@@ -36,3 +36,24 @@ CREATE TABLE `project_staff` (
   `project_id` int(11) NOT NULL,
   `staff_id` int(11) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+-- 部门表
+CREATE TABLE `department` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `department_name` varchar(20) NOT NULL COMMENT '部门名称',
+  `code` varchar(20) DEFAULT NULL COMMENT '部门编号',
+  `created_time` timestamp NULL DEFAULT NULL,
+  `update_time` timestamp NULL DEFAULT NULL,
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB AUTO_INCREMENT=7 DEFAULT CHARSET=utf8;
+
+-- 子部门表
+CREATE TABLE `sub_department` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `sub_department_name` varchar(20) NOT NULL COMMENT '子部门名称',
+  `code` varchar(20) DEFAULT NULL COMMENT '子部门编号',
+  `department_id` int(11) NOT NULL COMMENT '所属部门id',
+  `created_time` timestamp NULL DEFAULT NULL,
+  `update_time` timestamp NULL DEFAULT NULL,
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB AUTO_INCREMENT=16 DEFAULT CHARSET=utf8;

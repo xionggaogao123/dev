@@ -28,12 +28,39 @@
     <!-- don't handle the static resource --> 
     <mvc:default-servlet-handler />
     
+    <mvc:interceptors>
+    	<mvc:interceptor>
+    		<mvc:mapping path="/**"/>
+    		<mvc:exclude-mapping path="/user/login"/>
+    		<mvc:exclude-mapping path="/user/toLogin"/>
+    		<bean class="com.fulaan.interceptor.LoginInterceptor"/>
+    	</mvc:interceptor>
+    </mvc:interceptors>
+    
     <!-- use annotation -->
     <mvc:annotation-driven />
     
+    <!-- 避免出现json文件下载 -->
+    <bean id="jacksonMessageConverter" class="org.springframework.http.converter.json.MappingJacksonHttpMessageConverter">
+    	<property name="supportedMediaTypes">
+    		<list>
+    			<value>application/json;charset=UTF-8</value>
+    		</list>
+    	</property>
+    </bean>
+	<bean
+        class="org.springframework.web.servlet.mvc.method.annotation.RequestMappingHandlerAdapter">
+        <property name="messageConverters">
+            <list>
+            	<!-- json转换器 -->
+                <ref bean="jacksonMessageConverter" />
+            </list>
+        </property>
+    </bean>    
+    
     <!-- 配置视图解析器 -->
     <bean class="org.springframework.web.servlet.view.InternalResourceViewResolver">
-    	<property name="prefix" value="/WEB-INF/jsp"></property>
+    	<property name="prefix" value="/WEB-INF/jsp/"></property>
     	<property name="suffix" value=".jsp"></property>
     </bean>
     

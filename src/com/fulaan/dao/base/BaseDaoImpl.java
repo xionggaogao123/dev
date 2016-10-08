@@ -7,8 +7,10 @@ import java.util.List;
 import javax.annotation.Resource;
 import javax.sql.DataSource;
 
+import org.hibernate.Query;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
+import org.hibernate.criterion.DetachedCriteria;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.orm.hibernate3.HibernateTemplate;
 import org.springframework.orm.hibernate3.SessionFactoryUtils;
@@ -33,6 +35,7 @@ public class BaseDaoImpl implements BaseDao{
 	}
 
 	public HibernateTemplate getHibernateTemplate() {
+		
 		return hibernateTemplate;
 	}
 
@@ -124,8 +127,9 @@ public class BaseDaoImpl implements BaseDao{
 	@Override
 	@SuppressWarnings("unchecked")
 	public long countAll(Class<?> entity) {
-		List<Long> list = getHibernateTemplate().find("select count(*) from" + entity.getName());
-		return (list != null && list.size() > 0) ? list.get(0) : 0L;
+		 List<Long> list = getHibernateTemplate().find("select count(*) from " + entity.getName());
+		
+		 return (list != null && list.size() > 0) ? list.get(0) : 0L;
 	}
 
 	@Override
@@ -147,6 +151,20 @@ public class BaseDaoImpl implements BaseDao{
 	public long count(String queryString, Object[] params) {
 		List<Long> list = find(queryString, params);
 		return (list != null && list.size() > 0) ? list.get(0) : 0L;
+	}
+
+	@Override
+	public List getPageItem(String queryString, int index, int size) {
+		Session session = getSession();
+		Query query = session.createQuery(queryString);
+		query.setFirstResult(index);
+		query.setMaxResults(size);
+		return query.list();
+	}
+
+	@Override
+	public List findByCriteria(DetachedCriteria criteria) {
+		return getHibernateTemplate().findByCriteria(criteria);
 	}
 	
 }

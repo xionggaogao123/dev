@@ -1,7 +1,7 @@
 -- 项目表
 -- added by xusy 2016-9-22
 CREATE TABLE `project` (
-  `id` int(11) NOT NULL,
+  `id` int(11) NOT NULL AUTO_INCREMENT,
   `project_number` varchar(50) NOT NULL,
   `project_name` varchar(255) NOT NULL COMMENT '项目名称',
   `project_desc` text COMMENT '项目描述',
@@ -12,12 +12,12 @@ CREATE TABLE `project` (
   `created_time` datetime DEFAULT NULL COMMENT '项目创建时间',
   `update_time` datetime DEFAULT NULL COMMENT '更新时间',
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB AUTO_INCREMENT=4 DEFAULT CHARSET=utf8;
 
 -- 职员表
 -- added by xusy 2016-9-22
 CREATE TABLE `staff` (
-  `id` int(11) NOT NULL,
+  `id` int(11) NOT NULL AUTO_INCREMENT,
   `job_number` varchar(20) DEFAULT NULL COMMENT '工号',
   `name` varchar(20) DEFAULT NULL COMMENT '姓名',
   `gender` varchar(5) DEFAULT NULL COMMENT '性别：0-女 1-男',
@@ -28,7 +28,7 @@ CREATE TABLE `staff` (
   `add_time` datetime DEFAULT NULL,
   `update_time` datetime DEFAULT NULL,
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB AUTO_INCREMENT=12 DEFAULT CHARSET=utf8;
 
 -- 项目职员关系表
 -- added by xusy 2016-9-22

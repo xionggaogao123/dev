@@ -13,6 +13,7 @@ import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.JoinTable;
 import javax.persistence.ManyToMany;
+import javax.persistence.ManyToOne;
 import javax.persistence.OrderBy;
 import javax.persistence.Table;
 import javax.persistence.Temporal;
@@ -53,6 +54,9 @@ public class Staff implements Serializable{
 	
 	// 部门
 	private String department;
+	
+	// 所属子部门
+	private SubDepartment subDepartment;
 	
 	// 职称
 	private String jobTitle;
@@ -130,6 +134,16 @@ public class Staff implements Serializable{
 	public void setDepartment(String department) {
 		this.department = department;
 	}
+	
+	@ManyToOne(targetEntity = SubDepartment.class, fetch = FetchType.EAGER)
+	@JoinColumn(name = "sub_department_id")
+	public SubDepartment getSubDepartment() {
+		return subDepartment;
+	}
+
+	public void setSubDepartment(SubDepartment subDepartment) {
+		this.subDepartment = subDepartment;
+	}
 
 	@Column(name = "job_title", length = 50)
 	public String getJobTitle() {
@@ -141,7 +155,7 @@ public class Staff implements Serializable{
 	}
 
 	@Column(name = "add_time")
-	@Temporal(TemporalType.TIME)
+	@Temporal(TemporalType.TIMESTAMP)
 	public Date getAddTime() {
 		return addTime;
 	}
@@ -151,7 +165,7 @@ public class Staff implements Serializable{
 	}
 
 	@Column(name = "update_time")
-	@Temporal(TemporalType.TIME)
+	@Temporal(TemporalType.TIMESTAMP)
 	public Date getUpdateTime() {
 		return updateTime;
 	}
@@ -160,7 +174,7 @@ public class Staff implements Serializable{
 		this.updateTime = updateTime;
 	}
 
-	@ManyToMany(targetEntity = Project.class, fetch = FetchType.LAZY)
+	@ManyToMany(targetEntity = Project.class, fetch = FetchType.EAGER)
 	@JoinTable(name = "project_staff", joinColumns = {@JoinColumn(name = "staff_id")}, inverseJoinColumns = {@JoinColumn(name = "project_id")})
 	@OrderBy("id")
 	@Fetch(FetchMode.SUBSELECT)

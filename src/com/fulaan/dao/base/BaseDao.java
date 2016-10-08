@@ -5,6 +5,7 @@ import java.util.Collection;
 import java.util.List;
 
 import org.hibernate.Session;
+import org.hibernate.criterion.DetachedCriteria;
 
 public interface BaseDao {
 	
@@ -112,4 +113,15 @@ public interface BaseDao {
 	public long count(String queryString, Object param);
 	
 	public long count(String queryString, Object[] params);
+	
+	/**
+	 * 获取当前页数据
+	 * @param queryString 查询语句
+	 * @param index 开始获取的下标
+	 * @param size 每页条数
+	 * @return
+	 */
+	public List getPageItem(String queryString, int index, int size);
+	
+	public List findByCriteria(DetachedCriteria criteria);
 }

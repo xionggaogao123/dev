@@ -102,7 +102,9 @@ public class StaffController {
 				sDto.setJobNumber(s.getJobNumber());
 				sDto.setName(s.getName());
 				sDto.setGender(s.getGender());
-				sDto.setDepartment(s.getSubDepartment().getDepartment().getDepartmentName());
+				if(s.getSubDepartment() != null) {
+					sDto.setDepartment(s.getSubDepartment().getDepartment().getDepartmentName());
+				}
 				sDto.setJobTitle(s.getJobTitle());
 				
 				tempResults.add(sDto);

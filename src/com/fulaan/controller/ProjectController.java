@@ -22,8 +22,10 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import com.fulaan.common.ProjectContent;
 import com.fulaan.dto.ProjectDto;
 import com.fulaan.dto.StaffDto;
+import com.fulaan.entity.Directory;
 import com.fulaan.entity.Project;
 import com.fulaan.entity.Staff;
+import com.fulaan.service.DirectoryService;
 import com.fulaan.service.ProjectService;
 import com.fulaan.service.StaffService;
 
@@ -51,6 +53,9 @@ public class ProjectController {
 	
 	@Resource
 	StaffService staffService;
+	
+	@Resource
+	DirectoryService directoryService;
 	
 	/**
 	 * 显示项目信息
@@ -139,8 +144,12 @@ public class ProjectController {
 		List<Staff> members = project.getMembers();
 		Map<String, List<StaffDto>> staffDtoMap = bulidDtoMap(members);
 		
+		int rootDirId = new Integer(project.getDocsPath()).intValue();
+		Directory rootDir = directoryService.get(Directory.class, rootDirId);
+		
 		request.setAttribute("project", project);
 		request.setAttribute("sdtoMap", staffDtoMap);
+		request.setAttribute("rootDir", rootDir);
 		
 		return PROJECT_DETAIL_PAGE;
 	}
@@ -206,6 +215,13 @@ public class ProjectController {
 			members.add(staff);
 		}
 		project.setMembers(members);
+		
+		// 为项目生成文档根目录
+		Directory rootDir = new Directory();
+		rootDir.setName(project.getProjectName() + "_" + project.getId());
+		directoryService.save(rootDir);
+		
+		project.setDocsPath(rootDir.getId() + ""); // 关联根目录
 		
 		projectService.save(project);
 		

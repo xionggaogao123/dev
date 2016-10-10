@@ -90,15 +90,6 @@
     				<span class="sp1"><em>*</em>项目描述</span>
     				<textarea name="projectDesc"></textarea>
     			</li>
-    			<li class="clearfix">
-    				<span class="sp1"><em>*</em>项目文件</span>
-    				<div class="new-item-list clearfix">
-    					<p><span class="sp4">添加项目文档</span></p>
-    					<p class="p-word">中秋节放假通知</p>
-    					<p class="p-word">国庆节放假通知</p>
-    					<p class="p-word">元旦放假通知</p>
-    				</div>
-    			</li>
     			<li class='li-pad'>
                     <button class="btn-ok" type="submit">确定</button>
                     <button class="btn-no">取消</button>

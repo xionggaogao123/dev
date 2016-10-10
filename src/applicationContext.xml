@@ -51,17 +51,6 @@
 		<property name="packagesToScan" value="com.fulaan.entity"></property>
 	</bean>
 	
-	<!-- 配置业务层 -->
-	<!-- <bean id="accountService" class="com.transaction.demo.AccountServiceImpl">
-	   <property name="accountDao" ref="accountDao"></property>
-	   <property name="transactionTemplate" ref="transactionTemplate"></property>
-	</bean> -->
-	
-	<!-- 配置持久层 -->
-	<!-- <bean id="accountDao" class="com.transaction.demo.AccountDaoImpl">
-	   <property name="dataSource" ref="dataSource"/>
-	</bean> -->
-	
 	<!-- 配置事务管理器 -->
 	<!-- <bean id="transactionManager" class="org.springframework.jdbc.datasource.DataSourceTransactionManager">
 	   <property name="dataSource" ref="dataSource"></property>

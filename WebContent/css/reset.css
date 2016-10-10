@@ -669,6 +669,13 @@ button{cursor: pointer;}
 	/* height: 425px; */
 }
 
+.wind-upload{
+	margin-left: -215px;
+	margin-top: -230px;
+	width: 390px;
+	/* height: 425px; */
+}
+
 .wind-new{
 	margin-left: -215px;
 	margin-top: -230px;
@@ -734,6 +741,16 @@ button{cursor: pointer;}
 	padding:0 0 0 6px;
 	margin: 11px 0 0 0;
 }
+
+.wind-del .ul-infor li .inp1{
+	float: left;
+	width: 185px;
+	height: 38px;
+	border: 1px solid #B9B9B9;
+	padding:0 0 0 6px;
+	margin: 11px 0 0 0;
+}
+
 .wind-edit .ul-infor li label{
 	float: left;
 	margin: 0 24px 0 4px;

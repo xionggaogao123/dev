@@ -57,3 +57,21 @@ CREATE TABLE `sub_department` (
   `update_time` timestamp NULL DEFAULT NULL,
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB AUTO_INCREMENT=16 DEFAULT CHARSET=utf8;
+
+-- 文件目录表
+CREATE TABLE `directory` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `name` varchar(20) NOT NULL COMMENT '目录名称',
+  `pid` int(11) DEFAULT NULL COMMENT '父目录id',
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB AUTO_INCREMENT=33 DEFAULT CHARSET=utf8;
+
+-- 文件信息表
+CREATE TABLE `file` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `file_name` varchar(100) NOT NULL COMMENT '文件名',
+  `file_path` varchar(255) DEFAULT NULL COMMENT '存储路径',
+  `file_type` int(11) DEFAULT NULL,
+  `dir_id` int(11) NOT NULL COMMENT '所属目录id',
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB AUTO_INCREMENT=6 DEFAULT CHARSET=utf8;

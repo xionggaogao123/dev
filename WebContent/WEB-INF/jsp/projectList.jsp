@@ -6,7 +6,7 @@
     	<title>我的项目清单</title>
         <meta charset="utf-8">
         <script type="text/javascript" src="${ctx }/js/jquery-1.11.1.js"></script>
-        
+        <link rel="shortcut icon" href="${ctx }/images/page_logo1.png" >
         <link rel="stylesheet" type="text/css" href="${ctx }/css/bootstrap.min.css">
         <script type="text/javascript" src="${ctx }/js/bootstrap.min.js"></script>
         <script type="text/javascript" src="${ctx }/js/jqPaginator.js"></script>

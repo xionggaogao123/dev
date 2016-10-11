@@ -5,7 +5,7 @@
     	<title>公司人员管理</title>
         <meta charset="utf-8">
         <script type="text/javascript" src="${ctx }/js/jquery-1.11.1.js"></script>
-        
+        <link rel="shortcut icon" href="${ctx }/images/page_logo1.png" >
         <link rel="stylesheet" type="text/css" href="${ctx }/css/bootstrap.min.css">
         <script type="text/javascript" src="${ctx }/js/bootstrap.min.js"></script>
         <script type="text/javascript" src="${ctx }/js/jqPaginator.js"></script>
@@ -89,6 +89,15 @@
                     <span class="sp1">姓名</span>
                     <input type="text" class="inp1" id="ed_name">
                 </li>
+                <li id="ed_is_owner">
+                	<span class="sp1">项目负责人</span>
+                	<label>
+                        <input type="radio" name="isPrjOwner" value="1">是
+                    </label>
+                    <label>
+                        <input type="radio" name="isPrjOwner" value="0">否
+                    </label>
+                </li>
                 <li id="ed_gender">
                     <span class="sp1">性别</span>
                     <label>
@@ -126,7 +135,8 @@
                 </li>
             </ul>
         </div>
-        <!--编辑员工信息弹窗-->
+        
+        <!-- 删除员工信息弹窗 -->
         <div class="wind-del wind">
             <p class="p1">提示<em></em></p>
             <ul class="ul-infor">
@@ -157,6 +167,15 @@
                 <li>
                 	<span class="sp1">密码</span>
                     <input type="password" class="inp1" id="new_pwd">
+                </li>
+                <li id="new_is_owner">
+                	<span class="sp1">项目负责人</span>
+                	<label>
+                        <input type="radio" name="isPrjOwner" value="1">是
+                    </label>
+                    <label>
+                        <input type="radio" name="isPrjOwner" value="0">否
+                    </label>
                 </li>
                 <li id="new_gender">
                     <span class="sp1">性别</span>

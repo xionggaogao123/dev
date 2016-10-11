@@ -70,6 +70,9 @@ public class Staff implements Serializable{
 	// 参与的项目
 	private List<Project> projects;
 	
+	// 是否为项目负责人
+	private String isPrjOwner; 
+	
 	@Id
 	@GeneratedValue(strategy = GenerationType.AUTO)
 	@Column(name = "id", nullable = false, unique = true)
@@ -185,6 +188,15 @@ public class Staff implements Serializable{
 
 	public void setProjects(List<Project> projects) {
 		this.projects = projects;
+	}
+
+	@Column(name = "is_prj_owner")
+	public String getIsPrjOwner() {
+		return isPrjOwner;
+	}
+
+	public void setIsPrjOwner(String isPrjOwner) {
+		this.isPrjOwner = isPrjOwner;
 	}
 	
 }

@@ -11,6 +11,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -205,7 +206,8 @@ public class StaffController {
 			@RequestParam String name,
 			@RequestParam String gender,
 			@RequestParam int subDepartment,
-			@RequestParam String jobTitle) {
+			@RequestParam String jobTitle,
+			@RequestParam(required = false) String isOwner) { // 1:是项目负责人   0:否
 		
 		CommonResult result = null;
 		
@@ -233,11 +235,39 @@ public class StaffController {
 		staff.setGender(gender);
 		staff.setSubDepartment(subDepa);
 		staff.setJobTitle(jobTitle);
+		staff.setIsPrjOwner(isOwner);
 		staffService.update(staff);
 		
 		result = new CommonResult(0, "success", "更新成功");
 		
 		return result;
+	}
+	
+	/**
+	 * 获取职员信息
+	 * @param id
+	 * @return
+	 */
+	@ResponseBody
+	@RequestMapping(value = "/{id}/info", method = RequestMethod.POST)
+	public StaffDto getStaffInfo(@PathVariable int id) {
+		
+		Staff staff = staffService.get(Staff.class, id);
+		if(staff == null) {
+			return null;
+		}
+		
+		StaffDto sDto = new StaffDto();
+		sDto.setId(staff.getId());
+		sDto.setName(staff.getName());
+		sDto.setGender(staff.getGender());
+		sDto.setIsPrjOwner(staff.getIsPrjOwner());
+		sDto.setJobNumber(staff.getJobNumber());
+		sDto.setJobTitle(staff.getJobTitle());
+		sDto.setDepartment(staff.getSubDepartment().getDepartment().getId() + "");
+		sDto.setSubDepartment(staff.getSubDepartment().getId() + "");
+		
+		return sDto;
 	}
 	
 }

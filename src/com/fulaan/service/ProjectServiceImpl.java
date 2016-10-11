@@ -1,5 +1,6 @@
 package com.fulaan.service;
 
+import java.math.BigInteger;
 import java.util.List;
 
 import javax.annotation.Resource;
@@ -45,7 +46,9 @@ public class ProjectServiceImpl implements ProjectService {
 		
 		SQLQuery sqlQuery = projectDao.getSession().createSQLQuery(querySql);
 		
-		return (long) (sqlQuery.list() != null ? sqlQuery.list().size() : 0);
+		long countNum = ((BigInteger) sqlQuery.list().get(0)).longValue();
+		
+		return (long) (sqlQuery.list() != null ? countNum : 0);
 	}
 
 	@Override

@@ -13,20 +13,22 @@ $(document).ready(function(){
 	totalPage = $('#totalPage').val();
 	//$('.ul-company-member li .sp1 em').click(function())
 	
-	$('#list').jqPaginator({
-		totalPages: parseInt(totalPage),
-		visiblePages: 5,
-		currentPage: 1,
-		first: '<li class="first"><a href="javascript:void(0);">首页<\/a><\/li>',
-		prev: '<li class="prev"><a href="javascript:void(0);">上一页<\/a><\/li>',
-		next: '<li class="next"><a href="javascript:void(0);">下一页<\/a><\/li>',
-		last: '<li class="last"><a href="javascript:void(0);">末页<\/a><\/li>',
-		page: '<li class="page"><a href="javascript:void(0);">{{page}}<\/a><\/li>',
-		onPageChange: function (num, type) {
-			console.log(num + "--")
-			listMember(num, context);
-		}
-	});
+	if(parseInt(totalPage) > 0) {
+		$('#list').jqPaginator({
+			totalPages: parseInt(totalPage),
+			visiblePages: 5,
+			currentPage: 1,
+			first: '<li class="first"><a href="javascript:void(0);">首页<\/a><\/li>',
+			prev: '<li class="prev"><a href="javascript:void(0);">上一页<\/a><\/li>',
+			next: '<li class="next"><a href="javascript:void(0);">下一页<\/a><\/li>',
+			last: '<li class="last"><a href="javascript:void(0);">末页<\/a><\/li>',
+			page: '<li class="page"><a href="javascript:void(0);">{{page}}<\/a><\/li>',
+			onPageChange: function (num, type) {
+				console.log(num + "--")
+				listMember(num, context);
+			}
+		});
+	}
 });
 
 

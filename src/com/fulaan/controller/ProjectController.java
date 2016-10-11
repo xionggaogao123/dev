@@ -5,6 +5,7 @@ import java.util.Collections;
 import java.util.Comparator;
 import java.util.Date;
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
@@ -167,6 +168,15 @@ public class ProjectController {
 		List<Staff> allStaff = staffService.findAllStaff();
 		
 		Map<String, List<StaffDto>> staffDtoMap = bulidDtoMap(allStaff);
+		
+		Iterator<Staff> iterator = allStaff.iterator();
+		while(iterator.hasNext()) { // 去除不能作为项目负责人的员工
+			Staff s = iterator.next();
+			if(s.getIsPrjOwner() == null 
+					|| !"1".equals(s.getIsPrjOwner())) {
+				iterator.remove();
+			}
+		}
 		
 		request.setAttribute("staffs", allStaff);
 		request.setAttribute("sdtoMap", staffDtoMap);

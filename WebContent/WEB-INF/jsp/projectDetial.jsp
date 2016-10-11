@@ -4,6 +4,7 @@
     <head>
     	<title>我的项目清单</title>
         <meta charset="utf-8">
+        <link rel="shortcut icon" href="${ctx }/images/page_logo1.png" >
         <script type="text/javascript" src="${ctx }/js/jquery-2.0.3.js"></script>
         <link rel="stylesheet" type="text/css" href="${ctx }/css/reset.css">
         <script type="text/javascript">

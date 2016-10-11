@@ -12,18 +12,25 @@ public class StaffDto {
 	
 	private String department;
 	
+	private String subDepartment;
+	
 	private String jobTitle;
+	
+	private String isPrjOwner;
 
 	public StaffDto() { }
 	
-	public StaffDto(Integer id, String jobNumber, String name, String gender, String department, String jobTitle) {
+	public StaffDto(Integer id, String jobNumber, String name, String gender, String department, 
+			String subDepartment, String jobTitle, String isPrjOwner) {
 		super();
 		this.id = id;
 		this.jobNumber = jobNumber;
 		this.name = name;
 		this.gender = gender;
 		this.department = department;
+		this.subDepartment = subDepartment;
 		this.jobTitle = jobTitle;
+		this.isPrjOwner = isPrjOwner;
 	}
 
 	public Integer getId() {
@@ -65,6 +72,14 @@ public class StaffDto {
 	public void setDepartment(String department) {
 		this.department = department;
 	}
+	
+	public String getSubDepartment() {
+		return subDepartment;
+	}
+
+	public void setSubDepartment(String subDepartment) {
+		this.subDepartment = subDepartment;
+	}
 
 	public String getJobTitle() {
 		return jobTitle;
@@ -72,6 +87,14 @@ public class StaffDto {
 
 	public void setJobTitle(String jobTitle) {
 		this.jobTitle = jobTitle;
+	}
+
+	public String getIsPrjOwner() {
+		return isPrjOwner;
+	}
+
+	public void setIsPrjOwner(String isPrjOwner) {
+		this.isPrjOwner = isPrjOwner;
 	}
 	
 }

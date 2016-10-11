@@ -75,3 +75,7 @@ CREATE TABLE `file` (
   `dir_id` int(11) NOT NULL COMMENT '所属目录id',
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB AUTO_INCREMENT=6 DEFAULT CHARSET=utf8;
+
+-- 新增是否可作为项目负责人字段
+-- 2016-10-11 10:42:17
+ALTER TABLE staff ADD COLUMN is_prj_owner VARCHAR(5) AFTER job_title;

@@ -66,6 +66,7 @@ $(document).ready(function(){
 		var gender = $("#ed_gender input[type=radio]:checked").val();
 		var sub_department = $("#ed_sub_depart select").val();
 		var jobTitle = $("#ed_jbTitle").val();
+		var isPrjOwner = $("#ed_is_owner input[type=radio]:checked").val();
 		$.ajax({
 			cache : false,
 			async : false,
@@ -78,7 +79,8 @@ $(document).ready(function(){
 				name : name,
 				gender : gender,
 				subDepartment : sub_department,
-				jobTitle : jobTitle
+				jobTitle : jobTitle,
+				isOwner : isPrjOwner
 			},
 			success : function(data) {
 				if(data.code === 0) { // 更新成功
@@ -94,6 +96,9 @@ $(document).ready(function(){
 					optionMemberId = null;
 					alert("更新失败：" + data.msg);
 				}
+			},
+			error : function(arg0, arg1, arg2) {
+				alert("出错了");
 			}
 		});
 	});
@@ -106,6 +111,7 @@ $(document).ready(function(){
 		var gender = $("#new_gender input[type=radio]:checked").val();
 		var subDepartment = $("#new_sub_depart select").val();
 		var jobTitle = $("#new_jbTitle").val();
+		var isPrjOwner = $("#new_is_owner input[type=radio]:checked").val();
 		$.ajax({
 			async : false,
 			cache : false,
@@ -117,7 +123,8 @@ $(document).ready(function(){
 				loginName : loginName,
 				password : pwd,
 				'subDepartment.id' : subDepartment,
-				jobTitle : jobTitle
+				jobTitle : jobTitle,
+				isPrjOwner : isPrjOwner
 			},
 			dateType : 'json',
 			url : contextGloabl + '/staff/save',
@@ -145,11 +152,43 @@ $(document).ready(function(){
 	
 });
 
+function getMemInfo() {
+	$.ajax({
+		cache : false,
+		async : false,
+		url : contextGloabl + '/staff/'+ optionMemberId + '/info',
+		type : 'post',
+		dataType : 'json',
+		success : function(data) {
+			$("#ed_staffNum").val(data.jobNumber);
+			$("#ed_name").val(data.name);
+			$("#ed_gender input").prop("checked", false);
+			if(data.gender) {
+				$("#ed_gender input[type=radio][value=" + data.gender + "]").prop("checked","checked");
+			}
+			$("#ed_depart option[value=" + data.department + "]").prop("selected", true);
+			$("#ed_depart option").trigger("change");
+			$("#ed_sub_depart option[value=" + data.subDepartment + "]").prop("selected", true);
+			$("#ed_jbTitle").val(data.jobTitle);
+			
+			$("#ed_is_owner input[type=radio]").prop("checked", false);
+			if(data.isPrjOwner) {
+				$("#ed_is_owner input[type=radio][value=" + data.isPrjOwner + "]").prop("checked","checked");
+			}
+		},
+		error : function(arg0, arg1, arg2) {
+			alert("出错了");
+			return;
+		}
+	});
+}
+
 function editMember(id) {
 	
 	optionMemberId = id;
 	$('.wind-edit').fadeIn();
 	$('.bg').fadeIn();
+	getMemInfo();
 }
 
 function deleteMember(id) {
@@ -213,58 +252,3 @@ function pagenation(totalPage, ctx) {
 		}
 	});
 }
-//var MEMBER = {
-//	listMember : function(page, ctx) {
-//		if(!ctx)
-//			ctx = "";
-//		$.ajax({ 
-//			cache : false,
-//			async : false,
-//			url : ctx + '/staff/show',
-//			dataType : 'json',
-//			type : 'post',
-//			data : {
-//				pageNum : page || 1
-//			},
-//			success : function(data) {
-//				if(data.code === 1) { // 成功获取数据
-//					$("#member").empty();
-//					for(var i = 0; i < data.results.length; i++) {
-//						var html = '<tr><td class="th1">' + data.results[i].jobNumber + '</td><td class="th2">' + data.results[i].name + '</td><td class="th3">';
-//						if(data.results[i].gender === "1") {
-//							html += '<img src="' + ctx + '/images/img_man.png"></td>';
-//						} else {
-//							html += '<img src="' + ctx + '/images/img_women.png"></td>';
-//						}
-//						html += '<td class="th4">' + data.results[i].department + '</td><td class="th5">' + data.results[i].jobTitle + '</td><td class="th6"><span class="sp1"></span><span class="sp2"></span></td></tr>';
-//						console.log(html)
-//						$("#mebmer").append(html);
-//					}
-//					$('#list').data("trigger", false);
-//					$('#list').jqPaginator({
-//	        		    totalPages: data.page,
-//	        		    visiblePages: 5,
-//	        		    currentPage: page,
-//	        		    first: '<li class="first"><a href="javascript:void(0);">First<\/a><\/li>',
-//	                    prev: '<li class="prev"><a href="javascript:void(0);">Previous<\/a><\/li>',
-//	                    next: '<li class="next"><a href="javascript:void(0);">Next<\/a><\/li>',
-//	                    last: '<li class="last"><a href="javascript:void(0);">Last<\/a><\/li>',
-//	                    page: '<li class="page"><a href="javascript:void(0);">{{page}}<\/a><\/li>',
-//	        		    onPageChange: function (num, type) {
-//	        		    	if ($('#list').data("trigger")) {
-//	        		    	    console.log(num + "--")
-//	        		    	    MEMBER.listMember(page, ctx);
-//	        		    	}
-//	        		    }
-//	        		});
-//				}
-//				if(data.code === 0) { // 未获取到数据
-//					
-//				}
-//			},
-//			error: function (jqXHR, textStatus, errorThrown) {
-//		        console.log(jqXHR + textStatus + errorThrown);
-//		    }
-//		});
-//	}
-//}

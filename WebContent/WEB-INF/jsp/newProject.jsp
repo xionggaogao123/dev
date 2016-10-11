@@ -4,6 +4,7 @@
 <html lang="en">
     <head>
     	<title>新建项目</title>
+    	<link rel="shortcut icon" href="${ctx }/images/page_logo1.png" >
         <meta charset="utf-8">
         <script type="text/javascript" src="${ctx }/js/jquery-1.11.1.js"></script>
         <script type="text/javascript" src="${ctx }/js/manage.js"></script>

@@ -3,7 +3,8 @@
 <!DOCTYPE html>
 <html lang="en">
     <head>
-    	<title>管理系统-登录</title>
+    	<title>复兰项目管理-登录</title>
+    	<link rel="shortcut icon" href="${ctx }/images/page_logo1.png" >
         <meta charset="utf-8">
         <script type="text/javascript" src="${ctx }/js/jquery-1.11.1.js"></script>
         <link rel="stylesheet" type="text/css" href="${ctx }/css/reset.css">
@@ -17,11 +18,15 @@
         </script>
     </head>
     <body style="background: #3FA8D8">
+    	<div class="header">
+            <img class="img1" src="${ctx }/images/top_logo.png">
+            <p class="p1">复兰项目管理</p>
+        </div>
         <div class="login-cont">
-            <div class="line1"></div>
+            <!-- <div class="line1"></div>
             <div class="line2"></div>
             <div class="dintou"></div>
-            <div class="dinxian"></div>
+            <div class="dinxian"></div> -->
             <div class="wind-login">
                 <form action="${ctx }/user/toLogin" method="post">
                 	<div class="top">

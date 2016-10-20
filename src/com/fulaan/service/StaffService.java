@@ -21,12 +21,32 @@ public interface StaffService {
 	public Long getTotalNum(Class<Staff> entity);
 	
 	/**
-	 * 获取当前页职员信息记录
+	 * 获取未删除职员数量
+	 * @return
+	 */
+	public Long getActiveStaffNum();
+	
+	/**
+	 * 获取未删除员工
+	 * @return
+	 */
+	public List getActiveStaff();
+	
+	/**
+	 * 获取当前页职员信息记录（所有，含删除）
 	 * @param pageNum 当前页数
 	 * @param size 每页记录条数
 	 * @return
 	 */
 	public List<Staff> getStaffsByPageNum(int pageNum, int size);
+	
+	/**
+	 * 获取当前页未删除员工信息
+	 * @param pageNum
+	 * @param size
+	 * @return
+	 */
+	public List<Staff> getAcitveStaffByPageNum(int pageNum, int size);
 	
 	/**
 	 * 根据主键id查找职员

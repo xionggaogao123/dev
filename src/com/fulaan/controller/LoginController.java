@@ -1,5 +1,6 @@
 package com.fulaan.controller;
 
+import java.util.Date;
 import java.util.List;
 
 import javax.annotation.Resource;
@@ -12,10 +13,14 @@ import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.ResponseBody;
 
+import com.fulaan.common.CommonResult;
 import com.fulaan.common.ProjectContent;
 import com.fulaan.dao.base.BaseDao;
+import com.fulaan.entity.LoginInfo;
 import com.fulaan.entity.Staff;
+import com.fulaan.service.LoginInfoService;
 import com.fulaan.util.MD5Util;
 
 @Controller
@@ -34,6 +39,9 @@ public class LoginController {
 	
 	@Resource
 	BaseDao baseDao;
+	
+	@Resource
+	LoginInfoService loginInfoService;
 	
 	@RequestMapping(value = "/login")
 	public String login(HttpServletRequest request,
@@ -72,9 +80,19 @@ public class LoginController {
 		}
 		
 		Staff staff = staffList.get(0);
+		if(staff.getIsDeleted() != ProjectContent.NOT_DELETED_FLAG) {
+			request.setAttribute("errorMsg", "该用户已被禁用");
+			return USER_LOGIN_PAGE;
+		}
+		
 		session.setAttribute(ProjectContent.LOGIN_USER_IN_SESSION, staff);
 		
-		return PROJECT_ADD_PAGE;
+		LoginInfo loginInfo = new LoginInfo();
+		loginInfo.setStaff(staff);
+		loginInfo.setLoginTime(new Date());
+		loginInfoService.save(loginInfo);
+		
+		return "redirect:/project/list";
 	}
 	
 	/**
@@ -91,6 +109,49 @@ public class LoginController {
 		session.removeAttribute(ProjectContent.LOGIN_USER_IN_SESSION);
 		
 		return USER_LOGIN_PAGE;
+	}
+	
+	/**
+	 * 修改用户密码
+	 * @param request
+	 * @param session
+	 * @param oldPw 旧密码
+	 * @param newPw 新密码
+	 * @param renewPw 输入第二次新密码
+	 * @return
+	 */
+	@ResponseBody
+	@RequestMapping(value = "/changePw", method = RequestMethod.POST)
+	public CommonResult changPw(HttpServletRequest request,
+			HttpSession session,
+			@RequestParam String oldPw,
+			@RequestParam String newPw,
+			@RequestParam String renewPw) {
+		
+		CommonResult result = null;
+		
+		Staff loginedStaff = (Staff) session.getAttribute(ProjectContent.LOGIN_USER_IN_SESSION);
+		
+		if(!newPw.equals(renewPw)) {
+			result = new CommonResult(1, "error", "两次输入的密码不一致");
+			return result;
+		}
+		
+		String encryPw = loginedStaff.getPassword();
+		String encryOldPw = MD5Util.MD5Encode(oldPw);
+		
+		if(!encryPw.equals(encryOldPw)) {
+			result = new CommonResult(1, "error", "原密码不正确");
+			return result;
+		}
+		
+		String encryNewPw = MD5Util.MD5Encode(newPw);
+		loginedStaff.setPassword(encryNewPw);
+		baseDao.update(loginedStaff);
+		
+		result = new CommonResult(0, "success", "修改密码成功");
+		
+		return result;
 	}
 	
 }

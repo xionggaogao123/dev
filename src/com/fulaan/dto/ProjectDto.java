@@ -12,6 +12,8 @@ public class ProjectDto {
 	
 	private String ownerName; // 项目负责人
 	
+	private String createrName; // 项目创建人
+	
 	private Date startDate; // 项目开始时间
 	
 	private Date endDate; // 项目结束时间
@@ -48,6 +50,14 @@ public class ProjectDto {
 
 	public void setOwnerName(String ownerName) {
 		this.ownerName = ownerName;
+	}
+	
+	public String getCreaterName() {
+		return createrName;
+	}
+
+	public void setCreaterName(String createrName) {
+		this.createrName = createrName;
 	}
 
 	public Date getStartDate() {

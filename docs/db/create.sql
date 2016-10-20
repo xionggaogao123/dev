@@ -79,3 +79,45 @@ CREATE TABLE `file` (
 -- 新增是否可作为项目负责人字段
 -- 2016-10-11 10:42:17
 ALTER TABLE staff ADD COLUMN is_prj_owner VARCHAR(5) AFTER job_title;
+
+-- 修改员工表字段
+ALTER TABLE staff DROP COLUMN department;
+
+ALTER TABLE staff ADD COLUMN department_id INT;
+
+-- 登录信息表
+CREATE TABLE `login_info` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `login_id` int(11) DEFAULT NULL COMMENT '登录用户id',
+  `login_time` timestamp NULL DEFAULT NULL ON UPDATE CURRENT_TIMESTAMP,
+  `ip_adress` varchar(50) DEFAULT NULL COMMENT '登录的ip地址',
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB AUTO_INCREMENT=3 DEFAULT CHARSET=utf8;
+
+-- 增加项目创建人字段
+ALTER TABLE project ADD COLUMN project_creater_id INT;
+UPDATE project SET project_creater_id = project_owner_id;
+
+-- 角色表
+CREATE TABLE `auth_role` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `name` varchar(100) DEFAULT NULL COMMENT '权限角色名称',
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB AUTO_INCREMENT=4 DEFAULT CHARSET=utf8;
+
+-- 权限表
+CREATE TABLE `auth_function` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `func_name` varchar(100) DEFAULT NULL COMMENT '权限名称',
+  `func_flag` varchar(255) DEFAULT NULL COMMENT '权限标识',
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB AUTO_INCREMENT=18 DEFAULT CHARSET=utf8;
+
+-- 角色权限关联表
+CREATE TABLE `auth_role_function` (
+  `role_id` int(11) DEFAULT NULL COMMENT '角色id',
+  `func_id` int(11) DEFAULT NULL COMMENT '权限id'
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+-- 标识用户是否删除 1:删除 	 0:未删除
+ALTER TABLE staff ADD COLUMN is_deleted INT DEFAULT 0;

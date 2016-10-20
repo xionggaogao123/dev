@@ -40,9 +40,16 @@ public class ProjectServiceImpl implements ProjectService {
 	@Override
 	public Long getTotalNumByStaffId(int id) {
 		
-		String querySql = "SELECT count(*) FROM "
-				+ "(SELECT project_id FROM project_staff ps WHERE ps.staff_id = " + id
-				+ " union SELECT id FROM project p WHERE p.project_owner_id = " + id + ") r";
+		String querySql = "";
+		
+		if(id > 0) {
+			querySql = "SELECT count(*) FROM "
+					+ "(SELECT project_id FROM project_staff ps WHERE ps.staff_id = " + id
+					+ " union SELECT id FROM project p WHERE p.project_owner_id = " + id 
+					+ " or p.project_creater_id = " + id +") r";
+		} else {
+			querySql = "SELECT count(*) FROM project";
+		}
 		
 		SQLQuery sqlQuery = projectDao.getSession().createSQLQuery(querySql);
 		
@@ -54,9 +61,15 @@ public class ProjectServiceImpl implements ProjectService {
 	@Override
 	public List getProjectPageListByStaffId(int pageNum, int size, int id) {
 		
-		String querySql = "SELECT * FROM project WHERE id in  "
-				+ "(SELECT project_id FROM project_staff ps WHERE ps.staff_id = " + id
-				+ " union SELECT id FROM project p WHERE p.project_owner_id = " + id + ")";
+		String querySql = "";
+		if(id > 0) {
+			querySql = "SELECT * FROM project WHERE id in  "
+					+ "(SELECT project_id FROM project_staff ps WHERE ps.staff_id = " + id
+					+ " union SELECT id FROM project p WHERE p.project_owner_id = " + id
+					+ " or p.project_creater_id = " + id + ")";
+		} else {
+			querySql = "SELECT * FROM project ORDER BY created_time DESC";
+		}
 		
 		int index = (pageNum == 0 ? 0 : pageNum - 1) * size;
 		SQLQuery sqlQuery = projectDao.getSession().createSQLQuery(querySql);
@@ -85,6 +98,11 @@ public class ProjectServiceImpl implements ProjectService {
 		dc.add(Restrictions.eq("projectOwner.id", id));
 		
 		return projectDao.findByCriteria(dc);
+	}
+
+	@Override
+	public void update(Project project) {
+		projectDao.update(project);
 	}
 	
 }

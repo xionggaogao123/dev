@@ -19,6 +19,7 @@
     	<input type="hidden" id="totalPage" value="${totalPage }">
     	<div class="header">
     		<button onclick="window.location.href='${ctx}/user/logout'">退出</button>
+    		<button onclick="window.location.href='${ctx}/static/ch-pw.html'" class="ch-pw">修改密码</button>
     		<p class="p2">${loginedStaff.name }&nbsp;&nbsp;&nbsp;${loginedStaff.jobTitle }<br>${loginedStaff.loginName }</p>
     		<img class="img2" src="${ctx }/images/img_top_head.png">
     		<img class="img1" src="${ctx }/images/top_logo.png">
@@ -44,6 +45,16 @@
     	<div class="container">
             <div class="my-list-cont">
                 <h3>我的项目清单</h3>
+                <table class="tab-project mt38">
+                    <tbody>
+                    	<tr>
+                        	<th class="th1">项目名称</th>
+                        	<th class="th2">项目负责人</th>
+                        	<th class="th3">项目创建人</th>
+                        	<th class="th4">创建日期</th>
+                    	</tr>
+                	</tbody>
+                </table>
                 <ul class="ul-company-member" id='pro_list'>
                 </ul>
 

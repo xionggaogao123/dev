@@ -9,6 +9,7 @@ import org.hibernate.criterion.DetachedCriteria;
 import org.hibernate.criterion.Restrictions;
 import org.springframework.stereotype.Service;
 
+import com.fulaan.common.ProjectContent;
 import com.fulaan.dao.StaffDao;
 import com.fulaan.entity.Staff;
 
@@ -83,6 +84,33 @@ public class StaffServiceImpl implements StaffService {
 	@Override
 	public List<Staff> findByCriteria(DetachedCriteria criteria) {
 		return staffDao.findByCriteria(criteria);
+	}
+
+	@Override
+	public Long getActiveStaffNum() {
+		String sql = "from Staff where isDeleted = 0 "
+				+ " or isDeleted is null order by jobNumber";
+		List staffList = staffDao.find(sql);
+		return staffList != null ? staffList.size() : 0L;
+	}
+
+	@Override
+	public List<Staff> getAcitveStaffByPageNum(int pageNum, int size) {
+		// 根据职工号排序
+		String sql = "from Staff where isDeleted = 0 "
+				+ " or isDeleted is null order by jobNumber";
+		int index = (pageNum == 0 ? 0 : pageNum - 1) * size;
+		List<Staff> staffs =  staffDao.getPageItem(sql, index, size);
+		
+		return staffs;
+	}
+
+	@Override
+	public List getActiveStaff() {
+		String sql = "from Staff where isDeleted = 0 "
+				+ " or isDeleted is null order by jobNumber";
+		List staffList = staffDao.find(sql);
+		return staffList;
 	}
 	
 }

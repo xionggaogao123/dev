@@ -24,6 +24,9 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.multipart.MultipartFile;
 
+import com.fulaan.auth.annotation.AuthFunctionType;
+import com.fulaan.auth.annotation.Authority;
+import com.fulaan.auth.annotation.ModuleType;
 import com.fulaan.common.CommonResult;
 import com.fulaan.common.FileExtension;
 import com.fulaan.common.ProjectContent;
@@ -52,6 +55,7 @@ public class FileController {
 	 */
 	@ResponseBody
 	@RequestMapping(value = "/upload", method = RequestMethod.POST)
+	@Authority(module = ModuleType.FILE, function = AuthFunctionType.INSERT)
 	public CommonResult uploadFile(HttpServletRequest request,
 			HttpServletResponse response,
 			@RequestParam MultipartFile file,
@@ -150,6 +154,7 @@ public class FileController {
 	 */
 	@ResponseBody
 	@RequestMapping(value = "/rename", method = RequestMethod.POST)
+	@Authority(module = ModuleType.FILE, function = AuthFunctionType.UPDATE)
 	public CommonResult renameFile(HttpServletRequest request,
 			HttpServletResponse response,
 			@RequestParam int fileId,
@@ -208,6 +213,7 @@ public class FileController {
 	 */
 	@ResponseBody
 	@RequestMapping(value = "/remove", method = RequestMethod.POST)
+	@Authority(module = ModuleType.FILE, function = AuthFunctionType.DELETE)
 	public CommonResult removeFile(HttpServletRequest request,
 			HttpServletResponse response,
 			@RequestParam int fileId) {
@@ -245,6 +251,7 @@ public class FileController {
 	 * @throws Exception
 	 */
 	@RequestMapping("/download/{fileId}")
+	@Authority(module = ModuleType.FILE, function = AuthFunctionType.READ)
 	public ResponseEntity<byte[]> download(@PathVariable int fileId) throws Exception {
 		
 		ProjectFile prjFile = fileService.get(ProjectFile.class, fileId);

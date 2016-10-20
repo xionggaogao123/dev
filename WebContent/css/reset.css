@@ -2,7 +2,7 @@
 * @Author: Voyage
 * @Date:   2016-09-22 17:05:19
 * @Last Modified by:   Tony
-* @Last Modified time: 2016-09-23 17:32:57
+* @Last Modified time: 2016-09-29 16:02:29
 */
  /* css reset  */
 body,div,dl,dt,dd,ul,ol,li,h1,h2,h3,h4,h5,h6,pre,code,form,fieldset,legend,input,button,textarea,p,blockquote,th,td { margin:0; padding:0; }
@@ -68,6 +68,12 @@ button{cursor: pointer;}
 	border-radius: 4px;
 	margin: 20px 42px 0 30px;
 }
+
+.header .ch-pw{
+	width: 70px;
+	margin: 20px 0px 0 20px;
+}
+
 .left-nav{
 	position: absolute;
 	top: 0;
@@ -350,11 +356,12 @@ button{cursor: pointer;}
 }
 .ul-company-member li .sp1{
 	float: left;
-	width: 554px;
+	width: 344px;
 	line-height: 54px;
 	padding-left: 17px;
 	font-weight: bold;
 	font-size: 15px;
+	text-align: center;
 }
 .ul-company-member li .sp1 em{
 	font-weight: bold;
@@ -366,7 +373,8 @@ button{cursor: pointer;}
 }
 .ul-company-member li .sp2{
 	float: left;
-	width: 94px;
+	width: 140px;
+	margin-left: 20px;
 }
 .ul-company-member li .sp2 img{
 	float: left;
@@ -491,6 +499,51 @@ button{cursor: pointer;}
 	color: #222;
 	transition: all .3s;
 }
+
+.detial-cont1 .dt1 .sp1{
+	float: right;
+	height: 32px;
+	width: 115px;
+	border: 1px solid #dcdcdc;
+	font-size: 14px;
+	line-height: 32px;
+	border-radius: 5px;
+	padding-left: 15px;
+	font-weight: normal;
+	cursor: pointer;
+	transition: all .3s;
+	margin: 10px 16px 0 0;
+}
+
+.detial-cont1 .dt1 .sp1 em {
+    font-size: 20px;
+    float: left;
+    line-height: 29px;
+    font-weight: bold;
+}
+
+.detial-cont1 .dt2 .sp1{
+	float: right;
+	height: 32px;
+	width: 108px;
+	border: 1px solid #dcdcdc;
+	font-size: 14px;
+	line-height: 32px;
+	border-radius: 5px;
+	padding-left: 20px;
+	font-weight: normal;
+	cursor: pointer;
+	transition: all .3s;
+	margin: 10px 16px 0 0;
+}
+
+.detial-cont1 .dt2 .sp1 em {
+    font-size: 20px;
+    float: left;
+    line-height: 29px;
+    font-weight: bold;
+}
+
 .detial-cont1 .dt3 .sp2{
 	float: right;
 	height: 32px;
@@ -618,6 +671,31 @@ button{cursor: pointer;}
 	font-size: 15px;
 	text-align: center;
 }
+
+.tab-project th{
+	background: #F1F1F1;
+	font-weight: bold;
+	line-height: 40px;
+	font-size: 15px;
+	text-align: center;
+}
+
+.tab-project .th1{
+	width: 354px;
+}
+
+.tab-project .th2{
+	width: 120px;
+}
+
+.tab-project .th3{
+	width: 145px;
+}
+
+.tab-project .th4{
+	width: 210px;
+}
+
 .tab-member td{
 	height: 44px;
 	text-align: center;
@@ -685,8 +763,8 @@ button{cursor: pointer;}
 }
 
 .wind-new .ul-infor li{
-	height: 60px;
-	line-height: 60px;
+	height: 50px;
+	line-height: 50px;
 }
 
 .wind-new .ul-infor li .sp1{
@@ -741,6 +819,35 @@ button{cursor: pointer;}
 	border: 1px solid #B9B9B9;
 	padding:0 0 0 6px;
 	margin: 11px 0 0 0;
+}
+
+
+.wind-show-log .ul-infor li .inp2{
+	float: left;
+	width: 185px;
+	height: 38px;
+	border: 0px solid #B9B9B9;
+	padding:0 0 0 6px;
+	margin: 11px 0 0 0;
+	readonly : true;
+}
+
+
+
+.wind-show-log .ul-infor li .inp1{
+	margin: 11px 0px 0px; 
+	height: 130px; 
+	width: 389px;
+	resize: none;
+	padding:5 0 0 6px;
+}
+
+.wind-log .ul-infor li .inp1{
+	margin: 11px 0px 0px; 
+	height: 103px; 
+	width: 389px;
+	resize: none;
+	padding:5 0 0 6px;
 }
 
 .wind-del .ul-infor li .inp1{
@@ -806,6 +913,13 @@ button{cursor: pointer;}
 	border-radius: 4px;
 	border: 1px solid #BEBEBE;
 }
+.btn-log {
+	width: 92px;
+	height: 32px;
+	background: #fff;
+	border-radius: 4px;
+	border: 1px solid #BEBEBE;
+}
 .bg{
 	display: none;
 	position: fixed;
@@ -840,6 +954,7 @@ button{cursor: pointer;}
 	border-radius: 10px;
 	box-shadow: 0 6px 10px #444;
 }
+
 .wind-login .top{
 	height: 40px;
 	overflow: hidden;
@@ -864,6 +979,47 @@ button{cursor: pointer;}
 	margin: 7px 8px 0 0;
 	box-shadow: 1px 2px 6px #555 inset;
 }
+
+
+.wind-ch-pw{
+	position:absolute;
+	width: 400px;
+	height: 370px;
+	top: 200px;
+	left: 150px;
+	background: #fff;
+	z-index: 4;
+	border-radius: 10px;
+	box-shadow: 0 6px 10px #444;
+}
+
+.wind-ch-pw .top{
+	height: 40px;
+	overflow: hidden;
+}
+.wind-ch-pw .top .sp1{
+	float: left;
+	width: 20px;
+	height: 20px;
+	border: 2px solid #fff;
+	border-radius: 100%;
+	background: #3FA8D8;
+	margin: 7px 0 0 8px;
+	box-shadow: 1px 2px 6px #555 inset;
+}
+.wind-ch-pw .top .sp2{
+	float: right;
+	width: 20px;
+	height: 20px;
+	border: 2px solid #fff;
+	border-radius: 100%;
+	background: #3FA8D8;
+	margin: 7px 8px 0 0;
+	box-shadow: 1px 2px 6px #555 inset;
+}
+
+
+
 .mid-do{    
 	margin: 8px auto;
     width: 120px;
@@ -939,10 +1095,19 @@ button{cursor: pointer;}
 	width: 300px;
 	margin: 30px auto 0;
 	border-radius: 6px;
+	transition: all .3s;
 }
 .p-input span{
 	color: #999;
 	padding: 0 0 0 11px;
+	transition: all .3s;
+}
+.p-input:hover{
+	border: 1px solid #3FA8D8;
+	color: #3FA8D8;
+}
+.p-input:hover>span{
+	color: #3FA8D8;
 }
 .p-input .inp1{
 	padding: 0 0 0 10px;
@@ -970,8 +1135,141 @@ button{cursor: pointer;}
 	font-size: 16px;
 	background: #3FA8D8;
 	border-radius: 6px;
+	transition: all .3s;
 	border: none;
 }
-.dropdown-menu {
-	top : 370px !important;
+.p-login button:hover{
+	box-shadow: 0 0 4px #666 inset;
+}
+
+/* new add */
+.item-conts{
+	float: left;
+	width: 715px;
+	padding: 23px 0 0 0;
+}
+.item-conts .p1{
+	height: 30px;
+}
+.item-conts .btn-addm{
+	width: 100px;
+	height: 26px;
+	background: #3FA8D8;
+	color: #fff;
+	border: 1px solid #3FA8D8;
+	transition: all .3s;
+	border-radius: 6px;
+}
+.item-conts .ul1{
+	padding-top: 10px;
+}
+.item-conts .ul1 li>span{
+	float: left;
+	/* width: 40px; */
+	border: 1px solid #999;
+	border-radius: 12px;
+	padding: 0px 10px;
+	text-align: center;
+	height: 22px;
+	line-height: 22px;
+}
+.item-conts .ul1 li{
+	padding-bottom: 8px;
+}
+.item-conts .p-memb {
+	float: left;
+	width: 640px;
+	padding-left: 10px
+}
+.item-conts .p-memb span{
+	float: left;
+	height: 22px;
+	line-height: 22px;
+	padding: 0 24px 0 6px ;
+	border-radius: 12px;
+	margin: 0 6px 3px 0;
+	transition: all .3s;
+	cursor: pointer;
+	border: 1px solid #fff;
+	position: relative;
+}
+.item-conts .p-memb span em{
+	color: #fff;
+	font-size: 18px;
+	float: right;
+	border-radius: 9px;
+	width: 18px;
+	height: 18px;
+	line-height: 15px;
+	position: absolute;
+	right: 2px;
+	bottom: 2px;
+	text-align: center;
+}
+.item-conts .p-memb span:hover{
+	border: 1px solid #3FA8D8;
+}
+.item-conts .p-memb span:hover>em{
+	background: #aaa;
+}
+.wind-addmember{
+	/* width: 600px; */
+	margin-left: -300px;
+	margin-top: -300px;
+	z-index: 4;
+	padding-bottom: 15px;
+	border-radius: 6px;
+}
+.wind-addmember .ul-fl li{
+	min-height: 30px;
+	padding: 10px 0 0 0;
+}
+.wind-addmember .ul-fl li>span{
+	float: left;
+	width: 50px;
+	font-size: 16px;
+}
+.wind-addmember .p-wind-cont{
+	float: left;
+	width: 537px;
+	font-size: 14px;
+	padding: 0 0 10px 10px;
+	border-bottom: 1px dashed #ddd;
+}
+.wind-addmember .p-wind-cont .div-per-cont{
+	float: left;
+	margin: 3px 13px 0 0 ;
+	cursor: pointer;
+	user-select: none;
+	-moz-user-select: none;
+	position: relative;
+	cursor: pointer;
+}
+.div-per-cont:hover>.p-infor{
+	display: block;
+}
+.wind-addmember .p-infor{
+	display: none;
+	position: absolute;
+	right: -157px;
+	top: 20px;
+	width: 200px;
+	background: #f5f5f5;
+	padding: 6px;
+	border: 1px solid #ddd;
+	z-index: 1;
+	box-shadow: 4px 4px 8px #aaa;
+	border-radius: 4px;
+}
+.wind-addmember  .p-infor span{
+	display: block;
+	font-size: 12px;
+}
+.wind-addmember input{
+	position: relative;
+	top: 2px;
+	margin: 0 2px 0 0;
+}
+.wind .p1 {
+    border-bottom: 1px solid #ddd;
 }

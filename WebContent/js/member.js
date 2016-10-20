@@ -13,7 +13,6 @@ $(document).ready(function(){
 	contextGloabl = $("#ctx").val();
 	
 	$('.tab-member .th6 .sp1').click(function(){
-		console.log("---");
 		$('.wind-edit').fadeIn();
 		$('.bg').fadeIn();
 	});
@@ -27,6 +26,11 @@ $(document).ready(function(){
 		$('.wind').fadeOut();
 		$('.bg').fadeOut();
 		optionMemberId = null;
+	});
+	
+	$('#info-ok').click(function() {
+		$('.wind').fadeOut();
+		$('.bg').fadeOut();
 	});
 	
 	$('#deleteBtn').click(function() { // 删除人员
@@ -43,14 +47,16 @@ $(document).ready(function(){
 				if(data.code === 0) {
 					$('.wind').fadeOut();
 					$('.bg').fadeOut();
-					alert("删除成功！");
-					location.reload(true);
+					showMsgBox("删除成功！");
+					setTimeout(function() {
+						location.reload(true);
+					}, 500);
 					optionMemberId = null;
 				}
 				if(data.code === 1) {
 					$('.wind').fadeOut();
 					$('.bg').fadeOut();
-					alert("删除失败:" + data.msg);
+					showMsgBox("删除失败:" + data.msg);
 					optionMemberId = null;
 				}
 			},
@@ -64,7 +70,9 @@ $(document).ready(function(){
 		var staffNum = $("#ed_staffNum").val();
 		var name = $("#ed_name").val();
 		var gender = $("#ed_gender input[type=radio]:checked").val();
+		var departmentId = $("#ed_depart select").val();
 		var sub_department = $("#ed_sub_depart select").val();
+		//console.log("sd" + sub_department)
 		var jobTitle = $("#ed_jbTitle").val();
 		var isPrjOwner = $("#ed_is_owner input[type=radio]:checked").val();
 		$.ajax({
@@ -78,6 +86,7 @@ $(document).ready(function(){
 				jobNumber : staffNum,
 				name : name,
 				gender : gender,
+				departmentId : departmentId,
 				subDepartment : sub_department,
 				jobTitle : jobTitle,
 				isOwner : isPrjOwner
@@ -86,19 +95,22 @@ $(document).ready(function(){
 				if(data.code === 0) { // 更新成功
 					$('.wind').fadeOut();
 					$('.bg').fadeOut();
-					alert("更新成功！");
-					location.reload(true);
+					showMsgBox("更新成功！");
+					setTimeout(function() {
+						location.reload(true);
+					}, 500);
 					optionMemberId = null;
 				}
 				if(data.code === 1) { // 更新失败
 					$('.wind').fadeOut();
 					$('.bg').fadeOut();
 					optionMemberId = null;
-					alert("更新失败：" + data.msg);
+					showMsgBox("更新失败：" + data.msg);
 				}
 			},
 			error : function(arg0, arg1, arg2) {
-				alert("出错了");
+				hideAll();
+				showMsgBox("出错了");
 			}
 		});
 	});
@@ -109,6 +121,7 @@ $(document).ready(function(){
 		var loginName = $("#new_login_name").val();
 		var pwd = $("#new_pwd").val();
 		var gender = $("#new_gender input[type=radio]:checked").val();
+		var departmentId = $("#new_depart select").val();
 		var subDepartment = $("#new_sub_depart select").val();
 		var jobTitle = $("#new_jbTitle").val();
 		var isPrjOwner = $("#new_is_owner input[type=radio]:checked").val();
@@ -122,6 +135,7 @@ $(document).ready(function(){
 				gender : gender,
 				loginName : loginName,
 				password : pwd,
+				'department.id' : departmentId,
 				'subDepartment.id' : subDepartment,
 				jobTitle : jobTitle,
 				isPrjOwner : isPrjOwner
@@ -132,25 +146,38 @@ $(document).ready(function(){
 				if(data.code === 0) { // 添加成功
 					$('.wind').fadeOut();
 					$('.bg').fadeOut();
-					alert("更新成功！");
-					location.reload(true);
+					showMsgBox("更新成功！");
+					setTimeout(function() {
+						location.reload(true);
+					}, 500);
 				}
 				
 				if(data.code === 1) { // 添加失败
 					$('.wind').fadeOut();
 					$('.bg').fadeOut();
-					alert("添加失败：" + data.msg);
+					showMsgBox("添加失败：" + data.msg);
 				}
 			},
 			error : function(arg0, arg1, arg2) {
 				$('.wind').fadeOut();
 				$('.bg').fadeOut();
-				alert("出错了！");
+				showMsgBox("出错了！");
 			}
 		});
 	});
 	
 });
+
+function hideAll() {
+	$('.wind').fadeOut();
+	$('.bg').fadeOut();
+}
+
+function showMsgBox(msg) {
+	$('.wind-msg').fadeIn();
+	$('.bg').fadeIn();
+	$('#msg').text(msg);
+}
 
 function getMemInfo() {
 	$.ajax({
@@ -177,7 +204,8 @@ function getMemInfo() {
 			}
 		},
 		error : function(arg0, arg1, arg2) {
-			alert("出错了");
+			hideAll();
+			showMsgBox("出错了");
 			return;
 		}
 	});
@@ -186,16 +214,15 @@ function getMemInfo() {
 function editMember(id) {
 	
 	optionMemberId = id;
+	getMemInfo();
 	$('.wind-edit').fadeIn();
 	$('.bg').fadeIn();
-	getMemInfo();
 }
 
 function deleteMember(id) {
 	
 	optionMemberId = id;
-	console.log("id:" + id);
-	$('.wind-del').fadeIn();
+	$('.wind-del-mem').fadeIn();
 	$('.bg').fadeIn();
 }
 
@@ -227,7 +254,8 @@ function listMember(page, ctx) {
 				}
 			}
 			if(data.code === 0) { // 未获取到数据
-			
+				hideAll();
+				showMsgBox("出错了：" + data.msg);
 			}
 		},
 		error: function (jqXHR, textStatus, errorThrown) {
@@ -247,7 +275,6 @@ function pagenation(totalPage, ctx) {
 		last: '<li class="last"><a href="javascript:void(0);">末页<\/a><\/li>',
 		page: '<li class="page"><a href="javascript:void(0);">{{page}}<\/a><\/li>',
 		onPageChange: function (num, type) {
-			console.log(num + "--")
 			listMember(num, ctx);
 		}
 	});

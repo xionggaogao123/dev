@@ -52,7 +52,8 @@ function listMember(page, ctx) {
 					html += data.results[i].projectName + '</em></span><span class="sp2"><img src="' + ctx + '/images/img_black_man.png">';
 					var createdDate = new Date(data.results[i].createdDate);
 					var dateStr = createdDate.getFullYear() + "-" + (createdDate.getMonth() + 1) + "-" + createdDate.getDate();
-					html += data.results[i].ownerName + '</span><span class="sp3">创建日期：' + dateStr + '</span></li>';
+					html += data.results[i].ownerName + '</span><span class="sp2"><img src="' + ctx + '/images/img_black_man.png">' + data.results[i].createrName + '</span>'
+					html += '<span class="sp3">' + dateStr + '</span></li>';
 					$("#pro_list").append(html);
 				}
 			}

@@ -1,0 +1,130 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+    	<title>复兰项目管理-修改密码</title>
+        <link rel="shortcut icon" href="../images/page_logo1.png" >
+        <meta charset="utf-8">
+        <script type="text/javascript" src="../js/jquery-1.11.1.js"></script>
+        <link rel="stylesheet" type="text/css" href="../css/reset.css">
+        <script type="text/javascript">
+        	function showMsgBox(msg) {
+        		$('.wind-msg').fadeIn();
+        		$('.bg').fadeIn();
+        		$('#msg').text(msg);
+        	}
+        
+        	$(function() {
+        		
+        		$('.wind .p1 em,.wind .btn-no').click(function(){
+        			$('.wind').fadeOut();
+        			$('.bg').fadeOut();
+        			optionMemberId = null;
+        		});
+        		
+        		$('#info-ok').click(function() {
+        			$('.wind').fadeOut();
+        			$('.bg').fadeOut();
+        		});
+        		
+        		$('.wind-ch-pw button').click(function() {
+        			
+        			var oldPw = $('.wind-ch-pw .oldPw').val();
+        			var newPw = $('.wind-ch-pw .newpw').val();
+        			var renewPw = $('.wind-ch-pw .renewPw').val();
+        			
+        			if(!oldPw) {
+        				showMsgBox("请输入原密码");
+        				return;
+        			}
+        			if(!newPw) {
+        				showMsgBox("请输入新密码")
+        				return;
+        			}
+        			if(!renewPw) {
+        				showMsgBox("请再次输入新密码");
+        				return;
+        			}
+        			if(newPw != renewPw) {
+        				showMsgBox("两次输入的密码不一致");
+        				return;
+        			}
+        			
+        			$.ajax({
+        				cache : false,
+        				async : false,
+        				type : 'post',
+        				dataType : 'json',
+        				url : '../user/changePw',
+        				data : {
+        					oldPw : oldPw,
+        					newPw : newPw,
+        					renewPw : renewPw
+        				},
+        				success : function(data) {
+        					if(data.code === 0) {
+        						showMsgBox("修改成功，请重新登录");
+        						setTimeout(function() {
+									window.location.href = '../user/login';
+								}, 2000);
+        					} else if(data.code === 1) {
+        						showMsgBox('出错了：' + data.msg);
+        					}
+        				},
+        				error : function(arg0, arg1, arg2) {
+        					showMsgBox("出错了");
+        				}
+        			});
+        		});
+        	});
+        </script>
+    </head>
+    <body style="background: #3FA8D8">
+
+        <div class="header">
+            <img class="img1" src="../images/top_logo.png">
+            <p class="p1">复兰项目管理</p>
+        </div>
+        <div class="login-cont">
+            <!-- <div class="line1"></div>
+            <div class="line2"></div>
+            <div class="dintou"></div>
+            <div class="dinxian"></div> -->
+            <div class="wind-ch-pw">
+                <div class="top">
+                    <span class="sp1"></span>
+                    <span class="sp2"></span>
+                    <div class="mid-do"></div>
+                </div>
+                <p class="p-input">
+                    <span>原密码</span><br>
+                    <input type="password" class="inp1 oldPw">
+                </p>
+                <p class="p-input">
+                    <span>新密码</span><br>
+                    <input type="password" class="inp1 newpw">
+                </p>
+                <p class="p-input">
+                    <span>再次输入新密码</span><br>
+                    <input type="password" class="inp1 renewPw">
+                </p>
+                <p class="p-login">
+                    <button>确认修改</button>
+                </p>
+             </div>
+        </div>
+		
+		<div class="bg"></div>
+		<!-- 信息窗口 -->
+        <div class="wind-del wind-msg wind">
+            <p class="p1">提示<em></em></p>
+            <ul class="ul-infor">
+                <li id="msg"></li>
+                <li class="tcenter">
+                    <button class="btn-ok" id="info-ok">确定</button>
+                    <button class="btn-no">取消</button>
+                </li>
+            </ul>
+        </div>
+		
+    </body>
+</html>

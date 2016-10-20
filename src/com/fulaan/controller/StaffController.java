@@ -17,6 +17,9 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
+import com.fulaan.auth.annotation.AuthFunctionType;
+import com.fulaan.auth.annotation.Authority;
+import com.fulaan.auth.annotation.ModuleType;
 import com.fulaan.common.CommonResult;
 import com.fulaan.common.ProjectContent;
 import com.fulaan.dao.base.BaseDao;
@@ -46,9 +49,11 @@ public class StaffController {
 	ProjectService projectService;
 	
 	@RequestMapping("/list")
+	@Authority(module = ModuleType.STAFF, function = AuthFunctionType.READ)
 	public String list(HttpServletRequest request,
 			HttpServletResponse response) {
-		Long total = staffService.getTotalNum(Staff.class);
+		//Long total = staffService.getTotalNum(Staff.class);
+		Long total = staffService.getActiveStaffNum(); // 获取未删除员工数量
 		if(total == null || total.intValue() == 0) {
 			request.setAttribute("totalPage", 0);
 		} else {
@@ -75,20 +80,21 @@ public class StaffController {
 	@SuppressWarnings("null")
 	@ResponseBody
 	@RequestMapping(value = "/show", method = RequestMethod.POST)
+	@Authority(module = ModuleType.STAFF, function = AuthFunctionType.READ)
 	public Map showStaffByPage(HttpServletRequest request, 
 			HttpServletResponse response,
 			@RequestParam(defaultValue = "0") Integer pageNum) {
 		
 		Map<String, Object> resultMap = new HashMap<>();
 		
-		Long total = staffService.getTotalNum(Staff.class);
+		Long total = staffService.getActiveStaffNum();
 		if(total == null || total.intValue() == 0) { // 未查询到结果
 			resultMap.put("code", 0);
 			resultMap.put("page", 0);
 			resultMap.put("results", null);
 		} else { // 返回结果
 			int pageSize = ProjectContent.MAX_RESULT_PER_PAGE;
-			List<Staff> resutls = staffService.getStaffsByPageNum(pageNum, pageSize);
+			List<Staff> resutls = staffService.getAcitveStaffByPageNum(pageNum, pageSize);
 			int page = 0;
 			int temp = total.intValue() / pageSize;
 			page = total.intValue() % pageSize == 0 ? temp : temp + 1;
@@ -103,8 +109,11 @@ public class StaffController {
 				sDto.setJobNumber(s.getJobNumber());
 				sDto.setName(s.getName());
 				sDto.setGender(s.getGender());
+				if(s.getDepartment() != null) {
+					sDto.setDepartment(s.getDepartment().getDepartmentName());
+				}
 				if(s.getSubDepartment() != null) {
-					sDto.setDepartment(s.getSubDepartment().getDepartment().getDepartmentName());
+					sDto.setSubDepartment(s.getSubDepartment().getSubDepartmentName());
 				}
 				sDto.setJobTitle(s.getJobTitle());
 				
@@ -125,6 +134,7 @@ public class StaffController {
 	 */
 	@ResponseBody
 	@RequestMapping(value = "/remove", method = {RequestMethod.POST})
+	@Authority(module = ModuleType.STAFF, function = AuthFunctionType.DELETE)
 	public CommonResult deleteStaff(HttpServletRequest request,
 			HttpServletResponse response,
 			@RequestParam int id) {
@@ -139,23 +149,14 @@ public class StaffController {
 		}
 		
 		// 查找该员工是否有负责的项目
-		List<Project> ownerProjects = projectService.getOwnerProjectByStaffId(id);
-		if(ownerProjects != null && ownerProjects.size() > 0) { // 存在负责的项目
-			result = new CommonResult(1, "error", "该职员为项目负责人");
-			return result;
-		}
-		
-//		List<Project> memberInProject = staff.getProjects();
-//		if(memberInProject != null && memberInProject.size() > 0) { // 存在该职员参与的项目
-//			for(Project p : memberInProject) {
-//				if(p.getProjectOwner().getId() == id) { // 该职员为某项目负责人
-//					result = new CommonResult(1, "error", "该职员为项目负责人");
-//					return result;
-//				}
-//			}
+//		List<Project> ownerProjects = projectService.getOwnerProjectByStaffId(id);
+//		if(ownerProjects != null && ownerProjects.size() > 0) { // 存在负责的项目
+//			result = new CommonResult(1, "error", "该职员为项目负责人");
+//			return result;
 //		}
 		
-		staffService.removeStaff(staff); // 删除
+		staff.setIsDeleted(ProjectContent.DELETED_FLAG); // 删除状态
+		staffService.update(staff); // 删除
 		result = new CommonResult(0, "success", "成功");
 		
 		return result;
@@ -167,6 +168,7 @@ public class StaffController {
 	 */
 	@ResponseBody
 	@RequestMapping(value = "/save", method = {RequestMethod.POST})
+	@Authority(module = ModuleType.STAFF, function = AuthFunctionType.INSERT)
 	public CommonResult save(HttpServletRequest request,
 			HttpServletResponse response,
 			Staff staff) {
@@ -185,6 +187,18 @@ public class StaffController {
 			return result;
 		}
 		
+		int subId = staff.getSubDepartment() != null ? staff.getSubDepartment().getId() : -1;
+		if(subId > 0) {
+			SubDepartment subDepa = baseDao.get(SubDepartment.class, subId);
+			if(subDepa == null) {
+				result = new CommonResult(1, "error", "不存在该子部门");
+				return result;
+			}
+			staff.setSubDepartment(subDepa);
+		} else {
+			staff.setSubDepartment(null);
+		}
+		
 		staff.setPassword(MD5Util.MD5Encode(staff.getPassword())); // 保存为密文
 		staff.setAddTime(new Date());
 		staffService.save(staff);
@@ -199,13 +213,15 @@ public class StaffController {
 	 */
 	@ResponseBody
 	@RequestMapping(value = "/update", method = {RequestMethod.POST})
+	@Authority(module = ModuleType.STAFF, function = AuthFunctionType.UPDATE)
 	public CommonResult updateStaff(HttpServletRequest request,
 			HttpServletResponse response,
 			@RequestParam int id,
 			@RequestParam String jobNumber,
 			@RequestParam String name,
 			@RequestParam String gender,
-			@RequestParam int subDepartment,
+			@RequestParam int departmentId,
+			@RequestParam(required = false) int subDepartment,
 			@RequestParam String jobTitle,
 			@RequestParam(required = false) String isOwner) { // 1:是项目负责人   0:否
 		
@@ -226,14 +242,29 @@ public class StaffController {
 			}
 		}
 		
-		SubDepartment subDepa = new SubDepartment();
-		subDepa.setId(subDepartment);
+		Department department = baseDao.get(Department.class, departmentId);
+		if(department == null) {
+			result = new CommonResult(1, "error", "不存在该部门");
+			return result;
+		}
+		
+		
+		if(subDepartment > 0) {
+			SubDepartment subDepa = baseDao.get(SubDepartment.class, subDepartment);
+			if(subDepa == null) {
+				result = new CommonResult(1, "error", "不存在该子部门");
+				return result;
+			}
+			staff.setSubDepartment(subDepa);
+		} else {
+			staff.setSubDepartment(null);
+		}
 		
 		staff.setUpdateTime(new Date()); // 更新时间
 		staff.setJobNumber(jobNumber);
 		staff.setName(name);
 		staff.setGender(gender);
-		staff.setSubDepartment(subDepa);
+		staff.setDepartment(department);
 		staff.setJobTitle(jobTitle);
 		staff.setIsPrjOwner(isOwner);
 		staffService.update(staff);
@@ -250,6 +281,7 @@ public class StaffController {
 	 */
 	@ResponseBody
 	@RequestMapping(value = "/{id}/info", method = RequestMethod.POST)
+	@Authority(module = ModuleType.STAFF, function = AuthFunctionType.READ)
 	public StaffDto getStaffInfo(@PathVariable int id) {
 		
 		Staff staff = staffService.get(Staff.class, id);
@@ -264,8 +296,12 @@ public class StaffController {
 		sDto.setIsPrjOwner(staff.getIsPrjOwner());
 		sDto.setJobNumber(staff.getJobNumber());
 		sDto.setJobTitle(staff.getJobTitle());
-		sDto.setDepartment(staff.getSubDepartment().getDepartment().getId() + "");
-		sDto.setSubDepartment(staff.getSubDepartment().getId() + "");
+		if(staff.getDepartment() != null) {
+			sDto.setDepartment(staff.getDepartment().getId() + "");
+		}
+		if(staff.getSubDepartment() != null) { // 有的部门不存在子部门
+			sDto.setSubDepartment(staff.getSubDepartment().getId() + "");
+		}
 		
 		return sDto;
 	}

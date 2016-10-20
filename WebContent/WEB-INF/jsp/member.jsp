@@ -27,6 +27,7 @@
     	<input type="hidden" id="ctx" value="${ctx }">
     	<div class="header">
     		<button onclick="window.location.href='${ctx}/user/logout'">退出</button>
+    		<button onclick="window.location.href='${ctx}/static/ch-pw.html'" class="ch-pw">修改密码</button>
     		<p class="p2">${loginedStaff.name }&nbsp;&nbsp;&nbsp;${loginedStaff.jobTitle }<br>${loginedStaff.loginName }</p>
     		<img class="img2" src="${ctx }/images/img_top_head.png">
     		<img class="img1" src="${ctx }/images/top_logo.png">
@@ -119,9 +120,16 @@
                     <span class="sp1">子部门</span>
                     <select id="ed_sec_sel">
                     	<c:forEach items="${departmentList }" var="department">
-                    		<c:forEach items="${department.subDepartments }" var="subDepart">
-                    			<option value="${subDepart.id }" class="${department.id }">${subDepart.subDepartmentName }</option>
-                    		</c:forEach>
+                    		<c:choose>
+                    			<c:when test="${not empty department.subDepartments }">
+                    				<c:forEach items="${department.subDepartments }" var="subDepart">
+                    					<option value="${subDepart.id }" class="${department.id }">${subDepart.subDepartmentName }</option>
+                    				</c:forEach>
+                    			</c:when>
+                    			<c:otherwise>
+                    				<option value="-1" class="${department.id }">无子部门</option>
+                    			</c:otherwise>
+                    		</c:choose>
                     	</c:forEach>
                     </select>
                 </li>
@@ -137,7 +145,7 @@
         </div>
         
         <!-- 删除员工信息弹窗 -->
-        <div class="wind-del wind">
+        <div class="wind-del wind-del-mem wind">
             <p class="p1">提示<em></em></p>
             <ul class="ul-infor">
                 <li>是否确定删除?</li>
@@ -198,9 +206,16 @@
                     <span class="sp1">子部门</span>
                     <select id="new_sec_sel">
                     	<c:forEach items="${departmentList }" var="department">
-                    		<c:forEach items="${department.subDepartments }" var="subDepart">
-                    			<option value="${subDepart.id }" class="${department.id }">${subDepart.subDepartmentName }</option>
-                    		</c:forEach>
+                    		<c:choose>
+                    			<c:when test="${not empty department.subDepartments }">
+                    				<c:forEach items="${department.subDepartments }" var="subDepart">
+                    					<option value="${subDepart.id }" class="${department.id }">${subDepart.subDepartmentName }</option>
+                    				</c:forEach>
+                    			</c:when>
+                    			<c:otherwise>
+                    				<option value="-1" class="${department.id }">无子部门</option>
+                    			</c:otherwise>
+                    		</c:choose>
                     	</c:forEach>
                     </select>
                 </li>
@@ -214,5 +229,18 @@
                 </li>
             </ul>
         </div>
+        
+        <!-- 信息窗口 -->
+        <div class="wind-del wind-msg wind">
+            <p class="p1">提示<em></em></p>
+            <ul class="ul-infor">
+                <li id="msg"></li>
+                <li class="tcenter">
+                    <button class="btn-ok" id="info-ok">确定</button>
+                    <button class="btn-no">取消</button>
+                </li>
+            </ul>
+        </div>
+        
     </body>
 </html>

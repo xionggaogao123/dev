@@ -47,4 +47,6 @@ public interface ProjectService {
 	 * @return
 	 */
 	public List<Project> getOwnerProjectByStaffId(int id);
+	
+	public void update(Project project);
 }

@@ -16,6 +16,9 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
+import com.fulaan.auth.annotation.AuthFunctionType;
+import com.fulaan.auth.annotation.Authority;
+import com.fulaan.auth.annotation.ModuleType;
 import com.fulaan.common.CommonResult;
 import com.fulaan.common.ProjectContent;
 import com.fulaan.dao.base.BaseDao;
@@ -49,6 +52,7 @@ public class DirectoryController {
 	 */
 	@ResponseBody
 	@RequestMapping(value = "/add", method = RequestMethod.POST)
+	@Authority(module = ModuleType.DIRECTORY, function = AuthFunctionType.INSERT)
 	public CommonResult addDir(HttpServletRequest request,
 			HttpServletResponse response,
 			@RequestParam(defaultValue = "0") int pid, // 父节点id
@@ -65,6 +69,16 @@ public class DirectoryController {
 		if(pDir == null) { // 不存在该父文件夹
 			result = new CommonResult(1, "error", "创建文件夹失败");
 			return result;
+		}
+		
+		List<Directory> childDirList = pDir.getChildDirs();
+		if(childDirList != null && childDirList.size() > 0) {
+			for(Directory cDir : childDirList) { // 同一父文件夹下是否存在同名文件夹
+				if(cDir.getName().equals(dirName)) {
+					result = new CommonResult(1, "error", "存在重名文件夹");
+					return result;
+				}
+			}
 		}
 		
 		Directory newDir = new Directory();
@@ -86,6 +100,7 @@ public class DirectoryController {
 	 */
 	@ResponseBody
 	@RequestMapping(value = "/remove", method = RequestMethod.POST)
+	@Authority(module = ModuleType.DIRECTORY, function = AuthFunctionType.DELETE)
 	public CommonResult removeDir(HttpServletRequest request,
 			HttpServletResponse response,
 			@RequestParam int id) {
@@ -152,6 +167,7 @@ public class DirectoryController {
 	 */
 	@ResponseBody
 	@RequestMapping(value = "/rename", method = RequestMethod.POST)
+	@Authority(module = ModuleType.DIRECTORY, function = AuthFunctionType.UPDATE)
 	public CommonResult renameDir(HttpServletRequest request,
 			HttpServletResponse response,
 			@RequestParam int id,
@@ -170,16 +186,26 @@ public class DirectoryController {
 			return result;
 		}
 		
+		List<Directory> childDirList = dir.getParentDir().getChildDirs();
+		if(childDirList != null && childDirList.size() > 0) {
+			for(Directory cDir : childDirList) { // 同一父文件夹下是否存在同名文件夹
+				if(cDir.getName().equals(rename)) {
+					result = new CommonResult(1, "error", "存在重名文件夹");
+					return result;
+				}
+			}
+		}
+		
 		String rootPath = ProjectContent.PROJECT_FILE_ROOT_PATH + bulidFilePath(dir.getParentDir());
 		String oldDirPath = rootPath + File.separator + dir.getName(); 
 		String newDirPath = rootPath + File.separator + rename;
 		File oldDir = new File(oldDirPath);
-		if(!oldDir.exists()) {
-			result = new CommonResult(1, "error", "不存在该文件夹");
-			return result;
+		if(oldDir.exists()) { // 存在物理文件夹
+			/*result = new CommonResult(1, "error", "不存在该文件夹");
+			return result;*/
+			File newDir = new File(newDirPath);
+			oldDir.renameTo(newDir);
 		}
-		File newDir = new File(newDirPath);
-		oldDir.renameTo(newDir);
 		
 		// 修改表中记录
 		dir.setName(rename);

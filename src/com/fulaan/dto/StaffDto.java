@@ -10,7 +10,11 @@ public class StaffDto {
 	
 	private String gender;
 	
+	private Integer departmentId;
+	
 	private String department;
+	
+	private Integer subDepartmentId;
 	
 	private String subDepartment;
 	
@@ -95,6 +99,22 @@ public class StaffDto {
 
 	public void setIsPrjOwner(String isPrjOwner) {
 		this.isPrjOwner = isPrjOwner;
+	}
+
+	public Integer getDepartmentId() {
+		return departmentId;
+	}
+
+	public void setDepartmentId(Integer departmentId) {
+		this.departmentId = departmentId;
+	}
+
+	public Integer getSubDepartmentId() {
+		return subDepartmentId;
+	}
+
+	public void setSubDepartmentId(Integer subDepartmentId) {
+		this.subDepartmentId = subDepartmentId;
 	}
 	
 }

@@ -14,6 +14,7 @@ import javax.persistence.JoinColumn;
 import javax.persistence.JoinTable;
 import javax.persistence.ManyToMany;
 import javax.persistence.ManyToOne;
+import javax.persistence.OneToMany;
 import javax.persistence.OrderBy;
 import javax.persistence.Table;
 import javax.persistence.Temporal;
@@ -49,6 +50,9 @@ public class Project implements Serializable{
 	// 项目负责人
 	private Staff projectOwner;
 	
+	// 项目创建人
+	private Staff projectCreater;
+	
 	// 项目文档存放根目录
 	private String docsPath;
 	
@@ -66,6 +70,9 @@ public class Project implements Serializable{
 
 	// 项目成员
 	private List<Staff> members;
+	
+	// 项目日志
+	private List<ProjectLog> logs;
 	
 	@Id
 	@Column(name = "id", nullable = false, unique = true)
@@ -113,6 +120,16 @@ public class Project implements Serializable{
 
 	public void setProjectOwner(Staff projectOwner) {
 		this.projectOwner = projectOwner;
+	}
+	
+	@ManyToOne(targetEntity = Staff.class, fetch = FetchType.EAGER)
+	@JoinColumn(name = "project_creater_id")
+	public Staff getProjectCreater() {
+		return projectCreater;
+	}
+
+	public void setProjectCreater(Staff projectCreater) {
+		this.projectCreater = projectCreater;
 	}
 
 	@Column(name = "docs_path", length = 255)
@@ -175,6 +192,15 @@ public class Project implements Serializable{
 
 	public void setMembers(List<Staff> members) {
 		this.members = members;
+	}
+
+	@OneToMany(mappedBy = "project", fetch = FetchType.EAGER)
+	public List<ProjectLog> getLogs() {
+		return logs;
+	}
+
+	public void setLogs(List<ProjectLog> logs) {
+		this.logs = logs;
 	}
 	
 }

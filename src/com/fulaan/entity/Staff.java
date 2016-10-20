@@ -53,7 +53,7 @@ public class Staff implements Serializable{
 	private String password;
 	
 	// 部门
-	private String department;
+	private Department department;
 	
 	// 所属子部门
 	private SubDepartment subDepartment;
@@ -70,7 +70,16 @@ public class Staff implements Serializable{
 	// 参与的项目
 	private List<Project> projects;
 	
+	// 是否删除  0：未删除 		1：删除
+	private Integer isDeleted;
+	
 	// 是否为项目负责人
+	/*
+	 * 该字段与auth_role对应关系如下：
+	 * 该字段值含义 "0": user角色
+	 * "1": admin角色
+	 * "2": superAdmin角色
+	 * */
 	private String isPrjOwner; 
 	
 	@Id
@@ -129,12 +138,13 @@ public class Staff implements Serializable{
 		this.password = password;
 	}
 
-	@Column(name = "department", length = 50)
-	public String getDepartment() {
+	@ManyToOne(targetEntity = Department.class, fetch = FetchType.EAGER)
+	@JoinColumn(name = "department_id")
+	public Department getDepartment() {
 		return department;
 	}
 
-	public void setDepartment(String department) {
+	public void setDepartment(Department department) {
 		this.department = department;
 	}
 	
@@ -197,6 +207,15 @@ public class Staff implements Serializable{
 
 	public void setIsPrjOwner(String isPrjOwner) {
 		this.isPrjOwner = isPrjOwner;
+	}
+
+	@Column(name = "is_deleted")
+	public Integer getIsDeleted() {
+		return isDeleted;
+	}
+
+	public void setIsDeleted(Integer isDeleted) {
+		this.isDeleted = isDeleted;
 	}
 	
 }

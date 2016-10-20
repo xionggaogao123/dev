@@ -29,11 +29,17 @@
     <mvc:default-servlet-handler />
     
     <mvc:interceptors>
+    	<!-- 登录拦截器 -->
     	<mvc:interceptor>
     		<mvc:mapping path="/**"/>
     		<mvc:exclude-mapping path="/user/login"/>
     		<mvc:exclude-mapping path="/user/toLogin"/>
     		<bean class="com.fulaan.interceptor.LoginInterceptor"/>
+    	</mvc:interceptor>
+    	<!-- 权限拦截器 -->
+    	<mvc:interceptor>
+    		<mvc:mapping path="/**"/>
+    		<bean class="com.fulaan.interceptor.AuthInterceptor"/>
     	</mvc:interceptor>
     </mvc:interceptors>
     
@@ -83,7 +89,7 @@
     
     <!-- upload settings -->
     <bean id="multipartResolver" class="org.springframework.web.multipart.commons.CommonsMultipartResolver"> 
-    	<property name="maxUploadSize" value="102400000"/> 
+    	<property name="maxUploadSize" value="50000000"/> 
     </bean>
     
 </beans>

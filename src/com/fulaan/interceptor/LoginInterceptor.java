@@ -18,7 +18,6 @@ public class LoginInterceptor implements HandlerInterceptor{
 	@Override
 	public boolean preHandle(HttpServletRequest paramHttpServletRequest, HttpServletResponse paramHttpServletResponse,
 			Object paramObject) throws Exception {
-		System.out.println("处理拦截......");
 		HttpSession session = paramHttpServletRequest.getSession();
 		Staff staff = (Staff) session.getAttribute(ProjectContent.LOGIN_USER_IN_SESSION);
 		if(staff != null) {
@@ -44,7 +43,6 @@ public class LoginInterceptor implements HandlerInterceptor{
 	public void afterCompletion(HttpServletRequest paramHttpServletRequest,
 			HttpServletResponse paramHttpServletResponse, Object paramObject, Exception paramException)
 			throws Exception {
-		// TODO Auto-generated method stub
 		
 	}
 

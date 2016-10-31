@@ -66,7 +66,7 @@ public class ProjectFile implements Serializable{
 		this.fileType = fileType;
 	}
 
-	@ManyToOne(fetch = FetchType.EAGER)
+	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "dir_id")
 	public Directory getParentDir() {
 		return parentDir;

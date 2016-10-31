@@ -1,5 +1,7 @@
 package com.fulaan.dto;
 
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
 import java.util.Date;
 
 import com.fulaan.entity.ProjectLog;
@@ -12,6 +14,8 @@ public class ProjectLogDto {
 	
 	private Date createdTime;
 	
+	private String createDate;
+	
 	private String logInfo;
 
 	public ProjectLogDto() {}
@@ -21,6 +25,8 @@ public class ProjectLogDto {
 		this.createdUserName = projectLog.getCreatedUser().getName();
 		this.logInfo = projectLog.getLogInfo();
 		this.createdTime = projectLog.getCreatedTime();
+		DateFormat format = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+		this.createDate = format.format(this.createdTime);
 	}
 	
 	public int getId() {
@@ -53,6 +59,14 @@ public class ProjectLogDto {
 
 	public void setLogInfo(String logInfo) {
 		this.logInfo = logInfo;
+	}
+
+	public String getCreateDate() {
+		return createDate;
+	}
+
+	public void setCreateDate(String createDate) {
+		this.createDate = createDate;
 	}
 	
 }

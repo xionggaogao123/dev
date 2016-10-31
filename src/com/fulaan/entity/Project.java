@@ -112,7 +112,7 @@ public class Project implements Serializable{
 		this.projectDesc = projectDesc;
 	}
 
-	@ManyToOne(targetEntity = Staff.class, fetch = FetchType.EAGER)
+	@ManyToOne(targetEntity = Staff.class, fetch = FetchType.LAZY)
 	@JoinColumn(name = "project_owner_id")
 	public Staff getProjectOwner() {
 		return projectOwner;
@@ -122,7 +122,7 @@ public class Project implements Serializable{
 		this.projectOwner = projectOwner;
 	}
 	
-	@ManyToOne(targetEntity = Staff.class, fetch = FetchType.EAGER)
+	@ManyToOne(targetEntity = Staff.class, fetch = FetchType.LAZY)
 	@JoinColumn(name = "project_creater_id")
 	public Staff getProjectCreater() {
 		return projectCreater;
@@ -181,7 +181,7 @@ public class Project implements Serializable{
 		this.updateTime = updateTime;
 	}
 
-	@ManyToMany(targetEntity = Staff.class, fetch = FetchType.EAGER)
+	@ManyToMany(targetEntity = Staff.class, fetch = FetchType.LAZY)
 	@JoinTable(name = "project_staff", joinColumns = {@JoinColumn(name = "project_id")}, inverseJoinColumns = {@JoinColumn(name = "staff_id")})
 	@Fetch(FetchMode.SUBSELECT)
 	@OrderBy("id")
@@ -194,7 +194,7 @@ public class Project implements Serializable{
 		this.members = members;
 	}
 
-	@OneToMany(mappedBy = "project", fetch = FetchType.EAGER)
+	@OneToMany(mappedBy = "project", fetch = FetchType.LAZY)
 	public List<ProjectLog> getLogs() {
 		return logs;
 	}

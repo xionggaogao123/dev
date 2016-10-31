@@ -91,6 +91,9 @@ public class StaffServiceImpl implements StaffService {
 		String sql = "from Staff where isDeleted = 0 "
 				+ " or isDeleted is null order by jobNumber";
 		List staffList = staffDao.find(sql);
+//		DetachedCriteria dc = DetachedCriteria.forClass(Staff.class);
+//		dc.add(Restrictions.or(Restrictions.eq("isDeleted", 0), Restrictions.isNull("isDeleted")));
+//		List staffList = staffDao.findByCriteria(dc);
 		return staffList != null ? staffList.size() : 0L;
 	}
 

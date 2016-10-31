@@ -774,7 +774,6 @@ button{cursor: pointer;}
 	padding-right: 11px;
 }
 
-
 .wind-new .ul-infor li .inp1{
 	float: left;
 	width: 185px;
@@ -798,7 +797,7 @@ button{cursor: pointer;}
 
 .wind-edit .ul-infor li{
 	height: 60px;
-	line-height: 60px;
+	/* line-height: 60px; */
 }
 .wind-del .ul-infor li{
 	height: 90px;
@@ -822,7 +821,7 @@ button{cursor: pointer;}
 }
 
 
-.wind-show-log .ul-infor li .inp2{
+.wind-log-tb .ul-infor li .inp2{
 	float: left;
 	width: 185px;
 	height: 38px;
@@ -832,14 +831,54 @@ button{cursor: pointer;}
 	readonly : true;
 }
 
+.wind-log-tb {
+	width: 650px;
+	height: 500px !important;
+	margin-left: -355px;
+    margin-top: -230px;
+}
 
-
-.wind-show-log .ul-infor li .inp1{
+.wind-log-tb .ul-infor li .inp1{
 	margin: 11px 0px 0px; 
 	height: 130px; 
 	width: 389px;
 	resize: none;
 	padding:5 0 0 6px;
+}
+
+.wind-log-tb .ul-infor li .sp1 {
+    float: left;
+    text-align: center;
+    width: 205px;
+    padding-right: 17px;
+}
+
+.wind-log-tb .ul-infor li .sp2 {
+    float: left;
+    text-align: center;
+    width: 370px;
+    padding-right: 11px;
+    line-height: 22px;
+    word-wrap: break-word;
+    word-break: break-all;
+    display:inline-block;
+}
+
+.wind-log-tb .ul-infor li .th {
+    float: left;
+    text-align: center;
+    width: 370px;
+    padding-right: 11px;
+    font-weight: bold;
+    font-size: 15px;
+    border:1px solid #3FA8D8;
+    display:inline-block;
+    height: 40px;
+    line-height: 40px;
+}
+
+.wind-log-tb ul {
+	height: 380px;
 }
 
 .wind-log .ul-infor li .inp1{
@@ -1272,4 +1311,44 @@ button{cursor: pointer;}
 }
 .wind .p1 {
     border-bottom: 1px solid #ddd;
+}
+.ul-infor li .pro-th{
+	width: 4em!important;
+	display:inline-blcok!important;
+}
+.ul-infor li .pro-thh{
+	width: 12em!important;
+	display:inline-blcok!important;
+}
+#log_list .sp1{
+	width:4em!important;
+	display:inline-block!important;
+}
+#log_list .sp4{
+	width: 12em!important;
+	display:inline-blcok!important;
+	padding-right: 20px;
+}
+#log_list li span{
+	border: 1px solid #3FA8D8;
+	min-height:40px;
+	/* line-height:40px; */
+}
+
+.wind-log-tb thead th {
+    text-align: center;
+    font-weight: bold;
+    font-size: 15px;
+    border: 1px solid #3FA8D8;
+    height:40px;
+    background: #f1f1f1;
+}
+.wind-log-tb td {
+    text-align: center;
+    /* font-weight: bold; */
+    font-size: 15px;
+    border: 1px solid #3FA8D8;
+    word-break: break-all;
+    text-align:left;
+    height:40px;
 }

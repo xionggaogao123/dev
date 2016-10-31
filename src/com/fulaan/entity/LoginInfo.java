@@ -41,7 +41,7 @@ public class LoginInfo implements Serializable{
 	}
 
 	@JoinColumn(name = "login_id")
-	@ManyToOne(fetch = FetchType.EAGER)
+	@ManyToOne(fetch = FetchType.LAZY)
 	public Staff getStaff() {
 		return staff;
 	}

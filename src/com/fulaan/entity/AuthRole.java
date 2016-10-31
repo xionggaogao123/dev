@@ -51,7 +51,7 @@ public class AuthRole implements Serializable {
 		this.name = name;
 	}
 
-	@ManyToMany(targetEntity = AuthFunction.class, fetch = FetchType.EAGER)
+	@ManyToMany(targetEntity = AuthFunction.class, fetch = FetchType.LAZY)
 	@JoinTable(name = "auth_role_function", joinColumns = {@JoinColumn(name = "role_id")}, inverseJoinColumns = {@JoinColumn(name = "func_id")})
 	@Fetch(FetchMode.SUBSELECT)
 	@OrderBy(value = "id")

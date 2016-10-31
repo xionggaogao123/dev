@@ -42,7 +42,7 @@ public class ProjectLog implements Serializable{
 		this.id = id;
 	}
 
-	@ManyToOne(fetch = FetchType.EAGER, targetEntity = Project.class)
+	@ManyToOne(fetch = FetchType.LAZY, targetEntity = Project.class)
 	@JoinColumn(name = "prj_id")
 	public Project getProject() {
 		return project;
@@ -61,7 +61,7 @@ public class ProjectLog implements Serializable{
 		this.logInfo = logInfo;
 	}
 
-	@ManyToOne(targetEntity = Staff.class)
+	@ManyToOne(targetEntity = Staff.class, fetch = FetchType.LAZY)
 	@JoinColumn(name = "created_user_id")
 	public Staff getCreatedUser() {
 		return createdUser;

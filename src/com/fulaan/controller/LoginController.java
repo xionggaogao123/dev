@@ -9,7 +9,6 @@ import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
 import org.springframework.stereotype.Controller;
-import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -73,14 +72,15 @@ public class LoginController {
 		String sql = "from Staff where loginName = ? and password = ?";
 		String encryPwd = MD5Util.MD5Encode(password);
 		
-		List<Staff> staffList = (List<Staff>) baseDao.find(sql, new String[]{loginName, encryPwd});
+		List<Staff> staffList = (List<Staff>) loginInfoService.find(sql, new String[]{loginName, encryPwd});
 		if(staffList == null || staffList.size() <= 0) {
 			request.setAttribute("errorMsg", "用户名或密码错误");
 			return USER_LOGIN_PAGE;
 		}
 		
 		Staff staff = staffList.get(0);
-		if(staff.getIsDeleted() != ProjectContent.NOT_DELETED_FLAG) {
+		if(staff.getIsDeleted() != null && 
+				staff.getIsDeleted() == ProjectContent.DELETED_FLAG) {
 			request.setAttribute("errorMsg", "该用户已被禁用");
 			return USER_LOGIN_PAGE;
 		}
@@ -147,7 +147,7 @@ public class LoginController {
 		
 		String encryNewPw = MD5Util.MD5Encode(newPw);
 		loginedStaff.setPassword(encryNewPw);
-		baseDao.update(loginedStaff);
+		loginInfoService.update(loginedStaff);
 		
 		result = new CommonResult(0, "success", "修改密码成功");
 		

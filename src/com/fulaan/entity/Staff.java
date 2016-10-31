@@ -138,7 +138,7 @@ public class Staff implements Serializable{
 		this.password = password;
 	}
 
-	@ManyToOne(targetEntity = Department.class, fetch = FetchType.EAGER)
+	@ManyToOne(targetEntity = Department.class, fetch = FetchType.LAZY)
 	@JoinColumn(name = "department_id")
 	public Department getDepartment() {
 		return department;
@@ -148,7 +148,7 @@ public class Staff implements Serializable{
 		this.department = department;
 	}
 	
-	@ManyToOne(targetEntity = SubDepartment.class, fetch = FetchType.EAGER)
+	@ManyToOne(targetEntity = SubDepartment.class, fetch = FetchType.LAZY)
 	@JoinColumn(name = "sub_department_id")
 	public SubDepartment getSubDepartment() {
 		return subDepartment;
@@ -187,7 +187,7 @@ public class Staff implements Serializable{
 		this.updateTime = updateTime;
 	}
 
-	@ManyToMany(targetEntity = Project.class, fetch = FetchType.EAGER)
+	@ManyToMany(targetEntity = Project.class, fetch = FetchType.LAZY)
 	@JoinTable(name = "project_staff", joinColumns = {@JoinColumn(name = "staff_id")}, inverseJoinColumns = {@JoinColumn(name = "project_id")})
 	@OrderBy("id")
 	@Fetch(FetchMode.SUBSELECT)

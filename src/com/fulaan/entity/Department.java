@@ -71,7 +71,7 @@ public class Department implements Serializable{
 		this.code = code;
 	}
 	
-	@OneToMany(mappedBy = "department", fetch = FetchType.EAGER)
+	@OneToMany(mappedBy = "department", fetch = FetchType.LAZY)
 	public List<SubDepartment> getSubDepartments() {
 		return subDepartments;
 	}

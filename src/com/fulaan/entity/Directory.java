@@ -64,7 +64,7 @@ public class Directory implements Serializable{
 		this.name = name;
 	}
 
-	@ManyToOne(targetEntity = Directory.class, fetch = FetchType.EAGER)
+	@ManyToOne(targetEntity = Directory.class, fetch = FetchType.LAZY)
 	@JoinColumn(name = "pid")
 	public Directory getParentDir() {
 		return parentDir;
@@ -74,7 +74,7 @@ public class Directory implements Serializable{
 		this.parentDir = parentDir;
 	}
 
-	@OneToMany(targetEntity = Directory.class, fetch = FetchType.EAGER, mappedBy = "parentDir")
+	@OneToMany(targetEntity = Directory.class, fetch = FetchType.LAZY, mappedBy = "parentDir")
 	@Fetch(FetchMode.SUBSELECT)
 	@OrderBy("name")
 	public List<Directory> getChildDirs() {
@@ -85,7 +85,7 @@ public class Directory implements Serializable{
 		this.childDirs = childDirs;
 	}
 
-	@OneToMany(targetEntity = ProjectFile.class, fetch = FetchType.EAGER, mappedBy = "parentDir")
+	@OneToMany(targetEntity = ProjectFile.class, fetch = FetchType.LAZY, mappedBy = "parentDir")
 	@Fetch(FetchMode.SUBSELECT)
 	public List<ProjectFile> getFiles() {
 		return files;

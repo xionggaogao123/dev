@@ -11,7 +11,8 @@
         	var parentDirId = ${project.docsPath};
         	var projectRootDir = ${project.docsPath};
         	var rootArray = [${project.docsPath}];
-        	var logIndex = 0;
+        	var logDates = [];
+        	var dateIndex = 0;
         	
         	function showMsgBox(msg) {
         		$('.wind-msg').fadeIn();
@@ -314,7 +315,90 @@
         	}
         	
         	function LogInfo() {
-        		getPrjLogInfo(0);
+        		//getPrjLogInfo(0);
+        		//$('.wind-log-tb').fadeIn();
+        		//$('.bg').fadeIn();
+        		getLogDates();
+        		if(logDates.length > 0) {
+        			getLogsByDate(0);
+        		}
+        	}
+        	
+        	function getLogDates() {
+        		if(true) {
+        			$.ajax({
+        				async : false,
+        				cache : false,
+        				type : 'post',
+        				dataType : 'json',
+        				url : '${ctx}' + '/project/log_dates',
+        				data : {
+        					prjId : ${project.id},
+        				},
+        				success : function(data) {
+        					if(data.length > 0) {
+        						logDates = data;
+        						console.log(logDates);
+        					} else {
+        						showMsgBox("没有相关日志信息");
+        					}
+        				},
+        				error : function(arg0, arg1, arg2) {
+        					showMsgBox("出错了");
+        				}
+        			});
+        		} 
+        	}
+        	
+        	function getLogsByDate(index) {
+        		
+        		$.ajax({
+        			async : false,
+        			cache : false,
+        			type : 'post',
+        			dataType : 'json',
+        			url : '${ctx}' + '/project/logInDate',
+        			data : {
+        				date : logDates[index],
+        				prjId : ${project.id}
+        			},
+        			success : function(data) {
+        				if(data.info.code === 0) {
+        					dateIndex = index;
+        					if(index <= 0) {
+		        				console.log("-----");
+		        				$('.wind-log-tb .prev').css('visibility', 'hidden');
+		        			} else {
+		        				$('.wind-log-tb .prev').css('visibility', 'visible');
+		        			}
+		        			if(index >= logDates.length - 1) {
+		        				$('.wind-log-tb .next').css('visibility', 'hidden');
+		        			} else {
+		        				$('.wind-log-tb .next').css('visibility', 'visible');
+		        			}
+		        			
+		        			$('#log_list').empty();
+		        			var logList = data.data;
+		        			var html = '';
+		        			for(var i = 0; i < logList.length; i++) {
+		        				html += '<tr><td width="100px">' + logList[i].createdUserName + '</td>';
+		        				html += '<td width="200px">' + logList[i].createDate + '</td>';
+		        				html += '<td width="370px">' + logList[i].logInfo + '</td></tr>';
+		        			}
+		        			
+		        			$('#log_list').append(html);
+		        			
+		        			$('.wind-log-tb').fadeIn();
+		        			$('.bg').fadeIn();
+        				} else {
+        					hideAll();
+    						showMsgBox("出错了：" + data.info.msg);
+        				}
+        			},
+        			error : function(arg0, arg1, arg2) {
+        				showMsgBox("出错了")
+        			}
+        		});
         	}
         	
         	function getPrjLogInfo(index) {
@@ -550,12 +634,12 @@
         			showInputBox('请输入文件夹名', '文件夹名', 1);
         		});
         		
-        		$('.wind-show-log .prev').click(function() {
-            		getPrjLogInfo(--logIndex);
+        		$('.wind-log-tb .prev').click(function() {
+        			getLogsByDate(--dateIndex);
             	});
             	
-            	$('.wind-show-log .next').click(function() {
-            		getPrjLogInfo(++logIndex);
+            	$('.wind-log-tb .next').click(function() {
+            		getLogsByDate(++dateIndex);
             	});
         		
         	});
@@ -807,6 +891,28 @@
                     <button class="btn-log next">下一条</button>
                 </li>
             </ul>
+        </div>
+        
+        <!-- 查看日志列表 -->
+        <div class="wind-edit wind-log-tb wind" style="height: 380px">
+            <p class="p1">项目日志信息<em></em></p>
+            <div style="height: 390px;">
+        		<table>
+            		<thead>
+                		<tr>
+                    		<th width="100px">姓名</th>
+                    		<th width="200px">时间</th>
+                    		<th width="370px">日志</th>
+                		</tr>
+            		</thead>
+            		<tbody id="log_list">
+            		</tbody>
+        		</table>
+   			</div>
+            <div class="tcenter">
+                    <button class="btn-log prev">上一页</button>
+                    <button class="btn-log next">下一页</button>
+            </div>
         </div>
     	
     </body>

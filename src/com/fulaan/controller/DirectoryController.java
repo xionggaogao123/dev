@@ -65,7 +65,7 @@ public class DirectoryController {
 			return result;
 		}
 		
-		Directory pDir = baseDao.get(Directory.class, pid);
+		Directory pDir = directoryService.get(Directory.class, pid);
 		if(pDir == null) { // 不存在该父文件夹
 			result = new CommonResult(1, "error", "创建文件夹失败");
 			return result;
@@ -84,7 +84,7 @@ public class DirectoryController {
 		Directory newDir = new Directory();
 		newDir.setName(dirName);
 		newDir.setParentDir(pDir);
-		baseDao.save(newDir);
+		directoryService.save(newDir);
 		
 		result = new CommonResult(0, "success", newDir.getId().toString());
 		
@@ -106,7 +106,7 @@ public class DirectoryController {
 			@RequestParam int id) {
 		
 		CommonResult result = null;
-		Directory dir = baseDao.get(Directory.class, id);
+		Directory dir = directoryService.get(Directory.class, id);
 		if(dir == null) { // 不存在该文件夹
 			result = new CommonResult(1, "error", "不存在该文件夹");
 			return result;
@@ -124,7 +124,7 @@ public class DirectoryController {
 			dirFile.delete();
 		}
 		
-		baseDao.delete(dir);
+		directoryService.delete(dir);
 			
 		result = new CommonResult(0, "success", "删除成功");
 		
@@ -180,7 +180,7 @@ public class DirectoryController {
 			return result;
 		}
 		
-		Directory dir = baseDao.get(Directory.class, id);
+		Directory dir = directoryService.get(Directory.class, id);
 		if(dir == null) { // 不存在该文件夹
 			result = new CommonResult(1, "error", "重命名文件夹失败");
 			return result;
@@ -209,7 +209,7 @@ public class DirectoryController {
 		
 		// 修改表中记录
 		dir.setName(rename);
-		baseDao.update(dir);
+		directoryService.update(dir);
 		
 		result = new CommonResult(0, "success", "删除成功");
 		

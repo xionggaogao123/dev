@@ -1,5 +1,7 @@
 package com.fulaan.controller;
 
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Collections;
@@ -16,6 +18,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
+import org.hibernate.FlushMode;
 import org.hibernate.criterion.DetachedCriteria;
 import org.hibernate.criterion.Order;
 import org.hibernate.criterion.Restrictions;
@@ -279,7 +282,8 @@ public class ProjectController {
 		Map<String, List<StaffDto>> staffDtoMap = new HashMap<String, List<StaffDto>>();
 		
 		for(Staff sf : allStaff) {
-			if("1".equals(sf.getIsDeleted())) { // 该员工已被删除
+			if(sf.getIsDeleted() != null 
+					&& sf.getIsDeleted() == 1) { // 该员工已被删除
 				continue;
 			}
 			StaffDto sdto = new StaffDto();
@@ -343,7 +347,7 @@ public class ProjectController {
 		project.setDocsPath(rootDir.getId() + ""); // 关联根目录
 		projectService.update(project);
 		
-		return "redirect:/project/new_project";
+		return "redirect:/project/list";
 	}
 	
 	/**
@@ -397,7 +401,6 @@ public class ProjectController {
 	 */
 	@ResponseBody
 	@RequestMapping(value = "/add_log", method = RequestMethod.POST)
-	//@Authority(module = ModuleType.PROJECT, function = AuthFunctionType.INSERT)
 	public CommonResult addProjectLog(HttpSession session,
 			@RequestParam int prjId,
 			@RequestParam String logInfo) {
@@ -434,8 +437,11 @@ public class ProjectController {
 			}
 		}
 		if(!isMem) { // 非该项目成员
-			result = new CommonResult(1, "error", "非项目成员不能添加日志");
-			return result;
+			if(loginStaff.getIsPrjOwner() == null 
+					|| "0".equals(loginStaff.getIsPrjOwner())) {
+				result = new CommonResult(1, "error", "非项目成员不能添加日志");
+				return result;
+			}
 		}
 		
 		ProjectLog log = new ProjectLog();
@@ -452,14 +458,107 @@ public class ProjectController {
 	}
 	
 	/**
+	 * 返回该项目下所有日志生产的时间列表
+	 * @param prjId 项目id
+	 * @return
+	 */
+	@ResponseBody
+	@RequestMapping(value = "/log_dates", method = RequestMethod.POST)
+	public List<String> getLogTime(@RequestParam int prjId) {
+		
+		List<Date> dateList = projectLogService.getProLogDateList(prjId);
+		DateFormat format = new SimpleDateFormat("yyyy-MM-dd");
+		
+		List<String> logDateList = new ArrayList<String>();
+		for(Date d : dateList) {
+			String date = format.format(d);
+			if(!logDateList.contains(date)) {
+				logDateList.add(date);
+			}
+		}
+		
+		return logDateList;
+	}
+	
+	/**
+	 * 根据日期进行日志查询
+	 * @param prjId
+	 * @param date
+	 * @param session
+	 * @return
+	 */
+	@ResponseBody
+	@RequestMapping(value = "/logInDate")
+	public Map<String, Object> getLogByDate(@RequestParam int prjId,
+			@RequestParam String date,
+			HttpSession session) {
+		
+		CommonResult info = null;
+		Map<String, Object> resultMap = new HashMap<String, Object>();
+		
+		Staff loginStaff = (Staff) session.getAttribute(ProjectContent.LOGIN_USER_IN_SESSION);
+		
+		Project project = projectService.get(prjId);
+		
+		if(project == null) {
+			info = new CommonResult(1, "error", "不存在该项目");
+			resultMap.put("info", info);
+			return resultMap;
+		}
+		
+		List<Staff> memberList = project.getMembers();
+		Staff prjOwner = project.getProjectOwner();
+		Staff prjCreater = project.getProjectCreater();
+		if(prjOwner == null || prjCreater == null) {
+			info = new CommonResult(1, "error", "未找到相关负责人");
+			resultMap.put("info", info);
+			return resultMap;
+		}
+		
+		boolean isMem = false; // 是否为属于该项目
+		int loginId = loginStaff.getId();
+		if(loginId == prjOwner.getId()) { // 是否为该项目负责人
+			isMem = true;
+		}
+		if(loginId == prjCreater.getId()) { // 是否为该项目创建者
+			isMem = true;
+		}
+		for(Staff m : memberList) { // 是否为该项目成员
+			if(loginId == m.getId()) {
+				isMem = true;
+			}
+		}
+		if(!isMem) { // 非该项目成员
+			if(loginStaff.getIsPrjOwner() == null 
+					|| "0".equals(loginStaff.getIsPrjOwner())) {
+				info = new CommonResult(1, "error", "非项目成员不能查看日志");
+				resultMap.put("info", info);
+				return resultMap;
+			}
+		}
+		
+		List<ProjectLogDto> logDtoList = new ArrayList<ProjectLogDto>();
+		List<ProjectLog> prjLogList = projectLogService.getLogByDate(prjId, date);
+		for(ProjectLog p : prjLogList) {
+			ProjectLogDto dto = new ProjectLogDto(p);
+			logDtoList.add(dto);
+		}
+		
+		info = new CommonResult(0, "success", "查询成功");
+		resultMap.put("info", info);
+		resultMap.put("data", logDtoList);
+		
+		return resultMap;
+	}
+	
+	/**
 	 * 查看项目日志
 	 * @param session
 	 * @param prjId 项目id
 	 * @return
 	 */
 	@ResponseBody
-	@RequestMapping(value = "/logs", method = RequestMethod.POST)
-	//@Authority(module = ModuleType.PROJECT, function = AuthFunctionType.READ)
+	//@RequestMapping(value = "/logs", method = RequestMethod.POST)
 	public Map<String, Object> getPrjLogs(HttpSession session,
 			@RequestParam int prjId,
 			@RequestParam(defaultValue = "0") int index) {
@@ -500,9 +599,12 @@ public class ProjectController {
 			}
 		}
 		if(!isMem) { // 非该项目成员
-			info = new CommonResult(1, "error", "非项目成员不能查看日志");
-			resultMap.put("info", info);
-			return resultMap;
+			if(loginStaff.getIsPrjOwner() == null 
+					|| "0".equals(loginStaff.getIsPrjOwner())) {
+				info = new CommonResult(1, "error", "非项目成员不能查看日志");
+				resultMap.put("info", info);
+				return resultMap;
+			}
 		}
 		
 		// 日志查询语句

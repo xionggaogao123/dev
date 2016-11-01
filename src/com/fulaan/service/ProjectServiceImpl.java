@@ -104,5 +104,10 @@ public class ProjectServiceImpl implements ProjectService {
 	public void update(Project project) {
 		projectDao.update(project);
 	}
+
+	@Override
+	public Long getTotalNumByStaffIdAndStatud(int id, int status) {
+		return null;
+	}
 	
 }

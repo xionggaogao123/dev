@@ -121,3 +121,6 @@ CREATE TABLE `auth_role_function` (
 
 -- 标识用户是否删除 1:删除 	 0:未删除
 ALTER TABLE staff ADD COLUMN is_deleted INT DEFAULT 0;
+
+-- 用于标识项目状态
+ALTER TABLE project ADD COLUMN project_status INT DEFAULT 0;

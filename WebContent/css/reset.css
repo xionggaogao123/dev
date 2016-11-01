@@ -399,6 +399,7 @@ button{cursor: pointer;}
 .p-detial-top {
     height: 24px;
     margin: 56px 0 46px 0;
+    width: 830px;
 }
 .p-detial-top .em1{
 	font-size: 18px;
@@ -810,6 +811,7 @@ button{cursor: pointer;}
 	text-align: right;
 	width: 92px;
 	padding-right: 11px;
+	padding-top: 20px;
 }
 .wind-edit .ul-infor li .inp1{
 	float: left;
@@ -1351,4 +1353,43 @@ button{cursor: pointer;}
     word-break: break-all;
     text-align:left;
     height:40px;
+}
+
+.p-detial-top .sp1 {
+	float: right;
+    height: 32px;
+    width: 95px;
+    border: 1px solid #dcdcdc;
+    font-size: 14px;
+    line-height: 32px;
+    border-radius: 5px;
+    padding-left: 15px;
+    font-weight: normal;
+    /* cursor: pointer; */
+    transition: all .3s;
+    margin: 10px 16px 0 0;
+}
+
+.wind-prj-status .sp1 {
+	padding-top: 20px;
+}
+
+.wind-prj-status select {
+	margin-top: 10px;
+}
+
+.p-detial-top .color-1 {
+	border: 3px solid #3fa8d8;
+}
+
+.p-detial-top .color-2 {
+	border: 3px solid #999;
+}
+
+.p-detial-top .color-3 {
+	border: 3px solid #ffb329;
+}
+
+.p-detial-top .color-4 {
+	border: 3px solid rgb(13, 210, 28);
 }

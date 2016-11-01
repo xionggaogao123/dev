@@ -572,6 +572,11 @@
                 }
             }
         	
+        	function showChgStatusBox() {
+        		$('.wind-prj-status').fadeIn();
+        		$('.bg').fadeIn();
+        	}
+        	
         	$(function() {
         		
         		function select() {
@@ -634,6 +639,39 @@
         			showInputBox('请输入文件夹名', '文件夹名', 1);
         		});
         		
+        		$('.wind-prj-status .btn-ok').click(function() {
+					var status = $('#status_li select').val();
+					var statusText = $('#status_li option:selected').text();
+					console.log("status:" + status + statusText);
+        			$.ajax({
+        				async : false,
+        				cache : false,
+        				dataType : 'json',
+        				type : 'post',
+        				url : '${ctx}/project/chgStatus',
+        				data : {
+        					prjId : ${project.id},
+        					status : status
+        				}, 
+        				success : function(data) {
+        					if(data.code === 0) {
+        						hideAll();
+        						$('.p-detial-top .sp1').text("状态：" + statusText);
+        						$('.p-detial-top span').removeClass();
+        						$('.p-detial-top span').addClass("sp1 color-" + status);
+            					showMsgBox("更新成功");
+        					} if(data.code === 1) {
+        						hideAll();
+            					showMsgBox("出错了：" + data.msg);
+        					}
+        				}, 
+        				error : function(arg0, arg1, arg2) {
+        					hideAll();
+            				showMsgBox("出错了");
+        				}
+        			});
+        		});
+        		
         		$('.wind-log-tb .prev').click(function() {
         			getLogsByDate(--dateIndex);
             	});
@@ -677,6 +715,7 @@
                     <em class="em1" onclick="window.location.href='${ctx}/project/list'">我的项目清单</em>
                     <em class="em2">></em>
                     <em class="em2">${project.projectName }</em>
+                    <span class="sp1 color-${status.code }" <c:if test="${loginedStaff.isPrjOwner eq '1' or loginedStaff.isPrjOwner eq '2' }">onclick="showChgStatusBox()" style="cursor: pointer;"</c:if>>状态：${status.status}</span>
                 </p>
                 <div class="detial-cont1">
                     <p class="detial-item-tit dt1">基本信息
@@ -913,6 +952,25 @@
                     <button class="btn-log prev">上一页</button>
                     <button class="btn-log next">下一页</button>
             </div>
+        </div>
+    	
+    	<!-- 修改项目状态 -->
+    	<div class="wind-edit wind-prj-status wind">
+            <p class="p1">修改项目状态<em></em></p>
+            <ul class="ul-infor">
+                <li id="status_li">
+                    <span class="sp1">项目状态</span>
+                    <select id="prj_status">
+                    	<c:forEach items="${statusVO }" var="vo">
+                    		<option value="${vo.value }"<c:if test="${vo.value == project.projectStatus }">selected</c:if>>${vo.label }</option>
+                    	</c:forEach>
+                    </select>
+                </li>
+                <li class="tcenter">
+                    <button class="btn-ok">确定</button>
+                    <button class="btn-no">取消</button>
+                </li>
+            </ul>
         </div>
     	
     </body>

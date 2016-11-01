@@ -74,6 +74,9 @@ public class Project implements Serializable{
 	// 项目日志
 	private List<ProjectLog> logs;
 	
+	// 项目状态
+	private Integer projectStatus;
+	
 	@Id
 	@Column(name = "id", nullable = false, unique = true)
 	@GeneratedValue(strategy = GenerationType.AUTO)
@@ -201,6 +204,15 @@ public class Project implements Serializable{
 
 	public void setLogs(List<ProjectLog> logs) {
 		this.logs = logs;
+	}
+
+	@Column(name = "project_status")
+	public Integer getProjectStatus() {
+		return projectStatus;
+	}
+
+	public void setProjectStatus(Integer projectStatus) {
+		this.projectStatus = projectStatus;
 	}
 	
 }

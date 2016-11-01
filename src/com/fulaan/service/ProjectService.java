@@ -20,6 +20,8 @@ public interface ProjectService {
 	 */
 	public Long getTotalNumByStaffId(int id);
 	
+	public Long getTotalNumByStaffIdAndStatud(int id, int status);
+	
 	/**
 	 * 获取该登录用户当前页数据
 	 * @param pageNum
@@ -49,4 +51,5 @@ public interface ProjectService {
 	public List<Project> getOwnerProjectByStaffId(int id);
 	
 	public void update(Project project);
+	
 }

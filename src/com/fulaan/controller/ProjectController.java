@@ -34,7 +34,9 @@ import com.fulaan.auth.annotation.Authority;
 import com.fulaan.auth.annotation.ModuleType;
 import com.fulaan.auth.annotation.SuperAdmin;
 import com.fulaan.common.CommonResult;
+import com.fulaan.common.LabelValueVO;
 import com.fulaan.common.ProjectContent;
+import com.fulaan.common.ProjectStatus;
 import com.fulaan.dto.ProjectDto;
 import com.fulaan.dto.ProjectLogDto;
 import com.fulaan.dto.StaffDto;
@@ -198,6 +200,8 @@ public class ProjectController {
 		request.setAttribute("sdtoMap", staffDtoMap);
 		request.setAttribute("allStaffMap", allStaffDtoMap);
 		request.setAttribute("rootDir", rootDir);
+		request.setAttribute("statusVO", ProjectStatus.getStatusVO());
+		request.setAttribute("status", ProjectStatus.getStatusByCode(project.getProjectStatus()));
 		
 		return PROJECT_DETAIL_PAGE;
 	}
@@ -549,6 +553,49 @@ public class ProjectController {
 		resultMap.put("data", logDtoList);
 		
 		return resultMap;
+	}
+	
+	/**
+	 * 获取所有项目状态
+	 * @return
+	 */
+	@ResponseBody
+	@RequestMapping(value = "/allStatus", method = RequestMethod.POST)
+	public List<LabelValueVO> getProjectStatus() {
+		return ProjectStatus.getStatusVO();
+	}
+	
+	/**
+	 * 更改项目状态
+	 * @param prjId 项目id
+	 * @param status 状态
+	 * @return
+	 */
+	@ResponseBody
+	@RequestMapping(value = "/chgStatus", method = RequestMethod.POST)
+	@Authority(module = ModuleType.PROJECT, function = AuthFunctionType.UPDATE)
+	public CommonResult changeProjectStatus(@RequestParam int prjId,
+			@RequestParam int status) {
+		
+		CommonResult result = null;
+		
+		Project project = projectService.get(prjId);
+		if(project == null) {
+			result = new CommonResult(1, "error", "不存在该项目");
+			return result;
+		}
+		
+		if(!ProjectStatus.isCorrectStatus(status)) {
+			result = new CommonResult(1, "error", "非法项目状态");
+			return result;
+		}
+		
+		project.setProjectStatus(status);
+		projectService.update(project);
+		
+		result = new CommonResult(0, "success", "更新成功");
+		
+		return result;
 	}
 	
 	/**

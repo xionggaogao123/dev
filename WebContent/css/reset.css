@@ -342,7 +342,7 @@ button{cursor: pointer;}
 	height: 24px;
 	font-size: 18px;
 	font-weight: bold;
-	margin:56px 0 46px 0;
+	margin:56px 0 15px 0;
 }
 .ul-company-member{
 	width: 829px;
@@ -660,7 +660,7 @@ button{cursor: pointer;}
 	line-height: 35px;
 }
 .mt38{
-	margin-top: 38px;
+	margin-top: 15px;
 }
 .mt13{
 	margin-top: 13px;
@@ -884,7 +884,7 @@ button{cursor: pointer;}
 }
 
 .wind-log .ul-infor li .inp1{
-	margin: 11px 0px 0px; 
+	margin: 11px 0px 11px; 
 	height: 103px; 
 	width: 389px;
 	resize: none;
@@ -1392,4 +1392,29 @@ button{cursor: pointer;}
 
 .p-detial-top .color-4 {
 	border: 3px solid rgb(13, 210, 28);
+}
+
+.my-list-cont .status-sel{
+	border: 1px solid #B9B9B9;
+    width: 110px;
+    height: 38px;
+}
+
+.my-list-cont .btn-ok {
+	width: 92px;
+    height: 32px;
+    background: #3FA8D8;
+    border-radius: 4px;
+    border: none;
+    margin-right: 10px;
+    color: #fff;
+}
+
+.my-list-cont .status-div {
+	margin-left: 540px;
+}
+
+.my-list-cont .em-tx {
+	font-weight: bold;
+    font-size: 15px;
 }

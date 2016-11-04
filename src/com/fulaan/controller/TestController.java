@@ -21,7 +21,7 @@ public class TestController {
 	BaseDao baseDao;
 	
 	@ResponseBody
-	@RequestMapping("/success")
+	//@RequestMapping("/success")
 	public String returnString() {
 		
 		Session session = baseDao.getSession();
@@ -34,8 +34,8 @@ public class TestController {
 	}
 	
 	public static void main(String[] args) {
-		double i = 141d / 174;
-		DecimalFormat df = new DecimalFormat("0.00%");
+		double i = 141d / 174 * 100;
+		DecimalFormat df = new DecimalFormat("0.00");
 		System.out.println(df.format(i));
 		System.out.println(new BigDecimal(i * 100).setScale(2, BigDecimal.ROUND_HALF_EVEN).doubleValue());
 		int rankGap = 141;

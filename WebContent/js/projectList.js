@@ -13,28 +13,35 @@ $(document).ready(function(){
 	totalPage = $('#totalPage').val();
 	//$('.ul-company-member li .sp1 em').click(function())
 	
-	if(parseInt(totalPage) > 0) {
-		$('#list').jqPaginator({
-			totalPages: parseInt(totalPage),
-			visiblePages: 5,
-			currentPage: 1,
-			first: '<li class="first"><a href="javascript:void(0);">首页<\/a><\/li>',
-			prev: '<li class="prev"><a href="javascript:void(0);">上一页<\/a><\/li>',
-			next: '<li class="next"><a href="javascript:void(0);">下一页<\/a><\/li>',
-			last: '<li class="last"><a href="javascript:void(0);">末页<\/a><\/li>',
-			page: '<li class="page"><a href="javascript:void(0);">{{page}}<\/a><\/li>',
-			onPageChange: function (num, type) {
-				console.log(num + "--")
-				listMember(num, context);
-			}
-		});
-	}
+//	if(parseInt(totalPage) > 0) {
+//		$('#list').jqPaginator({
+//			totalPages: parseInt(totalPage),
+//			visiblePages: 5,
+//			currentPage: 1,
+//			first: '<li class="first"><a href="javascript:void(0);">首页<\/a><\/li>',
+//			prev: '<li class="prev"><a href="javascript:void(0);">上一页<\/a><\/li>',
+//			next: '<li class="next"><a href="javascript:void(0);">下一页<\/a><\/li>',
+//			last: '<li class="last"><a href="javascript:void(0);">末页<\/a><\/li>',
+//			page: '<li class="page"><a href="javascript:void(0);">{{page}}<\/a><\/li>',
+//			onPageChange: function (num, type) {
+//				console.log(num + "--")
+//				listMember(num, context);
+//			}
+//		});
+//	}
+	$('#searchBtn').click(function() {
+		var status = $('#prjStatus').val();
+		console.log("status:" + status);
+		listMember(1, status, context);
+	});
+	listMember(1, -1, context);
 });
 
 
-function listMember(page, ctx) {
+function listMember(page, status, ctx) {
 	if(!ctx)
 		ctx = "";
+	var isInit = true;
 	$.ajax({ 
 		cache : false,
 		async : false,
@@ -42,11 +49,31 @@ function listMember(page, ctx) {
 		dataType : 'json',
 		type : 'post',
 		data : {
-			pageNum : page || 1
+			page : page || 1,
+			status : status || -1
 		},
 		success : function(data) {
+			$("#pro_list").empty();
+			$('#list').empty();
 			if(data.code === 1) { // 成功获取数据
-				$("#pro_list").empty();
+				$('#list').jqPaginator({
+					totalPages: data.totalPage,
+					visiblePages: 5,
+					currentPage: 1,
+					first: '<li class="first"><a href="javascript:void(0);">首页<\/a><\/li>',
+					prev: '<li class="prev"><a href="javascript:void(0);">上一页<\/a><\/li>',
+					next: '<li class="next"><a href="javascript:void(0);">下一页<\/a><\/li>',
+					last: '<li class="last"><a href="javascript:void(0);">末页<\/a><\/li>',
+					page: '<li class="page"><a href="javascript:void(0);">{{page}}<\/a><\/li>',
+					onPageChange: function (num, type) {
+						if(isInit) {
+							isInit = false
+						} else {
+							console.log(num + "--")
+							listMember(num, status, context);
+						}
+					}
+				});
 				for(var i = 0; i < data.results.length; i++) {
 					var html = '<li><span class="sp1"><em onclick="window.location.href=\'' + ctx + '/project/' + data.results[i].id + '/detail\'">';
 					html += data.results[i].projectName + '</em></span><span class="sp2"><img src="' + ctx + '/images/img_black_man.png">';

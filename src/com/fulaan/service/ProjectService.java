@@ -14,22 +14,29 @@ public interface ProjectService {
 	public Long getTotalNum(Class<Project> entity);
 	
 	/**
-	 * 根据雇员查询id查询其所属项目
+	 * 根据雇员id查询其所属项目
 	 * @param id 雇员主键id
 	 * @return
 	 */
 	public Long getTotalNumByStaffId(int id);
 	
-	public Long getTotalNumByStaffIdAndStatud(int id, int status);
+	/**
+	 * 根据员工id和项目状态查询其所属项目
+	 * @param id
+	 * @param projectStatus 项目状态
+	 * @return
+	 */
+	public Long getTotalNumByStaffIdAndStatus(int id, int projectStatus);
 	
 	/**
 	 * 获取该登录用户当前页数据
 	 * @param pageNum
 	 * @param size
-	 * @param id
+	 * @param id 员工id
+	 * @param projectStatus 项目状态
 	 * @return
 	 */
-	public List getProjectPageListByStaffId(int pageNum, int size, int id);
+	public List getProjectPageListByStaffId(int pageNum, int size, int id, int projectStatus);
 	
 	/**
 	 * 获取该页项目数据

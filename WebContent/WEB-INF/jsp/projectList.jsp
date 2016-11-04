@@ -45,6 +45,16 @@
     	<div class="container">
             <div class="my-list-cont">
                 <h3>我的项目清单</h3>
+                <div class="status-div">
+                	<em class="em-tx">项目状态：</em>
+                	<select id="prjStatus" class="status-sel">
+                		<option value="-1">全部</option>
+                		<c:forEach items="${status }" var="s">
+                			<option value="${s.value }">${s.label }</option>
+                		</c:forEach>
+                	</select>
+                	<button id="searchBtn" class="btn-ok">确定</button>
+                </div>
                 <table class="tab-project mt38">
                     <tbody>
                     	<tr>

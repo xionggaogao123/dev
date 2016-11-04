@@ -88,6 +88,12 @@ public enum ProjectStatus {
 	
 	public static void main(String[] args) {
 		System.out.println(isCorrectStatus(0));
+		for(ProjectStatus ps : ProjectStatus.values()) {
+			LabelValueVO vo = new LabelValueVO();
+			vo.setValue(ps.getCode());
+			vo.setLabel(ps.getStatus());
+			System.out.println(ps.getCode() + "-" + ps.getStatus() + ps);
+		}
 	}
 	
 }

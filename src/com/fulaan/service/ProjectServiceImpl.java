@@ -59,16 +59,30 @@ public class ProjectServiceImpl implements ProjectService {
 	}
 
 	@Override
-	public List getProjectPageListByStaffId(int pageNum, int size, int id) {
+	public List getProjectPageListByStaffId(int pageNum, int size, int id, int projectStatus) {
 		
 		String querySql = "";
 		if(id > 0) {
-			querySql = "SELECT * FROM project WHERE id in  "
-					+ "(SELECT project_id FROM project_staff ps WHERE ps.staff_id = " + id
-					+ " union SELECT id FROM project p WHERE p.project_owner_id = " + id
-					+ " or p.project_creater_id = " + id + ")";
+			querySql = "SELECT * FROM project WHERE id in "
+					+ "(SELECT project_id FROM project_staff ps, project pj WHERE ps.staff_id = " + id
+					+ " AND ps.project_id = pj.id";
+			
+			if(projectStatus >= 0) {
+				querySql += " AND pj.project_status = " + projectStatus;
+			}
+			
+			querySql += " union SELECT id FROM project p WHERE (p.project_owner_id = " + id
+					+ " or p.project_creater_id = " + id + ") ";
+			if(projectStatus >= 0) {
+				querySql += "AND p.project_status = " + projectStatus;
+			}
+			querySql += ") ORDER BY created_time DESC";
 		} else {
-			querySql = "SELECT * FROM project ORDER BY created_time DESC";
+			querySql = "SELECT * FROM project ";
+			if(projectStatus >= 0) {
+				querySql += "WHERE project_status = " + projectStatus;
+			}
+			querySql += " ORDER BY created_time DESC";
 		}
 		
 		int index = (pageNum == 0 ? 0 : pageNum - 1) * size;
@@ -106,8 +120,37 @@ public class ProjectServiceImpl implements ProjectService {
 	}
 
 	@Override
-	public Long getTotalNumByStaffIdAndStatud(int id, int status) {
-		return null;
+	public Long getTotalNumByStaffIdAndStatus(int id, int projectStatus) {
+		
+		String querySql = "";
+		
+		if(id > 0) {
+			querySql = "SELECT count(*) FROM "
+					+ "(SELECT project_id FROM project_staff ps, project pj WHERE ps.staff_id = " + id
+					+ " AND ps.project_id = pj.id";
+			
+			if(projectStatus >= 0) {
+				querySql += " AND pj.project_status = " + projectStatus;
+			}
+			
+			querySql += " union SELECT id FROM project p WHERE (p.project_owner_id = " + id 
+					+ " or p.project_creater_id = " + id + ")";
+			
+			if(projectStatus >= 0) {
+				querySql += " and p.project_status = " + projectStatus;
+			}
+			querySql += ") r";
+		} else {
+			querySql = "SELECT count(*) FROM project";
+			if(projectStatus >= 0) {
+				querySql += " WHERE project_status = " + projectStatus;
+			}
+		}
+		
+		SQLQuery sqlQuery = projectDao.getSession().createSQLQuery(querySql);
+		long countNum = ((BigInteger) sqlQuery.list().get(0)).longValue();
+		
+		return (long) (sqlQuery.list() != null ? countNum : 0);
 	}
 	
 }

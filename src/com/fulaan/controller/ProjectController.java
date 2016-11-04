@@ -94,20 +94,7 @@ public class ProjectController {
 			HttpServletResponse response,
 			HttpSession session) {
 
-		Long totalPro = null;
-		
-		Object isSuperAdmin = session.getAttribute(ProjectContent.SUPERADMIN_FLAG);
-		if(isSuperAdmin != null && (boolean)isSuperAdmin == true) { // superAdmin特殊处理
-			totalPro = projectService.getTotalNumByStaffId(-1); // 查询所有
-		} else {
-			Staff staff = (Staff) session.getAttribute(ProjectContent.LOGIN_USER_IN_SESSION);
-			totalPro = projectService.getTotalNumByStaffId(staff.getId());
-		}
-		
-		int temp = totalPro.intValue() / ProjectContent.MAX_RESULT_PER_PAGE;
-		int totalPage = totalPro.intValue() % ProjectContent.MAX_RESULT_PER_PAGE == 0 ? temp : temp + 1;
-		
-		request.setAttribute("totalPage", totalPage);
+		request.setAttribute("status", ProjectStatus.getStatusVO());
 		
 		return LIST_PROJECTS_PAGE;
 	}
@@ -126,7 +113,8 @@ public class ProjectController {
 	public Map toPageProjectItems(HttpServletRequest request,
 			HttpServletResponse response,
 			HttpSession session,
-			@RequestParam(defaultValue = "0") int page) {
+			@RequestParam(defaultValue = "0") int page,
+			@RequestParam(defaultValue = "-1") int status) {
 		
 		Map<String, Object> resultMap = new HashMap<String, Object>();
 		
@@ -140,18 +128,24 @@ public class ProjectController {
 		
 		int size = ProjectContent.MAX_RESULT_PER_PAGE;
 		List projectList = new ArrayList();
+		Long totalPro = null; // 项目总数
 		
 		Object isSuperAdmin = session.getAttribute(ProjectContent.SUPERADMIN_FLAG);
 		if(isSuperAdmin != null && (boolean)isSuperAdmin == true) { // superAdmin特殊处理
-			projectList = projectService.getProjectPageListByStaffId(page, size, -1); // 查询所有
+			projectList = projectService.getProjectPageListByStaffId(page, size, -1, status); // 查询所有
+			totalPro = projectService.getTotalNumByStaffIdAndStatus(-1, status); // 查询所有
 		} else {
-			projectList = projectService.getProjectPageListByStaffId(page, size, staff.getId());
+			projectList = projectService.getProjectPageListByStaffId(page, size, staff.getId(), status);
+			totalPro = projectService.getTotalNumByStaffIdAndStatus(staff.getId(), status);
 		}
 		
 		if(projectList == null || projectList.size() <= 0) { // 未获取到数据
 			resultMap.put("code", 0);
 			resultMap.put("results", null);
 		}
+		
+		int temp = totalPro.intValue() / ProjectContent.MAX_RESULT_PER_PAGE;
+		int totalPage = totalPro.intValue() % ProjectContent.MAX_RESULT_PER_PAGE == 0 ? temp : temp + 1;
 		
 		List<ProjectDto> results = new ArrayList<ProjectDto>();
 		for(int i = 0; i < projectList.size(); i++) {
@@ -172,6 +166,7 @@ public class ProjectController {
 		// 获取成功
 		resultMap.put("code", 1);
 		resultMap.put("results", results);
+		resultMap.put("totalPage", totalPage);
 		
 		return resultMap;
 	}
@@ -329,6 +324,7 @@ public class ProjectController {
 			Project project,
 			@RequestParam int[] staffs) {
 		
+		project.setProjectStatus(ProjectStatus.NEW_PRJ.getCode()); // 项目状态为新建
 		project.setCreatedTime(new Date());
 		List<Staff> members = new ArrayList<Staff>();
 		for(int sId : staffs) {

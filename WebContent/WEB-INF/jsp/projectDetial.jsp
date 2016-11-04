@@ -899,7 +899,6 @@
             <ul class="ul-infor">
                 <li>
                 <!-- style="margin: 11px 0px 0px; height: 103px; width: 389px;" -->
-                    <span class="sp1"></span>
                     <textarea type="text" class="inp1"></textarea>
                 </li>
                 <li class="tcenter">

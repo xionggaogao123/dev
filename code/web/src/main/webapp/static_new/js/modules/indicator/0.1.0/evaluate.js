@@ -260,7 +260,7 @@ define('evaluate',['jquery','doT','easing','common'],function(require,exports,mo
         Common.getPostData('/evaluate/getStudentList.do', selStuParam, function(rep){
             if(rep.code=200){
                 $('#studentList').html("");
-                var lenth = rep.message.length*90;
+                var lenth = rep.message.length*95;
                 $('#studentList').css('width',lenth);
                 Common.render({tmpl: $("#j-tmpl2"), data: rep, context: '#studentList'});
                 indiData.parentId="";

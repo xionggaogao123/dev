@@ -808,6 +808,12 @@ public class Constant {
 	//杨浦小学 综合素质 商品兑换
 	public static final String COLLECTION_STU_CHANGE_GOODS = "stuChangeGoods";
 
+	//指标副本的使用记录
+	public static final String COLLECTION_INDICATOR_TREE_APPLIED = "indicatorTreeApplied";
+
+	//拓展课 学生评论
+	public static final String COLLECTION_INTEREST_EVALUATE_RESULT = "evaluateResult";
+	
 	//宿舍区
 	public static final String COLLECTION_OA_DORM="darea";
 	//宿舍楼

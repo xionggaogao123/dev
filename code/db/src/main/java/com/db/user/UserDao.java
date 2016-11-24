@@ -1390,6 +1390,21 @@ public class UserDao extends SynDao {
         return useridList;
     }
 
+    public List<ObjectId> findIdListByUserName(List<ObjectId> userids, String userName) {
+        BasicDBObject query=new BasicDBObject();
+        query.append(Constant.ID,new BasicDBObject(Constant.MONGO_IN,userids));
+        query.append("nm",MongoUtils.buildRegex(userName));
+        List<DBObject> list=find(MongoFacroty.getAppDB(), Constant.COLLECTION_USER_NAME,query, Constant.FIELDS);
+        List<ObjectId> useridList=new ArrayList<ObjectId>();
+        if(list!=null){
+            for(DBObject dbObject:list){
+                UserEntry userEntry=new UserEntry((BasicDBObject)dbObject);
+                useridList.add(userEntry.getID());
+            }
+        }
+        return useridList;
+    }
+
     public List<UserEntry> getUserInfoList(String keyword,int postion,String schoolId,List<ObjectId> userids) {
         BasicDBObject query=new BasicDBObject("si", new ObjectId(schoolId)).append("r", new BasicDBObject(Constant.MONGO_GTE, UserRole.TEACHER.getRole())
                 .append(Constant.MONGO_NE, UserRole.PARENT.getRole()))

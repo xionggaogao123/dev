@@ -121,6 +121,29 @@ define('common',['jquery','doT','cal','easing','ajaxfileupload','widget','transp
 
     };
 
+    Common.getPostBodyData = function(url,data,callback){
+        $.ajax({
+            type: "post",
+            data:JSON.stringify(data),
+            url: url,
+            async: false,
+            contentType: 'application/json',
+            success: function(rep){
+                if(!rep){
+                    return rep;
+                }
+                try{
+                    $.isPlainObject(rep);
+                }catch(e){
+                    console.log("数据解析错误!");
+                    return;
+                }
+                callback.apply(this,arguments);
+            }
+        });
+
+    };
+
     /**
      * 异步获取
      * @param url

@@ -507,7 +507,7 @@ public class InterestClassDao extends BaseDao {
      * @param fields
      * @return
      */
-    public List<InterestClassEntry> findInterestClassEntrysByIds(Collection<ObjectId> ids,DBObject fields) {
+    public List<InterestClassEntry> findInterestClassEntrysByIds(Collection<ObjectId> ids, DBObject fields) {
         BasicDBObject query=new BasicDBObject(Constant.ID,new BasicDBObject(Constant.MONGO_IN,ids));
         List<DBObject> list = find(MongoFacroty.getAppDB(), Constant.COLLECTION_INTEREST_CLASS_NAME, query, fields);
         List<InterestClassEntry> interestClassEntryList=new ArrayList<InterestClassEntry>();

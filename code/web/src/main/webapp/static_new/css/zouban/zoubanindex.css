@@ -1,0 +1,648 @@
+/* 
+* @Author: Tony
+* @Date:   2015-10-15 16:23:59
+* @Last Modified by:   Tony
+* @Last Modified time: 2015-10-23 15:25:26
+*/
+.cont-right{
+	width: 790px;
+}
+
+.right-title{
+	height: 40px;
+}
+
+.right-title li{
+	float: left;
+	height: 40px;
+	width: 125px;
+	margin-right: 3px;
+	background: #FDA716 none repeat scroll 0% 0%;
+	color: #FFF;
+	border: medium none;
+	cursor: pointer;
+	text-align: center;
+	line-height: 41px;
+	font-size: 16px;
+}
+
+/* .title-t{
+	width: 135px;
+	height: 41px;
+	border: #bbbbbb 1px solid ;
+	border-bottom: none;
+	background: #fff;
+	position: relative;
+	top: -1px;
+	color: #ff8a00;
+	font-size: 16px;
+	text-align: center;
+	line-height: 41px;
+	float: left;
+	cursor: pointer;
+} */
+
+
+.right-main{
+	width: 790px;
+	min-height:693px ;
+	border: #bbb 1px solid;
+}
+
+.right-main1{
+	width: 740px;
+	height: 35px;
+	margin-top: 37px;
+	margin-bottom: 11px;
+}
+
+.right-main1 select{
+	width: 223px;
+}
+
+.right-main1 span{
+	display: inline-block;
+	margin-left: 35px;
+}
+
+.right-mian2{
+	margin-top: 38px;
+	width: 681px;
+	height: 360px;
+	background-image: url(../../images/zouban_index_bg.png);
+	margin-left: 50px;
+	overflow: hidden;
+	
+}
+.right-mian2-gezhi{
+	margin-top: 38px;
+	width: 681px;
+	height: 360px;
+	background-image: url(../../images/zouban_index_bg2.png);
+	margin-left: 50px;
+	overflow: hidden;
+
+}
+
+.cont-style{
+	color: #fba713 !important;
+	border: #bbbbbb 1px solid !important;
+	border-bottom:none !important;
+	background: #fff !important;
+}
+
+.main2-child{
+	width: 120px;
+	height: 70px;
+	float: left;
+	text-align: center;
+}
+
+.mian2-grandson{
+	height: 45px;
+	width: 120px;
+	border: 1px solid #ff8a00;
+	line-height: 45px;
+	margin-top: 4px;
+	cursor: pointer;
+}
+
+.main1-btn1{
+    display: inline-block;
+    width: 70px;
+    height: 35px;
+    background: #9C9C9C;
+    color: #fff;
+    cursor: pointer;
+    line-height: 35px;
+    text-align: center;
+    margin-left: 15px;
+}
+
+.main2-i{
+	font-size: 20px;
+	display: inline-block;
+	
+}
+
+.main2-div1 ,.main2-div2,.main2-div3{
+	width: 650px;
+	height: 70px;
+}
+
+.main2-div1{
+	margin-top:25px;
+}
+
+.main2-div2{
+	margin-top: 31px;
+}
+.main2-div3{
+	margin-top: 30px;
+}
+
+
+ .lie1{
+	margin-left: 70px;
+}
+
+.lie2{
+	margin-left: 99px;
+}
+
+.lie3{
+	margin-left: 105px;
+}
+
+/*****************教室管理***************************/
+.right2-main{
+	width: 790px;
+	min-height:693px ;
+	border: #bbb 1px solid;
+	display: none;
+
+}
+
+.right2-btn{
+	width: 90px;
+	height: 32px;
+	border:none;
+	color: #fff;
+	background: #737373;
+	float: right;
+	margin-right: 40px;
+	margin-top: 40px;
+	cursor: pointer;
+}
+
+.right2-tab{
+	margin-top:92px;
+	margin-left:40px;
+}
+
+
+.right2-tab .row1{
+	background: #f2f2f2;
+}
+
+.right2-tab td{
+	border:1px solid #d4d4d4;
+	height: 40px;
+	text-align: center;
+}
+
+.right2-tab .col1{
+	width: 212px;
+}
+
+.right2-tab .col2{
+	width: 180px;
+}
+.right2-tab .col4{
+	width: 155px;
+}
+.right2-tab .col3{
+	width: 160px;
+}
+
+.right2-tab .col3 em , i {
+	cursor: pointer;
+	display: inline-block;
+}
+
+/*******************教学周管理st**************************/
+.right3-main{
+    width: 790px;
+    min-height:693px ;
+    border: #bbb 1px solid;
+    padding-bottom: 20px;
+    display: none;
+}
+
+.right3-1{
+    width: 100px;
+    height: 32px;
+    background: #737373;
+    color: #fff;
+    border-radius: 2px;
+    text-align: center;
+    line-height: 32px;
+    cursor: pointer;
+    margin:38px 0 0 646px;
+}
+
+.right3-2{
+    height: 32px;
+    line-height: 32px;
+    margin:28px 42px 0 36px ;
+}
+
+.right3-2 i{
+    display: inline-block;
+    width: 150px;
+    height: 32px;
+    background: #b5b5b5;
+    color: #fff;
+    text-align: center;
+    font-weight: bold;
+    margin:0 268px 0 18px;
+}
+
+.right3-3{
+    width: 710px;
+    max-height: 398px;
+    border: 1px solid #c2c2c2;
+    margin:20px 0 0 32px;
+}
+
+.right3-3 .top-day{
+    height: 40px;
+    line-height: 40px;
+    margin:0  20px 0 167px;
+    border-bottom: 1px solid #e0e7f1;
+}
+
+.right3-3 .top-day i{
+    display: inline-block;
+    width: 71px;
+    text-align: center;
+}
+
+.right3-3 .cont-day{
+    max-height: 357px;
+    overflow: auto;
+}
+
+.weeklist{
+    width: 166px;
+    float: left;
+    background: #f7f8fa;
+}
+
+.weeklist span{
+    display: inline-block;
+    margin:9px 0 8px 29px;
+    width: 85px;
+    height: 34px;
+    background: #ee8f4d;
+    color: #fff;
+    line-height: 34px;
+    text-align: center;
+}
+
+.cont-date tr{
+    border-bottom:1px solid #e0e7ef ;
+}
+
+.cont-date td{
+    width: 75px;
+    height: 50px;
+    line-height: 50px;
+    text-align: center;
+}
+
+.right3-main hr{
+    height:1px;
+    border:none;
+    border-top:1px dashed #c2c2c2;
+    margin: 41px 41px 39px 32px;
+}
+
+.right3-4{
+    height: 32px;
+    line-height: 32px;
+    margin:28px 42px 0 36px ;
+}
+
+.right3-4 i{
+    display: inline-block;
+    width: 150px;
+    height: 32px;
+    background: #b5b5b5;
+    color: #fff;
+    text-align: center;
+    font-weight: bold;
+    margin:0 268px 0 18px;
+}
+
+.right3-5{
+    width: 710px;
+    max-height: 398px;
+    border: 1px solid #c2c2c2;
+    margin:20px 0 0 32px;
+}
+
+.right3-5 .top-day{
+    height: 40px;
+    line-height: 40px;
+    margin:0  20px 0 167px;
+    border-bottom: 1px solid #e0e7f1;
+}
+
+.right3-5 .top-day i{
+    display: inline-block;
+    width: 71px;
+    text-align: center;
+}
+
+.right3-5 .cont-day{
+    max-height: 357px;
+    overflow: auto;
+}
+
+
+/*******************教学周管理ed**************************/
+
+/********************设置教学周弹窗st*************************/
+.weekwind{
+    width: 410px;
+    height: 490px;
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    margin-left: -210px;
+    margin-top: -245px;
+    background: #fff;
+    z-index: 2;
+    display: none;
+}
+
+.weekwind dd{
+    width: 360px;
+    margin-left: 35px;
+    height: 54px;
+    line-height: 54px;
+}
+
+.weekwind span{
+    margin-right: 30px;
+}
+
+.weekwind button{
+    width: 60px;
+    height: 27px;
+    background: #fff;
+    border: 1px solid #707070;
+    margin-left: 14px;
+    cursor: pointer;
+}
+
+.weekwind input{
+    width: 229px;
+    height: 30px;
+    border: 1px solid #707070;
+
+}
+
+.weekwind .week-conf{
+    border: 1px solid #fe8a00;
+    margin-left: 94px;
+    color: #fe8a00;
+}
+/********************设置教学周弹窗ed*************************/
+
+
+
+/*********************添加教室弹窗*************************/
+.hide-add{
+	width: 418px;
+	height: 318px;
+	background: #fff;
+	position: fixed;
+    top:50%;
+    left: 50%;
+    margin-left: -209px;
+    margin-top: -159px;
+    z-index: 99;
+    display: none;
+}
+
+.hide-top{
+	height: 35px;
+	background: #737373;
+	color: #fff;
+	line-height: 35px;
+	padding-left: 10px;
+}
+
+.hide-top em{
+	display: inline-block;
+	font-size: 23px;
+	cursor: pointer;
+	float: right;
+	margin-right: 10px;
+}
+
+.hide-1{
+	margin-top: 27px;
+	margin-left: 40px;
+}
+
+.hide-1 input{
+	width: 239px;
+	height: 33px;
+	line-height: 33px;
+	border:1px solid #c9c9c9;
+	margin-left: 20px;
+	padding-left: 6px;
+}
+.hide-2{
+	margin-top: 30px;
+	margin-left: 40px;
+}
+
+.hide-2 .input{
+	width: 239px;
+	height: 70px;
+	line-height: 33px;
+	border:1px solid #c9c9c9;
+	margin-left: 48px;
+	padding-left: 6px;
+}
+.hide-3{
+	margin-top: 27px;
+	margin-left: 40px;
+}
+.hide-3 select{
+	width: 239px;
+	height: 33px;
+	line-height: 33px;
+	border:1px solid #c9c9c9;
+	margin-left: 16px;
+}
+.hide-add button {
+	width: 55px;
+	height: 24px;
+	background: #fff;
+	border: 1px solid #6f6f6f;
+	cursor: pointer;
+	margin-top: 23px;
+	margin-left: 14px;
+}
+.hide-conf-add , .hide-conf-update {
+	color: #ff8a00;
+	border: 1px solid #ff8a00 !important;
+	margin-left: 155px!important;
+}
+
+
+.error-span{
+	display: inline-block;
+	font-size: 12px;
+	position: relative;
+    top: -210px;
+    left: 104px;
+	color: #c31200;/* 
+	display: none; */
+}
+
+/*.error-border{
+	border:1px solid #c31200!important;
+}*/
+
+.error-x{
+	font-size: 20px;
+	display: inline-block;
+	position: relative;
+    left: 228px;
+    top: -25px;
+    cursor: pointer;
+}
+
+/*************编辑弹窗*******************/
+
+.hide-edit{
+	width: 418px;
+	height: 318px;
+	background: #fff;
+	position: fixed;
+    top:50%;
+    left: 50%;
+    margin-left: -209px;
+    margin-top: -159px;
+    z-index: 99;
+    display: none;
+}
+
+.hide-edit button {
+	width: 55px;
+	height: 24px;
+	background: #fff;
+	border: 1px solid #6f6f6f;
+	cursor: pointer;
+	margin-top: 23px;
+	margin-left: 14px;
+}
+
+
+/***************背景****************************/
+.bg{
+    display: none;
+    background-color: #000;
+    width: 100%;
+    height: 100%;
+    left: 0;
+    top: 0;
+    filter: alpha(opacity=40);
+    opacity: 0.4;
+    z-index: 1;
+    position: fixed !important; /*FF IE7*/
+    position: absolute;
+    _top: expression(eval(document.compatMode && document.compatMode=='CSS1Compat') ?
+            documentElement.scrollTop + (document.documentElement.clientHeight-this.offsetHeight)/2 :/*IE6*/
+            document.body.scrollTop + (document.body.clientHeight - this.clientHeight)/2); /*IE5 IE5.5*/
+}
+
+/*分页*/
+.page-paginator {
+	width: 100%;
+	margin: 40px auto 20px auto;
+	text-align: center;
+	display: none;
+}
+
+.page-index span {
+	padding: 3px 8px;
+	color: #838383;
+	border-radius: 4px;
+	border: 1px solid #838383;
+	background-color: #F6F7F6;
+	cursor: pointer;
+	margin: 0 2px;
+}
+
+.first-page, .last-page {
+	padding: 3px 15px;
+	color: #838383;
+	border-radius: 4px;
+	border: 1px solid #838383;
+	background-color: #F6F7F6;
+	cursor: pointer;
+	margin: 0 2px;
+}
+
+.page-paginator span.active {
+	background-color: #E6E6E6;
+	color: #779554;
+}
+
+/*分页结束*/
+
+
+#adjsutCourse{
+	height: 45px;
+	width: 120px;
+	border: 1px solid #ff8a00;
+	line-height: 45px;
+	margin-top: 4px;
+	cursor: pointer;
+	background:#ff8a00;
+	color:#fff;
+	margin-top: 24px;
+}
+
+.right-mian3
+{
+	width: 681px;
+	margin-left: 50px;
+	height: 370px;
+}
+.title
+{
+	font: normal bold 16px/25px arial,sans-serif;
+	margin-bottom: 10px;
+}
+.t1
+{
+	font: normal bold 16px/25px arial,sans-serif;
+	float: left;
+	width: 70px;
+}
+.t2
+{
+	font-size: 15px;
+	line-height: 25px;
+	margin-left: 70px;
+}
+.content
+{
+	float: left;
+	width: 100%;
+}
+.cal-term
+{
+	margin-top: 38px;
+	margin-left: 35px;
+	width: 300px;
+	float: left;
+}
+.cal-term select
+{
+	width: 223px;
+}
+.tip span{
+	margin-left: 35px;
+	height: 20px;
+	line-height: 20px;
+	color: red;
+}

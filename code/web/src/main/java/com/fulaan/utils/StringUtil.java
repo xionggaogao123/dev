@@ -69,4 +69,13 @@ public class StringUtil {
         Pattern pattern = Pattern.compile("[0-9]*");
         return pattern.matcher(str).matches();
     }
+
+
+	public static boolean isEmpty(String str) {
+		if(str!=null&&!"".equals(str)){
+			return true;
+		}else{
+			return false;
+		}
+	}
 }

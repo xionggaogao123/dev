@@ -12,6 +12,7 @@
     <link rel="stylesheet" type="text/css" href="/static/css/style.css"/>
     <link rel="stylesheet" type="text/css" href="/static/css/dialog.css"/>
     <link rel="stylesheet" type="text/css" href="/static/css/message.css"/>
+    <link rel="stylesheet" type="text/css" href="/static/css/font-awesome.min.css"/>
     <script type="text/javascript" src="/static/js/jquery.min.js"></script>
     <script src="/static/js/bootstrap-paginator.min.js" type="text/javascript"></script>
     <script type="text/javascript" src="/static/js/sharedpart.js"></script>

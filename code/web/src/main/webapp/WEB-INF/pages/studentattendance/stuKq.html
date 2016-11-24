@@ -1,0 +1,363 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <!-- Basic Page Needs-->
+    <meta charset="utf-8">
+    <title>学生考勤</title>
+    <!-- css files -->
+    <!-- Normalize default styles -->
+    <link href="css/reset.css" rel="stylesheet" />
+    <link rel="stylesheet" type="text/css" href="css/stuKq.css">
+    <script type="text/javascript" src="js/jquery-1.11.1.js"></script>
+    <script type="text/javascript" src="js/stuKq.js"></script>
+</head>    
+<body>
+    <!--#head-->
+    <div id="head">
+
+        <div class="sub-head clearfix">
+            <a href="#" class="logo"></a>
+            <div class="head-right">
+                <a href="javascript:;" class="user-msg"><i>14</i>私信</a>
+                <span class="user-cener">
+                    <a href="javascript:;">个人中心</a>
+                    <ul style="display:none;">
+                        <li><a href="javascript:;">我的私信</a></li>
+                        <li><a href="javascript:;">个人设置</a></li>
+                        <li><a href="javascript:;">用户手册</a></li>
+                        <li><a href="javascript:;">我的好友</a></li>
+                    </ul>
+                </span>
+                <span>欢迎您，siri [ <a href="javascript:;">退出</a> ]</span>
+            </div>
+        </div>
+
+    </div>
+    <!--/#head-->
+
+    <!--#content-->
+    <div id="content" class="clearfix">
+
+        <!--.col-left-->
+        <div class="col-left">
+
+            <!--.user-info-->
+            <div class="user-info">
+                <img src="http://placehold.it/116x116" />
+                <em>王源</em>
+                <span>课程23&nbsp;&nbsp;经验值339</span>
+            </div>
+            <!--/.user-info-->
+
+            <!--.left-nav左侧导航-->
+            <ul class="left-nav">
+                <li class="er current">
+                    <i class="iconfont">&#xe67b;</i>
+                    <span>管理统计</span>
+                    <s class="iconfont">&#xe61c;</s>
+                </li>
+                <dl>
+                    <a href="javascript:;"><dt>统计首页</dt></a>
+                    <a href="javascript:;"><dt>功能使用</dt></a>
+                </dl>
+                <li class="er">
+                    <i class="iconfont">&#xf0084;</i>
+                    <span>成绩分析</span>
+                    <s class="iconfont">&#xe61c;</s>
+                </li>
+                <dl>
+                    <a href="javascript:;"><dt>分析首页</dt></a>
+                    <a href="javascript:;"><dt>功能使用</dt></a>
+                </dl>
+                <li class="er">
+                    <i class="iconfont">&#xf003a;</i>
+                    <span>家校互动</span>
+                    <s class="iconfont">&#xe61c;</s>
+                </li>
+                <dl>
+                   <a href="javascript:;"><dt>微校园</dt></a>
+                   <a href="javascript:;"><dt>微家园</dt></a>
+                   <a href="javascript:;"><dt>通知</dt></a>
+                </dl>
+                <li class="er">
+                    <i class="iconfont">&#xe674;</i>
+                    <span>学习中心</span>
+                    <s class="iconfont">&#xe61c;</s>
+                </li>
+                <dl>
+                    <a href="javascript:;"><dt>微课@翻转课堂</dt></a>
+                    <a href="javascript:;"><dt>作业</dt></a>
+                    <a href="javascript:;"><dt>考试</dt></a>
+                    <a href="javascript:;"><dt>题库/组卷</dt></a>
+                </dl>
+                <li class="er">
+                    <i class="iconfont">&#xe6d4;</i>
+                    <span>电子超市</span>
+                    <s class="iconfont">&#xe61c;</s>
+                </li>
+                <dl>
+                    <a href="javascript:;"><dt>电子超市首页</dt></a>
+                    <a href="javascript:;"><dt>个人帐户</dt></a>
+                </dl>
+                <li id="pre">
+                    <i class="iconfont">&#xe614;</i>
+                    <span>我的班级</span>
+                </li>
+                <li id="pre">
+                    <i class="iconfont">&#xe631;</i>
+                    <span>好友圈</span>
+                </li>
+                <li class="er">
+                    <i class="iconfont">&#xf00aa;</i>
+                    <span>我的学校</span>
+                    <s class="iconfont">&#xe61c;</s>
+                </li>
+                <dl>
+                    <a href="javascript:;"><dt>班级</dt></a>
+                    <a href="javascript:;"><dt>老师</dt></a>
+                    <a href="javascript:;"><dt>管理学科</dt></a>
+                    <a href="javascript:;"><dt>管理老师</dt></a>
+                    <a href="javascript:;"><dt>管理校园</dt></a>
+                    <a href="javascript:;"><dt>管理拓展课</dt></a>
+                </dl>
+                <li id="pre">
+                    <i class="iconfont">&#xe663;</i>
+                    <span>群组交流</span>
+                </li>
+                <li id="pre">
+                    <i class="iconfont">&#xe6c3;</i>
+                    <span>投票选举</span>
+                </li>
+                <li id="pre">
+                    <i class="iconfont">&#x349b;</i>
+                    <span>调查问卷</span>
+                </li>
+                <li id="pre">
+                    <i class="iconfont">&#xe68a;</i>
+                    <span>火热活动</span>
+                </li>
+                <li id="pre">
+                    <i class="iconfont">&#xe65a;</i>
+                    <span>校园安全</span>
+                </li>
+            </ul>
+            <!--/.left-nav左侧导航-->
+
+            <!--.wcal-->
+            <div class="left-cal" id="calId"></div>
+            <!--/.wcal-->
+
+            <!--.orange-col-->
+            <div class="orange-col">
+                <div class="col-head">
+                    <h3>同学排行</h3>
+                </div>
+                <ul class="col-main paihan">
+                    <li class="clearfix">
+                        <img src="http://placehold.it/45x45" />
+                        <span>xinxin</span>
+                        <em>经验值<i>238</i></em>
+                    </li>
+                    <li class="clearfix">
+                        <img src="http://placehold.it/45x45 " />
+                        <span>xinxin</span>
+                        <em>经验值<i>238</i></em>
+                    </li>
+                </ul>
+            </div>
+            <!--/.orange-col-->
+
+        </div>
+        <!--/.col-left-->
+
+        <!--.col-right-->
+        <div class="col-right">
+
+            <!--.banner-info-->
+            <img src="http://placehold.it/770x100" class="banner-info" />
+            <!--/.banner-info-->
+
+            <!--.tab-col右侧-->
+            <div class="tab-col">
+                <div class="stukq-con">
+                    <div class="new-title">学生考勤</div>
+                    <div class="select-div">
+                        <table>
+                            <tr>
+                                <th style="width:115px;">年级</th>
+                                <th style="width:115px;">班级</th>
+                                <th style="width:234px;">日期</th>
+                                <th style="width:115px;">状态</th>
+                                <th style="width:88px;">学生姓名</th>
+                                <th style="width:78px;">&nbsp;</th>
+                            </tr>
+                            <tr>
+                                <td>
+                                    <select>
+                                        <option>全部</option>
+                                    </select>
+                                </td>
+                                <td>
+                                    <select>
+                                        <option>全部</option>
+                                    </select> 
+                                </td>
+                                <td>
+                                    <input type="text" class="Wdate"/>-
+                                    <input type="text" class="Wdate">
+                                </td>
+                                <td>
+                                    <select>
+                                        <option>全部</option>
+                                    </select> 
+                                </td>
+                                <td>
+                                    <input type="text" style="width:80px;"/>
+                                </td>
+                                <td>
+                                    <button class="btn-cx">查询</button>
+                                </td>
+                            </tr>
+                        </table>
+                    </div>
+                    <div class="stukq-main">
+                        <div class="dc-wrap">
+                            <button class="btn-dc fr">导出</button>
+                        </div>
+                        <table class="newTable">
+                            <thead>
+                                <tr>
+                                    <th style="width:45px;">学号</th>
+                                    <th style="width:98px;">姓名</th>
+                                    <th style="width:98px;">考勤日期</th>
+                                    <th style="width:98px;">班级</th>
+                                    <th style="width:98px;">考勤状态</th>
+                                    <th style="width:160px;">备注</th>
+                                    <th style="width:152px;">操作</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td>1</td>
+                                    <td>张力尹</td>
+                                    <td>2016/9/12</td>
+                                    <td>高一（2）班</td>
+                                    <td>
+                                        <img src="img/stukq-1.png">
+                                    </td>
+                                    <td></td>
+                                    <td>
+                                        <a href="javascript:;" class="table-xg">修改</a>
+                                        <em>|</em>
+                                        <a href="javascript:;" class="table-set">批量考勤设置</a>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td>2</td>
+                                    <td>张力尹</td>
+                                    <td>2016/9/12</td>
+                                    <td>高一（2）班</td>
+                                    <td>
+                                        <img src="img/stukq-2.png">
+                                    </td>
+                                    <td>家里有点事</td>
+                                    <td>
+                                        <a href="javascript:;" class="table-xg">修改</a>
+                                        <em>|</em>
+                                        <a href="javascript:;" class="table-set">批量考勤设置</a>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td>3</td>
+                                    <td>张力尹</td>
+                                    <td>2016/9/12</td>
+                                    <td>高一（2）班</td>
+                                    <td>
+                                        <img src="img/stukq-3.png">
+                                    </td>
+                                    <td>请假看病</td>
+                                    <td>
+                                        <a href="javascript:;" class="table-xg">修改</a>
+                                        <em>|</em>
+                                        <a href="javascript:;" class="table-set">批量考勤设置</a>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td>4</td>
+                                    <td>张力尹</td>
+                                    <td>2016/9/12</td>
+                                    <td>高一（2）班</td>
+                                    <td>
+                                        <img src="img/stukq-4.png">
+                                    </td>
+                                    <td></td>
+                                    <td>
+                                        <a href="javascript:;" class="table-xg">修改</a>
+                                        <em>|</em>
+                                        <a href="javascript:;" class="table-set">批量考勤设置</a>
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>  
+            </div>
+            <!--/.tab-col右侧-->
+
+        </div>
+        <!--/.col-right-->
+
+    </div>
+    <!--/#content-->
+</div>
+</div>
+    <div class="xg-alert">
+        <div class="alert-title clearfix">
+            <p>修改学生考勤</p>  
+            <span class="alert-close">x</span>
+        </div>
+        <div class="alert-main">
+            <span class="alert-top">荒废可<em>2016-9-12</em></span>
+            <div class="type-select">
+                <span>状态</span>
+                <select>
+                    <option>事假</option>
+                </select>
+            </div>
+            <div class="stukq-note">
+                <span>备注</span>
+                <textarea></textarea>
+            </div>
+            <div class="alert-btn">
+                <button class="alert-btn-sure">确定</button>
+                <button class="alert-btn-qx">取消</button>
+            </div>
+        </div>   
+    </div>
+    <div class="bg"></div>
+    <!--#foot-->
+    <div id="foot">
+        <div class="sub-foot clearfix">
+            <p>版权所有：上海复兰信息科技有限公司 www.fulaan-tech.com 沪ICP备14004857号 </p>
+            <ul>
+                <li><a href="#">关于我们</a></li><li>|</li>
+                <li><a href="#">联系我们</a></li><li>|</li>
+                <li><a href="#">服务条款</a></li><li>|</li>
+                <li><a href="#">隐私保护</a></li><li>|</li>
+                <li><a href="#" class="qq-online"></a></li>
+            </ul>
+        </div>
+    </div>
+    <!--#foot-->
+
+    <!-- Javascript Files -->
+    <!-- initialize seajs Library -->
+  <script src="../js/sea.js"></script>
+<!-- Custom js -->
+  <script src="../js/modules/core/0.1.0/config.js?v=2015041602"></script>
+  <script>
+    seajs.use('../chengjifenxi/js/stu-chengji.js');
+  </script>
+
+</body>
+</html>

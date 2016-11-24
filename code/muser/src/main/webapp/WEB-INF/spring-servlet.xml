@@ -1,0 +1,233 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns:mvc="http://www.springframework.org/schema/mvc"
+       xmlns:context="http://www.springframework.org/schema/context"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xmlns="http://www.springframework.org/schema/beans"
+       xmlns:task="http://www.springframework.org/schema/task"
+       xsi:schemaLocation="
+        http://www.springframework.org/schema/beans
+        http://www.springframework.org/schema/beans/spring-beans.xsd
+        http://www.springframework.org/schema/mvc
+        http://www.springframework.org/schema/mvc/spring-mvc.xsd
+        http://www.springframework.org/schema/context
+        http://www.springframework.org/schema/context/spring-context.xsd
+        http://www.springframework.org/schema/task
+        http://www.springframework.org/schema/task/spring-task.xsd
+        http://www.springframework.org/schema/security/oauth2
+        http://www.springframework.org/schema/security/spring-security-oauth2.xsd">
+        
+   
+    
+        
+    <mvc:annotation-driven content-negotiation-manager="contentNegotiationManager" >
+        <mvc:message-converters>
+            <bean class="org.springframework.http.converter.StringHttpMessageConverter">
+                <constructor-arg value="UTF-8"/>
+            </bean>
+            <bean class="org.springframework.http.converter.json.MappingJackson2HttpMessageConverter">
+                <property name="objectMapper">
+                    <bean class="org.springframework.http.converter.json.Jackson2ObjectMapperFactoryBean">
+                        <property name="simpleDateFormat" value="yyyy/MM/dd HH:mm:ss"/>
+                    </bean>
+                </property>
+                <property name="prefixJson" value="false"/>
+                <property name="supportedMediaTypes">
+                    <list>
+                        <value>application/json;charset=utf-8</value>
+                        <value>text/json;charset=utf-8</value>
+                        <value>text/plain;charset=utf-8</value>
+                        <value>text/html;charset=utf-8</value>
+                    </list>
+                </property>
+            </bean>
+        </mvc:message-converters>
+        <mvc:argument-resolvers>
+            <bean class="org.springframework.data.web.PageableHandlerMethodArgumentResolver"/>
+            <bean class="com.fulaan.interceptor.ObjectIdResolver" />
+        </mvc:argument-resolvers>
+    </mvc:annotation-driven>
+    
+    <context:component-scan base-package="com.fulaan" use-default-filters="false">
+        <context:include-filter type="annotation" expression="org.springframework.stereotype.Controller"/>
+        <context:include-filter type="annotation" expression="org.springframework.stereotype.Service"/>
+    </context:component-scan>
+     
+    
+    <bean class="org.springframework.web.servlet.view.ResourceBundleViewResolver">
+        <property name="basename" value="views"></property>
+    </bean>
+
+
+    <bean id="internalResourceViewResolver" class="org.springframework.web.servlet.view.InternalResourceViewResolver">
+        <property name="prefix" value="/WEB-INF/pages/"/>
+        <property name="suffix" value=".jsp"/>
+        <property name="order" value="0" /> 
+    </bean>
+    <bean id="contentNegotiationManager" class="org.springframework.web.accept.ContentNegotiationManagerFactoryBean">
+        <property name="favorPathExtension" value="false" />
+        <property name="favorParameter" value="false" />
+        <property name="ignoreAcceptHeader" value="false" />
+        <property name="mediaTypes" >
+            <value>
+                atom=application/atom+xml
+                html=text/html
+                json=application/json
+                *=*/*
+            </value>
+        </property>
+    </bean>
+
+    <mvc:interceptors>  
+        <mvc:interceptor>
+            <mvc:mapping path="/**"/>
+            <mvc:exclude-mapping path="/css/**"/>
+            <mvc:exclude-mapping path="/img/**"/>
+            <mvc:exclude-mapping path="/images/**"/>
+            <mvc:exclude-mapping path="/script/**"/>
+           <bean class="com.fulaan.interceptor.SessionValueInterceptor"></bean>
+        </mvc:interceptor>
+     </mvc:interceptors>
+
+    <bean id="exceptionResolver"
+          class="com.fulaan.interceptor.ExceptionResolver">
+    </bean>
+    
+    
+     <!-- oauth 2.0 start -->
+    <authentication-manager id="clientAuthenticationManager">  
+            <authentication-provider user-service-ref="oauth2ClientDetailsUserService" />  
+    </authentication-manager>
+    
+    
+    <beans:bean id="oauth2ClientDetailsUserService"  
+        class="org.springframework.security.oauth2.provider.client.ClientDetailsUserDetailsService">  
+            <beans:constructor-arg ref="clientDetailsService" />  
+    </beans:bean>
+    
+    <oauth2:client-details-service id="clientDetailsService">  
+            <oauth2:client client-id="m1"  
+                authorized-grant-types="password,authorization_code,refresh_token,implicit"  
+                secret="s1" scope="read,write,trust" authorities="ROLE_CLIENT, ROLE_TRUSTED_CLIENT"  
+                resource-ids="pic-resource" />  
+    </oauth2:client-details-service>  
+    
+    
+    <oauth2:resource-server id="picResourceServer"  
+            resource-id="pic-resource" token-services-ref="tokenServices" />
+    
+    <beans:bean id="tokenServices"  
+            class="org.springframework.security.oauth2.provider.token.DefaultTokenServices">  
+            <beans:property name="tokenStore" ref="tokenStore" />  
+            <beans:property name="supportRefreshToken" value="true" />  
+            <beans:property name="clientDetailsService" ref="clientDetailsService" />  
+    </beans:bean>
+    
+    <beans:bean id="tokenStore"  
+            class="org.springframework.security.oauth2.provider.token.store.InMemoryTokenStore">  
+    </beans:bean>
+    
+    
+    <http pattern="/user/**" create-session="never"  
+        entry-point-ref="oauth2AuthenticationEntryPoint"  
+        access-decision-manager-ref="oauth2AccessDecisionManager">  
+        <anonymous enabled="false" />  
+        <intercept-url pattern="/user/**" access="ROLE_USER,SCOPE_READ" />
+        <custom-filter ref="picResourceServer" before="PRE_AUTH_FILTER" />  
+        <access-denied-handler ref="oauthAccessDeniedHandler" />  
+    </http> 
+    
+    
+    <beans:bean id="oauth2AuthenticationEntryPoint"  
+            class="org.springframework.security.oauth2.provider.error.OAuth2AuthenticationEntryPoint" />  
+      
+   <beans:bean id="oauthAccessDeniedHandler"  
+            class="org.springframework.security.oauth2.provider.error.OAuth2AccessDeniedHandler" />  
+            
+   
+   
+   <beans:bean id="oauth2AccessDecisionManager"  
+        class="org.springframework.security.access.vote.UnanimousBased">  
+        <beans:constructor-arg>  
+            <beans:list>  
+                <beans:bean  
+                    class="org.springframework.security.oauth2.provider.vote.ScopeVoter" />  
+                <beans:bean class="org.springframework.security.access.vote.RoleVoter" />  
+                <beans:bean  
+                    class="org.springframework.security.access.vote.AuthenticatedVoter" />  
+            </beans:list>  
+        </beans:constructor-arg>  
+    </beans:bean> 
+    
+   
+   <oauth2:authorization-server  
+            client-details-service-ref="clientDetailsService" token-services-ref="tokenServices"  
+            user-approval-handler-ref="oauthUserApprovalHandler"  
+            user-approval-page="oauth_approval" error-page="oauth_error">  
+            <oauth2:authorization-code />  
+            <oauth2:implicit />  
+            <oauth2:refresh-token />  
+            <oauth2:client-credentials />  
+            <oauth2:password />  
+   </oauth2:authorization-server>  
+      
+   <beans:bean id="oauthUserApprovalHandler"  
+            class="org.springframework.security.oauth2.provider.approval.DefaultUserApprovalHandler" /> 
+            
+   
+   
+    <oauth2:authorization-server  
+            client-details-service-ref="clientDetailsService" token-services-ref="tokenServices"  
+            user-approval-handler-ref="oauthUserApprovalHandler"  
+            user-approval-page="oauth_approval" error-page="oauth_error">  
+            <oauth2:authorization-code />  
+            <oauth2:implicit />  
+            <oauth2:refresh-token />  
+            <oauth2:client-credentials />  
+            <oauth2:password />  
+     </oauth2:authorization-server>  
+      
+     <beans:bean id="oauthUserApprovalHandler"  
+            class="org.springframework.security.oauth2.provider.approval.DefaultUserApprovalHandler" />
+     
+     
+     
+     <http pattern="/oauth/token" create-session="stateless"  
+            authentication-manager-ref="clientAuthenticationManager"  
+            entry-point-ref="oauth2AuthenticationEntryPoint">  
+            <intercept-url pattern="/oauth/token" access="IS_AUTHENTICATED_FULLY" />  
+            <anonymous enabled="false" />  
+            <http-basic entry-point-ref="oauth2AuthenticationEntryPoint" />  
+            <custom-filter ref="clientCredentialsTokenEndpointFilter"  
+                before="BASIC_AUTH_FILTER" />  
+            <access-denied-handler ref="oauthAccessDeniedHandler" />  
+    </http>  
+      
+    <beans:bean id="clientCredentialsTokenEndpointFilter"  
+            class="org.springframework.security.oauth2.provider.client.ClientCredentialsTokenEndpointFilter">  
+            <beans:property name="authenticationManager" ref="clientAuthenticationManager" />  
+     </beans:bean> 
+     
+    
+    
+    <http access-denied-page="/login.jsp?error=true"  
+        authentication-manager-ref="authenticationManager">  
+        <intercept-url pattern="/oauth/**" access="ROLE_USER" />  
+        <intercept-url pattern="/**" access="IS_AUTHENTICATED_ANONYMOUSLY" />  
+        <form-login login-page="/login.jsp"  
+            authentication-failure-url="/login.jsp?error=true"  
+            default-target-url="/index.jsp" />  
+        <anonymous />  
+    </http>  
+  
+    <authentication-manager alias="authenticationManager">  
+        <authentication-provider>  
+            <user-service id="userService">  
+                <user name="admin" password="admin" authorities="ROLE_USER" />  
+            </user-service>  
+        </authentication-provider>  
+    </authentication-manager>
+    
+    
+   <!-- oauth 2.0 end -->
+ 
+</beans>

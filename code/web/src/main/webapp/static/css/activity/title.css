@@ -1,0 +1,30 @@
+
+body{margin: 0;padding: 0;border:0;outline: 0;}
+div{margin: 0;padding: 0;outline: 0;border:0;}
+p{margin: 0;padding: 0;border: 0;outline: 0;}
+span{font-family: "Microsoft Yahei"}
+#content{text-align: center;width: 655px; height: 300px;left: 50%; top: 50%;position: fixed;margin-top: -150px;margin-left: -327px;background: #ffffff !important;border: 2px solid #F0F0EE;}
+
+#title{width:655px;height:40px;background:#546fb4;overflow:hidden;z-index: 20;}
+#left{float: left;margin-top:10px ;margin-left:20px;color: #ffffff;font-size: 15px;}
+#right{float: right;margin-top:5px ;margin-left:20px;color:#fff;display:block; cursor:pointer;z-index: 20;}
+#content_left{width: 400px;float: left;}
+#centent_lianxi{float:left;font-size:15px;margin-left:20px;margin-top:10px;overflow:hidden; font-family: "Microsoft YaHei";}
+#centent_lianxi  #recipient{width:208px;height:28px;border:1px solid #DBDBDB;}
+#neirong{float:left;font-size:15px;margin-left:20px;margin-top:10px;}
+#pm{float:left;font-size:14px;margin-left:15px;margin-top:10px;overflow:hidden;}
+#pm-content{border:1px solid #DBDBDB; padding:10px; width:290px;height:80px;}
+#pm-fasong span{cursor:pointer;float:right;width:75px;height:25px;background:#ff7625;color:#fff;margin-top:40px;font-size:14px;font-weight:bold;line-height:25px;}
+#content-links{float:right;width: 200px; height: 260px;overflow: auto;text-align: center;}
+.contact-list-index{font-size: 14px;width: 200px;line-height: 32px;background: #CECECE url(../../images/next.png) no-repeat 12px 7px;cursor: pointer;float: left;}
+.studentsList{font-family: "Microsoft Yahei";font-size: 14px;line-height: 30px;cursor:pointer;display:block;text-align: center;}
+#preview{height: auto;width: auto;}
+#preview>img{height: auto;width:100px;float: left;position: relative}
+#preview-I{margin-left: 3px;margin-top:-10px;cursor:pointer;}
+
+
+
+
+
+
+

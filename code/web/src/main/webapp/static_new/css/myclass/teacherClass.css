@@ -1,0 +1,55 @@
+#fc_class_container {
+    margin: 0 auto;
+    position: relative;
+    left: 10px;
+    float: left;
+}
+
+#fc_class_container h4 {
+    font-size: 17px;
+    margin-top: 10px;
+    border-left: 4px solid #ff7e00;
+    padding-left: 10px;
+}
+
+#fc_class_list {
+    clear: both;
+    transition-duration: 1.5s;
+    transition-property: height;
+}
+
+.fc_class{
+    display: inline-block;
+    float: left;
+    margin-bottom: 40px;
+    border-bottom: none;
+    border: 1px solid #D0D0D0;
+    border-radius: 3px;
+    padding-top: 15px;;
+}
+
+.fc_class_detail > div > * {
+    float: left;
+}
+
+.fc_class_detail > div > div {
+    text-align: center;
+    background: white;
+    border: 1px solid #D0D0D0;
+}
+
+.fc_class_detail > div > div > div {
+    margin: 5px 0;
+    padding: 0 14px;
+    float: left;
+    min-width: 80px;
+}
+
+.fc_class_detail > div > div > div > span:first-child {
+    margin-top: 20px;
+    display: block;
+}
+
+.fc_class_detail > div > div > div > span:first-child + span {
+    margin-bottom: 20px;
+}

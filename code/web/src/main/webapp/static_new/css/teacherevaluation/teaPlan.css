@@ -1,0 +1,184 @@
+.fl{
+    float: left;
+}
+.fr{
+    float: right;
+}
+.plan-title{
+    height: 42px;
+    line-height: 42px;
+    border-bottom: 2px solid #5db85b;
+    padding-left: 10px;
+    font-weight: bold;
+    margin: 20px 0 28px 0;
+}
+.plan-set-l input{
+    width: 173px;
+    height: 28px;
+    padding:0 0 0  5px;
+    border:1px solid #ddd;
+    margin-right: 16px;
+}
+.plan-search,.plan-newadd{
+    height: 28px;
+    font-size: 12px;
+    line-height: 20px;
+    text-align: center;
+    border:1px solid #ddd;
+    background: #eeeeee;
+    cursor: pointer;
+}
+.plan-search{
+    width: 78px;
+}
+.plan-newadd{
+    width: 103px;
+}
+.newTable tbody tr td:first-child{
+    background: #ececec;
+}
+.table-check,.table-look{
+    color: #3999d5;
+    margin:0px 3px;
+}
+.next-path{
+    font-weight: normal;
+    margin-left: 5px;
+}
+.path-root{
+    cursor: pointer;
+}
+.tea-name{
+    display: inline-block;
+    width: 134px;
+}
+.table-blue a{
+    color: #3999d5 !important;
+}
+.file-add{
+    display: block;
+    height: 19px;
+    color: #3999d5;
+    margin: 19px 0 48px 55px;
+    padding-left: 19px;
+    /*background: url(../img/file-add.png) no-repeat 0px 0px;*/
+    cursor: pointer;
+}
+.btn-wrap button{
+    width: 80px;
+    height: 30px;
+    line-height: 25px;
+    text-align: center;
+    margin-right: 24px;
+    cursor: pointer;
+}
+.btn-sure{
+    background: #5db85b;
+    border:1px solid #5db85b;
+    color: #fff;
+}
+.btn-esc{
+    background: #eee;
+    border:1px solid #cacaca;
+}
+.year-select{
+    margin-bottom: 16px;
+    display: block;
+    margin-right: 65px;
+}
+.select-nian{
+    display: inline-block;
+    width: 98px;
+    text-align: right;
+    margin-right: 12px;
+}
+.tea-plan{
+    display: block;
+    width: 98px;
+    text-align: right;
+    margin-bottom: 10px;
+}
+.btn-wrap{
+    padding-left: 55px;
+}
+.select-year{
+    width: 190px;
+    height:30px;
+    border:1px solid #ddd;
+}
+.year-select input{
+    border: 1px solid #dfdfdf;
+    width: 200px;
+    height: 26px;
+}
+.removeFile{
+    margin-right: 20px;
+    cursor:pointer;
+}
+
+.fileAtt{
+    cursor: pointer;
+    margin-top: 12px;
+    margin-left: 40px;
+    color: #3999d5;
+}
+
+.popup-info {
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    margin-left: -215px;
+    margin-top: -111px;
+    width: 430px;
+    height: 222px;
+    background: #ffffff;
+
+}
+
+.popup-info dl dt {
+    background: #6b6b6b;
+    height: 45px;
+}
+
+.popup-info dl dt em {
+    font-size: 17px;
+    padding: 10px 25px;
+    display: block;
+    color: #ffffff;
+}
+
+.popup-info dl dd {
+    text-align: center;
+    font-size: 16px;
+    height: 35px;
+}
+
+.popup-bt {
+    color: #6b6b6b;
+    margin-top: 35px;
+    display: block
+}
+
+.popup-info dl button {
+    background: #ff8b00;
+    color: #ffffff;
+    width: 55px;
+    height: 25px;
+    border: 1px solid transparent;
+    margin: 0 5px;
+    cursor: pointer;
+}
+
+.popup-info dl .he_qd {
+    background: #5db85b;
+}
+
+.popup-info dl .he_qx {
+    background: #959595;
+}
+#edui1{
+    z-index: 99 !important;
+}
+.bg{
+    z-index: 999 !important;
+}

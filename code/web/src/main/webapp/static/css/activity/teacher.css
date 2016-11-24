@@ -1,0 +1,6 @@
+#teacher_info_container{ height: 170px; background: url("../../img/activity/Logo-NEW.jpg")no-repeat; overflod:hidden;}
+#teacher_info >img{width:120px;height:120px;margin:15px 0 0 27%;border:5px solid white;border-radius:5px; float: left}
+#info{float: left; margin: 20px;}
+#info span{ font-family: "Microsoft Yahei"; font-size: 14px;}
+
+

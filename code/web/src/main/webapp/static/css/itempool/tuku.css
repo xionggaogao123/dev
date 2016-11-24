@@ -1,0 +1,200 @@
+/* 
+* @Author: Tony
+* @Date:   2015-06-24 14:00:02
+* @Last Modified by:   Tony
+* @Last Modified time: 2015-06-25 09:31:47
+*/
+*{
+	margin:0;
+	padding:0;
+	border:0;
+	list-style: none;
+	font-size: 14px;
+	text-decoration: none;
+	/*color:#666;*/
+}
+.itempool_main{
+	width:100%;
+	height:100%;
+	background:white;
+}
+.main{
+	width:1000px;
+	margin:0 auto;
+	overflow: hidden;
+}
+.tu_right{
+	width:768px;
+	border:1px solid #ddd;
+    float: left;;
+    margin-top: 15px;
+    margin-left: 10px;
+}
+.tu_head{
+	height:36px;
+	border-bottom:1px solid #ddd;
+	background: #f1f1f1;
+	overflow:visible
+}
+.tu_head ul li{
+	float:left;
+	line-height: 36px;
+	width:97px;
+	border-bottom:1px solid #ddd;
+	border-right:1px solid #ddd;
+	text-align: center;
+}
+.tu_head ul li a{
+	display: block;
+	font-size: 16px;
+	color:#000;
+	font-size: 16px;
+}
+.tu_head ul li.current1{
+	background: white;
+	border-bottom: none;
+	border-top: 4px solid #ff8a00;
+	line-height: 34px;
+	margin-top: -1px;
+	
+}
+.tu_head ul li.current1 a{
+	color:#ff8a00;
+}
+.tu_main{
+	padding:10px;
+}
+.tu_main_top{
+	border:1px solid #fda618;
+	height:40px;
+	margin-bottom: 10px;
+}
+.tu_main_top ul li{
+	float:left;
+	width:373px;
+	line-height: 40px;
+	text-align: center;
+}
+.tu_main_top ul li a{
+	color:#fda618;
+}
+.tu_main_top ul li.current2{
+	background: #fda618;
+}
+.tu_main_top ul li.current2 a{
+	color:white;
+}
+.tu_main_bottom{
+	border:1px solid #eee;
+	margin-bottom: 10px;
+}
+.tu_main_bottom ul li{
+	font-size: 12px;
+	color:#333;
+	border-bottom: 1px solid #eee;
+	overflow: hidden;
+}
+.tu_main_bottom ul li .l{
+	width:75px;
+	line-height: 37px;
+	text-align: right;
+	font-size: 14px;
+	color: #000;
+	float: left;
+	margin-right: 25px;
+}
+.tu_main_bottom ul li .r{
+	float: left;
+	padding:10px 0;
+    width: 640px;
+}
+.tu_main_bottom ul li .r span{
+    width: 145px;
+    /* float: left; */
+    display: inline-block;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    overflow: hidden;
+    padding-left: 5px;
+}
+.tu_main_bottom ul li .r span label{
+	font-size: 12px;
+	overflow: hidden;
+}
+.tu_main_bottom ul li .r span label .chang{
+    font-size: 12px;
+    /* float: left; */
+    margin-top: -17px;
+    padding-left: 17px;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    overflow: hidden!important;
+}
+.tu_main button,.tutu1 button{
+	border:0;
+	outline: none;
+	background: #468cc8;
+	border-radius: 4px;
+	color: white;
+	cursor: pointer;
+	margin-right: 5px;
+	float:none;
+	height: 35px;
+	line-height: 35px;
+	width: 160px;
+}
+/* 第二页 */
+.tutu1{
+	padding: 30px 10px 10px;
+}
+.allok{
+	padding-top: 20px;
+	overflow-y:hidden;
+
+}
+#allok,#TU1{
+		display: none;
+}
+.allok p{
+	padding-left: 10px;
+	margin-bottom: 20px;
+}
+.tu1 h3{
+	font-size: 20px;
+	
+	padding-left: 10px;
+	
+}
+.tu1 h3{
+	border-left:4px solid #fda618;
+	height:15px;
+	line-height: 15px;
+	margin-bottom: 15px;
+}
+.tu1 h3 span{
+	font-size: 20px;
+	font-weight: bold;
+}
+.xinxi1{
+	padding-left: 10px;
+	margin-bottom: 35px;
+}
+.connent1{
+	padding-left: 10px;
+	line-height: 60px;
+}
+.teare{
+	padding-left: 10px;
+	overflow:hidden;
+	
+}
+.teare textarea{
+	margin-bottom: 10px;
+	width:718px;
+	height:110px;
+	outline: none;
+	padding:10px;
+	background: #f4f2f2;
+	border:1px solid #ddd;
+	resize:none;
+}

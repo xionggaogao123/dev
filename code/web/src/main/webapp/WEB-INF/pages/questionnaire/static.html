@@ -1,0 +1,110 @@
+<div id="main" style="height:400px;"></div>
+
+<div ng-controller="StaticCtrl as ctrl">
+    <div class="question-head">
+        <a ng-click="closeWindow()">返回</a>
+        {{name}}
+    </div>
+    <!--<div class="doc-include" ng-include src="docUrl"></div>-->
+    <iframe src="{{docUrl}}" width="600" height="100%" ng-show="!ie"></iframe>
+    <div1 class="configuration_main_left" id="showPdf" style="margin-top: 10px;float: left;height: 800px;width:600px!important" ng-show="ie">
+        <a id="viewerPlaceHolder" style="width:645px;height:950px;display:inline" class="configuration_main_left_I" href="{{docUrl}}"></a>
+    </div1>
+    <div class="static-container">
+        <div class="static-header">
+            <span class="float-left static-title">目前统计</span>
+            <!--<span class="float-left">{{nonpartCount}}未答卷</span>-->
+            <span class="float-right" style="margin-top: -6px;" ng-click="exportCharts('EXCEL')"><a
+                    title="导出excel文件"><img
+                    src="/img/icon_excel.png" style="width: 21px;height: 20px;"/></a></span>
+            <span class="float-right" style="margin-top: -6px;" ng-click="exportCharts('WORD')"><a title="导出word文件"><img
+                    src="/img/icon_word.png" style="width: 21px;height: 20px;"/></a></span>
+            <span class="float-right">导出</span>
+        </div>
+        <ul>
+            <li ng-repeat="question in answerSheet track by $index" class="static-question">
+                <div class="static-quesiton-title">{{$index+1}}.{{question | questionType}}</div>
+                <div class="static-answers-container" >
+                    <div ng-if="question != 0 && question<10000">
+
+                        <div ng-if="question > 0" class="chart-type-switch">
+                            <button ng-click="chartTypes[$index] = 'bar'" class="bar-switcher"
+                                    ng-class="{active:chartTypes[$index] == 'bar'}">条形
+                            </button>
+                            <button ng-click="chartTypes[$index] = 'pie'" class="pie-switcher"
+                                    ng-class="{active:chartTypes[$index] == 'pie'}">饼形
+                            </button>
+                        </div>
+                        <div e-chart option="chartTypes[$index] == 'pie' ? pieOpts[$index]:chartOpts[$index]"
+                             chart-obj="chartObjs[$index]"
+                             style="width:200px;height:150px;"></div>
+                    </div>
+                    <div ng-if="question ==0">
+                        <ul>
+                            <li class="answer-text-item" ng-repeat="answer in answers[$index] | limit track by $index">
+                                {{answer}}
+                            </li>
+                        </ul>
+                        <a class="expand-button" ng-show="answers[$index].length>3"
+                           ng-click="toggleExpand(answers[$index])">{{answers[$index].expanded?'收起':'展开'}}</a>
+                    </div>
+                    <div ng-if="question > 10000">
+                        <span style=" width:140px">分数范围{{math.floor(question/10000)-10000}}-{{(question%10000)}}</span>
+
+                        <span>均值：{{getavgscore(answers[$index])}}</span>
+                    </div>
+                </div>
+            </li>
+        </ul>
+    </div>
+</div>
+
+
+<!--<script>
+    var myChart = echarts.init(document.getElementById('main'));
+    option = {
+        title : {
+            text: '',
+            subtext: ''
+        },
+
+        tooltip : {
+            trigger: 'axis'
+        },
+        legend: {
+            data:[]
+        },
+        toolbox: {
+            show : true,
+            feature : {
+                mark : {show: true},
+                dataView : {show: true, readOnly: false},
+                magicType: {show: true, type: ['line', 'bar']},
+                restore : {show: true},
+                saveAsImage : {show: true}
+            }
+        },
+        calculable : true,
+        xAxis : [
+            {
+                type : 'value',
+                boundaryGap : [0, 0.01]
+            }
+        ],
+        yAxis : [
+            {
+                type : 'category',
+                data : ['A','B','C','D']
+            }
+        ],
+        series : [
+
+            {
+                name:'2012年',
+                type:'bar',
+                data:[2, 4, 5, 4, 6, 5]
+            }
+        ]
+    };
+    myChart.setOption(option);
+</script>-->

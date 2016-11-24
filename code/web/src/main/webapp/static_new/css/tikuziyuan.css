@@ -1,0 +1,373 @@
+.ziyuan-col{
+    border: #d0d0d0 1px solid;
+    padding: 20px;
+}
+.ziyuan-orange-btn{
+    color: #fff;
+    text-align: center;
+    background: #ff8a00;
+    border: 0;
+    display: block;
+    cursor: pointer;
+    padding: 0 16px;
+    line-height: 32px;
+}
+.zy-gray-btn{
+    padding: 0 15px;
+    line-height: 30px;
+    text-align: center;
+    color: #fff;
+    background: #a9a9a9;
+    border: 0;
+    font-size: 12px;
+    display: inline-block;
+}
+.zy-head-right a{
+    float: right;
+}
+.ziyuan-col dl{
+    border-bottom: #d0d0d0 1px solid;
+    padding-bottom: 20px;
+    margin-bottom: 20px;
+}
+.ziyuan-col dt select{
+    width: 167px;
+}
+.ziyuan-col dd{
+    padding-top: 18px;
+}
+.ziyuan-col label{
+    width: 65px;
+    display: inline-block;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+.ziyuan-col dd select{
+    width: 80px;
+    margin-right: 14px;
+}
+.zy-gray-table{
+    border: #d3d3d3 1px solid;
+    border-bottom: 0;
+}
+
+.zy-gray-table td, .zy-gray-table th{
+    border-bottom: #d3d3d3 1px solid;
+    text-align: center;
+}
+.zy-gray-table th{
+    line-height: 44px;
+    background: #d3d3d3;
+}
+.zy-gray-table td span, .zy-gray-table td em{
+    display: block;
+    font-size: 12px;
+    text-align: left;
+}
+.zy-gray-table td em{
+    padding-left: 10px;
+    line-height: 30px;
+}
+.zy-gray-table td span{
+    padding-left: 30px;
+}
+.zy-gray-table td img{
+    width: 95px;
+    height: 60px;
+    display: block;
+    margin-top: 10px;
+    margin-left: 10px;
+}
+.zy-gray-table a{
+    display: block;
+    margin: 0 auto;
+    margin-bottom: 10px;
+}
+.zy-gray-table a:first-child{
+    margin-top: 10px;
+}
+.zy-orange-sm-btn{
+    width: 48px;
+    height: 24px;
+    line-height: 24px;
+    border: #a0a0a0 1px solid;
+    background: #ff8a00;
+    color: #fff;
+    text-align: center;
+    display: inline-block;
+}
+.zy-gray-sm-btn{
+    width: 48px;
+    height: 24px;
+    line-height: 24px;
+    border: #a0a0a0 1px solid;
+    background: #eee;
+    color: #3d3d3d;
+    text-align: center;
+    display: inline-block;
+}
+.add-ziyuan{
+    padding: 0 10px;
+}
+.add-head{
+    font-size: 18px;
+    padding-left: 10px;
+}
+.form-col{
+    margin-top: 20px;
+}
+.form-head{
+    padding-bottom: 5px;
+    border-bottom: #b8b8b8 1px solid;
+}
+.form-head h4{
+    float: left;
+    font-size: 14px;
+    color: #727272;
+}
+.form-head span{
+    float: right;
+    color: #ff4343;
+}
+.form-head span em{
+    display: inline-block;
+    border: #ff4343 1px solid;
+    padding: 2px 10px;
+    cursor: pointer;
+    margin-left: 20px;
+}
+.form-main{
+    margin-top: 10px;
+}
+.form-main dl{
+    width: 50%;
+    float: left;
+}
+.form-main dl dt{
+    color: #ff8a00;
+}
+.form-main dl label{
+    width: 85px;
+    display: inline-block;
+}
+.form-main dl dd{
+    padding-top: 10px;
+}
+.form-main dl dd select{
+    width: 180px;
+}
+.form-main button, .add-ziyuan-btn{
+    width: 180px;
+    color: #ff8a00;
+    font-size: 16px;
+    line-height: 40px;
+    border: #ff8a00 1px solid;
+    background: #fff;
+    margin: 40px auto;
+    display: block;
+}
+.uploader-info > .clearfix{
+    margin-top: 10px;
+}
+.uploader-info label{
+    width: 290px;
+    float: left;
+    text-align: right;
+    padding-right: 20px;
+    line-height: 40px;
+}
+.wu-example{
+    float: left;
+}
+#picker{
+    float: left;
+    margin-right: 10px;
+}
+#ctlBtn{
+    width: 90px;
+    margin: 0;
+}
+#uploader-demo .thumbnail{
+    width: 278px;
+    height: 164px;
+    margin-left: 310px;
+}
+.progress{
+    margin-top: 10px;
+}
+.uploader-info .btn-list{
+    width: 200px;
+    margin: 20px auto;
+}
+.uploader-info button{
+    width: 84px;
+    height: 40px;
+    background: #ff8a00;
+    border: #dcdcdc 1px solid;
+    line-height: 35px;
+    color: #fff;
+    font-size: 16px;
+    margin: 0;
+    display: inline-block;
+}
+.uploader-info button.reset-btn{
+    background: #959595;
+    margin-left: 10px;
+}
+.answer-check{
+    border: #abadb3 1px solid;
+    padding: 8px;
+    margin-bottom: 10px;
+}
+
+
+
+
+.addCheck input,.delCheck input{
+    width: 16px;
+    height: 16px;
+}
+.addCheck label,.delCheck label{
+    float: left;
+    width: 40px;
+    margin-right: 10px;
+}
+.addCheck{
+    padding: 4px;
+}
+.delCheck{
+    float: left;
+    width: 706px;
+    padding: 4px;
+}
+.addItems span{
+    margin:0px  10px;
+}
+.dele{
+
+    display: block;
+    float: right;
+}
+.dele img{
+    padding-top: 4px
+}
+.clear{
+    clear: both;
+}
+
+
+.form-head span.add-answer{
+    color: #ff8a00;
+    border: #ff8a00 1px solid;
+    padding: 2px 5px;
+    cursor: pointer;
+}
+.answer-check em{
+    width: 18px;
+    height: 18px;
+    border: #abadb3 2px solid;
+    color: #abadb3;
+    line-height: 20px;
+    float: right;
+    text-align: center;
+    border-radius: 100%;
+    cursor: pointer;
+}
+.answer-check em:hover{
+    color: #f60;
+    border-color: #f60;
+}
+.answer-txt{
+    line-height: 25px;
+    width: 600px;
+    border: 0;
+}
+.ask-txt label{
+    display: block;
+    padding-left: 10px;
+    padding-top: 10px;
+    font-size: 16px;
+}
+.ask-txt label select{
+    width: 180px;
+}
+#dialogPlayer {
+    padding-top: 10px;
+    padding-right: 10px;
+    height: 300px;
+}
+.dialogAsk .bottom{
+    position: absolute;
+    top: -5px;
+    right: 0;
+    background: #eee;
+}
+.dialogAsk #dvMsgBtns .btn{
+    width: auto;
+    color: #000;
+    background: #eee;
+    border: 0;
+}
+.dialogAsk .top{
+    background: #eee;
+}
+.dialogAsk input.btnfocus{
+    border: 0;
+    background: #eee;
+    width: auto;
+    color: #EC6D51;
+}
+.dialogAsk .body .right .ct{
+    color: #333;
+}
+.ask-btn{
+    position: absolute;
+    top: 8px;
+    right: 50px;
+}
+.ask-btn button{
+    width: 52px;
+    height: 24px;
+    border: #959595 1px solid;
+    color: #fff;
+    background: #aaa;
+    display: inline-block;
+    line-height: 18px;
+}
+.ask-btn button.cur{
+    background: #fe9224;
+    margin-right: 15px;
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

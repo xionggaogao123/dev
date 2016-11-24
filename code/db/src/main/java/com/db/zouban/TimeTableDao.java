@@ -5,8 +5,6 @@ import com.db.factory.MongoFacroty;
 import com.mongodb.BasicDBList;
 import com.mongodb.BasicDBObject;
 import com.mongodb.DBObject;
-import com.mongodb.QueryOperators;
-import com.pojo.base.BaseDBObject;
 import com.pojo.utils.MongoUtils;
 import com.pojo.zouban.*;
 import com.sys.constants.Constant;
@@ -20,18 +18,7 @@ import java.util.List;
  */
 public class TimeTableDao extends BaseDao {
     /**
-     * 添加课表
-     *
-     * @param timeTableEntry
-     * @return
-     */
-    public boolean addTimeTable(TimeTableEntry timeTableEntry) {
-        save(MongoFacroty.getAppDB(), Constant.COLLECTION_COURSE_TABLE, timeTableEntry.getBaseEntry());
-        return true;
-    }
-
-    /**
-     * 查询班级课表
+     * 查询课表
      *
      * @param term
      * @param classId
@@ -39,97 +26,15 @@ public class TimeTableDao extends BaseDao {
      * @return
      */
     public TimeTableEntry findTimeTable(String term, ObjectId classId, int type, int week) {
-        BasicDBObject query = new BasicDBObject()
-                .append("te", term)
-                .append("cid", classId)
-                .append("week", week);
-        if (type != 0) {
-            query.append("ty", type);
-        }
+        BasicDBObject query = new BasicDBObject();
+        query.append("te", term);
+        query.append("cid", classId);
+        query.append("ty", type);
+        query.append("week", week);
         DBObject dbObject = findOne(MongoFacroty.getAppDB(), Constant.COLLECTION_COURSE_TABLE, query, Constant.FIELDS);
         if (dbObject == null)
             return null;
         return new TimeTableEntry((BasicDBObject) dbObject);
-    }
-
-
-    /**
-     * 根据学校和type查询课表
-     *
-     * @param term
-     * @param schoolId
-     * @param type
-     * @return
-     */
-    public TimeTableEntry findTimetable(String term, ObjectId schoolId, int type) {
-        BasicDBObject query = new BasicDBObject()
-                .append("sid", schoolId)
-                .append("ty", type);
-
-        String term1 = term + "第一学期";
-        String term2 = term + "第二学期";
-        List<String> termList = new ArrayList<String>();
-        termList.add(term1);
-        termList.add(term2);
-        query.append("te", new BasicDBObject(Constant.MONGO_IN, termList));
-
-        DBObject dbObject = findOne(MongoFacroty.getAppDB(), Constant.COLLECTION_COURSE_TABLE, query, Constant.FIELDS);
-        if (dbObject == null) {
-            return null;
-        }
-        return new TimeTableEntry((BasicDBObject) dbObject);
-    }
-
-    /**
-     * 根据班级id列表查询
-     *
-     * @param term
-     * @param classId
-     * @param week
-     * @return
-     */
-    public List<TimeTableEntry> findTimeTableList(String term, List<ObjectId> classId, int week) {
-        BasicDBObject query = new BasicDBObject()
-                .append("te", term)
-                .append("cid", new BasicDBObject(Constant.MONGO_IN, classId))
-                .append("week", week);
-        List<DBObject> dbObjectList = find(MongoFacroty.getAppDB(), Constant.COLLECTION_COURSE_TABLE, query, Constant.FIELDS);
-        List<TimeTableEntry> timeTableEntryList = new ArrayList<TimeTableEntry>();
-
-        for (DBObject dbObject : dbObjectList) {
-            timeTableEntryList.add(new TimeTableEntry((BasicDBObject) dbObject));
-        }
-
-        return timeTableEntryList;
-    }
-
-
-    /**
-     * 获取全校的课表
-     *
-     * @param term
-     * @param schoolId
-     * @param type
-     * @return
-     */
-    public List<TimeTableEntry> findAllTimeTable(String term, ObjectId schoolId, int type, int week) {
-        BasicDBObject query = new BasicDBObject()
-                .append("te", term)
-                .append("sid", schoolId)
-                .append("week", week);
-
-        if (type != 0) {
-            query.append("ty", type);
-        }
-
-        List<DBObject> dbObjectList = find(MongoFacroty.getAppDB(), Constant.COLLECTION_COURSE_TABLE, query, Constant.FIELDS);
-        List<TimeTableEntry> timeTableEntries = new ArrayList<TimeTableEntry>();
-        if (dbObjectList != null && !dbObjectList.isEmpty()) {
-            for (DBObject dbObject : dbObjectList) {
-                timeTableEntries.add(new TimeTableEntry((BasicDBObject) dbObject));
-            }
-        }
-        return timeTableEntries;
     }
 
     /**
@@ -142,16 +47,11 @@ public class TimeTableDao extends BaseDao {
      * @return
      */
     public List<TimeTableEntry> findTimeTableByGrade(String term, ObjectId gradeId, int type, int week) {
-        BasicDBObject query = new BasicDBObject()
-                .append("te", term)
-                .append("gid", gradeId)
-                .append("week", week);
-        if (type != 0) {
-            query.append("ty", type);
-        } else {
-            query.append("ty", 1);
-        }
-
+        BasicDBObject query = new BasicDBObject();
+        query.append("te", term);
+        query.append("gid", gradeId);
+        query.append("ty", type);
+        query.append("week", week);
         List<DBObject> dbObjectList = find(MongoFacroty.getAppDB(), Constant.COLLECTION_COURSE_TABLE, query, Constant.FIELDS);
         List<TimeTableEntry> timeTableEntryList = new ArrayList<TimeTableEntry>();
         if (dbObjectList != null && !dbObjectList.isEmpty()) {
@@ -163,6 +63,29 @@ public class TimeTableDao extends BaseDao {
         return timeTableEntryList;
     }
 
+    /**
+     * 获取全校的课表
+     *
+     * @param term
+     * @param schoolId
+     * @param type
+     * @return
+     */
+    public List<TimeTableEntry> findAllTimeTable(String term, ObjectId schoolId, int type, int week) {
+        BasicDBObject query = new BasicDBObject();
+        query.append("te", term);
+        query.append("sid", schoolId);
+        query.append("ty", type);
+        query.append("week", week);
+        List<DBObject> dbObjectList = find(MongoFacroty.getAppDB(), Constant.COLLECTION_COURSE_TABLE, query, Constant.FIELDS);
+        List<TimeTableEntry> timeTableEntries = new ArrayList<TimeTableEntry>();
+        if (dbObjectList != null && !dbObjectList.isEmpty()) {
+            for (DBObject dbObject : dbObjectList) {
+                timeTableEntries.add(new TimeTableEntry((BasicDBObject) dbObject));
+            }
+        }
+        return timeTableEntries;
+    }
 
     /**
      * 获取全校的课表---介于两周之间
@@ -176,6 +99,7 @@ public class TimeTableDao extends BaseDao {
         BasicDBObject query = new BasicDBObject();
         query.append("te", term);
         query.append("sid", schoolId);
+        query.append("ty", type);
 
         BasicDBList basicDBList = new BasicDBList();
         basicDBList.add(new BasicDBObject("week", new BasicDBObject(Constant.MONGO_GTE, week1)));
@@ -191,7 +115,81 @@ public class TimeTableDao extends BaseDao {
         return timeTableEntries;
     }
 
+    /**
+     * 查询介于两周之间的所有课表
+     *
+     * @param term
+     * @param schoolId
+     * @param classId
+     * @param type
+     * @param week1
+     * @param week2
+     * @return
+     */
+    public List<TimeTableEntry> findTimeTableByWeek(String term, ObjectId schoolId, ObjectId classId, int type, int week1, int week2) {
+        BasicDBObject query = new BasicDBObject();
+        query.append("te", term);
+        query.append("sid", schoolId);
+        query.append("cid", classId);
+        query.append("ty", type);
+        BasicDBList basicDBList = new BasicDBList();
+        basicDBList.add(new BasicDBObject("week", new BasicDBObject(Constant.MONGO_GTE, week1)));
+        basicDBList.add(new BasicDBObject("week", new BasicDBObject(Constant.MONGO_LTE, week2)));
+        query.append(Constant.MONGO_AND, basicDBList);
+        List<DBObject> dbObjectList = find(MongoFacroty.getAppDB(), Constant.COLLECTION_COURSE_TABLE, query, Constant.FIELDS);
+        List<TimeTableEntry> timeTableEntries = new ArrayList<TimeTableEntry>();
+        if (dbObjectList != null && !dbObjectList.isEmpty()) {
+            for (DBObject dbObject : dbObjectList) {
+                timeTableEntries.add(new TimeTableEntry((BasicDBObject) dbObject));
+            }
+        }
+        return timeTableEntries;
+    }
 
+    /**
+     * 添加课表
+     *
+     * @param timeTableEntry
+     * @return
+     */
+    public boolean addTimeTable(TimeTableEntry timeTableEntry) {
+        save(MongoFacroty.getAppDB(), Constant.COLLECTION_COURSE_TABLE, timeTableEntry.getBaseEntry());
+        return true;
+    }
+
+    /**
+     * 删除课表
+     *
+     * @param term
+     * @param classId
+     * @param type
+     * @return
+     */
+    public boolean deleteTimeTable(String term, ObjectId classId, int type, int week) {
+        BasicDBObject query = new BasicDBObject();
+        query.append("te", term);
+        query.append("cid", classId);
+        query.append("week", week);
+        query.append("ty", type);
+        remove(MongoFacroty.getAppDB(), Constant.COLLECTION_COURSE_TABLE, query);
+        return true;
+    }
+
+    /**
+     * 统计课表数量
+     *
+     * @param term
+     * @param classId
+     * @param type
+     * @return
+     */
+    public int countTimeTable(String term, ObjectId classId, int type) {
+        BasicDBObject query = new BasicDBObject();
+        query.append("te", term);
+        query.append("cid", classId);
+        query.append("ty", type);
+        return count(MongoFacroty.getAppDB(), Constant.COLLECTION_COURSE_TABLE, query);
+    }
 
     /**
      * 添加排课结果
@@ -202,96 +200,45 @@ public class TimeTableDao extends BaseDao {
      * @param courseItemList
      */
     public void addCourseList(String term, ObjectId classId, int type, List<CourseItem> courseItemList) {
-        BasicDBObject query = new BasicDBObject()
-                .append("te", term)
-                .append("cid", classId);
-        BasicDBObject updateValue = new BasicDBObject("cli", MongoUtils.fetchDBObjectList(courseItemList));
-        BasicDBObject update = new BasicDBObject(Constant.MONGO_PUSHALL, updateValue);
+        BasicDBObject query = new BasicDBObject();
+        query.append("te", term);
+        query.append("cid", classId);
+        query.append("ty", type);
+        BasicDBObject update = new BasicDBObject();
+        update.append(Constant.MONGO_PUSHALL, new BasicDBObject("cli", MongoUtils.fetchDBObjectList(courseItemList)));
         update(MongoFacroty.getAppDB(), Constant.COLLECTION_COURSE_TABLE, query, update);
     }
 
-
-    /**
-     * 添加课程
-     *
-     * @param term
-     * @param classId
-     * @param courseItem
-     */
-    public void addCourse(String term, ObjectId classId, CourseItem courseItem) {
-        BasicDBObject query = new BasicDBObject()
-                .append("te", term)
-                .append("cid", classId)
-                .append("ty", 1)
-                .append("week", 0);
-        BasicDBObject updateValue = new BasicDBObject("cli", courseItem.getBaseEntry());
-        BasicDBObject update = new BasicDBObject(Constant.MONGO_PUSH, updateValue);
+    public void addCourseList(String term, ObjectId classId, ObjectId gradeId, int type, List<CourseItem> courseItemList) {
+        BasicDBObject query = new BasicDBObject();
+        query.append("te", term);
+        query.append("cid", classId);
+        query.append("gid", gradeId);
+        query.append("ty", type);
+        BasicDBObject update = new BasicDBObject();
+        update.append(Constant.MONGO_PUSHALL, new BasicDBObject("cli", MongoUtils.fetchDBObjectList(courseItemList)));
         update(MongoFacroty.getAppDB(), Constant.COLLECTION_COURSE_TABLE, query, update);
     }
 
-
     /**
-     * 更新课表项
-     *
-     * @param term
-     * @param classId
-     * @param courseItemId
-     * @param courseIds
-     */
-    public void updateCourseItem(String term, ObjectId classId, ObjectId courseItemId, List<ObjectId> courseIds) {
-        BasicDBObject query = new BasicDBObject()
-                .append("te", term)
-                .append("cid", classId)
-                .append("ty", 1)
-                .append("week", 0)
-                .append("cli.id", courseItemId);
-        BasicDBObject updateValue = new BasicDBObject("cli.$.cou", MongoUtils.convert(courseIds));
-        BasicDBObject update = new BasicDBObject(Constant.MONGO_SET, updateValue);
-        update(MongoFacroty.getAppDB(), Constant.COLLECTION_COURSE_TABLE, query, update);
-    }
-
-
-    /**
-     * 更新课表（调课用）
+     * 添加课程----调课专用
      *
      * @param term
      * @param classId
      * @param type
-     * @param weekList
-     * @param courseItemId
-     * @param x
-     * @param y
-     */
-    public void updateCourseItem(String term, ObjectId classId, int type, List<Integer> weekList, ObjectId courseItemId, int x, int y) {
-       BasicDBObject query = new BasicDBObject("te", term)
-               .append("cid", classId)
-               .append("ty", type)
-               .append("week", new BasicDBObject(Constant.MONGO_IN, weekList))
-               .append("cli.id", courseItemId);
-        BasicDBObject updateValue = new BasicDBObject("cli.$.xi", x).append("cli.$.yi", y);
-        BasicDBObject update = new BasicDBObject(Constant.MONGO_SET, updateValue);
-        update(MongoFacroty.getAppDB(), Constant.COLLECTION_COURSE_TABLE, query, update);
-    }
-
-    /**
-     * 保存调课结果（调课用）
-     *
-     * @param term
-     * @param classId
-     * @param type
-     * @param weekList
+     * @param week
      * @param courseItemList
      */
-    public void updateCourseItems(String term, ObjectId classId, int type, List<Integer> weekList, List<CourseItem> courseItemList) {
-        BasicDBObject query = new BasicDBObject("te", term)
-                .append("cid", classId)
-                .append("ty", type)
-                .append("week", new BasicDBObject(Constant.MONGO_IN, weekList));
-        BasicDBObject updateValue = new BasicDBObject("cli", MongoUtils.convert(MongoUtils.fetchDBObjectList(courseItemList)));
-        BasicDBObject update = new BasicDBObject(Constant.MONGO_SET, updateValue);
+    public void addCourseListByWeek(String term, ObjectId classId, int type, int week, List<CourseItem> courseItemList) {
+        BasicDBObject query = new BasicDBObject();
+        query.append("te", term);
+        query.append("cid", classId);
+        query.append("week", week);
+        query.append("ty", type);
+        BasicDBObject update = new BasicDBObject();
+        update.append(Constant.MONGO_PUSHALL, new BasicDBObject("cli", MongoUtils.fetchDBObjectList(courseItemList)));
         update(MongoFacroty.getAppDB(), Constant.COLLECTION_COURSE_TABLE, query, update);
     }
-
 
     /**
      * 移除课程
@@ -302,221 +249,254 @@ public class TimeTableDao extends BaseDao {
      * @param courseItem
      */
     public void removeCourse(String term, ObjectId classId, int type, CourseItem courseItem) {
-        BasicDBObject query = new BasicDBObject()
-                .append("te", term)
-                .append("cid", classId)
-                .append("ty", 1)
-                .append("week", 0);
-
+        BasicDBObject query = new BasicDBObject();
+        query.append("te", term);
+        query.append("cid", classId);
+        query.append("ty", type);
         BasicDBObject update = new BasicDBObject();
-        update.append(Constant.MONGO_PULL, new BasicDBObject("cli",
-                new BasicDBObject("id", courseItem.getId())));
+        update.append(Constant.MONGO_PULL, new BasicDBObject("cli", courseItem.getBaseEntry()));
         update(MongoFacroty.getAppDB(), Constant.COLLECTION_COURSE_TABLE, query, update);
     }
 
     /**
-     * 删除部分班级某个时间点的课
+     * 移除课程
      *
      * @param term
-     * @param classIdList
-     * @param x
-     * @param y
+     * @param classId
+     * @param type
+     * @param courseItem
      */
-    public void removeCourse(String term, List<ObjectId> classIdList, int x, int y) {
-        BasicDBObject query = new BasicDBObject()
-                .append("te", term)
-                .append("cid", new BasicDBObject(Constant.MONGO_IN, classIdList))
-                .append("ty", 1)
-                .append("week", 0);
-        BasicDBObject updatevalue = new BasicDBObject("xi", x).append("yi", y);
-        BasicDBObject update = new BasicDBObject(Constant.MONGO_PULL, new BasicDBObject("cli", updatevalue));
+    public void removeCourseByWeek(String term, ObjectId classId, int type, int week, CourseItem courseItem) {
+        BasicDBObject query = new BasicDBObject();
+        query.append("te", term);
+        query.append("cid", classId);
+        query.append("week", week);
+        query.append("ty", type);
+        BasicDBObject update = new BasicDBObject();
+        update.append(Constant.MONGO_PULL, new BasicDBObject("cli", courseItem.getBaseEntry()));
         update(MongoFacroty.getAppDB(), Constant.COLLECTION_COURSE_TABLE, query, update);
     }
 
+    /**
+     * 根据学科、班级、学期获取课表
+     *
+     * @param term
+     * @param classId
+     * @return
+     */
+    public TimeTableEntry getCourseTableBySubId(String term, ObjectId classId) {
+        BasicDBObject query = new BasicDBObject();
+        query.append("te", term);
+        query.append("cid", classId);
+        query.append("ty", 0);
+        DBObject dbObject = findOne(MongoFacroty.getAppDB(), Constant.COLLECTION_COURSE_TABLE, query, Constant.FIELDS);
+        if (dbObject == null)
+            return null;
+        return new TimeTableEntry((BasicDBObject) dbObject);
+    }
 
     /**
-     * 移除年级某个位置的课
+     * 根据年级获取全部课表
      *
      * @param term
      * @param gradeId
-     * @param x
-     * @param y
+     * @return
      */
-    public void removeCourse(String term, ObjectId gradeId, int x, int y, int type) {
-        BasicDBObject query = new BasicDBObject()
-                .append("te", term)
-                .append("gid", gradeId)
-                .append("ty", 1)
-                .append("week", 0);
-        BasicDBObject updatevalue = new BasicDBObject("xi", x).append("yi", y).append("ty", type);
-        BasicDBObject update = new BasicDBObject(Constant.MONGO_PULL, new BasicDBObject("cli", updatevalue));
-        update(MongoFacroty.getAppDB(), Constant.COLLECTION_COURSE_TABLE, query, update);
+    public List<TimeTableEntry> getCourseTableByGradeId(String term, ObjectId gradeId, int type, int week) {
+        BasicDBObject query = new BasicDBObject();
+        query.append("te", term);
+        query.append("gid", gradeId);
+        query.append("ty", type);
+        query.append("week", week);
+        List<DBObject> dbObjectList = find(MongoFacroty.getAppDB(), Constant.COLLECTION_COURSE_TABLE, query, Constant.FIELDS);
+        List<TimeTableEntry> timeTableEntries = new ArrayList<TimeTableEntry>();
+        if (dbObjectList != null && !dbObjectList.isEmpty()) {
+            for (DBObject d : dbObjectList) {
+                timeTableEntries.add(new TimeTableEntry((BasicDBObject) d));
+            }
+        }
+        return timeTableEntries;
+    }
+
+
+    /**
+     * 根据courseId获取课程详细内容
+     *
+     * @param courseIds
+     * @return
+     */
+    public List<ZouBanCourseEntry> getCourseEntriesByIds(List<ObjectId> courseIds) {
+        List<ZouBanCourseEntry> zouBanCourseEntries = new ArrayList<ZouBanCourseEntry>();
+        BasicDBObject query = new BasicDBObject();
+        query.append(Constant.ID, new BasicDBObject(Constant.MONGO_IN, courseIds));
+        List<DBObject> dbObjectList = find(MongoFacroty.getAppDB(), Constant.COLLECTION_ZOUBAN_COURSE, query, Constant.FIELDS);
+        if (dbObjectList != null && !dbObjectList.isEmpty()) {
+            for (DBObject d : dbObjectList) {
+                ZouBanCourseEntry zouBanCourseEntry = new ZouBanCourseEntry((BasicDBObject) d);
+                zouBanCourseEntries.add(zouBanCourseEntry);
+            }
+        }
+        return zouBanCourseEntries;
     }
 
     /**
-     * 删除全校课表某一行或某一列的课
+     * 根据学校获取走班课列表
      *
-     * @param term
      * @param schoolId
-     * @param x
-     * @param y
+     * @return
      */
-    public void removeCourseByXY(String term, ObjectId schoolId, int x, int y) {
-        BasicDBObject query = new BasicDBObject()
-                .append("te", term)
-                .append("sid", schoolId)
-                .append("ty", 1)
-                .append("week", 0);
-        BasicDBObject updatevalue = new BasicDBObject();
-        if (x != -1) {//删除某行
-            updatevalue.append("xi", x);
+    public List<ZouBanCourseEntry> getZoubanCourseList(String year, ObjectId schoolId) {
+        BasicDBObject query = new BasicDBObject();
+        query.append("sid", schoolId);
+        query.append("te", year);
+        //query.append("subid",new BasicDBObject(Constant.MONGO_IN,subjectIds));
+        List<DBObject> dbObjectList = find(MongoFacroty.getAppDB(), Constant.COLLECTION_ZOUBAN_COURSE, query, Constant.FIELDS);
+        List<ZouBanCourseEntry> zouBanCourseEntries = new ArrayList<ZouBanCourseEntry>();
+        if (dbObjectList != null && !dbObjectList.isEmpty()) {
+            for (DBObject d : dbObjectList) {
+                zouBanCourseEntries.add(new ZouBanCourseEntry((BasicDBObject) d));
+            }
         }
-        if (y != -1) {//删除某列
-            updatevalue.append("yi", y);
-        }
-        BasicDBObject update = new BasicDBObject(Constant.MONGO_PULL, new BasicDBObject("cli", updatevalue));
-        update(MongoFacroty.getAppDB(), Constant.COLLECTION_COURSE_TABLE, query, update);
+        return zouBanCourseEntries;
     }
 
     /**
-     * 删除本年级课表
+     * 获取教师课表----finish
      *
      * @param term
-     * @param gradeId
-     * @param type 0:删除所有类型的课表
+     * @param teacherId
+     * @return
      */
-    public void deleteTimetableByGradeId(String term, ObjectId gradeId, int type) {
-        BasicDBObject query = new BasicDBObject()
-                .append("te", term)
-                .append("gid", gradeId);
-        if (type != 0) {
-            query.append("ty", type);
+    public List<ZouBanCourseEntry> findTeacherCourseList(String term, ObjectId teacherId) {
+        List<ZouBanCourseEntry> zouBanCourseEntries = new ArrayList<ZouBanCourseEntry>();
+        BasicDBObject query = new BasicDBObject();
+        query.append("te", term);
+        query.append("tid", teacherId);
+        List<DBObject> dbObjectList = find(MongoFacroty.getAppDB(), Constant.COLLECTION_ZOUBAN_COURSE, query, Constant.FIELDS);
+        for (DBObject d : dbObjectList) {
+            zouBanCourseEntries.add(new ZouBanCourseEntry((BasicDBObject) d));
         }
-        remove(MongoFacroty.getAppDB(), Constant.COLLECTION_COURSE_TABLE, query);
+        return zouBanCourseEntries;
     }
 
     /**
-     * 删除年级某种类型的课
+     * 根据课程id获取基本配置
+     *
+     * @param courseId
+     * @return
+     */
+    public ZouBanCourseEntry findZoubanConfByCourseId(ObjectId courseId) {
+        BasicDBObject query = new BasicDBObject();
+        query.append(Constant.ID, courseId);
+        DBObject dbObject = findOne(MongoFacroty.getAppDB(), Constant.COLLECTION_ZOUBAN_COURSE, query, Constant.FIELDS);
+        ZouBanCourseEntry zouBanCourseEntry = new ZouBanCourseEntry((BasicDBObject) dbObject);
+        return zouBanCourseEntry;
+    }
+
+    /**
+     * 根据科目id获取zoubancoursentry列表
+     *
+     * @param subIds
+     * @return
+     */
+    public List<ZouBanCourseEntry> getZoubanCouseEntryList(List<ObjectId> subIds) {
+        List<ZouBanCourseEntry> zouBanCourseEntries = new ArrayList<ZouBanCourseEntry>();
+        BasicDBObject query = new BasicDBObject();
+        query.append("subid", new BasicDBObject(Constant.MONGO_IN, subIds));
+        List<DBObject> dbObjectList = find(MongoFacroty.getAppDB(), Constant.COLLECTION_ZOUBAN_COURSE, query, Constant.FIELDS);
+        if (dbObjectList != null && !dbObjectList.isEmpty()) {
+            for (DBObject dbObject : dbObjectList) {
+                zouBanCourseEntries.add(new ZouBanCourseEntry((BasicDBObject) dbObject));
+            }
+        }
+        return zouBanCourseEntries;
+    }
+
+    /**
+     * 删除本年级的已选科目
      *
      * @param term
      * @param gradeId
      * @param type
      */
-    public void removeCourse(String term, ObjectId gradeId, int type) {
-        BasicDBObject query = new BasicDBObject()
-                .append("te", term)
-                .append("gid", gradeId)
-                .append("ty", 1)
-                .append("week", 0);
-        BasicDBObject updateValue = new BasicDBObject("cli", new BasicDBObject("ty", type));
-        BasicDBObject update = new BasicDBObject(Constant.MONGO_PULL, updateValue);
-        update(MongoFacroty.getAppDB(), Constant.COLLECTION_COURSE_TABLE, query, update);
+    public void deleteCourseByGradeId(String term, ObjectId gradeId, int type) {
+        BasicDBObject query = new BasicDBObject();
+        query.append("te", term);
+        query.append("gid", gradeId);
+        query.append("ty", type);
+        remove(MongoFacroty.getAppDB(), Constant.COLLECTION_COURSE_TABLE, query);
     }
 
     /**
-     * 删除课表中某种类型的课
+     * 更新锁定状态
      *
      * @param term
      * @param classIds
-     * @param type 0：删除所有课
+     * @param lock
      */
-    public void removeCourse(String term, List<ObjectId> classIds, int type) {
-        BasicDBObject query = new BasicDBObject()
-                .append("te", term)
-                .append("ty", 1)
-                .append("week", 0)
-                .append("cid", new BasicDBObject(Constant.MONGO_IN, classIds));
-
-        BasicDBObject update = new BasicDBObject();
-
-        if (type == 0) {
-            BasicDBObject updateValue = new BasicDBObject("cli", MongoUtils.convert(MongoUtils.fetchDBObjectList(new ArrayList<CourseItem>())));
-            update.append(Constant.MONGO_SET, updateValue);
-        } else {
-            BasicDBObject updateValue = new BasicDBObject("cli", new BasicDBObject("ty", type));
-            update.append(Constant.MONGO_PULL, updateValue);
-        }
-
-        update(MongoFacroty.getAppDB(), Constant.COLLECTION_COURSE_TABLE, query, update);
+    public void updateCourseTable(String term, List<ObjectId> classIds, int lock) {
+        BasicDBObject query = new BasicDBObject();
+        query.append("te", term);
+        query.append("cid", new BasicDBObject(Constant.MONGO_IN, classIds));
+        BasicDBObject updateValue = new BasicDBObject()
+                .append(Constant.MONGO_SET, new BasicDBObject("lock", lock));
+        update(MongoFacroty.getAppDB(), Constant.COLLECTION_COURSE_TABLE, query, updateValue);
     }
 
     /**
-     * 根据课程的id删除相关的课程
-     * @param term
-     * @param classIdList
-     * @param couIds
-     */
-    public void removeCourseByIds(String term, List<ObjectId> classIdList, List<ObjectId> couIds){
-        BasicDBObject query = new BasicDBObject("te", term)
-                .append("ty", 1)
-                .append("week", 0);
-        if (classIdList != null) {
-            query.append("cid", new BasicDBObject(Constant.MONGO_IN, classIdList));
-        }
-
-        BasicDBObject updateValue = new BasicDBObject("cli", new BasicDBObject("cou",
-                new BasicDBObject(Constant.MONGO_ALL,couIds)));
-        BasicDBObject update = new BasicDBObject(Constant.MONGO_PULL, updateValue);
-        update(MongoFacroty.getAppDB(), Constant.COLLECTION_COURSE_TABLE, query, update);
-    }
-
-    /**
-     * 根据课程的id删除相关的课程
-     * @param term
-     * @param classId
-     * @param courseId
-     */
-    public void removeCourseById(String term, ObjectId classId, ObjectId courseId){
-        BasicDBObject query = new BasicDBObject("te", term)
-                .append("ty", 1)
-                .append("week", 0);
-        if (classId != null) {
-            query.append("cid", classId);
-        }
-
-        BasicDBObject updateValue = new BasicDBObject("cli", new BasicDBObject("cou", courseId));
-        BasicDBObject update = new BasicDBObject(Constant.MONGO_PULL, updateValue);
-        update(MongoFacroty.getAppDB(), Constant.COLLECTION_COURSE_TABLE, query, update);
-    }
-
-
-
-    /**
-     * 删除课表中的所有课
+     * 删除课表，仅保留排课状态，即type=3
      *
-     * @param term
-     * @param gradeId
-     */
-    public void removeAllCourseItem(String term, ObjectId gradeId) {
-        BasicDBObject query = new BasicDBObject("te", term).append("gid", gradeId);
-        BasicDBObject update = new BasicDBObject(Constant.MONGO_SET,
-                new BasicDBObject("cli", MongoUtils.convert(MongoUtils.fetchDBObjectList(new ArrayList<CourseItem>()))));
-        update(MongoFacroty.getAppDB(), Constant.COLLECTION_COURSE_TABLE, query, update);
-    }
-
-    /**
-     * 删除全校课表
-     * @param schoolId
-     */
-    public void deleteTimetableBySchoolId(ObjectId schoolId) {
-        BasicDBObject query = new BasicDBObject("sid", schoolId);
-        remove(MongoFacroty.getAppDB(), Constant.COLLECTION_COURSE_TABLE, query);
-    }
-
-
-    /**
-     * 删除已发布课表
-     *
+     * @param term1
      * @param schoolId
      * @param gradeId
      */
-    public void removeAllPublishedTimetable(ObjectId schoolId, ObjectId gradeId) {
-        BasicDBObject query = new BasicDBObject("sid", schoolId)
-                .append("gid", gradeId)
-                .append("ty", 2);
+    public void removeAllCourse(String term1, String term2, ObjectId schoolId, ObjectId gradeId) {
+        BasicDBObject query = new BasicDBObject();
+        BasicDBList values = new BasicDBList();
+        values.add(new BasicDBObject("te", term1));
+        values.add(new BasicDBObject("te", term2));
+        query.put(Constant.MONGO_OR, values);
+        query.append("sid", schoolId);
+        query.append("gid", gradeId);
+        query.append("ty", new BasicDBObject(Constant.MONGO_LT, 3));
         remove(MongoFacroty.getAppDB(), Constant.COLLECTION_COURSE_TABLE, query);
     }
 
+    /**
+     * 根据id删除课表
+     *
+     * @param tableIds
+     */
+    public void removeTable(List<ObjectId> tableIds) {
+        BasicDBObject query = new BasicDBObject();
+        query.append(Constant.ID, new BasicDBObject(Constant.MONGO_IN, tableIds));
+        remove(MongoFacroty.getAppDB(), Constant.COLLECTION_COURSE_TABLE, query);
+    }
+
+    /**
+     * 获取有调课的班级
+     *
+     * @param term
+     * @param gradeId
+     * @param week
+     * @return
+     */
+    public List<TimeTableEntry> findAdjustClass(String term, ObjectId gradeId, ObjectId schoolId, int week) {
+        List<TimeTableEntry> result = new ArrayList<TimeTableEntry>();
+        BasicDBObject query = new BasicDBObject();
+        query.append("te", term);
+        query.append("gid", gradeId);
+        query.append("sid", schoolId);
+        query.append("week", week);
+        query.append("ty", 1);
+        List<DBObject> dbObjectList = find(MongoFacroty.getAppDB(), Constant.COLLECTION_COURSE_TABLE, query, Constant.FIELDS);
+        if (dbObjectList != null && !dbObjectList.isEmpty()) {
+            for (DBObject dbObject : dbObjectList) {
+                result.add(new TimeTableEntry((BasicDBObject) dbObject));
+            }
+        }
+        return result;
+    }
 
     /**
      * 修改课表内容//TODO
@@ -526,6 +506,8 @@ public class TimeTableDao extends BaseDao {
      * @param classId
      * @param week
      * @param type
+     * @param x
+     * @param y
      * @param newCourseId
      */
     public void updateTable(String term, ObjectId schoolId, ObjectId classId, int week, int type, ObjectId newCourseId, ObjectId oldCourseId) {
@@ -538,7 +520,12 @@ public class TimeTableDao extends BaseDao {
                 .append("sid", schoolId)
                 .append("cid", classId)
                 .append("week", week)
+                .append("ty", type)
                 .append("cli.cou", oldCourseIds);
+        /*BasicDBList queryList = new BasicDBList();
+        queryList.add(new BasicDBObject("cli.xi", x));
+        queryList.add(new BasicDBObject("cli.yi", y));
+        query.append(Constant.MONGO_AND,queryList);*/
         BasicDBObject updateValue = new BasicDBObject()
                 .append(Constant.MONGO_SET, new BasicDBObject("cli.$.cou", courseIds));
         try {
@@ -547,6 +534,27 @@ public class TimeTableDao extends BaseDao {
         } catch (Exception e) {
             System.out.println(e);
         }
+    }
+
+    /**
+     * 体育调课
+     *
+     * @param term
+     * @param gradeId
+     * @param xFrom
+     * @param yFrom
+     * @param xTo
+     * @param yTo
+     */
+    public void adjustPhysical(String term, ObjectId gradeId, int xFrom, int yFrom, int xTo, int yTo) {
+        BasicDBObject query = new BasicDBObject("te", term)
+                .append("gid", gradeId)
+                .append("cli", new BasicDBObject(Constant.MONGO_ELEMATCH, new BasicDBObject("xi", xFrom).append("yi", yFrom)));
+
+        BasicDBObject update = new BasicDBObject("cli.$.xi", xTo).append("cli.$.yi", yTo);
+        BasicDBObject updateValue = new BasicDBObject(Constant.MONGO_SET, update);
+
+        update(MongoFacroty.getAppDB(), Constant.COLLECTION_COURSE_TABLE, query, updateValue);
     }
 
 

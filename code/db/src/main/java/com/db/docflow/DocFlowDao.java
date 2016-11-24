@@ -22,15 +22,16 @@ import java.util.List;
  */
 public class DocFlowDao extends BaseDao {
 
-    private EducationBureauDao educationBureauDao=new EducationBureauDao();
+    private EducationBureauDao educationBureauDao = new EducationBureauDao();
+
     /**
      * 根据条件统计公文总数目
      *
-     * @param userId 用户id
-     * @param term 学期
-     * @param isHandle 0未处理 1已处理
-     * @param keyWords 关键字
-     * @param type 0公文 1审阅 2 我的公文
+     * @param userId        用户id
+     * @param term          学期
+     * @param isHandle      0未处理 1已处理
+     * @param keyWords      关键字
+     * @param type          0公文 1审阅 2 我的公文
      * @param departmentIds 用户是校长和管理员时返回该校部门列表
      * @return
      */
@@ -38,10 +39,12 @@ public class DocFlowDao extends BaseDao {
         BasicDBObject query = generalSql(userId, term, isHandle, keyWords, type, departmentIds);
         return count(MongoFacroty.getAppDB(), Constant.COLLECTION_DOC_FLOW_NAME, query);
     }
+
     public int getDocFlowCountEdu(ObjectId educationId, String term, List<ObjectId> schoolIdList, String keyWords, int type) {
         BasicDBObject query = generalSqlEdu(educationId, term, schoolIdList, keyWords, type);
         return count(MongoFacroty.getAppDB(), Constant.COLLECTION_DOC_FLOW_NAME, query);
     }
+
     //获取教育局公文
     public List<DocFlowEntry> getPublishedDocFlowListEdu(ObjectId educationId, String term, String keyWords, int page, int pageSize, List<ObjectId> schoolIds) {
         List<DocFlowEntry> docFlowEntries = new ArrayList<DocFlowEntry>();
@@ -56,12 +59,12 @@ public class DocFlowDao extends BaseDao {
             queryBase.append("pub", schoolIds.get(0));
         }
         queryBase.append("st", CheckStateEnum.PUBLISH.getIndex());
-        queryBase.append("did",educationId);
+        queryBase.append("did", educationId);
 
         List<DBObject> list;
         BasicDBObject sort = new BasicDBObject();
         sort.append(Constant.ID, -1);
-        list = find(MongoFacroty.getAppDB(), Constant.COLLECTION_DOC_FLOW_NAME, queryBase, Constant.FIELDS, sort, 0, pageSize*(page-1));
+        list = find(MongoFacroty.getAppDB(), Constant.COLLECTION_DOC_FLOW_NAME, queryBase, Constant.FIELDS, sort, 0, pageSize * (page - 1));
         if (list != null && !list.isEmpty()) {
             for (DBObject dbObject : list) {
                 docFlowEntries.add(new DocFlowEntry((BasicDBObject) dbObject));
@@ -69,8 +72,9 @@ public class DocFlowDao extends BaseDao {
         }
         return docFlowEntries;
     }
+
     //获取学校公文---教育局使用，不考虑已读未读
-    public List<DocFlowEntry> getSchoolDocFlowListEdu( String term, String keyWords, int page, int pageSize, ObjectId schoolId) {
+    public List<DocFlowEntry> getSchoolDocFlowListEdu(String term, String keyWords, int page, int pageSize, ObjectId schoolId) {
         List<DocFlowEntry> docFlowEntries = new ArrayList<DocFlowEntry>();
         BasicDBObject queryBase = new BasicDBObject();
         queryBase.append("te", term);
@@ -84,7 +88,7 @@ public class DocFlowDao extends BaseDao {
         List<DBObject> list;
         BasicDBObject sort = new BasicDBObject();
         sort.append(Constant.ID, -1);
-        list = find(MongoFacroty.getAppDB(), Constant.COLLECTION_DOC_FLOW_NAME, queryBase, Constant.FIELDS, sort, 0, pageSize*(page-1));
+        list = find(MongoFacroty.getAppDB(), Constant.COLLECTION_DOC_FLOW_NAME, queryBase, Constant.FIELDS, sort, 0, pageSize * (page - 1));
         if (list != null && !list.isEmpty()) {
             for (DBObject dbObject : list) {
                 docFlowEntries.add(new DocFlowEntry((BasicDBObject) dbObject));
@@ -168,10 +172,10 @@ public class DocFlowDao extends BaseDao {
     /**
      * 获取我的公文，被驳回可编辑的有限获取
      *
-     * @param userId 用户id
-     * @param term 学期
+     * @param userId   用户id
+     * @param term     学期
      * @param keyWords 关键字
-     * @param page 当前页
+     * @param page     当前页
      * @param pageSize 每页数量
      * @return 公文列表
      */
@@ -184,7 +188,7 @@ public class DocFlowDao extends BaseDao {
         }
         queryBase.append("uid", userId);
 
-        BasicDBObject query_Edit =new BasicDBObject(queryBase);//查询可编辑的
+        BasicDBObject query_Edit = new BasicDBObject(queryBase);//查询可编辑的
         query_Edit.append("st", CheckStateEnum.REJECT.getIndex());
         query_Edit.append("ckl", new BasicDBObject(Constant.MONGO_ELEMATCH, new BasicDBObject("uid", userId).append("op", -1)));
         int count = count(MongoFacroty.getAppDB(), Constant.COLLECTION_DOC_FLOW_NAME, query_Edit);
@@ -298,7 +302,7 @@ public class DocFlowDao extends BaseDao {
                     queryList.add(new BasicDBObject("ckl", new BasicDBObject(Constant.MONGO_ELEMATCH,
                             new BasicDBObject("uid", userId).append("op", new BasicDBObject(Constant.MONGO_IN, stateList)))));
                     //queryList.add(new BasicDBObject("st", CheckStateEnum.REVOCATE.getIndex()));
-                    queryList.add(new BasicDBObject("ckl",new BasicDBObject(Constant.MONGO_ELEMATCH,
+                    queryList.add(new BasicDBObject("ckl", new BasicDBObject(Constant.MONGO_ELEMATCH,
                             new BasicDBObject("uid", userId).append("st", CheckStateEnum.REVOCATE.getIndex()))));
                     query.append(Constant.MONGO_OR, queryList);
                 } else {//未处理，而且本人在审阅历史中，审阅意见为-1
@@ -320,6 +324,7 @@ public class DocFlowDao extends BaseDao {
 
     /**
      * 教育局使用
+     *
      * @param educationId
      * @param term
      * @param schoolIdList
@@ -336,15 +341,15 @@ public class DocFlowDao extends BaseDao {
         }
         switch (type) {
             case 0://教育局公文
-                if(schoolIdList.size()>1)
-                    query.append("pub",new BasicDBObject(Constant.MONGO_IN,schoolIdList));
+                if (schoolIdList.size() > 1)
+                    query.append("pub", new BasicDBObject(Constant.MONGO_IN, schoolIdList));
                 else
-                    query.append("pub",schoolIdList.get(0));
-                query.append("did",educationId);
+                    query.append("pub", schoolIdList.get(0));
+                query.append("did", educationId);
                 query.append("st", CheckStateEnum.PUBLISH.getIndex());
                 break;
             case 1://学校公文
-                query.append("si",schoolIdList.get(0));
+                query.append("si", schoolIdList.get(0));
                 query.append("st", CheckStateEnum.PUBLISH.getIndex());
                 break;
             case 2://撰写公文
@@ -352,6 +357,7 @@ public class DocFlowDao extends BaseDao {
         }
         return query;
     }
+
     /**
      * 添加公文
      *
@@ -515,11 +521,11 @@ public class DocFlowDao extends BaseDao {
     /**
      * 审阅公文
      *
-     * @param docId 公文id
-     * @param handleType 审阅意见
-     * @param receiveId 下一位接收人，无则“”
+     * @param docId               公文id
+     * @param handleType          审阅意见
+     * @param receiveId           下一位接收人，无则“”
      * @param receiveDepartmentId 下一位接收部门，无责 “”
-     * @param remark 备注
+     * @param remark              备注
      * @return true/false
      */
     public boolean checkDoc(ObjectId docId, int handleType, ObjectId receiveId, ObjectId receiveDepartmentId,
@@ -567,12 +573,12 @@ public class DocFlowDao extends BaseDao {
      * @param docId 公文id
      * @return true/false
      */
-    public boolean revDoc(ObjectId docId,DocCheckEntry docCheckEntry) {
+    public boolean revDoc(ObjectId docId, DocCheckEntry docCheckEntry) {
         BasicDBObject query = new BasicDBObject();
         BasicDBObject update = new BasicDBObject();
         query.append(Constant.ID, docId);
-        update.append(Constant.MONGO_SET, new BasicDBObject("st", 5).append("ci",docCheckEntry.getId()));
-        update.append(Constant.MONGO_PUSH,new BasicDBObject("ckl",docCheckEntry.getBaseEntry()));
+        update.append(Constant.MONGO_SET, new BasicDBObject("st", 5).append("ci", docCheckEntry.getId()));
+        update.append(Constant.MONGO_PUSH, new BasicDBObject("ckl", docCheckEntry.getBaseEntry()));
         update(MongoFacroty.getAppDB(), Constant.COLLECTION_DOC_FLOW_NAME, query, update);
         return true;
     }
@@ -592,8 +598,9 @@ public class DocFlowDao extends BaseDao {
 
     /**
      * 更新阅读人数,即从未读列表中把当前用户去除
+     *
      * @param userId 用户id
-     * @param docId 公文id
+     * @param docId  公文id
      */
     public void updateUnread(ObjectId userId, ObjectId docId) {
         BasicDBObject query = new BasicDBObject(Constant.ID, docId);

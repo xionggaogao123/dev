@@ -1,8 +1,8 @@
 package com.pojo.user;
 
-import com.pojo.app.IdValuePairDTO;
-
 import java.io.Serializable;
+
+import com.pojo.app.IdValuePairDTO;
 
 /**
  * 用户信息
@@ -23,7 +23,6 @@ public class UserInfoDTO implements Serializable {
 	private int role;
 	private int permission;
 	private String name;
-	private String realName;
 	private String nickName;
 	private String avt;
 	private String passWord;
@@ -47,7 +46,6 @@ public class UserInfoDTO implements Serializable {
 		this.sex=e.getSex();
 		this.role=e.getRole();
 		this.name=e.getUserName();
-		this.realName=e.getRealUserName();
 		this.nickName=e.getNickName();
 		this.passWord=e.getPassword();
 		this.avt=e.getAvatar();
@@ -130,15 +128,6 @@ public class UserInfoDTO implements Serializable {
 	public void setName(String name) {
 		this.name = name;
 	}
-
-	public String getRealName() {
-		return realName;
-	}
-
-	public void setRealName(String realName) {
-		this.realName = realName;
-	}
-
 	public String getAvt() {
 		return avt;
 	}

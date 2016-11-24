@@ -154,7 +154,19 @@ public class EGoodsEntry extends BaseDBObject {
 			return -1;
 		}
 	}
+
 	public void setGroupPurchase(int groupPurchase) {setSimpleValue("gpc", groupPurchase);}
+
+	//爆款
+	public int getMaxOut(){
+		if(getBaseEntry().containsField("mxt")){
+			return getSimpleIntegerValue("mxt");
+		}else{
+			return -1;
+		}
+	}
+
+	public void setMaxOut(int maxOut) {setSimpleValue("mxt", maxOut);}
 	public int getSellCount() {
 		return getSimpleIntegerValue("sc");
 	}
@@ -326,7 +338,7 @@ public class EGoodsEntry extends BaseDBObject {
 		 * 
 		 */
 		private static final long serialVersionUID = -580185485475369231L;
-		
+
 		
 		public Kind(BasicDBObject baseEntry) {
 			super(baseEntry);

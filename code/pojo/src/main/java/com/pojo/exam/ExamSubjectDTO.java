@@ -17,8 +17,6 @@ public class ExamSubjectDTO {
     private String subjectName;
     private int fullMarks;
     private double failScore;
-    private double youXiuScore;
-    private double diFenScore;
     private String time;
     private String examDate;
     private String weekDay;
@@ -43,8 +41,6 @@ public class ExamSubjectDTO {
         this.openBeginTime = subjectEntry.getOpenBeginTime();
         this.openEndTime = subjectEntry.getOpenEndTime();
         this.failScore = subjectEntry.getFailScore();
-        this.youXiuScore = subjectEntry.getYouXiuScore();
-        this.diFenScore = subjectEntry.getDiFenScore();
     }
 
     public String getId() {
@@ -161,29 +157,5 @@ public class ExamSubjectDTO {
 
     public void setCanEdit(boolean canEdit) {
         this.canEdit = canEdit;
-    }
-
-    public double getFailScore() {
-        return failScore;
-    }
-
-    public void setFailScore(double failScore) {
-        this.failScore = failScore;
-    }
-
-    public double getYouXiuScore() {
-        return youXiuScore;
-    }
-
-    public void setYouXiuScore(double youXiuScore) {
-        this.youXiuScore = youXiuScore;
-    }
-
-    public double getDiFenScore() {
-        return diFenScore;
-    }
-
-    public void setDiFenScore(double diFenScore) {
-        this.diFenScore = diFenScore;
     }
 }

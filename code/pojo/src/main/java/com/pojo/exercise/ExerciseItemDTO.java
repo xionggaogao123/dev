@@ -3,7 +3,6 @@ package com.pojo.exercise;
 import java.util.ArrayList;
 import java.util.List;
 
-import com.pojo.app.IdValuePairDTO;
 import org.bson.types.ObjectId;
 
 import com.pojo.exercise.ExerciseItemEntry.Item;
@@ -46,7 +45,7 @@ public class ExerciseItemDTO {
 	
 	public ExerciseItemEntry convert() throws Exception
 	{
-		if(!ObjectId.isValid(this.docId))
+		if(null==this.docId||!ObjectId.isValid(this.docId))
 			throw new IllegalParamException();
 		ExerciseItemEntry e=new ExerciseItemEntry(new ObjectId(this.docId), name, titleId, time);
 		List<Item> itemList =new ArrayList<ExerciseItemEntry.Item>();
@@ -174,8 +173,6 @@ public class ExerciseItemDTO {
 		private List<String> option;
 		private String rightAnswer;
 		private int selectCount;
-		private String userAnswer = "";
-		private List<IdValuePairDTO> imageList =new ArrayList<IdValuePairDTO>();
 		
 		
 		
@@ -291,21 +288,6 @@ public class ExerciseItemDTO {
 			this.selectCount = selectCount;
 		}
 
-		public String getUserAnswer() {
-			return userAnswer;
-		}
-
-		public void setUserAnswer(String userAnswer) {
-			this.userAnswer = userAnswer;
-		}
-
-		public List<IdValuePairDTO> getImageList() {
-			return imageList;
-		}
-
-		public void setImageList(List<IdValuePairDTO> imageList) {
-			this.imageList = imageList;
-		}
 
 		@Override
 		public String toString() {

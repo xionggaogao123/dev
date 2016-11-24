@@ -1,72 +1,111 @@
 package com.sys.utils;
 
-import java.io.BufferedReader;
-import java.io.IOException;
-import java.io.InputStreamReader;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
-
 import org.apache.http.HttpEntity;
 import org.apache.http.HttpResponse;
 import org.apache.http.client.ClientProtocolException;
-import org.apache.http.client.HttpClient;
 import org.apache.http.client.methods.HttpGet;
-import org.apache.http.impl.client.DefaultHttpClient;
-import org.apache.http.client.methods.HttpPost;  
-import org.apache.http.NameValuePair; 
-import org.apache.http.message.BasicNameValuePair; 
-import org.apache.http.client.entity.UrlEncodedFormEntity;  
-import org.apache.http.client.methods.HttpUriRequest; 
-import org.apache.http.util.EntityUtils;  
+import org.apache.http.impl.client.CloseableHttpClient;
+import org.apache.http.impl.client.HttpClientBuilder;
+
+import java.io.*;
+import java.net.URLEncoder;
+import java.util.Iterator;
+import java.util.Map;
+
 
 /**
  * 处理rest风格请求
  * @author fourer
  *
  */
-@SuppressWarnings("all")
 public class HttpClientUtils {
 
 
+	public static String get(String url) throws IOException {
+		CloseableHttpClient http = HttpClientBuilder.create().build();
+		 HttpGet get = new HttpGet(url);
+		HttpResponse response = http.execute(get);
+		 if (response.getStatusLine().getStatusCode() == 200) {  
+		    HttpEntity entity = response.getEntity();
+		    String res= convertStreamToString(new InputStreamReader(
+					entity.getContent(), "UTF-8"));
+		    return res;
+		} 
+		return null;
+	}
 
-	public static String get(String url) throws ClientProtocolException, IOException
-	{
-		
-		HttpClient http = new DefaultHttpClient(); 
-		 HttpGet get = new HttpGet(url);  
-		 HttpResponse response = http.execute(get);  
-		 if (response.getStatusLine().getStatusCode() == 200) {  
-		    HttpEntity entity = response.getEntity();  
-		    String res=   convertStreamToString(entity.getContent());
-		    return res;
-		} 
+	/**
+	 *  http请求
+	 * @param url
+	 * @param params
+	 * @return
+	 * @throws ClientProtocolException
+	 * @throws IOException
+     */
+	public static String get(String url,Map<String,String> params)  throws IOException{
+
+		String encodeUrl = url + "?" + urlEncode(params);
+		return get(encodeUrl);
+	}
+
+	/**
+	 * encode url
+	 * @param map
+	 * @return
+	 */
+	public static String urlEncode(Map<String,String> map) {
+
+		String retVal = "";
+		if(map == null) return retVal;
+		Iterator<String> keys = map.keySet().iterator();
+		while (keys.hasNext()) {
+			String key = keys.next();
+			String value = map.get(key);
+			try {
+				String encodeValue = URLEncoder.encode(value, "UTF8");
+				retVal += key + "=" + encodeValue + "&";
+
+			} catch (UnsupportedEncodingException ex) {
+
+			}
+		}
+
+		return retVal.substring(0,retVal.length() - 1);
+	}
+
+
+	public static String strURLEncodeUTF8(String value){
+
+		try {
+			return URLEncoder.encode(value, "UTF8");
+		} catch (UnsupportedEncodingException e) {
+			e.printStackTrace();
+		}
 		return null;
 	}
-	
-	
-	public static String get(String url,String token) throws ClientProtocolException, IOException
-	{
-		 HttpClient http = new DefaultHttpClient(); 
-		 HttpGet get = new HttpGet(url);  
-		 get.addHeader("Accept", "application/json, text/plain, */*");
-		 get.addHeader("Accept-Language", "zh-CN,zh;");
-		 
-		 get.addHeader("Authorization", "Bearer "+token+"");
-		 HttpResponse response = http.execute(get);  
-		 if (response.getStatusLine().getStatusCode() == 200) {  
-		    HttpEntity entity = response.getEntity();  
-		   // String res=   convertStreamToString(entity.getContent());
-		    String res=  EntityUtils.toString(entity, "utf-8");
-		    return res;
-		} 
+
+	/**
+	 * 获取流文件
+	 * @param url
+	 * @return
+	 * @throws IOException
+	 */
+	public static InputStream getInputStream(String url) throws IOException{
+
+		CloseableHttpClient http = HttpClientBuilder.create().build();
+		HttpGet get = new HttpGet(url);
+		HttpResponse response = http.execute(get);
+		if (response.getStatusLine().getStatusCode() == 200) {
+			HttpEntity entity = response.getEntity();
+
+			System.out.println(entity.getContent() + "===");
+			return entity.getContent();
+		}
 		return null;
 	}
-	
-	
-	public static String convertStreamToString(java.io.InputStream inputStream) {      
-        BufferedReader reader = new BufferedReader(new InputStreamReader(inputStream));      
+
+	public static String convertStreamToString(java.io.InputStreamReader inputStream) {
+        BufferedReader reader = new BufferedReader(inputStream);
         StringBuilder sb = new StringBuilder();      
        
         String line = null;      
@@ -82,105 +121,9 @@ public class HttpClientUtils {
             } catch (IOException e) {      
                e.printStackTrace();      
             }      
-        }      
-        return sb.toString();      
-    }  
-	
-	
-	
-	public static String post(String url, Map<String, String> params) {  
-        DefaultHttpClient httpclient = new DefaultHttpClient();  
-        String body = null;  
-          
-      
-        HttpPost post = postForm(url, params);  
-          
-        body = invoke(httpclient, post);  
-          
-        httpclient.getConnectionManager().shutdown();  
-          
-        return body;  
-    }  
-	
-	
-	
-	private static HttpPost postForm(String url, Map<String, String> params){  
-        
-        HttpPost httpost = new HttpPost(url);  
-        List<NameValuePair> nvps = new ArrayList <NameValuePair>();  
-          
-        Set<String> keySet = params.keySet();  
-        for(String key : keySet) {  
-            nvps.add(new BasicNameValuePair(key, params.get(key)));  
-        }  
-          
-        try {  
-            httpost.setEntity(new UrlEncodedFormEntity(nvps, "utf-8"));  
-        } catch (Exception e) {  
-            e.printStackTrace();  
-        }  
-          
-        return httpost;  
-    }  
-	
-	
-	private static String invoke(DefaultHttpClient httpclient,  
-            HttpUriRequest httpost) {  
-          
-        HttpResponse response = sendRequest(httpclient, httpost);  
-        String body = paseResponse(response);  
-          
-        return body;  
+        }
+        return sb.toString();
     }
-	
-	
-	
-	private static HttpResponse sendRequest(DefaultHttpClient httpclient,  
-            HttpUriRequest httpost) {  
-        HttpResponse response = null;  
-          
-        try {  
-            response = httpclient.execute(httpost);  
-        } catch (ClientProtocolException e) {  
-            e.printStackTrace();  
-        } catch (IOException e) {  
-            e.printStackTrace();  
-        }  
-        return response;  
-    }  
-	
-	
-	private static String paseResponse(HttpResponse response) {  
-        HttpEntity entity = response.getEntity();  
-          
-        String charset = EntityUtils.getContentCharSet(entity);  
-        String body = null;  
-        try {  
-            body = EntityUtils.toString(entity);  
-         
-        } catch (Exception e) {  
-            e.printStackTrace();  
-        } 
-          
-        return body;  
-    }  
-	
-	public static void main(String[] args) {
-	try {
-			
-			for(int i=0;i<20;i++)
-			{
-			String id=HttpClientUtils.get("http://midong.k6kt.com:80/user/check.do?key=56679ab30cf217c1b9213375");
-			System.out.println(i+":"+id);
-			}
-		} catch (ClientProtocolException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		} catch (IOException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-	}
 	
 	
 }

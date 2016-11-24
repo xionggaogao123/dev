@@ -8,12 +8,12 @@ import java.lang.annotation.Target;
 
 /**
  * 用户权限控制
- * @author fourer
  *
+ * @author fourer
  */
 @Target({METHOD})
 @Retention(RetentionPolicy.RUNTIME)
 public @interface UserPermissions {
 
-	int value();
+    int value();
 }

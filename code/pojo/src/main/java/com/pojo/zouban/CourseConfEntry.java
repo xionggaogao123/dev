@@ -22,7 +22,6 @@ import java.util.List;
  * }
  * Created by qiangm on 2015/9/15.
  */
-@Deprecated
 public class CourseConfEntry extends BaseDBObject {
     public CourseConfEntry() {
         super();

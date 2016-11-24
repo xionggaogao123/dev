@@ -20,27 +20,27 @@ public class InteractLessonScoreClassifyDao extends BaseDao {
      * @return
      */
     public ObjectId addInteractLessonScoreClassifyEntry(InteractLessonScoreClassifyEntry e) {
-        save(MongoFacroty.getAppDB(), Constant.COLLECTION_INTERACTLESSON_SCORE_CLASSIFY,e.getBaseEntry());
+        save(MongoFacroty.getAppDB(), Constant.COLLECTION_INTERACTLESSON_SCORE_CLASSIFY, e.getBaseEntry());
         return e.getID();
     }
 
     /**
      * 查询
+     *
      * @param lessonId
      * @param times
      * @return
      */
     public InteractLessonScoreClassifyEntry findInteractLessonScoreClassifyEntry(ObjectId lessonId, int times) {
         BasicDBObject query = new BasicDBObject("lid", lessonId);
-        query.append("ts",times);
-        DBObject dbo = findOne(MongoFacroty.getAppDB(),Constant.COLLECTION_INTERACTLESSON_SCORE_CLASSIFY, query, Constant.FIELDS);
+        query.append("ts", times);
+        DBObject dbo = findOne(MongoFacroty.getAppDB(), Constant.COLLECTION_INTERACTLESSON_SCORE_CLASSIFY, query, Constant.FIELDS);
         if (null != dbo) {
             InteractLessonScoreClassifyEntry e = new InteractLessonScoreClassifyEntry((BasicDBObject) dbo);
             return e;
         }
         return null;
     }
-
 
 
 }

@@ -17,7 +17,7 @@ import java.util.List;
  * </pre>
  * <pre>
  * {
- *  ty:1 视频 2Flash 3Mp3 4word 5ppt 6pdf
+ *  ty:具体参见FileType
  *  nm:名字
  *  ud:更新日期
  *  lng:长度
@@ -33,10 +33,6 @@ import java.util.List;
  *  vsty:视频来源类型; 详见VideoSourceType
  *  vt：视频type
  *  
- *  ======资源用====
- *  iig(isIgnore) 0否,1是
- *  ======资源用====
- *  
  *  ui:
  *  si:学校
  *  pc:推送次数
@@ -46,13 +42,6 @@ import java.util.List;
  *  psbs：课程list;放置最后一级课程表
  *  [
  *  ]
- *
- *  删除标志位  : ir (isRemoved) 0没有删除 1已经删除
- *  入库标志位  : is (isSaved)  0没有入库 1已经入库
- *  归属类型：ot(ownType) 0:大众所有，1：私人专属
- *  专属教育局ID： edid(educationBureauId)
- *  不可用教育局IDs： neids(noEducationBureauIds)
- *  资源来源 : rf (resourceFrom)
  * }
  * </pre>
  * @author fourer
@@ -71,7 +60,7 @@ public class ResourceEntry extends BaseDBObject {
 	}
 	
 	
-	public ResourceEntry(int type, String name, long length, String imgUrl, String bucketkey, ObjectId userId, ObjectId schoolId, List<ObjectId> scList, List<ObjectId> psbList, int isRemoved, int isSaved, int ownType, ObjectId eduId, List<ObjectId> noEdIds, String resourceFrom)
+	public ResourceEntry(int type,String name,long length,String imgUrl,String bucketkey,ObjectId userId,ObjectId schoolId,List<ObjectId> scList,List<ObjectId> psbList)
 	{
 		this(
 				type,
@@ -79,7 +68,7 @@ public class ResourceEntry extends BaseDBObject {
 				System.currentTimeMillis(),//updateDate
 				length,
 				imgUrl,
-				Constant.TWO,//updateState
+				Constant.ONE,//updateState
 				Constant.ZERO,//deleteFlag
 				Constant.EMPTY,//temporaryName
 				bucketkey,
@@ -91,35 +80,23 @@ public class ResourceEntry extends BaseDBObject {
 				schoolId,
 				Constant.ZERO,//pushCount
 				scList,
-				psbList,
-				isRemoved,
-				isSaved,
-				ownType,
-				eduId,
-				noEdIds,
-				resourceFrom
+				psbList
 			);
 	}
 	
 	
 	
-	public ResourceEntry(int type, String name, long updateDate, long length, String imgUrl, int updateState, int deleteFlag, String temporaryName, String bucketkey,
-						 String persistentId,
-						 int viewNumber,
-						 int videoSourceType,
-						 int videoType,
-
-						 ObjectId userId,
-						 ObjectId schoolId,
-						 int pushCount,
-						 List<ObjectId> scList,
-						 List<ObjectId> psbList,
-						 int isRemoved,
-						 int isSaved,
-						 int ownType,
-						 ObjectId eduId,
-						 List<ObjectId> noEdIds,
-						 String resourceFrom
+	public ResourceEntry(int type,String name, long updateDate, long length, String imgUrl, int updateState,   int deleteFlag,   String temporaryName,String bucketkey, 
+			String persistentId,
+			int viewNumber,
+			int videoSourceType,
+			int videoType,
+			
+			ObjectId userId,
+			ObjectId schoolId,
+			int pushCount,
+			List<ObjectId> scList,
+			List<ObjectId> psbList
 			) {
 		super();
 		
@@ -143,17 +120,8 @@ public class ResourceEntry extends BaseDBObject {
 		.append("pc", pushCount)
 		.append("scs", MongoUtils.convert(scList))
 		.append("psbs", MongoUtils.convert(psbList))
-		.append("iig", Constant.ZERO)
-
-		.append("ir", isRemoved)
-		.append("is", isSaved)
-
-		.append("ot", ownType)
-		.append("edid", eduId)
-
-		.append("neids", noEdIds)
-
-		.append("rf", resourceFrom);
+		.append("iig", Constant.ZERO);
+		;
 		setBaseEntry(baseEntry);;
 	}
 	
@@ -303,7 +271,7 @@ public class ResourceEntry extends BaseDBObject {
 	public void setVideoSourceType(int videoSourceType) {
 		setSimpleValue("vsty", videoSourceType);
 	}
-
+	
 	public String getOriginalFileStore() {
 		return getSimpleStringValue("ofs");
 	}
@@ -318,54 +286,4 @@ public class ResourceEntry extends BaseDBObject {
 		setSimpleValue("iig", isIgnore);
 	}
 
-	public int getIsRemoved() {
-		return getSimpleIntegerValue("ir");
-	}
-	public void setIsRemoved(int isRemoved) {
-		setSimpleValue("ir", isRemoved);
-	}
-
-	public int getIsSaved() {
-		return getSimpleIntegerValueDef("is",1);
-	}
-	public void setIsSaved(int isSaved) {
-		setSimpleValue("is", isSaved);
-	}
-
-	public int getOwnType() {
-		return getSimpleIntegerValue("ot");
-	}
-	public void setOwnType(int ownType) {
-		setSimpleValue("ot", ownType);
-	}
-
-	public ObjectId getEduId() {
-		return getSimpleObjecIDValue("edid");
-	}
-	public void setEduId(ObjectId eduId) {
-		setSimpleValue("edid", eduId);
-	}
-
-	public List<ObjectId> getNoEdIds() {
-		List<ObjectId> retList =new ArrayList<ObjectId>();
-		BasicDBList list =(BasicDBList)getSimpleObjectValue("neids");
-		if(null!=list && !list.isEmpty())
-		{
-			for(Object o:list)
-			{
-				retList.add((ObjectId)o);
-			}
-		}
-		return retList;
-	}
-	public void setNoEdIds(List<ObjectId> noEdIds) {
-		setSimpleValue("neids", MongoUtils.convert(noEdIds));
-	}
-
-	public String getResourceFrom() {
-		return getSimpleStringValue("rf");
-	}
-	public void setResourceFrom(String resourceFrom) {
-		setSimpleValue("rf", resourceFrom);
-	}
 }

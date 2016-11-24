@@ -30,22 +30,24 @@ public class ResumeDao extends BaseDao {
 
     /**
      * 删除
+     *
      * @param userId
      */
     public void removeResumeEntry(ObjectId userId) {
-        DBObject query =new BasicDBObject("ui",userId);
+        DBObject query = new BasicDBObject("ui", userId);
         remove(MongoFacroty.getAppDB(), Constant.COLLECTION_RESUME, query);
     }
 
     /**
      * 获取老师个人简历
+     *
      * @param userId
      * @param fields
      * @return
      */
-    public ResumeEntry getResumeList(ObjectId userId,DBObject fields) {
-        BasicDBObject query =new BasicDBObject("ui",userId);
-        DBObject dbo=findOne(MongoFacroty.getAppDB(), Constant.COLLECTION_RESUME, query, fields);
+    public ResumeEntry getResumeList(ObjectId userId, DBObject fields) {
+        BasicDBObject query = new BasicDBObject("ui", userId);
+        DBObject dbo = findOne(MongoFacroty.getAppDB(), Constant.COLLECTION_RESUME, query, fields);
         if (null != dbo) {
             ResumeEntry e = new ResumeEntry((BasicDBObject) dbo);
             return e;

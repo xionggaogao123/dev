@@ -29,25 +29,20 @@ public class ItemDTO {
 	private int totalCount;
 	private int rightCount;
 	private String id;
-	private String userName;
 	private String time;
 	private String itemId; 
 	private String source;
-	private int intLevel;
 	private String level;
 	private int type;
 	private String itemType;
 	private String kwId;
 	private String kw;
-	private String bk;
+	
 	private String score;
 	private String item;//题干
 	private String myAnswer="";
 	private String answer;
-	private int answerNum;
 	private String parse;
-	private int isSaved;
-	private String uploadTime;
 	//是否正确
 	private boolean right;
 	//选择题的选项
@@ -205,54 +200,8 @@ public class ItemDTO {
 			choice="";
 		}
 	}
-
-	public ItemDTO(ItemPoolEntry e)
-	{
-		this.id=e.getID().toString();
-		int intLevel=e.getLevel();
-		this.intLevel=intLevel;
-		//1：较易 2：中 3：难
-		if(Constant.ONE==intLevel)
-		{
-			this.level="容易";
-		}
-		if(Constant.TWO==intLevel)
-		{
-			this.level="较容易";
-		}
-		if(Constant.THREE==intLevel)
-		{
-			this.level="中等";
-		}
-		if(Constant.FOUR==intLevel)
-		{
-			this.level="较难";
-		}
-		if(Constant.FIVE==intLevel)
-		{
-			this.level="难";
-		}
-		ExerciseItemType type= ExerciseItemType.getExerciseItemType(e.getOrigType());
-		this.type=type.getType();
-		this.itemType=type.getName();
-		if(type.getType()==1){
-			this.answerNum=e.getItem().getSelectCount();
-		}else{
-			this.answerNum=0;
-		}
-		this.score=String.valueOf(e.getScore());
-		this.item=e.getQuestion();
-		this.answer=e.getAnswer();
-		this.parse=e.getParseAnser();
-		//if(e.getType()==ExerciseItemType.SINGLECHOICE.getType() || e.getType()==ExerciseItemType.MULTICHOICE.getType())
-		{
-			choice="";
-		}
-	}
-
-	public ItemDTO(){
-
-	}
+	
+	
 	
 	/**
 	 * 判断答题是否正确
@@ -483,54 +432,6 @@ public class ItemDTO {
 
 	public void setImage(String image) {
 		this.image = image;
-	}
-
-	public String getUserName() {
-		return userName;
-	}
-
-	public void setUserName(String userName) {
-		this.userName = userName;
-	}
-
-	public String getBk() {
-		return bk;
-	}
-
-	public void setBk(String bk) {
-		this.bk = bk;
-	}
-
-	public int getIsSaved() {
-		return isSaved;
-	}
-
-	public void setIsSaved(int isSaved) {
-		this.isSaved = isSaved;
-	}
-
-	public String getUploadTime() {
-		return uploadTime;
-	}
-
-	public void setUploadTime(String uploadTime) {
-		this.uploadTime = uploadTime;
-	}
-
-	public int getIntLevel() {
-		return intLevel;
-	}
-
-	public void setIntLevel(int intLevel) {
-		this.intLevel = intLevel;
-	}
-
-	public int getAnswerNum() {
-		return answerNum;
-	}
-
-	public void setAnswerNum(int answerNum) {
-		this.answerNum = answerNum;
 	}
 
 	@Override

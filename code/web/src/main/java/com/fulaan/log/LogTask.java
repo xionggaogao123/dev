@@ -8,34 +8,35 @@ import java.util.concurrent.LinkedBlockingQueue;
 
 public class LogTask implements Runnable {
 
-	private static LinkedBlockingQueue<LogDTO> logs = new LinkedBlockingQueue<LogDTO>();
-	private  LogService logService=new LogService();
-	public static void put(LogDTO log) {
-		try {
+    private static LinkedBlockingQueue<LogDTO> logs = new LinkedBlockingQueue<LogDTO>();
+    private LogService logService = new LogService();
+
+    public static void put(LogDTO log) {
+        try {
             logs.put(log);
-		} catch (InterruptedException e) {
+        } catch (InterruptedException e) {
             e.printStackTrace();
         }
-	}
+    }
 
-	public static void put(LogType type, String userId, String actionName) {
+    public static void put(LogType type, String userId, String actionName) {
         LogDTO le = new LogDTO();
-		le.setActionType(type.getCode());
-		le.setUserId(userId);
-		le.setActionName(actionName);
-		put(le);
-	}
-	
+        le.setActionType(type.getCode());
+        le.setUserId(userId);
+        le.setActionName(actionName);
+        put(le);
+    }
 
-	@Override
-	public void run() {
-		while (true) {
-			try {
+
+    @Override
+    public void run() {
+        while (true) {
+            try {
                 LogDTO logDto = logs.take();
                 logService.insert(logDto);
-			} catch (InterruptedException e) {
+            } catch (InterruptedException e) {
                 e.printStackTrace();
             }
-		}
-	}
+        }
+    }
 }

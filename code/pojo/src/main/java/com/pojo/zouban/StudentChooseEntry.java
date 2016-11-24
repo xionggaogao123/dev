@@ -14,10 +14,10 @@ import java.util.List;
  * {
  * xkid:选课id--------------->xuanKeId
  * uid:学生id---------------->studentId
- * um:学生名称----------------->userName
  * advls:合格考科目------------------->advancelist
  * sipls:等级考科目---------------->simplelist
  * cid:班级id---------------->classId
+ * um:学生名称----------------->userName
  * isx:是否选课----------------->isXuan
  * }
  * Created by wang_xinxin on 2015/9/24.

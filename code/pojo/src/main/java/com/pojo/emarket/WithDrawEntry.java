@@ -33,9 +33,7 @@ public class WithDrawEntry extends BaseDBObject {
 								.append("ph", phone)
 								.append("pt", payType)
 								.append("orid",orderid)
-								.append("cd",cardNum)
-								.append("st",0)
-								.append("bz", "");
+								.append("cd",cardNum);
 		setBaseEntry(dbo);
 	}
 	public String getUserid() {
@@ -115,17 +113,5 @@ public class WithDrawEntry extends BaseDBObject {
 	}
 	public void setCardNum(String cardNum) {
 		setSimpleValue("cd",cardNum);
-	}
-	public int getStatus() {
-		return getSimpleIntegerValue("st");
-	}
-	public void setStatus(int status) {
-		setSimpleValue("st",status);
-	}
-	public String getBeiZhu() {
-		return getSimpleStringValue("bz");
-	}
-	public void setBeiZhu(String beiZhu) {
-		setSimpleValue("bz",beiZhu);
 	}
 }

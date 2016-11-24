@@ -18,7 +18,7 @@ import com.pojo.utils.MongoUtils;
  * </pre>
  * <pre>
  * {
- *  di:文档ID  对应exerciseEntry的_id
+ *  di:文档ID
  *  nm:名字
  *  ti:大题目号，1,2，3
  *  spt:应该所花时间;单位秒, -1为未配置

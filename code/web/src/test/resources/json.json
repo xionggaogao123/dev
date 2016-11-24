@@ -1,0 +1,70 @@
+{
+  code: "200",
+  message: {
+    means: [ ],
+    activity: [ ],
+    homework: [ ],
+    materials: [ ],
+    shara: [ ],
+    announcement: [
+      {
+        id: "5812bc9213bd9b18c0c75612",
+        communityId: "5811715a44b0cc24c0d86aff",
+        userId: "579ec252de04cb4774f8d517",
+        title: "吃饭了",
+        content: "大家该交班费了",
+        type: 1,
+        time: "2016-10-28 10:48:50",
+        unReadList: [ ],
+        partInList: [ ],
+        attachements: [
+          {
+            url: "http://localhost/community/create?name=sdfsd",
+            flnm: "打酱油磊",
+            uploadUserId: "579ec252de04cb4774f8d517",
+            time: "2016-10-28 10:48:50"
+          },
+          {
+            url: "http://localhost/community/create?name=sdfsd",
+            flnm: "打酱油磊2",
+            uploadUserId: "579ec252de04cb4774f8d517",
+            time: "2016-10-28 10:48:50"
+          }
+        ],
+        vedios: [ ],
+        images: [ ],
+        voices: [ ],
+        partList: [ ]
+      },
+      {
+        id: "5812bc1f13bd9b18c0c75611",
+        communityId: "5811715a44b0cc24c0d86aff",
+        userId: "579ec252de04cb4774f8d517",
+        title: "吃饭了",
+        content: "吃饭了，同志们",
+        type: 1,
+        time: "2016-10-28 10:46:55",
+        unReadList: [ ],
+        partInList: [ ],
+        attachements: [
+          {
+            url: "http://localhost/community/create?name=sdfsd",
+            flnm: "打酱油磊",
+            uploadUserId: "579ec252de04cb4774f8d517",
+            time: "2016-10-28 10:46:55"
+          },
+          {
+            url: "http://localhost/community/create?name=sdfsd",
+            flnm: "打酱油磊2",
+            uploadUserId: "579ec252de04cb4774f8d517",
+            time: "2016-10-28 10:46:55"
+          }
+        ],
+        vedios: [ ],
+        images: [ ],
+        voices: [ ],
+        partList: [ ]
+      }
+    ]
+  }
+}

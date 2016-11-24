@@ -28,7 +28,6 @@ public class ExamDTO {
     private int isGra;
     private List<String> classList = new ArrayList<String>();
     private List<ExamSubjectDTO> examSubjectDTO = new ArrayList<ExamSubjectDTO>();
-    private int type;//1：普通考试     2:3+3考试
 
     public ExamDTO() {
     }
@@ -57,7 +56,6 @@ public class ExamDTO {
         if (entry.getRoomUsed() != null) {
             roomUsed = entry.getRoomUsed();
         }
-        this.type = entry.getType();
     }
 
     public Map<String, Map<String, Object>> getRoomUsed() {
@@ -197,14 +195,6 @@ public class ExamDTO {
         this.remark = remark;
     }
 
-    public int getType() {
-        return type;
-    }
-
-    public void setType(int type) {
-        this.type = type;
-    }
-
     public ExamEntry getEntry() {
         List<ExamSubjectEntry> examSubjectEntries = new ArrayList<ExamSubjectEntry>(this.getExamSubjectDTO().size());
         List<ObjectId> subjectList = new ArrayList<ObjectId>(this.getExamSubjectDTO().size());
@@ -213,9 +203,7 @@ public class ExamDTO {
                     new ObjectId(examSubjectDTO.getSubjectId()),
                     examSubjectDTO.getSubjectName(),
                     examSubjectDTO.getFullMarks(),
-                    examSubjectDTO.getYouXiuScore(),
-                    examSubjectDTO.getFailScore(),
-                    examSubjectDTO.getDiFenScore(),
+                    examSubjectDTO.getFullMarks() * 0.6,
                     examSubjectDTO.getTime(),
                     examSubjectDTO.getExamDate(),
                     examSubjectDTO.getWeekDay(),
@@ -228,7 +216,7 @@ public class ExamDTO {
         for (String string : this.classList) {
             classL.add(new ObjectId(string));
         }
-        ExamEntry examEntry =  new ExamEntry(this.name,
+        return new ExamEntry(this.name,
                 DateTimeUtils.stringToDate(this.date,
                         DateTimeUtils.DATE_YYYY_MM_DD).getTime(),
                 new ObjectId(this.gradeId),
@@ -243,8 +231,6 @@ public class ExamDTO {
                 this.getIsGra(),
                 classL,
                 subjectList);
-        examEntry.setType(type == 2 ? 2 : 1);
-        return examEntry;
     }
 
     private String genSchoolYear() {

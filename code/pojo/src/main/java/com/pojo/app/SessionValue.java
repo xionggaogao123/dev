@@ -17,9 +17,6 @@ import java.util.Map;
  */
 public class SessionValue implements Serializable{
 
-	/**
-	 * 
-	 */
 	private static final long serialVersionUID = -7786199032928967400L;
 
 	private static final String DEFAULT_SCHOOL_NAVS_INT="0";
@@ -41,14 +38,11 @@ public class SessionValue implements Serializable{
 	public static final String EDUCATION_LOGO="elogo";
 	public static final String CLOUD_URL="curl";
 	public static final String USER_SSO="sso";
-	public static final String COUPON="coupon";
-	public static final String USER_SEX="sex";
     
 	
 	private Map<String,String> map =new HashMap<String, String>();
-	
-	
-	
+
+
 	public Map<String, String> getMap() {
 		return map;
 	}
@@ -71,11 +65,9 @@ public class SessionValue implements Serializable{
 		return get(USER_ID);
 	}
 
-
 	public void setId(String id) {
 		put(USER_ID, id);
 	}
-
 
 	public String getUserName() {
 		return get(USER_NAME);
@@ -149,20 +141,6 @@ public class SessionValue implements Serializable{
 
 	public void setSchoolName(String schoolName) {
 		put(SCHOOL_NAME, schoolName);
-	}
-
-
-	public int getCoupon() {
-		String strInt =get(COUPON);
-		if(StringUtils.isNotBlank(strInt))
-		{
-			return Integer.valueOf(strInt);
-		}
-		return Constant.DEFAULT_VALUE_INT;
-	}
-
-	public void setCoupon(int coupon) {
-		put(COUPON, String.valueOf(coupon));
 	}
 
     public String getSchoolLogo(){return get(SCHOOL_LOGO);}
@@ -325,18 +303,5 @@ public class SessionValue implements Serializable{
     public String toString(){
         return com.mongodb.util.JSON.serialize( this.map );
     }
-
-	public int getSex() {
-		String strInt =get(USER_SEX);
-		if(StringUtils.isNotBlank(strInt))
-		{
-			return Integer.valueOf(strInt);
-		}
-		return Constant.DEFAULT_VALUE_INT;
-	}
-
-	public void setSex(int sex) {
-		put(USER_SEX, String.valueOf(sex));
-	}
 
 }

@@ -10,8 +10,8 @@ import org.bson.types.ObjectId;
  *     sid:学校id-------------->scholId
  *     gid：年级id------------->gradeId
  *     te:学期----------------->term
- *     st:选课进度------------------>state
- *     st2:分段编班状态---------------->state2
+ *     st:状态------------------>state
+ *     st2:状态2---------------->state2
  * }
  * Created by qiangm on 2015/10/14.
  */
@@ -26,6 +26,17 @@ public class ZoubanState extends BaseDBObject{
         super(basicDBObject);
     }
 
+    public ZoubanState(ObjectId schoolId, ObjectId gradeId, String term, int state)
+    {
+        super();
+        BasicDBObject basicDBObject=new BasicDBObject()
+                .append("sid",schoolId)
+                .append("gid",gradeId)
+                .append("te",term)
+                .append("st",state)
+                .append("st2",1);
+        setBaseEntry(basicDBObject);
+    }
     public void setSchoolId(ObjectId schoolId)
     {
         setSimpleValue("sid",schoolId);

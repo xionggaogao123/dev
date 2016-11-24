@@ -30,25 +30,27 @@ public class PostionDao extends BaseDao {
 
     /**
      * 删除行政职务*
+     *
      * @param userId
      */
     public void removePostionEntry(ObjectId userId) {
-        DBObject query =new BasicDBObject("ui",userId);
+        DBObject query = new BasicDBObject("ui", userId);
         remove(MongoFacroty.getAppDB(), Constant.COLLECTION_POSTION, query);
     }
 
     /**
      * 获取行政职务*
+     *
      * @param userId
      * @param fields
      * @return
      */
-    public List<PostionEntry> getPostionList(ObjectId userId,DBObject fields) {
-        BasicDBObject query =new BasicDBObject("ui",userId);
-        List<DBObject> list=find(MongoFacroty.getAppDB(), Constant.COLLECTION_POSTION, query, fields);
-        List<PostionEntry> postionEntryList=new ArrayList<PostionEntry>();
-        for(DBObject dbObject:list){
-            PostionEntry postionEntry=new PostionEntry((BasicDBObject)dbObject);
+    public List<PostionEntry> getPostionList(ObjectId userId, DBObject fields) {
+        BasicDBObject query = new BasicDBObject("ui", userId);
+        List<DBObject> list = find(MongoFacroty.getAppDB(), Constant.COLLECTION_POSTION, query, fields);
+        List<PostionEntry> postionEntryList = new ArrayList<PostionEntry>();
+        for (DBObject dbObject : list) {
+            PostionEntry postionEntry = new PostionEntry((BasicDBObject) dbObject);
             postionEntryList.add(postionEntry);
         }
         return postionEntryList;

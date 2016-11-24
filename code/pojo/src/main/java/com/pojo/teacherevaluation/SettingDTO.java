@@ -1,8 +1,6 @@
 package com.pojo.teacherevaluation;
 
 
-import com.pojo.app.NameValuePair;
-import com.pojo.app.NameValuePairDTO;
 import org.bson.types.ObjectId;
 
 import java.io.Serializable;
@@ -18,32 +16,31 @@ public class SettingDTO{
     private String schoolId;
     private String year;
     private String rule;
+    private long personalTimeBegin;
+    private long personalTimeEnd;
+    private long groupTimeBegin;
+    private long groupTimeEnd;
     private long evaluationTimeBegin;
     private long evaluationTimeEnd;
-    private int mode;
     private List<GradeSettingDTO> gradeSettingDTOs = new ArrayList<GradeSettingDTO>();
-    private List<NameValuePairDTO> modeGrades = new ArrayList<NameValuePairDTO>();
 
     public SettingDTO(){}
 
     public SettingDTO(SettingEntry settingEntry){
-        this.id = settingEntry.getID().toString();
-        this.schoolId = settingEntry.getSchoolId().toString();
-        this.year = settingEntry.getYear();
-        this.rule = settingEntry.getRule();
-        this.evaluationTimeBegin = settingEntry.getEvaluationTimeBegin();
-        this.evaluationTimeEnd = settingEntry.getEvaluationTimeEnd();
-        this.mode = settingEntry.getMode();
+        id = settingEntry.getID().toString();
+        schoolId = settingEntry.getSchoolId().toString();
+        year = settingEntry.getYear();
+        rule = settingEntry.getRule();
+        personalTimeBegin = settingEntry.getPersonalTimeBegin();
+        personalTimeEnd = settingEntry.getPersonalTimeEnd();
+        groupTimeBegin = settingEntry.getGroupTimeBegin();
+        groupTimeEnd = settingEntry.getGroupTimeEnd();
+        evaluationTimeBegin = settingEntry.getEvaluationTimeBegin();
+        evaluationTimeEnd = settingEntry.getEvaluationTimeEnd();
         List<SettingEntry.GradeSetting> gradeSettings = settingEntry.getGradeSettings();
         if(gradeSettings.size() > 0){
             for(SettingEntry.GradeSetting gradeSetting : gradeSettings) {
-                this.gradeSettingDTOs.add(new GradeSettingDTO(gradeSetting));
-            }
-        }
-        List<NameValuePair> nameValuePairs = settingEntry.getModeGrades();
-        if(nameValuePairs.size() > 0){
-            for(NameValuePair nameValuePair : nameValuePairs){
-                this.modeGrades.add(new NameValuePairDTO(nameValuePair));
+                gradeSettingDTOs.add(new GradeSettingDTO(gradeSetting));
             }
         }
 
@@ -81,6 +78,38 @@ public class SettingDTO{
         this.rule = rule;
     }
 
+    public long getPersonalTimeBegin() {
+        return personalTimeBegin;
+    }
+
+    public void setPersonalTimeBegin(long personalTimeBegin) {
+        this.personalTimeBegin = personalTimeBegin;
+    }
+
+    public long getPersonalTimeEnd() {
+        return personalTimeEnd;
+    }
+
+    public void setPersonalTimeEnd(long personalTimeEnd) {
+        this.personalTimeEnd = personalTimeEnd;
+    }
+
+    public long getGroupTimeBegin() {
+        return groupTimeBegin;
+    }
+
+    public void setGroupTimeBegin(long groupTimeBegin) {
+        this.groupTimeBegin = groupTimeBegin;
+    }
+
+    public long getGroupTimeEnd() {
+        return groupTimeEnd;
+    }
+
+    public void setGroupTimeEnd(long groupTimeEnd) {
+        this.groupTimeEnd = groupTimeEnd;
+    }
+
     public long getEvaluationTimeBegin() {
         return evaluationTimeBegin;
     }
@@ -105,25 +134,6 @@ public class SettingDTO{
         this.gradeSettingDTOs = gradeSettingDTOs;
     }
 
-    public int getMode() {
-        return mode;
-    }
-
-    public void setMode(int mode) {
-        this.mode = mode;
-    }
-
-    public List<NameValuePairDTO> getModeGrades() {
-        return modeGrades;
-    }
-
-    public void setModeGrades(List<NameValuePairDTO> modeGrades) {
-        this.modeGrades = modeGrades;
-    }
-
-    /**
-     *
-     */
     public static class GradeSettingDTO{
         private String id;
         private String name;

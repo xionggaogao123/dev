@@ -15,33 +15,29 @@ import com.sys.exceptions.IllegalParamException;
 
 public class ResourcesUpdates {
 
-	public static void main(String[] args) throws IOException {
-		
-		
-		File file =new File("/home/micro0111.txt");
-		
-		ResourceDao resourceDao =new ResourceDao();
-	
-		CloudLessonDao cloudLessonDao =new CloudLessonDao();
-		
-		int skip=0;
-		int limit=200;
-		
-		while(true)
-		{
-			System.out.println("skip="+skip);
-			List<ResourceEntry> list=resourceDao.getResourceEntry(skip, limit);
-			
-			if(null==list || list.size()==0)
-			{
-				break;
-			}
-			
-			for(ResourceEntry e:list)
-			{
-				if(StringUtils.isBlank(e.getImgUrl()))
-				{
-					
+    public static void main(String[] args) throws IOException {
+
+
+        File file = new File("/home/micro0111.txt");
+
+        ResourceDao resourceDao = new ResourceDao();
+
+        CloudLessonDao cloudLessonDao = new CloudLessonDao();
+
+        int skip = 0;
+        int limit = 200;
+
+        while (true) {
+            System.out.println("skip=" + skip);
+            List<ResourceEntry> list = resourceDao.getResourceEntry(skip, limit);
+
+            if (null == list || list.size() == 0) {
+                break;
+            }
+
+            for (ResourceEntry e : list) {
+                if (StringUtils.isBlank(e.getImgUrl())) {
+
 //					{
 //						CloudLessonEntry ce=cloudLessonDao.getCloudLessonEntryByVideoid(e.getName());
 //						if(null!=ce && StringUtils.isNotBlank(ce.getImageUrl()))
@@ -55,15 +51,14 @@ public class ResourcesUpdates {
 //								
 //							}
 //						}
-					//}
-				}
-			}
-			
-			
-			skip=skip+200;
-		}
-		
-		
-	
-	}
+                    //}
+                }
+            }
+
+
+            skip = skip + 200;
+        }
+
+
+    }
 }

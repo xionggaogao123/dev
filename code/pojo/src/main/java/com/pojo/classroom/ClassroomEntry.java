@@ -8,52 +8,84 @@ import org.bson.types.ObjectId;
 /**
  * 教室表
  * {
- * sid:学校id----------->schoolId,
- * nm:教室名----------->className
- * cid:班级id--------->classId
+ *     sid:学校id----------->schoolId,
+ *     nm:教室名----------->className
+ *     re：备注------------->remark
+ *     cid:班级id--------->classId
+ *     df:删除--------------》deleteFlag 0未删除，1已删除
  * }
  * Created by qiangm on 2015/10/10.
  */
 public class ClassroomEntry extends BaseDBObject {
-    public ClassroomEntry() {
+    public ClassroomEntry()
+    {
         super();
     }
-
-    public ClassroomEntry(BasicDBObject basicDBObject) {
+    public ClassroomEntry(BasicDBObject basicDBObject)
+    {
         super(basicDBObject);
     }
 
-    public ClassroomEntry(ObjectId schoolId, String name, ObjectId classId) {
+    public ClassroomEntry(ObjectId schoolId,String name,String remrak,ObjectId classId)
+    {
         super();
-        BasicDBObject baseEntry = new BasicDBObject()
-                .append("sid", schoolId)
+        BasicDBObject baseEntry =new BasicDBObject()
+                .append("sid",schoolId)
                 .append("nm", name)
-                .append("cid", classId);
+                .append("re", remrak)
+                .append("cid",classId)
+                .append("df", 0);
         setBaseEntry(baseEntry);
     }
-
-
-    public ObjectId getSchoolId() {
+    public ClassroomEntry(ObjectId schoolId,String name,String remrak,int deleteFlag)
+    {
+        super();
+        BasicDBObject baseEntry =new BasicDBObject()
+                .append("sid",schoolId)
+                .append("nm", name)
+                .append("re", remrak)
+                .append("df",deleteFlag);
+        setBaseEntry(baseEntry);
+    }
+    public ObjectId getSchoolId()
+    {
         return getSimpleObjecIDValue("sid");
     }
-
-    public void setSchoolId(ObjectId schoolId) {
-        setSimpleValue("sid", schoolId);
+    public void setSchoolId(ObjectId schoolId)
+    {
+        setSimpleValue("sid",schoolId);
     }
 
     public ObjectId getClassId() {
         return getSimpleObjecIDValue("cid");
     }
-
     public void setClassId(ObjectId classId) {
-        setSimpleValue("cid", classId);
+        setSimpleValue("cid",classId);
     }
 
-    public String getRoomName() {
+    public String getRoomName()
+    {
         return getSimpleStringValue("nm");
     }
+    public void setRoomName(String name)
+    {
+        setSimpleValue("nm",name);
+    }
+    public String getRemark()
+    {
+        return getSimpleStringValue("re");
+    }
+    public void setRemark(String remark)
+    {
+        setSimpleValue("re",remark);
+    }
 
-    public void setRoomName(String name) {
-        setSimpleValue("nm", name);
+    public int getDeleteFlag()
+    {
+        return getSimpleIntegerValue("df");
+    }
+    public void setDeleteFlag(int deleteFlag)
+    {
+        setSimpleValue("df",deleteFlag);
     }
 }

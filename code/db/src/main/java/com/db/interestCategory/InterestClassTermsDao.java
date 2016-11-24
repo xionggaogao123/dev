@@ -16,23 +16,25 @@ public class InterestClassTermsDao extends BaseDao {
 
     /**
      * 添加
+     *
      * @param entry
      * @return
      */
-    public ObjectId add(InterestClassTermsEntry entry){
+    public ObjectId add(InterestClassTermsEntry entry) {
         save(MongoFacroty.getAppDB(), Constant.COLLECTION_INTERESTTERMS_NAME, entry.getBaseEntry());
         return entry.getID();
     }
 
     /**
      * 根据学校id查找
+     *
      * @param schoolId
      * @return
      */
-    public InterestClassTermsEntry findInterestClassTermsEntryBySchoolId(ObjectId schoolId){
+    public InterestClassTermsEntry findInterestClassTermsEntryBySchoolId(ObjectId schoolId) {
         BasicDBObject query = new BasicDBObject("sid", schoolId);
-        DBObject dbObject = findOne(MongoFacroty.getAppDB(), Constant.COLLECTION_INTERESTTERMS_NAME,query, Constant.FIELDS);
-        if(dbObject != null) {
+        DBObject dbObject = findOne(MongoFacroty.getAppDB(), Constant.COLLECTION_INTERESTTERMS_NAME, query, Constant.FIELDS);
+        if (dbObject != null) {
             return new InterestClassTermsEntry((BasicDBObject) dbObject);
         } else {
             return null;
@@ -41,12 +43,13 @@ public class InterestClassTermsDao extends BaseDao {
 
     /**
      * 增加一个学期
+     *
      * @param schoolId
      * @param term
      */
-    public void updateTerms(ObjectId schoolId, IdNameValuePair term){
+    public void updateTerms(ObjectId schoolId, IdNameValuePair term) {
         DBObject query = new BasicDBObject("sid", schoolId);
         DBObject updateValue = new BasicDBObject(Constant.MONGO_PUSH, new BasicDBObject("tms", term.getBaseEntry()));
-        update(MongoFacroty.getAppDB(), Constant.COLLECTION_INTERESTTERMS_NAME, query,updateValue);
+        update(MongoFacroty.getAppDB(), Constant.COLLECTION_INTERESTTERMS_NAME, query, updateValue);
     }
 }

@@ -1,0 +1,129 @@
+.ebusiness-I img {
+    width: 65px;
+    height: 65px;
+    margin: 20px 0 0 50px;
+    float: left;
+}
+
+.ebusiness-I {
+    display: inline-block;
+    width: 420px;
+    vertical-align: middle;
+}
+
+.ebusiness-I p {
+    display: block;
+    vertical-align: middle;
+    margin: 20px 0 0 130px;
+}
+
+.ebusiness-II {
+    display: inline-block;
+    width: 200px;
+    text-align: center;
+}
+
+.ebusiness-III {
+    display: inline-block;
+    width: 600px;
+    text-align: center;
+}
+
+.ebusiness-III em {
+    font-family: "Microsoft YaHei";
+    font-style: normal;
+    margin-left: 30px;
+    cursor: pointer;
+}
+
+.ebusiness-III .ecn {
+    margin-left: 10px;
+    width: 90px;
+}
+
+.ebusiness-IV {
+    display: inline-block;
+    width: 500px;
+}
+
+.ebusiness-IV i {
+    font-family: "Microsoft YaHei";
+    font-style: normal;
+}
+
+.ebusiness-I label {
+    display: block;
+    vertical-align: middle;
+    margin: 10px 0 0 130px;
+}
+
+.list-group {
+    margin-top: 50px;;
+}
+
+.order-user {
+    font-family: "Microsoft YaHei";
+    font-style: normal;
+}
+
+.navbar-nav > li > a {
+    cursor: pointer;
+}
+
+/************************分页*****************************/
+.new-page-links {
+    width: 540px;
+    margin: 20px auto;
+    margin-right: auto;
+}
+
+.new-page-links li {
+    list-style: none;
+    float: left;
+    line-height: 30px;
+    border: #dcdcdc 1px solid;
+    color: #000a25;
+    background: #fff;
+    padding: 0 10px;
+    border-right: 0;
+}
+
+.new-page-links li a {
+    display: block;
+}
+
+.new-page-links li.first {
+    border-top-left-radius: 3px;
+    border-bottom-left-radius: 3px;
+}
+
+.new-page-links li.last {
+    border-top-right-radius: 3px;
+    border-bottom-right-radius: 3px;
+    border-right: #dcdcdc 1px solid;
+}
+
+.new-page-links li:hover {
+    background: #ddd;
+}
+
+.new-page-links li a:hover {
+    color: #000a25;
+}
+
+.new-page-links li.active {
+    background: #f5f5f5;
+    color: #9d9f9e;
+}
+
+.new-page-links li.active a {
+    cursor: default !important;
+    color: #9d9f9e;
+}
+
+.new-page-links li.disabled, .new-page-links li.disabled a {
+    color: #999;
+    background-color: #fff;
+    border-color: #ddd;
+    cursor: not-allowed;
+}

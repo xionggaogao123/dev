@@ -25,7 +25,7 @@ public class InteractLessonExamDetailDao extends BaseDao {
      * @return
      */
     public ObjectId addInteractLessonExamDetailEntry(InteractLessonExamDetailEntry e) {
-        save(MongoFacroty.getAppDB(), Constant.COLLECTION_INTERACTLESSON_EXAM_DETAIL,e.getBaseEntry());
+        save(MongoFacroty.getAppDB(), Constant.COLLECTION_INTERACTLESSON_EXAM_DETAIL, e.getBaseEntry());
         return e.getID();
     }
 
@@ -43,24 +43,24 @@ public class InteractLessonExamDetailDao extends BaseDao {
         List<InteractLessonExamDetailEntry> retList = new ArrayList<InteractLessonExamDetailEntry>();
         BasicDBObject dbo = new BasicDBObject();
         dbo.append("lid", lessonId);
-        if(type!=0){
+        if (type != 0) {
             dbo.append("ty", type);
         }
-        if(times!=0){
+        if (times != 0) {
             dbo.append("ts", times);
         }
-        if(number!=0){
+        if (number != 0) {
             dbo.append("nb", number);
         }
-        BasicDBObject sortDBO =new BasicDBObject();
-        if(orderBy!=null&&!"".equals(orderBy)){
-            if("nb".equals(orderBy)){
-                sortDBO.append(orderBy,1);
-            }else{
-                sortDBO.append(orderBy,-1);
+        BasicDBObject sortDBO = new BasicDBObject();
+        if (orderBy != null && !"".equals(orderBy)) {
+            if ("nb".equals(orderBy)) {
+                sortDBO.append(orderBy, 1);
+            } else {
+                sortDBO.append(orderBy, -1);
             }
-        }else{
-            sortDBO.append(Constant.ID,-1);
+        } else {
+            sortDBO.append(Constant.ID, -1);
         }
         List<DBObject> list = find(MongoFacroty.getAppDB(), Constant.COLLECTION_INTERACTLESSON_EXAM_DETAIL, dbo, fields, sortDBO);
         if (null != list && !list.isEmpty()) {
@@ -74,36 +74,34 @@ public class InteractLessonExamDetailDao extends BaseDao {
     }
 
     public Map<ObjectId, List<InteractLessonExamDetailEntry>> getExamDetailEntryMap(ObjectId lessonId, int type, int times, DBObject fields, String orderBy) {
-        Map<ObjectId, List<InteractLessonExamDetailEntry>> retMap =new HashMap<ObjectId, List<InteractLessonExamDetailEntry>>();
+        Map<ObjectId, List<InteractLessonExamDetailEntry>> retMap = new HashMap<ObjectId, List<InteractLessonExamDetailEntry>>();
         BasicDBObject dbo = new BasicDBObject();
         dbo.append("lid", lessonId);
-        if(type!=0){
+        if (type != 0) {
             dbo.append("ty", type);
         }
-        if(times!=0){
+        if (times != 0) {
             dbo.append("ts", times);
         }
-        BasicDBObject sortDBO =new BasicDBObject();
-        if(orderBy!=null&&!"".equals(orderBy)){
-            if("nb".equals(orderBy)){
-                sortDBO.append(orderBy,1);
-            }else{
-                sortDBO.append(orderBy,-1);
+        BasicDBObject sortDBO = new BasicDBObject();
+        if (orderBy != null && !"".equals(orderBy)) {
+            if ("nb".equals(orderBy)) {
+                sortDBO.append(orderBy, 1);
+            } else {
+                sortDBO.append(orderBy, -1);
             }
-        }else{
-            sortDBO.append(Constant.ID,-1);
+        } else {
+            sortDBO.append(Constant.ID, -1);
         }
-        List<DBObject> list=find(MongoFacroty.getAppDB(), Constant.COLLECTION_INTERACTLESSON_EXAM_DETAIL, dbo, fields, sortDBO);
-        List<InteractLessonExamDetailEntry> retList=null;
-        if(null!=list && !list.isEmpty())
-        {
+        List<DBObject> list = find(MongoFacroty.getAppDB(), Constant.COLLECTION_INTERACTLESSON_EXAM_DETAIL, dbo, fields, sortDBO);
+        List<InteractLessonExamDetailEntry> retList = null;
+        if (null != list && !list.isEmpty()) {
             InteractLessonExamDetailEntry e;
-            for(DBObject dbo1:list)
-            {
-                e=new InteractLessonExamDetailEntry((BasicDBObject)dbo1);
-                retList=retMap.get(e.getExamId());
-                if(retList==null){
-                    retList=new ArrayList<InteractLessonExamDetailEntry>();
+            for (DBObject dbo1 : list) {
+                e = new InteractLessonExamDetailEntry((BasicDBObject) dbo1);
+                retList = retMap.get(e.getExamId());
+                if (retList == null) {
+                    retList = new ArrayList<InteractLessonExamDetailEntry>();
                 }
                 retList.add(e);
                 retMap.put(e.getExamId(), retList);

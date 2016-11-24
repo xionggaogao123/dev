@@ -15,25 +15,17 @@ public class ProportionDao extends BaseDao {
 
     private static final String COLLECTION_NAME = Constant.COLLECTION_TE_PROPORTION;
 
-    public ObjectId addProportion(ProportionEntry entry){
+    public ObjectId addProportion(ProportionEntry entry) {
         save(MongoFacroty.getAppDB(), COLLECTION_NAME, entry.getBaseEntry());
         return entry.getID();
     }
 
-    public ProportionEntry getProportionEntryByEvalationId(ObjectId evaluationId){
-        DBObject query = new BasicDBObject("evid", evaluationId);
+    public ProportionEntry getProportionEntryBySchoolAndYear(ObjectId schoolId, String year) {
+        DBObject query = new BasicDBObject("si", schoolId).append("y", year);
         DBObject dbObject = findOne(MongoFacroty.getAppDB(), COLLECTION_NAME, query, Constant.FIELDS);
-        if(dbObject != null){
-            return new ProportionEntry((BasicDBObject)dbObject);
+        if (dbObject != null) {
+            return new ProportionEntry((BasicDBObject) dbObject);
         }
         return null;
     }
-
-    @Deprecated
-    public void updateEvaluationId(ObjectId schoolId, String year, ObjectId evaluationId){
-        DBObject query = new BasicDBObject("si", schoolId).append("y", year);
-        DBObject updateValue = new BasicDBObject(Constant.MONGO_SET, new BasicDBObject("evid", evaluationId));
-        update(MongoFacroty.getAppDB(), COLLECTION_NAME, query, updateValue);
-    }
-
 }

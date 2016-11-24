@@ -17,7 +17,6 @@ public class SimpleUserInfo implements Serializable {
     private int experienceValue;
     private int role;
     private String positionDec;
-    private String schoolName;
 
 
     public SimpleUserInfo()
@@ -106,14 +105,6 @@ public class SimpleUserInfo implements Serializable {
 
     public void setPositionDec(String positionDec) {
         this.positionDec = positionDec;
-    }
-
-    public String getSchoolName() {
-        return schoolName;
-    }
-
-    public void setSchoolName(String schoolName) {
-        this.schoolName = schoolName;
     }
 
     @Override

@@ -233,7 +233,6 @@ public class TransferCloudLesson {
 
         CloudLessonEntry cloudLessonEntry = new CloudLessonEntry(
                 cloudLessonInfo.getLessonName(),
-                null,
                 cloudLessonInfo.getLessonContent(),
                 0,//order
                 videoimage,
@@ -241,7 +240,6 @@ public class TransferCloudLesson {
                 subjectMap.get(cloudLessonInfo.getSubjectId()),
                 cloudLessonInfo.getGradeList(),
                 cloudLessonInfo.getLessonList()
-                ,0,1,0,null,new ArrayList<ObjectId>(),"资源板块后端"
         );
         cloudLessonDao.addCloudLessonEntry(cloudLessonEntry);
         cloudLessonMap.put(cloudLessonInfo.getId(),cloudLessonEntry.getID());

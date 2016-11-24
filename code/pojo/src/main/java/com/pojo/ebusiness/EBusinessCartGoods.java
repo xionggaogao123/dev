@@ -33,8 +33,17 @@ public class EBusinessCartGoods implements Serializable {
 	private int voucherOff;//单位  分
 	private String exTempId;
 	private int state;
-	
-	
+	//实付金额
+    private String priceDisCount;
+	private int discountPrice;
+	private int realPrice;
+	private String priceReal;
+
+	//抵用金额
+	private String pricel;
+
+
+
 	public EBusinessCartGoods(){}
 	
 	public EBusinessCartGoods(EGoodsEntry ge,int count)
@@ -60,9 +69,12 @@ public class EBusinessCartGoods implements Serializable {
 		this.image=ee.getSuggestImage().toString();
 		this.name=ee.getName();
 		this.price=ge.getPrice();
+		this.discountPrice=ee.getDiscountPrice();
+		this.realPrice=ee.getPr();
 		this.count=ge.getCount();
 		this.exCompanyNo=ge.getExCompanyNo();
 		this.expressNo=ge.getExpressNo();
+//		this.priceCount=ee.getDiscountPrice();
 		if(ee.getExpTempId() == null){
 			this.exTempId = "";
 		}else{
@@ -169,10 +181,39 @@ public class EBusinessCartGoods implements Serializable {
 		
 	}
 
+
+
 	public void setPriceStr(String priceStr) {
 		
 	}
 
+	public String getPriceDisCount() {
+		if(this.discountPrice<=0)
+		{
+			return "0.00";
+		}
+
+		Double d=Double.valueOf(String.valueOf(this.discountPrice*this.count))/100D;
+		return d.toString();
+	}
+
+	public void setPriceDisCount(String priceDisCount) {
+		this.priceDisCount = priceDisCount;
+	}
+
+	public String getPriceReal() {
+		if(this.realPrice<=0)
+		{
+			return "0.00";
+		}
+
+		Double d=Double.valueOf(String.valueOf(this.realPrice*this.count))/100D;
+		return d.toString();
+	}
+
+	public void setPriceReal(String priceReal) {
+		this.priceReal = priceReal;
+	}
 	public int getExperienceOff() {
 		return experienceOff;
 	}
@@ -207,6 +248,36 @@ public class EBusinessCartGoods implements Serializable {
 
 	public void setState(int state) {
 		this.state = state;
+	}
+
+	public int getDiscountPrice() {
+		return discountPrice;
+	}
+
+	public void setDiscountPrice(int discountPrice) {
+		this.discountPrice = discountPrice;
+	}
+
+	public int getRealPrice() {
+		return realPrice;
+	}
+
+	public void setRealPrice(int realPrice) {
+		this.realPrice = realPrice;
+	}
+
+	public String getPricel() {
+		if(this.realPrice<=0)
+		{
+			return "0.00";
+		}
+
+		Double d=Double.valueOf(String.valueOf(this.realPrice*this.count-this.discountPrice*this.count))/100D;
+		return d.toString();
+	}
+
+	public void setPricel(String pricel) {
+		this.pricel = pricel;
 	}
 
 	@Override

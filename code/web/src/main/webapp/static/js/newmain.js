@@ -1,41 +1,41 @@
-$(function() {
+$(function () {
     initWindow();
 
-    $('.login-btn').on('click', function() {
+    $('.login-btn').on('click', function () {
         loginIndex();
     });
 
-    $('.input-account').focus(function() {
+    $('.input-account').focus(function () {
         $(this).removeClass('error');
         $('.username-error').hide();
         $(this).val('');
     });
-    $('.input-password').focus(function() {
+    $('.input-password').focus(function () {
         $(this).removeClass('error');
         $('.password-error').hide();
         $(this).val('');
     });
 
-    $('.input-password').keydown(function(event) {
+    $('.input-password').keydown(function (event) {
         if (event.which == 13) {
             loginIndex();
         }
     });
-    
+
     var arrStr = document.cookie.split(";");
-    for(var i = 0;i < arrStr.length;i ++){ 
-    	var temp = arrStr[i].split("="); 
-    	if(temp[0] == "momcallme") {
-    		if (decodeURI(temp[1])!=null && decodeURI(temp[1])!="\"\"") {
-    			$(".input-account").val(decodeURI(temp[1]));
-    		}
-    		
-    	}
-    } 
+    for (var i = 0; i < arrStr.length; i++) {
+        var temp = arrStr[i].split("=");
+        if (temp[0] == "momcallme") {
+            if (decodeURI(temp[1]) != null && decodeURI(temp[1]) != "\"\"") {
+                $(".input-account").val(decodeURI(temp[1]));
+            }
+
+        }
+    }
 
     $('.company-info-content').find('br').after('&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;');
 
-    $('.online-btn,.manage-btn').mouseenter(function() {
+    $('.online-btn,.manage-btn').mouseenter(function () {
         $(this).animate({
             'bottom': '80px'
         }, 250).animate({
@@ -44,7 +44,7 @@ $(function() {
     });
 });
 
-window.onresize = function() {
+window.onresize = function () {
     initWindow();
 }
 
@@ -86,7 +86,7 @@ function loginIndex() {
             'autologin': false,
             'inJson': true
         },
-        success: function(data) {
+        success: function (data) {
             if (data.status == "ok") {
                 if (!data.userInitialized) {
                     if (typeof data.geo == 'undefined') {
@@ -124,7 +124,7 @@ function loginIndex() {
                 }
             }
         },
-        complete: function() {
+        complete: function () {
             $('.login-btn').removeClass('active');
         }
     });
@@ -136,23 +136,23 @@ function submitMessage() {
 
 function validateContactus() {
     if (validateForm({
-        name: {
-            required: true,
-            maxLength: 20
-        },
-        email_input: {
-            required: false,
-            email: true,
-            maxLength: 255
-        },
-        phone: {
-            required: false,
-            maxLength: 11
-        }
-    }, {
-        con: $('.showerror').find('span:last'),
-        msg: ['用户名', '邮箱地址', '联系电话']
-    })) {
+            name: {
+                required: true,
+                maxLength: 20
+            },
+            email_input: {
+                required: false,
+                email: true,
+                maxLength: 255
+            },
+            phone: {
+                required: false,
+                maxLength: 11
+            }
+        }, {
+            con: $('.showerror').find('span:last'),
+            msg: ['用户名', '邮箱地址', '联系电话']
+        })) {
         var name_content = $.trim($('#name').val());
         var message_content = $.trim($('#message_text').val());
         var email_content = $.trim($('#email_input').val());
@@ -183,7 +183,7 @@ function validateContactus() {
             url: "/callUs.action",
             type: "post",
             data: userMessage,
-            success: function(data) {
+            success: function (data) {
                 alert("我们已收到留言，会尽快处理，谢谢您的关注。");
                 $('.contact-us-dl').find('input').val('');
                 $('.contact-us-dl').find('textarea').text('');
@@ -193,12 +193,14 @@ function validateContactus() {
                 $('#email-prompt').css('color', 'grey');
                 $('#phone-prompt').css('color', 'grey');
             },
-            error: function(e) {}
+            error: function (e) {
+            }
         });
         $('#submitBtn').attr('disabled', 'disabled');
         $('#submitBtn').attr('value', '提交中...');
         $('#submitBtn').css('cursor', 'wait');
-    } else {}
+    } else {
+    }
 }
 
 var polyv_player;
@@ -215,7 +217,7 @@ function playMovie() {
         polyvObject.writePlayer(0);
     }
     vc.fadeIn();
-    $('.close-dialog').on('click', function() {
+    $('.close-dialog').on('click', function () {
         vc.empty();
         vc.fadeOut();
     });

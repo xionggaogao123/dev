@@ -32,9 +32,7 @@ public class LessonWare extends BaseDBObject {
 		.append("id", new ObjectId())
 		.append("fty", type)
 		.append("nm", name)
-		.append("pa", path)
-		.append("sort", 0)
-		.append("push",1);
+		.append("pa", path);
 		setBaseEntry(baseEntry);
 	}
 	
@@ -62,25 +60,5 @@ public class LessonWare extends BaseDBObject {
 	}
 	public void setPath(String path) {
 		setSimpleValue("pa", path);
-	}
-	public int getSort() {
-		if (getSimpleObjectValue("sort")==null) {
-			return 0;
-		} else {
-			return getSimpleIntegerValue("sort");
-		}
-	}
-	public void setSort(int sort) {
-		setSimpleValue("sort",sort);
-	}
-	public int getPush() {
-		if (getSimpleObjectValue("push")==null) {
-			return 1;
-		} else {
-			return getSimpleIntegerValue("push");
-		}
-	}
-	public void setPush(int push) {
-		setSimpleValue("push",push);
 	}
 }

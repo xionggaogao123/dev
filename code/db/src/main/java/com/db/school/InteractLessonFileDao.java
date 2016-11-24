@@ -25,12 +25,13 @@ public class InteractLessonFileDao extends BaseDao {
      * @return
      */
     public ObjectId addInteractLessonFileEntry(InteractLessonFileEntry e) {
-        save(MongoFacroty.getAppDB(), Constant.COLLECTION_INTERACTLESSON_FILE,e.getBaseEntry());
+        save(MongoFacroty.getAppDB(), Constant.COLLECTION_INTERACTLESSON_FILE, e.getBaseEntry());
         return e.getID();
     }
 
     /**
      * 查询
+     *
      * @param lessonId
      * @param type
      * @param times
@@ -42,17 +43,17 @@ public class InteractLessonFileDao extends BaseDao {
         List<InteractLessonFileEntry> retList = new ArrayList<InteractLessonFileEntry>();
         BasicDBObject dbo = new BasicDBObject();
         dbo.append("lid", lessonId);
-        if(type!=0){
+        if (type != 0) {
             dbo.append("ty", type);
         }
-        if(times!=0){
+        if (times != 0) {
             dbo.append("ts", times);
         }
-        BasicDBObject sortDBO =new BasicDBObject();
-        if(orderBy!=null&&!"".equals(orderBy)){
-            sortDBO.append(orderBy,-1);
-        }else{
-            sortDBO.append(Constant.ID,-1);
+        BasicDBObject sortDBO = new BasicDBObject();
+        if (orderBy != null && !"".equals(orderBy)) {
+            sortDBO.append(orderBy, -1);
+        } else {
+            sortDBO.append(Constant.ID, -1);
         }
         List<DBObject> list = find(MongoFacroty.getAppDB(), Constant.COLLECTION_INTERACTLESSON_FILE, dbo, fields, sortDBO);
         if (null != list && !list.isEmpty()) {
@@ -64,26 +65,26 @@ public class InteractLessonFileDao extends BaseDao {
         }
         return retList;
     }
+
     /**
      * 查询
+     *
      * @param lessonId
      * @param type
      * @return
      */
     public Map<String, InteractLessonFileEntry> getExamFileEntryMap(ObjectId lessonId, int type) {
-        Map<String, InteractLessonFileEntry> retMap =new HashMap<String, InteractLessonFileEntry>();
+        Map<String, InteractLessonFileEntry> retMap = new HashMap<String, InteractLessonFileEntry>();
         BasicDBObject dbo = new BasicDBObject();
         dbo.append("lid", lessonId);
-        if(type!=0){
+        if (type != 0) {
             dbo.append("ty", type);
         }
-        List<DBObject> list=find(MongoFacroty.getAppDB(), Constant.COLLECTION_INTERACTLESSON_FILE, dbo, Constant.FIELDS);
-        if(null!=list && !list.isEmpty())
-        {
+        List<DBObject> list = find(MongoFacroty.getAppDB(), Constant.COLLECTION_INTERACTLESSON_FILE, dbo, Constant.FIELDS);
+        if (null != list && !list.isEmpty()) {
             InteractLessonFileEntry e;
-            for(DBObject dbo1:list)
-            {
-                e=new InteractLessonFileEntry((BasicDBObject)dbo1);
+            for (DBObject dbo1 : list) {
+                e = new InteractLessonFileEntry((BasicDBObject) dbo1);
                 retMap.put(e.getFileName(), e);
             }
         }

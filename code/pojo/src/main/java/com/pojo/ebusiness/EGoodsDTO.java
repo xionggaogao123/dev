@@ -35,6 +35,7 @@ public class EGoodsDTO {
     private String expressTemplateId;
     private int activity;
     private int groupPurchase;
+    private int maxOut;
 
     public EGoodsDTO(){}
 
@@ -88,6 +89,7 @@ public class EGoodsDTO {
         }
         this.activity=eGoodsEntry.getActivity();
         this.groupPurchase=eGoodsEntry.getGroupPurchase();
+        this.maxOut=eGoodsEntry.getMaxOut();
     }
 
     public EGoodsEntry exportEntry(){
@@ -111,6 +113,7 @@ public class EGoodsDTO {
         eGoodsEntry.setState(state);
         eGoodsEntry.setActivity(activity);
         eGoodsEntry.setGroupPurchase(groupPurchase);
+        eGoodsEntry.setMaxOut(maxOut);
         eGoodsEntry.setSellCount(sellCount);
         eGoodsEntry.setPopularLevel(popularLevel);
         List<EGoodsEntry.Kind> kindList = new ArrayList<EGoodsEntry.Kind>();
@@ -341,5 +344,13 @@ public class EGoodsDTO {
 
     public void setGroupPurchase(int groupPurchase) {
         this.groupPurchase = groupPurchase;
+    }
+
+    public int getMaxOut() {
+        return maxOut;
+    }
+
+    public void setMaxOut(int maxOut) {
+        this.maxOut = maxOut;
     }
 }

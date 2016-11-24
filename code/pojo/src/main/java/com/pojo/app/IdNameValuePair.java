@@ -42,15 +42,6 @@ public class IdNameValuePair extends BaseDBObject {
 		.append("v", value);
 		setBaseEntry(baseEntry);
 	}
-
-	public IdNameValuePair(Object id,String name, ObjectId value) {
-		super();
-		BasicDBObject baseEntry =new BasicDBObject()
-				.append("id", id)
-				.append("nm", name)
-				.append("v", value);
-		setBaseEntry(baseEntry);
-	}
 	
 	
 	public ObjectId getId() {

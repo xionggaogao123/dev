@@ -115,8 +115,7 @@ public final class ExamDao extends BaseDao {
                 .append("type", ExamDTO.examTypeNames[dto.getExamType()])
                 .append("cList", examEntry.getCList())
                 .append("sList", examEntry.getSubjectList())
-                .append("rm", dto.getRemark())
-                .append("ty", dto.getType());
+                .append("rm", dto.getRemark());
         DBObject values = new BasicDBObject(Constant.MONGO_SET, entry);
         update(MongoFacroty.getAppDB(), Constant.COLLECTION_EXAM, query, values);
     }
@@ -143,9 +142,7 @@ public final class ExamDao extends BaseDao {
                 new ObjectId(examSubjectDTO.getSubjectId()),
                 examSubjectDTO.getSubjectName(),
                 examSubjectDTO.getFullMarks(),
-                examSubjectDTO.getYouXiuScore(),
-                examSubjectDTO.getFailScore(),
-                examSubjectDTO.getDiFenScore(),
+                examSubjectDTO.getFullMarks() * 0.6,
                 examSubjectDTO.getTime(),
                 examSubjectDTO.getExamDate(),
                 examSubjectDTO.getWeekDay(),
@@ -183,9 +180,6 @@ public final class ExamDao extends BaseDao {
                 new BasicDBObject("es.$.sna", examSubjectDTO.getSubjectName()).
                         append("es.$.sid", new ObjectId(examSubjectDTO.getSubjectId())).
                         append("es.$.fm", examSubjectDTO.getFullMarks()).
-                        append("es.$.yx", examSubjectDTO.getYouXiuScore()).
-                        append("es.$.fl", examSubjectDTO.getFailScore()).
-                        append("es.$.df", examSubjectDTO.getDiFenScore()).
                         append("es.$.tm", examSubjectDTO.getTime()).
                         append("es.$.ed", examSubjectDTO.getExamDate()));
         update(MongoFacroty.getAppDB(), Constant.COLLECTION_EXAM, query, updateValue);
@@ -250,16 +244,17 @@ public final class ExamDao extends BaseDao {
         DBObject query = new BasicDBObject(Constant.ID, examId);
         DBObject updateValue = new BasicDBObject(Constant.MONGO_PUSH,
                 new BasicDBObject("ue", new BasicDBObject("rid", dto.getId())
-                        .append("rna",dto.getExamRoomName()).append("an", arrangedNum)));
+                        .append("rna", dto.getExamRoomName()).append("an", arrangedNum)));
         update(MongoFacroty.getAppDB(), Constant.COLLECTION_EXAM, query, updateValue);
     }
 
     /**
      * 修改考试的考场信息是否已经编排完成
+     *
      * @param examId
      * @param status
      */
-    public void updateExamroomArrange(ObjectId examId,int status){
+    public void updateExamroomArrange(ObjectId examId, int status) {
         update(MongoFacroty.getAppDB(), Constant.COLLECTION_EXAM,
                 new BasicDBObject(Constant.ID, examId),
                 new BasicDBObject(Constant.MONGO_SET, new BasicDBObject().append("ac", status)));

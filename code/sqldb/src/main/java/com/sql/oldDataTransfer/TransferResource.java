@@ -1,20 +1,21 @@
 package com.sql.oldDataTransfer;
 
+import java.io.File;
+import java.io.FileInputStream;
+import java.util.ArrayList;
+import java.util.List;
+
+import org.apache.commons.io.FileUtils;
+import org.apache.commons.io.FilenameUtils;
+import org.apache.commons.lang.StringUtils;
+import org.bson.types.ObjectId;
+
 import com.db.resources.ResourceDao;
 import com.db.resources.ResourceDictionaryDao;
 import com.pojo.app.FileType;
 import com.pojo.resources.ResourceDictionaryEntry;
 import com.pojo.resources.ResourceEntry;
 import com.sys.utils.HttpFileConvertUtils;
-import org.apache.commons.io.FileUtils;
-import org.apache.commons.io.FilenameUtils;
-import org.apache.commons.lang.StringUtils;
-import org.bson.types.ObjectId;
-
-import java.io.File;
-import java.io.FileInputStream;
-import java.util.ArrayList;
-import java.util.List;
 
 
 /**
@@ -30,10 +31,10 @@ public class TransferResource {
 		
 		ResourceDictionaryDao resourceDictionaryDao =new ResourceDictionaryDao();
 	
-		File f= new File("D:\\res1215\\TransferResource0902.txt");
+		File f= new File("D:\\res1215\\TransferResource0523.txt");
 		f.createNewFile();
 		
-		File dir=new File("D:\\resourceSwf0902");
+		File dir=new File("D:\\resourceSwf0302");
 		//resourceSwf
 		
 		
@@ -45,14 +46,21 @@ public class TransferResource {
 		
 		
 		
-		if(names.size()!=mulus.size() || mulus.size()!=addresss.size()  )
+		if(names.size()!=mulus.size() || mulus.size()!=addresss.size()   )
 		{
 			System.out.println("数目错误");
 			throw new Exception("data size error!!");
 		}
 		
 		
-		for(int i=370;i<names.size();i++)
+		if(names.size()!=mulus.size() || mulus.size()!=addresss.size()   )
+		{
+			System.out.println("数目错误");
+			throw new Exception("data size error!!");
+		}
+		
+		
+		for(int i=0;i<names.size();i++)
 		{
 			System.out.println("i="+i);
 			
@@ -129,22 +137,7 @@ public class TransferResource {
 				
 				for(String ml:muluArr)
 				{
-					
-					Long a=null;
-					try
-					{
-					a=Long.valueOf(ml);
-					}catch(Exception ex)
-					{
-						
-					}
-					
-					if(null==a)
-					{
-						a=Long.valueOf(ml.substring(1));
-					}
-					
-					ResourceDictionaryEntry rde=resourceDictionaryDao.getResourceDictionaryEntryBySort(a,6);
+					ResourceDictionaryEntry rde=resourceDictionaryDao.getResourceDictionaryEntryBySort(Long.valueOf(ml),6);
 					
 					if(null==rde)
 					{
@@ -210,6 +203,7 @@ public class TransferResource {
 				FileUtils.copyFile(res, newFile);
 			}
 			
+			//QiniuFileUtils.uploadFile(fileKey+"."+extendName, s, QiniuFileUtils.TYPE_DOCUMENT);
 			
 			File swfFile=new File(dir, fileKey+".swf");
 			swfFile.createNewFile();
@@ -229,9 +223,11 @@ public class TransferResource {
 		    {
 				HttpFileConvertUtils.convertPPToPdf(res, pdfFile.getAbsolutePath());
 				HttpFileConvertUtils.convertPdfToSwf(pdfFile,swfFile.getAbsolutePath());
+				
+		
 		    }
 			
-			  ResourceEntry e =new ResourceEntry(ft.getType(), name, res.length(), "", fileKey+"."+extendName, null, null, kwList, psbList,0,1,0,null,new ArrayList<ObjectId>(),"资源板块后端");
+			  ResourceEntry e =new ResourceEntry(ft.getType(), name, res.length(), "", fileKey+"."+extendName, null, null, kwList, psbList);
 			  e.setID(fileKey);
 			  resourceDao.addResource(e);
 			  FileUtils.write(f, "\r\n",true);

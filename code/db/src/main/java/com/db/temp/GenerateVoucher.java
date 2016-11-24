@@ -14,7 +14,7 @@ import java.util.Date;
 public class GenerateVoucher {
     private EVoucherDao eVoucherDao = new EVoucherDao();
 
-    private void generate(){
+    private void generate() {
         String num = String.valueOf(System.currentTimeMillis());
         num += RandomUtils.nextInt(Constant.MIN_PASSWORD);
         Date date = DateTimeUtils.stringToDate("2016-04-30 23:59:59", DateTimeUtils.DATE_YYYY_MM_DD_HH_MM_SS_H);
@@ -22,9 +22,9 @@ public class GenerateVoucher {
         eVoucherDao.add(eVoucherEntry);
     }
 
-    public static void main(String[] args){
-       GenerateVoucher generateVoucher = new GenerateVoucher();
-        for(int i=0; i<10; i++){
+    public static void main(String[] args) {
+        GenerateVoucher generateVoucher = new GenerateVoucher();
+        for (int i = 0; i < 10; i++) {
             generateVoucher.generate();
         }
     }

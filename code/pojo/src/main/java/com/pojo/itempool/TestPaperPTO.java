@@ -102,13 +102,13 @@ public class TestPaperPTO {
 		}
 		
 		
-        if(null==this.subject || !ObjectId.isValid(this.subject))
+        if(!ObjectId.isValid(this.subject))
         {
         	obj.setMessage("科目错误");
 			return obj;
         }
         
-        if(null== this.getGrade() ||   !ObjectId.isValid(this.getGrade()))
+        if(!ObjectId.isValid(this.getGrade()))
         {
         	obj.setMessage("学段错误");
 			return obj;

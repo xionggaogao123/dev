@@ -109,21 +109,6 @@ public enum SubjectType {
 		
 		return null;
 	}
+
 	
-	
-	/**
-	 * 返回是不是普通课程
-	 * 语文，数学，外语，历史，地理，生物，物理，化学，政治 是普通课程
-	 * @param name
-	 * @return
-	 */
-	public static Boolean isCommonSubject(String name)
-	{
-		SubjectType ty=getSubjectType(name);
-		if(null!=ty && ty.getId()>=1 && ty.getId()<=9)
-		{
-			return true;
-		}
-		return false;
-	}
 }

@@ -1,0 +1,310 @@
+/*
+* @Author: Tony
+* @Date:   2016-08-03 10:10:21
+* @Last Modified by:   Tony
+* @Last Modified time: 2016-08-16 10:46:29
+*/
+body, div, dl, dt, dd, ul, ol, li, h1, h2, h3, h4, h5, h6, pre, code, form, fieldset, legend, input, button, textarea, p, blockquote, th, td {
+    margin: 0;
+    padding: 0;
+    font-size: 14px;
+}
+
+body {
+    background: none;
+    margin-bottom: 55px;
+    color: #555;
+    font-size: 14px;
+    font-family: "Myriad Set Pro", "Helvetica Neue", "Helvetica", "Arial", sans-serif;
+}
+
+td, th, caption {
+    font-size: 14px;
+}
+
+h1, h2, h3, h4, h5, h6 {
+    font-weight: normal;
+    font-size: 100%;
+}
+
+address, caption, cite, code, dfn, em, strong, th, var {
+    font-style: normal;
+    font-weight: normal;
+}
+
+a {
+    color: #555;
+    text-decoration: none;
+}
+
+a:hover {
+    text-decoration: underline;
+}
+
+img {
+    border: none;
+}
+
+ol, ul, li {
+    list-style: none;
+}
+
+input, textarea, select, button {
+    font: 14px Verdana, Helvetica, Arial, sans-serif;
+}
+
+table {
+    border-collapse: collapse;
+}
+
+html {
+    background: none;
+}
+
+/* css common */
+.clearfix:after {
+    content: ".";
+    display: block;
+    height: 0;
+    clear: both;
+    visibility: hidden;
+}
+
+.clearfix {
+    *zoom: 1;
+}
+
+.container {
+    margin: 0;
+    width: 750px;
+    margin: 0 auto;
+    position: relative;
+    overflow: hidden;
+}
+
+.l-bg {
+    position: fixed;
+    width: 750px;
+    z-index: -1;
+    top: 0;
+    left: 50%;
+    margin-left: -375px;
+    height: 1500px;
+}
+
+.head-pic {
+    display: block;
+    width: 162px;
+    height: 162px;
+    border-radius: 100%;
+    border: 1px solid #fff;
+    margin: 200px auto 28px;
+}
+
+.p-input {
+    width: 86.8%;
+    height: 50px;
+    margin: 25px auto 0;
+    position: relative;
+}
+
+.p-input input {
+    width: 89.62%;
+    height: 50px;
+    line-height: 50px;
+    display: block;
+    margin: 0 auto;
+    border: 1px solid #EEEAE4;
+    border-radius: 6px;
+    font-size: 16px;
+    padding-left: 10.38%;
+}
+
+.img-input {
+    position: absolute;
+    top: 9px;
+    left: 19px;
+    width: 30px;
+    height: 34px;
+}
+
+.btn1 {
+    display: block;
+    width: 86.8%;
+    height: 50px;
+    background: #F39E71;
+    color: #fff;
+    font-size: 22px;
+    border: 1px solid #fff;
+    margin: 25px auto 0;
+    border-radius: 6px;
+    cursor: pointer;
+}
+
+.p-now {
+    width: 86.8%;
+    margin: 18px auto 165px;
+    height: 12px;
+    line-height: 20px;
+    font-size: 16px;
+    color: #999;
+}
+
+.p-now .a1 {
+    float: left;
+    color: #999;
+}
+
+.p-now .a2 {
+    float: right;
+    color: #666;
+}
+
+.other-login {
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    width: 100%;
+    height: 118px;
+}
+
+.line-left {
+    position: fixed;
+    bottom: 120px;
+    width: 40.625%;
+    left: 0;
+    height: 1px;
+    background: #fff;
+}
+
+.line-right {
+    position: fixed;
+    bottom: 120px;
+    width: 40.625%;
+    right: 0;
+    height: 1px;
+    background: #fff;
+}
+
+.other-logo {
+    width: 31.25%;
+    height: 59px;
+    margin: 0 auto;
+    position: relative;
+}
+
+.other-logo img {
+    width: 70px;
+    height: 70px;
+    margin-top: 10px;
+    cursor: pointer;
+}
+
+.oqq {
+    float: left;
+}
+
+.owx {
+    float: right;
+}
+
+.other-txt {
+    position: fixed;
+    bottom: 106px;
+    left: 50%;
+    margin-left: -9.375%;
+    width: 18.75%;
+    text-align: center;
+    font-size: 24px;
+    color: #fff;
+}
+
+/* 关联页面 */
+.p-back {
+    height: 50px;
+    margin: 20px 0 0 20px;
+}
+
+.back-span {
+    float: left;
+    cursor: pointer;
+    width: 40px;
+    height: 40px;
+}
+
+.p-infor1 {
+    margin: 120px 0 30px;
+    text-align: center;
+    color: #999;
+    font-size: 24px;
+}
+
+.back-span:hover {
+    text-decoration: none;
+}
+
+/* 判断页面 */
+.head-pic2 {
+    display: block;
+    width: 162px;
+    height: 162px;
+    border-radius: 100%;
+    border: 1px solid #fff;
+    margin: 102px auto 6px;
+}
+
+.j-p1 {
+    width: 86.8%;
+    text-align: center;
+    margin: 30px auto 0;
+    font-size: 30px;
+    height: 40px;
+    color: #666;
+    line-height: 40px;
+}
+
+.j-p2 {
+    width: 86.8%;
+    text-align: center;
+    margin: 14px auto 16px;
+    font-size: 19px;
+    height: 40px;
+    line-height: 40px;
+    color: #888;
+}
+
+.j-p3 {
+    width: 86.8%;
+    text-align: center;
+    font-size: 19px;
+    margin: 40px auto 0;
+    height: 76px;
+    line-height: 20px;
+    background: #fff;
+    line-height: 76px;
+    color: #888;
+    border: 1px solid #e5e5e5;
+    cursor: pointer;
+}
+
+/* 创建页面 */
+.p-input .input-yzm {
+    width: 85.62%;
+    height: 50px;
+    line-height: 38px;
+    display: block;
+    margin: 0 auto;
+    border: 1px solid #EEEAE4;
+    border-radius: 6px;
+    font-size: 16px;
+    padding-right: 13.38%;
+    padding-left: 1%;
+}
+
+.img-yzm {
+    position: absolute;
+    right: 5px;
+    top: 5px;
+    width: 120px;
+    height: 43px;
+}

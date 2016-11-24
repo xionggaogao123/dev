@@ -10,7 +10,7 @@ import com.sys.exceptions.IllegalParamException;
 
 public class ItemPoolUpdate {
 
-	public static void main(String[] args) throws IllegalParamException {
+    public static void main(String[] args) throws IllegalParamException {
 
 //	    ItemPoolDao dao =new ItemPoolDao();
 //		int skip=0;
@@ -42,5 +42,5 @@ public class ItemPoolUpdate {
 //			 }
 //			 skip=skip+200;
 //		}
-	}
+    }
 }

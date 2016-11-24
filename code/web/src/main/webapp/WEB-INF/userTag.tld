@@ -40,25 +40,18 @@
         <function-class>com.pojo.user.UserRole</function-class>
         <function-signature>boolean isStudentOrParent(int)</function-signature>
     </function>
-     <function>
+    <function>
         <name>isNotStudentAndParent</name>
         <function-class>com.pojo.user.UserRole</function-class>
         <function-signature>boolean isNotStudentAndParent(int)</function-signature>
     </function>
-    
-    
+
+
     <function>
         <name>isTeacher</name>
         <function-class>com.pojo.user.UserRole</function-class>
         <function-signature>boolean isTeacher(int)</function-signature>
     </function>
-
-    <function>
-        <name>isTeacherOnly</name>
-        <function-class>com.pojo.user.UserRole</function-class>
-        <function-signature>boolean isTeacherOnly(int)</function-signature>
-    </function>
-
     <function>
         <name>isK6ktHelper</name>
         <function-class>com.pojo.user.UserRole</function-class>
@@ -79,9 +72,9 @@
         <function-class>com.pojo.user.UserRole</function-class>
         <function-signature>boolean roleIsRole(int,int)</function-signature>
     </function>
-    
-    
-      <function>
+
+
+    <function>
         <name>isDoorKeeper</name>
         <function-class>com.pojo.user.UserRole</function-class>
         <function-signature>boolean isDoorKeeper(int)</function-signature>
@@ -96,5 +89,5 @@
         <function-class>com.pojo.user.UserRole</function-class>
         <function-signature>boolean isFunctionRoomManager(int)</function-signature>
     </function>
-    
+
 </taglib>

@@ -18,6 +18,17 @@ public class FSectionDTO {
     private String parentId;
     private String image;
     private String memo;
+    private String memoName;
+
+    //app端上传图片
+    private String imageAppSrc;
+    private String imageBigAppSrc;
+
+    //设置优化数据
+    private long totalScanCount;
+    private long totalCommentCount;
+    private long themeCount;
+    private long postCount;
 
 
     public FSectionDTO(){}
@@ -36,8 +47,15 @@ public class FSectionDTO {
         }
         this.sort=fSectionEntry.getSort();
         this.image=fSectionEntry.getImage();
+        this.imageAppSrc=fSectionEntry.getImageAppSrc();
+        this.imageBigAppSrc=fSectionEntry.getImageBigAppSrc();
         this.sectionName=fSectionEntry.getSectionName();
         this.memo=fSectionEntry.getMemo();
+        this.memoName=fSectionEntry.getMemoName();
+        this.totalCommentCount=fSectionEntry.getTotalCommentCount();
+        this.totalScanCount=fSectionEntry.getTotalCommentCount();
+        this.themeCount=fSectionEntry.getThemeCount();
+        this.postCount=fSectionEntry.getPostCount();
     }
 
     public FSectionEntry exportEntry() {
@@ -54,9 +72,36 @@ public class FSectionDTO {
         fSectionEntry.setLevel(level);
         fSectionEntry.setSort(sort);
         fSectionEntry.setImage(image);
-        if(null!=parentId|!parentId.equals("")) {
+        fSectionEntry.setImageAppSrc(imageAppSrc);
+        fSectionEntry.setImageBigAppSrc(imageBigAppSrc);
+        fSectionEntry.setMemoName(memoName);
+        fSectionEntry.setTotalCommentCount(totalCommentCount);
+        fSectionEntry.setTotalScanCount(totalScanCount);
+        fSectionEntry.setThemeCount(themeCount);
+        fSectionEntry.setPostCount(postCount);
+        if(null!=parentId&&!parentId.equals("")) {
             fSectionEntry.setParentId(new ObjectId(parentId));
         }
+        return fSectionEntry;
+    }
+
+    public static FSectionEntry exportEntry(String name,String sectionName,String introduction,String memo) {
+        FSectionEntry fSectionEntry=new FSectionEntry();
+        fSectionEntry.setID(new ObjectId());
+        fSectionEntry.setName(name);
+        fSectionEntry.setSectionName(sectionName);
+        fSectionEntry.setIntroduction(introduction);
+        fSectionEntry.setMemo(memo);
+        fSectionEntry.setCount(0);
+        fSectionEntry.setTotalCount(0);
+        fSectionEntry.setLevel(0);
+        fSectionEntry.setSort(0);
+        fSectionEntry.setMemoName("");
+        fSectionEntry.setTotalCommentCount(Long.parseLong("0"));
+        fSectionEntry.setTotalScanCount(Long.parseLong("0"));
+        fSectionEntry.setThemeCount(Long.parseLong("0"));
+        fSectionEntry.setPostCount(Long.parseLong("0"));
+        fSectionEntry.setParentId(new ObjectId());
         return fSectionEntry;
     }
 
@@ -146,5 +191,61 @@ public class FSectionDTO {
 
     public void setMemo(String memo) {
         this.memo = memo;
+    }
+
+    public String getMemoName() {
+        return memoName;
+    }
+
+    public void setMemoName(String memoName) {
+        this.memoName = memoName;
+    }
+
+    public String getImageAppSrc() {
+        return imageAppSrc;
+    }
+
+    public void setImageAppSrc(String imageAppSrc) {
+        this.imageAppSrc = imageAppSrc;
+    }
+
+    public String getImageBigAppSrc() {
+        return imageBigAppSrc;
+    }
+
+    public void setImageBigAppSrc(String imageBigAppSrc) {
+        this.imageBigAppSrc = imageBigAppSrc;
+    }
+
+    public long getTotalScanCount() {
+        return totalScanCount;
+    }
+
+    public void setTotalScanCount(long totalScanCount) {
+        this.totalScanCount = totalScanCount;
+    }
+
+    public long getPostCount() {
+        return postCount;
+    }
+
+    public void setPostCount(long postCount) {
+        this.postCount = postCount;
+    }
+
+    public long getThemeCount() {
+        return themeCount;
+    }
+
+    public void setThemeCount(long themeCount) {
+        this.themeCount = themeCount;
+    }
+
+    public long getTotalCommentCount() {
+        return totalCommentCount;
+    }
+
+    public void setTotalCommentCount(long totalCommentCount) {
+        this.totalCommentCount = totalCommentCount;
     }
 }

@@ -1,0 +1,25 @@
+.new-page-links {
+    margin-left: 500px;
+}
+
+.close {
+    margin-left: 60px;
+}
+
+.upStrus {
+    background-color: #58535D;
+}
+
+.upStrus span {
+    color: #fff;
+}
+
+#status .pop-title .closePop {
+    display: block;
+    width: 36px;
+    height: 36px;
+    float: right;
+    cursor: pointer;
+    background: url('../images/closePop.png') 0 0 no-repeat;
+}
+

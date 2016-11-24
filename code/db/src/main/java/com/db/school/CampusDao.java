@@ -14,10 +14,11 @@ import java.util.List;
 /**
  * Created by fl on 2015/7/23.
  */
-public class CampusDao extends BaseDao{
+public class CampusDao extends BaseDao {
 
     /**
      * 添加校区
+     *
      * @param campusEntry
      * @return
      */
@@ -28,6 +29,7 @@ public class CampusDao extends BaseDao{
 
     /**
      * 删除校区
+     *
      * @param campusId
      */
     public void delete(ObjectId campusId) {
@@ -37,26 +39,27 @@ public class CampusDao extends BaseDao{
 
     /**
      * 更新校区
+     *
      * @param campusId
      * @param campusEntry
      */
     public void edit(ObjectId campusId, CampusEntry campusEntry) {
         DBObject query = new BasicDBObject(Constant.ID, campusId);
-        DBObject updateValue = new BasicDBObject(Constant.MONGO_SET,campusEntry.getBaseEntry());
+        DBObject updateValue = new BasicDBObject(Constant.MONGO_SET, campusEntry.getBaseEntry());
         update(MongoFacroty.getAppDB(), Constant.COLLECTION_CAMPUS_NAME, query, updateValue);
     }
 
     /**
      * 列表
+     *
      * @return
      */
     public List<CampusEntry> list() {
         List<CampusEntry> campusEntryList = new ArrayList<CampusEntry>();
-        List<DBObject> list=find(MongoFacroty.getAppDB(), Constant.COLLECTION_CAMPUS_NAME, Constant.QUERY, Constant.FIELDS);
-        if(null!=list && !list.isEmpty()) {
-            for(DBObject dbo:list)
-            {
-                CampusEntry campusEntry = new CampusEntry((BasicDBObject)dbo);
+        List<DBObject> list = find(MongoFacroty.getAppDB(), Constant.COLLECTION_CAMPUS_NAME, Constant.QUERY, Constant.FIELDS);
+        if (null != list && !list.isEmpty()) {
+            for (DBObject dbo : list) {
+                CampusEntry campusEntry = new CampusEntry((BasicDBObject) dbo);
                 campusEntryList.add(campusEntry);
             }
             return campusEntryList;
@@ -67,8 +70,8 @@ public class CampusDao extends BaseDao{
     public CampusEntry getCampusInfo(ObjectId campusId) {
         DBObject query = new BasicDBObject(Constant.ID, campusId);
         DBObject dbo = findOne(MongoFacroty.getAppDB(), Constant.COLLECTION_CAMPUS_NAME, query, Constant.FIELDS);
-        if(dbo != null) {
-            return (new CampusEntry((BasicDBObject)dbo));
+        if (dbo != null) {
+            return (new CampusEntry((BasicDBObject) dbo));
         }
         return new CampusEntry();
     }

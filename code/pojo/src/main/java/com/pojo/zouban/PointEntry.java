@@ -41,23 +41,4 @@ public class PointEntry extends BaseDBObject{
     {
         return getSimpleIntegerValue("y");
     }
-
-
-    @Override
-    public int hashCode() {
-        return 31 * getX() + 15 * getY();
-    }
-
-    @Override
-    public boolean equals(Object o) {
-        if (this == o) {
-            return true;
-        }
-        if (o instanceof PointEntry) {
-            PointEntry p = (PointEntry) o;
-            return p.getX() == getX() && p.getY() == getY();
-        } else {
-            return false;
-        }
-    }
 }

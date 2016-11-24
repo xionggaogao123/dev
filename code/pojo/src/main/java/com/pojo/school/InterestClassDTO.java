@@ -51,7 +51,6 @@ public class InterestClassDTO {
     private boolean isRequired;
     private String typeId;
     private String room;
-    private int sex;
 
     //额外字段 用于页面展示或者判断
     private boolean isChoose;
@@ -254,7 +253,6 @@ public class InterestClassDTO {
         expandClassEntry.setRelationId(this.relationId);
         expandClassEntry.setClassContent(this.classContent);
         expandClassEntry.setRoom(this.room);
-        expandClassEntry.setSex(this.sex);
         if(null==typeId ||typeId.equals("")){
             expandClassEntry.setTypeId(null);
         } else {
@@ -481,13 +479,5 @@ public class InterestClassDTO {
 
     public void setRoom(String room) {
         this.room = room;
-    }
-
-    public int getSex() {
-        return sex;
-    }
-
-    public void setSex(int sex) {
-        this.sex = sex;
     }
 }

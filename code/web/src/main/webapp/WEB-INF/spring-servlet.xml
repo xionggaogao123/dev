@@ -13,10 +13,9 @@
         http://www.springframework.org/schema/context/spring-context.xsd
         http://www.springframework.org/schema/task
         http://www.springframework.org/schema/task/spring-task.xsd">
-        
-        
-        
-    <mvc:annotation-driven content-negotiation-manager="contentNegotiationManager" >
+
+    <!--映射驱动-->
+    <mvc:annotation-driven content-negotiation-manager="contentNegotiationManager">
         <mvc:message-converters>
             <bean class="org.springframework.http.converter.StringHttpMessageConverter">
                 <constructor-arg value="UTF-8"/>
@@ -40,36 +39,47 @@
         </mvc:message-converters>
         <mvc:argument-resolvers>
             <bean class="org.springframework.data.web.PageableHandlerMethodArgumentResolver"/>
-            <bean class="com.fulaan.interceptor.ObjectIdResolver" />
+            <bean class="com.fulaan.interceptor.ObjectIdResolver"/>
         </mvc:argument-resolvers>
     </mvc:annotation-driven>
-    
-    
-    
 
+    <!-- 扫描组件-->
+    <context:component-scan base-package="com.fulaan_old" use-default-filters="false">
+        <context:include-filter type="annotation" expression="org.springframework.stereotype.Controller"/>
+        <context:include-filter type="annotation" expression="org.springframework.stereotype.Service"/>
+    </context:component-scan>
+
+    <!-- 扫描组件-->
     <context:component-scan base-package="com.fulaan" use-default-filters="false">
         <context:include-filter type="annotation" expression="org.springframework.stereotype.Controller"/>
         <context:include-filter type="annotation" expression="org.springframework.stereotype.Service"/>
     </context:component-scan>
-     
-    
+
+    <context:component-scan base-package="com.db" use-default-filters="false">
+        <context:include-filter type="annotation" expression="org.springframework.stereotype.Controller"/>
+        <context:include-filter type="annotation" expression="org.springframework.stereotype.Service"/>
+    </context:component-scan>
+
+
+    <!-- 资源视图解析-->
     <bean class="org.springframework.web.servlet.view.ResourceBundleViewResolver">
-        <property name="basename" value="views"></property>
+        <property name="basename" value="views"/>
     </bean>
 
-    <bean class = "com.fulaan.utils.SpringContextUtil" id = "springContextUtil" />
+    <!-- Context Util -->
+    <bean class="com.fulaan_old.utils.SpringContextUtil" id="springContextUtil"/>
 
-
+    <!-- 视图解析器 -->
     <bean id="internalResourceViewResolver" class="org.springframework.web.servlet.view.InternalResourceViewResolver">
-        <property name="prefix" value="/WEB-INF/pages/"/>
+        <property name="prefix" value="/WEB-INF/jsp/"/>
         <property name="suffix" value=".jsp"/>
-        <property name="order" value="0" /> 
+        <property name="order" value="0"/>
     </bean>
     <bean id="contentNegotiationManager" class="org.springframework.web.accept.ContentNegotiationManagerFactoryBean">
-        <property name="favorPathExtension" value="false" />
-        <property name="favorParameter" value="false" />
-        <property name="ignoreAcceptHeader" value="false" />
-        <property name="mediaTypes" >
+        <property name="favorPathExtension" value="false"/>
+        <property name="favorParameter" value="false"/>
+        <property name="ignoreAcceptHeader" value="false"/>
+        <property name="mediaTypes">
             <value>
                 atom=application/atom+xml
                 html=text/html
@@ -79,97 +89,63 @@
         </property>
     </bean>
 
+    <!--&lt;!&ndash; SpringMVC上传文件时，需要配置MultipartResolver处理器 &ndash;&gt;-->
+    <!--<bean id="multipartResolver"-->
+          <!--class="org.springframework.web.multipart.commons.CommonsMultipartResolver">-->
+        <!--<property name="defaultEncoding" value="UTF-8" />-->
+        <!--&lt;!&ndash; 指定所上传文件的总大小不能超过200KB。注意maxUploadSize属性的限制不是针对单个文件，而是所有文件的容量之和 &ndash;&gt;-->
+        <!--<property name="maxUploadSize" value="54000000000" />-->
+        <!--&lt;!&ndash; max size of file in memory (in bytes) &ndash;&gt;-->
+        <!--&lt;!&ndash; oddly, the MultipartFile passed as a RequestParam gets set to null if I allow it to use memory-->
+            <!--rather than disk!  &ndash;&gt;-->
+        <!--<property name="maxInMemorySize" value="0" />-->
+    <!--</bean>-->
 
-
-
-  <!--
- 
-   <bean id="viewResolver" class="org.springframework.web.servlet.view.velocity.VelocityViewResolver">  
-    <property name="cache" value="true"/>  
-    <property name="prefix" value=""/>
-    <property name="suffix" value=".vm"/>  
-    <property name="contentType"><value>text/html;charset=UTF-8</value></property>
-    <property name="toolboxConfigLocation" value="/WEB-INF/velocity-toolbox.xml" />
-    <property name="order" value="0" />
-  </bean>
-  
-   <bean id="velocityConfigurer" class="org.springframework.web.servlet.view.velocity.VelocityConfigurer">  
-            <property name="resourceLoaderPath" value="/WEB-INF/vm"/>
-            <property name= "velocityProperties">
-                <props>
-                     <prop key="input.encoding">utf-8</prop>
-                     <prop key="output.encoding">utf-8</prop>
-                </props>
-            </property>
-   </bean>
-   
--->
-   
-        
-
-    <mvc:interceptors>  
+    <!-- 拦截器 -->
+    <mvc:interceptors>
         <mvc:interceptor>
             <mvc:mapping path="/**"/>
             <mvc:exclude-mapping path="/css/**"/>
-            <mvc:exclude-mapping path="/img/**"/>
             <mvc:exclude-mapping path="/images/**"/>
             <mvc:exclude-mapping path="/script/**"/>
-           <bean class="com.fulaan.interceptor.SessionValueInterceptor"></bean>
+            <bean class="com.fulaan.interceptor.SessionValueInterceptor"/>
         </mvc:interceptor>
         <mvc:interceptor>
             <mvc:mapping path="/**"/>
             <mvc:exclude-mapping path="/css/**"/>
-            <mvc:exclude-mapping path="/img/**"/>
             <mvc:exclude-mapping path="/images/**"/>
             <mvc:exclude-mapping path="/script/**"/>
-            <bean class="com.fulaan.interceptor.CustomizedInterceptor"></bean>
+            <bean class="com.fulaan.interceptor.PermissionInterceptor"/>
         </mvc:interceptor>
         <mvc:interceptor>
             <mvc:mapping path="/**"/>
             <mvc:exclude-mapping path="/css/**"/>
-             <mvc:exclude-mapping path="/img/**"/>
             <mvc:exclude-mapping path="/images/**"/>
             <mvc:exclude-mapping path="/script/**"/>
-           <bean class="com.fulaan.interceptor.PermissionInterceptor"></bean>
-       </mvc:interceptor>
-        <!--<mvc:interceptor>
-            <mvc:mapping path="/**"/>
-            <mvc:exclude-mapping path="/css/**"/>
-            <mvc:exclude-mapping path="/img/**"/>
-            <mvc:exclude-mapping path="/images/**"/>
-            <mvc:exclude-mapping path="/script/**"/>
-            <bean class="com.fulaan.interceptor.UserActionLogInterceptor"></bean>
-        </mvc:interceptor>-->
-     </mvc:interceptors>
+            <bean class="com.fulaan.interceptor.Infoterceptor"/>
+        </mvc:interceptor>
+    </mvc:interceptors>
 
+    <!-- 异常处理器 -->
     <bean id="exceptionResolver"
           class="com.fulaan.interceptor.ExceptionResolver">
     </bean>
- 
+
+    <!-- 文件上传 -->
     <bean id="multipartResolver"
           class="org.springframework.web.multipart.support.StandardServletMultipartResolver">
     </bean>
 
+    <!-- 定时任务 -->
     <bean id="taskJob"
-          class="com.fulaan.timedtask.service.TaskJob">
+          class="com.fulaan.timedtask.TaskJob">
     </bean>
 
     <task:scheduled-tasks>
-        <task:scheduled ref="taskJob" method="timedClearSchoolYearExpJob" cron="59 59 23 31 8 ?"/>
-        <task:scheduled ref="taskJob" method="timedFieryActivityIsEnd" cron="0 1 0 * * ?"/>
-        <task:scheduled ref="taskJob" method="timedFieryActivityIsStart" cron="0 1 0 * * ?"/>
-        <task:scheduled ref="taskJob" method="timedEduSchoolsTotalData" cron="5 0 0 * * ?"/>
-        <task:scheduled ref="taskJob" method="timedSchoolTotalData" cron="5 0 0 * * ?"/>
-        <task:scheduled ref="taskJob" method="checkVoucherExpiration" cron="0 0 0 * * ?"/>
-        <!--<task:scheduled ref="taskJob" method="timedSchoolNewInterestTerm" cron="5 0 0 1 9 ?"/>以后改为手动执行-->
-        <!--<task:scheduled ref="taskJob" method="timedSchoolNewInterestTerm" cron="5 0 0 1 2 ?"/>以后改为手动执行-->
-        <task:scheduled ref="taskJob" method="timedSendLogReportEmail" cron="0 30 5 * * ?"/>
-        <task:scheduled ref="taskJob" method="checkMicroBlog" cron="59 59 23 * * ?"/>
-        <task:scheduled ref="taskJob" method="timedUploadKaoQinState" cron="0 30 8 * * ?"/>
+        <task:scheduled ref="taskJob" method="mallDailyReport" cron="00 30 5 * * ?"/>
     </task:scheduled-tasks>
-    <context:component-scan base-package="com.fulaan.timedtask.service" />
 
-
+    <context:component-scan base-package="com.fulaan.timedtask"/>
     <task:annotation-driven scheduler="taskScheduler" executor="taskExecutor"/>
     <task:executor id="taskExecutor" pool-size="5000" queue-capacity="10000"/>
     <task:scheduler id="taskScheduler" pool-size="100"/>

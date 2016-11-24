@@ -10,39 +10,27 @@ public class ProportionDTO {
     private String id;
     private String schoolId;
     private String year;
-    private String evaluationId;
     private double leadGroupPro;
     private double leaderPro;
     private double groupPro;
     private double huPingPro;
-    private int leaderMax;
-    private int leaderMin;
-    private int groupMax;
-    private int groupMin;
-    private int huPingMax;
-    private int huPingMin;
+    private double liangHuaPro;
 
     public ProportionDTO(){}
 
     public ProportionDTO(ProportionEntry entry){
-        this.id = entry.getID().toString();
-        this.schoolId = entry.getSchoolId().toString();
-        this.year = entry.getYear();
-        this.leadGroupPro = entry.getLeadGroupPro();
-        this.leaderPro = entry.getLeaderPro();
-        this.groupPro = entry.getGroupPro();
-        this.huPingPro = entry.getHuPingPro();
-        this.leaderMax = entry.getLeaderMax();
-        this.leaderMin = entry.getLeaderMin();
-        this.groupMax = entry.getGroupMax();
-        this.groupMin = entry.getGroupMin();
-        this.huPingMax = entry.getHuPingMax();
-        this.huPingMin = entry.getHuPingMin();
+        id = entry.getID().toString();
+        schoolId = entry.getSchoolId().toString();
+        year = entry.getYear();
+        leadGroupPro = entry.getLeadGroupPro();
+        leaderPro = entry.getLeaderPro();
+        groupPro = entry.getGroupPro();
+        huPingPro = entry.getHuPingPro();
+        liangHuaPro = entry.getLiangHuaPro();
     }
 
     public ProportionEntry exportEntry(){
-        ProportionEntry entry = new ProportionEntry(new ObjectId(schoolId), year, new ObjectId(evaluationId), leadGroupPro, leaderPro, groupPro, huPingPro,
-                leaderMax, leaderMin, groupMax, groupMin, huPingMax, huPingMin);
+        ProportionEntry entry = new ProportionEntry(new ObjectId(schoolId), year, leadGroupPro, leaderPro, groupPro, huPingPro, liangHuaPro);
         if(id != null){
             entry.setID(new ObjectId(id));
         }
@@ -105,59 +93,11 @@ public class ProportionDTO {
         this.huPingPro = huPingPro;
     }
 
-    public String getEvaluationId() {
-        return evaluationId;
+    public double getLiangHuaPro() {
+        return liangHuaPro;
     }
 
-    public void setEvaluationId(String evaluationId) {
-        this.evaluationId = evaluationId;
-    }
-
-    public int getGroupMax() {
-        return groupMax;
-    }
-
-    public void setGroupMax(int groupMax) {
-        this.groupMax = groupMax;
-    }
-
-    public int getGroupMin() {
-        return groupMin;
-    }
-
-    public void setGroupMin(int groupMin) {
-        this.groupMin = groupMin;
-    }
-
-    public int getHuPingMax() {
-        return huPingMax;
-    }
-
-    public void setHuPingMax(int huPingMax) {
-        this.huPingMax = huPingMax;
-    }
-
-    public int getHuPingMin() {
-        return huPingMin;
-    }
-
-    public void setHuPingMin(int huPingMin) {
-        this.huPingMin = huPingMin;
-    }
-
-    public int getLeaderMax() {
-        return leaderMax;
-    }
-
-    public void setLeaderMax(int leaderMax) {
-        this.leaderMax = leaderMax;
-    }
-
-    public int getLeaderMin() {
-        return leaderMin;
-    }
-
-    public void setLeaderMin(int leaderMin) {
-        this.leaderMin = leaderMin;
+    public void setLiangHuaPro(double liangHuaPro) {
+        this.liangHuaPro = liangHuaPro;
     }
 }

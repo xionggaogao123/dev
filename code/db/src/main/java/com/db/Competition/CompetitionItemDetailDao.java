@@ -18,17 +18,18 @@ public class CompetitionItemDetailDao extends BaseDao {
 
     /**
      * 添加一条评比明细信息
+     *
      * @param e
      * @return
      */
-    public ObjectId addCompetitionItemDetailEntry(CompetitionItemDetailEntry e)
-    {
+    public ObjectId addCompetitionItemDetailEntry(CompetitionItemDetailEntry e) {
         save(MongoFacroty.getAppDB(), Constant.COLLECTION_COMPETITION_DETAIL, e.getBaseEntry());
         return e.getID();
     }
 
     /**
      * 增加评比项目明细
+     *
      * @param list
      * @return
      */
@@ -38,26 +39,29 @@ public class CompetitionItemDetailDao extends BaseDao {
 
     /**
      * 修改评比项目明细
+     *
      * @param e
      * @return
      */
     public void updCompetitionItemDetailEntry(CompetitionItemDetailEntry e) {
-        BasicDBObject query =new BasicDBObject(Constant.ID,e.getID());
-        BasicDBObject update=new BasicDBObject(Constant.MONGO_SET, new BasicDBObject(e.getBaseEntry()));
+        BasicDBObject query = new BasicDBObject(Constant.ID, e.getID());
+        BasicDBObject update = new BasicDBObject(Constant.MONGO_SET, new BasicDBObject(e.getBaseEntry()));
         update(MongoFacroty.getAppDB(), Constant.COLLECTION_COMPETITION_DETAIL, query, update);
     }
 
     /**
      * 删除评比项目明细
+     *
      * @param ids
      */
     public void removeCompetitionItemDetailEntryByIds(List<ObjectId> ids) {
-        BasicDBObject query = new BasicDBObject(Constant.ID, new BasicDBObject(Constant.MONGO_IN,ids));
+        BasicDBObject query = new BasicDBObject(Constant.ID, new BasicDBObject(Constant.MONGO_IN, ids));
         remove(MongoFacroty.getAppDB(), Constant.COLLECTION_COMPETITION_DETAIL, query);
     }
 
     /**
      * 删除评比项目明细
+     *
      * @param id
      */
     public void removeCompetitionItemDetailEntryById(ObjectId id) {
@@ -69,6 +73,7 @@ public class CompetitionItemDetailDao extends BaseDao {
 
     /**
      * 删除评比项目明细
+     *
      * @param itemId
      */
     public void removeCompetitionItemDetailEntryByItemId(ObjectId itemId) {
@@ -80,6 +85,7 @@ public class CompetitionItemDetailDao extends BaseDao {
 
     /**
      * 查询评比项目明细
+     *
      * @param itemId
      */
     public List<CompetitionItemDetailEntry> getCompetitionItemDetailsByItemId(ObjectId itemId) {
@@ -103,6 +109,7 @@ public class CompetitionItemDetailDao extends BaseDao {
 
     /**
      * 查询评比项目明细
+     *
      * @param comId
      */
     public List<CompetitionItemDetailEntry> getCompetitionItemDetailsByComId(ObjectId comId) {

@@ -50,14 +50,12 @@ public class UserDetailInfoDTO extends UserInfoDTO implements Serializable {
     private String mainClassName;
     private String schoolName;
     private String schoolLogo;
-    private String moduleStr; //学校有效板块名称
     private int relation;//1，是好友，2，不是好友 添加好友申请已发出 3，不是好友未发出添加申请
     private String petName;
     private String chatid;
     private double balance;
     private int jinyan;
     private List<String> connectIds;
-    private String letter;
 
     public int getRelation() {
         return relation;
@@ -113,7 +111,7 @@ public class UserDetailInfoDTO extends UserInfoDTO implements Serializable {
         setId(userEntry.getID().toString());
         this.nickName=userEntry.getNickName();
         this.chatid=userEntry.getChatId();
-        this.userName=userEntry.getRealUserName();
+        this.userName=userEntry.getUserName();
         setRole(userEntry.getRole());
     }
     public UserDetailInfoDTO(UserEntry userEntry){
@@ -152,7 +150,7 @@ public class UserDetailInfoDTO extends UserInfoDTO implements Serializable {
         this.schoolID=userEntry.getSchoolID()+"";
         setSex(userEntry.getSex());
         this.studentNum=userEntry.getStudyNum();
-        this.userName=userEntry.getRealUserName();
+        this.userName=userEntry.getUserName();
         this.weiBo=userEntry.getWeiBo();
         this.weiXin=userEntry.getWeiXin();
         this.experienceValue=userEntry.getExperiencevalue();
@@ -170,11 +168,6 @@ public class UserDetailInfoDTO extends UserInfoDTO implements Serializable {
             }
         }
         this.connectIds = cids;
-    }
-
-    public UserDetailInfoDTO(ObjectId id,String name) {
-        setId(id.toString());
-        this.userName = name;
     }
 
     public boolean getIsFriend() {
@@ -387,7 +380,6 @@ public class UserDetailInfoDTO extends UserInfoDTO implements Serializable {
     * */
     public UserEntry exportEntry() {
         UserEntry userEntry=new UserEntry(userName,passWord,getSex(),null);
-        userEntry.setLetter(this.letter);
         userEntry.setAddress(this.address);
         userEntry.setUserName(this.userName);
         userEntry.setNickName(this.nickName);
@@ -395,17 +387,16 @@ public class UserDetailInfoDTO extends UserInfoDTO implements Serializable {
         userEntry.setRole((int)this.getRole());
         userEntry.setJob(this.jobName);
         userEntry.setStudyNum(this.studentNum);
-        if(StringUtils.isNotBlank(getId())   && ObjectId.isValid(getId())){
+        if(null!=getId()&&ObjectId.isValid(getId())){
             userEntry.setID(new ObjectId(getId()));
         }
-        if(StringUtils.isNotBlank(getRelationId()) && ObjectId.isValid(getRelationId())){
-        	
+        if(null!=getRelationId()&&ObjectId.isValid(getRelationId())){
         	
         	List<ObjectId> list =new ArrayList<ObjectId>();
         	list.add(new ObjectId(this.relationId));
             userEntry.setConnectIds(list);
         }
-        if(StringUtils.isNotBlank(getSchoolID()) && ObjectId.isValid(getSchoolID()))
+        if(null!=getSchoolID()&&ObjectId.isValid(getSchoolID()))
         {
         	userEntry.setSchoolID(new ObjectId(getSchoolID()));
         }
@@ -462,24 +453,6 @@ public class UserDetailInfoDTO extends UserInfoDTO implements Serializable {
 
     public void setConnectIds(List<String> connectIds) {
         this.connectIds = connectIds;
-    }
-    
-    
-
-    public String getModuleStr() {
-		return moduleStr;
-	}
-
-	public void setModuleStr(String moduleStr) {
-		this.moduleStr = moduleStr;
-	}
-
-    public String getLetter() {
-        return letter;
-    }
-
-    public void setLetter(String letter) {
-        this.letter = letter;
     }
 
     @Override

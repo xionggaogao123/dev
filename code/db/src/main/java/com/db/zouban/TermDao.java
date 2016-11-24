@@ -2,6 +2,7 @@ package com.db.zouban;
 
 import com.db.base.BaseDao;
 import com.db.factory.MongoFacroty;
+import com.mongodb.BasicDBList;
 import com.mongodb.BasicDBObject;
 import com.mongodb.DBObject;
 import com.pojo.zouban.TermEntry;
@@ -111,9 +112,10 @@ public class TermDao extends BaseDao {
     }
 
     //寻找比当前时间大的第一学期
-    public List<TermEntry> findFirstTermGteNow(ObjectId schoolId, long date) {
-        BasicDBObject query = new BasicDBObject("sid", schoolId)
-                .append("fts", new BasicDBObject(Constant.MONGO_GTE, date));
+    public List<TermEntry> findFirstTermGteNow(ObjectId schoolId, long data) {
+        BasicDBObject query = new BasicDBObject()
+                .append("sid", schoolId)
+                .append("fts", new BasicDBObject(Constant.MONGO_GTE, data));
         List<DBObject> dbObjectLsit = find(MongoFacroty.getAppDB(), Constant.COLLECTION_ZOUBAN_TERMWEEK, query, Constant.FIELDS);
         List<TermEntry> termEntries = new ArrayList<TermEntry>();
         if (dbObjectLsit != null && !dbObjectLsit.isEmpty()) {
@@ -123,5 +125,4 @@ public class TermDao extends BaseDao {
         }
         return termEntries;
     }
-
 }

@@ -30,25 +30,27 @@ public class JobDao extends BaseDao {
 
     /**
      * 删除工作信息
+     *
      * @param userId
      */
     public void removeJobEntry(ObjectId userId) {
-        DBObject query =new BasicDBObject("ui",userId);
+        DBObject query = new BasicDBObject("ui", userId);
         remove(MongoFacroty.getAppDB(), Constant.COLLECTION_JOB, query);
     }
 
     /**
      * 获取工作信息
+     *
      * @param userId
      * @param fields
      * @return
      */
-    public List<JobEntry> getJobList(ObjectId userId,DBObject fields) {
-        BasicDBObject query =new BasicDBObject("ui",userId);
-        List<DBObject> list=find(MongoFacroty.getAppDB(), Constant.COLLECTION_JOB, query, fields);
-        List<JobEntry> jobEntryList=new ArrayList<JobEntry>();
-        for(DBObject dbObject:list){
-            JobEntry jobEntry=new JobEntry((BasicDBObject)dbObject);
+    public List<JobEntry> getJobList(ObjectId userId, DBObject fields) {
+        BasicDBObject query = new BasicDBObject("ui", userId);
+        List<DBObject> list = find(MongoFacroty.getAppDB(), Constant.COLLECTION_JOB, query, fields);
+        List<JobEntry> jobEntryList = new ArrayList<JobEntry>();
+        for (DBObject dbObject : list) {
+            JobEntry jobEntry = new JobEntry((BasicDBObject) dbObject);
             jobEntryList.add(jobEntry);
         }
         return jobEntryList;

@@ -11,7 +11,6 @@ package com.pojo.salary;
 
 import com.mongodb.BasicDBList;
 import com.mongodb.BasicDBObject;
-import com.sys.utils.DateTimeUtils;
 
 import java.io.Serializable;
 import java.text.DecimalFormat;
@@ -46,15 +45,6 @@ public class SalaryDto implements Serializable {
     private String msStr;
     private String asStr;
 
-    private List<SalaryItem> salaryItem;
-    private List<List<SalaryItemDto>> debitList;
-    private List<List<SalaryItemDto>> sendList;
-    private int debitCount;
-
-    private String createTime;
-
-    private String remark;
-
     public SalaryDto() {
     }
 
@@ -76,8 +66,6 @@ public class SalaryDto implements Serializable {
         this.ssStr = decimalFormat.format(ss);
         this.msStr = decimalFormat.format(ms);
         this.asStr = decimalFormat.format(as);
-        this.createTime = DateTimeUtils.getLongToStrTime(salaryEntry.getID().getTime());
-        this.remark = salaryEntry.getRemark()==null?"":salaryEntry.getRemark();
     }
 
     public void calculateRealSalary() {
@@ -169,7 +157,7 @@ public class SalaryDto implements Serializable {
         return new SalaryEntry(
                 uid, unm,
                 y, m, n, schoolId, timesName,
-                items,remark);
+                items);
     }
 
 
@@ -253,51 +241,4 @@ public class SalaryDto implements Serializable {
         this.id = id;
     }
 
-    public List<SalaryItem> getSalaryItem() {
-        return salaryItem;
-    }
-
-    public void setSalaryItem(List<SalaryItem> salaryItem) {
-        this.salaryItem = salaryItem;
-    }
-
-    public String getCreateTime() {
-        return createTime;
-    }
-
-    public void setCreateTime(String createTime) {
-        this.createTime = createTime;
-    }
-
-    public List<List<SalaryItemDto>> getDebitList() {
-        return debitList;
-    }
-
-    public void setDebitList(List<List<SalaryItemDto>> debitList) {
-        this.debitList = debitList;
-    }
-
-    public List<List<SalaryItemDto>> getSendList() {
-        return sendList;
-    }
-
-    public void setSendList(List<List<SalaryItemDto>> sendList) {
-        this.sendList = sendList;
-    }
-
-    public int getDebitCount() {
-        return debitCount;
-    }
-
-    public void setDebitCount(int debitCount) {
-        this.debitCount = debitCount;
-    }
-
-    public String getRemark() {
-        return remark;
-    }
-
-    public void setRemark(String remark) {
-        this.remark = remark;
-    }
 }

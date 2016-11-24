@@ -66,7 +66,7 @@ public class ElectEntry extends BaseDBObject{
                       long startTime,long endTime,long publishTime,long modifyTime,
                       ObjectId publisherId,int parentEligible,int studentEligible,
                       int teacherEligible, int leaderEligible,int parentVotable, int studentVotable,
-                      int teacherVotable, int leaderVotable,int ballotCount,List<Candidate> candidates,int pub,int manageType)
+                      int teacherVotable, int leaderVotable,int ballotCount,List<Candidate> candidates,int pub)
     {
         super();
 
@@ -111,12 +111,10 @@ public class ElectEntry extends BaseDBObject{
                 .append("leav", leaderVotable)
                 .append("bcnt", ballotCount)
                 .append("cands", cands)
-                .append("pub",pub)
-                .append("mtp",manageType);
+                .append("pub",pub);
         setBaseEntry(dbo);
     }
-//    public int getManageType(){return getSimpleIntegerValue("mtp");}
-    public void setManageType(int manageType){ setSimpleValue("mtp",manageType);}
+
     public String getName() {
         return getSimpleStringValue("nm");
     }

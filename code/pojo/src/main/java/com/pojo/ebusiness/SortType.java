@@ -16,7 +16,9 @@ public enum SortType {
     SALES_DESC(6, new BasicDBObject("sc", -1)),//销量降序
     POPULAR_ASC(7, new BasicDBObject("pl", 1)),//人气升序
     POPULAR_DESC(8, new BasicDBObject("pl", -1)),//人气降序
-    UPDATE_ASC(9, new BasicDBObject("upt", -1)) //最新时间降序
+    UPDATE_DESC(9, new BasicDBObject("upt", -1)), //最新时间降序
+    TOP_DESC(10, new BasicDBObject("tp", -1)), //置顶降序
+    PRAISE_DESC(11, new BasicDBObject("prc", -1)) //点赞数排序
     ;
 
     private int type;

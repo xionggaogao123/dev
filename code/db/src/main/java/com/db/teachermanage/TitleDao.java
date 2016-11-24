@@ -29,25 +29,27 @@ public class TitleDao extends BaseDao {
 
     /**
      * 删除教师职称信息
+     *
      * @param userId
      */
     public void removeTitleEntry(ObjectId userId) {
-        DBObject query =new BasicDBObject("ui",userId);
+        DBObject query = new BasicDBObject("ui", userId);
         remove(MongoFacroty.getAppDB(), Constant.COLLECTION_TITLE, query);
     }
 
     /**
      * 获取教师职称信息
+     *
      * @param userId
      * @param fields
      * @return
      */
-    public List<TitleEntry> getTitleList(ObjectId userId,DBObject fields) {
-        BasicDBObject query =new BasicDBObject("ui",userId);
-        List<DBObject> list=find(MongoFacroty.getAppDB(), Constant.COLLECTION_TITLE, query, fields);
-        List<TitleEntry> titleEntryList=new ArrayList<TitleEntry>();
-        for(DBObject dbObject:list){
-            TitleEntry resumeEntry=new TitleEntry((BasicDBObject)dbObject);
+    public List<TitleEntry> getTitleList(ObjectId userId, DBObject fields) {
+        BasicDBObject query = new BasicDBObject("ui", userId);
+        List<DBObject> list = find(MongoFacroty.getAppDB(), Constant.COLLECTION_TITLE, query, fields);
+        List<TitleEntry> titleEntryList = new ArrayList<TitleEntry>();
+        for (DBObject dbObject : list) {
+            TitleEntry resumeEntry = new TitleEntry((BasicDBObject) dbObject);
             titleEntryList.add(resumeEntry);
         }
         return titleEntryList;

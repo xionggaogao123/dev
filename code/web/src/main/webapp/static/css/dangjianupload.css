@@ -1,0 +1,395 @@
+/*dangjianup_content*/
+.dangjianup_content {
+    margin: 14px auto;
+
+    width: 1000px;
+}
+
+/*dangjianup_content*/
+/*dangjianup_inf_title*/
+.dangjianup_inf_title {
+    padding-bottom: 10px;
+    border-bottom: 1px solid #ff7e00;
+}
+
+.dangjianup_inf_title p {
+    padding-left: 10px;
+
+    border-left: 5px solid #ff7e00;
+}
+
+/*dangjianup_inf_title*/
+/*dangjian_inf_step*/
+.dangjian_inf_step {
+    margin-top: 30px;
+
+}
+
+.dangjian_inf_step span {
+    margin-left: 28px;
+    margin-right: 20px;
+    font-size: 14px;
+    color: #333;
+    font-weight: bold;
+    display: inline-block;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    max-width: 200px;
+}
+
+.dangjian_inf_step .dangjiang_inf_inp {
+    width: 352px;
+    height: 33px;
+    border: 1px solid #b2b2b2;
+    border-radius: 5px;
+}
+
+.dangjian_inf_step div {
+    margin-bottom: 25px;
+}
+
+.dangjian_inf_step .dangjian_inf_check {
+    margin-left: 112px;
+}
+
+.dangjian_inf_step .dangjian_step_select {
+    display: inline-block;
+    width: 492px;
+    height: 178px;
+    border: 1px solid #b2b2b2;
+    border-radius: 3px;
+}
+
+.dangjian_inf_step .dangjian_step_span {
+    display: inline-block;
+    vertical-align: top;
+    margin-left: 16px !important;
+}
+
+.dangjian_inf_step button {
+    background: #fbc84d;
+    color: #fff;
+    font-weight: bold;
+    padding: 8px 8px;
+    margin-left: 110px;
+    /*
+        margin-top: 10px;*/
+    border: 1px solid #fbc84d;
+    border-radius: 3px;
+    cursor: pointer;
+}
+
+.div-bot {
+    margin-bottom: 5px !important;
+}
+
+/*dangjian_inf_step*/
+/*dangjian_upload*/
+.dangjian_upload .dangjian_zlup {
+    padding-bottom: 10px;
+    border-bottom: 1px solid #ff7e00;
+}
+
+.dangjian_upload span {
+    padding-left: 10px;
+
+    border-left: 5px solid #ff7e00;
+}
+
+.dangjian_upload_select button {
+    display: inline-block;
+    width: 125px;
+    height: 38px;
+    background: #ddd;
+    position: absolute;
+}
+
+.dangjian_upload input {
+    display: inline-block;
+    filter: alpha(opacity=0);
+    opacity: 0;
+    position: absolute;
+    top: 10px;
+    left: 0px;
+}
+
+.dangjian_upload_select {
+    margin-left: 20px;
+    margin-top: 20px;
+    margin-bottom: 20px;
+    padding: 0 35px;
+    line-height: 38px;
+    position: relative;
+    cursor: pointer;
+    color: #383838;
+    background: #ddd;
+    border: 1px solid #ddd;
+
+    overflow: hidden;
+    display: inline-block;
+    *display: inline;
+    *zoom: 1
+}
+
+.dangjian_upload_select input {
+    position: absolute;
+    font-size: 100px;
+    right: 0;
+    top: 0;
+    opacity: 0;
+    filter: alpha(opacity=0);
+    cursor: pointer
+}
+
+.dangjian_upload p {
+    margin-left: 20px;
+}
+
+.dangjian_upload button {
+    background: #fda616;
+    font-size: 14px;
+    color: #fff;
+    border: none;
+    padding: 8px 30px;
+    cursor: pointer;
+    margin-left: 20px;
+    margin-top: 40px;
+}
+
+/*dangjian_upload*/
+
+.file {
+    text-align: center;
+    float: left;
+    margin-left: 20px;
+    margin-top: 20px;
+    width: 103px;
+    height: 100px;
+    position: relative;
+    overflow: visible;
+
+}
+
+.file .dangjian_pic {
+    width: 46px;
+    height: 63px;
+    vertical-align: super;
+}
+
+.dangjian_upload .dangjina_del {
+    position: absolute;
+    top: -10px;
+    left: 70px;
+    cursor: pointer;
+}
+
+.file p {
+    text-overflow: ellipsis;
+    overflow: hidden;
+    white-space: nowrap;
+    width: 123px;
+    margin-left: 0px;
+}
+
+.disable {
+    color: #A9AAB9;
+}
+
+.bar {
+    height: 18px;
+    background: green;
+}
+
+/*弹框*/
+#fullbg {
+    background-color: gray;
+    left: 0;
+    opacity: 0.5;
+    position: fixed;
+    top: 0;
+    z-index: 30;
+    filter: alpha(opacity=50);
+    -moz-opacity: 0.5;
+    -khtml-opacity: 0.5;
+    width: 100%;
+    height: 100%;
+    display: none;
+}
+
+#dialog {
+    /*background-color:#fff;
+border:5px solid rgba(0,0,0, 0.4);
+ */
+    width: 344px;
+    left: 50%;
+    margin: 0 0 0 -120px;
+    padding: 1px;
+    position: fixed !important; /* 浮动对话框 */
+    position: absolute;
+    top: 168px;
+    z-index: 50;
+    border-radius: 10px;
+    display: none;
+}
+
+.dialog {
+    width: 344px;
+    left: 50%;
+    margin: 0 0 0 -120px;
+    padding: 1px;
+    position: fixed !important; /* 浮动对话框 */
+    position: absolute;
+    top: 168px;
+    z-index: 50;
+    border-radius: 10px;
+    display: none;
+}
+
+.dialog div.title {
+    margin: 0;
+    background: #e0e0e0 url(../img/alert-title-user.png) no-repeat 13px 6px;
+    line-height: 42px;
+    text-align: left;
+    padding-left: 50px;
+    padding-right: 10px;
+    height: 42px;
+    border-bottom: 2px solid #33ade1;
+    position: relative;
+    overflow: hidden;
+}
+
+.dialog span.title-login {
+    background: url(../img/alert-title-user.png) no-repeat 13px 6px;
+    padding-left: 50px;
+}
+
+.dialog div.title a {
+    color: #fff;
+    text-decoration: none;
+}
+
+.dialog .clostBtn {
+    position: absolute;
+    top: 13px;
+    right: 22px;
+}
+
+.dialog .dialog-content {
+    background: #fff;
+    padding: 24px;
+    font-size: 14px;
+}
+
+.dialog .dialog-child {
+    width: 236px;
+    padding: 0 30px;
+    background: #d8f1fe;
+    border: 1px solid #d2d2d2;
+    margin-bottom: 12px;
+    color: #7c7d7d;
+}
+
+.dialog .dialog-child p {
+    line-height: 22px;
+}
+
+.dialog table {
+    width: 100%;
+    text-align: left;
+}
+
+.dialog .dialog-title {
+    font-size: 14px;
+    font-weight: bold;
+}
+
+.dialog .dialog-title-user {
+    font-weight: normal;
+    font-size: 12px;
+    color: #686868;
+}
+
+.dialog .no-titleIcon {
+    background-image: none !important;
+    padding-left: 22px !important;
+}
+
+.dialog .input-div {
+    height: 48px;
+    border: 2px solid #dcdcdc;
+    font-size: 12px;
+    line-height: 46px;
+    padding-left: 14px;
+    margin-bottom: 26px;
+    color: #5e5b5b;
+    overflow: hidden;
+}
+
+.dialog .input {
+    width: 190px;
+    height: 48px;
+    font-size: 16px;
+    font-weight: bold;
+    padding-left: 10px;
+    padding-right: 22px;
+}
+
+.dialog .loginNameInput {
+    background: url(../img/login-u-bg.png) no-repeat 100% 14px
+}
+
+.dialog .passwordInput {
+    background: url(../img/login-p-bg.png) no-repeat 100% 14px
+}
+
+.dialog .dialog-submit a {
+    color: #5e5b5b;
+}
+
+#prompt-div {
+    background-color: rgba(128, 128, 128, 0.3);
+    /*opacity: 1;*/
+    position: fixed;
+    top: 0;
+    left: 0;
+    z-index: 9999;
+    /*filter: alpha(opacity = 50);*/
+    /*-moz-opacity: 0.5;*/
+    /*-khtml-opacity: 0.5;*/
+    width: 100%;
+    height: 100%;
+    padding-top: 120px;
+    font-size: 14px;
+    display: none;
+}
+
+.message-box {
+    max-width: 450px;
+    margin: 0 auto;
+    background: white;
+    box-shadow: 0px 0px 10px #666;
+    position: relative;
+    top: 250px;
+}
+
+.message-box-title {
+    background: lightgray;
+    overflow: visible;
+    padding: 10px 20px 10px 20px;
+}
+
+.message-box-title + div {
+    padding: 20px;
+    text-align: center;
+    overflow: visible;
+}
+
+.submit-button {
+    background: #33ADE1;
+    color: white;
+    cursor: pointer;
+    font: 13px;
+    height: 30px;
+    width: 70px;
+    border: 0;
+}

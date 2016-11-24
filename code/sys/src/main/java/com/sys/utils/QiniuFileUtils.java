@@ -2,11 +2,8 @@ package com.sys.utils;
 
 import java.io.File;
 import java.io.FileInputStream;
-import java.io.FileNotFoundException;
-import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
-import java.io.OutputStream;
 import java.net.HttpURLConnection;
 import java.net.URL;
 import java.text.MessageFormat;
@@ -332,30 +329,6 @@ public class QiniuFileUtils {
 	        return null;
 	  }
 	    
-    
-    
-    public static void main(String[] args) throws Exception {
-		
-    	InputStream stream=	QiniuFileUtils.downFileByUrl("http://7sbrbm.com1.z0.glb.clouddn.com/cloud/flash/20140923031228NTCogG.swf");
-    	
-        
-    	File f =new File("d:\\20140923031228NTCogG.swf");
-    	
-    	
-    	OutputStream os = new FileOutputStream(f);
-    	   int bytesRead = 0;
-    	   byte[] buffer = new byte[8192];
-    	   while ((bytesRead = stream.read(buffer, 0, 8192)) != -1) {
-    	      os.write(buffer, 0, bytesRead);
-    	   }
-    	   os.close();
-    	   stream.close();
-    	
-    	
-    		
-    	///FileInputStream 
-    		
-	}
     
     static class BucketInfo
 	{

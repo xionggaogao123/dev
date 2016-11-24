@@ -29,8 +29,6 @@ public class WithdrawCashInfo implements Serializable {
         this.paytype = entry.getPayType();
         this.password = entry.getPassword();
 		this.cardnum = entry.getCardNum()==null?"":entry.getCardNum();
-		this.status = entry.getStatus();
-		this.beiZhu = entry.getBeiZhu()==null?"":entry.getBeiZhu();
 
 
     }
@@ -66,10 +64,6 @@ public class WithdrawCashInfo implements Serializable {
 	private String time;
 
 	private String cardnum;
-
-	private int status;
-
-	private String beiZhu;
 
 	public String getId() {
 		return id;
@@ -213,22 +207,6 @@ public class WithdrawCashInfo implements Serializable {
 
 	public void setCardnum(String cardnum) {
 		this.cardnum = cardnum;
-	}
-
-	public int getStatus() {
-		return status;
-	}
-
-	public void setStatus(int status) {
-		this.status = status;
-	}
-
-	public String getBeiZhu() {
-		return beiZhu;
-	}
-
-	public void setBeiZhu(String beiZhu) {
-		this.beiZhu = beiZhu;
 	}
 
 	/** 从当前传入的DTO产生Entry

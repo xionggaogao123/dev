@@ -9,11 +9,6 @@ public class NameValuePairDTO {
 
     public NameValuePairDTO(){}
 
-    public NameValuePairDTO(String name, Object value) {
-        this.name = name;
-        this.value = value;
-    }
-
     public NameValuePairDTO(NameValuePair nameValuePair){
         this.name = nameValuePair.getName();
         this.value = nameValuePair.getValue();

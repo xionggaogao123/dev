@@ -23,20 +23,19 @@ import java.util.*;
 public class InterestClass {
 
     private InterestClassDao classdao = new InterestClassDao();
-    private TeacherClassSubjectDao teacherClassSubjectDao=new TeacherClassSubjectDao();
-    private SchoolDao schoolDao=new SchoolDao();
+    private TeacherClassSubjectDao teacherClassSubjectDao = new TeacherClassSubjectDao();
+    private SchoolDao schoolDao = new SchoolDao();
     private DirDao dirDao = new DirDao();
 
     public void deleteschoolinterest() throws IOException {
-        List<InterestClassEntry> classlist = classdao.findClassBySchoolId(new ObjectId("55934c15f6f28b7261c19ca4"), 1,null, null);
-        if (classlist!=null && classlist.size()!=0) {
+        List<InterestClassEntry> classlist = classdao.findClassBySchoolId(new ObjectId("55934c15f6f28b7261c19ca4"), 1, null, null);
+        if (classlist != null && classlist.size() != 0) {
             for (InterestClassEntry entry : classlist) {
                 classdao.deleteExpandClassById(entry.getID());
                 //删除tcsubject中关系
                 teacherClassSubjectDao.deleteById(entry.getID());
-                ObjectId tclid=teacherClassSubjectDao.getTcsubjectId(entry.getID(), entry.getTeacherId(), entry.getSubjectId());
-                if(tclid!=null)
-                {
+                ObjectId tclid = teacherClassSubjectDao.getTcsubjectId(entry.getID(), entry.getTeacherId(), entry.getSubjectId());
+                if (tclid != null) {
                     teacherClassSubjectDao.deleteById(tclid);
                     dirDao.deleteByOwnId(tclid);
                 }
@@ -44,30 +43,31 @@ public class InterestClass {
         }
 
     }
+
     public void insertclass() throws IOException {
-        List<InterestClassEntry> classlist = classdao.findClassBySchoolId(new ObjectId("55934c14f6f28b7261c19c5e"), 1,  null, null);
+        List<InterestClassEntry> classlist = classdao.findClassBySchoolId(new ObjectId("55934c14f6f28b7261c19c5e"), 1, null, null);
         List<InterestClassStudent> newstulist1 = new ArrayList<InterestClassStudent>();
         List<InterestClassStudent> newstulist2 = new ArrayList<InterestClassStudent>();
         InterestClassEntry centry = new InterestClassEntry();
-        if (classlist!=null && classlist.size()!=0) {
+        if (classlist != null && classlist.size() != 0) {
             for (InterestClassEntry entry : classlist) {
                 ObjectId id = entry.getID();
-                if (entry.getFirstTerm()==1||entry.getSecondTerm()==1) {
+                if (entry.getFirstTerm() == 1 || entry.getSecondTerm() == 1) {
                     List<InterestClassStudent> stulist = entry.getInterestClassStudents();
-                    if (stulist!=null && stulist.size()!=0) {
+                    if (stulist != null && stulist.size() != 0) {
                         newstulist1 = new ArrayList<InterestClassStudent>();
                         newstulist2 = new ArrayList<InterestClassStudent>();
                         for (InterestClassStudent stu : stulist) {
-                            if (stu.getCourseType()==1) {
+                            if (stu.getCourseType() == 1) {
                                 newstulist1.add(stu);
-                            } else if(stu.getCourseType()==2) {
+                            } else if (stu.getCourseType() == 2) {
                                 newstulist2.add(stu);
                             }
                         }
                         ObjectId relationid1 = null;
                         ObjectId relationid2 = null;
                         String classname = entry.getClassName();
-                        if (newstulist1!=null && newstulist1.size()!=0) {
+                        if (newstulist1 != null && newstulist1.size() != 0) {
                             entry.setInterestClassStudents(newstulist1);
                             entry.setClassName(classname + "短课1");
                             entry.setFirstTerm(1);
@@ -75,15 +75,15 @@ public class InterestClass {
                             entry.setRelationId(new ObjectId());
                             entry.setID(new ObjectId());
                             relationid1 = classdao.addExpandClass(entry);
-                            addTeacherSubject(relationid1,entry.getTeacherId(),entry.getSubjectId());
+                            addTeacherSubject(relationid1, entry.getTeacherId(), entry.getSubjectId());
                         }
-                        if (newstulist2!=null && newstulist2.size()!=0) {
+                        if (newstulist2 != null && newstulist2.size() != 0) {
                             entry.setID(new ObjectId());
                             entry.setFirstTerm(0);
                             entry.setSecondTerm(1);
                             entry.setInterestClassStudents(newstulist2);
                             entry.setRelationId(relationid1);
-                            entry.setClassName(classname+"短课2");
+                            entry.setClassName(classname + "短课2");
                             relationid2 = classdao.addExpandClass(entry);
                             classdao.updateExpandClassRelation(relationid1, relationid2);
                             addTeacherSubject(relationid1, entry.getTeacherId(), entry.getSubjectId());
@@ -93,9 +93,8 @@ public class InterestClass {
                     classdao.deleteExpandClassById(id);
                     //删除tcsubject中关系
                     teacherClassSubjectDao.deleteById(id);
-                    ObjectId tclid=teacherClassSubjectDao.getTcsubjectId(id, entry.getTeacherId(), entry.getSubjectId());
-                    if(tclid!=null)
-                    {
+                    ObjectId tclid = teacherClassSubjectDao.getTcsubjectId(id, entry.getTeacherId(), entry.getSubjectId());
+                    if (tclid != null) {
                         teacherClassSubjectDao.deleteById(tclid);
                         dirDao.deleteByOwnId(tclid);
                     }
@@ -107,9 +106,9 @@ public class InterestClass {
     }
 
     private void addTeacherSubject(ObjectId classid, ObjectId teacherid, ObjectId subjectid) {
-        InterestClassEntry classEntry= classdao.findEntryByClassId(classid);
+        InterestClassEntry classEntry = classdao.findEntryByClassId(classid);
         ObjectId schoolId = classEntry.getSchoolId();
-        SchoolEntry schoolEntry = schoolDao.getSchoolEntry(schoolId,Constant.FIELDS);
+        SchoolEntry schoolEntry = schoolDao.getSchoolEntry(schoolId, Constant.FIELDS);
         List<Subject> subjects = schoolEntry.getSubjects();
         Map<ObjectId, String> subjectMap = new HashMap<ObjectId, String>();
         for (Subject subject : subjects) {
@@ -122,20 +121,20 @@ public class InterestClass {
         //插入teacherClassSubjectEntry
         ObjectId tclId = teacherClassSubjectDao.addTeacherClassSubjectEntry(teacherClassLessonEntry);
         //新建dir
-        DirEntry entry=new DirEntry(tclId,classEntry.getClassName()+subjectMap.get(subjectid),null,0, DirType.CLASS_LESSON);
+        DirEntry entry = new DirEntry(tclId, classEntry.getClassName() + subjectMap.get(subjectid), null, 0, DirType.CLASS_LESSON);
         dirDao.addDirEntry(entry);
     }
 
 
-    private void updateTerm(){
+    private void updateTerm() {
         classdao.deleteKey("tm");
         List<InterestClassEntry> list = classdao.findAllInterestClass();
-        for(InterestClassEntry entry : list){
+        for (InterestClassEntry entry : list) {
 //            if(entry.getSchoolId().toString().equals("55934c14f6f28b7261c19c62")){
-                ObjectId classId = entry.getID();
+            ObjectId classId = entry.getID();
 //            entry.setTerm(getTerm(classId.getTime()));
-                IdNameValuePair term = new IdNameValuePair(null, getTerm(classId.getTime()), entry.getTermType());
-                classdao.updateTerm(classId,term);
+            IdNameValuePair term = new IdNameValuePair(null, getTerm(classId.getTime()), entry.getTermType());
+            classdao.updateTerm(classId, term);
 //            }
 
         }
@@ -144,10 +143,11 @@ public class InterestClass {
 
     /**
      * 根据时间计算所处学期
+     *
      * @param time
      * @return
      */
-    private String getTerm(long time){
+    private String getTerm(long time) {
         Calendar calendar = Calendar.getInstance();
         calendar.setTimeInMillis(time);
         int year = calendar.get(Calendar.YEAR);
@@ -156,7 +156,7 @@ public class InterestClass {
         String schoolYear;
         if (month < 9 && month > 2) {
             schoolYear = (year - 1) + "-" + year + "学年第二学期";
-        } else if(month >= 9){
+        } else if (month >= 9) {
             schoolYear = year + "-" + (year + 1) + "学年第一学期";
         } else {
             schoolYear = (year - 1) + "-" + year + "学年第一学期";
@@ -166,14 +166,13 @@ public class InterestClass {
     }
 
 
-
-    private void ss(){
+    private void ss() {
         ObjectId schoolId = new ObjectId("55934c15f6f28b7261c19ca4");
-        List<InterestClassEntry> classEntryList = classdao.findClassBySchoolId(schoolId, 1,  "56e2032f0cf2bd4da79ac515", null);
-        for(InterestClassEntry entry : classEntryList){
+        List<InterestClassEntry> classEntryList = classdao.findClassBySchoolId(schoolId, 1, "56e2032f0cf2bd4da79ac515", null);
+        for (InterestClassEntry entry : classEntryList) {
             System.out.println(entry.getID().toString() + "\t" + entry.getClassName());
             List<InterestClassStudent> students = entry.getInterestClassStudents();
-            for(InterestClassStudent student : students){
+            for (InterestClassStudent student : students) {
                 student.setTermType(2);
             }
 

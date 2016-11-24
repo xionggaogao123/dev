@@ -11,7 +11,7 @@ import com.pojo.salary.SalaryItemEntry;
 
 public class SalaryItemUpdate {
 
-	public static void main(String[] args) {
+    public static void main(String[] args) {
 //		
 //		SalaryDao salaryDao =new SalaryDao();
 //		
@@ -35,5 +35,5 @@ public class SalaryItemUpdate {
 //		}
 //		
 //		
-	}
+    }
 }

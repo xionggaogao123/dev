@@ -14,12 +14,6 @@ public class ScoreSectionDTO {
         this.num = scoreSection.getNum();
     }
 
-    public ScoreSectionDTO(int beginScore, int endScore, int num) {
-        this.beginScore = beginScore;
-        this.endScore = endScore;
-        this.num = num;
-    }
-
     public int getBeginScore() {
         return beginScore;
     }

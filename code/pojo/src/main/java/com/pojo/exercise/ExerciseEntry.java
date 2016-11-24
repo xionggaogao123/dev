@@ -45,10 +45,6 @@ import com.sys.constants.Constant;
  *   
  *  ]
  * }
- *  2016/7/8添加一下属性
- * tty:时间类型 1：限时练习练习  如45分钟做完的练习  2：期限节点练习  如2016/8/31前提交    缺省值为1
- * dt:期限节点  long
- * dld:文档是否允许下载  0：不允许   1：允许   缺省值0
  * </pre>
  * @author fourer
  */
@@ -85,21 +81,18 @@ public class ExerciseEntry extends BaseDBObject {
                          int totalScore, int totalTime, long lastUpdateTime, List<IdValuePair> submitStudents) {
 		super();
 		BasicDBObject baseEntry =new BasicDBObject()
-				.append("ty", type)
-				.append("ti", teacherId)
-				.append("cis", MongoUtils.convert(classIds))
-				.append("nm", name)
-				.append("qp", questionPath)
-				.append("ap", answerPath)
-				.append("st", state)
-				.append("ts", totalScore)
-				.append("tt", totalTime)
-				.append("lut", lastUpdateTime)
-				.append("sts", MongoUtils.convert(MongoUtils.fetchDBObjectList(submitStudents)))
-				.append("gu", new BasicDBList())
-				.append("tty", 1)
-				.append("dt", 0)
-				.append("dld", 0)
+		.append("ty", type)
+		.append("ti", teacherId)
+		.append("cis", MongoUtils.convert(classIds))
+		.append("nm", name)
+		.append("qp", questionPath)
+		.append("ap", answerPath)
+		.append("st", state)
+		.append("ts", totalScore)
+		.append("tt", totalTime)
+		.append("lut", lastUpdateTime)
+		.append("sts", MongoUtils.convert(MongoUtils.fetchDBObjectList(submitStudents)))
+		.append("gu", new BasicDBList());
 		;
 		setBaseEntry(baseEntry);
 	}
@@ -204,29 +197,6 @@ public class ExerciseEntry extends BaseDBObject {
 		setSimpleValue("lut", lastUpdateTime);
 	}
 
-	public int getTimeType(){
-		return getSimpleIntegerValueDef("tty", 1);
-	}
-
-	public void setTimeType(int timeType){
-		setSimpleValue("tty", timeType);
-	}
-
-	public long getDate(){
-		return getSimpleLongValueDef("dt", 0);
-	}
-
-	public void setDate(long date){
-		setSimpleValue("dt", date);
-	}
-
-	public int getDownLoad(){
-		return getSimpleIntegerValueDef("dld", 0);
-	}
-
-	public void setDownLoad(int downLoad){
-		setSimpleValue("dld", downLoad);
-	}
 
 
 }

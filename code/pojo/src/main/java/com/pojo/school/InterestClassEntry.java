@@ -38,7 +38,6 @@ public class InterestClassEntry extends BaseDBObject {
     * typeId-->tyid 类型id
     * isRemove-->ir是否删除，0未删除   1已删除   默认0
     * room  rm 上课教室
-    * sex --> sex 从属性别
     * */
 
 
@@ -68,8 +67,7 @@ public class InterestClassEntry extends BaseDBObject {
                 append("rid",null).
                 append("tm",null).
                 append("tyid", null).
-                append("rm", "").
-                append("sex",2)
+                append("rm", "")
                 ;
         setBaseEntry(entry);
     }
@@ -281,12 +279,6 @@ public class InterestClassEntry extends BaseDBObject {
     public void setRoom(String room){
         setSimpleValue("rm", room);
     }
-    public void setSex(int sex){
-        setSimpleValue("sex", sex);
-    }
 
-    public int getSex(){
-        return getSimpleIntegerValue("sex");
-    }
 
  }

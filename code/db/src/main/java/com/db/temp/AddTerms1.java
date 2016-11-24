@@ -22,26 +22,26 @@ public class AddTerms1 {
     private InterestClassTermsDao interestClassTermsDao = new InterestClassTermsDao();
 
 
-    private void addTerms(){//为学校创建学期表
-        List<SchoolEntry> schoolEntries = schoolDao.getSchoolEntry(0,500);
-        if(null!=schoolEntries){
-            for(SchoolEntry schoolEntry : schoolEntries){
+    private void addTerms() {//为学校创建学期表
+        List<SchoolEntry> schoolEntries = schoolDao.getSchoolEntry(0, 500);
+        if (null != schoolEntries) {
+            for (SchoolEntry schoolEntry : schoolEntries) {
                 addInterestClassTermsEntry(schoolEntry.getID());
             }
         }
 
     }
 
-    private InterestClassTermsDTO getInterestClassTermsDTO(ObjectId schoolId){
+    private InterestClassTermsDTO getInterestClassTermsDTO(ObjectId schoolId) {
         InterestClassTermsEntry entry = interestClassTermsDao.findInterestClassTermsEntryBySchoolId(schoolId);
-        if(null == entry){
+        if (null == entry) {
             entry = addInterestClassTermsEntry(schoolId);
         }
         return new InterestClassTermsDTO(entry);
     }
 
-    private InterestClassTermsEntry addInterestClassTermsEntry(ObjectId schoolId){
-        SchoolEntry schoolEntry = schoolDao.getSchoolEntry(schoolId,Constant.FIELDS);
+    private InterestClassTermsEntry addInterestClassTermsEntry(ObjectId schoolId) {
+        SchoolEntry schoolEntry = schoolDao.getSchoolEntry(schoolId, Constant.FIELDS);
         String termName = getCurrentTerm();
         IdNameValuePair term = new IdNameValuePair(null, termName, schoolEntry.getTermType());
         List<IdNameValuePair> terms = new ArrayList<IdNameValuePair>();
@@ -50,6 +50,7 @@ public class AddTerms1 {
         interestClassTermsDao.add(interestClassTermsEntry);
         return interestClassTermsEntry;
     }
+
     private String getCurrentTerm() {
         Calendar calendar = Calendar.getInstance();
         int year = calendar.get(Calendar.YEAR);
@@ -57,7 +58,7 @@ public class AddTerms1 {
         String schoolYear;
         if (month < 9 && month > 2) {
             schoolYear = (year - 1) + "-" + year + "学年第二学期";
-        } else if(month >= 9){
+        } else if (month >= 9) {
             schoolYear = year + "-" + (year + 1) + "学年第一学期";
         } else {
             schoolYear = (year - 1) + "-" + year + "学年第一学期";
@@ -65,7 +66,7 @@ public class AddTerms1 {
         return schoolYear;
     }
 
-    public static void main(String[] args){
+    public static void main(String[] args) {
         new AddTerms1().addTerms();
     }
 }

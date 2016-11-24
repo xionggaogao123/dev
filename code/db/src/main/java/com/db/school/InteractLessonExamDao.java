@@ -23,7 +23,7 @@ public class InteractLessonExamDao extends BaseDao {
      * @return
      */
     public ObjectId addInteractLessonExamEntry(InteractLessonExamEntry e) {
-        save(MongoFacroty.getAppDB(), Constant.COLLECTION_INTERACTLESSON_EXAM,e.getBaseEntry());
+        save(MongoFacroty.getAppDB(), Constant.COLLECTION_INTERACTLESSON_EXAM, e.getBaseEntry());
         return e.getID();
     }
 
@@ -39,6 +39,7 @@ public class InteractLessonExamDao extends BaseDao {
 
     /**
      * 查询
+     *
      * @param lessonId
      * @param type
      * @param times
@@ -50,20 +51,20 @@ public class InteractLessonExamDao extends BaseDao {
         List<InteractLessonExamEntry> retList = new ArrayList<InteractLessonExamEntry>();
         BasicDBObject dbo = new BasicDBObject();
         dbo.append("lid", lessonId);
-        if(type!=0){
+        if (type != 0) {
             dbo.append("ty", type);
         }
-        if(times!=0){
+        if (times != 0) {
             dbo.append("ts", times);
         }
-        BasicDBObject sortDBO =new BasicDBObject();
-        if(orderBy!=null&&!"".equals(orderBy)){
-            if("cr".equals(orderBy)){
+        BasicDBObject sortDBO = new BasicDBObject();
+        if (orderBy != null && !"".equals(orderBy)) {
+            if ("cr".equals(orderBy)) {
                 sortDBO.append(orderBy, 1);
-            }else{
+            } else {
                 sortDBO.append(orderBy, -1);
             }
-        }else{
+        } else {
             sortDBO.append(Constant.ID, -1);
         }
         List<DBObject> list = find(MongoFacroty.getAppDB(), Constant.COLLECTION_INTERACTLESSON_EXAM, dbo, fields, sortDBO);

@@ -24,11 +24,6 @@ import com.sys.constants.Constant;
 public class StudentEnterEntry extends BaseDBObject{
 	
 	/**
-	 * 
-	 */
-	private static final long serialVersionUID = 2033839649544307116L;
-
-	/**
 	 * 构造函数
 	 * @param baseEntry
 	 */

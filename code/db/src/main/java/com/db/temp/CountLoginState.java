@@ -11,19 +11,19 @@ public class CountLoginState {
     public static void main(String[] args) {
 
         try {
-            Map<String,List<String>> citymap=readfile("D:\\temp\\Loginlog");
-            Map<String,Set<String>> map=new HashMap<String, Set<String>>();
-            Map<String,Integer> intMap=new HashMap<String, Integer>();
+            Map<String, List<String>> citymap = readfile("D:\\temp\\Loginlog");
+            Map<String, Set<String>> map = new HashMap<String, Set<String>>();
+            Map<String, Integer> intMap = new HashMap<String, Integer>();
             for (List<String> strs : citymap.values()) {
-                for(String str:strs) {
+                for (String str : strs) {
                     String[] subStrs = str.split(",");
-                    String schoolName=subStrs[2].substring(12);
-                    String userName=subStrs[4].substring(10);
-                    Set<String> stuSet=map.get(schoolName);
-                    if(stuSet!=null){
+                    String schoolName = subStrs[2].substring(12);
+                    String userName = subStrs[4].substring(10);
+                    Set<String> stuSet = map.get(schoolName);
+                    if (stuSet != null) {
                         stuSet.add(userName);
-                    }else{
-                        stuSet=new HashSet<String>();
+                    } else {
+                        stuSet = new HashSet<String>();
                         stuSet.add(userName);
                     }
                     map.put(schoolName, stuSet);
@@ -40,8 +40,8 @@ public class CountLoginState {
         System.out.println("ok");
     }
 
-    public static Map<String,List<String>> readfile(String filepath) throws FileNotFoundException, IOException {
-        Map<String,List<String>> citymap=new HashMap<String, List<String>>();
+    public static Map<String, List<String>> readfile(String filepath) throws FileNotFoundException, IOException {
+        Map<String, List<String>> citymap = new HashMap<String, List<String>>();
         try {
             File file = new File(filepath);
             if (!file.isDirectory()) {
@@ -56,23 +56,23 @@ public class CountLoginState {
                 for (int i = 0; i < filelist.length; i++) {
                     File readfile = new File(filepath + "\\" + filelist[i]);
                     if (!readfile.isDirectory()) {
-                        List<String> recodes=readLog(readfile.getPath());
-                        for(String str:recodes){
-                            String subStr=str.substring(str.indexOf("[")+1,str.indexOf("]"));
-                            String[] subStrs=subStr.split(",");
-                            String city=subStrs[0].substring(5);
-                            List<String> list=citymap.get(city);
-                            if(list!=null){
+                        List<String> recodes = readLog(readfile.getPath());
+                        for (String str : recodes) {
+                            String subStr = str.substring(str.indexOf("[") + 1, str.indexOf("]"));
+                            String[] subStrs = subStr.split(",");
+                            String city = subStrs[0].substring(5);
+                            List<String> list = citymap.get(city);
+                            if (list != null) {
                                 list.add(subStr);
-                            }else{
-                                list=new ArrayList<String>();
+                            } else {
+                                list = new ArrayList<String>();
                                 list.add(subStr);
                             }
-                            citymap.put(city,list);
+                            citymap.put(city, list);
                         }
 
                         System.out.println("path=" + readfile.getPath());
-                            System.out.println("absolutepath=" + readfile.getAbsolutePath());
+                        System.out.println("absolutepath=" + readfile.getAbsolutePath());
                         System.out.println("name=" + readfile.getName());
                     } else if (readfile.isDirectory()) {
                         readfile(filepath + "\\" + filelist[i]);

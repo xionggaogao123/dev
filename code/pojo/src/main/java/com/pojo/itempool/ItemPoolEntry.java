@@ -45,12 +45,6 @@ import com.pojo.utils.MongoUtils;
  *    zc:组选个数
  *    sc:选项个数
  *  }
- *
- *  入库标志位  : is (isSaved)  0没有入库 1已经入库 2不允许入库
- *  归属类型：ot(ownType) 0:大众所有，1：私人专属
- *  专属教育局ID： edid(educationBureauId)
- *  uid:用户Id
- *  不可用教育局IDs： neids(noEducationBureauIds)
  * }
  * </pre>
  * @author fourer
@@ -117,60 +111,8 @@ public class ItemPoolEntry extends BaseDBObject {
 		
 		setBaseEntry(baseEntry);
 	}
+	
 
-	/**
-	 *
-	 * @param xueduan
-	 * @param subject
-	 * @param level
-	 * @param type
-	 * @param sco
-	 * @param clty
-	 * @param score
-	 * @param question
-	 * @param answer
-	 * @param parseAnser
-	 * @param item
-	 * @param zhangjie1
-	 * @param zhangjie2
-	 * @param gradeList
-	 * @param origItemType
-	 */
-	public ItemPoolEntry(ObjectId xueduan, ObjectId subject,int level, ObjectId type,List<ObjectId> scs,
-						 double score, String question, String answer,String parseAnser,
-						 ObjectiveItem item,List<ObjectId> psbs,List<Integer> gradeList,Integer origItemType,
-						 int isSaved, int ownType, ObjectId eduId, ObjectId userId, List<ObjectId> noEdIds) {
-		super();
-		BasicDBObject baseEntry =new BasicDBObject()
-				.append("gtys", xueduan) //学段
-				.append("sty", subject) //学科
-				.append("lel", level) //难易程度
-				.append("ty", type) //题目类型
-				.append("scs", MongoUtils.convert(scs)) //只是面
-				.append("sco", score) //分值
-				.append("qu", question)
-				.append("an", answer)
-				.append("pan", parseAnser)
-				.append("psbs", MongoUtils.convert(psbs)) //教材
-				.append("grs", MongoUtils.convert(gradeList))
-				.append("oty", origItemType)
-				.append("is", isSaved)
-				.append("ot", ownType)
-				.append("edid", eduId)
-				.append("uid", userId)
-				.append("neids", noEdIds)
-				;
-		if(null!=item)
-		{
-			baseEntry.append("kg", item.getBaseEntry());
-		}
-		else
-		{
-			baseEntry.append("kg", null);
-		}
-
-		setBaseEntry(baseEntry);
-	}
 	
 	public List<ObjectId> getScList()
 	{
@@ -338,50 +280,6 @@ public class ItemPoolEntry extends BaseDBObject {
 
 	public void setItem(ObjectiveItem item) {
 		setSimpleValue("kg",item.getBaseEntry());
-	}
-
-	public int getIsSaved() {
-		return getSimpleIntegerValueDef("is",1);
-	}
-	public void setIsSaved(int isSaved) {
-		setSimpleValue("is", isSaved);
-	}
-
-	public int getOwnType() {
-		return getSimpleIntegerValue("ot");
-	}
-	public void setOwnType(int ownType) {
-		setSimpleValue("ot", ownType);
-	}
-
-	public ObjectId getEduId() {
-		return getSimpleObjecIDValue("edid");
-	}
-	public void setEduId(ObjectId eduId) {
-		setSimpleValue("edid", eduId);
-	}
-
-	public ObjectId getUserId() {
-		return getSimpleObjecIDValue("uid");
-	}
-	public void setUserId(ObjectId userId) {
-		setSimpleValue("uid", userId);
-	}
-
-	public List<ObjectId> getNoEdIds() {
-		List<ObjectId> retList =new ArrayList<ObjectId>();
-		BasicDBList list =(BasicDBList)getSimpleObjectValue("neids");
-		if(null!=list && !list.isEmpty())
-		{
-			for(Object o:list)
-			{
-				retList.add((ObjectId)o);
-			}
-		}
-		return retList;
-	}
-	public void setNoEdIds(List<ObjectId> noEdIds) {
-		setSimpleValue("neids", MongoUtils.convert(noEdIds));
 	}
 
 	/**

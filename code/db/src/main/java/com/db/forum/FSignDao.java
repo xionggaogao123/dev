@@ -10,17 +10,16 @@ import org.bson.types.ObjectId;
 
 /**
  * Created by wangkaidong on 2016/5/30.
- *
+ * <p>
  * 签到DAO
- *
  */
-public class FSignDao extends BaseDao{
+public class FSignDao extends BaseDao {
 
     /**
      * 新增&更新签到
-     * */
-    public ObjectId saveOrUpdate(FSignEntry entry){
-        save(MongoFacroty.getAppDB(), Constant.COLLECTION_COURSE_TABLE,entry.getBaseEntry());
+     */
+    public ObjectId saveOrUpdate(FSignEntry entry) {
+        save(MongoFacroty.getAppDB(), Constant.COLLECTION_FORUM_SIGN, entry.getBaseEntry());
         return entry.getID();
     }
 
@@ -28,11 +27,11 @@ public class FSignDao extends BaseDao{
      * 查询签到记录
      *
      * @param userId
-     * */
-    public FSignEntry findSignByUserId(ObjectId userId){
-        DBObject dbObject = findOne(MongoFacroty.getAppDB(),Constant.COLLECTION_FORUM_SIGN,new BasicDBObject("uid",userId),Constant.FIELDS);
-        if(dbObject != null){
-            return new FSignEntry((BasicDBObject)dbObject);
+     */
+    public FSignEntry findSignByUserId(ObjectId userId) {
+        DBObject dbObject = findOne(MongoFacroty.getAppDB(), Constant.COLLECTION_FORUM_SIGN, new BasicDBObject("uid", userId), Constant.FIELDS);
+        if (dbObject != null) {
+            return new FSignEntry((BasicDBObject) dbObject);
         } else {
             return null;
         }

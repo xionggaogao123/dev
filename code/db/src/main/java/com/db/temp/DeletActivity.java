@@ -19,30 +19,27 @@ import java.util.List;
  * Created by qiangm on 2015/8/28.
  */
 public class DeletActivity {
-    private UserDao userDao=new UserDao();
+    private UserDao userDao = new UserDao();
     private ActivityDao activityDao = new ActivityDao();
     private ActivityTrackDao activityTrackDao = new ActivityTrackDao();
-    private ActInvitationDao actInvitationDao=new ActInvitationDao();
+    private ActInvitationDao actInvitationDao = new ActInvitationDao();
 
     /**
      * 根据用户名删除所有记录
+     *
      * @param userName
      */
-    public void deleteActivityByUserName(String userName)
-    {
+    public void deleteActivityByUserName(String userName) {
         // 找到用户id
-        UserEntry userEntry=userDao.searchUserByUserName(userName);
-        
+        UserEntry userEntry = userDao.searchUserByUserName(userName);
+
         //王子恒8
-        if(userEntry!=null)
-        {
-            ObjectId userId=userEntry.getID();
-            List<ActivityEntry> activityEntryList=activityDao.myOrganizedActivity(userId, 0, 1000);
-            if(activityEntryList!=null && !activityEntryList.isEmpty())
-            {
-                List<ObjectId> actIds=new ArrayList<ObjectId>();
-                for(ActivityEntry activityEntry : activityEntryList)
-                {
+        if (userEntry != null) {
+            ObjectId userId = userEntry.getID();
+            List<ActivityEntry> activityEntryList = activityDao.myOrganizedActivity(userId, 0, 1000);
+            if (activityEntryList != null && !activityEntryList.isEmpty()) {
+                List<ObjectId> actIds = new ArrayList<ObjectId>();
+                for (ActivityEntry activityEntry : activityEntryList) {
                     actIds.add(activityEntry.getID());
                 }
                 //删除actTrack中记录
@@ -54,8 +51,8 @@ public class DeletActivity {
             }
         }
     }
-    public static void main(String[] args)
-    {
+
+    public static void main(String[] args) {
 
         new DeletActivity().deleteAllSpeak(args[0]);
 
@@ -63,17 +60,16 @@ public class DeletActivity {
 
     /**
      * 删除该用户的所有发言
+     *
      * @param userName
      */
-    public void deleteAllSpeak(String userName)
-    {
+    public void deleteAllSpeak(String userName) {
         // 找到用户id
-        UserEntry userEntry=userDao.searchUserByUserName(userName);
-        if(userEntry!=null)
-        {
-            ObjectId userId=userEntry.getID();
-            List<ActivityEntry> activityEntryList=activityDao.getAllList();
-            if(activityEntryList!=null && !activityEntryList.isEmpty()) {
+        UserEntry userEntry = userDao.searchUserByUserName(userName);
+        if (userEntry != null) {
+            ObjectId userId = userEntry.getID();
+            List<ActivityEntry> activityEntryList = activityDao.getAllList();
+            if (activityEntryList != null && !activityEntryList.isEmpty()) {
                 for (ActivityEntry activityEntry : activityEntryList) {
                     List<ActivityDiscuss> activityDiscussList = activityEntry.getActDiscusses();
                     if (activityDiscussList != null && !activityDiscussList.isEmpty()) {

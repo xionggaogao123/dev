@@ -24,95 +24,80 @@ public class WithdrawCashDao extends BaseDao {
 
     /**
      * 提现记录
+     *
      * @return
      */
-    public List<WithDrawEntry> selWithDrawEntryList(List<String> userids,ObjectId dslId, ObjectId delId,int page,int pageSize) {
-        List<WithDrawEntry> retList =new ArrayList<WithDrawEntry>();
-        BasicDBObject query =new BasicDBObject();
-        if (userids!=null && userids.size()!=0) {
+    public List<WithDrawEntry> selWithDrawEntryList(List<String> userids, ObjectId dslId, ObjectId delId, int page, int pageSize) {
+        List<WithDrawEntry> retList = new ArrayList<WithDrawEntry>();
+        BasicDBObject query = new BasicDBObject();
+        if (userids != null && userids.size() != 0) {
             query.append("uid", new BasicDBObject(Constant.MONGO_IN, userids));
         }
-        BasicDBList dblist =new BasicDBList();
-        if(dslId!=null){
-            dblist.add(new BasicDBObject(Constant.ID,new BasicDBObject(Constant.MONGO_GTE,dslId)));
+        BasicDBList dblist = new BasicDBList();
+        if (dslId != null) {
+            dblist.add(new BasicDBObject(Constant.ID, new BasicDBObject(Constant.MONGO_GTE, dslId)));
         }
-        if(delId!=null){
+        if (delId != null) {
             dblist.add(new BasicDBObject(Constant.ID, new BasicDBObject(Constant.MONGO_LTE, delId)));
         }
-        if(dblist.size()>0){
-            query.append(Constant.MONGO_AND,dblist);
+        if (dblist.size() > 0) {
+            query.append(Constant.MONGO_AND, dblist);
         }
-        List<DBObject> list=find(MongoFacroty.getAppDB(), Constant.COLLECTION_WITHDRAW_CASH_NAME, query, null, new BasicDBObject("_id",-1),page,pageSize);
-        for(DBObject dbo:list)
-        {
-            retList.add(new WithDrawEntry((BasicDBObject)dbo));
+        List<DBObject> list = find(MongoFacroty.getAppDB(), Constant.COLLECTION_WITHDRAW_CASH_NAME, query, null, new BasicDBObject("_id", -1), page, pageSize);
+        for (DBObject dbo : list) {
+            retList.add(new WithDrawEntry((BasicDBObject) dbo));
         }
         return retList;
     }
 
     /**
-     *
      * @return
      */
-    public int withDrawEntryCount(List<String> userids,ObjectId dslId, ObjectId delId) {
-        BasicDBObject query =new BasicDBObject();
-        if (userids!=null && userids.size()!=0) {
+    public int withDrawEntryCount(List<String> userids, ObjectId dslId, ObjectId delId) {
+        BasicDBObject query = new BasicDBObject();
+        if (userids != null && userids.size() != 0) {
             query.append("uid", new BasicDBObject(Constant.MONGO_IN, userids));
         }
-        BasicDBList dblist =new BasicDBList();
-        if(dslId!=null){
-            dblist.add(new BasicDBObject(Constant.ID,new BasicDBObject(Constant.MONGO_GTE,dslId)));
+        BasicDBList dblist = new BasicDBList();
+        if (dslId != null) {
+            dblist.add(new BasicDBObject(Constant.ID, new BasicDBObject(Constant.MONGO_GTE, dslId)));
         }
-        if(delId!=null){
+        if (delId != null) {
             dblist.add(new BasicDBObject(Constant.ID, new BasicDBObject(Constant.MONGO_LTE, delId)));
         }
-        if(dblist.size()>0){
-            query.append(Constant.MONGO_AND,dblist);
+        if (dblist.size() > 0) {
+            query.append(Constant.MONGO_AND, dblist);
         }
         return count(MongoFacroty.getAppDB(), Constant.COLLECTION_WITHDRAW_CASH_NAME, query);
     }
 
 
     /**
-     *
      * @param userids
      * @param dslId
      * @param delId
      * @return
      */
     public List<WithDrawEntry> selWithDrawEntryList(List<String> userids, ObjectId dslId, ObjectId delId) {
-        List<WithDrawEntry> retList =new ArrayList<WithDrawEntry>();
-        BasicDBObject query =new BasicDBObject();
-        if (userids!=null && userids.size()!=0) {
+        List<WithDrawEntry> retList = new ArrayList<WithDrawEntry>();
+        BasicDBObject query = new BasicDBObject();
+        if (userids != null && userids.size() != 0) {
             query.append("uid", new BasicDBObject(Constant.MONGO_IN, userids));
         }
-        BasicDBList dblist =new BasicDBList();
-        if(dslId!=null){
-            dblist.add(new BasicDBObject(Constant.ID,new BasicDBObject(Constant.MONGO_GTE,dslId)));
+        BasicDBList dblist = new BasicDBList();
+        if (dslId != null) {
+            dblist.add(new BasicDBObject(Constant.ID, new BasicDBObject(Constant.MONGO_GTE, dslId)));
         }
-        if(delId!=null){
+        if (delId != null) {
             dblist.add(new BasicDBObject(Constant.ID, new BasicDBObject(Constant.MONGO_LTE, delId)));
         }
-        if(dblist.size()>0){
-            query.append(Constant.MONGO_AND,dblist);
+        if (dblist.size() > 0) {
+            query.append(Constant.MONGO_AND, dblist);
         }
-        List<DBObject> list=find(MongoFacroty.getAppDB(), Constant.COLLECTION_WITHDRAW_CASH_NAME, query, null, new BasicDBObject("_id",-1));
-        for(DBObject dbo:list)
-        {
-            retList.add(new WithDrawEntry((BasicDBObject)dbo));
+        List<DBObject> list = find(MongoFacroty.getAppDB(), Constant.COLLECTION_WITHDRAW_CASH_NAME, query, null, new BasicDBObject("_id", -1));
+        for (DBObject dbo : list) {
+            retList.add(new WithDrawEntry((BasicDBObject) dbo));
         }
         return retList;
-    }
-
-    public void updateBeiZhu(ObjectId id, String beiZhu) {
-        BasicDBObject query=new BasicDBObject(Constant.ID,id);
-        BasicDBObject updateValue=new BasicDBObject(Constant.MONGO_SET,new BasicDBObject("bz",beiZhu));
-        update(MongoFacroty.getAppDB(),Constant.COLLECTION_WITHDRAW_CASH_NAME, query, updateValue);
-    }
-
-    public void updateStatus(ObjectId id, int status) {
-        BasicDBObject query=new BasicDBObject(Constant.ID,id);
-        BasicDBObject updateValue=new BasicDBObject(Constant.MONGO_SET,new BasicDBObject("st",status));
-        update(MongoFacroty.getAppDB(),Constant.COLLECTION_WITHDRAW_CASH_NAME, query, updateValue);
     }
 }

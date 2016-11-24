@@ -15,34 +15,30 @@ import java.util.List;
  */
 public class SubjectAddType {
 
-    private SchoolDao schoolService =new SchoolDao();
-    private ClassDao classService =new ClassDao();
-    private TeacherClassSubjectDao teacherClassSubjectService =new TeacherClassSubjectDao();
-    private DirDao dirDao =new DirDao();
+    private SchoolDao schoolService = new SchoolDao();
+    private ClassDao classService = new ClassDao();
+    private TeacherClassSubjectDao teacherClassSubjectService = new TeacherClassSubjectDao();
+    private DirDao dirDao = new DirDao();
 
-    public void updateAll() throws IOException
-    {
-        int skip=0;
-        int limit=200;
+    public void updateAll() throws IOException {
+        int skip = 0;
+        int limit = 200;
 
-        while(true)
-        {
-            List<SchoolEntry> schoolList=schoolService.getSchoolEntry(skip, limit);
+        while (true) {
+            List<SchoolEntry> schoolList = schoolService.getSchoolEntry(skip, limit);
 
-            if(null==schoolList || schoolList.isEmpty())
-            {
+            if (null == schoolList || schoolList.isEmpty()) {
                 break;
             }
-            for(SchoolEntry se:schoolList)
-            {
+            for (SchoolEntry se : schoolList) {
                 updateSubjectType(se);
             }
-            skip=skip+200;
+            skip = skip + 200;
         }
 
     }
 
-    private void updateSubjectType(SchoolEntry schoolEntry){
+    private void updateSubjectType(SchoolEntry schoolEntry) {
 
     }
 }

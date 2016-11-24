@@ -75,7 +75,7 @@ public class MicroBlogEntry extends BaseDBObject {
 	}
 
 	public MicroBlogEntry(ObjectId userId, int type,  String content,Platform pl,int top,int blogtype,ObjectId mainid,int isread,ObjectId schoolID,
-			 List<MicroBlogImage> imageList,IdValuePair atInfo,List<ObjectId> classAry,List<IdNameValuePair> videoIds,int seachType,int manageType) {
+			 List<MicroBlogImage> imageList,IdValuePair atInfo,List<ObjectId> classAry,List<IdNameValuePair> videoIds,int seachType) {
 		this(
 				userId,
 				type,
@@ -97,15 +97,14 @@ public class MicroBlogEntry extends BaseDBObject {
 				atInfo,
 				classAry,
 				videoIds,
-				seachType,
-				manageType
+				seachType
 			);
 	}
 	
 	public MicroBlogEntry(ObjectId userId, int type, int state, String content,
 			Platform pl,long publishTime,long updateTime,int top,int blogtype, int replyCount, int zanCount,ObjectId mainid,int isread,
             ObjectId schoolID,
-			List<ObjectId> commentList, List<MicroBlogImage> imageList,List<ObjectId> zanList,IdValuePair atInfo,List<ObjectId> classAry,List<IdNameValuePair> videoIds,int seachType,int manageType) {
+			List<ObjectId> commentList, List<MicroBlogImage> imageList,List<ObjectId> zanList,IdValuePair atInfo,List<ObjectId> classAry,List<IdNameValuePair> videoIds,int seachType) {
 		super();
 		
 		BasicDBObject baseEntry =new BasicDBObject()
@@ -128,9 +127,7 @@ public class MicroBlogEntry extends BaseDBObject {
 		.append("zci", MongoUtils.convert(zanList))
 		.append("cls",MongoUtils.convert(classAry))
 		.append("vids", MongoUtils.convert(MongoUtils.fetchDBObjectList(videoIds)))
-		.append("stp",seachType)
-		.append("sc", 0)
-		.append("mtp",manageType);
+		.append("stp",seachType);
 		if(null!=atInfo)
 		{
 			baseEntry.append("at", atInfo.getBaseEntry());
@@ -283,6 +280,4 @@ public class MicroBlogEntry extends BaseDBObject {
 	public void setSeachType(int seachType) { setSimpleValue("stp",seachType);}
 	public long getUpdateTime() {return getSimpleLongValue("upt");}
 	public void setUpdateTime(long updateTime) {setSimpleValue("upt",updateTime);}
-	public int getShouCang() {return getSimpleIntegerValue("sc");}
-	public void setShouCang(int shouCang) { setSimpleValue("sc",shouCang);}
 }

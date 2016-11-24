@@ -29,25 +29,27 @@ public class CertificateDao extends BaseDao {
 
     /**
      * 删除证书信息
+     *
      * @param userId
      */
     public void removeCertificateEntry(ObjectId userId) {
-        DBObject query =new BasicDBObject("ui",userId);
+        DBObject query = new BasicDBObject("ui", userId);
         remove(MongoFacroty.getAppDB(), Constant.COLLECTION_CERTIFICATE, query);
     }
 
     /**
      * 获取证书信息
+     *
      * @param userId
      * @param fields
      * @return
      */
-    public List<CertificateEntry> getCertificateList(ObjectId userId,DBObject fields) {
-        BasicDBObject query =new BasicDBObject("ui",userId);
-        List<DBObject> list=find(MongoFacroty.getAppDB(), Constant.COLLECTION_CERTIFICATE, query, fields);
-        List<CertificateEntry> certificateEntryArrayList=new ArrayList<CertificateEntry>();
-        for(DBObject dbObject:list){
-            CertificateEntry certificateEntry=new CertificateEntry((BasicDBObject)dbObject);
+    public List<CertificateEntry> getCertificateList(ObjectId userId, DBObject fields) {
+        BasicDBObject query = new BasicDBObject("ui", userId);
+        List<DBObject> list = find(MongoFacroty.getAppDB(), Constant.COLLECTION_CERTIFICATE, query, fields);
+        List<CertificateEntry> certificateEntryArrayList = new ArrayList<CertificateEntry>();
+        for (DBObject dbObject : list) {
+            CertificateEntry certificateEntry = new CertificateEntry((BasicDBObject) dbObject);
             certificateEntryArrayList.add(certificateEntry);
         }
         return certificateEntryArrayList;

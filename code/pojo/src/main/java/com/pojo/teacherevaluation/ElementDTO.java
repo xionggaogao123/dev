@@ -14,7 +14,6 @@ public class ElementDTO {
 
     private String id;
     private String schoolId;
-    private String evaluationId;
     private String year;
     private String name;
     private double score;
@@ -26,7 +25,6 @@ public class ElementDTO {
     public ElementDTO(ElementEntry elementEntry){
         id = elementEntry.getID().toString();
         schoolId = elementEntry.getSchoolId().toString();
-        evaluationId = elementEntry.getEvaluationId().toString();
         year = elementEntry.getYear();
         name = elementEntry.getName();
         score = elementEntry.getElementScore();
@@ -46,7 +44,7 @@ public class ElementDTO {
                 pairs.add(content.exportEntry());
             }
         }
-        ElementEntry elementEntry = new ElementEntry(new ObjectId(schoolId), year, new ObjectId(evaluationId), name, score, type, pairs);
+        ElementEntry elementEntry = new ElementEntry(new ObjectId(schoolId), year, name, score, type, pairs);
         if(null != id){
             elementEntry.setID(new ObjectId(id));
         }
@@ -107,13 +105,5 @@ public class ElementDTO {
 
     public void setContents(List<IdValuePairDTO1> contents) {
         this.contents = contents;
-    }
-
-    public String getEvaluationId() {
-        return evaluationId;
-    }
-
-    public void setEvaluationId(String evaluationId) {
-        this.evaluationId = evaluationId;
     }
 }

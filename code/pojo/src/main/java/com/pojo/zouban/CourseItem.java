@@ -10,13 +10,13 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
- * 课表嵌套数据 TimeTableEntry嵌套类
+ * 课表嵌套数据
  * {
  * id:------------------------>id
  * xi: 星期------------------->xIndex
  * yi:  第几节课-------------->yIndex
  * cou: 课程id列表------------>course[]
- * ty:类型------------------->参照ZoubanType
+ * ty:类型------------------->0 走班，1小走班  2非走班
  * }
  * Created by qiangm on 2015/9/15.
  */

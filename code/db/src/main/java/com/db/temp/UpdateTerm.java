@@ -13,11 +13,11 @@ import java.util.List;
 public class UpdateTerm {
     private static ExamResultDao examResultDao = new ExamResultDao();
 
-    public static void main(String[] args){
+    public static void main(String[] args) {
         List<String> nameList = new ArrayList<String>();
-        for(String name : nameList) {
+        for (String name : nameList) {
             List<ExamResultEntry> examResultEntryList = examResultDao.getExamResultEntryByName(name);
-            if(examResultEntryList.size() == 1) {
+            if (examResultEntryList.size() == 1) {
                 ExamResultEntry examResultEntry = examResultEntryList.get(0);
                 examResultEntry.setSchoolYear("2015-2016学年第一学期");
                 examResultDao.updateInfo(examResultEntry.getID(), examResultEntry);

@@ -12,6 +12,7 @@ import java.util.List;
 /**
  * 不可排课的事件
  * {
+ * id:----------------->id
  * xi:星期几------------>xIndex
  * yi:第几节课---------->yIndex
  * fb:不可选课---------->forbid[]
@@ -20,13 +21,22 @@ import java.util.List;
  * }
  * Created by qiangm on 2015/9/15.
  */
-@Deprecated
 public class CourseEvent extends BaseDBObject {
     public CourseEvent(BasicDBObject basicDBObject)
     {
         super(basicDBObject);
     }
-    public CourseEvent() {}
+    public CourseEvent() {
+        super();
+        BasicDBObject basicDBObject = new BasicDBObject()
+                .append("id", null)
+                .append("xi", 0)
+                .append("yi", 0)
+                .append("fb", new BasicDBList())
+                .append("gs", new BasicDBList())
+                .append("pe", new BasicDBList());
+        setBaseEntry(basicDBObject);
+    }
 
     public CourseEvent(ObjectId id, int xIndex, int yIndex, List<String> forbidList, List<ObjectId> groupStudy,
                        List<TeacherEvent> teacherEvent) {
@@ -41,11 +51,11 @@ public class CourseEvent extends BaseDBObject {
         setBaseEntry(basicDBObject);
     }
 
-    public ObjectId getId(){
+    public ObjectId getId() {
         return getSimpleObjecIDValue("id");
     }
 
-    public void setId(ObjectId id){
+    public void setId(ObjectId id) {
         setSimpleValue("id", id);
     }
 

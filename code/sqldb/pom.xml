@@ -6,7 +6,6 @@
 		<groupId>fulaan</groupId>
 		<artifactId>oneconf</artifactId>
 		<version>1.0</version>
-		<relativePath>../oneconf/pom.xml</relativePath>
 	</parent>
 	
   <artifactId>sqldb</artifactId>
@@ -36,6 +35,7 @@
 		<groupId>org.mybatis</groupId>  
 	    <artifactId>mybatis</artifactId>  
 	</dependency> 
+
 	<dependency>
 		<groupId>alibaba</groupId>
 		<artifactId>com.alibaba.druid</artifactId>
@@ -46,11 +46,13 @@
 			<artifactId>db</artifactId>
 			<version>${project.version}</version>
 	</dependency>
+
     <dependency>
 			<groupId>fulaan</groupId>
 			<artifactId>sys</artifactId>
 			<version>${project.version}</version>
 	</dependency>
+
 	<dependency>
 			<groupId>fulaan</groupId>
 			<artifactId>pojo</artifactId>
@@ -61,5 +63,6 @@
           <groupId>com.qiniu</groupId>
           <artifactId>qiniu-java-sdk</artifactId>
       </dependency>
+
   </dependencies>
 </project>

@@ -27,14 +27,8 @@ import com.sys.constants.Constant;
  *  报修描述 : rc(repairContent)
  *  报修进度 : rpr(repairProcedure)
  *  报修结果 : rre(repairResult)
- *  
- *  
- *  
  *  维修人id: rspid(solveRepairPersonId)
  *  维修人na: rspna(solveRepairPersonName)
- *  
- *  
- *  
  *  报修评价 : rev(repariEvaluation)
  *  报修照片 : rpic(repairPicture)
  *  删除标志位 : ir(isRemoved,0为未删除，1为已删除)
@@ -45,20 +39,15 @@ import com.sys.constants.Constant;
  *  上报原因：rr(reportReason)
  *  所属教育局的id：eid(educationId)
  *  教育局是否指派：isr(isResolve,0为指派，1已指派)
- *  图片地址：ipath
  */
 public class RepairEntry extends BaseDBObject {
-	/**
-	 * 
-	 */
-	private static final long serialVersionUID = 2460585943922873390L;
 	public RepairEntry(BasicDBObject baseEntry) {
 		super(baseEntry);
 	}
 	
 	public RepairEntry(String repairTermType,ObjectId declareRepairPersonId,String declareRepairPersonName, long repairDate, String repairPlace,
 			String phone, String repairType, ObjectId repairDepartmentId,String repairDepartmentName,String repairContent, String repairProcedure,
-			ObjectId schoolId,String schoolName,ObjectId educationId,String reportReason,String manager,Integer isReport,Integer isResolve,String imagePath) {
+			ObjectId schoolId,String schoolName,ObjectId educationId,String reportReason,String manager,Integer isReport,Integer isResolve) {
 		super();
 		
 		BasicDBObject baseEntry =new BasicDBObject()
@@ -80,18 +69,12 @@ public class RepairEntry extends BaseDBObject {
 		.append("eid", educationId)
 		.append("rr", "")
 		.append("rnm", "")
-		.append("isr", Constant.ZERO)
-		.append("ipath", imagePath)
-		;
+		.append("isr", Constant.ZERO);
 		
 		
 		setBaseEntry(baseEntry);
 		
 	}
-	
-	
-	
-	
 	
 	public String getRepairTermType() {
 		return getSimpleStringValue("rtt");
@@ -127,31 +110,6 @@ public class RepairEntry extends BaseDBObject {
 	public void setRepairPlace(String repairPlace) {
 		setSimpleValue("rpl", repairPlace);
 	}
-	
-	
-	
-	
-	
-	
-	
-	public String getImagePath() {
-		return getSimpleStringValue("ipath");
-	}
-	public void setImagePath(String ipath) {
-		setSimpleValue("ipath", ipath);
-	}
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
 	
 	public String getPhone() {
 		return getSimpleStringValue("ph");

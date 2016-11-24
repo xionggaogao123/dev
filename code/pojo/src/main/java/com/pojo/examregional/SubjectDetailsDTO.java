@@ -15,8 +15,6 @@ public class SubjectDetailsDTO {
     private double excellentRate;
     private int compositeRanking;
     private double compositeScores;
-    private double biJun;//比均：全校平均分/全区平均分
-    private double chaoJun;//超均：（全校平均分-全区平均分）/全区平均分
 
     public SubjectDetailsDTO(){}
     public SubjectDetailsDTO(SubjectDetails subjectDetails){
@@ -119,21 +117,5 @@ public class SubjectDetailsDTO {
 
     public void setCompositeScores(double compositeScores) {
         this.compositeScores = compositeScores;
-    }
-
-    public double getBiJun() {
-        return biJun;
-    }
-
-    public void setBiJun(double biJun) {
-        this.biJun = biJun;
-    }
-
-    public double getChaoJun() {
-        return chaoJun;
-    }
-
-    public void setChaoJun(double chaoJun) {
-        this.chaoJun = chaoJun;
     }
 }

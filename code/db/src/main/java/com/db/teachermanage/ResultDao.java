@@ -29,25 +29,27 @@ public class ResultDao extends BaseDao {
 
     /**
      * 删除成果信息
+     *
      * @param userId
      */
     public void removeResultEntry(ObjectId userId) {
-        DBObject query =new BasicDBObject("ui",userId);
+        DBObject query = new BasicDBObject("ui", userId);
         remove(MongoFacroty.getAppDB(), Constant.COLLECTION_RESULT, query);
     }
 
     /**
      * 获取成果信息
+     *
      * @param userId
      * @param fields
      * @return
      */
-    public List<ResultEntry> getResultList(ObjectId userId,DBObject fields) {
-        BasicDBObject query =new BasicDBObject("ui",userId);
-        List<DBObject> list=find(MongoFacroty.getAppDB(), Constant.COLLECTION_RESULT, query, fields);
-        List<ResultEntry> resultEntries=new ArrayList<ResultEntry>();
-        for(DBObject dbObject:list){
-            ResultEntry resumeEntry=new ResultEntry((BasicDBObject)dbObject);
+    public List<ResultEntry> getResultList(ObjectId userId, DBObject fields) {
+        BasicDBObject query = new BasicDBObject("ui", userId);
+        List<DBObject> list = find(MongoFacroty.getAppDB(), Constant.COLLECTION_RESULT, query, fields);
+        List<ResultEntry> resultEntries = new ArrayList<ResultEntry>();
+        for (DBObject dbObject : list) {
+            ResultEntry resumeEntry = new ResultEntry((BasicDBObject) dbObject);
             resultEntries.add(resumeEntry);
         }
         return resultEntries;

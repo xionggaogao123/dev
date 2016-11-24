@@ -21,6 +21,7 @@ public class SchoolSecurityDao extends BaseDao {
 
     /**
      * 添加校园安全
+     *
      * @param e
      * @return
      */
@@ -31,14 +32,15 @@ public class SchoolSecurityDao extends BaseDao {
 
     /**
      * 删除校园安全
+     *
      * @param id
      * @param operateUserId
      * @param operateTime
      */
     public void deleteSchoolSecurity(ObjectId id, ObjectId operateUserId, long operateTime) {
-        DBObject query =new BasicDBObject(Constant.ID,id);
-        BasicDBObject update=new BasicDBObject(Constant.MONGO_SET,
-                        new BasicDBObject("st",DeleteState.DELETED.getState())
+        DBObject query = new BasicDBObject(Constant.ID, id);
+        BasicDBObject update = new BasicDBObject(Constant.MONGO_SET,
+                new BasicDBObject("st", DeleteState.DELETED.getState())
                         .append("oui", operateUserId)
                         .append("ot", operateTime));
         update(MongoFacroty.getAppDB(), Constant.COLLECTION_SCHOOL_SECURITY, query, update);
@@ -46,14 +48,15 @@ public class SchoolSecurityDao extends BaseDao {
 
     /**
      * 批量删除校园安全
+     *
      * @param ids
      * @param operateUserId
      * @param operateTime
      */
     public void batchDeleteSchoolSecurity(List<ObjectId> ids, ObjectId operateUserId, long operateTime) {
-        DBObject query =new BasicDBObject(Constant.ID, new BasicDBObject(Constant.MONGO_IN,ids));
-        BasicDBObject update=new BasicDBObject(Constant.MONGO_SET,
-                new BasicDBObject("st",DeleteState.DELETED.getState())
+        DBObject query = new BasicDBObject(Constant.ID, new BasicDBObject(Constant.MONGO_IN, ids));
+        BasicDBObject update = new BasicDBObject(Constant.MONGO_SET,
+                new BasicDBObject("st", DeleteState.DELETED.getState())
                         .append("oui", operateUserId)
                         .append("ot", operateTime));
         update(MongoFacroty.getAppDB(), Constant.COLLECTION_SCHOOL_SECURITY, query, update);
@@ -62,13 +65,14 @@ public class SchoolSecurityDao extends BaseDao {
 
     /**
      * 处理校园安全
+     *
      * @param id
      * @param operateUserId
      * @param operateTime
      */
     public void handleSchoolSecurity(ObjectId id, ObjectId operateUserId, long operateTime) {
-        DBObject query =new BasicDBObject(Constant.ID,id);
-        BasicDBObject update=new BasicDBObject(Constant.MONGO_SET,
+        DBObject query = new BasicDBObject(Constant.ID, id);
+        BasicDBObject update = new BasicDBObject(Constant.MONGO_SET,
                 new BasicDBObject("ih", HandleState.TREATED.getState())
                         .append("oui", operateUserId)
                         .append("ot", operateTime));
@@ -78,73 +82,71 @@ public class SchoolSecurityDao extends BaseDao {
 
     /**
      * 获取数量
+     *
      * @param handleState
      * @param schoolId
      * @return
      */
     public int getSchoolSecurityCount(int handleState, String schoolId) {
-        BasicDBObject query =new BasicDBObject("st", DeleteState.NORMAL.getState());
-        if (handleState!=2) {
-            query.append("ih",handleState);
+        BasicDBObject query = new BasicDBObject("st", DeleteState.NORMAL.getState());
+        if (handleState != 2) {
+            query.append("ih", handleState);
         }
-        query.append("si",new ObjectId(schoolId));
-        return count(MongoFacroty.getAppDB(),Constant.COLLECTION_SCHOOL_SECURITY,query);
+        query.append("si", new ObjectId(schoolId));
+        return count(MongoFacroty.getAppDB(), Constant.COLLECTION_SCHOOL_SECURITY, query);
     }
 
     /**
      * 查询
+     *
      * @param handleState 处理状态
-     * @param userId 用户id
+     * @param userId      用户id
      * @param state
      * @param schoolId
-     * @param skip 用于分页；大于0时生效
-     * @param limit 用于分页；大于0时生效
+     * @param skip        用于分页；大于0时生效
+     * @param limit       用于分页；大于0时生效
      * @return
      * @throws com.sys.exceptions.ResultTooManyException
      */
-    public List<SchoolSecurityEntry> getSchoolSecurityEntryList(int handleState, ObjectId userId, DeleteState state, String schoolId, int skip, int limit) throws ResultTooManyException{
-        List<SchoolSecurityEntry> retList =new ArrayList<SchoolSecurityEntry>();
-        BasicDBObject query =new BasicDBObject("st",state.getState());
-        if (handleState==3) {
-            query.append("ui",userId);
-        }else if(handleState!=2) {
-            query.append("ih",handleState);
+    public List<SchoolSecurityEntry> getSchoolSecurityEntryList(int handleState, ObjectId userId, DeleteState state, String schoolId, int skip, int limit) throws ResultTooManyException {
+        List<SchoolSecurityEntry> retList = new ArrayList<SchoolSecurityEntry>();
+        BasicDBObject query = new BasicDBObject("st", state.getState());
+        if (handleState == 3) {
+            query.append("ui", userId);
+        } else if (handleState != 2) {
+            query.append("ih", handleState);
         }
-        query.append("si",new ObjectId(schoolId));
-        if(query.isEmpty())
+        query.append("si", new ObjectId(schoolId));
+        if (query.isEmpty())
             throw new ResultTooManyException();
 
-        BasicDBObject sort =new BasicDBObject("pbt",Constant.DESC);
-        List<DBObject> list =new ArrayList<DBObject>();
-        if(skip>=0 && limit>0)
-        {
-            list=find(MongoFacroty.getAppDB(), Constant.COLLECTION_SCHOOL_SECURITY, query, Constant.FIELDS,sort, skip, limit);
-        }
-        else
-        {
-            list=find(MongoFacroty.getAppDB(), Constant.COLLECTION_SCHOOL_SECURITY, query, Constant.FIELDS, sort);
+        BasicDBObject sort = new BasicDBObject("pbt", Constant.DESC);
+        List<DBObject> list = new ArrayList<DBObject>();
+        if (skip >= 0 && limit > 0) {
+            list = find(MongoFacroty.getAppDB(), Constant.COLLECTION_SCHOOL_SECURITY, query, Constant.FIELDS, sort, skip, limit);
+        } else {
+            list = find(MongoFacroty.getAppDB(), Constant.COLLECTION_SCHOOL_SECURITY, query, Constant.FIELDS, sort);
         }
 
-        for(DBObject dbo:list)
-        {
-            retList.add(new SchoolSecurityEntry((BasicDBObject)dbo));
+        for (DBObject dbo : list) {
+            retList.add(new SchoolSecurityEntry((BasicDBObject) dbo));
         }
         return retList;
     }
 
     /**
      * 查询单条校园安全信息
+     *
      * @param id
      * @param fields
      * @return
      */
     public SchoolSecurityEntry getOneSchoolSecurityInfo(ObjectId id, DBObject fields) {
-        BasicDBObject query =new BasicDBObject(Constant.ID,id);
-        query.append("st",DeleteState.NORMAL.getState());
-        DBObject dbo =  findOne(MongoFacroty.getAppDB(),Constant.COLLECTION_SCHOOL_SECURITY,query,fields);
-        if(null!=dbo)
-        {
-            return new SchoolSecurityEntry((BasicDBObject)dbo);
+        BasicDBObject query = new BasicDBObject(Constant.ID, id);
+        query.append("st", DeleteState.NORMAL.getState());
+        DBObject dbo = findOne(MongoFacroty.getAppDB(), Constant.COLLECTION_SCHOOL_SECURITY, query, fields);
+        if (null != dbo) {
+            return new SchoolSecurityEntry((BasicDBObject) dbo);
         }
         return null;
     }

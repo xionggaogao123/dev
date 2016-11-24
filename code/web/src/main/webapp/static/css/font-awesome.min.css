@@ -47,7 +47,6 @@
 .fa-fw {
     width: 1.28571429em;
     text-align: center;
-
 }
 
 .fa-ul {
@@ -59,6 +58,7 @@
 .fa-ul > li {
     position: relative;
 }
+
 .fa-li {
     position: absolute;
     left: -2.14285714em;

@@ -22,23 +22,53 @@ package com.fulaan.alipay.config;
  */
 
 public class AlipayConfig {
-	
-	//↓↓↓↓↓↓↓↓↓↓请在这里配置您的基本信息↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓
-	// 合作身份者ID，以2088开头由16位纯数字组成的字符串
-	public static String partner = "2088311713347385";
-	// 商户的私钥
-	public static String key = "r1pv9jky8s1ubzgkvpxvkls520y10jyc";
 
-	//↑↑↑↑↑↑↑↑↑↑请在这里配置您的基本信息↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑
-	
+  //↓↓↓↓↓↓↓↓↓↓请在这里配置您的基本信息↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓
+  // 合作身份者ID，以2088开头由16位纯数字组成的字符串
+  public static String partner = "2088311713347385";
 
-	// 调试用，创建TXT日志文件夹路径
-	public static String log_path = "D:\\";
+  //商户收款账号
+  public static String SELLER = "zhifu@fulaan.com";
 
-	// 字符编码格式 目前支持 gbk 或 utf-8
-	public static String input_charset = "utf-8";
-	
-	// 签名方式 不需修改
-	public static String sign_type = "MD5";
+  // 商户的私钥
+  public static String key = "r1pv9jky8s1ubzgkvpxvkls520y10jyc";
+
+  //支付宝公钥
+  public static String RSA_PUBLIC = "MIGfMA0GCSqGSIb3DQEBAQUAA4GNADCBiQKBgQCnxj/9qwV" +
+          "fgoUh/y2W89L6BkRAFljhNhgPdyPuBV64bfQNN1PjbCzkIM6qRdKBoLPXmKKMiFYnkd6rAo" +
+          "prih3/PrQEB/VsW8OoM8fxn67UDYuyBTqA23MML9q1+ilIZwBC2AQ2UBVOrFXfFl75p6/B5K" +
+          "siNG9zpgmLCUYuLkxpLQIDAQAB";
+
+
+  //商户私钥，pkcs8格式
+  public static String RSA_PRIVATE = "MIICeAIBADANBgkqhkiG9w0BAQEFAASCAmIwggJeAgEAAoGBALQM3ozAvbJDk5rK" +
+          " WXJbZ1WloXjEoYlMf51dlkB8BmbU9b87u3WnVkVVRpJ9UrqP7mMOcbzvy52+bmmH" +
+          " ibpusXyqZaICDGBG1+fxEpTpH9dtRJQWsOn5yNibb2a31IlhMSxGH9utskqTs+qs" +
+          " UXIUZhNUKGzHJrnpGkZNwgkL3ujDAgMBAAECgYBP/v/KTcB6uaeVOJ5xPsc0uHh7" +
+          " rfGPjRuOEYy2beRyP+BH7QQnDAg6md7XKzNcjKKABGToaypulbN806mP2aqlWARt" +
+          " f6gTHQdaT7NsOBgXNWMKxQnNX1/zpMXl2fnZVHs5wUry70YjhR9s+Bwnd9zUim+0" +
+          " PHO6yef8gCKQVpVX4QJBAOMJ+njxD3GYTFAMwco8hpmEB2bObrZSl0oKkr3yRo8/" +
+          " /kdPhqSzIC8mqGcCQEQMOGZv8S4sVZ7drmV8b3/NamkCQQDLBHYkdjdhOkSvsJj5" +
+          " 0aZ7SWbLK2EtOX6pLOOXawzV4D6beksiM8TRlFyh9xY1GkBtf6oI2G1HRpzLY+Ro" +
+          " e1xLAkEA1/wEJc3dzUj/QCACs2vE+IIbsHet5xDHEA7i7oRvD5PnSNuk0UX+1hxG" +
+          " lEgV7yZY+UqA/FX81fc6Ex2/zKsUEQJBAKA6aTPlyVeHMWaoLlQczxRGnkaDejLD" +
+          " SeAjeYysBHlYfpEfN+VKjnAKdAGwjWpjya2iMITCq5yxclZkBIUht3kCQQDBUFcj" +
+          " YMkjoLhRGkOJ44aEcwLE8GXK0guQdlmvC3R8Y7BGN2r+zxncFT8e5OJzv80W6PBl" +
+          " wqEVw5IttGBtV0fH";
+
+  // 调试用，创建TXT日志文件夹路径
+  public static String log_path = "D:\\";
+
+  // 字符编码格式 目前支持 gbk 或 utf-8
+  public static String input_charset = "utf-8";
+
+  // MD5 签名方式
+  public static String sign_type_md5 = "MD5";
+
+  //RSA 签名方式
+  public static String sign_type_rsa = "RSA";
+
+
+  //↑↑↑↑↑↑↑↑↑↑请在这里配置您的基本信息↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑
 
 }

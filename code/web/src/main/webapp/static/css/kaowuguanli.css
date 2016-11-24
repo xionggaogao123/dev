@@ -1,0 +1,529 @@
+.class-list {
+    padding-left: 20px;
+    padding-top: 20px;
+}
+
+.class-list select {
+    width: 150px;
+    margin: 0 10px;
+}
+
+.class-list button {
+    display: inline-block;
+    height: 30px;
+}
+
+.class-add {
+    margin-top: 20px;
+    display: block;
+}
+
+.div100 {
+    width: 100px;
+}
+
+.div120 {
+    width: 120px;
+}
+
+.class-add a {
+    float: right;
+}
+
+#viewKaoshiId {
+    width: 620px;
+    margin-left: -310px;
+}
+
+#viewKaoshiId table {
+    width: 590px;
+}
+
+#viewKaoshiId h3 {
+    text-align: center;
+    font-size: 18px;
+    padding-top: 10px;
+    padding-bottom: 20px;
+}
+
+#viewKaoshiId .pop-btn {
+    width: 80px;
+}
+
+.cview {
+    cursor: pointer;
+}
+
+.back-link {
+    font-size: 14px;
+    padding-top: 10px;
+    display: inline-block;
+}
+
+.class-edit {
+    display: none;
+    padding-left: 20px;
+}
+
+.class-edit input[type="text"] {
+    width: 163px;
+    height: 23px;
+    border: #ddd 1px solid;
+}
+
+.class-edit select {
+    width: 169px;
+}
+
+.class-edit label {
+    padding-bottom: 5px;
+    display: inline-block;
+    margin-right: 10px;
+}
+
+.class-edit table td {
+    padding-top: 20px;
+}
+
+.class-edit textarea {
+    width: 280px;
+    height: 100px;
+    border: #ddd 1px solid;
+    overflow-x: hidden;
+    overflow-y: auto;
+}
+
+.class-edit table.gray-table {
+    margin: 10px auto 0;
+}
+
+.class-edit table.gray-table td {
+    padding-top: 0;
+}
+
+.class-edit h3 {
+    font-size: 16px;
+    padding-left: 75px;
+}
+
+.cj-lvru {
+    width: 475px;
+}
+
+.cj-lvru h3 {
+    padding-left: 0;
+    text-align: center;
+    margin: 30px 0;
+}
+
+.cj-lvru .green-btn {
+    float: right;
+}
+
+.kf-set, .kaifang-set, .qk-set, .bj-set, .kc-set, .chakan-view {
+    cursor: pointer;
+}
+
+#lurusetId h3, .qmkao-view h3, .class-luru h3, .kaochang-luru h3, .chakan-luru h3, .kaosheng-edit h3 {
+    text-align: center;
+}
+
+.qmkao-view table, .class-luru table, .kaochang-luru table, .chakan-luru table {
+    /*margin-left: 20px;*/
+}
+
+.table-form td {
+    padding-top: 10px;
+}
+
+.table-form .gray-line-btn {
+    float: right;
+}
+
+.btn-list {
+    width: 560px;
+    margin-top: -46px;
+    margin-left: 189px;
+}
+
+.btn-list a {
+    float: right;
+    margin-left: 10px;
+    margin-top: 20px;
+}
+
+#daoruId ul {
+    width: 132px;
+    margin: 0 auto;
+    margin-top: 10px;
+}
+
+#daoruId .icon-down {
+    width: 19px;
+    height: 22px;
+    display: block;
+    margin: 5px auto;
+    background: url('../images/newimgs/icon-down02.png') 0 0 no-repeat;
+}
+
+#dengji-view h3 {
+    margin-top: 20px;
+    margin-left: 20px;
+}
+
+#dengji-view div.clearfix {
+    width: 520px;
+    height: 30px;
+}
+
+#dengji-view .green-btn {
+    margin-top: 10px;
+    float: right;
+}
+
+#dengji-view table {
+    margin-left: 20px;
+}
+
+#kaochang-view h3 {
+    padding-top: 20px;
+    padding-left: 20px;
+}
+
+.kaosheng-tit {
+    width: 530px;
+}
+
+.kaosheng-tit span {
+    display: block;
+    margin-top: 10px;
+}
+
+.kaosheng-tit select {
+    margin-left: 10px;
+}
+
+.kaosheng-edit span.clearfix {
+    width: 510px;
+    height: 30px;
+    margin: 10px 0;
+    display: block;
+}
+
+.kaosheng-edit span.clearfix a {
+    float: right;
+}
+
+.sub-kaosheng-list {
+    height: 700px;
+    overflow-y: auto;
+    overflow-x: auto;
+}
+
+.paikc-tit {
+    background: #f2f2f2;
+    padding: 12px;
+    line-height: 24px;
+    margin-top: 10px;
+}
+
+.paikc-tit span, .paikc-tit ol, .paikc-tit ol li {
+    float: left;
+}
+
+.paikc-tit span {
+    width: 70px;
+}
+
+.paikc-tit ol {
+    width: 640px;
+}
+
+.paikc-tit ol li {
+    width: 320px;
+}
+
+.paikaochang h3 {
+    text-align: center;
+    line-height: 60px;
+}
+
+.class-edit table.paikc-opt td {
+    padding-top: 0;
+}
+
+.paikc-list {
+    margin-top: 40px;
+}
+
+.paikc-list .paikc-list-left, .paikc-list .paikc-list-opt, .paikc-list .paikc-list-right {
+    float: left;
+}
+
+.paikc-list-left {
+    width: 265px;
+}
+
+.paikc-list-opt {
+    padding-top: 100px;
+}
+
+.paikc-list-opt em {
+    width: 26px;
+    height: 20px;
+    background: url('../images/newimgs/icon-left.png') 0 0 no-repeat;
+    margin: auto 10px;
+    display: block;
+}
+
+.paikc-list-opt em:last-child {
+    margin-top: 5px;
+    background: url('../images/newimgs/icon-right.png') 0 0 no-repeat;
+
+}
+
+.paikc-list-right {
+    width: 438px;
+}
+
+.paikc-list-right h4 {
+    float: left;
+    line-height: 36px;
+}
+
+.sub-btn-list {
+    float: right;
+    padding-bottom: 10px;
+}
+
+.paikc-list-left td em {
+    width: 11px;
+    height: 19px;
+    margin: auto;
+    background: url('../images/newimgs/icon-action02.png') 0 0 no-repeat;
+    display: block;
+    cursor: pointer;
+}
+
+.paikc-list-left td em.icon-active {
+    background: url('../images/newimgs/icon-action.png') 0 0 no-repeat;
+}
+
+#bianPaiId p {
+    color: #5db75d;
+    font-size: 18px;
+    text-align: center;
+    padding-top: 10px;
+}
+
+#bianPaiId .pop-btn {
+    width: 80px;
+}
+
+.table-box {
+    width: 540px;
+    height: 500px;
+    overflow: auto;
+}
+
+.table-box table {
+    table-layout: fixed;
+}
+
+.inputOfTable {
+    text-align: center;
+    border: none;
+    background-color: #FFF;
+    width: 80%
+}
+
+#scoreGrayTable {
+    width: 770px;
+}
+
+.infoWindowH {
+    margin-left: 100px;
+    margin-bottom: 10px;
+}
+
+#waitWindow, #overWindow {
+    margin-top: 15%;
+}
+
+#overWindowBtn {
+    margin-left: 25%;
+}
+
+#overWindowH {
+    margin-top: 20px;
+    margin-left: 20px;
+    width: 315px;
+    text-align: center;
+}
+
+#overWindowHT {
+    margin-top: 20px;
+    margin-left: 58px;
+}
+
+#szqmkTable {
+    margin-left: 22%;
+}
+
+.showConfigExamItemWindow {
+    cursor: pointer;
+}
+
+.exam-item {
+    display: none;
+}
+
+#examItemTitle {
+    text-align: center;
+    margin-top: 5%;
+    margin-bottom: 5%;
+}
+
+#examItemConfigTable {
+    margin-left: 16%;
+}
+
+#examItemConfigTable span {
+    cursor: pointer;
+}
+
+#importExamItemWindow .icon-down {
+    width: 19px;
+    height: 22px;
+    display: block;
+    margin: 5px auto;
+    background: url('../images/newimgs/icon-down02.png') 0 0 no-repeat;
+}
+
+#importExamItemWindow ul {
+    width: 132px;
+    margin: 0 auto;
+    margin-top: 10px;
+}
+
+#daoruByClass .icon-down {
+    width: 19px;
+    height: 22px;
+    display: block;
+    margin: 5px auto;
+    background: url('../images/newimgs/icon-down02.png') 0 0 no-repeat;
+}
+
+#daoruByClass ul {
+    width: 132px;
+    margin: 0 auto;
+    margin-top: 10px;
+}
+
+#daoruByExamId .icon-down {
+    width: 19px;
+    height: 22px;
+    display: block;
+    margin: 5px auto;
+    background: url('../images/newimgs/icon-down02.png') 0 0 no-repeat;
+}
+
+#daoruByExamId ul {
+    width: 132px;
+    margin: 0 auto;
+    margin-top: 10px;
+}
+
+#importExamItemWindow {
+    width: 800px;
+    height: 600px;
+    margin-left: -380px;
+}
+
+#importExamItemWindow .fomartImg {
+    width: 300px;
+    height: 300px;
+    display: block;
+    margin-top: 10px;
+    margin-left: -80px;
+    background: url('../images/newimgs/examItemFormat.jpg') 0 0 no-repeat;
+}
+
+.showConfigExamItemScoreWindow {
+    cursor: pointer;
+}
+
+.exam-item-score {
+    display: none;
+}
+
+#examItemScoreTitle {
+    text-align: center;
+    margin-top: 5%;
+    margin-bottom: 5%;
+}
+
+#examItemScoreConfigTable {
+    margin-left: 16%;
+}
+
+#examItemScoreConfigTable span {
+    cursor: pointer;
+}
+
+#importExamItemScoreWindow .icon-down {
+    width: 19px;
+    height: 22px;
+    display: block;
+    margin: 5px auto;
+    background: url('../images/newimgs/icon-down02.png') 0 0 no-repeat;
+}
+
+#importExamItemScoreWindow ul {
+    width: 132px;
+    margin: 0 auto;
+    margin-top: 10px;
+}
+
+#examItemDetail {
+    display: none;
+    width: 500px;
+    height: 600px;
+}
+
+#examItemDetailContent {
+    height: 460px;
+    overflow-y: auto;
+}
+
+#treeDemo {
+    margin-left: 90px;
+}
+
+#examItemDetailCloseBtn {
+    margin-left: 50px;
+}
+
+#overWindowBtn_score {
+    margin-left: 50px;
+}
+
+#waitWindow_score {
+    margin-top: 18%;
+}
+
+#overWindow_score {
+    margin-top: 16%;
+}
+
+.postscript-class {
+    width: 190px;
+    display: block;
+    overflow: hidden;
+    white-space: nowrap;
+    text-overflow: ellipsis;
+}
+
+.file-input-class {
+    width: 220px;
+}

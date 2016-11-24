@@ -2,22 +2,24 @@ package com.db.zouban;
 
 import com.db.base.BaseDao;
 import com.db.factory.MongoFacroty;
+import com.mongodb.BasicDBList;
 import com.mongodb.BasicDBObject;
 import com.mongodb.DBObject;
+import com.pojo.app.IdValuePair;
+import com.pojo.utils.DeleteState;
 import com.pojo.zouban.*;
 import com.sys.constants.Constant;
-import org.apache.commons.lang.StringUtils;
 import org.bson.types.ObjectId;
 
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.List;
-import java.util.regex.Pattern;
 
 /**
  * Created by qiangm on 2015/10/8.
  */
 public class StudentXuankeDao extends BaseDao {
+
+    private XuanKeConfDao xuanKeConfDao = new XuanKeConfDao();
 
     /**
      * 插入学生选课记录
@@ -39,39 +41,101 @@ public class StudentXuankeDao extends BaseDao {
     }
 
     /**
-     * 更新学生选课结果---finish
+     * 添加学生选课结果---finish
      *
      * @param studentChooseEntry
      */
-    public void updateStudentChoose(StudentChooseEntry studentChooseEntry) {
+    public void addStudentChoose(StudentChooseEntry studentChooseEntry) {
+        //如果存在先删除
         BasicDBObject query = new BasicDBObject("uid", studentChooseEntry.getUserId()).append("xkid", studentChooseEntry.getXuanKeId());
-        BasicDBObject updateValue = new BasicDBObject()
-                .append("advls", studentChooseEntry.getAdvancelist())
-                .append("sipls", studentChooseEntry.getSimplelist())
-                .append("cid", studentChooseEntry.getClassId())
-                .append("um", studentChooseEntry.getUserName())
-                .append("isx", studentChooseEntry.getIsXuan());
-        BasicDBObject update = new BasicDBObject().append(Constant.MONGO_SET, updateValue);
+        BasicDBObject updateValue = new BasicDBObject();
+        /*updateValue.append("xkid",studentChooseEntry.getXuanKeId());
+        updateValue.append("uid",studentChooseEntry.getUserId());*/
+        updateValue.append("advls", studentChooseEntry.getAdvancelist());
+        updateValue.append("sipls", studentChooseEntry.getSimplelist());
+        updateValue.append("cid", studentChooseEntry.getClassId());
+        updateValue.append("um", studentChooseEntry.getUserName());
+        updateValue.append("isx", studentChooseEntry.getIsXuan());
+        BasicDBObject updateValue2 = new BasicDBObject().append(Constant.MONGO_SET, updateValue);
         try {
-            update(MongoFacroty.getAppDB(), Constant.COLLECTION_STUDENT_CHOOSE, query, update);
+            update(MongoFacroty.getAppDB(), Constant.COLLECTION_STUDENT_CHOOSE, query, updateValue2);
         } catch (Exception e) {
-            e.printStackTrace();
+            System.out.println(e);
         }
     }
 
     /**
-     * 学生选课数量
+     * 学生选课数量选课
      *
      * @param xuankeId
      * @param isXuan
      * @return
      */
     public int findStudentChooseByType(ObjectId xuankeId, int isXuan) {
-        BasicDBObject query = new BasicDBObject("xkid", xuankeId).append("isx", isXuan);
+        BasicDBObject query = new BasicDBObject();
+        query.append("xkid", xuankeId);
+        query.append("isx", isXuan);
         return count(MongoFacroty.getAppDB(), Constant.COLLECTION_STUDENT_CHOOSE, query);
     }
 
+    /**
+     * 等级考中添加学生名单-------finish
+     *
+     * @param courseIds
+     * @param stuId
+     * @param classId
+     */
+    public void addAdvanceStudent(List<ObjectId> courseIds, ObjectId stuId, ObjectId classId, ObjectId xuankeId) {
+        BasicDBObject query = new BasicDBObject("subid", new BasicDBObject(Constant.MONGO_IN, courseIds));
+        query.append("xkid", xuankeId);
+        BasicDBObject updateValue = new BasicDBObject();
+        IdValuePair idValuePair = new IdValuePair(stuId, classId);
+        updateValue.append(Constant.MONGO_PUSH, new BasicDBObject("ausers", idValuePair.getBaseEntry()));
+        update(MongoFacroty.getAppDB(), Constant.COLLECTION_SUBJECT_CONF, query, updateValue);
+    }
 
+    /**
+     * 合格考中添加学生名单-----finish
+     *
+     * @param courseIds
+     * @param stuId
+     * @param classId
+     */
+    public void addSimpleStudent(List<ObjectId> courseIds, ObjectId stuId, ObjectId classId, ObjectId xuankeId) {
+        BasicDBObject query = new BasicDBObject("subid", new BasicDBObject(Constant.MONGO_IN, courseIds));
+        query.append("xkid", xuankeId);
+        BasicDBObject updateValue = new BasicDBObject();
+        IdValuePair idValuePair = new IdValuePair(stuId, classId);
+        updateValue.append(Constant.MONGO_PUSH, new BasicDBObject("susers", idValuePair.getBaseEntry()));
+        update(MongoFacroty.getAppDB(), Constant.COLLECTION_SUBJECT_CONF, query, updateValue);
+    }
+
+    /**
+     * 删除subjectConf表中已经存在的选课记录----finish
+     *
+     * @param stuId
+     * @param classId
+     * @param advanceList
+     * @param simpleList
+     */
+    public void removeXuankeHistory(ObjectId xuankeId, ObjectId stuId, ObjectId classId, List<ObjectId> advanceList, List<ObjectId> simpleList) {
+        advanceList.addAll(simpleList);
+        BasicDBObject query = new BasicDBObject("subid", new BasicDBObject(Constant.MONGO_IN, advanceList));
+        query.append("xkid", xuankeId);
+        //BasicDBObject updateValue=new BasicDBObject();
+        IdValuePair idValuePair = new IdValuePair(stuId, classId);
+        BasicDBList basicDBList = new BasicDBList();
+        basicDBList.add(new BasicDBObject(Constant.MONGO_PULL, new BasicDBObject("ausers", idValuePair.getBaseEntry())));
+        basicDBList.add(new BasicDBObject(Constant.MONGO_PULL, new BasicDBObject("susers", idValuePair.getBaseEntry())));
+        //updateValue.append(Constant.MONGO_AND,basicDBList);
+        try {
+            update(MongoFacroty.getAppDB(), Constant.COLLECTION_SUBJECT_CONF, query, new BasicDBObject(Constant.MONGO_PULL, new BasicDBObject("ausers", idValuePair.getBaseEntry())));
+            update(MongoFacroty.getAppDB(), Constant.COLLECTION_SUBJECT_CONF, query, new BasicDBObject(Constant.MONGO_PULL, new BasicDBObject("susers", idValuePair.getBaseEntry())));
+        } catch (Exception e) {
+            System.out.println(e);
+        }
+
+    }
 
     /**
      * 获取学生已经选择的走班科目----finish
@@ -86,6 +150,87 @@ public class StudentXuankeDao extends BaseDao {
         query.append("uid", stuId);
         DBObject dbObject = findOne(MongoFacroty.getAppDB(), Constant.COLLECTION_STUDENT_CHOOSE, query, Constant.FIELDS);
         return new StudentChooseEntry((BasicDBObject) dbObject);
+    }
+
+    /**
+     * 获取学生选择的走班课
+     *
+     * @param stuId
+     * @param term
+     * @param gradeId
+     * @return
+     */
+    public List<ZouBanCourseEntry> getStudentChooseZB(ObjectId stuId, String term, ObjectId gradeId) {
+        BasicDBObject query = new BasicDBObject();
+        query.append("te", term);
+        query.append("gid", gradeId);
+        query.append("stus", stuId);
+        List<ZouBanCourseEntry> zouBanCourseEntries = new ArrayList<ZouBanCourseEntry>();
+        List<DBObject> dbObjectList = find(MongoFacroty.getAppDB(), Constant.COLLECTION_ZOUBAN_COURSE, query, Constant.FIELDS);
+        if (dbObjectList != null && !dbObjectList.isEmpty()) {
+            for (DBObject dbObject : dbObjectList) {
+                zouBanCourseEntries.add(new ZouBanCourseEntry((BasicDBObject) dbObject));
+            }
+        }
+        return zouBanCourseEntries;
+    }
+
+    /**
+     * 获取学生选课进度
+     *
+     * @param classId
+     * @param term
+     * @return
+     */
+    public List<StudentChooseEntry> getStudentChoose(ObjectId classId, String term) {
+        List<StudentChooseEntry> studentChooseEntryList = new ArrayList<StudentChooseEntry>();
+        BasicDBObject query = new BasicDBObject();
+        query.append("cid", classId);
+        List<DBObject> dbObjectList = find(MongoFacroty.getAppDB(), Constant.COLLECTION_SUBJECT_CONF, query, Constant.FIELDS);
+        for (DBObject dbObject : dbObjectList) {
+            StudentChooseEntry studentChooseEntry = new StudentChooseEntry((BasicDBObject) dbObject);
+            studentChooseEntryList.add(studentChooseEntry);
+        }
+        return studentChooseEntryList;
+    }
+
+    /**
+     * 获取学生选课单科名单
+     *
+     * @param xuankeId
+     * @param type
+     * @param subjectId
+     * @return
+     */
+    public SubjectConfEntry findSubjectConf(ObjectId xuankeId, int type, ObjectId subjectId) {
+        List<DBObject> list = new ArrayList<DBObject>();
+        BasicDBObject query = new BasicDBObject("delflg", DeleteState.NORMAL.getState());
+        query.append("xkid", xuankeId);
+        query.append("subid", subjectId);
+        query.append("type", type);
+        DBObject dbObject = findOne(MongoFacroty.getAppDB(), Constant.COLLECTION_SUBJECT_CONF, query, Constant.FIELDS);
+        SubjectConfEntry retList = new SubjectConfEntry((BasicDBObject) dbObject);
+
+        return retList;
+    }
+
+    /**
+     * 获取学生需要选择的走班课列表
+     *
+     * @param xuankeId
+     * @return
+     */
+    public List<SubjectConfEntry> getCourseConfList(ObjectId xuankeId) {
+        BasicDBObject query = new BasicDBObject();
+        query.append("xkid", xuankeId);
+        List<DBObject> dbObjectList = find(MongoFacroty.getAppDB(), Constant.COLLECTION_SUBJECT_CONF, query, Constant.FIELDS);
+        List<SubjectConfEntry> courseConfEntries = new ArrayList<SubjectConfEntry>();
+        if (dbObjectList != null && !dbObjectList.isEmpty()) {
+            for (DBObject d : dbObjectList) {
+                courseConfEntries.add(new SubjectConfEntry((BasicDBObject) d));
+            }
+        }
+        return courseConfEntries;
     }
 
 
@@ -108,126 +253,6 @@ public class StudentXuankeDao extends BaseDao {
             }
         }
         return studentChooseEntries;
-    }
-
-    /**
-     * 根据学科组合查出学生  shanchao
-     * @param subjectIds
-     * @param xuankeId
-     * @return
-     */
-    public List<StudentChooseEntry> getStudentChoosesBySubjectGroup(Collection<ObjectId> subjectIds, ObjectId xuankeId) {
-        BasicDBObject query = new BasicDBObject();
-        query.append("xkid", xuankeId);
-        query.append("advls", new BasicDBObject("$all", subjectIds));
-        List<DBObject> dbObjects = find(MongoFacroty.getAppDB(), Constant.COLLECTION_STUDENT_CHOOSE, query, Constant.FIELDS);
-        List<StudentChooseEntry> studentChooseEntries = new ArrayList<StudentChooseEntry>();
-        if (dbObjects != null) {
-            for (DBObject dbObject : dbObjects) {
-                studentChooseEntries.add(new StudentChooseEntry((BasicDBObject) dbObject));
-            }
-        }
-        return studentChooseEntries;
-    }
-
-    /**
-     * 查询组合选择人数
-     * @param subjectIds
-     * @param xuankeId
-     * @return
-     */
-    public int countStudentChoosesBySubjectGroup(Collection<ObjectId> subjectIds, ObjectId xuankeId) {
-        BasicDBObject query = new BasicDBObject();
-        query.append("xkid", xuankeId);
-        query.append("advls", new BasicDBObject("$all", subjectIds));
-        return count(MongoFacroty.getAppDB(), Constant.COLLECTION_STUDENT_CHOOSE, query);
-    }
-
-
-    /**
-     * 根据选课组合查询学生
-     *
-     * @param subjectIds
-     * @param xuankeId
-     * @return
-     */
-    public List<StudentChooseEntry> getStudentBySubjectGroup(Collection<ObjectId> subjectIds, ObjectId xuankeId) {
-        BasicDBObject query = new BasicDBObject("xkid", xuankeId).append("advls", new BasicDBObject("$all", subjectIds));
-        List<DBObject> dbObjectList = find(MongoFacroty.getAppDB(), Constant.COLLECTION_STUDENT_CHOOSE, query, Constant.FIELDS);
-        List<StudentChooseEntry> studentChooseEntries = new ArrayList<StudentChooseEntry>();
-
-        for (DBObject dbObject : dbObjectList) {
-            studentChooseEntries.add(new StudentChooseEntry((BasicDBObject) dbObject));
-        }
-        return studentChooseEntries;
-    }
-
-    /**
-     * 选课进度学生列表
-     *
-     * @param xuanKeId
-     * @param classId
-     * @param choose
-     * @param userName
-     */
-    public List<StudentChooseEntry> studentXuanKeList(ObjectId xuanKeId, ObjectId classId, int choose, String userName) {
-        List<StudentChooseEntry> retList = new ArrayList<StudentChooseEntry>();
-        BasicDBObject query = new BasicDBObject("xkid", xuanKeId);
-        query.append("cid", classId);
-        if (!StringUtils.isEmpty(userName)) {
-            Pattern pattern = Pattern.compile("^.*" + userName + ".*$", Pattern.MULTILINE);
-            query.append("um", new BasicDBObject(Constant.MONGO_REGEX, pattern));
-        }
-        query.append("isx", choose);
-
-        List<DBObject> list = find(MongoFacroty.getAppDB(), Constant.COLLECTION_STUDENT_CHOOSE, query, null, Constant.MONGO_SORTBY_DESC);
-        for (DBObject dbo : list) {
-            retList.add(new StudentChooseEntry((BasicDBObject) dbo));
-        }
-        return retList;
-    }
-
-    public List<StudentChooseEntry> studentXuanKeList(ObjectId xuanKeId, ObjectId classId) {
-        List<StudentChooseEntry> retList = new ArrayList<StudentChooseEntry>();
-        BasicDBObject query = new BasicDBObject("xkid", xuanKeId).append("cid", classId);
-        List<DBObject> list = find(MongoFacroty.getAppDB(), Constant.COLLECTION_STUDENT_CHOOSE, query, null, Constant.MONGO_SORTBY_DESC);
-        for (DBObject dbo : list) {
-            retList.add(new StudentChooseEntry((BasicDBObject) dbo));
-        }
-        return retList;
-    }
-
-    /**
-     * 获取全年级的选课列表
-     *
-     * @param xuanKeId
-     * @return
-     */
-    public List<StudentChooseEntry> findStuXuanKeListByGradeId(ObjectId xuanKeId) {
-        List<StudentChooseEntry> retList = new ArrayList<StudentChooseEntry>();
-        BasicDBObject query = new BasicDBObject("xkid", xuanKeId);
-        List<DBObject> list = find(MongoFacroty.getAppDB(), Constant.COLLECTION_STUDENT_CHOOSE, query, null, Constant.MONGO_SORTBY_DESC);
-        for (DBObject dbo : list) {
-            retList.add(new StudentChooseEntry((BasicDBObject) dbo));
-        }
-        return retList;
-    }
-
-    /**
-     * 获取分段班级选课结果
-     *
-     * @param xuankeId
-     * @param classIds
-     * @return
-     */
-    public List<StudentChooseEntry> findStuXuanKeListByClassIds(ObjectId xuankeId, List<ObjectId> classIds) {
-        List<StudentChooseEntry> retList = new ArrayList<StudentChooseEntry>();
-        BasicDBObject query = new BasicDBObject("xkid", xuankeId).append("cid", new BasicDBObject(Constant.MONGO_IN, classIds));
-        List<DBObject> list = find(MongoFacroty.getAppDB(), Constant.COLLECTION_STUDENT_CHOOSE, query, null, Constant.MONGO_SORTBY_DESC);
-        for (DBObject dbo : list) {
-            retList.add(new StudentChooseEntry((BasicDBObject) dbo));
-        }
-        return retList;
     }
 
 

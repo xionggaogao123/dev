@@ -1,11 +1,17 @@
 package com.pojo.forum;
 
+import org.bson.types.ObjectId;
+
+import java.util.ArrayList;
+import java.util.List;
+
 /**
  * Created by wangkaidong on 2016/5/30.
  */
 public class FCollectionDTO {
     private String id;
     private String userId;
+    private String postSectionId;
     private String userAvatar;
     private String userName;
     private int type;// 0:帖子 1:版块
@@ -15,7 +21,7 @@ public class FCollectionDTO {
 
     //帖子专用字段
     private String postId;
-    private String postName;
+    private String postTitle;
     private int scanCount;
     private int commentCount;
     private String from;
@@ -24,7 +30,37 @@ public class FCollectionDTO {
     private int count;//每天发帖数
     private int totalCount;//帖子总数
     private int focusCount;//关注人数
+    //收藏时间
+    private String time;
+    private String personId;
 
+
+
+    public FCollectionDTO(){}
+
+
+    public FCollectionDTO(FCollectionEntry fCollectionEntry){
+
+        this.id=fCollectionEntry.getID().toString();
+        this.userId=fCollectionEntry.getUserId().toString();
+        this.type=fCollectionEntry.getType();
+        this.postSectionId=fCollectionEntry.getPostSectionId().toString();
+    }
+
+    public FCollectionEntry exportEntry(){
+        FCollectionEntry fCollectionEntry=new FCollectionEntry();
+        if(id != null && !id.equals("")){
+            fCollectionEntry.setID(new ObjectId(id));
+        }
+        if(!userId.equals("")){
+            fCollectionEntry.setUserId(new ObjectId(userId));
+        }
+        if(!postSectionId.equals("")){
+            fCollectionEntry.setPostSectionId(new ObjectId(postSectionId));
+        }
+        fCollectionEntry.setType(type);
+        return fCollectionEntry;
+    }
 
     public String getId() {
         return id;
@@ -90,14 +126,6 @@ public class FCollectionDTO {
         this.postId = postId;
     }
 
-    public String getPostName() {
-        return postName;
-    }
-
-    public void setPostName(String postName) {
-        this.postName = postName;
-    }
-
     public int getScanCount() {
         return scanCount;
     }
@@ -144,5 +172,37 @@ public class FCollectionDTO {
 
     public void setFocusCount(int focusCount) {
         this.focusCount = focusCount;
+    }
+
+    public String getTime() {
+        return time;
+    }
+
+    public void setTime(String time) {
+        this.time = time;
+    }
+
+    public String getPostSectionId() {
+        return postSectionId;
+    }
+
+    public void setPostSectionId(String postSectionId) {
+        this.postSectionId = postSectionId;
+    }
+
+    public String getPostTitle() {
+        return postTitle;
+    }
+
+    public void setPostTitle(String postTitle) {
+        this.postTitle = postTitle;
+    }
+
+    public String getPersonId() {
+        return personId;
+    }
+
+    public void setPersonId(String personId) {
+        this.personId = personId;
     }
 }

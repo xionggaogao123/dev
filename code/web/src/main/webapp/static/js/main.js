@@ -87,8 +87,8 @@ $(function() {
       case "playing":
         name = arguments[1];
         $controls = controlsEl(name);
-        $controls.find('.record_button img').attr('src', '/business/images/recorder.png');
-        $controls.find('.play_button img').attr('src', '/business/images/pause.png');
+        $controls.find('.record_button img').attr('src', '/static/images/recorder.png');
+        $controls.find('.play_button img').attr('src', '/static/images/pause.png');
         $controls.find('.pause_button').show();
         break;
 
@@ -100,8 +100,8 @@ $(function() {
       case "stopped":
         name = arguments[1];
         $controls = controlsEl(name);
-        $controls.find('.record_button img').attr('src', '/business/images/recorder.png');
-        $controls.find('.play_button img').attr('src', '/business/images/play.png');
+        $controls.find('.record_button img').attr('src', '/static/images/recorder.png');
+        $controls.find('.play_button img').attr('src', '/static/images/play.png');
         $controls.find('.pause_button').hide();
         break;
 
@@ -120,15 +120,15 @@ $(function() {
           var voiceUrlStr = arguments[2];
  
           var locationStr=window.location.href;
-          if(locationStr.indexOf("notice")>0) //如果是增加通知的话
+          if(locationStr.indexOf("community")>0) //如果是增加通知的话
           {
         	  var noticeInfo=JSON.parse(voiceUrlStr);
         	  var voicePath=JSON.parse(voiceUrlStr).message[0].path;
+        	  var voiceName=JSON.parse(voiceUrlStr).message[0].fileName;
         	  
         	  
         	  
-        	  
-        	  newVoice(voicePath).appendTo(jQuery("#voice_notice"));
+        	  newVoice(voicePath,voiceName).appendTo(jQuery("#voice_notice"));
            
         	  
         	  
@@ -138,7 +138,8 @@ $(function() {
               $("div[id^=myContent]").hide();
         	  return;
           }
-          
+
+          /**
           if (voiceUrlStr) {
               var voiceUrl = JSON.parse(voiceUrlStr)[0];
               if (voiceUrl.match(/\/elect-/)) {
@@ -173,7 +174,7 @@ $(function() {
 
               }
           }
-
+        **/
         //name = arguments[1];
         //FWRecorder.hide();
         //$("#uploadvoiceloading").hide();
@@ -206,16 +207,16 @@ $(function() {
   }
 });
 
-function newVoice(url) {
-    return $('<p><a class="voice" onclick="playVoice(\'' + url + '\');" url="' + url + '"><img src="/img/yuyin.png" style="width:160px;height:22px;">播放</a></p>').hover(function () {
-        if ($(this).find('img[src="/img/dustbin.png"]').length == 0) {
-            $(this).append("<a style=\"margin-left:20px;\" onclick=\"$(this).closest('p').remove();\"><img src=\"/img/dustbin.png\" /></a>");
+function newVoice(url,voiceName) {
+    return $('<p><a class="voice" fileName="'+voiceName+'" onclick="playVoice(\'' + url + '\');" url="' + url + '"><img src="/static/images/yuyin.png" style="width:160px;height:22px;">播放</a></p>').hover(function () {
+        if ($(this).find('img[src="/static/images/dustbin.png"]').length == 0) {
+            $(this).append("<a style=\"margin-left:20px;\" onclick=\"$(this).closest('p').remove();\"><img src=\"/static/images/dustbin.png\" /></a>");
 
         } else {
-            $(this).find('img[src="/img/dustbin.png"]').show();
+            $(this).find('img[src="/static/images/dustbin.png"]').show();
         }
     }, function () {
-        $(this).find('img[src="/img/dustbin.png"]').hide();
+        $(this).find('img[src="/static/images/dustbin.png"]').show();
     });
 }
 

@@ -12,9 +12,7 @@ import org.bson.types.ObjectId;
  * 科目编码:sid
  * 科目名称:sna
  * 满分:fm
- * 优秀分 ：yx 20160816添加
  * 及格分:fl
- * 低分：df 20160816添加
  * 考试日期:ed
  * 考试时间对应周几:wd
  * 考试时间段:tm
@@ -27,16 +25,14 @@ public class ExamSubjectEntry extends BaseDBObject {
         super(baseEntry);
     }
 
-    public ExamSubjectEntry(ObjectId subjectId, String subjectName, int fullMarks, double youXiuScore, double failScore, double diFenScore, String time, String examDate, String weekDay, int openStatus,
+    public ExamSubjectEntry(ObjectId subjectId, String subjectName, int fullMarks,double failScore, String time, String examDate, String weekDay, int openStatus,
                             String openBeginTime, String openEndTime) {
         super();
         BasicDBObject baseEntry = new BasicDBObject()
                 .append("sid", subjectId)
                 .append("sna", subjectName)
                 .append("fm", fullMarks)
-                .append("yx", youXiuScore)
-                .append("fl", failScore)
-                .append("df", diFenScore)
+                .append("fl",failScore)
                 .append("tm", time)
                 .append("ed", examDate)
                 .append("wd", weekDay)
@@ -54,22 +50,6 @@ public class ExamSubjectEntry extends BaseDBObject {
 
     public void setFailScore(double failScore) {
         setSimpleValue("fl", failScore);
-    }
-
-    public double getYouXiuScore() {
-        return getSimpleDoubleValueDef("yx", getFullMarks() * 0.9);
-    }
-
-    public void setYouXiuScore(double youXiuScore) {
-        setSimpleValue("yx", youXiuScore);
-    }
-
-    public double getDiFenScore() {
-        return getSimpleDoubleValueDef("df", getFullMarks() * 0.3);
-    }
-
-    public void setDiFenScore(double diFenScore) {
-        setSimpleValue("df", diFenScore);
     }
 
     public ObjectId getSubjectId() {

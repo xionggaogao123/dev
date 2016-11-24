@@ -1,8 +1,9 @@
 package com.pojo.resources;
 
+import org.apache.commons.lang.StringUtils;
+
 import com.pojo.app.FileType;
 import com.pojo.video.VideoDTO;
-import org.apache.commons.lang.StringUtils;
 
 /**
  * 资源DTO，继承VideoDTO，方便融合
@@ -15,27 +16,17 @@ public class ResourceDTO extends VideoDTO {
 	 */
 	private static final long serialVersionUID = 5918857855632091422L;
 
-	private String termType;
-	private String subjectName;
-	private String bookType;
-	private String gradeName;
-    private String chapterName;
-    private String partName;
 	private int viewCount;
 	private int pushCount;
 	private int fileTypeInt=-1;
 	private String fileType="其他";
 	private String userName="";
-	private String createrAvt;
-	private String schoolName;
-	private String createTime;
-	private String from;
 	
 	public ResourceDTO(ResourceEntry e) {
 		super(e);
 		this.viewCount=e.getViewNumber();
 		this.pushCount=e.getPushCount();
-		FileType fy = FileType.getFileType(e.getType());
+		FileType fy =FileType.getFileType(e.getType());
 		if(null!=fy)
 		{
 			if(!fy.equals(FileType.OTHER_VIDEO))
@@ -69,54 +60,6 @@ public class ResourceDTO extends VideoDTO {
 				super.setImageUrl("/images/resource/pdf.png");
 			}
 		}
-	}
-
-	public String getTermType() {
-		return termType;
-	}
-
-	public void setTermType(String termType) {
-		this.termType = termType;
-	}
-
-	public String getSubjectName() {
-		return subjectName;
-	}
-
-	public void setSubjectName(String subjectName) {
-		this.subjectName = subjectName;
-	}
-
-	public String getBookType() {
-		return bookType;
-	}
-
-	public void setBookType(String bookType) {
-		this.bookType = bookType;
-	}
-
-	public String getGradeName() {
-		return gradeName;
-	}
-
-	public void setGradeName(String gradeName) {
-		this.gradeName = gradeName;
-	}
-
-	public String getChapterName() {
-		return chapterName;
-	}
-
-	public void setChapterName(String chapterName) {
-		this.chapterName = chapterName;
-	}
-
-	public String getPartName() {
-		return partName;
-	}
-
-	public void setPartName(String partName) {
-		this.partName = partName;
 	}
 
 	public int getViewCount() {
@@ -159,35 +102,6 @@ public class ResourceDTO extends VideoDTO {
 		this.userName = userName;
 	}
 
-	public String getCreaterAvt() {
-		return createrAvt;
-	}
-
-	public void setCreaterAvt(String createrAvt) {
-		this.createrAvt = createrAvt;
-	}
-
-	public String getSchoolName() {
-		return schoolName;
-	}
-
-	public void setSchoolName(String schoolName) {
-		this.schoolName = schoolName;
-	}
-
-	public String getCreateTime() {
-		return createTime;
-	}
-
-	public void setCreateTime(String createTime) {
-		this.createTime = createTime;
-	}
-
-	public String getFrom() {
-		return from;
-	}
-
-	public void setFrom(String from) {
-		this.from = from;
-	}
+	
+	
 }

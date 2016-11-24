@@ -18,20 +18,20 @@ import java.util.List;
 /**
  * Created by fl on 2016/1/28.
  */
-public class EGoodsLogDao extends BaseDao{
+public class EGoodsLogDao extends BaseDao {
 
     /**
      * 新增浏览记录/收藏记录
-     * */
-    public ObjectId add(EGoodsLogEntry eGoodsLogEntry){
+     */
+    public ObjectId add(EGoodsLogEntry eGoodsLogEntry) {
         save(MongoFacroty.getAppDB(), Constant.COLLECTION_EBUSINESS_GOODSLOG, eGoodsLogEntry.getBaseEntry());
         return eGoodsLogEntry.getID();
     }
 
     /**
      * 通过id获取时间
-     * */
-    private String getDate(EGoodsLogEntry entry){
+     */
+    private String getDate(EGoodsLogEntry entry) {
         Date time = new Date(entry.getID().getTime());
         SimpleDateFormat sdFormat = new SimpleDateFormat("yyyy-MM-dd");
         String date = sdFormat.format(time);
@@ -40,15 +40,16 @@ public class EGoodsLogDao extends BaseDao{
 
     /**
      * 查询浏览记录
+     *
      * @return 商品id列表
-     * */
-    public List<EGoodsHistory> getLogs(ObjectId userId){
-        BasicDBObject query = new BasicDBObject("uid",userId).append("ty", 1);
-        List<DBObject> logs = find(MongoFacroty.getAppDB(),Constant.COLLECTION_EBUSINESS_GOODSLOG,query,Constant.FIELDS,Constant.MONGO_SORTBY_DESC);
+     */
+    public List<EGoodsHistory> getLogs(ObjectId userId) {
+        BasicDBObject query = new BasicDBObject("uid", userId).append("ty", 1);
+        List<DBObject> logs = find(MongoFacroty.getAppDB(), Constant.COLLECTION_EBUSINESS_GOODSLOG, query, Constant.FIELDS, Constant.MONGO_SORTBY_DESC);
         List<EGoodsHistory> historyList = new ArrayList<EGoodsHistory>();
 
-        for(DBObject dbo : logs){
-            EGoodsLogEntry log = new EGoodsLogEntry((BasicDBObject)dbo);
+        for (DBObject dbo : logs) {
+            EGoodsLogEntry log = new EGoodsLogEntry((BasicDBObject) dbo);
             EGoodsHistory history = new EGoodsHistory();
             history.setId(log.getID().toString());
             history.setDate(getDate(log));
@@ -60,15 +61,16 @@ public class EGoodsLogDao extends BaseDao{
 
     /**
      * 查询收藏记录
+     *
      * @return 商品id列表
-     * */
-    public List<EGoodsCollection> getCollections(ObjectId userId){
-        BasicDBObject query = new BasicDBObject("uid",userId).append("ty",2);
-        List<DBObject> logs = find(MongoFacroty.getAppDB(),Constant.COLLECTION_EBUSINESS_GOODSLOG,query,Constant.FIELDS,Constant.MONGO_SORTBY_DESC);
+     */
+    public List<EGoodsCollection> getCollections(ObjectId userId) {
+        BasicDBObject query = new BasicDBObject("uid", userId).append("ty", 2);
+        List<DBObject> logs = find(MongoFacroty.getAppDB(), Constant.COLLECTION_EBUSINESS_GOODSLOG, query, Constant.FIELDS, Constant.MONGO_SORTBY_DESC);
         List<EGoodsCollection> collectionList = new ArrayList<EGoodsCollection>();
 
-        for(DBObject dbo : logs){
-            EGoodsLogEntry log = new EGoodsLogEntry((BasicDBObject)dbo);
+        for (DBObject dbo : logs) {
+            EGoodsLogEntry log = new EGoodsLogEntry((BasicDBObject) dbo);
             EGoodsCollection collection = new EGoodsCollection(log);
             collectionList.add(collection);
         }
@@ -78,16 +80,16 @@ public class EGoodsLogDao extends BaseDao{
 
     /**
      * 判断是否已加入浏览记录
-     * */
-    public boolean isAddLog(ObjectId userId,ObjectId goodsId,String createTime){
-        BasicDBObject query = new BasicDBObject("uid",userId).append("gid",goodsId).append("ty",1);
+     */
+    public boolean isAddLog(ObjectId userId, ObjectId goodsId, String createTime) {
+        BasicDBObject query = new BasicDBObject("uid", userId).append("gid", goodsId).append("ty", 1);
         List<DBObject> log = find(MongoFacroty.getAppDB(), Constant.COLLECTION_EBUSINESS_GOODSLOG, query, Constant.FIELDS);
         List<String> dateList = new ArrayList<String>();
-        for(DBObject dbObject : log){
-            EGoodsLogEntry entry = new EGoodsLogEntry((BasicDBObject)dbObject);
+        for (DBObject dbObject : log) {
+            EGoodsLogEntry entry = new EGoodsLogEntry((BasicDBObject) dbObject);
             dateList.add(getDate(entry));
         }
-        if(dateList.contains(createTime)){
+        if (dateList.contains(createTime)) {
             return true;
         }
         return false;
@@ -95,11 +97,11 @@ public class EGoodsLogDao extends BaseDao{
 
     /**
      * 判断是否已收藏
-     * */
-    public boolean isCollected(ObjectId userId,ObjectId goodsId){
-        BasicDBObject query = new BasicDBObject("uid",userId).append("gid",goodsId).append("ty",2);
-        DBObject log = findOne(MongoFacroty.getAppDB(),Constant.COLLECTION_EBUSINESS_GOODSLOG,query,Constant.FIELDS);
-        if(log != null){
+     */
+    public boolean isCollected(ObjectId userId, ObjectId goodsId) {
+        BasicDBObject query = new BasicDBObject("uid", userId).append("gid", goodsId).append("ty", 2);
+        DBObject log = findOne(MongoFacroty.getAppDB(), Constant.COLLECTION_EBUSINESS_GOODSLOG, query, Constant.FIELDS);
+        if (log != null) {
             return true;
         }
         return false;
@@ -107,10 +109,10 @@ public class EGoodsLogDao extends BaseDao{
 
     /**
      * 根据id删除浏览/收藏记录
-     * */
-    public void delete(ObjectId logId){
-        BasicDBObject query = new BasicDBObject(Constant.ID,logId);
-        remove(MongoFacroty.getAppDB(),Constant.COLLECTION_EBUSINESS_GOODSLOG,query);
+     */
+    public void delete(ObjectId logId) {
+        BasicDBObject query = new BasicDBObject(Constant.ID, logId);
+        remove(MongoFacroty.getAppDB(), Constant.COLLECTION_EBUSINESS_GOODSLOG, query);
     }
 
 }

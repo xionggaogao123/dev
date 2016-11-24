@@ -19,8 +19,8 @@ import com.pojo.utils.MongoUtils;
  * </pre>
  * <pre>
  * {
- *  di:文档ID 对应exerciseEntry的_id
- *  ti:文档题目ID  对应exerciseItemEntry的_id
+ *  di:文档ID
+ *  ti:文档题目ID
  *  ui:用户ID
  *  an:题目答案
  *  so:用户得分 ；如果是非主观题，有具体值；主观题开始为-1

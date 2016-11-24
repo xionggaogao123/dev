@@ -3,6 +3,7 @@ package com.pojo.activity;
 import org.bson.types.ObjectId;
 
 import java.util.Date;
+import java.util.List;
 
 public class FriendApply {
     private String id;
@@ -30,6 +31,14 @@ public class FriendApply {
     private Integer accepted;
 
     private String content;
+
+    private long time;
+
+    private String avatar;
+
+    private String nickName;
+
+    private List<String> tags;
 
     public FriendApply(){}
     public FriendApply(FriendApplyEntry friendApplyEntry) {
@@ -165,5 +174,37 @@ public class FriendApply {
         	friendApplyEntry.setID(new ObjectId(this.getId()));
 
         return friendApplyEntry;
+    }
+
+    public String getAvatar() {
+        return avatar;
+    }
+
+    public void setAvatar(String avatar) {
+        this.avatar = avatar;
+    }
+
+    public long getTime() {
+        return time;
+    }
+
+    public void setTime(long time) {
+        this.time = time;
+    }
+
+    public String getNickName() {
+        return nickName;
+    }
+
+    public void setNickName(String nickName) {
+        this.nickName = nickName;
+    }
+
+    public List<String> getTags() {
+        return tags;
+    }
+
+    public void setTags(List<String> tags) {
+        this.tags = tags;
     }
 }

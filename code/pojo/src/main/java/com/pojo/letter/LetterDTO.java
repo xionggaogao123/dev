@@ -38,8 +38,6 @@ public class LetterDTO {
     @JsonSerialize(using = CustomDateSerializer.class)
     private Date sendingTime;
 
-    private String roleName;
-
 
 
 
@@ -169,13 +167,5 @@ public class LetterDTO {
 
     public void setUserid(String userid) {
         this.userid = userid;
-    }
-
-    public String getRoleName() {
-        return roleName;
-    }
-
-    public void setRoleName(String roleName) {
-        this.roleName = roleName;
     }
 }

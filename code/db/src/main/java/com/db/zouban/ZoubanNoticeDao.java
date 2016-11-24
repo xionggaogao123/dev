@@ -4,8 +4,7 @@ import com.db.base.BaseDao;
 import com.db.factory.MongoFacroty;
 import com.mongodb.BasicDBObject;
 import com.mongodb.DBObject;
-import com.pojo.utils.MongoUtils;
-import com.pojo.zouban.ZoubanNoticeEntry;
+import com.pojo.zouban.ZoubanNotice;
 import com.sys.constants.Constant;
 import org.bson.types.ObjectId;
 
@@ -18,103 +17,142 @@ import java.util.List;
 public class ZoubanNoticeDao extends BaseDao {
 
     /**
-     * 新建调课通知
-     *
-     * @param zoubanNoticeEntry
-     */
-    public void addNotice(ZoubanNoticeEntry zoubanNoticeEntry) {
-        save(MongoFacroty.getAppDB(), Constant.COLLECTION_ZOUBAN_NOTICE, zoubanNoticeEntry.getBaseEntry());
-    }
-
-
-    /**
-     * 更新调课详情
-     *
-     * @param id
-     * @param state
-     * @param detailList
-     */
-    public void updateNotice(ObjectId id, int state, List<ZoubanNoticeEntry.NoticeDetail> detailList) {
-        BasicDBObject query = new BasicDBObject(Constant.ID, id);
-        BasicDBObject update = new BasicDBObject(Constant.MONGO_SET, new BasicDBObject("st", state))
-                .append(Constant.MONGO_PUSHALL, new BasicDBObject("con", MongoUtils.convert(MongoUtils.fetchDBObjectList(detailList))));
-        update(MongoFacroty.getAppDB(), Constant.COLLECTION_ZOUBAN_NOTICE, query, update);
-    }
-
-
-    /**
-     * 获取调课通知列表
+     * 获取走班通知列表
      *
      * @param term
+     * @param schoolId
      * @param gradeId
-     * @param page
-     * @param pageSize
+     * @param type
      * @return
      */
-    public List<ZoubanNoticeEntry> findNoticeList(String term, ObjectId gradeId, int page, int pageSize) {
-        List<ZoubanNoticeEntry> zoubanNoticeEntryList = new ArrayList<ZoubanNoticeEntry>();
-        BasicDBObject query = new BasicDBObject("te", term)
-                .append("gid", gradeId)
-                .append("del",0);
+    public List<ZoubanNotice> findNoticeList(String term, ObjectId schoolId, ObjectId gradeId, int type, int page, int pageSize) {
+        List<ZoubanNotice> zoubanNoticeList = new ArrayList<ZoubanNotice>();
+        BasicDBObject query = new BasicDBObject();
+        query.append("te", term);
+        query.append("sid", schoolId);
+        query.append("gid", gradeId);
+        query.append("df", Constant.ZERO);
         int skip = pageSize * (page - 1);
+        if (type != -1)
+            query.append("ty", type);
         List<DBObject> dbObjectList = find(MongoFacroty.getAppDB(), Constant.COLLECTION_ZOUBAN_NOTICE, query, Constant.FIELDS, new BasicDBObject(Constant.ID, -1), skip, pageSize);
         if (dbObjectList != null && !dbObjectList.isEmpty()) {
             for (DBObject dbObject : dbObjectList) {
-                zoubanNoticeEntryList.add(new ZoubanNoticeEntry((BasicDBObject) dbObject));
+                zoubanNoticeList.add(new ZoubanNotice((BasicDBObject) dbObject));
             }
         }
-        return zoubanNoticeEntryList;
+        return zoubanNoticeList;
     }
 
     /**
-     * 统计共有多少条调课通知
+     * 统计共有多少条走班通知
      *
      * @param term
+     * @param schoolId
      * @param gradeId
+     * @param type
      * @return
      */
-    public int countNotice(String term, ObjectId gradeId) {
-        BasicDBObject query = new BasicDBObject()
-                .append("te",term)
-                .append("gid",gradeId)
-                .append("del",0);
+    public int countNotice(String term, ObjectId schoolId, ObjectId gradeId, int type) {
+        BasicDBObject query = new BasicDBObject();
+        query.append("te", term);
+        query.append("sid", schoolId);
+        query.append("gid", gradeId);
+        query.append("df", Constant.ZERO);
+        if (type != -1)
+            query.append("ty", type);
         return count(MongoFacroty.getAppDB(), Constant.COLLECTION_ZOUBAN_NOTICE, query);
     }
 
     /**
-     * 根据id查询
+     * 获取走班详情
      *
      * @param id
      * @return
      */
-    public ZoubanNoticeEntry findNoticeById(ObjectId id) {
-        BasicDBObject query = new BasicDBObject(Constant.ID, id).append("del", Constant.ZERO);
+    public ZoubanNotice findNoticeById(ObjectId id) {
+        BasicDBObject query = new BasicDBObject()
+                .append(Constant.ID, id)
+                .append("df", Constant.ZERO);
         DBObject dbObject = findOne(MongoFacroty.getAppDB(), Constant.COLLECTION_ZOUBAN_NOTICE, query, Constant.FIELDS);
-        return dbObject == null ? null : new ZoubanNoticeEntry((BasicDBObject) dbObject);
+        if (dbObject != null) {
+            return new ZoubanNotice((BasicDBObject) dbObject);
+        }
+        return null;
     }
 
+    /**
+     * 新建调课通知
+     *
+     * @param zoubanNotice
+     */
+    public void addNotice(ZoubanNotice zoubanNotice) {
+        zoubanNotice.setDeleteFlag(0);
+        save(MongoFacroty.getAppDB(), Constant.COLLECTION_ZOUBAN_NOTICE, zoubanNotice.getBaseEntry());
+    }
 
     /**
-     * 判断是否调过课
+     * 删除调课通知，修改delete标志位
+     *
+     * @param id
+     */
+    public void deleteZoubanNotice(ObjectId id) {
+        BasicDBObject query = new BasicDBObject()
+                .append(Constant.ID, id);
+        BasicDBObject updateValue = new BasicDBObject()
+                .append(Constant.MONGO_SET, new BasicDBObject("df", 1));
+        update(MongoFacroty.getAppDB(), Constant.COLLECTION_ZOUBAN_NOTICE, query, updateValue);
+    }
+
+    /**
+     * 获取和本班相关的通知
      *
      * @param term
      * @param schoolId
-     * @param weeks
+     * @param gradeId
+     * @param classId
      * @return
      */
-    public boolean hasNotice(String term, ObjectId schoolId, int type, List<Integer> weeks) {
-        BasicDBObject query = new BasicDBObject("te", term)
-                .append("sid", schoolId)
-                .append("ty", type)
-                .append("week", new BasicDBObject(Constant.MONGO_IN, weeks));
-        List<DBObject> dbObjectList = find(MongoFacroty.getAppDB(), Constant.COLLECTION_ZOUBAN_NOTICE, query, Constant.FIELDS);
-        if (dbObjectList == null || dbObjectList.isEmpty()) {
-            return false;
+    public List<ZoubanNotice> findNoticeListByClass(String term, ObjectId schoolId, ObjectId gradeId, ObjectId classId) {
+        List<ZoubanNotice> zoubanNoticeList = new ArrayList<ZoubanNotice>();
+        BasicDBObject query = new BasicDBObject();
+        query.append("te", term);
+        query.append("sid", schoolId);
+        query.append("gid", gradeId);
+        query.append("cl", classId);
+        query.append("df", Constant.ZERO);
+        List<DBObject> dbObjectList = find(MongoFacroty.getAppDB(), Constant.COLLECTION_ZOUBAN_NOTICE, query, Constant.FIELDS, new BasicDBObject(Constant.ID, -1));
+        if (dbObjectList != null && !dbObjectList.isEmpty()) {
+            for (DBObject dbObject : dbObjectList) {
+                zoubanNoticeList.add(new ZoubanNotice((BasicDBObject) dbObject));
+            }
         }
-        return true;
+        return zoubanNoticeList;
     }
 
-
+    /**
+     * 获取和本年级相关的通知
+     *
+     * @param term
+     * @param schoolId
+     * @param gradeId
+     * @return
+     */
+    public List<ZoubanNotice> findNoticeListByGrade(String term, ObjectId schoolId, ObjectId gradeId) {
+        List<ZoubanNotice> zoubanNoticeList = new ArrayList<ZoubanNotice>();
+        BasicDBObject query = new BasicDBObject();
+        query.append("te", term);
+        query.append("sid", schoolId);
+        query.append("gid", gradeId);
+        query.append("df", Constant.ZERO);
+        List<DBObject> dbObjectList = find(MongoFacroty.getAppDB(), Constant.COLLECTION_ZOUBAN_NOTICE, query, Constant.FIELDS, new BasicDBObject(Constant.ID, -1));
+        if (dbObjectList != null && !dbObjectList.isEmpty()) {
+            for (DBObject dbObject : dbObjectList) {
+                zoubanNoticeList.add(new ZoubanNotice((BasicDBObject) dbObject));
+            }
+        }
+        return zoubanNoticeList;
+    }
 
     /**
      * 删除通知
@@ -123,10 +161,11 @@ public class ZoubanNoticeDao extends BaseDao {
      * @param gradeId
      */
     public void deleteAllNotice(String term, ObjectId gradeId) {
-        BasicDBObject query = new BasicDBObject("te", term).append("gid", gradeId);
+        BasicDBObject query = new BasicDBObject()
+                .append("te", term)
+                .append("gid", gradeId);
         BasicDBObject updateValue = new BasicDBObject()
-                .append(Constant.MONGO_SET, new BasicDBObject("del", 1));
+                .append(Constant.MONGO_SET, new BasicDBObject("df", 1));
         update(MongoFacroty.getAppDB(), Constant.COLLECTION_ZOUBAN_NOTICE, query, updateValue);
     }
-
 }

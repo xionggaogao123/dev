@@ -21,7 +21,6 @@ public class FileUtil {
     // 上传微博图片路径
     public final static String UPLOADMATCHDIR = "/upload/microlesson/pic";
 
-	public final static String SCHOOL_GOODS = "/upload/schoolGoods/pic";
     /**
      * 随机数
      * @return

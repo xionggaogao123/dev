@@ -27,8 +27,6 @@ public class SimpleDTO implements Serializable {
 	public Object value1;
 	public Object value2;
 	public Object value3;
-	public Object value4;
-	public Object value5;
 	private Long size;
 	
 	public SimpleDTO() {
@@ -76,7 +74,6 @@ public class SimpleDTO implements Serializable {
 		this.id = e.getID().toString();
 		this.type = e.getName();
 		this.value = e.getQuestionPath();
-		this.value1 = e.getTimeType();
 	}
 
 	public SimpleDTO(Grade e) {
@@ -154,21 +151,5 @@ public class SimpleDTO implements Serializable {
 
 	public void setType1(Object type1) {
 		this.type1 = type1;
-	}
-
-	public Object getValue4() {
-		return value4;
-	}
-
-	public void setValue4(Object value4) {
-		this.value4 = value4;
-	}
-
-	public Object getValue5() {
-		return value5;
-	}
-
-	public void setValue5(Object value5) {
-		this.value5 = value5;
 	}
 }

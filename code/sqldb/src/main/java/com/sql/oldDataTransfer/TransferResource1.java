@@ -1,20 +1,21 @@
 package com.sql.oldDataTransfer;
 
+import java.io.File;
+import java.io.FileInputStream;
+import java.util.ArrayList;
+import java.util.List;
+
+import org.apache.commons.io.FileUtils;
+import org.apache.commons.io.FilenameUtils;
+import org.apache.commons.lang.StringUtils;
+import org.bson.types.ObjectId;
+
 import com.db.resources.ResourceDao;
 import com.db.resources.ResourceDictionaryDao;
 import com.pojo.app.FileType;
 import com.pojo.resources.ResourceDictionaryEntry;
 import com.pojo.resources.ResourceEntry;
 import com.sys.utils.HttpFileConvertUtils;
-import org.apache.commons.io.FileUtils;
-import org.apache.commons.io.FilenameUtils;
-import org.apache.commons.lang.StringUtils;
-import org.bson.types.ObjectId;
-
-import java.io.File;
-import java.io.FileInputStream;
-import java.util.ArrayList;
-import java.util.List;
 
 public class TransferResource1 {
 
@@ -245,7 +246,7 @@ public static void main(String[] args) throws Exception {
 				TransferResource1.pdfToSwf("D:\\resourceSwf0523\\"+fileKey+".pdf","D:\\resourceSwf0523\\"+fileKey);
 		    }
 			
-			  ResourceEntry e =new ResourceEntry(ft.getType(), name, res.length(), "", fileKey+"."+extendName, null, null, kwList, psbList,0,1,0,null,new ArrayList<ObjectId>(),"资源板块后端");
+			  ResourceEntry e =new ResourceEntry(ft.getType(), name, res.length(), "", fileKey+"."+extendName, null, null, kwList, psbList);
 			  e.setID(fileKey);
 			  resourceDao.addResource(e);
 			  FileUtils.write(f, "\r\n",true);

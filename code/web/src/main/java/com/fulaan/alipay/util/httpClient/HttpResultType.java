@@ -15,13 +15,13 @@ package com.fulaan.alipay.util.httpClient;
  *该代码仅供学习和研究支付宝接口使用，只是提供一个参考。
  */
 public enum HttpResultType {
-    /**
-     * 字符串方式
-     */
-    STRING,
+  /**
+   * 字符串方式
+   */
+  STRING,
 
-    /**
-     * 字节数组方式
-     */
-    BYTES
+  /**
+   * 字节数组方式
+   */
+  BYTES
 }

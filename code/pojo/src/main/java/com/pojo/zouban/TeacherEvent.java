@@ -14,7 +14,6 @@ import org.bson.types.ObjectId;
  * }
  * Created by qiangm on 2015/9/15.
  */
-@Deprecated
 public class TeacherEvent extends BaseDBObject {
     public TeacherEvent(BasicDBObject basicDBObject)
     {

@@ -20,7 +20,6 @@ import java.util.List;
  * Created by wang_xinxin on 2015/10/9.
  */
 public class ClassFengDuanEntry extends BaseDBObject {
-    public ClassFengDuanEntry(){}
 
     public ClassFengDuanEntry(BasicDBObject baseEntry) {
         super(baseEntry);
@@ -31,6 +30,15 @@ public class ClassFengDuanEntry extends BaseDBObject {
         BasicDBObject baseEntry =new BasicDBObject()
                 .append("xkid",xuanKeId)
                 .append("group", group)
+                .append("cids", MongoUtils.convert(classIds));
+        setBaseEntry(baseEntry);
+    }
+    public ClassFengDuanEntry(ObjectId xuanKeId,int group,String groupName,List<ObjectId> classIds) {
+        super();
+        BasicDBObject baseEntry =new BasicDBObject()
+                .append("xkid",xuanKeId)
+                .append("group", group)
+                .append("grpnm",groupName)
                 .append("cids", MongoUtils.convert(classIds));
         setBaseEntry(baseEntry);
     }

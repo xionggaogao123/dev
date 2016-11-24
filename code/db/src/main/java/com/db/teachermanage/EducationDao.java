@@ -28,25 +28,27 @@ public class EducationDao extends BaseDao {
 
     /**
      * 删除学历信息
+     *
      * @param userId
      */
     public void removeEducationEntry(ObjectId userId) {
-        DBObject query =new BasicDBObject("ui",userId);
+        DBObject query = new BasicDBObject("ui", userId);
         remove(MongoFacroty.getAppDB(), Constant.COLLECTION_EDUCATION, query);
     }
 
     /**
      * 获取学历信息
+     *
      * @param userId
      * @param fields
      * @return
      */
-    public List<EducationEntry> getEducationList(ObjectId userId,DBObject fields) {
-        BasicDBObject query =new BasicDBObject("ui",userId);
-        List<DBObject> list=find(MongoFacroty.getAppDB(), Constant.COLLECTION_EDUCATION, query, fields);
-        List<EducationEntry> educationEntryList=new ArrayList<EducationEntry>();
-        for(DBObject dbObject:list){
-            EducationEntry resumeEntry=new EducationEntry((BasicDBObject)dbObject);
+    public List<EducationEntry> getEducationList(ObjectId userId, DBObject fields) {
+        BasicDBObject query = new BasicDBObject("ui", userId);
+        List<DBObject> list = find(MongoFacroty.getAppDB(), Constant.COLLECTION_EDUCATION, query, fields);
+        List<EducationEntry> educationEntryList = new ArrayList<EducationEntry>();
+        for (DBObject dbObject : list) {
+            EducationEntry resumeEntry = new EducationEntry((BasicDBObject) dbObject);
             educationEntryList.add(resumeEntry);
         }
         return educationEntryList;

@@ -49,24 +49,24 @@ public class TeacherDao extends BaseDao {
     * 包括校领导
     * */
     public List<UserDetailInfoDTO> teacherList(ObjectId objectId, String keyWord, int skip, int size) {
-        BasicDBObject query=new BasicDBObject("si",objectId).append("ir", Constant.ZERO);
-        if(!StringUtils.isBlank(keyWord)){
+        BasicDBObject query = new BasicDBObject("si", objectId).append("ir", Constant.ZERO);
+        if (!StringUtils.isBlank(keyWord)) {
             Pattern pattern = Pattern.compile(keyWord, Pattern.CASE_INSENSITIVE);
-            query.append("nm",pattern);
+            query.append("nm", pattern);
         }
-        
-       // String func="function (){return (this.r & 2) == 2 || (this.r & 8) == 8  || (this.r & 64) == 64  ;};";
-       // query.append("$where",func);
-       // BasicDBList list=new BasicDBList();
-       // list.add(new BasicDBObject());
-        
-        query.append("r", new BasicDBObject(Constant.MONGO_NOTIN,new Integer[]{UserRole.STUDENT.getRole(),UserRole.PARENT.getRole()}));
 
-        List<DBObject> dbObjects=MongoFacroty.getAppDB().getCollection(Constant.COLLECTION_USER_NAME).find(query).skip(skip).limit(size).toArray();
-        List<UserDetailInfoDTO> userInfoDTOList=new ArrayList<UserDetailInfoDTO>();
-        for(DBObject dbObject:dbObjects){
-            UserEntry userEntry=new UserEntry((BasicDBObject)dbObject);
-            UserDetailInfoDTO userInfoDTO=new UserDetailInfoDTO(userEntry);
+        // String func="function (){return (this.r & 2) == 2 || (this.r & 8) == 8  || (this.r & 64) == 64  ;};";
+        // query.append("$where",func);
+        // BasicDBList list=new BasicDBList();
+        // list.add(new BasicDBObject());
+
+        query.append("r", new BasicDBObject(Constant.MONGO_NOTIN, new Integer[]{UserRole.STUDENT.getRole(), UserRole.PARENT.getRole()}));
+
+        List<DBObject> dbObjects = MongoFacroty.getAppDB().getCollection(Constant.COLLECTION_USER_NAME).find(query).skip(skip).limit(size).toArray();
+        List<UserDetailInfoDTO> userInfoDTOList = new ArrayList<UserDetailInfoDTO>();
+        for (DBObject dbObject : dbObjects) {
+            UserEntry userEntry = new UserEntry((BasicDBObject) dbObject);
+            UserDetailInfoDTO userInfoDTO = new UserDetailInfoDTO(userEntry);
             userInfoDTOList.add(userInfoDTO);
         }
         return userInfoDTOList;
@@ -131,16 +131,16 @@ public class TeacherDao extends BaseDao {
     }
 
     public int countTeacher(ObjectId objectId, String keyWord) {
-        BasicDBObject query=new BasicDBObject("si",objectId).append("ir", Constant.ZERO);
-        if(!StringUtils.isBlank(keyWord)){
+        BasicDBObject query = new BasicDBObject("si", objectId).append("ir", Constant.ZERO);
+        if (!StringUtils.isBlank(keyWord)) {
             Pattern pattern = Pattern.compile(keyWord, Pattern.CASE_INSENSITIVE);
-            query.append("nm",pattern);
+            query.append("nm", pattern);
         }
         //String func="function (){return (this.r & 2) == 2 || (this.r & 8) == 8  || (this.r & 64) == 64  ;};";
         //query.append("$where",func);
-        query.append("r", new BasicDBObject(Constant.MONGO_NOTIN,new Integer[]{UserRole.STUDENT.getRole(),UserRole.PARENT.getRole()}));
-        
-        int count=count(MongoFacroty.getAppDB(),Constant.COLLECTION_USER_NAME,query);
+        query.append("r", new BasicDBObject(Constant.MONGO_NOTIN, new Integer[]{UserRole.STUDENT.getRole(), UserRole.PARENT.getRole()}));
+
+        int count = count(MongoFacroty.getAppDB(), Constant.COLLECTION_USER_NAME, query);
         return count;
     }
 
@@ -153,7 +153,7 @@ public class TeacherDao extends BaseDao {
         return true;
     }
 
-    public UserEntry addTeacherInfo(ObjectId schoolId, int userRole, int sex,String teacherName,String realName, String pwd,int postion,String teachernumber,String postionDec) {
+    public UserEntry addTeacherInfo(ObjectId schoolId, int userRole, int sex, String teacherName, String realName, String pwd, int postion, String teachernumber, String postionDec) {
         UserEntry userEntry = new UserEntry(teacherName, pwd, -1, null);
         userEntry.setUserName(teacherName);
         userEntry.setSchoolID(schoolId);
@@ -166,29 +166,23 @@ public class TeacherDao extends BaseDao {
         userEntry.setJobnumber(teachernumber);
         String headPrefix = "head-";
         userEntry.setAvatar(headPrefix + "default-head.jpg");
-        
-        
-        
-        if(StringUtils.isBlank(userEntry.getChatId()))
-        {
-            if(null==userEntry.getID())
-            {
-            	userEntry.setID(new ObjectId());
+
+
+        if (StringUtils.isBlank(userEntry.getChatId())) {
+            if (null == userEntry.getID()) {
+                userEntry.setID(new ObjectId());
             }
             userEntry.setChatId(userEntry.getID().toString());
         }
-        if(userEntry.getAvatar().equals(""))
-        {
-        	userEntry.setAvatar("head-default-head.jpg");
+        if (userEntry.getAvatar().equals("")) {
+            userEntry.setAvatar("head-default-head.jpg");
         }
-        
-        if(userEntry.getRole()==UserRole.HEADMASTER.getRole())
-        {
-        	userEntry.setRole(UserRole.HEADMASTER.getRole() | UserRole.TEACHER.getRole() );
+
+        if (userEntry.getRole() == UserRole.HEADMASTER.getRole()) {
+            userEntry.setRole(UserRole.HEADMASTER.getRole() | UserRole.TEACHER.getRole());
         }
-        
-        
-        
+
+
         save(MongoFacroty.getAppDB(), Constant.COLLECTION_USER_NAME, userEntry.getBaseEntry());
         return userEntry;
     }

@@ -21,7 +21,7 @@ import java.util.*;
  * 年级名称:gna
  * 学校编码:sid
  * 学年:schY
- * 是否为年级考试:考试来源 0：老师自建  1：考务管理   2：考试模块   3：区域联考
+ * 是否为年级考试:考试来源0：老师自建1：考务管理2：考试模块3：区域联考
  * 考试类型：et  [0:期中，1:期末，2:其他,3:区域联考]
  * 说明:rm
  * 考试科目列表:es
@@ -37,7 +37,6 @@ import java.util.*;
 	2：初中
 	3：高中
 	4：大学"
- ty : 类型 1：普通版(同一个班级所有学生所学科目一样)  2：3+3版  20160816添加
  */
 public class ExamEntry extends BaseDBObject {
     /**
@@ -78,8 +77,7 @@ public class ExamEntry extends BaseDBObject {
                 .append("cList", classList)
                 .append("sList",subjectList)
                 .append("ue", null)
-                .append("es", MongoUtils.convert(MongoUtils.fetchDBObjectList(examSubjectEntries)))
-                .append("ty", 1);
+                .append("es", MongoUtils.convert(MongoUtils.fetchDBObjectList(examSubjectEntries)));
         setBaseEntry(baseEntry);
     }
     
@@ -89,27 +87,26 @@ public class ExamEntry extends BaseDBObject {
             ObjectId examId ,int studentPeriod) {
     	super();
     	BasicDBObject baseEntry = new BasicDBObject()
-                .append("name", name)
-                .append("ed", examDate)
-                .append("date", DateTimeUtils.convert(examDate,DateTimeUtils.DATE_YYYY_MM_DD))
-                .append("gId", gradeId)
-                .append("gna", gradeName)
-                .append("et", examType)
-                .append("type", ExamDTO.examTypeNames[examType])
-                .append("rm", remark)
-                .append("ac", isArrangeComplate)
-                .append("lk", isLock)
-                .append("df", FLAG_NOT_DELETE)
-                .append("sId", schoolId)
-                .append("schY", schoolYear)
-                .append("isGra", isGra)//默认
-                .append("cList", classList)
-                .append("sList",subjectList)
-                .append("ue", null)
-                .append("es", MongoUtils.convert(MongoUtils.fetchDBObjectList(examSubjectEntries)))
-                .append("eId", examId)
-                .append("sp", studentPeriod)
-                .append("ty", 1);
+    		.append("name", name)
+    		.append("ed", examDate)
+    		.append("date", DateTimeUtils.convert(examDate,DateTimeUtils.DATE_YYYY_MM_DD))
+    		.append("gId", gradeId)
+    		.append("gna", gradeName)
+    		.append("et", examType)
+    		.append("type", ExamDTO.examTypeNames[examType])
+    		.append("rm", remark)
+    		.append("ac", isArrangeComplate)
+    		.append("lk", isLock)
+    		.append("df", FLAG_NOT_DELETE)
+    		.append("sId", schoolId)
+    		.append("schY", schoolYear)
+    		.append("isGra", isGra)//默认
+    		.append("cList", classList)
+    		.append("sList",subjectList)
+    		.append("ue", null)
+    		.append("es", MongoUtils.convert(MongoUtils.fetchDBObjectList(examSubjectEntries)))
+    		.append("eId", examId)
+    		.append("sp", studentPeriod);
     	setBaseEntry(baseEntry);
 }
     
@@ -118,25 +115,24 @@ public class ExamEntry extends BaseDBObject {
             ObjectId schoolId, String schoolYear, int isGra, List<ObjectId> classList,List<ObjectId> subjectList) {
     	super();
     	BasicDBObject baseEntry = new BasicDBObject()
-                .append("name", name)
-                .append("ed", examDate)
-                .append("date", DateTimeUtils.convert(examDate,DateTimeUtils.DATE_YYYY_MM_DD))
-                .append("gId", gradeId)
-                .append("gna", gradeName)
-                .append("et", examType)
-                .append("type", ExamDTO.examTypeNames[examType])
-                .append("rm", remark)
-                .append("ac", isArrangeComplate)
-                .append("lk", isLock)
-                .append("df", FLAG_NOT_DELETE)
-                .append("sId", schoolId)
-                .append("schY", schoolYear)
-                .append("isGra", isGra)//默认
-                .append("cList", classList)
-                .append("sList",subjectList)
-                .append("ue", null)
-                .append("es", MongoUtils.convert(MongoUtils.fetchDBObjectList(examSubjectEntries)))
-                .append("ty", 1);
+    		.append("name", name)
+    		.append("ed", examDate)
+    		.append("date", DateTimeUtils.convert(examDate,DateTimeUtils.DATE_YYYY_MM_DD))
+    		.append("gId", gradeId)
+    		.append("gna", gradeName)
+    		.append("et", examType)
+    		.append("type", ExamDTO.examTypeNames[examType])
+    		.append("rm", remark)
+    		.append("ac", isArrangeComplate)
+    		.append("lk", isLock)
+    		.append("df", FLAG_NOT_DELETE)
+    		.append("sId", schoolId)
+    		.append("schY", schoolYear)
+    		.append("isGra", isGra)//默认
+    		.append("cList", classList)
+    		.append("sList",subjectList)
+    		.append("ue", null)
+    		.append("es", MongoUtils.convert(MongoUtils.fetchDBObjectList(examSubjectEntries)));
     	setBaseEntry(baseEntry);
 }
 
@@ -295,14 +291,6 @@ public class ExamEntry extends BaseDBObject {
 
     public void setRegionalExamId(ObjectId regionalExamId) {
         setSimpleValue("eId", regionalExamId);
-    }
-
-    public int getType(){
-        return getSimpleIntegerValueDef("ty", 1);
-    }
-
-    public void setType(int type){
-        setSimpleValue("ty", type);
     }
     
 }

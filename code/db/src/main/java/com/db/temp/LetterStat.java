@@ -22,13 +22,13 @@ import com.sys.utils.DateTimeUtils;
 
 /**
  * 信件统计
- * @author fourer
  *
+ * @author fourer
  */
 public class LetterStat {
 
-	public static void main(String[] args) throws IOException {
-		
+    public static void main(String[] args) throws IOException {
+
 //		 File file =new File("/home/letter1221.txt");
 //		 file.createNewFile();
 //		 
@@ -69,5 +69,5 @@ public class LetterStat {
 //				 
 //			 }
 //		 }
-	}
+    }
 }

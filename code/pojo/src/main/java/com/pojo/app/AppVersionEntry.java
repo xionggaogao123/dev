@@ -12,7 +12,6 @@ import com.pojo.base.BaseDBObject;
  * {
  *  c:1为安卓    2平板
  *  v:
- *  des:
  * }
  * </pre>
  * @author fourer
@@ -52,18 +51,5 @@ public class AppVersionEntry extends BaseDBObject{
 	public void setClient(int client) {
 		setSimpleValue("c", client);
 	}
-	
-	
-
-	public String getDes() {
-		return getSimpleStringValue("des");
-	}
-
-
-	public void setDes(String des) {
-		setSimpleValue("des", des);
-	}
-	
-	
 	
 }

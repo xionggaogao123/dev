@@ -1,0 +1,184 @@
+.class-list {
+    /*padding-left: 20px;*/
+    padding-top: 20px;
+}
+
+.class-list select {
+    width: 150px;
+    margin: 0 10px;
+
+}
+
+.inAdd {
+    line-height: 32px;
+    background-color: #ff8a00;
+    float: right;
+}
+
+.inAdd a {
+    padding: 6px 18px;
+    color: #fff;
+
+}
+
+.inRecord th {
+    background-color: #a3a3a3;
+    font-size: 16px;
+    color: #000000;
+    line-height: 42px;
+}
+
+.inRecord-detail td {
+    color: #000000;
+    font-size: 12px;
+
+}
+
+.inHead td {
+    font-size: 16px;
+    height: 35px;
+}
+
+#visit td {
+    padding: 10px 0;
+    line-height: 15px;
+    word-break: break-all;
+}
+
+.deleteEnter {
+    padding: 2px 4px;
+    margin-right: 6px;
+    border: 1px solid #a3a3a3;
+}
+
+.delIn, .lookIn {
+    padding: 2px 4px;
+    margin-right: 6px;
+    border: 1px solid #a3a3a3;
+}
+
+.gray-table .leave {
+
+    padding: 2px 5px;
+    text-align: center;
+    line-height: 18px;
+}
+
+#inRecordId {
+    width: 526px;
+    top: 25%;
+    position: fixed;
+    margin-left: -250px;
+
+}
+
+#inRecordId .pop-title, #outRecordId .pop-title, #inviteRecordId .pop-title {
+    height: 36px;
+    line-height: 36px;
+    color: #fff;
+    background: #616161;
+}
+
+#inRecordId .closePop, #outRecordId .closePop, #inviteRecordId .closePop {
+    display: block;
+    width: 36px;
+    height: 36px;
+    float: right;
+    cursor: pointer;
+    background: url('../images/closePop.png') 0 0 no-repeat;
+}
+
+#inRecordId .inRecord-table, #outRecordId .outRecord-table, #inviteRecordId .inviteRecord-table {
+    margin-left: 26px;
+    width: 510px;
+}
+
+#inRecordId .pop-content, #outRecordId .pop-content, #inviteRecordId .pop-content {
+    padding-top: 0px;
+}
+
+#inRecordId td, #outRecordId td, #inviteRecordId td {
+    padding: 10px;
+}
+
+.inRecord-table input, .inRecord-table select, .outRecord-table input, .outRecord-table select, .inviteRecord-table input, .inviteRecord-table select {
+    border: 1px solid #a3a3a3;
+    text-indent: 8px;
+    height: 30px;
+    line-height: 30px;
+    width: 140px;
+    cursor: pointer;
+}
+
+.inRecord-table textarea, .outRecord-table textarea, .inviteRecord-table textarea {
+    text-indent: 8px;
+    height: 116px;
+    width: 382px;
+}
+
+#inRecordId .save, #outRecordId .save, #inviteRecordId .save {
+
+    background-color: #a3a3a3;
+    color: #fff;
+    padding: 8px 10px;
+    margin-left: 20px;
+}
+
+#inRecordSave:hover {
+    background: #ff8a00;
+}
+
+#inviteRecordId {
+    width: 556px;
+    top: 5%;
+    position: fixed;
+    margin-left: -250px;
+}
+
+#outRecordId {
+    width: 556px;
+    top: 15%;
+    position: fixed;
+    margin-left: -250px;
+}
+
+#outRecordId .agreeTeacher, #inviteRecordId .agreeTeacher {
+    width: 384px;
+}
+
+#outRecordId .rightAlign, #inviteRecordId .rightAlign {
+    text-align: right;
+}
+
+.lookInId .pop-btn {
+    width: 80px;
+}
+
+.pop-btn {
+    width: 160px;
+    margin: 30px auto;
+}
+
+.gray-table-box .gray-table-body {
+    overflow-y: hidden;
+
+}
+
+.new-page-links {
+    width: initial;
+    display: inline-block;
+    margin: 20px auto;
+}
+
+#enterSchoolLists .td {
+    overflow-x: auto;
+}
+
+.gray-table .phoneWid {
+    width: 100px;
+}
+
+.new-page-link {
+    text-align: center;
+}
+    

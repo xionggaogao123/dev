@@ -41,8 +41,8 @@ public class ReviewDao extends BaseDao {
      * @return
      */
 
-    public List<ReviewEntry> findReviewEntry(String queryId, String columName, int pageNo, int pageSize,ObjectId edId) {
-        BasicDBObject query = new BasicDBObject("edid",edId).append("ir", Constant.ZERO);
+    public List<ReviewEntry> findReviewEntry(String queryId, String columName, int pageNo, int pageSize, ObjectId edId) {
+        BasicDBObject query = new BasicDBObject("edid", edId).append("ir", Constant.ZERO);
         if (!StringUtils.isEmpty(queryId) && !StringUtils.isEmpty(columName)) {
             query.append(columName, queryId);
         }
@@ -63,8 +63,8 @@ public class ReviewDao extends BaseDao {
      * @param columName 查询条件列
      * @return
      */
-    public int count(String queryId, String columName,ObjectId edid) {
-        BasicDBObject query = new BasicDBObject("edid",edid).append("ir", Constant.ZERO);
+    public int count(String queryId, String columName, ObjectId edid) {
+        BasicDBObject query = new BasicDBObject("edid", edid).append("ir", Constant.ZERO);
         if (!StringUtils.isEmpty(queryId) && !StringUtils.isEmpty(columName)) {
             query.append(columName, queryId);
         }
@@ -84,53 +84,55 @@ public class ReviewDao extends BaseDao {
                 Constant.FIELDS);
         return object == null ? null : new ReviewEntry((BasicDBObject) object);
     }
-    
-    /**
-	 * 查询所有的列表信息
-	 * @param resourceDictionaryId
-	 * @param columName
-	 * @return
-	 */
-	public List<ReviewEntry> getAllReviewEntries(ObjectId edId){
-		BasicDBObject query = new BasicDBObject("edid",edId).append("ir", Constant.ZERO);
-		DBObject orderBy = new BasicDBObject("pt",Constant.DESC); 
-        List<DBObject> dbObjects = find(MongoFacroty.getCloudAppDB(),Constant.COLLECTION_REVIEW,query,Constant.FIELDS,orderBy);
-        List<ReviewEntry> resultList = new ArrayList<ReviewEntry>();
-        for(DBObject dbObject:dbObjects){
-        	ReviewEntry entry = new ReviewEntry((BasicDBObject)dbObject);
-        	resultList.add(entry);
-        }
-		return resultList;
-	}
 
-	/**
-	 * 根据传入的数据字典ID和字段名查询集体备课List
-	 * @param resourceDictionaryId
-	 * @param columName
-	 * @return
-	 */
-	public List<ReviewEntry> getReviewEntriesByResourceDictionaryId(String resourceDictionaryId,String columName,ObjectId edId){
-		BasicDBObject query = new BasicDBObject("edid",edId).append("ir", Constant.ZERO);
-		query.append(columName,resourceDictionaryId);
-		DBObject orderBy = new BasicDBObject("pt",Constant.DESC); 
-        List<DBObject> dbObjects = find(MongoFacroty.getCloudAppDB(),Constant.COLLECTION_REVIEW,query,Constant.FIELDS,orderBy);
+    /**
+     * 查询所有的列表信息
+     *
+     * @param resourceDictionaryId
+     * @param columName
+     * @return
+     */
+    public List<ReviewEntry> getAllReviewEntries(ObjectId edId) {
+        BasicDBObject query = new BasicDBObject("edid", edId).append("ir", Constant.ZERO);
+        DBObject orderBy = new BasicDBObject("pt", Constant.DESC);
+        List<DBObject> dbObjects = find(MongoFacroty.getCloudAppDB(), Constant.COLLECTION_REVIEW, query, Constant.FIELDS, orderBy);
         List<ReviewEntry> resultList = new ArrayList<ReviewEntry>();
-        for(DBObject dbObject:dbObjects){
-        	ReviewEntry entry = new ReviewEntry((BasicDBObject)dbObject);
-        	resultList.add(entry);
+        for (DBObject dbObject : dbObjects) {
+            ReviewEntry entry = new ReviewEntry((BasicDBObject) dbObject);
+            resultList.add(entry);
         }
-		return resultList;
-	}
-	
-	/**
+        return resultList;
+    }
+
+    /**
+     * 根据传入的数据字典ID和字段名查询集体备课List
+     *
+     * @param resourceDictionaryId
+     * @param columName
+     * @return
+     */
+    public List<ReviewEntry> getReviewEntriesByResourceDictionaryId(String resourceDictionaryId, String columName, ObjectId edId) {
+        BasicDBObject query = new BasicDBObject("edid", edId).append("ir", Constant.ZERO);
+        query.append(columName, resourceDictionaryId);
+        DBObject orderBy = new BasicDBObject("pt", Constant.DESC);
+        List<DBObject> dbObjects = find(MongoFacroty.getCloudAppDB(), Constant.COLLECTION_REVIEW, query, Constant.FIELDS, orderBy);
+        List<ReviewEntry> resultList = new ArrayList<ReviewEntry>();
+        for (DBObject dbObject : dbObjects) {
+            ReviewEntry entry = new ReviewEntry((BasicDBObject) dbObject);
+            resultList.add(entry);
+        }
+        return resultList;
+    }
+
+    /**
      * 给某一个评课议课去除一个课件
+     *
      * @param userId
      * @return
      */
-    public void delFileForReview(ObjectId reviewId,ObjectId fileId)
-    {
-        BasicDBObject query =new BasicDBObject(Constant.ID,reviewId);
-        DBObject updateValue =new BasicDBObject(Constant.MONGO_PULL,new BasicDBObject("cs",fileId));
+    public void delFileForReview(ObjectId reviewId, ObjectId fileId) {
+        BasicDBObject query = new BasicDBObject(Constant.ID, reviewId);
+        DBObject updateValue = new BasicDBObject(Constant.MONGO_PULL, new BasicDBObject("cs", fileId));
         update(MongoFacroty.getCloudAppDB(), Constant.COLLECTION_REVIEW, query, updateValue);
     }
 }

@@ -16,13 +16,13 @@ public class DeleteReminder {
     private ReminderDao reminderDao = new ReminderDao();
     private HomeWorkDao homeWorkDao = new HomeWorkDao();
 
-    private void deleteReminder(){
+    private void deleteReminder() {
 //        List<ReminderEntry> reminderEntryList = reminderDao.findAllReminder();
         List<ReminderEntry> reminderEntryList = new ArrayList<ReminderEntry>();
-        for(ReminderEntry reminderEntry : reminderEntryList){
+        for (ReminderEntry reminderEntry : reminderEntryList) {
             ObjectId homeworkId = reminderEntry.getHomeworkId();
             HomeWorkEntry homeWorkEntry = homeWorkDao.findHomeWorkEntry(homeworkId);
-            if(homeWorkEntry == null){
+            if (homeWorkEntry == null) {
                 System.out.println("删除homeworkId=" + homeworkId.toString() + "  的提醒");
                 reminderDao.removeReminder(reminderEntry.getID());
             }
@@ -30,7 +30,7 @@ public class DeleteReminder {
         System.out.println(reminderEntryList.size());
     }
 
-    public static void main(String[] args){
+    public static void main(String[] args) {
         new DeleteReminder().deleteReminder();
     }
 }

@@ -1,8 +1,8 @@
 package com.sys.mails;
 
-import java.util.Enumeration;
-import java.util.Properties;
-import java.util.Vector;
+import com.sys.props.Resources;
+import org.apache.log4j.Logger;
+import sun.misc.BASE64Encoder;
 
 import javax.activation.DataHandler;
 import javax.activation.FileDataSource;
@@ -14,12 +14,12 @@ import javax.mail.internet.InternetAddress;
 import javax.mail.internet.MimeBodyPart;
 import javax.mail.internet.MimeMessage;
 import javax.mail.internet.MimeMultipart;
-
-import org.apache.log4j.Logger;
-
-import sun.misc.BASE64Encoder;
-
-import com.sys.props.Resources;
+import java.io.BufferedReader;
+import java.io.FileReader;
+import java.io.IOException;
+import java.util.Enumeration;
+import java.util.Properties;
+import java.util.Vector;
 
 /**
  * 邮件处理类
@@ -196,20 +196,62 @@ public class MailUtils {
 	 */
 	public static void main(String args[]) throws Exception {
 
+
+		//获取classpath路径
+		System.out.println("classpath路径： "+MailUtils.class.getClassLoader().getResource("").getPath());
+
+		//获取当前类的加载路径
+		System.out.println("当前类加载路径： "+MailUtils.class.getResource("").getPath());
+
+		// 读取文件resources目录中文件的若干种方法
+		// 方法一：从classpath路径出发读取
+		String content = readTxt(MailUtils.class.getClassLoader().getResource("content.html").getPath());
+
+		System.out.println(content);
+
+
 		MailUtils mail = new MailUtils();
 
 		// type类型,根据此字段去配置文件SendMail.xml中匹配,然后发到相应的邮箱
 
 		// 邮件的内容,实际开发中这个内容是前台传到后台
-		String content = "<h4><font color=red>Welcome!</font></h4><br>";
+//		String content = "<h4><font color=red>Welcome!</font></h4><br>";
 
 		// 在其他类中调用时只能看到sendMail方法,为了保护内部细节,其它的方法都声明为私有的
-		mail.sendMail("测试", "fourer.yin@fulaan.com", content);
+		mail.sendMail("我们在“复兰杯”才艺挑战赛等你！", "moshenglei@icloud.com", content);
 		// 这个项目中没有日志文件,所以我打印一句话来告诉自己程序已经成功运行
 		System.out.println("****success****");
+//		// 方法二：从类加载路径出发，相当于使用绝对路径
+//		readTxt(MailUtils.class.getResource("/test/demo1.txt").getPath());
+//		// 方法三：从类加载路径出发，相当于使用相对路径
+//		readTxt(MailUtils.class.getResource("../../../test/demo1.txt").getPath());
 
 	}
-	
+
+	private static String readTxt(String filePath) {
+		BufferedReader reader = null;
+		String content = "";
+		try {
+			reader =  new BufferedReader(new FileReader(filePath));
+			String line = null;
+			while ((line = reader.readLine()) != null) {
+				System.out.println(line);
+				content += line;
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
+		} finally {
+			if (reader != null) {
+				try {
+					reader.close();
+				} catch (IOException e) {
+					e.printStackTrace();
+				}
+			}
+		}
+
+		return content;
+	}
 	
 	
 }

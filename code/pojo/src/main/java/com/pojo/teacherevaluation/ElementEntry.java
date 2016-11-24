@@ -15,7 +15,6 @@ import java.util.List;
  * Created by fl on 2016/4/19.
  * si 学校id
  * y  年度 例如2015-2016年度  保存为2015-2016
- * evid  评价id  对应MemberGroupEntry _id  2016.7.29新增
  * nm 名称
  * sc 分值
  * ty 类型 1：考核要素  2：量化成绩
@@ -29,11 +28,10 @@ public class ElementEntry extends BaseDBObject {
         setBaseEntry(baseEntry);
     }
 
-    public ElementEntry(ObjectId schoolId, String year, ObjectId evaluationId, String name, double score, int type, List<IdValuePair> content){
+    public ElementEntry(ObjectId schoolId, String year, String name, double score, int type, List<IdValuePair> content){
         BasicDBObject baseEntry = new BasicDBObject()
                 .append("si", schoolId)
                 .append("y", year)
-                .append("evid", evaluationId)
                 .append("nm", name)
                 .append("sc", score)
                 .append("ty", type)
@@ -56,14 +54,6 @@ public class ElementEntry extends BaseDBObject {
 
     public void setYear(String year){
         setSimpleValue("y", year);
-    }
-
-    public ObjectId getEvaluationId(){
-        return getSimpleObjecIDValue("evid");
-    }
-
-    public void setEvaluationId(ObjectId evaluationId){
-        setSimpleValue("evid", evaluationId);
     }
 
     public String getName(){

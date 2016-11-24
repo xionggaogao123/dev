@@ -83,14 +83,17 @@ public class ScoreDao extends BaseDao {
         }
         save(MongoFacroty.getAppDB(), Constant.COLLECTION_SCORE, objects);
     }
+
     /**
-	 * 批量添加考试成绩
-	 * @param e
-	 * @return
-	 */
-	public void addScoreEntryList(List<DBObject> list){
-		save(MongoFacroty.getAppDB(),Constant.COLLECTION_SCORE, list);
-	}
+     * 批量添加考试成绩
+     *
+     * @param e
+     * @return
+     */
+    public void addScoreEntryList(List<DBObject> list) {
+        save(MongoFacroty.getAppDB(), Constant.COLLECTION_SCORE, list);
+    }
+
     /**
      * 导入学生成绩
      *
@@ -204,10 +207,10 @@ public class ScoreDao extends BaseDao {
      *
      * @param examRoomId
      */
-    public List<ScoreEntry> findScoreListByExamRoomId( final String examId, String roomId) {
+    public List<ScoreEntry> findScoreListByExamRoomId(final String examId) {
         List<DBObject> results = find(MongoFacroty.getAppDB(),
                 Constant.COLLECTION_SCORE,
-                new BasicDBObject().append("exId", new ObjectId(examId)).append("rid", new ObjectId(roomId)),
+                new BasicDBObject().append("exId", new ObjectId(examId)),
                 Constant.FIELDS, new BasicDBObject("rid", Constant.ASC).append("cId", Constant.ASC));
         List<ScoreEntry> resultList = new ArrayList<ScoreEntry>(results.size());
         ScoreEntry scoreEntry;
@@ -231,9 +234,9 @@ public class ScoreDao extends BaseDao {
 
         //排序
         if (order == null || "class".equals(order)) {
-            orderObject = new BasicDBObject().append("cna", Constant.ASC).append("suc", Constant.DESC);
+            orderObject = new BasicDBObject().append("cId", Constant.ASC).append("suc", Constant.DESC);
         } else {
-            orderObject = new BasicDBObject().append("suc", Constant.DESC).append("cna", Constant.ASC);
+            orderObject = new BasicDBObject().append("suc", Constant.DESC).append("cId", Constant.ASC);
         }
 
         //班级查询条件
@@ -360,11 +363,12 @@ public class ScoreDao extends BaseDao {
 
     /**
      * 更新学生考场编排信息
+     *
      * @param examRoomDTO
      * @param studentId
      * @param examNumber
      */
-    public void updateExamSeat(ObjectId examId,ExamRoomDTO examRoomDTO, ObjectId studentId, final String examNumber) {
+    public void updateExamSeat(ObjectId examId, ExamRoomDTO examRoomDTO, ObjectId studentId, final String examNumber) {
         update(MongoFacroty.getAppDB(), Constant.COLLECTION_SCORE,
                 new BasicDBObject("stuId", studentId).append("exId", examId),
                 new BasicDBObject(Constant.MONGO_SET, new BasicDBObject("rid", new ObjectId(examRoomDTO.getId()))
@@ -372,78 +376,70 @@ public class ScoreDao extends BaseDao {
                         .append("enm", examRoomDTO.getExamRoomNumber() + Constant.SEPARATE_LINE + examNumber)
                         .append("ern", examRoomDTO.getExamRoomNumber())));
     }
-    
+
     /**
      * 根据校名词或班级名称排序查看
      * Created by Zoukai on 2015/11
+     *
      * @param schoolRanking "sr" 学校排名
      */
-    public List<ScoreEntry> findByRanking(ObjectId exid,int skip, int size){
-    	if(!"".equals(exid)){
-    	DBObject query=new BasicDBObject("exId",exid);
-    	DBObject orderBy =new BasicDBObject("sr", Constant.ASC); 
-    	
-    		List<DBObject> dbObjectList=find(MongoFacroty.getAppDB(), Constant.COLLECTION_SCORE, query, Constant.FIELDS,orderBy,skip, size);
-    		List<ScoreEntry> list=new ArrayList<ScoreEntry>();
-    		for (DBObject dbobjectlist : dbObjectList) {
-    			ScoreEntry score=new ScoreEntry((BasicDBObject) dbobjectlist);
-				list.add(score); 
-			}
-    		return list;
-    	}
-    	return null;
-    }
-    
-    /**
-     * 根据考试编码查询考试信息
-     * @param examId "exId"
-     */
-    public List<ScoreEntry> findByExid(ObjectId exid,int skip, int size){
-    		DBObject query=new BasicDBObject("exId",exid);
-        	List<DBObject> dbObjectList=find(MongoFacroty.getAppDB(), Constant.COLLECTION_SCORE, query, Constant.FIELDS,new BasicDBObject(),skip, size);
-        	List<ScoreEntry> list=new ArrayList<ScoreEntry>();
-        	for (DBObject dbobjectlist : dbObjectList) {
-    			ScoreEntry score=new ScoreEntry((BasicDBObject) dbobjectlist);
-    			list.add(score); 
-    		}
-    		return list;
-    	
-    }
-    
-    /**
-     * 根据考试编码查询考试信息
-     * @param exId
-     */
-    public List<ScoreEntry> findByExid(ObjectId exid){
-    		DBObject query=new BasicDBObject("exId",exid);
-        	List<DBObject> dbObjectList=find(MongoFacroty.getAppDB(), Constant.COLLECTION_SCORE, query, Constant.FIELDS,new BasicDBObject());
-        	List<ScoreEntry> list=new ArrayList<ScoreEntry>();
-        	for (DBObject dbobjectlist : dbObjectList) {
-    			ScoreEntry score=new ScoreEntry((BasicDBObject) dbobjectlist);
-    			list.add(score); 
-    		}
-    		return list;
-    	
-    }
-    
-    /**
-     * 根据ID更新学校Ranking
-     */
-    public void updateSchoolRankById(ObjectId id , int rank){
-    	 update(MongoFacroty.getAppDB(), Constant.COLLECTION_SCORE,
-                 new BasicDBObject(Constant.ID, id),
-                 new BasicDBObject(Constant.MONGO_SET, new BasicDBObject("sr",rank)));
-    	
+    public List<ScoreEntry> findByRanking(ObjectId exid, int skip, int size) {
+        if (!"".equals(exid)) {
+            DBObject query = new BasicDBObject("exId", exid);
+            DBObject orderBy = new BasicDBObject("sr", Constant.ASC);
+
+            List<DBObject> dbObjectList = find(MongoFacroty.getAppDB(), Constant.COLLECTION_SCORE, query, Constant.FIELDS, orderBy, skip, size);
+            List<ScoreEntry> list = new ArrayList<ScoreEntry>();
+            for (DBObject dbobjectlist : dbObjectList) {
+                ScoreEntry score = new ScoreEntry((BasicDBObject) dbobjectlist);
+                list.add(score);
+            }
+            return list;
+        }
+        return null;
     }
 
     /**
-     * 更新学生姓名
-     * @param stuId
-     * @param stuName
+     * 根据考试编码查询考试信息
+     *
+     * @param examId "exId"
      */
-    public void updateStuName(ObjectId stuId, String stuName){
+    public List<ScoreEntry> findByExid(ObjectId exid, int skip, int size) {
+        DBObject query = new BasicDBObject("exId", exid);
+        List<DBObject> dbObjectList = find(MongoFacroty.getAppDB(), Constant.COLLECTION_SCORE, query, Constant.FIELDS, new BasicDBObject(), skip, size);
+        List<ScoreEntry> list = new ArrayList<ScoreEntry>();
+        for (DBObject dbobjectlist : dbObjectList) {
+            ScoreEntry score = new ScoreEntry((BasicDBObject) dbobjectlist);
+            list.add(score);
+        }
+        return list;
+
+    }
+
+    /**
+     * 根据考试编码查询考试信息
+     *
+     * @param examId "exId"
+     */
+    public List<ScoreEntry> findByExid(ObjectId exid) {
+        DBObject query = new BasicDBObject("exId", exid);
+        List<DBObject> dbObjectList = find(MongoFacroty.getAppDB(), Constant.COLLECTION_SCORE, query, Constant.FIELDS, new BasicDBObject());
+        List<ScoreEntry> list = new ArrayList<ScoreEntry>();
+        for (DBObject dbobjectlist : dbObjectList) {
+            ScoreEntry score = new ScoreEntry((BasicDBObject) dbobjectlist);
+            list.add(score);
+        }
+        return list;
+
+    }
+
+    /**
+     * 根据ID更新学校Ranking
+     */
+    public void updateSchoolRankById(ObjectId id, int rank) {
         update(MongoFacroty.getAppDB(), Constant.COLLECTION_SCORE,
-                new BasicDBObject("stuId", stuId),
-                new BasicDBObject(Constant.MONGO_SET, new BasicDBObject("stuNm",stuName)));
+                new BasicDBObject(Constant.ID, id),
+                new BasicDBObject(Constant.MONGO_SET, new BasicDBObject("sr", rank)));
+
     }
 }

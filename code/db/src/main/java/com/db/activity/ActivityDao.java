@@ -52,7 +52,7 @@ public class ActivityDao extends BaseDao {
 
     public List<ActivityEntry> selectActivityByUserIds(List<ObjectId> objectIdList, Integer skip, Integer pageSize) {
         BasicDBObject query = new BasicDBObject("att", new BasicDBObject(Constant.MONGO_IN, objectIdList))
-                .append("as",new BasicDBObject(Constant.MONGO_NE,1));
+                .append("as", new BasicDBObject(Constant.MONGO_NE, 1));
 
         //List<DBObject> baseList = find(Constant.COLLECTION_ACTIVITY_NAME, query, Constant.FIELDS);
         List<DBObject> baseList = find(MongoFacroty.getAppDB(), Constant.COLLECTION_ACTIVITY_NAME, query, Constant.FIELDS, Constant.MONGO_SORTBY_DESC, skip, pageSize);
@@ -64,7 +64,7 @@ public class ActivityDao extends BaseDao {
     }
 
     public int findFriendsActivityCount(List<ObjectId> userIds) {
-        BasicDBObject query = new BasicDBObject("att", new BasicDBObject(Constant.MONGO_IN, userIds)).append("as",new BasicDBObject(Constant.MONGO_NE,1));
+        BasicDBObject query = new BasicDBObject("att", new BasicDBObject(Constant.MONGO_IN, userIds)).append("as", new BasicDBObject(Constant.MONGO_NE, 1));
         return count(MongoFacroty.getAppDB(), Constant.COLLECTION_ACTIVITY_NAME, query);
     }
 
@@ -127,7 +127,7 @@ public class ActivityDao extends BaseDao {
     *
     * */
     public List<ActivityEntry> myOrganizedActivity(ObjectId userId, int begin, Integer pageSize) {
-        BasicDBObject query = new BasicDBObject("oid", userId).append("as",new BasicDBObject(Constant.MONGO_NE,1));
+        BasicDBObject query = new BasicDBObject("oid", userId).append("as", new BasicDBObject(Constant.MONGO_NE, 1));
         List<DBObject> dbObjects = find(MongoFacroty.getAppDB(), Constant.COLLECTION_ACTIVITY_NAME, query, Constant.FIELDS, Constant.MONGO_SORTBY_DESC, begin, pageSize);
         List<ActivityEntry> activityEntryList = new ArrayList<ActivityEntry>();
         for (DBObject dbObject : dbObjects) {
@@ -142,7 +142,7 @@ public class ActivityDao extends BaseDao {
     *
     * */
     public int myOrganizedActivityCount(ObjectId objectId) {
-        BasicDBObject query = new BasicDBObject("oid", objectId).append("as",new BasicDBObject(Constant.MONGO_NE,1));
+        BasicDBObject query = new BasicDBObject("oid", objectId).append("as", new BasicDBObject(Constant.MONGO_NE, 1));
         int count = count(MongoFacroty.getAppDB(), Constant.COLLECTION_ACTIVITY_NAME, query);
         return count;
     }
@@ -152,7 +152,7 @@ public class ActivityDao extends BaseDao {
     *
     * */
     public List<ActivityEntry> myAttendActivity(ObjectId objectId, int begin, Integer pageSize) {
-        BasicDBObject query = new BasicDBObject("att", objectId).append("as",new BasicDBObject(Constant.MONGO_NE,1));
+        BasicDBObject query = new BasicDBObject("att", objectId).append("as", new BasicDBObject(Constant.MONGO_NE, 1));
         List<DBObject> dbObjects = find(MongoFacroty.getAppDB(), Constant.COLLECTION_ACTIVITY_NAME, query, Constant.FIELDS, Constant.MONGO_SORTBY_DESC, begin, pageSize);
         List<ActivityEntry> activityEntryList = new ArrayList<ActivityEntry>();
         for (DBObject dbObject : dbObjects) {
@@ -163,7 +163,7 @@ public class ActivityDao extends BaseDao {
     }
 
     public int myAttendActivityCount(ObjectId objectId) {
-        BasicDBObject query = new BasicDBObject("att", objectId).append("as",new BasicDBObject(Constant.MONGO_NE,1));
+        BasicDBObject query = new BasicDBObject("att", objectId).append("as", new BasicDBObject(Constant.MONGO_NE, 1));
         int count = count(MongoFacroty.getAppDB(), Constant.COLLECTION_ACTIVITY_NAME, query);
         return count;
     }
@@ -225,7 +225,7 @@ public class ActivityDao extends BaseDao {
     public void quitActivity(ObjectId actId, ObjectId userId) {
         DBObject query = new BasicDBObject(Constant.ID, actId);
         DBObject updateValue = new BasicDBObject(Constant.MONGO_PULL, new BasicDBObject("att", userId))
-                .append(Constant.MONGO_INC,new BasicDBObject("attc",-1));
+                .append(Constant.MONGO_INC, new BasicDBObject("attc", -1));
         update(MongoFacroty.getAppDB(), Constant.COLLECTION_ACTIVITY_NAME, query, updateValue);
     }
 
@@ -282,7 +282,7 @@ public class ActivityDao extends BaseDao {
     public List<ActivityEntry> getAllList() {
         BasicDBObject query = new BasicDBObject();
         List<DBObject> dbObjectList = find(MongoFacroty.getAppDB(), Constant.COLLECTION_ACTIVITY_NAME,
-                query, new BasicDBObject("diss",0));
+                query, Constant.FIELDS);
         List<ActivityEntry> activityEntryList = new ArrayList<ActivityEntry>();
         if (dbObjectList != null) {
             for (DBObject dbObject : dbObjectList) {
@@ -321,8 +321,8 @@ public class ActivityDao extends BaseDao {
         DBObject db = findOne(MongoFacroty.getAppDB(), Constant.COLLECTION_ACTIVITY_NAME, query, Constant.FIELDS);
         ActivityEntry activityEntry = new ActivityEntry((BasicDBObject) db);
         List<ActivityDiscuss> discusses = activityEntry.getActDiscusses();
-        List<Long> timeList=new ArrayList<Long>();
-        List<ObjectId> userIds=new ArrayList<ObjectId>();
+        List<Long> timeList = new ArrayList<Long>();
+        List<ObjectId> userIds = new ArrayList<ObjectId>();
         for (ActivityDiscuss activityDiscuss : discusses) {
             if (activityDiscuss.getId().equals(replyId) || activityDiscuss.getRepId() != null && activityDiscuss.getRepId().equals(replyId)) {
                 deleteList.add(activityDiscuss.getBaseEntry());
@@ -342,10 +342,10 @@ public class ActivityDao extends BaseDao {
         update(MongoFacroty.getAppDB(), Constant.COLLECTION_ACTIVITY_NAME, query, updateValue);
 
         //删除动态
-        BasicDBObject query2=new BasicDBObject();
-        query2.append("rid",actId);
-        query2.append("uid",new BasicDBObject(Constant.MONGO_IN,userIds));
-        query2.append("ct",new BasicDBObject(Constant.MONGO_IN,timeList));
+        BasicDBObject query2 = new BasicDBObject();
+        query2.append("rid", actId);
+        query2.append("uid", new BasicDBObject(Constant.MONGO_IN, userIds));
+        query2.append("ct", new BasicDBObject(Constant.MONGO_IN, timeList));
         remove(MongoFacroty.getAppDB(), Constant.COLLECTION_ACTIVITY_TRACK_NAME, query2);
     }
 }

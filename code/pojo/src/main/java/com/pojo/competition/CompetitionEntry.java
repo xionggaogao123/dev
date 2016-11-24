@@ -1,17 +1,18 @@
 package com.pojo.competition;
 
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Date;
+import java.util.List;
+
+import org.bson.types.ObjectId;
+
 import com.mongodb.BasicDBList;
 import com.mongodb.BasicDBObject;
 import com.mongodb.DBObject;
 import com.pojo.base.BaseDBObject;
 import com.pojo.utils.MongoUtils;
 import com.sys.constants.Constant;
-import org.bson.types.ObjectId;
-
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Date;
-import java.util.List;
 
 /**
  * 评比信息
@@ -41,7 +42,6 @@ import java.util.List;
  * 生成时间 ： cd (createDate)long
  * 删除标志位 : ir(isRemoved,0为未删除，1为已删除) 
  * 所属学校id : scid(schoolId)
- * 流動紅旗數量:(rfn)redFlagNum
  * @author cxy 
  */
 public class CompetitionEntry extends BaseDBObject{
@@ -54,7 +54,7 @@ public class CompetitionEntry extends BaseDBObject{
 	}
 	
 	public CompetitionEntry(ObjectId shcoolId,String termType,String competitionName,String competitionPostscript,
-					List<ObjectId> competitionRange,List<CompetitionItem> competitionItems,List<CompetitionBatch> competitionBatches,int redFlagNum) {
+					List<ObjectId> competitionRange,List<CompetitionItem> competitionItems,List<CompetitionBatch> competitionBatches) {
 		super();
 
 		BasicDBObject baseEntry = new BasicDBObject().append("scid", shcoolId)
@@ -65,8 +65,7 @@ public class CompetitionEntry extends BaseDBObject{
 				.append("cps", competitionPostscript)
 				.append("cra", MongoUtils.convert(competitionRange))
 				.append("cits", MongoUtils.convert(MongoUtils.fetchDBObjectList(competitionItems)))
-				.append("cbas", MongoUtils.convert(MongoUtils.fetchDBObjectList(competitionBatches)))
-				.append("rfn",redFlagNum);
+				.append("cbas", MongoUtils.convert(MongoUtils.fetchDBObjectList(competitionBatches)));
 
 		setBaseEntry(baseEntry);
 	}
@@ -164,13 +163,4 @@ public class CompetitionEntry extends BaseDBObject{
 		List<DBObject> list=MongoUtils.fetchDBObjectList(competitionBatches);
 		setSimpleValue("cbas", MongoUtils.convert(list));
 	}
-
-	public int getRedFlagNum() {
-		return getSimpleIntegerValueDef("rfn", 0);
-	}
-
-	public void setRedFlagNum(int redFlagNum) {
-		setSimpleValue("rfn", redFlagNum);
-	}
-
 }

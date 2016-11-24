@@ -39,7 +39,6 @@ import org.bson.types.ObjectId;
  *  ms: 扣发合计
  *  as: 实发合计
  *  dl: 是否删除
- *  rmk:remark备注
  * }
  * </pre>
  *
@@ -62,7 +61,7 @@ public class SalaryEntry extends BaseDBObject {
     public SalaryEntry(
             String uid, String unm,
             int y, int m, int n, String schoolId, String timesName,
-            List<SalaryItemDto> moneyList,String remark) {
+            List<SalaryItemDto> moneyList) {
         super();
         double ss = 0;
         double ms = 0;
@@ -87,7 +86,7 @@ public class SalaryEntry extends BaseDBObject {
                 .append("uid", new ObjectId(uid)).append("unm", unm)
                 .append("y", y).append("m", m).append("n", n)
                 .append("money", list).append("na", timesName).append("ym", Integer.parseInt(Constant.EMPTY + y + (m < 10 ? "0" + m : m)))
-                .append("ss", ss).append("ms", ms).append("as", as).append("dl", 0).append("tm", DateTimeUtils.getCurrDate()).append("rmk",remark);
+                .append("ss", ss).append("ms", ms).append("as", as).append("dl", 0).append("tm", DateTimeUtils.getCurrDate());
 
         setBaseEntry(baseEntry);
     }
@@ -121,10 +120,6 @@ public class SalaryEntry extends BaseDBObject {
 
     public String getUserName() {
         return getSimpleStringValue("unm");
-    }
-
-    public String getRemark() {
-        return getSimpleStringValue("rmk");
     }
 
     public int getYear() {

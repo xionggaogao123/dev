@@ -11,6 +11,7 @@ import org.bson.types.ObjectId;
  * de：denomination 面额（分）
  * et:expiration time 过期时间 Long
  * st:state 状态 0未使用  1已使用  2已过期  3未发放  4已发放  5已删除
+ * ac:activity 0:默认 1：活动优惠券
  */
 public class EVoucherEntry extends BaseDBObject{
 

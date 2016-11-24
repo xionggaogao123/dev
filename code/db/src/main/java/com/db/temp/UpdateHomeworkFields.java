@@ -16,20 +16,20 @@ import java.util.Map;
  * Created by fl on 2015/9/22.
  */
 public class UpdateHomeworkFields {
-    public static void main(String[] args){
+    public static void main(String[] args) {
         //查找所有作业
         HomeWorkDao homeWorkDao = new HomeWorkDao();
         LessonDao lessonDao = new LessonDao();
         ExerciseItemDao exerciseItemDao = new ExerciseItemDao();
         List<HomeWorkEntry> homeWorkEntryList = homeWorkDao.findAllHomeworkEntry();
-        if(homeWorkEntryList!=null && homeWorkEntryList.size()>0){
+        if (homeWorkEntryList != null && homeWorkEntryList.size() > 0) {
             long size = homeWorkEntryList.size();
             long i = 0;
-            for(HomeWorkEntry homeWorkEntry : homeWorkEntryList){
+            for (HomeWorkEntry homeWorkEntry : homeWorkEntryList) {
                 i++;
-                System.out.println("==============================" + i +"/" + size);
+                System.out.println("==============================" + i + "/" + size);
                 System.out.print("homeworkId=" + homeWorkEntry.getID().toString());
-                LessonEntry lessonEntry = lessonDao.getLessonEntry(homeWorkEntry.getLessonId(), Constant.ZERO,Constant.FIVE);
+                LessonEntry lessonEntry = lessonDao.getLessonEntry(homeWorkEntry.getLessonId(), Constant.ZERO, Constant.FIVE);
                 homeWorkEntry.setVideoNum(lessonEntry.getVideoIds().size());
                 homeWorkEntry.setFileNum(lessonEntry.getDocumentCount());
                 homeWorkEntry.setVoiceNum(homeWorkEntry.getVoiceFile().size());
@@ -38,8 +38,8 @@ public class UpdateHomeworkFields {
                 ObjectId exerciseId = lessonEntry.getExercise();
                 exercises.add(exerciseId);
                 Map<ObjectId, Integer> map = exerciseItemDao.statItemCount(exercises);
-                Integer exerciseNum = exerciseId==null? new Integer(0) : map.get(exerciseId);
-                if(exerciseNum == null){
+                Integer exerciseNum = exerciseId == null ? new Integer(0) : map.get(exerciseId);
+                if (exerciseNum == null) {
                     homeWorkEntry.setExerciseNum(0);
                 } else {
                     homeWorkEntry.setExerciseNum(exerciseNum);

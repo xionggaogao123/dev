@@ -21,9 +21,6 @@ import com.pojo.utils.MongoUtils;
  *       [
  *       
  *       ]
- *       uis:学科组长
- *       [
- *       ]
  * }
  * </pre>
  * @author fourer
@@ -46,12 +43,10 @@ public class Subject extends BaseDBObject {
 		super();
 		BasicDBList list =new BasicDBList();
 		list.add(gradeId);
-		BasicDBList list2 =new BasicDBList();
 		BasicDBObject dbo =new BasicDBObject()
 		.append("si", new ObjectId())
 		.append("nm", name)
-		.append("gis", list)
-		.append("uis", list2);
+		.append("gis", list);
 		setBaseEntry(dbo);
 	}
 	public ObjectId getSubjectId() {
@@ -90,21 +85,6 @@ public class Subject extends BaseDBObject {
 	public void setSubjectType(int gradeType) {
 		setSimpleValue("ty", gradeType);
 	}
-	public List<ObjectId> getUserIds() {
-		List<ObjectId> retList =new ArrayList<ObjectId>();
-		BasicDBList list =(BasicDBList)getSimpleObjectValue("uis");
-		if(null!=list && !list.isEmpty())
-		{
-			for(Object o:list)
-			{
-				retList.add((ObjectId)o);
-			}
-		}
-		return retList;
-	}
-	public void setUserIds(List<ObjectId> userIds) {
-		setSimpleValue("uis", MongoUtils.convert(userIds));
-	}
-
-
+	
+	
 }

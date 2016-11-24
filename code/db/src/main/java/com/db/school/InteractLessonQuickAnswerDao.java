@@ -18,16 +18,18 @@ public class InteractLessonQuickAnswerDao extends BaseDao {
 
     /**
      * 增加
+     *
      * @param e
      * @return
      */
     public ObjectId addInteractLessonQuickAnswerEntry(InteractLessonQuickAnswerEntry e) {
-        save(MongoFacroty.getAppDB(), Constant.COLLECTION_INTERACTLESSON_QUICK_ANSWER,e.getBaseEntry());
+        save(MongoFacroty.getAppDB(), Constant.COLLECTION_INTERACTLESSON_QUICK_ANSWER, e.getBaseEntry());
         return e.getID();
     }
 
     /**
      * 查询
+     *
      * @param lessonId
      * @param type
      * @param times
@@ -39,16 +41,16 @@ public class InteractLessonQuickAnswerDao extends BaseDao {
         List<InteractLessonQuickAnswerEntry> retList = new ArrayList<InteractLessonQuickAnswerEntry>();
         BasicDBObject dbo = new BasicDBObject();
         dbo.append("lid", lessonId);
-        if(type!=0){
+        if (type != 0) {
             dbo.append("ty", type);
         }
-        if(times!=0){
+        if (times != 0) {
             dbo.append("ts", times);
         }
-        BasicDBObject sortDBO =new BasicDBObject();
-        if(orderBy!=null&&!"".equals(orderBy)){
+        BasicDBObject sortDBO = new BasicDBObject();
+        if (orderBy != null && !"".equals(orderBy)) {
             sortDBO.append(orderBy, -1);
-        }else{
+        } else {
             sortDBO.append(Constant.ID, 1);
         }
         List<DBObject> list = find(MongoFacroty.getAppDB(), Constant.COLLECTION_INTERACTLESSON_QUICK_ANSWER, dbo, fields, sortDBO);

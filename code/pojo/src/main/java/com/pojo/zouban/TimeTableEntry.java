@@ -17,10 +17,10 @@ import java.util.List;
  * gid:年级id-------------->gradeId
  * cid:班级id-------------->classId
  * cli:选择的课程----------->courseList[]
- * ty:类型----------------->type 参照TimetableState
+ * ty:类型----------------->type 0发布版、1调课完成版、2调课中、3排课中
  * //以下为新加的
  * lock:是否锁定------------>lock 0未锁定，1已经锁定  解释：用来标记走班课是否已经排完，锁定状态下才可以编排非走班，如解锁则删除所有非走班课
- * week:有效周-------------->week 学期周 0原始状态，排课是在原始课表上操作，发布以后会生成每周课表
+ * week:有效周-------------->week 学期周 0原始状态
  * }
  * Created by qiangm on 2015/9/15.
  */
@@ -37,7 +37,7 @@ public class TimeTableEntry extends BaseDBObject {
                 .append("gid", null)
                 .append("cid", null)
                 .append("cli", new BasicDBList())
-                .append("ty", 1)
+                .append("ty", 0)
                 .append("lock", 0)
                 .append("week", 1);
         setBaseEntry(basicDBObject);

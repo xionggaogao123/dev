@@ -13,6 +13,7 @@ import org.bson.types.ObjectId;
  *     uid : userId 发帖人id
  *     psid : postSectionId 帖子/版块id
  *     tp : type 类型 0：帖子 1：版块
+ *     ti : time 收藏时间
  * }
  *
  */
@@ -22,11 +23,12 @@ public class FCollectionEntry extends BaseDBObject{
         super();
     }
 
-    public FCollectionEntry(ObjectId userId,ObjectId postSectionId,int type){
+    public FCollectionEntry(ObjectId userId,ObjectId postSectionId,int type,long time){
         BasicDBObject baseEntry = new BasicDBObject()
                 .append("uid",userId)
                 .append("psid",postSectionId)
-                .append("tp",type);
+                .append("tp",type)
+                .append("ti",time);
         setBaseEntry(baseEntry);
     }
 
@@ -57,6 +59,14 @@ public class FCollectionEntry extends BaseDBObject{
 
     public void setType(int type){
         setSimpleValue("tp",type);
+    }
+
+    public Long getTime(){
+        return getSimpleLongValue("ti");
+    }
+
+    public void setTime(Long time){
+        setSimpleValue("ti", time);
     }
 
 }

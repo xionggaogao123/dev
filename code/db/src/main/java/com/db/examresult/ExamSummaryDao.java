@@ -13,23 +13,23 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
-* Created by fl on 2015/10/27.
-*/
+ * Created by fl on 2015/10/27.
+ */
 public class ExamSummaryDao extends BaseDao {
-    public List<ExamSummaryEntry> findExamSummaryList(ObjectId jointExamId){
+    public List<ExamSummaryEntry> findExamSummaryList(ObjectId jointExamId) {
         DBObject query = new BasicDBObject("aid", jointExamId);
         List<DBObject> dbList = find(MongoFacroty.getAppDB(), Constant.COLLECTION_EXAMSUMMARY, query, Constant.FIELDS);
-        if(dbList!=null){
+        if (dbList != null) {
             List<ExamSummaryEntry> list = new ArrayList<ExamSummaryEntry>();
-            for(DBObject dbo : dbList){
-                list.add(new ExamSummaryEntry((BasicDBObject)dbo));
+            for (DBObject dbo : dbList) {
+                list.add(new ExamSummaryEntry((BasicDBObject) dbo));
             }
             return list;
         }
         return null;
     }
 
-    public void update(ExamSummaryEntry examSummaryEntry){
+    public void update(ExamSummaryEntry examSummaryEntry) {
         DBObject query = new BasicDBObject(Constant.ID, examSummaryEntry.getID());
         BasicDBObject updateValue = new BasicDBObject(Constant.MONGO_SET, examSummaryEntry.getBaseEntry());
         update(MongoFacroty.getAppDB(), Constant.COLLECTION_EXAMSUMMARY, query, updateValue);

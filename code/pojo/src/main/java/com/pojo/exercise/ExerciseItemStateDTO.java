@@ -134,8 +134,6 @@ public class ExerciseItemStateDTO extends ExerciseMixItemInfoDTO {
 	private Map<String, Integer>  answerMap =new HashMap<String, Integer>();
 	//用户答案
 	private Map<String, UserItemAnswerDTO>  userMap =new HashMap<String, UserItemAnswerDTO>();
-	//未提交用户
-	private List<UserItemAnswerDTO> unCommitted = new ArrayList<UserItemAnswerDTO>();
 
 
 	public int getAnswerCount() {
@@ -249,6 +247,9 @@ public class ExerciseItemStateDTO extends ExerciseMixItemInfoDTO {
 		return rightUserItemAnswerDTOs;
 	}
 
+	public void setRightUserAnswerList(List<UserItemAnswerDTO> rightUserAnswerList){
+
+	}
 
 	public List<UserItemAnswerDTO> getWrongUserAnswerList(){
 		List<UserItemAnswerDTO> userItemAnswerDTOs = getUserAnswerList();
@@ -261,14 +262,9 @@ public class ExerciseItemStateDTO extends ExerciseMixItemInfoDTO {
 		return rightUserItemAnswerDTOs;
 	}
 
-	public List<UserItemAnswerDTO> getUnCommitted() {
-		return unCommitted;
-	}
+	public void setWrongUserAnswerList(List<UserItemAnswerDTO> wrongUserAnswerList){
 
-	public void setUnCommitted(List<UserItemAnswerDTO> unCommitted) {
-		this.unCommitted = unCommitted;
 	}
-
 	/**
 	 * 得分率
 	 * @return

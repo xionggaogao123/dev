@@ -1,15 +1,10 @@
 package com.pojo.funcitonclassroom;
 
-import com.mongodb.BasicDBList;
-import com.pojo.utils.MongoUtils;
 import org.bson.types.ObjectId;
 
 import com.mongodb.BasicDBObject;
 import com.pojo.base.BaseDBObject;
 import com.sys.constants.Constant;
-
-import java.util.ArrayList;
-import java.util.List;
 
 /** 
  * @author chengwei@ycode.cn
@@ -38,16 +33,17 @@ public class ClassRoomEntry extends BaseDBObject{
 	}
 	
 	public ClassRoomEntry(ObjectId schoolId, int number, String classRoomName, 
-			List<ObjectId> userIds){
+			ObjectId administratorId, String administratorName){
 		super();
 		
 		BasicDBObject baseEntry = new BasicDBObject()
 		.append("num", number)
 		.append("ct", System.currentTimeMillis())
 		.append("cn", classRoomName)
+		.append("an", administratorName)
 		.append("ir", Constant.ZERO)
 		.append("sid", schoolId)
-		.append("aids", MongoUtils.convert(userIds));
+		.append("aid", administratorId);
 		
 		setBaseEntry(baseEntry);
 	}
@@ -76,38 +72,22 @@ public class ClassRoomEntry extends BaseDBObject{
 	public void setClassRoomName(String classRoomName){
 		setSimpleValue("cn", classRoomName);
 	}
-
-	public List<ObjectId> getUserIds() {
-		List<ObjectId> retList =new ArrayList<ObjectId>();
-		BasicDBList list =(BasicDBList)getSimpleObjectValue("aids");
-		if(null!=list && !list.isEmpty())
-		{
-			for(Object o:list)
-			{
-				retList.add((ObjectId)o);
-			}
-		}
-		return retList;
-	}
-	public void setUserIds(List<ObjectId> userIds) {
-		setSimpleValue("aids", MongoUtils.convert(userIds));
+	
+	public ObjectId getAdministratorId(){
+		return getSimpleObjecIDValue("aid");
 	}
 	
-//	public ObjectId getAdministratorId(){
-//		return getSimpleObjecIDValue("aid");
-//	}
-//
-//	public void setAdministratorId(ObjectId administratorId){
-//		setSimpleValue("aid", administratorId);
-//	}
-//
-//	public String getAdministratorName(){
-//		return getSimpleStringValue("an");
-//	}
-//
-//	public void setAdministratorName(String administratorName){
-//		setSimpleValue("an", administratorName);
-//	}
+	public void setAdministratorId(ObjectId administratorId){
+		setSimpleValue("aid", administratorId);
+	}
+	
+	public String getAdministratorName(){
+		return getSimpleStringValue("an");
+	}
+	
+	public void setAdministratorName(String administratorName){
+		setSimpleValue("an", administratorName);
+	}
 
 }
 

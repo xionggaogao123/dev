@@ -14,39 +14,34 @@ import com.pojo.school.TeacherClassSubjectEntry;
 
 public class TeachSubjectUpdate {
 
-	public static void main(String[] args) {
-		ClassDao classDao =new ClassDao();
-		InterestClassDao interestClassDao=new InterestClassDao();
-		TeacherClassSubjectDao teacherClassSubjectDao =new TeacherClassSubjectDao();
-		
-		int skip=0;
-		int limit=200;
-		
-		while(true)
-		{
-			 System.out.println("skip="+skip);
-			 List<TeacherClassSubjectEntry> schoolList=teacherClassSubjectDao.getClassSubjectEntry(skip, limit);
-			
-			 if(null==schoolList || schoolList.isEmpty())
-			 {
-				  break;
-			 }
-			 for(TeacherClassSubjectEntry se:schoolList)
-			 {
-				 ObjectId clasid=se.getClassInfo().getId();
-				 ClassEntry ce= classDao.getClassEntryById(clasid, new BasicDBObject("_id",1));
-				 
-				 if(null==ce)
-				 {
-					 InterestClassEntry inc= interestClassDao.findEntryByClassId(clasid);
-					 if(null==inc)
-					 {
-						 teacherClassSubjectDao.removeByClassId(clasid);
-					 }
-				 }
-				
-			 }
-			 skip=skip+200;
-		}
-	}
+    public static void main(String[] args) {
+        ClassDao classDao = new ClassDao();
+        InterestClassDao interestClassDao = new InterestClassDao();
+        TeacherClassSubjectDao teacherClassSubjectDao = new TeacherClassSubjectDao();
+
+        int skip = 0;
+        int limit = 200;
+
+        while (true) {
+            System.out.println("skip=" + skip);
+            List<TeacherClassSubjectEntry> schoolList = teacherClassSubjectDao.getClassSubjectEntry(skip, limit);
+
+            if (null == schoolList || schoolList.isEmpty()) {
+                break;
+            }
+            for (TeacherClassSubjectEntry se : schoolList) {
+                ObjectId clasid = se.getClassInfo().getId();
+                ClassEntry ce = classDao.getClassEntryById(clasid, new BasicDBObject("_id", 1));
+
+                if (null == ce) {
+                    InterestClassEntry inc = interestClassDao.findEntryByClassId(clasid);
+                    if (null == inc) {
+                        teacherClassSubjectDao.removeByClassId(clasid);
+                    }
+                }
+
+            }
+            skip = skip + 200;
+        }
+    }
 }

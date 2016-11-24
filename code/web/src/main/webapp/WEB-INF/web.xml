@@ -1,41 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<web-app xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://java.sun.com/xml/ns/javaee" xmlns:jsp="http://java.sun.com/xml/ns/javaee/jsp" xsi:schemaLocation="http://java.sun.com/xml/ns/javaee http://java.sun.com/xml/ns/javaee/web-app_3_0.xsd" version="3.0">
-   
-    
-  <filter>
-    <filter-name>filterchainproxy</filter-name>
-    <filter-class>dsidealsso.FilterChainProxy</filter-class>
-    <init-param>
-      <param-name>casServerLoginUrl</param-name>
-      <param-value>http://221.214.55.21:6603/dsssoserver/login</param-value>
-    </init-param>
-    <init-param>
-      <param-name>serverName</param-name>
-      <param-value>http://60.216.14.5:8081</param-value>
-    </init-param>
-    <init-param>
-      <param-name>casServerUrlPrefix</param-name>
-      <param-value>http://221.214.55.21:6603/dsssoserver</param-value>
-    </init-param>
-    <init-param>
-      <param-name>encoding</param-name>
-      <param-value>utf-8</param-value>
-    </init-param>
-    
-    <init-param>
-      <param-name>dofilter</param-name>
-      <param-value>/index.jsp**;/login.do**;/getLoginInfo.jsp**;/yhuser/sso/login.do**;</param-value>
-    </init-param>
-  </filter>
-  
-  <filter-mapping>
-    <filter-name>filterchainproxy</filter-name>
-    <url-pattern>/yhuser/sso/login.do</url-pattern>
-  </filter-mapping>
-  
-  
-  
- 
+<web-app xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xmlns="http://java.sun.com/xml/ns/javaee"
+         xsi:schemaLocation="http://java.sun.com/xml/ns/javaee http://java.sun.com/xml/ns/javaee/web-app_3_0.xsd"
+         version="3.0">
+
     <filter>
         <filter-name>encodingFilter</filter-name>
         <filter-class>
@@ -50,13 +18,12 @@
             <param-value>true</param-value>
         </init-param>
         <async-supported>true</async-supported>
-
     </filter>
     <filter-mapping>
         <filter-name>encodingFilter</filter-name>
         <url-pattern>/*</url-pattern>
     </filter-mapping>
-
+    <!-- 地址重写-->
     <filter>
         <filter-name>UrlRewriteFilter</filter-name>
         <filter-class>org.tuckey.web.filters.urlrewrite.UrlRewriteFilter</filter-class>
@@ -68,18 +35,26 @@
         <dispatcher>REQUEST</dispatcher>
         <dispatcher>FORWARD</dispatcher>
     </filter-mapping>
-
-
     <filter>
         <filter-name>rewriter</filter-name>
         <filter-class>com.fulaan.filter.ReWriteFilter</filter-class>
         <async-supported>true</async-supported>
-
     </filter>
     <filter-mapping>
         <filter-name>rewriter</filter-name>
         <url-pattern>*.do</url-pattern>
     </filter-mapping>
+
+    <!--<filter>-->
+        <!--<filter-name>multipartFilter</filter-name>-->
+        <!--<filter-class>org.springframework.web.multipart.support.MultipartFilter</filter-class>-->
+    <!--</filter>-->
+    <!--<filter-mapping>-->
+        <!--<filter-name>multipartFilter</filter-name>-->
+        <!--<url-pattern>/*</url-pattern>-->
+    <!--</filter-mapping>-->
+
+
     <servlet>
         <servlet-name>spring</servlet-name>
         <servlet-class>org.springframework.web.servlet.DispatcherServlet</servlet-class>
@@ -95,40 +70,38 @@
         <servlet-name>spring</servlet-name>
         <url-pattern>*.do</url-pattern>
     </servlet-mapping>
-	<welcome-file-list>
-		<welcome-file>index.html</welcome-file>
-	</welcome-file-list>
-	<listener>    
-        <listener-class>    
-            org.springframework.web.context.request.RequestContextListener    
-        </listener-class>
-  </listener>
+    <welcome-file-list>
+        <welcome-file>index.html</welcome-file>
+    </welcome-file-list>
     <listener>
-        <listener-class>com.fulaan.listener.KeyWordFilterListener</listener-class>
+        <listener-class>
+            org.springframework.web.context.request.RequestContextListener
+        </listener-class>
     </listener>
-  <jsp-config>
-    <taglib>
-      <taglib-uri>http://java.sun.com/jstl/core</taglib-uri>
-      <taglib-location>/WEB-INF/tld/c.tld</taglib-location>
-    </taglib>
-    <taglib>
-      <taglib-uri>http://fulaan.userRole.com</taglib-uri>
-      <taglib-location>/WEB-INF/userTag.tld</taglib-location>
-    </taglib>
-  </jsp-config>
-  <welcome-file-list>
-    <welcome-file>index.jsp</welcome-file>
-  </welcome-file-list>
-  <mime-mapping>
-    <extension>htm</extension>
-    <mime-type>text/html;charset=utf-8</mime-type>
-  </mime-mapping>
-  <mime-mapping>
-    <extension>html</extension>
-    <mime-type>text/html;charset=utf-8</mime-type>
-  </mime-mapping>
-  <error-page>
-    <error-code>404</error-code>
-    <location>/WEB-INF/error404.html</location>
-  </error-page>
+    <jsp-config>
+        <taglib>
+            <taglib-uri>http://java.sun.com/jstl/core</taglib-uri>
+            <taglib-location>/WEB-INF/tld/c.tld</taglib-location>
+        </taglib>
+        <taglib>
+            <taglib-uri>http://fulaan.userRole.com</taglib-uri>
+            <taglib-location>/WEB-INF/userTag.tld</taglib-location>
+        </taglib>
+    </jsp-config>
+    <welcome-file-list>
+        <welcome-file>/entrance.do</welcome-file>
+    </welcome-file-list>
+    <mime-mapping>
+        <extension>htm</extension>
+        <mime-type>text/html;charset=utf-8</mime-type>
+    </mime-mapping>
+    <mime-mapping>
+        <extension>html</extension>
+        <mime-type>text/html;charset=utf-8</mime-type>
+    </mime-mapping>
+    <error-page>
+        <error-code>404</error-code>
+        <location>/404.html</location>
+    </error-page>
 </web-app>
+

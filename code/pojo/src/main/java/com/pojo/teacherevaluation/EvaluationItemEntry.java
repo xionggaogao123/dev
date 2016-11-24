@@ -2,7 +2,6 @@ package com.pojo.teacherevaluation;
 
 import com.mongodb.BasicDBList;
 import com.mongodb.BasicDBObject;
-import com.pojo.app.IdNameValuePair;
 import com.pojo.app.IdValuePair;
 import com.pojo.base.BaseDBObject;
 import com.pojo.utils.MongoUtils;
@@ -14,13 +13,16 @@ import java.util.List;
 /**
  * Created by fl on 2016/4/19.
  * 考核详情  te_item
- * evid  评价id  对应MemberGroupEntry _id  2016.7.29新增
+ * si 学校id
+ * y  年度 例如2015-2016年度  保存为2015-2016
  * tid 被考核老师id
  * stat 个人陈述
  * evi  实证材料
+ * lhs  量化成绩
  * hps  互评成绩
  * lds  考核小组领导成绩
  * gps  考核小组成员成绩
+ * flh  最终量化成绩 即 量化成绩平均分
  * fhp  最终互评成绩 即 互评成绩平均分
  * fld  最终领导成绩 即 领导成绩平均分
  * fgp  最终成员成绩 即 成员成绩平均分
@@ -32,26 +34,29 @@ public class EvaluationItemEntry extends BaseDBObject {
 
     public EvaluationItemEntry(){}
 
-    public EvaluationItemEntry(ObjectId evaluationId, ObjectId teacherId){
-        this(evaluationId, teacherId, "", "", new ArrayList<ElementScore>(), new ArrayList<ElementScore>(), new ArrayList<ElementScore>(),
-                0, 0, 0, 0);
+    public EvaluationItemEntry(ObjectId schoolId, String year, ObjectId teacherId){
+        this(schoolId, year, teacherId, "", "", new ArrayList<ElementScore>(), new ArrayList<ElementScore>(), new ArrayList<ElementScore>(), new ArrayList<ElementScore>(),
+                0, 0, 0, 0, 0);
     }
 
     public EvaluationItemEntry(BasicDBObject baseEntry){
         setBaseEntry(baseEntry);
     }
 
-    public EvaluationItemEntry(ObjectId evaluationId, ObjectId teacherId, String statement, String evidence,
-                               List<ElementScore> huPingScore, List<ElementScore> leaderScore, List<ElementScore> groupScore,
-                               double finalHuPingScore, double finalLeaderScore, double finalGroupScore, double finalScore){
+    public EvaluationItemEntry(ObjectId schoolId, String year, ObjectId teacherId, String statement, String evidence,
+                               List<ElementScore> liangHuaScore, List<ElementScore> huPingScore, List<ElementScore> leaderScore, List<ElementScore> groupScore,
+                               double finalLiangHuaScore, double finalHuPingScore, double finalLeaderScore, double finalGroupScore, double finalScore){
         BasicDBObject baseEntry = new BasicDBObject()
-                .append("evid", evaluationId)
+                .append("si", schoolId)
+                .append("y", year)
                 .append("tid", teacherId)
                 .append("stat", statement)
                 .append("evi", evidence)
+                .append("lhs", MongoUtils.convert(MongoUtils.fetchDBObjectList(liangHuaScore)))
                 .append("hps", MongoUtils.convert(MongoUtils.fetchDBObjectList(huPingScore)))
                 .append("lds", MongoUtils.convert(MongoUtils.fetchDBObjectList(leaderScore)))
                 .append("gps", MongoUtils.convert(MongoUtils.fetchDBObjectList(groupScore)))
+                .append("flh", finalLiangHuaScore)
                 .append("fhp", finalHuPingScore)
                 .append("fld", finalLeaderScore)
                 .append("fgp", finalGroupScore)
@@ -63,12 +68,20 @@ public class EvaluationItemEntry extends BaseDBObject {
 
     }
 
-    public ObjectId getEvaluationId(){
-        return getSimpleObjecIDValue("evid");
+    public ObjectId getSchoolId(){
+        return getSimpleObjecIDValue("si");
     }
 
-    public void setEvaluationId(ObjectId evaluationId){
-        setSimpleValue("evid", evaluationId);
+    public void setSchoolId(ObjectId schoolId){
+        setSimpleValue("si", schoolId);
+    }
+
+    public String getYear(){
+        return getSimpleStringValue("y");
+    }
+
+    public void setYear(String year){
+        setSimpleValue("y", year);
     }
 
     public ObjectId getTeacherId(){
@@ -93,6 +106,14 @@ public class EvaluationItemEntry extends BaseDBObject {
 
     public void setEvidence(String evidence){
         setSimpleValue("evi", evidence);
+    }
+
+    public double getFinalLiangHuaScore(){
+        return getSimpleDoubleValue("flh");
+    }
+
+    public void setFinalLiangHuaScore(double finalLiangHuaScore){
+        setSimpleValue("flh", finalLiangHuaScore);
     }
 
     public double getFinalHuPingScore(){
@@ -188,6 +209,21 @@ public class EvaluationItemEntry extends BaseDBObject {
         setSimpleValue("lds", MongoUtils.convert(MongoUtils.fetchDBObjectList(leaderScore)));
     }
 
+    public List<ElementScore> getLiangHuaScore(){
+        List<ElementScore> retList = new ArrayList<ElementScore>();
+        BasicDBList list = (BasicDBList)getSimpleObjectValue("lhs");
+        if(null != list && !list.isEmpty()){
+            for(Object o : list){
+                retList.add(new ElementScore((BasicDBObject)o));
+            }
+        }
+        return retList;
+    }
+
+    public void setLiangHuaScore(List<ElementScore> liangHuaScore){
+        setSimpleValue("lhs", MongoUtils.convert(MongoUtils.fetchDBObjectList(liangHuaScore)));
+    }
+
 
 
 
@@ -196,10 +232,8 @@ public class EvaluationItemEntry extends BaseDBObject {
     /**
      * 考核元素打分详情
      * id  打分老师id
-     * tj  是否提交 1提交  0未提交（保存状态，不计入最后总分计算） 缺省为1  20160919新增
      * scs 考核元素打分列表
-     * [id: 考核元素id, v:分数] 20160919废弃
-     * [id: 考核元素id, nm:等级名称，v:分数] 20160919新增 nm等级模式下使用， v打分模式下使用
+     * [id: 考核元素id, v:分数]
      */
     public static class ElementScore extends BaseDBObject{
         public ElementScore(){}
@@ -208,10 +242,9 @@ public class EvaluationItemEntry extends BaseDBObject {
             setBaseEntry(baseEntry);
         }
 
-        public ElementScore(ObjectId id, int tijiao, List<IdNameValuePair> scores){
+        public ElementScore(ObjectId id, List<IdValuePair> scores){
             BasicDBObject baseEntry = new BasicDBObject()
                     .append("id", id)
-                    .append("tj", tijiao)
                     .append("scs", MongoUtils.convert(MongoUtils.fetchDBObjectList(scores)));
             setBaseEntry(baseEntry);
         }
@@ -224,36 +257,19 @@ public class EvaluationItemEntry extends BaseDBObject {
             setSimpleValue("id", evaluateTeacherId);
         }
 
-        public int getTijiao(){
-            return getSimpleIntegerValueDef("tj", 1);
-        }
-
-        public void setTijiao(int tijiao){
-            setSimpleValue("tj", tijiao);
-        }
-
-        public List<IdNameValuePair> getElementScores(){
-            List<IdNameValuePair> retList = new ArrayList<IdNameValuePair>();
+        public List<IdValuePair> getElementScores(){
+            List<IdValuePair> retList = new ArrayList<IdValuePair>();
             BasicDBList list = (BasicDBList)getSimpleObjectValue("scs");
             if(null != list && !list.isEmpty()){
                 for(Object o : list){
-                    retList.add(new IdNameValuePair((BasicDBObject)o));
+                    retList.add(new IdValuePair((BasicDBObject)o));
                 }
             }
             return retList;
         }
 
-        public void setElementScores(List<IdNameValuePair> elementScores){
+        public void setElementScores(List<IdValuePair> elementScores){
             setSimpleValue("scs", MongoUtils.convert(MongoUtils.fetchDBObjectList(elementScores)));
-        }
-
-        public Double getTotalScore(){
-            double totalScore = 0;
-            List<IdNameValuePair> elementScores = getElementScores();
-            for(IdNameValuePair elementScore : elementScores){
-                totalScore += (Double)elementScore.getValue();
-            }
-            return totalScore;
         }
     }
 }

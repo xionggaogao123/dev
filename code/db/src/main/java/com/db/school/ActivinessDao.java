@@ -40,6 +40,7 @@ public class ActivinessDao extends BaseDao {
 
     /**
      * 查询学生活跃度
+     *
      * @param lessonId
      * @param studentId
      * @param type
@@ -60,6 +61,7 @@ public class ActivinessDao extends BaseDao {
 
     /**
      * 查询学生活跃度
+     *
      * @param lessonId
      * @param studentId
      * @param type
@@ -93,12 +95,13 @@ public class ActivinessDao extends BaseDao {
 
     /**
      * 修改学生活跃度
+     *
      * @param e
      * @return
      */
     public void updActivinessEntry(ActivinessEntry e) {
-        BasicDBObject query =new BasicDBObject(Constant.ID,e.getID());
-        BasicDBObject update=new BasicDBObject(Constant.MONGO_SET, new BasicDBObject(e.getBaseEntry()));
+        BasicDBObject query = new BasicDBObject(Constant.ID, e.getID());
+        BasicDBObject update = new BasicDBObject(Constant.MONGO_SET, new BasicDBObject(e.getBaseEntry()));
         update(MongoFacroty.getAppDB(), Constant.COLLECTION_ACTIVINESS, query, update);
     }
 }

@@ -23,7 +23,8 @@ public enum LogType {
     CLICK_BUY(19),
     CLICK_PAY(20),
     VISIT_COURSE_VIDEO_TRIAL_END(21),
-    VIEW_CLOUD_VIDEO(22), ;
+    VIEW_CLOUD_VIDEO(22),
+    VIEW_SECTION_BEGIN(23), ;
 
 	private int code;
 

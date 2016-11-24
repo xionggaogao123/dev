@@ -1,0 +1,49 @@
+.bg {
+    z-index: 999
+}
+
+.lunt-index-hide {
+    display: none;
+}
+
+.edui-default .edui-editor {
+    margin: 10px auto;
+}
+
+.view {
+    height: 90% !important;
+}
+
+#edui86_state {
+    display: none !important;
+}
+
+.header-cont .ha4 {
+    background: #E8E8E8;
+    color: #3764a0;
+}
+
+#videoUrl {
+    width: 100px;
+}
+
+.good {
+}
+
+.deleteBox {
+}
+
+.deleteLOL {
+
+}
+
+.pdfobject-container {
+    height: 800px;
+}
+
+.pdfobject {
+    border: 1px solid #666;
+}
+
+.pdf {
+}

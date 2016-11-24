@@ -4,10 +4,8 @@ import com.mongodb.BasicDBList;
 import com.mongodb.BasicDBObject;
 import com.mongodb.DBObject;
 import com.pojo.base.BaseDBObject;
-import com.pojo.user.UserEntry.Binds;
 import com.pojo.utils.MongoUtils;
 import com.sys.constants.Constant;
-
 import org.bson.types.ObjectId;
 
 import java.util.ArrayList;
@@ -60,9 +58,6 @@ import java.util.List;
  *       [
  *        
  *       ]
- *       uis:学科组长
- *       [
- *       ]
  *     }
      ]
      nv:自定义导航 0默认 
@@ -73,18 +68,6 @@ import java.util.List;
      ]
      
      bindId:绑定ID 与ahedu.com学校绑定ID
-     yhbd:有鸿学校绑定
-     
-     
-     binds:绑定；参见UserEntry.UserBind
- *   {
- *    ty: 1安徽省平台绑定  2 有红用户绑定 3 高新一中用户
-	  bv:
- *   }
-     
-     
-     mods:该学校所拥有的板块名称
-     isf:是否需要火热活动推荐;页面是否有活动 banner;0有  1没有
  * }
  * </pre>
  * @author fourer
@@ -318,13 +301,6 @@ public class SchoolEntry extends BaseDBObject {
 	
 	
 	
-	public String getYhBindId() {
-		return getSimpleStringValue("yhbd");
-	}
-	public void setYhBindId(String bindId) {
-		setSimpleValue("yhbd", bindId);
-	}
-	
 
 	public List<ObjectId> getSchoolIds() {
 		List<ObjectId> retList =new ArrayList<ObjectId>();
@@ -341,36 +317,5 @@ public class SchoolEntry extends BaseDBObject {
 
 	public void setSchoolIds(List<ObjectId> schoolIds) {
 		setSimpleValue("sis",  MongoUtils.convert(schoolIds));
-	}
-	
-	public String getModuleStr() {
-		return getSimpleStringValue("mods");
-	}
-
-	public void setModuleStr(String moduleStr) {
-		setSimpleValue("mods", moduleStr);
-	}
-
-	public int getIsFieryactivity() {
-		return getSimpleIntegerValueDef("isf", 0);
-	}
-	
-	public void setIsFieryactivity(int isFieryactivity) {
-		setSimpleValue("isf", isFieryactivity);
-	}
-	
-	
-	public Binds getUserBind() {
-		BasicDBObject dbo=(BasicDBObject)getSimpleObjectValue("binds");
-		
-		if(null!=dbo)
-		{
-			return new Binds(dbo);
-		}
-		return null;
-	}
-
-	public void setUserBind(Binds userBind) {
-		setSimpleValue("binds", userBind.getBaseEntry());
 	}
 }

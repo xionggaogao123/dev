@@ -19,12 +19,12 @@ import com.sys.constants.Constant;
 
 public class ResourcefindNoVideo {
 
-	public static void main(String[] args) throws IOException {
-		
-		
-		List<DBObject> list =       MongoFacroty.getAppDB().getCollection(Constant.COLLECTION_RESOURCES).find(new BasicDBObject("_id",new BasicDBObject(Constant.MONGO_GTE,new ObjectId("573ea26363e702f38081546e")))).toArray();
-		MongoFacroty.getAppDB().getCollection("res1").insert(list);
-		
+    public static void main(String[] args) throws IOException {
+
+
+        List<DBObject> list = MongoFacroty.getAppDB().getCollection(Constant.COLLECTION_RESOURCES).find(new BasicDBObject("_id", new BasicDBObject(Constant.MONGO_GTE, new ObjectId("573ea26363e702f38081546e")))).toArray();
+        MongoFacroty.getAppDB().getCollection("res1").insert(list);
+
 //		ResourceDao resourceDao =new ResourceDao();
 //		ResourceDictionaryDao resourceDictionaryDao=new ResourceDictionaryDao();
 //		List<ResourceEntry> list=resourceDao.getResourceEntry();
@@ -56,7 +56,7 @@ public class ResourcefindNoVideo {
 //			 {
 //			 }
 //		 }
-		
-		
-	}
+
+
+    }
 }

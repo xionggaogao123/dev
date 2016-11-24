@@ -7,7 +7,7 @@ import org.bson.types.ObjectId;
 /**
  * Created by qiangm on 2015/11/5.
  * sid -----------------》schoolId
- * year------------------>学年
+ * yaer------------------>学年
  * fts------------------>firstTermStart
  * fte------------------->firstTermEnd
  * sts-------------------->secondTermStart

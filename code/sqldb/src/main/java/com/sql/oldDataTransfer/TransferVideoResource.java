@@ -1,5 +1,15 @@
 package com.sql.oldDataTransfer;
 
+import java.io.File;
+import java.io.FileInputStream;
+import java.util.ArrayList;
+import java.util.List;
+
+import org.apache.commons.io.FileUtils;
+import org.apache.commons.io.FilenameUtils;
+import org.apache.commons.lang.StringUtils;
+import org.bson.types.ObjectId;
+
 import com.db.resources.ResourceDao;
 import com.db.resources.ResourceDictionaryDao;
 import com.db.video.VideoDao;
@@ -9,15 +19,6 @@ import com.pojo.resources.ResourceEntry;
 import com.pojo.video.VideoEntry;
 import com.pojo.video.VideoSourceType;
 import com.sys.constants.Constant;
-import org.apache.commons.io.FileUtils;
-import org.apache.commons.io.FilenameUtils;
-import org.apache.commons.lang.StringUtils;
-import org.bson.types.ObjectId;
-
-import java.io.File;
-import java.io.FileInputStream;
-import java.util.ArrayList;
-import java.util.List;
 
 /**
  * 将视频转变成资源
@@ -29,16 +30,16 @@ public class TransferVideoResource {
 
 	public static void main(String[] args) throws Exception {
 	
-		File f= new File("D:\\0519\\TransferVideo1117.txt");
+		File f= new File("D:\\0519\\TransferVideo0520.txt");
 		f.createNewFile();
 		
 		VideoDao videoDao =new VideoDao();
 		ResourceDao resourceDao =new ResourceDao();
 		ResourceDictionaryDao resourceDictionaryDao =new ResourceDictionaryDao();
 		
-		File address=new File("D:\\0519\\file0805.txt");
-		File fileKws=new File("D:\\0519\\kws0805.txt");
-		File filemulus=new File("D:\\0519\\mulu0805.txt");
+		File address=new File("D:\\0519\\file0519.txt");
+		File fileKws=new File("D:\\0519\\kws0519.txt");
+		File filemulus=new File("D:\\0519\\mulu0519.txt");
 	
 		
 		
@@ -54,16 +55,14 @@ public class TransferVideoResource {
 		}
 		
 		
-		for(int i=118;i<stringNames.size();i++)
+		for(int i=0;i<stringNames.size();i++)
 		{
-			//72 95 110 111 112
-			 String videoAddress=stringNames.get(i);
-			 if(videoAddress.endsWith(".jpg"))
-			 {
-				 continue;
-			 }
-			
 			 System.out.println(i);
+			String videoAddress=stringNames.get(i);
+			
+			
+			
+			
 			File videoFile =new File(videoAddress);
 			FileUtils.write(f, "文件："+videoAddress, true);
 			FileUtils.write(f, "\r\n", true);
@@ -128,7 +127,10 @@ public class TransferVideoResource {
 			
 			try
 			{
+				   
+					
 					String kwId =stringKws.get(i);
+					
 					String zhangjieId = stringmulus.get(i);
 					
 				    VideoEntry e=videoDao.getVideoEntryById(videoId);
@@ -196,6 +198,13 @@ public class TransferVideoResource {
 				    	}
 				    }
 				    
+				    
+				    
+				    
+				    
+				  
+				    
+				    
 				    //章节
 				    List<ObjectId> psbList =new ArrayList<ObjectId>();
 				    if(StringUtils.isNotBlank(zhangjieId) && !"null".equalsIgnoreCase(zhangjieId))
@@ -241,9 +250,7 @@ public class TransferVideoResource {
 				    		null,
 				    		0, 
 				    		kwList,
-				    		psbList,
-							0,1,0,null,new ArrayList<ObjectId>(),"资源板块后端"
-							);
+				    		psbList);
 				    re.setID(id);
 				    
 				    resourceDao.addResource(re);
@@ -256,8 +263,14 @@ public class TransferVideoResource {
 			}catch(Exception ex)
 			{
 				System.out.println("出错;"+i+","+stringNames.get(i));
+				
 			}
 			
+	
+			
 		}
+		
+		
+		
 	}
 }

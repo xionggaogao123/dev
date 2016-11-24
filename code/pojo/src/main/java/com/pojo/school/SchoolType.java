@@ -75,37 +75,7 @@ public enum SchoolType {
 		}
 		return retList;
 	}
-
-	/**
-	 * 根据type得到SchoolType
-	 * @param type
-	 * @return
-	 */
-	public static  String getSchoolTypeName(int type)
-	{
-
-		if((type & Constant.ONE) == Constant.ONE)
-		{
-			return KINDERGARENER.getName();
-		}
-		if((type & Constant.TWO) == Constant.TWO)
-		{
-			return PRIMARY.getName();
-		}
-		if((type & Constant.FOUR) == Constant.FOUR)
-		{
-			return JUNIOR.getName();
-		}
-		if((type & Constant.EIGHT) == Constant.EIGHT)
-		{
-			return SENIOR.getName();
-		}
-		if((type & Constant.SIXTEEN) == Constant.SIXTEEN)
-		{
-			return UNIVERSITY.getName();
-		}
-		return UNIVERSITY.getName();
-	}
+	
 	
 	public SimpleDTO toSimpleDTO()
 	{

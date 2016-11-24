@@ -48,7 +48,8 @@ public class ClassInfoDTO implements Serializable {
     private int coursetype;
 
     public ClassInfoDTO()
-	{}
+	{
+	}
 	public ClassInfoDTO(ClassEntry e)
 	{
 		this.id=e.getID().toString();
@@ -116,7 +117,7 @@ public class ClassInfoDTO implements Serializable {
         classEntry.setIntroduce(introduce);
         classEntry.setName(className);
         
-        if(null!=mainTeacherId && ObjectId.isValid(mainTeacherId))
+        if(ObjectId.isValid(mainTeacherId))
         {
          classEntry.setMaster(new ObjectId(mainTeacherId));
         }

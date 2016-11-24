@@ -68,9 +68,9 @@ public class SalaryItemDao extends BaseDao {
      * @param fields
      * @return
      */
-    public List<SalaryItemEntry> getSalaryItemEntryList(ObjectId schoolId,DBObject fields) {
+    public List<SalaryItemEntry> getSalaryItemEntryList(ObjectId schoolId, DBObject fields) {
         List<SalaryItemEntry> salaryList = new ArrayList<SalaryItemEntry>();
-        BasicDBObject query = new BasicDBObject("sid",schoolId);
+        BasicDBObject query = new BasicDBObject("sid", schoolId);
 
         List<DBObject> list = find(MongoFacroty.getAppDB(), Constant.COLLECTION_SALARY_ITEM, query, fields, Constant.MONGO_SORTBY_DESC);
         if (null != list && !list.isEmpty()) {
@@ -82,7 +82,7 @@ public class SalaryItemDao extends BaseDao {
         }
         return salaryList;
     }
-    
+
 
     /**
      * 分页查询工资项目
@@ -105,9 +105,8 @@ public class SalaryItemDao extends BaseDao {
         }
         return salaryList;
     }
-    
-    
-    
+
+
     /**
      * 删除工资项目
      *

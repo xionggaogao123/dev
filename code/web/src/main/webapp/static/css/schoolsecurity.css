@@ -1,0 +1,365 @@
+.txt-info {
+    position: relative;
+}
+
+.txt-info textarea {
+    width: 743px;
+    margin-left: 10px;
+    margin-top: 10px;
+    border: #ddd 1px solid;
+    resize: none;
+    height: 65px;
+    overflow: hidden;
+    overflow-y: auto;
+}
+
+.font-num {
+    position: absolute;
+    right: 15px;
+    /* bottom: 85px;*/
+    top: 60px;
+    color: #999999
+}
+
+.upload-info {
+    padding: 10px;
+    position: relative;
+}
+
+.upload-info span {
+    float: left;
+    background: url('../images/icon-upload.png') 0 0 no-repeat;
+    line-height: 21px;
+    padding-left: 30px;
+    cursor: pointer;
+}
+
+.upload-info button {
+    float: right;
+    position: absolute;
+    right: 10px;
+    top: 5px;
+}
+
+.info-list {
+    border: #ddd 1px solid;
+    margin-top: 10px;
+}
+
+.info-list .info-head {
+    border-bottom: #ddd 1px solid;
+    line-height: 36px;
+    padding-right: 10px;
+}
+
+.info-head ul, .info-head li {
+    float: left;
+}
+
+.info-head li {
+    padding: 0 24px;
+    position: relative;
+    top: 1px;
+    cursor: pointer;
+}
+
+.info-head li.cur {
+    border-bottom: #ffa800 2px solid;
+    color: #ffa800;
+    background: #fff !important;
+}
+
+.info-head select {
+    float: right;
+    padding: 5px 0;
+    border: none;
+    color: #333;
+    vertical-align: top;
+    margin-top: 4px;
+}
+
+.list-info {
+    position: relative;
+    padding-left: 10px;
+    border-bottom: #ddd 1px solid;
+}
+
+.stips-un, .stips-on {
+    width: 81px;
+    height: 82px;
+    display: block;
+    position: absolute;
+    top: 0;
+    right: 0;
+    background: url('../images/icon-unchu.png') 0 0 no-repeat;
+}
+
+.stips-deal {
+    position: absolute;
+    top: 3px;
+    right: 10px;
+    width: 77px;
+    height: 31px;
+    border: none;
+    cursor: pointer;
+    background: #ffa800;
+    color: white;
+}
+
+.batch-del {
+    top: 3px;
+    right: 10px;
+    width: 110px;
+    height: 31px;
+    border: none;
+    cursor: pointer;
+    background: #ffa800;
+    color: white;
+}
+
+.stips-on {
+    background: url('../images/icon-chu.png') 0 0 no-repeat;
+}
+
+.user-img {
+    width: 65px;
+    height: 65px;
+    border-radius: 100%;
+    float: left;
+    margin-top: 10px;
+}
+
+.list-txt {
+    float: right;
+    width: 675px;
+}
+
+.list-txt h4 {
+    line-height: 30px;
+}
+
+.list-txt h4 em {
+    font-size: 12px;
+    color: #27a9e3 !important;
+    padding-left: 5px;
+}
+
+.list-txt h4 em.ld {
+    color: #e02222;
+}
+
+.info-role {
+    font-size: 12px;
+    padding-left: 5px;
+}
+
+.list-txt p {
+    line-height: 26px;
+    word-break: break-all;
+    width: 590px;
+}
+
+.list-txt ul {
+    width: 310px;
+    margin-top: 10px;
+}
+
+.list-txt li {
+    width: 80px;
+    height: 80px;
+    float: left;
+    margin-right: 2px;
+    margin-bottom: 2px;
+}
+
+.date-txt span {
+    float: left;
+    line-height: 26px;
+    color: #999;
+    font-size: 12px;
+    text-align: center;
+}
+
+.date-txt span em {
+    padding-left: 10px;
+}
+
+.date-txt label {
+    width: 11px;
+    height: 45px;
+    background: url('../images/icon-del.png') 0 25px no-repeat;
+    float: right;
+    margin-right: 10px;
+    cursor: pointer;
+}
+
+.record {
+    text-align: center;
+    line-height: 144px;
+    font-size: 48px;
+    color: #d3d3d3;
+}
+
+#picuploadLoading {
+    position: absolute;
+    left: 100px;
+    top: 6px;
+    display: none;
+}
+
+.upload-image {
+    line-height: 32px;
+    margin-left: 3px;
+"
+}
+
+.size-zero {
+    width: 0;
+    height: 0;
+    display: none;
+}
+
+.security-img-delete {
+    float: left;
+    line-height: 50px;
+    cursor: pointer;
+}
+
+.security-img {
+    width: 60px;
+    height: 60px;
+    float: left;
+    margin: 8px 5px 5px 8px;
+}
+
+.fa {
+    display: inline-block;
+    font: normal normal normal 14px/1 FontAwesome;
+    font-size: inherit;
+    text-rendering: auto;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+}
+
+.fa-times:before {
+    content: "\f00d";
+}
+
+.content-img {
+    height: 80px;
+    width: 80px;
+    margin: 1px;
+}
+
+/*-------------  伪类清楚浮动法  ---------------*/
+.clearfix:before, .clearfix:after {
+    content: "";
+    display: table;
+}
+
+.clearfix:after {
+    clear: both;
+}
+
+.clearfix {
+    zoom: 1
+}
+
+/*
+ul,ol{padding:0;margin:0 0 10px 25px;}
+.pagination{margin:20px 0;}
+.pagination ul{display:inline-block;*display:inline;*zoom:1;margin-left:0;margin-bottom:0;-webkit-border-radius:4px;-moz-border-radius:4px;border-radius:4px;-webkit-box-shadow:0 1px 2px rgba(0, 0, 0, 0.05);-moz-box-shadow:0 1px 2px rgba(0, 0, 0, 0.05);box-shadow:0 1px 2px rgba(0, 0, 0, 0.05);}
+.pagination ul>li{display:inline;}
+.pagination ul>li>a,.pagination ul>li>span{float:left;padding:4px 12px;line-height:20px;text-decoration:none;background-color:#ffffff;border:1px solid #dddddd;border-left-width:0;}
+.pagination ul>li>a:hover,.pagination ul>li>a:focus,.pagination ul>.active>a,.pagination ul>.active>span{background-color:#f5f5f5;}
+.pagination ul>.active>a,.pagination ul>.active>span{color:#999999;cursor:default;}
+.pagination ul>.disabled>span,.pagination ul>.disabled>a,.pagination ul>.disabled>a:hover,.pagination ul>.disabled>a:focus{color:#999999;background-color:transparent;cursor:default;}
+.pagination ul>li:first-child>a,.pagination ul>li:first-child>span{border-left-width:1px;-webkit-border-top-left-radius:4px;-moz-border-radius-topleft:4px;border-top-left-radius:4px;-webkit-border-bottom-left-radius:4px;-moz-border-radius-bottomleft:4px;border-bottom-left-radius:4px;}
+.pagination ul>li:last-child>a,.pagination ul>li:last-child>span{-webkit-border-top-right-radius:4px;-moz-border-radius-topright:4px;border-top-right-radius:4px;-webkit-border-bottom-right-radius:4px;-moz-border-radius-bottomright:4px;border-bottom-right-radius:4px;}
+.pagination-centered{text-align:center;}
+.pagination-right{text-align:right;}
+.pagination-large ul>li>a,.pagination-large ul>li>span{padding:11px 19px;font-size:17.5px;}
+.pagination-large ul>li:first-child>a,.pagination-large ul>li:first-child>span{-webkit-border-top-left-radius:6px;-moz-border-radius-topleft:6px;border-top-left-radius:6px;-webkit-border-bottom-left-radius:6px;-moz-border-radius-bottomleft:6px;border-bottom-left-radius:6px;}
+.pagination-large ul>li:last-child>a,.pagination-large ul>li:last-child>span{-webkit-border-top-right-radius:6px;-moz-border-radius-topright:6px;border-top-right-radius:6px;-webkit-border-bottom-right-radius:6px;-moz-border-radius-bottomright:6px;border-bottom-right-radius:6px;}
+.pagination-mini ul>li:first-child>a,.pagination-small ul>li:first-child>a,.pagination-mini ul>li:first-child>span,.pagination-small ul>li:first-child>span{-webkit-border-top-left-radius:3px;-moz-border-radius-topleft:3px;border-top-left-radius:3px;-webkit-border-bottom-left-radius:3px;-moz-border-radius-bottomleft:3px;border-bottom-left-radius:3px;}
+.pagination-mini ul>li:last-child>a,.pagination-small ul>li:last-child>a,.pagination-mini ul>li:last-child>span,.pagination-small ul>li:last-child>span{-webkit-border-top-right-radius:3px;-moz-border-radius-topright:3px;border-top-right-radius:3px;-webkit-border-bottom-right-radius:3px;-moz-border-radius-bottomright:3px;border-bottom-right-radius:3px;}
+.pagination-small ul>li>a,.pagination-small ul>li>span{padding:2px 10px;font-size:11.9px;}
+.pagination-mini ul>li>a,.pagination-mini ul>li>span{padding:0 6px;font-size:10.5px;}
+*/
+
+.active {
+    background: white;
+    border-top: 4px solid #FF8900;
+    margin-top: -4px;
+    border-right: 1px solid #DDDDDD;
+    color: #FF8900;
+}
+
+#img-container {
+    clear: both;
+    width: 280px;
+}
+
+#img-container ul li {
+    display: block;
+}
+
+#picuploadLoading {
+    position: absolute;
+    left: 335px;
+    top: 15px;
+    display: none;
+}
+
+/*分页*/
+.page-paginator {
+    width: 100%;
+    margin: 40px auto 20px auto;
+    text-align: center;
+    display: none;
+}
+
+.page-index span {
+    padding: 3px 8px;
+    color: #838383;
+    border-radius: 4px;
+    border: 1px solid #838383;
+    background-color: #F6F7F6;
+    cursor: pointer;
+    margin: 0 2px;
+}
+
+.first-page, .last-page {
+    padding: 3px 15px;
+    color: #838383;
+    border-radius: 4px;
+    border: 1px solid #838383;
+    background-color: #F6F7F6;
+    cursor: pointer;
+    margin: 0 2px;
+}
+
+.page-paginator span.active {
+    background-color: #E6E6E6;
+    color: #779554;
+}
+
+/*******************************************/
+#recordercontainer1 {
+    float: left;
+}
+
+#attacher {
+    overflow: hidden;
+    display: inline-block;
+    float: left
+}
+
+#recordercontainer1 .area {
+    margin: 0;
+    width: 150px;
+}
+
+#reply_section .detail-bottom-lt #recordercontainer1 {
+    margin: 0px !important;
+}

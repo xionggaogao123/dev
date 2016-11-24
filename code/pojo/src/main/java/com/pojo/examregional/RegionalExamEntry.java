@@ -3,7 +3,6 @@ package com.pojo.examregional;
 import java.util.ArrayList;
 import java.util.List;
 
-import com.pojo.app.NameValuePair;
 import org.bson.types.ObjectId;
 
 import com.mongodb.BasicDBList;
@@ -25,8 +24,7 @@ import com.sys.constants.Constant;
  * 学校:sch(list)
  * 学期:term
  * 教育局id：eid
- * 分数段:ss  List<ScoreSection>
- * 等第设置gs List<NameValuePair>  name等第名称  value百分比值
+ * 分数段:ss
  * 是否完成排名：rf(0：未完成，1：完成)
  * 是否删除：isr(0:未删除，1：已删除)
  */
@@ -46,9 +44,8 @@ public class RegionalExamEntry extends BaseDBObject{
 				 .append("sch",MongoUtils.convert(MongoUtils.fetchDBObjectList(school)))
 				 .append("term", term)
 				 .append("eid", educationId)
-				 .append("isr", isRemove)
-				 .append("ss", null)
-				 .append("gs", null)
+				 .append("isr", Constant.ZERO)
+				 .append("ss",null)
 				 .append("rf", 1);
 		 setBaseEntry(baseEntry);
 	}
@@ -91,8 +88,10 @@ public class RegionalExamEntry extends BaseDBObject{
 	public List<RegionalSubjectItem> getExamSubject(){
 		List<RegionalSubjectItem> resultList = new ArrayList<RegionalSubjectItem>();
 		BasicDBList list =(BasicDBList)getSimpleObjectValue("sbj");
-		if(null!=list && !list.isEmpty()) {
-			for(Object o:list) {
+		if(null!=list && !list.isEmpty())
+		{
+			for(Object o:list)
+			{
 				resultList.add(new RegionalSubjectItem((BasicDBObject)o));
 			}
 		}
@@ -107,8 +106,10 @@ public class RegionalExamEntry extends BaseDBObject{
 	public List<RegionalSchItem> getSchool(){
 		List<RegionalSchItem> resultList = new ArrayList<RegionalSchItem>();
 		BasicDBList list =(BasicDBList)getSimpleObjectValue("sch");
-		if(null!=list && !list.isEmpty()) {
-			for(Object o:list) {
+		if(null!=list && !list.isEmpty())
+		{
+			for(Object o:list)
+			{
 				resultList.add(new RegionalSchItem((BasicDBObject)o));
 			}
 		}
@@ -122,8 +123,10 @@ public class RegionalExamEntry extends BaseDBObject{
 	public List<ScoreSection> getScoreSection(){
 		List<ScoreSection> resultList = new ArrayList<ScoreSection>();
 		BasicDBList list =(BasicDBList)getSimpleObjectValue("ss");
-		if(null!=list && !list.isEmpty()) {
-			for(Object o:list) {
+		if(null!=list && !list.isEmpty())
+		{
+			for(Object o:list)
+			{
 				resultList.add(new ScoreSection((BasicDBObject)o));
 			}
 		}
@@ -156,23 +159,4 @@ public class RegionalExamEntry extends BaseDBObject{
 	public void setRankingFlag(int rankingFlag){
 		setSimpleValue("rf", rankingFlag);
 	}
-
-	public List<NameValuePair> getGradeSetting(){
-		List<NameValuePair> resultList = new ArrayList<NameValuePair>();
-		if(getBaseEntry().containsField("gs")) {
-			BasicDBList list = (BasicDBList) getSimpleObjectValue("gs");
-			if (null != list && !list.isEmpty()) {
-				for (Object o : list) {
-					resultList.add(new NameValuePair((BasicDBObject) o));
-				}
-			}
-		}
-		return resultList;
-	}
-
-	public void setGradeSetting(List<NameValuePair> scoreSection){
-		List<DBObject> list=MongoUtils.fetchDBObjectList(scoreSection);
-		setSimpleValue("gs",MongoUtils.convert(list));
-	}
-
 }

@@ -2,7 +2,6 @@ package com.pojo.teacherevaluation;
 
 import com.mongodb.BasicDBList;
 import com.mongodb.BasicDBObject;
-import com.pojo.app.NameValuePair;
 import com.pojo.base.BaseDBObject;
 import com.pojo.utils.MongoUtils;
 import org.bson.types.ObjectId;
@@ -12,45 +11,45 @@ import java.util.List;
 
 /**
  * Created by fl on 2016/4/19.
- * 教师评价设置  包含  等第设置 评分时间 评比规则 考核模式  te_setting
+ * 教师评价设置  包含  等第设置 评分时间 评比规则  te_setting
  * si 学校id
  * y  年度 例如2015-2016年度  保存为2015-2016
- * evid  评价id  对应MemberGroupEntry _id  2016.7.29新增
  * rule 评比规则
- * ptb 个人陈述时间开始 //20160912废弃
- * pte 个人陈述时间结束 //20160912废弃
- * gtb 组内互评时间开始 //20160912废弃
- * gte 组内互评时间结束 //20160912废弃
- * etb 考核打分时间开始
- * ete 考核打分时间结束
- * mode 考核模式  1：打分模式   2：等级模式  缺省为1  20160919新增
- * mgs 等级模式下等级设置  List<NameValuePair> 20160919新增
+ * ptb 个人陈述时间开始
+ * pte 个人陈述时间结束
+ * gtb 组内互评时间开始
+ * gte 组内互评时间结束
+ * etb 考核小组打分时间开始
+ * ete 考核小组打分时间结束
  * grd  等第 List<GradeSetting>
  */
 public class SettingEntry extends BaseDBObject {
 
     public SettingEntry(){}
 
-    public SettingEntry(ObjectId schoolId, String year, ObjectId evaluationId){
-        this(schoolId, year, evaluationId, "", 0, 0, new ArrayList<GradeSetting>(), 1, new ArrayList<NameValuePair>());
+    public SettingEntry(ObjectId schoolId, String year){
+        this(schoolId, year, "", 0, 0, 0, 0, 0, 0, new ArrayList<GradeSetting>());
     }
 
     public SettingEntry(BasicDBObject baseEntry){
         setBaseEntry(baseEntry);
     }
 
-    public SettingEntry(ObjectId schoolId, String year, ObjectId evaluationId, String rule,
-                        long evaluationTimeBegin,long evaluationTimeEnd, List<GradeSetting> gradeSettings, int mode, List<NameValuePair> modeGrades){
+    public SettingEntry(ObjectId schoolId, String year, String rule,
+                        long personalTimeBegin, long groupTimeBegin, long evaluationTimeBegin,
+                        long personalTimeEnd, long groupTimeEnd, long evaluationTimeEnd,
+                        List<GradeSetting> gradeSettings){
         BasicDBObject baseEntry = new BasicDBObject()
                 .append("si", schoolId)
                 .append("y", year)
-                .append("evid", evaluationId)
                 .append("rule", rule)
+                .append("ptb", personalTimeBegin)
+                .append("pte", personalTimeEnd)
+                .append("gpb", groupTimeBegin)
+                .append("gpe", groupTimeEnd)
                 .append("etb", evaluationTimeBegin)
                 .append("ete", evaluationTimeEnd)
                 .append("grd", MongoUtils.convert(MongoUtils.fetchDBObjectList(gradeSettings)))
-                .append("mode", mode)
-                .append("mgs", MongoUtils.convert(MongoUtils.fetchDBObjectList(modeGrades)))
                 ;
         setBaseEntry(baseEntry);
     }
@@ -71,20 +70,44 @@ public class SettingEntry extends BaseDBObject {
         setSimpleValue("y", year);
     }
 
-    public ObjectId getEvaluationId(){
-        return getSimpleObjecIDValue("evid");
-    }
-
-    public void setEvaluationId(ObjectId evaluationId){
-        setSimpleValue("evid", evaluationId);
-    }
-
     public String getRule(){
         return getSimpleStringValue("rule");
     }
 
     public void setRule(String rule){
         setSimpleValue("rule", rule);
+    }
+
+    public long getPersonalTimeBegin(){
+        return getSimpleLongValue("ptb");
+    }
+
+    public void setPersonalTimeBegin(long personalTimeBegin){
+        setSimpleValue("ptb", personalTimeBegin);
+    }
+
+    public long getPersonalTimeEnd(){
+        return getSimpleLongValue("pte");
+    }
+
+    public void setPersonalTimeEnd(long personalTimeEnd){
+        setSimpleValue("pte", personalTimeEnd);
+    }
+
+    public long getGroupTimeBegin(){
+        return getSimpleLongValue("gpb");
+    }
+
+    public void setGroupTimeBegin(long groupTimeBegin){
+        setSimpleValue("gpb", groupTimeBegin);
+    }
+
+    public long getGroupTimeEnd(){
+        return getSimpleLongValue("gpe");
+    }
+
+    public void setGroupTimeEnd(long groupTimeEnd){
+        setSimpleValue("gpe", groupTimeEnd);
     }
 
     public long getEvaluationTimeBegin(){
@@ -101,29 +124,6 @@ public class SettingEntry extends BaseDBObject {
 
     public void setEvaluationTimeEnd(long evaluationTimeEnd){
         setSimpleValue("ete", evaluationTimeEnd);
-    }
-
-    public int getMode(){
-        return getSimpleIntegerValueDef("mode", 1);
-    }
-
-    public void setMode(int mode){
-        setSimpleValue("mode", mode);
-    }
-
-    public List<NameValuePair> getModeGrades(){
-        List<NameValuePair> retList = new ArrayList<NameValuePair>();
-        BasicDBList list = (BasicDBList)getSimpleObjectValue("mgs");
-        if(null != list && !list.isEmpty()){
-            for(Object o : list){
-                retList.add(new NameValuePair((BasicDBObject)o));
-            }
-        }
-        return retList;
-    }
-
-    public void setModeGrades(List<NameValuePair> modeGrades){
-        setSimpleValue("mgs", MongoUtils.convert(MongoUtils.fetchDBObjectList(modeGrades)));
     }
 
     public List<GradeSetting> getGradeSettings(){

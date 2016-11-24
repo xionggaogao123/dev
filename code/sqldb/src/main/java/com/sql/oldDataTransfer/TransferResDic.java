@@ -74,7 +74,7 @@ public class TransferResDic {
         }
 
 
-        List<ResourceDictionaryEntry> existDicList = null;
+        List<ResourceDictionaryEntry> existDicList = resourceDictionaryDao.getAll();
 
         for(ResourceDictionaryEntry rentry : existDicList){
             if(rentry.getSort()!=0 && rentry.getType()!=7 && rentry.getType()!=8 && rentry.getType()!=9){

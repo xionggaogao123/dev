@@ -8,9 +8,9 @@ import java.util.Set;
 
 import com.mongodb.AggregationOutput;
 import com.pojo.exam.ExamEntry;
-import com.pojo.salary.*;
+import com.pojo.salary.SalaryDto;
+import com.pojo.salary.SalaryItemDto;
 
-import org.apache.commons.lang.StringUtils;
 import org.bson.types.ObjectId;
 
 import com.db.base.BaseDao;
@@ -18,6 +18,8 @@ import com.db.factory.MongoFacroty;
 import com.mongodb.BasicDBObject;
 import com.mongodb.DBObject;
 import com.pojo.app.FieldValuePair;
+import com.pojo.salary.SalaryEntry;
+import com.pojo.salary.SalaryQueryDto;
 import com.pojo.school.SchoolEntry;
 import com.sys.constants.Constant;
 
@@ -85,10 +87,10 @@ public class SalaryDao extends BaseDao {
      * @param ms
      * @param as
      */
-    public void updateRealSalary(final String id, final double ss, final double ms, final double as,final String remark) {
+    public void updateRealSalary(final String id, final double ss, final double ms, final double as) {
         BasicDBObject query = new BasicDBObject(Constant.ID, new ObjectId(id));
         BasicDBObject updateValue = new BasicDBObject(Constant.MONGO_SET,
-                new BasicDBObject("ss", ss).append("ms", ms).append("as", as).append("rmk",remark));
+                new BasicDBObject("ss", ss).append("ms", ms).append("as", as));
         update(MongoFacroty.getAppDB(), Constant.COLLECTION_SALARY, query, updateValue);
     }
 
@@ -130,27 +132,6 @@ public class SalaryDao extends BaseDao {
         List<SalaryEntry> salaryList = new ArrayList<SalaryEntry>();
         List<DBObject> list = find(MongoFacroty.getAppDB(), Constant.COLLECTION_SALARY, query, fields,
                 new BasicDBObject("unm", Constant.ASC).append("ym", Constant.DESC).append("n", Constant.DESC));
-        if (null != list && !list.isEmpty()) {
-            SalaryEntry e;
-            for (DBObject dbo : list) {
-                e = new SalaryEntry((BasicDBObject) dbo);
-                salaryList.add(e);
-            }
-        }
-        return salaryList;
-    }
-
-    /**
-     * 查询工资数据
-     *
-     * @param query
-     * @param fields
-     * @return
-     */
-    public List<SalaryEntry> getSalaryEntryList(DBObject query,int skip,int limit, DBObject fields) {
-        List<SalaryEntry> salaryList = new ArrayList<SalaryEntry>();
-        List<DBObject> list = find(MongoFacroty.getAppDB(), Constant.COLLECTION_SALARY, query, fields,
-                new BasicDBObject("unm", Constant.ASC).append("ym", Constant.DESC).append("n", Constant.DESC), skip, limit);
         if (null != list && !list.isEmpty()) {
             SalaryEntry e;
             for (DBObject dbo : list) {
@@ -238,58 +219,22 @@ public class SalaryDao extends BaseDao {
         }
         return 0;
     }
-    
-    
-    
+
+
     /**
-     * 
      * @param skip
      * @param limit
      * @return
      */
     @Deprecated
-    public Set<ObjectId> getSalaryEntrySchoolIdSet( ){
-        List<DBObject> list=find(MongoFacroty.getAppDB(), Constant.COLLECTION_SALARY,new BasicDBObject(), new BasicDBObject("sid",1));
-        Set<ObjectId> set =new HashSet<ObjectId>();
-        for(DBObject dbObject:list){
-        	SalaryEntry schoolEntry=new SalaryEntry((BasicDBObject)dbObject);
-        	set.add(schoolEntry.getSchoolId());
+    public Set<ObjectId> getSalaryEntrySchoolIdSet() {
+        List<DBObject> list = find(MongoFacroty.getAppDB(), Constant.COLLECTION_SALARY, new BasicDBObject(), new BasicDBObject("sid", 1));
+        Set<ObjectId> set = new HashSet<ObjectId>();
+        for (DBObject dbObject : list) {
+            SalaryEntry schoolEntry = new SalaryEntry((BasicDBObject) dbObject);
+            set.add(schoolEntry.getSchoolId());
         }
         return set;
     }
 
-    /**
-     *
-     * @param itemName
-     * @param type
-     * @param schoolId
-     * @return
-     */
-    public int selSalaryItem(String itemName, String type, String schoolId) {
-        BasicDBObject query =new BasicDBObject("in",itemName).append("it",type).append("sid",new ObjectId(schoolId));
-        return count(MongoFacroty.getAppDB(), Constant.COLLECTION_SALARY_ITEM,query);
-
-    }
-
-    /**
-     *
-     * @param query
-     * @return
-     */
-    public int getSalaryCount(BasicDBObject query) {
-        return count(MongoFacroty.getAppDB(),Constant.COLLECTION_SALARY,query);
-    }
-
-    /**
-     *
-     * @param id
-     * @param m
-     */
-    public void updateRemark(ObjectId id, String m) {
-        BasicDBObject query = new BasicDBObject(Constant.ID, id);
-
-        BasicDBObject updateValue = new BasicDBObject(Constant.MONGO_SET,
-                new BasicDBObject("rmk", m));
-        update(MongoFacroty.getAppDB(), Constant.COLLECTION_SALARY, query, updateValue);
-    }
 }

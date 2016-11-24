@@ -320,4 +320,13 @@ public class MemberService {
     }
     return memberDTOs;
   }
+
+  /**
+   * 更改头像
+   * @param userId
+   * @param avatar
+   */
+  public void updateAllAvatar(ObjectId userId,String avatar){
+    memberDao.updateAllAvatar(userId,avatar);
+  }
 }

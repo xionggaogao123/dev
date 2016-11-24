@@ -50,7 +50,8 @@ public class GroupEntry extends BaseDBObject {
             .append("grcd", chatId)
             .append("grow", owerId)
             .append("himg","")
-            .append("ism",0);
+            .append("ism",0)
+            .append("r",0);
     setBaseEntry(dbo);
   }
 
@@ -73,7 +74,8 @@ public class GroupEntry extends BaseDBObject {
             .append("grcd", chatId)
             .append("grow", owerId)
             .append("himg","")
-            .append("ism",0);
+            .append("ism",0)
+            .append("r",0);
     setBaseEntry(dbo);
   }
 

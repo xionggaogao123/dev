@@ -24,6 +24,11 @@ define(['jquery', 'pagination', 'common'], function (require, exports, module) {
         getMyCommunity();
     }
     $(document).ready(function () {
+
+        hx_update();
+
+        setInterval(hx_update,1000 * 60);
+
         $('body').on('click','.comb1 .b1',function () {
             $('.com-b').hide();
             $('.comb2').show();
@@ -408,6 +413,26 @@ define(['jquery', 'pagination', 'common'], function (require, exports, module) {
             overwrite: 1
         })
     }
+
+    function hx_update() {
+
+        $.ajax({
+            url:'/group/offlineMsgCount.do',
+            success: function(resp){
+                var hx_notice = $('.hx-notice span');
+                var offCount = resp.message.offlineCount;
+
+                if(offCount > 0) {
+                    $('#hx-icon').removeClass("sp2");
+                    $('#hx-icon').addClass('sp1');
+                } else {
+                    $('#hx-icon').addClass('sp2');
+                }
+                $('#hx-msg-count').text('您有' + offCount + '条未读消息');
+            }
+        });
+    }
+
 
     module.exports = communityMember;
 });

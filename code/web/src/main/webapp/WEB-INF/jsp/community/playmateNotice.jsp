@@ -125,8 +125,8 @@
 
 <%--环信消息通知--%>
 <div class="hx-notice">
-    <span class="sp1"></span>
-    <span class="sp3">你有3条未读消息</span>
+    <span class="sp2" id="hx-icon"></span>
+    <span class="sp3" id="hx-msg-count">你有0条未读消息</span>
 </div>
 
 

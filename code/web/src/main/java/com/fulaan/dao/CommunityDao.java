@@ -105,7 +105,7 @@ public class CommunityDao extends BaseDao {
    */
   public List<CommunityEntry> findByRegularName(String regular) {
     BasicDBObject query = new BasicDBObject()
-            .append("cmmn", MongoUtils.buildRegular(regular));
+            .append("cmmn", MongoUtils.buildRegex(regular));
     List<DBObject> dbObjects = find(getDB(), getCollection(), query);
     List<CommunityEntry> communitys = new ArrayList<CommunityEntry>();
     for (DBObject dbo : dbObjects) {

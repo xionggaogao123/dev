@@ -49,7 +49,7 @@ public class GroupService {
                                            String desc, String qrUrl) throws Exception {
     ObjectId groupId = new ObjectId();
     GroupEntry group = new GroupEntry(groupId, commid, owerId, qrUrl, emChatId, name, desc);
-    groupDao.save(group);
+    groupDao.add(group);
     memberService.saveMember(owerId, groupId, 2);
     return groupId;
   }
@@ -58,7 +58,7 @@ public class GroupService {
     ObjectId groupId = new ObjectId();
     String qrUrl = QRUtils.getGroupQrUrl(groupId);
     GroupEntry group = new GroupEntry(groupId, owerId, qrUrl, emChatId);
-    groupDao.save(group);
+    groupDao.add(group);
     memberService.saveMember(owerId, groupId, 2);
     return groupId;
   }
@@ -276,6 +276,12 @@ public class GroupService {
     return memberDao.isMember(groupId, userId);
   }
 
+  /**
+   * 是否以前加入过
+   * @param groupId
+   * @param userId
+   * @return
+   */
   public boolean isBeforeMember(ObjectId groupId, ObjectId userId) {
     return memberDao.isBeforeMember(groupId, userId);
   }

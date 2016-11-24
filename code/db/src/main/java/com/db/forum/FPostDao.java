@@ -450,7 +450,7 @@ public class FPostDao extends BaseDao {
       query.append("rpt", reported);
     }
     if (StringUtils.isNotBlank(regular)) {
-      query.append("pt", MongoUtils.buildRegular(regular));
+      query.append("pt", MongoUtils.buildRegex(regular));
     }
     return query;
   }

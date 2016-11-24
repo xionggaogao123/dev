@@ -38,14 +38,10 @@ public class MemberDao extends BaseDao {
    * @return
    */
   public List<MemberEntry> getMembers(ObjectId grid, int page, int pageSize) {
-    BasicDBObject query = new BasicDBObject()
-            .append("grid", grid)
-            .append("r", 0);
-    BasicDBObject orderBy = new BasicDBObject()
-            .append("rl", -1)
-            .append(Constant.ID, -1);
+    BasicDBObject query = new BasicDBObject("grid", grid).append("r", Constant.ZERO);
+    BasicDBObject orderBy = new BasicDBObject("rl", Constant.DESC).append(Constant.ID, Constant.DESC);
     List<MemberEntry> memberEntries = new ArrayList<MemberEntry>();
-    List<DBObject> dbObjects = find(getDB(), getCollection(), query, Constant.FIELDS, orderBy, (page - 1) * pageSize, pageSize);
+    List<DBObject> dbObjects = find(getDB(), getCollection(), query, Constant.FIELDS, orderBy, (page - Constant.ONE) * pageSize, pageSize);
     for (DBObject dbo : dbObjects) {
       memberEntries.add(new MemberEntry(dbo));
     }
@@ -59,14 +55,10 @@ public class MemberDao extends BaseDao {
    * @return
    */
   public List<MemberEntry> getMembers(ObjectId grid, int count) {
-    BasicDBObject query = new BasicDBObject()
-            .append("grid", grid)
-            .append("r", 0);
-    BasicDBObject orderBy = new BasicDBObject()
-            .append("rl", -1)
-            .append(Constant.ID, -1);
+    BasicDBObject query = new BasicDBObject("grid", grid).append("r", Constant.ZERO);
+    BasicDBObject orderBy = new BasicDBObject("rl", Constant.DESC).append(Constant.ID, Constant.DESC);
     List<MemberEntry> memberEntries = new ArrayList<MemberEntry>();
-    List<DBObject> dbObjects = find(getDB(), getCollection(), query, Constant.FIELDS, orderBy, 0, count);
+    List<DBObject> dbObjects = find(getDB(), getCollection(), query, Constant.FIELDS, orderBy, Constant.ZERO, count);
     for (DBObject dbo : dbObjects) {
       memberEntries.add(new MemberEntry(dbo));
     }
@@ -80,9 +72,7 @@ public class MemberDao extends BaseDao {
    * @return
    */
   public int countMember(ObjectId grid) {
-    BasicDBObject query = new BasicDBObject()
-            .append("grid", grid)
-            .append("r", 0);
+    BasicDBObject query = new BasicDBObject("grid", grid).append("r", Constant.ZERO);
     return count(getDB(), getCollection(), query);
   }
 
@@ -94,11 +84,8 @@ public class MemberDao extends BaseDao {
    * @param nickName
    */
   public void updateSetting(ObjectId userId, ObjectId groupId, String nickName) {
-    BasicDBObject query = new BasicDBObject()
-            .append("uid", userId)
-            .append("cmid", groupId);
-    BasicDBObject update = new BasicDBObject()
-            .append(Constant.MONGO_SET, new BasicDBObject("nk", nickName));
+    BasicDBObject query = new BasicDBObject("uid", userId).append("cmid", groupId);
+    BasicDBObject update = new BasicDBObject().append(Constant.MONGO_SET, new BasicDBObject("nk", nickName));
     update(getDB(), getCollection(), query, update);
   }
 
@@ -341,9 +328,8 @@ public class MemberDao extends BaseDao {
     list.add(1);
     list.add(2);
     List<MemberEntry> members = new ArrayList<MemberEntry>();
-    BasicDBObject query = new BasicDBObject()
-            .append("grid", id)
-            .append("rl", new BasicDBObject("$in", list))
+    BasicDBObject query = new BasicDBObject().append("grid", id)
+            .append("rl", new BasicDBObject(Constant.MONGO_IN, list))
             .append("r", 0);
     List<DBObject> dbos = find(getDB(), getCollection(), query);
     for (DBObject dbo : dbos) {
@@ -360,15 +346,9 @@ public class MemberDao extends BaseDao {
    * @return
    */
   public MemberEntry getUser(ObjectId groupId, ObjectId userId) {
-    BasicDBObject query = new BasicDBObject()
-            .append("grid", groupId)
-            .append("uid", userId)
-            .append("r", 0);
+    BasicDBObject query = new BasicDBObject("grid", groupId).append("uid", userId).append("r", 0);
     DBObject dbo = findOne(getDB(), getCollection(), query);
-    if (dbo != null) {
-      return new MemberEntry(dbo);
-    }
-    return null;
+    return dbo == null ? null : new MemberEntry(dbo);
   }
 
   /**
@@ -401,19 +381,11 @@ public class MemberDao extends BaseDao {
    * @return
    */
   public boolean isHead(ObjectId groupId, ObjectId userId) {
-    BasicDBObject query = new BasicDBObject()
-            .append("grid", groupId)
+    BasicDBObject query = new BasicDBObject().append("grid", groupId)
             .append("uid", userId)
-            .append("r", 0)
-            .append("rl", 2);
-    BasicDBObject field = new BasicDBObject()
-            .append("rl", 1);
-    DBObject dbo = findOne(getDB(), getCollection(), query, field);
-    if (dbo != null) {
-      int role = (Integer) dbo.get("rl");
-      return role == 2;
-    }
-    return false;
+            .append("rl", 2)
+            .append("r", 0);
+    return count(getDB(), getCollection(), query) == Constant.ONE;
   }
 
   /**
@@ -424,18 +396,11 @@ public class MemberDao extends BaseDao {
    * @return
    */
   public boolean isDeputyHead(ObjectId groupId, ObjectId userId) {
-    BasicDBObject query = new BasicDBObject()
-            .append("grid", groupId)
+    BasicDBObject query = new BasicDBObject().append("grid", groupId)
             .append("uid", userId)
+            .append("rl", 1)
             .append("r", 0);
-    BasicDBObject field = new BasicDBObject()
-            .append("rl", 1);
-    DBObject dbo = findOne(getDB(), getCollection(), query, field);
-    if (dbo != null) {
-      int role = (Integer) dbo.get("rl");
-      return role == 1;
-    }
-    return false;
+    return count(getDB(), getCollection(), query) == Constant.ONE;
   }
 
 
@@ -468,10 +433,7 @@ public class MemberDao extends BaseDao {
    * @param nickName
    */
   public void updateMyNickname(ObjectId groupId, ObjectId userId, String nickName) {
-    BasicDBObject query = new BasicDBObject()
-            .append("grid", groupId)
-            .append("uid", userId)
-            .append("r", 0);
+    BasicDBObject query = new BasicDBObject("grid", groupId).append("uid", userId).append("r", 0);
     BasicDBObject update = new BasicDBObject()
             .append(Constant.MONGO_SET, new BasicDBObject("nk", nickName));
     update(getDB(), getCollection(), query, update);
@@ -485,10 +447,7 @@ public class MemberDao extends BaseDao {
    * @param status
    */
   public void updateMyStatus(ObjectId groupId, ObjectId userId, int status) {
-    BasicDBObject query = new BasicDBObject()
-            .append("grid", groupId)
-            .append("uid", userId)
-            .append("r", 0);
+    BasicDBObject query = new BasicDBObject("grid", groupId).append("uid", userId).append("r", 0);
     BasicDBObject update = new BasicDBObject()
             .append(Constant.MONGO_SET, new BasicDBObject("st", status));
     update(getDB(), getCollection(), query, update);
@@ -501,12 +460,8 @@ public class MemberDao extends BaseDao {
    * @return
    */
   public List<MemberEntry> getAllMembers(ObjectId groupId) {
-    BasicDBObject query = new BasicDBObject()
-            .append("grid", groupId)
-            .append("r", 0);
-    BasicDBObject orderBy = new BasicDBObject()
-            .append("rl", -1)
-            .append(Constant.ID, -1);
+    BasicDBObject query = new BasicDBObject().append("grid", groupId).append("r", 0);
+    BasicDBObject orderBy = new BasicDBObject().append("rl", -1).append(Constant.ID, -1);
     List<MemberEntry> memberEntries = new ArrayList<MemberEntry>();
     List<DBObject> dbObjects = find(getDB(), getCollection(), query, Constant.FIELDS, orderBy);
     for (DBObject dbo : dbObjects) {
@@ -522,15 +477,9 @@ public class MemberDao extends BaseDao {
    * @return
    */
   public MemberEntry getHead(ObjectId groupId) {
-    BasicDBObject query = new BasicDBObject()
-            .append("grid", groupId)
-            .append("rl", 2)
-            .append("r", 0);
+    BasicDBObject query = new BasicDBObject("grid", groupId).append("rl", 2).append("r", Constant.ZERO);
     DBObject dbo = findOne(getDB(), getCollection(), query, Constant.FIELDS);
-    if (dbo != null) {
-      return new MemberEntry(dbo);
-    }
-    return null;
+    return dbo == null ? null : new MemberEntry(dbo);
   }
 
   /**
@@ -539,13 +488,19 @@ public class MemberDao extends BaseDao {
    * @param groupId
    */
   public void cleayDeputyHead(ObjectId groupId) {
-    BasicDBObject query = new BasicDBObject()
-            .append("grid", groupId)
-            .append("rl", 1)
-            .append("r", 0);
-    BasicDBObject update = new BasicDBObject()
-            .append(Constant.MONGO_SET, new BasicDBObject("rl", 0));
+    BasicDBObject query = new BasicDBObject("grid", groupId).append("rl", 1).append("r", Constant.ZERO);
+    BasicDBObject update = new BasicDBObject().append(Constant.MONGO_SET, new BasicDBObject("rl", 0));
     update(getDB(), getCollection(), query, update);
+  }
 
+  /**
+   * 更新在群组中的头像
+   * @param userId
+   * @param avatar
+   */
+  public void updateAllAvatar(ObjectId userId,String avatar) {
+    BasicDBObject query = new BasicDBObject("uid",userId);
+    BasicDBObject update = new BasicDBObject(Constant.MONGO_SET,new BasicDBObject("av",avatar));
+    update(getDB(),getCollection(),query,update);
   }
 }

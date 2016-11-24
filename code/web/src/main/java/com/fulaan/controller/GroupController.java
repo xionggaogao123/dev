@@ -23,10 +23,7 @@ import org.bson.types.ObjectId;
 import org.docx4j.wml.P;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.bind.annotation.*;
 
 import javax.imageio.ImageIO;
 import javax.servlet.http.HttpServletRequest;
@@ -34,9 +31,7 @@ import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
+import java.util.*;
 
 /**
  * Created by jerry on 2016/10/31.
@@ -80,19 +75,19 @@ public class GroupController extends BaseController {
     List<ObjectId> userList = new ArrayList<ObjectId>();
 
     String[] users = userIds.split(",");
-    for(String user:users) {
-      if(ObjectId.isValid(user)){
+    for (String user : users) {
+      if (ObjectId.isValid(user)) {
         userList.add(new ObjectId(user));
       }
     }
 
-    if(userList.contains(owerId)) {
+    if (userList.contains(owerId)) {
       userList.remove(owerId);
     }
 
     //创建环信群聊
     String emChatId = emService.createEmGroup(owerId);
-    if(emChatId == null) {
+    if (emChatId == null) {
       return RespObj.FAILD("环信创建失败");
     }
     //创建组
@@ -100,8 +95,8 @@ public class GroupController extends BaseController {
 
     groupService.addMembers(groupId, userList);
 
-    for(ObjectId userId:userList) {
-      emService.addUserToGroup(emChatId,userId);
+    for (ObjectId userId : userList) {
+      emService.addUserToGroup(emChatId, userId);
     }
 
     groupService.updateHeadImage(groupId);
@@ -234,6 +229,13 @@ public class GroupController extends BaseController {
     return RespObj.SUCCESS("操作成功");
   }
 
+  /**
+   * 加入群组
+   * @param emChatId
+   * @return
+   * @throws IOException
+   * @throws IllegalParamException
+   */
   @RequestMapping("/join")
   @ResponseBody
   public RespObj join(String emChatId) throws IOException, IllegalParamException {
@@ -252,7 +254,6 @@ public class GroupController extends BaseController {
     }
     return RespObj.SUCCESS("操作成功");
   }
-
 
 
   /**
@@ -301,7 +302,7 @@ public class GroupController extends BaseController {
   }
 
   /**
-   * 自己退出群聊
+   * 退出群聊
    *
    * @param request
    * @param emChatId
@@ -633,6 +634,22 @@ public class GroupController extends BaseController {
     }
     groupAnnounceService.save(groupId, title, content, getUserId(), imageArray);
     return RespObj.SUCCESS("发布成功");
+  }
+
+  /**
+   * 获取未读消息个数
+   *
+   * @return
+   */
+  @RequestMapping("/offlineMsgCount")
+  @ResponseBody
+  public RespObj msgCount() {
+
+    ObjectId userId = getUserId();
+    int msgCount = EaseMobAPI.getOfflineMsgCount(userId.toString());
+    Map<String, Object> map = new HashMap<String, Object>();
+    map.put("offlineCount", msgCount);
+    return RespObj.SUCCESS(map);
   }
 
 

@@ -204,6 +204,8 @@ define(['jquery', 'pagination', 'common'], function (require, exports, module) {
 
             $('.sp-do').click(function(){
 
+                if($('#coms').is(':animated'))
+                    return;
                 var wid=widths[index];
                 index++;
                 wid = wid + 39;
@@ -221,6 +223,8 @@ define(['jquery', 'pagination', 'common'], function (require, exports, module) {
             });
 
             $('.sp-up').click(function(){
+                if($('#coms').is(':animated'))
+                    return;
                 var wid=widths[--index];
                 wid = wid + 39;
                 IWid += wid;

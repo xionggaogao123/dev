@@ -1,6 +1,7 @@
 package com.fulaan.dao;
 
 import com.db.base.BaseDao;
+import com.db.factory.MongoFacroty;
 import com.fulaan.entry.GroupEntry;
 import com.mongodb.BasicDBObject;
 import com.mongodb.DBObject;
@@ -12,47 +13,40 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
- * Created by moslpc on 2016/11/1.
+ * Created by jerry on 2016/11/1.
  * 讨论组 Dao层
  */
 @Service
-public class GroupDao extends BaseDao{
+public class GroupDao extends BaseDao {
 
-  private String getCollection(){
-    return Constant.COLLECTION_FORUM_COMMUNITY_GROUP;
-  }
-
-  public void save(GroupEntry entry){
-    save(getDB(),getCollection(),entry.getBaseEntry());
+  public ObjectId add(GroupEntry entry) {
+    save(MongoFacroty.getAppDB(), Constant.COLLECTION_FORUM_COMMUNITY_GROUP, entry.getBaseEntry());
+    return entry.getID();
   }
 
   /**
    * 获得 GroupEntry
    *
-   * @param _id
+   * @param groupId
    * @return
    */
-  public GroupEntry findByObjectId(ObjectId groupId){
-    BasicDBObject query = new BasicDBObject()
-            .append(Constant.ID,groupId);
-    DBObject dbo = findOne(getDB(),getCollection(),query,Constant.FIELDS);
-    if(dbo != null){
-      return new GroupEntry(dbo);
-    }
-    return null;
+  public GroupEntry findByObjectId(ObjectId groupId) {
+    BasicDBObject query = new BasicDBObject(Constant.ID, groupId);
+    DBObject dbo = findOne(MongoFacroty.getAppDB(), Constant.COLLECTION_FORUM_COMMUNITY_GROUP, query, Constant.FIELDS);
+    return dbo == null ? null : new GroupEntry(dbo);
   }
 
   /**
    * 获得 List
+   *
    * @param ids
    * @return
    */
-  public List<GroupEntry> findByIdList(List<ObjectId> ids){
-    BasicDBObject query = new BasicDBObject()
-            .append(Constant.ID,new BasicDBObject("$in",ids));
-    List<DBObject> dbos = find(getDB(),getCollection(),query);
+  public List<GroupEntry> findByIdList(List<ObjectId> ids) {
+    BasicDBObject query = new BasicDBObject(Constant.ID, new BasicDBObject(Constant.MONGO_IN, ids));
+    List<DBObject> dbos = find(MongoFacroty.getAppDB(), Constant.COLLECTION_FORUM_COMMUNITY_GROUP, query);
     List<GroupEntry> groupEntrys = new ArrayList<GroupEntry>();
-    for(DBObject dbo:dbos){
+    for (DBObject dbo : dbos) {
       groupEntrys.add(new GroupEntry(dbo));
     }
     return groupEntrys;
@@ -60,49 +54,40 @@ public class GroupDao extends BaseDao{
 
   /**
    * 根据环信id得到 群聊id
+   *
    * @param emChatId
    * @return
    */
-  public ObjectId getGroupIdByEmchatId(String emChatId){
-    BasicDBObject query = new BasicDBObject()
-            .append("grcd",emChatId);
-    BasicDBObject field = new BasicDBObject()
-            .append(Constant.ID,1);
-    DBObject dbo = findOne(getDB(),getCollection(),query,field);
-    if(dbo == null){
-      return null;
-    }
-    return (ObjectId)dbo.get("_id");
+  public ObjectId getGroupIdByEmchatId(String emChatId) {
+    BasicDBObject query = new BasicDBObject("grcd", emChatId);
+    BasicDBObject field = new BasicDBObject(Constant.ID, 1);
+    DBObject dbo = findOne(MongoFacroty.getAppDB(), Constant.COLLECTION_FORUM_COMMUNITY_GROUP, query, field);
+    return dbo == null ? null : (ObjectId) dbo.get(Constant.ID);
   }
 
   /**
    * 获取群聊头像
+   *
    * @param groupId
    * @return
    */
   public String getHeadImage(ObjectId groupId) {
-    BasicDBObject query = new BasicDBObject()
-            .append(Constant.ID,groupId);
-    BasicDBObject field = new BasicDBObject()
-            .append("himg",1);
-    DBObject dbo = findOne(getDB(),getCollection(),query,field);
-    if(dbo != null){
-      return (String)dbo.get("himg");
-    }
-    return "";
+    BasicDBObject query = new BasicDBObject(Constant.ID, groupId);
+    BasicDBObject field = new BasicDBObject("himg", 1);
+    DBObject dbo = findOne(MongoFacroty.getAppDB(), Constant.COLLECTION_FORUM_COMMUNITY_GROUP, query, field);
+    return dbo == null ? null : (String) dbo.get("himg");
   }
 
   /**
    * 设置群聊头像
+   *
    * @param groupId
    * @param url
    */
-  public void setHeadImage(ObjectId groupId,String url){
-    BasicDBObject query = new BasicDBObject()
-            .append(Constant.ID,groupId);
-    BasicDBObject update = new BasicDBObject()
-            .append(Constant.MONGO_SET,new BasicDBObject("himg",url));
-    update(getDB(),getCollection(),query,update);
+  public void setHeadImage(ObjectId groupId, String url) {
+    BasicDBObject query = new BasicDBObject(Constant.ID, groupId);
+    BasicDBObject update = new BasicDBObject(Constant.MONGO_SET, new BasicDBObject("himg", url));
+    update(MongoFacroty.getAppDB(), Constant.COLLECTION_FORUM_COMMUNITY_GROUP, query, update);
   }
 
   /**
@@ -112,80 +97,82 @@ public class GroupDao extends BaseDao{
    * @param name
    */
   public void updateGroupName(ObjectId groupId, String name) {
-    BasicDBObject query = new BasicDBObject()
-            .append(Constant.ID,groupId);
-    BasicDBObject update = new BasicDBObject()
-            .append(Constant.MONGO_SET,new BasicDBObject("grnm",name));
-    update(getDB(),getCollection(),query,update);
+    BasicDBObject query = new BasicDBObject(Constant.ID, groupId);
+    BasicDBObject update = new BasicDBObject(Constant.MONGO_SET, new BasicDBObject("grnm", name));
+    update(MongoFacroty.getAppDB(), Constant.COLLECTION_FORUM_COMMUNITY_GROUP, query, update);
   }
 
   /**
    * 获取群聊名称
+   *
    * @param groupId
    * @return
    */
   public String getGroupName(ObjectId groupId) {
-    BasicDBObject query = new BasicDBObject()
-            .append(Constant.ID,groupId);
-    BasicDBObject field = new BasicDBObject()
-            .append("grnm",1);
-    DBObject dbo = findOne(getDB(),getCollection(),query,field);
-    if(dbo != null){
-      return (String)dbo.get("grnm");
-    }
-    return "";
+    BasicDBObject query = new BasicDBObject(Constant.ID, groupId);
+    BasicDBObject field = new BasicDBObject("grnm", 1);
+    DBObject dbo = findOne(MongoFacroty.getAppDB(), Constant.COLLECTION_FORUM_COMMUNITY_GROUP, query, field);
+    return dbo == null ? null : (String) dbo.get("grnm");
   }
 
+  /**
+   * 获取环信id
+   *
+   * @param groupId
+   * @return
+   */
   public String getEmchatIdByGroupId(ObjectId groupId) {
-    BasicDBObject query = new BasicDBObject()
-            .append(Constant.ID,groupId);
-    BasicDBObject field = new BasicDBObject()
-            .append("grcd",1);
-    DBObject dbo = findOne(getDB(),getCollection(),query,field);
-    if(dbo != null){
-      return (String) dbo.get("grcd");
-    }
-    return null;
+    BasicDBObject query = new BasicDBObject(Constant.ID, groupId);
+    BasicDBObject field = new BasicDBObject("grcd", 1);
+    DBObject dbo = findOne(MongoFacroty.getAppDB(), Constant.COLLECTION_FORUM_COMMUNITY_GROUP, query, field);
+    return dbo == null ? null : (String) dbo.get("grcd");
   }
 
-  public void setOwerId(ObjectId groupId,ObjectId owerId){
-    BasicDBObject query = new BasicDBObject()
-            .append(Constant.ID,groupId);
-    BasicDBObject update = new BasicDBObject()
-            .append(Constant.MONGO_SET,new BasicDBObject("grow",owerId));
-    update(getDB(),getCollection(),query,update);
+  /**
+   * 更新群组拥有者
+   *
+   * @param groupId
+   * @param owerId
+   */
+  public void setOwerId(ObjectId groupId, ObjectId owerId) {
+    BasicDBObject query = new BasicDBObject(Constant.ID, groupId);
+    BasicDBObject update = new BasicDBObject(Constant.MONGO_SET, new BasicDBObject("grow", owerId));
+    update(MongoFacroty.getAppDB(), Constant.COLLECTION_FORUM_COMMUNITY_GROUP, query, update);
   }
 
-  public void delete(ObjectId groupId){
-    BasicDBObject query = new BasicDBObject()
-            .append(Constant.ID,groupId);
-    remove(getDB(),getCollection(),query);
+  /**
+   * 删除群组
+   *
+   * @param groupId
+   */
+  public void delete(ObjectId groupId) {
+    BasicDBObject query = new BasicDBObject(Constant.ID, groupId);
+    BasicDBObject update = new BasicDBObject(Constant.MONGO_SET, new BasicDBObject("r", 1));
+    update(MongoFacroty.getAppDB(), Constant.COLLECTION_FORUM_COMMUNITY_GROUP, query, update);
   }
 
   /**
    * 根据群组id 获取 社区id
+   *
    * @param groupId
    * @return
    */
   public ObjectId getCommunityIdByGroupId(ObjectId groupId) {
-    BasicDBObject query = new BasicDBObject()
-            .append(Constant.ID,groupId);
-    BasicDBObject field = new BasicDBObject()
-            .append("cmid",1);
-    DBObject dbo = findOne(getDB(),getCollection(),query,field);
-    return (ObjectId)dbo.get("cmid");
+    BasicDBObject query = new BasicDBObject(Constant.ID, groupId);
+    BasicDBObject field = new BasicDBObject("cmid", 1);
+    DBObject dbo = findOne(MongoFacroty.getAppDB(), Constant.COLLECTION_FORUM_COMMUNITY_GROUP, query, field);
+    return (ObjectId) dbo.get("cmid");
   }
 
   /**
    * 更新是否更改群聊名称
+   *
    * @param groupId
    * @param i
    */
-  public void updateIsM(ObjectId groupId,int i) {
-    BasicDBObject query = new BasicDBObject()
-            .append(Constant.ID,groupId);
-    BasicDBObject update = new BasicDBObject()
-            .append(Constant.MONGO_SET,new BasicDBObject("ism",i));
-    update(getDB(),getCollection(),query,update);
+  public void updateIsM(ObjectId groupId, int ism) {
+    BasicDBObject query = new BasicDBObject(Constant.ID, groupId);
+    BasicDBObject update = new BasicDBObject(Constant.MONGO_SET, new BasicDBObject("ism", ism));
+    update(MongoFacroty.getAppDB(), Constant.COLLECTION_FORUM_COMMUNITY_GROUP, query, update);
   }
 }

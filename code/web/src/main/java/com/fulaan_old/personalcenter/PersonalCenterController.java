@@ -2,6 +2,7 @@ package com.fulaan_old.personalcenter;
 
 import com.fulaan.controller.BaseController;
 import com.fulaan.cache.CacheHandler;
+import com.fulaan.service.MemberService;
 import com.fulaan_old.experience.service.ExperienceService;
 import com.fulaan_old.forum.service.FScoreService;
 import com.fulaan.user.service.UserService;
@@ -41,18 +42,21 @@ public class PersonalCenterController extends BaseController {
 
     private static final Logger logger = Logger.getLogger(PersonalCenterController.class);
 
-    @Autowired
-    private UserService userService;
-
-    private FScoreService fScoreService = new FScoreService();
+  @Autowired
+  private UserService userService;
+  @Autowired
+  private FScoreService fScoreService;
 
     @Autowired
     private ExperienceService experienceService;
 
-    @RequestMapping("/letterpage")
-    public String letterPage() {
-        return "personalcenter/myMessage";
-    }
+  @Autowired
+  private MemberService memberService;
+
+  @RequestMapping("/letterpage")
+  public String letterPage() {
+    return "personalcenter/myMessage";
+  }
 
 
     @RequestMapping("/replyletterpage")
@@ -161,6 +165,7 @@ public class PersonalCenterController extends BaseController {
 
         userService.update(getUserId(), "avt", input);
 
+    memberService.updateAllAvatar(getUserId(),input);
 
         sv.setAvatar(input);
 

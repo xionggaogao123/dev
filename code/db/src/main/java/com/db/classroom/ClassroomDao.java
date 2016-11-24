@@ -16,7 +16,7 @@ import java.util.Map;
 /**
  * Created by qiangm on 2015/10/10.
  */
-public class ClassRoomDao extends BaseDao {
+public class ClassroomDao extends BaseDao {
     /**
      * 增加一个教室
      *

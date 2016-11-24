@@ -1,0 +1,56 @@
+#fc_my_classes{
+    background: #ffffff;
+    border:1px solid #D0D0D0;
+    overflow: hidden;
+}
+
+.my_class_container {
+    padding:10px;
+    display:block;
+}
+
+.my_class_item.active{
+    margin-left:30px;
+    /*padding-left: 50px;*/
+    /*padding-top:3px;*/
+    padding:13px 0px 10px 46px;
+    font-size:14px;
+    display:inline-block;
+    width:165px;
+    min-height: 22px;
+    background: url('/img/K6KT/my_classes/class_pressed.png') no-repeat center left;
+    color: rgb(255,126,0);
+    word-wrap: break-word;
+    word-break: break-all;
+}
+
+.my_class_item{
+    margin-left:30px;
+    /*padding-left: 50px;*/
+    /*padding-top:3px;*/
+    padding:13px 0px 10px 46px;
+    font-size:14px;
+    display:inline-block;
+    width:165px;
+    min-height: 22px;
+    background: url('/img/K6KT/my_classes/class.png') no-repeat center left;
+    cursor: pointer;
+    word-wrap: break-word;
+    word-break: break-all;
+}
+
+.my_class_item:hover{
+    background: url('/img/K6KT/my_classes/class_pressed.png') no-repeat center left;
+    color: rgb(255,126,0);
+    cursor: pointer;
+}
+
+#fc_my_classes a:hover{
+    text-decoration:underline;
+}
+
+#fc_my_classes a{
+    margin-left:98px;
+    color:white;
+    font-weight: normal;
+}

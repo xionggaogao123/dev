@@ -1,0 +1,227 @@
+<div ng-controller="NewQuestCtrl as ctrl">
+    <div class="question-head">
+        <a href="/questionnaire/load.do">取消</a>
+        <span class="ctrl span-break" ng-bind="name" title="{{name}}"></span>
+        <button class="publish" ng-click="ctrl.submit()">完成并发布</button>
+        <label for="docUplaoder" class="change">
+            更换文件
+        </label>
+    </div>
+    <!--<div class="horiz-container">-->
+        <!--<div class="horiz_left">-->
+
+
+            <div class="doc-container" style="overflow:hidden">
+
+                <!--<div ng-include src="docUrl"></div>-->
+                <iframe src="{{docUrl}}" width="550" height="800" ng-show="!ie"></iframe>
+                <div1 class="configuration_main_left" id="showPdf" style="margin-top: 10px;float: left;height: 800px;width:550px!important" ng-show="ie">
+                    <a id="viewerPlaceHolder" style="width:645px;height:950px;display:inline" class="configuration_main_left_I" href="{{docUrl}}"></a>
+                </div1>
+
+                <div class="doc-uploader-container">
+                    <div class="size-zero hidden">
+                        <input id="docUplaoder" type="file" nv-file-select="" uploader="uploader"
+                               accept="application/msword"/>
+                    </div>
+                    <label for="docUplaoder" style="cursor: pointer" ng-show="docUrl == null">
+                        <div class="doc-uploader-label">
+                            <span class="title">上传问卷</span>
+                            <br>
+                            <span>*注：文档名称将自动获取为问卷名称</span>
+                        </div>
+                    </label>
+
+                    <div class="tip" ng-show="uploading">
+                        <div class="header">提示</div>
+                        <div class="content">
+                            <i class="fa fa-spinner fa-spin"/>
+                            问卷上传中...
+                        </div>
+                    </div>
+                    <div class="tip" ng-show="uploadDone">
+                        <div class="header">提示</div>
+                        <div class="content">
+                            问卷上传成功！
+                        </div>
+                    </div>
+                </div>
+            </div>
+        <!--</div>-->
+        <div class="configuration_main_right">
+            <div class="answer-sheet-container">
+                <div class="answer-sheet-title">
+                    问卷填写与配置
+                </div>
+                <div class="answer-sheet-head-container">
+                    <label>问卷名称<input class="deadline-input" name="name" ng-model="name">
+                </label>
+                </div>
+
+                <div class="answer-sheet-head-container">
+
+                        <label>截止日期<input class="deadline-input" name="endDate" ui-date="endDateOpt" ng-model="endDate"
+                                           ui-date-format="yymmdd"></label>
+
+                  </div>
+
+                <div class="answer-sheet-option answer-sheet-head-container">
+                    <div>
+                        <span>调查范围</span>
+
+                        <div class="category-option-container">
+                        <div>
+                            <input type="checkbox" id="schoolCheck" ng-model="ctrl.schoolChecked"
+                                   ng-change="ctrl.checkAll()"/>
+                            <label for="schoolCheck">全校</label>
+                        </div>
+                        <div ng-repeat="classInfo in ctrl.classes">
+                            <input ng-model="ctrl.classIds[classInfo.id]"
+                                   name="classIds"
+                                   type="checkbox" classId="{{classInfo.id}}" id="{{classInfo.id}}Check"
+                                   ng-change="ctrl.checkChange()">
+                            <label for="{{classInfo.id}}Check">{{classInfo.className}}</label>
+                        </div>
+                        </div>
+                    </div>
+
+                    <div>
+
+                        <span>参加人员</span>
+                    <span>
+                    <span>
+                        <input type="checkbox" id="allRespondentCheck" ng-model="ctrl.allRespondent"
+                               ng-change="ctrl.checkAll()"/>
+                        <label for="allRespondentCheck">全部</label>
+                    </span>
+                    <span ng-repeat="respondent in ctrl.respondentCheck">
+                        <input type="checkbox" id="{{respondent.id}}Check"
+                               ng-model="ctrl.respondentCheck[$index].checked" ng-change="ctrl.checkChange()"/>
+                        <label for="{{respondent.id}}Check">{{respondent.name}}</label>
+                    </span>
+                        </span>
+                    </div>
+
+                </div>
+                <table class="answer-table">
+                    <tr ng-repeat-start="answerSet in ctrl.answerSheet track by $index">
+                        <td class="answer-left-column">题号</td>
+                        <td>
+                            {{$index+1}}
+                                <span class="float-right">
+                                    <span class="question-up-op" ng-click="move($index, -1)"
+                                          ng-show="!$first"></span>
+                                    <span class="question-down-op" ng-click="move($index, 1)"
+                                          ng-show="!$last"></span>
+                                    <span class="question-remove-op" ng-click="removeQuestion($index)"></span>
+                                </span>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>类型</td>
+                        <td>
+                                    <span class="question-type-button" type="choose" ng-class="{active:answerSet > 0 && answerSet<10000}"
+                                          ng-click="chooseType($index, 4)">单选</span>
+                                    <span class="question-type-button" type="choose" ng-class="{active:answerSet < 0}"
+                                          ng-click="chooseType($index, -4)">多选</span>
+                                    <span class="question-type-button" type="fill" ng-class="{active:answerSet == 0}"
+                                          ng-click="chooseType($index, 0)">问答</span>
+                                    <span class="question-type-button" type="fill" ng-class="{active:answerSet >10000}"
+                                          ng-click="chooseType($index, 100000010)">打分</span>
+                        </td>
+                    </tr>
+                    <tr ng-show="answerSet>10000">
+                        <td>最低分</td>
+                        <td>
+                            <input name="minScore{{$index}}" type="text" value="{{math.floor(answerSet/10000)-10000}}" >
+                        </td>
+                    </tr>
+                    <tr ng-show="answerSet>10000">
+                        <td>最高分</td>
+                        <td>
+                            <input name="maxScore{{$index}}" type="text" value="{{(answerSet%10000)}}" >
+                        </td>
+                    </tr>
+                    <tr ng-repeat-end ng-show="answerSet!=0 && answerSet<10000">
+                        <td>选项</td>
+                        <td>
+                            <span class="float-right">
+                                <button class="answer-add-one"
+                                            ng-click="answerAdd($index)"
+                                            ng-show="answerSet<26 && answerSet > -26"></button>
+                                <button class="answer-minus-one" ng-click="answerMinus($index)"
+                                            ng-show="answerSet>1 || answerSet < -1"></button>
+                            </span>
+
+                            <div class="answer-option-container">
+                                    <span ng-repeat="n in ctrl.getAnswers(answerSet)">
+                                        <label>{{n}}</label>；
+                                    </span>
+                            </div>
+                        </td>
+                    </tr>
+
+                </table>
+            </div>
+            <div class="configuration_bottom" style="overflow: visible;">
+                <span class="configuration_bottom_I" ng-click="ctrl.increaseAnswerSheet()">添加题目</span>
+                <span class="configuration_bottom_I" style="position: relative;">
+                    <label ng-click="ctrl.toggleShowBatch()" style="cursor: pointer;">批量添加</label>
+                    <div class="absent-popup-container" style="right: -21px;cursor: default;" ng-show="ctrl.showBatch">
+                        <div  class="part-user-container absent-popup batch-upload">
+                            <table class="answer-table" style="margin-bottom: 10px;border-bottom: 1px solid #aaa;">
+                                <tr>
+                                    <td>添加个数</td><td><input placeholder="点击输入批量题目个数" ng-model="batchCount" type="number" min="1"></td>
+                                </tr>
+                                <tr>
+                                    <td>类型</td>
+                                    <td>
+                                        <span class="question-type-button active" type="choose" ng-class="{active:batchAnswerSet > 0 && batchAnswerSet<10000}" ng-click="chooseType(4)">单选</span>
+                                        <span class="question-type-button" type="choose" ng-class="{active:batchAnswerSet < 0}" ng-click="chooseType(-4)">多选</span>
+                                        <span class="question-type-button" type="fill" ng-class="{active:batchAnswerSet == 0}" ng-click="chooseType(0)">问答</span>
+                                        <span class="question-type-button" type="fill" ng-class="{active:batchAnswerSet >10000}"
+                                              ng-click="chooseType(100000010)">打分</span>
+                                    </td>
+                                </tr>
+
+                                <tr ng-show="batchAnswerSet!=0&& batchAnswerSet<10000">
+                                    <td>选项</td>
+                                    <td>
+                                        <span class="float-right">
+                                            <button class="answer-add-one" ng-click="addBatch()"
+                                                    ng-show="batchAnswerSet<26 && batchAnswerSet > -26"></button>
+                                            <button class="answer-minus-one" ng-click="minusBatch()"
+                                                    ng-show="batchAnswerSet>1 || batchAnswerSet < -1"></button>
+                                        </span>
+
+                                        <div class="answer-option-container">
+                                            <span ng-repeat="n in getAnswers(batchAnswerSet) track by $index">
+                                                <label>{{n}}</label>；
+                                            </span>
+                                        </div>
+                                    </td>
+                                </tr>
+                                <tr ng-show="batchAnswerSet>10000">
+                                    <td>最低分</td>
+                                    <td>
+                                        <input name="batchMinScore" type="text" value="{{math.floor(batchAnswerSet/10000)-10000}}" >
+                                    </td>
+                                </tr>
+                                <tr ng-show="batchAnswerSet>10000">
+                                    <td>最高分</td>
+                                    <td>
+                                        <input name="batchMaxScore" type="text" value="{{(batchAnswerSet%10000)}}" >
+                                    </td>
+                                </tr>
+                                <tr><td colspan="2">
+                                    <span class="configuration_bottom_I" ng-click="batchAddToSheet()">确定</span>
+                            </table>
+                        </div>
+                    </div>
+                </span>
+            </div>
+        </div>
+</div>
+
+    <!--</div>-->
+

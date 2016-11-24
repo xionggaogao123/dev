@@ -1,0 +1,301 @@
+html,body,div,h1,h2,h3,h4,h5,h6,p,img,dl,dt,dd,ol,ul,li,a,b,i,em,strong,form,table,tr,th,td,span,input,fieldset,select,option,textarea,label,iframe,header,nav,aside,article,section,button{margin:0;padding:0;border:0;}
+h1,h2,h3,h4,h5,h6{ font-weight:normal;}
+
+img{display:block;}
+ol,ul{ list-style:none;}
+i,b,em,strong { font-style:normal; text-decoration:none; font-weight: normal;}
+body{font-family:Microsoft YaHei;color:#656565; background-color:#fff;position:relative;z-index:1;}
+a{text-decoration:none; color:black;font-family:'Microsoft YaHei','Arial', 'Helvetica', 'sans-serif','simsun','Lucida Grande','Lucida Sans Unicode';}
+a:hover{color: #ff5a0b;}
+img{display: inline}
+input{outline: none;}
+ul{list-style-type: none}
+img{border-style: none}
+
+
+
+.I img{
+    position: relative;
+    top: 12px !important;
+}
+.middle_info{
+    width: 960px;
+    margin: 0 auto;
+}
+.middle_info>dl>dt{
+    height: 50px;
+    line-height: 50px;
+    font-size: 16px;
+}
+.middle_info>dl>dd{
+    width: 960px;
+    min-height: 795px;
+    border: 1px solid #dadada;
+    margin-bottom: 5px;
+}
+.middle_left{
+    width: 152px;
+    height: 795px;
+}
+.middle_left a{
+    display: inline-block;
+    height: 60px;
+    width: 155px;
+    line-height: 60px;
+    text-align: center;
+    border-bottom:1px solid #dadada;
+    color: #010101;
+    font-size: 17px;
+    cursor: pointer;
+}
+.cur{
+    background: #7f868b;
+    color: #ffffff !important;
+}
+.middle_right_I{
+    border-left: 1px solid #dadada;
+    display: block !important;
+}
+.middle_right_I>div{
+    min-height: 795px;
+}
+.middle_right_I>div>dl{
+    width: 722px;
+    margin: 0px 0px 0px 42px;
+
+}
+.middle_right_I>div>dl>dt{
+    font-size: 17px;
+    border-bottom: 1px solid #999999;
+    height: 35px;
+    line-height: 35px;
+}
+.middle_right_I>div>dl>dd{
+    width: 722px;
+    height: 35px;
+    line-height: 35px;
+    cursor: pointer;
+}
+.middle_right_I>div>dl>dd>a{
+    color: #454545;
+    font-size: 15px;
+    float: left;
+    width: 35em;
+    text-overflow:ellipsis;
+    -moz-text-overflow:ellipsis;
+    overflow:hidden;
+    white-space:nowrap;
+}
+.middle_right_I>div>dl>dd>i{
+    color: #bababa;
+    font-size: 14px;
+    float: right;
+}
+.middle_right_I>div>dl>dt>em{
+    float: left;
+}
+.middle_right_I>div>dl>dt>i{
+    float: right;
+    font-size: 14px;
+    cursor:pointer;
+}
+.middle_right_II{
+    border-left: 1px solid #dadada;
+    display: none;
+}
+.middle_right_II>div{
+    min-height: 795px;
+}
+.middle_right_II>div>dl{
+    width: 722px;
+    margin: 0px 0px 0px 42px;
+}
+.news_main_title{
+    font-family: Microsoft Yahei;
+    font-size: 20px !IMPORTANT;
+    height: 45px !IMPORTANT;
+    line-height: 45px !IMPORTANT;
+    color: #4d4d4d;
+    font-weight: bold;
+    text-align:center;
+}
+.news_main_riqi{
+    color:#a5a5a5;
+    font-size: 10px;
+    font-weight: bold;
+    text-align:center;
+    display: block;
+    height: 35px !IMPORTANT;
+}
+.news_main_bottom{
+    height: auto !IMPORTANT;
+}
+.news_main_bottom>p{
+    color: #6e6e6e;
+    font-size: 15px;
+    margin-top:20px;
+    line-height:23px;
+    text-indent:2em;
+    text-overflow:ellipsis;
+    word-break: break-all;
+    width: 700px;
+}
+.news_main_info{
+    text-align:center;
+    margin-top:20px;
+    width: 410px !IMPORTANT;
+    margin:0 auto
+}
+/*.news_main_info img{
+    white:auto!important;
+    height:auto!important;
+}*/
+.news_main_f{
+    font-size: 16px;
+    color: #9e9e9e;
+    height: 100px !IMPORTANT;
+    line-height: 100px !IMPORTANT;
+}
+.news_main_f>a{
+    color: #9e9e9e !important
+
+
+}
+.news_main_f>i{
+    float: right;
+    cursor: pointer;
+}
+.middle_info td{
+    vertical-align: top;
+}
+.middle_right_III{
+    margin-left: 40px !important;
+}
+.middle_view{
+    height: 30px;
+    width: 100%;
+}
+.news_line{
+    border-left: 1px solid #dadada;
+}
+.news_right{
+    width: 722px;
+    margin: 0 0 0 42px;
+
+}
+.content_manage_info_sp {
+    color: #fc9c39;
+}
+.notice-page-paginator {
+    width: 100%;
+    margin: 40px auto 20px auto;
+    text-align: center;
+    display: none;
+}
+.news-page-paginator {
+    width: 100%;
+    margin: 40px auto 20px auto;
+    text-align: center;
+    display: none;
+}
+.first-page, .last-page {
+    padding: 3px 15px;
+    color: #838383;
+    border-radius: 4px;
+    border: 1px solid #838383;
+    background-color: #F6F7F6;
+    cursor: pointer;
+    margin: 0 2px;
+}
+.page-paginator span.active {
+    background-color: #E6E6E6;
+    color: #779554;
+}
+.page-index span {
+    padding: 3px 8px;
+    color: #838383;
+    border-radius: 4px;
+    border: 1px solid #838383;
+    background-color: #F6F7F6;
+    cursor: pointer;
+    margin: 0 2px;
+}
+.login-btn{
+    float: right;
+    margin-top: 15px;
+    background-color: #EC7500;
+    margin-left: 15px;
+    border-radius: 5px;
+    color: #fff;
+    font-size: 15px;
+    height: 40px;
+    line-height: 40px;
+    width: 100px;
+    text-align: center;
+}
+.input-password{
+    margin-left: 15px;
+    background: #fff url(../images/K6KT-4.png) no-repeat 12px 8px;
+}
+.input-account{
+    background: #fff url(../images/K6KT-3.png) no-repeat 12px 8px;
+}
+.input-password{
+    float: right;
+    margin-top: 15px;
+    padding: 11px;
+    padding-left: 52px;
+    width: 136px;
+    border-radius: 5px;
+    border: 1px solid darkgray;
+}
+.input-account{
+    float: right;
+    margin-top: 15px;
+    padding: 11px;
+    padding-left: 52px;
+    width: 136px;
+    border-radius: 5px;
+    border: 1px solid darkgray
+}
+
+
+.password-error{
+    float: right;
+    right: 605px!important;
+    top: 38px;
+    margin-top: -12px;
+    color: #E43838;
+    display: none;
+    position: absolute;
+    padding: 0px!important;
+    border: 0px!important;
+    background: #ffffff!important;
+    font-size: 13px!important;
+    height: 0px!important;
+}
+.username-error{
+    float: right;
+    right: 600px!important;
+    top: 38px;
+    margin-top: -12px;
+    color: #E43838;
+    display: none;
+    position: absolute;
+    padding: 0px!important;
+    border: 0px!important;
+    background: #ffffff!important;
+    font-size: 13px!important;
+    height: 0px!important;
+}
+.login-R{
+    float: right;
+    position: relative;
+    left: 35px;
+    top: -4px;
+}
+.login-R img{
+    vertical-align: middle;
+
+}
+

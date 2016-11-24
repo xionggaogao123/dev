@@ -1,0 +1,15 @@
+#fc_my_colleagues{
+    background: #ffffff;
+    border:1px solid #D0D0D0;
+}
+
+.my_colleagues_a:hover{
+    color:rgb(255,126,0) ;
+}
+
+.my_colleagues{
+    background: url('/img/K6KT/my_classes/colleague.png') no-repeat center left;
+    padding:12px 0px 12px 45px;
+    font-size:14px;
+    margin-left: 60px;
+}

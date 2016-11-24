@@ -1,0 +1,98 @@
+.kehou-main{
+	position: relative;
+	width: 770px;
+	margin-top: 10px
+}
+.kehou-top{
+	height: 75px;
+	line-height: 75px;
+	width: 100%;
+}
+.kehou-top select{
+	width: 130px;
+	height: 36px;
+	border:1px solid #dfdfdf;
+	margin-right: 20px;
+}
+.kehou-top input{
+	width: 388px;
+	height: 36px;
+	border:1px solid #dfdfdf;
+	text-indent: 0.5em;
+}
+.kehou-top span{
+	display: inline-block;
+	width: 60px;
+	height: 40px;
+	line-height: 40px;
+	text-align: center;
+	background: #ff8a00;
+	cursor: pointer;
+	color: white;
+	vertical-align:middle;
+	margin-left: -5px;
+}
+.kehou-middle div{
+	width: 100%;
+	text-align: center;
+	height: 62px;
+	line-height: 62px;
+	background: #dfdfdf;
+	font-size: 15px;
+}
+.kehou-middle tr td{
+	border:1px solid #dfdfdf;
+	border-top: none;
+	height: 58px;
+	text-align: center;
+}
+.kehou-middle tr td em{
+	float: left;
+	display: inline-block;
+	width: 160px;
+	text-align: center;
+}
+.kehou-middle tr td span{
+	float: right;
+	margin-right: 45px;
+	display: inline-block;
+	width: 280px;
+	text-align: left;
+}
+/*分页*/
+.page-paginator {
+	width: 100%;
+	margin: 40px auto 20px auto;
+	text-align: center;
+	display: none;
+}
+.page-index span {
+	padding: 3px 8px;
+	color: #838383;
+	border-radius: 4px;
+	border: 1px solid #838383;
+	background-color: #F6F7F6;
+	cursor: pointer;
+	margin: 0 2px;
+}
+.first-page,.last-page {
+	padding: 3px 15px;
+	color: #838383;
+	border-radius: 4px;
+	border: 1px solid #838383;
+	background-color: #F6F7F6;
+	cursor: pointer;
+	margin: 0 2px;
+}
+.page-paginator span.active {
+	background-color:#E6E6E6;
+	color: #779554;
+}
+.uploadify-button{
+	cursor: pointer;
+	position: absolute;
+	background: url("/img/shijuanbianjiqi.png") no-repeat;
+	width: 85px;
+	height:85px;
+	right:-85px;
+}

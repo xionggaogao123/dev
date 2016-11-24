@@ -1,0 +1,972 @@
+/*****************加班申请管理******************/
+.tab-main{
+	margin-top: -30px;
+}
+.h-cursor{
+	cursor:pointer;
+}
+.JBSQ-top{
+	height: 75px;
+	line-height: 75px;
+	border-bottom:3px solid #eeeeee;
+}
+.JBSQ-top input{
+	width: 80px;
+	height: 30px;
+	line-height: 30px;
+	text-indent: 0.5em;
+	border:1px solid #dcdcdc;
+}
+.JBSQ-top .JBSQ-day{
+	width: 150px;
+}
+.JBSQ-top em{
+	margin-left: 10px;
+}
+.JBSQ-top span{
+	display: inline-block;
+	width: 80px;
+	height: 30px;
+	border:1px solid #cacaca;
+	text-align: center;
+	line-height: 30px;
+	cursor: pointer;
+	color: black;
+	background:#eeeeee;
+	vertical-align:middle;
+	margin-left: 20px;
+}
+.JBSQ-middle{
+	height: 65px;
+	line-height: 65px;
+	margin-left: 10px;
+}
+.JBSQ-middle .JBSQ-jiaban{
+	display: inline-block;
+	width: 85px;
+	height: 28px;
+	text-align: center;
+	line-height: 28px;
+	background: #389ad4;
+	color: white;
+	margin-right: 10px;
+}
+.JBSQ-middle .JBSQ-muban {
+    display: inline-block;
+    width: 85px;
+    height: 28px;
+    text-align: center;
+    line-height: 28px;
+    color: white;
+    background: url("/static_new/images/zhiban/WDZB-MB.jpg") 6px 7px no-repeat #afafaf;
+    padding-left: 10px;
+}
+.JBSQ-middle .JBSQ-daochu{
+	float: right;
+    display: inline-block;
+    width: 66px;
+    height: 28px;
+    text-align: center;
+    line-height: 28px;
+    color: white;
+    background: url("/static_new/images/zhiban/WSZB-DC.jpg") 12px 8px no-repeat #389ad4;
+    padding-left: 8px;
+    margin-top: 18px;
+}
+.JBSQ-main{
+	width: 760px;
+	height: auto;
+	background: #f8f8f8;
+	margin-left: 10px;
+}
+.JBSQ-main table{
+	margin: 0 10px;
+    padding: 15px 0;
+    display: inline-block;
+}
+.JBSQ-main tr th{
+	height: 55px;
+	background: #5cb95b;
+	color: white;
+}
+.JBSQ-main tr td{
+	height: 42px;
+	text-align: center;
+	word-break: break-all;
+}
+.JBSQ-main tr th,.JBSQ-main tr td{
+	border:1px solid #d2d2d2;
+}
+.JBSQ-main tr td em{
+	color: #389ad4;
+	margin: 0 5px;
+}
+.JBSQ-main .JBSQ-td{
+	background: #ececec
+}
+.JBSQ-II{
+	display: none;
+}
+.JBSQ-II .JBSQ-II-back{
+	color: #389ad4;
+	display: inline-block;
+	height: 60px;
+	line-height: 60px;
+	margin-left: 10px;
+}
+/**********************申请加班**********************/
+.popup-SQ{
+	display: none;
+	position: fixed;
+	width: 390px;
+	height: 225px;
+	top:50%;
+	left: 50%;
+	margin-top: -112.5px;
+	margin-left: -195px;
+	background: white;
+	z-index: 99999
+}
+.popup-SQ-top{
+	height: 45px;
+	line-height: 45px;
+	background: #616161;
+	color: white;
+}
+.popup-SQ-top em{
+	margin-left: 15px;
+}
+.popup-SQ-top i{
+	float: right;
+	margin-right: 15px;
+}
+.popup-SQ-main>div{
+	width: 100%;
+	text-align: center;
+	margin-top: 40px;
+
+	color: black;
+}
+.popup-SQ-main>div em{
+	font-family: Microsoft yahei;
+	font-size: 18px;
+}
+.popup-SQ-main span{
+	margin: 0 13px;
+}
+.popup-SQ-main .SQ-sy{
+	display: inline-block;
+	width: 110px;
+	height: 30px;
+	text-align: center;
+	line-height: 30px;
+	color: white;
+	background: #5cb95b;
+}
+.popup-SQ-main .SQ-sd{
+	display: inline-block;
+	width: 83px;
+	height: 28px;
+	text-align: center;
+	line-height: 28px;
+	border:1px solid #cacaca;
+	background: #eeeeee;
+	color: black;
+}
+
+.popup-MB{
+	display: none;
+	position: fixed;
+	width: 460px;
+	height: 525px;
+	top:50%;
+	left: 50%;
+	margin-top: -262.5px;
+	margin-left: -230px;
+	background: white;
+	z-index: 99999
+}
+.popup-MB-top{
+	height: 45px;
+	line-height: 45px;
+	background: #616161;
+	color: white;
+	margin-bottom: 15px;
+}
+.popup-MB-top em{
+	margin-left: 15px;
+}
+.popup-MB-top i{
+	float: right;
+	margin-right: 15px;
+}
+.popup-MB-main dd{
+	min-height: 32px;
+	line-height: 32px;
+	margin-top: 15px;
+}
+.popup-MB-main dd em{
+	display: inline-block;
+	width: 5em;
+	margin-left: 40px;
+	text-align: right;
+	vertical-align: top;
+}
+.popup-MB-main dd select{
+	border:1px solid #bebebe;
+	height: 29px;
+	width: 127px;
+}
+.popup-MB-main dd input{
+	border:1px solid #bebebe;
+	height: 29px;
+	width: 127px;
+}
+.popup-MB-main dd textarea{
+	width: 268px;
+	height: 90px;
+	border:1px solid #bebebe;
+}
+.popup-MB-bottom{
+	margin-top: 45px;
+	width: 100%;
+	text-align: center;
+}
+.popup-MB-bottom span{
+	display: inline-block;
+	width: 80px;
+	text-align: center;
+	height: 28px;
+	line-height: 28px;
+	margin: 0 10px;
+}
+.popup-MB-bottom .MB-TJ{
+	background: #5cb95b;
+	color: white;
+	border: 1px solid #5cb95b;
+}
+.popup-MB-bottom .MB-QX {
+	background: #eeeeee;
+	color: black;
+	border: 1px solid #cacaca;
+}
+
+.popup-SD{
+	display: none;
+	position: fixed;
+	width: 460px;
+	height: 510px;
+	top:50%;
+	left: 50%;
+	margin-top: -250px;
+	margin-left: -230px;
+	background: white;
+	z-index: 99999
+}
+.popup-SD-top{
+	height: 45px;
+	line-height: 45px;
+	background: #616161;
+	color: white;
+	margin-bottom: 15px;
+}
+.popup-SD-top em{
+	margin-left: 15px;
+}
+.popup-SD-top i{
+	float: right;
+	margin-right: 15px;
+}
+.popup-SD-main dd{
+	min-height: 32px;
+	line-height: 32px;
+	margin-top: 15px;
+}
+.popup-SD-main dd em{
+	display: inline-block;
+	width: 5em;
+	margin-left: 40px;
+	text-align: right;
+	vertical-align: top;
+}
+.popup-SD-main dd select{
+	border:1px solid #bebebe;
+	height: 29px;
+	width: 127px;
+}
+.popup-SD-main dd input{
+	border:1px solid #bebebe;
+	height: 29px;
+	width: 127px;
+}
+.popup-SD-main dd textarea{
+	width: 268px;
+	height: 90px;
+	border:1px solid #bebebe;
+}
+.popup-SD-bottom{
+	margin-top: 45px;
+	width: 100%;
+	text-align: center;
+}
+.popup-SD-bottom span{
+	display: inline-block;
+	width: 80px;
+	text-align: center;
+	height: 28px;
+	line-height: 28px;
+	margin: 0 10px;
+}
+.popup-SD-bottom .SD-TJ{
+	background: #5cb95b;
+	color: white;
+	border: 1px solid #5cb95b;
+}
+.popup-SD-bottom .SD-QX {
+	background: #eeeeee;
+	color: black;
+	border: 1px solid #cacaca;
+}
+.popup-JB{
+	display: none;
+	position: fixed;
+	width: 460px;
+	min-height: 490px;
+	top:50%;
+	left: 50%;
+	margin-top: -225.5px;
+	margin-left: -230px;
+	background: white;
+	z-index: 999999999999999999999
+}
+.popup-bottom-LAB>label{
+	display: block;
+	margin: -10px 0px;
+}
+.popup-JB-top{
+	height: 45px;
+	line-height: 45px;
+	background: #616161;
+	color: white;
+	margin-bottom: 15px;
+}
+.popup-JB-main{
+	margin-top: 20px;
+}
+.popup-JB-top em{
+	margin-left: 15px;
+}
+.popup-JB-top i{
+	float: right;
+	margin-right: 15px;
+}
+.popup-JB-main dd{
+	min-height: 32px;
+	line-height: 32px;
+	margin-top: 15px;
+}
+.popup-JB-main dd em{
+	display: inline-block;
+	width: 5em;
+	margin-left: 40px;
+	text-align: right;
+	vertical-align: top;
+}
+.popup-JB-bottom{
+	margin-top: 25px;
+	width: 100%;
+	text-align: center;
+	margin-bottom: 20px;
+}
+.popup-JB-bottom span{
+	display: inline-block;
+	width: 80px;
+	text-align: center;
+	height: 28px;
+	line-height: 28px;
+	margin: 0 10px;
+}
+.popup-JB-bottom .JB-TJ{
+	background: #5cb95b;
+	color: white;
+	border: 1px solid #5cb95b;
+}
+.popup-JB-main dd textarea{
+	width: 268px;
+	height: 90px;
+	border:1px solid #bebebe;
+}
+.popup-JB-bottom .JB-QX {
+	background: #eeeeee;
+	color: black;
+	border: 1px solid #cacaca;
+}
+/****************加班薪酬管理****************/
+.tab-JBXC{
+	display: none;
+}
+.JBSQ-main tr td input{
+	width: 85px;
+	height: 28px;
+	border:1px solid #d2d2d2;
+	text-align: center;
+}
+/**************加班审核******************/
+.tab-JBSH{
+	display: none;
+}
+/**************教师加班****************/
+.tab-JSJB{
+	display: none;
+}
+.tab-JSJB span{
+	display: inline-block;
+	text-align: center;
+}
+.tab-JSJB .JSJB-TX{
+	width: 110px;
+	height: 25px;
+	line-height: 25px;
+	border:1px solid #cacaca;
+	background: #eeeeee;
+	color: black;
+}
+.tab-JSJB .JSJB-QT{
+	width: 55px;
+	height: 27px;
+	line-height: 27px;
+	background: #ff8b00;
+	color: white;
+}
+.tab-JSJB .JSJB-QD{
+	width: 55px;
+	height: 27px;
+	line-height: 27px;
+	background: #5cb95b;
+	color: white;
+}
+/*********************教师我的加班******************/
+.LWDJB-top{
+	height: 60px;
+	line-height: 60px;
+	margin-left: 10px;
+}
+.LWDJB-top-left{
+	float: left;
+}
+.LWDJB-top-left span{
+	display: inline-block;
+	border:1px solid #656565;
+	border-radius: 3px;
+	width: 63px;
+	height: 20px;
+	line-height: 20px;
+	text-align: center;
+	margin-right: 15px;
+}
+.LWDJB-top-right{
+	float: right;
+}
+.LWDJB-top-right span{
+	color: #3799d3;
+	background: url("/static_new/images/zhiban/LWDJB-yan.jpg") 0px 6px no-repeat;
+	padding-left: 20px;
+}
+.LWDJB-main{
+    width: 760px;
+    height: auto;
+    background: #f8f8f8;
+    margin-left: 10px;
+}
+.LWDJB-main table {
+    margin: 0 10px;
+    padding: 15px 0;
+    display: inline-block;
+}
+.LWDJB-main tr th{
+	background: #5cb95b;
+	color: white;
+	height: 55px;
+	color: white;
+}
+.LWDJB-main tr td{
+	height: 60px;
+	position: relative;
+}
+.LWDJB-main tr th,.LWDJB-main tr td{
+	border:1px solid #d2d2d2;
+	text-align: center;
+}
+.LWDJB-main .JBSQ-td{
+	background: #ececec;
+}
+.LWDJB-main tr td img{
+	position: absolute;
+    left: -15px;
+    top: 0px;
+}
+.JBSQ-top select{
+	width: 100px;
+	margin-right: 10px;
+}
+/*************加班薪酬***************/
+.tab-LJBXC{
+	display: none;
+}
+/***************值班薪酬************************/
+.tab-LZBXC{
+	display: none;
+}
+/***************我的值班*********************/
+.LWDJB-main tr td em{
+	display: inline-block;
+	width: 325px;
+	word-break:break-all;
+	float: left;
+	margin-left: 10px;
+}
+.LWDJB-main span{
+	display: inline-block;
+	height: 25px;
+	text-align: center;
+	line-height: 25px;
+	margin-left: 10px;
+}
+.LWDJB-main div{
+	float: right;
+	margin-right: 25px;
+}
+.LWDJB-main .LWDJB-TX{
+	width:110px;
+	border:1px solid #cacaca;
+	background: #eeeeee;
+}
+.LWDJB-main .LWDJB-HB{
+	width: 80px;
+	border:1px solid #cacaca;
+	background: #eeeeee;
+}
+.LWDJB-main .LWDJB-QT{
+	width: 55px;
+	border:1px solid #5cb95b;
+	color: white;
+	background: #5cb95b;
+}
+.LWDJB-main .LWDJB-QD{
+	width: 55px;
+	border:1px solid #ff8b00;
+	color: white;
+	background: #ff8b00;
+}
+/*****************我的值班详情*********************/
+.LWDZB-II{
+	display: none;
+}
+/****************申请换班***************/
+.LWDZB-II a{
+	margin-left: 10px;
+	display: inline-block;
+	margin-top: 25px;
+	color: #379bd4;
+} 
+/*****************申请换班弹窗框******************/
+.popup-ZBJL{
+	display: none;
+	position: fixed;
+	width: 460px;
+	height: 480px;
+	top:50%;
+	left: 50%;
+	margin-top: -240px;
+	margin-left: -230px;
+	background: white;
+	z-index: 999999999999999999999
+}
+.popup-HB{
+	display: none;
+	position: fixed;
+	width: 460px;
+	height: 480px;
+	top:50%;
+	left: 50%;
+	margin-top: -240px;
+	margin-left: -230px;
+	background: white;
+	z-index: 999999999999999999999
+}
+.popup-HB-top{
+	height: 45px;
+	line-height: 45px;
+	background: #616161;
+	color: white;
+	margin-bottom: 15px;
+}
+.popup-HB-main{
+	margin-top: 20px;
+}
+.popup-HB-top em{
+	margin-left: 15px;
+}
+.popup-HB-top i{
+	float: right;
+	margin-right: 15px;
+}
+.popup-HB-main dd{
+	min-height: 32px;
+	line-height: 32px;
+	margin-top: 15px;
+}
+.popup-HB-main dd em{
+	display: inline-block;
+	width: 5em;
+	margin-left: 40px;
+	text-align: right;
+	vertical-align: top;
+}
+.popup-HB-bottom{
+	margin-top: 25px;
+	width: 100%;
+	text-align: center;
+}
+.popup-HB-bottom span{
+	display: inline-block;
+	width: 80px;
+	text-align: center;
+	height: 28px;
+	line-height: 28px;
+	margin: 0 10px;
+}
+.popup-HB-bottom .HB-TJ{
+	background: #5cb95b;
+	color: white;
+	border: 1px solid #5cb95b;
+}
+.popup-HB-main dd textarea{
+	width: 268px;
+	height: 90px;
+	border:1px solid #bebebe;
+}
+.popup-HB-bottom .HB-QX {
+	background: #eeeeee;
+	color: black;
+	border: 1px solid #cacaca;
+}
+.bg
+{
+    display: none;
+    background-color: #000;
+    width: 100%;
+    height: 100%;
+    left: 0;
+    top: 0;
+    /* margin-left: -467px; */
+    /* margin-top: -254px; */
+    filter: alpha(opacity=40);
+    opacity: 0.4;
+    z-index: 1001;
+    position: fixed !important;
+    _top: expression(eval(document.compatMode && document.compatMode=='CSS1Compat') ?
+            documentElement.scrollTop + (document.documentElement.clientHeight-this.offsetHeight)/2 :/*IE6*/
+            document.body.scrollTop + (document.body.clientHeight - this.clientHeight)/2); /*IE5 IE5.5*/
+}
+
+/*zb-model-alert*/
+.zb-model-alert{
+	z-index:9999999999999999999999;
+	width: 456px;
+	position: fixed;
+	left: 40%;
+	top:30%;
+	background: #fff;
+	display: none;
+}
+.zb-model-main{
+	padding-left: 76px;
+}
+.zb-model-main span{
+	display: inline-block;
+	margin-right: 10px;
+}
+.zb-model-main input,.zb-model-main select{
+	display: inline-block;
+	width: 158px;
+	height: 28px;
+	border: 1px solid #bebebe;
+}
+/*zb-model-alert*/
+
+.zb-set-title{
+	background: #616161;
+	padding: 15px 0;
+	margin-bottom: 30px;
+}
+.zb-alert-btn{
+	width: 100%;
+	text-align: center;
+	margin: 50px 0;
+
+}
+.zb-btn-sure{
+	padding: 4px 20px;
+	background: #5db85b;
+	border:1px solid #5db85b;
+	color:#fff;
+	margin-right: 25px;
+}
+.zb-btn-qx{
+	padding: 4px 20px;
+	background: #eee;
+	border:1px solid #cacaca;
+	color:#333;
+}
+.zb-set-title p{
+	display: inline-block;
+	float: left;
+	color: #fff;
+	margin-left: 20px;
+}
+
+.zb-set-title span{
+	display: inline-block;
+	float:right;
+	color: #fff;
+	cursor: pointer;
+	margin-right: 20px;
+}
+
+.popup-bottom-LAB{
+	display: inline-block;
+	width: 350px;
+}
+.popup-JB-main dd .popup-TJ{
+	margin-left: 30px;
+	background: url("/static_new/images/zhiban/popup-fujian-img.jpg") no-repeat;
+	width: 75px;
+	height: 16px;
+	vertical-align: middle;
+	display: block;
+	margin-bottom: 10px;
+}
+.popup-JB-main .popup-TJ-IN{
+	opacity: 0;
+	z-index: 99999999999999999999;
+	height: 32px;
+	width: 100px;
+}
+
+.popup-SHR{
+	display: none;
+	position: fixed;
+	width: 460px;
+	height: 210px;
+	top:50%;
+	left: 50%;
+	margin-top: -105px;
+	margin-left: -230px;
+	background: white;
+	z-index: 999999999999999999999
+}
+.popup-SHR-top{
+	height: 45px;
+	line-height: 45px;
+	background: #616161;
+	color: white;
+	margin-bottom: 15px;
+}
+.popup-SHR-main{
+	margin-top: 20px;
+}
+.popup-SHR-top em{
+	margin-left: 15px;
+}
+.popup-SHR-top i{
+	float: right;
+	margin-right: 15px;
+}
+.popup-SHR-main dd{
+	min-height: 32px;
+	line-height: 32px;
+	margin-top: 15px;
+}
+.popup-SHR-bottom{
+	margin-top: 25px;
+	width: 100%;
+	text-align: center;
+}
+.popup-SHR-bottom span{
+	display: inline-block;
+	width: 80px;
+	height: 30px;
+	line-height: 30px;
+	text-align: center;
+	margin: 0 15px;
+}
+.popup-SHR-bottom .SHR-TJ{
+	background: #5cb95b;
+	color: white;
+	border: 1px solid #5cb95b;
+}
+.popup-SHR-bottom .SHR-QX {
+	background: #eeeeee;
+	color: black;
+	border: 1px solid #cacaca;
+}
+.popup-SHR-main dd em{
+	display: inline-block;
+	width: 6em;
+	margin-left: 12px;
+	text-align: right;
+	vertical-align: top;
+	margin-right: 15px;
+}
+.popup-SHR-main dd .popup-SHR-IN{
+	width: 15px;
+	height: 15px;
+}
+.popup-SHR-main dd select{
+	width: 220px;
+}
+
+.zb-plan-alert{
+	z-index:999;
+	width: 456px;
+	position: fixed;
+	left: 40%;
+	top:30%;
+	background: #fff;
+	display: none;
+}
+.zb-plan-main{
+	padding-left: 115px;
+}
+/*zb-plan-alert*/
+/*zb-lookjl*/
+.zb-lookjl{
+	width: 762px;
+	padding-left: 8px;
+	display: none;
+}
+.zhiban-back{
+	display: block;
+	color: #3999d5;
+	margin-bottom: 20px;
+	padding-top: 5px;
+}
+.zhiban-title select{
+	height: 28px;
+	width: 98px;
+	border:1px solid #ddd;
+}
+.zb-table-dc{
+	display: inline-block;
+	float: right;
+	padding: 4px 10px;
+	padding-left: 25px !important;
+	background-color:#3999d5;
+	background-image:url(/static_new/images/zhiban/zhiban-1.png);
+	background-repeat: no-repeat;
+	background-position: 6px 8px;
+	color: #fff;
+	margin-bottom: 20px;
+}
+.zb-jl-table{
+	float: left;
+	width: 100%;
+	text-align: center;
+}
+.zb-jl-table th{
+	height: 50px;
+	background:#5db85b;
+	border:1px solid #d2d2d2;
+	color: #fff;
+}
+.zb-jl-table td{
+	height: 40px;
+	border:1px solid #d2d2d2;
+	color: #333;
+	word-break: break-all;
+}
+/*zb-lookjl*/
+/*zb-jl-tj*/
+.zb-jl-tj{
+	width: 762px;
+	padding-left: 8px;
+	display: none;
+}
+.zb-table-tj{
+	float: left;
+	width: 100%;
+	text-align: center;
+}
+.zb-table-tj th{
+	height: 50px;
+	background:#5db85b;
+	border:1px solid #d2d2d2;
+	color: #fff;
+}
+.zb-table-tj td{
+	height: 40px;
+	border:1px solid #d2d2d2;
+	color: #333;
+}
+/*zb-jl-tj*/
+/*zb-pay-gl*/
+.zb-pay-gl{
+	width: 762px;
+	padding-left: 8px;
+	display: none;
+}
+.zb-pay-num{
+	width: 83px;
+	height: 28px;
+	border:1px solid #d2d2d2;
+	text-align: center;
+}
+.zb-table-pay{
+	float: left;
+	width: 100%;
+	text-align: center;
+}
+.zb-table-pay th{
+	height: 50px;
+	background:#5db85b;
+	border:1px solid #d2d2d2;
+	color: #fff;
+}
+.zb-table-pay td{
+	height: 40px;
+	border:1px solid #d2d2d2;
+	color: #333;
+}
+.zhiban-qr{
+	display: inline-block;
+	width: 80px;
+	height: 30px;
+	border: 1px solid #cacaca;
+	text-align: center;
+	line-height: 30px;
+	cursor: pointer;
+	color: black;
+	background: #eeeeee;
+	vertical-align: middle;
+	margin-left: 20px;
+}
+
+.zhiban-FJ{
+	height: 25px;
+	line-height: 25px;
+	width: 135px;
+}
+.zhiban-FJ>em{
+	text-align: left;
+	display: inline-block;
+	width: 75px;
+	text-overflow:ellipsis;
+	overflow: hidden;
+	white-space: nowrap;
+}
+.zhiban-FJ>a{
+	display: inline-block;
+	overflow: hidden;
+	cursor: pointer;
+}

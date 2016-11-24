@@ -1,0 +1,269 @@
+body,div,dl,dt,dd,ul,ol,li,h1,h2,h3,h4,h5,h6,pre,code,form,fieldset,legend,input,button,textarea,p,blockquote,th,td { margin:0; padding:0; }
+body { background:#fff; color:#555; font-size:14px; font-family: Verdana, Arial, Helvetica, sans-serif; }
+td,th,caption { font-size:14px; }
+h1, h2, h3, h4, h5, h6 { font-weight:normal; font-size:100%; }
+address, caption, cite, code, dfn, em, strong, th, var { font-style:normal; font-weight:normal;}
+a { color:#555; text-decoration:none; }
+a:hover { text-decoration:underline; }
+img { border:none; }
+ol,ul,li { list-style:none; }
+input, textarea, select, button { font:14px Verdana,Helvetica,Arial,sans-serif; }
+table { border-collapse:collapse; }
+html {overflow-y: scroll;}
+*{-webkit-transition: all ease .3s;
+    -ms-transition: all ease .3s;
+    -moz-transition: all ease .3s;
+    transition: all ease .3s;}
+/* css common */
+.clearfix:after {content: "."; display: block; height:0; clear:both; visibility: hidden;}
+.clearfix { *zoom:1; }
+*{transition:all 0.3s;}
+button{cursor:pointer;}
+.header-cont{
+	width: 1250px;
+	margin: 0 auto;
+	height: 61px;
+}
+.header-cont img{
+	float:left;
+	margin-right: 58px;
+}
+.header-cont a{
+	float:left;
+	height: 61px;
+	line-height: 61px;
+	text-decoration: none;
+	padding: 0 15px;
+	margin-right: 10px;
+	cursor: pointer;
+}
+.header-cont a:hover{
+	background:#E8E8E8; 
+}
+.header-cont span{
+	float:right;
+	height: 61px;
+	line-height: 61px;
+	margin-left: 32px;
+	cursor: pointer;
+}
+.container{
+	background: #eee;
+	overflow: hidden;
+}
+.mid-cont{
+	width: 1250px;
+	margin: 0 auto 31px;
+	background: #fff;
+	overflow: hidden;
+}
+.top_banner{
+	width: 1250px;
+	height: 272px;
+	background: url('../../images/entrance/top_banner.png');
+}
+.bk-block{
+	height: 355px;
+}
+.img-jh{
+    position: relative;
+	width: 320px;
+	height: 320px;
+	margin: 22px;
+	float:left;
+    background: url("/images/yanjiang_voo.png") no-repeat;
+}
+.img-jh:hover .span-more{
+    display: block;
+}
+.div-more{
+    position: absolute;
+    left: 2px;
+    top: 0px;
+    width: 308px;
+    height: 310px;
+    z-index: 1;
+}
+.span-more{
+    display: none;
+    position: absolute;
+    left: 116px;
+    top:139px;
+    color: #fff;
+    width: 80px;
+    height: 33px;
+    border: 1px solid #fff;
+    text-align: center;
+    line-height: 33px;
+    cursor: pointer;
+    font-size: 16px;
+    z-index: 2;
+}
+.span-more:hover{
+    background: #000;
+    -moz-opacity: 0.6;
+    border-radius:19px;
+    opacity: 0.6;
+    filter: alpha(opacity=60);
+}
+.img-jh:hover .div-more{
+    background: #000;
+    -moz-opacity: 0.5;
+    opacity: 0.5;
+    filter: alpha(opacity=50);
+}
+
+.img-jh img{
+	float: left;
+}
+.img-jh img:nth-child(2n+1){
+	margin-right: 22px;
+	margin-bottom: 22px;
+}
+.left-arrow{
+	height: 40px;
+	float: left;
+	font-size: 17px;
+	margin-top: 260px;
+	border-bottom:1px solid #ff500d;
+	line-height:40px;
+	position:relative;
+}
+.arrow-leftj{
+	position:absolute;
+	left:1px;
+	bottom:-7px;
+	height:6px;
+	width:8px;
+	background:url('../../images/entrance/arrow_j.png') no-repeat;
+}
+.arrow-rightj{
+	position:absolute;
+	right:0;
+	bottom:-1px;
+	width:8px;
+	height:6px;
+	background:url('../../images/entrance/arrow_j.png') no-repeat;
+}
+.right-arrow{
+	float: right;
+	height: 40px;
+	line-height:40px; 
+	font-size: 22px;
+	margin: 100px 0 0 0;
+	border-bottom:1px solid #ff500d;
+	position:relative;
+}
+.cy-card{
+	float:right;
+	width: 517px;
+	height:313px;
+	margin:22px;
+	overflow: hidden;
+}
+.card-cy{
+	background: url('../../images/entrance/img_cy_bg.png') no-repeat 0 113px;
+}
+.card-kx{
+	background: url('../../images/entrance/img_kx_bg.png') no-repeat 0 113px;
+}
+.card-xb{
+	background: url('../../images/entrance/img_xb_bg.png') no-repeat 0 113px;
+}
+.card-yj{
+	background: url('/images/madingmyun.png') no-repeat 0 113px;
+}
+.card-aq{
+	background: url('../../images/entrance/img_aq_bg.png') no-repeat 0 113px;
+}
+.card-name{
+	height: 41px;
+	line-height: 41px;
+	color:#fff;
+	font-weight: bold;
+	padding-left: 20px;
+	font-size: 15px;
+}
+.card-bg1{
+	background: #EF5834;
+}
+.card-bg2{
+	background: #87AEBE;
+}
+.card-bg3{
+	background: #00ACED;
+}
+.card-bg4{
+	background: #3DB39C;
+}
+.card-bg5{
+	background: #2BB12B;
+}
+.card-name em{
+	float:right;
+	font-size: 13px;
+	margin-right: 15px;
+}
+.card-cont{
+	height: 121px;
+	background: #f6f6f6;
+	cursor: pointer;
+	border:1px solid #fff;
+}
+.card-cont:hover{
+    padding:15px 0;
+    border: 1px solid #ccc;
+    box-shadow: 0 2px 4px #777;
+}
+.card-cont .card-logo{
+	float: left;
+	margin: 25px 0 0 31px;
+	width: 62px;
+	height: 62px;
+	border-radius: 100%;
+	background: url('../../images/entrance/cy_logo.png') no-repeat;
+}
+.card-cont p{
+	float: right;
+	width:400px;
+	line-height: 20px;
+}
+.card-cont .p1{
+	margin: 24px 0 0 0;
+	font-size: 16px;
+}
+.card-cont .p1 em{
+	color: red;
+	font-size: 12px;
+}
+.card-cont .p2{
+	font-size: 12px;
+	margin-top: 5px;
+	color:#999;
+}
+.card-cont .p3{
+	margin-top: 5px;
+}
+.card-cont .p3 span{
+	float: left;
+	width: 100px;
+	font-size: 12px;
+}
+.em-p{
+	padding-left: 23px;
+	float: right;
+	height: 20px;
+	width: 45px;
+	text-align: left;
+	font-size: 12px;
+	background: url('../../images/entrance/img_pl.png') no-repeat 0 3px;
+}
+.em-c{
+	padding-left: 23px;
+	float: right;
+	height: 20px;
+	width: 45px;
+	font-size: 12px;
+	text-align: left;
+	background: url('../../images/entrance/img_c.png') no-repeat 0 3px;
+}

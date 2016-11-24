@@ -1,0 +1,976 @@
+/*
+* @Author: Tony
+* @Date:   2015-06-11 14:24:13
+* @Last Modified by:   Tony
+* @Last Modified time: 2015-06-30 16:51:20
+*/
+.sub-head, #content, .sub-foot{
+    width: 1000px;
+    margin: 0 auto;
+}
+.col-right{
+    width: 770px;
+    float: right;
+}
+a.hotspect{
+    display: block;
+    margin:20px 0;
+    height:40px;
+    line-height: 40px;
+    color:white;
+    font-weight:bold;
+    padding-left: 20px;
+    background: url(/static_new/images/cy.png) no-repeat 184px 11px;
+    background-size:18px;
+    background-color: #ffa800;
+}
+.coottop .tab-col,.coottop .big-tu{
+    float: left;
+}
+.coottop .tab-col{
+    width:605px;
+    margin-right: 10px;
+}
+.coottop .tab-col .tab-main{
+    padding:10px;
+    background: url(/static_new/images/tell.jpg) no-repeat 10px 10px;
+    margin-bottom: 10px;
+}
+.coottop .tab-col .tab-main .talk{
+    position: relative;
+    border:none;
+    vertical-align: top;
+    border-radius: 4px;
+    padding:0 7px;
+    height:30px;
+    line-height: 30px;
+    color: #666;
+    cursor: pointer;
+    display: block;
+    margin-left: auto;
+}
+.coottop .tab-col .tab-main .phd{
+    width:561px;
+    height:38px;
+    margin:10px 0;
+    padding:10px;
+    border:1px solid #d0d0d0;
+    resize: none;
+}
+.coottop .tab-col .tab-main .talk:hover{
+    background: #ffa33a;
+    color:white;
+}
+/* 评论 */
+.coottop .tab-col .pinglun{
+    border:1px solid #ddd;
+    border-top: none;
+    padding:10px;
+    position: relative;
+}
+.coottop .tab-col .pinglun p{
+    font-size: 17px;
+    line-height: 30px;
+    color:#656565;
+    margin-bottom: 20px;
+}
+.coottop .tab-col .pinglun button{
+    position: absolute;
+    top:10px;
+    right:10px;
+    border:0;
+    border-radius: 4px;
+    padding:0 7px;
+    height:30px;
+    line-height: 30px;
+    cursor: pointer;
+    color:#666;
+}
+.coottop .tab-col .pinglun button:hover{
+    background: #ffa33a;
+    color:white;
+}
+.coottop .tab-col .pinglun dl{
+    padding:20px 10px 10px;
+    border:1px solid #ddd;
+}
+.coottop .tab-col .pinglun dl dt{
+    width:70px;
+    height:70px;
+    float:left;
+}
+.coottop .tab-col .pinglun dl dt img{
+    display: block;
+    width:70px;
+    height:70px;
+}
+.coottop .tab-col .pinglun dl dd{
+    float:right;
+    border:1px solid #bdbdbd;
+    background:#f3f3f3;
+    padding:10px;
+    border-radius: 10px;
+    width:453px;
+    position: relative;
+    color:#656565;
+    line-height: 25px;
+}
+.coottop .tab-col .pinglun dl dd .zuojian{
+    position: absolute;
+    z-index:101;
+    left:-8px;
+    top: 27px;
+    width: 0px;
+    height: 0px;
+    border-top: 8px solid transparent;
+    border-bottom: 8px solid transparent;
+    border-right: 8px solid #F3F3F3;
+}
+.coottop .tab-col .pinglun dl dd .zuojian1{
+    position: absolute;
+    z-index:100;
+    left:-9px;
+    top: 27px;
+    width: 0px;
+    height: 0px;
+    border-top: 8px solid transparent;
+    border-bottom: 8px solid transparent;
+    border-right: 8px solid #bdbdbd;
+}
+.coottop .tab-col .pinglun dl dd .lanname{
+    color:blue;
+}
+.coottop .tab-col .pinglun dl dd .lanname:hover{
+    text-decoration: underline;
+}
+.coottop .tab-col .pinglun dl dd .neirong,
+.coottop .tab-col .pinglun dl dd .huifu{
+    word-break: break-word;
+    word-wrap: break-word;
+}
+.coottop .tab-col .pinglun dl dd .huifu a{
+    color: blue;
+}
+.coottop .tab-col .pinglun dl dd .xn{
+    font-size: 12px;
+    color:#999;
+}
+.coottop .tab-col .pinglun dl dd .sh{
+    text-align: right;
+}
+.coottop .tab-col .pinglun dl dd .sh a{
+    color:blue;
+}
+.coottop .tab-col .pinglun dl dd .sh a:hover{
+    color:#ffa800 ;
+}
+.coottop .tab-col .pinglun dl .bomt{
+    margin-bottom: 10px;
+}
+#PL{
+    display: none;
+}
+/* 评论 */
+.coottop{
+    position: relative;
+}
+.coottop .big-tu{
+    width:220px;
+    position: absolute;
+    right: -64px;
+    top: 0px;
+}
+.coottop .big-tu img{
+    display: block;
+    margin-bottom: 10px;
+}
+.coottop .tab-col .tab-main .upload-info span{
+    color: #656565;
+    cursor:pointer;
+    margin-right: 20px;
+    /*line-height: 31px;*/
+}
+/* 图片 */
+.coottop .tab-col .tab-main .upload-info span.icontu{
+    padding-left: 25px;
+    background: url(/static_new/images/icontu.jpg) no-repeat 0 3px;
+    position: relative;
+}
+.coottop .tab-col .tab-main .upload-info span.icontu input{
+    position:absolute;
+    top:0;
+    left:0;
+    width:57px;
+    height:20px;
+    filter:alpha(opacity:0);
+    opacity: 0;
+    outline:none;
+    margin-top:0;
+    cursor: pointer;
+}
+/* 图片 */
+/* 视频 */
+.coottop .tab-col .tab-main .upload-info span.iconvideo{
+    padding-left: 30px;
+    background: url(/static_new/images/iconvideo.jpg) no-repeat 3px 4px;
+    position: relative;
+}
+.coottop .tab-col .tab-main .upload-info span.iconvideo input{
+    position:absolute;
+    top:0;
+    left:0;
+    width:63px;
+    height:20px;
+    filter:alpha(opacity:0);
+    opacity: 0;
+    outline:none;
+    margin-top:0;
+    cursor: pointer;
+}
+/* 视频 */
+/* 话题 */
+.HUA{
+    position: relative;
+}
+.coottop .tab-col .tab-main .upload-info span.iconhua{
+    padding-left: 30px;
+    background: url(/static_new/images/iconhua.jpg) no-repeat 7px 3px;
+    position: absolute;
+    display: inline-block;
+    width: 60px;
+    overflow: hidden;
+    top: 10px;
+}
+.huati{
+    width:218px;
+    border:1px solid #ddd;
+    position: absolute;
+    z-index: 100;
+    top:28px;
+    left:0;
+    padding:10px;
+    border-radius: 4px;
+    background: #fff;
+    cursor: default;
+}
+.huati .i_hua{
+    position: absolute;
+    top:5px;
+    right:5px;
+    width:9px;
+    height:10px;
+    background: url(/static_new/images/huati.jpg) no-repeat;
+    cursor: pointer;
+}
+.sjt1{
+    z-index: 100;
+    position: absolute;
+    top: -9px;
+    left: 35px;
+    width: 0;
+    height: 0;
+    border-left: 8px solid transparent;
+    border-right: 8px solid transparent;
+    border-bottom: 8px solid #ddd;
+}
+.sjt2{
+    z-index: 101;
+    position: absolute;
+    top: -8px;
+    left: 35px;
+    width: 0;
+    height: 0;
+    border-left: 8px solid transparent;
+    border-right: 8px solid transparent;
+    border-bottom: 8px solid #fff;
+}
+.tra{
+    text-align: center;
+}
+.tra .tra1{
+    width:200px;
+    height:30px;
+    font-size:12px;
+    color:#000;
+    margin:0;
+    padding:0;
+    margin-bottom: 10px;
+    line-height: 30px ;
+    text-align: center;
+    resize: none;
+    border:1px solid #ddd;
+}
+.huati ul{
+    border:1px solid #ddd;
+    text-align: center;
+    font-size: 12px;
+    color:#000;
+}
+.huati ul .hot-huati{
+    border-bottom: 1px solid #ddd;
+}
+.huati{
+    display: none;
+}
+/* 话题 */
+/* 图片的空白位置 */
+.kongbai{
+    width:280px;
+}
+.kongbai ul li{
+    float: left;
+}
+.kongbai ul li img{
+    width: 60px;
+    height: 60px;
+    float: left;
+    margin: 8px 5px 5px 8px;
+}
+.kongbai ul li .ix{
+    position: relative;
+    display: inline-block;
+
+
+}
+.kongbai ul li i{
+    position: absolute;
+    /*top:2px;*/
+    /*right:-5px;*/
+    width:9px;
+    height:8px;
+    cursor: pointer;
+    background: url(/static_new/images/tux.jpg) no-repeat;
+}
+/* 图片的空白位置 */
+.coottop .tab-col .tab-main .upload-info .orange-btn{
+    float: right;
+    margin-left: 20px;
+    cursor: pointer;
+}
+.coottop .tab-col .tab-main .upload-info select{
+    float: right;
+    margin-left: 20px;
+    font-size: 12px;
+    padding:5px;
+    border:none;
+    color:#ff8800;
+
+
+    margin-top: 18px;
+}
+.upload-info input, .upload-info label{
+    float:right;
+    color:#ff8800;
+    margin-top: 5px;
+}
+.coottop .tab-col .tab-main .upload-info input{
+    margin-top: 30px;
+}
+.coottop .tab-col .tab-list{
+    border: #ddd 1px solid;
+}
+.tab-list .info-head{
+    border-bottom: #ddd 1px solid;
+    line-height: 36px;
+    padding-right:10px;
+}
+.info-head ul, .info-head li{
+    float: left;
+}
+.info-head li{
+    padding: 0 24px;
+    position: relative;
+    top: 1px;
+    cursor: pointer;
+}
+.info-head li.cur{
+    border-bottom: #ffa800 2px solid;
+    color: #ffa800;
+}
+.coottop .tab-col .tab-list select{
+    padding:5px 0;
+    float: right;
+    border:none;
+    color:#333;
+    vertical-align: top;
+    margin-top: 4px;
+}
+/* 帖子 */
+.list-info{
+    position: relative;
+    padding-left: 10px;
+    border-bottom: #ddd 1px solid;
+}
+.user-img{
+    width: 65px;
+    height: 65px;
+    float: left;
+    margin-top: 10px;
+}
+.list-txt{
+    float: right;
+    width: 518px;
+}
+.list-txt h4{
+    line-height: 30px;
+}
+.list-txt h4 em{
+    font-size:12px;
+    padding-left: 5px;
+}
+.list-txt p{
+    line-height: 26px;
+    padding-right: 10px;
+    word-wrap: break-word;
+    word-break: normal;
+}
+.list-txt ul{
+    width: 330px;
+    margin-top: 10px;
+}
+.list-txt li{
+    width: 80px;
+    height: 80px;
+    float: left;
+    margin-right: 10px;
+    margin-bottom: 10px;
+    position: relative;
+}
+.date-txt{
+    color: #999;
+    font-size: 12px;
+    margin-bottom: 5px;
+}
+.date-txt span{
+    padding:0 3px;
+}
+.date-txt a{
+    color: #999;
+    float: right;
+    font-size: 12px;
+    padding:0 3px;
+}
+.date-txt a img{
+    margin-top: 2px;
+    float: left;
+}
+.date-txt a.zan{
+    margin-left: 10px;
+}
+.orange-col{
+    margin-bottom: 10px;
+}
+.mo{
+    border:1px solid #d0d0d0;
+    padding:10px 20px;
+    margin-bottom: 10px;
+    margin-right: 5px;
+    position: relative;
+    border-radius: 4px;
+    background:#FaFaFa;
+    position: relative;
+    display: none;
+}
+.mo .s1{
+    z-index: 100;
+    position: absolute;
+    top: -9px;
+    right: 33px;
+    width: 0;
+    height: 0;
+    border-left: 8px solid transparent;
+    border-right: 8px solid transparent;
+    border-bottom: 8px solid #bdbdbd;
+}
+.mo .s2{
+    z-index: 101;
+    position: absolute;
+    top: -8px;
+    right: 33px;
+    width: 0;
+    height: 0;
+    border-left: 8px solid transparent;
+    border-right: 8px solid transparent;
+    border-bottom: 8px solid #FaFaFa;
+}
+.mo textarea{
+    width: 380px;
+    height:34px;
+    border: 1px solid #d0d0d0;
+    padding: 3px 5px;
+    resize: none;
+    font-size: 12px;
+    color:#000;
+}
+.mo button{
+    position: absolute;
+    top:16px;
+    right:20px;
+    border:0;
+    border-radius: 4px;
+    padding:0 7px;
+    height:30px;
+    line-height: 30px;
+    cursor: pointer;
+    color:#666;
+}
+.mo button:hover{
+    background: #ffa33a;
+    color:white;
+}
+
+
+.moreply{
+    border:1px solid #d0d0d0;
+    padding:10px 20px;
+    margin-bottom: 10px;
+    margin-right: 5px;
+    position: relative;
+    border-radius: 4px;
+    background:#FaFaFa;
+    position: relative;
+    display: none;
+}
+.moreply .s1{
+    z-index: 100;
+    position: absolute;
+    top: -9px;
+    right: 33px;
+    width: 0;
+    height: 0;
+    border-left: 8px solid transparent;
+    border-right: 8px solid transparent;
+    border-bottom: 8px solid #bdbdbd;
+}
+.moreply .s2{
+    z-index: 101;
+    position: absolute;
+    top: -8px;
+    right: 33px;
+    width: 0;
+    height: 0;
+    border-left: 8px solid transparent;
+    border-right: 8px solid transparent;
+    border-bottom: 8px solid #FaFaFa;
+}
+.moreply textarea{
+    width: 380px;
+    height:34px;
+    border: 1px solid #d0d0d0;
+    padding: 3px 5px;
+    resize: none;
+    font-size: 12px;
+    color:#000;
+}
+.moreply button{
+    position: absolute;
+    top:16px;
+    right:20px;
+    border:0;
+    border-radius: 4px;
+    padding:0 7px;
+    height:30px;
+    line-height: 30px;
+    cursor: pointer;
+    color:#666;
+}
+.moreply button:hover{
+    background: #ffa33a;
+    color:white;
+}
+/* 回复 */
+.huifu1{
+    border-top: 1px solid #bdbdbd;
+    margin-top: 10px;
+    padding-top: 15px;
+    position: relative;
+    display: none;
+}
+.huifu1 textarea{
+    width: 380px;
+    border: 1px solid #d0d0d0;
+    padding: 3px 5px;
+    resize: none;
+    font-size: 12px;
+    color:#000;
+    height:34px;
+}
+.huifu1 button{
+    top:21px !important;
+    right:0 !important;
+}
+/* 回复 */
+
+/* 热门话题 */
+.hottalk{
+    border:1px solid #ddd;
+}
+.hottalk p{
+    height:36px;
+
+    color:white;
+    line-height: 36px;
+    padding:0 12px;
+    /*background: url(/static_new/images/change.jpg) no-repeat 143px 12px;*/
+    background-color: #ffa800;
+
+}
+.hottalk p span.hot{
+    font-weight: bold;
+    font-size: 16px;
+}
+.hottalk p span.change{
+    float: right;
+    cursor: pointer;
+}
+.hottalk ul{
+    padding:10px 12px 0;
+    font-size: 12px;
+    line-height: 28px;
+    border-bottom: 1px solid #ddd;
+}
+.hottalk ul li{
+    position:relative;
+}
+.hottalk ul li span{
+    display: inline-block;
+    color: #808080;
+    position: absolute;
+    bottom:0;
+    right:-5px;
+}
+.hottalk ul li em{
+    font-size: 10px !important;
+    color:white;
+    background: #5dc5a6;
+    border-radius: 4px;
+    padding:1px 2px;
+}
+.hottalk .more{
+    text-align: center;
+    line-height: 35px;
+
+}
+.hottalk .more a{
+    font-size: 12px;
+    color: #333;
+}
+.content-img{
+    height: 80px;
+    width: 80px;
+    margin: 1px;
+}
+
+/*分页*/
+.page-paginator {
+    width: 100%;
+    margin: 40px auto 20px auto;
+    text-align: center;
+    display: none;
+}
+
+.page-index span {
+    padding: 3px 8px;
+    color: #838383;
+    border-radius: 4px;
+    border: 1px solid #838383;
+    background-color: #F6F7F6;
+    cursor: pointer;
+    margin: 0 2px;
+}
+.first-page,.last-page {
+    padding: 3px 15px;
+    color: #838383;
+    border-radius: 4px;
+    border: 1px solid #838383;
+    background-color: #F6F7F6;
+    cursor: pointer;
+    margin: 0 2px;
+}
+.page-paginator span.active {
+    background-color:#E6E6E6;
+    color: #779554;
+}
+
+#img-container{
+    clear: both;
+    width: 280px;
+}
+
+#img-container ul li {
+    display: block;
+}
+
+#picuploadLoading {
+    position: absolute;
+    left: 265px;
+    top: 15px;
+    display: none;
+}
+
+.size-zero {
+    width: 0;
+    height: 0;
+    display:none;
+}
+
+.micoblog-img-delete {
+    float: left;
+    line-height: 50px;
+    cursor: pointer;
+}
+
+
+/*分页*/
+.page-paginator2 {
+    width: 100%;
+    margin: 40px auto 20px auto;
+    text-align: center;
+    display: none;
+}
+
+.page-index2 span {
+    padding: 3px 8px;
+    color: #838383;
+    border-radius: 4px;
+    border: 1px solid #838383;
+    background-color: #F6F7F6;
+    cursor: pointer;
+    margin: 0 2px;
+}
+.first-page2,.last-page2 {
+    padding: 3px 15px;
+    color: #838383;
+    border-radius: 4px;
+    border: 1px solid #838383;
+    background-color: #F6F7F6;
+    cursor: pointer;
+    margin: 0 2px;
+}
+.page-paginator2 span.active {
+    background-color:#E6E6E6;
+    color: #779554;
+}
+
+/* 热门话题 */
+/* 有评论的样式 */
+.p_l dl {
+    padding:10px 0;
+    font-size: 13px;
+}
+.p_l dl dt,
+.p_l dl dd {
+    float: left;
+}
+.p_l dl dt img {
+    display: block;
+    width:40px;
+    height:40px;
+    margin-right: 10px;
+}
+.p_l dl dd {
+    width:421px;
+}
+.p_l dl dd a {
+    color: blue;
+}
+.p_l dl dd a:hover {
+    text-decoration: underline;
+}
+.p_l .er_l {
+    text-align: right;
+    font-size: 12px;
+}
+.p_l .er_l a {
+    padding:0 3px;
+}
+.p_l .er_l img {
+    position: relative;
+    top:3px;
+}
+.p_l .er_l a.hu_f {
+    color:blue;
+}
+.p_l .er_l a.hu_f:hover {
+    text-decoration: underline;
+}
+.p_l .er_l .mo {
+    background: #ebebeb;
+    padding-right: 0;
+    margin-right: 0;
+    margin-top: 5px;
+}
+.p_l .er_l .mo .s2 {
+    border-bottom: 8px solid #ebebeb;
+}
+.p_l .er_l .mo textarea {
+    float: left;
+    width:350px;
+}
+.p_l .er_l .mo button {
+    background: #ff8800;
+    color: #fff;
+}
+.p_l .er_l .mo .s1,
+.p_l .er_l .mo .s2 {
+    right:5px;
+}
+
+.p_l .er_l .moreply {
+    background: #ebebeb;
+    padding-right: 0;
+    margin-right: 0;
+    margin-top: 5px;
+}
+.p_l .er_l .moreply .s2 {
+    border-bottom: 8px solid #ebebeb;
+}
+.p_l .er_l .moreply textarea {
+    float: left;
+    width:350px;
+}
+.p_l .er_l .moreply button {
+    background: #ff8800;
+    color: #fff;
+}
+.p_l .er_l .moreply .s1,
+.p_l .er_l .moreply .s2 {
+    right:5px;
+}
+
+.order-blue.active {
+    border-bottom: 2px solid #FF8900;
+    color: #FFA800;
+    /*padding-left: 10px;*/
+    background: #F8F8F8;
+}
+/* 有评论的样式 */
+#file_upload{
+    position: absolute;
+    top: -5px;
+    background: white;
+    width: 70px!important;
+    opacity: 0;
+    left: -22px
+}
+.iconvideo{
+    position: relative!important;
+    left: 70px;
+    top: 25px;
+}
+#upload-img{
+    cursor: pointer;
+    position: relative;
+    left: -510px;
+    top: 22px;
+}
+.HUA{
+    position: relative;
+    left: 75px;
+    top: 15px;
+}
+.upload-info{
+    position: relative;
+    top: -22px;
+}
+.player-container{
+    display: none;
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    margin-left: -315px;
+    margin-top: -180px;
+    z-index: 999999;
+    background-color: white;
+    box-shadow: 0 10px 25px #000;
+    box-sizing: content-box;
+    border-radius: 4px;
+    padding: 15px;
+}
+.player-close-btn{
+    display: none;
+    position: absolute;
+    top: -18px;
+    right: -18px;
+    width: 36px;
+    height: 36px;
+    cursor: pointer;
+    z-index: 8040;
+    background-image: url('/static/plugins/fancyBox/fancybox_sprite.png');
+}
+/*.uploadify-queue{
+    position: fixed;
+    top: 50%;
+    left: 50%;
+}*/
+.uploadify-queue{
+    position: absolute;
+    z-index: 99999999999999;
+}
+.homepage-zuti{
+    margin-top: 25px!important;
+}
+.orange-btn{
+    margin-right: -70px!important;
+    margin-top: 17px!important;
+}
+
+.card-more {
+    width: 100%;
+    text-align: center;
+    display: inline-block;
+}
+.tab-deit{
+    display: inline-block;
+    position: absolute;
+    width: 15px;
+    height: 15px;
+    border-radius: 50%;
+    background: red;
+    top: -8px;
+    right: -8px;
+    font-size: 12px;
+    line-height: 15px;
+    color: white;
+}
+
+.bg{
+    display: none;
+    background-color: #000;
+    width: 100%;
+    height: 100%;
+    left: 0;
+    top: 0;
+    filter: alpha(opacity=40);
+    opacity: 0.4;
+    z-index: 1;
+    position: fixed !important; /*FF IE7*/
+    position: absolute;
+    _top: expression(eval(document.compatMode && document.compatMode=='CSS1Compat') ?
+            documentElement.scrollTop + (document.documentElement.clientHeight-this.offsetHeight)/2 :/*IE6*/
+            document.body.scrollTop + (document.body.clientHeight - this.clientHeight)/2); /*IE5 IE5.5*/
+}
+.video-play-btn{
+    position: absolute;
+    left: 20px;
+    top: 20px;
+    cursor: pointer;
+    width: 40px;
+    height: 40px;
+}
+
+.list-txt p{position: relative;padding: 10px;overflow: hidden;}
+#gradient{width: 100%;height: 35px;background:repeat-x;position: absolute;bottom: 0;left: 0;}
+#read-more{padding: 5px;background: #fff;color: cornflowerblue;}
+#read-more:hover{
+    color:red;
+}
+.zhankai {
+    color: cornflowerblue;
+}
+.info-content{
+    padding-top: 5px;
+    padding-bottom: 5px;
+    word-wrap: break-word;
+    margin: 5px;
+}

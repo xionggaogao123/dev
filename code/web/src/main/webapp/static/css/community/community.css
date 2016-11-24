@@ -2646,8 +2646,7 @@ pre{white-space: pre-wrap;word-wrap: break-word;}
     float: left;
     font-size: 13px;
     width: 163px;
-    line-height: 22px;
-    height: 22px;
+    height: auto;
 }
 .ul-member-list li .p3{
     float: left;

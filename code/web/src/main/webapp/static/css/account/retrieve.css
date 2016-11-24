@@ -1,0 +1,251 @@
+/*********************找回密码********************/
+body, dl, dd, h1, h2, h3, h4, h5, h6, p, form{margin:0;}
+ol,ul{margin:0; padding:0; list-style: none;}
+:focus {outline: 1;}
+.clearfix:after{content:'.';display:block;clear:both;line-height:0;height:0;visibility:hidden}
+img{border:0}
+body{color:#333;font:normal normal normal 14px/20px 'Microsoft YaHei',Arial,sans-serif;background:#fff}
+input,select,textarea,button{vertical-align:middle;font-size:100%;outline:0;font-family:'Microsoft YaHei',Arial,sans-serif}
+a{color:#333;text-decoration:none;outline:0}a:hover{color:#ff9c00;text-decoration:none}
+i,em{font-style: normal}
+table{border:0;margin:0;border-collapse:collapse;border-spacing:0;}
+table td{padding:0;}
+textarea{resize: none;}
+.retrieve-main{
+    background: #ffffff;
+    width:1250px;
+    margin: 0 auto;
+}
+.retrieve-main .retrieve-top{
+    display: block!important;
+    margin:20px auto 0;
+    height: 45px;
+    line-height: 45px;
+    border-bottom:1px solid #000000;
+    width: 1155px;
+}
+.retrieve-top h1{
+    font-size: 20px;
+    float: left;
+}
+.retrieve-top em{
+    float: right;
+    font-size: 15px;
+}
+.retrieve-top a{
+    display: inline-block;
+    color: #ffffff;
+    background: #fe8f1f;
+    border-radius: 5px;
+    width: 68px;
+    height: 26px;
+    text-align: center;
+    line-height: 26px;
+    cursor: pointer;
+}
+.retrieve-info{
+    width: 600px;
+    margin:  45px auto 0;
+}
+.retrieve-info dt{
+    background: url("../../../img/account/retrieve-1.png") no-repeat center;
+    height: 60px;
+    width: 600px;
+}
+.retrieve-info dd{
+    margin:35px 0 0 30px;
+}
+.retrieve-info dd i{
+    color: red;
+}
+.retrieve-info input{
+    text-indent: 0.5em;
+    border:1px solid #959595;
+    border-radius: 5px;
+    height: 38px;
+}
+.retrieve-info .retrieve-ZHM{
+    width: 280px;
+}
+.retrieve-info .retrieve-YZM{
+    width: 165px;
+}
+.retrieve-info span{
+    display: inline-block;
+    width: 100px;
+    height: 40px;
+    text-align: center;
+    line-height: 40px;
+    background:#fed581;
+    float: right;
+    margin-right: 132px;
+    border-radius: 5px;
+}
+.retrieve-info dd .retrieve-TJ{
+    display: inline-block;
+    width: 88px;
+    height: 33px;
+    text-align: center;
+    line-height: 33px;
+    background: #ffac09;
+    color: #ffffff;
+    float: left;
+    margin-left: 153px;
+    cursor: pointer;
+}
+/**********************验证身份*********************/
+.verify-info{
+    display: none;
+    width: 600px;
+    margin:  45px auto 0;
+}
+.verify-info dt{
+    background: url("../../../img/account/retrieve-2.png") no-repeat center;
+    height: 60px;
+    width: 600px;
+}
+.verify-info dd{
+    margin:35px 0 0 30px;
+}
+.verify-info dd i{
+    color: red;
+}
+.verify-info em,.retrieve-info em{
+    display: inline-block;
+    width: 10em;
+    text-align: right;
+    margin-right: 9px;
+}
+.verify-info input{
+    text-indent: 0.5em;
+    border:1px solid #959595;
+    border-radius: 5px;
+    height: 38px;
+}
+.verify-info .retrieve-ZHM{
+    width: 235px;
+}
+.verify-info .verify-HQ{
+    float: right;
+    margin-right: 143px;
+    width: 105px;
+    height: 38px;
+    border: 1px solid #959595;
+    background: #f6f6f6;
+    text-align: center;
+    line-height: 38px;
+    cursor: pointer;
+}
+.verify-info .verify-QD{
+    float: right;
+    margin-right: 142px;
+    width: 105px;
+    height: 38px;
+    border: 1px solid #fed580;
+    border-radius: 5px;
+    background: #fed580;
+    text-align: center;
+    line-height: 38px;
+}
+.verify-info .retrieve-TJ{
+    display: inline-block;
+    width: 88px;
+    height: 33px;
+    text-align: center;
+    line-height: 33px;
+    background: #ffac09;
+    color: #ffffff;
+    float: left;
+    margin-left: 153px;
+    cursor: pointer;
+    border-radius: 5px;
+}
+/*********************设置新密码**********************/
+.newPass{
+    display: none;
+    width: 600px;
+    margin:  45px auto 0;
+}
+.newPass dt{
+    background: url("../../../img/account/retrieve-3.png") no-repeat center;
+    height: 60px;
+    width: 600px;
+}
+.newPass dd{
+    margin:35px 0 0 30px;
+}
+.newPass dd i{
+    color: red;
+}
+.newPass em{
+    display: inline-block;
+    width: 10em;
+    text-align: right;
+    margin-right: 9px;
+}
+.newPass input{
+    text-indent: 0.5em;
+    border:1px solid #959595;
+    border-radius: 5px;
+    height: 38px;
+}
+.newPass .retrieve-ZHM{
+    width: 235px;
+}
+.newPass .retrieve-YZM{
+    width: 165px;
+}
+.newPass .verify-HQ{
+    display: inline-block;
+    width: 100px;
+    height: 40px;
+    text-align: center;
+    line-height: 40px;
+    background: #fed581;
+    float: right;
+    margin-right: 132px;
+    border-radius: 5px;
+}
+.newPass .retrieve-TJ{
+    display: inline-block;
+    width: 88px;
+    height: 33px;
+    text-align: center;
+    line-height: 33px;
+    background: #ffac09;
+    color: #ffffff;
+    float: left;
+    margin-left: 153px;
+    cursor: pointer;
+    border-radius: 5px;
+}
+.dd-ok{
+    padding-left: 139px;
+    height: 100px;
+    background:url('../../../img/account/green_gou.png') no-repeat 52px 3px ;
+}
+.dd-ok button{
+    width:125px;
+    height:41px;
+    border: none;
+    color:#fff;
+    background:#FC530F;
+    margin: 36px 0 0 36px;
+    cursor:pointer;
+}
+/******************找回密码*********************/
+.findPass{
+    display: none;
+    width: 550px;
+    margin:  45px auto 0;
+}
+.findPass dt{
+    background: url("../../../img/account/retrieve-4.png") no-repeat center;
+    height: 60px;
+    width: 525px;
+}
+.findPass dd{
+    margin:35px 0 0 30px;
+    text-align:left;
+    font-size: 15px;
+}

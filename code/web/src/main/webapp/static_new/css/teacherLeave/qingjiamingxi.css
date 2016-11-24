@@ -1,0 +1,89 @@
+/*qjshenhe_main*/
+.qjmingxi_main{
+	width: 792px;
+	margin-top: 15px;
+	margin-left: 10px;
+
+}
+/*qjshenhe_main*/
+/*qjshenhe_title*/
+.qjmingxi_title{
+	border-bottom:1px solid #babcb9;
+}
+.qjmingxi_title li{
+	display:inline-block;
+	float: left;
+	padding:13px 27px;
+	font-size: 16px;
+	color:#fda716;
+	border: 1px solid #babcb9;
+	border-bottom: none;
+	cursor: pointer;
+	position: relative;
+	top:1px;
+	background: #fff;
+
+}
+.qjmingxi_title button{
+	
+	float: right;
+	background: #fe7a00;
+	border:1px solid #fe7a00;
+	color:#fff0e9;
+	padding:4px 30px;
+	margin-top:10px;
+	cursor: pointer;
+}
+/*qjshenhe_title*/
+/*qjshenhe_maincon*/
+.qjmingxi_maincon{
+	border:1px solid #babcb9;
+	border-top:none;
+	padding-top:8px;
+	padding-right: 15px;
+	padding-left: 25px; 
+}
+
+/*qjshenhe_maincon*/
+/*qjshenhe_ren*/
+.qjmingxi_ren{
+	border-bottom: 1px solid #babcb9;
+
+}
+.qjmingxi_ren span,.qjmingxi_ren em{
+	line-height: 36px;
+	font-size: 16px;
+	text-align: center;
+}
+.qjmingxi_ren em{
+	margin-right: 36px;
+}
+/*qjshenhe_ren*/
+/*qjmingxi_content*/
+.qjmingxi_content{
+	height:586px;
+}
+.qjmingxi_content span{
+	margin-right: 15px;
+}
+.qjmingxi_content .qjmingxi_bt{
+	margin-top: 12px;
+	margin-bottom:22px;
+	width: 272px;
+	height: 24px;
+}
+.qjmingxi_content textarea{
+	width: 498px;
+	height: 150px;
+}
+.qjmingxi_content .qjmx_title{
+vertical-align: center;
+}	
+.qjmingxi_content .qjmx_xq{
+	vertical-align: top;
+}
+/*qjmingxi_content*/
+.rd-day-body
+{
+	border: none;
+}

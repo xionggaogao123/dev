@@ -1,0 +1,78 @@
+.treeview-cols{
+    width: 214px;
+    float: left;
+    padding: 0 20px;
+}
+.treeview-head{
+    font-size: 16px;
+    border-bottom: #d3d3d3 1px solid;
+    line-height: 30px;
+    padding-top: 10px;
+    margin-bottom: 20px;
+}
+.treeview-head h3, .treeview-head span{
+    float: left;
+}
+.treeview-head h3{
+    padding-right: 20px;
+    font-size: 16px;
+}
+.treeview-head span a{
+    width: 18px;
+    line-height: 30px;
+    height: 31px;
+    display: inline-block;
+    vertical-align: middle;
+}
+.treeview-head span a.add-folder{
+    background: url('../images/newimgs/add-folder.png') center center no-repeat;
+}
+.treeview-head span a.add-file{
+    background: url('../images/newimgs/add-file.png') center center no-repeat;
+}
+.treeview-head span a.minus-file{
+    background: url('../images/newimgs/minus-file.png') center center no-repeat;
+}
+.treeview-head span a.icon-down{
+    background: url('../images/newimgs/icon-down.png') center center no-repeat;
+}
+.treeview-head span a.icon-up{
+    background: url('../images/newimgs/icon-up.png') center center no-repeat;
+}
+.treeform{
+    width: 485px;
+    float: right;
+    border-left: #d3d3d3 1px solid;
+    margin-top: 12px;
+    padding: 0 15px;
+    padding-bottom: 50px;
+}
+.treeform h3{
+    border-bottom: #d3d3d3 1px solid;
+    line-height: 30px;
+    font-size: 16px;
+}
+.treeform table td{
+    line-height: 40px;
+}
+.treeform-head{
+    margin-top: 30px;
+    border-bottom: #d3d3d3 1px solid;
+    padding-bottom: 7px;
+}
+.treeform-head h4, .treeform-head span a{
+    float: left;
+}
+.treeform-head h4{
+    padding-top: 5px;
+}
+.treeform-head span{
+    float: right;
+}
+.treeform-head span a{
+    margin-left: 10px;
+}
+#uploadFile{
+	margin-left: 75px;
+	margin-top:15px
+}

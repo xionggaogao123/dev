@@ -1,0 +1,36 @@
+<div ng-controller="FillStatusCtrl" class="unfilled-container">
+    <div class="title-bar" style="border-bottom: 1px solid #ccc;">
+        <span><a ng-click="closeWindow()" class="goback">返回</a></span>
+        
+        
+        <script>
+          var loc=location.href;
+          var thisIndex=loc.indexOf("allRelevant/");
+          var subStr=loc.substr(thisIndex+12);
+          jQuery("#stat_a").attr("href","/questionnaire#/static/"+subStr)
+        </script>
+        
+        <a id="stat_a" href="/questionnaire#/static/54bc83e3483ff35303ce4c24" target="_blank"><button class="title-btn">查看统计</button></a>
+    </div>
+    <div class="notfilled-container">
+        <div class="title-bar" style="text-align: center;">
+            <span>未填写问卷</span>
+            <button ng-click="notify()">私信通知</button>
+        </div>
+        <div>
+            <ul>
+                <li class="unfilled-prs" ng-repeat="user in content track by $index">
+                    <div><img src="{{user.maxImageURL}}" class="unfilled-prs-img"><span>{{user.nickName}}</span></div>
+                </li>
+            </ul>
+            <div class="pagination-wrapper">
+                <pagination boundary-links="true" total-items="totalElements" items-per-page="size" ng-model="pageNumber"
+                            ng-change="pageChanged()" class="pagination-sm" previous-text="上一页" next-text="下一页" first-text="第一页"
+                            last-text="最后一页"></pagination>
+            </div>
+        </div>
+
+    </div>
+
+
+</div>

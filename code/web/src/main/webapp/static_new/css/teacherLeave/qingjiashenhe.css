@@ -1,0 +1,164 @@
+/*qjshenhe_main*/
+.qjshenhe_main{
+	width: 792px;
+	margin-top: 15px;
+	margin-left: 10px;
+
+}
+/*qjshenhe_main*/
+/*qjshenhe_title*/
+.qjshenhe_title{
+	border-bottom:1px solid #babcb9;
+}
+.qjshenhe_title li{
+	display:inline-block;
+	float: left;
+	padding:13px 27px;
+	font-size: 16px;
+	color:#fda716;
+	border: 1px solid #babcb9;
+	border-bottom: none;
+	cursor: pointer;
+	position: relative;
+	top:1px;
+	background: #fff;
+
+}
+.qjshenhe_title button{
+	
+	float: right;
+	background: #fe7a00;
+	border:1px solid #fe7a00;
+	color:#fff0e9;
+	padding:6px 20px;
+	margin-top:10px;
+	cursor: pointer;
+}
+/*qjshenhe_title*/
+/*qjshenhe_maincon*/
+.qjshenhe_maincon{
+	border:1px solid #babcb9;
+	border-top:none;
+	padding-top:8px;
+	padding-right: 15px;
+	padding-left: 25px; 
+}
+
+/*qjshenhe_maincon*/
+/*qjshenhe_ren*/
+.qjshenhe_ren{
+	border-bottom: 1px solid #babcb9;
+	margin-bottom: 12px;
+}
+.qjshenhe_ren span,.qjshenhe_ren em{
+	line-height: 36px;
+	font-size: 16px;
+	text-align: center;
+}
+.qjshenhe_ren em{
+	margin-right: 36px;
+}
+/*qjshenhe_ren*/
+/*qjshenhe_select*/
+.qjshenhe_select span{
+	font-size: 16px;
+	font-weight: bold;
+	margin-right:20px;
+}
+.qjshenhe_select select{
+	width: 154px;
+	height: 32px;
+	margin-right: 14px;
+}
+.qjshenhe_select input{
+	width: 154px;
+	height: 26px;
+	margin-right: 14px;	
+}
+.qjshenhe_select button{
+	background: #fe7a00;
+	border:1px solid #fe7a00;
+	color:#fff0e9;
+	padding:6px 10px;
+	cursor: pointer;
+}
+/*qjshenhe_select*/
+/*qjshenhe_table*/
+table{
+	margin-top:22px;
+	font-weight: bold;
+	text-align: center;
+	margin-bottom: 20px;
+}
+table td{
+	border: 1px solid #797979;
+}
+.qjshenhe_table thead td{
+	height:28px; 
+}
+.qjshenhe_table tbody td{
+	height:64px;
+}
+.qjshenhe_table td{
+	width:125px;
+}
+.qjshenhe_table .qjshenhe_first_col{
+	width: 95px !important;
+	
+}
+.qjshenhe_table .qjshenhe_table_avtive{
+	background: #fe7a00;
+	font-size: 16px;
+	color:#fff;
+	cursor: pointer;
+}
+/*qjshenhe_table*/
+/*分页*/
+.page-paginator {
+	width: 100%;
+	margin: 40px auto 20px auto;
+	text-align: center;
+	display: none;
+}
+.page-index span {
+	padding: 3px 8px;
+	color: #838383;
+	border-radius: 4px;
+	border: 1px solid #838383;
+	background-color: #F6F7F6;
+	cursor: pointer;
+	margin: 0 2px;
+}
+.first-page,.last-page {
+	padding: 3px 15px;
+	color: #838383;
+	border-radius: 4px;
+	border: 1px solid #838383;
+	background-color: #F6F7F6;
+	cursor: pointer;
+	margin: 0 2px;
+}
+
+.page-paginator span.active {
+	background-color:#E6E6E6;
+	color: #779554;
+}
+/*分页结束*/
+
+.course_choosed
+{
+	background: limegreen !important;
+}
+.daike
+{
+	display: none;
+}
+.grqingjia_active {
+	background: #fe7a00 !important;
+	color: #fff !important;
+}
+.teacherChooseInp,.teacherChooseInp2
+{
+	height: 30px;
+	border: 1px solid #ddd;
+}

@@ -1,0 +1,116 @@
+.project{
+	margin-top: 10px;
+}
+.projectList{
+	width: 100%;
+	margin-bottom: 6px;
+	float: left;
+}
+.projectDetail{
+	float: left;
+	padding-left: 10px;
+	margin-right: 20px;
+	width: 570px;
+	border: 2px solid #d2d2d2;
+	line-height: 32px;
+	float: left;
+	color: #474747;
+	cursor:pointer;
+}
+.projectDetail label{
+	display: inline-block;
+	width: 50px;
+}
+.projectDetail input{
+	text-align: center;
+	width: 46px;
+	height: 22px;
+	border-radius: 5px;
+	border: 1px solid #cccccc;
+	background-color: #fafafa;
+}
+.projectDetail p{
+	float: left;
+	margin-right: 32px;
+
+}
+.projectEdit{
+	float: left;
+	line-height: 36px;
+	border: none;
+}
+#addRadio,#addSubProj{
+	width:500px;
+}
+#addRadio .pop-title,#addSubProj .pop-title{
+	height: 39px;
+}
+#addRadio table,#addSubProj table{
+	margin-left: 30px; 
+	width: 100%;
+}
+#addRadio .addRadio-table td,#addSubProj td{
+	width: 45px;
+}
+#addRadio .addRadio-table input,#addSubProj input{
+	border:1px solid #a3a3a3;
+	border-radius: 3px;
+	width: 270px;
+}
+#addRadio .depic,#addSubProj .depic{
+	display: block;
+	width: 40px;
+	height: 40px;
+	float: right;
+	cursor: pointer;
+	background: url(../images/depic.png);
+}
+#addRadio .pop-btn,#addSubProj .pop-btn{
+	width: 100px;
+	margin-right: 10px;
+}
+#addRadio .pop-btn .active,#addSubProj .pop-btn .active{
+	width: 100px;
+	border-radius: 3px;
+}
+
+
+
+
+#editRadio,#editSubProj{
+	width:500px;
+}
+#editRadio .pop-title,#editSubProj .pop-title{
+	height: 39px;
+}
+#editRadio table,#editSubProj table{
+	margin-left: 30px; 
+	width: 100%;
+}
+#editRadio .addRadio-table td,#editSubProj td{
+	width: 45px;
+}
+#editRadio .addRadio-table input,#editSubProj input{
+	border:1px solid #a3a3a3;
+	border-radius: 3px;
+	width: 270px;
+}
+#editRadio .depic,#editSubProj .depic{
+	display: block;
+	width: 40px;
+	height: 40px;
+	float: right;
+	cursor: pointer;
+	background: url(../images/depic.png);
+}
+#editRadio .pop-btn,#editSubProj .pop-btn{
+	width: 100px;
+	margin-right: 10px;
+}
+#editRadio .pop-btn .active,#editSubProj .pop-btn .active{
+	width: 100px;
+	border-radius: 3px;
+}
+.no-pointer{
+	cursor : default
+}

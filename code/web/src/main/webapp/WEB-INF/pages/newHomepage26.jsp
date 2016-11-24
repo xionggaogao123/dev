@@ -200,12 +200,12 @@
                             </a>
                             <c:choose>
                                 <c:when test="${roles:isHeadmaster(sessionValue.userRole) || roles:isManager(sessionValue.userRole)}">
-                                    <a href="/growth/list.do?index=6" class="newPage-right-pageview">
+                                    <a href="/indicator/iTreeManage.do?index=6&version=3" class="newPage-right-pageview">
                                         <img class="newpage-WK newPage-shadow" src="../../customizedpage/newspage/img/newLogoo-15.png">
                                     </a>
                                 </c:when>
                                 <c:when test="${roles:isTeacher(sessionValue.userRole)}">
-                                    <a href="/growth/list.do?index=6" class="newPage-right-pageview">
+                                    <a href="/indicator/iTreeManage.do?index=6&version=3" class="newPage-right-pageview">
                                         <img class="newpage-WK newPage-shadow" src="../../customizedpage/newspage/img/newLogoo-15.png">
                                     </a>
                                 </c:when>

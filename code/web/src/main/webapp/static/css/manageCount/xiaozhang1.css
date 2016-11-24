@@ -1,0 +1,330 @@
+html, body, div, span, object, iframe,h1, h2, h3, h4, h5, h6, p, blockquote, pre,abbr, address, cite, code, del, dfn, em, img, ins, kbd, q, samp,small, strong, sub, sup, var, b, i, dl, dt, dd, ol, ul, li,fieldset, form, label, legend,table, caption, tbody, tfoot, thead, tr, th, td,article, aside, canvas, details, figcaption, figure,footer, header, hgroup, menu, nav, section, summary,time, mark, audio, video,a ,input{	margin:0;	padding:0;	border:0;	font-size:100%;	font-family: "Microsoft Yahei";	vertical-align:baseline;	list-style: none;}
+
+.right{
+	width: 768px;
+	/*height: 100%;*/
+	border:1px solid #dddddd;
+    margin-left: 10px;
+    margin-top: 22px;
+    margin-bottom: 80px;
+    float: left;
+}
+.right .right_top{
+	width: 100%;
+	/*height:100%;*/
+	/*border-bottom: 1px solid #cccccc;*/
+}
+.right .right_top p{
+	width: 100%;
+	height:36px;
+	border-bottom: 1px solid #dddddd;
+	background: #f1f1f1;
+	margin-bottom: 19px;
+}
+.right .right_top p a{
+	width: 97px;
+	border-right: 1px solid #dddddd;
+	height:100%;
+	text-decoration: none;
+	float: left;
+	color: #333333;
+	font-size: 16px;
+	text-align: center;
+	line-height: 36px;
+}
+.right .right_top p a.current{
+	color:#ff8a00;
+	background:white; 
+	border-bottom:1px solid white; 
+	border-top:4px solid #ff8a00; 
+	margin-top:-4px;
+}
+.right .right_top .select{
+	padding-left: 9px;
+	width:759px;
+	/*height:82px;*/
+
+}
+.right .right_top .select select{
+	height:32px;
+	margin-bottom: 8px;
+	margin-right: 4px;
+	font-size: 14px;
+	color: #333333;
+    vertical-align: top;
+    border:1px solid #a9a9a9;
+}
+.right .right_top .select span{
+	width: 50px;
+	height:32px;
+	background: #fda417;
+	text-align: center;
+	line-height: 32px;
+	font-size: 14px;
+	color: white;
+	display: inline-block;
+	cursor: pointer;
+}
+/* top结束 */
+.tongji1{
+    /*width:100%-20px;
+    height:100%-20px;*/
+	border-bottom: 1px solid #cccccc;
+	padding:10px; 
+}
+.tongji1 p.pp{
+			width:135px;
+			height:32px;
+			background: #74a3f2;
+			line-height: 32px;
+			font-size: 18px;
+			color: white;
+			margin-bottom: 14px;
+		}
+.tongji1 p.pp span{
+			float: left;
+			width: 32px;
+			height:32px;
+			background: #4b86e7;
+			text-align: center;
+		}
+.tongji1 .fangwen{
+	border:1px solid #cccccc;
+}
+.tongji1 .fangwen .title{
+	width:100%;
+	height:40px;
+	text-align: center;
+	line-height: 40px;
+	color: #878ca2;
+	font-size: 20px;
+}
+.tongji1 .fangwen .zhexian1{
+	height:218px; 
+	width:746px;
+	margin-bottom: 10px;
+}
+
+.tongji1 .fangwen .zhexian2{
+	height:163px; 
+	width:746px;
+	margin-bottom: 10px;
+}
+.tongji1 .fangwen  .zhexian2_1{
+	width:163px;
+	height:163px;
+	float: left;
+}
+.tongji1 .fangwen  .zhexian2_2{
+	width:575px;
+	height:163px;
+	float: right;
+	/*background: green;*/
+}
+.tongji1 .fangwen .touxiang{
+	height: 150px;
+    padding-top: 30px;
+	background: #f8f9fe;
+}
+.tongji1 .fangwen .touxiang .bot{
+	width:248px;
+	height:100%;
+	float: left;
+	font-size: 24px;
+	color: #878ca2;
+	text-align: center;
+
+}
+.tongji1 .fangwen .touxiang .bot dl{
+	overflow: hidden;
+	padding:0 53px 0;
+}
+.tongji1 .fangwen .touxiang .bot dt{
+	float: left;
+}
+.tongji1 .fangwen .touxiang .bot dd{
+	float: right;
+	line-height: 62px;
+}
+.tongji1 .fangwen .touxiang .bot ul{
+	font-size: 30px;
+	line-height: 89px;
+}
+/* 统计1结束*/
+.tongji2{
+    /*width:100%-20px;
+    height:100%-20px;*/
+	border-bottom: 1px solid #cccccc;
+	padding:10px; 
+}
+.tongji2 p{
+			width:135px;
+			height:32px;
+			background: #74a3f2;
+			line-height: 32px;
+			font-size: 18px;
+			color: white;
+			margin-bottom: 14px;
+		}
+.tongji2 p span{
+			float: left;
+			width: 32px;
+			height:32px;
+			background: #4b86e7;
+			text-align: center;
+		}
+.tongji2 .fangwen{
+	border:1px solid #cccccc;
+}
+.tongji2 .fangwen .title{
+	width:100%;
+	height:40px;
+	text-align: center;
+	line-height: 40px;
+	color: #878ca2;
+	font-size: 20px;
+}
+.tongji2 .fangwen .zhexian2{
+    width:746px;
+    height:225px;
+	margin-bottom: 10px;
+}
+.tongji2 .fangwen .touxiang{
+	height:150px;
+	padding-top: 30px;
+	background: #f8f9fe;
+}
+.tongji2 .fangwen .touxiang .bot{
+	width:373px;
+	height:100%;
+	float: left;
+	font-size: 24px;
+	color: #878ca2;
+	text-align: center;
+
+}
+.tongji2 .fangwen .touxiang .bot dl{
+	overflow: hidden;
+	padding:0 90px 0;
+}
+.tongji2 .fangwen .touxiang .bot dt{
+	float: left;
+}
+.tongji2 .fangwen .touxiang .bot dd{
+	float: right;
+	line-height: 62px;
+}
+.tongji2 .fangwen .touxiang .bot ul{
+	font-size: 30px;
+	line-height: 87px;
+}
+/* 统计2结束 */
+.tongji3{
+    /*width:100%-20px;
+    height:100%-20px;*/
+	border-bottom: 1px solid #cccccc;
+	padding:10px; 
+}
+.tongji3 p{
+			width:135px;
+			height:32px;
+			background: #74a3f2;
+			line-height: 32px;
+			font-size: 18px;
+			color: white;
+			margin-bottom: 14px;
+		}
+.tongji3 p span{
+			float: left;
+			width: 32px;
+			height:32px;
+			background: #4b86e7;
+			text-align: center;
+		}
+.tongji3 .fangwen{
+	border:1px solid #cccccc;
+}
+.tongji3 .fangwen .title{
+	width:100%;
+	height:40px;
+	text-align: center;
+	line-height: 40px;
+	color: #878ca2;
+	font-size: 20px;
+}
+.tongji3 .fangwen .zhexian1{
+	margin-bottom: 10px;
+}
+.tongji3 .fangwen .zhexian2{
+    width:746px;
+    height:226px;
+	margin-bottom: 10px;
+}
+.tongji3 .fangwen .touxiang{
+	height:150px;
+	padding-top: 30px;
+	background: #f8f9fe;
+}
+.tongji3 .fangwen .touxiang .bot{
+	width:248px;
+	height:100%;
+	float: left;
+	font-size: 24px;
+	color: #878ca2;
+	text-align: center;
+
+}
+.tongji3 .fangwen .touxiang .bot dl{
+	overflow: hidden;
+	padding:0 53px 0;
+}
+.tongji3 .fangwen .touxiang .bot dt{
+	float: left;
+}
+.tongji3 .fangwen .touxiang .bot dd{
+	float: right;
+	line-height: 62px;
+}
+.tongji3 .fangwen .touxiang .bot ul{
+	font-size: 30px;
+	line-height: 89px;
+}
+#footer {
+    width: inherit;
+      background: rgba(0, 0, 0, 0.8);
+      background-color:#2E2E2E;
+    background-color:rgb(0, 0, 0);
+    opacity:.7;
+    filter:alpha(opacity=70);
+    height: 40px;
+    min-width: 900px;
+    color: white;
+    line-height: 40px;
+
+}
+
+#footer div {
+    width: 900px;
+    margin-left: auto;
+    margin-right: auto;
+}
+
+#footer a {
+    color: white;
+    cursor:pointer;
+}
+
+#footer a:hover {
+    color: red;
+}
+
+#footer img{
+    vertical-align: middle;
+    margin-right:5px;
+}
+
+#footer span {
+      white-space: pre;
+}
+
+/* 统计3结束 */

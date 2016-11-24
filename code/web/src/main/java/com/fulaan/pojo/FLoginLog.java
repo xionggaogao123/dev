@@ -1,7 +1,7 @@
 package com.fulaan.pojo;
 
-import com.fulaan.entry.FLoginLogEntry;
 import com.pojo.app.Platform;
+import com.pojo.fcommunity.FLoginLogEntry;
 
 /**
  * Created by jerry on 2016/9/21.

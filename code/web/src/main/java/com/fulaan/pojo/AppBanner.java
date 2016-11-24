@@ -1,6 +1,7 @@
 package com.fulaan.pojo;
 
-import com.fulaan.entry.AppBannerEntry;
+
+import com.pojo.fcommunity.AppBannerEntry;
 
 import java.util.ArrayList;
 import java.util.List;

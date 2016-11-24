@@ -2,13 +2,11 @@ package com.fulaan.dao;
 
 import com.db.base.BaseDao;
 import com.db.factory.MongoFacroty;
-import com.fulaan.entry.MineCommunityEntry;
 import com.mongodb.BasicDBObject;
 import com.mongodb.DBObject;
+import com.pojo.fcommunity.MineCommunityEntry;
 import com.sys.constants.Constant;
-import org.bson.types.BasicBSONList;
 import org.bson.types.ObjectId;
-import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
 import java.util.List;

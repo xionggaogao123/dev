@@ -1,13 +1,11 @@
 package com.fulaan.dao;
 
 import com.db.base.BaseDao;
-import com.db.factory.MongoFacroty;
-import com.fulaan.entry.AppBannerEntry;
-import com.fulaan.entry.BannerEntity;
 import com.fulaan.pojo.Banner;
 import com.mongodb.BasicDBObject;
-import com.mongodb.DB;
 import com.mongodb.DBObject;
+import com.pojo.fcommunity.AppBannerEntry;
+import com.pojo.fcommunity.BannerEntity;
 import com.sys.constants.Constant;
 import org.bson.types.ObjectId;
 import org.springframework.stereotype.Service;

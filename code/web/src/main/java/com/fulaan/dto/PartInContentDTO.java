@@ -1,10 +1,10 @@
 package com.fulaan.dto;
 
-import com.fulaan.entry.AttachmentEntry;
-import com.fulaan.entry.PartInContentEntry;
-import com.fulaan.entry.VideoEntry;
 import com.fulaan.pojo.Attachement;
 import com.fulaan.pojo.ShareContent;
+import com.pojo.fcommunity.AttachmentEntry;
+import com.pojo.fcommunity.PartInContentEntry;
+import com.pojo.fcommunity.VideoEntry;
 import org.bson.types.ObjectId;
 
 import java.util.ArrayList;

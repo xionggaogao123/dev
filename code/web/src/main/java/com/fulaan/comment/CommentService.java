@@ -1,4 +1,4 @@
-package com.fulaan_old.comment;
+package com.fulaan.comment;
 
 import java.util.List;
 

@@ -1,6 +1,6 @@
 package com.fulaan.pojo;
 
-import com.fulaan.entry.GroupAnnounceEntry;
+import com.pojo.fcommunity.GroupAnnounceEntry;
 import org.apache.commons.lang3.StringUtils;
 
 import java.util.List;

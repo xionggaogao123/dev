@@ -1,10 +1,10 @@
 package com.fulaan.dto;
 
-import com.fulaan.entry.AttachmentEntry;
-import com.fulaan.entry.CommunityDetailEntry;
-import com.fulaan.entry.PartInContentEntry;
 import com.fulaan.pojo.Attachement;
 import com.fulaan.util.DateUtils;
+import com.pojo.fcommunity.AttachmentEntry;
+import com.pojo.fcommunity.CommunityDetailEntry;
+import com.pojo.fcommunity.PartInContentEntry;
 import com.sys.utils.DateTimeUtils;
 import org.bson.types.ObjectId;
 

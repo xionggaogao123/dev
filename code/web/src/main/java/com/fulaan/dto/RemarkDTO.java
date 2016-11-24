@@ -1,6 +1,7 @@
 package com.fulaan.dto;
 
-import com.fulaan.entry.RemarkEntry;
+
+import com.pojo.fcommunity.RemarkEntry;
 
 /**
  * Created by admin on 2016/11/1.

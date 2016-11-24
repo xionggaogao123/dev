@@ -1,9 +1,9 @@
 package com.fulaan.dao;
 
 import com.db.base.BaseDao;
-import com.fulaan.entry.GroupAnnounceEntry;
 import com.mongodb.BasicDBObject;
 import com.mongodb.DBObject;
+import com.pojo.fcommunity.GroupAnnounceEntry;
 import com.sys.constants.Constant;
 import org.bson.types.ObjectId;
 import org.springframework.stereotype.Service;

@@ -1,8 +1,8 @@
-package com.fulaan.entry;
+package com.pojo.fcommunity;
 
-import com.fulaan.pojo.FLoginLog;
 import com.mongodb.BasicDBObject;
 import com.mongodb.DBObject;
+import com.pojo.app.Platform;
 import com.pojo.base.BaseDBObject;
 
 /**
@@ -21,14 +21,14 @@ public class FLoginLogEntry extends BaseDBObject {
         super((BasicDBObject) dbo);
     }
 
-    public FLoginLogEntry(FLoginLog loginLog) {
+    public FLoginLogEntry(String userName,String nickName,long time,String ip,Platform pf) {
         super();
         BasicDBObject dbo = new BasicDBObject()
-                .append("nm", loginLog.getUserName())
-                .append("nk", loginLog.getNickName())
-                .append("ti", loginLog.getLoginTime())
-                .append("ip", loginLog.getIp())
-                .append("pf", loginLog.getPf().getName());
+                .append("nm", userName)
+                .append("nk", nickName)
+                .append("ti", time)
+                .append("ip", ip)
+                .append("pf", pf.getName());
         setBaseEntry(dbo);
     }
 

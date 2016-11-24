@@ -1,7 +1,7 @@
 package com.fulaan.dto;
 
-import com.fulaan.entry.VideoEntry;
 import com.fulaan.util.DateUtils;
+import com.pojo.fcommunity.VideoEntry;
 
 import java.util.ArrayList;
 import java.util.List;

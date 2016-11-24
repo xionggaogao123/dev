@@ -1,12 +1,10 @@
 package com.fulaan.dao;
 
 import com.db.base.BaseDao;
-import com.fulaan.entry.CommunityDetailEntry;
 import com.fulaan.util.CommunityDetailType;
 import com.mongodb.BasicDBObject;
 import com.mongodb.DBObject;
-import com.mongodb.WriteResult;
-import com.pojo.utils.MongoUtils;
+import com.pojo.fcommunity.CommunityDetailEntry;
 import com.sys.constants.Constant;
 import org.bson.types.ObjectId;
 import org.springframework.stereotype.Service;

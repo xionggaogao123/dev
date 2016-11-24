@@ -1,7 +1,6 @@
 package com.fulaan.interceptor;
 
 import com.fulaan.annotation.LoginInfo;
-import com.fulaan.entry.ConcernEntry;
 import com.fulaan.service.CommunityService;
 import com.fulaan.service.ConcernService;
 import com.fulaan_old.forum.service.FCollectionService;

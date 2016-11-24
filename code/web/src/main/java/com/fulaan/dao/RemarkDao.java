@@ -3,9 +3,9 @@ package com.fulaan.dao;
 
 import com.db.base.BaseDao;
 import com.db.factory.MongoFacroty;
-import com.fulaan.entry.RemarkEntry;
 import com.mongodb.BasicDBObject;
 import com.mongodb.DBObject;
+import com.pojo.fcommunity.RemarkEntry;
 import com.pojo.user.UserEntry;
 import com.sys.constants.Constant;
 import org.bson.types.ObjectId;

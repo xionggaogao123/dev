@@ -1,7 +1,7 @@
 package com.fulaan.dto;
 
-import com.fulaan.entry.CommunityEntry;
 import com.fulaan.util.DateUtils;
+import com.pojo.fcommunity.CommunityEntry;
 
 import java.util.List;
 

@@ -2,8 +2,8 @@ package com.fulaan_old.forum.service;
 
 import com.db.forum.FLogDao;
 import com.fulaan.dao.LoginLogDao;
-import com.fulaan.entry.FLoginLogEntry;
 import com.fulaan.pojo.FLoginLog;
+import com.pojo.fcommunity.FLoginLogEntry;
 import com.pojo.forum.FLogDTO;
 import org.bson.types.ObjectId;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -42,7 +42,7 @@ public class FLogService {
     }
 
     public void loginLog(FLoginLog log) {
-        loginDao.save(new FLoginLogEntry(log));
+        loginDao.save(new FLoginLogEntry(log.getUserName(),log.getNickName(),log.getLoginTime(),log.getIp(),log.getPf()));
     }
 
 

@@ -3,7 +3,7 @@ package com.fulaan_old.project.controller;
 import com.alibaba.fastjson.JSON;
 import com.fulaan.annotation.SessionNeedless;
 import com.fulaan.controller.BaseController;
-import com.fulaan_old.comment.CommentService;
+import com.fulaan.comment.CommentService;
 import com.fulaan_old.project.service.SubProjectService;
 import com.fulaan.user.service.UserService;
 import com.pojo.comment.CommentEntry;

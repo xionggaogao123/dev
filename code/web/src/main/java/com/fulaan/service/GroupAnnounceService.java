@@ -2,13 +2,12 @@ package com.fulaan.service;
 
 import com.fulaan.dao.GroupAnnounceDao;
 import com.fulaan.dto.CommunityDetailDTO;
-import com.fulaan.entry.GroupAnnounceEntry;
 import com.fulaan.pojo.Attachement;
-import com.fulaan.pojo.CommunityMessage;
 import com.fulaan.pojo.GroupAnnounceDTO;
 import com.fulaan.pojo.PageModel;
 import com.fulaan.user.service.UserService;
 import com.fulaan.util.DateUtils;
+import com.pojo.fcommunity.GroupAnnounceEntry;
 import com.pojo.user.AvatarType;
 import com.pojo.user.UserEntry;
 import com.sys.utils.AvatarUtils;

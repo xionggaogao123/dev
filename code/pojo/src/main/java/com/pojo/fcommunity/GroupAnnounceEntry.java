@@ -1,6 +1,5 @@
-package com.fulaan.entry;
+package com.pojo.fcommunity;
 
-import com.mongodb.BasicDBList;
 import com.mongodb.BasicDBObject;
 import com.mongodb.DBObject;
 import com.pojo.base.BaseDBObject;

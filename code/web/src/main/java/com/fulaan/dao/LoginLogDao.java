@@ -1,11 +1,9 @@
 package com.fulaan.dao;
 
 import com.db.base.BaseDao;
-import com.db.factory.MongoFacroty;
-import com.fulaan.entry.FLoginLogEntry;
 import com.mongodb.BasicDBObject;
-import com.mongodb.DB;
 import com.mongodb.DBObject;
+import com.pojo.fcommunity.FLoginLogEntry;
 import com.sys.constants.Constant;
 import org.springframework.stereotype.Service;
 
@@ -20,7 +18,7 @@ import java.util.List;
 public class LoginLogDao extends BaseDao {
 
 
-    public List<FLoginLogEntry> getLoginLog(long start,long end){
+    public List<FLoginLogEntry> getLoginLog(long start, long end){
 
         BasicDBObject query = new BasicDBObject()
                 .append("ti",new BasicDBObject(Constant.MONGO_LTE,end).append(Constant.MONGO_GTE,start));

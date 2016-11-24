@@ -1,8 +1,8 @@
 package com.fulaan.service;
 
 import com.fulaan.dao.LoginLogDao;
-import com.fulaan.entry.FLoginLogEntry;
 import com.fulaan.pojo.FLoginLog;
+import com.pojo.fcommunity.FLoginLogEntry;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 

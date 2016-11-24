@@ -1,13 +1,9 @@
-package com.fulaan.entry;
+package com.pojo.fcommunity;
 
-import com.mongodb.BasicDBList;
 import com.mongodb.BasicDBObject;
 import com.mongodb.DBObject;
 import com.pojo.base.BaseDBObject;
 import org.bson.types.ObjectId;
-
-import java.util.ArrayList;
-import java.util.List;
 
 /**
  * Created by admin on 2016/11/7.

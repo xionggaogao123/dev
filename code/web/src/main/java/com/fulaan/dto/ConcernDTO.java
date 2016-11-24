@@ -1,6 +1,6 @@
 package com.fulaan.dto;
 
-import com.fulaan.entry.ConcernEntry;
+import com.pojo.fcommunity.ConcernEntry;
 import org.bson.types.ObjectId;
 
 import java.util.ArrayList;

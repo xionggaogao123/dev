@@ -1,6 +1,6 @@
 package com.fulaan.pojo;
 
-import com.fulaan.entry.BannerEntity;
+import com.pojo.fcommunity.BannerEntity;
 
 import java.io.Serializable;
 import java.util.ArrayList;

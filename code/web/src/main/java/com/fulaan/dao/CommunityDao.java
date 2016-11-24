@@ -1,9 +1,9 @@
 package com.fulaan.dao;
 
 import com.db.base.BaseDao;
-import com.fulaan.entry.CommunityEntry;
 import com.mongodb.BasicDBObject;
 import com.mongodb.DBObject;
+import com.pojo.fcommunity.CommunityEntry;
 import com.pojo.utils.MongoUtils;
 import com.sys.constants.Constant;
 import org.bson.types.ObjectId;

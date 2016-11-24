@@ -1,9 +1,9 @@
 package com.fulaan.dao;
 
 import com.db.base.BaseDao;
-import com.fulaan.entry.CommunitySeqEntry;
 import com.mongodb.BasicDBObject;
 import com.mongodb.DBObject;
+import com.pojo.fcommunity.CommunitySeqEntry;
 import com.sys.constants.Constant;
 import org.springframework.stereotype.Service;
 

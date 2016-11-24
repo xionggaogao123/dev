@@ -1,7 +1,7 @@
 package com.fulaan.dto;
 
-import com.fulaan.entry.MemberEntry;
 import com.fulaan.util.OperationType;
+import com.pojo.fcommunity.MemberEntry;
 import com.pojo.user.AvatarType;
 import com.sys.utils.AvatarUtils;
 

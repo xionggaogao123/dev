@@ -2,9 +2,14 @@ package com.fulaan.service;
 
 import com.db.user.UserDao;
 import com.fulaan.dao.*;
-import com.fulaan.dto.*;
-import com.fulaan.entry.*;
-import com.fulaan.pojo.*;
+import com.fulaan.dto.CommunityDTO;
+import com.fulaan.dto.CommunityDetailDTO;
+import com.fulaan.dto.MemberDTO;
+import com.fulaan.dto.PartInContentDTO;
+import com.fulaan.pojo.Attachement;
+import com.fulaan.pojo.CommunityMessage;
+import com.fulaan.pojo.PageModel;
+import com.fulaan.pojo.ProductModel;
 import com.fulaan.user.service.UserService;
 import com.fulaan.util.CommunityDetailType;
 import com.fulaan.util.DateUtils;
@@ -12,18 +17,16 @@ import com.fulaan.util.QRUtils;
 import com.fulaan_old.friendscircle.service.FriendApplyService;
 import com.fulaan_old.friendscircle.service.FriendService;
 import com.pojo.activity.FriendApplyEntry;
+import com.pojo.fcommunity.*;
 import com.pojo.user.AvatarType;
 import com.pojo.user.UserEntry;
 import com.sys.constants.Constant;
 import com.sys.utils.AvatarUtils;
 import org.apache.commons.lang3.StringUtils;
-import org.apache.xpath.operations.Bool;
 import org.bson.types.ObjectId;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.Part;
 import java.util.*;
 
 /**

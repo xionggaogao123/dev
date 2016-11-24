@@ -2,11 +2,10 @@ package com.fulaan.service;
 
 import com.fulaan.dao.ConcernDao;
 import com.fulaan.dto.ConcernDTO;
-import com.fulaan.entry.ConcernEntry;
 import com.fulaan.user.service.UserService;
+import com.pojo.fcommunity.ConcernEntry;
 import com.pojo.user.AvatarType;
 import com.pojo.user.UserEntry;
-import com.sys.constants.Constant;
 import com.sys.utils.AvatarUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.bson.types.ObjectId;

@@ -165,7 +165,7 @@ public class PersonalCenterController extends BaseController {
 
         userService.update(getUserId(), "avt", input);
 
-    memberService.updateAllAvatar(getUserId(),input);
+        memberService.updateAllAvatar(getUserId(),input);
 
         sv.setAvatar(input);
 

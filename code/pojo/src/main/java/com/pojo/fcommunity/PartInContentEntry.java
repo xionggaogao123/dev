@@ -1,12 +1,9 @@
-package com.fulaan.entry;
+package com.pojo.fcommunity;
 
-import com.fulaan.pojo.ShareContent;
 import com.mongodb.BasicDBList;
 import com.mongodb.BasicDBObject;
 import com.mongodb.DBObject;
-import com.pojo.app.Page;
 import com.pojo.base.BaseDBObject;
-import com.pojo.utils.MongoUtils;
 import com.sys.constants.Constant;
 import org.bson.types.ObjectId;
 

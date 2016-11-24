@@ -1,6 +1,5 @@
-package com.fulaan.entry;
+package com.pojo.fcommunity;
 
-import com.fulaan.util.DateUtils;
 import com.mongodb.BasicDBList;
 import com.mongodb.BasicDBObject;
 import com.mongodb.DBObject;
@@ -87,7 +86,7 @@ public class CommunityDetailEntry extends BaseDBObject {
             .append("shim",shareImage)
             .append("shti",shareTitle)
             .append("shpr",sharePrice)
-            .append("ti", DateUtils.currentMillisecond())
+            .append("ti", System.currentTimeMillis())
             .append("r", 0);
     setBaseEntry(basicDBObject);
   }

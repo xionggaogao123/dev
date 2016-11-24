@@ -1,6 +1,7 @@
 package com.fulaan.dto;
 
-import com.fulaan.entry.AttachmentEntry;
+
+import com.pojo.fcommunity.AttachmentEntry;
 
 /**
  * Created by admin on 2016/10/24.

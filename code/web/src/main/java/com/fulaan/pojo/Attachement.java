@@ -1,7 +1,7 @@
 package com.fulaan.pojo;
 
-import com.fulaan.entry.AttachmentEntry;
 import com.fulaan.util.DateUtils;
+import com.pojo.fcommunity.AttachmentEntry;
 
 /**
  * Created by jerry on 2016/10/25.

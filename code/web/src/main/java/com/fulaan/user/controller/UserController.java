@@ -79,7 +79,7 @@ import java.util.*;
 public class
 		UserController  extends BaseController implements ApplicationContextAware{
 
-	
+	//first test
 	
 	private static final Logger logger =Logger.getLogger(UserController.class);
 	private static final Logger loginLogger =Logger.getLogger("LOGIN");

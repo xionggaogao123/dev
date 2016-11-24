@@ -59,46 +59,46 @@ define('evaluate',['jquery','doT','easing','common'],function(require,exports,mo
             }
         });
 
-     /*   $(".te-stack").click(function(){
-            if($(this).hasClass("te-stack")){
-                $(this).removeClass("te-stack").addClass("te-stack-h")
-            }else{
-                $(this).removeClass("te-stack-h").addClass("te-stack")
-            }
-        });*/
-      /*  $('body').on('mouseover','td', function(){
-            var s =$(this).find("ul");
-            var n=s.children();
-            var input=s.siblings("input");
-            clearAll = function () {
-                for (var i = 0; i < n.length; i++) {
-                    n[i].className = '';
-                }
-            }
-            for (var i = 0; i < n.length; i++) {
-                n[i].onclick = function () {
-                    var q = this.getAttribute("rel");
-                    clearAll();
-                    input.val(q);
-                    for (var i = 0; i < q; i++) {
-                        n[i].className = 'on';
-                    }
-                }
-                n[i].onmouseover = function () {
-                    var q = this.getAttribute("rel");
-                    clearAll();
-                    for (var i = 0; i < q; i++) {
-                        n[i].className = 'on';
-                    }
-                }
-                n[i].onmouseout = function () {
-                    clearAll();
-                    for (var i = 0; i < input.val(); i++) {
-                        n[i].className = 'on';
-                    }
-                }
-            }
-        });*/
+        /*   $(".te-stack").click(function(){
+         if($(this).hasClass("te-stack")){
+         $(this).removeClass("te-stack").addClass("te-stack-h")
+         }else{
+         $(this).removeClass("te-stack-h").addClass("te-stack")
+         }
+         });*/
+        /*  $('body').on('mouseover','td', function(){
+         var s =$(this).find("ul");
+         var n=s.children();
+         var input=s.siblings("input");
+         clearAll = function () {
+         for (var i = 0; i < n.length; i++) {
+         n[i].className = '';
+         }
+         }
+         for (var i = 0; i < n.length; i++) {
+         n[i].onclick = function () {
+         var q = this.getAttribute("rel");
+         clearAll();
+         input.val(q);
+         for (var i = 0; i < q; i++) {
+         n[i].className = 'on';
+         }
+         }
+         n[i].onmouseover = function () {
+         var q = this.getAttribute("rel");
+         clearAll();
+         for (var i = 0; i < q; i++) {
+         n[i].className = 'on';
+         }
+         }
+         n[i].onmouseout = function () {
+         clearAll();
+         for (var i = 0; i < input.val(); i++) {
+         n[i].className = 'on';
+         }
+         }
+         }
+         });*/
 
         //点星星
         $('body').on('mouseover','i[cjmark]',function(){
@@ -260,7 +260,7 @@ define('evaluate',['jquery','doT','easing','common'],function(require,exports,mo
         Common.getPostData('/evaluate/getStudentList.do', selStuParam, function(rep){
             if(rep.code=200){
                 $('#studentList').html("");
-                var lenth = rep.message.length*70;
+                var lenth = rep.message.length*90;
                 $('#studentList').css('width',lenth);
                 Common.render({tmpl: $("#j-tmpl2"), data: rep, context: '#studentList'});
                 indiData.parentId="";
@@ -413,53 +413,53 @@ define('evaluate',['jquery','doT','easing','common'],function(require,exports,mo
      * 查询指标信息列表
      */
     /*evaluate.getIndicatorList = function(){
-        Common.getPostData('/growth/getIndicatorList.do', indiData,function(rep){
-            if(rep.code==200){
-                if(indiData.level==1){
-                    $('#indicatorTable').html("");
-                    Common.render({tmpl: $("#j-tmpl"), data: rep, context: '#indicatorTable'});
-                }else{
-                    var list = rep.message;
-                    var html='';
-                    $.each(list,function(i,item){
-                        html+='<tr zhiBiaoId="'+item.id+'" zhiBiaoParentId="'+indiData.parentId+'" level="'+item.level+'" type="'+item.type;
-                        if(item.type==1){
-                            html+='" isOpen="0" class="evaluate-tr evaluate-tr-bl">';
-                            html+='<td width="475px;">';
-                            html+='<em class="em-jia"></em>';
-                        }else{
-                            html+='" class="evaluate-trr evaluate-trr-bl">';
-                            html+='<td width="475px;">';
-                        }
-                        html+='<input readonly="readonly"  placeholder="'+item.name+'"/>';
-                        html+='</td>';
-                        html+='<td>';
-                        html+='<div class="gradecon" id="Addnewskill_119"><ul class="rev_pro clearfix">';
-                        html+='<li>';
-                        html+='<input class="fl" type="hidden" style="margin-top:2px;" name="InterviewCommentInfoSub[1]" value="0" />';
-                        html+=' <div class="revinp">';
-                        html+='            <span class="level">';
-                        html+='                <i class="level_hollow" cjmark=""></i>';
-                        html+='                <i class="level_hollow" cjmark=""></i>';
-                        html+='                <i class="level_hollow" cjmark=""></i>';
-                        html+='                <i class="level_hollow" cjmark=""></i>';
-                        html+='                 <i class="level_hollow" cjmark=""></i>';
-                        html+='             </span>';
-                        html+='            <!-- <span style="display: none" class="revgrade">未评分</span>-->';
-                        html+='             <span class="gradcon-c">重新打分</span>';
-                        html+='             </div>';
-                        html+='         </li>';
-                        html+='     </ul>';
-                        html+='     </div>';
-                        html+='</td>';
-                        html+='</tr>';
-                    });
-                    $("tr[zhiBiaoId='"+indiData.parentId+"']").after(html);
-                    $("tr[zhiBiaoId='"+indiData.parentId+"']").attr("isOpen",1);
-                }
-            }
-        });
-    };*/
+     Common.getPostData('/growth/getIndicatorList.do', indiData,function(rep){
+     if(rep.code==200){
+     if(indiData.level==1){
+     $('#indicatorTable').html("");
+     Common.render({tmpl: $("#j-tmpl"), data: rep, context: '#indicatorTable'});
+     }else{
+     var list = rep.message;
+     var html='';
+     $.each(list,function(i,item){
+     html+='<tr zhiBiaoId="'+item.id+'" zhiBiaoParentId="'+indiData.parentId+'" level="'+item.level+'" type="'+item.type;
+     if(item.type==1){
+     html+='" isOpen="0" class="evaluate-tr evaluate-tr-bl">';
+     html+='<td width="475px;">';
+     html+='<em class="em-jia"></em>';
+     }else{
+     html+='" class="evaluate-trr evaluate-trr-bl">';
+     html+='<td width="475px;">';
+     }
+     html+='<input readonly="readonly"  placeholder="'+item.name+'"/>';
+     html+='</td>';
+     html+='<td>';
+     html+='<div class="gradecon" id="Addnewskill_119"><ul class="rev_pro clearfix">';
+     html+='<li>';
+     html+='<input class="fl" type="hidden" style="margin-top:2px;" name="InterviewCommentInfoSub[1]" value="0" />';
+     html+=' <div class="revinp">';
+     html+='            <span class="level">';
+     html+='                <i class="level_hollow" cjmark=""></i>';
+     html+='                <i class="level_hollow" cjmark=""></i>';
+     html+='                <i class="level_hollow" cjmark=""></i>';
+     html+='                <i class="level_hollow" cjmark=""></i>';
+     html+='                 <i class="level_hollow" cjmark=""></i>';
+     html+='             </span>';
+     html+='            <!-- <span style="display: none" class="revgrade">未评分</span>-->';
+     html+='             <span class="gradcon-c">重新打分</span>';
+     html+='             </div>';
+     html+='         </li>';
+     html+='     </ul>';
+     html+='     </div>';
+     html+='</td>';
+     html+='</tr>';
+     });
+     $("tr[zhiBiaoId='"+indiData.parentId+"']").after(html);
+     $("tr[zhiBiaoId='"+indiData.parentId+"']").attr("isOpen",1);
+     }
+     }
+     });
+     };*/
 
     module.exports=evaluate;
 });

@@ -1,0 +1,681 @@
+html,body,div,h1,h2,h3,h4,h5,h6,p,img,dl,dt,dd,ol,ul,li,a,b,i,em,strong,form,table,tr,th,td,span,input,fieldset,select,option,textarea,label,iframe,header,nav,aside,article,section,button{margin:0;padding:0;border:0;}
+h1,h2,h3,h4,h5,h6{ font-weight:normal;}
+
+img{display:block;}
+ol,ul{ list-style:none;}
+i,b,em,strong { font-style:normal; text-decoration:none; font-weight: normal;}
+body{font-family:Microsoft YaHei;color:#656565; background-color:#fff;position:relative;z-index:1;}
+a{text-decoration:none; color:red;font-family:'Microsoft YaHei','Arial', 'Helvetica', 'sans-serif','simsun','Lucida Grande','Lucida Sans Unicode';}
+a:hover{color: #ff5a0b;}
+img{display: inline}
+input{outline: none}
+ul{list-style-type: none}
+img{border-style: none}
+body{font-family: "Microsoft YaHei"}
+
+
+
+.inform-all{
+    width: 100%;
+    background: #ffffff;
+}
+.informm-main{
+    width: 1000px;
+    margin: 0 auto;
+    overflow: visible;
+}
+
+.inform-main{
+    position: relative;
+    left: 10px;
+    width:770px;
+    min-height: 1150px;
+    background-color: #ffffff;
+    border:solid #D0D0D0 1px;
+    margin: 20px;
+    overflow: hidden;
+}
+
+.inform-top{
+    overflow: visible;
+    height: 95px;
+    width: 100%;
+    border-bottom: 1px solid #D0D0D0;
+}
+
+.inform-top-I{
+    height: 33px;
+    background-color: #E6E6E6;
+    text-align: center;
+    line-height: 33px;
+    cursor: pointer;
+    overflow: visible
+}
+.inform-top-I>span>a{
+    color: #3D87C6;
+}
+.inform-top-I>img{
+    position: relative;
+    top: 0px;
+}
+.inform-top-II{
+    height: 62px;
+    line-height: 62px;
+    color: #DCDCDC;
+    padding-left: 20px;
+    overflow: visible
+}
+.inform-TJ{
+    font-size: 30px;
+}
+
+.inform-main ul li{
+    overflow: visible;
+    height: 62px;
+    width: 100%;
+    background-color: #ffffff;
+    border-bottom: 1px solid #D0D0D0;
+    font-size: 14px;
+    position: relative;
+}
+.inform-main ul li:hover{
+    background-color: #f6f9fb;
+}
+.inform-main ul li>div{
+    overflow: visible;
+    height: 40px;
+    width: 680px;
+    float: right;
+    margin-top: 10px;
+    margin-right: 10px;
+    line-height: 40px;
+}
+.inform-main ul li img{
+    width: 50px;
+    height: 50px;
+    margin:6px 10px;
+    float: left;
+}
+
+.inform-ZD{
+    width: 225px;
+    color: #333333;
+}
+.inform-ZD>span{
+    color: #fbb38a;
+    display: inline-block;
+
+}
+.fiery-wid{
+    width: 360px!important;
+}
+.inform-ZD>p{
+    display: inline-block;
+    width: 20em;
+}
+.tet{
+    display: inline-block;
+    text-overflow: ellipsis;
+    -webkit-text-overflow:ellipsis;
+    white-space: nowrap;
+    overflow: hidden;
+
+}
+.inform-time{
+    /*width: 85px;*/
+    display: inline-block;
+    overflow: hidden;
+    color: #999999;
+}
+.inform-li-right{
+    float: right;
+    /* display: none;*/
+    cursor:pointer;
+    overflow: visible;
+}
+
+.inform-deletee{
+    overflow: hidden;
+    display: inline-block;
+    width: 2em;
+    color: #3d87c6;
+    margin-left: 10px;
+    overflow: hidden;
+    display: inline-block;
+    width: 2em;
+    color: #3d87c6;
+    /* margin-left: 25px; */
+    /*   position: absolute;
+       right: 172px*/
+}
+
+.inform-YC{
+    display: none;
+}
+.inform-main ul li>div:hover .inform-YC{
+    display: inline-block;
+}
+
+/*************************************通知删除框********************************/
+.inform-popup{
+    display: none;
+    width: 448px;
+    height: 130px;
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    margin-left: -224px;
+    margin-top: -65px;
+    background-color: #ffffff;
+    border:1px solid #D0D0D0;
+    box-shadow: 3px 5px 10px #ababab;
+    color: #000000;
+    font-size: 14px;
+}
+.inform-popup-top{
+
+    height: 36px;
+    width: 100%;
+    background-color: #d3d3d3;
+}
+.inform-popup-top>span{
+    display: inline-block;
+    margin: 7px 0 0 20px;
+
+}
+.inform-popup-middle{
+    height: 50px;
+    line-height: 50px;
+    margin-left: 20px;
+}
+.infrom-popup-bottom>button{
+    background-color: #ffffff;
+    font-size: 14px;
+    font-family: "Microsoft Yahei";
+    border: 1px solid #D0D0D0;
+    padding: 0px 20px;
+    outline: none;
+    float: right;
+    margin-top: 5px;
+    margin-right: 7px;
+    border-radius: 5px;
+    cursor: pointer;
+    color: #000000;
+}
+.infrom-popup-bottom>button:hover{
+    color: #ffffff;
+    background-color: #e53131;
+}
+
+
+/**********************************编辑*************************************/
+.compile-main{
+    z-index: 1;
+    overflow: visible;
+    margin:  0 auto;
+    width:610px;
+    display: none;
+    /* min-height: 335px;*/
+    background-color: #ffffff;
+    position: absolute;
+    top: 0;
+    font-size: 14px;
+}
+.compile-top{
+    height: 50px;
+    width: 100%;
+    line-height: 50px;
+    margin-left: 20px;
+    color: #000000;
+}
+.compile-top-input{
+    position: relative;
+    left: -5px;
+}
+.compile-top>span{
+    width: 3em;
+    display: inline-block;
+    text-align: right;
+}
+.compile-top>input{
+
+    border: 1px solid #cccccc;
+    height: 30px;
+    width: 80%;
+    margin-left: 10px;
+    border-radius: 5px;
+}
+.gj-conts strong{
+    font-weight: bold !important;
+}
+.gj-conts em{
+    font-style: italic !important;
+}
+.compile-hr{
+    overflow: visible;
+    height: 25px;
+    width: 90%;
+    border-bottom: 1px solid #efefef;
+    margin-left: 5%;
+}
+.compile-hr>span{
+    text-align: center;
+    /*width: 120px;*/
+    display: inline-block;
+    color: #989898;
+    margin:3% 0 0 38%;
+    background-color: #ffffff;
+    padding: 0 10px;
+}
+.inform-BJ{
+    border: 1px solid #D0D0D0;
+    width: 525px;
+    height: 313px;
+    margin-top: 20px;
+    margin-left: 50px;
+    text-align: justify;
+    overflow-y: hidden;
+}
+.compile-add{
+    display: inline-block;
+    width: 100%;
+    overflow: visible;
+    color: #3b87cd;
+}
+.compile-add>img{
+    margin-left: 15px;
+}
+.compile-add>span{
+    margin-left:15px;
+    color: #4889c8;
+    cursor: pointer;
+}
+.compile-add>span:hover{
+    text-decoration: underline;
+}
+.infrom-TP{
+    /* height: 32px;
+     width: 95%;*/
+    /*background-color: #eef1f3;*/
+    margin-left: 15px;
+    margin-top: 2px;
+}
+.infrom-TP img{
+    margin:8px 0 0 5px;
+    float: left;
+}
+.infrom-TP>div{
+    height: 32px;
+    line-height: 32px;
+    padding-left: 20px;
+    width: 95%;
+    background-color: #eef1f3;
+    margin-top: 2px;
+}
+.infrom-PTP{
+    /* height: 32px;
+     width: 95%;*/
+    /*background-color: #eef1f3;*/
+    margin-left: 15px;
+    margin-top: 2px;
+}
+.infrom-PTP img{
+    margin:8px 0 0 5px;
+    float: left;
+}
+.infrom-PTP>div{
+    height: 32px;
+    line-height: 32px;
+    padding-left: 20px;
+    width: 95%;
+    background-color: #eef1f3;
+    margin-top: 2px;
+}
+.infrom-FJ{
+    /* height: 32px;
+     width: 95%;*/
+    /*background-color: #eef1f3;*/
+    margin-left: 15px;
+    margin-top: 2px;
+}
+.infrom-FJ img{
+    margin:8px 0 0 5px;
+    float: left;
+}
+.infrom-FJ>div{
+    height: 32px;
+    line-height: 32px;
+    padding-left: 20px;
+    width: 95%;
+    background-color: #eef1f3;
+    margin-top: 2px;
+}
+
+.inform-bottom{
+    position: relative;
+    overflow: visible;
+    line-height: 32px;
+    height: 32px;
+    background-color:#e5e5e5 ;
+    width: 100%;
+    margin-top: 10px;
+}
+.inform-bottom>div{
+    float: left;
+    height: 32px;
+}
+.inform-bottom-middle{
+    position: relative;
+    padding-left: 10px;
+}
+.inform-bottom-middle>img{
+    position: relative;
+    top: 2px;
+}
+.inform-bottom-middle>span{
+    margin-left: 5px;
+}
+.inform-bottom-middle>input{
+    margin-left: 5px;
+    border:1px solid #D0D0D0;
+    height: 25px;
+    width: 90px;
+}
+.infrom-YX{
+    color: #4287be;
+    cursor: pointer;
+}
+.infrom-YX:hover{
+    text-decoration: underline;
+}
+.testB{
+    color: #b0b0b0;
+}
+.infrom-right>button{
+    border: 1px solid #D0D0D0;
+    float: right;
+    background-color: #ffffff;
+    height: 27px;
+    width: 47px;
+    color: #000000;
+    margin-top: 2px;
+    font-family: "Microsoft Yahei";
+}
+.infrom-right>button:hover{
+    background-color: #438cce;
+    color: #ffffff;
+}
+.valid-time{
+    display: none;
+    border: 1px solid #D0D0D0;
+    height: 100px;
+    width: 150px;
+    position: absolute;
+    bottom:-120px;
+    left: 100px;
+    border-radius: 10px;
+    padding-left: 10px;
+    padding-top: 15px;
+    background-color: #ffffff;
+}
+.valid-time-I{
+    color: #d88147;
+}
+.valid-timeT{
+    display: none;
+    position: absolute;
+    bottom: -14px;
+    left: 150px;
+    border:1px solid #D0D0D0;
+    width:20px;
+    height:20px;
+    transform: rotate(-45deg);
+    -webkit-transform: rotate(-45deg);
+    -moz-transform: rotate(-45deg);
+    -ms-transform: rotate(-45deg);
+    filter: progid:DXImageTransform.Microsoft.BasicImage(rotation=3);
+    background-color: #ffffff;
+    /* border-top:10px solid #ffffff;
+     border-right:10px solid #ffffff;
+     border-bottom:10px solid #D0D0D0;
+     border-left:10px solid #ffffff;*/
+    border-left: none;
+    border-bottom: none;
+}
+
+.inform-popup-I{
+    z-index: 99999999999;
+    display: none;
+    width: 448px;
+    height: 130px;
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    margin-left: -224px;
+    margin-top: -65px;
+    background-color: #ffffff;
+    border:1px solid #D0D0D0;
+    box-shadow: 3px 5px 10px #ababab;
+    color: #000000;
+    font-size: 14px;
+}
+.inform-popup-top-I{
+
+    height: 36px;
+    width: 100%;
+    background-color: #d3d3d3;
+}
+.inform-popup-top-I>span{
+    display: inline-block;
+    margin: 7px 0 0 20px;
+
+}
+.inform-popup-middle-I{
+    height: 50px;
+    line-height: 50px;
+    margin-left: 20px;
+}
+.infrom-popup-bottom-I>button{
+    background-color: #ffffff;
+    font-size: 14px;
+    font-family: "Microsoft Yahei";
+    border: 1px solid #D0D0D0;
+    outline: none;
+    float: right;
+    margin-top: 5px;
+    margin-right: 7px;
+    border-radius: 5px;
+    cursor: pointer;
+    color: #000000;
+}
+.infrom-popup-bottom-I>button:hover{
+    color: #ffffff;
+    background-color: #e53131;
+}
+
+.input-button{
+    background-color: #ffffff;
+    font-size: 14px;
+    font-family: "Microsoft Yahei";
+    border: 1px solid #D0D0D0;
+    outline: none;
+    margin-top: 5px;
+    margin-right: 7px;
+    border-radius: 5px;
+    cursor: pointer;
+    color: #000000;
+}
+
+.input-button:hover{
+    background-color: #438cce;
+    color: #ffffff;
+}
+
+.view-main{
+    overflow: visible;
+    position: relative;
+    font-size: 15px;
+    margin: 0 auto;
+    width: 770px;
+    min-height: 500px;
+    border:1px solid #D0D0D0;
+    background-color: #ffffff;
+    float: right;
+}
+
+.view-top{
+    padding-left: 20px;
+    height: 50px;
+    border-bottom: 1px solid #D0D0D0;
+    line-height: 50px;
+    overflow: visible;
+    color: red;
+    font-weight: bold;
+    font-size: 16px;
+}
+.view-I{
+    color: #3d87c1;
+    cursor: pointer;
+    float: left;
+    display: inline-block
+}
+.view-I:hover{
+    text-decoration: underline;
+}
+.view-II{
+    width: 450px;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    overflow: hidden;
+    display: inline-block
+
+}
+.view-III{
+    float: left;
+}
+
+.view-middle{
+    height: 110px;
+    width: 100%;
+    background-color: #f6f9fb;
+    border-bottom: 1px solid #D0D0D0;
+    overflow-y: hidden;
+}
+.view-left{
+    width: 40em;
+    float: left;
+    margin-top: 10px;
+
+}
+.view-left>div{
+    margin-top: 3px;
+    height: 20px;
+    margin-left: 20px;
+    overflow: visible;
+}
+
+.view-MC{
+    width: 450px;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    overflow: hidden;
+    display: inline-block;
+}
+
+.viewC{
+    color: #4185c3;
+}
+.view-right{
+    float: right;
+    width: 180px;
+    height: 110px;
+}
+.view-right-I{
+    height: 100px;
+}
+.view-right-I>span{
+    display: inline-block;
+    margin-left: 20px;
+    width: 2em;
+    margin-top: 30px;
+    cursor: pointer;
+}
+.view-right-I>span:hover{
+    text-decoration: underline;
+}
+.view-text p{
+    word-wrap: break-word;
+    line-height: 28px;
+}
+.view-text{
+    width: 100%;
+    min-height: 100px;
+    overflow: visible;
+}
+.view-text>div{
+    overflow: visible;
+    min-height: 90px;
+    margin: 20px 10px 0 10px;
+    color: #000000;
+}
+.view-XZ-left{
+    float: left;
+    width: 464px;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    overflow: hidden;
+    margin-top: 8px;
+    margin-left: 20px
+}
+
+.colorB{
+    color: #a1a4a4;
+}
+
+.view-XZ-right{
+    cursor: pointer;
+    overflow: visible;
+}
+.view-XZ-right>span{
+    margin: 10px 0 0 10px;
+}
+.view-XZ-right>span:hover{
+    text-decoration: underline;
+}
+
+/*分页*/
+.page-paginator {
+    width: 100%;
+    margin: 40px auto 20px auto;
+    text-align: center;
+    display: none;
+}
+.page-index span {
+    padding: 3px 8px;
+    color: #838383;
+    border-radius: 4px;
+    border: 1px solid #838383;
+    background-color: #F6F7F6;
+    cursor: pointer;
+    margin: 0 2px;
+}
+.first-page,.last-page {
+    padding: 3px 15px;
+    color: #838383;
+    border-radius: 4px;
+    border: 1px solid #838383;
+    background-color: #F6F7F6;
+    cursor: pointer;
+    margin: 0 2px;
+}
+.page-paginator span.active {
+    background-color:#E6E6E6;
+    color: #779554;
+}
+.view-text>div>p>strong>span{
+    font-family: 微软雅黑;
+    color: rgb(0,0,0);
+    font-weight: bold;
+    font-size: 18px;
+}
+

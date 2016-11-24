@@ -1,0 +1,201 @@
+/*dangjian_content*/
+.dangjian_content{
+	margin: 23px auto;
+	width: 1000px;
+}
+/*dangjian_content ceshi*/
+/*dangjian_nav*/
+.dangjian_nav a{
+	float: left;
+	font-size: 14px;
+	font-weight: bold;
+	background: #feaa00;
+	color: #fff;
+	padding: 8px 20px;
+	border: 1px solid #feaa00;
+	border-bottom: none;
+	margin-left: 1px;
+}
+.dangjian_nav .focus{
+	background: #fff;
+	color: #333;
+	font-weight: bold;
+	border: 1px solid #bbb;
+	border-bottom: none;
+}
+.span-over{
+    word-wrap: break-word;
+}
+.ztree li span{
+    display: inline-block;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    max-width: 130px;
+}
+/*dangjian_nav*/
+/*dangjian_main*/
+.dangjian_main{
+	margin-top: 16px;
+}
+/*dangjian_main*/
+/*dangjian_main_left*/
+.dangjian_main_left{
+	margin-top: 15px;
+	float: left;
+	width:240px;
+	background: #e9e9e9;
+	height: 700px;
+}
+#DirUl{
+    overflow-y: auto;
+    height: 650px;
+}
+/*dangjian_main_left*/
+/*dangjian_content_right*/
+.dangjian_content_right{
+	margin-top: 15px;
+	width: 760px;
+	float: right;
+}
+/*dangjian_content_right*/
+/*dangjian_right_title*/
+.dangjian_right_title{
+	background: #f0f8de;
+	line-height: 45px;
+	font-size: 14px;
+	font-weight: bold;
+}
+.dangjian_right_title p{
+	float: left;
+	margin-left: 20px;
+}
+.dangjian_right_title button{
+	float: right;
+	background: #ff9c00;
+	padding: 6px 12px;
+	border: none;
+	cursor:pointer;
+	margin-top: 8px;
+	margin-right: 10px;
+
+	color:#fff;
+}
+/*dangjian_right_title*/
+/*dangjian_right_main*/
+.dangjian_right_main{
+	margin-left: 16px;
+}
+.dangjian_right_main select{
+	display: inline-block;
+	width:225px;
+	height: 20px;
+	margin-top: 25px;
+}
+/*dangjian_right_main*/
+/*dangjian_right_file*/
+.dangjian_right_file{
+	margin-top: 22px;
+
+}
+.dangjian_right_file div{
+	float:left;
+	width: 225px;
+	height: 215px;
+	margin-right: 23px;
+}
+.dangjian_right_file button{
+	background: #00a0e9;
+	font-size: 14px;
+	font-weight: bold;
+	color:#fff;
+	padding: 6px 12px;
+	border:1px solid #fff;
+	border-radius:8px;
+	cursor:pointer;
+	display: none;
+}
+
+.dangjiang_file{
+	position:relative;
+}
+.dangjian_right_file .dangjian_file_edit{
+	position: absolute;
+	top:64px;
+	left: 50px;
+}
+.dangjian_right_file .dangjian_file_del{
+	position: absolute;
+	top:64px; 
+	left:120px;
+}
+/*dangjian_right_file*/
+/*.dangjiang_file:hover button{*/
+	/*display: inline-block;*/
+/*}*/
+/*.dangjiang_file button:hover{*/
+	/*display: inline-block;*/
+/*}*/
+.dangjiang_file_img{
+	width: 225px;
+	height: 152px;
+}
+/*dangjian_left_title*/
+.dangjian_left_title{
+	background: #e5e5e5;
+	font-weight: bold;
+	padding:13px 50px 13px 2px;
+}
+
+.dangjian_left_title img{
+	margin-right: 8px;
+}
+.dangjian_left_title .dangjian_add{
+	color: #585858;
+	margin-right: 22px;
+	cursor: pointer;
+}
+.dangjian_left_title .dangjian_del{
+	color: #828282;
+	cursor: pointer;
+}
+/*dangjian_left_title*/
+
+.new-page-links {
+	left: 275px;
+	position: relative;
+}
+/*人员*/
+/*djry-set*/
+.djry-set{
+	width: 1000px;
+	margin: 0 auto;
+}
+/*djry-set-title*/
+.djry-set-title{
+	height: 50px;
+	line-height: 50px;
+	font-size: 16px;
+	text-align: left;
+	font-weight: bold;
+}
+/*djry-set-title*/
+/*djry-set-table*/
+.djry-set-table{
+	width: 998px;
+	text-align: center;
+}
+.djry-set-table th{
+	background: #ccc;
+	height: 35px;
+	width: 100px;
+	border: 1px solid #959595;
+	color: #333;
+}
+.djry-set-table td{
+	height: 33px;
+	width: 100px;
+	border: 1px solid #959595;
+	color: #666;
+}
+/*djry-set-table*/
+/*djry-set*/

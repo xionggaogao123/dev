@@ -1,0 +1,147 @@
+/*dypeizhi_content*/
+.dypeizhi_content{
+	width: 772px;
+	margin-top: 20px;
+	margin-left: 10px;
+	position: relative;
+}
+/*dypeizhi_content*/
+/*dypeizhi_tab*/
+.dypeizhi_tab{
+	width: 100%;
+	border-bottom: 1px solid #cccccc;
+
+}
+.dypeizhi_tab  ul a{
+	display: inline-block;
+	float:left;
+	font-size: 16px;
+	background: #fda716;
+	color:#fff;
+	padding: 12px 20px;
+	margin-right: 5px;
+	position: relative;
+	top:1px;
+	cursor: pointer;
+	border: 1px solid #ccc;
+	border-bottom: none;
+}
+.dypeizhi_tab  ul a:hover{
+	background: #fff;
+	color: #fda716;
+}
+.dypeizhi_tab .dypeizhi_backindex{
+	
+	float:right;
+	margin-top: 10px;
+}
+/*dypeizhi_tab*/
+/*dypeizhi_mian*/
+.dypeizhi_mian{
+	display: none;
+	width: 752px;
+	border: 1px solid #ccc;
+	/*border-top: none;*/
+	padding: 20px 10px;
+}
+.dypeizhi_mian .dypeizhi_back{
+	margin-left: 30px;
+}
+.dypeizhi_mian button{
+	margin-top:20px;
+	float: right;
+	background: #fda716;
+	color:#fff;
+	padding: 3px 10px;
+	border:none;
+	margin-left: 3px;
+	cursor: pointer;
+}
+table{
+	width: 750px;
+	margin-top: 36px;
+	border: 1px solid #ccc;
+	text-align: center;
+	margin-bottom: 180px;
+}
+table th{
+	background: #ccc;
+}
+table th,table td{
+	border: 1px solid #949494;
+	height: 36px;
+}
+table td{
+	color:#646464;
+}
+/*dypeizhi_mian*/
+/*dypeizhi_alert*/
+.dypeizhi_alert{
+	width: 482px;
+	position: absolute;
+	left: 653px;
+	top: 163px;
+	display: none;
+	background: #fff;
+	border:1px solid #ccc;
+	z-index:999;
+}
+.dypeizhi_alert_title{
+	height: 36px;
+	line-height: 36px;
+	background: #616161;
+}
+.dypeizhi_alert_title span{
+	display: inline-block;
+	margin-left: 10px;
+	color:#fff;
+	
+}
+.dypeizhi_alert_title em{
+	float: right;
+	color:#fff;
+	margin-right: 10px;
+	cursor: pointer;
+}
+.dypeizhi_alert_item{
+	padding: 10px 40px 30px 24px;
+}
+.dypeizhi_alert_text{
+	width: 300px;
+	height: 20px;
+}
+.dypeizhi_alert_box{
+	width: 290px;
+	margin-left:75px;
+	margin-bottom: -30px;
+}
+.dypeizhi_alert_foot{
+	margin-left: 95px;
+	margin-bottom: 20px;
+}
+.dypeizhi_alert_foot button{
+	padding:4px 14px;
+	border:1px solid #949494;
+	background: #fff;
+	margin-right: 30px;
+	margin-top: 20px;
+	cursor: pointer;
+}
+.dypeizhi_alert2{
+	width: 482px;
+	position: absolute;
+	left: 653px;
+	top: 163px;
+	display: none;
+	background: #fff;
+	border:1px solid #ccc;
+	z-index:999;
+}
+.dypeizhi_alert2 button{
+	margin-top: 40px;
+}
+.dypeizhi_alert_text
+{
+	border: 1px solid #949494;
+}
+/*dypeizhi_alert*/

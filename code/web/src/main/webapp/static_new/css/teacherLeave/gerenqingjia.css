@@ -1,0 +1,128 @@
+/*grqingjia_main*/
+.grqingjia_main{
+	width: 792px;
+	margin-top: 15px;
+	margin-left: 10px;
+
+}
+/*grqingjia_main*/
+/*grqingjia_title*/
+.grqingjia_title{
+	border-bottom:1px solid #babcb9;
+}
+.grqingjia_title li{
+	display:inline-block;
+	float: left;
+	padding:10px 26px;
+	font-size: 16px;
+	color:#fe7a00;
+	font-weight: bold;
+	border: 1px solid #babcb9;
+	border-bottom: none;
+	cursor: pointer;
+	position: relative;
+	top:1px;
+	background: #fff;
+	margin-right: 1px;
+
+}
+.grqingjia_title .grqingjia_active{
+	background: #fe7a00;
+	color: #fff;
+}
+.grqingjia_title button{
+	display: inline-block;
+	float: right;
+	background: #fe7a00;
+	border:1px solid #fe7a00;
+	color:#fff0e9;
+	padding:6px 20px;
+	margin-top:3px;
+	cursor: pointer;
+}
+/*grqingjia_title*/
+/*grqingjia_maincon*/
+.grqingjia_maincon{
+	border:1px solid #babcb9;
+	border-top:none;
+	padding-top:15px;
+	padding-right: 15px;
+	padding-left: 25px; 
+}
+/*grqingjia_maincon*/
+/*grqingjia_select*/
+.grqingjia_select{
+	margin-bottom: 26px;
+}
+.grqingjia_select span{
+	font-size: 16px;
+	font-weight: bold;
+	margin-right:20px;
+}
+.grqingjia_select select{
+	width: 120px;
+	height: 32px;
+	margin-right: 14px;
+}
+.grqingjia_select input{
+	width: 120px;
+	height: 26px;
+	margin-right: 14px;	
+}
+/*tqingjia_select*/
+/*tqingjia_inf*/
+.grqingjia_inf .grqingjia_reason{
+	border:1px solid #bbb;
+	margin-bottom: 13px;
+	padding:8px 15px 8px 8px;
+	
+}
+.grqingjia_inf p{
+	margin-top: 3px;
+	color: #333;
+	font-size: 14px;
+}
+.grqingjia_inf span,.grqingjia_inf em{
+	display: inline-block;
+	margin-top: 0;
+	color: #666;
+	font-size: 12px;
+}
+.grqingjia_inf em{
+	margin-left: 30px;
+}
+.grqingjia_inf button{
+	float: right;
+	background: #fff;
+	color: #fe7a00;
+	border:1px solid #fe7a00;
+	padding: 6px 14px;
+	cursor: pointer;
+}
+/*tqingjia_inf*/
+
+.noLeave
+{
+	display: none;
+}
+.noReplace
+{
+	display: none;
+}
+.noReplace p,.noLeave p{
+	text-align: center;
+	font-size: 24px;
+	font-weight: bold;
+	color: #666;
+	line-height: 400px;
+}
+#deleteLeave
+{
+	float: right;
+	background: #fff;
+	color: #fe7a00;
+	border: 1px solid #fe7a00;
+	padding: 6px 14px;
+	cursor: pointer;
+	display: none;
+}

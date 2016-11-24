@@ -1,0 +1,933 @@
+/*
+* @Author: Tony
+* @Date:   2015-08-19 16:30:27
+* @Last Modified by:   Tony
+* @Last Modified time: 2015-08-20 15:16:10
+*/
+.tab_main {
+    border: 1px solid #ddd;
+    border-top: none;
+    padding: 35px;
+}
+
+.tab-head li {
+    position: relative;
+}
+
+.tab-head li span {
+    position: absolute;
+    top: 5px;
+    left: 71px;
+    background: #ff5a00;
+    color: #fff;
+    font-size: 12px;
+    line-height: 16px;
+    padding: 0 5px;
+    border-radius: 2px;
+}
+
+.tab-head li span.Lg {
+    left: 88px;
+}
+
+.tab_main .Xueqi label,
+.tab_main .Xueqi select,
+.tab_main .Xueqi input,
+.tab_main .Xueqi button {
+    float: left;
+}
+
+.tab_main .Xueqi label {
+    line-height: 35px;
+    margin-right: 20px;
+}
+
+/*.tab_main .Xueqi select {
+    margin-right:20px;
+    height:35px;
+    min-width: 187px;
+}*/
+.tab_main .Xueqi input {
+    height: 35px;
+    border: 1px solid #ddd;
+    border-right: none;
+    padding-left: 5px;
+    line-height: 31px;
+    margin: 0;
+    width: 225px;
+}
+
+.tab_main .Xueqi button {
+    margin: 0;
+    padding: 0;
+    border: 1px solid #ddd;
+    border-left: none;
+    line-height: 33px;
+    background: #6b6b6b;
+    color: #fff;
+    width: 55px;
+    cursor: pointer;
+}
+
+.tab_main .Xueqi {
+    margin-bottom: 30px;
+}
+
+.tab_main .Lb .Zx {
+    color: #fff;
+    background: #ffa800;
+    float: right;
+    line-height: 28px;
+    width: 75px;
+    text-align: center;
+    margin-bottom: 20px;
+}
+
+.tab_main .Lb table {
+    border: 1px solid #bbb;
+    text-align: center;
+    color: #000;
+    clear: both;
+}
+
+.tab_main .Lb table tr {
+    border-bottom: 1px solid #bbb;
+}
+
+.tab_main .Lb table th,
+.tab_main .Lb table td {
+    border-right: 1px solid #bbb;
+    height: 36px;
+    max-width: 15em;
+    word-break: break-all;
+}
+
+.tab_main .Lb table th {
+    background: #ccc;
+}
+
+.tab_main .Lb table .Wd td {
+   /* color: #8b8b8b;*/
+    color: #666666;
+}
+
+.tab_main .Lb table tr .CK {
+    cursor: pointer;
+}
+.tab_main .Bt em {
+    color: #858585;
+    margin-right: 30px;
+}
+
+/* 首页结束 */
+.tab_main .Bk {
+    border-bottom: 1px solid #333;
+}
+
+.tab_main .Bk:hover {
+    border-bottom: 1px solid #ff9c00;
+}
+
+.tab_main h3 {
+    font-size: 16px;
+    padding: 30px 0;
+}
+
+.tab_main .title {
+    font-weight: bold;
+    text-align: center;
+}
+
+/*.tab_main .Bt span {
+    color: #858585;
+    margin-right: 30px;
+}*/
+
+.tab_main .Zw {
+    padding-top: 20px;
+}
+
+.tab_main .Zw li {
+    margin-bottom: 30px;
+    text-align: justify;
+}
+
+.tab_main .Fj {
+    color: #3f75a3;
+}
+
+.tab_main .Fj a {
+    color: #3f75a3;
+    text-decoration: underline;
+}
+
+.removeFile{
+    margin-right: 20px;
+}
+/* 详情页面结束 */
+.tab_main .Xq {
+    padding-top: 0;
+}
+
+.tab_main .BT li {
+    margin-bottom: 20px;
+}
+
+.tab_main .BT li label,
+.tab_main .BT li input,
+.tab_main .BT li span,
+.tab_main .BT li select,
+.tab_main .BT li button {
+    float: left;
+    margin: 0;
+}
+
+.tab_main .BT li span,
+.tab_main .BT li label {
+    line-height: 35px;
+}
+
+.tab_main .BT li span {
+    margin-right: 60px;
+}
+
+.tab_main .BT li label {
+    margin-right: 20px;
+}
+
+.tab_main .BT li select {
+    height: 35px;
+    min-width: 160px;
+}
+
+.tab_main .BT li input {
+    width: 440px;
+    padding: 0 5px;
+    height: 34px;
+    border: 1px solid #c9c9c9;
+}
+
+.tab_main .BT .TS label {
+    width: 80px;
+    margin-right: 0;
+}
+
+.tab_main .BT .TS input {
+    width: 225px;
+    border-right: none;
+}
+
+.tab_main .BT .TS button {
+    border: 1px solid #c9c9c9;
+    border-left: none;
+    padding: 0;
+    width: 55px;
+    background: #6b6b6b;
+    color: #fff;
+    cursor: pointer;
+    line-height: 33px;
+}
+
+.tab_main .CJ label {
+    width: 80px;
+    float: left;
+}
+
+.tab_main .CJ .Yc {
+    float: left;
+    width: 610px;
+}
+
+.tab_main .CJ .xcj {
+    height: 38px;
+    border: 1px solid #009dda;
+    margin-bottom: 5px;
+}
+
+.tab_main .CJ textarea {
+    height: 175px;
+    width: 608px;
+    padding: 0;
+    border: 1px solid #abadb3;
+    display: block;
+    resize: vertical;
+    margin-bottom: 10px;
+}
+
+.tab_main .CJ a {
+    /*display: inline-block;*/
+    line-height: 28px;
+    border: 1px solid transparent;
+    width: 98px;
+    height: 28px;
+    text-align: center;
+}
+
+.tab_main .CJ a:hover {
+    border: 1px solid #ff9c00;
+}
+
+.tab_main .CJ a span {
+    font-size: 20px;
+    font-weight: bold;
+    margin-right: 5px;
+}
+
+.tab_main .TJ {
+    padding: 70px 0;
+    text-align: center;
+}
+
+.tab_main .TJ button {
+    margin: 0;
+    padding: 0;
+    border: 1px solid #ff8a00;
+    color: #ff8a00;
+    width: 83px;
+    height: 34px;
+    background: #fff;
+    font-size: 16px;
+    cursor: pointer;
+    margin: 0 10px;
+}
+
+.tab_main .TJ button.qX {
+    color: #959595;
+    border: 1px solid #959595;
+}
+
+/* 撰写页面结束 */
+/* 弹出层 */
+.gay {
+    width: 100%;
+    height: auto;
+    background: #000;
+    opacity: 0.3;
+    -moz-opacity: 0.3;
+    filter: alpha(opacity=30);
+    position: fixed;
+    top: 0;
+    left: 0;
+    z-index: 1;
+    display: none;
+}
+
+.Tanchu1,
+.Tanchu2 {
+    width: 500px;
+    height: 330px;
+    background: #fff;
+    position: fixed;
+    z-index: 2;
+    top: 50% !important;
+    left: 50% !important;
+    margin-left: -250px;
+    margin-top: -165px;
+    display: none;
+}
+
+.Tanchu1 p,
+.Tanchu2 p {
+    line-height: 44px;
+    background: #6b6b6b;
+    color: #fff;
+    font-size: 16px;
+    padding: 0 22px;
+}
+
+.Tanchu1 p span,
+.Tanchu2 p span {
+    font-size: 14px;
+    width: 52px;
+    height: 24px;
+    border: 1px solid #cacaca;
+    background: #959595;
+    float: right;
+    text-align: center;
+    line-height: 24px;
+    cursor: pointer;
+    margin-left: 10px;
+    margin-top: 9px;
+}
+
+.Tanchu1 p span.QD,
+.Tanchu2 p span.QD {
+    background: #ff8a00;
+    border: 1px solid #ff8a00;
+}
+
+.Tanchu1 .xuanren,
+.Tanchu2 .xuanren {
+    padding: 15px 20px 0;
+    height: 270px;
+    overflow-y: auto
+}
+
+.Tanchu1 .xuanren .Hm,
+.Tanchu2 .xuanren .Hm {
+    background: #dcdcdc;
+    color: #6b6b6b;
+    line-height: 28px;
+    padding: 0 10px;
+    margin-bottom: 10px;
+}
+
+.Tanchu1 .xuanren .Hm em,
+.Tanchu2 .xuanren .Hm em {
+    margin-right: 10px;
+}
+
+.Tanchu1 .xuanren span {
+    display: inline-block;
+    width: 52px;
+    height: 28px;
+    line-height: 28px;
+    text-align: center;
+    color: #fff;
+    background: #ff8a00;
+    margin-bottom: 10px;
+}
+
+.Tanchu1 .xuanren ul li {
+    line-height: 24px;
+    padding-left: 10px;
+    color: #6b6b6b;
+    cursor: pointer;
+}
+
+.K1 > li {
+    font-weight: bold;
+}
+
+.Tanchu1 .xuanren ul li.current {
+    background: url(../images/WD.png) #dcdcdc no-repeat 440px center;
+}
+
+.Tanchu2 .xuanren ol {
+    float: left;
+    width: 17px;
+    height: 202px;
+    background: url(../images/Rarr.png) center no-repeat;
+}
+
+.Tanchu2 .xuanren ul {
+    float: left;
+    height: 200px;
+    width: 100px;
+    border: 1px solid #dcdcdc;
+    overflow-y: auto;
+}
+
+.Tanchu2 .xuanren ul.K1 {
+    width: 140px;
+}
+
+.Tanchu2 .xuanren ul.K2 {
+    width: 180px;
+}
+
+.Tanchu2 .xuanren ul h4,
+.Tanchu2 .xuanren ul li {
+    text-align: center;
+    line-height: 24px;
+    color: #6b6b6b;
+    font-weight: 400;
+    cursor: pointer;
+}
+
+.Tanchu2 .xuanren ul li.current {
+    background: #dcdcdc;
+}
+
+.Tanchu2 .xuanren ul.K2 li {
+    cursor: pointer;
+}
+
+.Tanchu2 .xuanren ul.K2 li.current {
+    background: url(../images/WD.png) #dcdcdc no-repeat 210px center;
+}
+
+/*******************************************审阅*******************************************/
+.Xueqi-I {
+    height: 35px;
+    margin-right: 20px;
+    width: 189px !important;
+}
+
+.Xueqi-II {
+    height: 35px;
+    width: 135px !important;
+    margin-right: 20px;
+}
+
+.tab-XG {
+    cursor: pointer;
+    font-size: 16px;
+    color: #ffb77c;
+    float: right;
+    border: 1px solid #ffb77c;
+    padding: 6px 20px;
+    margin-top: -10px;
+    margin-left: 15px;
+}
+
+.tab_AN {
+    margin-top: 30px;
+}
+
+.tab_AN span {
+    display: block;
+    font-size: 16px;
+    border-top: 1px solid #ddd;
+    padding-top: 30px;
+}
+
+.tab_BU {
+    margin: 30px 0;
+}
+
+.tab_BU button {
+    background: #ffffff;
+    color: #ffb77c;
+    border: 1px solid;
+    width: 80px;
+    height: 30px;
+    float: left;
+    margin-right: 10px;
+    cursor: pointer;
+    font-size: 15px
+}
+
+.tab_LS {
+    margin-top: 30px;
+    padding-top: 20px;
+    border-top: 1px solid #DDD;
+}
+
+.tab_LS span {
+    font-size: 16px;
+}
+
+.tab_LS table {
+    width: 100%;
+    margin-top: 20px;
+}
+
+.tab_LS th {
+    border: 1px solid #bababa;
+    /*width: 20%;*/
+    font: normal normal normal 14px/40px 'Microsoft YaHei', Arial, sans-serif;
+    background: #cccccc;
+}
+
+.tab_LS td {
+    border: 1px solid #bababa;
+    /* width: 20%;*/
+    font: normal normal normal 14px/40px 'Microsoft YaHei', Arial, sans-serif;
+    background: #ffffff;
+    text-align: center;
+    max-width: 15em;
+    word-break: break-all;
+}
+
+.tab_AN .tab_BU .tab_HV {
+    background: #feaa00;
+    color: #ffffff;
+}
+
+.tab-TY {
+    min-height: 400px;
+    margin: 30px 0;
+    font-size: 15px;
+}
+
+#tab-TY {
+    display: none;
+}
+
+.tab-TY span {
+    margin-right: 20px;
+}
+
+.tab-TY input {
+    border: 1px solid #c9c9c9;
+    border-right: none;
+    height: 35px;
+    width: 260px;
+    margin: 0;
+    padding: 0;
+}
+
+.tab_TX {
+    height: 35px;
+    width: 70px;
+    background: #6b6b6b;
+    border: 1px solid #6b6b6b;
+    color: #ffffff;
+    margin-left: -5px;
+    cursor: pointer;
+}
+
+.tab-BZ {
+    height: 55px;
+    line-height: 55px;
+    display: block;
+}
+
+.tab-TY textarea {
+    height: 175px;
+    width: 700px;
+    padding: 0;
+    border: 1px solid #abadb3;
+    display: block;
+    resize: vertical;
+    margin-bottom: 10px;
+    resize: none;
+    outline: none;
+}
+
+.tab-TY .xcj {
+    height: 38px;
+    border: 1px solid #009dda;
+    margin-bottom: 5px;
+    width: 700px;
+}
+
+.tab_TJ {
+    width: 100px;
+    height: 30px;
+    border: 1px solid #dddddd;
+    background: #ffffff;
+    cursor: pointer;
+}
+
+.tab_bottom {
+    width: 100%;
+    text-align: center;
+}
+
+.tab_TY {
+    width: 113px;
+    height: 37px;
+    color: #feaa00;
+    background: #ffffff;
+    border: 1px solid #feaa00;
+    margin-top: 45px;
+    cursor: pointer;
+}
+
+.tab-TY select {
+    width: 238px;
+    height: 35px;
+}
+
+.tab-TY option:hover {
+    background: #cccccc;
+}
+
+.tab-TY select option span {
+    display: block;
+    margin: 0 10px;
+}
+
+#tab-BH {
+    display: none;
+}
+
+.tab_main h3 input {
+    width: 600px;
+    padding: 0 10px;
+    background: #eeeeee;
+    height: 35px;
+    border: 1px solid #dddddd;
+    font: inherit;
+}
+
+.Bt span input {
+    border: 1px solid #dddddd;
+    border-right: 0;
+    padding: 0;
+    height: 35px;
+    width: 260px;
+    margin-left: 20px;
+    background: #eeeeee;
+    padding: 0 10px;
+
+}
+
+.Bt span button {
+    background: #6b6b6b;
+    color: #ffffff;
+    width: 66px;
+    height: 35px;
+    border: 1px solid #6b6b6b;
+    border-left: none;
+    cursor: pointer;
+}
+
+.pro-de-ZW {
+    border: 1px solid #dddddd;
+    width: 700px;
+    height: 380px;
+    margin-top: 40px;
+}
+
+.tab_main .pro-de-TJ {
+    display: inline-block;
+    line-height: 28px;
+    border: 1px solid #c9c9c9;
+    width: 98px;
+    height: 30px;
+    text-align: center;
+    margin: 25px 0;
+}
+
+.tab_main .pro-de-TJ span {
+    font-size: 20px;
+    font-weight: bold;
+    margin-right: 5px;
+}
+
+.tab_main .Mre-SC em {
+    color: #2c2c2c;
+    border: 1px solid #2c2c2c;
+    border-radius: 50%;
+    width: 18px;
+    height: 18px;
+    display: inline-block;
+    text-align: center;
+    line-height: 15px;
+    font-size: 20px;
+    margin-left: -15px;
+    margin-right: 20px;
+    cursor: pointer;
+}
+
+/**********************废弃**************************/
+#tab-FQ {
+    display: none;
+}
+
+/***********************转寄**************************/
+.tab-ZJ {
+
+}
+
+/***************************审阅已处理****************************/
+.peo-de-SY {
+    margin-top: 30px;
+    height: 35px;
+    line-height: 35px;
+    color: #000000;
+}
+
+.peo-de-SY em {
+    margin-right: 45px;
+}
+
+.Bt span {
+    display: block;
+    height: 30px;
+}
+
+.Bt span em {
+    margin-right: 45px;
+}
+
+/*************************************我的公文**************************************/
+.tab_main ul li .tab_cle {
+    margin-right: 52px;
+}
+
+.tab_main ul li .te-Mre {
+    margin-left: 40px;
+}
+
+.CJ div .xcj {
+    width: 700px;
+}
+
+.CJ div .CJ-Mre {
+    width: 700px;
+    outline: none;
+    resize: none;
+}
+
+.tab_main .EDD {
+    margin-top: 30px;
+}
+
+.tab_xgyy {
+    margin-top: 10px;
+    border: 1px solid #dddddd;
+    width: 700px;
+    height: 100px;
+}
+
+.tab_main .TJ .tjbc {
+    width: 115px;
+}
+
+.tab_main .BT .Mrea button {
+    width: 100px;
+}
+
+.Mrea-HR {
+    border: 1px solid #dddddd;
+    width: 700px;
+}
+
+/*******************************校领导公文**********************************/
+.Lb table tr .CK em {
+    padding: 0 10px;
+}
+
+.tab_main .BT .h_audit input {
+    border: 1px solid #dddddd;
+    width: 15px;
+    margin-left: -38px;
+}
+
+.popup-head {
+    background: #000000;
+    opacity: 0.5;
+    filter: alpha(opacity=50);
+    position: fixed;
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 100%;
+}
+
+.popup-info {
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    margin-left: -215px;
+    margin-top: -111px;
+    width: 430px;
+    height: 222px;
+    background: #ffffff;
+
+}
+
+.popup-info dl dt {
+    background: #6b6b6b;
+    height: 45px;
+}
+
+.popup-info dl dt em {
+    font-size: 17px;
+    padding: 10px 25px;
+    display: block;
+    color: #ffffff;
+}
+
+.popup-info dl dd {
+    text-align: center;
+    font-size: 16px;
+    height: 35px;
+}
+
+.popup-bt {
+    color: #6b6b6b;
+    margin-top: 35px;
+    display: block
+}
+
+.popup-info dl button {
+    background: #ff8b00;
+    color: #ffffff;
+    width: 55px;
+    height: 25px;
+    border: 1px solid transparent;
+    margin: 0 5px;
+    cursor: pointer;
+}
+
+.popup-info dl .he_qd {
+    background: #ff8b00;
+}
+
+.popup-info dl .he_qx {
+    background: #959595;
+}
+
+/*分页*/
+.page-paginator {
+    width: 100%;
+    margin: 40px auto 20px auto;
+    text-align: center;
+    display: none;
+}
+
+.page-index span {
+    padding: 3px 8px;
+    color: #838383;
+    border-radius: 4px;
+    border: 1px solid #838383;
+    background-color: #F6F7F6;
+    cursor: pointer;
+    margin: 0 2px;
+}
+
+.first-page, .last-page {
+    padding: 3px 15px;
+    color: #838383;
+    border-radius: 4px;
+    border: 1px solid #838383;
+    background-color: #F6F7F6;
+    cursor: pointer;
+    margin: 0 2px;
+}
+
+.page-paginator span.active {
+    background-color: #E6E6E6;
+    color: #779554;
+}
+
+/*分页结束*/
+
+.tab-head ul li a {
+    display: block;
+    width: 80px;
+}
+
+.tab_main .CJ i {
+    cursor: pointer;
+    padding-right: 30px;
+}
+
+.tab_BU .head_JS {
+    width: 125px;
+}
+/********************我的公文table*************************/
+.Fj i, #fileListShow_TY i, #fileListShow_BH i, #fileListShow_FB i, #fileListShow_FQ i, #fileListShow_ZJ i{
+    cursor: pointer;
+}
+/**dropper**/
+.fs-upload, .fs-upload:after, .fs-upload:before, .fs-upload *, .fs-upload *:after, .fs-upload *:before {
+    box-sizing: border-box;
+    -webkit-transition: none;
+    transition: none;
+    -webkit-user-select: none !important;
+    overflow: hidden;
+}
+.fs-upload-target {
+    background: #ffffff;
+    border: 3px dashed #cccccc;
+    border-radius: 3px;
+    color: #666666;
+    cursor: pointer;
+    font-size: 14px;
+    margin: 0;
+    padding: 25px;
+    text-align: center;
+    -webkit-transition: background 0.15s linear, border 0.15s linear, color 0.15s linear, opacity 0.15s linear;
+    transition: background 0.15s linear, border 0.15s linear, color 0.15s linear, opacity 0.15s linear;
+}
+.dropper-input {
+    position: absolute;
+    left: 100%;
+    opacity: 0;
+}

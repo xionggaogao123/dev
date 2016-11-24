@@ -1,0 +1,135 @@
+.homepage-right-top {
+    top: 0 !important;
+    left: 0 !important;
+    margin-bottom: 10px;
+}
+
+.groupchat-container {
+    box-sizing: content-box;
+    border: 1px solid #aaa !important;
+    position: relative;
+    margin: 20px 11px;
+    height: 525px;
+    width: 745px;
+    overflow: hidden;
+    border-radius: 5px;
+    box-shadow: 0 0 5px;
+}
+
+.leftcontact {
+    position: static !important;
+    height: 525px;
+    box-shadow: none !important;
+    border: 0 !important;
+}
+
+.leftheader {
+    background-color: #FF8A00 !important;
+    height: 62px !important;
+    overflow: visible;
+}
+
+#leftmiddle {
+    color: #ff8a00;
+}
+
+.chat-left-group-item {
+    text-align: center;
+}
+
+.chatRight {
+    width: 550px !important;
+    position: absolute;
+    left: 195px;
+    top: 0;
+    border-radius: 0 !important;
+    border: solid #aaa !important;
+    border-width: 0 0 0 1px !important;
+}
+
+.chat-contents {
+    position: relative;
+}
+
+#member-list-container {
+    width: 148px !important;
+    position: absolute;
+    right: 0;
+    top: 0;
+    height: 100%;
+}
+
+.chat01_content {
+    width: 400px !important;
+}
+
+.chat02 {
+    width: 400px;
+}
+
+.chat02_content textarea {
+    width: 390px !important;
+}
+
+#history-list-container {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100% !important;
+    background: #fff;
+}
+
+#chat-history-list {
+    height: 400px !important;
+}
+
+.ctb01 {
+    margin-left: 0 !important;
+    padding: 0 !important;
+}
+
+.chat02_title_btn {
+    margin: 2px !important;
+    padding: 2px 0 2px 23px !important;
+}
+
+.wlf_icon {
+    left: 20px !important;
+    bottom: -2px !important;
+}
+
+.groupchat-prompt {
+    width: 100%;
+    text-align: center;
+    font-weight: bold;
+    margin-top: 200px;
+    font-size: 15px;
+}
+
+.chat03_content_ul .offline{
+    color: #ff8a00 !important;
+}
+
+.center_main_popup_main_bottom_FS {
+    background-color: #ff8a00 !important;
+}
+
+.chat-content-p3 {
+    max-width: 280px !important;
+}
+
+.chat01_title {
+    background-color: #3d87c6 !important;
+}
+
+.modal-backdrop.fade.in {
+    display: none !important;
+}
+
+.chat-member-item {
+    overflow: visible;
+}
+
+.leftcontact + div.chatRight {
+    display: block !important;
+}

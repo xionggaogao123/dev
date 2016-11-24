@@ -1,0 +1,1418 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    <meta name="renderer" content="webkit">
+    <title>复兰科技 K6KT-快乐课堂</title>
+    <link rel="stylesheet" type="text/css" href="/admin/static/css/bootstrap.min.css"/>
+    <link rel="stylesheet" type="text/css" href="/css/font-awesome.min.css"/>
+    <link rel="stylesheet" type="text/css" href="/css/style.css"/>
+    <link rel="stylesheet" type="text/css" href="/css/main.css"/>
+    <link rel="stylesheet" href="/css/nivo-slider.css" type="text/css"/>
+    <link rel="stylesheet" type="text/css" href="/css/style.css">
+    <link rel="stylesheet" href="/css/activate.css" type="text/css">
+    <link rel="stylesheet" href="/css/forIE.css" type="text/css">
+    <link rel="stylesheet" type="text/css" href="/admin/static/css/bootstrap.min.css"/>
+    <link rel="stylesheet" type="text/css" href="/css/flippedclassroom.css"/>
+    <link rel="stylesheet" href="/admin/static/css/bootstrap-combined.school.css"/>
+    <link rel="stylesheet" href="/css/teacherSheet.css"/>
+    <link rel="stylesheet" type="text/css" href="/css/class-course.css"/>
+    <link rel="stylesheet" type="text/css" href="/css/zTreeStyle/zTreeStyle.css"/>
+    <link rel="stylesheet" type="text/css" href="/css/tree.css"/>
+    <link rel="stylesheet" type="text/css" href="/js/contextMenu/src/jquery.contextMenu.css"/>
+    <link rel="stylesheet" type="text/css" href="/css/artDialog/ui-dialog.css"/>
+    <link rel="stylesheet" type="text/css" href="/css/font-awesome.min.css"/>
+    <link rel="stylesheet" type="text/css" href="/js/jquery-ui-1.11.1.custom/jquery-ui.min.css"/>
+
+
+    <style>
+        .item-tab {
+            width: 83px;
+            *width: 81px;
+            text-align: center;
+            height: 35px;
+            font-size: 14px;
+            line-height: 33px;
+            border: 1px solid #d2d2d2;
+            float: left;
+            cursor: pointer;
+            border-right: 0;
+            background: #f1f1f1;
+        }
+
+        .selected {
+            border-top: 4px solid #3aa21d;
+            background: #fff;
+            border-bottom: 0;
+            border-top-radius: 4px;
+        }
+
+        .subject-teacher {
+            display: none;
+            width: auto;
+            min-height: 76px;
+        }
+
+        .current-show {
+            display: block;
+        }
+
+        .teachers-info {
+            width: auto;
+            padding-left: 0px;
+            overflow: hidden;
+        }
+
+        .subject-teacher {
+            margin-left: 0;
+            border-top: 0;
+            border-top-right-radius: 0px;
+            border-top-left-radius: 0px;
+        }
+
+        .names-pre {
+            font-size: 14px;
+            line-height: 32px;
+            padding: 12px 7px 12px 37px;
+            width: 994px;
+            *width: 940px;
+        }
+    </style>
+</head>
+<body>
+<div class="index-title-bar">
+    <div class="title-bar-container">
+        <div class="company-name">
+            <img src="/img/Mb.png" style="margin-top: -5px;margin-right: 2px;">
+            <span>400-820-6735</span>
+        </div>
+        <div class="company-phone">
+            <a href="/mobile">手机客户端下载</a>
+        </div>
+        <div class="guanzhu">
+            <span>关注我们：</span>
+            <a href='http://weibo.com/FulaanTechnology'><img src="/img/WEIBO.png"></a>
+            <a href='http://t.qq.com/FulaanTechnology'><img src="/img/WEIBO2.png"></a>
+            <img src="/img/weixin.png">
+        </div>
+    </div>
+</div>
+<div id="intro-player">
+    <div id="player_div"></div>
+    <span onclick="closeMovie()" class="close-dialog"><i class="fa fa-times-circle fa-lg"></i></span></div>
+<div class="main-container">
+    <div class="login-bar">
+        <div class='title-bar-container' style="height:105px;">
+            <img class="title-logo" src="/business/ypxx/special/mas22/mas22_logo.png">
+            <a class="login-btn" href="javascript:;">登 录</a>
+            <input class="input-password" type="password" placeholder="密码" tabindex="2">
+            <input class="input-account" type="text" placeholder="邮箱/手机号/用户名" tabindex="1">
+
+            <div id="tips-msg">
+                <a class="password-error">密码错误</a>
+                <a class="forget-pass" href='#'>忘记密码？</a>
+                <a class="username-error">用户名不存在</a>
+            </div>
+        </div>
+    </div>
+</div>
+<div id="teacher_info_container">
+    <div id="teacher_info">
+        <img id="teacher_img" src="http://static.fulaan.com/image/userImage/8a2b6bc3485d204901485eb3643c001b_big.jpg">
+
+        <div class="info" style="overflow:hidden;"><p>
+            <span>yujia</span>
+
+
+            <span style="font-size:14px;">老师</span>
+
+
+            <a href="/editphoto"><img src="/img/edit.png"></a>
+
+
+            <a style="color: white" onclick="window.open('/upload/resources/化学微课评比使用指南.pdf')"><label
+                    id="user-help">评比手册</label></a>
+
+
+        </p>
+
+            <p><span style="display:none;">上海杨浦小学</span><span style="display:none;">男</span><span
+                    style="font-size:14px;">课程：41</span></p>
+        </div>
+        <div id="classes" class="teacher-class">
+            <div style="width: 100%;">
+
+
+                <a href="/cloudClass"><span class="dir-nav-item ">云课程</span></a>
+                <a href="/teacher/course"><span class="dir-nav-item active">上传微课</span></a>
+                <a href="/vote/course"><span class="dir-nav-item ">微课评比</span></a>
+                <a href="/school/course"><span class="dir-nav-item ">校本资源</span></a>
+                <a href="/vote/result"><span class="dir-nav-item ">评比结果</span></a>
+
+
+            </div>
+        </div>
+        <a href="/business/ypxx/help.jsp" target="_blank" id="howtomakevk"
+           style="position: absolute;right:15px;font-size:13px;background:url(/img/howto.png) no-repeat 0 34%;height:40px;padding:7px 2px 7px 26px;color:#FFF;">如何录制微课</a>
+
+        <a href="#" onclick="fastnewlessonDialog();" id="fast-newless"
+           style="position: absolute;right:0px;bottom:0px;font-size:13px;background:url(/img/fastnewlesson.png) no-repeat;height:33px;width:152px;color:#f27c7c;padding-left: 42px;padding-top: 10px;">快速上传微课</a>
+
+    </div>
+</div>
+<div class="main-container">
+<div class="course-left-container">
+    <div id="file-tools">
+        <ul>
+            <a id="newFolder" onclick="newDirByToolBtn()">
+                <li class="fa fa-plus fa-1.5x"><label style="margin-left:7px;cursor:pointer;">新建文件夹</label></li>
+            </a>
+            <a id="deleteFolder" onclick="deleteDirByToolBtn()" class="tool-not-allowed" title="请先选择文件夹">
+                <li class="fa fa-trash-o fa-1.5x"><label style="margin-left:7px;" class="tool-not-allowed">删除</label>
+                </li>
+            </a>
+        </ul>
+    </div>
+    <ul id="teacherDirUl" class="ztree dir-tree">
+        <li id="teacherDirUl_1" class="level0" tabindex="0" hidefocus="true" treenode=""><span
+                id="teacherDirUl_1_switch" title="" class="button level0 switch roots_close"
+                treenode_switch=""></span><a id="teacherDirUl_1_a" class="level0 ui-droppable" treenode_a="" onclick=""
+                                             target="_blank" style="" title="数学"><span id="teacherDirUl_1_ico" title=""
+                                                                                       treenode_ico=""
+                                                                                       class="button ico_close"
+                                                                                       style=""></span><span
+                id="teacherDirUl_1_span" class="ellipsis" style="max-width: 9em;">数学</span></a></li>
+        <li id="teacherDirUl_5" class="level0" tabindex="0" hidefocus="true" treenode=""><span
+                id="teacherDirUl_5_switch" title="" class="button level0 switch center_docu"
+                treenode_switch=""></span><a id="teacherDirUl_5_a" class="level0 ui-droppable" treenode_a="" onclick=""
+                                             target="_blank" style="" title="语文"><span id="teacherDirUl_5_ico" title=""
+                                                                                       treenode_ico=""
+                                                                                       class="button ico_docu"
+                                                                                       style=""></span><span
+                id="teacherDirUl_5_span" class="ellipsis" style="max-width: 9em;">语文</span></a></li>
+        <li id="teacherDirUl_6" class="level0" tabindex="0" hidefocus="true" treenode=""><span
+                id="teacherDirUl_6_switch" title="" class="button level0 switch center_docu"
+                treenode_switch=""></span><a id="teacherDirUl_6_a" class="level0 ui-droppable" treenode_a="" onclick=""
+                                             target="_blank" style="" title="qw"><span id="teacherDirUl_6_ico" title=""
+                                                                                       treenode_ico=""
+                                                                                       class="button ico_docu"
+                                                                                       style=""></span><span
+                id="teacherDirUl_6_span" class="ellipsis" style="max-width: 9em;">qw</span></a></li>
+        <li id="teacherDirUl_7" class="level0" tabindex="0" hidefocus="true" treenode=""><span
+                id="teacherDirUl_7_switch" title="" class="button level0 switch center_docu"
+                treenode_switch=""></span><a id="teacherDirUl_7_a" class="level0 ui-droppable" treenode_a="" onclick=""
+                                             target="_blank" style="" title="3"><span id="teacherDirUl_7_ico" title=""
+                                                                                      treenode_ico=""
+                                                                                      class="button ico_docu"
+                                                                                      style=""></span><span
+                id="teacherDirUl_7_span" class="ellipsis" style="max-width: 9em;">3</span></a></li>
+        <li id="teacherDirUl_8" class="level0" tabindex="0" hidefocus="true" treenode=""><span
+                id="teacherDirUl_8_switch" title="" class="button level0 switch center_docu"
+                treenode_switch=""></span><a id="teacherDirUl_8_a" class="level0 ui-droppable" treenode_a="" onclick=""
+                                             target="_blank" style="" title="4"><span id="teacherDirUl_8_ico" title=""
+                                                                                      treenode_ico=""
+                                                                                      class="button ico_docu"
+                                                                                      style=""></span><span
+                id="teacherDirUl_8_span" class="ellipsis" style="max-width: 9em;">4</span></a></li>
+        <li id="teacherDirUl_9" class="level0" tabindex="0" hidefocus="true" treenode=""><span
+                id="teacherDirUl_9_switch" title="" class="button level0 switch center_docu"
+                treenode_switch=""></span><a id="teacherDirUl_9_a" class="level0 ui-droppable" treenode_a="" onclick=""
+                                             target="_blank" style="" title="5"><span id="teacherDirUl_9_ico" title=""
+                                                                                      treenode_ico=""
+                                                                                      class="button ico_docu"
+                                                                                      style=""></span><span
+                id="teacherDirUl_9_span" class="ellipsis" style="max-width: 9em;">5</span></a></li>
+        <li id="teacherDirUl_10" class="level0" tabindex="0" hidefocus="true" treenode=""><span
+                id="teacherDirUl_10_switch" title="" class="button level0 switch center_docu" treenode_switch=""></span><a
+                id="teacherDirUl_10_a" class="level0 ui-droppable" treenode_a="" onclick="" target="_blank" style=""
+                title="6"><span id="teacherDirUl_10_ico" title="" treenode_ico="" class="button ico_docu"
+                                style=""></span><span id="teacherDirUl_10_span" class="ellipsis"
+                                                      style="max-width: 9em;">6</span></a></li>
+        <li id="teacherDirUl_11" class="level0" tabindex="0" hidefocus="true" treenode=""><span
+                id="teacherDirUl_11_switch" title="" class="button level0 switch center_docu" treenode_switch=""></span><a
+                id="teacherDirUl_11_a" class="level0 ui-droppable" treenode_a="" onclick="" target="_blank" style=""
+                title="7"><span id="teacherDirUl_11_ico" title="" treenode_ico="" class="button ico_docu"
+                                style=""></span><span id="teacherDirUl_11_span" class="ellipsis"
+                                                      style="max-width: 9em;">7</span></a></li>
+        <li id="teacherDirUl_12" class="level0" tabindex="0" hidefocus="true" treenode=""><span
+                id="teacherDirUl_12_switch" title="" class="button level0 switch center_docu" treenode_switch=""></span><a
+                id="teacherDirUl_12_a" class="level0 ui-droppable" treenode_a="" onclick="" target="_blank" style=""
+                title="8"><span id="teacherDirUl_12_ico" title="" treenode_ico="" class="button ico_docu"
+                                style=""></span><span id="teacherDirUl_12_span" class="ellipsis"
+                                                      style="max-width: 9em;">8</span></a></li>
+        <li id="teacherDirUl_13" class="level0" tabindex="0" hidefocus="true" treenode=""><span
+                id="teacherDirUl_13_switch" title="" class="button level0 switch center_docu" treenode_switch=""></span><a
+                id="teacherDirUl_13_a" class="level0 ui-droppable" treenode_a="" onclick="" target="_blank" style=""
+                title="9"><span id="teacherDirUl_13_ico" title="" treenode_ico="" class="button ico_docu"
+                                style=""></span><span id="teacherDirUl_13_span" class="ellipsis"
+                                                      style="max-width: 9em;">9</span></a></li>
+        <li id="teacherDirUl_14" class="level0" tabindex="0" hidefocus="true" treenode=""><span
+                id="teacherDirUl_14_switch" title="" class="button level0 switch center_docu" treenode_switch=""></span><a
+                id="teacherDirUl_14_a" class="level0 ui-droppable" treenode_a="" onclick="" target="_blank" style=""
+                title="10"><span id="teacherDirUl_14_ico" title="" treenode_ico="" class="button ico_docu"
+                                 style=""></span><span id="teacherDirUl_14_span" class="ellipsis"
+                                                       style="max-width: 9em;">10</span></a></li>
+        <li id="teacherDirUl_15" class="level0" tabindex="0" hidefocus="true" treenode=""><span
+                id="teacherDirUl_15_switch" title="" class="button level0 switch center_docu" treenode_switch=""></span><a
+                id="teacherDirUl_15_a" class="level0 ui-droppable" treenode_a="" onclick="" target="_blank" style=""
+                title="111"><span id="teacherDirUl_15_ico" title="" treenode_ico="" class="button ico_docu"
+                                  style=""></span><span id="teacherDirUl_15_span" class="ellipsis"
+                                                        style="max-width: 9em;">111</span></a></li>
+        <li id="teacherDirUl_16" class="level0" tabindex="0" hidefocus="true" treenode=""><span
+                id="teacherDirUl_16_switch" title="" class="button level0 switch center_docu" treenode_switch=""></span><a
+                id="teacherDirUl_16_a" class="level0 ui-droppable" treenode_a="" onclick="" target="_blank" style=""
+                title="222"><span id="teacherDirUl_16_ico" title="" treenode_ico="" class="button ico_docu"
+                                  style=""></span><span id="teacherDirUl_16_span" class="ellipsis"
+                                                        style="max-width: 9em;">222</span></a></li>
+        <li id="teacherDirUl_17" class="level0" tabindex="0" hidefocus="true" treenode=""><span
+                id="teacherDirUl_17_switch" title="" class="button level0 switch center_docu" treenode_switch=""></span><a
+                id="teacherDirUl_17_a" class="level0 ui-droppable" treenode_a="" onclick="" target="_blank" style=""
+                title="333"><span id="teacherDirUl_17_ico" title="" treenode_ico="" class="button ico_docu"
+                                  style=""></span><span id="teacherDirUl_17_span" class="ellipsis"
+                                                        style="max-width: 9em;">333</span></a></li>
+        <li id="teacherDirUl_18" class="level0" tabindex="0" hidefocus="true" treenode=""><span
+                id="teacherDirUl_18_switch" title="" class="button level0 switch center_docu" treenode_switch=""></span><a
+                id="teacherDirUl_18_a" class="level0 ui-droppable" treenode_a="" onclick="" target="_blank" style=""
+                title="444"><span id="teacherDirUl_18_ico" title="" treenode_ico="" class="button ico_docu"
+                                  style=""></span><span id="teacherDirUl_18_span" class="ellipsis"
+                                                        style="max-width: 9em;">444</span></a></li>
+        <li id="teacherDirUl_19" class="level0" tabindex="0" hidefocus="true" treenode=""><span
+                id="teacherDirUl_19_switch" title="" class="button level0 switch center_docu" treenode_switch=""></span><a
+                id="teacherDirUl_19_a" class="level0 ui-droppable" treenode_a="" onclick="" target="_blank" style=""
+                title="11"><span id="teacherDirUl_19_ico" title="" treenode_ico="" class="button ico_docu"
+                                 style=""></span><span id="teacherDirUl_19_span" class="ellipsis"
+                                                       style="max-width: 9em;">11</span></a></li>
+        <li id="teacherDirUl_20" class="level0" tabindex="0" hidefocus="true" treenode=""><span
+                id="teacherDirUl_20_switch" title="" class="button level0 switch center_docu" treenode_switch=""></span><a
+                id="teacherDirUl_20_a" class="level0 ui-droppable" treenode_a="" onclick="" target="_blank" style=""
+                title="12"><span id="teacherDirUl_20_ico" title="" treenode_ico="" class="button ico_docu"
+                                 style=""></span><span id="teacherDirUl_20_span" class="ellipsis"
+                                                       style="max-width: 9em;">12</span></a></li>
+        <li id="teacherDirUl_21" class="level0" tabindex="0" hidefocus="true" treenode=""><span
+                id="teacherDirUl_21_switch" title="" class="button level0 switch center_docu" treenode_switch=""></span><a
+                id="teacherDirUl_21_a" class="level0 ui-droppable" treenode_a="" onclick="" target="_blank" style=""
+                title="13"><span id="teacherDirUl_21_ico" title="" treenode_ico="" class="button ico_docu"
+                                 style=""></span><span id="teacherDirUl_21_span" class="ellipsis"
+                                                       style="max-width: 9em;">13</span></a></li>
+        <li id="teacherDirUl_22" class="level0" tabindex="0" hidefocus="true" treenode=""><span
+                id="teacherDirUl_22_switch" title="" class="button level0 switch center_docu" treenode_switch=""></span><a
+                id="teacherDirUl_22_a" class="level0 ui-droppable" treenode_a="" onclick="" target="_blank" style=""
+                title="23"><span id="teacherDirUl_22_ico" title="" treenode_ico="" class="button ico_docu"
+                                 style=""></span><span id="teacherDirUl_22_span" class="ellipsis"
+                                                       style="max-width: 9em;">23</span></a></li>
+        <li id="teacherDirUl_23" class="level0" tabindex="0" hidefocus="true" treenode=""><span
+                id="teacherDirUl_23_switch" title="" class="button level0 switch center_docu" treenode_switch=""></span><a
+                id="teacherDirUl_23_a" class="level0 ui-droppable" treenode_a="" onclick="" target="_blank" style=""
+                title="55"><span id="teacherDirUl_23_ico" title="" treenode_ico="" class="button ico_docu"
+                                 style=""></span><span id="teacherDirUl_23_span" class="ellipsis"
+                                                       style="max-width: 9em;">55</span></a></li>
+        <li id="teacherDirUl_24" class="level0" tabindex="0" hidefocus="true" treenode=""><span
+                id="teacherDirUl_24_switch" title="" class="button level0 switch center_docu" treenode_switch=""></span><a
+                id="teacherDirUl_24_a" class="level0 ui-droppable" treenode_a="" onclick="" target="_blank" style=""
+                title="11"><span id="teacherDirUl_24_ico" title="" treenode_ico="" class="button ico_docu"
+                                 style=""></span><span id="teacherDirUl_24_span" class="ellipsis"
+                                                       style="max-width: 9em;">11</span></a></li>
+        <li id="teacherDirUl_25" class="level0" tabindex="0" hidefocus="true" treenode=""><span
+                id="teacherDirUl_25_switch" title="" class="button level0 switch center_docu" treenode_switch=""></span><a
+                id="teacherDirUl_25_a" class="level0 ui-droppable" treenode_a="" onclick="" target="_blank" style=""
+                title="111"><span id="teacherDirUl_25_ico" title="" treenode_ico="" class="button ico_docu"
+                                  style=""></span><span id="teacherDirUl_25_span" class="ellipsis"
+                                                        style="max-width: 9em;">111</span></a></li>
+        <li id="teacherDirUl_26" class="level0" tabindex="0" hidefocus="true" treenode=""><span
+                id="teacherDirUl_26_switch" title="" class="button level0 switch center_docu" treenode_switch=""></span><a
+                id="teacherDirUl_26_a" class="level0 ui-droppable" treenode_a="" onclick="" target="_blank" style=""
+                title="12"><span id="teacherDirUl_26_ico" title="" treenode_ico="" class="button ico_docu"
+                                 style=""></span><span id="teacherDirUl_26_span" class="ellipsis"
+                                                       style="max-width: 9em;">12</span></a></li>
+        <li id="teacherDirUl_27" class="level0" tabindex="0" hidefocus="true" treenode=""><span
+                id="teacherDirUl_27_switch" title="" class="button level0 switch bottom_docu" treenode_switch=""></span><a
+                id="teacherDirUl_27_a" class="level0 ui-droppable" treenode_a="" onclick="" target="_blank" style=""
+                title="123"><span id="teacherDirUl_27_ico" title="" treenode_ico="" class="button ico_docu"
+                                  style=""></span><span id="teacherDirUl_27_span" class="ellipsis"
+                                                        style="max-width: 9em;">123</span></a></li>
+    </ul>
+</div>
+<div class="course-right-container">
+
+
+<script>
+    $('.course-right-container').data('total', 41);
+    //@ sourceURL=foo.js
+</script>
+
+
+<div class="right-container-title">
+    <div style="padding:2px 10px;line-height:30px;height:48px;">
+
+
+        <div style="float:left;width:182px;">
+            <div class="course-title ellipsis" title=""></div>
+            <div class="course-include">
+                0个文件夹，41个课程
+            </div>
+        </div>
+        <div style="float:left;margin-left:-30px;padding-top:5px;padding-bottom:5px;overflow:hidden;">
+            <ul id="icons" style="display:inline;">
+
+
+            </ul>
+        </div>
+
+        <input class="search-file-input" type="text" onkeypress="searchKeyPress(event.keyCode, this.value)"
+               style="margin-top:8px;">
+
+
+    </div>
+</div>
+<div class="course-list-container">
+
+
+<div class="course-container lesson ui-draggable" file-id="2359" title="1">
+
+    <div class="file-cover" onclick="play(2359)">
+        <img class="file-img" src="/upload/fzcourse/pic/1411614410215bkfdtL/ryVegaWWxCkfMNEUeTGU.jpg">
+
+        <div class="file-info">
+            <div class="hover-title">
+                <span class="ellipsis" style="max-width: 10em;">1</span>
+            </div>
+            <div class="files">
+                <div>
+                    <!-- <img src="/img/K6KT/video.png"> -->
+                    <span>视频:1</span>
+                </div>
+                <div>
+                    <!-- <img src="/img/K6KT/files.png"> -->
+                    <span>文档:0</span>
+                </div>
+                <div>
+                    <!-- <img src="/img/K6KT/lianxi.png"> -->
+                    <span>习题:0</span>
+                </div>
+            </div>
+            <div class="play">
+                <img src="/img/play_icon.png">
+            </div>
+        </div>
+    </div>
+    <div class="file-title ellipsis">1</div>
+    <ul class="file-toolbar"></ul>
+</div>
+
+<div class="course-container lesson ui-draggable" file-id="1773" title="数学广角">
+
+    <div class="file-cover" onclick="play(1773)">
+        <img class="file-img" src="/upload/video/coursesImg/uhQppDQwWxwCbjAmaPuT.jpg">
+
+        <div class="file-info">
+            <div class="hover-title">
+                <span class="ellipsis" style="max-width: 10em;">数学广角</span>
+            </div>
+            <div class="files">
+                <div>
+                    <!-- <img src="/img/K6KT/video.png"> -->
+                    <span>视频:1</span>
+                </div>
+                <div>
+                    <!-- <img src="/img/K6KT/files.png"> -->
+                    <span>文档:0</span>
+                </div>
+                <div>
+                    <!-- <img src="/img/K6KT/lianxi.png"> -->
+                    <span>习题:0</span>
+                </div>
+            </div>
+            <div class="play">
+                <img src="/img/play_icon.png">
+            </div>
+        </div>
+    </div>
+    <div class="file-title ellipsis">数学广角</div>
+    <ul class="file-toolbar"></ul>
+</div>
+
+<div class="course-container lesson ui-draggable" file-id="1722" title="111">
+
+    <div class="file-cover" onclick="play(1722)">
+        <img class="file-img" src="/upload/fzcourse/pic/1411538168758tBctLQ/RjDTHrgEIMGOknDkfGaz.jpg">
+
+        <div class="file-info">
+            <div class="hover-title">
+                <span class="ellipsis" style="max-width: 10em;">111</span>
+            </div>
+            <div class="files">
+                <div>
+                    <!-- <img src="/img/K6KT/video.png"> -->
+                    <span>视频:1</span>
+                </div>
+                <div>
+                    <!-- <img src="/img/K6KT/files.png"> -->
+                    <span>文档:0</span>
+                </div>
+                <div>
+                    <!-- <img src="/img/K6KT/lianxi.png"> -->
+                    <span>习题:0</span>
+                </div>
+            </div>
+            <div class="play">
+                <img src="/img/play_icon.png">
+            </div>
+        </div>
+    </div>
+    <div class="file-title ellipsis">111</div>
+    <ul class="file-toolbar"></ul>
+</div>
+
+<div class="course-container lesson ui-draggable" file-id="1619" title="华东政法大学">
+
+    <div class="file-cover" onclick="play(1619)">
+        <img class="file-img" src="/upload/pic/school/1403755138203_953.jpg">
+
+        <div class="file-info">
+            <div class="hover-title">
+                <span class="ellipsis" style="max-width: 10em;">华东政法大学</span>
+            </div>
+            <div class="files">
+                <div>
+                    <!-- <img src="/img/K6KT/video.png"> -->
+                    <span>视频:1</span>
+                </div>
+                <div>
+                    <!-- <img src="/img/K6KT/files.png"> -->
+                    <span>文档:0</span>
+                </div>
+                <div>
+                    <!-- <img src="/img/K6KT/lianxi.png"> -->
+                    <span>习题:0</span>
+                </div>
+            </div>
+            <div class="play">
+                <img src="/img/play_icon.png">
+            </div>
+        </div>
+    </div>
+    <div class="file-title ellipsis">华东政法大学</div>
+    <ul class="file-toolbar"></ul>
+</div>
+
+<div class="course-container lesson ui-draggable" file-id="1546" title="321">
+
+    <div class="file-cover" onclick="play(1546)">
+        <img class="file-img" src="/upload/fzcourse/pic/1409328024582lNxZqS/UMgCIAtjANFRwZxVywtR.jpg">
+
+        <div class="file-info">
+            <div class="hover-title">
+                <span class="ellipsis" style="max-width: 10em;">321</span>
+            </div>
+            <div class="files">
+                <div>
+                    <!-- <img src="/img/K6KT/video.png"> -->
+                    <span>视频:1</span>
+                </div>
+                <div>
+                    <!-- <img src="/img/K6KT/files.png"> -->
+                    <span>文档:0</span>
+                </div>
+                <div>
+                    <!-- <img src="/img/K6KT/lianxi.png"> -->
+                    <span>习题:0</span>
+                </div>
+            </div>
+            <div class="play">
+                <img src="/img/play_icon.png">
+            </div>
+        </div>
+    </div>
+    <div class="file-title ellipsis">321</div>
+    <ul class="file-toolbar"></ul>
+</div>
+
+<div class="course-container lesson ui-draggable" file-id="1509" title="小蝌蚪找妈妈">
+
+    <div class="file-cover" onclick="play(1509)">
+        <img class="file-img" src="/upload/coursesImg/YPmxmHnqbTregTDYHrDm.jpg">
+
+        <div class="file-info">
+            <div class="hover-title">
+                <span class="ellipsis" style="max-width: 10em;">小蝌蚪找妈妈</span>
+            </div>
+            <div class="files">
+                <div>
+                    <!-- <img src="/img/K6KT/video.png"> -->
+                    <span>视频:1</span>
+                </div>
+                <div>
+                    <!-- <img src="/img/K6KT/files.png"> -->
+                    <span>文档:0</span>
+                </div>
+                <div>
+                    <!-- <img src="/img/K6KT/lianxi.png"> -->
+                    <span>习题:0</span>
+                </div>
+            </div>
+            <div class="play">
+                <img src="/img/play_icon.png">
+            </div>
+        </div>
+    </div>
+    <div class="file-title ellipsis">小蝌蚪找妈妈</div>
+    <ul class="file-toolbar"></ul>
+</div>
+
+<div class="course-container lesson ui-draggable" file-id="1508" title="地球爷爷的手">
+
+    <div class="file-cover" onclick="play(1508)">
+        <img class="file-img" src="/upload/coursesImg/EkYwoVvFVcXBlExtUJOl.jpg">
+
+        <div class="file-info">
+            <div class="hover-title">
+                <span class="ellipsis" style="max-width: 10em;">地球爷爷的手</span>
+            </div>
+            <div class="files">
+                <div>
+                    <!-- <img src="/img/K6KT/video.png"> -->
+                    <span>视频:1</span>
+                </div>
+                <div>
+                    <!-- <img src="/img/K6KT/files.png"> -->
+                    <span>文档:0</span>
+                </div>
+                <div>
+                    <!-- <img src="/img/K6KT/lianxi.png"> -->
+                    <span>习题:0</span>
+                </div>
+            </div>
+            <div class="play">
+                <img src="/img/play_icon.png">
+            </div>
+        </div>
+    </div>
+    <div class="file-title ellipsis">地球爷爷的手</div>
+    <ul class="file-toolbar"></ul>
+</div>
+
+<div class="course-container lesson ui-draggable" file-id="1506" title="统计">
+
+    <div class="file-cover" onclick="play(1506)">
+        <img class="file-img" src="/upload/coursesImg/ECboVOiliZbzuqGfBHXF.jpg">
+
+        <div class="file-info">
+            <div class="hover-title">
+                <span class="ellipsis" style="max-width: 10em;">统计</span>
+            </div>
+            <div class="files">
+                <div>
+                    <!-- <img src="/img/K6KT/video.png"> -->
+                    <span>视频:1</span>
+                </div>
+                <div>
+                    <!-- <img src="/img/K6KT/files.png"> -->
+                    <span>文档:0</span>
+                </div>
+                <div>
+                    <!-- <img src="/img/K6KT/lianxi.png"> -->
+                    <span>习题:0</span>
+                </div>
+            </div>
+            <div class="play">
+                <img src="/img/play_icon.png">
+            </div>
+        </div>
+    </div>
+    <div class="file-title ellipsis">统计</div>
+    <ul class="file-toolbar"></ul>
+</div>
+
+<div class="course-container lesson ui-draggable" file-id="1505" title="总复习">
+
+    <div class="file-cover" onclick="play(1505)">
+        <img class="file-img" src="/upload/coursesImg/pmkoWzLEMZwNtdIbCqcl.jpg">
+
+        <div class="file-info">
+            <div class="hover-title">
+                <span class="ellipsis" style="max-width: 10em;">总复习</span>
+            </div>
+            <div class="files">
+                <div>
+                    <!-- <img src="/img/K6KT/video.png"> -->
+                    <span>视频:1</span>
+                </div>
+                <div>
+                    <!-- <img src="/img/K6KT/files.png"> -->
+                    <span>文档:0</span>
+                </div>
+                <div>
+                    <!-- <img src="/img/K6KT/lianxi.png"> -->
+                    <span>习题:0</span>
+                </div>
+            </div>
+            <div class="play">
+                <img src="/img/play_icon.png">
+            </div>
+        </div>
+    </div>
+    <div class="file-title ellipsis">总复习</div>
+    <ul class="file-toolbar"></ul>
+</div>
+
+<div class="course-container lesson ui-draggable" file-id="1504" title="小蝌蚪找妈妈">
+
+    <div class="file-cover" onclick="play(1504)">
+        <img class="file-img" src="/upload/coursesImg/YPmxmHnqbTregTDYHrDm.jpg">
+
+        <div class="file-info">
+            <div class="hover-title">
+                <span class="ellipsis" style="max-width: 10em;">小蝌蚪找妈妈</span>
+            </div>
+            <div class="files">
+                <div>
+                    <!-- <img src="/img/K6KT/video.png"> -->
+                    <span>视频:1</span>
+                </div>
+                <div>
+                    <!-- <img src="/img/K6KT/files.png"> -->
+                    <span>文档:0</span>
+                </div>
+                <div>
+                    <!-- <img src="/img/K6KT/lianxi.png"> -->
+                    <span>习题:0</span>
+                </div>
+            </div>
+            <div class="play">
+                <img src="/img/play_icon.png">
+            </div>
+        </div>
+    </div>
+    <div class="file-title ellipsis">小蝌蚪找妈妈</div>
+    <ul class="file-toolbar"></ul>
+</div>
+
+<div class="course-container lesson ui-draggable" file-id="1503" title="语文：聚焦省题">
+
+    <div class="file-cover" onclick="play(1503)">
+        <img class="file-img" src="/upload/video/coursesImg/WntOZcHmaZUPPBxpWenp.jpg">
+
+        <div class="file-info">
+            <div class="hover-title">
+                <span class="ellipsis" style="max-width: 10em;">语文：聚焦省题</span>
+            </div>
+            <div class="files">
+                <div>
+                    <!-- <img src="/img/K6KT/video.png"> -->
+                    <span>视频:1</span>
+                </div>
+                <div>
+                    <!-- <img src="/img/K6KT/files.png"> -->
+                    <span>文档:0</span>
+                </div>
+                <div>
+                    <!-- <img src="/img/K6KT/lianxi.png"> -->
+                    <span>习题:0</span>
+                </div>
+            </div>
+            <div class="play">
+                <img src="/img/play_icon.png">
+            </div>
+        </div>
+    </div>
+    <div class="file-title ellipsis">语文：聚焦省题</div>
+    <ul class="file-toolbar"></ul>
+</div>
+
+<div class="course-container lesson ui-draggable" file-id="1502" title="小蝌蚪找妈妈">
+
+    <div class="file-cover" onclick="play(1502)">
+        <img class="file-img" src="/upload/coursesImg/YPmxmHnqbTregTDYHrDm.jpg">
+
+        <div class="file-info">
+            <div class="hover-title">
+                <span class="ellipsis" style="max-width: 10em;">小蝌蚪找妈妈</span>
+            </div>
+            <div class="files">
+                <div>
+                    <!-- <img src="/img/K6KT/video.png"> -->
+                    <span>视频:1</span>
+                </div>
+                <div>
+                    <!-- <img src="/img/K6KT/files.png"> -->
+                    <span>文档:0</span>
+                </div>
+                <div>
+                    <!-- <img src="/img/K6KT/lianxi.png"> -->
+                    <span>习题:0</span>
+                </div>
+            </div>
+            <div class="play">
+                <img src="/img/play_icon.png">
+            </div>
+        </div>
+    </div>
+    <div class="file-title ellipsis">小蝌蚪找妈妈</div>
+    <ul class="file-toolbar"></ul>
+</div>
+
+<div class="course-container lesson ui-draggable" file-id="1501" title="小蝌蚪找妈妈">
+
+    <div class="file-cover" onclick="play(1501)">
+        <img class="file-img" src="/upload/coursesImg/YPmxmHnqbTregTDYHrDm.jpg">
+
+        <div class="file-info">
+            <div class="hover-title">
+                <span class="ellipsis" style="max-width: 10em;">小蝌蚪找妈妈</span>
+            </div>
+            <div class="files">
+                <div>
+                    <!-- <img src="/img/K6KT/video.png"> -->
+                    <span>视频:1</span>
+                </div>
+                <div>
+                    <!-- <img src="/img/K6KT/files.png"> -->
+                    <span>文档:0</span>
+                </div>
+                <div>
+                    <!-- <img src="/img/K6KT/lianxi.png"> -->
+                    <span>习题:0</span>
+                </div>
+            </div>
+            <div class="play">
+                <img src="/img/play_icon.png">
+            </div>
+        </div>
+    </div>
+    <div class="file-title ellipsis">小蝌蚪找妈妈</div>
+    <ul class="file-toolbar"></ul>
+</div>
+
+<div class="course-container lesson ui-draggable" file-id="1477" title="321">
+
+    <div class="file-cover" onclick="play(1477)">
+        <img class="file-img" src="/upload/fzcourse/pic/1409149266746jfGVxx/nkJzAUUTlqYvUOsXhmfO.jpg">
+
+        <div class="file-info">
+            <div class="hover-title">
+                <span class="ellipsis" style="max-width: 10em;">321</span>
+            </div>
+            <div class="files">
+                <div>
+                    <!-- <img src="/img/K6KT/video.png"> -->
+                    <span>视频:1</span>
+                </div>
+                <div>
+                    <!-- <img src="/img/K6KT/files.png"> -->
+                    <span>文档:0</span>
+                </div>
+                <div>
+                    <!-- <img src="/img/K6KT/lianxi.png"> -->
+                    <span>习题:0</span>
+                </div>
+            </div>
+            <div class="play">
+                <img src="/img/play_icon.png">
+            </div>
+        </div>
+    </div>
+    <div class="file-title ellipsis">321</div>
+    <ul class="file-toolbar"></ul>
+</div>
+
+<div class="course-container lesson ui-draggable" file-id="1476" title="小蝌蚪找妈妈">
+
+    <div class="file-cover" onclick="play(1476)">
+        <img class="file-img" src="/upload/coursesImg/YPmxmHnqbTregTDYHrDm.jpg">
+
+        <div class="file-info">
+            <div class="hover-title">
+                <span class="ellipsis" style="max-width: 10em;">小蝌蚪找妈妈</span>
+            </div>
+            <div class="files">
+                <div>
+                    <!-- <img src="/img/K6KT/video.png"> -->
+                    <span>视频:1</span>
+                </div>
+                <div>
+                    <!-- <img src="/img/K6KT/files.png"> -->
+                    <span>文档:0</span>
+                </div>
+                <div>
+                    <!-- <img src="/img/K6KT/lianxi.png"> -->
+                    <span>习题:0</span>
+                </div>
+            </div>
+            <div class="play">
+                <img src="/img/play_icon.png">
+            </div>
+        </div>
+    </div>
+    <div class="file-title ellipsis">小蝌蚪找妈妈</div>
+    <ul class="file-toolbar"></ul>
+</div>
+
+<div class="course-container lesson ui-draggable" file-id="1474" title="44444">
+
+    <div class="file-cover" onclick="play(1474)">
+        <img class="file-img" src="/img/K6KT/filecourse.png">
+
+        <div class="file-info">
+            <div class="hover-title">
+                <span class="ellipsis" style="max-width: 10em;">44444</span>
+            </div>
+            <div class="files">
+                <div>
+                    <!-- <img src="/img/K6KT/video.png"> -->
+                    <span>视频:0</span>
+                </div>
+                <div>
+                    <!-- <img src="/img/K6KT/files.png"> -->
+                    <span>文档:0</span>
+                </div>
+                <div>
+                    <!-- <img src="/img/K6KT/lianxi.png"> -->
+                    <span>习题:0</span>
+                </div>
+            </div>
+            <div class="play">
+                <img src="/img/play_icon.png">
+            </div>
+        </div>
+    </div>
+    <div class="file-title ellipsis">44444</div>
+    <ul class="file-toolbar"></ul>
+</div>
+
+
+<div class="course-container lesson ui-draggable" file-id="1473" title="123">
+
+    <div class="file-cover" onclick="play(1473)">
+        <img class="file-img" src="/upload/fzcourse/pic/1409145139926vYjxgQ/QkAuJAnZtZrEOswxRJMl.jpg">
+
+        <div class="file-info">
+            <div class="hover-title">
+                <span class="ellipsis" style="max-width: 10em;">123</span>
+            </div>
+            <div class="files">
+                <div>
+                    <!-- <img src="/img/K6KT/video.png"> -->
+                    <span>视频:1</span>
+                </div>
+                <div>
+                    <!-- <img src="/img/K6KT/files.png"> -->
+                    <span>文档:0</span>
+                </div>
+                <div>
+                    <!-- <img src="/img/K6KT/lianxi.png"> -->
+                    <span>习题:0</span>
+                </div>
+            </div>
+            <div class="play">
+                <img src="/img/play_icon.png">
+            </div>
+        </div>
+    </div>
+    <div class="file-title ellipsis">123</div>
+    <ul class="file-toolbar"></ul>
+</div>
+
+<div class="course-container lesson ui-draggable" file-id="1472" title="123">
+
+    <div class="file-cover" onclick="play(1472)">
+        <img class="file-img" src="/upload/fzcourse/pic/1409145376893RzWwfh/nxlbsASmWBoDzjglaswX.jpg">
+
+        <div class="file-info">
+            <div class="hover-title">
+                <span class="ellipsis" style="max-width: 10em;">123</span>
+            </div>
+            <div class="files">
+                <div>
+                    <!-- <img src="/img/K6KT/video.png"> -->
+                    <span>视频:1</span>
+                </div>
+                <div>
+                    <!-- <img src="/img/K6KT/files.png"> -->
+                    <span>文档:0</span>
+                </div>
+                <div>
+                    <!-- <img src="/img/K6KT/lianxi.png"> -->
+                    <span>习题:0</span>
+                </div>
+            </div>
+            <div class="play">
+                <img src="/img/play_icon.png">
+            </div>
+        </div>
+    </div>
+    <div class="file-title ellipsis">123</div>
+    <ul class="file-toolbar"></ul>
+</div>
+
+<div class="course-container lesson ui-draggable" file-id="1468" title="小蝌蚪找妈妈">
+
+    <div class="file-cover" onclick="play(1468)">
+        <img class="file-img" src="/upload/coursesImg/YPmxmHnqbTregTDYHrDm.jpg">
+
+        <div class="file-info">
+            <div class="hover-title">
+                <span class="ellipsis" style="max-width: 10em;">小蝌蚪找妈妈</span>
+            </div>
+            <div class="files">
+                <div>
+                    <!-- <img src="/img/K6KT/video.png"> -->
+                    <span>视频:1</span>
+                </div>
+                <div>
+                    <!-- <img src="/img/K6KT/files.png"> -->
+                    <span>文档:0</span>
+                </div>
+                <div>
+                    <!-- <img src="/img/K6KT/lianxi.png"> -->
+                    <span>习题:0</span>
+                </div>
+            </div>
+            <div class="play">
+                <img src="/img/play_icon.png">
+            </div>
+        </div>
+    </div>
+    <div class="file-title ellipsis">小蝌蚪找妈妈</div>
+    <ul class="file-toolbar"></ul>
+</div>
+
+<div class="course-container lesson ui-draggable" file-id="1467" title="000">
+
+    <div class="file-cover" onclick="play(1467)">
+        <img class="file-img" src="/img/K6KT/filecourse.png">
+
+        <div class="file-info">
+            <div class="hover-title">
+                <span class="ellipsis" style="max-width: 10em;">000</span>
+            </div>
+            <div class="files">
+                <div>
+                    <!-- <img src="/img/K6KT/video.png"> -->
+                    <span>视频:0</span>
+                </div>
+                <div>
+                    <!-- <img src="/img/K6KT/files.png"> -->
+                    <span>文档:0</span>
+                </div>
+                <div>
+                    <!-- <img src="/img/K6KT/lianxi.png"> -->
+                    <span>习题:0</span>
+                </div>
+            </div>
+            <div class="play">
+                <img src="/img/play_icon.png">
+            </div>
+        </div>
+    </div>
+    <div class="file-title ellipsis">000</div>
+    <ul class="file-toolbar"></ul>
+</div>
+
+<div class="course-container lesson ui-draggable" file-id="1466" title="213123">
+
+    <div class="file-cover" onclick="play(1466)">
+        <img class="file-img" src="/img/K6KT/filecourse.png">
+
+        <div class="file-info">
+            <div class="hover-title">
+                <span class="ellipsis" style="max-width: 10em;">213123</span>
+            </div>
+            <div class="files">
+                <div>
+                    <!-- <img src="/img/K6KT/video.png"> -->
+                    <span>视频:0</span>
+                </div>
+                <div>
+                    <!-- <img src="/img/K6KT/files.png"> -->
+                    <span>文档:0</span>
+                </div>
+                <div>
+                    <!-- <img src="/img/K6KT/lianxi.png"> -->
+                    <span>习题:0</span>
+                </div>
+            </div>
+            <div class="play">
+                <img src="/img/play_icon.png">
+            </div>
+        </div>
+    </div>
+    <div class="file-title ellipsis">213123</div>
+    <ul class="file-toolbar"></ul>
+</div>
+
+<div class="course-container lesson ui-draggable" file-id="1465" title="adsf">
+
+    <div class="file-cover" onclick="play(1465)">
+        <img class="file-img" src="/upload/fzcourse/pic/1409151971778YcEjkS/eMeICVBQJoLqXSuiqBjs.jpg">
+
+        <div class="file-info">
+            <div class="hover-title">
+                <span class="ellipsis" style="max-width: 10em;">adsf</span>
+            </div>
+            <div class="files">
+                <div>
+                    <!-- <img src="/img/K6KT/video.png"> -->
+                    <span>视频:1</span>
+                </div>
+                <div>
+                    <!-- <img src="/img/K6KT/files.png"> -->
+                    <span>文档:0</span>
+                </div>
+                <div>
+                    <!-- <img src="/img/K6KT/lianxi.png"> -->
+                    <span>习题:0</span>
+                </div>
+            </div>
+            <div class="play">
+                <img src="/img/play_icon.png">
+            </div>
+        </div>
+    </div>
+    <div class="file-title ellipsis">adsf</div>
+    <ul class="file-toolbar"></ul>
+</div>
+
+<div class="course-container lesson ui-draggable" file-id="12" title="wode">
+
+    <div class="file-cover" onclick="play(12)">
+        <img class="file-img" src="/img/K6KT/filecourse.png">
+
+        <div class="file-info">
+            <div class="hover-title">
+                <span class="ellipsis" style="max-width: 10em;">wode</span>
+            </div>
+            <div class="files">
+                <div>
+                    <!-- <img src="/img/K6KT/video.png"> -->
+                    <span>视频:1</span>
+                </div>
+                <div>
+                    <!-- <img src="/img/K6KT/files.png"> -->
+                    <span>文档:0</span>
+                </div>
+                <div>
+                    <!-- <img src="/img/K6KT/lianxi.png"> -->
+                    <span>习题:3</span>
+                </div>
+            </div>
+            <div class="play">
+                <img src="/img/play_icon.png">
+            </div>
+        </div>
+    </div>
+    <div class="file-title ellipsis">wode</div>
+    <ul class="file-toolbar"></ul>
+</div>
+
+<div class="course-container lesson ui-draggable" file-id="13" title="5665">
+
+    <div class="file-cover" onclick="play(13)">
+        <img class="file-img" src="/upload/fzcourse/pic/1409152014056rNjmUf/rrHTQqzjoiZHWlZzBxPK.jpg">
+
+        <div class="file-info">
+            <div class="hover-title">
+                <span class="ellipsis" style="max-width: 10em;">5665</span>
+            </div>
+            <div class="files">
+                <div>
+                    <!-- <img src="/img/K6KT/video.png"> -->
+                    <span>视频:1</span>
+                </div>
+                <div>
+                    <!-- <img src="/img/K6KT/files.png"> -->
+                    <span>文档:0</span>
+                </div>
+                <div>
+                    <!-- <img src="/img/K6KT/lianxi.png"> -->
+                    <span>习题:1</span>
+                </div>
+            </div>
+            <div class="play">
+                <img src="/img/play_icon.png">
+            </div>
+        </div>
+    </div>
+    <div class="file-title ellipsis">5665</div>
+    <ul class="file-toolbar"></ul>
+</div>
+
+<div class="course-container lesson ui-draggable" file-id="14" title="4443">
+
+    <div class="file-cover" onclick="play(14)">
+        <img class="file-img" src="/img/K6KT/filecourse.png">
+
+        <div class="file-info">
+            <div class="hover-title">
+                <span class="ellipsis" style="max-width: 10em;">4443</span>
+            </div>
+            <div class="files">
+                <div>
+                    <!-- <img src="/img/K6KT/video.png"> -->
+                    <span>视频:0</span>
+                </div>
+                <div>
+                    <!-- <img src="/img/K6KT/files.png"> -->
+                    <span>文档:0</span>
+                </div>
+                <div>
+                    <!-- <img src="/img/K6KT/lianxi.png"> -->
+                    <span>习题:1</span>
+                </div>
+            </div>
+            <div class="play">
+                <img src="/img/play_icon.png">
+            </div>
+        </div>
+    </div>
+    <div class="file-title ellipsis">4443</div>
+    <ul class="file-toolbar"></ul>
+</div>
+
+<div class="course-container lesson ui-draggable" file-id="15" title="56①有人">
+
+    <div class="file-cover" onclick="play(15)">
+        <img class="file-img" src="/img/K6KT/filecourse.png">
+
+        <div class="file-info">
+            <div class="hover-title">
+                <span class="ellipsis" style="max-width: 10em;">56①有人</span>
+            </div>
+            <div class="files">
+                <div>
+                    <!-- <img src="/img/K6KT/video.png"> -->
+                    <span>视频:0</span>
+                </div>
+                <div>
+                    <!-- <img src="/img/K6KT/files.png"> -->
+                    <span>文档:0</span>
+                </div>
+                <div>
+                    <!-- <img src="/img/K6KT/lianxi.png"> -->
+                    <span>习题:1</span>
+                </div>
+            </div>
+            <div class="play">
+                <img src="/img/play_icon.png">
+            </div>
+        </div>
+    </div>
+    <div class="file-title ellipsis">56①有人</div>
+    <ul class="file-toolbar"></ul>
+</div>
+
+<div class="course-container lesson ui-draggable" file-id="22" title="wrwe ">
+
+    <div class="file-cover" onclick="play(22)">
+        <img class="file-img" src="/img/K6KT/filecourse.png">
+
+        <div class="file-info">
+            <div class="hover-title">
+                <span class="ellipsis" style="max-width: 10em;">wrwe </span>
+            </div>
+            <div class="files">
+                <div>
+                    <!-- <img src="/img/K6KT/video.png"> -->
+                    <span>视频:0</span>
+                </div>
+                <div>
+                    <!-- <img src="/img/K6KT/files.png"> -->
+                    <span>文档:0</span>
+                </div>
+                <div>
+                    <!-- <img src="/img/K6KT/lianxi.png"> -->
+                    <span>习题:0</span>
+                </div>
+            </div>
+            <div class="play">
+                <img src="/img/play_icon.png">
+            </div>
+        </div>
+    </div>
+    <div class="file-title ellipsis">wrwe</div>
+    <ul class="file-toolbar"></ul>
+</div>
+
+<div class="course-container lesson ui-draggable" file-id="25" title="www">
+
+    <div class="file-cover" onclick="play(25)">
+        <img class="file-img" src="/img/K6KT/filecourse.png">
+
+        <div class="file-info">
+            <div class="hover-title">
+                <span class="ellipsis" style="max-width: 10em;">www</span>
+            </div>
+            <div class="files">
+                <div>
+                    <!-- <img src="/img/K6KT/video.png"> -->
+                    <span>视频:0</span>
+                </div>
+                <div>
+                    <!-- <img src="/img/K6KT/files.png"> -->
+                    <span>文档:0</span>
+                </div>
+                <div>
+                    <!-- <img src="/img/K6KT/lianxi.png"> -->
+                    <span>习题:0</span>
+                </div>
+            </div>
+            <div class="play">
+                <img src="/img/play_icon.png">
+            </div>
+        </div>
+    </div>
+    <div class="file-title ellipsis">www</div>
+    <ul class="file-toolbar"></ul>
+</div>
+
+<div class="course-container lesson ui-draggable" file-id="27" title="eeee">
+
+    <div class="file-cover" onclick="play(27)">
+        <img class="file-img" src="/img/K6KT/filecourse.png">
+
+        <div class="file-info">
+            <div class="hover-title">
+                <span class="ellipsis" style="max-width: 10em;">eeee</span>
+            </div>
+            <div class="files">
+                <div>
+                    <!-- <img src="/img/K6KT/video.png"> -->
+                    <span>视频:0</span>
+                </div>
+                <div>
+                    <!-- <img src="/img/K6KT/files.png"> -->
+                    <span>文档:0</span>
+                </div>
+                <div>
+                    <!-- <img src="/img/K6KT/lianxi.png"> -->
+                    <span>习题:0</span>
+                </div>
+            </div>
+            <div class="play">
+                <img src="/img/play_icon.png">
+            </div>
+        </div>
+    </div>
+    <div class="file-title ellipsis">eeee</div>
+    <ul class="file-toolbar"></ul>
+</div>
+
+<div class="course-container lesson ui-draggable" file-id="44" title="三角形">
+
+    <div class="file-cover" onclick="play(44)">
+        <img class="file-img" src="/img/K6KT/filecourse.png">
+
+        <div class="file-info">
+            <div class="hover-title">
+                <span class="ellipsis" style="max-width: 10em;">三角形</span>
+            </div>
+            <div class="files">
+                <div>
+                    <!-- <img src="/img/K6KT/video.png"> -->
+                    <span>视频:1</span>
+                </div>
+                <div>
+                    <!-- <img src="/img/K6KT/files.png"> -->
+                    <span>文档:0</span>
+                </div>
+                <div>
+                    <!-- <img src="/img/K6KT/lianxi.png"> -->
+                    <span>习题:1</span>
+                </div>
+            </div>
+            <div class="play">
+                <img src="/img/play_icon.png">
+            </div>
+        </div>
+    </div>
+    <div class="file-title ellipsis">三角形</div>
+    <ul class="file-toolbar"></ul>
+</div>
+
+<div class="course-container lesson ui-draggable" file-id="46" title="语文课程">
+
+    <div class="file-cover" onclick="play(46)">
+        <img class="file-img" src="/img/K6KT/filecourse.png">
+
+        <div class="file-info">
+            <div class="hover-title">
+                <span class="ellipsis" style="max-width: 10em;">语文课程</span>
+            </div>
+            <div class="files">
+                <div>
+                    <!-- <img src="/img/K6KT/video.png"> -->
+                    <span>视频:1</span>
+                </div>
+                <div>
+                    <!-- <img src="/img/K6KT/files.png"> -->
+                    <span>文档:1</span>
+                </div>
+                <div>
+                    <!-- <img src="/img/K6KT/lianxi.png"> -->
+                    <span>习题:2</span>
+                </div>
+            </div>
+            <div class="play">
+                <img src="/img/play_icon.png">
+            </div>
+        </div>
+    </div>
+    <div class="file-title ellipsis">语文课程</div>
+    <ul class="file-toolbar"></ul>
+</div>
+
+<div class="course-container lesson ui-draggable" file-id="55" title="分数">
+
+    <div class="file-cover" onclick="play(55)">
+        <img class="file-img" src="/img/K6KT/filecourse.png">
+
+        <div class="file-info">
+            <div class="hover-title">
+                <span class="ellipsis" style="max-width: 10em;">分数</span>
+            </div>
+            <div class="files">
+                <div>
+                    <!-- <img src="/img/K6KT/video.png"> -->
+                    <span>视频:1</span>
+                </div>
+                <div>
+                    <!-- <img src="/img/K6KT/files.png"> -->
+                    <span>文档:1</span>
+                </div>
+                <div>
+                    <!-- <img src="/img/K6KT/lianxi.png"> -->
+                    <span>习题:1</span>
+                </div>
+            </div>
+            <div class="play">
+                <img src="/img/play_icon.png">
+            </div>
+        </div>
+    </div>
+    <div class="file-title ellipsis">分数</div>
+    <ul class="file-toolbar"></ul>
+</div>
+
+
+</div>
+</div>
+</div>
+<div id="footer">
+    <div>
+        <span style="float: left">版权所有：上海复兰信息科技有限公司          <a href="http://www.fulaan-tech.com" target="_blank">www.fulaan-tech.com</a>        沪ICP备14004857号</span>
+        <span style="float: right"><a href="/aboutus/k6kt">关于我们</a>  |  <a href="/contactus/k6kt">联系我们</a>   |  <a
+                href="/service/k6kt">服务条款 </a> |  <a href="/privacy/k6kt">隐私保护 </a> |  <a
+                href='http://wpa.qq.com/msgrd?v=1&uin=2803728882&site=qq&menu=yes' target="_blank"><img
+                src="/img/QQService.png"></a></span>
+    </div>
+</div>
+<div id="browser-updater">
+    <div class="browser-updater-wrapper">
+        <p>
+            <span>亲，浏览器版本过低可能会影响您的使用体验，为了提升速度您可以：</span>
+            <a class="browser-updater-chrome" href="/upload/resources/ChromeStandaloneSetup.exe">安装Chrome浏览器</a>
+        </p>
+        <a class="browser-updater-close" onclick="hideBrowserUpdater()"><i class="fa fa-close fa-2"></i></a>
+    </div>
+</div>
+</body>
+</html>

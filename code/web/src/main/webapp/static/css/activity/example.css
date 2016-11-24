@@ -1,0 +1,40 @@
+
+
+#toggle {
+  color: #ecf0f1;
+  background-color: #8e44ad;
+  padding: 10px;
+  outline: none;
+  border: none;
+  cursor: pointer;
+}
+
+#toggle:hover {
+  background-color: #9b59b6;
+}
+
+
+#inl {
+  margin: 1em 0;
+}
+
+#inlvc {
+  vertical-align: top;
+  font-weight: bold;
+  color: #c0392b;
+  margin: 80px;
+}
+
+.block {
+  display: block;
+}
+.inline {
+  display: inline-block;
+}
+
+.gh-fork {
+  position: fixed;
+  top: 0;
+  right: 0;
+  border: 0;
+}

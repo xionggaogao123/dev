@@ -1,0 +1,513 @@
+/*clslist_mian*/
+.clslist_mian{
+    width:770px;
+    border: 1px solid #ccc;
+    border-top: none;
+    padding: 30px 8px 0 13px;
+}
+.clslist_mian_title{
+    width:680px;
+    text-align:left;
+    font-size: 14px;
+    color:#333;
+    font-weight: bold;
+    margin-bottom: 20px;
+    margin-left: 15px;
+}
+.clslist_mian_table{
+    width: 764px;
+    text-align: center;
+    margin-bottom: 50px !important;
+}
+.clslist_mian_table th{
+    height: 35px;
+    background: #cccccc;
+}
+.clslist_mian_table td{
+    /*color:#959595;*/
+}
+.clslist_mian_table th,.clslist_mian_table td{
+    border:1px solid #959595;
+
+}
+.clslist_mian_table a{
+    color: #ff9342 !important;
+}
+/*clslist_tab*/
+.clslist-in{
+    border:none;
+    background:#fff;
+    width: 5em;
+    display: inline-block;
+    /*color:#959595;*/
+}
+/*clslist_mian*/
+
+
+/*clslist_content*/
+.clslist_content{
+    width: 770px;
+    margin-top: 20px;
+    margin-left: 10px;
+}
+/*clslist_content*/
+/*clslist_tab*/
+.clslist_tab{
+    width:792px;
+    height: 40px;
+    border-bottom: 1px solid #cccccc;
+
+}
+.clslist_tab  ul a{
+    display: inline-block;
+    float: left;
+    font-size: 16px;
+    background: #fff;
+    color:#fda716;
+    padding: 10px 25px;
+    position: relative;
+    top:1px;
+    cursor: pointer;
+    border: 1px solid #ccc;
+    border-bottom: none;
+}
+.clslist_back{
+    float: right;
+    display: inline-block;
+    margin-top: -30px;
+    margin-right: 5px;
+}
+/*clslist_tab*/
+
+/*clsmanage_content*/
+.clsmanage_content{
+    width: 770px;
+    margin-top: 20px;
+    margin-left: 10px;
+}
+/*clsmanage_content*/
+/*clsmanage_tab*/
+.clsmanage_tab{
+    width:792px;
+    border-bottom: 1px solid #cccccc;
+
+}
+.clsmanage_tab  ul a{
+    display: inline-block;
+    float: left;
+    font-size: 16px;
+    background: #fff;
+    color:#fda716;
+    padding: 10px 25px;
+    position: relative;
+    top:1px;
+    cursor: pointer;
+    border: 1px solid #ccc;
+    border-bottom: none;
+}
+/*clsmanage_tab*/
+/*clsmanage_mian*/
+.clsmanage_mian{
+    width:770px;
+    border: 1px solid #ccc;
+    border-top: none;
+    padding: 30px 8px 0 13px;
+}
+.clsmanage_select{
+    margin-bottom: 20px;
+}
+.clsmanage_xueqi{
+    width: 202px;
+    height: 30px;
+}
+.clsmanage_grade,.clsmanage_class,.clsmanage_subject{
+    width: 134px;
+    height: 30px;
+    margin-left: 15px;
+}
+.clsmanage_score{
+    position: relative;
+    height: 105px;
+    border: 1px solid #d0d0d0;
+    border-radius:3px;
+    margin-bottom: 40px;
+}
+.clsmanage_score table{
+    position: absolute;
+    top: 28px;
+    left: 120px;
+    font-size: 14px;
+}
+.clsmanage_score img{
+    margin-top: 15px;
+    margin-left: 2px;
+    margin-right:50px;
+}
+.clsmanage_select,table,img{
+    display: inline-block;
+}
+.clsmanage_score table{
+    text-align: center;
+    margin-bottom: 6px;
+}
+.clsmanage_score table th{
+    color:#fe1833;
+    width: 116px;
+}
+.clsmanage_score table td{
+    color: #656565;
+}
+.clsmanage_score a{
+    float: right;
+    background: #3999d4;
+    padding: 9px 20px;
+    color:#fff;
+    border-radius: 3px;
+    margin-right: 50px;
+    margin-top: 40px;
+}
+/*clsmanage_mian*/
+
+
+/*stulist_content*/
+.stulist_content{
+    width: 770px;
+    margin-top: 20px;
+    margin-left: 10px;
+}
+/*stulist_content*/
+/*stulist_tab*/
+.stulist_tab{
+    width:792px;
+    height: 40px;
+    border-bottom: 1px solid #cccccc;
+
+}
+.stulist_tab  ul a{
+    display: inline-block;
+    float: left;
+    font-size: 16px;
+    background: #fff;
+    color:#fda716;
+    padding: 10px 25px;
+    position: relative;
+    top:1px;
+    cursor: pointer;
+    border: 1px solid #ccc;
+    border-bottom: none;
+}
+.stulist_back{
+    float: right;
+    display: inline-block;
+    margin-top: -30px;
+    margin-right: 5px;
+}
+/*stulist_tab*/
+/*stulist_mian*/
+.stulist_mian{
+    width:770px;
+    border: 1px solid #ccc;
+    border-top: none;
+    padding: 30px 8px 0 13px;
+}
+.stulist_mian_title{
+    width:680px;
+    text-align:left;
+    font-size: 14px;
+    color:#333;
+    font-weight: bold;
+    margin-bottom: 20px;
+    margin-left: 15px;
+}
+.stulist_mian_table{
+    width: 764px;
+    text-align: center;
+    margin-bottom: 50px;
+}
+.stulist_mian_table th{
+    height: 35px;
+    background: #cccccc;
+}
+.stulist_mian_table th,.stulist_mian_table td{
+    border:1px solid #959595;
+    padding: 3px;
+}
+.stulist_queqin{
+    color: #ff0000;
+}
+.stulist_socre{
+    color:#ff7e00;
+}
+.stulist_wrapper{
+    height: 20px;
+}
+.stulist_wrapper i{
+    display:inline-block;
+    width: 15px;
+    height: 14px;
+    background:url(../img/score_star.png) 0 0 no-repeat;
+}
+/*stulist_mian*/
+
+
+/*clslist_content*/
+.clslist_content{
+    width: 770px;
+    margin-top: 20px;
+    margin-left: 10px;
+}
+/*clslist_content*/
+/*clslist_tab*/
+.clslist_tab{
+    width:792px;
+    height: 40px;
+    border-bottom: 1px solid #cccccc;
+
+}
+.clslist_tab  ul a{
+    display: inline-block;
+    float: left;
+    font-size: 16px;
+    background: #fff;
+    color:#fda716;
+    padding: 10px 25px;
+    position: relative;
+    top:1px;
+    cursor: pointer;
+    border: 1px solid #ccc;
+    border-bottom: none;
+}
+.clslist_back{
+    float: right;
+    display: inline-block;
+    margin-top: -30px;
+    margin-right: 5px;
+}
+
+.xsscore_queqin{
+    color: #ff0000;
+}
+.xsscore_socre{
+    color:#ff7e00;
+}
+.xsscore_wrapper{
+    height: 20px;
+}
+.xsscore_wrapper i{
+    display:inline-block;
+    width: 15px;
+    height: 14px;
+    background:url(../img/score_star.png) 0 0 no-repeat;
+}
+/*clslist_mian*/
+.stars-container{
+    /*width: 100px;*/
+}
+.stars-container span{
+    margin-left: 6px;
+}
+.orange-color {
+    color:#ff7e00;
+}
+.stars-container i.fa {
+    cursor: pointer;
+}
+
+
+
+/**********************************新增考勤****************************/
+.attendance-add{
+    background: #fda715;
+    color: #ffffff;
+    padding: 8px 17px;
+    border: none;
+    cursor: pointer;
+    margin-right: 4px;
+}
+.attendance{
+    display: none;
+    width: 375px;
+    height: 370px;
+    background: #ffffff;
+    position: fixed;
+    top:50%;
+    left: 50%;
+    margin-left: -187.5px;
+    margin-top: -220px;
+    z-index: 99;
+}
+.attendance .attendance-top{
+    height: 38px;
+    line-height: 38px;
+    background: #616161;
+    color: white;
+    font-size: 16px;
+}
+.attendance dl{
+    margin: 10px 39px 0;
+    font-size: 14px;
+}
+.attendance dl dt{
+    height: 50px;
+    line-height: 50px;
+}
+.attendance dl dd{
+    height: 50px;
+    line-height: 50px;
+}
+.attendance dl dd em{
+    display: inline-block;
+    width: 8em;
+}
+.attendance dd input{
+    width:171px;
+    height: 29px;
+}
+.attendance dd select{
+    width: 171px;
+    height: 34px;
+}
+.attendance dd span{
+    display: inline-block;
+    width: 100%;
+    text-align: center;
+    margin-top: 10px;
+}
+.attendance dd button{
+    width: 62px;
+    height: 29px;
+    line-height: 29px;
+    background: #ffffff;
+    border:1px solid #a0a0a0;
+    cursor: pointer;
+    line-height: 26px;
+}
+.attendance dd .curri-TJ{
+    color: #fd8b00;
+    border: 1px solid #fd8b00;
+}
+.attendance .submit{
+    border: 1px solid #FDA715 !important;
+    color: #FDA715;
+}
+.attendance-top{
+    height: 38px;
+    line-height: 38px;
+    background: #616161;
+    color: white;
+    font-size: 16px;
+}
+.attendance-top em{
+    float: left;
+    margin-left: 28px;
+}
+.attendance-top i{
+    float: right;
+    margin-right: 20px;
+    cursor: pointer;
+}
+
+/**************************背景***********************/
+.bg
+{
+    display: none;
+    background-color: #000;
+    width: 100%;
+    height: 100%;
+    left: 0;
+    top: 0;
+    filter: alpha(opacity=40);
+    opacity: 0.4;
+    z-index: 1;
+    position: fixed !important; /*FF IE7*/
+    position: absolute;
+    _top: expression(eval(document.compatMode && document.compatMode=='CSS1Compat') ?
+            documentElement.scrollTop + (document.documentElement.clientHeight-this.offsetHeight)/2 :/*IE6*/
+            document.body.scrollTop + (document.body.clientHeight - this.clientHeight)/2); /*IE5 IE5.5*/
+}
+
+.Wdate {
+    border: #999 1px solid;
+    height: 20px;
+    background: #fff url(/img/datePicker.gif) no-repeat right;
+}
+
+.Wdate::-ms-clear {
+    display: none;
+}
+
+.WdateFmtErr {
+    font-weight: bold;
+    color: red;
+}
+.timeShow
+{
+    /*height: 47px;
+    overflow-x: auto;
+    overflow-y: hidden;
+    width: 397px;
+    min-width: 397px;*/
+
+    height: 47px;
+    overflow-x: auto;
+    overflow-y: auto;
+    width: 397px;
+    min-width: 397px;
+    border: 1px solid #000;
+}
+
+/****************分页****************************/
+.new-page-links{
+    width: 540px;
+    margin:10px 30%;
+    margin-right: auto;
+    /*  height: 42px;*/
+    background: white;
+}
+.new-page-links li{
+    list-style: none;
+    float: left;
+    line-height: 30px;
+    border: #dcdcdc 1px solid!important;
+    color: #000a25;
+    background: #fff;
+    /* padding: 0 10px;*/
+    border-right: 0!important;
+    font-size:12px!important;
+    width: 30px!important;
+    height: 30px!important;
+    text-align: center
+}
+.new-page-links li a{
+    display: block;
+}
+.new-page-links li.first{
+    border-top-left-radius: 3px;
+    border-bottom-left-radius: 3px;
+}
+.new-page-links li.last{
+    border-top-right-radius: 3px;
+    border-bottom-right-radius: 3px;
+    border-right: #dcdcdc 1px solid;
+}
+.new-page-links li:hover{
+    background: #ddd;
+}
+.new-page-links li a:hover{
+    color: #000a25;
+}
+
+.new-page-links li.active{
+    background: #f5f5f5;
+    color: #9d9f9e;
+}
+.new-page-links li.active a{
+    cursor: default !important;
+    color: #9d9f9e;
+}
+.new-page-links li.disabled,.new-page-links li.disabled a{
+    color: #999;
+    background-color: #fff;
+    border-color: #ddd;
+    cursor: not-allowed;
+}

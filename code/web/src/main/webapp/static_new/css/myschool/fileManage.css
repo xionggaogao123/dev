@@ -1,0 +1,194 @@
+html,body,div,h1,h2,h3,h4,h5,h6,p,img,dl,dt,dd,ol,ul,li,a,b,i,em,strong,form,table,tr,th,td,span,input,fieldset,select,option,textarea,label,iframe,header,nav,aside,article,section,button{margin:0;padding:0;border:0;}
+h1,h2,h3,h4,h5,h6{ font-weight:normal;}
+
+img{display:block;}
+ol,ul{ list-style:none;}
+i,b,em,strong { font-style:normal; text-decoration:none; font-weight: normal;}
+body{font-family:Microsoft YaHei;color:#656565; background-color:#fff;position:relative;z-index:1;}
+a{text-decoration:none; color:black;font-family:'Microsoft YaHei','Arial', 'Helvetica', 'sans-serif','simsun','Lucida Grande','Lucida Sans Unicode';}
+a:hover{color: #ff5a0b;}
+img{display: inline}
+input{outline: none;}
+ul{list-style-type: none}
+img{border-style: none}
+div{overflow:visible;}
+input::-ms-clear { display: none;}
+button{font-family: Microsoft yahei;cursor: pointer;outline:none}
+
+
+.f-ziti{
+    display: block;
+    padding-top: 10px;
+    text-overflow: ellipsis;
+    overflow: hidden;
+    white-space: nowrap;
+}
+.bg-color{
+    width: 100%;
+    height: 100%;
+    background: #ffffff;
+}
+.f-manage-main{
+    width: 1000px;
+    height: auto;
+    margin:0 auto;
+}
+.f-manage-right{
+    margin-top:15px;
+    width: 770px;
+    min-height: 1000px;
+    border:1px solid #dddddd;
+    float: right;
+}
+.f-right-top{
+    height: 40px;
+    background: #f1f1f1;
+    border-bottom:1px solid #dddddd;
+    overflow: visible;
+}
+.f-right-top ul li  .cur{
+    color: #ff8a00;
+    width: 100px;
+    height: 40px;
+    border-top:4px solid #ff8a00;
+    border-right:1px solid #dddddd;
+    display: block;
+    background: #ffffff;
+    text-align: center;
+    line-height: 40px;
+    font-size: 16px;
+    font-weight: bold;
+    position: relative;
+    top:-2px;
+    float: left;
+}
+.f-right-top button{
+    float: right;
+    background: #5cb95b;
+    border: 1px solid #3caa3d;
+    border-radius: 5px;
+    height: 28px;
+    width: 92px;
+    color: #ffffff;
+    line-height: 28px;
+    margin: 6px 8px 0 0;
+}
+.f-middle-info{
+    margin-top: 30px;
+    background:#f8f8f8;
+    min-height: 1000px;
+    border-top:1px solid #d0d0d0;
+    border-bottom:1px solid #d0d0d0;
+}
+.f-middle-info dl{
+    padding: 15px 0 15px 30px;
+    width: 722px;
+}
+.f-middle-info dl dd{
+    height: 70px;
+    border-bottom:1px solid #d0d0d0;
+    color: #333333;
+    font-size: 14px;
+}
+.f-middle-info dl dd p{
+    background: url("../img/f-file.png") no-repeat 0 10px;
+    width: 240px;
+    height: 70px;
+    float: left;
+}
+.f-middle-info em{
+    margin: 0 0 0 65px;
+    height: 70px;
+    line-height: 22px;
+    padding-top: 10px;
+}
+.f-middle-I{
+    margin: 0 0 0 65px;
+    height: 70px;
+    line-height: 22px;
+    padding-top: 10px;
+}
+.f-middle-info span{
+    width: 210px;
+    height: 70px;
+    float: left;
+    margin-left: -25px;
+}
+.f-middle-info div{
+    width: 125px;
+    height: 70px;
+    float: left;
+    margin-left: -40px;
+}
+.file-img i{
+    margin: 0 0 0 10px;
+    line-height: 22px;
+    position:relative;
+    top: 25px;
+    left: 65px;
+    cursor: pointer;
+}
+/*****************************信息修改**********************************/
+.upload-manage{
+    clear: both;
+}
+.upload-manage dl{
+    width: 744px;
+    padding: 25px 0 0 15px;
+}
+.upload-manage  span{
+    font-size: 15px;
+    color: #ffa800;
+    cursor: pointer;
+}
+.upload-line{
+    height: 40px;
+    line-height: 40px;
+    border-bottom: 1px solid #ff7e00;
+}
+.upload-line em{
+    font-weight: bold;
+    border-left: 5px solid #ff7e00;
+    padding-left: 10px;
+}
+.upload-info{
+    padding: 24px 20px;
+}
+.upload-info i{
+    font-size: 15px;
+    padding-bottom: 5px;
+}
+.upload-info input{
+    border: 1px solid #808080;
+    height: 36px;
+    width: 400px;
+    margin-top: 5px;
+}
+.upload-bottom{
+    padding:20px;
+}
+.upload-bottom input{
+    cursor: pointer;
+    height: 32px;
+    width: 190px;
+ /*   margin-top: -35px;
+    margin-left: -70px;
+    opacity: 0;
+    file:alpha(opacity=0);*/
+}
+.upload-bottom button{
+    width: 125px;
+    height: 35px;
+    line-height: 32px;
+    background: #656565;
+    border-radius: 20px;
+    border: 2px solid #808080;
+    color: #ffffff;
+   /* overflow: hidden;
+    display: block*/
+}
+.upload-bottom p{
+    font-size: 13px;
+    color: #333333;
+    margin-top: 25px;
+}

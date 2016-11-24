@@ -1,0 +1,114 @@
+/*daorustart_main*/
+.daorustart_main{
+	width: 734px;
+	margin-top: 24px;
+	margin-left: 20px;
+}
+/*daorustart_main*/
+/*daoru_worker*/
+.daoru_worker{
+	width: 734px;
+	height: 30px;
+	background:#a0a0a0;
+    margin: 10px 0;
+}
+
+.daorustart_step input,.daorustart_step select{
+    border: 1px solid #ddd;
+}
+
+.daorustart_step dl dd{
+    line-height: 35px;
+}
+
+.daoru_worker p{
+	display: inline-block;
+	color:#fff;
+	font-size: 16px;
+	margin: 6px auto 6px 10px;
+}
+/*daoru_worker*/
+/*daorustart_step*/
+.daorustart_step p{
+	display: inline-block;
+	font-size: 20px;
+	font-weight: bold;
+	color: #333333;
+	margin:0 20px 10px 25px ;
+}
+.em2{
+    font-size: 16px !important;
+    margin-right: 10px;
+}
+
+.daorustart_step .first_step{
+}
+
+.kb-top1{
+    margin: 10px 0;
+}
+.daorustart_step .model_download,.daorustart_step .daorustart_btn{
+	padding: 3px 22px;
+	color:#fff;
+	font-size: 14px;
+	background: #ff7e00;
+	border:1px solid #ff7e00;
+	cursor: pointer;
+	border-radius:4px;
+
+}
+.daorustart_step .daorustart_btn{
+	margin-left: 85px;
+}
+.daorustart_step em{
+	font-size: 18px;
+	color:#333;
+    vertical-align: top;
+}
+.daorustart_step .daorustart_file{
+	display: inline-block;
+	padding: 0px 50px 6px 6px;	
+}
+
+.timetable-SE{
+    width: 60px;
+}
+
+/*daorustart_step*/
+
+.back{
+	cursor: pointer;
+}
+.timeAdd{
+	display: none;
+    height: 35px;
+    margin-left: 10px;
+}
+.timeAdd1
+{
+	display: none;
+}
+.sksj{
+    display: inline-block;
+    width: 500px;
+    line-height: 40px;
+}
+
+#timeShow1
+{
+}
+.sch-dd
+{
+	margin-left:108px;
+    vertical-align: top;
+}
+.save-dd {
+	margin-left: 114px;
+}
+.termSe {
+	width:300px;height: 25px;border: 1px solid #000;
+}
+.notice-sp {
+    line-height: 25px;
+	margin-left: 58px;
+}

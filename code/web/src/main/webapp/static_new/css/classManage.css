@@ -1,0 +1,518 @@
+
+
+.grow-tab-head li{
+    float: left;
+    border: 1px solid #bbbbbb;   
+    line-height: 40px;
+    width: 154px;
+    text-align: center;
+    margin-bottom: -1px;
+    border-bottom: transparent;
+    background-color: #fff;
+    
+}
+
+.grow-tab-head li a{
+    display: inline-block;
+    cursor: default;
+    font-size:16px;
+    color: #ff9c00;
+}
+.grow-col{
+
+    padding: 20px 20px 0px 20px;
+    border: 1px solid #bbbbbb;
+}
+.addClass{
+    float: right;
+    display: inline-block;
+    width: 120px;
+    height: 34px;
+    color: #fff;
+    background-color: #9c9c9c;
+    text-align: center;
+    line-height: 34px;
+}
+.gray-table .thead{
+    font-size: 16px;
+}
+.gray-table .ttitle{
+    font-size: 14px;
+}
+.gray-table td{
+    font-size: 12px;
+    color:#000;
+}
+.abtn{
+    border: 1px solid #bfbfbf;
+    display: inline-block;
+    width: 40px;
+    height: 20px;
+    line-height: 20px;
+    text-align: center;
+    
+    color: #fff;
+    background-color: #fda616;
+}
+.abtn:hover{
+    color: #fff;
+}
+.del{
+    border: 1px solid #bfbfbf;
+    display: inline-block;
+    width: 40px;
+    height: 20px;
+    line-height: 20px;
+    margin-left: 16px;
+    text-align: center;   
+}
+.del2{
+    border: 1px solid #bfbfbf;
+    display: inline-block;
+    width: 40px;
+    height: 20px;
+    line-height: 20px;
+    text-align: center;   
+}
+.pop-wrap{
+    width: 470px;
+    margin-left: -235px;
+}
+.pop-wrapp {
+    width: 470px;
+    background: #fff;
+    position: absolute;
+    top: 30px;
+    left: 50%;
+    margin-left: -235px;
+    z-index: 99;
+     display: none;
+    height: 280px;
+}
+.pop-title{
+    height: 36px;
+    line-height: 36px;
+    color: #fff;
+    background-color: #616161;
+}
+.pop-title .closePop{
+    display: block;
+    width: 36px;
+    height: 36px;
+    float: right;
+    cursor: pointer;
+    background: url('../images/closePop.png') 0 0 no-repeat;
+}
+.pop-content{
+    width: auto;
+}
+.pop-content td.right{
+    text-align: right;
+    width: 100px;
+    padding-right: 25px;
+    display: inline-block;
+}
+.pop-wrap table{
+    width: 100%;
+}
+.pop-content input{
+    text-indent: 5px;
+    width: 150px;
+    border: 1px solid #a0a0a0;
+    height: 26px;
+
+}
+.pop-content input.className{
+    width: 295px;
+    border: 1px solid #a0a0a0;
+    height: 26px;
+
+}
+.pop-content select{
+    width: 150px;
+    height: 30px;
+    text-indent: 5px;
+    border: 1px solid #a0a0a0;
+}
+.pop-btn{
+    text-align: center;
+}
+.pop-btn a{
+    display: inline-block;
+    width: 58px;
+    height: 26px;
+    line-height: 26px;
+    color: #fff;
+    font-size: 12px;
+
+}
+.pop-btn .sure{
+    background-color: #fb7e00;
+    margin-right: 12px;
+
+
+}
+
+
+/*ͳ��*/
+#count{
+    width: 660px;
+    margin-left: -330px;
+}
+#count .pop-content{
+
+    padding: 30px;
+    padding-bottom: 0px;
+}
+#count table,#count td{
+    text-align: center;
+    border:1px solid #717171;
+    font-size: 12px;
+    line-height: 35px;
+}
+#count th{
+    text-align: center;
+    border:1px solid #717171;
+    font-size: 14px;
+    font-weight: normal;
+    line-height: 40px;
+}
+.term{
+
+   margin-bottom: 30px;
+    color: #474747;
+    font-size: 14px;
+}
+.term label{
+    margin-right: 25px;
+}
+.term select{
+    width: 195px;
+    height: 30px;
+}
+#count .last{
+    display: none;
+}
+/*��ҳ*/
+.fenye{
+    text-align: center;
+}
+.fenye .inline{
+    display: inline-block;
+}
+
+.new-page-links{
+    width: auto;
+    line-height: 34px;
+    padding: 5px 8px;
+    float: left;
+} 
+.new-page-links li{
+    margin-right: 10px;
+    border: 1px solid #808080;
+}
+.new-page-links li.disabled, .new-page-links li.disabled a {
+    color: #000000;
+    border-color: #808080;
+}
+.pageSearch{
+    float: left;
+}
+
+
+/*�ҵ�ԤԼ
+#myReservation{
+    padding:10px 18px;
+}
+*/
+.searchDate{
+    margin-bottom: 24px;
+}
+
+.searchDate input{
+    width: 210px;
+    height: 30px;
+    border: 1px solid #c9c9c9;
+    text-indent: 5px;
+    margin:0px  20px;
+}
+.searchDate input.search{
+    background-color: #ff8a00;
+    border: none;
+    width: 100px;
+    color: #fff;
+    cursor: pointer;
+}
+#myReservation .theadbg,#classReservation .theadbg,#manageClass .theadbg{
+    
+    background-color: #fff;
+}
+#myReservation th,#classReservation th,#manageClass th{
+    line-height: 42px;
+    color: #000000;
+    border: 1px solid #717171;
+}
+#myReservation td,#classReservation td,#manageClass td{
+    line-height: 36px;
+    border: 1px solid #717171;
+    color: #000000;
+}
+#editReserv td,#order td,#adminOrder td{
+    line-height: 55px;
+}
+#editReserv input,#order input,#adminOrder input{
+    width: 182px;
+    height: 28px;
+}
+#editReserv textarea,#order textarea,#adminOrder textarea,#editMyAppointment textarea{
+    margin-top: 15px;
+    width: 288px;
+    height: 76px;
+}
+
+/*����ԤԼ*/
+#classReservation .gray-table,#manageClass .gray-table{
+    margin-top: 26px;
+}
+
+ .fenye .new-page-links{
+    background-color: #fff;
+}
+.fenye .new-page-links li{
+    background-color: #fff;
+}
+.new-page-links li.disabled, .new-page-links li.disabled a{
+    background-color: #fff;
+}
+.new-page-links li.active{
+	background: #7e7e7e;
+}
+
+ .new-page-links li.active a{
+    color: #fff;
+}
+.pageSearch{
+    
+    float: left;
+    /*margin-right: 230px;*/
+    line-height: 80px;
+
+}
+.pageSearch input{
+    font-size: 12px;
+    text-align: center;
+    width: 54px;
+    border: 1px solid #a9a9a9;
+    line-height: 26px;
+    height: 26px;
+
+}
+.pageSearch .button{
+    font-size: 12px;
+    text-align: center;
+    width: 60px;
+    border: 1px solid #a9a9a9;
+    background-color: #dddddd;
+    height: 30px;
+
+}
+
+/*�鿴ԤԼ*/
+
+.index{
+    font-size: 14px;
+    color: #666666;
+    margin-top: 26px;
+
+}
+.res{
+    margin-top: 24px;
+}
+.res label{
+    color: #000000;
+    font-size: 16px;
+    font-weight: bold;
+    line-height: 35px;
+
+}
+.order,.adminOrder{
+    float: right;
+    text-align: center;
+    /*display: inline-block;*/
+    width: 75px;
+    height: 35px;
+    line-height: 35px;
+    color: #fff;
+    background-color: #ff8a00;
+}
+
+.adminOrder{
+    width: 108px;
+}
+
+/*��ʾ*/
+#tip .pop-content,#tip2 .pop-content{
+    padding:0 26px;
+}
+#tip p,#tip2 p{
+   
+    margin-top: 14px;
+    margin-bottom: 20px;
+    color: #ffa200;
+}
+#tip td,#tip2 td{
+    line-height: 36px;
+    font-size: 12px;
+    text-align: center;
+    border: 1px solid #717171;
+}
+#tip th,#tip2 th{
+    font-weight: normal;
+    font-size: 14px;
+    line-height: 42px;
+    text-align: center;
+    border: 1px solid #717171;
+    background-color: #dfdfdf;
+}
+#tip .continue{
+    width: 82px;
+}
+#tip2 .continue{
+	width:40px;
+}
+
+.tbod{
+    height: 150px;
+    overflow-y:auto;
+}
+.Wdate .WdateDiv{
+    width: 312px;
+}
+/*ȥ��������*/
+.gray-table-box .gray-table-body {
+    float: left;
+     height: auto; 
+     overflow-y:hidden;
+}
+#tipBody td{
+    line-height: 36px;
+    font-size: 12px;
+    text-align: center;
+    border: 1px solid #717171;
+}
+#tipBody th{
+    font-weight: normal;
+    font-size: 14px;
+    line-height: 42px;
+    text-align: center;
+    border: 1px solid #717171;
+    background-color: #dfdfdf;
+}
+#tipBody td.atime{
+	width:126px;
+}
+#tipBody td.auser{
+	width:78px;
+}
+#tipBody3 td.atime{
+	width:126px;
+}
+#tipBody3 td.auser{
+	width:78px;
+}
+#tip2,#tip{
+	width:570px;
+}
+.pop-btn .undo{
+    background-color: #b3b3b3;
+}
+#appointDetial .hand{
+	cursor: pointer;
+}
+
+/*��ʾ*/
+#tip .pop-content,#tip2 .pop-content,#tip3 .pop-content{
+    padding:0 26px;
+}
+#tip p,#tip2 p,#tip3 p{
+   
+    margin-top: 14px;
+    margin-bottom: 20px;
+    color: #ffa200;
+}
+#tip td,#tip2 td,#tip3 td{
+    line-height: 36px;
+    font-size: 12px;
+    text-align: center;
+    border: 1px solid #717171;
+}
+#tip th,#tip2 th,#tip3 th{
+    font-weight: normal;
+    font-size: 14px;
+    line-height: 42px;
+    text-align: center;
+    border: 1px solid #717171;
+    background-color: #dfdfdf;
+}
+
+#tip2 .continue,#tip3 .continue{
+	width:40px;
+}
+#tip3{
+	width:570px;
+}
+/*ĩҳborder*/
+.new-page-links li.last{
+	border-right:1px solid #808080;
+}
+#editReserv textarea,#order textarea,#adminOrder textarea,#manEdit textarea{
+    margin-top: 15px;
+    width: 288px;
+    height: 76px;
+}
+.manDel{
+    border: 1px solid #bfbfbf;
+    display: inline-block;
+    width: 40px;
+    height: 20px;
+    line-height: 20px;
+    text-align: center;   
+}
+.mydel{
+	border: 1px solid #bfbfbf;
+    display: inline-block;
+    width: 40px;
+    height: 20px;
+    line-height: 20px;
+    margin-left: 16px;
+    text-align: center;  
+}
+/*字体颜色*/
+.tab-head-new li.cur a{
+	color:#ff8a00;
+}
+.gray-table th{
+	color:#000000;
+}
+.order:hover,.adminOrder:hover{
+	color:#fff;
+}
+.manage-ren-alert{
+    display: inline-block;
+    /* width: 78px; */
+    height: 28px;
+    line-height: 28px;
+    border: 1px solid #c3c3c3;
+    border-radius: 3px;
+    margin-right: 12px;
+    margin-bottom: 8px;
+    text-align: center;
+    position: relative;
+    top: -15px;
+}
+.zb-ren-add {
+    background: url(/static_new/images/zhiban/zhiban-10.png) no-repeat 28px 5px;
+    top: 4px;
+    width: 75px;
+    height: 28px;
+}

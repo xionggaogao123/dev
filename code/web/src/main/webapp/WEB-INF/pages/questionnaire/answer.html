@@ -1,0 +1,43 @@
+<div ng-controller="AnswerCtrl">
+    <form ng-submit="submit()" name="answerForm">
+        <div class="question-head">
+            <a href="/questionnaire/load.do">取消</a>
+            <span class="ctrl" ng-bind="name"></span>
+            <button class="publish" type="submit">提交</button>
+        </div>
+        <!--<div class="doc-include" ng-include src="docUrl"></div>-->
+        <iframe src="{{docUrl}}" width="570" height="800" ng-show="!ie"></iframe>
+        <div1 class="configuration_main_left" id="showPdf" style="margin-top: 10px;float: left;height: 800px;width:570px!important" ng-show="ie">
+            <a id="viewerPlaceHolder" style="width:645px;height:950px;display:inline" class="configuration_main_left_I" href="{{docUrl}}"></a>
+        </div1>
+        <div class="answer-area">
+            <ul class="answer-list-ul">
+                <li ng-repeat="question in answerSheet track by $index">
+                    <div>{{$index+1}}&nbsp;{{question|questionType}}</div>
+                    <div>
+                        <ul ng-if="question!=0 && question<10000" class="answer-ul">
+                            <li ng-repeat="answer in getAnswers(question) track by $index" ng-switch on="question > 0">
+                                <label>
+                                    <input ng-switch-when="true" required type="radio" name="{{$parent.$parent.$index}}"
+                                           ng-model="answers[$parent.$parent.$index]" value="{{$index}}">
+                                    <input ng-switch-default type="checkbox" name="{{$parent.$parent.$index}}"
+                                           ng-model="answers[$parent.$parent.$index][$index]" value="{{$index}}">{{answer}}
+                                </label>
+                            </li>
+                        </ul>
+                        <textarea required maxlength="500" ng-if="question==0"
+                                  ng-model="answers[$index]"></textarea>
+                        <div ng-if="question>10000">
+                            <span style=" width:150px">分数范围{{math.floor(question/10000)-10000}}-{{(question%10000)}}</span>
+                            <select id="score{{$index}}"  style=" width:60px">
+                                <option ng-repeat="scorevalue in buildScoreValueArray(math.floor(question/10000)-10000,
+                            (question%10000))" value="{{scorevalue}}">{{scorevalue}}</option>
+                            </select>
+                        </div>
+
+                    </div>
+                </li>
+            </ul>
+        </div>
+    </form>
+</div>

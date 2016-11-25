@@ -267,53 +267,13 @@
         </dependency>
         <!-- 苏州团队jar -->
 
-        <!--&lt;!&ndash; sso &ndash;&gt;-->
-        <!--<dependency>-->
-            <!--<groupId>cas-client-core</groupId>-->
-            <!--<artifactId>cas-client-core</artifactId>-->
-        <!--</dependency>-->
-        <!--<dependency>-->
-            <!--<groupId>org.opensaml</groupId>-->
-            <!--<artifactId>opensaml</artifactId>-->
-        <!--</dependency>-->
-        <!--<dependency>-->
-            <!--<groupId>org.apache.santuario</groupId>-->
-            <!--<artifactId>xmlsec</artifactId>-->
-        <!--</dependency>-->
-        <!--<dependency>-->
-            <!--<groupId>avalon-framework</groupId>-->
-            <!--<artifactId>avalon-framework</artifactId>-->
-        <!--</dependency>-->
-        <!--<dependency>-->
-            <!--<groupId>logkit</groupId>-->
-            <!--<artifactId>logkit</artifactId>-->
-        <!--</dependency>-->
-        <!-- sso -->
-
-        <!-- phprpc -->
-        <!--<dependency>-->
-            <!--<groupId>phprpc</groupId>-->
-            <!--<artifactId>phprpc</artifactId>-->
-        <!--</dependency>-->
-
-        <!--<dependency>-->
-            <!--<groupId>phprpc-client</groupId>-->
-            <!--<artifactId>phprpc-client</artifactId>-->
-        <!--</dependency>-->
-        <!-- phprpc -->
-        <dependency>
-            <groupId>org.jasig.cas.client</groupId>
-            <artifactId>cas-client-core</artifactId>
-            <version>3.2.1</version>
-        </dependency>
-
         <dependency>
             <groupId>net.dreamlu</groupId>
             <artifactId>jsp-layout</artifactId>
             <version>0.0.2</version>
         </dependency>
 
-        <!-- https://mvnrepository.com/artifact/org.docx4j/docx4j -->
+        <!-- docx4j -->
         <dependency>
             <groupId>org.docx4j</groupId>
             <artifactId>docx4j</artifactId>
@@ -326,21 +286,21 @@
             <version>3.3.0</version>
         </dependency>
 
-        <!-- https://mvnrepository.com/artifact/org.docx4j/docx4j-ImportXHTML -->
+        <!-- docx4j-ImportXHTML -->
         <dependency>
             <groupId>org.docx4j</groupId>
             <artifactId>docx4j-ImportXHTML</artifactId>
             <version>3.3.1</version>
         </dependency>
 
-        <!-- https://mvnrepository.com/artifact/org.docx4j/xhtmlrenderer -->
+        <!-- xhtmlrenderer -->
         <dependency>
             <groupId>org.docx4j</groupId>
             <artifactId>xhtmlrenderer</artifactId>
             <version>3.0.0</version>
         </dependency>
 
-        <!-- https://mvnrepository.com/artifact/org.apache.pdfbox/pdfbox -->
+        <!-- pdfbox -->
         <dependency>
             <groupId>org.apache.pdfbox</groupId>
             <artifactId>pdfbox</artifactId>

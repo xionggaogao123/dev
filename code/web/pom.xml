@@ -291,15 +291,15 @@
         <!-- sso -->
 
         <!-- phprpc -->
-        <dependency>
-            <groupId>phprpc</groupId>
-            <artifactId>phprpc</artifactId>
-        </dependency>
+        <!--<dependency>-->
+            <!--<groupId>phprpc</groupId>-->
+            <!--<artifactId>phprpc</artifactId>-->
+        <!--</dependency>-->
 
-        <dependency>
-            <groupId>phprpc-client</groupId>
-            <artifactId>phprpc-client</artifactId>
-        </dependency>
+        <!--<dependency>-->
+            <!--<groupId>phprpc-client</groupId>-->
+            <!--<artifactId>phprpc-client</artifactId>-->
+        <!--</dependency>-->
         <!-- phprpc -->
         <dependency>
             <groupId>org.jasig.cas.client</groupId>

@@ -548,7 +548,7 @@ public class AdminController extends BaseController {
     /**
      * 上传移动端首页图片
      */
-    @RequestMapping(value = "/section/uploadImgApp", method = RequestMethod.POST)
+    @RequestMapping(value = "/section/uploadImgApp")
     @ResponseBody
     @UserRoles(UserRole.DISCUSS_MANAGER)
     public RespObj uploadFSectionImgApp(@RequestParam String id, @RequestParam String imgUrl) {
@@ -582,6 +582,7 @@ public class AdminController extends BaseController {
         }
         return respObj;
     }
+
 
     //=====================================================商品分类===========================================================
 

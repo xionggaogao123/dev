@@ -33,12 +33,9 @@ public class GroupService {
 
     @Autowired
     private MemberService memberService;
-    @Autowired
-    private CommunityService communityService;
 
     private GroupDao groupDao = new GroupDao();
     private MemberDao memberDao = new MemberDao();
-    private UserDao userDao = new UserDao();
 
     public ObjectId createGroupWithCommunity(ObjectId commid, ObjectId owerId, String emChatId, String name,
                                              String desc, String qrUrl) throws Exception {
@@ -68,10 +65,6 @@ public class GroupService {
         return groupDao.getGroupIdByEmchatId(chatId);
     }
 
-    public ObjectId getCommunityIdByGroupId(ObjectId groupId) {
-        return groupDao.getCommunityIdByGroupId(groupId);
-    }
-
     /**
      * findObjectId
      *
@@ -83,21 +76,6 @@ public class GroupService {
         List<MemberDTO> managers = memberService.getManagers(groupId);
         List<MemberDTO> members = memberService.getMembers(groupId, 20);
         return new GroupDTO(groupEntry, members, managers);
-    }
-
-    /**
-     * 根据id获取List<GroupDTO>
-     *
-     * @param ids
-     * @return
-     */
-    private List<GroupDTO> findByList(List<ObjectId> ids) {
-        List<GroupDTO> groups = new ArrayList<GroupDTO>();
-        List<GroupEntry> entrys = groupDao.findByIdList(ids);
-        for (GroupEntry entry : entrys) {
-            groups.add(new GroupDTO(entry));
-        }
-        return groups;
     }
 
     /**
@@ -135,100 +113,6 @@ public class GroupService {
         outFile.delete();
         String url = QiniuFileUtils.getPath(QiniuFileUtils.TYPE_IMAGE, fileKey.toString() + ".jpg");
         groupDao.updateHeadImage(groupId, url);
-    }
-
-    /**
-     * 邀请别人进入群聊
-     *
-     * @param emChatId
-     * @param userLists
-     */
-    public void inviteMembers(String emChatId, List<String> userLists) {
-        ObjectId groupId = getGroupIdByChatId(emChatId);
-        for (String userId : userLists) {
-            if (ObjectId.isValid(userId)) {
-                inviteMember(groupId, emChatId, new ObjectId(userId));
-            }
-        }
-    }
-
-    public void addMembers(ObjectId groupId, List<ObjectId> userList) {
-        for (ObjectId userId : userList) {
-            if (!isGroupMember(groupId, userId)) {
-                //添加成员
-                if (isBeforeMember(groupId, userId)) {
-                    memberService.updateMember(groupId, userId, 0);
-                } else {
-                    memberService.saveMember(userId, groupId);
-                }
-            }
-        }
-    }
-
-    /**
-     * 邀请别人进群聊
-     *
-     * @param groupId
-     * @param emChatId
-     * @param userId
-     */
-    public void inviteMember(ObjectId groupId, String emChatId, ObjectId userId) {
-        if (!isGroupMember(groupId, userId)) { //不是群聊成员
-            ResponseWrapper responseWrapper = EaseMobAPI.addSingleUserToChatGroup(emChatId, userId.toString());
-            if (responseWrapper.getResponseStatus() == 200) {
-                //添加成员
-                if (isBeforeMember(groupId, userId)) {
-                    memberService.updateMember(groupId, userId, 0);
-                } else {
-                    memberService.saveMember(userId, groupId);
-                }
-            }
-        }
-    }
-
-
-    public void joinGroup(ObjectId groupId, ObjectId userId) {
-        String emChatId = getEmchatIdByGroupId(groupId);
-        if (!isGroupMember(groupId, userId)) { //不是群聊成员
-            if (inviteToEmGroup(emChatId, userId)) {
-                if (isBeforeMember(groupId, userId)) {
-                    memberService.updateMember(groupId, userId, 0);
-                } else {
-                    memberService.saveMember(userId, groupId);
-                }
-            }
-        }
-    }
-
-    /**
-     * 加入组 - 但是不加入环信
-     *
-     * @param groupId
-     * @param userId
-     */
-    public void joinGroupWithoutEm(ObjectId groupId, ObjectId userId) {
-        String emChatId = getEmchatIdByGroupId(groupId);
-        if (!isGroupMember(groupId, userId)) { //不是群聊成员
-            memberService.saveMember(userId, groupId);
-        }
-    }
-
-    /**
-     * 退出群组
-     * 逻辑
-     * 1.判断是否是群成员
-     * 2.从环信群聊中剔除
-     * 3.在成员表中删除
-     *
-     * @param groupId
-     * @param userId
-     */
-    public void quitMember(ObjectId groupId, ObjectId userId) {
-        String emChatId = getEmchatIdByGroupId(groupId);
-        if (quitToEmGroup(emChatId, userId)) {
-            //删除成员
-            memberService.deleteMember(groupId, userId);
-        }
     }
 
     /**
@@ -271,27 +155,6 @@ public class GroupService {
     }
 
     /**
-     * 是否以前加入过
-     *
-     * @param groupId
-     * @param userId
-     * @return
-     */
-    public boolean isBeforeMember(ObjectId groupId, ObjectId userId) {
-        return memberDao.isBeforeMember(groupId, userId);
-    }
-
-    /**
-     * 获取群聊名称
-     *
-     * @param groupId
-     * @return
-     */
-    public String getGroupName(ObjectId groupId) {
-        return groupDao.getGroupName(groupId);
-    }
-
-    /**
      * 根据群组id获取环信id
      *
      * @param groupId
@@ -299,36 +162,6 @@ public class GroupService {
      */
     public String getEmchatIdByGroupId(ObjectId groupId) {
         return groupDao.getEmchatIdByGroupId(groupId);
-    }
-
-    /**
-     * 群主 - 邀请人加入环信群聊
-     *
-     * @param emChatId
-     * @param userId
-     * @return
-     */
-    public boolean inviteToEmGroup(String emChatId, ObjectId userId) {
-        ResponseWrapper responseWrapper = EaseMobAPI.addSingleUserToChatGroup(emChatId, userId.toString());
-        if (responseWrapper.getResponseStatus() == 200) {
-            return true;
-        }
-        return false;
-    }
-
-    /**
-     * 群主 - 从环信群聊中剔除
-     *
-     * @param emChatId
-     * @param userId
-     * @return
-     */
-    public boolean quitToEmGroup(String emChatId, ObjectId userId) {
-        ResponseWrapper responseWrapper = EaseMobAPI.removeSingleUserFromChatGroup(emChatId, userId.toString());
-        if (responseWrapper.getResponseStatus() == 200) {
-            return true;
-        }
-        return false;
     }
 
     /**

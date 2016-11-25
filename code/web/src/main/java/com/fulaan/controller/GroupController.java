@@ -13,6 +13,7 @@ import com.pojo.fcommunity.CommunityDetailType;
 import com.pojo.user.AvatarType;
 import com.pojo.user.UserDetailInfoDTO;
 import com.pojo.user.UserEntry;
+import com.pojo.utils.MongoUtils;
 import com.sys.exceptions.IllegalParamException;
 import com.sys.utils.AvatarUtils;
 import com.sys.utils.RespObj;
@@ -55,47 +56,34 @@ public class GroupController extends BaseController {
      * 1.创建环信群聊
      * 2.创建群聊组
      *
-     * @param request
      * @param userIds
      * @return
      * @throws Exception
      */
     @RequestMapping(value = "/create")
     @ResponseBody
-    public RespObj createGroup(HttpServletRequest request,
-                               @RequestParam(defaultValue = "", required = false) String userIds) throws Exception {
+    public RespObj createGroup(@RequestParam(defaultValue = "", required = false) String userIds) throws Exception {
         ObjectId owerId = getUserId();
-        List<ObjectId> userList = new ArrayList<ObjectId>();
-
-        String[] users = userIds.split(",");
-        for (String user : users) {
-            if (ObjectId.isValid(user)) {
-                userList.add(new ObjectId(user));
-            }
-        }
-
-        if (userList.contains(owerId)) {
-            userList.remove(owerId);
-        }
-
         //创建环信群聊
         String emChatId = emService.createEmGroup(owerId);
         if (emChatId == null) {
-            return RespObj.FAILD("环信创建失败");
+            return RespObj.FAILD("环信群组创建失败");
         }
         //创建组
         ObjectId groupId = groupService.createGroupWithoutCommunity(owerId, emChatId);
 
-        groupService.addMembers(groupId, userList);
+        List<ObjectId> userList = getMembersId(userIds);
 
-        for (ObjectId userId : userList) {
-            emService.addUserToGroup(emChatId, userId);
+        for (ObjectId personId : userList) {
+            if (!memberService.isGroupMember(groupId, personId)) {
+                if (emService.addUserToEmGroup(emChatId, personId)) {
+                    memberService.saveMember(personId, groupId);
+                }
+            }
         }
 
         groupService.updateHeadImage(groupId);
-
         groupService.updateGroupNameByMember(groupId);
-
         return RespObj.SUCCESS(groupService.findByObjectId(groupId));
     }
 
@@ -208,14 +196,28 @@ public class GroupController extends BaseController {
 
         ObjectId groupId = groupService.getGroupIdByChatId(emChatId);
         GroupDTO groupDTO = groupService.findByObjectId(groupId);
-        String[] userList = userIds.split(",");
-        List<String> userLists = new ArrayList<String>();
-        Collections.addAll(userLists, userList);
-        groupService.inviteMembers(emChatId, userLists);
+
+        List<ObjectId> userList = getMembersId(userIds);
+
+        for (ObjectId personId : userList) {
+            if (!memberService.isGroupMember(groupId, personId)) {
+                if (emService.addUserToEmGroup(emChatId, personId)) {
+                    if (memberService.isBeforeMember(groupId, personId)) {
+                        memberService.updateMember(groupId, personId, 0);
+                    } else {
+                        memberService.saveMember(personId, groupId);
+                    }
+
+                    if (groupDTO.isBindCommunity()) {
+                        communityService.setPartIncontentStatus(new ObjectId(groupDTO.getCommunityId()), personId, 0);
+                        communityService.pushToUser(new ObjectId(groupDTO.getCommunityId()), personId, 1);
+                    }
+                }
+            }
+        }
 
         //更新群聊头像
         groupService.updateHeadImage(groupId);
-
         if (groupDTO.getIsM() == 0) {
             groupService.updateGroupNameByMember(new ObjectId(groupDTO.getId()));
         }
@@ -236,9 +238,22 @@ public class GroupController extends BaseController {
 
         ObjectId groupId = groupService.getGroupIdByChatId(emChatId);
         GroupDTO groupDTO = groupService.findByObjectId(groupId);
-        List<String> userLists = new ArrayList<String>();
-        userLists.add(getUserId().toString());
-        groupService.inviteMembers(emChatId, userLists);
+
+        ObjectId userId = getUserId();
+        if (!memberService.isGroupMember(groupId, userId)) {
+            if (memberService.isBeforeMember(groupId, userId)) {
+                if (emService.addUserToEmGroup(emChatId, userId)) {
+
+                    memberService.updateMember(userId, groupId, 0);
+                    communityService.setPartIncontentStatus(new ObjectId(groupDTO.getCommunityId()), userId, 0);
+                }
+            } else {
+                if (emService.addUserToEmGroup(emChatId, userId)) {
+                    memberService.saveMember(userId, groupId, 0);
+                }
+            }
+
+        }
 
         //更新群聊头像
         groupService.updateHeadImage(groupId);
@@ -273,15 +288,21 @@ public class GroupController extends BaseController {
             return RespObj.FAILD("您没有这个权限");
         }
 
-        String[] userList = userIds.split(",");
+        List<ObjectId> userList = getMembersId(userIds);
 
-        for (String userEntryId : userList) {
+        if (userList.contains(userId)) {
+            userList.remove(userId);
+        }
 
-            groupService.quitMember(groupId, new ObjectId(userEntryId));
-
-            if (groupDTO.isBindCommunity()) {
-                if (StringUtils.isNotBlank(groupDTO.getCommunityId())) {
-                    communityService.pullFromUser(new ObjectId(groupDTO.getCommunityId()), new ObjectId(userEntryId));
+        for (ObjectId personId : userList) {
+            if (memberService.isGroupMember(groupId, personId)) {
+                if (emService.removeUserFromEmGroup(emChatId, personId)) {
+                    memberService.deleteMember(groupId, personId);
+                    //废除数据
+                    if (groupDTO.isBindCommunity()) {
+                        communityService.setPartIncontentStatus(new ObjectId(groupDTO.getCommunityId()), userId, 1);
+                        communityService.pullFromUser(new ObjectId(groupDTO.getCommunityId()), personId);
+                    }
                 }
             }
         }
@@ -298,7 +319,6 @@ public class GroupController extends BaseController {
     /**
      * 退出群聊
      *
-     * @param request
      * @param emChatId
      * @return
      */
@@ -320,37 +340,40 @@ public class GroupController extends BaseController {
                 EaseMobAPI.transferChatGroupOwner(emChatId, memberDTO.getUserId());
                 memberService.setHead(groupId, new ObjectId(memberDTO.getUserId()));
                 groupService.transferOwerId(groupId, new ObjectId(memberDTO.getUserId()));
-                groupService.quitMember(groupId, userId);
 
+                if (emService.removeUserFromEmGroup(emChatId, userId)) {
+                    memberService.deleteMember(groupId, userId);
+                }
                 if (groupDTO.isBindCommunity()) {
-                    if (StringUtils.isNotBlank(groupDTO.getCommunityId())) {
-                        communityService.pullFromUser(new ObjectId(groupDTO.getCommunityId()), userId);
-                    }
+                    communityService.setPartIncontentStatus(new ObjectId(groupDTO.getCommunityId()), userId, 1);
+                    communityService.pullFromUser(new ObjectId(groupDTO.getCommunityId()), userId);
+                    communityService.deleteCommunity(new ObjectId(groupDTO.getCommunityId()));
                 }
             }
 
             if (memberDTOs.size() == 1) {//只有一个人
                 EaseMobAPI.deleteChatGroup(emChatId);
-                groupService.quitMember(groupId, userId);
+                memberService.deleteMember(groupId, userId);
                 groupService.deleteGroup(groupId);
 
                 if (groupDTO.isBindCommunity()) {
-                    if (StringUtils.isNotBlank(groupDTO.getCommunityId())) {
-                        communityService.pullFromUser(new ObjectId(groupDTO.getCommunityId()), userId);
-
-                        communityService.deleteCommunity(new ObjectId(groupDTO.getCommunityId()));
-                    }
+                    communityService.setPartIncontentStatus(new ObjectId(groupDTO.getCommunityId()), userId, 1);
+                    communityService.pullFromUser(new ObjectId(groupDTO.getCommunityId()), userId);
+                    communityService.deleteCommunity(new ObjectId(groupDTO.getCommunityId()));
                 }
             }
 
         } else {
-            groupService.quitMember(groupId, userId);
 
-            if (groupDTO.isBindCommunity()) {
-                if (StringUtils.isNotBlank(groupDTO.getCommunityId())) {
+            if (emService.removeUserFromEmGroup(emChatId, userId)) {
+                memberService.deleteMember(groupId, userId);
+                if (groupDTO.isBindCommunity()) {
+                    communityService.setPartIncontentStatus(new ObjectId(groupDTO.getCommunityId()), userId, 1);
                     communityService.pullFromUser(new ObjectId(groupDTO.getCommunityId()), userId);
+                    communityService.deleteCommunity(new ObjectId(groupDTO.getCommunityId()));
                 }
             }
+
         }
 
         groupService.updateHeadImage(groupId);
@@ -510,15 +533,6 @@ public class GroupController extends BaseController {
         return RespObj.SUCCESS("操作成功！");
     }
 
-    private List<ObjectId> getMembersId(String memberId) {
-        String[] members = memberId.split(",");
-        List<ObjectId> objectIds = new ArrayList<ObjectId>();
-        for (String item : members) {
-            objectIds.add(new ObjectId(item));
-        }
-        return objectIds;
-    }
-
     /**
      * 取消 副群主
      *
@@ -644,6 +658,21 @@ public class GroupController extends BaseController {
         Map<String, Object> map = new HashMap<String, Object>();
         map.put("offlineCount", msgCount);
         return RespObj.SUCCESS(map);
+    }
+
+    /**
+     * 分隔
+     *
+     * @param userIds
+     * @return
+     */
+    private List<ObjectId> getMembersId(String userIds) {
+        String[] members = userIds.split(",");
+        List<ObjectId> objectIds = new ArrayList<ObjectId>();
+        for (String item : members) {
+            objectIds.add(new ObjectId(item));
+        }
+        return objectIds;
     }
 
 

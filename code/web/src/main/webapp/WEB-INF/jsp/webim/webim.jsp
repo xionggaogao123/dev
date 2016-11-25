@@ -15,6 +15,12 @@
             background: url("/static/images/web_im_bg.jpg") no-repeat center;
             background-size: cover;
         }
+
+        ::-webkit-scrollbar{width:12px;}
+        ::-webkit-scrollbar-track{background-color:#2E3238;}
+        ::-webkit-scrollbar-thumb{background-color:#414449;border-radius: 7px;}
+        ::-webkit-scrollbar-thumb:hover {background-color:#666}
+        ::-webkit-scrollbar-thumb:active {background-color:#666}
     </style>
 </head>
 <body>

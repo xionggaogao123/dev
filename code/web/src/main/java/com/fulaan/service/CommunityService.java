@@ -1150,10 +1150,6 @@ public class CommunityService {
         partInContentDao.pullImage(id, oldImageUrl);
     }
 
-    public void resetMineCommunityS(ObjectId userId, ObjectId communityId, int priory) {
-        mineCommunityDao.resetMineCommunitys(userId, communityId, priory);
-    }
-
     public PartInContentEntry findPartIncontById(ObjectId id) {
         return partInContentDao.find(id);
     }

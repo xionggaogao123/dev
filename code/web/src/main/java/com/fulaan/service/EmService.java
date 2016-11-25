@@ -34,12 +34,9 @@ public class EmService {
      * @param userId
      * @return
      */
-    public boolean addUserToGroup(String emChatId, ObjectId userId) {
+    public boolean addUserToEmGroup(String emChatId, ObjectId userId) {
         ResponseWrapper responseWrapper = EaseMobAPI.addSingleUserToChatGroup(emChatId, userId.toString());
-        if (responseWrapper.getResponseStatus() == 200) {
-            return true;
-        }
-        return false;
+        return responseWrapper.getResponseStatus() == 200;
     }
 
     /**
@@ -49,11 +46,8 @@ public class EmService {
      * @param userId
      * @return
      */
-    public boolean removeUserFromGroup(String emChatId, ObjectId userId) {
+    public boolean removeUserFromEmGroup(String emChatId, ObjectId userId) {
         ResponseWrapper responseWrapper = EaseMobAPI.removeSingleUserFromChatGroup(emChatId, userId.toString());
-        if (responseWrapper.getResponseStatus() == 200) {
-            return true;
-        }
-        return false;
+        return responseWrapper.getResponseStatus() == 200;
     }
 }

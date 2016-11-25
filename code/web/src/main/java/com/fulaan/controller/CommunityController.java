@@ -12,10 +12,7 @@ import com.fulaan.dto.*;
 import com.fulaan.pojo.CommunityMessage;
 import com.fulaan.pojo.PageModel;
 import com.fulaan.pojo.ProductModel;
-import com.fulaan.service.CommunityService;
-import com.fulaan.service.ConcernService;
-import com.fulaan.service.GroupService;
-import com.fulaan.service.MemberService;
+import com.fulaan.service.*;
 import com.fulaan.user.service.UserService;
 import com.fulaan.util.GetImage;
 import com.fulaan.util.QRUtils;
@@ -86,6 +83,8 @@ public class CommunityController extends BaseController {
     private ConcernService concernService;
     @Autowired
     private FriendService friendService;
+    @Autowired
+    private EmService emService;
 
     public static final String suffix = "/static/images/community/upload.png";
 
@@ -130,15 +129,15 @@ public class CommunityController extends BaseController {
         if (StringUtils.isNotBlank(userIds)) {
             GroupDTO groupDTO = groupService.findByObjectId(new ObjectId(communityDTO.getGroupId()));
             String[] userList = userIds.split(",");
-            List<String> userArray = new ArrayList<String>();
-            for (String userId : userList) {
-                userArray.add(userId);
-            }
 
             for (String userId : userList) {
-                communityService.pushToUser(communityId, new ObjectId(userId), 1);
+
+                if(emService.addUserToEmGroup(groupDTO.getEmChatId(),new ObjectId(userId))){
+                    memberService.saveMember(new ObjectId(userId),new ObjectId(groupDTO.getId()),0);
+                    communityService.pushToUser(communityId, new ObjectId(userId), 1);
+                }
+
             }
-            groupService.inviteMembers(groupDTO.getEmChatId(), userArray);
         }
 
         int memberCount = memberService.countMember(new ObjectId(communityDTO.getGroupId()));
@@ -175,12 +174,6 @@ public class CommunityController extends BaseController {
         }
         ObjectId uid = getUserId();
 
-        int count = communityService.countCommunityAmount(uid);
-        if (count > 10) {
-            CommunityDTO communityDTO = new CommunityDTO();
-            communityDTO.setErrorMsg("创建社区达到上限");
-            return RespObj.FAILD(communityDTO);
-        }
         ObjectId communityId = new ObjectId();
 
         String qrUrl = QRUtils.getCommunityQrUrl(communityId);
@@ -205,15 +198,15 @@ public class CommunityController extends BaseController {
         if (StringUtils.isNotBlank(userIds)) {
             GroupDTO groupDTO = groupService.findByObjectId(new ObjectId(communityDTO.getGroupId()));
             String[] userList = userIds.split(",");
-            List<String> userArray = new ArrayList<String>();
-            for (String userId : userList) {
-                userArray.add(userId);
-            }
 
             for (String userId : userList) {
-                communityService.pushToUser(communityId, new ObjectId(userId), 1);
+
+                if(emService.addUserToEmGroup(groupDTO.getEmChatId(),new ObjectId(userId))){
+                    memberService.saveMember(new ObjectId(userId),new ObjectId(groupDTO.getId()),0);
+                    communityService.pushToUser(communityId, new ObjectId(userId), 1);
+                }
+
             }
-            groupService.inviteMembers(groupDTO.getEmChatId(), userArray);
         }
 
         int memberCount = memberService.countMember(new ObjectId(communityDTO.getGroupId()));
@@ -588,6 +581,7 @@ public class CommunityController extends BaseController {
     public boolean joinCommunity(ObjectId userId, ObjectId communityId, int type) {
 
         ObjectId groupId = communityService.getGroupId(communityId);
+        GroupDTO groupDTO = groupService.findByObjectId(groupId);
         //type=1时，处理的是复兰社区
         if (type == 1) {
             if (memberService.isGroupMember(groupId, userId)) {
@@ -596,22 +590,26 @@ public class CommunityController extends BaseController {
         }
         //判断该用户是否曾经加入过该社区
         if (memberService.isBeforeMember(groupId, userId)) {
-            memberService.updateMember(groupId, userId, 0);
-            //设置先前该用户所发表的数据
-            communityService.setPartIncontentStatus(communityId, userId, 0);
+
+            if (emService.addUserToEmGroup(groupDTO.getEmChatId(), userId)) {
+                memberService.updateMember(groupId, userId, 0);
+                //设置先前该用户所发表的数据
+                communityService.setPartIncontentStatus(communityId, userId, 0);
+                communityService.pushToUser(communityId, userId, 1);
+            }
+
         } else {
-            //判断该用户是否加过该社区
-            if (memberService.isGroupMember(groupId, userId)) {
-                return false;
+
+            if (emService.addUserToEmGroup(groupDTO.getEmChatId(), userId)) {
+                memberService.saveMember(groupId, userId, 0);
+                communityService.pushToUser(communityId, userId, 1);
             }
         }
-        communityService.pushToUser(communityId, userId, 1);
-        groupService.joinGroup(groupId, userId);
         return true;
     }
 
     /**
-     * 加入社区但是不加入环信群组
+     * 加入社区但是不加入环信群组---这里只有复兰社区调用
      *
      * @param userId
      * @param communityId
@@ -633,7 +631,7 @@ public class CommunityController extends BaseController {
         } else {
             //新人
             communityService.pushToUser(communityId, userId, 1);
-            groupService.joinGroupWithoutEm(groupId, userId);
+            memberService.saveMember(groupId, userId, 0);
         }
         return true;
     }
@@ -659,13 +657,12 @@ public class CommunityController extends BaseController {
             return RespObj.FAILD("群主暂时无法退出");
         }
 
-        EaseMobAPI.removeSingleUserFromChatGroup(emChatId, userId.toString());
-
-        communityService.pullFromUser(communityId, userId);
-        memberService.deleteMember(groupId, userId);
-        groupService.quitMember(groupId, userId);
-        //设置先前该用户所发表的数据为废弃掉的
-        communityService.setPartIncontentStatus(communityId, userId, 1);
+        if (emService.removeUserFromEmGroup(emChatId, userId)) {
+            communityService.pullFromUser(communityId, userId);
+            memberService.deleteMember(groupId, userId);
+            //设置先前该用户所发表的数据为废弃掉的
+            communityService.setPartIncontentStatus(communityId, userId, 1);
+        }
         return RespObj.SUCCESS("操作成功!");
     }
 
@@ -1498,14 +1495,19 @@ public class CommunityController extends BaseController {
         List<ObjectId> userIdList = getMembersId(userIds);
 
         for (ObjectId userId : userIdList) {
-            if (!memberService.isGroupMember(groupId, userId)) {
+
+            if(!memberService.isGroupMember(groupId,userId)) {
                 if (memberService.isBeforeMember(groupId, userId)) {
-                    memberService.updateMember(groupId, userId, 0);
+
+                    if(emService.addUserToEmGroup(emChatId,userId)) {
+                        memberService.updateMember(groupId,userId,0);
+                    }
                 } else {
-                    memberService.saveMember(userId, groupId);
+                    if(emService.addUserToEmGroup(emChatId,userId)) {
+                        memberService.saveMember(userId, groupId);
+                    }
+
                 }
-                communityService.pushToUser(communityId, userId, 1);
-                groupService.inviteMember(groupId, emChatId, userId);
             }
         }
         return RespObj.SUCCESS("操作成功");
@@ -1882,35 +1884,13 @@ public class CommunityController extends BaseController {
         return model;
     }
 
-    @RequestMapping("/resetMyCommunitys")
-    @ResponseBody
-    public RespObj resetMyCommunitys() {
-
-        int cout = communityService.countMyCommunity(getUserId());
-
-        int pageSize = 10;
-        int totalPages;
-
-        if (cout % pageSize == 0) {
-            totalPages = cout / pageSize;
-        } else {
-            totalPages = (int) Math.floor(cout / pageSize) + 1;
-        }
-
-        for (int i = 1; i <= totalPages; i++) {
-            List<CommunityDTO> list = communityService.getCommunitys(getUserId(), i, pageSize);
-
-            for (CommunityDTO communityDTO : list) {
-
-                if (communityDTO.getName().endsWith("复兰社区")) {
-
-                }
-            }
-        }
-
-        return RespObj.SUCCESS("success");
-    }
-
+    /**
+     * 保存涂鸦图片 - web端
+     *
+     * @param request
+     * @return
+     * @throws Exception
+     */
     @RequestMapping("/saveEditedImage")
     @ResponseBody
     public RespObj saveEditedImage(HttpServletRequest request) throws Exception {
@@ -1936,6 +1916,25 @@ public class CommunityController extends BaseController {
         }
         return RespObj.SUCCESS;
     }
+
+    /**
+     * 保存涂鸦 - 图片
+     *
+     * @return
+     * @throws Exception
+     */
+    @RequestMapping("/saveTuYaImage")
+    @SessionNeedless
+    @ResponseBody
+    public RespObj saveEditedImage(@ObjectIdType ObjectId partInContentId, String oldImagePath, @RequestParam("file") MultipartFile multipartFile) throws Exception {
+
+        String fileKey = new ObjectId().toString() + ".jpg";
+        QiniuFileUtils.uploadFile(fileKey, multipartFile.getInputStream(), QiniuFileUtils.TYPE_IMAGE);
+        String newImagePath = QiniuFileUtils.getPath(QiniuFileUtils.TYPE_IMAGE, fileKey);
+        communityService.updateImage(partInContentId, newImagePath, oldImagePath);
+        return RespObj.SUCCESS("保存成功!");
+    }
+
 
     /**
      * 批阅

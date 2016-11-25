@@ -77,12 +77,7 @@ public class GroupController extends BaseController {
         for (ObjectId personId : userList) {
             if (!memberService.isGroupMember(groupId, personId)) {
                 if (emService.addUserToEmGroup(emChatId, personId)) {
-                    if (memberService.isBeforeMember(groupId, personId)) {
-                        memberService.updateMember(groupId, personId, 0);
-                    } else {
-                        memberService.saveMember(personId, groupId);
-                    }
-
+                    memberService.saveMember(personId, groupId);
                 }
             }
         }
@@ -223,7 +218,6 @@ public class GroupController extends BaseController {
 
         //更新群聊头像
         groupService.updateHeadImage(groupId);
-
         if (groupDTO.getIsM() == 0) {
             groupService.updateGroupNameByMember(new ObjectId(groupDTO.getId()));
         }
@@ -247,7 +241,6 @@ public class GroupController extends BaseController {
 
         ObjectId userId = getUserId();
         if (!memberService.isGroupMember(groupId, userId)) {
-
             if (memberService.isBeforeMember(groupId, userId)) {
                 if (emService.addUserToEmGroup(emChatId, userId)) {
 
@@ -351,11 +344,10 @@ public class GroupController extends BaseController {
                 if (emService.removeUserFromEmGroup(emChatId, userId)) {
                     memberService.deleteMember(groupId, userId);
                 }
-
                 if (groupDTO.isBindCommunity()) {
-                    if (StringUtils.isNotBlank(groupDTO.getCommunityId())) {
-                        communityService.pullFromUser(new ObjectId(groupDTO.getCommunityId()), userId);
-                    }
+                    communityService.setPartIncontentStatus(new ObjectId(groupDTO.getCommunityId()), userId, 1);
+                    communityService.pullFromUser(new ObjectId(groupDTO.getCommunityId()), userId);
+                    communityService.deleteCommunity(new ObjectId(groupDTO.getCommunityId()));
                 }
             }
 
@@ -365,10 +357,9 @@ public class GroupController extends BaseController {
                 groupService.deleteGroup(groupId);
 
                 if (groupDTO.isBindCommunity()) {
-                    if (StringUtils.isNotBlank(groupDTO.getCommunityId())) {
-                        communityService.pullFromUser(new ObjectId(groupDTO.getCommunityId()), userId);
-                        communityService.deleteCommunity(new ObjectId(groupDTO.getCommunityId()));
-                    }
+                    communityService.setPartIncontentStatus(new ObjectId(groupDTO.getCommunityId()), userId, 1);
+                    communityService.pullFromUser(new ObjectId(groupDTO.getCommunityId()), userId);
+                    communityService.deleteCommunity(new ObjectId(groupDTO.getCommunityId()));
                 }
             }
 
@@ -376,12 +367,10 @@ public class GroupController extends BaseController {
 
             if (emService.removeUserFromEmGroup(emChatId, userId)) {
                 memberService.deleteMember(groupId, userId);
-
                 if (groupDTO.isBindCommunity()) {
                     communityService.setPartIncontentStatus(new ObjectId(groupDTO.getCommunityId()), userId, 1);
-                    if (StringUtils.isNotBlank(groupDTO.getCommunityId())) {
-                        communityService.pullFromUser(new ObjectId(groupDTO.getCommunityId()), userId);
-                    }
+                    communityService.pullFromUser(new ObjectId(groupDTO.getCommunityId()), userId);
+                    communityService.deleteCommunity(new ObjectId(groupDTO.getCommunityId()));
                 }
             }
 

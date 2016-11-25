@@ -3,7 +3,7 @@ package com.fulaan.timedtask;
 import com.db.businessactivity.FieryActivityDao;
 import com.db.ebusiness.EVoucherDao;
 import com.db.microblog.MicroBlogDao;
-import com.fulaan_old.logreport.service.BuildLogReportService;
+import com.fulaan.logreport.service.BuildLogReportService;
 import com.pojo.app.RegionEntry;
 import com.pojo.emailmanage.EmailManageEntry;
 import com.pojo.forum.FLogEntry;

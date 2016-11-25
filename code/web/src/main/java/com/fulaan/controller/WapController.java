@@ -2,7 +2,7 @@ package com.fulaan.controller;
 
 import com.fulaan.annotation.SessionNeedless;
 import com.fulaan.cache.CacheHandler;
-import com.fulaan_old.school.SchoolService;
+import com.fulaan.school.SchoolService;
 import com.fulaan.user.service.UserService;
 import com.fulaan.user.util.QQLoginUtil;
 import com.pojo.app.SessionValue;

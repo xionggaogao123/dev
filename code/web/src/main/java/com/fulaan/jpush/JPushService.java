@@ -16,14 +16,14 @@ import java.io.IOException;
 public class JPushService {
 
 
-  public void sendMessage() {
-    CloseableHttpClient client = HttpClientBuilder.create().build();
-    HttpPost post = new HttpPost("");
-    post.addHeader("Authorization", "Basic N2Q0MzFlNDJkZmE2YTZkNjkzYWMyZDA0OjVlOTg3YWM2ZDJlMDRkOTVhOWQ4ZjBkMQ==");
-    try {
-      HttpResponse response = client.execute(post);
-    } catch (IOException e) {
-      e.printStackTrace();
+    public void sendMessage() {
+        CloseableHttpClient client = HttpClientBuilder.create().build();
+        HttpPost post = new HttpPost("");
+        post.addHeader("Authorization", "Basic N2Q0MzFlNDJkZmE2YTZkNjkzYWMyZDA0OjVlOTg3YWM2ZDJlMDRkOTVhOWQ4ZjBkMQ==");
+        try {
+            HttpResponse response = client.execute(post);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     }
-  }
 }

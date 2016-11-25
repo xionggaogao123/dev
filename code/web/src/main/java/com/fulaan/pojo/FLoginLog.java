@@ -23,7 +23,7 @@ public class FLoginLog {
         this.pf = pf;
     }
 
-    public FLoginLog(FLoginLogEntry loginLogEntry){
+    public FLoginLog(FLoginLogEntry loginLogEntry) {
         this.userName = loginLogEntry.getUserName();
         this.nickName = loginLogEntry.getUserNick();
         this.loginTime = loginLogEntry.getLoginTime();

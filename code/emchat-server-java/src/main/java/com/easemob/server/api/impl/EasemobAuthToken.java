@@ -11,22 +11,22 @@ import com.easemob.server.comm.constant.HTTPMethod;
 import com.easemob.server.comm.wrapper.HeaderWrapper;
 import com.easemob.server.comm.body.AuthTokenBody;
 
-public class EasemobAuthToken extends EasemobRestAPI implements AuthTokenAPI{
-	
-	public static final String ROOT_URI = "/token";
-	
-	private static final Logger log = LoggerFactory.getLogger(EasemobAuthToken.class);
-	
-	@Override
-	public String getResourceRootURI() {
-		return ROOT_URI;
-	}
+public class EasemobAuthToken extends EasemobRestAPI implements AuthTokenAPI {
 
-	public Object getAuthToken(String clientId, String clientSecret) {
-		String url = getContext().getSeriveURL() + getResourceRootURI();
-		BodyWrapper body = new AuthTokenBody(clientId, clientSecret);
-		HeaderWrapper header = HeaderHelper.getDefaultHeader();
-		
-		return getInvoker().sendRequest(HTTPMethod.METHOD_POST, url, header, body, null);
-	}
+    public static final String ROOT_URI = "/token";
+
+    private static final Logger log = LoggerFactory.getLogger(EasemobAuthToken.class);
+
+    @Override
+    public String getResourceRootURI() {
+        return ROOT_URI;
+    }
+
+    public Object getAuthToken(String clientId, String clientSecret) {
+        String url = getContext().getSeriveURL() + getResourceRootURI();
+        BodyWrapper body = new AuthTokenBody(clientId, clientSecret);
+        HeaderWrapper header = HeaderHelper.getDefaultHeader();
+
+        return getInvoker().sendRequest(HTTPMethod.METHOD_POST, url, header, body, null);
+    }
 }

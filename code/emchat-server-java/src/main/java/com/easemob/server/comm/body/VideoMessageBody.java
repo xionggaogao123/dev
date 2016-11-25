@@ -8,74 +8,74 @@ import com.easemob.server.comm.constant.MsgType;
 import java.util.Map;
 
 public class VideoMessageBody extends MessageBody {
-	private String url;
-	private String filename;
-	private String secret;
-	private Long length;
-	private Long fileLength;
-	private String thumb;
-	private String thumbSecret;
-	
-	public VideoMessageBody(String targetType, String[] targets, String from, Map<String, String> ext, String url, String filename, String secret, Long length, Long fileLength,
-							String thumb, String thumbSecret) {
-		super(targetType, targets, from, ext);
-		this.url = url;
-		this.filename = filename;
-		this.secret = secret;
-		this.length = length;
-		this.fileLength = fileLength;
-		this.thumb = thumb;
-		this.thumbSecret = thumbSecret;
+    private String url;
+    private String filename;
+    private String secret;
+    private Long length;
+    private Long fileLength;
+    private String thumb;
+    private String thumbSecret;
 
-	}
+    public VideoMessageBody(String targetType, String[] targets, String from, Map<String, String> ext, String url, String filename, String secret, Long length, Long fileLength,
+                            String thumb, String thumbSecret) {
+        super(targetType, targets, from, ext);
+        this.url = url;
+        this.filename = filename;
+        this.secret = secret;
+        this.length = length;
+        this.fileLength = fileLength;
+        this.thumb = thumb;
+        this.thumbSecret = thumbSecret;
 
-	public String getUrl() {
-		return url;
-	}
+    }
 
-	public String getFilename() {
-		return filename;
-	}
+    public String getUrl() {
+        return url;
+    }
 
-	public String getSecret() {
-		return secret;
-	}
+    public String getFilename() {
+        return filename;
+    }
 
-	public Long getLength() {
-		return length;
-	}
+    public String getSecret() {
+        return secret;
+    }
 
-	public Long getFileLength() {
-		return fileLength;
-	}
+    public Long getLength() {
+        return length;
+    }
 
-	public String getThumb() {
-		return thumb;
-	}
+    public Long getFileLength() {
+        return fileLength;
+    }
 
-	public String getThumbSecret() {
-		return thumbSecret;
-	}
+    public String getThumb() {
+        return thumb;
+    }
 
-	public ContainerNode<?> getBody() {
-		if(!this.isInit()){
-			this.getMsgBody().put("type", MsgType.VIDEO);
-			this.getMsgBody().put("url", url);
-			this.getMsgBody().put("filename", filename);
-			this.getMsgBody().put("secret", secret);
-			this.getMsgBody().put("length", length);
-			this.getMsgBody().put("file_length", fileLength);
-			this.getMsgBody().put("thumb", thumb);
-			this.getMsgBody().put("thumb_secret", thumbSecret);
+    public String getThumbSecret() {
+        return thumbSecret;
+    }
 
-			this.setInit(true);
-		}
+    public ContainerNode<?> getBody() {
+        if (!this.isInit()) {
+            this.getMsgBody().put("type", MsgType.VIDEO);
+            this.getMsgBody().put("url", url);
+            this.getMsgBody().put("filename", filename);
+            this.getMsgBody().put("secret", secret);
+            this.getMsgBody().put("length", length);
+            this.getMsgBody().put("file_length", fileLength);
+            this.getMsgBody().put("thumb", thumb);
+            this.getMsgBody().put("thumb_secret", thumbSecret);
 
-		return this.getMsgBody();
-	}
+            this.setInit(true);
+        }
 
-	@Override
-	public Boolean validate() {
-		return super.validate() && StringUtils.isNoneBlank(url) && StringUtils.isNoneBlank(filename) && StringUtils.isNoneBlank(secret) && null != length && null != fileLength && StringUtils.isNoneBlank(thumb) && StringUtils.isNoneBlank(thumbSecret);
-	}
+        return this.getMsgBody();
+    }
+
+    @Override
+    public Boolean validate() {
+        return super.validate() && StringUtils.isNoneBlank(url) && StringUtils.isNoneBlank(filename) && StringUtils.isNoneBlank(secret) && null != length && null != fileLength && StringUtils.isNoneBlank(thumb) && StringUtils.isNoneBlank(thumbSecret);
+    }
 }

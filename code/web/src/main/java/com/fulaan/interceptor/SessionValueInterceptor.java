@@ -3,7 +3,7 @@ package com.fulaan.interceptor;
 
 import com.fulaan.cache.CacheHandler;
 import com.fulaan.annotation.SessionNeedless;
-import com.fulaan_old.forum.service.FLogService;
+import com.fulaan.forum.service.FLogService;
 import com.pojo.app.SessionValue;
 import com.pojo.forum.FLogDTO;
 import com.sys.constants.Constant;

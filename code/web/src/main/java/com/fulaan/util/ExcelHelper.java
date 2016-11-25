@@ -17,16 +17,16 @@ import java.util.List;
  */
 public class ExcelHelper {
 
-    public static void writeToExcel(List<List<Object>> content,String path,String sheetName) throws IOException{
+    public static void writeToExcel(List<List<Object>> content, String path, String sheetName) throws IOException {
         //创建excel工作簿
         Workbook wb = new HSSFWorkbook();
         //创建第一个sheet（页），命名为 new sheet
         Sheet sheet = wb.createSheet(sheetName);
-        for(int i=0;i<content.size();i++){
+        for (int i = 0; i < content.size(); i++) {
             // 创建一行，在页sheet上
             Row row = sheet.createRow((short) i);
             List<Object> objects = content.get(i);
-            for(int j=0;j<objects.size();j++){
+            for (int j = 0; j < objects.size(); j++) {
                 Cell cell = row.createCell(j);
                 Object obj = objects.get(j);
                 if (obj instanceof Date)
@@ -37,7 +37,7 @@ public class ExcelHelper {
                     cell.setCellValue((String) obj);
                 else if (obj instanceof Double)
                     cell.setCellValue((Double) obj);
-                else if(obj instanceof Integer)
+                else if (obj instanceof Integer)
                     cell.setCellValue((Integer) obj);
                 else
                     cell.setCellValue(obj.toString());
@@ -53,7 +53,7 @@ public class ExcelHelper {
     }
 
 
-    public static void main(String[] args){
+    public static void main(String[] args) {
 
         List<List<Object>> list = new ArrayList<List<Object>>();
         List<Object> objects = new ArrayList<Object>();
@@ -63,7 +63,7 @@ public class ExcelHelper {
         list.add(objects);
 
         try {
-            writeToExcel(list,"E:\\hello.xls","点赞");
+            writeToExcel(list, "E:\\hello.xls", "点赞");
         } catch (IOException e) {
             e.printStackTrace();
         }

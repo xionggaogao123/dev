@@ -1,6 +1,6 @@
 package com.fulaan.user.util;
 
-import com.fulaan_old.utils.JsonUtil;
+import com.fulaan.utils.JsonUtil;
 import com.sys.utils.HttpClientUtils;
 import org.apache.log4j.Logger;
 

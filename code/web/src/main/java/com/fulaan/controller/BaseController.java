@@ -16,92 +16,92 @@ import java.io.File;
 
 public class BaseController {
 
-  public static final String SESSION_VALUE = "sessionValue";
+    public static final String SESSION_VALUE = "sessionValue";
 
-  protected SessionValue getSessionValue() {
-    HttpServletRequest request = getRequest();
-    return (SessionValue) request.getAttribute(SESSION_VALUE);
-  }
+    protected SessionValue getSessionValue() {
+        HttpServletRequest request = getRequest();
+        return (SessionValue) request.getAttribute(SESSION_VALUE);
+    }
 
-  protected ObjectId getUserId() {
-    SessionValue sv = getSessionValue();
-    if (null != sv && !sv.isEmpty()) {
-      return new ObjectId(sv.getId());
-    }
-    return null;
-  }
-
-  protected ObjectId getSchoolId() {
-    SessionValue sv = getSessionValue();
-    if (null != sv && !sv.isEmpty()) {
-      return new ObjectId(sv.getSchoolId());
-    }
-    return null;
-  }
-
-  /**
-   * 得到ip地址
-   *
-   * @return ip
-   */
-  protected String getIP() {
-    HttpServletRequest request = getRequest();
-    String ip = request.getHeader("x-forwarded-for");
-    if (ip == null || ip.length() == 0 || "unknown".equalsIgnoreCase(ip)) {
-      ip = request.getHeader("Proxy-Client-IP");
-    }
-    if (ip == null || ip.length() == 0 || "unknown".equalsIgnoreCase(ip)) {
-      ip = request.getHeader("WL-Proxy-Client-IP");
-    }
-    if (ip == null || ip.length() == 0 || "unknown".equalsIgnoreCase(ip)) {
-      ip = request.getRemoteAddr();
-    }
-    return ip;
-  }
-
-  protected String getCookieValue(String cookieName) {
-    HttpServletRequest request = getRequest();
-    Cookie[] cookies = request.getCookies();
-    if (null != cookies) {
-      for (Cookie cookie : cookies) {
-        if (cookie.getName().equals(cookieName)) {
-          return cookie.getValue();
+    protected ObjectId getUserId() {
+        SessionValue sv = getSessionValue();
+        if (null != sv && !sv.isEmpty()) {
+            return new ObjectId(sv.getId());
         }
-      }
+        return null;
     }
-    return Constant.EMPTY;
-  }
 
-  /**
-   * 获取平台
-   *
-   * @return Platform
-   */
-  protected Platform getPlatform() {
-    HttpServletRequest request = getRequest();
-    String client = request.getHeader("User-Agent");
-    Platform pf = Platform.PC;
-    if (client.contains("iPhone")) {
-      pf = Platform.IOS;
-    } else if (client.contains("Android")) {
-      pf = Platform.Android;
-    } else if (client.contains("iOS")) {
-      pf = Platform.IOS;
+    protected ObjectId getSchoolId() {
+        SessionValue sv = getSessionValue();
+        if (null != sv && !sv.isEmpty()) {
+            return new ObjectId(sv.getSchoolId());
+        }
+        return null;
     }
-    return pf;
-  }
 
-  protected HttpServletRequest getRequest() {
-    return ((ServletRequestAttributes) RequestContextHolder.getRequestAttributes()).getRequest();
-  }
+    /**
+     * 得到ip地址
+     *
+     * @return ip
+     */
+    protected String getIP() {
+        HttpServletRequest request = getRequest();
+        String ip = request.getHeader("x-forwarded-for");
+        if (ip == null || ip.length() == 0 || "unknown".equalsIgnoreCase(ip)) {
+            ip = request.getHeader("Proxy-Client-IP");
+        }
+        if (ip == null || ip.length() == 0 || "unknown".equalsIgnoreCase(ip)) {
+            ip = request.getHeader("WL-Proxy-Client-IP");
+        }
+        if (ip == null || ip.length() == 0 || "unknown".equalsIgnoreCase(ip)) {
+            ip = request.getRemoteAddr();
+        }
+        return ip;
+    }
 
-  protected HttpServletResponse getResponse() {
-    return ((ServletRequestAttributes) RequestContextHolder.getRequestAttributes()).getResponse();
-  }
+    protected String getCookieValue(String cookieName) {
+        HttpServletRequest request = getRequest();
+        Cookie[] cookies = request.getCookies();
+        if (null != cookies) {
+            for (Cookie cookie : cookies) {
+                if (cookie.getName().equals(cookieName)) {
+                    return cookie.getValue();
+                }
+            }
+        }
+        return Constant.EMPTY;
+    }
 
-  protected HttpSession getSession() {
-    return ((ServletRequestAttributes) RequestContextHolder.getRequestAttributes()).getRequest().getSession(true);
-  }
+    /**
+     * 获取平台
+     *
+     * @return Platform
+     */
+    protected Platform getPlatform() {
+        HttpServletRequest request = getRequest();
+        String client = request.getHeader("User-Agent");
+        Platform pf = Platform.PC;
+        if (client.contains("iPhone")) {
+            pf = Platform.IOS;
+        } else if (client.contains("Android")) {
+            pf = Platform.Android;
+        } else if (client.contains("iOS")) {
+            pf = Platform.IOS;
+        }
+        return pf;
+    }
+
+    protected HttpServletRequest getRequest() {
+        return ((ServletRequestAttributes) RequestContextHolder.getRequestAttributes()).getRequest();
+    }
+
+    protected HttpServletResponse getResponse() {
+        return ((ServletRequestAttributes) RequestContextHolder.getRequestAttributes()).getResponse();
+    }
+
+    protected HttpSession getSession() {
+        return ((ServletRequestAttributes) RequestContextHolder.getRequestAttributes()).getRequest().getSession(true);
+    }
 
 
 }

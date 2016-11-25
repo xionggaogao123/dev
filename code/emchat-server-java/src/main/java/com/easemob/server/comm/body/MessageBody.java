@@ -11,7 +11,7 @@ import java.util.Iterator;
 import java.util.Map;
 
 public abstract class MessageBody implements BodyWrapper {
-	private ObjectNode msgBody;
+    private ObjectNode msgBody;
 
     private String targetType;
 
@@ -56,26 +56,26 @@ public abstract class MessageBody implements BodyWrapper {
     }
 
     protected ObjectNode getMsgBody() {
-        if(null == this.msgBody) {
+        if (null == this.msgBody) {
             this.msgBody = JsonNodeFactory.instance.objectNode();
             msgBody.put("target_type", targetType);
             ArrayNode targetsNode = msgBody.putArray("target");
-            for (String target: targets ) {
+            for (String target : targets) {
                 targetsNode.add(target);
             }
             msgBody.put("from", from);
 
-            if(null != ext) {
+            if (null != ext) {
                 ObjectNode extNode = msgBody.putObject("ext");
                 Iterator<String> iter = ext.keySet().iterator();
-                while(iter.hasNext()){
+                while (iter.hasNext()) {
                     String key = iter.next();
                     extNode.put(key, ext.get(key));
                 }
             }
         }
-		return msgBody;
-	}
+        return msgBody;
+    }
 
     public Boolean validate() {
         return StringUtils.isNotBlank(targetType) && isValidTargetType() && ArrayUtils.isNotEmpty(targets) && StringUtils.isNotBlank(from);

@@ -44,12 +44,6 @@
     </mvc:annotation-driven>
 
     <!-- 扫描组件-->
-    <context:component-scan base-package="com.fulaan_old" use-default-filters="false">
-        <context:include-filter type="annotation" expression="org.springframework.stereotype.Controller"/>
-        <context:include-filter type="annotation" expression="org.springframework.stereotype.Service"/>
-    </context:component-scan>
-
-    <!-- 扫描组件-->
     <context:component-scan base-package="com.fulaan" use-default-filters="false">
         <context:include-filter type="annotation" expression="org.springframework.stereotype.Controller"/>
         <context:include-filter type="annotation" expression="org.springframework.stereotype.Service"/>
@@ -67,7 +61,7 @@
     </bean>
 
     <!-- Context Util -->
-    <bean class="com.fulaan_old.utils.SpringContextUtil" id="springContextUtil"/>
+    <bean class="com.fulaan.utils.SpringContextUtil" id="springContextUtil"/>
 
     <!-- 视图解析器 -->
     <bean id="internalResourceViewResolver" class="org.springframework.web.servlet.view.InternalResourceViewResolver">

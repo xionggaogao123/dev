@@ -28,7 +28,7 @@ public class HttpUtils {
         return entity.getContent();
     }
 
-    public static HttpResponse getCrawlHtml(HttpClient client, String personalUrl){
+    public static HttpResponse getCrawlHtml(HttpClient client, String personalUrl) {
         //获取响应文件，即html，采用get方法获取响应数据
         HttpGet getMethod = new HttpGet(personalUrl);
         HttpResponse response = new BasicHttpResponse(HttpVersion.HTTP_1_1,

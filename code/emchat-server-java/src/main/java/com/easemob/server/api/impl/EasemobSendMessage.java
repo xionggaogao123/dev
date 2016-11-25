@@ -16,7 +16,7 @@ public class EasemobSendMessage extends EasemobRestAPI implements SendMessageAPI
     }
 
     public Object sendMessage(Object payload) {
-        String  url = getContext().getSeriveURL() + getResourceRootURI();
+        String url = getContext().getSeriveURL() + getResourceRootURI();
         HeaderWrapper header = HeaderHelper.getDefaultHeaderWithToken();
         BodyWrapper body = (BodyWrapper) payload;
 

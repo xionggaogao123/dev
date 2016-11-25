@@ -6,7 +6,7 @@ import com.fasterxml.jackson.databind.node.ContainerNode;
 import com.fasterxml.jackson.databind.node.JsonNodeFactory;
 import org.apache.commons.lang3.StringUtils;
 
-public class ResetPasswordBody implements BodyWrapper{
+public class ResetPasswordBody implements BodyWrapper {
     private String newPassword;
 
     public ResetPasswordBody(String newPassword) {

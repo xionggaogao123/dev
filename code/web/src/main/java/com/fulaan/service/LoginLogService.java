@@ -1,6 +1,6 @@
 package com.fulaan.service;
 
-import com.fulaan.dao.LoginLogDao;
+import com.db.fcommunity.LoginLogDao;
 import com.fulaan.pojo.FLoginLog;
 import com.pojo.fcommunity.FLoginLogEntry;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -15,12 +15,12 @@ import java.util.List;
 @Service
 public class LoginLogService {
 
-    @Autowired private LoginLogDao loginLogDao;
+    private LoginLogDao loginLogDao = new LoginLogDao();
 
-    public List<FLoginLog> getLoginLog(long start,long end){
-        List<FLoginLogEntry> loginLogEntries = loginLogDao.getLoginLog(start,end);
+    public List<FLoginLog> getLoginLog(long start, long end) {
+        List<FLoginLogEntry> loginLogEntries = loginLogDao.getLoginLog(start, end);
         List<FLoginLog> loginLogs = new ArrayList<FLoginLog>();
-        for(FLoginLogEntry logEntry:loginLogEntries){
+        for (FLoginLogEntry logEntry : loginLogEntries) {
             FLoginLog loginLog = new FLoginLog(logEntry);
             loginLogs.add(loginLog);
         }

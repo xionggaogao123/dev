@@ -52,6 +52,11 @@ public class CommunityDao extends BaseDao {
         return dbObject == null ? null : new CommunityEntry(dbObject);
     }
 
+    /**
+     * 返回社区Entry
+     * @param emChatId 环信id
+     * @return
+     */
     public CommunityEntry findByEmChatId(String emChatId) {
         BasicDBObject query = new BasicDBObject("emid", emChatId);
         DBObject dbObject = findOne(MongoFacroty.getAppDB(), Constant.COLLECTION_FORUM_COMMUNITY, query);
@@ -219,19 +224,9 @@ public class CommunityDao extends BaseDao {
     }
 
 
-    public Boolean judgeCommunity(String communityName) {
-        DBObject dbo = getDBObject(communityName);
+    public Boolean isCommunityNameUsed(String communityName) {
+        CommunityEntry dbo = findByName(communityName);
         return dbo != null;
-    }
-
-    public DBObject getDBObject(String communityName) {
-        BasicDBObject query = new BasicDBObject().append("cmmn", communityName);
-        return findOne(MongoFacroty.getAppDB(), Constant.COLLECTION_FORUM_COMMUNITY, query, Constant.FIELDS);
-    }
-
-    public CommunityEntry getDefaultEntry(String communityName) {
-        DBObject dbo = getDBObject(communityName);
-        return dbo == null ? null : new CommunityEntry(dbo);
     }
 
     public boolean judgeCommunityName(String communityName, ObjectId id) {

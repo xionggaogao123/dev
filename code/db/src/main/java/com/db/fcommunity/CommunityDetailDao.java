@@ -32,10 +32,7 @@ public class CommunityDetailDao extends BaseDao {
         BasicDBObject query = new BasicDBObject()
                 .append(Constant.ID, id);
         DBObject dbo = findOne(MongoFacroty.getAppDB(), Constant.COLLECTION_FORUM_COMMUNITY_DETAIL, query);
-        if (dbo != null) {
-            return new CommunityDetailEntry(dbo);
-        }
-        return null;
+        return dbo == null ? null : new CommunityDetailEntry(dbo);
     }
 
     /**
@@ -69,11 +66,9 @@ public class CommunityDetailDao extends BaseDao {
      */
     public List<CommunityDetailEntry> getDetails(ObjectId communityId, int page, int pageSize, int order, int type) {
         List<CommunityDetailEntry> detailEntries = new ArrayList<CommunityDetailEntry>();
-        BasicDBObject query = new BasicDBObject()
-                .append("cmid", communityId)
+        BasicDBObject query = new BasicDBObject().append("cmid", communityId)
                 .append("cmty", type);
-        BasicDBObject orderBy = new BasicDBObject()
-                .append(Constant.ID, order);
+        BasicDBObject orderBy = new BasicDBObject().append(Constant.ID, order);
         List<DBObject> dbObjects = find(MongoFacroty.getAppDB(), Constant.COLLECTION_FORUM_COMMUNITY_DETAIL, query, Constant.FIELDS, orderBy, (page - 1) * pageSize, pageSize);
         for (DBObject dbo : dbObjects) {
             detailEntries.add(new CommunityDetailEntry(dbo));
@@ -110,10 +105,8 @@ public class CommunityDetailDao extends BaseDao {
      */
     public List<CommunityDetailEntry> getDetailsByUserId(List<ObjectId> commIds, int page, int pageSize, int order) {
         List<CommunityDetailEntry> detailEntries = new ArrayList<CommunityDetailEntry>();
-        BasicDBObject query = new BasicDBObject()
-                .append("cmid", new BasicDBObject(Constant.MONGO_IN, commIds));
-        BasicDBObject orderBy = new BasicDBObject()
-                .append(Constant.ID, order);
+        BasicDBObject query = new BasicDBObject().append("cmid", new BasicDBObject(Constant.MONGO_IN, commIds));
+        BasicDBObject orderBy = new BasicDBObject().append(Constant.ID, order);
         List<DBObject> dbObjects = find(MongoFacroty.getAppDB(), Constant.COLLECTION_FORUM_COMMUNITY_DETAIL, query, Constant.FIELDS, orderBy, (page - 1) * pageSize, pageSize);
         for (DBObject dbo : dbObjects) {
             detailEntries.add(new CommunityDetailEntry(dbo));
@@ -124,13 +117,11 @@ public class CommunityDetailDao extends BaseDao {
 
     public List<CommunityDetailEntry> getNewsByType(List<ObjectId> communityIds, CommunityDetailType type, int page, int pageSize, int order) {
         List<CommunityDetailEntry> detailEntries = new ArrayList<CommunityDetailEntry>();
-        BasicDBObject query = new BasicDBObject()
-                .append("cmty", type.getType());
+        BasicDBObject query = new BasicDBObject().append("cmty", type.getType());
         if (communityIds != null && communityIds.size() > 0) {
             query.append("cmid", new BasicDBObject(Constant.MONGO_IN, communityIds));
         }
-        BasicDBObject orderBy = new BasicDBObject()
-                .append(Constant.ID, order);
+        BasicDBObject orderBy = new BasicDBObject().append(Constant.ID, order);
         List<DBObject> dbObjects = find(MongoFacroty.getAppDB(), Constant.COLLECTION_FORUM_COMMUNITY_DETAIL, query, Constant.FIELDS, orderBy, (page - 1) * pageSize, pageSize);
         for (DBObject dbo : dbObjects) {
             detailEntries.add(new CommunityDetailEntry(dbo));
@@ -166,8 +157,7 @@ public class CommunityDetailDao extends BaseDao {
      * @return
      */
     public int count(ObjectId communityId, int type) {
-        BasicDBObject query = new BasicDBObject("cmid", communityId)
-                .append("cmty", type);
+        BasicDBObject query = new BasicDBObject("cmid", communityId).append("cmty", type);
         return count(MongoFacroty.getAppDB(), Constant.COLLECTION_FORUM_COMMUNITY_DETAIL, query);
     }
 
@@ -178,8 +168,7 @@ public class CommunityDetailDao extends BaseDao {
      * @return
      */
     public int count(List<ObjectId> commIds) {
-        BasicDBObject query = new BasicDBObject()
-                .append("cmid", new BasicDBObject(Constant.MONGO_IN, commIds));
+        BasicDBObject query = new BasicDBObject().append("cmid", new BasicDBObject(Constant.MONGO_IN, commIds));
         return count(MongoFacroty.getAppDB(), Constant.COLLECTION_FORUM_COMMUNITY_DETAIL, query);
     }
 
@@ -214,8 +203,7 @@ public class CommunityDetailDao extends BaseDao {
      * @param userId
      */
     public void deleteBaomingBeizhu(ObjectId communityDetailId, ObjectId userId) {
-        BasicDBObject query = new BasicDBObject()
-                .append("cdid", communityDetailId)
+        BasicDBObject query = new BasicDBObject().append("cdid", communityDetailId)
                 .append("uid", userId);
         remove(MongoFacroty.getAppDB(), Constant.COLLECTION_FORUM_PARTINCONTENT, query);
     }
@@ -226,8 +214,7 @@ public class CommunityDetailDao extends BaseDao {
      * @return
      */
     public int countRead(int type, ObjectId communityId, ObjectId userId) {
-        BasicDBObject query = new BasicDBObject()
-                .append("cmid", communityId)
+        BasicDBObject query = new BasicDBObject().append("cmid", communityId)
                 .append("unrl", userId)
                 .append("cmty", type);
         return count(MongoFacroty.getAppDB(), Constant.COLLECTION_FORUM_COMMUNITY_DETAIL, query);
@@ -240,10 +227,8 @@ public class CommunityDetailDao extends BaseDao {
      * @param userId
      */
     public void pushRead(ObjectId detailId, ObjectId userId) {
-        BasicDBObject query = new BasicDBObject()
-                .append(Constant.ID, detailId);
-        BasicDBObject update = new BasicDBObject()
-                .append(Constant.MONGO_PUSH, new BasicDBObject("unrl", userId));
+        BasicDBObject query = new BasicDBObject().append(Constant.ID, detailId);
+        BasicDBObject update = new BasicDBObject().append(Constant.MONGO_PUSH, new BasicDBObject("unrl", userId));
         update(MongoFacroty.getAppDB(), Constant.COLLECTION_FORUM_COMMUNITY_DETAIL, query, update);
     }
 

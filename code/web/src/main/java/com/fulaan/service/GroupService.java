@@ -134,7 +134,7 @@ public class GroupService {
         QiniuFileUtils.uploadFile(fileKey.toString() + ".jpg", new FileInputStream(outFile), QiniuFileUtils.TYPE_IMAGE);
         outFile.delete();
         String url = QiniuFileUtils.getPath(QiniuFileUtils.TYPE_IMAGE, fileKey.toString() + ".jpg");
-        groupDao.setHeadImage(groupId, url);
+        groupDao.updateHeadImage(groupId, url);
     }
 
     /**
@@ -235,7 +235,6 @@ public class GroupService {
      * 更新群聊名称-按照用户名,的方式拼接
      *
      * @param groupId
-     * @param emId
      */
     public void updateGroupNameByMember(ObjectId groupId) {
         List<MemberDTO> members = memberService.getMembers(groupId, 3);
@@ -339,7 +338,7 @@ public class GroupService {
      * @param owerId
      */
     public void transferOwerId(ObjectId groupId, ObjectId owerId) {
-        groupDao.setOwerId(groupId, owerId);
+        groupDao.updateOwerId(groupId, owerId);
     }
 
     /**

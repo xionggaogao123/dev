@@ -34,16 +34,12 @@ import java.util.*;
 @Service
 public class CommunityService {
 
-    private CommunityDao communityDao = new CommunityDao();
-    private CommunityDetailDao communityDetailDao = new CommunityDetailDao();
     @Autowired
     private UserService userService;
     @Autowired
     private MemberService memberService;
-    private MemberDao memberDao = new MemberDao();
     @Autowired
     private FriendService friendService;
-    private RemarkDao remarkDao = new RemarkDao();
     @Autowired
     private GroupService groupService;
     @Autowired
@@ -52,9 +48,13 @@ public class CommunityService {
     private EmService emService;
 
     private UserDao userDao = new UserDao();
+    private CommunityDao communityDao = new CommunityDao();
+    private CommunityDetailDao communityDetailDao = new CommunityDetailDao();
     private PartInContentDao partInContentDao = new PartInContentDao();
     private MineCommunityDao mineCommunityDao = new MineCommunityDao();
     private CommunitySeqDao seqDao = new CommunitySeqDao();
+    private RemarkDao remarkDao = new RemarkDao();
+    private MemberDao memberDao = new MemberDao();
 
     /**
      * 创建社区
@@ -1077,18 +1077,13 @@ public class CommunityService {
      * @return
      */
     public Boolean judgeCommunityCreate(String communityName) {
-        return communityDao.judgeCommunity(communityName);
+        return communityDao.isCommunityNameUsed(communityName);
     }
 
 
     public CommunityDTO getDefaultDto(String name) {
-        CommunityEntry communityEntry = communityDao.getDefaultEntry(name);
-        if (null != communityEntry) {
-            return new CommunityDTO(communityEntry);
-        } else {
-            return null;
-        }
-
+        CommunityEntry communityEntry = communityDao.findByName(name);
+        return communityEntry == null ? null : new CommunityDTO(communityEntry);
     }
 
 
@@ -1103,7 +1098,7 @@ public class CommunityService {
     }
 
 
-    public CommunityDTO getByGroupId(String emChatId) {
+    public CommunityDTO getByEmChatId(String emChatId) {
         CommunityEntry communityEntry = communityDao.findByEmChatId(emChatId);
         return communityEntry == null ? null : new CommunityDTO(communityEntry);
     }

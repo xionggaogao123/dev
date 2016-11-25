@@ -31,8 +31,4 @@ public class CommunitySeqDao extends BaseDao {
         return new CommunitySeqEntry(dbo);
     }
 
-    private int count(BasicDBObject query) {
-        return count(MongoFacroty.getAppDB(), getCollection(), query);
-    }
-
 }

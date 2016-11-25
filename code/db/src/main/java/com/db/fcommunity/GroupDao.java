@@ -82,7 +82,7 @@ public class GroupDao extends BaseDao {
      * @param groupId
      * @param url
      */
-    public void setHeadImage(ObjectId groupId, String url) {
+    public void updateHeadImage(ObjectId groupId, String url) {
         BasicDBObject query = new BasicDBObject(Constant.ID, groupId);
         BasicDBObject update = new BasicDBObject(Constant.MONGO_SET, new BasicDBObject("himg", url));
         update(MongoFacroty.getAppDB(), Constant.COLLECTION_FORUM_COMMUNITY_GROUP, query, update);
@@ -91,7 +91,7 @@ public class GroupDao extends BaseDao {
     /**
      * 更新群聊名称
      *
-     * @param _id
+     * @param groupId
      * @param name
      */
     public void updateGroupName(ObjectId groupId, String name) {
@@ -132,7 +132,7 @@ public class GroupDao extends BaseDao {
      * @param groupId
      * @param owerId
      */
-    public void setOwerId(ObjectId groupId, ObjectId owerId) {
+    public void updateOwerId(ObjectId groupId, ObjectId owerId) {
         BasicDBObject query = new BasicDBObject(Constant.ID, groupId);
         BasicDBObject update = new BasicDBObject(Constant.MONGO_SET, new BasicDBObject("grow", owerId));
         update(MongoFacroty.getAppDB(), Constant.COLLECTION_FORUM_COMMUNITY_GROUP, query, update);
@@ -166,7 +166,7 @@ public class GroupDao extends BaseDao {
      * 更新是否更改群聊名称
      *
      * @param groupId
-     * @param i
+     * @param ism
      */
     public void updateIsM(ObjectId groupId, int ism) {
         BasicDBObject query = new BasicDBObject(Constant.ID, groupId);

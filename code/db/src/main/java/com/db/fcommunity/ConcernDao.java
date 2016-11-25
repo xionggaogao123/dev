@@ -21,8 +21,7 @@ public class ConcernDao extends BaseDao {
     }
 
     public void pullConcern(ObjectId id) {
-        BasicDBObject dbObject = new BasicDBObject()
-                .append(Constant.ID, id);
+        BasicDBObject dbObject = new BasicDBObject(Constant.ID, id);
         BasicDBObject updateValue = new BasicDBObject()
                 .append(Constant.MONGO_SET, new BasicDBObject("r", 1));
         update(MongoFacroty.getAppDB(), Constant.COLLECTION_FORUM_CONCERNED, dbObject, updateValue);

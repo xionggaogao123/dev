@@ -83,17 +83,17 @@
         </property>
     </bean>
 
-    <!--&lt;!&ndash; SpringMVC上传文件时，需要配置MultipartResolver处理器 &ndash;&gt;-->
-    <!--<bean id="multipartResolver"-->
-          <!--class="org.springframework.web.multipart.commons.CommonsMultipartResolver">-->
-        <!--<property name="defaultEncoding" value="UTF-8" />-->
-        <!--&lt;!&ndash; 指定所上传文件的总大小不能超过200KB。注意maxUploadSize属性的限制不是针对单个文件，而是所有文件的容量之和 &ndash;&gt;-->
-        <!--<property name="maxUploadSize" value="54000000000" />-->
-        <!--&lt;!&ndash; max size of file in memory (in bytes) &ndash;&gt;-->
-        <!--&lt;!&ndash; oddly, the MultipartFile passed as a RequestParam gets set to null if I allow it to use memory-->
-            <!--rather than disk!  &ndash;&gt;-->
-        <!--<property name="maxInMemorySize" value="0" />-->
-    <!--</bean>-->
+    <!-- SpringMVC上传文件时，需要配置MultipartResolver处理器 -->
+    <bean id="multipartResolver"
+          class="org.springframework.web.multipart.commons.CommonsMultipartResolver">
+        <property name="defaultEncoding" value="UTF-8" />
+        <!-- 指定所上传文件的总大小不能超过200KB。注意maxUploadSize属性的限制不是针对单个文件，而是所有文件的容量之和 -->
+        <property name="maxUploadSize" value="54000000000" />
+        <!-- max size of file in memory (in bytes) -->
+        <!-- oddly, the MultipartFile passed as a RequestParam gets set to null if I allow it to use memory
+            rather than disk!  -->
+        <property name="maxInMemorySize" value="0" />
+    </bean>
 
     <!-- 拦截器 -->
     <mvc:interceptors>
@@ -125,10 +125,10 @@
           class="com.fulaan.interceptor.ExceptionResolver">
     </bean>
 
-    <!-- 文件上传 -->
-    <bean id="multipartResolver"
-          class="org.springframework.web.multipart.support.StandardServletMultipartResolver">
-    </bean>
+    <!--&lt;!&ndash; 文件上传 &ndash;&gt;-->
+    <!--<bean id="multipartResolver"-->
+          <!--class="org.springframework.web.multipart.support.StandardServletMultipartResolver">-->
+    <!--</bean>-->
 
     <!-- 定时任务 -->
     <bean id="taskJob"

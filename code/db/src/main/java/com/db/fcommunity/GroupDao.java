@@ -145,7 +145,7 @@ public class GroupDao extends BaseDao {
      */
     public void delete(ObjectId groupId) {
         BasicDBObject query = new BasicDBObject(Constant.ID, groupId);
-        BasicDBObject update = new BasicDBObject(Constant.MONGO_SET, new BasicDBObject("r", 1));
+        BasicDBObject update = new BasicDBObject(Constant.MONGO_SET, new BasicDBObject("r", Constant.ONE));
         update(MongoFacroty.getAppDB(), Constant.COLLECTION_FORUM_COMMUNITY_GROUP, query, update);
     }
 

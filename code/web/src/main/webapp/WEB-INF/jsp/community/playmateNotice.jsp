@@ -85,7 +85,7 @@
                 </script>
                 <div class="new-page-links"></div>
             </div>
-            <div class="com-left-s">
+            <div class="com-left-s" style="display: none;">
                 <div class="com-tit">系统消息</div>
                 <ul class="ul-sysNotice">
                     <li>
@@ -120,7 +120,7 @@
                         <em class="em1" <c:if test="${menuItem==1}">style="display: none"</c:if>></em><em class="em2" <c:if test="${menuItem==1}">style="display: block;"</c:if>></em><span onclick="window.location.href='/community/playmateNotice.do'">玩伴通知</span><button <c:if test="${menuItem==1}">class="btn2"</c:if>
                         <c:if test="${menuItem==2}">class="btn1"</c:if>>${friendApplyCount}</button>
                     </li>
-                    <li class="li4" style="cursor: pointer">
+                    <li class="li4" style="cursor: pointer;display: none;">
                         <em class="em1" ></em><em class="em2" ></em><span onclick="">我关注的人</span><button class="btn1"></button>
                     </li>
                 </ul>

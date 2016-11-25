@@ -21,6 +21,10 @@
     </div>
     <div class="f-cont">
         <div class="hd-nav">
+            <div class="login-mk-btn" style="display: none;">
+                <div class="d1"></div>
+                <div class="d2"></div>
+            </div>
             <span class="hd-green-cur">我的社区</span>
             <%--<span>找学习</span>--%>
             <%--<span>找玩伴</span>--%>

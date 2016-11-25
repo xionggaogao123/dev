@@ -1,6 +1,7 @@
 package com.fulaan.controller;
 
 import com.easemob.server.EaseMobAPI;
+import com.fulaan.annotation.SessionNeedless;
 import com.fulaan.dto.CommunityDTO;
 import com.fulaan.dto.CommunityDetailDTO;
 import com.fulaan.dto.GroupDTO;
@@ -651,11 +652,15 @@ public class GroupController extends BaseController {
      */
     @RequestMapping("/offlineMsgCount")
     @ResponseBody
+    @SessionNeedless
     public RespObj msgCount() {
-
+        Map<String, Object> map = new HashMap<String, Object>();
+        if(getUserId() == null) {
+            map.put("offlineCount", 0);
+            return RespObj.SUCCESS(map);
+        }
         ObjectId userId = getUserId();
         int msgCount = EaseMobAPI.getOfflineMsgCount(userId.toString());
-        Map<String, Object> map = new HashMap<String, Object>();
         map.put("offlineCount", msgCount);
         return RespObj.SUCCESS(map);
     }

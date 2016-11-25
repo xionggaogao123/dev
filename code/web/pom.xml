@@ -267,27 +267,27 @@
         </dependency>
         <!-- 苏州团队jar -->
 
-        <!-- sso -->
-        <dependency>
-            <groupId>cas-client-core</groupId>
-            <artifactId>cas-client-core</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>org.opensaml</groupId>
-            <artifactId>opensaml</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>org.apache.santuario</groupId>
-            <artifactId>xmlsec</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>avalon-framework</groupId>
-            <artifactId>avalon-framework</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>logkit</groupId>
-            <artifactId>logkit</artifactId>
-        </dependency>
+        <!--&lt;!&ndash; sso &ndash;&gt;-->
+        <!--<dependency>-->
+            <!--<groupId>cas-client-core</groupId>-->
+            <!--<artifactId>cas-client-core</artifactId>-->
+        <!--</dependency>-->
+        <!--<dependency>-->
+            <!--<groupId>org.opensaml</groupId>-->
+            <!--<artifactId>opensaml</artifactId>-->
+        <!--</dependency>-->
+        <!--<dependency>-->
+            <!--<groupId>org.apache.santuario</groupId>-->
+            <!--<artifactId>xmlsec</artifactId>-->
+        <!--</dependency>-->
+        <!--<dependency>-->
+            <!--<groupId>avalon-framework</groupId>-->
+            <!--<artifactId>avalon-framework</artifactId>-->
+        <!--</dependency>-->
+        <!--<dependency>-->
+            <!--<groupId>logkit</groupId>-->
+            <!--<artifactId>logkit</artifactId>-->
+        <!--</dependency>-->
         <!-- sso -->
 
         <!-- phprpc -->
@@ -346,22 +346,6 @@
             <artifactId>pdfbox</artifactId>
             <version>2.0.3</version>
         </dependency>
-
-        <!--<dependency>-->
-            <!--<groupId>com.hope.cloud</groupId>  &lt;!&ndash;自定义&ndash;&gt;-->
-            <!--<artifactId>cloud</artifactId>    &lt;!&ndash;自定义&ndash;&gt;-->
-            <!--<version>1.0</version> &lt;!&ndash;自定义&ndash;&gt;-->
-            <!--<scope>system</scope>-->
-            <!--<systemPath>${basedir}/src/main/webapp/WEB-INF/lib/words.jar</systemPath> &lt;!&ndash;项目根目录下的lib文件夹下&ndash;&gt;-->
-        <!--</dependency>-->
-
-        <!--<dependency>-->
-            <!--<groupId>com.hope.cloud2</groupId>  &lt;!&ndash;自定义&ndash;&gt;-->
-            <!--<artifactId>apose</artifactId>    &lt;!&ndash;自定义&ndash;&gt;-->
-            <!--<version>1.0</version> &lt;!&ndash;自定义&ndash;&gt;-->
-            <!--<scope>system</scope>-->
-            <!--<systemPath>${basedir}/src/main/webapp/WEB-INF/lib/aspose.pdf-11.0.0.jar</systemPath> &lt;!&ndash;项目根目录下的lib文件夹下&ndash;&gt;-->
-        <!--</dependency>-->
 
         <!-- 解析xml -->
         <dependency>

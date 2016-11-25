@@ -150,7 +150,7 @@ public class CommunityService {
 
     public void generateSeq() {
 
-        for (int i = 100000; i < 150000; i++) {
+        for (int i = 150000; i < 200000; i++) {
             CommunitySeqEntry entry = new CommunitySeqEntry(1, i);
             seqDao.save(entry);
         }

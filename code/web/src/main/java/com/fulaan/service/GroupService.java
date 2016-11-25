@@ -37,10 +37,10 @@ public class GroupService {
     private GroupDao groupDao = new GroupDao();
     private MemberDao memberDao = new MemberDao();
 
-    public ObjectId createGroupWithCommunity(ObjectId commid, ObjectId owerId, String emChatId, String name,
+    public ObjectId createGroupWithCommunity(ObjectId communityId, ObjectId owerId, String emChatId, String name,
                                              String desc, String qrUrl) throws Exception {
         ObjectId groupId = new ObjectId();
-        GroupEntry group = new GroupEntry(groupId, commid, owerId, qrUrl, emChatId, name, desc);
+        GroupEntry group = new GroupEntry(groupId, communityId, owerId, qrUrl, emChatId, name, desc);
         groupDao.add(group);
         memberService.saveMember(owerId, groupId, 2);
         return groupId;

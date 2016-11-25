@@ -1729,7 +1729,7 @@ public class UserDao extends BaseDao {
     BasicDBObject query =new BasicDBObject()
             .append(Constant.ID,uid);
     BasicDBObject update=new BasicDBObject(Constant.MONGO_PUSH,new BasicDBObject("ustg",userTagEntry.getBaseEntry()));
-    update(getDB(),getCollection(),query,update);
+    update(MongoFacroty.getAppDB(),getCollection(),query,update);
   }
 
   public void pullUserTag(ObjectId uid,int code){
@@ -1737,7 +1737,7 @@ public class UserDao extends BaseDao {
             .append(Constant.ID,uid);
     BasicDBObject update=new BasicDBObject()
             .append(Constant.MONGO_PULL,new BasicDBObject("ustg",new BasicDBObject("co",code)));
-    update(getDB(),getCollection(),query,update);
+    update(MongoFacroty.getAppDB(),getCollection(),query,update);
   }
 
   /**

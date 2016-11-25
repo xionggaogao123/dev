@@ -1,6 +1,7 @@
 package com.db.fcommunity;
 
 import com.db.base.BaseDao;
+import com.db.factory.MongoFacroty;
 import com.mongodb.BasicDBObject;
 import com.mongodb.DBObject;
 import com.pojo.fcommunity.GroupAnnounceEntry;
@@ -16,14 +17,14 @@ import java.util.List;
 public class GroupAnnounceDao extends BaseDao {
 
     public void save(GroupAnnounceEntry entry) {
-        save(getDB(), Constant.COLLECTION_FORUM_GROUPANNOUNCE, entry.getBaseEntry());
+        save(MongoFacroty.getAppDB(), Constant.COLLECTION_FORUM_GROUPANNOUNCE, entry.getBaseEntry());
     }
 
     public GroupAnnounceEntry getEarlyOne(ObjectId groupId) {
         BasicDBObject query = new BasicDBObject()
                 .append("grid", groupId);
         BasicDBObject sort = new BasicDBObject(Constant.ID, -1);
-        List<DBObject> dbos = find(getDB(), Constant.COLLECTION_FORUM_GROUPANNOUNCE, query, Constant.FIELDS, sort, 0, 1);
+        List<DBObject> dbos = find(MongoFacroty.getAppDB(), Constant.COLLECTION_FORUM_GROUPANNOUNCE, query, Constant.FIELDS, sort, 0, 1);
         if (dbos != null && dbos.size() > 0) {
             return new GroupAnnounceEntry(dbos.get(0));
         }
@@ -36,7 +37,7 @@ public class GroupAnnounceDao extends BaseDao {
                 .append("grid", groupId);
         BasicDBObject orderBy = new BasicDBObject()
                 .append(Constant.ID, -1);
-        List<DBObject> dbObjects = find(getDB(), Constant.COLLECTION_FORUM_GROUPANNOUNCE, query, Constant.FIELDS, orderBy, (page - 1) * paeSize, paeSize);
+        List<DBObject> dbObjects = find(MongoFacroty.getAppDB(), Constant.COLLECTION_FORUM_GROUPANNOUNCE, query, Constant.FIELDS, orderBy, (page - 1) * paeSize, paeSize);
         for (DBObject dbo : dbObjects) {
             groupAnnounceEntries.add(new GroupAnnounceEntry(dbo));
         }
@@ -47,7 +48,7 @@ public class GroupAnnounceDao extends BaseDao {
         BasicDBObject query = new BasicDBObject()
                 .append("grid", groupId)
                 .append("r", 0);
-        return count(getDB(), Constant.COLLECTION_FORUM_GROUPANNOUNCE, query);
+        return count(MongoFacroty.getAppDB(), Constant.COLLECTION_FORUM_GROUPANNOUNCE, query);
     }
 
 

@@ -1,6 +1,7 @@
 package com.db.fcommunity;
 
 import com.db.base.BaseDao;
+import com.db.factory.MongoFacroty;
 import com.mongodb.BasicDBObject;
 import com.mongodb.DBObject;
 import com.pojo.fcommunity.FLoginLogEntry;
@@ -20,7 +21,7 @@ public class LoginLogDao extends BaseDao {
 
         BasicDBObject query = new BasicDBObject()
                 .append("ti", new BasicDBObject(Constant.MONGO_LTE, end).append(Constant.MONGO_GTE, start));
-        List<DBObject> list = find(getDB(), getCollection(), query, Constant.FIELDS);
+        List<DBObject> list = find(MongoFacroty.getAppDB(), getCollection(), query, Constant.FIELDS);
         List<FLoginLogEntry> loginLogEntries = new ArrayList<FLoginLogEntry>();
         for (DBObject dbo : list) {
             loginLogEntries.add(new FLoginLogEntry(dbo));
@@ -33,7 +34,7 @@ public class LoginLogDao extends BaseDao {
     }
 
     public void save(FLoginLogEntry entry) {
-        save(getDB(), getCollection(), entry.getBaseEntry());
+        save(MongoFacroty.getAppDB(), getCollection(), entry.getBaseEntry());
     }
 
 }

@@ -1,6 +1,7 @@
 package com.db.fcommunity;
 
 import com.db.base.BaseDao;
+import com.db.factory.MongoFacroty;
 import com.mongodb.BasicDBObject;
 import com.mongodb.DBObject;
 import com.pojo.fcommunity.MemberEntry;
@@ -18,12 +19,9 @@ import java.util.Map;
  */
 public class MemberDao extends BaseDao {
 
-    private String getCollection() {
-        return Constant.COLLECTION_FORUM_COMMUNITY_MEMBER;
-    }
 
     public void save(MemberEntry entry) {
-        save(getDB(), getCollection(), entry.getBaseEntry());
+        save(MongoFacroty.getAppDB(), Constant.COLLECTION_FORUM_COMMUNITY_MEMBER, entry.getBaseEntry());
     }
 
     /**
@@ -38,7 +36,7 @@ public class MemberDao extends BaseDao {
         BasicDBObject query = new BasicDBObject("grid", grid).append("r", Constant.ZERO);
         BasicDBObject orderBy = new BasicDBObject("rl", Constant.DESC).append(Constant.ID, Constant.DESC);
         List<MemberEntry> memberEntries = new ArrayList<MemberEntry>();
-        List<DBObject> dbObjects = find(getDB(), getCollection(), query, Constant.FIELDS, orderBy, (page - Constant.ONE) * pageSize, pageSize);
+        List<DBObject> dbObjects = find(MongoFacroty.getAppDB(), Constant.COLLECTION_FORUM_COMMUNITY_MEMBER, query, Constant.FIELDS, orderBy, (page - Constant.ONE) * pageSize, pageSize);
         for (DBObject dbo : dbObjects) {
             memberEntries.add(new MemberEntry(dbo));
         }
@@ -55,7 +53,7 @@ public class MemberDao extends BaseDao {
         BasicDBObject query = new BasicDBObject("grid", grid).append("r", Constant.ZERO);
         BasicDBObject orderBy = new BasicDBObject("rl", Constant.DESC).append(Constant.ID, Constant.DESC);
         List<MemberEntry> memberEntries = new ArrayList<MemberEntry>();
-        List<DBObject> dbObjects = find(getDB(), getCollection(), query, Constant.FIELDS, orderBy, Constant.ZERO, count);
+        List<DBObject> dbObjects = find(MongoFacroty.getAppDB(), Constant.COLLECTION_FORUM_COMMUNITY_MEMBER, query, Constant.FIELDS, orderBy, Constant.ZERO, count);
         for (DBObject dbo : dbObjects) {
             memberEntries.add(new MemberEntry(dbo));
         }
@@ -70,7 +68,7 @@ public class MemberDao extends BaseDao {
      */
     public int countMember(ObjectId grid) {
         BasicDBObject query = new BasicDBObject("grid", grid).append("r", Constant.ZERO);
-        return count(getDB(), getCollection(), query);
+        return count(MongoFacroty.getAppDB(), Constant.COLLECTION_FORUM_COMMUNITY_MEMBER, query);
     }
 
     /**
@@ -83,7 +81,7 @@ public class MemberDao extends BaseDao {
     public void updateSetting(ObjectId userId, ObjectId groupId, String nickName) {
         BasicDBObject query = new BasicDBObject("uid", userId).append("cmid", groupId);
         BasicDBObject update = new BasicDBObject().append(Constant.MONGO_SET, new BasicDBObject("nk", nickName));
-        update(getDB(), getCollection(), query, update);
+        update(MongoFacroty.getAppDB(), Constant.COLLECTION_FORUM_COMMUNITY_MEMBER, query, update);
     }
 
     /**
@@ -99,7 +97,7 @@ public class MemberDao extends BaseDao {
                 .append("cmid", groupId);
         BasicDBObject update = new BasicDBObject()
                 .append(Constant.MONGO_SET, new BasicDBObject("st", status));
-        update(getDB(), getCollection(), query, update);
+        update(MongoFacroty.getAppDB(), Constant.COLLECTION_FORUM_COMMUNITY_MEMBER, query, update);
     }
 
     /**
@@ -118,7 +116,7 @@ public class MemberDao extends BaseDao {
 
         BasicDBObject update = new BasicDBObject()
                 .append(Constant.MONGO_SET, updateValue);
-        update(getDB(), getCollection(), query, update);
+        update(MongoFacroty.getAppDB(), Constant.COLLECTION_FORUM_COMMUNITY_MEMBER, query, update);
     }
 
     /**
@@ -135,7 +133,7 @@ public class MemberDao extends BaseDao {
                 .append("rl", 0);
         BasicDBObject update = new BasicDBObject()
                 .append(Constant.MONGO_SET, updateValue);
-        update(getDB(), getCollection(), query, update);
+        update(MongoFacroty.getAppDB(), Constant.COLLECTION_FORUM_COMMUNITY_MEMBER, query, update);
     }
 
     /**
@@ -149,7 +147,7 @@ public class MemberDao extends BaseDao {
                 .append(Constant.ID, new BasicDBObject(Constant.MONGO_IN, membersId));
         BasicDBObject updateValue = new BasicDBObject()
                 .append(Constant.MONGO_SET, new BasicDBObject("rl", role));
-        update(getDB(), getCollection(), query, updateValue);
+        update(MongoFacroty.getAppDB(), Constant.COLLECTION_FORUM_COMMUNITY_MEMBER, query, updateValue);
     }
 
     /**
@@ -165,7 +163,7 @@ public class MemberDao extends BaseDao {
                 .append("r", 0);
         BasicDBObject updateValue = new BasicDBObject()
                 .append(Constant.MONGO_SET, new BasicDBObject("rl", 1));
-        update(getDB(), getCollection(), query, updateValue);
+        update(MongoFacroty.getAppDB(), Constant.COLLECTION_FORUM_COMMUNITY_MEMBER, query, updateValue);
     }
 
     /**
@@ -181,7 +179,7 @@ public class MemberDao extends BaseDao {
                 .append("r", 0);
         BasicDBObject updateValue = new BasicDBObject()
                 .append(Constant.MONGO_SET, new BasicDBObject("rl", 1));
-        update(getDB(), getCollection(), query, updateValue);
+        update(MongoFacroty.getAppDB(), Constant.COLLECTION_FORUM_COMMUNITY_MEMBER, query, updateValue);
     }
 
     /**
@@ -197,7 +195,7 @@ public class MemberDao extends BaseDao {
                 .append("r", 0);
         BasicDBObject updateValue = new BasicDBObject()
                 .append(Constant.MONGO_SET, new BasicDBObject("rl", 0));
-        update(getDB(), getCollection(), query, updateValue);
+        update(MongoFacroty.getAppDB(), Constant.COLLECTION_FORUM_COMMUNITY_MEMBER, query, updateValue);
     }
 
     /**
@@ -213,7 +211,7 @@ public class MemberDao extends BaseDao {
                 .append("r", 0);
         BasicDBObject updateValue = new BasicDBObject()
                 .append(Constant.MONGO_SET, new BasicDBObject("rl", 2));
-        update(getDB(), getCollection(), query, updateValue);
+        update(MongoFacroty.getAppDB(), Constant.COLLECTION_FORUM_COMMUNITY_MEMBER, query, updateValue);
     }
 
     /**
@@ -227,7 +225,7 @@ public class MemberDao extends BaseDao {
                 .append("grid", groupId)
                 .append("rl", 1)
                 .append("r", 0);
-        return count(getDB(), getCollection(), query);
+        return count(MongoFacroty.getAppDB(), Constant.COLLECTION_FORUM_COMMUNITY_MEMBER, query);
     }
 
     /**
@@ -242,7 +240,7 @@ public class MemberDao extends BaseDao {
                 .append("grid", groupId)
                 .append("rl", 1)
                 .append("r", 0);
-        List<DBObject> dbos = find(getDB(), getCollection(), query);
+        List<DBObject> dbos = find(MongoFacroty.getAppDB(), Constant.COLLECTION_FORUM_COMMUNITY_MEMBER, query);
         for (DBObject dbo : dbos) {
             members.add(new MemberEntry(dbo));
         }
@@ -261,7 +259,7 @@ public class MemberDao extends BaseDao {
                 .append("grid", groupId)
                 .append("uid", userId)
                 .append("r", 0);
-        return count(getDB(), getCollection(), query) == 1;
+        return count(MongoFacroty.getAppDB(), Constant.COLLECTION_FORUM_COMMUNITY_MEMBER, query) == 1;
     }
 
 
@@ -278,7 +276,7 @@ public class MemberDao extends BaseDao {
                 .append(Constant.MONGO_IN, new BasicDBObject("grid", groupIds))
                 .append("uid", userId)
                 .append("r", 0);
-        List<DBObject> list = find(getDB(), getCollection(), query, Constant.FIELDS);
+        List<DBObject> list = find(MongoFacroty.getAppDB(), Constant.COLLECTION_FORUM_COMMUNITY_MEMBER, query, Constant.FIELDS);
         if (null != list && !list.isEmpty()) {
             MemberEntry memberEntry;
             for (DBObject dbo : list) {
@@ -300,7 +298,7 @@ public class MemberDao extends BaseDao {
                 .append("r", remove);
         BasicDBObject update = new BasicDBObject()
                 .append(Constant.MONGO_SET, updateValue);
-        update(getDB(), getCollection(), query, update);
+        update(MongoFacroty.getAppDB(), Constant.COLLECTION_FORUM_COMMUNITY_MEMBER, query, update);
     }
 
     /**
@@ -310,7 +308,7 @@ public class MemberDao extends BaseDao {
         BasicDBObject query = new BasicDBObject()
                 .append("grid", groupId)
                 .append("uid", userId);
-        return count(getDB(), getCollection(), query) == 1;
+        return count(MongoFacroty.getAppDB(), Constant.COLLECTION_FORUM_COMMUNITY_MEMBER, query) == 1;
     }
 
 
@@ -328,7 +326,7 @@ public class MemberDao extends BaseDao {
         BasicDBObject query = new BasicDBObject().append("grid", id)
                 .append("rl", new BasicDBObject(Constant.MONGO_IN, list))
                 .append("r", 0);
-        List<DBObject> dbos = find(getDB(), getCollection(), query);
+        List<DBObject> dbos = find(MongoFacroty.getAppDB(), Constant.COLLECTION_FORUM_COMMUNITY_MEMBER, query);
         for (DBObject dbo : dbos) {
             members.add(new MemberEntry(dbo));
         }
@@ -344,7 +342,7 @@ public class MemberDao extends BaseDao {
      */
     public MemberEntry getUser(ObjectId groupId, ObjectId userId) {
         BasicDBObject query = new BasicDBObject("grid", groupId).append("uid", userId).append("r", 0);
-        DBObject dbo = findOne(getDB(), getCollection(), query);
+        DBObject dbo = findOne(MongoFacroty.getAppDB(), Constant.COLLECTION_FORUM_COMMUNITY_MEMBER, query);
         return dbo == null ? null : new MemberEntry(dbo);
     }
 
@@ -362,7 +360,7 @@ public class MemberDao extends BaseDao {
                 .append("r", 0);
         BasicDBObject field = new BasicDBObject()
                 .append("rl", 1);
-        DBObject dbo = findOne(getDB(), getCollection(), query, field);
+        DBObject dbo = findOne(MongoFacroty.getAppDB(), Constant.COLLECTION_FORUM_COMMUNITY_MEMBER, query, field);
         if (dbo != null) {
             int role = (Integer) dbo.get("rl");
             return role >= 1;
@@ -382,7 +380,7 @@ public class MemberDao extends BaseDao {
                 .append("uid", userId)
                 .append("rl", 2)
                 .append("r", 0);
-        return count(getDB(), getCollection(), query) == Constant.ONE;
+        return count(MongoFacroty.getAppDB(), Constant.COLLECTION_FORUM_COMMUNITY_MEMBER, query) == Constant.ONE;
     }
 
     /**
@@ -397,7 +395,7 @@ public class MemberDao extends BaseDao {
                 .append("uid", userId)
                 .append("rl", 1)
                 .append("r", 0);
-        return count(getDB(), getCollection(), query) == Constant.ONE;
+        return count(MongoFacroty.getAppDB(), Constant.COLLECTION_FORUM_COMMUNITY_MEMBER, query) == Constant.ONE;
     }
 
 
@@ -415,7 +413,7 @@ public class MemberDao extends BaseDao {
                 .append("r", 0);
         BasicDBObject field = new BasicDBObject()
                 .append("uid", 1);
-        List<DBObject> dbos = find(getDB(), getCollection(), query, field);
+        List<DBObject> dbos = find(MongoFacroty.getAppDB(), Constant.COLLECTION_FORUM_COMMUNITY_MEMBER, query, field);
         for (DBObject dbo : dbos) {
             userIds.add((ObjectId) dbo.get("uid"));
         }
@@ -433,7 +431,7 @@ public class MemberDao extends BaseDao {
         BasicDBObject query = new BasicDBObject("grid", groupId).append("uid", userId).append("r", 0);
         BasicDBObject update = new BasicDBObject()
                 .append(Constant.MONGO_SET, new BasicDBObject("nk", nickName));
-        update(getDB(), getCollection(), query, update);
+        update(MongoFacroty.getAppDB(), Constant.COLLECTION_FORUM_COMMUNITY_MEMBER, query, update);
     }
 
     /**
@@ -447,7 +445,7 @@ public class MemberDao extends BaseDao {
         BasicDBObject query = new BasicDBObject("grid", groupId).append("uid", userId).append("r", 0);
         BasicDBObject update = new BasicDBObject()
                 .append(Constant.MONGO_SET, new BasicDBObject("st", status));
-        update(getDB(), getCollection(), query, update);
+        update(MongoFacroty.getAppDB(), Constant.COLLECTION_FORUM_COMMUNITY_MEMBER, query, update);
     }
 
     /**
@@ -460,7 +458,7 @@ public class MemberDao extends BaseDao {
         BasicDBObject query = new BasicDBObject().append("grid", groupId).append("r", 0);
         BasicDBObject orderBy = new BasicDBObject().append("rl", -1).append(Constant.ID, -1);
         List<MemberEntry> memberEntries = new ArrayList<MemberEntry>();
-        List<DBObject> dbObjects = find(getDB(), getCollection(), query, Constant.FIELDS, orderBy);
+        List<DBObject> dbObjects = find(MongoFacroty.getAppDB(), Constant.COLLECTION_FORUM_COMMUNITY_MEMBER, query, Constant.FIELDS, orderBy);
         for (DBObject dbo : dbObjects) {
             memberEntries.add(new MemberEntry(dbo));
         }
@@ -475,7 +473,7 @@ public class MemberDao extends BaseDao {
      */
     public MemberEntry getHead(ObjectId groupId) {
         BasicDBObject query = new BasicDBObject("grid", groupId).append("rl", 2).append("r", Constant.ZERO);
-        DBObject dbo = findOne(getDB(), getCollection(), query, Constant.FIELDS);
+        DBObject dbo = findOne(MongoFacroty.getAppDB(), Constant.COLLECTION_FORUM_COMMUNITY_MEMBER, query, Constant.FIELDS);
         return dbo == null ? null : new MemberEntry(dbo);
     }
 
@@ -487,7 +485,7 @@ public class MemberDao extends BaseDao {
     public void cleayDeputyHead(ObjectId groupId) {
         BasicDBObject query = new BasicDBObject("grid", groupId).append("rl", 1).append("r", Constant.ZERO);
         BasicDBObject update = new BasicDBObject().append(Constant.MONGO_SET, new BasicDBObject("rl", 0));
-        update(getDB(), getCollection(), query, update);
+        update(MongoFacroty.getAppDB(), Constant.COLLECTION_FORUM_COMMUNITY_MEMBER, query, update);
     }
 
     /**
@@ -499,6 +497,6 @@ public class MemberDao extends BaseDao {
     public void updateAllAvatar(ObjectId userId, String avatar) {
         BasicDBObject query = new BasicDBObject("uid", userId);
         BasicDBObject update = new BasicDBObject(Constant.MONGO_SET, new BasicDBObject("av", avatar));
-        update(getDB(), getCollection(), query, update);
+        update(MongoFacroty.getAppDB(), Constant.COLLECTION_FORUM_COMMUNITY_MEMBER, query, update);
     }
 }

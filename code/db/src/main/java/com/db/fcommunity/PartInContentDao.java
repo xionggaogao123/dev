@@ -1,6 +1,7 @@
 package com.db.fcommunity;
 
 import com.db.base.BaseDao;
+import com.db.factory.MongoFacroty;
 import com.mongodb.BasicDBObject;
 import com.mongodb.DBObject;
 import com.pojo.fcommunity.PartInContentEntry;
@@ -16,13 +17,9 @@ import java.util.List;
 
 public class PartInContentDao extends BaseDao {
 
-    private String getCollection() {
-        return Constant.COLLECTION_FORUM_PARTINCONTENT;
-    }
-
     public PartInContentEntry find(ObjectId id) {
         BasicDBObject query = new BasicDBObject(Constant.ID, id);
-        DBObject dbo = findOne(getDB(), getCollection(), query, Constant.FIELDS);
+        DBObject dbo = findOne(MongoFacroty.getAppDB(), Constant.COLLECTION_FORUM_PARTINCONTENT, query, Constant.FIELDS);
         if (dbo != null) {
             PartInContentEntry partInContentEntry = new PartInContentEntry(dbo);
             return partInContentEntry;
@@ -34,13 +31,13 @@ public class PartInContentDao extends BaseDao {
     public void pushImage(ObjectId id, String imageUrl) {
         BasicDBObject query = new BasicDBObject(Constant.ID, id);
         BasicDBObject updateValue = new BasicDBObject(Constant.MONGO_PUSH, new BasicDBObject("iml", imageUrl));
-        update(getDB(), getCollection(), query, updateValue);
+        update(MongoFacroty.getAppDB(), Constant.COLLECTION_FORUM_PARTINCONTENT, query, updateValue);
     }
 
     public void pullImage(ObjectId id, String oldImageUrl) {
         BasicDBObject query = new BasicDBObject(Constant.ID, id);
         BasicDBObject updateValue = new BasicDBObject(Constant.MONGO_PULL, new BasicDBObject("iml", oldImageUrl));
-        update(getDB(), getCollection(), query, updateValue);
+        update(MongoFacroty.getAppDB(), Constant.COLLECTION_FORUM_PARTINCONTENT, query, updateValue);
     }
 
     public List<PartInContentEntry> getPartInContent(ObjectId detailId, int type, int page, int pageSize) {
@@ -53,7 +50,7 @@ public class PartInContentDao extends BaseDao {
         BasicDBObject order = new BasicDBObject()
                 .append("zan", -1)
                 .append(Constant.ID, -1);
-        List<DBObject> list = find(getDB(), getCollection(), query, Constant.FIELDS, order, (page - 1) * pageSize, pageSize);
+        List<DBObject> list = find(MongoFacroty.getAppDB(), Constant.COLLECTION_FORUM_PARTINCONTENT, query, Constant.FIELDS, order, (page - 1) * pageSize, pageSize);
         List<PartInContentEntry> entries = new ArrayList<PartInContentEntry>();
         for (DBObject dbo : list) {
             entries.add(new PartInContentEntry(dbo));
@@ -65,11 +62,11 @@ public class PartInContentDao extends BaseDao {
         BasicDBObject query = new BasicDBObject()
                 .append("cdid", detailId)
                 .append("r", 0);
-        return count(getDB(), getCollection(), query);
+        return count(MongoFacroty.getAppDB(), Constant.COLLECTION_FORUM_PARTINCONTENT, query);
     }
 
     public void saveParInContent(PartInContentEntry partInContentEntry) {
-        save(getDB(), getCollection(), partInContentEntry.getBaseEntry());
+        save(MongoFacroty.getAppDB(), Constant.COLLECTION_FORUM_PARTINCONTENT, partInContentEntry.getBaseEntry());
     }
 
     public void setZanToPartInContent(ObjectId partInContentId, ObjectId userId) {
@@ -78,7 +75,7 @@ public class PartInContentDao extends BaseDao {
         BasicDBObject update = new BasicDBObject()
                 .append("$push", new BasicDBObject("zali", userId))
                 .append(Constant.MONGO_INC, new BasicDBObject("zan", 1));
-        update(getDB(), getCollection(), query, update);
+        update(MongoFacroty.getAppDB(), Constant.COLLECTION_FORUM_PARTINCONTENT, query, update);
     }
 
     public void downZanToPartInContent(ObjectId partInContentId, ObjectId userId) {
@@ -88,13 +85,13 @@ public class PartInContentDao extends BaseDao {
         BasicDBObject update = new BasicDBObject()
                 .append("$pull", new BasicDBObject("zali", userId))
                 .append(Constant.MONGO_INC, new BasicDBObject("zan", -1));
-        update(getDB(), getCollection(), query, update);
+        update(MongoFacroty.getAppDB(), Constant.COLLECTION_FORUM_PARTINCONTENT, query, update);
     }
 
     public boolean isZanToPartInContent(ObjectId partInContentId, ObjectId userId) {
         BasicDBObject query = new BasicDBObject()
                 .append(Constant.ID, partInContentId);
-        DBObject dbo = findOne(getDB(), getCollection(), query, Constant.FIELDS);
+        DBObject dbo = findOne(MongoFacroty.getAppDB(), Constant.COLLECTION_FORUM_PARTINCONTENT, query, Constant.FIELDS);
         if (dbo != null) {
             PartInContentEntry partInContentEntry = new PartInContentEntry(dbo);
             List<ObjectId> list = partInContentEntry.getZanList();
@@ -111,7 +108,7 @@ public class PartInContentDao extends BaseDao {
                 .append("uid", userId)
                 .append("ty", 2)
                 .append("r", 0);
-        DBObject dbo = findOne(getDB(), getCollection(), query);
+        DBObject dbo = findOne(MongoFacroty.getAppDB(), Constant.COLLECTION_FORUM_PARTINCONTENT, query);
         if (dbo != null) {
             return new PartInContentEntry(dbo);
         }
@@ -133,6 +130,6 @@ public class PartInContentDao extends BaseDao {
         BasicDBObject updateValue = new BasicDBObject()
                 .append("r", remove);
         BasicDBObject update = new BasicDBObject(Constant.MONGO_SET, updateValue);
-        update(getDB(), getCollection(), query, update);
+        update(MongoFacroty.getAppDB(), Constant.COLLECTION_FORUM_PARTINCONTENT, query, update);
     }
 }

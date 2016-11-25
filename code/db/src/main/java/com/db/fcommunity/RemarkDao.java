@@ -2,6 +2,7 @@ package com.db.fcommunity;
 
 
 import com.db.base.BaseDao;
+import com.db.factory.MongoFacroty;
 import com.mongodb.BasicDBObject;
 import com.mongodb.DBObject;
 import com.pojo.fcommunity.RemarkEntry;
@@ -17,12 +18,8 @@ import java.util.Map;
  */
 public class RemarkDao extends BaseDao {
 
-    private String getCollection() {
-        return Constant.COLLECTION_FORUM_REMARK;
-    }
-
     public void save(RemarkEntry entry) {
-        save(getDB(), getCollection(), entry.getBaseEntry());
+        save(MongoFacroty.getAppDB(), Constant.COLLECTION_FORUM_REMARK, entry.getBaseEntry());
     }
 
     public void update(ObjectId id, String remark) {
@@ -30,7 +27,7 @@ public class RemarkDao extends BaseDao {
                 .append(Constant.ID, id);
         BasicDBObject update = new BasicDBObject()
                 .append(Constant.MONGO_SET, new BasicDBObject("rm", remark));
-        update(getDB(), getCollection(), query, update);
+        update(MongoFacroty.getAppDB(), Constant.COLLECTION_FORUM_REMARK, query, update);
     }
 
     /**
@@ -45,7 +42,7 @@ public class RemarkDao extends BaseDao {
         BasicDBObject query = new BasicDBObject()
                 .append("suid", startUserId)
                 .append("euid", new BasicDBObject(Constant.MONGO_IN, endUserIds));
-        List<DBObject> list = find(getDB(), getCollection(), query, Constant.FIELDS);
+        List<DBObject> list = find(MongoFacroty.getAppDB(), Constant.COLLECTION_FORUM_REMARK, query, Constant.FIELDS);
         if (null != list && !list.isEmpty()) {
             RemarkEntry e;
             for (DBObject dbo : list) {

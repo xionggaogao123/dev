@@ -1,6 +1,7 @@
 package com.db.fcommunity;
 
 import com.db.base.BaseDao;
+import com.db.factory.MongoFacroty;
 import com.mongodb.BasicDBObject;
 import com.mongodb.DBObject;
 import com.pojo.fcommunity.AppBannerEntry;
@@ -19,13 +20,13 @@ public class BannerDao extends BaseDao {
 
     //app 端banner
     public void save(AppBannerEntry entity) {
-        save(getDB(), Constant.COLLECTION_App_Banners, entity.getBaseEntry());
+        save(MongoFacroty.getAppDB(), Constant.COLLECTION_App_Banners, entity.getBaseEntry());
     }
 
     public List<AppBannerEntry> get() {
         List<AppBannerEntry> entities = new ArrayList<AppBannerEntry>();
         BasicDBObject query = new BasicDBObject();
-        List<DBObject> dbos = find(getDB(), Constant.COLLECTION_App_Banners, query, Constant.FIELDS);
+        List<DBObject> dbos = find(MongoFacroty.getAppDB(), Constant.COLLECTION_App_Banners, query, Constant.FIELDS);
         for (DBObject dbo : dbos) {
             entities.add(new AppBannerEntry((BasicDBObject) dbo));
         }
@@ -34,18 +35,18 @@ public class BannerDao extends BaseDao {
 
     public void deleteAppBanner(String id) {
         BasicDBObject query = new BasicDBObject(Constant.ID, new ObjectId(id));
-        remove(getDB(), Constant.COLLECTION_App_Banners, query);
+        remove(MongoFacroty.getAppDB(), Constant.COLLECTION_App_Banners, query);
     }
 
     public void updateAppStatus(String id, int status) {
         DBObject query = new BasicDBObject(Constant.ID, new ObjectId(id));
         DBObject update = new BasicDBObject(Constant.MONGO_SET, new BasicDBObject("ss", status));
-        update(getDB(), Constant.COLLECTION_App_Banners, query, update);
+        update(MongoFacroty.getAppDB(), Constant.COLLECTION_App_Banners, query, update);
     }
 
     public int getAppBannerCount(int status) {
         DBObject query = new BasicDBObject("ss", status);
-        return count(getDB(), Constant.COLLECTION_App_Banners, query);
+        return count(MongoFacroty.getAppDB(), Constant.COLLECTION_App_Banners, query);
     }
 
     // pc 端banner
@@ -61,7 +62,7 @@ public class BannerDao extends BaseDao {
 
     private List<Banner> query(BasicDBObject query) {
         List<Banner> entities = new ArrayList<Banner>();
-        List<DBObject> dbos = find(getDB(), Constant.COLLECTION_Banners, query, Constant.FIELDS);
+        List<DBObject> dbos = find(MongoFacroty.getAppDB(), Constant.COLLECTION_Banners, query, Constant.FIELDS);
         for (DBObject dbo : dbos) {
             Banner banner = new Banner(new BannerEntity((BasicDBObject) dbo));
             entities.add(banner);
@@ -79,7 +80,7 @@ public class BannerDao extends BaseDao {
                 .setTargetUrl(banner.getTargetUrl())
                 .setTargetId(banner.getTargetId()).build();
 
-        save(getDB(), Constant.COLLECTION_Banners, entity.getBaseEntry());
+        save(MongoFacroty.getAppDB(), Constant.COLLECTION_Banners, entity.getBaseEntry());
     }
 
     public int countBanner(int status) {
@@ -89,27 +90,27 @@ public class BannerDao extends BaseDao {
         } else {
             query = new BasicDBObject("ss", status);
         }
-        return count(getDB(), Constant.COLLECTION_Banners, query);
+        return count(MongoFacroty.getAppDB(), Constant.COLLECTION_Banners, query);
     }
 
     public void save(BannerEntity entity) {
-        save(getDB(), Constant.COLLECTION_Banners, entity.getBaseEntry());
+        save(MongoFacroty.getAppDB(), Constant.COLLECTION_Banners, entity.getBaseEntry());
     }
 
     public void delete(String id) {
         DBObject query = new BasicDBObject(Constant.ID, new ObjectId(id));
-        remove(getDB(), Constant.COLLECTION_Banners, query);
+        remove(MongoFacroty.getAppDB(), Constant.COLLECTION_Banners, query);
     }
 
     public void updateStatus(String id, int status) {
         DBObject query = new BasicDBObject(Constant.ID, new ObjectId(id));
         DBObject update = new BasicDBObject(Constant.MONGO_SET, new BasicDBObject("ss", status));
-        update(getDB(), Constant.COLLECTION_Banners, query, update);
+        update(MongoFacroty.getAppDB(), Constant.COLLECTION_Banners, query, update);
     }
 
     public int getCount(int status) {
         DBObject query = new BasicDBObject("ss", status);
-        return count(getDB(), Constant.COLLECTION_Banners, query);
+        return count(MongoFacroty.getAppDB(), Constant.COLLECTION_Banners, query);
     }
 
 

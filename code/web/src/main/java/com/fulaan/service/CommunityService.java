@@ -1104,9 +1104,8 @@ public class CommunityService {
 
 
     public CommunityDTO getByGroupId(String emChatId) {
-        CommunityEntry communityEntry = communityDao.findByGroupId(emChatId);
-        if (communityEntry == null) return null;
-        return new CommunityDTO(communityEntry);
+        CommunityEntry communityEntry = communityDao.findByEmChatId(emChatId);
+        return communityEntry == null ? null : new CommunityDTO(communityEntry);
     }
 
     /**
@@ -1134,7 +1133,7 @@ public class CommunityService {
     }
 
     public List<CommunityDTO> findAllCommunity() {
-        List<CommunityEntry> communityEntrys = communityDao.findAll();
+        List<CommunityEntry> communityEntrys = communityDao.getAllCommunitys();
         List<CommunityDTO> communityDtos = new ArrayList<CommunityDTO>();
         for (CommunityEntry entry : communityEntrys) {
             communityDtos.add(new CommunityDTO(entry));
@@ -1143,7 +1142,7 @@ public class CommunityService {
     }
 
     public void resetLogo(String communityId, String logo) {
-        communityDao.resetLogo(communityId, logo);
+        communityDao.updateCommunityLogo(new ObjectId(communityId), logo);
     }
 
     public void deleteCommunity(ObjectId communityId) {

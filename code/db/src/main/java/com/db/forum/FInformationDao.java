@@ -42,7 +42,7 @@ public class FInformationDao extends BaseDao {
             FInformationEntry entry = new FInformationEntry(uid, time, content.trim());
             infos.add(entry.getBaseEntry());
         }
-        save(getDB(), getCollection(), infos);
+        save(MongoFacroty.getAppDB(), getCollection(), infos);
     }
 
     /**
@@ -91,7 +91,7 @@ public class FInformationDao extends BaseDao {
         if (type != -1) {
             query.append("ty", type);
         }
-        List<DBObject> dbObjectList = find(getDB(), getCollection(), query, Constant.FIELDS, sort);
+        List<DBObject> dbObjectList = find(MongoFacroty.getAppDB(), getCollection(), query, Constant.FIELDS, sort);
 
         for (DBObject dbObject : dbObjectList) {
             fInformationEntries.add(new FInformationEntry((BasicDBObject) dbObject));
@@ -109,8 +109,8 @@ public class FInformationDao extends BaseDao {
         List<DBObject> dbs=new ArrayList<DBObject>();
         BasicDBObject query = new BasicDBObject("psid", userId).append("ty", type);
         BasicDBObject query1 = new BasicDBObject("uid", userId).append("ty", type);
-        List<DBObject> dbObjectList = find(getDB(), getCollection(), query, Constant.FIELDS, Constant.MONGO_SORTBY_DESC);
-        List<DBObject> dbObjectList1 = find(getDB(), getCollection(), query1, Constant.FIELDS, Constant.MONGO_SORTBY_DESC);
+        List<DBObject> dbObjectList = find(MongoFacroty.getAppDB(), getCollection(), query, Constant.FIELDS, Constant.MONGO_SORTBY_DESC);
+        List<DBObject> dbObjectList1 = find(MongoFacroty.getAppDB(), getCollection(), query1, Constant.FIELDS, Constant.MONGO_SORTBY_DESC);
         dbs.addAll(dbObjectList);
         dbs.addAll(dbObjectList1);
         for (DBObject dbObject : dbs) {
@@ -140,7 +140,7 @@ public class FInformationDao extends BaseDao {
     public List<FInformationEntry> getInformationUnRead(ObjectId userId) {
         List<FInformationEntry> fInformationEntries = new ArrayList<FInformationEntry>();
         BasicDBObject query = new BasicDBObject("psid", userId).append("sc", 0);
-        List<DBObject> dbObjectList = find(getDB(), getCollection(), query, Constant.FIELDS, Constant.MONGO_SORTBY_DESC);
+        List<DBObject> dbObjectList = find(MongoFacroty.getAppDB(), getCollection(), query, Constant.FIELDS, Constant.MONGO_SORTBY_DESC);
         for (DBObject dbObject : dbObjectList) {
             fInformationEntries.add(new FInformationEntry((BasicDBObject) dbObject));
         }
@@ -272,34 +272,34 @@ public class FInformationDao extends BaseDao {
     }
 
     private DBObject query(DBObject query) {
-        return findOne(getDB(), getCollection(), query, Constant.FIELDS);
+        return findOne(MongoFacroty.getAppDB(), getCollection(), query, Constant.FIELDS);
     }
 
     private List<DBObject> queryList(DBObject query) {
-        return find(getDB(), getCollection(), query, Constant.FIELDS);
+        return find(MongoFacroty.getAppDB(), getCollection(), query, Constant.FIELDS);
     }
 
     private List<DBObject> queryList(DBObject query, BasicDBObject sort) {
-        return find(getDB(), getCollection(), query, Constant.FIELDS, sort);
+        return find(MongoFacroty.getAppDB(), getCollection(), query, Constant.FIELDS, sort);
     }
 
     private int save(DBObject entry) {
-        WriteResult writeResult = save(getDB(), getCollection(), entry);
+        WriteResult writeResult = save(MongoFacroty.getAppDB(), getCollection(), entry);
         return writeResult.getN();
     }
 
     private int update(DBObject query, DBObject update) {
-        WriteResult writeResult = update(getDB(), getCollection(), query, update);
+        WriteResult writeResult = update(MongoFacroty.getAppDB(), getCollection(), query, update);
         return writeResult.getN();
     }
 
     private int delete(DBObject query) {
-        WriteResult writeResult = remove(getDB(), getCollection(), query);
+        WriteResult writeResult = remove(MongoFacroty.getAppDB(), getCollection(), query);
         return writeResult.getN();
     }
 
     private int count(DBObject query) {
-        return count(getDB(), getCollection(), query);
+        return count(MongoFacroty.getAppDB(), getCollection(), query);
     }
 
     private String getCollection() {

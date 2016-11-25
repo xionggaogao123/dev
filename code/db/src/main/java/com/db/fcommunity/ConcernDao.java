@@ -1,6 +1,7 @@
 package com.db.fcommunity;
 
 import com.db.base.BaseDao;
+import com.db.factory.MongoFacroty;
 import com.mongodb.BasicDBObject;
 import com.mongodb.DBObject;
 import com.pojo.fcommunity.ConcernEntry;
@@ -15,12 +16,8 @@ import java.util.List;
  */
 public class ConcernDao extends BaseDao {
 
-    public String getCollection() {
-        return Constant.COLLECTION_FORUM_CONCERNED;
-    }
-
     public void save(ConcernEntry concernEntry) {
-        save(getDB(), getCollection(), concernEntry.getBaseEntry());
+        save(MongoFacroty.getAppDB(), Constant.COLLECTION_FORUM_CONCERNED, concernEntry.getBaseEntry());
     }
 
     public void pullConcern(ObjectId id) {
@@ -28,23 +25,20 @@ public class ConcernDao extends BaseDao {
                 .append(Constant.ID, id);
         BasicDBObject updateValue = new BasicDBObject()
                 .append(Constant.MONGO_SET, new BasicDBObject("r", 1));
-        update(getDB(), getCollection(), dbObject, updateValue);
+        update(MongoFacroty.getAppDB(), Constant.COLLECTION_FORUM_CONCERNED, dbObject, updateValue);
     }
 
 
     public ConcernEntry getConcernEntry(ObjectId id) {
         BasicDBObject dbObject = new BasicDBObject().append(Constant.ID, id).append("r", 0);
-        DBObject dto = findOne(getDB(), getCollection(), dbObject);
-        if (null != dto) {
-            return new ConcernEntry(dto);
-        }
-        return null;
+        DBObject dto = findOne(MongoFacroty.getAppDB(), Constant.COLLECTION_FORUM_CONCERNED, dbObject);
+        return dto == null ? null : new ConcernEntry(dto);
     }
 
     public int countConcernByUserId(ObjectId userId) {
         BasicDBObject dbObject = new BasicDBObject()
                 .append("uid", userId).append("r", 0);
-        return count(getDB(), getCollection(), dbObject);
+        return count(MongoFacroty.getAppDB(), Constant.COLLECTION_FORUM_CONCERNED, dbObject);
     }
 
     public List<ConcernEntry> getConcernByUserId(ObjectId userId, int page, int pageSize) {
@@ -52,7 +46,7 @@ public class ConcernDao extends BaseDao {
                 .append(Constant.ID, -1);
         List<ConcernEntry> concernEntries = new ArrayList<ConcernEntry>();
         BasicDBObject dbObject = new BasicDBObject().append("uid", userId).append("r", 0);
-        List<DBObject> list = find(getDB(), getCollection(), dbObject, Constant.FIELDS, orderBy, (page - 1) * pageSize, pageSize);
+        List<DBObject> list = find(MongoFacroty.getAppDB(), Constant.COLLECTION_FORUM_CONCERNED, dbObject, Constant.FIELDS, orderBy, (page - 1) * pageSize, pageSize);
         for (DBObject dbo : list) {
             concernEntries.add(new ConcernEntry(dbo));
         }
@@ -65,7 +59,7 @@ public class ConcernDao extends BaseDao {
                 .append("cid", concernId);
         BasicDBObject updateValue = new BasicDBObject()
                 .append(Constant.MONGO_SET, new BasicDBObject("r", remove));
-        update(getDB(), getCollection(), dbObject, updateValue);
+        update(MongoFacroty.getAppDB(), Constant.COLLECTION_FORUM_CONCERNED, dbObject, updateValue);
     }
 
     public ConcernEntry getConcernData(ObjectId userId, ObjectId concernId, int remove) {
@@ -75,7 +69,7 @@ public class ConcernDao extends BaseDao {
         if (remove != -1) {
             dbObject.append("r", remove);
         }
-        DBObject dto = findOne(getDB(), getCollection(), dbObject);
+        DBObject dto = findOne(MongoFacroty.getAppDB(), Constant.COLLECTION_FORUM_CONCERNED, dbObject);
         if (null != dto) {
             return new ConcernEntry(dto);
         }

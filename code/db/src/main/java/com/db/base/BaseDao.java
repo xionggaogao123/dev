@@ -277,10 +277,6 @@ public class BaseDao {
     return output;
   }
 
-  protected DB getDB() {
-    return MongoFacroty.getAppDB();
-  }
-
   protected DBObject findAndModifed(DB db, String name, DBObject query, DBObject update){
     return db.getCollection(name).findAndModify(query,update);
   }

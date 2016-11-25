@@ -1,6 +1,7 @@
 package com.db.fcommunity;
 
 import com.db.base.BaseDao;
+import com.db.factory.MongoFacroty;
 import com.mongodb.BasicDBObject;
 import com.mongodb.DBObject;
 import com.pojo.fcommunity.CommunityEntry;
@@ -17,10 +18,6 @@ import java.util.List;
  */
 public class CommunityDao extends BaseDao {
 
-    private String getCollection() {
-        return Constant.COLLECTION_FORUM_COMMUNITY;
-    }
-
     /**
      * 保存社区
      *
@@ -28,7 +25,7 @@ public class CommunityDao extends BaseDao {
      * @return 返回保存是否成功
      */
     public void save(CommunityEntry entry) {
-        save(getDB(), getCollection(), entry.getBaseEntry());
+        save(MongoFacroty.getAppDB(), Constant.COLLECTION_FORUM_COMMUNITY, entry.getBaseEntry());
     }
 
     /**
@@ -38,13 +35,9 @@ public class CommunityDao extends BaseDao {
      * @return
      */
     public CommunityEntry findByObjectId(ObjectId id) {
-        BasicDBObject query = new BasicDBObject()
-                .append(Constant.ID, id);
-        DBObject dbObject = findOne(getDB(), getCollection(), query);
-        if (null != dbObject) {
-            return new CommunityEntry(dbObject);
-        }
-        return null;
+        BasicDBObject query = new BasicDBObject(Constant.ID, id);
+        DBObject dbObject = findOne(MongoFacroty.getAppDB(), Constant.COLLECTION_FORUM_COMMUNITY, query);
+        return dbObject == null ? null : new CommunityEntry(dbObject);
     }
 
     /**
@@ -54,29 +47,15 @@ public class CommunityDao extends BaseDao {
      * @return
      */
     public CommunityEntry findBySearchId(String searchId) {
-        BasicDBObject query = new BasicDBObject()
-                .append("cmid", searchId);
-        DBObject dbObject = findOne(getDB(), getCollection(), query);
-        if (null != dbObject) {
-            return new CommunityEntry(dbObject);
-        }
-        return null;
+        BasicDBObject query = new BasicDBObject("cmid", searchId);
+        DBObject dbObject = findOne(MongoFacroty.getAppDB(), Constant.COLLECTION_FORUM_COMMUNITY, query);
+        return dbObject == null ? null : new CommunityEntry(dbObject);
     }
 
-    /**
-     * 返回社区Entry
-     *
-     * @param groupId 环信id
-     * @return
-     */
-    public CommunityEntry findByGroupId(String emChatId) {
-        BasicDBObject query = new BasicDBObject()
-                .append("emid", emChatId);
-        DBObject dbObject = findOne(getDB(), getCollection(), query);
-        if (null != dbObject) {
-            return new CommunityEntry(dbObject);
-        }
-        return null;
+    public CommunityEntry findByEmChatId(String emChatId) {
+        BasicDBObject query = new BasicDBObject("emid", emChatId);
+        DBObject dbObject = findOne(MongoFacroty.getAppDB(), Constant.COLLECTION_FORUM_COMMUNITY, query);
+        return dbObject == null ? null : new CommunityEntry(dbObject);
     }
 
     /**
@@ -86,13 +65,9 @@ public class CommunityDao extends BaseDao {
      * @return
      */
     public CommunityEntry findByName(String communityName) {
-        BasicDBObject query = new BasicDBObject()
-                .append("cmmn", communityName);
-        DBObject dbObject = findOne(getDB(), getCollection(), query);
-        if (null != dbObject) {
-            return new CommunityEntry(dbObject);
-        }
-        return null;
+        BasicDBObject query = new BasicDBObject("cmmn", communityName);
+        DBObject dbObject = findOne(MongoFacroty.getAppDB(), Constant.COLLECTION_FORUM_COMMUNITY, query);
+        return dbObject == null ? null : new CommunityEntry(dbObject);
     }
 
     /**
@@ -102,9 +77,8 @@ public class CommunityDao extends BaseDao {
      * @return
      */
     public List<CommunityEntry> findByRegularName(String regular) {
-        BasicDBObject query = new BasicDBObject()
-                .append("cmmn", MongoUtils.buildRegex(regular));
-        List<DBObject> dbObjects = find(getDB(), getCollection(), query);
+        BasicDBObject query = new BasicDBObject("cmmn", MongoUtils.buildRegex(regular));
+        List<DBObject> dbObjects = find(MongoFacroty.getAppDB(), Constant.COLLECTION_FORUM_COMMUNITY, query);
         List<CommunityEntry> communitys = new ArrayList<CommunityEntry>();
         for (DBObject dbo : dbObjects) {
             communitys.add(new CommunityEntry(dbo));
@@ -115,14 +89,13 @@ public class CommunityDao extends BaseDao {
     /**
      * 获取社区
      *
-     * @param commIds
+     * @param communityIds
      * @return
      */
     public List<CommunityEntry> getCommunitysByIds(List<ObjectId> communityIds) {
         List<CommunityEntry> communityEntries = new ArrayList<CommunityEntry>();
-        BasicDBObject query = new BasicDBObject()
-                .append(Constant.ID, new BasicDBObject(Constant.MONGO_IN, communityIds));
-        List<DBObject> dbObjects = find(getDB(), getCollection(), query, Constant.FIELDS);
+        BasicDBObject query = new BasicDBObject().append(Constant.ID, new BasicDBObject(Constant.MONGO_IN, communityIds));
+        List<DBObject> dbObjects = find(MongoFacroty.getAppDB(), Constant.COLLECTION_FORUM_COMMUNITY, query, Constant.FIELDS);
         for (DBObject dbo : dbObjects) {
             communityEntries.add(new CommunityEntry(dbo));
         }
@@ -132,14 +105,13 @@ public class CommunityDao extends BaseDao {
     /**
      * 获取用户创建的所有CommunityEntry
      *
-     * @param uid
+     * @param userId
      * @return
      */
     public List<CommunityEntry> getOwerCommunitys(ObjectId userId) {
         List<CommunityEntry> list = new ArrayList<CommunityEntry>();
-        BasicDBObject query = new BasicDBObject()
-                .append("cmow", userId);
-        List<DBObject> dbObjects = find(getDB(), getCollection(), query);
+        BasicDBObject query = new BasicDBObject().append("cmow", userId);
+        List<DBObject> dbObjects = find(MongoFacroty.getAppDB(), Constant.COLLECTION_FORUM_COMMUNITY, query);
         for (DBObject dbo : dbObjects) {
             list.add(new CommunityEntry(dbo));
         }
@@ -153,9 +125,8 @@ public class CommunityDao extends BaseDao {
      */
     public List<CommunityEntry> getOpenCommunitys() {
         List<CommunityEntry> list = new ArrayList<CommunityEntry>();
-        BasicDBObject query = new BasicDBObject()
-                .append("op", 1);
-        List<DBObject> dbObjects = find(getDB(), getCollection(), query);
+        BasicDBObject query = new BasicDBObject().append("op", Constant.ONE);
+        List<DBObject> dbObjects = find(MongoFacroty.getAppDB(), Constant.COLLECTION_FORUM_COMMUNITY, query);
         for (DBObject dbo : dbObjects) {
             list.add(new CommunityEntry(dbo));
         }
@@ -165,66 +136,73 @@ public class CommunityDao extends BaseDao {
     /**
      * 更改 - 社区名称
      *
-     * @param cid
+     * @param communityId
      * @param name
      */
     public void updateCommunityName(ObjectId communityId, String name) {
-        BasicDBObject query = new BasicDBObject()
-                .append(Constant.ID, communityId);
+        BasicDBObject query = new BasicDBObject().append(Constant.ID, communityId);
         BasicDBObject update = new BasicDBObject(Constant.MONGO_SET, new BasicDBObject("cmmn", name));
-        update(getDB(), getCollection(), query, update);
+        update(MongoFacroty.getAppDB(), Constant.COLLECTION_FORUM_COMMUNITY, query, update);
     }
 
     /**
      * 更改 -社区公开状态
      *
-     * @param cid
+     * @param communityId
      * @param open
      */
     public void updateCommunityOpen(ObjectId communityId, int open) {
-        BasicDBObject query = new BasicDBObject()
-                .append(Constant.ID, communityId);
+        BasicDBObject query = new BasicDBObject().append(Constant.ID, communityId);
         BasicDBObject update = new BasicDBObject(Constant.MONGO_SET, new BasicDBObject("op", open));
-        update(getDB(), getCollection(), query, update);
+        update(MongoFacroty.getAppDB(), Constant.COLLECTION_FORUM_COMMUNITY, query, update);
     }
 
 
     /**
      * 更改 - 社区描述
      *
-     * @param cid
+     * @param communityId
      * @param desc
      */
-    public void updateCommunityDesc(ObjectId cid, String desc) {
-        BasicDBObject query = new BasicDBObject()
-                .append(Constant.ID, cid);
+    public void updateCommunityDesc(ObjectId communityId, String desc) {
+        BasicDBObject query = new BasicDBObject().append(Constant.ID, communityId);
         BasicDBObject update = new BasicDBObject(Constant.MONGO_SET, new BasicDBObject("cmde", desc));
-        update(getDB(), getCollection(), query, update);
+        update(MongoFacroty.getAppDB(), Constant.COLLECTION_FORUM_COMMUNITY, query, update);
     }
 
     /**
      * 更改logo
      *
-     * @param cid
+     * @param communityId
      * @param logo
      */
     public void updateCommunityLogo(ObjectId communityId, String logo) {
-        BasicDBObject query = new BasicDBObject()
-                .append(Constant.ID, communityId);
+        BasicDBObject query = new BasicDBObject().append(Constant.ID, communityId);
         BasicDBObject update = new BasicDBObject(Constant.MONGO_SET, new BasicDBObject("cmlg", logo));
-        update(getDB(), getCollection(), query, update);
+        update(MongoFacroty.getAppDB(), Constant.COLLECTION_FORUM_COMMUNITY, query, update);
+    }
+
+    /**
+     * 更改 二维码
+     * @param communtiyId
+     * @param qrUrl
+     */
+    public void updateCommunityQrUrl(ObjectId communtiyId, String qrUrl) {
+        BasicDBObject query = new BasicDBObject().append(Constant.ID, communtiyId);
+        BasicDBObject update = new BasicDBObject().append(Constant.MONGO_SET, new BasicDBObject("cmco", qrUrl));
+        update(MongoFacroty.getAppDB(), Constant.COLLECTION_FORUM_COMMUNITY, query, update);
     }
 
 
     /**
-     * 删除 - 社区
+     * 删除 - 社区 - 逻辑删除
      *
-     * @param cid
+     * @param communityId
      */
     public void deleteCommunity(ObjectId communityId) {
-        BasicDBObject query = new BasicDBObject()
-                .append(Constant.ID, communityId);
-        remove(getDB(), getCollection(), query);
+        BasicDBObject query = new BasicDBObject().append(Constant.ID, communityId);
+        BasicDBObject update = new BasicDBObject(Constant.MONGO_SET,new BasicDBObject("r",Constant.ONE));
+        update(MongoFacroty.getAppDB(), Constant.COLLECTION_FORUM_COMMUNITY, query,update);
     }
 
     /**
@@ -234,76 +212,46 @@ public class CommunityDao extends BaseDao {
      * @return
      */
     public ObjectId getGroupId(ObjectId communityId) {
-        BasicDBObject query = new BasicDBObject()
-                .append(Constant.ID, communityId);
-        BasicDBObject field = new BasicDBObject()
-                .append("grid", 1);
-        DBObject dbo = findOne(getDB(), getCollection(), query, field);
-        if (dbo != null) {
-            return (ObjectId) dbo.get("grid");
-        }
-        return null;
+        BasicDBObject query = new BasicDBObject().append(Constant.ID, communityId);
+        BasicDBObject field = new BasicDBObject().append("grid", 1);
+        DBObject dbo = findOne(MongoFacroty.getAppDB(), Constant.COLLECTION_FORUM_COMMUNITY, query, field);
+        return dbo == null ? null : (ObjectId) dbo.get("grid");
     }
 
 
     public Boolean judgeCommunity(String communityName) {
         DBObject dbo = getDBObject(communityName);
-        if (dbo != null) {
-            return true;
-        }
-        return false;
+        return dbo != null;
     }
 
     public DBObject getDBObject(String communityName) {
-        BasicDBObject query = new BasicDBObject()
-                .append("cmmn", communityName);
-        return findOne(getDB(), getCollection(), query, Constant.FIELDS);
+        BasicDBObject query = new BasicDBObject().append("cmmn", communityName);
+        return findOne(MongoFacroty.getAppDB(), Constant.COLLECTION_FORUM_COMMUNITY, query, Constant.FIELDS);
     }
 
     public CommunityEntry getDefaultEntry(String communityName) {
         DBObject dbo = getDBObject(communityName);
-        if (dbo != null) {
-            return new CommunityEntry((BasicDBObject) dbo);
-        }
-        return null;
+        return dbo == null ? null : new CommunityEntry(dbo);
     }
 
     public boolean judgeCommunityName(String communityName, ObjectId id) {
-        BasicDBObject query = new BasicDBObject()
-                .append(Constant.ID, id)
+        BasicDBObject query = new BasicDBObject().append(Constant.ID, id)
                 .append("cmmn", communityName);
-        int count = count(getDB(), getCollection(), query);
-        return count == 1;
+        return count(MongoFacroty.getAppDB(), Constant.COLLECTION_FORUM_COMMUNITY, query) == 1;
     }
 
 
     public int getCommunityCountByOwerId(ObjectId userId) {
-        BasicDBObject query = new BasicDBObject()
-                .append("cmow", userId);
-        return count(getDB(), getCollection(), query);
+        BasicDBObject query = new BasicDBObject().append("cmow", userId);
+        return count(MongoFacroty.getAppDB(), Constant.COLLECTION_FORUM_COMMUNITY, query);
     }
 
-    public void updateCommunityQrUrl(ObjectId communtiyId, String qrUrl) {
-        BasicDBObject query = new BasicDBObject()
-                .append(Constant.ID, communtiyId);
-        BasicDBObject update = new BasicDBObject()
-                .append(Constant.MONGO_SET, new BasicDBObject("cmco", qrUrl));
-        update(getDB(), getCollection(), query, update);
-    }
-
-    public List<CommunityEntry> findAll() {
-        BasicDBObject query = new BasicDBObject();
-        List<DBObject> dbos = find(getDB(), getCollection(), query, Constant.FIELDS);
+    public List<CommunityEntry> getAllCommunitys() {
+        List<DBObject> dbos = find(MongoFacroty.getAppDB(), Constant.COLLECTION_FORUM_COMMUNITY, new BasicDBObject(), Constant.FIELDS);
         List<CommunityEntry> communitys = new ArrayList<CommunityEntry>();
         for (DBObject dbo : dbos) {
             communitys.add(new CommunityEntry(dbo));
         }
         return communitys;
-    }
-
-    public void resetLogo(String communityId, String logo) {
-        BasicDBObject query = new BasicDBObject(Constant.ID, new ObjectId(communityId));
-        BasicDBObject update = new BasicDBObject(Constant.MONGO_SET, new BasicDBObject("cmlg", logo));
-        update(getDB(), getCollection(), query, update);
     }
 }

@@ -13,7 +13,6 @@ public class AttachmentDTO {
     private long time;
     private String userId;
 
-
     public AttachmentDTO(AttachmentEntry attachmentEntry) {
         this.url = attachmentEntry.getUrl();
         this.userId = attachmentEntry.getUserId().toString();

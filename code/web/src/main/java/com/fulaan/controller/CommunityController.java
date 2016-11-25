@@ -278,17 +278,6 @@ public class CommunityController extends BaseController {
             MultipartFile file = fileMap.get(list.get(0));
             String extensionName = FilenameUtils.getExtension(file.getOriginalFilename());
             String fileKey = id.toString() + Constant.POINT + extensionName;
-//      if(file.getSize()>= 1024*1024){
-//        File thumbnailFile = File.createTempFile(new ObjectId().toString(), Constant.POINT + FilenameUtils.getExtension(file.getOriginalFilename()));
-//        if("gif".equalsIgnoreCase(extensionName)){
-//          Thumbnails.of(file.getInputStream()).scale(1f).outputQuality(0.5f).outputFormat("gif").toFile(thumbnailFile);
-//        }else {
-//          Thumbnails.of(file.getInputStream()).scale(1f).outputQuality(0.5f).toFile(thumbnailFile);
-//        }
-//        QiniuFileUtils.uploadFile(fileKey, new FileInputStream(thumbnailFile), QiniuFileUtils.TYPE_IMAGE);
-//      }else{
-//        QiniuFileUtils.uploadFile(fileKey, file.getInputStream(), QiniuFileUtils.TYPE_IMAGE);
-//      }
             QiniuFileUtils.uploadFile(fileKey, file.getInputStream(), QiniuFileUtils.TYPE_IMAGE);
             String path = QiniuFileUtils.getPath(QiniuFileUtils.TYPE_IMAGE, fileKey);
             FileUploadDTO dto = new FileUploadDTO(id.toString(), fileKey, file.getOriginalFilename(), path);
@@ -299,71 +288,6 @@ public class CommunityController extends BaseController {
         }
         return obj;
     }
-
-//  public MultipartFile getThumbnailatorFile(MultipartFile imageFile,HttpServletRequest request) throws IOException{
-//      String parentPath = request.getServletContext().getRealPath("/upload");
-//      File parentFile = new File(parentPath);
-//      if (!parentFile.exists()) {
-//        parentFile.mkdirs();
-//      }
-//      String originName = new ObjectId().toString() + Constant.POINT + FilenameUtils.getExtension(imageFile.getOriginalFilename());
-//      String thumbnailPathName= new ObjectId().toString() + Constant.POINT + FilenameUtils.getExtension(imageFile.getOriginalFilename());
-//      String originFilepath=parentPath+originName;
-//      String thumbnailFilePathName = parentPath + thumbnailPathName;
-//      File originFile = new File(originFilepath);
-//      File thumbnailFile=new File(thumbnailFilePathName);
-//      if (!originFile.exists()) {
-//        originFile.createNewFile();
-//      }
-//      if(!thumbnailFile.exists()){
-//        thumbnailFile.createNewFile();
-//      }
-//      IOUtils.copy(imageFile.getInputStream(),new FileOutputStream(originFile));
-//      //质量压缩成原来的一半
-//      Thumbnails.of(originFile).scale(1f).outputQuality(0.5f).toFile(thumbnailFile);
-//      return new MultipartFile(){
-//
-//        @Override
-//        public String getName() {
-//          return null;
-//        }
-//
-//        @Override
-//        public String getOriginalFilename() {
-//          return thumbnailPathName;
-//        }
-//
-//        @Override
-//        public String getContentType() {
-//          return null;
-//        }
-//
-//        @Override
-//        public boolean isEmpty() {
-//          return false;
-//        }
-//
-//        @Override
-//        public long getSize() {
-//          return 0;
-//        }
-//
-//        @Override
-//        public byte[] getBytes() throws IOException {
-//          return new byte[0];
-//        }
-//
-//        @Override
-//        public InputStream getInputStream() throws IOException {
-//          return null;
-//        }
-//
-//        @Override
-//        public void transferTo(File file) throws IOException, IllegalStateException {
-//
-//        }
-//      };
-//  }
 
     /**
      * 邀请人员加入社区

@@ -32,20 +32,20 @@
             <div class="com-left-s">
                 <div class="com-tit" id="title">玩伴通知</div>
                 <script type="text/template" id="friendApplyTmpl">
-                {{~it:value:index}}
-                <li>
-                    <img src="{{=value.avatar}}">
-                    <p class="p4 accept" applyId="{{=value.id}}">接受</p>
-                    <p class="p5 refuse" applyId="{{=value.id}}">拒绝</p>
-                    <p class="p-li"></p>
-                    <p class="p1">{{=value.nickName}}</p>
-                    <p class="p2">TA的标签：<em>
-                        {{~value.tags:tag:i}}
-                        {{=tag}}
-                        {{~}}
-                    </em></p>
-                </li>
-                {{~}}
+                    {{~it:value:index}}
+                    <li>
+                        <img src="{{=value.avatar}}">
+                        <p class="p4 accept" applyId="{{=value.id}}">接受</p>
+                        <p class="p5 refuse" applyId="{{=value.id}}">拒绝</p>
+                        <p class="p-li"></p>
+                        <p class="p1">{{=value.nickName}}</p>
+                        <p class="p2">TA的标签：<em>
+                            {{~value.tags:tag:i}}
+                            {{=tag}}
+                            {{~}}
+                        </em></p>
+                    </li>
+                    {{~}}
                 </script>
                 <ul class="ul-pm-notice" id="friendApply">
                 </ul>
@@ -85,6 +85,24 @@
                 </script>
                 <div class="new-page-links"></div>
             </div>
+            <div class="com-left-s" style="display: none;">
+                <div class="com-tit">系统消息</div>
+                <ul class="ul-sysNotice">
+                    <li>
+                        <span class="sp1">用户<em>shawn</em>退出喷子社区</span>
+                        <span class="sp2">2016-12-21 15:56</span>
+                    </li>
+                    <li>
+                        <span class="sp1">用户<em>shawn</em>退出喷子社区</span>
+                        <span class="sp2">2016-12-21 15:56</span>
+                    </li>
+                    <li>
+                        <span class="sp1"><i></i>"人事任命"—恭喜您成为喷子社区的社长，您有权对本社区进行管理....<a href="###">去试试></a></span>
+                        <span class="sp2">2016-12-21 15:56</span>
+                    </li>
+                </ul>
+
+            </div>
 
         </div>
         <div class="com-right">
@@ -101,6 +119,9 @@
                     <li class="li3 <c:if test="${menuItem==1}">blue-cur</c:if>" style="cursor: pointer">
                         <em class="em1" <c:if test="${menuItem==1}">style="display: none"</c:if>></em><em class="em2" <c:if test="${menuItem==1}">style="display: block;"</c:if>></em><span onclick="window.location.href='/community/playmateNotice.do'">玩伴通知</span><button <c:if test="${menuItem==1}">class="btn2"</c:if>
                         <c:if test="${menuItem==2}">class="btn1"</c:if>>${friendApplyCount}</button>
+                    </li>
+                    <li class="li4" style="cursor: pointer;display: none;">
+                        <em class="em1" ></em><em class="em2" ></em><span onclick="">我关注的人</span><button class="btn1"></button>
                     </li>
                 </ul>
             </div>
@@ -125,8 +146,8 @@
 
 <%--环信消息通知--%>
 <div class="hx-notice">
-    <span class="sp1"></span>
-    <span class="sp3">你有3条未读消息</span>
+    <span class="sp2" id="hx-icon"></span>
+    <span class="sp3" id="hx-msg-count">您有0条未读消息</span>
 </div>
 
 

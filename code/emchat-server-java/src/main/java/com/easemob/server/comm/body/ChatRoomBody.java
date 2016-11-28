@@ -46,10 +46,10 @@ public class ChatRoomBody implements BodyWrapper {
     public ContainerNode<?> getBody() {
         ObjectNode body = JsonNodeFactory.instance.objectNode();
         body.put("name", name).put("description", desc).put("owner", owner);
-        if(null != maxUsers) {
+        if (null != maxUsers) {
             body.put("maxusers", maxUsers);
         }
-        if(ArrayUtils.isNotEmpty(members)) {
+        if (ArrayUtils.isNotEmpty(members)) {
             ArrayNode membersNode = body.putArray("members");
             for (String member : members) {
                 membersNode.add(member);

@@ -56,8 +56,6 @@ public class DateUtils {
     }
 
     /**
-     *
-     *
      * @param dateStr
      * @return
      * @throws ParseException
@@ -97,7 +95,7 @@ public class DateUtils {
         return time;
     }
 
-    public static long currentMillisecond(){
+    public static long currentMillisecond() {
         return System.currentTimeMillis();
     }
 

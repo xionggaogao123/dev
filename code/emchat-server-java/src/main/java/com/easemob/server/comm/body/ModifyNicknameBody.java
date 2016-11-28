@@ -5,7 +5,7 @@ import com.fasterxml.jackson.databind.node.ContainerNode;
 import com.fasterxml.jackson.databind.node.JsonNodeFactory;
 import org.apache.commons.lang3.StringUtils;
 
-public class ModifyNicknameBody implements BodyWrapper{
+public class ModifyNicknameBody implements BodyWrapper {
 
     private String nickname;
 

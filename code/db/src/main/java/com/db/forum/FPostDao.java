@@ -27,7 +27,7 @@ public class FPostDao extends BaseDao {
    * 添加帖子
    **/
   public ObjectId addFPost(FPostEntry e) {
-    save(getDB(), getCollection(), e.getBaseEntry());
+    save(MongoFacroty.getAppDB(), getCollection(), e.getBaseEntry());
     return e.getID();
   }
 
@@ -40,7 +40,7 @@ public class FPostDao extends BaseDao {
                                           long gtTime, int skip, int limit, int remove) {
     DBObject query = buildQuery(startTime, endTime, reported, regular, cream, inSet, postSectionId, personId, classify, gtTime, remove);
     List<FPostEntry> retList = new ArrayList<FPostEntry>();
-    List<DBObject> dbObjectList = find(getDB(), getCollection(), query, fields, sort, skip, limit);
+    List<DBObject> dbObjectList = find(MongoFacroty.getAppDB(), getCollection(), query, fields, sort, skip, limit);
     for (DBObject dbObject : dbObjectList) {
       retList.add(new FPostEntry((BasicDBObject) dbObject));
     }
@@ -361,7 +361,7 @@ public class FPostDao extends BaseDao {
 
   private List<FPostEntry> query(BasicDBObject query) {
     List<FPostEntry> retList = new ArrayList<FPostEntry>();
-    List<DBObject> dbObjectList = find(getDB(), getCollection(), query, Constant.FIELDS);
+    List<DBObject> dbObjectList = find(MongoFacroty.getAppDB(), getCollection(), query, Constant.FIELDS);
     for (DBObject dbObject : dbObjectList) {
       FPostEntry post = new FPostEntry((BasicDBObject) dbObject);
       retList.add(post);
@@ -371,7 +371,7 @@ public class FPostDao extends BaseDao {
 
   private List<FPostEntry> query(BasicDBObject query, BasicDBObject sort) {
     List<FPostEntry> retList = new ArrayList<FPostEntry>();
-    List<DBObject> dbObjectList = find(getDB(), getCollection(), query, Constant.FIELDS, sort);
+    List<DBObject> dbObjectList = find(MongoFacroty.getAppDB(), getCollection(), query, Constant.FIELDS, sort);
     for (DBObject dbObject : dbObjectList) {
       FPostEntry post = new FPostEntry((BasicDBObject) dbObject);
       retList.add(post);
@@ -380,7 +380,7 @@ public class FPostDao extends BaseDao {
   }
 
   private FPostEntry queryOne(BasicDBObject query) {
-    DBObject dbo = findOne(getDB(), getCollection(), query, Constant.FIELDS);
+    DBObject dbo = findOne(MongoFacroty.getAppDB(), getCollection(), query, Constant.FIELDS);
     if (null != dbo) {
       return new FPostEntry((BasicDBObject) dbo);
     }
@@ -388,11 +388,11 @@ public class FPostDao extends BaseDao {
   }
 
   private void update(DBObject query, DBObject update) {
-    update(getDB(), getCollection(), query, update);
+    update(MongoFacroty.getAppDB(), getCollection(), query, update);
   }
 
   private int count(DBObject query) {
-    return count(getDB(), getCollection(), query);
+    return count(MongoFacroty.getAppDB(), getCollection(), query);
   }
 
   private long handleDate(String date) {
@@ -450,7 +450,7 @@ public class FPostDao extends BaseDao {
       query.append("rpt", reported);
     }
     if (StringUtils.isNotBlank(regular)) {
-      query.append("pt", MongoUtils.buildRegular(regular));
+      query.append("pt", MongoUtils.buildRegex(regular));
     }
     return query;
   }

@@ -1,8 +1,7 @@
 package com.fulaan.controller;
 
-import com.fulaan.controller.BaseController;
 import com.fulaan.dto.MessageDTO;
-import com.fulaan_old.forum.service.FInformationService;
+import com.fulaan.forum.service.FInformationService;
 import com.sys.utils.RespObj;
 import org.bson.types.ObjectId;
 import org.springframework.beans.factory.annotation.Autowired;

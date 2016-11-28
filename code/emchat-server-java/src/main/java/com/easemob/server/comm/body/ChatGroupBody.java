@@ -58,10 +58,10 @@ public class ChatGroupBody implements BodyWrapper {
     public ContainerNode<?> getBody() {
         ObjectNode body = JsonNodeFactory.instance.objectNode();
         body.put("groupname", groupName).put("desc", desc).put("public", isPublic).put("approval", approval).put("owner", owner);
-        if(null != maxUsers) {
+        if (null != maxUsers) {
             body.put("maxusers", maxUsers);
         }
-        if(ArrayUtils.isNotEmpty(members)) {
+        if (ArrayUtils.isNotEmpty(members)) {
             ArrayNode membersNode = body.putArray("members");
             for (String member : members) {
                 membersNode.add(member);

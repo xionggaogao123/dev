@@ -13,44 +13,41 @@ import org.springframework.stereotype.Service;
 @Service
 public class EmService {
 
-  /**
-   * 创建环信群组
-   * @param owerId
-   * @return
-   */
-  public String createEmGroup(ObjectId owerId){
-    ResponseWrapper responseWrapper = EaseMobAPI.createGroup("","",owerId.toString());
-    if(responseWrapper.getResponseStatus() == 200) {
-      return ((ObjectNode) responseWrapper.getResponseBody()).get("data").get("groupid").asText();
+    /**
+     * 创建环信群组
+     *
+     * @param owerId
+     * @return
+     */
+    public String createEmGroup(ObjectId owerId) {
+        ResponseWrapper responseWrapper = EaseMobAPI.createGroup("", "", owerId.toString());
+        if (responseWrapper.getResponseStatus() == 200) {
+            return ((ObjectNode) responseWrapper.getResponseBody()).get("data").get("groupid").asText();
+        }
+        return null;
     }
-    return null;
-  }
 
-  /**
-   * 把人加到环信群组
-   * @param emChatId
-   * @param userId
-   * @return
-   */
-  public boolean addUserToGroup(String emChatId,ObjectId userId) {
-    ResponseWrapper responseWrapper = EaseMobAPI.addSingleUserToChatGroup(emChatId, userId.toString());
-    if(responseWrapper.getResponseStatus() == 200) {
-      return true;
+    /**
+     * 把人加到环信群组
+     *
+     * @param emChatId
+     * @param userId
+     * @return
+     */
+    public boolean addUserToEmGroup(String emChatId, ObjectId userId) {
+        ResponseWrapper responseWrapper = EaseMobAPI.addSingleUserToChatGroup(emChatId, userId.toString());
+        return responseWrapper.getResponseStatus() == 200;
     }
-    return false;
-  }
 
-  /**
-   *  把用户从环信群组移除
-   * @param emChatId
-   * @param userId
-   * @return
-   */
-  public boolean removeUserFromGroup(String emChatId,ObjectId userId) {
-    ResponseWrapper responseWrapper = EaseMobAPI.removeSingleUserFromChatGroup(emChatId, userId.toString());
-    if(responseWrapper.getResponseStatus() == 200) {
-      return true;
+    /**
+     * 把用户从环信群组移除
+     *
+     * @param emChatId
+     * @param userId
+     * @return
+     */
+    public boolean removeUserFromEmGroup(String emChatId, ObjectId userId) {
+        ResponseWrapper responseWrapper = EaseMobAPI.removeSingleUserFromChatGroup(emChatId, userId.toString());
+        return responseWrapper.getResponseStatus() == 200;
     }
-    return false;
-  }
 }

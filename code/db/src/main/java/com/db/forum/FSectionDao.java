@@ -23,7 +23,7 @@ public class FSectionDao extends BaseDao {
     public List<FSectionEntry> getFSection() {
         List<FSectionEntry> retList = new ArrayList<FSectionEntry>();
         BasicDBObject query = new BasicDBObject();
-        List<DBObject> dbObjectList = find(getDB(), getCollection(), query, null);
+        List<DBObject> dbObjectList = find(MongoFacroty.getAppDB(), getCollection(), query, null);
         for (DBObject dbObject : dbObjectList) {
             retList.add(new FSectionEntry((BasicDBObject) dbObject));
         }
@@ -31,7 +31,7 @@ public class FSectionDao extends BaseDao {
     }
 
     public ObjectId addFSectionEntry(FSectionEntry fSectionEntry) {
-        save(getDB(), getCollection(), fSectionEntry.getBaseEntry());
+        save(MongoFacroty.getAppDB(), getCollection(), fSectionEntry.getBaseEntry());
         return fSectionEntry.getID();
     }
 
@@ -47,7 +47,7 @@ public class FSectionDao extends BaseDao {
             value.put("mmn", mmn);
         }
         DBObject update = new BasicDBObject(Constant.MONGO_SET, value);
-        update(getDB(), getCollection(), query, update);
+        update(MongoFacroty.getAppDB(), getCollection(), query, update);
     }
 
 
@@ -55,7 +55,7 @@ public class FSectionDao extends BaseDao {
         DBObject query = new BasicDBObject(Constant.ID, entry.getID());
         DBObject update = new BasicDBObject("nm", entry.getName());
         DBObject updateValue = new BasicDBObject(Constant.MONGO_SET, update);
-        update(getDB(), getCollection(), query, updateValue);
+        update(MongoFacroty.getAppDB(), getCollection(), query, updateValue);
         return entry.getID();
     }
 
@@ -66,12 +66,12 @@ public class FSectionDao extends BaseDao {
         DBObject query1 = new BasicDBObject(Constant.ID, selfId);
         DBObject update1 = new BasicDBObject("st", selfSort);
         DBObject updateValue1 = new BasicDBObject(Constant.MONGO_SET, update1);
-        update(getDB(), getCollection(), query1, updateValue1);
+        update(MongoFacroty.getAppDB(), getCollection(), query1, updateValue1);
 
         DBObject query2 = new BasicDBObject(Constant.ID, anotherId);
         DBObject update2 = new BasicDBObject("st", anotherSort);
         DBObject updateValue2 = new BasicDBObject(Constant.MONGO_SET, update2);
-        update(getDB(), getCollection(), query2, updateValue2);
+        update(MongoFacroty.getAppDB(), getCollection(), query2, updateValue2);
     }
 
     /**
@@ -81,7 +81,7 @@ public class FSectionDao extends BaseDao {
         DBObject query = new BasicDBObject(Constant.ID, id);
         DBObject update = new BasicDBObject(type, imgUrl);
         DBObject updateValue = new BasicDBObject(Constant.MONGO_SET, update);
-        update(getDB(), getCollection(), query, updateValue);
+        update(MongoFacroty.getAppDB(), getCollection(), query, updateValue);
     }
 
     /**
@@ -92,13 +92,13 @@ public class FSectionDao extends BaseDao {
     public void updateReplyAndPost(ObjectId id) {
         DBObject query = new BasicDBObject(Constant.ID, id);
         DBObject updateValue = new BasicDBObject(Constant.MONGO_INC, new BasicDBObject("pc", 1));
-        update(getDB(), getCollection(), query, updateValue);
+        update(MongoFacroty.getAppDB(), getCollection(), query, updateValue);
     }
 
     public void updateTotalComment(ObjectId id) {
         DBObject query = new BasicDBObject(Constant.ID, id);
         DBObject updateValue = new BasicDBObject(Constant.MONGO_INC, new BasicDBObject("tcc", 1));
-        update(getDB(), getCollection(), query, updateValue);
+        update(MongoFacroty.getAppDB(), getCollection(), query, updateValue);
     }
 
     /**
@@ -109,13 +109,13 @@ public class FSectionDao extends BaseDao {
     public void updateThemeAndPost(ObjectId id) {
         DBObject query = new BasicDBObject(Constant.ID, id);
         DBObject updateValue = new BasicDBObject(Constant.MONGO_INC, new BasicDBObject("pc", 1));
-        update(getDB(), getCollection(), query, updateValue);
+        update(MongoFacroty.getAppDB(), getCollection(), query, updateValue);
     }
 
     public void updateThemeCount(ObjectId id) {
         DBObject query = new BasicDBObject(Constant.ID, id);
         DBObject updateValue = new BasicDBObject(Constant.MONGO_INC, new BasicDBObject("tc", 1));
-        update(getDB(), getCollection(), query, updateValue);
+        update(MongoFacroty.getAppDB(), getCollection(), query, updateValue);
     }
 
     /**
@@ -124,7 +124,7 @@ public class FSectionDao extends BaseDao {
     public void updateTotalScanCount(ObjectId id) {
         DBObject query = new BasicDBObject(Constant.ID, id);
         DBObject updateValue = new BasicDBObject(Constant.MONGO_INC, new BasicDBObject("tsc", 1));
-        update(getDB(), getCollection(), query, updateValue);
+        update(MongoFacroty.getAppDB(), getCollection(), query, updateValue);
     }
 
     /**
@@ -138,7 +138,7 @@ public class FSectionDao extends BaseDao {
         values.add(new BasicDBObject("pid", fSectionEntryId));
         values.add(new BasicDBObject(Constant.ID, fSectionEntryId));
         query.put(Constant.MONGO_OR, values);
-        remove(getDB(), getCollection(), query);
+        remove(MongoFacroty.getAppDB(), getCollection(), query);
     }
 
     /**
@@ -149,7 +149,7 @@ public class FSectionDao extends BaseDao {
      */
     public FSectionEntry getFSection(ObjectId fSectionEntryId) {
         DBObject query = new BasicDBObject(Constant.ID, fSectionEntryId);
-        DBObject dbObject = findOne(getDB(), getCollection(), query, Constant.FIELDS);
+        DBObject dbObject = findOne(MongoFacroty.getAppDB(), getCollection(), query, Constant.FIELDS);
         return new FSectionEntry((BasicDBObject) dbObject);
     }
 
@@ -168,7 +168,7 @@ public class FSectionDao extends BaseDao {
         if (StringUtils.isNotBlank(name)) {
             query.append("nm", name);
         }
-        List<DBObject> dbObjectList = find(getDB(), getCollection(), query, Constant.FIELDS, sort);
+        List<DBObject> dbObjectList = find(MongoFacroty.getAppDB(), getCollection(), query, Constant.FIELDS, sort);
         List<FSectionEntry> retList = new ArrayList<FSectionEntry>();
         if (dbObjectList != null && dbObjectList.size() > 0) {
             for (DBObject dbo : dbObjectList) {

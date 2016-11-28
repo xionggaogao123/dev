@@ -1,7 +1,7 @@
 package com.fulaan.pojo;
 
-import com.fulaan.entry.FLoginLogEntry;
 import com.pojo.app.Platform;
+import com.pojo.fcommunity.FLoginLogEntry;
 
 /**
  * Created by jerry on 2016/9/21.
@@ -23,7 +23,7 @@ public class FLoginLog {
         this.pf = pf;
     }
 
-    public FLoginLog(FLoginLogEntry loginLogEntry){
+    public FLoginLog(FLoginLogEntry loginLogEntry) {
         this.userName = loginLogEntry.getUserName();
         this.nickName = loginLogEntry.getUserNick();
         this.loginTime = loginLogEntry.getLoginTime();

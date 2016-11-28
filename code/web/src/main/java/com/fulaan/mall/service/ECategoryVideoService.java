@@ -1,8 +1,8 @@
 package com.fulaan.mall.service;
 
 import com.db.ebusiness.ECategoryVideoDao;
-import com.fulaan_old.utils.QiniuFileUtils;
-import com.fulaan_old.video.service.VideoService;
+import com.fulaan.utils.QiniuFileUtils;
+import com.fulaan.video.service.VideoService;
 import com.pojo.ebusiness.ECategoryVideoDTO;
 import com.pojo.ebusiness.ECategoryVideoEntry;
 import org.bson.types.ObjectId;

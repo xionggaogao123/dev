@@ -1,7 +1,7 @@
 package com.fulaan.dto;
 
-import com.fulaan.entry.MemberEntry;
 import com.fulaan.util.OperationType;
+import com.pojo.fcommunity.MemberEntry;
 import com.pojo.user.AvatarType;
 import com.sys.utils.AvatarUtils;
 
@@ -14,212 +14,212 @@ import java.util.List;
 
 public class MemberDTO {
 
-  private String id;
-  private String userId;
-  private String time;
-  private String avator;
-  private String userName;
-  private String nickName;
-  private String groupId;
-  private String roleStr;
-  private int status;
-  private int flag;
-  private int role;
-  private List<String> tags = new ArrayList<String>();
-  private List<String> playmate = new ArrayList<String>();
-  private int playmateCount;
-  private int tagType;//0:没有标签 1:有标签
-  private int playmateFlag;
-  private String remarkId;
-  //判断是否本人的标志位
-  private int isOwner;
+    private String id;
+    private String userId;
+    private String time;
+    private String avator;
+    private String userName;
+    private String nickName;
+    private String groupId;
+    private String roleStr;
+    private int status;
+    private int flag;
+    private int role;
+    private List<String> tags = new ArrayList<String>();
+    private List<String> playmate = new ArrayList<String>();
+    private int playmateCount;
+    private int tagType;//0:没有标签 1:有标签
+    private int playmateFlag;
+    private String remarkId;
+    //判断是否本人的标志位
+    private int isOwner;
 
 
-  public MemberDTO() {
+    public MemberDTO() {
 
-  }
-
-  public MemberDTO(MemberEntry entry) {
-    this.id = entry.getID().toString();
-    this.userId = entry.getUserId().toString();
-    this.time = entry.getAvator();
-    this.nickName = entry.getNickName();
-    this.status = entry.getStatus();
-    this.role = entry.getRole();
-    this.roleStr = getRoleStr(entry.getRole());
-    this.userName = entry.getUserName();
-    this.avator = AvatarUtils.getAvatar(entry.getAvator(), AvatarType.MIN_AVATAR.getType());
-    if (null != entry.getGroupId()) {
-      this.groupId = entry.getGroupId().toString();
     }
 
-  }
+    public MemberDTO(MemberEntry entry) {
+        this.id = entry.getID().toString();
+        this.userId = entry.getUserId().toString();
+        this.time = entry.getAvator();
+        this.nickName = entry.getNickName();
+        this.status = entry.getStatus();
+        this.role = entry.getRole();
+        this.roleStr = getRoleStr(entry.getRole());
+        this.userName = entry.getUserName();
+        this.avator = AvatarUtils.getAvatar(entry.getAvator(), AvatarType.MIN_AVATAR.getType());
+        if (null != entry.getGroupId()) {
+            this.groupId = entry.getGroupId().toString();
+        }
 
-  public String getRoleStr(int role) {
-    String roleStr = "";
-
-    switch (role) {
-      case 0:
-        roleStr = OperationType.NORMAL.getDecs();
-        break;
-      case 1:
-        roleStr = OperationType.MONITOR.getDecs();
-        break;
-      case 2:
-        roleStr = OperationType.MANAGEMENT.getDecs();
-        break;
-
-      default:
-        roleStr = "";
     }
-    return roleStr;
-  }
 
-  public String getUserName() {
-    return userName;
-  }
+    public String getRoleStr(int role) {
+        String roleStr = "";
 
-  public void setUserName(String userName) {
-    this.userName = userName;
-  }
+        switch (role) {
+            case 0:
+                roleStr = OperationType.NORMAL.getDecs();
+                break;
+            case 1:
+                roleStr = OperationType.MONITOR.getDecs();
+                break;
+            case 2:
+                roleStr = OperationType.MANAGEMENT.getDecs();
+                break;
 
-  public String getId() {
-    return id;
-  }
+            default:
+                roleStr = "";
+        }
+        return roleStr;
+    }
 
-  public void setId(String id) {
-    this.id = id;
-  }
+    public String getUserName() {
+        return userName;
+    }
 
-  public String getUserId() {
-    return userId;
-  }
+    public void setUserName(String userName) {
+        this.userName = userName;
+    }
 
-  public void setUserId(String userId) {
-    this.userId = userId;
-  }
+    public String getId() {
+        return id;
+    }
 
-  public String getTime() {
-    return time;
-  }
+    public void setId(String id) {
+        this.id = id;
+    }
 
-  public void setTime(String time) {
-    this.time = time;
-  }
+    public String getUserId() {
+        return userId;
+    }
 
-  public String getAvator() {
-    return avator;
-  }
+    public void setUserId(String userId) {
+        this.userId = userId;
+    }
 
-  public void setAvator(String avator) {
-    this.avator = avator;
-  }
+    public String getTime() {
+        return time;
+    }
 
-  public String getNickName() {
-    return nickName;
-  }
+    public void setTime(String time) {
+        this.time = time;
+    }
 
-  public void setNickName(String nickName) {
-    this.nickName = nickName;
-  }
+    public String getAvator() {
+        return avator;
+    }
 
-  public String getGroupId() {
-    return groupId;
-  }
+    public void setAvator(String avator) {
+        this.avator = avator;
+    }
 
-  public void setGroupId(String groupId) {
-    this.groupId = groupId;
-  }
+    public String getNickName() {
+        return nickName;
+    }
 
-  public String getRoleStr() {
-    return roleStr;
-  }
+    public void setNickName(String nickName) {
+        this.nickName = nickName;
+    }
 
-  public void setRoleStr(String roleStr) {
-    this.roleStr = roleStr;
-  }
+    public String getGroupId() {
+        return groupId;
+    }
 
-  public int getStatus() {
-    return status;
-  }
+    public void setGroupId(String groupId) {
+        this.groupId = groupId;
+    }
 
-  public void setStatus(int status) {
-    this.status = status;
-  }
+    public String getRoleStr() {
+        return roleStr;
+    }
 
-  public int getFlag() {
-    return flag;
-  }
+    public void setRoleStr(String roleStr) {
+        this.roleStr = roleStr;
+    }
 
-  public void setFlag(int flag) {
-    this.flag = flag;
-  }
+    public int getStatus() {
+        return status;
+    }
 
-  public int getRole() {
-    return role;
-  }
+    public void setStatus(int status) {
+        this.status = status;
+    }
 
-  public void setRole(int role) {
-    this.role = role;
-  }
+    public int getFlag() {
+        return flag;
+    }
 
-  public List<String> getTags() {
-    return tags;
-  }
+    public void setFlag(int flag) {
+        this.flag = flag;
+    }
 
-  public void setTags(List<String> tags) {
-    this.tags = tags;
-  }
+    public int getRole() {
+        return role;
+    }
 
-  public List<String> getPlaymate() {
-    return playmate;
-  }
+    public void setRole(int role) {
+        this.role = role;
+    }
 
-  public void setPlaymate(List<String> playmate) {
-    this.playmate = playmate;
-  }
+    public List<String> getTags() {
+        return tags;
+    }
 
-  public int getPlaymateCount() {
-    return playmateCount;
-  }
+    public void setTags(List<String> tags) {
+        this.tags = tags;
+    }
 
-  public void setPlaymateCount(int playmateCount) {
-    this.playmateCount = playmateCount;
-  }
+    public List<String> getPlaymate() {
+        return playmate;
+    }
 
-  public int getTagType() {
-    return tagType;
-  }
+    public void setPlaymate(List<String> playmate) {
+        this.playmate = playmate;
+    }
 
-  public void setTagType(int tagType) {
-    this.tagType = tagType;
-  }
+    public int getPlaymateCount() {
+        return playmateCount;
+    }
 
-  public int isPlaymateFlag() {
-    return playmateFlag;
-  }
+    public void setPlaymateCount(int playmateCount) {
+        this.playmateCount = playmateCount;
+    }
 
-  public void setPlaymateFlag(int playmateFlag) {
-    this.playmateFlag = playmateFlag;
-  }
+    public int getTagType() {
+        return tagType;
+    }
 
-  public String getRemarkId() {
-    return remarkId;
-  }
+    public void setTagType(int tagType) {
+        this.tagType = tagType;
+    }
 
-  public void setRemarkId(String remarkId) {
-    this.remarkId = remarkId;
-  }
+    public int isPlaymateFlag() {
+        return playmateFlag;
+    }
 
-  public int getPlaymateFlag() {
-    return playmateFlag;
-  }
+    public void setPlaymateFlag(int playmateFlag) {
+        this.playmateFlag = playmateFlag;
+    }
 
-  public int getIsOwner() {
-    return isOwner;
-  }
+    public String getRemarkId() {
+        return remarkId;
+    }
 
-  public void setIsOwner(int isOwner) {
-    this.isOwner = isOwner;
-  }
+    public void setRemarkId(String remarkId) {
+        this.remarkId = remarkId;
+    }
+
+    public int getPlaymateFlag() {
+        return playmateFlag;
+    }
+
+    public int getIsOwner() {
+        return isOwner;
+    }
+
+    public void setIsOwner(int isOwner) {
+        this.isOwner = isOwner;
+    }
 }

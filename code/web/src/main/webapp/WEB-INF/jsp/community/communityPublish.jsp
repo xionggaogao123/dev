@@ -21,6 +21,10 @@
     </div>
     <div class="f-cont">
         <div class="hd-nav">
+            <div class="login-mk-btn" style="display: none;">
+                <div class="d1"></div>
+                <div class="d2"></div>
+            </div>
             <span class="hd-green-cur">我的社区</span>
             <%--<span>找学习</span>--%>
             <%--<span>找玩伴</span>--%>
@@ -241,8 +245,8 @@
 
 <%--环信消息通知--%>
 <div class="hx-notice">
-    <span class="sp1"></span>
-    <span class="sp3">你有3条未读消息</span>
+    <span class="sp2" id="hx-icon"></span>
+    <span class="sp3" id="hx-msg-count">您有0条未读消息</span>
 </div>
 
 

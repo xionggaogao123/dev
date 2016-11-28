@@ -79,14 +79,14 @@ public class FriendDao extends BaseDao {
 
   public FriendEntry get(ObjectId id) {
     BasicDBObject query = new BasicDBObject("uid", id);
-    DBObject dbObject = findOne(getDB(), getCollection(), query, Constant.FIELDS);
+    DBObject dbObject = findOne(MongoFacroty.getAppDB(), getCollection(), query, Constant.FIELDS);
     if (dbObject == null) return null;
     return new FriendEntry((BasicDBObject) dbObject);
   }
 
   public boolean isFriend(ObjectId u1, ObjectId u2) {
     BasicDBObject query = new BasicDBObject("uid", u1).append("fid", u2);
-    DBObject dbObject = findOne(getDB(), getCollection(), query, Constant.FIELDS);
+    DBObject dbObject = findOne(MongoFacroty.getAppDB(), getCollection(), query, Constant.FIELDS);
     return dbObject != null;
   }
 
@@ -94,24 +94,24 @@ public class FriendDao extends BaseDao {
   public void deleteOneFriend(ObjectId objectId, ObjectId objectId1) {
     BasicDBObject query = new BasicDBObject("uid", objectId);
     BasicDBObject update = new BasicDBObject(Constant.MONGO_PULL, new BasicDBObject("fid", objectId1));
-    update(getDB(), getCollection(), query, update);
+    update(MongoFacroty.getAppDB(), getCollection(), query, update);
   }
 
   public boolean recordIsExist(ObjectId userId) {
     BasicDBObject query = new BasicDBObject("uid", userId);
-    int k = count(getDB(), getCollection(), query);
+    int k = count(MongoFacroty.getAppDB(), getCollection(), query);
     return k != 0;
   }
 
   public void addOneFriend(ObjectId userId, ObjectId friendId) {
     BasicDBObject query = new BasicDBObject("uid", userId);
     BasicDBObject update = new BasicDBObject(Constant.MONGO_PUSH, new BasicDBObject("fid", friendId));
-    update(getDB(), getCollection(), query, update);
+    update(MongoFacroty.getAppDB(), getCollection(), query, update);
   }
 
   public void addFriendEntry(ObjectId objectId, List<ObjectId> objectIdList) {
     BasicDBObject basicDBObject = new BasicDBObject("uid", objectId).append("fid", objectIdList);
-    save(getDB(), getCollection(), basicDBObject);
+    save(MongoFacroty.getAppDB(), getCollection(), basicDBObject);
   }
 
   private String getCollection() {
@@ -123,7 +123,7 @@ public class FriendDao extends BaseDao {
   * */
   public List<UserEntry> recommendFriendBySchool(ObjectId objectId, List<ObjectId> objectIdList, Integer begin, Integer pageSize) {
     BasicDBObject query = new BasicDBObject(Constant.ID, new BasicDBObject(Constant.MONGO_NOTIN, objectIdList)).append("si", objectId).append("r", UserRole.STUDENT.getRole()).append("ir", 0);
-    List<DBObject> dbObjectList = find(getDB(), Constant.COLLECTION_USER_NAME, query, new BasicDBObject("nm", 1).append("nnm", 1).append("avt", 1), Constant.MONGO_SORTBY_DESC, begin, pageSize);
+    List<DBObject> dbObjectList = find(MongoFacroty.getAppDB(), Constant.COLLECTION_USER_NAME, query, new BasicDBObject("nm", 1).append("nnm", 1).append("avt", 1), Constant.MONGO_SORTBY_DESC, begin, pageSize);
     List<UserEntry> userEntryList = new ArrayList<UserEntry>();
     for (DBObject dbObject : dbObjectList) {
       UserEntry userEntry = new UserEntry((BasicDBObject) dbObject);
@@ -134,7 +134,7 @@ public class FriendDao extends BaseDao {
 
   public int recommendFriendBySchoolCount(ObjectId objectId, List<ObjectId> objectIdList) {
     BasicDBObject query = new BasicDBObject(Constant.ID, new BasicDBObject(Constant.MONGO_NOTIN, objectIdList)).append("si", objectId).append("r", UserRole.STUDENT.getRole()).append("ir", 0);
-    return count(getDB(), Constant.COLLECTION_USER_NAME, query);
+    return count(MongoFacroty.getAppDB(), Constant.COLLECTION_USER_NAME, query);
   }
 
 

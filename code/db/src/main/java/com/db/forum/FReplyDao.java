@@ -24,11 +24,11 @@ public class FReplyDao extends BaseDao {
      * @return
      */
     public ObjectId addFReply(FReplyEntry e) {
-        save(getDB(), getCollection(), e.getBaseEntry());
+        save(MongoFacroty.getAppDB(), getCollection(), e.getBaseEntry());
         ObjectId postId = e.getPostId();
         BasicDBObject query = new BasicDBObject(Constant.ID, postId);
         BasicDBObject updateValue = new BasicDBObject(Constant.MONGO_SET, new BasicDBObject("upt", System.currentTimeMillis()));
-        update(getDB(), Constant.COLLECTION_FORUM_POST, query, updateValue);
+        update(MongoFacroty.getAppDB(), Constant.COLLECTION_FORUM_POST, query, updateValue);
         return e.getID();
     }
 
@@ -44,7 +44,7 @@ public class FReplyDao extends BaseDao {
             } else {
                 updateValue.append(Constant.MONGO_SET, new BasicDBObject("rl", e.getRepliesList().get(0)));
             }
-            update(getDB(), getCollection(), query, updateValue);
+            update(MongoFacroty.getAppDB(), getCollection(), query, updateValue);
         } catch (Exception e1) {
             e1.printStackTrace();
             System.out.print(System.currentTimeMillis());
@@ -64,7 +64,7 @@ public class FReplyDao extends BaseDao {
         if (repliesToReply != -1) {
             query.append("rfr", repliesToReply);
         }
-        List<DBObject> dbObjectList = find(getDB(), getCollection(), query, fields, sort, skip, limit);
+        List<DBObject> dbObjectList = find(MongoFacroty.getAppDB(), getCollection(), query, fields, sort, skip, limit);
 
         for (DBObject dbObject : dbObjectList) {
             retList.add(new FReplyEntry((BasicDBObject) dbObject));
@@ -82,7 +82,7 @@ public class FReplyDao extends BaseDao {
         if (repliesToReply != -1) {
             query.append("rfr", repliesToReply);
         }
-        List<DBObject> dbObjectList = find(getDB(), getCollection(), query, fields, sort);
+        List<DBObject> dbObjectList = find(MongoFacroty.getAppDB(), getCollection(), query, fields, sort);
         for (DBObject dbObject : dbObjectList) {
             retList.add(new FReplyEntry((BasicDBObject) dbObject));
         }
@@ -120,7 +120,7 @@ public class FReplyDao extends BaseDao {
             query.append("fl", floor);
         }
         query.append("rm", new BasicDBObject(Constant.MONGO_NOTIN, new int[]{1}));
-        List<DBObject> dbObjectList = find(getDB(), getCollection(), query, fields, sort, skip, limit);
+        List<DBObject> dbObjectList = find(MongoFacroty.getAppDB(), getCollection(), query, fields, sort, skip, limit);
 
         for (DBObject dbObject : dbObjectList) {
             retList.add(new FReplyEntry(dbObject));
@@ -136,7 +136,7 @@ public class FReplyDao extends BaseDao {
             query.append("ptid", postId);
         }
         query.append("rm", new BasicDBObject(Constant.MONGO_NOTIN, new int[]{1}));
-        List<DBObject> dbObjectList = find(getDB(), getCollection(), query, Constant.FIELDS, new BasicDBObject("_id", -1), 1, 1);
+        List<DBObject> dbObjectList = find(MongoFacroty.getAppDB(), getCollection(), query, Constant.FIELDS, new BasicDBObject("_id", -1), 1, 1);
 
         for (DBObject dbObject : dbObjectList) {
             retList.add(new FReplyEntry(dbObject));
@@ -156,7 +156,7 @@ public class FReplyDao extends BaseDao {
             query.append("ptid", postId);
         }
         query.append("rm", new BasicDBObject(Constant.MONGO_NOTIN, new int[]{1}));
-        List<DBObject> dbObjectList = find(getDB(), getCollection(), query, Constant.FIELDS, new BasicDBObject("_id", -1));
+        List<DBObject> dbObjectList = find(MongoFacroty.getAppDB(), getCollection(), query, Constant.FIELDS, new BasicDBObject("_id", -1));
         for (DBObject dbObject : dbObjectList) {
             retList.add(new FReplyEntry((BasicDBObject) dbObject));
         }
@@ -200,7 +200,7 @@ public class FReplyDao extends BaseDao {
         BasicDBObject query = new BasicDBObject("ptid", postId);
         BasicDBObject updateValue = new BasicDBObject();
         updateValue.append(Constant.MONGO_SET, new BasicDBObject("rm", 1));
-        update(getDB(), getCollection(), query, updateValue);
+        update(MongoFacroty.getAppDB(), getCollection(), query, updateValue);
     }
 
     /**
@@ -210,7 +210,7 @@ public class FReplyDao extends BaseDao {
         BasicDBObject query = new BasicDBObject(Constant.ID, id);
         BasicDBObject updateValue = new BasicDBObject();
         updateValue.append(Constant.MONGO_SET, new BasicDBObject("rm", 1));
-        update(getDB(), getCollection(), query, updateValue);
+        update(MongoFacroty.getAppDB(), getCollection(), query, updateValue);
     }
 
     /**
@@ -221,7 +221,7 @@ public class FReplyDao extends BaseDao {
      */
     public FReplyEntry getFReplyEntry(ObjectId id) {
         BasicDBObject query = new BasicDBObject(Constant.ID, id);
-        DBObject dbo = findOne(getDB(), getCollection(), query, Constant.FIELDS);
+        DBObject dbo = findOne(MongoFacroty.getAppDB(), getCollection(), query, Constant.FIELDS);
         if (null != dbo) {
             return new FReplyEntry((BasicDBObject) dbo);
         }
@@ -253,7 +253,7 @@ public class FReplyDao extends BaseDao {
         BasicDBObject query = new BasicDBObject()
                 .append("ptid", postId)
                 .append("fl", flooor);
-        DBObject dbObject = findOne(getDB(), getCollection(), query, Constant.FIELDS);
+        DBObject dbObject = findOne(MongoFacroty.getAppDB(), getCollection(), query, Constant.FIELDS);
         if (dbObject != null) {
             FReplyEntry entry = new FReplyEntry(dbObject);
             return entry.getTime();
@@ -270,7 +270,7 @@ public class FReplyDao extends BaseDao {
         Long updateTime = System.currentTimeMillis();
         updateValue.append(Constant.MONGO_ADDTOSET, new BasicDBObject("url", userReplyId)).append(Constant.MONGO_INC, new BasicDBObject("prc", 1))
                 .append(Constant.MONGO_SET, new BasicDBObject("upt", updateTime));
-        update(getDB(), getCollection(), query, updateValue);
+        update(MongoFacroty.getAppDB(), getCollection(), query, updateValue);
     }
 
     /**
@@ -286,7 +286,7 @@ public class FReplyDao extends BaseDao {
         BasicDBObject sort = new BasicDBObject();
         sort.append("prc", -1);
         sort.append("upt", -1);
-        List<DBObject> dbObjectList = find(getDB(), getCollection(), query, Constant.FIELDS, sort);
+        List<DBObject> dbObjectList = find(MongoFacroty.getAppDB(), getCollection(), query, Constant.FIELDS, sort);
         for (DBObject dbObject : dbObjectList) {
             retList.add(new FReplyEntry((BasicDBObject) dbObject));
         }
@@ -308,7 +308,7 @@ public class FReplyDao extends BaseDao {
         BasicDBObject sort = new BasicDBObject();
         sort.append("prc", -1);
         sort.append("upt", -1);
-        List<DBObject> dbObjectList = find(getDB(), getCollection(), query, Constant.FIELDS, sort);
+        List<DBObject> dbObjectList = find(MongoFacroty.getAppDB(), getCollection(), query, Constant.FIELDS, sort);
         for (DBObject dbObject : dbObjectList) {
             retList.add(new FReplyEntry((BasicDBObject) dbObject));
         }
@@ -334,7 +334,7 @@ public class FReplyDao extends BaseDao {
                 .append("rl",pullSpec);
         BasicDBObject update = new BasicDBObject()
                 .append(Constant.MONGO_PULL, pull);
-        update(getDB(), getCollection(), query, update);
+        update(MongoFacroty.getAppDB(), getCollection(), query, update);
         return 0;
     }
 
@@ -349,7 +349,7 @@ public class FReplyDao extends BaseDao {
                 .append("ptid",postId);
         BasicDBObject sort = new BasicDBObject()
                 .append("prc",-1);
-        List<DBObject> dbObjectList = find(getDB(), getCollection(), query, Constant.FIELDS, sort);
+        List<DBObject> dbObjectList = find(MongoFacroty.getAppDB(), getCollection(), query, Constant.FIELDS, sort);
         for (DBObject dbObject : dbObjectList) {
             retList.add(new FReplyEntry(dbObject));
         }
@@ -358,7 +358,7 @@ public class FReplyDao extends BaseDao {
 
 
     private int count(BasicDBObject query) {
-        return count(getDB(), getCollection(), query);
+        return count(MongoFacroty.getAppDB(), getCollection(), query);
     }
 
     private String getCollection() {

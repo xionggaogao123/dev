@@ -3,28 +3,28 @@ package com.easemob.server.api;
 import com.easemob.server.comm.ClientContext;
 
 public abstract class EasemobRestAPI implements RestAPI {
-	
-	private ClientContext context;
-	
-	private RestAPIInvoker invoker;
 
-	public abstract String getResourceRootURI();
-	
-	public ClientContext getContext() {
-		return context;
-	}
+    private ClientContext context;
 
-	public void setContext(ClientContext context) {
-		this.context = context;
-	}
+    private RestAPIInvoker invoker;
 
-	public RestAPIInvoker getInvoker() {
-		return invoker;
-	}
+    public abstract String getResourceRootURI();
 
-	public void setInvoker(RestAPIInvoker invoker) {
-		this.invoker = invoker;
-	}
-	
-	
+    public ClientContext getContext() {
+        return context;
+    }
+
+    public void setContext(ClientContext context) {
+        this.context = context;
+    }
+
+    public RestAPIInvoker getInvoker() {
+        return invoker;
+    }
+
+    public void setInvoker(RestAPIInvoker invoker) {
+        this.invoker = invoker;
+    }
+
+
 }

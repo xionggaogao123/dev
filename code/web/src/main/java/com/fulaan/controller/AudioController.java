@@ -1,7 +1,7 @@
 package com.fulaan.controller;
 
 import com.fulaan.annotation.SessionNeedless;
-import com.fulaan_old.utils.QiniuFileUtils;
+import com.fulaan.utils.QiniuFileUtils;
 import com.sys.utils.RespObj;
 import org.apache.log4j.Logger;
 import org.springframework.stereotype.Controller;
@@ -20,31 +20,31 @@ import org.springframework.web.multipart.MultipartFile;
 @RequestMapping("/audio")
 public class AudioController {
 
-  private static final Logger logger = Logger.getLogger(AudioController.class);
+    private static final Logger logger = Logger.getLogger(AudioController.class);
 
-  /**
-   * 处理上传语音的接口
-   *
-   * @param name 文件名
-   * @param file 文件
-   * @param type 文件类型
-   * @return RespObj
-   * @throws Exception
-   */
-  @SessionNeedless
-  @RequestMapping(value = "/upload", method = RequestMethod.POST)
-  @ResponseBody
-  public RespObj uploadAudio(@RequestParam("name") String name,
-                             @RequestParam("file") MultipartFile file,
-                             @RequestParam("type") String type) throws Exception {
-    String path;
-    if (!file.isEmpty()) {
-      String fileName = String.valueOf(System.currentTimeMillis()) + "." + type;
-      QiniuFileUtils.uploadFile(fileName, file.getInputStream(), QiniuFileUtils.TYPE_SOUND);
-      path = QiniuFileUtils.getPath(QiniuFileUtils.TYPE_SOUND, fileName);
-    } else {
-      return RespObj.FAILD("文件为空");
+    /**
+     * 处理上传语音的接口
+     *
+     * @param name 文件名
+     * @param file 文件
+     * @param type 文件类型
+     * @return RespObj
+     * @throws Exception
+     */
+    @SessionNeedless
+    @RequestMapping(value = "/upload", method = RequestMethod.POST)
+    @ResponseBody
+    public RespObj uploadAudio(@RequestParam("name") String name,
+                               @RequestParam("file") MultipartFile file,
+                               @RequestParam("type") String type) throws Exception {
+        String path;
+        if (!file.isEmpty()) {
+            String fileName = String.valueOf(System.currentTimeMillis()) + "." + type;
+            QiniuFileUtils.uploadFile(fileName, file.getInputStream(), QiniuFileUtils.TYPE_SOUND);
+            path = QiniuFileUtils.getPath(QiniuFileUtils.TYPE_SOUND, fileName);
+        } else {
+            return RespObj.FAILD("文件为空");
+        }
+        return RespObj.SUCCESS(path);
     }
-    return RespObj.SUCCESS(path);
-  }
 }

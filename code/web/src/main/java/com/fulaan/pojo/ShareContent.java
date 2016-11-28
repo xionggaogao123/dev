@@ -6,53 +6,53 @@ package com.fulaan.pojo;
  */
 public class ShareContent {
 
-  private String shareUrl;
-  private String shareImage;
-  private String shareTitle;
-  private String sharePrice;
+    private String shareUrl;
+    private String shareImage;
+    private String shareTitle;
+    private String sharePrice;
 
-  public ShareContent(){
+    public ShareContent() {
 
-  }
+    }
 
-  public ShareContent(String shareUrl,String shareImage,String shareTitle,String sharePrice){
+    public ShareContent(String shareUrl, String shareImage, String shareTitle, String sharePrice) {
 
-    this.shareImage = shareImage;
-    this.sharePrice = sharePrice;
-    this.shareTitle = shareTitle;
-    this.shareUrl = shareUrl;
-  }
+        this.shareImage = shareImage;
+        this.sharePrice = sharePrice;
+        this.shareTitle = shareTitle;
+        this.shareUrl = shareUrl;
+    }
 
-  public String getShareUrl() {
-    return shareUrl;
-  }
+    public String getShareUrl() {
+        return shareUrl;
+    }
 
-  public void setShareUrl(String shareUrl) {
-    this.shareUrl = shareUrl;
-  }
+    public void setShareUrl(String shareUrl) {
+        this.shareUrl = shareUrl;
+    }
 
-  public String getShareImage() {
-    return shareImage;
-  }
+    public String getShareImage() {
+        return shareImage;
+    }
 
-  public void setShareImage(String shareImage) {
-    this.shareImage = shareImage;
-  }
+    public void setShareImage(String shareImage) {
+        this.shareImage = shareImage;
+    }
 
-  public String getShareTitle() {
-    return shareTitle;
-  }
+    public String getShareTitle() {
+        return shareTitle;
+    }
 
-  public void setShareTitle(String shareTitle) {
-    this.shareTitle = shareTitle;
-  }
+    public void setShareTitle(String shareTitle) {
+        this.shareTitle = shareTitle;
+    }
 
-  public String getSharePrice() {
-    return sharePrice;
-  }
+    public String getSharePrice() {
+        return sharePrice;
+    }
 
-  public void setSharePrice(String sharePrice) {
-    this.sharePrice = sharePrice;
-  }
+    public void setSharePrice(String sharePrice) {
+        this.sharePrice = sharePrice;
+    }
 
 }

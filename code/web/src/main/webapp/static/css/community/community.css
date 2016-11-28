@@ -859,6 +859,30 @@ pre{white-space: pre-wrap;word-wrap: break-word;}
     width: 1250px;
     margin: 0 auto;
     height: 56px;
+    position: relative;
+}
+.login-mk-btn{
+    position: absolute;
+    width: 300px;
+    height: 37px;
+    top:-100px;
+    left: 475px;
+}
+.login-mk-btn .d1{
+    float: right;
+    width: 120px;
+    height: 37px;
+    background: url("/static/images/community/orange_register.png");
+    cursor: pointer;
+    border-radius: 6px;
+}
+.login-mk-btn .d2{
+    float: left;
+    width: 120px;
+    height: 37px;
+    background: url("/static/images/community/green_login.png");
+    cursor: pointer;
+    border-radius: 6px;
 }
 .hd-nav span{
     float: left;
@@ -2646,8 +2670,7 @@ pre{white-space: pre-wrap;word-wrap: break-word;}
     float: left;
     font-size: 13px;
     width: 163px;
-    line-height: 22px;
-    height: 22px;
+    height: auto;
 }
 .ul-member-list li .p3{
     float: left;
@@ -2719,6 +2742,12 @@ pre{white-space: pre-wrap;word-wrap: break-word;}
     height: 16px;
     margin: 10px 12px 0 30px;
 }
+.ul-comr-all .li4 .em1{
+    background: url('/static/images/community/all_gray4.png');
+    width: 16px;
+    height: 16px;
+    margin: 10px 12px 0 30px;
+}
 .ul-comr-all .li1 .em2{
     width: 17px;
     height: 17px;
@@ -2733,6 +2762,12 @@ pre{white-space: pre-wrap;word-wrap: break-word;}
 }
 .ul-comr-all .li3 .em2{
     background: url('/static/images/community/all_blue3.png');
+    width: 16px;
+    height: 16px;
+    margin: 10px 12px 0 30px;
+}
+.ul-comr-all .li4 .em2{
+    background: url('/static/images/community/all_blue4.png');
     width: 16px;
     height: 16px;
     margin: 10px 12px 0 30px;
@@ -3606,4 +3641,37 @@ text-align: center
     border: solid 1px green;
     background: green;
 }
-
+.ul-sysNotice{
+    margin: 0 27px;
+    line-height: 50px;
+}
+.ul-sysNotice li{
+    height: 50px;
+    line-height: 50px;
+    padding-left: 29px;
+    border-bottom: 1px dashed #D7D7D7;
+    background: url("/static/images/community/all_gray4.png") no-repeat 1px 18px;
+}
+.ul-sysNotice li .sp1{
+    float: left;
+    width: 650px;
+    overflow: hidden;
+    height: 50px;
+    line-height: 50px;
+}
+.ul-sysNotice li .sp2{
+     float: right;
+     height: 50px;
+     line-height: 50px;
+ }
+.ul-sysNotice li .sp1 i{
+    float: left;
+    width: 22px;
+    height: 22px;
+    background: url("/static/images/community/guzhang.png");
+    margin-top: 14px;
+    margin-right: 5px;
+}
+.ul-sysNotice li .sp1 a{
+    color: #FF9926;
+}

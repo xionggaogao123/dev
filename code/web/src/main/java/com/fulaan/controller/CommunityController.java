@@ -1821,7 +1821,6 @@ public class CommunityController extends BaseController {
     }
 
     /**
-     * <<<<<<< HEAD
      * 注册环信服务
      *
      * @return
@@ -1955,5 +1954,18 @@ public class CommunityController extends BaseController {
         } else {
             return RespObj.FAILD("你不是副社长或社长，不能批阅作业");
         }
+    }
+
+
+    /**
+     * 删除消息
+     * @param detailId
+     * @return
+     */
+    @RequestMapping("/removeDetailById")
+    @ResponseBody
+    public RespObj removeDetailById(@ObjectIdType ObjectId detailId){
+        communityService.removeCommunityDetailById(detailId);
+        return RespObj.SUCCESS;
     }
 }

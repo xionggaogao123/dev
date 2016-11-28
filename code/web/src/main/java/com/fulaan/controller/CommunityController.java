@@ -90,7 +90,8 @@ public class CommunityController extends BaseController {
 
     @RequestMapping("/create")
     @ResponseBody
-    public RespObj createCommunity(String name,
+    public RespObj createCommunity(HttpServletRequest request,
+                                   String name,
                                    @RequestParam(required = false, defaultValue = "") String desc,
                                    @RequestParam(required = false, defaultValue = "") String logo,
                                    @RequestParam(required = false, defaultValue = "0") int open,
@@ -131,8 +132,8 @@ public class CommunityController extends BaseController {
 
             for (String userId : userList) {
 
-                if (emService.addUserToEmGroup(groupDTO.getEmChatId(), new ObjectId(userId))) {
-                    memberService.saveMember(new ObjectId(userId), new ObjectId(groupDTO.getId()), 0);
+                if(emService.addUserToEmGroup(groupDTO.getEmChatId(),new ObjectId(userId))){
+                    memberService.saveMember(new ObjectId(userId),new ObjectId(groupDTO.getId()),0);
                     communityService.pushToUser(communityId, new ObjectId(userId), 1);
                 }
 
@@ -157,7 +158,8 @@ public class CommunityController extends BaseController {
 
     @RequestMapping("/create2")
     @ResponseBody
-    public RespObj createCommunity2(String name,
+    public RespObj createCommunity2(HttpServletRequest request,
+                                    String name,
                                     @RequestParam(required = false, defaultValue = "") String desc,
                                     @RequestParam(required = false, defaultValue = "") String logo,
                                     @RequestParam(required = false, defaultValue = "0") int open,
@@ -199,8 +201,8 @@ public class CommunityController extends BaseController {
 
             for (String userId : userList) {
 
-                if (emService.addUserToEmGroup(groupDTO.getEmChatId(), new ObjectId(userId))) {
-                    memberService.saveMember(new ObjectId(userId), new ObjectId(groupDTO.getId()), 0);
+                if(emService.addUserToEmGroup(groupDTO.getEmChatId(),new ObjectId(userId))){
+                    memberService.saveMember(new ObjectId(userId),new ObjectId(groupDTO.getId()),0);
                     communityService.pushToUser(communityId, new ObjectId(userId), 1);
                 }
 
@@ -235,7 +237,6 @@ public class CommunityController extends BaseController {
     public RespObj get(@PathVariable @ObjectIdType ObjectId id) {
 
         ObjectId groupId = communityService.getGroupId(id);
-        if(groupId == null) return RespObj.FAILD("fail");
         CommunityDTO communityDTO = communityService.findByObjectId(id);
         List<MemberDTO> members = memberService.getMembers(groupId, 12);
         if (null != getUserId()) {
@@ -360,6 +361,7 @@ public class CommunityController extends BaseController {
                 }
 
                 communityDTOList = communityService.getCommunitys(userId, 1, 9);
+
                 return RespObj.SUCCESS(communityDTOList);
             }
         } catch (Exception e) {
@@ -1494,14 +1496,14 @@ public class CommunityController extends BaseController {
 
         for (ObjectId userId : userIdList) {
 
-            if (!memberService.isGroupMember(groupId, userId)) {
+            if(!memberService.isGroupMember(groupId,userId)) {
                 if (memberService.isBeforeMember(groupId, userId)) {
 
-                    if (emService.addUserToEmGroup(emChatId, userId)) {
-                        memberService.updateMember(groupId, userId, 0);
+                    if(emService.addUserToEmGroup(emChatId,userId)) {
+                        memberService.updateMember(groupId,userId,0);
                     }
                 } else {
-                    if (emService.addUserToEmGroup(emChatId, userId)) {
+                    if(emService.addUserToEmGroup(emChatId,userId)) {
                         memberService.saveMember(userId, groupId);
                     }
 
@@ -1907,5 +1909,18 @@ public class CommunityController extends BaseController {
         } else {
             return RespObj.FAILD("你不是副社长或社长，不能批阅作业");
         }
+    }
+
+
+    /**
+     * 删除消息
+     * @param detailId
+     * @return
+     */
+    @RequestMapping("/removeDetailById")
+    @ResponseBody
+    public RespObj removeDetailById(@ObjectIdType ObjectId detailId){
+        communityService.removeCommunityDetailById(detailId);
+        return RespObj.SUCCESS;
     }
 }

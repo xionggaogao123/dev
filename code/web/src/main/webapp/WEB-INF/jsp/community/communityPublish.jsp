@@ -263,6 +263,17 @@
 </div>
 <div class="bg"></div>
 
+<div class="sign-alert si-s3" >
+    <p class="alert-title">提示<em>×</em></p>
+    <div class="alert-main">
+        <span>你确认要删除这条信息吗？</span>
+    </div>
+    <div class="alert-btn">
+        <button class="alert-btn-sure" id="sureCancel">确认</button>
+        <button class="alert-btn-esc">取消</button>
+    </div>
+</div>
+
 <script type="text/javascript">
     function download(url, fileName) {
         $.ajax({
@@ -339,6 +350,7 @@
             <p class="p-infor">
                 <span>消息来源：{{=value.communityName}}</span>
                 <span>发表时间：{{=value.time}}</span>
+                <span class="delete-detail" detailId="{{=value.id}}">删除</span>
             </p>
         </div>
     </div>
@@ -367,6 +379,7 @@
             <p class="p-infor">
                 <span>消息来源：{{=value.communityName}}</span>
                 <span>发表时间：{{=value.time}}</span>
+                <span class="delete-detail" detailId="{{=value.id}}">删除</span>
             </p>
         </div>
         <%--<div class="notice-bm">--%>
@@ -399,6 +412,7 @@
             <p class="p-infor">
                 <span>消息来源：{{=value.communityName}}</span>
                 <span>发表时间：{{=value.time}}</span>
+                <span class="delete-detail" detailId="{{=value.id}}">删除</span>
             </p>
         </div>
     </div>
@@ -437,6 +451,7 @@
             <p class="p-infor">
                 <span>消息来源：{{=value.communityName}}</span>
                 <span>发表时间：{{=value.time}}</span>
+                <span class="delete-detail" detailId="{{=value.id}}">删除</span>
             </p>
         </div>
         <%--<div class="notice-bm">--%>
@@ -470,6 +485,7 @@
             <p class="p-infor">
                 <span>消息来源：{{=value.communityName}}</span>
                 <span>发表时间：{{=value.time}}</span>
+                <span class="delete-detail" detailId="{{=value.id}}">删除</span>
             </p>
         </div>
         <div class="notice-bm">
@@ -510,6 +526,7 @@
             <p class="p-infor">
                 <span>消息来源：{{=value.communityName}}</span>
                 <span>发表时间：{{=value.time}}</span>
+                <span class="delete-detail" detailId="{{=value.id}}">删除</span>
             </p>
         </div>
     </div>

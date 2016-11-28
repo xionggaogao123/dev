@@ -57,10 +57,11 @@ define(['jquery', 'pagination', 'common'], function (require, exports, module) {
             $('#load').show();
             getUserInfo(1);
         });
-        $('.wind-wait .p1 em').click(function(){
+
+        $('body').on('click','.wind-wait .p1 em',function(){
             $('.wind-wait').fadeOut();
             $('.bg').fadeOut();
-        })
+        });
 
         $('body').on('click', '.wind-yq .p1 em', function () {
             cancelFriend();
@@ -231,7 +232,40 @@ define(['jquery', 'pagination', 'common'], function (require, exports, module) {
         $('body').on('click','.personNal',function(){
             personNal($(this));
         })
+
+        $('body').on('click','.delete-detail',function(){
+            showDelete($(this));
+        })
+
+        $('body').on('click','#sureCancel',function(){
+            sureCancel();
+        })
+
+        $('body').on('click','.si-s3 em,.si-s3 .alert-btn-esc',function(){
+            ss3();
+        })
     })
+
+    function sureCancel(){
+        var param={};
+        param.detailId=$('.si-s3').data('detailId');
+        common.getData('/community/removeDetailById.do',param,function (resp) {
+            ss3();
+            getCommunityDetail();
+        })
+    }
+
+    function ss3(){
+        $('.si-s3').hide();
+        $('.bg').hide();
+    }
+
+
+    function showDelete(obj){
+        $('.si-s3').data('detailId',obj.attr('detailId'));
+        $('.si-s3').show();
+        $('.bg').show();
+    }
 
     function judgeMember(){
         $.ajax({

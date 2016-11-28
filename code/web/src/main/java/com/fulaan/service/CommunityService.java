@@ -130,7 +130,8 @@ public class CommunityService {
         } else {
             communityDetailDTO.setNickName(userEntry.getUserName());
         }
-
+        int partIncontentCount=partInContentDao.countPartPartInContent(communityDetailId);
+        communityDetailDTO.setPartIncotentCount(partIncontentCount);
         communityDetailDTO.setImageUrl(AvatarUtils.getAvatar(userEntry.getAvatar(), AvatarType.MIN_AVATAR.getType()));
         return communityDetailDTO;
     }
@@ -241,7 +242,7 @@ public class CommunityService {
         List<CommunityDetailEntry> communitys = communityDetailDao.getNewsByType(communityIds, type, page, pageSize, order);
 
         int unreadCount = 0;
-        if (userId != null) {
+        if (userId != null&& communityIds.size() > 0 && operation == 1) {
             int totalCount = communityDetailDao.count(communityIds.get(0), type.getType());
             int readCount = communityDetailDao.countRead(type.getType(), communityIds.get(0), userId);
             unreadCount = totalCount - readCount;
@@ -1134,5 +1135,9 @@ public class CommunityService {
 
     public void savePartIncontent(PartInContentEntry partInContentEntry) {
         partInContentDao.saveParInContent(partInContentEntry);
+    }
+
+    public void removeCommunityDetailById(ObjectId id){
+        communityDetailDao.removeCommunityDetail(id);
     }
 }

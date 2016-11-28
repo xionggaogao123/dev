@@ -3675,3 +3675,8 @@ text-align: center
 .ul-sysNotice li .sp1 a{
     color: #FF9926;
 }
+
+.delete-detail{
+    float: right;
+    cursor: pointer;
+}

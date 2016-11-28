@@ -101,19 +101,6 @@ public class GroupDao extends BaseDao {
     }
 
     /**
-     * 获取群聊名称
-     *
-     * @param groupId
-     * @return
-     */
-    public String getGroupName(ObjectId groupId) {
-        BasicDBObject query = new BasicDBObject(Constant.ID, groupId);
-        BasicDBObject field = new BasicDBObject("grnm", 1);
-        DBObject dbo = findOne(MongoFacroty.getAppDB(), Constant.COLLECTION_FORUM_COMMUNITY_GROUP, query, field);
-        return dbo == null ? null : (String) dbo.get("grnm");
-    }
-
-    /**
      * 获取环信id
      *
      * @param groupId
@@ -147,19 +134,6 @@ public class GroupDao extends BaseDao {
         BasicDBObject query = new BasicDBObject(Constant.ID, groupId);
         BasicDBObject update = new BasicDBObject(Constant.MONGO_SET, new BasicDBObject("r", Constant.ONE));
         update(MongoFacroty.getAppDB(), Constant.COLLECTION_FORUM_COMMUNITY_GROUP, query, update);
-    }
-
-    /**
-     * 根据群组id 获取 社区id
-     *
-     * @param groupId
-     * @return
-     */
-    public ObjectId getCommunityIdByGroupId(ObjectId groupId) {
-        BasicDBObject query = new BasicDBObject(Constant.ID, groupId);
-        BasicDBObject field = new BasicDBObject("cmid", 1);
-        DBObject dbo = findOne(MongoFacroty.getAppDB(), Constant.COLLECTION_FORUM_COMMUNITY_GROUP, query, field);
-        return (ObjectId) dbo.get("cmid");
     }
 
     /**

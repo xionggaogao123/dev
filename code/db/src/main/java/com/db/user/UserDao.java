@@ -1561,18 +1561,6 @@ public class UserDao extends BaseDao {
     return userEntryList;
   }
 
-  public List<UserEntry> testTotal(Collection<ObjectId> ids) {
-    List<UserEntry> retList = new ArrayList<UserEntry>();
-    BasicDBObject query = new BasicDBObject(Constant.ID, new BasicDBObject(Constant.MONGO_IN, ids)).append("ir", Constant.ZERO);
-    List<DBObject> list = find(MongoFacroty.getAppDB(), Constant.COLLECTION_USER_NAME, query, Constant.FIELDS);
-    if (null != list && !list.isEmpty()) {
-      for (DBObject dbo : list) {
-        retList.add(new UserEntry((BasicDBObject) dbo));
-      }
-    }
-    return retList;
-  }
-
   //=========================================================新增=========================================
   public void updateRole(ObjectId uid, UserRole role) {
     BasicDBObject query = new BasicDBObject(Constant.ID, uid);

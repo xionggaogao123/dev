@@ -280,7 +280,7 @@ public class MemberDao extends BaseDao {
         if (null != list && !list.isEmpty()) {
             MemberEntry memberEntry;
             for (DBObject dbo : list) {
-                memberEntry = new MemberEntry((BasicDBObject) dbo);
+                memberEntry = new MemberEntry(dbo);
                 map.put(memberEntry.getGroupId(), memberEntry);
             }
         }

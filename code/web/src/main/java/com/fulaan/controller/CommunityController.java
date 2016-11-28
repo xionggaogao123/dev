@@ -90,8 +90,7 @@ public class CommunityController extends BaseController {
 
     @RequestMapping("/create")
     @ResponseBody
-    public RespObj createCommunity(HttpServletRequest request,
-                                   String name,
+    public RespObj createCommunity(String name,
                                    @RequestParam(required = false, defaultValue = "") String desc,
                                    @RequestParam(required = false, defaultValue = "") String logo,
                                    @RequestParam(required = false, defaultValue = "0") int open,
@@ -132,8 +131,8 @@ public class CommunityController extends BaseController {
 
             for (String userId : userList) {
 
-                if(emService.addUserToEmGroup(groupDTO.getEmChatId(),new ObjectId(userId))){
-                    memberService.saveMember(new ObjectId(userId),new ObjectId(groupDTO.getId()),0);
+                if (emService.addUserToEmGroup(groupDTO.getEmChatId(), new ObjectId(userId))) {
+                    memberService.saveMember(new ObjectId(userId), new ObjectId(groupDTO.getId()), 0);
                     communityService.pushToUser(communityId, new ObjectId(userId), 1);
                 }
 
@@ -158,8 +157,7 @@ public class CommunityController extends BaseController {
 
     @RequestMapping("/create2")
     @ResponseBody
-    public RespObj createCommunity2(HttpServletRequest request,
-                                    String name,
+    public RespObj createCommunity2(String name,
                                     @RequestParam(required = false, defaultValue = "") String desc,
                                     @RequestParam(required = false, defaultValue = "") String logo,
                                     @RequestParam(required = false, defaultValue = "0") int open,
@@ -201,8 +199,8 @@ public class CommunityController extends BaseController {
 
             for (String userId : userList) {
 
-                if(emService.addUserToEmGroup(groupDTO.getEmChatId(),new ObjectId(userId))){
-                    memberService.saveMember(new ObjectId(userId),new ObjectId(groupDTO.getId()),0);
+                if (emService.addUserToEmGroup(groupDTO.getEmChatId(), new ObjectId(userId))) {
+                    memberService.saveMember(new ObjectId(userId), new ObjectId(groupDTO.getId()), 0);
                     communityService.pushToUser(communityId, new ObjectId(userId), 1);
                 }
 
@@ -237,6 +235,7 @@ public class CommunityController extends BaseController {
     public RespObj get(@PathVariable @ObjectIdType ObjectId id) {
 
         ObjectId groupId = communityService.getGroupId(id);
+        if(groupId == null) return RespObj.FAILD("fail");
         CommunityDTO communityDTO = communityService.findByObjectId(id);
         List<MemberDTO> members = memberService.getMembers(groupId, 12);
         if (null != getUserId()) {
@@ -361,7 +360,6 @@ public class CommunityController extends BaseController {
                 }
 
                 communityDTOList = communityService.getCommunitys(userId, 1, 9);
-
                 return RespObj.SUCCESS(communityDTOList);
             }
         } catch (Exception e) {
@@ -1496,14 +1494,14 @@ public class CommunityController extends BaseController {
 
         for (ObjectId userId : userIdList) {
 
-            if(!memberService.isGroupMember(groupId,userId)) {
+            if (!memberService.isGroupMember(groupId, userId)) {
                 if (memberService.isBeforeMember(groupId, userId)) {
 
-                    if(emService.addUserToEmGroup(emChatId,userId)) {
-                        memberService.updateMember(groupId,userId,0);
+                    if (emService.addUserToEmGroup(emChatId, userId)) {
+                        memberService.updateMember(groupId, userId, 0);
                     }
                 } else {
-                    if(emService.addUserToEmGroup(emChatId,userId)) {
+                    if (emService.addUserToEmGroup(emChatId, userId)) {
                         memberService.saveMember(userId, groupId);
                     }
 
@@ -1750,38 +1748,6 @@ public class CommunityController extends BaseController {
         return RespObj.SUCCESS;
     }
 
-    /**
-     * 重新生成 二维码
-     *
-     * @param searchId
-     * @return
-     */
-    @RequestMapping("/generateQrUrl")
-    @ResponseBody
-    @SessionNeedless
-    public RespObj generateQrUrl(String searchId) {
-        communityService.generateQrUrl(searchId);
-        return RespObj.SUCCESS;
-    }
-
-    /**
-     * 重置logo
-     *
-     * @return
-     */
-    @RequestMapping("/resetLogo")
-    @ResponseBody
-    public RespObj resetLogo() {
-        List<CommunityDTO> communityDTOs = communityService.findAllCommunity();
-        String logo = "http://www.fulaan.com/static/images/community/upload.png";
-        for (CommunityDTO communityDTO : communityDTOs) {
-            if (communityDTO.getLogo().contains("k6kt")) {
-                communityService.resetLogo(communityDTO.getId(), logo);
-            }
-        }
-        return RespObj.SUCCESS("success");
-    }
-
 
     /**
      * 通过url获取下载图片到本地
@@ -1818,20 +1784,6 @@ public class CommunityController extends BaseController {
         } else {
             return RespObj.FAILD("没有从该连接获得内容");
         }
-    }
-
-    /**
-     * <<<<<<< HEAD
-     * 注册环信服务
-     *
-     * @return
-     */
-    @RequestMapping("/registerEmService")
-    @ResponseBody
-    @UserRoles(UserRole.DISCUSS_MANAGER)
-    public RespObj registerEmService() {
-        userService.registerEmChatService();
-        return RespObj.SUCCESS("success");
     }
 
     /* 在七牛上下载压缩过的图片，放在本地服务器上

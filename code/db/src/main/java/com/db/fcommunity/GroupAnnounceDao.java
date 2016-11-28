@@ -12,7 +12,8 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
- * Created by moslpc on 2016/11/8.
+ * Created by jerry on 2016/11/8.
+ * 群组公告 Entry
  */
 public class GroupAnnounceDao extends BaseDao {
 
@@ -20,6 +21,11 @@ public class GroupAnnounceDao extends BaseDao {
         save(MongoFacroty.getAppDB(), Constant.COLLECTION_FORUM_GROUPANNOUNCE, entry.getBaseEntry());
     }
 
+    /**
+     * 找到最早的一条
+     * @param groupId
+     * @return
+     */
     public GroupAnnounceEntry getEarlyOne(ObjectId groupId) {
         BasicDBObject query = new BasicDBObject()
                 .append("grid", groupId);
@@ -31,12 +37,19 @@ public class GroupAnnounceDao extends BaseDao {
         return null;
     }
 
+    /**
+     * 分页获取
+     * @param groupId
+     * @param page
+     * @param paeSize
+     * @return
+     */
     public List<GroupAnnounceEntry> getByPage(ObjectId groupId, int page, int paeSize) {
         List<GroupAnnounceEntry> groupAnnounceEntries = new ArrayList<GroupAnnounceEntry>();
         BasicDBObject query = new BasicDBObject()
                 .append("grid", groupId);
         BasicDBObject orderBy = new BasicDBObject()
-                .append(Constant.ID, -1);
+                .append(Constant.ID, Constant.DESC);
         List<DBObject> dbObjects = find(MongoFacroty.getAppDB(), Constant.COLLECTION_FORUM_GROUPANNOUNCE, query, Constant.FIELDS, orderBy, (page - 1) * paeSize, paeSize);
         for (DBObject dbo : dbObjects) {
             groupAnnounceEntries.add(new GroupAnnounceEntry(dbo));
@@ -44,6 +57,11 @@ public class GroupAnnounceDao extends BaseDao {
         return groupAnnounceEntries;
     }
 
+    /**
+     * 计数
+     * @param groupId
+     * @return
+     */
     public int count(ObjectId groupId) {
         BasicDBObject query = new BasicDBObject()
                 .append("grid", groupId)

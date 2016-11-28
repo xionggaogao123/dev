@@ -1114,28 +1114,6 @@ public class CommunityService {
         communityDao.updateCommunityName(communityId, groupName);
     }
 
-    public int countCommunityAmount(ObjectId userId) {
-        return communityDao.getCommunityCountByOwerId(userId);
-    }
-
-    public void generateQrUrl(String searchId) {
-
-        CommunityEntry communityEntry = communityDao.findBySearchId(searchId);
-        String qrUrl = QRUtils.getCommunityQrUrl(communityEntry.getID());
-        communityDao.updateCommunityQrUrl(communityEntry.getID(), qrUrl);
-        CommunityDTO communityDto = findByObjectId(communityEntry.getID());
-
-    }
-
-    public List<CommunityDTO> findAllCommunity() {
-        List<CommunityEntry> communityEntrys = communityDao.getAllCommunitys();
-        List<CommunityDTO> communityDtos = new ArrayList<CommunityDTO>();
-        for (CommunityEntry entry : communityEntrys) {
-            communityDtos.add(new CommunityDTO(entry));
-        }
-        return communityDtos;
-    }
-
     public void resetLogo(String communityId, String logo) {
         communityDao.updateCommunityLogo(new ObjectId(communityId), logo);
     }

@@ -7,6 +7,7 @@ import com.fulaan.annotation.UserRoles;
 import com.fulaan.controller.BaseController;
 import com.fulaan.cache.CacheHandler;
 import com.fulaan.pojo.FLoginLog;
+import com.fulaan.pojo.User;
 import com.fulaan.util.Validator;
 import com.fulaan.forum.service.FLogService;
 import com.fulaan.forum.service.FScoreService;
@@ -2022,6 +2023,32 @@ public class UserController extends BaseController {
         result.put("month", month);
         result.put("day", day);
         return result;
+    }
+
+    @RequestMapping("/userInfos")
+    public @ResponseBody RespObj getUserInfos(String userIds) {
+        List<ObjectId> userList = new ArrayList<ObjectId>();
+        String[] userStr = userIds.split(",");
+        for(String e: userStr) {
+            if(ObjectId.isValid(e)) {
+                userList.add(new ObjectId(e));
+            }
+        }
+
+        List<User> userDatas = new ArrayList<User>();
+        List<UserDetailInfoDTO> userDetailInfoDTOS = userService.findUserInfoByIds(userList);
+
+        for(UserDetailInfoDTO e : userDetailInfoDTOS) {
+            User user = new User();
+            user.setId(e.getId());
+            user.setAvator(e.getImgUrl());
+            user.setNickName(e.getNickName());
+            user.setUserName(e.getUserName());
+            user.setSex(e.getSex());
+            userDatas.add(user);
+        }
+
+        return RespObj.SUCCESS(userDatas);
     }
 
 }

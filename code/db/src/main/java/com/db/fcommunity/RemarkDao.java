@@ -46,7 +46,7 @@ public class RemarkDao extends BaseDao {
         if (null != list && !list.isEmpty()) {
             RemarkEntry e;
             for (DBObject dbo : list) {
-                e = new RemarkEntry((BasicDBObject) dbo);
+                e = new RemarkEntry(dbo);
                 retMap.put(e.getEndUserId(), e);
             }
         }

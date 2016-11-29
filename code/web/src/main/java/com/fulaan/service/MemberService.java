@@ -4,22 +4,12 @@ import com.db.fcommunity.MemberDao;
 import com.db.user.UserDao;
 import com.fulaan.dto.MemberDTO;
 import com.fulaan.pojo.PageModel;
-import com.fulaan.util.ImageUtils;
-import com.mongodb.BasicDBObject;
 import com.pojo.fcommunity.MemberEntry;
 import com.pojo.user.UserEntry;
-import com.sys.exceptions.IllegalParamException;
-import com.sys.utils.QiniuFileUtils;
 import org.apache.commons.lang.StringUtils;
 import org.bson.types.ObjectId;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import javax.imageio.ImageIO;
-import java.awt.image.BufferedImage;
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -42,6 +32,7 @@ public class MemberService {
      */
     public void saveMember(ObjectId userId, ObjectId groupId, int role) {
         UserEntry user = userDao.findByObjectId(userId);
+        if(user == null) return;
         String nickName = StringUtils.isNotBlank(user.getNickName()) ? user.getNickName() : user.getUserName();
         String userName = user.getUserName();
         MemberEntry entry = new MemberEntry(userId, groupId, nickName, user.getAvatar(), role, userName);
@@ -64,24 +55,13 @@ public class MemberService {
     }
 
     /**
-     * 设置副社长
-     *
-     * @param groupId
-     * @param userId
-     */
-    public void setDeputyHead(ObjectId groupId, ObjectId userId) {
-        memberDao.cleayDeputyHead(groupId);
-        memberDao.setDeputyHead(groupId, userId);
-    }
-
-    /**
      * 设置多个副社长
      *
      * @param groupId
      * @param userIds
      */
     public void setDeputyHead(ObjectId groupId, List<ObjectId> userIds) {
-        memberDao.cleayDeputyHead(groupId);
+        memberDao.cleanDeputyHead(groupId);
         memberDao.setDeputyHead(groupId, userIds);
     }
 
@@ -91,7 +71,7 @@ public class MemberService {
      * @param groupId
      */
     public void clearDeputyHead(ObjectId groupId) {
-        memberDao.cleayDeputyHead(groupId);
+        memberDao.cleanDeputyHead(groupId);
     }
 
     /**

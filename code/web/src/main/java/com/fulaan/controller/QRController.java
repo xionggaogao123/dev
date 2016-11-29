@@ -11,6 +11,7 @@ import com.fulaan.service.CommunityService;
 import com.fulaan.service.GroupService;
 import com.fulaan.service.MemberService;
 import com.fulaan.util.DateUtils;
+import com.sys.constants.Constant;
 import com.sys.utils.RespObj;
 import org.bson.types.ObjectId;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -47,17 +48,11 @@ public class QRController extends BaseController {
     @RequestMapping("/group/{id}")
     @SessionNeedless
     @ResponseBody
-    public RespObj groupHandle(@PathVariable @ObjectIdType ObjectId id, HttpServletRequest request, HttpServletResponse response) {
-
-
+    public RespObj groupHandle(@PathVariable @ObjectIdType ObjectId id, HttpServletRequest request,
+                               HttpServletResponse response) throws IOException {
         if (getUserId() == null) {
-
-            try {
-                response.sendRedirect("http://a.app.qq.com/o/simple.jsp?pkgname=com.fulan.mall");
-                return null;
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
+            response.sendRedirect(Constant.COLLECTION_MALL_MARKET_URL);
+            return null;
         }
 
         GroupDTO groupDTO = groupService.findByObjectId(id);
@@ -105,7 +100,6 @@ public class QRController extends BaseController {
             communityDTO.setEmChatId(groupDTO.getEmChatId());
             communityDTO.setIsJoin(isJoin);
             return RespObj.SUCCESS(communityDTO);
-
         }
     }
 
@@ -116,26 +110,23 @@ public class QRController extends BaseController {
      * @param response
      */
     @RequestMapping("/person/{id}")
-    public void personHandle(HttpServletRequest request, HttpServletResponse response) {
-
+    @ResponseBody
+    public RespObj personHandle(HttpServletRequest request, HttpServletResponse response) throws IOException {
+        if (getUserId() == null) {
+            response.sendRedirect(Constant.COLLECTION_MALL_MARKET_URL);
+            return null;
+        }
+        return RespObj.SUCCESS;
     }
 
     @RequestMapping("/community/{communityId}")
     @SessionNeedless
     @ResponseBody
-    public RespObj communityHandle(@PathVariable @ObjectIdType ObjectId communityId, HttpServletResponse response) {
-
-
+    public RespObj communityHandle(@PathVariable @ObjectIdType ObjectId communityId,
+                                   HttpServletResponse response) throws IOException {
         if (getUserId() == null) {
-
-            try {
-                response.sendRedirect("http://a.app.qq.com/o/simple.jsp?pkgname=com.fulan.mall");
-                return null;
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
-
-
+            response.sendRedirect(Constant.COLLECTION_MALL_MARKET_URL);
+            return null;
         }
         CommunityDTO communityDTO = communityService.findByObjectId(communityId);
         if (communityDTO == null) {

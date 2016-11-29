@@ -1,4 +1,4 @@
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+﻿<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
     <modelVersion>4.0.0</modelVersion>
     <parent>
@@ -273,40 +273,6 @@
             <version>0.0.2</version>
         </dependency>
 
-        <!-- docx4j -->
-        <dependency>
-            <groupId>org.docx4j</groupId>
-            <artifactId>docx4j</artifactId>
-            <version>3.3.1</version>
-        </dependency>
-
-        <dependency>
-            <groupId>org.docx4j</groupId>
-            <artifactId>docx4j-export-fo</artifactId>
-            <version>3.3.0</version>
-        </dependency>
-
-        <!-- docx4j-ImportXHTML -->
-        <dependency>
-            <groupId>org.docx4j</groupId>
-            <artifactId>docx4j-ImportXHTML</artifactId>
-            <version>3.3.1</version>
-        </dependency>
-
-        <!-- xhtmlrenderer -->
-        <dependency>
-            <groupId>org.docx4j</groupId>
-            <artifactId>xhtmlrenderer</artifactId>
-            <version>3.0.0</version>
-        </dependency>
-
-        <!-- pdfbox -->
-        <dependency>
-            <groupId>org.apache.pdfbox</groupId>
-            <artifactId>pdfbox</artifactId>
-            <version>2.0.3</version>
-        </dependency>
-
         <!-- 解析xml -->
         <dependency>
             <groupId>org.jsoup</groupId>
@@ -328,13 +294,14 @@
             <version>1.12</version>
         </dependency>
 
+        <!-- 环信 -->
         <dependency>
             <groupId>com.easemob.rest</groupId>
             <artifactId>emchat-server-java</artifactId>
             <version>1.0</version>
         </dependency>
 
-        <!-- com.google.zxing/core -->
+        <!-- 二维码 -->
         <dependency>
             <groupId>com.google.zxing</groupId>
             <artifactId>core</artifactId>

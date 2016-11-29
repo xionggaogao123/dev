@@ -41,7 +41,7 @@ public class FriendController extends BaseController {
 
     @RequestMapping("/getParters")
     @ResponseBody
-    public RespObj getParters() {
+    public RespObj getPartners() {
         ObjectId uid = getUserId();
         return RespObj.SUCCESS(friendService.getParters(uid));
     }
@@ -129,7 +129,7 @@ public class FriendController extends BaseController {
     @ResponseBody
     public RespObj deleteFriend(@RequestParam String userIds) {
         String userId = getUserId().toString();
-    /* 删除好友关系 */
+        /* 删除好友关系 */
         String[] friendList = userIds.split(",");
         for (String friendId : friendList) {
             friendService.deleteByUserId1AndUserId2(userId, friendId);

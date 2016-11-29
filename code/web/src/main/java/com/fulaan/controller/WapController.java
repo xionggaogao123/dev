@@ -138,6 +138,6 @@ public class WapController extends BaseController {
     @RequestMapping("/download")
     @SessionNeedless
     public String downloadApp() {
-        return "redirect:http://a.app.qq.com/o/simple.jsp?pkgname=com.fulan.mall";
+        return "redirect:" + Constant.COLLECTION_MALL_MARKET_URL;
     }
 }

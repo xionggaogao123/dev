@@ -16,6 +16,7 @@ import java.util.List;
  * 我的社区
  * uid： 用户id
  * cmid： 社区id
+ * prio: 优先级 1：自己加入的社区  2：自己创建的社区  3：系统设定(如复兰社区)
  */
 public class MineCommunityDao extends BaseDao {
 
@@ -25,7 +26,7 @@ public class MineCommunityDao extends BaseDao {
 
     public List<MineCommunityEntry> findByPage(ObjectId userId, int page, int pageSize) {
         BasicDBObject query = new BasicDBObject().append("uid", userId);
-        BasicDBObject orderBy = new BasicDBObject().append("prio", -1).append(Constant.ID, -1);
+        BasicDBObject orderBy = new BasicDBObject().append("prio", Constant.DESC).append(Constant.ID, Constant.DESC);
         List<DBObject> dbos = find(MongoFacroty.getAppDB(), Constant.COLLECTION_FORUM_MINE_COMMUNITY, query, Constant.FIELDS, orderBy, (page - 1) * pageSize, pageSize);
         List<MineCommunityEntry> mineCommunityEntries = new ArrayList<MineCommunityEntry>();
         for (DBObject dbo : dbos) {
@@ -77,8 +78,14 @@ public class MineCommunityDao extends BaseDao {
         return mineCommunityEntries;
     }
 
-    public void resetMineCommunitys(ObjectId userId, ObjectId communityId, int priory) {
+    public void resetCommunityPriory(ObjectId userId, ObjectId communityId, int priory) {
         BasicDBObject query = new BasicDBObject("uid", userId).append("cmid", communityId);
+        BasicDBObject update = new BasicDBObject(Constant.MONGO_SET, new BasicDBObject("prio", priory));
+        update(MongoFacroty.getAppDB(), Constant.COLLECTION_FORUM_MINE_COMMUNITY, query, update);
+    }
+
+    public void resetAllCommunityPriory(ObjectId communityId, int priory) {
+        BasicDBObject query = new BasicDBObject("cmid", communityId);
         BasicDBObject update = new BasicDBObject(Constant.MONGO_SET, new BasicDBObject("prio", priory));
         update(MongoFacroty.getAppDB(), Constant.COLLECTION_FORUM_MINE_COMMUNITY, query, update);
     }

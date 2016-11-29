@@ -37,7 +37,8 @@ import org.apache.commons.io.FilenameUtils;
 import org.apache.commons.io.IOUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.http.client.HttpClient;
-import org.apache.http.impl.client.DefaultHttpClient;
+import org.apache.http.impl.client.CloseableHttpClient;
+import org.apache.http.impl.client.HttpClientBuilder;
 import org.apache.poi.hssf.usermodel.*;
 import org.apache.poi.hssf.util.HSSFColor;
 import org.bson.types.ObjectId;
@@ -136,8 +137,8 @@ public class CommunityController extends BaseController {
 
             for (String userId : userList) {
 
-                if(emService.addUserToEmGroup(groupDTO.getEmChatId(),new ObjectId(userId))){
-                    memberService.saveMember(new ObjectId(userId),new ObjectId(groupDTO.getId()),0);
+                if (emService.addUserToEmGroup(groupDTO.getEmChatId(), new ObjectId(userId))) {
+                    memberService.saveMember(new ObjectId(userId), new ObjectId(groupDTO.getId()), 0);
                     communityService.pushToUser(communityId, new ObjectId(userId), 1);
                 }
 
@@ -206,8 +207,8 @@ public class CommunityController extends BaseController {
 
             for (String userId : userList) {
 
-                if(emService.addUserToEmGroup(groupDTO.getEmChatId(),new ObjectId(userId))){
-                    memberService.saveMember(new ObjectId(userId),new ObjectId(groupDTO.getId()),0);
+                if (emService.addUserToEmGroup(groupDTO.getEmChatId(), new ObjectId(userId))) {
+                    memberService.saveMember(new ObjectId(userId), new ObjectId(groupDTO.getId()), 0);
                     communityService.pushToUser(communityId, new ObjectId(userId), 1);
                 }
 
@@ -830,7 +831,9 @@ public class CommunityController extends BaseController {
     @ResponseBody
     public RespObj getInfoByUrl(String url) {
         try {
-            HttpClient client = new DefaultHttpClient();
+            //创建HttpClientBuilder
+            HttpClientBuilder httpClientBuilder = HttpClientBuilder.create();
+            CloseableHttpClient client = httpClientBuilder.build();
             //抓取的数据
             ProductModel productModel = URLParseUtil.UrlParser(client, url);
             if (StringUtils.isBlank(productModel.getImageUrl())) {
@@ -1053,7 +1056,7 @@ public class CommunityController extends BaseController {
             PartInContentDTO partInContentDTO = communityService.getPartInContent(detailId, new ObjectId(user.getId()));
             if (partInContentDTO != null) {
                 user1.setContent(partInContentDTO.getInformation());
-                user1.setTime(DateTimeUtils.convert(new ObjectId(partInContentDTO.getPartInContentId()).getTime(),
+                user1.setTime(DateTimeUtils.convert(new ObjectId(partInContentDTO.getPartInContentId()).getTimestamp(),
                         DateTimeUtils.DATE_YYYY_MM_DD_HH_MM_A));
             }
 
@@ -1073,7 +1076,7 @@ public class CommunityController extends BaseController {
             PartInContentDTO partInContentDTO = communityService.getPartInContent(detailId, new ObjectId(userDetailInfoDTO.getId()));
             if (partInContentDTO != null) {
                 user1.setContent(partInContentDTO.getInformation());
-                user1.setTime(DateTimeUtils.convert(new ObjectId(partInContentDTO.getPartInContentId()).getTime(),
+                user1.setTime(DateTimeUtils.convert(new ObjectId(partInContentDTO.getPartInContentId()).getTimestamp(),
                         DateTimeUtils.DATE_YYYY_MM_DD_HH_MM_A));
             }
 
@@ -1457,7 +1460,8 @@ public class CommunityController extends BaseController {
                             @RequestParam(defaultValue = "", required = false) String shareUrl) {
 
         try {
-            HttpClient client = new DefaultHttpClient();
+            HttpClientBuilder httpClientBuilder = HttpClientBuilder.create();
+            CloseableHttpClient client = httpClientBuilder.build();
             //抓取的数据
             ProductModel productModel = URLParseUtil.UrlParser(client, shareUrl);
             if (StringUtils.isBlank(productModel.getImageUrl())) {
@@ -1510,14 +1514,14 @@ public class CommunityController extends BaseController {
 
         for (ObjectId userId : userIdList) {
 
-            if(!memberService.isGroupMember(groupId,userId)) {
+            if (!memberService.isGroupMember(groupId, userId)) {
                 if (memberService.isBeforeMember(groupId, userId)) {
 
-                    if(emService.addUserToEmGroup(emChatId,userId)) {
-                        memberService.updateMember(groupId,userId,0);
+                    if (emService.addUserToEmGroup(emChatId, userId)) {
+                        memberService.updateMember(groupId, userId, 0);
                     }
                 } else {
-                    if(emService.addUserToEmGroup(emChatId,userId)) {
+                    if (emService.addUserToEmGroup(emChatId, userId)) {
                         memberService.saveMember(userId, groupId);
                     }
 
@@ -1769,38 +1773,6 @@ public class CommunityController extends BaseController {
         return RespObj.SUCCESS;
     }
 
-    /**
-     * 重新生成 二维码
-     *
-     * @param searchId
-     * @return
-     */
-    @RequestMapping("/generateQrUrl")
-    @ResponseBody
-    @SessionNeedless
-    public RespObj generateQrUrl(String searchId) {
-        communityService.generateQrUrl(searchId);
-        return RespObj.SUCCESS;
-    }
-
-    /**
-     * 重置logo
-     *
-     * @return
-     */
-    @RequestMapping("/resetLogo")
-    @ResponseBody
-    public RespObj resetLogo() {
-        List<CommunityDTO> communityDTOs = communityService.findAllCommunity();
-        String logo = "http://www.fulaan.com/static/images/community/upload.png";
-        for (CommunityDTO communityDTO : communityDTOs) {
-            if (communityDTO.getLogo().contains("k6kt")) {
-                communityService.resetLogo(communityDTO.getId(), logo);
-            }
-        }
-        return RespObj.SUCCESS("success");
-    }
-
 
     /**
      * 通过url获取下载图片到本地
@@ -1837,19 +1809,6 @@ public class CommunityController extends BaseController {
         } else {
             return RespObj.FAILD("没有从该连接获得内容");
         }
-    }
-
-    /**
-     * 注册环信服务
-     *
-     * @return
-     */
-    @RequestMapping("/registerEmService")
-    @ResponseBody
-    @UserRoles(UserRole.DISCUSS_MANAGER)
-    public RespObj registerEmService() {
-        userService.registerEmChatService();
-        return RespObj.SUCCESS("success");
     }
 
     /* 在七牛上下载压缩过的图片，放在本地服务器上
@@ -1945,7 +1904,7 @@ public class CommunityController extends BaseController {
      * @return
      * @throws Exception
      */
-    @RequestMapping("/saveTuYaImage")
+    @RequestMapping(value = "/saveTuYaImage", method = RequestMethod.POST)
     @SessionNeedless
     @ResponseBody
     public RespObj saveEditedImage(@ObjectIdType ObjectId partInContentId, String oldImagePath, @RequestParam("file") MultipartFile multipartFile) throws Exception {
@@ -1982,12 +1941,13 @@ public class CommunityController extends BaseController {
 
     /**
      * 删除消息
+     *
      * @param detailId
      * @return
      */
     @RequestMapping("/removeDetailById")
     @ResponseBody
-    public RespObj removeDetailById(@ObjectIdType ObjectId detailId){
+    public RespObj removeDetailById(@ObjectIdType ObjectId detailId) {
         communityService.removeCommunityDetailById(detailId);
         return RespObj.SUCCESS;
     }

@@ -110,22 +110,6 @@ public class CommunityDao extends BaseDao {
     }
 
     /**
-     * 获取用户创建的所有CommunityEntry
-     *
-     * @param userId
-     * @return
-     */
-    public List<CommunityEntry> getOwerCommunitys(ObjectId userId) {
-        List<CommunityEntry> list = new ArrayList<CommunityEntry>();
-        BasicDBObject query = new BasicDBObject().append("cmow", userId);
-        List<DBObject> dbObjects = find(MongoFacroty.getAppDB(), Constant.COLLECTION_FORUM_COMMUNITY, query);
-        for (DBObject dbo : dbObjects) {
-            list.add(new CommunityEntry(dbo));
-        }
-        return list;
-    }
-
-    /**
      * 获取 - 公开群
      *
      * @return
@@ -237,11 +221,11 @@ public class CommunityDao extends BaseDao {
         return count(MongoFacroty.getAppDB(), Constant.COLLECTION_FORUM_COMMUNITY, query) == 1;
     }
 
-
     public int getCommunityCountByOwerId(ObjectId userId) {
         BasicDBObject query = new BasicDBObject().append("cmow", userId);
         return count(MongoFacroty.getAppDB(), Constant.COLLECTION_FORUM_COMMUNITY, query);
     }
+
 
     public List<CommunityEntry> getAllCommunitys() {
         List<DBObject> dbos = find(MongoFacroty.getAppDB(), Constant.COLLECTION_FORUM_COMMUNITY, new BasicDBObject(), Constant.FIELDS);

@@ -48,11 +48,10 @@ public class Infoterceptor extends HandlerInterceptorAdapter {
     @Autowired
     private ConcernService concernService;
     @Autowired
-    private CommunityService communityService;
-    @Autowired
     private CommunitySystemInfoService communitySystemInfoService;
     @Autowired
     private FriendApplyService friendApplyService;
+
 
     @Override
     public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler) throws Exception {

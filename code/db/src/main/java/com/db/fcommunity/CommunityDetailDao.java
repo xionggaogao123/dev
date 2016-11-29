@@ -6,7 +6,6 @@ import com.mongodb.BasicDBObject;
 import com.mongodb.DBObject;
 import com.pojo.fcommunity.CommunityDetailEntry;
 import com.pojo.fcommunity.CommunityDetailType;
-import com.sun.javafx.geom.AreaOp;
 import com.sys.constants.Constant;
 import org.bson.types.ObjectId;
 
@@ -48,7 +47,7 @@ public class CommunityDetailDao extends BaseDao {
         List<CommunityDetailEntry> detailEntries = new ArrayList<CommunityDetailEntry>();
         BasicDBObject query = new BasicDBObject()
                 .append("cmid", communityId)
-                .append("r",0);
+                .append("r", 0);
         BasicDBObject orderBy = new BasicDBObject()
                 .append(Constant.ID, order);
         List<DBObject> dbObjects = find(MongoFacroty.getAppDB(), Constant.COLLECTION_FORUM_COMMUNITY_DETAIL, query, Constant.FIELDS, orderBy, (page - 1) * pageSize, pageSize);
@@ -69,7 +68,7 @@ public class CommunityDetailDao extends BaseDao {
     public List<CommunityDetailEntry> getDetails(ObjectId communityId, int page, int pageSize, int order, int type) {
         List<CommunityDetailEntry> detailEntries = new ArrayList<CommunityDetailEntry>();
         BasicDBObject query = new BasicDBObject().append("cmid", communityId)
-                .append("cmty", type).append("r",0);
+                .append("cmty", type).append("r", 0);
         BasicDBObject orderBy = new BasicDBObject().append(Constant.ID, order);
         List<DBObject> dbObjects = find(MongoFacroty.getAppDB(), Constant.COLLECTION_FORUM_COMMUNITY_DETAIL, query, Constant.FIELDS, orderBy, (page - 1) * pageSize, pageSize);
         for (DBObject dbo : dbObjects) {
@@ -84,7 +83,7 @@ public class CommunityDetailDao extends BaseDao {
         BasicDBObject query = new BasicDBObject()
                 .append("cmid", communityId)
                 .append("cmty", type)
-                .append("r",0);
+                .append("r", 0);
         BasicDBObject orderBy = new BasicDBObject()
                 .append(Constant.ID, -1);
         List<DBObject> dbObjects = find(MongoFacroty.getAppDB(), Constant.COLLECTION_FORUM_COMMUNITY_DETAIL, query, Constant.FIELDS, orderBy, 0, 1);
@@ -108,7 +107,7 @@ public class CommunityDetailDao extends BaseDao {
      */
     public List<CommunityDetailEntry> getDetailsByUserId(List<ObjectId> commIds, int page, int pageSize, int order) {
         List<CommunityDetailEntry> detailEntries = new ArrayList<CommunityDetailEntry>();
-        BasicDBObject query = new BasicDBObject().append("cmid", new BasicDBObject(Constant.MONGO_IN, commIds)).append("r",0);
+        BasicDBObject query = new BasicDBObject().append("cmid", new BasicDBObject(Constant.MONGO_IN, commIds)).append("r", 0);
         BasicDBObject orderBy = new BasicDBObject().append(Constant.ID, order);
         List<DBObject> dbObjects = find(MongoFacroty.getAppDB(), Constant.COLLECTION_FORUM_COMMUNITY_DETAIL, query, Constant.FIELDS, orderBy, (page - 1) * pageSize, pageSize);
         for (DBObject dbo : dbObjects) {
@@ -124,7 +123,7 @@ public class CommunityDetailDao extends BaseDao {
         if (communityIds != null && communityIds.size() > 0) {
             query.append("cmid", new BasicDBObject(Constant.MONGO_IN, communityIds));
         }
-        query.append("r",0);
+        query.append("r", 0);
         BasicDBObject orderBy = new BasicDBObject().append(Constant.ID, order);
         List<DBObject> dbObjects = find(MongoFacroty.getAppDB(), Constant.COLLECTION_FORUM_COMMUNITY_DETAIL, query, Constant.FIELDS, orderBy, (page - 1) * pageSize, pageSize);
         for (DBObject dbo : dbObjects) {
@@ -150,7 +149,7 @@ public class CommunityDetailDao extends BaseDao {
      * @return
      */
     public int count(ObjectId communityId) {
-        BasicDBObject query = new BasicDBObject("cmid", communityId).append("r",0);
+        BasicDBObject query = new BasicDBObject("cmid", communityId).append("r", 0);
         return count(MongoFacroty.getAppDB(), Constant.COLLECTION_FORUM_COMMUNITY_DETAIL, query);
     }
 
@@ -161,7 +160,7 @@ public class CommunityDetailDao extends BaseDao {
      * @return
      */
     public int count(ObjectId communityId, int type) {
-        BasicDBObject query = new BasicDBObject("cmid", communityId).append("cmty", type).append("r",0);
+        BasicDBObject query = new BasicDBObject("cmid", communityId).append("cmty", type).append("r", 0);
         return count(MongoFacroty.getAppDB(), Constant.COLLECTION_FORUM_COMMUNITY_DETAIL, query);
     }
 
@@ -172,7 +171,7 @@ public class CommunityDetailDao extends BaseDao {
      * @return
      */
     public int count(List<ObjectId> commIds) {
-        BasicDBObject query = new BasicDBObject().append("cmid", new BasicDBObject(Constant.MONGO_IN, commIds)).append("r",0);
+        BasicDBObject query = new BasicDBObject().append("cmid", new BasicDBObject(Constant.MONGO_IN, commIds)).append("r", 0);
         return count(MongoFacroty.getAppDB(), Constant.COLLECTION_FORUM_COMMUNITY_DETAIL, query);
     }
 
@@ -221,7 +220,7 @@ public class CommunityDetailDao extends BaseDao {
         BasicDBObject query = new BasicDBObject().append("cmid", communityId)
                 .append("unrl", userId)
                 .append("cmty", type)
-                .append("r",0);
+                .append("r", 0);
         return count(MongoFacroty.getAppDB(), Constant.COLLECTION_FORUM_COMMUNITY_DETAIL, query);
     }
 
@@ -240,12 +239,13 @@ public class CommunityDetailDao extends BaseDao {
 
     /**
      * 根据Id删除社区详情
+     *
      * @param id
      */
-    public void removeCommunityDetail(ObjectId id){
-        BasicDBObject query=new BasicDBObject(Constant.ID,id);
-        BasicDBObject updateValue=new BasicDBObject(Constant.MONGO_SET,new BasicDBObject("r",1));
-        update(MongoFacroty.getAppDB(),Constant.COLLECTION_FORUM_COMMUNITY_DETAIL,query,updateValue);
+    public void removeCommunityDetail(ObjectId id) {
+        BasicDBObject query = new BasicDBObject(Constant.ID, id);
+        BasicDBObject updateValue = new BasicDBObject(Constant.MONGO_SET, new BasicDBObject("r", 1));
+        update(MongoFacroty.getAppDB(), Constant.COLLECTION_FORUM_COMMUNITY_DETAIL, query, updateValue);
     }
 
 }

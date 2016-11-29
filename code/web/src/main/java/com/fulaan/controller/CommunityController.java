@@ -129,8 +129,8 @@ public class CommunityController extends BaseController {
 
         CommunityDTO communityDTO = communityService.findByObjectId(commId);
         //创建社区系统消息通知
-        communitySystemInfoService.saveOrupdateEntry(getUserId(),getUserId(),"社长",4,commId);
-        communitySystemInfoService.saveOrupdateEntry(getUserId(),getUserId(),"社长",5,commId);
+        communitySystemInfoService.saveOrupdateEntry(getUserId(), getUserId(), "社长", 4, commId);
+        communitySystemInfoService.saveOrupdateEntry(getUserId(), getUserId(), "社长", 5, commId);
         if (StringUtils.isNotBlank(userIds)) {
             GroupDTO groupDTO = groupService.findByObjectId(new ObjectId(communityDTO.getGroupId()));
             String[] userList = userIds.split(",");
@@ -326,14 +326,18 @@ public class CommunityController extends BaseController {
     @ResponseBody
     public RespObj removeMember(@ObjectIdType ObjectId communityId,
                                 @ObjectIdType ObjectId userId) {
+
         CommunityDTO communityDTO = communityService.findByObjectId(communityId);
-        String groupId = communityDTO.getEmChatId();
-        ResponseWrapper responseWrapper = EaseMobAPI.removeSingleUserFromChatGroup(groupId, userId.toString());
-        if (responseWrapper.getResponseStatus() != 200) {
-            return RespObj.FAILD("环信出错!");
+        String emChatId = communityDTO.getEmChatId();
+
+        if (memberService.isHead(new ObjectId(communityDTO.getGroupId()), userId)) {
+            return RespObj.FAILD("不能删除社长");
         }
-        memberService.deleteMember(new ObjectId(communityDTO.getGroupId()), userId);
-        communityService.pullFromUser(new ObjectId(communityDTO.getId()), userId);
+        if (emService.removeUserFromEmGroup(emChatId, userId)) {
+            memberService.deleteMember(new ObjectId(communityDTO.getGroupId()), userId);
+            communityService.setPartIncontentStatus(new ObjectId(communityDTO.getGroupId()), userId, 1);
+            communityService.pullFromUser(new ObjectId(communityDTO.getGroupId()), userId);
+        }
         return RespObj.SUCCESS("删除成员成功");
     }
 
@@ -361,7 +365,7 @@ public class CommunityController extends BaseController {
                 if (null != fulanDto) {
                     if (!memberService.isGroupMember(new ObjectId(fulanDto.getGroupId()), getUserId())) {
                         //加入复兰社区
-                        joinCommunityWithEm(getUserId(), new ObjectId(fulanDto.getId()), 1);
+                        joinCommunityWithEm(getUserId(), new ObjectId(fulanDto.getId()));
                         communityService.pushToUser(new ObjectId(fulanDto.getId()), getUserId(), 2);
                     }
                 }
@@ -584,7 +588,7 @@ public class CommunityController extends BaseController {
      * @param communityId
      * @return
      */
-    public boolean joinCommunity(ObjectId userId, ObjectId communityId, int type) {
+    private boolean joinCommunity(ObjectId userId, ObjectId communityId, int type) {
 
         ObjectId groupId = communityService.getGroupId(communityId);
         GroupDTO groupDTO = groupService.findByObjectId(groupId);
@@ -599,6 +603,7 @@ public class CommunityController extends BaseController {
 
             if (emService.addUserToEmGroup(groupDTO.getEmChatId(), userId)) {
                 memberService.updateMember(groupId, userId, 0);
+                communityService.pushToUser(communityId, userId, 1);
                 //设置先前该用户所发表的数据
                 communityService.setPartIncontentStatus(communityId, userId, 0);
                 communityService.pushToUser(communityId, userId, 1);
@@ -619,10 +624,9 @@ public class CommunityController extends BaseController {
      *
      * @param userId
      * @param communityId
-     * @param type
      * @return
      */
-    public boolean joinCommunityWithEm(ObjectId userId, ObjectId communityId, int type) {
+    private boolean joinCommunityWithEm(ObjectId userId, ObjectId communityId) {
 
         ObjectId groupId = communityService.getGroupId(communityId);
         //type=1时，处理的是复兰社区
@@ -632,6 +636,7 @@ public class CommunityController extends BaseController {
         //判断该用户是否曾经加入过该社区
         if (memberService.isBeforeMember(groupId, userId)) {
             memberService.updateMember(groupId, userId, 0);
+            communityService.pushToUser(communityId, userId, 1);
             //设置先前该用户所发表的数据
             communityService.setPartIncontentStatus(communityId, userId, 0);
         } else {
@@ -661,10 +666,6 @@ public class CommunityController extends BaseController {
 
         if (memberService.isHead(groupId, userId)) {
             return RespObj.FAILD("群主暂时无法退出");
-        }else if(memberService.isManager(groupId,userId)){
-            //当是副社长退出时
-            List<ObjectId> objectIds=communityService.getAllMemberIds(groupId);
-            communitySystemInfoService.addBatchData(userId,objectIds,"副社长",1,communityId);
         }
 
         if (emService.removeUserFromEmGroup(emChatId, userId)) {
@@ -672,6 +673,13 @@ public class CommunityController extends BaseController {
             memberService.deleteMember(groupId, userId);
             //设置先前该用户所发表的数据为废弃掉的
             communityService.setPartIncontentStatus(communityId, userId, 1);
+
+            if (memberService.isManager(groupId, userId)) { //发送退出消息
+                //当是副社长退出时
+                List<ObjectId> objectIds = communityService.getAllMemberIds(groupId);
+                communitySystemInfoService.addBatchData(userId, objectIds, "副社长", 1, communityId);
+            }
+
         }
         return RespObj.SUCCESS("操作成功!");
     }
@@ -711,7 +719,7 @@ public class CommunityController extends BaseController {
     @RequestMapping("/communityDetail")
     @SessionNeedless
     @LoginInfo
-    public String communityMessage(@ObjectIdType ObjectId detailId, Map<String, Object> model) throws Exception{
+    public String communityMessage(@ObjectIdType ObjectId detailId, Map<String, Object> model) throws Exception {
         try {
             ObjectId uid = getUserId();
             CommunityDetailDTO detail = communityService.findDetailByObjectId(detailId);
@@ -746,9 +754,9 @@ public class CommunityController extends BaseController {
             model.put("detailId", detailId.toString());
             model.put("communitys", communitys);
             return "community/communityDetail";
-        }catch (Exception e){
+        } catch (Exception e) {
             e.printStackTrace();
-            throw  e;
+            throw e;
         }
     }
 
@@ -1869,7 +1877,7 @@ public class CommunityController extends BaseController {
      * @throws Exception
      */
     @RequestMapping("/saveEditedImage")
-    public void saveEditedImage(HttpServletRequest request,HttpServletResponse response) throws Exception {
+    public void saveEditedImage(HttpServletRequest request, HttpServletResponse response) throws Exception {
         String filekey = "qiuNiu-" + new ObjectId().toString() + ".png";
         String parentPath = request.getServletContext().getRealPath("/upload") + "/qiuNiu/";
         File parentFile = new File(parentPath);
@@ -1879,7 +1887,7 @@ public class CommunityController extends BaseController {
             FileUtils.copyInputStreamToFile(inputStream, attachFile);
         } catch (Exception ex) {
             ex.printStackTrace();
-            throw  ex;
+            throw ex;
         }
         String[] partInContentId = request.getParameter("partInContentId").split("-");
         String fileKey = new ObjectId().toString() + Constant.POINT + "png";
@@ -1887,10 +1895,10 @@ public class CommunityController extends BaseController {
         String path = QiniuFileUtils.getPath(QiniuFileUtils.TYPE_IMAGE, fileKey);
         communityService.updateImage(new ObjectId(partInContentId[0]), path, "http://" + partInContentId[1]);
 
-        PartInContentEntry partInContentEntry=communityService.findPartIncontById(new ObjectId(partInContentId[0]));
+        PartInContentEntry partInContentEntry = communityService.findPartIncontById(new ObjectId(partInContentId[0]));
         try {
             attachFile.delete();
-            response.sendRedirect("/community/communityDetail.do?detailId="+partInContentEntry.getDetailId());
+            response.sendRedirect("/community/communityDetail.do?detailId=" + partInContentEntry.getDetailId());
             return;
         } catch (Exception e) {
             e.printStackTrace();
@@ -1954,24 +1962,25 @@ public class CommunityController extends BaseController {
 
     /**
      * 获取系统消息列表
+     *
      * @param page
      * @param pageSize
      * @return
      */
     @RequestMapping("/getCommunitySysInfo")
     @ResponseBody
-    public Map<String,Object> getCommunitySysInfo(@RequestParam(required = false,defaultValue = "1")int page,
-                                       @RequestParam(required = false,defaultValue = "10")int pageSize){
-        Map<String,Object> map=new HashMap<String,Object>();
-        ObjectId userId=getUserId();
-        List<CommunitySystemInfoDTO> dtos=communitySystemInfoService.findInfoByUserIdAndType(userId,page,pageSize);
-        int count=communitySystemInfoService.countEntriesByUserIdAndType(userId);
+    public Map<String, Object> getCommunitySysInfo(@RequestParam(required = false, defaultValue = "1") int page,
+                                                   @RequestParam(required = false, defaultValue = "10") int pageSize) {
+        Map<String, Object> map = new HashMap<String, Object>();
+        ObjectId userId = getUserId();
+        List<CommunitySystemInfoDTO> dtos = communitySystemInfoService.findInfoByUserIdAndType(userId, page, pageSize);
+        int count = communitySystemInfoService.countEntriesByUserIdAndType(userId);
         //加载完数据设置已读
         communitySystemInfoService.setAllData(userId);
-        map.put("list",dtos);
-        map.put("count",count);
-        map.put("page",page);
-        map.put("pageSize",pageSize);
+        map.put("list", dtos);
+        map.put("count", count);
+        map.put("page", page);
+        map.put("pageSize", pageSize);
         return map;
     }
 

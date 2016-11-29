@@ -18,18 +18,20 @@
 <%@ include file="../common/head.jsp" %>
 <div class="container">
     <%@ include file="_layout.jsp" %>
-    </div>
-    <div class="f-cont">
-        <div class="hd-nav">
-            <div class="login-mk-btn" style="display: none;">
-                <div class="d1"></div>
+</div>
+<div class="f-cont">
+    <div class="hd-nav">
+        <c:if test="${login == false}">
+            <div class="login-mk-btn">
+                <div class="d1" onclick="window.open('/mall/register.do')"></div>
                 <div class="d2"></div>
             </div>
-            <span class="hd-green-cur">我的社区</span>
-            <%--<span>找学习</span>--%>
-            <%--<span>找玩伴</span>--%>
-        </div>
+        </c:if>
+        <span class="hd-green-cur">我的社区</span>
+        <%--<span>找学习</span>--%>
+        <%--<span>找玩伴</span>--%>
     </div>
+</div>
 <div class="container">
     <div class="hd-cont-f hd-cont-f1">
         <div class="com-left">
@@ -171,7 +173,9 @@
                 <p class="member-more">更多</p>
             </div>
             <div class="com-right-s">
-                <div class="com-tit">我的社区<c:if test="${login == true}"><a href="/community/communitySet.do" target="_blank"><span class="com-set-my-btn"></span></a></c:if></div>
+                <div class="com-tit">我的社区<c:if test="${login == true}"><a href="/community/communitySet.do"
+                                                                          target="_blank"><span
+                        class="com-set-my-btn"></span></a></c:if></div>
                 <ul class="ul-my-com clearfix" id="myCommunity">
                 </ul>
             </div>
@@ -198,7 +202,8 @@
         <img src="/static/images/newIndex/store-WEII.jpg" class="ddimg">
     </div>
     <div class="d3">
-        <p>*温馨提示：<br>1.新社员加入可通过“复兰教育社区”手机客户端，选择“扫一扫”，扫描二维码加入该社区；<br>2.若未安装“复兰教育社区”手机客户端，可先通过扫描二维码安装手机客户端后，再次扫描二维码加入该社区。</p>
+        <p>*温馨提示：<br>1.新社员加入可通过“复兰教育社区”手机客户端，选择“扫一扫”，扫描二维码加入该社区；<br>2.若未安装“复兰教育社区”手机客户端，可先通过扫描二维码安装手机客户端后，再次扫描二维码加入该社区。
+        </p>
     </div>
 </div>
 <div class="wind wind-yq">
@@ -213,13 +218,13 @@
             <em class="em-green">（共找到<span id="userCount"></span>位相关用户）</em>
         </div>
         <script id="userListTmpl" type="text/template">
-        {{~it:value:index}}
-        <li>
-            <img src="{{=value.value}}">
-            <p>{{=value.name}}</p>
-            <button class="btn3" userId="{{=value.id}}">邀请</button>
-        </li>
-        {{~}}
+            {{~it:value:index}}
+            <li>
+                <img src="{{=value.value}}">
+                <p>{{=value.name}}</p>
+                <button class="btn3" userId="{{=value.id}}">邀请</button>
+            </li>
+            {{~}}
         </script>
         <ul class="d1-ul" id="userList">
             <li>
@@ -250,7 +255,6 @@
 </div>
 
 
-
 <div class="wind-yins">
     <p class="p1">隐私设置<em>×</em></p>
     <label><input type="radio" name="ys-set">所有人可见</label>
@@ -263,7 +267,7 @@
 </div>
 <div class="bg"></div>
 
-<div class="sign-alert si-s3" >
+<div class="sign-alert si-s3">
     <p class="alert-title">提示<em>×</em></p>
     <div class="alert-main">
         <span>你确认要删除这条信息吗？</span>
@@ -286,7 +290,7 @@
                 var flag = resp.login;
                 if (flag) {
                     location.href = "/commondownload/downloadFile.do?remoteFilePath=" + url + "&fileName=" + fileName;
-                }else{
+                } else {
                     $('.store-register').fadeToggle();
                     $('.bg').fadeToggle();
                 }
@@ -340,11 +344,13 @@
             <p class="p1">{{=value.roleStr}}</p>
         </div>
         <div class="notice-cont">
-            <p class="p-zl p1" style="cursor: pointer" onclick="window.open('/community/communityDetail?detailId={{=value.id}}')">{{=value.title}}</p>
+            <p class="p-zl p1" style="cursor: pointer"
+               onclick="window.open('/community/communityDetail?detailId={{=value.id}}')">{{=value.title}}</p>
             <p class="p-hw">
                 {{~value.attachements:attachment:i}}
                 <span class="sp-hw">{{=attachment.flnm}}<a><span
-                        onclick="download('{{=attachment.url}}','{{=attachment.flnm}}')" style="cursor: pointer">下载</span></a></span>
+                        onclick="download('{{=attachment.url}}','{{=attachment.flnm}}')"
+                        style="cursor: pointer">下载</span></a></span>
                 {{~}}
             </p>
             <p class="p-infor">
@@ -373,7 +379,8 @@
             <p class="p1">{{=value.roleStr}}</p>
         </div>
         <div class="notice-cont">
-            <p class="p-zy p1"  style="cursor: pointer" onclick="window.open('/community/communityDetail?detailId={{=value.id}}')">{{=value.title}}</p>
+            <p class="p-zy p1" style="cursor: pointer"
+               onclick="window.open('/community/communityDetail?detailId={{=value.id}}')">{{=value.title}}</p>
             <p class="p-cont">{{=value.content}}<span
                     class="sp-more">{{?value.content.length>=90}}...<em class="spread">[展开全文]</em>{{?}}</span></p>
             <p class="p-infor">
@@ -383,8 +390,8 @@
             </p>
         </div>
         <%--<div class="notice-bm">--%>
-            <%--<button class="commit" itemId="{{=value.id}}">提交作业</button>--%>
-            <%--<span>已提交（{{=value.partInCount}}）人</span>--%>
+        <%--<button class="commit" itemId="{{=value.id}}">提交作业</button>--%>
+        <%--<span>已提交（{{=value.partInCount}}）人</span>--%>
         <%--</div>--%>
     </div>
     {{~}}
@@ -406,7 +413,8 @@
             <p class="p1">{{=value.roleStr}}</p>
         </div>
         <div class="notice-cont">
-            <p class="p-tz p1"  style="cursor: pointer" onclick="window.open('/community/communityDetail?detailId={{=value.id}}')">{{=value.title}}</p>
+            <p class="p-tz p1" style="cursor: pointer"
+               onclick="window.open('/community/communityDetail?detailId={{=value.id}}')">{{=value.title}}</p>
             <p class="p-cont">{{=value.content}}<span
                     class="sp-more">{{?value.content.length>=143}}...<em class="spread">[展开全文]</em>{{?}}</span></p>
             <p class="p-infor">
@@ -436,7 +444,8 @@
             <p class="p1">{{=value.roleStr}}</p>
         </div>
         <div class="notice-cont">
-            <p class="p-fx p1"  style="cursor: pointer" onclick="window.open('/community/communityDetail?detailId={{=value.id}}')">{{=value.title}}</p>
+            <p class="p-fx p1" style="cursor: pointer"
+               onclick="window.open('/community/communityDetail?detailId={{=value.id}}')">{{=value.title}}</p>
             <p class="p-cont">{{=value.content}}<span
                     class="sp-more">{{?value.content.length>=90}}...<em class="spread">[展开全文]</em>{{?}}</span></p>
             {{?value.images.length>0}}
@@ -455,8 +464,8 @@
             </p>
         </div>
         <%--<div class="notice-bm">--%>
-            <%--<button class="commit" itemId="{{=value.id}}">我要分享</button>--%>
-            <%--<span>已分享（{{=value.partInCount}}）人</span>--%>
+        <%--<button class="commit" itemId="{{=value.id}}">我要分享</button>--%>
+        <%--<span>已分享（{{=value.partInCount}}）人</span>--%>
         <%--</div>--%>
     </div>
     {{~}}
@@ -479,7 +488,8 @@
             <p class="p1">{{=value.roleStr}}</p>
         </div>
         <div class="notice-cont">
-            <p class="p-hd p1"  style="cursor: pointer" onclick="window.open('/community/communityDetail?detailId={{=value.id}}')">{{=value.title}}</p>
+            <p class="p-hd p1" style="cursor: pointer"
+               onclick="window.open('/community/communityDetail?detailId={{=value.id}}')">{{=value.title}}</p>
             <p class="p-cont">{{=value.content}}<span
                     class="sp-more">{{?value.content.length>=90}}...<em class="spread">[展开全文]</em>{{?}}</span></p>
             <p class="p-infor">
@@ -513,14 +523,15 @@
             <p class="p1">{{=value.roleStr}}</p>
         </div>
         <div class="notice-cont">
-            <p class="p-tj p1"  style="cursor: pointer" onclick="window.open('/community/communityDetail?detailId={{=value.id}}')">{{=value.title}}</p>
+            <p class="p-tj p1" style="cursor: pointer"
+               onclick="window.open('/community/communityDetail?detailId={{=value.id}}')">{{=value.title}}</p>
             <p class="p-cont">{{=value.content}}<span
                     class="sp-more">{{?value.content.length>=90}}...<em class="spread">[展开全文]</em>{{?}}</span></p>
             <p class="p-img clearfix">
                 {{?value.shareImage!=null&&value.shareImage!=""}}
                 <img src="{{=value.shareImage}}">
                 {{??value.shareUrl!=null&&value.shareUrl!=""}}
-                <a  style="cursor: pointer" onclick="window.open('{{=value.shareUrl}}')" class="limitCount">{{=value.shareUrl}}</a>
+                <a style="cursor: pointer" onclick="window.open('{{=value.shareUrl}}')" class="limitCount">{{=value.shareUrl}}</a>
                 {{?}}
             </p>
             <p class="p-infor">
@@ -562,13 +573,14 @@
                 $('.pub-fj-img').append(str);
             } else {
                 alert("上传失败，请重新上传！");
-            }        },
+            }
+        },
         progressall: function (e, data) {
             $('.wind-wait').show();
 //            $('.vote-vedio-container ul').html('正在上传...');
         },
         submit: function (e) {
-            if($('.p-doc').length>0){
+            if ($('.p-doc').length > 0) {
                 alert('上传附件了不能再上传图片！');
                 return false;
             }
@@ -602,8 +614,8 @@
 //            $('.vote-vedio-container ul').html('正在上传...');
             $('.wind-wait').show();
         },
-        submit: function(e){
-            if($('.pub-img').length>0){
+        submit: function (e) {
+            if ($('.pub-img').length > 0) {
                 alert("上传图片了不能再上传附件！");
                 return false;
             }
@@ -638,9 +650,8 @@
 </script>
 <script type="text/javascript" src="/static/js/modules/core/0.1.0/fancyBox/jquery.fancybox.js"></script>
 <script type="text/javascript">
-    $(document).ready(function() {
-        $(".fancybox").fancybox({
-        });
+    $(document).ready(function () {
+        $(".fancybox").fancybox({});
 
     })
 </script>

@@ -13,6 +13,12 @@
     <input value="${communityId}" id="communityId" hidden>
     <div class="f-cont">
         <div class="hd-nav">
+            <c:if test="${login == false}">
+                <div class="login-mk-btn">
+                    <div class="d1" onclick="window.open('/mall/register.do')"></div>
+                    <div class="d2"></div>
+                </div>
+            </c:if>
             <span class="hd-green-cur">我的社区</span>
                 <%--<span>找学习</span>--%>
                 <%--<span>找玩伴</span>--%>

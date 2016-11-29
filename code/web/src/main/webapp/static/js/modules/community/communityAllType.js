@@ -28,7 +28,10 @@ define(['jquery', 'pagination', 'common'], function (require, exports, module) {
 
         setInterval(hx_update,1000 * 60);
 
-
+        $('body').on('click','.login-mk-btn .d2',function () {
+            $('.store-register').fadeToggle();
+            $('.bg').fadeToggle();
+        })
     });
 
     function  spread(obj) {

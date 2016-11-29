@@ -53,7 +53,7 @@ public class CommunitySystemInfoDao extends BaseDao {
         type.add(4);
         type.add(5);
         BasicDBObject query=new BasicDBObject().append("reid",relationId).
-                append("ty",new BasicDBObject(Constant.MONGO_IN,type)).append("r",0).append("unr",0);
+                append("ty",new BasicDBObject(Constant.MONGO_IN,type)).append("r",0);
         return query;
     }
 

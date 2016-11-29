@@ -1898,7 +1898,7 @@ public class CommunityController extends BaseController {
         PartInContentEntry partInContentEntry = communityService.findPartIncontById(new ObjectId(partInContentId[0]));
         try {
             attachFile.delete();
-            response.sendRedirect("/community/communityDetail.do?detailId=" + partInContentEntry.getDetailId());
+            response.sendRedirect("/community/communityDetail.do?detailId="+partInContentEntry.getDetailId().toString());
             return;
         } catch (Exception e) {
             e.printStackTrace();
@@ -1969,12 +1969,12 @@ public class CommunityController extends BaseController {
      */
     @RequestMapping("/getCommunitySysInfo")
     @ResponseBody
-    public Map<String, Object> getCommunitySysInfo(@RequestParam(required = false, defaultValue = "1") int page,
-                                                   @RequestParam(required = false, defaultValue = "10") int pageSize) {
-        Map<String, Object> map = new HashMap<String, Object>();
-        ObjectId userId = getUserId();
-        List<CommunitySystemInfoDTO> dtos = communitySystemInfoService.findInfoByUserIdAndType(userId, page, pageSize);
-        int count = communitySystemInfoService.countEntriesByUserIdAndType(userId);
+    public Map<String,Object> getCommunitySysInfo(@RequestParam(required = false,defaultValue = "1")int page,
+                                       @RequestParam(required = false,defaultValue = "20")int pageSize){
+        Map<String,Object> map=new HashMap<String,Object>();
+        ObjectId userId=getUserId();
+        List<CommunitySystemInfoDTO> dtos=communitySystemInfoService.findInfoByUserIdAndType(userId,page,pageSize);
+        int count=communitySystemInfoService.countEntriesByUserIdAndType(userId);
         //加载完数据设置已读
         communitySystemInfoService.setAllData(userId);
         map.put("list", dtos);

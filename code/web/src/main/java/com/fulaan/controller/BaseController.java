@@ -31,14 +31,6 @@ public class BaseController {
         return null;
     }
 
-    protected ObjectId getSchoolId() {
-        SessionValue sv = getSessionValue();
-        if (null != sv && !sv.isEmpty()) {
-            return new ObjectId(sv.getSchoolId());
-        }
-        return null;
-    }
-
     /**
      * 得到ip地址
      *

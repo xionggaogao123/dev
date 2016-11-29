@@ -6,15 +6,14 @@ import com.fulaan.dto.CommunityDTO;
 import com.fulaan.dto.CommunityDetailDTO;
 import com.fulaan.dto.GroupDTO;
 import com.fulaan.dto.MemberDTO;
+import com.fulaan.friendscircle.service.FriendService;
 import com.fulaan.pojo.*;
 import com.fulaan.service.*;
 import com.fulaan.user.service.UserService;
-import com.fulaan.friendscircle.service.FriendService;
 import com.pojo.fcommunity.CommunityDetailType;
 import com.pojo.user.AvatarType;
 import com.pojo.user.UserDetailInfoDTO;
 import com.pojo.user.UserEntry;
-import com.pojo.utils.MongoUtils;
 import com.sys.exceptions.IllegalParamException;
 import com.sys.utils.AvatarUtils;
 import com.sys.utils.RespObj;
@@ -22,11 +21,16 @@ import org.apache.commons.lang3.StringUtils;
 import org.bson.types.ObjectId;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.ResponseBody;
 
-import javax.servlet.http.HttpServletRequest;
 import java.io.IOException;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 /**
  * Created by jerry on 2016/10/31.

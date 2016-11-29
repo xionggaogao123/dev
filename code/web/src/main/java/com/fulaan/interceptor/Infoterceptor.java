@@ -45,8 +45,6 @@ public class Infoterceptor extends HandlerInterceptorAdapter {
     private FriendService friendService;
     @Autowired
     private ConcernService concernService;
-    @Autowired
-    private CommunityService communityService;
 
     @Override
     public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler) throws Exception {

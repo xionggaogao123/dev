@@ -31,7 +31,7 @@ public class BannerController {
 
     private static final Logger logger = Logger.getLogger(BannerController.class);
 
-    private BannerDao bannerDao;
+    private BannerDao bannerDao = new BannerDao();
 
     private BannerDao appBannerDao = new BannerDao();
 

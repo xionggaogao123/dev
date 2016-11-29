@@ -37,7 +37,8 @@ import org.apache.commons.io.FilenameUtils;
 import org.apache.commons.io.IOUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.http.client.HttpClient;
-import org.apache.http.impl.client.DefaultHttpClient;
+import org.apache.http.impl.client.CloseableHttpClient;
+import org.apache.http.impl.client.HttpClientBuilder;
 import org.apache.poi.hssf.usermodel.*;
 import org.apache.poi.hssf.util.HSSFColor;
 import org.bson.types.ObjectId;
@@ -816,7 +817,9 @@ public class CommunityController extends BaseController {
     @ResponseBody
     public RespObj getInfoByUrl(String url) {
         try {
-            HttpClient client = new DefaultHttpClient();
+            //创建HttpClientBuilder
+            HttpClientBuilder httpClientBuilder = HttpClientBuilder.create();
+            CloseableHttpClient client = httpClientBuilder.build();
             //抓取的数据
             ProductModel productModel = URLParseUtil.UrlParser(client, url);
             if (StringUtils.isBlank(productModel.getImageUrl())) {
@@ -1039,7 +1042,7 @@ public class CommunityController extends BaseController {
             PartInContentDTO partInContentDTO = communityService.getPartInContent(detailId, new ObjectId(user.getId()));
             if (partInContentDTO != null) {
                 user1.setContent(partInContentDTO.getInformation());
-                user1.setTime(DateTimeUtils.convert(new ObjectId(partInContentDTO.getPartInContentId()).getTime(),
+                user1.setTime(DateTimeUtils.convert(new ObjectId(partInContentDTO.getPartInContentId()).getTimestamp(),
                         DateTimeUtils.DATE_YYYY_MM_DD_HH_MM_A));
             }
 
@@ -1059,7 +1062,7 @@ public class CommunityController extends BaseController {
             PartInContentDTO partInContentDTO = communityService.getPartInContent(detailId, new ObjectId(userDetailInfoDTO.getId()));
             if (partInContentDTO != null) {
                 user1.setContent(partInContentDTO.getInformation());
-                user1.setTime(DateTimeUtils.convert(new ObjectId(partInContentDTO.getPartInContentId()).getTime(),
+                user1.setTime(DateTimeUtils.convert(new ObjectId(partInContentDTO.getPartInContentId()).getTimestamp(),
                         DateTimeUtils.DATE_YYYY_MM_DD_HH_MM_A));
             }
 
@@ -1443,7 +1446,8 @@ public class CommunityController extends BaseController {
                             @RequestParam(defaultValue = "", required = false) String shareUrl) {
 
         try {
-            HttpClient client = new DefaultHttpClient();
+            HttpClientBuilder httpClientBuilder = HttpClientBuilder.create();
+            CloseableHttpClient client = httpClientBuilder.build();
             //抓取的数据
             ProductModel productModel = URLParseUtil.UrlParser(client, shareUrl);
             if (StringUtils.isBlank(productModel.getImageUrl())) {

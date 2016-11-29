@@ -134,15 +134,12 @@ public class CommunityController extends BaseController {
         communitySystemInfoService.saveOrupdateEntry(getUserId(), getUserId(), "社长", 5, commId);
         if (StringUtils.isNotBlank(userIds)) {
             GroupDTO groupDTO = groupService.findByObjectId(new ObjectId(communityDTO.getGroupId()));
-            String[] userList = userIds.split(",");
-
-            for (String userId : userList) {
-
-                if (emService.addUserToEmGroup(groupDTO.getEmChatId(), new ObjectId(userId))) {
-                    memberService.saveMember(new ObjectId(userId), new ObjectId(groupDTO.getId()), 0);
-                    communityService.pushToUser(communityId, new ObjectId(userId), 1);
+            List<ObjectId> userList = MongoUtils.convertObjectIds(userIds);
+            for(ObjectId userId:userList) {
+                if (emService.addUserToEmGroup(groupDTO.getEmChatId(),userId)) {
+                    memberService.saveMember(userId, new ObjectId(groupDTO.getId()), 0);
+                    communityService.pushToUser(communityId, userId, 1);
                 }
-
             }
         }
 
@@ -198,21 +195,15 @@ public class CommunityController extends BaseController {
 
         ObjectId commId = communityService.createCommunity(communityId, uid, name, desc, logo, qrUrl, seqId, open);
         communityService.pushToUser(commId, uid, 2);
-
         CommunityDTO communityDTO = communityService.findByObjectId(commId);
-
-
         if (StringUtils.isNotBlank(userIds)) {
             GroupDTO groupDTO = groupService.findByObjectId(new ObjectId(communityDTO.getGroupId()));
-            String[] userList = userIds.split(",");
-
-            for (String userId : userList) {
-
-                if (emService.addUserToEmGroup(groupDTO.getEmChatId(), new ObjectId(userId))) {
-                    memberService.saveMember(new ObjectId(userId), new ObjectId(groupDTO.getId()), 0);
-                    communityService.pushToUser(communityId, new ObjectId(userId), 1);
+            List<ObjectId> userList = MongoUtils.convertObjectIds(userIds);
+            for(ObjectId userId:userList) {
+                if (emService.addUserToEmGroup(groupDTO.getEmChatId(),userId)) {
+                    memberService.saveMember(userId, new ObjectId(groupDTO.getId()), 0);
+                    communityService.pushToUser(communityId, userId, 1);
                 }
-
             }
         }
 
@@ -294,7 +285,8 @@ public class CommunityController extends BaseController {
      * 2.加入环信
      * 3.判断是否以前加入过
      * 4.更新或保存成员
-     * 5.push 到社区
+     * 5.更新数据
+     * 6.push 到社区
      *
      * @param communityId
      * @param userId
@@ -577,7 +569,7 @@ public class CommunityController extends BaseController {
     @ResponseBody
     public RespObj joinCommunity(@ObjectIdType ObjectId communityId) {
         ObjectId userId = getUserId();
-        if (joinCommunity(userId, communityId, 0)) {
+        if (joinCommunity(userId, communityId)) {
             return RespObj.SUCCESS("操作成功!");
         } else {
             return RespObj.FAILD("该用户已经是该社区成员了");
@@ -586,25 +578,22 @@ public class CommunityController extends BaseController {
     }
 
     /**
-     * 加入社区
+     * 加入社区==同时加入环信组
      *
      * @param userId
      * @param communityId
      * @return
      */
-    private boolean joinCommunity(ObjectId userId, ObjectId communityId, int type) {
+    private boolean joinCommunity(ObjectId userId, ObjectId communityId) {
 
         ObjectId groupId = communityService.getGroupId(communityId);
         GroupDTO groupDTO = groupService.findByObjectId(groupId);
         //type=1时，处理的是复兰社区
-        if (type == 1) {
-            if (memberService.isGroupMember(groupId, userId)) {
-                return false;
-            }
+        if (memberService.isGroupMember(groupId, userId)) {
+            return false;
         }
         //判断该用户是否曾经加入过该社区
         if (memberService.isBeforeMember(groupId, userId)) {
-
             if (emService.addUserToEmGroup(groupDTO.getEmChatId(), userId)) {
                 memberService.updateMember(groupId, userId, 0);
                 communityService.pushToUser(communityId, userId, 1);
@@ -614,7 +603,6 @@ public class CommunityController extends BaseController {
             }
 
         } else {
-
             if (emService.addUserToEmGroup(groupDTO.getEmChatId(), userId)) {
                 memberService.saveMember(groupId, userId, 0);
                 communityService.pushToUser(communityId, userId, 1);

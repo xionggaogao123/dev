@@ -40,13 +40,7 @@ define(['jquery', 'pagination', 'common'], function (require, exports, module) {
 
         $('body').on('click', '.com-set-my-btn', function () {
             window.location.href='/community/communitySet.do';
-        })
-
-        // $('body').on('blur','#communityName',function () {
-        //     if($(this).val()!=""){
-        //         judgeCreate($(this).val());
-        //     }
-        // })
+        });
 
         $('body').on('mouseleave','.ul-my-com li',function(){
             $('.ul-my-com li .com-hover-card .sp3').removeClass('sp33').addClass('sp-short');
@@ -113,7 +107,7 @@ define(['jquery', 'pagination', 'common'], function (require, exports, module) {
                 flag=false;
                 alert("该社区名称已存在！");
             }
-        })
+        });
         return flag;
     }
 

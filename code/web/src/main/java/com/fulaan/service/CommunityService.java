@@ -150,7 +150,6 @@ public class CommunityService {
     }
 
     public void generateSeq() {
-
         for (int i = 150000; i < 200000; i++) {
             CommunitySeqEntry entry = new CommunitySeqEntry(1, i);
             seqDao.save(entry);
@@ -177,10 +176,6 @@ public class CommunityService {
             }
         }
         return list;
-    }
-
-    public int countMyCommunity(ObjectId userId) {
-        return mineCommunityDao.count(userId);
     }
 
     /**
@@ -297,7 +292,7 @@ public class CommunityService {
         return dtos;
     }
 
-    public void setRoleStr(CommunityDetailDTO communityDetailDTO, CommunityEntry communityEntry, ObjectId userId) {
+    private void setRoleStr(CommunityDetailDTO communityDetailDTO, CommunityEntry communityEntry, ObjectId userId) {
         String groupId = communityEntry.getGroupId();
         if (userId.equals(communityEntry.getOwerID())) {
             communityDetailDTO.setRoleStr("社长");
@@ -556,7 +551,7 @@ public class CommunityService {
     }
 
 
-    public boolean judgePartner(List<ObjectId> partners, ObjectId userId) {
+    private boolean judgePartner(List<ObjectId> partners, ObjectId userId) {
         boolean judge = false;
         for (ObjectId objectId : partners) {
             if (userId.equals(objectId)) {
@@ -567,7 +562,7 @@ public class CommunityService {
         return judge;
     }
 
-    public List<String> getPlaymate(Map<ObjectId, UserEntry> partnerInfo, List<ObjectId> mutual) {
+    private List<String> getPlaymate(Map<ObjectId, UserEntry> partnerInfo, List<ObjectId> mutual) {
         List<String> playmate = new ArrayList<String>();
         if (mutual.size() == 0) {
             return playmate;
@@ -864,7 +859,7 @@ public class CommunityService {
         return pageModel;
     }
 
-    public void setPartIncontentZan(PartInContentDTO dto, ObjectId userId) {
+    private void setPartIncontentZan(PartInContentDTO dto, ObjectId userId) {
         List<String> zanUserIds = dto.getZanUserIds();
         boolean flag = false;
         for (String item : zanUserIds) {
@@ -1113,10 +1108,6 @@ public class CommunityService {
 
     public void updateCommunityName(ObjectId communityId, String groupName) {
         communityDao.updateCommunityName(communityId, groupName);
-    }
-
-    public void resetLogo(String communityId, String logo) {
-        communityDao.updateCommunityLogo(new ObjectId(communityId), logo);
     }
 
     public void deleteCommunity(ObjectId communityId) {

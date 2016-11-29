@@ -604,7 +604,7 @@ public class CommunityController extends BaseController {
 
         } else {
             if (emService.addUserToEmGroup(groupDTO.getEmChatId(), userId)) {
-                memberService.saveMember(groupId, userId, 0);
+                memberService.saveMember(userId, groupId, 0);
                 communityService.pushToUser(communityId, userId, 1);
             }
         }
@@ -634,7 +634,7 @@ public class CommunityController extends BaseController {
         } else {
             //新人
             communityService.pushToUser(communityId, userId, 1);
-            memberService.saveMember(groupId, userId, 0);
+            memberService.saveMember(userId, groupId, 0);
         }
         return true;
     }

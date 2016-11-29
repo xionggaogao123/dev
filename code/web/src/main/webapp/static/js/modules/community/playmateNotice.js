@@ -40,6 +40,10 @@ define(['jquery', 'pagination', 'common'], function (require, exports, module) {
     }
     $(document).ready(function () {
 
+        $(".hx-notice").click(function () {
+            window.open('/webim/index','_blank');
+        });
+
         hx_update();
 
         setInterval(hx_update,1000 * 60);

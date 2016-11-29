@@ -290,8 +290,11 @@ public class CommunityController extends BaseController {
     }
 
     /**
-     * 邀请人员加入社区
-     * 这里的逻辑是先
+     * 1.判断是否是成员
+     * 2.加入环信
+     * 3.判断是否以前加入过
+     * 4.更新或保存成员
+     * 5.push 到社区
      *
      * @param communityId
      * @param userId
@@ -302,14 +305,18 @@ public class CommunityController extends BaseController {
     public RespObj inviteMember(@ObjectIdType ObjectId communityId,
                                 @ObjectIdType ObjectId userId) {
         ObjectId groupId = communityService.getGroupId(communityId);
+        GroupDTO groupDTO = groupService.findByObjectId(groupId);
         //判断该用户是否加过该社区
         if (memberService.isGroupMember(groupId, userId)) {
             return RespObj.FAILD("该用户已经是该社区成员了");
         } else {
-            if (memberService.isBeforeMember(groupId, userId)) {
-                memberService.updateMember(groupId, userId, 0);
-            } else {
-                memberService.saveMember(userId, groupId, 0);
+            if (emService.addUserToEmGroup(groupDTO.getEmChatId(), userId)){
+                if (memberService.isBeforeMember(groupId, userId)) {
+                    memberService.updateMember(groupId, userId, 0);
+                    communityService.setPartIncontentStatus(communityId, userId, 0);
+                } else {
+                    memberService.saveMember(userId, groupId, 0);
+                }
             }
             communityService.pushToUser(communityId, userId, 1);
             return RespObj.SUCCESS("加人成员成功");
@@ -327,10 +334,8 @@ public class CommunityController extends BaseController {
     @ResponseBody
     public RespObj removeMember(@ObjectIdType ObjectId communityId,
                                 @ObjectIdType ObjectId userId) {
-
         CommunityDTO communityDTO = communityService.findByObjectId(communityId);
         String emChatId = communityDTO.getEmChatId();
-
         if (memberService.isHead(new ObjectId(communityDTO.getGroupId()), userId)) {
             return RespObj.FAILD("不能删除社长");
         }
@@ -370,9 +375,7 @@ public class CommunityController extends BaseController {
                         communityService.pushToUser(new ObjectId(fulanDto.getId()), getUserId(), 2);
                     }
                 }
-
                 communityDTOList = communityService.getCommunitys(userId, 1, 9);
-
                 return RespObj.SUCCESS(communityDTOList);
             }
         } catch (Exception e) {
@@ -1525,6 +1528,7 @@ public class CommunityController extends BaseController {
                 if (memberService.isBeforeMember(groupId, userId)) {
                     if (emService.addUserToEmGroup(emChatId, userId)) {
                         memberService.updateMember(groupId, userId, 0);
+                        communityService.setPartIncontentStatus(communityId, userId, 0);
                     }
                 } else {
                     if (emService.addUserToEmGroup(emChatId, userId)) {

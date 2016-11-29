@@ -8,7 +8,7 @@
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
 <div class="ebusiness-main-left">
     <dl>
-        <dt class="ebusiness-main-B">我的论坛</dt>
+        <%--<dt class="ebusiness-main-B">我的论坛</dt>--%>
         <%--<dd class="ebusiness-main-B">交易中心</dd>--%>
         <%--<span id="item1" class="ebusiness-main-HOV" onclick="window.location.href = '/mall/order/page.do'">我的订单</span>--%>
         <%--<span id="item2" onclick="window.location.href = '/mall/userCenter/voucher.do'">我的优惠券</span>--%>

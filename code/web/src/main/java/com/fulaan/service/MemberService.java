@@ -55,24 +55,13 @@ public class MemberService {
     }
 
     /**
-     * 设置副社长
-     *
-     * @param groupId
-     * @param userId
-     */
-    public void setDeputyHead(ObjectId groupId, ObjectId userId) {
-        memberDao.cleayDeputyHead(groupId);
-        memberDao.setDeputyHead(groupId, userId);
-    }
-
-    /**
      * 设置多个副社长
      *
      * @param groupId
      * @param userIds
      */
     public void setDeputyHead(ObjectId groupId, List<ObjectId> userIds) {
-        memberDao.cleayDeputyHead(groupId);
+        memberDao.cleanDeputyHead(groupId);
         memberDao.setDeputyHead(groupId, userIds);
     }
 
@@ -82,7 +71,7 @@ public class MemberService {
      * @param groupId
      */
     public void clearDeputyHead(ObjectId groupId) {
-        memberDao.cleayDeputyHead(groupId);
+        memberDao.cleanDeputyHead(groupId);
     }
 
     /**

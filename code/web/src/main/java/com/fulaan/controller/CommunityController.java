@@ -133,8 +133,8 @@ public class CommunityController extends BaseController {
 
             for (String userId : userList) {
 
-                if(emService.addUserToEmGroup(groupDTO.getEmChatId(),new ObjectId(userId))){
-                    memberService.saveMember(new ObjectId(userId),new ObjectId(groupDTO.getId()),0);
+                if (emService.addUserToEmGroup(groupDTO.getEmChatId(), new ObjectId(userId))) {
+                    memberService.saveMember(new ObjectId(userId), new ObjectId(groupDTO.getId()), 0);
                     communityService.pushToUser(communityId, new ObjectId(userId), 1);
                 }
 
@@ -202,8 +202,8 @@ public class CommunityController extends BaseController {
 
             for (String userId : userList) {
 
-                if(emService.addUserToEmGroup(groupDTO.getEmChatId(),new ObjectId(userId))){
-                    memberService.saveMember(new ObjectId(userId),new ObjectId(groupDTO.getId()),0);
+                if (emService.addUserToEmGroup(groupDTO.getEmChatId(), new ObjectId(userId))) {
+                    memberService.saveMember(new ObjectId(userId), new ObjectId(groupDTO.getId()), 0);
                     communityService.pushToUser(communityId, new ObjectId(userId), 1);
                 }
 
@@ -1500,14 +1500,14 @@ public class CommunityController extends BaseController {
 
         for (ObjectId userId : userIdList) {
 
-            if(!memberService.isGroupMember(groupId,userId)) {
+            if (!memberService.isGroupMember(groupId, userId)) {
                 if (memberService.isBeforeMember(groupId, userId)) {
 
-                    if(emService.addUserToEmGroup(emChatId,userId)) {
-                        memberService.updateMember(groupId,userId,0);
+                    if (emService.addUserToEmGroup(emChatId, userId)) {
+                        memberService.updateMember(groupId, userId, 0);
                     }
                 } else {
-                    if(emService.addUserToEmGroup(emChatId,userId)) {
+                    if (emService.addUserToEmGroup(emChatId, userId)) {
                         memberService.saveMember(userId, groupId);
                     }
 
@@ -1881,7 +1881,7 @@ public class CommunityController extends BaseController {
      * @return
      * @throws Exception
      */
-    @RequestMapping("/saveTuYaImage")
+    @RequestMapping(value = "/saveTuYaImage", method = RequestMethod.POST)
     @SessionNeedless
     @ResponseBody
     public RespObj saveEditedImage(@ObjectIdType ObjectId partInContentId, String oldImagePath, @RequestParam("file") MultipartFile multipartFile) throws Exception {
@@ -1918,12 +1918,13 @@ public class CommunityController extends BaseController {
 
     /**
      * 删除消息
+     *
      * @param detailId
      * @return
      */
     @RequestMapping("/removeDetailById")
     @ResponseBody
-    public RespObj removeDetailById(@ObjectIdType ObjectId detailId){
+    public RespObj removeDetailById(@ObjectIdType ObjectId detailId) {
         communityService.removeCommunityDetailById(detailId);
         return RespObj.SUCCESS;
     }

@@ -41,7 +41,7 @@ public class FriendController extends BaseController {
 
     @RequestMapping("/getParters")
     @ResponseBody
-    public RespObj getParters() {
+    public RespObj getPartners() {
         ObjectId uid = getUserId();
         return RespObj.SUCCESS(friendService.getParters(uid));
     }

@@ -14,6 +14,7 @@ import com.pojo.fcommunity.CommunityDetailType;
 import com.pojo.user.AvatarType;
 import com.pojo.user.UserDetailInfoDTO;
 import com.pojo.user.UserEntry;
+import com.sys.constants.Constant;
 import com.sys.exceptions.IllegalParamException;
 import com.sys.utils.AvatarUtils;
 import com.sys.utils.RespObj;
@@ -27,10 +28,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 /**
  * Created by jerry on 2016/10/31.
@@ -512,28 +510,21 @@ public class GroupController extends BaseController {
     public RespObj setRole(String emChatId,
                            @RequestParam(defaultValue = "", required = false) String userIds) {
         ObjectId groupId = groupService.getGroupIdByChatId(emChatId);
-
         if (!memberService.isHead(groupId, getUserId())) {
             return RespObj.FAILD("您没有权限");
         }
-
         if (StringUtils.isBlank(userIds)) {
             memberService.clearDeputyHead(groupId);
             return RespObj.SUCCESS("操作成功！");
         }
-
         List<ObjectId> memberIds = getMembersId(userIds);
-
         if (memberIds.size() > 2) {
             return RespObj.FAILD("只能设置两个副社长");
         }
-
         MemberDTO head = memberService.getHead(groupId);
-
         if (memberIds.contains(new ObjectId(head.getUserId()))) {
             return RespObj.FAILD("不能设置群主为副群主");
         }
-
         memberService.setDeputyHead(groupId, memberIds);
         return RespObj.SUCCESS("操作成功！");
     }
@@ -574,15 +565,12 @@ public class GroupController extends BaseController {
     public RespObj getAnnounceMent(String emChatId,
                                    @RequestParam(defaultValue = "1", required = false) int page,
                                    @RequestParam(defaultValue = "10", required = false) int pageSize) {
-
         ObjectId groupId = groupService.getGroupIdByChatId(emChatId);
-
         GroupDTO groupDTO = groupService.findByObjectId(groupId);
 
         if (groupDTO.isBindCommunity()) { //有社区
-
             ObjectId communityId = new ObjectId(groupDTO.getCommunityId());
-            PageModel<CommunityDetailDTO> pageModel = communityService.getMessages(communityId, page, pageSize, -1, CommunityDetailType.ANNOUNCEMENT.getType());
+            PageModel<CommunityDetailDTO> pageModel = communityService.getMessages(communityId, page, pageSize, Constant.DESC, CommunityDetailType.ANNOUNCEMENT.getType());
             return RespObj.SUCCESS(pageModel);
         }
         return RespObj.SUCCESS(groupAnnounceService.getGroupAnnounceByMessage(groupId, page, pageSize));
@@ -601,11 +589,9 @@ public class GroupController extends BaseController {
     @ResponseBody
     public RespObj setAnnounceMent(String emChatId,
                                    @RequestParam(defaultValue = "", required = false) String title,
-                                   String content,
+                                   @RequestParam(defaultValue = "", required = false) String content,
                                    @RequestParam(defaultValue = "", required = false) String images) {
-
         ObjectId groupId = groupService.getGroupIdByChatId(emChatId);
-
         if (groupId == null) {
             return RespObj.FAILD("群组不存在");
         }
@@ -613,11 +599,8 @@ public class GroupController extends BaseController {
         if (!memberService.isManager(groupId, userId)) {
             return RespObj.FAILD("对不起，您没有权限");
         }
-
         GroupDTO groupDTO = groupService.findByObjectId(groupId);
-
         if (groupDTO.isBindCommunity()) { //有社区
-
             CommunityMessage message = new CommunityMessage();
             message.setContent(content);
             List<Attachement> attachements = new ArrayList<Attachement>();
@@ -641,9 +624,7 @@ public class GroupController extends BaseController {
         List<String> imageArray = new ArrayList<String>();
         if (StringUtils.isNotBlank(images)) {
             String[] imageList = images.split(",");
-            for (String imageStr : imageList) {
-                imageArray.add(imageStr);
-            }
+            Collections.addAll(imageArray, imageList);
         }
         groupAnnounceService.save(groupId, title, content, getUserId(), imageArray);
         return RespObj.SUCCESS("发布成功");
@@ -659,7 +640,7 @@ public class GroupController extends BaseController {
     @SessionNeedless
     public RespObj msgCount() {
         Map<String, Object> map = new HashMap<String, Object>();
-        if(getUserId() == null) {
+        if (getUserId() == null) {
             map.put("offlineCount", 0);
             return RespObj.SUCCESS(map);
         }

@@ -28,8 +28,6 @@ import java.util.List;
 public class LoginInfoController {
 
     @Autowired
-    private UserService userService;
-    @Autowired
     private LoginLogService loginLogService;
 
     @RequestMapping("/downloadXls")

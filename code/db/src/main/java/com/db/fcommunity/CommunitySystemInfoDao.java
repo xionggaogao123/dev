@@ -101,7 +101,7 @@ public class CommunitySystemInfoDao extends BaseDao {
         for(int i=0;i<ids.size();i++){
             BasicDBObject dbo=new BasicDBObject()
                     .append("uid",userId)
-                    .append("reid",ids.get(0))
+                    .append("reid",ids.get(i))
                     .append("rst",roleStr)
                     .append("ty",type)
                     .append("cmid",communityId)

@@ -1030,6 +1030,7 @@ public class CommunityController extends BaseController {
             return RespObj.FAILD("不能设置社长为副社长");
         }
         communityService.setSecondMembers(objectIds, role);
+
         return RespObj.SUCCESS("操作成功");
     }
 
@@ -1869,7 +1870,8 @@ public class CommunityController extends BaseController {
      * @throws Exception
      */
     @RequestMapping("/saveEditedImage")
-    public void saveEditedImage(HttpServletRequest request,HttpServletResponse response) throws Exception {
+    @ResponseBody
+    public RespObj saveEditedImage(HttpServletRequest request,HttpServletResponse response) throws Exception {
         String filekey = "qiuNiu-" + new ObjectId().toString() + ".png";
         String parentPath = request.getServletContext().getRealPath("/upload") + "/qiuNiu/";
         File parentFile = new File(parentPath);
@@ -1886,14 +1888,10 @@ public class CommunityController extends BaseController {
         QiniuFileUtils.uploadFile(fileKey, new FileInputStream(attachFile), QiniuFileUtils.TYPE_IMAGE);
         String path = QiniuFileUtils.getPath(QiniuFileUtils.TYPE_IMAGE, fileKey);
         communityService.updateImage(new ObjectId(partInContentId[0]), path, "http://" + partInContentId[1]);
-
-        PartInContentEntry partInContentEntry=communityService.findPartIncontById(new ObjectId(partInContentId[0]));
         try {
             attachFile.delete();
-            response.sendRedirect("/community/communityDetail.do?detailId="+partInContentEntry.getDetailId().toString());
-            return;
+            return RespObj.SUCCESS;
         } catch (Exception e) {
-            e.printStackTrace();
             throw e;
         }
     }

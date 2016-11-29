@@ -438,7 +438,7 @@ public class MemberDao extends BaseDao {
         List<DBObject> dbObjects = find(MongoFacroty.getAppDB(), Constant.COLLECTION_FORUM_COMMUNITY_MEMBER, query, Constant.FIELDS, orderBy);
         for (DBObject dbo : dbObjects) {
             MemberEntry memberEntry=new MemberEntry(dbo);
-            memberEntries.add(memberEntry.getID());
+            memberEntries.add(memberEntry.getUserId());
         }
         return memberEntries;
     }

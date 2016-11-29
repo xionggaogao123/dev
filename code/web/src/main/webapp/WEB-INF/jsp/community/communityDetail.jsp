@@ -351,7 +351,8 @@
 
     <script type="text/javascript" src="/static/js/main.js"></script>
     <script type="text/javascript" src="/static/js/recorder.js"></script>
-    <script type="text/javascript" src="/static/js/swfobject.js"></script>
+    <%--<script type="text/javascript" src="/static/js/swfobject.js"></script>--%>
+    <script type="text/javascript" src="/static/js/modules/community/plugins/swfobject.js"></script>
     <script type="text/javascript"
             src="/static/js/modules/core/0.1.0/jquery-upload/vendor/jquery.ui.widget.js?v=1"></script>
     <script type="text/javascript" src="/static/js/modules/core/0.1.0/jquery-upload/jquery.fileupload.js"></script>
@@ -588,12 +589,12 @@
                     {{~}}
 
                 </div>
+                {{?}}
                 <div class="py-wrap">
                     <c:if test="${login == true}">
                         {{?value.type==5}}{{?value.manager==true}}<button contentId="{{=value.partInContentId}}" {{?value.mark==1}} class="mark"{{??}} class="un-mark"{{?}}>{{?value.mark==1}}已{{?}}批阅</button>{{?}}{{?}}
                     </c:if>
                 </div>
-                {{?}}
                 {{?value.attachmentList.length>0||value.videoList.length>0}}
                 <div class="doc-wrap">
                     {{?value.attachmentList.length>0}}
@@ -651,6 +652,5 @@
 
         })
     </script>
-
 </layout:override>
 <%@ include file="_layout.jsp" %>

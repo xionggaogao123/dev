@@ -2006,6 +2006,8 @@ public class CommunityController extends BaseController {
         ObjectId userId=getUserId();
         List<CommunitySystemInfoDTO> dtos=communitySystemInfoService.findInfoByUserIdAndType(userId,page,pageSize);
         int count=communitySystemInfoService.countEntriesByUserIdAndType(userId);
+        //加载完数据设置已读
+        communitySystemInfoService.setAllData(userId);
         map.put("list",dtos);
         map.put("count",count);
         map.put("page",page);

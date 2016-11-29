@@ -1856,10 +1856,14 @@ pre{white-space: pre-wrap;word-wrap: break-word;}
     width: 778px;
     border-top: 1px solid #C2C2C2;
     /*padding-top: 13px;*/
+    margin-top: 6px;
 }
 .publish-fj-2{
     width: 778px;
     padding-top: 13px;
+}
+.img-wrap{
+    margin-top: 6px;
 }
 .publish-fj .pub-img{
     float: left;
@@ -1921,7 +1925,7 @@ pre{white-space: pre-wrap;word-wrap: break-word;}
 }
 .p-doc em{
     position: absolute;
-    top: -2px;
+    top: 0;
     right: -14px;
     z-index: 1;
     display: inline-block;

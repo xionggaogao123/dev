@@ -42,12 +42,6 @@ define(['jquery', 'pagination', 'common'], function (require, exports, module) {
         })
 
 
-        // $('body').on('click', '', function () {
-        //
-        //     // window.open('/webim/index', '_blank');
-        // })
-
-
         $('body').on('click', '#editTag', function () {
             common.getData('/community/getMyTags.do',{},function(resp){
                 var tags=resp.message;

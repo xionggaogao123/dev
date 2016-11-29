@@ -911,6 +911,7 @@ button{cursor: pointer;}
 	font-size: 14px;
 	margin-right: 7px;
 	cursor: pointer;
+	text-align: center;
 }
 .com-list ul li:hover {
 	box-shadow: 0 0 5px #FF9F19 inset;

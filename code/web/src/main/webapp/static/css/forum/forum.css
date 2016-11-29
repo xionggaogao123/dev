@@ -2700,7 +2700,7 @@ pre {
 .header-bar, .header {
     background: #fff;
     border-bottom: #e8e8e8;
-    box-shadow: 0 2px 3px #e7e7e7;
+    /*box-shadow: 0 2px 3px #e7e7e7;*/
 }
 
 /**********************************new add**************************************************************/

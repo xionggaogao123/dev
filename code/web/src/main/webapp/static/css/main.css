@@ -4813,7 +4813,7 @@ ol.bjqs-markers li:last-child {
 .ebusiness-main-left dl dt, .ebusiness-main-left dl dd, .ebusiness-main-left dl span {
     margin-top: 5px;
     width: 150px;
-    font-size: 15px;
+    font-size: 16px;
     display: block;
     padding-bottom: 4px;
 }
@@ -4824,6 +4824,7 @@ ol.bjqs-markers li:last-child {
     border-left: 4px solid transparent;
     padding-left: 10px;
     margin-left: -15px;
+    font-size: 14px;
 }
 
 .ebusiness-main-left dl span:hover {
@@ -5841,8 +5842,8 @@ ol.bjqs-markers li:last-child {
 
 .header-bar, .header {
     background: #fff;
-    border-bottom: #e8e8e8 1px solid;
-    box-shadow: 0 2px 3px #e7e7e7;
+    border-bottom: #e8e8e8 2px solid;
+    /*box-shadow: 0 2px 3px #e7e7e7;*/
 }
 
 .user-no, .out-no {
@@ -5998,7 +5999,164 @@ ol.bjqs-markers li:last-child {
     width: 121px;
 }
 
-/*****************************mallSectionHeader************************************/
+.login-already{
+    float:right;
+    width: 250px;
+    height: 61px;
+}
+.login-already .d1-set{
+    float: right;
+    width: 46px;
+    height: 61px;
+    position: relative;
+    cursor: pointer;
+}
+.login-already .d1-set:hover{
+    background: #E8E8E8;
+}
+.login-already .d2-msg:hover{
+    background: #E8E8E8;
+}
+.login-already .d1-set:hover>.d1-mk{
+    display: block;
+}
+.login-already .d2-msg:hover>.d2-mk{
+    display: block;
+}
+.login-already .d2-msg{
+    float: right;
+    width: 46px;
+    height: 61px;
+    position: relative;
+    cursor: pointer;
+}
+.login-already .d1-set .d1-img{
+    background: url("/static/images/community/gray_set.png") no-repeat;
+    width: 18px;
+    height: 18px;
+    margin: 21px auto 0;
+}
+.login-already .d2-msg .d2-img{
+    background: url("/static/images/community/gray_message.png") no-repeat;
+    width: 23px;
+    height: 18px;
+    margin: 23px auto 0;
+}
+.login-already .d1-set .d1-mk{
+    display: none;
+    z-index: 3;
+    position: absolute;
+    height: 86px;
+    width: 119px;
+    top: 61px;
+    right: 0;
+    border-radius: 0 0 4px 4px;
+    box-shadow: 0 2px 2px #999;
+    background: #fff;
+    border: 1px solid #E8E8E8;
+}
+.login-already .d1-set .d1-mk div{
+    height: 42px;
+    line-height: 42px;
+    cursor: pointer;
+    border-top: 1px solid #E8E8E8;
+}
+.login-already .d1-set .d1-mk .p1{
+}
+.login-already .d1-set .d1-mk .p1 span{
+    display: inline-block;
+    width: 18px;
+    height: 18px;
+    background: url("/static/images/community/personal_set.png") no-repeat;
+    float: left;
+    margin: 13px 11px 0 18px;
+}
+.login-already .d1-set .d1-mk .p2 span{
+    display: inline-block;
+    width: 18px;
+    height: 18px;
+    background: url("/static/images/community/gray_out.png") no-repeat;
+    float: left;
+    margin: 13px 11px 0 18px;
+}
+/**/
+
+.login-already .d2-msg .d2-mk{
+    display: none;
+    z-index: 3;
+    position: absolute;
+    height: 86px;
+    width: 137px;
+    top: 61px;
+    right: 0;
+    border-radius: 0 0 4px 4px;
+    box-shadow: 0 2px 2px #999;
+    background: #fff;
+    border: 1px solid #E8E8E8;
+}
+.login-already .d2-msg .d2-mk div{
+    height: 42px;
+    line-height: 42px;
+    cursor: pointer;
+    border-top: 1px solid #E8E8E8;
+}
+.login-already .d2-msg .d2-mk div:hover{
+    background: #E8E8E8;
+}
+.login-already .d1-set .d1-mk div:hover{
+    background: #E8E8E8;
+}
+.login-already .d2-msg .d2-mk div em{
+    float: right;
+    width: 19px;
+    text-align: center;
+    height: 14px;
+    line-height: 14px;
+    font-size: 10px;
+    color: #fff;
+    background: #FF9926;
+    border-radius: 3px;
+    margin: 15px 10px 0 0;
+}
+.login-already .d2-msg .d2-mk .p1{
+    border-bottom: 1px solid #E8E8E8;
+}
+.login-already .d2-msg .d2-mk .p1 span{
+    display: inline-block;
+    width: 16px;
+    height: 16px;
+    background: url("/static/images/community/all_gray3.png") no-repeat;
+    float: left;
+    margin: 13px 11px 0 18px;
+}
+.login-already .d2-msg .d2-mk .p2 span{
+    display: inline-block;
+    width: 18px;
+    height: 16px;
+    background: url("/static/images/community/all_gray4.png") no-repeat;
+    float: left;
+    margin: 13px 11px 0 18px;
+}
+.login-already .login-name{
+    float: right;
+    height: 61px;
+    line-height:61px;
+    max-width: 85px;
+    margin-right: 22px;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+.login-already>img{
+    float: right;
+    height: 35px;
+    width: 35px;
+    border-radius: 100%;
+    border:1px solid #aaa;
+    margin: 13px 13px 0 0 ;
+}
+
+    /*****************************mallSectionHeader************************************/
 
 .bg {
     display: none;

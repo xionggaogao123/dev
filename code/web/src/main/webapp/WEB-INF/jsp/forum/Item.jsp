@@ -15,7 +15,7 @@
         <%--<dd class="ebusiness-main-B">关注中心</dd>--%>
         <%--<span id="item3" onclick="window.location.href = '/mall/userCenter/collection.do'">我收藏的商品</span>--%>
         <%--<span id="item4" onclick="window.location.href = '/mall/userCenter/history.do'">我的浏览记录</span>--%>
-        <dd class="ebusiness-main-B">个人中心</dd>
+        <dd class="ebusiness-main-B">个人设置</dd>
         <span id="item5" class="ebusiness-main-HOV"
               onclick="window.location.href = '/forum/userCenter/user.do'">个人信息</span>
         <span class="jf-my">我的积分</span>

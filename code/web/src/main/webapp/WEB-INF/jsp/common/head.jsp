@@ -107,8 +107,26 @@
             手机app
         </a>
         <c:if test="${login == true}">
-            <span id="logout">[退出]</span>
-            <span id="userName" onclick="window.open('/forum/userCenter/user.do')">Hi, ${userName}</span>
+            <span<%-- id="logout"--%> style="display: none">[退出]</span>
+            <span<%-- id="userName"--%> style="display: none;" onclick="window.open('/forum/userCenter/user.do')">Hi, ${userName}</span>
+            <div class="login-already">
+                <div class="d1-set">
+                    <div class="d1-img"></div>
+                    <div class="d1-mk">
+                        <div class="p1" onclick="window.open('/forum/userCenter/user.do')"><span></span>个人设置</div>
+                        <div class="p2"  id="logout"><span></span>退出</div>
+                    </div>
+                </div>
+                <div class="d2-msg">
+                    <div class="d2-img"></div>
+                    <div class="d2-mk">
+                        <div class="p1"><span></span>玩伴通知<em>10</em></div>
+                        <div class="p2"><span></span>系统消息<em>10</em></div>
+                    </div>
+                </div>
+                <div class="login-name" id="userName">${userName}</div>
+                <img src="">
+            </div>
         </c:if>
         <c:if test="${login == false}">
             <span onclick="window.open('/mall/register.do')">注册</span>

@@ -196,12 +196,9 @@ public class GroupController extends BaseController {
     @ResponseBody
     public RespObj inviteMember(String emChatId,
                                 String userIds) throws IOException, IllegalParamException {
-
         ObjectId groupId = groupService.getGroupIdByChatId(emChatId);
         GroupDTO groupDTO = groupService.findByObjectId(groupId);
-
         List<ObjectId> userList = getMembersId(userIds);
-
         for (ObjectId personId : userList) {
             if (!memberService.isGroupMember(groupId, personId)) {
                 if (emService.addUserToEmGroup(emChatId, personId)) {
@@ -210,7 +207,6 @@ public class GroupController extends BaseController {
                     } else {
                         memberService.saveMember(personId, groupId);
                     }
-
                     if (groupDTO.isBindCommunity()) {
                         communityService.setPartIncontentStatus(new ObjectId(groupDTO.getCommunityId()), personId, 0);
                         communityService.pushToUser(new ObjectId(groupDTO.getCommunityId()), personId, 1);
@@ -218,7 +214,6 @@ public class GroupController extends BaseController {
                 }
             }
         }
-
         //更新群聊头像
         groupService.updateHeadImage(groupId);
         if (groupDTO.getIsM() == 0) {
@@ -238,15 +233,12 @@ public class GroupController extends BaseController {
     @RequestMapping("/join")
     @ResponseBody
     public RespObj join(String emChatId) throws IOException, IllegalParamException {
-
         ObjectId groupId = groupService.getGroupIdByChatId(emChatId);
         GroupDTO groupDTO = groupService.findByObjectId(groupId);
-
         ObjectId userId = getUserId();
         if (!memberService.isGroupMember(groupId, userId)) {
             if (memberService.isBeforeMember(groupId, userId)) {
                 if (emService.addUserToEmGroup(emChatId, userId)) {
-
                     memberService.updateMember(userId, groupId, 0);
                     communityService.setPartIncontentStatus(new ObjectId(groupDTO.getCommunityId()), userId, 0);
                 }
@@ -255,18 +247,14 @@ public class GroupController extends BaseController {
                     memberService.saveMember(userId, groupId, 0);
                 }
             }
-
         }
-
         //更新群聊头像
         groupService.updateHeadImage(groupId);
-
         if (groupDTO.getIsM() == 0) {
             groupService.updateGroupNameByMember(new ObjectId(groupDTO.getId()));
         }
         return RespObj.SUCCESS("操作成功");
     }
-
 
     /**
      * 群主踢人
@@ -285,18 +273,14 @@ public class GroupController extends BaseController {
         }
         ObjectId groupId = groupService.getGroupIdByChatId(emChatId);
         GroupDTO groupDTO = groupService.findByObjectId(groupId);
-
         ObjectId userId = getUserId();
         if (!memberService.isManager(groupId, userId)) {
             return RespObj.FAILD("您没有这个权限");
         }
-
         List<ObjectId> userList = getMembersId(userIds);
-
         if (userList.contains(userId)) {
             userList.remove(userId);
         }
-
         for (ObjectId personId : userList) {
             if (memberService.isGroupMember(groupId, personId)) {
                 if (emService.removeUserFromEmGroup(emChatId, personId)) {
@@ -376,7 +360,6 @@ public class GroupController extends BaseController {
                     communityService.deleteCommunity(new ObjectId(groupDTO.getCommunityId()));
                 }
             }
-
         }
 
         groupService.updateHeadImage(groupId);

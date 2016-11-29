@@ -26,6 +26,7 @@ import com.pojo.fcommunity.ConcernEntry;
 import com.pojo.fcommunity.PartInContentEntry;
 import com.pojo.fcommunity.RemarkEntry;
 import com.pojo.user.*;
+import com.pojo.utils.MongoUtils;
 import com.sys.constants.Constant;
 import com.sys.exceptions.IllegalParamException;
 import com.sys.utils.AvatarUtils;
@@ -970,8 +971,8 @@ public class CommunityController extends BaseController {
     @RequestMapping("/deleteMembers")
     @ResponseBody
     public RespObj deleteMembers(@ObjectIdType ObjectId communityId, String memberUserId, String memberId) {
-        List<ObjectId> objectIds = getMembersId(memberId);
-        List<ObjectId> userIds = getMembersId(memberUserId);
+        List<ObjectId> objectIds = MongoUtils.convertObjectIds(memberId);
+        List<ObjectId> userIds = MongoUtils.convertObjectIds(memberUserId);
         CommunityDTO community = communityService.findByObjectId(communityId);
 
         ObjectId groupId = communityService.getGroupId(communityId);
@@ -1023,15 +1024,14 @@ public class CommunityController extends BaseController {
     @RequestMapping("/setSecondMembers")
     @ResponseBody
     public RespObj setSecondMembers(@ObjectIdType ObjectId communityId, String memberUserId, String memberId, int role) {
-        List<ObjectId> objectIds = getMembersId(memberId);
-        List<ObjectId> userIds = getMembersId(memberUserId);
+        List<ObjectId> objectIds = MongoUtils.convertObjectIds(memberId);
+        List<ObjectId> userIds = MongoUtils.convertObjectIds(memberUserId);
         ObjectId userId = getUserId();
         ObjectId groupId = communityService.getGroupId(communityId);
 
         if (!memberService.isHead(groupId, userId)) {
             return RespObj.FAILD("您没有权限");
         }
-
         CommunityDTO communityDTO = communityService.findByObjectId(communityId);
 
         if (userIds.contains(new ObjectId(communityDTO.getOwerId()))) {
@@ -1518,13 +1518,10 @@ public class CommunityController extends BaseController {
                                  String userIds) {
         ObjectId groupId = communityService.getGroupId(communityId);
         String emChatId = groupService.getEmchatIdByGroupId(groupId);
-        List<ObjectId> userIdList = getMembersId(userIds);
-
+        List<ObjectId> userIdList = MongoUtils.convertObjectIds(userIds);
         for (ObjectId userId : userIdList) {
-
             if (!memberService.isGroupMember(groupId, userId)) {
                 if (memberService.isBeforeMember(groupId, userId)) {
-
                     if (emService.addUserToEmGroup(emChatId, userId)) {
                         memberService.updateMember(groupId, userId, 0);
                     }
@@ -1532,20 +1529,10 @@ public class CommunityController extends BaseController {
                     if (emService.addUserToEmGroup(emChatId, userId)) {
                         memberService.saveMember(userId, groupId);
                     }
-
                 }
             }
         }
         return RespObj.SUCCESS("操作成功");
-    }
-
-    private List<ObjectId> getMembersId(String memberId) {
-        String[] members = memberId.split(",");
-        List<ObjectId> objectIds = new ArrayList<ObjectId>();
-        for (String item : members) {
-            objectIds.add(new ObjectId(item));
-        }
-        return objectIds;
     }
 
     /**

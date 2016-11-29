@@ -14,6 +14,7 @@ import com.pojo.fcommunity.CommunityDetailType;
 import com.pojo.user.AvatarType;
 import com.pojo.user.UserDetailInfoDTO;
 import com.pojo.user.UserEntry;
+import com.pojo.utils.MongoUtils;
 import com.sys.constants.Constant;
 import com.sys.exceptions.IllegalParamException;
 import com.sys.utils.AvatarUtils;
@@ -74,9 +75,7 @@ public class GroupController extends BaseController {
         }
         //创建组
         ObjectId groupId = groupService.createGroupWithoutCommunity(owerId, emChatId);
-
-        List<ObjectId> userList = getMembersId(userIds);
-
+        List<ObjectId> userList = MongoUtils.convertObjectIds(userIds);
         for (ObjectId personId : userList) {
             if (!memberService.isGroupMember(groupId, personId)) {
                 if (emService.addUserToEmGroup(emChatId, personId)) {
@@ -84,7 +83,6 @@ public class GroupController extends BaseController {
                 }
             }
         }
-
         groupService.updateHeadImage(groupId);
         groupService.updateGroupNameByMember(groupId);
         return RespObj.SUCCESS(groupService.findByObjectId(groupId));
@@ -198,7 +196,7 @@ public class GroupController extends BaseController {
                                 String userIds) throws IOException, IllegalParamException {
         ObjectId groupId = groupService.getGroupIdByChatId(emChatId);
         GroupDTO groupDTO = groupService.findByObjectId(groupId);
-        List<ObjectId> userList = getMembersId(userIds);
+        List<ObjectId> userList = MongoUtils.convertObjectIds(userIds);
         for (ObjectId personId : userList) {
             if (!memberService.isGroupMember(groupId, personId)) {
                 if (emService.addUserToEmGroup(emChatId, personId)) {
@@ -277,7 +275,7 @@ public class GroupController extends BaseController {
         if (!memberService.isManager(groupId, userId)) {
             return RespObj.FAILD("您没有这个权限");
         }
-        List<ObjectId> userList = getMembersId(userIds);
+        List<ObjectId> userList = MongoUtils.convertObjectIds(userIds);
         if (userList.contains(userId)) {
             userList.remove(userId);
         }
@@ -315,11 +313,8 @@ public class GroupController extends BaseController {
 
         ObjectId groupId = groupService.getGroupIdByChatId(emChatId);
         GroupDTO groupDTO = groupService.findByObjectId(groupId);
-
         ObjectId userId = getUserId();
-
         if (memberService.isHead(groupId, userId)) {
-
             List<MemberDTO> memberDTOs = memberService.getMembers(groupId, 2);
             //转让
             if (memberDTOs.size() == 2) {
@@ -351,7 +346,6 @@ public class GroupController extends BaseController {
             }
 
         } else {
-
             if (emService.removeUserFromEmGroup(emChatId, userId)) {
                 memberService.deleteMember(groupId, userId);
                 if (groupDTO.isBindCommunity()) {
@@ -500,7 +494,7 @@ public class GroupController extends BaseController {
             memberService.clearDeputyHead(groupId);
             return RespObj.SUCCESS("操作成功！");
         }
-        List<ObjectId> memberIds = getMembersId(userIds);
+        List<ObjectId> memberIds = MongoUtils.convertObjectIds(userIds);
         if (memberIds.size() > 2) {
             return RespObj.FAILD("只能设置两个副社长");
         }
@@ -631,21 +625,6 @@ public class GroupController extends BaseController {
         int msgCount = EaseMobAPI.getOfflineMsgCount(userId.toString());
         map.put("offlineCount", msgCount);
         return RespObj.SUCCESS(map);
-    }
-
-    /**
-     * 分隔
-     *
-     * @param userIds
-     * @return
-     */
-    private List<ObjectId> getMembersId(String userIds) {
-        String[] members = userIds.split(",");
-        List<ObjectId> objectIds = new ArrayList<ObjectId>();
-        for (String item : members) {
-            objectIds.add(new ObjectId(item));
-        }
-        return objectIds;
     }
 
 

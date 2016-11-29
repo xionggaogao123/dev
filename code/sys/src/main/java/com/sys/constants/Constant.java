@@ -602,6 +602,8 @@ public class Constant {
 
   public static final String COLLECTION_FORUM_GROUPANNOUNCE = "fgroupAnnounce";
 
+  public static final String COLLECTION_FORUM_COMMUNITY_SYSTEMINFO="fcomunitySysInfo";
+
   //=========第三方登录=======================================================
   //微信APP ID
   public static final String WECHAT_APPID = "wx71d74481f7f0aff0";

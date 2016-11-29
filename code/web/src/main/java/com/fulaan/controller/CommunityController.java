@@ -85,6 +85,8 @@ public class CommunityController extends BaseController {
     private FriendService friendService;
     @Autowired
     private EmService emService;
+    @Autowired
+    private CommunitySystemInfoService communitySystemInfoService;
 
     public static final String suffix = "/static/images/community/upload.png";
 
@@ -125,7 +127,9 @@ public class CommunityController extends BaseController {
         communityService.pushToUser(commId, uid, 2);
 
         CommunityDTO communityDTO = communityService.findByObjectId(commId);
-
+        //创建社区系统消息通知
+        communitySystemInfoService.saveOrupdateEntry(getUserId(),getUserId(),"社长",4,commId);
+        communitySystemInfoService.saveOrupdateEntry(getUserId(),getUserId(),"社长",5,commId);
         if (StringUtils.isNotBlank(userIds)) {
             GroupDTO groupDTO = groupService.findByObjectId(new ObjectId(communityDTO.getGroupId()));
             String[] userList = userIds.split(",");
@@ -194,6 +198,7 @@ public class CommunityController extends BaseController {
         communityService.pushToUser(commId, uid, 2);
 
         CommunityDTO communityDTO = communityService.findByObjectId(commId);
+
 
         if (StringUtils.isNotBlank(userIds)) {
             GroupDTO groupDTO = groupService.findByObjectId(new ObjectId(communityDTO.getGroupId()));
@@ -655,6 +660,10 @@ public class CommunityController extends BaseController {
 
         if (memberService.isHead(groupId, userId)) {
             return RespObj.FAILD("群主暂时无法退出");
+        }else if(memberService.isManager(groupId,userId)){
+            //当是副社长退出时
+            List<ObjectId> objectIds=communityService.getAllMemberIds(groupId);
+            communitySystemInfoService.addBatchData(userId,objectIds,"副社长",1,communityId);
         }
 
         if (emService.removeUserFromEmGroup(emChatId, userId)) {
@@ -701,40 +710,45 @@ public class CommunityController extends BaseController {
     @RequestMapping("/communityDetail")
     @SessionNeedless
     @LoginInfo
-    public String communityMessage(@ObjectIdType ObjectId detailId, Map<String, Object> model) {
-        ObjectId uid = getUserId();
-        CommunityDetailDTO detail = communityService.findDetailByObjectId(detailId);
-        List<CommunityDTO> communitys = new ArrayList<CommunityDTO>();
-        model.put("operation", false);
-        //已读
-        //判断是否已读，未读则添加进去
-        if (null != uid) {
-            boolean flag = true;
-            List<String> unReadList = detail.getUnReadList();
-            for (String item : unReadList) {
-                if (item.equals(uid.toString())) {
-                    flag = false;
-                    break;
+    public String communityMessage(@ObjectIdType ObjectId detailId, Map<String, Object> model) throws Exception{
+        try {
+            ObjectId uid = getUserId();
+            CommunityDetailDTO detail = communityService.findDetailByObjectId(detailId);
+            List<CommunityDTO> communitys = new ArrayList<CommunityDTO>();
+            model.put("operation", false);
+            //已读
+            //判断是否已读，未读则添加进去
+            if (null != uid) {
+                boolean flag = true;
+                List<String> unReadList = detail.getUnReadList();
+                for (String item : unReadList) {
+                    if (item.equals(uid.toString())) {
+                        flag = false;
+                        break;
+                    }
+                }
+                if (flag) {
+                    communityService.pushRead(detailId, getUserId());
+                }
+                communitys = communityService.getCommunitys(uid, 1, 9);
+                ObjectId groupId = communityService.getGroupId(new ObjectId(detail.getCommunityId()));
+                if (memberService.isManager(groupId, getUserId())) {
+                    model.put("operation", true);
+                }
+            } else {
+                CommunityDTO fulanDto = communityService.getDefaultDto("复兰社区");
+                if (null != fulanDto) {
+                    communitys.add(fulanDto);
                 }
             }
-            if (flag) {
-                communityService.pushRead(detailId, getUserId());
-            }
-            communitys = communityService.getCommunitys(uid, 1, 9);
-            ObjectId groupId = communityService.getGroupId(new ObjectId(detail.getCommunityId()));
-            if (memberService.isManager(groupId, getUserId())) {
-                model.put("operation", true);
-            }
-        } else {
-            CommunityDTO fulanDto = communityService.getDefaultDto("复兰社区");
-            if (null != fulanDto) {
-                communitys.add(fulanDto);
-            }
+            model.put("detail", detail);
+            model.put("detailId", detailId.toString());
+            model.put("communitys", communitys);
+            return "community/communityDetail";
+        }catch (Exception e){
+            e.printStackTrace();
+            throw  e;
         }
-        model.put("detail", detail);
-        model.put("detailId", detailId.toString());
-        model.put("communitys", communitys);
-        return "community/communityDetail";
     }
 
     @RequestMapping("/myMessages")
@@ -1565,20 +1579,25 @@ public class CommunityController extends BaseController {
     @RequestMapping("/playmateNotice")
     @LoginInfo
     public String playmateNotice(Map<String, Object> model) {
-        int friendApplyCount = friendApplyService.countNoResponseReply(getUserId().toString());
-        model.put("friendApplyCount", friendApplyCount);
         model.put("menuItem", 1);
         return "/community/playmateNotice";
     }
 
+    @RequestMapping("/mySystemInfo")
+    @LoginInfo
+    public String mySystemInfo(Map<String, Object> model) {
+        model.put("menuItem", 3);
+        return "/community/playmateNotice";
+    }
+
+
     @RequestMapping("/myPartners")
     @LoginInfo
     public String myPartners(Map<String, Object> model) {
-        int friendApplyCount = friendApplyService.countNoResponseReply(getUserId().toString());
-        model.put("friendApplyCount", friendApplyCount);
         model.put("menuItem", 2);
         return "/community/playmateNotice";
     }
+
 
     @RequestMapping("/friendList")
     @LoginInfo
@@ -1891,8 +1910,7 @@ public class CommunityController extends BaseController {
      * @throws Exception
      */
     @RequestMapping("/saveEditedImage")
-    @ResponseBody
-    public RespObj saveEditedImage(HttpServletRequest request) throws Exception {
+    public void saveEditedImage(HttpServletRequest request,HttpServletResponse response) throws Exception {
         String filekey = "qiuNiu-" + new ObjectId().toString() + ".png";
         String parentPath = request.getServletContext().getRealPath("/upload") + "/qiuNiu/";
         File parentFile = new File(parentPath);
@@ -1901,19 +1919,24 @@ public class CommunityController extends BaseController {
             ServletInputStream inputStream = request.getInputStream();
             FileUtils.copyInputStreamToFile(inputStream, attachFile);
         } catch (Exception ex) {
-            return RespObj.FAILD;
+            ex.printStackTrace();
+            throw  ex;
         }
         String[] partInContentId = request.getParameter("partInContentId").split("-");
         String fileKey = new ObjectId().toString() + Constant.POINT + "png";
         QiniuFileUtils.uploadFile(fileKey, new FileInputStream(attachFile), QiniuFileUtils.TYPE_IMAGE);
         String path = QiniuFileUtils.getPath(QiniuFileUtils.TYPE_IMAGE, fileKey);
         communityService.updateImage(new ObjectId(partInContentId[0]), path, "http://" + partInContentId[1]);
+
+        PartInContentEntry partInContentEntry=communityService.findPartIncontById(new ObjectId(partInContentId[0]));
         try {
             attachFile.delete();
+            response.sendRedirect("/community/communityDetail.do?detailId="+partInContentEntry.getDetailId());
+            return;
         } catch (Exception e) {
+            e.printStackTrace();
             throw e;
         }
-        return RespObj.SUCCESS;
     }
 
     /**
@@ -1968,4 +1991,27 @@ public class CommunityController extends BaseController {
         communityService.removeCommunityDetailById(detailId);
         return RespObj.SUCCESS;
     }
+
+    /**
+     * 获取系统消息列表
+     * @param page
+     * @param pageSize
+     * @return
+     */
+    @RequestMapping("/getCommunitySysInfo")
+    @ResponseBody
+    public Map<String,Object> getCommunitySysInfo(@RequestParam(required = false,defaultValue = "1")int page,
+                                       @RequestParam(required = false,defaultValue = "10")int pageSize){
+        Map<String,Object> map=new HashMap<String,Object>();
+        ObjectId userId=getUserId();
+        List<CommunitySystemInfoDTO> dtos=communitySystemInfoService.findInfoByUserIdAndType(userId,page,pageSize);
+        int count=communitySystemInfoService.countEntriesByUserIdAndType(userId);
+        map.put("list",dtos);
+        map.put("count",count);
+        map.put("page",page);
+        map.put("pageSize",pageSize);
+        return map;
+    }
+
+
 }

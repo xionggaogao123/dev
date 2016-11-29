@@ -465,6 +465,24 @@ public class MemberDao extends BaseDao {
         return memberEntries;
     }
 
+
+    /**
+     * 获取所有的成员Ids
+     * @param groupId
+     * @return
+     */
+    public List<ObjectId> getAllMemberIds(ObjectId groupId){
+        BasicDBObject query = new BasicDBObject().append("grid", groupId).append("r", 0);
+        BasicDBObject orderBy = new BasicDBObject().append("rl", -1).append(Constant.ID, -1);
+        List<ObjectId> memberEntries = new ArrayList<ObjectId>();
+        List<DBObject> dbObjects = find(MongoFacroty.getAppDB(), Constant.COLLECTION_FORUM_COMMUNITY_MEMBER, query, Constant.FIELDS, orderBy);
+        for (DBObject dbo : dbObjects) {
+            MemberEntry memberEntry=new MemberEntry(dbo);
+            memberEntries.add(memberEntry.getID());
+        }
+        return memberEntries;
+    }
+
     /**
      * 获取群主
      *

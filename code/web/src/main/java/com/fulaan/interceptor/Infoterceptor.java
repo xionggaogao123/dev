@@ -1,7 +1,9 @@
 package com.fulaan.interceptor;
 
 import com.fulaan.annotation.LoginInfo;
+import com.fulaan.friendscircle.service.FriendApplyService;
 import com.fulaan.service.CommunityService;
+import com.fulaan.service.CommunitySystemInfoService;
 import com.fulaan.service.ConcernService;
 import com.fulaan.forum.service.FCollectionService;
 import com.fulaan.forum.service.FLevelService;
@@ -47,6 +49,10 @@ public class Infoterceptor extends HandlerInterceptorAdapter {
     private ConcernService concernService;
     @Autowired
     private CommunityService communityService;
+    @Autowired
+    private CommunitySystemInfoService communitySystemInfoService;
+    @Autowired
+    private FriendApplyService friendApplyService;
 
     @Override
     public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler) throws Exception {
@@ -85,6 +91,10 @@ public class Infoterceptor extends HandlerInterceptorAdapter {
             return;
         }
 
+        int systemInfoCount = communitySystemInfoService.findUnReadInfo(new ObjectId(sessionValue.getId()));
+        model.put("systemInfoCount", systemInfoCount);
+        int friendApplyCount = friendApplyService.countNoResponseReply(sessionValue.getId());
+        model.put("friendApplyCount", friendApplyCount);
         Map<String, Object> map = fMissionService.findTodayMissionByUserId(sessionValue.getId());
         model.put("signIn", map.get("signIn"));
         model.put("userPermission", sessionValue.getUserRole());

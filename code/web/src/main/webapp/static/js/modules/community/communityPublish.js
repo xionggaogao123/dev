@@ -244,6 +244,11 @@ define(['jquery', 'pagination', 'common'], function (require, exports, module) {
         $('body').on('click','.si-s3 em,.si-s3 .alert-btn-esc',function(){
             ss3();
         })
+
+        $('body').on('click','.login-mk-btn .d2',function () {
+            $('.store-register').fadeToggle();
+            $('.bg').fadeToggle();
+        })
     })
 
     function sureCancel(){

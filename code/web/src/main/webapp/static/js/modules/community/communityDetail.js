@@ -250,6 +250,11 @@ define(['jquery', 'pagination', 'common'], function (require, exports, module) {
             $(this).closest('.p-doc').remove();
         })
 
+        $('body').on('click','.login-mk-btn .d2',function () {
+            $('.store-register').fadeToggle();
+            $('.bg').fadeToggle();
+        })
+
         $('body').on('click','#outResult',function(){
             $.ajax({
                 url: "/forum/loginInfo.do?date=" + new Date(),

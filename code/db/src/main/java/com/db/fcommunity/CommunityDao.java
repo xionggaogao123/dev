@@ -10,7 +10,9 @@ import com.sys.constants.Constant;
 import org.bson.types.ObjectId;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 /**
  * Created by jerry on 2016/10/24.
@@ -248,5 +250,25 @@ public class CommunityDao extends BaseDao {
             communitys.add(new CommunityEntry(dbo));
         }
         return communitys;
+    }
+
+    /**
+     * 通过id查找社区消息
+     * @param ids
+     * @return
+     */
+    public Map<ObjectId,CommunityEntry> findMapInfo(List<ObjectId> ids){
+        BasicDBObject query=new BasicDBObject()
+               .append(Constant.ID,new BasicDBObject(Constant.MONGO_IN,ids)).append("r",0);
+        Map<ObjectId, CommunityEntry> retMap = new HashMap<ObjectId, CommunityEntry>();
+        List<DBObject> list = find(MongoFacroty.getAppDB(), Constant.COLLECTION_FORUM_COMMUNITY, query, Constant.FIELDS);
+        if (null != list && !list.isEmpty()) {
+            CommunityEntry e;
+            for (DBObject dbo : list) {
+                e = new CommunityEntry((BasicDBObject) dbo);
+                retMap.put(e.getID(), e);
+            }
+        }
+        return retMap;
     }
 }

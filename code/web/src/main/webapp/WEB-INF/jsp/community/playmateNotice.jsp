@@ -29,7 +29,7 @@
     </div>
     <div class="hd-cont-f hd-cont-f1">
         <div class="com-left">
-            <div class="com-left-s">
+            <div class="com-left-s" id="friendInform">
                 <div class="com-tit" id="title">玩伴通知</div>
                 <script type="text/template" id="friendApplyTmpl">
                     {{~it:value:index}}
@@ -83,25 +83,55 @@
                     </li>
                     {{~}}
                 </script>
-                <div class="new-page-links"></div>
+                <div class="new-page-links" id="friendInformPage"></div>
             </div>
-            <div class="com-left-s" style="display: none;">
+            <div class="com-left-s" id="SysInfo" style="display: none">
                 <div class="com-tit">系统消息</div>
-                <ul class="ul-sysNotice">
-                    <li>
-                        <span class="sp1">用户<em>shawn</em>退出喷子社区</span>
-                        <span class="sp2">2016-12-21 15:56</span>
-                    </li>
-                    <li>
-                        <span class="sp1">用户<em>shawn</em>退出喷子社区</span>
-                        <span class="sp2">2016-12-21 15:56</span>
-                    </li>
-                    <li>
-                        <span class="sp1"><i></i>"人事任命"—恭喜您成为喷子社区的社长，您有权对本社区进行管理....<a href="###">去试试></a></span>
-                        <span class="sp2">2016-12-21 15:56</span>
-                    </li>
+                <ul class="ul-sysNotice" id="mySystemInfo">
+                    <%--<li>--%>
+                        <%--<span class="sp1">用户<em>shawn</em>退出喷子社区</span>--%>
+                        <%--<span class="sp2">2016-12-21 15:56</span>--%>
+                    <%--</li>--%>
+                    <%--<li>--%>
+                        <%--<span class="sp1">用户<em>shawn</em>退出喷子社区</span>--%>
+                        <%--<span class="sp2">2016-12-21 15:56</span>--%>
+                    <%--</li>--%>
+                    <%--<li>--%>
+                        <%--<span class="sp1"><i></i>"人事任命"—恭喜您成为喷子社区的社长，您有权对本社区进行管理....<a href="###">去试试></a></span>--%>
+                        <%--<span class="sp2">2016-12-21 15:56</span>--%>
+                    <%--</li>--%>
                 </ul>
-
+                <script type="text/template" id="mySystemInfoTmpl">
+                    {{~it:value:index}}
+                    {{?value.type==1}}
+                    <li>
+                        <span class="sp1">{{=value.roleStr}}<em>{{=value.nickName}}</em>退出{{=value.communityName}}</span>
+                        <span class="sp2">{{=value.time}}</span>
+                    </li>
+                    {{??value.type==2}}
+                    <li>
+                        <span class="sp1">人事任命”— {{=value.roleStr}}<em>{{=value.nickName}}</em>成为{{=value.communityName}}新一任社长了</span>
+                        <span class="sp2">{{=value.time}}</span>
+                    </li>
+                    {{??value.type==3}}
+                    <li>
+                        <span class="sp1">“人事任命”— 恭喜您成为{{=value.communityName}}的社长，您有权对本社区进行管理......</span>
+                        <span class="sp2">{{=value.time}}</span>
+                    </li>
+                    {{??value.type==4}}
+                    <li>
+                        <span class="sp1">Hi，恭喜您{{=value.communityName}}创建成功，祝您学习愉快。如有问题，随时与我联系。</span>
+                        <span class="sp2">{{=value.time}}</span>
+                    </li>
+                    {{??}}
+                    <li>
+                        <span class="sp1">恭喜您成为{{=value.communityName}}的社长，您有权对本社区进行管理......</span>
+                        <span class="sp2">{{=value.time}}</span>
+                    </li>
+                    {{?}}
+                    {{~}}
+                </script>
+                <div class="new-page-links" id="sysInfoPage"></div>
             </div>
 
         </div>
@@ -111,17 +141,18 @@
                 <ul class="ul-comr-all">
                     <li class="li1 <c:if test="${menuItem==2}">blue-cur</c:if>" style="cursor: pointer">
                         <em class="em1" <c:if test="${menuItem==2}">style="display: none"</c:if>></em><em class="em2" <c:if test="${menuItem==2}">style="display: block;"</c:if>></em><span onclick="window.location.href='/community/myPartners.do'">我的玩伴</span><button <c:if test="${menuItem==2}">class="btn2"</c:if>
-                        <c:if test="${menuItem==1}">class="btn1"</c:if>>${friendCount}</button>
+                        <c:if test="${menuItem==1||menuItem==3}">class="btn1"</c:if>>${friendCount}</button>
                     </li>
                     <li class="li2" style="cursor: pointer">
                         <em class="em1" ></em><em class="em2" ></em><span onclick="window.open('/community/friendList.do')">我关注的人</span><button class="btn1">${concernCount}</button>
                     </li>
                     <li class="li3 <c:if test="${menuItem==1}">blue-cur</c:if>" style="cursor: pointer">
                         <em class="em1" <c:if test="${menuItem==1}">style="display: none"</c:if>></em><em class="em2" <c:if test="${menuItem==1}">style="display: block;"</c:if>></em><span onclick="window.location.href='/community/playmateNotice.do'">玩伴通知</span><button <c:if test="${menuItem==1}">class="btn2"</c:if>
-                        <c:if test="${menuItem==2}">class="btn1"</c:if>>${friendApplyCount}</button>
+                        <c:if test="${menuItem==2||menuItem==3}">class="btn1"</c:if>>${friendApplyCount}</button>
                     </li>
-                    <li class="li4" style="cursor: pointer;display: none;">
-                        <em class="em1" ></em><em class="em2" ></em><span onclick="">我关注的人</span><button class="btn1"></button>
+                    <li class="li4 <c:if test="${menuItem==3}">blue-cur</c:if>" style="cursor: pointer">
+                        <em class="em1" <c:if test="${menuItem==3}">style="display: none"</c:if>></em><em class="em2" <c:if test="${menuItem==3}">style="display: block;"</c:if>></em><span onclick="window.location.href='/community/mySystemInfo.do'">系统消息</span><button <c:if test="${menuItem==3}">class="btn2"</c:if>
+                        <c:if test="${menuItem==2||menuItem==1}">class="btn1"</c:if>>${systemInfoCount}</button>
                     </li>
                 </ul>
             </div>

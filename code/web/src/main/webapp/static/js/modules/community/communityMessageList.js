@@ -50,6 +50,12 @@ define(['jquery', 'pagination', 'common'], function (require, exports, module) {
             });
         })
 
+        $('body').on('click','.login-mk-btn .d2',function () {
+            $('.store-register').fadeToggle();
+            $('.bg').fadeToggle();
+        })
+
+
     });
 
     function enterCommunityDetail(obj) {

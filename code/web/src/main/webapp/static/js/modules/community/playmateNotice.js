@@ -20,13 +20,22 @@ define(['jquery', 'pagination', 'common'], function (require, exports, module) {
         getMyCommunity();
 
         if(menuItem==1){
+            $('#friendInform').show();
+            $('#SysInfo').hide();
             //获取玩伴通知列表
             getFriendApplys(initPage);
-        }else {
+        }else if(menuItem==2){
+            $('#friendInform').show();
+            $('#SysInfo').hide();
             //获取我的玩伴列表
             $('#title').html("我的玩伴列表");
             $('#friendApply').removeClass('ul-pm-notice').addClass('ul-member-list');
             myPartners();
+        }else{
+            //获取我的系统消息
+            $('#friendInform').hide();
+            $('#SysInfo').show();
+            getSystemInfo(1);
         }
     }
     $(document).ready(function () {
@@ -118,6 +127,38 @@ define(['jquery', 'pagination', 'common'], function (require, exports, module) {
         })
     }
 
+
+    function getSystemInfo(page){
+        var isInit = true;
+        var requestData = {};
+        requestData.page = page;
+        common.getData("/community/getCommunitySysInfo.do", requestData, function (resp) {
+            var resultData = resp.list;
+            $('#sysInfoPage').html("");
+            if (resultData.length > 0) {
+                $('#sysInfoPage').jqPaginator({
+                    totalPages: Math.ceil(resp.count /  resp.pageSize) == 0 ? 1 : Math.ceil(resp.count / resp.pageSize),//总页数
+                    visiblePages: 10,//分多少页
+                    currentPage: parseInt(page),//当前页数
+                    first: '<li class="first"><a href="javascript:void(0);">首页<\/a><\/li>',
+                    prev: '<li class="prev"><a href="javascript:void(0);">&lt;<\/a><\/li>',
+                    next: '<li class="next"><a href="javascript:void(0);">&gt;<\/a><\/li>',
+                    last: '<li class="last"><a href="javascript:void(0);">末页<\/a><\/li>',
+                    page: '<li class="page"><a href="javascript:void(0);">{{page}}<\/a><\/li>',
+                    onPageChange: function (n) { //回调函数
+                        if (isInit) {
+                            isInit = false;
+                        } else {
+                            getSystemInfo(n);
+                            $('body,html').animate({scrollTop: 0}, 20);
+                        }
+                    }
+                });
+            }
+            template('#mySystemInfoTmpl', '#mySystemInfo', resultData);
+        })
+    }
+
     function acceptOrRefuseFriend(applyId,url){
         var param={};
         param.applyId=applyId;
@@ -136,9 +177,9 @@ define(['jquery', 'pagination', 'common'], function (require, exports, module) {
         requestData.page = page;
         common.getData("/community/getFriendApplys.do", requestData, function (resp) {
             var resultData = resp.message.result;
-            $('.new-page-links').html("");
+            $('#friendInformPage').html("");
             if (resultData.length > 0) {
-                $('.new-page-links').jqPaginator({
+                $('#friendInformPage').jqPaginator({
                     totalPages: Math.ceil(resp.message.totalCount /  resp.message.pageSize) == 0 ? 1 : Math.ceil(resp.message.totalCount / resp.message.pageSize),//总页数
                     visiblePages: 10,//分多少页
                     currentPage: parseInt(page),//当前页数

@@ -1162,4 +1162,9 @@ public class CommunityService {
     public void removeCommunityDetailById(ObjectId id){
         communityDetailDao.removeCommunityDetail(id);
     }
+
+
+    public List<ObjectId> getAllMemberIds(ObjectId groupId){
+        return memberDao.getAllMemberIds(groupId);
+    }
 }

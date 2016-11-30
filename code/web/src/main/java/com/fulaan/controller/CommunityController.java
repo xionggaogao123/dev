@@ -958,19 +958,26 @@ public class CommunityController extends BaseController {
      */
     @RequestMapping("/deleteMembers")
     @ResponseBody
-    public RespObj deleteMembers(@ObjectIdType ObjectId communityId, String memberUserId, String memberId) {
-        List<ObjectId> objectIds = MongoUtils.convertObjectIds(memberId);
+    public RespObj deleteMembers(@ObjectIdType ObjectId communityId, String memberUserId) {
         List<ObjectId> userIds = MongoUtils.convertObjectIds(memberUserId);
         CommunityDTO community = communityService.findByObjectId(communityId);
-
         ObjectId groupId = communityService.getGroupId(communityId);
-
         for (ObjectId userId : userIds) {
-            if (!memberService.isManager(groupId, userId)) {
-                communityService.deleteMembers(objectIds);
-                return RespObj.SUCCESS;
-            } else {
-                return RespObj.FAILD("不能删除该社区社长");
+
+            if(memberService.isHead(new ObjectId(community.getGroupId()),userId)) {
+                return RespObj.FAILD("不能删除社长");
+            }
+            if (emService.removeUserFromEmGroup(community.getEmChatId(), userId)) {
+                communityService.pullFromUser(communityId, userId);
+                memberService.deleteMember(groupId, userId);
+                //设置先前该用户所发表的数据为废弃掉的
+                communityService.setPartIncontentStatus(communityId, userId, 1);
+                if (memberService.isManager(groupId, userId)) { //发送退出消息
+                    //当是副社长退出时
+                    List<ObjectId> objectIds = communityService.getAllMemberIds(groupId);
+                    communitySystemInfoService.addBatchData(userId, objectIds, "副社长", 1, communityId);
+                }
+
             }
         }
         return RespObj.FAILD;

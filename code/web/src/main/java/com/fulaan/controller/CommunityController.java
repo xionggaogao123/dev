@@ -1521,10 +1521,12 @@ public class CommunityController extends BaseController {
                     if (emService.addUserToEmGroup(emChatId, userId)) {
                         memberService.updateMember(groupId, userId, 0);
                         communityService.setPartIncontentStatus(communityId, userId, 0);
+                        communityService.pushToUser(communityId,userId,1);
                     }
                 } else {
                     if (emService.addUserToEmGroup(emChatId, userId)) {
                         memberService.saveMember(userId, groupId);
+                        communityService.pushToUser(communityId,userId,1);
                     }
                 }
             }

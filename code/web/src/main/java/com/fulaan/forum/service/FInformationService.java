@@ -206,12 +206,6 @@ public class FInformationService {
         return fInformationDTOList;
     }
 
-    @Async
-    public void sendSystemMessageToAllUser(String content) {
-        List<ObjectId> users = userDao.getAllUserId();
-        fInformationDao.sendSystemMessage(users, content);
-    }
-
     public void sendSystemMessage(ObjectId uid, String content) {
         fInformationDao.sendSystemMessage(uid, content);
     }

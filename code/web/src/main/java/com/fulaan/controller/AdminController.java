@@ -1072,7 +1072,7 @@ public class AdminController extends BaseController {
                                    @RequestParam(value = "type", required = false, defaultValue = "1") int type,
                                    @RequestParam(value = "message", required = false, defaultValue = "") String message) {
         if (type == 1) { //发送给所有用户
-            fInformationService.sendSystemMessageToAllUser(message);
+//            fInformationService.sendSystemMessageToAllUser(message);
         } else {//发送给特定用户
             if (StringUtils.isNotBlank(userName)) {
                 String[] users = userName.split("#");

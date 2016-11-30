@@ -39,3 +39,9 @@ code/web/src/main/webapp/upload/
 code/k6ktsso/*
 code/k6ktsso1/*
 
+code/db/src/main/resources/rebel.xml
+code/emchat-server-java/src/main/resources/rebel.xml
+code/indexsearch/src/main/resources/rebel.xml
+code/oneconf/src/main/resources/rebel.xml
+code/pojo/src/main/resources/rebel.xml
+code/sys/src/main/resources/rebel.xml

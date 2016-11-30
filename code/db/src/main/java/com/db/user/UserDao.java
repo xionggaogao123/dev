@@ -87,8 +87,9 @@ public class UserDao extends BaseDao {
      * @param uid
      */
     public void updateHuanXin(ObjectId uid) {
-        FieldValuePair fieldValuePair = new FieldValuePair("ieasd", 1);
-        update(uid, fieldValuePair);
+        BasicDBObject query = new BasicDBObject(Constant.ID,uid);
+        BasicDBObject update = new BasicDBObject(Constant.MONGO_SET,new BasicDBObject("ieasd",1));
+        update(MongoFacroty.getAppDB(),Constant.COLLECTION_USER_NAME,query,update);
     }
 
     /**
@@ -202,8 +203,7 @@ public class UserDao extends BaseDao {
      */
     public int getForumInfoCount(Collection<ObjectId> ids) {
         BasicDBObject query = new BasicDBObject(Constant.ID, new BasicDBObject(Constant.MONGO_IN, ids)).append("ir", Constant.ZERO);
-        int count = count(MongoFacroty.getAppDB(), Constant.COLLECTION_USER_NAME, query);
-        return count;
+        return count(MongoFacroty.getAppDB(), Constant.COLLECTION_USER_NAME, query);
     }
 
 
@@ -295,8 +295,7 @@ public class UserDao extends BaseDao {
      */
     public int countUsers(String userName) {
         BasicDBObject query = new BasicDBObject("nnm", userName).append("ir", Constant.ZERO);
-        int total = count(MongoFacroty.getAppDB(), Constant.COLLECTION_USER_NAME, query);
-        return total;
+        return count(MongoFacroty.getAppDB(), Constant.COLLECTION_USER_NAME, query);
     }
 
 
@@ -310,7 +309,7 @@ public class UserDao extends BaseDao {
         BasicDBObject query = new BasicDBObject("nm", userName.toLowerCase()).append("ir", Constant.ZERO);
         List<DBObject> list = find(MongoFacroty.getAppDB(), Constant.COLLECTION_USER_NAME, query, Constant.FIELDS);
         if (null != list && list.size() > 0) {
-            UserEntry e = null;
+            UserEntry e;
             for (DBObject dbo : list) {
                 e = new UserEntry((BasicDBObject) dbo);
                 if (e.getUserName().equalsIgnoreCase(userName)) {
@@ -332,7 +331,7 @@ public class UserDao extends BaseDao {
         BasicDBObject query = new BasicDBObject("logn", loginName.toLowerCase()).append("ir", Constant.ZERO);
         List<DBObject> list = find(MongoFacroty.getAppDB(), Constant.COLLECTION_USER_NAME, query, Constant.FIELDS);
         if (null != list && list.size() > 0) {
-            UserEntry e = null;
+            UserEntry e;
             for (DBObject dbo : list) {
                 e = new UserEntry((BasicDBObject) dbo);
                 if (e.getLoginName().equalsIgnoreCase(loginName)) {
@@ -388,8 +387,7 @@ public class UserDao extends BaseDao {
         BasicDBObject query = new BasicDBObject("e", email.toLowerCase()).append("ir", Constant.ZERO);
         DBObject dbo = findOne(MongoFacroty.getAppDB(), Constant.COLLECTION_USER_NAME, query, Constant.FIELDS);
         if (null != dbo) {
-            UserEntry e = new UserEntry((BasicDBObject) dbo);
-            return e;
+            return new UserEntry((BasicDBObject) dbo);
 
         }
         return null;

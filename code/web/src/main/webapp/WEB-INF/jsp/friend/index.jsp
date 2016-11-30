@@ -47,9 +47,7 @@
                 <div class="menu-item">兴趣爱好</div>
                 <div class="clearfix menu-cont">
                     <span class="gre-cur">不限</span>
-                    <c:forEach items="${hobbys}" var="hobby">
-                        <span value="${hobby['id']}">${hobby['name']}</span>
-                    </c:forEach>
+                    <span >你好</span>
                 </div>
             </div>
             <div class="menu1 clearfix">
@@ -388,9 +386,7 @@
     <p class="p1">我的标签<em>×</em></p>
     <p class="p2">推荐标签</p>
     <div class="bq-list clearfix">
-        <c:forEach items="${tags}" var="tag">
-            <span value="${tag['id']}">${tag['name']}</span>
-        </c:forEach>
+        <span>是的范德萨发</span>
     </div>
     <p class="p3">
         <button class="btn1">确认添加</button>
@@ -430,9 +426,7 @@
     <p class="p2">主题<span>（请选择一个项目作为活动标签）</span></p>
     <p class="p3">
         <select>
-            <c:forEach items="${themes}" var="theme">
-                <option value="${theme['id']}">${theme['name']}</option>
-            </c:forEach>
+            <option>是的范德萨</option>
         </select>
         <input type="text">
     </p>
@@ -447,10 +441,6 @@
 </div>
 <!--发起活动-->
 <%@include file="../common/footer.jsp" %>
-
-<!--背景-->
-<%--<div class="bg"></div>--%>
-<!--背景-->
 
 </body>
 </html>

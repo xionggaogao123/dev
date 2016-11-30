@@ -32,7 +32,6 @@ public class MemberService {
      */
     public void saveMember(ObjectId userId, ObjectId groupId, int role) {
         UserEntry user = userDao.findByObjectId(userId);
-        if(user == null) return;
         String nickName = StringUtils.isNotBlank(user.getNickName()) ? user.getNickName() : user.getUserName();
         String userName = user.getUserName();
         MemberEntry entry = new MemberEntry(userId, groupId, nickName, user.getAvatar(), role, userName);

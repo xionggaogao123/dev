@@ -129,7 +129,6 @@ import java.util.List;
  *  ieasd: 是否注册了环信id  0:没有,1注册了
  *  comms: 我的社区--包含我加入的和我创建的
  *
- *  grids: 我的讨论组
  *  usts: 用户标签  {cd:1,tag:'跑步‘}
  * }
  * </pre>

@@ -4,9 +4,10 @@
 <head>
     <meta charset="utf-8">
     <title>个人空间</title>
-    <link rel="stylesheet" type="text/css" href="/static/css/forum.css">
+    <link rel="stylesheet" type="text/css" href="/static/css/forum/forum.css">
     <script type="text/javascript" src="/static/js/friend/jquery-1.11.1.js"></script>
     <script type="text/javascript" src="/static/js/friend/near.js"></script>
+    <script type="text/javascript" src="/static/css/friend/nearby.css"></script>
 </head>
 <body style="background: #f5f5f5;">
 <div class="near-container clearfix">
@@ -28,7 +29,7 @@
                 </p>
             </div>
         </div>
-        <img src="static/images/pc_find_center.jpg" class="img1">
+        <img src="/static/images/pc_find_center.png" class="img1">
         <img src="" class="img2">
         <p class="p1">shawn</p>
         <p class="p2">UID:shawn （UID:654651AD1D354C65ZC4846）</p>

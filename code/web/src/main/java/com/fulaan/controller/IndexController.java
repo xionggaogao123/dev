@@ -27,14 +27,14 @@ import java.util.*;
 @Controller
 public class IndexController extends BaseController {
 
-    private static final Logger logger = Logger.getLogger(IndexController.class);
-    private BannerDao mBannerDao = new BannerDao();
     @Autowired
     private FSectionService fSectionService;
     @Autowired
     private FPostService fPostService;
 
     private static Map<String, String> titles = new HashMap<String, String>();
+
+    private BannerDao mBannerDao = new BannerDao();
 
     static {
         titles.put("article01", "孩子迷恋智能手机怎么办？");
@@ -97,6 +97,13 @@ public class IndexController extends BaseController {
     public String competition(Map<String, Object> model) {
         model.put("count", fPostService.competitionPostCount());
         return "/forum/competition";
+    }
+
+    @SessionNeedless
+    @RequestMapping("/friend")
+    @LoginInfo
+    public String friend() {
+        return "/friend/index";
     }
 
     @SessionNeedless

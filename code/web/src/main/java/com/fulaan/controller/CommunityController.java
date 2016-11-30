@@ -1,14 +1,13 @@
 package com.fulaan.controller;
 
 
-import com.easemob.server.EaseMobAPI;
-import com.easemob.server.comm.wrapper.ResponseWrapper;
 import com.fulaan.annotation.LoginInfo;
 import com.fulaan.annotation.ObjectIdType;
 import com.fulaan.annotation.SessionNeedless;
-import com.fulaan.annotation.UserRoles;
 import com.fulaan.cache.RedisUtils;
 import com.fulaan.dto.*;
+import com.fulaan.friendscircle.service.FriendApplyService;
+import com.fulaan.friendscircle.service.FriendService;
 import com.fulaan.pojo.CommunityMessage;
 import com.fulaan.pojo.PageModel;
 import com.fulaan.pojo.ProductModel;
@@ -17,15 +16,16 @@ import com.fulaan.user.service.UserService;
 import com.fulaan.util.GetImage;
 import com.fulaan.util.QRUtils;
 import com.fulaan.util.URLParseUtil;
-import com.fulaan.friendscircle.service.FriendApplyService;
-import com.fulaan.friendscircle.service.FriendService;
 import com.pojo.activity.FriendApply;
 import com.pojo.app.FileUploadDTO;
 import com.pojo.app.IdNameValuePairDTO;
 import com.pojo.fcommunity.ConcernEntry;
 import com.pojo.fcommunity.PartInContentEntry;
 import com.pojo.fcommunity.RemarkEntry;
-import com.pojo.user.*;
+import com.pojo.user.AvatarType;
+import com.pojo.user.UserDetailInfoDTO;
+import com.pojo.user.UserEntry;
+import com.pojo.user.UserTag;
 import com.pojo.utils.MongoUtils;
 import com.sys.constants.Constant;
 import com.sys.exceptions.IllegalParamException;
@@ -37,7 +37,6 @@ import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.FilenameUtils;
 import org.apache.commons.io.IOUtils;
 import org.apache.commons.lang3.StringUtils;
-import org.apache.http.client.HttpClient;
 import org.apache.http.impl.client.CloseableHttpClient;
 import org.apache.http.impl.client.HttpClientBuilder;
 import org.apache.poi.hssf.usermodel.*;
@@ -49,14 +48,12 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.multipart.MultipartRequest;
 
-
 import javax.servlet.ServletInputStream;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.*;
 import java.net.MalformedURLException;
 import java.net.URL;
-
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;

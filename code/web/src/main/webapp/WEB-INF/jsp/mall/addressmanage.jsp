@@ -22,7 +22,7 @@
         <div class="ebusiness-history-main">
             <div class="coupon-top">
                 <ul>
-                    <li>地址设置</li>
+                    <li>我的地址</li>
                 </ul>
             </div>
             <div class="div-address">

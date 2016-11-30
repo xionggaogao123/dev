@@ -1,6 +1,7 @@
 package com.fulaan.forum.controller;
 
 import com.alibaba.fastjson.JSON;
+import com.fulaan.annotation.LoginInfo;
 import com.fulaan.annotation.SessionNeedless;
 import com.fulaan.annotation.UserRoles;
 import com.fulaan.controller.BaseController;
@@ -90,6 +91,7 @@ public class UserCenterController extends BaseController {
     }
 
     @RequestMapping("/user")
+    @LoginInfo
     public String userPage(Map<String, Object> model) {
         loginInfo(model);
         List<FScoreDTO> fScoreDTOs = fScoreService.getFScoreByPersonId(getSessionValue().getId());

@@ -1,5 +1,6 @@
 package com.fulaan.mall.controller;
 
+import com.fulaan.annotation.LoginInfo;
 import com.fulaan.annotation.ObjectIdType;
 import com.fulaan.controller.BaseController;
 import com.fulaan.forum.service.FLogService;
@@ -37,6 +38,7 @@ public class EBusinessCartController extends BaseController {
     private FLogService fLogService = new FLogService();
 
     @RequestMapping("/load")
+    @LoginInfo
     public String loadCart(HttpServletRequest request, Map<String, Object> model) {
         SessionValue sessionValue = (SessionValue) request.getAttribute(BaseController.SESSION_VALUE);
         if (null == sessionValue || sessionValue.isEmpty()) {

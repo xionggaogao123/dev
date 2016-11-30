@@ -41,8 +41,8 @@ public class FMateEntry  extends BaseDBObject{
         return getSimpleObjecIDValue("uid");
     }
 
-    public BasicDBObject getLocation() {
-        return (BasicDBObject)getSimpleObjectValue("loc");
+    public BasicDBList getLocation() {
+        return (BasicDBList)getSimpleObjectValue("loc");
     }
 
     public BasicDBList getHobbys() {

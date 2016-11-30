@@ -249,6 +249,18 @@ public class MongoUtils {
         return MongoUtils.buildRegex(sb.toString());
     }
 
+    public static List<String> convertToStrList(BasicDBList dbList) {
+        List<String> retList = new ArrayList<String>();
+        if (null != dbList) {
+            for (Object o : dbList) {
+                if (null != o && o instanceof String) {
+                    retList.add((String)o);
+                }
+            }
+        }
+        return retList;
+    }
+
 
 }
 

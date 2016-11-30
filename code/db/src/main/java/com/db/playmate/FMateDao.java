@@ -18,55 +18,124 @@ import java.util.List;
 public class FMateDao extends BaseDao {
 
     public ObjectId save(FMateEntry mateEntry) {
-        save(MongoFacroty.getAppDB(), Constant.COLLECTION_FORUM_MATE_SEEKMATE,mateEntry.getBaseEntry());
+        save(MongoFacroty.getAppDB(), Constant.COLLECTION_FORUM_MATE_SEEKMATE, mateEntry.getBaseEntry());
         return mateEntry.getID();
     }
 
-    public List<FMateEntry> findByPage(double lat,double lon,List<String> tags,List<String> hobbys) {
+    /**
+     * 分页
+     *
+     * @param lat
+     * @param lon
+     * @param tags
+     * @param hobbys
+     * @param aged
+     * @param ons
+     * @param page
+     * @param pageSize
+     * @return
+     */
+    public List<FMateEntry> findByPage(double lon, double lat, List<String> tags, List<String> hobbys, int aged, int ons, int page, int pageSize) {
+        List<FMateEntry> fMateEntries = new ArrayList<FMateEntry>();
+        List<Double> locs = new ArrayList<Double>();
+        locs.add(lon);
+        locs.add(lat);
+        List<Object> list = new ArrayList<Object>();
+        list.add(locs);
+        list.add(1000);
+        BasicDBObject query = new BasicDBObject("loc", new BasicDBObject(Constant.MONGO_GEOWITHIN, new BasicDBObject("$centerSphere", list)));
+        if (null != tags && tags.size() > 0) {
+            query.append("tag", new BasicDBObject("$all", tags));
+        }
+        if (null != hobbys && hobbys.size() > 0) {
+            query.append("hob", new BasicDBObject("$all", hobbys));
+        }
+        if (aged != -1) {
+            query.append("aged", aged);
+        }
+        if (ons != -1) {
+            query.append("ons", ons);
+        }
+        BasicDBObject orderBy = new BasicDBObject("ti", -1);
+        List<DBObject> dbos = find(MongoFacroty.getAppDB(), Constant.COLLECTION_FORUM_MATE_SEEKMATE, query, Constant.FIELDS, orderBy, (page - 1) * pageSize, pageSize);
+        for (DBObject dbo : dbos) {
+            fMateEntries.add(new FMateEntry(dbo));
+        }
+        return fMateEntries;
+    }
+
+    /**
+     * count
+     * @param lat
+     * @param lon
+     * @param tags
+     * @param hobbys
+     * @param aged
+     * @param ons
+     * @return
+     */
+    public int countByPage(double lat, double lon, List<String> tags, List<String> hobbys, int aged, int ons) {
         List<Double> locs = new ArrayList<Double>();
         locs.add(lat);
         locs.add(lon);
         List<Object> list = new ArrayList<Object>();
         list.add(locs);
         list.add(1000);
-        BasicDBObject query = new BasicDBObject("loc",new BasicDBObject(Constant.MONGO_GEOWITHIN,new BasicDBObject("$centerSphere",list)));
-        List<DBObject> dbos = find(MongoFacroty.getAppDB(),Constant.COLLECTION_FORUM_MATE_SEEKMATE,query);
-        return null;
+        BasicDBObject query = new BasicDBObject("loc", new BasicDBObject(Constant.MONGO_GEOWITHIN, new BasicDBObject("$centerSphere", list)));
+        if (null != tags && tags.size() > 0) {
+            query.append("tag", new BasicDBObject("$all", tags));
+        }
+        if (null != hobbys && hobbys.size() > 0) {
+            query.append("hob", new BasicDBObject("$all", hobbys));
+        }
+        if (aged != -1) {
+            query.append("aged", aged);
+        }
+        if (ons != -1) {
+            query.append("ons", ons);
+        }
+        return count(MongoFacroty.getAppDB(),Constant.COLLECTION_FORUM_MATE_SEEKMATE,query);
     }
 
-    public void upateUserLocation(ObjectId userId,double lat,double lon) {
-        BasicDBObject query = new BasicDBObject("uid",userId);
+    /**
+     * 更新位置
+     * @param userId
+     * @param lat
+     * @param lon
+     */
+    public void upateUserLocation(ObjectId userId, double lat, double lon) {
+        BasicDBObject query = new BasicDBObject("uid", userId);
         List<Double> locations = new ArrayList<Double>();
         locations.add(lat);
         locations.add(lon);
-        BasicDBObject update = new BasicDBObject(Constant.MONGO_SET,new BasicDBObject("loc",locations));
-        update(MongoFacroty.getAppDB(),Constant.COLLECTION_FORUM_MATE_SEEKMATE,query,update);
+        BasicDBObject update = new BasicDBObject(Constant.MONGO_SET, new BasicDBObject("loc", locations));
+        update(MongoFacroty.getAppDB(), Constant.COLLECTION_FORUM_MATE_SEEKMATE, query, update);
     }
 
-    public void updateUserTags(ObjectId userId,List<String> tags) {
-        BasicDBObject query = new BasicDBObject("uid",userId);
-        BasicDBObject update = new BasicDBObject(Constant.MONGO_SET,new BasicDBObject("tag",tags));
-        update(MongoFacroty.getAppDB(),Constant.COLLECTION_FORUM_MATE_SEEKMATE,query,update);
+    /**
+     * 更新用户标签
+     * @param userId
+     * @param tags
+     */
+    public void updateUserTags(ObjectId userId, List<String> tags) {
+        BasicDBObject query = new BasicDBObject("uid", userId);
+        BasicDBObject update = new BasicDBObject(Constant.MONGO_SET, new BasicDBObject("tag", tags));
+        update(MongoFacroty.getAppDB(), Constant.COLLECTION_FORUM_MATE_SEEKMATE, query, update);
     }
 
-    public void updateUserHobbys(ObjectId userId,List<String> hobbys) {
-        BasicDBObject query = new BasicDBObject("uid",userId);
-        BasicDBObject update = new BasicDBObject(Constant.MONGO_SET,new BasicDBObject("hob",hobbys));
-        update(MongoFacroty.getAppDB(),Constant.COLLECTION_FORUM_MATE_SEEKMATE,query,update);
+    /**
+     * 更新爱好
+     * @param userId
+     * @param hobbys
+     */
+    public void updateUserHobbys(ObjectId userId, List<String> hobbys) {
+        BasicDBObject query = new BasicDBObject("uid", userId);
+        BasicDBObject update = new BasicDBObject(Constant.MONGO_SET, new BasicDBObject("hob", hobbys));
+        update(MongoFacroty.getAppDB(), Constant.COLLECTION_FORUM_MATE_SEEKMATE, query, update);
     }
 
     public static void main(String[] args) {
 
-//        ObjectId _id = new ObjectId();
-        FMateDao fMateDao = new FMateDao();
-//        fMateDao.save(new FMateEntry(_id,new ObjectId("579ec252de04cb4774f8d517")));
-
-        fMateDao.findByPage(40.0,40.0,null,null);
-
-//        List<String> tags = new ArrayList<String>();
-//        tags.add("学习");
-//        tags.add("二次元");
-//        fMateDao.updateUserTags(new ObjectId("579ec252de04cb4774f8d517"),tags);
 
     }
 

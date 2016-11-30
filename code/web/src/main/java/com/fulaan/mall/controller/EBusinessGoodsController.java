@@ -1,5 +1,6 @@
 package com.fulaan.mall.controller;
 
+import com.fulaan.annotation.LoginInfo;
 import com.fulaan.annotation.ObjectIdType;
 import com.fulaan.annotation.SessionNeedless;
 import com.fulaan.controller.BaseController;
@@ -64,6 +65,7 @@ public class EBusinessGoodsController extends BaseController {
 
     @SessionNeedless
     @RequestMapping("/index")
+    @LoginInfo
     public String index(HttpServletRequest request, Map<String, Object> model) {
         loginInfo(model);
 
@@ -99,6 +101,7 @@ public class EBusinessGoodsController extends BaseController {
 
     @SessionNeedless
     @RequestMapping("/detail")
+    @LoginInfo
     public String detail(HttpServletRequest request, Map<String, Object> model) {
         loginInfo(model);
 

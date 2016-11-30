@@ -3,6 +3,7 @@ package com.fulaan.mall.controller;
 
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONArray;
+import com.fulaan.annotation.LoginInfo;
 import com.fulaan.annotation.ObjectIdType;
 import com.fulaan.annotation.SessionNeedless;
 import com.fulaan.controller.BaseController;
@@ -97,6 +98,7 @@ public class EBusinessOrderController extends BaseController {
      * @throws ClassNotFoundException
      */
     @RequestMapping("/address")
+    @LoginInfo
     public String orderAddress(String ebcIds, HttpServletRequest request, Map<String, Object> model) throws IllegalParamException, ClassNotFoundException, IOException {
         if (StringUtils.isNotBlank(ebcIds)) {
             List<ObjectId> selectEbcIds = MongoUtils.convert(ebcIds);

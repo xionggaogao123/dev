@@ -15,9 +15,9 @@
         <dd class="ebusiness-main-B">关注中心</dd>
         <span id="item3" onclick="window.location.href = '/mall/userCenter/collection.do'">我收藏的商品</span>
         <span id="item4" onclick="window.location.href = '/mall/userCenter/history.do'">我的浏览记录</span>
-        <dd class="ebusiness-main-B">个人中心</dd>
-        <span id="item5" onclick="window.location.href = '/mall/userCenter/user.do'">个人信息</span>
-        <span id="item6" onclick="window.location.href = '/mall/userCenter/address.do'">地址设置</span>
+        <dd class="ebusiness-main-B">管理收货地址</dd>
+        <%--<span id="item5" onclick="window.location.href = '/mall/userCenter/user.do'">个人信息</span>--%>
+        <span id="item6" onclick="window.location.href = '/mall/userCenter/address.do'">我的地址</span>
     </dl>
 </div>
 <script>

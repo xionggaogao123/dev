@@ -27,13 +27,13 @@ public class MemberDao extends BaseDao {
     /**
      * 获取群聊成员 分页
      *
-     * @param grid
+     * @param groupId
      * @param page
      * @param pageSize
      * @return
      */
-    public List<MemberEntry> getMembers(ObjectId grid, int page, int pageSize) {
-        BasicDBObject query = new BasicDBObject("grid", grid).append("r", Constant.ZERO);
+    public List<MemberEntry> getMembers(ObjectId groupId, int page, int pageSize) {
+        BasicDBObject query = new BasicDBObject("groupId", groupId).append("r", Constant.ZERO);
         BasicDBObject orderBy = new BasicDBObject("rl", Constant.DESC).append(Constant.ID, Constant.DESC);
         List<MemberEntry> memberEntries = new ArrayList<MemberEntry>();
         List<DBObject> dbObjects = find(MongoFacroty.getAppDB(), Constant.COLLECTION_FORUM_COMMUNITY_MEMBER, query, Constant.FIELDS, orderBy, (page - Constant.ONE) * pageSize, pageSize);
@@ -46,11 +46,11 @@ public class MemberDao extends BaseDao {
     /**
      * 获取群聊成员  前20个
      *
-     * @param grid
+     * @param groupId
      * @return
      */
-    public List<MemberEntry> getMembers(ObjectId grid, int count) {
-        BasicDBObject query = new BasicDBObject("grid", grid).append("r", Constant.ZERO);
+    public List<MemberEntry> getMembers(ObjectId groupId, int count) {
+        BasicDBObject query = new BasicDBObject("groupId", groupId).append("r", Constant.ZERO);
         BasicDBObject orderBy = new BasicDBObject("rl", Constant.DESC).append(Constant.ID, Constant.DESC);
         List<MemberEntry> memberEntries = new ArrayList<MemberEntry>();
         List<DBObject> dbObjects = find(MongoFacroty.getAppDB(), Constant.COLLECTION_FORUM_COMMUNITY_MEMBER, query, Constant.FIELDS, orderBy, Constant.ZERO, count);
@@ -63,11 +63,11 @@ public class MemberDao extends BaseDao {
     /**
      * 查询群聊人数
      *
-     * @param grid
+     * @param groupId
      * @return
      */
-    public int countMember(ObjectId grid) {
-        BasicDBObject query = new BasicDBObject("grid", grid).append("r", Constant.ZERO);
+    public int countMember(ObjectId groupId) {
+        BasicDBObject query = new BasicDBObject("groupId", groupId).append("r", Constant.ZERO);
         return count(MongoFacroty.getAppDB(), Constant.COLLECTION_FORUM_COMMUNITY_MEMBER, query);
     }
 
@@ -94,7 +94,7 @@ public class MemberDao extends BaseDao {
      * @param userId
      */
     public void deleteMember(ObjectId groupId, ObjectId userId) {
-        BasicDBObject query = new BasicDBObject("grid", groupId).append("uid", userId);
+        BasicDBObject query = new BasicDBObject("groupId", groupId).append("uid", userId);
         BasicDBObject updateValue = new BasicDBObject("r", 1).append("rl", 0);
         BasicDBObject update = new BasicDBObject()
                 .append(Constant.MONGO_SET, updateValue);
@@ -130,22 +130,6 @@ public class MemberDao extends BaseDao {
     }
 
     /**
-     * 设置某个人为副社长
-     *
-     * @param groupId
-     * @param userId
-     */
-    public void setDeputyHead(ObjectId groupId, ObjectId userId) {
-        BasicDBObject query = new BasicDBObject()
-                .append("grid", groupId)
-                .append("uid", userId)
-                .append("r", 0);
-        BasicDBObject updateValue = new BasicDBObject()
-                .append(Constant.MONGO_SET, new BasicDBObject("rl", 1));
-        update(MongoFacroty.getAppDB(), Constant.COLLECTION_FORUM_COMMUNITY_MEMBER, query, updateValue);
-    }
-
-    /**
      * 设置多个人为副社长
      *
      * @param groupId
@@ -153,7 +137,7 @@ public class MemberDao extends BaseDao {
      */
     public void setDeputyHead(ObjectId groupId, List<ObjectId> userIds) {
         BasicDBObject query = new BasicDBObject()
-                .append("grid", groupId)
+                .append("groupId", groupId)
                 .append("uid", new BasicDBObject(Constant.MONGO_IN, userIds))
                 .append("r", 0);
         BasicDBObject updateValue = new BasicDBObject()
@@ -169,7 +153,7 @@ public class MemberDao extends BaseDao {
      */
     public void unsetDeputyHead(ObjectId groupId, ObjectId userId) {
         BasicDBObject query = new BasicDBObject()
-                .append("grid", groupId)
+                .append("groupId", groupId)
                 .append("uid", userId)
                 .append("r", 0);
         BasicDBObject updateValue = new BasicDBObject()
@@ -185,7 +169,7 @@ public class MemberDao extends BaseDao {
      */
     public void setHead(ObjectId groupId, ObjectId userId) {
         BasicDBObject query = new BasicDBObject()
-                .append("grid", groupId)
+                .append("groupId", groupId)
                 .append("uid", userId)
                 .append("r", 0);
         BasicDBObject updateValue = new BasicDBObject()
@@ -201,7 +185,7 @@ public class MemberDao extends BaseDao {
      */
     public int countDeputyHead(ObjectId groupId) {
         BasicDBObject query = new BasicDBObject()
-                .append("grid", groupId)
+                .append("groupId", groupId)
                 .append("rl", 1)
                 .append("r", 0);
         return count(MongoFacroty.getAppDB(), Constant.COLLECTION_FORUM_COMMUNITY_MEMBER, query);
@@ -216,7 +200,7 @@ public class MemberDao extends BaseDao {
     public List<MemberEntry> getDeputyHead(ObjectId groupId) {
         List<MemberEntry> members = new ArrayList<MemberEntry>();
         BasicDBObject query = new BasicDBObject()
-                .append("grid", groupId)
+                .append("groupId", groupId)
                 .append("rl", 1)
                 .append("r", 0);
         List<DBObject> dos = find(MongoFacroty.getAppDB(), Constant.COLLECTION_FORUM_COMMUNITY_MEMBER, query);
@@ -235,35 +219,10 @@ public class MemberDao extends BaseDao {
      */
     public boolean isMember(ObjectId groupId, ObjectId userId) {
         BasicDBObject query = new BasicDBObject()
-                .append("grid", groupId)
+                .append("groupId", groupId)
                 .append("uid", userId)
                 .append("r", 0);
         return count(MongoFacroty.getAppDB(), Constant.COLLECTION_FORUM_COMMUNITY_MEMBER, query) == 1;
-    }
-
-
-    /**
-     * 通过热区以及用户Id查找数据
-     *
-     * @param groupIds
-     * @param userId
-     * @return
-     */
-    public Map<ObjectId, MemberEntry> getHotOwenr(List<ObjectId> groupIds, ObjectId userId) {
-        Map<ObjectId, MemberEntry> map = new HashMap<ObjectId, MemberEntry>();
-        BasicDBObject query = new BasicDBObject()
-                .append(Constant.MONGO_IN, new BasicDBObject("grid", groupIds))
-                .append("uid", userId)
-                .append("r", 0);
-        List<DBObject> list = find(MongoFacroty.getAppDB(), Constant.COLLECTION_FORUM_COMMUNITY_MEMBER, query, Constant.FIELDS);
-        if (null != list && !list.isEmpty()) {
-            MemberEntry memberEntry;
-            for (DBObject dbo : list) {
-                memberEntry = new MemberEntry(dbo);
-                map.put(memberEntry.getGroupId(), memberEntry);
-            }
-        }
-        return map;
     }
 
     /**
@@ -271,7 +230,7 @@ public class MemberDao extends BaseDao {
      */
     public void updateMember(ObjectId groupId, ObjectId userId, int remove) {
         BasicDBObject query = new BasicDBObject()
-                .append("grid", groupId)
+                .append("groupId", groupId)
                 .append("uid", userId);
         BasicDBObject updateValue = new BasicDBObject()
                 .append("r", remove);
@@ -285,7 +244,7 @@ public class MemberDao extends BaseDao {
      */
     public boolean isBeforeMember(ObjectId groupId, ObjectId userId) {
         BasicDBObject query = new BasicDBObject()
-                .append("grid", groupId)
+                .append("groupId", groupId)
                 .append("uid", userId);
         return count(MongoFacroty.getAppDB(), Constant.COLLECTION_FORUM_COMMUNITY_MEMBER, query) == 1;
     }
@@ -302,7 +261,7 @@ public class MemberDao extends BaseDao {
         list.add(1);
         list.add(2);
         List<MemberEntry> members = new ArrayList<MemberEntry>();
-        BasicDBObject query = new BasicDBObject().append("grid", id)
+        BasicDBObject query = new BasicDBObject().append("groupId", id)
                 .append("rl", new BasicDBObject(Constant.MONGO_IN, list))
                 .append("r", 0);
         List<DBObject> dos = find(MongoFacroty.getAppDB(), Constant.COLLECTION_FORUM_COMMUNITY_MEMBER, query);
@@ -320,7 +279,7 @@ public class MemberDao extends BaseDao {
      * @return
      */
     public MemberEntry getUser(ObjectId groupId, ObjectId userId) {
-        BasicDBObject query = new BasicDBObject("grid", groupId).append("uid", userId).append("r", 0);
+        BasicDBObject query = new BasicDBObject("groupId", groupId).append("uid", userId).append("r", 0);
         DBObject dbo = findOne(MongoFacroty.getAppDB(), Constant.COLLECTION_FORUM_COMMUNITY_MEMBER, query);
         return dbo == null ? null : new MemberEntry(dbo);
     }
@@ -334,7 +293,7 @@ public class MemberDao extends BaseDao {
      */
     public boolean isManager(ObjectId groupId, ObjectId userId) {
         BasicDBObject query = new BasicDBObject()
-                .append("grid", groupId)
+                .append("groupId", groupId)
                 .append("uid", userId)
                 .append("r", 0);
         BasicDBObject field = new BasicDBObject()
@@ -351,7 +310,7 @@ public class MemberDao extends BaseDao {
      * @return
      */
     public boolean isHead(ObjectId groupId, ObjectId userId) {
-        BasicDBObject query = new BasicDBObject().append("grid", groupId)
+        BasicDBObject query = new BasicDBObject().append("groupId", groupId)
                 .append("uid", userId)
                 .append("rl", 2)
                 .append("r", 0);
@@ -368,7 +327,7 @@ public class MemberDao extends BaseDao {
     public List<ObjectId> getQuitList(ObjectId groupId) {
         List<ObjectId> userIds = new ArrayList<ObjectId>();
         BasicDBObject query = new BasicDBObject()
-                .append("grid", groupId)
+                .append("groupId", groupId)
                 .append("rl", 0)
                 .append("r", 0);
         BasicDBObject field = new BasicDBObject()
@@ -381,14 +340,14 @@ public class MemberDao extends BaseDao {
     }
 
     /**
-     * 更新我在群里的昵称
+     * 更新我在某个群里的昵称
      *
      * @param groupId
      * @param userId
      * @param nickName
      */
     public void updateMyNickname(ObjectId groupId, ObjectId userId, String nickName) {
-        BasicDBObject query = new BasicDBObject("grid", groupId).append("uid", userId).append("r", 0);
+        BasicDBObject query = new BasicDBObject("groupId", groupId).append("uid", userId).append("r", 0);
         BasicDBObject update = new BasicDBObject()
                 .append(Constant.MONGO_SET, new BasicDBObject("nk", nickName));
         update(MongoFacroty.getAppDB(), Constant.COLLECTION_FORUM_COMMUNITY_MEMBER, query, update);
@@ -402,7 +361,7 @@ public class MemberDao extends BaseDao {
      * @param status
      */
     public void updateMyStatus(ObjectId groupId, ObjectId userId, int status) {
-        BasicDBObject query = new BasicDBObject("grid", groupId).append("uid", userId).append("r", 0);
+        BasicDBObject query = new BasicDBObject("groupId", groupId).append("uid", userId).append("r", 0);
         BasicDBObject update = new BasicDBObject()
                 .append(Constant.MONGO_SET, new BasicDBObject("st", status));
         update(MongoFacroty.getAppDB(), Constant.COLLECTION_FORUM_COMMUNITY_MEMBER, query, update);
@@ -415,7 +374,7 @@ public class MemberDao extends BaseDao {
      * @return
      */
     public List<MemberEntry> getAllMembers(ObjectId groupId) {
-        BasicDBObject query = new BasicDBObject().append("grid", groupId).append("r", 0);
+        BasicDBObject query = new BasicDBObject().append("groupId", groupId).append("r", 0);
         BasicDBObject orderBy = new BasicDBObject("rl", Constant.DESC).append(Constant.ID, Constant.DESC);
         List<MemberEntry> memberEntries = new ArrayList<MemberEntry>();
         List<DBObject> dbObjects = find(MongoFacroty.getAppDB(), Constant.COLLECTION_FORUM_COMMUNITY_MEMBER, query, Constant.FIELDS, orderBy);
@@ -427,17 +386,18 @@ public class MemberDao extends BaseDao {
 
 
     /**
-     * 获取所有的成员Ids
+     * 获取所有的成员Id
+     *
      * @param groupId
      * @return
      */
-    public List<ObjectId> getAllMemberIds(ObjectId groupId){
-        BasicDBObject query = new BasicDBObject().append("grid", groupId).append("r", 0);
+    public List<ObjectId> getAllMemberIds(ObjectId groupId) {
+        BasicDBObject query = new BasicDBObject().append("groupId", groupId).append("r", 0);
         BasicDBObject orderBy = new BasicDBObject().append("rl", -1).append(Constant.ID, -1);
         List<ObjectId> memberEntries = new ArrayList<ObjectId>();
         List<DBObject> dbObjects = find(MongoFacroty.getAppDB(), Constant.COLLECTION_FORUM_COMMUNITY_MEMBER, query, Constant.FIELDS, orderBy);
         for (DBObject dbo : dbObjects) {
-            MemberEntry memberEntry=new MemberEntry(dbo);
+            MemberEntry memberEntry = new MemberEntry(dbo);
             memberEntries.add(memberEntry.getUserId());
         }
         return memberEntries;
@@ -450,7 +410,7 @@ public class MemberDao extends BaseDao {
      * @return
      */
     public MemberEntry getHead(ObjectId groupId) {
-        BasicDBObject query = new BasicDBObject("grid", groupId).append("rl", 2).append("r", Constant.ZERO);
+        BasicDBObject query = new BasicDBObject("groupId", groupId).append("rl", 2).append("r", Constant.ZERO);
         DBObject dbo = findOne(MongoFacroty.getAppDB(), Constant.COLLECTION_FORUM_COMMUNITY_MEMBER, query, Constant.FIELDS);
         return dbo == null ? null : new MemberEntry(dbo);
     }
@@ -461,7 +421,7 @@ public class MemberDao extends BaseDao {
      * @param groupId
      */
     public void cleanDeputyHead(ObjectId groupId) {
-        BasicDBObject query = new BasicDBObject("grid", groupId).append("rl", 1).append("r", Constant.ZERO);
+        BasicDBObject query = new BasicDBObject("groupId", groupId).append("rl", 1).append("r", Constant.ZERO);
         BasicDBObject update = new BasicDBObject().append(Constant.MONGO_SET, new BasicDBObject("rl", 0));
         update(MongoFacroty.getAppDB(), Constant.COLLECTION_FORUM_COMMUNITY_MEMBER, query, update);
     }

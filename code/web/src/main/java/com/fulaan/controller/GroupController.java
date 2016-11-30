@@ -329,29 +329,23 @@ public class GroupController extends BaseController {
                 if (groupDTO.isBindCommunity()) {
                     communityService.setPartIncontentStatus(new ObjectId(groupDTO.getCommunityId()), userId, 1);
                     communityService.pullFromUser(new ObjectId(groupDTO.getCommunityId()), userId);
-                    communityService.deleteCommunity(new ObjectId(groupDTO.getCommunityId()));
                 }
             }
-
             if (memberDTOs.size() == 1) {//只有一个人
                 EaseMobAPI.deleteChatGroup(emChatId);
                 memberService.deleteMember(groupId, userId);
                 groupService.deleteGroup(groupId);
-
                 if (groupDTO.isBindCommunity()) {
                     communityService.setPartIncontentStatus(new ObjectId(groupDTO.getCommunityId()), userId, 1);
                     communityService.pullFromUser(new ObjectId(groupDTO.getCommunityId()), userId);
-                    communityService.deleteCommunity(new ObjectId(groupDTO.getCommunityId()));
                 }
             }
-
         } else {
             if (emService.removeUserFromEmGroup(emChatId, userId)) {
                 memberService.deleteMember(groupId, userId);
                 if (groupDTO.isBindCommunity()) {
                     communityService.setPartIncontentStatus(new ObjectId(groupDTO.getCommunityId()), userId, 1);
                     communityService.pullFromUser(new ObjectId(groupDTO.getCommunityId()), userId);
-                    communityService.deleteCommunity(new ObjectId(groupDTO.getCommunityId()));
                 }
             }
         }

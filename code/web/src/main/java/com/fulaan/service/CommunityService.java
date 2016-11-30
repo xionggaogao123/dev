@@ -262,7 +262,7 @@ public class CommunityService {
                     dto.setUserName(user.getUserName());
                     dto.setAvator(AvatarUtils.getAvatar(user.getAvatar(), AvatarType.MIN_AVATAR.getType()));
                     dto.setNickName(StringUtils.isNotBlank(user.getNickName()) ? user.getNickName() : user.getUserName());
-                    dto.setTime(DateUtils.timeStampToStr(partEntry.getID().getTimestamp()));
+                    dto.setTime(DateUtils.timeStampToStr(partEntry.getID().getTime()));
                     partInContentDTOs.add(dto);
                 }
                 communityDetailDTO.setPartList(partInContentDTOs);
@@ -524,7 +524,7 @@ public class CommunityService {
                 partInContentDTO.setUserName(userEntry1.getUserName());
                 partInContentDTO.setAvator(AvatarUtils.getAvatar(userEntry1.getAvatar(), AvatarType.MIN_AVATAR.getType()));
                 partInContentDTO.setNickName(StringUtils.isNotBlank(userEntry1.getNickName()) ? userEntry1.getNickName() : userEntry1.getUserName());
-                partInContentDTO.setTime(DateUtils.timeStampToStr(partInContentEntry.getID().getTimestamp()));
+                partInContentDTO.setTime(DateUtils.timeStampToStr(partInContentEntry.getID().getTime()));
                 partInContentDTOs.add(partInContentDTO);
             }
             int totalCount = partInContentDao.countPartPartInContent(entry.getID());
@@ -846,7 +846,7 @@ public class CommunityService {
             dto.setUserName(userEntry.getUserName());
             dto.setAvator(AvatarUtils.getAvatar(userEntry.getAvatar(), AvatarType.MIN_AVATAR.getType()));
             dto.setNickName(StringUtils.isNotBlank(userEntry.getNickName()) ? userEntry.getNickName() : userEntry.getUserName());
-            dto.setTime(DateUtils.timeStampToStr(entry.getID().getTimestamp()));
+            dto.setTime(DateUtils.timeStampToStr(entry.getID().getTime()));
             //判断该用户是否点过赞
             if (null != userId) {
                 setPartIncontentZan(dto, userId);

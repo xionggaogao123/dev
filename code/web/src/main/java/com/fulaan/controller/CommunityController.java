@@ -1053,7 +1053,7 @@ public class CommunityController extends BaseController {
             PartInContentDTO partInContentDTO = communityService.getPartInContent(detailId, new ObjectId(user.getId()));
             if (partInContentDTO != null) {
                 user1.setContent(partInContentDTO.getInformation());
-                user1.setTime(DateTimeUtils.convert(new ObjectId(partInContentDTO.getPartInContentId()).getTimestamp(),
+                user1.setTime(DateTimeUtils.convert(new ObjectId(partInContentDTO.getPartInContentId()).getTime(),
                         DateTimeUtils.DATE_YYYY_MM_DD_HH_MM_A));
             }
 
@@ -1073,7 +1073,7 @@ public class CommunityController extends BaseController {
             PartInContentDTO partInContentDTO = communityService.getPartInContent(detailId, new ObjectId(userDetailInfoDTO.getId()));
             if (partInContentDTO != null) {
                 user1.setContent(partInContentDTO.getInformation());
-                user1.setTime(DateTimeUtils.convert(new ObjectId(partInContentDTO.getPartInContentId()).getTimestamp(),
+                user1.setTime(DateTimeUtils.convert(new ObjectId(partInContentDTO.getPartInContentId()).getTime(),
                         DateTimeUtils.DATE_YYYY_MM_DD_HH_MM_A));
             }
 

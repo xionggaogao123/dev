@@ -79,7 +79,7 @@ public class QRController extends BaseController {
             communityDTO.setHeadImage(groupDTO.getHeadImage());
             communityDTO.setLogo(community.getLogo());
             communityDTO.setName(groupDTO.getName());
-            communityDTO.setCreateTime(DateUtils.timeStampToStr(new ObjectId(groupDTO.getId()).getTimestamp()));
+            communityDTO.setCreateTime(DateUtils.timeStampToStr(new ObjectId(groupDTO.getId()).getTime()));
             communityDTO.setMemberCount(count);
             communityDTO.setEmChatId(groupDTO.getEmChatId());
             communityDTO.setIsJoin(isJoin);
@@ -93,7 +93,7 @@ public class QRController extends BaseController {
             communityDTO.setLogo(groupDTO.getHeadImage());
             communityDTO.setHeadImage(groupDTO.getHeadImage());
             communityDTO.setName(groupDTO.getName());
-            communityDTO.setCreateTime(DateUtils.timeStampToStr(new ObjectId(groupDTO.getId()).getTimestamp()));
+            communityDTO.setCreateTime(DateUtils.timeStampToStr(new ObjectId(groupDTO.getId()).getTime()));
             communityDTO.setMemberCount(count);
             communityDTO.setEmChatId(groupDTO.getEmChatId());
             communityDTO.setIsJoin(isJoin);

@@ -84,7 +84,7 @@ public class GroupAnnounceService {
                 images.add(attachement);
             }
             communityDetailDTO.setImages(images);
-            communityDetailDTO.setTime(DateUtils.timeStampToStr(entry.getID().getTimestamp()));
+            communityDetailDTO.setTime(DateUtils.timeStampToStr(entry.getID().getTime()));
             groupAnnounceDTOs.add(communityDetailDTO);
         }
 

@@ -342,8 +342,8 @@ public class ParseUserData {
                 DTO dto = new DTO();
                 String[] str = tempString.split(",");
                 DateFormat df = new SimpleDateFormat("yyyy/MM/dd HH:mm:ss");
-                Date date = new ObjectId(str[0]).getDate();
-                dto.setTime(df.format(date));
+//                Date date = new ObjectId(str[0]).getDate();
+//                dto.setTime(df.format(date));
                 dto.setUserName(str[1]);
                 dto.setPhone(str[2]);
                 dto.setEmail(str[3]);

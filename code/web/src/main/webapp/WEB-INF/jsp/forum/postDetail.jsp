@@ -19,8 +19,6 @@
     <script type="text/javascript" src="/static/js/modules/forum/jquery-browser.js"></script>
     <script type="text/javascript" src="/static/js/modules/forum/jquery.qqFace.js"></script>
     <script src="http://static.polyv.net/file/polyvplayer_v2.0.min.js"></script>
-    <script type="text/javascript" src="/static/plugins/fancyBox/jquery.fancybox.pack.js"></script>
-    <script type="text/javascript" src="/static/js/modules/core/0.1.0/fancyBox/jquery.fancybox.js"></script>
     <script type="text/javascript" charset="utf-8" src="/static/js/modules/forum/ueditor.config.js"></script>
     <script type="text/javascript" charset="utf-8" src="/static/js/modules/forum/ueditor.all.js"></script>
     <script type="text/javascript" charset="utf-8" src="/static/js/modules/forum/ueditor.parse.js"></script>
@@ -1086,6 +1084,13 @@
     seajs.use('/static/js/modules/forum/postDetail.js', function (postDetail) {
         postDetail.init();
     });
+</script>
+<script type="text/javascript" src="/static/js/modules/core/0.1.0/fancyBox/jquery.fancybox.js"></script>
+<script type="text/javascript">
+    $(document).ready(function () {
+        $(".fancybox").fancybox({});
+
+    })
 </script>
 </body>
 </html>

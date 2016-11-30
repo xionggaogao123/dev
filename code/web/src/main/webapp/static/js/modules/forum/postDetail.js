@@ -1,10 +1,9 @@
 /**
  * Created by admin on 2016/6/3.
  */
-define(['jquery','pagination','social', 'common','fancybox'], function (require, exports, module) {
+define(['jquery','pagination','social', 'common'], function (require, exports, module) {
     var Common = require('common');
     require('pagination');
-    require('fancybox');
     var postDetail = {};
     var login = $('body').attr('login') == 'true';
     var page = 1;
@@ -68,9 +67,6 @@ define(['jquery','pagination','social', 'common','fancybox'], function (require,
             $(document).scrollTop(floor);
         }
 
-        if ($('.fancybox') != undefined) {
-            $('.fancybox').fancybox();
-        }
     };
     $(document).ready(function () {
 

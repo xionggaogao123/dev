@@ -590,15 +590,19 @@
 
                 </div>
                 {{?}}
+                <c:if test="${login == true}">
+                {{?value.type==5}}
+                {{?value.manager==true}}
                 <div class="py-wrap">
-                    <c:if test="${login == true}">
-                        {{?value.type==5}}{{?value.manager==true}}<button contentId="{{=value.partInContentId}}" {{?value.mark==1}} class="mark"{{??}} class="un-mark"{{?}}>{{?value.mark==1}}已{{?}}批阅</button>{{?}}{{?}}
-                    </c:if>
+                        <button contentId="{{=value.partInContentId}}" {{?value.mark==1}} class="mark"{{??}} class="un-mark"{{?}}>{{?value.mark==1}}已{{?}}批阅</button>
                 </div>
+                {{?}}
+                {{?}}
+                </c:if>
                 {{?value.attachmentList.length>0||value.videoList.length>0}}
                 <div class="doc-wrap">
                     {{?value.attachmentList.length>0}}
-                    <p class="p-hw">
+                    <%--<p class="p-hw"></p>--%>
                         {{~value.attachmentList:attachment:i}}
                         <div>
                         <span class="sp-hw">
@@ -609,8 +613,7 @@
                             </a>
                         </span>
                         </div>
-                    {{~}}
-                    </p>
+                        {{~}}
                     {{?}}
                     {{~value.videoList:video:i}}
                     <div class="content-DV">

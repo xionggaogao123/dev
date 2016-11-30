@@ -44,6 +44,18 @@ public class MateService {
         return mateDTOS;
     }
 
+    public void updateLocation(ObjectId userId,double lon,double lat) {
+        fMateDao.upateUserLocation(userId,lon,lat);
+    }
+
+    public void updateTags(ObjectId userId,List<String> tags) {
+        fMateDao.updateUserTags(userId,tags);
+    }
+
+    public void updateHobbys(ObjectId userId,List<String> hobbys) {
+        fMateDao.updateUserHobbys(userId,hobbys);
+    }
+
     /**
      * 计算地图上两点之间的距离
      * @param longitude

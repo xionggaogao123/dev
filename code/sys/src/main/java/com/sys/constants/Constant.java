@@ -3,6 +3,9 @@ package com.sys.constants;
 import com.mongodb.BasicDBObject;
 import com.sys.props.Resources;
 
+import java.util.ArrayList;
+import java.util.List;
+
 public class Constant {
     /**
      * chat 站点设置名称
@@ -126,6 +129,7 @@ public class Constant {
     public static final long DEFAULT_VALUE_LONG = 0l;
     public static final double DEFAULT_VALUE_DOUBLE = 0D;
     public static final Object DEFAULT_VALUE_OBJECT = null;
+    public static final List DEFAULT_VALUE_ARRAY = new ArrayList();
     public static final int MAN = 1;
     public static final int WOMEN = 0;
 

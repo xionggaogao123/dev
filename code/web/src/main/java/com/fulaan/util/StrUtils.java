@@ -1,5 +1,7 @@
 package com.fulaan.util;
 
+import org.apache.commons.lang3.StringUtils;
+
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -10,9 +12,11 @@ import java.util.List;
 public class StrUtils {
 
     public static List<String> splitToList(String str) {
-        String[] strs = str.split(",");
         List<String> strList = new ArrayList<String>();
-        Collections.addAll(strList,strs);
+        if(StringUtils.isNotBlank(str)) {
+            String[] strs = str.split(",");
+            Collections.addAll(strList,strs);
+        }
         return strList;
     }
 }

@@ -10,7 +10,7 @@ public class MateDTO {
     private String userName;
     private String nickName;
     private String avatar;
-    private long distance;
+    private String distance;
 
     private List<String> tags;
     private List<String> hobbys;
@@ -63,11 +63,11 @@ public class MateDTO {
         this.hobbys = hobbys;
     }
 
-    public long getDistance() {
+    public String getDistance() {
         return distance;
     }
 
-    public void setDistance(long distance) {
+    public void setDistance(String distance) {
         this.distance = distance;
     }
 }

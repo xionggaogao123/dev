@@ -1360,6 +1360,10 @@ public class UserService {
 
 
     public void pushUserTag(ObjectId userId, int code, String tag) {
+
+        if(userDao.tagIsExist(userId,code)) {
+            return;
+        }
         UserEntry.UserTagEntry userTagEntry = new UserEntry.UserTagEntry(code, tag);
         userDao.pushUserTag(userId, userTagEntry);
     }

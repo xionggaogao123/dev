@@ -8,6 +8,7 @@ import com.fulaan.cache.RedisUtils;
 import com.fulaan.dto.*;
 import com.fulaan.friendscircle.service.FriendApplyService;
 import com.fulaan.friendscircle.service.FriendService;
+import com.fulaan.playmate.service.MateService;
 import com.fulaan.pojo.CommunityMessage;
 import com.fulaan.pojo.PageModel;
 import com.fulaan.pojo.ProductModel;
@@ -86,13 +87,14 @@ public class CommunityController extends BaseController {
     private EmService emService;
     @Autowired
     private CommunitySystemInfoService communitySystemInfoService;
+    @Autowired
+    private MateService mateService;
 
     public static final String suffix = "/static/images/community/upload.png";
 
     @RequestMapping("/create")
     @ResponseBody
-    public RespObj createCommunity(HttpServletRequest request,
-                                   String name,
+    public RespObj createCommunity(String name,
                                    @RequestParam(required = false, defaultValue = "") String desc,
                                    @RequestParam(required = false, defaultValue = "") String logo,
                                    @RequestParam(required = false, defaultValue = "0") int open,
@@ -104,27 +106,21 @@ public class CommunityController extends BaseController {
             return RespObj.FAILD("该社区名称已使用过！");
         }
         ObjectId uid = getUserId();
-
         ObjectId communityId = new ObjectId();
-
         String qrUrl = QRUtils.getCommunityQrUrl(communityId);
         if (qrUrl == null) {
             return RespObj.FAILD("无法生成二维码");
         }
         String seqId = communityService.getSeq();
-
         if (StringUtils.isBlank(seqId)) {
             return RespObj.FAILD("社区序列值不够");
         }
-
         if (StringUtils.isBlank(logo)) {
             String prev = "http://www.fulaan.com";
             logo = prev + suffix;
         }
-
         ObjectId commId = communityService.createCommunity(communityId, uid, name, desc, logo, qrUrl, seqId, open);
         communityService.pushToUser(commId, uid, 2);
-
         CommunityDTO communityDTO = communityService.findByObjectId(commId);
         //创建社区系统消息通知
         communitySystemInfoService.saveOrupdateEntry(getUserId(), getUserId(), "社长", 4, commId);
@@ -139,27 +135,21 @@ public class CommunityController extends BaseController {
                 }
             }
         }
-
         int memberCount = memberService.countMember(new ObjectId(communityDTO.getGroupId()));
         communityDTO.setMemberCount(memberCount);
-
         List<MemberDTO> members = memberService.getMembers(new ObjectId(communityDTO.getGroupId()), 20);
         communityDTO.setMembers(members);
-
         MemberDTO mine = memberService.getUser(new ObjectId(communityDTO.getGroupId()), getUserId());
         communityDTO.setMine(mine);
-
         String headImage = groupService.getHeadImage(new ObjectId(communityDTO.getGroupId()));
         communityDTO.setHeadImage(headImage);
-
         return RespObj.SUCCESS(communityDTO);
     }
 
 
     @RequestMapping("/create2")
     @ResponseBody
-    public RespObj createCommunity2(HttpServletRequest request,
-                                    String name,
+    public RespObj createCommunity2(String name,
                                     @RequestParam(required = false, defaultValue = "") String desc,
                                     @RequestParam(required = false, defaultValue = "") String logo,
                                     @RequestParam(required = false, defaultValue = "0") int open,
@@ -173,23 +163,18 @@ public class CommunityController extends BaseController {
             return RespObj.FAILD(communityDTO);
         }
         ObjectId uid = getUserId();
-
         ObjectId communityId = new ObjectId();
-
         String qrUrl = QRUtils.getCommunityQrUrl(communityId);
         String seqId = communityService.getSeq();
-
         if (StringUtils.isBlank(seqId)) {
             CommunityDTO communityDTO = new CommunityDTO();
             communityDTO.setErrorMsg("社区序列值不够");
             return RespObj.FAILD(communityDTO);
         }
-
         if (StringUtils.isBlank(logo)) {
             String prev = "http://www.fulaan.com";
             logo = prev + suffix;
         }
-
         ObjectId commId = communityService.createCommunity(communityId, uid, name, desc, logo, qrUrl, seqId, open);
         communityService.pushToUser(commId, uid, 2);
         CommunityDTO communityDTO = communityService.findByObjectId(commId);
@@ -203,19 +188,14 @@ public class CommunityController extends BaseController {
                 }
             }
         }
-
         int memberCount = memberService.countMember(new ObjectId(communityDTO.getGroupId()));
         communityDTO.setMemberCount(memberCount);
-
         List<MemberDTO> members = memberService.getMembers(new ObjectId(communityDTO.getGroupId()), 20);
         communityDTO.setMembers(members);
-
         MemberDTO mine = memberService.getUser(new ObjectId(communityDTO.getGroupId()), getUserId());
         communityDTO.setMine(mine);
-
         String headImage = groupService.getHeadImage(new ObjectId(communityDTO.getGroupId()));
         communityDTO.setHeadImage(headImage);
-
         return RespObj.SUCCESS(communityDTO);
     }
 
@@ -364,7 +344,7 @@ public class CommunityController extends BaseController {
                         communityService.pushToUser(new ObjectId(fulanDto.getId()), getUserId(), 2);
                     }
                 }
-                communityDTOList = communityService.getCommunitys(userId, 1, 9);
+                communityDTOList = communityService.getCommunitys(userId, 1, 100);
                 return RespObj.SUCCESS(communityDTOList);
             }
         } catch (Exception e) {
@@ -1703,6 +1683,7 @@ public class CommunityController extends BaseController {
     public RespObj pushUserTag(@RequestBody UserTag userTag) {
         ObjectId userId = getUserId();
         userService.pushUserTag(userId, userTag.getCode(), userTag.getTag());
+        mateService.pushUserTag(userId,userTag.getCode());
         return RespObj.SUCCESS;
     }
 
@@ -1711,6 +1692,7 @@ public class CommunityController extends BaseController {
     public RespObj pullUserTag(int code) {
         ObjectId userId = getUserId();
         userService.pullUserTag(userId, code);
+        mateService.pullUserTag(userId,code);
         return RespObj.SUCCESS;
     }
 

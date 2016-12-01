@@ -2,9 +2,11 @@ package com.db.playmate;
 
 import com.db.base.BaseDao;
 import com.db.factory.MongoFacroty;
+import com.mongodb.BasicDBList;
 import com.mongodb.BasicDBObject;
 import com.mongodb.DBObject;
 import com.pojo.playmate.FMateEntry;
+import com.pojo.user.UserTag;
 import com.sys.constants.Constant;
 import org.bson.types.ObjectId;
 
@@ -25,68 +27,35 @@ public class FMateDao extends BaseDao {
     /**
      * 分页
      *
-     * @param lat
-     * @param lon
-     * @param tags
-     * @param hobbys
-     * @param aged
-     * @param ons
      * @param page
      * @param pageSize
      * @return
      */
-    public List<FMateEntry> findByPage(double lon, double lat, List<String> tags, List<String> hobbys, int aged, int ons, int page, int pageSize) {
+    public List<FMateEntry> findByPage(BasicDBObject query, int page, int pageSize) {
         List<FMateEntry> fMateEntries = new ArrayList<FMateEntry>();
-        List<Double> locs = new ArrayList<Double>();
-        locs.add(lon);
-        locs.add(lat);
-        List<Object> list = new ArrayList<Object>();
-        list.add(locs);
-        list.add(1000);
-        BasicDBObject query = new BasicDBObject("loc", new BasicDBObject(Constant.MONGO_GEOWITHIN, new BasicDBObject("$centerSphere", list)));
-        if (null != tags && tags.size() > 0) {
-            query.append("tag", new BasicDBObject("$all", tags));
-        }
-        if (null != hobbys && hobbys.size() > 0) {
-            query.append("hob", new BasicDBObject("$all", hobbys));
-        }
-        if (aged != -1) {
-            query.append("aged", aged);
-        }
-        if (ons != -1) {
-            query.append("ons", ons);
-        }
-        BasicDBObject orderBy = new BasicDBObject("ti", -1);
-        List<DBObject> dbos = find(MongoFacroty.getAppDB(), Constant.COLLECTION_FORUM_MATE_SEEKMATE, query, Constant.FIELDS, orderBy, (page - 1) * pageSize, pageSize);
+        BasicDBObject orderBy = new BasicDBObject();
+        List<DBObject> dbos = find(MongoFacroty.getAppDB(), Constant.COLLECTION_FORUM_MATE_SEEKMATE, query, Constant.FIELDS,orderBy, (page - 1) * pageSize, pageSize);
         for (DBObject dbo : dbos) {
             fMateEntries.add(new FMateEntry(dbo));
         }
         return fMateEntries;
     }
 
-    /**
-     * count
-     * @param lat
-     * @param lon
-     * @param tags
-     * @param hobbys
-     * @param aged
-     * @param ons
-     * @return
-     */
-    public int countByPage(double lat, double lon, List<String> tags, List<String> hobbys, int aged, int ons) {
+    public BasicDBObject buildQuery(double lon, double lat, List<Integer> tags, List<String> hobbys, int aged, int ons, int maxDistance) {
+        BasicDBObject query = new BasicDBObject();
         List<Double> locs = new ArrayList<Double>();
-        locs.add(lat);
         locs.add(lon);
-        List<Object> list = new ArrayList<Object>();
-        list.add(locs);
-        list.add(1000);
-        BasicDBObject query = new BasicDBObject("loc", new BasicDBObject(Constant.MONGO_GEOWITHIN, new BasicDBObject("$centerSphere", list)));
+        locs.add(lat);
+        if (lon != 0 && lat != 0) {
+            BasicDBObject geometry = new BasicDBObject("type", "Point")
+                    .append("coordinates", locs);
+            query.append("loc", new BasicDBObject("$near", new BasicDBObject("$geometry",geometry).append("$maxDistance", maxDistance)));
+        }
         if (null != tags && tags.size() > 0) {
-            query.append("tag", new BasicDBObject("$all", tags));
+            query.append("tag", new BasicDBObject("$in", tags));
         }
         if (null != hobbys && hobbys.size() > 0) {
-            query.append("hob", new BasicDBObject("$all", hobbys));
+            query.append("hob", new BasicDBObject("$in", hobbys));
         }
         if (aged != -1) {
             query.append("aged", aged);
@@ -94,11 +63,26 @@ public class FMateDao extends BaseDao {
         if (ons != -1) {
             query.append("ons", ons);
         }
-        return count(MongoFacroty.getAppDB(),Constant.COLLECTION_FORUM_MATE_SEEKMATE,query);
+        return query;
+    }
+
+    /**
+     * count
+     *
+     * @return
+     */
+    public int countByPage(BasicDBObject query) {
+        return count(MongoFacroty.getAppDB(), Constant.COLLECTION_FORUM_MATE_SEEKMATE, query);
+    }
+
+    public boolean isExist(ObjectId userId){
+        BasicDBObject query = new BasicDBObject("uid",userId);
+        return count(MongoFacroty.getAppDB(),Constant.COLLECTION_FORUM_MATE_SEEKMATE,query) >=1;
     }
 
     /**
      * 更新位置
+     *
      * @param userId
      * @param lat
      * @param lon
@@ -108,23 +92,57 @@ public class FMateDao extends BaseDao {
         List<Double> locations = new ArrayList<Double>();
         locations.add(lat);
         locations.add(lon);
-        BasicDBObject update = new BasicDBObject(Constant.MONGO_SET, new BasicDBObject("loc", locations));
+        BasicDBObject gemObject = new BasicDBObject("type", "Point").append("coordinates", locations);
+        BasicDBObject update = new BasicDBObject(Constant.MONGO_SET, new BasicDBObject("loc", gemObject));
         update(MongoFacroty.getAppDB(), Constant.COLLECTION_FORUM_MATE_SEEKMATE, query, update);
+    }
+
+    public FMateEntry getCoordinates(ObjectId userId) {
+        BasicDBObject query = new BasicDBObject("uid", userId);
+        DBObject dbo = findOne(MongoFacroty.getAppDB(), Constant.COLLECTION_FORUM_MATE_SEEKMATE, query, Constant.FIELDS);
+        return dbo == null ? null : new FMateEntry(dbo);
     }
 
     /**
      * 更新用户标签
+     *
      * @param userId
      * @param tags
      */
-    public void updateUserTags(ObjectId userId, List<String> tags) {
+    public void updateUserTags(ObjectId userId, List<Integer> tags) {
         BasicDBObject query = new BasicDBObject("uid", userId);
         BasicDBObject update = new BasicDBObject(Constant.MONGO_SET, new BasicDBObject("tag", tags));
         update(MongoFacroty.getAppDB(), Constant.COLLECTION_FORUM_MATE_SEEKMATE, query, update);
     }
 
     /**
+     * 更新用户标签
+     *
+     * @param userId
+     * @param tag
+     */
+    public void pushUserTag(ObjectId userId, int tag) {
+        BasicDBObject query = new BasicDBObject("uid", userId);
+        BasicDBObject update = new BasicDBObject(Constant.MONGO_PUSH, new BasicDBObject("tag", tag));
+        update(MongoFacroty.getAppDB(), Constant.COLLECTION_FORUM_MATE_SEEKMATE, query, update);
+    }
+
+    /**
+     * 更新用户标签
+     *
+     * @param userId
+     * @param tag
+     */
+    public void pullUserTag(ObjectId userId, int tag) {
+        BasicDBObject query = new BasicDBObject("uid", userId);
+        BasicDBObject update = new BasicDBObject(Constant.MONGO_PULL, new BasicDBObject("tag", tag));
+        update(MongoFacroty.getAppDB(), Constant.COLLECTION_FORUM_MATE_SEEKMATE, query, update);
+    }
+
+
+    /**
      * 更新爱好
+     *
      * @param userId
      * @param hobbys
      */
@@ -132,11 +150,6 @@ public class FMateDao extends BaseDao {
         BasicDBObject query = new BasicDBObject("uid", userId);
         BasicDBObject update = new BasicDBObject(Constant.MONGO_SET, new BasicDBObject("hob", hobbys));
         update(MongoFacroty.getAppDB(), Constant.COLLECTION_FORUM_MATE_SEEKMATE, query, update);
-    }
-
-    public static void main(String[] args) {
-
-
     }
 
 }

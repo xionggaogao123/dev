@@ -15,8 +15,8 @@ import org.bson.types.ObjectId;
  * hob -- 爱好 [篮球，足球]
  * tag -- 标签 [学生，二次元]
  * ti  -- 最近一次登录时间
- * aged -- 年龄段[  0-6: 1 ,6-12: 2,12-18: 3,18~ 4 ] - 0未知
- * ons -- 在线时间段 [ 00:00 - 06:00 : 1,06:00-12:00 : 2,12:00- 18:00 : 3,18:00 - 24:00 :4] - 0未知
+ * aged -- 年龄段[  3-5: 1 ,5-8: 2,8-11: 3,11-15~ 4,15-18:5 18~:6 ] - -1未知
+ * ons -- 在线时间段 [ 00:00 - 06:00 : 1,06:00-12:00 : 2,12:00- 18:00 : 3,18:00 - 24:00 :4] - -1未知
  */
 public class FMateEntry  extends BaseDBObject{
 
@@ -30,7 +30,7 @@ public class FMateEntry  extends BaseDBObject{
                 .append("uid", userId)
                 .append("loc", Constant.DEFAULT_VALUE_OBJECT)
                 .append("hob", Constant.DEFAULT_VALUE_OBJECT)
-                .append("tag", Constant.DEFAULT_VALUE_OBJECT)
+                .append("tag", Constant.DEFAULT_VALUE_ARRAY)
                 .append("ti", System.currentTimeMillis())
                 .append("aged",Constant.DEFAULT_VALUE_INT)
                 .append("ons", Constant.DEFAULT_VALUE_INT);
@@ -42,7 +42,9 @@ public class FMateEntry  extends BaseDBObject{
     }
 
     public BasicDBList getLocation() {
-        return (BasicDBList)getSimpleObjectValue("loc");
+        DBObject dbo = (DBObject)getSimpleObjectValue("loc");
+        if(dbo == null) return null;
+        return (BasicDBList) dbo.get("coordinates");
     }
 
     public BasicDBList getHobbys() {

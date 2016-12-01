@@ -3,37 +3,13 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <title>找附近</title>
+    <title>找玩伴</title>
     <meta charset="utf-8">
     <script type="text/javascript" src="/static/js/friend/jquery-1.11.1.js"></script>
-    <script type="text/javascript" src="/static/js/friend/near.js"></script>
     <link rel="stylesheet" type="text/css" href="/static/css/friend/nearby.css">
     <link rel="stylesheet" type="text/css" href="/static/css/main.css">
-    <script type="text/javascript">
-        $(function () {
-            var $this = $("#nearNews");
-            var scrollTimer;
-            $this.hover(function () {
-                clearInterval(scrollTimer);
-            }, function () {
-                scrollTimer = setInterval(function () {
-                    scrollNews($this);
-                }, 2000);
-            }).trigger("mouseleave");
-
-            function scrollNews(obj) {
-                var $self = obj.find("ul");
-                var lineHeight = $self.find("li:first").height();
-                $self.animate({
-                    "marginTop": -lineHeight - 21 + "px"
-                }, 1000, function () {
-                    $self.css({
-                        marginTop: 0
-                    }).find("li:first").appendTo($self);
-                })
-            }
-        })
-    </script>
+    <script type="text/javascript"
+            src="http://api.map.baidu.com/api?v=2.0&ak=gLtMQemqya8xYLSOlUkfGL0iCKGsqdfw"></script>
 </head>
 <body style="background: #f5f5f5">
 <%@include file="../common/head.jsp" %>
@@ -45,80 +21,79 @@
         <div class="near-menu">
             <div class="menu1 clearfix">
                 <div class="menu-item">兴趣爱好</div>
-                <div class="clearfix menu-cont">
-                    <span class="gre-cur">不限</span>
-                    <span >你好</span>
+                <div class="clearfix menu-cont mate-xingqu">
+                    <span value="-1" class="gre-cur">不限</span>
+                    <span code="100" tag="旅行">旅行</span>
+                    <span code="101" tag="英语">英语</span>
+                    <span code="102" tag="阅读">阅读</span>
+                    <span code="103" tag="足球">足球</span>
+                    <span code="104" tag="篮球">篮球</span>
+                    <span code="105" tag="羽毛球">羽毛球</span>
+                    <span code="106" tag="网球">网球</span>
+                    <span code="107" tag="乒乓球">乒乓球</span>
+                    <span code="108" tag="轮滑跆">轮滑跆</span>
+                    <span code="109" tag="拳道">拳道</span>
+                    <span code="110" tag="跳绳">跳绳</span>
+                    <span code="111" tag="歌唱">歌唱</span>
+                    <span code="112" tag="表演">表演</span>
+                    <span code="113" tag="舞蹈">舞蹈</span>
+                    <span code="114" tag="美术">美术</span>
+                    <span code="115" tag="钢琴">钢琴</span>
+                    <span code="116" tag="古筝">古筝</span>
+                    <span code="117" tag="二胡">二胡</span>
+                    <span code="118" tag="小提琴">小提琴</span>
+                    <span code="119" tag="笛子">笛子</span>
+                    <span code="120" tag="架子鼓">架子鼓</span>
+                    <span code="121" tag="围棋">围棋</span>
+                    <span code="122" tag="跳棋">跳棋</span>
+                    <span code="123" tag="象棋">象棋</span>
+                    <span code="124" tag="桥牌">桥牌</span>
+                    <span code="125" tag="演讲">演讲</span>
+                    <span code="126" tag="航模">航模</span>
+                    <span code="127" tag="航海">航海</span>
+                    <span code="128" tag="机器人">机器人</span>
+                    <span code="129" tag="演讲">演讲</span>
                 </div>
             </div>
             <div class="menu1 clearfix">
                 <div class="menu-item">年&nbsp;龄&nbsp;段</div>
-                <div class="clearfix menu-cont">
-                    <span class="gre-cur">不限</span>
-                    <span>运动</span>
-                    <span>运动</span>
-                    <span>运动</span>
-                    <span>运动</span>
-                    <span>运动</span>
-                    <span>运动</span>
-                    <span>运动</span>
-                    <span>运动</span>
+                <div class="clearfix menu-cont mate-aged">
+                    <span value='-1' class="gre-cur">不限</span>
+                    <span value="1">3-5岁</span>
+                    <span value="2">5-8岁</span>
+                    <span value="3">8-11岁</span>
+                    <span value="4">11-15岁</span>
+                    <span value="5">15-18岁</span>
+                    <span value="6">18岁以上</span>
                 </div>
             </div>
             <div class="menu1 clearfix">
                 <div class="menu-item">距&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;离</div>
-                <div class="clearfix menu-cont">
-                    <span class="gre-cur">不限</span>
-                    <span>运动</span>
-                    <span>运动</span>
-                    <span>运动</span>
-                    <span>运动</span>
-                    <span>运动</span>
-                    <span>运动</span>
-                    <span>运动</span>
-                    <span>运动</span>
+                <div class="clearfix menu-cont mate-distance">
+                    <span value='-1' class="gre-cur">不限</span>
+                    <span value='500'>500米</span>
+                    <span value='1000'>1km</span>
+                    <span value='2000'>2km</span>
+                    <span value="5000">5km以上</span>
+                </div>
+            </div>
+            <div class="menu1 clearfix">
+                <div class="menu-item">时&nbsp;间&nbsp;段</div>
+                <div class="clearfix menu-cont mate-timed">
+                    <span value='-1' class="gre-cur">不限</span>
+                    <span value='1'>周六08:00~11:00</span>
+                    <span value='2'>周六11:00~14:00</span>
+                    <span value='3'>周六14:00~17:00</span>
+                    <span value="4">周日08:00~11:00</span>
+                    <span value="5">周日11:00~14:00</span>
+                    <span value="6">周日14:00~17:00</span>
                 </div>
             </div>
         </div>
         <div class="near-list">
-            <p class="near-p">共有12位邻居符合条件</p>
-            <div class="near-li">
-                <img src=''>
-                <div class="near-infor">
-                    <p class="p1">
-                        <span class="sp1">乔纳森</span>
-                        <span class="sp2">查看更多</span>
-                    </p>
-                    <p class="p2">
-                        标签：<i>阅读</i>、<i>运动</i>、饮食、旅游
-                    </p>
-                    <p class="p2">
-                        您的认证好友<i>卢佳佳</i>对他进行了认证
-                    </p>
-                    <p class="p2">
-                        <img src="/static/images/findnearby_zuobiao.png">距离您<i>2000</i>米
-                    </p>
-                </div>
-                <button class="btn-lyl">聊一聊</button>
-            </div>
-            <div class="near-li">
-                <img src="">
-                <div class="near-infor">
-                    <p class="p1">
-                        <span class="sp1">乔纳森</span>
-                        <span class="sp2">查看更多</span>
-                    </p>
-                    <p class="p2">
-                        标签：<i>阅读</i>、<i>运动</i>、饮食、旅游
-                    </p>
-                    <p class="p2">
-                        您的认证好友<i>卢佳佳</i>对他进行了认证
-                    </p>
-                    <p class="p2">
-                        <img src="/static/images/findnearby_zuobiao.png">距离您<i>2000</i>米
-                    </p>
-                </div>
-                <button class="btn-lyl">聊一聊</button>
-            </div>
+            <p class="near-p">共有<em class="mate-count"></em>位邻居符合条件</p>
+            <div id="near-mates"></div>
+            <div class="new-page-links"></div>
         </div>
     </div>
     <div class="near-right clearfix">
@@ -385,8 +360,40 @@
 <div class="wind-biaoq">
     <p class="p1">我的标签<em>×</em></p>
     <p class="p2">推荐标签</p>
-    <div class="bq-list clearfix">
-        <span>是的范德萨发</span>
+    <div class="bq-list clearfix biaoq-all">
+        <span code="100" tag="旅行">旅行</span>
+        <span code="101" tag="英语">英语</span>
+        <span code="102" tag="阅读">阅读</span>
+        <span code="103" tag="足球">足球</span>
+        <span code="104" tag="篮球">篮球</span>
+        <span code="105" tag="羽毛球">羽毛球</span>
+        <span code="106" tag="网球">网球</span>
+        <span code="107" tag="乒乓球">乒乓球</span>
+        <span code="108" tag="轮滑跆">轮滑跆</span>
+        <span code="109" tag="拳道">拳道</span>
+        <span code="110" tag="跳绳">跳绳</span>
+        <span code="111" tag="歌唱">歌唱</span>
+        <span code="112" tag="表演">表演</span>
+        <span code="113" tag="舞蹈">舞蹈</span>
+        <span code="114" tag="美术">美术</span>
+        <span code="115" tag="钢琴">钢琴</span>
+        <span code="116" tag="古筝">古筝</span>
+        <span code="117" tag="二胡">二胡</span>
+        <span code="118" tag="小提琴">小提琴</span>
+        <span code="119" tag="笛子">笛子</span>
+        <span code="120" tag="架子鼓">架子鼓</span>
+        <span code="121" tag="围棋">围棋</span>
+        <span code="122" tag="跳棋">跳棋</span>
+        <span code="123" tag="象棋">象棋</span>
+        <span code="124" tag="桥牌">桥牌</span>
+        <span code="125" tag="演讲">演讲</span>
+        <span code="126" tag="航模">航模</span>
+        <span code="127" tag="航海">航海</span>
+        <span code="128" tag="机器人">机器人</span>
+        <span code="129" tag="演讲">演讲</span>
+    </div>
+    <p class="p2">已选标签</p>
+    <div class="bq-list clearfix biaoq-selected">
     </div>
     <p class="p3">
         <button class="btn1">确认添加</button>
@@ -439,8 +446,41 @@
         <button class="b2">取消发布</button>
     </p>
 </div>
+
+<script type="text/template" id="mateBox">
+    {{~it:value:index}}
+    <div class="near-li">
+        <img src='{{=value.avatar}}'>
+        <div class="near-infor">
+            <p class="p1">
+                <span class="sp1">{{=value.nickName}}</span>
+                <span class="sp2">查看更多</span>
+            </p>
+            <p class="p2">
+                标签：{{~value.tags:tag:i}}
+                <i>{{=tag}}</i>、
+                {{~}}
+            </p>
+            <p class="p2">
+                您的认证好友<i>卢佳佳</i>对他进行了认证
+            </p>
+            <p class="p2">
+                <img src="/static/images/findnearby_zuobiao.png">距离您<i>{{=value.distance}}</i>米
+            </p>
+        </div>
+        <button class="btn-lyl">聊一聊</button>
+    </div>
+    {{~}}
+</script>
 <!--发起活动-->
 <%@include file="../common/footer.jsp" %>
+<script src="/static/js/sea.js"></script>
+<script src="/static/js/modules/core/0.1.0/config.js?v=2015041602"></script>
+<script>
+    seajs.use('/static/js/modules/mate/seekMate.js', function (seekMate) {
+        seekMate.init();
+    });
+</script>
 
 </body>
 </html>

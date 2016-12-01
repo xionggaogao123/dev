@@ -1,3 +1,4 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 <%@ page language="java" session="false" contentType="text/html;charset=UTF-8" isELIgnored="false" %>
 <%@ page trimDirectiveWhitespaces="true" %>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
@@ -252,6 +253,59 @@
     </div>
     <!--取消报名提示end-->
     <%--<div class="bg"></div>--%>
+
+    <div id="tuyaCanva" style="z-index: 9999;display: none;width:1000px;position:fixed;top: 10px;left: 50%;margin-left: -500px;padding: 10px;border-radius: 6px 6px 0 6px;background: #f7f7f7;">
+        <canvas id="canvas" width="600" height="500" style="border:1px solid #999;position:fixed;left:50%;margin-left:-300px;top:100px;"></canvas>
+        <canvas id="canvas2" width="600" height="500" style="border:1px solid #999;position:fixed;left:50%;margin-left:-300px;top:100px;"></canvas>
+        <span class="btn-canvas" onClick="$('#forbiden_back').fadeIn(300)" style="background-image: url(/static/js/modules/community/plugins/canvas/image/open_url.png)"></span>
+        <span class="btn-canvas" onClick="change_attr(0,-1,-1)" style="background-image: url(/static/js/modules/community/plugins/canvas/image/pencil.png)"></span>
+        <%--<span class="btn-canvas" onClick="change_attr(1,-1,-1)" style="background-image: url(/static/js/modules/community/plugins/canvas/image/straight.png)"></span>--%>
+        <span class="btn-canvas" onClick="change_attr(2,-1,-1)" style="background-image: url(/static/js/modules/community/plugins/canvas/image/star_straight.png)"></span>
+        <%--<span class="btn-canvas" onClick="change_attr(3,-1,-1)" style="background-image: url(/static/js/modules/community/plugins/canvas/image/circle.png)"></span>--%>
+        <%--<span class="btn-canvas" onClick="change_attr(4,-1,-1)" style="background-image: url(/static/js/modules/community/plugins/canvas/image/rect.png)"></span>--%>
+        <span class="btn-canvas" onClick="gaussian()" style="background-image: url(/static/js/modules/community/plugins/canvas/image/blur.png)"></span>
+        <span class="btn-canvas" id="undo" onclick="undoPrev()">回退</span>
+        <span class="btn-canvas" id="redo" onclick="undoNext()">重做</span>
+        <span class="btn-canvas" onclick="saveUrl()">保存</span>
+        <span class="btn-canvas" onclick="closeCanvas()">关闭</span>
+        <%--<span class="btn-canvas" onClick="change_attr(5,-1,-1)" style="background-image: url(/static/js/modules/community/plugins/canvas/image/eraser.png)"></span>--%>
+        <%--<span class="btn-canvas" onClick="fill_canvas('#ffffff',0,0,canvas_size.x,canvas_size.y)" style="background-image: url(/static/js/modules/community/plugins/canvas/image/clear.png)"></span>--%>
+        <span id="size_span" style="border: 1px solid #999;width:15px;height: 15px;margin-top:7px;margin-left: 50px;display: block;float: left;margin-left: 20px">1</span>
+        <div id="size_bar" style="width: 100px;height: 5px;background-color:#999; float: left;margin: 12px;position: relative;">
+		<span id="size_thumb" class="btn-canvas" onClick="" style="background-color:#666;;width: 15px; border-top-left-radius:8px; border-top-right-radius:8px; border-bottom-left-radius:8px;
+		border-bottom-right-radius:8px;height: 15px;margin:0px; margin-top:-5px;position: absolute;left: 0px;"></span>
+        </div>
+        <span id="color_span" style="border: 1px solid #999;background-color:#00aeef;width:15px;height: 15px;margin-top:7px;display: block;float: left;margin-left: 10px"></span>
+        <canvas id="canvas_color" width="198" height="15" style="border:1px solid #999;margin-top:7px;margin-left:10px;float:left;"></canvas>
+
+        <div style="width: 248px;height: 162px;position: absolute;left:50%;top:50px;margin-left: 262px;background: #f7f7f7;border-radius: 0 0 6px 6px;">
+            <span id="r_channel_span" style="border: 1px solid #999;width:15px;height: 15px;margin-top:7px;margin-left: 50px;display: block;float: left;margin-left: 20px">r</span>
+            <div id="r_channel_bar" style="width: 100px;height: 5px;background-color:#999; float: left;margin: 12px;position: relative;">
+			<span id="r_channel_thumb" class="btn-canvas" onClick="" style="background-color:#666;;width: 15px; border-top-left-radius:8px; border-top-right-radius:8px; border-bottom-left-radius:8px;
+			border-bottom-right-radius:8px;height: 15px;margin:0px; margin-top:-5px;position: absolute;left: 45%;"></span>
+            </div>
+            <div style="clear: both;"></div>
+            <span id="g_channel_span" style="border: 1px solid #999;width:15px;height: 15px;margin-top:7px;margin-left: 50px;display: block;float: left;margin-left: 20px">g</span>
+            <div id="g_channel_bar" style="width: 100px;height: 5px;background-color:#999; float: left;margin: 12px;position: relative;">
+			<span id="g_channel_thumb" class="btn-canvas" onClick="" style="background-color:#666;;width: 15px; border-top-left-radius:8px; border-top-right-radius:8px; border-bottom-left-radius:8px;
+			border-bottom-right-radius:8px;height: 15px;margin:0px; margin-top:-5px;position: absolute;left: 45%;"></span>
+            </div>
+            <div style="clear: both;"></div>
+            <span id="b_channel_span" style="border: 1px solid #999;width:15px;height: 15px;margin-top:7px;margin-left: 50px;display: block;float: left;margin-left: 20px">b</span>
+            <div id="b_channel_bar" style="width: 100px;height: 5px;background-color:#999; float: left;margin: 12px;position: relative;">
+			<span id="b_channel_thumb" class="btn-canvas" onClick="" style="background-color:#666;;width: 15px; border-top-left-radius:8px; border-top-right-radius:8px; border-bottom-left-radius:8px;
+			border-bottom-right-radius:8px;height: 15px;margin:0px; margin-top:-5px;position: absolute;left: 45%;"></span>
+            </div>
+        </div>
+        <div id="forbiden_back" style="width: 100%;height: 100%;background-image: url(/static/js/modules/community/plugins/canvas/image/pattern.png);position: absolute;top: 0px;left: 0px;display: none;">
+            <div style="width: 382px;height: 170px;background-image: url(/static/js/modules/community/plugins/canvas/image/open_window.png);margin: 0 auto;margin-top: 200px;position: relative;">
+                <input id="pic_url" type="text" style="width:250px; margin: 53px;margin-left: 83px;"/>
+                <div id="close_window" style="width: 20px;height: 15px;border: 0px solid green;position: absolute;right:20px;top: 10px"></div>
+                <div id="open_pic" style="width: 80px;height: 30px;border: 0px solid green;position: absolute;left:155px;top: 102px" onClick="open_img(pic_url)"></div>
+            </div>
+        </div>
+    </div>
+
     <div id="YCourse_player" class="player-container" style="display: none">
         <div id="player_div" class="player-div"></div>
         <div id="sewise-div"
@@ -356,6 +410,7 @@
     <script type="text/javascript"
             src="/static/js/modules/core/0.1.0/jquery-upload/vendor/jquery.ui.widget.js?v=1"></script>
     <script type="text/javascript" src="/static/js/modules/core/0.1.0/jquery-upload/jquery.fileupload.js"></script>
+    <script type="text/javascript" src="/static/js/modules/community/plugins/canvas/lanrenzhijia.js"></script>
     <%-- 填充script --%>
     <script>
             //上传图片
@@ -482,6 +537,7 @@
 //                    }
 //                })
 //            });
+
     </script>
 
     <script type="text/template" id="usersTmpl">
@@ -632,8 +688,98 @@
 
     <script type="text/javascript">
         function download(url, fileName) {
-            location.href = "/commondownload/downloadFile.do?remoteFilePath=" + url + "&fileName=" + fileName;
+            location.href = "/commondownload/downloadFile.do?remoteFilePath=" + url + "&amp;fileName=" + fileName;
         }
+
+        function saveUrl(){
+            var param={};
+            param.base64ImgData=getImage();
+            $('.com-now').find('img').attr('src',getImage());
+            param.oldImage=$('#tuyaCanva').data('oldImage');
+            param.partContentId=$('#tuyaCanva').data('partInContentId');
+            $.ajax({
+                type: "POST",
+                data: param,
+                url: '/community/base64image.do',
+                async: false,
+                dataType: "json",
+                contentType: "application/x-www-form-urlencoded; charset=UTF-8",
+                success: function (rep) {
+                    window.location.href=location.href;
+                }
+            });
+
+        }
+
+        function closeCanvas(){
+            $('#tuyaCanva').hide();
+            $('.bg').hide();
+        }
+
+        $('body').on('click','.type-check',function(){
+            var pUrl = $(this).attr('vurl');
+//            var partInContentId = $(this).attr('contentId')+"-"+encodeURIComponent(pUrl.substring(7,pUrl.length));
+            var requestData = {};
+            var that=this;
+            requestData.imageUrl = pUrl;
+            var url="/community/getQiuNiuImage.do";
+            $.ajax({
+                type: "GET",
+                data: requestData,
+                url: url,
+                async: false,
+                dataType: "json",
+                contentType: "application/x-www-form-urlencoded; charset=UTF-8",
+                success: function (resp) {
+                    var picUrl;
+                    if(resp.code == 200){
+                        picUrl = resp.url;
+                    } else {
+                        picUrl = pUrl;
+                    }
+                    $('#tuyaCanva').show();
+                    $('#tuyaCanva').data('partInContentId',$(that).attr('contentId'));
+                    $('#tuyaCanva').data('oldImage',encodeURIComponent(pUrl.substring(7,pUrl.length)));
+                    $('.bg').show();
+                    open_img(picUrl);
+//                    checkPrintPos();
+//                    var url="/community/saveEditedImage.do?partInContentId=" + partInContentId;
+//                    $('#check-hw-container').show();
+//                    $('.bg').show();
+//                    var so = new FlashObject("/static/js/modules/community/plugins/pictureEditor/pictureEditor.swf", "flashApp", "1000px", "700px", "8");
+//                    so.addVariable("picUrl", picUrl);
+//                    so.addVariable("uploadUrl", url);
+//                    so.addParam("wmode", "transparent");
+//                    so.write("check-hw-container");
+//                    $('#check-hw-container').append('<div class="close-check-hw" style=" color: white;top: 59px;right: 117px;width: 24px;height: 24px;z-index: 100;position: absolute;cursor: pointer;"></div>');
+// $('#check-hw-container').append('<div class="close-save-hw" style=" background:#23CD77;color:#fff;border-radius:3px;top: 58px;right: 240px;width: 62px;height: 30px;line-height:30px;font-size:17px;text-align:center;z-index: 100;position: absolute;cursor: pointer;">保存</div>');
+                }
+            });
+        });
+//
+//
+//        $('body').on('click','.close-check-hw',function(){
+//            closeCheck();
+//        })
+//
+//
+//        function checkPrintPos() {
+//            var whigh = document.documentElement.clientHeight;
+//            var wwidth = document.documentElement.clientWidth;
+//            if (wwidth > 900) {
+//                $('#check-hw-container').css({
+//                    'top': (whigh - 700) / 2,
+//                    'left': (wwidth - 1000) / 2
+//                });
+//            }
+//        }
+//
+//        function closeCheck() {
+//            $('#check-hw-container').empty().hide();
+//            $('.bg').hide();
+//        };
+
+
     </script>
     <!--============登录================-->
     <%@ include file="../common/login.jsp" %>

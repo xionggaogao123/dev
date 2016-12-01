@@ -274,67 +274,8 @@ define(['jquery', 'pagination', 'common'], function (require, exports, module) {
             });
         })
 
-        $('body').on('click','.type-check',function(){
-            var pUrl = $(this).attr('vurl');
-            var partInContentId = $(this).attr('contentId')+"-"+encodeURIComponent(pUrl.substring(7,pUrl.length));
-            var requestData = {};
-            requestData.imageUrl = pUrl;
-            var url="/community/getQiuNiuImage.do";
-            $.ajax({
-                type: "GET",
-                data: requestData,
-                url: url,
-                async: false,
-                dataType: "json",
-                contentType: "application/x-www-form-urlencoded; charset=UTF-8",
-                success: function (resp) {
-                    var picUrl;
-                    if(resp.code == 200){
-                        picUrl = resp.url;
-                    } else {
-                        picUrl = pUrl;
-                    }
-                    checkPrintPos();
-                    var url="/community/saveEditedImage.do?partInContentId=" + partInContentId;
-                    $('#check-hw-container').show();
-                    $('.bg').show();
-                    var so = new FlashObject("/static/js/modules/community/plugins/pictureEditor/pictureEditor.swf", "flashApp", "1000px", "700px", "8");
-                    so.addVariable("picUrl", picUrl);
-                    so.addVariable("uploadUrl", url);
-                    so.addParam("wmode", "transparent");
-                    so.write("check-hw-container");
-                    $('#check-hw-container').append('<div class="close-check-hw" style=" color: white;top: 59px;right: 117px;width: 24px;height: 24px;z-index: 100;position: absolute;cursor: pointer;"></div>');
-                    // $('#check-hw-container').append('<div class="close-save-hw" style=" background:#23CD77;color:#fff;border-radius:3px;top: 58px;right: 240px;width: 62px;height: 30px;line-height:30px;font-size:17px;text-align:center;z-index: 100;position: absolute;cursor: pointer;">保存</div>');
-                }
-            });
-        });
-
-        $('body').on('click','.close-save-hw',function(){
-            closeCheck();
-        })
-
-        $('body').on('click','.close-check-hw',function(){
-            closeCheck();
-        })
 
     });
-
-    function checkPrintPos() {
-        var whigh = document.documentElement.clientHeight;
-        var wwidth = document.documentElement.clientWidth;
-        if (wwidth > 900) {
-            $('#check-hw-container').css({
-                'top': (whigh - 700) / 2,
-                'left': (wwidth - 1000) / 2
-            });
-        }
-    }
-
-    function closeCheck() {
-        getPartInContent(1);
-        $('#check-hw-container').empty().hide();
-        $('.bg').hide();
-    };
 
 
     //获取当前社区

@@ -1,6 +1,7 @@
 package com.fulaan.controller;
 
 
+import com.cloopen.rest.sdk.utils.encoder.BASE64Decoder;
 import com.fulaan.annotation.LoginInfo;
 import com.fulaan.annotation.ObjectIdType;
 import com.fulaan.annotation.SessionNeedless;
@@ -33,6 +34,8 @@ import com.sys.utils.AvatarUtils;
 import com.sys.utils.DateTimeUtils;
 import com.sys.utils.QiniuFileUtils;
 import com.sys.utils.RespObj;
+import org.apache.commons.codec.Decoder;
+import org.apache.commons.codec.binary.Base64;
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.FilenameUtils;
 import org.apache.commons.io.IOUtils;
@@ -48,16 +51,16 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.multipart.MultipartRequest;
 
+import javax.imageio.ImageIO;
 import javax.servlet.ServletInputStream;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import java.awt.image.BufferedImage;
 import java.io.*;
 import java.net.MalformedURLException;
 import java.net.URL;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.net.URLDecoder;
+import java.util.*;
 
 
 /**
@@ -1826,7 +1829,7 @@ public class CommunityController extends BaseController {
         if (!file.exists()) {//文件不存在
             try {
                 file.createNewFile();
-                String type = "?imageView/2/w/580";//压缩样式
+                String type = "?imageMogr2/thumbnail/600x500";//压缩样式
                 String qnUrl = imageUrl + type;//对应七牛地址
                 URL url = new URL(qnUrl);
                 DataInputStream dataInputStream = new DataInputStream(url.openStream());
@@ -1853,40 +1856,6 @@ public class CommunityController extends BaseController {
             model.put("url", "/upload/qiuNiu/" + filekey);
         }
         return model;
-    }
-
-    /**
-     * 保存涂鸦图片 - web端
-     *
-     * @param request
-     * @return
-     * @throws Exception
-     */
-    @RequestMapping("/saveEditedImage")
-    @ResponseBody
-    public RespObj saveEditedImage(HttpServletRequest request,HttpServletResponse response) throws Exception {
-        String filekey = "qiuNiu-" + new ObjectId().toString() + ".png";
-        String parentPath = request.getServletContext().getRealPath("/upload") + "/qiuNiu/";
-        File parentFile = new File(parentPath);
-        File attachFile = new File(parentFile, filekey);
-        try {
-            ServletInputStream inputStream = request.getInputStream();
-            FileUtils.copyInputStreamToFile(inputStream, attachFile);
-        } catch (Exception ex) {
-            ex.printStackTrace();
-            throw ex;
-        }
-        String[] partInContentId = request.getParameter("partInContentId").split("-");
-        String fileKey = new ObjectId().toString() + Constant.POINT + "png";
-        QiniuFileUtils.uploadFile(fileKey, new FileInputStream(attachFile), QiniuFileUtils.TYPE_IMAGE);
-        String path = QiniuFileUtils.getPath(QiniuFileUtils.TYPE_IMAGE, fileKey);
-        communityService.updateImage(new ObjectId(partInContentId[0]), path, "http://" + partInContentId[1]);
-        try {
-            attachFile.delete();
-            return RespObj.SUCCESS;
-        } catch (Exception e) {
-            throw e;
-        }
     }
 
     /**
@@ -1965,6 +1934,100 @@ public class CommunityController extends BaseController {
         map.put("page", page);
         map.put("pageSize", pageSize);
         return map;
+    }
+
+
+    /**
+     * web端涂鸦控件
+     * @param base64ImgData
+     * @param oldImage
+     * @param partContentId
+     * @param req
+     * @return
+     * @throws Exception
+     */
+    @RequestMapping("/base64image")
+    @ResponseBody
+    public RespObj uploadBase64Image(String base64ImgData,String oldImage,String partContentId, HttpServletRequest req) throws Exception {
+        String temp=base64ImgData.substring(base64ImgData.indexOf("base64")+7,base64ImgData.length());
+//        BASE64Decoder d = new BASE64Decoder();
+//        byte[] bs = d.decodeBuffer(temp);
+//        for (int i = 0; i < bs.length; ++i) {
+//            if (bs[i] < 0) {// 调整异常数据
+//                bs[i] += 256;
+//            }
+//        }
+        Base64 base64=new Base64();
+        byte[] b=base64.decodeBase64(temp.getBytes());
+        for (int i = 0; i < b.length; ++i) {
+            if (b[i] < 0) {// 调整异常数据
+                b[i] += 256;
+            }
+        }
+        String parentPath = req.getServletContext().getRealPath("/upload") + "/qiuNiu";
+        File parentFile = new File(parentPath);
+        if (!parentFile.exists()) {
+            parentFile.mkdirs();
+        }
+//        String filekey = new ObjectId() + ".png";
+        String fileName=new ObjectId() + ".jpeg";
+        File attachFile = new File(parentFile, fileName);
+        try {
+            OutputStream out = new FileOutputStream(attachFile);
+            out.write(b);
+            out.flush();
+            out.close();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+//
+//        ByteArrayInputStream bais = new ByteArrayInputStream(bs);
+//        BufferedImage bi1 = ImageIO.read(bais);
+
+
+
+//        ImageIO.write(bi1, "jpg", attachFile);
+
+        String fileKey1 = new ObjectId().toString() + Constant.POINT + "png";
+        QiniuFileUtils.uploadFile(fileKey1, new FileInputStream(attachFile), QiniuFileUtils.TYPE_IMAGE);
+        String path = QiniuFileUtils.getPath(QiniuFileUtils.TYPE_IMAGE, fileKey1);
+        communityService.updateImage(new ObjectId(partContentId), path, "http://" + URLDecoder.decode(oldImage,"UTF-8"));
+        return RespObj.SUCCESS;
+    }
+
+
+    /**
+     * 保存涂鸦图片 - web端
+     *
+     * @param request
+     * @return
+     * @throws Exception
+     */
+    @RequestMapping("/saveEditedImage")
+    @ResponseBody
+    public RespObj saveEditedImage(HttpServletRequest request,HttpServletResponse response) throws Exception {
+        String filekey = "qiuNiu-" + new ObjectId().toString() + ".png";
+        String parentPath = request.getServletContext().getRealPath("/upload") + "/qiuNiu/";
+        File parentFile = new File(parentPath);
+        File attachFile = new File(parentFile, filekey);
+        try {
+            ServletInputStream inputStream = request.getInputStream();
+            FileUtils.copyInputStreamToFile(inputStream, attachFile);
+        } catch (Exception ex) {
+            ex.printStackTrace();
+            throw ex;
+        }
+        String[] partInContentId = request.getParameter("partInContentId").split("-");
+        String fileKey = new ObjectId().toString() + Constant.POINT + "png";
+        QiniuFileUtils.uploadFile(fileKey, new FileInputStream(attachFile), QiniuFileUtils.TYPE_IMAGE);
+        String path = QiniuFileUtils.getPath(QiniuFileUtils.TYPE_IMAGE, fileKey);
+        communityService.updateImage(new ObjectId(partInContentId[0]), path, "http://" + partInContentId[1]);
+        try {
+            attachFile.delete();
+            return RespObj.SUCCESS;
+        } catch (Exception e) {
+            throw e;
+        }
     }
 
 

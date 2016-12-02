@@ -370,9 +370,12 @@ public class CommunityController extends BaseController {
     @RequestMapping("/hotCommunitys")
     @ResponseBody
     @SessionNeedless
-    public RespObj hotCommunitys() {
+    public RespObj hotCommunitys(@RequestParam(defaultValue = "1",required = false)int page,
+                                 @RequestParam(defaultValue = "28",required = false)int pageSize,
+                                 @RequestParam(defaultValue = "",required = false)String lastId) {
         ObjectId userId = getUserId();
-        return RespObj.SUCCESS(communityService.getOpenCommunityS(userId));
+
+        return RespObj.SUCCESS(communityService.getOpenCommunityS(userId,page,pageSize,lastId));
     }
 
     /**

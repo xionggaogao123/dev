@@ -883,41 +883,83 @@ public class CommunityService {
      *
      * @return
      */
-    public List<CommunityDTO> getOpenCommunityS(ObjectId userId) {
+    public List<CommunityDTO> getOpenCommunityS(ObjectId userId,int page,int pageSize,String lastId) {
         List<CommunityDTO> communityDTOs = new ArrayList<CommunityDTO>();
-        List<CommunityEntry> communityEntries = communityDao.getOpenCommunitys();
-//    List<ObjectId> groupIds=new ArrayList<ObjectId>();
+        List<CommunityEntry> communityEntries = communityDao.getOpenCommunitys(page,pageSize,lastId);
+
         if (null == userId) {
             for (CommunityEntry communityEntry : communityEntries) {
-//      groupIds.add(new ObjectId(communityEntry.getGroupId()));
+
                 CommunityDTO communityDTO = new CommunityDTO(communityEntry);
                 communityDTOs.add(communityDTO);
             }
         } else {
             for (CommunityEntry communityEntry : communityEntries) {
-//      groupIds.add(new ObjectId(communityEntry.getGroupId()));
                 if (!memberService.isGroupMember(new ObjectId(communityEntry.getGroupId()), userId)) {
                     CommunityDTO communityDTO = new CommunityDTO(communityEntry);
                     communityDTOs.add(communityDTO);
                 }
-
             }
+            //判断查询的是否满足所有条件
+            int count=pageSize-communityDTOs.size();
+            if(count>0){
+                if(communityDTOs.size()!=0){
+                    lastId = communityDTOs.get(communityDTOs.size() - 1).getId();
+                }
+                boolean flag=false;
+                List<Integer> integers=new ArrayList<Integer>();
+                integers.add(0);
+                //每次查询300条,查询次数最多10次
+                dealWithData(flag,page,300,pageSize,lastId,communityDTOs,userId,integers);
+            }
+
         }
-
-//    if(null!=userId){
-//      Map<ObjectId,MemberEntry> map=memberDao.getHotOwenr(groupIds,userId);
-//      for(CommunityDTO communityDTO:communityDTOs){
-//        MemberEntry memberEntry=map.get(new ObjectId(communityDTO.getGroupId()));
-//        if(null!=memberEntry){
-//          communityDTO.setHot(1);
-//        }else{
-//          communityDTO.setHot(0);
-//        }
-//      }
-//    }
-
         return communityDTOs;
     }
+
+
+    private boolean dealWithData(boolean flag,int page,int count,int pageSize,String lastId,List<CommunityDTO> communityDTOs,ObjectId userId,List<Integer> integers){
+        if(StringUtils.isNotBlank(lastId)){
+            if(page==1){
+                page=2;
+            }
+        }
+        int integer=integers.get(0);
+        if(integer>10){
+            return true;
+        }else {
+            integers.set(0, integer + 1);
+        }
+        while(true) {
+            List<CommunityEntry> communityEntries1 = communityDao.getOpenCommunitys(page, count, lastId);
+            if (communityEntries1.size() != 0) {
+                for (CommunityEntry communityEntry : communityEntries1) {
+                    if(pageSize==communityDTOs.size()){
+                        break;
+                    }else if(!memberService.isGroupMember(new ObjectId(communityEntry.getGroupId()), userId)){
+                        CommunityDTO communityDTO = new CommunityDTO(communityEntry);
+                        communityDTOs.add(communityDTO);
+                    }
+                }
+                int temp=pageSize-communityDTOs.size();
+                if(temp>0){
+                    if(communityDTOs.size()!=0){
+                        lastId=communityDTOs.get(communityDTOs.size()-1).getId();
+                    }
+                    flag=dealWithData(flag,page,count,pageSize,lastId,communityDTOs,userId,integers);
+                }else{
+                    flag=true;
+                }
+            }else{
+                flag=true;
+            }
+            if(flag){
+                break;
+            }
+        }
+        return flag;
+    }
+
 
     /**
      * 上传作业

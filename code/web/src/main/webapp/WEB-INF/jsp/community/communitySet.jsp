@@ -43,6 +43,7 @@
 
                 </ul>
             </div>
+            <p class="member-more" onclick="window.open('/community/searchHotCommunity.do')">更多</p>
         </div>
     </div>
 </div>

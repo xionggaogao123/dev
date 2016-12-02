@@ -176,8 +176,7 @@ public class UserService {
     * */
     public UserDetailInfoDTO getUserInfoById(String id) {
         UserEntry userEntry = userDao.getUserEntry(new ObjectId(id), Constant.FIELDS);
-        if (userEntry == null) return null;
-        return new UserDetailInfoDTO(userEntry);
+        return userEntry == null ? null : new UserDetailInfoDTO(userEntry);
     }
 
     /**

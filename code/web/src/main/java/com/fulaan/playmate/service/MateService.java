@@ -1,20 +1,29 @@
 package com.fulaan.playmate.service;
 
+import com.db.activity.FriendDao;
 import com.db.playmate.FMateDao;
 import com.db.user.UserDao;
 import com.fulaan.playmate.dto.MateDTO;
 import com.fulaan.pojo.PageModel;
+import com.fulaan.pojo.User;
+import com.fulaan.util.DateUtils;
+import com.fulaan.util.DistanceUtils;
 import com.mongodb.BasicDBList;
 import com.mongodb.BasicDBObject;
+import com.pojo.activity.FriendEntry;
 import com.pojo.playmate.FMateEntry;
 import com.pojo.user.AvatarType;
 import com.pojo.user.UserEntry;
+import com.pojo.user.UserTag;
 import com.pojo.utils.MongoUtils;
 import com.sys.utils.AvatarUtils;
+import org.apache.commons.lang3.StringUtils;
 import org.bson.types.ObjectId;
 import org.springframework.stereotype.Service;
 
+import java.text.ParseException;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 /**
@@ -25,8 +34,9 @@ public class MateService {
 
     private FMateDao fMateDao = new FMateDao();
     private UserDao userDao = new UserDao();
+    private FriendDao friendDao = new FriendDao();
 
-    public PageModel<MateDTO> findMates(double lon, double lat, List<String> tags, List<String> hobbys, int aged, int ons, int page, int pageSize, int maxDistance) {
+    public PageModel<MateDTO> findMates(ObjectId userId, double lon, double lat, List<String> tags, List<String> hobbys, int aged, int ons, int page, int pageSize, int maxDistance) {
         List<MateDTO> mateDTOS = new ArrayList<MateDTO>();
         PageModel<MateDTO> pageModel = new PageModel<MateDTO>();
 
@@ -45,11 +55,17 @@ public class MateService {
             page = 1;
         }
         List<FMateEntry> fMateEntries = fMateDao.findByPage(query, page, pageSize);
+        FriendEntry myFriendEnty = null;
+        if (userId != null) {
+            myFriendEnty = friendDao.get(userId);
+        }
         for (FMateEntry mateEntry : fMateEntries) {
             BasicDBList dbList = mateEntry.getLocation();
+
+            if(mateEntry.getUserId().equals(userId)) continue;
             String distance = "未知";
             if (lon != 0 && lat != 0) {
-                Double distanceDouble = distance(lon, lat, (Double) dbList.get(0), (Double) dbList.get(1));
+                Double distanceDouble = DistanceUtils.distance(lon, lat, (Double) dbList.get(0), (Double) dbList.get(1));
                 distance = String.valueOf(distanceDouble.longValue());
             }
             MateDTO mateDTO = new MateDTO();
@@ -59,9 +75,39 @@ public class MateService {
             mateDTO.setNickName(userEntry.getNickName());
             mateDTO.setUserName(userEntry.getUserName());
             mateDTO.setAvatar(AvatarUtils.getAvatar(userEntry.getAvatar(), AvatarType.MIN_AVATAR.getType()));
-            mateDTO.setTags(MongoUtils.convertToStrList(mateEntry.getTags()));
-            mateDTO.setHobbys(MongoUtils.convertToStrList(mateEntry.getHobbys()));
+            List<UserTag> tagList = new ArrayList<UserTag>();
+            List<UserEntry.UserTagEntry> userTagEntries = userEntry.getUserTag();
+            for (UserEntry.UserTagEntry tagEntry : userTagEntries) {
+                UserTag userTag = new UserTag(tagEntry.getCode(), tagEntry.getTag());
+                tagList.add(userTag);
+            }
+            mateDTO.setTags(tagList);
             mateDTOS.add(mateDTO);
+
+            List<User> users = new ArrayList<User>();
+            //寻找共同好友
+            FriendEntry userFriendEntry = friendDao.get(mateEntry.getUserId());
+            if (myFriendEnty != null && userFriendEntry != null) {
+                List<ObjectId> myFriendList = myFriendEnty.getFriendIds();
+                List<ObjectId> userFriendList = userFriendEntry.getFriendIds();
+                myFriendList.retainAll(userFriendList);
+
+                for (ObjectId uid : myFriendList) {
+                    UserEntry entry = userDao.findByObjectId(uid);
+                    if(entry != null){
+                        User user = new User();
+                        if(entry.getAvatar() != null) {
+                            user.setAvator(AvatarUtils.getAvatar(entry.getAvatar(), AvatarType.MIN_AVATAR.getType()));
+                        }
+                        user.setSex(entry.getSex());
+                        user.setId(entry.getID().toString());
+                        user.setNickName(StringUtils.isBlank(entry.getNickName()) ? entry.getUserName() : entry.getNickName());
+                        user.setUserName(entry.getUserName());
+                        users.add(user);
+                    }
+                }
+            }
+            mateDTO.setCommonFriends(users);
         }
         pageModel.setPage(page);
         pageModel.setPageSize(pageSize);
@@ -110,30 +156,33 @@ public class MateService {
         return fMateDao.isExist(userId);
     }
 
+    public void updateAged(ObjectId userId,long age){
+        try {
+            age = DateUtils.getAgeFromTimeStamp(age);
+        } catch (ParseException e) {
+            e.printStackTrace();
+            return;
+        }
+        int aged = -1;
+        if(age > 3 && age < 5){
+            aged = 1;
+        } else if(age > 5 && age < 8){
+            aged = 2;
+        } else if(age > 8 && age < 11) {
+            aged = 3;
+        } else if(age > 11 && age < 15) {
+            aged = 4;
+        } else if(age > 15 && age < 18) {
+            aged = 5;
+        } else if(age > 18){
+            aged = 6;
+        }
+        fMateDao.updateAged(userId,aged);
+    }
+
     public void updateHobbys(ObjectId userId, List<String> hobbys) {
         fMateDao.updateUserHobbys(userId, hobbys);
     }
 
-    /**
-     * 计算地图上两点之间的距离(单位千米)
-     *
-     * @return
-     */
-    public Double distance(double longitude, double latitude, double long2,
-                           double lat2) {
-        double a, b, R;
-        R = 6371; // 地球半径
-        latitude = latitude * Math.PI / 180.0;
-        lat2 = lat2 * Math.PI / 180.0;
-        a = latitude - lat2;
-        b = (longitude - long2) * Math.PI / 180.0;
-        double d;
-        double sa2, sb2;
-        sa2 = Math.sin(a / 2.0);
-        sb2 = Math.sin(b / 2.0);
-        d = 2 * R * Math.asin(
-                Math.sqrt(sa2 * sa2 + Math.cos(latitude)
-                        * Math.cos(lat2) * sb2 * sb2));
-        return d * 1000;
-    }
+
 }

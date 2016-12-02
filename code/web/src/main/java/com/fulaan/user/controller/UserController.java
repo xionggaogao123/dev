@@ -385,6 +385,7 @@ public class UserController extends BaseController {
         if (!isMateExist) {
             mateService.saveMateEntry(e.getID());
         }
+        mateService.updateAged(e.getID(),e.getBirthDate());
         return respObj;
     }
 

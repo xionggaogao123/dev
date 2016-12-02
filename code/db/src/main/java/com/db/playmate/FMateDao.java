@@ -24,6 +24,7 @@ public class FMateDao extends BaseDao {
         return mateEntry.getID();
     }
 
+
     /**
      * 分页
      *
@@ -34,7 +35,7 @@ public class FMateDao extends BaseDao {
     public List<FMateEntry> findByPage(BasicDBObject query, int page, int pageSize) {
         List<FMateEntry> fMateEntries = new ArrayList<FMateEntry>();
         BasicDBObject orderBy = new BasicDBObject();
-        List<DBObject> dbos = find(MongoFacroty.getAppDB(), Constant.COLLECTION_FORUM_MATE_SEEKMATE, query, Constant.FIELDS,orderBy, (page - 1) * pageSize, pageSize);
+        List<DBObject> dbos = find(MongoFacroty.getAppDB(), Constant.COLLECTION_FORUM_MATE_SEEKMATE, query, Constant.FIELDS, orderBy, (page - 1) * pageSize, pageSize);
         for (DBObject dbo : dbos) {
             fMateEntries.add(new FMateEntry(dbo));
         }
@@ -43,13 +44,13 @@ public class FMateDao extends BaseDao {
 
     public BasicDBObject buildQuery(double lon, double lat, List<Integer> tags, List<String> hobbys, int aged, int ons, int maxDistance) {
         BasicDBObject query = new BasicDBObject();
-        List<Double> locs = new ArrayList<Double>();
-        locs.add(lon);
-        locs.add(lat);
         if (lon != 0 && lat != 0) {
+            List<Double> locs = new ArrayList<Double>();
+            locs.add(lon);
+            locs.add(lat);
             BasicDBObject geometry = new BasicDBObject("type", "Point")
                     .append("coordinates", locs);
-            query.append("loc", new BasicDBObject("$near", new BasicDBObject("$geometry",geometry).append("$maxDistance", maxDistance)));
+            query.append("loc", new BasicDBObject("$near", new BasicDBObject("$geometry", geometry).append("$maxDistance", maxDistance)));
         }
         if (null != tags && tags.size() > 0) {
             query.append("tag", new BasicDBObject("$in", tags));
@@ -75,9 +76,15 @@ public class FMateDao extends BaseDao {
         return count(MongoFacroty.getAppDB(), Constant.COLLECTION_FORUM_MATE_SEEKMATE, query);
     }
 
-    public boolean isExist(ObjectId userId){
-        BasicDBObject query = new BasicDBObject("uid",userId);
-        return count(MongoFacroty.getAppDB(),Constant.COLLECTION_FORUM_MATE_SEEKMATE,query) >=1;
+    public boolean isExist(ObjectId userId) {
+        BasicDBObject query = new BasicDBObject("uid", userId);
+        return count(MongoFacroty.getAppDB(), Constant.COLLECTION_FORUM_MATE_SEEKMATE, query) >= 1;
+    }
+
+    public void updateAged(ObjectId userId, int aged) {
+        BasicDBObject query = new BasicDBObject("uid", userId);
+        BasicDBObject update = new BasicDBObject(Constant.MONGO_SET, new BasicDBObject("aged", aged));
+        update(MongoFacroty.getAppDB(), Constant.COLLECTION_FORUM_MATE_SEEKMATE, query, update);
     }
 
     /**

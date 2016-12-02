@@ -211,6 +211,7 @@ pre {
 .near-infor .p2 {
     line-height: 20px;
     height: 20px;
+    overflow: hidden;
 }
 
 .near-infor .p2 i {
@@ -489,7 +490,7 @@ pre {
     background: #fff;
     border: 1px solid #DFDFDF;
     margin-top: -190px;
-    z-index: 2;
+    z-index: 10000;
 }
 
 .wind-act-det .p1 {
@@ -1072,4 +1073,21 @@ pre {
     opacity: 0.4;
     z-index: 1;
     position: fixed !important;
+}
+
+.ac-timer {
+    margin: 4px;
+    padding: 4px;
+    height: 24px;
+}
+.ac-timer select {
+    float: left;
+}
+
+.ac-timer p {
+    float: left;
+}
+
+.wind-act-det img{
+    width: 40px;
 }

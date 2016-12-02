@@ -170,4 +170,10 @@ public class IndexController extends BaseController {
         return "forum/previewWord";
     }
 
+    @RequestMapping("/friendCenter")
+    @SessionNeedless
+    public String friendCenter(){
+        return "/friend/friendCenter";
+    }
+
 }

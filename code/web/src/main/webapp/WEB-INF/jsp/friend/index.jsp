@@ -109,247 +109,7 @@
         <div id="nearNews">
             <p>小喇叭广播站</p>
             <div class="news-f">
-                <ul class="ul-nearnews">
-                    <li class="clearfix">
-                        <img src="http://placehold.it/58">
-                        <p class="p1">哥白尼</p>
-                        <p class="p2">标签:阅读、运动、饮食、旅游、音乐、电影、篮球</p>
-                        <p class="p3">
-                            <img src="/static/images/findnearby_zuobiao.png">
-                            距离你<i>200</i>米
-                        </p>
-                        <p class="p4"><i>#篮球#</i>10月25日 周五下午3:30,学校操场打篮球，有没有人来呀？打篮球，有没有人来呀？打篮球，有没有人来呀？打篮球，有没有人来呀？</p>
-                        <p class="p5">已有20人报名</p>
-                        <button>我要报名</button>
-                    </li>
-                    <li class="clearfix">
-                        <img src="http://placehold.it/58">
-                        <p class="p1">哥白尼</p>
-                        <p class="p2">标签:阅读、运动、饮食、旅游、音乐、电影、篮球</p>
-                        <p class="p3">
-                            <img src="/static/images/findnearby_zuobiao.png">
-                            距离你<i>200</i>米
-                        </p>
-                        <p class="p4"><i>#篮球#</i>10月25日 周五下午3:30,学校操场打篮球，有没有人来呀？</p>
-                        <p class="p5">已有20人报名</p>
-                        <button>我要报名</button>
-                    </li>
-                    <li class="clearfix">
-                        <img src="http://placehold.it/58">
-                        <p class="p1">哥白尼</p>
-                        <p class="p2">标签:阅读、运动、饮食、旅游、音乐、电影、篮球</p>
-                        <p class="p3">
-                            <img src="/static/images/findnearby_zuobiao.png">
-                            距离你<i>200</i>米
-                        </p>
-                        <p class="p4"><i>#篮球#</i>10月25日 周五下午3:30,学校操场打篮球，有没有人来呀？</p>
-                        <p class="p5">已有20人报名</p>
-                        <button>我要报名</button>
-                    </li>
-                    <li class="clearfix">
-                        <img src="http://placehold.it/58">
-                        <p class="p1">哥白尼</p>
-                        <p class="p2">标签:阅读、运动、饮食、旅游、音乐、电影、篮球</p>
-                        <p class="p3">
-                            <img src="/static/images/findnearby_zuobiao.png">
-                            距离你<i>200</i>米
-                        </p>
-                        <p class="p4"><i>#篮球#</i>10月25日 周五下午3:30,学校操场打篮球，有没有人来呀？</p>
-                        <p class="p5">已有20人报名</p>
-                        <button>我要报名</button>
-                    </li>
-                    <li class="clearfix">
-                        <img src="http://placehold.it/58">
-                        <p class="p1">哥白尼</p>
-                        <p class="p2">标签:阅读、运动、饮食、旅游、音乐、电影、篮球</p>
-                        <p class="p3">
-                            <img src="/static/images/findnearby_zuobiao.png">
-                            距离你<i>200</i>米
-                        </p>
-                        <p class="p4"><i>#篮球#</i>10月25日 周五下午3:30,学校操场打篮球，有没有人来呀？</p>
-                        <p class="p5">已有20人报名</p>
-                        <button>我要报名</button>
-                    </li>
-                    <li class="clearfix">
-                        <img src="http://placehold.it/58">
-                        <p class="p1">哥白尼</p>
-                        <p class="p2">标签:阅读、运动、饮食、旅游、音乐、电影、篮球</p>
-                        <p class="p3">
-                            <img src="/static/images/findnearby_zuobiao.png">
-                            距离你<i>200</i>米
-                        </p>
-                        <p class="p4"><i>#篮球#</i>10月25日 周五下午3:30,学校操场打篮球，有没有人来呀？</p>
-                        <p class="p5">已有20人报名</p>
-                        <button>我要报名</button>
-                    </li>
-                    <li class="clearfix">
-                        <img src="http://placehold.it/58">
-                        <p class="p1">哥白尼</p>
-                        <p class="p2">标签:阅读、运动、饮食、旅游、音乐、电影、篮球</p>
-                        <p class="p3">
-                            <img src="/static/images/findnearby_zuobiao.png">
-                            距离你<i>200</i>米
-                        </p>
-                        <p class="p4"><i>#篮球#</i>10月25日 周五下午3:30,学校操场打篮球，有没有人来呀？</p>
-                        <p class="p5">已有20人报名</p>
-                        <button>我要报名</button>
-                    </li>
-                    <li class="clearfix">
-                        <img src="http://placehold.it/58">
-                        <p class="p1">哥白尼</p>
-                        <p class="p2">标签:阅读、运动、饮食、旅游、音乐、电影、篮球</p>
-                        <p class="p3">
-                            <img src="/static/images/findnearby_zuobiao.png">
-                            距离你<i>200</i>米
-                        </p>
-                        <p class="p4"><i>#篮球#</i>10月25日 周五下午3:30,学校操场打篮球，有没有人来呀？</p>
-                        <p class="p5">已有20人报名</p>
-                        <button>我要报名</button>
-                    </li>
-                    <li class="clearfix">
-                        <img src="http://placehold.it/58">
-                        <p class="p1">哥白尼</p>
-                        <p class="p2">标签:阅读、运动、饮食、旅游、音乐、电影、篮球</p>
-                        <p class="p3">
-                            <img src="/static/images/findnearby_zuobiao.png">
-                            距离你<i>200</i>米
-                        </p>
-                        <p class="p4"><i>#篮球#</i>10月25日 周五下午3:30,学校操场打篮球，有没有人来呀？</p>
-                        <p class="p5">已有20人报名</p>
-                        <button>我要报名</button>
-                    </li>
-                    <li class="clearfix">
-                        <img src="http://placehold.it/58">
-                        <p class="p1">哥白尼</p>
-                        <p class="p2">标签:阅读、运动、饮食、旅游、音乐、电影、篮球</p>
-                        <p class="p3">
-                            <img src="/static/images/findnearby_zuobiao.png">
-                            距离你<i>200</i>米
-                        </p>
-                        <p class="p4"><i>#篮球#</i>10月25日 周五下午3:30,学校操场打篮球，有没有人来呀？</p>
-                        <p class="p5">已有20人报名</p>
-                        <button>我要报名</button>
-                    </li>
-                    <li class="clearfix">
-                        <img src="http://placehold.it/58">
-                        <p class="p1">哥白尼</p>
-                        <p class="p2">标签:阅读、运动、饮食、旅游、音乐、电影、篮球</p>
-                        <p class="p3">
-                            <img src="/static/images/findnearby_zuobiao.png">
-                            距离你<i>200</i>米
-                        </p>
-                        <p class="p4"><i>#篮球#</i>10月25日 周五下午3:30,学校操场打篮球，有没有人来呀？</p>
-                        <p class="p5">已有20人报名</p>
-                        <button>我要报名</button>
-                    </li>
-                    <li class="clearfix">
-                        <img src="http://placehold.it/58">
-                        <p class="p1">哥白尼</p>
-                        <p class="p2">标签:阅读、运动、饮食、旅游、音乐、电影、篮球</p>
-                        <p class="p3">
-                            <img src="/static/images/findnearby_zuobiao.png">
-                            距离你<i>200</i>米
-                        </p>
-                        <p class="p4"><i>#篮球#</i>10月25日 周五下午3:30,学校操场打篮球，有没有人来呀？</p>
-                        <p class="p5">已有20人报名</p>
-                        <button>我要报名</button>
-                    </li>
-                    <li class="clearfix">
-                        <img src="http://placehold.it/58">
-                        <p class="p1">哥白尼</p>
-                        <p class="p2">标签:阅读、运动、饮食、旅游、音乐、电影、篮球</p>
-                        <p class="p3">
-                            <img src="/static/images/findnearby_zuobiao.png">
-                            距离你<i>200</i>米
-                        </p>
-                        <p class="p4"><i>#篮球#</i>10月25日 周五下午3:30,学校操场打篮球，有没有人来呀？</p>
-                        <p class="p5">已有20人报名</p>
-                        <button>我要报名</button>
-                    </li>
-                    <li class="clearfix">
-                        <img src="http://placehold.it/58">
-                        <p class="p1">哥白尼</p>
-                        <p class="p2">标签:阅读、运动、饮食、旅游、音乐、电影、篮球</p>
-                        <p class="p3">
-                            <img src="/static/images/findnearby_zuobiao.png">
-                            距离你<i>200</i>米
-                        </p>
-                        <p class="p4"><i>#篮球#</i>10月25日 周五下午3:30,学校操场打篮球，有没有人来呀？</p>
-                        <p class="p5">已有20人报名</p>
-                        <button>我要报名</button>
-                    </li>
-                    <li class="clearfix">
-                        <img src="http://placehold.it/58">
-                        <p class="p1">哥白尼</p>
-                        <p class="p2">标签:阅读、运动、饮食、旅游、音乐、电影、篮球</p>
-                        <p class="p3">
-                            <img src="/static/images/findnearby_zuobiao.png">
-                            距离你<i>200</i>米
-                        </p>
-                        <p class="p4"><i>#篮球#</i>10月25日 周五下午3:30,学校操场打篮球，有没有人来呀？</p>
-                        <p class="p5">已有20人报名</p>
-                        <button>我要报名</button>
-                    </li>
-                    <li class="clearfix">
-                        <img src="http://placehold.it/58">
-                        <p class="p1">哥白尼</p>
-                        <p class="p2">标签:阅读、运动、饮食、旅游、音乐、电影、篮球</p>
-                        <p class="p3">
-                            <img src="/static/images/findnearby_zuobiao.png">
-                            距离你<i>200</i>米
-                        </p>
-                        <p class="p4"><i>#篮球#</i>10月25日 周五下午3:30,学校操场打篮球，有没有人来呀？</p>
-                        <p class="p5">已有20人报名</p>
-                        <button>我要报名</button>
-                    </li>
-                    <li class="clearfix">
-                        <img src="http://placehold.it/58">
-                        <p class="p1">哥白尼</p>
-                        <p class="p2">标签:阅读、运动、饮食、旅游、音乐、电影、篮球</p>
-                        <p class="p3">
-                            <img src="/static/images/findnearby_zuobiao.png">
-                            距离你<i>200</i>米
-                        </p>
-                        <p class="p4"><i>#篮球#</i>10月25日 周五下午3:30,学校操场打篮球，有没有人来呀？</p>
-                        <p class="p5">已有20人报名</p>
-                        <button>我要报名</button>
-                    </li>
-                    <li class="clearfix">
-                        <img src="http://placehold.it/58">
-                        <p class="p1">哥白尼</p>
-                        <p class="p2">标签:阅读、运动、饮食、旅游、音乐、电影、篮球</p>
-                        <p class="p3">
-                            <img src="/static/images/findnearby_zuobiao.png">
-                            距离你<i>200</i>米
-                        </p>
-                        <p class="p4"><i>#篮球#</i>10月25日 周五下午3:30,学校操场打篮球，有没有人来呀？</p>
-                        <p class="p5">已有20人报名</p>
-                        <button>我要报名</button>
-                    </li>
-                    <li class="clearfix">
-                        <img src="http://placehold.it/58">
-                        <p class="p1">哥白尼</p>
-                        <p class="p2">标签:阅读、运动、饮食、旅游、音乐、电影、篮球</p>
-                        <p class="p3">
-                            <img src="/static/images/findnearby_zuobiao.png">
-                            距离你<i>200</i>米
-                        </p>
-                        <p class="p4"><i>#篮球#</i>10月25日 周五下午3:30,学校操场打篮球，有没有人来呀？</p>
-                        <p class="p5">已有20人报名</p>
-                        <button>我要报名</button>
-                    </li>
-                    <li class="clearfix">
-                        <img src="http://placehold.it/58">
-                        <p class="p1">哥白尼</p>
-                        <p class="p2">标签:阅读、运动、饮食、旅游、音乐、电影、篮球</p>
-                        <p class="p3">
-                            <img src="/static/images/findnearby_zuobiao.png">
-                            距离你<i>200</i>米
-                        </p>
-                        <p class="p4"><i>#篮球#</i>10月25日 周五下午3:30,学校操场打篮球，有没有人来呀？</p>
-                        <p class="p5">已有20人报名</p>
-                        <button>我要报名</button>
-                    </li>
+                <ul class="ul-nearnews" id="nearnewsBox">
                 </ul>
             </div>
         </div>
@@ -405,20 +165,11 @@
 <!--活动详情-->
 <div class="wind-act-det">
     <p class="p1">活动详情<em>×</em></p>
-    <p class="p2 clearfix">主题：<span><em>#篮球#</em>周末一起打篮球！</span></p>
-    <p class="p3">时间：2016-06-06 15：00</p>
+    <p class="p2 clearfix">主题：<span><em>#篮球#</em><i>周末一起打篮球！</i></span></p>
+    <p class="p3">时间：<span>2016-06-06 15：00</span></p>
     <p class="p4 clearfix">详情：<span>广泛士大夫敢死队分别是的版本</span>
-    <p class="p5">活动人员：已报名200人</p>
+    <p class="p5">活动人员：已报名<span>200</span>人</p>
     <p class="p6 clearfix">
-        <img src="">
-        <img src="">
-        <img src="">
-        <img src="">
-        <img src="">
-        <img src="">
-        <img src="">
-        <img src="">
-        <img src="">
     </p>
     <p class="p7">
         <button class="b1">确认报名</button>
@@ -433,15 +184,78 @@
     <p class="p2">主题<span>（请选择一个项目作为活动标签）</span></p>
     <p class="p3">
         <select>
-            <option>是的范德萨</option>
+            <option value="-1" class="gre-cur">不限</option>
+            <option value="100" tag="旅行">旅行</option>
+            <option value="101" tag="英语">英语</option>
+            <option value="102" tag="阅读">阅读</option>
+            <option value="103" tag="足球">足球</option>
+            <option value="104" tag="篮球">篮球</option>
+            <option value="105" tag="羽毛球">羽毛球</option>
+            <option value="106" tag="网球">网球</option>
+            <option value="107" tag="乒乓球">乒乓球</option>
+            <option value="108" tag="轮滑跆">轮滑</option>
+            <option value="109" tag="拳道">跆拳道</option>
+            <option value="110" tag="跳绳">跳绳</option>
+            <option value="111" tag="歌唱">歌唱</option>
+            <option value="112" tag="表演">表演</option>
+            <option value="113" tag="舞蹈">舞蹈</option>
+            <option value="114" tag="美术">美术</option>
+            <option value="115" tag="钢琴">钢琴</option>
+            <option value="116" tag="古筝">古筝</option>
+            <option value="117" tag="二胡">二胡</option>
+            <option value="118" tag="小提琴">小提琴</option>
+            <option value="119" tag="笛子">笛子</option>
+            <option value="120" tag="架子鼓">架子鼓</option>
+            <option value="121" tag="围棋">围棋</option>
+            <option value="122" tag="跳棋">跳棋</option>
+            <option value="123" tag="象棋">象棋</option>
+            <option value="124" tag="桥牌">桥牌</option>
+            <option value="125" tag="演讲">演讲</option>
+            <option value="126" tag="航模">航模</option>
+            <option value="127" tag="航海">航海</option>
+            <option value="128" tag="机器人">机器人</option>
+            <option value="129" tag="演讲">演讲</option>
         </select>
         <input type="text">
     </p>
     <p class="p2">活动内容<span>(克简要说明一下活动时间、地点等)</span></p>
     <textarea></textarea>
-    <p class="p2">活动时间</p>
-    <input type="text" class="input1">
-    <p class="p4 clearfix">
+    <div class="ac-timer">
+        <p>日期：<input type="text" id="datepicker"></p>
+        <select class="time-hour">
+            <option value="24">24</option>
+            <option value="23">23</option>
+            <option value="22">22</option>
+            <option value="21">21</option>
+            <option value="20">20</option>
+            <option value="19">19</option>
+            <option value="18">18</option>
+            <option value="17">17</option>
+            <option value="16">16</option>
+            <option value="15">15</option>
+            <option value="14">14</option>
+            <option value="13">13</option>
+            <option value="12">12</option>
+            <option value="11">11</option>
+            <option value="10">10</option>
+            <option value="9">9</option>
+            <option value="8">8</option>
+            <option value="7">7</option>
+            <option value="6">6</option>
+            <option value="5">5</option>
+            <option value="4">4</option>
+            <option value="3">3</option>
+            <option value="2">2</option>
+            <option value="1">1</option>
+        </select>
+        <select class="time-mins">
+            <option>0</option>
+            <option>15</option>
+            <option>30</option>
+            <option>45</option>
+        </select>
+    </div>
+    <p class="p4 clearfix mate-publish">
         <button class="b1">发布活动</button>
         <button class="b2">取消发布</button>
     </p>
@@ -458,18 +272,43 @@
             </p>
             <p class="p2">
                 标签：{{~value.tags:tag:i}}
-                <i>{{=tag}}</i>、
+                <i>{{=tag.tag}}</i>、
                 {{~}}
             </p>
             <p class="p2">
-                您的认证好友<i>卢佳佳</i>对他进行了认证
+                您的玩伴
+                {{~value.commonFriends:friend:i}}
+                <i>{{=friend.nickName}}</i>
+                {{~}}
+                等{{=value.commonFriends.length}}人也是TA的玩伴
             </p>
             <p class="p2">
                 <img src="/static/images/findnearby_zuobiao.png">距离您<i>{{=value.distance}}</i>米
             </p>
         </div>
-        <button class="btn-lyl">聊一聊</button>
+        <button class="btn-lyl" onClick="window.open('/webim/index?userId={{=value.userId}}')">聊一聊</button>
     </div>
+    {{~}}
+</script>
+
+<script type="text/template" id="activityBox">
+    {{~it:value:index}}
+    <li class="clearfix">
+        <img src="{{=value.user.avatar}}">
+        <p class="p1">{{=value.user.nickName}}</p>
+        <p class="p2">标签:
+            {{~value.user.tags:tag:i}}
+            <i>{{=tag.tag}}</i>、
+            {{~}}
+        </p>
+        <p class="p3">
+            <img src="/static/images/findnearby_zuobiao.png">
+            距离你<i>{{=value.distance}}</i>米
+        </p>
+        <p class="p4"><i>#篮球#</i>{{=value.title}}</p>
+        <p class="p5">已有{{=value.signCount}}人报名</p>
+        <button value="{{=value.acid}}">我要报名</button>
+    </li>
     {{~}}
 </script>
 <!--发起活动-->
@@ -482,5 +321,18 @@
     });
 </script>
 
+<link rel="stylesheet" href="//apps.bdimg.com/libs/jqueryui/1.10.4/css/jquery-ui.min.css">
+<script src="//apps.bdimg.com/libs/jquery/1.10.2/jquery.min.js"></script>
+<script src="//apps.bdimg.com/libs/jqueryui/1.10.4/jquery-ui.min.js"></script>
+<script>
+    $(function () {
+        $("#datepicker").datepicker({
+            dateFormat: 'yy-mm-dd',
+            monthNames: ['一月', '二月', '三月', '四月', '五月', '六月', '七月', '八月', '九月', '十月', '十一月', '十二月'],
+            dayNames: ['星期日', '星期一', '星期二', '星期三', '星期四', '星期五', '星期六'],
+            dayNamesShort: ['周日', '周一', '周二', '周三', '周四', '周五', '周六'],
+        });
+    });
+</script>
 </body>
 </html>

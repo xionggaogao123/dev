@@ -57,7 +57,7 @@ public class PlayMateController extends BaseController {
         }
         List<String> tagList = StrUtils.splitToList(tags);
         List<String> hobbyList = StrUtils.splitToList(hobbys);
-        return RespObj.SUCCESS(mateService.findMates(lon, lat, tagList, hobbyList, aged, ons, page, pageSize, distance));
+        return RespObj.SUCCESS(mateService.findMates(getUserId(),lon, lat, tagList, hobbyList, aged, ons, page, pageSize, distance));
     }
 
     @RequestMapping("/updateMateData")

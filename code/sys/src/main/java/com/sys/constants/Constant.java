@@ -567,19 +567,11 @@ public class Constant {
 
     //==========================第二版新加的表=================================
     //位置
-    public static final String COLLECTION_FORUM_LOCATION = "flocation";
     //登录日志
     public static final String COLLECTION_FORUM_LOGIN_LOG = "floginlog";
 
-    public static final String COLLECTION_FORUM_USER_HOBBY = "fuserhobby";
-
-    public static final String COLLECTION_FORUM_USER_TAG = "fusertag";
-
-    public static final String COLLECTION_FORUM_ACTIVITY_THEME = "factivitytheme";
-
     public static final String COLLECTION_FORUM_ACTIVITY = "factivity";
-    //文章
-    public static final String COLLECTION_FORUM_ARTICLE = "farticle";
+    public static final String COLLECTION_FORM_SIGN_ACTIVITY_SHEET = "factivitySignSheet";
     //家校互动
     public static final String COLLECTION_FORUM_COMMUNITY = "fcommunity";
 

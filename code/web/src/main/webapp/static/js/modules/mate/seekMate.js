@@ -4,9 +4,13 @@ define(['jquery', 'pagination', 'common'], function (require, exports, module) {
     require('pagination');
     var seekMate = {};
     var scrollTimer;
+    var isLogin = false;
     var seekMateParm = {
         pageSize: 10
     };
+    var lon;
+    var lat;
+    var activitys = [];
     seekMate.init = function () {
 
     };
@@ -46,9 +50,23 @@ define(['jquery', 'pagination', 'common'], function (require, exports, module) {
 
     $(document).ready(function () {
 
+        $.ajax({
+            url: "/forum/loginInfo.do?date=" + new Date(),
+            type: "get",
+            dataType: "json",
+            async: false,
+            data: {},
+            success: function (resp) {
+                isLogin = resp.login;
+            }
+        });
+
         var geolocation = new BMap.Geolocation();
         geolocation.getCurrentPosition(function (r) {
             if (this.getStatus() == BMAP_STATUS_SUCCESS) {
+
+                lon = r.point.lng;
+                lat = r.point.lat;
                 var requestParm = {
                     lon: r.point.lng,
                     lat: r.point.lat
@@ -57,6 +75,7 @@ define(['jquery', 'pagination', 'common'], function (require, exports, module) {
                 seekMateParm.lon = r.point.lng;
                 seekMateParm.lat = r.point.lat;
                 getMates(1);
+                getActivitys();
                 $.ajax({
                     url: '/mate/updateMateData.do',
                     data: requestParm
@@ -68,29 +87,76 @@ define(['jquery', 'pagination', 'common'], function (require, exports, module) {
         }, {enableHighAccuracy: true});
 
         bindClick();
-        getUserTag();
 
+        if (isLogin) {
+            getUserTag();
+        }
     });
 
     function bindClick() {
 
+        $('.mate-publish .b1').click(function () {
+            publishActivity();
+        });
+
         $('.btn-wdbq').click(function () {
-            $('.bg').fadeIn();
-            $('.wind-biaoq').fadeIn();
+            if (!isLogin) {
+                $('.store-register').fadeToggle();
+                $('.bg').fadeToggle();
+            } else {
+                $('.bg').fadeIn();
+                $('.wind-biaoq').fadeIn();
+            }
+
         });
         $('.wind-act-det .p1 em,.wind-act-det .p7 .b2').click(function () {
             $('.wind-act-det').fadeOut();
             $('.bg').fadeOut();
         });
+
         $('.wind-act-fq .p1 em,.wind-act-fq .p4 .b2').click(function () {
             $('.wind-act-fq').fadeOut();
             $('.bg').fadeOut();
         });
         $('.btn-fbgb').click(function () {
-            $('.wind-act-fq').fadeIn();
-            $('.bg').fadeIn();
+
+            if (!isLogin) {
+                $('.store-register').fadeToggle();
+                $('.bg').fadeToggle();
+            } else {
+                $('.wind-act-fq').fadeIn();
+                $('.bg').fadeIn();
+            }
+
         });
+
+        $('body').on('click', '.wind-act-det .b1', function () {
+
+            signActivty();
+        });
+
         $('body').on('click', '.ul-nearnews li button', function () {
+
+            var value = $(this).attr('value');
+            var selectActivity;
+
+            for (var i = 0; i < activitys.length; i++) {
+                if (activitys[i].acid === value) {
+                    selectActivity = activitys[i];
+                }
+            }
+            if (selectActivity) {
+                $('.wind-act-det .p5 span').text(selectActivity.signCount);
+                $('.wind-act-det .p4 span').text(selectActivity.description);
+                $('.wind-act-det .p2 i').text(selectActivity.title);
+                $('.wind-act-det .p3 span').text(selectActivity.activityTime);
+                $('.wind-act-det').attr('acid', selectActivity.acid);
+                $('.wind-act-det .p6').empty();
+                for (var i = 0; i < selectActivity.signSheets.length; i++) {
+                    $('.wind-act-det .p6').append("<img src='" + selectActivity.signSheets[i].avatar + "'</img>");
+                }
+            }
+
             $('.wind-act-det').fadeIn();
             $('.bg').fadeIn();
         });
@@ -254,6 +320,62 @@ define(['jquery', 'pagination', 'common'], function (require, exports, module) {
                 }
             })
         })
+    }
+
+    function publishActivity() {
+        var tag = $('.wind-act-fq .p3 select').val();
+        var title = $('.wind-act-fq .p3 input').val();
+        var desc = $('.wind-act-fq textarea').val();
+        var date = $('#datepicker').val();
+        var hour = $('.wind-act-fq .time-hour').val();
+        var mins = $('.wind-act-fq .time-mins').val();
+
+        date = date + ' ' + hour + ':' + mins;
+        var requestParm = {
+            lon: lon,
+            lat: lat,
+            acode: tag,
+            title: title,
+            desc: desc,
+            endTime: date
+        };
+        common.getData('/activity/publish.do', requestParm, function (resp) {
+            if (resp.code == 200) {
+                $('.wind-act-fq').fadeOut();
+                $('.bg').fadeOut();
+            }
+        });
+    }
+
+    function getActivitys() {
+        var requestParm = {
+            lon: lon,
+            lat: lat
+        };
+        common.getData('/activity/nearActivitys.do', requestParm, function (resp) {
+            if (resp.code == "200") {
+                template('#activityBox', '#nearnewsBox', resp.message.result);
+                activitys = resp.message.result;
+            }
+        });
+    }
+
+    function signActivty() {
+
+        var requestParm = {
+            acid: $('.wind-act-det').attr('acid')
+        };
+        common.getData('/activity/sign.do', requestParm, function (resp) {
+            if (resp.code == "200") {
+                if (resp.message) {
+                    alert("报名成功");
+                    $('.wind-act-det').fadeOut();
+                    $('.bg').fadeOut();
+                } else {
+                    alert('您已经报名了');
+                }
+            }
+        });
     }
 
     //加载模板

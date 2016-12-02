@@ -254,11 +254,20 @@ public class MongoUtils {
         if (null != dbList) {
             for (Object o : dbList) {
                 if (null != o && o instanceof String) {
-                    retList.add((String)o);
+                    retList.add((String) o);
                 }
             }
         }
         return retList;
+    }
+
+    public static BasicDBObject buildGeometry(double lon, double lat, int maxDistance) {
+        List<Double> locs = new ArrayList<Double>();
+        locs.add(lon);
+        locs.add(lat);
+        BasicDBObject geometry = new BasicDBObject("type", "Point")
+                .append("coordinates", locs);
+        return new BasicDBObject("$near", new BasicDBObject("$geometry", geometry).append("$maxDistance", maxDistance));
     }
 
 

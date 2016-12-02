@@ -6,7 +6,6 @@
     <title>个人空间</title>
     <link rel="stylesheet" type="text/css" href="/static/css/forum/forum.css">
     <script type="text/javascript" src="/static/js/friend/jquery-1.11.1.js"></script>
-    <script type="text/javascript" src="/static/js/friend/near.js"></script>
     <script type="text/javascript" src="/static/css/friend/nearby.css"></script>
 </head>
 <body style="background: #f5f5f5;">
@@ -181,6 +180,5 @@
         <button class="btn2">取消</button>
     </p>
 </div>
-<div class="bg"></div>
 </body>
 </html>

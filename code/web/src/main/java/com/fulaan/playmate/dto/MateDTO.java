@@ -1,5 +1,8 @@
 package com.fulaan.playmate.dto;
 
+import com.fulaan.pojo.User;
+import com.pojo.user.UserTag;
+
 import java.util.List;
 
 /**
@@ -12,8 +15,8 @@ public class MateDTO {
     private String avatar;
     private String distance;
 
-    private List<String> tags;
-    private List<String> hobbys;
+    private List<UserTag> tags;
+    private List<User> commonFriends;
 
     public String getUserId() {
         return userId;
@@ -47,20 +50,12 @@ public class MateDTO {
         this.avatar = avatar;
     }
 
-    public List<String> getTags() {
+    public List<UserTag> getTags() {
         return tags;
     }
 
-    public void setTags(List<String> tags) {
+    public void setTags(List<UserTag> tags) {
         this.tags = tags;
-    }
-
-    public List<String> getHobbys() {
-        return hobbys;
-    }
-
-    public void setHobbys(List<String> hobbys) {
-        this.hobbys = hobbys;
     }
 
     public String getDistance() {
@@ -69,5 +64,13 @@ public class MateDTO {
 
     public void setDistance(String distance) {
         this.distance = distance;
+    }
+
+    public List<User> getCommonFriends() {
+        return commonFriends;
+    }
+
+    public void setCommonFriends(List<User> commonFriends) {
+        this.commonFriends = commonFriends;
     }
 }

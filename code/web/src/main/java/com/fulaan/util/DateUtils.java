@@ -4,6 +4,7 @@ import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
+import java.util.Locale;
 
 /**
  * Created by moslpc on 2016/10/20.
@@ -129,12 +130,19 @@ public class DateUtils {
     /**
      * 将一个时间戳转换成提示性时间字符串，(多少分钟)
      *
-     * @param timeStamp
      * @return
      */
     public static String timeStampToFormat(long timeStamp) {
         long curTime = System.currentTimeMillis() / (long) 1000;
         long time = curTime - timeStamp;
         return time / 60 + "";
+    }
+
+    public static int getAgeFromTimeStamp(long birDate) throws ParseException {
+        Date date = new Date(birDate);
+        long timeStamp = date.getTime() / 1000;
+        long now = getUnixStamp();
+        long minus = now - timeStamp;
+        return (int) minus / (12 * 30 * 24 * 3600);
     }
 }

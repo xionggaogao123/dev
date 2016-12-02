@@ -51,10 +51,6 @@ public class FMateEntry  extends BaseDBObject{
         return (BasicDBList)getSimpleObjectValue("hob");
     }
 
-    public BasicDBList getTags() {
-        return (BasicDBList)getSimpleObjectValue("tag");
-    }
-
     public long getTime() {
         return getSimpleLongValue("ti");
     }

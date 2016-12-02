@@ -123,7 +123,7 @@ define(['jquery', 'pagination', 'common'], function (require, exports, module) {
     function getMyCommunity(){
         common.getData("/community/myCommunitys.do",{},function(result){
             if(result.code="200"){
-                template('#myCommunityTmpl','#myCommunity',result.message);
+                template('#myCommunityTmpl','#myCommunity',result.message.list);
             }else{
                 alert(result.message);
             }

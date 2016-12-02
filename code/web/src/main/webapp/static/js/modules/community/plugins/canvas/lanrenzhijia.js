@@ -395,15 +395,15 @@ function undoToggleIcons()
     var iconRedo=$('#redo');
     if(undoCurrent > 0 && undoArray.length > 1)
     {
-        if(!iconUndo.hasClass('uactive')) { iconUndo.addClass('uactive');}
+        if(!iconUndo.hasClass('active-undo-n')) { iconUndo.addClass('active-undo-n').removeClass('active-undo');}
     }
-    else {iconUndo.removeClass('uactive'); }
+    else {iconUndo.removeClass('active-undo-n').addClass('active-undo'); }
 
     if(undoCurrent <undoArray.length-1)
     {
-        if(!iconRedo.hasClass('uactive')) {iconRedo.addClass('uactive'); }
+        if(!iconRedo.hasClass('active-redo-n')) {iconRedo.addClass('active-redo-n').removeClass('active-redo'); }
     }
-    else {iconRedo.removeClass('uactive'); }
+    else {iconRedo.removeClass('active-redo-n').addClass('active-redo'); }
 }
 
 

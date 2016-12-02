@@ -257,17 +257,17 @@
     <div id="tuyaCanva" style="z-index: 9999;display: none;width:1000px;position:fixed;top: 10px;left: 50%;margin-left: -500px;padding: 10px;border-radius: 6px 6px 0 6px;background: #f7f7f7;">
         <canvas id="canvas" width="600" height="500" style="border:1px solid #999;position:fixed;left:50%;margin-left:-300px;top:100px;"></canvas>
         <canvas id="canvas2" width="600" height="500" style="border:1px solid #999;position:fixed;left:50%;margin-left:-300px;top:100px;"></canvas>
-        <span class="btn-canvas" onClick="$('#forbiden_back').fadeIn(300)" style="background-image: url(/static/js/modules/community/plugins/canvas/image/open_url.png)"></span>
-        <span class="btn-canvas" onClick="change_attr(0,-1,-1)" style="background-image: url(/static/js/modules/community/plugins/canvas/image/pencil.png)"></span>
+        <%--<span class="btn-canvas" onClick="$('#forbiden_back').fadeIn(300)" style="background-image: url(/static/js/modules/community/plugins/canvas/image/open_url.png)"></span>--%>
+        <span class="btn-canvas" onClick="change_attr(0,-1,-1)" style="background-image: url(/static/js/modules/community/plugins/canvas/image/pencil.png);cursor: pointer"></span>
         <%--<span class="btn-canvas" onClick="change_attr(1,-1,-1)" style="background-image: url(/static/js/modules/community/plugins/canvas/image/straight.png)"></span>--%>
-        <span class="btn-canvas" onClick="change_attr(2,-1,-1)" style="background-image: url(/static/js/modules/community/plugins/canvas/image/star_straight.png)"></span>
+        <span class="btn-canvas" onClick="change_attr(2,-1,-1)" style="background-image: url(/static/js/modules/community/plugins/canvas/image/star_straight.png);cursor: pointer"></span>
         <%--<span class="btn-canvas" onClick="change_attr(3,-1,-1)" style="background-image: url(/static/js/modules/community/plugins/canvas/image/circle.png)"></span>--%>
         <%--<span class="btn-canvas" onClick="change_attr(4,-1,-1)" style="background-image: url(/static/js/modules/community/plugins/canvas/image/rect.png)"></span>--%>
-        <span class="btn-canvas" onClick="gaussian()" style="background-image: url(/static/js/modules/community/plugins/canvas/image/blur.png)"></span>
-        <span class="btn-canvas" id="undo" onclick="undoPrev()">回退</span>
-        <span class="btn-canvas" id="redo" onclick="undoNext()">重做</span>
-        <span class="btn-canvas" onclick="saveUrl()">保存</span>
-        <span class="btn-canvas" onclick="closeCanvas()">关闭</span>
+        <span class="btn-canvas" onClick="gaussian()" style="background-image: url(/static/js/modules/community/plugins/canvas/image/blur.png);cursor: pointer"></span>
+        <span class="btn-canvas active-undo" id="undo" onclick="undoPrev()"></span>
+        <span class="btn-canvas active-redo" id="redo" onclick="undoNext()"></span>
+        <span class="btn-canvas" onclick="saveUrl()" style="background-image: url(/static/js/modules/community/plugins/canvas/image/saveBtn.png);cursor: pointer"></span>
+        <span class="btn-canvas" onclick="closeCanvas()" style="background-image: url(/static/js/modules/community/plugins/canvas/image/closeBtn.png);cursor: pointer"></span>
         <%--<span class="btn-canvas" onClick="change_attr(5,-1,-1)" style="background-image: url(/static/js/modules/community/plugins/canvas/image/eraser.png)"></span>--%>
         <%--<span class="btn-canvas" onClick="fill_canvas('#ffffff',0,0,canvas_size.x,canvas_size.y)" style="background-image: url(/static/js/modules/community/plugins/canvas/image/clear.png)"></span>--%>
         <span id="size_span" style="border: 1px solid #999;width:15px;height: 15px;margin-top:7px;margin-left: 50px;display: block;float: left;margin-left: 20px">1</span>

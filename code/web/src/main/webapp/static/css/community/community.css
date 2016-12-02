@@ -3712,6 +3712,22 @@ text-align: center
     transform:scale(0.9);
 }
 
-.uactive{
-    color:red;
+.active-undo-n{
+    cursor: pointer;
+    background-image: url(/static/js/modules/community/plugins/canvas/image/undo_n.png);
+}
+
+.active-undo{
+    cursor: pointer;
+    background-image: url(/static/js/modules/community/plugins/canvas/image/undo.png);
+}
+
+.active-redo-n{
+    cursor: pointer;
+    background-image: url(/static/js/modules/community/plugins/canvas/image/redo_n.png);
+}
+
+.active-redo{
+    cursor: pointer;
+    background-image: url(/static/js/modules/community/plugins/canvas/image/redo.png);
 }

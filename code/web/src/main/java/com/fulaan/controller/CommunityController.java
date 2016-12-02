@@ -327,7 +327,8 @@ public class CommunityController extends BaseController {
     @RequestMapping("/myCommunitys")
     @ResponseBody
     @SessionNeedless
-    public RespObj getMyCommunitys() {
+    public RespObj getMyCommunitys(@RequestParam(defaultValue = "1",required = false)int page,
+                                   @RequestParam(defaultValue = "100",required = false)int pageSize) {
         try {
             ObjectId userId = getUserId();
             List<CommunityDTO> communityDTOList = new ArrayList<CommunityDTO>();
@@ -347,8 +348,14 @@ public class CommunityController extends BaseController {
                         communityService.pushToUser(new ObjectId(fulanDto.getId()), getUserId(), 2);
                     }
                 }
-                communityDTOList = communityService.getCommunitys(userId, 1, 100);
-                return RespObj.SUCCESS(communityDTOList);
+                communityDTOList = communityService.getCommunitys(userId, page, pageSize);
+                int count=communityService.countMycommunitys(userId);
+                Map<String,Object> map=new HashMap<String,Object>();
+                map.put("list",communityDTOList);
+                map.put("count",count);
+                map.put("pageSize",pageSize);
+                map.put("page",page);
+                return RespObj.SUCCESS(map);
             }
         } catch (Exception e) {
             return RespObj.FAILD(e.getMessage());
@@ -1620,6 +1627,13 @@ public class CommunityController extends BaseController {
     @LoginInfo
     public String communitySet() {
         return "/community/communitySet";
+    }
+
+
+    @RequestMapping("/searchHotCommunity")
+    @LoginInfo
+    public String searchHotCommunity() {
+        return "/community/hotCommunity";
     }
 
 

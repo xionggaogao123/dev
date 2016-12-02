@@ -5,10 +5,12 @@
 define(['jquery', 'pagination', 'common'], function (require, exports, module) {
 
     var common = require('common');
+    require('pagination');
     var communitySet = {};
+    var page=1;
     communitySet.init = function () {
         getHotCommunity();
-        getMyCommunity();
+        getMyCommunity(page);
     };
 
     $(document).ready(function () {
@@ -82,7 +84,7 @@ define(['jquery', 'pagination', 'common'], function (require, exports, module) {
     function joinCommunity(communityId){
         common.getData('/community/join.do',{communityId:communityId},function(resp){
             if(resp.code=="200"){
-                getMyCommunity();
+                getMyCommunity(page);
                 getHotCommunity();
             }else{
                 alert(resp.message);
@@ -104,14 +106,55 @@ define(['jquery', 'pagination', 'common'], function (require, exports, module) {
     }
 
 
-    function getMyCommunity() {
-        common.getData("/community/myCommunitys.do", {}, function (result) {
-            if (result.code = "200") {
-                template('#myCommunityTmpl', '#myCommunity', result.message);
-            } else {
-                alert(result.message);
+    function getMyCommunity(page) {
+        var isInit = true;
+        var requestData = {};
+        requestData.page=page;
+        $.ajax({
+            type: "GET",
+            data: requestData,
+            url: '/community/myCommunitys.do',
+            async: true,
+            dataType: "json",
+            contentType: "application/x-www-form-urlencoded; charset=UTF-8",
+            success: function (resp) {
+                $('#myPage').html("");
+                if (resp.code == "200") {
+                    var resultData = resp.message.list;
+                    $('#userCount').text(resp.message.count);
+                    if (resultData.length > 0) {
+                        $('#myPage').jqPaginator({
+                            totalPages: Math.ceil(resp.message.count / resp.message.pageSize) == 0 ? 1 : Math.ceil(resp.message.count / resp.message.pageSize),//总页数
+                            visiblePages: 3,//分多少页
+                            currentPage: parseInt(page),//当前页数
+                            first: '<li class="first"><a href="javascript:void(0);">首页<\/a><\/li>',
+                            prev: '<li class="prev"><a href="javascript:void(0);">&lt;<\/a><\/li>',
+                            next: '<li class="next"><a href="javascript:void(0);">&gt;<\/a><\/li>',
+                            last: '<li class="last"><a href="javascript:void(0);">末页<\/a><\/li>',
+                            page: '<li class="page"><a href="javascript:void(0);">{{page}}<\/a><\/li>',
+                            onPageChange: function (n) { //回调函数
+                                if (isInit) {
+                                    isInit = false;
+                                } else {
+                                    getMyCommunity(n);
+                                    $('body,html').animate({scrollTop: 0}, 20);
+                                }
+                            }
+                        });
+                    }
+                    template('#myCommunityTmpl','#myCommunity',resultData);
+                } else {
+                    alert(resp.message);
+                }
             }
-        })
+        });
+        // common.getData("/community/myCommunitys.do", {}, function (result) {
+        //     if (result.code = "200") {
+        //         template('#myCommunityTmpl', '#myCommunity', result.message);
+        //     } else {
+        //         alert(result.message);
+        //     }
+        // })
     }
 
 
@@ -124,7 +167,7 @@ define(['jquery', 'pagination', 'common'], function (require, exports, module) {
 
             if (result.code = "200") {
                 alert("退出成功");
-                getMyCommunity();
+                getMyCommunity(page);
                 getHotCommunity();
             } else {
                 alert(result.message);
@@ -132,10 +175,6 @@ define(['jquery', 'pagination', 'common'], function (require, exports, module) {
         });
     }
 
-
-    function uploadImage() {
-
-    }
 
     function validateCommunityInfo(){
 
@@ -175,7 +214,7 @@ define(['jquery', 'pagination', 'common'], function (require, exports, module) {
                 param.open=$('#selectOpen').val();
                 param.communityId=$('.wind-com-edit').data('id');
                 common.getData('/community/update.do',param,function(resp){
-                        getMyCommunity();
+                        getMyCommunity(page);
                         $('.wind-com-edit').fadeOut();
                         $('.bg').fadeOut();
                         alert("保存成功！");

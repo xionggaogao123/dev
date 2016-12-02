@@ -177,6 +177,10 @@ public class CommunityService {
         return list;
     }
 
+    public int countMycommunitys(ObjectId userId){
+        return mineCommunityDao.count(userId);
+    }
+
     /**
      * 更新社团
      *

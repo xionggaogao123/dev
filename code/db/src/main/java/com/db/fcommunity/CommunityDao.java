@@ -2,11 +2,12 @@ package com.db.fcommunity;
 
 import com.db.base.BaseDao;
 import com.db.factory.MongoFacroty;
-import com.mongodb.BasicDBObject;
-import com.mongodb.DBObject;
+import com.mongodb.*;
 import com.pojo.fcommunity.CommunityEntry;
+import com.pojo.user.UserEntry;
 import com.pojo.utils.MongoUtils;
 import com.sys.constants.Constant;
+import org.apache.commons.lang.StringUtils;
 import org.bson.types.ObjectId;
 
 import java.util.ArrayList;
@@ -114,14 +115,31 @@ public class CommunityDao extends BaseDao {
      *
      * @return
      */
-    public List<CommunityEntry> getOpenCommunitys() {
-        List<CommunityEntry> list = new ArrayList<CommunityEntry>();
+    public List<CommunityEntry> getOpenCommunitys(int page,int pageSize,String lastId) {
+        List<CommunityEntry> retList = new ArrayList<CommunityEntry>();
         BasicDBObject query = new BasicDBObject().append("op", Constant.ONE);
-        List<DBObject> dbObjects = find(MongoFacroty.getAppDB(), Constant.COLLECTION_FORUM_COMMUNITY, query);
-        for (DBObject dbo : dbObjects) {
-            list.add(new CommunityEntry(dbo));
+        DB myMongo = MongoFacroty.getAppDB();
+        DBCollection communityCollection = myMongo.getCollection(Constant.COLLECTION_FORUM_COMMUNITY);
+        DBCursor limit = null;
+        if (page == 1) {
+            limit = communityCollection.find(query)
+                    .sort(Constant.MONGO_SORTBY_ASC).limit(pageSize);
+        } else {
+            if (StringUtils.isNotBlank(lastId)) {
+                limit = communityCollection
+                        .find(new BasicDBObject(Constant.ID, new BasicDBObject(
+                                Constant.MONGO_GT, new ObjectId(lastId))))
+                        .sort(Constant.MONGO_SORTBY_ASC).limit(pageSize);
+            } else {
+                limit = communityCollection.find(query).skip((page - 1) * pageSize)
+                        .sort(Constant.MONGO_SORTBY_ASC).limit(pageSize);
+            }
         }
-        return list;
+
+        while (limit.hasNext()) {
+            retList.add(new CommunityEntry((BasicDBObject) limit.next()));
+        }
+        return retList;
     }
 
     /**

@@ -1171,7 +1171,7 @@ pre{white-space: pre-wrap;word-wrap: break-word;}
 .com-left-s{
     margin-bottom: 15px;
     background: #fff;
-    overflow: hidden;
+    /*overflow: hidden;*/
     padding-bottom: 22px;
     min-height: 137px;
 }
@@ -1392,7 +1392,7 @@ pre{white-space: pre-wrap;word-wrap: break-word;}
     height:259px;
 }
 .com-right-s{
-    margin-bottom: 15px;
+    margin-bottom: 0px;
     background: #fff;
 }
 .com-rlt{
@@ -1691,12 +1691,30 @@ pre{white-space: pre-wrap;word-wrap: break-word;}
     background: url('/static/images/community/img_gly.png') no-repeat;
 }
 .com-right-s .member-more{
+     height: 32px;
+     border-top: 1px solid #E0E0E0;
+     line-height: 32px;
+     text-align: center;
+     cursor: pointer;
+}
+.com-right .member-more{
     height: 32px;
     border-top: 1px solid #E0E0E0;
     line-height: 32px;
     text-align: center;
     cursor: pointer;
+    background: #fff;
 }
+
+.com-left .member-more{
+    height: 32px;
+    border-top: 1px solid #E0E0E0;
+    line-height: 32px;
+    text-align: center;
+    cursor: pointer;
+    background: #fff;
+}
+
 .publish-cont{
     background: #fff;
     padding: 8px 24px 15px;
@@ -3133,6 +3151,7 @@ text-align: center
 
 .my-comm-container{
     min-height:450px;
+    overflow: visible;
 }
 .ul-com li>button{
     background: #fff;

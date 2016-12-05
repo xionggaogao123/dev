@@ -32,13 +32,7 @@ public class InstituteDao extends BaseDao {
      */
     public List<InstituteEntry> findInstituteEntries(String type,String area,int page,int pageSize){
         List<InstituteEntry> entries=new ArrayList<InstituteEntry>();
-        BasicDBObject query=new BasicDBObject();
-        if(StringUtils.isNotBlank(type)){
-            query.append("tys.id",type);
-        }
-        if(StringUtils.isNotBlank(area)){
-            query.append("ars.id",area);
-        }
+        BasicDBObject query=getQueryCondition(type, area);
         List<DBObject> dbObjects=find(MongoFacroty.getAppDB(),Constant.COLLECTION_TRAIN_INSTITUTE,query,Constant.FIELDS,Constant.MONGO_SORTBY_ASC,(page-1)*pageSize,pageSize);
         if(null!=dbObjects&&!dbObjects.isEmpty()){
             for(DBObject dbo:dbObjects){
@@ -46,6 +40,23 @@ public class InstituteDao extends BaseDao {
             }
         }
         return entries;
+    }
+
+    private BasicDBObject getQueryCondition(String type,String area){
+        BasicDBObject query=new BasicDBObject();
+        if(StringUtils.isNotBlank(type)){
+            query.append("tys.id",type);
+        }
+        if(StringUtils.isNotBlank(area)){
+            query.append("ars.id",area);
+        }
+        return query;
+    }
+
+
+    public int countInstituteEntries(String type,String area){
+        BasicDBObject query=getQueryCondition(type, area);
+        return count(MongoFacroty.getAppDB(),Constant.COLLECTION_TRAIN_INSTITUTE,query);
     }
 
     /**

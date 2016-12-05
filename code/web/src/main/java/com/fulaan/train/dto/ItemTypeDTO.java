@@ -1,7 +1,68 @@
 package com.fulaan.train.dto;
 
+import com.pojo.train.ItemTypeEntry;
+
 /**
  * Created by admin on 2016/12/2.
  */
 public class ItemTypeDTO {
+    private String id;
+    private String parentId;
+    private String name;
+    private int level;
+    private int sort;
+
+    public ItemTypeDTO(){
+
+    }
+
+    public ItemTypeDTO(ItemTypeEntry entry){
+        this.id=entry.getID().toString();
+        if(null!=entry.getParentId()){
+            this.parentId=entry.getParentId().toString();
+        }
+        this.name=entry.getName();
+        this.level=entry.getLevel();
+        this.sort=entry.getSort();
+    }
+
+    public String getId() {
+        return id;
+    }
+
+    public void setId(String id) {
+        this.id = id;
+    }
+
+    public String getParentId() {
+        return parentId;
+    }
+
+    public void setParentId(String parentId) {
+        this.parentId = parentId;
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public void setName(String name) {
+        this.name = name;
+    }
+
+    public int getLevel() {
+        return level;
+    }
+
+    public void setLevel(int level) {
+        this.level = level;
+    }
+
+    public int getSort() {
+        return sort;
+    }
+
+    public void setSort(int sort) {
+        this.sort = sort;
+    }
 }

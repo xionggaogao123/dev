@@ -105,9 +105,9 @@
         <script id="jwbUserListTmpl" type="text/template">
             {{~it:value:index}}
             <li>
-                <img src="{{=value.value}}">
-                <p>{{=value.name}}</p>
-                <button class="jwbUserId" userId="{{=value.id}}">加玩伴</button>
+                <img src="{{=value.avator}}">
+                <p>{{=value.userName}}</p>
+                <button class="jwbUserId" userId="{{=value.userId}}">加玩伴</button>
             </li>
             {{~}}
         </script>

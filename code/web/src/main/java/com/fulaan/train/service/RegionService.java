@@ -2,9 +2,11 @@ package com.fulaan.train.service;
 
 import com.db.train.RegionDao;
 import com.fulaan.train.dto.RegionDTO;
+import com.pojo.train.RegionEntry;
 import org.bson.types.ObjectId;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -13,9 +15,14 @@ import java.util.List;
 @Service
 public class RegionService {
 
-    private RegionDao regionDao;
+    private RegionDao regionDao=new RegionDao();
 
-//    public List<RegionDTO> getRegionList(ObjectId parentId){
-//
-//    }
+    public List<RegionDTO> getRegionList(ObjectId parentId){
+        List<RegionDTO> dtos=new ArrayList<RegionDTO>();
+        List<RegionEntry> entries=regionDao.getRegionEntries(parentId);
+        for(RegionEntry regionEntry:entries){
+            dtos.add(new RegionDTO(regionEntry));
+        }
+        return dtos;
+    }
 }

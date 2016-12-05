@@ -220,9 +220,9 @@
         <script id="userListTmpl" type="text/template">
             {{~it:value:index}}
             <li>
-                <img src="{{=value.value}}">
-                <p>{{=value.name}}</p>
-                <button class="btn3" userId="{{=value.id}}">邀请</button>
+                <img src="{{=value.avator}}">
+                <p>{{=value.userName}}</p>
+                <button class="btn3" userId="{{=value.userId}}">邀请</button>
             </li>
             {{~}}
         </script>

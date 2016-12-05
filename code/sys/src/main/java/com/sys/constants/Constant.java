@@ -602,6 +602,12 @@ public class Constant {
 
     public static final String COLLECTION_FORUM_MATE_SEEKMATE = "fmateSeekMate";
 
+    public static final String COLLECTION_TRAIN_INSTITUTE="institute";
+
+    public static final String COLLECTION_TRAIN_ITEMTYPENAME="itemTypeName";
+
+    public static final String COLLECTION_TRAIN_REGIONS="regions";
+
     //=========第三方登录=======================================================
     //微信APP ID
     public static final String WECHAT_APPID = "wx71d74481f7f0aff0";

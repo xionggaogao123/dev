@@ -979,7 +979,7 @@ public class CommunityController extends BaseController {
 
             }
         }
-        return RespObj.FAILD;
+        return RespObj.SUCCESS("删除成员成功！");
     }
 
 

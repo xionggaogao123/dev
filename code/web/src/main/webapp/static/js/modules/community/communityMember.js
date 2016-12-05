@@ -369,6 +369,7 @@ define(['jquery', 'pagination', 'common'], function (require, exports, module) {
                 if(resp.code=="200"){
                     getMemberList(initPage);
                     comb2();
+                    alert(resp.message);
                 }else{
                     getMemberList(initPage);
                     comb2();

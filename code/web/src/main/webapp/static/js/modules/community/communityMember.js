@@ -372,7 +372,7 @@ define(['jquery', 'pagination', 'common'], function (require, exports, module) {
                 }else{
                     getMemberList(initPage);
                     comb2();
-                    alert("好像什么东西错了！");
+                    alert(resp.message);
                 }
             })
         }

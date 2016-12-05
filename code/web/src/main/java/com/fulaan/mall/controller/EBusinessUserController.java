@@ -420,9 +420,9 @@ public class EBusinessUserController extends BaseController {
             /**
              * 注册时生成用户二维码
              */
-            String qrCode= QRUtils.getPersonQrUrl(userId);
-            userEntry.setQRCode(qrCode);
-            userService.addEntry(userEntry) ;
+//            String qrCode= QRUtils.getPersonQrUrl(userId);
+//            userEntry.setQRCode(qrCode);
+//            userService.addEntry(userEntry) ;
 
             //发起激活
             if (StringUtils.isNotBlank(email)) {

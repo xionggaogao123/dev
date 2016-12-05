@@ -12,6 +12,7 @@ import com.fulaan.forum.service.*;
 import com.fulaan.friendscircle.service.FriendService;
 import com.fulaan.screenshot.Encoder;
 import com.fulaan.screenshot.EncoderException;
+import com.fulaan.util.QRUtils;
 import com.fulaan.utils.QiniuFileUtils;
 import com.fulaan.video.service.VideoService;
 import com.pojo.app.FileUploadDTO;
@@ -2888,7 +2889,10 @@ public class FPostController extends BaseController {
 
         UserEntry userEntry = userService.find(new ObjectId(sessionValue.getId()));
         model.put("forumScore", userEntry.getForumScore());
-        model.put("qrCode",userEntry.getQRCode());
+        if(StringUtils.isNotBlank(userEntry.getQRCode())){
+            model.put("qrCode",userEntry.getQRCode());
+        }
+
         model.put("forumExperience", userEntry.getForumExperience());
         long stars = fLevelService.getStars(userEntry.getForumExperience());
         model.put("stars", stars);

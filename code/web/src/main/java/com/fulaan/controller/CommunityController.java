@@ -2070,5 +2070,21 @@ public class CommunityController extends BaseController {
         }
     }
 
+    @RequestMapping("/getMyQRCode")
+    @ResponseBody
+    public RespObj getMyQRCode(){
+        ObjectId userId=getUserId();
+        UserEntry userEntry=userService.find(userId);
+        if(StringUtils.isNotBlank(userEntry.getQRCode())){
+            String qrCode= QRUtils.getPersonQrUrl(userId);
+            userEntry.setQRCode(qrCode);
+            userService.addEntry(userEntry) ;
+            return RespObj.SUCCESS(qrCode);
+        }else{
+            return RespObj.SUCCESS(userEntry.getQRCode());
+        }
+
+    }
+
 
 }

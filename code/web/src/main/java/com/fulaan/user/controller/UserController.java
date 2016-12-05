@@ -383,18 +383,18 @@ public class UserController extends BaseController {
         userService.updateHuanXinTag(e.getID());
 
         //找玩伴
-        boolean isMateExist = mateService.isMateRecoreExist(e.getID());
-        if (!isMateExist) {
-            mateService.saveMateEntry(e.getID());
-        }
-        mateService.updateAged(e.getID(),e.getBirthDate());
+//        boolean isMateExist = mateService.isMateRecoreExist(e.getID());
+//        if (!isMateExist) {
+//            mateService.saveMateEntry(e.getID());
+//        }
+//        mateService.updateAged(e.getID(),e.getBirthDate());
 
         //生成个人二维码
-        if(StringUtils.isBlank(e.getQRCode())){
-            ThreadLocalUtil t=new ThreadLocalUtil();
-            Thread t1 = new Thread(t,e.getID().toString());
-            t1.start();
-        }
+//        if(StringUtils.isBlank(e.getQRCode())){
+//            ThreadLocalUtil t=new ThreadLocalUtil();
+//            Thread t1 = new Thread(t,e.getID().toString());
+//            t1.start();
+//        }
 
         return respObj;
     }

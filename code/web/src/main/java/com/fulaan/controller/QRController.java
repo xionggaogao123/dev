@@ -123,10 +123,10 @@ public class QRController extends BaseController {
     @ResponseBody
     public RespObj personHandle(@PathVariable @ObjectIdType ObjectId id,HttpServletRequest request,
                                 HttpServletResponse response) throws IOException {
-//        if (getUserId() == null) {
-//            response.sendRedirect(Constant.COLLECTION_MALL_MARKET_URL);
-//            return null;
-//        }
+        if (getUserId() == null) {
+            response.sendRedirect(Constant.COLLECTION_MALL_MARKET_URL);
+            return null;
+        }
 
         UserEntry userEntry=userService.find(id);
         Map<String,String> map=new HashMap<String,String>();

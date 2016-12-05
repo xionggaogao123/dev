@@ -20,14 +20,18 @@ define(['jquery', 'pagination', 'common'], function (require, exports, module) {
         //获取该社区详情列表
         getCommunityDetail();
 
-        getPublishedActivitys();
-
-        getSignedActivitys();
-
-        getAttendActivitys();
-    }
+        // getPublishedActivitys();
+        //
+        // getSignedActivitys();
+        //
+        // getAttendActivitys();
+    };
 
     $(document).ready(function () {
+
+        $(".hx-notice").click(function () {
+            window.open('/webim/index','_blank');
+        });
 
         $('body').on('click', '.spread', function () {
             spread($(this));
@@ -52,7 +56,6 @@ define(['jquery', 'pagination', 'common'], function (require, exports, module) {
         });
 
         hx_update();
-
         setInterval(hx_update, 1000 * 60);
 
         $('body').on('click', '.login-mk-btn .d2', function () {

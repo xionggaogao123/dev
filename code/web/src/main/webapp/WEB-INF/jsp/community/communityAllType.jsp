@@ -24,7 +24,7 @@
             </div>
         </c:if>
         <span id="my-community-span" class="hd-green-cur">我的社区</span>
-        <span id="myActivity-span">我的活动</span>
+        <%--<span id="myActivity-span">我的活动</span>--%>
     </div>
 </div>
 <div class="container">

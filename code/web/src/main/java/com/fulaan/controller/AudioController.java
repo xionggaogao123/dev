@@ -20,8 +20,6 @@ import org.springframework.web.multipart.MultipartFile;
 @RequestMapping("/audio")
 public class AudioController {
 
-    private static final Logger logger = Logger.getLogger(AudioController.class);
-
     /**
      * 处理上传语音的接口
      *

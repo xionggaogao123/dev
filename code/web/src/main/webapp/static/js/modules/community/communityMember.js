@@ -29,6 +29,10 @@ define(['jquery', 'pagination', 'common'], function (require, exports, module) {
 
         setInterval(hx_update,1000 * 60);
 
+        $(".hx-notice").click(function () {
+            window.open('/webim/index','_blank');
+        });
+
         $('body').on('click','.comb1 .b1',function () {
             $('.com-b').hide();
             $('.comb2').show();
@@ -178,7 +182,7 @@ define(['jquery', 'pagination', 'common'], function (require, exports, module) {
             if(resp.code=="200"){
                getMemberList(initPage);
             }else{
-                alert(resp.message);
+                alert("请求好友失败");
             }
         })
     }
@@ -338,7 +342,7 @@ define(['jquery', 'pagination', 'common'], function (require, exports, module) {
             if (result.code = "200") {
                 template('#myCommunityTmpl', '#myCommunity', result.message.list);
             } else {
-                alert(result.message);
+                alert("获取我的社区出错了哦！");
             }
         })
     }
@@ -364,7 +368,7 @@ define(['jquery', 'pagination', 'common'], function (require, exports, module) {
                 }else{
                     getMemberList(initPage);
                     comb2();
-                    alert(resp.message);
+                    alert("好像什么东西错了！");
                 }
             })
         }

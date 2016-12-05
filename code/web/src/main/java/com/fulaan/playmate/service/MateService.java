@@ -74,6 +74,7 @@ public class MateService {
             mateDTO.setUserId(userEntry.getID().toString());
             mateDTO.setNickName(userEntry.getNickName());
             mateDTO.setUserName(userEntry.getUserName());
+            mateDTO.setTimePeriod(mateEntry.getOns());
             mateDTO.setAvatar(AvatarUtils.getAvatar(userEntry.getAvatar(), AvatarType.MIN_AVATAR.getType()));
             List<UserTag> tagList = new ArrayList<UserTag>();
             List<UserEntry.UserTagEntry> userTagEntries = userEntry.getUserTag();
@@ -164,15 +165,15 @@ public class MateService {
             return;
         }
         int aged = -1;
-        if(age > 3 && age < 5){
+        if(age >= 3 && age <= 5){
             aged = 1;
-        } else if(age > 5 && age < 8){
+        } else if(age > 5 && age <= 8){
             aged = 2;
-        } else if(age > 8 && age < 11) {
+        } else if(age > 8 && age <= 11) {
             aged = 3;
-        } else if(age > 11 && age < 15) {
+        } else if(age > 11 && age <= 15) {
             aged = 4;
-        } else if(age > 15 && age < 18) {
+        } else if(age > 15 && age <= 18) {
             aged = 5;
         } else if(age > 18){
             aged = 6;

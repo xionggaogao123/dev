@@ -42,7 +42,7 @@ public class EGoodsCommentService {
             for (EGoodsCommentEntry entry : entries) {
                 userIds.add(entry.getUserId());
                 EGoodCommentDTO dto = new EGoodCommentDTO(entry);
-                long time = entry.getID().getTime();
+                long time = entry.getID().getTimestamp();
                 String date = DateTimeUtils.convert(time, DateTimeUtils.DATE_YYYY_MM_DD_HH_MM_SS_H);
                 dto.setDate(date);
                 eGoodCommentDTOs.add(dto);

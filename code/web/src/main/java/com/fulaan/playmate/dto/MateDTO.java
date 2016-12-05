@@ -14,6 +14,7 @@ public class MateDTO {
     private String nickName;
     private String avatar;
     private String distance;
+    private int timePeriod;
 
     private List<UserTag> tags;
     private List<User> commonFriends;
@@ -72,5 +73,13 @@ public class MateDTO {
 
     public void setCommonFriends(List<User> commonFriends) {
         this.commonFriends = commonFriends;
+    }
+
+    public int getTimePeriod() {
+        return timePeriod;
+    }
+
+    public void setTimePeriod(int timePeriod) {
+        this.timePeriod = timePeriod;
     }
 }

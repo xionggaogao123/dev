@@ -246,6 +246,7 @@ pre {
     text-align: center;
     line-height: 25px;
     margin: 9px 0 0 35px;
+    cursor: pointer;
 }
 
 .act-nav .act-already-push {
@@ -254,6 +255,7 @@ pre {
     text-align: center;
     margin: 9px 35px 0 0;
     line-height: 25px;
+    cursor: pointer;
 }
 
 .act-nav > div > i {

@@ -137,6 +137,11 @@ define(['jquery', 'pagination', 'common'], function (require, exports, module) {
 
         $('body').on('click', '.ul-nearnews li button', function () {
 
+            if(!isLogin) {
+                $('.store-register').fadeToggle();
+                $('.bg').fadeToggle();
+                return;
+            }
             var value = $(this).attr('value');
             var selectActivity;
 
@@ -159,6 +164,16 @@ define(['jquery', 'pagination', 'common'], function (require, exports, module) {
 
             $('.wind-act-det').fadeIn();
             $('.bg').fadeIn();
+        });
+
+        $('body').on('click','.act-already-join',function () {
+
+            alert('haha');
+        });
+
+        $('body').on('click','.act-already-push',function () {
+
+            alert('haha');
         });
 
         $('body').on('click', '.wind-biaoq em', function () {

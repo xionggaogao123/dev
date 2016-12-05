@@ -188,10 +188,7 @@ public class MemberService {
      */
     public MemberDTO getUser(ObjectId groupId, ObjectId userId) {
         MemberEntry memberEntry = memberDao.getUser(groupId, userId);
-        if (memberEntry != null) {
-            return new MemberDTO(memberEntry);
-        }
-        return null;
+        return memberEntry == null ? null : new MemberDTO(memberEntry);
     }
 
     /**

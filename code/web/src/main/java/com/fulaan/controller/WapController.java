@@ -36,18 +36,10 @@ public class WapController extends BaseController {
 
     private static final Logger logger = Logger.getLogger(BaseController.class);
 
+    @Autowired
     private UserService userService;
+    @Autowired
     private SchoolService schoolService;
-
-    @Autowired
-    public void setUserService(UserService userService) {
-        this.userService = userService;
-    }
-
-    @Autowired
-    public void setSchoolService(SchoolService schoolService) {
-        this.schoolService = schoolService;
-    }
 
     @RequestMapping("/page")
     @SessionNeedless

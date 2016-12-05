@@ -67,7 +67,6 @@ public class LoginInfoController {
         wb.write(fileOut);
         //关闭输出流
         IOUtils.closeQuietly(fileOut);
-
         try {
             FileInputStream input = new FileInputStream(file);
             OutputStream os = response.getOutputStream();
@@ -77,7 +76,6 @@ public class LoginInfoController {
             IOUtils.closeQuietly(os);
             //删除文件
             FileUtils.deleteQuietly(file);
-
         } catch (FileNotFoundException e) {
             e.printStackTrace();
         } catch (IOException e) {

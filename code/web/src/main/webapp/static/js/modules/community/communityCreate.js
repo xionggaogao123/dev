@@ -19,6 +19,10 @@ define(['jquery', 'pagination', 'common'], function (require, exports, module) {
 
     $(document).ready(function () {
 
+        $(".hx-notice").click(function () {
+            window.open('/webim/index','_blank');
+        });
+
         $('.hd-nav span').click(function () {
             $(this).addClass('hd-green-cur').siblings('.hd-nav span').removeClass('hd-green-cur');
         });

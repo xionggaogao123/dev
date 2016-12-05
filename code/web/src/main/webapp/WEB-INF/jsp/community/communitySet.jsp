@@ -86,8 +86,8 @@
 
 <%--环信消息通知--%>
 <div class="hx-notice">
-    <span class="sp1"></span>
-    <span class="sp3">您有3条未读消息</span>
+    <span class="sp2"></span>
+    <span class="sp3">您有0条未读消息</span>
 </div>
 
 

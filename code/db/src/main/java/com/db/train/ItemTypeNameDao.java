@@ -1,0 +1,43 @@
+package com.db.train;
+
+import com.db.base.BaseDao;
+import com.db.factory.MongoFacroty;
+import com.mongodb.BasicDBObject;
+import com.mongodb.DBObject;
+import com.pojo.train.ItemTypeEntry;
+import com.sun.corba.se.spi.ior.ObjectId;
+import com.sys.constants.Constant;
+
+import java.util.ArrayList;
+import java.util.List;
+
+/**
+ * Created by admin on 2016/12/5.
+ */
+public class ItemTypeNameDao extends BaseDao {
+
+    /**
+     * 保存
+     * @param entry
+     */
+    public void saveOrUpdateEntry(ItemTypeEntry entry){
+        save(MongoFacroty.getAppDB(), Constant.COLLECTION_TRAIN_ITEMTYPENAME,entry.getBaseEntry());
+    }
+
+    /**
+     * 获取某一层的分类数据
+     * @return
+     */
+    public List<ItemTypeEntry> getLevelEntries(int level,ObjectId parentId){
+        BasicDBObject query=new BasicDBObject().append("lel",level)
+                .append("pid",parentId);
+        List<ItemTypeEntry> entries=new ArrayList<ItemTypeEntry>();
+        List<DBObject> dbObjects=find(MongoFacroty.getAppDB(),Constant.COLLECTION_TRAIN_ITEMTYPENAME,query);
+        if(null!=dbObjects&&!dbObjects.isEmpty()){
+            for(DBObject dbo:dbObjects) {
+                entries.add(new ItemTypeEntry((BasicDBObject)dbo));
+            }
+        }
+        return entries;
+    }
+}

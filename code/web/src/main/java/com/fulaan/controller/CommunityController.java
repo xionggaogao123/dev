@@ -2075,7 +2075,7 @@ public class CommunityController extends BaseController {
     public RespObj getMyQRCode(){
         ObjectId userId=getUserId();
         UserEntry userEntry=userService.find(userId);
-        if(StringUtils.isNotBlank(userEntry.getQRCode())){
+        if(StringUtils.isBlank(userEntry.getQRCode())){
             String qrCode= QRUtils.getPersonQrUrl(userId);
             userEntry.setQRCode(qrCode);
             userService.addEntry(userEntry) ;

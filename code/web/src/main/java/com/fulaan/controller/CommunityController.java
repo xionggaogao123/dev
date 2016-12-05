@@ -11,6 +11,7 @@ import com.fulaan.friendscircle.service.FriendApplyService;
 import com.fulaan.friendscircle.service.FriendService;
 import com.fulaan.playmate.service.MateService;
 import com.fulaan.pojo.CommunityMessage;
+import com.fulaan.pojo.LikeInfo;
 import com.fulaan.pojo.PageModel;
 import com.fulaan.pojo.ProductModel;
 import com.fulaan.service.*;
@@ -24,10 +25,7 @@ import com.pojo.app.IdNameValuePairDTO;
 import com.pojo.fcommunity.ConcernEntry;
 import com.pojo.fcommunity.PartInContentEntry;
 import com.pojo.fcommunity.RemarkEntry;
-import com.pojo.user.AvatarType;
-import com.pojo.user.UserDetailInfoDTO;
-import com.pojo.user.UserEntry;
-import com.pojo.user.UserTag;
+import com.pojo.user.*;
 import com.pojo.utils.MongoUtils;
 import com.sys.constants.Constant;
 import com.sys.exceptions.IllegalParamException;
@@ -1312,7 +1310,7 @@ public class CommunityController extends BaseController {
                                @RequestParam(defaultValue = "5", required = false) int pageSize) throws Exception {
         try {
             int count = 1;
-            List<IdNameValuePairDTO> dtos = new ArrayList<IdNameValuePairDTO>();
+            List<UserSearchInfo> dtos = new ArrayList<UserSearchInfo>();
             if (ObjectId.isValid(regular)) {
                 UserEntry userEntry = userService.find(new ObjectId(regular));
                 if (null == userEntry) {
@@ -1364,7 +1362,7 @@ public class CommunityController extends BaseController {
                         //存储key-value
                         Map hashMap = new HashMap();
                         if (dtos.size() > 0) {
-                            hashMap.put("lastId", dtos.get(dtos.size() - 1).getId());
+                            hashMap.put("lastId", dtos.get(dtos.size() - 1).getUserId());
                             hashMap.put("count", count + "");
                         }
                         if (null != hashMap && hashMap.size() > 0) {
@@ -1383,19 +1381,59 @@ public class CommunityController extends BaseController {
         }
     }
 
-    public List<IdNameValuePairDTO> getUserInfo(List<UserEntry> userEntries) {
-        List<IdNameValuePairDTO> idNameValuePairDTOs = new ArrayList<IdNameValuePairDTO>();
+    public List<UserSearchInfo> getUserInfo(List<UserEntry> userEntries) {
+        List<UserSearchInfo> userSearchInfos = new ArrayList<UserSearchInfo>();
         for (UserEntry item : userEntries) {
-            idNameValuePairDTOs.add(getDto(item));
+            userSearchInfos.add(getDto(item));
         }
-        return idNameValuePairDTOs;
+        return userSearchInfos;
     }
 
-    public IdNameValuePairDTO getDto(UserEntry userEntry) {
-        IdNameValuePairDTO dto = new IdNameValuePairDTO();
-        dto.setId(userEntry.getID().toString());
-        dto.setValue(AvatarUtils.getAvatar(userEntry.getAvatar(), AvatarType.MIN_AVATAR.getType()));
-        dto.setName(StringUtils.isNotBlank(userEntry.getNickName()) ? userEntry.getNickName() : userEntry.getUserName());
+    private static class UserSearchInfo{
+        private String userId;
+        private String avator;
+        private String nickName;
+        private String userName;
+
+        public String getUserId() {
+            return userId;
+        }
+
+        public void setUserId(String userId) {
+            this.userId = userId;
+        }
+
+        public String getAvator() {
+            return avator;
+        }
+
+        public void setAvator(String avator) {
+            this.avator = avator;
+        }
+
+        public String getNickName() {
+            return nickName;
+        }
+
+        public void setNickName(String nickName) {
+            this.nickName = nickName;
+        }
+
+        public String getUserName() {
+            return userName;
+        }
+
+        public void setUserName(String userName) {
+            this.userName = userName;
+        }
+    }
+
+    public UserSearchInfo getDto(UserEntry userEntry) {
+        UserSearchInfo dto = new UserSearchInfo();
+        dto.setUserId(userEntry.getID().toString());
+        dto.setAvator(AvatarUtils.getAvatar(userEntry.getAvatar(), AvatarType.MIN_AVATAR.getType()));
+        dto.setNickName(userEntry.getNickName());
+        dto.setUserName(userEntry.getUserName());
         return dto;
     }
 

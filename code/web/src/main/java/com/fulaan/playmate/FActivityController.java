@@ -17,6 +17,7 @@ import java.text.ParseException;
 
 /**
  * Created by moslpc on 2016/11/30.
+ * 找活动
  */
 @Controller
 @RequestMapping("/activity")
@@ -53,7 +54,6 @@ public class FActivityController extends BaseController {
 
     @RequestMapping("sign")
     @ResponseBody
-    @SessionNeedless
     public RespObj signActivity(@RequestParam(value = "acid") @ObjectIdType ObjectId acid,
                                 @RequestParam(value = "signText", required = false, defaultValue = "") String signText) {
         return RespObj.SUCCESS(fActivityService.signActivity(acid,getUserId(),signText));

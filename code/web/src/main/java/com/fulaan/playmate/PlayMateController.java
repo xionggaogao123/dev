@@ -65,7 +65,8 @@ public class PlayMateController extends BaseController {
     public RespObj updateLocation(@RequestParam(value = "lon", required = false, defaultValue = "0") double lon,
                                   @RequestParam(value = "lat", required = false, defaultValue = "0") double lat,
                                   @RequestParam(value = "tags", required = false, defaultValue = "") String tags,
-                                  @RequestParam(value = "hobbys", required = false, defaultValue = "") String hobbys) {
+                                  @RequestParam(value = "hobbys", required = false, defaultValue = "") String hobbys,
+                                  @RequestParam(value = "age",required = false,defaultValue = "-1") int age) {
         ObjectId userId = getUserId();
         if (lon != 0 && lat != 0) {
             mateService.updateLocation(userId, lon, lat);

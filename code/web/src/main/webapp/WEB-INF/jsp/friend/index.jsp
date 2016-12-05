@@ -223,10 +223,6 @@
     <div class="ac-timer">
         <p>日期：<input type="text" id="datepicker"></p>
         <select class="time-hour">
-            <option value="24">24</option>
-            <option value="23">23</option>
-            <option value="22">22</option>
-            <option value="21">21</option>
             <option value="20">20</option>
             <option value="19">19</option>
             <option value="18">18</option>
@@ -238,15 +234,9 @@
             <option value="12">12</option>
             <option value="11">11</option>
             <option value="10">10</option>
-            <option value="9">9</option>
-            <option value="8">8</option>
-            <option value="7">7</option>
-            <option value="6">6</option>
-            <option value="5">5</option>
-            <option value="4">4</option>
-            <option value="3">3</option>
-            <option value="2">2</option>
-            <option value="1">1</option>
+            <option value="09">09</option>
+            <option value="08">08</option>
+            <option value="07">07</option>
         </select>
         <select class="time-mins">
             <option>0</option>
@@ -268,7 +258,7 @@
         <div class="near-infor">
             <p class="p1">
                 <span class="sp1">{{=value.nickName}}</span>
-                <span class="sp2">查看更多</span>
+                <span class="sp2" onClick="window.open('/community/userData.do?userId={{=value.userId}}')">查看更多</span>
             </p>
             <p class="p2">
                 标签：{{~value.tags:tag:i}}

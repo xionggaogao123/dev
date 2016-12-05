@@ -261,10 +261,12 @@ public class MemberDao extends BaseDao {
         list.add(1);
         list.add(2);
         List<MemberEntry> members = new ArrayList<MemberEntry>();
-        BasicDBObject query = new BasicDBObject().append("grid", id)
+        BasicDBObject query = new BasicDBObject("grid", id)
                 .append("rl", new BasicDBObject(Constant.MONGO_IN, list))
                 .append("r", 0);
-        List<DBObject> dos = find(MongoFacroty.getAppDB(), Constant.COLLECTION_FORUM_COMMUNITY_MEMBER, query);
+
+        BasicDBObject orderBy = new BasicDBObject("rl", Constant.DESC).append(Constant.ID, Constant.DESC);
+        List<DBObject> dos = find(MongoFacroty.getAppDB(), Constant.COLLECTION_FORUM_COMMUNITY_MEMBER, query, Constant.FIELDS, orderBy);
         for (DBObject dbo : dos) {
             members.add(new MemberEntry(dbo));
         }
@@ -348,8 +350,7 @@ public class MemberDao extends BaseDao {
      */
     public void updateMyNickname(ObjectId groupId, ObjectId userId, String nickName) {
         BasicDBObject query = new BasicDBObject("grid", groupId).append("uid", userId).append("r", 0);
-        BasicDBObject update = new BasicDBObject()
-                .append(Constant.MONGO_SET, new BasicDBObject("nk", nickName));
+        BasicDBObject update = new BasicDBObject().append(Constant.MONGO_SET, new BasicDBObject("nk", nickName));
         update(MongoFacroty.getAppDB(), Constant.COLLECTION_FORUM_COMMUNITY_MEMBER, query, update);
     }
 
@@ -362,8 +363,7 @@ public class MemberDao extends BaseDao {
      */
     public void updateMyStatus(ObjectId groupId, ObjectId userId, int status) {
         BasicDBObject query = new BasicDBObject("grid", groupId).append("uid", userId).append("r", 0);
-        BasicDBObject update = new BasicDBObject()
-                .append(Constant.MONGO_SET, new BasicDBObject("st", status));
+        BasicDBObject update = new BasicDBObject().append(Constant.MONGO_SET, new BasicDBObject("st", status));
         update(MongoFacroty.getAppDB(), Constant.COLLECTION_FORUM_COMMUNITY_MEMBER, query, update);
     }
 

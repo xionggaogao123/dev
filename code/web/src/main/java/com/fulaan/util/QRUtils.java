@@ -1,6 +1,5 @@
 package com.fulaan.util;
 
-import com.sys.props.Resources;
 import com.sys.utils.QiniuFileUtils;
 import org.apache.commons.io.IOUtils;
 import org.bson.types.ObjectId;
@@ -38,7 +37,6 @@ public class QRUtils {
      */
     public static String getPersonQrUrl(ObjectId userId) {
         String qrCode = "http://www.fulaan.com/qr/person/" + userId.toString();
-//        String qrCode = "http://192.168.1.218:8080/qr/person/" + userId.toString();
         try {
             return getQrUrl(qrCode);
         } catch (Exception e) {

@@ -48,18 +48,6 @@ public class GroupDTO {
         this.isBindCommunity = groupEntry.getCommunityId() != null;
     }
 
-    public GroupDTO(GroupEntry groupEntry) {
-        this.id = groupEntry.getID().toString();
-        this.emChatId = groupEntry.getEmChatId();
-        this.name = groupEntry.getName();
-        this.logo = groupEntry.getLogo();
-        this.desc = groupEntry.getDesc();
-        this.isM = groupEntry.getIsName();
-        this.qrUrl = groupEntry.getQrUrl();
-        this.owerId = groupEntry.getOwerId().toString();
-        this.headImage = groupEntry.getHeadImage();
-    }
-
     public int getIsM() {
         return isM;
     }

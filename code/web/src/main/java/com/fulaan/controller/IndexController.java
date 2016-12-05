@@ -100,13 +100,6 @@ public class IndexController extends BaseController {
     }
 
     @SessionNeedless
-    @RequestMapping("/friend")
-    @LoginInfo
-    public String friend() {
-        return "/friend/index";
-    }
-
-    @SessionNeedless
     @RequestMapping("/integrate")
     @LoginInfo
     public String toIntegratePage() {

@@ -1,4 +1,4 @@
-package com.fulaan.controller;
+package com.fulaan.admin;
 
 import com.db.factory.MongoFacroty;
 import com.db.fcommunity.BannerDao;
@@ -7,6 +7,7 @@ import com.db.user.UserDao;
 import com.fulaan.annotation.ObjectIdType;
 import com.fulaan.annotation.SessionNeedless;
 import com.fulaan.annotation.UserRoles;
+import com.fulaan.controller.BaseController;
 import com.fulaan.mall.service.*;
 import com.fulaan.user.service.UserService;
 import com.fulaan.forum.service.FInformationService;

@@ -15,12 +15,13 @@ public class FASignEntry extends BaseDBObject {
         setBaseEntry((BasicDBObject) dbo);
     }
 
-    public FASignEntry(ObjectId _id, ObjectId acid, ObjectId uid, String signText) {
+    public FASignEntry(ObjectId _id, ObjectId acid, ObjectId uid, String signText,long activityTime) {
         BasicDBObject dbo = new BasicDBObject()
                 .append("_id", _id)
                 .append("acid", acid)
                 .append("uid", uid)
                 .append("sitx", signText)
+                .append("acti",activityTime)
                 .append("ti", System.currentTimeMillis());
         setBaseEntry(dbo);
     }

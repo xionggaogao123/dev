@@ -226,10 +226,12 @@ public class MongoUtils {
     }
 
     public static List<ObjectId> convertObjectIds(String memberId) {
-        String[] members = memberId.split(",");
         List<ObjectId> objectIds = new ArrayList<ObjectId>();
-        for (String item : members) {
-            objectIds.add(new ObjectId(item));
+        if(StringUtils.isNotBlank(memberId)) {
+            String[] members = memberId.split(",");
+            for (String item : members) {
+                objectIds.add(new ObjectId(item));
+            }
         }
         return objectIds;
     }

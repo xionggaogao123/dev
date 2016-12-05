@@ -1,4 +1,4 @@
-package com.fulaan.controller;
+package com.fulaan.admin;
 
 import com.fulaan.pojo.FLoginLog;
 import com.fulaan.service.LoginLogService;

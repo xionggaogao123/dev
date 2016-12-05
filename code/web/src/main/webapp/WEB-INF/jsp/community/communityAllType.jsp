@@ -7,6 +7,7 @@
     <link rel="stylesheet" type="text/css" href="/static/css/community/community.css">
     <link href="/static/js/modules/core/0.1.0/fancyBox/jquery.fancybox.css?v=2015041602" rel="stylesheet"
           type="text/css" media="screen">
+    <link rel="stylesheet" type="text/css" href="/static/css/friend/nearby.css">
 </head>
 <body style="background: #f5f5f5;">
 <%--==============头部===================--%>
@@ -22,9 +23,8 @@
                 <div class="d2"></div>
             </div>
         </c:if>
-        <span class="hd-green-cur">我的社区</span>
-        <%--<span>找学习</span>--%>
-        <%--<span>找玩伴</span>--%>
+        <span id="my-community-span" class="hd-green-cur">我的社区</span>
+        <%--<span id="myActivity-span">我的活动</span>--%>
     </div>
 </div>
 <div class="container">
@@ -80,8 +80,8 @@
                         </p>
                     </div>
                     <%--<div class="notice-bm">--%>
-                        <%--<button class="commit" itemId="{{=value.id}}">我要报名</button>--%>
-                        <%--<span>已报名（<em>{{=value.partInCount}}</em>）人</span>--%>
+                    <%--<button class="commit" itemId="{{=value.id}}">我要报名</button>--%>
+                    <%--<span>已报名（<em>{{=value.partInCount}}</em>）人</span>--%>
                     <%--</div>--%>
                 </div>
                 {{~}}
@@ -134,7 +134,8 @@
                                 class="spread">[展开全文]</em>{{?}}</span></p>
                         <p class="p-img clearfix">
                             {{~value.images:image:i}}
-                            <a class="fancybox" style="cursor:pointer;" href="{{=image.url}}" data-fancybox-group="home" title="预览">
+                            <a class="fancybox" style="cursor:pointer;" href="{{=image.url}}" data-fancybox-group="home"
+                               title="预览">
                                 <img src="{{=image.url}}?imageView2/1/w/100/h/100"><br/>
                             </a>
                             {{~}}
@@ -201,7 +202,8 @@
                         <p class="p-hw">
                             {{~value.attachements:attachment:i}}
                             <span class="sp-hw">{{=attachment.flnm}}<a><span
-                                    onclick="download('{{=attachment.url}}','{{=attachment.flnm}}')" style="cursor: pointer">下载</span></a></span>
+                                    onclick="download('{{=attachment.url}}','{{=attachment.flnm}}')"
+                                    style="cursor: pointer">下载</span></a></span>
                             {{~}}
                         </p>
                         <p class="p-infor">
@@ -242,6 +244,18 @@
             </div>
         </div>
     </div>
+    <div class="hd-cont-f hd-cont-f2">
+        <p class="p1">
+            <span id="my-community-1" class="hd-cf-cur2">已报名活动</span>
+            <span id="my-community-2">已发布活动</span>
+            <span id="my-community-3">已参加活动</span>
+        </p>
+
+        <ul class="ul-hds" id="ul-activity">
+        </ul>
+
+        <div class="new-page-links"></div>
+    </div>
 </div>
 
 <!--=============底部版权=================-->
@@ -265,6 +279,18 @@
 </div>
 <div class="bg"></div>
 <%@ include file="../common/login.jsp" %>
+
+<script type="text/template" id="activityBox">
+    {{~it:value:index}}
+    <li>
+        <button value="{{=value.acid}}" class="cancelSign">取消报名</button>
+        <p class="p1">
+            <span># {{=value.activityCode}}#</span>{{=value.title}}
+        </p>
+        <p class="p2">{{=value.description}}</p>
+    </li>
+    {{~}}
+</script>
 <script src="/static/js/sea.js"></script>
 <script src="/static/js/modules/core/0.1.0/config.js?v=2015041602"></script>
 <script>
@@ -274,10 +300,8 @@
 </script>
 <script type="text/javascript" src="/static/js/modules/core/0.1.0/fancyBox/jquery.fancybox.js"></script>
 <script type="text/javascript">
-    $(document).ready(function() {
-        $(".fancybox").fancybox({
-        });
-
+    $(document).ready(function () {
+        $(".fancybox").fancybox({});
     })
 </script>
 </body>

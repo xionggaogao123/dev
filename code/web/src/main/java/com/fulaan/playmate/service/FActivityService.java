@@ -81,13 +81,45 @@ public class FActivityService {
         return pageModel;
     }
 
+    public PageModel<ActivityDTO> getPublishedActivity(ObjectId userId, int page, int pageSize) {
+        int count = fActivityDao.countPublishActivity(userId);
+        int totalPages = count % pageSize == 0 ? count / pageSize : (int) Math.ceil(count / pageSize) + 1;
+        if (page > totalPages) {
+            page = totalPages;
+        }
+        if (page <= 0) {
+            page = 1;
+        }
+        List<FActivityEntry> activityEntries = fActivityDao.getPublishedActivity(userId,page,pageSize);
+        List<ActivityDTO> activityDTOS = new ArrayList<ActivityDTO>();
+        PageModel<ActivityDTO> pageModel = new PageModel<ActivityDTO>();
+        pageModel.setPage(page);
+        pageModel.setPageSize(pageSize);
+        pageModel.setTotalPages(totalPages);
+        pageModel.setTotalCount(count);
+        for(FActivityEntry activityEntry : activityEntries) {
+            activityDTOS.add(new ActivityDTO(activityEntry));
+        }
+        pageModel.setResult(activityDTOS);
+        return pageModel;
+    }
+
     public boolean signActivity(ObjectId acid, ObjectId userId, String signText) {
         if (fActivityDao.isUserSignActivity(acid, userId)) {
             return false;
         }
-        FASignEntry faSignEntry = new FASignEntry(new ObjectId(), acid, userId, signText);
+        FActivityEntry activityEntry = fActivityDao.getActivityById(acid);
+        FASignEntry faSignEntry = new FASignEntry(new ObjectId(), acid, userId, signText,activityEntry.getActivityTime());
         fActivityDao.save(faSignEntry);
         return true;
+    }
+
+    public boolean isUserSigned(ObjectId acid,ObjectId userId) {
+        return fActivityDao.isUserSignActivity(acid, userId);
+    }
+
+    public int countUserSignActivity(ObjectId userId) {
+        return fActivityDao.countUserSignActivity(userId);
     }
 
     public List<Map<String, Object>> get20SignSheets(ObjectId acid) {
@@ -107,4 +139,74 @@ public class FActivityService {
         }
         return sheets;
     }
+
+    public int countPublishActivity(ObjectId userId) {
+        return fActivityDao.countPublishActivity(userId);
+    }
+
+    /**
+     * 获取已经报名的活动
+     * @param userId
+     * @param page
+     * @param pageSize
+     * @return
+     */
+    public PageModel<ActivityDTO> getSignedActivity(ObjectId userId, int page, int pageSize) {
+        int count = fActivityDao.countUserSignActivity(userId);
+        int totalPages = count % pageSize == 0 ? count / pageSize : (int) Math.ceil(count / pageSize) + 1;
+        if (page > totalPages) {
+            page = totalPages;
+        }
+        if (page <= 0) {
+            page = 1;
+        }
+        List<FActivityEntry> activityEntries = fActivityDao.getSignedActivity(userId,page,pageSize);
+        List<ActivityDTO> activityDTOS = new ArrayList<ActivityDTO>();
+        PageModel<ActivityDTO> pageModel = new PageModel<ActivityDTO>();
+        pageModel.setPage(page);
+        pageModel.setPageSize(pageSize);
+        pageModel.setTotalPages(totalPages);
+        pageModel.setTotalCount(count);
+        for(FActivityEntry activityEntry : activityEntries) {
+            activityDTOS.add(new ActivityDTO(activityEntry));
+        }
+        pageModel.setResult(activityDTOS);
+        return pageModel;
+    }
+
+    /**
+     * 获取已经参加过的活动
+     * @param userId
+     * @param page
+     * @param pageSize
+     * @return
+     */
+    public Object getAttendedActivity(ObjectId userId, int page, int pageSize) {
+        int count = fActivityDao.countUserAttendActivity(userId);
+        int totalPages = count % pageSize == 0 ? count / pageSize : (int) Math.ceil(count / pageSize) + 1;
+        if (page > totalPages) {
+            page = totalPages;
+        }
+        if (page <= 0) {
+            page = 1;
+        }
+        List<FActivityEntry> activityEntries = fActivityDao.getAttendedActivity(userId,page,pageSize);
+        List<ActivityDTO> activityDTOS = new ArrayList<ActivityDTO>();
+        PageModel<ActivityDTO> pageModel = new PageModel<ActivityDTO>();
+        pageModel.setPage(page);
+        pageModel.setPageSize(pageSize);
+        pageModel.setTotalPages(totalPages);
+        pageModel.setTotalCount(count);
+        for(FActivityEntry activityEntry : activityEntries) {
+            activityDTOS.add(new ActivityDTO(activityEntry));
+        }
+        pageModel.setResult(activityDTOS);
+        return pageModel;
+    }
+
+    public void cancelSignActivity(ObjectId acid,ObjectId userId) {
+        fActivityDao.cancelSignActivity(acid,userId);
+    }
+
+    
 }

@@ -770,22 +770,6 @@ public class CommunityService {
     }
 
     /**
-     * 查询该社区副社长信息
-     *
-     * @param communityId
-     * @return
-     */
-    public List<MemberDTO> getSecondMembers(ObjectId communityId) {
-        List<MemberDTO> memberDTOs = new ArrayList<MemberDTO>();
-        ObjectId groupId = getGroupId(communityId);
-        List<MemberEntry> memberEntries = memberDao.getDeputyHead(groupId);
-        for (MemberEntry memberEntry : memberEntries) {
-            memberDTOs.add(new MemberDTO(memberEntry));
-        }
-        return memberDTOs;
-    }
-
-    /**
      * 保存单个的文本
      *
      * @param detailId
@@ -1157,11 +1141,6 @@ public class CommunityService {
         communityDao.updateCommunityName(communityId, groupName);
     }
 
-    public void deleteCommunity(ObjectId communityId) {
-        communityDao.deleteCommunity(communityId);
-    }
-
-
     public void updateImage(ObjectId id, String newImageUrl, String oldImageUrl) {
         partInContentDao.pushImage(id, newImageUrl);
         partInContentDao.pullImage(id, oldImageUrl);
@@ -1178,7 +1157,6 @@ public class CommunityService {
     public void removeCommunityDetailById(ObjectId id){
         communityDetailDao.removeCommunityDetail(id);
     }
-
 
     public List<ObjectId> getAllMemberIds(ObjectId groupId){
         return memberDao.getAllMemberIds(groupId);

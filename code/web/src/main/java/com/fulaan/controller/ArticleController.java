@@ -23,7 +23,6 @@ import java.util.Map;
 @RequestMapping("/article")
 public class ArticleController extends BaseController {
 
-    private static final Logger logger = Logger.getLogger(ArticleController.class);
     private static Map<String, String> titles = new HashMap<String, String>();
 
     static {

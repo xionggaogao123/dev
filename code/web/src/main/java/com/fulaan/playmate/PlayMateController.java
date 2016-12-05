@@ -1,7 +1,9 @@
 package com.fulaan.playmate;
 
+import com.fulaan.annotation.LoginInfo;
 import com.fulaan.annotation.SessionNeedless;
 import com.fulaan.controller.BaseController;
+import com.fulaan.playmate.service.FActivityService;
 import com.fulaan.playmate.service.MateService;
 import com.fulaan.user.service.UserService;
 import com.fulaan.util.StrUtils;
@@ -31,6 +33,24 @@ public class PlayMateController extends BaseController {
     private MateService mateService;
     @Autowired
     private UserService userService;
+    @Autowired
+    private FActivityService fActivityService;
+
+
+    @SessionNeedless
+    @RequestMapping("/friend")
+    @LoginInfo
+    public String friend(Map<String,Object> model) {
+
+        if(getUserId() == null) {
+            model.put("signActivityCount",0);
+            model.put("publishActivityCount",0);
+        } else {
+            model.put("signActivityCount",fActivityService.countUserSignActivity(getUserId()));
+            model.put("publishActivityCount",fActivityService.countPublishActivity(getUserId()));
+        }
+        return "/friend/index";
+    }
 
     @RequestMapping("/getPlayMates")
     @ResponseBody

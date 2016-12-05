@@ -1,7 +1,8 @@
-package com.fulaan.controller;
+package com.fulaan.fgroup;
 
 import com.easemob.server.EaseMobAPI;
 import com.fulaan.annotation.SessionNeedless;
+import com.fulaan.controller.BaseController;
 import com.fulaan.dto.CommunityDTO;
 import com.fulaan.dto.CommunityDetailDTO;
 import com.fulaan.dto.GroupDTO;
@@ -67,14 +68,14 @@ public class GroupController extends BaseController {
     @RequestMapping(value = "/create")
     @ResponseBody
     public RespObj createGroup(@RequestParam(defaultValue = "", required = false) String userIds) throws Exception {
-        ObjectId owerId = getUserId();
+        ObjectId userId = getUserId();
         //创建环信群聊
-        String emChatId = emService.createEmGroup(owerId);
+        String emChatId = emService.createEmGroup(userId);
         if (emChatId == null) {
             return RespObj.FAILD("环信群组创建失败");
         }
         //创建组
-        ObjectId groupId = groupService.createGroupWithoutCommunity(owerId, emChatId);
+        ObjectId groupId = groupService.createGroupWithoutCommunity(userId, emChatId);
         List<ObjectId> userList = MongoUtils.convertObjectIds(userIds);
         for (ObjectId personId : userList) {
             if (!memberService.isGroupMember(groupId, personId)) {
@@ -102,18 +103,15 @@ public class GroupController extends BaseController {
             return RespObj.FAILD("群组不存在");
         }
         GroupDTO groupDTO = groupService.findByObjectId(groupId);
-
         if (groupDTO.isBindCommunity()) {
             CommunityDTO communityDTO = communityService.getByEmChatId(groupDTO.getEmChatId());
             groupDTO.setSearchId(communityDTO.getSearchId());
             groupDTO.setHeadImage(communityDTO.getLogo());
             groupDTO.setName(communityDTO.getName());
         }
-
         MemberDTO mine = memberService.getUser(groupId, getUserId());
         groupDTO.setCount(memberService.countMember(groupId));
         groupDTO.setMine(mine);
-
         if (groupDTO.isBindCommunity()) {
             ObjectId communityId = new ObjectId(groupDTO.getCommunityId());
             CommunityDetailDTO groupAnnounceDTO = communityService.getLatestAnnouncement(communityId);
@@ -349,7 +347,6 @@ public class GroupController extends BaseController {
                 }
             }
         }
-
         groupService.updateHeadImage(groupId);
         if (groupDTO.getIsM() == 0) {
             groupService.updateGroupNameByMember(new ObjectId(groupDTO.getId()));
@@ -420,13 +417,11 @@ public class GroupController extends BaseController {
     @ResponseBody
     public RespObj updateGroupName(String emChatId,
                                    String groupName) {
-
         ObjectId userId = getUserId();
         ObjectId groupId = groupService.getGroupIdByChatId(emChatId);
         if (!memberService.isManager(groupId, userId)) {
             return RespObj.FAILD("对不起，您没有此权限");
         }
-
         GroupDTO groupDTO = groupService.findByObjectId(groupId);
         if (groupDTO.isBindCommunity()) {
             communityService.updateCommunityName(new ObjectId(groupDTO.getCommunityId()), groupName);
@@ -512,7 +507,6 @@ public class GroupController extends BaseController {
     public RespObj unsetMaster(String emChatId,
                                @RequestParam(defaultValue = "", required = false) String userIds) {
         ObjectId groupId = groupService.getGroupIdByChatId(emChatId);
-
         if (!memberService.isHead(groupId, getUserId())) {
             return RespObj.FAILD("您没有权限");
         }
@@ -538,7 +532,6 @@ public class GroupController extends BaseController {
                                    @RequestParam(defaultValue = "10", required = false) int pageSize) {
         ObjectId groupId = groupService.getGroupIdByChatId(emChatId);
         GroupDTO groupDTO = groupService.findByObjectId(groupId);
-
         if (groupDTO.isBindCommunity()) { //有社区
             ObjectId communityId = new ObjectId(groupDTO.getCommunityId());
             PageModel<CommunityDetailDTO> pageModel = communityService.getMessages(communityId, page, pageSize, Constant.DESC, CommunityDetailType.ANNOUNCEMENT.getType());

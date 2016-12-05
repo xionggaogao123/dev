@@ -178,7 +178,7 @@ define(['jquery', 'pagination', 'common'], function (require, exports, module) {
 
     function getMyCommunitys() {
 
-        var param = {};
+        var param = {platform:"web"};
         common.getData('/community/myCommunitys',param,function (resp) {
 
             for(var i=0;i<resp.message.list.length;i++) {

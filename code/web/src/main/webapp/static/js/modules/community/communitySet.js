@@ -110,6 +110,7 @@ define(['jquery', 'pagination', 'common'], function (require, exports, module) {
         var isInit = true;
         var requestData = {};
         requestData.page=page;
+        requestData.platform="web";
         $.ajax({
             type: "GET",
             data: requestData,
@@ -148,13 +149,6 @@ define(['jquery', 'pagination', 'common'], function (require, exports, module) {
                 }
             }
         });
-        // common.getData("/community/myCommunitys.do", {}, function (result) {
-        //     if (result.code = "200") {
-        //         template('#myCommunityTmpl', '#myCommunity', result.message);
-        //     } else {
-        //         alert(result.message);
-        //     }
-        // })
     }
 
 

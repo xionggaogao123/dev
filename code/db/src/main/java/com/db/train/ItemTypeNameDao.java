@@ -29,8 +29,10 @@ public class ItemTypeNameDao extends BaseDao {
      * @return
      */
     public List<ItemTypeEntry> getLevelEntries(int level,ObjectId parentId){
-        BasicDBObject query=new BasicDBObject().append("lel",level)
-                .append("pid",parentId);
+        BasicDBObject query=new BasicDBObject().append("lel",level);
+        if(null!=parentId) {
+                query.append("pid", parentId);
+        }
         List<ItemTypeEntry> entries=new ArrayList<ItemTypeEntry>();
         List<DBObject> dbObjects=find(MongoFacroty.getAppDB(),Constant.COLLECTION_TRAIN_ITEMTYPENAME,query);
         if(null!=dbObjects&&!dbObjects.isEmpty()){

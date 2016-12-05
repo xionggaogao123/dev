@@ -17,9 +17,9 @@ public class RegionService {
 
     private RegionDao regionDao=new RegionDao();
 
-    public List<RegionDTO> getRegionList(ObjectId parentId){
+    public List<RegionDTO> getRegionList(int level,ObjectId parentId){
         List<RegionDTO> dtos=new ArrayList<RegionDTO>();
-        List<RegionEntry> entries=regionDao.getRegionEntries(parentId);
+        List<RegionEntry> entries=regionDao.getRegionEntries(level,parentId);
         for(RegionEntry regionEntry:entries){
             dtos.add(new RegionDTO(regionEntry));
         }

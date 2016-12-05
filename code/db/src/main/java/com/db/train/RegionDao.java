@@ -25,9 +25,11 @@ public class RegionDao extends BaseDao {
      * @param parentId
      * @return
      */
-    public List<RegionEntry> getRegionEntries(ObjectId parentId){
-        BasicDBObject query=new BasicDBObject()
-                .append("pid",parentId);
+    public List<RegionEntry> getRegionEntries(int level,ObjectId parentId){
+        BasicDBObject query=new BasicDBObject().append("lel",level);
+        if(null!=parentId) {
+            query.append("pid", parentId);
+        }
         List<RegionEntry> regionEntries=new ArrayList<RegionEntry>();
         List<DBObject> dbObjects=find(MongoFacroty.getAppDB(),Constant.COLLECTION_TRAIN_REGIONS,query);
         if(null!=dbObjects&&!dbObjects.isEmpty()){

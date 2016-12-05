@@ -326,7 +326,8 @@ public class CommunityController extends BaseController {
     @ResponseBody
     @SessionNeedless
     public RespObj getMyCommunitys(@RequestParam(defaultValue = "1",required = false)int page,
-                                   @RequestParam(defaultValue = "100",required = false)int pageSize) {
+                                   @RequestParam(defaultValue = "100",required = false)int pageSize,
+                                   @RequestParam(defaultValue = "app",required = false)String platform) {
         try {
             ObjectId userId = getUserId();
             List<CommunityDTO> communityDTOList = new ArrayList<CommunityDTO>();
@@ -347,18 +348,25 @@ public class CommunityController extends BaseController {
                     }
                 }
                 communityDTOList = communityService.getCommunitys(userId, page, pageSize);
-                int count=communityService.countMycommunitys(userId);
-                Map<String,Object> map=new HashMap<String,Object>();
-                map.put("list",communityDTOList);
-                map.put("count",count);
-                map.put("pageSize",pageSize);
-                map.put("page",page);
-                return RespObj.SUCCESS(map);
+                if("web".equals(platform)) {
+                    int count = communityService.countMycommunitys(userId);
+                    Map<String, Object> map = new HashMap<String, Object>();
+                    map.put("list", communityDTOList);
+                    map.put("count", count);
+                    map.put("pageSize", pageSize);
+                    map.put("page", page);
+                    return RespObj.SUCCESS(map);
+                }else{
+                    return RespObj.SUCCESS(communityDTOList);
+                }
             }
         } catch (Exception e) {
             return RespObj.FAILD(e.getMessage());
         }
     }
+
+
+
 
     /**
      * 获取热门社区

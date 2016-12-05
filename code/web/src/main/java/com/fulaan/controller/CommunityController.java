@@ -1390,17 +1390,17 @@ public class CommunityController extends BaseController {
     }
 
     private static class UserSearchInfo{
-        private String id;
+        private String userId;
         private String avator;
         private String nickName;
         private String userName;
 
-        public String getId() {
-            return id;
+        public String getUserId() {
+            return userId;
         }
 
-        public void setId(String id) {
-            this.id = id;
+        public void setUserId(String userId) {
+            this.userId = userId;
         }
 
         public String getAvator() {
@@ -1430,7 +1430,7 @@ public class CommunityController extends BaseController {
 
     public UserSearchInfo getDto(UserEntry userEntry) {
         UserSearchInfo dto = new UserSearchInfo();
-        dto.setId(userEntry.getID().toString());
+        dto.setUserId(userEntry.getID().toString());
         dto.setAvator(AvatarUtils.getAvatar(userEntry.getAvatar(), AvatarType.MIN_AVATAR.getType()));
         dto.setNickName(userEntry.getNickName());
         dto.setUserName(userEntry.getUserName());

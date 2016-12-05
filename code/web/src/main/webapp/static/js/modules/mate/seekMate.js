@@ -168,12 +168,13 @@ define(['jquery', 'pagination', 'common'], function (require, exports, module) {
 
         $('body').on('click','.act-already-join',function () {
 
-            alert('haha');
+            window.open('/community/communityAllType.do','__blank');
         });
 
         $('body').on('click','.act-already-push',function () {
 
-            alert('haha');
+            window.open('/community/communityAllType.do','__blank');
+
         });
 
         $('body').on('click', '.wind-biaoq em', function () {
@@ -354,7 +355,7 @@ define(['jquery', 'pagination', 'common'], function (require, exports, module) {
             desc: desc,
             endTime: date
         };
-        common.getData('/activity/publish.do', requestParm, function (resp) {
+        common.getData('/factivity/publish.do', requestParm, function (resp) {
             if (resp.code == 200) {
                 $('.wind-act-fq').fadeOut();
                 $('.bg').fadeOut();
@@ -367,7 +368,7 @@ define(['jquery', 'pagination', 'common'], function (require, exports, module) {
             lon: lon,
             lat: lat
         };
-        common.getData('/activity/nearActivitys.do', requestParm, function (resp) {
+        common.getData('/factivity/nearActivitys.do', requestParm, function (resp) {
             if (resp.code == "200") {
                 template('#activityBox', '#nearnewsBox', resp.message.result);
                 activitys = resp.message.result;
@@ -380,7 +381,7 @@ define(['jquery', 'pagination', 'common'], function (require, exports, module) {
         var requestParm = {
             acid: $('.wind-act-det').attr('acid')
         };
-        common.getData('/activity/sign.do', requestParm, function (resp) {
+        common.getData('/factivity/sign.do', requestParm, function (resp) {
             if (resp.code == "200") {
                 if (resp.message) {
                     alert("报名成功");

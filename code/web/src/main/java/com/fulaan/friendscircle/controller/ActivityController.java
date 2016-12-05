@@ -50,6 +50,7 @@ import java.util.*;
 @Controller
 @RequestMapping("/activity")
 public class ActivityController extends BaseController {
+
     private static final Logger logger = Logger.getLogger(ActivityController.class);
     @Resource
     private UserService userService;

@@ -98,8 +98,8 @@
     </div>
     <div class="near-right clearfix">
         <div class="act-nav">
-            <div class="act-already-join">已参加活动<br><i>10</i></div>
-            <div class="act-already-push">已发布活动<br><i>10</i></div>
+            <div class="act-already-join">已参加活动<br><i>${signActivityCount}</i></div>
+            <div class="act-already-push">已发布活动<br><i>${publishActivityCount}</i></div>
             <div class="act-nav-line"></div>
         </div>
         <div class="act-nav2">

@@ -419,9 +419,7 @@ define(['jquery', 'pagination', 'common'], function (require, exports, module) {
         $.ajax({
             url:'/group/offlineMsgCount.do',
             success: function(resp){
-                var hx_notice = $('.hx-notice span');
                 var offCount = resp.message.offlineCount;
-
                 if(offCount > 0) {
                     $('#hx-icon').removeClass("sp2");
                     $('#hx-icon').addClass('sp1');

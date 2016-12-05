@@ -20,7 +20,7 @@ import java.text.ParseException;
  * 找活动
  */
 @Controller
-@RequestMapping("/activity")
+@RequestMapping("/factivity")
 public class FActivityController extends BaseController {
 
     @Autowired
@@ -48,14 +48,47 @@ public class FActivityController extends BaseController {
     public RespObj nearActivitys(@RequestParam(value = "lon", required = false, defaultValue = "0") double lon,
                                  @RequestParam(value = "lat", required = false, defaultValue = "0") double lat,
                                  @RequestParam(value = "page", required = false, defaultValue = "1") int page,
-                                 @RequestParam(value = "page", required = false, defaultValue = "10") int pageSize) {
+                                 @RequestParam(value = "pageSize", required = false, defaultValue = "10") int pageSize) {
         return RespObj.SUCCESS(fActivityService.getNearActivitys(lon, lat, page, pageSize));
     }
 
-    @RequestMapping("sign")
+    @RequestMapping("/sign")
     @ResponseBody
     public RespObj signActivity(@RequestParam(value = "acid") @ObjectIdType ObjectId acid,
                                 @RequestParam(value = "signText", required = false, defaultValue = "") String signText) {
-        return RespObj.SUCCESS(fActivityService.signActivity(acid,getUserId(),signText));
+        return RespObj.SUCCESS(fActivityService.signActivity(acid, getUserId(), signText));
     }
+
+    @RequestMapping("/published")
+    @ResponseBody
+    public RespObj published(@RequestParam(value = "page", required = false, defaultValue = "1") int page,
+                             @RequestParam(value = "pageSize", required = false, defaultValue = "10") int pageSize) {
+        return RespObj.SUCCESS(fActivityService.getPublishedActivity(getUserId(), page, pageSize));
+    }
+
+    @RequestMapping("/signed")
+    @ResponseBody
+    public RespObj signed(@RequestParam(value = "page", required = false, defaultValue = "1") int page,
+                          @RequestParam(value = "pageSize", required = false, defaultValue = "10") int pageSize) {
+        return RespObj.SUCCESS(fActivityService.getSignedActivity(getUserId(), page, pageSize));
+    }
+
+    @RequestMapping("/attended")
+    @ResponseBody
+    public RespObj attended(@RequestParam(value = "page", required = false, defaultValue = "1") int page,
+                            @RequestParam(value = "pageSize", required = false, defaultValue = "10") int pageSize) {
+        return RespObj.SUCCESS(fActivityService.getAttendedActivity(getUserId(), page, pageSize));
+    }
+
+    @RequestMapping("/cancelSign")
+    @ResponseBody
+    public RespObj cancel(@ObjectIdType ObjectId acid) {
+        if (!fActivityService.isUserSigned(acid, getUserId())) {
+            return RespObj.FAILD("您未参加此活动");
+        }
+        fActivityService.cancelSignActivity(acid, getUserId());
+        return RespObj.SUCCESS;
+    }
+
+
 }

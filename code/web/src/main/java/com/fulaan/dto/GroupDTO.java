@@ -45,7 +45,7 @@ public class GroupDTO {
         this.managers = managers;
         this.isM = groupEntry.getIsName();
         this.communityId = groupEntry.getCommunityId() == null ? "" : groupEntry.getCommunityId().toString();
-        this.isBindCommunity = groupEntry.getCommunityId() == null ? false : true;
+        this.isBindCommunity = groupEntry.getCommunityId() != null;
     }
 
     public GroupDTO(GroupEntry groupEntry) {

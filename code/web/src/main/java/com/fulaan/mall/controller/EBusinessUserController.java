@@ -10,6 +10,7 @@ import com.fulaan.forum.service.FInvitationService;
 import com.fulaan.forum.service.FScoreService;
 import com.fulaan.user.controller.UserController;
 import com.fulaan.user.service.UserService;
+import com.fulaan.util.QRUtils;
 import com.pojo.app.SessionValue;
 import com.pojo.ebusiness.EVoucherEntry;
 import com.pojo.forum.FInvitationEntry;
@@ -412,7 +413,16 @@ public class EBusinessUserController extends BaseController {
             } else {
                 userEntry.setEmailValidateCode(Constant.EMPTY);
             }
+
+
             userId = userService.addUser(userEntry);
+
+            /**
+             * 注册时生成用户二维码
+             */
+            String qrCode= QRUtils.getPersonQrUrl(userId);
+            userEntry.setQRCode(qrCode);
+            userService.addEntry(userEntry) ;
 
             //发起激活
             if (StringUtils.isNotBlank(email)) {

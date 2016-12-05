@@ -8,9 +8,14 @@ import com.fulaan.dto.MemberDTO;
 import com.fulaan.service.CommunityService;
 import com.fulaan.service.GroupService;
 import com.fulaan.service.MemberService;
+import com.fulaan.user.service.UserService;
 import com.fulaan.util.DateUtils;
+import com.pojo.user.AvatarType;
+import com.pojo.user.UserEntry;
 import com.sys.constants.Constant;
+import com.sys.utils.AvatarUtils;
 import com.sys.utils.RespObj;
+import org.apache.commons.lang.StringUtils;
 import org.bson.types.ObjectId;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -21,6 +26,8 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
+import java.util.HashMap;
+import java.util.Map;
 
 /**
  * Created by jerry on 2016/10/25.
@@ -36,6 +43,10 @@ public class QRController extends BaseController {
     private MemberService memberService;
     @Autowired
     private GroupService groupService;
+    @Autowired
+    private UserService userService;
+
+
 
     /**
      * 群组二维码入口
@@ -108,13 +119,21 @@ public class QRController extends BaseController {
      * @param response
      */
     @RequestMapping("/person/{id}")
+    @SessionNeedless
     @ResponseBody
-    public RespObj personHandle(HttpServletRequest request, HttpServletResponse response) throws IOException {
-        if (getUserId() == null) {
-            response.sendRedirect(Constant.COLLECTION_MALL_MARKET_URL);
-            return null;
-        }
-        return RespObj.SUCCESS;
+    public RespObj personHandle(@PathVariable @ObjectIdType ObjectId id,HttpServletRequest request,
+                                HttpServletResponse response) throws IOException {
+//        if (getUserId() == null) {
+//            response.sendRedirect(Constant.COLLECTION_MALL_MARKET_URL);
+//            return null;
+//        }
+
+        UserEntry userEntry=userService.find(id);
+        Map<String,String> map=new HashMap<String,String>();
+        map.put("userId",userEntry.getID().toString());
+        map.put("nickName",StringUtils.isNotBlank(userEntry.getNickName())?userEntry.getNickName():userEntry.getUserName());
+        map.put("avator", AvatarUtils.getAvatar(userEntry.getAvatar(), AvatarType.MIN_AVATAR.getType()));
+        return RespObj.SUCCESS(map);
     }
 
     @RequestMapping("/community/{communityId}")

@@ -181,9 +181,16 @@ define(['jquery', 'pagination', 'common'], function (require, exports, module) {
         var param = {platform:"web"};
         common.getData('/community/myCommunitys',param,function (resp) {
 
-            for(var i=0;i<resp.message.list.length;i++) {
-                $('#coms').append("<li class='com-li' value='"+ resp.message.list[i].id +"'>" + resp.message.list[i].name + "</li>");
+            if(undefined!=resp.message.list){
+                for(var i=0;i<resp.message.list.length;i++) {
+                    $('#coms').append("<li class='com-li' value='"+ resp.message.list[i].id +"'>" + resp.message.list[i].name + "</li>");
+                }
+            }else{
+                for(var i=0;i<resp.message.length;i++) {
+                    $('#coms').append("<li class='com-li' value='"+ resp.message[i].id +"'>" + resp.message[i].name + "</li>");
+                }
             }
+
 
             $('#coms li').each(function () {
                 var mywidth = $(this).width();

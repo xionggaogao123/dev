@@ -427,6 +427,9 @@ public class UserService {
     }
 
 
+    public ObjectId addEntry(UserEntry e){
+        return userDao.addEntry(e);
+    }
     /**
      * 添加用户
      */
@@ -1349,8 +1352,8 @@ public class UserService {
         return userDao.getUserEntryList(userIds, Constant.FIELDS);
     }
 
-    public List<UserEntry> getUserList(String field, String regularName, int page, int pageSize, String lastId) {
-        return userDao.getEntriesByUserName(field, regularName, page, pageSize, lastId);
+    public List<UserEntry> getUserList(String field, String regularName, int page, int pageSize) {
+        return userDao.getEntriesByUserName(field, regularName, page, pageSize);
     }
 
     public int countUserList(String field, String userName) {

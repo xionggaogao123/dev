@@ -895,9 +895,11 @@ public class CommunityService {
             }
         } else {
             for (CommunityEntry communityEntry : communityEntries) {
-                if (!memberService.isGroupMember(new ObjectId(communityEntry.getGroupId()), userId)) {
-                    CommunityDTO communityDTO = new CommunityDTO(communityEntry);
-                    communityDTOs.add(communityDTO);
+                if(null!=communityEntry.getOwerID()) {
+                    if (!memberService.isGroupMember(new ObjectId(communityEntry.getGroupId()), userId)) {
+                        CommunityDTO communityDTO = new CommunityDTO(communityEntry);
+                        communityDTOs.add(communityDTO);
+                    }
                 }
             }
             //判断查询的是否满足所有条件

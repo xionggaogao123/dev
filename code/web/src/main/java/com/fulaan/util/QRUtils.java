@@ -37,7 +37,8 @@ public class QRUtils {
      * @return
      */
     public static String getPersonQrUrl(ObjectId userId) {
-        String qrCode = "http://www.fulaan.com/qr/person/" + userId.toString();
+//        String qrCode = "http://www.fulaan.com/qr/person/" + userId.toString();
+        String qrCode = "http://192.168.1.218:8080/qr/person/" + userId.toString();
         try {
             return getQrUrl(qrCode);
         } catch (Exception e) {

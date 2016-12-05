@@ -130,6 +130,8 @@ import java.util.List;
  *  comms: 我的社区--包含我加入的和我创建的
  *
  *  usts: 用户标签  {cd:1,tag:'跑步‘}
+ *
+ *  qrCode:个人二维码
  * }
  * </pre>
  *
@@ -1166,6 +1168,19 @@ public class UserEntry extends BaseDBObject {
     }
   }
 
+
+  public String getQRCode(){
+    if(getBaseEntry().containsField("qrc")){
+       return getSimpleStringValue("qrc");
+    }else{
+      return Constant.EMPTY;
+    }
+  }
+
+  public void setQRCode(String qrCode){
+     setSimpleValue("qrc",qrCode);
+  }
+
   public static class UserTagEntry extends BaseDBObject{
     public UserTagEntry(BasicDBObject dbObject){
       setBaseEntry(dbObject);
@@ -1187,6 +1202,7 @@ public class UserEntry extends BaseDBObject {
     }
 
   }
+
 
 
 }

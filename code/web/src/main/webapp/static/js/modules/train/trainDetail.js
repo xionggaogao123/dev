@@ -5,36 +5,43 @@
 * @Last Modified time: 2016-12-01 15:40:02
 */
 
-'use strict';
-	
-    $(function(){
-        $('.train-nav span').click(function(){
+define(['jquery', 'pagination', 'common'], function (require, exports, module) {
+
+    var common = require('common');
+    require('pagination');
+
+    var trainDetail = {};
+    trainDetail.init = function () {
+    };
+
+    $(document).ready(function () {
+        $('body').on('click','.train-nav span',function(){
             $('.train-nav span').removeClass('cur1');
             $(this).addClass('cur1');
         });
-        $('.d1f span').click(function(){
+        $('body').on('click','.d1f span',function(){
             $('.d1f span').removeClass('cur2');
             $(this).addClass('cur2');
         });
-    	$('.d2f span').click(function(){
+    	$('body').on('click','.d2f span',function(){
     		$('.d2f span').removeClass('cur2');
     		$(this).addClass('cur2');
     	});
-    	$('.lesson-menu span').click(function(){
+    	$('body').on('click','.lesson-menu span',function(){
     		$(this).addClass('cur3').siblings('span').removeClass('cur3');
     	});
-        $('.train-detail .nav span').click(function(){
+        $('body').on('click','.train-detail .nav span',function(){
             $(this).addClass('cur4').siblings('span').removeClass('cur4');
         });
-        $('.train-detail .nav .sp1').click(function(){
+        $('body').on('click','.train-detail .nav .sp1',function(){
             $('.train-infor').show();
             $('.train-pj').hide();
         })
-        $('.train-detail .nav .sp2').click(function(){
+        $('body').on('click','.train-detail .nav .sp2',function(){
             $('.train-infor').hide();
             $('.train-pj').show();
         })
-
-        
-
     })
+
+    module.exports = trainDetail;
+});

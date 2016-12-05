@@ -32,6 +32,11 @@ public class UserDao extends BaseDao {
 
     private static final Logger logger = Logger.getLogger(SynDao.class);
 
+    public ObjectId addEntry(UserEntry e){
+        save(MongoFacroty.getAppDB(), Constant.COLLECTION_USER_NAME, e.getBaseEntry());
+        return e.getID();
+    }
+
     /**
      * 添加用户
      *
@@ -920,29 +925,14 @@ public class UserDao extends BaseDao {
         return retList;
     }
 
-    public List<UserEntry> getEntriesByUserName(String field, String userName, int page, int pageSize, String lastId) {
+    public List<UserEntry> getEntriesByUserName(String field, String userName, int page, int pageSize) {
         List<UserEntry> retList = new ArrayList<UserEntry>();
         BasicDBObject query = getQueryCondition(field, userName);
-        DB myMongo = MongoFacroty.getAppDB();
-        DBCollection userCollection = myMongo.getCollection(Constant.COLLECTION_USER_NAME);
-        DBCursor limit = null;
-        if (page == 1) {
-            limit = userCollection.find(query)
-                    .sort(Constant.MONGO_SORTBY_ASC).limit(pageSize);
-        } else {
-            if (StringUtils.isNotBlank(lastId)) {
-                limit = userCollection
-                        .find(new BasicDBObject(Constant.ID, new BasicDBObject(
-                                Constant.MONGO_GT, new ObjectId(lastId))))
-                        .sort(Constant.MONGO_SORTBY_ASC).limit(pageSize);
-            } else {
-                limit = userCollection.find(query).skip((page - 1) * pageSize)
-                        .sort(Constant.MONGO_SORTBY_ASC).limit(pageSize);
+        List<DBObject> list = find(MongoFacroty.getAppDB(), Constant.COLLECTION_USER_NAME, query, Constant.FIELDS, Constant.MONGO_SORTBY_DESC,(page-1)*pageSize,pageSize);
+        if(null != list && !list.isEmpty()){
+            for (DBObject dbo : list) {
+                retList.add(new UserEntry((BasicDBObject) dbo));
             }
-        }
-
-        while (limit.hasNext()) {
-            retList.add(new UserEntry((BasicDBObject) limit.next()));
         }
         return retList;
     }

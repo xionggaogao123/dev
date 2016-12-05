@@ -377,7 +377,7 @@ public class CommunityController extends BaseController {
     @ResponseBody
     @SessionNeedless
     public RespObj hotCommunitys(@RequestParam(defaultValue = "1",required = false)int page,
-                                 @RequestParam(defaultValue = "28",required = false)int pageSize,
+                                 @RequestParam(defaultValue = "21",required = false)int pageSize,
                                  @RequestParam(defaultValue = "",required = false)String lastId) {
         ObjectId userId = getUserId();
 
@@ -1345,13 +1345,9 @@ public class CommunityController extends BaseController {
                         ObjectId userId = getUserId();
                         String key = userId.toString() + "$" + regular;
                         Map map = RedisUtils.getMap(key);
-                        String lastId = "";
-                        if (null != map && map.size() != 0) {
-                            lastId = (String) map.get("lastId");
-                        }
                         UserEntry userEntry = userService.getUserInfoEntry(regular);
                         if (null != userEntry) {
-                            List<UserEntry> userEntries = userService.getUserList(field1, regular, page, pageSize, lastId);
+                            List<UserEntry> userEntries = userService.getUserList(field1, regular, page, pageSize);
                             dtos = getUserInfo(userEntries);
                             if (null != map && map.size() != 0) {
                                 count = Integer.parseInt((String) map.get("count"));
@@ -1359,7 +1355,7 @@ public class CommunityController extends BaseController {
                                 count = userService.countUserList(field1, regular);
                             }
                         } else {
-                            List<UserEntry> userEntries = userService.getUserList(filed2, regular, page, pageSize, lastId);
+                            List<UserEntry> userEntries = userService.getUserList(filed2, regular, page, pageSize);
                             dtos = getUserInfo(userEntries);
                             if (null != map && map.size() != 0) {
                                 count = Integer.parseInt((String) map.get("count"));
@@ -1370,7 +1366,6 @@ public class CommunityController extends BaseController {
                         //存储key-value
                         Map hashMap = new HashMap();
                         if (dtos.size() > 0) {
-                            hashMap.put("lastId", dtos.get(dtos.size() - 1).getUserId());
                             hashMap.put("count", count + "");
                         }
                         if (null != hashMap && hashMap.size() > 0) {

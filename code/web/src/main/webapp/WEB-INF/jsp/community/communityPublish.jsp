@@ -221,7 +221,7 @@
             {{~it:value:index}}
             <li>
                 <img src="{{=value.avator}}">
-                <p>{{=value.userName}}</p>
+                <p>{{=value.userName}}/(昵称:){{=value.nickName}}</p>
                 <button class="btn3" userId="{{=value.userId}}">邀请</button>
             </li>
             {{~}}

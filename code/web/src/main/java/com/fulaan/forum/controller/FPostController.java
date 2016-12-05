@@ -2888,6 +2888,7 @@ public class FPostController extends BaseController {
 
         UserEntry userEntry = userService.find(new ObjectId(sessionValue.getId()));
         model.put("forumScore", userEntry.getForumScore());
+        model.put("qrCode",userEntry.getQRCode());
         model.put("forumExperience", userEntry.getForumExperience());
         long stars = fLevelService.getStars(userEntry.getForumExperience());
         model.put("stars", stars);

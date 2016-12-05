@@ -121,9 +121,13 @@ define(['jquery', 'pagination', 'common'], function (require, exports, module) {
     }
 
     function getMyCommunity(){
-        common.getData("/community/myCommunitys.do",{platform:"web"},function(result){
+        common.getData("/community/myCommunitys.do",{pageSize:9,platform:"web"},function(result){
             if(result.code="200"){
-                template('#myCommunityTmpl','#myCommunity',result.message.list);
+                if(undefined!=result.message.list){
+                    template('#myCommunityTmpl','#myCommunity',result.message.list);
+                }else{
+                    template('#myCommunityTmpl','#myCommunity',result.message);
+                }
             }else{
                 alert(result.message);
             }
@@ -134,7 +138,7 @@ define(['jquery', 'pagination', 'common'], function (require, exports, module) {
      * 获取热门社区
      */
     function getHotCommunity(){
-        common.getData('/community/hotCommunitys.do',{},function (resp) {
+        common.getData('/community/hotCommunitys.do',{pageSize:9},function (resp) {
             if(resp.code=="200"){
                 template('#hotCommunityTmpl','#hotCommunity',resp.message);
             }

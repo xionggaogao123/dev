@@ -9,6 +9,8 @@ import com.fulaan.cache.CacheHandler;
 import com.fulaan.playmate.service.MateService;
 import com.fulaan.pojo.FLoginLog;
 import com.fulaan.pojo.User;
+import com.fulaan.util.QRUtils;
+import com.fulaan.util.ThreadLocalUtil;
 import com.fulaan.util.Validator;
 import com.fulaan.forum.service.FLogService;
 import com.fulaan.forum.service.FScoreService;
@@ -386,8 +388,18 @@ public class UserController extends BaseController {
             mateService.saveMateEntry(e.getID());
         }
         mateService.updateAged(e.getID(),e.getBirthDate());
+
+        //生成个人二维码
+        if(StringUtils.isBlank(e.getQRCode())){
+            ThreadLocalUtil t=new ThreadLocalUtil();
+            Thread t1 = new Thread(t,e.getID().toString());
+            t1.start();
+        }
+
         return respObj;
     }
+
+
 
     /**
      * 用户登录

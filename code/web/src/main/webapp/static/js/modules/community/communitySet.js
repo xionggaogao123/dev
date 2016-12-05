@@ -95,7 +95,7 @@ define(['jquery', 'pagination', 'common'], function (require, exports, module) {
 
     //获取我的社区
     function getHotCommunity() {
-        common.getData("/community/hotCommunitys.do", {}, function (result) {
+        common.getData("/community/hotCommunitys.do", {pageSize:9}, function (result) {
             if (result.code = "200") {
                 template('#communityTmpl', '#hotCommunity', result.message);
 
@@ -121,29 +121,33 @@ define(['jquery', 'pagination', 'common'], function (require, exports, module) {
             success: function (resp) {
                 $('#myPage').html("");
                 if (resp.code == "200") {
-                    var resultData = resp.message.list;
-                    $('#userCount').text(resp.message.count);
-                    if (resultData.length > 0) {
-                        $('#myPage').jqPaginator({
-                            totalPages: Math.ceil(resp.message.count / resp.message.pageSize) == 0 ? 1 : Math.ceil(resp.message.count / resp.message.pageSize),//总页数
-                            visiblePages: 3,//分多少页
-                            currentPage: parseInt(page),//当前页数
-                            first: '<li class="first"><a href="javascript:void(0);">首页<\/a><\/li>',
-                            prev: '<li class="prev"><a href="javascript:void(0);">&lt;<\/a><\/li>',
-                            next: '<li class="next"><a href="javascript:void(0);">&gt;<\/a><\/li>',
-                            last: '<li class="last"><a href="javascript:void(0);">末页<\/a><\/li>',
-                            page: '<li class="page"><a href="javascript:void(0);">{{page}}<\/a><\/li>',
-                            onPageChange: function (n) { //回调函数
-                                if (isInit) {
-                                    isInit = false;
-                                } else {
-                                    getMyCommunity(n);
-                                    $('body,html').animate({scrollTop: 0}, 20);
+                    if(undefined!=resp.message.list){
+                        var resultData = resp.message.list;
+                        $('#userCount').text(resp.message.count);
+                        if (resultData.length > 0) {
+                            $('#myPage').jqPaginator({
+                                totalPages: Math.ceil(resp.message.count / resp.message.pageSize) == 0 ? 1 : Math.ceil(resp.message.count / resp.message.pageSize),//总页数
+                                visiblePages: 3,//分多少页
+                                currentPage: parseInt(page),//当前页数
+                                first: '<li class="first"><a href="javascript:void(0);">首页<\/a><\/li>',
+                                prev: '<li class="prev"><a href="javascript:void(0);">&lt;<\/a><\/li>',
+                                next: '<li class="next"><a href="javascript:void(0);">&gt;<\/a><\/li>',
+                                last: '<li class="last"><a href="javascript:void(0);">末页<\/a><\/li>',
+                                page: '<li class="page"><a href="javascript:void(0);">{{page}}<\/a><\/li>',
+                                onPageChange: function (n) { //回调函数
+                                    if (isInit) {
+                                        isInit = false;
+                                    } else {
+                                        getMyCommunity(n);
+                                        $('body,html').animate({scrollTop: 0}, 20);
+                                    }
                                 }
-                            }
-                        });
+                            });
+                        }
+                        template('#myCommunityTmpl','#myCommunity',resultData);
+                    }else{
+                        template('#myCommunityTmpl','#myCommunity',resp.message);
                     }
-                    template('#myCommunityTmpl','#myCommunity',resultData);
                 } else {
                     alert(resp.message);
                 }

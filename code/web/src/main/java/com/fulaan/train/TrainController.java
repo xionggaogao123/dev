@@ -3,6 +3,7 @@ package com.fulaan.train;
 import com.fulaan.annotation.LoginInfo;
 import com.fulaan.annotation.SessionNeedless;
 import com.fulaan.controller.BaseController;
+import com.fulaan.train.dto.InstituteDTO;
 import com.fulaan.train.dto.ItemTypeDTO;
 import com.fulaan.train.dto.RegionDTO;
 import com.fulaan.train.service.InstituteService;
@@ -80,7 +81,12 @@ public class TrainController extends BaseController{
                                  String type,
                                  String area){
         Map<String,Object> map=new HashMap<String,Object>();
-
+        List<InstituteDTO> dtos=instituteService.getInstitutes(type, area, page, pageSize);
+        int count=instituteService.countInstitutes(type, area);
+        map.put("list",dtos);
+        map.put("count",count);
+        map.put("page",page);
+        map.put("pageSize",pageSize);
         return  RespObj.SUCCESS(map);
 
     }

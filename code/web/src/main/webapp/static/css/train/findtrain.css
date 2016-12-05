@@ -78,14 +78,17 @@ pre{white-space: pre-wrap;word-wrap: break-word;}
 }
 
 .city-select {
-	height: 22px;
+	height: 30px;
 	margin-right: 5px;
 	position: relative;
 	z-index: 32;
+	width: 90px;
 }
-
-.city-select.hover .selector {
-	color: #FF5A00;
+.city-select:hover .d-traing{
+	display: block;
+}
+.city-select:hover .hide_city_group{
+	display: block;
 }
 
 .city-select .selector {
@@ -103,14 +106,36 @@ pre{white-space: pre-wrap;word-wrap: break-word;}
 	border-left: 1px solid #666;
 }
 
-a {
-	text-decoration: none;
-	color: #333;
+.d-traing{
+	display: none;
+	position: absolute;
+	top:20px;
+	left: 33px;
+	z-index: 1;
+	width: 17px;
+	height:9px;
+	background: url("/static/images/train/down-train1.png");
 }
-
-.city-select .hide_city_group {
+.hide_city_group {
 	display: none;
 	padding: 10px;
+	width:305px;
+	border:#dcdcdc;
+	background: #fff;
+	position: absolute;
+	top: 27px;
+	left: 14px;
+	border:1px solid #dcdcdc;
+	box-shadow: 1px 1px 2px #ccc;
+}
+.hide_city_group>div{
+	float: left;
+	width: 60px;
+	padding: 2px 0;
+}
+.a-selected{
+	background-color: #FF5A00;
+	color: #fff;
 }
 
 .city-select .hideMap {
@@ -126,180 +151,12 @@ a {
 	color: #444;
 }
 
-.city-select .hideMap .showPanel {
-	border-bottom: solid 1px #E9E9E9;
-	padding-bottom: 10px;
-}
-
-.city-select .hideMap .showPanel .mycity {
-	line-height: 20px;
-}
-
-.city-select .hideMap .showPanel .near {
-	height: 20px;
-	display: inline-block;
-	padding: 0 6px 0 20px;
-	text-align: center;
-	line-height: 20px;
-	background: #FFFAF0 url('/static/images/train/change_city3.gif') -20px 3px no-repeat;
-	border: 1px solid #F5E6BF;
-	border-radius: 3px;
-	color: #CF2C2D;
-}
-
-.Right {
-	float: right;
-}
-
-.city-select .hideMap .showPanel2 {
-	padding-top: 10px;
-}
-
-.city-select .hideMap .showPanel {
-	border-bottom: solid 1px #E9E9E9;
-	padding-bottom: 10px;
-}
-
-.city-select .hideMap .showPanel2 .city_words a:hover,.city-select .hideMap .showPanel2 .hot_city a:hover,.city-select .hideMap .cityMap .city_list td a:hover{
-	color: #FFF !important;
-	background: #FF5A00;
-	text-decoration: none;
-}
-
-.city-select .hideMap .showPanel2 .hot_city a {
-	display: inline-block;
-	padding: 0 3px;
-	line-height: 19px;
-	margin-right: 2px;
-}
-
-.city-select .hideMap .showPanel2 a {
-	color: #434343;
-}
 
 .mt10 {
 	margin-top: 10px;
 }
 
-.city-select .hideMap .showPanel2 .search_city_tip {
-	position: absolute;
-	width: 169px;
-	height: 20px;
-	text-align: center;
-	color: #EE7001;
-	background: #FFFDE6;
-	border: 1px solid #E5935B;
-	box-shadow: 2px 2px 2px #999;
-	margin-top: 25px;
-	line-height: 20px;
-}
 
-.city-select .hideMap .showPanel2 .search_city_input {
-	width: 114px;
-	height: 22px;
-	padding: 0 5px;
-	border: 1px solid #CCC;
-	border-right: 0;
-	color: #999;
-	vertical-align: middle;
-	line-height: 22px\0;
-}
-
-.city-select .hideMap .showPanel2 .search_city_submit {
-	border: 1px solid #BBB;
-	display: inline-block;
-	width: 46px;
-	height: 24px;
-	text-align: center;
-	line-height: 22px;
-	color: #444;
-	vertical-align: middle;
-	background: #FFF;
-	font: normal 12px Arial;
-	cursor: pointer;
-	background: url('/static/images/train/change_city3.gif') -45px -15px;
-}
-
-.city-select .hideMap .showPanel2 .city_words a {
-	display: inline-block;
-	width: 17px;
-	text-align: center;
-	color: #FF5A00;
-	font: normal 14px Arial;
-}
-
-.city-select .hideMap .scrollBody {
-	height: 180px;
-	margin-top: 10px;
-	overflow: hidden;
-}
-
-.city-select .hideMap .cityMap {
-	width: 385px;
-	height: 180px;
-	float: left;
-}
-
-.city-select .hideMap .cityMap .city_list {
-	width: 385px;
-}
-
-table {
-	border-collapse: collapse;
-	border-spacing: 0;
-}
-
-.city-select .hideMap .cityMap .city_list th {
-	vertical-align: top;
-}
-
-th,td {
-	vertical-align: middle;
-}
-
-.city-select .hideMap .cityMap .city_list th div {
-	width: 19px;
-	height: 19px;
-	padding-right: 2px;
-	background: url('/static/images/train/change_city3.gif') -20px -17px;
-	text-align: center;
-	line-height: 19px;
-	color: #FFF;
-	font: normal 14px Arial;
-	margin-bottom: 11px;
-	overflow: hidden;
-}
-
-.city-select .hideMap .cityMap .city_list td {
-	line-height: 19px;
-	vertical-align: top;
-	padding-bottom: 11px;
-	padding-left: 5px;
-}
-
-.city-select .hideMap .cityMap .city_list td a {
-	display: inline-block;
-	padding: 0 5px;
-	line-height: 19px;
-}
-
-.city-select .hideMap .scrollBar {
-	width: 10px;
-	height: 180px;
-	float: right;
-	overflow: hidden;
-	background: url('/static/images/train/change_city3.gif') -10px 0 repeat-y;
-	cursor: pointer;
-}
-
-.city-select .hideMap .scrollBar span {
-	width: 10px;
-	height: 36px;
-	overflow: hidden;
-	cursor: pointer;
-	background: url('/static/images/train/change_city3.gif') 0 0 no-repeat;
-	display: inline-block;
-}
 .train-nav{
 	height: 51px;
 	line-height: 51px;
@@ -317,6 +174,13 @@ th,td {
 	transition: all .3s ease;
 	cursor: pointer;
 	margin-right: 1px;
+}
+.hide_city_group > div a{
+	text-decoration: none;
+	line-height:24px;
+	height: 24px;
+	padding:0 8px;
+	display: inline-block;
 }
 .train-nav>span:hover{
 	background: #23B182;
@@ -357,7 +221,7 @@ th,td {
 .train-nav .select-arrow{
 	position: absolute;
 	top: 10px;
-	right: 306px;
+	right: 300px;
 	width: 19px;
 	height: 33px;
 	background: url('/static/images/train/select_arrow.png');

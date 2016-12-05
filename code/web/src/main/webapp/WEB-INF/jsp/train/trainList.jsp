@@ -19,37 +19,46 @@
     <div class="top-city">
         <img src="/static/images/train/location01.png">
         <div class="city">
-            <span id="DY_site_name" class="city-name Left">上海</span>
-            <div id="JS_hide_city_menu_11" class="city-select cut_handdler Left">
-                <a href="javascript:void(0);" class="common-bg selector">切换城市</a>
-                <div id="JS_header_city_bar_box" class="hide_city_group">
-                    <div class="hideMap">
-                        <div class="showPanel clearfix">
-                            <div class="Left mycity">
-                                <div id="JS_current_city_box">
-                                    当前城市：<strong id="JS_city_current_city">北京</strong>
-                                </div>
-                                <div id="JS_default_city_delete" style="display: none;"></div>
-                            </div>
-                        </div>
-                        <div class="showPanel showPanel2 clearfix">
-                            <div class="hot_city" id="JS_header_city_hot">
-                            </div>
-                            <div class="city_words mt10" id="JS_header_city_char">
-                            </div>
-                        </div>
-                        <div class="scrollBody">
-                            <div class="cityMap clearfix">
-                                <table id="JS_header_city_list" class="city_list" style="margin-top: 0px;">
-                                    <tbody>
-                                    </tbody>
-                                </table>
-                            </div>
-                            <div class="scrollBar">
-                                <span id="JS_header_city_bar" style="margin-top: 0px;"></span>
-                            </div>
-                        </div>
-                    </div>
+            <span class="city-name Left">上海</span>
+            <div class="city-select Left">
+                <a href="javascript:void(0);" class="selector">切换城市</a>
+                <div class="d-traing"></div>
+                <div class="hide_city_group clearfix">
+                    <div> <a href="javascript:void(0)">北京</a></div>
+                    <div> <a class="a-selected" href="javascript:void(0)">上海</a></div>
+                    <div> <a href="javascript:void(0)">天津</a></div>
+                    <div> <a href="javascript:void(0)">重庆</a></div>
+                    <div> <a href="javascript:void(0)">河北</a></div>
+                    <div> <a href="javascript:void(0)">山西</a></div>
+                    <div> <a href="javascript:void(0)">河南</a></div>
+                    <div> <a href="javascript:void(0)">辽宁</a></div>
+                    <div> <a href="javascript:void(0)">吉林</a></div>
+                    <div> <a href="javascript:void(0)">黑龙江</a></div>
+                    <div> <a href="javascript:void(0)">内蒙古</a></div>
+                    <div> <a href="javascript:void(0)">江苏</a></div>
+                    <div> <a href="javascript:void(0)">山东</a></div>
+                    <div> <a href="javascript:void(0)">安徽</a></div>
+                    <div> <a href="javascript:void(0)">浙江</a></div>
+                    <div> <a href="javascript:void(0)">福建</a></div>
+                    <div> <a href="javascript:void(0)">湖北</a></div>
+                    <div> <a href="javascript:void(0)">湖南</a></div>
+                    <div> <a href="javascript:void(0)">广东</a></div>
+                    <div> <a href="javascript:void(0)">广西</a></div>
+                    <div> <a href="javascript:void(0)">江西</a></div>
+                    <div> <a href="javascript:void(0)">四川</a></div>
+                    <div> <a href="javascript:void(0)">海南</a></div>
+                    <div> <a href="javascript:void(0)">贵州</a></div>
+                    <div> <a href="javascript:void(0)">云南</a></div>
+                    <div> <a href="javascript:void(0)">西藏</a></div>
+                    <div> <a href="javascript:void(0)">陕西</a></div>
+                    <div> <a href="javascript:void(0)">甘肃</a></div>
+                    <div> <a href="javascript:void(0)">青海</a></div>
+                    <div> <a href="javascript:void(0)">宁夏</a></div>
+                    <div> <a href="javascript:void(0)">新疆</a></div>
+                    <div> <a href="javascript:void(0)">港澳</a></div>
+                    <div> <a href="javascript:void(0)">台湾</a></div>
+                    <div> <a href="javascript:void(0)">钓鱼岛</a></div>
+                    <div> <a href="javascript:void(0)">海外</a></div>
                 </div>
             </div>
             <span class="common-bg city-logo"></span>

@@ -346,7 +346,7 @@ define(['jquery', 'pagination', 'common'], function (require, exports, module) {
                     template('#myCommunityTmpl','#myCommunity',result.message);
                 }
             } else {
-                alert("获取我的社区出错了哦！");
+                alert(result.message);
             }
         })
     }

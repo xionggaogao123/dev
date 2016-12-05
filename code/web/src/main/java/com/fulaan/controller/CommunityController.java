@@ -1362,7 +1362,7 @@ public class CommunityController extends BaseController {
                         //存储key-value
                         Map hashMap = new HashMap();
                         if (dtos.size() > 0) {
-                            hashMap.put("lastId", dtos.get(dtos.size() - 1).getId());
+                            hashMap.put("lastId", dtos.get(dtos.size() - 1).getUserId());
                             hashMap.put("count", count + "");
                         }
                         if (null != hashMap && hashMap.size() > 0) {

@@ -24,7 +24,7 @@
             </div>
         </c:if>
         <span id="my-community-span" class="hd-green-cur">我的社区</span>
-        <%--<span id="myActivity-span">我的活动</span>--%>
+        <span id="myActivity-span">我的活动</span>
     </div>
 </div>
 <div class="container">
@@ -251,10 +251,27 @@
             <span id="my-community-3">已参加活动</span>
         </p>
 
-        <ul class="ul-hds" id="ul-activity">
-        </ul>
+        <div id="activity-signed-div">
+            <img src="/static/images/community/no_data.jpg" hidden>
+            <ul class="ul-hds" id="ul-activity-signed">
+            </ul>
+            <div class="new-page-links signed-page"></div>
+        </div>
 
-        <div class="new-page-links"></div>
+        <div id="activity-published-dev">
+            <img src="/static/images/community/no_data.jpg" hidden>
+            <ul class="ul-hds" id="ul-activity-published">
+            </ul>
+            <div class="new-page-links published-page"></div>
+        </div>
+
+        <div id="activity-attended-div">
+            <img src="/static/images/community/no_data.jpg" hidden>
+            <ul class="ul-hds" id="ul-activity-attended">
+            </ul>
+            <div class="new-page-links attended-page"></div>
+        </div>
+
     </div>
 </div>
 
@@ -283,7 +300,7 @@
 <script type="text/template" id="activityBox">
     {{~it:value:index}}
     <li>
-        <button value="{{=value.acid}}" class="cancelSign">取消报名</button>
+        <button value="{{=value.acid}}">取消报名</button>
         <p class="p1">
             <span># {{=value.activityCode}}#</span>{{=value.title}}
         </p>
@@ -291,6 +308,7 @@
     </li>
     {{~}}
 </script>
+
 <script src="/static/js/sea.js"></script>
 <script src="/static/js/modules/core/0.1.0/config.js?v=2015041602"></script>
 <script>

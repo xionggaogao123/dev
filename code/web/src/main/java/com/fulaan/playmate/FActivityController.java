@@ -6,6 +6,7 @@ import com.fulaan.controller.BaseController;
 import com.fulaan.playmate.service.FActivityService;
 import com.fulaan.util.DateUtils;
 import com.sys.utils.RespObj;
+import org.apache.commons.lang3.StringUtils;
 import org.bson.types.ObjectId;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -61,8 +62,12 @@ public class FActivityController extends BaseController {
 
     @RequestMapping("/published")
     @ResponseBody
-    public RespObj published(@RequestParam(value = "page", required = false, defaultValue = "1") int page,
+    public RespObj published(@RequestParam(value = "personId",required = false,defaultValue = "")String personId,
+                             @RequestParam(value = "page", required = false, defaultValue = "1") int page,
                              @RequestParam(value = "pageSize", required = false, defaultValue = "10") int pageSize) {
+        if(StringUtils.isNotBlank(personId)) {
+            return RespObj.SUCCESS(fActivityService.getPublishedActivity(new ObjectId(personId), page, pageSize));
+        }
         return RespObj.SUCCESS(fActivityService.getPublishedActivity(getUserId(), page, pageSize));
     }
 
@@ -87,6 +92,13 @@ public class FActivityController extends BaseController {
             return RespObj.FAILD("您未参加此活动");
         }
         fActivityService.cancelSignActivity(acid, getUserId());
+        return RespObj.SUCCESS;
+    }
+
+    @RequestMapping("/cancelPublish")
+    @ResponseBody
+    public RespObj cancelPublish(@ObjectIdType ObjectId acid) {
+        fActivityService.cancelPublishActivity(acid,getUserId());
         return RespObj.SUCCESS;
     }
 

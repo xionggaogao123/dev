@@ -5,23 +5,68 @@ define(['jquery', 'pagination', 'common'], function (require, exports, module) {
     var communityId = $('#communityId').attr('communityId');
     var detailId=$('#communityId').attr('detailId');
     var communityDetail = {};
+    var activity_cur = 1;
     communityDetail.init = function () {
 
         getMessageDetail();
         getCurrCommunity();
+
+        getPublishedActivitys();
+
+        getSignedActivitys();
+
+        getAttendActivitys();
     };
 
 
     $(document).ready(function () {
 
+        $('#activity-signed-div').show();
+        $('#activity-published-dev').hide();
+        $('#activity-attended-div').hide();
+
+        $('body').on('click', '#myActivity-span', function () {
+            $('#my-community-span').removeClass('hd-green-cur');
+            $(this).addClass('hd-green-cur');
+            $('.container .hd-cont-f1').hide();
+            $('.container .hd-cont-f2').show();
+        });
+
+        $('body').on('click', '#my-community-span', function () {
+            $('#myActivity-span').removeClass('hd-green-cur');
+            $(this).addClass('hd-green-cur');
+
+            $('.container .hd-cont-f1').show();
+            $('.container .hd-cont-f2').hide();
+        });
+
+        $('body').on('click', '#my-community-1', function () {
+            $('#my-community-2').removeClass('hd-cf-cur2');
+            $('#my-community-3').removeClass('hd-cf-cur2');
+            $(this).addClass('hd-cf-cur2');
+            activity_cur = 1;
+            renderActivity();
+        });
+
+        $('body').on('click', '#my-community-2', function () {
+            $('#my-community-1').removeClass('hd-cf-cur2');
+            $('#my-community-3').removeClass('hd-cf-cur2');
+            $(this).addClass('hd-cf-cur2');
+            activity_cur = 2;
+            renderActivity();
+        });
+
+        $('body').on('click', '#my-community-3', function () {
+            $('#my-community-1').removeClass('hd-cf-cur2');
+            $('#my-community-2').removeClass('hd-cf-cur2');
+            $(this).addClass('hd-cf-cur2');
+            activity_cur = 3;
+            renderActivity();
+        });
+
         hx_update();
 
         setInterval(hx_update,1000 * 60);
-
-        // var requestData = {
-        //     communityId: communityId,
-        //     communityDetailId: detailId
-        // };
 
         $('.alert-btn-sure').click(function () {
             var requestData = {
@@ -378,17 +423,6 @@ define(['jquery', 'pagination', 'common'], function (require, exports, module) {
             overwrite: 1
         });
     }
-
-    // $.urlParam = function (name) {
-    //     var results = new RegExp('[\?&]' + name + '=([^&#]*)').exec(window.location.href);
-    //     if (results == null) {
-    //         return null;
-    //     }
-    //     else {
-    //         return results[1] || 0;
-    //     }
-    // };
-
 
     function getMessageDetail() {
 
@@ -808,12 +842,174 @@ define(['jquery', 'pagination', 'common'], function (require, exports, module) {
         });
     }
 
+    function getPublishedActivitys(n) {
+        var requestParm = {
+            page: n
+        };
+        var init = true;
+        common.getData("/factivity/published.do", requestParm, function (resp) {
+            if (resp.code == '200') {
+                if(resp.message.result.length <= 0 ) {
+                    $('#activity-published-dev img').show();
+                    $('#ul-activity-published').hide();
+                    $('.published-page').hide();
+                    return;
+                }
+                $('.published-page').jqPaginator({
+                    totalPages: resp.message.totalPages,//总页数
+                    visiblePages: 10,//分多少页
+                    currentPage: resp.message.page,//当前页数
+                    first: '<li class="first"><a href="javascript:void(0);">首页<\/a><\/li>',
+                    prev: '<li class="prev"><a href="javascript:void(0);">&lt;<\/a><\/li>',
+                    next: '<li class="next"><a href="javascript:void(0);">&gt;<\/a><\/li>',
+                    last: '<li class="last"><a href="javascript:void(0);">末页<\/a><\/li>',
+                    page: '<li class="page"><a href="javascript:void(0);">{{page}}<\/a><\/li>',
+                    onPageChange: function (n) { //回调函数
+                        if (init) {
+                            init = false;
+                        } else {
+                            getPublishedActivitys(n);
+                        }
+                    }
+                });
+                template('#activityBox', '#ul-activity-published', resp.message.result);
+
+                $('#ul-activity-published li button').each(function () {
+
+                    $(this).text('取消活动');
+                    var acid = $(this).attr('value');
+                    $(this).click(function () {
+                        var requestParm = {
+                            acid: acid
+                        };
+                        common.getData("/factivity/cancelPublish.do", requestParm, function (resp) {
+                            if (resp.code == '200') {
+                                alert("取消报名成功");
+                                me.parent().hide();
+                            } else {
+
+                            }
+                        });
+                    });
+                });
+            }
+        });
+    }
+
+    function getSignedActivitys(n) {
+        var requestParm = {
+            page: n
+        };
+        var init = true;
+        common.getData("/factivity/signed.do", requestParm, function (resp) {
+            if (resp.code == '200') {
+
+                if(resp.message.result.length <= 0 ) {
+                    $('#activity-signed-div img').show();
+                    $('#ul-activity-signed').hide();
+                    $('.signed-page').hide();
+                    return;
+                }
+                $('.signed-page').jqPaginator({
+                    totalPages: resp.message.totalPages,//总页数
+                    visiblePages: 10,//分多少页
+                    currentPage: resp.message.page,//当前页数
+                    first: '<li class="first"><a href="javascript:void(0);">首页<\/a><\/li>',
+                    prev: '<li class="prev"><a href="javascript:void(0);">&lt;<\/a><\/li>',
+                    next: '<li class="next"><a href="javascript:void(0);">&gt;<\/a><\/li>',
+                    last: '<li class="last"><a href="javascript:void(0);">末页<\/a><\/li>',
+                    page: '<li class="page"><a href="javascript:void(0);">{{page}}<\/a><\/li>',
+                    onPageChange: function (n) { //回调函数
+                        if (init) {
+                            init = false;
+                        } else {
+                            getSignedActivitys(n);
+                        }
+                    }
+                });
+                template('#activityBox', '#ul-activity-signed', resp.message.result);
+
+                $('#ul-activity-signed li button').click(function () {
+
+                    alert('haha');
+                    var me = $(this);
+                    var requestParm = {
+                        acid: $(this).attr('value')
+                    };
+                    common.getData("/factivity/cancelSign.do", requestParm, function (resp) {
+                        if (resp.code == '200') {
+                            alert("取消报名成功");
+                            me.parent().hide();
+                        } else {
+
+                        }
+                    });
+                });
+            }
+        });
+    }
+
+    function getAttendActivitys(n) {
+        var requestParm = {
+            page: n
+        };
+        var init = true;
+        common.getData("/factivity/attended.do", requestParm, function (resp) {
+            if (resp.code == '200') {
+                if(resp.message.result.length <= 0 ) {
+                    $('#activity-attended-div img').show();
+                    $('#ul-activity-attended').hide();
+                    $('.attended-page').hide();
+                    return;
+                }
+                $('.attended-page').jqPaginator({
+                    totalPages: resp.message.totalPages,//总页数
+                    visiblePages: 10,//分多少页
+                    currentPage: resp.message.page,//当前页数
+                    first: '<li class="first"><a href="javascript:void(0);">首页<\/a><\/li>',
+                    prev: '<li class="prev"><a href="javascript:void(0);">&lt;<\/a><\/li>',
+                    next: '<li class="next"><a href="javascript:void(0);">&gt;<\/a><\/li>',
+                    last: '<li class="last"><a href="javascript:void(0);">末页<\/a><\/li>',
+                    page: '<li class="page"><a href="javascript:void(0);">{{page}}<\/a><\/li>',
+                    onPageChange: function (n) { //回调函数
+                        if (init) {
+                            init = false;
+                        } else {
+                            getAttendActivitys(n);
+                        }
+                    }
+                });
+                template('#activityBox', '#ul-activity-attended', resp.message.result);
+            }
+        });
+    }
+
+    function renderActivity() {
+        if (activity_cur === 1) {
+
+            $('#activity-signed-div').show();
+            $('#activity-published-dev').hide();
+            $('#activity-attended-div').hide();
+
+        } else if (activity_cur === 2) {
+
+            $('#activity-signed-div').hide();
+            $('#activity-published-dev').show();
+            $('#activity-attended-div').hide();
+
+        } else if (activity_cur === 3) {
+
+            $('#activity-signed-div').hide();
+            $('#activity-published-dev').hide();
+            $('#activity-attended-div').show();
+        }
+    }
+
     function hx_update() {
 
         $.ajax({
             url:'/group/offlineMsgCount.do',
             success: function(resp){
-                var hx_notice = $('.hx-notice span');
                 var offCount = resp.message.offlineCount;
 
                 if(offCount > 0) {

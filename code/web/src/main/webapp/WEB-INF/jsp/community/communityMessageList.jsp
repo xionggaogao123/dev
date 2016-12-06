@@ -7,6 +7,7 @@
 <%-- 填充head --%>
 <layout:override name="head">
     <title>复兰后台管理</title>
+    <link rel="stylesheet" type="text/css" href="/static/css/friend/nearby.css">
 </layout:override>
 <%-- 填充content --%>
 <layout:override name="content">
@@ -19,28 +20,60 @@
                     <div class="d2"></div>
                 </div>
             </c:if>
-            <span class="hd-green-cur">我的社区</span>
-                <%--<span>找学习</span>--%>
-                <%--<span>找玩伴</span>--%>
+            <span id="my-community-span" class="hd-green-cur">我的社区</span>
+            <span id="myActivity-span">我的活动</span>
         </div>
     </div>
-    <div class="hd-cont-f hd-cont-f1">
-        <div class="det-left">
-            <div class="act-details">
-                <div class="com-left-s" id="content">
+
+    <div class="container">
+        <div class="hd-cont-f hd-cont-f1">
+            <div class="det-left">
+                <div class="act-details">
+                    <div class="com-left-s" id="content">
+                    </div>
+                    <div class="new-page-links"></div>
                 </div>
-                <div class="new-page-links"></div>
+            </div>
+            <div class="com-right">
+                <div class="com-right-s clearfix">
+                    <div class="com-tit">我的社区<c:if test="${login == true}"><span class="com-set-my-btn" onclick="window.open('/community/communitySet.do')"></span>
+                    </c:if></div>
+                    <ul class="ul-my-com clearfix" id="myCommunity">
+                    </ul>
+                </div>
             </div>
         </div>
-        <div class="com-right">
-            <div class="com-right-s clearfix">
-                <div class="com-tit">我的社区<c:if test="${login == true}"><span class="com-set-my-btn" onclick="window.open('/community/communitySet.do')"></span>
-                </c:if></div>
-                <ul class="ul-my-com clearfix" id="myCommunity">
+
+        <div class="hd-cont-f hd-cont-f2">
+            <p class="p1">
+                <span id="my-community-1" class="hd-cf-cur2">已报名活动</span>
+                <span id="my-community-2">已发布活动</span>
+                <span id="my-community-3">已参加活动</span>
+            </p>
+
+            <div id="activity-signed-div">
+                <img src="/static/images/community/no_data.jpg" hidden>
+                <ul class="ul-hds" id="ul-activity-signed">
                 </ul>
+                <div class="new-page-links signed-page"></div>
             </div>
+
+            <div id="activity-published-dev">
+                <img src="/static/images/community/no_data.jpg" hidden>
+                <ul class="ul-hds" id="ul-activity-published">
+                </ul>
+                <div class="new-page-links published-page"></div>
+            </div>
+
+            <div id="activity-attended-div">
+                <img src="/static/images/community/no_data.jpg" hidden>
+                <ul class="ul-hds" id="ul-activity-attended">
+                </ul>
+                <div class="new-page-links attended-page"></div>
+            </div>
+
         </div>
-    </div>
+
     </div>
 
     <!--=============底部版权=================-->
@@ -128,6 +161,8 @@
         });
     </script>
 
+    <script type="text/javascript" src="/static/js/modules/mate/commonActivity.js" ></script>
+
 
     <!-- js template -->
     <script type="text/template" id="myCommunityTmpl">
@@ -202,10 +237,6 @@
                     <span>发表时间：{{=value.time}}</span>
                 </p>
             </div>
-            <%--<div class="notice-bm">--%>
-                <%--<button class="commit" itemId="{{=value.id}}">提交作业</button>--%>
-                <%--<span>已提交（{{=value.partInCount}}）人</span>--%>
-            <%--</div>--%>
         </div>
         {{~}}
     </script>
@@ -257,10 +288,6 @@
                     <span>详情</span>
                 </p>
             </div>
-            <%--<div class="notice-bm">--%>
-                <%--<button class="commit" itemId="{{=value.id}}">我要分享</button>--%>
-                <%--<span>已分享（{{=value.partInCount}}）人</span>--%>
-            <%--</div>--%>
         </div>
         {{~}}
     </script>
@@ -312,6 +339,18 @@
                 </p>
             </div>
         </div>
+        {{~}}
+    </script>
+
+    <script type="text/template" id="activityBox">
+        {{~it:value:index}}
+        <li>
+            <button value="{{=value.acid}}">取消报名</button>
+            <p class="p1">
+                <span># {{=value.activityCode}}#</span>{{=value.title}}
+            </p>
+            <p class="p2">{{=value.description}}</p>
+        </li>
         {{~}}
     </script>
 

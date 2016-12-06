@@ -383,19 +383,11 @@ public class UserController extends BaseController {
         userService.updateHuanXinTag(e.getID());
 
         //找玩伴
-//        boolean isMateExist = mateService.isMateRecoreExist(e.getID());
-//        if (!isMateExist) {
-//            mateService.saveMateEntry(e.getID());
-//        }
-//        mateService.updateAged(e.getID(),e.getBirthDate());
-
-        //生成个人二维码
-//        if(StringUtils.isBlank(e.getQRCode())){
-//            ThreadLocalUtil t=new ThreadLocalUtil();
-//            Thread t1 = new Thread(t,e.getID().toString());
-//            t1.start();
-//        }
-
+        boolean isMateExist = mateService.isMateRecoreExist(e.getID());
+        if (!isMateExist) {
+            mateService.saveMateEntry(e.getID());
+        }
+        mateService.updateAged(e.getID(),e.getBirthDate());
         return respObj;
     }
 
@@ -412,10 +404,8 @@ public class UserController extends BaseController {
     @RequestMapping("/third/login")
     @ResponseBody
     public RespObj login(String name, String pwd, String cacheThirdId, HttpServletResponse response, RedirectAttributes redirectAttributes) {
-
         redirectAttributes.addFlashAttribute("name", name);
         redirectAttributes.addFlashAttribute("pwd", pwd);
-
         RespObj respObj = login(name, pwd, response);
         if (respObj.getCode().equals("200")) {
             SessionValue sessionValue = CacheHandler.getSessionValue(cacheThirdId);

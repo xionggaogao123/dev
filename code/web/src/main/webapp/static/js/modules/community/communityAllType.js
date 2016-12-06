@@ -11,34 +11,47 @@ define(['jquery', 'pagination', 'common'], function (require, exports, module) {
     var communityAllType = {};
 
     var activity_cur = 1;
-    var publish_activity_resp = null;
-    var sign_activity_resp = null;
-    var attend_activity_resp = null;
     communityAllType.init = function () {
         getMyCommunity();
 
         //获取该社区详情列表
         getCommunityDetail();
 
-        // getPublishedActivitys();
-        //
-        // getSignedActivitys();
-        //
-        // getAttendActivitys();
+        getPublishedActivitys();
+
+        getSignedActivitys();
+
+        getAttendActivitys();
     };
 
     $(document).ready(function () {
 
+
         $(".hx-notice").click(function () {
-            window.open('/webim/index','_blank');
+            window.open('/webim/index', '_blank');
         });
 
         $('body').on('click', '.spread', function () {
             spread($(this));
-        })
+        });
+
         $('body').on('click', '.collect', function () {
             collect($(this));
         });
+
+
+        hx_update();
+        setInterval(hx_update, 1000 * 60);
+
+        $('body').on('click', '.login-mk-btn .d2', function () {
+            $('.store-register').fadeToggle();
+            $('.bg').fadeToggle();
+        });
+
+        $('#activity-signed-div').show();
+        $('#activity-published-dev').hide();
+        $('#activity-attended-div').hide();
+
 
         $('body').on('click', '#myActivity-span', function () {
             $('#my-community-span').removeClass('hd-green-cur');
@@ -53,14 +66,6 @@ define(['jquery', 'pagination', 'common'], function (require, exports, module) {
 
             $('.container .hd-cont-f1').show();
             $('.container .hd-cont-f2').hide();
-        });
-
-        hx_update();
-        setInterval(hx_update, 1000 * 60);
-
-        $('body').on('click', '.login-mk-btn .d2', function () {
-            $('.store-register').fadeToggle();
-            $('.bg').fadeToggle();
         });
 
         $('body').on('click', '#my-community-1', function () {
@@ -83,24 +88,9 @@ define(['jquery', 'pagination', 'common'], function (require, exports, module) {
             $('#my-community-1').removeClass('hd-cf-cur2');
             $('#my-community-2').removeClass('hd-cf-cur2');
             $(this).addClass('hd-cf-cur2');
-
             activity_cur = 3;
             renderActivity();
         });
-
-        $('body').on('click', '.cancelSign', function () {
-            var requestParm = {
-                acid: $(this).attr('value')
-            };
-            common.getData("/factivity/cancelSign.do", requestParm, function (resp) {
-                if (resp.code == '200') {
-                    renderActivity();
-                } else {
-
-                }
-            });
-        });
-
 
     });
 
@@ -165,15 +155,15 @@ define(['jquery', 'pagination', 'common'], function (require, exports, module) {
 
 
     //获取我的社区
-    function getMyCommunity(){
-        common.getData("/community/myCommunitys.do",{pageSize:9,platform:"web"},function(result){
-            if(result.code="200"){
-                if(undefined!=result.message.list){
-                    template('#myCommunityTmpl','#myCommunity',result.message.list);
-                }else{
-                    template('#myCommunityTmpl','#myCommunity',result.message);
+    function getMyCommunity() {
+        common.getData("/community/myCommunitys.do", {pageSize: 9, platform: "web"}, function (result) {
+            if (result.code = "200") {
+                if (undefined != result.message.list) {
+                    template('#myCommunityTmpl', '#myCommunity', result.message.list);
+                } else {
+                    template('#myCommunityTmpl', '#myCommunity', result.message);
                 }
-            }else{
+            } else {
                 alert(result.message);
             }
         })
@@ -183,14 +173,52 @@ define(['jquery', 'pagination', 'common'], function (require, exports, module) {
         var requestParm = {
             page: n
         };
+        var init = true;
         common.getData("/factivity/published.do", requestParm, function (resp) {
             if (resp.code == '200') {
-                publish_activity_resp = resp;
-                if(activity_cur === 2) {
-                    renderActivity();
+                if(resp.message.result.length <= 0 ) {
+                    $('#activity-published-dev img').show();
+                    $('#ul-activity-published').hide();
+                    $('.published-page').hide();
+                    return;
                 }
-            } else {
+                $('.published-page').jqPaginator({
+                    totalPages: resp.message.totalPages,//总页数
+                    visiblePages: 10,//分多少页
+                    currentPage: resp.message.page,//当前页数
+                    first: '<li class="first"><a href="javascript:void(0);">首页<\/a><\/li>',
+                    prev: '<li class="prev"><a href="javascript:void(0);">&lt;<\/a><\/li>',
+                    next: '<li class="next"><a href="javascript:void(0);">&gt;<\/a><\/li>',
+                    last: '<li class="last"><a href="javascript:void(0);">末页<\/a><\/li>',
+                    page: '<li class="page"><a href="javascript:void(0);">{{page}}<\/a><\/li>',
+                    onPageChange: function (n) { //回调函数
+                        if (init) {
+                            init = false;
+                        } else {
+                            getPublishedActivitys(n);
+                        }
+                    }
+                });
+                template('#activityBox', '#ul-activity-published', resp.message.result);
 
+                $('#ul-activity-published li button').each(function () {
+
+                    $(this).text('取消活动');
+                    var acid = $(this).attr('value');
+                    $(this).click(function () {
+                        var requestParm = {
+                            acid: acid
+                        };
+                        common.getData("/factivity/cancelPublish.do", requestParm, function (resp) {
+                            if (resp.code == '200') {
+                                alert("取消报名成功");
+                                me.parent().hide();
+                            } else {
+
+                            }
+                        });
+                    });
+                });
             }
         });
     }
@@ -199,126 +227,108 @@ define(['jquery', 'pagination', 'common'], function (require, exports, module) {
         var requestParm = {
             page: n
         };
+        var init = true;
         common.getData("/factivity/signed.do", requestParm, function (resp) {
             if (resp.code == '200') {
-                sign_activity_resp = resp;
-                if(activity_cur === 1) {
-                    renderActivity();
-                }
-            } else {
 
+                if(resp.message.result.length <= 0 ) {
+                    $('#activity-signed-div img').show();
+                    $('#ul-activity-signed').hide();
+                    $('.signed-page').hide();
+                    return;
+                }
+                $('.signed-page').jqPaginator({
+                    totalPages: resp.message.totalPages,//总页数
+                    visiblePages: 10,//分多少页
+                    currentPage: resp.message.page,//当前页数
+                    first: '<li class="first"><a href="javascript:void(0);">首页<\/a><\/li>',
+                    prev: '<li class="prev"><a href="javascript:void(0);">&lt;<\/a><\/li>',
+                    next: '<li class="next"><a href="javascript:void(0);">&gt;<\/a><\/li>',
+                    last: '<li class="last"><a href="javascript:void(0);">末页<\/a><\/li>',
+                    page: '<li class="page"><a href="javascript:void(0);">{{page}}<\/a><\/li>',
+                    onPageChange: function (n) { //回调函数
+                        if (init) {
+                            init = false;
+                        } else {
+                            getSignedActivitys(n);
+                        }
+                    }
+                });
+                template('#activityBox', '#ul-activity-signed', resp.message.result);
+
+                $('#ul-activity-signed li button').click(function () {
+
+                    alert('haha');
+                    var me = $(this);
+                    var requestParm = {
+                        acid: $(this).attr('value')
+                    };
+                    common.getData("/factivity/cancelSign.do", requestParm, function (resp) {
+                        if (resp.code == '200') {
+                            alert("取消报名成功");
+                            me.parent().hide();
+                        } else {
+
+                        }
+                    });
+                });
             }
         });
     }
 
     function getAttendActivitys(n) {
         var requestParm = {
-            page:n
+            page: n
         };
+        var init = true;
         common.getData("/factivity/attended.do", requestParm, function (resp) {
             if (resp.code == '200') {
-                attend_activity_resp = resp;
-                if(activity_cur === 3) {
-                    renderActivity();
+                if(resp.message.result.length <= 0 ) {
+                    $('#activity-attended-div img').show();
+                    $('#ul-activity-attended').hide();
+                    $('.attended-page').hide();
+                    return;
                 }
-            } else {
-
+                $('.attended-page').jqPaginator({
+                    totalPages: resp.message.totalPages,//总页数
+                    visiblePages: 10,//分多少页
+                    currentPage: resp.message.page,//当前页数
+                    first: '<li class="first"><a href="javascript:void(0);">首页<\/a><\/li>',
+                    prev: '<li class="prev"><a href="javascript:void(0);">&lt;<\/a><\/li>',
+                    next: '<li class="next"><a href="javascript:void(0);">&gt;<\/a><\/li>',
+                    last: '<li class="last"><a href="javascript:void(0);">末页<\/a><\/li>',
+                    page: '<li class="page"><a href="javascript:void(0);">{{page}}<\/a><\/li>',
+                    onPageChange: function (n) { //回调函数
+                        if (init) {
+                            init = false;
+                        } else {
+                            getAttendActivitys(n);
+                        }
+                    }
+                });
+                template('#activityBox', '#ul-activity-attended', resp.message.result);
             }
         });
     }
 
-    function getNextPage(n) {
-
-        if (activity_cur === 1) {
-            getSignedActivitys(n);
-        } else if (activity_cur === 2) {
-            getPublishedActivitys(n);
-        } else if (activity_cur === 3) {
-            getAttendActivitys(n);
-        }
-    }
-
     function renderActivity() {
-        var resp;
-        var init = true;
         if (activity_cur === 1) {
-            resp = sign_activity_resp;
-            if (resp === undefined || resp === null || resp === '') {
-                template('#activityBox', '#ul-activity', []);
-                $('.new-page-links').hide();
-                return;
-            }
-            $('.new-page-links').show();
-            $('.new-page-links').jqPaginator({
-                totalPages: resp.message.totalPages,//总页数
-                visiblePages: 10,//分多少页
-                currentPage: resp.message.page,//当前页数
-                first: '<li class="first"><a href="javascript:void(0);">首页<\/a><\/li>',
-                prev: '<li class="prev"><a href="javascript:void(0);">&lt;<\/a><\/li>',
-                next: '<li class="next"><a href="javascript:void(0);">&gt;<\/a><\/li>',
-                last: '<li class="last"><a href="javascript:void(0);">末页<\/a><\/li>',
-                page: '<li class="page"><a href="javascript:void(0);">{{page}}<\/a><\/li>',
-                onPageChange: function (n) { //回调函数
-                    if (init) {
-                        init = false;
-                    } else {
-                        getNextPage(n);
-                    }
-                }
-            });
-            template('#activityBox', '#ul-activity', resp.message.result);
+
+            $('#activity-signed-div').show();
+            $('#activity-published-dev').hide();
+            $('#activity-attended-div').hide();
+
         } else if (activity_cur === 2) {
-            resp = publish_activity_resp;
-            if (resp === undefined || resp === null || resp === '') {
-                template('#activityBox', '#ul-activity', []);
-                $('.new-page-links').hide();
-                return;
-            }
-            $('.new-page-links').show();
-            $('.new-page-links').jqPaginator({
-                totalPages: resp.message.totalPages,//总页数
-                visiblePages: 10,//分多少页
-                currentPage: resp.message.page,//当前页数
-                first: '<li class="first"><a href="javascript:void(0);">首页<\/a><\/li>',
-                prev: '<li class="prev"><a href="javascript:void(0);">&lt;<\/a><\/li>',
-                next: '<li class="next"><a href="javascript:void(0);">&gt;<\/a><\/li>',
-                last: '<li class="last"><a href="javascript:void(0);">末页<\/a><\/li>',
-                page: '<li class="page"><a href="javascript:void(0);">{{page}}<\/a><\/li>',
-                onPageChange: function (n) { //回调函数
-                    if (init) {
-                        init = false;
-                    } else {
-                        getNextPage(n);
-                    }
-                }
-            });
-            template('#activityBox', '#ul-activity', resp.message.result);
+
+            $('#activity-signed-div').hide();
+            $('#activity-published-dev').show();
+            $('#activity-attended-div').hide();
+
         } else if (activity_cur === 3) {
-            resp = attend_activity_resp;
-            if (resp === undefined || resp === null || resp === '') {
-                template('#activityBox', '#ul-activity', []);
-                $('.new-page-links').hide();
-                return;
-            }
-            $('.new-page-links').show();
-            $('.new-page-links').jqPaginator({
-                totalPages: resp.message.totalPages,//总页数
-                visiblePages: 10,//分多少页
-                currentPage: resp.message.page,//当前页数
-                first: '<li class="first"><a href="javascript:void(0);">首页<\/a><\/li>',
-                prev: '<li class="prev"><a href="javascript:void(0);">&lt;<\/a><\/li>',
-                next: '<li class="next"><a href="javascript:void(0);">&gt;<\/a><\/li>',
-                last: '<li class="last"><a href="javascript:void(0);">末页<\/a><\/li>',
-                page: '<li class="page"><a href="javascript:void(0);">{{page}}<\/a><\/li>',
-                onPageChange: function (n) { //回调函数
-                    if (init) {
-                        init = false;
-                    } else {
-                        getNextPage(n);
-                    }
-                }
-            });
-            template('#activityBox', '#ul-activity', resp.message.result);
+
+            $('#activity-signed-div').hide();
+            $('#activity-published-dev').hide();
+            $('#activity-attended-div').show();
         }
     }
 

@@ -3,8 +3,8 @@ define(['jquery', 'pagination', 'common'], function (require, exports, module) {
     var common = require('common');
     require('pagination');
     var communityMessageList = {};
-    var communityId=$('#temp').attr('communityId');
-    var type=$('#temp').attr('type');
+    var communityId = $('#temp').attr('communityId');
+    var type = $('#temp').attr('type');
     communityMessageList.init = function () {
         getMyCommunity();
         getMessages(1);
@@ -13,25 +13,73 @@ define(['jquery', 'pagination', 'common'], function (require, exports, module) {
 
     $(document).ready(function () {
 
+        $('body').on('click', '#myActivity-span', function () {
+            $('#my-community-span').removeClass('hd-green-cur');
+            $(this).addClass('hd-green-cur');
+            $('.container .hd-cont-f1').hide();
+            $('.container .hd-cont-f2').show();
+        });
+
+        $('body').on('click', '#my-community-span', function () {
+            $('#myActivity-span').removeClass('hd-green-cur');
+            $(this).addClass('hd-green-cur');
+            $('.container .hd-cont-f1').show();
+            $('.container .hd-cont-f2').hide();
+        });
+
+        $('body').on('click', '#my-community-1', function () {
+            $('#my-community-2').removeClass('hd-cf-cur2');
+            $('#my-community-3').removeClass('hd-cf-cur2');
+            $(this).addClass('hd-cf-cur2');
+            activity_cur = 1;
+            renderActivity();
+        });
+
+        $('body').on('click', '#my-community-2', function () {
+            $('#my-community-1').removeClass('hd-cf-cur2');
+            $('#my-community-3').removeClass('hd-cf-cur2');
+            $(this).addClass('hd-cf-cur2');
+            activity_cur = 2;
+            renderActivity();
+        });
+
+        $('body').on('click', '#my-community-3', function () {
+            $('#my-community-1').removeClass('hd-cf-cur2');
+            $('#my-community-2').removeClass('hd-cf-cur2');
+            $(this).addClass('hd-cf-cur2');
+            activity_cur = 3;
+            renderActivity();
+        });
+
+        $('#activity-signed-div').show();
+        $('#activity-published-dev').hide();
+        $('#activity-attended-div').hide();
+
+        getPublishedActivitys();
+
+        getSignedActivitys();
+
+        getAttendActivitys();
+
         hx_update();
 
-        setInterval(hx_update,1000 * 60);
+        setInterval(hx_update, 1000 * 60);
 
         $(".detail").click(function () {
             var detailId = $(this).attr('value');
-            var url='/community/communityDetail?detailId='+detailId;
+            var url = '/community/communityDetail?detailId=' + detailId;
             window.open(url, '_blank');
         });
 
 
         $(".open").click(function () {
             var detailId = $(this).attr('value');
-            var url='/community/communityDetail?detailId='+detailId;
+            var url = '/community/communityDetail?detailId=' + detailId;
             window.open(url, '_blank');
         });
 
         $('body').on('click', '.commit', function () {
-            var that=this;
+            var that = this;
             $.ajax({
                 url: "/forum/loginInfo.do?date=" + new Date(),
                 type: "get",
@@ -42,7 +90,7 @@ define(['jquery', 'pagination', 'common'], function (require, exports, module) {
                     var flag = resp.login;
                     if (flag) {
                         enterCommunityDetail($(that));
-                    }else{
+                    } else {
                         $('.store-register').fadeToggle();
                         $('.bg').fadeToggle();
                     }
@@ -50,7 +98,7 @@ define(['jquery', 'pagination', 'common'], function (require, exports, module) {
             });
         })
 
-        $('body').on('click','.login-mk-btn .d2',function () {
+        $('body').on('click', '.login-mk-btn .d2', function () {
             $('.store-register').fadeToggle();
             $('.bg').fadeToggle();
         })
@@ -62,10 +110,10 @@ define(['jquery', 'pagination', 'common'], function (require, exports, module) {
         var communityDetailId = obj.attr('itemId');
         var requestParam = {};
         requestParam.communityDetailId = communityDetailId;
-        requestParam.communityId=communityId,
+        requestParam.communityId = communityId,
             common.getData('/community/enterCommunityDetail.do', requestParam, function (resp) {
                 if (resp.code == "200") {
-                    var count=parseInt(obj.next().find('em').html())+1;
+                    var count = parseInt(obj.next().find('em').html()) + 1;
                     obj.next().find('em').html(count);
                     alert(resp.message);
                 } else {
@@ -77,12 +125,12 @@ define(['jquery', 'pagination', 'common'], function (require, exports, module) {
 
     //获取我的社区
     function getMyCommunity() {
-        common.getData("/community/myCommunitys.do", {pageSize:9,platform:"web"}, function (result) {
+        common.getData("/community/myCommunitys.do", {pageSize: 9, platform: "web"}, function (result) {
             if (result.code = "200") {
-                if(undefined!=result.message.list){
-                    template('#myCommunityTmpl','#myCommunity',result.message.list);
-                }else{
-                    template('#myCommunityTmpl','#myCommunity',result.message);
+                if (undefined != result.message.list) {
+                    template('#myCommunityTmpl', '#myCommunity', result.message.list);
+                } else {
+                    template('#myCommunityTmpl', '#myCommunity', result.message);
                 }
             } else {
                 alert(result.message);
@@ -95,8 +143,8 @@ define(['jquery', 'pagination', 'common'], function (require, exports, module) {
         var requestData = {};
         requestData.page = page;
         requestData.pageSize = 10;
-        requestData.communityId=communityId;
-        requestData.type=type;
+        requestData.communityId = communityId;
+        requestData.type = type;
         common.getData("/community/getMessage.do", requestData, function (result) {
             if (result.code = "200") {
                 $('.new-page-links').html("");
@@ -119,22 +167,22 @@ define(['jquery', 'pagination', 'common'], function (require, exports, module) {
                     }
                 });
 
-                if(type == 1){
+                if (type == 1) {
                     template('#announcementTmpl', '#content', result.message.result);
                 }
-                if(type ==2){
+                if (type == 2) {
                     template('#activityTmpl', '#content', result.message.result);
                 }
-                if(type ==3){
+                if (type == 3) {
                     template('#shareTmpl', '#content', result.message.result);
                 }
-                if(type ==4){
+                if (type == 4) {
                     template('#meansTmpl', '#content', result.message.result);
                 }
-                if(type ==5){
+                if (type == 5) {
                     template('#homeworkTmpl', '#content', result.message.result);
                 }
-                if(type ==6){
+                if (type == 6) {
                     template('#materialsTmpl', '#content', result.message.result);
                 }
             }
@@ -152,14 +200,14 @@ define(['jquery', 'pagination', 'common'], function (require, exports, module) {
 
         $(".detail").click(function () {
             var detailId = $(this).attr('value');
-            var url='/community/communityDetail?detailId='+detailId;
+            var url = '/community/communityDetail?detailId=' + detailId;
             window.open(url, '_blank');
         });
 
 
         $(".open").click(function () {
             var detailId = $(this).attr('value');
-            var url='/community/communityDetail?detailId='+detailId;
+            var url = '/community/communityDetail?detailId=' + detailId;
             window.open(url, '_blank');
         });
     }
@@ -167,12 +215,11 @@ define(['jquery', 'pagination', 'common'], function (require, exports, module) {
     function hx_update() {
 
         $.ajax({
-            url:'/group/offlineMsgCount.do',
-            success: function(resp){
-                var hx_notice = $('.hx-notice span');
+            url: '/group/offlineMsgCount.do',
+            success: function (resp) {
                 var offCount = resp.message.offlineCount;
 
-                if(offCount > 0) {
+                if (offCount > 0) {
                     $('#hx-icon').removeClass("sp2");
                     $('#hx-icon').addClass('sp1');
                 } else {
@@ -183,15 +230,168 @@ define(['jquery', 'pagination', 'common'], function (require, exports, module) {
         });
     }
 
-    // $.urlParam = function(name){
-    //     var results = new RegExp('[\?&]' + name + '=([^&#]*)').exec(window.location.href);
-    //     if (results==null){
-    //         return null;
-    //     }
-    //     else{
-    //         return results[1] || 0;
-    //     }
-    // };
+    function getPublishedActivitys(n) {
+        var requestParm = {
+            page: n
+        };
+        var init = true;
+        common.getData("/factivity/published.do", requestParm, function (resp) {
+            if (resp.code == '200') {
+                if (resp.message.result.length <= 0) {
+                    $('#activity-published-dev img').show();
+                    $('#ul-activity-published').hide();
+                    $('.published-page').hide();
+                    return;
+                }
+                $('.published-page').jqPaginator({
+                    totalPages: resp.message.totalPages,//总页数
+                    visiblePages: 10,//分多少页
+                    currentPage: resp.message.page,//当前页数
+                    first: '<li class="first"><a href="javascript:void(0);">首页<\/a><\/li>',
+                    prev: '<li class="prev"><a href="javascript:void(0);">&lt;<\/a><\/li>',
+                    next: '<li class="next"><a href="javascript:void(0);">&gt;<\/a><\/li>',
+                    last: '<li class="last"><a href="javascript:void(0);">末页<\/a><\/li>',
+                    page: '<li class="page"><a href="javascript:void(0);">{{page}}<\/a><\/li>',
+                    onPageChange: function (n) { //回调函数
+                        if (init) {
+                            init = false;
+                        } else {
+                            getPublishedActivitys(n);
+                        }
+                    }
+                });
+                template('#activityBox', '#ul-activity-published', resp.message.result);
+
+                $('#ul-activity-published li button').each(function () {
+
+                    $(this).text('取消活动');
+                    var acid = $(this).attr('value');
+                    $(this).click(function () {
+                        var requestParm = {
+                            acid: acid
+                        };
+                        common.getData("/factivity/cancelPublish.do", requestParm, function (resp) {
+                            if (resp.code == '200') {
+                                alert("取消报名成功");
+                                me.parent().hide();
+                            } else {
+
+                            }
+                        });
+                    });
+                });
+            }
+        });
+    }
+
+    function getSignedActivitys(n) {
+        var requestParm = {
+            page: n
+        };
+        var init = true;
+        common.getData("/factivity/signed.do", requestParm, function (resp) {
+            if (resp.code == '200') {
+
+                if (resp.message.result.length <= 0) {
+                    $('#activity-signed-div img').show();
+                    $('#ul-activity-signed').hide();
+                    $('.signed-page').hide();
+                    return;
+                }
+                $('.signed-page').jqPaginator({
+                    totalPages: resp.message.totalPages,//总页数
+                    visiblePages: 10,//分多少页
+                    currentPage: resp.message.page,//当前页数
+                    first: '<li class="first"><a href="javascript:void(0);">首页<\/a><\/li>',
+                    prev: '<li class="prev"><a href="javascript:void(0);">&lt;<\/a><\/li>',
+                    next: '<li class="next"><a href="javascript:void(0);">&gt;<\/a><\/li>',
+                    last: '<li class="last"><a href="javascript:void(0);">末页<\/a><\/li>',
+                    page: '<li class="page"><a href="javascript:void(0);">{{page}}<\/a><\/li>',
+                    onPageChange: function (n) { //回调函数
+                        if (init) {
+                            init = false;
+                        } else {
+                            getSignedActivitys(n);
+                        }
+                    }
+                });
+                template('#activityBox', '#ul-activity-signed', resp.message.result);
+
+                $('#ul-activity-signed li button').click(function () {
+
+                    alert('haha');
+                    var me = $(this);
+                    var requestParm = {
+                        acid: $(this).attr('value')
+                    };
+                    common.getData("/factivity/cancelSign.do", requestParm, function (resp) {
+                        if (resp.code == '200') {
+                            alert("取消报名成功");
+                            me.parent().hide();
+                        } else {
+
+                        }
+                    });
+                });
+            }
+        });
+    }
+
+    function getAttendActivitys(n) {
+        var requestParm = {
+            page: n
+        };
+        var init = true;
+        common.getData("/factivity/attended.do", requestParm, function (resp) {
+            if (resp.code == '200') {
+                if (resp.message.result.length <= 0) {
+                    $('#activity-attended-div img').show();
+                    $('#ul-activity-attended').hide();
+                    $('.attended-page').hide();
+                    return;
+                }
+                $('.attended-page').jqPaginator({
+                    totalPages: resp.message.totalPages,//总页数
+                    visiblePages: 10,//分多少页
+                    currentPage: resp.message.page,//当前页数
+                    first: '<li class="first"><a href="javascript:void(0);">首页<\/a><\/li>',
+                    prev: '<li class="prev"><a href="javascript:void(0);">&lt;<\/a><\/li>',
+                    next: '<li class="next"><a href="javascript:void(0);">&gt;<\/a><\/li>',
+                    last: '<li class="last"><a href="javascript:void(0);">末页<\/a><\/li>',
+                    page: '<li class="page"><a href="javascript:void(0);">{{page}}<\/a><\/li>',
+                    onPageChange: function (n) { //回调函数
+                        if (init) {
+                            init = false;
+                        } else {
+                            getAttendActivitys(n);
+                        }
+                    }
+                });
+                template('#activityBox', '#ul-activity-attended', resp.message.result);
+            }
+        });
+    }
+
+    function renderActivity() {
+        if (activity_cur === 1) {
+
+            $('#activity-signed-div').show();
+            $('#activity-published-dev').hide();
+            $('#activity-attended-div').hide();
+
+        } else if (activity_cur === 2) {
+
+            $('#activity-signed-div').hide();
+            $('#activity-published-dev').show();
+            $('#activity-attended-div').hide();
+
+        } else if (activity_cur === 3) {
+
+            $('#activity-signed-div').hide();
+            $('#activity-published-dev').hide();
+            $('#activity-attended-div').show();
+        }
+    }
 
     module.exports = communityMessageList;
 });

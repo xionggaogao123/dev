@@ -19,6 +19,7 @@ define(['jquery', 'pagination', 'common'], function (require, exports, module) {
         seekMateParm.page = page;
         var init = true;
         common.getData('/mate/getPlayMates.do', seekMateParm, function (resp) {
+
             if (resp.code == "200") {
                 template('#mateBox', '#near-mates', resp.message.result);
                 $('.mate-count').text(resp.message.totalCount);
@@ -41,7 +42,6 @@ define(['jquery', 'pagination', 'common'], function (require, exports, module) {
                         }
                     }
                 });
-
             } else {
                 alert(resp.message);
             }

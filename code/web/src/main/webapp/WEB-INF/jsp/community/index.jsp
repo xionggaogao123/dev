@@ -192,7 +192,7 @@
                 <div></div>
                 <div></div>
             </div>
-            <div class="mk-s">
+            <div class="mk-s mk-ls" id="playmate">
                 <div class="mk1-pho"></div>
                 <div class="mk-name">
                     <span>找玩伴</span>

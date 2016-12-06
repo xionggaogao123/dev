@@ -1,10 +1,3 @@
-<%--
-  Created by IntelliJ IDEA.
-  User: admin
-  Date: 2016/10/25
-  Time: 11:08
-  To change this template use File | Settings | File Templates.
---%>
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
 <html lang="en">
 <head>
@@ -12,6 +5,7 @@
     <title>加入社区</title>
     <link rel="stylesheet" type="text/css" href="/static/css/community/community.css">
     <script type="text/javascript" src="/static/js/modules/forum/jquery-1.11.1.js"></script>
+    <link rel="stylesheet" type="text/css" href="/static/css/friend/nearby.css">
 </head>
 <body style="background: #f5f5f5;">
 <%--==============头部===================--%>
@@ -21,15 +15,17 @@
 </div>
 <div class="f-cont">
     <div class="hd-nav">
-        <span class="hd-green-cur">我的社区</span>
-        <%--<span>我的学习</span>--%>
-        <%--<span>我的玩伴</span>--%>
+        <span id="my-community-span" class="hd-green-cur">我的社区</span>
+        <span id="myActivity-span">我的活动</span>
     </div>
 </div>
 <div class="container">
+    <!-- 返回 -->
     <div class="back-prev">
         <a onclick="window.history.go(-1)">< 返回上一页</a>
     </div>
+
+    <!-- 社区-->
     <div class="hd-cont-f hd-cont-f1">
         <div class="com-left">
             <div class="com-left-s">
@@ -117,32 +113,41 @@
                     {{~}}
                 </script>
                 <ul class="ul-my-com" id="hotCommunity">
-                    <%--<li>--%>
-                    <%--<img src="/static/images/community/wuling.png">--%>
-                    <%--<p>五菱宏光超跑车队</p>--%>
-                    <%--</li>--%>
-                    <%--<li>--%>
-                    <%--<img src="/static/images/community/wuling.png">--%>
-                    <%--<p>五菱宏光超跑车队</p>--%>
-                    <%--</li>--%>
-                    <%--<li>--%>
-                    <%--<img src="/static/images/community/wuling.png">--%>
-                    <%--<p>五菱宏光超跑车队</p>--%>
-                    <%--</li>--%>
-                    <%--<li>--%>
-                    <%--<img src="/static/images/community/wuling.png">--%>
-                    <%--<p>五菱宏光超跑车队</p>--%>
-                    <%--</li>--%>
-                    <%--<li>--%>
-                    <%--<img src="/static/images/community/wuling.png">--%>
-                    <%--<p>五菱宏光超跑车队</p>--%>
-                    <%--</li>--%>
                 </ul>
             </div>
             <p class="member-more" onclick="window.open('/community/searchHotCommunity.do')">更多</p>
         </div>
     </div>
+
+    <!-- 找玩伴 -->
     <div class="hd-cont-f hd-cont-f2">
+        <p class="p1">
+            <span id="my-community-1" class="hd-cf-cur2">已报名活动</span>
+            <span id="my-community-2">已发布活动</span>
+            <span id="my-community-3">已参加活动</span>
+        </p>
+
+        <div id="activity-signed-div">
+            <img src="/static/images/community/no_data.jpg" hidden>
+            <ul class="ul-hds" id="ul-activity-signed">
+            </ul>
+            <div class="new-page-links signed-page"></div>
+        </div>
+
+        <div id="activity-published-dev">
+            <img src="/static/images/community/no_data.jpg" hidden>
+            <ul class="ul-hds" id="ul-activity-published">
+            </ul>
+            <div class="new-page-links published-page"></div>
+        </div>
+
+        <div id="activity-attended-div">
+            <img src="/static/images/community/no_data.jpg" hidden>
+            <ul class="ul-hds" id="ul-activity-attended">
+            </ul>
+            <div class="new-page-links attended-page"></div>
+        </div>
+
     </div>
 </div>
 
@@ -169,10 +174,24 @@
 
 <script src="/static/js/sea.js"></script>
 <script src="/static/js/modules/core/0.1.0/config.js?v=2015041602"></script>
+
 <script>
     seajs.use('/static/js/modules/community/communityJoin.js', function (communityJoin) {
         communityJoin.init();
     });
 </script>
+
+<script type="text/template" id="activityBox">
+    {{~it:value:index}}
+    <li>
+        <button value="{{=value.acid}}">取消报名</button>
+        <p class="p1">
+            <span># {{=value.activityCode}}#</span>{{=value.title}}
+        </p>
+        <p class="p2">{{=value.description}}</p>
+    </li>
+    {{~}}
+</script>
+
 </body>
 </html>

@@ -7,6 +7,7 @@
     <link rel="stylesheet" type="text/css" href="/static/css/community/community.css">
     <link href="/static/js/modules/core/0.1.0/fancyBox/jquery.fancybox.css?v=2015041602" rel="stylesheet"
           type="text/css" media="screen">
+    <link rel="stylesheet" type="text/css" href="/static/css/friend/nearby.css">
     <script type="text/javascript" src="/static/js/modules/forum/jquery-1.11.1.js"></script>
     <script type="text/javascript" src="/static/js/modules/forum/jquery-browser.js"></script>
     <script type="text/javascript" src="/static/js/main.js"></script>
@@ -27,12 +28,13 @@
                 <div class="d2"></div>
             </div>
         </c:if>
-        <span class="hd-green-cur">我的社区</span>
-        <%--<span>找学习</span>--%>
+        <span id="my-community-span" class="hd-green-cur">我的社区</span>
+        <span id="myActivity-span">我的活动</span>
         <%--<span>找玩伴</span>--%>
     </div>
 </div>
 <div class="container">
+    <!-- 社区 -->
     <div class="hd-cont-f hd-cont-f1">
         <div class="com-left">
             <div class="com-rlt">
@@ -181,6 +183,38 @@
             </div>
         </div>
     </div>
+
+    <!-- 活动 -->
+    <div class="hd-cont-f hd-cont-f2">
+        <p class="p1">
+            <span id="my-community-1" class="hd-cf-cur2">已报名活动</span>
+            <span id="my-community-2">已发布活动</span>
+            <span id="my-community-3">已参加活动</span>
+        </p>
+
+        <div id="activity-signed-div">
+            <img src="/static/images/community/no_data.jpg" hidden>
+            <ul class="ul-hds" id="ul-activity-signed">
+            </ul>
+            <div class="new-page-links signed-page"></div>
+        </div>
+
+        <div id="activity-published-dev">
+            <img src="/static/images/community/no_data.jpg" hidden>
+            <ul class="ul-hds" id="ul-activity-published">
+            </ul>
+            <div class="new-page-links published-page"></div>
+        </div>
+
+        <div id="activity-attended-div">
+            <img src="/static/images/community/no_data.jpg" hidden>
+            <ul class="ul-hds" id="ul-activity-attended">
+            </ul>
+            <div class="new-page-links attended-page"></div>
+        </div>
+
+    </div>
+
 </div>
 <!--=============底部版权=================-->
 <%@ include file="../common/footer.jsp" %>
@@ -648,6 +682,19 @@
 
 
 </script>
+
+<script type="text/template" id="activityBox">
+    {{~it:value:index}}
+    <li>
+        <button value="{{=value.acid}}">取消报名</button>
+        <p class="p1">
+            <span># {{=value.activityCode}}#</span>{{=value.title}}
+        </p>
+        <p class="p2">{{=value.description}}</p>
+    </li>
+    {{~}}
+</script>
+
 <script type="text/javascript" src="/static/js/modules/core/0.1.0/fancyBox/jquery.fancybox.js"></script>
 <script type="text/javascript">
     $(document).ready(function () {

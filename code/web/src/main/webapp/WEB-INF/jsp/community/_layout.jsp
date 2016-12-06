@@ -8,8 +8,6 @@
     <meta charset="utf-8">
     <link rel="stylesheet" type="text/css" href="/static/css/community/community.css">
     <script type="text/javascript" src="/static/js/modules/forum/jquery-1.11.1.js"></script>
-    <script type="text/javascript" src="/static/js/friend/near.js"></script><%--
-    <link rel="stylesheet" type="text/css" href="/static/css/friend/nearby.css">--%>
     <title>社区</title>
     <layout:block name="head">
         <%--重写的head --%>

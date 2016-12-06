@@ -123,7 +123,7 @@ public class FActivityDao extends BaseDao {
     }
 
     public int countUserAttendActivity(ObjectId userId) {
-        BasicDBObject query = new BasicDBObject("uid", userId).append(Constant.MONGO_GTE, new BasicDBObject("acti", System.currentTimeMillis()));
+        BasicDBObject query = new BasicDBObject("uid", userId).append("acti", new BasicDBObject(Constant.MONGO_GTE, System.currentTimeMillis()));
         return count(MongoFacroty.getAppDB(), Constant.COLLECTION_FORM_SIGN_ACTIVITY_SHEET, query);
     }
 
@@ -137,7 +137,7 @@ public class FActivityDao extends BaseDao {
      */
     public List<FActivityEntry> getAttendedActivity(ObjectId userId, int page, int pageSize) {
         List<FASignEntry> signEntries = new ArrayList<FASignEntry>();
-        BasicDBObject query = new BasicDBObject("uid", userId).append(Constant.MONGO_GTE, new BasicDBObject("acti", System.currentTimeMillis()));
+        BasicDBObject query = new BasicDBObject("uid", userId).append("acti", new BasicDBObject(Constant.MONGO_GTE, System.currentTimeMillis()));
         BasicDBObject orderBy = new BasicDBObject("acid", Constant.DESC);
         List<DBObject> dbos = find(MongoFacroty.getAppDB(), Constant.COLLECTION_FORM_SIGN_ACTIVITY_SHEET, query, Constant.FIELDS, orderBy, (page - 1) * pageSize, pageSize);
         for (DBObject dbo : dbos) {
@@ -159,5 +159,19 @@ public class FActivityDao extends BaseDao {
     public void cancelSignActivity(ObjectId acid, ObjectId userId) {
         BasicDBObject query = new BasicDBObject("acid", acid).append("uid", userId);
         remove(MongoFacroty.getAppDB(), Constant.COLLECTION_FORM_SIGN_ACTIVITY_SHEET, query);
+    }
+
+    /**
+     * 取消发布活动
+     *
+     * @param acid
+     * @param userId
+     */
+    public void cancelPublishActivity(ObjectId acid, ObjectId userId) {
+        BasicDBObject query = new BasicDBObject(Constant.ID, acid).append("uid", userId);
+        remove(MongoFacroty.getAppDB(), Constant.COLLECTION_FORUM_ACTIVITY, query);
+
+        BasicDBObject querySheet = new BasicDBObject("acid", acid);
+        remove(MongoFacroty.getAppDB(), Constant.COLLECTION_FORM_SIGN_ACTIVITY_SHEET, querySheet);
     }
 }

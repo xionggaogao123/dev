@@ -1392,7 +1392,7 @@ pre{white-space: pre-wrap;word-wrap: break-word;}
     height:259px;
 }
 .com-right-s{
-    margin-bottom: 0px;
+    margin-bottom: 14px;
     background: #fff;
 }
 .com-rlt{
@@ -1564,6 +1564,9 @@ pre{white-space: pre-wrap;word-wrap: break-word;}
     padding: 0 11px;
     width: 544px;
    /* height: 80px;*/
+}
+.notice-cont .p-img img{
+    max-width: 726px;
 }
 .notice-cont .p-hw{
     margin-bottom: 10px;

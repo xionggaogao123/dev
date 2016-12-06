@@ -52,3 +52,9 @@ code/oneconf/src/main/resources/rebel-remote.xml
 code/pojo/src/main/resources/rebel-remote.xml
 code/sys/src/main/resources/rebel-remote.xml
 code/web/src/main/resources/rebel-remote.xml
+code/db/.rebel-remote.xml.bak
+code/emchat-server-java/.rebel-remote.xml.bak
+code/indexsearch/.rebel-remote.xml.bak
+code/pojo/.rebel-remote.xml.bak
+code/sys/.rebel-remote.xml.bak
+code/web/.rebel-remote.xml.bak

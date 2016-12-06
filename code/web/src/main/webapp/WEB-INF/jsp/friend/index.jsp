@@ -8,8 +8,11 @@
     <script type="text/javascript" src="/static/js/friend/jquery-1.11.1.js"></script>
     <link rel="stylesheet" type="text/css" href="/static/css/friend/nearby.css">
     <link rel="stylesheet" type="text/css" href="/static/css/main.css">
-    <script type="text/javascript"
-            src="http://api.map.baidu.com/api?v=2.0&ak=gLtMQemqya8xYLSOlUkfGL0iCKGsqdfw"></script>
+    <%--<script type="text/javascript"--%>
+            <%--src="http://api.map.baidu.com/api?v=2.0&ak=gLtMQemqya8xYLSOlUkfGL0iCKGsqdfw"></script>--%>
+
+    <script type="text/javascript" src="http://webapi.amap.com/maps?v=1.3&key=5031ffed31f86c967f58806fd39cfad4"></script>
+
 </head>
 <body style="background: #f5f5f5">
 <%@include file="../common/head.jsp" %>

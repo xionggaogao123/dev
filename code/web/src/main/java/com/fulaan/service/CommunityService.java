@@ -69,20 +69,18 @@ public class CommunityService {
      * @param qrUrl
      */
     public ObjectId createCommunity(ObjectId communityId, ObjectId userId, String name, String desc, String logo, String qrUrl, String seqId, int open) throws Exception {
-
         String emChatId = emService.createEmGroup(userId);
-        if(emChatId == null) {
+        if (emChatId == null) {
             return null;
         }
         ObjectId groupId = groupService.createGroupWithCommunity(communityId, userId, emChatId, name, desc, qrUrl);
-        try{
+        CommunityEntry entry = new CommunityEntry(communityId, seqId, groupId, emChatId, name, logo, desc, qrUrl, open, userId);
+        communityDao.save(entry);
+        try {
             groupService.updateHeadImage(groupId);
         } catch (Exception e) {
             e.printStackTrace();
         }
-
-        CommunityEntry entry = new CommunityEntry(communityId, seqId, groupId, emChatId, name, logo, desc, qrUrl, open, userId);
-        communityDao.save(entry);
         return communityId;
     }
 
@@ -135,7 +133,7 @@ public class CommunityService {
         } else {
             communityDetailDTO.setNickName(userEntry.getUserName());
         }
-        int partIncontentCount=partInContentDao.countPartPartInContent(communityDetailId);
+        int partIncontentCount = partInContentDao.countPartPartInContent(communityDetailId);
         communityDetailDTO.setPartIncotentCount(partIncontentCount);
         communityDetailDTO.setImageUrl(AvatarUtils.getAvatar(userEntry.getAvatar(), AvatarType.MIN_AVATAR.getType()));
         return communityDetailDTO;
@@ -183,7 +181,7 @@ public class CommunityService {
         return list;
     }
 
-    public int countMycommunitys(ObjectId userId){
+    public int countMycommunitys(ObjectId userId) {
         return mineCommunityDao.count(userId);
     }
 
@@ -246,7 +244,7 @@ public class CommunityService {
         List<CommunityDetailEntry> communitys = communityDetailDao.getNewsByType(communityIds, type, page, pageSize, order);
 
         int unreadCount = 0;
-        if (userId != null&& communityIds.size() > 0 && operation == 1) {
+        if (userId != null && communityIds.size() > 0 && operation == 1) {
             int totalCount = communityDetailDao.count(communityIds.get(0), type.getType());
             int readCount = communityDetailDao.countRead(type.getType(), communityIds.get(0), userId);
             unreadCount = totalCount - readCount;
@@ -873,9 +871,9 @@ public class CommunityService {
      *
      * @return
      */
-    public List<CommunityDTO> getOpenCommunityS(ObjectId userId,int page,int pageSize,String lastId) {
+    public List<CommunityDTO> getOpenCommunityS(ObjectId userId, int page, int pageSize, String lastId) {
         List<CommunityDTO> communityDTOs = new ArrayList<CommunityDTO>();
-        List<CommunityEntry> communityEntries = communityDao.getOpenCommunitys(page,pageSize,lastId);
+        List<CommunityEntry> communityEntries = communityDao.getOpenCommunitys(page, pageSize, lastId);
 
         if (null == userId) {
             for (CommunityEntry communityEntry : communityEntries) {
@@ -885,7 +883,7 @@ public class CommunityService {
             }
         } else {
             for (CommunityEntry communityEntry : communityEntries) {
-                if(null!=communityEntry.getOwerID()) {
+                if (null != communityEntry.getOwerID()) {
                     if (!memberService.isGroupMember(new ObjectId(communityEntry.getGroupId()), userId)) {
                         CommunityDTO communityDTO = new CommunityDTO(communityEntry);
                         communityDTOs.add(communityDTO);
@@ -893,16 +891,16 @@ public class CommunityService {
                 }
             }
             //判断查询的是否满足所有条件
-            int count=pageSize-communityDTOs.size();
-            if(count>0){
-                if(communityDTOs.size()!=0){
+            int count = pageSize - communityDTOs.size();
+            if (count > 0) {
+                if (communityDTOs.size() != 0) {
                     lastId = communityDTOs.get(communityDTOs.size() - 1).getId();
                 }
-                boolean flag=false;
-                List<Integer> integers=new ArrayList<Integer>();
+                boolean flag = false;
+                List<Integer> integers = new ArrayList<Integer>();
                 integers.add(0);
                 //每次查询300条,查询次数最多10次
-                dealWithData(flag,page,300,pageSize,lastId,communityDTOs,userId,integers);
+                dealWithData(flag, page, 300, pageSize, lastId, communityDTOs, userId, integers);
             }
 
         }
@@ -910,42 +908,42 @@ public class CommunityService {
     }
 
 
-    private boolean dealWithData(boolean flag,int page,int count,int pageSize,String lastId,List<CommunityDTO> communityDTOs,ObjectId userId,List<Integer> integers){
-        if(StringUtils.isNotBlank(lastId)){
-            if(page==1){
-                page=2;
+    private boolean dealWithData(boolean flag, int page, int count, int pageSize, String lastId, List<CommunityDTO> communityDTOs, ObjectId userId, List<Integer> integers) {
+        if (StringUtils.isNotBlank(lastId)) {
+            if (page == 1) {
+                page = 2;
             }
         }
-        int integer=integers.get(0);
-        if(integer>10){
+        int integer = integers.get(0);
+        if (integer > 10) {
             return true;
-        }else {
+        } else {
             integers.set(0, integer + 1);
         }
-        while(true) {
+        while (true) {
             List<CommunityEntry> communityEntries1 = communityDao.getOpenCommunitys(page, count, lastId);
             if (communityEntries1.size() != 0) {
                 for (CommunityEntry communityEntry : communityEntries1) {
-                    if(pageSize==communityDTOs.size()){
+                    if (pageSize == communityDTOs.size()) {
                         break;
-                    }else if(!memberService.isGroupMember(new ObjectId(communityEntry.getGroupId()), userId)){
+                    } else if (!memberService.isGroupMember(new ObjectId(communityEntry.getGroupId()), userId)) {
                         CommunityDTO communityDTO = new CommunityDTO(communityEntry);
                         communityDTOs.add(communityDTO);
                     }
                 }
-                int temp=pageSize-communityDTOs.size();
-                if(temp>0){
-                    if(communityDTOs.size()!=0){
-                        lastId=communityDTOs.get(communityDTOs.size()-1).getId();
+                int temp = pageSize - communityDTOs.size();
+                if (temp > 0) {
+                    if (communityDTOs.size() != 0) {
+                        lastId = communityDTOs.get(communityDTOs.size() - 1).getId();
                     }
-                    flag=dealWithData(flag,page,count,pageSize,lastId,communityDTOs,userId,integers);
-                }else{
-                    flag=true;
+                    flag = dealWithData(flag, page, count, pageSize, lastId, communityDTOs, userId, integers);
+                } else {
+                    flag = true;
                 }
-            }else{
-                flag=true;
+            } else {
+                flag = true;
             }
-            if(flag){
+            if (flag) {
                 break;
             }
         }
@@ -1160,11 +1158,11 @@ public class CommunityService {
         partInContentDao.saveParInContent(partInContentEntry);
     }
 
-    public void removeCommunityDetailById(ObjectId id){
+    public void removeCommunityDetailById(ObjectId id) {
         communityDetailDao.removeCommunityDetail(id);
     }
 
-    public List<ObjectId> getAllMemberIds(ObjectId groupId){
+    public List<ObjectId> getAllMemberIds(ObjectId groupId) {
         return memberDao.getAllMemberIds(groupId);
     }
 }

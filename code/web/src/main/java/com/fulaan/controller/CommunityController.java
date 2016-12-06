@@ -121,9 +121,8 @@ public class CommunityController extends BaseController {
             logo = prev + suffix;
         }
         ObjectId commId = communityService.createCommunity(communityId, uid, name, desc, logo, qrUrl, seqId, open);
-
         if(commId == null ){
-            return RespObj.FAILD("社区序列值不够");
+            return RespObj.FAILD("无法创建社区");
         }
         communityService.pushToUser(commId, uid, 2);
         CommunityDTO communityDTO = communityService.findByObjectId(commId);
@@ -215,7 +214,6 @@ public class CommunityController extends BaseController {
     @SessionNeedless
     @ResponseBody
     public RespObj get(@PathVariable @ObjectIdType ObjectId id) {
-
         ObjectId groupId = communityService.getGroupId(id);
         CommunityDTO communityDTO = communityService.findByObjectId(id);
         List<MemberDTO> members = memberService.getMembers(groupId, 12);

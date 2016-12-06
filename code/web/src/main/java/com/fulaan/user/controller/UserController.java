@@ -674,169 +674,6 @@ public class UserController extends BaseController {
     }
 
 
-//    /**
-//     * sso 回调登录
-//     *
-//     * @param request
-//     * @param response
-//     * @return
-//     * @throws UnLoginException
-//     * @throws ClientProtocolException
-//     * @throws IOException
-//     * @throws IllegalParamException
-//     * @throws UnBindException
-//     * @throws ServletException
-//     */
-//    @SessionNeedless
-//    @RequestMapping("/sso/login")
-//    public String ssoLogin(HttpServletRequest request, HttpServletResponse response, String nextpage) throws UnLoginException, IOException, IllegalParamException, UnBindException, ServletException {
-//        String service = new String(service_url);
-//        if (StringUtils.isNotBlank(nextpage)) {
-//            service = service + "?nextpage=" + nextpage;
-//        }
-//        CASRestful casrest = new CASRestful(request, cas_url, service);
-//        String st = "";
-//        if (null != request.getParameter("ticket")) {
-//            st = request.getParameter("ticket");
-//        }
-//        if (StringUtils.isBlank(st)) {
-//            throw new UnBindException("sso login cannot find ticket!!!!");
-//        }
-//
-//        logger.info("get ticket=" + st);
-//        casrest.authenticateWithST(st);
-//        logger.info("sso user name：" + casrest.getCurrentUser());
-//        if (StringUtils.isBlank(casrest.getCurrentUser())) {
-//            throw new UnBindException("sso login faild");
-//        }
-//
-//        String name = casrest.getCurrentUser().toLowerCase();
-//
-//        UserEntry e = userService.getUserEntryByBindName(name);
-//
-//        if (null == e) //没有绑定用户
-//        {
-//            throw new UnBindException("un bind k6kt user!!!");
-//        }
-//
-//        try {
-//            if (0l == e.getLastActiveDate()) {
-//                String params = e.getID().toString() + 0l;
-//                String flkey = CacheHandler.getKeyString(CacheHandler.CACHE_USER_FIRST_LOGIN, params);
-//                CacheHandler.cache(flkey, Constant.USER_FIRST_LOGIN, Constant.SESSION_FIVE_MINUTE);
-//            }
-//            //更新最后登录日期
-//            userService.updateLastActiveDate(e.getID());
-//        } catch (Exception ex) {
-//            logger.error("", ex);
-//        }
-//
-//
-//        if (Constant.ONE == e.getUserType()) //有效时间用户
-//        {
-//            long validBeginTime = e.getValidBeginTime();
-//            long validTime = e.getValidTime();
-//            if (0L == validBeginTime) //第一次登陆
-//            {
-//                try {
-//                    userService.update(e.getID(), "vabt", System.currentTimeMillis());
-//                } catch (IllegalParamException e1) {
-//
-//                }
-//                ;
-//            } else {
-//                if (System.currentTimeMillis() > validBeginTime + validTime * 1000) {
-//                    throw new UnLoginException();
-//                }
-//            }
-//        }
-//
-//        SchoolEntry schoolEntry = null;
-//        try {
-//            schoolEntry = schoolService.getSchoolEntryByUserId(e.getID());
-//        } catch (IllegalParamException ie) {
-//            logger.error("Can not find school for user:" + e);
-//        }
-//
-//
-//        //处理SessionValue
-//        SessionValue value = new SessionValue();
-//        value.setId(e.getID().toString());
-//        value.setUserName(e.getUserName());
-//        value.setRealName(e.getNickName());
-//        value.setK6kt(e.getK6KT());
-//        value.setSso();
-//        if (e.getK6KT() == 1) {//k6kt用户
-//            value.setSchoolId(e.getSchoolID().toString());
-//            if (schoolEntry != null && schoolEntry.getLogo() != null) {
-//                value.setSchoolLogo(schoolEntry.getLogo());
-//            }
-//
-//            value.setUserRole(e.getRole());
-//            value.setAvatar(e.getAvatar());
-//            value.setUserPermission(e.getPermission());
-//            value.setUserRemovePermission(e.getRemovePermission());
-//            value.setExperience(e.getExperiencevalue());
-//            value.setChatid(e.getChatId());
-//            value.setSchoolNavs(schoolEntry.getSchoolNavs());
-//            value.setSchoolName(schoolEntry.getName());
-//        }
-//        //放入缓存
-//        ObjectId cacheUserKey = new ObjectId();
-//        //ck_key
-//        CacheHandler.cacheUserKey(e.getID().toString(), cacheUserKey.toString(), Constant.SECONDS_IN_DAY);
-//        //s_key
-//        CacheHandler.cacheSessionValue(cacheUserKey.toString(), value, Constant.SECONDS_IN_DAY);
-//        //处理cookie
-//        Cookie userKeycookie = new Cookie(Constant.COOKIE_USER_KEY, cacheUserKey.toString());
-//        userKeycookie.setMaxAge(Constant.SECONDS_IN_DAY);
-//        userKeycookie.setPath(Constant.BASE_PATH);
-//        response.addCookie(userKeycookie);
-//
-//        request.setAttribute(BaseController.SESSION_VALUE, value);
-//
-//        //将ticket存入缓存
-//        CacheHandler.cache(CacheHandler.getKeyString(CacheHandler.USER_SSO_TICKET, e.getID().toString()), st, Constant.SECONDS_IN_DAY * 2);
-//
-//        try {
-//            Cookie nameCookie = new Cookie(Constant.COOKIE_USERNAME_KEY, URLEncoder.encode(name, Constant.UTF_8));
-//            nameCookie.setMaxAge(Constant.SECONDS_IN_MONTH);
-//            nameCookie.setPath(Constant.BASE_PATH);
-//            response.addCookie(nameCookie);
-//        } catch (UnsupportedEncodingException e1) {
-//            logger.error("", e1);
-//        }
-//        return "redirect:/user/homepage.do";
-//    }
-
-    /**
-     * sso 登录 跳转
-     *
-     * @param request
-     * @param response
-     * @param callBack
-     * @throws UnLoginException
-     * @throws ClientProtocolException
-     * @throws IOException
-     */
-    @SessionNeedless
-    @RequestMapping("/sso/redirect")
-    public void ssoLoginRedirect(HttpServletRequest request,
-                                 HttpServletResponse response, String callBack)
-            throws UnLoginException, ClientProtocolException, IOException {
-        String login_url = new String(cas_login_url);
-        String service = new String(service_url);
-
-        ObjectId uid = getUserId();
-        if (null != uid) {
-            service = service + "?nextpage=" + uid.toString();
-        }
-        login_url = login_url + "?service=" + URLEncoder.encode(service, "UTF-8");
-        logger.info("sso loginaa begin redirect!!!");
-        logger.info(login_url);
-        response.sendRedirect(login_url + "&redirect=true");
-    }
-
 
     /**
      * @return
@@ -1851,6 +1688,14 @@ public class UserController extends BaseController {
             logger.error("Can not find school for user:" + userEntry);
         }
         SessionValue value = userService.getSessionValue(getIP(), userEntry, schoolEntry, response, request);
+
+        //检查是否注册环信
+        boolean isRegister = userEntry.isRegisterHuanXin();
+        String nickName2 = StringUtils.isNotBlank(userEntry.getNickName()) ? userEntry.getNickName() : userEntry.getUserName();
+        if (!isRegister) {
+            EaseMobAPI.createUser(userEntry.getID().toString(), nickName2);
+        }
+
         return RespObj.SUCCESS(value);
     }
 

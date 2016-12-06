@@ -121,6 +121,10 @@ public class CommunityController extends BaseController {
             logo = prev + suffix;
         }
         ObjectId commId = communityService.createCommunity(communityId, uid, name, desc, logo, qrUrl, seqId, open);
+
+        if(commId == null ){
+            return RespObj.FAILD("社区序列值不够");
+        }
         communityService.pushToUser(commId, uid, 2);
         CommunityDTO communityDTO = communityService.findByObjectId(commId);
         //创建社区系统消息通知

@@ -71,8 +71,16 @@ public class CommunityService {
     public ObjectId createCommunity(ObjectId communityId, ObjectId userId, String name, String desc, String logo, String qrUrl, String seqId, int open) throws Exception {
 
         String emChatId = emService.createEmGroup(userId);
+        if(emChatId == null) {
+            return null;
+        }
         ObjectId groupId = groupService.createGroupWithCommunity(communityId, userId, emChatId, name, desc, qrUrl);
-        groupService.updateHeadImage(groupId);
+        try{
+            groupService.updateHeadImage(groupId);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
         CommunityEntry entry = new CommunityEntry(communityId, seqId, groupId, emChatId, name, logo, desc, qrUrl, open, userId);
         communityDao.save(entry);
         return communityId;
@@ -119,11 +127,9 @@ public class CommunityService {
     public CommunityDetailDTO findDetailByObjectId(ObjectId communityDetailId) {
         CommunityDetailEntry communityDetailEntry = communityDetailDao.findByObjectId(communityDetailId);
         List<PartInContentEntry> partInContentEntries = partInContentDao.getPartInContent(communityDetailEntry.getID(), -1, 1, 10);
-
         CommunityDetailDTO communityDetailDTO = new CommunityDetailDTO(communityDetailEntry, partInContentEntries);
         ObjectId userId = communityDetailEntry.getCommunityUserId();
         UserEntry userEntry = userDao.findByObjectId(userId);
-
         if (StringUtils.isNotBlank(userEntry.getNickName())) {
             communityDetailDTO.setNickName(userEntry.getNickName());
         } else {

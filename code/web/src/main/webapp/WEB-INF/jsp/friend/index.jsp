@@ -92,7 +92,14 @@
         </div>
         <div class="near-list">
             <p class="near-p">共有<em class="mate-count"></em>位邻居符合条件</p>
-            <div id="near-mates"></div>
+            <div id="near-mates">
+                <div class="h-load">
+                    <div class="loading-d">
+                        <img src="/static/images/loading.gif">
+                        <span>数据加载中...</span>
+                    </div>
+                </div>
+            </div>
             <div class="new-page-links"></div>
         </div>
     </div>
@@ -110,6 +117,12 @@
             <p>小喇叭广播站</p>
             <div class="news-f">
                 <ul class="ul-nearnews" id="nearnewsBox">
+                    <div class="h-load">
+                        <div class="loading-d">
+                            <img src="/static/images/loading.gif">
+                            <span>数据加载中...</span>
+                        </div>
+                    </div>
                 </ul>
             </div>
         </div>

@@ -26,7 +26,7 @@ public class FActivityDao extends BaseDao {
 
     public List<FActivityEntry> findByPage(BasicDBObject query, int page, int pageSize) {
         List<FActivityEntry> activityEntries = new ArrayList<FActivityEntry>();
-        BasicDBObject orderBy = new BasicDBObject("st", -1);
+        BasicDBObject orderBy = new BasicDBObject();
         List<DBObject> dbos = find(MongoFacroty.getAppDB(), Constant.COLLECTION_FORUM_ACTIVITY, query, Constant.FIELDS, orderBy, (page - 1) * pageSize, pageSize);
         for (DBObject dbo : dbos) {
             activityEntries.add(new FActivityEntry(dbo));
@@ -39,6 +39,7 @@ public class FActivityDao extends BaseDao {
         if (lon != 0 && lat != 0) {
             query.append("loc", MongoUtils.buildGeometry(lon, lat, maxDistance));
         }
+        query.append("act",new BasicDBObject("$gte",System.currentTimeMillis()));
         return query;
     }
 
@@ -137,7 +138,7 @@ public class FActivityDao extends BaseDao {
      */
     public List<FActivityEntry> getAttendedActivity(ObjectId userId, int page, int pageSize) {
         List<FASignEntry> signEntries = new ArrayList<FASignEntry>();
-        BasicDBObject query = new BasicDBObject("uid", userId).append("acti", new BasicDBObject(Constant.MONGO_GTE, System.currentTimeMillis()));
+        BasicDBObject query = new BasicDBObject("uid", userId).append("acti", new BasicDBObject(Constant.MONGO_LT, System.currentTimeMillis()));
         BasicDBObject orderBy = new BasicDBObject("acid", Constant.DESC);
         List<DBObject> dbos = find(MongoFacroty.getAppDB(), Constant.COLLECTION_FORM_SIGN_ACTIVITY_SHEET, query, Constant.FIELDS, orderBy, (page - 1) * pageSize, pageSize);
         for (DBObject dbo : dbos) {

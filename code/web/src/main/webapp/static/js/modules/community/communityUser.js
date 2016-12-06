@@ -74,7 +74,6 @@ define(['jquery', 'pagination', 'common'], function (require, exports, module) {
             url:'/group/offlineMsgCount.do',
             success: function(resp){
                 var offCount = resp.message.offlineCount;
-
                 if(offCount > 0) {
                     $('#hx-icon').removeClass("sp2");
                     $('#hx-icon').addClass('sp1');
@@ -139,9 +138,7 @@ define(['jquery', 'pagination', 'common'], function (require, exports, module) {
         };
         var init = true;
         common.getData("/factivity/published.do", requestParm, function (resp) {
-            alert(JSON.stringify(resp));
             if (resp.code == '200') {
-
                 if(resp.message.result.length <= 0) {
                     $('.no-data').show();
                     $('.ac-have-data').hide();

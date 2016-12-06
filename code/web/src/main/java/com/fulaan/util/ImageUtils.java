@@ -20,10 +20,7 @@ public class ImageUtils {
      *
      * @throws IOException
      */
-    public static BufferedImage getCombinationOfhead(List<String> paths)
-            throws IOException {
-
-        int count = paths.size();
+    public static BufferedImage getCombinationOfhead(List<String> paths) {
 
         List<BufferedImage> bufferedImages = new ArrayList<BufferedImage>();
         int width = 690; // 这是画板的宽高
@@ -40,18 +37,33 @@ public class ImageUtils {
 
         int padding = 10;
 
+        List<BufferedImage> bufferedImageList = new ArrayList<BufferedImage>();
+
+        for (String path : paths) {
+            try {
+                BufferedImage bufferedImage = ImageIO.read(new URL(path));
+                if (bufferedImage != null)
+                    bufferedImageList.add(bufferedImage);
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        }
+
+        int count = bufferedImageList.size();
         if (count == 1) {
             int scale = height / 2;
-            for (String f : paths) {
-                bufferedImages.add(resize2(f, scale, scale));
+            for (BufferedImage buff : bufferedImageList) {
+                BufferedImage bufferedImage = resize2(buff, scale, scale);
+                bufferedImages.add(bufferedImage);
             }
             g2d.drawImage(bufferedImages.get(0), (height - scale) / 2, (height - scale) / 2, null);
         }
 
         if (count == 2) {
             int scale = (height - 3 * padding) / 2;
-            for (String f : paths) {
-                bufferedImages.add(resize2(f, scale, scale));
+            for (BufferedImage buff : bufferedImageList) {
+                BufferedImage bufferedImage = resize2(buff, scale, scale);
+                bufferedImages.add(bufferedImage);
             }
             g2d.drawImage(bufferedImages.get(0), padding, scale / 2, null);
             g2d.drawImage(bufferedImages.get(1), scale + 2 * padding, scale / 2, null);
@@ -59,8 +71,9 @@ public class ImageUtils {
 
         if (count == 3) {
             int scale = (height - 3 * padding) / 2;
-            for (String f : paths) {
-                bufferedImages.add(resize2(f, scale, scale));
+            for (BufferedImage buff : bufferedImageList) {
+                BufferedImage bufferedImage = resize2(buff, scale, scale);
+                bufferedImages.add(bufferedImage);
             }
             g2d.drawImage(bufferedImages.get(0), (width - scale) / 2, padding, null);
             g2d.drawImage(bufferedImages.get(1), padding, scale + 2 * padding, null);
@@ -69,8 +82,9 @@ public class ImageUtils {
         }
         if (count == 4) {
             int scale = (height - 3 * padding) / 2;
-            for (String f : paths) {
-                bufferedImages.add(resize2(f, scale, scale));
+            for (BufferedImage buff : bufferedImageList) {
+                BufferedImage bufferedImage = resize2(buff, scale, scale);
+                bufferedImages.add(bufferedImage);
             }
             g2d.drawImage(bufferedImages.get(0), padding, padding, null);
             g2d.drawImage(bufferedImages.get(1), scale + 2 * padding, padding, null);
@@ -84,8 +98,9 @@ public class ImageUtils {
             int scale = (height - 4 * padding) / 3;
             int hei = (height - 2 * scale - padding) / 2;
             int wid = (width - 2 * scale - padding) / 2;
-            for (String f : paths) {
-                bufferedImages.add(resize2(f, scale, scale));
+            for (BufferedImage buff : bufferedImageList) {
+                BufferedImage bufferedImage = resize2(buff, scale, scale);
+                bufferedImages.add(bufferedImage);
             }
             g2d.drawImage(bufferedImages.get(0), wid, hei, null);
             g2d.drawImage(bufferedImages.get(1), scale + wid + padding, hei, null);
@@ -101,8 +116,9 @@ public class ImageUtils {
 
             int scale = (height - 4 * padding) / 3;
             int hei = (height - 2 * scale - padding) / 2;
-            for (String f : paths) {
-                bufferedImages.add(resize2(f, scale, scale));
+            for (BufferedImage buff : bufferedImageList) {
+                BufferedImage bufferedImage = resize2(buff, scale, scale);
+                bufferedImages.add(bufferedImage);
             }
             g2d.drawImage(bufferedImages.get(0), padding, hei, null);
             g2d.drawImage(bufferedImages.get(1), scale + 2 * padding, hei, null);
@@ -116,8 +132,9 @@ public class ImageUtils {
 
         if (count == 7) {
             int scale = (height - 4 * padding) / 3;
-            for (String f : paths) {
-                bufferedImages.add(resize2(f, scale, scale));
+            for (BufferedImage buff : bufferedImageList) {
+                BufferedImage bufferedImage = resize2(buff, scale, scale);
+                bufferedImages.add(bufferedImage);
             }
             g2d.drawImage(bufferedImages.get(0), (width - scale) / 2, padding, null);
 
@@ -134,8 +151,9 @@ public class ImageUtils {
 
             int scale = (height - 4 * padding) / 3;
             int win = (width - 2 * scale - padding) / 2;
-            for (String f : paths) {
-                bufferedImages.add(resize2(f, scale, scale));
+            for (BufferedImage buff : bufferedImageList) {
+                BufferedImage bufferedImage = resize2(buff, scale, scale);
+                bufferedImages.add(bufferedImage);
             }
             g2d.drawImage(bufferedImages.get(0), win, padding, null);
             g2d.drawImage(bufferedImages.get(1), scale + padding + win, padding, null);
@@ -151,8 +169,9 @@ public class ImageUtils {
         if (count == 9) {
 
             int scale = (height - 4 * padding) / 3;
-            for (String f : paths) {
-                bufferedImages.add(resize2(f, scale, scale));
+            for (BufferedImage buff : bufferedImageList) {
+                BufferedImage bufferedImage = resize2(buff, scale, scale);
+                bufferedImages.add(bufferedImage);
             }
             g2d.drawImage(bufferedImages.get(0), padding, padding, null);
             g2d.drawImage(bufferedImages.get(1), scale + 2 * padding, padding, null);
@@ -177,9 +196,9 @@ public class ImageUtils {
      * @param height 高度
      * @param width  宽度
      */
-    public static BufferedImage resize2(String f, int height, int width) throws IOException {
-        double ratio = 0; // 缩放比例
-        BufferedImage bi = ImageIO.read(new URL(f).openStream());
+    private static BufferedImage resize2(BufferedImage bi, int height, int width) {
+        double ratio; // 缩放比例
+
         Image itemp = bi.getScaledInstance(width, height,
                 Image.SCALE_SMOOTH);
         if ((bi.getHeight() > height) || (bi.getWidth() > width)) {
@@ -193,10 +212,11 @@ public class ImageUtils {
                     AffineTransform.getScaleInstance(ratio, ratio), null);
             itemp = op.filter(bi, null);
         }
+
         return toBufferedImage(itemp);
     }
 
-    public static BufferedImage toBufferedImage(Image img) {
+    private static BufferedImage toBufferedImage(Image img) {
         if (img instanceof BufferedImage) {
             return (BufferedImage) img;
         }

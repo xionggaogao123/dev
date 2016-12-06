@@ -39,6 +39,12 @@ define(['jquery', 'pagination', 'common'], function (require, exports, module) {
             collect($(this));
         });
 
+        $('body').on('click','.alert-diglog em,.alert-diglog .alert-btn-esc',function () {
+
+            $('.alert-diglog').fadeOut();
+            $('.bg').fadeOut();
+        });
+
 
         hx_update();
         setInterval(hx_update, 1000 * 60);
@@ -205,17 +211,28 @@ define(['jquery', 'pagination', 'common'], function (require, exports, module) {
 
                     $(this).text('取消活动');
                     var acid = $(this).attr('value');
+                    var me = $(this);
                     $(this).click(function () {
-                        var requestParm = {
-                            acid: acid
-                        };
-                        common.getData("/factivity/cancelPublish.do", requestParm, function (resp) {
-                            if (resp.code == '200') {
-                                alert("取消报名成功");
-                                me.parent().hide();
-                            } else {
 
-                            }
+                        $('.alert-diglog').fadeIn();
+                        $('.bg').fadeIn();
+
+                        $('.alert-diglog .alert-main span').html('确定要取消此次活动吗？');
+
+                        $('.alert-diglog .alert-btn-sure').click(function () {
+                            var requestParm = {
+                                acid: acid
+                            };
+                            common.getData("/factivity/cancelPublish.do", requestParm, function (resp) {
+                                if (resp.code == '200') {
+                                    me.parent().hide();
+
+                                    $('.alert-diglog').fadeOut();
+                                    $('.bg').fadeOut();
+                                } else {
+                                    alert(resp.message);
+                                }
+                            });
                         });
                     });
                 });
@@ -258,18 +275,27 @@ define(['jquery', 'pagination', 'common'], function (require, exports, module) {
 
                 $('#ul-activity-signed li button').click(function () {
 
-                    alert('haha');
-                    var me = $(this);
-                    var requestParm = {
-                        acid: $(this).attr('value')
-                    };
-                    common.getData("/factivity/cancelSign.do", requestParm, function (resp) {
-                        if (resp.code == '200') {
-                            alert("取消报名成功");
-                            me.parent().hide();
-                        } else {
+                    $('.alert-diglog').fadeIn();
+                    $('.bg').fadeIn();
 
-                        }
+                    $('.alert-diglog .alert-main span').html('确定要取消此次报名吗？');
+
+                    var me = $(this);
+                    var acid = $(this).attr('value');
+
+                    $('.alert-diglog .alert-btn-sure').click(function (){
+                        var requestParm = {
+                            acid: acid
+                        };
+                        common.getData("/factivity/cancelSign.do", requestParm, function (resp) {
+                            if (resp.code == '200') {
+                                me.parent().hide();
+                                $('.alert-diglog').fadeOut();
+                                $('.bg').fadeOut();
+                            } else {
+                                alert(resp.message);
+                            }
+                        });
                     });
                 });
             }
@@ -307,6 +333,8 @@ define(['jquery', 'pagination', 'common'], function (require, exports, module) {
                     }
                 });
                 template('#activityBox', '#ul-activity-attended', resp.message.result);
+
+                $('#ul-activity-attended li button').hide();
             }
         });
     }

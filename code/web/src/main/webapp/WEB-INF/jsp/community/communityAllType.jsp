@@ -275,6 +275,17 @@
     </div>
 </div>
 
+<div class="sign-alert si-s3 alert-diglog">
+    <p class="alert-title">提示<em>×</em></p>
+    <div class="alert-main">
+        <span>确认要取消和<em class="em-f">shawn</em>的玩伴关系吗？</span>
+    </div>
+    <div class="alert-btn">
+        <button class="alert-btn-sure" id="sureCancel">确认</button>
+        <button class="alert-btn-esc">取消</button>
+    </div>
+</div>
+
 <!--=============底部版权=================-->
 <%@ include file="../common/footer.jsp" %>
 

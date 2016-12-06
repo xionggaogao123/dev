@@ -49,7 +49,7 @@
 </div>
 
 <div class="container" id="activity-div" hidden>
-    <div style="text-align: center;background: #fff;margin-top:14px;" class="no-data">
+    <div style="text-align: center;background: #fff;margin-top:14px;" class="no-data" hidden>
         <img src="/static/images/community/no_data.jpg">
     </div>
     <div class="hd-cont-f hd-cont-f1 ac-have-data" style="width: 1000px;background: #fff;">

@@ -81,7 +81,14 @@
                 logout();
             });
 
-
+            $('.sear').click(function(){
+                $('.full-map').fadeIn();
+                $('.bg').fadeIn();
+            });
+            $('.full-map .p-x em').click(function(){
+                $('.full-map').fadeOut();
+                $('.bg').fadeOut();
+            });
             $('#loginText').click(function () {//登录
                 $('.store-register').fadeToggle();
                 $('.bg').fadeToggle();
@@ -322,6 +329,7 @@
     <div class="train-right">
         <div id="AmapContainer" style="display: none"></div>
         <div class="train-map">
+            <div class="sear"></div>
             <div id="mapContainer"></div>
             <div id="tip">
                 <%--<input type="button" value="开始定位" onClick="javascript:toolBar.doLocation()"/>--%>
@@ -358,6 +366,9 @@
         </div>
     </div>
 
+</div>
+<div class="full-map">
+    <p class="p-x"><em>×</em></p>
 </div>
 <%@ include file="../common/login.jsp" %>
 <script src="/static/js/sea.js"></script>

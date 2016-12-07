@@ -608,6 +608,8 @@ public class Constant {
 
     public static final String COLLECTION_TRAIN_REGIONS="regions";
 
+    public static final String COLLECTION_TRAIN_COMMENT="trainComment";
+
     //=========第三方登录=======================================================
     //微信APP ID
     public static final String WECHAT_APPID = "wx71d74481f7f0aff0";

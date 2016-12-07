@@ -1,5 +1,6 @@
 package com.fulaan.playmate.dto;
 
+import com.fulaan.playmate.pojo.MateData;
 import com.fulaan.pojo.User;
 import com.pojo.user.UserTag;
 
@@ -16,6 +17,7 @@ public class MateDTO {
     private String distance;
     private int timed;
     private int aged;
+    private MateData ons;
 
     private List<UserTag> tags;
     private List<User> commonFriends;
@@ -90,5 +92,13 @@ public class MateDTO {
 
     public void setAged(int aged) {
         this.aged = aged;
+    }
+
+    public MateData getOns() {
+        return ons;
+    }
+
+    public void setOns(MateData ons) {
+        this.ons = ons;
     }
 }

@@ -1694,6 +1694,17 @@ public class UserDao extends BaseDao {
         update(MongoFacroty.getAppDB(), getCollection(), query, update);
     }
 
+    public void pushUserTags(ObjectId uid,List<UserEntry.UserTagEntry> tags) {
+        BasicDBObject query = new BasicDBObject()
+                .append(Constant.ID, uid);
+        BasicDBList dbList = new BasicDBList();
+        for(UserEntry.UserTagEntry userTagEntry: tags) {
+            dbList.add(userTagEntry.getBaseEntry());
+        }
+        BasicDBObject update = new BasicDBObject(Constant.MONGO_ADDTOSET, new BasicDBObject("ustg", new BasicDBObject(Constant.MONGO_EACH,dbList)));
+        update(MongoFacroty.getAppDB(), getCollection(), query, update);
+    }
+
     public boolean tagIsExist(ObjectId uid,int code) {
         BasicDBObject query = new BasicDBObject()
                 .append(Constant.ID,uid)

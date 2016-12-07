@@ -1370,6 +1370,14 @@ public class UserService {
         userDao.pushUserTag(userId, userTagEntry);
     }
 
+    public void pushUserTags(ObjectId userId,List<UserTag> tags) {
+        List<UserEntry.UserTagEntry> tagEntries = new ArrayList<UserEntry.UserTagEntry>();
+        for(UserTag tag : tags) {
+            tagEntries.add(new UserEntry.UserTagEntry(tag.getCode(),tag.getTag()));
+        }
+        userDao.pushUserTags(userId,tagEntries);
+    }
+
     public void pullUserTag(ObjectId userId, int code) {
         userDao.pullUserTag(userId, code);
     }

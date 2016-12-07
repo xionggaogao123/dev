@@ -118,6 +118,17 @@ define(['jquery', 'pagination', 'common'], function (require, exports, module) {
             $('.wind-act-fq').fadeOut();
             $('.bg').fadeOut();
         });
+
+        $('body').on('click','.near-li button',function () {
+            var userId = $(this).attr('value');
+            if(isLogin) {
+                window.open('/community/userData.do?userId=' + userId,'__blank');
+            } else {
+                $('.store-register').fadeToggle();
+                $('.bg').fadeToggle();
+            }
+        });
+
         $('.btn-fbgb').click(function () {
 
             if (!isLogin) {
@@ -316,25 +327,23 @@ define(['jquery', 'pagination', 'common'], function (require, exports, module) {
     }
 
     function updateTags() {
+        var tags = '';
         $('.biaoq-selected span').each(function () {
             var code = $(this).attr('code');
-            var tag = $(this).text();
-            var userTag = {
-                code: code,
-                tag: tag
-            };
+            tags += code + ',';
+        });
 
-            $.ajax({
-                url: '/community/pushUserTag.do',
-                contentType: "application/json",
-                dataType: 'json',
-                type: 'post',
-                data: JSON.stringify(userTag),
-                success: function () {
-                    $('.bg').fadeOut();
-                    $('.wind-biaoq').fadeOut();
-                }
-            })
+        alert(JSON.stringify(tags));
+        $.ajax({
+            url: '/mate/updateMateData.do',
+            type: 'get',
+            data: {
+                tags:tags
+            },
+            success: function () {
+                $('.bg').fadeOut();
+                $('.wind-biaoq').fadeOut();
+            }
         })
     }
 

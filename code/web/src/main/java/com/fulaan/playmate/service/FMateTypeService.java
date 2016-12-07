@@ -20,23 +20,46 @@ public class FMateTypeService {
 
     private FMateTypeDao fMateTypeDao = new FMateTypeDao();
 
-    public Map<String,List<MateData>> getAllSortTypes() {
-        Map<String,List<MateData>> data = new HashMap<String, List<MateData>>();
-        data.put("tags",getMateType(1));
-        data.put("ages",getMateType(2));
-        data.put("distances",getMateType(3));
-        data.put("times",getMateType(4));
+    public Map<String, List<MateData>> getAllSortTypes() {
+        Map<String, List<MateData>> data = new HashMap<String, List<MateData>>();
+        data.put("tags", getMateType(1));
+        data.put("ages", getMateType(2));
+        data.put("distances", getMateType(3));
+        data.put("times", getMateType(4));
         return data;
     }
 
     private List<MateData> getMateType(int type) {
         FMateTypeEntry fMateTypeEntry = fMateTypeDao.getType(type);
-        List<MateData> tags = new ArrayList<MateData>();
         if (fMateTypeEntry == null) {
-            return tags;
+            return new ArrayList<MateData>();
         }
 
         BasicDBList dbList = fMateTypeEntry.getData();
+        return getMateData(dbList);
+    }
+
+    public List<MateData> getTags() {
+        FMateTypeEntry fMateTypeEntry = fMateTypeDao.getType(1);
+        if (fMateTypeEntry == null) {
+            return new ArrayList<MateData>();
+        }
+        BasicDBList dbList = fMateTypeEntry.getData();
+        return getMateData(dbList);
+    }
+
+    public List<MateData> getOns() {
+        FMateTypeEntry fMateTypeEntry = fMateTypeDao.getType(4);
+        if (fMateTypeEntry == null) {
+            return new ArrayList<MateData>();
+        }
+        BasicDBList dbList = fMateTypeEntry.getData();
+        return getMateData(dbList);
+    }
+
+    private List<MateData> getMateData(BasicDBList dbList) {
+        List<MateData> tags = new ArrayList<MateData>();
+        if (dbList == null) return tags;
         for (Object o : dbList) {
             int code = (Integer) ((DBObject) o).get("co");
             String data = (String) ((DBObject) o).get("da");
@@ -51,8 +74,8 @@ public class FMateTypeService {
         fMateTypeDao.save(mateTypeEntry);
     }
 
-    public void pushType(int type,int code,String data) {
-        fMateTypeDao.pushType(type,code,data);
+    public void pushType(int type, int code, String data) {
+        fMateTypeDao.pushType(type, code, data);
     }
 
 
@@ -64,8 +87,8 @@ public class FMateTypeService {
         String s = "周六08:00~11:00,周六11:00~14:00,周六14:00~17:00,周日08:00~11:00,周日11:00~14:00,周日14:00~17:00";
         String[] list = s.split(",");
         int code = 1;
-        for(String s1:list) {
-            service.pushType(4,code++,s1);
+        for (String s1 : list) {
+            service.pushType(4, code++, s1);
         }
 
 

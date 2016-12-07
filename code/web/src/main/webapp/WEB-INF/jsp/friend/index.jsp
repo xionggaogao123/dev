@@ -109,7 +109,7 @@
     <p class="p2">活动内容<span>(克简要说明一下活动时间、地点等)</span></p>
     <textarea></textarea>
     <div class="ac-timer">
-        <p>日期：<input type="text" id="datepicker"></p>
+        <p>时间：<input type="text" id="datepicker"></p>
         <select class="time-hour">
             <option value="20">20</option>
             <option value="19">19</option>
@@ -126,8 +126,9 @@
             <option value="08">08</option>
             <option value="07">07</option>
         </select>
+        <p>:</p>
         <select class="time-mins">
-            <option>0</option>
+            <option>00</option>
             <option>15</option>
             <option>30</option>
             <option>45</option>
@@ -149,9 +150,22 @@
                 <span class="sp2" onClick="window.open('/community/userData.do?userId={{=value.userId}}')">查看更多</span>
             </p>
             <p class="p2">
-                标签：{{~value.tags:tag:i}}
+                标签：
+                {{~value.tags:tag:i}}
                 <i>{{=tag.tag}}</i>、
                 {{~}}
+                {{? value.tags.length == 0}}
+                <i>未设置</i>
+                {{?}}
+            </p>
+            <p class="p2">
+                空闲时间段:
+                {{?value.ons}}
+                 <i>{{=value.ons.data}}</i>
+                {{?}}
+                {{?value.ons == null }}
+                <i>未设置</i>
+                {{?}}
             </p>
             <p class="p2">
                 您的玩伴
@@ -164,7 +178,7 @@
                 <img src="/static/images/findnearby_zuobiao.png">距离您<i>{{=value.distance}}</i>
             </p>
         </div>
-        <button class="btn-lyl" onClick="window.open('/webim/index?userId={{=value.userId}}')">聊一聊</button>
+        <button class="btn-lyl" value="{{=value.userId}}">聊一聊</button>
     </div>
     {{~}}
 </script>

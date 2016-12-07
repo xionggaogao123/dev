@@ -3,12 +3,14 @@ package com.fulaan.playmate;
 import com.fulaan.annotation.LoginInfo;
 import com.fulaan.annotation.SessionNeedless;
 import com.fulaan.controller.BaseController;
+import com.fulaan.playmate.pojo.MateData;
 import com.fulaan.playmate.service.FActivityService;
 import com.fulaan.playmate.service.FMateTypeService;
 import com.fulaan.playmate.service.MateService;
 import com.fulaan.user.service.UserService;
 import com.fulaan.util.StrUtils;
 import com.pojo.user.UserEntry;
+import com.pojo.user.UserTag;
 import com.sys.utils.RespObj;
 import org.apache.commons.lang3.StringUtils;
 import org.bson.types.ObjectId;
@@ -40,7 +42,6 @@ public class PlayMateController extends BaseController {
     private FMateTypeService fMateTypeService;
 
 
-
     @SessionNeedless
     @RequestMapping("/friend")
     @LoginInfo
@@ -70,7 +71,6 @@ public class PlayMateController extends BaseController {
                                 @RequestParam(value = "lat", required = false, defaultValue = "0") double lat,
                                 @RequestParam(value = "distance", required = false, defaultValue = "-1") int distance,
                                 @RequestParam(value = "tags", required = false, defaultValue = "") String tags,
-                                @RequestParam(value = "hobbys", required = false, defaultValue = "") String hobbys,
                                 @RequestParam(value = "aged", required = false, defaultValue = "-1") int aged,
                                 @RequestParam(value = "ons", required = false, defaultValue = "-1") int ons,
                                 @RequestParam(value = "page", required = false, defaultValue = "1") int page,
@@ -89,8 +89,7 @@ public class PlayMateController extends BaseController {
             distance *= 500;
         }
         List<String> tagList = StrUtils.splitToList(tags);
-        List<String> hobbyList = StrUtils.splitToList(hobbys);
-        return RespObj.SUCCESS(mateService.findMates(getUserId(),lon, lat, tagList, hobbyList, aged, ons, page, pageSize, distance));
+        return RespObj.SUCCESS(mateService.findMates(getUserId(),lon, lat, tagList, aged, ons, page, pageSize, distance));
     }
 
     @RequestMapping("/updateMateData")
@@ -98,11 +97,11 @@ public class PlayMateController extends BaseController {
     public RespObj updateLocation(@RequestParam(value = "lon", required = false, defaultValue = "0") double lon,
                                   @RequestParam(value = "lat", required = false, defaultValue = "0") double lat,
                                   @RequestParam(value = "tags", required = false, defaultValue = "") String tags,
-                                  @RequestParam(value = "hobbys", required = false, defaultValue = "") String hobbys,
-                                  @RequestParam(value = "age",required = false,defaultValue = "-1") int age) {
+                                  @RequestParam(value = "aged",required = false,defaultValue = "-1") int age,
+                                  @RequestParam(value = "ons",required = false,defaultValue = "-1") int ons) {
         ObjectId userId = getUserId();
         if (lon != 0 && lat != 0) {
-            mateService.updateLocation(userId, lon, lat);
+            mateService.updateLocation (userId, lon, lat);
         }
         if (StringUtils.isNotBlank(tags)) {
             List<String> tagList = StrUtils.splitToList(tags);
@@ -111,11 +110,28 @@ public class PlayMateController extends BaseController {
                 tagIntegerList.add(Integer.parseInt(tag));
             }
             mateService.updateTags(userId, tagIntegerList);
+
+            List<UserTag> userTagList = new ArrayList<UserTag>();
+            List<MateData> mateDatas = fMateTypeService.getTags();
+            for(int code:tagIntegerList) {
+                for(MateData mateData : mateDatas) {
+                    if(mateData.getCode() == code) {
+                        userTagList.add(new UserTag(mateData.getCode(),mateData.getData()));
+                    }
+                }
+            }
+            userService.pushUserTags(getUserId(),userTagList);
         }
-        if (StringUtils.isNotBlank(hobbys)) {
-            List<String> hobbyList = StrUtils.splitToList(hobbys);
-            mateService.updateHobbys(userId, hobbyList);
+        //更新年龄
+        if(age != -1) {
+            mateService.updateAge(getUserId(),age);
         }
+
+        //更新在线时间段
+        if(ons != -1) {
+            mateService.updateOns(getUserId(),ons);
+        }
+
         return RespObj.SUCCESS("成功");
     }
 

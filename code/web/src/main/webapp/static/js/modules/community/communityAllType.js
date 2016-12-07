@@ -292,6 +292,7 @@ define(['jquery', 'pagination', 'common'], function (require, exports, module) {
                                 me.parent().hide();
                                 $('.alert-diglog').fadeOut();
                                 $('.bg').fadeOut();
+                                me.parent().hide();
                             } else {
                                 alert(resp.message);
                             }

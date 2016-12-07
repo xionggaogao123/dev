@@ -6,6 +6,7 @@ import com.fulaan.controller.BaseController;
 import com.fulaan.playmate.service.FActivityService;
 import com.fulaan.util.DateUtils;
 import com.fulaan.utils.KeyWordFilterUtil;
+import com.pojo.playmate.FActivityEntry;
 import com.sys.utils.RespObj;
 import org.apache.commons.lang3.StringUtils;
 import org.bson.types.ObjectId;
@@ -89,7 +90,7 @@ public class FActivityController extends BaseController {
     }
 
     /**
-     * 获取自己发布的活动
+     * 获取自己或别人发布的活动
      * @param personId
      * @param page
      * @param pageSize
@@ -97,6 +98,7 @@ public class FActivityController extends BaseController {
      */
     @RequestMapping("/published")
     @ResponseBody
+    @SessionNeedless
     public RespObj published(@RequestParam(value = "personId",required = false,defaultValue = "")String personId,
                              @RequestParam(value = "page", required = false, defaultValue = "1") int page,
                              @RequestParam(value = "pageSize", required = false, defaultValue = "10") int pageSize) {
@@ -142,6 +144,10 @@ public class FActivityController extends BaseController {
     public RespObj cancel(@ObjectIdType ObjectId acid) {
         if (!fActivityService.isUserSigned(acid, getUserId())) {
             return RespObj.FAILD("您未参加此活动");
+        }
+        FActivityEntry fActivityEntry = fActivityService.getActivityById(acid);
+        if(fActivityEntry.getUserId().equals(getUserId())) {
+            return RespObj.FAILD("不能取消报名自己发布的活动");
         }
         fActivityService.cancelSignActivity(acid, getUserId());
         return RespObj.SUCCESS;

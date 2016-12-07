@@ -234,6 +234,10 @@ public class FActivityService {
         return pageModel;
     }
 
+    public FActivityEntry getActivityById(ObjectId acid) {
+        return fActivityDao.getActivityById(acid);
+    }
+
     /**
      * 取消报名活动
      * @param acid 活动id

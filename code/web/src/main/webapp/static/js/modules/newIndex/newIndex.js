@@ -80,6 +80,10 @@ define(['jquery', 'pagination', 'common'], function (require, exports, module) {
             window.open('/mate/friend');
         })
 
+        $('body').on('click','#train',function(){
+            window.open('/train/trainList');
+        })
+
 
         //创建新社区
         $('body').on('click', '#btn1', function () {

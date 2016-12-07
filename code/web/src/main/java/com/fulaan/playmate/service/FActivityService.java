@@ -3,6 +3,7 @@ package com.fulaan.playmate.service;
 import com.db.playmate.FActivityDao;
 import com.db.user.UserDao;
 import com.fulaan.playmate.dto.ActivityDTO;
+import com.fulaan.playmate.pojo.User;
 import com.fulaan.pojo.PageModel;
 import com.fulaan.util.DistanceUtils;
 import com.mongodb.BasicDBList;
@@ -34,13 +35,14 @@ public class FActivityService {
 
     /**
      * 保存活动
-     * @param uid 发布人userId
-     * @param lon 经度
-     * @param lat 纬度
-     * @param acode 活动主题code
-     * @param title 标题
-     * @param desc 描述
-     * @param activityTime  活动时间
+     *
+     * @param uid          发布人userId
+     * @param lon          经度
+     * @param lat          纬度
+     * @param acode        活动主题code
+     * @param title        标题
+     * @param desc         描述
+     * @param activityTime 活动时间
      */
     public void saveActivity(ObjectId uid, double lon, double lat, int acode, String title, String desc, long activityTime) {
         ObjectId _id = new ObjectId();
@@ -52,9 +54,10 @@ public class FActivityService {
 
     /**
      * 获取距离由近到远的活动排序 - 按距离排序
-     * @param lon 经度
-     * @param lat 纬度
-     * @param page 页
+     *
+     * @param lon      经度
+     * @param lat      纬度
+     * @param page     页
      * @param pageSize 每页个数
      * @return PageModel
      */
@@ -102,10 +105,71 @@ public class FActivityService {
         return pageModel;
     }
 
+    public User getMateUser(ObjectId userId) {
+        UserEntry userEntry = userDao.findByObjectId(userId);
+        String nickName = userEntry.getNickName();
+        String userName = userEntry.getUserName();
+        String avatar = AvatarUtils.getAvatar(userEntry.getAvatar(), AvatarType.MIN_AVATAR.getType());
+        List<UserTag> tags = new ArrayList<UserTag>();
+        List<UserEntry.UserTagEntry> userTagEntries = userEntry.getUserTag();
+        for (UserEntry.UserTagEntry tagEntry : userTagEntries) {
+            UserTag userTag = new UserTag(tagEntry.getCode(), tagEntry.getTag());
+            tags.add(userTag);
+        }
+        User user = new User();
+        user.userId = userId.toString();
+        user.nickName = nickName;
+        user.userName = userName;
+        user.avatar = avatar;
+        user.tags = tags;
+        return user;
+    }
+
+    public ActivityDTO getActivityById(ObjectId acid) {
+        FActivityEntry fActivityEntry = fActivityDao.getActivityById(acid);
+        if (fActivityEntry == null) {
+            return null;
+        }
+        ActivityDTO activityDTO = new ActivityDTO(fActivityEntry);
+        activityDTO.setSignCount(fActivityDao.countSignUser(acid));
+        activityDTO.setUser(getMateUser(fActivityEntry.getUserId()));
+        return activityDTO;
+    }
+
+    public List<Map<String, Object>> getAllSignMembers(ObjectId acid) {
+        List<FASignEntry> signEntries = fActivityDao.getAllSignMember(acid);
+        return getMembers(signEntries);
+    }
+
+    private List<Map<String, Object>> getMembers(List<FASignEntry> signEntries) {
+        List<Map<String, Object>> sheets = new ArrayList<Map<String, Object>>();
+        for (FASignEntry signEntry : signEntries) {
+            ObjectId userId = signEntry.getUserId();
+            UserEntry userEntry = userDao.findByObjectId(userId);
+            String nickName = StringUtils.isBlank(userEntry.getNickName()) ? userEntry.getUserName() : userEntry.getNickName();
+            String userName = userEntry.getUserName();
+            String avatar = AvatarUtils.getAvatar(userEntry.getAvatar(), AvatarType.MIN_AVATAR.getType());
+            Map<String, Object> map = new HashMap<String, Object>();
+
+            List<UserTag> userTagList = new ArrayList<UserTag>();
+            List<UserEntry.UserTagEntry> tagEntries = userEntry.getUserTag();
+            for (UserEntry.UserTagEntry tagEntry : tagEntries) {
+                userTagList.add(new UserTag(tagEntry.getCode(), tagEntry.getTag()));
+            }
+            map.put("tags", userTagList);
+            map.put("nickName", nickName);
+            map.put("userName", userName);
+            map.put("avatar", avatar);
+            sheets.add(map);
+        }
+        return sheets;
+    }
+
     /**
      * 获取某人发布的活动 - 按时间先后顺序
-     * @param userId 用户id
-     * @param page 页
+     *
+     * @param userId   用户id
+     * @param page     页
      * @param pageSize 每页个数
      * @return PageModel
      */
@@ -150,22 +214,9 @@ public class FActivityService {
         return fActivityDao.countUserSignActivity(userId);
     }
 
-    private List<Map<String, Object>> get20SignSheets(ObjectId acid) {
+    public List<Map<String, Object>> get20SignSheets(ObjectId acid) {
         List<FASignEntry> signEntries = fActivityDao.get20SignEntry(acid);
-        List<Map<String, Object>> sheets = new ArrayList<Map<String, Object>>();
-        for (FASignEntry signEntry : signEntries) {
-            ObjectId userId = signEntry.getUserId();
-            UserEntry userEntry = userDao.findByObjectId(userId);
-            String nickName = StringUtils.isBlank(userEntry.getNickName()) ? userEntry.getUserName() : userEntry.getNickName();
-            String userName = userEntry.getUserName();
-            String avatar = AvatarUtils.getAvatar(userEntry.getAvatar(), AvatarType.MIN_AVATAR.getType());
-            Map<String, Object> map = new HashMap<String, Object>();
-            map.put("nickName", nickName);
-            map.put("userName", userName);
-            map.put("avatar", avatar);
-            sheets.add(map);
-        }
-        return sheets;
+        return getMembers(signEntries);
     }
 
     public int countPublishActivity(ObjectId userId) {
@@ -234,13 +285,14 @@ public class FActivityService {
         return pageModel;
     }
 
-    public FActivityEntry getActivityById(ObjectId acid) {
+    public FActivityEntry getActivityEntryById(ObjectId acid) {
         return fActivityDao.getActivityById(acid);
     }
 
     /**
      * 取消报名活动
-     * @param acid 活动id
+     *
+     * @param acid   活动id
      * @param userId 用户 id
      */
     public void cancelSignActivity(ObjectId acid, ObjectId userId) {
@@ -249,7 +301,8 @@ public class FActivityService {
 
     /**
      * 删除发布的活动
-     * @param acid 活动id
+     *
+     * @param acid   活动id
      * @param userId 用户id
      */
     public void cancelPublishActivity(ObjectId acid, ObjectId userId) {

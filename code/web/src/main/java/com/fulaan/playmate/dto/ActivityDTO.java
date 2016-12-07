@@ -1,5 +1,6 @@
 package com.fulaan.playmate.dto;
 
+import com.fulaan.playmate.pojo.User;
 import com.fulaan.util.DateUtils;
 import com.pojo.playmate.FActivityEntry;
 import com.pojo.user.UserTag;
@@ -25,6 +26,7 @@ public class ActivityDTO {
 
     private User user;
     private List<Map<String,Object>> signSheets;
+    private List<Map<String,Object>> allSignSheets;
 
     public ActivityDTO(FActivityEntry entry){
         this.acid = entry.getID().toString();
@@ -122,19 +124,23 @@ public class ActivityDTO {
         this.user = user;
     }
 
-    class User{
-        public String userId;
-        public String nickName;
-        public String userName;
-        public String avatar;
-        public List<UserTag> tags;
-    }
-
     public List<Map<String, Object>> getSignSheets() {
         return signSheets;
     }
 
     public void setSignSheets(List<Map<String, Object>> signSheets) {
         this.signSheets = signSheets;
+    }
+
+    public List<Map<String, Object>> getAllSignSheets() {
+        return allSignSheets;
+    }
+
+    public void setAllSignSheets(List<Map<String, Object>> allSignSheets) {
+        this.allSignSheets = allSignSheets;
+    }
+
+    public void setUser(User user) {
+        this.user = user;
     }
 }

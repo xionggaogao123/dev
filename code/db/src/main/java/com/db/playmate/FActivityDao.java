@@ -76,6 +76,17 @@ public class FActivityDao extends BaseDao {
         return signEntries;
     }
 
+    public List<FASignEntry> getAllSignMember(ObjectId acid) {
+        BasicDBObject query = new BasicDBObject("acid", acid);
+        BasicDBObject orderBy = new BasicDBObject(Constant.ID, -1);
+        List<DBObject> dbos = find(MongoFacroty.getAppDB(), Constant.COLLECTION_FORM_SIGN_ACTIVITY_SHEET, query,Constant.FIELDS,orderBy);
+        List<FASignEntry> signEntries = new ArrayList<FASignEntry>();
+        for (DBObject dbo : dbos) {
+            signEntries.add(new FASignEntry(dbo));
+        }
+        return signEntries;
+    }
+
 
     public int countPublishActivity(ObjectId userId) {
         BasicDBObject query = new BasicDBObject("uid", userId);

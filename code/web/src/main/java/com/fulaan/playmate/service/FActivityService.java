@@ -45,6 +45,8 @@ public class FActivityService {
     public void saveActivity(ObjectId uid, double lon, double lat, int acode, String title, String desc, long activityTime) {
         ObjectId _id = new ObjectId();
         FActivityEntry fActivityEntry = new FActivityEntry(_id, uid, acode, title, desc, lon, lat, activityTime);
+        FASignEntry faSignEntry = new FASignEntry(new ObjectId(), _id, uid, "", activityTime);
+        fActivityDao.save(faSignEntry);
         fActivityDao.save(fActivityEntry);
     }
 

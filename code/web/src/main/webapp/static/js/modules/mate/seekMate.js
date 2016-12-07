@@ -12,7 +12,7 @@ define(['jquery', 'pagination', 'common'], function (require, exports, module) {
     var lat;
     var activitys = [];
     seekMate.init = function () {
-
+        getAllSortType();
     };
 
     function getMates(page) {
@@ -49,6 +49,12 @@ define(['jquery', 'pagination', 'common'], function (require, exports, module) {
     }
 
     $(document).ready(function () {
+
+        // var list = [];
+        // $('.mate-timed span').each(function () {
+        //     list.push($(this).text());
+        // });
+        // document.write(list);
 
         $.ajax({
             url: "/forum/loginInfo.do?date=" + new Date(),
@@ -349,10 +355,14 @@ define(['jquery', 'pagination', 'common'], function (require, exports, module) {
             desc: desc,
             endTime: date
         };
+
+        alert(JSON.stringify(requestParm));
         common.getData('/factivity/publish.do', requestParm, function (resp) {
             if (resp.code == 200) {
                 $('.wind-act-fq').fadeOut();
                 $('.bg').fadeOut();
+            } else {
+                alert(resp.message);
             }
         });
     }
@@ -396,10 +406,10 @@ define(['jquery', 'pagination', 'common'], function (require, exports, module) {
         str.push('精度：' + data.accuracy + ' 米');
         str.push('是否经过偏移：' + (data.isConverted ? '是' : '否'));
 
-        alert(JSON.stringify(data));
-
         seekMateParm.lon = data.position.getLng();
         seekMateParm.lat = data.position.getLat();
+        lon = data.position.getLng();
+        lat = data.position.getLat();
 
         var requestParm = {
             lon:data.position.getLng(),
@@ -415,6 +425,20 @@ define(['jquery', 'pagination', 'common'], function (require, exports, module) {
     //解析定位错误信息
     function onError(data) {
         document.getElementById('tip').innerHTML = '定位失败';
+    }
+
+    function getAllSortType() {
+        common.getData('/mate/sortType.do', {}, function (resp) {
+            if (resp.code == "200") {
+                for(var i=0;i<resp.message.tags.length;i++) {
+                    $('.wind-act-fq select.theme').append('<option value="' + resp.message.tags[i].code +'">'+resp.message.tags[i].data+'</option>');
+                    $('.biaoq-all').append('<span code="'+resp.message.tags[i].code+'">'+resp.message.tags[i].data+'</span>');
+                }
+                var result = [];
+                result.push(resp.message);
+                template('#menuTmpl', '#nearMenu', result);
+            }
+        });
     }
 
 

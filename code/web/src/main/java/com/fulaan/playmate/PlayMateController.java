@@ -4,6 +4,7 @@ import com.fulaan.annotation.LoginInfo;
 import com.fulaan.annotation.SessionNeedless;
 import com.fulaan.controller.BaseController;
 import com.fulaan.playmate.service.FActivityService;
+import com.fulaan.playmate.service.FMateTypeService;
 import com.fulaan.playmate.service.MateService;
 import com.fulaan.user.service.UserService;
 import com.fulaan.util.StrUtils;
@@ -35,6 +36,9 @@ public class PlayMateController extends BaseController {
     private UserService userService;
     @Autowired
     private FActivityService fActivityService;
+    @Autowired
+    private FMateTypeService fMateTypeService;
+
 
 
     @SessionNeedless
@@ -52,12 +56,19 @@ public class PlayMateController extends BaseController {
         return "/friend/index";
     }
 
+    @SessionNeedless
+    @RequestMapping("/sortType")
+    @ResponseBody
+    public RespObj getSortType() {
+        return RespObj.SUCCESS(fMateTypeService.getAllSortTypes());
+    }
+
     @RequestMapping("/getPlayMates")
     @ResponseBody
     @SessionNeedless
     public RespObj getPlayMates(@RequestParam(value = "lon", required = false, defaultValue = "0") double lon,
                                 @RequestParam(value = "lat", required = false, defaultValue = "0") double lat,
-                                @RequestParam(value = "distance", required = false, defaultValue = "10000000") int distance,
+                                @RequestParam(value = "distance", required = false, defaultValue = "-1") int distance,
                                 @RequestParam(value = "tags", required = false, defaultValue = "") String tags,
                                 @RequestParam(value = "hobbys", required = false, defaultValue = "") String hobbys,
                                 @RequestParam(value = "aged", required = false, defaultValue = "-1") int aged,
@@ -74,6 +85,8 @@ public class PlayMateController extends BaseController {
         }
         if(distance < 0) {
             distance = 10000000;
+        } else {
+            distance *= 500;
         }
         List<String> tagList = StrUtils.splitToList(tags);
         List<String> hobbyList = StrUtils.splitToList(hobbys);

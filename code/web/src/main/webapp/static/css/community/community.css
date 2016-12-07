@@ -1886,6 +1886,9 @@ pre{white-space: pre-wrap;word-wrap: break-word;}
 .img-wrap{
     margin-top: 6px;
 }
+.img-wrap a{
+    float: left;
+}
 .publish-fj .pub-img{
     float: left;
     width: 60px;

@@ -633,7 +633,7 @@
                 </div>
                 {{?}}
                 {{?value.imageList.length>0}}
-                <div class="img-wrap">
+                <div class="img-wrap clearfix">
                     {{~value.imageList:image:i}}
                     {{?value.type==5}}
                     <img src="{{=image}}?imageView2/1/w/82/h/82" vurl="{{=image}}" <c:if test="${operation==true}"> contentId="{{=value.partInContentId}}" class="type-check"</c:if> >

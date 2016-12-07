@@ -17,8 +17,8 @@
     <link rel="stylesheet" type="text/css" href="/static/css/main.css"/>
     <script type="text/javascript" src="/static/js/modules/train/jquery-1.8.0.min.js"></script>
     <script type="text/javascript" src="/static/js/modules/train/jquery.raty.min.js"></script>
-    <%--<script type="text/javascript"--%>
-    <%--src="http://api.map.baidu.com/api?v=2.0&ak=TzFCVsUAf4RzyoOdgZ5tB10fASv5Dswy"></script>--%>
+    <script type="text/javascript"
+    src="http://api.map.baidu.com/api?v=2.0&ak=TzFCVsUAf4RzyoOdgZ5tB10fASv5Dswy"></script>
     <link rel="stylesheet" href="http://cache.amap.com/lbs/static/main1119.css"/>
     <script type="text/javascript"
             src="http://webapi.amap.com/maps?v=1.3&key=3a1cd4cff6fcbdf71ea760da6957fb94"></script>
@@ -320,6 +320,7 @@
         </div>
     </div>
     <div class="train-right">
+        <div id="AmapContainer" style="display: none"></div>
         <div class="train-map">
             <div id="mapContainer"></div>
             <div id="tip">
@@ -368,21 +369,12 @@
 </script>
 
 <script type="text/javascript">
-    //    var map = new BMap.Map("baiduMap");  //创建Map实例
-    //    var point = new BMap.Point(114.419915,30.513719);  //创建Point位置实例
-    //    map.centerAndZoom(point, 19);  //设置地图中心点及缩放级别
-    //    map.addControl(new BMap.MapTypeControl());  //添加地图类型控件
-    //    var marker = new BMap.Marker(point);  //创建一个Marker点
-    //    map.addOverlay(marker);  //将Marker点覆盖到地图上
-    //    marker.setAnimation(BMAP_ANIMATION_BOUNCE);  //使Marker点跳动起来
-    //    map.enableScrollWheelZoom(true);     //开启鼠标滚轮缩放
-    // 百度地图API功能
     /***************************************
      由于Chrome、IOS10等已不再支持非安全域的浏览器定位请求，为保证定位成功率和精度，请尽快升级您的站点到HTTPS。
      ***************************************/
     var map, geolocation;
     //加载地图，调用浏览器定位服务
-    map = new AMap.Map('mapContainer', {
+    map = new AMap.Map('AmapContainer', {
         resizeEnable: true
 //        zoom: 13
     });
@@ -401,12 +393,25 @@
     });
     //解析定位结果
     function onComplete(data) {
-//        var str=['定位成功'];
-//        str.push('经度：' + data.position.getLng());
-//        str.push('纬度：' + data.position.getLat());
-//        str.push('精度：' + data.accuracy + ' 米');
-//        str.push('是否经过偏移：' + (data.isConverted ? '是' : '否'));
+        var str=['定位成功'];
+        str.push('经度：' + data.position.getLng());
+        str.push('纬度：' + data.position.getLat());
+        str.push('精度：' + data.accuracy + ' 米');
+        str.push('是否经过偏移：' + (data.isConverted ? '是' : '否'));
 //        document.getElementById('tip').innerHTML = str.join('<br>');
+        loadMap(data.position.getLng(),data.position.getLat());
+    }
+
+    function loadMap(lng,lat){
+        // 百度地图API功能
+        var map = new BMap.Map("mapContainer");  //创建Map实例
+        var point = new BMap.Point(lng,lat);  //创建Point位置实例
+        map.centerAndZoom(point, 25);  //设置地图中心点及缩放级别
+        map.addControl(new BMap.MapTypeControl());  //添加地图类型控件
+        var marker = new BMap.Marker(point);  //创建一个Marker点
+        map.addOverlay(marker);  //将Marker点覆盖到地图上
+        marker.setAnimation(BMAP_ANIMATION_BOUNCE);  //使Marker点跳动起来
+        map.enableScrollWheelZoom(true);
     }
     //解析定位错误信息
     function onError(data) {

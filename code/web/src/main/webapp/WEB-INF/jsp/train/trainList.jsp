@@ -83,6 +83,17 @@
     <li>
         <img src="{{=value.mainPicture}}" onclick="window.open('/train/trainDetail.do?detailId={{=value.id}}&itemId='+$('#trainTop').data($('#trainTop').find('.cur1').text()))">
         <div class="name">{{=value.name}}</div>
+        <div class="star">
+            <span>{{=value.score}}</span>
+            <p>
+                {{~value.scoreList:score:i}}
+                <img src="/static/images/train/star_golden.png">
+                {{~}}
+                {{~value.unScoreList:unscore:i}}
+                <img src="/static/images/train/star_gray.png">
+                {{~}}
+            </p>
+        </div>
     </li>
     {{~}}
     </script>

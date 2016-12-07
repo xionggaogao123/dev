@@ -70,11 +70,11 @@ public class MateService {
             }
             MateDTO mateDTO = new MateDTO();
             UserEntry userEntry = userDao.findByObjectId(mateEntry.getUserId());
-            mateDTO.setDistance(distance);
+            mateDTO.setDistance(distance + "米");
             mateDTO.setUserId(userEntry.getID().toString());
             mateDTO.setNickName(userEntry.getNickName());
             mateDTO.setUserName(userEntry.getUserName());
-            mateDTO.setTimePeriod(mateEntry.getOns());
+            mateDTO.setTimed(mateEntry.getOns());
             mateDTO.setAvatar(AvatarUtils.getAvatar(userEntry.getAvatar(), AvatarType.MIN_AVATAR.getType()));
             List<UserTag> tagList = new ArrayList<UserTag>();
             List<UserEntry.UserTagEntry> userTagEntries = userEntry.getUserTag();

@@ -5,7 +5,9 @@ import com.fulaan.annotation.SessionNeedless;
 import com.fulaan.controller.BaseController;
 import com.fulaan.playmate.service.FActivityService;
 import com.fulaan.util.DateUtils;
+import com.fulaan.utils.KeyWordFilterUtil;
 import com.sys.utils.RespObj;
+import org.apache.commons.lang3.StringUtils;
 import org.bson.types.ObjectId;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -26,6 +28,16 @@ public class FActivityController extends BaseController {
     @Autowired
     private FActivityService fActivityService;
 
+    /**
+     * 发布活动
+     * @param lon
+     * @param lat
+     * @param acode
+     * @param title
+     * @param des
+     * @param endTime
+     * @return
+     */
     @RequestMapping("/publish")
     @ResponseBody
     public RespObj publishActivity(double lon, double lat, int acode, String title,
@@ -34,6 +46,9 @@ public class FActivityController extends BaseController {
         long timeStamp;
         try {
             timeStamp = DateUtils.strToTimeStamp(endTime + ":00") * 1000;
+            if(timeStamp < System.currentTimeMillis()) {
+                return RespObj.FAILD("发布时间不得小于当前时间");
+            }
         } catch (ParseException e) {
             e.printStackTrace();
             return RespObj.FAILD("失败");
@@ -42,6 +57,14 @@ public class FActivityController extends BaseController {
         return RespObj.SUCCESS;
     }
 
+    /**
+     * 附近的活动
+     * @param lon
+     * @param lat
+     * @param page
+     * @param pageSize
+     * @return
+     */
     @RequestMapping("/nearActivitys")
     @ResponseBody
     @SessionNeedless
@@ -52,6 +75,12 @@ public class FActivityController extends BaseController {
         return RespObj.SUCCESS(fActivityService.getNearActivitys(lon, lat, page, pageSize));
     }
 
+    /**
+     * 报名某个活动
+     * @param acid
+     * @param signText
+     * @return
+     */
     @RequestMapping("/sign")
     @ResponseBody
     public RespObj signActivity(@RequestParam(value = "acid") @ObjectIdType ObjectId acid,
@@ -59,13 +88,30 @@ public class FActivityController extends BaseController {
         return RespObj.SUCCESS(fActivityService.signActivity(acid, getUserId(), signText));
     }
 
+    /**
+     * 获取自己发布的活动
+     * @param personId
+     * @param page
+     * @param pageSize
+     * @return
+     */
     @RequestMapping("/published")
     @ResponseBody
-    public RespObj published(@RequestParam(value = "page", required = false, defaultValue = "1") int page,
+    public RespObj published(@RequestParam(value = "personId",required = false,defaultValue = "")String personId,
+                             @RequestParam(value = "page", required = false, defaultValue = "1") int page,
                              @RequestParam(value = "pageSize", required = false, defaultValue = "10") int pageSize) {
+        if(StringUtils.isNotBlank(personId)) {
+            return RespObj.SUCCESS(fActivityService.getPublishedActivity(new ObjectId(personId), page, pageSize));
+        }
         return RespObj.SUCCESS(fActivityService.getPublishedActivity(getUserId(), page, pageSize));
     }
 
+    /**
+     * 获取自己参加的活动
+     * @param page
+     * @param pageSize
+     * @return
+     */
     @RequestMapping("/signed")
     @ResponseBody
     public RespObj signed(@RequestParam(value = "page", required = false, defaultValue = "1") int page,
@@ -73,6 +119,12 @@ public class FActivityController extends BaseController {
         return RespObj.SUCCESS(fActivityService.getSignedActivity(getUserId(), page, pageSize));
     }
 
+    /**
+     * 获取已经过期的活动
+     * @param page
+     * @param pageSize
+     * @return
+     */
     @RequestMapping("/attended")
     @ResponseBody
     public RespObj attended(@RequestParam(value = "page", required = false, defaultValue = "1") int page,
@@ -80,6 +132,11 @@ public class FActivityController extends BaseController {
         return RespObj.SUCCESS(fActivityService.getAttendedActivity(getUserId(), page, pageSize));
     }
 
+    /**
+     * 取消报名某活动
+     * @param acid
+     * @return
+     */
     @RequestMapping("/cancelSign")
     @ResponseBody
     public RespObj cancel(@ObjectIdType ObjectId acid) {
@@ -87,6 +144,18 @@ public class FActivityController extends BaseController {
             return RespObj.FAILD("您未参加此活动");
         }
         fActivityService.cancelSignActivity(acid, getUserId());
+        return RespObj.SUCCESS;
+    }
+
+    /**
+     * 取消发布某活动
+     * @param acid
+     * @return
+     */
+    @RequestMapping("/cancelPublish")
+    @ResponseBody
+    public RespObj cancelPublish(@ObjectIdType ObjectId acid) {
+        fActivityService.cancelPublishActivity(acid,getUserId());
         return RespObj.SUCCESS;
     }
 

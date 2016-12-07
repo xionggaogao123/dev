@@ -24,18 +24,6 @@ public class MineCommunityDao extends BaseDao {
         save(MongoFacroty.getAppDB(), Constant.COLLECTION_FORUM_MINE_COMMUNITY, entry.getBaseEntry());
     }
 
-    public List<MineCommunityEntry> findByPage(ObjectId userId, int page, int pageSize) {
-        BasicDBObject query = new BasicDBObject().append("uid", userId);
-        BasicDBObject orderBy = new BasicDBObject().append("prio", Constant.DESC).append(Constant.ID, Constant.DESC);
-        List<DBObject> dbos = find(MongoFacroty.getAppDB(), Constant.COLLECTION_FORUM_MINE_COMMUNITY, query, Constant.FIELDS, orderBy, (page - 1) * pageSize, pageSize);
-        List<MineCommunityEntry> mineCommunityEntries = new ArrayList<MineCommunityEntry>();
-        for (DBObject dbo : dbos) {
-            mineCommunityEntries.add(new MineCommunityEntry(dbo));
-        }
-        return mineCommunityEntries;
-    }
-
-
     public List<MineCommunityEntry> findAll(ObjectId userId, int page, int pageSize) {
 
         BasicDBObject query = new BasicDBObject()
@@ -76,17 +64,5 @@ public class MineCommunityDao extends BaseDao {
             mineCommunityEntries.add(new MineCommunityEntry(dbo));
         }
         return mineCommunityEntries;
-    }
-
-    public void resetCommunityPriory(ObjectId userId, ObjectId communityId, int priory) {
-        BasicDBObject query = new BasicDBObject("uid", userId).append("cmid", communityId);
-        BasicDBObject update = new BasicDBObject(Constant.MONGO_SET, new BasicDBObject("prio", priory));
-        update(MongoFacroty.getAppDB(), Constant.COLLECTION_FORUM_MINE_COMMUNITY, query, update);
-    }
-
-    public void resetAllCommunityPriory(ObjectId communityId, int priory) {
-        BasicDBObject query = new BasicDBObject("cmid", communityId);
-        BasicDBObject update = new BasicDBObject(Constant.MONGO_SET, new BasicDBObject("prio", priory));
-        update(MongoFacroty.getAppDB(), Constant.COLLECTION_FORUM_MINE_COMMUNITY, query, update);
     }
 }

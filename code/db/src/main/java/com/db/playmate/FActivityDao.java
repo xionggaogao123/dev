@@ -12,6 +12,7 @@ import com.sys.constants.Constant;
 import org.bson.types.ObjectId;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 /**
@@ -26,7 +27,7 @@ public class FActivityDao extends BaseDao {
 
     public List<FActivityEntry> findByPage(BasicDBObject query, int page, int pageSize) {
         List<FActivityEntry> activityEntries = new ArrayList<FActivityEntry>();
-        BasicDBObject orderBy = new BasicDBObject("st", -1);
+        BasicDBObject orderBy = new BasicDBObject();
         List<DBObject> dbos = find(MongoFacroty.getAppDB(), Constant.COLLECTION_FORUM_ACTIVITY, query, Constant.FIELDS, orderBy, (page - 1) * pageSize, pageSize);
         for (DBObject dbo : dbos) {
             activityEntries.add(new FActivityEntry(dbo));
@@ -39,6 +40,7 @@ public class FActivityDao extends BaseDao {
         if (lon != 0 && lat != 0) {
             query.append("loc", MongoUtils.buildGeometry(lon, lat, maxDistance));
         }
+        query.append("act", new BasicDBObject("$gte", System.currentTimeMillis()));
         return query;
     }
 
@@ -91,20 +93,21 @@ public class FActivityDao extends BaseDao {
         return activityEntries;
     }
 
-    public List<FActivityEntry> getActivityByIds(List<ObjectId> ids) {
+    private List<FActivityEntry> getActivityByIds(List<ObjectId> ids) {
         BasicDBObject query = new BasicDBObject(Constant.ID, new BasicDBObject(Constant.MONGO_IN, ids));
         List<DBObject> dbos = find(MongoFacroty.getAppDB(), Constant.COLLECTION_FORUM_ACTIVITY, query, Constant.FIELDS);
         List<FActivityEntry> activityEntries = new ArrayList<FActivityEntry>();
         for (DBObject dbo : dbos) {
             activityEntries.add(new FActivityEntry(dbo));
         }
+        Collections.reverse(activityEntries);
         return activityEntries;
     }
 
     public List<FActivityEntry> getSignedActivity(ObjectId userId, int page, int pageSize) {
         List<FASignEntry> signEntries = new ArrayList<FASignEntry>();
         BasicDBObject query = new BasicDBObject("uid", userId);
-        BasicDBObject orderBy = new BasicDBObject(Constant.ID, Constant.DESC);
+        BasicDBObject orderBy = new BasicDBObject(Constant.ID, -1);
         List<DBObject> dbos = find(MongoFacroty.getAppDB(), Constant.COLLECTION_FORM_SIGN_ACTIVITY_SHEET, query, Constant.FIELDS, orderBy, (page - 1) * pageSize, pageSize);
         for (DBObject dbo : dbos) {
             signEntries.add(new FASignEntry(dbo));
@@ -123,7 +126,7 @@ public class FActivityDao extends BaseDao {
     }
 
     public int countUserAttendActivity(ObjectId userId) {
-        BasicDBObject query = new BasicDBObject("uid", userId).append(Constant.MONGO_GTE, new BasicDBObject("acti", System.currentTimeMillis()));
+        BasicDBObject query = new BasicDBObject("uid", userId).append("acti", new BasicDBObject(Constant.MONGO_GTE, System.currentTimeMillis()));
         return count(MongoFacroty.getAppDB(), Constant.COLLECTION_FORM_SIGN_ACTIVITY_SHEET, query);
     }
 
@@ -137,7 +140,7 @@ public class FActivityDao extends BaseDao {
      */
     public List<FActivityEntry> getAttendedActivity(ObjectId userId, int page, int pageSize) {
         List<FASignEntry> signEntries = new ArrayList<FASignEntry>();
-        BasicDBObject query = new BasicDBObject("uid", userId).append(Constant.MONGO_GTE, new BasicDBObject("acti", System.currentTimeMillis()));
+        BasicDBObject query = new BasicDBObject("uid", userId).append("acti", new BasicDBObject(Constant.MONGO_LT, System.currentTimeMillis()));
         BasicDBObject orderBy = new BasicDBObject("acid", Constant.DESC);
         List<DBObject> dbos = find(MongoFacroty.getAppDB(), Constant.COLLECTION_FORM_SIGN_ACTIVITY_SHEET, query, Constant.FIELDS, orderBy, (page - 1) * pageSize, pageSize);
         for (DBObject dbo : dbos) {
@@ -159,5 +162,19 @@ public class FActivityDao extends BaseDao {
     public void cancelSignActivity(ObjectId acid, ObjectId userId) {
         BasicDBObject query = new BasicDBObject("acid", acid).append("uid", userId);
         remove(MongoFacroty.getAppDB(), Constant.COLLECTION_FORM_SIGN_ACTIVITY_SHEET, query);
+    }
+
+    /**
+     * 取消发布活动
+     *
+     * @param acid
+     * @param userId
+     */
+    public void cancelPublishActivity(ObjectId acid, ObjectId userId) {
+        BasicDBObject query = new BasicDBObject(Constant.ID, acid).append("uid", userId);
+        remove(MongoFacroty.getAppDB(), Constant.COLLECTION_FORUM_ACTIVITY, query);
+
+        BasicDBObject querySheet = new BasicDBObject("acid", acid);
+        remove(MongoFacroty.getAppDB(), Constant.COLLECTION_FORM_SIGN_ACTIVITY_SHEET, querySheet);
     }
 }

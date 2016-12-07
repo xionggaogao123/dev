@@ -24,6 +24,7 @@ import java.util.Map;
 
 /**
  * Created by moslpc on 2016/12/2.
+ * 活动 Service
  */
 @Service
 public class FActivityService {
@@ -31,12 +32,32 @@ public class FActivityService {
     private FActivityDao fActivityDao = new FActivityDao();
     private UserDao userDao = new UserDao();
 
-    public void saveActivity(ObjectId uid, double lon, double lat, int acode, String title, String desc, long endTime) {
+    /**
+     * 保存活动
+     * @param uid 发布人userId
+     * @param lon 经度
+     * @param lat 纬度
+     * @param acode 活动主题code
+     * @param title 标题
+     * @param desc 描述
+     * @param activityTime  活动时间
+     */
+    public void saveActivity(ObjectId uid, double lon, double lat, int acode, String title, String desc, long activityTime) {
         ObjectId _id = new ObjectId();
-        FActivityEntry fActivityEntry = new FActivityEntry(_id, uid, acode, title, desc, lon, lat, endTime);
+        FActivityEntry fActivityEntry = new FActivityEntry(_id, uid, acode, title, desc, lon, lat, activityTime);
+        FASignEntry faSignEntry = new FASignEntry(new ObjectId(), _id, uid, "", activityTime);
+        fActivityDao.save(faSignEntry);
         fActivityDao.save(fActivityEntry);
     }
 
+    /**
+     * 获取距离由近到远的活动排序 - 按距离排序
+     * @param lon 经度
+     * @param lat 纬度
+     * @param page 页
+     * @param pageSize 每页个数
+     * @return PageModel
+     */
     public PageModel<ActivityDTO> getNearActivitys(double lon, double lat, int page, int pageSize) {
         BasicDBObject query = fActivityDao.buildQuery(lon, lat, 10000000);
         int count = fActivityDao.coutByQuery(query);
@@ -81,6 +102,13 @@ public class FActivityService {
         return pageModel;
     }
 
+    /**
+     * 获取某人发布的活动 - 按时间先后顺序
+     * @param userId 用户id
+     * @param page 页
+     * @param pageSize 每页个数
+     * @return PageModel
+     */
     public PageModel<ActivityDTO> getPublishedActivity(ObjectId userId, int page, int pageSize) {
         int count = fActivityDao.countPublishActivity(userId);
         int totalPages = count % pageSize == 0 ? count / pageSize : (int) Math.ceil(count / pageSize) + 1;
@@ -90,14 +118,14 @@ public class FActivityService {
         if (page <= 0) {
             page = 1;
         }
-        List<FActivityEntry> activityEntries = fActivityDao.getPublishedActivity(userId,page,pageSize);
+        List<FActivityEntry> activityEntries = fActivityDao.getPublishedActivity(userId, page, pageSize);
         List<ActivityDTO> activityDTOS = new ArrayList<ActivityDTO>();
         PageModel<ActivityDTO> pageModel = new PageModel<ActivityDTO>();
         pageModel.setPage(page);
         pageModel.setPageSize(pageSize);
         pageModel.setTotalPages(totalPages);
         pageModel.setTotalCount(count);
-        for(FActivityEntry activityEntry : activityEntries) {
+        for (FActivityEntry activityEntry : activityEntries) {
             activityDTOS.add(new ActivityDTO(activityEntry));
         }
         pageModel.setResult(activityDTOS);
@@ -109,12 +137,12 @@ public class FActivityService {
             return false;
         }
         FActivityEntry activityEntry = fActivityDao.getActivityById(acid);
-        FASignEntry faSignEntry = new FASignEntry(new ObjectId(), acid, userId, signText,activityEntry.getActivityTime());
+        FASignEntry faSignEntry = new FASignEntry(new ObjectId(), acid, userId, signText, activityEntry.getActivityTime());
         fActivityDao.save(faSignEntry);
         return true;
     }
 
-    public boolean isUserSigned(ObjectId acid,ObjectId userId) {
+    public boolean isUserSigned(ObjectId acid, ObjectId userId) {
         return fActivityDao.isUserSignActivity(acid, userId);
     }
 
@@ -122,7 +150,7 @@ public class FActivityService {
         return fActivityDao.countUserSignActivity(userId);
     }
 
-    public List<Map<String, Object>> get20SignSheets(ObjectId acid) {
+    private List<Map<String, Object>> get20SignSheets(ObjectId acid) {
         List<FASignEntry> signEntries = fActivityDao.get20SignEntry(acid);
         List<Map<String, Object>> sheets = new ArrayList<Map<String, Object>>();
         for (FASignEntry signEntry : signEntries) {
@@ -146,6 +174,7 @@ public class FActivityService {
 
     /**
      * 获取已经报名的活动
+     *
      * @param userId
      * @param page
      * @param pageSize
@@ -160,14 +189,14 @@ public class FActivityService {
         if (page <= 0) {
             page = 1;
         }
-        List<FActivityEntry> activityEntries = fActivityDao.getSignedActivity(userId,page,pageSize);
+        List<FActivityEntry> activityEntries = fActivityDao.getSignedActivity(userId, page, pageSize);
         List<ActivityDTO> activityDTOS = new ArrayList<ActivityDTO>();
         PageModel<ActivityDTO> pageModel = new PageModel<ActivityDTO>();
         pageModel.setPage(page);
         pageModel.setPageSize(pageSize);
         pageModel.setTotalPages(totalPages);
         pageModel.setTotalCount(count);
-        for(FActivityEntry activityEntry : activityEntries) {
+        for (FActivityEntry activityEntry : activityEntries) {
             activityDTOS.add(new ActivityDTO(activityEntry));
         }
         pageModel.setResult(activityDTOS);
@@ -176,6 +205,7 @@ public class FActivityService {
 
     /**
      * 获取已经参加过的活动
+     *
      * @param userId
      * @param page
      * @param pageSize
@@ -190,23 +220,36 @@ public class FActivityService {
         if (page <= 0) {
             page = 1;
         }
-        List<FActivityEntry> activityEntries = fActivityDao.getAttendedActivity(userId,page,pageSize);
+        List<FActivityEntry> activityEntries = fActivityDao.getAttendedActivity(userId, page, pageSize);
         List<ActivityDTO> activityDTOS = new ArrayList<ActivityDTO>();
         PageModel<ActivityDTO> pageModel = new PageModel<ActivityDTO>();
         pageModel.setPage(page);
         pageModel.setPageSize(pageSize);
         pageModel.setTotalPages(totalPages);
         pageModel.setTotalCount(count);
-        for(FActivityEntry activityEntry : activityEntries) {
+        for (FActivityEntry activityEntry : activityEntries) {
             activityDTOS.add(new ActivityDTO(activityEntry));
         }
         pageModel.setResult(activityDTOS);
         return pageModel;
     }
 
-    public void cancelSignActivity(ObjectId acid,ObjectId userId) {
-        fActivityDao.cancelSignActivity(acid,userId);
+    /**
+     * 取消报名活动
+     * @param acid 活动id
+     * @param userId 用户 id
+     */
+    public void cancelSignActivity(ObjectId acid, ObjectId userId) {
+        fActivityDao.cancelSignActivity(acid, userId);
     }
 
-    
+    /**
+     * 删除发布的活动
+     * @param acid 活动id
+     * @param userId 用户id
+     */
+    public void cancelPublishActivity(ObjectId acid, ObjectId userId) {
+        fActivityDao.cancelPublishActivity(acid, userId);
+    }
+
 }

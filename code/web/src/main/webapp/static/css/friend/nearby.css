@@ -1082,6 +1082,7 @@ pre {
     padding: 4px;
     height: 24px;
 }
+
 .ac-timer select {
     float: left;
 }
@@ -1090,6 +1091,14 @@ pre {
     float: left;
 }
 
-.wind-act-det img{
+.wind-act-det img {
     width: 40px;
+}
+
+.loading-d {
+
+}
+
+.h-load {
+    text-align: center;
 }

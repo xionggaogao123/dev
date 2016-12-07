@@ -19,6 +19,8 @@ define(['jquery', 'pagination', 'common'], function (require, exports, module) {
     var zan = 1;
     communityUser.init = function () {
         postList(page, 0);//发帖列表
+
+        getPublishedActivitys(1);
     };
 
 
@@ -27,6 +29,21 @@ define(['jquery', 'pagination', 'common'], function (require, exports, module) {
         $(".hx-notice").click(function () {
             window.open('/webim/index','_blank');
         });
+
+        $('#forum-span').click(function () {
+            $(this).addClass('hd-green-cur');
+            $('#activity-span').removeClass('hd-green-cur');
+            $('#theme-div').show();
+            $('#activity-div').hide();
+        });
+
+        $('#activity-span').click(function () {
+            $(this).addClass('hd-green-cur');
+            $('#forum-span').removeClass('hd-green-cur');
+            $('#theme-div').hide();
+            $('#activity-div').show();
+        });
+
 
         hx_update();
 
@@ -56,9 +73,7 @@ define(['jquery', 'pagination', 'common'], function (require, exports, module) {
         $.ajax({
             url:'/group/offlineMsgCount.do',
             success: function(resp){
-                var hx_notice = $('.hx-notice span');
                 var offCount = resp.message.offlineCount;
-
                 if(offCount > 0) {
                     $('#hx-icon').removeClass("sp2");
                     $('#hx-icon').addClass('sp1');
@@ -69,8 +84,6 @@ define(['jquery', 'pagination', 'common'], function (require, exports, module) {
             }
         });
     }
-
-
 
     function postList(page, gtTime) {
         var isInit = true;
@@ -116,7 +129,57 @@ define(['jquery', 'pagination', 'common'], function (require, exports, module) {
             template('#postListTml','#postList',posts);
 
         })
+    }
 
+    function getPublishedActivitys(n) {
+        var requestParm = {
+            page: n,
+            personId:personId
+        };
+        var init = true;
+        common.getData("/factivity/published.do", requestParm, function (resp) {
+            if (resp.code == '200') {
+                if(resp.message.result.length <= 0) {
+                    $('.no-data').show();
+                    $('.ac-have-data').hide();
+                    return;
+                }
+                $('#activity-page').jqPaginator({
+                    totalPages: resp.message.totalPages,//总页数
+                    visiblePages: 10,//分多少页
+                    currentPage: resp.message.page,//当前页数
+                    first: '<li class="first"><a href="javascript:void(0);">首页<\/a><\/li>',
+                    prev: '<li class="prev"><a href="javascript:void(0);">&lt;<\/a><\/li>',
+                    next: '<li class="next"><a href="javascript:void(0);">&gt;<\/a><\/li>',
+                    last: '<li class="last"><a href="javascript:void(0);">末页<\/a><\/li>',
+                    page: '<li class="page"><a href="javascript:void(0);">{{page}}<\/a><\/li>',
+                    onPageChange: function (n) { //回调函数
+                        if (init) {
+                            init = false;
+                        } else {
+                            getPublishedActivitys(n);
+                        }
+                    }
+                });
+                template('#activityBox', '#published-activity', resp.message.result);
+
+                $('#published-activity li button').click(function () {
+                    var requestParm = {
+                        acid: $(this).attr('value')
+                    };
+                    common.getData('/factivity/sign.do', requestParm, function (resp) {
+                        if (resp.code == "200") {
+                            if (resp.message) {
+                                alert("报名成功");
+                                $(this).hide();
+                            } else {
+                                alert('您已经报名了');
+                            }
+                        }
+                    });
+                });
+            }
+        });
     }
 
 

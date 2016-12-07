@@ -100,7 +100,9 @@ public class CommunityController extends BaseController {
                                    @RequestParam(required = false, defaultValue = "") String logo,
                                    @RequestParam(required = false, defaultValue = "0") int open,
                                    @RequestParam(required = false, defaultValue = "") String userIds) throws Exception {
-
+        //先进行敏感词过滤
+        name=userService.filter(name);
+        desc=userService.filter(desc);
         //先判断该社区名称是否使用过
         boolean flag = communityService.judgeCommunityCreate(name);
         if (flag) {
@@ -121,6 +123,9 @@ public class CommunityController extends BaseController {
             logo = prev + suffix;
         }
         ObjectId commId = communityService.createCommunity(communityId, uid, name, desc, logo, qrUrl, seqId, open);
+        if(commId == null ){
+            return RespObj.FAILD("无法创建社区");
+        }
         communityService.pushToUser(commId, uid, 2);
         CommunityDTO communityDTO = communityService.findByObjectId(commId);
         //创建社区系统消息通知
@@ -155,6 +160,9 @@ public class CommunityController extends BaseController {
                                     @RequestParam(required = false, defaultValue = "") String logo,
                                     @RequestParam(required = false, defaultValue = "0") int open,
                                     @RequestParam(required = false, defaultValue = "") String userIds) throws Exception {
+        //先进行敏感词过滤
+        name=userService.filter(name);
+        desc=userService.filter(desc);
 
         //先判断该社区名称是否使用过
         boolean flag = communityService.judgeCommunityCreate(name);
@@ -211,7 +219,6 @@ public class CommunityController extends BaseController {
     @SessionNeedless
     @ResponseBody
     public RespObj get(@PathVariable @ObjectIdType ObjectId id) {
-
         ObjectId groupId = communityService.getGroupId(id);
         CommunityDTO communityDTO = communityService.findByObjectId(id);
         List<MemberDTO> members = memberService.getMembers(groupId, 12);
@@ -488,6 +495,8 @@ public class CommunityController extends BaseController {
                                         @ObjectIdType ObjectId communityDetailId,
                                         @RequestParam(defaultValue = "1") int join,
                                         @RequestParam(defaultValue = "", required = false) String msg) {
+        //先进行敏感词过滤
+        msg=userService.filter(msg);
         ObjectId userId = getUserId();
         if (join == 1) {
             CommunityDetailDTO communityDetailDTO = communityService.findDetailByObjectId(communityDetailId);
@@ -1246,7 +1255,8 @@ public class CommunityController extends BaseController {
                                  @RequestParam(defaultValue = "", required = false) String images,
                                  @RequestParam(defaultValue = "", required = false) String vedios,
                                  @RequestParam(defaultValue = "", required = false) String attachements) {
-
+        //先进行敏感词过滤
+        text=userService.filter(text);
         ObjectId userId = getUserId();
         if (StringUtils.isNotBlank(text)) {
             communityService.saveReplyDetailText(communityId, detailId, userId, text, type);
@@ -1498,6 +1508,8 @@ public class CommunityController extends BaseController {
                             @RequestParam(defaultValue = "", required = false) String shareUrl) {
 
         try {
+            //先进行敏感词过滤
+            shareCommend=userService.filter(shareCommend);
             HttpClientBuilder httpClientBuilder = HttpClientBuilder.create();
             CloseableHttpClient client = httpClientBuilder.build();
             //抓取的数据
@@ -1523,6 +1535,8 @@ public class CommunityController extends BaseController {
                              @RequestParam(defaultValue = "", required = false) String shareImage,
                              @RequestParam(defaultValue = "", required = false) String description,
                              @RequestParam(defaultValue = "", required = false) String sharePrice) {
+        //先进行敏感词过滤
+        shareCommend=userService.filter(shareCommend);
         ObjectId uid = getUserId();
         communityService.saveCommunityRecommend(communityId, communityDetailId, uid, shareUrl, shareImage, description, sharePrice, shareCommend, type);
         return RespObj.SUCCESS("推荐学习用品成功！");

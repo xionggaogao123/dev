@@ -571,6 +571,9 @@ public class Constant {
     public static final String COLLECTION_FORUM_LOGIN_LOG = "floginlog";
 
     public static final String COLLECTION_FORUM_ACTIVITY = "factivity";
+
+    public static final String COLLECTION_FORUM_F_MATETYPE = "fmatetype";
+
     public static final String COLLECTION_FORM_SIGN_ACTIVITY_SHEET = "factivitySignSheet";
     //家校互动
     public static final String COLLECTION_FORUM_COMMUNITY = "fcommunity";
@@ -607,6 +610,8 @@ public class Constant {
     public static final String COLLECTION_TRAIN_ITEMTYPENAME="itemTypeName";
 
     public static final String COLLECTION_TRAIN_REGIONS="regions";
+
+    public static final String COLLECTION_TRAIN_COMMENT="trainComment";
 
     //=========第三方登录=======================================================
     //微信APP ID

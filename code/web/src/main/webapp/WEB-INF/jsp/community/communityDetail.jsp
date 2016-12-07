@@ -10,6 +10,7 @@
     <title>复兰后台管理</title>
     <link href="/static/js/modules/core/0.1.0/fancyBox/jquery.fancybox.css?v=2015041602" rel="stylesheet"
           type="text/css" media="screen">
+    <link rel="stylesheet" type="text/css" href="/static/css/friend/nearby.css">
 </layout:override>
 <%-- 填充content --%>
 <layout:override name="content">
@@ -21,192 +22,208 @@
                     <div class="d2"></div>
                 </div>
             </c:if>
-            <span class="hd-green-cur">我的社区</span>
-                <%--<span>找学习</span>--%>
-                <%--<span>找玩伴</span>--%>
+            <span id="my-community-span" class="hd-green-cur">我的社区</span>
+            <span id="myActivity-span">我的活动</span>
         </div>
     </div>
     <div id="communityType"></div>
     <span id="communityId" communityId="${detail.communityId}" detailId="${detailId}"></span>
-    <div class="hd-cont-f hd-cont-f1 clearfix">
-        <div class="det-left">
-            <div class="act-details">
-                <div class="det-title">
-                    <span id="title"></span>
-                </div>
-                <div class="det-main">
-                    <div class="det-inf">
-                        <span>活动发起人：${detail.nickName}</span>
-                        <span>发表时间:<em>${detail.time}</em></span>
+
+    <div class="container">
+        <div class="hd-cont-f hd-cont-f1 clearfix">
+            <div class="det-left">
+                <div class="act-details">
+                    <div class="det-title">
+                        <span id="title"></span>
                     </div>
-                    <div class="act-title">
-                        <p class="p1" id="type">${detail.title}</p>
-                        <div class="txt-wrap">
-                            <p class="p-wrap">${detail.content}</p>
-                            <c:forEach items="${detail.images}" var="image">
-                            <a class="fancybox" style="cursor:pointer;" href="${image.url}" data-fancybox-group="home" title="预览">
-                                <img src="${image.url}?imageView2/2/h/300"/>
-                            </a>
-                            </c:forEach>
-                            <c:if test="${detail.attachements != null}">
-                                <dl class="file-wrap">
-                                    <dt>附件下载：</dt>
-                                    <c:forEach items="${detail.attachements}" var="attachement">
-                                        <dd class="clearfix">
-                                            <span>${attachement.flnm}</span>
-                                            <a href="javascript:;" class="file-download" url="${attachement.url}"
-                                               flnm="${attachement.flnm}">下载</a>
-                                        </dd>
-                                    </c:forEach>
-                                </dl>
-                            </c:if>
+                    <div class="det-main">
+                        <div class="det-inf">
+                            <span>活动发起人：${detail.nickName}</span>
+                            <span>发表时间:<em>${detail.time}</em></span>
                         </div>
-
-                        <!-- 编辑器 -->
-                        <div class="act-bottom">
-                            <button class="share-btn" hidden></button>
-                        </div>
-                        <div class="share-upload" hidden>
-                            <div class="sign-title clearfix">
-                                <span class="fl" id="input_title">我要分享</span>
+                        <div class="act-title">
+                            <p class="p1" id="type">${detail.title}</p>
+                            <div class="txt-wrap">
+                                <p class="p-wrap">${detail.content}</p>
+                                <c:forEach items="${detail.images}" var="image">
+                                    <a class="fancybox" style="cursor:pointer;" href="${image.url}"
+                                       data-fancybox-group="home" title="预览">
+                                        <img src="${image.url}?imageView2/2/h/300"/>
+                                    </a>
+                                </c:forEach>
+                                <c:if test="${detail.attachements != null}">
+                                    <dl class="file-wrap">
+                                        <dt>附件下载：</dt>
+                                        <c:forEach items="${detail.attachements}" var="attachement">
+                                            <dd class="clearfix">
+                                                <span>${attachement.flnm}</span>
+                                                <a href="javascript:;" class="file-download" url="${attachement.url}"
+                                                   flnm="${attachement.flnm}">下载</a>
+                                            </dd>
+                                        </c:forEach>
+                                    </dl>
+                                </c:if>
                             </div>
-                            <div class="needs-inf" hidden>
-                                <%--<input type="text" placeholder="在这里粘贴单品链接"/>--%>
-                                <%--<span class="get-inf fr">获取商品信息</span>--%>
-                                <%--<div class="clearfix pub-pro-show"><img--%>
+
+                            <!-- 编辑器 -->
+                            <div class="act-bottom">
+                                <button class="share-btn" hidden></button>
+                            </div>
+                            <div class="share-upload" hidden>
+                                <div class="sign-title clearfix">
+                                    <span class="fl" id="input_title">我要分享</span>
+                                </div>
+                                <div class="needs-inf" hidden>
+                                        <%--<input type="text" placeholder="在这里粘贴单品链接"/>--%>
+                                        <%--<span class="get-inf fr">获取商品信息</span>--%>
+                                        <%--<div class="clearfix pub-pro-show"><img--%>
                                         <%--src="http://7xiclj.com1.z0.glb.clouddn.com/20160831170237.jpg">--%>
-                                    <%--<p class="p2">undefined</p>--%>
-                                    <%--<p class="p2">undefined</p>--%>
-                                <%--</div>--%>
-                            </div>
-                            <textarea></textarea>
-                            <div class="publish-fj" style="border: white">
-                                <div class="pub-fj-img clearfix">
-
+                                        <%--<p class="p2">undefined</p>--%>
+                                        <%--<p class="p2">undefined</p>--%>
+                                        <%--</div>--%>
                                 </div>
-                                <div class="pub-fj-vedio clearfix">
+                                <textarea></textarea>
+                                <div class="publish-fj" style="border: white">
+                                    <div class="pub-fj-img clearfix">
 
-                                </div>
-                                <div class="pub-fj-doc clearfix">
+                                    </div>
+                                    <div class="pub-fj-vedio clearfix">
 
-                                </div>
-                                <div class="vote-vedio-container">
-                                    <ul>
+                                    </div>
+                                    <div class="pub-fj-doc clearfix">
+
+                                    </div>
+                                    <div class="vote-vedio-container">
+                                        <ul>
                                         </ul>
                                     </div>
-                            </div>
+                                </div>
 
-                            <input type="file" name="image-upload" id="image-upload" accept="image/*" size="1"
-                                   hidden="hidden"/>
-                            <input type="file" name="attach-upload" id="attach-upload" hidden="hidden"/>
-                            <input type="file" name="vedio-upload" id="vedio-upload" accept="video/*" hidden>
-                            <div class="publish-btn" style="height: 37px">
-                                <span class="sp1"><label for="image-upload">上传照片</label></span>
-                                <span class="sp2" id="uploadAtt"><label for="attach-upload">上传附件</label></span>
-                                <span class="sp4"><label for="vedio-upload">上传视频</label></span>
-                                <button id="send" style="width: 147px;line-height:37px;height: 37px;margin-top: -9px">发布</button>
-                            </div>
-                        </div>
-
-                        <div id="recommend" hidden>
-                            <div class="sign-title clearfix">
-                                <span class="fl"></span>
-                            </div>
-                            <div class="needs-inf">
-                                <input type="text" placeholder=" 在这里粘贴单品链接" id="shareUrl"/>
-                                <span class="get-inf fr" id="get">获取商品信息</span>
-                                <div class="pub-pro-show">
+                                <input type="file" name="image-upload" id="image-upload" accept="image/*" size="1"
+                                       hidden="hidden"/>
+                                <input type="file" name="attach-upload" id="attach-upload" hidden="hidden"/>
+                                <input type="file" name="vedio-upload" id="vedio-upload" accept="video/*" hidden>
+                                <div class="publish-btn" style="height: 37px">
+                                    <span class="sp1"><label for="image-upload">上传照片</label></span>
+                                    <span class="sp2" id="uploadAtt"><label for="attach-upload">上传附件</label></span>
+                                    <span class="sp4"><label for="vedio-upload">上传视频</label></span>
+                                    <button id="send"
+                                            style="width: 147px;line-height:37px;height: 37px;margin-top: -9px">发布
+                                    </button>
                                 </div>
                             </div>
-                            <textarea placeholder="  推荐理由···" style="width: 100%;height: 78px" id="comment"></textarea>
-                            <div class="share-type clearfix">
-                                <div class="share-select fl" hidden>
-                                    <span class="img-upload"><label for="image-upload">上传照片</label></span>
+
+                            <div id="recommend" hidden>
+                                <div class="sign-title clearfix">
+                                    <span class="fl"></span>
                                 </div>
-                                <button class="share-recommend fr" id="submit">推荐</button>
+                                <div class="needs-inf">
+                                    <input type="text" placeholder=" 在这里粘贴单品链接" id="shareUrl"/>
+                                    <span class="get-inf fr" id="get">获取商品信息</span>
+                                    <div class="pub-pro-show">
+                                    </div>
+                                </div>
+                                <textarea placeholder="  推荐理由···" style="width: 100%;height: 78px"
+                                          id="comment"></textarea>
+                                <div class="share-type clearfix">
+                                    <div class="share-select fl" hidden>
+                                        <span class="img-upload"><label for="image-upload">上传照片</label></span>
+                                    </div>
+                                    <button class="share-recommend fr" id="submit">推荐</button>
+                                </div>
                             </div>
+
+                            <div class="sign-details" id="users" hidden>
+                                <div class="sign-title clearfix">
+                                    <span class="fl" id="result"></span>
+                                    <button class="fr" hidden>导出数据</button>
+                                </div>
+                                <div class="sign-main">
+                                    <ul class="clearfix down-result">
+
+                                    </ul>
+                                </div>
+                            </div>
+
+
+                            <div class="sign-details">
+                                <div class="sign-title clearfix" hidden>
+                                    <span class="fl" id="dload">推荐结果</span>
+                                    <button class="fr" id="outResult" hidden>导出数据</button>
+                                </div>
+                                <span class="sign-num" style="display: none">已经报名<em id="partInCount">12</em>人</span>
+                                <div id="partInContent"></div>
+                                <div class="sign-main" id="dloadData" hidden>
+                                    <ul class="clearfix down-result" id="signData">
+                                    </ul>
+                                </div>
+
+                            </div>
+                            <!-- 分页 -->
+                            <div class="new-page-links" hidden></div>
                         </div>
-
-                        <div class="sign-details" id="users" hidden>
-                            <div class="sign-title clearfix">
-                                <span class="fl" id="result"></span>
-                                <button class="fr" hidden>导出数据</button>
-                            </div>
-                            <div class="sign-main">
-                                <ul class="clearfix down-result">
-
-                                </ul>
-                            </div>
-                        </div>
-
-
-                        <div class="sign-details">
-                            <div class="sign-title clearfix" hidden>
-                                <span class="fl" id="dload">推荐结果</span>
-                                <button class="fr" id="outResult" hidden>导出数据</button>
-                            </div>
-                            <span class="sign-num" style="display: none">已经报名<em id="partInCount">12</em>人</span>
-                            <div id="partInContent"></div>
-                            <div class="sign-main" id="dloadData" hidden>
-                                <ul class="clearfix down-result" id="signData">
-                                </ul>
-                            </div>
-                                <%--<!-- 推荐结果 -->--%>
-                                <%--<div class="sign-txt">--%>
-                                <%--<div class="sign-div">--%>
-                                <%--<div class="txt-head clearfix">--%>
-                                <%--<span class="per-inf fl">--%>
-                                <%--<img src="http://7xiclj.com1.z0.glb.clouddn.com/20160831170237.jpg"/>--%>
-                                <%--<em>动力系统综合</em>--%>
-                                <%--</span>--%>
-                                <%--<span class="fr">发表于：2016-10-25<em>13:33</em></span>--%>
-                                <%--</div>--%>
-                                <%--<div>--%>
-                                <%--<div class="needs-wrap">--%>
-                                <%--<div class="needs-img-wrap">--%>
-                                <%--<img src="/static/images/needs-2.png">--%>
-                                <%--</div>--%>
-                                <%--<dl>--%>
-                                <%--<dt>【天猫超市】奥利奥奥利奥奥利奥奥利奥</dt>--%>
-                                <%--<dd>￥44.70</dd>--%>
-                                <%--</dl>--%>
-                                <%--</div>--%>
-                                <%--</div>--%>
-                                <%--</div>--%>
-                                <%--</div>--%>
-
-                        </div>
-                        <!-- 分页 -->
-                        <div class="new-page-links" hidden></div>
                     </div>
                 </div>
             </div>
-        </div>
 
 
-        <div class="com-right">
-            <div class="com-right-s clearfix">
-                <div class="com-tit">当前社区</div>
-                <div class="com-now">
-                    <img src="/static/images/community/result.png" width="60px" height="60px">
-                    <p class="p1">弗兰社区</p>
-                    <p class="p2">社区ID：1321465</p>
+            <div class="com-right">
+                <div class="com-right-s clearfix">
+                    <div class="com-tit">当前社区</div>
+                    <div class="com-now">
+                        <img src="/static/images/community/result.png" width="60px" height="60px">
+                        <p class="p1">弗兰社区</p>
+                        <p class="p2">社区ID：1321465</p>
+                    </div>
+                </div>
+                <div class="com-right-s clearfix">
+                    <div class="com-tit">我的社区 <c:if test="${login == true}"><span class="com-set-my-btn"
+                                                                                  onclick="window.open('/community/communitySet.do')"></span></c:if>
+                    </div>
+                    <ul class="ul-my-com">
+                        <c:forEach items="${communitys}" var="community">
+                            <li>
+                                <a href="/community/communityPublish?communityId=${community.id}"><img
+                                        src="${community.logo}"></a>
+                                <p>${community.name}</p>
+                            </li>
+                        </c:forEach>
+                    </ul>
                 </div>
             </div>
-            <div class="com-right-s clearfix">
-                <div class="com-tit">我的社区 <c:if test="${login == true}"><span class="com-set-my-btn" onclick="window.open('/community/communitySet.do')"></span></c:if></div>
-                <ul class="ul-my-com">
-                    <c:forEach items="${communitys}" var="community">
-                        <li>
-                            <a href="/community/communityPublish?communityId=${community.id}"><img src="${community.logo}"></a>
-                            <p>${community.name}</p>
-                        </li>
-                    </c:forEach>
-                </ul>
-            </div>
         </div>
-    </div>
 
+        <div class="hd-cont-f hd-cont-f2">
+            <p class="p1">
+                <span id="my-community-1" class="hd-cf-cur2">已报名活动</span>
+                <span id="my-community-2">已发布活动</span>
+                <span id="my-community-3">已参加活动</span>
+            </p>
+
+            <div id="activity-signed-div">
+                <img src="/static/images/community/no_data.jpg" hidden>
+                <ul class="ul-hds" id="ul-activity-signed">
+                </ul>
+                <div class="new-page-links signed-page"></div>
+            </div>
+
+            <div id="activity-published-dev">
+                <img src="/static/images/community/no_data.jpg" hidden>
+                <ul class="ul-hds" id="ul-activity-published">
+                </ul>
+                <div class="new-page-links published-page"></div>
+            </div>
+
+            <div id="activity-attended-div">
+                <img src="/static/images/community/no_data.jpg" hidden>
+                <ul class="ul-hds" id="ul-activity-attended">
+                </ul>
+                <div class="new-page-links attended-page"></div>
+            </div>
+
+        </div>
+
+    </div>
     <!--=============底部版权=================-->
     <%@ include file="../common/footer.jsp" %>
 
@@ -254,54 +271,76 @@
     <!--取消报名提示end-->
     <%--<div class="bg"></div>--%>
 
-    <div id="tuyaCanva" style="z-index: 9999;display: none;width:1000px;position:fixed;top: 10px;left: 50%;margin-left: -500px;padding: 10px;border-radius: 6px 6px 0 6px;background: #f7f7f7;">
-        <canvas id="canvas" width="600" height="500" style="border:1px solid #999;position:fixed;left:50%;margin-left:-300px;top:100px;"></canvas>
-        <canvas id="canvas2" width="600" height="500" style="border:1px solid #999;position:fixed;left:50%;margin-left:-300px;top:100px;"></canvas>
-        <%--<span class="btn-canvas" onClick="$('#forbiden_back').fadeIn(300)" style="background-image: url(/static/js/modules/community/plugins/canvas/image/open_url.png)"></span>--%>
-        <span class="btn-canvas" onClick="change_attr(0,-1,-1)" style="background-image: url(/static/js/modules/community/plugins/canvas/image/pencil.png);cursor: pointer"></span>
-        <%--<span class="btn-canvas" onClick="change_attr(1,-1,-1)" style="background-image: url(/static/js/modules/community/plugins/canvas/image/straight.png)"></span>--%>
-        <span class="btn-canvas" onClick="change_attr(2,-1,-1)" style="background-image: url(/static/js/modules/community/plugins/canvas/image/star_straight.png);cursor: pointer"></span>
-        <%--<span class="btn-canvas" onClick="change_attr(3,-1,-1)" style="background-image: url(/static/js/modules/community/plugins/canvas/image/circle.png)"></span>--%>
-        <%--<span class="btn-canvas" onClick="change_attr(4,-1,-1)" style="background-image: url(/static/js/modules/community/plugins/canvas/image/rect.png)"></span>--%>
-        <span class="btn-canvas" onClick="gaussian()" style="background-image: url(/static/js/modules/community/plugins/canvas/image/blur.png);cursor: pointer"></span>
+    <div id="tuyaCanva"
+         style="z-index: 9999;display: none;width:1000px;position:fixed;top: 10px;left: 50%;margin-left: -500px;padding: 10px;border-radius: 6px 6px 0 6px;background: #f7f7f7;">
+        <canvas id="canvas" width="600" height="500"
+                style="border:1px solid #999;position:fixed;left:50%;margin-left:-300px;top:100px;"></canvas>
+        <canvas id="canvas2" width="600" height="500"
+                style="border:1px solid #999;position:fixed;left:50%;margin-left:-300px;top:100px;"></canvas>
+            <%--<span class="btn-canvas" onClick="$('#forbiden_back').fadeIn(300)" style="background-image: url(/static/js/modules/community/plugins/canvas/image/open_url.png)"></span>--%>
+        <span class="btn-canvas" onClick="change_attr(0,-1,-1)"
+              style="background-image: url(/static/js/modules/community/plugins/canvas/image/pencil.png);cursor: pointer"></span>
+            <%--<span class="btn-canvas" onClick="change_attr(1,-1,-1)" style="background-image: url(/static/js/modules/community/plugins/canvas/image/straight.png)"></span>--%>
+        <span class="btn-canvas" onClick="change_attr(2,-1,-1)"
+              style="background-image: url(/static/js/modules/community/plugins/canvas/image/star_straight.png);cursor: pointer"></span>
+            <%--<span class="btn-canvas" onClick="change_attr(3,-1,-1)" style="background-image: url(/static/js/modules/community/plugins/canvas/image/circle.png)"></span>--%>
+            <%--<span class="btn-canvas" onClick="change_attr(4,-1,-1)" style="background-image: url(/static/js/modules/community/plugins/canvas/image/rect.png)"></span>--%>
+        <span class="btn-canvas" onClick="gaussian()"
+              style="background-image: url(/static/js/modules/community/plugins/canvas/image/blur.png);cursor: pointer"></span>
         <span class="btn-canvas active-undo" id="undo" onclick="undoPrev()"></span>
         <span class="btn-canvas active-redo" id="redo" onclick="undoNext()"></span>
-        <span class="btn-canvas" onclick="saveUrl()" style="background-image: url(/static/js/modules/community/plugins/canvas/image/saveBtn.png);cursor: pointer"></span>
-        <span class="btn-canvas" onclick="closeCanvas()" style="background-image: url(/static/js/modules/community/plugins/canvas/image/closeBtn.png);cursor: pointer"></span>
-        <%--<span class="btn-canvas" onClick="change_attr(5,-1,-1)" style="background-image: url(/static/js/modules/community/plugins/canvas/image/eraser.png)"></span>--%>
-        <%--<span class="btn-canvas" onClick="fill_canvas('#ffffff',0,0,canvas_size.x,canvas_size.y)" style="background-image: url(/static/js/modules/community/plugins/canvas/image/clear.png)"></span>--%>
-        <span id="size_span" style="border: 1px solid #999;width:15px;height: 15px;margin-top:7px;margin-left: 50px;display: block;float: left;margin-left: 20px">1</span>
-        <div id="size_bar" style="width: 100px;height: 5px;background-color:#999; float: left;margin: 12px;position: relative;">
+        <span class="btn-canvas" onclick="saveUrl()"
+              style="background-image: url(/static/js/modules/community/plugins/canvas/image/saveBtn.png);cursor: pointer"></span>
+        <span class="btn-canvas" onclick="closeCanvas()"
+              style="background-image: url(/static/js/modules/community/plugins/canvas/image/closeBtn.png);cursor: pointer"></span>
+            <%--<span class="btn-canvas" onClick="change_attr(5,-1,-1)" style="background-image: url(/static/js/modules/community/plugins/canvas/image/eraser.png)"></span>--%>
+            <%--<span class="btn-canvas" onClick="fill_canvas('#ffffff',0,0,canvas_size.x,canvas_size.y)" style="background-image: url(/static/js/modules/community/plugins/canvas/image/clear.png)"></span>--%>
+        <span id="size_span"
+              style="border: 1px solid #999;width:15px;height: 15px;margin-top:7px;margin-left: 50px;display: block;float: left;margin-left: 20px">1</span>
+        <div id="size_bar"
+             style="width: 100px;height: 5px;background-color:#999; float: left;margin: 12px;position: relative;">
 		<span id="size_thumb" class="btn-canvas" onClick="" style="background-color:#666;;width: 15px; border-top-left-radius:8px; border-top-right-radius:8px; border-bottom-left-radius:8px;
 		border-bottom-right-radius:8px;height: 15px;margin:0px; margin-top:-5px;position: absolute;left: 0px;"></span>
         </div>
-        <span id="color_span" style="border: 1px solid #999;background-color:#00aeef;width:15px;height: 15px;margin-top:7px;display: block;float: left;margin-left: 10px"></span>
-        <canvas id="canvas_color" width="198" height="15" style="border:1px solid #999;margin-top:7px;margin-left:10px;float:left;"></canvas>
+        <span id="color_span"
+              style="border: 1px solid #999;background-color:#00aeef;width:15px;height: 15px;margin-top:7px;display: block;float: left;margin-left: 10px"></span>
+        <canvas id="canvas_color" width="198" height="15"
+                style="border:1px solid #999;margin-top:7px;margin-left:10px;float:left;"></canvas>
 
         <div style="width: 248px;height: 162px;position: absolute;left:50%;top:50px;margin-left: 262px;background: #f7f7f7;border-radius: 0 0 6px 6px;">
-            <span id="r_channel_span" style="border: 1px solid #999;width:15px;height: 15px;margin-top:7px;margin-left: 50px;display: block;float: left;margin-left: 20px">r</span>
-            <div id="r_channel_bar" style="width: 100px;height: 5px;background-color:#999; float: left;margin: 12px;position: relative;">
+            <span id="r_channel_span"
+                  style="border: 1px solid #999;width:15px;height: 15px;margin-top:7px;margin-left: 50px;display: block;float: left;margin-left: 20px">r</span>
+            <div id="r_channel_bar"
+                 style="width: 100px;height: 5px;background-color:#999; float: left;margin: 12px;position: relative;">
 			<span id="r_channel_thumb" class="btn-canvas" onClick="" style="background-color:#666;;width: 15px; border-top-left-radius:8px; border-top-right-radius:8px; border-bottom-left-radius:8px;
 			border-bottom-right-radius:8px;height: 15px;margin:0px; margin-top:-5px;position: absolute;left: 45%;"></span>
             </div>
             <div style="clear: both;"></div>
-            <span id="g_channel_span" style="border: 1px solid #999;width:15px;height: 15px;margin-top:7px;margin-left: 50px;display: block;float: left;margin-left: 20px">g</span>
-            <div id="g_channel_bar" style="width: 100px;height: 5px;background-color:#999; float: left;margin: 12px;position: relative;">
+            <span id="g_channel_span"
+                  style="border: 1px solid #999;width:15px;height: 15px;margin-top:7px;margin-left: 50px;display: block;float: left;margin-left: 20px">g</span>
+            <div id="g_channel_bar"
+                 style="width: 100px;height: 5px;background-color:#999; float: left;margin: 12px;position: relative;">
 			<span id="g_channel_thumb" class="btn-canvas" onClick="" style="background-color:#666;;width: 15px; border-top-left-radius:8px; border-top-right-radius:8px; border-bottom-left-radius:8px;
 			border-bottom-right-radius:8px;height: 15px;margin:0px; margin-top:-5px;position: absolute;left: 45%;"></span>
             </div>
             <div style="clear: both;"></div>
-            <span id="b_channel_span" style="border: 1px solid #999;width:15px;height: 15px;margin-top:7px;margin-left: 50px;display: block;float: left;margin-left: 20px">b</span>
-            <div id="b_channel_bar" style="width: 100px;height: 5px;background-color:#999; float: left;margin: 12px;position: relative;">
+            <span id="b_channel_span"
+                  style="border: 1px solid #999;width:15px;height: 15px;margin-top:7px;margin-left: 50px;display: block;float: left;margin-left: 20px">b</span>
+            <div id="b_channel_bar"
+                 style="width: 100px;height: 5px;background-color:#999; float: left;margin: 12px;position: relative;">
 			<span id="b_channel_thumb" class="btn-canvas" onClick="" style="background-color:#666;;width: 15px; border-top-left-radius:8px; border-top-right-radius:8px; border-bottom-left-radius:8px;
 			border-bottom-right-radius:8px;height: 15px;margin:0px; margin-top:-5px;position: absolute;left: 45%;"></span>
             </div>
         </div>
-        <div id="forbiden_back" style="width: 100%;height: 100%;background-image: url(/static/js/modules/community/plugins/canvas/image/pattern.png);position: absolute;top: 0px;left: 0px;display: none;">
+        <div id="forbiden_back"
+             style="width: 100%;height: 100%;background-image: url(/static/js/modules/community/plugins/canvas/image/pattern.png);position: absolute;top: 0px;left: 0px;display: none;">
             <div style="width: 382px;height: 170px;background-image: url(/static/js/modules/community/plugins/canvas/image/open_window.png);margin: 0 auto;margin-top: 200px;position: relative;">
                 <input id="pic_url" type="text" style="width:250px; margin: 53px;margin-left: 83px;"/>
-                <div id="close_window" style="width: 20px;height: 15px;border: 0px solid green;position: absolute;right:20px;top: 10px"></div>
-                <div id="open_pic" style="width: 80px;height: 30px;border: 0px solid green;position: absolute;left:155px;top: 102px" onClick="open_img(pic_url)"></div>
+                <div id="close_window"
+                     style="width: 20px;height: 15px;border: 0px solid green;position: absolute;right:20px;top: 10px"></div>
+                <div id="open_pic"
+                     style="width: 80px;height: 30px;border: 0px solid green;position: absolute;left:155px;top: 102px"
+                     onClick="open_img(pic_url)"></div>
             </div>
         </div>
     </div>
@@ -363,7 +402,7 @@
                     var flag = resp.login;
                     if (flag) {
                         location.href = "/forum/userCenter/m3u8ToMp4DownLoad.do?filePath=" + url;
-                    }else{
+                    } else {
                         $('.store-register').fadeToggle();
                         $('.bg').fadeToggle();
                     }
@@ -413,131 +452,143 @@
     <script type="text/javascript" src="/static/js/modules/community/plugins/canvas/lanrenzhijia.js"></script>
     <%-- 填充script --%>
     <script>
-            //上传图片
-            $('#image-upload').fileupload({
-                url: '/community/images.do',
-                done: function (e, response) {
-                    if (response.result.code != '500') {
-                        $(this).closest('div').find('.vote-vedio-container ul').html('');
-                        var imageUrl = response.result.message[0].path;
-                        var fileName = response.result.message[0].fileName;
-                        var str = "<div class=\"pub-img\" fileName=\"" + fileName + "\"" + ">"
-                                + "<img width=\"60px\" height=\"43px\" src=\"" + imageUrl + "\"" + ">"
-                                + "<em></em></div>";
-                        $('.pub-fj-img').append(str);
-                    } else {
-                        alert("上传失败，请重新上传！");
-                    }
-                },
-                progressall: function (e, data) {
-                    $(this).closest('div').find('.vote-vedio-container ul').html('正在上传...');
-                },
-                submit: function (e) {
-                    if($('.uploadContent').length>0){
-                        alert("上传视频了不能再上传图片！");
-                        return false;
-                    }
-
-                    if($('.p-doc').length>0){
-                        alert("上传附件了不能再上传图片！");
-                        return false;
-                    }
-                    if ($('.pub-img') != undefined) {
-                        if ($('.pub-img').length >= 9) {
-                            alert("上传照片不能超过9张！");
-                            return false;
-                        }
-                    }
+        //上传图片
+        $('#image-upload').fileupload({
+            url: '/community/images.do',
+            done: function (e, response) {
+                if (response.result.code != '500') {
+                    $(this).closest('div').find('.vote-vedio-container ul').html('');
+                    var imageUrl = response.result.message[0].path;
+                    var fileName = response.result.message[0].fileName;
+                    var str = "<div class=\"pub-img\" fileName=\"" + fileName + "\"" + ">"
+                        + "<img width=\"60px\" height=\"43px\" src=\"" + imageUrl + "\"" + ">"
+                        + "<em></em></div>";
+                    $('.pub-fj-img').append(str);
+                } else {
+                    alert("上传失败，请重新上传！");
                 }
-            });
+            },
+            progressall: function (e, data) {
+                $(this).closest('div').find('.vote-vedio-container ul').html('正在上传...');
+            },
+            submit: function (e) {
+                if ($('.uploadContent').length > 0) {
+                    alert("上传视频了不能再上传图片！");
+                    return false;
+                }
 
-            //上传附件
-            $('#attach-upload').fileupload({
-                url: '/commonupload/doc/upload.do',
-                done: function (e, response) {
-                    if (response.result.code != '500') {
-                        $(this).closest('div').find('.vote-vedio-container ul').html('');
-                        var url = response.result.message[0].path;
-                        var fileName = response.result.message[0].fileName;
-                        var str = "<p class=\"p-doc\" url=\"" + url + "\"" + ">" +
-                                "<span>" + fileName + "</span><em></em></p> ";
-                        $('.pub-fj-doc').append(str);
-                    } else {
-                        alert("上传失败，请重新上传！");
-                    }
-                },
-                progressall: function (e, data) {
-                    $(this).closest('div').find('.vote-vedio-container ul').html('正在上传...');
-                },
-                submit: function (e) {
-                    if ($('.uploadContent').length>0) {
-                        alert("上传视频了不能再上传附件！");
-                        return false;
-                    }
-                    if($('.pub-img').length>0){
-                        alert("上传图片了不能再上传附件！");
+                if ($('.p-doc').length > 0) {
+                    alert("上传附件了不能再上传图片！");
+                    return false;
+                }
+                if ($('.pub-img') != undefined) {
+                    if ($('.pub-img').length >= 9) {
+                        alert("上传照片不能超过9张！");
                         return false;
                     }
                 }
-            });
+            }
+        });
 
-            //上传视频
-            $('#vedio-upload').fileupload({
-                url: '/commonupload/video.do',
-                done: function (e, response) {
-                    if (response.result.result) {
-                        $(this).closest('div').find('.vote-vedio-container ul').html('');
-                        var str = "<div class=\"content-DV uploadContent\" >" +
-                                "<img class=\"content-img content-Im videoshow2\" vurl=\"" + response.result.videoInfo.url + "\" src=\"" + response.result.videoInfo.imageUrl + "\">" +
-                                "<img src=\"/static/images/play.png\" class=\"video-play-btn\" onclick=\"tryPlayYCourse('" + response.result.videoInfo.url + "')\"> </div>";
-                        $('.pub-fj-vedio').append(str);
-                    } else {
-                        alert("上传失败，请重新上传！");
-                    }
-                },
-                progressall: function (e, data) {
-                    $(this).closest('div').find('.vote-vedio-container ul').html('正在上传...');
-                },
-                submit: function (e) {
-                    if($('.pub-img').length>0){
-                        alert("上传图片了不能再上传视频！");
+        //上传附件
+        $('#attach-upload').fileupload({
+            url: '/commonupload/doc/upload.do',
+            done: function (e, response) {
+                if (response.result.code != '500') {
+                    $(this).closest('div').find('.vote-vedio-container ul').html('');
+                    var url = response.result.message[0].path;
+                    var fileName = response.result.message[0].fileName;
+                    var str = "<p class=\"p-doc\" url=\"" + url + "\"" + ">" +
+                        "<span>" + fileName + "</span><em></em></p> ";
+                    $('.pub-fj-doc').append(str);
+                } else {
+                    alert("上传失败，请重新上传！");
+                }
+            },
+            progressall: function (e, data) {
+                $(this).closest('div').find('.vote-vedio-container ul').html('正在上传...');
+            },
+            submit: function (e) {
+                if ($('.uploadContent').length > 0) {
+                    alert("上传视频了不能再上传附件！");
+                    return false;
+                }
+                if ($('.pub-img').length > 0) {
+                    alert("上传图片了不能再上传附件！");
+                    return false;
+                }
+            }
+        });
+
+        //上传视频
+        $('#vedio-upload').fileupload({
+            url: '/commonupload/video.do',
+            done: function (e, response) {
+                if (response.result.result) {
+                    $(this).closest('div').find('.vote-vedio-container ul').html('');
+                    var str = "<div class=\"content-DV uploadContent\" >" +
+                        "<img class=\"content-img content-Im videoshow2\" vurl=\"" + response.result.videoInfo.url + "\" src=\"" + response.result.videoInfo.imageUrl + "\">" +
+                        "<img src=\"/static/images/play.png\" class=\"video-play-btn\" onclick=\"tryPlayYCourse('" + response.result.videoInfo.url + "')\"> </div>";
+                    $('.pub-fj-vedio').append(str);
+                } else {
+                    alert("上传失败，请重新上传！");
+                }
+            },
+            progressall: function (e, data) {
+                $(this).closest('div').find('.vote-vedio-container ul').html('正在上传...');
+            },
+            submit: function (e) {
+                if ($('.pub-img').length > 0) {
+                    alert("上传图片了不能再上传视频！");
+                    return false;
+                }
+
+                if ($('.p-doc').length > 0) {
+                    alert("上传附件了不能再上传视频！");
+                    return false;
+                }
+
+                if ($('.uploadContent') != undefined) {
+                    if ($('.uploadContent').length >= 1) {
+                        alert("上传视频不能超过1个！");
                         return false;
-                    }
-
-                    if($('.p-doc').length>0){
-                        alert("上传附件了不能再上传视频！");
-                        return false;
-                    }
-
-                    if ($('.uploadContent') != undefined) {
-                        if ($('.uploadContent').length >= 1) {
-                            alert("上传视频不能超过1个！");
-                            return false;
-                        }
                     }
                 }
-            });
+            }
+        });
 
-//            $('.btn1').click(function () {
-//                var tags = [];
-//                $('.bq-cur').each(function () {
-//                    tags.push($(this).attr('value'));
-//                });
-//                $.ajax({
-//                    type: 'POST',
-//                    dataType: 'json',
-//                    url: "/v2/user/pushTag",
-//                    data: {
-//                        name: 'mosdf',
-//                        ps: 'sdfdsf',
-//                        data: tags
-//                    },
-//                    success: function (data) {
-//                        alert(JSON.stringify(data));
-//                    }
-//                })
-//            });
+        //            $('.btn1').click(function () {
+        //                var tags = [];
+        //                $('.bq-cur').each(function () {
+        //                    tags.push($(this).attr('value'));
+        //                });
+        //                $.ajax({
+        //                    type: 'POST',
+        //                    dataType: 'json',
+        //                    url: "/v2/user/pushTag",
+        //                    data: {
+        //                        name: 'mosdf',
+        //                        ps: 'sdfdsf',
+        //                        data: tags
+        //                    },
+        //                    success: function (data) {
+        //                        alert(JSON.stringify(data));
+        //                    }
+        //                })
+        //            });
 
+    </script>
+
+    <script type="text/template" id="activityBox">
+        {{~it:value:index}}
+        <li>
+            <button value="{{=value.acid}}">取消报名</button>
+            <p class="p1">
+                <span># {{=value.activityCode}}#</span>{{=value.title}}
+            </p>
+            <p class="p2">{{=value.description}}</p>
+        </li>
+        {{~}}
     </script>
 
     <script type="text/template" id="usersTmpl">
@@ -603,32 +654,36 @@
                 <div class="clearfix comdeti-zan" style="width:100%;">
                     <div class="needs-wrap">
                         <div class="needs-img-wrap">
-                            <img src="{{=value.shareImage}}" style="width: 117px;height:79px;cursor: pointer" onclick="window.open('{{=value.shareUrl}}')">
+                            <img src="{{=value.shareImage}}" style="width: 117px;height:79px;cursor: pointer"
+                                 onclick="window.open('{{=value.shareUrl}}')">
                         </div>
                         <dl>
-                            <dt style="cursor: pointer" onclick="window.open('{{=value.shareUrl}}')">{{=value.shareTitle}}</dt>
+                            <dt style="cursor: pointer" onclick="window.open('{{=value.shareUrl}}')">
+                                {{=value.shareTitle}}
+                            </dt>
                             <dd>{{=value.sharePrice}}
                             </dd>
                         </dl>
 
                     </div>
                     <c:if test="${login == true}">
-                    {{?value.ownerZan==0}}
-                    <span class="dianzan"  ownerZan="{{=value.ownerZan}}" zanId="{{=value.partInContentId}}" >{{=value.zan}}</span>
-                    {{??}}
-                    <span class="yidianzan"  ownerZan="{{=value.ownerZan}}" zanId="{{=value.partInContentId}}" >{{=value.zan}}</span>
-                    {{?}}
+                        {{?value.ownerZan==0}}
+                        <span class="dianzan" ownerZan="{{=value.ownerZan}}" zanId="{{=value.partInContentId}}">{{=value.zan}}</span>
+                        {{??}}
+                        <span class="yidianzan" ownerZan="{{=value.ownerZan}}" zanId="{{=value.partInContentId}}">{{=value.zan}}</span>
+                        {{?}}
                     </c:if>
                 </div>
                 {{??value.shareUrl!=null&&value.shareUrl!=""}}
                 <div class="clearfix comdeti-zan" style="width:100%;">
-                    <p><a style="cursor: pointer" onclick="window.open('{{=value.shareUrl}}')" class="urlCount">{{=value.shareUrl}}</a></p>
+                    <p><a style="cursor: pointer" onclick="window.open('{{=value.shareUrl}}')" class="urlCount">{{=value.shareUrl}}</a>
+                    </p>
                     <c:if test="${login == true}">
-                    {{?value.ownerZan==0}}
-                    <span class="dianzan"  ownerZan="{{=value.ownerZan}}" zanId="{{=value.partInContentId}}" >{{=value.zan}}</span>
-                    {{??}}
-                    <span class="yidianzan"  ownerZan="{{=value.ownerZan}}" zanId="{{=value.partInContentId}}" >{{=value.zan}}</span>
-                    {{?}}
+                        {{?value.ownerZan==0}}
+                        <span class="dianzan" ownerZan="{{=value.ownerZan}}" zanId="{{=value.partInContentId}}">{{=value.zan}}</span>
+                        {{??}}
+                        <span class="yidianzan" ownerZan="{{=value.ownerZan}}" zanId="{{=value.partInContentId}}">{{=value.zan}}</span>
+                        {{?}}
                     </c:if>
                 </div>
                 {{?}}
@@ -636,7 +691,8 @@
                 <div class="img-wrap clearfix">
                     {{~value.imageList:image:i}}
                     {{?value.type==5}}
-                    <img src="{{=image}}?imageView2/1/w/82/h/82" vurl="{{=image}}" <c:if test="${operation==true}"> contentId="{{=value.partInContentId}}" class="type-check"</c:if> >
+                    <img src="{{=image}}?imageView2/1/w/82/h/82" vurl="{{=image}}"
+                    <c:if test="${operation==true}"> contentId="{{=value.partInContentId}}" class="type-check"</c:if> >
                     {{??}}
                     <a class="fancybox" style="cursor:pointer;" href="{{=image}}" data-fancybox-group="home" title="预览">
                         <img src="{{=image}}?imageView2/1/w/82/h/82"><br/>
@@ -647,20 +703,22 @@
                 </div>
                 {{?}}
                 <c:if test="${login == true}">
-                {{?value.type==5}}
-                {{?value.manager==true}}
-                <div class="py-wrap">
-                        <button contentId="{{=value.partInContentId}}" {{?value.mark==1}} class="mark"{{??}} class="un-mark"{{?}}>{{?value.mark==1}}已{{?}}批阅</button>
-                </div>
-                {{?}}
-                {{?}}
+                    {{?value.type==5}}
+                    {{?value.manager==true}}
+                    <div class="py-wrap">
+                        <button contentId="{{=value.partInContentId}}" {{?value.mark==1}} class="mark" {{??}}
+                                class="un-mark" {{?}}>{{?value.mark==1}}已{{?}}批阅
+                        </button>
+                    </div>
+                    {{?}}
+                    {{?}}
                 </c:if>
                 {{?value.attachmentList.length>0||value.videoList.length>0}}
                 <div class="doc-wrap">
                     {{?value.attachmentList.length>0}}
-                    <%--<p class="p-hw"></p>--%>
-                        {{~value.attachmentList:attachment:i}}
-                        <div>
+                        <%--<p class="p-hw"></p>--%>
+                    {{~value.attachmentList:attachment:i}}
+                    <div>
                         <span class="sp-hw">
                             {{=attachment.flnm}}
                             <a style="margin: 20px">
@@ -668,8 +726,8 @@
                                       style="color: #3C6CE1;cursor: pointer;">下载</span>
                             </a>
                         </span>
-                        </div>
-                        {{~}}
+                    </div>
+                    {{~}}
                     {{?}}
                     {{~value.videoList:video:i}}
                     <div class="content-DV">
@@ -691,12 +749,12 @@
             location.href = "/commondownload/downloadFile.do?remoteFilePath=" + url + "&amp;fileName=" + fileName;
         }
 
-        function saveUrl(){
-            var param={};
-            param.base64ImgData=getImage();
-            $('.com-now').find('img').attr('src',getImage());
-            param.oldImage=$('#tuyaCanva').data('oldImage');
-            param.partContentId=$('#tuyaCanva').data('partInContentId');
+        function saveUrl() {
+            var param = {};
+            param.base64ImgData = getImage();
+            $('.com-now').find('img').attr('src', getImage());
+            param.oldImage = $('#tuyaCanva').data('oldImage');
+            param.partContentId = $('#tuyaCanva').data('partInContentId');
             $.ajax({
                 type: "POST",
                 data: param,
@@ -705,24 +763,26 @@
                 dataType: "json",
                 contentType: "application/x-www-form-urlencoded; charset=UTF-8",
                 success: function (rep) {
-                    window.location.href=location.href;
+                    window.location.href = location.href;
                 }
             });
 
         }
 
-        function closeCanvas(){
+        function closeCanvas() {
             $('#tuyaCanva').hide();
             $('.bg').hide();
         }
 
-        $('body').on('click','.type-check',function(){
+
+
+        $('body').on('click', '.type-check', function () {
             var pUrl = $(this).attr('vurl');
 //            var partInContentId = $(this).attr('contentId')+"-"+encodeURIComponent(pUrl.substring(7,pUrl.length));
             var requestData = {};
-            var that=this;
+            var that = this;
             requestData.imageUrl = pUrl;
-            var url="/community/getQiuNiuImage.do";
+            var url = "/community/getQiuNiuImage.do";
             $.ajax({
                 type: "GET",
                 data: requestData,
@@ -732,14 +792,14 @@
                 contentType: "application/x-www-form-urlencoded; charset=UTF-8",
                 success: function (resp) {
                     var picUrl;
-                    if(resp.code == 200){
+                    if (resp.code == 200) {
                         picUrl = resp.url;
                     } else {
                         picUrl = pUrl;
                     }
                     $('#tuyaCanva').show();
-                    $('#tuyaCanva').data('partInContentId',$(that).attr('contentId'));
-                    $('#tuyaCanva').data('oldImage',encodeURIComponent(pUrl.substring(7,pUrl.length)));
+                    $('#tuyaCanva').data('partInContentId', $(that).attr('contentId'));
+                    $('#tuyaCanva').data('oldImage', encodeURIComponent(pUrl.substring(7, pUrl.length)));
                     $('.bg').show();
                     open_img(picUrl);
 //                    checkPrintPos();
@@ -756,28 +816,28 @@
                 }
             });
         });
-//
-//
-//        $('body').on('click','.close-check-hw',function(){
-//            closeCheck();
-//        })
-//
-//
-//        function checkPrintPos() {
-//            var whigh = document.documentElement.clientHeight;
-//            var wwidth = document.documentElement.clientWidth;
-//            if (wwidth > 900) {
-//                $('#check-hw-container').css({
-//                    'top': (whigh - 700) / 2,
-//                    'left': (wwidth - 1000) / 2
-//                });
-//            }
-//        }
-//
-//        function closeCheck() {
-//            $('#check-hw-container').empty().hide();
-//            $('.bg').hide();
-//        };
+        //
+        //
+        //        $('body').on('click','.close-check-hw',function(){
+        //            closeCheck();
+        //        })
+        //
+        //
+        //        function checkPrintPos() {
+        //            var whigh = document.documentElement.clientHeight;
+        //            var wwidth = document.documentElement.clientWidth;
+        //            if (wwidth > 900) {
+        //                $('#check-hw-container').css({
+        //                    'top': (whigh - 700) / 2,
+        //                    'left': (wwidth - 1000) / 2
+        //                });
+        //            }
+        //        }
+        //
+        //        function closeCheck() {
+        //            $('#check-hw-container').empty().hide();
+        //            $('.bg').hide();
+        //        };
 
 
     </script>
@@ -795,9 +855,8 @@
     </script>
     <script type="text/javascript" src="/static/js/modules/core/0.1.0/fancyBox/jquery.fancybox.js"></script>
     <script type="text/javascript">
-        $(document).ready(function() {
-            $(".fancybox").fancybox({
-            });
+        $(document).ready(function () {
+            $(".fancybox").fancybox({});
 
         })
     </script>

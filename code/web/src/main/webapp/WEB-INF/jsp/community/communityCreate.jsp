@@ -4,6 +4,7 @@
     <meta charset="utf-8">
     <title>个人空间</title>
     <link rel="stylesheet" type="text/css" href="/static/css/community/community.css">
+    <link rel="stylesheet" type="text/css" href="/static/css/friend/nearby.css">
 </head>
 <body style="background: #f5f5f5;">
 
@@ -14,9 +15,8 @@
 </div>
 <div class="f-cont">
     <div class="hd-nav">
-        <span class="hd-green-cur">我的社区</span>
-        <%--<span>我的学习</span>--%>
-        <%--<span>我的玩伴</span>--%>
+        <span id="my-community-span" class="hd-green-cur">我的社区</span>
+        <span id="myActivity-span">我的活动</span>
     </div>
 </div>
 <div class="container">
@@ -130,6 +130,37 @@
             <p class="member-more" onclick="window.open('/community/searchHotCommunity.do')">更多</p>
         </div>
     </div>
+
+    <!-- 找玩伴 -->
+    <div class="hd-cont-f hd-cont-f2">
+        <p class="p1">
+            <span id="my-community-1" class="hd-cf-cur2">已报名活动</span>
+            <span id="my-community-2">已发布活动</span>
+            <span id="my-community-3">已参加活动</span>
+        </p>
+
+        <div id="activity-signed-div">
+            <img src="/static/images/community/no_data.jpg" hidden>
+            <ul class="ul-hds" id="ul-activity-signed">
+            </ul>
+            <div class="new-page-links signed-page"></div>
+        </div>
+
+        <div id="activity-published-dev">
+            <img src="/static/images/community/no_data.jpg" hidden>
+            <ul class="ul-hds" id="ul-activity-published">
+            </ul>
+            <div class="new-page-links published-page"></div>
+        </div>
+
+        <div id="activity-attended-div">
+            <img src="/static/images/community/no_data.jpg" hidden>
+            <ul class="ul-hds" id="ul-activity-attended">
+            </ul>
+            <div class="new-page-links attended-page"></div>
+        </div>
+
+    </div>
 </div>
 <!--=============底部版权=================-->
 <%@ include file="../common/footer.jsp" %>
@@ -178,6 +209,18 @@
             $(this).closest('.tp-bm-box').find('.vote-vedio-container ul').html('正在上传...');
         }
     });
+</script>
+
+<script type="text/template" id="activityBox">
+    {{~it:value:index}}
+    <li>
+        <button value="{{=value.acid}}">取消报名</button>
+        <p class="p1">
+            <span># {{=value.activityCode}}#</span>{{=value.title}}
+        </p>
+        <p class="p2">{{=value.description}}</p>
+    </li>
+    {{~}}
 </script>
 </body>
 </html>

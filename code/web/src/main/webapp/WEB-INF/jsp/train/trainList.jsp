@@ -12,7 +12,7 @@
     <meta charset="utf-8">
     <link rel="stylesheet" type="text/css" href="/static/css/train/findtrain.css">
     <script type="text/javascript" src="/static/js/modules/train/jquery-1.8.0.min.js"></script>
-    <script type="text/javascript" src="/static/js/modules/train/trainList.js"></script>
+    <%--<script type="text/javascript" src="/static/js/modules/train/trainList.js"></script>--%>
 </head>
 <body>
 <div class="container">
@@ -23,326 +23,87 @@
             <div class="city-select Left">
                 <a href="javascript:void(0);" class="selector">切换城市</a>
                 <div class="d-traing"></div>
-                <div class="hide_city_group clearfix">
-                    <div> <a href="javascript:void(0)">北京</a></div>
-                    <div> <a class="a-selected" href="javascript:void(0)">上海</a></div>
-                    <div> <a href="javascript:void(0)">天津</a></div>
-                    <div> <a href="javascript:void(0)">重庆</a></div>
-                    <div> <a href="javascript:void(0)">河北</a></div>
-                    <div> <a href="javascript:void(0)">山西</a></div>
-                    <div> <a href="javascript:void(0)">河南</a></div>
-                    <div> <a href="javascript:void(0)">辽宁</a></div>
-                    <div> <a href="javascript:void(0)">吉林</a></div>
-                    <div> <a href="javascript:void(0)">黑龙江</a></div>
-                    <div> <a href="javascript:void(0)">内蒙古</a></div>
-                    <div> <a href="javascript:void(0)">江苏</a></div>
-                    <div> <a href="javascript:void(0)">山东</a></div>
-                    <div> <a href="javascript:void(0)">安徽</a></div>
-                    <div> <a href="javascript:void(0)">浙江</a></div>
-                    <div> <a href="javascript:void(0)">福建</a></div>
-                    <div> <a href="javascript:void(0)">湖北</a></div>
-                    <div> <a href="javascript:void(0)">湖南</a></div>
-                    <div> <a href="javascript:void(0)">广东</a></div>
-                    <div> <a href="javascript:void(0)">广西</a></div>
-                    <div> <a href="javascript:void(0)">江西</a></div>
-                    <div> <a href="javascript:void(0)">四川</a></div>
-                    <div> <a href="javascript:void(0)">海南</a></div>
-                    <div> <a href="javascript:void(0)">贵州</a></div>
-                    <div> <a href="javascript:void(0)">云南</a></div>
-                    <div> <a href="javascript:void(0)">西藏</a></div>
-                    <div> <a href="javascript:void(0)">陕西</a></div>
-                    <div> <a href="javascript:void(0)">甘肃</a></div>
-                    <div> <a href="javascript:void(0)">青海</a></div>
-                    <div> <a href="javascript:void(0)">宁夏</a></div>
-                    <div> <a href="javascript:void(0)">新疆</a></div>
-                    <div> <a href="javascript:void(0)">港澳</a></div>
-                    <div> <a href="javascript:void(0)">台湾</a></div>
-                    <div> <a href="javascript:void(0)">钓鱼岛</a></div>
-                    <div> <a href="javascript:void(0)">海外</a></div>
+                <div class="hide_city_group clearfix" id="topRegion">
                 </div>
+                <script type="text/template" id="topRegionTmpl">
+                 {{~it:value:index}}
+                 <div> <a href="javascript:void(0)" regionId="{{=value.id}}" regionName="{{=value.name}}">{{=value.name}}</a></div>
+                 {{~}}
+                </script>
             </div>
             <span class="common-bg city-logo"></span>
         </div>
-        <button>添加商户信息</button>
-        <button>老师入口</button>
-        <button>培训机构入口</button>
+        <%--<button>添加商户信息</button>--%>
+        <%--<button>老师入口</button>--%>
+        <%--<button>培训机构入口</button>--%>
     </div>
-    <div class="train-nav">
-        <span>找家教</span>
-        <span class="cur1">找培训</span>
-        <span>在线学习</span>
-        <span>亲子活动</span>
-        <button>搜索</button>
-        <input type="text">
-        <select>
-            <option>家教</option>
-            <option>培训</option>
-            <option>在线学习</option>
-            <option>亲子活动</option>
-        </select>
-        <div class="select-arrow"></div>
+    <div class="train-nav" id="trainTop">
     </div>
     <div class="train-type">
         <div class="clearfix d1f ">
             <div class="dl">
                 <p class="sp1">分类</p>
-                <span class="cur2">不限</span>
+                <span class="cur2" itemId="">不限</span>
             </div>
-            <div class="dr clearfix">
-                <p><span>外语培训</span></p>
-                <p><span>音乐培训</span></p>
-                <p><span>美术培训</span></p>
-                <p><span>兴趣生活</span></p>
-                <p><span>计算机培训</span></p>
+            <div class="dr clearfix" id="itemType">
             </div>
+            <script id="itemTypeTmpl" type="text/template">
+                {{~it:value:index}}
+                  <p><span itemId="{{=value.id}}">{{=value.name}}</span></p>
+                {{~}}
+            </script>
         </div>
         <div class="clearfix d2f">
             <div class="dl">
                 <p class="sp1">位置</p>
-                <span class="cur2">不限</span>
+                <span class="cur2" region="">不限</span>
             </div>
-            <div class="dr clearfix">
-                <p><span>浦东新区</span></p>
-                <p><span>闵行区</span></p>
-                <p><span>普陀区</span></p>
-                <p><span>嘉定区</span></p>
-                <p><span>徐汇区</span></p>
-                <p><span>宝山区</span></p>
-                <p><span>长宁区</span></p>
-                <p><span>虹口区</span></p>
-                <p><span>黄埔区</span></p>
-                <p><span>杨浦区</span></p>
-                <p><span>松江区</span></p>
-                <p><span>闸北区</span></p>
-                <p><span>静安区</span></p>
-                <p><span>卢湾区</span></p>
-                <p><span>奉贤区</span></p>
-                <p><span>青浦区</span></p>
-                <p><span>金山区</span></p>
-                <p><span>崇明区</span></p>
+            <div class="dr clearfix" id="region">
             </div>
+            <script type="text/template" id="regionTmpl">
+            {{~it:value:index}}
+            <p><span region="{{=value.id}}">{{=value.name}}</span></p>
+            {{~}}
+            </script>
         </div>
     </div>
     <div class="lesson-menu">
-        <span class="cur3 bln">默认</span>
-        <span>最新发布<img src="/static/images/train/arrow_lesson.png"></span>
-        <p class="p-page">
-            <i class="i1"></i><em>1</em>/1<i class="i2"></i>
-        </p>
+        <span class="cur3 bln" tip="1">默认</span>
+        <span tip="2">最新发布<img src="/static/images/train/arrow_lesson.png"></span>
+        <%--<p class="p-page">--%>
+            <%--<i class="i1"></i><em>1</em>/1<i class="i2"></i>--%>
+        <%--</p>--%>
     </div>
-    <ul class="lesson-list clearfix">
-        <li>
-            <img src="/static/images/train/peixun.png">
-            <div class="name">环球美邦国际教育</div>
-            <div class="star">
-                <span>4.5</span>
-                <p>
-                    <img src="/static/images/train/star_gray.png">
-                    <img src="/static/images/train/star_gray.png">
-                    <img src="/static/images/train/star_golden.png">
-                    <img src="/static/images/train/star_golden.png">
-                    <img src="/static/images/train/star_golden.png">
-                </p>
-            </div>
-        </li>
-        <li>
-            <img src="/static/images/train/peixun.png">
-            <div class="name">环球美邦国际教育</div>
-            <div class="star">
-                <span>4.5</span>
-                <p>
-                    <img src="/static/images/train/star_gray.png">
-                    <img src="/static/images/train/star_gray.png">
-                    <img src="/static/images/train/star_golden.png">
-                    <img src="/static/images/train/star_golden.png">
-                    <img src="/static/images/train/star_golden.png">
-                </p>
-            </div>
-        </li>
-        <li>
-            <img src="/static/images/train/peixun.png">
-            <div class="name">环球美邦国际教育</div>
-            <div class="star">
-                <span>4.5</span>
-                <p>
-                    <img src="/static/images/train/star_gray.png">
-                    <img src="/static/images/train/star_gray.png">
-                    <img src="/static/images/train/star_golden.png">
-                    <img src="/static/images/train/star_golden.png">
-                    <img src="/static/images/train/star_golden.png">
-                </p>
-            </div>
-        </li>
-        <li>
-            <img src="/static/images/train/peixun.png">
-            <div class="name">环球美邦国际教育</div>
-            <div class="star">
-                <span>4.5</span>
-                <p>
-                    <img src="/static/images/train/star_gray.png">
-                    <img src="/static/images/train/star_gray.png">
-                    <img src="/static/images/train/star_golden.png">
-                    <img src="/static/images/train/star_golden.png">
-                    <img src="/static/images/train/star_golden.png">
-                </p>
-            </div>
-        </li>
-        <li>
-            <img src="/static/images/train/peixun.png">
-            <div class="name">环球美邦国际教育</div>
-            <div class="star">
-                <span>4.5</span>
-                <p>
-                    <img src="/static/images/train/star_gray.png">
-                    <img src="/static/images/train/star_gray.png">
-                    <img src="/static/images/train/star_golden.png">
-                    <img src="/static/images/train/star_golden.png">
-                    <img src="/static/images/train/star_golden.png">
-                </p>
-            </div>
-        </li>
-        <li>
-            <img src="/static/images/train/peixun.png">
-            <div class="name">环球美邦国际教育</div>
-            <div class="star">
-                <span>4.5</span>
-                <p>
-                    <img src="/static/images/train/star_gray.png">
-                    <img src="/static/images/train/star_gray.png">
-                    <img src="/static/images/train/star_golden.png">
-                    <img src="/static/images/train/star_golden.png">
-                    <img src="/static/images/train/star_golden.png">
-                </p>
-            </div>
-        </li>
-        <li>
-            <img src="/static/images/train/peixun.png">
-            <div class="name">环球美邦国际教育</div>
-            <div class="star">
-                <span>4.5</span>
-                <p>
-                    <img src="/static/images/train/star_gray.png">
-                    <img src="/static/images/train/star_gray.png">
-                    <img src="/static/images/train/star_golden.png">
-                    <img src="/static/images/train/star_golden.png">
-                    <img src="/static/images/train/star_golden.png">
-                </p>
-            </div>
-        </li>
-        <li>
-            <img src="/static/images/train/peixun.png">
-            <div class="name">环球美邦国际教育</div>
-            <div class="star">
-                <span>4.5</span>
-                <p>
-                    <img src="/static/images/train/star_gray.png">
-                    <img src="/static/images/train/star_gray.png">
-                    <img src="/static/images/train/star_golden.png">
-                    <img src="/static/images/train/star_golden.png">
-                    <img src="/static/images/train/star_golden.png">
-                </p>
-            </div>
-        </li>
-        <li>
-            <img src="/static/images/train/peixun.png">
-            <div class="name">环球美邦国际教育</div>
-            <div class="star">
-                <span>4.5</span>
-                <p>
-                    <img src="/static/images/train/star_gray.png">
-                    <img src="/static/images/train/star_gray.png">
-                    <img src="/static/images/train/star_golden.png">
-                    <img src="/static/images/train/star_golden.png">
-                    <img src="/static/images/train/star_golden.png">
-                </p>
-            </div>
-        </li>
-        <li>
-            <img src="/static/images/train/peixun.png">
-            <div class="name">环球美邦国际教育</div>
-            <div class="star">
-                <span>4.5</span>
-                <p>
-                    <img src="/static/images/train/star_gray.png">
-                    <img src="/static/images/train/star_gray.png">
-                    <img src="/static/images/train/star_golden.png">
-                    <img src="/static/images/train/star_golden.png">
-                    <img src="/static/images/train/star_golden.png">
-                </p>
-            </div>
-        </li>
-        <li>
-            <img src="/static/images/train/peixun.png">
-            <div class="name">环球美邦国际教育</div>
-            <div class="star">
-                <span>4.5</span>
-                <p>
-                    <img src="/static/images/train/star_gray.png">
-                    <img src="/static/images/train/star_gray.png">
-                    <img src="/static/images/train/star_golden.png">
-                    <img src="/static/images/train/star_golden.png">
-                    <img src="/static/images/train/star_golden.png">
-                </p>
-            </div>
-        </li>
-        <li>
-            <img src="/static/images/train/peixun.png">
-            <div class="name">环球美邦国际教育</div>
-            <div class="star">
-                <span>4.5</span>
-                <p>
-                    <img src="/static/images/train/star_gray.png">
-                    <img src="/static/images/train/star_gray.png">
-                    <img src="/static/images/train/star_golden.png">
-                    <img src="/static/images/train/star_golden.png">
-                    <img src="/static/images/train/star_golden.png">
-                </p>
-            </div>
-        </li>
-        <li>
-            <img src="/static/images/train/peixun.png">
-            <div class="name">环球美邦国际教育</div>
-            <div class="star">
-                <span>4.5</span>
-                <p>
-                    <img src="/static/images/train/star_gray.png">
-                    <img src="/static/images/train/star_gray.png">
-                    <img src="/static/images/train/star_golden.png">
-                    <img src="/static/images/train/star_golden.png">
-                    <img src="/static/images/train/star_golden.png">
-                </p>
-            </div>
-        </li>
-        <li>
-            <img src="/static/images/train/peixun.png">
-            <div class="name">环球美邦国际教育</div>
-            <div class="star">
-                <span>4.5</span>
-                <p>
-                    <img src="/static/images/train/star_gray.png">
-                    <img src="/static/images/train/star_gray.png">
-                    <img src="/static/images/train/star_golden.png">
-                    <img src="/static/images/train/star_golden.png">
-                    <img src="/static/images/train/star_golden.png">
-                </p>
-            </div>
-        </li>
-        <li>
-            <img src="/static/images/train/peixun.png">
-            <div class="name">环球美邦国际教育</div>
-            <div class="star">
-                <span>4.5</span>
-                <p>
-                    <img src="/static/images/train/star_gray.png">
-                    <img src="/static/images/train/star_gray.png">
-                    <img src="/static/images/train/star_golden.png">
-                    <img src="/static/images/train/star_golden.png">
-                    <img src="/static/images/train/star_golden.png">
-                </p>
-            </div>
-        </li>
-    </ul>
-</div>
+    <ul class="lesson-list clearfix" id="institute">
 
+    </ul>
+    <div class="new-page-links"></div>
+    <script type="text/template" id="instituteTmpl">
+    {{~it:value:index}}
+    <li>
+        <img src="{{=value.mainPicture}}" onclick="window.open('/train/trainDetail.do?detailId={{=value.id}}&itemId='+$('#trainTop').data($('#trainTop').find('.cur1').text()))">
+        <div class="name">{{=value.name}}</div>
+        <div class="star">
+            <span>{{=value.score}}</span>
+            <p>
+                {{~value.scoreList:score:i}}
+                <img src="/static/images/train/star_golden.png">
+                {{~}}
+                {{~value.unScoreList:unscore:i}}
+                <img src="/static/images/train/star_gray.png">
+                {{~}}
+            </p>
+        </div>
+    </li>
+    {{~}}
+    </script>
+</div>
+<script src="/static/js/sea.js"></script>
+<script src="/static/js/modules/core/0.1.0/config.js?v=2015041602"></script>
+<script>
+    seajs.use('/static/js/modules/train/trainList.js', function (trainList) {
+        trainList.init();
+    });
+</script>
 </body>
 </html>

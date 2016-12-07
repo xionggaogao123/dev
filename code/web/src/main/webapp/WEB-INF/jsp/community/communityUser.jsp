@@ -27,124 +27,39 @@
         </p>
         <p class="p3">
             <span id="apply"><img src="/static/images/community/img_add.png">${friend}<em></em></span>
-            <span style="cursor: pointer" onClick="window.open('/webim/index?userId=${personId}')"><img src="/static/images/community/img_chat.png">聊一聊<em></em></span>
+            <span style="cursor: pointer" onClick="window.open('/webim/index?userId=${personId}')"><img
+                    src="/static/images/community/img_chat.png">聊一聊<em></em></span>
         </p>
     </div>
 </div>
 <div class="f-cont">
     <div class="hd-nav" style="width: 1000px">
-        <span class="hd-green-cur">TA的论坛</span>
-        <%--<span>TA的玩伴</span>--%>
+        <span id="forum-span" class="hd-green-cur">TA的论坛</span>
+        <span id="activity-span">TA的活动</span>
     </div>
 </div>
-<div class="container" id="theme">
-    <div class="thme-ied">我发过的主题</div>
+
+<div class="container" id="theme-div">
+    <div class="thme-ied">TA发过的主题</div>
     <div style="background: #fff;padding-bottom:20px;">
         <table class="ul-tabtheme" id="postList">
-            <%--<thead>--%>
-            <%--<tr>--%>
-                <%--<th width="70%" class="th1">主题</th>--%>
-                <%--<th width="15%">所属板块</th>--%>
-                <%--<th width="15%">回复/查看</th>--%>
-            <%--</tr>--%>
-            <%--</thead>--%>
-            <%--<tbody >--%>
-            <%--<td class="td1">小蚁思想碰撞下</td>--%>
-            <%--<td>晒才艺</td>--%>
-            <%--<td>50/100</td>--%>
-            <%--</tbody>--%>
         </table>
-        <script id="postListTml" type="text/template">
-            <thead>
-            <tr>
-                <th width="70%" class="th1">主题</th>
-                <th width="15%">所属板块</th>
-                <th width="15%">回复/查看</th>
-            </tr>
-            </thead>
-            {{~it:value:index}}
-            <tbody>
-            <td class="td1" style="cursor: pointer" onclick="window.open('/forum/postDetail.do?pSectionId={{=value.postSectionId}}&postId={{=value.fpostId}}&personId={{=value.personId}}')">{{=value.postTitle}}</td>
-            <td>{{=value.postSectionName}}</td>
-            <td>{{=value.commentCount}}/{{=value.scanCount}}</td>
-            </tbody>
-            {{~}}
-        </script>
         <div class="new-page-links" id="newPage"></div>
     </div>
 </div>
-<div class="container" id="imageTheme">
 
-    <div style="text-align: center;background: #fff;margin-top:14px;"><img src="/static/images/community/no_data.jpg"></div>
-        <div class="hd-cont-f hd-cont-f1" style="width: 1000px;background: #fff;display: none;">
-            <p class="p-taf">TA发布的活动</p>
-            <ul class="ul-hds">
-                <li>
-                    <button>进行中</button>
-                    <p class="p1">
-                        <span>#篮球#</span>周末下午打篮球！
-                    </p>
-                    <p class="p2">是的饭卡上发士大夫山豆根山豆根法国皇帝皇后</p>
-                </li>
-                <li>
-                    <button>取消报名</button>
-                    <p class="p1">
-                        <span>#篮球#</span>周末下午打篮球！
-                    </p>
-                    <p class="p2">是的饭卡上发士大夫山豆根山豆根法国皇帝皇后</p>
-                </li>
-                <li>
-                    <button>取消报名</button>
-                    <p class="p1">
-                        <span>#篮球#</span>周末下午打篮球！
-                    </p>
-                    <p class="p2">是的饭卡上发士大夫山豆根山豆根法国皇帝皇后</p>
-                </li>
-                <li>
-                    <button>取消报名</button>
-                    <p class="p1">
-                        <span>#篮球#</span>周末下午打篮球！
-                    </p>
-                    <p class="p2">是的饭卡上发士大夫山豆根山豆根法国皇帝皇后</p>
-                </li>
-                <li>
-                    <button>取消报名</button>
-                    <p class="p1">
-                        <span>#篮球#</span>周末下午打篮球！
-                    </p>
-                    <p class="p2">是的饭卡上发士大夫山豆根山豆根法国皇帝皇后</p>
-                </li>
-                <li>
-                    <button>取消报名</button>
-                    <p class="p1">
-                        <span>#篮球#</span>周末下午打篮球！
-                    </p>
-                    <p class="p2">是的饭卡上发士大夫山豆根山豆根法国皇帝皇后</p>
-                </li>
-                <li>
-                    <button>取消报名</button>
-                    <p class="p1">
-                        <span>#篮球#</span>周末下午打篮球！
-                    </p>
-                    <p class="p2">是的饭卡上发士大夫山豆根山豆根法国皇帝皇后</p>
-                </li>
-                <li>
-                    <button>取消报名</button>
-                    <p class="p1">
-                        <span>#篮球#</span>周末下午打篮球！
-                    </p>
-                    <p class="p2">是的饭卡上发士大夫山豆根山豆根法国皇帝皇后</p>
-                </li>
-                <li>
-                    <button>取消报名</button>
-                    <p class="p1">
-                        <span>#篮球#</span>周末下午打篮球！
-                    </p>
-                    <p class="p2">是的饭卡上发士大夫山豆根山豆根法国皇帝皇后</p>
-                </li>
-            </ul>
-        </div>
+<div class="container" id="activity-div" hidden>
+    <div style="text-align: center;background: #fff;margin-top:14px;" class="no-data" hidden>
+        <img src="/static/images/community/no_data.jpg">
+    </div>
+    <div class="hd-cont-f hd-cont-f1 ac-have-data" style="width: 1000px;background: #fff;">
+        <p class="p-taf">TA发布的活动</p>
+        <ul class="ul-hds" id="published-activity">
+        </ul>
+        <div class="new-page-links" id="activity-page"></div>
+    </div>
 </div>
+
 <!--=============底部版权=================-->
 <%@ include file="../common/footer.jsp" %>
 
@@ -153,7 +68,6 @@
     <span class="sp2" id="hx-icon"></span>
     <span class="sp3" id="hx-msg-count">您有0条未读消息</span>
 </div>
-
 
 
 <div class="wind-yins">
@@ -170,7 +84,37 @@
 
 <!-- template -->
 
+<script id="postListTml" type="text/template">
+    <thead>
+    <tr>
+        <th width="70%" class="th1">主题</th>
+        <th width="15%">所属板块</th>
+        <th width="15%">回复/查看</th>
+    </tr>
+    </thead>
+    {{~it:value:index}}
+    <tbody>
+    <td class="td1" style="cursor: pointer"
+        onclick="window.open('/forum/postDetail.do?pSectionId={{=value.postSectionId}}&postId={{=value.fpostId}}&personId={{=value.personId}}')">
+        {{=value.postTitle}}
+    </td>
+    <td>{{=value.postSectionName}}</td>
+    <td>{{=value.commentCount}}/{{=value.scanCount}}</td>
+    </tbody>
+    {{~}}
+</script>
 
+<script type="text/template" id="activityBox">
+    {{~it:value:index}}
+    <li>
+        <button value="{{=value.acid}}">报名活动</button>
+        <p class="p1">
+            <span># {{=value.activityCode}}#</span>{{=value.title}}
+        </p>
+        <p class="p2">{{=value.description}}</p>
+    </li>
+    {{~}}
+</script>
 
 
 <!-- end template -->

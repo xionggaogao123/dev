@@ -12,13 +12,14 @@ define(['jquery', 'pagination', 'common'], function (require, exports, module) {
     var lat;
     var activitys = [];
     seekMate.init = function () {
-
+        getAllSortType();
     };
 
     function getMates(page) {
         seekMateParm.page = page;
         var init = true;
         common.getData('/mate/getPlayMates.do', seekMateParm, function (resp) {
+
             if (resp.code == "200") {
                 template('#mateBox', '#near-mates', resp.message.result);
                 $('.mate-count').text(resp.message.totalCount);
@@ -41,7 +42,6 @@ define(['jquery', 'pagination', 'common'], function (require, exports, module) {
                         }
                     }
                 });
-
             } else {
                 alert(resp.message);
             }
@@ -49,6 +49,12 @@ define(['jquery', 'pagination', 'common'], function (require, exports, module) {
     }
 
     $(document).ready(function () {
+
+        // var list = [];
+        // $('.mate-timed span').each(function () {
+        //     list.push($(this).text());
+        // });
+        // document.write(list);
 
         $.ajax({
             url: "/forum/loginInfo.do?date=" + new Date(),
@@ -61,30 +67,24 @@ define(['jquery', 'pagination', 'common'], function (require, exports, module) {
             }
         });
 
-        var geolocation = new BMap.Geolocation();
-        geolocation.getCurrentPosition(function (r) {
-            if (this.getStatus() == BMAP_STATUS_SUCCESS) {
-
-                lon = r.point.lng;
-                lat = r.point.lat;
-                var requestParm = {
-                    lon: r.point.lng,
-                    lat: r.point.lat
-                };
-
-                seekMateParm.lon = r.point.lng;
-                seekMateParm.lat = r.point.lat;
-                getMates(1);
-                getActivitys();
-                $.ajax({
-                    url: '/mate/updateMateData.do',
-                    data: requestParm
-                })
-            }
-            else {
-                alert('failed' + this.getStatus());
-            }
-        }, {enableHighAccuracy: true});
+        var map, geolocation;
+        //加载地图，调用浏览器定位服务
+        map = new AMap.Map('container', {
+            resizeEnable: true
+        });
+        map.plugin('AMap.Geolocation', function() {
+            geolocation = new AMap.Geolocation({
+                enableHighAccuracy: true,//是否使用高精度定位，默认:true
+                timeout: 10000,          //超过10秒后停止定位，默认：无穷大
+                buttonOffset: new AMap.Pixel(10, 20),//定位按钮与设置的停靠位置的偏移量，默认：Pixel(10, 20)
+                zoomToAccuracy: true,      //定位成功后调整地图视野范围使定位位置及精度范围视野内可见，默认：false
+                buttonPosition:'RB'
+            });
+            map.addControl(geolocation);
+            geolocation.getCurrentPosition();
+            AMap.event.addListener(geolocation, 'complete', onComplete);//返回定位信息
+            AMap.event.addListener(geolocation, 'error', onError);      //返回定位出错信息
+        });
 
         bindClick();
 
@@ -355,10 +355,14 @@ define(['jquery', 'pagination', 'common'], function (require, exports, module) {
             desc: desc,
             endTime: date
         };
+
+        alert(JSON.stringify(requestParm));
         common.getData('/factivity/publish.do', requestParm, function (resp) {
             if (resp.code == 200) {
                 $('.wind-act-fq').fadeOut();
                 $('.bg').fadeOut();
+            } else {
+                alert(resp.message);
             }
         });
     }
@@ -393,6 +397,50 @@ define(['jquery', 'pagination', 'common'], function (require, exports, module) {
             }
         });
     }
+
+    //解析定位结果
+    function onComplete(data) {
+        var str=['定位成功'];
+        str.push('经度：' + data.position.getLng());
+        str.push('纬度：' + data.position.getLat());
+        str.push('精度：' + data.accuracy + ' 米');
+        str.push('是否经过偏移：' + (data.isConverted ? '是' : '否'));
+
+        seekMateParm.lon = data.position.getLng();
+        seekMateParm.lat = data.position.getLat();
+        lon = data.position.getLng();
+        lat = data.position.getLat();
+
+        var requestParm = {
+            lon:data.position.getLng(),
+            lat:data.position.getLat()
+        };
+        getMates(1);
+        getActivitys();
+        $.ajax({
+            url: '/mate/updateMateData.do',
+            data: requestParm
+        })
+    }
+    //解析定位错误信息
+    function onError(data) {
+        document.getElementById('tip').innerHTML = '定位失败';
+    }
+
+    function getAllSortType() {
+        common.getData('/mate/sortType.do', {}, function (resp) {
+            if (resp.code == "200") {
+                for(var i=0;i<resp.message.tags.length;i++) {
+                    $('.wind-act-fq select.theme').append('<option value="' + resp.message.tags[i].code +'">'+resp.message.tags[i].data+'</option>');
+                    $('.biaoq-all').append('<span code="'+resp.message.tags[i].code+'">'+resp.message.tags[i].data+'</span>');
+                }
+                var result = [];
+                result.push(resp.message);
+                template('#menuTmpl', '#nearMenu', result);
+            }
+        });
+    }
+
 
     //加载模板
     function template(tmpl, ctx, data) {

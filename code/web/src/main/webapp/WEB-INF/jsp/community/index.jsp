@@ -163,7 +163,7 @@
                 <div class="mk-intro">便捷安全一对一，<br>名师家教自由选择</div>
             </div>
             <div class="line-thr"></div>
-            <div class="mk-s">
+            <div class="mk-s mk-ls" id="train">
                 <div class="mk4-pho"></div>
                 <div class="mk-name">
                     <span>找培训</span>
@@ -192,7 +192,7 @@
                 <div></div>
                 <div></div>
             </div>
-            <div class="mk-s">
+            <div class="mk-s mk-ls" id="playmate">
                 <div class="mk1-pho"></div>
                 <div class="mk-name">
                     <span>找玩伴</span>

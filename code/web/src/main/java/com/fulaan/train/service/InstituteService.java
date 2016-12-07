@@ -18,6 +18,10 @@ public class InstituteService {
     private InstituteDao instituteDao=new InstituteDao();
 
 
+
+    public void saveOrUpdate(InstituteEntry entry){
+        instituteDao.saveOrUpdate(entry);
+    }
     /**
      * 获取分页列表
      * @param type
@@ -26,23 +30,55 @@ public class InstituteService {
      * @param pageSize
      * @return
      */
-    public List<InstituteDTO> getInstitutes(String type,String area,int page,int pageSize){
+    public List<InstituteDTO> getInstitutes(String regular,List<String> regionIds,List<String> itemTypeIds,String type,String area,int page,int pageSize,int sortType){
         List<InstituteDTO> dtos=new ArrayList<InstituteDTO>();
-        List<InstituteEntry> entries=instituteDao.findInstituteEntries(type, area, page, pageSize);
+        List<InstituteEntry> entries=instituteDao.findInstituteEntries(regular,regionIds,itemTypeIds,type, area, page, pageSize,sortType);
         for(InstituteEntry instituteEntry:entries){
-            dtos.add(new InstituteDTO(instituteEntry));
+            InstituteDTO instituteDTO=new InstituteDTO(instituteEntry);
+            String score=instituteDTO.getScore();
+            int stip=(int)Double.parseDouble(score);
+            int tip=0;
+            List<Integer> tips=new ArrayList<Integer>();
+            List<Integer> stips=new ArrayList<Integer>();
+            for(int i=0;i<stip;i++){
+                tips.add(tip);
+            }
+            for(int i=0;i<5-stip;i++){
+                stips.add(tip);
+            }
+            instituteDTO.setScoreList(tips);
+            instituteDTO.setUnScoreList(stips);
+            dtos.add(instituteDTO);
         }
         return dtos;
     }
 
-    public int countInstitutes(String type,String area){
-        return  instituteDao.countInstituteEntries(type, area);
+    public int countInstitutes(String regular,List<String> ids,List<String> itemTypeIds,String type,String area){
+        return  instituteDao.countInstituteEntries(regular,ids,itemTypeIds,type, area);
     }
 
 
     public InstituteDTO findById(ObjectId id){
         InstituteEntry entry=instituteDao.findById(id);
-        return new InstituteDTO(entry);
+        InstituteDTO instituteDTO=new InstituteDTO(entry);
+        String score=instituteDTO.getScore();
+        int stip=(int)Double.parseDouble(score);
+        int tip=0;
+        List<Integer> tips=new ArrayList<Integer>();
+        List<Integer> stips=new ArrayList<Integer>();
+        for(int i=0;i<stip;i++){
+            tips.add(tip);
+        }
+        for(int i=0;i<5-stip;i++){
+            stips.add(tip);
+        }
+        instituteDTO.setScoreList(tips);
+        instituteDTO.setUnScoreList(stips);
+        return instituteDTO;
+    }
+
+    public InstituteEntry find(ObjectId id){
+        return instituteDao.findById(id);
     }
 
 

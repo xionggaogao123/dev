@@ -24,6 +24,16 @@ public class ItemTypeNameDao extends BaseDao {
         save(MongoFacroty.getAppDB(), Constant.COLLECTION_TRAIN_ITEMTYPENAME,entry.getBaseEntry());
     }
 
+    public ItemTypeEntry find(ObjectId id){
+        BasicDBObject query=new BasicDBObject(Constant.ID,id);
+        DBObject dbObject=findOne(MongoFacroty.getAppDB(), Constant.COLLECTION_TRAIN_ITEMTYPENAME,query);
+        if(null!=dbObject){
+            return new ItemTypeEntry((BasicDBObject)dbObject);
+        }else{
+            return null;
+        }
+    }
+
     /**
      * 获取某一层的分类数据
      * @return

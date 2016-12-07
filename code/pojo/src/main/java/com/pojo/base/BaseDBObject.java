@@ -83,6 +83,10 @@ public class BaseDBObject implements Serializable {
     return baseEntry.getDouble(key);
   }
 
+  protected Double getSimpleDoubleValueDef(String key, double defValue){
+    return baseEntry.getDouble(key, defValue);
+  }
+
   protected Long getSimpleLongValue(String key) {
     return baseEntry.getLong(key);
   }

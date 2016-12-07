@@ -25,4 +25,13 @@ public class ItemTypeService {
         }
         return dtos;
     }
+
+    public ItemTypeDTO find(ObjectId id){
+        ItemTypeEntry entry=itemTypeNameDao.find(id);
+        if(null!=entry){
+            return new ItemTypeDTO(entry);
+        }else{
+            return new ItemTypeDTO();
+        }
+    }
 }

@@ -153,4 +153,17 @@ public class InstituteEntry extends BaseDBObject {
         setSimpleValue("ars",MongoUtils.convert(list));
     }
 
+
+    public double getScore(){
+        if(getBaseEntry().containsField("sc")){
+            return getSimpleDoubleValueDef("sc",0);
+        }else{
+            return 0;
+        }
+    }
+
+    public void setScore(double score){
+        setSimpleValue("sc",score);
+    }
+
 }

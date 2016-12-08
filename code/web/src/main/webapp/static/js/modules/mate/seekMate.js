@@ -123,7 +123,7 @@ define(['jquery', 'pagination', 'common'], function (require, exports, module) {
         $('body').on('click','.near-li button',function () {
             var userId = $(this).attr('value');
             if(isLogin) {
-                window.open('/community/userData.do?userId=' + userId,'__blank');
+                window.open('/webim/index.do?userId=' + userId,'__blank');
             } else {
                 $('.store-register').fadeToggle();
                 $('.bg').fadeToggle();
@@ -168,6 +168,7 @@ define(['jquery', 'pagination', 'common'], function (require, exports, module) {
                 $('.wind-act-det .p2 i').text(selectActivity.title);
                 $('.wind-act-det .p3 span').text(selectActivity.activityTime);
                 $('.wind-act-det').attr('acid', selectActivity.acid);
+                $('.wind-act-det .p2 span em span').text(selectActivity.activityTheme.data);
                 $('.wind-act-det .p6').empty();
                 for (var i = 0; i < selectActivity.signSheets.length; i++) {
                     $('.wind-act-det .p6').append("<img src='" + selectActivity.signSheets[i].avatar + "'</img>");

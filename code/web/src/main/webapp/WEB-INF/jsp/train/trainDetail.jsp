@@ -57,6 +57,18 @@
     <%--<script type="text/javascript" src="/static/js/modules/train/trainDetail.js"></script>--%>
     <script type="text/javascript">
         $(function () {
+            var offset = $('#trainRight').offset();
+            $(window).scroll(function () {
+                //检查对象的顶部是否在游览器可见的范围内
+                var scrollTop = document.documentElement.scrollTop || window.pageYOffset || document.body.scrollTop;
+                if (offset.top < scrollTop) {
+                    $('#trainRight').addClass('fixed-r');
+                }
+                else {
+                    $('#trainRight').removeClass('fixed-r');
+                }
+            });
+
 
             $("#p-star").raty({
                 starOff: '/static/images/train/star_gray.png',
@@ -333,7 +345,7 @@
             <div class="new-page-links" hidden></div>
         </div>
     </div>
-    <div class="train-right">
+    <div class="train-right" id="trainRight">
         <div id="AmapContainer" style="display: none"></div>
         <div class="train-map">
             <div class="sear"></div>

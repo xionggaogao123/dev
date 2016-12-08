@@ -830,12 +830,15 @@ pre {
 .hd-cont-f {
     width: 1250px;
     margin: 14px auto;
-    background: #fff;
+    /*background: #fff;*/
     overflow: hidden;
+}
+.hd-cont-f>p,.hd-cont-f>div{
+    background: #fff;
 }
 
 .hd-cont-f > .p1 {
-    margin: 13px 23px 0;
+    padding: 13px 23px 0;
     height: 48px;
     border-bottom: 1px solid #333;
 }

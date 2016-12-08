@@ -14,6 +14,7 @@
 <body style="background: #f5f5f5;" communityId="${communityId}" personId="${personId}" applyName="${applyName}">
 <%--==============头部===================--%>
 <%@ include file="../common/head.jsp" %>
+<%@include file="../common/login.jsp" %>
 <div class="container">
     <%--<%@ include file="_layout.jsp" %>--%>
     <div class="user-infor">
@@ -81,7 +82,21 @@
         <button class="btn2">取消</button>
     </p>
 </div>
+
+<div class="sign-alert si-s3 alert-diglog">
+    <p class="alert-title">提示<em>×</em></p>
+    <div class="alert-main">
+        <span>确认要取消和<em class="em-f">shawn</em>的玩伴关系吗？</span>
+    </div>
+    <div class="alert-btn">
+        <button class="alert-btn-sure" id="sureCancel">确认</button>
+        <button class="alert-btn-esc">取消</button>
+    </div>
+</div>
+
 <div class="bg"></div>
+
+
 
 <!-- template -->
 
@@ -108,7 +123,9 @@
 <script type="text/template" id="activityBox">
     {{~it:value:index}}
     <li>
-        <button value="{{=value.acid}}">取消报名</button>
+        {{? !value.youSigned }}
+            <button value="{{=value.acid}}">报名活动</button>
+        {{?}}
         <p class="p1">
             <span># {{? value.activityTheme != null }}
                      {{= value.activityTheme.data }}
@@ -119,6 +136,7 @@
     </li>
     {{~}}
 </script>
+
 
 
 <!-- end template -->

@@ -45,7 +45,7 @@ public class IndexController extends BaseController {
     }
 
     @RequestMapping("webim/index")
-    public String index() {
+    public String webim() {
         return "/webim/webim";
     }
 
@@ -53,7 +53,7 @@ public class IndexController extends BaseController {
     @LoginInfo
     @SessionNeedless
     @RequestMapping("/entrance")
-    public String index(HttpServletRequest request, Map<String, Object> model) {
+    public String entrance() {
         return "/community/index";
     }
 

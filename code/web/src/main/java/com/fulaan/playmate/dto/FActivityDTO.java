@@ -29,6 +29,8 @@ public class FActivityDTO {
     private User user;
     private List<Map<String,Object>> signSheets;
 
+    private boolean isYouSigned;
+
     public FActivityDTO(FActivityEntry entry){
         this.acid = entry.getID().toString();
         this.userId = entry.getUserId().toString();
@@ -134,5 +136,13 @@ public class FActivityDTO {
 
     public void setActivityTheme(MateData activityTheme) {
         this.activityTheme = activityTheme;
+    }
+
+    public boolean isYouSigned() {
+        return isYouSigned;
+    }
+
+    public void setYouSigned(boolean youSigned) {
+        isYouSigned = youSigned;
     }
 }

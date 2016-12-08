@@ -24,7 +24,7 @@
         <div class="city">
             <span class="city-name Left">上海</span>
             <div class="city-select Left">
-                <a href="javascript:void(0);" class="selector">切换城市</a>
+                <a href="javascript:void(0);" class="selector">切换省份</a>
                 <div class="d-traing"></div>
                 <div class="hide_city_group clearfix" id="topRegion">
                 </div>

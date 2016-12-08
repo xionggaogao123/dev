@@ -269,7 +269,7 @@ pre{white-space: pre-wrap;word-wrap: break-word;}
 }
 .train-type .dr>p{
 	float: left;
-	width: 97px;
+	width: 109px;
 	height: 25px;
 	margin-bottom: 5px;
 }
@@ -465,6 +465,12 @@ pre{white-space: pre-wrap;word-wrap: break-word;}
 	padding: 7px 20px 30px;
 	background: #fff;
 	margin-top: 19px;
+}
+.fixed-r{
+	position: fixed;
+	top: 16px;
+	left: 50%;
+	margin-left: 250px;
 }
 .train-detail .nav{
 	height: 43px;

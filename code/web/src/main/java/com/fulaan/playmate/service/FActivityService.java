@@ -143,13 +143,23 @@ public class FActivityService {
 
     public FActivityDTO getActivityById(ObjectId acid) {
         FActivityEntry fActivityEntry = fActivityDao.getActivityById(acid);
+        FActivityDTO fActivityDTO = new FActivityDTO(fActivityEntry);
         if (fActivityEntry == null) {
             return null;
         }
-        FActivityDTO FActivityDTO = new FActivityDTO(fActivityEntry);
-        FActivityDTO.setSignCount(fActivityDao.countSignUser(acid));
-        FActivityDTO.setUser(getMateUser(fActivityEntry.getUserId()));
-        return FActivityDTO;
+        List<MateData> allTags = fMateTypeService.getTags();
+        for (MateData mateData : allTags) {
+            if (mateData.getCode() == fActivityEntry.getACode()) {
+                fActivityDTO.setActivityTheme(mateData);
+            }
+        }
+        if (fActivityDTO.getActivityTheme() == null) {
+            fActivityDTO.setActivityTheme(new MateData(-1, "不限"));
+        }
+
+        fActivityDTO.setSignCount(fActivityDao.countSignUser(acid));
+        fActivityDTO.setUser(getMateUser(fActivityEntry.getUserId()));
+        return fActivityDTO;
     }
 
     public List<Map<String, Object>> getAllSignMembers(ObjectId acid) {
@@ -204,7 +214,7 @@ public class FActivityService {
         pageModel.setPageSize(pageSize);
         pageModel.setTotalPages(totalPages);
         pageModel.setTotalCount(count);
-        pageModel.setResult(getFActivityDtos(activityEntries));
+        pageModel.setResult(getFActivityDtos(activityEntries,userId));
         return pageModel;
     }
 
@@ -259,7 +269,7 @@ public class FActivityService {
         pageModel.setPageSize(pageSize);
         pageModel.setTotalPages(totalPages);
         pageModel.setTotalCount(count);
-        pageModel.setResult(getFActivityDtos(activityEntries));
+        pageModel.setResult(getFActivityDtos(activityEntries,userId));
         return pageModel;
     }
 
@@ -286,17 +296,15 @@ public class FActivityService {
         pageModel.setPageSize(pageSize);
         pageModel.setTotalPages(totalPages);
         pageModel.setTotalCount(count);
-        pageModel.setResult(getFActivityDtos(activityEntries));
+        pageModel.setResult(getFActivityDtos(activityEntries,userId));
         return pageModel;
     }
 
-    private List<FActivityDTO> getFActivityDtos(List<FActivityEntry> entryList) {
+    private List<FActivityDTO> getFActivityDtos(List<FActivityEntry> entryList,ObjectId userId) {
         List<FActivityDTO> fActivityDTOS = new ArrayList<FActivityDTO>();
         List<MateData> allTags = fMateTypeService.getTags();
         for (FActivityEntry entry : entryList) {
-
             FActivityDTO fActivityDTO = new FActivityDTO(entry);
-
             for (MateData mateData : allTags) {
                 if (mateData.getCode() == entry.getACode()) {
                     fActivityDTO.setActivityTheme(mateData);
@@ -305,7 +313,9 @@ public class FActivityService {
             if (fActivityDTO.getActivityTheme() == null) {
                 fActivityDTO.setActivityTheme(new MateData(-1, "不限"));
             }
-
+            if(isUserSigned(entry.getID(),userId)) {
+                fActivityDTO.setYouSigned(true);
+            }
             fActivityDTOS.add(fActivityDTO);
         }
         return fActivityDTOS;

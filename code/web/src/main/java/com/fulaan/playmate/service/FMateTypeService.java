@@ -1,10 +1,12 @@
 package com.fulaan.playmate.service;
 
+import com.db.factory.MongoFacroty;
 import com.db.playmate.FMateTypeDao;
 import com.fulaan.playmate.pojo.MateData;
 import com.mongodb.BasicDBList;
 import com.mongodb.DBObject;
 import com.pojo.playmate.FMateTypeEntry;
+import com.sys.constants.Constant;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
@@ -121,4 +123,7 @@ public class FMateTypeService {
     }
 
 
+    public void create2dsphereIndex() {
+        fMateTypeDao.create2dsphereIndex(MongoFacroty.getAppDB(), Constant.COLLECTION_FORUM_MATE_SEEKMATE);
+    }
 }

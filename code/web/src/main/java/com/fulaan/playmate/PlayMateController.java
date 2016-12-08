@@ -172,5 +172,13 @@ public class PlayMateController extends BaseController {
         return RespObj.SUCCESS;
     }
 
+    @RequestMapping("/create2dsphereIndex")
+    @ResponseBody
+    @UserRoles(UserRole.DISCUSS_MANAGER)
+    public RespObj create2dsphereIndex() {
+        fMateTypeService.create2dsphereIndex();
+        return RespObj.SUCCESS;
+    }
+
 
 }

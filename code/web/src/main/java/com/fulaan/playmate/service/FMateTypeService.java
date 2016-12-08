@@ -125,5 +125,6 @@ public class FMateTypeService {
 
     public void create2dsphereIndex() {
         fMateTypeDao.create2dsphereIndex(MongoFacroty.getAppDB(), Constant.COLLECTION_FORUM_MATE_SEEKMATE);
+        fMateTypeDao.create2dsphereIndex(MongoFacroty.getAppDB(), Constant.COLLECTION_FORUM_ACTIVITY);
     }
 }

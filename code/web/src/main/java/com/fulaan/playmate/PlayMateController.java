@@ -164,6 +164,11 @@ public class PlayMateController extends BaseController {
         return RespObj.SUCCESS(mateService.getMyOns(getUserId()));
     }
 
+    /**
+     * 生成排序数据
+     * 没后台管理好烦 =_=
+     * @return
+     */
     @RequestMapping("/generateSortData")
     @ResponseBody
     @UserRoles(UserRole.DISCUSS_MANAGER)
@@ -172,6 +177,11 @@ public class PlayMateController extends BaseController {
         return RespObj.SUCCESS;
     }
 
+    /**
+     * 创建索引
+     *
+     * @return
+     */
     @RequestMapping("/create2dsphereIndex")
     @ResponseBody
     @UserRoles(UserRole.DISCUSS_MANAGER)

@@ -251,7 +251,7 @@ define(['jquery', 'pagination', 'common'], function (require, exports, module) {
                 if(resp.message.result.length <= 0 ) {
                     $('#activity-signed-div img').show();
                     $('#ul-activity-signed').hide();
-                    $('.signed-page').hide();
+                    $('div.signed-page').hide();
                     return;
                 }
                 $('.signed-page').jqPaginator({
@@ -299,6 +299,10 @@ define(['jquery', 'pagination', 'common'], function (require, exports, module) {
                         });
                     });
                 });
+            } else {
+                $('#activity-signed-div img').show();
+                $('#ul-activity-signed').hide();
+                $('div.signed-page').hide();
             }
         });
     }
@@ -336,6 +340,10 @@ define(['jquery', 'pagination', 'common'], function (require, exports, module) {
                 template('#activityBox', '#ul-activity-attended', resp.message.result);
 
                 $('#ul-activity-attended li button').hide();
+            } else {
+                $('#activity-attended-div img').show();
+                $('#ul-activity-attended').hide();
+                $('.attended-page').hide();
             }
         });
     }

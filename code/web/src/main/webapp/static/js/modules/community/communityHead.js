@@ -263,7 +263,10 @@ define(['jquery', 'pagination', 'common'], function (require, exports, module) {
         });
 
         common.getData('/mate/getMyOns.do',{},function(resp){
-            $('#o-data').text(resp.message.data);
+            if(resp.message.data != null) {
+                $('#o-data').text(resp.message.data);
+            }
+
         });
     }
 

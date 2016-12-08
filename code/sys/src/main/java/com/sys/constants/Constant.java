@@ -53,6 +53,8 @@ public class Constant {
     public static final String NEW_ROWS = "\n";
     //空字符
     public static final String EMPTY = "";
+    public static final String EMPTY_STR="EMPTY";
+    public static final String DEFAULT_POINT="Point";
     //一个空格
     public static final String SPACE = " ";
 
@@ -566,15 +568,21 @@ public class Constant {
     public static final String COLLECTION_FORUM_SCORE = "fscore";
 
     //==========================第二版新加的表=================================
-    //位置
-    //登录日志
-    public static final String COLLECTION_FORUM_LOGIN_LOG = "floginlog";
 
+    //找玩伴
     public static final String COLLECTION_FORUM_ACTIVITY = "factivity";
 
     public static final String COLLECTION_FORUM_F_MATETYPE = "fmatetype";
 
     public static final String COLLECTION_FORM_SIGN_ACTIVITY_SHEET = "factivitySignSheet";
+
+    public static final String COLLECTION_FORUM_MATE_SEEKMATE = "fmateSeekMate";
+
+
+    //位置
+    //登录日志
+    public static final String COLLECTION_FORUM_LOGIN_LOG = "floginlog";
+
     //家校互动
     public static final String COLLECTION_FORUM_COMMUNITY = "fcommunity";
 
@@ -603,8 +611,6 @@ public class Constant {
 
     public static final String COLLECTION_FORUM_COMMUNITY_SYSTEMINFO = "fcomunitySysInfo";
 
-    public static final String COLLECTION_FORUM_MATE_SEEKMATE = "fmateSeekMate";
-
     public static final String COLLECTION_TRAIN_INSTITUTE="institute";
 
     public static final String COLLECTION_TRAIN_ITEMTYPENAME="itemTypeName";
@@ -612,6 +618,8 @@ public class Constant {
     public static final String COLLECTION_TRAIN_REGIONS="regions";
 
     public static final String COLLECTION_TRAIN_COMMENT="trainComment";
+
+
 
     //=========第三方登录=======================================================
     //微信APP ID

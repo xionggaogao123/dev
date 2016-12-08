@@ -79,10 +79,6 @@
                             <span>发表时间：{{=value.time}}</span>
                         </p>
                     </div>
-                    <%--<div class="notice-bm">--%>
-                    <%--<button class="commit" itemId="{{=value.id}}">我要报名</button>--%>
-                    <%--<span>已报名（<em>{{=value.partInCount}}</em>）人</span>--%>
-                    <%--</div>--%>
                 </div>
                 {{~}}
             </script>
@@ -145,10 +141,6 @@
                             <span>发表时间：{{=value.time}}</span>
                         </p>
                     </div>
-                    <%--<div class="notice-bm">--%>
-                    <%--<button class="commit" itemId="{{=value.id}}">我要分享</button>--%>
-                    <%--<span>已分享（{{=value.partInCount}}）人</span>--%>
-                    <%--</div>--%>
                 </div>
                 {{~}}
             </script>
@@ -176,10 +168,6 @@
                             <span>发表时间：{{=value.time}}</span>
                         </p>
                     </div>
-                    <%--<div class="notice-bm">--%>
-                    <%--<button class="commit" itemId="{{=value.id}}">提交作业</button>--%>
-                    <%--<span>已提交（{{=value.partInCount}}）人</span>--%>
-                    <%--</div>--%>
                 </div>
                 {{~}}
             </script>
@@ -316,7 +304,8 @@
             <span># {{? value.activityTheme != null }}
                      {{= value.activityTheme.data }}
                     {{?}}
-                  #</span> {{=value.title}}
+                  #
+            </span> {{=value.title}}
         </p>
         <p class="p2">{{=value.description}}</p>
     </li>

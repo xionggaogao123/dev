@@ -22,14 +22,12 @@ public class FActivityDTO {
     private String createTime;
     private String activityTime;
     private int signCount;
-    private int activityCode;
     private String distance;
 
     private MateData activityTheme;
 
     private User user;
     private List<Map<String,Object>> signSheets;
-    private List<Map<String,Object>> allSignSheets;
 
     public FActivityDTO(FActivityEntry entry){
         this.acid = entry.getID().toString();
@@ -38,7 +36,6 @@ public class FActivityDTO {
         this.description = entry.getDescription();
         this.createTime = DateUtils.timeStampToStr(entry.getCreateTime() / 1000);
         this.activityTime = DateUtils.timeStampToStr(entry.getActivityTime() / 1000);
-        this.activityCode = entry.getACode();
     }
 
     public String getAcid() {
@@ -109,14 +106,6 @@ public class FActivityDTO {
         return user;
     }
 
-    public int getActivityCode() {
-        return activityCode;
-    }
-
-    public void setActivityCode(int activityCode) {
-        this.activityCode = activityCode;
-    }
-
     public void setUser(ObjectId userId, String nickName, String userName, String avatar, List<UserTag> tags) {
         User user = new User();
         user.setUserId(userId.toString());
@@ -133,14 +122,6 @@ public class FActivityDTO {
 
     public void setSignSheets(List<Map<String, Object>> signSheets) {
         this.signSheets = signSheets;
-    }
-
-    public List<Map<String, Object>> getAllSignSheets() {
-        return allSignSheets;
-    }
-
-    public void setAllSignSheets(List<Map<String, Object>> allSignSheets) {
-        this.allSignSheets = allSignSheets;
     }
 
     public void setUser(User user) {

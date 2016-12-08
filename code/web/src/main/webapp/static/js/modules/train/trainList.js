@@ -6,8 +6,12 @@ define(['jquery', 'pagination', 'common'], function (require, exports, module) {
 	require('pagination');
 
 	var trainList = {};
+	var region=$('body').attr('region');
 	var sortType=1;
 	var page=1;
+	var lon;
+	var lat;
+	var flag=false;
 	trainList.init = function () {
 		getTopItems();
 
@@ -51,17 +55,47 @@ define(['jquery', 'pagination', 'common'], function (require, exports, module) {
 			$('.d1f span').removeClass('cur2');
 			$('.d1f span').eq(0).addClass('cur2');
 			getSecondItemTypes($(this));
-			getInstituteList(page);
+			if(flag){
+				getInstituteList(page);
+			}else{
+				flag=true;
+			}
 		})
 
 		$('body').on('click','#search',function () {
 			searchForRegular();
 		})
 
-		$('#trainTop span').eq(0).trigger('click');
-
-		$('a[regionName="上海"]').trigger('click');
+		var map, geolocation;
+		//加载地图，调用浏览器定位服务
+		map = new AMap.Map('containerMap', {
+			resizeEnable: true
+		});
+		map.plugin('AMap.Geolocation', function() {
+			geolocation = new AMap.Geolocation({
+				enableHighAccuracy: true,//是否使用高精度定位，默认:true
+				timeout: 10000,          //超过10秒后停止定位，默认：无穷大
+				buttonOffset: new AMap.Pixel(10, 20),//定位按钮与设置的停靠位置的偏移量，默认：Pixel(10, 20)
+				zoomToAccuracy: true,      //定位成功后调整地图视野范围使定位位置及精度范围视野内可见，默认：false
+				buttonPosition:'RB'
+			});
+			map.addControl(geolocation);
+			geolocation.getCurrentPosition();
+			AMap.event.addListener(geolocation, 'complete', onComplete);//返回定位信息
+			AMap.event.addListener(geolocation, 'error', onError);      //返回定位出错信息
+		});
 	})
+
+	function onComplete(data) {
+		lon = data.position.getLng();
+		lat = data.position.getLat();
+		$('#trainTop span').eq(0).trigger('click');
+		$('a[regionName='+region+']').trigger('click');
+	}
+
+	function onError(){
+		alert("定位失败!请先登录");
+	}
 
 
 	function searchForRegular(){
@@ -81,12 +115,17 @@ define(['jquery', 'pagination', 'common'], function (require, exports, module) {
 		var isInit = true;
 		var requestData = {};
 		requestData.page=page;
+		if($('.hide_city_group>div').find('.a-selected').attr('regionName')==region){
+			requestData.lon=lon;
+			requestData.lat=lat;
+		}
 		requestData.type=$('.d1f').find('.cur2').attr('itemId');
 		requestData.area=$('.d2f').find('.cur2').attr('region');
 		requestData.region=$('.hide_city_group>div').find('.a-selected').attr('regionId');
 		requestData.itemType=$('#trainTop').data($('#trainTop').find('.cur1').text());
         requestData.regular=$('#regular').val();
 		requestData.sortType=sortType;
+		$('.h-load').show();
 		$.ajax({
 			type: "GET",
 			data: requestData,
@@ -95,6 +134,7 @@ define(['jquery', 'pagination', 'common'], function (require, exports, module) {
 			dataType: "json",
 			contentType: "application/x-www-form-urlencoded; charset=UTF-8",
 			success: function (resp) {
+				$('.h-load').hide();
 				$('.new-page-links').html("");
 				if (resp.code == "200") {
 

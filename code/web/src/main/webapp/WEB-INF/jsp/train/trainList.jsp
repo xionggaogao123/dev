@@ -12,9 +12,12 @@
     <meta charset="utf-8">
     <link rel="stylesheet" type="text/css" href="/static/css/train/findtrain.css">
     <script type="text/javascript" src="/static/js/modules/train/jquery-1.8.0.min.js"></script>
+    <script type="text/javascript"
+            src="http://webapi.amap.com/maps?v=1.3&key=3a1cd4cff6fcbdf71ea760da6957fb94"></script>
     <%--<script type="text/javascript" src="/static/js/modules/train/trainList.js"></script>--%>
 </head>
-<body>
+<body region="${region}">
+<div id="containerMap"></div>
 <div class="container">
     <div class="top-city">
         <img src="/static/images/train/location01.png">
@@ -75,7 +78,12 @@
         <%--</p>--%>
     </div>
     <ul class="lesson-list clearfix" id="institute">
-
+        <div class="h-load" hidden>
+            <div class="loading-d">
+                <img src="/static/images/loading.gif">
+                <span>数据加载中...</span>
+            </div>
+        </div>
     </ul>
     <div class="new-page-links"></div>
     <script type="text/template" id="instituteTmpl">

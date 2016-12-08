@@ -50,12 +50,6 @@ define(['jquery', 'pagination', 'common'], function (require, exports, module) {
 
     $(document).ready(function () {
 
-        // var list = [];
-        // $('.mate-timed span').each(function () {
-        //     list.push($(this).text());
-        // });
-        // document.write(list);
-
         $.ajax({
             url: "/forum/loginInfo.do?date=" + new Date(),
             type: "get",
@@ -186,12 +180,23 @@ define(['jquery', 'pagination', 'common'], function (require, exports, module) {
 
         $('body').on('click','.act-already-join',function () {
 
-            window.open('/community/communityAllType.do','__blank');
+            if(isLogin) {
+                window.open('/community/communityAllType.do','__blank');
+            } else {
+                $('.store-register').fadeToggle();
+                $('.bg').fadeToggle();
+            }
+
         });
 
         $('body').on('click','.act-already-push',function () {
 
-            window.open('/community/communityAllType.do','__blank');
+            if(isLogin) {
+                window.open('/community/communityAllType.do','__blank');
+            } else {
+                $('.store-register').fadeToggle();
+                $('.bg').fadeToggle();
+            }
 
         });
 

@@ -106,7 +106,7 @@
         </select>
         <input type="text">
     </p>
-    <p class="p2">活动内容<span>(克简要说明一下活动时间、地点等)</span></p>
+    <p class="p2">活动内容<span>(简要说明一下活动时间、地点等)</span></p>
     <textarea></textarea>
     <div class="ac-timer">
         <p>时间：<input type="text" id="datepicker"></p>

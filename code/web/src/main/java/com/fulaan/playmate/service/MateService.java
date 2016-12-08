@@ -25,6 +25,7 @@ import org.springframework.stereotype.Service;
 import java.text.ParseException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 /**
  * Created by moslpc on 2016/11/30.
@@ -86,10 +87,9 @@ public class MateService {
             fMateDTO.setUserId(userEntry.getID().toString());
             fMateDTO.setNickName(userEntry.getNickName());
             fMateDTO.setUserName(userEntry.getUserName());
-            fMateDTO.setTimed(mateEntry.getOns());
 
-            for(MateData mateData:mateDatas) {
-                if(mateEntry.getOns() == mateData.getCode()) {
+            for (MateData mateData : mateDatas) {
+                if (mateEntry.getOns() == mateData.getCode()) {
                     fMateDTO.setOns(mateData);
                 }
             }
@@ -137,7 +137,7 @@ public class MateService {
     }
 
     public List<Double> getCoordinates(ObjectId userId) {
-        FMateEntry mateEntry = fMateDao.getCoordinates(userId);
+        FMateEntry mateEntry = fMateDao.getMateEntryByUserId(userId);
         List<Double> locs = new ArrayList<Double>();
         if (mateEntry == null) return locs;
         BasicDBList dbList = mateEntry.getLocation();
@@ -156,6 +156,25 @@ public class MateService {
 
     public void updateLocation(ObjectId userId, double lon, double lat) {
         fMateDao.upateUserLocation(userId, lon, lat);
+    }
+
+    public FMateEntry getMateEntry(ObjectId userId) {
+        return fMateDao.getMateEntryByUserId(userId);
+    }
+
+    public MateData getMyOns(ObjectId userId) {
+        FMateEntry fMateEntry = fMateDao.getMateEntryByUserId(userId);
+        if (fMateEntry == null) {
+            return null;
+        }
+        int ons = fMateEntry.getOns();
+        List<MateData> datas = fMateTypeService.getOns();
+        for (MateData mateData : datas) {
+            if (ons == mateData.getCode()) {
+                return mateData;
+            }
+        }
+        return null;
     }
 
     public void updateTags(ObjectId userId, List<Integer> tags) {
@@ -209,6 +228,6 @@ public class MateService {
     }
 
     public void updateOns(ObjectId userId, int ons) {
-        fMateDao.updateUserOns(userId,ons);
+        fMateDao.updateUserOns(userId, ons);
     }
 }

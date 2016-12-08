@@ -25,6 +25,9 @@ public class InstituteDTO {
     private List<String> regionNames=new ArrayList<String>();
     private List<Integer> scoreList=new ArrayList<Integer>();
     private List<Integer> unScoreList=new ArrayList<Integer>();
+    private double lon;
+    private double lat;
+    private String distance;
 
     public InstituteDTO(){
 
@@ -49,6 +52,17 @@ public class InstituteDTO {
         for(PropertiesObj obj:regions){
             regionNames.add(obj.getName());
         }
+        if(null!=entry.getLocations()){
+            getLocation(entry.getLocations());
+        }
+
+
+    }
+
+    public void getLocation(InstituteEntry.Locations locations){
+        List<Double> accordinates=locations.getCoordinates();
+        this.lon=accordinates.get(0);
+        this.lat=accordinates.get(1);
     }
 
     public String getId() {
@@ -161,5 +175,29 @@ public class InstituteDTO {
 
     public void setUnScoreList(List<Integer> unScoreList) {
         this.unScoreList = unScoreList;
+    }
+
+    public double getLon() {
+        return lon;
+    }
+
+    public void setLon(double lon) {
+        this.lon = lon;
+    }
+
+    public double getLat() {
+        return lat;
+    }
+
+    public void setLat(double lat) {
+        this.lat = lat;
+    }
+
+    public String getDistance() {
+        return distance;
+    }
+
+    public void setDistance(String distance) {
+        this.distance = distance;
     }
 }

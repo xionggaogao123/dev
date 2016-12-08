@@ -10,6 +10,7 @@ import org.bson.types.ObjectId;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.regex.Pattern;
 
 /**
  * Created by admin on 2016/12/5.
@@ -38,6 +39,24 @@ public class RegionDao extends BaseDao {
            }
         }
         return regionEntries;
+    }
+
+    public RegionEntry getRegionEntry(String name){
+        BasicDBObject query =getQueryCondition("nm",name);
+        DBObject dbObject=findOne(MongoFacroty.getAppDB(),Constant.COLLECTION_TRAIN_REGIONS,query);
+        if(null!=dbObject){
+            return new RegionEntry((BasicDBObject) dbObject);
+        }else{
+            return null;
+        }
+    }
+
+
+    public BasicDBObject getQueryCondition(String field, String name) {
+        BasicDBObject query = new BasicDBObject();
+        Pattern pattern = Pattern.compile("^.*" + name + ".*$", Pattern.CASE_INSENSITIVE);
+        query.append(field, new BasicDBObject(Constant.MONGO_REGEX, pattern));
+        return query;
     }
 
 }

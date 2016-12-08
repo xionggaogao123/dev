@@ -111,7 +111,6 @@ public class FActivityController extends BaseController {
         if(getUserId() != null) {
             fActivityDTO.setYouSigned(fActivityService.isUserSigned(acid,getUserId()));
         }
-
         return RespObj.SUCCESS(fActivityDTO);
     }
 

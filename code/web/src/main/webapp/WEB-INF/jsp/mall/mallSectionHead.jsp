@@ -206,6 +206,7 @@
     <div class="header-cont">
         <img src="/static/images/entrance/fl_mall_logo.png" style="cursor: pointer" onclick="window.open('/mall')">
         <a href="/" target="_blank" class="ha1">首页</a>
+        <a href="/community/communityAllType.do" target="_blank">我的社区</a>
         <a href="/competition" target="_blank" class="ha5">
             <img src="/static/images/logo_competitioin.png">大赛<img class="hot_a" src="/static/images/forum/hot.png">
         </a>

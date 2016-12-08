@@ -53,6 +53,8 @@ public class Constant {
     public static final String NEW_ROWS = "\n";
     //空字符
     public static final String EMPTY = "";
+    public static final String EMPTY_STR="EMPTY";
+    public static final String DEFAULT_POINT="Point";
     //一个空格
     public static final String SPACE = " ";
 

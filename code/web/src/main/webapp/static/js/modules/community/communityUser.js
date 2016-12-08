@@ -17,14 +17,31 @@ define(['jquery', 'pagination', 'common'], function (require, exports, module) {
     var personId=$('body').attr('personId');
     var applyName=$('body').attr('applyName');
     var zan = 1;
+    var isLogin = false;
     communityUser.init = function () {
         postList(page, 0);//发帖列表
-
         getPublishedActivitys(1);
     };
 
 
     $(document).ready(function () {
+
+        $.ajax({
+            url: "/forum/loginInfo.do?date=" + new Date(),
+            type: "get",
+            dataType: "json",
+            async: false,
+            data: {},
+            success: function (resp) {
+                isLogin = resp.login;
+            }
+        });
+
+        $('body').on('click','.alert-diglog em,.alert-diglog .alert-btn-esc',function () {
+
+            $('.alert-diglog').fadeOut();
+            $('.bg').fadeOut();
+        });
 
         $(".hx-notice").click(function () {
             window.open('/webim/index','_blank');
@@ -36,6 +53,8 @@ define(['jquery', 'pagination', 'common'], function (require, exports, module) {
             $('#theme-div').show();
             $('#activity-div').hide();
         });
+
+
 
         $('#activity-span').click(function () {
             $(this).addClass('hd-green-cur');
@@ -164,18 +183,39 @@ define(['jquery', 'pagination', 'common'], function (require, exports, module) {
                 template('#activityBox', '#published-activity', resp.message.result);
 
                 $('#published-activity li button').click(function () {
+
+
+                    if(!isLogin) {
+                        $('.store-register').fadeIn();
+                        $('.bg').fadeIn();
+                        return;
+                    }
+                    $('.alert-diglog').fadeIn();
+                    $('.bg').fadeIn();
+
+                    $('.alert-diglog .alert-main span').html('确定要报名此次活动吗？');
                     var requestParm = {
                         acid: $(this).attr('value')
                     };
-                    common.getData('/factivity/sign.do', requestParm, function (resp) {
-                        if (resp.code == "200") {
-                            if (resp.message) {
-                                alert("报名成功");
-                                $(this).hide();
+                    var me = $(this);
+                    $('.alert-diglog .alert-btn-sure').click(function () {
+                        common.getData("/factivity/sign.do", requestParm, function (resp) {
+                            if (resp.code == '200') {
+                                if(resp.code.message) {
+                                    $('.alert-diglog').fadeOut();
+                                    $('.bg').fadeOut();
+                                    me.hide();
+                                } else {
+                                    alert("你已经报名了！");
+                                    $('.alert-diglog').fadeOut();
+                                    $('.bg').fadeOut();
+                                    me.hide();
+                                }
+
                             } else {
-                                alert('您已经报名了');
+                                alert(resp.message);
                             }
-                        }
+                        });
                     });
                 });
             }

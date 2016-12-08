@@ -5,6 +5,7 @@ import com.fulaan.annotation.SessionNeedless;
 import com.fulaan.controller.BaseController;
 import com.fulaan.playmate.dto.FActivityDTO;
 import com.fulaan.playmate.service.FActivityService;
+import com.fulaan.pojo.PageModel;
 import com.fulaan.util.DateUtils;
 import com.pojo.playmate.FActivityEntry;
 import com.sys.utils.RespObj;
@@ -100,13 +101,18 @@ public class FActivityController extends BaseController {
      */
     @RequestMapping("/detail")
     @ResponseBody
+    @SessionNeedless
     public RespObj detailActivity(@RequestParam(value = "acid") @ObjectIdType ObjectId acid) {
-        FActivityDTO FActivityDTO = fActivityService.getActivityById(acid);
-        if (FActivityDTO == null) {
+        FActivityDTO fActivityDTO = fActivityService.getActivityById(acid);
+        if (fActivityDTO == null) {
             return RespObj.FAILD("活动不存在");
         }
-        FActivityDTO.setSignSheets(fActivityService.getAllSignMembers(acid));
-        return RespObj.SUCCESS(FActivityDTO);
+        fActivityDTO.setSignSheets(fActivityService.getAllSignMembers(acid));
+        if(getUserId() != null) {
+            fActivityDTO.setYouSigned(fActivityService.isUserSigned(acid,getUserId()));
+        }
+
+        return RespObj.SUCCESS(fActivityDTO);
     }
 
     /**
@@ -124,9 +130,16 @@ public class FActivityController extends BaseController {
                              @RequestParam(value = "page", required = false, defaultValue = "1") int page,
                              @RequestParam(value = "pageSize", required = false, defaultValue = "10") int pageSize) {
         if (StringUtils.isNotBlank(personId)) {
-            return RespObj.SUCCESS(fActivityService.getPublishedActivity(new ObjectId(personId), page, pageSize));
+            PageModel<FActivityDTO> pageModel = fActivityService.getPublishedActivity(new ObjectId(personId), page, pageSize);
+            for(FActivityDTO fActivityDTO : pageModel.getResult()) {
+                fActivityDTO.setYouSigned(fActivityService.isUserSigned(new ObjectId(personId),new ObjectId(fActivityDTO.getAcid())));
+            }
+            return RespObj.SUCCESS(pageModel);
         }
-        return RespObj.SUCCESS(fActivityService.getPublishedActivity(getUserId(), page, pageSize));
+        if(getUserId() != null) {
+            return RespObj.SUCCESS(fActivityService.getPublishedActivity(getUserId(), page, pageSize));
+        }
+        return RespObj.FAILD;
     }
 
     /**

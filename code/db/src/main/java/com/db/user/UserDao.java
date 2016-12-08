@@ -1701,6 +1701,10 @@ public class UserDao extends BaseDao {
         for(UserEntry.UserTagEntry userTagEntry: tags) {
             dbList.add(userTagEntry.getBaseEntry());
         }
+
+        BasicDBObject clearTag = new BasicDBObject(Constant.MONGO_SET,new BasicDBObject("ustg",Constant.DEFAULT_VALUE_ARRAY));
+        update(MongoFacroty.getAppDB(), getCollection(), query, clearTag);
+
         BasicDBObject update = new BasicDBObject(Constant.MONGO_ADDTOSET, new BasicDBObject("ustg", new BasicDBObject(Constant.MONGO_EACH,dbList)));
         update(MongoFacroty.getAppDB(), getCollection(), query, update);
     }

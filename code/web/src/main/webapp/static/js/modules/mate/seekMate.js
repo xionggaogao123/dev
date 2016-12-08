@@ -99,6 +99,12 @@ define(['jquery', 'pagination', 'common'], function (require, exports, module) {
             publishActivity();
         });
 
+        $('.mate-publish .b2').click(function () {
+
+            $('.wind-act-fq').fadeOut();
+            $('.bg').fadeOut();
+        });
+
         $('.btn-wdbq').click(function () {
             if (!isLogin) {
                 $('.store-register').fadeToggle();
@@ -110,6 +116,7 @@ define(['jquery', 'pagination', 'common'], function (require, exports, module) {
 
         });
         $('.wind-act-det .p1 em,.wind-act-det .p7 .b2').click(function () {
+
             $('.wind-act-det').fadeOut();
             $('.bg').fadeOut();
         });
@@ -223,10 +230,13 @@ define(['jquery', 'pagination', 'common'], function (require, exports, module) {
 
         $("#nearNews").hover(function () {
             clearInterval(scrollTimer);
+            scrollTimer = false;
         }, function () {
-            scrollTimer = setInterval(function () {
-                scrollNews($("#nearNews"));
-            }, 2000);
+            if(!scrollTimer) {
+                scrollTimer = setInterval(function () {
+                    scrollNews($("#nearNews"));
+                }, 3000);
+            }
         }).trigger("mouseleave");
 
         function scrollNews(obj) {
@@ -355,6 +365,20 @@ define(['jquery', 'pagination', 'common'], function (require, exports, module) {
         var hour = $('.wind-act-fq .time-hour').val();
         var mins = $('.wind-act-fq .time-mins').val();
 
+        if(title === ''){
+            alert("标题不能为空");
+            return;
+        }
+
+        if(desc === '') {
+            alert("描述不能为空");
+            return;
+        }
+
+        if(date === '') {
+            alert("时间不能为空");
+            return;
+        }
         date = date + ' ' + hour + ':' + mins;
         var requestParm = {
             lon: lon,
@@ -365,7 +389,6 @@ define(['jquery', 'pagination', 'common'], function (require, exports, module) {
             endTime: date
         };
 
-        alert(JSON.stringify(requestParm));
         common.getData('/factivity/publish.do', requestParm, function (resp) {
             if (resp.code == 200) {
                 $('.wind-act-fq').fadeOut();
@@ -433,7 +456,7 @@ define(['jquery', 'pagination', 'common'], function (require, exports, module) {
     }
     //解析定位错误信息
     function onError(data) {
-        document.getElementById('tip').innerHTML = '定位失败';
+        alert("定位失败");
     }
 
     function getAllSortType() {

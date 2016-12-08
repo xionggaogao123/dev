@@ -83,7 +83,7 @@
 <!--活动详情-->
 <div class="wind-act-det">
     <p class="p1">活动详情<em>×</em></p>
-    <p class="p2 clearfix">主题：<span><em>#篮球#</em><i>周末一起打篮球！</i></span></p>
+    <p class="p2 clearfix">主题：<span><em>#<span>篮球</span>#</em><i>周末一起打篮球！</i></span></p>
     <p class="p3">时间：<span>2016-06-06 15：00</span></p>
     <p class="p4 clearfix">详情：<span>广泛士大夫敢死队分别是的版本</span>
     <p class="p5">活动人员：已报名<span>200</span>人</p>
@@ -134,7 +134,7 @@
             <option>45</option>
         </select>
     </div>
-    <p class="p4 clearfix mate-publish">
+    <p class="pp clearfix mate-publish">
         <button class="b1">发布活动</button>
         <button class="b2">取消发布</button>
     </p>
@@ -161,7 +161,7 @@
             <p class="p2">
                 空闲时间段:
                 {{?value.ons}}
-                 <i>{{=value.ons.data}}</i>
+                <i>{{=value.ons.data}}</i>
                 {{?}}
                 {{?value.ons == null }}
                 <i>未设置</i>
@@ -197,7 +197,10 @@
             <img src="/static/images/findnearby_zuobiao.png">
             距离你<i>{{=value.distance}}</i>米
         </p>
-        <p class="p4"><i>#篮球#</i>{{=value.title}}</p>
+        <p class="p4"><i># {{? value.activityTheme != null }}
+            {{=value.activityTheme.data}}
+            {{?}}#
+        </i>{{=value.title}}</p>
         <p class="p5">已有{{=value.signCount}}人报名</p>
         <button value="{{=value.acid}}">我要报名</button>
     </li>

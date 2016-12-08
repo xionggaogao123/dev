@@ -941,11 +941,7 @@ pre{white-space: pre-wrap;word-wrap: break-word;}
 .ul-hds{
     padding: 0 23px;
 }
-.ul-hds li{
-    height: 65px;
-    border-bottom: 1px solid #777;
-    overflow: hidden;
-}
+
 .ul-hds li>button{
     width: 78px;
     height: 30px;
@@ -959,7 +955,6 @@ pre{white-space: pre-wrap;word-wrap: break-word;}
 .ul-hds li .p1{
     height: 14px;
     line-height: 14px;
-    height: 14px;
     margin-top: 12px;
     width: 730px;
     float: left;

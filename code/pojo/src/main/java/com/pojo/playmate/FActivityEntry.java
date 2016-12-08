@@ -70,7 +70,6 @@ public class FActivityEntry extends BaseDBObject {
 
     public BasicDBList getLocations(){
         DBObject dbo = (DBObject)getSimpleObjectValue("loc");
-        if(dbo == null) return null;
-        return (BasicDBList) dbo.get("coordinates");
+        return dbo == null ? null : (BasicDBList) dbo.get("coordinates");
     }
 }

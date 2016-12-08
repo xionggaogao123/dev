@@ -4,10 +4,10 @@
     <meta charset="utf-8">
     <title>通知</title>
     <script type="text/javascript" src="/static/js/modules/forum/jquery-1.11.1.js"></script>
+    <link rel="stylesheet" type="text/css" href="/static/css/friend/nearby.css">
     <link rel="stylesheet" type="text/css" href="/static/css/community/community.css">
     <link href="/static/js/modules/core/0.1.0/fancyBox/jquery.fancybox.css?v=2015041602" rel="stylesheet"
           type="text/css" media="screen">
-    <link rel="stylesheet" type="text/css" href="/static/css/friend/nearby.css">
 </head>
 <body style="background: #f5f5f5;">
 <%--==============头部===================--%>
@@ -313,7 +313,10 @@
     <li>
         <button value="{{=value.acid}}">取消报名</button>
         <p class="p1">
-            <span># {{=value.activityCode}}#</span>{{=value.title}}
+            <span># {{? value.activityTheme != null }}
+                     {{= value.activityTheme.data }}
+                    {{?}}
+                  #</span> {{=value.title}}
         </p>
         <p class="p2">{{=value.description}}</p>
     </li>

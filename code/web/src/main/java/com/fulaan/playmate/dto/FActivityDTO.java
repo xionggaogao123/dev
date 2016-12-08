@@ -1,5 +1,6 @@
 package com.fulaan.playmate.dto;
 
+import com.fulaan.playmate.pojo.MateData;
 import com.fulaan.playmate.pojo.User;
 import com.fulaan.util.DateUtils;
 import com.pojo.playmate.FActivityEntry;
@@ -12,7 +13,7 @@ import java.util.Map;
 /**
  * Created by moslpc on 2016/12/2.
  */
-public class ActivityDTO {
+public class FActivityDTO {
 
     private String acid;
     private String userId;
@@ -24,11 +25,13 @@ public class ActivityDTO {
     private int activityCode;
     private String distance;
 
+    private MateData activityTheme;
+
     private User user;
     private List<Map<String,Object>> signSheets;
     private List<Map<String,Object>> allSignSheets;
 
-    public ActivityDTO(FActivityEntry entry){
+    public FActivityDTO(FActivityEntry entry){
         this.acid = entry.getID().toString();
         this.userId = entry.getUserId().toString();
         this.title = entry.getTitle();
@@ -116,11 +119,11 @@ public class ActivityDTO {
 
     public void setUser(ObjectId userId, String nickName, String userName, String avatar, List<UserTag> tags) {
         User user = new User();
-        user.userId = userId.toString();
-        user.nickName = nickName;
-        user.userName = userName;
-        user.avatar = avatar;
-        user.tags = tags;
+        user.setUserId(userId.toString());
+        user.setUserName(userName);
+        user.setNickName(nickName);
+        user.setAvatar(avatar);
+        user.setTags(tags);
         this.user = user;
     }
 
@@ -142,5 +145,13 @@ public class ActivityDTO {
 
     public void setUser(User user) {
         this.user = user;
+    }
+
+    public MateData getActivityTheme() {
+        return activityTheme;
+    }
+
+    public void setActivityTheme(MateData activityTheme) {
+        this.activityTheme = activityTheme;
     }
 }

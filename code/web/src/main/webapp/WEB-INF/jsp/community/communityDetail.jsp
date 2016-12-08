@@ -557,26 +557,6 @@
             }
         });
 
-        //            $('.btn1').click(function () {
-        //                var tags = [];
-        //                $('.bq-cur').each(function () {
-        //                    tags.push($(this).attr('value'));
-        //                });
-        //                $.ajax({
-        //                    type: 'POST',
-        //                    dataType: 'json',
-        //                    url: "/v2/user/pushTag",
-        //                    data: {
-        //                        name: 'mosdf',
-        //                        ps: 'sdfdsf',
-        //                        data: tags
-        //                    },
-        //                    success: function (data) {
-        //                        alert(JSON.stringify(data));
-        //                    }
-        //                })
-        //            });
-
     </script>
 
     <script type="text/template" id="activityBox">
@@ -584,7 +564,10 @@
         <li>
             <button value="{{=value.acid}}">取消报名</button>
             <p class="p1">
-                <span># {{=value.activityCode}}#</span>{{=value.title}}
+            <span># {{? value.activityTheme != null }}
+                     {{= value.activityTheme.data }}
+                    {{?}}
+                  #</span> {{=value.title}}
             </p>
             <p class="p2">{{=value.description}}</p>
         </li>

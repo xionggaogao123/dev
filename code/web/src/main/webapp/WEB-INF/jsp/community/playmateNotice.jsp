@@ -1,10 +1,3 @@
-<%--
-  Created by IntelliJ IDEA.
-  User: admin
-  Date: 2016/11/7
-  Time: 15:33
-  To change this template use File | Settings | File Templates.
---%>
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <html lang="en">
@@ -88,18 +81,6 @@
             <div class="com-left-s" id="SysInfo" style="display: none">
                 <div class="com-tit">系统消息</div>
                 <ul class="ul-sysNotice" id="mySystemInfo">
-                    <%--<li>--%>
-                        <%--<span class="sp1">用户<em>shawn</em>退出喷子社区</span>--%>
-                        <%--<span class="sp2">2016-12-21 15:56</span>--%>
-                    <%--</li>--%>
-                    <%--<li>--%>
-                        <%--<span class="sp1">用户<em>shawn</em>退出喷子社区</span>--%>
-                        <%--<span class="sp2">2016-12-21 15:56</span>--%>
-                    <%--</li>--%>
-                    <%--<li>--%>
-                        <%--<span class="sp1"><i></i>"人事任命"—恭喜您成为喷子社区的社长，您有权对本社区进行管理....<a href="###">去试试></a></span>--%>
-                        <%--<span class="sp2">2016-12-21 15:56</span>--%>
-                    <%--</li>--%>
                 </ul>
                 <script type="text/template" id="mySystemInfoTmpl">
                     {{~it:value:index}}

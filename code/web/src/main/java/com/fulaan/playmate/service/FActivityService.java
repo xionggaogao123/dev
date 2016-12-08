@@ -2,7 +2,8 @@ package com.fulaan.playmate.service;
 
 import com.db.playmate.FActivityDao;
 import com.db.user.UserDao;
-import com.fulaan.playmate.dto.ActivityDTO;
+import com.fulaan.playmate.dto.FActivityDTO;
+import com.fulaan.playmate.pojo.MateData;
 import com.fulaan.playmate.pojo.User;
 import com.fulaan.pojo.PageModel;
 import com.fulaan.util.DistanceUtils;
@@ -16,6 +17,7 @@ import com.pojo.user.UserTag;
 import com.sys.utils.AvatarUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.bson.types.ObjectId;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
@@ -32,6 +34,8 @@ public class FActivityService {
 
     private FActivityDao fActivityDao = new FActivityDao();
     private UserDao userDao = new UserDao();
+    @Autowired
+    private FMateTypeService fMateTypeService;
 
     /**
      * 保存活动
@@ -61,7 +65,7 @@ public class FActivityService {
      * @param pageSize 每页个数
      * @return PageModel
      */
-    public PageModel<ActivityDTO> getNearActivitys(double lon, double lat, int page, int pageSize) {
+    public PageModel<FActivityDTO> getNearActivitys(double lon, double lat, int page, int pageSize) {
         BasicDBObject query = fActivityDao.buildQuery(lon, lat, 10000000);
         int count = fActivityDao.coutByQuery(query);
         int totalPages = count % pageSize == 0 ? count / pageSize : (int) Math.ceil(count / pageSize) + 1;
@@ -71,11 +75,13 @@ public class FActivityService {
         if (page <= 0) {
             page = 1;
         }
-        List<ActivityDTO> activityDTOS = new ArrayList<ActivityDTO>();
+
+        List<MateData> allTags = fMateTypeService.getTags();
+        List<FActivityDTO> FActivityDTOS = new ArrayList<FActivityDTO>();
         List<FActivityEntry> activityEntryList = fActivityDao.findByPage(query, page, pageSize);
         for (FActivityEntry entry : activityEntryList) {
-            ActivityDTO activityDTO = new ActivityDTO(entry);
-            activityDTO.setSignCount(fActivityDao.countSignUser(entry.getID()));
+            FActivityDTO fActivityDTO = new FActivityDTO(entry);
+            fActivityDTO.setSignCount(fActivityDao.countSignUser(entry.getID()));
             ObjectId userId = entry.getUserId();
             UserEntry userEntry = userDao.findByObjectId(userId);
             String nickName = userEntry.getNickName();
@@ -87,17 +93,26 @@ public class FActivityService {
                 UserTag userTag = new UserTag(tagEntry.getCode(), tagEntry.getTag());
                 tags.add(userTag);
             }
-            activityDTO.setUser(userId, nickName, userName, avatar, tags);
+            fActivityDTO.setUser(userId, nickName, userName, avatar, tags);
+
+            for(MateData mateData: allTags) {
+                if(mateData.getCode() == entry.getACode()) {
+                    fActivityDTO.setActivityTheme(mateData);
+                }
+            }
+            if(fActivityDTO.getActivityTheme() == null ) {
+                fActivityDTO.setActivityTheme(new MateData(-1,"不限"));
+            }
             BasicDBList locs = entry.getLocations();
             if (locs != null) {
                 Double distance = DistanceUtils.distance(lon, lat, (Double) locs.get(0), (Double) locs.get(1));
-                activityDTO.setDistance(String.valueOf(distance.longValue()));
+                fActivityDTO.setDistance(String.valueOf(distance.longValue()));
             }
-            activityDTO.setSignSheets(get20SignSheets(entry.getID()));
-            activityDTOS.add(activityDTO);
+            fActivityDTO.setSignSheets(get20SignSheets(entry.getID()));
+            FActivityDTOS.add(fActivityDTO);
         }
-        PageModel<ActivityDTO> pageModel = new PageModel<ActivityDTO>();
-        pageModel.setResult(activityDTOS);
+        PageModel<FActivityDTO> pageModel = new PageModel<FActivityDTO>();
+        pageModel.setResult(FActivityDTOS);
         pageModel.setTotalCount(count);
         pageModel.setTotalPages(totalPages);
         pageModel.setPage(page);
@@ -117,23 +132,23 @@ public class FActivityService {
             tags.add(userTag);
         }
         User user = new User();
-        user.userId = userId.toString();
-        user.nickName = nickName;
-        user.userName = userName;
-        user.avatar = avatar;
-        user.tags = tags;
+        user.setUserId(userId.toString());
+        user.setUserName(userName);
+        user.setNickName(nickName);
+        user.setAvatar(avatar);
+        user.setTags(tags);
         return user;
     }
 
-    public ActivityDTO getActivityById(ObjectId acid) {
+    public FActivityDTO getActivityById(ObjectId acid) {
         FActivityEntry fActivityEntry = fActivityDao.getActivityById(acid);
         if (fActivityEntry == null) {
             return null;
         }
-        ActivityDTO activityDTO = new ActivityDTO(fActivityEntry);
-        activityDTO.setSignCount(fActivityDao.countSignUser(acid));
-        activityDTO.setUser(getMateUser(fActivityEntry.getUserId()));
-        return activityDTO;
+        FActivityDTO FActivityDTO = new FActivityDTO(fActivityEntry);
+        FActivityDTO.setSignCount(fActivityDao.countSignUser(acid));
+        FActivityDTO.setUser(getMateUser(fActivityEntry.getUserId()));
+        return FActivityDTO;
     }
 
     public List<Map<String, Object>> getAllSignMembers(ObjectId acid) {
@@ -173,7 +188,7 @@ public class FActivityService {
      * @param pageSize 每页个数
      * @return PageModel
      */
-    public PageModel<ActivityDTO> getPublishedActivity(ObjectId userId, int page, int pageSize) {
+    public PageModel<FActivityDTO> getPublishedActivity(ObjectId userId, int page, int pageSize) {
         int count = fActivityDao.countPublishActivity(userId);
         int totalPages = count % pageSize == 0 ? count / pageSize : (int) Math.ceil(count / pageSize) + 1;
         if (page > totalPages) {
@@ -183,18 +198,16 @@ public class FActivityService {
             page = 1;
         }
         List<FActivityEntry> activityEntries = fActivityDao.getPublishedActivity(userId, page, pageSize);
-        List<ActivityDTO> activityDTOS = new ArrayList<ActivityDTO>();
-        PageModel<ActivityDTO> pageModel = new PageModel<ActivityDTO>();
+        PageModel<FActivityDTO> pageModel = new PageModel<FActivityDTO>();
         pageModel.setPage(page);
         pageModel.setPageSize(pageSize);
         pageModel.setTotalPages(totalPages);
         pageModel.setTotalCount(count);
-        for (FActivityEntry activityEntry : activityEntries) {
-            activityDTOS.add(new ActivityDTO(activityEntry));
-        }
-        pageModel.setResult(activityDTOS);
+        pageModel.setResult(getFActivityDtos(activityEntries));
         return pageModel;
     }
+
+
 
     public boolean signActivity(ObjectId acid, ObjectId userId, String signText) {
         if (fActivityDao.isUserSignActivity(acid, userId)) {
@@ -231,7 +244,7 @@ public class FActivityService {
      * @param pageSize
      * @return
      */
-    public PageModel<ActivityDTO> getSignedActivity(ObjectId userId, int page, int pageSize) {
+    public PageModel<FActivityDTO> getSignedActivity(ObjectId userId, int page, int pageSize) {
         int count = fActivityDao.countUserSignActivity(userId);
         int totalPages = count % pageSize == 0 ? count / pageSize : (int) Math.ceil(count / pageSize) + 1;
         if (page > totalPages) {
@@ -241,16 +254,12 @@ public class FActivityService {
             page = 1;
         }
         List<FActivityEntry> activityEntries = fActivityDao.getSignedActivity(userId, page, pageSize);
-        List<ActivityDTO> activityDTOS = new ArrayList<ActivityDTO>();
-        PageModel<ActivityDTO> pageModel = new PageModel<ActivityDTO>();
+        PageModel<FActivityDTO> pageModel = new PageModel<FActivityDTO>();
         pageModel.setPage(page);
         pageModel.setPageSize(pageSize);
         pageModel.setTotalPages(totalPages);
         pageModel.setTotalCount(count);
-        for (FActivityEntry activityEntry : activityEntries) {
-            activityDTOS.add(new ActivityDTO(activityEntry));
-        }
-        pageModel.setResult(activityDTOS);
+        pageModel.setResult(getFActivityDtos(activityEntries));
         return pageModel;
     }
 
@@ -272,17 +281,35 @@ public class FActivityService {
             page = 1;
         }
         List<FActivityEntry> activityEntries = fActivityDao.getAttendedActivity(userId, page, pageSize);
-        List<ActivityDTO> activityDTOS = new ArrayList<ActivityDTO>();
-        PageModel<ActivityDTO> pageModel = new PageModel<ActivityDTO>();
+        PageModel<FActivityDTO> pageModel = new PageModel<FActivityDTO>();
         pageModel.setPage(page);
         pageModel.setPageSize(pageSize);
         pageModel.setTotalPages(totalPages);
         pageModel.setTotalCount(count);
-        for (FActivityEntry activityEntry : activityEntries) {
-            activityDTOS.add(new ActivityDTO(activityEntry));
-        }
-        pageModel.setResult(activityDTOS);
+        pageModel.setResult(getFActivityDtos(activityEntries));
         return pageModel;
+    }
+
+    private List<FActivityDTO> getFActivityDtos(List<FActivityEntry> entryList) {
+        List<FActivityDTO> fActivityDTOS = new ArrayList<FActivityDTO>();
+        List<MateData> allTags = fMateTypeService.getTags();
+        for (FActivityEntry entry : entryList) {
+
+            FActivityDTO fActivityDTO = new FActivityDTO(entry);
+
+            for(MateData mateData: allTags) {
+                if(mateData.getCode() == entry.getACode()) {
+                    fActivityDTO.setActivityTheme(mateData);
+                }
+            }
+            if(fActivityDTO.getActivityTheme() == null ) {
+                fActivityDTO.setActivityTheme(new MateData(-1,"不限"));
+            }
+
+            fActivityDTOS.add(fActivityDTO);
+        }
+        return fActivityDTOS;
+
     }
 
     public FActivityEntry getActivityEntryById(ObjectId acid) {

@@ -107,9 +107,12 @@
 <script type="text/template" id="activityBox">
     {{~it:value:index}}
     <li>
-        <button value="{{=value.acid}}">报名活动</button>
+        <button value="{{=value.acid}}">取消报名</button>
         <p class="p1">
-            <span># {{=value.activityCode}}#</span>{{=value.title}}
+            <span># {{? value.activityTheme != null }}
+                     {{= value.activityTheme.data }}
+                    {{?}}
+                  #</span> {{=value.title}}
         </p>
         <p class="p2">{{=value.description}}</p>
     </li>

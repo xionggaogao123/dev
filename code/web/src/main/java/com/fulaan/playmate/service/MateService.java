@@ -3,7 +3,7 @@ package com.fulaan.playmate.service;
 import com.db.activity.FriendDao;
 import com.db.playmate.FMateDao;
 import com.db.user.UserDao;
-import com.fulaan.playmate.dto.MateDTO;
+import com.fulaan.playmate.dto.FMateDTO;
 import com.fulaan.playmate.pojo.MateData;
 import com.fulaan.pojo.PageModel;
 import com.fulaan.pojo.User;
@@ -16,7 +16,6 @@ import com.pojo.playmate.FMateEntry;
 import com.pojo.user.AvatarType;
 import com.pojo.user.UserEntry;
 import com.pojo.user.UserTag;
-import com.pojo.utils.MongoUtils;
 import com.sys.utils.AvatarUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.bson.types.ObjectId;
@@ -25,7 +24,6 @@ import org.springframework.stereotype.Service;
 
 import java.text.ParseException;
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
 
 /**
@@ -41,9 +39,9 @@ public class MateService {
     private UserDao userDao = new UserDao();
     private FriendDao friendDao = new FriendDao();
 
-    public PageModel<MateDTO> findMates(ObjectId userId, double lon, double lat, List<String> tags, int aged, int ons, int page, int pageSize, int maxDistance) {
-        List<MateDTO> mateDTOS = new ArrayList<MateDTO>();
-        PageModel<MateDTO> pageModel = new PageModel<MateDTO>();
+    public PageModel<FMateDTO> findMates(ObjectId userId, double lon, double lat, List<String> tags, int aged, int ons, int page, int pageSize, int maxDistance) {
+        List<FMateDTO> fMateDTOS = new ArrayList<FMateDTO>();
+        PageModel<FMateDTO> pageModel = new PageModel<FMateDTO>();
 
         List<Integer> tagIntegers = new ArrayList<Integer>();
         for (String tagStr : tags) {
@@ -82,28 +80,28 @@ public class MateService {
                 Double distanceDouble = DistanceUtils.distance(lon, lat, (Double) dbList.get(0), (Double) dbList.get(1));
                 distance = String.valueOf(distanceDouble.longValue());
             }
-            MateDTO mateDTO = new MateDTO();
+            FMateDTO fMateDTO = new FMateDTO();
             UserEntry userEntry = userDao.findByObjectId(mateEntry.getUserId());
-            mateDTO.setDistance(distance + "米");
-            mateDTO.setUserId(userEntry.getID().toString());
-            mateDTO.setNickName(userEntry.getNickName());
-            mateDTO.setUserName(userEntry.getUserName());
-            mateDTO.setTimed(mateEntry.getOns());
+            fMateDTO.setDistance(distance + "米");
+            fMateDTO.setUserId(userEntry.getID().toString());
+            fMateDTO.setNickName(userEntry.getNickName());
+            fMateDTO.setUserName(userEntry.getUserName());
+            fMateDTO.setTimed(mateEntry.getOns());
 
             for(MateData mateData:mateDatas) {
                 if(mateEntry.getOns() == mateData.getCode()) {
-                    mateDTO.setOns(mateData);
+                    fMateDTO.setOns(mateData);
                 }
             }
-            mateDTO.setAvatar(AvatarUtils.getAvatar(userEntry.getAvatar(), AvatarType.MIN_AVATAR.getType()));
+            fMateDTO.setAvatar(AvatarUtils.getAvatar(userEntry.getAvatar(), AvatarType.MIN_AVATAR.getType()));
             List<UserTag> tagList = new ArrayList<UserTag>();
             List<UserEntry.UserTagEntry> userTagEntries = userEntry.getUserTag();
             for (UserEntry.UserTagEntry tagEntry : userTagEntries) {
                 UserTag userTag = new UserTag(tagEntry.getCode(), tagEntry.getTag());
                 tagList.add(userTag);
             }
-            mateDTO.setTags(tagList);
-            mateDTOS.add(mateDTO);
+            fMateDTO.setTags(tagList);
+            fMateDTOS.add(fMateDTO);
 
             List<User> users = new ArrayList<User>();
             //寻找共同好友
@@ -128,13 +126,13 @@ public class MateService {
                     }
                 }
             }
-            mateDTO.setCommonFriends(users);
+            fMateDTO.setCommonFriends(users);
         }
         pageModel.setPage(page);
         pageModel.setPageSize(pageSize);
         pageModel.setTotalCount(count);
         pageModel.setTotalPages(totalPages);
-        pageModel.setResult(mateDTOS);
+        pageModel.setResult(fMateDTOS);
         return pageModel;
     }
 

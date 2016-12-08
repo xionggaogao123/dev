@@ -9,7 +9,7 @@ import java.util.List;
 /**
  * Created by moslpc on 2016/11/30.
  */
-public class MateDTO {
+public class FMateDTO {
     private String userId;
     private String userName;
     private String nickName;

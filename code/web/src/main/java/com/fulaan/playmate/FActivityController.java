@@ -3,10 +3,9 @@ package com.fulaan.playmate;
 import com.fulaan.annotation.ObjectIdType;
 import com.fulaan.annotation.SessionNeedless;
 import com.fulaan.controller.BaseController;
-import com.fulaan.playmate.dto.ActivityDTO;
+import com.fulaan.playmate.dto.FActivityDTO;
 import com.fulaan.playmate.service.FActivityService;
 import com.fulaan.util.DateUtils;
-import com.fulaan.utils.KeyWordFilterUtil;
 import com.pojo.playmate.FActivityEntry;
 import com.sys.utils.RespObj;
 import org.apache.commons.lang3.StringUtils;
@@ -102,13 +101,13 @@ public class FActivityController extends BaseController {
     @RequestMapping("/detail")
     @ResponseBody
     public RespObj detailActivity(@RequestParam(value = "acid") @ObjectIdType ObjectId acid) {
-        ActivityDTO activityDTO = fActivityService.getActivityById(acid);
-        if (activityDTO == null) {
+        FActivityDTO FActivityDTO = fActivityService.getActivityById(acid);
+        if (FActivityDTO == null) {
             return RespObj.FAILD("活动不存在");
         }
-        activityDTO.setAllSignSheets(fActivityService.getAllSignMembers(acid));
-        activityDTO.setSignSheets(fActivityService.get20SignSheets(acid));
-        return RespObj.SUCCESS(activityDTO);
+        FActivityDTO.setAllSignSheets(fActivityService.getAllSignMembers(acid));
+        FActivityDTO.setSignSheets(fActivityService.get20SignSheets(acid));
+        return RespObj.SUCCESS(FActivityDTO);
     }
 
     /**

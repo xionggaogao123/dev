@@ -101,7 +101,12 @@ public class FMateDao extends BaseDao {
         update(MongoFacroty.getAppDB(), Constant.COLLECTION_FORUM_MATE_SEEKMATE, query, update);
     }
 
-    public FMateEntry getCoordinates(ObjectId userId) {
+    /**
+     * 获取
+     * @param userId
+     * @return
+     */
+    public FMateEntry getMateEntryByUserId(ObjectId userId) {
         BasicDBObject query = new BasicDBObject("uid", userId);
         DBObject dbo = findOne(MongoFacroty.getAppDB(), Constant.COLLECTION_FORUM_MATE_SEEKMATE, query, Constant.FIELDS);
         return dbo == null ? null : new FMateEntry(dbo);

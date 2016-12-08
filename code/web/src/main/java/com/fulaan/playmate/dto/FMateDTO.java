@@ -15,7 +15,6 @@ public class FMateDTO {
     private String nickName;
     private String avatar;
     private String distance;
-    private int timed;
     private int aged;
     private MateData ons;
 
@@ -76,14 +75,6 @@ public class FMateDTO {
 
     public void setCommonFriends(List<User> commonFriends) {
         this.commonFriends = commonFriends;
-    }
-
-    public int getTimed() {
-        return timed;
-    }
-
-    public void setTimed(int timed) {
-        this.timed = timed;
     }
 
     public int getAged() {

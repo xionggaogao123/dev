@@ -50,12 +50,6 @@ define(['jquery', 'pagination', 'common'], function (require, exports, module) {
 
     $(document).ready(function () {
 
-        // var list = [];
-        // $('.mate-timed span').each(function () {
-        //     list.push($(this).text());
-        // });
-        // document.write(list);
-
         $.ajax({
             url: "/forum/loginInfo.do?date=" + new Date(),
             type: "get",
@@ -471,6 +465,7 @@ define(['jquery', 'pagination', 'common'], function (require, exports, module) {
                 template('#menuTmpl', '#nearMenu', result);
             }
         });
+
     }
 
 

@@ -7,7 +7,7 @@
 <%@ include file="../common/head.jsp" %>
 <%-- 填充head --%>
 <layout:override name="head">
-    <title>复兰后台管理</title>
+    <title>社区详情</title>
     <link href="/static/js/modules/core/0.1.0/fancyBox/jquery.fancybox.css?v=2015041602" rel="stylesheet"
           type="text/css" media="screen">
     <link rel="stylesheet" type="text/css" href="/static/css/friend/nearby.css">

@@ -105,8 +105,7 @@ public class FActivityController extends BaseController {
         if (FActivityDTO == null) {
             return RespObj.FAILD("活动不存在");
         }
-        FActivityDTO.setAllSignSheets(fActivityService.getAllSignMembers(acid));
-        FActivityDTO.setSignSheets(fActivityService.get20SignSheets(acid));
+        FActivityDTO.setSignSheets(fActivityService.getAllSignMembers(acid));
         return RespObj.SUCCESS(FActivityDTO);
     }
 

@@ -32,12 +32,16 @@
             <img src="${avatar}" class="img2">
             <p class="p1">${nickName}</p>
             <p class="p2">UID:${userId}</p>
-            <%--<p class="p3">用户组：新手上路 在线时间：67小时</p>--%>
             <p class="p4" id="myTags">
                 <c:forEach items="${tags}" var="tag">
                     <em>${tag}</em>
                 </c:forEach>
                 <em id="editTag">编辑标签</em>
+            </p>
+
+            <p class="p4" id="myOns">
+                <em id="o-data"></em>
+                <em id="editOns">编辑时间段</em>
             </p>
         </c:if>
     </div>
@@ -54,7 +58,7 @@
         <span code="105" tag="羽毛球">羽毛球</span>
         <span code="106" tag="网球">网球</span>
         <span code="107" tag="乒乓球">乒乓球</span>
-        <span code="108" tag="轮滑跆">轮滑跆</span>
+        <span code="108" tag="轮滑跆">轮滑</span>
         <span code="109" tag="拳道">拳道</span>
         <span code="110" tag="跳绳">跳绳</span>
         <span code="111" tag="歌唱">歌唱</span>
@@ -80,13 +84,20 @@
     </div>
     <p class="p2">已选标签</p>
     <div class="bq-list clearfix" id="selected">
-        <%--<span > 篮球</span>--%>
-        <%--<span > 足球</span>--%>
-        <%--<span > 跑步</span>--%>
-        <%--<span > 滑板</span>--%>
     </div>
     <p class="p3">
         <button class="btn1" id="btn1">确认添加</button>
+        <button class="btn-add-no">取消添加</button>
+    </p>
+</div>
+
+<div class="wind-ons">
+    <p class="p1">选择时间段<em>×</em></p>
+    <div class="bq-list tj-list clearfix ons-div">
+
+    </div>
+    <p class="p3">
+        <button class="btn1">确认添加</button>
         <button class="btn-add-no">取消添加</button>
     </p>
 </div>

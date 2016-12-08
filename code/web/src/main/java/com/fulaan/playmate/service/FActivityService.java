@@ -95,20 +95,21 @@ public class FActivityService {
             }
             fActivityDTO.setUser(userId, nickName, userName, avatar, tags);
 
-            for(MateData mateData: allTags) {
-                if(mateData.getCode() == entry.getACode()) {
+            for (MateData mateData : allTags) {
+                if (mateData.getCode() == entry.getACode()) {
                     fActivityDTO.setActivityTheme(mateData);
                 }
             }
-            if(fActivityDTO.getActivityTheme() == null ) {
-                fActivityDTO.setActivityTheme(new MateData(-1,"不限"));
+            if (fActivityDTO.getActivityTheme() == null) {
+                fActivityDTO.setActivityTheme(new MateData(-1, "不限"));
             }
+
+            fActivityDTO.setSignSheets(getAllSignMembers(entry.getID()));
             BasicDBList locs = entry.getLocations();
             if (locs != null) {
                 Double distance = DistanceUtils.distance(lon, lat, (Double) locs.get(0), (Double) locs.get(1));
                 fActivityDTO.setDistance(String.valueOf(distance.longValue()));
             }
-            fActivityDTO.setSignSheets(get20SignSheets(entry.getID()));
             FActivityDTOS.add(fActivityDTO);
         }
         PageModel<FActivityDTO> pageModel = new PageModel<FActivityDTO>();
@@ -120,7 +121,7 @@ public class FActivityService {
         return pageModel;
     }
 
-    public User getMateUser(ObjectId userId) {
+    private User getMateUser(ObjectId userId) {
         UserEntry userEntry = userDao.findByObjectId(userId);
         String nickName = userEntry.getNickName();
         String userName = userEntry.getUserName();
@@ -206,7 +207,6 @@ public class FActivityService {
         pageModel.setResult(getFActivityDtos(activityEntries));
         return pageModel;
     }
-
 
 
     public boolean signActivity(ObjectId acid, ObjectId userId, String signText) {
@@ -297,13 +297,13 @@ public class FActivityService {
 
             FActivityDTO fActivityDTO = new FActivityDTO(entry);
 
-            for(MateData mateData: allTags) {
-                if(mateData.getCode() == entry.getACode()) {
+            for (MateData mateData : allTags) {
+                if (mateData.getCode() == entry.getACode()) {
                     fActivityDTO.setActivityTheme(mateData);
                 }
             }
-            if(fActivityDTO.getActivityTheme() == null ) {
-                fActivityDTO.setActivityTheme(new MateData(-1,"不限"));
+            if (fActivityDTO.getActivityTheme() == null) {
+                fActivityDTO.setActivityTheme(new MateData(-1, "不限"));
             }
 
             fActivityDTOS.add(fActivityDTO);

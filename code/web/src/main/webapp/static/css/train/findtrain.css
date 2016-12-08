@@ -466,6 +466,12 @@ pre{white-space: pre-wrap;word-wrap: break-word;}
 	background: #fff;
 	margin-top: 19px;
 }
+.fixed-r{
+	position: fixed;
+	top: 16px;
+	left: 50%;
+	margin-left: 250px;
+}
 .train-detail .nav{
 	height: 43px;
 	border-bottom: 1px solid #E6E6E6;

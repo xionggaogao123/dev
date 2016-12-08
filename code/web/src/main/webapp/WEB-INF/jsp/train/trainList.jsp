@@ -17,8 +17,9 @@
     <%--<script type="text/javascript" src="/static/js/modules/train/trainList.js"></script>--%>
 </head>
 <body region="${region}">
+<%@ include file="../common/head.jsp" %>
 <div id="containerMap"></div>
-<div class="container">
+<div class="train-container">
     <div class="top-city">
         <img src="/static/images/train/location01.png">
         <div class="city">

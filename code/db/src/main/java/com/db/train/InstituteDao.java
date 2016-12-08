@@ -31,9 +31,10 @@ public class InstituteDao extends BaseDao {
      * @param pageSize
      * @return
      */
-    public List<InstituteEntry> findInstituteEntries(String regular,List<String> regionIds,List<String> itemTypeIds,String type,String area,int page,int pageSize,int sortType){
+    public List<InstituteEntry> findInstituteEntries(String regular,List<String> regionIds,List<String> itemTypeIds,String type,String area,int page,
+                                                     int pageSize,int sortType,double lon,double lat,int distance){
         List<InstituteEntry> entries=new ArrayList<InstituteEntry>();
-        BasicDBObject query=getQueryCondition(regular,regionIds,itemTypeIds,type, area);
+        BasicDBObject query=getQueryCondition(regular,regionIds,itemTypeIds,type, area,lon,lat,distance);
         BasicDBObject orderBy=new BasicDBObject();
         if(sortType==1){
             orderBy.append("sc",-1);
@@ -48,8 +49,19 @@ public class InstituteDao extends BaseDao {
         return entries;
     }
 
-    private BasicDBObject getQueryCondition(String regular,List<String> regionIds,List<String> itemTypeIds,String type,String area){
+    private BasicDBObject getQueryCondition(String regular,List<String> regionIds,List<String> itemTypeIds,
+                                            String type,String area,double lon,double lat,int distance){
         BasicDBObject query=new BasicDBObject();
+        if (lon != 0 && lat != 0) {
+            List<Double>  coordinates= new ArrayList<Double>();
+            coordinates.add(lon);
+            coordinates.add(lat);
+            BasicDBObject geometry = new BasicDBObject("type", Constant.DEFAULT_POINT)
+                    .append("coordinates", coordinates);
+            query.append("loc", new BasicDBObject("$near", new BasicDBObject("$geometry", geometry).append("$maxDistance", distance)));
+        }
+
+
         if(StringUtils.isNotBlank(type)){
             query.append("tys.id",type);
         }
@@ -71,8 +83,9 @@ public class InstituteDao extends BaseDao {
     }
 
 
-    public int countInstituteEntries(String regular,List<String> regionIds,List<String> itemTypeIds,String type,String area){
-        BasicDBObject query=getQueryCondition(regular,regionIds,itemTypeIds,type, area);
+    public int countInstituteEntries(String regular,List<String> regionIds,List<String> itemTypeIds,
+                                     String type,String area,double lon,double lat,int distance){
+        BasicDBObject query=getQueryCondition(regular,regionIds,itemTypeIds,type, area,lon,lat,distance);
         return count(MongoFacroty.getAppDB(),Constant.COLLECTION_TRAIN_INSTITUTE,query);
     }
 
@@ -90,5 +103,19 @@ public class InstituteDao extends BaseDao {
             return null;
         }
     }
+
+
+    public List<InstituteEntry> findInstituteEntries(int page,int pageSize){
+       BasicDBObject query=new BasicDBObject();
+       List<InstituteEntry> entries=new ArrayList<InstituteEntry>();
+       List<DBObject> dbObjects=find(MongoFacroty.getAppDB(),Constant.COLLECTION_TRAIN_INSTITUTE,query,Constant.FIELDS,Constant.MONGO_SORTBY_DESC,(page-1)*pageSize,pageSize);
+       if(null!=dbObjects&&!dbObjects.isEmpty()){
+           for(DBObject dbObject:dbObjects){
+               entries.add(new InstituteEntry((BasicDBObject)dbObject));
+           }
+       }
+       return entries;
+    }
+
 
 }

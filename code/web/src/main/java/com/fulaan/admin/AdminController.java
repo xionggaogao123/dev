@@ -247,6 +247,27 @@ public class AdminController extends BaseController {
         return "/admin/banner";
     }
 
+
+    /**
+     * 处理数据
+     * @return
+     */
+    @RequestMapping("/institute")
+    @UserRoles(UserRole.DISCUSS_MANAGER)
+    public String instituteData() {
+        return "/admin/institute";
+    }
+
+    /**
+     * 处理数据
+     * @return
+     */
+    @RequestMapping("/batchImage")
+    @UserRoles(UserRole.DISCUSS_MANAGER)
+    public String batchImage() {
+        return "/admin/batchImage";
+    }
+
     /**
      * 板块管理
      *

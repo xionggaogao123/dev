@@ -33,4 +33,9 @@ public class RegionService {
         }
         return dtos;
     }
+
+    public RegionEntry getRegionEntry(String name){
+        return regionDao.getRegionEntry(name);
+    }
+
 }

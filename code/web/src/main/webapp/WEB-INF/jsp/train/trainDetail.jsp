@@ -19,10 +19,10 @@
     <script type="text/javascript" src="/static/js/modules/train/jquery.raty.min.js"></script>
     <script type="text/javascript"
     src="http://api.map.baidu.com/api?v=2.0&ak=TzFCVsUAf4RzyoOdgZ5tB10fASv5Dswy"></script>
-    <link rel="stylesheet" href="http://cache.amap.com/lbs/static/main1119.css"/>
+    <%--<link rel="stylesheet" href="http://cache.amap.com/lbs/static/main1119.css"/>--%>
     <script type="text/javascript"
             src="http://webapi.amap.com/maps?v=1.3&key=3a1cd4cff6fcbdf71ea760da6957fb94"></script>
-    <script type="text/javascript" src="http://cache.amap.com/lbs/static/addToolbar.js"></script>
+    <%--<script type="text/javascript" src="http://cache.amap.com/lbs/static/addToolbar.js"></script>--%>
     <%--<style type="text/css">--%>
     <%--#tip {--%>
     <%--height: 50px;--%>
@@ -372,27 +372,33 @@
     /***************************************
      由于Chrome、IOS10等已不再支持非安全域的浏览器定位请求，为保证定位成功率和精度，请尽快升级您的站点到HTTPS。
      ***************************************/
-    var map, geolocation;
-    //加载地图，调用浏览器定位服务
-    map = new AMap.Map('AmapContainer', {
-        resizeEnable: true
-//        zoom: 13
-    });
-    map.plugin('AMap.Geolocation', function () {
-        geolocation = new AMap.Geolocation({
-            enableHighAccuracy: true,//是否使用高精度定位，默认:true
-            timeout: 10000,          //超过10秒后停止定位，默认：无穷大
-            buttonOffset: new AMap.Pixel(10, 20),//定位按钮与设置的停靠位置的偏移量，默认：Pixel(10, 20)
-            zoomToAccuracy: true,      //定位成功后调整地图视野范围使定位位置及精度范围视野内可见，默认：false
-            buttonPosition: 'RB'
+    var lng='${dto.lon}';
+    var lat='${dto.lat}';
+    if(lng==null||lng==""||lng==undefined){
+        var map, geolocation;
+
+        map = new AMap.Map('AmapContainer', {
+            resizeEnable: true
         });
-        map.addControl(geolocation);
-        geolocation.getCurrentPosition();
-        AMap.event.addListener(geolocation, 'complete', onComplete);//返回定位信息
-        AMap.event.addListener(geolocation, 'error', onError);      //返回定位出错信息
-    });
-    //解析定位结果
-    function onComplete(data) {
+        map.plugin('AMap.Geolocation', function () {
+            geolocation = new AMap.Geolocation({
+                enableHighAccuracy: true,//是否使用高精度定位，默认:true
+                timeout: 10000,          //超过10秒后停止定位，默认：无穷大
+                buttonOffset: new AMap.Pixel(10, 20),//定位按钮与设置的停靠位置的偏移量，默认：Pixel(10, 20)
+                zoomToAccuracy: true,      //定位成功后调整地图视野范围使定位位置及精度范围视野内可见，默认：false
+                buttonPosition: 'RB'
+            });
+            map.addControl(geolocation);
+            geolocation.getCurrentPosition();
+            AMap.event.addListener(geolocation, 'complete', completeFunc);//返回定位信息
+            AMap.event.addListener(geolocation, 'error', errorFuc);      //返回定位出错信息
+        });
+    }else{
+       loadMap(lng,lat);
+    }
+
+//    //解析定位结果
+    function completeFunc(data) {
         var str=['定位成功'];
         str.push('经度：' + data.position.getLng());
         str.push('纬度：' + data.position.getLat());
@@ -401,12 +407,12 @@
 //        document.getElementById('tip').innerHTML = str.join('<br>');
         loadMap(data.position.getLng(),data.position.getLat());
     }
-
+//
     function loadMap(lng,lat){
         // 百度地图API功能
         var map = new BMap.Map("mapContainer");  //创建Map实例
         var point = new BMap.Point(lng,lat);  //创建Point位置实例
-        map.centerAndZoom(point, 25);  //设置地图中心点及缩放级别
+        map.centerAndZoom(point, 24);  //设置地图中心点及缩放级别
         map.addControl(new BMap.MapTypeControl());  //添加地图类型控件
         var marker = new BMap.Marker(point);  //创建一个Marker点
         map.addOverlay(marker);  //将Marker点覆盖到地图上
@@ -414,7 +420,7 @@
         map.enableScrollWheelZoom(true);
     }
     //解析定位错误信息
-    function onError(data) {
+    function errorFuc(data) {
 //        document.getElementById('tip').innerHTML = '定位失败';
     }
 </script>

@@ -2,6 +2,7 @@ package com.fulaan.train.service;
 
 import com.db.train.InstituteDao;
 import com.fulaan.train.dto.InstituteDTO;
+import com.fulaan.util.DistanceUtils;
 import com.pojo.train.InstituteEntry;
 import org.bson.types.ObjectId;
 import org.springframework.stereotype.Service;
@@ -30,9 +31,11 @@ public class InstituteService {
      * @param pageSize
      * @return
      */
-    public List<InstituteDTO> getInstitutes(String regular,List<String> regionIds,List<String> itemTypeIds,String type,String area,int page,int pageSize,int sortType){
+    public List<InstituteDTO> getInstitutes(String regular,List<String> regionIds,List<String> itemTypeIds,String type,String area,int page,
+                                            int pageSize,int sortType,double lon,double lat,int distance){
         List<InstituteDTO> dtos=new ArrayList<InstituteDTO>();
-        List<InstituteEntry> entries=instituteDao.findInstituteEntries(regular,regionIds,itemTypeIds,type, area, page, pageSize,sortType);
+        List<InstituteEntry> entries=instituteDao.findInstituteEntries(regular,regionIds,itemTypeIds,type, area, page,
+                                        pageSize,sortType,lon,lat,distance);
         for(InstituteEntry instituteEntry:entries){
             InstituteDTO instituteDTO=new InstituteDTO(instituteEntry);
             String score=instituteDTO.getScore();
@@ -46,6 +49,17 @@ public class InstituteService {
             for(int i=0;i<5-stip;i++){
                 stips.add(tip);
             }
+
+            InstituteEntry.Locations locations=instituteEntry.getLocations();
+            String range = "未知";
+            if (lon != 0 && lat != 0) {
+                if(null!=locations){
+                    List<Double> accordinates=locations.getCoordinates();
+                    Double distanceDouble = DistanceUtils.distance(lon, lat, accordinates.get(0),accordinates.get(1));
+                    range = String.valueOf(distanceDouble.longValue());
+                }
+            }
+            instituteDTO.setDistance(range);
             instituteDTO.setScoreList(tips);
             instituteDTO.setUnScoreList(stips);
             dtos.add(instituteDTO);
@@ -53,8 +67,10 @@ public class InstituteService {
         return dtos;
     }
 
-    public int countInstitutes(String regular,List<String> ids,List<String> itemTypeIds,String type,String area){
-        return  instituteDao.countInstituteEntries(regular,ids,itemTypeIds,type, area);
+    public int countInstitutes(String regular,List<String> ids,List<String> itemTypeIds,String type,
+                               String area,double lon,double lat,int distance){
+        return  instituteDao.countInstituteEntries(regular,ids,itemTypeIds,
+                type, area,lon,lat,distance);
     }
 
 
@@ -82,5 +98,8 @@ public class InstituteService {
     }
 
 
+    public List<InstituteEntry> findInstituteEntries(int page,int pageSize){
+        return instituteDao.findInstituteEntries(page,pageSize);
+    }
 
 }

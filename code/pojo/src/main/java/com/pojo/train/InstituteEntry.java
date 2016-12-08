@@ -7,6 +7,7 @@ import com.pojo.base.BaseDBObject;
 import com.pojo.questions.PropertiesObj;
 import com.pojo.utils.MongoUtils;
 import com.sys.constants.Constant;
+import org.bson.types.ObjectId;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -154,6 +155,18 @@ public class InstituteEntry extends BaseDBObject {
     }
 
 
+    public String getImageUrl(){
+        if(getBaseEntry().containsField("ims")){
+            return getSimpleStringValue("ims");
+        }else{
+            return Constant.EMPTY;
+        }
+    }
+
+    public void setImageUrl(String imageUrl){
+        setSimpleValue("ims",imageUrl);
+    }
+
     public double getScore(){
         if(getBaseEntry().containsField("sc")){
             return getSimpleDoubleValueDef("sc",0);
@@ -164,6 +177,66 @@ public class InstituteEntry extends BaseDBObject {
 
     public void setScore(double score){
         setSimpleValue("sc",score);
+    }
+
+
+    public Locations getLocations() {
+        if(getBaseEntry().containsField("loc")){
+            return new Locations((BasicDBObject) getSimpleObjectValue("loc"));
+        }else{
+            return null;
+        }
+    }
+    public void setLocations(Locations locations) {
+        setSimpleValue("loc", locations.getBaseEntry());
+    }
+
+
+    public static class Locations extends BaseDBObject{
+
+        public Locations(){
+
+        }
+
+        public Locations(BasicDBObject baseEntry){
+            setBaseEntry(baseEntry);
+        }
+
+        public Locations(double lat,double lon){
+            List<Double> coordinates=new ArrayList<Double>();
+            coordinates.add(lat);
+            coordinates.add(lon);
+            BasicDBObject dbObject=new BasicDBObject()
+                    .append("type",Constant.DEFAULT_POINT)
+                    .append("coordinates",MongoUtils.convert(coordinates));
+
+        }
+
+        public String getType(){
+            return getSimpleStringValue("type");
+        }
+
+        public void setType(String type){
+            setSimpleValue("type",type);
+        }
+
+
+        public List<Double> getCoordinates(){
+            List<Double> retList =new ArrayList<Double>();
+            if(getBaseEntry().containsField("coordinates")) {
+                BasicDBList list = (BasicDBList) getSimpleObjectValue("coordinates");
+                if (null != list && !list.isEmpty()) {
+                    for (Object o : list) {
+                        retList.add((Double) o);
+                    }
+                }
+            }
+            return retList;
+        }
+
+        public void setCoordinates(List<Double> Coordinates){
+            setSimpleValue("coordinates", MongoUtils.convert(Coordinates));
+        }
     }
 
 }

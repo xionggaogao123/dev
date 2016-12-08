@@ -57,5 +57,11 @@
         <li>
             <a href="/admin/loginInfo.do">登录数据</a>
         </li>
+        <li>
+            <a href="/admin/institute.do">培训数据管理</a>
+        </li>
+        <li>
+            <a href="/admin/batchImage.do">培训图片管理</a>
+        </li>
     </ul>
 </div>

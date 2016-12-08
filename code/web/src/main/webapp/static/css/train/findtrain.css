@@ -462,7 +462,7 @@ pre{white-space: pre-wrap;word-wrap: break-word;}
 	float: right;
 }
 .train-detail{
-	padding: 7px 20px;
+	padding: 7px 20px 30px;
 	background: #fff;
 	margin-top: 19px;
 }
@@ -500,6 +500,7 @@ pre{white-space: pre-wrap;word-wrap: break-word;}
 	height: 40px;
 	line-height: 40px;
 	color: #777;
+	font-size: 18px;
 }
 .train-map{
 	height: 240px;
@@ -587,7 +588,11 @@ pre{white-space: pre-wrap;word-wrap: break-word;}
 	margin-left: 4px;
 }
 .train-pj{
-	display: none;
+	/*display: none;*/
+}
+.jg-infor{
+	line-height: 25px;
+	letter-spacing: .5px;
 }
 .train-pj .pj-cont{
 	width: 693px;

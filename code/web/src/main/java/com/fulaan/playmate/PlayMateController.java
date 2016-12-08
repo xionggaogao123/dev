@@ -48,7 +48,6 @@ public class PlayMateController extends BaseController {
     @RequestMapping("/friend")
     @LoginInfo
     public String friend(Map<String, Object> model) {
-
         if (getUserId() == null) {
             model.put("signActivityCount", 0);
             model.put("publishActivityCount", 0);
@@ -167,6 +166,7 @@ public class PlayMateController extends BaseController {
     /**
      * 生成排序数据
      * 没后台管理好烦 =_=
+     *
      * @return
      */
     @RequestMapping("/generateSortData")
@@ -179,6 +179,7 @@ public class PlayMateController extends BaseController {
 
     /**
      * 创建索引
+     * =_= 创建 地理位置索引
      *
      * @return
      */

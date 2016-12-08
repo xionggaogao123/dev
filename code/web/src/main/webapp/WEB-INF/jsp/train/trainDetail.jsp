@@ -284,11 +284,18 @@
         <div class="train-detail">
             <div class="nav">
                 <span class="cur4 sp1">培训机构详情</span>
-                <span class="sp2">用户评论<em>（0）</em></span>
             </div>
             <div class="train-infor">
                 <h3 class="h3-intro">培训机构简介</h3>
-                <div>${dto.description}</div>
+                <div class="jg-infor">${dto.description}</div>
+            </div>
+
+        </div>
+
+
+        <div class="train-detail">
+            <div class="nav">
+                <span class="cur4 sp2">用户评论<em>（0）</em></span>
             </div>
             <div class="train-pj">
                 <div class="pj-cont">

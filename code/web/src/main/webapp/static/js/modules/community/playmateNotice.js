@@ -29,7 +29,7 @@ define(['jquery', 'pagination', 'common'], function (require, exports, module) {
             $('#SysInfo').hide();
             //获取我的玩伴列表
             $('#title').html("我的玩伴列表");
-            $('#friendApply').removeClass('ul-pm-notice').addClass('ul-member-list');
+            $('#friendApply').removeClass('ul-pm-notice').addClass('ul-member-list').addClass('clearfix');
             myPartners();
         }else{
             //获取我的系统消息

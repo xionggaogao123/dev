@@ -42,7 +42,7 @@ public class FMateDao extends BaseDao {
         return fMateEntries;
     }
 
-    public BasicDBObject buildQuery(double lon, double lat, List<Integer> tags, List<String> hobbys, int aged, int ons, int maxDistance) {
+    public BasicDBObject buildQuery(double lon, double lat, List<Integer> tags,int aged, int ons, int maxDistance) {
         BasicDBObject query = new BasicDBObject();
         if (lon != 0 && lat != 0) {
             List<Double> locs = new ArrayList<Double>();
@@ -54,9 +54,6 @@ public class FMateDao extends BaseDao {
         }
         if (null != tags && tags.size() > 0) {
             query.append("tag", new BasicDBObject("$in", tags));
-        }
-        if (null != hobbys && hobbys.size() > 0) {
-            query.append("hob", new BasicDBObject("$in", hobbys));
         }
         if (aged != -1) {
             query.append("aged", aged);
@@ -104,7 +101,12 @@ public class FMateDao extends BaseDao {
         update(MongoFacroty.getAppDB(), Constant.COLLECTION_FORUM_MATE_SEEKMATE, query, update);
     }
 
-    public FMateEntry getCoordinates(ObjectId userId) {
+    /**
+     * 获取
+     * @param userId
+     * @return
+     */
+    public FMateEntry getMateEntryByUserId(ObjectId userId) {
         BasicDBObject query = new BasicDBObject("uid", userId);
         DBObject dbo = findOne(MongoFacroty.getAppDB(), Constant.COLLECTION_FORUM_MATE_SEEKMATE, query, Constant.FIELDS);
         return dbo == null ? null : new FMateEntry(dbo);
@@ -159,4 +161,14 @@ public class FMateDao extends BaseDao {
         update(MongoFacroty.getAppDB(), Constant.COLLECTION_FORUM_MATE_SEEKMATE, query, update);
     }
 
+    /**
+     * 更新可在线时间段
+     * @param userId
+     * @param ons
+     */
+    public void updateUserOns(ObjectId userId, int ons) {
+        BasicDBObject query = new BasicDBObject("uid", userId);
+        BasicDBObject update = new BasicDBObject(Constant.MONGO_SET, new BasicDBObject("ons", ons));
+        update(MongoFacroty.getAppDB(), Constant.COLLECTION_FORUM_MATE_SEEKMATE, query, update);
+    }
 }

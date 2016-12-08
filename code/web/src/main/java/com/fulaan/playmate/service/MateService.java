@@ -3,7 +3,8 @@ package com.fulaan.playmate.service;
 import com.db.activity.FriendDao;
 import com.db.playmate.FMateDao;
 import com.db.user.UserDao;
-import com.fulaan.playmate.dto.MateDTO;
+import com.fulaan.playmate.dto.FMateDTO;
+import com.fulaan.playmate.pojo.MateData;
 import com.fulaan.pojo.PageModel;
 import com.fulaan.pojo.User;
 import com.fulaan.util.DateUtils;
@@ -15,16 +16,16 @@ import com.pojo.playmate.FMateEntry;
 import com.pojo.user.AvatarType;
 import com.pojo.user.UserEntry;
 import com.pojo.user.UserTag;
-import com.pojo.utils.MongoUtils;
 import com.sys.utils.AvatarUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.bson.types.ObjectId;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.text.ParseException;
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
+import java.util.Map;
 
 /**
  * Created by moslpc on 2016/11/30.
@@ -32,19 +33,26 @@ import java.util.List;
 @Service
 public class MateService {
 
+    @Autowired
+    private FMateTypeService fMateTypeService;
+
     private FMateDao fMateDao = new FMateDao();
     private UserDao userDao = new UserDao();
     private FriendDao friendDao = new FriendDao();
 
-    public PageModel<MateDTO> findMates(ObjectId userId, double lon, double lat, List<String> tags, List<String> hobbys, int aged, int ons, int page, int pageSize, int maxDistance) {
-        List<MateDTO> mateDTOS = new ArrayList<MateDTO>();
-        PageModel<MateDTO> pageModel = new PageModel<MateDTO>();
+    public PageModel<FMateDTO> findMates(ObjectId userId, double lon, double lat, List<String> tags, int aged, int ons, int page, int pageSize, int maxDistance) {
+        List<FMateDTO> fMateDTOS = new ArrayList<FMateDTO>();
+        PageModel<FMateDTO> pageModel = new PageModel<FMateDTO>();
 
         List<Integer> tagIntegers = new ArrayList<Integer>();
         for (String tagStr : tags) {
-            tagIntegers.add(Integer.parseInt(tagStr));
+            try {
+                tagIntegers.add(Integer.parseInt(tagStr));
+            } catch (NumberFormatException e) {
+                e.printStackTrace();
+            }
         }
-        BasicDBObject query = fMateDao.buildQuery(lon, lat, tagIntegers, hobbys, aged, ons, maxDistance);
+        BasicDBObject query = fMateDao.buildQuery(lon, lat, tagIntegers, aged, ons, maxDistance);
         System.out.println(query.toString());
         int count = fMateDao.countByPage(query);
         int totalPages = count % pageSize == 0 ? count / pageSize : (int) Math.ceil(count / pageSize) + 1;
@@ -59,31 +67,41 @@ public class MateService {
         if (userId != null) {
             myFriendEnty = friendDao.get(userId);
         }
+
+        List<MateData> mateDatas = fMateTypeService.getOns();
+
         for (FMateEntry mateEntry : fMateEntries) {
             BasicDBList dbList = mateEntry.getLocation();
-
-            if(mateEntry.getUserId().equals(userId)) continue;
+            if (mateEntry.getUserId().equals(userId)) {
+                count--;
+                continue;
+            }
             String distance = "未知";
             if (lon != 0 && lat != 0) {
                 Double distanceDouble = DistanceUtils.distance(lon, lat, (Double) dbList.get(0), (Double) dbList.get(1));
                 distance = String.valueOf(distanceDouble.longValue());
             }
-            MateDTO mateDTO = new MateDTO();
+            FMateDTO fMateDTO = new FMateDTO();
             UserEntry userEntry = userDao.findByObjectId(mateEntry.getUserId());
-            mateDTO.setDistance(distance + "米");
-            mateDTO.setUserId(userEntry.getID().toString());
-            mateDTO.setNickName(userEntry.getNickName());
-            mateDTO.setUserName(userEntry.getUserName());
-            mateDTO.setTimed(mateEntry.getOns());
-            mateDTO.setAvatar(AvatarUtils.getAvatar(userEntry.getAvatar(), AvatarType.MIN_AVATAR.getType()));
+            fMateDTO.setDistance(distance + "米");
+            fMateDTO.setUserId(userEntry.getID().toString());
+            fMateDTO.setNickName(userEntry.getNickName());
+            fMateDTO.setUserName(userEntry.getUserName());
+
+            for (MateData mateData : mateDatas) {
+                if (mateEntry.getOns() == mateData.getCode()) {
+                    fMateDTO.setOns(mateData);
+                }
+            }
+            fMateDTO.setAvatar(AvatarUtils.getAvatar(userEntry.getAvatar(), AvatarType.MIN_AVATAR.getType()));
             List<UserTag> tagList = new ArrayList<UserTag>();
             List<UserEntry.UserTagEntry> userTagEntries = userEntry.getUserTag();
             for (UserEntry.UserTagEntry tagEntry : userTagEntries) {
                 UserTag userTag = new UserTag(tagEntry.getCode(), tagEntry.getTag());
                 tagList.add(userTag);
             }
-            mateDTO.setTags(tagList);
-            mateDTOS.add(mateDTO);
+            fMateDTO.setTags(tagList);
+            fMateDTOS.add(fMateDTO);
 
             List<User> users = new ArrayList<User>();
             //寻找共同好友
@@ -95,9 +113,9 @@ public class MateService {
 
                 for (ObjectId uid : myFriendList) {
                     UserEntry entry = userDao.findByObjectId(uid);
-                    if(entry != null){
+                    if (entry != null) {
                         User user = new User();
-                        if(entry.getAvatar() != null) {
+                        if (entry.getAvatar() != null) {
                             user.setAvator(AvatarUtils.getAvatar(entry.getAvatar(), AvatarType.MIN_AVATAR.getType()));
                         }
                         user.setSex(entry.getSex());
@@ -108,18 +126,18 @@ public class MateService {
                     }
                 }
             }
-            mateDTO.setCommonFriends(users);
+            fMateDTO.setCommonFriends(users);
         }
         pageModel.setPage(page);
         pageModel.setPageSize(pageSize);
         pageModel.setTotalCount(count);
         pageModel.setTotalPages(totalPages);
-        pageModel.setResult(mateDTOS);
+        pageModel.setResult(fMateDTOS);
         return pageModel;
     }
 
     public List<Double> getCoordinates(ObjectId userId) {
-        FMateEntry mateEntry = fMateDao.getCoordinates(userId);
+        FMateEntry mateEntry = fMateDao.getMateEntryByUserId(userId);
         List<Double> locs = new ArrayList<Double>();
         if (mateEntry == null) return locs;
         BasicDBList dbList = mateEntry.getLocation();
@@ -140,6 +158,25 @@ public class MateService {
         fMateDao.upateUserLocation(userId, lon, lat);
     }
 
+    public FMateEntry getMateEntry(ObjectId userId) {
+        return fMateDao.getMateEntryByUserId(userId);
+    }
+
+    public MateData getMyOns(ObjectId userId) {
+        FMateEntry fMateEntry = fMateDao.getMateEntryByUserId(userId);
+        if (fMateEntry == null) {
+            return null;
+        }
+        int ons = fMateEntry.getOns();
+        List<MateData> datas = fMateTypeService.getOns();
+        for (MateData mateData : datas) {
+            if (ons == mateData.getCode()) {
+                return mateData;
+            }
+        }
+        return null;
+    }
+
     public void updateTags(ObjectId userId, List<Integer> tags) {
         fMateDao.updateUserTags(userId, tags);
     }
@@ -157,28 +194,14 @@ public class MateService {
         return fMateDao.isExist(userId);
     }
 
-    public void updateAged(ObjectId userId,long age){
+    public void updateAged(ObjectId userId, long age) {
         try {
-            age = DateUtils.getAgeFromTimeStamp(age);
+            int aged = DateUtils.getAgeFromTimeStamp(age);
+            updateAge(userId, aged);
         } catch (ParseException e) {
             e.printStackTrace();
             return;
         }
-        int aged = -1;
-        if(age >= 3 && age <= 5){
-            aged = 1;
-        } else if(age > 5 && age <= 8){
-            aged = 2;
-        } else if(age > 8 && age <= 11) {
-            aged = 3;
-        } else if(age > 11 && age <= 15) {
-            aged = 4;
-        } else if(age > 15 && age <= 18) {
-            aged = 5;
-        } else if(age > 18){
-            aged = 6;
-        }
-        fMateDao.updateAged(userId,aged);
     }
 
     public void updateHobbys(ObjectId userId, List<String> hobbys) {
@@ -186,4 +209,25 @@ public class MateService {
     }
 
 
+    public void updateAge(ObjectId userId, int age) {
+        int aged = -1;
+        if (age >= 3 && age <= 5) {
+            aged = 1;
+        } else if (age > 5 && age <= 8) {
+            aged = 2;
+        } else if (age > 8 && age <= 11) {
+            aged = 3;
+        } else if (age > 11 && age <= 15) {
+            aged = 4;
+        } else if (age > 15 && age <= 18) {
+            aged = 5;
+        } else if (age > 18) {
+            aged = 6;
+        }
+        fMateDao.updateAged(userId, aged);
+    }
+
+    public void updateOns(ObjectId userId, int ons) {
+        fMateDao.updateUserOns(userId, ons);
+    }
 }

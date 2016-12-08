@@ -83,7 +83,7 @@
 <!--活动详情-->
 <div class="wind-act-det">
     <p class="p1">活动详情<em>×</em></p>
-    <p class="p2 clearfix">主题：<span><em>#篮球#</em><i>周末一起打篮球！</i></span></p>
+    <p class="p2 clearfix">主题：<span><em>#<span>篮球</span>#</em><i>周末一起打篮球！</i></span></p>
     <p class="p3">时间：<span>2016-06-06 15：00</span></p>
     <p class="p4 clearfix">详情：<span>广泛士大夫敢死队分别是的版本</span>
     <p class="p5">活动人员：已报名<span>200</span>人</p>
@@ -106,10 +106,10 @@
         </select>
         <input type="text">
     </p>
-    <p class="p2">活动内容<span>(克简要说明一下活动时间、地点等)</span></p>
+    <p class="p2">活动内容<span>(简要说明一下活动时间、地点等)</span></p>
     <textarea></textarea>
     <div class="ac-timer">
-        <p>日期：<input type="text" id="datepicker"></p>
+        <p>时间：<input type="text" id="datepicker"></p>
         <select class="time-hour">
             <option value="20">20</option>
             <option value="19">19</option>
@@ -126,14 +126,15 @@
             <option value="08">08</option>
             <option value="07">07</option>
         </select>
+        <p>:</p>
         <select class="time-mins">
-            <option>0</option>
+            <option>00</option>
             <option>15</option>
             <option>30</option>
             <option>45</option>
         </select>
     </div>
-    <p class="p4 clearfix mate-publish">
+    <p class="pp clearfix mate-publish">
         <button class="b1">发布活动</button>
         <button class="b2">取消发布</button>
     </p>
@@ -149,9 +150,22 @@
                 <span class="sp2" onClick="window.open('/community/userData.do?userId={{=value.userId}}')">查看更多</span>
             </p>
             <p class="p2">
-                标签：{{~value.tags:tag:i}}
+                标签：
+                {{~value.tags:tag:i}}
                 <i>{{=tag.tag}}</i>、
                 {{~}}
+                {{? value.tags.length == 0}}
+                <i>未设置</i>
+                {{?}}
+            </p>
+            <p class="p2">
+                空闲时间段:
+                {{?value.ons}}
+                <i>{{=value.ons.data}}</i>
+                {{?}}
+                {{?value.ons == null }}
+                <i>未设置</i>
+                {{?}}
             </p>
             <p class="p2">
                 您的玩伴
@@ -164,7 +178,7 @@
                 <img src="/static/images/findnearby_zuobiao.png">距离您<i>{{=value.distance}}</i>
             </p>
         </div>
-        <button class="btn-lyl" onClick="window.open('/webim/index?userId={{=value.userId}}')">聊一聊</button>
+        <button class="btn-lyl" value="{{=value.userId}}">聊一聊</button>
     </div>
     {{~}}
 </script>
@@ -183,7 +197,10 @@
             <img src="/static/images/findnearby_zuobiao.png">
             距离你<i>{{=value.distance}}</i>米
         </p>
-        <p class="p4"><i>#篮球#</i>{{=value.title}}</p>
+        <p class="p4"><i># {{? value.activityTheme != null }}
+            {{=value.activityTheme.data}}
+            {{?}}#
+        </i>{{=value.title}}</p>
         <p class="p5">已有{{=value.signCount}}人报名</p>
         <button value="{{=value.acid}}">我要报名</button>
     </li>

@@ -7,7 +7,7 @@
 <%@ include file="../common/head.jsp" %>
 <%-- 填充head --%>
 <layout:override name="head">
-    <title>复兰后台管理</title>
+    <title>社区详情</title>
     <link href="/static/js/modules/core/0.1.0/fancyBox/jquery.fancybox.css?v=2015041602" rel="stylesheet"
           type="text/css" media="screen">
     <link rel="stylesheet" type="text/css" href="/static/css/friend/nearby.css">
@@ -557,26 +557,6 @@
             }
         });
 
-        //            $('.btn1').click(function () {
-        //                var tags = [];
-        //                $('.bq-cur').each(function () {
-        //                    tags.push($(this).attr('value'));
-        //                });
-        //                $.ajax({
-        //                    type: 'POST',
-        //                    dataType: 'json',
-        //                    url: "/v2/user/pushTag",
-        //                    data: {
-        //                        name: 'mosdf',
-        //                        ps: 'sdfdsf',
-        //                        data: tags
-        //                    },
-        //                    success: function (data) {
-        //                        alert(JSON.stringify(data));
-        //                    }
-        //                })
-        //            });
-
     </script>
 
     <script type="text/template" id="activityBox">
@@ -584,7 +564,10 @@
         <li>
             <button value="{{=value.acid}}">取消报名</button>
             <p class="p1">
-                <span># {{=value.activityCode}}#</span>{{=value.title}}
+            <span># {{? value.activityTheme != null }}
+                     {{= value.activityTheme.data }}
+                    {{?}}
+                  #</span> {{=value.title}}
             </p>
             <p class="p2">{{=value.description}}</p>
         </li>
@@ -688,7 +671,7 @@
                 </div>
                 {{?}}
                 {{?value.imageList.length>0}}
-                <div class="img-wrap">
+                <div class="img-wrap clearfix">
                     {{~value.imageList:image:i}}
                     {{?value.type==5}}
                     <img src="{{=image}}?imageView2/1/w/82/h/82" vurl="{{=image}}"

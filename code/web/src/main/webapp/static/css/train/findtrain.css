@@ -499,6 +499,41 @@ pre{white-space: pre-wrap;word-wrap: break-word;}
 	height: 240px;
 	margin-bottom: 19px;
 	background: #fff;
+	position: relative;
+}
+.full-map{
+	display: none;
+	position: fixed;
+	top:50%;
+	left:50%;
+	margin-top: -240px;
+	margin-left: -450px;
+	width: 900px;
+	height:480px;
+	background: #fff;
+	z-index: 1003;
+}
+.full-map .p-x{
+	height:30px;
+}
+.full-map .p-x em{
+	float: right;
+	font-size:24px;
+	margin:3px 6px 0 0;
+	cursor: pointer;
+}
+.sear{
+	position: absolute;
+	width: 17px;
+	height:17px;
+	right: 7px;
+	bottom: 9px;
+	background: url("/static/images/train/sear.png") no-repeat -120px -60px;
+	z-index: 1;
+	cursor: pointer;
+}
+.sear:hover{
+	background: url("/static/images/train/sear.png") no-repeat -120px -90px ;
 }
 .train-hot{
 	padding: 7px 20px;
@@ -626,10 +661,8 @@ pre{white-space: pre-wrap;word-wrap: break-word;}
 /**分页**/
 #mapContainer {
 	position: absolute;
-	top: 181px;
-	left: 1202px;
-	right: 0;
-	bottom: 0;
+	top: 0;
+	left: 0;
 	width: 301px;
 	height: 241px;
 }

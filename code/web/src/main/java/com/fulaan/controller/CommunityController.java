@@ -1721,35 +1721,43 @@ public class CommunityController extends BaseController {
 
 
     @RequestMapping("/userData")
+    @SessionNeedless
     public String redirectUser(Map<String, Object> model) {
-        ObjectId userId = getUserId();
-        UserEntry userEntry1 = userService.find(userId);
-        model.put("applyName", StringUtils.isNotBlank(userEntry1.getNickName()) ? userEntry1.getNickName() : userEntry1.getUserName());
-        String personId = getRequest().getParameter("userId");
-        UserEntry userEntry = userService.find(new ObjectId(personId));
+
+        ObjectId personId = new ObjectId(getRequest().getParameter("userId"));
+        UserEntry userEntry = userService.find(personId);
         model.put("avatar", AvatarUtils.getAvatar(userEntry.getAvatar(), AvatarType.MIN_AVATAR.getType()));
         model.put("nickName", StringUtils.isNotBlank(userEntry.getNickName()) ? userEntry.getNickName() : userEntry.getUserName());
-        //获取自己的标签信息
-        List<UserEntry.UserTagEntry> userTagEntries = userEntry.getUserTag();
-        List<String> tags = new ArrayList<String>();
-        for (UserEntry.UserTagEntry userTagEntry : userTagEntries) {
-            tags.add(userTagEntry.getTag());
-        }
-        model.put("tags", tags);
-        model.put("personId", personId);
-        model.put("communityNames", communityService.generateCommunityNames(new ObjectId(personId)));
-        //判断是否为好友
-        boolean isFriend = friendService.isFriend(personId, userId.toString());
-        if (isFriend) {
-            model.put("friend", "玩伴");
-        } else {
-            List<FriendApply> friendApplyList = friendApplyService.findApplyBySponsorIdAndRespondentId(userId.toString(), personId);
-            if (null != friendApplyList && !friendApplyList.isEmpty()) {
-                model.put("friend", "等回复");
-            } else {
-                model.put("friend", "加玩伴");
+        if(getUserId() != null) {
+            ObjectId userId = getUserId();
+            UserEntry userEntry1 = userService.find(userId);
+            model.put("applyName", StringUtils.isNotBlank(userEntry1.getNickName()) ? userEntry1.getNickName() : userEntry1.getUserName());
+
+            //获取自己的标签信息
+            List<UserEntry.UserTagEntry> userTagEntries = userEntry.getUserTag();
+            List<String> tags = new ArrayList<String>();
+            for (UserEntry.UserTagEntry userTagEntry : userTagEntries) {
+                tags.add(userTagEntry.getTag());
             }
+            model.put("tags", tags);
+
+            //判断是否为好友
+            boolean isFriend = friendService.isFriend(personId.toString(), userId.toString());
+            if (isFriend) {
+                model.put("friend", "玩伴");
+            } else {
+                List<FriendApply> friendApplyList = friendApplyService.findApplyBySponsorIdAndRespondentId(userId.toString(), personId.toString());
+                if (null != friendApplyList && !friendApplyList.isEmpty()) {
+                    model.put("friend", "等回复");
+                } else {
+                    model.put("friend", "加玩伴");
+                }
+            }
+
         }
+        model.put("personId", personId.toString());
+        model.put("communityNames", communityService.generateCommunityNames(personId));
+
         return "/community/communityUser";
     }
 

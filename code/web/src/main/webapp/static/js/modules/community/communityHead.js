@@ -10,8 +10,10 @@ define(['jquery', 'pagination', 'common'], function (require, exports, module) {
     require('pagination');
     var communityHead = {};
     var nickName=$('#apply').attr('applyName');
-    communityHead.init = function () {
 
+    var ons = {};
+    communityHead.init = function () {
+        getAllOns();
     };
 
 
@@ -56,6 +58,10 @@ define(['jquery', 'pagination', 'common'], function (require, exports, module) {
             })
         });
 
+        $('body').on('click', '#editOns', function () {
+            $('.bg').fadeIn();
+            $('.wind-ons').fadeIn();
+        });
 
         $('body').on('click', '.wind-biaoq .p1 em,.btn-add-no', function () {
             comb2();
@@ -64,9 +70,40 @@ define(['jquery', 'pagination', 'common'], function (require, exports, module) {
 
         $('body').on('click', '.jwbUserId', function () {
             jwb($(this));
-        })
+        });
 
-        $('body').on('click', '.tj-list span', function () {
+        $('body').on('click','.ons-div span',function () {
+            $('.ons-div span').each(function () {
+                $(this).removeClass('bq-cur');
+            });
+            $(this).addClass('bq-cur');
+            var code = $(this).attr('code');
+            ons = {
+                ons: code,
+                data:$(this).text()
+            }
+        });
+
+        $('body').on('click','.wind-ons .p3 .btn-add-no,.wind-ons .p1 em',function () {
+            $('.wind-ons').fadeOut();
+            $('.bg').fadeOut();
+        });
+
+        $('body').on('click','.wind-ons .p3 .btn1',function () {
+            common.getData('/mate/updateMateData.do',ons,function(resp){
+
+                if(resp.code == '200') {
+                    $('.wind-ons').fadeOut();
+                    $('.bg').fadeOut();
+
+                    $('#o-data').text(ons.data);
+                } else {
+                    alert(resp.message);
+                }
+            });
+        });
+
+        $('body').on('click', '#myTxt span', function () {
             var that = this;
             if ($(this).hasClass('bq-cur')) {
                 var param = {};
@@ -156,12 +193,6 @@ define(['jquery', 'pagination', 'common'], function (require, exports, module) {
             async: true,
             dataType: "json",
             contentType: "application/x-www-form-urlencoded; charset=UTF-8",
-            // beforeSend:function() {
-            //
-            // },
-            // complete:function(data) {
-            //    $('#load').hide();
-            // },
             success: function (resp) {
                 $('#jwbLoad').hide();
                 $('#jwb').show().html("");
@@ -215,6 +246,27 @@ define(['jquery', 'pagination', 'common'], function (require, exports, module) {
                 str += "<em id=\"editTag\">编辑标签</em>";
                 $('#myTags').append(str);
             }
+        });
+    }
+
+    function getAllOns() {
+        $.ajax({
+            type: "GET",
+            url: '/mate/sortType.do',
+            success: function (resp) {
+                var str = '';
+                for(var i=0;i<resp.message.times.length;i++) {
+                    str += '<span code="'+resp.message.times[i].code+'">'+resp.message.times[i].data+'</span>';
+                }
+                $('.ons-div').append(str);
+            }
+        });
+
+        common.getData('/mate/getMyOns.do',{},function(resp){
+            if(resp.message.data != null) {
+                $('#o-data').text(resp.message.data);
+            }
+
         });
     }
 

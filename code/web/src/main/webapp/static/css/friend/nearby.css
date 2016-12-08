@@ -159,7 +159,8 @@ pre {
 }
 
 .near-li {
-    height: 108px;
+    height: 120px;
+    padding: 5px;
     border-bottom: 1px solid #ddd;
 }
 
@@ -212,6 +213,9 @@ pre {
     line-height: 20px;
     height: 20px;
     overflow: hidden;
+}
+
+.near-infor p {
 }
 
 .near-infor .p2 i {
@@ -649,7 +653,21 @@ pre {
     color: #fff;
 }
 
-.wind-act-fq .p4 .b2 {
+.wind-act-fq .pp .b1 {
+    width: 70px;
+    height: 28px;
+    border: 1px solid #23CD77;
+    background: #23CD77;
+    color: #fff;
+}
+
+.wind-act-fq .pp {
+    margin-top: 10px;
+    text-align: center;
+}
+
+
+.wind-act-fq .pp .b2 {
     width: 70px;
     height: 28px;
     border: 1px solid #23CD77;
@@ -842,7 +860,7 @@ pre {
 }
 
 .ul-hds li {
-    height: 75px;
+    height: 78px;
     border-bottom: 1px solid #777;
     overflow: hidden;
 }
@@ -861,7 +879,6 @@ pre {
 .ul-hds li .p1 {
     height: 14px;
     line-height: 14px;
-    height: 14px;
     margin-top: 20px;
     width: 1000px;
     float: left;

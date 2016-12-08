@@ -2,13 +2,17 @@ package com.fulaan.playmate;
 
 import com.fulaan.annotation.LoginInfo;
 import com.fulaan.annotation.SessionNeedless;
+import com.fulaan.annotation.UserRoles;
 import com.fulaan.controller.BaseController;
+import com.fulaan.playmate.pojo.MateData;
 import com.fulaan.playmate.service.FActivityService;
 import com.fulaan.playmate.service.FMateTypeService;
 import com.fulaan.playmate.service.MateService;
 import com.fulaan.user.service.UserService;
 import com.fulaan.util.StrUtils;
 import com.pojo.user.UserEntry;
+import com.pojo.user.UserRole;
+import com.pojo.user.UserTag;
 import com.sys.utils.RespObj;
 import org.apache.commons.lang3.StringUtils;
 import org.bson.types.ObjectId;
@@ -40,18 +44,17 @@ public class PlayMateController extends BaseController {
     private FMateTypeService fMateTypeService;
 
 
-
     @SessionNeedless
     @RequestMapping("/friend")
     @LoginInfo
-    public String friend(Map<String,Object> model) {
+    public String friend(Map<String, Object> model) {
 
-        if(getUserId() == null) {
-            model.put("signActivityCount",0);
-            model.put("publishActivityCount",0);
+        if (getUserId() == null) {
+            model.put("signActivityCount", 0);
+            model.put("publishActivityCount", 0);
         } else {
-            model.put("signActivityCount",fActivityService.countUserSignActivity(getUserId()));
-            model.put("publishActivityCount",fActivityService.countPublishActivity(getUserId()));
+            model.put("signActivityCount", fActivityService.countUserSignActivity(getUserId()));
+            model.put("publishActivityCount", fActivityService.countPublishActivity(getUserId()));
         }
         return "/friend/index";
     }
@@ -70,7 +73,6 @@ public class PlayMateController extends BaseController {
                                 @RequestParam(value = "lat", required = false, defaultValue = "0") double lat,
                                 @RequestParam(value = "distance", required = false, defaultValue = "-1") int distance,
                                 @RequestParam(value = "tags", required = false, defaultValue = "") String tags,
-                                @RequestParam(value = "hobbys", required = false, defaultValue = "") String hobbys,
                                 @RequestParam(value = "aged", required = false, defaultValue = "-1") int aged,
                                 @RequestParam(value = "ons", required = false, defaultValue = "-1") int ons,
                                 @RequestParam(value = "page", required = false, defaultValue = "1") int page,
@@ -83,14 +85,13 @@ public class PlayMateController extends BaseController {
                 lat = locs.get(1);
             }
         }
-        if(distance < 0) {
+        if (distance < 0) {
             distance = 10000000;
         } else {
             distance *= 500;
         }
         List<String> tagList = StrUtils.splitToList(tags);
-        List<String> hobbyList = StrUtils.splitToList(hobbys);
-        return RespObj.SUCCESS(mateService.findMates(getUserId(),lon, lat, tagList, hobbyList, aged, ons, page, pageSize, distance));
+        return RespObj.SUCCESS(mateService.findMates(getUserId(), lon, lat, tagList, aged, ons, page, pageSize, distance));
     }
 
     @RequestMapping("/updateMateData")
@@ -98,8 +99,8 @@ public class PlayMateController extends BaseController {
     public RespObj updateLocation(@RequestParam(value = "lon", required = false, defaultValue = "0") double lon,
                                   @RequestParam(value = "lat", required = false, defaultValue = "0") double lat,
                                   @RequestParam(value = "tags", required = false, defaultValue = "") String tags,
-                                  @RequestParam(value = "hobbys", required = false, defaultValue = "") String hobbys,
-                                  @RequestParam(value = "age",required = false,defaultValue = "-1") int age) {
+                                  @RequestParam(value = "aged", required = false, defaultValue = "-1") int age,
+                                  @RequestParam(value = "ons", required = false, defaultValue = "-1") int ons) {
         ObjectId userId = getUserId();
         if (lon != 0 && lat != 0) {
             mateService.updateLocation(userId, lon, lat);
@@ -111,11 +112,28 @@ public class PlayMateController extends BaseController {
                 tagIntegerList.add(Integer.parseInt(tag));
             }
             mateService.updateTags(userId, tagIntegerList);
+
+            List<UserTag> userTagList = new ArrayList<UserTag>();
+            List<MateData> mateDatas = fMateTypeService.getTags();
+            for (int code : tagIntegerList) {
+                for (MateData mateData : mateDatas) {
+                    if (mateData.getCode() == code) {
+                        userTagList.add(new UserTag(mateData.getCode(), mateData.getData()));
+                    }
+                }
+            }
+            userService.pushUserTags(getUserId(), userTagList);
         }
-        if (StringUtils.isNotBlank(hobbys)) {
-            List<String> hobbyList = StrUtils.splitToList(hobbys);
-            mateService.updateHobbys(userId, hobbyList);
+        //更新年龄
+        if (age != -1) {
+            mateService.updateAge(getUserId(), age);
         }
+
+        //更新在线时间段
+        if (ons != -1) {
+            mateService.updateOns(getUserId(), ons);
+        }
+
         return RespObj.SUCCESS("成功");
     }
 
@@ -138,6 +156,38 @@ public class PlayMateController extends BaseController {
             tags.add(map);
         }
         return RespObj.SUCCESS(tags);
+    }
+
+    @RequestMapping("/getMyOns")
+    @ResponseBody
+    public RespObj getMyOns() {
+        return RespObj.SUCCESS(mateService.getMyOns(getUserId()));
+    }
+
+    /**
+     * 生成排序数据
+     * 没后台管理好烦 =_=
+     * @return
+     */
+    @RequestMapping("/generateSortData")
+    @ResponseBody
+    @UserRoles(UserRole.DISCUSS_MANAGER)
+    public RespObj generateSortData() {
+        fMateTypeService.generateData();
+        return RespObj.SUCCESS;
+    }
+
+    /**
+     * 创建索引
+     *
+     * @return
+     */
+    @RequestMapping("/create2dsphereIndex")
+    @ResponseBody
+    @UserRoles(UserRole.DISCUSS_MANAGER)
+    public RespObj create2dsphereIndex() {
+        fMateTypeService.create2dsphereIndex();
+        return RespObj.SUCCESS;
     }
 
 

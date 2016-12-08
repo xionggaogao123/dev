@@ -100,15 +100,6 @@
             });
         }
 
-        function showLoginTitle(login) {
-            if (login) {
-                $('.header-bar').show();
-                $('.header').hide();
-            } else {
-                $('.header').hide();
-                $('.header-bar').show();
-            }
-        }
         function redirectQ() {
 
             location.href = '/user/qqlogin.do?historyUrl=' + encodeURIComponent(encodeURIComponent(window.location.href));
@@ -123,9 +114,6 @@
     <div class="index-right">
         <div class="login-mk">
             <c:if test="${login == true}">
-                <%--<span id="logout">[退出]</span>
-                <span id="userName" style="cursor: pointer"
-                      onclick="window.open('/forum/userCenter/user.do')">Hi, ${userName}</span>--%>
                 <div class="login-already">
                     <div class="d1-set">
                         <div class="d1-img"></div>
@@ -241,76 +229,6 @@
                     {{~}}
                 </script>
                 <ul class="ul-photo" style="left: 0;" id="talentList">
-                    <%--<li>--%>
-                    <%--<img src="/static/images/newIndex/rb_banner.png">--%>
-                    <%--<span>更多</span>--%>
-                    <%--<div class="photo-text">--%>
-                    <%--<h3>留住的时光</h3>--%>
-                    <%--<p class="p1">【摄影·中学组】</p>--%>
-                    <%--<p>数码时代,千万像素,</p>--%>
-                    <%--<p>记录的是那泛起的涟漪,</p>--%>
-                    <%--<p>亦或是迎风摇摆的银杏,还是你</p>--%>
-                    <%--<p>天真无邪的笑容？</p>--%>
-                    <%--<p>少年少女,轻轻的一声快门,</p>--%>
-                    <%--<p>就留住了时光。</p>--%>
-                    <%--</div>--%>
-                    <%--</li>--%>
-                    <%--<li>--%>
-                    <%--<img src="/static/images/newIndex/rb_banner.png">--%>
-                    <%--<span>更多</span>--%>
-                    <%--<div class="photo-text">--%>
-                    <%--<h3>留住的时光</h3>--%>
-                    <%--<p class="p1">【摄影·中学组】</p>--%>
-                    <%--<p>数码时代,千万像素,</p>--%>
-                    <%--<p>记录的是那泛起的涟漪,</p>--%>
-                    <%--<p>亦或是迎风摇摆的银杏,还是你</p>--%>
-                    <%--<p>天真无邪的笑容？</p>--%>
-                    <%--<p>少年少女,轻轻的一声快门,</p>--%>
-                    <%--<p>就留住了时光。</p>--%>
-                    <%--</div>--%>
-                    <%--</li>--%>
-                    <%--<li>--%>
-                    <%--<img src="/static/images/newIndex/rb_banner.png">--%>
-                    <%--<span>更多</span>--%>
-                    <%--<div class="photo-text">--%>
-                    <%--<h3>留住的时光</h3>--%>
-                    <%--<p class="p1">【摄影·中学组】</p>--%>
-                    <%--<p>数码时代,千万像素,</p>--%>
-                    <%--<p>记录的是那泛起的涟漪,</p>--%>
-                    <%--<p>亦或是迎风摇摆的银杏,还是你</p>--%>
-                    <%--<p>天真无邪的笑容？</p>--%>
-                    <%--<p>少年少女,轻轻的一声快门,</p>--%>
-                    <%--<p>就留住了时光。</p>--%>
-                    <%--</div>--%>
-                    <%--</li>--%>
-                    <%--<li>--%>
-                    <%--<img src="/static/images/newIndex/rb_banner.png">--%>
-                    <%--<span>更多</span>--%>
-                    <%--<div class="photo-text">--%>
-                    <%--<h3>留住的时光</h3>--%>
-                    <%--<p class="p1">【摄影·中学组】</p>--%>
-                    <%--<p>数码时代,千万像素,</p>--%>
-                    <%--<p>记录的是那泛起的涟漪,</p>--%>
-                    <%--<p>亦或是迎风摇摆的银杏,还是你</p>--%>
-                    <%--<p>天真无邪的笑容？</p>--%>
-                    <%--<p>少年少女,轻轻的一声快门,</p>--%>
-                    <%--<p>就留住了时光。</p>--%>
-                    <%--</div>--%>
-                    <%--</li>--%>
-                    <%--<li>--%>
-                    <%--<img src="/static/images/newIndex/rb_banner.png">--%>
-                    <%--<span>更多</span>--%>
-                    <%--<div class="photo-text">--%>
-                    <%--<h3>留住的时光</h3>--%>
-                    <%--<p class="p1">【摄影·中学组】</p>--%>
-                    <%--<p>数码时代,千万像素,</p>--%>
-                    <%--<p>记录的是那泛起的涟漪,</p>--%>
-                    <%--<p>亦或是迎风摇摆的银杏,还是你</p>--%>
-                    <%--<p>天真无邪的笑容？</p>--%>
-                    <%--<p>少年少女,轻轻的一声快门,</p>--%>
-                    <%--<p>就留住了时光。</p>--%>
-                    <%--</div>--%>
-                    <%--</li>--%>
                 </ul>
 
                 <div class="photo-btn">
@@ -348,11 +266,6 @@
             <a target="_blank" href="http://t.qq.com/FulaanTechnology"><img
                     src="/static/images/newIndex/store-WEBI.png"></a>
         </div>
-        <%--<div>
-          <img src="/static/images/newIndex/store_erw.png">
-          <p class="p2">复兰教育社区客户端</p>
-          <img src="/static/images/newIndex/fotter_iosand.png">
-        </div>--%>
     </div>
 </div>
 <div class="bg"></div>

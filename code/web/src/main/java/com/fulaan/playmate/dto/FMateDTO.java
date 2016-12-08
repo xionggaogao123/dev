@@ -1,5 +1,6 @@
 package com.fulaan.playmate.dto;
 
+import com.fulaan.playmate.pojo.MateData;
 import com.fulaan.pojo.User;
 import com.pojo.user.UserTag;
 
@@ -8,14 +9,14 @@ import java.util.List;
 /**
  * Created by moslpc on 2016/11/30.
  */
-public class MateDTO {
+public class FMateDTO {
     private String userId;
     private String userName;
     private String nickName;
     private String avatar;
     private String distance;
-    private int timed;
     private int aged;
+    private MateData ons;
 
     private List<UserTag> tags;
     private List<User> commonFriends;
@@ -76,19 +77,19 @@ public class MateDTO {
         this.commonFriends = commonFriends;
     }
 
-    public int getTimed() {
-        return timed;
-    }
-
-    public void setTimed(int timed) {
-        this.timed = timed;
-    }
-
     public int getAged() {
         return aged;
     }
 
     public void setAged(int aged) {
         this.aged = aged;
+    }
+
+    public MateData getOns() {
+        return ons;
+    }
+
+    public void setOns(MateData ons) {
+        this.ons = ons;
     }
 }

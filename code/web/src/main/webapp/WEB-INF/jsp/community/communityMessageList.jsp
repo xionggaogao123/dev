@@ -343,16 +343,19 @@
     </script>
 
     <script type="text/template" id="activityBox">
-        {{~it:value:index}}
-        <li>
-            <button value="{{=value.acid}}">取消报名</button>
-            <p class="p1">
-                <span># {{=value.activityCode}}#</span>{{=value.title}}
-            </p>
-            <p class="p2">{{=value.description}}</p>
-        </li>
-        {{~}}
-    </script>
+    {{~it:value:index}}
+    <li>
+        <button value="{{=value.acid}}">取消报名</button>
+        <p class="p1">
+            <span># {{? value.activityTheme != null }}
+                     {{= value.activityTheme.data }}
+                    {{?}}
+                  #</span> {{=value.title}}
+        </p>
+        <p class="p2">{{=value.description}}</p>
+    </li>
+    {{~}}
+</script>
 
     <!-- end js template -->
 </layout:override>

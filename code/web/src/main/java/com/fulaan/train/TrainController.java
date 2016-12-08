@@ -63,12 +63,16 @@ public class TrainController extends BaseController {
     @RequestMapping("/trainList")
     @SessionNeedless
     @LoginInfo
-    public String trainList(Map<String, Object> model) throws UnsupportedEncodingException {
-        Map<String,String> map=getProvinceInfo.getAddresses("ip="+getIP(),"utf-8");
-        if(null==map||map.size()==0){
-            model.put("region","上海");
-        }else{
-            model.put("region",map.get("region").substring(0,2));
+    public String trainList(Map<String, Object> model){
+        try {
+            Map<String, String> map = getProvinceInfo.getAddresses("ip=" + getIP(), "utf-8");
+            if (null == map || map.size() == 0) {
+                model.put("region", "上海");
+            } else {
+                model.put("region", map.get("region").substring(0, 2));
+            }
+        }catch(UnsupportedEncodingException  e){
+            model.put("region", "上海");
         }
         return "/train/trainList";
     }
@@ -80,24 +84,29 @@ public class TrainController extends BaseController {
      */
     @RequestMapping("/getAppRegions")
     @SessionNeedless
-    @LoginInfo
-    public RespObj getAppRegions(@ObjectIdType ObjectId itemTypeId,String name){
+    @ResponseBody
+    public RespObj getAppRegions(@ObjectIdType ObjectId itemTypeId,
+                                 @RequestParam(defaultValue = "",required = false) String name) throws UnsupportedEncodingException{
 //        String name="";
 //
-//        Map<String,String> map=getProvinceInfo.getAddresses("ip="+getIP(),"utf-8");
-//        if(null==map||map.size()==0){
-//            name="上海";
-//        }else{
-//            if(StringUtils.isNotBlank(map.get("region"))&&map.get("region").length()>=2) {
-//                name = map.get("region").substring(0, 2);
-//            }else{
-//                name="上海";
-//            }
-//        }
+        if(StringUtils.isBlank(name)){
+            Map<String,String> map=getProvinceInfo.getAddresses("ip="+getIP(),"utf-8");
+            if(null==map||map.size()==0){
+                name="上海";
+            }else{
+                if(StringUtils.isNotBlank(map.get("region"))&&map.get("region").length()>=2) {
+                    name = map.get("region").substring(0, 2);
+                }else{
+                    name="上海";
+                }
+            }
+        }
+
         RegionEntry regionEntry=regionService.getRegionEntry(name);
         List<RegionDTO> regionList=regionService.getRegionList(3, regionEntry.getID());
         List<ItemTypeDTO> itemTypes = itemTypeService.getItemTypes(2, itemTypeId);
         Map<String,Object> retMap=new HashMap<String,Object>();
+        retMap.put("regionId",regionEntry.getID().toString());
         retMap.put("regionList",regionList);
         retMap.put("itemTypes",itemTypes);
         return RespObj.SUCCESS(retMap);
@@ -312,6 +321,8 @@ public class TrainController extends BaseController {
         }
         return RespObj.SUCCESS;
     }
+
+
     /**
      * 处理institute数据
      *

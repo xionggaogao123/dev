@@ -58,8 +58,8 @@
         <span code="105" tag="羽毛球">羽毛球</span>
         <span code="106" tag="网球">网球</span>
         <span code="107" tag="乒乓球">乒乓球</span>
-        <span code="108" tag="轮滑跆">轮滑</span>
-        <span code="109" tag="拳道">拳道</span>
+        <span code="108" tag="轮滑">轮滑</span>
+        <span code="109" tag="跆拳道">跆拳道</span>
         <span code="110" tag="跳绳">跳绳</span>
         <span code="111" tag="歌唱">歌唱</span>
         <span code="112" tag="表演">表演</span>
@@ -80,7 +80,6 @@
         <span code="127" tag="航海">航海</span>
         <span code="128" tag="机器人">机器人</span>
         <span code="129" tag="演讲">演讲</span>
-        <span code="130" tag="其他活动">其他活动</span>
     </div>
     <p class="p2">已选标签</p>
     <div class="bq-list clearfix" id="selected">

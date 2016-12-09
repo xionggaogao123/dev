@@ -121,9 +121,6 @@
                                 <button id="try">试一试</button>
                             </div>
                             <div class="clearfix pub-pro-show">
-                                <%--<img src="/static/images/community/shouzhi.png">--%>
-                                <%--<p class="p1"><a href="###">【天猫超市】超级无敌宇宙最牛逼奢侈豪华加长霹雳炫酷吊炸天厕纸</a></p>--%>
-                                <%--<p class="p2">￥100000000</p>--%>
                             </div>
                         </div>
                         <div class="vote-vedio-container">
@@ -299,6 +296,18 @@
         <button class="btn2">取消</button>
     </p>
 </div>
+
+<div class="sign-alert si-s3 alert-diglog">
+    <p class="alert-title">提示<em>×</em></p>
+    <div class="alert-main">
+        <span>确认要取消和<em class="em-f">shawn</em>的玩伴关系吗？</span>
+    </div>
+    <div class="alert-btn">
+        <button class="alert-btn-sure">确认</button>
+        <button class="alert-btn-esc">取消</button>
+    </div>
+</div>
+
 <div class="bg"></div>
 
 <div class="sign-alert si-s3">
@@ -705,5 +714,7 @@
 
     })
 </script>
+
+
 </body>
 </html>

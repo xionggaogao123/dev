@@ -13,13 +13,13 @@
 <%@ include file="../common/head.jsp" %>
 <div class="container">
     <%@ include file="_layout.jsp" %>
+</div>
+<div class="f-cont">
+    <div class="hd-nav">
+        <span id="my-community-span" class="hd-green-cur">我的社区</span>
+        <span id="myActivity-span">我的活动</span>
     </div>
-    <div class="f-cont">
-        <div class="hd-nav">
-            <span id="my-community-span" class="hd-green-cur">我的社区</span>
-            <span id="myActivity-span">我的活动</span>
-        </div>
-    </div>
+</div>
 <div class="container">
     <div class="back-prev">
         <a onclick="window.history.go(-1)">< 返回上一页</a>
@@ -79,13 +79,15 @@
                             {{~}}{{?value.playmate.length>0}}等{{?}}{{=value.playmateCount}}人</p>
                         <p class="p3">
                             {{?value.isOwner==0}}
-                            <img src="/static/images/community/mem_xx.png"><em onClick="window.open('/webim/index?userId={{=value.userId}}')" >发信息</em>
+                            <img src="/static/images/community/mem_xx.png"><em
+                                onClick="window.open('/webim/index?userId={{=value.userId}}')">发信息</em>
                             {{?value.playmateFlag==1}}
                             <img src="/static/images/community/delf.png"><em><span class="cancelFriend"
-                                                                                     nickName="{{=value.nickName}}"
-                                                                                     userId="{{=value.userId}}">取消玩伴</span></em>
+                                                                                   nickName="{{=value.nickName}}"
+                                                                                   userId="{{=value.userId}}">取消玩伴</span></em>
                             {{??value.playmateFlag==2}}
-                            <img src="/static/images/community/mem_gx.png"><em><span nickName="{{=value.nickName}}" class="wait">等待回复</span></em>
+                            <img src="/static/images/community/mem_gx.png"><em><span nickName="{{=value.nickName}}"
+                                                                                     class="wait">等待回复</span></em>
                             {{??}}
                             <img src="/static/images/community/mem_gx.png"><em><span class="applyFriend"
                                                                                      nickName="{{=value.nickName}}"
@@ -128,7 +130,8 @@
                 </div>
             </div>
             <div class="com-right-s">
-                <div class="com-tit">我的社区<a href="/community/communitySet.do" target="_blank"><span class="com-set-my-btn"></span></a></div>
+                <div class="com-tit">我的社区<a href="/community/communitySet.do" target="_blank"><span
+                        class="com-set-my-btn"></span></a></div>
                 <ul class="ul-my-com clearfix" id="myCommunity">
                 </ul>
             </div>
@@ -176,71 +179,83 @@
 </div>
 
 <!--权限start-->
-    <div class="sign-alert si-s1">
-        <p class="alert-title">提示<em>×</em></p>
-        <div class="alert-main">
-            <span>设置备注名</span>
-            <input type="text" placeholder="备注名" id="remark">
-        </div>
-        <div class="alert-btn">
-            <button class="alert-btn-sure" id="confirm">确认</button>
-            <button class="alert-btn-esc">取消</button>
-        </div>
+<div class="sign-alert si-s1">
+    <p class="alert-title">提示<em>×</em></p>
+    <div class="alert-main">
+        <span>设置备注名</span>
+        <input type="text" placeholder="备注名" id="remark">
     </div>
-    <!--权限end-->
+    <div class="alert-btn">
+        <button class="alert-btn-sure" id="confirm">确认</button>
+        <button class="alert-btn-esc">取消</button>
+    </div>
+</div>
+<!--权限end-->
 
-    <div class="sign-alert si-s2">
-        <p class="alert-title">提示<em>×</em></p>
-        <div class="alert-main">
-            <span>您确定要设置<em class="em-f">shawn</em>为副社长的权限吗？</span>
-        </div>
-        <div class="alert-btn">
-            <button class="alert-btn-sure">确认</button>
-            <button class="alert-btn-esc">取消</button>
-        </div>
+<div class="sign-alert si-s2">
+    <p class="alert-title">提示<em>×</em></p>
+    <div class="alert-main">
+        <span>您确定要设置<em class="em-f">shawn</em>为副社长的权限吗？</span>
     </div>
+    <div class="alert-btn">
+        <button class="alert-btn-sure">确认</button>
+        <button class="alert-btn-esc">取消</button>
+    </div>
+</div>
 
-    <div class="sign-alert si-s3">
-        <p class="alert-title">提示<em>×</em></p>
-        <div class="alert-main">
-            <span>确认要取消和<em class="em-f">shawn</em>的玩伴关系吗？</span>
-        </div>
-        <div class="alert-btn">
-            <button class="alert-btn-sure" id="sureCancel">确认</button>
-            <button class="alert-btn-esc">取消</button>
-        </div>
+<div class="sign-alert si-s3 cancel-parter">
+    <p class="alert-title">提示<em>×</em></p>
+    <div class="alert-main">
+        <span>确认要取消和<em class="em-f">shawn</em>的玩伴关系吗？</span>
     </div>
+    <div class="alert-btn">
+        <button class="alert-btn-sure" id="sureCancel">确认</button>
+        <button class="alert-btn-esc">取消</button>
+    </div>
+</div>
 
-    <div class="sign-alert si-s4">
-        <p class="alert-title">提示<em>×</em></p>
-        <div class="alert-main">
-            <span>确认要和<em class="em-f">shawn</em>成为玩伴吗？</span>
-            <input type="text" id="content" value="">
-        </div>
-        <div class="alert-btn">
-            <button class="alert-btn-sure" id="applyFriend">确认</button>
-            <button class="alert-btn-esc">取消</button>
-        </div>
+<div class="sign-alert si-s4">
+    <p class="alert-title">提示<em>×</em></p>
+    <div class="alert-main">
+        <span>确认要和<em class="em-f">shawn</em>成为玩伴吗？</span>
+        <input type="text" id="content" value="">
     </div>
+    <div class="alert-btn">
+        <button class="alert-btn-sure" id="applyFriend">确认</button>
+        <button class="alert-btn-esc">取消</button>
+    </div>
+</div>
 
-    <div class="sign-alert si-s5">
-        <p class="alert-title">提示<em>×</em></p>
-        <div class="alert-main">
-            <span>请等待<em class="em-f">shawn</em>的回复！</span>
-        </div>
-        <div class="alert-btn">
-            <button class="alert-btn-sure" id="reply">确认</button>
-            <button class="alert-btn-esc">取消</button>
-        </div>
+<div class="sign-alert si-s5 wait-reply">
+    <p class="alert-title">提示<em>×</em></p>
+    <div class="alert-main">
+        <span>请等待<em class="em-f">shawn</em>的回复！</span>
     </div>
-    <div class="bg"></div>
-    <script src="/static/js/sea.js"></script>
-    <script src="/static/js/modules/core/0.1.0/config.js?v=2015041602"></script>
-    <script>
-        seajs.use('/static/js/modules/community/communityMember.js', function (communityMember) {
-            communityMember.init();
-        });
-    </script>
+    <div class="alert-btn">
+        <button class="alert-btn-sure" id="reply">确认</button>
+        <button class="alert-btn-esc">取消</button>
+    </div>
+</div>
+
+<div class="sign-alert si-s3 alert-diglog">
+    <p class="alert-title">提示<em>×</em></p>
+    <div class="alert-main">
+        <span>确认要取消和<em class="em-f">shawn</em>的玩伴关系吗？</span>
+    </div>
+    <div class="alert-btn">
+        <button class="alert-btn-sure">确认</button>
+        <button class="alert-btn-esc">取消</button>
+    </div>
+</div>
+
+<div class="bg"></div>
+<script src="/static/js/sea.js"></script>
+<script src="/static/js/modules/core/0.1.0/config.js?v=2015041602"></script>
+<script>
+    seajs.use('/static/js/modules/community/communityMember.js', function (communityMember) {
+        communityMember.init();
+    });
+</script>
 </body>
 
 <script type="text/template" id="activityBox">

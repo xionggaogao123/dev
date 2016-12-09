@@ -20,9 +20,7 @@ define(['jquery', 'pagination', 'common'], function (require, exports, module) {
         getCommunityDetail();
 
         getPublishedActivitys();
-
         getSignedActivitys();
-
         getAttendActivitys();
     };
 
@@ -62,6 +60,10 @@ define(['jquery', 'pagination', 'common'], function (require, exports, module) {
                     if (resp.code == '200') {
                         $('.alert-diglog').fadeOut();
                         $('.bg').fadeOut();
+
+                        getPublishedActivitys();
+                        getSignedActivitys();
+                        getAttendActivitys();
                     } else {
                         alert(resp.message);
                     }
@@ -71,6 +73,10 @@ define(['jquery', 'pagination', 'common'], function (require, exports, module) {
                     if (resp.code == '200') {
                         $('.alert-diglog').fadeOut();
                         $('.bg').fadeOut();
+
+                        getPublishedActivitys();
+                        getSignedActivitys();
+                        getAttendActivitys();
                     } else {
                         alert(resp.message);
                     }

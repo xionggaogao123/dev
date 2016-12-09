@@ -405,6 +405,9 @@ define(['jquery', 'pagination', 'common'], function (require, exports, module) {
                 $('.bg').fadeOut();
 
                 alert('发布成功');
+
+                var count = $('.act-already-push i').text();
+                $('.act-already-push i').text(++count);
             }
              else {
                 alert(resp.message);

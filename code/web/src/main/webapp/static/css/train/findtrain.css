@@ -665,8 +665,12 @@ pre{white-space: pre-wrap;word-wrap: break-word;}
 	margin: 4px 3px 0 0;
 }
 #p-star{
-	width: 120px !important;
+	width: 100px !important;
 	margin-left: 10px;
+}
+#p-star img{
+	position: relative;
+	top:1px;
 }
 
 /**分页**/

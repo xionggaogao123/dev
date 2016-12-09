@@ -454,6 +454,12 @@ public class UserController extends BaseController {
             EaseMobAPI.createUser(userEntry.getID().toString(), nickName2);
         }
 
+        //找玩伴
+        boolean isMateExist = mateService.isMateRecoreExist(userEntry.getID());
+        if (!isMateExist) {
+            mateService.saveMateEntry(userEntry.getID());
+        }
+
         userService.addUser(userEntry);
         userEntry = userService.searchUserByUserName(userName);
         //保存第三方登录数据
@@ -1694,6 +1700,12 @@ public class UserController extends BaseController {
         String nickName2 = StringUtils.isNotBlank(userEntry.getNickName()) ? userEntry.getNickName() : userEntry.getUserName();
         if (!isRegister) {
             EaseMobAPI.createUser(userEntry.getID().toString(), nickName2);
+        }
+
+        //找玩伴
+        boolean isMateExist = mateService.isMateRecoreExist(userEntry.getID());
+        if (!isMateExist) {
+            mateService.saveMateEntry(userEntry.getID());
         }
 
         return RespObj.SUCCESS(value);

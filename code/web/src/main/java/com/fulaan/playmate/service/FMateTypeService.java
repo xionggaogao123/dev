@@ -130,5 +130,7 @@ public class FMateTypeService {
 
     public void clearHeap() {
         fMateTypeDao.dropCollection(MongoFacroty.getAppDB(),Constant.COLLECTION_FORUM_MATE_SEEKMATE);
+        fMateTypeDao.dropCollection(MongoFacroty.getAppDB(),Constant.COLLECTION_FORUM_ACTIVITY);
+        fMateTypeDao.dropCollection(MongoFacroty.getAppDB(),Constant.COLLECTION_FORM_SIGN_ACTIVITY_SHEET);
     }
 }

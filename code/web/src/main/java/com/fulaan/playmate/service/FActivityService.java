@@ -75,7 +75,6 @@ public class FActivityService {
         if (page <= 0) {
             page = 1;
         }
-
         List<MateData> allTags = fMateTypeService.getTags();
         List<FActivityDTO> FActivityDTOS = new ArrayList<FActivityDTO>();
         List<FActivityEntry> activityEntryList = fActivityDao.findByPage(query, page, pageSize);
@@ -186,6 +185,7 @@ public class FActivityService {
             map.put("nickName", nickName);
             map.put("userName", userName);
             map.put("avatar", avatar);
+            map.put("userId",userId.toString());
             sheets.add(map);
         }
         return sheets;

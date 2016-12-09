@@ -12,6 +12,7 @@
 <body style="background: #f5f5f5;">
 <%--==============头部===================--%>
 <%@ include file="../common/head.jsp" %>
+<input id="target" value="${target}" hidden>
 <div class="container">
     <%@ include file="_layout.jsp" %>
 </div>

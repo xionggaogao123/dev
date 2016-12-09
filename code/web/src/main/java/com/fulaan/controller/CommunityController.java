@@ -709,7 +709,9 @@ public class CommunityController extends BaseController {
     @RequestMapping("/communityAllType")
     @SessionNeedless
     @LoginInfo
-    public String communityAllType(Map<String, Object> model) {
+    public String communityAllType(Map<String, Object> model,
+                                   @RequestParam(value = "target",defaultValue = "") String target) {
+        model.put("target",target);
         return "/community/communityAllType";
     }
 

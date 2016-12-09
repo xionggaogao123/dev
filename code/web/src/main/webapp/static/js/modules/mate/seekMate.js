@@ -179,21 +179,10 @@ define(['jquery', 'pagination', 'common'], function (require, exports, module) {
             $('.bg').fadeIn();
         });
 
-        $('body').on('click', '.act-already-join', function () {
+        $('body').on('click', '.act-already-push,.act-already-join', function () {
 
             if (isLogin) {
-                window.open('/community/communityAllType.do', '__blank');
-            } else {
-                $('.store-register').fadeToggle();
-                $('.bg').fadeToggle();
-            }
-
-        });
-
-        $('body').on('click', '.act-already-push', function () {
-
-            if (isLogin) {
-                window.open('/community/communityAllType.do', '__blank');
+                window.open('/community/communityAllType.do?target=activity', '__blank');
             } else {
                 $('.store-register').fadeToggle();
                 $('.bg').fadeToggle();

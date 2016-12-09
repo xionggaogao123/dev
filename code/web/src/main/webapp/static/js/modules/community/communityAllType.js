@@ -26,7 +26,6 @@ define(['jquery', 'pagination', 'common'], function (require, exports, module) {
 
     $(document).ready(function () {
 
-
         $(".hx-notice").click(function () {
             window.open('/webim/index', '_blank');
         });
@@ -97,6 +96,14 @@ define(['jquery', 'pagination', 'common'], function (require, exports, module) {
             activity_cur = 3;
             renderActivity();
         });
+
+        if($('#target').val() == 'activity') {
+
+            $('#my-community-span').removeClass('hd-green-cur');
+            $('#myActivity-span').addClass('hd-green-cur');
+            $('.container .hd-cont-f1').hide();
+            $('.container .hd-cont-f2').show();
+        }
 
     });
 

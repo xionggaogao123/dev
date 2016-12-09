@@ -48,7 +48,7 @@ public class FActivityDao extends BaseDao {
         return count(MongoFacroty.getAppDB(), Constant.COLLECTION_FORUM_ACTIVITY, query);
     }
 
-    public boolean isUserSignActivity(ObjectId acid, ObjectId uid) {
+    public boolean isUserSignedActivity(ObjectId acid, ObjectId uid) {
         BasicDBObject query = new BasicDBObject("acid", acid).append("uid", uid);
         return count(MongoFacroty.getAppDB(), Constant.COLLECTION_FORM_SIGN_ACTIVITY_SHEET, query) >= 1;
     }
@@ -68,17 +68,6 @@ public class FActivityDao extends BaseDao {
 
     public int countUserSignActivity(ObjectId userId) {
         return count(MongoFacroty.getAppDB(), Constant.COLLECTION_FORM_SIGN_ACTIVITY_SHEET, new BasicDBObject("uid", userId));
-    }
-
-    public List<FASignEntry> get20SignEntry(ObjectId acid) {
-        BasicDBObject query = new BasicDBObject("acid", acid);
-        BasicDBObject orderBy = new BasicDBObject(Constant.ID, -1);
-        List<DBObject> dbos = find(MongoFacroty.getAppDB(), Constant.COLLECTION_FORM_SIGN_ACTIVITY_SHEET, query, Constant.FIELDS, orderBy, 0, 20);
-        List<FASignEntry> signEntries = new ArrayList<FASignEntry>();
-        for (DBObject dbo : dbos) {
-            signEntries.add(new FASignEntry(dbo));
-        }
-        return signEntries;
     }
 
     public List<FASignEntry> getAllSignMember(ObjectId acid) {
@@ -141,6 +130,11 @@ public class FActivityDao extends BaseDao {
         return dbo == null ? null : new FActivityEntry(dbo);
     }
 
+    /**
+     * count 用户参加过的活动
+     * @param userId
+     * @return
+     */
     public int countUserAttendActivity(ObjectId userId) {
         BasicDBObject query = new BasicDBObject("uid", userId).append("acti", new BasicDBObject(Constant.MONGO_GTE, System.currentTimeMillis()));
         return count(MongoFacroty.getAppDB(), Constant.COLLECTION_FORM_SIGN_ACTIVITY_SHEET, query);

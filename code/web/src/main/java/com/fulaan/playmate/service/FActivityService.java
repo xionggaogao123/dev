@@ -120,6 +120,9 @@ public class FActivityService {
 
     private User getMateUser(ObjectId userId) {
         UserEntry userEntry = userDao.findByObjectId(userId);
+        if (userEntry == null) {
+            return null;
+        }
         String nickName = userEntry.getNickName();
         String userName = userEntry.getUserName();
         String avatar = AvatarUtils.getAvatar(userEntry.getAvatar(), AvatarType.MIN_AVATAR.getType());
@@ -169,6 +172,9 @@ public class FActivityService {
         for (FASignEntry signEntry : signEntries) {
             ObjectId userId = signEntry.getUserId();
             UserEntry userEntry = userDao.findByObjectId(userId);
+            if (userEntry == null) {
+                continue;
+            }
             String nickName = StringUtils.isBlank(userEntry.getNickName()) ? userEntry.getUserName() : userEntry.getNickName();
             String userName = userEntry.getUserName();
             String avatar = AvatarUtils.getAvatar(userEntry.getAvatar(), AvatarType.MIN_AVATAR.getType());
@@ -183,7 +189,7 @@ public class FActivityService {
             map.put("nickName", nickName);
             map.put("userName", userName);
             map.put("avatar", avatar);
-            map.put("userId",userId.toString());
+            map.put("userId", userId.toString());
             sheets.add(map);
         }
         return sheets;
@@ -212,17 +218,17 @@ public class FActivityService {
         pageModel.setPageSize(pageSize);
         pageModel.setTotalPages(totalPages);
         pageModel.setTotalCount(count);
-        pageModel.setResult(getFActivityDtos(activityEntries,userId));
+        pageModel.setResult(getFActivityDtos(activityEntries, userId));
         return pageModel;
     }
 
 
     public boolean signActivity(ObjectId acid, ObjectId userId, String signText) {
-        if (fActivityDao.isUserSignActivity(acid, userId)) {
+        if (fActivityDao.isUserSignedActivity(acid, userId)) {
             return false;
         }
 
-        if(fActivityDao.isUserPublishedActivity(acid,userId)) {
+        if (fActivityDao.isUserPublishedActivity(acid, userId)) {
             return false;
         }
         FActivityEntry activityEntry = fActivityDao.getActivityById(acid);
@@ -232,16 +238,11 @@ public class FActivityService {
     }
 
     public boolean isUserSigned(ObjectId acid, ObjectId userId) {
-        return fActivityDao.isUserSignActivity(acid, userId);
+        return fActivityDao.isUserSignedActivity(acid, userId);
     }
 
     public int countUserSignActivity(ObjectId userId) {
         return fActivityDao.countUserSignActivity(userId);
-    }
-
-    public List<Map<String, Object>> get20SignSheets(ObjectId acid) {
-        List<FASignEntry> signEntries = fActivityDao.get20SignEntry(acid);
-        return getMembers(signEntries);
     }
 
     public int countPublishActivity(ObjectId userId) {
@@ -271,7 +272,7 @@ public class FActivityService {
         pageModel.setPageSize(pageSize);
         pageModel.setTotalPages(totalPages);
         pageModel.setTotalCount(count);
-        pageModel.setResult(getFActivityDtos(activityEntries,userId));
+        pageModel.setResult(getFActivityDtos(activityEntries, userId));
         return pageModel;
     }
 
@@ -298,11 +299,11 @@ public class FActivityService {
         pageModel.setPageSize(pageSize);
         pageModel.setTotalPages(totalPages);
         pageModel.setTotalCount(count);
-        pageModel.setResult(getFActivityDtos(activityEntries,userId));
+        pageModel.setResult(getFActivityDtos(activityEntries, userId));
         return pageModel;
     }
 
-    private List<FActivityDTO> getFActivityDtos(List<FActivityEntry> entryList,ObjectId userId) {
+    private List<FActivityDTO> getFActivityDtos(List<FActivityEntry> entryList, ObjectId userId) {
         List<FActivityDTO> fActivityDTOS = new ArrayList<FActivityDTO>();
         List<MateData> allTags = fMateTypeService.getTags();
         for (FActivityEntry entry : entryList) {
@@ -315,7 +316,7 @@ public class FActivityService {
             if (fActivityDTO.getActivityTheme() == null) {
                 fActivityDTO.setActivityTheme(new MateData(-1, "不限"));
             }
-            if(isUserSigned(entry.getID(),userId)) {
+            if (isUserSigned(entry.getID(), userId)) {
                 fActivityDTO.setYouSigned(true);
             }
             fActivityDTOS.add(fActivityDTO);

@@ -8,6 +8,8 @@
 <layout:override name="head">
     <title>复兰后台管理</title>
     <link rel="stylesheet" type="text/css" href="/static/css/friend/nearby.css">
+    <link href="/static/js/modules/core/0.1.0/fancyBox/jquery.fancybox.css?v=2015041602" rel="stylesheet"
+          type="text/css" media="screen">
 </layout:override>
 <%-- 填充content --%>
 <layout:override name="content">
@@ -174,7 +176,7 @@
         });
     </script>
 
-    <script type="text/javascript" src="/static/js/modules/mate/commonActivity.js"></script>
+    <%--<script type="text/javascript" src="/static/js/modules/mate/commonActivity.js"></script>--%>
 
 
     <!-- js template -->

@@ -95,11 +95,11 @@
         <div class="star">
             <span>{{=value.score}}</span>
             <p>
-                {{~value.scoreList:score:i}}
-                <img src="/static/images/train/star_golden.png">
-                {{~}}
                 {{~value.unScoreList:unscore:i}}
                 <img src="/static/images/train/star_gray.png">
+                {{~}}
+                {{~value.scoreList:score:i}}
+                <img src="/static/images/train/star_golden.png">
                 {{~}}
             </p>
         </div>

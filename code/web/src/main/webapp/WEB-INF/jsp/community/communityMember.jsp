@@ -49,7 +49,7 @@
                     {{~it:value:index}}
                     <li>
                         <div>
-                            <img src="{{=value.avator}}">
+                            <img src="{{=value.avator}}" style="cursor: pointer" onclick="window.open('/community/userData.do?userId={{=value.userId}}')">
                             <p>{{=value.roleStr}}</p>
                             {{?value.playmateFlag==1}}
                             <em></em>

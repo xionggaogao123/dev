@@ -90,7 +90,7 @@
     <script type="text/template" id="instituteTmpl">
     {{~it:value:index}}
     <li>
-        <img src="{{=value.mainPicture}}" onclick="window.open('/train/trainDetail.do?detailId={{=value.id}}&itemId='+$('#trainTop').data($('#trainTop').find('.cur1').text()))">
+        <img src="{{=value.imageUrl}}" onclick="window.open('/train/trainDetail.do?detailId={{=value.id}}&itemId='+$('#trainTop').data($('#trainTop').find('.cur1').text()))">
         <div class="name">{{=value.name}}</div>
         <div class="star">
             <span>{{=value.score}}</span>

@@ -255,7 +255,7 @@
     </div>
     <div class="train-left">
         <div class="train-intro">
-            <img src="${dto.mainPicture}">
+            <img src="${dto.imageUrl}">
             <div class="intro-txt">
                 <div class="p1">${dto.name}</div>
                 <div class="p2 clearfix">

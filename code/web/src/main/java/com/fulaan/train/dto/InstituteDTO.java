@@ -2,6 +2,7 @@ package com.fulaan.train.dto;
 
 import com.pojo.questions.PropertiesObj;
 import com.pojo.train.InstituteEntry;
+import org.apache.commons.lang.StringUtils;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -28,6 +29,7 @@ public class InstituteDTO {
     private double lon;
     private double lat;
     private String distance;
+    private String imageUrl;
 
     public InstituteDTO(){
 
@@ -44,6 +46,7 @@ public class InstituteDTO {
         this.businessTime=entry.getYingYeShiJian();
         this.server=entry.getTeSeFuWu();
         this.score=String.format("%.1f",entry.getScore());
+        this.imageUrl=dealImage(entry.getImageUrl(),entry.getMainPic());
         List<PropertiesObj> types=entry.getTypes();
         for(PropertiesObj obj:types){
             typeNames.add(obj.getName());
@@ -56,7 +59,14 @@ public class InstituteDTO {
             getLocation(entry.getLocations());
         }
 
+    }
 
+    public String dealImage(String imageUrl,String mainPicture){
+        if(StringUtils.isNotBlank(imageUrl)){
+            return  imageUrl;
+        }else{
+            return mainPicture;
+        }
     }
 
     public void getLocation(InstituteEntry.Locations locations){
@@ -199,5 +209,13 @@ public class InstituteDTO {
 
     public void setDistance(String distance) {
         this.distance = distance;
+    }
+
+    public String getImageUrl() {
+        return imageUrl;
+    }
+
+    public void setImageUrl(String imageUrl) {
+        this.imageUrl = imageUrl;
     }
 }

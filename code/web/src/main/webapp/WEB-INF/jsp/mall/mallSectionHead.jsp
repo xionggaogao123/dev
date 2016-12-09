@@ -207,6 +207,27 @@
         <img src="/static/images/entrance/fl_mall_logo.png" style="cursor: pointer" onclick="window.open('/mall')">
         <a href="/" target="_blank" class="ha1">首页</a>
         <a href="/community/communityAllType.do" target="_blank">我的社区</a>
+        <a href="" class="find">
+            <img src="/static/images/forum/nav_eye.png">
+            <span class="nav-txt">发现</span>
+            <span class="sp-nav">
+                <span class="sp1">找家教</span>
+                <span class="sp2">找培训</span>
+                <span class="sp3">在线学习</span>
+                <span class="sp4">亲子活动</span>
+                <span class="sp5">找玩伴</span>
+            </span>
+        </a>
+        <a href="/mall" class="ha2" target="_blank" <c:if test="${k6kt == 0}">style="display: none" </c:if>>教育商城</a>
+        <a id="try" href="/competition" target="_blank" class="ha5">大赛<%--<img src="/static/images/logo_competitioin.png"><img class="hot_a" src="/static/images/forum/hot.png">--%></a>
+        <a id="trr" href="/forum" target="_blank" class="ha4">论坛</a><%--<a id="trr" href="/friend" target="_blank" class="ha4">找伙伴</a><%--<a href="/integrate" target="_blank" class="ha3">特惠</a>--%>
+        <a href="http://www.k6kt.com/" target="_blank" class="ha6">智慧校园</a>
+        <a href="#" class="a-app"><%--<img src="/static/images/forum/forum_phone.png">--%><img class="er" src="/static/images/forum/forum_app.png">手机app</a>
+
+
+
+
+<%--        <a href="/community/communityAllType.do" target="_blank">我的社区</a>
         <a href="/competition" target="_blank" class="ha5">
             <img src="/static/images/logo_competitioin.png">大赛<img class="hot_a" src="/static/images/forum/hot.png">
         </a>
@@ -216,10 +237,15 @@
         <a href="http://www.k6kt.com" target="_blank" class="ha6">智慧校园</a>
         <a href="#" class="a-app"><img src="/static/images/forum/forum_phone.png"><img class="er"
                                                                                        src="/static/images/forum/forum_app.png">
-            手机app</a>
+            手机app</a>--%>
+
+
+
+
+
         <%--<a>手机商城</a>--%>
-        <span onclick="window.open('/mall/register.do')">注册</span>
-        <span id="toplogin">登录</span>
+        <span class="spanss" onclick="window.open('/mall/register.do')">注册</span>
+        <span class="spanss" id="toplogin">登录</span>
     </div>
 </div>
 
@@ -227,7 +253,32 @@
     <div class="header-cont">
         <img src="/static/images/entrance/fl_mall_logo.png">
         <a href="/" target="_blank" class="ha1">首页</a>
-        <a href="/competition" target="_blank" class="ha5">
+        <a href="/community/communityAllType.do" target="_blank">我的社区</a>
+        <a href="" class="find">
+            <img src="/static/images/forum/nav_eye.png">
+            <span class="nav-txt">发现</span>
+            <span class="sp-nav">
+                <span class="sp1">找家教</span>
+                <span class="sp2">找培训</span>
+                <span class="sp3">在线学习</span>
+                <span class="sp4">亲子活动</span>
+                <span class="sp5">找玩伴</span>
+            </span>
+        </a>
+        <a href="/mall" class="ha2" target="_blank">教育商城</a>
+        <a id="try" href="/competition" target="_blank" class="ha5">大赛<%--<img src="/static/images/logo_competitioin.png"><img class="hot_a" src="/static/images/forum/hot.png">--%></a>
+        <a id="trr" href="/forum" target="_blank" class="ha4">论坛</a><%--<a id="trr" href="/friend" target="_blank" class="ha4">找伙伴</a><%--<a href="/integrate" target="_blank" class="ha3">特惠</a>--%>
+        <a href="http://www.k6kt.com/" target="_blank" class="ha6">智慧校园</a>
+        <a href="#" class="a-app"><%--<img src="/static/images/forum/forum_phone.png">--%><img class="er" src="/static/images/forum/forum_app.png">手机app</a>
+
+
+
+
+
+
+
+
+        <%--<a href="/competition" target="_blank" class="ha5">
             <img src="/static/images/logo_competitioin.png">大赛<img class="hot_a" src="/static/images/forum/hot.png">
         </a>
         <a href="/forum" target="_blank" class="ha4">论坛</a>
@@ -236,7 +287,11 @@
         <a href="http://www.k6kt.com" target="_blank" class="ha6">智慧校园</a>
         <a href="#" class="a-app"><img src="/static/images/forum/forum_phone.png"><img class="er"
                                                                                        src="/static/images/forum/forum_app.png">
-            手机app</a>
+            手机app</a>--%>
+
+
+
+
         <%--<a>手机商城
             <div></div>
         </a>--%>

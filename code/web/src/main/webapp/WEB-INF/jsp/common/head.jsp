@@ -94,18 +94,22 @@
         <img src="/static/images/entrance/fl_mall_logo.png" style="cursor: pointer" onclick="window.open('/')">
         <a href="/" target="_blank" class="ha1">首页</a>
         <a href="/community/communityAllType.do" target="_blank">我的社区</a>
-        <a id="try" href="/competition" target="_blank" class="ha5">
-            <img src="/static/images/logo_competitioin.png">大赛<img class="hot_a" src="/static/images/forum/hot.png">
+        <a href="" class="find">
+            <img src="/static/images/forum/nav_eye.png">
+            <span class="nav-txt">发现</span>
+            <span class="sp-nav">
+                <span class="sp1">找家教</span>
+                <span class="sp2">找培训</span>
+                <span class="sp3">在线学习</span>
+                <span class="sp4">亲子活动</span>
+                <span class="sp5">找玩伴</span>
+            </span>
         </a>
-        <a id="trr" href="/forum" target="_blank" class="ha4">论坛</a>
-        <%--<a id="trr" href="/friend" target="_blank" class="ha4">找伙伴</a>--%>
-        <a href="/mall" class="ha2" target="_blank">商城</a>
-        <a href="/integrate" target="_blank" class="ha3">特惠</a>
+        <a href="/mall" class="ha2" target="_blank">教育商城</a>
+        <a id="try" href="/competition" target="_blank" class="ha5">大赛<%--<img src="/static/images/logo_competitioin.png"><img class="hot_a" src="/static/images/forum/hot.png">--%></a>
+        <a id="trr" href="/forum" target="_blank" class="ha4">论坛</a><%--<a id="trr" href="/friend" target="_blank" class="ha4">找伙伴</a><%--<a href="/integrate" target="_blank" class="ha3">特惠</a>--%>
         <a href="http://www.k6kt.com/" target="_blank" class="ha6">智慧校园</a>
-        <a href="#" class="a-app"><img src="/static/images/forum/forum_phone.png">
-            <img class="er" src="/static/images/forum/forum_app.png">
-            手机app
-        </a>
+        <a href="#" class="a-app"><%--<img src="/static/images/forum/forum_phone.png">--%><img class="er" src="/static/images/forum/forum_app.png">手机app</a>
         <c:if test="${login == true}">
             <span<%-- id="logout"--%> style="display: none">[退出]</span>
             <span<%-- id="userName"--%> style="display: none;" onclick="window.open('/forum/userCenter/user.do')">Hi, ${userName}</span>
@@ -131,8 +135,8 @@
             </div>
         </c:if>
         <c:if test="${login == false}">
-            <span onclick="window.open('/mall/register.do')">注册</span>
-            <span id="toplogin">登录</span>
+            <span class="spanss" onclick="window.open('/mall/register.do')">注册</span>
+            <span class="spanss"  id="toplogin">登录</span>
             <a onclick="redirectQ()"><img src="/static/images/forum/Connect_logo_7.png"></a>
             <a onclick="loginWeiXin()"><img src="/static/images/forum/icon24_wx_button.png"/></a>
         </c:if>

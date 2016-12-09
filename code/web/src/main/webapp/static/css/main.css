@@ -5866,12 +5866,20 @@ ol.bjqs-markers li:last-child {
 
 .header-cont > img {
     float: left;
-    margin: 6px 58px 0 0;
+    margin: 6px 48px 0 0;
+}
+
+.header-cont .spanss {
+    float: right;
+    height: 61px;
+    line-height: 61px;
+    margin-left: 32px;
+    cursor: pointer;
 }
 
 .header-cont a img {
     float: left;
-    margin: 22px 5px 0px 0px;
+    margin: 22px 0 0px 0px;
 }
 
 .header-cont .a-app {
@@ -5887,7 +5895,7 @@ ol.bjqs-markers li:last-child {
 .header-cont .a-app .er {
     display: none;
     position: absolute;
-    top: 40px;
+    top: 39px;
     left: 0;
     z-index: 101;
     max-width: 237px !important;
@@ -5910,31 +5918,80 @@ ol.bjqs-markers li:last-child {
 .header-cont a .hot_a {
     position: absolute;
     top: -10px;
-    left: 67px;
+    left: 60px;
     z-index: 1;
-}
-
-.header-cont span {
-    float: right;
-    height: 61px;
-    line-height: 61px;
-    margin-left: 32px;
-    cursor: pointer;
 }
 
 .head-nav-cur {
     background: #E8E8E8;
     color: #3764a0;
 }
-
+/*
 .header-cont span {
     float: right;
     height: 61px;
     line-height: 61px;
     margin-left: 32px;
     cursor: pointer;
+}*/
+.header-cont a.find{
+    position: relative;
 }
-
+.header-cont a.find:hover > .sp-nav{
+    display: block;
+}
+.header-cont a.find .sp-nav{
+    position: absolute;
+    display: none;
+    width: 137px;
+    height: 171px;
+    top:61px;
+    padding: 5px 0;
+    left: 0;
+    border:1px solid #E8E8E8;
+    border-radius: 0 0 4px 4px;
+    box-shadow: 0 2px 2px #999;
+    background: #fff;
+    z-index: 102;
+    transition: all .3s ease;
+}
+.header-cont a.find .nav-txt{
+    color: #FF500D;
+    float: left;
+    padding-left: 6px;
+    width: 43px;
+    height:61px;
+    background: url("/static/images/forum/nav_reatrain.png") no-repeat 42px 28px;
+}
+.header-cont a.find .sp-nav span{
+    display: block;
+    height: 34px;
+    line-height:34px;
+    padding-left: 55px;
+}
+.header-cont a.find .sp-nav .sp1{
+    background: url("/static/images/forum/nav_sp1.png") no-repeat 20px 8px;
+    color: #999;
+}
+.header-cont a.find .sp-nav .sp2{
+    background: url("/static/images/forum/nav_sp2.png") no-repeat 20px 10px;
+    color: #444;
+}
+.header-cont a.find .sp-nav .sp3{
+    background: url("/static/images/forum/nav_sp3.png") no-repeat 20px 10px;
+    color: #999;
+}
+.header-cont a.find .sp-nav .sp4{
+    background: url("/static/images/forum/nav_sp4.png") no-repeat 21px 10px;
+    color: #999;
+}
+.header-cont a.find .sp-nav .sp5{
+    background: url("/static/images/forum/nav_sp5.png") no-repeat 20px 10px;
+    color: #444;
+}
+.header-cont a.find .sp-nav span:hover{
+    background-color: #E8E8E8;
+}
 .header-cont a:hover {
     background: #E8E8E8;
     color: #3764a0;

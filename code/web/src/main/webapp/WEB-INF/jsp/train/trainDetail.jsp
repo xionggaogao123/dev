@@ -78,7 +78,8 @@
                 hints: ['1分 差', '2分 较差', '3分 及格', '4分 满意', '5分 优秀'],
                 targetKeep: true,
                 width: 150,
-                score:5
+                number:5,
+                dv
             })
 
             $('#toplogin').click(function () {//登录
@@ -171,7 +172,7 @@
     </script>
 </head>
 <body class="gray-cont" instituteId="${instituteId}" itemName="${itemDto.name}">
-<div class="header">
+<%--<div class="header">
     <div class="header-cont">
         <img src="/static/images/entrance/fl_mall_logo.png" style="cursor: pointer" onclick="window.open('/')">
         <a href="/" target="_blank" class="ha1">首页</a>
@@ -180,7 +181,7 @@
             <img src="/static/images/logo_competitioin.png">大赛<img class="hot_a" src="/static/images/forum/hot.png">
         </a>
         <a id="trr" href="/forum" target="_blank" class="ha4">论坛</a>
-        <%--<a id="trr" href="/friend" target="_blank" class="ha4">找伙伴</a>--%>
+        &lt;%&ndash;<a id="trr" href="/friend" target="_blank" class="ha4">找伙伴</a>&ndash;%&gt;
         <a href="/mall" class="ha2" target="_blank">商城</a>
         <a href="/integrate" target="_blank" class="ha3">特惠</a>
         <a href="http://www.k6kt.com/" target="_blank" class="ha6">智慧校园</a>
@@ -189,8 +190,8 @@
             手机app
         </a>
         <c:if test="${login == true}">
-            <span<%-- id="logout"--%> style="display: none">[退出]</span>
-            <span<%-- id="userName"--%> style="display: none;"
+            <span&lt;%&ndash; id="logout"&ndash;%&gt; style="display: none">[退出]</span>
+            <span&lt;%&ndash; id="userName"&ndash;%&gt; style="display: none;"
                                         onclick="window.open('/forum/userCenter/user.do')">Hi, ${userName}</span>
             <div class="login-already">
                 <div class="d1-set">
@@ -225,8 +226,8 @@
             <a onclick="loginWeiXin()"><img src="/static/images/forum/icon24_wx_button.png"/></a>
         </c:if>
     </div>
-</div>
-<%--<%@ include file="../common/head.jsp" %>--%>
+</div>--%>
+<%@ include file="../common/head.jsp" %>
 <div class="container" style="padding-top: 21px;width: 1100px;">
     <div class="train-nav" id="trainTop">
         <%--<span>找家教</span>--%>

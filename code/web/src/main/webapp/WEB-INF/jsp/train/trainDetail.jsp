@@ -78,6 +78,7 @@
                 hints: ['1分 差', '2分 较差', '3分 及格', '4分 满意', '5分 优秀'],
                 targetKeep: true,
                 width: 150,
+                score:5
             })
 
             $('#toplogin').click(function () {//登录
@@ -305,7 +306,7 @@
                     <div class="star-pj">
                         <p>星级评分</p>
                         <p id="p-star"></p>
-                        <p id="p-rel"></p>
+                        <p id="p-rel">5分 优秀</p>
                     </div>
                 </div>
                 <ul class="ul-train-pj" id="trainComment">

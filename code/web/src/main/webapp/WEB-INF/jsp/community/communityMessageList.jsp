@@ -297,7 +297,9 @@
                         class="sp-more">{{?value.content.length>=143}}...<em class="spread">[展开全文]</em>{{?}}</span></p>
                 <p class="p-img clearfix">
                     {{~value.images:image:i}}
-                    <img src="{{=image.url}}">
+                    <a class="fancybox" style="cursor:pointer;" href="{{=image.url}}" data-fancybox-group="home" title="预览">
+                          <img src="{{=image.url}}?imageView2/1/w/100/h/100"><br/>
+                    </a>
                     {{~}}
                 </p>
                 <p class="p-infor">
@@ -376,6 +378,14 @@
     </li>
     {{~}}
 </script>
+<script type="text/javascript" src="/static/js/modules/core/0.1.0/fancyBox/jquery.fancybox.js"></script>
+<script type="text/javascript">
+    $(document).ready(function () {
+        $(".fancybox").fancybox({});
+
+    })
+</script>
+
 
     <!-- end js template -->
 </layout:override>

@@ -213,7 +213,7 @@ public class TrainController extends BaseController {
 //            }
 //        }
         if(distance < 0) {
-            distance = 100000;
+            distance = 20000;
         } else {
             distance *= 500;
         }
@@ -290,12 +290,12 @@ public class TrainController extends BaseController {
                 entry.setScore(score);
                 entry.setComment(comment);
                 criticismService.saveEntry(entry);
-//                saveInstituteEntry(instituteId);
+                saveInstituteEntry(instituteId);
                 return RespObj.SUCCESS("评价成功!");
             }
         } else {
             criticismService.saveOrUpdate(comment, userId, instituteId, score);
-//            saveInstituteEntry(instituteId);
+            saveInstituteEntry(instituteId);
             return RespObj.SUCCESS("评价成功!");
         }
 

@@ -63,5 +63,8 @@
         <li>
             <a href="/admin/batchImage.do">培训图片管理</a>
         </li>
+        <li>
+            <a href="/admin/manageCriticism.do">培训机构管理</a>
+        </li>
     </ul>
 </div>

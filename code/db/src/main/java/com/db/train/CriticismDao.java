@@ -20,10 +20,11 @@ public class CriticismDao extends BaseDao {
         save(MongoFacroty.getAppDB(), Constant.COLLECTION_TRAIN_COMMENT,entry.getBaseEntry());
     }
 
-    public List<CriticismEntry> getCriticismEntries(ObjectId instituteId,int page,int pageSize){
+    public List<CriticismEntry> getCriticismEntries(ObjectId instituteId,int page,int pageSize,int remove){
         List<CriticismEntry> entries=new ArrayList<CriticismEntry>();
         BasicDBObject query=new BasicDBObject()
-                .append("sid",instituteId);
+                .append("sid",instituteId)
+                .append("ir",remove);
         BasicDBObject order=new BasicDBObject()
                 .append(Constant.ID,-1)
                 .append("sc",-1);
@@ -36,17 +37,24 @@ public class CriticismDao extends BaseDao {
         return entries;
     }
 
-    public int countCriticismEntries(ObjectId instituteId){
+    public int countCriticismEntries(ObjectId instituteId,int remove){
         BasicDBObject query=new BasicDBObject()
-                .append("sid",instituteId);
+                .append("sid",instituteId)
+                .append("ir",remove);
         return count(MongoFacroty.getAppDB(), Constant.COLLECTION_TRAIN_COMMENT,query);
+    }
+
+
+    public void dealCriticism(ObjectId id,int remove){
+        BasicDBObject query=new BasicDBObject(Constant.ID,id);
+        BasicDBObject updateValue=new BasicDBObject(Constant.MONGO_SET,new BasicDBObject("ir",remove));
+        update(MongoFacroty.getAppDB(),Constant.COLLECTION_TRAIN_COMMENT,query,updateValue);
     }
 
     public CriticismEntry getEntry(ObjectId instituteId,ObjectId userId){
         BasicDBObject query=new BasicDBObject()
                 .append("sid",instituteId)
-                .append("uid",userId)
-                .append("ir",0);
+                .append("uid",userId);
         DBObject dbObject=findOne(MongoFacroty.getAppDB(), Constant.COLLECTION_TRAIN_COMMENT,query);
         if(null!=dbObject){
             return new CriticismEntry((BasicDBObject)dbObject);

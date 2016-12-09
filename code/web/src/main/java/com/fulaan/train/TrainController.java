@@ -3,6 +3,7 @@ package com.fulaan.train;
 import com.fulaan.annotation.LoginInfo;
 import com.fulaan.annotation.ObjectIdType;
 import com.fulaan.annotation.SessionNeedless;
+import com.fulaan.annotation.UserRoles;
 import com.fulaan.cache.RedisUtils;
 import com.fulaan.controller.BaseController;
 import com.fulaan.playmate.service.MateService;
@@ -22,6 +23,7 @@ import com.pojo.questions.PropertiesObj;
 import com.pojo.train.CriticismEntry;
 import com.pojo.train.InstituteEntry;
 import com.pojo.train.RegionEntry;
+import com.pojo.user.UserRole;
 import com.sys.constants.Constant;
 import com.sys.utils.QiniuFileUtils;
 import com.sys.utils.RespObj;
@@ -113,6 +115,23 @@ public class TrainController extends BaseController {
     }
 
 
+    @RequestMapping("/create2dsphereIndex")
+    @ResponseBody
+    @UserRoles(UserRole.DISCUSS_MANAGER)
+    public RespObj create2dsphereIndex() {
+        instituteService.create2dsphereIndex();
+        return RespObj.SUCCESS;
+    }
+
+
+    @RequestMapping("/dealCriticism")
+    @ResponseBody
+    @UserRoles(UserRole.DISCUSS_MANAGER)
+    public RespObj dealCriticism(@ObjectIdType ObjectId id,int remove) {
+        criticismService.dealCriticism(id,remove);
+        return RespObj.SUCCESS;
+    }
+
 
 
 
@@ -194,7 +213,7 @@ public class TrainController extends BaseController {
 //            }
 //        }
         if(distance < 0) {
-            distance = 100000;
+            distance = 20000;
         } else {
             distance *= 500;
         }
@@ -238,11 +257,12 @@ public class TrainController extends BaseController {
     @SessionNeedless
     @ResponseBody
     public RespObj getTrainComments(@PathVariable @ObjectIdType ObjectId instituteId,
+                                    @RequestParam(defaultValue = "0",required = false) int remove,
                                     @RequestParam(defaultValue = "1", required = false) int page,
                                     @RequestParam(defaultValue = "10", required = false) int pageSize) {
         Map<String, Object> map = new HashMap<String, Object>();
-        List<CriticismDTO> dtos = criticismService.getCriticismDTOs(instituteId, page, pageSize);
-        int count = criticismService.countCriticisms(instituteId);
+        List<CriticismDTO> dtos = criticismService.getCriticismDTOs(instituteId, page, pageSize,remove);
+        int count = criticismService.countCriticisms(instituteId,remove);
         map.put("list", dtos);
         map.put("count", count);
         map.put("page", page);
@@ -266,15 +286,16 @@ public class TrainController extends BaseController {
             if (remove == 0) {
                 return RespObj.FAILD("已经评价过了!");
             } else {
+                entry.setRemove(0);
                 entry.setScore(score);
                 entry.setComment(comment);
                 criticismService.saveEntry(entry);
-//                saveInstituteEntry(instituteId);
+                saveInstituteEntry(instituteId);
                 return RespObj.SUCCESS("评价成功!");
             }
         } else {
             criticismService.saveOrUpdate(comment, userId, instituteId, score);
-//            saveInstituteEntry(instituteId);
+            saveInstituteEntry(instituteId);
             return RespObj.SUCCESS("评价成功!");
         }
 
@@ -283,7 +304,7 @@ public class TrainController extends BaseController {
     public void saveInstituteEntry(ObjectId instituteId) {
         int count = 0;
         InstituteEntry instituteEntry = instituteService.find(instituteId);
-        List<CriticismDTO> dtos = criticismService.getCriticismDTOs(instituteId, 1, 500);
+        List<CriticismDTO> dtos = criticismService.getCriticismDTOs(instituteId, 1, 500,0);
         for (CriticismDTO criticismDTO : dtos) {
             count += criticismDTO.getScore();
         }
@@ -322,6 +343,26 @@ public class TrainController extends BaseController {
         return RespObj.SUCCESS;
     }
 
+    /**
+     * 数据进行清理
+     * @param parentId
+     * @return
+     */
+    @RequestMapping("/replaceRegion/{parentId}")
+    @ResponseBody
+    public RespObj replaceRegion(@PathVariable @ObjectIdType ObjectId parentId){
+        List<RegionDTO> regionDTOs=regionService.getRegionList(3,parentId);
+        for(RegionDTO regionDTO:regionDTOs){
+            List<RegionDTO> regionDTOList=regionService.getRegionList(4,new ObjectId(regionDTO.getId()));
+            if(regionDTOList.size()>0){
+                for(RegionDTO dto:regionDTOList){
+                    instituteService.updateRegionData(dto.getName(),dto.getId());
+                }
+            }
+            instituteService.updateRegionData(regionDTO.getName(),regionDTO.getId());
+        }
+        return RespObj.SUCCESS;
+    }
 
     /**
      * 处理institute数据

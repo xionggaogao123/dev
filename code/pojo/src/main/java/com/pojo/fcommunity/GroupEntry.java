@@ -140,6 +140,6 @@ public class GroupEntry extends BaseDBObject {
   }
 
   public int getIsName(){
-    return getSimpleIntegerValue("ism");
+    return getSimpleIntegerValueDef("ism",0);
   }
 }

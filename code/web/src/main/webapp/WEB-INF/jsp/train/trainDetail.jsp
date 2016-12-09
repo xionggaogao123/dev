@@ -344,7 +344,7 @@
                     {{~}}
                 </script>
             </div>
-            <div class="new-page-links" hidden></div>
+            <div class="new-page-links"></div>
         </div>
     </div>
     <div class="train-right" id="trainRight">
@@ -367,7 +367,7 @@
             <script type="text/template" id="instituteTmpl">
                 {{~it:value:index}}
                 <li class="clearfix">
-                    <img src="{{=value.mainPicture}}"
+                    <img src="{{=value.mainPicture}}" style="cursor: pointer"
                          onclick="window.open('/train/trainDetail.do?detailId={{=value.id}}&itemId='+$('#trainTop').data($('#trainTop').find('.cur1').text()))">
                     <div class="hot-infor">
                         <p>{{=value.name}}</p>

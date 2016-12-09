@@ -37,14 +37,14 @@ public class CriticismService {
         criticismDao.saveOrUpdate(entry);
     }
 
-    public int countCriticisms(ObjectId instituteId){
-       return criticismDao.countCriticismEntries(instituteId);
+    public int countCriticisms(ObjectId instituteId,int remove){
+       return criticismDao.countCriticismEntries(instituteId,remove);
     }
 
-    public List<CriticismDTO> getCriticismDTOs(ObjectId instituteId,int page,int pageSize){
+    public List<CriticismDTO> getCriticismDTOs(ObjectId instituteId,int page,int pageSize,int remove){
         List<CriticismDTO> dtos=new ArrayList<CriticismDTO>();
         List<ObjectId> userIds=new ArrayList<ObjectId>();
-        List<CriticismEntry> entries=criticismDao.getCriticismEntries(instituteId, page, pageSize);
+        List<CriticismEntry> entries=criticismDao.getCriticismEntries(instituteId, page, pageSize,remove);
         for(CriticismEntry entry:entries){
             userIds.add(entry.getUserId());
         }
@@ -74,5 +74,9 @@ public class CriticismService {
 
     public CriticismEntry getEntry(ObjectId instituteId,ObjectId userId){
         return  criticismDao.getEntry(instituteId, userId);
+    }
+
+    public void dealCriticism(ObjectId id,int remove){
+        criticismDao.dealCriticism(id,remove);
     }
 }

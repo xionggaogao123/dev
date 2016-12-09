@@ -170,6 +170,18 @@
         <button class="btn2">取消</button>
     </p>
 </div>
+
+<div class="sign-alert si-s3 alert-diglog">
+    <p class="alert-title">提示<em>×</em></p>
+    <div class="alert-main">
+        <span>确认要取消和<em class="em-f">shawn</em>的玩伴关系吗？</span>
+    </div>
+    <div class="alert-btn">
+        <button class="alert-btn-sure">确认</button>
+        <button class="alert-btn-esc">取消</button>
+    </div>
+</div>
+
 <div class="bg"></div>
 
 <script src="/static/js/sea.js"></script>

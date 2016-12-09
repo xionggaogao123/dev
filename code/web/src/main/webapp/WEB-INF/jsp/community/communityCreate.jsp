@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
     <meta charset="utf-8">
-    <title>个人空间</title>
+    <title>创建社区</title>
     <link rel="stylesheet" type="text/css" href="/static/css/community/community.css">
     <link rel="stylesheet" type="text/css" href="/static/css/friend/nearby.css">
 </head>
@@ -181,6 +181,18 @@
         <button class="btn2">取消</button>
     </p>
 </div>
+
+<div class="sign-alert si-s3 alert-diglog">
+    <p class="alert-title">提示<em>×</em></p>
+    <div class="alert-main">
+        <span>确认要取消和<em class="em-f">shawn</em>的玩伴关系吗？</span>
+    </div>
+    <div class="alert-btn">
+        <button class="alert-btn-sure" id="sureCancel">确认</button>
+        <button class="alert-btn-esc">取消</button>
+    </div>
+</div>
+
 <div class="bg"></div>
 <script type="text/javascript" src="/static/js/modules/forum/jquery-1.11.1.js"></script>
 <script type="text/javascript"

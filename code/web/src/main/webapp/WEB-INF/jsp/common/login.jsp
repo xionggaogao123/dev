@@ -76,7 +76,7 @@
                 } else {
                     $('#k6kt').hide();
                 }
-                showLoginTitle(true);
+//                showLoginTitle(true);
                 $('#password').val('');
                 window.location.href = window.location.href;
             } else {

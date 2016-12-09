@@ -11,6 +11,8 @@ define(['jquery', 'pagination', 'common'], function (require, exports, module) {
     var communityAllType = {};
 
     var activity_cur = 1;
+    var acid = '';
+    var select = '';
     communityAllType.init = function () {
         getMyCommunity();
 
@@ -26,6 +28,56 @@ define(['jquery', 'pagination', 'common'], function (require, exports, module) {
 
     $(document).ready(function () {
 
+        $('body').on('click', '.alert-diglog em,.alert-diglog .alert-btn-esc', function () {
+
+            $('.alert-diglog').fadeOut();
+            $('.bg').fadeOut();
+        });
+
+        $('body').on('click', '#ul-activity-signed li button', function () {
+
+            $('.alert-diglog').fadeIn();
+            $('.bg').fadeIn();
+
+            $('.alert-diglog .alert-main span').html('确定要取消此次报名吗？');
+            acid = $(this).attr('value');
+            select = 'signed';
+        });
+
+        $('body').on('click', '#ul-activity-published li button', function () {
+            $('.alert-diglog').fadeIn();
+            $('.bg').fadeIn();
+            $('.alert-diglog .alert-main span').html('确定要取消此次活动吗？');
+            acid = $(this).attr('value');
+            select = 'published';
+        });
+
+        $('.alert-diglog .alert-btn-sure').click(function () {
+            var requestParm = {
+                acid: acid
+            };
+
+            if(select == 'signed') {
+                common.getData("/factivity/cancelSign.do", requestParm, function (resp) {
+                    if (resp.code == '200') {
+                        $('.alert-diglog').fadeOut();
+                        $('.bg').fadeOut();
+                    } else {
+                        alert(resp.message);
+                    }
+                });
+            } else {
+                common.getData("/factivity/cancelPublish.do", requestParm, function (resp) {
+                    if (resp.code == '200') {
+                        $('.alert-diglog').fadeOut();
+                        $('.bg').fadeOut();
+                    } else {
+                        alert(resp.message);
+                    }
+                });
+            }
+        });
+
         $(".hx-notice").click(function () {
             window.open('/webim/index', '_blank');
         });
@@ -37,13 +89,6 @@ define(['jquery', 'pagination', 'common'], function (require, exports, module) {
         $('body').on('click', '.collect', function () {
             collect($(this));
         });
-
-        $('body').on('click','.alert-diglog em,.alert-diglog .alert-btn-esc',function () {
-
-            $('.alert-diglog').fadeOut();
-            $('.bg').fadeOut();
-        });
-
 
         hx_update();
         setInterval(hx_update, 1000 * 60);
@@ -97,7 +142,7 @@ define(['jquery', 'pagination', 'common'], function (require, exports, module) {
             renderActivity();
         });
 
-        if($('#target').val() == 'activity') {
+        if ($('#target').val() == 'activity') {
 
             $('#my-community-span').removeClass('hd-green-cur');
             $('#myActivity-span').addClass('hd-green-cur');
@@ -189,7 +234,7 @@ define(['jquery', 'pagination', 'common'], function (require, exports, module) {
         var init = true;
         common.getData("/factivity/published.do", requestParm, function (resp) {
             if (resp.code == '200') {
-                if(resp.message.result.length <= 0 ) {
+                if (resp.message.result.length <= 0) {
                     $('#activity-published-dev img').show();
                     $('#ul-activity-published').hide();
                     $('.published-page').hide();
@@ -213,35 +258,8 @@ define(['jquery', 'pagination', 'common'], function (require, exports, module) {
                     }
                 });
                 template('#activityBox', '#ul-activity-published', resp.message.result);
-
                 $('#ul-activity-published li button').each(function () {
-
                     $(this).text('取消活动');
-                    var acid = $(this).attr('value');
-                    var me = $(this);
-                    $(this).click(function () {
-
-                        $('.alert-diglog').fadeIn();
-                        $('.bg').fadeIn();
-
-                        $('.alert-diglog .alert-main span').html('确定要取消此次活动吗？');
-
-                        $('.alert-diglog .alert-btn-sure').click(function () {
-                            var requestParm = {
-                                acid: acid
-                            };
-                            common.getData("/factivity/cancelPublish.do", requestParm, function (resp) {
-                                if (resp.code == '200') {
-                                    me.parent().hide();
-
-                                    $('.alert-diglog').fadeOut();
-                                    $('.bg').fadeOut();
-                                } else {
-                                    alert(resp.message);
-                                }
-                            });
-                        });
-                    });
                 });
             }
         });
@@ -255,7 +273,7 @@ define(['jquery', 'pagination', 'common'], function (require, exports, module) {
         common.getData("/factivity/signed.do", requestParm, function (resp) {
             if (resp.code == '200') {
 
-                if(resp.message.result.length <= 0 ) {
+                if (resp.message.result.length <= 0) {
                     $('#activity-signed-div img').show();
                     $('#ul-activity-signed').hide();
                     $('div.signed-page').hide();
@@ -279,33 +297,6 @@ define(['jquery', 'pagination', 'common'], function (require, exports, module) {
                     }
                 });
                 template('#activityBox', '#ul-activity-signed', resp.message.result);
-
-                $('#ul-activity-signed li button').click(function () {
-
-                    $('.alert-diglog').fadeIn();
-                    $('.bg').fadeIn();
-
-                    $('.alert-diglog .alert-main span').html('确定要取消此次报名吗？');
-
-                    var me = $(this);
-                    var acid = $(this).attr('value');
-
-                    $('.alert-diglog .alert-btn-sure').click(function (){
-                        var requestParm = {
-                            acid: acid
-                        };
-                        common.getData("/factivity/cancelSign.do", requestParm, function (resp) {
-                            if (resp.code == '200') {
-                                me.parent().hide();
-                                $('.alert-diglog').fadeOut();
-                                $('.bg').fadeOut();
-                                me.parent().hide();
-                            } else {
-                                alert(resp.message);
-                            }
-                        });
-                    });
-                });
             } else {
                 $('#activity-signed-div img').show();
                 $('#ul-activity-signed').hide();
@@ -321,7 +312,7 @@ define(['jquery', 'pagination', 'common'], function (require, exports, module) {
         var init = true;
         common.getData("/factivity/attended.do", requestParm, function (resp) {
             if (resp.code == '200') {
-                if(resp.message.result.length <= 0 ) {
+                if (resp.message.result.length <= 0) {
                     $('#activity-attended-div img').show();
                     $('#ul-activity-attended').hide();
                     $('.attended-page').hide();

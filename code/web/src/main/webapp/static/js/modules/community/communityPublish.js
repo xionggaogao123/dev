@@ -19,9 +19,7 @@ define(['jquery', 'pagination', 'common'], function (require, exports, module) {
         judgeMember();
 
         getPublishedActivitys();
-
         getSignedActivitys();
-
         getAttendActivitys();
     };
 
@@ -38,65 +36,62 @@ define(['jquery', 'pagination', 'common'], function (require, exports, module) {
             $('.container .hd-cont-f2').show();
         });
 
-        $('body').on('click','.alert-diglog em,.alert-diglog .alert-btn-esc',function () {
+        $('body').on('click', '.alert-diglog em,.alert-diglog .alert-btn-esc', function () {
 
             $('.alert-diglog').fadeOut();
             $('.bg').fadeOut();
         });
 
-        $('body').on('click','#ul-activity-signed li button',function () {
+        $('body').on('click', '#ul-activity-signed li button', function () {
 
             $('.alert-diglog').fadeIn();
             $('.bg').fadeIn();
 
             $('.alert-diglog .alert-main span').html('确定要取消此次报名吗？');
-
-            var me = $(this);
-            var acid = $(this).attr('value');
-
-            $('.alert-diglog .alert-btn-sure').click(function (){
-                var requestParm = {
-                    acid: acid
-                };
-                common.getData("/factivity/cancelSign.do", requestParm, function (resp) {
-                    if (resp.code == '200') {
-                        me.parent().hide();
-                        $('.alert-diglog').fadeOut();
-                        $('.bg').fadeOut();
-                        me.parent().hide();
-                    } else {
-                        alert(resp.message);
-                    }
-                });
-            });
+            acid = $(this).attr('value');
+            select = 'signed';
         });
 
-
-        $('body').on('click','#ul-activity-published li button',function () {
-            var acid = $(this).attr('value');
-
+        $('body').on('click', '#ul-activity-published li button', function () {
             $('.alert-diglog').fadeIn();
             $('.bg').fadeIn();
-
-            var me = $(this);
-
             $('.alert-diglog .alert-main span').html('确定要取消此次活动吗？');
+            acid = $(this).attr('value');
+            select = 'published';
+        });
 
-            $('.alert-diglog .alert-btn-sure').click(function () {
-                var requestParm = {
-                    acid: acid
-                };
-                common.getData("/factivity/cancelPublish.do", requestParm, function (resp) {
+        $('.alert-diglog .alert-btn-sure').click(function () {
+            var requestParm = {
+                acid: acid
+            };
+
+            if(select == 'signed') {
+                common.getData("/factivity/cancelSign.do", requestParm, function (resp) {
                     if (resp.code == '200') {
-                        me.parent().hide();
-
                         $('.alert-diglog').fadeOut();
                         $('.bg').fadeOut();
+
+                        getPublishedActivitys();
+                        getSignedActivitys();
+                        getAttendActivitys();
                     } else {
                         alert(resp.message);
                     }
                 });
-            });
+            } else {
+                common.getData("/factivity/cancelPublish.do", requestParm, function (resp) {
+                    if (resp.code == '200') {
+                        $('.alert-diglog').fadeOut();
+                        $('.bg').fadeOut();
+
+                        getPublishedActivitys();
+                        getSignedActivitys();
+                        getAttendActivitys();
+                    } else {
+                        alert(resp.message);
+                    }
+                });
+            }
         });
 
 

@@ -319,7 +319,7 @@ public class TrainController extends BaseController {
     @RequestMapping("/batchDealImage")
     @ResponseBody
     public RespObj batchDealImage(@RequestParam(defaultValue = "1", required = false) int page,
-                                  @RequestParam(defaultValue = "1000", required = false) int pageSize){
+                                  @RequestParam(defaultValue = "100", required = false) int pageSize){
         try{
             List<InstituteEntry> entries = instituteService.findInstituteEntries(page, pageSize);
             for(InstituteEntry entry : entries) {

@@ -408,6 +408,8 @@ define(['jquery', 'pagination', 'common'], function (require, exports, module) {
 
                 var count = $('.act-already-push i').text();
                 $('.act-already-push i').text(++count);
+                getActivitys();
+
             }
              else {
                 alert(resp.message);

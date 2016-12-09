@@ -118,7 +118,6 @@ define(['jquery', 'pagination', 'common'], function (require, exports, module) {
                 ons: onsLi
             };
 
-            alert(JSON.stringify(requestParm));
             common.getData('/mate/updateMateData.do', requestParm, function (resp) {
                 if (resp.code == '200') {
                     $('.wind-ons').fadeOut();
@@ -286,6 +285,7 @@ define(['jquery', 'pagination', 'common'], function (require, exports, module) {
                 for (var i = 0; i < resp.message.times.length; i++) {
                     str += '<span code="' + resp.message.times[i].code + '">' + resp.message.times[i].data + '</span>';
                 }
+                $('.ons-div').empty();
                 $('.ons-div').append(str);
             }
         });

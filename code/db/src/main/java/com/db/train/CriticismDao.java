@@ -54,8 +54,7 @@ public class CriticismDao extends BaseDao {
     public CriticismEntry getEntry(ObjectId instituteId,ObjectId userId){
         BasicDBObject query=new BasicDBObject()
                 .append("sid",instituteId)
-                .append("uid",userId)
-                .append("ir",0);
+                .append("uid",userId);
         DBObject dbObject=findOne(MongoFacroty.getAppDB(), Constant.COLLECTION_TRAIN_COMMENT,query);
         if(null!=dbObject){
             return new CriticismEntry((BasicDBObject)dbObject);

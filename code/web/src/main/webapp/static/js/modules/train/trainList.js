@@ -44,6 +44,7 @@ define(['jquery', 'pagination', 'common'], function (require, exports, module) {
 			$('.city-name').text($(this).attr('regionName'));
 			$('.d2f span').removeClass('cur2');
 			$('.d2f span').eq(0).addClass('cur2');
+            $('#regular').val("");
 			getSecondRegions($(this));
 			getInstituteList(page);
 		})

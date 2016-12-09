@@ -286,6 +286,7 @@ public class TrainController extends BaseController {
             if (remove == 0) {
                 return RespObj.FAILD("已经评价过了!");
             } else {
+                entry.setRemove(0);
                 entry.setScore(score);
                 entry.setComment(comment);
                 criticismService.saveEntry(entry);

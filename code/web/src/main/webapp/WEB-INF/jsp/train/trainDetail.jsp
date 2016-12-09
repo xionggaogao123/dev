@@ -343,7 +343,7 @@
                     {{~}}
                 </script>
             </div>
-            <div class="new-page-links" hidden></div>
+            <div class="new-page-links"></div>
         </div>
     </div>
     <div class="train-right" id="trainRight">

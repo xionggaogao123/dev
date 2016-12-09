@@ -735,7 +735,7 @@ define(['jquery', 'pagination', 'common'], function (require, exports, module) {
     }
 
     function addShareVideos(vedios) {
-        $('.content-DV').each(function () {
+        $('.uploadContent').each(function () {
             var item = {};
             item.vurl = $(this).find('img').eq(0).attr('vurl');
             item.vimage = $(this).find('img').eq(0).attr('src');

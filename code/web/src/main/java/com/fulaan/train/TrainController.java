@@ -343,6 +343,26 @@ public class TrainController extends BaseController {
         return RespObj.SUCCESS;
     }
 
+    /**
+     * 数据进行清理
+     * @param parentId
+     * @return
+     */
+    @RequestMapping("/replaceRegion/{parentId}")
+    @ResponseBody
+    public RespObj replaceRegion(@PathVariable @ObjectIdType ObjectId parentId){
+        List<RegionDTO> regionDTOs=regionService.getRegionList(3,parentId);
+        for(RegionDTO regionDTO:regionDTOs){
+            List<RegionDTO> regionDTOList=regionService.getRegionList(4,new ObjectId(regionDTO.getId()));
+            if(regionDTOList.size()>0){
+                for(RegionDTO dto:regionDTOList){
+                    instituteService.updateRegionData(dto.getName(),dto.getId());
+                }
+            }
+            instituteService.updateRegionData(regionDTO.getName(),regionDTO.getId());
+        }
+        return RespObj.SUCCESS;
+    }
 
     /**
      * 处理institute数据

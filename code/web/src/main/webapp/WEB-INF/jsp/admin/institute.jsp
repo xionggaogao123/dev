@@ -10,6 +10,9 @@
     <div id="r-result">请输入:<input type="text" id="suggestId" size="20" style="width:150px;" /></div>
     <button id="submit">提交</button>
     <button id="generateIndex">生成索引</button>
+
+    <div id="r-result">对数据的处理:<input type="text" id="parentId" size="20" style="width:150px;" /></div>
+    <button id="replaceRegion">数据处理</button>
 </layout:override>
 <%-- 填充script --%>
 <layout:override name="script">
@@ -20,6 +23,24 @@
     <script type="text/javascript">
 
         $(function(){
+
+            $('#replaceRegion').click(function(){
+                var parentId=$('#parentId').val();
+                $.ajax({
+                    type: "GET",
+                    data: {},
+                    url: '/train/replaceRegion/'+parentId,
+                    async: false,
+                    dataType: "json",
+                    contentType: "application/x-www-form-urlencoded; charset=UTF-8",
+                    success: function (resp) {
+                        if(resp.code=="200"){
+                            alert("数据处理成功了!");
+                        }
+                    }
+                });
+            });
+
 
             $('#generateIndex').click(function(){
                 $.ajax({

@@ -108,4 +108,8 @@ public class InstituteService {
         instituteDao.create2dsphereIndex(MongoFacroty.getAppDB(), Constant.COLLECTION_TRAIN_INSTITUTE);
     }
 
+    public void updateRegionData(String regionName,String regionId){
+        instituteDao.updateRegionData(regionName,regionId);
+    }
+
 }

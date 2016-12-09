@@ -118,4 +118,11 @@ public class InstituteDao extends BaseDao {
     }
 
 
+    public void updateRegionData(String regionName,String id){
+       BasicDBObject query=new BasicDBObject("ars.nm",regionName);
+       BasicDBObject updateValue=new BasicDBObject(Constant.MONGO_SET,new BasicDBObject("ars.$.id",id));
+       update(MongoFacroty.getAppDB(),Constant.COLLECTION_TRAIN_INSTITUTE,query,updateValue);
+    }
+
+
 }

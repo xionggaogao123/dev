@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
     <meta charset="utf-8">
-    <title>个人空间</title>
+    <title>创建社区</title>
     <link rel="stylesheet" type="text/css" href="/static/css/community/community.css">
     <link rel="stylesheet" type="text/css" href="/static/css/friend/nearby.css">
 </head>

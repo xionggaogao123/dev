@@ -207,15 +207,15 @@
         <img src="/static/images/entrance/fl_mall_logo.png" style="cursor: pointer" onclick="window.open('/mall')">
         <a href="/" target="_blank" class="ha1">首页</a>
         <a href="/community/communityAllType.do" target="_blank">我的社区</a>
-        <a href="" class="find">
+        <a href="#" class="find">
             <img src="/static/images/forum/nav_eye.png">
             <span class="nav-txt">发现</span>
             <span class="sp-nav">
                 <span class="sp1">找家教</span>
-                <span class="sp2">找培训</span>
+                <span class="sp2" onclick="window.open('/train/trainList')">找培训</span>
                 <span class="sp3">在线学习</span>
                 <span class="sp4">亲子活动</span>
-                <span class="sp5">找玩伴</span>
+                <span class="sp5" onclick="window.open('/mate/friend')">找玩伴</span>
             </span>
         </a>
         <a href="/mall" class="ha2" target="_blank" <c:if test="${k6kt == 0}">style="display: none" </c:if>>教育商城</a>

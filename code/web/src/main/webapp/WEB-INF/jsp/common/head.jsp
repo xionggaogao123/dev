@@ -103,7 +103,7 @@
         <img src="/static/images/entrance/fl_mall_logo.png" style="cursor: pointer" onclick="window.open('/')">
         <a href="/" target="_blank" class="ha1">首页</a>
         <a href="/community/communityAllType.do" target="_blank">我的社区</a>
-        <a href="" class="find">
+        <a href="#" class="find">
             <img src="/static/images/forum/nav_eye.png">
             <span class="nav-txt">发现</span>
             <span class="sp-nav">

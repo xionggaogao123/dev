@@ -124,11 +124,11 @@ public class TrainController extends BaseController {
     }
 
 
-    @RequestMapping("/removeCriticism")
+    @RequestMapping("/dealCriticism")
     @ResponseBody
     @UserRoles(UserRole.DISCUSS_MANAGER)
-    public RespObj removeCriticism(@ObjectIdType ObjectId id) {
-        criticismService.removeCriticism(id);
+    public RespObj dealCriticism(@ObjectIdType ObjectId id,int remove) {
+        criticismService.dealCriticism(id,remove);
         return RespObj.SUCCESS;
     }
 
@@ -257,11 +257,12 @@ public class TrainController extends BaseController {
     @SessionNeedless
     @ResponseBody
     public RespObj getTrainComments(@PathVariable @ObjectIdType ObjectId instituteId,
+                                    @RequestParam(defaultValue = "0",required = false) int remove,
                                     @RequestParam(defaultValue = "1", required = false) int page,
                                     @RequestParam(defaultValue = "10", required = false) int pageSize) {
         Map<String, Object> map = new HashMap<String, Object>();
-        List<CriticismDTO> dtos = criticismService.getCriticismDTOs(instituteId, page, pageSize);
-        int count = criticismService.countCriticisms(instituteId);
+        List<CriticismDTO> dtos = criticismService.getCriticismDTOs(instituteId, page, pageSize,remove);
+        int count = criticismService.countCriticisms(instituteId,remove);
         map.put("list", dtos);
         map.put("count", count);
         map.put("page", page);
@@ -302,7 +303,7 @@ public class TrainController extends BaseController {
     public void saveInstituteEntry(ObjectId instituteId) {
         int count = 0;
         InstituteEntry instituteEntry = instituteService.find(instituteId);
-        List<CriticismDTO> dtos = criticismService.getCriticismDTOs(instituteId, 1, 500);
+        List<CriticismDTO> dtos = criticismService.getCriticismDTOs(instituteId, 1, 500,0);
         for (CriticismDTO criticismDTO : dtos) {
             count += criticismDTO.getScore();
         }

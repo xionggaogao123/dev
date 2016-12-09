@@ -21,7 +21,8 @@
             <label for="limit">培训机构Id</label>
             <input type="text" class="form-control" id="instituteId" placeholder="情输入评论对应的机构Id">
         </div>
-        <button type="submit" onclick="callBackPagination();" class="btn btn-default">提交</button>
+        <button type="submit" onclick="callBackPagination(0);" class="btn btn-default">查询未删除数据</button>
+        <button type="submit" onclick="callBackPagination(1);" class="btn btn-default">查询已删除数据</button>
     </form>
     <div id="mainContent"></div>
     <div id="callBackPager"></div>
@@ -41,24 +42,49 @@
         $(function(){
             $('body').on('click','.delInfo',function(){
                 var id=$(this).attr('delId');
-                $.ajax({
-                    type: "GET",
-                    data: {id:id},
-                    url: '/train/removeCriticism.do',
-                    async: false,
-                    dataType: "json",
-                    contentType: "application/x-www-form-urlencoded; charset=UTF-8",
-                    success: function (resp) {
-                        if(resp.code=="200") {
-                            callBackPagination();
+                if (confirm("你确定删除吗？")) {
+                    $.ajax({
+                        type: "GET",
+                        data: {id:id,remove:1},
+                        url: '/train/dealCriticism.do',
+                        async: false,
+                        dataType: "json",
+                        contentType: "application/x-www-form-urlencoded; charset=UTF-8",
+                        success: function (resp) {
+                            if(resp.code=="200") {
+                                callBackPagination(0);
+                            }
                         }
-                    }
-                });
+                    });
+                }
             })
+
+            $('body').on('click','.recoverInfo',function(){
+                var id = $(this).attr('recoverId');
+                if (confirm("你确定还原吗？")) {
+                    $.ajax({
+                        type: "GET",
+                        data: {id: id, remove: 0},
+                        url: '/train/dealCriticism.do',
+                        async: false,
+                        dataType: "json",
+                        contentType: "application/x-www-form-urlencoded; charset=UTF-8",
+                        success: function (resp) {
+                            if (resp.code == "200") {
+                                callBackPagination(1);
+                            }
+                        }
+                    });
+                }
+            })
+
         })
-        function callBackPagination() {
+        function callBackPagination(obj) {
+            $('#mainContent').empty();
+            $('#callBackPager').empty();
+            $('#instituteId').data('obj',obj);
             var limit = Number($('#limit').val()) || 10;
-            var totalCount=createTable(1, limit, totalCount);
+            var totalCount=createTable(1, limit, obj);
             $('#callBackPager').extendPagination({
                 totalCount: totalCount,
                 showCount: 0,
@@ -70,17 +96,18 @@
         }
 
         function geCriticisms(currPage,limit,instituteId){
+            var obj= $('#instituteId').data('obj');
             var totalCount=0;
             $.ajax({
                 type: "GET",
-                data: {pageSize:limit,page:currPage},
+                data: {pageSize:limit,page:currPage,remove:obj},
                 url: '/train/getTrainComments/'+instituteId,
                 async: false,
                 dataType: "json",
                 contentType: "application/x-www-form-urlencoded; charset=UTF-8",
                 success: function (resp) {
                    if(resp.code=="200") {
-                       showData(currPage,limit,resp.message.count,resp.message.list);
+                       showData(resp.message.count,resp.message.list);
                        totalCount=resp.message.count;
                    }
                 }
@@ -88,14 +115,15 @@
             return totalCount;
         }
 
-        function createTable(currPage, limit, total) {
+        function createTable(currPage, limit, obj) {
             var instituteId=$('#instituteId').val();
             return geCriticisms(currPage,limit,instituteId);
         }
 
-        function showData(currPage, limit, total, data){
-            var html = [], showNum = limit;
-            if (total - (currPage * limit) < 0) showNum = total - ((currPage - 1) * limit);
+        function showData(total, data){
+            var html = [];
+            var obj= $('#instituteId').data('obj');
+//            if (total - (currPage * limit) < 0) showNum = total - ((currPage - 1) * limit);
             html.push(' <table class="table table-hover piece" style="margin-left: 0;">');
             html.push(' <caption>悬停表格(' + total + ')</caption>');
             html.push(' <thead><tr><th>评论人昵称</th><th>评论人积分</th><th>评论内容</th><th>操作</th></tr></thead><tbody>');
@@ -109,7 +137,12 @@
                 html.push('<td>');
                 html.push(data[i].comment);
                 html.push('</td>');
-                html.push('<td style="color: blue;cursor: pointer" class="delInfo" delId="'+data[i].id+'">删除</td>');
+                if(obj==0){
+                    html.push('<td style="color: blue;cursor: pointer" class="delInfo" delId="'+data[i].id+'">删除</td>');
+                }else{
+                    html.push('<td style="color: blue;cursor: pointer" class="recoverInfo" recoverId="'+data[i].id+'">还原</td>');
+                }
+
                 html.push('</tr>');
             }
             html.push('</tbody></table>');

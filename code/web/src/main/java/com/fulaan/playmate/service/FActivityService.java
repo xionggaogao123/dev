@@ -221,6 +221,10 @@ public class FActivityService {
         if (fActivityDao.isUserSignActivity(acid, userId)) {
             return false;
         }
+
+        if(fActivityDao.isUserPublishedActivity(acid,userId)) {
+            return false;
+        }
         FActivityEntry activityEntry = fActivityDao.getActivityById(acid);
         FASignEntry faSignEntry = new FASignEntry(new ObjectId(), acid, userId, signText, activityEntry.getActivityTime());
         fActivityDao.save(faSignEntry);

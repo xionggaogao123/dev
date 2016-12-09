@@ -25,12 +25,10 @@ public class MineCommunityDao extends BaseDao {
     }
 
     public List<MineCommunityEntry> findAll(ObjectId userId, int page, int pageSize) {
-
         BasicDBObject query = new BasicDBObject()
                 .append("uid", userId);
         BasicDBObject orderBy = new BasicDBObject()
-                .append("prio", -1)
-                .append("ti", -1);
+                .append(Constant.ID, Constant.DESC);
         List<DBObject> dbos;
         if (page != -1) {
             dbos = find(MongoFacroty.getAppDB(), Constant.COLLECTION_FORUM_MINE_COMMUNITY, query, Constant.FIELDS, orderBy, (page - 1) * pageSize, pageSize);

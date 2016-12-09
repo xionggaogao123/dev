@@ -50,7 +50,12 @@ public class FActivityDao extends BaseDao {
 
     public boolean isUserSignActivity(ObjectId acid, ObjectId uid) {
         BasicDBObject query = new BasicDBObject("acid", acid).append("uid", uid);
-        return count(MongoFacroty.getAppDB(), Constant.COLLECTION_FORM_SIGN_ACTIVITY_SHEET, query) == 1;
+        return count(MongoFacroty.getAppDB(), Constant.COLLECTION_FORM_SIGN_ACTIVITY_SHEET, query) >= 1;
+    }
+
+    public boolean isUserPublishedActivity(ObjectId acid, ObjectId uid) {
+        BasicDBObject query = new BasicDBObject(Constant.ID, acid).append("uid", uid);
+        return count(MongoFacroty.getAppDB(), Constant.COLLECTION_FORUM_ACTIVITY, query) >= 1;
     }
 
     public void save(FASignEntry signEntry) {
@@ -79,7 +84,7 @@ public class FActivityDao extends BaseDao {
     public List<FASignEntry> getAllSignMember(ObjectId acid) {
         BasicDBObject query = new BasicDBObject("acid", acid);
         BasicDBObject orderBy = new BasicDBObject(Constant.ID, -1);
-        List<DBObject> dbos = find(MongoFacroty.getAppDB(), Constant.COLLECTION_FORM_SIGN_ACTIVITY_SHEET, query,Constant.FIELDS,orderBy);
+        List<DBObject> dbos = find(MongoFacroty.getAppDB(), Constant.COLLECTION_FORM_SIGN_ACTIVITY_SHEET, query, Constant.FIELDS, orderBy);
         List<FASignEntry> signEntries = new ArrayList<FASignEntry>();
         for (DBObject dbo : dbos) {
             signEntries.add(new FASignEntry(dbo));

@@ -43,58 +43,6 @@ define(['jquery', 'pagination', 'common'], function (require, exports, module) {
             $('.bg').fadeOut();
         });
 
-        $('body').on('click', '#ul-activity-signed li button', function () {
-
-            $('.alert-diglog').fadeIn();
-            $('.bg').fadeIn();
-
-            $('.alert-diglog .alert-main span').html('确定要取消此次报名吗？');
-            acid = $(this).attr('value');
-            select = 'signed';
-        });
-
-        $('body').on('click', '#ul-activity-published li button', function () {
-            $('.alert-diglog').fadeIn();
-            $('.bg').fadeIn();
-            $('.alert-diglog .alert-main span').html('确定要取消此次活动吗？');
-            acid = $(this).attr('value');
-            select = 'published';
-        });
-
-        $('.alert-diglog .alert-btn-sure').click(function () {
-            var requestParm = {
-                acid: acid
-            };
-
-            if(select == 'signed') {
-                common.getData("/factivity/cancelSign.do", requestParm, function (resp) {
-                    if (resp.code == '200') {
-                        $('.alert-diglog').fadeOut();
-                        $('.bg').fadeOut();
-
-                        getPublishedActivitys();
-                        getSignedActivitys();
-                        getAttendActivitys();
-                    } else {
-                        alert(resp.message);
-                    }
-                });
-            } else {
-                common.getData("/factivity/cancelPublish.do", requestParm, function (resp) {
-                    if (resp.code == '200') {
-                        $('.alert-diglog').fadeOut();
-                        $('.bg').fadeOut();
-
-                        getPublishedActivitys();
-                        getSignedActivitys();
-                        getAttendActivitys();
-                    } else {
-                        alert(resp.message);
-                    }
-                });
-            }
-        });
-
         $(".hx-notice").click(function () {
             window.open('/webim/index','_blank');
         });
@@ -105,8 +53,6 @@ define(['jquery', 'pagination', 'common'], function (require, exports, module) {
             $('#theme-div').show();
             $('#activity-div').hide();
         });
-
-
 
         $('#activity-span').click(function () {
             $(this).addClass('hd-green-cur');

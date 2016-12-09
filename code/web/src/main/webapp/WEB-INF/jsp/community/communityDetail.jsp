@@ -74,13 +74,6 @@
                                     <span class="fl" id="input_title">我要分享</span>
                                 </div>
                                 <div class="needs-inf" hidden>
-                                        <%--<input type="text" placeholder="在这里粘贴单品链接"/>--%>
-                                        <%--<span class="get-inf fr">获取商品信息</span>--%>
-                                        <%--<div class="clearfix pub-pro-show"><img--%>
-                                        <%--src="http://7xiclj.com1.z0.glb.clouddn.com/20160831170237.jpg">--%>
-                                        <%--<p class="p2">undefined</p>--%>
-                                        <%--<p class="p2">undefined</p>--%>
-                                        <%--</div>--%>
                                 </div>
                                 <textarea></textarea>
                                 <div class="publish-fj" style="border: white">
@@ -244,7 +237,7 @@
         </p>
     </div>
     <!--报名提示start-->
-    <div class="sign-alert">
+    <div class="sign-alert sign-activity">
         <p class="alert-title">提示<em>×</em></p>
         <div class="alert-main">
             <span>您确定要参加该活动吗？</span>
@@ -269,7 +262,18 @@
         </div>
     </div>
     <!--取消报名提示end-->
-    <%--<div class="bg"></div>--%>
+
+    <div class="sign-alert si-s3 alert-diglog">
+        <p class="alert-title">提示<em>×</em></p>
+        <div class="alert-main">
+            <span>确认要取消和<em class="em-f">shawn</em>的玩伴关系吗？</span>
+        </div>
+        <div class="alert-btn">
+            <button class="alert-btn-sure">确认</button>
+            <button class="alert-btn-esc">取消</button>
+        </div>
+    </div>
+
 
     <div id="tuyaCanva"
          style="z-index: 9999;display: none;width:1000px;position:fixed;top: 10px;left: 50%;margin-left: -500px;padding: 10px;border-radius: 6px 6px 0 6px;background: #f7f7f7;">

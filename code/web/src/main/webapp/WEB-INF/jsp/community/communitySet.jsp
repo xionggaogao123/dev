@@ -6,6 +6,8 @@
     <title>管理社区</title>
     <link rel="stylesheet" type="text/css" href="/static/css/community/community.css">
     <script type="text/javascript" src="/static/js/modules/forum/jquery-1.11.1.js"></script>
+
+    <link rel="stylesheet" type="text/css" href="/static/css/friend/nearby.css">
 </head>
 <body style="background: #f5f5f5;">
 <%--==============头部===================--%>
@@ -13,10 +15,11 @@
 <div class="container">
 
     <%@ include file="_layout.jsp" %>
-    </div>
+</div>
 <div class="f-cont">
     <div class="hd-nav">
-        <span class="hd-green-cur">我的社区</span>
+        <span id="my-community-span" class="hd-green-cur">我的社区</span>
+        <span id="myActivity-span">我的活动</span>
     </div>
 </div>
 <div class="container">
@@ -45,6 +48,36 @@
             </div>
             <p class="member-more" onclick="window.open('/community/searchHotCommunity.do')">更多</p>
         </div>
+    </div>
+
+    <div class="hd-cont-f hd-cont-f2">
+        <p class="p1">
+            <span id="my-community-1" class="hd-cf-cur2">已报名活动</span>
+            <span id="my-community-2">已发布活动</span>
+            <span id="my-community-3">已参加活动</span>
+        </p>
+
+        <div id="activity-signed-div">
+            <img src="/static/images/community/no_data.jpg" hidden>
+            <ul class="ul-hds" id="ul-activity-signed">
+            </ul>
+            <div class="new-page-links signed-page"></div>
+        </div>
+
+        <div id="activity-published-dev">
+            <img src="/static/images/community/no_data.jpg" hidden>
+            <ul class="ul-hds" id="ul-activity-published">
+            </ul>
+            <div class="new-page-links published-page"></div>
+        </div>
+
+        <div id="activity-attended-div">
+            <img src="/static/images/community/no_data.jpg" hidden>
+            <ul class="ul-hds" id="ul-activity-attended">
+            </ul>
+            <div class="new-page-links attended-page"></div>
+        </div>
+
     </div>
 </div>
 <!--=============底部版权=================-->
@@ -79,7 +112,20 @@
         <span class="gk-tx xt1" id="xt1">"不公开"社区，系统将不会将本社区作为热门社区推荐给其他用户</span>
         <span class="gk-tx xt2" id="xt2">"公开"社区，系统将会降本社区作为热门社区推荐给其他用户</span>
     </div>
-    <div class="p2"><button class="btn-save">保存</button></div>
+    <div class="p2">
+        <button class="btn-save">保存</button>
+    </div>
+</div>
+
+<div class="sign-alert si-s3 alert-diglog">
+    <p class="alert-title">提示<em>×</em></p>
+    <div class="alert-main">
+        <span>确认要取消和<em class="em-f">shawn</em>的玩伴关系吗？</span>
+    </div>
+    <div class="alert-btn">
+        <button class="alert-btn-sure">确认</button>
+        <button class="alert-btn-esc">取消</button>
+    </div>
 </div>
 
 <div class="bg"></div>
@@ -145,6 +191,22 @@
     </li>
     {{~}}
 </script>
+
+<script type="text/template" id="activityBox">
+    {{~it:value:index}}
+    <li>
+        <button value="{{=value.acid}}">取消报名</button>
+        <p class="p1">
+            <span># {{? value.activityTheme != null }}
+                     {{= value.activityTheme.data }}
+                    {{?}}
+                  #</span> {{=value.title}}
+        </p>
+        <p class="p2">{{=value.description}}</p>
+    </li>
+    {{~}}
+</script>
+
 <script src="/static/js/sea.js"></script>
 <script src="/static/js/modules/core/0.1.0/config.js?v=2015041602"></script>
 <script type="text/javascript"

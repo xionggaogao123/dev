@@ -14,6 +14,10 @@ define(['jquery', 'pagination', 'common'], function (require, exports, module) {
         getMyCommunity();
         //获取热门社区
         getHotCommunity();
+
+        getPublishedActivitys();
+        getSignedActivitys();
+        getAttendActivitys();
     }
     $(document).ready(function () {
 
@@ -21,6 +25,67 @@ define(['jquery', 'pagination', 'common'], function (require, exports, module) {
         $('#activity-published-dev').hide();
         $('#activity-attended-div').hide();
 
+
+        $('body').on('click','.alert-diglog em,.alert-diglog .alert-btn-esc',function () {
+
+            $('.alert-diglog').fadeOut();
+            $('.bg').fadeOut();
+        });
+
+        $('body').on('click','#ul-activity-signed li button',function () {
+
+            $('.alert-diglog').fadeIn();
+            $('.bg').fadeIn();
+
+            $('.alert-diglog .alert-main span').html('确定要取消此次报名吗？');
+
+            var me = $(this);
+            var acid = $(this).attr('value');
+
+            $('.alert-diglog .alert-btn-sure').click(function (){
+                var requestParm = {
+                    acid: acid
+                };
+                common.getData("/factivity/cancelSign.do", requestParm, function (resp) {
+                    if (resp.code == '200') {
+                        me.parent().hide();
+                        $('.alert-diglog').fadeOut();
+                        $('.bg').fadeOut();
+                        me.parent().hide();
+                    } else {
+                        alert(resp.message);
+                    }
+                });
+            });
+        });
+
+
+        $('body').on('click','#ul-activity-published li button',function () {
+            var acid = $(this).attr('value');
+
+            $('.alert-diglog').fadeIn();
+            $('.bg').fadeIn();
+
+            var me = $(this);
+
+            $('.alert-diglog .alert-main span').html('确定要取消此次活动吗？');
+
+            $('.alert-diglog .alert-btn-sure').click(function () {
+                var requestParm = {
+                    acid: acid
+                };
+                common.getData("/factivity/cancelPublish.do", requestParm, function (resp) {
+                    if (resp.code == '200') {
+                        me.parent().hide();
+
+                        $('.alert-diglog').fadeOut();
+                        $('.bg').fadeOut();
+                    } else {
+                        alert(resp.message);
+                    }
+                });
+            });
+        });
 
         $('body').on('click', '#myActivity-span', function () {
             $('#my-community-span').removeClass('hd-green-cur');

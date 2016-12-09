@@ -36,7 +36,8 @@
             </div>
             <div class="com-right">
                 <div class="com-right-s clearfix">
-                    <div class="com-tit">我的社区<c:if test="${login == true}"><span class="com-set-my-btn" onclick="window.open('/community/communitySet.do')"></span>
+                    <div class="com-tit">我的社区<c:if test="${login == true}"><span class="com-set-my-btn"
+                                                                                 onclick="window.open('/community/communitySet.do')"></span>
                     </c:if></div>
                     <ul class="ul-my-com clearfix" id="myCommunity">
                     </ul>
@@ -97,7 +98,7 @@
         </p>
     </div>
     <!--报名提示start-->
-    <div class="sign-alert">
+    <div class="sign-alert cancel-ac">
         <p class="alert-title">提示<em>×</em></p>
         <div class="alert-main">
             <span>您确定要参加该活动吗？</span>
@@ -122,6 +123,18 @@
         </div>
     </div>
     <!--取消报名提示end-->
+
+    <div class="sign-alert si-s3 alert-diglog">
+    <p class="alert-title">提示<em>×</em></p>
+    <div class="alert-main">
+        <span>确认要取消和<em class="em-f">shawn</em>的玩伴关系吗？</span>
+    </div>
+    <div class="alert-btn">
+        <button class="alert-btn-sure">确认</button>
+        <button class="alert-btn-esc">取消</button>
+    </div>
+    </div>
+
     <div class="bg"></div>
 </layout:override>
 <layout:override name="script">
@@ -139,7 +152,7 @@
                 var flag = resp.login;
                 if (flag) {
                     location.href = "/commondownload/downloadFile.do?remoteFilePath=" + url + "&fileName=" + fileName;
-                }else{
+                } else {
                     $('.store-register').fadeToggle();
                     $('.bg').fadeToggle();
                 }
@@ -161,7 +174,7 @@
         });
     </script>
 
-    <script type="text/javascript" src="/static/js/modules/mate/commonActivity.js" ></script>
+    <script type="text/javascript" src="/static/js/modules/mate/commonActivity.js"></script>
 
 
     <!-- js template -->
@@ -202,11 +215,13 @@
                 <p class="p1">{{=value.roleStr}}</p>
             </div>
             <div class="notice-cont">
-                <p class="p-zl p1" style="cursor: pointer" onclick="window.open('/community/communityDetail?detailId={{=value.id}}')">{{=value.title}}</p>
+                <p class="p-zl p1" style="cursor: pointer"
+                   onclick="window.open('/community/communityDetail?detailId={{=value.id}}')">{{=value.title}}</p>
                 <p class="p-hw">
                     {{~value.attachements:attachment:i}}
                     <span class="sp-hw">{{=attachment.flnm}}<a><span
-                            onclick="download('{{=attachment.url}}','{{=attachment.flnm}}')" style="cursor: pointer">下载</span></a></span>
+                            onclick="download('{{=attachment.url}}','{{=attachment.flnm}}')"
+                            style="cursor: pointer">下载</span></a></span>
                     {{~}}
                 </p>
                 <p class="p-infor">
@@ -229,7 +244,8 @@
                 <p class="p1">{{=value.roleStr}}</p>
             </div>
             <div class="notice-cont">
-                <p class="p-zy p1" style="cursor: pointer" onclick="window.open('/community/communityDetail?detailId={{=value.id}}')">{{=value.title}}</p>
+                <p class="p-zy p1" style="cursor: pointer"
+                   onclick="window.open('/community/communityDetail?detailId={{=value.id}}')">{{=value.title}}</p>
                 <p class="p-cont">{{=value.content}}<span
                         class="sp-more">{{?value.content.length>=143}}...<em class="spread">[展开全文]</em>{{?}}</span></p>
                 <p class="p-infor">
@@ -251,7 +267,8 @@
                 <p class="p1">{{=value.roleStr}}</p>
             </div>
             <div class="notice-cont">
-                <p class="p-tz p1" style="cursor: pointer" onclick="window.open('/community/communityDetail?detailId={{=value.id}}')">{{=value.title}}</p>
+                <p class="p-tz p1" style="cursor: pointer"
+                   onclick="window.open('/community/communityDetail?detailId={{=value.id}}')">{{=value.title}}</p>
                 <p class="p-cont">{{=value.content}}<span
                         class="sp-more">{{?value.content.length>=143}}...<em class="spread">[展开全文]</em>{{?}}</span></p>
                 <p class="p-infor">
@@ -274,7 +291,8 @@
                 <p class="p1">{{=value.roleStr}}</p>
             </div>
             <div class="notice-cont">
-                <p class="p-fx p1" style="cursor: pointer" onclick="window.open('/community/communityDetail?detailId={{=value.id}}')">{{=value.title}}</p>
+                <p class="p-fx p1" style="cursor: pointer"
+                   onclick="window.open('/community/communityDetail?detailId={{=value.id}}')">{{=value.title}}</p>
                 <p class="p-cont">{{=value.content}}<span
                         class="sp-more">{{?value.content.length>=143}}...<em class="spread">[展开全文]</em>{{?}}</span></p>
                 <p class="p-img clearfix">
@@ -303,7 +321,8 @@
                 <p class="p1">{{=value.roleStr}}</p>
             </div>
             <div class="notice-cont">
-                <p class="p-hd p1" style="cursor: pointer" onclick="window.open('/community/communityDetail?detailId={{=value.id}}')">{{=value.title}}</p>
+                <p class="p-hd p1" style="cursor: pointer"
+                   onclick="window.open('/community/communityDetail?detailId={{=value.id}}')">{{=value.title}}</p>
                 <p class="p-cont">{{=value.content}}<span
                         class="sp-more">{{?value.content.length>=143}}...<em class="spread">[展开全文]</em>{{?}}</span></p>
                 <p class="p-infor">
@@ -330,7 +349,8 @@
                 <p class="p1">{{=value.roleStr}}</p>
             </div>
             <div class="notice-cont">
-                <p class="p-tj p1" style="cursor: pointer" onclick="window.open('/community/communityDetail?detailId={{=value.id}}')">{{=value.title}}</p>
+                <p class="p-tj p1" style="cursor: pointer"
+                   onclick="window.open('/community/communityDetail?detailId={{=value.id}}')">{{=value.title}}</p>
                 <p class="p-cont">{{=value.content}}<span
                         class="sp-more">{{?value.content.length>=143}}...<em class="spread">[展开全文]</em>{{?}}</span></p>
                 <p class="p-infor">

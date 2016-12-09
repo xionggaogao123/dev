@@ -63,19 +63,19 @@ public class FActivityController extends BaseController {
     /**
      * 附近的活动
      *
-     * @param lon
-     * @param lat
-     * @param page
-     * @param pageSize
-     * @return
+     * @param lon 经度
+     * @param lat 纬度
+     * @param page 页
+     * @param pageSize 每页个数
+     * @return RespObj
      */
     @RequestMapping("/nearActivitys")
     @ResponseBody
     @SessionNeedless
-    public RespObj nearActivitys(@RequestParam(value = "lon", required = false, defaultValue = "0") double lon,
-                                 @RequestParam(value = "lat", required = false, defaultValue = "0") double lat,
-                                 @RequestParam(value = "page", required = false, defaultValue = "1") int page,
-                                 @RequestParam(value = "pageSize", required = false, defaultValue = "10") int pageSize) {
+    public RespObj nearActivity(@RequestParam(value = "lon", required = false, defaultValue = "0") double lon,
+                                @RequestParam(value = "lat", required = false, defaultValue = "0") double lat,
+                                @RequestParam(value = "page", required = false, defaultValue = "1") int page,
+                                @RequestParam(value = "pageSize", required = false, defaultValue = "10") int pageSize) {
         return RespObj.SUCCESS(fActivityService.getNearActivitys(lon, lat, page, pageSize));
     }
 
@@ -117,7 +117,7 @@ public class FActivityController extends BaseController {
     /**
      * 获取自己或别人发布的活动
      *
-     * @param personId
+     * @param personId 别人的id
      * @param page
      * @param pageSize
      * @return

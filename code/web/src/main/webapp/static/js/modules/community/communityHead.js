@@ -59,6 +59,18 @@ define(['jquery', 'pagination', 'common'], function (require, exports, module) {
         });
 
         $('body').on('click', '#editOns', function () {
+
+            $('.ons-div span').each(function () {
+                $(this).removeClass('bq-cur');
+            });
+
+            $('.ons-div span').each(function () {
+                var code = $(this).attr('code');
+                if(code == ons.code) {
+                    $(this).addClass('bq-cur');
+                }
+            });
+
             $('.bg').fadeIn();
             $('.wind-ons').fadeIn();
         });
@@ -91,7 +103,6 @@ define(['jquery', 'pagination', 'common'], function (require, exports, module) {
 
         $('body').on('click','.wind-ons .p3 .btn1',function () {
             common.getData('/mate/updateMateData.do',ons,function(resp){
-
                 if(resp.code == '200') {
                     $('.wind-ons').fadeOut();
                     $('.bg').fadeOut();
@@ -143,7 +154,7 @@ define(['jquery', 'pagination', 'common'], function (require, exports, module) {
             }
         });
 
-    })
+    });
 
     function jwb(obj) {
         var userId = obj.attr('userId');

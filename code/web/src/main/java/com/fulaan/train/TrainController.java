@@ -324,10 +324,10 @@ public class TrainController extends BaseController {
             List<InstituteEntry> entries = instituteService.findInstituteEntries(page, pageSize);
             for(InstituteEntry entry : entries) {
                 String fileName=new ObjectId()+".jpg";
-                String path="D:\\water";
+                String path="E:\\water";
                 DownloadUtil.downLoadFromUrl(entry.getMainPic(),fileName,path);
                 String filePath=path+"\\"+fileName;
-                String logoImg = "D:/water/logo.png";
+                String logoImg = "E:/water/logo.png";
                 String waterImage=imageInit.mergeWaterMark(filePath,logoImg);
                 File file=new File(waterImage);
                 String extensionName = fileName.substring(fileName.indexOf(".")+1,fileName.length());

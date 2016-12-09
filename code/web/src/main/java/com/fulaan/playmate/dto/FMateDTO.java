@@ -16,7 +16,7 @@ public class FMateDTO {
     private String avatar;
     private String distance;
     private int aged;
-    private MateData ons;
+    private List<MateData> ons;
 
     private List<UserTag> tags;
     private List<User> commonFriends;
@@ -85,11 +85,11 @@ public class FMateDTO {
         this.aged = aged;
     }
 
-    public MateData getOns() {
+    public List<MateData> getOns() {
         return ons;
     }
 
-    public void setOns(MateData ons) {
+    public void setOns(List<MateData> ons) {
         this.ons = ons;
     }
 }

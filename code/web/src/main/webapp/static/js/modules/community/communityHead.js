@@ -9,9 +9,10 @@ define(['jquery', 'pagination', 'common'], function (require, exports, module) {
     var common = require('common');
     require('pagination');
     var communityHead = {};
-    var nickName=$('#apply').attr('applyName');
+    var nickName = $('#apply').attr('applyName');
 
-    var ons = {};
+    var ons = [];
+    var myOns = [];
     communityHead.init = function () {
         getAllOns();
     };
@@ -41,18 +42,19 @@ define(['jquery', 'pagination', 'common'], function (require, exports, module) {
         $('body').on('click', '#btn1', function () {
             comb2();
             getMyTags();
-        })
+        });
 
 
         $('body').on('click', '#editTag', function () {
-            common.getData('/community/getMyTags.do',{},function(resp){
-                var tags=resp.message;
+            common.getData('/community/getMyTags.do', {}, function (resp) {
+                var tags = resp.message;
                 for (var i in tags) {
                     var obj = $('#myTxt').find('[tag=' + tags[i] + ']');
                     obj.addClass('bq-cur');
                     var str = "<span class=\"bq-cur\" code=\"" + obj.attr('code') + "\">" + obj.text() + "</span>";
                     $('#selected').append(str);
                 }
+
                 $('.bg').fadeIn();
                 $('.wind-biaoq').fadeIn();
             })
@@ -65,9 +67,10 @@ define(['jquery', 'pagination', 'common'], function (require, exports, module) {
             });
 
             $('.ons-div span').each(function () {
-                var code = $(this).attr('code');
-                if(code == ons.code) {
-                    $(this).addClass('bq-cur');
+                for (var i = 0; i < myOns.length; i++) {
+                    if (myOns[i].code == $(this).attr('code')) {
+                        $(this).addClass('bq-cur');
+                    }
                 }
             });
 
@@ -84,30 +87,40 @@ define(['jquery', 'pagination', 'common'], function (require, exports, module) {
             jwb($(this));
         });
 
-        $('body').on('click','.ons-div span',function () {
-            $('.ons-div span').each(function () {
-                $(this).removeClass('bq-cur');
-            });
-            $(this).addClass('bq-cur');
+        $('body').on('click', '.ons-div span', function () {
             var code = $(this).attr('code');
-            ons = {
-                ons: code,
-                data:$(this).text()
+            if ($(this).hasClass('bq-cur')) {
+                $(this).removeClass('bq-cur');
+                for (var i = 0; i < ons.length; i++) {
+                    if (ons[i] == code) {
+                        ons.splice(i,1);
+                    }
+                }
+            } else {
+                $(this).addClass('bq-cur');
+                ons.push(code);
             }
         });
 
-        $('body').on('click','.wind-ons .p3 .btn-add-no,.wind-ons .p1 em',function () {
+        $('body').on('click', '.wind-ons .p3 .btn-add-no,.wind-ons .p1 em', function () {
             $('.wind-ons').fadeOut();
             $('.bg').fadeOut();
         });
 
-        $('body').on('click','.wind-ons .p3 .btn1',function () {
-            common.getData('/mate/updateMateData.do',ons,function(resp){
-                if(resp.code == '200') {
+        $('body').on('click', '.wind-ons .p3 .btn1', function () {
+
+            var onsLi = '';
+            for(var i=0;i<ons.length;i++) {
+                onsLi += ons[i] + ',';
+            }
+            var requestParm = {
+                ons: onsLi
+            };
+            common.getData('/mate/updateMateData.do', requestParm, function (resp) {
+                if (resp.code == '200') {
                     $('.wind-ons').fadeOut();
                     $('.bg').fadeOut();
 
-                    $('#o-data').text(ons.data);
                 } else {
                     alert(resp.message);
                 }
@@ -127,11 +140,11 @@ define(['jquery', 'pagination', 'common'], function (require, exports, module) {
                 })
             } else {
                 //先判断是否超过六个标签
-                var count=0;
+                var count = 0;
                 $('#selected span').each(function () {
                     count++;
                 });
-                if(count>=6){
+                if (count >= 6) {
                     alert("用户最多选择六个标签");
                     return;
                 }
@@ -158,7 +171,7 @@ define(['jquery', 'pagination', 'common'], function (require, exports, module) {
 
     function jwb(obj) {
         var userId = obj.attr('userId');
-        var contentValue = "我是"+nickName+",请求加为好友";
+        var contentValue = "我是" + nickName + ",请求加为好友";
         var param = {};
         param.content = contentValue;
         param.personId = userId;
@@ -266,18 +279,21 @@ define(['jquery', 'pagination', 'common'], function (require, exports, module) {
             url: '/mate/sortType.do',
             success: function (resp) {
                 var str = '';
-                for(var i=0;i<resp.message.times.length;i++) {
-                    str += '<span code="'+resp.message.times[i].code+'">'+resp.message.times[i].data+'</span>';
+                for (var i = 0; i < resp.message.times.length; i++) {
+                    str += '<span code="' + resp.message.times[i].code + '">' + resp.message.times[i].data + '</span>';
                 }
                 $('.ons-div').append(str);
             }
         });
 
-        common.getData('/mate/getMyOns.do',{},function(resp){
-            if(resp.message.data != null) {
-                $('#o-data').text(resp.message.data);
+        common.getData('/mate/getMyOns.do', {}, function (resp) {
+            var str = '';
+            for (var i = 0; i < resp.message.length; i++) {
+                str += '<em>' + resp.message[i].data + '</em>';
+                myOns.push(resp.message[i]);
             }
-
+            str += '<em id="editOns">编辑时间段</em>';
+            $('#myOns').append(str);
         });
     }
 

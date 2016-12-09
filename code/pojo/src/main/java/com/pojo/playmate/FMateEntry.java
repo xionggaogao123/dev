@@ -33,7 +33,7 @@ public class FMateEntry  extends BaseDBObject{
                 .append("tag", Constant.DEFAULT_VALUE_ARRAY)
                 .append("ti", System.currentTimeMillis())
                 .append("aged",Constant.DEFAULT_VALUE_INT)
-                .append("ons", Constant.DEFAULT_VALUE_INT);
+                .append("ons", Constant.DEFAULT_VALUE_ARRAY);
         setBaseEntry(dbo);
     }
 
@@ -59,8 +59,8 @@ public class FMateEntry  extends BaseDBObject{
         return getSimpleIntegerValue("aged");
     }
 
-    public int getOns() {
-        return getSimpleIntegerValue("ons");
+    public BasicDBList getOns() {
+        return (BasicDBList)getSimpleObjectValue("ons");
     }
 
 }

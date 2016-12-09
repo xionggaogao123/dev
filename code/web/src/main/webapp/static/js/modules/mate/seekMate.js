@@ -66,13 +66,13 @@ define(['jquery', 'pagination', 'common'], function (require, exports, module) {
         map = new AMap.Map('container', {
             resizeEnable: true
         });
-        map.plugin('AMap.Geolocation', function() {
+        map.plugin('AMap.Geolocation', function () {
             geolocation = new AMap.Geolocation({
                 enableHighAccuracy: true,//是否使用高精度定位，默认:true
                 timeout: 10000,          //超过10秒后停止定位，默认：无穷大
                 buttonOffset: new AMap.Pixel(10, 20),//定位按钮与设置的停靠位置的偏移量，默认：Pixel(10, 20)
                 zoomToAccuracy: true,      //定位成功后调整地图视野范围使定位位置及精度范围视野内可见，默认：false
-                buttonPosition:'RB'
+                buttonPosition: 'RB'
             });
             map.addControl(geolocation);
             geolocation.getCurrentPosition();
@@ -120,10 +120,10 @@ define(['jquery', 'pagination', 'common'], function (require, exports, module) {
             $('.bg').fadeOut();
         });
 
-        $('body').on('click','.near-li button',function () {
+        $('body').on('click', '.near-li button', function () {
             var userId = $(this).attr('value');
-            if(isLogin) {
-                window.open('/webim/index.do?userId=' + userId,'__blank');
+            if (isLogin) {
+                window.open('/webim/index.do?userId=' + userId, '__blank');
             } else {
                 $('.store-register').fadeToggle();
                 $('.bg').fadeToggle();
@@ -149,7 +149,7 @@ define(['jquery', 'pagination', 'common'], function (require, exports, module) {
 
         $('body').on('click', '.ul-nearnews li button', function () {
 
-            if(!isLogin) {
+            if (!isLogin) {
                 $('.store-register').fadeToggle();
                 $('.bg').fadeToggle();
                 return;
@@ -179,10 +179,10 @@ define(['jquery', 'pagination', 'common'], function (require, exports, module) {
             $('.bg').fadeIn();
         });
 
-        $('body').on('click','.act-already-join',function () {
+        $('body').on('click', '.act-already-join', function () {
 
-            if(isLogin) {
-                window.open('/community/communityAllType.do','__blank');
+            if (isLogin) {
+                window.open('/community/communityAllType.do', '__blank');
             } else {
                 $('.store-register').fadeToggle();
                 $('.bg').fadeToggle();
@@ -190,10 +190,10 @@ define(['jquery', 'pagination', 'common'], function (require, exports, module) {
 
         });
 
-        $('body').on('click','.act-already-push',function () {
+        $('body').on('click', '.act-already-push', function () {
 
-            if(isLogin) {
-                window.open('/community/communityAllType.do','__blank');
+            if (isLogin) {
+                window.open('/community/communityAllType.do', '__blank');
             } else {
                 $('.store-register').fadeToggle();
                 $('.bg').fadeToggle();
@@ -238,7 +238,7 @@ define(['jquery', 'pagination', 'common'], function (require, exports, module) {
             clearInterval(scrollTimer);
             scrollTimer = false;
         }, function () {
-            if(!scrollTimer) {
+            if (!scrollTimer) {
                 scrollTimer = setInterval(function () {
                     scrollNews($("#nearNews"));
                 }, 3000);
@@ -270,11 +270,7 @@ define(['jquery', 'pagination', 'common'], function (require, exports, module) {
                         $(this).removeClass('gre-cur');
                     }
                 });
-                if ($(this).hasClass('gre-cur')) {
-                    $(this).removeClass('gre-cur');
-                } else {
-                    $(this).addClass('gre-cur');
-                }
+                $(this).addClass('gre-cur');
             }
             var tags = '';
             $('.mate-xingqu span.gre-cur').each(function () {
@@ -307,12 +303,32 @@ define(['jquery', 'pagination', 'common'], function (require, exports, module) {
             getMates(1);
         });
 
-        $('.mate-timed span').click(function () {
+        $('body').on('click', ".mate-timed span", function () {
+            var value = $(this).attr('value');
+            if (value == '-1') {
+                $(this).addClass('gre-cur');
+                $('.mate-timed span').each(function () {
+                    if ($(this).attr('value') != '-1') {
+                        $(this).removeClass('gre-cur');
+                    }
+                });
+                seekMateParm.ons = '';
+            } else {
+                $('.mate-timed span').each(function () {
+                    if ($(this).attr('value') == '-1') {
+                        $(this).removeClass('gre-cur');
+                    }
+                });
+                $(this).addClass('gre-cur');
+            }
+            var ons = '';
             $('.mate-timed span').each(function () {
-                $(this).removeClass('gre-cur');
+                if ($(this).attr('value') != '-1') {
+                    if ($(this).hasClass('gre-cur')) {
+                        ons += $(this).attr('value') + ',';
+                    }
+                }
             });
-            $(this).addClass('gre-cur');
-            var ons = $(this).attr('value');
             seekMateParm.ons = ons;
             getMates(1);
         });
@@ -349,12 +365,11 @@ define(['jquery', 'pagination', 'common'], function (require, exports, module) {
             tags += code + ',';
         });
 
-        alert(JSON.stringify(tags));
         $.ajax({
             url: '/mate/updateMateData.do',
             type: 'get',
             data: {
-                tags:tags
+                tags: tags
             },
             success: function () {
                 $('.bg').fadeOut();
@@ -371,17 +386,17 @@ define(['jquery', 'pagination', 'common'], function (require, exports, module) {
         var hour = $('.wind-act-fq .time-hour').val();
         var mins = $('.wind-act-fq .time-mins').val();
 
-        if(title === ''){
+        if (title === '') {
             alert("标题不能为空");
             return;
         }
 
-        if(desc === '') {
+        if (desc === '') {
             alert("描述不能为空");
             return;
         }
 
-        if(date === '') {
+        if (date === '') {
             alert("时间不能为空");
             return;
         }
@@ -419,7 +434,6 @@ define(['jquery', 'pagination', 'common'], function (require, exports, module) {
     }
 
     function signActivty() {
-
         var requestParm = {
             acid: $('.wind-act-det').attr('acid')
         };
@@ -438,7 +452,7 @@ define(['jquery', 'pagination', 'common'], function (require, exports, module) {
 
     //解析定位结果
     function onComplete(data) {
-        var str=['定位成功'];
+        var str = ['定位成功'];
         str.push('经度：' + data.position.getLng());
         str.push('纬度：' + data.position.getLat());
         str.push('精度：' + data.accuracy + ' 米');
@@ -450,16 +464,18 @@ define(['jquery', 'pagination', 'common'], function (require, exports, module) {
         lat = data.position.getLat();
 
         var requestParm = {
-            lon:data.position.getLng(),
-            lat:data.position.getLat()
+            lon: data.position.getLng(),
+            lat: data.position.getLat()
         };
-        getMates(1);
-        getActivitys();
         $.ajax({
             url: '/mate/updateMateData.do',
             data: requestParm
-        })
+        });
+
+        getMates(1);
+        getActivitys();
     }
+
     //解析定位错误信息
     function onError(data) {
         alert("定位失败");
@@ -468,9 +484,9 @@ define(['jquery', 'pagination', 'common'], function (require, exports, module) {
     function getAllSortType() {
         common.getData('/mate/sortType.do', {}, function (resp) {
             if (resp.code == "200") {
-                for(var i=0;i<resp.message.tags.length;i++) {
-                    $('.wind-act-fq select.theme').append('<option value="' + resp.message.tags[i].code +'">'+resp.message.tags[i].data+'</option>');
-                    $('.biaoq-all').append('<span code="'+resp.message.tags[i].code+'">'+resp.message.tags[i].data+'</span>');
+                for (var i = 0; i < resp.message.tags.length; i++) {
+                    $('.wind-act-fq select.theme').append('<option value="' + resp.message.tags[i].code + '">' + resp.message.tags[i].data + '</option>');
+                    $('.biaoq-all').append('<span code="' + resp.message.tags[i].code + '">' + resp.message.tags[i].data + '</span>');
                 }
                 var result = [];
                 result.push(resp.message);

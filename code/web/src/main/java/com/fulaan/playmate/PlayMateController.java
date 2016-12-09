@@ -73,15 +73,17 @@ public class PlayMateController extends BaseController {
                                 @RequestParam(value = "distance", required = false, defaultValue = "-1") int distance,
                                 @RequestParam(value = "tags", required = false, defaultValue = "") String tags,
                                 @RequestParam(value = "aged", required = false, defaultValue = "-1") int aged,
-                                @RequestParam(value = "ons", required = false, defaultValue = "-1") int ons,
+                                @RequestParam(value = "ons", required = false, defaultValue = "") String ons,
                                 @RequestParam(value = "page", required = false, defaultValue = "1") int page,
                                 @RequestParam(value = "pageSize", required = false, defaultValue = "10") int pageSize) {
         if (lon == 0 && lat == 0) {
-            ObjectId userId = getUserId();
-            List<Double> locs = mateService.getCoordinates(userId);
-            if (locs != null && locs.size() == 2) {
-                lon = locs.get(0);
-                lat = locs.get(1);
+            if (getUserId() != null) {
+                ObjectId userId = getUserId();
+                List<Double> locs = mateService.getCoordinates(userId);
+                if (locs != null && locs.size() == 2) {
+                    lon = locs.get(0);
+                    lat = locs.get(1);
+                }
             }
         }
         if (distance < 0) {
@@ -89,8 +91,23 @@ public class PlayMateController extends BaseController {
         } else {
             distance *= 500;
         }
+
+        List<Integer> onsList = new ArrayList<Integer>();
+        if (StringUtils.isNotBlank(ons)) {
+            String[] tempList = ons.split(",");
+            for (String s : tempList) {
+                try {
+                    onsList.add(Integer.parseInt(s));
+                } catch (NumberFormatException e) {
+                    e.printStackTrace();
+                }
+
+            }
+            mateService.updateOns(getUserId(), onsList);
+        }
+
         List<String> tagList = StrUtils.splitToList(tags);
-        return RespObj.SUCCESS(mateService.findMates(getUserId(), lon, lat, tagList, aged, ons, page, pageSize, distance));
+        return RespObj.SUCCESS(mateService.findMates(getUserId(), lon, lat, tagList, aged, onsList, page, pageSize, distance));
     }
 
     @RequestMapping("/updateMateData")
@@ -99,7 +116,7 @@ public class PlayMateController extends BaseController {
                                   @RequestParam(value = "lat", required = false, defaultValue = "0") double lat,
                                   @RequestParam(value = "tags", required = false, defaultValue = "") String tags,
                                   @RequestParam(value = "aged", required = false, defaultValue = "-1") int age,
-                                  @RequestParam(value = "ons", required = false, defaultValue = "-1") int ons) {
+                                  @RequestParam(value = "ons", required = false, defaultValue = "") String ons) {
         ObjectId userId = getUserId();
         if (lon != 0 && lat != 0) {
             mateService.updateLocation(userId, lon, lat);
@@ -111,7 +128,6 @@ public class PlayMateController extends BaseController {
                 tagIntegerList.add(Integer.parseInt(tag));
             }
             mateService.updateTags(userId, tagIntegerList);
-
             List<UserTag> userTagList = new ArrayList<UserTag>();
             List<MateData> mateDatas = fMateTypeService.getTags();
             for (int code : tagIntegerList) {
@@ -127,10 +143,19 @@ public class PlayMateController extends BaseController {
         if (age != -1) {
             mateService.updateAge(getUserId(), age);
         }
-
         //更新在线时间段
-        if (ons != -1) {
-            mateService.updateOns(getUserId(), ons);
+        if (StringUtils.isNotBlank(ons) && !"-1".equals(ons)) {
+            List<Integer> onsList = new ArrayList<Integer>();
+            String[] tempList = ons.split(",");
+            for (String s : tempList) {
+                try {
+                    onsList.add(Integer.parseInt(s));
+                } catch (NumberFormatException e) {
+                    e.printStackTrace();
+                }
+
+            }
+            mateService.updateOns(getUserId(), onsList);
         }
 
         return RespObj.SUCCESS("成功");
@@ -188,6 +213,14 @@ public class PlayMateController extends BaseController {
     @UserRoles(UserRole.DISCUSS_MANAGER)
     public RespObj create2dsphereIndex() {
         fMateTypeService.create2dsphereIndex();
+        return RespObj.SUCCESS;
+    }
+
+    @RequestMapping("/clearHeap")
+    @ResponseBody
+    @UserRoles(UserRole.DISCUSS_MANAGER)
+    public RespObj clearHeap() {
+        fMateTypeService.clearHeap();
         return RespObj.SUCCESS;
     }
 

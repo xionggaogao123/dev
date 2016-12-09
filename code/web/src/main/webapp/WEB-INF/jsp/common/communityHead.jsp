@@ -40,8 +40,6 @@
             </p>
 
             <p class="p4" id="myOns">
-                <em id="o-data"></em>
-                <em id="editOns">编辑时间段</em>
             </p>
         </c:if>
     </div>

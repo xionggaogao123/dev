@@ -40,10 +40,9 @@ public class MateService {
     private UserDao userDao = new UserDao();
     private FriendDao friendDao = new FriendDao();
 
-    public PageModel<FMateDTO> findMates(ObjectId userId, double lon, double lat, List<String> tags, int aged, int ons, int page, int pageSize, int maxDistance) {
+    public PageModel<FMateDTO> findMates(ObjectId userId, double lon, double lat, List<String> tags, int aged, List<Integer> ons, int page, int pageSize, int maxDistance) {
         List<FMateDTO> fMateDTOS = new ArrayList<FMateDTO>();
         PageModel<FMateDTO> pageModel = new PageModel<FMateDTO>();
-
         List<Integer> tagIntegers = new ArrayList<Integer>();
         for (String tagStr : tags) {
             try {
@@ -77,7 +76,7 @@ public class MateService {
                 continue;
             }
             String distance = "未知";
-            if (lon != 0 && lat != 0) {
+            if (lon != 0 && lat != 0 && dbList != null) {
                 Double distanceDouble = DistanceUtils.distance(lon, lat, (Double) dbList.get(0), (Double) dbList.get(1));
                 distance = String.valueOf(distanceDouble.longValue());
             }
@@ -88,11 +87,18 @@ public class MateService {
             fMateDTO.setNickName(userEntry.getNickName());
             fMateDTO.setUserName(userEntry.getUserName());
 
+            List<MateData> onsList = new ArrayList<MateData>();
             for (MateData mateData : mateDatas) {
-                if (mateEntry.getOns() == mateData.getCode()) {
-                    fMateDTO.setOns(mateData);
+                BasicDBList basicDBList = mateEntry.getOns();
+                if(basicDBList != null) {
+                    for (Object o : basicDBList) {
+                        if (((Integer) o) == mateData.getCode()) {
+                            onsList.add(mateData);
+                        }
+                    }
                 }
             }
+            fMateDTO.setOns(onsList);
             fMateDTO.setAvatar(AvatarUtils.getAvatar(userEntry.getAvatar(), AvatarType.MIN_AVATAR.getType()));
             List<UserTag> tagList = new ArrayList<UserTag>();
             List<UserEntry.UserTagEntry> userTagEntries = userEntry.getUserTag();
@@ -162,19 +168,22 @@ public class MateService {
         return fMateDao.getMateEntryByUserId(userId);
     }
 
-    public MateData getMyOns(ObjectId userId) {
+    public List<MateData> getMyOns(ObjectId userId) {
         FMateEntry fMateEntry = fMateDao.getMateEntryByUserId(userId);
         if (fMateEntry == null) {
-            return null;
+            return new ArrayList<MateData>();
         }
-        int ons = fMateEntry.getOns();
+        BasicDBList dbList = fMateEntry.getOns();
         List<MateData> datas = fMateTypeService.getOns();
+        List<MateData> onsList = new ArrayList<MateData>();
         for (MateData mateData : datas) {
-            if (ons == mateData.getCode()) {
-                return mateData;
+            for (Object o : dbList) {
+                if (((Integer) o) == mateData.getCode()) {
+                    onsList.add(mateData);
+                }
             }
         }
-        return null;
+        return onsList;
     }
 
     public void updateTags(ObjectId userId, List<Integer> tags) {
@@ -227,7 +236,7 @@ public class MateService {
         fMateDao.updateAged(userId, aged);
     }
 
-    public void updateOns(ObjectId userId, int ons) {
-        fMateDao.updateUserOns(userId, ons);
+    public void updateOns(ObjectId userId, List<Integer> onsList) {
+        fMateDao.updateUserOns(userId, onsList);
     }
 }

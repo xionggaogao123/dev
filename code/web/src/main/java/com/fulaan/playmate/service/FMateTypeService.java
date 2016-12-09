@@ -127,4 +127,8 @@ public class FMateTypeService {
         fMateTypeDao.create2dsphereIndex(MongoFacroty.getAppDB(), Constant.COLLECTION_FORUM_MATE_SEEKMATE);
         fMateTypeDao.create2dsphereIndex(MongoFacroty.getAppDB(), Constant.COLLECTION_FORUM_ACTIVITY);
     }
+
+    public void clearHeap() {
+        fMateTypeDao.dropCollection(MongoFacroty.getAppDB(),Constant.COLLECTION_FORUM_MATE_SEEKMATE);
+    }
 }

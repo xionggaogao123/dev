@@ -160,10 +160,12 @@
             </p>
             <p class="p2">
                 空闲时间段:
-                {{?value.ons}}
-                <i>{{=value.ons.data}}</i>
+                {{? value.ons.length > 0 }}
+                {{~ value.ons:ons:i}}
+                <i>{{=ons.data}}</i>
+                {{~}}
                 {{?}}
-                {{?value.ons == null }}
+                {{? value.ons.length == 0 }}
                 <i>未设置</i>
                 {{?}}
             </p>
@@ -239,7 +241,7 @@
     <div class="menu1 clearfix">
         <div class="menu-item">时&nbsp;间&nbsp;段</div>
         <div class="clearfix menu-cont mate-timed">
-            <span value='-1' class="gre-cur">不限</span>
+            <span value='-1' class="gre-cur" id="no-limit">不限</span>
             {{~value.times:time:index}}
             <span value="{{=time.code}}">{{=time.data}}</span>
             {{~}}

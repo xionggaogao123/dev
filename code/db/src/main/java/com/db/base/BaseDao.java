@@ -279,4 +279,8 @@ public class BaseDao {
         db.getCollection(name).createIndex(new BasicDBObject("loc", "2dsphere"));
     }
 
+    public void dropCollection(DB db, String name) {
+        db.getCollection(name).drop();
+    }
+
 }

@@ -42,7 +42,7 @@ public class FMateDao extends BaseDao {
         return fMateEntries;
     }
 
-    public BasicDBObject buildQuery(double lon, double lat, List<Integer> tags,int aged, int ons, int maxDistance) {
+    public BasicDBObject buildQuery(double lon, double lat, List<Integer> tags,int aged, List<Integer> onsList, int maxDistance) {
         BasicDBObject query = new BasicDBObject();
         if (lon != 0 && lat != 0) {
             List<Double> locs = new ArrayList<Double>();
@@ -58,8 +58,8 @@ public class FMateDao extends BaseDao {
         if (aged != -1) {
             query.append("aged", aged);
         }
-        if (ons != -1) {
-            query.append("ons", ons);
+        if (onsList != null && onsList.size() > 0) {
+            query.append("ons", new BasicDBObject("$in", onsList));
         }
         return query;
     }
@@ -164,11 +164,11 @@ public class FMateDao extends BaseDao {
     /**
      * 更新可在线时间段
      * @param userId
-     * @param ons
+     * @param onsList
      */
-    public void updateUserOns(ObjectId userId, int ons) {
+    public void updateUserOns(ObjectId userId, List<Integer> onsList) {
         BasicDBObject query = new BasicDBObject("uid", userId);
-        BasicDBObject update = new BasicDBObject(Constant.MONGO_SET, new BasicDBObject("ons", ons));
+        BasicDBObject update = new BasicDBObject(Constant.MONGO_SET, new BasicDBObject("ons", onsList));
         update(MongoFacroty.getAppDB(), Constant.COLLECTION_FORUM_MATE_SEEKMATE, query, update);
     }
 }

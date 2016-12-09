@@ -22,10 +22,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 /**
  * Created by moslpc on 2016/11/30.
@@ -153,8 +150,8 @@ public class PlayMateController extends BaseController {
                 } catch (NumberFormatException e) {
                     e.printStackTrace();
                 }
-
             }
+            onsList = new ArrayList<Integer>(new HashSet<Integer>(onsList));
             mateService.updateOns(getUserId(), onsList);
         }
 

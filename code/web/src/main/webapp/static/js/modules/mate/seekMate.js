@@ -403,7 +403,10 @@ define(['jquery', 'pagination', 'common'], function (require, exports, module) {
             if (resp.code == 200) {
                 $('.wind-act-fq').fadeOut();
                 $('.bg').fadeOut();
-            } else {
+
+                alert('发布成功');
+            }
+             else {
                 alert(resp.message);
             }
         });

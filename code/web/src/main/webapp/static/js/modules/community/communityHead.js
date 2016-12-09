@@ -88,17 +88,10 @@ define(['jquery', 'pagination', 'common'], function (require, exports, module) {
         });
 
         $('body').on('click', '.ons-div span', function () {
-            var code = $(this).attr('code');
             if ($(this).hasClass('bq-cur')) {
                 $(this).removeClass('bq-cur');
-                for (var i = 0; i < ons.length; i++) {
-                    if (ons[i] == code) {
-                        ons.splice(i,1);
-                    }
-                }
             } else {
                 $(this).addClass('bq-cur');
-                ons.push(code);
             }
         });
 
@@ -109,6 +102,14 @@ define(['jquery', 'pagination', 'common'], function (require, exports, module) {
 
         $('body').on('click', '.wind-ons .p3 .btn1', function () {
 
+            ons = [];
+            $('.ons-div span').each(function () {
+                var code = $(this).attr('code');
+                if ($(this).hasClass('bq-cur')) {
+                    ons.push(code);
+                }
+            });
+
             var onsLi = '';
             for(var i=0;i<ons.length;i++) {
                 onsLi += ons[i] + ',';
@@ -116,11 +117,14 @@ define(['jquery', 'pagination', 'common'], function (require, exports, module) {
             var requestParm = {
                 ons: onsLi
             };
+
+            alert(JSON.stringify(requestParm));
             common.getData('/mate/updateMateData.do', requestParm, function (resp) {
                 if (resp.code == '200') {
                     $('.wind-ons').fadeOut();
                     $('.bg').fadeOut();
 
+                    getAllOns();
                 } else {
                     alert(resp.message);
                 }
@@ -292,6 +296,7 @@ define(['jquery', 'pagination', 'common'], function (require, exports, module) {
                 str += '<em>' + resp.message[i].data + '</em>';
                 myOns.push(resp.message[i]);
             }
+            $('#myOns').empty();
             str += '<em id="editOns">编辑时间段</em>';
             $('#myOns').append(str);
         });

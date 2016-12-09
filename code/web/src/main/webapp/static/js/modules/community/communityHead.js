@@ -290,6 +290,7 @@ define(['jquery', 'pagination', 'common'], function (require, exports, module) {
             }
         });
 
+        myOns = [];
         common.getData('/mate/getMyOns.do', {}, function (resp) {
             var str = '';
             for (var i = 0; i < resp.message.length; i++) {

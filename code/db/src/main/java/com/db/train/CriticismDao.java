@@ -23,7 +23,8 @@ public class CriticismDao extends BaseDao {
     public List<CriticismEntry> getCriticismEntries(ObjectId instituteId,int page,int pageSize){
         List<CriticismEntry> entries=new ArrayList<CriticismEntry>();
         BasicDBObject query=new BasicDBObject()
-                .append("sid",instituteId);
+                .append("sid",instituteId)
+                .append("ir",0);
         BasicDBObject order=new BasicDBObject()
                 .append(Constant.ID,-1)
                 .append("sc",-1);
@@ -38,8 +39,16 @@ public class CriticismDao extends BaseDao {
 
     public int countCriticismEntries(ObjectId instituteId){
         BasicDBObject query=new BasicDBObject()
-                .append("sid",instituteId);
+                .append("sid",instituteId)
+                .append("ir",0);
         return count(MongoFacroty.getAppDB(), Constant.COLLECTION_TRAIN_COMMENT,query);
+    }
+
+
+    public void removeCriticism(ObjectId id){
+        BasicDBObject query=new BasicDBObject(Constant.ID,id);
+        BasicDBObject updateValue=new BasicDBObject(Constant.MONGO_SET,new BasicDBObject("ir",1));
+        update(MongoFacroty.getAppDB(),Constant.COLLECTION_TRAIN_COMMENT,query,updateValue);
     }
 
     public CriticismEntry getEntry(ObjectId instituteId,ObjectId userId){

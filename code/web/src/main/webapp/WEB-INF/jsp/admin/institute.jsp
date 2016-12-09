@@ -9,6 +9,7 @@
 <layout:override name="content">
     <div id="r-result">请输入:<input type="text" id="suggestId" size="20" style="width:150px;" /></div>
     <button id="submit">提交</button>
+    <button id="generateIndex">生成索引</button>
 </layout:override>
 <%-- 填充script --%>
 <layout:override name="script">
@@ -19,6 +20,24 @@
     <script type="text/javascript">
 
         $(function(){
+
+            $('#generateIndex').click(function(){
+                $.ajax({
+                    type: "GET",
+                    data: {},
+                    url: '/train/create2dsphereIndex.do',
+                    async: false,
+                    dataType: "json",
+                    contentType: "application/x-www-form-urlencoded; charset=UTF-8",
+                    success: function (resp) {
+                        if(resp.code=="200"){
+                            alert("生成索引成功了!");
+                        }
+                    }
+                });
+            });
+
+
             $('#submit').click(function(){
                 var page=$('#suggestId').val();
                 $.ajax({

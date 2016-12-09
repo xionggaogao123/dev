@@ -1,9 +1,11 @@
 package com.fulaan.train.service;
 
+import com.db.factory.MongoFacroty;
 import com.db.train.InstituteDao;
 import com.fulaan.train.dto.InstituteDTO;
 import com.fulaan.util.DistanceUtils;
 import com.pojo.train.InstituteEntry;
+import com.sys.constants.Constant;
 import org.bson.types.ObjectId;
 import org.springframework.stereotype.Service;
 
@@ -100,6 +102,10 @@ public class InstituteService {
 
     public List<InstituteEntry> findInstituteEntries(int page,int pageSize){
         return instituteDao.findInstituteEntries(page,pageSize);
+    }
+
+    public void create2dsphereIndex() {
+        instituteDao.create2dsphereIndex(MongoFacroty.getAppDB(), Constant.COLLECTION_TRAIN_INSTITUTE);
     }
 
 }

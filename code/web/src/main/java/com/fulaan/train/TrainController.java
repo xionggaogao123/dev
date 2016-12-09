@@ -3,6 +3,7 @@ package com.fulaan.train;
 import com.fulaan.annotation.LoginInfo;
 import com.fulaan.annotation.ObjectIdType;
 import com.fulaan.annotation.SessionNeedless;
+import com.fulaan.annotation.UserRoles;
 import com.fulaan.cache.RedisUtils;
 import com.fulaan.controller.BaseController;
 import com.fulaan.playmate.service.MateService;
@@ -22,6 +23,7 @@ import com.pojo.questions.PropertiesObj;
 import com.pojo.train.CriticismEntry;
 import com.pojo.train.InstituteEntry;
 import com.pojo.train.RegionEntry;
+import com.pojo.user.UserRole;
 import com.sys.constants.Constant;
 import com.sys.utils.QiniuFileUtils;
 import com.sys.utils.RespObj;
@@ -112,6 +114,23 @@ public class TrainController extends BaseController {
         return RespObj.SUCCESS(retMap);
     }
 
+
+    @RequestMapping("/create2dsphereIndex")
+    @ResponseBody
+    @UserRoles(UserRole.DISCUSS_MANAGER)
+    public RespObj create2dsphereIndex() {
+        instituteService.create2dsphereIndex();
+        return RespObj.SUCCESS;
+    }
+
+
+    @RequestMapping("/removeCriticism")
+    @ResponseBody
+    @UserRoles(UserRole.DISCUSS_MANAGER)
+    public RespObj removeCriticism(@ObjectIdType ObjectId id) {
+        criticismService.removeCriticism(id);
+        return RespObj.SUCCESS;
+    }
 
 
 

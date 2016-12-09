@@ -75,4 +75,8 @@ public class CriticismService {
     public CriticismEntry getEntry(ObjectId instituteId,ObjectId userId){
         return  criticismDao.getEntry(instituteId, userId);
     }
+
+    public void removeCriticism(ObjectId id){
+        criticismDao.removeCriticism(id);
+    }
 }

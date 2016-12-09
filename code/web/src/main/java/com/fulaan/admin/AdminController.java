@@ -268,6 +268,17 @@ public class AdminController extends BaseController {
         return "/admin/batchImage";
     }
 
+
+    /**
+     * 管理评论
+     * @return
+     */
+    @RequestMapping("/manageCriticism")
+    @UserRoles(UserRole.DISCUSS_MANAGER)
+    public String manageCriticism() {
+        return "/admin/manageCriticism";
+    }
+
     /**
      * 板块管理
      *

@@ -3,7 +3,16 @@
 
 <link rel="stylesheet" type="text/css" href="/static/css/forum/forum.css">
 <link rel="stylesheet" type="text/css" href="/static/css/main.css"/>
-<script type="text/javascript" src="/static/js/jquery-1.11.1.min.js"></script>
+<link rel="stylesheet" type="text/css" href="/static/css/train/findtrain.css">
+<%--<link rel="stylesheet" type="text/css" href="/static/css/forum/forum.css">--%>
+<%--<link rel="stylesheet" type="text/css" href="/static/css/main.css"/>--%>
+<script type="text/javascript" src="/static/js/modules/train/jquery-1.8.0.min.js"></script>
+<script type="text/javascript" src="/static/js/modules/train/jquery.raty.min.js"></script>
+<script type="text/javascript"
+        src="http://api.map.baidu.com/api?v=2.0&ak=TzFCVsUAf4RzyoOdgZ5tB10fASv5Dswy"></script>
+<%--<link rel="stylesheet" href="http://cache.amap.com/lbs/static/main1119.css"/>--%>
+<script type="text/javascript"
+        src="http://webapi.amap.com/maps?v=1.3&key=3a1cd4cff6fcbdf71ea760da6957fb94"></script>
 <script type="text/javascript">
     $(function () {
 
@@ -99,10 +108,10 @@
             <span class="nav-txt">发现</span>
             <span class="sp-nav">
                 <span class="sp1">找家教</span>
-                <span class="sp2">找培训</span>
+                <span class="sp2" onclick="window.open('/train/trainList')">找培训</span>
                 <span class="sp3">在线学习</span>
                 <span class="sp4">亲子活动</span>
-                <span class="sp5">找玩伴</span>
+                <span class="sp5" onclick="window.open('/mate/friend')">找玩伴</span>
             </span>
         </a>
         <a href="/mall" class="ha2" target="_blank">教育商城</a>

@@ -12,16 +12,8 @@
     <title>培训详情</title>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
     <meta name="viewport" content="initial-scale=1.0, user-scalable=no"/>
-    <link rel="stylesheet" type="text/css" href="/static/css/train/findtrain.css">
-    <link rel="stylesheet" type="text/css" href="/static/css/forum/forum.css">
-    <link rel="stylesheet" type="text/css" href="/static/css/main.css"/>
-    <script type="text/javascript" src="/static/js/modules/train/jquery-1.8.0.min.js"></script>
-    <script type="text/javascript" src="/static/js/modules/train/jquery.raty.min.js"></script>
-    <script type="text/javascript"
-    src="http://api.map.baidu.com/api?v=2.0&ak=TzFCVsUAf4RzyoOdgZ5tB10fASv5Dswy"></script>
-    <%--<link rel="stylesheet" href="http://cache.amap.com/lbs/static/main1119.css"/>--%>
-    <script type="text/javascript"
-            src="http://webapi.amap.com/maps?v=1.3&key=3a1cd4cff6fcbdf71ea760da6957fb94"></script>
+    <script type="text/javascript" src="/static/js/jquery-1.11.1.min.js"></script>
+
     <%--<script type="text/javascript" src="http://cache.amap.com/lbs/static/addToolbar.js"></script>--%>
     <%--<style type="text/css">--%>
     <%--#tip {--%>
@@ -79,7 +71,7 @@
                 targetKeep: true,
                 width: 150,
                 number:5,
-                dv
+                score:5
             })
 
             $('#toplogin').click(function () {//登录

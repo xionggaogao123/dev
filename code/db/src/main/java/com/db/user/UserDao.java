@@ -1583,21 +1583,13 @@ public class UserDao extends BaseDao {
 
         FieldValuePair fieldValuePair = new FieldValuePair(Constant.ID,id);
         return query(fieldValuePair);
-
-
-//        BasicDBObject query = new BasicDBObject(Constant.ID,id);
-//        DBObject dbo = findOne(MongoFacroty.getAppDB(),Constant.COLLECTION_FORUM_COMMUNITY,Constant.FIELDS,query);
-//        return dbo == null ? null : new UserEntry(dbo);
     }
 
     public UserEntry findByName(String userName) {
         BasicDBObject query = new BasicDBObject()
                 .append("nm", userName.toLowerCase());
         DBObject dbo = findOne(MongoFacroty.getAppDB(), Constant.COLLECTION_USER_NAME, query, Constant.FIELDS);
-        if (dbo != null) {
-            return new UserEntry((BasicDBObject) dbo);
-        }
-        return null;
+        return dbo == null ? null : new UserEntry((BasicDBObject) dbo);
     }
 
     public UserEntry findByEmail(String email) {

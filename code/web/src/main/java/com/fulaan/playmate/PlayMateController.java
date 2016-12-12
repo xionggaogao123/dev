@@ -1,6 +1,7 @@
 package com.fulaan.playmate;
 
 import com.fulaan.annotation.LoginInfo;
+import com.fulaan.annotation.ObjectIdType;
 import com.fulaan.annotation.SessionNeedless;
 import com.fulaan.annotation.UserRoles;
 import com.fulaan.controller.BaseController;
@@ -219,6 +220,26 @@ public class PlayMateController extends BaseController {
     public RespObj clearHeap() {
         fMateTypeService.clearHeap();
         return RespObj.SUCCESS;
+    }
+
+    @RequestMapping("/getUserMateData")
+    @ResponseBody
+    @SessionNeedless
+    public RespObj getUserMateData(@ObjectIdType ObjectId userId) {
+        List<MateData> mateDatas = mateService.getMyOns(getUserId());
+        List<Map<String, Object>> tags = new ArrayList<Map<String, Object>>();
+        UserEntry userEntry = userService.find(userId);
+        List<UserEntry.UserTagEntry> userTagEntries = userEntry.getUserTag();
+        for (UserEntry.UserTagEntry userTagEntry : userTagEntries) {
+            Map<String, Object> map = new HashMap<String, Object>();
+            map.put("code", userTagEntry.getCode());
+            map.put("tag", userTagEntry.getTag());
+            tags.add(map);
+        }
+        Map<String, Object> map = new HashMap<String, Object>();
+        map.put("freeTimes", mateDatas);
+        map.put("tags", tags);
+        return RespObj.SUCCESS(map);
     }
 
 

@@ -1,0 +1,290 @@
+/* start */
+.reg-container{
+    width: 1000px;
+    margin: 0 auto;
+}
+.reg-container .tit{
+    height: 59px;
+    line-height: 59px;
+    background: url('/static/images/account/img_regi.png') no-repeat 0 18px;
+}
+.reg-container .tit .sp1{
+    float: left;
+    margin: 0 0 0 37px;
+    color: #FF602E;
+    font-size: 20px;
+}
+.reg-container .tit .sp2{
+    float: right;
+}
+.reg-container .tit .sp2 a{
+    color: #FF602E;
+    cursor: pointer;
+}
+.re-cont{
+    border: 1px solid #D2D2D2;
+    height: 598px;
+}
+.re-cont .tab{
+    height: 40px;
+    text-align: center;
+    margin: 0 61px 35px;
+    border-bottom: 1px solid #FF9F19;
+}
+.re-cont .tab span{
+    display: inline-block;
+    width: 155px;
+    height: 39px;
+    line-height: 39px;
+    text-align: center;
+    border: 1px solid #FF9F19;
+    font-size: 15px;
+    cursor: pointer;
+    margin: 0;
+}
+.re-cont .ul2{
+    display: none;
+}
+.tab-cur{
+    color: #fff;
+    background: #FF9F19;
+}
+.re-form{
+    width: 314px;
+    margin: 0 auto;
+}
+.re-form li{
+    position: relative;
+    margin-bottom: 13px;
+}
+.re-form li .sp1{
+    position: absolute;
+    top: 0;
+    left: -135px;
+    display: inline-block;
+    width: 120px;
+    height: 39px;
+    line-height: 39px;
+    text-align: right;
+}
+.re-form li .sp4{
+    position: absolute;
+    top: 0;
+    right: 0;
+    display: inline-block;
+    width: 106px;
+    height: 41px;
+    line-height: 41px;
+    text-align: center;
+    color: #fff;
+    cursor: pointer;
+    background: #FF9F19;
+}
+.re-form li .sp2{
+    display: block;
+    font-size: 12px;
+    color: #999;
+    height: 20px;
+    line-height: 20px;
+}
+.re-form li .sp3{
+    display: inline-block;
+    position: absolute;
+    top: 0;
+    right: -254px;
+    width: 220px;
+    height: 39px;
+    line-height: 39px;
+    padding-left: 22px;
+    background: url('/static/images/account/jinggao.png') no-repeat 0 11px;
+    font-size: 12px;
+    color: #FF9F19;
+}
+.re-form li .in1{
+    width: 186px;
+}
+.re-form li button{
+    width: 314px;
+    height: 48px;
+    border: none;
+    color: #fff;
+    background: #FF9F19;
+    font-size: 15px;
+    margin-top: 4px;
+}
+.re-form input[type="checkbox"]{
+    position: relative;
+    top: 1px;
+    border: 1px solid #FF9F19;
+    margin: 0 10px 0 0;
+}
+.h37{
+    height: 37px;
+}
+
+.re-form input[type="text"]{
+    display: block;
+    border: 1px solid #C9C9C9;
+    width: 306px;
+    height: 39px;
+    padding-left: 6px;
+}
+
+.re-form input[type="password"]{
+    display: block;
+    border: 1px solid #C9C9C9;
+    width: 306px;
+    height: 39px;
+    padding-left: 6px;
+}
+
+.re-form input:hover{
+    border: 1px solid #FF9F19;
+}
+
+/* new add */
+
+.re-form li .sp5{
+    display: inline-block;
+    position: absolute;
+    top: 0;
+    right: -236px;
+    width: 220px;
+    height: 39px;
+    line-height: 39px;
+    font-size: 12px;
+    color: #FF9F19;
+    cursor: pointer;
+}
+.sp-qq{
+    padding-left: 20px;
+    height: 18px;
+    line-height: 18px;
+    background: url('/static/images/account/qq.png') no-repeat 0 2px;
+    color: #033E88;
+    margin-right: 25px;
+    float: left;
+}
+.sp-wx{
+    padding-left: 20px;
+    height: 18px;
+    line-height: 18px;
+    background: url('/static/images/account/wx.png') no-repeat 0 0;
+    color: #033E88;
+    float: left;
+    margin-right: 25px;
+}
+.sp-fl{
+    float: left;
+    margin-right: 25px;
+}
+.h67{
+    height: 67px;
+}
+.ul-luc{
+    height: 150px;
+    width: 530px;
+    margin: 0 auto;
+}
+.ul-luc li{
+    float: left;
+    margin: 36px 5px 0 0;
+    height: 70px;
+}
+.ul-luc .li1{
+    width: 153px;
+}
+.ul-luc .li2{
+    width: 40px;
+}
+.ul-luc li .sp1{
+    float: left;
+    width: 30px;
+    height: 30px;
+    line-height: 30px;
+    font-weight: bold;
+    color: #aaa;
+    text-align: center;
+    border-radius: 100%;
+    border: 4px solid #aaa;
+}
+.ul-luc li .sp2{
+    float: left;
+    width: 115px;
+    height: 4px;
+    background: #aaa;
+    margin: 17px 0;
+}
+.ul-luc li .sp3{
+    float: left;
+    width: 90px;
+    font-size: 16px;
+    height: 18px;
+    line-height: 18px;
+    margin-top: 8px;
+    text-align: center;
+    color: #aaa;
+    position: relative;
+    left: -26px;
+}
+.ul-luc .orali span{
+    color: #FF9F19;
+}
+.ul-luc .orali .sp1{
+    border: 4px solid #FF9F19;
+}
+.ul-luc .orali .sp2{
+    background: #FF9F19;
+}
+.re-form .sp6{
+    display: inline-block;
+    width: 120px;
+    height: 39px;
+    border: 1px solid #C9C9C9;
+    position: absolute;
+    right: -130px;
+    top: 0;
+}
+.re-form .sp7{
+    display: block;
+    text-align: center;
+    font-size: 17px;
+    width: 414px;
+    margin-left: -50px;
+}
+.re-form .sp7 a{
+    color: #FF9F19;
+    margin-left: 5px;
+}
+.usn{
+    -moz-user-select: none;
+    -webkit-user-select: none;
+    -ms-user-select: none;
+    user-select: none;
+}
+
+.re-cont .ul11,.re-cont .ul21{
+    display: none;
+}
+.re-cont2,.re-cont3,.re-cont4{
+    display: none;
+}
+
+.reg-container .tit2{
+    height: 59px;
+    line-height: 59px;
+    background: url('/static/images/account/suo.png') no-repeat 0 18px;
+}
+.reg-container .tit2 .sp1{
+    float: left;
+    margin: 0 0 0 37px;
+    color: #FF602E;
+    font-size: 20px;
+}
+.reg-container .tit2 .sp2{
+    float: right;
+}
+.reg-container .tit2 .sp2 a{
+    color: #FF602E;
+    cursor: pointer;
+}

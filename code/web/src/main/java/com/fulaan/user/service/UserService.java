@@ -1421,4 +1421,8 @@ public class UserService {
         }
 
     }
+
+    public Object checkUserNameExist(String userName) {
+        return userDao.findByName(userName) != null;
+    }
 }

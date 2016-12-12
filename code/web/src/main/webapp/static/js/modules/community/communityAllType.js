@@ -164,6 +164,10 @@ define(['jquery', 'pagination', 'common'], function (require, exports, module) {
             sureCancel();
         })
 
+        $('body').on('click','.si-s4 em,.si-s4 .alert-btn-esc',function(){
+            ss3();
+        })
+
     });
 
     function ss3(){

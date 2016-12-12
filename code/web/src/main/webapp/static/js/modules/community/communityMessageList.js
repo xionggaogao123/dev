@@ -171,6 +171,9 @@ define(['jquery', 'pagination', 'common'], function (require, exports, module) {
             sureCancel();
         })
 
+        $('body').on('click','.si-s4 em,.si-s4 .alert-btn-esc',function(){
+            ss4();
+        })
 
     });
 
@@ -236,24 +239,27 @@ define(['jquery', 'pagination', 'common'], function (require, exports, module) {
         common.getData("/community/getMessage.do", requestData, function (result) {
             if (result.code = "200") {
                 $('.new-page-links').html("");
-                $('.new-page-links').jqPaginator({
-                    totalPages: Math.ceil(result.message.totalCount / result.message.pageSize) == 0 ? 1 : Math.ceil(result.message.totalCount / result.message.pageSize),//总页数
-                    visiblePages: 10,//分多少页
-                    currentPage: parseInt(result.message.page),//当前页数
-                    first: '<li class="first"><a href="javascript:void(0);">首页<\/a><\/li>',
-                    prev: '<li class="prev"><a href="javascript:void(0);">&lt;<\/a><\/li>',
-                    next: '<li class="next"><a href="javascript:void(0);">&gt;<\/a><\/li>',
-                    last: '<li class="last"><a href="javascript:void(0);">末页<\/a><\/li>',
-                    page: '<li class="page"><a href="javascript:void(0);">{{page}}<\/a><\/li>',
-                    onPageChange: function (n) { //回调函数
-                        if (isInit) {
-                            isInit = false;
-                        } else {
-                            getMessages(n);
-                            $('body,html').animate({scrollTop: 0}, 20);
+                if(result.message.result.length>0){
+                    $('.new-page-links').jqPaginator({
+                        totalPages: Math.ceil(result.message.totalCount / result.message.pageSize) == 0 ? 1 : Math.ceil(result.message.totalCount / result.message.pageSize),//总页数
+                        visiblePages: 10,//分多少页
+                        currentPage: parseInt(result.message.page),//当前页数
+                        first: '<li class="first"><a href="javascript:void(0);">首页<\/a><\/li>',
+                        prev: '<li class="prev"><a href="javascript:void(0);">&lt;<\/a><\/li>',
+                        next: '<li class="next"><a href="javascript:void(0);">&gt;<\/a><\/li>',
+                        last: '<li class="last"><a href="javascript:void(0);">末页<\/a><\/li>',
+                        page: '<li class="page"><a href="javascript:void(0);">{{page}}<\/a><\/li>',
+                        onPageChange: function (n) { //回调函数
+                            if (isInit) {
+                                isInit = false;
+                            } else {
+                                getMessages(n);
+                                $('body,html').animate({scrollTop: 0}, 20);
+                            }
                         }
-                    }
-                });
+                    });
+                }
+
 
                 if (type == 1) {
                     template('#announcementTmpl', '#content', result.message.result);

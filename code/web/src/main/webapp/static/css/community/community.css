@@ -1213,6 +1213,7 @@ pre{white-space: pre-wrap;word-wrap: break-word;}
 .com-left{
     width: 872px;
     float: left;
+    background: rgba(255,255,255,0) !important;
 }
 .com-left-s{
     margin-bottom: 15px;
@@ -1224,6 +1225,7 @@ pre{white-space: pre-wrap;word-wrap: break-word;}
 .com-right{
     width: 360px;
     float: right;
+    background: rgba(255,255,255,0) !important;
 }
 .com-tit{
     height: 46px;

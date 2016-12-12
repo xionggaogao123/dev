@@ -156,7 +156,36 @@ define(['jquery', 'pagination', 'common'], function (require, exports, module) {
             $('.container .hd-cont-f2').show();
         }
 
+        $('body').on('click','.delete-detail',function(){
+            showDelete($(this));
+        })
+
+        $('body').on('click','#confirm',function(){
+            sureCancel();
+        })
+
     });
+
+    function ss3(){
+        $('.si-s4').hide();
+        $('.bg').hide();
+    }
+
+    function sureCancel(){
+        var param={};
+        param.detailId=$('.si-s4').data('detailId');
+        common.getData('/community/removeDetailById.do',param,function (resp) {
+            ss3();
+            getCommunityDetail();
+        })
+    }
+
+
+    function showDelete(obj){
+        $('.si-s4').data('detailId',obj.attr('detailId'));
+        $('.si-s4').show();
+        $('.bg').show();
+    }
 
     function spread(obj) {
         obj.closest('p').css('max-height', '140px');

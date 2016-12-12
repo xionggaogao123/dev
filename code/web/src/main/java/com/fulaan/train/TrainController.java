@@ -25,6 +25,7 @@ import com.pojo.train.InstituteEntry;
 import com.pojo.train.RegionEntry;
 import com.pojo.user.UserRole;
 import com.sys.constants.Constant;
+import com.sys.props.Resources;
 import com.sys.utils.QiniuFileUtils;
 import com.sys.utils.RespObj;
 import org.apache.commons.io.FilenameUtils;
@@ -319,23 +320,30 @@ public class TrainController extends BaseController {
     @RequestMapping("/batchDealImage")
     @ResponseBody
     public RespObj batchDealImage(@RequestParam(defaultValue = "1", required = false) int page,
-                                  @RequestParam(defaultValue = "100", required = false) int pageSize){
+                                  @RequestParam(defaultValue = "1000", required = false) int pageSize){
         try{
             List<InstituteEntry> entries = instituteService.findInstituteEntries(page, pageSize);
             for(InstituteEntry entry : entries) {
                 String fileName=new ObjectId()+".jpg";
-                String path="E:\\water";
+                String path= Resources.getProperty("upload.file");
                 DownloadUtil.downLoadFromUrl(entry.getMainPic(),fileName,path);
                 String filePath=path+"\\"+fileName;
-                String logoImg = "E:/water/logo.png";
+                String logoImg = getRequest().getServletContext().getRealPath("/upload") +"/logo.png";
                 String waterImage=imageInit.mergeWaterMark(filePath,logoImg);
+                File file1=new File(filePath);
                 File file=new File(waterImage);
-                String extensionName = fileName.substring(fileName.indexOf(".")+1,fileName.length());
+                String extensionName = waterImage.substring(waterImage.indexOf(".")+1,waterImage.length());
                 String fileKey = new ObjectId().toString() + Constant.POINT + extensionName;
                 QiniuFileUtils.uploadFile(fileKey, new FileInputStream(file), QiniuFileUtils.TYPE_IMAGE);
                 String qiuNiuPath = QiniuFileUtils.getPath(QiniuFileUtils.TYPE_IMAGE, fileKey);
                 entry.setImageUrl(qiuNiuPath);
                 instituteService.saveOrUpdate(entry);
+                try {
+                    file.delete();
+                    file1.delete();
+                }catch (Exception e){
+
+                }
             }
         }catch (Exception e){
             return RespObj.FAILD(e.getMessage());

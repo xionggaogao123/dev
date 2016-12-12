@@ -163,7 +163,36 @@ define(['jquery', 'pagination', 'common'], function (require, exports, module) {
         })
 
 
+        $('body').on('click','.delete-detail',function(){
+            showDelete($(this));
+        })
+
+        $('body').on('click','#sureCancel',function(){
+            sureCancel();
+        })
+
+
     });
+
+    function ss4(){
+        $('.si-s4').hide();
+        $('.bg').hide();
+    }
+
+    function sureCancel(){
+        var param={};
+        param.detailId=$('.si-s4').data('detailId');
+        common.getData('/community/removeDetailById.do',param,function (resp) {
+            ss4();
+            getMessages(1);
+        })
+    }
+
+    function showDelete(obj){
+        $('.si-s4').data('detailId',obj.attr('detailId'));
+        $('.si-s4').show();
+        $('.bg').show();
+    }
 
     function enterCommunityDetail(obj) {
         var communityDetailId = obj.attr('itemId');

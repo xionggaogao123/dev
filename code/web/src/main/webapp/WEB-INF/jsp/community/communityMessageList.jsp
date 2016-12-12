@@ -136,6 +136,16 @@
         <button class="alert-btn-esc">取消</button>
     </div>
     </div>
+    <div class="sign-alert si-s4">
+    <p class="alert-title">提示<em>×</em></p>
+    <div class="alert-main">
+        <span>你确认要删除这条信息吗？</span>
+    </div>
+    <div class="alert-btn">
+        <button class="alert-btn-sure" id="sureCancel">确认</button>
+        <button class="alert-btn-esc">取消</button>
+    </div>
+    </div>
 
     <div class="bg"></div>
 </layout:override>
@@ -229,7 +239,8 @@
                 <p class="p-infor">
                     <span>消息来源：{{=value.nickName}}</span>
                     <span>发表时间：{{=value.time}}</span>
-                    <a><span class="detail" value="{{=value.id}}" style="cursor: pointer">详情</span></a>
+                    <%--<a><span class="detail" value="{{=value.id}}" style="cursor: pointer">详情</span></a>--%>
+                    <c:if test="${operation==1}"><span class="delete-detail" detailId="{{=value.id}}">删除</span></c:if>
                 </p>
             </div>
         </div>
@@ -253,6 +264,7 @@
                 <p class="p-infor">
                     <span>消息来源：{{=value.nickName}}</span>
                     <span>发表时间：{{=value.time}}</span>
+                    <c:if test="${operation==1}"><span class="delete-detail" detailId="{{=value.id}}">删除</span></c:if>
                 </p>
             </div>
         </div>
@@ -276,6 +288,7 @@
                 <p class="p-infor">
                     <span>消息来源：{{=value.nickName}}</span>
                     <span>发表时间：{{=value.time}}</span>
+                    <c:if test="${operation==1}"><span class="delete-detail" detailId="{{=value.id}}">删除</span></c:if>
                 </p>
             </div>
         </div>
@@ -299,7 +312,8 @@
                         class="sp-more">{{?value.content.length>=143}}...<em class="spread">[展开全文]</em>{{?}}</span></p>
                 <p class="p-img clearfix">
                     {{~value.images:image:i}}
-                    <a class="fancybox" style="cursor:pointer;" href="{{=image.url}}" data-fancybox-group="home" title="预览">
+                    <a class="fancybox" style="cursor:pointer;" href="{{=image.url}}" data-fancybox-group="home"
+                       title="预览">
                           <img src="{{=image.url}}?imageView2/1/w/100/h/100"><br/>
                     </a>
                     {{~}}
@@ -307,7 +321,7 @@
                 <p class="p-infor">
                     <span>消息来源：{{=value.nickName}}</span>
                     <span>发表时间：{{=value.time}}</span>
-                    <span>详情</span>
+                    <c:if test="${operation==1}"><span class="delete-detail" detailId="{{=value.id}}">删除</span></c:if>
                 </p>
             </div>
         </div>
@@ -332,6 +346,7 @@
                 <p class="p-infor">
                     <span>消息来源：{{=value.nickName}}</span>
                     <span>发表时间：{{=value.time}}</span>
+                    <c:if test="${operation==1}"><span class="delete-detail" detailId="{{=value.id}}">删除</span></c:if>
                 </p>
             </div>
             <div class="notice-bm">
@@ -360,6 +375,7 @@
                 <p class="p-infor">
                     <span>消息来源：{{=value.nickName}}</span>
                     <span>发表时间：{{=value.time}}</span>
+                    <c:if test="${operation==1}"><span class="delete-detail" detailId="{{=value.id}}">删除</span></c:if>
                 </p>
             </div>
         </div>
@@ -380,8 +396,8 @@
     </li>
     {{~}}
 </script>
-<script type="text/javascript" src="/static/js/modules/core/0.1.0/fancyBox/jquery.fancybox.js"></script>
-<script type="text/javascript">
+    <script type="text/javascript" src="/static/js/modules/core/0.1.0/fancyBox/jquery.fancybox.js"></script>
+    <script type="text/javascript">
     $(document).ready(function () {
         $(".fancybox").fancybox({});
 

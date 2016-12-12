@@ -310,7 +310,7 @@
 
 <div class="bg"></div>
 
-<div class="sign-alert si-s3">
+<div class="sign-alert si-s4">
     <p class="alert-title">提示<em>×</em></p>
     <div class="alert-main">
         <span>你确认要删除这条信息吗？</span>

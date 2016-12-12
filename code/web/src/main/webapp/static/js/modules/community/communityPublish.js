@@ -346,8 +346,8 @@ define(['jquery', 'pagination', 'common'], function (require, exports, module) {
             sureCancel();
         })
 
-        $('body').on('click','.si-s3 em,.si-s3 .alert-btn-esc',function(){
-            ss3();
+        $('body').on('click','.si-s4 em,.si-s4 .alert-btn-esc',function(){
+            ss4();
         })
 
         $('body').on('click','.login-mk-btn .d2',function () {
@@ -358,9 +358,9 @@ define(['jquery', 'pagination', 'common'], function (require, exports, module) {
 
     function sureCancel(){
         var param={};
-        param.detailId=$('.si-s3').data('detailId');
+        param.detailId=$('.si-s4').data('detailId');
         common.getData('/community/removeDetailById.do',param,function (resp) {
-            ss3();
+            ss4();
             getCommunityDetail();
         })
     }
@@ -370,10 +370,15 @@ define(['jquery', 'pagination', 'common'], function (require, exports, module) {
         $('.bg').hide();
     }
 
+    function ss4(){
+        $('.si-s4').hide();
+        $('.bg').hide();
+    }
+
 
     function showDelete(obj){
-        $('.si-s3').data('detailId',obj.attr('detailId'));
-        $('.si-s3').show();
+        $('.si-s4').data('detailId',obj.attr('detailId'));
+        $('.si-s4').show();
         $('.bg').show();
     }
 

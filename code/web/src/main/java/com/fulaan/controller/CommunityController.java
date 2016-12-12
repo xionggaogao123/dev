@@ -960,6 +960,16 @@ public class CommunityController extends BaseController {
         int type = Integer.parseInt(getRequest().getParameter("type"));
         model.put("communityId", communityId);
         model.put("type", type);
+        ObjectId groupId = communityService.getGroupId(new ObjectId(communityId));
+        ObjectId userId = getUserId();
+        if (null != userId) {
+            if (memberService.isManager(groupId, userId)) {
+                model.put("operation", 1);
+            } else {
+                model.put("operation", 0);
+            }
+        }
+
         return "/community/communityMessageList";
     }
 

@@ -49,6 +49,9 @@ public class CommunityDetailDTO {
 
     private int unReadCount;
 
+    //判断登录人的权限
+    private int operation;
+
 
     private List<PartInContentDTO> partList = new ArrayList<PartInContentDTO>();
 
@@ -364,5 +367,13 @@ public class CommunityDetailDTO {
 
     public void setUnReadCount(int unReadCount) {
         this.unReadCount = unReadCount;
+    }
+
+    public int getOperation() {
+        return operation;
+    }
+
+    public void setOperation(int operation) {
+        this.operation = operation;
     }
 }

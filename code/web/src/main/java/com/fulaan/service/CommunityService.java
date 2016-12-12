@@ -281,6 +281,14 @@ public class CommunityService {
                 communityEntry = communityDao.findByObjectId(new ObjectId(entry.getCommunityId()));
                 communityDetailDTO.setCommunityName(communityEntry.getCommunityName());
             }
+            communityDetailDTO.setOperation(0);
+
+            if(null!=userId){
+                ObjectId groupId =getGroupId(new ObjectId(entry.getCommunityId()));
+               if(memberService.isManager(groupId,userId)) {
+                   communityDetailDTO.setOperation(1);
+               }
+            }
 
             //设置权限
             setRoleStr(communityDetailDTO, communityEntry, entry.getCommunityUserId());

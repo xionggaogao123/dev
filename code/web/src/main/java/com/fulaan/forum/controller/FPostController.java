@@ -1627,7 +1627,7 @@ public class FPostController extends BaseController {
             try {
                 ObjectId id = new ObjectId();
                 String fileKey = "postVideo-" + id.toString() + file.getOriginalFilename().substring(file.getOriginalFilename().lastIndexOf('.'));
-                String bathPath = Resources.getProperty("uploads.file");
+                String bathPath = Resources.getProperty("upload.file");
                 File parentFile = new File(bathPath);
                 if (!parentFile.exists()) {
                     parentFile.mkdirs();

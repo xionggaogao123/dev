@@ -107,6 +107,8 @@
     {{~}}
     </script>
 </div>
+<%@ include file="../common/footer.jsp" %>
+<%@ include file="../common/login.jsp" %>
 <script src="/static/js/sea.js"></script>
 <script src="/static/js/modules/core/0.1.0/config.js?v=2015041602"></script>
 <script>

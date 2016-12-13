@@ -133,6 +133,7 @@ define(['jquery', 'pagination', 'common'], function (require, exports, module) {
 		requestData.itemType=$('#trainTop').data($('#trainTop').find('.cur1').text());
         requestData.regular=$('#regular').val();
 		requestData.sortType=sortType;
+		requestData.pageSize=25;
 		$('.h-load').show();
 		$.ajax({
 			type: "GET",
@@ -150,7 +151,7 @@ define(['jquery', 'pagination', 'common'], function (require, exports, module) {
 					if (resultData.length > 0) {
 						$('.new-page-links').jqPaginator({
 							totalPages: Math.ceil(resp.message.count / resp.message.pageSize) == 0 ? 1 : Math.ceil(resp.message.count / resp.message.pageSize),//总页数
-							visiblePages: 3,//分多少页
+							visiblePages: 5,//分多少页
 							currentPage: parseInt(page),//当前页数
 							first: '<li class="first"><a href="javascript:void(0);">首页<\/a><\/li>',
 							prev: '<li class="prev"><a href="javascript:void(0);">&lt;<\/a><\/li>',

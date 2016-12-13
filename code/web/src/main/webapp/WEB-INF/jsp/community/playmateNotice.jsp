@@ -13,6 +13,8 @@
 <%@ include file="../common/head.jsp" %>
 <div class="container">
     <%@ include file="_layout.jsp" %>
+</div>
+
     <div class="f-cont">
         <div class="hd-nav">
             <span class="hd-green-cur">我的社区</span>
@@ -20,6 +22,7 @@
             <%--<span>找玩伴</span>--%>
         </div>
     </div>
+<div class="container">
     <div class="hd-cont-f hd-cont-f1">
         <div class="com-left">
             <div class="com-left-s" id="friendInform">

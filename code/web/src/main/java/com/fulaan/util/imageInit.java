@@ -70,12 +70,15 @@ public class imageInit {
         String watermarkImagePath = imagePath.substring(0,imagePath.lastIndexOf("."))+"-merge-"+ new Random().nextInt(9999) +".jpg";
         FileOutputStream fos = null;
         BufferedOutputStream bos = null;
-        File imgDir = new File(watermarkPath);
-        if(!imgDir.exists()){
-            imgDir.mkdirs();
-        }
-        File fileImg = new File(watermarkImagePath);
         try {
+            File imgDir = new File(watermarkPath);
+            if(!imgDir.exists()){
+                imgDir.mkdirs();
+            }
+            File fileImg = new File(watermarkImagePath);
+            if(!fileImg.exists()){
+                fileImg.createNewFile();
+            }
             fos = new FileOutputStream(fileImg);
             bos = new BufferedOutputStream(fos);
             bos.write(imageWatermarkProcess(imagePath, logoPath, 1.0F,10,10));

@@ -31,7 +31,7 @@
         <c:if test="${login == true}">
             <img src="${avatar}" class="img2">
             <p class="p1">${nickName}</p>
-            <p class="p2">UID:${userId}</p>
+            <p class="p2">UID : ${userId}</p>
             <p class="p4" id="myTags">
                 <c:forEach items="${tags}" var="tag">
                     <em>${tag}</em>
@@ -39,7 +39,7 @@
                 <em id="editTag">编辑标签</em>
             </p>
 
-            <p class="p4" id="myOns">
+            <p class="p4 pt" id="myOns">
             </p>
         </c:if>
     </div>

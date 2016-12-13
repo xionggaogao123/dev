@@ -700,16 +700,20 @@ pre {
 
 .find-center-top > .p1 {
     float: left;
-    width: 700px;
     height: 18px;
-    font-size: 18px;
-    margin-top: 33px;
+    font-size: 16px;
+    max-width: 200px;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    margin:33px 20px 0 6px;
 }
 
 .find-center-top > .p2 {
     float: left;
     width: 700px;
-    height: 14px;
+    height: 18px;
+    line-height:24px;
     font-size: 14px;
     margin-top: 10px;
 }

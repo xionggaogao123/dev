@@ -23,6 +23,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
+import java.text.SimpleDateFormat;
 import java.util.*;
 
 /**
@@ -120,22 +121,7 @@ public class PlayMateController extends BaseController {
             mateService.updateLocation(userId, lon, lat);
         }
         if (StringUtils.isNotBlank(tags)) {
-            List<String> tagList = StrUtils.splitToList(tags);
-            List<Integer> tagIntegerList = new ArrayList<Integer>();
-            for (String tag : tagList) {
-                tagIntegerList.add(Integer.parseInt(tag));
-            }
-            mateService.updateTags(userId, tagIntegerList);
-            List<UserTag> userTagList = new ArrayList<UserTag>();
-            List<MateData> mateDatas = fMateTypeService.getTags();
-            for (int code : tagIntegerList) {
-                for (MateData mateData : mateDatas) {
-                    if (mateData.getCode() == code) {
-                        userTagList.add(new UserTag(mateData.getCode(), mateData.getData()));
-                    }
-                }
-            }
-            userService.pushUserTags(getUserId(), userTagList);
+            updateTag(userId,tags);
         }
         //更新年龄
         if (age != -1) {
@@ -249,8 +235,31 @@ public class PlayMateController extends BaseController {
         return RespObj.SUCCESS(map);
     }
 
-    public RespObj updateUserAgeAndTag(String year,String month,String day,String tags) {
+    @RequestMapping("/updateUserAge")
+    @ResponseBody
+    public RespObj updateUserAge(int year,int month,int day) {
+        try {
+            String date = String.valueOf(year) + "-" + String.valueOf(month) + "-" + String.valueOf(day);
+            SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd");
+            Date birthday = format.parse(date);
+            userService.update(getUserId(), "bir", birthday.getTime());
+            mateService.updateAged(getUserId(), birthday.getTime());
+        } catch (Exception e) {
+            e.printStackTrace();
+            return RespObj.FAILD(e.getMessage());
+        }
+        return RespObj.SUCCESS("修改成功");
+    }
+
+    @RequestMapping("/updateUserTag")
+    @ResponseBody
+    public RespObj updateUserTag(String tags) {
         ObjectId userId = getUserId();
+        updateTag(userId,tags);
+        return RespObj.SUCCESS("修改成功");
+    }
+
+    private void updateTag(ObjectId userId,String tags) {
         if (StringUtils.isNotBlank(tags)) {
             List<String> tagList = StrUtils.splitToList(tags);
             List<Integer> tagIntegerList = new ArrayList<Integer>();
@@ -269,8 +278,6 @@ public class PlayMateController extends BaseController {
             }
             userService.pushUserTags(getUserId(), userTagList);
         }
-        return null;
-
     }
 
 

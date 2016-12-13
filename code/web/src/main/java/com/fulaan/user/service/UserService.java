@@ -657,6 +657,8 @@ public class UserService {
         userDao.updateNickNameAndSexById(new ObjectId(studenrid), stnickname, sex);
     }
 
+//    public void updateAgeById()
+
     public void updateNickNameById(String userId, String stnickname) {
         userDao.updateNickNameById(new ObjectId(userId), stnickname);
     }

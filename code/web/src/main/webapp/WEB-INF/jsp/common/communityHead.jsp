@@ -85,7 +85,6 @@
         <span code="126" tag="航模">航模</span>
         <span code="127" tag="航海">航海</span>
         <span code="128" tag="机器人">机器人</span>
-        <span code="129" tag="演讲">演讲</span>
     </div>
     <p class="p2">已选标签</p>
     <div class="bq-list clearfix" id="selected">

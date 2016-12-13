@@ -38,4 +38,8 @@ public class RegionService {
         return regionDao.getRegionEntry(name);
     }
 
+    public void setSort(ObjectId id,int sort){
+        regionDao.setSort(id, sort);
+    }
+
 }

@@ -43,13 +43,20 @@ public class ItemTypeNameDao extends BaseDao {
         if(null!=parentId) {
                 query.append("pid", parentId);
         }
+        BasicDBObject sort=new BasicDBObject("so",-1);
         List<ItemTypeEntry> entries=new ArrayList<ItemTypeEntry>();
-        List<DBObject> dbObjects=find(MongoFacroty.getAppDB(),Constant.COLLECTION_TRAIN_ITEMTYPENAME,query);
+        List<DBObject> dbObjects=find(MongoFacroty.getAppDB(),Constant.COLLECTION_TRAIN_ITEMTYPENAME,query,Constant.FIELDS,sort);
         if(null!=dbObjects&&!dbObjects.isEmpty()){
             for(DBObject dbo:dbObjects) {
                 entries.add(new ItemTypeEntry((BasicDBObject)dbo));
             }
         }
         return entries;
+    }
+
+    public void  setSort(ObjectId id,int sort){
+        BasicDBObject query=new BasicDBObject(Constant.ID,id);
+        BasicDBObject updateValue=new BasicDBObject(Constant.MONGO_SET,new BasicDBObject("so",sort));
+        update(MongoFacroty.getAppDB(),Constant.COLLECTION_TRAIN_ITEMTYPENAME,query,updateValue);
     }
 }

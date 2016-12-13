@@ -66,5 +66,8 @@
         <li>
             <a href="/admin/manageCriticism.do">培训机构管理</a>
         </li>
+        <li>
+            <a href="/admin/manageItemType.do">培训分类管理</a>
+        </li>
     </ul>
 </div>

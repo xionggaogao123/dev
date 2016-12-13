@@ -493,6 +493,20 @@ public class TrainController extends BaseController {
         return RespObj.SUCCESS;
     }
 
+    @RequestMapping("/region/setSort/{id}")
+    @ResponseBody
+    public RespObj regionSetSort(@PathVariable @ObjectIdType ObjectId id,int sort){
+        regionService.setSort(id,sort);
+        return RespObj.SUCCESS;
+    }
+
+    @RequestMapping("/itemType/setSort/{id}")
+    @ResponseBody
+    public RespObj itemTypeSetSort(@PathVariable @ObjectIdType ObjectId id,int sort){
+        itemTypeService.setSort(id,sort);
+        return RespObj.SUCCESS;
+    }
+
     protected String getIP() {
         HttpServletRequest request = getRequest();
         String ip = request.getHeader("x-forwarded-for");

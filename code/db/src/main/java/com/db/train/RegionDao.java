@@ -31,8 +31,9 @@ public class RegionDao extends BaseDao {
         if(null!=parentId) {
             query.append("pid", parentId);
         }
+        BasicDBObject sort=new BasicDBObject("so",-1);
         List<RegionEntry> regionEntries=new ArrayList<RegionEntry>();
-        List<DBObject> dbObjects=find(MongoFacroty.getAppDB(),Constant.COLLECTION_TRAIN_REGIONS,query);
+        List<DBObject> dbObjects=find(MongoFacroty.getAppDB(),Constant.COLLECTION_TRAIN_REGIONS,query,Constant.FIELDS,sort);
         if(null!=dbObjects&&!dbObjects.isEmpty()){
            for(DBObject dbObject:dbObjects){
                regionEntries.add(new RegionEntry((BasicDBObject)dbObject));
@@ -51,8 +52,14 @@ public class RegionDao extends BaseDao {
         }
     }
 
+    public void  setSort(ObjectId id,int sort){
+        BasicDBObject query=new BasicDBObject(Constant.ID,id);
+        BasicDBObject updateValue=new BasicDBObject(Constant.MONGO_SET,new BasicDBObject("so",sort));
+        update(MongoFacroty.getAppDB(),Constant.COLLECTION_TRAIN_REGIONS,query,updateValue);
+    }
 
-    public BasicDBObject getQueryCondition(String field, String name) {
+
+    private BasicDBObject getQueryCondition(String field, String name) {
         BasicDBObject query = new BasicDBObject();
         Pattern pattern = Pattern.compile("^.*" + name + ".*$", Pattern.CASE_INSENSITIVE);
         query.append(field, new BasicDBObject(Constant.MONGO_REGEX, pattern));

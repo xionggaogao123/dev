@@ -280,6 +280,16 @@ public class AdminController extends BaseController {
     }
 
     /**
+     * 管理评论
+     * @return
+     */
+    @RequestMapping("/manageItemType")
+    @UserRoles(UserRole.DISCUSS_MANAGER)
+    public String manageItemType() {
+        return "/admin/manageItemType";
+    }
+
+    /**
      * 板块管理
      *
      * @param map

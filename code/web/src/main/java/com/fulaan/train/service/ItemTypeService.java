@@ -34,4 +34,8 @@ public class ItemTypeService {
             return new ItemTypeDTO();
         }
     }
+
+    public void setSort(ObjectId id,int sort){
+        itemTypeNameDao.setSort(id, sort);
+    }
 }

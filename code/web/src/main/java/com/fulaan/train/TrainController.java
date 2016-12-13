@@ -323,7 +323,7 @@ public class TrainController extends BaseController {
     public RespObj batchDefaultImage(String idOrNames){
         if(StringUtils.isNotBlank(idOrNames)){
             try{
-                String defaultImage = getRequest().getServletContext().getRealPath("/upload") +"/default.png";
+                String defaultImage = getRequest().getServletContext().getRealPath("/static") +"/images/upload/default.png";
                 File file=new File(defaultImage);
                 String fileKey = new ObjectId().toString() +".png";
                 QiniuFileUtils.uploadFile(fileKey, new FileInputStream(file), QiniuFileUtils.TYPE_IMAGE);
@@ -389,7 +389,7 @@ public class TrainController extends BaseController {
             String path= Resources.getProperty("upload.file");
             DownloadUtil.downLoadFromUrl(entry.getMainPic(),fileName,path);
             String filePath=path+"\\"+fileName;
-            String logoImg = getRequest().getServletContext().getRealPath("/upload") +"/logo.png";
+            String logoImg = getRequest().getServletContext().getRealPath("/static") +"/images/upload/logo.png";
             String waterImage=imageInit.mergeWaterMark(filePath,logoImg);
             File file1=new File(filePath);
             File file=new File(waterImage);

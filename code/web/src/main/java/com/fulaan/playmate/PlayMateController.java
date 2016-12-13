@@ -249,5 +249,29 @@ public class PlayMateController extends BaseController {
         return RespObj.SUCCESS(map);
     }
 
+    public RespObj updateUserAgeAndTag(String year,String month,String day,String tags) {
+        ObjectId userId = getUserId();
+        if (StringUtils.isNotBlank(tags)) {
+            List<String> tagList = StrUtils.splitToList(tags);
+            List<Integer> tagIntegerList = new ArrayList<Integer>();
+            for (String tag : tagList) {
+                tagIntegerList.add(Integer.parseInt(tag));
+            }
+            mateService.updateTags(userId, tagIntegerList);
+            List<UserTag> userTagList = new ArrayList<UserTag>();
+            List<MateData> mateDatas = fMateTypeService.getTags();
+            for (int code : tagIntegerList) {
+                for (MateData mateData : mateDatas) {
+                    if (mateData.getCode() == code) {
+                        userTagList.add(new UserTag(mateData.getCode(), mateData.getData()));
+                    }
+                }
+            }
+            userService.pushUserTags(getUserId(), userTagList);
+        }
+        return null;
+
+    }
+
 
 }

@@ -176,7 +176,7 @@
                 等{{=value.commonFriends.length}}人也是TA的玩伴
             </p>
             <p class="p2">
-                <img src="/static/images/findnearby_zuobiao.png">距离您<i>{{=value.distance}}</i>
+                <img src="/static/images/findnearby_zuobiao.png">距离您<i style="color:#FF964C">{{=value.distance}}</i>
             </p>
         </div>
         <button class="btn-lyl" value="{{=value.userId}}">聊一聊</button>

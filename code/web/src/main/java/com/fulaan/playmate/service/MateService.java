@@ -249,6 +249,6 @@ public class MateService {
         } else if(distance < 5000) {
             return "≤5km";
         }
-        return "≥5km";
+        return ">5km";
     }
 }

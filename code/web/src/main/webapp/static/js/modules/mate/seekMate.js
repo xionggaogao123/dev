@@ -11,6 +11,7 @@ define(['jquery', 'pagination', 'common'], function (require, exports, module) {
     var lon;
     var lat;
     var activitys = [];
+    var myTags = [];
     seekMate.init = function () {
         getAllSortType();
     };
@@ -335,6 +336,7 @@ define(['jquery', 'pagination', 'common'], function (require, exports, module) {
                 $('.biaoq-all span').each(function () {
                     var code = $(this).attr('code');
                     for (var i = 0; i < resp.message.length; i++) {
+                        myTags.push(resp.message[i]);
                         if (code == resp.message[i].code) {
                             $(this).addClass('bq-cur');
                         }

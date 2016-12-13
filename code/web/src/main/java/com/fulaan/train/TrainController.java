@@ -391,26 +391,25 @@ public class TrainController extends BaseController {
 
     private void batchImage(List<InstituteEntry> entries) throws  IOException,IllegalParamException{
         for(InstituteEntry entry : entries) {
-            String fileName=new ObjectId()+".jpg";
-            String parentPath=getRequest().getServletContext().getRealPath("/static")+"/images/upload";
-//            String path= Resources.getProperty("upload.file");
-            DownloadUtil.downLoadFromUrl(entry.getMainPic(),fileName,parentPath);
-            String filePath=parentPath+"\\"+fileName;
-            String logoImg = getRequest().getServletContext().getRealPath("/static") +"/images/upload/logo.png";
-            String waterImage=imageInit.mergeWaterMark(filePath,logoImg);
-            File file1=new File(filePath);
-            File file=new File(waterImage);
-            String extensionName = waterImage.substring(waterImage.indexOf(".")+1,waterImage.length());
-            String fileKey = new ObjectId().toString() + Constant.POINT + extensionName;
-            QiniuFileUtils.uploadFile(fileKey, new FileInputStream(file), QiniuFileUtils.TYPE_IMAGE);
-            String qiuNiuPath = QiniuFileUtils.getPath(QiniuFileUtils.TYPE_IMAGE, fileKey);
-            entry.setImageUrl(qiuNiuPath);
-            instituteService.saveOrUpdate(entry);
+            String fileName = new ObjectId() + ".jpg";
+            String parentPath = getRequest().getServletContext().getRealPath("/static") + "/images/upload";
+//           String path= Resources.getProperty("upload.file");
+            DownloadUtil.downLoadFromUrl(entry.getMainPic(), fileName, parentPath);
+            String filePath = parentPath + "/" + fileName;
+            String logoImg = getRequest().getServletContext().getRealPath("/static") + "/images/upload/logo.png";
+            String waterImage = imageInit.mergeWaterMark(filePath, logoImg);
+            File file1 = new File(filePath);
+            File file = new File(waterImage);
             try {
+                String extensionName = waterImage.substring(waterImage.indexOf(".") + 1, waterImage.length());
+                String fileKey = new ObjectId().toString() + Constant.POINT + extensionName;
+                QiniuFileUtils.uploadFile(fileKey, new FileInputStream(file), QiniuFileUtils.TYPE_IMAGE);
+                String qiuNiuPath = QiniuFileUtils.getPath(QiniuFileUtils.TYPE_IMAGE, fileKey);
+                entry.setImageUrl(qiuNiuPath);
+                instituteService.saveOrUpdate(entry);
+            }finally {
                 file.delete();
                 file1.delete();
-            }catch (Exception e){
-
             }
         }
     }

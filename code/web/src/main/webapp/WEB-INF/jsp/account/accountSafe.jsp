@@ -66,7 +66,7 @@
                     <div class="l2">
                         <div class="li-img">
                             <img src="">
-                            <span>编辑头像</span>
+                            <span class="edit-img">编辑头像</span>
                         </div>
                     </div>
                 </li>
@@ -262,6 +262,9 @@
     <input type="text" title="">
     <p class="p-btn-ok">确认</p>
 </div>
+
+<%@include file="../common/footer.jsp" %>
+
 </body>
 
 <script src="/static/js/sea.js"></script>

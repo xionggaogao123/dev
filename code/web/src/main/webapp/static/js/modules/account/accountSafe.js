@@ -8,6 +8,7 @@ define(['jquery', 'pagination', 'common'], function (require, exports, module) {
     };
 
     $(function () {
+
         $('.btn-xg-psw').click(function () {
             $('.wind-psw').fadeIn();
             $('.bg').fadeIn();
@@ -54,7 +55,40 @@ define(['jquery', 'pagination', 'common'], function (require, exports, module) {
                 $(this).addClass('oracur2');
             }
         });
+
+        $('body').on('click', '.edit-img', function () {
+            var random = Math.random();
+            window.open('/personal/avatarpage.do?uid=' + random + '&uploadtype=head', '图片上传', 'height=253,width=450,top=300,left=800,status=no,toolbar=no,menubar=no,location=no,scrollbars=no,resizable=no');
+        });
     });
+
+    function getTags(userId) {
+        var requestParm = {
+            userId: userId
+        };
+        common.getData('/mate/getUserMateData.do', requestParm, function (resp) {
+
+            alert(JSON.stringify(resp));
+        });
+    }
+
+    function getUserInfo() {
+        common.getData('/forum/loginInfo.do', {}, function (resp) {
+            alert(JSON.stringify(resp));
+        });
+    }
+
+    function getValidateData() {
+        common.getData('/account/validateData.do', {}, function (resp) {
+            alert(JSON.stringify(resp));
+        });
+    }
+
+    function getInfo() {
+        common.getData('/forum/userCenter/userInfo.do', {}, function (resp) {
+
+        });
+    }
 
     module.exports = accountSafe;
 });

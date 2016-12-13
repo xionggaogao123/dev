@@ -52,7 +52,6 @@ define(['jquery', 'pagination', 'common'], function (require, exports, module) {
                     alert(resp.message);
                 }
             });
-
         });
 
         $('.ul1 li .sp-qq').click(function () {

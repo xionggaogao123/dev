@@ -16,6 +16,7 @@ import org.springframework.web.bind.annotation.ResponseBody;
  * Created by moslpc on 2016/12/12.
  */
 @Controller
+@RequestMapping("/account")
 public class AccountController extends BaseController {
 
     @Autowired
@@ -81,6 +82,12 @@ public class AccountController extends BaseController {
         if (userService.find(name) == null) {
             return RespObj.FAILD("用户不存在");
         }
+        return RespObj.SUCCESS;
+    }
+
+    @RequestMapping("/validateData")
+    @ResponseBody
+    public RespObj validateData() {
         return RespObj.SUCCESS;
     }
 }

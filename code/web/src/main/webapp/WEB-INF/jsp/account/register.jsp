@@ -18,7 +18,7 @@
     </div>
 </div>
 
-<div class="reg-container">
+<div class="reg-container" style="margin-bottom: 100px">
 
     <div class="tit">
         <span class="sp1">登录复兰教育社区帐号</span>
@@ -103,6 +103,8 @@
         </ul>
     </div>
 </div>
+
+<%@include file="../common/footer.jsp" %>
 </body>
 <script src="/static/js/sea.js"></script>
 <script src="/static/js/modules/core/0.1.0/config.js?v=2015041602"></script>

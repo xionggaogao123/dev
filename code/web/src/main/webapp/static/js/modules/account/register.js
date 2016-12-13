@@ -223,7 +223,7 @@ define(['jquery', 'pagination', 'common'], function (require, exports, module) {
 
             if (emailRegisterCheck.email && emailRegisterCheck.password && emailRegisterCheck.userName) {
 
-                alert("可以注册了 haha");
+                $(this).parent().find('.sp3').hide();
                 var userName = $.trim($('.ul2 .user-name').val());
                 var password = $.trim($('.ul2 .password').val());
                 var email = $.trim($('.email-input').val());

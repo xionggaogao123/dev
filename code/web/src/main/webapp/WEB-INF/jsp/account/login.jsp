@@ -10,7 +10,7 @@
 
 <jsp:include page="../common/head.jsp"/>
 
-<div class="reg-container">
+<div class="reg-container" style="margin-bottom: 100px">
     <div class="tit">
         <span class="sp1">注册复兰教育社区帐号</span>
         <span class="sp2">如果你的学校正在使用K6KT平台，请使用实名直接登录！&nbsp;&nbsp;&nbsp;没有帐号？<a href="/register">马上注册</a></span>
@@ -39,6 +39,9 @@
         </ul>
     </div>
 </div>
+
+<%@include file="../common/footer.jsp" %>
+
 </body>
 <script src="/static/js/sea.js"></script>
 <script src="/static/js/modules/core/0.1.0/config.js?v=2015041602"></script>

@@ -105,7 +105,7 @@ public class FMateTypeService {
         }
 
         service.saveType(3);
-        String distance = "500米,1km,2km,5km以上";
+        String distance = "≤500m,≤1km,≤2km,≤5km";
         list = distance.split(",");
         code = 1;
         for (String s1 : list) {

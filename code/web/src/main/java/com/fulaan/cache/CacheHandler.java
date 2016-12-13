@@ -61,6 +61,11 @@ public final class CacheHandler {
     //存储用户key和IP的对应关系
     public static final String CACHE_USER_KEY_IP = "uip_{0}";
 
+    //用户找回密码
+    public static final String CACHE_FW_KEY = "fw_{0}";
+    public static final String CACHE_FW_USERNAME_KEY = "fw_user_{0}";
+
+
 
     /**
      * 得到session

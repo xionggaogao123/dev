@@ -1,5 +1,4 @@
 define('birthday', ['jquery'], function (require, exports, module) {
-    alert('hhaa');
     (function ($) {
         $.extend({
             ms_DatePicker: function (options) {

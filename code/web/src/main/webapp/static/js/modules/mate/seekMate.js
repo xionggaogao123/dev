@@ -24,6 +24,9 @@ define(['jquery', 'pagination', 'common'], function (require, exports, module) {
                 template('#mateBox', '#near-mates', resp.message.result);
                 $('.mate-count').text(resp.message.totalCount);
                 page = resp.page;
+                if(resp.message.totalPages == 0) {
+                    return;
+                }
                 $('.new-page-links').jqPaginator({
                     totalPages: resp.message.totalPages,//总页数
                     visiblePages: 10,//分多少页

@@ -613,6 +613,8 @@ public class Constant {
 
     public static final String COLLECTION_TRAIN_INSTITUTE="institute";
 
+    public static final String COLLECTION_TRAIN_INSTITUTE_TEST="institute_copy";
+
     public static final String COLLECTION_TRAIN_ITEMTYPENAME="itemTypeName";
 
     public static final String COLLECTION_TRAIN_REGIONS="regions";

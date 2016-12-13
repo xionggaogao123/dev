@@ -263,8 +263,14 @@ public class TrainController extends BaseController {
         Map<String, Object> map = new HashMap<String, Object>();
         List<CriticismDTO> dtos = criticismService.getCriticismDTOs(instituteId, page, pageSize,remove);
         int count = criticismService.countCriticisms(instituteId,remove);
+        int goodCount=criticismService.countCriticismEntriesSort(instituteId,remove,4);
+        int normalCount=criticismService.countCriticismEntriesSort(instituteId,remove,3);
+        int badCount=criticismService.countCriticismEntriesSort(instituteId,remove,2);
         map.put("list", dtos);
         map.put("count", count);
+        map.put("goodCount", goodCount);
+        map.put("normalCount", normalCount);
+        map.put("badCount", badCount);
         map.put("page", page);
         map.put("pageSize", pageSize);
         return RespObj.SUCCESS(map);
@@ -386,9 +392,10 @@ public class TrainController extends BaseController {
     private void batchImage(List<InstituteEntry> entries) throws  IOException,IllegalParamException{
         for(InstituteEntry entry : entries) {
             String fileName=new ObjectId()+".jpg";
-            String path= Resources.getProperty("upload.file");
-            DownloadUtil.downLoadFromUrl(entry.getMainPic(),fileName,path);
-            String filePath=path+"\\"+fileName;
+            String parentPath=getRequest().getServletContext().getRealPath("/static")+"/images/upload";
+//            String path= Resources.getProperty("upload.file");
+            DownloadUtil.downLoadFromUrl(entry.getMainPic(),fileName,parentPath);
+            String filePath=parentPath+"\\"+fileName;
             String logoImg = getRequest().getServletContext().getRealPath("/static") +"/images/upload/logo.png";
             String waterImage=imageInit.mergeWaterMark(filePath,logoImg);
             File file1=new File(filePath);

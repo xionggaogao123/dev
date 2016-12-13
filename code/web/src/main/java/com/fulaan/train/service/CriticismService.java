@@ -79,4 +79,8 @@ public class CriticismService {
     public void dealCriticism(ObjectId id,int remove){
         criticismDao.dealCriticism(id,remove);
     }
+
+    public int countCriticismEntriesSort(ObjectId instituteId,int remove,int score){
+        return criticismDao.countCriticismEntriesSort(instituteId, remove, score);
+    }
 }

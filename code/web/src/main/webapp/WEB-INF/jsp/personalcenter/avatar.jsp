@@ -43,6 +43,7 @@
                 success: function (data) {
                     if (data.result == 'false') {
                         alert("Í·ÏñÐÞ¸ÄÊ§°Ü");
+                        return;
                     }
                     window.opener.location.reload();
 

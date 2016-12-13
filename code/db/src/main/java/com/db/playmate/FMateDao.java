@@ -42,7 +42,7 @@ public class FMateDao extends BaseDao {
         return fMateEntries;
     }
 
-    public BasicDBObject buildQuery(double lon, double lat, List<Integer> tags,int aged, List<Integer> onsList, int maxDistance) {
+    public BasicDBObject buildQuery(ObjectId userId,double lon, double lat, List<Integer> tags,int aged, List<Integer> onsList, int maxDistance) {
         BasicDBObject query = new BasicDBObject();
         if (lon != 0 && lat != 0) {
             List<Double> locs = new ArrayList<Double>();
@@ -51,6 +51,9 @@ public class FMateDao extends BaseDao {
             BasicDBObject geometry = new BasicDBObject("type", "Point")
                     .append("coordinates", locs);
             query.append("loc", new BasicDBObject("$near", new BasicDBObject("$geometry", geometry).append("$maxDistance", maxDistance)));
+        }
+        if(userId != null ) {
+            query.append("uid",new BasicDBObject("$ne",userId));
         }
         if (null != tags && tags.size() > 0) {
             query.append("tag", new BasicDBObject("$in", tags));

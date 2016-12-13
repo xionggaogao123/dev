@@ -1,13 +1,17 @@
 define(['jquery', 'pagination', 'common'], function (require, exports, module) {
 
-    var common = require('common');
     require('pagination');
+    require('jquery');
+    require('birthday');
+    var common = require('common');
     var accountSafe = {};
     accountSafe.init = function () {
 
+        $.ms_DatePicker();
     };
 
     $(function () {
+        getInfo();
 
         $('.btn-xg-psw').click(function () {
             $('.wind-psw').fadeIn();
@@ -86,6 +90,15 @@ define(['jquery', 'pagination', 'common'], function (require, exports, module) {
 
     function getInfo() {
         common.getData('/forum/userCenter/userInfo.do', {}, function (resp) {
+            $('.ul-infor .username').text(resp.name);
+            $('.ul-infor .nickname').val(resp.nickName);
+            $('.ul-infor .avatar').attr('src',resp.avatar);
+            $('.sex-div input[name="sex"]').each(function () {
+                var value = $(this).attr('value');
+                if(value == resp.sex) {
+                    $(this).attr('checked',0);
+                }
+            });
 
         });
     }

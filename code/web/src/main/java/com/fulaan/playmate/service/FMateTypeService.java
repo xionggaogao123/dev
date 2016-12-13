@@ -88,7 +88,7 @@ public class FMateTypeService {
         String[] list;
 
         service.saveType(1);
-        String tags = "旅行,英语,阅读,足球,篮球,羽毛球,网球,乒乓球,轮滑,跆拳道,跳绳,歌唱,表演,舞蹈,美术,钢琴,古筝,二胡,小提琴,笛子,架子鼓,围棋,跳棋,象棋,桥牌,演讲,航模,航海,机器人,演讲";
+        String tags = "旅行,英语,阅读,足球,篮球,羽毛球,网球,乒乓球,轮滑,跆拳道,跳绳,歌唱,表演,舞蹈,美术,钢琴,古筝,二胡,小提琴,笛子,架子鼓,围棋,跳棋,象棋,桥牌,演讲,航模,航海,机器人";
         list = tags.split(",");
         code = 100;
         for (String s1 : list) {
@@ -129,8 +129,9 @@ public class FMateTypeService {
     }
 
     public void clearHeap() {
-        fMateTypeDao.dropCollection(MongoFacroty.getAppDB(),Constant.COLLECTION_FORUM_MATE_SEEKMATE);
-        fMateTypeDao.dropCollection(MongoFacroty.getAppDB(),Constant.COLLECTION_FORUM_ACTIVITY);
-        fMateTypeDao.dropCollection(MongoFacroty.getAppDB(),Constant.COLLECTION_FORM_SIGN_ACTIVITY_SHEET);
+//        fMateTypeDao.dropCollection(MongoFacroty.getAppDB(),Constant.COLLECTION_FORUM_MATE_SEEKMATE);
+//        fMateTypeDao.dropCollection(MongoFacroty.getAppDB(),Constant.COLLECTION_FORUM_ACTIVITY);
+//        fMateTypeDao.dropCollection(MongoFacroty.getAppDB(),Constant.COLLECTION_FORM_SIGN_ACTIVITY_SHEET);
+        fMateTypeDao.dropCollection(MongoFacroty.getAppDB(),Constant.COLLECTION_FORUM_F_MATETYPE);
     }
 }

@@ -237,7 +237,14 @@ public class PlayMateController extends BaseController {
             tags.add(map);
         }
         Map<String, Object> map = new HashMap<String, Object>();
-        map.put("freeTimes", mateDatas);
+        List<Map<String,Object>> freeTime = new ArrayList<Map<String, Object>>();
+        for(MateData data: mateDatas) {
+            Map<String,Object> map1 = new HashMap<String,Object>();
+            map1.put("code",data.getCode());
+            map1.put("time",data.getData());
+            freeTime.add(map1);
+        }
+        map.put("freeTimes", freeTime);
         map.put("tags", tags);
         return RespObj.SUCCESS(map);
     }

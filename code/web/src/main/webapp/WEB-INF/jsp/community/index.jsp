@@ -118,7 +118,7 @@
                     <div class="d1-set">
                         <div class="d1-img"></div>
                         <div class="d1-mk">
-                            <div class="p1" onclick="window.open('/accountSafe','_blank')"><span></span>个人设置</div>
+                            <div class="p1" onclick="window.open('/account/accountSafe.do','_blank')"><span></span>个人设置</div>
                             <div class="p2"  id="logout"><span></span>退出</div>
                         </div>
                     </div>
@@ -136,7 +136,7 @@
                 </div>
             </c:if>
             <c:if test="${login == false}">
-                <button onclick="window.open('/register.do')">注册</button>
+                <button onclick="window.open('/account/register.do')">注册</button>
                 <button id="toplogin">登录</button>
                 <span class="wx-l" onclick="loginWeiXin()">微信登录</span>
                 <span class="qq-l" onclick="redirectQ()">QQ登录</span>

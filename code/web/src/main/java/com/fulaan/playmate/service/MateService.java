@@ -51,7 +51,7 @@ public class MateService {
                 e.printStackTrace();
             }
         }
-        BasicDBObject query = fMateDao.buildQuery(lon, lat, tagIntegers, aged, ons, maxDistance);
+        BasicDBObject query = fMateDao.buildQuery(userId,lon, lat, tagIntegers, aged, ons, maxDistance);
         System.out.println(query.toString());
         int count = fMateDao.countByPage(query);
         int totalPages = count % pageSize == 0 ? count / pageSize : (int) Math.ceil(count / pageSize) + 1;
@@ -71,18 +71,14 @@ public class MateService {
 
         for (FMateEntry mateEntry : fMateEntries) {
             BasicDBList dbList = mateEntry.getLocation();
-            if (mateEntry.getUserId().equals(userId)) {
-                count--;
-                continue;
-            }
             String distance = "未知";
             if (lon != 0 && lat != 0 && dbList != null) {
                 Double distanceDouble = DistanceUtils.distance(lon, lat, (Double) dbList.get(0), (Double) dbList.get(1));
-                distance = String.valueOf(distanceDouble.longValue());
+                distance = filterDistance(distanceDouble.longValue());
             }
             FMateDTO fMateDTO = new FMateDTO();
             UserEntry userEntry = userDao.findByObjectId(mateEntry.getUserId());
-            fMateDTO.setDistance(distance + "米");
+            fMateDTO.setDistance(distance);
             fMateDTO.setUserId(userEntry.getID().toString());
             fMateDTO.setNickName(userEntry.getNickName());
             fMateDTO.setUserName(userEntry.getUserName());
@@ -131,6 +127,9 @@ public class MateService {
                         users.add(user);
                     }
                 }
+            }
+            if(users.size() > 4) {
+                users = users.subList(0,4);
             }
             fMateDTO.setCommonFriends(users);
         }
@@ -238,5 +237,18 @@ public class MateService {
 
     public void updateOns(ObjectId userId, List<Integer> onsList) {
         fMateDao.updateUserOns(userId, onsList);
+    }
+
+    public String filterDistance(long distance) {
+        if(distance < 500) {
+            return "≤500m";
+        } else if(distance < 1000) {
+            return "≤1km";
+        } else if(distance < 2000) {
+            return "≤2km";
+        } else if(distance < 5000) {
+            return "≤5km";
+        }
+        return "≥5km";
     }
 }

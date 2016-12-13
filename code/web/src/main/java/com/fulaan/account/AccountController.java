@@ -90,4 +90,10 @@ public class AccountController extends BaseController {
     public RespObj validateData() {
         return RespObj.SUCCESS;
     }
+
+    @RequestMapping("/thirdLoginSuccess")
+    @SessionNeedless
+    public String thirdLoginSuccess() {
+        return "/account/thirdLoginSuccess";
+    }
 }

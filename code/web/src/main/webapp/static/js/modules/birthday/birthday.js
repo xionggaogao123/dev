@@ -1,4 +1,5 @@
 define('birthday', ['jquery'], function (require, exports, module) {
+    alert('hhaa');
     (function ($) {
         $.extend({
             ms_DatePicker: function (options) {
@@ -96,4 +97,4 @@ define('birthday', ['jquery'], function (require, exports, module) {
             } // End ms_DatePicker
         });
     })(jQuery);
-})
+});

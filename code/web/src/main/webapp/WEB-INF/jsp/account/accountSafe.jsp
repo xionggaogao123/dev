@@ -46,26 +46,26 @@
             <ul class="ul-infor">
                 <li class="clearfix">
                     <div class="l1">用户名 :</div>
-                    <div class="l2">shawn</div>
+                    <div class="l2 username">shawn</div>
                 </li>
                 <li class="clearfix">
                     <div class="l1">昵称 :</div>
                     <div class="l2">
-                        <input type="text" class="in1">
+                        <input type="text" class="in1 nickname">
                     </div>
                 </li>
                 <li class="clearfix">
                     <div class="l1">性别 :</div>
-                    <div class="l2">
-                        <label><input type="radio" name="sex">男</label>
-                        <label><input type="radio" name="sex">女</label>
+                    <div class="l2 sex-div">
+                        <label><input type="radio" name="sex" value="1">男</label>
+                        <label><input type="radio" name="sex" value="0">女</label>
                     </div>
                 </li>
                 <li class="clearfix">
                     <div class="l1">头像 :</div>
                     <div class="l2">
                         <div class="li-img">
-                            <img src="">
+                            <img src="" class="avatar">
                             <span class="edit-img">编辑头像</span>
                         </div>
                     </div>
@@ -73,18 +73,9 @@
                 <li class="clearfix">
                     <div class="l1">生日 :</div>
                     <div class="l2">
-                        <select>
-                            <option>2015</option>
-                        </select>
-                        年
-                        <select>
-                            <option>2015</option>
-                        </select>
-                        月
-                        <select>
-                            <option>2015</option>
-                        </select>
-                        日
+                        <select name="year" class="sel_year" id="sel_year" rel="2016" required></select> 年
+                        <select name="month" class="sel_month" id="sel_month" rel="2" required></select> 月
+                        <select name="day" class="sel_day" id="sel_day" rel="14" required></select> 日
                         <span class="sp2">（出生年份为保密）</span>
                     </div>
                 </li>

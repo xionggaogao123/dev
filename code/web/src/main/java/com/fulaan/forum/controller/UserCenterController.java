@@ -449,6 +449,7 @@ public class UserCenterController extends BaseController {
         result.put("year", year);
         result.put("month", month);
         result.put("day", day);
+        result.put("avatar",user.getImgUrl());
         return result;
     }
 

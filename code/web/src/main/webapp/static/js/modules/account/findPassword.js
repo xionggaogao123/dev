@@ -12,6 +12,7 @@ define(['jquery', 'pagination', 'common'], function (require, exports, module) {
             $(this).addClass('tab-cur').siblings('.tab span').removeClass('tab-cur');
             $('.re-cont .ul1').show().siblings('.re-cont ul').hide();
         });
+
         $('.tab span:nth-child(2)').click(function () {
             $(this).addClass('tab-cur').siblings('.tab span').removeClass('tab-cur');
             $('.re-cont .ul2').show().siblings('.re-cont ul').hide();
@@ -22,6 +23,7 @@ define(['jquery', 'pagination', 'common'], function (require, exports, module) {
             $('.re-cont3').show();
             $('.ul-luc li:nth-child(3)').addClass('orali');
         });
+
         $('.re-btn3').click(function () {
             $('.re-conts').hide();
             $('.re-cont4').show();
@@ -43,7 +45,7 @@ define(['jquery', 'pagination', 'common'], function (require, exports, module) {
         $('.re-btn1').click(function () {
             var verifyCode = $('.verifyCode1').val();
             var name = $('.username').val();
-            common.getData("/verifyCodeWithName.do", {name: name, verifyCode: verifyCode}, function (resp) {
+            common.getData("/account/verifyCodeWithName.do", {name: name, verifyCode: verifyCode}, function (resp) {
                 alert(JSON.stringify(resp));
                 if (resp.code == '200') {
                     $('.re-conts').hide();

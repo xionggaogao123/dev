@@ -15,7 +15,7 @@ define(['jquery', 'pagination', 'common'], function (require, exports, module) {
     $(function () {
 
         $('.ul1 .forget-password').click(function () {
-            window.location.href = '/findPassword';
+            window.location.href = '/account/findPassword';
         });
 
         $('input.username').blur(function () {

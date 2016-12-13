@@ -143,11 +143,10 @@
 <script type="text/template" id="mateBox">
     {{~it:value:index}}
     <div class="near-li">
-        <img src='{{=value.avatar}}'>
+        <img style="cursor: pointer" onClick="window.open('/community/userData.do?userId={{=value.userId}}')" src='{{=value.avatar}}'>
         <div class="near-infor">
             <p class="p1">
-                <span class="sp1">{{=value.nickName}}</span>
-                <span class="sp2" onClick="window.open('/community/userData.do?userId={{=value.userId}}')">查看更多</span>
+                <span class="sp1" style="cursor: pointer" onClick="window.open('/community/userData.do?userId={{=value.userId}}')">{{=value.nickName}}</span>
             </p>
             <p class="p2">
                 标签：
@@ -172,7 +171,7 @@
             <p class="p2">
                 您的玩伴
                 {{~value.commonFriends:friend:i}}
-                <i>{{=friend.nickName}}</i>
+                <i style="color:#FF964C">{{=friend.nickName}}</i>
                 {{~}}
                 等{{=value.commonFriends.length}}人也是TA的玩伴
             </p>

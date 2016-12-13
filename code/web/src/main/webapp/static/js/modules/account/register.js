@@ -42,7 +42,7 @@ define(['jquery', 'pagination', 'common'], function (require, exports, module) {
             var pattern = /(^(([0\+]\d{2,3}-)?(0\d{2,3})-)(\d{7,8})(-(\d{3,}))?$)|(^0{0,1}1[3|4|5|6|7|8|9][0-9]{9}$)/;
             if (pattern.test(self.val())) {
                 var requestParm = {phone: self.val()};
-                common.getData('/userPhoneCheck', requestParm, function (resp) {
+                common.getData('/account/userPhoneCheck', requestParm, function (resp) {
                     if (resp.message) {
                         self.parent().find('.sp3').text('该手机号已被使用');
                         self.parent().find('.sp3').show();
@@ -63,7 +63,7 @@ define(['jquery', 'pagination', 'common'], function (require, exports, module) {
             var pattern = /^([a-zA-Z0-9_-])+@([a-zA-Z0-9_-])+(.[a-zA-Z0-9_-])+/;
             if (pattern.test($(this).val())) {
                 var requestParm = {email: $(this).val()};
-                common.getData('/userEmailCheck', requestParm, function (resp) {
+                common.getData('/account/userEmailCheck', requestParm, function (resp) {
                     if (resp.message) {
                         self.parent().find('.sp3').text('该邮箱已被使用');
                         self.parent().find('.sp3').show();
@@ -131,7 +131,7 @@ define(['jquery', 'pagination', 'common'], function (require, exports, module) {
             if (self.val() != '') {
                 self.parent().find('.sp3').hide();
                 var requestParm = {userName: self.val()};
-                common.getData('/userNameCheck', requestParm, function (resp) {
+                common.getData('/account/userNameCheck', requestParm, function (resp) {
                     if (resp.message) {
                         self.parent().find('.sp3').text('用户名被占用了');
                         self.parent().find('.sp3').show();
@@ -152,7 +152,7 @@ define(['jquery', 'pagination', 'common'], function (require, exports, module) {
             if (self.val() != '') {
                 self.parent().find('.sp3').hide();
                 var requestParm = {userName: self.val()};
-                common.getData('/userNameCheck', requestParm, function (resp) {
+                common.getData('/account/userNameCheck', requestParm, function (resp) {
                     if (resp.message) {
                         self.parent().find('.sp3').text('用户名被占用了');
                         self.parent().find('.sp3').show();

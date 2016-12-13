@@ -61,23 +61,24 @@
             </div>
             <ul class="re-form ul1">
                 <li>
-                    <input type="text">
+                    <input type="text" id="phone">
                     <span class="sp1">手机验证 : </span>
                     <span class="sp3">请输入11位正确的手机号码</span>
                 </li>
                 <li>
-                    <input type="text" class="in1">
+                    <input type="text" class="in1" id="verifyCode">
                     <span class="sp1">验证码 : </span>
                     <img id="verifyImg" alt="" src="/verify/verifyCode.do" class="sp6" style="top: 5px;width: auto;height: auto"/>
                 </li>
                 <li>
                     <input type="text" class="in1">
                     <span class="sp1">短信验证码 : </span>
-                    <span class="sp4">发送验证码</span>
+                    <span class="sp4" id="sendCode">发送验证码</span>
                 </li>
                 <li>
                     <span class="sp2"><label><input type="checkbox">我同意《复兰教育社区协议》</label></span>
-                    <button class="re-btn2">下一步</button>
+                    <button class="re-btn2 next2">下一步</button>
+                    <span class="sp3" style="display: none">未勾选社区协议</span>
                 </li>
             </ul>
             <ul class="re-form ul2">

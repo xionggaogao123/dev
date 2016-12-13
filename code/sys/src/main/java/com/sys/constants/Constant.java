@@ -147,6 +147,8 @@ public class Constant {
 
     public static final String MD5 = "MD5";
 
+    public static final String FWCODE = "fw_code";
+
 
     /**
      * 最大的key.split 之后的长度，最大支持长度为3的key,也就是支持a.b.c,不支持a.b.c.d

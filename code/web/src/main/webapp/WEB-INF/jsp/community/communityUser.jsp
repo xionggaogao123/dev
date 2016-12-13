@@ -28,7 +28,7 @@
                     <em class="em2">${personId}</em>
                 </span>
             </span>
-            <span class="sp3"></span>
+            <span class="sp3" style="display: none"></span>
         </p>
         <p class="p1">所属群组：${communityNames}</p>
         <p class="p2">

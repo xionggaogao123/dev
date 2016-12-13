@@ -38,7 +38,7 @@
                         <em class="em2">UID:${userId}</em>
                     </span>
                 </span>
-                <span class="sp3"></span>
+                <span class="sp3" style="display: none"></span>
             </p>
             <p class="p4" id="myTags">
                 <c:forEach items="${tags}" var="tag">

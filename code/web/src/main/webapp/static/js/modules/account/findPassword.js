@@ -7,6 +7,12 @@ define(['jquery', 'pagination', 'common'], function (require, exports, module) {
 
     };
 
+    var check = {
+        phone : false,
+        verifyCode: false,
+        code: false
+    };
+
     $(function () {
         $('.tab span:nth-child(1)').click(function () {
             $(this).addClass('tab-cur').siblings('.tab span').removeClass('tab-cur');
@@ -16,12 +22,6 @@ define(['jquery', 'pagination', 'common'], function (require, exports, module) {
         $('.tab span:nth-child(2)').click(function () {
             $(this).addClass('tab-cur').siblings('.tab span').removeClass('tab-cur');
             $('.re-cont .ul2').show().siblings('.re-cont ul').hide();
-        });
-
-        $('.re-btn2').click(function () {
-            $('.re-conts').hide();
-            $('.re-cont3').show();
-            $('.ul-luc li:nth-child(3)').addClass('orali');
         });
 
         $('.re-btn3').click(function () {
@@ -57,6 +57,59 @@ define(['jquery', 'pagination', 'common'], function (require, exports, module) {
                 }
 
             })
+        });
+
+        $('#phone').blur(function () {
+            var self = $(this);
+            var pattern = /(^(([0\+]\d{2,3}-)?(0\d{2,3})-)(\d{7,8})(-(\d{3,}))?$)|(^0{0,1}1[3|4|5|6|7|8|9][0-9]{9}$)/;
+            if (pattern.test(self.val())) {
+                var requestParm = {phone: self.val()};
+                common.getData('/account/verifyUserPhone', requestParm, function (resp) {
+                    if(resp.code == '200' && resp.message.verify) {
+                        self.parent().find('.sp3').hide();
+                    } else {
+                        self.parent().find('.sp3').text(resp.message.msg);
+                        self.parent().find('.sp3').show();
+                    }
+                });
+            } else {
+                self.parent().find('.sp3').text('手机号不合法');
+                self.parent().find('.sp3').show();
+            }
+        });
+
+        $('#sendCode').click(function () {
+            var phone = $('#phone').val();
+            var verifyCode = $('#verifyCode').val();
+            common.getData("/mall/users/messages.do", {mobile: phone, verifyCode: verifyCode}, function (resp) {
+                alert(JSON.stringify(resp));
+                if (resp.code == '200') {
+
+                } else {
+                    alert(resp.message);
+                }
+
+            })
+        });
+
+        $('body').on('click','.next2',function () {
+            if (!$('.ul2 .argument').is(':checked')) {
+                $(this).parent().find('.sp3').text('未勾选社区协议');
+                $(this).parent().find('.sp3').show();
+                return;
+            } else {
+                $(this).parent().find('.sp3').hide();
+            }
+
+            if(check.code && check.phone && check.verifyCode) {
+                $(this).parent().find('.sp3').hide();
+                $('.re-conts').hide();
+                $('.re-cont3').show();
+                $('.ul-luc li:nth-child(3)').addClass('orali');
+            } else {
+                $(this).parent().find('.sp3').text('输入不完整');
+                $(this).parent().find('.sp3').show();
+            }
         });
     });
 

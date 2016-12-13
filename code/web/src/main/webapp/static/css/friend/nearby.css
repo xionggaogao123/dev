@@ -114,7 +114,7 @@ pre {
 .near-container {
     width: 1250px;
     margin: 0 auto;
-    padding-top: 12px;
+    /*padding-top: 12px;*/
 }
 
 .near-menu {
@@ -414,7 +414,7 @@ pre {
     padding: 10px 20px;
     background: #fff;
     border: 1px solid #DFDFDF;
-    margin-top: -100px;
+    margin-top: -200px;
     z-index: 1002;
 }
 
@@ -530,7 +530,7 @@ pre {
 .wind-act-det .p2 > span, .wind-act-det .p4 > span {
     float: right;
     line-height: 20px;
-    width: 100px;
+    word-break: break-all;
     width: 410px;
 }
 
@@ -698,67 +698,7 @@ pre {
     margin: 38px 22px 0 0;
 }
 
-.find-center-top > .p1 {
-    float: left;
-    height: 18px;
-    font-size: 16px;
-    max-width: 200px;
-    overflow: hidden;
-    text-overflow: ellipsis;
-    white-space: nowrap;
-    margin:33px 20px 0 6px;
-}
 
-.find-center-top > .p2 {
-    float: left;
-    width: 700px;
-    height: 18px;
-    line-height:24px;
-    font-size: 14px;
-    margin-top: 10px;
-}
-
-.find-center-top > .p3 {
-    float: left;
-    width: 700px;
-    height: 14px;
-    font-size: 14px;
-    margin-top: 10px;
-}
-
-.find-center-top > .p4 {
-    float: left;
-    width: 700px;
-    font-size: 14px;
-    margin-top: 16px;
-}
-
-.find-center-top > .p4 span {
-    float: left;
-    padding: 0 10px;
-    border: 1px solid #fff;
-    font-size: 14px;
-    border-radius: 14px;
-    margin-right: 5px;
-}
-
-.find-center-top > .p4 em {
-    float: left;
-    padding: 0 10px;
-    border: 1px solid #4A506C;
-    background: #4A506C;
-    font-size: 14px;
-    border-radius: 14px;
-    margin-right: 5px;
-    cursor: pointer;
-}
-
-.huodong-ss {
-    float: right;
-    width: 280px;
-    position: relative;
-    margin-top: 40px;
-}
 
 .huodong-ss .line-l {
     position: absolute;

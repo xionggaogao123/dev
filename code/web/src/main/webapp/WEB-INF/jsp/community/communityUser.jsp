@@ -20,7 +20,16 @@
     <div class="user-infor">
         <div class="d1"></div>
         <img src="${avatar}">
-        <p class="p1"><span>${nickName}</span>(UID:<span>${personId}</span>)</p>
+        <p class="p1">
+            <span class="sp1">${nickName}</span>
+            <span class="sp2">
+                <span>
+                    <em class="em1"></em>
+                    <em class="em2">${personId}</em>
+                </span>
+            </span>
+            <span class="sp3"></span>
+        </p>
         <p class="p1">所属群组：${communityNames}</p>
         <p class="p2">
             <c:forEach items="${tags}" var="tag">

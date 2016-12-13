@@ -818,12 +818,8 @@ pre{white-space: pre-wrap;word-wrap: break-word;}
 .find-center-top>.p1{
     float: left;
     height: 18px;
-    font-size: 16px;
-    max-width: 200px;
-    overflow: hidden;
-    text-overflow: ellipsis;
-    white-space: nowrap;
-    margin:33px 20px 0 6px;
+    width: 700px;
+    margin-top: 33px;
 }
 .find-center-top>.pt em{
     margin-bottom: 7px;
@@ -835,6 +831,60 @@ pre{white-space: pre-wrap;word-wrap: break-word;}
     line-height:24px;
     font-size: 14px;
     margin-top: 33px;
+}
+.find-center-top>.p1 .sp1{
+    font-size: 16px;
+    float: left;
+    line-height:18px;
+}
+.find-center-top>.p1 .sp2{
+    float: left;
+    width: 25px;
+    height:18px;
+    background: url("/static/images/community/uid.png") no-repeat;
+    cursor: pointer;
+    position: relative;
+    margin-left: 8px;
+}
+.find-center-top>.p1 .sp2:hover>span{
+    display: block;
+}
+.find-center-top>.p1 .sp2>span{
+    position: absolute;
+    transition: all .3s;
+    display: none;
+    height: 30px;
+    bottom: 15px;
+    left: 1px;
+    padding: 0 10px;
+}
+.find-center-top>.p1 .sp2>span .em2{
+    display: inline-block;
+    height: 20px;
+    background: #fff;
+    color: #333;
+    padding: 0 8px;
+    font-size: 12px;
+    border-radius: 4px;
+    cursor: text;
+}
+.find-center-top>.p1 .sp2>span .em1 {
+    width: 0;
+    height: 0;
+    border-left: 3px solid transparent;
+    border-right: 3px solid transparent;
+    border-top: 6px solid #fff;
+    position: absolute;
+    bottom: 4px;
+    left: 16px;
+}
+.find-center-top>.p1 .sp3{
+    float: left;
+    width: 18px;
+    height:18px;
+    background: url("/static/images/community/erw_mini.png") no-repeat;
+    cursor: pointer;
+    margin-left: 5px;
 }
 .find-center-top>.p3{
     float: left;
@@ -3592,9 +3642,64 @@ text-align: center
     color: #fff;
     font-size: 12px;
 }
-.user-infor .p1 span{
+.user-infor>.p1 .sp1{
     font-size: 18px;
 }
+.user-infor>.p1 .sp2{
+    display: inline-block;
+    width: 25px;
+    height:18px;
+    background: url("/static/images/community/uid.png") no-repeat;
+    cursor: pointer;
+    position: relative;
+    margin-left: 8px;
+    top:4px;
+}
+
+.user-infor>.p1 .sp3{
+    display: inline-block;
+    width: 18px;
+    height:18px;
+    background: url("/static/images/community/erw_mini.png") no-repeat;
+    cursor: pointer;
+    margin-left: 5px;
+    position: relative;
+    top:4px;
+}
+.user-infor>.p1 .sp2:hover>span{
+    display: block;
+}
+.user-infor>.p1 .sp2>span{
+    position: absolute;
+    transition: all .3s;
+    display: none;
+    height: 32px;
+    bottom: 17px;
+    left: 1px;
+    padding: 0 10px;
+}
+.user-infor>.p1 .sp2>span .em2{
+    display: inline-block;
+    height: 20px;
+    line-height: 20px;
+    background: #fff;
+    color: #333;
+    padding: 0 8px;
+    font-size: 12px;
+    border-radius: 4px;
+    cursor: text;
+}
+.user-infor>.p1 .sp2>span .em1 {
+    width: 0;
+    height: 0;
+    border-left: 3px solid transparent;
+    border-right: 3px solid transparent;
+    border-top: 6px solid #fff;
+    position: absolute;
+    bottom: 2px;
+    left: 16px;
+}
+
 .user-infor .p2 em{
     padding: 0 10px 1px;
     border:1px solid #fff;

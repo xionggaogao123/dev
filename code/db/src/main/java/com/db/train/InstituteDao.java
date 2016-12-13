@@ -125,4 +125,36 @@ public class InstituteDao extends BaseDao {
     }
 
 
+    public void batchImageByIds(List<ObjectId> ids,String qiuNiuImage){
+        BasicDBObject query=new BasicDBObject()
+                .append(Constant.ID,new BasicDBObject(Constant.MONGO_IN,ids));
+        BasicDBObject updateValue=new BasicDBObject(Constant.MONGO_SET,new BasicDBObject("ims",qiuNiuImage));
+        update(MongoFacroty.getAppDB(),Constant.COLLECTION_TRAIN_INSTITUTE,query,updateValue);
+    }
+
+    public void batchImageByNames(List<String> names,String qiuNiuImage){
+        BasicDBObject query=new BasicDBObject()
+                .append("nm",new BasicDBObject(Constant.MONGO_IN,names));
+        BasicDBObject updateValue=new BasicDBObject(Constant.MONGO_SET,new BasicDBObject("ims",qiuNiuImage));
+        update(MongoFacroty.getAppDB(),Constant.COLLECTION_TRAIN_INSTITUTE,query,updateValue);
+    }
+
+    /**
+     * 后台获取未处理的某些漏掉的水印图片数据
+     * @param ids
+     * @return
+     */
+    public List<InstituteEntry> findInstitutesByIds(List<ObjectId> ids){
+        BasicDBObject query=new BasicDBObject(Constant.ID,new BasicDBObject(Constant.MONGO_IN,ids));
+        List<InstituteEntry> entries=new ArrayList<InstituteEntry>();
+        List<DBObject> dbObjects=find(MongoFacroty.getAppDB(),Constant.COLLECTION_TRAIN_INSTITUTE,query);
+        if(null!=dbObjects&&!dbObjects.isEmpty()){
+            for(DBObject dbObject:dbObjects){
+                entries.add(new InstituteEntry((BasicDBObject)dbObject));
+            }
+        }
+        return entries;
+    }
+
+
 }

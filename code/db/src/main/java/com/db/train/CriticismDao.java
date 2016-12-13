@@ -44,6 +44,20 @@ public class CriticismDao extends BaseDao {
         return count(MongoFacroty.getAppDB(), Constant.COLLECTION_TRAIN_COMMENT,query);
     }
 
+    public int countCriticismEntriesSort(ObjectId instituteId,int remove,int score){
+        BasicDBObject query=new BasicDBObject()
+                .append("sid",instituteId)
+                .append("ir",remove);
+        if(score<=2){
+            query.append("sc",new BasicDBObject(Constant.MONGO_LTE,score));
+        }else if(score==3){
+            query.append("sc",score);
+        }else{
+            query.append("sc",new BasicDBObject(Constant.MONGO_GTE,score));
+        }
+        return count(MongoFacroty.getAppDB(), Constant.COLLECTION_TRAIN_COMMENT,query);
+    }
+
 
     public void dealCriticism(ObjectId id,int remove){
         BasicDBObject query=new BasicDBObject(Constant.ID,id);

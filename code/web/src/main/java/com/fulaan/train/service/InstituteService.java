@@ -112,4 +112,16 @@ public class InstituteService {
         instituteDao.updateRegionData(regionName,regionId);
     }
 
+    public void batchImageByIds(List<ObjectId> ids,String qiuNiuImage){
+        instituteDao.batchImageByIds(ids,qiuNiuImage);
+    }
+
+    public void batchImageByNames(List<String> names,String qiuNiuImage){
+        instituteDao.batchImageByNames(names,qiuNiuImage);
+    }
+
+    public List<InstituteEntry> findInstitutesByIds(List<ObjectId> ids){
+        return instituteDao.findInstitutesByIds(ids);
+    }
+
 }

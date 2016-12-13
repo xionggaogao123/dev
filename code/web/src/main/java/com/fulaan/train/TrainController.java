@@ -4,7 +4,6 @@ import com.fulaan.annotation.LoginInfo;
 import com.fulaan.annotation.ObjectIdType;
 import com.fulaan.annotation.SessionNeedless;
 import com.fulaan.annotation.UserRoles;
-import com.fulaan.cache.RedisUtils;
 import com.fulaan.controller.BaseController;
 import com.fulaan.playmate.service.MateService;
 import com.fulaan.train.dto.CriticismDTO;
@@ -25,10 +24,10 @@ import com.pojo.train.InstituteEntry;
 import com.pojo.train.RegionEntry;
 import com.pojo.user.UserRole;
 import com.sys.constants.Constant;
+import com.sys.exceptions.IllegalParamException;
 import com.sys.props.Resources;
 import com.sys.utils.QiniuFileUtils;
 import com.sys.utils.RespObj;
-import org.apache.commons.io.FilenameUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.bson.types.ObjectId;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -264,8 +263,14 @@ public class TrainController extends BaseController {
         Map<String, Object> map = new HashMap<String, Object>();
         List<CriticismDTO> dtos = criticismService.getCriticismDTOs(instituteId, page, pageSize,remove);
         int count = criticismService.countCriticisms(instituteId,remove);
+        int goodCount=criticismService.countCriticismEntriesSort(instituteId,remove,4);
+        int normalCount=criticismService.countCriticismEntriesSort(instituteId,remove,3);
+        int badCount=criticismService.countCriticismEntriesSort(instituteId,remove,2);
         map.put("list", dtos);
         map.put("count", count);
+        map.put("goodCount", goodCount);
+        map.put("normalCount", normalCount);
+        map.put("badCount", badCount);
         map.put("page", page);
         map.put("pageSize", pageSize);
         return RespObj.SUCCESS(map);
@@ -315,6 +320,103 @@ public class TrainController extends BaseController {
     }
 
     /**
+     * 处理默认图片数据
+     * @param idOrNames
+     * @return
+     */
+    @RequestMapping("/batchDefaultImage")
+    @ResponseBody
+    public RespObj batchDefaultImage(String idOrNames){
+        if(StringUtils.isNotBlank(idOrNames)){
+            try{
+                String defaultImage = getRequest().getServletContext().getRealPath("/static") +"/images/upload/default.png";
+                File file=new File(defaultImage);
+                String fileKey = new ObjectId().toString() +".png";
+                QiniuFileUtils.uploadFile(fileKey, new FileInputStream(file), QiniuFileUtils.TYPE_IMAGE);
+                String qiuNiuPath = QiniuFileUtils.getPath(QiniuFileUtils.TYPE_IMAGE, fileKey);
+                if(idOrNames.contains("@")){
+                    //处理Ids
+                    String[] instituteIds=idOrNames.split("@");
+                    List<ObjectId> ids=new ArrayList<ObjectId>();
+                    for(String item:instituteIds){
+                        ids.add(new ObjectId(item));
+                    }
+                    instituteService.batchImageByIds(ids,qiuNiuPath);
+                }else if(idOrNames.contains("$")){
+                    //处理名字
+                    String[] instituteName=idOrNames.split("\\$");
+                    List<String> names=Arrays.asList(instituteName);
+                    instituteService.batchImageByNames(names,qiuNiuPath);
+                }else{
+                    List<ObjectId> ids=new ArrayList<ObjectId>();
+                    ids.add(new ObjectId(idOrNames));
+                    instituteService.batchImageByIds(ids,qiuNiuPath);
+                }
+            }catch (Exception e){
+                e.printStackTrace();
+            }
+            return RespObj.SUCCESS("处理成功");
+        }else{
+            return RespObj.FAILD("请传入Ids");
+        }
+    }
+
+
+
+    /**
+     * 处理还未处理的图片
+     */
+    @RequestMapping("/batchImages")
+    @ResponseBody
+    public RespObj batchImages(String instituteIds){
+        try{
+            List<ObjectId> ids=new ArrayList<ObjectId>();
+            if(instituteIds.contains("@")){
+                String[] temp=instituteIds.split("@");
+                for(String item:temp){
+                    ids.add(new ObjectId(item));
+                }
+            }else{
+                ids.add(new ObjectId(instituteIds));
+            }
+            List<InstituteEntry> entries = instituteService.findInstitutesByIds(ids);
+            batchImage(entries);
+        }catch (Exception e){
+            return RespObj.FAILD(e.getMessage());
+        }
+        return RespObj.SUCCESS;
+    }
+
+
+
+    private void batchImage(List<InstituteEntry> entries) throws  IOException,IllegalParamException{
+        for(InstituteEntry entry : entries) {
+            String fileName=new ObjectId()+".jpg";
+            String parentPath=getRequest().getServletContext().getRealPath("/static")+"/images/upload";
+//            String path= Resources.getProperty("upload.file");
+            DownloadUtil.downLoadFromUrl(entry.getMainPic(),fileName,parentPath);
+            String filePath=parentPath+"\\"+fileName;
+            String logoImg = getRequest().getServletContext().getRealPath("/static") +"/images/upload/logo.png";
+            String waterImage=imageInit.mergeWaterMark(filePath,logoImg);
+            File file1=new File(filePath);
+            File file=new File(waterImage);
+            String extensionName = waterImage.substring(waterImage.indexOf(".")+1,waterImage.length());
+            String fileKey = new ObjectId().toString() + Constant.POINT + extensionName;
+            QiniuFileUtils.uploadFile(fileKey, new FileInputStream(file), QiniuFileUtils.TYPE_IMAGE);
+            String qiuNiuPath = QiniuFileUtils.getPath(QiniuFileUtils.TYPE_IMAGE, fileKey);
+            entry.setImageUrl(qiuNiuPath);
+            instituteService.saveOrUpdate(entry);
+            try {
+                file.delete();
+                file1.delete();
+            }catch (Exception e){
+
+            }
+        }
+    }
+
+
+    /**
      * 批量处理图片
      */
     @RequestMapping("/batchDealImage")
@@ -323,28 +425,7 @@ public class TrainController extends BaseController {
                                   @RequestParam(defaultValue = "1000", required = false) int pageSize){
         try{
             List<InstituteEntry> entries = instituteService.findInstituteEntries(page, pageSize);
-            for(InstituteEntry entry : entries) {
-                String fileName=new ObjectId()+".jpg";
-                String path= Resources.getProperty("upload.file");
-                DownloadUtil.downLoadFromUrl(entry.getMainPic(),fileName,path);
-                String filePath=path+"\\"+fileName;
-                String logoImg = getRequest().getServletContext().getRealPath("/upload") +"/logo.png";
-                String waterImage=imageInit.mergeWaterMark(filePath,logoImg);
-                File file1=new File(filePath);
-                File file=new File(waterImage);
-                String extensionName = waterImage.substring(waterImage.indexOf(".")+1,waterImage.length());
-                String fileKey = new ObjectId().toString() + Constant.POINT + extensionName;
-                QiniuFileUtils.uploadFile(fileKey, new FileInputStream(file), QiniuFileUtils.TYPE_IMAGE);
-                String qiuNiuPath = QiniuFileUtils.getPath(QiniuFileUtils.TYPE_IMAGE, fileKey);
-                entry.setImageUrl(qiuNiuPath);
-                instituteService.saveOrUpdate(entry);
-                try {
-                    file.delete();
-                    file1.delete();
-                }catch (Exception e){
-
-                }
-            }
+            batchImage(entries);
         }catch (Exception e){
             return RespObj.FAILD(e.getMessage());
         }

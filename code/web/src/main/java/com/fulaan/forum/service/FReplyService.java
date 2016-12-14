@@ -817,7 +817,7 @@ public class FReplyService {
         String filePath = fileUrl.split("#")[0];
         String fileName = filePath.substring(filePath.lastIndexOf("/") + 1);
         String suffix = fileName.substring(fileName.lastIndexOf("."));
-        String prefix = fileName.substring(0, fileName.lastIndexOf("."));
+        String prefix = fileName.substring(0, fileName.lastIndexOf("."))+".mp4";
         if (".m3u8".equals(suffix)) {
             InputStream in = null;
             InputStream subIn = QiniuFileUtils.downFileByUrl(filePath);

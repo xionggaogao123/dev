@@ -4,6 +4,7 @@ import com.fulaan.annotation.LoginInfo;
 import com.fulaan.annotation.ObjectIdType;
 import com.fulaan.annotation.SessionNeedless;
 import com.fulaan.annotation.UserRoles;
+import com.fulaan.cache.RedisUtils;
 import com.fulaan.controller.BaseController;
 import com.fulaan.playmate.service.MateService;
 import com.fulaan.train.dto.CriticismDTO;
@@ -328,18 +329,24 @@ public class TrainController extends BaseController {
     @ResponseBody
     public RespObj batchDefaultImage(String idOrNames,int type){
         if(StringUtils.isNotBlank(idOrNames)){
-            try{
-                String fileName;
-                if(type==0){
-                    fileName="default.png";
-                }else {
-                    fileName = "default" + type + ".png";
+            try {
+                String qiuNiuPath;
+                String key = "defaultTypeForImage" + type;
+                qiuNiuPath = RedisUtils.getString(key);
+                if (StringUtils.isBlank(qiuNiuPath)) {
+                    String fileName;
+                    if (type == 0) {
+                        fileName = "default.png";
+                    } else {
+                        fileName = "default" + type + ".png";
+                    }
+                    String defaultImage = getRequest().getServletContext().getRealPath("/static") + "/images/upload/" + fileName;
+                    File file = new File(defaultImage);
+                    String fileKey = new ObjectId().toString() + ".png";
+                    QiniuFileUtils.uploadFile(fileKey, new FileInputStream(file), QiniuFileUtils.TYPE_IMAGE);
+                    qiuNiuPath = QiniuFileUtils.getPath(QiniuFileUtils.TYPE_IMAGE, fileKey);
+                    RedisUtils.cacheString(key,qiuNiuPath,Constant.SECONDS_IN_MONTH);
                 }
-                String defaultImage = getRequest().getServletContext().getRealPath("/static") +"/images/upload/"+fileName;
-                File file=new File(defaultImage);
-                String fileKey = new ObjectId().toString() +".png";
-                QiniuFileUtils.uploadFile(fileKey, new FileInputStream(file), QiniuFileUtils.TYPE_IMAGE);
-                String qiuNiuPath = QiniuFileUtils.getPath(QiniuFileUtils.TYPE_IMAGE, fileKey);
                 if(idOrNames.contains("@")){
                     //处理Ids
                     String[] instituteIds=idOrNames.split("@");

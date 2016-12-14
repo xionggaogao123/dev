@@ -8,7 +8,9 @@
 <%-- 填充content --%>
 <layout:override name="content">
     <div id="r-result">请输入页码:<input placeholder="生成水印图片处理(1~54)" type="text" id="suggestId" size="20" style="width:200px;" /></div>
-    <button id="submit">提交</button>
+    <button id="submit">水印图片提交处理</button>
+    <div id="r-result">请输入七牛视频地址:<input placeholder="请输入七牛视频地址" type="text" id="qiuNiuUrl" size="20" style="width:700px;" /></div>
+    <button id="downloadVideo">下载七牛视频</button>
 </layout:override>
 <%-- 填充script --%>
 <layout:override name="script">
@@ -19,6 +21,15 @@
     <script type="text/javascript">
 
         $(function(){
+            $('#downloadVideo').click(function () {
+                var qiNiuUrl=$('#qiuNiuUrl').val();
+                if(qiNiuUrl==""){
+                    alert("七牛地址不能为空！");
+                    return false;
+                }
+                location.href = "/forum/userCenter/m3u8ToMp4DownLoad.do?filePath=" + qiNiuUrl;
+            });
+
             $('#submit').click(function(){
                 var page=$('#suggestId').val();
                 $.ajax({

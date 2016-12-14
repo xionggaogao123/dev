@@ -70,11 +70,11 @@
                 <li>
                     <input type="text" class="in1" id="verifyCode">
                     <span class="sp1">验证码 : </span>
-                    <img id="verifyImg" alt="" src="/verify/verifyCode.do" class="sp6"
+                    <img id="verifyImg" alt="" class="sp6"
                          style="top: 5px;width: auto;height: auto"/>
                 </li>
                 <li>
-                    <input type="text" class="in1">
+                    <input type="text" class="in1" id="code">
                     <span class="sp1">短信验证码 : </span>
                     <span class="sp4" id="sendCode">发送验证码</span>
                 </li>
@@ -98,7 +98,7 @@
                     <span class="sp7">我们已经向您的注册邮箱<i>shawn****s@qq.com</i>发送了一封密码找回邮件，请您注意<a href="###">接收邮件</a></span>
                 </li>
                 <li>
-                    <button class="re-btn2">去邮箱接收邮件</button>
+                    <button class="re-btn2 receiveEmail">去邮箱接收邮件</button>
                 </li>
             </ul>
 

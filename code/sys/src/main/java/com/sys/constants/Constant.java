@@ -149,7 +149,8 @@ public class Constant {
 
     public static final String MD5 = "MD5";
 
-    public static final String FWCODE = "fw_code";
+    public static final String FWCODE = "FWCODE";
+    public static final String FW_RESET_PASSWORD_CODE = "FWRESETCODE";
 
 
     /**

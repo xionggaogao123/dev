@@ -72,7 +72,7 @@ public class PlayMateController extends BaseController {
                                 @RequestParam(value = "distance", required = false, defaultValue = "-1") int distance,
                                 @RequestParam(value = "tags", required = false, defaultValue = "") String tags,
                                 @RequestParam(value = "aged", required = false, defaultValue = "-1") int aged,
-                                @RequestParam(value = "ons", required = false, defaultValue = "") String ons,
+                                @RequestParam(value = "ons", required = false, defaultValue = "-1") String ons,
                                 @RequestParam(value = "page", required = false, defaultValue = "1") int page,
                                 @RequestParam(value = "pageSize", required = false, defaultValue = "10") int pageSize) {
         if (lon == 0 && lat == 0) {
@@ -92,7 +92,7 @@ public class PlayMateController extends BaseController {
         }
 
         List<Integer> onsList = new ArrayList<Integer>();
-        if (StringUtils.isNotBlank(ons)) {
+        if (StringUtils.isNotBlank(ons) && !"-1".equals(ons)) {
             String[] tempList = ons.split(",");
             for (String s : tempList) {
                 try {

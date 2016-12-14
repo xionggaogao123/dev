@@ -32,7 +32,6 @@
         <div class="index-focus" id="news">
             <div class="jian-index"></div>
             <ul class="ul-index-n" id="communityNews">
-
             </ul>
         </div>
         <img src="/static/images/newIndex/lb_banner.png" class="ora-ban">
@@ -118,8 +117,8 @@
                     <div class="d1-set">
                         <div class="d1-img"></div>
                         <div class="d1-mk">
-                            <div class="p1" onclick="window.open('/forum/userCenter/user.do','_blank')"><span></span>个人设置</div>
-                            <%--<div class="p1" onclick="window.open('/account/accountSafe.do','_blank')"><span></span>个人设置</div>--%>
+                            <%--<div class="p1" onclick="window.open('/forum/userCenter/user.do','_blank')"><span></span>个人设置</div>--%>
+                            <div class="p1" onclick="window.open('/account/accountSafe.do','_blank')"><span></span>个人设置</div>
                             <div class="p2"  id="logout"><span></span>退出</div>
                         </div>
                     </div>
@@ -137,8 +136,8 @@
                 </div>
             </c:if>
             <c:if test="${login == false}">
-                <%--<button onclick="window.open('/account/register.do')">注册</button>--%>
-                <button onclick="window.open('/mall/register.do')">注册</button>
+                <button onclick="window.open('/account/register.do')">注册</button>
+                <%--<button onclick="window.open('/mall/register.do')">注册</button>--%>
                 <button id="toplogin">登录</button>
                 <span class="wx-l" onclick="loginWeiXin()">微信登录</span>
                 <span class="qq-l" onclick="redirectQ()">QQ登录</span>

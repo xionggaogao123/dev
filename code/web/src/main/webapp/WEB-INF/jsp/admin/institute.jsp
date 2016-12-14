@@ -7,17 +7,20 @@
 </layout:override>
 <%-- 填充content --%>
 <layout:override name="content">
-    <div id="r-result">请输入页号:<input type="text" id="suggestId" size="20" style="width:150px;" /></div>
+    <div id="r-result">请输入页码:<input type="text" id="suggestId" size="20" style="width:150px;" /></div>
     <button id="submit">生成经纬度</button>
     <button id="generateIndex">生成索引</button>
 
-    <div id="r-result-s">对区域对应的数据的处理:<input type="text" id="parentId" size="20" style="width:150px;" /></div>
+    <div id="r-result-s">对区域对应的数据的处理:<input type="text" id="parentId" size="20" placeholder="请输入区域Id,不常用" style="width:150px;" /></div>
     <button id="replaceRegion">数据处理</button>
 
     <div id="r-result-ss">处理残留未处理水印图片的数据:<input placeholder="请输入Id(用@隔开)" type="text" id="instituteIds" style="width:350px;" /></div>
     <button id="batchImages">处理残留图片</button>
-
-    <div id="r-result-sss">一些数据用默认图片覆盖:<input placeholder="请输入Id(用@隔开)或者名字(用$隔开),注意:只传一个时传Id" type="text" id="idOrNames" style="width:350px;" /></div>
+    <br>
+    <div id="r-result-sss">
+        一些数据用默认图片覆盖:<input placeholder="请输入Id(用@隔开)或者名字(用$隔开),注意:只传一个时传Id" type="text" id="idOrNames" style="width:380px;" />
+        <br>输入类型:<input type="text" id="sortNum" placeholder="请输入类型的数字信息（0~10）" size="20" style="width:200px;" >
+    </div>
     <button id="defaultImage">默认图片覆盖处理</button>
 </layout:override>
 <%-- 填充script --%>
@@ -50,13 +53,14 @@
 
             $('#defaultImage').click(function () {
                 var idOrNames=$('#idOrNames').val();
+                var type=Number($('#sortNum').val());
                 if(idOrNames==""||idOrNames==undefined){
                     alert("请输入信息");
                     return false;
                 }
                 $.ajax({
                     type: "GET",
-                    data: {idOrNames:idOrNames},
+                    data: {idOrNames:idOrNames,type:type},
                     url: '/train/batchDefaultImage.do',
                     async: false,
                     dataType: "json",

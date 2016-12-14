@@ -185,8 +185,8 @@ define(['jquery', 'pagination', 'common'], function (require, exports, module) {
                             }
                         });
 
-                        var str="<li><span >到第</span><em><input style='margin: -63px 0px 0px 34px;height: 30px; width: 48px;' id=\"num\">" +
-                            "<button id=\"redirectPage\" style='margin: -35px 0 26px 0;width: 37px;'>确定</button></em></li>";
+                        var str="<span style='float:left;margin:0 10px 0 15px;height: 32px;line-height: 32px;'>到第<input style='text-align:center;height: 30px; width: 48px;border:1px solid #dcdcdc;margin: 0 5px;' id=\"num\">页</span>" +
+                            "<button id=\"redirectPage\" style='float:left;background: #FF8400;color: #fff;border: none;height: 32px;padding:0 18px;margin:1px 0 0 0;'>确定</button>";
                         $('.new-page-links').data('totalPage',Math.ceil(resp.message.count / resp.message.pageSize) == 0 ? 1 : Math.ceil(resp.message.count / resp.message.pageSize));
                         $('.new-page-links').append(str);
                     }

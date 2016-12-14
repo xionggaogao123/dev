@@ -38,7 +38,9 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
+import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
@@ -66,18 +68,54 @@ public class TrainController extends BaseController {
     @RequestMapping("/trainList")
     @SessionNeedless
     @LoginInfo
-    public String trainList(Map<String, Object> model){
+    public String trainList(Map<String, Object> model,HttpServletRequest request){
         try {
-            Map<String, String> map = getProvinceInfo.getAddresses("ip=" + getIP(), "utf-8");
-            if (null == map || map.size() == 0) {
-                model.put("region", "上海");
-            } else {
-                model.put("region", map.get("region").substring(0, 2));
+            model.put("location",false);
+            String instituteKeyValue = getCookieInstituteKeyValue(request);
+            if(StringUtils.isNotBlank(instituteKeyValue)){
+                Map<String,String> map=RedisUtils.getMap(instituteKeyValue);
+                if(null!=map&&!map.isEmpty()){
+                    String regionId=map.get("regionId");
+                    if(StringUtils.isNotBlank(regionId)){
+                        RegionEntry regionEntry=regionService.findById(new ObjectId(regionId));
+                        model.put("region",regionEntry.getName().substring(0,2));
+                    }
+                    String typeId=map.get("type");
+                    if(StringUtils.isNotBlank(typeId)){
+                        model.put("typeId",typeId);
+                    }
+                    String areaId=map.get("area");
+                    if(StringUtils.isNotBlank(areaId)){
+                        model.put("areaId",areaId);
+                    }
+                    model.put("location",true);
+                }else{
+                    model.put("region", "上海");
+                }
+            }else{
+                Map<String, String> map = getProvinceInfo.getAddresses("ip=" + getIP(), "utf-8");
+                if (null == map || map.size() == 0) {
+                    model.put("region", "上海");
+                } else {
+                    model.put("region", map.get("region").substring(0, 2));
+                }
             }
         }catch(UnsupportedEncodingException  e){
             model.put("region", "上海");
         }
         return "/train/trainList";
+    }
+
+    private String getCookieInstituteKeyValue(HttpServletRequest request) {
+        Cookie[] cookies = request.getCookies();
+        if (null != cookies) {
+            for (Cookie cookie : cookies) {
+                if (cookie.getName().equals(Constant.COOKIE_INSTITUTE_INFO)) {
+                    return cookie.getValue();
+                }
+            }
+        }
+        return Constant.EMPTY;
     }
 
     /**
@@ -203,7 +241,7 @@ public class TrainController extends BaseController {
                                  @RequestParam(defaultValue = "", required = false) String region,
                                  @RequestParam(defaultValue = "", required = false) String itemType,
                                  @RequestParam(defaultValue = "", required = false) String regular,
-                                 @RequestParam(defaultValue = "1", required = false) int sortType) {
+                                 @RequestParam(defaultValue = "1", required = false) int sortType,HttpServletResponse response) {
 //        if (lon == 0 && lat == 0) {
 //            if(null!=getUserId()){
 //                List<Double> locs = mateService.getCoordinates(getUserId());
@@ -213,6 +251,19 @@ public class TrainController extends BaseController {
 //                }
 //            }
 //        }
+
+        //状态记录
+        ObjectId cacheKey = new ObjectId();
+        Map<String,String> cacheMap=new HashMap<String, String>();
+        cacheMap.put("regionId",region);
+        cacheMap.put("type",type);
+        cacheMap.put("area",area);
+        RedisUtils.cacheMap(cacheKey.toString(),cacheMap,Constant.SECONDS_IN_DAY);
+        Cookie instituteCookie = new Cookie(Constant.COOKIE_INSTITUTE_INFO, cacheKey.toString());
+        instituteCookie.setMaxAge(Constant.SECONDS_IN_DAY);
+        instituteCookie.setPath(Constant.BASE_PATH);
+        response.addCookie(instituteCookie);
+
         if(distance < 0) {
             distance = 20000;
         } else {
@@ -321,6 +372,47 @@ public class TrainController extends BaseController {
     }
 
     /**
+     * 根据两个Id处理这一段之间的数据
+     * @param startId
+     * @param endId
+     * @param type
+     * @return
+     */
+    @RequestMapping("/batchDealTwoId")
+    @ResponseBody
+    public RespObj batchDealTwoId(@ObjectIdType ObjectId startId,@ObjectIdType ObjectId endId,int type){
+        try {
+            List<ObjectId> ids=new ArrayList<ObjectId>();
+            String qiuNiuPath;
+            String key = "defaultTypeForImage" + type;
+            qiuNiuPath = RedisUtils.getString(key);
+            if (StringUtils.isBlank(qiuNiuPath)) {
+                String fileName;
+                if (type == 0) {
+                    fileName = "default.png";
+                } else {
+                    fileName = "default" + type + ".png";
+                }
+                String defaultImage = getRequest().getServletContext().getRealPath("/static") + "/images/upload/" + fileName;
+                File file = new File(defaultImage);
+                String fileKey = new ObjectId().toString() + ".png";
+                QiniuFileUtils.uploadFile(fileKey, new FileInputStream(file), QiniuFileUtils.TYPE_IMAGE);
+                qiuNiuPath = QiniuFileUtils.getPath(QiniuFileUtils.TYPE_IMAGE, fileKey);
+                RedisUtils.cacheString(key,qiuNiuPath,Constant.SECONDS_IN_MONTH);
+            }
+            List<InstituteEntry> entries=instituteService.getEntriesByTwoId(startId,endId);
+            for(InstituteEntry entry:entries){
+                ids.add(entry.getID());
+            }
+            instituteService.batchImageByIds(ids,qiuNiuPath);
+
+        }catch (Exception e){
+            e.printStackTrace();
+        }
+        return RespObj.SUCCESS("处理成功");
+    }
+
+    /**
      * 处理默认图片数据
      * @param idOrNames
      * @return
@@ -399,6 +491,35 @@ public class TrainController extends BaseController {
         }
         return RespObj.SUCCESS;
     }
+
+    /**
+     * 批量删除数据
+     * @param deleteIds
+     * @return
+     */
+    @RequestMapping("/batchDeleteData")
+    @ResponseBody
+    public RespObj batchDeleteData(String deleteIds){
+        try{
+            List<ObjectId> ids=new ArrayList<ObjectId>();
+            if(deleteIds.contains(";")){
+                String[] temp=deleteIds.split(";");
+                for(String item:temp){
+                    ids.add(new ObjectId(item));
+                }
+            }else{
+                ids.add(new ObjectId(deleteIds));
+            }
+            instituteService.removeData(ids);
+        }catch (Exception e){
+            return RespObj.FAILD(e.getMessage());
+        }
+        return RespObj.SUCCESS;
+    }
+
+
+
+
 
 
 

@@ -124,4 +124,13 @@ public class InstituteService {
         return instituteDao.findInstitutesByIds(ids);
     }
 
+
+    public List<InstituteEntry> getEntriesByTwoId(ObjectId startId,ObjectId endId){
+        return instituteDao.getEntriesByTwoId(startId, endId);
+    }
+
+    public void removeData(List<ObjectId> objectIds){
+        instituteDao.removeEntries(objectIds);
+    }
+
 }

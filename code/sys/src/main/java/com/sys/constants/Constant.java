@@ -140,6 +140,8 @@ public class Constant {
     public static final String COOKIE_USERNAME_KEY = "momcallme";
     public static final String COOKIE_VALIDATE_CODE = "verifycode";
     public static final String COOKIE_PASS_WORD = "password";
+    //保存记录信息
+    public static final String COOKIE_INSTITUTE_INFO="instituteInfo";
 
     public static final String USER_FIRST_LOGIN = "firstlogin";
 

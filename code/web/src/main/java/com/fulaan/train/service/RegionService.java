@@ -42,4 +42,8 @@ public class RegionService {
         regionDao.setSort(id, sort);
     }
 
+    public RegionEntry findById(ObjectId id){
+        return regionDao.find(id);
+    }
+
 }

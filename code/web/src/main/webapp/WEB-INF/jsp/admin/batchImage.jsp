@@ -7,7 +7,7 @@
 </layout:override>
 <%-- 填充content --%>
 <layout:override name="content">
-    <div id="r-result">请输入:<input type="text" id="suggestId" size="20" style="width:150px;" /></div>
+    <div id="r-result">请输入页码:<input placeholder="生成水印图片处理(1~54)" type="text" id="suggestId" size="20" style="width:200px;" /></div>
     <button id="submit">提交</button>
 </layout:override>
 <%-- 填充script --%>

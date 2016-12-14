@@ -326,10 +326,16 @@ public class TrainController extends BaseController {
      */
     @RequestMapping("/batchDefaultImage")
     @ResponseBody
-    public RespObj batchDefaultImage(String idOrNames){
+    public RespObj batchDefaultImage(String idOrNames,int type){
         if(StringUtils.isNotBlank(idOrNames)){
             try{
-                String defaultImage = getRequest().getServletContext().getRealPath("/static") +"/images/upload/default.png";
+                String fileName;
+                if(type==0){
+                    fileName="default.png";
+                }else {
+                    fileName = "default" + type + ".png";
+                }
+                String defaultImage = getRequest().getServletContext().getRealPath("/static") +"/images/upload/"+fileName;
                 File file=new File(defaultImage);
                 String fileKey = new ObjectId().toString() +".png";
                 QiniuFileUtils.uploadFile(fileKey, new FileInputStream(file), QiniuFileUtils.TYPE_IMAGE);

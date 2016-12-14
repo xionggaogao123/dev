@@ -12,6 +12,7 @@ import com.sys.constants.Constant;
 import com.sys.exceptions.UnLoginException;
 import com.sys.utils.MD5Utils;
 import com.sys.utils.RespObj;
+import org.apache.commons.lang.StringUtils;
 import org.bson.types.ObjectId;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -97,7 +98,7 @@ public class AccountController extends BaseController {
         ObjectId key = new ObjectId();
         String cacheKey = CacheHandler.getKeyString(CacheHandler.CACHE_FW_USERNAME_KEY, key.toString());
         CacheHandler.cache(cacheKey, name, Constant.SESSION_FIVE_MINUTE);//5分钟
-        response.addCookie(new Cookie("fw_code", key.toString()));
+        response.addCookie(new Cookie(Constant.FWCODE, key.toString()));
         return RespObj.SUCCESS;
     }
 
@@ -144,6 +145,43 @@ public class AccountController extends BaseController {
     }
 
     @SessionNeedless
+    @RequestMapping("/phoneValidate")
+    @ResponseBody
+    public RespObj  phoneValidate(String phone,String code,String cacheKeyId,@CookieValue(Constant.FWCODE) String fwCode,HttpServletResponse response) {
+        String fwUser = CacheHandler.getStringValue(CacheHandler.getKeyString(CacheHandler.CACHE_FW_USERNAME_KEY, fwCode));
+        if (fwUser == null) {
+            return RespObj.FAILD(new VerifyData(false, "时间失效或不存在"));
+        }
+        UserDTO userDTO = userService.findByRegular(fwUser);
+        if (userDTO == null) {
+            return RespObj.FAILD(new VerifyData(false, "用户不存在"));
+        }
+        if(!phone.equals(userDTO.getPhone())) {
+            return RespObj.FAILD("用户未绑定此手机号");
+        }
+
+        String cacheKey = CacheHandler.getKeyString(CacheHandler.CACHE_SHORTMESSAGE, cacheKeyId);
+        String value = CacheHandler.getStringValue(cacheKey);
+        if (StringUtils.isBlank(value)) {
+            return RespObj.FAILD("验证码失效，请重新获取");
+        }
+        String[] cache = value.split(",");
+        if (!cache[1].equals(phone)) {
+            return RespObj.FAILD("注册失败：手机号码与验证码不匹配");
+        }
+
+        if (cache[0].equals(code)) {
+            ObjectId keyId = new ObjectId();
+            String resetCacheKey = CacheHandler.getKeyString(CacheHandler.CACHE_FW_RESET_PASSWORD,keyId.toString());
+            CacheHandler.cache(resetCacheKey,userDTO.getUserName(),Constant.SESSION_FIVE_MINUTE);
+            response.addCookie(new Cookie(Constant.FW_RESET_PASSWORD_CODE,keyId.toString()));
+            return RespObj.SUCCESS("验证成功");
+        } else {
+            return RespObj.FAILD("短信验证码输入错误");
+        }
+    }
+
+    @SessionNeedless
     @RequestMapping("/emailValidate")
     public ModelAndView emailValidate(String validateCode, HttpServletResponse response) throws Exception{
         String cacheKey = CacheHandler.getKeyString(CacheHandler.CACHE_FW_VALIDATE_EMAIL,validateCode);
@@ -156,14 +194,14 @@ public class AccountController extends BaseController {
         ObjectId key = new ObjectId();
         String resetPassKey = CacheHandler.getKeyString(CacheHandler.CACHE_FW_RESET_PASSWORD,key.toString());
         CacheHandler.cache(resetPassKey,userName,Constant.SESSION_FIVE_MINUTE);
-        response.addCookie(new Cookie("fw_reset_code",key.toString()));
+        response.addCookie(new Cookie(Constant.FW_RESET_PASSWORD_CODE,key.toString()));
         return new ModelAndView("/account/findPassword","verify",true);
     }
 
     @SessionNeedless
     @RequestMapping("/resetPassword")
     @ResponseBody
-    public RespObj resetPassword(String password,@CookieValue("fw_reset_code") String resetCode) {
+    public RespObj resetPassword(String password,@CookieValue(Constant.FW_RESET_PASSWORD_CODE) String resetCode) {
         String cacheKey = CacheHandler.getKeyString(CacheHandler.CACHE_FW_RESET_PASSWORD,resetCode);
         String userName = CacheHandler.getStringValue(cacheKey);
         if(userName == null) {
@@ -176,12 +214,6 @@ public class AccountController extends BaseController {
         userService.resetPassword(userEntry.getID(),MD5Utils.getMD5String(password));
         CacheHandler.deleteKey(CacheHandler.CACHE_FW_RESET_PASSWORD,resetCode);
         return RespObj.SUCCESS("重置密码成功");
-    }
-
-    @RequestMapping("/validateData")
-    @ResponseBody
-    public RespObj validateData() {
-        return RespObj.SUCCESS;
     }
 
     @RequestMapping("/thirdLoginSuccess")

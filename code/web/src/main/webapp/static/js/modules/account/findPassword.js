@@ -17,6 +17,8 @@ define(['jquery', 'pagination', 'common'], function (require, exports, module) {
         rePassword: false
     };
 
+    var cacheKeyId = '';
+
     $(function () {
         $('.tab span:nth-child(1)').click(function () {
             $(this).addClass('tab-cur').siblings('.tab span').removeClass('tab-cur');
@@ -67,6 +69,7 @@ define(['jquery', 'pagination', 'common'], function (require, exports, module) {
                     $('.re-cont2').show();
                     $('.ul-luc li:nth-child(2)').addClass('orali');
 
+                    $('#verifyImg').attr('src','/verify/verifyCode.do?date'+ new Date());
                 } else {
                     alert(resp.message);
                 }
@@ -102,6 +105,7 @@ define(['jquery', 'pagination', 'common'], function (require, exports, module) {
                 alert(JSON.stringify(resp));
                 if (resp.code == '200') {
                     phoneVerifyCheck.code = true;
+                    cacheKeyId = resp.cacheKeyId;
                 } else {
                     alert(resp.message);
                     phoneVerifyCheck.code = false;
@@ -122,9 +126,27 @@ define(['jquery', 'pagination', 'common'], function (require, exports, module) {
             alert(JSON.stringify(phoneVerifyCheck));
             if(phoneVerifyCheck.code && phoneVerifyCheck.phone ) {
                 $(this).parent().find('.sp3').hide();
-                $('.re-conts').hide();
-                $('.re-cont3').show();
-                $('.ul-luc li:nth-child(3)').addClass('orali');
+
+                var phone = $('#phone').val();
+                var code = $('#code').val();
+
+                var requestParm = {
+                    phone: phone,
+                    code: code,
+                    cacheKeyId: cacheKeyId
+                };
+                common.getData("/account/phoneValidate.do", requestParm, function (resp) {
+                    alert(JSON.stringify(resp));
+                    if (resp.code == '200') {
+                        $('.re-conts').hide();
+                        $('.re-cont3').show();
+                        $('.ul-luc li:nth-child(3)').addClass('orali');
+                    } else {
+                        alert(resp.message);
+                    }
+
+                });
+
             } else {
                 $(this).parent().find('.sp3').text('输入不完整');
                 $(this).parent().find('.sp3').show();
@@ -179,8 +201,11 @@ define(['jquery', 'pagination', 'common'], function (require, exports, module) {
         });
 
         $('.step4 button').click(function () {
-
             window.location.href = '/account/login.do';
+        });
+
+        $('.receiveEmail').click(function () {
+
         });
 
     });

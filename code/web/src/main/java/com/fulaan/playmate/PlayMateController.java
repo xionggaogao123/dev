@@ -1,7 +1,6 @@
 package com.fulaan.playmate;
 
 import com.fulaan.annotation.LoginInfo;
-import com.fulaan.annotation.ObjectIdType;
 import com.fulaan.annotation.SessionNeedless;
 import com.fulaan.annotation.UserRoles;
 import com.fulaan.controller.BaseController;

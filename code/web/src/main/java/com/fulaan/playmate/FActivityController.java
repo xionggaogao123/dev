@@ -79,7 +79,7 @@ public class FActivityController extends BaseController {
         PageModel<FActivityDTO> pageModel = fActivityService.getNearActivitys(lon, lat, page, pageSize);
         for(FActivityDTO fActivityDTO : pageModel.getResult()) {
             if(getUserId() != null) {
-                if(fActivityDTO.getUserId().equals(getUserId())) {
+                if(fActivityDTO.getUserId().equals(getUserId().toString())) {
                     fActivityDTO.setYouSigned(true);
                 } else {
                     fActivityDTO.setYouSigned(fActivityService.isUserSigned(getUserId(),new ObjectId(fActivityDTO.getAcid())));
@@ -119,7 +119,7 @@ public class FActivityController extends BaseController {
         }
         fActivityDTO.setSignSheets(fActivityService.getAllSignMembers(acid));
         if(getUserId() != null) {
-            if(fActivityDTO.getUserId().equals(getUserId())) {
+            if(fActivityDTO.getUserId().equals(getUserId().toString())) {
                 fActivityDTO.setYouSigned(true);
             } else {
                 fActivityDTO.setYouSigned(fActivityService.isUserSigned(acid,getUserId()));

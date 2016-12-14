@@ -10,10 +10,7 @@ import com.sys.constants.Constant;
 import org.apache.commons.lang.StringUtils;
 import org.bson.types.ObjectId;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 /**
  * Created by jerry on 2016/10/24.
@@ -107,6 +104,7 @@ public class CommunityDao extends BaseDao {
         for (DBObject dbo : dbObjects) {
             communityEntries.add(new CommunityEntry(dbo));
         }
+        Collections.reverse(communityEntries);
         return communityEntries;
     }
 

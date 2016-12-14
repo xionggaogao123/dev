@@ -2120,5 +2120,13 @@ public class CommunityController extends BaseController {
 
     }
 
+    @RequestMapping("/updateCommunityPrio")
+    @ResponseBody
+    public RespObj updateCommunityPrio(@ObjectIdType ObjectId cmid,int prio) {
+
+        communityService.updateCommunityPrio(cmid,prio);
+        return RespObj.SUCCESS;
+    }
+
 
 }

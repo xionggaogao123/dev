@@ -76,7 +76,17 @@ public class FActivityController extends BaseController {
                                 @RequestParam(value = "lat", required = false, defaultValue = "0") double lat,
                                 @RequestParam(value = "page", required = false, defaultValue = "1") int page,
                                 @RequestParam(value = "pageSize", required = false, defaultValue = "10") int pageSize) {
-        return RespObj.SUCCESS(fActivityService.getNearActivitys(lon, lat, page, pageSize));
+        PageModel<FActivityDTO> pageModel = fActivityService.getNearActivitys(lon, lat, page, pageSize);
+        for(FActivityDTO fActivityDTO : pageModel.getResult()) {
+            if(getUserId() != null) {
+                if(fActivityDTO.getUserId().equals(getUserId())) {
+                    fActivityDTO.setYouSigned(true);
+                } else {
+                    fActivityDTO.setYouSigned(fActivityService.isUserSigned(getUserId(),new ObjectId(fActivityDTO.getAcid())));
+                }
+            }
+        }
+        return RespObj.SUCCESS(pageModel);
     }
 
     /**
@@ -109,7 +119,11 @@ public class FActivityController extends BaseController {
         }
         fActivityDTO.setSignSheets(fActivityService.getAllSignMembers(acid));
         if(getUserId() != null) {
-            fActivityDTO.setYouSigned(fActivityService.isUserSigned(acid,getUserId()));
+            if(fActivityDTO.getUserId().equals(getUserId())) {
+                fActivityDTO.setYouSigned(true);
+            } else {
+                fActivityDTO.setYouSigned(fActivityService.isUserSigned(acid,getUserId()));
+            }
         }
         return RespObj.SUCCESS(fActivityDTO);
     }

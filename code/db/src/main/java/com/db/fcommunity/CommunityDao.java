@@ -104,7 +104,7 @@ public class CommunityDao extends BaseDao {
         for (DBObject dbo : dbObjects) {
             communityEntries.add(new CommunityEntry(dbo));
         }
-        Collections.reverse(communityEntries);
+//        Collections.reverse(communityEntries);
         return communityEntries;
     }
 

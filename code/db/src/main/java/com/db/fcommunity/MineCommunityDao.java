@@ -28,6 +28,7 @@ public class MineCommunityDao extends BaseDao {
         BasicDBObject query = new BasicDBObject()
                 .append("uid", userId);
         BasicDBObject orderBy = new BasicDBObject()
+                .append("prio",-1)
                 .append(Constant.ID, Constant.DESC);
         List<DBObject> dbos;
         if (page != -1) {
@@ -40,6 +41,12 @@ public class MineCommunityDao extends BaseDao {
             mineCommunityEntries.add(new MineCommunityEntry(dbo));
         }
         return mineCommunityEntries;
+    }
+
+    public void updatePrio(ObjectId communityId,int prio) {
+        BasicDBObject query = new BasicDBObject("cmid",communityId);
+        BasicDBObject update = new BasicDBObject(Constant.MONGO_SET,new BasicDBObject("prio",prio));
+        update(MongoFacroty.getAppDB(),Constant.COLLECTION_FORUM_MINE_COMMUNITY,query,update);
     }
 
     public int count(ObjectId userId) {

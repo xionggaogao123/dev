@@ -116,6 +116,10 @@ public class CommunityService {
         return new CommunityDTO(communityEntry);
     }
 
+    public void updateCommunityPrio(ObjectId communityId,int prio) {
+        mineCommunityDao.updatePrio(communityId,prio);
+    }
+
     /**
      * 根据ObjectId 获取详情
      *

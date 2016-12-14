@@ -211,7 +211,7 @@ public class PlayMateController extends BaseController {
         if(personId == null) {
             return RespObj.FAILD;
         }
-        List<MateData> mateDatas = mateService.getMyOns(getUserId());
+        List<MateData> mateDatas = mateService.getMyOns(personId);
         List<Map<String, Object>> tags = new ArrayList<Map<String, Object>>();
         UserEntry userEntry = userService.find(personId);
         List<UserEntry.UserTagEntry> userTagEntries = userEntry.getUserTag();

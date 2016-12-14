@@ -52,6 +52,16 @@ public class RegionDao extends BaseDao {
         }
     }
 
+    public RegionEntry find(ObjectId id){
+        BasicDBObject query=new BasicDBObject().append(Constant.ID,id);
+        DBObject dbObject=findOne(MongoFacroty.getAppDB(),Constant.COLLECTION_TRAIN_REGIONS,query);
+        if(null!=dbObject){
+            return new RegionEntry((BasicDBObject) dbObject);
+        }else{
+            return null;
+        }
+    }
+
     public void  setSort(ObjectId id,int sort){
         BasicDBObject query=new BasicDBObject(Constant.ID,id);
         BasicDBObject updateValue=new BasicDBObject(Constant.MONGO_SET,new BasicDBObject("so",sort));

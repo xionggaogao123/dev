@@ -49,6 +49,34 @@ public class InstituteDao extends BaseDao {
         return entries;
     }
 
+    /**
+     * 查询两个Id间的数据并替换
+     */
+    public List<InstituteEntry> getEntriesByTwoId(ObjectId startId,ObjectId endId){
+        List<InstituteEntry> entries=new ArrayList<InstituteEntry>();
+        BasicDBObject query=new BasicDBObject(Constant.ID, new BasicDBObject(Constant.MONGO_LTE, startId).append(Constant.MONGO_GTE, endId));
+        BasicDBObject orderBy=new BasicDBObject().append("sc",-1).append(Constant.ID,-1);
+        List<DBObject> dbObjects=find(MongoFacroty.getAppDB(),Constant.COLLECTION_TRAIN_INSTITUTE,query,Constant.FIELDS,orderBy);
+        if(null!=dbObjects&&!dbObjects.isEmpty()){
+            for(DBObject dbo:dbObjects){
+                entries.add(new InstituteEntry((BasicDBObject)dbo));
+            }
+        }
+        return entries;
+    }
+    /**
+     *
+     * @param regular
+     * @param regionIds
+     * @param itemTypeIds
+     * @param type
+     * @param area
+     * @param lon
+     * @param lat
+     * @param distance
+     * @return
+     */
+
     private BasicDBObject getQueryCondition(String regular,List<String> regionIds,List<String> itemTypeIds,
                                             String type,String area,double lon,double lat,int distance){
         BasicDBObject query=new BasicDBObject();
@@ -154,6 +182,15 @@ public class InstituteDao extends BaseDao {
             }
         }
         return entries;
+    }
+
+    /**
+     * 物理删除数据
+     * @param ids
+     */
+    public void removeEntries(List<ObjectId> ids){
+        BasicDBObject query=new BasicDBObject(Constant.ID,new BasicDBObject(Constant.MONGO_IN,ids));
+        remove(MongoFacroty.getAppDB(),Constant.COLLECTION_TRAIN_INSTITUTE,query);
     }
 
 

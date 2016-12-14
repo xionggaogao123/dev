@@ -16,12 +16,24 @@
 
     <div id="r-result-ss">处理残留未处理水印图片的数据:<input placeholder="请输入Id(用@隔开)" type="text" id="instituteIds" style="width:350px;" /></div>
     <button id="batchImages">处理残留图片</button>
-    <br>
+    <br/>
     <div id="r-result-sss">
         一些数据用默认图片覆盖:<input placeholder="请输入Id(用@隔开)或者名字(用$隔开),注意:只传一个时传Id" type="text" id="idOrNames" style="width:380px;" />
         <br>输入类型:<input type="text" id="sortNum" placeholder="请输入类型的数字信息（0~10）" size="20" style="width:200px;" >
     </div>
     <button id="defaultImage">默认图片覆盖处理</button>
+
+
+    <div id="r-result-l">
+        开始数据Id:<input placeholder="请输入开始Id(startId)" type="text" id="startId" style="width:200px;" />
+        结束数据Id:<input placeholder="请输入结束Id(endId)" type="text" id="endId" style="width:200px;" />
+        <br>输入类型:<input type="text" id="typeNum" placeholder="请输入类型的数字信息（0~10）" size="20" style="width:200px;" >
+    </div>
+    <button id="startAndEnd">默认图片覆盖处理(根据两个Id来处理)</button>
+    <br/>
+    <div id="r-result-ll">输入删除的Id:<input placeholder="请输入Id(用;隔开)" type="text" id="deleteIds" style="width:350px;" /></div>
+    <button id="deleteData">批量删除数据</button>
+
 </layout:override>
 <%-- 填充script --%>
 <layout:override name="script">
@@ -32,6 +44,47 @@
     <script type="text/javascript">
 
         $(function(){
+
+            $('#deleteData').click(function () {
+                if(confirm("你确定删除吗？")){
+                    var deleteIds=$('#deleteIds').val();
+                    $.ajax({
+                        type: "GET",
+                        data: {deleteIds:deleteIds},
+                        url: '/train/batchDeleteData.do',
+                        async: false,
+                        dataType: "json",
+                        contentType: "application/x-www-form-urlencoded; charset=UTF-8",
+                        success: function (resp) {
+                            if(resp.code=="200"){
+                                alert("数据处理成功了!");
+                            }
+                        }
+                    });
+                }
+            });
+
+
+
+            $('#startAndEnd').click(function () {
+                var startId=$('#startId').val();
+                var endId=$('#endId').val();
+                var type=Number($('#typeNum').val());
+                $.ajax({
+                    type: "GET",
+                    data: {startId:startId,endId:endId,type:type},
+                    url: '/train/batchDealTwoId.do',
+                    async: false,
+                    dataType: "json",
+                    contentType: "application/x-www-form-urlencoded; charset=UTF-8",
+                    success: function (resp) {
+                        if(resp.code=="200"){
+                            alert("数据处理成功了!");
+                        }
+                    }
+                });
+            });
+
 
             $('#batchImages').click(function () {
                 var instituteIds=$('#instituteIds').val();

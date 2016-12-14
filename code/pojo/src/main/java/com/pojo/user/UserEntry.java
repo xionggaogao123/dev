@@ -1156,15 +1156,20 @@ public class UserEntry extends BaseDBObject {
     if(!getBaseEntry().containsField("ustg")){
       return userTagEntries;
     }else{
-      BasicDBList list =(BasicDBList)getSimpleObjectValue("ustg");
-      if(null!=list && !list.isEmpty())
-      {
-        for(Object o:list)
+      Object object=getSimpleObjectValue("ustg");
+      if(null==object){
+        return userTagEntries;
+      }else{
+        BasicDBList list =(BasicDBList)object;
+        if(null!=list && !list.isEmpty())
         {
-          userTagEntries.add(new UserTagEntry((BasicDBObject)o));
+          for(Object o:list)
+          {
+            userTagEntries.add(new UserTagEntry((BasicDBObject)o));
+          }
         }
+        return userTagEntries;
       }
-      return userTagEntries;
     }
   }
 

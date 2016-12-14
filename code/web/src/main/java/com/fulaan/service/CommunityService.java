@@ -283,11 +283,11 @@ public class CommunityService {
             }
             communityDetailDTO.setOperation(0);
 
-            if(null!=userId){
-                ObjectId groupId =getGroupId(new ObjectId(entry.getCommunityId()));
-               if(memberService.isManager(groupId,userId)) {
-                   communityDetailDTO.setOperation(1);
-               }
+            if (null != userId) {
+                ObjectId groupId = getGroupId(new ObjectId(entry.getCommunityId()));
+                if (memberService.isManager(groupId, userId)) {
+                    communityDetailDTO.setOperation(1);
+                }
             }
 
             //设置权限
@@ -370,28 +370,31 @@ public class CommunityService {
             MemberDTO memberDTO = new MemberDTO();
             memberDTO.setRemarkId(Constant.EMPTY);
             UserEntry userEntry1 = partnerInfo.get(partner);
-            List<UserEntry.UserTagEntry> partnerTags = userEntry1.getUserTag();
-            if (partnerTags.size() == 0) {
-                memberDTO.setTagType(0);
-                memberDTO.setTags(new ArrayList<String>());
-            } else {
-                memberDTO.setTagType(1);
-                memberDTO.setTags(getTagList(ftags, partnerTags));
-            }
-            List<ObjectId> partners1 = friendService.getObjectFriends(partner);
-            partners1.retainAll(partners);
-            memberDTO.setRoleStr("好友");
-            memberDTO.setUserId(partner.toString());
-            memberDTO.setAvator(AvatarUtils.getAvatar(userEntry1.getAvatar(), AvatarType.MIN_AVATAR.getType()));
-            memberDTO.setNickName(StringUtils.isNotBlank(userEntry1.getNickName()) ? userEntry1.getNickName() : userEntry1.getUserName());
-            memberDTO.setPlaymateCount(partners1.size());
-            memberDTO.setPlaymate(getPlaymate(partnerInfo, partners1));
+            //过滤掉不存在的用户
+            if(null!=userEntry1){
+                List<UserEntry.UserTagEntry> partnerTags = userEntry1.getUserTag();
+                if (partnerTags.size() == 0) {
+                    memberDTO.setTagType(0);
+                    memberDTO.setTags(new ArrayList<String>());
+                } else {
+                    memberDTO.setTagType(1);
+                    memberDTO.setTags(getTagList(ftags, partnerTags));
+                }
+                List<ObjectId> partners1 = friendService.getObjectFriends(partner);
+                partners1.retainAll(partners);
+                memberDTO.setRoleStr("好友");
+                memberDTO.setUserId(partner.toString());
+                memberDTO.setAvator(AvatarUtils.getAvatar(userEntry1.getAvatar(), AvatarType.MIN_AVATAR.getType()));
+                memberDTO.setNickName(StringUtils.isNotBlank(userEntry1.getNickName()) ? userEntry1.getNickName() : userEntry1.getUserName());
+                memberDTO.setPlaymateCount(partners1.size());
+                memberDTO.setPlaymate(getPlaymate(partnerInfo, partners1));
 
-            if (null != remarkEntryMap.get(partner)) {
-                memberDTO.setNickName(remarkEntryMap.get(partner).getRemark());
-                memberDTO.setRemarkId(remarkEntryMap.get(partner).getID().toString());
+                if (null != remarkEntryMap.get(partner)) {
+                    memberDTO.setNickName(remarkEntryMap.get(partner).getRemark());
+                    memberDTO.setRemarkId(remarkEntryMap.get(partner).getID().toString());
+                }
+                memberDTOs.add(memberDTO);
             }
-            memberDTOs.add(memberDTO);
         }
         return memberDTOs;
     }
@@ -433,39 +436,43 @@ public class CommunityService {
             memberDTO.setRemarkId(Constant.EMPTY);
             String memberUserId = memberDTO.getUserId();
             if (!memberUserId.equals(userId.toString())) {
-                UserEntry userEntry1 = map.get(new ObjectId(memberUserId));
-                List<UserEntry.UserTagEntry> tags = userEntry1.getUserTag();
-                if (tags.size() == 0) {
-                    memberDTO.setTagType(0);
-                    memberDTO.setTags(new ArrayList<String>());
-                } else {
-                    memberDTO.setTagType(1);
-                    memberDTO.setTags(getTagList(ftags, tags));
-                }
-                boolean judge = judgePartner(partners, new ObjectId(memberUserId));
-                if (judge) {
-                    memberDTO.setPlaymateFlag(1);
-                } else {
-                    //若该用户不是同伴的话，判断是否申请加为好友
-                    FriendApplyEntry friendApplyEntry = friendApplyEntryMap.get(new ObjectId(memberUserId));
-                    if (null != friendApplyEntry) {
-                        //申请了
-                        memberDTO.setPlaymateFlag(2);
+                UserEntry userEntry1;
+                userEntry1 = map.get(new ObjectId(memberUserId));
+                //过滤掉不存在的用户成员
+                if(null!=userEntry1){
+                    List<UserEntry.UserTagEntry> tags = userEntry1.getUserTag();
+                    if (tags.size() == 0) {
+                        memberDTO.setTagType(0);
+                        memberDTO.setTags(new ArrayList<String>());
                     } else {
-                        memberDTO.setPlaymateFlag(0);
+                        memberDTO.setTagType(1);
+                        memberDTO.setTags(getTagList(ftags, tags));
                     }
-                }
-                List<ObjectId> partners1 = friendService.getObjectFriends(new ObjectId(memberUserId));
-                partners1.retainAll(partners);
-                memberDTO.setPlaymateCount(partners1.size());
-                memberDTO.setPlaymate(getPlaymate(partnerInfo, partners1));
+                    boolean judge = judgePartner(partners, new ObjectId(memberUserId));
+                    if (judge) {
+                        memberDTO.setPlaymateFlag(1);
+                    } else {
+                        //若该用户不是同伴的话，判断是否申请加为好友
+                        FriendApplyEntry friendApplyEntry = friendApplyEntryMap.get(new ObjectId(memberUserId));
+                        if (null != friendApplyEntry) {
+                            //申请了
+                            memberDTO.setPlaymateFlag(2);
+                        } else {
+                            memberDTO.setPlaymateFlag(0);
+                        }
+                    }
+                    List<ObjectId> partners1 = friendService.getObjectFriends(new ObjectId(memberUserId));
+                    partners1.retainAll(partners);
+                    memberDTO.setPlaymateCount(partners1.size());
+                    memberDTO.setPlaymate(getPlaymate(partnerInfo, partners1));
 
-                if (null != remarkEntryMap.get(new ObjectId(memberUserId))) {
-                    memberDTO.setNickName(remarkEntryMap.get(new ObjectId(memberUserId)).getRemark());
-                    memberDTO.setRemarkId(remarkEntryMap.get(new ObjectId(memberUserId)).getID().toString());
+                    if (null != remarkEntryMap.get(new ObjectId(memberUserId))) {
+                        memberDTO.setNickName(remarkEntryMap.get(new ObjectId(memberUserId)).getRemark());
+                        memberDTO.setRemarkId(remarkEntryMap.get(new ObjectId(memberUserId)).getID().toString());
+                    }
+                    memberDTO.setIsOwner(0);
+                    memberDTOs.add(memberDTO);
                 }
-                memberDTO.setIsOwner(0);
-                memberDTOs.add(memberDTO);
             } else {
                 List<String> ownerTags = new ArrayList<String>();
                 UserEntry userEntry1 = map.get(new ObjectId(memberUserId));

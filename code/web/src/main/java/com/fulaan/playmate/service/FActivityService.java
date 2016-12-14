@@ -105,7 +105,7 @@ public class FActivityService {
             BasicDBList locs = entry.getLocations();
             if (locs != null) {
                 Double distance = DistanceUtils.distance(lon, lat, (Double) locs.get(0), (Double) locs.get(1));
-                fActivityDTO.setDistance(String.valueOf(distance.longValue()));
+                fActivityDTO.setDistance(filterDistance(distance.longValue()));
             }
             FActivityDTOS.add(fActivityDTO);
         }
@@ -347,6 +347,19 @@ public class FActivityService {
      */
     public void cancelPublishActivity(ObjectId acid, ObjectId userId) {
         fActivityDao.cancelPublishActivity(acid, userId);
+    }
+
+    public String filterDistance(long distance) {
+        if(distance < 500) {
+            return "≤500m";
+        } else if(distance < 1000) {
+            return "≤1km";
+        } else if(distance < 2000) {
+            return "≤2km";
+        } else if(distance < 5000) {
+            return "≤5km";
+        }
+        return ">5km";
     }
 
 }

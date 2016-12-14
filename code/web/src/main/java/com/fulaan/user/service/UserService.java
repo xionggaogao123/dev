@@ -427,9 +427,10 @@ public class UserService {
     }
 
 
-    public ObjectId addEntry(UserEntry e){
+    public ObjectId addEntry(UserEntry e) {
         return userDao.addEntry(e);
     }
+
     /**
      * 添加用户
      */
@@ -1163,12 +1164,11 @@ public class UserService {
         if (entry != null) {
             return new UserDTO(entry);
         }
-
         entry = userDao.findByPhone(regular);
         if (entry != null) {
             return new UserDTO(entry);
         }
-        entry = userDao.findByPhone(regular);
+        entry = userDao.findByEmail(regular);
         if (entry != null) {
             return new UserDTO(entry);
         }
@@ -1365,19 +1365,19 @@ public class UserService {
 
     public void pushUserTag(ObjectId userId, int code, String tag) {
 
-        if(userDao.tagIsExist(userId,code)) {
+        if (userDao.tagIsExist(userId, code)) {
             return;
         }
         UserEntry.UserTagEntry userTagEntry = new UserEntry.UserTagEntry(code, tag);
         userDao.pushUserTag(userId, userTagEntry);
     }
 
-    public void pushUserTags(ObjectId userId,List<UserTag> tags) {
+    public void pushUserTags(ObjectId userId, List<UserTag> tags) {
         List<UserEntry.UserTagEntry> tagEntries = new ArrayList<UserEntry.UserTagEntry>();
-        for(UserTag tag : tags) {
-            tagEntries.add(new UserEntry.UserTagEntry(tag.getCode(),tag.getTag()));
+        for (UserTag tag : tags) {
+            tagEntries.add(new UserEntry.UserTagEntry(tag.getCode(), tag.getTag()));
         }
-        userDao.pushUserTags(userId,tagEntries);
+        userDao.pushUserTags(userId, tagEntries);
     }
 
     public void pullUserTag(ObjectId userId, int code) {
@@ -1426,5 +1426,9 @@ public class UserService {
 
     public Object checkUserNameExist(String userName) {
         return userDao.findByName(userName) != null;
+    }
+
+    public void resetPassword(ObjectId userId, String password) {
+        userDao.resetPwd(userId, password);
     }
 }

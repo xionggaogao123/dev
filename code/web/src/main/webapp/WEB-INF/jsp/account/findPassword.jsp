@@ -1,4 +1,5 @@
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
+<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -47,7 +48,8 @@
                 <li>
                     <input type="text" class="in1 verifyCode1">
                     <span class="sp1">验证码 : </span>
-                    <img id="verifyImg2" alt="" src="/verify/verifyCode.do" class="sp6" style="top: 5px;width: auto;height: auto"/>
+                    <img id="verifyImg2" alt="" src="/verify/verifyCode.do" class="sp6"
+                         style="top: 5px;width: auto;height: auto"/>
                 </li>
                 <li>
                     <button class="re-btn1">下一步</button>
@@ -68,7 +70,8 @@
                 <li>
                     <input type="text" class="in1" id="verifyCode">
                     <span class="sp1">验证码 : </span>
-                    <img id="verifyImg" alt="" src="/verify/verifyCode.do" class="sp6" style="top: 5px;width: auto;height: auto"/>
+                    <img id="verifyImg" alt="" src="/verify/verifyCode.do" class="sp6"
+                         style="top: 5px;width: auto;height: auto"/>
                 </li>
                 <li>
                     <input type="text" class="in1">
@@ -76,14 +79,14 @@
                     <span class="sp4" id="sendCode">发送验证码</span>
                 </li>
                 <li>
-                    <span class="sp2"><label><input type="checkbox">我同意《复兰教育社区协议》</label></span>
+                    <span class="sp2"><label><input type="checkbox" class="next2-argument">我同意《复兰教育社区协议》</label></span>
                     <button class="re-btn2 next2">下一步</button>
-                    <span class="sp3" style="display: none">未勾选社区协议</span>
+                    <span class="sp3" style="display: none;top: 24px">未勾选社区协议</span>
                 </li>
             </ul>
             <ul class="re-form ul2">
                 <li>
-                    <input type="text">
+                    <input type="text" id="email">
                     <span class="sp1">邮箱 : </span>
                 </li>
                 <li>
@@ -92,7 +95,7 @@
             </ul>
             <ul class="re-form ul21">
                 <li>
-                    <span class="sp7">我们已经向您的注册邮箱shawn****s@qq.com发送了一封密码找回邮件，请您注意<a href="###">接收邮件</a></span>
+                    <span class="sp7">我们已经向您的注册邮箱<i>shawn****s@qq.com</i>发送了一封密码找回邮件，请您注意<a href="###">接收邮件</a></span>
                 </li>
                 <li>
                     <button class="re-btn2">去邮箱接收邮件</button>
@@ -113,15 +116,16 @@
 
         </div>
         <div class="re-cont3 re-conts">
-            <ul class="re-form ul3">
+            <ul class="re-form ul3 step3">
                 <li>
-                    <input type="text">
+                    <input type="password" class="password" id="reset-password">
                     <span class="sp1">新密码 : </span>
+                    <span class="sp3" style="display:none;">密码格式不合法</span>
                 </li>
                 <li>
-                    <input type="text">
+                    <input type="password" class="re-password" >
                     <span class="sp1">新密码确认 : </span>
-                    <span class="sp3">两次输入的密码不一致</span>
+                    <span class="sp3" style="display:none;">两次输入的密码不一致</span>
                 </li>
                 <li>
                     <button class="re-btn3">下一步</button>
@@ -129,7 +133,7 @@
             </ul>
         </div>
         <div class="re-cont4 re-conts">
-            <ul class="re-form ul3">
+            <ul class="re-form ul3 step4">
                 <li>
                     <span class="sp7">恭喜你，密码重置成功！</span>
                 </li>
@@ -148,5 +152,18 @@
     seajs.use('/static/js/modules/account/findPassword.js', function (findPassword) {
         findPassword.init();
     });
+</script>
+
+<script>
+
+    <c:if test="${verify}">
+        $(function () {
+            $('.re-conts').hide();
+            $('.re-cont3').show();
+            $('.ul-luc li:nth-child(3)').addClass('orali');
+            $('.ul-luc li:nth-child(2)').addClass('orali');
+            $('.ul-luc li:nth-child(1)').addClass('orali');
+        });
+    </c:if>
 </script>
 </html>

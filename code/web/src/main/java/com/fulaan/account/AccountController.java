@@ -1,12 +1,16 @@
 package com.fulaan.account;
 
+import com.fulaan.account.dto.VerifyData;
 import com.fulaan.account.service.AccountService;
 import com.fulaan.annotation.SessionNeedless;
 import com.fulaan.cache.CacheHandler;
 import com.fulaan.controller.BaseController;
+import com.fulaan.dto.UserDTO;
 import com.fulaan.user.service.UserService;
 import com.pojo.user.UserEntry;
 import com.sys.constants.Constant;
+import com.sys.exceptions.UnLoginException;
+import com.sys.utils.MD5Utils;
 import com.sys.utils.RespObj;
 import org.bson.types.ObjectId;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -14,11 +18,10 @@ import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.CookieValue;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.servlet.ModelAndView;
 
 import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletResponse;
-import java.util.HashMap;
-import java.util.Map;
 
 /**
  * Created by moslpc on 2016/12/12.
@@ -87,42 +90,92 @@ public class AccountController extends BaseController {
             return RespObj.FAILD("验证码不正确");
         }
 
-        if (userService.find(name) == null) {
+        if (userService.findByRegular(name) == null) {
             return RespObj.FAILD("用户不存在");
         }
+
         ObjectId key = new ObjectId();
         String cacheKey = CacheHandler.getKeyString(CacheHandler.CACHE_FW_USERNAME_KEY, key.toString());
         CacheHandler.cache(cacheKey, name, Constant.SESSION_FIVE_MINUTE);//5分钟
-        response.addCookie(new Cookie("fw_code",key.toString()));
+        response.addCookie(new Cookie("fw_code", key.toString()));
         return RespObj.SUCCESS;
     }
 
     @SessionNeedless
     @RequestMapping("/verifyUserPhone")
     @ResponseBody
-    public RespObj verifyUserPhone(String phone,@CookieValue(Constant.FWCODE) String fwCode) {
-        Map<String,Object> result = new HashMap<String,Object>();
-        String fwUser = CacheHandler.getStringValue(CacheHandler.getKeyString(CacheHandler.CACHE_FW_USERNAME_KEY,fwCode));
-        if(fwUser == null) {
-            result.put("verify",false);
-            result.put("msg","时间失效或不存在");
-            return RespObj.FAILD(result);
+    public RespObj verifyUserPhone(String phone, @CookieValue(Constant.FWCODE) String fwCode) {
+        String fwUser = CacheHandler.getStringValue(CacheHandler.getKeyString(CacheHandler.CACHE_FW_USERNAME_KEY, fwCode));
+        if (fwUser == null) {
+            return RespObj.FAILD(new VerifyData(false, "时间失效或不存在"));
         }
-        UserEntry userEntry = userService.searchUserByphone(phone);
-        if(userEntry == null) {
-            result.put("verify",false);
-            result.put("msg","手机未绑定");
-            return RespObj.FAILD(result);
+        UserDTO userDTO = userService.findByRegular(fwUser);
+        if (userDTO == null) {
+            return RespObj.FAILD(new VerifyData(false, "用户不存在"));
         }
-        if(fwUser.equals(userEntry.getUserName())) {
-            result.put("verify",true);
-            result.put("msg","验证成功");
-            return RespObj.SUCCESS(result);
+        if (phone.equals(userDTO.getPhone())) {
+            return RespObj.SUCCESS(new VerifyData(true, "验证成功"));
         } else {
-            result.put("verify",false);
-            result.put("msg","该用户未绑定此手机号");
-            return RespObj.FAILD(result);
+            return RespObj.FAILD(new VerifyData(false, "该用户未绑定此手机号"));
         }
+    }
+
+    @SessionNeedless
+    @RequestMapping("/verifyUserEmail")
+    @ResponseBody
+    public RespObj verifyUserEmail(String email, @CookieValue(Constant.FWCODE) String fwCode) {
+        String fwUser = CacheHandler.getStringValue(CacheHandler.getKeyString(CacheHandler.CACHE_FW_USERNAME_KEY, fwCode));
+        if (fwUser == null) {
+            return RespObj.FAILD(new VerifyData(false, "时间失效或不存在"));
+        }
+        UserDTO userDTO = userService.findByRegular(fwUser);
+        if (userDTO == null) {
+            return RespObj.FAILD(new VerifyData(false, "用户不存在"));
+        }
+        if (email.equals(userDTO.getEmail())) {
+            ObjectId key = new ObjectId();
+            String cacheKey = CacheHandler.getKeyString(CacheHandler.CACHE_FW_VALIDATE_EMAIL,key.toString());
+            CacheHandler.cache(cacheKey, userDTO.getUserName(), Constant.SECONDS_IN_DAY);//1天
+            accountService.processFindPasswordByEmail(userDTO.getUserName(), email, key.toString());
+            return RespObj.SUCCESS(new VerifyData(true, "发送成功"));
+        } else {
+            return RespObj.FAILD(new VerifyData(false, "该用户未绑定此邮箱"));
+        }
+    }
+
+    @SessionNeedless
+    @RequestMapping("/emailValidate")
+    public ModelAndView emailValidate(String validateCode, HttpServletResponse response) throws Exception{
+        String cacheKey = CacheHandler.getKeyString(CacheHandler.CACHE_FW_VALIDATE_EMAIL,validateCode);
+        String userName = CacheHandler.getStringValue(cacheKey);
+        if(userName == null) {
+            throw new UnLoginException();
+        }
+
+        CacheHandler.deleteKey(CacheHandler.CACHE_FW_VALIDATE_EMAIL,validateCode);
+        ObjectId key = new ObjectId();
+        String resetPassKey = CacheHandler.getKeyString(CacheHandler.CACHE_FW_RESET_PASSWORD,key.toString());
+        CacheHandler.cache(resetPassKey,userName,Constant.SESSION_FIVE_MINUTE);
+        response.addCookie(new Cookie("fw_reset_code",key.toString()));
+        return new ModelAndView("/account/findPassword","verify",true);
+    }
+
+    @SessionNeedless
+    @RequestMapping("/resetPassword")
+    @ResponseBody
+    public RespObj resetPassword(String password,@CookieValue("fw_reset_code") String resetCode) {
+        String cacheKey = CacheHandler.getKeyString(CacheHandler.CACHE_FW_RESET_PASSWORD,resetCode);
+        String userName = CacheHandler.getStringValue(cacheKey);
+        if(userName == null) {
+            return RespObj.FAILD("时间失效或不合法");
+        }
+        UserEntry userEntry = userService.searchUserByUserName(userName);
+        if(userEntry == null) {
+            return RespObj.FAILD("用户不存在");
+        }
+        userService.resetPassword(userEntry.getID(),MD5Utils.getMD5String(password));
+        CacheHandler.deleteKey(CacheHandler.CACHE_FW_RESET_PASSWORD,resetCode);
+        return RespObj.SUCCESS("重置密码成功");
     }
 
     @RequestMapping("/validateData")

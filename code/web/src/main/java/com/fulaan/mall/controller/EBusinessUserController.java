@@ -310,7 +310,6 @@ public class EBusinessUserController extends BaseController {
                 EBusinessUserController.error("", e1);
             }
         }
-
     }
 
     @SessionNeedless
@@ -413,7 +412,6 @@ public class EBusinessUserController extends BaseController {
             } else {
                 userEntry.setEmailValidateCode(Constant.EMPTY);
             }
-
 
             userId = userService.addUser(userEntry);
 

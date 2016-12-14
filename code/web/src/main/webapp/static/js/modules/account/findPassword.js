@@ -7,10 +7,14 @@ define(['jquery', 'pagination', 'common'], function (require, exports, module) {
 
     };
 
-    var check = {
+    var phoneVerifyCheck = {
         phone : false,
-        verifyCode: false,
         code: false
+    };
+
+    var resetPasswordCheck = {
+        password : false,
+        rePassword: false
     };
 
     $(function () {
@@ -29,9 +33,20 @@ define(['jquery', 'pagination', 'common'], function (require, exports, module) {
             $('.re-cont4').show();
             $('.ul-luc li:nth-child(4)').addClass('orali');
         });
+
         $('.re-btn-email').click(function () {
-            $('.re-conts .ul2').hide();
-            $('.re-conts .ul21').show();
+
+            var email = $('#email').val();
+            common.getData("/account/verifyUserEmail.do", {email: email}, function (resp) {
+                if (resp.code == '200') {
+                    $('.re-conts .ul2').hide();
+                    $('.re-conts .ul21').show();
+                    $('.ul21 .sp7 i').text(email);
+                } else {
+                    alert(resp.message.msg);
+                }
+
+            });
         });
 
         $('#verifyImg').click(function () {
@@ -55,7 +70,6 @@ define(['jquery', 'pagination', 'common'], function (require, exports, module) {
                 } else {
                     alert(resp.message);
                 }
-
             })
         });
 
@@ -67,14 +81,17 @@ define(['jquery', 'pagination', 'common'], function (require, exports, module) {
                 common.getData('/account/verifyUserPhone', requestParm, function (resp) {
                     if(resp.code == '200' && resp.message.verify) {
                         self.parent().find('.sp3').hide();
+                        phoneVerifyCheck.phone = true;
                     } else {
                         self.parent().find('.sp3').text(resp.message.msg);
                         self.parent().find('.sp3').show();
+                        phoneVerifyCheck.phone = false;
                     }
                 });
             } else {
                 self.parent().find('.sp3').text('手机号不合法');
                 self.parent().find('.sp3').show();
+                phoneVerifyCheck.phone = false;
             }
         });
 
@@ -84,16 +101,17 @@ define(['jquery', 'pagination', 'common'], function (require, exports, module) {
             common.getData("/mall/users/messages.do", {mobile: phone, verifyCode: verifyCode}, function (resp) {
                 alert(JSON.stringify(resp));
                 if (resp.code == '200') {
-
+                    phoneVerifyCheck.code = true;
                 } else {
                     alert(resp.message);
+                    phoneVerifyCheck.code = false;
                 }
 
             })
         });
 
         $('body').on('click','.next2',function () {
-            if (!$('.ul2 .argument').is(':checked')) {
+            if (!$('.next2-argument').is(':checked')) {
                 $(this).parent().find('.sp3').text('未勾选社区协议');
                 $(this).parent().find('.sp3').show();
                 return;
@@ -101,7 +119,8 @@ define(['jquery', 'pagination', 'common'], function (require, exports, module) {
                 $(this).parent().find('.sp3').hide();
             }
 
-            if(check.code && check.phone && check.verifyCode) {
+            alert(JSON.stringify(phoneVerifyCheck));
+            if(phoneVerifyCheck.code && phoneVerifyCheck.phone ) {
                 $(this).parent().find('.sp3').hide();
                 $('.re-conts').hide();
                 $('.re-cont3').show();
@@ -111,6 +130,59 @@ define(['jquery', 'pagination', 'common'], function (require, exports, module) {
                 $(this).parent().find('.sp3').show();
             }
         });
+
+        $('body').on('click','.re-btn3',function () {
+            var password = $('#reset-password').val();
+            if(!resetPasswordCheck.password || !resetPasswordCheck.rePassword ) {
+                return;
+            }
+            common.getData("/account/resetPassword.do", {password: password}, function (resp) {
+                alert(JSON.stringify(resp));
+                if (resp.code == '200') {
+
+                } else {
+                    alert(resp.message);
+                }
+
+            });
+        });
+
+        $('.step3 .password').blur(function () {
+            var self = $(this);
+            if (self.val() == '') {
+                self.parent().find('.sp3').text('密码不能为空');
+                self.parent().find('.sp3').show();
+                resetPasswordCheck.password = false;
+            } else {
+                var pattern = /[a-zA-Z0-9!@#\*\^\$%\(\)-+=_&]{6,20}$/;
+                if (!pattern.test(self.val())) {
+                    self.parent().find('.sp3').text('密码不符合格式');
+                    self.parent().find('.sp3').show();
+                    resetPasswordCheck.password = false;
+                } else {
+                    self.parent().find('.sp3').hide();
+                    resetPasswordCheck.password = true;
+                }
+            }
+        });
+
+        $('.step3 .re-password').blur(function () {
+            var self = $(this);
+            if ($('.step3 .password').val() == $('.step3 .re-password').val()) {
+                self.parent().find('.sp3').hide();
+                resetPasswordCheck.rePassword = true;
+            } else {
+                self.parent().find('.sp3').text('两次输入的密码不一致');
+                self.parent().find('.sp3').show();
+                resetPasswordCheck.rePassword = false;
+            }
+        });
+
+        $('.step4 button').click(function () {
+
+            window.location.href = '/account/login.do';
+        });
+
     });
 
     module.exports = findPassword;

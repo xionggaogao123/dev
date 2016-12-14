@@ -20,6 +20,8 @@ public class UserDTO {
     private long birthday;
     private long distance;
     private long login;
+    private String phone;
+    private String email;
 
     public UserDTO(UserEntry entry) {
         if (entry == null) {
@@ -32,6 +34,8 @@ public class UserDTO {
         this.sex = entry.getSex();
         this.avator = AvatarUtils.getAvatar(entry.getAvatar(), AvatarType.MIN_AVATAR.getType());
         this.birthday = entry.getBirthDate();
+        this.phone = entry.getMobileNumber();
+        this.email = entry.getEmail();
     }
 
     public String getUserId() {
@@ -104,5 +108,21 @@ public class UserDTO {
 
     public void setLogin(long login) {
         this.login = login;
+    }
+
+    public String getPhone() {
+        return phone;
+    }
+
+    public void setPhone(String phone) {
+        this.phone = phone;
+    }
+
+    public String getEmail() {
+        return email;
+    }
+
+    public void setEmail(String email) {
+        this.email = email;
     }
 }

@@ -64,6 +64,8 @@ public final class CacheHandler {
     //用户找回密码
     public static final String CACHE_FW_KEY = "fw_{0}";
     public static final String CACHE_FW_USERNAME_KEY = "fw_user_{0}";
+    public static final String CACHE_FW_VALIDATE_EMAIL = "fw_email_{0}";
+    public static final String CACHE_FW_RESET_PASSWORD = "fw_reset_pass_{0}";
 
 
 

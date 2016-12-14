@@ -552,18 +552,6 @@ public class UserDao extends BaseDao {
         return total;
     }
 
-    public List<UserEntry> findUserEntriesLimitRole(List<ObjectId> objectIdList, BasicDBObject fields) {
-        List<UserEntry> retList = new ArrayList<UserEntry>();
-        BasicDBObject query = new BasicDBObject(Constant.ID, new BasicDBObject(Constant.MONGO_IN, objectIdList)).append("r", UserRole.STUDENT.getRole()).append("ir", Constant.ZERO);
-        List<DBObject> list = find(MongoFacroty.getAppDB(), Constant.COLLECTION_USER_NAME, query, fields);
-        if (null != list && !list.isEmpty()) {
-            for (DBObject dbo : list) {
-                retList.add(new UserEntry((BasicDBObject) dbo));
-            }
-        }
-        return retList;
-    }
-
 
     public void resetPwd(ObjectId id, String initPwd) {
         BasicDBObject query = new BasicDBObject(Constant.ID, id);

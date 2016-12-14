@@ -1578,7 +1578,8 @@ public class UserController extends BaseController {
         if (StringUtils.isNotBlank(redirectUrl) && getPlatform() != Platform.PC) {
             return redirectUrl;
         }
-        return "redirect:/account/thirdLoginSuccess";
+//        return "redirect:/account/thirdLoginSuccess";
+        return "redirect:/";
     }
 
     /**
@@ -1667,7 +1668,8 @@ public class UserController extends BaseController {
         if (redirectUrl != null && getPlatform() != Platform.PC) {
             return redirectUrl;
         }
-        return "redirect:/account/thirdLoginSuccess";
+//        return "redirect:/account/thirdLoginSuccess";
+        return "redirect:/";
     }
 
     /**

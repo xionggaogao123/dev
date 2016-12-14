@@ -15,7 +15,7 @@
 <div class="reg-container">
     <div class="tit2">
         <span class="sp1">找回密码</span>
-        <span class="sp2">如果你的学校正在使用K6KT平台，请使用实名直接登录！&nbsp;&nbsp;&nbsp;已有帐号？<a href="/login">马上登录</a></span>
+        <span class="sp2">如果你的学校正在使用K6KT平台，请使用实名直接登录！&nbsp;&nbsp;&nbsp;已有帐号？<a href="/account/login">马上登录</a></span>
     </div>
     <div class="re-cont">
         <ul class="ul-luc">

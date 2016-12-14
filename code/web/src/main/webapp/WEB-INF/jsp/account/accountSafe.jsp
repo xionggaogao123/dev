@@ -92,51 +92,11 @@
                 <span>扩展资料<em>增加你的扩展资料，将显示在你的个人名片中，并可以让更多的朋友了解和认识你</em></span>
             </div>
             <div class="bq-tit">兴趣爱好标签</div>
-            <div class="clearfix bq-list">
-                <span>旅行</span>
-                <span>英语</span>
-                <span>阅读</span>
-                <span>足球</span>
-                <span class="oracur2">篮球</span>
-                <span>羽毛球</span>
-                <span>网球</span>
-                <span>乒乓球</span>
-                <span>轮滑</span>
-                <span>跆拳道</span>
-                <span>旅行</span>
-                <span class="oracur2">跳绳</span>
-                <span>歌唱</span>
-                <span>表演</span>
-                <span>舞蹈</span>
-                <span>美术</span>
-                <span>钢琴</span>
-                <span>其他运动</span>
-                <span>古筝</span>
-                <span>二胡</span>
-                <span>小提琴</span>
-                <span>笛子</span>
-                <span>架子鼓</span>
-                <span>围棋</span>
-                <span>跳棋</span>
-                <span>象棋</span>
-                <span>桥牌</span>
-                <span>演讲</span>
-                <span>航海</span>
-                <span>航模</span>
-                <span>机器人</span>
-                <span>爱宠</span>
-                <span>旅行</span>
-                <span>旅行</span>
+            <div class="clearfix bq-list bq-tags">
             </div>
             <div class="bq-tit">休闲时间标签</div>
 
-            <div class="clearfix bq-list">
-                <span>周六08:00~11:00</span>
-                <span class="oracur2">周六11:00~14:00</span>
-                <span>周六14:00~17:00</span>
-                <span class="oracur2">周日08:00~11:00</span>
-                <span>周日11:00~14:00</span>
-                <span>周日14:00~17:00</span>
+            <div class="clearfix bq-list bq-times">
             </div>
             <div class="h25"></div>
             <div class="">

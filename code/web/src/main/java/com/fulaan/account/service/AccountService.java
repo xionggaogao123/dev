@@ -31,10 +31,6 @@ public class AccountService {
         return !"".equals(verifyCode) && verifyCode.equals(validateCode);
     }
 
-    public RespObj verifyUserPhone(String fwCode, String phone) {
-        return null;
-    }
-
     public void processFindPasswordByEmail(String userName,String email, String code) {
         //发送邮箱
         MailUtils sendMail = new MailUtils();

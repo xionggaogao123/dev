@@ -82,6 +82,14 @@ public class AccountController extends BaseController {
         return RespObj.SUCCESS(userService.searchUserByEmail(email) != null);
     }
 
+    /**
+     * 验证用户名与验证码
+     * @param name
+     * @param verifyCode
+     * @param verifyKey
+     * @param response
+     * @return
+     */
     @RequestMapping("/verifyCodeWithName")
     @SessionNeedless
     @ResponseBody
@@ -102,6 +110,12 @@ public class AccountController extends BaseController {
         return RespObj.SUCCESS;
     }
 
+    /**
+     * 验证用户与手机是否匹配
+     * @param phone
+     * @param fwCode
+     * @return
+     */
     @SessionNeedless
     @RequestMapping("/verifyUserPhone")
     @ResponseBody
@@ -121,6 +135,12 @@ public class AccountController extends BaseController {
         }
     }
 
+    /**
+     * 验证 用户与邮箱是否匹配
+     * @param email
+     * @param fwCode
+     * @return
+     */
     @SessionNeedless
     @RequestMapping("/verifyUserEmail")
     @ResponseBody
@@ -144,6 +164,15 @@ public class AccountController extends BaseController {
         }
     }
 
+    /**
+     * 手机验证
+     * @param phone
+     * @param code
+     * @param cacheKeyId
+     * @param fwCode
+     * @param response
+     * @return
+     */
     @SessionNeedless
     @RequestMapping("/phoneValidate")
     @ResponseBody
@@ -175,12 +204,20 @@ public class AccountController extends BaseController {
             String resetCacheKey = CacheHandler.getKeyString(CacheHandler.CACHE_FW_RESET_PASSWORD,keyId.toString());
             CacheHandler.cache(resetCacheKey,userDTO.getUserName(),Constant.SESSION_FIVE_MINUTE);
             response.addCookie(new Cookie(Constant.FW_RESET_PASSWORD_CODE,keyId.toString()));
+            CacheHandler.deleteKey(CacheHandler.CACHE_SHORTMESSAGE, cacheKeyId);
             return RespObj.SUCCESS("验证成功");
         } else {
             return RespObj.FAILD("短信验证码输入错误");
         }
     }
 
+    /**
+     * 邮箱验证
+     * @param validateCode
+     * @param response
+     * @return
+     * @throws Exception
+     */
     @SessionNeedless
     @RequestMapping("/emailValidate")
     public ModelAndView emailValidate(String validateCode, HttpServletResponse response) throws Exception{
@@ -198,6 +235,12 @@ public class AccountController extends BaseController {
         return new ModelAndView("/account/findPassword","verify",true);
     }
 
+    /**
+     * 重置密码
+     * @param password
+     * @param resetCode
+     * @return
+     */
     @SessionNeedless
     @RequestMapping("/resetPassword")
     @ResponseBody
@@ -216,6 +259,10 @@ public class AccountController extends BaseController {
         return RespObj.SUCCESS("重置密码成功");
     }
 
+    /**
+     * 第三方登录成功
+     * @return
+     */
     @RequestMapping("/thirdLoginSuccess")
     @SessionNeedless
     public String thirdLoginSuccess() {

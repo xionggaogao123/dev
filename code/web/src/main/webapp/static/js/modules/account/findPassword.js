@@ -101,11 +101,17 @@ define(['jquery', 'pagination', 'common'], function (require, exports, module) {
         $('#sendCode').click(function () {
             var phone = $('#phone').val();
             var verifyCode = $('#verifyCode').val();
+            if(!phoneVerifyCheck.phone) {
+                return;
+            }
+            var self = $(this);
+            self.css('color','#aaa');
             common.getData("/mall/users/messages.do", {mobile: phone, verifyCode: verifyCode}, function (resp) {
                 alert(JSON.stringify(resp));
                 if (resp.code == '200') {
                     phoneVerifyCheck.code = true;
                     cacheKeyId = resp.cacheKeyId;
+
                 } else {
                     alert(resp.message);
                     phoneVerifyCheck.code = false;

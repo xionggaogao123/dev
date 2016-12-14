@@ -128,19 +128,7 @@ public class PlayMateController extends BaseController {
             mateService.updateAge(getUserId(), age);
         }
         //更新在线时间段
-        if (StringUtils.isNotBlank(ons) && !"-1".equals(ons)) {
-            List<Integer> onsList = new ArrayList<Integer>();
-            String[] tempList = ons.split(",");
-            for (String s : tempList) {
-                try {
-                    onsList.add(Integer.parseInt(s));
-                } catch (NumberFormatException e) {
-                    e.printStackTrace();
-                }
-            }
-            onsList = new ArrayList<Integer>(new HashSet<Integer>(onsList));
-            mateService.updateOns(getUserId(), onsList);
-        }
+        updateTime(userId,ons);
 
         return RespObj.SUCCESS("成功");
     }
@@ -211,10 +199,21 @@ public class PlayMateController extends BaseController {
     @RequestMapping("/getUserMateData")
     @ResponseBody
     @SessionNeedless
-    public RespObj getUserMateData(@ObjectIdType ObjectId userId) {
+    public RespObj getUserMateData(@RequestParam(value = "userId",defaultValue = "",required = false) String userId) {
+
+        ObjectId personId;
+        if(StringUtils.isNotBlank(userId)) {
+            personId = new ObjectId(userId);
+        } else {
+            personId = getUserId();
+        }
+
+        if(personId == null) {
+            return RespObj.FAILD;
+        }
         List<MateData> mateDatas = mateService.getMyOns(getUserId());
         List<Map<String, Object>> tags = new ArrayList<Map<String, Object>>();
-        UserEntry userEntry = userService.find(userId);
+        UserEntry userEntry = userService.find(personId);
         List<UserEntry.UserTagEntry> userTagEntries = userEntry.getUserTag();
         for (UserEntry.UserTagEntry userTagEntry : userTagEntries) {
             Map<String, Object> map = new HashMap<String, Object>();
@@ -230,7 +229,7 @@ public class PlayMateController extends BaseController {
             map1.put("time",data.getData());
             freeTime.add(map1);
         }
-        map.put("freeTimes", freeTime);
+        map.put("times", freeTime);
         map.put("tags", tags);
         return RespObj.SUCCESS(map);
     }
@@ -259,26 +258,51 @@ public class PlayMateController extends BaseController {
         return RespObj.SUCCESS("修改成功");
     }
 
+    @RequestMapping("/updateUserTagAndTime")
+    @ResponseBody
+    public RespObj updateUserTagAndTime(@RequestParam(value = "tags",required = false,defaultValue = "") String tags,
+                                        @RequestParam(value = "times",required = false,defaultValue = "") String times) {
+        ObjectId userId = getUserId();
+        updateTag(userId,tags);
+        updateTime(userId,times);
+        return RespObj.SUCCESS("修改成功");
+    }
+
     private void updateTag(ObjectId userId,String tags) {
-        if (StringUtils.isNotBlank(tags)) {
-            List<String> tagList = StrUtils.splitToList(tags);
-            List<Integer> tagIntegerList = new ArrayList<Integer>();
-            for (String tag : tagList) {
-                tagIntegerList.add(Integer.parseInt(tag));
-            }
-            mateService.updateTags(userId, tagIntegerList);
-            List<UserTag> userTagList = new ArrayList<UserTag>();
-            List<MateData> mateDatas = fMateTypeService.getTags();
-            for (int code : tagIntegerList) {
-                for (MateData mateData : mateDatas) {
-                    if (mateData.getCode() == code) {
-                        userTagList.add(new UserTag(mateData.getCode(), mateData.getData()));
-                    }
+        List<String> tagList = StrUtils.splitToList(tags);
+        List<Integer> tagIntegerList = new ArrayList<Integer>();
+        for (String tag : tagList) {
+            tagIntegerList.add(Integer.parseInt(tag));
+        }
+        mateService.updateTags(userId, tagIntegerList);
+        List<UserTag> userTagList = new ArrayList<UserTag>();
+        List<MateData> mateDatas = fMateTypeService.getTags();
+        for (int code : tagIntegerList) {
+            for (MateData mateData : mateDatas) {
+                if (mateData.getCode() == code) {
+                    userTagList.add(new UserTag(mateData.getCode(), mateData.getData()));
                 }
             }
-            userService.pushUserTags(getUserId(), userTagList);
         }
+        userService.pushUserTags(userId, userTagList);
     }
+
+    private void updateTime(ObjectId userId,String times) {
+        //更新在线时间段
+        List<Integer> onsList = new ArrayList<Integer>();
+        String[] tempList = times.split(",");
+        for (String s : tempList) {
+            try {
+                onsList.add(Integer.parseInt(s));
+            } catch (NumberFormatException e) {
+                e.printStackTrace();
+            }
+        }
+        onsList = new ArrayList<Integer>(new HashSet<Integer>(onsList));
+        mateService.updateOns(userId, onsList);
+    }
+
+
 
 
 }

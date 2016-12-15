@@ -11,6 +11,7 @@
     <button id="submit">水印图片提交处理</button>
     <div id="r-result">请输入七牛视频地址:<input placeholder="请输入七牛视频地址" type="text" id="qiuNiuUrl" size="20" style="width:700px;" /></div>
     <button id="downloadVideo">下载七牛视频</button>
+    <button id="setDefaultSort">设置默认排序</button>
 </layout:override>
 <%-- 填充script --%>
 <layout:override name="script">
@@ -21,6 +22,23 @@
     <script type="text/javascript">
 
         $(function(){
+
+            $('#setDefaultSort').click(function(){
+                $.ajax({
+                    type: "GET",
+                    data: {page:page},
+                    url: '/community/setDefaultSort.do',
+                    async: false,
+                    dataType: "json",
+                    contentType: "application/x-www-form-urlencoded; charset=UTF-8",
+                    success: function (resp) {
+                        if(resp.code=="200"){
+                            alert("设置默认顺序成功了!");
+                        }
+                    }
+                });
+            });
+
             $('#downloadVideo').click(function () {
                 var qiNiuUrl=$('#qiuNiuUrl').val();
                 if(qiNiuUrl==""){

@@ -89,16 +89,18 @@ define(['jquery','pagination','social', 'common'], function (require, exports, m
             var that=this;
             var replyId = $(this).attr("replyId");
             var rpid = $(this).attr("rpid");
-            $.ajax({
-                url: "/admin/deletelol",
-                data: {
-                    lolId: replyId,
-                    rpid: rpid
-                },
-                success: function (resp) {
-                    window.location.reload();
-                }
-            });
+            if(confirm("你确定要删除该评论？")){
+                $.ajax({
+                    url: "/admin/deletelol",
+                    data: {
+                        lolId: replyId,
+                        rpid: rpid
+                    },
+                    success: function (resp) {
+                        window.location.reload();
+                    }
+                });
+            }
         });
 
         $('#downloadLike').click(function () {

@@ -34,6 +34,11 @@ public class CommunityDTO {
 
     private String errorMsg;
 
+    /**
+     * 置顶与否
+     */
+    private int top;
+
     public CommunityDTO() {
 
     }
@@ -194,5 +199,21 @@ public class CommunityDTO {
 
     public void setErrorMsg(String errorMsg) {
         this.errorMsg = errorMsg;
+    }
+
+    public boolean isJoin() {
+        return isJoin;
+    }
+
+    public void setJoin(boolean join) {
+        isJoin = join;
+    }
+
+    public int getTop() {
+        return top;
+    }
+
+    public void setTop(int top) {
+        this.top = top;
     }
 }

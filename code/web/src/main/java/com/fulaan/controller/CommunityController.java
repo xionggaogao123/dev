@@ -2129,4 +2129,29 @@ public class CommunityController extends BaseController {
     }
 
 
+    /**
+     * 设置置顶
+     * @param communityId
+     * @param top
+     * @return
+     */
+    @RequestMapping("/updateCommunityTop")
+    @ResponseBody
+    public RespObj updateCommunityTop(@ObjectIdType ObjectId communityId,int top) {
+
+        communityService.setTop(communityId,getUserId(),top);
+        return RespObj.SUCCESS;
+    }
+
+    @RequestMapping("/setDefaultSort")
+    @ResponseBody
+    public RespObj setDefaultSort() {
+
+        communityService.setDefaultSort();
+        return RespObj.SUCCESS;
+    }
+
+
+
+
 }

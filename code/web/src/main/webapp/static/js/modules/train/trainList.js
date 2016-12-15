@@ -74,11 +74,17 @@ define(['jquery', 'pagination', 'common'], function (require, exports, module) {
              var page=$('#num').val();
              if(isNaN(page)){
                  alert("不能输入除了数字外的其他任何信息!");
+                 $('#num').val("");
                  return ;
              }
              var totalPage=$('.new-page-links').data('totalPage');
              if(parseInt(page)>totalPage){
                  alert("输入的不能超过总页数");
+                 $('#num').val("");
+                 return ;
+             }
+             if(parseInt(page)<=0){
+                 alert("输入的数值不能小于或等于0");
                  $('#num').val("");
                  return ;
              }

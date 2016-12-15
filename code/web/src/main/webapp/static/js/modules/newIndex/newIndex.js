@@ -65,7 +65,7 @@ define(['jquery', 'pagination', 'common'], function (require, exports, module) {
         });
 
         $('body').on('click','#forumIndex',function () {
-           window.open('/mall/index');
+           window.open('/mall');
         });
 
         $('body').on('click','#competition',function(){

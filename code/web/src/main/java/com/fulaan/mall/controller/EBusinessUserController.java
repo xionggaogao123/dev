@@ -502,6 +502,16 @@ public class EBusinessUserController extends BaseController {
     }
 
 
+    @RequestMapping(value="getChristReward")
+    @ResponseBody
+    public RespObj getChristReward(){
+
+        //判断该用户是否还有抽奖机会(抽奖记录表)
+
+        return RespObj.SUCCESS;
+    }
+
+
     public EVoucherEntry getActivityEVouchers(ObjectId userId, int amount, String time) throws Exception {
         String num = String.valueOf(System.currentTimeMillis());
         num += RandomUtils.nextInt(Constant.MIN_PASSWORD);

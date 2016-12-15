@@ -23,7 +23,8 @@ public class MineCommunityEntry extends BaseDBObject {
     BasicDBObject basicDBObject = new BasicDBObject()
             .append("uid", userId)
             .append("cmid",communityId)
-            .append("prio",priority);
+            .append("prio",priority)
+            .append("tp",0);
     setBaseEntry(basicDBObject);
   }
 
@@ -37,6 +38,18 @@ public class MineCommunityEntry extends BaseDBObject {
 
   public int getPriority(){
     return getSimpleIntegerValue("prio");
+  }
+
+  public int getTop(){
+      if(getBaseEntry().containsField("tp")){
+          return getSimpleIntegerValueDef("tp",0);
+      }else{
+          return 0;
+      }
+  }
+
+  public void setTop(int top){
+      setSimpleValue("tp",top);
   }
 
 }

@@ -186,6 +186,11 @@
                 {{??}}
                 <span class="quit" communidyId="{{=value.id}}">退出社区</span>
                 {{?}}
+                {{?value.top==0}}
+                <span class="setTop" cmId="{{=value.id}}" top="{{=value.top}}">置顶</span>
+                {{??}}
+                <span class="setTop" cmId="{{=value.id}}" top="{{=value.top}}">取消置顶</span>
+                {{?}}
             </p>
         </div>
     </li>

@@ -174,6 +174,10 @@ define(['jquery', 'pagination', 'common'], function (require, exports, module) {
 
         })
 
+        $('body').on('click','.setTop',function(){
+            setTop($(this));
+        })
+
         $('body').on('change', '#selectOpen', function () {
             selectShow($(this));
         })
@@ -198,6 +202,29 @@ define(['jquery', 'pagination', 'common'], function (require, exports, module) {
                 getHotCommunity();
             } else {
                 alert(resp.message);
+            }
+        })
+    }
+
+    //设置置顶
+    function  setTop(obj) {
+        var communityId=obj.attr('cmId');
+        var top;
+        if(obj.attr('top')==0){
+            top=1;
+        }else{
+            top=0;
+        }
+        common.getData('/community/updateCommunityTop.do',{communityId:communityId,top:top},function (resp) {
+            if(resp.code=="200"){
+                alert(obj.text()+"成功!");
+                if(top==0){
+                    obj.attr('top',top);
+                    obj.text('置顶');
+                }else{
+                    obj.attr('top',top);
+                    obj.text('取消置顶');
+                }
             }
         })
     }

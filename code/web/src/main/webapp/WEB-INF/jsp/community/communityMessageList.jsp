@@ -218,8 +218,16 @@
     </script>
 
     <script type="text/template" id="meansTmpl">
-        <div class="com-tit">学习资料</div>
         {{~it:value:index}}
+        <div class="com-tit">学习资料
+            <c:if test="${login==true}">
+                {{?value.readFlag==1}}
+                <span class="i-unreadTip">已读</span>
+                {{??}}
+                <span class="i-newtips">未读</span>
+                {{?}}
+            </c:if>
+        </div>
         <div class="notice-container clearfix">
             <div class="notice-holder">
                 <img src="{{=value.imageUrl}}">
@@ -248,8 +256,16 @@
     </script>
 
     <script type="text/template" id="homeworkTmpl">
-        <div class="com-tit">作业</div>
         {{~it:value:index}}
+        <div class="com-tit">作业
+            <c:if test="${login==true}">
+                {{?value.readFlag==1}}
+                <span class="i-unreadTip">已读</span>
+                {{??}}
+                <span class="i-newtips">未读</span>
+                {{?}}
+            </c:if>
+        </div>
         <div class="notice-container clearfix">
             <div class="notice-holder">
                 <img src="{{=value.imageUrl}}">
@@ -272,8 +288,16 @@
     </script>
 
     <script type="text/template" id="announcementTmpl">
-        <div class="com-tit" id="announce_all">社区通知</div>
         {{~it:value:index}}
+        <div class="com-tit" id="announce_all">社区通知
+        <c:if test="${login==true}">
+            {{?value.readFlag==1}}
+            <span class="i-unreadTip">已读</span>
+            {{??}}
+            <span class="i-newtips">未读</span>
+            {{?}}
+        </c:if>
+        </div>
         <div class="notice-container clearfix">
             <div class="notice-holder">
                 <img src="{{=value.imageUrl}}">
@@ -297,8 +321,16 @@
 
 
     <script type="text/template" id="shareTmpl">
-        <div class="com-tit">火热分享</div>
         {{~it:value:index}}
+        <div class="com-tit">火热分享
+        <c:if test="${login==true}">
+            {{?value.readFlag==1}}
+            <span class="i-unreadTip">已读</span>
+            {{??}}
+            <span class="i-newtips">未读</span>
+            {{?}}
+        </c:if>
+        </div>
         <div class="notice-container clearfix">
             <div class="notice-holder">
                 <img src="{{=value.imageUrl}}">
@@ -330,8 +362,16 @@
 
 
     <script type="text/template" id="activityTmpl">
-        <div class="com-tit">组织活动报名</div>
         {{~it:value:index}}
+        <div class="com-tit">组织活动报名
+        <c:if test="${login==true}">
+            {{?value.readFlag==1}}
+            <span class="i-unreadTip">已读</span>
+            {{??}}
+            <span class="i-newtips">未读</span>
+            {{?}}
+        </c:if>
+        </div>
         <div class="notice-container clearfix">
             <div class="notice-holder">
                 <img src="{{=value.imageUrl}}">
@@ -359,8 +399,16 @@
 
 
     <script type="text/template" id="materialsTmpl">
-        <div class="com-tit">学习用品</div>
         {{~it:value:index}}
+        <div class="com-tit">学习用品
+        <c:if test="${login==true}">
+            {{?value.readFlag==1}}
+            <span class="i-unreadTip">已读</span>
+            {{??}}
+            <span class="i-newtips">未读</span>
+            {{?}}
+        </c:if>
+        </div>
         <div class="notice-container clearfix">
             <div class="notice-holder">
                 <img src="{{=value.imageUrl}}">
@@ -400,7 +448,6 @@
     <script type="text/javascript">
     $(document).ready(function () {
         $(".fancybox").fancybox({});
-
     })
 </script>
 

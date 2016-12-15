@@ -104,6 +104,65 @@ define(['jquery', 'pagination', 'common'], function (require, exports, module) {
             $('.bg').fadeToggle();
         });
 
+        $('body').on('click','#createCommunity',function(){
+            $.ajax({
+                url: "/forum/loginInfo.do?date=" + new Date(),
+                type: "get",
+                dataType: "json",
+                async: false,
+                data: {},
+                success: function (resp) {
+                    var flag = resp.login;
+                    if (flag) {
+                        window.location.href='/communityCreate.do';
+                    }else{
+                        $('.store-register').fadeToggle();
+                        $('.bg').fadeToggle();
+                    }
+                }
+            });
+        })
+
+
+        $('body').on('click','#joinCommunity',function(){
+            $.ajax({
+                url: "/forum/loginInfo.do?date=" + new Date(),
+                type: "get",
+                dataType: "json",
+                async: false,
+                data: {},
+                success: function (resp) {
+                    var flag = resp.login;
+                    if (flag) {
+                        window.location.href='/communityJoin.do'
+                    }else{
+                        $('.store-register').fadeToggle();
+                        $('.bg').fadeToggle();
+                    }
+                }
+            });
+        })
+
+        $('body').on('click','#myC',function(){
+            $.ajax({
+                url: "/forum/loginInfo.do?date=" + new Date(),
+                type: "get",
+                dataType: "json",
+                async: false,
+                data: {},
+                success: function (resp) {
+                    var flag = resp.login;
+                    if (flag) {
+                        window.location.href='/community/communitySet.do'
+                    }else{
+                        $('.store-register').fadeToggle();
+                        $('.bg').fadeToggle();
+                    }
+                }
+            });
+        })
+
+
         $('#activity-signed-div').show();
         $('#activity-published-dev').hide();
         $('#activity-attended-div').hide();

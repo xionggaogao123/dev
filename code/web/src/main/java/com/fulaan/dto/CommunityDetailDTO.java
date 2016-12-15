@@ -52,6 +52,8 @@ public class CommunityDetailDTO {
     //判断登录人的权限
     private int operation;
 
+    private int readFlag;
+
 
     private List<PartInContentDTO> partList = new ArrayList<PartInContentDTO>();
 
@@ -375,5 +377,13 @@ public class CommunityDetailDTO {
 
     public void setOperation(int operation) {
         this.operation = operation;
+    }
+
+    public int getReadFlag() {
+        return readFlag;
+    }
+
+    public void setReadFlag(int readFlag) {
+        this.readFlag = readFlag;
     }
 }

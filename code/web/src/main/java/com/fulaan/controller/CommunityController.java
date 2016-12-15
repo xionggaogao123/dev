@@ -789,7 +789,7 @@ public class CommunityController extends BaseController {
                               @RequestParam(required = false, defaultValue = "4") int pageSize,
                               @RequestParam(required = false, defaultValue = "-1") int order,
                               @RequestParam(required = false, defaultValue = "1") int type) {
-        return RespObj.SUCCESS(communityService.getMessages(communityId, page, pageSize, order, type));
+        return RespObj.SUCCESS(communityService.getMessages(communityId, page, pageSize, order, type,getUserId()));
     }
 
     @RequestMapping("/getAllTypeMessage")

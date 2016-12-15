@@ -525,7 +525,7 @@ public class CommunityService {
      * @param order
      * @return
      */
-    public PageModel<CommunityDetailDTO> getMessages(ObjectId communityId, int page, int pageSize, int order, int type) {
+    public PageModel<CommunityDetailDTO> getMessages(ObjectId communityId, int page, int pageSize, int order, int type,ObjectId userId) {
         PageModel<CommunityDetailDTO> pageModel = new PageModel<CommunityDetailDTO>();
         List<CommunityDetailEntry> entries = communityDetailDao.getDetails(communityId, page, pageSize, order, type);
         int counts = communityDetailDao.count(communityId, type);
@@ -545,6 +545,13 @@ public class CommunityService {
                 communityDetailDTO.setNickName(userEntry.getNickName());
             } else {
                 communityDetailDTO.setNickName(userEntry.getUserName());
+            }
+
+            if(null!=userId){
+                communityDetailDTO.setReadFlag(0);
+                if(entry.getUnReadList().size()>0&&entry.getUnReadList().contains(userId)){
+                    communityDetailDTO.setReadFlag(1);
+                }
             }
 
             List<PartInContentDTO> partInContentDTOs = new ArrayList<PartInContentDTO>();

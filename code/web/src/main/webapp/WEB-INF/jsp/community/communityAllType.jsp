@@ -219,11 +219,11 @@
         </div>
         <div class="com-right">
             <div class="com-btn">
-                <span class="btn-create" onclick="window.location.href='/communityCreate.do'">创建社区</span>
-                <span class="btn-join" onclick="window.location.href='/communityJoin.do'">加入社区</span>
+                <span class="btn-create" id="createCommunity">创建社区</span>
+                <span class="btn-join" id="joinCommunity">加入社区</span>
             </div>
             <div class="com-right-s clearfix">
-                <div class="com-tit">我的社区<a href="/community/communitySet.do"><span class="com-set-my-btn"></span></a>
+                <div class="com-tit">我的社区<a href="javascript:void(0)" id="myC"><span class="com-set-my-btn"></span></a>
                 </div>
                 <ul class="ul-my-com" id="myCommunity">
 

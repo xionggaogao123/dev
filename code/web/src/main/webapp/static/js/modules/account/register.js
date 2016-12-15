@@ -22,6 +22,8 @@ define(['jquery', 'pagination', 'common'], function (require, exports, module) {
 
     };
 
+    var isPressEmailSend = false;
+
     $(function () {
         $('.re-cont .tab span').click(function () {
             $(this).addClass('tab-cur').siblings('.re-cont .tab span').removeClass('tab-cur');
@@ -190,6 +192,15 @@ define(['jquery', 'pagination', 'common'], function (require, exports, module) {
             }
         });
 
+        $('#code').blur(function () {
+            if($(this).val() == '') {
+                $(this).parent().find('.sp3').text('参数不完整');
+                $(this).parent().find('.sp3').show();
+            } else {
+                $(this).parent().find('.sp3').hide();
+            }
+        });
+
         $('.ul1 button').click(function () {
             if (!$('.ul1 .argument').is(':checked')) {
                 $(this).parent().find('.sp3').text('未勾选社区协议');
@@ -213,6 +224,11 @@ define(['jquery', 'pagination', 'common'], function (require, exports, module) {
         });
 
         $('.ul2 button').click(function () {
+            if(isPressEmailSend) {
+                return;
+            } else {
+                isPressEmailSend = true;
+            }
             if (!$('.ul2 .argument').is(':checked')) {
                 $(this).parent().find('.sp3').text('未勾选社区协议');
                 $(this).parent().find('.sp3').show();
@@ -243,13 +259,13 @@ define(['jquery', 'pagination', 'common'], function (require, exports, module) {
 
     function sendVerifyCode(phone, verifyCode) {
         common.getData("/mall/users/messages.do", {mobile: phone, verifyCode: verifyCode}, function (resp) {
+            alert(JSON.stringify(resp));
             if (resp.code == '200') {
-
+                cacheKeyId = resp.cacheKeyId;
             } else {
                 alert(resp.message);
             }
-
-        })
+        });
     }
 
     function registerUser(code, userName, password, phone, email) {
@@ -266,6 +282,7 @@ define(['jquery', 'pagination', 'common'], function (require, exports, module) {
                     $('#successDiv').show();
                     setTimeout(function () {
                         window.location.href = '/mall/entrance.do';
+                        isPressEmailSend = false;
                     }, 8000);
                 } else if (resp.type == 2) {
                     var message = resp.message;
@@ -273,6 +290,7 @@ define(['jquery', 'pagination', 'common'], function (require, exports, module) {
                     location.href = '/mall/users/sendEmail.do?email=' + item[0] + '&emailValidateCode=' + item[1];
                 }
             } else {
+                isPressEmailSend = false;
                 alert(resp.message);
             }
 

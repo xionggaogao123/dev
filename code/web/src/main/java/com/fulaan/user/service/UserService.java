@@ -6,12 +6,6 @@ import com.db.forum.FLevelDao;
 import com.db.forum.FPostDao;
 import com.db.school.*;
 import com.db.user.UserDao;
-import com.easemob.server.api.IMUserAPI;
-import com.easemob.server.comm.ClientContext;
-import com.easemob.server.comm.EasemobRestAPIFactory;
-import com.easemob.server.comm.body.IMUserBody;
-import com.easemob.server.comm.wrapper.BodyWrapper;
-import com.easemob.server.comm.wrapper.ResponseWrapper;
 import com.fulaan.cache.CacheHandler;
 import com.fulaan.dto.UserDTO;
 import com.fulaan.mall.service.EBusinessVoucherService;
@@ -1393,42 +1387,27 @@ public class UserService {
         return userDao.getJudgeByRegular(regular);
     }
 
-    /**
-     * 脚本：循环注册环信用户
-     */
-    public void registerEmChatService() {
-
-        int count = userDao.countUserAmount();
-        int pageSize = 1000;
-
-        int totalPages;
-        if (count % pageSize != 0) {
-            totalPages = (int) Math.floor(count / pageSize) + 1;
-        } else {
-            totalPages = (int) Math.floor(count / pageSize);
-        }
-        EasemobRestAPIFactory factory = ClientContext.getInstance().init(ClientContext.INIT_FROM_PROPERTIES).getAPIFactory();
-        IMUserAPI user = (IMUserAPI) factory.newInstance(EasemobRestAPIFactory.USER_CLASS);
-
-        for (int i = 1; i <= totalPages; i++) {
-            List<ObjectId> userIds = userDao.findUserIdByPage(i, pageSize);
-
-            for (ObjectId userId : userIds) {
-                BodyWrapper userBody = new IMUserBody(userId.toString(), "123456", userId.toString());
-                ResponseWrapper responseWrapper = (ResponseWrapper) user.createNewIMUserSingle(userBody);
-                if (responseWrapper.getResponseStatus() == 200) {
-                    updateHuanXinTag(userId);
-                }
-            }
-        }
-
-    }
-
     public Object checkUserNameExist(String userName) {
         return userDao.findByName(userName) != null;
     }
 
     public void resetPassword(ObjectId userId, String password) {
         userDao.resetPwd(userId, password);
+    }
+
+    public void updateSexById(ObjectId userId, int sex) {
+        userDao.updateSexById(userId,sex);
+    }
+
+    public void updateUserEmail(ObjectId userId, String email) {
+        userDao.updateEmailById(userId,email);
+    }
+
+    public boolean isBindQQ(ObjectId userId) {
+        return thirdLoginDao.isBindQQ(userId);
+    }
+
+    public boolean isBindWechat(ObjectId userId) {
+        return thirdLoginDao.isBindWechat(userId);
     }
 }

@@ -741,7 +741,7 @@ define(['jquery', 'pagination', 'common'], function (require, exports, module) {
     function getCurrCommunity() {
         common.getData('/community/' + communityId, {}, function (resp) {
             if (resp.code == "200") {
-                $('.com-rlt').find('img').attr('src', resp.message.logo);
+                $('.com-rlt').find('.img1').attr('src', resp.message.logo);
                 $('.com-rlt').find('.p1').html(resp.message.name);
                 $('.com-rlt').find('.p2').html("社区ID:" + resp.message.searchId);
                 $('.com-rlt').find('.p3').html("社区简介：" + resp.message.desc);

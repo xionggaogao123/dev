@@ -38,12 +38,13 @@
     <div class="hd-cont-f hd-cont-f1">
         <div class="com-left">
             <div class="com-rlt">
-                <img src="/static/images/community/result.png">
+                <img class="img1" src="/static/images/community/result.png">
                 <p class="p1">复兰社区</p>
                 <p class="p4">
-                    <em class="em-com-er">社区二维码</em>
-                    <%--<em>查看</em>--%>
-                    <%--<em>复制</em>--%>
+                    <em class="em1"><img src="/static/images/community/shequ_em1.png">取消置顶</em>
+                    <em class="em2"><img src="/static/images/community/shequ_em2.png">置顶社区</em>
+                    <em class="em2"><img src="/static/images/community/shequ_em3.png">邀请玩伴</em>
+                    <em class="em-com-er em4"><img src="/static/images/community/shequ_em4.png">社区二维码</em>
                 </p>
                 <p class="p2">社区ID:fulaan666</p>
                 <p class="p3">社区简介：本社区仅限用于家长和教师的日常沟通、学习...</p>

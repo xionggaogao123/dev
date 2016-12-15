@@ -44,6 +44,18 @@ public class ThirdLoginDao extends BaseDao {
         return thirdLoginEntry;
     }
 
+    public boolean isBindQQ(ObjectId userId) {
+        BasicDBObject query = new BasicDBObject("uid",userId).append("type",2);
+        return count(MongoFacroty.getAppDB(),Constant.COLLECTION_THIRD_LOGIN_NAME,query) == 1;
+    }
+
+    public boolean isBindWechat(ObjectId userId) {
+        BasicDBObject query = new BasicDBObject("uid",userId).append("type",1);
+        return count(MongoFacroty.getAppDB(),Constant.COLLECTION_THIRD_LOGIN_NAME,query) == 1;
+    }
+
+
+
     /**
      * 获取第三方用户实体
      *

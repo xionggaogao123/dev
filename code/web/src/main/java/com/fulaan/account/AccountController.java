@@ -64,7 +64,6 @@ public class AccountController extends BaseController {
     }
 
     @RequestMapping("/accountSafe")
-    @SessionNeedless
     public String accountSafe() {
         return "/account/accountSafe";
     }

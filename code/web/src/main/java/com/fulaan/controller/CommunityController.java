@@ -23,6 +23,7 @@ import com.pojo.activity.FriendApply;
 import com.pojo.app.FileUploadDTO;
 import com.pojo.app.IdNameValuePairDTO;
 import com.pojo.fcommunity.ConcernEntry;
+import com.pojo.fcommunity.MineCommunityEntry;
 import com.pojo.fcommunity.PartInContentEntry;
 import com.pojo.fcommunity.RemarkEntry;
 import com.pojo.user.*;
@@ -700,6 +701,14 @@ public class CommunityController extends BaseController {
                 model.put("operation", 1);
             } else {
                 model.put("operation", 0);
+            }
+            MineCommunityEntry entry=communityService.getTopEntry(new ObjectId(communityId),getUserId());
+            if(null!=entry){
+                if(entry.getTop()==0){
+                    model.put("top",1);
+                }else{
+                    model.put("top",0);
+                }
             }
         }
         model.put("communityId", communityId);

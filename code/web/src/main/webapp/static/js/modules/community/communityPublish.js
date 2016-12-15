@@ -354,7 +354,32 @@ define(['jquery', 'pagination', 'common'], function (require, exports, module) {
             $('.store-register').fadeToggle();
             $('.bg').fadeToggle();
         })
+
+        $('body').on('click','#top',function () {
+            setTop($(this),1);
+        })
+
+        $('body').on('click','#cancel',function () {
+            setTop($(this),0);
+        })
+
     })
+
+    function  setTop(obj,top) {
+        common.getData('/community/updateCommunityTop.do',{communityId:communityId,top:top},function (resp) {
+            if(resp.code=="200"){
+                if(top==0){
+                    $('#top').show();
+                    $('#cancel').hide();
+                }else{
+                    $('#top').hide();
+                    $('#cancel').show();
+                }
+                alert(obj.text()+"成功!");
+            }
+        })
+    }
+
 
     function sureCancel(){
         var param={};

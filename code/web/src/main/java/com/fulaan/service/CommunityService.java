@@ -1206,4 +1206,8 @@ public class CommunityService {
     public void setDefaultSort(){
         mineCommunityDao.setDefaultSort();
     }
+
+    public MineCommunityEntry getTopEntry(ObjectId community,ObjectId userId){
+        return mineCommunityDao.find(community,userId);
+    }
 }

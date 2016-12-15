@@ -41,15 +41,21 @@
                 <img class="img1" src="/static/images/community/result.png">
                 <p class="p1">复兰社区</p>
                 <p class="p4">
-                    <em class="em1"><img src="/static/images/community/shequ_em1.png">取消置顶</em>
-                    <em class="em2"><img src="/static/images/community/shequ_em2.png">置顶社区</em>
-                    <em class="em2"><img src="/static/images/community/shequ_em3.png">邀请玩伴</em>
+                    <c:if test="${top==0}">
+                    <em class="em1" id="cancel"><img src="/static/images/community/shequ_em1.png">取消置顶</em>
+                    <em class="em2" id="top" style="display: none"><img src="/static/images/community/shequ_em2.png">置顶社区</em>
+                    </c:if>
+                    <c:if test="${top==1}">
+                    <em class="em1" id="cancel" style="display: none"><img src="/static/images/community/shequ_em1.png">取消置顶</em>
+                    <em class="em2" id="top"><img src="/static/images/community/shequ_em2.png">置顶社区</em>
+                    </c:if>
+                    <em class="em2 btn-yq"><img src="/static/images/community/shequ_em3.png">邀请玩伴</em>
                     <em class="em-com-er em4"><img src="/static/images/community/shequ_em4.png">社区二维码</em>
                 </p>
                 <p class="p2">社区ID:fulaan666</p>
                 <p class="p3">社区简介：本社区仅限用于家长和教师的日常沟通、学习...</p>
                 <%--<button id="join">加入社区</button>--%>
-                <button class="btn-yq">+邀请玩伴</button>
+                <%--<button class="btn-yq">+邀请玩伴</button>--%>
             </div>
             <div class="publish-cont" <c:if test="${operation!=1}">style="display: none"</c:if>>
                 <ul class="publish-nav">

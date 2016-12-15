@@ -59,6 +59,7 @@
                     <div class="l2 sex-div">
                         <label><input type="radio" name="sex" value="1">男</label>
                         <label><input type="radio" name="sex" value="0">女</label>
+                        <label><input type="radio" name="sex" value="-1">保密</label>
                     </div>
                 </li>
                 <li class="clearfix">
@@ -116,12 +117,12 @@
                 </li>
                 <li>
                     <span>验证邮箱：</span>
-                    <span>shawn@qq.com</span>
+                    <span id="verify-email"></span>
                     <button class="btn-xg-email">修改</button>
                 </li>
                 <li>
                     <span>验证手机：</span>
-                    <span>137****8745<em>未设置</em></span>
+                    <span id="verify-phone"></span>
                     <button class="btn-xg-phone">修改</button>
                 </li>
             </ul>
@@ -131,21 +132,20 @@
                 <span>关联第三方帐号<em>关联第三方帐号也可以登录</em></span>
             </div>
             <div>
-                <div class="d-qq dq fl">
-                    <img src="">
+                <div class="d-qq dq fl third-qq">
+                    <img src="" class="avatar">
                     <span class="sp1"><!--class="sp2"时显示为已关联状态-->
                                 <img class="img1" src="/static/images/account/white_qq.png">
                             </span>
                     <button class="btn1">立即关联</button>
                 </div>
-                <div class="d-qq dw fr">
-                    <img src="">
+                <div class="d-qq dw fr third-wechat">
+                    <img src="" class="avatar">
                     <span class="sp2"><!--class="sp1"时显示为未关联状态-->
                                 <img class="img2" src="/static/images/account/white_wechat.png">
                             </span>
                     <button class="btn2">解除关联</button>
                 </div>
-
             </div>
         </div>
     </div>
@@ -154,24 +154,26 @@
 
 <div class="bg"></div>
 <!-- 修改密码弹窗 -->
-<div class="wind-psw windd">
+<div class="wind-psw windd edit-pass">
     <p class="p1">修改登录密码<em>×</em></p>
     <p class="p2">
         <span class="sp1">原密码：</span>
         <span class="sp2">（请先验证原密码）</span>
-        <span class="sp3"> 密码不正确！</span>
+        <span class="sp3 verify-pass" style="display: none"> 密码不正确！</span>
     </p>
-    <input type="text" title="">
+    <input type="password" title="" class="password">
     <p class="p2">
         <span class="sp1">新密码：</span>
         <span class="sp2">（最小长度为6个字符）</span>
+        <span class="sp3 verify-pass-n" style="display: none"> 密码格式不正确！</span>
     </p>
-    <input type="text" title="">
+    <input type="password" title="" class="n-password">
     <p class="p2">
-        <span class="sp1">新密码：</span>
+        <span class="sp1">确认新密码：</span>
         <span class="sp2">（最小长度为6个字符）</span>
+        <span class="sp3 verify-pass-r" style="display: none"> 两次密码不一致！</span>
     </p>
-    <input type="text" title="">
+    <input type="password" title="" class="n-r-password">
     <p class="p-btn-ok">确定</p>
 </div>
 
@@ -181,36 +183,38 @@
     <p class="p1">设置手机号<em>×</em></p>
     <p class="p2">
         <span class="sp1">请输入手机号码：</span>
+        <span class="sp3 phone-tip" style="display: none"> </span>
     </p>
-    <input type="text" title="">
+    <input type="text" title="" class="phone">
     <p class="p2">
         <span class="sp1">请输入验证码：</span>
     </p>
     <div class="d-yz">
-        <input type="text" title="">
-        <span>发送验证码</span>
+        <input type="text" title="" class="code">
+        <span id="sendText">发送验证码</span>
     </div>
     <p class="p-btn-ok">确定</p>
 </div>
 
 
 <!-- 修改邮箱 -->
-<div class="wind-email1 windd">
+<div class="wind-email1 windd" id="verify-wind">
     <p class="p1">密码验证<em>×</em></p>
     <p class="p2">
         <span class="sp1">请输入网站登录密码以验证身份：</span>
-        <span class="sp3"> 密码不正确！</span>
+        <span class="sp3" style="display: none;"> 密码不正确！</span>
     </p>
-    <input type="text" title="">
+    <input type="password" title="" class="password">
     <p class="p-btn-ok">确认</p>
 </div>
+
 <div class="wind-email2 windd">
     <p class="p1">修改邮箱验证<em>×</em></p>
     <p class="p2">
         <span class="sp1">请填写新邮箱地址：</span>
-        <span class="sp3"> 邮箱格式不正确！</span>
+        <span class="sp3" style="display:none;"> 邮箱格式不正确！</span>
     </p>
-    <input type="text" title="">
+    <input type="text" title="" class="email-input">
     <p class="p-btn-ok">确认</p>
 </div>
 

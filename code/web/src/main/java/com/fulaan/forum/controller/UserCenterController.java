@@ -450,6 +450,14 @@ public class UserCenterController extends BaseController {
         result.put("month", month);
         result.put("day", day);
         result.put("avatar",user.getImgUrl());
+
+        if(user.getMobileNumber() != null && user.getMobileNumber().length() == 11) {
+            String phone = user.getMobileNumber();
+            String prefix = phone.substring(0,3);
+            String stufix = phone.substring(7,11);
+            result.put("phone",prefix + "****" + stufix);
+        }
+        result.put("email",user.getEmail());
         return result;
     }
 

@@ -565,9 +565,22 @@ public class UserDao extends BaseDao {
         update(MongoFacroty.getAppDB(), Constant.COLLECTION_USER_NAME, query, update);
     }
 
+
     public void updateNickNameById(ObjectId objectId, String stnickname) {
         BasicDBObject query = new BasicDBObject(Constant.ID, objectId);
         BasicDBObject update = new BasicDBObject(Constant.MONGO_SET, new BasicDBObject("nnm", stnickname));
+        update(MongoFacroty.getAppDB(), Constant.COLLECTION_USER_NAME, query, update);
+    }
+
+    public void updateSexById(ObjectId objectId, int sex) {
+        BasicDBObject query = new BasicDBObject(Constant.ID, objectId);
+        BasicDBObject update = new BasicDBObject(Constant.MONGO_SET, new BasicDBObject("sex", sex));
+        update(MongoFacroty.getAppDB(), Constant.COLLECTION_USER_NAME, query, update);
+    }
+
+    public void updateEmailById(ObjectId objectId, String email) {
+        BasicDBObject query = new BasicDBObject(Constant.ID, objectId);
+        BasicDBObject update = new BasicDBObject(Constant.MONGO_SET, new BasicDBObject("e", email));
         update(MongoFacroty.getAppDB(), Constant.COLLECTION_USER_NAME, query, update);
     }
 

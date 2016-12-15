@@ -257,6 +257,13 @@ public class PlayMateController extends BaseController {
         return RespObj.SUCCESS("修改成功");
     }
 
+    @RequestMapping("/updateUserTime")
+    @ResponseBody
+    public RespObj updateUserTime(String times) {
+        updateTime(getUserId(),times);
+        return RespObj.SUCCESS("修改成功");
+    }
+
     @RequestMapping("/updateUserTagAndTime")
     @ResponseBody
     public RespObj updateUserTagAndTime(@RequestParam(value = "tags",required = false,defaultValue = "") String tags,

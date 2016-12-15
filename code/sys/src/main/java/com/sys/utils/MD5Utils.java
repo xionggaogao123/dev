@@ -95,11 +95,6 @@ public class MD5Utils {
 		stringbuffer.append(c1);
 	}
 
-	public static boolean checkPassword(String password, String md5PwdStr) {
-		String s = getMD5String(password);
-		return s.equals(md5PwdStr);
-	}
-
 	public static String getMD5String(String s) {
 		String string = s;
 		for (int i = 0; i < count; i++) {

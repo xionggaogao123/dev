@@ -39,13 +39,13 @@
             <li>
                 <input type="password" class="password">
                 <span class="sp1">设置密码 : </span>
-                <span class="sp2">6-20位字符（字母、数字、下划线）</span>
+                <span class="sp2">6-20位字符（字母、数字、下划线、特殊符号）</span>
                 <span class="sp3" style="display: none">密码</span>
             </li>
             <li>
                 <input type="password" class="r-password">
                 <span class="sp1">确认密码 : </span>
-                <span class="sp2">6-20位字符（字母、数字、下划线）</span>
+                <span class="sp2">6-20位字符（字母、数字、下划线、特殊符号）</span>
                 <span class="sp3" style="display: none">两次输入的密码不一致</span>
             </li>
             <li>
@@ -81,13 +81,13 @@
             <li>
                 <input type="password" class="password">
                 <span class="sp1">设置密码 : </span>
-                <span class="sp2">6-20位字符（字母、数字、下划线）</span>
+                <span class="sp2">6-20位字符（字母、数字、下划线、特殊符号）</span>
                 <span class="sp3" style="display: none">密码</span>
             </li>
             <li>
                 <input type="password" class="r-password">
                 <span class="sp1">确认密码 : </span>
-                <span class="sp2">6-20位字符（字母、数字、下划线）</span>
+                <span class="sp2">6-20位字符（字母、数字、下划线、特殊符号）</span>
                 <span class="sp3" style="display: none">您两次输入的密码不一致</span>
             </li>
             <li>

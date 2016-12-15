@@ -80,6 +80,8 @@ public class Constant {
     public static final long MS_SECONDS_IN_HOUR = 60 * 60 * 1000L;
     //一天
     public static final int SECONDS_IN_DAY = 60 * 60 * 24;
+    //缓存5天
+    public static final int SECONDS_IN_FIVE_DAY = 60 * 60 * 24 * 5;
     //一天
     public static final long MS_SECONDS_IN_DAY = 60 * 60 * 24 * 1000L;
     //一周

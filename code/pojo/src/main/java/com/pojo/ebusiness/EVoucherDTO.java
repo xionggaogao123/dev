@@ -43,7 +43,7 @@ public class EVoucherDTO {
         this.state = entry.getState();
         this.stateInfo = convertStateToStateInfo();
         this.expTimeInfo = convertExpTimeToExpTimeInfo();
-        this.rechargeTimeInfo = convertExpTimeToRechargeTimeInfo();
+        this.rechargeTimeInfo = convertExpTimeToRechargeTimeInfo(entry.getID(),entry.getActivity());
     }
 
     private String convertStateToStateInfo(){
@@ -59,12 +59,17 @@ public class EVoucherDTO {
 
     }
 
-    private String convertExpTimeToRechargeTimeInfo(){
-        Calendar calendar = Calendar.getInstance();
-        calendar.setTimeInMillis(expTime);
-        calendar.add(Calendar.DATE, -30);
-        long rechargeTime = calendar.getTimeInMillis();
-        return DateTimeUtils.convert(rechargeTime, "yyyy/MM/dd");
+    private String convertExpTimeToRechargeTimeInfo(ObjectId id,int activity){
+        if(activity==0){
+            Calendar calendar = Calendar.getInstance();
+            calendar.setTimeInMillis(expTime);
+            calendar.add(Calendar.DATE, -30);
+            long rechargeTime = calendar.getTimeInMillis();
+            return DateTimeUtils.convert(rechargeTime, "yyyy/MM/dd");
+        }else{
+            return DateTimeUtils.convert(id.getTime(),DateTimeUtils.DATE_YYYY_MM_DD_);
+        }
+
     }
 
     private String convertExpTimeToExpTimeInfo(){

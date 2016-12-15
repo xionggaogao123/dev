@@ -13,6 +13,7 @@ public class DateTimeUtils {
   public static final String CHINESE_LONGDATETIME = "yyyy年MM月dd日 HH时mm分ss秒";
   public static final String CHINESE_DATETIME_MINUTE = "yyyy年MM月dd日 HH时mm分";
   public static final String DATE_YYYY_MM_DD_HH_MM_SS = "yyyy/MM/dd HH:mm:ss";
+  public static final String DATE_YYYY_MM_DD_="yyyy/MM/dd";
   public static final String DATE_YYYY_MM_DD_HH_MM = "yyyy/MM/dd HH:mm";
   public static final String DATE_YYYY_MM_DD_HH_MM_SS_H = "yyyy-MM-dd HH:mm:ss";
   public static final String DATE_YYYY_MM_DD_HH_MM_A = "yyyy-MM-dd HH:mm";

@@ -2,6 +2,7 @@ package com.fulaan.mall.controller;
 
 import com.easemob.server.EaseMobAPI;
 import com.fulaan.annotation.SessionNeedless;
+import com.fulaan.cache.RedisUtils;
 import com.fulaan.controller.BaseController;
 import com.fulaan.cache.CacheHandler;
 import com.fulaan.mall.service.EBusinessVoucherService;
@@ -18,6 +19,7 @@ import com.pojo.forum.FScoreDTO;
 import com.pojo.user.UserEntry;
 import com.sys.constants.Constant;
 import com.sys.mails.MailUtils;
+import com.sys.utils.DateTimeUtils;
 import com.sys.utils.MD5Utils;
 import com.sys.utils.RespObj;
 import com.sys.utils.ValidationUtils;
@@ -43,6 +45,7 @@ import javax.servlet.http.HttpServletResponse;
 import java.io.ByteArrayOutputStream;
 import java.io.InputStream;
 import java.net.URLDecoder;
+import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.*;
 import java.util.regex.Matcher;
@@ -502,13 +505,54 @@ public class EBusinessUserController extends BaseController {
     }
 
 
-    @RequestMapping(value="getChristReward")
+    @RequestMapping(value="/getChristReward")
     @ResponseBody
-    public RespObj getChristReward(){
+    public RespObj getChristReward()throws Exception{
+     try {
+         long startTime=getTime("2016-12-22 00:00:00");
+         long endTime=getTime("2016-12-26 23:59:59");
+         long deadTime=getTime("2016-12-31 23:59:59");
+         long currentTime=System.currentTimeMillis();
+         if(currentTime<startTime){
+             return RespObj.FAILD("该活动还没开始!");
+         }else if(currentTime>endTime){
+             return RespObj.FAILD("该活动已经结束!");
+         }else{
+             ObjectId userId=getUserId();
+             String key="Christmas"+userId.toString();
+             String value= RedisUtils.getString(key);
+             if(StringUtils.isBlank(value)){
+                //以三万作为基数，5元40%、10元30%、20元20%、50元10%
+                 String num = String.valueOf(System.currentTimeMillis());
+                 num += RandomUtils.nextInt(Constant.MIN_PASSWORD);
+                 int random=1+(int)(Math.random()*30000);
+                 EVoucherEntry eVoucherEntry;
+                 if(random<=30000*0.4){
+                     eVoucherEntry=new EVoucherEntry(userId,num,500,deadTime,0,1);
+                 }else if(30000*0.4<random&&random<=30000*0.7){
+                     eVoucherEntry=new EVoucherEntry(userId,num,1000,deadTime,0,1);
+                 }else if(30000*0.7<random&&random<=30000*0.9){
+                     eVoucherEntry=new EVoucherEntry(userId,num,2000,deadTime,0,1);
+                 }else{
+                     eVoucherEntry=new EVoucherEntry(userId,num,5000,deadTime,0,1);
+                 }
+                 ObjectId voucherId=eBusinessVoucherService.addEVoucher(eVoucherEntry);
+                 RedisUtils.cacheString(key,voucherId.toString(),Constant.SECONDS_IN_FIVE_DAY);
+                 return RespObj.SUCCESS(voucherId.toString());
+             }else{
+//                 RedisUtils.deleteKey(key);
+                 return RespObj.FAILD("你已经获取到优惠券了，每个人只有一次机会哦!");
+             }
+         }
+     }catch (Exception e){
+         throw e;
+     }
+    }
 
-        //判断该用户是否还有抽奖机会(抽奖记录表)
-
-        return RespObj.SUCCESS;
+    public long getTime(String strTime) throws ParseException {
+        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+        Date  endDate= sdf.parse(strTime);
+        return endDate.getTime();
     }
 
 

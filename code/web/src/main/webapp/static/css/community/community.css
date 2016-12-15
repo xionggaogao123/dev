@@ -1509,7 +1509,7 @@ pre{white-space: pre-wrap;word-wrap: break-word;}
 .mb225{
     margin-bottom: 225px;
 }
-.com-rlt img{
+.com-rlt>img{
     float: left;
     width: 60px;
     height: 60px;
@@ -1519,7 +1519,7 @@ pre{white-space: pre-wrap;word-wrap: break-word;}
     font-weight: bold;
     font-size: 16px;
     float: left;
-    width: 620px;
+    width: 200px;
     height: 24px;
     line-height: 24px;
     margin-top: 6px;
@@ -1543,7 +1543,7 @@ pre{white-space: pre-wrap;word-wrap: break-word;}
 }
 .com-rlt .p4{
     float: right;
-    width: 140px;
+    width: 550px;
     height: 20px;
     line-height: 20px;
     margin-top: 6px;
@@ -1554,6 +1554,26 @@ pre{white-space: pre-wrap;word-wrap: break-word;}
     cursor: pointer;
     margin: 0 5px;
     float: right;
+    height: 25px;
+    border:1px solid #23CD77;
+    color: #23CD77;
+    line-height: 25px;
+    padding: 0 7px;
+}
+.com-rlt .p4 .em4 img {
+    position: relative;
+    top:3px;
+}
+.com-rlt .p4 .em1{
+    background: #23CD77;
+    color: #fff;
+}
+.com-rlt .p4 .em1 img , .com-rlt .p4 .em2 img {
+    position: relative;
+    top:1px;
+}
+.com-rlt .p4 em img{
+    margin-right: 5px;
 }
 .com-rlt>button{
     float: right;

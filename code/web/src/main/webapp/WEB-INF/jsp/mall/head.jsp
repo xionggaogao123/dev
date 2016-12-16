@@ -247,7 +247,7 @@
         <div class="ebusiness-main-top-r">
             <span class="store-car">购物车</span>
             <a class="login-find" href="/mall/findUserPwd.do">找回密码</a>
-            <a class="login-log login-lo" href="/mall/register.do">注册</a>
+            <a class="login-log login-lo" href="/account/register">注册</a>
             <a class="login-log" href="javascript:;" id="toplogin">登 录</a>
             <span id="veryCodeSpan" style="display: none" class="very-code">
                         <input id="veryCode" class="input-verycode" name="veryCode" type="text"/>

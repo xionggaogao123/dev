@@ -71,7 +71,7 @@ define(['jquery', 'pagination', 'common'], function (require, exports, module) {
 
         var body = $('body');
 
-        $('ul.set-left li').click(function () {
+        $('ul.set-left-l li').click(function () {
             var value = $(this).index() + 1;
 
             for (var i = 1; i <= 4; i++) {
@@ -82,7 +82,7 @@ define(['jquery', 'pagination', 'common'], function (require, exports, module) {
                 $('.set-container .right-' + i).hide();
             }
 
-            $('ul.set-left li').each(function () {
+            $('ul.set-left-l li').each(function () {
                 $(this).removeClass('li444');
             });
 
@@ -328,13 +328,12 @@ define(['jquery', 'pagination', 'common'], function (require, exports, module) {
         });
 
         body.on('click', '.third-qq button', function () {
-            $('#verify-wind').fadeIn();
-            $('.bg').fadeIn();
+
+            window.open('/account/qqBind.do', "TencentLogin", "width=800,height=600,menubar=0,scrollbars=1, resizable=1,status=1,titlebar=0,toolbar=0,location=1");
         });
 
         body.on('click', '.third-wechat button', function () {
-            $('#verify-wind').fadeIn();
-            $('.bg').fadeIn();
+            window.open('/account/wechatBind.do', "TencentLogin", "width=800,height=600,menubar=0,scrollbars=1, resizable=1,status=1,titlebar=0,toolbar=0,location=1");
         });
 
     });

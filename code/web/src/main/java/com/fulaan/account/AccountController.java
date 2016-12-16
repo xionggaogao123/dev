@@ -10,10 +10,12 @@ import com.fulaan.controller.BaseController;
 import com.fulaan.dto.UserDTO;
 import com.fulaan.playmate.service.MateService;
 import com.fulaan.user.service.UserService;
+import com.fulaan.user.util.QQLoginUtil;
 import com.pojo.user.UserEntry;
 import com.pojo.user.UserRole;
 import com.sys.constants.Constant;
 import com.sys.exceptions.UnLoginException;
+import com.sys.utils.HttpClientUtils;
 import com.sys.utils.MD5Utils;
 import com.sys.utils.RespObj;
 import org.apache.commons.lang.StringUtils;
@@ -27,7 +29,9 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.servlet.ModelAndView;
 
 import javax.servlet.http.Cookie;
+import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import java.io.IOException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.HashMap;
@@ -132,6 +136,41 @@ public class AccountController extends BaseController {
     @ResponseBody
     public RespObj userEmailCheck(String email) {
         return RespObj.SUCCESS(userService.searchUserByEmail(email) != null);
+    }
+
+    /**
+     * 进行QQ 绑定
+     *
+     * @param request
+     * @param response
+     * @throws IOException
+     */
+    @SessionNeedless
+    @RequestMapping(value = "/qqBind")
+    public void QQLogin(HttpServletRequest request, HttpServletResponse response) throws IOException {
+        String state = "123456";
+        request.getSession().setAttribute("qq_connect_state", state);
+        String redirect_URI = HttpClientUtils.strURLEncodeUTF8(QQLoginUtil.getValue("redirect_URI").trim());
+        String authorizeURL = QQLoginUtil.getValue("authorizeURL").trim();
+        String app_ID = QQLoginUtil.getValue("app_ID").trim();
+        String url = authorizeURL + "?client_id=" + app_ID + "&redirect_uri=" + redirect_URI + "&response_type=" + "code" + "&state=" + state;
+        response.addCookie(new Cookie("bindQQ",getUserId().toString()));
+        response.sendRedirect(url);
+    }
+
+    /**
+     * 进行微信绑定操作
+     *
+     * @param response
+     * @throws IOException
+     */
+    @SessionNeedless
+    @RequestMapping(value = "/wechatBind")
+    public void WeChatLogin(HttpServletResponse response) throws IOException {
+        String urlEncodeRedirectUrl = HttpClientUtils.strURLEncodeUTF8(Constant.WECHAT_REDIRECT_URL);
+        String strWeChatConnectUrl = String.format(Constant.WECHAT_CONNECT_URL, Constant.WECHAT_APPID, urlEncodeRedirectUrl);
+        response.addCookie(new Cookie("bindWechat",getUserId().toString()));
+        response.sendRedirect(strWeChatConnectUrl);
     }
 
     /**

@@ -13,7 +13,7 @@
 <div id="successDiv" class="wind">
     <p>提示</p>
     <div>
-        注册成功！恭喜你，成为复兰教育社区用户！<br>可以在<a href="/mall/userCenter/voucher.do">个人中心</a>查看查看。<br>
+        注册成功！恭喜你，成为复兰教育社区用户！<br>可以在<a href="/">个人中心</a>查看查看。<br>
         <input type="button" value="确定">
     </div>
 </div>
@@ -33,7 +33,7 @@
             <li>
                 <input type="text" class="user-name">
                 <span class="sp1">用户名 : </span>
-                <span class="sp2">6-20位字符（汉字、字母、数字、下划线）</span>
+                <span class="sp2">3-20位字符（汉字、字母、数字、下划线）</span>
                 <span class="sp3" style="display: none">请输入用户名</span>
             </li>
             <li>

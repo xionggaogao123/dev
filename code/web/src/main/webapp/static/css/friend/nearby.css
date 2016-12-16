@@ -142,14 +142,18 @@ pre {
 
 .menu-cont > span {
     float: left;
-    margin-right: 25px;
-    height: 33px;
+    height: 20px;
+    line-height: 20px;
+    margin:6px 16px 6px 0;
     cursor: pointer;
-    line-height: 33px;
+    border: 1px solid #fff;
+    border-radius: 4px;
+    padding: 0px 5px 1px;
 }
 
 .gre-cur {
-    color: #23CD77;
+    color: #FF8400;
+    border: 1px solid #FF8400 !important;
 }
 
 .near-list {

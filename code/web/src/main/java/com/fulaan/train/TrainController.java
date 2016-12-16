@@ -74,7 +74,7 @@ public class TrainController extends BaseController {
     @LoginInfo
     public String trainList(Map<String, Object> model,HttpServletRequest request){
         try {
-            model.put("location",false);
+            model.put("location",0);
             String region;
             String instituteKeyValue = getCookieInstituteKeyValue(request);
             if(StringUtils.isNotBlank(instituteKeyValue)){
@@ -101,7 +101,7 @@ public class TrainController extends BaseController {
                         String positionRegion=map.get("region");
                         if(StringUtils.isNotBlank(positionRegion)){
                             if(!model.get("region").equals(positionRegion.substring(0, 2))){
-                                model.put("location",true);
+                                model.put("location",1);
                             }
                         }
 

@@ -94,7 +94,7 @@ define(['jquery', 'pagination', 'common'], function (require, exports, module) {
 
         var map, geolocation;
         //加载地图，调用浏览器定位服务
-        if(location){
+        if(location=="1"){
             $('#trainTop span').eq(0).trigger('click');
             $('a[regionName=' + region + ']').trigger('click');
         }else{

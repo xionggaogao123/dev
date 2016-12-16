@@ -45,11 +45,11 @@
             <div class="act-nav-line"></div>
         </div>
         <div class="act-nav2">
-            <div class="btn-fbgb">发布广播</div>
+            <div class="btn-fbgb">发布活动</div>
             <div class="btn-wdbq">我的标签</div>
         </div>
         <div id="nearNews">
-            <p>小喇叭广播站</p>
+            <p>广播站</p>
             <div class="news-f">
                 <ul class="ul-nearnews" id="nearnewsBox">
                     <div class="h-load">

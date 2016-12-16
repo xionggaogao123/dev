@@ -79,7 +79,7 @@
                     <span class="sp4" id="sendCode">发送验证码</span>
                 </li>
                 <li>
-                    <span class="sp2"><label><input type="checkbox" class="next2-argument">我同意《复兰教育社区协议》</label></span>
+                    <span class="sp2"><label><input type="checkbox" class="next2-argument">我同意<a href="/agreement.html" target="_blank">《复兰教育社区协议》</a></label></span>
                     <button class="re-btn2 next2">下一步</button>
                     <span class="sp3" style="display: none;top: 24px">未勾选社区协议</span>
                 </li>
@@ -120,11 +120,13 @@
                 <li>
                     <input type="password" class="password" id="reset-password">
                     <span class="sp1">新密码 : </span>
+                    <span class="sp2">6-20位字符（字母、数字、下划线、特殊符号）</span>
                     <span class="sp3" style="display:none;">密码格式不合法</span>
                 </li>
                 <li>
                     <input type="password" class="re-password" >
                     <span class="sp1">新密码确认 : </span>
+                    <span class="sp2">6-20位字符（字母、数字、下划线、特殊符号）</span>
                     <span class="sp3" style="display:none;">两次输入的密码不一致</span>
                 </li>
                 <li>

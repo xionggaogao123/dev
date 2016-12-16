@@ -268,6 +268,7 @@ define(['jquery', 'pagination', 'common'], function (require, exports, module) {
         });
     }
 
+    var isRegister = false;
     function registerUser(code, userName, password, phone, email) {
         var requestData = {};
         requestData.cacheKeyId = cacheKeyId;
@@ -276,13 +277,16 @@ define(['jquery', 'pagination', 'common'], function (require, exports, module) {
         requestData.userName = userName;
         requestData.passWord = password;
         requestData.phoneNumber = phone;
+        if(isRegister) {
+            return;
+        }
+        isRegister = true;
         common.getPostData('/mall/users.do', requestData, function (resp) {
             if (resp.code == 200) {
                 if (resp.type == 1) {
                     $('#successDiv').show();
                     setTimeout(function () {
-                        window.location.href = '/mall/entrance.do';
-                        isPressEmailSend = false;
+                        window.location.href = '/';
                     }, 8000);
                 } else if (resp.type == 2) {
                     var message = resp.message;
@@ -290,8 +294,8 @@ define(['jquery', 'pagination', 'common'], function (require, exports, module) {
                     location.href = '/mall/users/sendEmail.do?email=' + item[0] + '&emailValidateCode=' + item[1];
                 }
             } else {
-                isPressEmailSend = false;
                 alert(resp.message);
+                isRegister = false;
             }
 
         });

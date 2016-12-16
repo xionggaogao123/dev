@@ -85,6 +85,17 @@ public class AccountController extends BaseController {
         return "/account/accountSafe";
     }
 
+    /**
+     * 第三方登录成功
+     *
+     * @return
+     */
+    @RequestMapping("/thirdLoginSuccess")
+    @SessionNeedless
+    public String thirdLoginSuccess() {
+        return "/account/thirdLoginSuccess";
+    }
+
     @RequestMapping("/userNameCheck")
     @SessionNeedless
     @ResponseBody
@@ -289,17 +300,6 @@ public class AccountController extends BaseController {
         return RespObj.SUCCESS("重置密码成功");
     }
 
-    /**
-     * 第三方登录成功
-     *
-     * @return
-     */
-    @RequestMapping("/thirdLoginSuccess")
-    @SessionNeedless
-    public String thirdLoginSuccess() {
-        return "/account/thirdLoginSuccess";
-    }
-
     @RequestMapping("/updateNickSexAge")
     @ResponseBody
     public RespObj updateNickSexAge(@RequestParam(value = "year", defaultValue = "0", required = false) int year,
@@ -378,7 +378,6 @@ public class AccountController extends BaseController {
     public RespObj changeUserEmail(String email) {
 
         UserEntry userEntry = userService.searchUserByEmail(email);
-
         if (userEntry != null && getUserId().equals(userEntry.getID())) {
             return RespObj.FAILD("邮箱已经绑定自己了，无需再次绑定");
         }

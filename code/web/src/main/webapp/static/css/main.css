@@ -6248,3 +6248,155 @@ ol.bjqs-markers li:last-child {
 .grade-cursor, .price-cursor, .book-cursor {
     color: #fd520f;
 }
+
+/*圣诞活动*/
+.christmas-wind{
+    position: fixed;
+    width: 100%;
+    height: 100%;
+    top: 0;
+    left: 0;
+    z-index: 101;
+    transition: all 1s;
+}
+
+.christ-light1 {
+    position: absolute;
+    display: block;
+    top: 0;
+    left: 50%;
+    margin-left: -32.5%;
+    width: 65%;
+    height: 76%;
+    animation: blink1 1s linear infinite;
+    -webkit-animation: blink1 1s linear infinite;
+    -moz-animation: blink1 1s linear infinite;
+    -ms-animation: blink1 1s linear infinite;
+    -o-animation: blink1 1s linear infinite;
+}
+.christ-light2 {
+    position: absolute;
+    display: block;
+    top: 0;
+    left: 50%;
+    margin-left: -32.5%;
+    width: 65%;
+    height: 76%;
+    /*animation: blink2 .75s linear infinite;
+    -webkit-animation: blink2 .75s linear infinite;
+    -moz-animation: blink2 .75s linear infinite;
+    -ms-animation: blink2 .75s linear infinite;
+    -o-animation: blink2 .75s linear infinite;*/
+}
+.christmas-wind .hide-light1 img{
+    width: 100%;
+    height: 100%;
+}
+.christmas-wind .hide-light2 img{
+    width: 100%;
+    height: 100%;
+}
+.christmas-wind .hl img{
+    opacity: 0;
+    cursor: pointer;
+}
+.christmas-wind .hl:hover>img{
+    opacity: 1;
+}
+
+.christmas-wind .hide-light3 img{
+    width: 100%;
+    height: 100%;
+}
+.christmas-wind .hide-light4 img{
+    width: 100%;
+    height: 100%;
+}
+.christmas-wind .hide-light1{
+    position: absolute;
+    width: 6%;
+    height: 10.8%;
+    left: 50%;
+    top: 19.6%;
+    margin-left: -31%;
+}
+.christmas-wind .hide-light2{
+    position: absolute;
+    width: 6.7%;
+    height: 12.2%;
+    left: 50%;
+    top: 26.7%;
+    margin-left: -19.5%;
+}
+.christ-x{
+    position: absolute;
+    top: 63%;
+    left: 50%;
+    margin-left: 27%;
+    cursor: pointer;
+}
+.christmas-wind .hide-light3{
+    position: absolute;
+    width: 7.7%;
+    height: 14.2%;
+    left: 50%;
+    top: 13.6%;
+    margin-left: 14%;
+}
+.christmas-wind .hide-light4{
+    position: absolute;
+    width: 4.7%;
+    height: 9%;
+    left: 50%;
+    top: 16.9%;
+    margin-left: 25.33%;
+}
+
+
+@keyframes blink1{
+    0% {
+        opacity: 1;
+    }
+    50% {
+        opacity: 1;
+    }
+    50.01% {
+        opacity: 0;
+    }
+    100% {
+        opacity: 0;
+    }
+}
+.christ-quan-wind{
+    position: fixed;
+    top:-100%;
+    left: 50%;
+    margin-left: -220px;
+    margin-top: -300px;
+    line-height: 30px;
+    height: 60px;
+    width: 440px;
+    padding:153px 0;
+    z-index: 101;
+    background:  url("/static/images/mallSection/christ_quan.png") center no-repeat ;
+    color: #FF4804;
+    font-weight: bold;
+    font-size: 20px;
+    text-align: center;
+    transition: all 1.3s;
+}
+.christ-quan-wind span{
+    font-size: 25px;
+}
+.christ-bg{
+    position: fixed;
+    width: 100%;
+    height: 100%;
+    top:0;
+    left: 0;
+    z-index: 100;
+    background: rgba(0,0,0,0.8);
+}
+.top100{
+    top: -100%;
+}

@@ -2,6 +2,22 @@
  * Created by admin on 2016/5/25.
  */
 
+$(document).ready(function(){
+    $('.christmas-wind .christ-x').click(function(){
+        $('.christmas-wind').fadeOut('fast');
+        $('.christ-bg').fadeOut('slow');
+    });
+    $('.christmas-wind .hl').click(function(){
+        $('.christmas-wind').css("top","-100%");
+        $('.christ-quan-wind').css('top','50%');
+        setTimeout(function(){
+            $('.christ-quan-wind ').fadeOut()
+        },"2500")
+        setTimeout(function(){
+            $(' .christ-bg, .christmas-wind').fadeOut()
+        },"3000")
+    })
+})
 define(function (require, exports, module) {
     var Common = require('common');
     require('jquery');

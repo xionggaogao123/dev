@@ -238,6 +238,35 @@
     </div>
 
 </div>
+
+<%--圣诞背景--%>
+<div class="christ-quan-wind">恭喜你获得<span>5</span>元优惠券，<br>赶快去选购吧...</div>
+<div class="christ-bg"></div>
+
+<%--圣诞节活动 st--%>
+<div class="christmas-wind">
+    <img class="christ-light1" src="/static/images/mallSection/christ_1.png">
+    <img class="christ-light2" src="/static/images/mallSection/christ_2.png">
+    <div class="hide-light1 hl">
+        <img src="/static/images/mallSection/light1.png">
+    </div>
+    <div class="hide-light2 hl">
+        <img src="/static/images/mallSection/light2.png">
+    </div>
+    <div class="hide-light3 hl">
+        <img src="/static/images/mallSection/light3.png">
+    </div>
+    <div class="hide-light4 hl">
+        <img src="/static/images/mallSection/light4.png">
+    </div>
+    <div class="christ-x"><img src="/static/images/mallSection/close.png"></div>
+</div>
+
+<
+<%--圣诞节活动 ed--%>
+
+
+
 <!-- 本月上新 end-->
 <!--=============底部版权=================-->
 <%@ include file="../common/footer.jsp" %>

@@ -41,10 +41,29 @@ define(['jquery', 'pagination', 'common'], function (require, exports, module) {
             $('.wind-phone').fadeIn();
             $('.bg').fadeIn();
         });
+
         $('.windd .p1 em').click(function () {
             $('.windd').fadeOut();
             $('.bg').fadeOut();
+
+            $('.edit-pass .password').val('');
+            $('.edit-pass .n-password').val('');
+            $('.edit-pass .n-r-password').val('');
+
+            $('.wind-email1 .password').val('');
+            $('.wind-email2 input.email-input').val('');
+
+            $('.wind-phone input.code').val('');
+            $('.wind-phone input.phone').val('');
+
+            $('.windd .sp3').hide();
+
+            edit_pass_check.password = false;
+            edit_pass_check.n_password = false;
+            edit_pass_check.n_r_password = false;
         });
+
+
         $('.btn-xg-email').click(function () {
             $('.wind-email1').fadeIn();
             $('.bg').fadeIn();
@@ -76,7 +95,7 @@ define(['jquery', 'pagination', 'common'], function (require, exports, module) {
             } else {
 
                 if ($('.bq-tags span.oracur2').length >= 6) {
-                    alert("标签只不能多于6个");
+                    alert("标签不能多于6个");
                     return;
                 }
                 $(this).addClass('oracur2');
@@ -221,7 +240,7 @@ define(['jquery', 'pagination', 'common'], function (require, exports, module) {
 
             var email_tip = $('.wind-email2 .sp3');
             var email = $('.wind-email2 input.email-input').val();
-            var pattern = /^([a-zA-Z0-9_-])+@([a-zA-Z0-9_-])+(.[a-zA-Z0-9_-])+/;
+            var pattern = /^([a-zA-Z0-9._-])+@([a-zA-Z0-9_-])+(.[a-zA-Z0-9_-])+/;
             if (!pattern.test(email)) {
                 email_tip.text('邮箱格式不正确');
                 email_tip.show();
@@ -270,7 +289,6 @@ define(['jquery', 'pagination', 'common'], function (require, exports, module) {
                 return;
             }
             common.getData('/mall/users/textMessags.do', {mobile: mobile}, function (resp) {
-                alert(JSON.stringify(resp));
                 if (resp.code == '200') {
                     cacheKeyId = resp.cacheKeyId;
                     edit_phone_check.code = true;
@@ -286,13 +304,22 @@ define(['jquery', 'pagination', 'common'], function (require, exports, module) {
 
             alert(JSON.stringify(edit_phone_check));
             if (edit_phone_check.phone && edit_phone_check.code) {
-                common.getData('/account/changeUserPhone.do', {
+                var requestData = {
                     mobile: mobile,
                     code: code,
                     cacheKeyId: cacheKeyId
-                }, function (resp) {
+                };
+                common.getData('/account/changeUserPhone.do', requestData, function (resp) {
                     alert(JSON.stringify(resp));
                     if (resp.code == '200') {
+                        alert(resp.message);
+                        $('.windd').fadeOut();
+                        $('.bg').fadeOut();
+                        $('.wind-phone input.code').val('');
+                        $('.wind-phone input.phone').val('');
+                        getInfo();
+                    } else {
+                        alert(resp.message);
                     }
                 });
             } else {
@@ -391,7 +418,6 @@ define(['jquery', 'pagination', 'common'], function (require, exports, module) {
     function getThirdInfo() {
 
         common.getData('/account/thirdLoginInfo', {}, function (resp) {
-            alert(JSON.stringify(resp));
 
             if (resp.message.isBindQQ) {
                 $('.third-qq span').removeClass('sp1');

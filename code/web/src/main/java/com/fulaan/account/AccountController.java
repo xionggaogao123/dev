@@ -368,6 +368,10 @@ public class AccountController extends BaseController {
             if (MD5Utils.getMD5(password).equals(userEntry.getPassword())) {
                 return RespObj.SUCCESS;
             }
+
+            if(password.equals(userEntry.getPassword())) {
+                return RespObj.SUCCESS;
+            }
         } catch (Exception e) {
             e.printStackTrace();
             return RespObj.FAILD("密码不正确");

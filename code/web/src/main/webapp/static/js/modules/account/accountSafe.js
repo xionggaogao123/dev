@@ -31,8 +31,6 @@ define(['jquery', 'pagination', 'common'], function (require, exports, module) {
     var cacheKeyId = '';
     var i = 0;
 
-    var verify_pass = false;
-
     $(function () {
 
         $('.btn-xg-psw').click(function () {
@@ -216,14 +214,15 @@ define(['jquery', 'pagination', 'common'], function (require, exports, module) {
 
         body.on('click', '.wind-email2 p.p-btn-ok', function () {
 
+            var email_tip = $('.wind-email2 .sp3');
             var email = $('.wind-email2 input.email-input').val();
             var pattern = /^([a-zA-Z0-9_-])+@([a-zA-Z0-9_-])+(.[a-zA-Z0-9_-])+/;
             if (!pattern.test(email)) {
-                $('.wind-email2 .sp3').text('邮箱格式不正确');
-                $('.wind-email2 .sp3').show();
+                email_tip.text('邮箱格式不正确');
+                email_tip.show();
                 return;
             } else {
-                $('.wind-email2 .sp3').hide();
+                email_tip.hide();
             }
             common.getData('/account/changeUserEmail.do', {email: email}, function (resp) {
                 if (resp.code == '200') {
@@ -269,6 +268,9 @@ define(['jquery', 'pagination', 'common'], function (require, exports, module) {
                 alert(JSON.stringify(resp));
                 if (resp.code == '200') {
                     cacheKeyId = resp.cacheKeyId;
+                    edit_phone_check.code = true;
+                } else {
+                    edit_phone_check.code = false;
                 }
             });
         });
@@ -362,13 +364,13 @@ define(['jquery', 'pagination', 'common'], function (require, exports, module) {
             });
 
             if (resp.phone == null || resp.phone == '') {
-                $('#verify-phone').text('<em>未设置</em>');
+                $('#verify-phone').append('<em>未设置</em>');
             } else {
                 $('#verify-phone').text(resp.phone);
             }
 
             if (resp.email == null || resp.email == '') {
-                $('#verify-email').text('<em>未设置</em>');
+                $('#verify-email').append('<em>未设置</em>');
             } else {
                 $('#verify-email').text(resp.email);
             }
@@ -511,7 +513,7 @@ define(['jquery', 'pagination', 'common'], function (require, exports, module) {
                 if ($DaySelector.attr("rel") != "") {
                     BuildDay();
                 }
-            } // End ms_DatePicker
+            }
         });
     })(jQuery);
     module.exports = accountSafe;

@@ -11,14 +11,14 @@
             <div hidden id="accountError" class="error">帐户名与密码不匹配，请重新输入</div>
             <h1 class="notice-dl">中国最专业的青少年素质教育社区!</h1>
 
-            <div class="store-MF" hidden>该登录名不存在<a href="/mall/register.do">免费注册？</a></div>
+            <div class="store-MF" hidden>该登录名不存在<a href="/account/register.do">免费注册？</a></div>
         </dd>
         <dd>
             <em>用户名：</em><input type="text" placeholder="用户名/邮箱/手机号" id="account">
         </dd>
         <dd>
             <em>密码：</em><input type="password" id="password">
-            <span class="mm-forget" onclick="window.open('/mall/findUserPwd.do')">忘记密码</span>
+            <span class="mm-forget" onclick="window.open('/account/findPassword.do')">忘记密码</span>
         </dd>
         <dd>
             <em></em><span class="store-DL" id="logIn">登录</span>

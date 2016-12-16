@@ -46,25 +46,40 @@ public class AccountController extends BaseController {
     @Autowired
     private MateService mateService;
 
-
+    /**
+     * 注册界面
+     * @return
+     */
     @RequestMapping("/register")
     @SessionNeedless
     public String register() {
         return "/account/register";
     }
 
+    /**
+     * 登录界面
+     * @return
+     */
     @RequestMapping("/login")
     @SessionNeedless
     public String login() {
         return "/account/login";
     }
 
+    /**
+     * 找回密码
+     * @return
+     */
     @RequestMapping("/findPassword")
     @SessionNeedless
     public String findPassword() {
         return "/account/findPassword";
     }
 
+    /**
+     * 我的账户
+     * @return
+     */
     @RequestMapping("/accountSafe")
     public String accountSafe() {
         return "/account/accountSafe";

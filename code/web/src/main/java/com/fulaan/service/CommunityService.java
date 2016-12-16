@@ -172,18 +172,12 @@ public class CommunityService {
     public List<CommunityDTO> getCommunitys(ObjectId uid, int page, int pageSize) {
 
         List<MineCommunityEntry> allMineCommunitys = mineCommunityDao.findAll(uid, page, pageSize);
-        List<ObjectId> myCommunitys = new ArrayList<ObjectId>();
-        Map<ObjectId,MineCommunityEntry> map=new HashMap<ObjectId, MineCommunityEntry>();
-        for (MineCommunityEntry mineCommunityEntry : allMineCommunitys) {
-            myCommunitys.add(mineCommunityEntry.getCommunityId());
-            map.put(mineCommunityEntry.getCommunityId(),mineCommunityEntry);
-        }
         List<CommunityDTO> list = new ArrayList<CommunityDTO>();
         if (allMineCommunitys.size() > 0) {
-            List<CommunityEntry> entries = communityDao.getCommunitysByIds(myCommunitys);
-            for (CommunityEntry e : entries) {
-                CommunityDTO communityDTO=new CommunityDTO(e);
-                communityDTO.setTop(map.get(e.getID()).getTop());
+            for(MineCommunityEntry mineCommunityEntry : allMineCommunitys){
+                CommunityEntry entry=communityDao.findByObjectId(mineCommunityEntry.getCommunityId());
+                CommunityDTO communityDTO=new CommunityDTO(entry);
+                communityDTO.setTop(mineCommunityEntry.getTop());
                 list.add(communityDTO);
             }
         }

@@ -74,18 +74,18 @@
                 score:5
             })
 
-            $('#toplogin').click(function () {//登录
-                $('.store-register').fadeToggle();
-                $('.bg').fadeToggle();
-            })
+//            $('#toplogin').click(function () {//登录
+//                $('.store-register').fadeToggle();
+//                $('.bg').fadeToggle();
+//            })
 
-            $('#logout').click(function () {//退出登录
-                logout();
-            });
-
-            $('#quitLog').click(function () {//退出登录
-                logout();
-            });
+//            $('#logout').click(function () {//退出登录
+//                logout();
+//            });
+//
+//            $('#quitLog').click(function () {//退出登录
+//                logout();
+//            });
 
             $('.sear').click(function(){
                 $('.full-map').fadeIn();
@@ -95,71 +95,71 @@
                 $('.full-map').fadeOut();
                 $('.bg').fadeOut();
             });
-            $('#loginText').click(function () {//登录
-                $('.store-register').fadeToggle();
-                $('.bg').fadeToggle();
-            })
-
-            $('#redirect').click(function () {//登录
-
-            })
+//            $('#loginText').click(function () {//登录
+//                $('.store-register').fadeToggle();
+//                $('.bg').fadeToggle();
+//            })
+//
+//            $('#redirect').click(function () {//登录
+//
+//            })
 
         })
 
-        function logout() {
-            $.ajax({
-                url: "/user/logout.do",
-                type: "post",
-                dataType: "json",
-                data: {
-                    'inJson': true
-                },
-                success: function () {
-                    location.reload();
-                }
-            });
-            ssoLoginout();
-        }
+//        function logout() {
+//            $.ajax({
+//                url: "/user/logout.do",
+//                type: "post",
+//                dataType: "json",
+//                data: {
+//                    'inJson': true
+//                },
+//                success: function () {
+//                    location.reload();
+//                }
+//            });
+//            ssoLoginout();
+//        }
+//
+//
+//        function ssoLoginout() {
+//            var logoutURL = "http://ah.sso.cycore.cn/sso/logout";
+//
+//            $.ajax({
+//                url: logoutURL,
+//                type: "GET",
+//                dataType: 'jsonp',
+//                jsonp: "callback",
+//                crossDomain: true,
+//                cache: false,
+//                success: function (html) {
+//
+//                },
+//                error: function (data) {
+//
+//                }
+//            });
+//        }
 
+//        function showLoginTitle(login) {
+//            if (login) {
+//                $('.header-bar').show();
+//                $('.header').hide();
+//            } else {
+//                $('.header').hide();
+//                $('.header-bar').show();
+//            }
+//        }
 
-        function ssoLoginout() {
-            var logoutURL = "http://ah.sso.cycore.cn/sso/logout";
-
-            $.ajax({
-                url: logoutURL,
-                type: "GET",
-                dataType: 'jsonp',
-                jsonp: "callback",
-                crossDomain: true,
-                cache: false,
-                success: function (html) {
-
-                },
-                error: function (data) {
-
-                }
-            });
-        }
-
-        function showLoginTitle(login) {
-            if (login) {
-                $('.header-bar').show();
-                $('.header').hide();
-            } else {
-                $('.header').hide();
-                $('.header-bar').show();
-            }
-        }
-
-        function redirectQ() {
-
-            location.href = '/user/qqlogin.do?historyUrl=' + encodeURIComponent(encodeURIComponent(window.location.href));
-        }
-
-        function loginWeiXin() {
-
-            location.href = '/user/wechatlogin.do?historyUrl=' + window.location.href;
-        }
+//        function redirectQ() {
+//
+//            location.href = '/user/qqlogin.do?historyUrl=' + encodeURIComponent(encodeURIComponent(window.location.href));
+//        }
+//
+//        function loginWeiXin() {
+//
+//            location.href = '/user/wechatlogin.do?historyUrl=' + window.location.href;
+//        }
 
     </script>
 </head>

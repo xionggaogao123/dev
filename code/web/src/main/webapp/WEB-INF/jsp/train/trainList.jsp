@@ -16,7 +16,7 @@
             src="http://webapi.amap.com/maps?v=1.3&key=3a1cd4cff6fcbdf71ea760da6957fb94"></script>
     <%--<script type="text/javascript" src="/static/js/modules/train/trainList.js"></script>--%>
 </head>
-<body region="${region}" regionName="${regionName}" typeId="${typeId}" areaId="${areaId}" location="${location}">
+<body region="${region}" typeId="${typeId}" areaId="${areaId}" location="${location}">
 <%@ include file="../common/head.jsp" %>
 <div id="containerMap"></div>
 <div class="train-container">

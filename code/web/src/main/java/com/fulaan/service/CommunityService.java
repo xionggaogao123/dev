@@ -15,6 +15,7 @@ import com.fulaan.pojo.ProductModel;
 import com.fulaan.user.service.UserService;
 import com.fulaan.util.DateUtils;
 import com.pojo.activity.FriendApplyEntry;
+import com.pojo.app.Platform;
 import com.pojo.fcommunity.*;
 import com.pojo.user.AvatarType;
 import com.pojo.user.UserEntry;
@@ -525,11 +526,14 @@ public class CommunityService {
      * @param order
      * @return
      */
-    public PageModel<CommunityDetailDTO> getMessages(ObjectId communityId, int page, int pageSize, int order, int type,ObjectId userId) {
+    public PageModel<CommunityDetailDTO> getMessages(ObjectId communityId, int page, int pageSize, int order, int type,ObjectId userId,boolean isApp) {
         PageModel<CommunityDetailDTO> pageModel = new PageModel<CommunityDetailDTO>();
         List<CommunityDetailEntry> entries = communityDetailDao.getDetails(communityId, page, pageSize, order, type);
         int counts = communityDetailDao.count(communityId, type);
 
+        if(type==1&&isApp){
+            setAppRead(userId,entries);
+        }
         CommunityEntry communityEntry = communityDao.findByObjectId(communityId);
         List<CommunityDetailDTO> dtos = new ArrayList<CommunityDetailDTO>();
         List<ObjectId> objectIds = new ArrayList<ObjectId>();
@@ -583,9 +587,30 @@ public class CommunityService {
         pageModel.setTotalCount(counts);
         pageModel.setTotalPages(totalPages);
         pageModel.setResult(dtos);
+        int totalCount = communityDetailDao.count(communityId, type);
+        int readCount = communityDetailDao.countRead(type, communityId, userId);
+        int unreadCount = totalCount - readCount;
+        pageModel.setTotalUnReadCount(unreadCount);
         return pageModel;
 
     }
+
+    private void setAppRead(ObjectId userId, List<CommunityDetailEntry> entries ){
+        for(CommunityDetailEntry entry:entries) {
+            boolean flag = true;
+            List<ObjectId> unReadList = entry.getUnReadList();
+            for (ObjectId item : unReadList) {
+                if (item.equals(userId)) {
+                    flag = false;
+                    break;
+                }
+            }
+            if (flag) {
+                pushRead(entry.getID(), userId);
+            }
+        }
+    }
+
 
 
     private boolean judgePartner(List<ObjectId> partners, ObjectId userId) {

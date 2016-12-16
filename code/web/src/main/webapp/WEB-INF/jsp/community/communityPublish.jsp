@@ -148,6 +148,9 @@
             <div class="com-left-s" id="announcement">
             </div>
 
+            <div class="com-left-s" id="homework">
+            </div>
+
             <div class="com-left-s" id="activity">
             </div>
 
@@ -155,9 +158,6 @@
             </div>
 
             <div class="com-left-s" id="share">
-            </div>
-
-            <div class="com-left-s" id="homework">
             </div>
 
             <div class="com-left-s" id="means">

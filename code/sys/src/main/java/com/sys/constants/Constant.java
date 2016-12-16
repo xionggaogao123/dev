@@ -266,7 +266,6 @@ public class Constant {
      */
     public static final int MAX_LESSON_COMMENT_INT = 500;
 
-
     /**
      * collection
      */

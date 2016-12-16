@@ -24,7 +24,7 @@
     <div class="hd-nav">
         <c:if test="${login == false}">
             <div class="login-mk-btn">
-                <div class="d1" onclick="window.open('/mall/register.do')"></div>
+                <div class="d1" onclick="window.open('/account/register.do')"></div>
                 <div class="d2"></div>
             </div>
         </c:if>

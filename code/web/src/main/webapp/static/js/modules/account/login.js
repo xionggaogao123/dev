@@ -10,6 +10,11 @@ define(['jquery', 'pagination', 'common'], function (require, exports, module) {
     };
     login.init = function () {
 
+        $(document).keypress(function (e) {
+            if (e.which == 13) {
+                loginWeb();
+            }
+        });
     };
 
     $(function () {
@@ -34,24 +39,7 @@ define(['jquery', 'pagination', 'common'], function (require, exports, module) {
 
 
         $('.ul1 button').click(function () {
-
-            if (!check.userName || !check.password) {
-                return;
-            }
-            var userName = $('input.username').val();
-            var password = $('input.password').val();
-            var requestData = {};
-            requestData.name = $.trim(userName);
-            requestData.pwd = $.trim(password);
-            requestData.verifyCode = "";
-            $.post('/user/login.do', requestData, function (resp) {
-
-                if (resp.code == '200') {
-                    window.location.href = '/';
-                } else {
-                    alert(resp.message);
-                }
-            });
+            loginWeb();
         });
 
         $('.ul1 li .sp-qq').click(function () {
@@ -62,6 +50,26 @@ define(['jquery', 'pagination', 'common'], function (require, exports, module) {
             window.open('/user/wechatlogin.do', "TencentLogin", "width=800,height=600,menubar=0,scrollbars=1, resizable=1,status=1,titlebar=0,toolbar=0,location=1");
         });
     });
+
+    function loginWeb() {
+        check.password = $(this).val() != '';
+        if (!check.userName || !check.password) {
+            return;
+        }
+        var userName = $('input.username').val();
+        var password = $('input.password').val();
+        var requestData = {};
+        requestData.name = $.trim(userName);
+        requestData.pwd = $.trim(password);
+        requestData.verifyCode = "";
+        $.post('/user/login.do', requestData, function (resp) {
+            if (resp.code == '200') {
+                window.location.href = '/';
+            } else {
+                alert(resp.message);
+            }
+        });
+    }
 
     module.exports = login;
 });

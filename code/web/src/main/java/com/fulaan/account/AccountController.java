@@ -22,6 +22,7 @@ import org.apache.commons.lang.StringUtils;
 import org.bson.types.ObjectId;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.CookieValue;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -98,7 +99,8 @@ public class AccountController extends BaseController {
      */
     @RequestMapping("/thirdLoginSuccess")
     @SessionNeedless
-    public String thirdLoginSuccess() {
+    public String thirdLoginSuccess(@RequestParam(value = "bindSuccess",required = false,defaultValue = "-1") int bindSuccess,Model model) {
+        model.addAttribute("bindSuccess",bindSuccess);
         return "/account/thirdLoginSuccess";
     }
 
@@ -154,7 +156,12 @@ public class AccountController extends BaseController {
         String authorizeURL = QQLoginUtil.getValue("authorizeURL").trim();
         String app_ID = QQLoginUtil.getValue("app_ID").trim();
         String url = authorizeURL + "?client_id=" + app_ID + "&redirect_uri=" + redirect_URI + "&response_type=" + "code" + "&state=" + state;
-        response.addCookie(new Cookie("bindQQ",getUserId().toString()));
+
+        Cookie userKeycookie = new Cookie("bindQQ", getUserId().toString());
+        userKeycookie.setMaxAge(Constant.SECONDS_IN_DAY);
+        userKeycookie.setPath(Constant.BASE_PATH);
+        response.addCookie(userKeycookie);
+
         response.sendRedirect(url);
     }
 
@@ -169,7 +176,12 @@ public class AccountController extends BaseController {
     public void WeChatLogin(HttpServletResponse response) throws IOException {
         String urlEncodeRedirectUrl = HttpClientUtils.strURLEncodeUTF8(Constant.WECHAT_REDIRECT_URL);
         String strWeChatConnectUrl = String.format(Constant.WECHAT_CONNECT_URL, Constant.WECHAT_APPID, urlEncodeRedirectUrl);
-        response.addCookie(new Cookie("bindWechat",getUserId().toString()));
+
+        Cookie userKeycookie = new Cookie("bindWechat", getUserId().toString());
+        userKeycookie.setMaxAge(Constant.SECONDS_IN_DAY);
+        userKeycookie.setPath(Constant.BASE_PATH);
+        response.addCookie(userKeycookie);
+
         response.sendRedirect(strWeChatConnectUrl);
     }
 

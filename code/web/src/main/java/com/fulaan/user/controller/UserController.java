@@ -1527,11 +1527,12 @@ public class UserController extends BaseController {
      */
     @SessionNeedless
     @RequestMapping(value = "/qqcallback")
-    public String afterQQLogin(HttpServletRequest request, HttpServletResponse response, String state) throws IOException {
+    public String afterQQLogin(HttpServletRequest request, HttpServletResponse response, String state,RedirectAttributes redirectAttributes) throws IOException {
         String code = request.getParameter("code");
         if (code == null || code.equals("")) {//未授权
             return "redirect:/";
         }
+
 
         Map<String, String> result = QQLoginUtil.getAccessToken(code);
         logger.info("" + result);
@@ -1550,6 +1551,29 @@ public class UserController extends BaseController {
         if (gender != null && gender.equals("男")) {
             sex = 1;
         }
+
+        Cookie[] cookies = request.getCookies();
+        for(Cookie cookie: cookies) {
+
+            if(cookie.getName().equals("bindQQ") && getUserId() != null) {
+                if(cookie.getValue().equals(getUserId().toString())) {
+                    //绑定qq
+                    boolean isBind = userService.isOpenIdBindQQ(openId);
+                    if(isBind) {
+                        redirectAttributes.addAttribute("bindSuccess",0);
+                        return "redirect:/account/thirdLoginSuccess";
+                    }
+
+                    //开始绑定
+                    ThirdLoginEntry thirdLoginEntry = new ThirdLoginEntry(getUserId(), openId, null, 2);
+                    userService.saveThidLogininfo(thirdLoginEntry);
+
+                    redirectAttributes.addAttribute("bindSuccess",1);
+                    return "redirect:/account/thirdLoginSuccess";
+                }
+            }
+        }
+
         UserEntry userEntry = userService.getThirdEntryByMap(query);
         if (userEntry == null) { //创建用户
             userEntry = userService.createUser(nickName, sex);
@@ -1576,8 +1600,7 @@ public class UserController extends BaseController {
         if (StringUtils.isNotBlank(redirectUrl) && getPlatform() != Platform.PC) {
             return redirectUrl;
         }
-//        return "redirect:/account/thirdLoginSuccess";
-        return "redirect:/";
+        return "redirect:/account/thirdLoginSuccess";
     }
 
     /**
@@ -1603,7 +1626,7 @@ public class UserController extends BaseController {
      */
     @SessionNeedless
     @RequestMapping(value = "/wechatcallback")
-    public String wechatCallBack(HttpServletRequest request, HttpServletResponse response) throws IOException {
+    public String wechatCallBack(HttpServletRequest request, HttpServletResponse response,RedirectAttributes redirectAttributes) throws IOException {
         String code = request.getParameter("code");
         String state = request.getParameter("state");
         Map<String, Object> maps;
@@ -1637,6 +1660,29 @@ public class UserController extends BaseController {
         query.put("unionid", unionId);
         query.put("type", 1);
 
+        Cookie[] cookies = request.getCookies();
+        for(Cookie cookie: cookies) {
+
+            if(cookie.getName().equals("bindQQ") && getUserId() != null) {
+                if(cookie.getValue().equals(getUserId().toString())) {
+                    //绑定qq
+                    boolean isBind = userService.isUnionIdBindWechat(unionId);
+                    if(isBind) {
+                        redirectAttributes.addAttribute("bindSuccess",0);
+                        return "redirect:/account/thirdLoginSuccess";
+                    }
+
+                    //开始绑定
+                    ThirdLoginEntry thirdLoginEntry = new ThirdLoginEntry(getUserId(), null, unionId, 2);
+                    userService.saveThidLogininfo(thirdLoginEntry);
+
+                    redirectAttributes.addAttribute("bindSuccess",1);
+                    return "redirect:/account/thirdLoginSuccess";
+                }
+            }
+        }
+
+
         UserEntry userEntry = userService.getThirdEntryByMap(query);
 
         if (userEntry == null) { //不存在,创建账号
@@ -1666,7 +1712,6 @@ public class UserController extends BaseController {
         if (redirectUrl != null && getPlatform() != Platform.PC) {
             return redirectUrl;
         }
-//        return "redirect:/account/thirdLoginSuccess";
         return "redirect:/";
     }
 

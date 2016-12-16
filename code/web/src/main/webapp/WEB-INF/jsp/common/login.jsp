@@ -3,7 +3,7 @@
     <dl>
         <dt>
             <em>登录</em>
-        <div>没有账号，<a href="/mall/register.do">立即注册</a>
+        <div>没有账号，<a href="/account/register.do">立即注册</a>
         </div>
         <i id="close">X</i>
         </dt>
@@ -76,7 +76,6 @@
                 } else {
                     $('#k6kt').hide();
                 }
-//                showLoginTitle(true);
                 $('#password').val('');
                 window.location.href = window.location.href;
             } else {

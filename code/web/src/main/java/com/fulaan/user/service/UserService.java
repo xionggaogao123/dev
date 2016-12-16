@@ -1063,37 +1063,6 @@ public class UserService {
         userDao.updateStatisticTimeValue(userId, time);
     }
 
-    /**
-     * 根据用户名精确查询
-     *
-     * @param page
-     * @param pageSize
-     * @return
-     */
-    public List<UserEntry> searchUser(String name, int jinyan, int page, int pageSize) {
-        return userDao.searchUser(name, jinyan, page < 1 ? 0 : ((page - 1) * pageSize), pageSize);
-    }
-
-    public int searchUserCount(String name, int jinyan) {
-        return userDao.searchUserCount(name, jinyan);
-    }
-
-    public List<UserDetailInfoDTO> getK6ktEntryByRoles() {
-        List<UserEntry> userEntryList = userDao.getK6ktEntryByRoles(Constant.FIELDS);
-        List<UserDetailInfoDTO> userInfoDTOs = new ArrayList<UserDetailInfoDTO>();
-        List<ObjectId> schoolids = new ArrayList<ObjectId>();
-        for (UserEntry user : userEntryList) {
-            schoolids.add(user.getSchoolID());
-        }
-        Map<ObjectId, SchoolEntry> schoolEntryMap = schoolService.getSchoolEntryMap(schoolids);
-        for (UserEntry user : userEntryList) {
-            UserDetailInfoDTO userDetailInfoDTO = new UserDetailInfoDTO(user);
-            userDetailInfoDTO.setSchoolName(schoolEntryMap.get(user.getSchoolID()).getName());
-            userInfoDTOs.add(userDetailInfoDTO);
-        }
-        return userInfoDTOs;
-    }
-
     public ObjectId randomAnId() {
         List<ObjectId> userIdList = userDao.getUserForEBusiness(new ObjectId("55934c14f6f28b7261c19c62"), Constant.FIELDS);
         Random random = new Random();
@@ -1101,15 +1070,6 @@ public class UserService {
         return userIdList.get(j);
     }
 
-
-    /**
-     * 通过并定用户名登录
-     *
-     * @return
-     */
-    public UserEntry getUserEntryByBindName(String bindName) {
-        return userDao.getUserEntryByBindName(bindName);
-    }
 
     /**
      * 新注册商城用户赠送购物券
@@ -1263,6 +1223,14 @@ public class UserService {
     public long score(ObjectId uid) {
         UserEntry entry = find(uid);
         return entry.getForumScore();
+    }
+
+    public boolean isOpenIdBindQQ(String openId) {
+        return thirdLoginDao.isOpenIdBindQQ(openId);
+    }
+
+    public boolean isUnionIdBindWechat(String unionId) {
+        return thirdLoginDao.isUnionIdBindWechat(unionId);
     }
 
     /**

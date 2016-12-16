@@ -244,7 +244,7 @@
 
 
         <%--<a>手机商城</a>--%>
-        <span class="spanss" onclick="window.open('/mall/register.do')">注册</span>
+        <span class="spanss" onclick="window.open('/account/register.do')">注册</span>
         <span class="spanss" id="toplogin">登录</span>
     </div>
 </div>

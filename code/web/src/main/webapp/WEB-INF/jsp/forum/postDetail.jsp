@@ -145,7 +145,7 @@
         </div>
         <div class="post-right">
             <div class="recall-notallow" <c:if test="${login==true}">style="display: none;"</c:if>> 您需要登录后才可以回帖<a
-                    id="ddd">&nbsp;&nbsp;登陆</a> | <a onclick="window.open('/mall/register.do')">注册</a></div>
+                    id="ddd">&nbsp;&nbsp;登陆</a> | <a onclick="window.open('/account/register.do')">注册</a></div>
             <script id="editor" type="text/plain" name="content" style="width:100%;height:200px;"></script>
             <script type="text/javascript">
                 UE.getEditor('editor', {

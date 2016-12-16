@@ -62,7 +62,7 @@ define(['jquery', 'pagination', 'common'], function (require, exports, module) {
 
         $('.ul2 .email-input').blur(function () {
             var self = $(this);
-            var pattern = /^([a-zA-Z0-9_-])+@([a-zA-Z0-9_-])+(.[a-zA-Z0-9_-])+/;
+            var pattern = /^([a-zA-Z0-9._-])+@([a-zA-Z0-9_-])+(.[a-zA-Z0-9_-])+/;
             if (pattern.test($(this).val())) {
                 var requestParm = {email: $(this).val()};
                 common.getData('/account/userEmailCheck', requestParm, function (resp) {
@@ -88,7 +88,7 @@ define(['jquery', 'pagination', 'common'], function (require, exports, module) {
                 self.parent().find('.sp3').text('密码不能为空');
                 self.parent().find('.sp3').show();
             } else {
-                var pattern = /[a-zA-Z0-9!@#\*\^\$%\(\)-+=_&]{6,20}$/;
+                var pattern = /[a-zA-Z0-9!@#*\^$%()-+=_&]{6,20}$/;
                 if (!pattern.test(self.val())) {
                     self.parent().find('.sp3').text('密码不符合格式');
                     self.parent().find('.sp3').show();
@@ -112,14 +112,14 @@ define(['jquery', 'pagination', 'common'], function (require, exports, module) {
 
         $('.ul2 .r-password').blur(function () {
             var self = $(this);
-            var pattern = /[a-zA-Z0-9!@#\*\^\$%\(\)-+=_&]{6,20}$/;
-            if (!pattern.test($('.ul2 .password').val())) {
+            var pattern = /[a-zA-Z0-9!@#*\^$%()-+=_&]{6,20}$/;
+            if (!pattern.test(self.val())) {
                 self.parent().find('.sp3').text('密码不符合格式');
                 self.parent().find('.sp3').show();
                 return;
             }
 
-            if ($('.ul2 .password').val() == $('.ul2 .r-password').val()) {
+            if (self.val() == $('.ul2 .r-password').val()) {
                 self.parent().find('.sp3').hide();
                 emailRegisterCheck.password = true;
             } else {
@@ -197,7 +197,6 @@ define(['jquery', 'pagination', 'common'], function (require, exports, module) {
         $('.sendYZM').click(function () {
             if (phoneRegisterCheck.userName && phoneRegisterCheck.password && phoneRegisterCheck.phone) {
                 $(this).parent().find('.sp3').hide();
-                alert('发送验证码');
                 sendVerifyCode($('#phone').val(), $('#verifyCode').val());
             } else {
                 $(this).parent().find('.sp3').show();
@@ -270,7 +269,6 @@ define(['jquery', 'pagination', 'common'], function (require, exports, module) {
 
     function sendVerifyCode(phone, verifyCode) {
         common.getData("/mall/users/messages.do", {mobile: phone, verifyCode: verifyCode}, function (resp) {
-            alert(JSON.stringify(resp));
             if (resp.code == '200') {
                 cacheKeyId = resp.cacheKeyId;
             } else {

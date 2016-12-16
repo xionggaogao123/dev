@@ -72,7 +72,7 @@ define(['jquery', 'pagination', 'common'], function (require, exports, module) {
 
         $('#phone').blur(function () {
             var self = $(this);
-            var pattern = /(^(([0\+]\d{2,3}-)?(0\d{2,3})-)(\d{7,8})(-(\d{3,}))?$)|(^0{0,1}1[3|4|5|6|7|8|9][0-9]{9}$)/;
+            var pattern = /^1[3|4|5|7|8][0-9]{9}$/;
             if (pattern.test(self.val())) {
                 var requestParm = {phone: self.val()};
                 common.getData('/account/verifyUserPhone', requestParm, function (resp) {
@@ -172,7 +172,7 @@ define(['jquery', 'pagination', 'common'], function (require, exports, module) {
                 self.parent().find('.sp3').show();
                 resetPasswordCheck.password = false;
             } else {
-                var pattern = /[a-zA-Z0-9!@#\*\^\$%\(\)-+=_&]{6,20}$/;
+                var pattern = /[a-zA-Z0-9!@#*\^$%()-+=_&]{6,20}$/;
                 if (!pattern.test(self.val())) {
                     self.parent().find('.sp3').text('密码不符合格式');
                     self.parent().find('.sp3').show();

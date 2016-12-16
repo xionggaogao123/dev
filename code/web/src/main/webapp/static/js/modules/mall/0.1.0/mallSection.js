@@ -2,22 +2,6 @@
  * Created by admin on 2016/5/25.
  */
 
-$(document).ready(function(){
-    $('.christmas-wind .christ-x').click(function(){
-        $('.christmas-wind').fadeOut('fast');
-        $('.christ-bg').fadeOut('slow');
-    });
-    $('.christmas-wind .hl').click(function(){
-        $('.christmas-wind').css("top","-100%");
-        $('.christ-quan-wind').css('top','50%');
-        setTimeout(function(){
-            $('.christ-quan-wind ').fadeOut()
-        },"2500")
-        setTimeout(function(){
-            $(' .christ-bg, .christmas-wind').fadeOut()
-        },"3000")
-    })
-})
 define(function (require, exports, module) {
     var Common = require('common');
     require('jquery');
@@ -26,7 +10,7 @@ define(function (require, exports, module) {
 
     var page = 1;
 
-    (function () {
+    $(document).ready(function(){
         getCategories();
         //商品列表
         $('.nav-list .nv:first').addClass('cur-white');
@@ -69,70 +53,83 @@ define(function (require, exports, module) {
             $(this).addClass('newcur').siblings('.ul-new-nav li').removeClass('newcur');
         })
 
-        var str = "";
-
-        function GetTime() {
-            str = "";
-            str = str + "本场倒计时&nbsp;";
-            var EndTime = new Date('2016/06/02 00:00:00');
-            var NowTime = new Date();
-            var t = EndTime.getTime() - NowTime.getTime();
-
-            var day = 0;
-            var hour = 0;
-            var minute = 0;
-            var second = 0;
-
-            if (t > 0) {
-                day = Math.floor(t / 1000 / 60 / 60 / 24);
-                hour = Math.floor(t / 1000 / 60 / 60 % 24);
-                minute = Math.floor(t / 1000 / 60 % 60);
-                second = Math.floor(t / 1000 % 60);
-                if (day < 10) {
-                    str += "\<em>0</em>";
-                    str = str + "\<em>" + day + "\</em>&nbsp;天";
-                } else {
-                    var day1 = parseInt(day / 10);
-                    var day2 = day % 10;
-                    str = str + "\<em>" + day1 + "\</em>";
-                    str = str + "\<em>" + day2 + "\</em>&nbsp;天";
-                }
-                if (hour < 10) {
-                    str += "\<em>0</em>";
-                    str = str + "\<em>" + hour + "\</em>&nbsp;时";
-                } else {
-                    var hour1 = parseInt(hour / 10);
-                    var hour2 = hour % 10;
-                    str = str + "\<em>" + hour1 + "\</em>";
-                    str = str + "\<em>" + hour2 + "\</em>&nbsp;时";
-                }
-                if (minute < 10) {
-                    str += "\<em>0</em>";
-                    str = str + "\<em>" + minute + "\</em>&nbsp;分";
-                } else {
-                    var minute1 = parseInt(minute / 10);
-                    var minute2 = minute % 10;
-                    str = str + "\<em>" + minute1 + "\</em>";
-                    str = str + "\<em>" + minute2 + "\</em>&nbsp;分";
-                }
-                if (second < 10) {
-                    str += "\<em>0</em>";
-                    str = str + "\<em>" + second + "\</em>&nbsp;秒&nbsp;";
-                } else {
-                    var second1 = parseInt(second / 10);
-                    var second2 = second % 10;
-                    str = str + "\<em>" + second1 + "\</em>";
-                    str = str + "\<em>" + second2 + "\</em>&nbsp;秒&nbsp;";
-                }
-            } else {
-                str = "";
-            }
-            $('#djs').html(str);
-        }
-
         setInterval(GetTime, 0);
 
-    })();
+        $('.christmas-wind .christ-x').click(function(){
+            $('.christmas-wind').fadeOut('fast');
+            $('.christ-bg').fadeOut('slow');
+        });
+        $('.christmas-wind .hl').click(function(){
+            $('.christmas-wind').css("top","-100%");
+            $('.christ-quan-wind').css('top','50%');
+            setTimeout(function(){
+                $('.christ-quan-wind ').fadeOut()
+            },"2500")
+            setTimeout(function(){
+                $(' .christ-bg, .christmas-wind').fadeOut()
+            },"3000")
+        })
+
+    });
+
+    function GetTime() {
+        str = "";
+        str = str + "本场倒计时&nbsp;";
+        var EndTime = new Date('2016/06/02 00:00:00');
+        var NowTime = new Date();
+        var t = EndTime.getTime() - NowTime.getTime();
+
+        var day = 0;
+        var hour = 0;
+        var minute = 0;
+        var second = 0;
+
+        if (t > 0) {
+            day = Math.floor(t / 1000 / 60 / 60 / 24);
+            hour = Math.floor(t / 1000 / 60 / 60 % 24);
+            minute = Math.floor(t / 1000 / 60 % 60);
+            second = Math.floor(t / 1000 % 60);
+            if (day < 10) {
+                str += "\<em>0</em>";
+                str = str + "\<em>" + day + "\</em>&nbsp;天";
+            } else {
+                var day1 = parseInt(day / 10);
+                var day2 = day % 10;
+                str = str + "\<em>" + day1 + "\</em>";
+                str = str + "\<em>" + day2 + "\</em>&nbsp;天";
+            }
+            if (hour < 10) {
+                str += "\<em>0</em>";
+                str = str + "\<em>" + hour + "\</em>&nbsp;时";
+            } else {
+                var hour1 = parseInt(hour / 10);
+                var hour2 = hour % 10;
+                str = str + "\<em>" + hour1 + "\</em>";
+                str = str + "\<em>" + hour2 + "\</em>&nbsp;时";
+            }
+            if (minute < 10) {
+                str += "\<em>0</em>";
+                str = str + "\<em>" + minute + "\</em>&nbsp;分";
+            } else {
+                var minute1 = parseInt(minute / 10);
+                var minute2 = minute % 10;
+                str = str + "\<em>" + minute1 + "\</em>";
+                str = str + "\<em>" + minute2 + "\</em>&nbsp;分";
+            }
+            if (second < 10) {
+                str += "\<em>0</em>";
+                str = str + "\<em>" + second + "\</em>&nbsp;秒&nbsp;";
+            } else {
+                var second1 = parseInt(second / 10);
+                var second2 = second % 10;
+                str = str + "\<em>" + second1 + "\</em>";
+                str = str + "\<em>" + second2 + "\</em>&nbsp;秒&nbsp;";
+            }
+        } else {
+            str = "";
+        }
+        $('#djs').html(str);
+    }
 
     //(function(){
     //    var categoryId = $('#categoryId').val();

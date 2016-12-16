@@ -2,6 +2,7 @@ package com.fulaan.account;
 
 import com.fulaan.account.dto.VerifyData;
 import com.fulaan.account.service.AccountService;
+import com.fulaan.annotation.LoginInfo;
 import com.fulaan.annotation.SessionNeedless;
 import com.fulaan.annotation.UserRoles;
 import com.fulaan.cache.CacheHandler;
@@ -81,6 +82,7 @@ public class AccountController extends BaseController {
      * @return
      */
     @RequestMapping("/accountSafe")
+    @LoginInfo
     public String accountSafe() {
         return "/account/accountSafe";
     }
@@ -96,6 +98,11 @@ public class AccountController extends BaseController {
         return "/account/thirdLoginSuccess";
     }
 
+    /**
+     * 检查用户名是否可用
+     * @param userName
+     * @return
+     */
     @RequestMapping("/userNameCheck")
     @SessionNeedless
     @ResponseBody
@@ -103,6 +110,11 @@ public class AccountController extends BaseController {
         return RespObj.SUCCESS(userService.checkUserNameExist(userName));
     }
 
+    /**
+     * 检查手机号是否可用
+     * @param phone
+     * @return
+     */
     @RequestMapping("/userPhoneCheck")
     @SessionNeedless
     @ResponseBody
@@ -110,6 +122,11 @@ public class AccountController extends BaseController {
         return RespObj.SUCCESS(userService.searchUserByphone(phone) != null);
     }
 
+    /**
+     * 检查邮箱是否可用
+     * @param email
+     * @return
+     */
     @RequestMapping("/userEmailCheck")
     @SessionNeedless
     @ResponseBody
@@ -300,6 +317,15 @@ public class AccountController extends BaseController {
         return RespObj.SUCCESS("重置密码成功");
     }
 
+    /**
+     * 更新出生年月 - 性别 - 昵称
+     * @param year
+     * @param month
+     * @param day
+     * @param sex
+     * @param nickName
+     * @return
+     */
     @RequestMapping("/updateNickSexAge")
     @ResponseBody
     public RespObj updateNickSexAge(@RequestParam(value = "year", defaultValue = "0", required = false) int year,

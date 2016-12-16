@@ -124,6 +124,11 @@ define(['jquery', 'pagination', 'common'], function (require, exports, module) {
         body.on('click', '.ul-infor button', function () {
             var requestData = {};
             requestData.nickName = $('.nickname').val();
+
+            if(requestData.nickName.length > 8) {
+                alert("昵称最多8个字符");
+                return;
+            }
             requestData.sex = $('input[type="radio"][name="sex"]:checked').val();
             requestData.year = $('#sel_year option:selected').val();
             requestData.month = $('#sel_month option:selected').val();

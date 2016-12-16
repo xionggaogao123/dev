@@ -17,7 +17,7 @@ define(['jquery', 'pagination', 'common'], function (require, exports, module) {
     };
 
     var edit_phone_check = {
-        phone :false,
+        phone: false,
         code: false
     };
 
@@ -29,6 +29,7 @@ define(['jquery', 'pagination', 'common'], function (require, exports, module) {
     };
 
     var cacheKeyId = '';
+    var i = 0;
 
     var verify_pass = false;
 
@@ -51,6 +52,8 @@ define(['jquery', 'pagination', 'common'], function (require, exports, module) {
             $('.bg').fadeIn();
         });
 
+        var body = $('body');
+
         $('ul.set-left li').click(function () {
             var value = $(this).index() + 1;
 
@@ -69,7 +72,7 @@ define(['jquery', 'pagination', 'common'], function (require, exports, module) {
             $(this).addClass('li444');
         });
 
-        $('body').on('click', '.bq-tags span', function () {
+        body.on('click', '.bq-tags span', function () {
             if ($(this).hasClass('oracur2')) {
                 $(this).removeClass('oracur2');
             } else {
@@ -82,7 +85,7 @@ define(['jquery', 'pagination', 'common'], function (require, exports, module) {
             }
         });
 
-        $('body').on('click', '.bq-times span', function () {
+        body.on('click', '.bq-times span', function () {
             if ($(this).hasClass('oracur2')) {
                 $(this).removeClass('oracur2');
             } else {
@@ -90,16 +93,16 @@ define(['jquery', 'pagination', 'common'], function (require, exports, module) {
             }
         });
 
-        $('body').on('click', '.edit-img', function () {
+        body.on('click', '.edit-img', function () {
             var random = Math.random();
             window.open('/personal/avatarpage.do?uid=' + random + '&uploadtype=head', '图片上传', 'height=253,width=450,top=300,left=800,status=no,toolbar=no,menubar=no,location=no,scrollbars=no,resizable=no');
         });
 
-        $('body').on('click', '.btn-no', function () {
+        body.on('click', '.btn-no', function () {
             getAllMateData();
         });
 
-        $('body').on('click', '.btn-save', function () {
+        body.on('click', '.btn-save', function () {
             var tags = '';
             $('.bq-tags span.oracur2').each(function () {
                 var code = $(this).attr('value');
@@ -120,7 +123,7 @@ define(['jquery', 'pagination', 'common'], function (require, exports, module) {
             });
         });
 
-        $('body').on('click', '.ul-infor button', function () {
+        body.on('click', '.ul-infor button', function () {
             var requestData = {};
             requestData.nickName = $('.nickname').val();
             requestData.sex = $('input[type="radio"][name="sex"]:checked').val();
@@ -136,7 +139,7 @@ define(['jquery', 'pagination', 'common'], function (require, exports, module) {
             });
         });
 
-        $('body').on('blur', '.edit-pass .password', function () {
+        body.on('blur', '.edit-pass .password', function () {
             var self = $(this);
             common.getData('/account/checkUserPassword.do', {password: self.val()}, function (resp) {
                 if (resp.code == '200') {
@@ -149,7 +152,7 @@ define(['jquery', 'pagination', 'common'], function (require, exports, module) {
             });
         });
 
-        $('body').on('blur', '.edit-pass .n-password', function () {
+        body.on('blur', '.edit-pass .n-password', function () {
             var self = $(this);
             var pattern = /[a-zA-Z0-9!@#\*\^\$%\(\)-+=_&]{6,20}$/;
             if (!pattern.test(self.val())) {
@@ -161,7 +164,7 @@ define(['jquery', 'pagination', 'common'], function (require, exports, module) {
             }
         });
 
-        $('body').on('blur', '.edit-pass .n-r-password', function () {
+        body.on('blur', '.edit-pass .n-r-password', function () {
             if ($('.edit-pass .n-password').val() != $('.edit-pass .n-r-password').val()) {
                 $('.verify-pass-r').show();
                 edit_pass_check.n_r_password = false;
@@ -171,7 +174,7 @@ define(['jquery', 'pagination', 'common'], function (require, exports, module) {
             }
         });
 
-        $('body').on('click', '.edit-pass .p-btn-ok', function () {
+        body.on('click', '.edit-pass .p-btn-ok', function () {
             if (edit_pass_check.password && edit_pass_check.n_password && edit_pass_check.n_r_password) {
                 var password = $('.edit-pass input.n-password').val();
                 common.getData('/account/changeUserPassword.do', {password: password}, function (resp) {
@@ -179,22 +182,31 @@ define(['jquery', 'pagination', 'common'], function (require, exports, module) {
                         alert("修改成功");
                         $('.edit-pass').fadeOut();
                         $('.bg').fadeOut();
+
+                        $('.edit-pass .password').val('');
+                        $('.edit-pass .n-password').val('');
+                        $('.edit-pass .n-r-password').val('');
+                        edit_pass_check.password = false;
+                        edit_pass_check.n_password = false;
+                        edit_pass_check.n_r_password = false;
                         getInfo();
                     } else {
                         alert(resp.message);
                     }
                 });
+            } else {
+                alert("未填写正确");
             }
         });
 
-        $('body').on('click', '.wind-email1 p.p-btn-ok', function () {
-
+        body.on('click', '.wind-email1 p.p-btn-ok', function () {
             var password = $('.wind-email1 .password').val();
             common.getData('/account/checkUserPassword.do', {password: password}, function (resp) {
                 if (resp.code == '200') {
                     $('.windd').fadeOut();
                     $('.wind-email2').fadeIn();
                     $('.wind-email1 span.sp3').hide();
+                    $('.wind-email1 .password').val('');
                 } else {
                     $('.wind-email1 span.sp3').show();
                 }
@@ -202,7 +214,7 @@ define(['jquery', 'pagination', 'common'], function (require, exports, module) {
         });
 
 
-        $('body').on('click', '.wind-email2 p.p-btn-ok', function () {
+        body.on('click', '.wind-email2 p.p-btn-ok', function () {
 
             var email = $('.wind-email2 input.email-input').val();
             var pattern = /^([a-zA-Z0-9_-])+@([a-zA-Z0-9_-])+(.[a-zA-Z0-9_-])+/;
@@ -220,13 +232,14 @@ define(['jquery', 'pagination', 'common'], function (require, exports, module) {
                     $('.wind-email2').fadeOut();
                     alert("修改成功");
                     getInfo();
+                    $('.wind-email2 input.email-input').val('')
                 } else {
                     alert(resp.message);
                 }
             });
         });
 
-        $('body').on('blur', '.wind-phone .phone', function () {
+        body.on('blur', '.wind-phone .phone', function () {
             var self = $(this);
             var pattern = /(^(([0\+]\d{2,3}-)?(0\d{2,3})-)(\d{7,8})(-(\d{3,}))?$)|(^0{0,1}1[3|4|5|6|7|8|9][0-9]{9}$)/;
             if (pattern.test(self.val())) {
@@ -247,9 +260,9 @@ define(['jquery', 'pagination', 'common'], function (require, exports, module) {
             }
         });
 
-        $('body').on('click', '#sendText', function () {
+        body.on('click', '#sendText', function () {
             var mobile = $('.wind-phone .phone').val();
-            if(!edit_phone_check.phone) {
+            if (!edit_phone_check.phone) {
                 return;
             }
             common.getData('/mall/users/textMessags.do', {mobile: mobile}, function (resp) {
@@ -260,25 +273,32 @@ define(['jquery', 'pagination', 'common'], function (require, exports, module) {
             });
         });
 
-        $('body').on('click', '.wind-phone p.p-btn-ok', function () {
+        body.on('click', '.wind-phone p.p-btn-ok', function () {
             var code = $('.wind-phone input.code').val();
             var mobile = $('.wind-phone input.phone').val();
 
-            if(edit_phone_check.phone && edit_phone_check.code) {
-                common.getData('/account/changeUserPhone.do', {mobile: mobile, code: code,cacheKeyId: cacheKeyId}, function (resp) {
+            alert(JSON.stringify(edit_phone_check));
+            if (edit_phone_check.phone && edit_phone_check.code) {
+                common.getData('/account/changeUserPhone.do', {
+                    mobile: mobile,
+                    code: code,
+                    cacheKeyId: cacheKeyId
+                }, function (resp) {
                     alert(JSON.stringify(resp));
                     if (resp.code == '200') {
                     }
                 });
+            } else {
+                alert("数据填写不正确");
             }
         });
 
-        $('body').on('click','.third-qq button',function () {
+        body.on('click', '.third-qq button', function () {
             $('#verify-wind').fadeIn();
             $('.bg').fadeIn();
         });
 
-        $('body').on('click','.third-wechat button',function () {
+        body.on('click', '.third-wechat button', function () {
             $('#verify-wind').fadeIn();
             $('.bg').fadeIn();
         });
@@ -294,7 +314,7 @@ define(['jquery', 'pagination', 'common'], function (require, exports, module) {
     }
 
     function update(data) {
-        for (var i = 0; i < data.tags.length; i++) {
+        for (i = 0; i < data.tags.length; i++) {
             $('.bq-tags span').each(function () {
                 var code = $(this).attr('value');
                 if (code == data.tags[i].code) {
@@ -303,7 +323,7 @@ define(['jquery', 'pagination', 'common'], function (require, exports, module) {
             });
         }
 
-        for (var i = 0; i < data.times.length; i++) {
+        for (i = 0; i < data.times.length; i++) {
             $('.bq-times span').each(function () {
                 var code = $(this).attr('value');
                 if (code == data.times[i].code) {
@@ -317,11 +337,11 @@ define(['jquery', 'pagination', 'common'], function (require, exports, module) {
         common.getData('/mate/sortType.do', {}, function (resp) {
             $('.bq-tags').empty();
             $('.bq-times').empty();
-            for (var i = 0; i < resp.message.tags.length; i++) {
+            for (i = 0; i < resp.message.tags.length; i++) {
                 $('.bq-tags').append('<span value="' + resp.message.tags[i].code + '">' + resp.message.tags[i].data + '</span>');
             }
 
-            for (var i = 0; i < resp.message.times.length; i++) {
+            for (i = 0; i < resp.message.times.length; i++) {
                 $('.bq-times').append('<span value="' + resp.message.times[i].code + '">' + resp.message.times[i].data + '</span>');
             }
             getMyTags();
@@ -330,7 +350,6 @@ define(['jquery', 'pagination', 'common'], function (require, exports, module) {
 
     function getInfo() {
         common.getData('/forum/userCenter/userInfo.do', {}, function (resp) {
-            alert(JSON.stringify(resp));
             $('.ul-infor .username').text(resp.name);
             $('.ul-infor .nickname').val(resp.nickName);
             $('.avatar').attr('src', resp.avatar);
@@ -364,10 +383,10 @@ define(['jquery', 'pagination', 'common'], function (require, exports, module) {
 
     function getThirdInfo() {
 
-        common.getData('/account/thirdLoginInfo',{},function (resp) {
+        common.getData('/account/thirdLoginInfo', {}, function (resp) {
             alert(JSON.stringify(resp));
 
-            if(resp.message.isBindQQ) {
+            if (resp.message.isBindQQ) {
                 $('.third-qq span').removeClass('sp1');
                 $('.third-qq span').addClass('sp2');
                 $('.third-qq button').removeClass('btn2');
@@ -381,7 +400,7 @@ define(['jquery', 'pagination', 'common'], function (require, exports, module) {
                 $('.third-qq button').text('立即关联');
             }
 
-            if(resp.message.isBindWechat) {
+            if (resp.message.isBindWechat) {
                 $('.third-wechat span').removeClass('sp1');
                 $('.third-wechat span').addClass('sp2');
                 $('.third-wechat button').removeClass('btn2');
@@ -495,7 +514,5 @@ define(['jquery', 'pagination', 'common'], function (require, exports, module) {
             } // End ms_DatePicker
         });
     })(jQuery);
-
-
     module.exports = accountSafe;
 });

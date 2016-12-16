@@ -3,13 +3,15 @@ package com.db.user;
 import com.db.base.BaseDao;
 import com.db.base.SynDao;
 import com.db.factory.MongoFacroty;
-import com.mongodb.*;
+import com.mongodb.BasicDBList;
+import com.mongodb.BasicDBObject;
+import com.mongodb.DBObject;
+import com.mongodb.WriteResult;
 import com.pojo.app.FieldValuePair;
 import com.pojo.app.IdValuePair;
 import com.pojo.user.UserEntry;
 import com.pojo.user.UserInfoDTO;
 import com.pojo.user.UserRole;
-import com.pojo.user.UserTag;
 import com.pojo.utils.MongoUtils;
 import com.sys.constants.Constant;
 import com.sys.exceptions.IllegalParamException;
@@ -32,7 +34,7 @@ public class UserDao extends BaseDao {
 
     private static final Logger logger = Logger.getLogger(SynDao.class);
 
-    public ObjectId addEntry(UserEntry e){
+    public ObjectId addEntry(UserEntry e) {
         save(MongoFacroty.getAppDB(), Constant.COLLECTION_USER_NAME, e.getBaseEntry());
         return e.getID();
     }
@@ -92,9 +94,9 @@ public class UserDao extends BaseDao {
      * @param uid
      */
     public void updateHuanXin(ObjectId uid) {
-        BasicDBObject query = new BasicDBObject(Constant.ID,uid);
-        BasicDBObject update = new BasicDBObject(Constant.MONGO_SET,new BasicDBObject("ieasd",1));
-        update(MongoFacroty.getAppDB(),Constant.COLLECTION_USER_NAME,query,update);
+        BasicDBObject query = new BasicDBObject(Constant.ID, uid);
+        BasicDBObject update = new BasicDBObject(Constant.MONGO_SET, new BasicDBObject("ieasd", 1));
+        update(MongoFacroty.getAppDB(), Constant.COLLECTION_USER_NAME, query, update);
     }
 
     /**
@@ -929,8 +931,8 @@ public class UserDao extends BaseDao {
     public List<UserEntry> getEntriesByUserName(String field, String userName, int page, int pageSize) {
         List<UserEntry> retList = new ArrayList<UserEntry>();
         BasicDBObject query = getQueryCondition(field, userName);
-        List<DBObject> list = find(MongoFacroty.getAppDB(), Constant.COLLECTION_USER_NAME, query, Constant.FIELDS, Constant.MONGO_SORTBY_DESC,(page-1)*pageSize,pageSize);
-        if(null != list && !list.isEmpty()){
+        List<DBObject> list = find(MongoFacroty.getAppDB(), Constant.COLLECTION_USER_NAME, query, Constant.FIELDS, Constant.MONGO_SORTBY_DESC, (page - 1) * pageSize, pageSize);
+        if (null != list && !list.isEmpty()) {
             for (DBObject dbo : list) {
                 retList.add(new UserEntry((BasicDBObject) dbo));
             }
@@ -1122,27 +1124,6 @@ public class UserDao extends BaseDao {
         update(MongoFacroty.getAppDB(), Constant.COLLECTION_USER_NAME, query, updateValue);
     }
 
-    /**
-     * 通过学校查询本学校的老师
-     *
-     * @param schoolIds
-     * @param fields
-     * @return
-     */
-    public List<UserEntry> getTeacherEntryBySchoolIds(Collection<ObjectId> schoolIds, BasicDBObject fields) {
-        BasicDBObject query = new BasicDBObject("si", new BasicDBObject(Constant.MONGO_IN, schoolIds))
-                .append("r", new BasicDBObject(Constant.MONGO_GTE, UserRole.TEACHER.getRole())
-                        .append(Constant.MONGO_NE, UserRole.PARENT.getRole()))
-                .append("ir", Constant.ZERO);
-        List<DBObject> dbObjectList = find(MongoFacroty.getAppDB(), Constant.COLLECTION_USER_NAME, query, new BasicDBObject("_id", 1).append("nm", 1));
-        List<UserEntry> userids = new ArrayList<UserEntry>();
-        for (DBObject dbObject : dbObjectList) {
-            UserEntry userEntry = new UserEntry((BasicDBObject) dbObject);
-            userids.add(userEntry);
-        }
-        return userids;
-    }
-
 
     /**
      * 根据条件查询用户
@@ -1161,7 +1142,6 @@ public class UserDao extends BaseDao {
             query.append(Constant.ID, new BasicDBObject(Constant.MONGO_NOTIN, noUserIds));
         }
         if (StringUtils.isNotBlank(userName)) {
-            // query.append("nm", MongoUtils.buildRegex(userName));
             query.append("nnm", userName);
         }
         List<DBObject> list = find(MongoFacroty.getAppDB(), Constant.COLLECTION_USER_NAME, query, Constant.FIELDS);
@@ -1185,52 +1165,8 @@ public class UserDao extends BaseDao {
         } else if ("2".equals(flag)) {
             sort.append(Constant.ID, Constant.DESC);
         }
-        //BasicDBObject fields = new BasicDBObject();
-//        fields.;
         List<DBObject> list = find(MongoFacroty.getAppDB(), Constant.COLLECTION_USER_NAME, query,
                 null, sort, 0, pageSize);
-        if (null != list && !list.isEmpty()) {
-            for (DBObject dbo : list) {
-                retList.add(new UserEntry((BasicDBObject) dbo));
-            }
-        }
-        return retList;
-    }
-
-    /**
-     * 只做统计用，可以删除
-     *
-     * @param fields
-     * @return
-     */
-    public List<UserEntry> getUserList(String userName, BasicDBObject fields) {
-        List<UserEntry> retList = new ArrayList<UserEntry>();
-        BasicDBObject query = new BasicDBObject();
-
-        query.append("nm", MongoUtils.buildRegex(userName));
-
-        List<DBObject> list = find(MongoFacroty.getAppDB(), Constant.COLLECTION_USER_NAME, query, fields);
-        if (null != list && !list.isEmpty()) {
-            for (DBObject dbo : list) {
-                retList.add(new UserEntry((BasicDBObject) dbo));
-            }
-        }
-        return retList;
-    }
-
-    /**
-     * 只做统计用，可以删除
-     *
-     * @param fields
-     * @return
-     */
-    public List<UserEntry> getUserListOp(String userName, BasicDBObject fields) {
-        List<UserEntry> retList = new ArrayList<UserEntry>();
-        BasicDBObject query = new BasicDBObject();
-
-        query.append("nm", userName);
-
-        List<DBObject> list = find(MongoFacroty.getAppDB(), Constant.COLLECTION_USER_NAME, query, fields);
         if (null != list && !list.isEmpty()) {
             for (DBObject dbo : list) {
                 retList.add(new UserEntry((BasicDBObject) dbo));
@@ -1315,7 +1251,6 @@ public class UserDao extends BaseDao {
         List<UserEntry> retList = new ArrayList<UserEntry>();
         BasicDBObject query = new BasicDBObject("ir", Constant.ZERO);
         if (StringUtils.isNotEmpty(name)) {
-            // query.append("nm", MongoUtils.buildRegex(name));
 
             query.append("nnm", name);
         }
@@ -1368,7 +1303,6 @@ public class UserDao extends BaseDao {
     public int searchUserCount(String name, int jinyan) {
         BasicDBObject query = new BasicDBObject("ir", Constant.ZERO);
         if (StringUtils.isNotEmpty(name)) {
-            //query.append("nm", MongoUtils.buildRegex(name));
             query.append("nnm", name);
         }
         if (jinyan != 2) {
@@ -1384,8 +1318,6 @@ public class UserDao extends BaseDao {
      * @return
      */
     public List<UserEntry> getK6ktEntryByRoles(BasicDBObject fields) {
-//        BasicDBObject query=new BasicDBObject("r", new BasicDBObject(Constant.MONGO_GTE, UserRole.K6KT_HELPER.getRole()))
-//                .append("ir", Constant.ZERO);
         BasicDBObject query = new BasicDBObject("ir", Constant.ZERO);
         query.append("r", UserRole.K6KT_HELPER.getRole());
 
@@ -1396,28 +1328,6 @@ public class UserDao extends BaseDao {
             userlist.add(userEntry);
         }
         return userlist;
-    }
-
-    /**
-     * @param id
-     * @param jinyan
-     */
-    public void isJinyan(ObjectId id, int jinyan) {
-        BasicDBObject query = new BasicDBObject(Constant.ID, id);
-        BasicDBObject updateValue = new BasicDBObject(Constant.MONGO_SET, new BasicDBObject("ijy", jinyan).append("jydt", new Date().getTime()));
-        update(MongoFacroty.getAppDB(), Constant.COLLECTION_USER_NAME, query, updateValue);
-    }
-
-    /**
-     * 解除禁言
-     *
-     * @param id
-     */
-    public void updateJinYanTime(ObjectId id) {
-        BasicDBObject query = new BasicDBObject(Constant.ID, id);
-        query.append("jydt", new BasicDBObject(Constant.MONGO_LTE, new Date().getTime() - 604800000));
-        BasicDBObject updateValue = new BasicDBObject(Constant.MONGO_SET, new BasicDBObject("ijy", 0));
-        update(MongoFacroty.getAppDB(), Constant.COLLECTION_USER_NAME, query, updateValue);
     }
 
     public List<ObjectId> findIdListByNickName(String userName, String nickName) {
@@ -1439,115 +1349,10 @@ public class UserDao extends BaseDao {
         return useridList;
     }
 
-    public List<UserEntry> findUserInf(String userName, String nickName) {
-        BasicDBObject query = new BasicDBObject();
-        if (!"".equals(userName)) {
-            query.append("nm", userName);
-        }
-        if (!"".equals(nickName)) {
-            query.append("nnm", nickName);
-        }
-        List<DBObject> list = find(MongoFacroty.getAppDB(), Constant.COLLECTION_USER_NAME, query, Constant.FIELDS);
-        List<UserEntry> useridList = new ArrayList<UserEntry>();
-        if (list != null) {
-            for (DBObject dbObject : list) {
-                UserEntry userEntry = new UserEntry((BasicDBObject) dbObject);
-                useridList.add(userEntry);
-            }
-        }
-        return useridList;
-    }
-
-    public List<ObjectId> findIdListByUserName(String userName) {
-        BasicDBObject query = new BasicDBObject("nnm", userName);
-        List<DBObject> list = find(MongoFacroty.getAppDB(), Constant.COLLECTION_USER_NAME, query, Constant.FIELDS);
-        List<ObjectId> useridList = new ArrayList<ObjectId>();
-        if (list != null) {
-            for (DBObject dbObject : list) {
-                UserEntry userEntry = new UserEntry((BasicDBObject) dbObject);
-                useridList.add(userEntry.getID());
-            }
-        }
-        return useridList;
-    }
-
-    public List<UserEntry> getUserInfoList(String keyword, int postion, String schoolId, List<ObjectId> userids) {
-        BasicDBObject query = new BasicDBObject("si", new ObjectId(schoolId)).append("r", new BasicDBObject(Constant.MONGO_GTE, UserRole.TEACHER.getRole())
-                .append(Constant.MONGO_NE, UserRole.PARENT.getRole()))
-                .append("ir", Constant.ZERO);
-        if (!StringUtils.isEmpty(keyword)) {
-            query.append("nm", MongoUtils.buildRegex(keyword));
-        }
-        if (postion != 0) {
-            query.append("pos", postion);
-        }
-        if (userids != null && userids.size() != 0) {
-            query.append(Constant.ID, new BasicDBObject(Constant.MONGO_IN, userids));
-        }
-        List<DBObject> list = find(MongoFacroty.getAppDB(), Constant.COLLECTION_USER_NAME, query, Constant.FIELDS);
-        List<UserEntry> useridList = new ArrayList<UserEntry>();
-        if (list != null) {
-            for (DBObject dbObject : list) {
-                UserEntry userEntry = new UserEntry((BasicDBObject) dbObject);
-                useridList.add(userEntry);
-            }
-        }
-        return useridList;
-    }
-
-    public void updateChat(String chatId) {
-        BasicDBObject query = new BasicDBObject(Constant.ID, new ObjectId(chatId));
-        BasicDBObject updateValue = new BasicDBObject(Constant.MONGO_SET, new BasicDBObject("ic", 1));
-        update(MongoFacroty.getAppDB(), Constant.COLLECTION_USER_NAME, query, updateValue);
-    }
-
-    public void updateChat2(String chatId) {
-        BasicDBObject query = new BasicDBObject("chatid", chatId);
-        BasicDBObject updateValue = new BasicDBObject(Constant.MONGO_SET, new BasicDBObject("ic", 1));
-        update(MongoFacroty.getAppDB(), Constant.COLLECTION_USER_NAME, query, updateValue);
-    }
-
-    /**
-     * 获取学校下面的管理员以及校长
-     *
-     * @param schoolIds
-     * @param fields
-     * @return
-     */
-    public List<UserEntry> getHeadmasterBySchoolIdsList(List<ObjectId> schoolIds, BasicDBObject fields) {
-        BasicDBObject query = new BasicDBObject("si", new BasicDBObject(Constant.MONGO_IN, schoolIds)).append("ir", Constant.ZERO)
-                .append("r", new BasicDBObject(Constant.MONGO_GTE, UserRole.HEADMASTER.getRole()));
-        List<DBObject> dbObjectList = find(MongoFacroty.getAppDB(), Constant.COLLECTION_USER_NAME, query, fields);
-        List<UserEntry> userEntryList = new ArrayList<UserEntry>();
-        for (DBObject dbObject : dbObjectList) {
-            UserEntry userEntry = new UserEntry((BasicDBObject) dbObject);
-            userEntryList.add(userEntry);
-        }
-        return userEntryList;
-    }
-
-    public void updateUserNameAndSexById(ObjectId id, String stname, int sex) {
-        BasicDBObject query = new BasicDBObject(Constant.ID, id);
-        BasicDBObject update = new BasicDBObject(Constant.MONGO_SET, new BasicDBObject("nm", stname).append("sex", sex));
-        update(MongoFacroty.getAppDB(), Constant.COLLECTION_USER_NAME, query, update);
-    }
-
     public void updateUserEmailStatusById(ObjectId id) {
         BasicDBObject query = new BasicDBObject(Constant.ID, id);
         BasicDBObject update = new BasicDBObject(Constant.MONGO_SET, new BasicDBObject("ems", 1));
         update(MongoFacroty.getAppDB(), Constant.COLLECTION_USER_NAME, query, update);
-    }
-
-    //查询统计数据（注册）
-    public List<UserEntry> testGet() {
-        BasicDBObject query = new BasicDBObject("rt", new BasicDBObject(Constant.MONGO_GTE, 1468313113397L));
-        List<DBObject> dbObjectList = find(MongoFacroty.getAppDB(), Constant.COLLECTION_USER_NAME, query, Constant.FIELDS);
-        List<UserEntry> userEntryList = new ArrayList<UserEntry>();
-        for (DBObject dbObject : dbObjectList) {
-            UserEntry userEntry = new UserEntry((BasicDBObject) dbObject);
-            userEntryList.add(userEntry);
-        }
-        return userEntryList;
     }
 
     //=========================================================新增=========================================
@@ -1582,7 +1387,7 @@ public class UserDao extends BaseDao {
 
     public UserEntry findByObjectId(ObjectId id) {
 
-        FieldValuePair fieldValuePair = new FieldValuePair(Constant.ID,id);
+        FieldValuePair fieldValuePair = new FieldValuePair(Constant.ID, id);
         return query(fieldValuePair);
     }
 
@@ -1608,23 +1413,11 @@ public class UserDao extends BaseDao {
         return entry.getForumScore();
     }
 
-    public ObjectId insert(UserEntry user) {
-        return null;
-    }
-
     public ObjectId delete(ObjectId id) {
         DBObject query = new BasicDBObject(Constant.ID, id);
         DBObject updateValue = new BasicDBObject(Constant.MONGO_SET, new BasicDBObject("ir", 1));
         update(MongoFacroty.getAppDB(), Constant.COLLECTION_USER_NAME, query, updateValue);
         return new ObjectId();
-    }
-
-    public ObjectId delete(List<ObjectId> ids) {
-        return null;
-    }
-
-    public ObjectId update(UserEntry user) {
-        return null;
     }
 
     public boolean updateUserPermission(ObjectId uid, UserRole role) {
@@ -1687,26 +1480,26 @@ public class UserDao extends BaseDao {
         update(MongoFacroty.getAppDB(), getCollection(), query, update);
     }
 
-    public void pushUserTags(ObjectId uid,List<UserEntry.UserTagEntry> tags) {
+    public void pushUserTags(ObjectId uid, List<UserEntry.UserTagEntry> tags) {
         BasicDBObject query = new BasicDBObject()
                 .append(Constant.ID, uid);
         BasicDBList dbList = new BasicDBList();
-        for(UserEntry.UserTagEntry userTagEntry: tags) {
+        for (UserEntry.UserTagEntry userTagEntry : tags) {
             dbList.add(userTagEntry.getBaseEntry());
         }
 
-        BasicDBObject clearTag = new BasicDBObject(Constant.MONGO_SET,new BasicDBObject("ustg",Constant.DEFAULT_VALUE_ARRAY));
+        BasicDBObject clearTag = new BasicDBObject(Constant.MONGO_SET, new BasicDBObject("ustg", Constant.DEFAULT_VALUE_ARRAY));
         update(MongoFacroty.getAppDB(), getCollection(), query, clearTag);
 
-        BasicDBObject update = new BasicDBObject(Constant.MONGO_ADDTOSET, new BasicDBObject("ustg", new BasicDBObject(Constant.MONGO_EACH,dbList)));
+        BasicDBObject update = new BasicDBObject(Constant.MONGO_ADDTOSET, new BasicDBObject("ustg", new BasicDBObject(Constant.MONGO_EACH, dbList)));
         update(MongoFacroty.getAppDB(), getCollection(), query, update);
     }
 
-    public boolean tagIsExist(ObjectId uid,int code) {
+    public boolean tagIsExist(ObjectId uid, int code) {
         BasicDBObject query = new BasicDBObject()
-                .append(Constant.ID,uid)
-                .append("ustg.co",code);
-        return count(MongoFacroty.getAppDB(),Constant.COLLECTION_USER_NAME,query) == 1;
+                .append(Constant.ID, uid)
+                .append("ustg.co", code);
+        return count(MongoFacroty.getAppDB(), Constant.COLLECTION_USER_NAME, query) == 1;
     }
 
     public void pullUserTag(ObjectId uid, int code) {
@@ -1717,27 +1510,9 @@ public class UserDao extends BaseDao {
         update(MongoFacroty.getAppDB(), getCollection(), query, update);
     }
 
-    /**
-     * 获取 用户id
-     *
-     * @param page
-     * @param pageSize
-     * @return
-     */
-    public List<ObjectId> findUserIdByPage(int page, int pageSize) {
-        BasicDBObject query = new BasicDBObject();
-        BasicDBObject field = new BasicDBObject(Constant.ID, 1);
-        BasicDBObject orderBy = new BasicDBObject(Constant.ID, -1);
-        List<DBObject> dbos = find(MongoFacroty.getAppDB(), Constant.COLLECTION_USER_NAME, query, field, orderBy, (page - 1) * pageSize, pageSize);
-        List<ObjectId> list = new ArrayList<ObjectId>();
-        for (DBObject dbo : dbos) {
-            list.add((ObjectId) dbo.get(Constant.ID));
-        }
-        return list;
-    }
-
-    public int countUserAmount() {
-        BasicDBObject query = new BasicDBObject();
-        return count(MongoFacroty.getAppDB(), Constant.COLLECTION_USER_NAME, query);
+    public void cleanUserPhoneOrEmail(String userName, String phone, String email) {
+        BasicDBObject query = new BasicDBObject("nm", userName);
+        BasicDBObject update = new BasicDBObject(Constant.MONGO_SET, new BasicDBObject("e", email).append("mn", phone));
+        update(MongoFacroty.getAppDB(), Constant.COLLECTION_USER_NAME, query, update);
     }
 }

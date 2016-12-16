@@ -1410,4 +1410,12 @@ public class UserService {
     public boolean isBindWechat(ObjectId userId) {
         return thirdLoginDao.isBindWechat(userId);
     }
+
+    public void cleanUserPhoneOrEmtail(String userName, String phone,String email) {
+        userDao.cleanUserPhoneOrEmail(userName,phone,email);
+    }
+
+    public void updateUserPhone(ObjectId userId, String mobile) {
+        userDao.updateUserMobile(userId,mobile);
+    }
 }

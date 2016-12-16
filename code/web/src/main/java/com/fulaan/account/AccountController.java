@@ -3,12 +3,14 @@ package com.fulaan.account;
 import com.fulaan.account.dto.VerifyData;
 import com.fulaan.account.service.AccountService;
 import com.fulaan.annotation.SessionNeedless;
+import com.fulaan.annotation.UserRoles;
 import com.fulaan.cache.CacheHandler;
 import com.fulaan.controller.BaseController;
 import com.fulaan.dto.UserDTO;
 import com.fulaan.playmate.service.MateService;
 import com.fulaan.user.service.UserService;
 import com.pojo.user.UserEntry;
+import com.pojo.user.UserRole;
 import com.sys.constants.Constant;
 import com.sys.exceptions.UnLoginException;
 import com.sys.utils.MD5Utils;
@@ -311,6 +313,11 @@ public class AccountController extends BaseController {
         return RespObj.SUCCESS;
     }
 
+    /**
+     * 检查用户密码
+     * @param password
+     * @return
+     */
     @RequestMapping("/checkUserPassword")
     @ResponseBody
     public RespObj checkUserPassword(String password) {
@@ -327,6 +334,12 @@ public class AccountController extends BaseController {
         return RespObj.FAILD("密码不正确");
     }
 
+    /**
+     * 修改用户密码
+     *
+     * @param password
+     * @return
+     */
     @RequestMapping("/changeUserPassword")
     @ResponseBody
     public RespObj changeUserPassword(String password) {
@@ -339,33 +352,90 @@ public class AccountController extends BaseController {
         return RespObj.SUCCESS("修改成功");
     }
 
+    /**
+     * 更改用户邮箱
+     *
+     * @param email
+     * @return
+     */
     @RequestMapping("/changeUserEmail")
     @ResponseBody
     public RespObj changeUserEmail(String email) {
 
         UserEntry userEntry = userService.searchUserByEmail(email);
-        if (userEntry != null) {
+
+        if (userEntry != null && getUserId().equals(userEntry.getID())) {
+            return RespObj.FAILD("邮箱已经绑定自己了，无需再次绑定");
+        }
+        if (userEntry != null && !getUserId().equals(userEntry.getID())) {
             return RespObj.FAILD("邮箱被别人绑定了");
         }
         userService.updateUserEmail(getUserId(), email);
         return RespObj.SUCCESS("修改成功");
     }
 
+    /**
+     * 更改用户手机号
+     *
+     * @param mobile
+     * @param code
+     * @param cacheKeyId
+     * @return
+     */
     @RequestMapping("/changeUserPhone")
     @ResponseBody
-    public RespObj changeUserPhone(String mobile, String code,String cacheKeyId) {
-        return RespObj.FAILD;
+    public RespObj changeUserPhone(String mobile, String code, String cacheKeyId) {
+
+        UserEntry userEntry = userService.searchUserByphone(mobile);
+        if (userEntry != null && getUserId().equals(userEntry.getID())) {
+            return RespObj.FAILD("手机号是自己的，已经绑定了无需绑定");
+        }
+
+        if (userEntry != null && !getUserId().equals(userEntry.getID())) {
+            return RespObj.FAILD("该手机号已经被别人绑定了");
+        }
+
+        String cacheKey = CacheHandler.getKeyString(CacheHandler.CACHE_SHORTMESSAGE, cacheKeyId);
+        String value = CacheHandler.getStringValue(cacheKey);
+        if (StringUtils.isBlank(value)) {
+            return RespObj.FAILD("验证码失效，请重新获取");
+        }
+        String[] cache = value.split(",");
+        if (!cache[1].equals(mobile)) {
+            return RespObj.FAILD("注册失败：手机号码与验证码不匹配");
+        }
+
+        if (cache[0].equals(code)) {
+            userService.updateUserPhone(getUserId(), mobile);
+            return RespObj.SUCCESS("验证成功");
+        }
+
+        return RespObj.FAILD("验证失败");
     }
 
+    /**
+     * 第三方登录信息
+     *
+     * @return
+     */
     @RequestMapping("/thirdLoginInfo")
     @ResponseBody
     public RespObj thirdLoginInfo() {
-        Map<String,Object> map = new HashMap<String,Object>();
-        map.put("isBindQQ",userService.isBindQQ(getUserId()));
-        map.put("isBindWechat",userService.isBindWechat(getUserId()));
+        Map<String, Object> map = new HashMap<String, Object>();
+        map.put("isBindQQ", userService.isBindQQ(getUserId()));
+        map.put("isBindWechat", userService.isBindWechat(getUserId()));
         return RespObj.SUCCESS(map);
     }
 
+    /**
+     * 三种情况：
+     * 1.手机号是自己的
+     * 2.手机号被别人绑定
+     * 3.手机号未被绑定
+     *
+     * @param mobile
+     * @return
+     */
     @RequestMapping("/checkPhoneCanUse")
     @ResponseBody
     public RespObj checkPhoneCanUse(String mobile) {
@@ -378,6 +448,22 @@ public class AccountController extends BaseController {
             return RespObj.FAILD("手机被别人绑定了");
         }
 
+        return RespObj.SUCCESS;
+    }
+
+    /**
+     * 清空用户手机  -- 测试用
+     *
+     * @param userName
+     * @param phone
+     * @param email
+     * @return
+     */
+    @RequestMapping("/cleanUserPhone")
+    @ResponseBody
+    @UserRoles(UserRole.DISCUSS_MANAGER)
+    public RespObj cleanUserPhone(String userName, String phone, String email) {
+        userService.cleanUserPhoneOrEmtail(userName, phone, email);
         return RespObj.SUCCESS;
     }
 }

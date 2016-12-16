@@ -13,7 +13,7 @@
 <div id="successDiv" class="wind">
     <p>提示</p>
     <div>
-        注册成功！恭喜你，成为复兰教育社区用户！<br>可以在<a href="/mall/userCenter/voucher.do">个人中心</a>查看查看。<br>
+        注册成功！恭喜你，成为复兰教育社区用户！<br>可以在<a href="/">个人中心</a>查看查看。<br>
         <input type="button" value="确定">
     </div>
 </div>
@@ -33,7 +33,7 @@
             <li>
                 <input type="text" class="user-name">
                 <span class="sp1">用户名 : </span>
-                <span class="sp2">6-20位字符（汉字、字母、数字、下划线）</span>
+                <span class="sp2">3-20位字符（汉字、字母、数字、下划线）</span>
                 <span class="sp3" style="display: none">请输入用户名</span>
             </li>
             <li>
@@ -66,7 +66,7 @@
                 <span class="sp3" style="display: none">参数不完整</span>
             </li>
             <li>
-                <span class="sp2"><label><input type="checkbox" class="argument">我同意《复兰教育社区协议》</label></span>
+                <span class="sp2"><label><input type="checkbox" class="argument">我同意<a href="/agreement.html" target="_blank">《复兰教育社区协议》</a></label></span>
                 <button>确认</button>
                 <span class="sp3" style="display: none;top: 26px">请填写参数</span>
             </li>
@@ -96,7 +96,7 @@
                 <span class="sp3" style="display: none">请输入正确的邮箱地址</span>
             </li>
             <li>
-                <span class="sp2"><label><input type="checkbox" class="argument" name="argument" value="1">我同意《复兰教育社区协议》</label></span>
+                <span class="sp2"><label><input type="checkbox" class="argument" name="argument" value="1">我同意<a href="/agreement.html" target="_blank">《复兰教育社区协议》</a></label></span>
                 <button>确认</button>
                 <span class="sp3" style="display: none;top: 26px">请填写参数</span>
             </li>

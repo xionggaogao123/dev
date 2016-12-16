@@ -176,7 +176,7 @@
 <script type="text/template" id="myCommunityTmpl">
     {{~it:value:index}}
     <li>
-        <img src="{{=value.logo}}">
+        <img src="{{=value.logo}}" style="cursor: pointer" onclick="window.open('/community/communityPublish?communityId={{=value.id}}')">
         <p>{{=value.name}}</p>
         <div id="manager">
             管理社区

@@ -196,7 +196,7 @@
         </p>
         <p class="p3">
             <img src="/static/images/findnearby_zuobiao.png">
-            距离你<i>{{=value.distance}}</i>米
+            距离你<i>{{=value.distance}}</i>
         </p>
         <p class="p4"><i># {{? value.activityTheme != null }}
             {{=value.activityTheme.data}}

@@ -31,8 +31,6 @@ define(['jquery', 'pagination', 'common'], function (require, exports, module) {
     var cacheKeyId = '';
     var i = 0;
 
-    var verify_pass = false;
-
     $(function () {
 
         $('.btn-xg-psw').click(function () {
@@ -43,10 +41,29 @@ define(['jquery', 'pagination', 'common'], function (require, exports, module) {
             $('.wind-phone').fadeIn();
             $('.bg').fadeIn();
         });
+
         $('.windd .p1 em').click(function () {
             $('.windd').fadeOut();
             $('.bg').fadeOut();
+
+            $('.edit-pass .password').val('');
+            $('.edit-pass .n-password').val('');
+            $('.edit-pass .n-r-password').val('');
+
+            $('.wind-email1 .password').val('');
+            $('.wind-email2 input.email-input').val('');
+
+            $('.wind-phone input.code').val('');
+            $('.wind-phone input.phone').val('');
+
+            $('.windd .sp3').hide();
+
+            edit_pass_check.password = false;
+            edit_pass_check.n_password = false;
+            edit_pass_check.n_r_password = false;
         });
+
+
         $('.btn-xg-email').click(function () {
             $('.wind-email1').fadeIn();
             $('.bg').fadeIn();
@@ -54,7 +71,7 @@ define(['jquery', 'pagination', 'common'], function (require, exports, module) {
 
         var body = $('body');
 
-        $('ul.set-left li').click(function () {
+        $('ul.set-left-l li').click(function () {
             var value = $(this).index() + 1;
 
             for (var i = 1; i <= 4; i++) {
@@ -65,7 +82,7 @@ define(['jquery', 'pagination', 'common'], function (require, exports, module) {
                 $('.set-container .right-' + i).hide();
             }
 
-            $('ul.set-left li').each(function () {
+            $('ul.set-left-l li').each(function () {
                 $(this).removeClass('li444');
             });
 
@@ -78,7 +95,7 @@ define(['jquery', 'pagination', 'common'], function (require, exports, module) {
             } else {
 
                 if ($('.bq-tags span.oracur2').length >= 6) {
-                    alert("标签只不能多于6个");
+                    alert("标签不能多于6个");
                     return;
                 }
                 $(this).addClass('oracur2');
@@ -126,6 +143,11 @@ define(['jquery', 'pagination', 'common'], function (require, exports, module) {
         body.on('click', '.ul-infor button', function () {
             var requestData = {};
             requestData.nickName = $('.nickname').val();
+
+            if(requestData.nickName.length > 8) {
+                alert("昵称最多8个字符");
+                return;
+            }
             requestData.sex = $('input[type="radio"][name="sex"]:checked').val();
             requestData.year = $('#sel_year option:selected').val();
             requestData.month = $('#sel_month option:selected').val();
@@ -216,14 +238,15 @@ define(['jquery', 'pagination', 'common'], function (require, exports, module) {
 
         body.on('click', '.wind-email2 p.p-btn-ok', function () {
 
+            var email_tip = $('.wind-email2 .sp3');
             var email = $('.wind-email2 input.email-input').val();
-            var pattern = /^([a-zA-Z0-9_-])+@([a-zA-Z0-9_-])+(.[a-zA-Z0-9_-])+/;
+            var pattern = /^([a-zA-Z0-9._-])+@([a-zA-Z0-9_-])+(.[a-zA-Z0-9_-])+/;
             if (!pattern.test(email)) {
-                $('.wind-email2 .sp3').text('邮箱格式不正确');
-                $('.wind-email2 .sp3').show();
+                email_tip.text('邮箱格式不正确');
+                email_tip.show();
                 return;
             } else {
-                $('.wind-email2 .sp3').hide();
+                email_tip.hide();
             }
             common.getData('/account/changeUserEmail.do', {email: email}, function (resp) {
                 if (resp.code == '200') {
@@ -266,9 +289,11 @@ define(['jquery', 'pagination', 'common'], function (require, exports, module) {
                 return;
             }
             common.getData('/mall/users/textMessags.do', {mobile: mobile}, function (resp) {
-                alert(JSON.stringify(resp));
                 if (resp.code == '200') {
                     cacheKeyId = resp.cacheKeyId;
+                    edit_phone_check.code = true;
+                } else {
+                    edit_phone_check.code = false;
                 }
             });
         });
@@ -279,13 +304,22 @@ define(['jquery', 'pagination', 'common'], function (require, exports, module) {
 
             alert(JSON.stringify(edit_phone_check));
             if (edit_phone_check.phone && edit_phone_check.code) {
-                common.getData('/account/changeUserPhone.do', {
+                var requestData = {
                     mobile: mobile,
                     code: code,
                     cacheKeyId: cacheKeyId
-                }, function (resp) {
+                };
+                common.getData('/account/changeUserPhone.do', requestData, function (resp) {
                     alert(JSON.stringify(resp));
                     if (resp.code == '200') {
+                        alert(resp.message);
+                        $('.windd').fadeOut();
+                        $('.bg').fadeOut();
+                        $('.wind-phone input.code').val('');
+                        $('.wind-phone input.phone').val('');
+                        getInfo();
+                    } else {
+                        alert(resp.message);
                     }
                 });
             } else {
@@ -294,13 +328,12 @@ define(['jquery', 'pagination', 'common'], function (require, exports, module) {
         });
 
         body.on('click', '.third-qq button', function () {
-            $('#verify-wind').fadeIn();
-            $('.bg').fadeIn();
+
+            window.open('/account/qqBind.do', "TencentLogin", "width=800,height=600,menubar=0,scrollbars=1, resizable=1,status=1,titlebar=0,toolbar=0,location=1");
         });
 
         body.on('click', '.third-wechat button', function () {
-            $('#verify-wind').fadeIn();
-            $('.bg').fadeIn();
+            window.open('/account/wechatBind.do', "TencentLogin", "width=800,height=600,menubar=0,scrollbars=1, resizable=1,status=1,titlebar=0,toolbar=0,location=1");
         });
 
     });
@@ -362,13 +395,13 @@ define(['jquery', 'pagination', 'common'], function (require, exports, module) {
             });
 
             if (resp.phone == null || resp.phone == '') {
-                $('#verify-phone').text('<em>未设置</em>');
+                $('#verify-phone').append('<em>未设置</em>');
             } else {
                 $('#verify-phone').text(resp.phone);
             }
 
             if (resp.email == null || resp.email == '') {
-                $('#verify-email').text('<em>未设置</em>');
+                $('#verify-email').append('<em>未设置</em>');
             } else {
                 $('#verify-email').text(resp.email);
             }
@@ -384,7 +417,6 @@ define(['jquery', 'pagination', 'common'], function (require, exports, module) {
     function getThirdInfo() {
 
         common.getData('/account/thirdLoginInfo', {}, function (resp) {
-            alert(JSON.stringify(resp));
 
             if (resp.message.isBindQQ) {
                 $('.third-qq span').removeClass('sp1');
@@ -511,7 +543,7 @@ define(['jquery', 'pagination', 'common'], function (require, exports, module) {
                 if ($DaySelector.attr("rel") != "") {
                     BuildDay();
                 }
-            } // End ms_DatePicker
+            }
         });
     })(jQuery);
     module.exports = accountSafe;

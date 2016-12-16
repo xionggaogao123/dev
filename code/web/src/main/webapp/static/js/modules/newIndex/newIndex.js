@@ -173,11 +173,11 @@ define(['jquery', 'pagination', 'common'], function (require, exports, module) {
                 var homework = resp.message.homework;
                 var materials = resp.message.materials;
                 loadAnnouncement(announcement);
+                loadHomework(homework);
                 loadActivity(activity);
                 loadShare(share);
                 loadMaterials(materials);
                 loadMeans(means);
-                loadHomework(homework);
             }else{
                 // alert(resp.message);
             }

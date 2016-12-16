@@ -13,7 +13,7 @@
 <div class="set-container">
     <div class="set-tit">账户中心</div>
     <div>
-        <ul class="set-left">
+        <ul class="set-left-l">
             <li class="li444">
                 <div>
                     <div class="d-img im1"></div>
@@ -39,7 +39,7 @@
                 </div>
             </li>
         </ul>
-        <div class="set-right right-1">
+        <div class="set-right-r right-1">
             <div class="tit">
                 <span>基本资料</span>
             </div>
@@ -88,7 +88,7 @@
                 </li>
             </ul>
         </div>
-        <div class="set-right right-2" hidden>
+        <div class="set-right-r right-2" hidden>
             <div class="tit">
                 <span>扩展资料<em>增加你的扩展资料，将显示在你的个人名片中，并可以让更多的朋友了解和认识你</em></span>
             </div>
@@ -105,7 +105,7 @@
                 <button class="btn-no">取消</button>
             </div>
         </div>
-        <div class="set-right right-3" hidden>
+        <div class="set-right-r right-3" hidden>
             <div class="tit">
                 <span>账户安全<em>请尽早完善账户安全信息，更好地保护您的数据安全！</em></span>
             </div>
@@ -127,7 +127,7 @@
                 </li>
             </ul>
         </div>
-        <div class="set-right right-4" hidden>
+        <div class="set-right-r right-4" hidden>
             <div class="tit">
                 <span>关联第三方帐号<em>关联第三方帐号也可以登录</em></span>
             </div>

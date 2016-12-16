@@ -26,7 +26,7 @@
             $('#setDefaultSort').click(function(){
                 $.ajax({
                     type: "GET",
-                    data: {page:page},
+                    data: {},
                     url: '/community/setDefaultSort.do',
                     async: false,
                     dataType: "json",

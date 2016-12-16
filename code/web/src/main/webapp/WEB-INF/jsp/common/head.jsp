@@ -144,7 +144,7 @@
             </div>
         </c:if>
         <c:if test="${login == false}">
-            <span class="spanss" onclick="window.open('/mall/register.do')">注册</span>
+            <span class="spanss" onclick="window.open('/account/register')">注册</span>
             <span class="spanss"  id="toplogin">登录</span>
             <a onclick="redirectQ()"><img src="/static/images/forum/Connect_logo_7.png"></a>
             <a onclick="loginWeiXin()"><img src="/static/images/forum/icon24_wx_button.png"/></a>

@@ -20,6 +20,8 @@ define(['jquery', 'pagination', 'common'], function (require, exports, module) {
     var cacheKeyId = '';
 
     $(function () {
+        
+        var body = $('body');
         $('.tab span:nth-child(1)').click(function () {
             $(this).addClass('tab-cur').siblings('.tab span').removeClass('tab-cur');
             $('.re-cont .ul1').show().siblings('.re-cont ul').hide();
@@ -29,13 +31,7 @@ define(['jquery', 'pagination', 'common'], function (require, exports, module) {
             $(this).addClass('tab-cur').siblings('.tab span').removeClass('tab-cur');
             $('.re-cont .ul2').show().siblings('.re-cont ul').hide();
         });
-
-        $('.re-btn3').click(function () {
-            $('.re-conts').hide();
-            $('.re-cont4').show();
-            $('.ul-luc li:nth-child(4)').addClass('orali');
-        });
-
+        
         $('.re-btn-email').click(function () {
 
             var email = $('#email').val();
@@ -63,12 +59,10 @@ define(['jquery', 'pagination', 'common'], function (require, exports, module) {
             var verifyCode = $('.verifyCode1').val();
             var name = $('.username').val();
             common.getData("/account/verifyCodeWithName.do", {name: name, verifyCode: verifyCode}, function (resp) {
-                alert(JSON.stringify(resp));
                 if (resp.code == '200') {
                     $('.re-conts').hide();
                     $('.re-cont2').show();
                     $('.ul-luc li:nth-child(2)').addClass('orali');
-
                     $('#verifyImg').attr('src','/verify/verifyCode.do?date'+ new Date());
                 } else {
                     alert(resp.message);
@@ -107,11 +101,9 @@ define(['jquery', 'pagination', 'common'], function (require, exports, module) {
             var self = $(this);
             self.css('color','#aaa');
             common.getData("/mall/users/messages.do", {mobile: phone, verifyCode: verifyCode}, function (resp) {
-                alert(JSON.stringify(resp));
                 if (resp.code == '200') {
                     phoneVerifyCheck.code = true;
                     cacheKeyId = resp.cacheKeyId;
-
                 } else {
                     alert(resp.message);
                     phoneVerifyCheck.code = false;
@@ -120,7 +112,7 @@ define(['jquery', 'pagination', 'common'], function (require, exports, module) {
             })
         });
 
-        $('body').on('click','.next2',function () {
+        body.on('click','.next2',function () {
             if (!$('.next2-argument').is(':checked')) {
                 $(this).parent().find('.sp3').text('未勾选社区协议');
                 $(this).parent().find('.sp3').show();
@@ -129,7 +121,6 @@ define(['jquery', 'pagination', 'common'], function (require, exports, module) {
                 $(this).parent().find('.sp3').hide();
             }
 
-            alert(JSON.stringify(phoneVerifyCheck));
             if(phoneVerifyCheck.code && phoneVerifyCheck.phone ) {
                 $(this).parent().find('.sp3').hide();
 
@@ -142,7 +133,6 @@ define(['jquery', 'pagination', 'common'], function (require, exports, module) {
                     cacheKeyId: cacheKeyId
                 };
                 common.getData("/account/phoneValidate.do", requestParm, function (resp) {
-                    alert(JSON.stringify(resp));
                     if (resp.code == '200') {
                         $('.re-conts').hide();
                         $('.re-cont3').show();
@@ -159,19 +149,19 @@ define(['jquery', 'pagination', 'common'], function (require, exports, module) {
             }
         });
 
-        $('body').on('click','.re-btn3',function () {
+        body.on('click','.re-btn3',function () {
             var password = $('#reset-password').val();
             if(!resetPasswordCheck.password || !resetPasswordCheck.rePassword ) {
                 return;
             }
             common.getData("/account/resetPassword.do", {password: password}, function (resp) {
-                alert(JSON.stringify(resp));
                 if (resp.code == '200') {
-
+                    $('.re-conts').hide();
+                    $('.re-cont4').show();
+                    $('.ul-luc li:nth-child(4)').addClass('orali');
                 } else {
                     alert(resp.message);
                 }
-
             });
         });
 

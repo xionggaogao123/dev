@@ -22,6 +22,7 @@ import com.fulaan.util.URLParseUtil;
 import com.pojo.activity.FriendApply;
 import com.pojo.app.FileUploadDTO;
 import com.pojo.app.IdNameValuePairDTO;
+import com.pojo.app.Platform;
 import com.pojo.fcommunity.ConcernEntry;
 import com.pojo.fcommunity.MineCommunityEntry;
 import com.pojo.fcommunity.PartInContentEntry;
@@ -798,7 +799,12 @@ public class CommunityController extends BaseController {
                               @RequestParam(required = false, defaultValue = "4") int pageSize,
                               @RequestParam(required = false, defaultValue = "-1") int order,
                               @RequestParam(required = false, defaultValue = "1") int type) {
-        return RespObj.SUCCESS(communityService.getMessages(communityId, page, pageSize, order, type,getUserId()));
+        Platform pf = getPlatform();
+        boolean isApp=false;
+        if(pf == Platform.Android || pf == Platform.IOS) {
+            isApp=true;
+        }
+        return RespObj.SUCCESS(communityService.getMessages(communityId, page, pageSize, order, type,getUserId(),isApp));
     }
 
     @RequestMapping("/getAllTypeMessage")
@@ -871,7 +877,24 @@ public class CommunityController extends BaseController {
     @ResponseBody
     @SessionNeedless
     public RespObj messageDetail(@ObjectIdType ObjectId detailId) {
-        return RespObj.SUCCESS(communityService.findDetailByObjectId(detailId));
+        CommunityDetailDTO detailDTO=communityService.findDetailByObjectId(detailId);
+        Platform pf = getPlatform();
+        if(pf == Platform.Android || pf == Platform.IOS){
+            if (null != getUserId()) {
+                boolean flag = true;
+                List<String> unReadList = detailDTO.getUnReadList();
+                for (String item : unReadList) {
+                    if (item.equals(getUserId().toString())) {
+                        flag = false;
+                        break;
+                    }
+                }
+                if (flag) {
+                    communityService.pushRead(detailId, getUserId());
+                }
+            }
+        }
+        return RespObj.SUCCESS(detailDTO);
     }
 
 

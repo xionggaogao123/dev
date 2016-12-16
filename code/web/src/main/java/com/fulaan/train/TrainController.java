@@ -15,6 +15,7 @@ import com.fulaan.train.service.CriticismService;
 import com.fulaan.train.service.InstituteService;
 import com.fulaan.train.service.ItemTypeService;
 import com.fulaan.train.service.RegionService;
+import com.fulaan.user.service.UserService;
 import com.fulaan.util.DownloadUtil;
 import com.fulaan.util.GetLocation;
 import com.fulaan.util.getProvinceInfo;
@@ -23,6 +24,7 @@ import com.pojo.questions.PropertiesObj;
 import com.pojo.train.CriticismEntry;
 import com.pojo.train.InstituteEntry;
 import com.pojo.train.RegionEntry;
+import com.pojo.user.UserEntry;
 import com.pojo.user.UserRole;
 import com.sys.constants.Constant;
 import com.sys.exceptions.IllegalParamException;
@@ -64,6 +66,8 @@ public class TrainController extends BaseController {
     private InstituteService instituteService;
     @Autowired
     private CriticismService criticismService;
+    @Autowired
+    private UserService userService;
 
     @RequestMapping("/trainList")
     @SessionNeedless
@@ -71,6 +75,7 @@ public class TrainController extends BaseController {
     public String trainList(Map<String, Object> model,HttpServletRequest request){
         try {
             model.put("location",false);
+            String region;
             String instituteKeyValue = getCookieInstituteKeyValue(request);
             if(StringUtils.isNotBlank(instituteKeyValue)){
                 Map<String,String> map=RedisUtils.getMap(instituteKeyValue);
@@ -78,7 +83,9 @@ public class TrainController extends BaseController {
                     String regionId=map.get("regionId");
                     if(StringUtils.isNotBlank(regionId)){
                         RegionEntry regionEntry=regionService.findById(new ObjectId(regionId));
-                        model.put("region",regionEntry.getName().substring(0,2));
+                        region=regionEntry.getName().substring(0,2);
+                    }else{
+                        region="上海";
                     }
                     String typeId=map.get("type");
                     if(StringUtils.isNotBlank(typeId)){
@@ -88,7 +95,17 @@ public class TrainController extends BaseController {
                     if(StringUtils.isNotBlank(areaId)){
                         model.put("areaId",areaId);
                     }
-                    model.put("location",true);
+                    model.put("region",region);
+                    Map<String, String>  position= getProvinceInfo.getAddresses("ip=" + getIP(), "utf-8");
+                    if (null != position && !position.isEmpty()) {
+                        String positionRegion=map.get("region");
+                        if(StringUtils.isNotBlank(positionRegion)){
+                            if(!model.get("region").equals(positionRegion.substring(0, 2))){
+                                model.put("location",true);
+                            }
+                        }
+
+                    }
                 }else{
                     model.put("region", "上海");
                 }
@@ -339,6 +356,14 @@ public class TrainController extends BaseController {
         //判断该用户是否评论过该培训信息
         CriticismEntry entry = criticismService.getEntry(instituteId, userId);
 
+        //先判断是否为最新10天注册的用户，若是，则不能评论
+        if(null!=userId){
+            long nowTime=System.currentTimeMillis();
+            long deadTime=userId.getTime()+10L*24L*60L*60L*1000L;
+            if(nowTime<deadTime){
+                return RespObj.FAILD("新用户10天内不能评论!");
+            }
+        }
         if (null != entry) {
             int remove = entry.getRemove();
             if (remove == 0) {

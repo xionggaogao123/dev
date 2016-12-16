@@ -13,6 +13,7 @@ public class PageModel<T> {
     private int pageSize;
     private int totalCount;
     private long totalPages;
+    private int totalUnReadCount;
     private List<T> result;
 
     public int getPage() {
@@ -53,5 +54,13 @@ public class PageModel<T> {
 
     public void setResult(List<T> result) {
         this.result = result;
+    }
+
+    public int getTotalUnReadCount() {
+        return totalUnReadCount;
+    }
+
+    public void setTotalUnReadCount(int totalUnReadCount) {
+        this.totalUnReadCount = totalUnReadCount;
     }
 }

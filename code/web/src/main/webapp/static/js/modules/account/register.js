@@ -41,7 +41,7 @@ define(['jquery', 'pagination', 'common'], function (require, exports, module) {
 
         $("#phone").blur(function () {
             var self = $(this);
-            var pattern = /(^(([0\+]\d{2,3}-)?(0\d{2,3})-)(\d{7,8})(-(\d{3,}))?$)|(^0{0,1}1[3|4|5|6|7|8|9][0-9]{9}$)/;
+            var pattern = /(^(([0+]\d{2,3}-)?(0\d{2,3})-)(\d{7,8})(-(\d{3,}))?$)|(^0{0,1}1[3|4|5|6|7|8|9][0-9]{9}$)/;
             if (pattern.test(self.val())) {
                 var requestParm = {phone: self.val()};
                 common.getData('/account/userPhoneCheck', requestParm, function (resp) {
@@ -130,6 +130,12 @@ define(['jquery', 'pagination', 'common'], function (require, exports, module) {
 
         $('.ul1 .user-name').blur(function () {
             var self = $(this);
+            var pattern = /[a-zA-Z0-9_\u4e00-\u9fa5]{3,20}$/;
+            if(!pattern.test(self.val())) {
+                self.parent().find('.sp3').text('用户名不符合规范');
+                self.parent().find('.sp3').show();
+                return;
+            }
             if (self.val() != '') {
                 self.parent().find('.sp3').hide();
                 var requestParm = {userName: self.val()};
@@ -151,6 +157,12 @@ define(['jquery', 'pagination', 'common'], function (require, exports, module) {
 
         $('.ul2 .user-name').blur(function () {
             var self = $(this);
+            var pattern = /[a-zA-Z0-9_\u4e00-\u9fa5]{3,20}$/;
+            if(!pattern.test(self.val())) {
+                self.parent().find('.sp3').text('用户名不符合规范');
+                self.parent().find('.sp3').show();
+                return;
+            }
             if (self.val() != '') {
                 self.parent().find('.sp3').hide();
                 var requestParm = {userName: self.val()};
@@ -211,7 +223,6 @@ define(['jquery', 'pagination', 'common'], function (require, exports, module) {
             }
 
             if (phoneRegisterCheck.userName && phoneRegisterCheck.password && phoneRegisterCheck.phone && phoneRegisterCheck.identifyCode) {
-                alert("开始注册");
                 var code = $.trim($('#code').val());
                 var userName = $.trim($('.ul1 .user-name').val());
                 var password = $.trim($('.ul1 .password').val());
@@ -268,6 +279,7 @@ define(['jquery', 'pagination', 'common'], function (require, exports, module) {
         });
     }
 
+    var isRegister = false;
     function registerUser(code, userName, password, phone, email) {
         var requestData = {};
         requestData.cacheKeyId = cacheKeyId;
@@ -276,13 +288,16 @@ define(['jquery', 'pagination', 'common'], function (require, exports, module) {
         requestData.userName = userName;
         requestData.passWord = password;
         requestData.phoneNumber = phone;
+        if(isRegister) {
+            return;
+        }
+        isRegister = true;
         common.getPostData('/mall/users.do', requestData, function (resp) {
             if (resp.code == 200) {
                 if (resp.type == 1) {
                     $('#successDiv').show();
                     setTimeout(function () {
-                        window.location.href = '/mall/entrance.do';
-                        isPressEmailSend = false;
+                        window.location.href = '/';
                     }, 8000);
                 } else if (resp.type == 2) {
                     var message = resp.message;
@@ -290,8 +305,8 @@ define(['jquery', 'pagination', 'common'], function (require, exports, module) {
                     location.href = '/mall/users/sendEmail.do?email=' + item[0] + '&emailValidateCode=' + item[1];
                 }
             } else {
-                isPressEmailSend = false;
                 alert(resp.message);
+                isRegister = false;
             }
 
         });

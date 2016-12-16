@@ -59,6 +59,8 @@
             </script>
             <div class="com-left-s" id="announcement">
             </div>
+            <div class="com-left-s" id="homework">
+            </div>
             <script type="text/template" id="activityTmpl">
                 <div class="com-tit" id="activity_all">组织活动报名</div>
                 {{~it:value:index}}
@@ -177,8 +179,6 @@
                 </div>
                 {{~}}
             </script>
-            <div class="com-left-s" id="homework">
-            </div>
             <script type="text/template" id="meansTmpl">
                 <div class="com-tit" id="means_all">学习资料</div>
                 {{~it:value:index}}

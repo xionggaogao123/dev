@@ -103,8 +103,8 @@ public class CommunityController extends BaseController {
                                    @RequestParam(required = false, defaultValue = "0") int open,
                                    @RequestParam(required = false, defaultValue = "") String userIds) throws Exception {
         //先进行敏感词过滤
-        name=userService.filter(name);
-        desc=userService.filter(desc);
+        name = userService.filter(name);
+        desc = userService.filter(desc);
         //先判断该社区名称是否使用过
         boolean flag = communityService.judgeCommunityCreate(name);
         if (flag) {
@@ -125,7 +125,7 @@ public class CommunityController extends BaseController {
             logo = prev + suffix;
         }
         ObjectId commId = communityService.createCommunity(communityId, uid, name, desc, logo, qrUrl, seqId, open);
-        if(commId == null ){
+        if (commId == null) {
             return RespObj.FAILD("无法创建社区");
         }
         communityService.pushToUser(commId, uid, 2);
@@ -136,8 +136,8 @@ public class CommunityController extends BaseController {
         if (StringUtils.isNotBlank(userIds)) {
             GroupDTO groupDTO = groupService.findByObjectId(new ObjectId(communityDTO.getGroupId()));
             List<ObjectId> userList = MongoUtils.convertObjectIds(userIds);
-            for(ObjectId userId:userList) {
-                if (emService.addUserToEmGroup(groupDTO.getEmChatId(),userId)) {
+            for (ObjectId userId : userList) {
+                if (emService.addUserToEmGroup(groupDTO.getEmChatId(), userId)) {
                     memberService.saveMember(userId, new ObjectId(groupDTO.getId()), 0);
                     communityService.pushToUser(communityId, userId, 1);
                 }
@@ -163,8 +163,8 @@ public class CommunityController extends BaseController {
                                     @RequestParam(required = false, defaultValue = "0") int open,
                                     @RequestParam(required = false, defaultValue = "") String userIds) throws Exception {
         //先进行敏感词过滤
-        name=userService.filter(name);
-        desc=userService.filter(desc);
+        name = userService.filter(name);
+        desc = userService.filter(desc);
 
         //先判断该社区名称是否使用过
         boolean flag = communityService.judgeCommunityCreate(name);
@@ -192,8 +192,8 @@ public class CommunityController extends BaseController {
         if (StringUtils.isNotBlank(userIds)) {
             GroupDTO groupDTO = groupService.findByObjectId(new ObjectId(communityDTO.getGroupId()));
             List<ObjectId> userList = MongoUtils.convertObjectIds(userIds);
-            for(ObjectId userId:userList) {
-                if (emService.addUserToEmGroup(groupDTO.getEmChatId(),userId)) {
+            for (ObjectId userId : userList) {
+                if (emService.addUserToEmGroup(groupDTO.getEmChatId(), userId)) {
                     memberService.saveMember(userId, new ObjectId(groupDTO.getId()), 0);
                     communityService.pushToUser(communityId, userId, 1);
                 }
@@ -289,7 +289,7 @@ public class CommunityController extends BaseController {
         if (memberService.isGroupMember(groupId, userId)) {
             return RespObj.FAILD("该用户已经是该社区成员了");
         } else {
-            if (emService.addUserToEmGroup(groupDTO.getEmChatId(), userId)){
+            if (emService.addUserToEmGroup(groupDTO.getEmChatId(), userId)) {
                 if (memberService.isBeforeMember(groupId, userId)) {
                     memberService.updateMember(groupId, userId, 0);
                     communityService.setPartIncontentStatus(communityId, userId, 0);
@@ -334,47 +334,39 @@ public class CommunityController extends BaseController {
     @RequestMapping("/myCommunitys")
     @ResponseBody
     @SessionNeedless
-    public RespObj getMyCommunitys(@RequestParam(defaultValue = "1",required = false)int page,
-                                   @RequestParam(defaultValue = "100",required = false)int pageSize,
-                                   @RequestParam(defaultValue = "app",required = false)String platform) {
-        try {
-            ObjectId userId = getUserId();
-            List<CommunityDTO> communityDTOList = new ArrayList<CommunityDTO>();
-            CommunityDTO fulanDto = communityService.getDefaultDto("复兰社区");
-            if (null == userId) {
-                if (null != fulanDto) {
-                    communityDTOList.add(fulanDto);
-                }
-                return RespObj.SUCCESS(communityDTOList);
-            } else {
-                //登录状态
-                //判断是否为复兰社区会员
-                if (null != fulanDto) {
-                    if (!memberService.isGroupMember(new ObjectId(fulanDto.getGroupId()), getUserId())) {
-                        //加入复兰社区
-                        joinCommunityWithEm(getUserId(), new ObjectId(fulanDto.getId()));
-                        communityService.pushToUser(new ObjectId(fulanDto.getId()), getUserId(), 2);
-                    }
-                }
-                communityDTOList = communityService.getCommunitys(userId, page, pageSize);
-                if("web".equals(platform)) {
-                    int count = communityService.countMycommunitys(userId);
-                    Map<String, Object> map = new HashMap<String, Object>();
-                    map.put("list", communityDTOList);
-                    map.put("count", count);
-                    map.put("pageSize", pageSize);
-                    map.put("page", page);
-                    return RespObj.SUCCESS(map);
-                }else{
-                    return RespObj.SUCCESS(communityDTOList);
-                }
+    public RespObj getMyCommunitys(@RequestParam(defaultValue = "1", required = false) int page,
+                                   @RequestParam(defaultValue = "100", required = false) int pageSize,
+                                   @RequestParam(defaultValue = "app", required = false) String platform) {
+        ObjectId userId = getUserId();
+        List<CommunityDTO> communityDTOList = new ArrayList<CommunityDTO>();
+        CommunityDTO fulanDto = communityService.getDefaultDto("复兰社区");
+        if (null == userId) {
+            if (null != fulanDto) {
+                communityDTOList.add(fulanDto);
             }
-        } catch (Exception e) {
-            return RespObj.FAILD(e.getMessage());
+            return RespObj.SUCCESS(communityDTOList);
+        } else {
+            //登录状态
+            //判断是否为复兰社区会员
+            if (null != fulanDto) {
+                //加入复兰社区
+                joinCommunityWithEm(getUserId(), new ObjectId(fulanDto.getId()));
+                communityService.clearNnnecessaryCommunity(new ObjectId(fulanDto.getId()), getUserId());
+            }
+            communityDTOList = communityService.getCommunitys(userId, page, pageSize);
+            if ("web".equals(platform)) {
+                int count = communityService.countMycommunitys(userId);
+                Map<String, Object> map = new HashMap<String, Object>();
+                map.put("list", communityDTOList);
+                map.put("count", count);
+                map.put("pageSize", pageSize);
+                map.put("page", page);
+                return RespObj.SUCCESS(map);
+            } else {
+                return RespObj.SUCCESS(communityDTOList);
+            }
         }
     }
-
-
 
 
     /**
@@ -385,12 +377,12 @@ public class CommunityController extends BaseController {
     @RequestMapping("/hotCommunitys")
     @ResponseBody
     @SessionNeedless
-    public RespObj hotCommunitys(@RequestParam(defaultValue = "1",required = false)int page,
-                                 @RequestParam(defaultValue = "21",required = false)int pageSize,
-                                 @RequestParam(defaultValue = "",required = false)String lastId) {
+    public RespObj hotCommunitys(@RequestParam(defaultValue = "1", required = false) int page,
+                                 @RequestParam(defaultValue = "21", required = false) int pageSize,
+                                 @RequestParam(defaultValue = "", required = false) String lastId) {
         ObjectId userId = getUserId();
 
-        return RespObj.SUCCESS(communityService.getOpenCommunityS(userId,page,pageSize,lastId));
+        return RespObj.SUCCESS(communityService.getOpenCommunityS(userId, page, pageSize, lastId));
     }
 
     /**
@@ -498,7 +490,7 @@ public class CommunityController extends BaseController {
                                         @RequestParam(defaultValue = "1") int join,
                                         @RequestParam(defaultValue = "", required = false) String msg) {
         //先进行敏感词过滤
-        msg=userService.filter(msg);
+        msg = userService.filter(msg);
         ObjectId userId = getUserId();
         if (join == 1) {
             CommunityDetailDTO communityDetailDTO = communityService.findDetailByObjectId(communityDetailId);
@@ -625,25 +617,24 @@ public class CommunityController extends BaseController {
      * @param communityId
      * @return
      */
-    private boolean joinCommunityWithEm(ObjectId userId, ObjectId communityId) {
+    private void joinCommunityWithEm(ObjectId userId, ObjectId communityId) {
 
         ObjectId groupId = communityService.getGroupId(communityId);
         //type=1时，处理的是复兰社区
         if (memberService.isGroupMember(groupId, userId)) {
-            return false;
+            return;
         }
         //判断该用户是否曾经加入过该社区
         if (memberService.isBeforeMember(groupId, userId)) {
             memberService.updateMember(groupId, userId, 0);
-            communityService.pushToUser(communityId, userId, 1);
+            communityService.pushToUser(communityId, userId, 2);
             //设置先前该用户所发表的数据
             communityService.setPartIncontentStatus(communityId, userId, 0);
         } else {
             //新人
-            communityService.pushToUser(communityId, userId, 1);
+            communityService.pushToUser(communityId, userId, 2);
             memberService.saveMember(userId, groupId, 0);
         }
-        return true;
     }
 
 
@@ -703,12 +694,12 @@ public class CommunityController extends BaseController {
             } else {
                 model.put("operation", 0);
             }
-            MineCommunityEntry entry=communityService.getTopEntry(new ObjectId(communityId),getUserId());
-            if(null!=entry){
-                if(entry.getTop()==0){
-                    model.put("top",1);
-                }else{
-                    model.put("top",0);
+            MineCommunityEntry entry = communityService.getTopEntry(new ObjectId(communityId), getUserId());
+            if (null != entry) {
+                if (entry.getTop() == 0) {
+                    model.put("top", 1);
+                } else {
+                    model.put("top", 0);
                 }
             }
         }
@@ -720,8 +711,8 @@ public class CommunityController extends BaseController {
     @SessionNeedless
     @LoginInfo
     public String communityAllType(Map<String, Object> model,
-                                   @RequestParam(value = "target",defaultValue = "") String target) {
-        model.put("target",target);
+                                   @RequestParam(value = "target", defaultValue = "") String target) {
+        model.put("target", target);
         return "/community/communityAllType";
     }
 
@@ -800,11 +791,11 @@ public class CommunityController extends BaseController {
                               @RequestParam(required = false, defaultValue = "-1") int order,
                               @RequestParam(required = false, defaultValue = "1") int type) {
         Platform pf = getPlatform();
-        boolean isApp=false;
-        if(pf == Platform.Android || pf == Platform.IOS) {
-            isApp=true;
+        boolean isApp = false;
+        if (pf == Platform.Android || pf == Platform.IOS) {
+            isApp = true;
         }
-        return RespObj.SUCCESS(communityService.getMessages(communityId, page, pageSize, order, type,getUserId(),isApp));
+        return RespObj.SUCCESS(communityService.getMessages(communityId, page, pageSize, order, type, getUserId(), isApp));
     }
 
     @RequestMapping("/getAllTypeMessage")
@@ -877,9 +868,9 @@ public class CommunityController extends BaseController {
     @ResponseBody
     @SessionNeedless
     public RespObj messageDetail(@ObjectIdType ObjectId detailId) {
-        CommunityDetailDTO detailDTO=communityService.findDetailByObjectId(detailId);
+        CommunityDetailDTO detailDTO = communityService.findDetailByObjectId(detailId);
         Platform pf = getPlatform();
-        if(pf == Platform.Android || pf == Platform.IOS){
+        if (pf == Platform.Android || pf == Platform.IOS) {
             if (null != getUserId()) {
                 boolean flag = true;
                 List<String> unReadList = detailDTO.getUnReadList();
@@ -1016,7 +1007,7 @@ public class CommunityController extends BaseController {
         ObjectId groupId = communityService.getGroupId(communityId);
         for (ObjectId userId : userIds) {
 
-            if(memberService.isHead(new ObjectId(community.getGroupId()),userId)) {
+            if (memberService.isHead(new ObjectId(community.getGroupId()), userId)) {
                 return RespObj.FAILD("不能删除社长");
             }
             if (emService.removeUserFromEmGroup(community.getEmChatId(), userId)) {
@@ -1300,7 +1291,7 @@ public class CommunityController extends BaseController {
                                  @RequestParam(defaultValue = "", required = false) String vedios,
                                  @RequestParam(defaultValue = "", required = false) String attachements) {
         //先进行敏感词过滤
-        text=userService.filter(text);
+        text = userService.filter(text);
         ObjectId userId = getUserId();
         if (StringUtils.isNotBlank(text)) {
             communityService.saveReplyDetailText(communityId, detailId, userId, text, type);
@@ -1446,7 +1437,7 @@ public class CommunityController extends BaseController {
         return userSearchInfos;
     }
 
-    private static class UserSearchInfo{
+    private static class UserSearchInfo {
         private String userId;
         private String avator;
         private String nickName;
@@ -1553,7 +1544,7 @@ public class CommunityController extends BaseController {
 
         try {
             //先进行敏感词过滤
-            shareCommend=userService.filter(shareCommend);
+            shareCommend = userService.filter(shareCommend);
             HttpClientBuilder httpClientBuilder = HttpClientBuilder.create();
             CloseableHttpClient client = httpClientBuilder.build();
             //抓取的数据
@@ -1580,7 +1571,7 @@ public class CommunityController extends BaseController {
                              @RequestParam(defaultValue = "", required = false) String description,
                              @RequestParam(defaultValue = "", required = false) String sharePrice) {
         //先进行敏感词过滤
-        shareCommend=userService.filter(shareCommend);
+        shareCommend = userService.filter(shareCommend);
         ObjectId uid = getUserId();
         communityService.saveCommunityRecommend(communityId, communityDetailId, uid, shareUrl, shareImage, description, sharePrice, shareCommend, type);
         return RespObj.SUCCESS("推荐学习用品成功！");
@@ -1613,12 +1604,12 @@ public class CommunityController extends BaseController {
                     if (emService.addUserToEmGroup(emChatId, userId)) {
                         memberService.updateMember(groupId, userId, 0);
                         communityService.setPartIncontentStatus(communityId, userId, 0);
-                        communityService.pushToUser(communityId,userId,1);
+                        communityService.pushToUser(communityId, userId, 1);
                     }
                 } else {
                     if (emService.addUserToEmGroup(emChatId, userId)) {
                         memberService.saveMember(userId, groupId);
-                        communityService.pushToUser(communityId,userId,1);
+                        communityService.pushToUser(communityId, userId, 1);
                     }
                 }
             }
@@ -1772,7 +1763,7 @@ public class CommunityController extends BaseController {
         UserEntry userEntry = userService.find(personId);
         model.put("avatar", AvatarUtils.getAvatar(userEntry.getAvatar(), AvatarType.MIN_AVATAR.getType()));
         model.put("nickName", StringUtils.isNotBlank(userEntry.getNickName()) ? userEntry.getNickName() : userEntry.getUserName());
-        if(getUserId() != null) {
+        if (getUserId() != null) {
             ObjectId userId = getUserId();
             UserEntry userEntry1 = userService.find(userId);
             model.put("applyName", StringUtils.isNotBlank(userEntry1.getNickName()) ? userEntry1.getNickName() : userEntry1.getUserName());
@@ -1810,7 +1801,7 @@ public class CommunityController extends BaseController {
     public RespObj pushUserTag(@RequestBody UserTag userTag) {
         ObjectId userId = getUserId();
         userService.pushUserTag(userId, userTag.getCode(), userTag.getTag());
-        mateService.pushUserTag(userId,userTag.getCode());
+        mateService.pushUserTag(userId, userTag.getCode());
         return RespObj.SUCCESS;
     }
 
@@ -1819,7 +1810,7 @@ public class CommunityController extends BaseController {
     public RespObj pullUserTag(int code) {
         ObjectId userId = getUserId();
         userService.pullUserTag(userId, code);
-        mateService.pullUserTag(userId,code);
+        mateService.pullUserTag(userId, code);
         return RespObj.SUCCESS;
     }
 
@@ -2027,12 +2018,12 @@ public class CommunityController extends BaseController {
      */
     @RequestMapping("/getCommunitySysInfo")
     @ResponseBody
-    public Map<String,Object> getCommunitySysInfo(@RequestParam(required = false,defaultValue = "1")int page,
-                                       @RequestParam(required = false,defaultValue = "20")int pageSize){
-        Map<String,Object> map=new HashMap<String,Object>();
-        ObjectId userId=getUserId();
-        List<CommunitySystemInfoDTO> dtos=communitySystemInfoService.findInfoByUserIdAndType(userId,page,pageSize);
-        int count=communitySystemInfoService.countEntriesByUserIdAndType(userId);
+    public Map<String, Object> getCommunitySysInfo(@RequestParam(required = false, defaultValue = "1") int page,
+                                                   @RequestParam(required = false, defaultValue = "20") int pageSize) {
+        Map<String, Object> map = new HashMap<String, Object>();
+        ObjectId userId = getUserId();
+        List<CommunitySystemInfoDTO> dtos = communitySystemInfoService.findInfoByUserIdAndType(userId, page, pageSize);
+        int count = communitySystemInfoService.countEntriesByUserIdAndType(userId);
         //加载完数据设置已读
         communitySystemInfoService.setAllData(userId);
         map.put("list", dtos);
@@ -2045,6 +2036,7 @@ public class CommunityController extends BaseController {
 
     /**
      * web端涂鸦控件
+     *
      * @param base64ImgData
      * @param oldImage
      * @param partContentId
@@ -2054,8 +2046,8 @@ public class CommunityController extends BaseController {
      */
     @RequestMapping("/base64image")
     @ResponseBody
-    public RespObj uploadBase64Image(String base64ImgData,String oldImage,String partContentId, HttpServletRequest req) throws Exception {
-        String temp=base64ImgData.substring(base64ImgData.indexOf("base64")+7,base64ImgData.length());
+    public RespObj uploadBase64Image(String base64ImgData, String oldImage, String partContentId, HttpServletRequest req) throws Exception {
+        String temp = base64ImgData.substring(base64ImgData.indexOf("base64") + 7, base64ImgData.length());
 //        BASE64Decoder d = new BASE64Decoder();
 //        byte[] bs = d.decodeBuffer(temp);
 //        for (int i = 0; i < bs.length; ++i) {
@@ -2063,8 +2055,8 @@ public class CommunityController extends BaseController {
 //                bs[i] += 256;
 //            }
 //        }
-        Base64 base64=new Base64();
-        byte[] b=base64.decodeBase64(temp.getBytes());
+        Base64 base64 = new Base64();
+        byte[] b = base64.decodeBase64(temp.getBytes());
         for (int i = 0; i < b.length; ++i) {
             if (b[i] < 0) {// 调整异常数据
                 b[i] += 256;
@@ -2076,7 +2068,7 @@ public class CommunityController extends BaseController {
             parentFile.mkdirs();
         }
 //        String filekey = new ObjectId() + ".png";
-        String fileName=new ObjectId() + ".jpeg";
+        String fileName = new ObjectId() + ".jpeg";
         File attachFile = new File(parentFile, fileName);
         try {
             OutputStream out = new FileOutputStream(attachFile);
@@ -2091,13 +2083,12 @@ public class CommunityController extends BaseController {
 //        BufferedImage bi1 = ImageIO.read(bais);
 
 
-
 //        ImageIO.write(bi1, "jpg", attachFile);
 
         String fileKey1 = new ObjectId().toString() + Constant.POINT + "png";
         QiniuFileUtils.uploadFile(fileKey1, new FileInputStream(attachFile), QiniuFileUtils.TYPE_IMAGE);
         String path = QiniuFileUtils.getPath(QiniuFileUtils.TYPE_IMAGE, fileKey1);
-        communityService.updateImage(new ObjectId(partContentId), path, "http://" + URLDecoder.decode(oldImage,"UTF-8"));
+        communityService.updateImage(new ObjectId(partContentId), path, "http://" + URLDecoder.decode(oldImage, "UTF-8"));
         return RespObj.SUCCESS;
     }
 
@@ -2111,7 +2102,7 @@ public class CommunityController extends BaseController {
      */
     @RequestMapping("/saveEditedImage")
     @ResponseBody
-    public RespObj saveEditedImage(HttpServletRequest request,HttpServletResponse response) throws Exception {
+    public RespObj saveEditedImage(HttpServletRequest request, HttpServletResponse response) throws Exception {
         String filekey = "qiuNiu-" + new ObjectId().toString() + ".png";
         String parentPath = request.getServletContext().getRealPath("/upload") + "/qiuNiu/";
         File parentFile = new File(parentPath);
@@ -2138,15 +2129,15 @@ public class CommunityController extends BaseController {
 
     @RequestMapping("/getMyQRCode")
     @ResponseBody
-    public RespObj getMyQRCode(){
-        ObjectId userId=getUserId();
-        UserEntry userEntry=userService.find(userId);
-        if(StringUtils.isBlank(userEntry.getQRCode())){
-            String qrCode= QRUtils.getPersonQrUrl(userId);
+    public RespObj getMyQRCode() {
+        ObjectId userId = getUserId();
+        UserEntry userEntry = userService.find(userId);
+        if (StringUtils.isBlank(userEntry.getQRCode())) {
+            String qrCode = QRUtils.getPersonQrUrl(userId);
             userEntry.setQRCode(qrCode);
-            userService.addEntry(userEntry) ;
+            userService.addEntry(userEntry);
             return RespObj.SUCCESS(qrCode);
-        }else{
+        } else {
             return RespObj.SUCCESS(userEntry.getQRCode());
         }
 
@@ -2154,24 +2145,25 @@ public class CommunityController extends BaseController {
 
     @RequestMapping("/updateCommunityPrio")
     @ResponseBody
-    public RespObj updateCommunityPrio(@ObjectIdType ObjectId cmid,int prio) {
+    public RespObj updateCommunityPrio(@ObjectIdType ObjectId cmid, int prio) {
 
-        communityService.updateCommunityPrio(cmid,prio);
+        communityService.updateCommunityPrio(cmid, prio);
         return RespObj.SUCCESS;
     }
 
 
     /**
      * 设置置顶
+     *
      * @param communityId
      * @param top
      * @return
      */
     @RequestMapping("/updateCommunityTop")
     @ResponseBody
-    public RespObj updateCommunityTop(@ObjectIdType ObjectId communityId,int top) {
+    public RespObj updateCommunityTop(@ObjectIdType ObjectId communityId, int top) {
 
-        communityService.setTop(communityId,getUserId(),top);
+        communityService.setTop(communityId, getUserId(), top);
         return RespObj.SUCCESS;
     }
 
@@ -2183,7 +2175,12 @@ public class CommunityController extends BaseController {
         return RespObj.SUCCESS;
     }
 
-
+//    @RequestMapping("/clearNnnecessaryCommunity")
+//    @ResponseBody
+//    public RespObj clearNnnecessaryCommunity() {
+//        communityService.clearNnnecessaryCommunity();
+//        return RespObj.SUCCESS;
+//    }
 
 
 }

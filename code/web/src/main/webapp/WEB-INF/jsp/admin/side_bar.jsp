@@ -49,12 +49,6 @@
             <a href="/admin/SystemMessage.do">消息管理</a>
         </li>
         <li>
-            <a href="/admin/articleManager.do">文章管理</a>
-        </li>
-        <li>
-            <a href="/v2/admin/jpushAdmin.do">极光推送</a>
-        </li>
-        <li>
             <a href="/admin/loginInfo.do">登录数据</a>
         </li>
         <li>

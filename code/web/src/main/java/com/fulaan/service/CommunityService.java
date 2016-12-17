@@ -170,16 +170,13 @@ public class CommunityService {
      * @param uid
      */
     public List<CommunityDTO> getCommunitys(ObjectId uid, int page, int pageSize) {
-
         List<MineCommunityEntry> allMineCommunitys = mineCommunityDao.findAll(uid, page, pageSize);
         List<CommunityDTO> list = new ArrayList<CommunityDTO>();
-        if (allMineCommunitys.size() > 0) {
-            for(MineCommunityEntry mineCommunityEntry : allMineCommunitys){
-                CommunityEntry entry=communityDao.findByObjectId(mineCommunityEntry.getCommunityId());
-                CommunityDTO communityDTO=new CommunityDTO(entry);
-                communityDTO.setTop(mineCommunityEntry.getTop());
-                list.add(communityDTO);
-            }
+        for(MineCommunityEntry mineCommunityEntry : allMineCommunitys){
+            CommunityEntry entry=communityDao.findByObjectId(mineCommunityEntry.getCommunityId());
+            CommunityDTO communityDTO=new CommunityDTO(entry);
+            communityDTO.setTop(mineCommunityEntry.getTop());
+            list.add(communityDTO);
         }
         return list;
     }
@@ -1228,5 +1225,9 @@ public class CommunityService {
 
     public MineCommunityEntry getTopEntry(ObjectId community,ObjectId userId){
         return mineCommunityDao.find(community,userId);
+    }
+
+    public void clearNnnecessaryCommunity(ObjectId communityId,ObjectId userId) {
+        mineCommunityDao.clearNnnecessaryCommunity(communityId,userId);
     }
 }

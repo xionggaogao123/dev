@@ -237,7 +237,6 @@ public class MemberService {
      */
     public MemberDTO getHead(ObjectId groupId) {
         MemberEntry memberEntry = memberDao.getHead(groupId);
-
         if (memberEntry != null) {
             return new MemberDTO(memberEntry);
         }

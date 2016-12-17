@@ -222,7 +222,7 @@ public class MemberDao extends BaseDao {
                 .append("grid", groupId)
                 .append("uid", userId)
                 .append("r", 0);
-        return count(MongoFacroty.getAppDB(), Constant.COLLECTION_FORUM_COMMUNITY_MEMBER, query) == 1;
+        return findOne(MongoFacroty.getAppDB(), Constant.COLLECTION_FORUM_COMMUNITY_MEMBER, query) != null;
     }
 
     /**

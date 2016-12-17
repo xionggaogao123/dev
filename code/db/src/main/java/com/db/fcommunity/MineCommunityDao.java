@@ -28,8 +28,8 @@ public class MineCommunityDao extends BaseDao {
         BasicDBObject query = new BasicDBObject()
                 .append("uid", userId);
         BasicDBObject orderBy = new BasicDBObject()
-                .append("prio",-1)
-                .append("tp",-1)
+                .append("prio", -1)
+                .append("tp", -1)
                 .append(Constant.ID, Constant.DESC);
         List<DBObject> dbos;
         if (page != -1) {
@@ -44,10 +44,10 @@ public class MineCommunityDao extends BaseDao {
         return mineCommunityEntries;
     }
 
-    public void updatePrio(ObjectId communityId,int prio) {
-        BasicDBObject query = new BasicDBObject("cmid",communityId);
-        BasicDBObject update = new BasicDBObject(Constant.MONGO_SET,new BasicDBObject("prio",prio));
-        update(MongoFacroty.getAppDB(),Constant.COLLECTION_FORUM_MINE_COMMUNITY,query,update);
+    public void updatePrio(ObjectId communityId, int prio) {
+        BasicDBObject query = new BasicDBObject("cmid", communityId);
+        BasicDBObject update = new BasicDBObject(Constant.MONGO_SET, new BasicDBObject("prio", prio));
+        update(MongoFacroty.getAppDB(), Constant.COLLECTION_FORUM_MINE_COMMUNITY, query, update);
     }
 
     public int count(ObjectId userId) {
@@ -72,33 +72,34 @@ public class MineCommunityDao extends BaseDao {
         return mineCommunityEntries;
     }
 
-    public  void setDefaultSort(){
-        List<Integer> list=new ArrayList<Integer>();
+    public void setDefaultSort() {
+        List<Integer> list = new ArrayList<Integer>();
         list.add(3);
-        BasicDBObject query=new BasicDBObject().
-                append("prio",new BasicDBObject(Constant.MONGO_NOTIN,list));
-        BasicDBObject updateValue=new BasicDBObject(Constant.MONGO_SET,new BasicDBObject("prio",1));
-        update(MongoFacroty.getAppDB(), Constant.COLLECTION_FORUM_MINE_COMMUNITY, query,updateValue);
+        BasicDBObject query = new BasicDBObject().
+                append("prio", new BasicDBObject(Constant.MONGO_NOTIN, list));
+        BasicDBObject updateValue = new BasicDBObject(Constant.MONGO_SET, new BasicDBObject("prio", 1));
+        update(MongoFacroty.getAppDB(), Constant.COLLECTION_FORUM_MINE_COMMUNITY, query, updateValue);
     }
 
-    public MineCommunityEntry find(ObjectId id){
-        BasicDBObject query=new BasicDBObject(Constant.ID,id);
-        DBObject dbObject=findOne(MongoFacroty.getAppDB(), Constant.COLLECTION_FORUM_MINE_COMMUNITY, query);
-        if(null!=dbObject){
-            return new MineCommunityEntry((BasicDBObject)dbObject);
-        }else{
-            return null;
+    public MineCommunityEntry find(ObjectId id) {
+        BasicDBObject query = new BasicDBObject(Constant.ID, id);
+        DBObject dbObject = findOne(MongoFacroty.getAppDB(), Constant.COLLECTION_FORUM_MINE_COMMUNITY, query);
+        return dbObject == null ? null : new MineCommunityEntry(dbObject);
+    }
+
+    public MineCommunityEntry find(ObjectId communityId, ObjectId userId) {
+        BasicDBObject query = new BasicDBObject("cmid", communityId).append("uid", userId);
+        DBObject dbObject = findOne(MongoFacroty.getAppDB(), Constant.COLLECTION_FORUM_MINE_COMMUNITY, query);
+        return dbObject == null ? null : new MineCommunityEntry(dbObject);
+    }
+
+    public void clearNnnecessaryCommunity(ObjectId communityId, ObjectId userId) {
+        BasicDBObject query = new BasicDBObject("cmid", communityId).append("uid", userId);
+        int count = count(MongoFacroty.getAppDB(), Constant.COLLECTION_FORUM_MINE_COMMUNITY, query);
+        if (count > 1) {
+            remove(MongoFacroty.getAppDB(),Constant.COLLECTION_FORUM_MINE_COMMUNITY,query);
+            MineCommunityEntry mineCommunityEntry = new MineCommunityEntry(userId, communityId, 2);
+            save(mineCommunityEntry);
         }
     }
-
-    public MineCommunityEntry find(ObjectId communityId,ObjectId userId){
-        BasicDBObject query=new BasicDBObject("cmid",communityId).append("uid",userId);
-        DBObject dbObject=findOne(MongoFacroty.getAppDB(), Constant.COLLECTION_FORUM_MINE_COMMUNITY, query);
-        if(null!=dbObject){
-            return new MineCommunityEntry((BasicDBObject)dbObject);
-        }else{
-            return null;
-        }
-    }
-
 }

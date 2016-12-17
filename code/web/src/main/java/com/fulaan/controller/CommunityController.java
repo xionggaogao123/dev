@@ -413,7 +413,7 @@ public class CommunityController extends BaseController {
      */
     @RequestMapping(value = "/newMessage")
     @ResponseBody
-    public RespObj newMessage(HttpServletRequest request, @RequestBody CommunityMessage message) {
+    public RespObj newMessage(@RequestBody CommunityMessage message) {
         ObjectId uid = getUserId();
         communityService.saveMessage(uid, message);
         return RespObj.SUCCESS;
@@ -805,16 +805,15 @@ public class CommunityController extends BaseController {
                                      @RequestParam(required = false, defaultValue = "4") int pageSize,
                                      @RequestParam(required = false, defaultValue = "-1") int order) {
         ObjectId userId = getUserId();
+        List<ObjectId> communityIds = new ArrayList<ObjectId>();
         if (null == userId) {
             CommunityDTO fulanDTO = communityService.getDefaultDto("复兰社区");
             if (fulanDTO != null && fulanDTO.getId() != null) {
-                List<ObjectId> cmmIds = new ArrayList<ObjectId>();
-                cmmIds.add(new ObjectId(fulanDTO.getId()));
-                return RespObj.SUCCESS(communityService.getNews(cmmIds, page, pageSize, order, userId, 1));
+                communityIds.add(new ObjectId(fulanDTO.getId()));
+                return RespObj.SUCCESS(communityService.getNews(communityIds, page, pageSize, order, null, 1));
             }
             return RespObj.FAILD("没有数据");
         } else {
-            List<ObjectId> communityIds = new ArrayList<ObjectId>();
             List<CommunityDTO> communityDTOList = communityService.getCommunitys(userId, -1, 0);
             for (CommunityDTO communityDTO : communityDTOList) {
                 communityIds.add(new ObjectId(communityDTO.getId()));

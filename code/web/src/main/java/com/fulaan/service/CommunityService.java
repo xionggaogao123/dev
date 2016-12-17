@@ -117,8 +117,8 @@ public class CommunityService {
         return new CommunityDTO(communityEntry);
     }
 
-    public void updateCommunityPrio(ObjectId communityId,int prio) {
-        mineCommunityDao.updatePrio(communityId,prio);
+    public void updateCommunityPrio(ObjectId communityId, int prio) {
+        mineCommunityDao.updatePrio(communityId, prio);
     }
 
     /**
@@ -172,9 +172,9 @@ public class CommunityService {
     public List<CommunityDTO> getCommunitys(ObjectId uid, int page, int pageSize) {
         List<MineCommunityEntry> allMineCommunitys = mineCommunityDao.findAll(uid, page, pageSize);
         List<CommunityDTO> list = new ArrayList<CommunityDTO>();
-        for(MineCommunityEntry mineCommunityEntry : allMineCommunitys){
-            CommunityEntry entry=communityDao.findByObjectId(mineCommunityEntry.getCommunityId());
-            CommunityDTO communityDTO=new CommunityDTO(entry);
+        for (MineCommunityEntry mineCommunityEntry : allMineCommunitys) {
+            CommunityEntry entry = communityDao.findByObjectId(mineCommunityEntry.getCommunityId());
+            CommunityDTO communityDTO = new CommunityDTO(entry);
             communityDTO.setTop(mineCommunityEntry.getTop());
             list.add(communityDTO);
         }
@@ -244,7 +244,7 @@ public class CommunityService {
         List<CommunityDetailEntry> communitys = communityDetailDao.getNewsByType(communityIds, type, page, pageSize, order);
 
         int unreadCount = 0;
-        if (userId != null && communityIds.size() > 0 && operation == 1) {
+        if (userId != null && communityIds != null && communityIds.size() > 0 && operation == 1) {
             int totalCount = communityDetailDao.count(communityIds.get(0), type.getType());
             int readCount = communityDetailDao.countRead(type.getType(), communityIds.get(0), userId);
             unreadCount = totalCount - readCount;
@@ -371,7 +371,7 @@ public class CommunityService {
             memberDTO.setRemarkId(Constant.EMPTY);
             UserEntry userEntry1 = partnerInfo.get(partner);
             //过滤掉不存在的用户
-            if(null!=userEntry1){
+            if (null != userEntry1) {
                 List<UserEntry.UserTagEntry> partnerTags = userEntry1.getUserTag();
                 if (partnerTags.size() == 0) {
                     memberDTO.setTagType(0);
@@ -439,7 +439,7 @@ public class CommunityService {
                 UserEntry userEntry1;
                 userEntry1 = map.get(new ObjectId(memberUserId));
                 //过滤掉不存在的用户成员
-                if(null!=userEntry1){
+                if (null != userEntry1) {
                     List<UserEntry.UserTagEntry> tags = userEntry1.getUserTag();
                     if (tags.size() == 0) {
                         memberDTO.setTagType(0);
@@ -517,13 +517,13 @@ public class CommunityService {
      * @param order
      * @return
      */
-    public PageModel<CommunityDetailDTO> getMessages(ObjectId communityId, int page, int pageSize, int order, int type,ObjectId userId,boolean isApp) {
+    public PageModel<CommunityDetailDTO> getMessages(ObjectId communityId, int page, int pageSize, int order, int type, ObjectId userId, boolean isApp) {
         PageModel<CommunityDetailDTO> pageModel = new PageModel<CommunityDetailDTO>();
         List<CommunityDetailEntry> entries = communityDetailDao.getDetails(communityId, page, pageSize, order, type);
         int counts = communityDetailDao.count(communityId, type);
 
-        if(type==1&&isApp){
-            setAppRead(userId,entries);
+        if (type == 1 && isApp) {
+            setAppRead(userId, entries);
         }
         CommunityEntry communityEntry = communityDao.findByObjectId(communityId);
         List<CommunityDetailDTO> dtos = new ArrayList<CommunityDetailDTO>();
@@ -542,9 +542,9 @@ public class CommunityService {
                 communityDetailDTO.setNickName(userEntry.getUserName());
             }
 
-            if(null!=userId){
+            if (null != userId) {
                 communityDetailDTO.setReadFlag(0);
-                if(entry.getUnReadList().size()>0&&entry.getUnReadList().contains(userId)){
+                if (entry.getUnReadList().size() > 0 && entry.getUnReadList().contains(userId)) {
                     communityDetailDTO.setReadFlag(1);
                 }
             }
@@ -586,8 +586,8 @@ public class CommunityService {
 
     }
 
-    private void setAppRead(ObjectId userId, List<CommunityDetailEntry> entries ){
-        for(CommunityDetailEntry entry:entries) {
+    private void setAppRead(ObjectId userId, List<CommunityDetailEntry> entries) {
+        for (CommunityDetailEntry entry : entries) {
             boolean flag = true;
             List<ObjectId> unReadList = entry.getUnReadList();
             for (ObjectId item : unReadList) {
@@ -601,7 +601,6 @@ public class CommunityService {
             }
         }
     }
-
 
 
     private boolean judgePartner(List<ObjectId> partners, ObjectId userId) {
@@ -1213,21 +1212,21 @@ public class CommunityService {
     }
 
 
-    public void setTop(ObjectId community,ObjectId userId,int top){
-        MineCommunityEntry entry=mineCommunityDao.find(community,userId);
+    public void setTop(ObjectId community, ObjectId userId, int top) {
+        MineCommunityEntry entry = mineCommunityDao.find(community, userId);
         entry.setTop(top);
         mineCommunityDao.save(entry);
     }
 
-    public void setDefaultSort(){
+    public void setDefaultSort() {
         mineCommunityDao.setDefaultSort();
     }
 
-    public MineCommunityEntry getTopEntry(ObjectId community,ObjectId userId){
-        return mineCommunityDao.find(community,userId);
+    public MineCommunityEntry getTopEntry(ObjectId community, ObjectId userId) {
+        return mineCommunityDao.find(community, userId);
     }
 
-    public void clearNnnecessaryCommunity(ObjectId communityId,ObjectId userId) {
-        mineCommunityDao.clearNnnecessaryCommunity(communityId,userId);
+    public void clearNnnecessaryCommunity(ObjectId communityId, ObjectId userId) {
+        mineCommunityDao.clearNnnecessaryCommunity(communityId, userId);
     }
 }

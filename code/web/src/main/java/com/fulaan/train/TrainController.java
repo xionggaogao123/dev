@@ -84,6 +84,7 @@ public class TrainController extends BaseController {
                     if(StringUtils.isNotBlank(regionId)){
                         RegionEntry regionEntry=regionService.findById(new ObjectId(regionId));
                         region=regionEntry.getName().substring(0,2);
+                        model.put("location",1);
                     }else{
                         region="上海";
                     }
@@ -96,16 +97,17 @@ public class TrainController extends BaseController {
                         model.put("areaId",areaId);
                     }
                     model.put("region",region);
-                    Map<String, String>  position= getProvinceInfo.getAddresses("ip=" + getIP(), "utf-8");
-                    if (null != position && !position.isEmpty()) {
-                        String positionRegion=map.get("region");
-                        if(StringUtils.isNotBlank(positionRegion)){
-                            if(!model.get("region").equals(positionRegion.substring(0, 2))){
-                                model.put("location",1);
-                            }
-                        }
 
-                    }
+//                    Map<String, String>  position= getProvinceInfo.getAddresses("ip=" + getIP(), "utf-8");
+//                    if (null != position && !position.isEmpty()) {
+//                        String positionRegion=map.get("region");
+//                        if(StringUtils.isNotBlank(positionRegion)){
+//                            if(!model.get("region").equals(positionRegion.substring(0, 2))){
+//                                model.put("location",1);
+//                            }
+//                        }
+//
+//                    }
                 }else{
                     model.put("region", "上海");
                 }

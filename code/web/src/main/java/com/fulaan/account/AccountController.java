@@ -111,9 +111,6 @@ public class AccountController extends BaseController {
 
     /**
      * 检查用户名是否可用
-     *
-     * @param userName
-     * @return
      */
     @RequestMapping("/userNameCheck")
     @SessionNeedless
@@ -124,9 +121,6 @@ public class AccountController extends BaseController {
 
     /**
      * 检查手机号是否可用
-     *
-     * @param phone
-     * @return
      */
     @RequestMapping("/userPhoneCheck")
     @SessionNeedless
@@ -137,9 +131,6 @@ public class AccountController extends BaseController {
 
     /**
      * 检查邮箱是否可用
-     *
-     * @param email
-     * @return
      */
     @RequestMapping("/userEmailCheck")
     @SessionNeedless
@@ -150,10 +141,6 @@ public class AccountController extends BaseController {
 
     /**
      * 进行QQ 绑定
-     *
-     * @param request
-     * @param response
-     * @throws IOException
      */
     @SessionNeedless
     @RequestMapping(value = "/qqBind")
@@ -175,9 +162,6 @@ public class AccountController extends BaseController {
 
     /**
      * 进行微信绑定操作
-     *
-     * @param response
-     * @throws IOException
      */
     @SessionNeedless
     @RequestMapping(value = "/wechatBind")
@@ -195,12 +179,6 @@ public class AccountController extends BaseController {
 
     /**
      * 验证用户名与验证码
-     *
-     * @param name
-     * @param verifyCode
-     * @param verifyKey
-     * @param response
-     * @return
      */
     @RequestMapping("/verifyCodeWithName")
     @SessionNeedless
@@ -222,10 +200,6 @@ public class AccountController extends BaseController {
 
     /**
      * 验证用户与手机是否匹配
-     *
-     * @param phone
-     * @param fwCode
-     * @return
      */
     @SessionNeedless
     @RequestMapping("/verifyUserPhone")
@@ -248,10 +222,6 @@ public class AccountController extends BaseController {
 
     /**
      * 验证 用户与邮箱是否匹配
-     *
-     * @param email
-     * @param fwCode
-     * @return
      */
     @SessionNeedless
     @RequestMapping("/verifyUserEmail")
@@ -278,13 +248,6 @@ public class AccountController extends BaseController {
 
     /**
      * 手机验证
-     *
-     * @param phone
-     * @param code
-     * @param cacheKeyId
-     * @param fwCode
-     * @param response
-     * @return
      */
     @SessionNeedless
     @RequestMapping("/phoneValidate")
@@ -326,11 +289,6 @@ public class AccountController extends BaseController {
 
     /**
      * 邮箱验证
-     *
-     * @param validateCode
-     * @param response
-     * @return
-     * @throws Exception
      */
     @SessionNeedless
     @RequestMapping("/emailValidate")
@@ -351,10 +309,6 @@ public class AccountController extends BaseController {
 
     /**
      * 重置密码
-     *
-     * @param password
-     * @param resetCode
-     * @return
      */
     @SessionNeedless
     @RequestMapping("/resetPassword")
@@ -376,13 +330,6 @@ public class AccountController extends BaseController {
 
     /**
      * 更新出生年月 - 性别 - 昵称
-     *
-     * @param year
-     * @param month
-     * @param day
-     * @param sex
-     * @param nickName
-     * @return
      */
     @RequestMapping("/updateNickSexAge")
     @ResponseBody
@@ -411,9 +358,6 @@ public class AccountController extends BaseController {
 
     /**
      * 检查用户密码
-     *
-     * @param password
-     * @return
      */
     @RequestMapping("/checkUserPassword")
     @ResponseBody
@@ -437,9 +381,6 @@ public class AccountController extends BaseController {
 
     /**
      * 修改用户密码
-     *
-     * @param password
-     * @return
      */
     @RequestMapping("/changeUserPassword")
     @ResponseBody
@@ -455,9 +396,6 @@ public class AccountController extends BaseController {
 
     /**
      * 更改用户邮箱
-     *
-     * @param email
-     * @return
      */
     @RequestMapping("/changeUserEmail")
     @ResponseBody
@@ -476,11 +414,6 @@ public class AccountController extends BaseController {
 
     /**
      * 更改用户手机号
-     *
-     * @param mobile
-     * @param code
-     * @param cacheKeyId
-     * @return
      */
     @RequestMapping("/changeUserPhone")
     @ResponseBody
@@ -515,8 +448,6 @@ public class AccountController extends BaseController {
 
     /**
      * 第三方登录信息
-     *
-     * @return
      */
     @RequestMapping("/thirdLoginInfo")
     @ResponseBody
@@ -532,9 +463,6 @@ public class AccountController extends BaseController {
      * 1.手机号是自己的
      * 2.手机号被别人绑定
      * 3.手机号未被绑定
-     *
-     * @param mobile
-     * @return
      */
     @RequestMapping("/checkPhoneCanUse")
     @ResponseBody
@@ -552,11 +480,6 @@ public class AccountController extends BaseController {
 
     /**
      * 清空用户手机  -- 测试用
-     *
-     * @param userName
-     * @param phone
-     * @param email
-     * @return
      */
     @RequestMapping("/cleanUserPhone")
     @ResponseBody

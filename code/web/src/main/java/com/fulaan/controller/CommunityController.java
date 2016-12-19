@@ -2174,12 +2174,5 @@ public class CommunityController extends BaseController {
         return RespObj.SUCCESS;
     }
 
-//    @RequestMapping("/clearNnnecessaryCommunity")
-//    @ResponseBody
-//    public RespObj clearNnnecessaryCommunity() {
-//        communityService.clearNnnecessaryCommunity();
-//        return RespObj.SUCCESS;
-//    }
-
 
 }

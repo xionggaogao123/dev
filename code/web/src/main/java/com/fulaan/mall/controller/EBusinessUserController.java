@@ -596,7 +596,7 @@ public class EBusinessUserController extends BaseController {
                  RedisUtils.cacheString(key,voucherId.toString(),Constant.SECONDS_IN_FIVE_DAY);
                  return RespObj.SUCCESS(voucher);
              }else{
-                 RedisUtils.deleteKey(key);
+//                 RedisUtils.deleteKey(key);
                  return RespObj.FAILD("你已经获取到优惠券了，每个人只有一次机会哦!");
              }
          }

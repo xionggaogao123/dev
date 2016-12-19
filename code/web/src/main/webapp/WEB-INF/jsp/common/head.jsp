@@ -76,24 +76,14 @@
         });
     }
 
-    function showLoginTitle(login) {
-        if (login) {
-            $('.header-bar').show();
-            $('.header').hide();
-        } else {
-            $('.header').hide();
-            $('.header-bar').show();
-        }
-    }
-
     function redirectQ() {
 
-        location.href = '/user/qqlogin.do?historyUrl=' + encodeURIComponent(encodeURIComponent(window.location.href));
+        window.open('/user/qqlogin.do', "TencentLogin", "width=800,height=600,menubar=0,scrollbars=1, resizable=1,status=1,titlebar=0,toolbar=0,location=1");
     }
 
     function loginWeiXin() {
 
-        location.href = '/user/wechatlogin.do?historyUrl=' + window.location.href;
+        window.open('/user/wechatlogin.do', "TencentLogin", "width=800,height=600,menubar=0,scrollbars=1, resizable=1,status=1,titlebar=0,toolbar=0,location=1");
     }
 
 </script>

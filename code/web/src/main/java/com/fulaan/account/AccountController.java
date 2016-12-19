@@ -15,6 +15,7 @@ import com.pojo.user.UserEntry;
 import com.pojo.user.UserRole;
 import com.sys.constants.Constant;
 import com.sys.exceptions.UnLoginException;
+import com.sys.utils.DateTimeUtils;
 import com.sys.utils.HttpClientUtils;
 import com.sys.utils.MD5Utils;
 import com.sys.utils.RespObj;
@@ -33,13 +34,13 @@ import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
-import java.text.SimpleDateFormat;
-import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 
 /**
- * Created by moslpc on 2016/12/12.
+ * Created by jerry on 2016/12/12.
+ * 账户 Controller
+ * 修改密码，登录，账户安全，注册界面
  */
 @Controller
 @RequestMapping("/account")
@@ -54,58 +55,63 @@ public class AccountController extends BaseController {
 
     /**
      * 注册界面
-     * @return
+     *
+     * @return register page
      */
     @RequestMapping("/register")
     @SessionNeedless
-    public String register() {
+    public String registerPage() {
         return "/account/register";
     }
 
     /**
      * 登录界面
-     * @return
+     *
+     * @return login page
      */
     @RequestMapping("/login")
     @SessionNeedless
-    public String login() {
+    public String loginPage() {
         return "/account/login";
     }
 
     /**
      * 找回密码
-     * @return
+     *
+     * @return findpassword page
      */
     @RequestMapping("/findPassword")
     @SessionNeedless
-    public String findPassword() {
+    public String findPasswordPage() {
         return "/account/findPassword";
     }
 
     /**
      * 我的账户
-     * @return
+     *
+     * @return account page
      */
     @RequestMapping("/accountSafe")
     @LoginInfo
-    public String accountSafe() {
+    public String accountSafePage() {
         return "/account/accountSafe";
     }
 
     /**
      * 第三方登录成功
      *
-     * @return
+     * @return page
      */
     @RequestMapping("/thirdLoginSuccess")
     @SessionNeedless
-    public String thirdLoginSuccess(@RequestParam(value = "bindSuccess",required = false,defaultValue = "-1") int bindSuccess,Model model) {
-        model.addAttribute("bindSuccess",bindSuccess);
+    public String thirdLoginSuccessPage(@RequestParam(value = "bindSuccess", required = false, defaultValue = "-1") int bindSuccess, Model model) {
+        model.addAttribute("bindSuccess", bindSuccess);
         return "/account/thirdLoginSuccess";
     }
 
     /**
      * 检查用户名是否可用
+     *
      * @param userName
      * @return
      */
@@ -118,6 +124,7 @@ public class AccountController extends BaseController {
 
     /**
      * 检查手机号是否可用
+     *
      * @param phone
      * @return
      */
@@ -130,6 +137,7 @@ public class AccountController extends BaseController {
 
     /**
      * 检查邮箱是否可用
+     *
      * @param email
      * @return
      */
@@ -198,7 +206,6 @@ public class AccountController extends BaseController {
     @SessionNeedless
     @ResponseBody
     public RespObj verifyCodeWithName(String name, String verifyCode, @CookieValue(Constant.COOKIE_VALIDATE_CODE) String verifyKey, HttpServletResponse response) {
-
         if (!accountService.checkVerifyCode(verifyCode, verifyKey)) {
             return RespObj.FAILD("验证码不正确");
         }
@@ -206,7 +213,6 @@ public class AccountController extends BaseController {
         if (userService.findByRegular(name) == null) {
             return RespObj.FAILD("用户不存在");
         }
-
         ObjectId key = new ObjectId();
         String cacheKey = CacheHandler.getKeyString(CacheHandler.CACHE_FW_USERNAME_KEY, key.toString());
         CacheHandler.cache(cacheKey, name, Constant.SESSION_FIVE_MINUTE);//5分钟
@@ -370,6 +376,7 @@ public class AccountController extends BaseController {
 
     /**
      * 更新出生年月 - 性别 - 昵称
+     *
      * @param year
      * @param month
      * @param day
@@ -384,14 +391,11 @@ public class AccountController extends BaseController {
                                     @RequestParam(value = "day", defaultValue = "0", required = false) int day,
                                     @RequestParam(value = "sex", defaultValue = "-1", required = false) int sex,
                                     @RequestParam(value = "nickName", defaultValue = "", required = false) String nickName) {
-
         if (year != 0 && month != 0 && day != 0) {
             try {
-                String date = String.valueOf(year) + "-" + String.valueOf(month) + "-" + String.valueOf(day);
-                SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd");
-                Date birthday = format.parse(date);
-                userService.update(getUserId(), "bir", birthday.getTime());
-                mateService.updateAged(getUserId(), birthday.getTime());
+                long birTimeStamp = DateTimeUtils.dateTime(year, month, day);
+                userService.update(getUserId(), "bir", birTimeStamp);
+                mateService.updateAged(getUserId(), birTimeStamp);
             } catch (Exception e) {
                 e.printStackTrace();
                 return RespObj.FAILD(e.getMessage());
@@ -407,6 +411,7 @@ public class AccountController extends BaseController {
 
     /**
      * 检查用户密码
+     *
      * @param password
      * @return
      */
@@ -420,7 +425,7 @@ public class AccountController extends BaseController {
                 return RespObj.SUCCESS;
             }
 
-            if(password.equals(userEntry.getPassword())) {
+            if (password.equals(userEntry.getPassword())) {
                 return RespObj.SUCCESS;
             }
         } catch (Exception e) {
@@ -535,7 +540,6 @@ public class AccountController extends BaseController {
     @ResponseBody
     public RespObj checkPhoneCanUse(String mobile) {
         UserEntry userEntry = userService.searchUserByphone(mobile);
-
         if (userEntry != null && userEntry.getID().equals(getUserId())) {
             return RespObj.FAILD("你已经绑定这个手机号了");
         }

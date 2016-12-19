@@ -42,7 +42,7 @@ public class EBusinessCartService {
 
         EGoodsEntry ge = goodsdao.getEGoodsEntry(goodsId, Constant.FIELDS);
         if (null == ge)
-            throw new Exception("Can not findByUserName egoods;the id:" + goodsId.toString());
+            throw new Exception("Can not find egoods;the id:" + goodsId.toString());
 
         EBusinessCartGoods ecg = new EBusinessCartGoods(ge, count);
         ecg.setType(type);

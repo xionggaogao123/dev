@@ -282,7 +282,7 @@ public class LetterService {
                     for (ObjectId reveiveId : receiveIds) {
                         LetterRecordEntry letterRecordEntry = letterRecordDao.getLetterRecordEntry(myId, reveiveId);
                         if (null == letterRecordEntry) {
-                            logger.error("can not findByUserName letterRecord; the user=" + myId + " , " + reveiveId);
+                            logger.error("can not find letterRecord; the user=" + myId + " , " + reveiveId);
                             continue;
                         }
                         handleRemove(letterRecordEntry, myId, reveiveId, letterId);

@@ -117,7 +117,7 @@ public class LetterController extends BaseController {
                 }
                 userEntry = userMap.get(ui);
                 if (null == userEntry) {
-                    logger.error("Can not findByUserName user;the id=" + ui);
+                    logger.error("Can not find user;the id=" + ui);
                     continue;
                 }
 

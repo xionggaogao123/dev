@@ -31,7 +31,7 @@ public class AlipayConfig {
     public static String SELLER = "zhifu@fulaan.com";
 
     // 商户的私钥
-    public static String key = "r1pv9jky8s1ubzgkvpxvkls520y10jyc";
+    public static String SELLER_KEY = "r1pv9jky8s1ubzgkvpxvkls520y10jyc";
 
     //支付宝公钥
     public static String RSA_PUBLIC = "MIGfMA0GCSqGSIb3DQEBAQUAA4GNADCBiQKBgQCnxj/9qwV" +
@@ -63,10 +63,10 @@ public class AlipayConfig {
     public static String input_charset = "utf-8";
 
     // MD5 签名方式
-    public static String sign_type_md5 = "MD5";
+    public static String sign_md5 = "MD5";
 
     //RSA 签名方式
-    public static String sign_type_rsa = "RSA";
+    public static String sign_rsa = "RSA";
 
 
     //↑↑↑↑↑↑↑↑↑↑请在这里配置您的基本信息↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑

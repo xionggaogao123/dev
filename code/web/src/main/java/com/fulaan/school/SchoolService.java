@@ -135,7 +135,7 @@ public class SchoolService {
     public SchoolEntry getSchoolEntryByUserId(ObjectId userId) throws IllegalParamException {
         UserEntry userEntry = userDao.getUserEntry(userId, new BasicDBObject().append("si", 1));
         if (null == userEntry) {
-            throw new IllegalParamException("Can not findByUserName UserEntry for user:" + userId.toString());
+            throw new IllegalParamException("Can not find UserEntry for user:" + userId.toString());
         }
         SchoolEntry schoolEntry = schoolDao.getSchoolEntry(userEntry.getSchoolID(), Constant.FIELDS);
         return schoolEntry;

@@ -133,7 +133,7 @@ public class UserController extends BaseController {
             try {
                 schoolEntry = schoolService.getSchoolEntryByUserId(e.getID());
             } catch (IllegalParamException ie) {
-                logger.error("Can not findByUserName school for user:" + e);
+                logger.error("Can not find school for user:" + e);
             }
             //处理SessionValue
             value.setId(e.getID().toString());
@@ -298,7 +298,7 @@ public class UserController extends BaseController {
         try {
             schoolEntry = schoolService.getSchoolEntryByUserId(e.getID());
         } catch (IllegalParamException ie) {
-            logger.error("Can not findByUserName school for user:" + e);
+            logger.error("Can not find school for user:" + e);
         }
 
         //处理SessionValue
@@ -520,7 +520,7 @@ public class UserController extends BaseController {
             String schoolId = e.getSchoolID() == null ? "" : e.getSchoolID().toString();
             schoolEntry = schoolService.getSchoolEntryByUserId(e.getID());
         } catch (IllegalParamException ie) {
-            logger.error("Can not findByUserName school for user:" + e);
+            logger.error("Can not find school for user:" + e);
         }
         String url = request.getHeader("Referer");
         String cloud_url = url == null ? "http://yun.k6kt.com/" : url.substring(0, url.lastIndexOf("com/") + 4);

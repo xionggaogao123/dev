@@ -53,10 +53,10 @@ public class AlipaySubmit {
         String prestr = AlipayCore.createLinkString(sPara); //把数组所有元素，按照“参数=参数值”的模式用“&”字符拼接成字符串
         EBusinessLog.info(prestr);
         String sign = "";
-        if (AlipayConfig.sign_type_md5.equals(signType)) {
+        if (AlipayConfig.sign_md5.equals(signType)) {
             EBusinessLog.info("MD5 Sign=============");
-            sign = MD5.sign(prestr, AlipayConfig.key, AlipayConfig.input_charset);
-        } else if (AlipayConfig.sign_type_rsa.equals(signType)) {
+            sign = MD5.sign(prestr, AlipayConfig.SELLER_KEY, AlipayConfig.input_charset);
+        } else if (AlipayConfig.sign_rsa.equals(signType)) {
             EBusinessLog.info("RSA Sign=============");
             sign = RSA.sign(prestr, AlipayConfig.RSA_PRIVATE, AlipayConfig.input_charset);
         }
@@ -87,7 +87,7 @@ public class AlipaySubmit {
 
         //签名结果与签名方式加入请求提交参数组中
         sPara.put("sign", mysign);
-        sPara.put("sign_type", AlipayConfig.sign_type_md5);
+        sPara.put("sign_type", AlipayConfig.sign_md5);
 
         return sPara;
     }

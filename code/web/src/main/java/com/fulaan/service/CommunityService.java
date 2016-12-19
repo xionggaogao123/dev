@@ -267,11 +267,14 @@ public class CommunityService {
                 for (PartInContentEntry partEntry : partInContentEntries) {
                     PartInContentDTO dto = new PartInContentDTO(partEntry);
                     UserEntry user = userService.find(partEntry.getUserId());
-                    dto.setUserName(user.getUserName());
-                    dto.setAvator(AvatarUtils.getAvatar(user.getAvatar(), AvatarType.MIN_AVATAR.getType()));
-                    dto.setNickName(StringUtils.isNotBlank(user.getNickName()) ? user.getNickName() : user.getUserName());
-                    dto.setTime(DateUtils.timeStampToStr(partEntry.getID().getTimestamp()));
-                    partInContentDTOs.add(dto);
+                    //判断用户是否为空
+                    if(null!=user) {
+                        dto.setUserName(user.getUserName());
+                        dto.setAvator(AvatarUtils.getAvatar(user.getAvatar(), AvatarType.MIN_AVATAR.getType()));
+                        dto.setNickName(StringUtils.isNotBlank(user.getNickName()) ? user.getNickName() : user.getUserName());
+                        dto.setTime(DateUtils.timeStampToStr(partEntry.getID().getTimestamp()));
+                        partInContentDTOs.add(dto);
+                    }
                 }
                 communityDetailDTO.setPartList(partInContentDTOs);
             }
@@ -294,7 +297,9 @@ public class CommunityService {
             setRoleStr(communityDetailDTO, communityEntry, entry.getCommunityUserId());
             int totalCount = partInContentDao.countPartPartInContent(entry.getID());
             communityDetailDTO.setPartIncotentCount(totalCount);
-            communityDetailDTO.setImageUrl(AvatarUtils.getAvatar(userEntry.getAvatar(), AvatarType.MIN_AVATAR.getType()));
+            if(null!=userEntry) {
+                communityDetailDTO.setImageUrl(AvatarUtils.getAvatar(userEntry.getAvatar(), AvatarType.MIN_AVATAR.getType()));
+            }
             if (StringUtils.isNotBlank(userEntry.getNickName())) {
                 communityDetailDTO.setNickName(userEntry.getNickName());
             } else {
@@ -523,7 +528,9 @@ public class CommunityService {
         int counts = communityDetailDao.count(communityId, type);
 
         if (type == 1 && isApp) {
-            setAppRead(userId, entries);
+            if(null!=userId){
+                setAppRead(userId, entries);
+            }
         }
         CommunityEntry communityEntry = communityDao.findByObjectId(communityId);
         List<CommunityDetailDTO> dtos = new ArrayList<CommunityDetailDTO>();

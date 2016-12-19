@@ -577,21 +577,26 @@ public class EBusinessUserController extends BaseController {
                  String num = String.valueOf(System.currentTimeMillis());
                  num += RandomUtils.nextInt(Constant.MIN_PASSWORD);
                  int random=1+(int)(Math.random()*30000);
+                 int voucher;
                  EVoucherEntry eVoucherEntry;
-                 if(random<=30000*0.4){
-                     eVoucherEntry=new EVoucherEntry(userId,num,500,deadTime,0,1);
+                 if(30000*0.7<random&&random<=30000*0.8){
+                     eVoucherEntry=new EVoucherEntry(userId,num,5000,deadTime,0,1);
+                     voucher=50;
                  }else if(30000*0.4<random&&random<=30000*0.7){
                      eVoucherEntry=new EVoucherEntry(userId,num,1000,deadTime,0,1);
-                 }else if(30000*0.7<random&&random<=30000*0.9){
+                     voucher=10;
+                 }else if(30000*0.1<random&&random<=30000*0.3){
                      eVoucherEntry=new EVoucherEntry(userId,num,2000,deadTime,0,1);
+                     voucher=20;
                  }else{
-                     eVoucherEntry=new EVoucherEntry(userId,num,5000,deadTime,0,1);
+                     eVoucherEntry=new EVoucherEntry(userId,num,500,deadTime,0,1);
+                     voucher=5;
                  }
                  ObjectId voucherId=eBusinessVoucherService.addEVoucher(eVoucherEntry);
                  RedisUtils.cacheString(key,voucherId.toString(),Constant.SECONDS_IN_FIVE_DAY);
-                 return RespObj.SUCCESS(voucherId.toString());
+                 return RespObj.SUCCESS(voucher);
              }else{
-//                 RedisUtils.deleteKey(key);
+                 RedisUtils.deleteKey(key);
                  return RespObj.FAILD("你已经获取到优惠券了，每个人只有一次机会哦!");
              }
          }

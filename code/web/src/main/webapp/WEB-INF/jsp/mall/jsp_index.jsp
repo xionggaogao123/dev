@@ -240,11 +240,11 @@
 </div>
 
 <%--圣诞背景--%>
-<div class="christ-quan-wind">恭喜你获得<span>5</span>元优惠券，<br>赶快去选购吧...</div>
-<div class="christ-bg" style="display: none"></div>
+<div class="christ-quan-wind">恭喜你获得<span id="christmasPrice">5</span>元优惠券，<br>赶快去选购吧...</div>
+<div class="christ-bg" <c:if test="${login==false}">style="display: none" </c:if>></div>
 
 <%--圣诞节活动 st--%>
-<div class="christmas-wind" style="display: none">
+<div class="christmas-wind" <c:if test="${login==false}">style="display: none" </c:if>>
     <img class="christ-light1" src="/static/images/mallSection/christ_1.png">
     <img class="christ-light2" src="/static/images/mallSection/christ_2.png">
     <div class="hide-light1 hl">

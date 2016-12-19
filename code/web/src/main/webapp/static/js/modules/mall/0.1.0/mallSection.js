@@ -60,17 +60,34 @@ define(function (require, exports, module) {
             $('.christ-bg').fadeOut('slow');
         });
         $('.christmas-wind .hl').click(function(){
-            $('.christmas-wind').css("top","-100%");
-            $('.christ-quan-wind').css('top','50%');
-            setTimeout(function(){
-                $('.christ-quan-wind ').fadeOut()
-            },"2500")
-            setTimeout(function(){
-                $(' .christ-bg, .christmas-wind').fadeOut()
-            },"3000")
+            getChristmasVoucher();
         })
 
+
+
     });
+
+    function getChristmasVoucher(){
+        Common.getData('/mall/users/getChristReward.do',{},function(resp){
+            if(resp.code=="200"){
+                $('#christmasPrice').text(resp.message);
+            }else{
+                $('.christ-quan-wind').html(resp.message);
+            }
+            christmas();
+        });
+    }
+
+    function christmas(){
+        $('.christmas-wind').css("top","-100%");
+        $('.christ-quan-wind').css('top','50%');
+        setTimeout(function(){
+            $('.christ-quan-wind ').fadeOut()
+        },"2500")
+        setTimeout(function(){
+            $(' .christ-bg, .christmas-wind').fadeOut()
+        },"3000")
+    }
 
     function GetTime() {
         str = "";

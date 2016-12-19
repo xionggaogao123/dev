@@ -2,7 +2,7 @@ package com.fulaan.forum.controller;
 
 import com.fulaan.annotation.ObjectIdType;
 import com.fulaan.annotation.SessionNeedless;
-import com.fulaan.controller.BaseController;
+import com.fulaan.base.BaseController;
 import com.fulaan.pojo.LikeInfo;
 import com.fulaan.util.DownloadUtil;
 import com.fulaan.util.HttpUtils;

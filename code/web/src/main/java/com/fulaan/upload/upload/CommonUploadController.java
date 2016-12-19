@@ -2,7 +2,7 @@ package com.fulaan.upload.upload;
 
 import com.cloopen.rest.sdk.utils.encoder.BASE64Decoder;
 import com.fulaan.annotation.SessionNeedless;
-import com.fulaan.controller.BaseController;
+import com.fulaan.base.BaseController;
 import com.fulaan.screenshot.Encoder;
 import com.fulaan.utils.QiniuFileUtils;
 import com.fulaan.video.service.VideoService;
@@ -11,7 +11,6 @@ import com.pojo.video.VideoDTO;
 import com.pojo.video.VideoEntry;
 import com.pojo.video.VideoSourceType;
 import com.sys.constants.Constant;
-import com.sys.props.Resources;
 import com.sys.utils.RespObj;
 
 import org.apache.commons.io.FileUtils;

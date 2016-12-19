@@ -2,9 +2,9 @@ package com.fulaan.fgroup;
 
 import com.easemob.server.EaseMobAPI;
 import com.fulaan.annotation.SessionNeedless;
-import com.fulaan.controller.BaseController;
-import com.fulaan.dto.CommunityDTO;
-import com.fulaan.dto.CommunityDetailDTO;
+import com.fulaan.base.BaseController;
+import com.fulaan.community.dto.CommunityDTO;
+import com.fulaan.community.dto.CommunityDetailDTO;
 import com.fulaan.dto.GroupDTO;
 import com.fulaan.dto.MemberDTO;
 import com.fulaan.friendscircle.service.FriendService;

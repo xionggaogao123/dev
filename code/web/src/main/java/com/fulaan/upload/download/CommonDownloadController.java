@@ -1,6 +1,6 @@
 package com.fulaan.upload.download;
 
-import com.fulaan.controller.BaseController;
+import com.fulaan.base.BaseController;
 
 import com.sys.exceptions.IllegalParamException;
 import org.apache.commons.io.IOUtils;

@@ -6,7 +6,7 @@ import com.alibaba.fastjson.JSONArray;
 import com.fulaan.annotation.LoginInfo;
 import com.fulaan.annotation.ObjectIdType;
 import com.fulaan.annotation.SessionNeedless;
-import com.fulaan.controller.BaseController;
+import com.fulaan.base.BaseController;
 import com.fulaan.alipay.config.AlipayConfig;
 import com.fulaan.alipay.util.AlipayCore;
 import com.fulaan.alipay.util.AlipayNotify;
@@ -225,7 +225,7 @@ public class EBusinessOrderController extends BaseController {
                               String goodsList, HttpServletResponse response) throws Exception {
         EBusinessLog.info("OrderCreate;UserId=" + getUserId().toString() + ";学校：" + getSessionValue().getSchoolName() + ";使用积分：" + usedExp);
         if (StringUtils.isEmpty(goodsList)) {
-            throw new Exception("Can not find goods in shopping cars for user:" + getUserId().toString());
+            throw new Exception("Can not findByUserName goods in shopping cars for user:" + getUserId().toString());
         }
         int exp = (Integer) getUserExperience().get("exp");
         if (usedExp > exp) {
@@ -277,7 +277,7 @@ public class EBusinessOrderController extends BaseController {
         EBusinessLog.info("OrderCreate;UserId=" + getUserId().toString() + ";学校：" + getSessionValue().getSchoolName() + ";使用积分：" + usedExp);
         List<EBusinessCartGoods> list = eBusinessCartService.getGoodsFromCars(getUserId(), Constant.ONE);
         if (null == list || list.size() == 0) {
-            throw new Exception("Can not find goods in shopping cars for user:" + getUserId().toString());
+            throw new Exception("Can not findByUserName goods in shopping cars for user:" + getUserId().toString());
         }
         int exp = (Integer) getUserExperience().get("exp");
         if (usedExp > exp) {
@@ -319,7 +319,7 @@ public class EBusinessOrderController extends BaseController {
                                     HttpServletResponse response) throws Exception {
         EBusinessLog.info("OrderCreate;UserId=" + getUserId().toString() + ";学校：" + getSessionValue().getSchoolName() + ";使用积分：" + usedExp);
         if (StringUtils.isEmpty(goodsList)) {
-            throw new Exception("Can not find goods in shopping cars for user:" + getUserId().toString());
+            throw new Exception("Can not findByUserName goods in shopping cars for user:" + getUserId().toString());
         }
         int exp = (Integer) getUserExperience().get("exp");
         if (usedExp > exp) {
@@ -523,7 +523,7 @@ public class EBusinessOrderController extends BaseController {
         EBusinessLog.info("OrderPay;user:" + getSessionValue().getMap() + ";学校：" + getSessionValue().getSchoolName());
         EOrderEntry eoe = orderService.getEOrderEntry(orderId);
         if (null == eoe) {
-            throw new Exception("Can not find order;the id=" + orderId.toString());
+            throw new Exception("Can not findByUserName order;the id=" + orderId.toString());
         }
         if (eoe.getState() != OrderState.READY.getType()) {
             throw new Exception("order state error;the id=" + orderId.toString());

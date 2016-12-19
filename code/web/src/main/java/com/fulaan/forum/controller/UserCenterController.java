@@ -4,7 +4,7 @@ import com.alibaba.fastjson.JSON;
 import com.fulaan.annotation.LoginInfo;
 import com.fulaan.annotation.SessionNeedless;
 import com.fulaan.annotation.UserRoles;
-import com.fulaan.controller.BaseController;
+import com.fulaan.base.BaseController;
 import com.fulaan.forum.service.*;
 import com.fulaan.friendscircle.service.FriendApplyService;
 import com.fulaan.friendscircle.service.FriendService;
@@ -96,7 +96,7 @@ public class UserCenterController extends BaseController {
         loginInfo(model);
         List<FScoreDTO> fScoreDTOs = fScoreService.getFScoreByPersonId(getSessionValue().getId());
         model.put("scores", fScoreDTOs);
-        UserEntry user = userService.find(getUserId());
+        UserEntry user = userService.findByUserId(getUserId());
         model.put("formScore", user.getForumScore());
         model.put("formExpermence", user.getForumExperience());
         return "/forum/user";
@@ -296,7 +296,7 @@ public class UserCenterController extends BaseController {
     public RespObj updateForumSilenced(String userId, String together) {
         RespObj respObj = new RespObj(Constant.FAILD_CODE);
         try {
-            UserEntry userEntry = userService.find(new ObjectId(userId));
+            UserEntry userEntry = userService.findByUserId(new ObjectId(userId));
             if (together.contains(",")) {
                 String[] item = together.split(",");
                 userEntry.setSilencedStatus(Integer.parseInt(item[0]));

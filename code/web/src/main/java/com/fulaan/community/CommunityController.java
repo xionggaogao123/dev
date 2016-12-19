@@ -1,17 +1,20 @@
-package com.fulaan.controller;
+package com.fulaan.community;
 
 
-import com.cloopen.rest.sdk.utils.encoder.BASE64Decoder;
 import com.fulaan.annotation.LoginInfo;
 import com.fulaan.annotation.ObjectIdType;
 import com.fulaan.annotation.SessionNeedless;
+import com.fulaan.base.BaseController;
 import com.fulaan.cache.RedisUtils;
+import com.fulaan.community.dto.CommunityDTO;
+import com.fulaan.community.dto.CommunityDetailDTO;
+import com.fulaan.community.dto.CommunitySystemInfoDTO;
+import com.fulaan.community.dto.PartInContentDTO;
 import com.fulaan.dto.*;
 import com.fulaan.friendscircle.service.FriendApplyService;
 import com.fulaan.friendscircle.service.FriendService;
 import com.fulaan.playmate.service.MateService;
 import com.fulaan.pojo.CommunityMessage;
-import com.fulaan.pojo.LikeInfo;
 import com.fulaan.pojo.PageModel;
 import com.fulaan.pojo.ProductModel;
 import com.fulaan.service.*;
@@ -21,7 +24,6 @@ import com.fulaan.util.QRUtils;
 import com.fulaan.util.URLParseUtil;
 import com.pojo.activity.FriendApply;
 import com.pojo.app.FileUploadDTO;
-import com.pojo.app.IdNameValuePairDTO;
 import com.pojo.app.Platform;
 import com.pojo.fcommunity.ConcernEntry;
 import com.pojo.fcommunity.MineCommunityEntry;
@@ -35,7 +37,6 @@ import com.sys.utils.AvatarUtils;
 import com.sys.utils.DateTimeUtils;
 import com.sys.utils.QiniuFileUtils;
 import com.sys.utils.RespObj;
-import org.apache.commons.codec.Decoder;
 import org.apache.commons.codec.binary.Base64;
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.FilenameUtils;
@@ -52,11 +53,9 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.multipart.MultipartRequest;
 
-import javax.imageio.ImageIO;
 import javax.servlet.ServletInputStream;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import java.awt.image.BufferedImage;
 import java.io.*;
 import java.net.MalformedURLException;
 import java.net.URL;
@@ -1364,7 +1363,7 @@ public class CommunityController extends BaseController {
             int count = 1;
             List<UserSearchInfo> dtos = new ArrayList<UserSearchInfo>();
             if (ObjectId.isValid(regular)) {
-                UserEntry userEntry = userService.find(new ObjectId(regular));
+                UserEntry userEntry = userService.findByUserId(new ObjectId(regular));
                 if (null == userEntry) {
                     return RespObj.FAILD("查找不到该用户！");
                 } else {
@@ -1759,12 +1758,12 @@ public class CommunityController extends BaseController {
     public String redirectUser(Map<String, Object> model) {
 
         ObjectId personId = new ObjectId(getRequest().getParameter("userId"));
-        UserEntry userEntry = userService.find(personId);
+        UserEntry userEntry = userService.findByUserId(personId);
         model.put("avatar", AvatarUtils.getAvatar(userEntry.getAvatar(), AvatarType.MIN_AVATAR.getType()));
         model.put("nickName", StringUtils.isNotBlank(userEntry.getNickName()) ? userEntry.getNickName() : userEntry.getUserName());
         if (getUserId() != null) {
             ObjectId userId = getUserId();
-            UserEntry userEntry1 = userService.find(userId);
+            UserEntry userEntry1 = userService.findByUserId(userId);
             model.put("applyName", StringUtils.isNotBlank(userEntry1.getNickName()) ? userEntry1.getNickName() : userEntry1.getUserName());
 
             //获取自己的标签信息
@@ -1823,7 +1822,7 @@ public class CommunityController extends BaseController {
     @ResponseBody
     public RespObj judgeTag(int code) {
         ObjectId userId = getUserId();
-        UserEntry userEntry = userService.find(userId);
+        UserEntry userEntry = userService.findByUserId(userId);
         List<UserEntry.UserTagEntry> userTagEntries = userEntry.getUserTag();
         boolean flag = true;
         for (UserEntry.UserTagEntry userTagEntry : userTagEntries) {
@@ -1844,7 +1843,7 @@ public class CommunityController extends BaseController {
     @ResponseBody
     public RespObj getMyTags() {
         ObjectId userId = getUserId();
-        UserEntry userEntry = userService.find(userId);
+        UserEntry userEntry = userService.findByUserId(userId);
         List<UserEntry.UserTagEntry> userTagEntries = userEntry.getUserTag();
         List<String> tags = new ArrayList<String>();
         for (UserEntry.UserTagEntry userTagEntry : userTagEntries) {
@@ -2130,11 +2129,11 @@ public class CommunityController extends BaseController {
     @ResponseBody
     public RespObj getMyQRCode() {
         ObjectId userId = getUserId();
-        UserEntry userEntry = userService.find(userId);
+        UserEntry userEntry = userService.findByUserId(userId);
         if (StringUtils.isBlank(userEntry.getQRCode())) {
             String qrCode = QRUtils.getPersonQrUrl(userId);
             userEntry.setQRCode(qrCode);
-            userService.addEntry(userEntry);
+            userService.addUser(userEntry);
             return RespObj.SUCCESS(qrCode);
         } else {
             return RespObj.SUCCESS(userEntry.getQRCode());
@@ -2161,7 +2160,6 @@ public class CommunityController extends BaseController {
     @RequestMapping("/updateCommunityTop")
     @ResponseBody
     public RespObj updateCommunityTop(@ObjectIdType ObjectId communityId, int top) {
-
         communityService.setTop(communityId, getUserId(), top);
         return RespObj.SUCCESS;
     }
@@ -2169,7 +2167,6 @@ public class CommunityController extends BaseController {
     @RequestMapping("/setDefaultSort")
     @ResponseBody
     public RespObj setDefaultSort() {
-
         communityService.setDefaultSort();
         return RespObj.SUCCESS;
     }

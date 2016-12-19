@@ -31,7 +31,7 @@ public class AccountService {
         return !"".equals(verifyCode) && verifyCode.equals(validateCode);
     }
 
-    public void processFindPasswordByEmail(String userName,String email, String code) {
+    public void sendEmailForFindPassword(String userName,String email, String code) {
         //发送邮箱
         MailUtils sendMail = new MailUtils();
         StringBuilder stringBuffer = new StringBuilder();

@@ -1,7 +1,7 @@
 package com.fulaan.verifycode;
 
 import com.fulaan.annotation.SessionNeedless;
-import com.fulaan.controller.BaseController;
+import com.fulaan.base.BaseController;
 import com.fulaan.cache.CacheHandler;
 import com.sys.constants.Constant;
 import org.bson.types.ObjectId;

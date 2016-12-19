@@ -3,6 +3,7 @@ package com.fulaan.user.dao;
 import com.db.base.BaseDao;
 import com.db.factory.MongoFacroty;
 import com.fulaan.user.model.ThirdLoginEntry;
+import com.fulaan.user.model.ThirdType;
 import com.mongodb.BasicDBObject;
 import com.mongodb.DBObject;
 import com.pojo.user.UserEntry;
@@ -45,13 +46,13 @@ public class ThirdLoginDao extends BaseDao {
     }
 
     public boolean isBindQQ(ObjectId userId) {
-        BasicDBObject query = new BasicDBObject("uid",userId).append("type",2);
-        return count(MongoFacroty.getAppDB(),Constant.COLLECTION_THIRD_LOGIN_NAME,query) == 1;
+        BasicDBObject query = new BasicDBObject("uid",userId).append("type", ThirdType.QQ.getCode());
+        return count(MongoFacroty.getAppDB(),Constant.COLLECTION_THIRD_LOGIN_NAME,query) == Constant.ONE;
     }
 
     public boolean isBindWechat(ObjectId userId) {
-        BasicDBObject query = new BasicDBObject("uid",userId).append("type",1);
-        return count(MongoFacroty.getAppDB(),Constant.COLLECTION_THIRD_LOGIN_NAME,query) == 1;
+        BasicDBObject query = new BasicDBObject("uid",userId).append("type",ThirdType.WECHAT.getCode());
+        return count(MongoFacroty.getAppDB(),Constant.COLLECTION_THIRD_LOGIN_NAME,query) == Constant.ONE;
     }
 
 
@@ -74,8 +75,8 @@ public class ThirdLoginDao extends BaseDao {
         if (null != dbo) {
             ThirdLoginEntry thirdLoginEntry = new ThirdLoginEntry((BasicDBObject) dbo);
             ObjectId uid = thirdLoginEntry.getUid();
-            BasicDBObject queryUserEntry = new BasicDBObject("_id", uid);
-            DBObject dboUserEntry = findOne(MongoFacroty.getAppDB(), Constant.COLLECTION_USER_NAME, queryUserEntry, null);
+            BasicDBObject queryUserEntry = new BasicDBObject(Constant.ID, uid);
+            DBObject dboUserEntry = findOne(MongoFacroty.getAppDB(), Constant.COLLECTION_USER_NAME, queryUserEntry);
             if (null != dboUserEntry) {
                 return new UserEntry(dboUserEntry);
             }
@@ -86,11 +87,11 @@ public class ThirdLoginDao extends BaseDao {
 
     public boolean isOpenIdBindQQ(String openId) {
         BasicDBObject query = new BasicDBObject("oid",openId).append("type",2);
-        return count(MongoFacroty.getAppDB(),Constant.COLLECTION_THIRD_LOGIN_NAME,query) == 1;
+        return count(MongoFacroty.getAppDB(),Constant.COLLECTION_THIRD_LOGIN_NAME,query) == Constant.ONE;
     }
 
     public boolean isUnionIdBindWechat(String unionId) {
         BasicDBObject query = new BasicDBObject("unionid",unionId).append("type",1);
-        return count(MongoFacroty.getAppDB(),Constant.COLLECTION_THIRD_LOGIN_NAME,query) == 1;
+        return count(MongoFacroty.getAppDB(),Constant.COLLECTION_THIRD_LOGIN_NAME,query) == Constant.ONE;
     }
 }

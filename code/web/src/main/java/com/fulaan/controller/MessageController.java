@@ -1,5 +1,6 @@
 package com.fulaan.controller;
 
+import com.fulaan.base.BaseController;
 import com.fulaan.dto.MessageDTO;
 import com.fulaan.forum.service.FInformationService;
 import com.sys.utils.RespObj;

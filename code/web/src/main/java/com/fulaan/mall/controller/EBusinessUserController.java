@@ -3,7 +3,7 @@ package com.fulaan.mall.controller;
 import com.easemob.server.EaseMobAPI;
 import com.fulaan.annotation.SessionNeedless;
 import com.fulaan.cache.RedisUtils;
-import com.fulaan.controller.BaseController;
+import com.fulaan.base.BaseController;
 import com.fulaan.cache.CacheHandler;
 import com.fulaan.mall.service.EBusinessVoucherService;
 import com.fulaan.forum.service.FInformationService;
@@ -11,7 +11,6 @@ import com.fulaan.forum.service.FInvitationService;
 import com.fulaan.forum.service.FScoreService;
 import com.fulaan.user.controller.UserController;
 import com.fulaan.user.service.UserService;
-import com.fulaan.util.QRUtils;
 import com.pojo.app.SessionValue;
 import com.pojo.ebusiness.EVoucherEntry;
 import com.pojo.forum.FInvitationEntry;
@@ -19,7 +18,6 @@ import com.pojo.forum.FScoreDTO;
 import com.pojo.user.UserEntry;
 import com.sys.constants.Constant;
 import com.sys.mails.MailUtils;
-import com.sys.utils.DateTimeUtils;
 import com.sys.utils.MD5Utils;
 import com.sys.utils.RespObj;
 import com.sys.utils.ValidationUtils;
@@ -273,7 +271,7 @@ public class EBusinessUserController extends BaseController {
     @RequestMapping(value = "/emailValidate")
     public String emailValidate(String email, String validateCode, HttpServletResponse response,
                                 Map<String, Object> model) {
-        UserEntry userEntry = userService.searchUserByEmail(email);
+        UserEntry userEntry = userService.findByUserEmail(email);
         //验证用户是否存在
         if (userEntry != null) {
             //验证用户激活状态
@@ -330,11 +328,11 @@ public class EBusinessUserController extends BaseController {
         Map<String, Object> model = new HashMap<String, Object>();
         UserEntry userEntry = null;
         if (StringUtils.isNotBlank(email)) {
-            userEntry = userService.searchUserByEmail(email);
+            userEntry = userService.findByUserEmail(email);
         } else if (StringUtils.isNotBlank(phone)) {
-            userEntry = userService.searchUserByphone(phone);
+            userEntry = userService.findByUserPhone(phone);
         } else if (StringUtils.isNotBlank(name)) {
-            userEntry = userService.find(name);
+            userEntry = userService.findByUserName(name);
         }
         if (userEntry == null) {
             model.put("isExit", 0);
@@ -348,7 +346,7 @@ public class EBusinessUserController extends BaseController {
         ///如果处于安全，可以将激活码处理的更复杂点，这里我稍做简单处理
         //发送邮箱
         MailUtils sendMail = new MailUtils();
-        UserEntry userEntry = userService.searchUserByEmail(email);
+        UserEntry userEntry = userService.findByUserEmail(email);
         if (userEntry != null) {
             StringBuffer stringBuffer = new StringBuffer();
             stringBuffer.append("<p>");
@@ -687,11 +685,11 @@ public class EBusinessUserController extends BaseController {
         Matcher phoneMatcher = phonePattern.matcher(account);
         UserEntry userEntry = null;
         if (emailMatcher.matches()) {//邮箱登录
-            userEntry = userService.searchUserByEmail(account);
+            userEntry = userService.findByUserEmail(account);
         } else if (phoneMatcher.matches()) {//手机号登录
-            userEntry = userService.searchUserByphone(account);
+            userEntry = userService.findByUserPhone(account);
         } else {//用户名登陆
-            userEntry = userService.searchUserByUserName(account);
+            userEntry = userService.findByUserName(account);
         }
 
         if (userEntry == null) {

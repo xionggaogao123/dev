@@ -2,7 +2,7 @@ package com.fulaan.file.controller;
 
 import com.alibaba.fastjson.JSON;
 import com.fulaan.annotation.SessionNeedless;
-import com.fulaan.controller.BaseController;
+import com.fulaan.base.BaseController;
 import com.fulaan.file.service.FileService;
 import com.sys.constants.Constant;
 import com.sys.exceptions.IllegalParamException;

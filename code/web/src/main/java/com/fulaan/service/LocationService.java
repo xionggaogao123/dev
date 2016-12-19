@@ -40,7 +40,7 @@ public class LocationService {
 //        LocationUtil.sortByDistance(userLocs);
 //        List<UserDTO> userDtos = new ArrayList<UserDTO>();
 //        for (UserLoc loc : userLocs) {
-//            UserEntry user = userDao.find(loc.getUid());
+//            UserEntry user = userDao.findByUserName(loc.getUid());
 //            UserDTO dto = new UserDTO(user);
 //            dto.setDistance((long) Math.floor(loc.getDistance()));
 //            dto.setLogin(loc.getTime());

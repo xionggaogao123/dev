@@ -1,5 +1,6 @@
-package com.fulaan.dto;
+package com.fulaan.community.dto;
 
+import com.fulaan.dto.MemberDTO;
 import com.fulaan.util.DateUtils;
 import com.pojo.fcommunity.CommunityEntry;
 

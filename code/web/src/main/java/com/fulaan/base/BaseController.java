@@ -1,4 +1,4 @@
-package com.fulaan.controller;
+package com.fulaan.base;
 
 import com.pojo.app.Platform;
 import com.pojo.app.SessionValue;

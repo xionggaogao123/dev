@@ -3,6 +3,7 @@ package com.fulaan.playmate.service;
 import com.db.activity.FriendDao;
 import com.db.playmate.FMateDao;
 import com.db.user.UserDao;
+import com.fulaan.base.BaseService;
 import com.fulaan.playmate.dto.FMateDTO;
 import com.fulaan.playmate.pojo.MateData;
 import com.fulaan.pojo.PageModel;
@@ -31,7 +32,7 @@ import java.util.Map;
  * Created by moslpc on 2016/11/30.
  */
 @Service
-public class MateService {
+public class MateService extends BaseService{
 
     @Autowired
     private FMateTypeService fMateTypeService;
@@ -197,7 +198,6 @@ public class MateService {
         fMateDao.pullUserTag(userId, tag);
     }
 
-
     public boolean isMateRecoreExist(ObjectId userId) {
         return fMateDao.isExist(userId);
     }
@@ -211,11 +211,6 @@ public class MateService {
             return;
         }
     }
-
-    public void updateHobbys(ObjectId userId, List<String> hobbys) {
-        fMateDao.updateUserHobbys(userId, hobbys);
-    }
-
 
     public void updateAge(ObjectId userId, int age) {
         int aged = -1;
@@ -237,18 +232,5 @@ public class MateService {
 
     public void updateOns(ObjectId userId, List<Integer> onsList) {
         fMateDao.updateUserOns(userId, onsList);
-    }
-
-    public String filterDistance(long distance) {
-        if(distance < 500) {
-            return "≤500m";
-        } else if(distance < 1000) {
-            return "≤1km";
-        } else if(distance < 2000) {
-            return "≤2km";
-        } else if(distance < 5000) {
-            return "≤5km";
-        }
-        return ">5km";
     }
 }

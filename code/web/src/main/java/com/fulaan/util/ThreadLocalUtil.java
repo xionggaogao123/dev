@@ -3,7 +3,6 @@ package com.fulaan.util;
 import com.fulaan.user.service.UserService;
 import com.pojo.user.UserEntry;
 import org.bson.types.ObjectId;
-import org.tuckey.web.filters.urlrewrite.Run;
 
 /**
  * Created by admin on 2016/12/5.
@@ -23,10 +22,10 @@ public class ThreadLocalUtil implements Runnable {
     public void run() {
 //        User user=getUser();
         String id=Thread.currentThread().getName();
-        UserEntry userEntry=userService.find(new ObjectId(id));
+        UserEntry userEntry=userService.findByUserId(new ObjectId(id));
         String qrCode= QRUtils.getPersonQrUrl(new ObjectId(id));
         userEntry.setQRCode(qrCode);
-        userService.addEntry(userEntry) ;
+        userService.addUser(userEntry) ;
     }
 
 

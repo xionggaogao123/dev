@@ -1,4 +1,4 @@
-package com.fulaan.dto;
+package com.fulaan.community.dto;
 
 import com.fulaan.pojo.Attachement;
 import com.fulaan.util.DateUtils;

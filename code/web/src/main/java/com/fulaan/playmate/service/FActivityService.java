@@ -2,6 +2,7 @@ package com.fulaan.playmate.service;
 
 import com.db.playmate.FActivityDao;
 import com.db.user.UserDao;
+import com.fulaan.base.BaseService;
 import com.fulaan.playmate.dto.FActivityDTO;
 import com.fulaan.playmate.pojo.MateData;
 import com.fulaan.playmate.pojo.User;
@@ -30,7 +31,7 @@ import java.util.Map;
  * 活动 Service
  */
 @Service
-public class FActivityService {
+public class FActivityService extends BaseService{
 
     private FActivityDao fActivityDao = new FActivityDao();
     private UserDao userDao = new UserDao();
@@ -252,9 +253,9 @@ public class FActivityService {
     /**
      * 获取已经报名的活动
      *
-     * @param userId
-     * @param page
-     * @param pageSize
+     * @param userId 用户id
+     * @param page 页
+     * @param pageSize 页码
      * @return
      */
     public PageModel<FActivityDTO> getSignedActivity(ObjectId userId, int page, int pageSize) {
@@ -279,9 +280,9 @@ public class FActivityService {
     /**
      * 获取已经参加过的活动
      *
-     * @param userId
-     * @param page
-     * @param pageSize
+     * @param userId 用户id
+     * @param page 页
+     * @param pageSize 页码
      * @return
      */
     public Object getAttendedActivity(ObjectId userId, int page, int pageSize) {
@@ -347,19 +348,6 @@ public class FActivityService {
      */
     public void cancelPublishActivity(ObjectId acid, ObjectId userId) {
         fActivityDao.cancelPublishActivity(acid, userId);
-    }
-
-    public String filterDistance(long distance) {
-        if(distance < 500) {
-            return "≤500m";
-        } else if(distance < 1000) {
-            return "≤1km";
-        } else if(distance < 2000) {
-            return "≤2km";
-        } else if(distance < 5000) {
-            return "≤5km";
-        }
-        return ">5km";
     }
 
 }

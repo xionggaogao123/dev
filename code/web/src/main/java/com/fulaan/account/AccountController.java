@@ -6,7 +6,7 @@ import com.fulaan.annotation.LoginInfo;
 import com.fulaan.annotation.SessionNeedless;
 import com.fulaan.annotation.UserRoles;
 import com.fulaan.cache.CacheHandler;
-import com.fulaan.controller.BaseController;
+import com.fulaan.base.BaseController;
 import com.fulaan.dto.UserDTO;
 import com.fulaan.playmate.service.MateService;
 import com.fulaan.user.service.UserService;
@@ -78,7 +78,7 @@ public class AccountController extends BaseController {
     /**
      * 找回密码
      *
-     * @return findpassword page
+     * @return findPassword page
      */
     @RequestMapping("/findPassword")
     @SessionNeedless
@@ -126,7 +126,7 @@ public class AccountController extends BaseController {
     @SessionNeedless
     @ResponseBody
     public RespObj userPhoneCheck(String phone) {
-        return RespObj.SUCCESS(userService.searchUserByphone(phone) != null);
+        return RespObj.SUCCESS(userService.findByUserPhone(phone) != null);
     }
 
     /**
@@ -136,7 +136,7 @@ public class AccountController extends BaseController {
     @SessionNeedless
     @ResponseBody
     public RespObj userEmailCheck(String email) {
-        return RespObj.SUCCESS(userService.searchUserByEmail(email) != null);
+        return RespObj.SUCCESS(userService.findByUserEmail(email) != null);
     }
 
     /**
@@ -239,7 +239,7 @@ public class AccountController extends BaseController {
             ObjectId key = new ObjectId();
             String cacheKey = CacheHandler.getKeyString(CacheHandler.CACHE_FW_VALIDATE_EMAIL, key.toString());
             CacheHandler.cache(cacheKey, userDTO.getUserName(), Constant.SECONDS_IN_DAY);//1天
-            accountService.processFindPasswordByEmail(userDTO.getUserName(), email, key.toString());
+            accountService.sendEmailForFindPassword(userDTO.getUserName(), email, key.toString());
             return RespObj.SUCCESS(new VerifyData(true, "发送成功"));
         } else {
             return RespObj.FAILD(new VerifyData(false, "该用户未绑定此邮箱"));
@@ -319,7 +319,7 @@ public class AccountController extends BaseController {
         if (userName == null) {
             return RespObj.FAILD("时间失效或不合法");
         }
-        UserEntry userEntry = userService.searchUserByUserName(userName);
+        UserEntry userEntry = userService.findByUserName(userName);
         if (userEntry == null) {
             return RespObj.FAILD("用户不存在");
         }
@@ -363,7 +363,7 @@ public class AccountController extends BaseController {
     @ResponseBody
     public RespObj checkUserPassword(String password) {
         ObjectId userId = getUserId();
-        UserEntry userEntry = userService.find(userId);
+        UserEntry userEntry = userService.findByUserId(userId);
         try {
             if (MD5Utils.getMD5(password).equals(userEntry.getPassword())) {
                 return RespObj.SUCCESS;
@@ -401,7 +401,7 @@ public class AccountController extends BaseController {
     @ResponseBody
     public RespObj changeUserEmail(String email) {
 
-        UserEntry userEntry = userService.searchUserByEmail(email);
+        UserEntry userEntry = userService.findByUserEmail(email);
         if (userEntry != null && getUserId().equals(userEntry.getID())) {
             return RespObj.FAILD("邮箱已经绑定自己了，无需再次绑定");
         }
@@ -419,7 +419,7 @@ public class AccountController extends BaseController {
     @ResponseBody
     public RespObj changeUserPhone(String mobile, String code, String cacheKeyId) {
 
-        UserEntry userEntry = userService.searchUserByphone(mobile);
+        UserEntry userEntry = userService.findByUserPhone(mobile);
         if (userEntry != null && getUserId().equals(userEntry.getID())) {
             return RespObj.FAILD("手机号是自己的，已经绑定了无需绑定");
         }
@@ -467,7 +467,7 @@ public class AccountController extends BaseController {
     @RequestMapping("/checkPhoneCanUse")
     @ResponseBody
     public RespObj checkPhoneCanUse(String mobile) {
-        UserEntry userEntry = userService.searchUserByphone(mobile);
+        UserEntry userEntry = userService.findByUserPhone(mobile);
         if (userEntry != null && userEntry.getID().equals(getUserId())) {
             return RespObj.FAILD("你已经绑定这个手机号了");
         }
@@ -485,7 +485,7 @@ public class AccountController extends BaseController {
     @ResponseBody
     @UserRoles(UserRole.DISCUSS_MANAGER)
     public RespObj cleanUserPhone(String userName, String phone, String email) {
-        userService.cleanUserPhoneOrEmtail(userName, phone, email);
+        userService.clearUserPhoneOrEmail(userName, phone, email);
         return RespObj.SUCCESS;
     }
 }

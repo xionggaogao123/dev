@@ -1,7 +1,7 @@
 package com.fulaan.mall.controller;
 
 import com.fulaan.annotation.ObjectIdType;
-import com.fulaan.controller.BaseController;
+import com.fulaan.base.BaseController;
 import com.fulaan.mall.service.EBusinessVoucherService;
 import com.pojo.ebusiness.EVoucherDTO;
 import org.bson.types.ObjectId;

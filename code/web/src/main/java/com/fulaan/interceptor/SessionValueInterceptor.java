@@ -18,7 +18,7 @@ import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import static com.fulaan.controller.BaseController.SESSION_VALUE;
+import static com.fulaan.base.BaseController.SESSION_VALUE;
 
 
 public class SessionValueInterceptor extends HandlerInterceptorAdapter {

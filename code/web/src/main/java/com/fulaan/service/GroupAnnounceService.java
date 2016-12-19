@@ -1,7 +1,7 @@
 package com.fulaan.service;
 
 import com.db.fcommunity.GroupAnnounceDao;
-import com.fulaan.dto.CommunityDetailDTO;
+import com.fulaan.community.dto.CommunityDetailDTO;
 import com.fulaan.pojo.Attachement;
 import com.fulaan.pojo.GroupAnnounceDTO;
 import com.fulaan.pojo.PageModel;
@@ -69,7 +69,7 @@ public class GroupAnnounceService {
             CommunityDetailDTO communityDetailDTO = new CommunityDetailDTO();
             communityDetailDTO.setTitle(entry.getTitle());
             communityDetailDTO.setContent(entry.getAnnounce());
-            UserEntry userEntry = userService.find(entry.getUserId());
+            UserEntry userEntry = userService.findByUserId(entry.getUserId());
             communityDetailDTO.setImageUrl(AvatarUtils.getAvatar(userEntry.getAvatar(), AvatarType.MIN_AVATAR.getType()));
             if (StringUtils.isNotBlank(userEntry.getNickName())) {
                 communityDetailDTO.setNickName(userEntry.getNickName());

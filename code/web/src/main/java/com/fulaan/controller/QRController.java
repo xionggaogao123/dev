@@ -2,7 +2,8 @@ package com.fulaan.controller;
 
 import com.fulaan.annotation.ObjectIdType;
 import com.fulaan.annotation.SessionNeedless;
-import com.fulaan.dto.CommunityDTO;
+import com.fulaan.base.BaseController;
+import com.fulaan.community.dto.CommunityDTO;
 import com.fulaan.dto.GroupDTO;
 import com.fulaan.dto.MemberDTO;
 import com.fulaan.service.CommunityService;
@@ -128,7 +129,7 @@ public class QRController extends BaseController {
             return null;
         }
 
-        UserEntry userEntry=userService.find(id);
+        UserEntry userEntry=userService.findByUserId(id);
         Map<String,String> map=new HashMap<String,String>();
         map.put("userId",userEntry.getID().toString());
         map.put("nickName",StringUtils.isNotBlank(userEntry.getNickName())?userEntry.getNickName():userEntry.getUserName());

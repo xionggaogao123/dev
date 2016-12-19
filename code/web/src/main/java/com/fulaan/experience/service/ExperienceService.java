@@ -5,7 +5,7 @@ import com.db.school.ClassDao;
 import com.db.user.UserDao;
 import com.db.user.UserExperienceLogDao;
 import com.db.user.UserSchoolYearExperienceDao;
-import com.fulaan.controller.BaseController;
+import com.fulaan.base.BaseController;
 import com.fulaan.cache.CacheHandler;
 import com.fulaan.experience.dto.ExperienceLogDTO;
 import com.fulaan.experience.dto.UserExperienceLogDTO;

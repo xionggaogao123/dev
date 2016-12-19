@@ -1,19 +1,16 @@
 package com.fulaan.controller;
 
 import com.fulaan.annotation.SessionNeedless;
+import com.fulaan.base.BaseController;
 import com.fulaan.cache.CacheHandler;
-import com.fulaan.school.SchoolService;
 import com.fulaan.user.service.UserService;
 import com.fulaan.user.util.QQLoginUtil;
 import com.pojo.app.SessionValue;
-import com.pojo.school.SchoolEntry;
 import com.pojo.user.UserEntry;
 import com.sys.constants.Constant;
-import com.sys.exceptions.IllegalParamException;
 import com.sys.utils.HttpClientUtils;
 import com.sys.utils.RespObj;
 import org.apache.commons.lang.StringUtils;
-import org.apache.log4j.Logger;
 import org.bson.types.ObjectId;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -34,12 +31,8 @@ import java.util.Map;
 @RequestMapping("/wap")
 public class WapController extends BaseController {
 
-    private static final Logger logger = Logger.getLogger(BaseController.class);
-
     @Autowired
     private UserService userService;
-    @Autowired
-    private SchoolService schoolService;
 
     @RequestMapping("/page")
     @SessionNeedless
@@ -65,15 +58,8 @@ public class WapController extends BaseController {
         if (!userService.isValidUser(user)) {
             return RespObj.FAILD("该用户已失效");
         }
-
-        SchoolEntry schoolEntry = null;
-        try {
-            schoolEntry = schoolService.getSchoolEntryByUserId(user.getID());
-        } catch (IllegalParamException ie) {
-            logger.error("Can not find school for user:" + user);
-        }
         String ip = getIP();
-        SessionValue value = userService.getSessionValue(ip, user, schoolEntry, response, request);
+        SessionValue value = userService.setCookieValue(ip, user, response, request);
         return RespObj.SUCCESS(value);
     }
 

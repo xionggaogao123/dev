@@ -3,7 +3,7 @@ package com.fulaan.mall.controller;
 import com.fulaan.annotation.LoginInfo;
 import com.fulaan.annotation.ObjectIdType;
 import com.fulaan.annotation.SessionNeedless;
-import com.fulaan.controller.BaseController;
+import com.fulaan.base.BaseController;
 import com.fulaan.cache.CacheHandler;
 import com.fulaan.forum.service.FLogService;
 import com.fulaan.mall.service.EGoodsCategoryService;
@@ -493,7 +493,7 @@ public class EBusinessGoodsController extends BaseController {
         Map<String, String> map = new HashMap<String, String>();
 
 
-        UserEntry ue = userService.searchUserByUserName(userName);
+        UserEntry ue = userService.findByUserName(userName);
 
         if (null == ue) {
             model.put("message", "用户名错误");
@@ -505,7 +505,7 @@ public class EBusinessGoodsController extends BaseController {
             return model;
         }
 
-        UserEntry mobileEntry = userService.searchUserByphone(phoneNumber);
+        UserEntry mobileEntry = userService.findByUserPhone(phoneNumber);
 
         if (null != mobileEntry && !mobileEntry.getUserName().toLowerCase().equals(ue.getUserName())) {
             model.put("message", "此手机已经被占用");
@@ -545,7 +545,7 @@ public class EBusinessGoodsController extends BaseController {
             return obj;
         }
 
-        UserEntry e = userService.searchUserByUserName(username.toLowerCase());
+        UserEntry e = userService.findByUserName(username.toLowerCase());
         if (null == e) {
             obj.put("message", "找不到用户");
             return obj;
@@ -582,7 +582,7 @@ public class EBusinessGoodsController extends BaseController {
             return obj;
         }
 
-        UserEntry e = userService.searchUserByUserName(username.toLowerCase());
+        UserEntry e = userService.findByUserName(username.toLowerCase());
         if (null == e) {
             obj.put("message", "找不到用户");
             return obj;
@@ -630,7 +630,7 @@ public class EBusinessGoodsController extends BaseController {
     @RequestMapping("/findUser/resetPwd/mobile")
     public RespObj reSetPwd(String username, String pwd, String pwdAgain, HttpServletRequest request) {
         RespObj obj = new RespObj(Constant.FAILD_CODE);
-        UserEntry e = userService.searchUserByUserName(username.toLowerCase());
+        UserEntry e = userService.findByUserName(username.toLowerCase());
         if (null == e) {
             obj.setMessage("找不到用户");
             return obj;
@@ -658,7 +658,7 @@ public class EBusinessGoodsController extends BaseController {
     @RequestMapping("/findUser/resetPwd")
     public RespObj reSetPwd(String username, String pwd, String pwdAgain, String vCode, HttpServletRequest request) {
         RespObj obj = new RespObj(Constant.FAILD_CODE);
-        UserEntry e = userService.searchUserByUserName(username.toLowerCase());
+        UserEntry e = userService.findByUserName(username.toLowerCase());
         if (null == e) {
             obj.setMessage("找不到用户");
             return obj;

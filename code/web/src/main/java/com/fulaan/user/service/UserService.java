@@ -6,10 +6,10 @@ import com.db.forum.FLevelDao;
 import com.db.forum.FPostDao;
 import com.db.school.*;
 import com.db.user.UserDao;
+import com.fulaan.base.BaseService;
 import com.fulaan.cache.CacheHandler;
 import com.fulaan.dto.UserDTO;
 import com.fulaan.mall.service.EBusinessVoucherService;
-import com.fulaan.school.SchoolService;
 import com.fulaan.user.dao.ThirdLoginDao;
 import com.fulaan.user.model.ThirdLoginEntry;
 import com.fulaan.utils.KeyWordFilterUtil;
@@ -17,7 +17,6 @@ import com.mongodb.BasicDBObject;
 import com.mongodb.DBObject;
 import com.pojo.app.*;
 import com.pojo.ebusiness.SortType;
-import com.pojo.emarket.UserBalanceDTO;
 import com.pojo.school.*;
 import com.pojo.user.*;
 import com.pojo.utils.LoginLog;
@@ -32,7 +31,6 @@ import org.apache.log4j.Logger;
 import org.bson.types.ObjectId;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import sql.dao.UserBalanceDao;
 
 import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
@@ -46,7 +44,7 @@ import java.util.*;
  * Created by yan on 2015/2/27.
  */
 @Service
-public class UserService {
+public class UserService extends BaseService {
 
     private static final Logger logger = Logger.getLogger(UserService.class);
 
@@ -54,18 +52,12 @@ public class UserService {
     private ThirdLoginDao thirdLoginDao = new ThirdLoginDao();
     private SchoolDao schoolDao = new SchoolDao();
     private ClassDao classDao = new ClassDao();
-    private TeacherClassSubjectDao teacherClassSubjectDao = new TeacherClassSubjectDao();
-    private UserBalanceDao userBalanceDao = new UserBalanceDao();
     private InterestClassDao interestClassDao = new InterestClassDao();
     private RegionDao regionDao = new RegionDao();
     private FLevelDao fLevelDao = new FLevelDao();
     private FPostDao fPostDao = new FPostDao();
-    private DepartmentDao departmentDao = new DepartmentDao();
-
     @Autowired
-    SchoolService schoolService;
-    @Autowired
-    EBusinessVoucherService voucherService;
+    private EBusinessVoucherService voucherService;
 
 
     /**
@@ -75,7 +67,7 @@ public class UserService {
      * @return
      */
     public boolean isSilenced(String userId) {
-        UserEntry userEntry = find(new ObjectId(userId));
+        UserEntry userEntry = findByUserId(new ObjectId(userId));
         int silencedStatus = userEntry.getSilencedStatus();
         if (silencedStatus == 0) {
             return false;
@@ -83,14 +75,7 @@ public class UserService {
             if (silencedStatus == 2) {
                 long silencedTime = userEntry.getSilencedTime();
                 long nowTime = System.currentTimeMillis();
-                if (silencedTime == 0) {
-                    return true;
-                }
-                if (silencedTime > nowTime) {
-                    return true;
-                } else {
-                    return false;
-                }
+                return silencedTime == 0 || silencedTime > nowTime;
             } else {
                 return false;
             }
@@ -105,10 +90,6 @@ public class UserService {
         userDao.updateHuanXin(uid);
     }
 
-    public List<ObjectId> getAllUserId() {
-        return userDao.getAllUserId();
-    }
-
     /**
      * 判断是否禁止发言
      *
@@ -116,7 +97,7 @@ public class UserService {
      * @return
      */
     public boolean isUnSpeak(String userId) {
-        UserEntry userEntry = find(new ObjectId(userId));
+        UserEntry userEntry = findByUserId(new ObjectId(userId));
         int silencedStatus = userEntry.getSilencedStatus();
         if (silencedStatus == 0) {
             return false;
@@ -125,8 +106,7 @@ public class UserService {
                 long silencedTime = userEntry.getSilencedTime();
                 int day = userEntry.getSilencedTen();
                 long nowTime = System.currentTimeMillis();
-                if (silencedTime == 0) return true;
-                return day > (nowTime / 1000 / (24 * 3600) - silencedTime / 1000 / (24 * 3600));
+                return silencedTime == 0 || day > (nowTime / 1000 / (24 * 3600) - silencedTime / 1000 / (24 * 3600));
             } else {
                 return false;
             }
@@ -271,9 +251,7 @@ public class UserService {
     private void sortList(List<UserDetailInfoDTO> list) {
         Collections.sort(list, new Comparator<UserDetailInfoDTO>() {
             public int compare(UserDetailInfoDTO obj1, UserDetailInfoDTO obj2) {
-                int flag = Collator.getInstance(Locale.CHINESE).compare(obj1.getUserName(), obj2.getUserName());
-
-                return flag;
+                return Collator.getInstance(Locale.CHINESE).compare(obj1.getUserName(), obj2.getUserName());
             }
         });
     }
@@ -285,9 +263,8 @@ public class UserService {
     *
     * */
     public UserDetailInfoDTO findStuInfoByParentId(String id) {
-        UserEntry userInfo = userDao.getUserEntryByParentId(new ObjectId(id));
-        if (userInfo == null) return null;
-        return new UserDetailInfoDTO(userInfo);
+        UserEntry e = userDao.getUserEntryByParentId(new ObjectId(id));
+        return e == null ? null : new UserDetailInfoDTO(e);
     }
 
     /**
@@ -333,28 +310,7 @@ public class UserService {
         }
     }
 
-    /**
-     * 根据用户名精确查询
-     *
-     * @param userName
-     * @return
-     */
-    public UserEntry searchUserByUserName(String userName) {
-        return userDao.findByName(userName);
-    }
-
-
-    /**
-     * 根据用户登录名精确查询
-     *
-     * @param userLoginName
-     * @return
-     */
-    public UserEntry searchUserByUserLoginName(String userLoginName) {
-        return userDao.searchUserByLoginName(userLoginName);
-    }
-
-    public UserEntry searchUserByphone(String phone) {
+    public UserEntry findByUserPhone(String phone) {
         return userDao.findByPhone(phone);
     }
 
@@ -364,7 +320,7 @@ public class UserService {
      * @param email
      * @return
      */
-    public UserEntry searchUserByEmail(String email) {
+    public UserEntry findByUserEmail(String email) {
         return userDao.findByEmail(email);
     }
 
@@ -374,18 +330,8 @@ public class UserService {
      * @param id
      * @return
      */
-    public UserEntry searchUserId(ObjectId id) {
+    public UserEntry findByUserId(ObjectId id) {
         return userDao.getUserEntry(id, Constant.FIELDS);
-    }
-
-    /**
-     * 根据CHATID查询
-     *
-     * @param id
-     * @return
-     */
-    public UserEntry searchUserChatId(String id) {
-        return userDao.getUserEntryByChatid(id, Constant.FIELDS);
     }
 
     /**
@@ -400,29 +346,12 @@ public class UserService {
     }
 
     /**
-     * 根据用户ID查询，返回用户的map
-     *
-     * @param ids
-     * @param fields
-     * @return
-     */
-    public Map<ObjectId, UserEntry> getUserEntryMap2(Collection<ObjectId> ids, DBObject fields) {
-        return userDao.getUserEntryMap2(ids, fields);
-    }
-
-
-    /**
      * 根据用户名查询，返回用户的id
      *
      * @return
      */
     public List<ObjectId> getUserIdsByName(Collection<String> userNames) {
         return userDao.getUserIdsByUserName(userNames);
-    }
-
-
-    public ObjectId addEntry(UserEntry e) {
-        return userDao.addEntry(e);
     }
 
     /**
@@ -451,7 +380,7 @@ public class UserService {
      */
     public UserEntry createUser(String nickName, int sex) {
 
-        UserEntry userEntry = searchUserByUserName(nickName);
+        UserEntry userEntry = findByUserName(nickName);
 
         if (userEntry == null) {
             userEntry = new UserEntry(nickName, nickName, "*", "", sex);
@@ -462,7 +391,7 @@ public class UserService {
         }
 
         addUser(userEntry);
-        userEntry = searchUserByUserName(nickName);
+        userEntry = findByUserName(nickName);
 
         return userEntry;
     }
@@ -487,11 +416,8 @@ public class UserService {
      * @return UserEntry
      */
     public UserEntry searchThirdEntry(String openId, String unionId, Integer type) {
-
         UserEntry userEntry = null;
-
         if (type == 1) { //微信
-
             Map<String, Object> map = new HashMap<String, Object>();
             map.put("unionid", unionId);
             map.put("type", type);
@@ -499,7 +425,6 @@ public class UserService {
             userEntry = getThirdEntryByMap(map);
 
         } else if (type == 2) { //QQ
-
             Map<String, Object> map = new HashMap<String, Object>();
             map.put("oid", openId);
             map.put("type", type);
@@ -554,124 +479,12 @@ public class UserService {
         return null;
     }
 
-    /**
-     * 通过学校查询老师信息，并且按照 <li>学科</li>
-     * <li>班级</li>
-     * <li>班主任</li>
-     * 进行分组
-     *
-     * @param schoolId
-     * @param type     1学科 2 班级 3班主任
-     * @return
-     */
-    public Map<IdNameValuePairDTO, Set<IdNameValuePairDTO>> getTeacherMap(ObjectId schoolId, int type) {
-        Map<IdNameValuePairDTO, Set<IdNameValuePairDTO>> retMap = new HashMap<IdNameValuePairDTO, Set<IdNameValuePairDTO>>();
-        //如果学校人数过大，会有性能影响
-        //todo by fourer
-        List<UserEntry> userEntryList = userDao.getUserEntryBySchoolIdList(schoolId, new BasicDBObject("r", 1).append("nnm", 1));
-        Map<ObjectId, UserEntry> userMap = new HashMap<ObjectId, UserEntry>();
-        for (UserEntry e : userEntryList) {
-            if (UserRole.isTeacher(e.getRole())) {
-                userMap.put(e.getID(), e);
-            }
-        }
-
-        UserEntry e;
-        if (type == 1 || type == 2)//学科 班级
-        {
-            List<TeacherClassSubjectEntry> tcjList = teacherClassSubjectDao.findSubjectByTeacherIds(userMap.keySet());
-            for (TeacherClassSubjectEntry tcj : tcjList) {
-                IdNameValuePairDTO dto = new IdNameValuePairDTO(type == 1 ? tcj.getSubjectInfo() : tcj.getClassInfo());
-                if (!retMap.containsKey(dto)) {
-                    retMap.put(dto, new HashSet<IdNameValuePairDTO>());
-                }
-                e = userMap.get(tcj.getTeacherId());
-                if (null != e) {
-                    retMap.get(dto).add(new IdNameValuePairDTO(e));
-                }
-            }
-        }
-
-        if (type == 3)//班主任
-        {
-            List<ClassEntry> ceList = classDao.findClassInfoBySchoolId(schoolId, Constant.FIELDS);
-            for (ClassEntry ce : ceList) {
-                IdNameValuePairDTO dto = new IdNameValuePairDTO(ce);
-                if (!retMap.containsKey(dto)) {
-                    retMap.put(dto, new HashSet<IdNameValuePairDTO>());
-                }
-                e = userMap.get(ce.getMaster());
-                if (null != e) {
-                    retMap.get(dto).add(new IdNameValuePairDTO(e));
-                }
-            }
-        }
-        return retMap;
-    }
-
-
-    /**
-     * 得到部门人员
-     *
-     * @param schoolId
-     * @return
-     */
-    public Map<IdNameValuePairDTO, Set<IdNameValuePairDTO>> getDepartmemtMembersMap(ObjectId schoolId) {
-        Map<IdNameValuePairDTO, Set<IdNameValuePairDTO>> retMap = new HashMap<IdNameValuePairDTO, Set<IdNameValuePairDTO>>();
-
-        List<DepartmentEntry> depList = departmentDao.getDepartmentEntrys(schoolId);
-
-        Set<ObjectId> totalSet = new HashSet<ObjectId>();
-
-        for (DepartmentEntry ce : depList) {
-            IdNameValuePairDTO dto = new IdNameValuePairDTO(ce);
-            if (!retMap.containsKey(dto)) {
-                retMap.put(dto, new HashSet<IdNameValuePairDTO>());
-            }
-
-            for (ObjectId stuId : ce.getMembers()) {
-                retMap.get(dto).add(new IdNameValuePairDTO(stuId));
-                totalSet.add(stuId);
-            }
-        }
-
-        Map<ObjectId, UserEntry> userMap = userDao.getUserEntryMap(totalSet, new BasicDBObject().append("nm", 1).append("cid", 1));
-        UserEntry e;
-        for (Map.Entry<IdNameValuePairDTO, Set<IdNameValuePairDTO>> entry : retMap.entrySet()) {
-            for (IdNameValuePairDTO dto : entry.getValue()) {
-                e = userMap.get(dto.getId());
-                if (null != e) {
-                    dto.setValue(e.getUserName());
-                }
-            }
-        }
-        return retMap;
-    }
-
     public void updateNickNameAndSexById(String studenrid, String stnickname, int sex) {
         userDao.updateNickNameAndSexById(new ObjectId(studenrid), stnickname, sex);
     }
 
-//    public void updateAgeById()
-
     public void updateNickNameById(String userId, String stnickname) {
         userDao.updateNickNameById(new ObjectId(userId), stnickname);
-    }
-
-    /**
-     * 获取用户账户余额
-     *
-     * @param userId
-     * @return
-     */
-    public double getUserBalance(String userId) {
-        UserBalanceDTO ubInfo = userBalanceDao.getUserBalanceInfo(userId);
-        double balance = 0.0;
-        if (null != ubInfo) {
-            balance = ubInfo.getBalance();
-            //System.out.println(balance);
-        }
-        return balance;
     }
 
 
@@ -748,25 +561,6 @@ public class UserService {
         FieldValuePair fvp = new FieldValuePair("pw", password);
         userDao.update(new ObjectId(userId), fvp);
     }
-
-    public void updateUserGroupList(List<String> userlist, IdValuePair idvalue) {
-        for (String userid : userlist) {
-            userDao.updateUserGroupList(userid, idvalue);
-        }
-    }
-
-    public void deleteUserGroupList(List<String> memberList, String roomid) {
-        for (String userid : memberList) {
-            UserEntry userentry = userDao.getUserEntryByChatid(userid, Constant.FIELDS);
-            for (IdValuePair idvaluepair : userentry.getGroupInfoList()) {
-                if (idvaluepair.getBaseEntry().getString("id").equals(roomid)) {
-                    userDao.deleteUserGroupList(userid, idvaluepair);
-                }
-            }
-
-        }
-    }
-
 
     /**
      * 得到用户所在的班级列表
@@ -857,13 +651,7 @@ public class UserService {
 
 
         }
-
-
         return classInfoDTOList;
-    }
-
-    public void updateIntroduction(String introduce, String userId) {
-        userDao.updateIntroduction(introduce, new ObjectId(userId));
     }
 
     /**
@@ -920,24 +708,6 @@ public class UserService {
             }
         }
         return k;
-    }
-
-
-    /**
-     * 根据条件查询用户
-     *
-     * @param role
-     * @param noUserIds
-     * @return
-     */
-    public List<UserInfoDTO> getUserListByParam(int role, String userName, Set<ObjectId> noUserIds) {
-        List<UserEntry> userEntryList = userDao.getUserListByParam(role, userName, noUserIds);
-        List<UserInfoDTO> dtolist = new ArrayList<UserInfoDTO>();
-        for (UserEntry userEntry : userEntryList) {
-            UserInfoDTO userInfoDTO = new UserInfoDTO(userEntry);
-            dtolist.add(userInfoDTO);
-        }
-        return dtolist;
     }
 
     /**
@@ -1074,7 +844,7 @@ public class UserService {
     /**
      * 新注册商城用户赠送购物券
      */
-    public void giveVouchers(ObjectId userId) {
+    private void giveVouchers(ObjectId userId) {
         voucherService.addEVoucher(userId, 1000);
         voucherService.addEVoucher(userId, 1000);
     }
@@ -1103,11 +873,7 @@ public class UserService {
         return parents.get(2).toString();
     }
 
-    public UserEntry find(ObjectId id) {
-        return userDao.findByObjectId(id);
-    }
-
-    public UserEntry find(String name) {
+    public UserEntry findByUserName(String name) {
         return userDao.findByName(name);
     }
 
@@ -1135,28 +901,24 @@ public class UserService {
     }
 
     public UserEntry login(String login) {
-
-        UserEntry user = userDao.searchUserByUserName(login);
+        UserEntry user = userDao.findByName(login);
         if (user == null) {
-            user = userDao.searchUserByEmail(login);
+            user = userDao.findByEmail(login);
         }
         if (user == null) {
-            user = userDao.searchUserByMobile(login);
+            user = userDao.findByPhone(login);
         }
         return user;
     }
 
     public UserEntry getUserEntry(String name) {
-        UserEntry e = searchUserByUserName(name);
+        UserEntry e = findByUserName(name);
 
         if (null == e && ValidationUtils.isRequestModile(name)) {
-            e = searchUserByphone(name);
+            e = findByUserPhone(name);
         }
         if (null == e && ValidationUtils.isEmail(name)) {
-            e = searchUserByEmail(name);
-        }
-        if (null == e) {
-            e = searchUserByUserLoginName(name);
+            e = findByUserEmail(name);
         }
 
         return e;
@@ -1201,7 +963,7 @@ public class UserService {
                 try {
                     update(user.getID(), "vabt", System.currentTimeMillis());
                 } catch (IllegalParamException e1) {
-
+                    e1.printStackTrace();
                 }
             } else {
                 if (System.currentTimeMillis() > validBeginTime + validTime * 1000) {
@@ -1221,7 +983,7 @@ public class UserService {
     }
 
     public long score(ObjectId uid) {
-        UserEntry entry = find(uid);
+        UserEntry entry = findByUserId(uid);
         return entry.getForumScore();
     }
 
@@ -1237,32 +999,13 @@ public class UserService {
      * 获取SessionValue
      *
      * @param e
-     * @param schoolEntry
      * @param response
      * @param request
      * @return
      */
-    public SessionValue getSessionValue(String ip, UserEntry e, SchoolEntry schoolEntry,
-                                        HttpServletResponse response, HttpServletRequest request) {
+    public SessionValue setCookieValue(String ip, UserEntry e, HttpServletResponse response, HttpServletRequest request) {
 
-        String client = request.getHeader("User-Agent");
-        Platform pf = null;
-        if (client.contains("iOS")) {
-            pf = Platform.IOS;
-        } else if (client.contains("Android")) {
-            pf = Platform.Android;
-        } else {
-            pf = Platform.PC;
-        }
-
-        //处理SessionValue
-        SessionValue value = new SessionValue();
-        value.setId(e.getID().toString());
-        value.setUserName(e.getUserName());
-        value.setRealName(e.getNickName());
-        value.setAvatar(e.getAvatar());
-        value.setK6kt(e.getK6KT());
-
+        SessionValue value = getSessionValue(e);
         //放入缓存
         ObjectId cacheUserKey = new ObjectId();
         String ipKey = CacheHandler.getKeyString(CacheHandler.CACHE_USER_KEY_IP, cacheUserKey.toString());
@@ -1276,7 +1019,6 @@ public class UserService {
         userKeycookie.setMaxAge(Constant.SECONDS_IN_DAY);
         userKeycookie.setPath(Constant.BASE_PATH);
         response.addCookie(userKeycookie);
-
         try {
             Cookie nameCookie = new Cookie(Constant.COOKIE_USERNAME_KEY, URLEncoder.encode(e.getUserName(), Constant.UTF_8));
             nameCookie.setMaxAge(Constant.SECONDS_IN_MONTH);
@@ -1285,22 +1027,41 @@ public class UserService {
         } catch (UnsupportedEncodingException e1) {
             logger.error("", e1);
         }
+        loginLog(request, e);
+        return value;
+    }
+
+    private void loginLog(HttpServletRequest request, UserEntry e) {
+        String ip = getIP(request);
+        String client = request.getHeader("User-Agent");
+        Platform pf;
+        if (client.contains("iOS")) {
+            pf = Platform.IOS;
+        } else if (client.contains("Android")) {
+            pf = Platform.Android;
+        } else {
+            pf = Platform.PC;
+        }
         try {
             LoginLog loginLog = new LoginLog();
             loginLog.setIpAddr(ip + e.getUserName());
             loginLog.setPlatform(pf.getName());
             loginLog.setUserId(e.getID().toString());
             loginLog.setUserName(e.getUserName());
-            if (null != schoolEntry) {
-                RegionEntry region = schoolService.getRegionEntry(schoolEntry.getRegionId());
-                //获取客户端信息
-            }
-
             logger.info(loginLog);
         } catch (Exception ex) {
             ex.printStackTrace();
         }
+    }
 
+    private SessionValue getSessionValue(UserEntry e) {
+        //处理SessionValue
+        SessionValue value = new SessionValue();
+        value.setId(e.getID().toString());
+        value.setUserName(e.getUserName());
+        value.setRealName(e.getNickName());
+        value.setAvatar(e.getAvatar());
+        value.setK6kt(e.getK6KT());
         return value;
     }
 
@@ -1326,7 +1087,6 @@ public class UserService {
 
 
     public void pushUserTag(ObjectId userId, int code, String tag) {
-
         if (userDao.tagIsExist(userId, code)) {
             return;
         }
@@ -1364,11 +1124,11 @@ public class UserService {
     }
 
     public void updateSexById(ObjectId userId, int sex) {
-        userDao.updateSexById(userId,sex);
+        userDao.updateSexById(userId, sex);
     }
 
     public void updateUserEmail(ObjectId userId, String email) {
-        userDao.updateEmailById(userId,email);
+        userDao.updateEmailById(userId, email);
     }
 
     public boolean isBindQQ(ObjectId userId) {
@@ -1379,11 +1139,11 @@ public class UserService {
         return thirdLoginDao.isBindWechat(userId);
     }
 
-    public void cleanUserPhoneOrEmtail(String userName, String phone,String email) {
-        userDao.cleanUserPhoneOrEmail(userName,phone,email);
+    public void clearUserPhoneOrEmail(String userName, String phone, String email) {
+        userDao.cleanUserPhoneOrEmail(userName, phone, email);
     }
 
     public void updateUserPhone(ObjectId userId, String mobile) {
-        userDao.updateUserMobile(userId,mobile);
+        userDao.updateUserMobile(userId, mobile);
     }
 }

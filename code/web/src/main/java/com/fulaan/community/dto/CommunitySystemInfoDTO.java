@@ -1,4 +1,4 @@
-package com.fulaan.dto;
+package com.fulaan.community.dto;
 
 import com.pojo.fcommunity.CommunitySystemInfoEntry;
 import com.sys.utils.DateTimeUtils;

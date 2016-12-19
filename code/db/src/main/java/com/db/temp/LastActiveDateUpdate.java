@@ -51,7 +51,7 @@ public class LastActiveDateUpdate {
                     FileUtils.write(errorFile, "\r\n", true);
                 }
             } else {
-                UserEntry e = dao.searchUserByUserName(s);
+                UserEntry e = dao.findByName(s);
                 if (null == e) {
                     FileUtils.write(errorFile, s + "不存在", true);
                     FileUtils.write(errorFile, "\r\n", true);

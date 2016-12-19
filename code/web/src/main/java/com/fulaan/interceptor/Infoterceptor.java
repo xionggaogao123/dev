@@ -2,7 +2,6 @@ package com.fulaan.interceptor;
 
 import com.fulaan.annotation.LoginInfo;
 import com.fulaan.friendscircle.service.FriendApplyService;
-import com.fulaan.service.CommunityService;
 import com.fulaan.service.CommunitySystemInfoService;
 import com.fulaan.service.ConcernService;
 import com.fulaan.forum.service.FCollectionService;
@@ -26,7 +25,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
-import static com.fulaan.controller.BaseController.SESSION_VALUE;
+import static com.fulaan.base.BaseController.SESSION_VALUE;
 
 /**
  * Created by jerry on 2016/9/8.
@@ -117,7 +116,7 @@ public class Infoterceptor extends HandlerInterceptorAdapter {
             boolean collect = fCollectionService.isCollected(new ObjectId(sessionValue.getId()), temp);
             model.put("collect", collect);
         }
-        UserEntry userEntry = userService.find(new ObjectId(sessionValue.getId()));
+        UserEntry userEntry = userService.findByUserId(new ObjectId(sessionValue.getId()));
         if (null != userEntry) {
             model.put("forumScore", userEntry.getForumScore());
             model.put("forumExperience", userEntry.getForumExperience());

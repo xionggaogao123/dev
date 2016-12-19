@@ -19,13 +19,13 @@ public class ThirdLoginEntry extends BaseDBObject {
         super(baseEntry);
     }
 
-    public ThirdLoginEntry(ObjectId uid, String oid, String unionid, int type) {
+    public ThirdLoginEntry(ObjectId uid, String oid, String unionid, ThirdType type) {
         super();
         BasicDBObject baseEntry = new BasicDBObject()
                 .append("uid", uid)
                 .append("oid", oid)
                 .append("unionid", unionid)
-                .append("type", type);
+                .append("type", type.getCode());
 
         setBaseEntry(baseEntry);
 

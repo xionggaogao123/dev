@@ -55,8 +55,6 @@ import java.util.*;
 public class TrainController extends BaseController {
 
     @Autowired
-    private MateService mateService;
-    @Autowired
     private RegionService regionService;
     @Autowired
     private ItemTypeService itemTypeService;
@@ -270,6 +268,16 @@ public class TrainController extends BaseController {
 //        }
 
         //状态记录
+        //先清空cookie
+        Cookie cookies[] = getRequest().getCookies();
+        Cookie c = null;
+        for (int i = 0; i < cookies.length; i++) {
+            c = cookies[i];
+            c.setMaxAge(0);
+            if (c.getName().equals(Constant.COOKIE_INSTITUTE_INFO)) {
+                RedisUtils.deleteKey(c.getValue());
+            }
+        }
         ObjectId cacheKey = new ObjectId();
         Map<String,String> cacheMap=new HashMap<String, String>();
         cacheMap.put("regionId",region);
@@ -280,7 +288,14 @@ public class TrainController extends BaseController {
         instituteCookie.setMaxAge(Constant.SECONDS_IN_DAY);
         instituteCookie.setPath(Constant.BASE_PATH);
         response.addCookie(instituteCookie);
+        return getInstituteData(lon,lat,distance,page,pageSize,type,area,region,itemType,regular,sortType);
 
+
+    }
+
+
+    private RespObj getInstituteData(double lon,double lat,int distance,int page,int pageSize,
+                                    String type,String area,String region,String itemType,String regular,int sortType){
         if(distance < 0) {
             distance = 20000;
         } else {
@@ -310,8 +325,19 @@ public class TrainController extends BaseController {
         map.put("page", page);
         map.put("pageSize", pageSize);
         return RespObj.SUCCESS(map);
-
     }
+
+    @RequestMapping("/getInstitutesInDetail")
+    @SessionNeedless
+    @ResponseBody
+    public RespObj getInstitutesInDetail(@RequestParam(defaultValue = "10", required = false) int pageSize,
+                                         @RequestParam(defaultValue = "1", required = false) int sortType,
+                                         @RequestParam(defaultValue = "", required = false) String itemType){
+        return getInstituteData(0,0,-1,1,pageSize,"","","",itemType,"",sortType);
+    }
+
+
+
 
 
     /**
@@ -517,6 +543,26 @@ public class TrainController extends BaseController {
         return RespObj.SUCCESS;
     }
 
+
+    /**
+     * 批量处理残留数据
+     * @param startId
+     * @param endId
+     * @return
+     */
+    @RequestMapping("/remainImage")
+    @ResponseBody
+    public RespObj remainImage(@ObjectIdType ObjectId startId,@ObjectIdType ObjectId endId){
+        try{
+            List<InstituteEntry> entries=instituteService.getEntriesByTwoId(startId,endId);
+            batchImage(entries);
+        }catch (Exception e){
+            return RespObj.FAILD(e.getMessage());
+        }
+        return RespObj.SUCCESS;
+    }
+
+
     /**
      * 批量删除数据
      * @param deleteIds
@@ -610,6 +656,8 @@ public class TrainController extends BaseController {
         }
         return RespObj.SUCCESS;
     }
+
+
 
     /**
      * 处理institute数据

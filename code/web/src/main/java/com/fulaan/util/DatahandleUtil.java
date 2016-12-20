@@ -34,11 +34,10 @@ public class DatahandleUtil {
         start();
     }
 
-    private static void exportData(List<PropertiesObj> areas, List<PropertiesObj> types) throws Exception {
+    private static void exportData(List<PropertiesObj> areas, List<PropertiesObj> types,File file) throws Exception {
         List<PropertiesObj> tempAreas = new ArrayList<PropertiesObj>();
         List<PropertiesObj> tempTypes = new ArrayList<PropertiesObj>();
         SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
-        File file = new File("D:\\gansu\\lanzhou.xlsx");
         XSSFWorkbook wb = new XSSFWorkbook(new FileInputStream(file));
 
         Sheet sheet = wb.getSheetAt(0);
@@ -268,7 +267,9 @@ public class DatahandleUtil {
                         String[] str = tempStr.split(" ");
                         StringBuffer buffer = new StringBuffer();
                         for (String item : str) {
-                            buffer.append(item.trim() + "|");
+                            if(StringUtils.isNotBlank(item)) {
+                                buffer.append(item.trim() + "|");
+                            }
                         }
                         instituteCopyEntry.setTeSeFuWu(buffer.toString().substring(0, buffer.toString().length() - 1));
                     } else {
@@ -355,8 +356,8 @@ public class DatahandleUtil {
                 propertiesObj.setName(itemTypeCopyEntry.getName());
                 types.add(propertiesObj);
             }
-
-            exportData(areas, types);
+            File file = new File("D:\\gansu\\lanzhou.xlsx");
+            exportData(areas, types,file);
 
         }
     }

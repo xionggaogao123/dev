@@ -618,11 +618,11 @@ public class Constant {
     public static final String COLLECTION_FORUM_COMMUNITY_SYSTEMINFO = "fcomunitySysInfo";
 
     //找培训
-    public static final String COLLECTION_TRAIN_INSTITUTE="institute";
+    public static final String COLLECTION_TRAIN_INSTITUTE="institute_copy";
 
-    public static final String COLLECTION_TRAIN_ITEMTYPENAME="itemTypeName";
+    public static final String COLLECTION_TRAIN_ITEMTYPENAME="itemTypeName_copy";
 
-    public static final String COLLECTION_TRAIN_REGIONS="regions";
+    public static final String COLLECTION_TRAIN_REGIONS="regions_copy";
 
     public static final String COLLECTION_TRAIN_COMMENT="trainComment";
 

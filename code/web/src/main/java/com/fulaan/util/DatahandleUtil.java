@@ -144,6 +144,12 @@ public class DatahandleUtil {
                     map.put("pid", itemTypeCopyEntry.getParentId().toString());
                     ItemTypeCopyEntry entryByName = itemTypeNameCopyDao.find(itemTypeCopyEntry.getParentId());
                     map.put("pName", entryByName.getName());
+                    if(itemType == 3 && itemTypeCopyEntry.getLevel()==3) {
+                        PropertiesObj obj = new PropertiesObj();
+                        obj.setId(itemTypeCopyEntry.getParentId().toString());
+                        obj.setName(entryByName.getName());
+                        tempTypes.add(obj);
+                    }
                 }
 
                 RedisUtils.cacheMap(temp, map, Constant.SESSION_TIMEOUT_SECOND_INT);

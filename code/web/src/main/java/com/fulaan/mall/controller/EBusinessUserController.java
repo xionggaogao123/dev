@@ -595,7 +595,7 @@ public class EBusinessUserController extends BaseController {
                  return RespObj.SUCCESS(voucher);
              }else{
 //                 RedisUtils.deleteKey(key);
-                 return RespObj.FAILD("你已经获取到优惠券了，每个人只有一次机会哦!");
+                 return RespObj.FAILD("你已经获取到优惠券了，<br/>每个人只有一次机会哦!");
              }
          }
      }catch (Exception e){

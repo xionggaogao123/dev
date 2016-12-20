@@ -617,9 +617,8 @@ public class Constant {
 
     public static final String COLLECTION_FORUM_COMMUNITY_SYSTEMINFO = "fcomunitySysInfo";
 
+    //找培训
     public static final String COLLECTION_TRAIN_INSTITUTE="institute";
-
-    public static final String COLLECTION_TRAIN_INSTITUTE_TEST="institute_copy";
 
     public static final String COLLECTION_TRAIN_ITEMTYPENAME="itemTypeName";
 
@@ -627,6 +626,12 @@ public class Constant {
 
     public static final String COLLECTION_TRAIN_COMMENT="trainComment";
 
+    //(上线前的数据处理)
+    public static final String COLLECTION_TRAIN_INSTITUTE_COPY="institute_copy";
+
+    public static final String COLLECTION_TRAIN_REGIONS_COPY="regions_copy";
+
+    public static final String COLLECTION_TRAIN_ITEMTYPENAME_COPY="itemTypeName_copy";
 
 
     //=========第三方登录=======================================================

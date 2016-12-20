@@ -6,6 +6,8 @@ import com.fulaan.community.dto.CommunityDTO;
 import com.fulaan.community.dto.CommunityDetailDTO;
 import com.fulaan.dto.MemberDTO;
 import com.fulaan.community.dto.PartInContentDTO;
+import com.fulaan.fgroup.service.EmService;
+import com.fulaan.fgroup.service.GroupService;
 import com.fulaan.friendscircle.service.FriendApplyService;
 import com.fulaan.friendscircle.service.FriendService;
 import com.fulaan.pojo.Attachement;

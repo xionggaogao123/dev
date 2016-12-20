@@ -1,4 +1,4 @@
-package com.fulaan.service;
+package com.fulaan.fgroup.service;
 
 import com.easemob.server.EaseMobAPI;
 import com.easemob.server.comm.wrapper.ResponseWrapper;

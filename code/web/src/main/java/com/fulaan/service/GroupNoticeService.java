@@ -24,7 +24,7 @@ import java.util.List;
  */
 
 @Service
-public class GroupAnnounceService {
+public class GroupNoticeService {
 
     private GroupAnnounceDao groupAnnounceDao = new GroupAnnounceDao();
     @Autowired
@@ -45,22 +45,13 @@ public class GroupAnnounceService {
 
     public GroupAnnounceDTO getEarlyAnnounce(ObjectId groupId) {
         GroupAnnounceEntry entry = groupAnnounceDao.getEarlyOne(groupId);
-        if (entry != null) {
-            return new GroupAnnounceDTO(entry);
-        }
-        return null;
+        return entry == null ? null : new GroupAnnounceDTO(entry);
     }
 
     public PageModel<CommunityDetailDTO> getGroupAnnounceByMessage(ObjectId groupId, int page, int pageSize) {
         int totalCount = groupAnnounceDao.count(groupId);
         int totalPages = (int) Math.ceil(totalCount / pageSize) + 1;
-        if (page > totalPages) {
-            page = 1;
-        }
-
-        if (page < 1) {
-            page = 1;
-        }
+        page = page > totalPages ? totalPages : page;
 
         List<GroupAnnounceEntry> list = groupAnnounceDao.getByPage(groupId, page, pageSize);
         List<CommunityDetailDTO> groupAnnounceDTOs = new ArrayList<CommunityDetailDTO>();
@@ -84,11 +75,9 @@ public class GroupAnnounceService {
                 images.add(attachement);
             }
             communityDetailDTO.setImages(images);
-            communityDetailDTO.setTime(DateUtils.timeStampToStr(entry.getID().getTime()));
+            communityDetailDTO.setTime(DateUtils.timeStampToStr(entry.getID().getTimestamp()));
             groupAnnounceDTOs.add(communityDetailDTO);
         }
-
-
         PageModel<CommunityDetailDTO> pageModel = new PageModel<CommunityDetailDTO>();
         pageModel.setResult(groupAnnounceDTOs);
         pageModel.setTotalCount(totalCount);

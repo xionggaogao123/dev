@@ -1,6 +1,7 @@
-package com.fulaan.dto;
+package com.fulaan.fgroup.dto;
 
 
+import com.fulaan.dto.MemberDTO;
 import com.pojo.fcommunity.GroupEntry;
 
 import java.util.List;

@@ -5,8 +5,10 @@ import com.fulaan.annotation.SessionNeedless;
 import com.fulaan.base.BaseController;
 import com.fulaan.community.dto.CommunityDTO;
 import com.fulaan.community.dto.CommunityDetailDTO;
-import com.fulaan.dto.GroupDTO;
 import com.fulaan.dto.MemberDTO;
+import com.fulaan.fgroup.dto.GroupDTO;
+import com.fulaan.fgroup.service.EmService;
+import com.fulaan.fgroup.service.GroupService;
 import com.fulaan.friendscircle.service.FriendService;
 import com.fulaan.pojo.*;
 import com.fulaan.service.*;
@@ -49,7 +51,7 @@ public class GroupController extends BaseController {
     @Autowired
     private UserService userService;
     @Autowired
-    private GroupAnnounceService groupAnnounceService;
+    private GroupNoticeService groupNoticeService;
     @Autowired
     private CommunityService communityService;
     @Autowired
@@ -117,7 +119,7 @@ public class GroupController extends BaseController {
             CommunityDetailDTO groupAnnounceDTO = communityService.getLatestAnnouncement(communityId);
             groupDTO.setCurAnnounceMent(groupAnnounceDTO);
         } else {
-            GroupAnnounceDTO groupAnnounceDTO = groupAnnounceService.getEarlyAnnounce(groupId);
+            GroupAnnounceDTO groupAnnounceDTO = groupNoticeService.getEarlyAnnounce(groupId);
             groupDTO.setCurAnnounceMent(groupAnnounceDTO);
         }
         return RespObj.SUCCESS(groupDTO);
@@ -537,7 +539,7 @@ public class GroupController extends BaseController {
             PageModel<CommunityDetailDTO> pageModel = communityService.getMessages(communityId, page, pageSize, Constant.DESC, CommunityDetailType.ANNOUNCEMENT.getType(),getUserId(),false);
             return RespObj.SUCCESS(pageModel);
         }
-        return RespObj.SUCCESS(groupAnnounceService.getGroupAnnounceByMessage(groupId, page, pageSize));
+        return RespObj.SUCCESS(groupNoticeService.getGroupAnnounceByMessage(groupId, page, pageSize));
     }
 
 
@@ -590,7 +592,7 @@ public class GroupController extends BaseController {
             String[] imageList = images.split(",");
             Collections.addAll(imageArray, imageList);
         }
-        groupAnnounceService.save(groupId, title, content, getUserId(), imageArray);
+        groupNoticeService.save(groupId, title, content, getUserId(), imageArray);
         return RespObj.SUCCESS("发布成功");
     }
 

@@ -151,7 +151,6 @@ public class AccountController extends BaseController {
         String authorizeURL = QQLoginUtil.getValue("authorizeURL").trim();
         String app_ID = QQLoginUtil.getValue("app_ID").trim();
         String url = authorizeURL + "?client_id=" + app_ID + "&redirect_uri=" + redirect_URI + "&response_type=" + "code" + "&state=" + state;
-
         Cookie userKeycookie = new Cookie("bindQQ", getUserId().toString());
         userKeycookie.setMaxAge(Constant.SECONDS_IN_DAY);
         userKeycookie.setPath(Constant.BASE_PATH);
@@ -484,8 +483,8 @@ public class AccountController extends BaseController {
     @RequestMapping("/cleanUserPhone")
     @ResponseBody
     @UserRoles(UserRole.DISCUSS_MANAGER)
-    public RespObj cleanUserPhone(String userName, String phone, String email) {
-        userService.clearUserPhoneOrEmail(userName, phone, email);
+    public RespObj cleanUserPhone(String userName) {
+        userService.clearUserPhoneAndEmail(userName);
         return RespObj.SUCCESS;
     }
 }

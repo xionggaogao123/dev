@@ -88,6 +88,7 @@ public class IndexController extends BaseController {
         model.put("levelCategoryId", getRequest().getParameter("levelCategoryId"));
         List<Banner> banners = mBannerDao.getBanner(2);
         model.put("banners", banners);
+        model.put("haha","sdfdsf");
         return "/mall/jsp_index";
     }
 

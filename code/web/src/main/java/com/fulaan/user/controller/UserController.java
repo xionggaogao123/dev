@@ -129,12 +129,6 @@ public class UserController extends BaseController {
         if (StringUtils.isBlank(cookieValue)) {
             String uid = HttpClientUtils.get(K6KT_SSO_URL + "/sso/simUserInfo.do?ssoKey=" + request.getParameter("token"));
             UserEntry e = userService.findByUserId(new ObjectId(uid));
-            SchoolEntry schoolEntry = null;
-            try {
-                schoolEntry = schoolService.getSchoolEntryByUserId(e.getID());
-            } catch (IllegalParamException ie) {
-                logger.error("Can not find school for user:" + e);
-            }
             //处理SessionValue
             value.setId(e.getID().toString());
             value.setUserName(e.getUserName());

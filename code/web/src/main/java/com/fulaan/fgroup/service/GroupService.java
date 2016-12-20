@@ -1,12 +1,10 @@
-package com.fulaan.service;
+package com.fulaan.fgroup.service;
 
 import com.db.fcommunity.GroupDao;
 import com.db.fcommunity.MemberDao;
-import com.db.user.UserDao;
-import com.easemob.server.EaseMobAPI;
-import com.easemob.server.comm.wrapper.ResponseWrapper;
-import com.fulaan.dto.GroupDTO;
+import com.fulaan.fgroup.dto.GroupDTO;
 import com.fulaan.dto.MemberDTO;
+import com.fulaan.service.MemberService;
 import com.fulaan.util.ImageUtils;
 import com.fulaan.util.QRUtils;
 import com.pojo.fcommunity.GroupEntry;
@@ -97,6 +95,11 @@ public class GroupService {
      * @throws IllegalParamException
      */
     public void updateHeadImage(ObjectId groupId) throws IOException, IllegalParamException {
+        String url = generateHeadImage(groupId);
+        groupDao.updateHeadImage(groupId, url);
+    }
+
+    private String generateHeadImage(ObjectId groupId) throws IOException, IllegalParamException {
         List<MemberDTO> members = memberService.getMembers(groupId, 4);
         List<String> images = new ArrayList<String>();
         for (MemberDTO memberDTO : members) {
@@ -111,8 +114,7 @@ public class GroupService {
 
         QiniuFileUtils.uploadFile(fileKey.toString() + ".jpg", new FileInputStream(outFile), QiniuFileUtils.TYPE_IMAGE);
         outFile.delete();
-        String url = QiniuFileUtils.getPath(QiniuFileUtils.TYPE_IMAGE, fileKey.toString() + ".jpg");
-        groupDao.updateHeadImage(groupId, url);
+        return QiniuFileUtils.getPath(QiniuFileUtils.TYPE_IMAGE, fileKey.toString() + ".jpg");
     }
 
     /**
@@ -121,6 +123,11 @@ public class GroupService {
      * @param groupId
      */
     public void updateGroupNameByMember(ObjectId groupId) {
+        String name = generateGroupName(groupId);
+        groupDao.updateGroupName(groupId, name);
+    }
+
+    private String generateGroupName(ObjectId groupId) {
         List<MemberDTO> members = memberService.getMembers(groupId, 3);
         String name = "";
         for (MemberDTO member : members) {
@@ -129,8 +136,9 @@ public class GroupService {
         if (name.contains(",")) {
             name = name.substring(0, name.lastIndexOf(","));
         }
-        groupDao.updateGroupName(groupId, name);
+        return name;
     }
+
 
     /**
      * 更新 - 群聊名称

@@ -9,9 +9,7 @@ import com.sys.constants.Constant;
 import org.bson.types.ObjectId;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 /**
  * Created by jerry on 2016/11/1.
@@ -264,7 +262,6 @@ public class MemberDao extends BaseDao {
         BasicDBObject query = new BasicDBObject("grid", id)
                 .append("rl", new BasicDBObject(Constant.MONGO_IN, list))
                 .append("r", 0);
-
         BasicDBObject orderBy = new BasicDBObject("rl", Constant.DESC).append(Constant.ID, Constant.DESC);
         List<DBObject> dos = find(MongoFacroty.getAppDB(), Constant.COLLECTION_FORUM_COMMUNITY_MEMBER, query, Constant.FIELDS, orderBy);
         for (DBObject dbo : dos) {

@@ -955,16 +955,12 @@ public class UserDao extends BaseDao {
         update(MongoFacroty.getAppDB(), Constant.COLLECTION_USER_NAME, query, updateValue);
     }
 
-    private String getCollection() {
-        return Constant.COLLECTION_USER_NAME;
-    }
-
 
     public void pushUserTag(ObjectId uid, UserEntry.UserTagEntry userTagEntry) {
         BasicDBObject query = new BasicDBObject()
                 .append(Constant.ID, uid);
         BasicDBObject update = new BasicDBObject(Constant.MONGO_PUSH, new BasicDBObject("ustg", userTagEntry.getBaseEntry()));
-        update(MongoFacroty.getAppDB(), getCollection(), query, update);
+        update(MongoFacroty.getAppDB(), Constant.COLLECTION_USER_NAME, query, update);
     }
 
     public void pushUserTags(ObjectId uid, List<UserEntry.UserTagEntry> tags) {
@@ -976,10 +972,10 @@ public class UserDao extends BaseDao {
         }
 
         BasicDBObject clearTag = new BasicDBObject(Constant.MONGO_SET, new BasicDBObject("ustg", Constant.DEFAULT_VALUE_ARRAY));
-        update(MongoFacroty.getAppDB(), getCollection(), query, clearTag);
+        update(MongoFacroty.getAppDB(), Constant.COLLECTION_USER_NAME, query, clearTag);
 
         BasicDBObject update = new BasicDBObject(Constant.MONGO_ADDTOSET, new BasicDBObject("ustg", new BasicDBObject(Constant.MONGO_EACH, dbList)));
-        update(MongoFacroty.getAppDB(), getCollection(), query, update);
+        update(MongoFacroty.getAppDB(), Constant.COLLECTION_USER_NAME, query, update);
     }
 
     public boolean tagIsExist(ObjectId uid, int code) {
@@ -994,12 +990,12 @@ public class UserDao extends BaseDao {
                 .append(Constant.ID, uid);
         BasicDBObject update = new BasicDBObject()
                 .append(Constant.MONGO_PULL, new BasicDBObject("ustg", new BasicDBObject("co", code)));
-        update(MongoFacroty.getAppDB(), getCollection(), query, update);
+        update(MongoFacroty.getAppDB(), Constant.COLLECTION_USER_NAME, query, update);
     }
 
-    public void cleanUserPhoneOrEmail(String userName, String phone, String email) {
+    public void cleanUserPhoneAndEmail(String userName) {
         BasicDBObject query = new BasicDBObject("nm", userName);
-        BasicDBObject update = new BasicDBObject(Constant.MONGO_SET, new BasicDBObject("e", email).append("mn", phone));
+        BasicDBObject update = new BasicDBObject(Constant.MONGO_SET, new BasicDBObject("e", "").append("mn", ""));
         update(MongoFacroty.getAppDB(), Constant.COLLECTION_USER_NAME, query, update);
     }
 }

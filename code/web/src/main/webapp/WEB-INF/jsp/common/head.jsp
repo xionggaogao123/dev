@@ -19,7 +19,7 @@
         $('#toplogin').click(function () {//登录
             $('.store-register').fadeToggle();
             $('.bg').fadeToggle();
-        })
+        });
 
         $('#logout').click(function () {//退出登录
             logout();
@@ -116,7 +116,7 @@
                 <div class="d1-set">
                     <div class="d1-img"></div>
                     <div class="d1-mk">
-                        <div class="p1" onclick="window.open('/forum/userCenter/user.do')"><span></span>个人设置</div>
+                        <div class="p1" onclick="window.open('/account/accountSafe.do')"><span></span>个人设置</div>
                         <div class="p2"  id="logout"><span></span>退出</div>
                     </div>
                 </div>

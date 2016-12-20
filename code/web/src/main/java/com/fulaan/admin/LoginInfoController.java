@@ -1,7 +1,6 @@
 package com.fulaan.admin;
 
 import com.fulaan.pojo.FLoginLog;
-import com.fulaan.service.LoginLogService;
 import com.fulaan.user.service.UserService;
 import com.fulaan.util.DateUtils;
 import org.apache.commons.io.FileUtils;
@@ -28,7 +27,7 @@ import java.util.List;
 public class LoginInfoController {
 
     @Autowired
-    private LoginLogService loginLogService;
+    private UserService loginLogService;
 
     @RequestMapping("/downloadXls")
     public void loginInfo(String date, HttpServletResponse response) throws IOException, ParseException {

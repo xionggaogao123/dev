@@ -68,12 +68,7 @@ public class FActivityService extends BaseService{
         BasicDBObject query = fActivityDao.buildQuery(lon, lat, 10000000);
         int count = fActivityDao.coutByQuery(query);
         int totalPages = count % pageSize == 0 ? count / pageSize : (int) Math.ceil(count / pageSize) + 1;
-        if (page > totalPages) {
-            page = totalPages;
-        }
-        if (page <= 0) {
-            page = 1;
-        }
+        page = page > totalPages ? totalPages : page;
         List<MateData> allTags = fMateTypeService.getTags();
         List<FActivityDTO> FActivityDTOS = new ArrayList<FActivityDTO>();
         List<FActivityEntry> activityEntryList = fActivityDao.findByPage(query, page, pageSize);

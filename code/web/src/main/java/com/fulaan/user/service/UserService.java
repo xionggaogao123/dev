@@ -2,6 +2,7 @@ package com.fulaan.user.service;
 
 
 import com.db.app.RegionDao;
+import com.db.fcommunity.LoginLogDao;
 import com.db.forum.FLevelDao;
 import com.db.forum.FPostDao;
 import com.db.school.*;
@@ -10,6 +11,7 @@ import com.fulaan.base.BaseService;
 import com.fulaan.cache.CacheHandler;
 import com.fulaan.dto.UserDTO;
 import com.fulaan.mall.service.EBusinessVoucherService;
+import com.fulaan.pojo.FLoginLog;
 import com.fulaan.user.dao.ThirdLoginDao;
 import com.fulaan.user.model.ThirdLoginEntry;
 import com.fulaan.utils.KeyWordFilterUtil;
@@ -17,6 +19,7 @@ import com.mongodb.BasicDBObject;
 import com.mongodb.DBObject;
 import com.pojo.app.*;
 import com.pojo.ebusiness.SortType;
+import com.pojo.fcommunity.FLoginLogEntry;
 import com.pojo.school.*;
 import com.pojo.user.*;
 import com.pojo.utils.LoginLog;
@@ -56,6 +59,8 @@ public class UserService extends BaseService {
     private RegionDao regionDao = new RegionDao();
     private FLevelDao fLevelDao = new FLevelDao();
     private FPostDao fPostDao = new FPostDao();
+    private LoginLogDao loginLogDao = new LoginLogDao();
+
     @Autowired
     private EBusinessVoucherService voucherService;
 
@@ -84,6 +89,16 @@ public class UserService extends BaseService {
 
     public String filter(String content) {
         return org.apache.commons.lang.StringUtils.replaceEach(content, KeyWordFilterUtil.split_list.toArray(new String[]{}), KeyWordFilterUtil.replace_list.toArray(new String[]{}));
+    }
+
+    public List<FLoginLog> getLoginLog(long start, long end) {
+        List<FLoginLogEntry> loginLogEntries = loginLogDao.getLoginLog(start, end);
+        List<FLoginLog> loginLogs = new ArrayList<FLoginLog>();
+        for (FLoginLogEntry logEntry : loginLogEntries) {
+            FLoginLog loginLog = new FLoginLog(logEntry);
+            loginLogs.add(loginLog);
+        }
+        return loginLogs;
     }
 
     public void updateHuanXinTag(ObjectId uid) {
@@ -1139,8 +1154,8 @@ public class UserService extends BaseService {
         return thirdLoginDao.isBindWechat(userId);
     }
 
-    public void clearUserPhoneOrEmail(String userName, String phone, String email) {
-        userDao.cleanUserPhoneOrEmail(userName, phone, email);
+    public void clearUserPhoneAndEmail(String userName) {
+        userDao.cleanUserPhoneAndEmail(userName);
     }
 
     public void updateUserPhone(ObjectId userId, String mobile) {

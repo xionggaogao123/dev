@@ -37,24 +37,19 @@ public class ThirdLoginDao extends BaseDao {
             String key = (String) iterator.next();
             query.append(key, map.get(key));
         }
-        DBObject dbo = findOne(MongoFacroty.getAppDB(), Constant.COLLECTION_THIRD_LOGIN_NAME, query, null);
-        ThirdLoginEntry thirdLoginEntry = null;
-        if (null != dbo) {
-            thirdLoginEntry = new ThirdLoginEntry((BasicDBObject) dbo);
-        }
-        return thirdLoginEntry;
+        DBObject dbo = findOne(MongoFacroty.getAppDB(), Constant.COLLECTION_THIRD_LOGIN_NAME, query, Constant.FIELDS);
+        return dbo == null ? null : new ThirdLoginEntry((BasicDBObject) dbo);
     }
 
     public boolean isBindQQ(ObjectId userId) {
-        BasicDBObject query = new BasicDBObject("uid",userId).append("type", ThirdType.QQ.getCode());
-        return count(MongoFacroty.getAppDB(),Constant.COLLECTION_THIRD_LOGIN_NAME,query) == Constant.ONE;
+        BasicDBObject query = new BasicDBObject("uid", userId).append("type", ThirdType.QQ.getCode());
+        return count(MongoFacroty.getAppDB(), Constant.COLLECTION_THIRD_LOGIN_NAME, query) == Constant.ONE;
     }
 
     public boolean isBindWechat(ObjectId userId) {
-        BasicDBObject query = new BasicDBObject("uid",userId).append("type",ThirdType.WECHAT.getCode());
-        return count(MongoFacroty.getAppDB(),Constant.COLLECTION_THIRD_LOGIN_NAME,query) == Constant.ONE;
+        BasicDBObject query = new BasicDBObject("uid", userId).append("type", ThirdType.WECHAT.getCode());
+        return count(MongoFacroty.getAppDB(), Constant.COLLECTION_THIRD_LOGIN_NAME, query) == Constant.ONE;
     }
-
 
 
     /**
@@ -76,22 +71,19 @@ public class ThirdLoginDao extends BaseDao {
             ThirdLoginEntry thirdLoginEntry = new ThirdLoginEntry((BasicDBObject) dbo);
             ObjectId uid = thirdLoginEntry.getUid();
             BasicDBObject queryUserEntry = new BasicDBObject(Constant.ID, uid);
-            DBObject dboUserEntry = findOne(MongoFacroty.getAppDB(), Constant.COLLECTION_USER_NAME, queryUserEntry);
-            if (null != dboUserEntry) {
-                return new UserEntry(dboUserEntry);
-            }
-            return null;
+            DBObject dbObject = findOne(MongoFacroty.getAppDB(), Constant.COLLECTION_USER_NAME, queryUserEntry);
+            return dbObject == null ? null : new UserEntry(dbObject);
         }
         return null;
     }
 
     public boolean isOpenIdBindQQ(String openId) {
-        BasicDBObject query = new BasicDBObject("oid",openId).append("type",2);
-        return count(MongoFacroty.getAppDB(),Constant.COLLECTION_THIRD_LOGIN_NAME,query) == Constant.ONE;
+        BasicDBObject query = new BasicDBObject("oid", openId).append("type", 2);
+        return count(MongoFacroty.getAppDB(), Constant.COLLECTION_THIRD_LOGIN_NAME, query) == Constant.ONE;
     }
 
     public boolean isUnionIdBindWechat(String unionId) {
-        BasicDBObject query = new BasicDBObject("unionid",unionId).append("type",1);
-        return count(MongoFacroty.getAppDB(),Constant.COLLECTION_THIRD_LOGIN_NAME,query) == Constant.ONE;
+        BasicDBObject query = new BasicDBObject("unionid", unionId).append("type", 1);
+        return count(MongoFacroty.getAppDB(), Constant.COLLECTION_THIRD_LOGIN_NAME, query) == Constant.ONE;
     }
 }

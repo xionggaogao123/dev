@@ -558,8 +558,8 @@ public class EBusinessUserController extends BaseController {
     @ResponseBody
     public RespObj getChristReward()throws Exception{
      try {
-         long startTime=getTime("2016-12-18 00:00:00");
-         long endTime=getTime("2016-12-24 23:59:59");
+         long startTime=getTime("2016-12-22 00:00:00");
+         long endTime=getTime("2016-12-26 23:59:59");
          long deadTime=getTime("2016-12-31 23:59:59");
          long currentTime=System.currentTimeMillis();
          if(currentTime<startTime){

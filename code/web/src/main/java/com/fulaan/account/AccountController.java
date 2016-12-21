@@ -399,7 +399,6 @@ public class AccountController extends BaseController {
     @RequestMapping("/changeUserEmail")
     @ResponseBody
     public RespObj changeUserEmail(String email) {
-
         UserEntry userEntry = userService.findByUserEmail(email);
         if (userEntry != null && getUserId().equals(userEntry.getID())) {
             return RespObj.FAILD("邮箱已经绑定自己了，无需再次绑定");
@@ -417,7 +416,6 @@ public class AccountController extends BaseController {
     @RequestMapping("/changeUserPhone")
     @ResponseBody
     public RespObj changeUserPhone(String mobile, String code, String cacheKeyId) {
-
         UserEntry userEntry = userService.findByUserPhone(mobile);
         if (userEntry != null && getUserId().equals(userEntry.getID())) {
             return RespObj.FAILD("手机号是自己的，已经绑定了无需绑定");

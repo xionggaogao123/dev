@@ -62,12 +62,16 @@ define(function (require, exports, module) {
         $('.christmas-wind .hl').click(function(){
             $('.christmas-wind').css("top","-100%");
             $('.christ-quan-wind').css('top','50%');
-            setTimeout(function(){
+            /*setTimeout(function(){
                 $('.christ-quan-wind ').fadeOut()
             },"2500")
             setTimeout(function(){
                 $(' .christ-bg, .christmas-wind').fadeOut()
-            },"3000")
+            },"3000")*/
+        });
+        $('.christ-quan-wind button').click(function(){
+            $('.christ-bg').fadeOut();
+            $('.christ-quan-wind').css('top','-100%');
         })
 
     });

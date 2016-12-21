@@ -61,8 +61,7 @@
             $('#redirect').click(function () {//登录
 
             })
-
-        })
+        });
 
         function logout() {
             $.ajax({

@@ -6,7 +6,7 @@ import com.alibaba.fastjson.JSONArray;
 import com.fulaan.annotation.LoginInfo;
 import com.fulaan.annotation.ObjectIdType;
 import com.fulaan.annotation.SessionNeedless;
-import com.fulaan.controller.BaseController;
+import com.fulaan.base.BaseController;
 import com.fulaan.alipay.config.AlipayConfig;
 import com.fulaan.alipay.util.AlipayCore;
 import com.fulaan.alipay.util.AlipayNotify;
@@ -190,7 +190,7 @@ public class EBusinessOrderController extends BaseController {
 
     @RequestMapping("/isVoucher")
     @ResponseBody
-    public RespObj IsVoucher(@RequestParam(required = false, defaultValue = "") String voucherId) {
+    public RespObj isVoucher(@RequestParam(required = false, defaultValue = "") String voucherId) {
         RespObj respObj = new RespObj(Constant.FAILD_CODE);
         ObjectId vId = null;
         if (!voucherId.equals("")) {

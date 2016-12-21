@@ -2,7 +2,7 @@ package com.fulaan.playmate;
 
 import com.fulaan.annotation.ObjectIdType;
 import com.fulaan.annotation.SessionNeedless;
-import com.fulaan.controller.BaseController;
+import com.fulaan.base.BaseController;
 import com.fulaan.playmate.dto.FActivityDTO;
 import com.fulaan.playmate.service.FActivityService;
 import com.fulaan.pojo.PageModel;
@@ -63,9 +63,9 @@ public class FActivityController extends BaseController {
     /**
      * 附近的活动
      *
-     * @param lon 经度
-     * @param lat 纬度
-     * @param page 页
+     * @param lon      经度
+     * @param lat      纬度
+     * @param page     页
      * @param pageSize 每页个数
      * @return RespObj
      */
@@ -77,12 +77,12 @@ public class FActivityController extends BaseController {
                                 @RequestParam(value = "page", required = false, defaultValue = "1") int page,
                                 @RequestParam(value = "pageSize", required = false, defaultValue = "10") int pageSize) {
         PageModel<FActivityDTO> pageModel = fActivityService.getNearActivitys(lon, lat, page, pageSize);
-        for(FActivityDTO fActivityDTO : pageModel.getResult()) {
-            if(getUserId() != null) {
-                if(fActivityDTO.getUserId().equals(getUserId().toString())) {
+        for (FActivityDTO fActivityDTO : pageModel.getResult()) {
+            if (getUserId() != null) {
+                if (fActivityDTO.getUserId().equals(getUserId().toString())) {
                     fActivityDTO.setYouSigned(true);
                 } else {
-                    fActivityDTO.setYouSigned(fActivityService.isUserSigned(getUserId(),new ObjectId(fActivityDTO.getAcid())));
+                    fActivityDTO.setYouSigned(fActivityService.isUserSigned(getUserId(), new ObjectId(fActivityDTO.getAcid())));
                 }
             }
         }
@@ -118,11 +118,11 @@ public class FActivityController extends BaseController {
             return RespObj.FAILD("活动不存在");
         }
         fActivityDTO.setSignSheets(fActivityService.getAllSignMembers(acid));
-        if(getUserId() != null) {
-            if(fActivityDTO.getUserId().equals(getUserId().toString())) {
+        if (getUserId() != null) {
+            if (fActivityDTO.getUserId().equals(getUserId().toString())) {
                 fActivityDTO.setYouSigned(true);
             } else {
-                fActivityDTO.setYouSigned(fActivityService.isUserSigned(acid,getUserId()));
+                fActivityDTO.setYouSigned(fActivityService.isUserSigned(acid, getUserId()));
             }
         }
         return RespObj.SUCCESS(fActivityDTO);
@@ -144,12 +144,12 @@ public class FActivityController extends BaseController {
                              @RequestParam(value = "pageSize", required = false, defaultValue = "10") int pageSize) {
         if (StringUtils.isNotBlank(personId)) {
             PageModel<FActivityDTO> pageModel = fActivityService.getPublishedActivity(new ObjectId(personId), page, pageSize);
-            for(FActivityDTO fActivityDTO : pageModel.getResult()) {
-                fActivityDTO.setYouSigned(fActivityService.isUserSigned(new ObjectId(personId),new ObjectId(fActivityDTO.getAcid())));
+            for (FActivityDTO fActivityDTO : pageModel.getResult()) {
+                fActivityDTO.setYouSigned(fActivityService.isUserSigned(new ObjectId(personId), new ObjectId(fActivityDTO.getAcid())));
             }
             return RespObj.SUCCESS(pageModel);
         }
-        if(getUserId() != null) {
+        if (getUserId() != null) {
             return RespObj.SUCCESS(fActivityService.getPublishedActivity(getUserId(), page, pageSize));
         }
         return RespObj.FAILD;

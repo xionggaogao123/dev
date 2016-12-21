@@ -1,6 +1,6 @@
 package com.fulaan.logreport.controller;
 
-import com.fulaan.controller.BaseController;
+import com.fulaan.base.BaseController;
 import com.fulaan.logreport.service.BuildLogReportService;
 import com.pojo.emailmanage.EmailManageEntry;
 import com.pojo.user.UserRole;

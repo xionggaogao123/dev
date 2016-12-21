@@ -32,7 +32,7 @@
                     <div class="d-txt">账户安全</div>
                 </div>
             </li>
-            <li hidden>
+            <li>
                 <div>
                     <div class="d-img im4"></div>
                     <div class="d-txt">关联第三方帐号</div>

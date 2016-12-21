@@ -73,7 +73,7 @@ public class QQLoginUtil {
 
             String result = content.substring(start + 1, end);
             logger.info(result + "----");
-            Map<String, Object> maps = JsonUtil.Json2Map(result);
+            Map<String, Object> maps = JsonUtil.json2Map(result);
 
             logger.info(maps + "===");
             return maps;
@@ -101,7 +101,7 @@ public class QQLoginUtil {
         try {
             String content = HttpClientUtils.get(getValue("getUserInfoURL"), parms);
 
-            Map<String, Object> maps = JsonUtil.Json2Map(content);
+            Map<String, Object> maps = JsonUtil.json2Map(content);
 
             logger.info(maps + "===");
             return maps;

@@ -105,12 +105,7 @@ public class MemberService {
 
         int totalCount = memberDao.countMember(grid);
         int totalPages = (int) Math.floor(totalCount / pageSize);
-        if (page > totalPages) {
-            page = totalPages;
-        }
-        if (page <= 0) {
-            page = 1;
-        }
+        page = page > totalPages ? totalPages : page;
         List<MemberEntry> entries = memberDao.getMembers(grid, page, pageSize);
         List<MemberDTO> memberDTOs = new ArrayList<MemberDTO>();
         for (MemberEntry entry : entries) {
@@ -237,10 +232,7 @@ public class MemberService {
      */
     public MemberDTO getHead(ObjectId groupId) {
         MemberEntry memberEntry = memberDao.getHead(groupId);
-        if (memberEntry != null) {
-            return new MemberDTO(memberEntry);
-        }
-        return null;
+        return memberEntry == null ? null : new MemberDTO(memberEntry);
     }
 
 

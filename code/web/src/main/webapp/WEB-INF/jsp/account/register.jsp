@@ -66,7 +66,7 @@
                 <span class="sp3" style="display: none">参数不完整</span>
             </li>
             <li>
-                <span class="sp2"><label><input type="checkbox" class="argument">我同意<a href="/agreement.html" target="_blank">《复兰教育社区协议》</a></label></span>
+                <span class="sp2"><label><input type="checkbox" class="argument" checked>我同意<a href="/agreement.html" target="_blank">《复兰教育社区协议》</a></label></span>
                 <button>确认</button>
                 <span class="sp3" style="display: none;top: 26px">请填写参数</span>
             </li>
@@ -75,7 +75,7 @@
             <li>
                 <input type="text" class="user-name">
                 <span class="sp1">用户名 : </span>
-                <span class="sp2">6-20位字符（汉字、字母、数字、下划线）</span>
+                <span class="sp2">3-20位字符（汉字、字母、数字、下划线）</span>
                 <span class="sp3" style="display: none">请输入用户名</span>
             </li>
             <li>
@@ -96,7 +96,7 @@
                 <span class="sp3" style="display: none">请输入正确的邮箱地址</span>
             </li>
             <li>
-                <span class="sp2"><label><input type="checkbox" class="argument" name="argument" value="1">我同意<a href="/agreement.html" target="_blank">《复兰教育社区协议》</a></label></span>
+                <span class="sp2"><label><input type="checkbox" class="argument" name="argument" value="1" checked>我同意<a href="/agreement.html" target="_blank">《复兰教育社区协议》</a></label></span>
                 <button>确认</button>
                 <span class="sp3" style="display: none;top: 26px">请填写参数</span>
             </li>

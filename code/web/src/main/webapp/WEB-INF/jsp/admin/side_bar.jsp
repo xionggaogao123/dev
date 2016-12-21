@@ -40,7 +40,7 @@
             <a href="/admin/appBannerManager.do">AppBanner管理</a>
         </li>
         <li>
-            <a href="/vv/banners.do"">Banner管理</a>
+            <a href="/vv/banners.do">Banner管理</a>
         </li>
         <li>
             <a href="/admin/sectionManage.do">版主管理</a>

@@ -2,11 +2,12 @@ package com.fulaan.controller;
 
 import com.fulaan.annotation.ObjectIdType;
 import com.fulaan.annotation.SessionNeedless;
-import com.fulaan.dto.CommunityDTO;
-import com.fulaan.dto.GroupDTO;
+import com.fulaan.base.BaseController;
+import com.fulaan.community.dto.CommunityDTO;
+import com.fulaan.fgroup.dto.GroupDTO;
 import com.fulaan.dto.MemberDTO;
 import com.fulaan.service.CommunityService;
-import com.fulaan.service.GroupService;
+import com.fulaan.fgroup.service.GroupService;
 import com.fulaan.service.MemberService;
 import com.fulaan.user.service.UserService;
 import com.fulaan.util.DateUtils;
@@ -47,7 +48,6 @@ public class QRController extends BaseController {
     private UserService userService;
 
 
-
     /**
      * 群组二维码入口
      *
@@ -82,7 +82,7 @@ public class QRController extends BaseController {
         int count = memberService.countMember(new ObjectId(groupDTO.getId()));
         boolean isJoin = memberService.isGroupMember(new ObjectId(groupDTO.getId()), getUserId());
 
-        if (groupDTO.isBindCommunity()) {
+        if (groupDTO.isBindCommunity() && community != null) {
             CommunityDTO communityDTO = new CommunityDTO();
             communityDTO.setId(groupDTO.getId());
             communityDTO.setGroupId(groupDTO.getId());
@@ -115,23 +115,22 @@ public class QRController extends BaseController {
     /**
      * 个人二维码入口
      *
-     * @param request
      * @param response
      */
     @RequestMapping("/person/{id}")
     @SessionNeedless
     @ResponseBody
-    public RespObj personHandle(@PathVariable @ObjectIdType ObjectId id,HttpServletRequest request,
+    public RespObj personHandle(@PathVariable @ObjectIdType ObjectId id,
                                 HttpServletResponse response) throws IOException {
         if (getUserId() == null) {
             response.sendRedirect(Constant.COLLECTION_MALL_MARKET_URL);
             return null;
         }
 
-        UserEntry userEntry=userService.find(id);
-        Map<String,String> map=new HashMap<String,String>();
-        map.put("userId",userEntry.getID().toString());
-        map.put("nickName",StringUtils.isNotBlank(userEntry.getNickName())?userEntry.getNickName():userEntry.getUserName());
+        UserEntry userEntry = userService.findByUserId(id);
+        Map<String, String> map = new HashMap<String, String>();
+        map.put("userId", userEntry.getID().toString());
+        map.put("nickName", StringUtils.isNotBlank(userEntry.getNickName()) ? userEntry.getNickName() : userEntry.getUserName());
         map.put("avator", AvatarUtils.getAvatar(userEntry.getAvatar(), AvatarType.MIN_AVATAR.getType()));
         return RespObj.SUCCESS(map);
     }

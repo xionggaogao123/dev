@@ -19,7 +19,7 @@
         $('#toplogin').click(function () {//登录
             $('.store-register').fadeToggle();
             $('.bg').fadeToggle();
-        })
+        });
 
         $('#logout').click(function () {//退出登录
             logout();
@@ -76,24 +76,14 @@
         });
     }
 
-    function showLoginTitle(login) {
-        if (login) {
-            $('.header-bar').show();
-            $('.header').hide();
-        } else {
-            $('.header').hide();
-            $('.header-bar').show();
-        }
-    }
-
     function redirectQ() {
 
-        location.href = '/user/qqlogin.do?historyUrl=' + encodeURIComponent(encodeURIComponent(window.location.href));
+        window.open('/user/qqlogin.do', "TencentLogin", "width=800,height=600,menubar=0,scrollbars=1, resizable=1,status=1,titlebar=0,toolbar=0,location=1");
     }
 
     function loginWeiXin() {
 
-        location.href = '/user/wechatlogin.do?historyUrl=' + window.location.href;
+        window.open('/user/wechatlogin.do', "TencentLogin", "width=800,height=600,menubar=0,scrollbars=1, resizable=1,status=1,titlebar=0,toolbar=0,location=1");
     }
 
 </script>
@@ -126,7 +116,7 @@
                 <div class="d1-set">
                     <div class="d1-img"></div>
                     <div class="d1-mk">
-                        <div class="p1" onclick="window.open('/forum/userCenter/user.do')"><span></span>个人设置</div>
+                        <div class="p1" onclick="window.open('/account/accountSafe.do')"><span></span>个人设置</div>
                         <div class="p2"  id="logout"><span></span>退出</div>
                     </div>
                 </div>

@@ -1,6 +1,7 @@
 package com.fulaan.controller;
 
 import com.fulaan.annotation.SessionNeedless;
+import com.fulaan.base.BaseController;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 

@@ -1,6 +1,6 @@
 package com.fulaan.experience.controller;
 
-import com.fulaan.controller.BaseController;
+import com.fulaan.base.BaseController;
 import com.fulaan.experience.dto.ExperienceLogDTO;
 import com.fulaan.experience.service.ExperienceService;
 import com.fulaan.log.LogTask;

@@ -1,6 +1,7 @@
 package com.fulaan.controller;
 
 import com.fulaan.annotation.ObjectIdType;
+import com.fulaan.base.BaseController;
 import com.fulaan.user.service.UserService;
 import com.fulaan.friendscircle.service.FriendApplyService;
 import com.fulaan.friendscircle.service.FriendService;

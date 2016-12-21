@@ -100,10 +100,10 @@ public class FriendService {
             pageSize = 10;
         int begin = (page - 1) * pageSize;
         List<ActivityEntry> activityEntryList = new ActivityDao().selectActivityByUserIds(objectIdList, begin, pageSize);
-        return ActivityEntry2ActivityDTO(activityEntryList);
+        return activityEntry2ActivityDTO(activityEntryList);
     }
 
-    public List<Activity> ActivityEntry2ActivityDTO(List<ActivityEntry> activityEntries) {
+    public List<Activity> activityEntry2ActivityDTO(List<ActivityEntry> activityEntries) {
         List<Activity> activityList = new ArrayList<Activity>();
         for (ActivityEntry activityEntry : activityEntries) {
 

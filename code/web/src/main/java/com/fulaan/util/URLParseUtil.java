@@ -19,7 +19,7 @@ public class URLParseUtil {
 
     private static EGoodsService eGoodsService = new EGoodsService();
 
-    public static ProductModel UrlParser(HttpClient client, String url) throws Exception {
+    public static ProductModel urlParser(HttpClient client, String url) throws Exception {
         //获取网站响应的html，这里调用了HTTPUtils类
         ProductModel productModel = new ProductModel();
         HttpResponse response = HttpUtils.getCrawlHtml(client, url);

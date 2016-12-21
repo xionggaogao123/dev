@@ -1,6 +1,6 @@
 package com.fulaan.interceptor;
 
-import com.fulaan.controller.BaseController;
+import com.fulaan.base.BaseController;
 import com.fulaan.annotation.UserPermissions;
 import com.fulaan.annotation.UserRoles;
 import com.pojo.app.SessionValue;

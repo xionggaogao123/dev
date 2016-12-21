@@ -3,7 +3,7 @@ package com.fulaan.playmate;
 import com.fulaan.annotation.LoginInfo;
 import com.fulaan.annotation.SessionNeedless;
 import com.fulaan.annotation.UserRoles;
-import com.fulaan.controller.BaseController;
+import com.fulaan.base.BaseController;
 import com.fulaan.playmate.pojo.MateData;
 import com.fulaan.playmate.service.FActivityService;
 import com.fulaan.playmate.service.FMateTypeService;
@@ -13,6 +13,7 @@ import com.fulaan.util.StrUtils;
 import com.pojo.user.UserEntry;
 import com.pojo.user.UserRole;
 import com.pojo.user.UserTag;
+import com.sys.utils.DateTimeUtils;
 import com.sys.utils.RespObj;
 import org.apache.commons.lang3.StringUtils;
 import org.bson.types.ObjectId;
@@ -128,7 +129,6 @@ public class PlayMateController extends BaseController {
         }
         //更新在线时间段
         updateTime(userId, ons);
-
         return RespObj.SUCCESS("成功");
     }
 
@@ -140,16 +140,9 @@ public class PlayMateController extends BaseController {
     @RequestMapping("/getMyTags")
     @ResponseBody
     public RespObj getMyTags() {
-        List<Map<String, Object>> tags = new ArrayList<Map<String, Object>>();
         ObjectId userId = getUserId();
-        UserEntry userEntry = userService.find(userId);
-        List<UserEntry.UserTagEntry> userTagEntries = userEntry.getUserTag();
-        for (UserEntry.UserTagEntry userTagEntry : userTagEntries) {
-            Map<String, Object> map = new HashMap<String, Object>();
-            map.put("code", userTagEntry.getCode());
-            map.put("tag", userTagEntry.getTag());
-            tags.add(map);
-        }
+        UserEntry userEntry = userService.findByUserId(userId);
+        List<Map<String, Object>> tags = getTagsFromUserEntry(userEntry);
         return RespObj.SUCCESS(tags);
     }
 
@@ -211,15 +204,8 @@ public class PlayMateController extends BaseController {
             return RespObj.FAILD;
         }
         List<MateData> mateDatas = mateService.getMyOns(personId);
-        List<Map<String, Object>> tags = new ArrayList<Map<String, Object>>();
-        UserEntry userEntry = userService.find(personId);
-        List<UserEntry.UserTagEntry> userTagEntries = userEntry.getUserTag();
-        for (UserEntry.UserTagEntry userTagEntry : userTagEntries) {
-            Map<String, Object> map = new HashMap<String, Object>();
-            map.put("code", userTagEntry.getCode());
-            map.put("tag", userTagEntry.getTag());
-            tags.add(map);
-        }
+        UserEntry userEntry = userService.findByUserId(personId);
+        List<Map<String, Object>> tags = getTagsFromUserEntry(userEntry);
         Map<String, Object> map = new HashMap<String, Object>();
         List<Map<String, Object>> freeTime = new ArrayList<Map<String, Object>>();
         for (MateData data : mateDatas) {
@@ -237,14 +223,12 @@ public class PlayMateController extends BaseController {
     @ResponseBody
     public RespObj updateUserAge(int year, int month, int day) {
         try {
-            String date = String.valueOf(year) + "-" + String.valueOf(month) + "-" + String.valueOf(day);
-            SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd");
-            Date birthday = format.parse(date);
-            userService.update(getUserId(), "bir", birthday.getTime());
-            mateService.updateAged(getUserId(), birthday.getTime());
+            long birthdayTimeStamp = DateTimeUtils.dateTime(year,month,day);
+            userService.update(getUserId(), "bir", birthdayTimeStamp);
+            mateService.updateAged(getUserId(), birthdayTimeStamp);
         } catch (Exception e) {
             e.printStackTrace();
-            return RespObj.FAILD(e.getMessage());
+            return RespObj.FAILD("修改失败");
         }
         return RespObj.SUCCESS("修改成功");
     }
@@ -317,7 +301,18 @@ public class PlayMateController extends BaseController {
         } else {
             mateService.updateOns(userId, new ArrayList<Integer>());
         }
+    }
 
+    private List<Map<String, Object>> getTagsFromUserEntry(UserEntry userEntry) {
+        List<UserEntry.UserTagEntry> userTagEntries = userEntry.getUserTag();
+        List<Map<String, Object>> tags = new ArrayList<Map<String, Object>>();
+        for (UserEntry.UserTagEntry userTagEntry : userTagEntries) {
+            Map<String, Object> map = new HashMap<String, Object>();
+            map.put("code", userTagEntry.getCode());
+            map.put("tag", userTagEntry.getTag());
+            tags.add(map);
+        }
+        return tags;
     }
 
 

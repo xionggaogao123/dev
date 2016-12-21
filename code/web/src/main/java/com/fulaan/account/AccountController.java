@@ -5,16 +5,19 @@ import com.fulaan.account.service.AccountService;
 import com.fulaan.annotation.LoginInfo;
 import com.fulaan.annotation.SessionNeedless;
 import com.fulaan.annotation.UserRoles;
+import com.fulaan.base.BaseController;
 import com.fulaan.cache.CacheHandler;
-import com.fulaan.controller.BaseController;
 import com.fulaan.dto.UserDTO;
 import com.fulaan.playmate.service.MateService;
+import com.fulaan.user.model.ThirdType;
 import com.fulaan.user.service.UserService;
 import com.fulaan.user.util.QQLoginUtil;
+import com.pojo.user.UserDetailInfoDTO;
 import com.pojo.user.UserEntry;
 import com.pojo.user.UserRole;
 import com.sys.constants.Constant;
 import com.sys.exceptions.UnLoginException;
+import com.sys.utils.DateTimeUtils;
 import com.sys.utils.HttpClientUtils;
 import com.sys.utils.MD5Utils;
 import com.sys.utils.RespObj;
@@ -34,12 +37,13 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.text.SimpleDateFormat;
-import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 
 /**
- * Created by moslpc on 2016/12/12.
+ * Created by jerry on 2016/12/12.
+ * 账户 Controller
+ * 修改密码，登录，账户安全，注册界面
  */
 @Controller
 @RequestMapping("/account")
@@ -54,60 +58,62 @@ public class AccountController extends BaseController {
 
     /**
      * 注册界面
-     * @return
+     *
+     * @return register page
      */
     @RequestMapping("/register")
     @SessionNeedless
-    public String register() {
+    public String registerPage() {
         return "/account/register";
     }
 
     /**
      * 登录界面
-     * @return
+     *
+     * @return login page
      */
     @RequestMapping("/login")
     @SessionNeedless
-    public String login() {
+    public String loginPage() {
         return "/account/login";
     }
 
     /**
      * 找回密码
-     * @return
+     *
+     * @return findPassword page
      */
     @RequestMapping("/findPassword")
     @SessionNeedless
-    public String findPassword() {
+    public String findPasswordPage() {
         return "/account/findPassword";
     }
 
     /**
      * 我的账户
-     * @return
+     *
+     * @return account page
      */
     @RequestMapping("/accountSafe")
     @LoginInfo
-    public String accountSafe() {
+    public String accountSafePage() {
         return "/account/accountSafe";
     }
 
     /**
      * 第三方登录成功
      *
-     * @return
+     * @return page
      */
     @RequestMapping("/thirdLoginSuccess")
     @SessionNeedless
-    public String thirdLoginSuccess(@RequestParam(value = "bindSuccess",required = false,defaultValue = "-1") int bindSuccess,Model model) {
-        model.addAttribute("bindSuccess",bindSuccess);
+    public String thirdLoginSuccessPage(@RequestParam(value = "bindSuccess", required = false, defaultValue = "-1") int bindSuccess, Model model) {
+        model.addAttribute("bindSuccess", bindSuccess);
         return "/account/thirdLoginSuccess";
     }
 
     /**
      * 检查用户名是否可用
-     * @param userName
-     * @return
      */
     @RequestMapping("/userNameCheck")
     @SessionNeedless
@@ -118,34 +124,26 @@ public class AccountController extends BaseController {
 
     /**
      * 检查手机号是否可用
-     * @param phone
-     * @return
      */
     @RequestMapping("/userPhoneCheck")
     @SessionNeedless
     @ResponseBody
     public RespObj userPhoneCheck(String phone) {
-        return RespObj.SUCCESS(userService.searchUserByphone(phone) != null);
+        return RespObj.SUCCESS(userService.findByUserPhone(phone) != null);
     }
 
     /**
      * 检查邮箱是否可用
-     * @param email
-     * @return
      */
     @RequestMapping("/userEmailCheck")
     @SessionNeedless
     @ResponseBody
     public RespObj userEmailCheck(String email) {
-        return RespObj.SUCCESS(userService.searchUserByEmail(email) != null);
+        return RespObj.SUCCESS(userService.findByUserEmail(email) != null);
     }
 
     /**
      * 进行QQ 绑定
-     *
-     * @param request
-     * @param response
-     * @throws IOException
      */
     @SessionNeedless
     @RequestMapping(value = "/qqBind")
@@ -156,49 +154,35 @@ public class AccountController extends BaseController {
         String authorizeURL = QQLoginUtil.getValue("authorizeURL").trim();
         String app_ID = QQLoginUtil.getValue("app_ID").trim();
         String url = authorizeURL + "?client_id=" + app_ID + "&redirect_uri=" + redirect_URI + "&response_type=" + "code" + "&state=" + state;
-
         Cookie userKeycookie = new Cookie("bindQQ", getUserId().toString());
         userKeycookie.setMaxAge(Constant.SECONDS_IN_DAY);
         userKeycookie.setPath(Constant.BASE_PATH);
         response.addCookie(userKeycookie);
-
         response.sendRedirect(url);
     }
 
     /**
      * 进行微信绑定操作
-     *
-     * @param response
-     * @throws IOException
      */
     @SessionNeedless
     @RequestMapping(value = "/wechatBind")
-    public void WeChatLogin(HttpServletResponse response) throws IOException {
+    public void weChatLogin(HttpServletResponse response) throws IOException {
         String urlEncodeRedirectUrl = HttpClientUtils.strURLEncodeUTF8(Constant.WECHAT_REDIRECT_URL);
         String strWeChatConnectUrl = String.format(Constant.WECHAT_CONNECT_URL, Constant.WECHAT_APPID, urlEncodeRedirectUrl);
-
         Cookie userKeycookie = new Cookie("bindWechat", getUserId().toString());
         userKeycookie.setMaxAge(Constant.SECONDS_IN_DAY);
         userKeycookie.setPath(Constant.BASE_PATH);
         response.addCookie(userKeycookie);
-
         response.sendRedirect(strWeChatConnectUrl);
     }
 
     /**
      * 验证用户名与验证码
-     *
-     * @param name
-     * @param verifyCode
-     * @param verifyKey
-     * @param response
-     * @return
      */
     @RequestMapping("/verifyCodeWithName")
     @SessionNeedless
     @ResponseBody
     public RespObj verifyCodeWithName(String name, String verifyCode, @CookieValue(Constant.COOKIE_VALIDATE_CODE) String verifyKey, HttpServletResponse response) {
-
         if (!accountService.checkVerifyCode(verifyCode, verifyKey)) {
             return RespObj.FAILD("验证码不正确");
         }
@@ -206,7 +190,6 @@ public class AccountController extends BaseController {
         if (userService.findByRegular(name) == null) {
             return RespObj.FAILD("用户不存在");
         }
-
         ObjectId key = new ObjectId();
         String cacheKey = CacheHandler.getKeyString(CacheHandler.CACHE_FW_USERNAME_KEY, key.toString());
         CacheHandler.cache(cacheKey, name, Constant.SESSION_FIVE_MINUTE);//5分钟
@@ -216,10 +199,6 @@ public class AccountController extends BaseController {
 
     /**
      * 验证用户与手机是否匹配
-     *
-     * @param phone
-     * @param fwCode
-     * @return
      */
     @SessionNeedless
     @RequestMapping("/verifyUserPhone")
@@ -242,10 +221,6 @@ public class AccountController extends BaseController {
 
     /**
      * 验证 用户与邮箱是否匹配
-     *
-     * @param email
-     * @param fwCode
-     * @return
      */
     @SessionNeedless
     @RequestMapping("/verifyUserEmail")
@@ -263,7 +238,7 @@ public class AccountController extends BaseController {
             ObjectId key = new ObjectId();
             String cacheKey = CacheHandler.getKeyString(CacheHandler.CACHE_FW_VALIDATE_EMAIL, key.toString());
             CacheHandler.cache(cacheKey, userDTO.getUserName(), Constant.SECONDS_IN_DAY);//1天
-            accountService.processFindPasswordByEmail(userDTO.getUserName(), email, key.toString());
+            accountService.sendEmailForFindPassword(userDTO.getUserName(), email, key.toString());
             return RespObj.SUCCESS(new VerifyData(true, "发送成功"));
         } else {
             return RespObj.FAILD(new VerifyData(false, "该用户未绑定此邮箱"));
@@ -272,13 +247,6 @@ public class AccountController extends BaseController {
 
     /**
      * 手机验证
-     *
-     * @param phone
-     * @param code
-     * @param cacheKeyId
-     * @param fwCode
-     * @param response
-     * @return
      */
     @SessionNeedless
     @RequestMapping("/phoneValidate")
@@ -320,11 +288,6 @@ public class AccountController extends BaseController {
 
     /**
      * 邮箱验证
-     *
-     * @param validateCode
-     * @param response
-     * @return
-     * @throws Exception
      */
     @SessionNeedless
     @RequestMapping("/emailValidate")
@@ -345,10 +308,6 @@ public class AccountController extends BaseController {
 
     /**
      * 重置密码
-     *
-     * @param password
-     * @param resetCode
-     * @return
      */
     @SessionNeedless
     @RequestMapping("/resetPassword")
@@ -359,7 +318,7 @@ public class AccountController extends BaseController {
         if (userName == null) {
             return RespObj.FAILD("时间失效或不合法");
         }
-        UserEntry userEntry = userService.searchUserByUserName(userName);
+        UserEntry userEntry = userService.findByUserName(userName);
         if (userEntry == null) {
             return RespObj.FAILD("用户不存在");
         }
@@ -370,12 +329,6 @@ public class AccountController extends BaseController {
 
     /**
      * 更新出生年月 - 性别 - 昵称
-     * @param year
-     * @param month
-     * @param day
-     * @param sex
-     * @param nickName
-     * @return
      */
     @RequestMapping("/updateNickSexAge")
     @ResponseBody
@@ -384,21 +337,18 @@ public class AccountController extends BaseController {
                                     @RequestParam(value = "day", defaultValue = "0", required = false) int day,
                                     @RequestParam(value = "sex", defaultValue = "-1", required = false) int sex,
                                     @RequestParam(value = "nickName", defaultValue = "", required = false) String nickName) {
-
         if (year != 0 && month != 0 && day != 0) {
             try {
-                String date = String.valueOf(year) + "-" + String.valueOf(month) + "-" + String.valueOf(day);
-                SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd");
-                Date birthday = format.parse(date);
-                userService.update(getUserId(), "bir", birthday.getTime());
-                mateService.updateAged(getUserId(), birthday.getTime());
+                long birTimeStamp = DateTimeUtils.dateTime(year, month, day);
+                userService.update(getUserId(), "bir", birTimeStamp);
+                mateService.updateAged(getUserId(), birTimeStamp);
             } catch (Exception e) {
                 e.printStackTrace();
                 return RespObj.FAILD(e.getMessage());
             }
         }
 
-        if (!"".equals(nickName)) {
+        if (StringUtils.isNotBlank(nickName)) {
             userService.updateNickNameById(getUserId().toString(), nickName);
         }
         userService.updateSexById(getUserId(), sex);
@@ -407,20 +357,18 @@ public class AccountController extends BaseController {
 
     /**
      * 检查用户密码
-     * @param password
-     * @return
      */
     @RequestMapping("/checkUserPassword")
     @ResponseBody
     public RespObj checkUserPassword(String password) {
         ObjectId userId = getUserId();
-        UserEntry userEntry = userService.find(userId);
+        UserEntry userEntry = userService.findByUserId(userId);
         try {
             if (MD5Utils.getMD5(password).equals(userEntry.getPassword())) {
                 return RespObj.SUCCESS;
             }
 
-            if(password.equals(userEntry.getPassword())) {
+            if (password.equals(userEntry.getPassword())) {
                 return RespObj.SUCCESS;
             }
         } catch (Exception e) {
@@ -432,9 +380,6 @@ public class AccountController extends BaseController {
 
     /**
      * 修改用户密码
-     *
-     * @param password
-     * @return
      */
     @RequestMapping("/changeUserPassword")
     @ResponseBody
@@ -450,15 +395,12 @@ public class AccountController extends BaseController {
 
     /**
      * 更改用户邮箱
-     *
-     * @param email
-     * @return
      */
     @RequestMapping("/changeUserEmail")
     @ResponseBody
     public RespObj changeUserEmail(String email) {
 
-        UserEntry userEntry = userService.searchUserByEmail(email);
+        UserEntry userEntry = userService.findByUserEmail(email);
         if (userEntry != null && getUserId().equals(userEntry.getID())) {
             return RespObj.FAILD("邮箱已经绑定自己了，无需再次绑定");
         }
@@ -471,17 +413,12 @@ public class AccountController extends BaseController {
 
     /**
      * 更改用户手机号
-     *
-     * @param mobile
-     * @param code
-     * @param cacheKeyId
-     * @return
      */
     @RequestMapping("/changeUserPhone")
     @ResponseBody
     public RespObj changeUserPhone(String mobile, String code, String cacheKeyId) {
 
-        UserEntry userEntry = userService.searchUserByphone(mobile);
+        UserEntry userEntry = userService.findByUserPhone(mobile);
         if (userEntry != null && getUserId().equals(userEntry.getID())) {
             return RespObj.FAILD("手机号是自己的，已经绑定了无需绑定");
         }
@@ -510,8 +447,6 @@ public class AccountController extends BaseController {
 
     /**
      * 第三方登录信息
-     *
-     * @return
      */
     @RequestMapping("/thirdLoginInfo")
     @ResponseBody
@@ -527,15 +462,11 @@ public class AccountController extends BaseController {
      * 1.手机号是自己的
      * 2.手机号被别人绑定
      * 3.手机号未被绑定
-     *
-     * @param mobile
-     * @return
      */
     @RequestMapping("/checkPhoneCanUse")
     @ResponseBody
     public RespObj checkPhoneCanUse(String mobile) {
-        UserEntry userEntry = userService.searchUserByphone(mobile);
-
+        UserEntry userEntry = userService.findByUserPhone(mobile);
         if (userEntry != null && userEntry.getID().equals(getUserId())) {
             return RespObj.FAILD("你已经绑定这个手机号了");
         }
@@ -548,17 +479,62 @@ public class AccountController extends BaseController {
 
     /**
      * 清空用户手机  -- 测试用
-     *
-     * @param userName
-     * @param phone
-     * @param email
-     * @return
      */
     @RequestMapping("/cleanUserPhone")
     @ResponseBody
     @UserRoles(UserRole.DISCUSS_MANAGER)
-    public RespObj cleanUserPhone(String userName, String phone, String email) {
-        userService.cleanUserPhoneOrEmtail(userName, phone, email);
+    public RespObj cleanUserPhone(String userName) {
+        userService.clearUserPhoneAndEmail(userName);
         return RespObj.SUCCESS;
+    }
+
+    /**
+     * 解除第三方绑定
+     * @param type
+     * @return
+     */
+    @RequestMapping("/removeThirdBind")
+    @ResponseBody
+    public RespObj removeThirdBind(int type) {
+        UserDetailInfoDTO user = userService.getUserInfoById(getUserId().toString());
+        if("*".equals(user.getPassWord())) {
+            return RespObj.FAILD("不能解除绑定");
+        }
+        userService.removeThirdBind(getUserId(), ThirdType.getThirdType(type));
+        return RespObj.SUCCESS;
+    }
+
+    /**
+     * 获取账户信息
+     * @param userName
+     * @return
+     */
+    @RequestMapping("/accountSafeInfo")
+    @ResponseBody
+    @SessionNeedless
+    public RespObj accountSafeInfo(String userName) {
+        UserDetailInfoDTO user = userService.getUserInfoByUserName(userName);
+        if(user == null) {
+            return RespObj.FAILD("用户不存在");
+        }
+        Map<String, Object> result = new HashMap<String, Object>();
+        result.put("userName", user.getUserName());
+        result.put("nickName", user.getNickName());
+        result.put("sex", user.getSex());
+        result.put("phone",getProtectedMobile(user.getMobileNumber()));
+        SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd");
+        String date = format.format(user.getBirthDate());
+        String[] dateArr = date.split("-");
+        int year = Integer.valueOf(dateArr[0]);
+        int month = Integer.valueOf(dateArr[1]);
+        int day = Integer.valueOf(dateArr[2]);
+
+        result.put("year", year);
+        result.put("month", month);
+        result.put("day", day);
+        result.put("avatar",user.getImgUrl());
+
+        result.put("email",user.getEmail());
+        return RespObj.SUCCESS(result);
     }
 }

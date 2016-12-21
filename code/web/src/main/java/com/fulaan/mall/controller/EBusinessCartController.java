@@ -2,7 +2,7 @@ package com.fulaan.mall.controller;
 
 import com.fulaan.annotation.LoginInfo;
 import com.fulaan.annotation.ObjectIdType;
-import com.fulaan.controller.BaseController;
+import com.fulaan.base.BaseController;
 import com.fulaan.forum.service.FLogService;
 import com.fulaan.mall.service.EBusinessCartService;
 import com.pojo.app.SessionValue;

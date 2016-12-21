@@ -122,10 +122,10 @@ public class Iparser {
         Iparser parser = new Iparser();
         // Read from input file.
         parser.loadConfig("text/bad.txt", "GBK");
-    /* find a concrete ip_address. using long instead of unsigned int because of Java do not
+    /* findByUserName a concrete ip_address. using long instead of unsigned int because of Java do not
      * have key word unsigned.
 		 */
-        //System.out.print(parser.find("210.122.1.10"));
+        //System.out.print(parser.findByUserName("210.122.1.10"));
         System.out.println(parser.find(1035902464));
         System.out.println(parser.findGeoCode(1035902464));
         System.out.println(parser.convertIP2Long(parser.convertLong2IP(1035902464)));
@@ -139,7 +139,7 @@ public class Iparser {
 		 */
 //		long startTime = System.currentTimeMillis();
 //		for(long i = 1; i <= 10000000; i++){
-//			parser.find(i);
+//			parser.findByUserName(i);
 //		}
 //		long endTime = System.currentTimeMillis();
 //		System.out.println("runtime:  " + (endTime - startTime) + "ms");

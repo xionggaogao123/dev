@@ -437,39 +437,6 @@ public class SchoolService {
         return k;
     }
 
-    /*
-    *
-    * 通过主键 更新老师信息
-    * */
-    public void updateTeacherCheck(String teacherId, String teacherName, String jobNum, String permission, Map<String, Object> model) {
-        boolean flg = true;
-        List<UserEntry> userEntryList = userDao.findEntryByName("nm", teacherName);
-        UserEntry uentry = userDao.searchUserByLoginName(teacherName);
-        if (ValidationUtils.isRequestModile(teacherName)) {
-            flg = false;
-            model.put("mesg", "用户名不能为手机号，请重新输入！");
-        }
-        if ((userEntryList != null && userEntryList.size() != 0) || uentry != null) {
-            flg = false;
-            model.put("mesg", "用户名重复，请重新输入！");
-        }
-        if (flg) {
-            UserEntry user = userDao.getUserEntry(new ObjectId(teacherId), Constant.FIELDS);
-            int role = user.getRole();
-            String roleStr = "";
-            //如果原来是校长或老师，修改为校长，则增加角色(modify by miaoqiang)
-            if ((UserRole.isHeadmaster(role) || UserRole.isTeacher(role)) && (Integer.parseInt(permission) == 8 ||
-                    Integer.parseInt(permission) == 72)) {
-                role = Integer.parseInt(permission) | role;
-                roleStr = Integer.toString(role);
-            } else {
-                roleStr = permission;
-            }
-            teacherDao.updateTeacher(new ObjectId(teacherId), teacherName, jobNum, roleStr);
-        }
-        model.put("flg", flg);
-    }
-
     public void updateTeacherRole(String teacherId, String teacherName, String jobNum, String permission, int ismanage) {
         UserEntry user = userDao.getUserEntry(new ObjectId(teacherId), Constant.FIELDS);
         int role = user.getRole();

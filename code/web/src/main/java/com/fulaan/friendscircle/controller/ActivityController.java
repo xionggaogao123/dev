@@ -1,6 +1,6 @@
 package com.fulaan.friendscircle.controller;
 
-import com.fulaan.controller.BaseController;
+import com.fulaan.base.BaseController;
 import com.fulaan.experience.service.ExperienceService;
 import com.fulaan.friendscircle.service.ActivityService;
 import com.fulaan.friendscircle.service.FriendApplyService;

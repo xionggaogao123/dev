@@ -21,6 +21,11 @@ define(['jquery', 'pagination', 'common'], function (require, exports, module) {
         code: false
     };
 
+    var thirdBind =  {
+        qq: false,
+        wechat: false
+    };
+
     accountSafe.init = function () {
 
         getInfo();
@@ -329,11 +334,20 @@ define(['jquery', 'pagination', 'common'], function (require, exports, module) {
 
         body.on('click', '.third-qq button', function () {
 
-            window.open('/account/qqBind.do', "TencentLogin", "width=800,height=600,menubar=0,scrollbars=1, resizable=1,status=1,titlebar=0,toolbar=0,location=1");
+            if(thirdBind.qq) {
+                removeThirdBind(1);
+            } else {
+                window.open('/account/qqBind.do', "TencentLogin", "width=800,height=600,menubar=0,scrollbars=1, resizable=1,status=1,titlebar=0,toolbar=0,location=1");
+            }
         });
 
         body.on('click', '.third-wechat button', function () {
-            window.open('/account/wechatBind.do', "TencentLogin", "width=800,height=600,menubar=0,scrollbars=1, resizable=1,status=1,titlebar=0,toolbar=0,location=1");
+            if(thirdBind.wechat) {
+                removeThirdBind(2);
+            } else {
+                window.open('/account/wechatBind.do', "TencentLogin", "width=800,height=600,menubar=0,scrollbars=1, resizable=1,status=1,titlebar=0,toolbar=0,location=1");
+            }
+
         });
 
     });
@@ -414,9 +428,23 @@ define(['jquery', 'pagination', 'common'], function (require, exports, module) {
         });
     }
 
+    function removeThirdBind(type) {
+        common.getData('/account/removeThirdBind',{type:type},function (resp) {
+            alert(JSON.stringify(resp));
+            if(resp.code == '200') {
+                window.location.reload();
+            } else {
+                alert(resp.message);
+            }
+        });
+    }
+
     function getThirdInfo() {
 
         common.getData('/account/thirdLoginInfo', {}, function (resp) {
+
+            thirdBind.qq = resp.message.isBindQQ;
+            thirdBind.wechat = resp.message.isBindWechat;
 
             if (resp.message.isBindQQ) {
                 $('.third-qq span').removeClass('sp1');

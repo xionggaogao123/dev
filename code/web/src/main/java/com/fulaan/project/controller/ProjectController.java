@@ -2,7 +2,7 @@ package com.fulaan.project.controller;
 
 import com.alibaba.fastjson.JSON;
 import com.fulaan.annotation.SessionNeedless;
-import com.fulaan.controller.BaseController;
+import com.fulaan.base.BaseController;
 import com.fulaan.project.service.ProjectService;
 import com.fulaan.project.service.SubProjectService;
 import com.fulaan.user.service.UserService;
@@ -69,7 +69,7 @@ public class ProjectController extends BaseController {
     public ModelAndView detailPage(@RequestParam(value = "id", defaultValue = "") String id) {
         ModelAndView mv = new ModelAndView();
         String userId = getSessionValue().getId();
-        userService.searchUserId(new ObjectId(userId));
+        userService.findByUserId(new ObjectId(userId));
         ProjectEntry e = projectService.getProjectEntryById(new ObjectId(id));
 
         List<SubProjectEntry> subEntries = subProjectService.querySubProjectionEntriesByParentId(new ObjectId(id));
@@ -118,7 +118,7 @@ public class ProjectController extends BaseController {
                                  @RequestParam(value = "projectProfile", defaultValue = "") String projectProfile,
                                  @RequestParam(value = "projectCover", defaultValue = "") String projectCover) {
         ObjectId userId = new ObjectId(getSessionValue().getId());
-        UserEntry ue = userService.searchUserId(userId);
+        UserEntry ue = userService.findByUserId(userId);
         SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
         try {
             projectService.addProjectEntry(new ProjectEntry(userId, ue.getUserName(),

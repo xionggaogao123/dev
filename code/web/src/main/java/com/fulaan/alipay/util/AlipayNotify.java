@@ -95,9 +95,9 @@ public class AlipayNotify {
         String preSignStr = AlipayCore.createLinkString(sParaNew);
         // 获得签名验证结果
         boolean isSign = false;
-        if (AlipayConfig.sign_type_md5.equals(sign_type)) {
-            isSign = MD5.verify(preSignStr, sign, AlipayConfig.key, AlipayConfig.input_charset);
-        } else if (AlipayConfig.sign_type_rsa.equals(sign_type)) {
+        if (AlipayConfig.sign_md5.equals(sign_type)) {
+            isSign = MD5.verify(preSignStr, sign, AlipayConfig.SELLER_KEY, AlipayConfig.input_charset);
+        } else if (AlipayConfig.sign_rsa.equals(sign_type)) {
             isSign = RSA.verify(preSignStr, sign, AlipayConfig.RSA_PUBLIC, AlipayConfig.input_charset);
         }
         return isSign;

@@ -1,6 +1,6 @@
 package com.fulaan.letter.controller;
 
-import com.fulaan.controller.BaseController;
+import com.fulaan.base.BaseController;
 import com.fulaan.cache.CacheHandler;
 import com.fulaan.letter.service.LetterService;
 import com.fulaan.user.service.UserService;
@@ -308,7 +308,7 @@ public class LetterController extends BaseController {
         letterService.sendLetter(letterEntry);
 
 //        if (needSendToEaseMob) {//发送消息到环信
-//            easeMobService.sendMessage(getSessionValue().getChatid().toString(), recipientIds, message, getSessionValue().getUserName(), getSessionValue().getMaxAvatar());
+//            easeMobService.sendMessage(setCookieValue().getChatid().toString(), recipientIds, message, setCookieValue().getUserName(), setCookieValue().getMaxAvatar());
 //        }
 
 

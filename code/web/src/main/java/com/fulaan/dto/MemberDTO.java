@@ -55,8 +55,8 @@ public class MemberDTO {
 
     }
 
-    public String getRoleStr(int role) {
-        String roleStr = "";
+    private String getRoleStr(int role) {
+        String roleStr;
 
         switch (role) {
             case 0:

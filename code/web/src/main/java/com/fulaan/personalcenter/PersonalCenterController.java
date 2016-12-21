@@ -1,6 +1,6 @@
 package com.fulaan.personalcenter;
 
-import com.fulaan.controller.BaseController;
+import com.fulaan.base.BaseController;
 import com.fulaan.cache.CacheHandler;
 import com.fulaan.service.MemberService;
 import com.fulaan.experience.service.ExperienceService;
@@ -73,7 +73,7 @@ public class PersonalCenterController extends BaseController {
 
     @RequestMapping("/settingpage")
     public String settingPage(Map<String, Object> model) {
-        UserEntry e = userService.searchUserId(getUserId());
+        UserEntry e = userService.findByUserId(getUserId());
         String avatar = AvatarUtils.getAvatar(e.getAvatar(), AvatarType.MAX_AVATAR.getType());
         model.put("avatar", avatar);
         return "personalcenter/myAccountInfo";
@@ -87,7 +87,7 @@ public class PersonalCenterController extends BaseController {
      */
     @RequestMapping("/basic")
     public String basicPage(Map<String, Object> model) {
-        UserEntry e = userService.searchUserId(getUserId());
+        UserEntry e = userService.findByUserId(getUserId());
         model.put("loginName", e.getLoginName());
         model.put("mobile", e.getMobileNumber());
         model.put("email", e.getEmail());

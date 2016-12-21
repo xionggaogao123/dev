@@ -187,7 +187,7 @@ define(['jquery', 'pagination', 'common'], function (require, exports, module) {
         requestData.itemType=$('#trainTop').data($('#trainTop').find('.cur1').text());
         requestData.sortType=1;
         requestData.pageSize=4;
-        common.getData('/train/getInstitutes.do',requestData,function(resp){
+        common.getData('/train/getInstitutesInDetail.do',requestData,function(resp){
              if(resp.code=="200"){
                template('#instituteTmpl','#institute',resp.message.list);
              }

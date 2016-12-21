@@ -1,7 +1,7 @@
 package com.fulaan.mall.controller;
 
 import com.fulaan.annotation.ObjectIdType;
-import com.fulaan.controller.BaseController;
+import com.fulaan.base.BaseController;
 import com.fulaan.mall.service.EBusinessVoucherService;
 import com.pojo.ebusiness.EVoucherDTO;
 import org.bson.types.ObjectId;
@@ -41,7 +41,7 @@ public class EBusinessVoucherController extends BaseController {
 
     @RequestMapping(value = "/num/{voucherNo}", method = RequestMethod.POST)
     @ResponseBody
-    public Map<String, Object> RechargeVoucher(@PathVariable("voucherNo") String voucherNo) {
+    public Map<String, Object> rechargeVoucher(@PathVariable("voucherNo") String voucherNo) {
         Map<String, Object> model = new HashMap<String, Object>();
         try {
             eBusinessVoucherService.userRechargeVoucherToMyVoucherAccount(getUserId(), voucherNo);

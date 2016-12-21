@@ -1,7 +1,7 @@
 package com.fulaan.video.controller;
 
 import com.fulaan.annotation.SessionNeedless;
-import com.fulaan.controller.BaseController;
+import com.fulaan.base.BaseController;
 import com.fulaan.video.service.VideoService;
 import com.pojo.video.VideoEntry;
 import org.apache.log4j.Logger;

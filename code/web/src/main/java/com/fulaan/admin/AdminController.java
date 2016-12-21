@@ -7,7 +7,7 @@ import com.db.user.UserDao;
 import com.fulaan.annotation.ObjectIdType;
 import com.fulaan.annotation.SessionNeedless;
 import com.fulaan.annotation.UserRoles;
-import com.fulaan.controller.BaseController;
+import com.fulaan.base.BaseController;
 import com.fulaan.mall.service.*;
 import com.fulaan.user.service.UserService;
 import com.fulaan.forum.service.FInformationService;
@@ -1053,7 +1053,7 @@ public class AdminController extends BaseController {
     @ResponseBody
     @UserRoles(UserRole.DISCUSS_MANAGER)
     public RespObj addAdmin(String name) {
-        UserEntry entry = userService.find(name);
+        UserEntry entry = userService.findByUserName(name);
         if (entry == null) {
             return RespObj.FAILD("用户不存在");
         }
@@ -1066,7 +1066,7 @@ public class AdminController extends BaseController {
     @ResponseBody
     @UserRoles(UserRole.DISCUSS_MANAGER)
     public RespObj addSectionAdmin(String name) {
-        UserEntry entry = userService.find(name);
+        UserEntry entry = userService.findByUserName(name);
         if (entry == null) {
             return RespObj.FAILD("用户不存在");
         }
@@ -1111,16 +1111,15 @@ public class AdminController extends BaseController {
     @RequestMapping("/SystemMsgManage")
     @ResponseBody
     @UserRoles(UserRole.DISCUSS_MANAGER)
-    public RespObj SystemMsgManage(@RequestParam(value = "userName", required = false, defaultValue = "") String userName,
+    public RespObj systemMsgManage(@RequestParam(value = "userName", required = false, defaultValue = "") String userName,
                                    @RequestParam(value = "type", required = false, defaultValue = "1") int type,
                                    @RequestParam(value = "message", required = false, defaultValue = "") String message) {
-        if (type == 1) { //发送给所有用户
+        if (type != 1) { //发送给所有用户
 //            fInformationService.sendSystemMessageToAllUser(message);
-        } else {//发送给特定用户
             if (StringUtils.isNotBlank(userName)) {
                 String[] users = userName.split("#");
                 for (String name : users) {
-                    UserEntry userEntry = userService.find(name);
+                    UserEntry userEntry = userService.findByUserName(name);
                     if (null != userEntry) {
                         fInformationService.sendSystemMessage(userEntry.getID(), message);
                     }

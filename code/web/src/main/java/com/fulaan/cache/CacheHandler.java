@@ -99,7 +99,7 @@ public final class CacheHandler {
      * 存储UserKey
      *
      * @param userId
-     * @param sv
+     * @param userKey
      * @param timeouts 单位秒
      */
     public static void cacheUserKey(String userId, String userKey, int timeouts) {

@@ -2,7 +2,7 @@ package com.fulaan.service;
 
 import com.db.fcommunity.CommunityDao;
 import com.db.fcommunity.CommunitySystemInfoDao;
-import com.fulaan.dto.CommunitySystemInfoDTO;
+import com.fulaan.community.dto.CommunitySystemInfoDTO;
 import com.fulaan.user.service.UserService;
 import com.pojo.fcommunity.CommunityEntry;
 import com.pojo.fcommunity.CommunitySystemInfoEntry;

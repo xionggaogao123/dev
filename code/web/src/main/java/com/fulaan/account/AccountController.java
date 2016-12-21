@@ -9,6 +9,7 @@ import com.fulaan.base.BaseController;
 import com.fulaan.cache.CacheHandler;
 import com.fulaan.dto.UserDTO;
 import com.fulaan.playmate.service.MateService;
+import com.fulaan.user.model.ThirdType;
 import com.fulaan.user.service.UserService;
 import com.fulaan.user.util.QQLoginUtil;
 import com.pojo.user.UserDetailInfoDTO;
@@ -484,6 +485,22 @@ public class AccountController extends BaseController {
     @UserRoles(UserRole.DISCUSS_MANAGER)
     public RespObj cleanUserPhone(String userName) {
         userService.clearUserPhoneAndEmail(userName);
+        return RespObj.SUCCESS;
+    }
+
+    /**
+     * 解除第三方绑定
+     * @param type
+     * @return
+     */
+    @RequestMapping("/removeThirdBind")
+    @ResponseBody
+    public RespObj removeThirdBind(int type) {
+        UserDetailInfoDTO user = userService.getUserInfoById(getUserId().toString());
+        if("*".equals(user.getPassWord())) {
+            return RespObj.FAILD("不能解除绑定");
+        }
+        userService.removeThirdBind(getUserId(), ThirdType.getThirdType(type));
         return RespObj.SUCCESS;
     }
 

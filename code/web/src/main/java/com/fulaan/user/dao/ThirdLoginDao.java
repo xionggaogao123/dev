@@ -86,4 +86,9 @@ public class ThirdLoginDao extends BaseDao {
         BasicDBObject query = new BasicDBObject("unionid", unionId).append("type", 1);
         return count(MongoFacroty.getAppDB(), Constant.COLLECTION_THIRD_LOGIN_NAME, query) == Constant.ONE;
     }
+
+    public void removeThirdBind(ObjectId userId, ThirdType thirdType) {
+        BasicDBObject query = new BasicDBObject("uid", userId).append("type", thirdType.getCode());
+        remove(MongoFacroty.getAppDB(), Constant.COLLECTION_THIRD_LOGIN_NAME,query);
+    }
 }

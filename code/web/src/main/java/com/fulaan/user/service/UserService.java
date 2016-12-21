@@ -14,6 +14,7 @@ import com.fulaan.mall.service.EBusinessVoucherService;
 import com.fulaan.pojo.FLoginLog;
 import com.fulaan.user.dao.ThirdLoginDao;
 import com.fulaan.user.model.ThirdLoginEntry;
+import com.fulaan.user.model.ThirdType;
 import com.fulaan.utils.KeyWordFilterUtil;
 import com.mongodb.BasicDBObject;
 import com.mongodb.DBObject;
@@ -1164,5 +1165,9 @@ public class UserService extends BaseService {
 
     public void updateUserPhone(ObjectId userId, String mobile) {
         userDao.updateUserMobile(userId, mobile);
+    }
+
+    public void removeThirdBind(ObjectId userId, ThirdType thirdType) {
+        thirdLoginDao.removeThirdBind(userId,thirdType);
     }
 }

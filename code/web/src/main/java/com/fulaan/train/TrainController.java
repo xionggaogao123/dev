@@ -62,8 +62,6 @@ public class TrainController extends BaseController {
     private InstituteService instituteService;
     @Autowired
     private CriticismService criticismService;
-    @Autowired
-    private UserService userService;
 
     @RequestMapping("/trainList")
     @SessionNeedless

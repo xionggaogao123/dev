@@ -1,5 +1,6 @@
 package com.fulaan.account.service;
 
+import com.fulaan.base.BaseService;
 import com.fulaan.cache.CacheHandler;
 import com.pojo.user.UserEntry;
 import com.sys.mails.MailUtils;
@@ -11,7 +12,7 @@ import org.springframework.stereotype.Service;
  * Created by moslpc on 2016/12/12.
  */
 @Service
-public class AccountService {
+public class AccountService extends BaseService{
 
     private static final String validateUrl = "http://fulaan.com/account/emailValidate.do?";
 
@@ -34,6 +35,15 @@ public class AccountService {
     public void sendEmailForFindPassword(String userName,String email, String code) {
         //发送邮箱
         MailUtils sendMail = new MailUtils();
+        StringBuilder stringBuffer = getEmailText(userName, email, code);
+        try {
+            sendMail.sendMail("用户邮箱验证", email, stringBuffer.toString());
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+    private StringBuilder getEmailText(String userName, String email, String code) {
         StringBuilder stringBuffer = new StringBuilder();
         stringBuffer.append("<p>");
         stringBuffer.append(userName);
@@ -42,10 +52,6 @@ public class AccountService {
         stringBuffer.append("您正在找回密码！点击以下链接验证您的帐号：<br/><a href=\"" + emailContent + "\"");
         stringBuffer.append(" >" + emailContent + "</a><br/>如果点击无效，请把下面网页地址复制到浏览器地址栏中打开<br/><br/>");
         stringBuffer.append("这是一封系统邮件，请勿回复</p>\n");
-        try {
-            sendMail.sendMail("用户邮箱验证", email, stringBuffer.toString());
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
+        return stringBuffer;
     }
 }

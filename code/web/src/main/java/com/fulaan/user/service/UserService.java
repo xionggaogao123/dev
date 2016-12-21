@@ -168,6 +168,11 @@ public class UserService extends BaseService {
         return userEntry == null ? null : new UserDetailInfoDTO(userEntry);
     }
 
+    public UserDetailInfoDTO getUserInfoByUserName(String userName) {
+        UserEntry userEntry = userDao.findByName(userName);
+        return userEntry == null ? null : new UserDetailInfoDTO(userEntry);
+    }
+
     /**
      * 查询用户信息
      *
@@ -393,21 +398,20 @@ public class UserService extends BaseService {
      * @param sex
      * @return
      */
-    public UserEntry createUser(String nickName, int sex) {
+    public UserEntry createUser(final String nickName, int sex) {
 
         UserEntry userEntry = findByUserName(nickName);
-
+        String userName = nickName;
         if (userEntry == null) {
-            userEntry = new UserEntry(nickName, nickName, "*", "", sex);
+            userEntry = new UserEntry(userName, nickName, "*", "", sex);
         } else {
             String uuidName = new ObjectId().toString();
-            nickName = nickName + uuidName;
-            userEntry = new UserEntry(nickName, nickName, "*", "", sex);
+            userName = nickName + uuidName;
+            userEntry = new UserEntry(userName, nickName, "*", "", sex);
         }
 
         addUser(userEntry);
         userEntry = findByUserName(nickName);
-
         return userEntry;
     }
 

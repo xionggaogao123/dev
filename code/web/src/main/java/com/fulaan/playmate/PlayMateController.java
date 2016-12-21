@@ -301,7 +301,6 @@ public class PlayMateController extends BaseController {
         } else {
             mateService.updateOns(userId, new ArrayList<Integer>());
         }
-
     }
 
     private List<Map<String, Object>> getTagsFromUserEntry(UserEntry userEntry) {

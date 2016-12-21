@@ -190,7 +190,7 @@ public class EBusinessOrderController extends BaseController {
 
     @RequestMapping("/isVoucher")
     @ResponseBody
-    public RespObj IsVoucher(@RequestParam(required = false, defaultValue = "") String voucherId) {
+    public RespObj isVoucher(@RequestParam(required = false, defaultValue = "") String voucherId) {
         RespObj respObj = new RespObj(Constant.FAILD_CODE);
         ObjectId vId = null;
         if (!voucherId.equals("")) {

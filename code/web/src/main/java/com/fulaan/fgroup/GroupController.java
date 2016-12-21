@@ -536,7 +536,8 @@ public class GroupController extends BaseController {
         GroupDTO groupDTO = groupService.findByObjectId(groupId);
         if (groupDTO.isBindCommunity()) { //有社区
             ObjectId communityId = new ObjectId(groupDTO.getCommunityId());
-            PageModel<CommunityDetailDTO> pageModel = communityService.getMessages(communityId, page, pageSize, Constant.DESC, CommunityDetailType.ANNOUNCEMENT.getType(),getUserId(),false);
+            PageModel<CommunityDetailDTO> pageModel = communityService.getMessages(communityId, page,
+                    pageSize, CommunityDetailType.ANNOUNCEMENT, getUserId(), false);
             return RespObj.SUCCESS(pageModel);
         }
         return RespObj.SUCCESS(groupNoticeService.getGroupAnnounceByMessage(groupId, page, pageSize));

@@ -83,6 +83,15 @@ public class BaseController {
         return pf;
     }
 
+    protected String getProtectedMobile(final String mobile) {
+        if (mobile != null && mobile.length() == 11) {
+            String prefix = mobile.substring(0, 3);
+            String stufix = mobile.substring(7, 11);
+            return prefix + "****" + stufix;
+        }
+        return mobile;
+    }
+
     protected HttpServletRequest getRequest() {
         return ((ServletRequestAttributes) RequestContextHolder.getRequestAttributes()).getRequest();
     }

@@ -41,7 +41,7 @@ public class EBusinessVoucherController extends BaseController {
 
     @RequestMapping(value = "/num/{voucherNo}", method = RequestMethod.POST)
     @ResponseBody
-    public Map<String, Object> RechargeVoucher(@PathVariable("voucherNo") String voucherNo) {
+    public Map<String, Object> rechargeVoucher(@PathVariable("voucherNo") String voucherNo) {
         Map<String, Object> model = new HashMap<String, Object>();
         try {
             eBusinessVoucherService.userRechargeVoucherToMyVoucherAccount(getUserId(), voucherNo);

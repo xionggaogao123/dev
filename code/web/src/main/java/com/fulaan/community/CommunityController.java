@@ -28,10 +28,7 @@ import com.fulaan.util.URLParseUtil;
 import com.pojo.activity.FriendApply;
 import com.pojo.app.FileUploadDTO;
 import com.pojo.app.Platform;
-import com.pojo.fcommunity.ConcernEntry;
-import com.pojo.fcommunity.MineCommunityEntry;
-import com.pojo.fcommunity.PartInContentEntry;
-import com.pojo.fcommunity.RemarkEntry;
+import com.pojo.fcommunity.*;
 import com.pojo.user.*;
 import com.pojo.utils.MongoUtils;
 import com.sys.constants.Constant;
@@ -790,14 +787,13 @@ public class CommunityController extends BaseController {
     public RespObj getMessage(@RequestParam @ObjectIdType ObjectId communityId,
                               @RequestParam(required = false, defaultValue = "1") int page,
                               @RequestParam(required = false, defaultValue = "4") int pageSize,
-                              @RequestParam(required = false, defaultValue = "-1") int order,
                               @RequestParam(required = false, defaultValue = "1") int type) {
         Platform pf = getPlatform();
         boolean isApp = false;
         if (pf == Platform.Android || pf == Platform.IOS) {
             isApp = true;
         }
-        return RespObj.SUCCESS(communityService.getMessages(communityId, page, pageSize, order, type, getUserId(), isApp));
+        return RespObj.SUCCESS(communityService.getMessages(communityId, page, pageSize, CommunityDetailType.getType(type), getUserId(), isApp));
     }
 
     @RequestMapping("/getAllTypeMessage")
@@ -849,7 +845,7 @@ public class CommunityController extends BaseController {
             HttpClientBuilder httpClientBuilder = HttpClientBuilder.create();
             CloseableHttpClient client = httpClientBuilder.build();
             //抓取的数据
-            ProductModel productModel = URLParseUtil.UrlParser(client, url);
+            ProductModel productModel = URLParseUtil.urlParser(client, url);
             if (StringUtils.isBlank(productModel.getImageUrl())) {
                 return RespObj.FAILD("解析不了该链接或者该链接无效");
             }
@@ -1104,7 +1100,7 @@ public class CommunityController extends BaseController {
             PartInContentDTO partInContentDTO = communityService.getPartInContent(detailId, new ObjectId(user.getId()));
             if (partInContentDTO != null) {
                 user1.setContent(partInContentDTO.getInformation());
-                user1.setTime(DateTimeUtils.convert(new ObjectId(partInContentDTO.getPartInContentId()).getTime(),
+                user1.setTime(DateTimeUtils.convert(new ObjectId(partInContentDTO.getPartInContentId()).getTimestamp() * 1000,
                         DateTimeUtils.DATE_YYYY_MM_DD_HH_MM_A));
             }
 
@@ -1124,7 +1120,7 @@ public class CommunityController extends BaseController {
             PartInContentDTO partInContentDTO = communityService.getPartInContent(detailId, new ObjectId(userDetailInfoDTO.getId()));
             if (partInContentDTO != null) {
                 user1.setContent(partInContentDTO.getInformation());
-                user1.setTime(DateTimeUtils.convert(new ObjectId(partInContentDTO.getPartInContentId()).getTime(),
+                user1.setTime(DateTimeUtils.convert(new ObjectId(partInContentDTO.getPartInContentId()).getTimestamp() * 1000,
                         DateTimeUtils.DATE_YYYY_MM_DD_HH_MM_A));
             }
 
@@ -1345,7 +1341,7 @@ public class CommunityController extends BaseController {
     @ResponseBody
     public RespObj zanToPartInContent(@ObjectIdType ObjectId partInContentId,
                                       @RequestParam(defaultValue = "1", required = false) int zan) {
-        Boolean message = communityService.ZanToPartInContent(partInContentId, getUserId(), zan);
+        Boolean message = communityService.zanToPartInContent(partInContentId, getUserId(), zan);
         return RespObj.SUCCESS(message);
     }
 
@@ -1549,7 +1545,7 @@ public class CommunityController extends BaseController {
             HttpClientBuilder httpClientBuilder = HttpClientBuilder.create();
             CloseableHttpClient client = httpClientBuilder.build();
             //抓取的数据
-            ProductModel productModel = URLParseUtil.UrlParser(client, shareUrl);
+            ProductModel productModel = URLParseUtil.urlParser(client, shareUrl);
             if (StringUtils.isBlank(productModel.getImageUrl())) {
                 return RespObj.FAILD("解析不了该链接或者该链接无效");
             }

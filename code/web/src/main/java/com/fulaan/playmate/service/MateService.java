@@ -26,13 +26,12 @@ import org.springframework.stereotype.Service;
 import java.text.ParseException;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
 
 /**
  * Created by moslpc on 2016/11/30.
  */
 @Service
-public class MateService extends BaseService{
+public class MateService extends BaseService {
 
     @Autowired
     private FMateTypeService fMateTypeService;
@@ -41,18 +40,13 @@ public class MateService extends BaseService{
     private UserDao userDao = new UserDao();
     private FriendDao friendDao = new FriendDao();
 
-    public PageModel<FMateDTO> findMates(ObjectId userId, double lon, double lat, List<String> tags, int aged, List<Integer> ons, int page, int pageSize, int maxDistance) {
-        List<FMateDTO> fMateDTOS = new ArrayList<FMateDTO>();
+    private List<MateData> datas;
+
+    public PageModel<FMateDTO> findMates(ObjectId userId, double lng, double lat, List<String> tagList, int ageGroup, List<Integer> timeList, int page, int pageSize, int maxDistance) {
+        List<FMateDTO> result = new ArrayList<FMateDTO>();
         PageModel<FMateDTO> pageModel = new PageModel<FMateDTO>();
-        List<Integer> tagIntegers = new ArrayList<Integer>();
-        for (String tagStr : tags) {
-            try {
-                tagIntegers.add(Integer.parseInt(tagStr));
-            } catch (NumberFormatException e) {
-                e.printStackTrace();
-            }
-        }
-        BasicDBObject query = fMateDao.buildQuery(userId,lon, lat, tagIntegers, aged, ons, maxDistance);
+        List<Integer> tagIntegers = getTagsList(tagList);
+        BasicDBObject query = fMateDao.buildQuery(userId, lng, lat, tagIntegers, ageGroup, timeList, maxDistance);
         System.out.println(query.toString());
         int count = fMateDao.countByPage(query);
         int totalPages = count % pageSize == 0 ? count / pageSize : (int) Math.ceil(count / pageSize) + 1;
@@ -62,79 +56,102 @@ public class MateService extends BaseService{
         if (userId != null) {
             myFriendEnty = friendDao.get(userId);
         }
-
-        List<MateData> mateDatas = fMateTypeService.getOns();
-
         for (FMateEntry mateEntry : fMateEntries) {
-            BasicDBList dbList = mateEntry.getLocation();
-            String distance = "未知";
-            if (lon != 0 && lat != 0 && dbList != null) {
-                Double distanceDouble = DistanceUtils.distance(lon, lat, (Double) dbList.get(0), (Double) dbList.get(1));
-                distance = filterDistance(distanceDouble.longValue());
-            }
-            FMateDTO fMateDTO = new FMateDTO();
-            UserEntry userEntry = userDao.findByObjectId(mateEntry.getUserId());
-            fMateDTO.setDistance(distance);
-            fMateDTO.setUserId(userEntry.getID().toString());
-            fMateDTO.setNickName(userEntry.getNickName());
-            fMateDTO.setUserName(userEntry.getUserName());
-
-            List<MateData> onsList = new ArrayList<MateData>();
-            for (MateData mateData : mateDatas) {
-                BasicDBList basicDBList = mateEntry.getOns();
-                if(basicDBList != null) {
-                    for (Object o : basicDBList) {
-                        if (((Integer) o) == mateData.getCode()) {
-                            onsList.add(mateData);
-                        }
-                    }
-                }
-            }
-            fMateDTO.setOns(onsList);
-            fMateDTO.setAvatar(AvatarUtils.getAvatar(userEntry.getAvatar(), AvatarType.MIN_AVATAR.getType()));
-            List<UserTag> tagList = new ArrayList<UserTag>();
-            List<UserEntry.UserTagEntry> userTagEntries = userEntry.getUserTag();
-            for (UserEntry.UserTagEntry tagEntry : userTagEntries) {
-                UserTag userTag = new UserTag(tagEntry.getCode(), tagEntry.getTag());
-                tagList.add(userTag);
-            }
-            fMateDTO.setTags(tagList);
-            fMateDTOS.add(fMateDTO);
-
-            List<User> users = new ArrayList<User>();
-            //寻找共同好友
-            FriendEntry userFriendEntry = friendDao.get(mateEntry.getUserId());
-            if (myFriendEnty != null && userFriendEntry != null) {
-                List<ObjectId> myFriendList = myFriendEnty.getFriendIds();
-                List<ObjectId> userFriendList = userFriendEntry.getFriendIds();
-                myFriendList.retainAll(userFriendList);
-
-                for (ObjectId uid : myFriendList) {
-                    UserEntry entry = userDao.findByObjectId(uid);
-                    if (entry != null) {
-                        User user = new User();
-                        if (entry.getAvatar() != null) {
-                            user.setAvator(AvatarUtils.getAvatar(entry.getAvatar(), AvatarType.MIN_AVATAR.getType()));
-                        }
-                        user.setSex(entry.getSex());
-                        user.setId(entry.getID().toString());
-                        user.setNickName(StringUtils.isBlank(entry.getNickName()) ? entry.getUserName() : entry.getNickName());
-                        user.setUserName(entry.getUserName());
-                        users.add(user);
-                    }
-                }
-            }
-            if(users.size() > 4) {
-                users = users.subList(0,4);
-            }
+            FMateDTO fMateDTO = getfMateDTO(lng, lat, mateEntry);
+            List<User> users = getCommonFriends(myFriendEnty, mateEntry);
             fMateDTO.setCommonFriends(users);
+            result.add(fMateDTO);
         }
         pageModel.setPage(page);
         pageModel.setPageSize(pageSize);
         pageModel.setTotalCount(count);
         pageModel.setTotalPages(totalPages);
-        pageModel.setResult(fMateDTOS);
+        pageModel.setResult(result);
         return pageModel;
+    }
+
+    private List<Integer> getTagsList(List<String> tags) {
+        List<Integer> tagIntegers = new ArrayList<Integer>();
+        for (String tagStr : tags) {
+            try {
+                tagIntegers.add(Integer.parseInt(tagStr));
+            } catch (NumberFormatException e) {
+                e.printStackTrace();
+            }
+        }
+        return tagIntegers;
+    }
+
+    private List<User> getCommonFriends(FriendEntry myFriendEnty, FMateEntry mateEntry) {
+        List<User> users = new ArrayList<User>();
+        //寻找共同好友
+        FriendEntry userFriendEntry = friendDao.get(mateEntry.getUserId());
+        if (myFriendEnty != null && userFriendEntry != null) {
+            List<ObjectId> myFriendList = myFriendEnty.getFriendIds();
+            List<ObjectId> userFriendList = userFriendEntry.getFriendIds();
+            myFriendList.retainAll(userFriendList);
+
+            for (ObjectId uid : myFriendList) {
+                UserEntry entry = userDao.findByObjectId(uid);
+                if (entry != null) {
+                    User user = new User();
+                    if (entry.getAvatar() != null) {
+                        user.setAvator(AvatarUtils.getAvatar(entry.getAvatar(), AvatarType.MIN_AVATAR.getType()));
+                    }
+                    user.setSex(entry.getSex());
+                    user.setId(entry.getID().toString());
+                    user.setNickName(StringUtils.isBlank(entry.getNickName()) ? entry.getUserName() : entry.getNickName());
+                    user.setUserName(entry.getUserName());
+                    users.add(user);
+                }
+            }
+        }
+        if (users.size() > 4) {
+            users = users.subList(0, 4);
+        }
+        return users;
+    }
+
+    private FMateDTO getfMateDTO(double lon, double lat, FMateEntry mateEntry) {
+        BasicDBList dbList = mateEntry.getLocation();
+        String distance = "未知";
+        if (lon != 0 && lat != 0 && dbList != null) {
+            Double distanceDouble = DistanceUtils.distance(lon, lat, (Double) dbList.get(0), (Double) dbList.get(1));
+            distance = filterDistance(distanceDouble.longValue());
+        }
+        FMateDTO fMateDTO = new FMateDTO();
+        UserEntry userEntry = userDao.findByObjectId(mateEntry.getUserId());
+        fMateDTO.setDistance(distance);
+        fMateDTO.setUserId(userEntry.getID().toString());
+        fMateDTO.setNickName(userEntry.getNickName());
+        fMateDTO.setUserName(userEntry.getUserName());
+
+        List<MateData> onsList = getMateDatas(mateEntry);
+        fMateDTO.setOns(onsList);
+        fMateDTO.setAvatar(AvatarUtils.getAvatar(userEntry.getAvatar(), AvatarType.MIN_AVATAR.getType()));
+        List<UserTag> tagList = new ArrayList<UserTag>();
+        List<UserEntry.UserTagEntry> userTagEntries = userEntry.getUserTag();
+        for (UserEntry.UserTagEntry tagEntry : userTagEntries) {
+            UserTag userTag = new UserTag(tagEntry.getCode(), tagEntry.getTag());
+            tagList.add(userTag);
+        }
+        fMateDTO.setTags(tagList);
+        return fMateDTO;
+    }
+
+    private List<MateData> getMateDatas(FMateEntry mateEntry) {
+        List<MateData> onsList = new ArrayList<MateData>();
+        for (MateData mateData : getDatas()) {
+            BasicDBList basicDBList = mateEntry.getOns();
+            if (basicDBList != null) {
+                for (Object o : basicDBList) {
+                    if (((Integer) o) == mateData.getCode()) {
+                        onsList.add(mateData);
+                    }
+                }
+            }
+        }
+        return onsList;
     }
 
     public List<Double> getCoordinates(ObjectId userId) {
@@ -159,19 +176,14 @@ public class MateService extends BaseService{
         fMateDao.upateUserLocation(userId, lon, lat);
     }
 
-    public FMateEntry getMateEntry(ObjectId userId) {
-        return fMateDao.getMateEntryByUserId(userId);
-    }
-
     public List<MateData> getMyOns(ObjectId userId) {
         FMateEntry fMateEntry = fMateDao.getMateEntryByUserId(userId);
         if (fMateEntry == null) {
             return new ArrayList<MateData>();
         }
         BasicDBList dbList = fMateEntry.getOns();
-        List<MateData> datas = fMateTypeService.getOns();
         List<MateData> onsList = new ArrayList<MateData>();
-        for (MateData mateData : datas) {
+        for (MateData mateData : getDatas()) {
             for (Object o : dbList) {
                 if (((Integer) o) == mateData.getCode()) {
                     onsList.add(mateData);
@@ -203,7 +215,6 @@ public class MateService extends BaseService{
             updateAge(userId, aged);
         } catch (ParseException e) {
             e.printStackTrace();
-            return;
         }
     }
 
@@ -227,5 +238,12 @@ public class MateService extends BaseService{
 
     public void updateOns(ObjectId userId, List<Integer> onsList) {
         fMateDao.updateUserOns(userId, onsList);
+    }
+
+    private List<MateData> getDatas() {
+        if (datas == null) {
+            datas = fMateTypeService.getOns();
+        }
+        return datas;
     }
 }

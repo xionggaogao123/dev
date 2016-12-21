@@ -436,8 +436,7 @@ public class UserCenterController extends BaseController {
         result.put("name", user.getUserName());
         result.put("nickName", user.getNickName());
         result.put("sex", user.getSex());
-        result.put("phone", user.getMobileNumber());
-
+        result.put("phone",getProtectedMobile(user.getMobileNumber()));
         Date birthdate = user.getBirthDate();
         SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd");
         String date = format.format(birthdate);
@@ -451,12 +450,6 @@ public class UserCenterController extends BaseController {
         result.put("day", day);
         result.put("avatar",user.getImgUrl());
 
-        if(user.getMobileNumber() != null && user.getMobileNumber().length() == 11) {
-            String phone = user.getMobileNumber();
-            String prefix = phone.substring(0,3);
-            String stufix = phone.substring(7,11);
-            result.put("phone",prefix + "****" + stufix);
-        }
         result.put("email",user.getEmail());
         return result;
     }

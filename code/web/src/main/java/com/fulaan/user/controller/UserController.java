@@ -1580,7 +1580,7 @@ public class UserController extends BaseController {
      */
     @SessionNeedless
     @RequestMapping(value = "/wechatlogin")
-    public void WeChatLogin(HttpServletResponse response) throws IOException {
+    public void weChatLogin(HttpServletResponse response) throws IOException {
         String urlEncodeRedirectUrl = HttpClientUtils.strURLEncodeUTF8(Constant.WECHAT_REDIRECT_URL);
         String strWeChatConnectUrl = String.format(Constant.WECHAT_CONNECT_URL, Constant.WECHAT_APPID, urlEncodeRedirectUrl);
         response.sendRedirect(strWeChatConnectUrl);
@@ -1632,7 +1632,7 @@ public class UserController extends BaseController {
         Cookie[] cookies = request.getCookies();
         for (Cookie cookie : cookies) {
 
-            if (cookie.getName().equals("bindQQ") && getUserId() != null) {
+            if (cookie.getName().equals("bindWechat") && getUserId() != null) {
                 if (cookie.getValue().equals(getUserId().toString())) {
                     //绑定qq
                     boolean isBind = userService.isUnionIdBindWechat(unionId);
@@ -1669,6 +1669,7 @@ public class UserController extends BaseController {
         if (!isRegister) {
             EaseMobAPI.createUser(userEntry.getID().toString(), nickName2);
         }
+
         String redirectUrl = userService.getRedirectUrl(request);
         userService.setCookieValue(getIP(), userEntry, response, request);
         if (redirectUrl != null && getPlatform() != Platform.PC) {

@@ -75,7 +75,7 @@
             <li>
                 <input type="text" class="user-name">
                 <span class="sp1">用户名 : </span>
-                <span class="sp2">6-20位字符（汉字、字母、数字、下划线）</span>
+                <span class="sp2">3-20位字符（汉字、字母、数字、下划线）</span>
                 <span class="sp3" style="display: none">请输入用户名</span>
             </li>
             <li>

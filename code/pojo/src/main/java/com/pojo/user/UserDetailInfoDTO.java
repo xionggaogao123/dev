@@ -12,10 +12,10 @@ import java.util.List;
 
 public class UserDetailInfoDTO extends UserInfoDTO implements Serializable {
 
-	private static final long serialVersionUID = 4002785167984267964L;
-	private String userName;
+    private static final long serialVersionUID = 4002785167984267964L;
+    private String userName;
     private String passWord;
-	private String nickName;
+    private String nickName;
     private String imgUrl;
     private String mobileNumber;
     private String phoneNumber;
@@ -34,7 +34,6 @@ public class UserDetailInfoDTO extends UserInfoDTO implements Serializable {
     private String relationId;//关联id    如果是学生该字段为家长id 如过是家长该字段是学生id
     private String studentNum;//学号
     private String registerNum;//学籍号
-
 
 
     private String jobName;//职务名称
@@ -88,6 +87,7 @@ public class UserDetailInfoDTO extends UserInfoDTO implements Serializable {
     public void setCityName(String cityName) {
         this.cityName = cityName;
     }
+
     public String getJobName() {
         return jobName;
     }
@@ -95,74 +95,75 @@ public class UserDetailInfoDTO extends UserInfoDTO implements Serializable {
     public void setJobName(String jobName) {
         this.jobName = jobName;
     }
-    
-    
+
+
     public String getSchoolLogo() {
-		return schoolLogo;
-	}
+        return schoolLogo;
+    }
 
-	public void setSchoolLogo(String schoolLogo) {
-		this.schoolLogo = schoolLogo;
-	}
+    public void setSchoolLogo(String schoolLogo) {
+        this.schoolLogo = schoolLogo;
+    }
 
-	public UserDetailInfoDTO(){}
-    public UserDetailInfoDTO(UserEntry userEntry ,int type){
-        this.imgUrl= AvatarUtils.getAvatar(userEntry.getAvatar(), 1);
+    public UserDetailInfoDTO() {
+    }
+
+    public UserDetailInfoDTO(UserEntry userEntry, int type) {
+        this.imgUrl = AvatarUtils.getAvatar(userEntry.getAvatar(), 1);
         setId(userEntry.getID().toString());
-        this.nickName=userEntry.getNickName();
-        this.chatid=userEntry.getChatId();
-        this.userName=userEntry.getUserName();
+        this.nickName = userEntry.getNickName();
+        this.chatid = userEntry.getChatId();
+        this.userName = userEntry.getUserName();
         setRole(userEntry.getRole());
     }
-    public UserDetailInfoDTO(UserEntry userEntry){
-        this.address=userEntry.getAddress();
-        this.imgUrl= AvatarUtils.getAvatar(userEntry.getAvatar(), 1);
-        this.birthDate=new Date(userEntry.getBirthDate());
-        this.bloodType=userEntry.getBloodType();
-        this.email=userEntry.getEmail();
+
+    public UserDetailInfoDTO(UserEntry userEntry) {
+        this.address = userEntry.getAddress();
+        this.imgUrl = AvatarUtils.getAvatar(userEntry.getAvatar(), 1);
+        this.birthDate = new Date(userEntry.getBirthDate());
+        this.bloodType = userEntry.getBloodType();
+        this.email = userEntry.getEmail();
         setExperienceValue(userEntry.getExperiencevalue());
         setId(userEntry.getID().toString());
-        this.introduction=userEntry.getIntroduce();
-        this.jobNumber=userEntry.getJobnumber();
-        this.lastActiveDate=new Date(userEntry.getLastActiveDate());
-        this.mobileNumber=userEntry.getMobileNumber();
-        this.nickName=userEntry.getNickName();
-        this.passWord=userEntry.getPassword();
-        String permission=userEntry.getPermission();
-        if(!StringUtils.isBlank(permission))
+        this.introduction = userEntry.getIntroduce();
+        this.jobNumber = userEntry.getJobnumber();
+        this.lastActiveDate = new Date(userEntry.getLastActiveDate());
+        this.mobileNumber = userEntry.getMobileNumber();
+        this.nickName = userEntry.getNickName();
+        this.passWord = userEntry.getPassword();
+        String permission = userEntry.getPermission();
+        if (!StringUtils.isBlank(permission))
             setPermission(new Long(userEntry.getPermission()).intValue());
-        this.phoneNumber=userEntry.getPhoneNumber();
-        this.postCode=userEntry.getPostCode();
-        this.qq=userEntry.getQq();
-        this.registerIP=userEntry.getRegisterIP();
-        this.registerNum=userEntry.getRegisterNum();
-        this.registerTime=new Date(userEntry.getRegisterTime());
-        
-        
-        try
-        {
-          this.relationId=(userEntry.getConnectIds().size()==0) ?null:userEntry.getConnectIds().get(0).toString();
-        }catch(Exception ex)
-        {
-        	
+        this.phoneNumber = userEntry.getPhoneNumber();
+        this.postCode = userEntry.getPostCode();
+        this.qq = userEntry.getQq();
+        this.registerIP = userEntry.getRegisterIP();
+        this.registerNum = userEntry.getRegisterNum();
+        this.registerTime = new Date(userEntry.getRegisterTime());
+
+
+        try {
+            this.relationId = (userEntry.getConnectIds().size() == 0) ? null : userEntry.getConnectIds().get(0).toString();
+        } catch (Exception ex) {
+
         }
         setRole(userEntry.getRole());
-        this.schoolID=userEntry.getSchoolID()+"";
+        this.schoolID = userEntry.getSchoolID() + "";
         setSex(userEntry.getSex());
-        this.studentNum=userEntry.getStudyNum();
-        this.userName=userEntry.getUserName();
-        this.weiBo=userEntry.getWeiBo();
-        this.weiXin=userEntry.getWeiXin();
-        this.experienceValue=userEntry.getExperiencevalue();
-        if(StringUtils.isBlank(userEntry.getJobnumber())){
-            this.jobNumber="";
+        this.studentNum = userEntry.getStudyNum();
+        this.userName = userEntry.getUserName();
+        this.weiBo = userEntry.getWeiBo();
+        this.weiXin = userEntry.getWeiXin();
+        this.experienceValue = userEntry.getExperiencevalue();
+        if (StringUtils.isBlank(userEntry.getJobnumber())) {
+            this.jobNumber = "";
         }
-        this.chatid=userEntry.getChatId();
-        this.jobName=userEntry.getJob();
+        this.chatid = userEntry.getChatId();
+        this.jobName = userEntry.getJob();
         this.jinyan = userEntry.getJinyan();
         List<ObjectId> connectIdList = userEntry.getConnectIds();
         List<String> cids = new ArrayList<String>();
-        if (connectIdList!=null && connectIdList.size()!=0) {
+        if (connectIdList != null && connectIdList.size() != 0) {
             for (ObjectId connectId : connectIdList) {
                 cids.add(connectId.toString());
             }
@@ -374,31 +375,31 @@ public class UserDetailInfoDTO extends UserInfoDTO implements Serializable {
     public void setImgUrl(String imgUrl) {
         this.imgUrl = imgUrl;
     }
+
     /*
     * 学校管理中 班级添加学生所用
     *
     * */
     public UserEntry exportEntry() {
-        UserEntry userEntry=new UserEntry(userName,passWord,getSex(),null);
+        UserEntry userEntry = new UserEntry(userName, passWord, getSex(), null);
         userEntry.setAddress(this.address);
         userEntry.setUserName(this.userName);
         userEntry.setNickName(this.nickName);
         userEntry.setSex(this.getSex());
-        userEntry.setRole((int)this.getRole());
+        userEntry.setRole((int) this.getRole());
         userEntry.setJob(this.jobName);
         userEntry.setStudyNum(this.studentNum);
-        if(null!=getId()&&ObjectId.isValid(getId())){
+        if (null != getId() && ObjectId.isValid(getId())) {
             userEntry.setID(new ObjectId(getId()));
         }
-        if(null!=getRelationId()&&ObjectId.isValid(getRelationId())){
-        	
-        	List<ObjectId> list =new ArrayList<ObjectId>();
-        	list.add(new ObjectId(this.relationId));
+        if (null != getRelationId() && ObjectId.isValid(getRelationId())) {
+
+            List<ObjectId> list = new ArrayList<ObjectId>();
+            list.add(new ObjectId(this.relationId));
             userEntry.setConnectIds(list);
         }
-        if(null!=getSchoolID()&&ObjectId.isValid(getSchoolID()))
-        {
-        	userEntry.setSchoolID(new ObjectId(getSchoolID()));
+        if (null != getSchoolID() && ObjectId.isValid(getSchoolID())) {
+            userEntry.setSchoolID(new ObjectId(getSchoolID()));
         }
         return userEntry;
     }

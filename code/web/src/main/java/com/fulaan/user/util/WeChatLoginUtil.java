@@ -36,7 +36,7 @@ public class WeChatLoginUtil {
             parms.put("grant_type", "authorization_code");
             String content = HttpClientUtils.get(Constant.WECHAT_ACCESS_TOKEN_URL, parms);
 
-            Map<String, Object> maps = JsonUtil.Json2Map(content);
+            Map<String, Object> maps = JsonUtil.json2Map(content);
             return maps;
         } catch (IOException e) {
             e.printStackTrace();
@@ -60,7 +60,7 @@ public class WeChatLoginUtil {
         try {
             String content = HttpClientUtils.get(Constant.WECHAT_GET_USERINFO_URL, userInfoParms);
 
-            Map<String, Object> maps = JsonUtil.Json2Map(content);
+            Map<String, Object> maps = JsonUtil.json2Map(content);
             return maps;
         } catch (IOException e) {
             e.printStackTrace();

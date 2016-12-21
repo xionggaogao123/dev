@@ -73,7 +73,9 @@ public class CommunityDetailDTO {
         List<ObjectId> communityDetailEntryUnReadList = communityDetailEntry.getUnReadList();
         if (null != communityDetailEntryUnReadList) {
             for (ObjectId objectId : communityDetailEntryUnReadList) {
-                this.unReadList.add(objectId.toString());
+                if(objectId != null) {
+                    this.unReadList.add(objectId.toString());
+                }
             }
         }
         List<ObjectId> communityDetailEntryPartInList = communityDetailEntry.getPartInList();

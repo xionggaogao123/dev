@@ -248,8 +248,8 @@ public class CommunityService {
 
         int unreadCount = 0;
         if (userId != null && communityIds != null && communityIds.size() > 0 && operation == 1) {
-            int totalCount = communityDetailDao.count(communityIds.get(0), type.getType());
-            int readCount = communityDetailDao.countRead(type.getType(), communityIds.get(0), userId);
+            int totalCount = communityDetailDao.count(communityIds.get(0), type);
+            int readCount = communityDetailDao.countRead(type, communityIds.get(0), userId);
             unreadCount = totalCount - readCount;
         }
 
@@ -522,15 +522,14 @@ public class CommunityService {
      * @param communityId
      * @param page
      * @param pageSize
-     * @param order
      * @return
      */
-    public PageModel<CommunityDetailDTO> getMessages(ObjectId communityId, int page, int pageSize, int order, int type, ObjectId userId, boolean isApp) {
+    public PageModel<CommunityDetailDTO> getMessages(ObjectId communityId, int page, int pageSize, CommunityDetailType type, ObjectId userId, boolean isApp) {
         PageModel<CommunityDetailDTO> pageModel = new PageModel<CommunityDetailDTO>();
-        List<CommunityDetailEntry> entries = communityDetailDao.getDetails(communityId, page, pageSize, order, type);
+        List<CommunityDetailEntry> entries = communityDetailDao.getDetails(communityId, page, pageSize, Constant.DESC, type);
         int counts = communityDetailDao.count(communityId, type);
 
-        if (type == 1 && isApp) {
+        if (type.getType() == CommunityDetailType.ANNOUNCEMENT.getType() && isApp) {
             if (null != userId) {
                 setAppRead(userId, entries);
             }
@@ -1107,7 +1106,7 @@ public class CommunityService {
      * @param userId
      * @param zan
      */
-    public boolean ZanToPartInContent(ObjectId partInContentId, ObjectId userId, int zan) {
+    public boolean zanToPartInContent(ObjectId partInContentId, ObjectId userId, int zan) {
         if (zan == 1) {
             if (!partInContentDao.isZanToPartInContent(partInContentId, userId)) {
                 partInContentDao.setZanToPartInContent(partInContentId, userId);

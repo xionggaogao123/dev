@@ -1,5 +1,7 @@
 package com.pojo.fcommunity;
 
+import sun.security.provider.SHA;
+
 /**
  * Created by admin on 2016/10/26.
  * ANNOUNCEMENT:
@@ -24,6 +26,24 @@ public enum CommunityDetailType {
 
     private int type;
     private String decs;
+
+    public static CommunityDetailType getType(int type) {
+        switch (type) {
+            case 1:
+                return ANNOUNCEMENT;
+            case 2:
+                return ACTIVITY;
+            case 3:
+                return SHARE;
+            case 4:
+                return MEANS;
+            case 5:
+                return HOMEWORK;
+            case 6:
+                return MATERIALS;
+        }
+        return ANNOUNCEMENT;
+    }
 
     public int getType() {
         return type;

@@ -486,7 +486,7 @@ public class EBusinessGoodsController extends BaseController {
     @SessionNeedless
     @RequestMapping(value = "/findUser/validate", method = RequestMethod.POST)
     @ResponseBody
-    public Map<String, Object> ValidateUser(String userName, String cacheKeyId, String code, String phoneNumber,
+    public Map<String, Object> validateUser(String userName, String cacheKeyId, String code, String phoneNumber,
                                             HttpServletResponse response, HttpServletRequest request) {
         Map<String, Object> model = new HashMap<String, Object>();
         model.put("code", 500);

@@ -1,17 +1,11 @@
 define(['jquery', 'pagination', 'common'], function (require, exports, module) {
 
-    var common = require('common');
-    require('pagination');
     var login = {};
 
-    var check = {
-        userName: false,
-        password: false
-    };
     login.init = function () {
 
-        $(document).keypress(function (e) {
-            if (e.which == 13) {
+        $(document).keypress(function(e) {
+            if(e.which == 13) {
                 loginWeb();
             }
         });
@@ -24,17 +18,19 @@ define(['jquery', 'pagination', 'common'], function (require, exports, module) {
         });
 
         $('input.username').blur(function () {
-            if ($('input.username').val() == '') {
+            if ($(this).val() == '') {
                 $(this).parent().find('.sp3').show();
-                check.userName = false;
             } else {
                 $(this).parent().find('.sp3').hide();
-                check.userName = true;
             }
         });
 
         $('input.password').blur(function () {
-            check.password = $(this).val() != '';
+            if ($(this).val() == '') {
+                $(this).parent().find('.sp3').show();
+            } else {
+                $(this).parent().find('.sp3').hide();
+            }
         });
 
 
@@ -52,12 +48,11 @@ define(['jquery', 'pagination', 'common'], function (require, exports, module) {
     });
 
     function loginWeb() {
-        check.password = $(this).val() != '';
-        if (!check.userName || !check.password) {
-            return;
-        }
         var userName = $('input.username').val();
         var password = $('input.password').val();
+        if (password == '' || userName == '') {
+            return;
+        }
         var requestData = {};
         requestData.name = $.trim(userName);
         requestData.pwd = $.trim(password);

@@ -28,7 +28,7 @@ public class JsonUtil {
      * @throws java.io.IOException
      * @throws com.fasterxml.jackson.core.JsonParseException
      */
-    public static Map<String, Object> Json2Map(String jsonStr) {
+    public static Map<String, Object> json2Map(String jsonStr) {
 
 
         Gson gson = new Gson();
@@ -48,7 +48,7 @@ public class JsonUtil {
         return map;
     }
 
-    public static List<Map<String, Object>> Json2List(String jsonStr) {
+    public static List<Map<String, Object>> json2List(String jsonStr) {
 
         ObjectMapper mapper = new ObjectMapper();
         List<Map<String, Object>> map = new ArrayList<Map<String, Object>>();

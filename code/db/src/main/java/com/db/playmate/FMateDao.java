@@ -12,6 +12,7 @@ import org.bson.types.ObjectId;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 
 /**
  * Created by moslpc on 2016/11/30.
@@ -42,7 +43,7 @@ public class FMateDao extends BaseDao {
         return fMateEntries;
     }
 
-    public BasicDBObject buildQuery(ObjectId userId,double lon, double lat, List<Integer> tags,int aged, List<Integer> onsList, int maxDistance) {
+    public BasicDBObject buildQuery(ObjectId userId,double lon, double lat, List<Integer> tags,int aged, List<Integer> timeList, int maxDistance) {
         BasicDBObject query = new BasicDBObject();
         if (lon != 0 && lat != 0) {
             List<Double> locs = new ArrayList<Double>();
@@ -61,8 +62,8 @@ public class FMateDao extends BaseDao {
         if (aged != -1) {
             query.append("aged", aged);
         }
-        if (onsList != null && onsList.size() > 0) {
-            query.append("ons", new BasicDBObject("$in", onsList));
+        if (timeList != null && timeList.size() > 0) {
+            query.append("ons", new BasicDBObject("$in", timeList));
         }
         return query;
     }

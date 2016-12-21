@@ -5,12 +5,13 @@ import com.fulaan.account.service.AccountService;
 import com.fulaan.annotation.LoginInfo;
 import com.fulaan.annotation.SessionNeedless;
 import com.fulaan.annotation.UserRoles;
-import com.fulaan.cache.CacheHandler;
 import com.fulaan.base.BaseController;
+import com.fulaan.cache.CacheHandler;
 import com.fulaan.dto.UserDTO;
 import com.fulaan.playmate.service.MateService;
 import com.fulaan.user.service.UserService;
 import com.fulaan.user.util.QQLoginUtil;
+import com.pojo.user.UserDetailInfoDTO;
 import com.pojo.user.UserEntry;
 import com.pojo.user.UserRole;
 import com.sys.constants.Constant;
@@ -34,6 +35,7 @@ import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
+import java.text.SimpleDateFormat;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -155,7 +157,6 @@ public class AccountController extends BaseController {
         userKeycookie.setMaxAge(Constant.SECONDS_IN_DAY);
         userKeycookie.setPath(Constant.BASE_PATH);
         response.addCookie(userKeycookie);
-
         response.sendRedirect(url);
     }
 
@@ -164,15 +165,13 @@ public class AccountController extends BaseController {
      */
     @SessionNeedless
     @RequestMapping(value = "/wechatBind")
-    public void WeChatLogin(HttpServletResponse response) throws IOException {
+    public void weChatLogin(HttpServletResponse response) throws IOException {
         String urlEncodeRedirectUrl = HttpClientUtils.strURLEncodeUTF8(Constant.WECHAT_REDIRECT_URL);
         String strWeChatConnectUrl = String.format(Constant.WECHAT_CONNECT_URL, Constant.WECHAT_APPID, urlEncodeRedirectUrl);
-
         Cookie userKeycookie = new Cookie("bindWechat", getUserId().toString());
         userKeycookie.setMaxAge(Constant.SECONDS_IN_DAY);
         userKeycookie.setPath(Constant.BASE_PATH);
         response.addCookie(userKeycookie);
-
         response.sendRedirect(strWeChatConnectUrl);
     }
 
@@ -348,7 +347,7 @@ public class AccountController extends BaseController {
             }
         }
 
-        if (!"".equals(nickName)) {
+        if (StringUtils.isNotBlank(nickName)) {
             userService.updateNickNameById(getUserId().toString(), nickName);
         }
         userService.updateSexById(getUserId(), sex);
@@ -486,5 +485,39 @@ public class AccountController extends BaseController {
     public RespObj cleanUserPhone(String userName) {
         userService.clearUserPhoneAndEmail(userName);
         return RespObj.SUCCESS;
+    }
+
+    /**
+     * 获取账户信息
+     * @param userName
+     * @return
+     */
+    @RequestMapping("/accountSafeInfo")
+    @ResponseBody
+    @SessionNeedless
+    public RespObj accountSafeInfo(String userName) {
+        UserDetailInfoDTO user = userService.getUserInfoByUserName(userName);
+        if(user == null) {
+            return RespObj.FAILD("用户不存在");
+        }
+        Map<String, Object> result = new HashMap<String, Object>();
+        result.put("userName", user.getUserName());
+        result.put("nickName", user.getNickName());
+        result.put("sex", user.getSex());
+        result.put("phone",getProtectedMobile(user.getMobileNumber()));
+        SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd");
+        String date = format.format(user.getBirthDate());
+        String[] dateArr = date.split("-");
+        int year = Integer.valueOf(dateArr[0]);
+        int month = Integer.valueOf(dateArr[1]);
+        int day = Integer.valueOf(dateArr[2]);
+
+        result.put("year", year);
+        result.put("month", month);
+        result.put("day", day);
+        result.put("avatar",user.getImgUrl());
+
+        result.put("email",user.getEmail());
+        return RespObj.SUCCESS(result);
     }
 }

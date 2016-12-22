@@ -105,8 +105,8 @@ public class CommunityController extends BaseController {
         name = userService.filter(name);
         desc = userService.filter(desc);
         //先判断该社区名称是否使用过
-        boolean flag = communityService.judgeCommunityCreate(name);
-        if (flag) {
+        boolean flag = communityService.isCommunityNameUnique(name);
+        if (!flag) {
             return RespObj.FAILD("该社区名称已使用过！");
         }
         ObjectId uid = getUserId();
@@ -142,7 +142,7 @@ public class CommunityController extends BaseController {
                 }
             }
         }
-        int memberCount = memberService.countMember(new ObjectId(communityDTO.getGroupId()));
+        int memberCount = memberService.getMemberCount(new ObjectId(communityDTO.getGroupId()));
         communityDTO.setMemberCount(memberCount);
         List<MemberDTO> members = memberService.getMembers(new ObjectId(communityDTO.getGroupId()), 20);
         communityDTO.setMembers(members);
@@ -166,8 +166,8 @@ public class CommunityController extends BaseController {
         desc = userService.filter(desc);
 
         //先判断该社区名称是否使用过
-        boolean flag = communityService.judgeCommunityCreate(name);
-        if (flag) {
+        boolean flag = communityService.isCommunityNameUnique(name);
+        if (!flag) {
             CommunityDTO communityDTO = new CommunityDTO();
             communityDTO.setErrorMsg("该社区名称已使用过！");
             return RespObj.FAILD(communityDTO);
@@ -198,7 +198,7 @@ public class CommunityController extends BaseController {
                 }
             }
         }
-        int memberCount = memberService.countMember(new ObjectId(communityDTO.getGroupId()));
+        int memberCount = memberService.getMemberCount(new ObjectId(communityDTO.getGroupId()));
         communityDTO.setMemberCount(memberCount);
         List<MemberDTO> members = memberService.getMembers(new ObjectId(communityDTO.getGroupId()), 20);
         communityDTO.setMembers(members);
@@ -338,7 +338,7 @@ public class CommunityController extends BaseController {
                                    @RequestParam(defaultValue = "app", required = false) String platform) {
         ObjectId userId = getUserId();
         List<CommunityDTO> communityDTOList = new ArrayList<CommunityDTO>();
-        CommunityDTO fulanDto = communityService.getDefaultDto("复兰社区");
+        CommunityDTO fulanDto = communityService.getCommunityByName("复兰社区");
         if (null == userId) {
             if (null != fulanDto) {
                 communityDTOList.add(fulanDto);
@@ -350,7 +350,6 @@ public class CommunityController extends BaseController {
             if (null != fulanDto) {
                 //加入复兰社区
                 joinCommunityWithEm(getUserId(), new ObjectId(fulanDto.getId()));
-                communityService.clearNnnecessaryCommunity(new ObjectId(fulanDto.getId()), getUserId());
             }
             communityDTOList = communityService.getCommunitys(userId, page, pageSize);
             if ("web".equals(platform)) {
@@ -400,7 +399,19 @@ public class CommunityController extends BaseController {
                                    @RequestParam(required = false, defaultValue = "") String desc,
                                    @RequestParam(required = false, defaultValue = "") String logo,
                                    @RequestParam(required = false, defaultValue = "0") int open) {
-        communityService.updateCommunity(communityId, name, desc, logo, open);
+        if (StringUtils.isBlank(name) || StringUtils.isBlank(logo)) {
+            return RespObj.FAILD("参数不合法");
+        }
+        CommunityDTO community = communityService.findByObjectId(communityId);
+        if (name.equals(community.getName())) {
+            communityService.updateCommunity(communityId, name, desc, logo, open);
+        } else {
+            if (communityService.isCommunityNameUnique(name)) {
+                communityService.updateCommunity(communityId, name, desc, logo, open);
+            } else {
+                return RespObj.FAILD("该社区名称已经存在");
+            }
+        }
         return RespObj.SUCCESS;
     }
 
@@ -492,7 +503,7 @@ public class CommunityController extends BaseController {
         msg = userService.filter(msg);
         ObjectId userId = getUserId();
         if (join == 1) {
-            CommunityDetailDTO communityDetailDTO = communityService.findDetailByObjectId(communityDetailId);
+            CommunityDetailDTO communityDetailDTO = communityService.findDetailById(communityDetailId);
             List<String> partInList = communityDetailDTO.getPartInList();
             boolean flag = false;
             for (String item : partInList) {
@@ -524,7 +535,7 @@ public class CommunityController extends BaseController {
     @RequestMapping("/joinActivitySheet")
     @ResponseBody
     public RespObj joinActivitySheet(@ObjectIdType ObjectId communityDetailId) {
-        CommunityDetailDTO communityDetailDTO = communityService.findDetailByObjectId(communityDetailId);
+        CommunityDetailDTO communityDetailDTO = communityService.findDetailById(communityDetailId);
         List<String> partInList = communityDetailDTO.getPartInList();
         List<User> users = new ArrayList<User>();
         for (String id : partInList) {
@@ -551,7 +562,7 @@ public class CommunityController extends BaseController {
     @ResponseBody
     public RespObj isEnterCommunityDetail(@ObjectIdType ObjectId communityDetailId) {
         ObjectId userId = getUserId();
-        CommunityDetailDTO communityDetailDTO = communityService.findDetailByObjectId(communityDetailId);
+        CommunityDetailDTO communityDetailDTO = communityService.findDetailById(communityDetailId);
         List<String> partInList = communityDetailDTO.getPartInList();
         boolean flag = false;
         for (String item : partInList) {
@@ -647,7 +658,7 @@ public class CommunityController extends BaseController {
      */
     @RequestMapping("/quit")
     @ResponseBody
-    public RespObj quitCommunity(@ObjectIdType ObjectId communityId) {
+    public RespObj quit(@ObjectIdType ObjectId communityId) {
 
         ObjectId groupId = communityService.getGroupId(communityId);
         String emChatId = groupService.getEmchatIdByGroupId(groupId);
@@ -668,7 +679,6 @@ public class CommunityController extends BaseController {
                 List<ObjectId> objectIds = communityService.getAllMemberIds(groupId);
                 communitySystemInfoService.addBatchData(userId, objectIds, "副社长", 1, communityId);
             }
-
         }
         return RespObj.SUCCESS("操作成功!");
     }
@@ -686,9 +696,8 @@ public class CommunityController extends BaseController {
     public String communityPublish(Map<String, Object> model) {
         String communityId = getRequest().getParameter("communityId");
         ObjectId groupId = communityService.getGroupId(new ObjectId(communityId));
-        ObjectId userId = getUserId();
-        if (null != userId) {
-            if (memberService.isManager(groupId, userId)) {
+        if (null != getUserId()) {
+            if (memberService.isManager(groupId, getUserId())) {
                 model.put("operation", 1);
             } else {
                 model.put("operation", 0);
@@ -721,7 +730,7 @@ public class CommunityController extends BaseController {
     public String communityMessage(@ObjectIdType ObjectId detailId, Map<String, Object> model) throws Exception {
         try {
             ObjectId uid = getUserId();
-            CommunityDetailDTO detail = communityService.findDetailByObjectId(detailId);
+            CommunityDetailDTO detail = communityService.findDetailById(detailId);
             List<CommunityDTO> communitys = new ArrayList<CommunityDTO>();
             model.put("operation", false);
             //已读
@@ -744,7 +753,7 @@ public class CommunityController extends BaseController {
                     model.put("operation", true);
                 }
             } else {
-                CommunityDTO fulanDto = communityService.getDefaultDto("复兰社区");
+                CommunityDTO fulanDto = communityService.getCommunityByName("复兰社区");
                 if (null != fulanDto) {
                     communitys.add(fulanDto);
                 }
@@ -805,7 +814,7 @@ public class CommunityController extends BaseController {
         ObjectId userId = getUserId();
         List<ObjectId> communityIds = new ArrayList<ObjectId>();
         if (null == userId) {
-            CommunityDTO fulanDTO = communityService.getDefaultDto("复兰社区");
+            CommunityDTO fulanDTO = communityService.getCommunityByName("复兰社区");
             if (fulanDTO != null && fulanDTO.getId() != null) {
                 communityIds.add(new ObjectId(fulanDTO.getId()));
                 return RespObj.SUCCESS(communityService.getNews(communityIds, page, pageSize, order, null, 1));
@@ -865,7 +874,7 @@ public class CommunityController extends BaseController {
     @ResponseBody
     @SessionNeedless
     public RespObj messageDetail(@ObjectIdType ObjectId detailId) {
-        CommunityDetailDTO detailDTO = communityService.findDetailByObjectId(detailId);
+        CommunityDetailDTO detailDTO = communityService.findDetailById(detailId);
         Platform pf = getPlatform();
         if (pf == Platform.Android || pf == Platform.IOS) {
             if (null != getUserId()) {
@@ -910,7 +919,9 @@ public class CommunityController extends BaseController {
     @LoginInfo
     public String getCommunityMember(Map<String, Object> model) {
         String communityId = getRequest().getParameter("communityId");
+        CommunityDTO community = communityService.findByObjectId(new ObjectId(communityId));
         model.put("communityId", communityId);
+        model.put("searchId", community.getSearchId());
 
         ObjectId groupId = communityService.getGroupId(new ObjectId(communityId));
         if (memberService.isManager(groupId, getUserId())) {
@@ -1088,7 +1099,7 @@ public class CommunityController extends BaseController {
     @ResponseBody
     @SessionNeedless
     public RespObj partInUsers(@ObjectIdType ObjectId detailId) {
-        CommunityDetailDTO communityDetailDTO = communityService.findDetailByObjectId(detailId);
+        CommunityDetailDTO communityDetailDTO = communityService.findDetailById(detailId);
         List<String> partInList = communityDetailDTO.getPartInList();
         List<User> users = new ArrayList<User>();
         for (String id : partInList) {
@@ -1110,7 +1121,7 @@ public class CommunityController extends BaseController {
     }
 
     public List<User> getPartInData(ObjectId detailId) {
-        CommunityDetailDTO communityDetailDTO = communityService.findDetailByObjectId(detailId);
+        CommunityDetailDTO communityDetailDTO = communityService.findDetailById(detailId);
         List<String> partInList = communityDetailDTO.getPartInList();
         List<User> users = new ArrayList<User>();
         for (String id : partInList) {
@@ -1362,7 +1373,7 @@ public class CommunityController extends BaseController {
             int count = 1;
             List<UserSearchInfo> dtos = new ArrayList<UserSearchInfo>();
             if (ObjectId.isValid(regular)) {
-                UserEntry userEntry = userService.findByUserId(new ObjectId(regular));
+                UserEntry userEntry = userService.findById(new ObjectId(regular));
                 if (null == userEntry) {
                     return RespObj.FAILD("查找不到该用户！");
                 } else {
@@ -1735,7 +1746,7 @@ public class CommunityController extends BaseController {
     @RequestMapping("/judgeCreate")
     @ResponseBody
     public RespObj judgeCreateCommunity(String communityName) {
-        return RespObj.SUCCESS(communityService.judgeCommunityCreate(communityName));
+        return RespObj.SUCCESS(!communityService.isCommunityNameUnique(communityName));
     }
 
     /**
@@ -1755,14 +1766,13 @@ public class CommunityController extends BaseController {
     @RequestMapping("/userData")
     @SessionNeedless
     public String redirectUser(Map<String, Object> model) {
-
         ObjectId personId = new ObjectId(getRequest().getParameter("userId"));
-        UserEntry userEntry = userService.findByUserId(personId);
+        UserEntry userEntry = userService.findById(personId);
         model.put("avatar", AvatarUtils.getAvatar(userEntry.getAvatar(), AvatarType.MIN_AVATAR.getType()));
         model.put("nickName", StringUtils.isNotBlank(userEntry.getNickName()) ? userEntry.getNickName() : userEntry.getUserName());
         if (getUserId() != null) {
             ObjectId userId = getUserId();
-            UserEntry userEntry1 = userService.findByUserId(userId);
+            UserEntry userEntry1 = userService.findById(userId);
             model.put("applyName", StringUtils.isNotBlank(userEntry1.getNickName()) ? userEntry1.getNickName() : userEntry1.getUserName());
 
             //获取自己的标签信息
@@ -1821,7 +1831,7 @@ public class CommunityController extends BaseController {
     @ResponseBody
     public RespObj judgeTag(int code) {
         ObjectId userId = getUserId();
-        UserEntry userEntry = userService.findByUserId(userId);
+        UserEntry userEntry = userService.findById(userId);
         List<UserEntry.UserTagEntry> userTagEntries = userEntry.getUserTag();
         boolean flag = true;
         for (UserEntry.UserTagEntry userTagEntry : userTagEntries) {
@@ -1842,7 +1852,7 @@ public class CommunityController extends BaseController {
     @ResponseBody
     public RespObj getMyTags() {
         ObjectId userId = getUserId();
-        UserEntry userEntry = userService.findByUserId(userId);
+        UserEntry userEntry = userService.findById(userId);
         List<UserEntry.UserTagEntry> userTagEntries = userEntry.getUserTag();
         List<String> tags = new ArrayList<String>();
         for (UserEntry.UserTagEntry userTagEntry : userTagEntries) {
@@ -1962,7 +1972,6 @@ public class CommunityController extends BaseController {
     @SessionNeedless
     @ResponseBody
     public RespObj saveEditedImage(@ObjectIdType ObjectId partInContentId, String oldImagePath, @RequestParam("file") MultipartFile multipartFile) throws Exception {
-
         String fileKey = new ObjectId().toString() + ".jpg";
         QiniuFileUtils.uploadFile(fileKey, multipartFile.getInputStream(), QiniuFileUtils.TYPE_IMAGE);
         String newImagePath = QiniuFileUtils.getPath(QiniuFileUtils.TYPE_IMAGE, fileKey);
@@ -2099,7 +2108,7 @@ public class CommunityController extends BaseController {
      */
     @RequestMapping("/saveEditedImage")
     @ResponseBody
-    public RespObj saveEditedImage(HttpServletRequest request, HttpServletResponse response) throws Exception {
+    public RespObj saveEditedImage(HttpServletRequest request) throws Exception {
         String filekey = "qiuNiu-" + new ObjectId().toString() + ".png";
         String parentPath = request.getServletContext().getRealPath("/upload") + "/qiuNiu/";
         File parentFile = new File(parentPath);
@@ -2128,7 +2137,7 @@ public class CommunityController extends BaseController {
     @ResponseBody
     public RespObj getMyQRCode() {
         ObjectId userId = getUserId();
-        UserEntry userEntry = userService.findByUserId(userId);
+        UserEntry userEntry = userService.findById(userId);
         if (StringUtils.isBlank(userEntry.getQRCode())) {
             String qrCode = QRUtils.getPersonQrUrl(userId);
             userEntry.setQRCode(qrCode);
@@ -2143,7 +2152,6 @@ public class CommunityController extends BaseController {
     @RequestMapping("/updateCommunityPrio")
     @ResponseBody
     public RespObj updateCommunityPrio(@ObjectIdType ObjectId cmid, int prio) {
-
         communityService.updateCommunityPrio(cmid, prio);
         return RespObj.SUCCESS;
     }

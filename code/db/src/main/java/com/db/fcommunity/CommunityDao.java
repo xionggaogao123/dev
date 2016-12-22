@@ -226,30 +226,15 @@ public class CommunityDao extends BaseDao {
     }
 
 
-    public Boolean isCommunityNameUsed(String communityName) {
+    public Boolean isCommunityNameUnique(String communityName) {
         CommunityEntry dbo = findByName(communityName);
-        return dbo != null;
+        return dbo == null;
     }
 
     public boolean judgeCommunityName(String communityName, ObjectId id) {
         BasicDBObject query = new BasicDBObject().append(Constant.ID, id)
                 .append("cmmn", communityName);
         return count(MongoFacroty.getAppDB(), Constant.COLLECTION_FORUM_COMMUNITY, query) == 1;
-    }
-
-    public int getCommunityCountByOwerId(ObjectId userId) {
-        BasicDBObject query = new BasicDBObject().append("cmow", userId);
-        return count(MongoFacroty.getAppDB(), Constant.COLLECTION_FORUM_COMMUNITY, query);
-    }
-
-
-    public List<CommunityEntry> getAllCommunitys() {
-        List<DBObject> dbos = find(MongoFacroty.getAppDB(), Constant.COLLECTION_FORUM_COMMUNITY, new BasicDBObject(), Constant.FIELDS);
-        List<CommunityEntry> communitys = new ArrayList<CommunityEntry>();
-        for (DBObject dbo : dbos) {
-            communitys.add(new CommunityEntry(dbo));
-        }
-        return communitys;
     }
 
     /**

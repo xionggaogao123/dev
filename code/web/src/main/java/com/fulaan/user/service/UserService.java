@@ -73,7 +73,7 @@ public class UserService extends BaseService {
      * @return
      */
     public boolean isSilenced(String userId) {
-        UserEntry userEntry = findByUserId(new ObjectId(userId));
+        UserEntry userEntry = findById(new ObjectId(userId));
         int silencedStatus = userEntry.getSilencedStatus();
         if (silencedStatus == 0) {
             return false;
@@ -113,7 +113,7 @@ public class UserService extends BaseService {
      * @return
      */
     public boolean isUnSpeak(String userId) {
-        UserEntry userEntry = findByUserId(new ObjectId(userId));
+        UserEntry userEntry = findById(new ObjectId(userId));
         int silencedStatus = userEntry.getSilencedStatus();
         if (silencedStatus == 0) {
             return false;
@@ -331,7 +331,7 @@ public class UserService extends BaseService {
         }
     }
 
-    public UserEntry findByUserPhone(String phone) {
+    public UserEntry findByPhone(String phone) {
         return userDao.findByPhone(phone);
     }
 
@@ -341,7 +341,7 @@ public class UserService extends BaseService {
      * @param email
      * @return
      */
-    public UserEntry findByUserEmail(String email) {
+    public UserEntry findByEmail(String email) {
         return userDao.findByEmail(email);
     }
 
@@ -351,7 +351,7 @@ public class UserService extends BaseService {
      * @param id
      * @return
      */
-    public UserEntry findByUserId(ObjectId id) {
+    public UserEntry findById(ObjectId id) {
         return userDao.getUserEntry(id, Constant.FIELDS);
     }
 
@@ -388,7 +388,7 @@ public class UserService extends BaseService {
      * @param thirdLoginEntry
      * @return
      */
-    public ObjectId saveThidLogininfo(ThirdLoginEntry thirdLoginEntry) {
+    public ObjectId saveThirdEntry(ThirdLoginEntry thirdLoginEntry) {
         return thirdLoginDao.addThidLoginEntry(thirdLoginEntry);
     }
 
@@ -462,7 +462,6 @@ public class UserService extends BaseService {
      * @return UserEntry
      */
     public UserEntry getThirdEntryByMap(Map<String, Object> map) {
-
         return thirdLoginDao.getEntryByMap(map);
     }
 
@@ -473,7 +472,6 @@ public class UserService extends BaseService {
      * @return ThirdLoginEntry
      */
     public ThirdLoginEntry searchThirdLoginEntry(Map<String, Object> map) {
-
         return thirdLoginDao.getThirdLoginEntryByMap(map);
     }
 
@@ -679,7 +677,7 @@ public class UserService extends BaseService {
      *
      * @param id
      */
-    public void updSchoolHomeDate(ObjectId id) {
+    public void updateSchoolHomeDate(ObjectId id) {
         userDao.updSchoolHomeDate(id);
     }
 
@@ -688,7 +686,7 @@ public class UserService extends BaseService {
      *
      * @param id
      */
-    public void updFamilyHomeDate(ObjectId id) {
+    public void updateFamilyHomeDate(ObjectId id) {
         userDao.updFamilyHomeDate(id);
     }
 
@@ -935,10 +933,10 @@ public class UserService extends BaseService {
         UserEntry e = findByUserName(name);
 
         if (null == e && ValidationUtils.isRequestModile(name)) {
-            e = findByUserPhone(name);
+            e = findByPhone(name);
         }
         if (null == e && ValidationUtils.isEmail(name)) {
-            e = findByUserEmail(name);
+            e = findByEmail(name);
         }
 
         return e;
@@ -1003,7 +1001,7 @@ public class UserService extends BaseService {
     }
 
     public long score(ObjectId uid) {
-        UserEntry entry = findByUserId(uid);
+        UserEntry entry = findById(uid);
         return entry.getForumScore();
     }
 

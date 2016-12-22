@@ -64,7 +64,7 @@ public class MemberDao extends BaseDao {
      * @param groupId
      * @return
      */
-    public int countMember(ObjectId groupId) {
+    public int getMemberCount(ObjectId groupId) {
         BasicDBObject query = new BasicDBObject("grid", groupId).append("r", Constant.ZERO);
         return count(MongoFacroty.getAppDB(), Constant.COLLECTION_FORUM_COMMUNITY_MEMBER, query);
     }
@@ -255,12 +255,9 @@ public class MemberDao extends BaseDao {
      * @return
      */
     public List<MemberEntry> getManagers(ObjectId id) {
-        List<Integer> list = new ArrayList<Integer>();
-        list.add(1);
-        list.add(2);
         List<MemberEntry> members = new ArrayList<MemberEntry>();
         BasicDBObject query = new BasicDBObject("grid", id)
-                .append("rl", new BasicDBObject(Constant.MONGO_IN, list))
+                .append("rl", new BasicDBObject(Constant.MONGO_IN, new Integer[]{1,2}))
                 .append("r", 0);
         BasicDBObject orderBy = new BasicDBObject("rl", Constant.DESC).append(Constant.ID, Constant.DESC);
         List<DBObject> dos = find(MongoFacroty.getAppDB(), Constant.COLLECTION_FORUM_COMMUNITY_MEMBER, query, Constant.FIELDS, orderBy);
@@ -433,5 +430,11 @@ public class MemberDao extends BaseDao {
         BasicDBObject query = new BasicDBObject("uid", userId);
         BasicDBObject update = new BasicDBObject(Constant.MONGO_SET, new BasicDBObject("av", avatar));
         update(MongoFacroty.getAppDB(), Constant.COLLECTION_FORUM_COMMUNITY_MEMBER, query, update);
+    }
+
+    public static void main(String[] args) {
+
+        MemberDao dao = new MemberDao();
+        dao.getManagers(new ObjectId("5858f4b270a0662c94cb8469"));
     }
 }

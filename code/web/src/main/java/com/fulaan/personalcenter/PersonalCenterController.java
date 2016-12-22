@@ -73,7 +73,7 @@ public class PersonalCenterController extends BaseController {
 
     @RequestMapping("/settingpage")
     public String settingPage(Map<String, Object> model) {
-        UserEntry e = userService.findByUserId(getUserId());
+        UserEntry e = userService.findById(getUserId());
         String avatar = AvatarUtils.getAvatar(e.getAvatar(), AvatarType.MAX_AVATAR.getType());
         model.put("avatar", avatar);
         return "personalcenter/myAccountInfo";
@@ -87,7 +87,7 @@ public class PersonalCenterController extends BaseController {
      */
     @RequestMapping("/basic")
     public String basicPage(Map<String, Object> model) {
-        UserEntry e = userService.findByUserId(getUserId());
+        UserEntry e = userService.findById(getUserId());
         model.put("loginName", e.getLoginName());
         model.put("mobile", e.getMobileNumber());
         model.put("email", e.getEmail());

@@ -15,7 +15,7 @@
 <body>
 <div class="index-container clearfix">
     <div class="index-left">
-        <img src="/static/images/newIndex/index_logo.png" class="logo">
+        <img src="/static/images/newIndex/index_logo.png" class="logo" onclick="window.open('/')" style="cursor: pointer">
         <h1>加入社区，让"家校互动"更轻松</h1>
         <h3>社区通知、作业、学习资料、讨论、分享、<br>学习用品，一站式沟通</h3>
         <div class="d-btn">

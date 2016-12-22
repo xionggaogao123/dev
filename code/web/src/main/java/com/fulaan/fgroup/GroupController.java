@@ -18,7 +18,6 @@ import com.pojo.user.AvatarType;
 import com.pojo.user.UserDetailInfoDTO;
 import com.pojo.user.UserEntry;
 import com.pojo.utils.MongoUtils;
-import com.sys.constants.Constant;
 import com.sys.exceptions.IllegalParamException;
 import com.sys.utils.AvatarUtils;
 import com.sys.utils.RespObj;
@@ -112,7 +111,7 @@ public class GroupController extends BaseController {
             groupDTO.setName(communityDTO.getName());
         }
         MemberDTO mine = memberService.getUser(groupId, getUserId());
-        groupDTO.setCount(memberService.countMember(groupId));
+        groupDTO.setCount(memberService.getMemberCount(groupId));
         groupDTO.setMine(mine);
         if (groupDTO.isBindCommunity()) {
             ObjectId communityId = new ObjectId(groupDTO.getCommunityId());
@@ -142,7 +141,7 @@ public class GroupController extends BaseController {
             try {
                 GroupDTO groupDTO = groupService.findByObjectId(groupId);
                 MemberDTO mine = memberService.getUser(groupId, getUserId());
-                groupDTO.setCount(memberService.countMember(groupId));
+                groupDTO.setCount(memberService.getMemberCount(groupId));
                 groupDTO.setMine(mine);
                 list.add(groupDTO);
             } catch (Exception e) {

@@ -60,7 +60,7 @@ public class GroupNoticeService {
             CommunityDetailDTO communityDetailDTO = new CommunityDetailDTO();
             communityDetailDTO.setTitle(entry.getTitle());
             communityDetailDTO.setContent(entry.getAnnounce());
-            UserEntry userEntry = userService.findByUserId(entry.getUserId());
+            UserEntry userEntry = userService.findById(entry.getUserId());
             communityDetailDTO.setImageUrl(AvatarUtils.getAvatar(userEntry.getAvatar(), AvatarType.MIN_AVATAR.getType()));
             if (StringUtils.isNotBlank(userEntry.getNickName())) {
                 communityDetailDTO.setNickName(userEntry.getNickName());

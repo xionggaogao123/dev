@@ -128,7 +128,7 @@ public class UserController extends BaseController {
         String cacheUserKey = new ObjectId().toString();
         if (StringUtils.isBlank(cookieValue)) {
             String uid = HttpClientUtils.get(K6KT_SSO_URL + "/sso/simUserInfo.do?ssoKey=" + request.getParameter("token"));
-            UserEntry e = userService.findByUserId(new ObjectId(uid));
+            UserEntry e = userService.findById(new ObjectId(uid));
             //处理SessionValue
             value.setId(e.getID().toString());
             value.setUserName(e.getUserName());
@@ -408,7 +408,7 @@ public class UserController extends BaseController {
             SessionValue userSession = (SessionValue) respObj.getMessage();
             ObjectId userId = new ObjectId(userSession.getId());
             ThirdLoginEntry thirdLoginEntry = new ThirdLoginEntry(userId, openId, unionid, ThirdType.getThirdType(type));
-            userService.saveThidLogininfo(thirdLoginEntry);
+            userService.saveThirdEntry(thirdLoginEntry);
         }
 
         return respObj;
@@ -455,7 +455,7 @@ public class UserController extends BaseController {
         userEntry = userService.findByUserName(userName);
         //保存第三方登录数据
         ThirdLoginEntry thirdLoginEntry = new ThirdLoginEntry(userEntry.getID(), openId, unionId, ThirdType.getThirdType(type));
-        userService.saveThidLogininfo(thirdLoginEntry);
+        userService.saveThirdEntry(thirdLoginEntry);
         return login(userEntry.getUserName(), userEntry.getPassword(), response);
     }
 
@@ -476,7 +476,7 @@ public class UserController extends BaseController {
             throw new UnLoginException();
         }
         //数据库验证
-        UserEntry e = userService.findByUserId(new ObjectId(id));
+        UserEntry e = userService.findById(new ObjectId(id));
         if (null == e) {
             logger.info("UnLoginException");
             throw new UnLoginException();
@@ -692,7 +692,7 @@ public class UserController extends BaseController {
             if (UserRole.isStudent(sv.getUserRole())) {
                 userid = uId;
             } else if (UserRole.isParent(sv.getUserRole())) {
-                UserEntry user = userService.findByUserId(new ObjectId(getSessionValue().getId()));
+                UserEntry user = userService.findById(new ObjectId(getSessionValue().getId()));
                 userid = user.getConnectIds().get(0);
             }
 
@@ -882,7 +882,7 @@ public class UserController extends BaseController {
     @ResponseBody
     public RespObj updateUserBasicInfos(@RequestParam(defaultValue = "") String userLoginName, @RequestParam(defaultValue = "") String mobile, String valiCode, String cacheKeyId, String email, Integer sex) throws IllegalParamException {
 
-        UserEntry ue = userService.findByUserId(getUserId());
+        UserEntry ue = userService.findById(getUserId());
         RespObj ret = new RespObj(Constant.FAILD_CODE);
 
         UserEntry e;
@@ -916,7 +916,7 @@ public class UserController extends BaseController {
                     return ret;
                 }
 
-                e = userService.findByUserPhone(mobile);
+                e = userService.findByPhone(mobile);
                 if (null != e) {
                     ret.setMessage("手机号码被占用");
                     return ret;
@@ -943,7 +943,7 @@ public class UserController extends BaseController {
                     ret.setMessage("邮箱错误");
                     return ret;
                 }
-                e = userService.findByUserEmail(email);
+                e = userService.findByEmail(email);
                 if (null != e) {
                     ret.setMessage("邮箱重复");
                     return ret;
@@ -1009,7 +1009,7 @@ public class UserController extends BaseController {
         } catch (Exception ex) {
             logger.error("", ex);
         }
-        UserEntry user = userService.findByUserId(getUserId());
+        UserEntry user = userService.findById(getUserId());
         SessionValue sv = getSessionValue();
         sv.setExperience(user.getExperiencevalue());
         int validityTime = Constant.SECONDS_IN_DAY + (int) ((user.getLastActiveDate() - System.currentTimeMillis()) / 1000);
@@ -1127,12 +1127,12 @@ public class UserController extends BaseController {
 
     @RequestMapping("/updSchoolHomeDate")
     public void updSchoolHomeDate() {
-        userService.updSchoolHomeDate(getUserId());
+        userService.updateSchoolHomeDate(getUserId());
     }
 
     @RequestMapping("/updFamilyHomeDate")
     public void updFamilyHomeDate() {
-        userService.updFamilyHomeDate(getUserId());
+        userService.updateFamilyHomeDate(getUserId());
     }
 
     /**
@@ -1345,7 +1345,7 @@ public class UserController extends BaseController {
             return ret;
         }
 
-        UserEntry mobileEntry = userService.findByUserPhone(mobile);
+        UserEntry mobileEntry = userService.findByPhone(mobile);
 
         if (null != mobileEntry && !mobileEntry.getUserName().toLowerCase().equals(ue.getUserName())) {
             ret.setMessage("此手机已经被占用");
@@ -1373,7 +1373,7 @@ public class UserController extends BaseController {
                 ret.setMessage("邮箱验证错误");
                 return ret;
             }
-            UserEntry emailUser = userService.findByUserEmail(emailCache);
+            UserEntry emailUser = userService.findByEmail(emailCache);
             if (null != emailUser && !emailUser.getUserName().equalsIgnoreCase(userName)) {
                 ret.setMessage("邮箱已经被登记使用");
                 return ret;
@@ -1541,7 +1541,7 @@ public class UserController extends BaseController {
 
                     //开始绑定
                     ThirdLoginEntry thirdLoginEntry = new ThirdLoginEntry(getUserId(), openId, null, ThirdType.QQ);
-                    userService.saveThidLogininfo(thirdLoginEntry);
+                    userService.saveThirdEntry(thirdLoginEntry);
 
                     redirectAttributes.addAttribute("bindSuccess", 1);
                     return "redirect:/account/thirdLoginSuccess";
@@ -1554,7 +1554,7 @@ public class UserController extends BaseController {
             userEntry = userService.createUser(nickName, sex);
             //保存第三方登录数据
             ThirdLoginEntry thirdLoginEntry = new ThirdLoginEntry(userEntry.getID(), openId, null, ThirdType.QQ);
-            userService.saveThidLogininfo(thirdLoginEntry);
+            userService.saveThirdEntry(thirdLoginEntry);
         }
 
         //检查是否注册环信
@@ -1643,7 +1643,7 @@ public class UserController extends BaseController {
 
                     //开始绑定
                     ThirdLoginEntry thirdLoginEntry = new ThirdLoginEntry(getUserId(), null, unionId, ThirdType.WECHAT);
-                    userService.saveThidLogininfo(thirdLoginEntry);
+                    userService.saveThirdEntry(thirdLoginEntry);
 
                     redirectAttributes.addAttribute("bindSuccess", 1);
                     return "redirect:/account/thirdLoginSuccess";
@@ -1660,7 +1660,7 @@ public class UserController extends BaseController {
             userEntry = userService.createUser(nickName, sex);
             //保存第三方登录数据
             ThirdLoginEntry thirdLoginEntry = new ThirdLoginEntry(userEntry.getID(), openid, unionId, ThirdType.WECHAT);
-            userService.saveThidLogininfo(thirdLoginEntry);
+            userService.saveThirdEntry(thirdLoginEntry);
         }
 
         //检查是否注册环信
@@ -1744,7 +1744,7 @@ public class UserController extends BaseController {
             }
             //保存第三方登录数据
             ThirdLoginEntry thirdLoginEntry = new ThirdLoginEntry(userEntry.getID(), openId, unionId, ThirdType.getThirdType(type));
-            userService.saveThidLogininfo(thirdLoginEntry);
+            userService.saveThirdEntry(thirdLoginEntry);
         }
         SessionValue value = userService.setCookieValue(getIP(), userEntry, response, request);
         return RespObj.SUCCESS(value);
@@ -1784,7 +1784,7 @@ public class UserController extends BaseController {
         }
         //保存第三方登录数据
         ThirdLoginEntry thirdLoginEntry = new ThirdLoginEntry(new ObjectId(userId), openId, unionId, ThirdType.getThirdType(type));
-        ObjectId objectId = userService.saveThidLogininfo(thirdLoginEntry);
+        ObjectId objectId = userService.saveThirdEntry(thirdLoginEntry);
         if (objectId != null) {
             return RespObj.SUCCESS("成功");
         }
@@ -1821,7 +1821,7 @@ public class UserController extends BaseController {
     @ResponseBody
     public RespObj isBindPhone() {
         ObjectId uid = getUserId();
-        UserEntry user = userService.findByUserId(uid);
+        UserEntry user = userService.findById(uid);
         Map<String, Object> map = new HashMap<String, Object>();
         if (StringUtils.isNotBlank(user.getMobileNumber())) {
             map.put("isBind", true);
@@ -1848,7 +1848,7 @@ public class UserController extends BaseController {
             return RespObj.FAILD("手机号不合法");
         }
         ObjectId uid = getUserId();
-        UserEntry user = userService.findByUserId(uid);
+        UserEntry user = userService.findById(uid);
         Map<String, Object> map = new HashMap<String, Object>();
         if (StringUtils.isNotBlank(user.getPhoneNumber())) {
             if (mobile.endsWith(user.getPhoneNumber())) {

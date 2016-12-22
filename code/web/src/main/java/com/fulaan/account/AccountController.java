@@ -129,7 +129,7 @@ public class AccountController extends BaseController {
     @SessionNeedless
     @ResponseBody
     public RespObj userPhoneCheck(String phone) {
-        return RespObj.SUCCESS(userService.findByUserPhone(phone) != null);
+        return RespObj.SUCCESS(userService.findByPhone(phone) != null);
     }
 
     /**
@@ -139,7 +139,7 @@ public class AccountController extends BaseController {
     @SessionNeedless
     @ResponseBody
     public RespObj userEmailCheck(String email) {
-        return RespObj.SUCCESS(userService.findByUserEmail(email) != null);
+        return RespObj.SUCCESS(userService.findByEmail(email) != null);
     }
 
     /**
@@ -362,7 +362,7 @@ public class AccountController extends BaseController {
     @ResponseBody
     public RespObj checkUserPassword(String password) {
         ObjectId userId = getUserId();
-        UserEntry userEntry = userService.findByUserId(userId);
+        UserEntry userEntry = userService.findById(userId);
         try {
             if (MD5Utils.getMD5(password).equals(userEntry.getPassword())) {
                 return RespObj.SUCCESS;
@@ -399,7 +399,7 @@ public class AccountController extends BaseController {
     @RequestMapping("/changeUserEmail")
     @ResponseBody
     public RespObj changeUserEmail(String email) {
-        UserEntry userEntry = userService.findByUserEmail(email);
+        UserEntry userEntry = userService.findByEmail(email);
         if (userEntry != null && getUserId().equals(userEntry.getID())) {
             return RespObj.FAILD("邮箱已经绑定自己了，无需再次绑定");
         }
@@ -416,7 +416,7 @@ public class AccountController extends BaseController {
     @RequestMapping("/changeUserPhone")
     @ResponseBody
     public RespObj changeUserPhone(String mobile, String code, String cacheKeyId) {
-        UserEntry userEntry = userService.findByUserPhone(mobile);
+        UserEntry userEntry = userService.findByPhone(mobile);
         if (userEntry != null && getUserId().equals(userEntry.getID())) {
             return RespObj.FAILD("手机号是自己的，已经绑定了无需绑定");
         }
@@ -464,7 +464,7 @@ public class AccountController extends BaseController {
     @RequestMapping("/checkPhoneCanUse")
     @ResponseBody
     public RespObj checkPhoneCanUse(String mobile) {
-        UserEntry userEntry = userService.findByUserPhone(mobile);
+        UserEntry userEntry = userService.findByPhone(mobile);
         if (userEntry != null && userEntry.getID().equals(getUserId())) {
             return RespObj.FAILD("你已经绑定这个手机号了");
         }

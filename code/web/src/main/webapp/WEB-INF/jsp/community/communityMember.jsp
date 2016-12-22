@@ -126,7 +126,7 @@
                          onclick="window.open('/community/communityPublish?communityId=${communityId}')" width="60px"
                          height="60px">
                     <p class="p1">弗兰社区</p>
-                    <p class="p2">社区ID：1321465</p>
+                    <p class="p2">社区ID：${searchId}</p>
                 </div>
             </div>
             <div class="com-right-s">

@@ -114,8 +114,7 @@ public class CommunityService {
      */
     public CommunityDTO findByObjectId(ObjectId communityId) {
         CommunityEntry communityEntry = communityDao.findByObjectId(communityId);
-        if (communityEntry == null) return null;
-        return new CommunityDTO(communityEntry);
+        return communityEntry == null ? null : new CommunityDTO(communityEntry);
     }
 
     public void updateCommunityPrio(ObjectId communityId, int prio) {
@@ -128,7 +127,7 @@ public class CommunityService {
      * @param communityDetailId
      * @return
      */
-    public CommunityDetailDTO findDetailByObjectId(ObjectId communityDetailId) {
+    public CommunityDetailDTO findDetailById(ObjectId communityDetailId) {
         CommunityDetailEntry communityDetailEntry = communityDetailDao.findByObjectId(communityDetailId);
         List<PartInContentEntry> partInContentEntries = partInContentDao.getPartInContent(communityDetailEntry.getID(), -1, 1, 10);
         CommunityDetailDTO communityDetailDTO = new CommunityDetailDTO(communityDetailEntry, partInContentEntries);
@@ -269,7 +268,7 @@ public class CommunityService {
                 List<PartInContentEntry> partInContentEntries = partInContentDao.getPartInContent(entry.getID(), 6, 1, 1);
                 for (PartInContentEntry partEntry : partInContentEntries) {
                     PartInContentDTO dto = new PartInContentDTO(partEntry);
-                    UserEntry user = userService.findByUserId(partEntry.getUserId());
+                    UserEntry user = userService.findById(partEntry.getUserId());
                     //判断用户是否为空
                     if (null != user) {
                         dto.setUserName(user.getUserName());
@@ -362,9 +361,8 @@ public class CommunityService {
      */
     public List<MemberDTO> getMyPartners(ObjectId userId) {
         List<MemberDTO> memberDTOs = new ArrayList<MemberDTO>();
-
         //查出当前用户的信息
-        UserEntry userEntry = userService.findByUserId(userId);
+        UserEntry userEntry = userService.findById(userId);
         List<UserEntry.UserTagEntry> ftags = userEntry.getUserTag();
         //查找伙伴
         List<ObjectId> partners = friendService.getObjectFriends(userId);
@@ -426,7 +424,7 @@ public class CommunityService {
             members.add(memberEntry.getUserId());
         }
         //查出当前用户的信息
-        UserEntry userEntry = userService.findByUserId(userId);
+        UserEntry userEntry = userService.findById(userId);
         List<UserEntry.UserTagEntry> ftags = userEntry.getUserTag();
         //查找伙伴
         List<ObjectId> partners = friendService.getObjectFriends(userId);
@@ -503,7 +501,7 @@ public class CommunityService {
                 memberDTOs.add(memberDTO);
             }
         }
-        int counts = memberDao.countMember(groupId);
+        int counts = memberDao.getMemberCount(groupId);
         int totalPages = (int) Math.ceil((counts / (pageSize * 1.0)));
         if (page > totalPages) {
             page = totalPages;
@@ -562,7 +560,7 @@ public class CommunityService {
             List<PartInContentEntry> partInContentEntries = partInContentDao.getPartInContent(entry.getID(), -1, 1, 1);
             for (PartInContentEntry partInContentEntry : partInContentEntries) {
                 PartInContentDTO partInContentDTO = new PartInContentDTO(partInContentEntry);
-                UserEntry userEntry1 = userService.findByUserId(partInContentEntry.getUserId());
+                UserEntry userEntry1 = userService.findById(partInContentEntry.getUserId());
                 partInContentDTO.setUserName(userEntry1.getUserName());
                 partInContentDTO.setAvator(AvatarUtils.getAvatar(userEntry1.getAvatar(), AvatarType.MIN_AVATAR.getType()));
                 partInContentDTO.setNickName(StringUtils.isNotBlank(userEntry1.getNickName()) ? userEntry1.getNickName() : userEntry1.getUserName());
@@ -748,7 +746,7 @@ public class CommunityService {
 
         for (CommunityDTO dto : dtos) {
             MemberDTO head = memberService.getHead(new ObjectId(dto.getGroupId()));
-            int count = memberService.countMember(new ObjectId(dto.getGroupId()));
+            int count = memberService.getMemberCount(new ObjectId(dto.getGroupId()));
             dto.setMemberCount(count);
             dto.setHead(head);
         }
@@ -887,7 +885,7 @@ public class CommunityService {
         }
         List<PartInContentDTO> parts = new ArrayList<PartInContentDTO>();
         for (PartInContentEntry entry : entrys) {
-            UserEntry userEntry = userService.findByUserId(entry.getUserId());
+            UserEntry userEntry = userService.findById(entry.getUserId());
             PartInContentDTO dto = new PartInContentDTO(entry);
             dto.setUserName(userEntry.getUserName());
             dto.setAvator(AvatarUtils.getAvatar(userEntry.getAvatar(), AvatarType.MIN_AVATAR.getType()));
@@ -1161,12 +1159,12 @@ public class CommunityService {
      * @param communityName
      * @return
      */
-    public Boolean judgeCommunityCreate(String communityName) {
-        return communityDao.isCommunityNameUsed(communityName);
+    public Boolean isCommunityNameUnique(String communityName) {
+        return communityDao.isCommunityNameUnique(communityName);
     }
 
 
-    public CommunityDTO getDefaultDto(String name) {
+    public CommunityDTO getCommunityByName(final String name) {
         CommunityEntry communityEntry = communityDao.findByName(name);
         return communityEntry == null ? null : new CommunityDTO(communityEntry);
     }
@@ -1233,9 +1231,5 @@ public class CommunityService {
 
     public MineCommunityEntry getTopEntry(ObjectId community, ObjectId userId) {
         return mineCommunityDao.find(community, userId);
-    }
-
-    public void clearNnnecessaryCommunity(ObjectId communityId, ObjectId userId) {
-        mineCommunityDao.clearNnnecessaryCommunity(communityId, userId);
     }
 }

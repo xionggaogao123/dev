@@ -96,7 +96,7 @@ public class UserCenterController extends BaseController {
         loginInfo(model);
         List<FScoreDTO> fScoreDTOs = fScoreService.getFScoreByPersonId(getSessionValue().getId());
         model.put("scores", fScoreDTOs);
-        UserEntry user = userService.findByUserId(getUserId());
+        UserEntry user = userService.findById(getUserId());
         model.put("formScore", user.getForumScore());
         model.put("formExpermence", user.getForumExperience());
         return "/forum/user";
@@ -296,7 +296,7 @@ public class UserCenterController extends BaseController {
     public RespObj updateForumSilenced(String userId, String together) {
         RespObj respObj = new RespObj(Constant.FAILD_CODE);
         try {
-            UserEntry userEntry = userService.findByUserId(new ObjectId(userId));
+            UserEntry userEntry = userService.findById(new ObjectId(userId));
             if (together.contains(",")) {
                 String[] item = together.split(",");
                 userEntry.setSilencedStatus(Integer.parseInt(item[0]));

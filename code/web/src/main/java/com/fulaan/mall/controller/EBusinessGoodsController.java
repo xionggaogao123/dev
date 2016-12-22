@@ -505,7 +505,7 @@ public class EBusinessGoodsController extends BaseController {
             return model;
         }
 
-        UserEntry mobileEntry = userService.findByUserPhone(phoneNumber);
+        UserEntry mobileEntry = userService.findByPhone(phoneNumber);
 
         if (null != mobileEntry && !mobileEntry.getUserName().toLowerCase().equals(ue.getUserName())) {
             model.put("message", "此手机已经被占用");

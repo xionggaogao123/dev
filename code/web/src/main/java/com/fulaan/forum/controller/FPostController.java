@@ -369,7 +369,7 @@ public class FPostController extends BaseController {
         fLogDTO.setTime(System.currentTimeMillis());
         fLogService.addFLog(fLogDTO);
         if (getSessionValue() != null) {
-            model.put("formScore", userService.findByUserId(new ObjectId(getUserId().toString())).getForumScore());
+            model.put("formScore", userService.findById(new ObjectId(getUserId().toString())).getForumScore());
         }
         return "/forum/postDetail";
     }
@@ -397,7 +397,7 @@ public class FPostController extends BaseController {
             model.put("postId", fPostDTO.getFpostId());
         }
         //获取总积分
-        UserEntry userEntry = userService.findByUserId(new ObjectId(sv.getId()));
+        UserEntry userEntry = userService.findById(new ObjectId(sv.getId()));
         long forumScore = userEntry.getForumScore();
         model.put("forumScore", forumScore);
         FLogDTO fLogDTO = new FLogDTO();
@@ -470,7 +470,7 @@ public class FPostController extends BaseController {
     public String personal(HttpServletRequest request, Map<String, Object> model) {
         String personId = request.getParameter("personId");
         model.put("personId", personId);
-        UserEntry userEntry = userService.findByUserId(new ObjectId(personId));
+        UserEntry userEntry = userService.findById(new ObjectId(personId));
         int sex = userEntry.getSex();
         if (1 == sex) {
             model.put("sex", "男");
@@ -1047,7 +1047,7 @@ public class FPostController extends BaseController {
                 model.put("solutionId", fReplyDTO.getfReplyId());
                 //回帖人昵称
                 String pId = fReplyDTO.getPersonId();
-                UserEntry userEntry = userService.findByUserId(new ObjectId(pId));
+                UserEntry userEntry = userService.findById(new ObjectId(pId));
                 if (null != userEntry) {
                     if (StringUtils.isNotBlank(userEntry.getNickName())) {
                         model.put("solNickName", userEntry.getNickName());
@@ -1237,7 +1237,7 @@ public class FPostController extends BaseController {
         int replyCounts = fReplyService.getFRepliyCountByPersonId(Item.getPersonId());
         model.put("tc", themeCounts);
         model.put("rc", replyCounts);
-        UserEntry dto = userService.findByUserId(new ObjectId(Item.getPersonId()));
+        UserEntry dto = userService.findById(new ObjectId(Item.getPersonId()));
         if (null != dto) {
             if (dto.getNickName() != null && !"".equals(dto.getNickName())) {
                 model.put("personName", dto.getNickName());
@@ -1291,7 +1291,7 @@ public class FPostController extends BaseController {
             return responseList;
         }
         Map<String, Object> model = getFPostById(postSectionId, personId);
-        UserEntry dto = userService.findByUserId(new ObjectId(personId));
+        UserEntry dto = userService.findById(new ObjectId(personId));
         model.put("personId", personId);
         if (null != dto) {
             if (dto.getNickName() != null && !"".equals(dto.getNickName())) {
@@ -1376,7 +1376,7 @@ public class FPostController extends BaseController {
         if (rl.contains(userReply)) {
             return RespObj.FAILD("已经点赞过了");
         }
-        UserEntry userEntry = userService.findByUserId(new ObjectId(userReply));
+        UserEntry userEntry = userService.findById(new ObjectId(userReply));
         if (null != userEntry) {
             //获取登录的人的Id，只有登录的人才能点赞成功
             String userId = getUserId().toString();
@@ -1406,7 +1406,7 @@ public class FPostController extends BaseController {
                 respObj.setMessage("已经点过赞了,请刷新页面");
                 return respObj;
             }
-            UserEntry userEntry = userService.findByUserId(new ObjectId(userReply));
+            UserEntry userEntry = userService.findById(new ObjectId(userReply));
             if (null != userEntry) {
                 fPostService.updateBtnZan(new ObjectId(userReply), new ObjectId(fPostDTO.getPersonId()), flag, new ObjectId(post));
             }
@@ -1417,7 +1417,7 @@ public class FPostController extends BaseController {
                 respObj.setMessage("已经取消点赞了,请刷新页面");
                 return respObj;
             }
-            UserEntry userEntry = userService.findByUserId(new ObjectId(userReply));
+            UserEntry userEntry = userService.findById(new ObjectId(userReply));
             if (null != userEntry) {
                 fPostService.updateBtnZan(new ObjectId(userReply), new ObjectId(fPostDTO.getPersonId()), flag, new ObjectId(post));
             }
@@ -2886,7 +2886,7 @@ public class FPostController extends BaseController {
             model.put("collect", collect);
         }
 
-        UserEntry userEntry = userService.findByUserId(new ObjectId(sessionValue.getId()));
+        UserEntry userEntry = userService.findById(new ObjectId(sessionValue.getId()));
         model.put("forumScore", userEntry.getForumScore());
         if(StringUtils.isNotBlank(userEntry.getQRCode())){
             model.put("qrCode",userEntry.getQRCode());

@@ -22,7 +22,7 @@ public class ThreadLocalUtil implements Runnable {
     public void run() {
 //        User user=getUser();
         String id=Thread.currentThread().getName();
-        UserEntry userEntry=userService.findByUserId(new ObjectId(id));
+        UserEntry userEntry=userService.findById(new ObjectId(id));
         String qrCode= QRUtils.getPersonQrUrl(new ObjectId(id));
         userEntry.setQRCode(qrCode);
         userService.addUser(userEntry) ;

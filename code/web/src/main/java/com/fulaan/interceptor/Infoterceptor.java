@@ -116,7 +116,7 @@ public class Infoterceptor extends HandlerInterceptorAdapter {
             boolean collect = fCollectionService.isCollected(new ObjectId(sessionValue.getId()), temp);
             model.put("collect", collect);
         }
-        UserEntry userEntry = userService.findByUserId(new ObjectId(sessionValue.getId()));
+        UserEntry userEntry = userService.findById(new ObjectId(sessionValue.getId()));
         if (null != userEntry) {
             model.put("forumScore", userEntry.getForumScore());
             model.put("forumExperience", userEntry.getForumExperience());

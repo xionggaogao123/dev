@@ -102,8 +102,7 @@ public class MemberService {
      * @return
      */
     public PageModel getGroupMembers(ObjectId grid, int page, int pageSize) {
-
-        int totalCount = memberDao.countMember(grid);
+        int totalCount = memberDao.getMemberCount(grid);
         int totalPages = (int) Math.floor(totalCount / pageSize);
         page = page > totalPages ? totalPages : page;
         List<MemberEntry> entries = memberDao.getMembers(grid, page, pageSize);
@@ -274,8 +273,8 @@ public class MemberService {
      * @param groupId
      * @return
      */
-    public int countMember(ObjectId groupId) {
-        return memberDao.countMember(groupId);
+    public int getMemberCount(ObjectId groupId) {
+        return memberDao.getMemberCount(groupId);
     }
 
     /**

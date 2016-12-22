@@ -32,7 +32,7 @@
     <div class="hd-cont-f hd-cont-f1">
         <div class="com-left">
             <script type="text/template" id="announcementTmpl">
-                <div class="com-tit" id="announce_all">社区通知</div>
+                <div class="com-tit" id="announce_all">通知</div>
                 {{~it:value:index}}
                 <div class="notice-container clearfix">
                     <div class="notice-holder">

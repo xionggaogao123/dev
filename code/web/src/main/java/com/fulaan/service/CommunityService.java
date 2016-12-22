@@ -196,7 +196,7 @@ public class CommunityService {
      * @param logo 图标
      */
     public void updateCommunity(ObjectId cid, String name, String desc, String logo, int open) {
-        communityDao.updateCommunityOpen(cid, open);
+        communityDao.updateCommunityOpenStatus(cid, open);
         if (StringUtils.isNotBlank(name)) {
             communityDao.updateCommunityName(cid, name);
         }

@@ -393,7 +393,7 @@ public class GroupController extends BaseController {
     @ResponseBody
     public RespObj getQuitList(String emChatId) {
         ObjectId groupId = groupService.getGroupIdByChatId(emChatId);
-        List<ObjectId> userIds = memberService.getQuitList(groupId);
+        List<ObjectId> userIds = memberService.getGroupQuitList(groupId);
         List<User> users = new ArrayList<User>();
         List<UserEntry> userEntries = userService.getUserByList(userIds);
         for (UserEntry userEntry : userEntries) {

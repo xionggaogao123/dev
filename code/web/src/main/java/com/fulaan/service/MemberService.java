@@ -241,7 +241,7 @@ public class MemberService {
      * @param groupId
      * @return
      */
-    public List<ObjectId> getQuitList(ObjectId groupId) {
+    public List<ObjectId> getGroupQuitList(ObjectId groupId) {
         return memberDao.getQuitList(groupId);
     }
 

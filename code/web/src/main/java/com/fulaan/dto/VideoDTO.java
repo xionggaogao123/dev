@@ -3,9 +3,6 @@ package com.fulaan.dto;
 import com.fulaan.util.DateUtils;
 import com.pojo.fcommunity.VideoEntry;
 
-import java.util.ArrayList;
-import java.util.List;
-
 /**
  * Created by admin on 2016/10/26.
  */

@@ -123,6 +123,10 @@ public class CommunityController extends BaseController {
             String prev = "http://www.fulaan.com";
             logo = prev + suffix;
         }
+        if(suffix.equals(logo)){
+            String prev = "http://www.fulaan.com";
+            logo = prev + suffix;
+        }
         ObjectId commId = communityService.createCommunity(communityId, uid, name, desc, logo, qrUrl, seqId, open);
         if (commId == null) {
             return RespObj.FAILD("无法创建社区");
@@ -133,7 +137,7 @@ public class CommunityController extends BaseController {
         communitySystemInfoService.saveOrupdateEntry(getUserId(), getUserId(), "社长", 4, commId);
         communitySystemInfoService.saveOrupdateEntry(getUserId(), getUserId(), "社长", 5, commId);
         if (StringUtils.isNotBlank(userIds)) {
-            GroupDTO groupDTO = groupService.findByObjectId(new ObjectId(communityDTO.getGroupId()));
+            GroupDTO groupDTO = groupService.findById(new ObjectId(communityDTO.getGroupId()));
             List<ObjectId> userList = MongoUtils.convertObjectIds(userIds);
             for (ObjectId userId : userList) {
                 if (emService.addUserToEmGroup(groupDTO.getEmChatId(), userId)) {
@@ -189,7 +193,7 @@ public class CommunityController extends BaseController {
         communityService.pushToUser(commId, uid, 2);
         CommunityDTO communityDTO = communityService.findByObjectId(commId);
         if (StringUtils.isNotBlank(userIds)) {
-            GroupDTO groupDTO = groupService.findByObjectId(new ObjectId(communityDTO.getGroupId()));
+            GroupDTO groupDTO = groupService.findById(new ObjectId(communityDTO.getGroupId()));
             List<ObjectId> userList = MongoUtils.convertObjectIds(userIds);
             for (ObjectId userId : userList) {
                 if (emService.addUserToEmGroup(groupDTO.getEmChatId(), userId)) {
@@ -283,7 +287,7 @@ public class CommunityController extends BaseController {
     public RespObj inviteMember(@ObjectIdType ObjectId communityId,
                                 @ObjectIdType ObjectId userId) {
         ObjectId groupId = communityService.getGroupId(communityId);
-        GroupDTO groupDTO = groupService.findByObjectId(groupId);
+        GroupDTO groupDTO = groupService.findById(groupId);
         //判断该用户是否加过该社区
         if (memberService.isGroupMember(groupId, userId)) {
             return RespObj.FAILD("该用户已经是该社区成员了");
@@ -349,7 +353,7 @@ public class CommunityController extends BaseController {
             //判断是否为复兰社区会员
             if (null != fulanDto) {
                 //加入复兰社区
-                joinCommunityWithEm(getUserId(), new ObjectId(fulanDto.getId()));
+                joinFulaanCommunity(getUserId(), new ObjectId(fulanDto.getId()));
             }
             communityDTOList = communityService.getCommunitys(userId, page, pageSize);
             if ("web".equals(platform)) {
@@ -574,6 +578,11 @@ public class CommunityController extends BaseController {
         return RespObj.SUCCESS(flag);
     }
 
+    /**
+     * 加入社区
+     * @param communityId
+     * @return
+     */
     @RequestMapping("/join")
     @ResponseBody
     public RespObj joinCommunity(@ObjectIdType ObjectId communityId) {
@@ -596,8 +605,7 @@ public class CommunityController extends BaseController {
     private boolean joinCommunity(ObjectId userId, ObjectId communityId) {
 
         ObjectId groupId = communityService.getGroupId(communityId);
-        GroupDTO groupDTO = groupService.findByObjectId(groupId);
-        //type=1时，处理的是复兰社区
+        GroupDTO groupDTO = groupService.findById(groupId);
         if (memberService.isGroupMember(groupId, userId)) {
             return false;
         }
@@ -622,12 +630,12 @@ public class CommunityController extends BaseController {
 
     /**
      * 加入社区但是不加入环信群组---这里只有复兰社区调用
-     *
+     * 加入复兰社区--- 复兰社区很特殊，特殊对待
      * @param userId
      * @param communityId
      * @return
      */
-    private void joinCommunityWithEm(ObjectId userId, ObjectId communityId) {
+    private void joinFulaanCommunity(ObjectId userId, ObjectId communityId) {
 
         ObjectId groupId = communityService.getGroupId(communityId);
         //type=1时，处理的是复兰社区

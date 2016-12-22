@@ -69,7 +69,7 @@ public class GroupService {
      * @param groupId
      * @return
      */
-    public GroupDTO findByObjectId(ObjectId groupId) {
+    public GroupDTO findById(ObjectId groupId) {
         GroupEntry groupEntry = groupDao.findByObjectId(groupId);
         List<MemberDTO> managers = memberService.getManagers(groupId);
         List<MemberDTO> members = memberService.getMembers(groupId, 20);

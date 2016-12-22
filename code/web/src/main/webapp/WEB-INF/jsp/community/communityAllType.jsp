@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
     <meta charset="utf-8">
-    <title>通知</title>
+    <title>我的社区</title>
     <script type="text/javascript" src="/static/js/modules/forum/jquery-1.11.1.js"></script>
     <link rel="stylesheet" type="text/css" href="/static/css/friend/nearby.css">
     <link rel="stylesheet" type="text/css" href="/static/css/community/community.css">

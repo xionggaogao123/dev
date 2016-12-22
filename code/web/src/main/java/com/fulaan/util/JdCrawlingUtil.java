@@ -1,6 +1,8 @@
 package com.fulaan.util;
 
 import com.fulaan.pojo.ProductModel;
+import com.pojo.parentChild.ParentChildActivityEntry;
+import org.bson.types.ObjectId;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
@@ -13,6 +15,56 @@ import java.util.List;
  * Created by admin on 2016/10/26.
  */
 public class JdCrawlingUtil {
+
+    public static boolean ParseData(String html, List<ParentChildActivityEntry> entries, String cityName, ObjectId regionId, int expense, String startTime) {
+        //采用Jsoup解析
+        Document doc = Jsoup.parse(html);
+        Element element = doc.getElementsByClass("find_main_ul").first();
+
+        Elements elements = element.getElementsByTag("li");
+        for (Element ele : elements) {
+            Element element1 = ele.getElementsByTag("a").first();
+            ParentChildActivityEntry entry = new ParentChildActivityEntry();
+            entry.setRegionId(regionId);
+            entry.setCity(cityName);
+            entry.setExpense(expense);
+            entry.setStartTime(startTime);
+            if (null != element1) {
+                entry.setActivityUrl(element1.attr("href"));
+                Element element2 = element1.getElementsByClass("hd_pic").first();
+                if (null != element2) {
+                    entry.setActivityImage(element2.attr("data-src"));
+                }
+            } else {
+                continue;
+            }
+            Element element2 = ele.getElementsByClass("find_main_div").first();
+            String title = element2.getElementsByClass("find_main_title").first().child(0).getElementsByTag("h4").first().html();
+            entry.setActivityName(title);
+            String time = element2.getElementsByClass("find_main_time").first().getElementsByTag("p").first().html();
+            entry.setActivityTime(time);
+            Element address = element2.getElementsByClass("find_main_address").first();
+            if (null != address) {
+                String content = address.getElementsByTag("p").first().getElementsByTag("a").text();
+                entry.setActivityContent(content);
+            }
+
+            Element element3 = element2.getElementsByClass("find_main_b").first().getElementsByClass("find_main_b_l").first();
+            Element element4 = element3.getElementsByTag("a").first().getElementsByTag("img").first();
+            if (null != element4) {
+                entry.setActivityDescImage(element4.attr("src"));
+            }
+            String desc = element3.getElementsByTag("a").first().nextElementSibling().html();
+            entry.setActivityDescription(desc);
+            entries.add(entry);
+        }
+
+        if (elements.size()==20) {
+            return true;
+        } else {
+            return false;
+        }
+    }
 
     public static ProductModel getJDH5(String html) {
         //采用Jsoup解析

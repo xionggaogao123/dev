@@ -3,6 +3,7 @@ package com.fulaan.util;
 import com.fulaan.mall.service.EGoodsService;
 import com.fulaan.pojo.ProductModel;
 import com.pojo.ebusiness.EGoodsDTO;
+import com.pojo.parentChild.ParentChildActivityEntry;
 import org.apache.http.HttpResponse;
 import org.apache.http.client.HttpClient;
 import org.apache.http.impl.client.DefaultHttpClient;
@@ -18,6 +19,22 @@ import java.util.List;
 public class URLParseUtil {
 
     private static EGoodsService eGoodsService = new EGoodsService();
+
+    public static boolean ParseHDBData(HttpClient client, String url,List<ParentChildActivityEntry> entries,String cityName,ObjectId regionId,int expense,String startTime) throws Exception {
+        HttpResponse response = HttpUtils.getCrawlHtml(client, url);
+        //获取响应状态码
+        int StatusCode = response.getStatusLine().getStatusCode();
+        //如果状态响应码为200，则获取html实体内容或者json文件
+        if (StatusCode == 200) {
+            String entity = EntityUtils.toString(response.getEntity(), "utf-8");
+            EntityUtils.consume(response.getEntity());
+            return  JdCrawlingUtil.ParseData(entity,entries,cityName,regionId,expense,startTime);
+        } else {
+            //否则，消耗掉实体
+            EntityUtils.consume(response.getEntity());
+            return false;
+        }
+    }
 
     public static ProductModel urlParser(HttpClient client, String url) throws Exception {
         //获取网站响应的html，这里调用了HTTPUtils类
@@ -40,6 +57,9 @@ public class URLParseUtil {
                 productModel = JdCrawlingUtil.getJDH5(entity);
             } else if (url.contains("item.taobao.com")) {
                 productModel = JdCrawlingUtil.getTaoBaoData(entity);
+            } else if (url.contains("hdb.com")){
+                //爬取互动吧数据
+
             }
 
             EntityUtils.consume(response.getEntity());

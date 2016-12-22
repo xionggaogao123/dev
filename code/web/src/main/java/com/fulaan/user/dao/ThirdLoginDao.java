@@ -59,14 +59,13 @@ public class ThirdLoginDao extends BaseDao {
      * @return UserEntry
      */
     public UserEntry getEntryByMap(Map<String, Object> map) {
-
         Iterator iterator = map.keySet().iterator();
         BasicDBObject query = new BasicDBObject();
         while (iterator.hasNext()) {
             String key = (String) iterator.next();
             query.append(key, map.get(key));
         }
-        DBObject dbo = findOne(MongoFacroty.getAppDB(), Constant.COLLECTION_THIRD_LOGIN_NAME, query, null);
+        DBObject dbo = findOne(MongoFacroty.getAppDB(), Constant.COLLECTION_THIRD_LOGIN_NAME, query, Constant.FIELDS);
         if (null != dbo) {
             ThirdLoginEntry thirdLoginEntry = new ThirdLoginEntry((BasicDBObject) dbo);
             ObjectId uid = thirdLoginEntry.getUid();

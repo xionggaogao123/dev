@@ -20,9 +20,9 @@ public enum ThirdType {
     public static ThirdType getThirdType(int code) {
         switch (code) {
             case 1:
-                return QQ;
-            case 2:
                 return WECHAT;
+            case 2:
+                return QQ;
         }
         return QQ;
     }

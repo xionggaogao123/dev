@@ -203,7 +203,7 @@ public class UserController extends BaseController {
 
         //判断用户登录平台，只对PC登录用户进行密码输入错误3次，需要验证码
         String client = getRequest().getHeader("User-Agent");
-        Platform pf = null;
+        Platform pf;
         if (client.contains("iOS")) {
             pf = Platform.IOS;
         } else if (client.contains("Android")) {
@@ -501,7 +501,6 @@ public class UserController extends BaseController {
                 } catch (IllegalParamException e1) {
 
                 }
-                ;
             } else {
                 if (System.currentTimeMillis() > validBeginTime + validTime * 1000) {
                     throw new UnLoginException();
@@ -620,17 +619,14 @@ public class UserController extends BaseController {
             logger.info("delete session value for user:" + sv.getId());
 
             Cookie cookies[] = request.getCookies();
-            Cookie c = null;
-            for (int i = 0; i < cookies.length; i++) {
-                c = cookies[i];
-                c.setMaxAge(0);
-                if (c.getName().equals(Constant.COOKIE_USER_KEY)) {
+            for (Cookie cookie : cookies) {
+                cookie.setMaxAge(0);
+                if (cookie.getName().equals(Constant.COOKIE_USER_KEY)) {
                     CacheHandler.deleteKey(CacheHandler.CACHE_SESSION_KEY,
-                            c.getValue());
+                            cookie.getValue());
                 }
             }
         }
-
         return RespObj.SUCCESS;
     }
 
@@ -1691,7 +1687,7 @@ public class UserController extends BaseController {
     @ResponseBody
     public RespObj checkUserFromThird(String openId, Integer type, String unionId,
                                       HttpServletResponse response, HttpServletRequest request) {
-        UserEntry userEntry = userService.searchThirdEntry(openId, unionId, type);
+        UserEntry userEntry = userService.searchThirdEntry(openId, unionId, ThirdType.getThirdType(type));
         if (userEntry == null) {
             return RespObj.SUCCESS(MapUtil.put("isExist", "No"));
         }
@@ -1731,7 +1727,7 @@ public class UserController extends BaseController {
         if (type == null) {
             return RespObj.FAILD("参数不对");
         }
-        UserEntry userEntry = userService.searchThirdEntry(openId, unionId, type);
+        UserEntry userEntry = userService.searchThirdEntry(openId, unionId, ThirdType.getThirdType(type));
         if (userEntry == null) { //第一次进入应用
             userEntry = userService.createUser(nickName, sex);
             if (avatar != null) {

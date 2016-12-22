@@ -632,6 +632,8 @@ public class Constant {
     public static final String COLLECTION_TRAIN_REGIONS_COPY="regions_copy";
 
     public static final String COLLECTION_TRAIN_ITEMTYPENAME_COPY="itemTypeName_copy";
+    //亲子活动
+    public static final String COLLECTION_PARENT_CHILD_ACTIVITY="parentChild";
 
 
     //=========第三方登录=======================================================

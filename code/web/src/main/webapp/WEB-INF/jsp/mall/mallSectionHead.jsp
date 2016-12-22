@@ -301,7 +301,7 @@
             <div class="d1-set">
                 <div class="d1-img"></div>
                 <div class="d1-mk">
-                    <div class="p1" onclick="window.open('/forum/userCenter/user.do')"><span></span>个人设置</div>
+                    <div class="p1" onclick="window.open('/account/accountSafe.do')"><span></span>个人设置</div>
                     <div class="p2"  id="logout"><span></span>退出</div>
                 </div>
             </div>
@@ -335,7 +335,7 @@
                 <span class="ebusiness-r-l">
                 <em class="ebusiness-D" onclick="window.open('/mall/order/page.do')">交易中心</em>
                 <em class="ebusiness-Z" onclick="window.open('/mall/userCenter/collection.do')">关注中心</em>
-                <em class="ebusiness-G" onclick="window.open('/mall/userCenter/user.do')">设置中心</em>
+                <em class="ebusiness-G" onclick="window.open('/account/accountSafe.do')">设置中心</em>
 
             </span>
                 <span class="store-car">购物车<em id="goodsCount" style="display: none"></em></span>

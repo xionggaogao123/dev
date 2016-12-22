@@ -47,7 +47,7 @@ public class ConcernService {
         List<ConcernEntry> concernEntries = concernDao.getConcernByUserId(id, page, pageSize);
         for (ConcernEntry concernEntry : concernEntries) {
             ConcernDTO concernDTO = new ConcernDTO(concernEntry);
-            UserEntry userEntry = userService.findByUserId(new ObjectId(concernDTO.getConcernId()));
+            UserEntry userEntry = userService.findById(new ObjectId(concernDTO.getConcernId()));
             concernDTO.setAvatar(AvatarUtils.getAvatar(userEntry.getAvatar(), AvatarType.MIN_AVATAR.getType()));
             concernDTO.setNickName(StringUtils.isNotBlank(userEntry.getNickName()) ? userEntry.getNickName() : userEntry.getUserName());
             concernDTOs.add(concernDTO);

@@ -824,7 +824,7 @@ define(['jquery', 'pagination', 'common'], function (require, exports, module) {
 
                 var tempStr="<div class=\"notice-container clearfix com-nothing\">";
                 if (announcement.length == 0) {
-                    var prev="<div class=\"com-tit\" id=\"announce_all\">社区通知<em>全部</em></div>";
+                    var prev="<div class=\"com-tit\" id=\"announce_all\">通知<em>全部</em></div>";
                     var str=prev+tempStr+"该社区还未发布通知"+"</div>";
                     $('#announcement').append(str);
                 }

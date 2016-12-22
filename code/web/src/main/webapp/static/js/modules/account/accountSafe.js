@@ -9,6 +9,7 @@ define(['jquery', 'pagination', 'common'], function (require, exports, module) {
         tags: [],
         times: []
     };
+    var bind = 1;
 
     var edit_pass_check = {
         password: false,
@@ -21,7 +22,7 @@ define(['jquery', 'pagination', 'common'], function (require, exports, module) {
         code: false
     };
 
-    var thirdBind =  {
+    var thirdBind = {
         qq: false,
         wechat: false
     };
@@ -149,7 +150,7 @@ define(['jquery', 'pagination', 'common'], function (require, exports, module) {
             var requestData = {};
             requestData.nickName = $('.nickname').val();
 
-            if(requestData.nickName.length > 8) {
+            if (requestData.nickName.length > 8) {
                 alert("昵称最多8个字符");
                 return;
             }
@@ -306,8 +307,6 @@ define(['jquery', 'pagination', 'common'], function (require, exports, module) {
         body.on('click', '.wind-phone p.p-btn-ok', function () {
             var code = $('.wind-phone input.code').val();
             var mobile = $('.wind-phone input.phone').val();
-
-            alert(JSON.stringify(edit_phone_check));
             if (edit_phone_check.phone && edit_phone_check.code) {
                 var requestData = {
                     mobile: mobile,
@@ -334,22 +333,29 @@ define(['jquery', 'pagination', 'common'], function (require, exports, module) {
 
         body.on('click', '.third-qq button', function () {
 
-            if(thirdBind.qq) {
-                removeThirdBind(1);
+            if (thirdBind.qq) {
+                $('#isRemoveBind').fadeIn();
+                $('.bg').fadeIn();
+                bind = 1;
             } else {
                 window.open('/account/qqBind.do', "TencentLogin", "width=800,height=600,menubar=0,scrollbars=1, resizable=1,status=1,titlebar=0,toolbar=0,location=1");
             }
         });
 
         body.on('click', '.third-wechat button', function () {
-            if(thirdBind.wechat) {
-                removeThirdBind(2);
+            if (thirdBind.wechat) {
+                $('#isRemoveBind').fadeIn();
+                $('.bg').fadeIn();
+                bind = 2;
             } else {
                 window.open('/account/wechatBind.do', "TencentLogin", "width=800,height=600,menubar=0,scrollbars=1, resizable=1,status=1,titlebar=0,toolbar=0,location=1");
             }
 
         });
 
+        body.on('click', '#isRemoveBind .p-btn-ok', function () {
+            removeThirdBind(bind);
+        });
     });
 
     function getMyTags() {
@@ -429,9 +435,9 @@ define(['jquery', 'pagination', 'common'], function (require, exports, module) {
     }
 
     function removeThirdBind(type) {
-        common.getData('/account/removeThirdBind',{type:type},function (resp) {
-            alert(JSON.stringify(resp));
-            if(resp.code == '200') {
+        common.getData('/account/removeThirdBind', {type: type}, function (resp) {
+            if (resp.code == '200') {
+                alert("解绑成功");
                 window.location.reload();
             } else {
                 alert(resp.message);

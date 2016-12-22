@@ -218,6 +218,11 @@
     <p class="p-btn-ok">确认</p>
 </div>
 
+<div class="windd" id="isRemoveBind">
+    <p class="p1" style="text-align: center">是否确认解绑<em>×</em></p>
+    <p class="p-btn-ok" style="margin-top: 50px;margin-bottom: 20px">确认</p>
+</div>
+
 <%@include file="../common/footer.jsp" %>
 
 </body>

@@ -271,7 +271,7 @@ public class EBusinessUserController extends BaseController {
     @RequestMapping(value = "/emailValidate")
     public String emailValidate(String email, String validateCode, HttpServletResponse response,
                                 Map<String, Object> model) {
-        UserEntry userEntry = userService.findByUserEmail(email);
+        UserEntry userEntry = userService.findByEmail(email);
         //验证用户是否存在
         if (userEntry != null) {
             //验证用户激活状态
@@ -328,9 +328,9 @@ public class EBusinessUserController extends BaseController {
         Map<String, Object> model = new HashMap<String, Object>();
         UserEntry userEntry = null;
         if (StringUtils.isNotBlank(email)) {
-            userEntry = userService.findByUserEmail(email);
+            userEntry = userService.findByEmail(email);
         } else if (StringUtils.isNotBlank(phone)) {
-            userEntry = userService.findByUserPhone(phone);
+            userEntry = userService.findByPhone(phone);
         } else if (StringUtils.isNotBlank(name)) {
             userEntry = userService.findByUserName(name);
         }
@@ -346,7 +346,7 @@ public class EBusinessUserController extends BaseController {
         ///如果处于安全，可以将激活码处理的更复杂点，这里我稍做简单处理
         //发送邮箱
         MailUtils sendMail = new MailUtils();
-        UserEntry userEntry = userService.findByUserEmail(email);
+        UserEntry userEntry = userService.findByEmail(email);
         if (userEntry != null) {
             StringBuffer stringBuffer = new StringBuffer();
             stringBuffer.append("<p>");
@@ -685,9 +685,9 @@ public class EBusinessUserController extends BaseController {
         Matcher phoneMatcher = phonePattern.matcher(account);
         UserEntry userEntry = null;
         if (emailMatcher.matches()) {//邮箱登录
-            userEntry = userService.findByUserEmail(account);
+            userEntry = userService.findByEmail(account);
         } else if (phoneMatcher.matches()) {//手机号登录
-            userEntry = userService.findByUserPhone(account);
+            userEntry = userService.findByPhone(account);
         } else {//用户名登陆
             userEntry = userService.findByUserName(account);
         }

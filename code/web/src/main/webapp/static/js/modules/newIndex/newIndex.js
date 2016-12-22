@@ -385,7 +385,7 @@ define(['jquery', 'pagination', 'common'], function (require, exports, module) {
         var temp = "";
         for (var i in data) {
             temp += "<li class=\"clearfix\">" +
-                "<p class=\"p1\"><em class=\"em1\">社区通知</em><br>" +
+                "<p class=\"p1\"><em class=\"em1\">通知</em><br>" +
                 "<em class=\"em2\">" + data[i].timeStr + "</em> </p>" +
                 "<img src=\"/static/images/newIndex/red_notice.png\">" +
                 "<p class=\"p-red\"></p>" +

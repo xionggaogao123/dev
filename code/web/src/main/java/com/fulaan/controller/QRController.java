@@ -76,10 +76,10 @@ public class QRController extends BaseController {
         MemberDTO head = memberService.getHead(new ObjectId(groupDTO.getId()));
 
         MemberDTO mine = memberService.getUser(id, getUserId());
-        groupDTO.setCount(memberService.countMember(id));
+        groupDTO.setCount(memberService.getMemberCount(id));
         groupDTO.setMine(mine);
 
-        int count = memberService.countMember(new ObjectId(groupDTO.getId()));
+        int count = memberService.getMemberCount(new ObjectId(groupDTO.getId()));
         boolean isJoin = memberService.isGroupMember(new ObjectId(groupDTO.getId()), getUserId());
 
         if (groupDTO.isBindCommunity() && community != null) {
@@ -127,7 +127,7 @@ public class QRController extends BaseController {
             return null;
         }
 
-        UserEntry userEntry = userService.findByUserId(id);
+        UserEntry userEntry = userService.findById(id);
         Map<String, String> map = new HashMap<String, String>();
         map.put("userId", userEntry.getID().toString());
         map.put("nickName", StringUtils.isNotBlank(userEntry.getNickName()) ? userEntry.getNickName() : userEntry.getUserName());
@@ -158,7 +158,7 @@ public class QRController extends BaseController {
         }
         MemberDTO head = memberService.getHead(new ObjectId(communityDTO.getGroupId()));
         communityDTO.setHead(head);
-        int count = memberService.countMember(new ObjectId(communityDTO.getGroupId()));
+        int count = memberService.getMemberCount(new ObjectId(communityDTO.getGroupId()));
         communityDTO.setMemberCount(count);
         return RespObj.SUCCESS(communityDTO);
     }

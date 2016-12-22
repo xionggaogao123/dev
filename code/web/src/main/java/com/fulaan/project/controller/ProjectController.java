@@ -69,7 +69,7 @@ public class ProjectController extends BaseController {
     public ModelAndView detailPage(@RequestParam(value = "id", defaultValue = "") String id) {
         ModelAndView mv = new ModelAndView();
         String userId = getSessionValue().getId();
-        userService.findByUserId(new ObjectId(userId));
+        userService.findById(new ObjectId(userId));
         ProjectEntry e = projectService.getProjectEntryById(new ObjectId(id));
 
         List<SubProjectEntry> subEntries = subProjectService.querySubProjectionEntriesByParentId(new ObjectId(id));
@@ -118,7 +118,7 @@ public class ProjectController extends BaseController {
                                  @RequestParam(value = "projectProfile", defaultValue = "") String projectProfile,
                                  @RequestParam(value = "projectCover", defaultValue = "") String projectCover) {
         ObjectId userId = new ObjectId(getSessionValue().getId());
-        UserEntry ue = userService.findByUserId(userId);
+        UserEntry ue = userService.findById(userId);
         SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
         try {
             projectService.addProjectEntry(new ProjectEntry(userId, ue.getUserName(),

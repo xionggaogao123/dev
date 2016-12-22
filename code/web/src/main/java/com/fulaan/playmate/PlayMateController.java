@@ -23,7 +23,6 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
-import java.text.SimpleDateFormat;
 import java.util.*;
 
 /**
@@ -141,7 +140,7 @@ public class PlayMateController extends BaseController {
     @ResponseBody
     public RespObj getMyTags() {
         ObjectId userId = getUserId();
-        UserEntry userEntry = userService.findByUserId(userId);
+        UserEntry userEntry = userService.findById(userId);
         List<Map<String, Object>> tags = getTagsFromUserEntry(userEntry);
         return RespObj.SUCCESS(tags);
     }
@@ -204,7 +203,7 @@ public class PlayMateController extends BaseController {
             return RespObj.FAILD;
         }
         List<MateData> mateDatas = mateService.getMyOns(personId);
-        UserEntry userEntry = userService.findByUserId(personId);
+        UserEntry userEntry = userService.findById(personId);
         List<Map<String, Object>> tags = getTagsFromUserEntry(userEntry);
         Map<String, Object> map = new HashMap<String, Object>();
         List<Map<String, Object>> freeTime = new ArrayList<Map<String, Object>>();

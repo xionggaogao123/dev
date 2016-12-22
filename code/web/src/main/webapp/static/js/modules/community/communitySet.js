@@ -9,6 +9,8 @@ define(['jquery', 'pagination', 'common'], function (require, exports, module) {
     var communitySet = {};
     var page = 1;
     var activity_cur = 1;
+
+    var saveFlag = false;
     communitySet.init = function () {
         getHotCommunity();
         getMyCommunity(page);
@@ -53,7 +55,7 @@ define(['jquery', 'pagination', 'common'], function (require, exports, module) {
                 acid: acid
             };
 
-            if(select == 'signed') {
+            if (select == 'signed') {
                 common.getData("/factivity/cancelSign.do", requestParm, function (resp) {
                     if (resp.code == '200') {
                         $('.alert-diglog').fadeOut();
@@ -174,7 +176,7 @@ define(['jquery', 'pagination', 'common'], function (require, exports, module) {
 
         })
 
-        $('body').on('click','.setTop',function(){
+        $('body').on('click', '.setTop', function () {
             setTop($(this));
         })
 
@@ -207,22 +209,22 @@ define(['jquery', 'pagination', 'common'], function (require, exports, module) {
     }
 
     //设置置顶
-    function  setTop(obj) {
-        var communityId=obj.attr('cmId');
+    function setTop(obj) {
+        var communityId = obj.attr('cmId');
         var top;
-        if(obj.attr('top')==0){
-            top=1;
-        }else{
-            top=0;
+        if (obj.attr('top') == 0) {
+            top = 1;
+        } else {
+            top = 0;
         }
-        common.getData('/community/updateCommunityTop.do',{communityId:communityId,top:top},function (resp) {
-            if(resp.code=="200"){
-                alert(obj.text()+"成功!");
-                if(top==0){
-                    obj.attr('top',top);
+        common.getData('/community/updateCommunityTop.do', {communityId: communityId, top: top}, function (resp) {
+            if (resp.code == "200") {
+                alert(obj.text() + "成功!");
+                if (top == 0) {
+                    obj.attr('top', top);
                     obj.text('置顶');
-                }else{
-                    obj.attr('top',top);
+                } else {
+                    obj.attr('top', top);
                     obj.text('取消置顶');
                 }
             }
@@ -297,9 +299,7 @@ define(['jquery', 'pagination', 'common'], function (require, exports, module) {
         var data = {
             communityId: communtiyId
         };
-
         common.getData("/community/quit.do", data, function (result) {
-
             if (result.code = "200") {
                 alert("退出成功");
                 getMyCommunity(page);
@@ -312,74 +312,46 @@ define(['jquery', 'pagination', 'common'], function (require, exports, module) {
 
 
     function validateCommunityInfo() {
-
         var communityName = $('#communityName').val();
         var communityDes = $('#communityDesc').next().val();
         if (communityName == "" || communityName == undefined) {
             alert("社区名称不能为空！");
-            return false;
+            saveFlag = false;
         }
-
         if (communityName.length > 15) {
             alert("社区名称不能超过15个字！");
-            return false;
+            saveFlag = false;
         }
-
         if (communityDes == "" || communityDes == undefined) {
             alert("社区简介不能为空！");
-            return false;
+            rsaveFlag = false;
         }
         if (communityDes.length > 100) {
             alert("社区简介字数不能超过100！");
-            return false;
+            saveFlag = false;
         }
-
-
-        return true;
-
+        saveFlag = true;
     }
 
     function saveOperation() {
-        if (validateCommunityInfo()) {
-            if (judgeCreate($('#communityName').val(), $('.wind-com-edit').data('id'))) {
-                var param = {};
-                param.logo = $('#communityLogo').attr('src');
-                param.desc = $('#communityDesc').next().val();
-                param.name = $('#communityName').val();
-                param.open = $('#selectOpen').val();
-                param.communityId = $('.wind-com-edit').data('id');
-                common.getData('/community/update.do', param, function (resp) {
+        var param = {};
+        validateCommunityInfo();
+        param.logo = $('#communityLogo').attr('src');
+        param.desc = $('#communityDesc').next().val();
+        param.name = $('#communityName').val();
+        param.open = $('#selectOpen').val();
+        param.communityId = $('.wind-com-edit').data('id');
+        if(saveFlag) {
+            common.getData('/community/update.do', param, function (resp) {
+                if (resp.code == '200') {
                     getMyCommunity(page);
                     $('.wind-com-edit').fadeOut();
                     $('.bg').fadeOut();
                     alert("保存成功！");
-                })
-            }
-        }
-
-    }
-
-    function judgeCreate(communityName, id) {
-        var flag = true;
-        //先判断社区名称是否更改
-        common.getData('/community/judgeCommunityName.do', {communityName: communityName, id: id}, function (resp) {
-            if (resp.message) {
-                flag = true;
-            } else {
-                flag = false;
-            }
-        })
-        if (!flag) {
-            flag = false;
-            common.getData('/community/judgeCreate.do', {communityName: communityName}, function (resp) {
-                if (resp.message) {
-                    flag = false;
-                    alert("该社区名称已存在！");
+                } else {
+                    alert(resp.message);
                 }
-            })
-            return flag;
-        } else {
-            return flag;
+            });
         }
     }
 
@@ -495,19 +467,14 @@ define(['jquery', 'pagination', 'common'], function (require, exports, module) {
 
     function renderActivity() {
         if (activity_cur === 1) {
-
             $('#activity-signed-div').show();
             $('#activity-published-dev').hide();
             $('#activity-attended-div').hide();
-
         } else if (activity_cur === 2) {
-
             $('#activity-signed-div').hide();
             $('#activity-published-dev').show();
             $('#activity-attended-div').hide();
-
         } else if (activity_cur === 3) {
-
             $('#activity-signed-div').hide();
             $('#activity-published-dev').hide();
             $('#activity-attended-div').show();
@@ -525,13 +492,10 @@ define(['jquery', 'pagination', 'common'], function (require, exports, module) {
     }
 
     function hx_update() {
-
         $.ajax({
             url: '/group/offlineMsgCount.do',
             success: function (resp) {
-                var hx_notice = $('.hx-notice span');
                 var offCount = resp.message.offlineCount;
-
                 if (offCount > 0) {
                     $('#hx-icon').removeClass("sp2");
                     $('#hx-icon').addClass('sp1');

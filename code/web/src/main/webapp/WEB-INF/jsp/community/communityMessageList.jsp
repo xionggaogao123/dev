@@ -289,7 +289,7 @@
 
     <script type="text/template" id="announcementTmpl">
         {{~it:value:index}}
-        <div class="com-tit" id="announce_all">社区通知
+        <div class="com-tit" id="announce_all">通知
         <c:if test="${login==true}">
             {{?value.readFlag==1}}
             <span class="i-unreadTip">已读</span>

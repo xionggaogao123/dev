@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
     <meta charset="utf-8">
-    <title>通知</title>
+    <title>我的社区</title>
     <script type="text/javascript" src="/static/js/modules/forum/jquery-1.11.1.js"></script>
     <link rel="stylesheet" type="text/css" href="/static/css/friend/nearby.css">
     <link rel="stylesheet" type="text/css" href="/static/css/community/community.css">
@@ -32,7 +32,7 @@
     <div class="hd-cont-f hd-cont-f1">
         <div class="com-left">
             <script type="text/template" id="announcementTmpl">
-                <div class="com-tit" id="announce_all">社区通知</div>
+                <div class="com-tit" id="announce_all">通知</div>
                 {{~it:value:index}}
                 <div class="notice-container clearfix">
                     <div class="notice-holder">

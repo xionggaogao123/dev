@@ -4,13 +4,15 @@ import com.db.base.BaseDao;
 import com.db.factory.MongoFacroty;
 import com.mongodb.*;
 import com.pojo.fcommunity.CommunityEntry;
-import com.pojo.user.UserEntry;
 import com.pojo.utils.MongoUtils;
 import com.sys.constants.Constant;
 import org.apache.commons.lang.StringUtils;
 import org.bson.types.ObjectId;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 /**
  * Created by jerry on 2016/10/24.
@@ -92,23 +94,6 @@ public class CommunityDao extends BaseDao {
     }
 
     /**
-     * 获取社区
-     *
-     * @param communityIds
-     * @return
-     */
-    public List<CommunityEntry> getCommunitysByIds(List<ObjectId> communityIds) {
-        List<CommunityEntry> communityEntries = new ArrayList<CommunityEntry>();
-        BasicDBObject query = new BasicDBObject().append(Constant.ID, new BasicDBObject(Constant.MONGO_IN, communityIds));
-        List<DBObject> dbObjects = find(MongoFacroty.getAppDB(), Constant.COLLECTION_FORUM_COMMUNITY, query, Constant.FIELDS);
-        for (DBObject dbo : dbObjects) {
-            communityEntries.add(new CommunityEntry(dbo));
-        }
-//        Collections.reverse(communityEntries);
-        return communityEntries;
-    }
-
-    /**
      * 获取 - 公开群
      *
      * @return
@@ -118,7 +103,7 @@ public class CommunityDao extends BaseDao {
         BasicDBObject query = new BasicDBObject().append("op", Constant.ONE);
         DB myMongo = MongoFacroty.getAppDB();
         DBCollection communityCollection = myMongo.getCollection(Constant.COLLECTION_FORUM_COMMUNITY);
-        DBCursor limit = null;
+        DBCursor limit;
         if (page == 1) {
             limit = communityCollection.find(query)
                     .sort(Constant.MONGO_SORTBY_ASC).limit(pageSize);
@@ -135,7 +120,7 @@ public class CommunityDao extends BaseDao {
         }
 
         while (limit.hasNext()) {
-            retList.add(new CommunityEntry((BasicDBObject) limit.next()));
+            retList.add(new CommunityEntry(limit.next()));
         }
         return retList;
     }
@@ -158,7 +143,7 @@ public class CommunityDao extends BaseDao {
      * @param communityId
      * @param open
      */
-    public void updateCommunityOpen(ObjectId communityId, int open) {
+    public void updateCommunityOpenStatus(ObjectId communityId, int open) {
         BasicDBObject query = new BasicDBObject().append(Constant.ID, communityId);
         BasicDBObject update = new BasicDBObject(Constant.MONGO_SET, new BasicDBObject("op", open));
         update(MongoFacroty.getAppDB(), Constant.COLLECTION_FORUM_COMMUNITY, query, update);
@@ -226,30 +211,15 @@ public class CommunityDao extends BaseDao {
     }
 
 
-    public Boolean isCommunityNameUsed(String communityName) {
+    public Boolean isCommunityNameUnique(String communityName) {
         CommunityEntry dbo = findByName(communityName);
-        return dbo != null;
+        return dbo == null;
     }
 
     public boolean judgeCommunityName(String communityName, ObjectId id) {
         BasicDBObject query = new BasicDBObject().append(Constant.ID, id)
                 .append("cmmn", communityName);
         return count(MongoFacroty.getAppDB(), Constant.COLLECTION_FORUM_COMMUNITY, query) == 1;
-    }
-
-    public int getCommunityCountByOwerId(ObjectId userId) {
-        BasicDBObject query = new BasicDBObject().append("cmow", userId);
-        return count(MongoFacroty.getAppDB(), Constant.COLLECTION_FORUM_COMMUNITY, query);
-    }
-
-
-    public List<CommunityEntry> getAllCommunitys() {
-        List<DBObject> dbos = find(MongoFacroty.getAppDB(), Constant.COLLECTION_FORUM_COMMUNITY, new BasicDBObject(), Constant.FIELDS);
-        List<CommunityEntry> communitys = new ArrayList<CommunityEntry>();
-        for (DBObject dbo : dbos) {
-            communitys.add(new CommunityEntry(dbo));
-        }
-        return communitys;
     }
 
     /**
@@ -265,7 +235,7 @@ public class CommunityDao extends BaseDao {
         if (null != list && !list.isEmpty()) {
             CommunityEntry e;
             for (DBObject dbo : list) {
-                e = new CommunityEntry((BasicDBObject) dbo);
+                e = new CommunityEntry(dbo);
                 retMap.put(e.getID(), e);
             }
         }

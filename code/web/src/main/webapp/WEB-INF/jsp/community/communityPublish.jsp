@@ -449,7 +449,7 @@
 
 <script type="text/template" id="announcementTmpl">
     {{~it:value:index}}
-    <div class="com-tit" id="announce_all" style="cursor: pointer">社区通知
+    <div class="com-tit" id="announce_all" style="cursor: pointer">通知
         {{?value.unReadCount==0}}
         <em>全部</em>
         {{??}}

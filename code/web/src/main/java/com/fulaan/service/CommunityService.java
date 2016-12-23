@@ -301,11 +301,11 @@ public class CommunityService {
             communityDetailDTO.setPartIncotentCount(totalCount);
             if (null != userEntry) {
                 communityDetailDTO.setImageUrl(AvatarUtils.getAvatar(userEntry.getAvatar(), AvatarType.MIN_AVATAR.getType()));
-            }
-            if (StringUtils.isNotBlank(userEntry.getNickName())) {
-                communityDetailDTO.setNickName(userEntry.getNickName());
-            } else {
-                communityDetailDTO.setNickName(userEntry.getUserName());
+                if (StringUtils.isNotBlank(userEntry.getNickName())) {
+                    communityDetailDTO.setNickName(userEntry.getNickName());
+                } else {
+                    communityDetailDTO.setNickName(userEntry.getUserName());
+                }
             }
             communityDetailDTO.setUnReadCount(unreadCount);
             communityDetailDTO.setPartInCount(communityDetailDTO.getPartInList().size());

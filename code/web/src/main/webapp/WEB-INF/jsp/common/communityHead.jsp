@@ -29,7 +29,7 @@
         </c:if>
         <img src="/static/images/community/pc_find_center.jpg" class="img1">
         <c:if test="${login == true}">
-            <img src="${avatar}" class="img2">
+            <img src="${avatar}" class="img2" style="cursor: pointer" onclick="window.open('/account/accountSafe')">
             <p class="p1">
                 <span class="sp1">${nickName}</span>
                 <span class="sp2">

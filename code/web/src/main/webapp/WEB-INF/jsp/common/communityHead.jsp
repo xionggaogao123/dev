@@ -12,7 +12,7 @@
                     <p class="p2" style="cursor: pointer;"
                        onclick="window.open('/community/myPartners.do')">${friendCount}</p>
                     <p class="p3">
-                        <a href="/forum/userCenter/user.do">
+                        <a href="/account/accountSafe.do">
                             <button>论坛空间</button>
                         </a>
                     </p>

@@ -193,7 +193,7 @@
                 <%--{{?}}--%>
             </p>
         </div>
-        <span class="com-mine"></span>
+        {{?value.owerId==userId}}<span class="com-mine"></span>{{?}}
     </li>
     {{~}}
 </script>

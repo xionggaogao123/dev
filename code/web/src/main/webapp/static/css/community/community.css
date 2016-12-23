@@ -841,7 +841,7 @@ pre{white-space: pre-wrap;word-wrap: break-word;}
     float: left;
     width: 25px;
     height:18px;
-    background: url("/static/images/community/uid.png") no-repeat;
+    background: url("/static/images/community/userId.png") no-repeat;
     cursor: pointer;
     position: relative;
     margin-left: 8px;
@@ -3702,7 +3702,7 @@ text-align: center
     display: inline-block;
     width: 25px;
     height:18px;
-    background: url("/static/images/community/uid.png") no-repeat;
+    background: url("/static/images/community/userId.png") no-repeat;
     cursor: pointer;
     position: relative;
     margin-left: 8px;

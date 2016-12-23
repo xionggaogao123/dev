@@ -109,7 +109,7 @@
 <div class="wind wind-jwb">
     <p class="p1">加为玩伴<em>×</em></p>
     <p class="p2">
-        <input type="text" id="jwbUid" placeholder="输入用户名/昵称/UID">
+        <input type="text" id="jwbUid" placeholder="输入用户名/昵称/ID">
         <button class="btn1">查找</button>
     </p>
     <div id="jwbLoad" style="width: 85px;height: 20px;margin-left: 151px;display: none">正在查找中...</div>

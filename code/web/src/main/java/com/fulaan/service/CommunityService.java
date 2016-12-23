@@ -4,8 +4,8 @@ import com.db.fcommunity.*;
 import com.db.user.UserDao;
 import com.fulaan.community.dto.CommunityDTO;
 import com.fulaan.community.dto.CommunityDetailDTO;
-import com.fulaan.dto.MemberDTO;
 import com.fulaan.community.dto.PartInContentDTO;
+import com.fulaan.dto.MemberDTO;
 import com.fulaan.fgroup.service.EmService;
 import com.fulaan.fgroup.service.GroupService;
 import com.fulaan.friendscircle.service.FriendApplyService;
@@ -180,6 +180,24 @@ public class CommunityService {
                 list.add(communityDTO);
             }
         }
+
+        Set<CommunityDTO> set = new TreeSet<CommunityDTO>(new Comparator<Object>() {
+
+            @Override
+            public int compare(Object o1, Object o2) {
+                if (o1 != null && o2 != null) {
+                    if (o1 instanceof CommunityDTO && o2 instanceof CommunityDTO) {
+                        return ((CommunityDTO) o1).getId().equals(((CommunityDTO) o2).getId()) ? 0 : 1;
+                    }
+                }
+                return 1;
+            }
+        });
+
+        set.addAll(list);
+        list.clear();
+        list.addAll(set);
+
         return list;
     }
 
@@ -237,8 +255,8 @@ public class CommunityService {
      * @return
      */
 
-    public List<CommunityDetailDTO> getNews(List<ObjectId> communityIds, CommunityDetailType type, int page, int pageSize,
-                                            int order, ObjectId userId, int operation) {
+    private List<CommunityDetailDTO> getNews(List<ObjectId> communityIds, CommunityDetailType type, int page, int pageSize,
+                                             int order, ObjectId userId, int operation) {
         CommunityEntry communityEntry = new CommunityEntry();
         if (null != communityIds && communityIds.size() > 0 && operation == 1) {
             communityEntry = communityDao.findByObjectId(communityIds.get(0));
@@ -542,7 +560,7 @@ public class CommunityService {
         for (CommunityDetailEntry entry : entries) {
             UserEntry userEntry = map.get(entry.getCommunityUserId());
             CommunityDetailDTO communityDetailDTO = new CommunityDetailDTO(entry);
-            if(userEntry != null) {
+            if (userEntry != null) {
                 communityDetailDTO.setImageUrl(AvatarUtils.getAvatar(userEntry.getAvatar(), AvatarType.MIN_AVATAR.getType()));
                 if (StringUtils.isNotBlank(userEntry.getNickName())) {
                     communityDetailDTO.setNickName(userEntry.getNickName());

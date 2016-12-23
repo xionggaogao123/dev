@@ -17,6 +17,7 @@ import com.sys.utils.AvatarUtils;
 import com.sys.utils.MD5Utils;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.log4j.Logger;
+import org.bson.types.ObjectId;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -199,6 +200,7 @@ public class PersonalCenterController extends BaseController {
 
         userService.updateAvatar(sv.getId(), imgpath1);
 
+        memberService.updateAllAvatar(new ObjectId(sv.getId()),imgpath1);
         sv.setAvatar(imgpath1 + "?v=1");
 
         String userKey = CacheHandler.getUserKey(sv.getId());

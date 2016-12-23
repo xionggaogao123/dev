@@ -89,4 +89,13 @@ public class MineCommunityDao extends BaseDao {
         DBObject dbObject = findOne(MongoFacroty.getAppDB(), Constant.COLLECTION_FORUM_MINE_COMMUNITY, query);
         return dbObject == null ? null : new MineCommunityEntry(dbObject);
     }
+
+    public void cleanNecessaryCommunity(ObjectId userId, ObjectId communityId) {
+        BasicDBObject query = new BasicDBObject("uid", userId).append("cmid", communityId);
+        if (count(MongoFacroty.getAppDB(), Constant.COLLECTION_FORUM_MINE_COMMUNITY, query) >= 2) {
+            delete(communityId, userId);
+            MineCommunityEntry communityEntry = new MineCommunityEntry(userId, communityId, 3);
+            save(communityEntry);
+        }
+    }
 }

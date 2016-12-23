@@ -56,6 +56,7 @@ public class CommunityDao extends BaseDao {
 
     /**
      * 返回社区Entry
+     *
      * @param emChatId 环信id
      * @return
      */
@@ -98,7 +99,7 @@ public class CommunityDao extends BaseDao {
      *
      * @return
      */
-    public List<CommunityEntry> getOpenCommunitys(int page,int pageSize,String lastId) {
+    public List<CommunityEntry> getOpenCommunitys(int page, int pageSize, String lastId) {
         List<CommunityEntry> retList = new ArrayList<CommunityEntry>();
         BasicDBObject query = new BasicDBObject().append("op", Constant.ONE);
         DB myMongo = MongoFacroty.getAppDB();
@@ -175,29 +176,6 @@ public class CommunityDao extends BaseDao {
     }
 
     /**
-     * 更改 二维码
-     * @param communtiyId
-     * @param qrUrl
-     */
-    public void updateCommunityQrUrl(ObjectId communtiyId, String qrUrl) {
-        BasicDBObject query = new BasicDBObject().append(Constant.ID, communtiyId);
-        BasicDBObject update = new BasicDBObject().append(Constant.MONGO_SET, new BasicDBObject("cmco", qrUrl));
-        update(MongoFacroty.getAppDB(), Constant.COLLECTION_FORUM_COMMUNITY, query, update);
-    }
-
-
-    /**
-     * 删除 - 社区 - 逻辑删除
-     *
-     * @param communityId
-     */
-    public void deleteCommunity(ObjectId communityId) {
-        BasicDBObject query = new BasicDBObject().append(Constant.ID, communityId);
-        BasicDBObject update = new BasicDBObject(Constant.MONGO_SET,new BasicDBObject("r",Constant.ONE));
-        update(MongoFacroty.getAppDB(), Constant.COLLECTION_FORUM_COMMUNITY, query,update);
-    }
-
-    /**
      * 获取 - 社区的群组 id
      *
      * @param communityId
@@ -212,8 +190,7 @@ public class CommunityDao extends BaseDao {
 
 
     public Boolean isCommunityNameUnique(String communityName) {
-        CommunityEntry dbo = findByName(communityName);
-        return dbo == null;
+        return findByName(communityName) == null;
     }
 
     public boolean judgeCommunityName(String communityName, ObjectId id) {
@@ -224,12 +201,13 @@ public class CommunityDao extends BaseDao {
 
     /**
      * 通过id查找社区消息
+     *
      * @param ids
      * @return
      */
-    public Map<ObjectId,CommunityEntry> findMapInfo(List<ObjectId> ids){
-        BasicDBObject query=new BasicDBObject()
-               .append(Constant.ID,new BasicDBObject(Constant.MONGO_IN,ids)).append("r",0);
+    public Map<ObjectId, CommunityEntry> findMapInfo(List<ObjectId> ids) {
+        BasicDBObject query = new BasicDBObject()
+                .append(Constant.ID, new BasicDBObject(Constant.MONGO_IN, ids)).append("r", 0);
         Map<ObjectId, CommunityEntry> retMap = new HashMap<ObjectId, CommunityEntry>();
         List<DBObject> list = find(MongoFacroty.getAppDB(), Constant.COLLECTION_FORUM_COMMUNITY, query, Constant.FIELDS);
         if (null != list && !list.isEmpty()) {

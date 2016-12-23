@@ -1244,4 +1244,8 @@ public class CommunityService {
     public MineCommunityEntry getTopEntry(ObjectId community, ObjectId userId) {
         return mineCommunityDao.findByUserAndCommunity(community, userId);
     }
+
+    public void cleanNecessaryCommunity(ObjectId userId, ObjectId communityId) {
+        mineCommunityDao.cleanNecessaryCommunity(userId,communityId);
+    }
 }

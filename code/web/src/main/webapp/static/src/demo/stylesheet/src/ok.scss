@@ -1,0 +1,149 @@
+.cm-container,.cm-container-selected{
+  background-color: #FFFFFF;
+  height: 60px;
+  text-align: center;
+  border-top: 1px solid #DCDCDC;
+  margin-top: 5px;
+
+  img {
+    width: 50px;
+    height: 50px;
+    text-align: center;
+    padding-top:5px;
+    float:left;
+    margin:0 0 0 15px;
+  }
+
+  input {
+    width: 15px;
+    height: 15px;
+    margin: 23px 0 0 20px;
+    float: left;
+  }
+
+  h4 {
+    width:100px;
+    float:left;
+    height:60px;
+    line-height:60px;
+    margin:0 0 0 15px;
+    text-align: left;
+  }
+}
+
+.cm-container-selected {
+  background-color: #DCDCDC;
+}
+
+.webim-dialog {
+
+  #cmBtn {
+    width: 160px;
+    height: 42px;
+    background-color: #3CAF36;
+    text-align: center;
+    line-height: 38px;
+    color: #fff;
+    border-radius: 4px;
+    font-size: 14px;
+    margin: 10px;
+    cursor:pointer;
+  }
+}
+
+
+.gm-container {
+  width: auto;
+  height: auto;
+  float:left;
+  text-align:center;
+  margin: 10px;
+
+  img {
+    width: 50px;
+    height: 50px;
+  }
+}
+
+.go-container {
+  height: 400px;
+  background-color: green;
+  width: auto;
+  visibility: hidden;
+  overflow-y: auto;
+
+  .go-content {
+    visibility:visible;
+  }
+}
+
+.search-friend-item {
+  height: 40px;
+  margin: 5px;
+
+  .search-friend-avatar {
+    width: 45px;
+    height: 45px;
+    display: block;
+    float: left;
+  }
+
+  .search-friend-info {
+    display: block;
+    float: left;
+    color: black;
+    position: relative;
+    top: 50%;
+  }
+}
+
+.searchItem {
+  width: auto;
+  height: 50px;
+  border-top: 1px solid #fff;
+  text-align: center;
+
+  img {
+    width: 45px;
+    height: 45px;
+    float: left;
+  }
+
+  h4 {
+    font-size: 14px;
+    float: left;
+  }
+
+  button {
+    float: right;
+    width: 60px;
+    height: 45px;
+    border: 1px solid #fff;
+  }
+}
+
+.lg-waing {
+  font-size: 20px;
+  margin: 10px;
+  display: block;
+}
+.login-out-btn-div {
+  position: absolute;
+  bottom: 0px;
+  text-align: center;
+  left: 0px;
+  right: 0px;
+  height: auto;
+
+  .login-out-btn {
+    width: 80px;
+    height: 32px;
+    background-color: #3CAF36;
+    text-align: center;
+    line-height: 38px;
+    color: #fff;
+    border-radius: 2px;
+    font-size: 14px;
+    cursor:pointer;
+  }
+}

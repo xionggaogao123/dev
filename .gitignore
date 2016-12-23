@@ -58,3 +58,5 @@ code/indexsearch/.rebel-remote.xml.bak
 code/pojo/.rebel-remote.xml.bak
 code/sys/.rebel-remote.xml.bak
 code/web/.rebel-remote.xml.bak
+
+code/web/node_modules/

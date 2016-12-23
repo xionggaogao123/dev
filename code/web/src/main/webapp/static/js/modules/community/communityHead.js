@@ -25,6 +25,11 @@ define(['jquery', 'pagination', 'common'], function (require, exports, module) {
             $('.bg').fadeIn();
         });
 
+        $('.mine-er').click(function(){
+            $('.wind-erw').fadeIn();
+            $('.bg').fadeIn();
+        })
+
         $('body').on('click', '.wind-jwb .btn1', function () {
             var regular = $('#jwbUid').val();
             if (regular == "") {

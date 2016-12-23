@@ -38,7 +38,7 @@
                         <em class="em2">ID:${packageCode}</em>
                     </span>
                 </span>
-                <span class="sp3" style="display: none"></span>
+                <span class="sp3 mine-er"></span>
             </p>
             <p class="p4" id="myTags">
                 <c:forEach items="${tags}" var="tag">
@@ -104,6 +104,22 @@
         <button class="btn1">确认添加</button>
         <button class="btn-add-no">取消添加</button>
     </p>
+</div>
+
+<div class="wind wind-erw">
+    <div class="d-x">×</div>
+    <div class="d1">
+        <img src="http://www.fulaan.com/static/images/community/upload.png">
+        <p class="dp1">希曼</p>
+        <p class="dp2">UID:100123</p>
+    </div>
+    <div class="d2">
+        <img src="http://7xiclj.com1.z0.glb.clouddn.com/5846026bde04cb17e0693f7b" class="ddimg">
+    </div>
+    <div class="d3">
+        <p style="text-align: center">请使用“复兰教育社区APP”扫描二维码<br>添加玩伴
+        </p>
+    </div>
 </div>
 
 <div class="wind wind-jwb">

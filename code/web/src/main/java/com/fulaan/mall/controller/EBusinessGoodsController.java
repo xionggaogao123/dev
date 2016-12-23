@@ -551,7 +551,9 @@ public class EBusinessGoodsController extends BaseController {
             return obj;
         }
         obj.put("code", Constant.SUCCESS_CODE);
-        obj.put("phone", e.getMobileNumber());
+        if(StringUtils.isNotBlank(e.getMobileNumber())) {
+            obj.put("phone", e.getMobileNumber());
+        }
         obj.put("k6kt", e.getK6KT());
         int type;
 

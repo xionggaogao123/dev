@@ -120,6 +120,13 @@ public class UserDao extends BaseDao {
     }
 
 
+    public UserEntry getGenerateCodeEntry(String generateCode){
+        BasicDBObject query = new BasicDBObject("gugc", generateCode);
+        DBObject dbo = findOne(MongoFacroty.getAppDB(), Constant.COLLECTION_USER_NAME, query, Constant.FIELDS);
+        return dbo == null ? null : new UserEntry(dbo);
+    }
+
+
     /**
      * 根据家长ID查询
      *
@@ -996,5 +1003,9 @@ public class UserDao extends BaseDao {
         BasicDBObject query = new BasicDBObject("nm", userName);
         BasicDBObject update = new BasicDBObject(Constant.MONGO_SET, new BasicDBObject("e", "").append("mn", ""));
         update(MongoFacroty.getAppDB(), Constant.COLLECTION_USER_NAME, query, update);
+    }
+
+    public void addEntry(UserEntry entry){
+        save(MongoFacroty.getAppDB(), Constant.COLLECTION_USER_NAME,entry.getBaseEntry());
     }
 }

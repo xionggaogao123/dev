@@ -20,6 +20,7 @@ import com.fulaan.user.service.UserService;
 import com.fulaan.user.util.MapUtil;
 import com.fulaan.user.util.QQLoginUtil;
 import com.fulaan.user.util.WeChatLoginUtil;
+import com.fulaan.util.ObjectIdPackageUtil;
 import com.fulaan.util.Validator;
 import com.fulaan.utils.CollectionUtil;
 import com.google.gson.Gson;
@@ -320,6 +321,8 @@ public class UserController extends BaseController {
             value.setSchoolNavs(schoolEntry.getSchoolNavs());
             value.setSchoolName(schoolEntry.getName());
         }
+
+
         //放入缓存
         ObjectId cacheUserKey = new ObjectId();
 
@@ -384,6 +387,13 @@ public class UserController extends BaseController {
             mateService.saveMateEntry(e.getID());
         }
         mateService.updateAged(e.getID(), e.getBirthDate());
+
+        //检查是否生成GenerateUserCode
+        if(StringUtils.isBlank(e.getGenerateUserCode())){
+            //若code为空，则生成code
+            e.setGenerateUserCode(ObjectIdPackageUtil.getPackage(e.getID()));
+            userService.addEntry(e);
+        }
         return respObj;
     }
 

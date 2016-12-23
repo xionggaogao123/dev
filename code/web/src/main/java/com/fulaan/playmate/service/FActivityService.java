@@ -66,9 +66,12 @@ public class FActivityService extends BaseService{
      */
     public PageModel<FActivityDTO> getNearActivitys(double lon, double lat, int page, int pageSize) {
         BasicDBObject query = fActivityDao.buildQuery(lon, lat, 10000000);
-        int count = fActivityDao.coutByQuery(query);
-        int totalPages = count % pageSize == 0 ? count / pageSize : (int) Math.ceil(count / pageSize) + 1;
+        int totalCount = fActivityDao.coutByQuery(query);
+        int totalPages = totalCount % pageSize == 0 ? totalCount / pageSize : (int) Math.ceil(totalCount / pageSize) + 1;
         page = page > totalPages ? totalPages : page;
+        if(totalPages == 0 || page < 1) {
+            page = 1;
+        }
         List<MateData> allTags = fMateTypeService.getTags();
         List<FActivityDTO> FActivityDTOS = new ArrayList<FActivityDTO>();
         List<FActivityEntry> activityEntryList = fActivityDao.findByPage(query, page, pageSize);
@@ -107,7 +110,7 @@ public class FActivityService extends BaseService{
         }
         PageModel<FActivityDTO> pageModel = new PageModel<FActivityDTO>();
         pageModel.setResult(FActivityDTOS);
-        pageModel.setTotalCount(count);
+        pageModel.setTotalCount(totalCount);
         pageModel.setTotalPages(totalPages);
         pageModel.setPage(page);
         pageModel.setPageSize(pageSize);
@@ -200,12 +203,10 @@ public class FActivityService extends BaseService{
      * @return PageModel
      */
     public PageModel<FActivityDTO> getPublishedActivity(ObjectId userId, int page, int pageSize) {
-        int count = fActivityDao.countPublishActivity(userId);
-        int totalPages = count % pageSize == 0 ? count / pageSize : (int) Math.ceil(count / pageSize) + 1;
-        if (page > totalPages) {
-            page = totalPages;
-        }
-        if (page <= 0) {
+        int totalCount = fActivityDao.countPublishActivity(userId);
+        int totalPages = totalCount % pageSize == 0 ? totalCount / pageSize : (int) Math.ceil(totalCount / pageSize) + 1;
+        page = page > totalPages ? totalPages : page;
+        if(totalPages == 0 || page < 1) {
             page = 1;
         }
         List<FActivityEntry> activityEntries = fActivityDao.getPublishedActivity(userId, page, pageSize);
@@ -213,7 +214,7 @@ public class FActivityService extends BaseService{
         pageModel.setPage(page);
         pageModel.setPageSize(pageSize);
         pageModel.setTotalPages(totalPages);
-        pageModel.setTotalCount(count);
+        pageModel.setTotalCount(totalCount);
         pageModel.setResult(getFActivityDtos(activityEntries, userId));
         return pageModel;
     }
@@ -254,12 +255,10 @@ public class FActivityService extends BaseService{
      * @return
      */
     public PageModel<FActivityDTO> getSignedActivity(ObjectId userId, int page, int pageSize) {
-        int count = fActivityDao.countUserSignActivity(userId);
-        int totalPages = count % pageSize == 0 ? count / pageSize : (int) Math.ceil(count / pageSize) + 1;
-        if (page > totalPages) {
-            page = totalPages;
-        }
-        if (page <= 0) {
+        int totalCount = fActivityDao.countUserSignActivity(userId);
+        int totalPages = totalCount % pageSize == 0 ? totalCount / pageSize : (int) Math.ceil(totalCount / pageSize) + 1;
+        page = page > totalPages ? totalPages : page;
+        if(totalPages == 0 || page < 1) {
             page = 1;
         }
         List<FActivityEntry> activityEntries = fActivityDao.getSignedActivity(userId, page, pageSize);
@@ -267,7 +266,7 @@ public class FActivityService extends BaseService{
         pageModel.setPage(page);
         pageModel.setPageSize(pageSize);
         pageModel.setTotalPages(totalPages);
-        pageModel.setTotalCount(count);
+        pageModel.setTotalCount(totalCount);
         pageModel.setResult(getFActivityDtos(activityEntries, userId));
         return pageModel;
     }
@@ -281,12 +280,10 @@ public class FActivityService extends BaseService{
      * @return
      */
     public Object getAttendedActivity(ObjectId userId, int page, int pageSize) {
-        int count = fActivityDao.countUserAttendActivity(userId);
-        int totalPages = count % pageSize == 0 ? count / pageSize : (int) Math.ceil(count / pageSize) + 1;
-        if (page > totalPages) {
-            page = totalPages;
-        }
-        if (page <= 0) {
+        int totalCount = fActivityDao.countUserAttendActivity(userId);
+        int totalPages = totalCount % pageSize == 0 ? totalCount / pageSize : (int) Math.ceil(totalCount / pageSize) + 1;
+        page = page > totalPages ? totalPages : page;
+        if(totalPages == 0 || page < 1) {
             page = 1;
         }
         List<FActivityEntry> activityEntries = fActivityDao.getAttendedActivity(userId, page, pageSize);
@@ -294,7 +291,7 @@ public class FActivityService extends BaseService{
         pageModel.setPage(page);
         pageModel.setPageSize(pageSize);
         pageModel.setTotalPages(totalPages);
-        pageModel.setTotalCount(count);
+        pageModel.setTotalCount(totalCount);
         pageModel.setResult(getFActivityDtos(activityEntries, userId));
         return pageModel;
     }

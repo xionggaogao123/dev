@@ -2216,6 +2216,42 @@ public class CommunityController extends BaseController {
 
     }
 
+
+    @RequestMapping("/getMyInfo")
+    @ResponseBody
+    public RespObj getMyInfo() {
+        ObjectId userId = getUserId();
+        Map<String,String> map=new HashMap<String, String>();
+        UserEntry userEntry = userService.findById(userId);
+        if(StringUtils.isNotBlank(userEntry.getGenerateUserCode())){
+            map.put("uid",userEntry.getGenerateUserCode());
+        }else{
+            map.put("uid",userEntry.getID().toString());
+        }
+        map.put("avatar",AvatarUtils.getAvatar(userEntry.getAvatar(),AvatarType.MIN_AVATAR.getType()));
+        if(StringUtils.isNotBlank(userEntry.getNickName())){
+            map.put("nickName",userEntry.getNickName());
+        }else{
+            map.put("nickName",userEntry.getUserName());
+        }
+        if (StringUtils.isBlank(userEntry.getQRCode())) {
+            String qrCode = QRUtils.getPersonQrUrl(userId);
+            userEntry.setQRCode(qrCode);
+            userService.addUser(userEntry);
+            map.put("qrCode",qrCode);
+
+            return RespObj.SUCCESS(map);
+        } else {
+            map.put("qrCode",userEntry.getQRCode());
+            return RespObj.SUCCESS(map);
+        }
+
+    }
+
+
+
+
+
     @RequestMapping("/updateCommunityPrio")
     @ResponseBody
     public RespObj updateCommunityPrio(@ObjectIdType ObjectId cmid, int prio) {

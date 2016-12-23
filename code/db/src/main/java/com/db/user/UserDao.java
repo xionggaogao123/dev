@@ -194,7 +194,7 @@ public class UserDao extends BaseDao {
      */
     public Map<ObjectId, UserEntry> getUserEntryMap(Collection<ObjectId> ids, DBObject fields) {
         Map<ObjectId, UserEntry> retMap = new HashMap<ObjectId, UserEntry>();
-        BasicDBObject query = new BasicDBObject(Constant.ID, new BasicDBObject(Constant.MONGO_IN, ids)).append("ir", 0);
+        BasicDBObject query = new BasicDBObject(Constant.ID, new BasicDBObject(Constant.MONGO_IN, ids));
         List<DBObject> list = find(MongoFacroty.getAppDB(), Constant.COLLECTION_USER_NAME, query, fields);
         for (DBObject dbo : list) {
             UserEntry e = new UserEntry((BasicDBObject) dbo);

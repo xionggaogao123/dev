@@ -38,7 +38,7 @@
                         <em class="em2">ID:${packageCode}</em>
                     </span>
                 </span>
-                <span class="sp3 mine-er"></span>
+                <span class="sp3 mine-er" id="myInfo"></span>
             </p>
             <p class="p4" id="myTags">
                 <c:forEach items="${tags}" var="tag">
@@ -148,6 +148,21 @@
     <div class="new-page-links" id="jwb" hidden></div>
 </div>
 
+<div class="wind wind-myInfo">
+    <div class="d-x">×</div>
+    <div class="d1">
+        <img src="/static/images/community/upload.png">
+        <p class="dp1">复兰社区</p>
+        <p class="dp2">社区ID:SDFS</p>
+    </div>
+    <div class="d2">
+        <img src="/static/images/newIndex/store-WEII.jpg" class="ddimg">
+    </div>
+    <div class="d3">
+        <p>*温馨提示：<br>请使用“复兰社区社区APP”扫描二维码<br>添加玩伴
+        </p>
+    </div>
+</div>
 
 <script src="/static/js/sea.js"></script>
 <script src="/static/js/modules/core/0.1.0/config.js?v=2015041602"></script>

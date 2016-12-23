@@ -3587,6 +3587,64 @@ text-align: center
     cursor: pointer;
 }
 
+/**/
+.wind-myInfo{
+    width: 400px;
+    height: 490px;
+    margin-left: -260px;
+    margin-top: -220px;
+    background: #fff;
+    z-index: 10;
+}
+.wind-myInfo .d1{
+    width: 260px;
+    height: 60px;
+    margin: 20px auto 25px;
+}
+.wind-myInfo .d1 img{
+    width: 60px;
+    height: 60px;
+    float: left;
+    border-radius: 100%;
+    margin-right: 15px;
+}
+.wind-myInfo .d1 .dp1{
+    float: left;
+    font-size: 16px;
+    font-weight: bold;
+    height: 20px;
+    line-height: 20px;
+    width: 175px;
+    margin-top:10px;
+    padding-bottom: 0;
+    border:none;
+}
+.wind-myInfo>div{
+    text-align: left;
+}
+.wind-myInfo .d1 .dp2{
+    float: left;
+    font-size: 13px;
+    height: 20px;
+    line-height: 20px;
+}
+.wind-myInfo .d2{
+    width: 260px;
+    height: 260px;
+    margin:0 auto;
+}
+.wind-myInfo .d3{
+    width: 380px;
+    margin: 0 auto;
+    line-height: 22px;
+    padding-top: 14px;
+}
+.wind-myInfo .d-x{
+    float: right;
+    font-size: 22px;
+    cursor: pointer;
+}
+
 /*播放器*/
 .player-container {
     position: fixed;

@@ -1504,24 +1504,13 @@ public class UserController extends BaseController {
             return "redirect:/";
         }
 
-
         Map<String, String> result = QQLoginUtil.getAccessToken(code);
         logger.info("" + result);
         String access_token = result.get("access_token");
         Map<String, Object> maps = QQLoginUtil.getOpenId(access_token);
         String openId = (String) maps.get("openid");
         Map<String, Object> userInfoMaps = QQLoginUtil.getUserInfo(access_token, openId);
-
         String nickName = (String) userInfoMaps.get("nickname");
-        Map<String, Object> query = new HashMap<String, Object>();
-        query.put("oid", openId);
-        query.put("type", 2);
-
-        int sex = 2;
-        String gender = (String) userInfoMaps.get("gender");
-        if (gender != null && gender.equals("男")) {
-            sex = 1;
-        }
 
         Cookie[] cookies = request.getCookies();
         for (Cookie cookie : cookies) {
@@ -1543,6 +1532,16 @@ public class UserController extends BaseController {
                     return "redirect:/account/thirdLoginSuccess";
                 }
             }
+        }
+
+        Map<String, Object> query = new HashMap<String, Object>();
+        query.put("oid", openId);
+        query.put("type", ThirdType.QQ.getCode());
+
+        int sex = 2;
+        String gender = (String) userInfoMaps.get("gender");
+        if (gender != null && gender.equals("男")) {
+            sex = 1;
         }
 
         UserEntry userEntry = userService.getThirdEntryByMap(query);
@@ -1623,7 +1622,7 @@ public class UserController extends BaseController {
 
         Map<String, Object> query = new HashMap<String, Object>();
         query.put("unionid", unionId);
-        query.put("type", 1);
+        query.put("type", ThirdType.WECHAT.getCode());
 
         Cookie[] cookies = request.getCookies();
         for (Cookie cookie : cookies) {
@@ -1646,7 +1645,6 @@ public class UserController extends BaseController {
                 }
             }
         }
-
 
         UserEntry userEntry = userService.getThirdEntryByMap(query);
 

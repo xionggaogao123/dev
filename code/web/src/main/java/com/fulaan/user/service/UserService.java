@@ -437,14 +437,13 @@ public class UserService extends BaseService {
      */
     public UserEntry searchThirdEntry(String openId, String unionId, ThirdType type) {
         UserEntry userEntry = null;
-        if (type.getCode() == ThirdType.WECHAT.getCode()) { //微信
+        if (type.getCode() == ThirdType.WECHAT.getCode() && unionId != null) { //微信
             Map<String, Object> map = new HashMap<String, Object>();
             map.put("unionid", unionId);
             map.put("type", ThirdType.WECHAT.getCode());
             logger.info(map + "--");
             userEntry = getThirdEntryByMap(map);
-
-        } else if (type.getCode() == ThirdType.QQ.getCode()) { //QQ
+        } else if (type.getCode() == ThirdType.QQ.getCode() && openId != null) { //QQ
             Map<String, Object> map = new HashMap<String, Object>();
             map.put("oid", openId);
             map.put("type", ThirdType.QQ.getCode());

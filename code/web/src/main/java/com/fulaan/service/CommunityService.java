@@ -118,7 +118,7 @@ public class CommunityService {
     }
 
     public void updateCommunityPrio(ObjectId communityId, int prio) {
-        mineCommunityDao.updatePrio(communityId, prio);
+        mineCommunityDao.updatePriority(communityId, prio);
     }
 
     /**
@@ -542,11 +542,13 @@ public class CommunityService {
         for (CommunityDetailEntry entry : entries) {
             UserEntry userEntry = map.get(entry.getCommunityUserId());
             CommunityDetailDTO communityDetailDTO = new CommunityDetailDTO(entry);
-            communityDetailDTO.setImageUrl(AvatarUtils.getAvatar(userEntry.getAvatar(), AvatarType.MIN_AVATAR.getType()));
-            if (StringUtils.isNotBlank(userEntry.getNickName())) {
-                communityDetailDTO.setNickName(userEntry.getNickName());
-            } else {
-                communityDetailDTO.setNickName(userEntry.getUserName());
+            if(userEntry != null) {
+                communityDetailDTO.setImageUrl(AvatarUtils.getAvatar(userEntry.getAvatar(), AvatarType.MIN_AVATAR.getType()));
+                if (StringUtils.isNotBlank(userEntry.getNickName())) {
+                    communityDetailDTO.setNickName(userEntry.getNickName());
+                } else {
+                    communityDetailDTO.setNickName(userEntry.getUserName());
+                }
             }
 
             if (null != userId) {
@@ -690,6 +692,10 @@ public class CommunityService {
             myCommunitys.add(mineCommunityEntry.getCommunityId());
         }
 
+        int counts = communityDetailDao.count(myCommunitys);
+        int totalPages = (int) Math.ceil((counts / (pageSize * 1.0)));
+        page = page > totalPages ? totalPages : page;
+
         PageModel<CommunityDetailDTO> pageModel = new PageModel<CommunityDetailDTO>();
         List<CommunityDetailEntry> entries = communityDetailDao.getDetailsByUserId(myCommunitys, page, pageSize, order);
         List<CommunityDetailDTO> dtos = new ArrayList<CommunityDetailDTO>();
@@ -709,11 +715,6 @@ public class CommunityService {
             }
 
             dtos.add(communityDetailDTO);
-        }
-        int counts = communityDetailDao.count(myCommunitys);
-        int totalPages = (int) Math.ceil((counts / (pageSize * 1.0)));
-        if (page > totalPages) {
-            page = totalPages;
         }
         pageModel.setPage(page);
         pageModel.setPageSize(pageSize);

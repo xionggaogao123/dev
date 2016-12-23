@@ -7,11 +7,9 @@ import com.pojo.ebusiness.EGoodsDTO;
 import com.pojo.parentChild.ParentChildActivityEntry;
 import org.apache.http.HttpResponse;
 import org.apache.http.client.HttpClient;
-import org.apache.http.impl.client.DefaultHttpClient;
 import org.apache.http.util.EntityUtils;
 import org.bson.types.ObjectId;
 
-import java.util.ArrayList;
 import java.util.List;
 
 /**

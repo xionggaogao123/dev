@@ -103,8 +103,11 @@ public class MemberService {
      */
     public PageModel getGroupMembers(ObjectId grid, int page, int pageSize) {
         int totalCount = memberDao.getMemberCount(grid);
-        int totalPages = (int) Math.floor(totalCount / pageSize);
+        int totalPages = totalCount % pageSize == 0 ? totalCount / pageSize : (int) Math.ceil(totalCount / pageSize) + 1;
         page = page > totalPages ? totalPages : page;
+        if(totalPages == 0 || page < 1) {
+            page = 1;
+        }
         List<MemberEntry> entries = memberDao.getMembers(grid, page, pageSize);
         List<MemberDTO> memberDTOs = new ArrayList<MemberDTO>();
         for (MemberEntry entry : entries) {

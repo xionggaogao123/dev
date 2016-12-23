@@ -361,14 +361,15 @@ public class CommunityService {
         for (CommunityDetailEntry entry : entries) {
             dtos.add(new CommunityDetailDTO(entry));
         }
-        int counts = communityDetailDao.count(communityId);
-        int totalPages = (int) Math.ceil((counts / (pageSize * 1.0)));
-        if (page > totalPages) {
-            page = totalPages;
+        int totalCount = communityDetailDao.count(communityId);
+        int totalPages = totalCount % pageSize == 0 ? totalCount / pageSize : (int) Math.ceil(totalCount / pageSize) + 1;
+        page = page > totalPages ? totalPages : page;
+        if(totalPages == 0 || page < 1) {
+            page = 1;
         }
         pageModel.setPage(page);
         pageModel.setPageSize(pageSize);
-        pageModel.setTotalCount(counts);
+        pageModel.setTotalCount(totalCount);
         pageModel.setTotalPages(totalPages);
         pageModel.setResult(dtos);
         return pageModel;
@@ -545,6 +546,12 @@ public class CommunityService {
         List<CommunityDetailEntry> entries = communityDetailDao.getDetails(communityId, page, pageSize, Constant.DESC, type);
         int counts = communityDetailDao.count(communityId, type);
 
+        int totalPages = counts % pageSize == 0 ? counts / pageSize : (int) Math.ceil(counts / pageSize) + 1;
+        page = page > totalPages ? totalPages : page;
+        if(totalPages == 0 || page < 1) {
+            page = 1;
+        }
+
         if (type.getType() == CommunityDetailType.ANNOUNCEMENT.getType() && isApp) {
             if (null != userId) {
                 setAppRead(userId, entries);
@@ -595,11 +602,6 @@ public class CommunityService {
             dtos.add(communityDetailDTO);
         }
 
-
-        int totalPages = (int) Math.ceil((counts / (pageSize * 1.0)));
-        if (page > totalPages) {
-            page = totalPages;
-        }
         pageModel.setPage(page);
         pageModel.setPageSize(pageSize);
         pageModel.setTotalCount(counts);
@@ -652,20 +654,7 @@ public class CommunityService {
         return playmate;
     }
 
-    public List<ObjectId> mutual(List<ObjectId> partners, List<ObjectId> partners1) {
-        List<ObjectId> objectIds = new ArrayList<ObjectId>();
-        for (ObjectId objectId : partners) {
-            for (ObjectId item : partners1) {
-                if (objectId.equals(item)) {
-                    objectIds.add(objectId);
-                    break;
-                }
-            }
-        }
-        return objectIds;
-    }
-
-    public List<String> getTagList(List<UserEntry.UserTagEntry> ftags, List<UserEntry.UserTagEntry> tags) {
+    private List<String> getTagList(List<UserEntry.UserTagEntry> ftags, List<UserEntry.UserTagEntry> tags) {
         List<String> tagEntries = new ArrayList<String>();
         for (UserEntry.UserTagEntry userTagEntry : ftags) {
             if (tagEntries.size() < 2) {
@@ -710,9 +699,12 @@ public class CommunityService {
             myCommunitys.add(mineCommunityEntry.getCommunityId());
         }
 
-        int counts = communityDetailDao.count(myCommunitys);
-        int totalPages = (int) Math.ceil((counts / (pageSize * 1.0)));
+        int totalCount = communityDetailDao.count(myCommunitys);
+        int totalPages = totalCount % pageSize == 0 ? totalCount / pageSize : (int) Math.ceil(totalCount / pageSize) + 1;
         page = page > totalPages ? totalPages : page;
+        if(totalPages == 0 || page < 1) {
+            page = 1;
+        }
 
         PageModel<CommunityDetailDTO> pageModel = new PageModel<CommunityDetailDTO>();
         List<CommunityDetailEntry> entries = communityDetailDao.getDetailsByUserId(myCommunitys, page, pageSize, order);
@@ -736,7 +728,7 @@ public class CommunityService {
         }
         pageModel.setPage(page);
         pageModel.setPageSize(pageSize);
-        pageModel.setTotalCount(counts);
+        pageModel.setTotalCount(totalCount);
         pageModel.setTotalPages(totalPages);
         pageModel.setResult(dtos);
         return pageModel;
@@ -877,11 +869,12 @@ public class CommunityService {
 
         int totalCount = partInContentDao.countPartPartInContent(detailId);
         pageModel.setTotalCount(totalCount);
-        int totalPage = (int) Math.ceil(totalCount / pageSize) + 1;
-        if (page > totalPage) {
-            page = totalPage;
+        int totalPages = totalCount % pageSize == 0 ? totalCount / pageSize : (int) Math.ceil(totalCount / pageSize) + 1;
+        page = page > totalPages ? totalPages : page;
+        if(totalPages == 0 || page < 1) {
+            page = 1;
         }
-        pageModel.setTotalPages(totalPage);
+        pageModel.setTotalPages(totalPages);
         pageModel.setPageSize(pageSize);
         pageModel.setPage(page);
         boolean isManager = false;

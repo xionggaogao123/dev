@@ -50,10 +50,10 @@ public class MateService extends BaseService {
         System.out.println(query.toString());
         int count = fMateDao.countByPage(query);
         int totalPages = count % pageSize == 0 ? count / pageSize : (int) Math.ceil(count / pageSize) + 1;
-        if(totalPages == 0) {
-            totalPages = 1;
-        }
         page = page > totalPages ? totalPages : page;
+        if(totalPages == 0 || page < 1) {
+            page = 1;
+        }
         List<FMateEntry> fMateEntries = fMateDao.findByPage(query, page, pageSize);
         FriendEntry myFriendEnty = null;
         if (userId != null) {

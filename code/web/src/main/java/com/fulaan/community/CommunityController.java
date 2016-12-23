@@ -103,7 +103,17 @@ public class CommunityController extends BaseController {
                                    @RequestParam(required = false, defaultValue = "0") int open,
                                    @RequestParam(required = false, defaultValue = "") String userIds) throws Exception {
         //先进行敏感词过滤
-        name = userService.replaceSensitiveWord(name);
+        List<String> words=userService.recordSensitiveWords(name);
+        if(words.size()>0){
+            StringBuffer buffer=new StringBuffer();
+            buffer.append("这些词语 ");
+            for(String item:words){
+                buffer.append("“"+item+"”"+"、");
+            }
+            String str=buffer.toString().substring(0,buffer.toString().length()-1);
+            str=str+"是违禁词!";
+            return RespObj.FAILD(str);
+        }
         desc = userService.replaceSensitiveWord(desc);
         //先判断该社区名称是否使用过
         boolean flag = communityService.isCommunityNameUnique(name);
@@ -167,7 +177,19 @@ public class CommunityController extends BaseController {
                                     @RequestParam(required = false, defaultValue = "0") int open,
                                     @RequestParam(required = false, defaultValue = "") String userIds) throws Exception {
         //先进行敏感词过滤
-        name = userService.replaceSensitiveWord(name);
+        List<String> words=userService.recordSensitiveWords(name);
+        if(words.size()>0){
+            StringBuffer buffer=new StringBuffer();
+            buffer.append("这些词语 ");
+            for(String item:words){
+                buffer.append("“"+item+"”"+"、");
+            }
+            String str=buffer.toString().substring(0,buffer.toString().length()-1);
+            str=str+"是违禁词!";
+            CommunityDTO communityDTO = new CommunityDTO();
+            communityDTO.setErrorMsg(str);
+            return RespObj.FAILD(communityDTO);
+        }
         desc = userService.replaceSensitiveWord(desc);
 
         //先判断该社区名称是否使用过
@@ -1389,49 +1411,56 @@ public class CommunityController extends BaseController {
                     dtos.add(getDto(userEntry));
                 }
             } else {
-                //用户名精确查找
-                List<UserEntry> userEntryList = userService.getInfoByName("nm", regular);
-                if (userEntryList.size() > 0) {
-                    dtos = getUserInfo(userEntryList);
-                    count = dtos.size();
-                } else {
-                    //昵称精确查找
-                    List<UserEntry> userEntryList1 = userService.getInfoByName("nnm", regular);
-                    if (userEntryList1.size() > 0) {
-                        dtos = getUserInfo(userEntryList1);
+                //新产生的Id查找
+                UserEntry userEntry1 = userService.findByGenerateCode(regular);
+                if (null != userEntry1) {
+                    dtos.add(getDto(userEntry1));
+                }
+                if(dtos.size()==0) {
+                    //用户名精确查找
+                    List<UserEntry> userEntryList = userService.getInfoByName("nm", regular);
+                    if (userEntryList.size() > 0) {
+                        dtos = getUserInfo(userEntryList);
                         count = dtos.size();
                     } else {
-                        //判断是否存储了Id,存储时间为5分钟
-                        String field1 = "nm";
-                        String filed2 = "nnm";
-                        ObjectId userId = getUserId();
-                        String key = userId.toString() + "$" + regular;
-                        Map map = RedisUtils.getMap(key);
-                        UserEntry userEntry = userService.getUserInfoEntry(regular);
-                        if (null != userEntry) {
-                            List<UserEntry> userEntries = userService.getUserList(field1, regular, page, pageSize);
-                            dtos = getUserInfo(userEntries);
-                            if (null != map && map.size() != 0) {
-                                count = Integer.parseInt((String) map.get("count"));
-                            } else {
-                                count = userService.countUserList(field1, regular);
-                            }
+                        //昵称精确查找
+                        List<UserEntry> userEntryList1 = userService.getInfoByName("nnm", regular);
+                        if (userEntryList1.size() > 0) {
+                            dtos = getUserInfo(userEntryList1);
+                            count = dtos.size();
                         } else {
-                            List<UserEntry> userEntries = userService.getUserList(filed2, regular, page, pageSize);
-                            dtos = getUserInfo(userEntries);
-                            if (null != map && map.size() != 0) {
-                                count = Integer.parseInt((String) map.get("count"));
+                            //判断是否存储了Id,存储时间为5分钟
+                            String field1 = "nm";
+                            String filed2 = "nnm";
+                            ObjectId userId = getUserId();
+                            String key = userId.toString() + "$" + regular;
+                            Map map = RedisUtils.getMap(key);
+                            UserEntry userEntry = userService.getUserInfoEntry(regular);
+                            if (null != userEntry) {
+                                List<UserEntry> userEntries = userService.getUserList(field1, regular, page, pageSize);
+                                dtos = getUserInfo(userEntries);
+                                if (null != map && map.size() != 0) {
+                                    count = Integer.parseInt((String) map.get("count"));
+                                } else {
+                                    count = userService.countUserList(field1, regular);
+                                }
                             } else {
-                                count = userService.countUserList(filed2, regular);
+                                List<UserEntry> userEntries = userService.getUserList(filed2, regular, page, pageSize);
+                                dtos = getUserInfo(userEntries);
+                                if (null != map && map.size() != 0) {
+                                    count = Integer.parseInt((String) map.get("count"));
+                                } else {
+                                    count = userService.countUserList(filed2, regular);
+                                }
                             }
-                        }
-                        //存储key-value
-                        Map hashMap = new HashMap();
-                        if (dtos.size() > 0) {
-                            hashMap.put("count", count + "");
-                        }
-                        if (null != hashMap && hashMap.size() > 0) {
-                            RedisUtils.cacheMap(key, hashMap, Constant.SESSION_FIVE_MINUTE);
+                            //存储key-value
+                            Map hashMap = new HashMap();
+                            if (dtos.size() > 0) {
+                                hashMap.put("count", count + "");
+                            }
+                            if (null != hashMap && hashMap.size() > 0) {
+                                RedisUtils.cacheMap(key, hashMap, Constant.SESSION_FIVE_MINUTE);
+                            }
                         }
                     }
                 }
@@ -1807,6 +1836,11 @@ public class CommunityController extends BaseController {
 
         }
         model.put("personId", personId.toString());
+        if(org.apache.commons.lang.StringUtils.isNotBlank(userEntry.getGenerateUserCode())){
+            model.put("packageCode",userEntry.getGenerateUserCode());
+        }else{
+            model.put("packageCode",personId.toString());
+        }
         model.put("communityNames", communityService.generateCommunityNames(personId));
 
         return "/community/communityUser";

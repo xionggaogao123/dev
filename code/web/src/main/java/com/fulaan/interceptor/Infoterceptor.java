@@ -122,11 +122,15 @@ public class Infoterceptor extends HandlerInterceptorAdapter {
             model.put("forumExperience", userEntry.getForumExperience());
             long stars = fLevelService.getStars(userEntry.getForumExperience());
             model.put("stars", stars);
+            if(StringUtils.isNotBlank(userEntry.getGenerateUserCode())){
+                model.put("packageCode",userEntry.getGenerateUserCode());
+            }else{
+                model.put("packageCode",sessionValue.getId());
+            }
         } else {
             model.put("forumScore", 0L);
             model.put("forumExperience", 0L);
         }
-
         //获取自己的标签信息
         List<UserEntry.UserTagEntry> userTagEntries = userEntry.getUserTag();
         List<String> tags = new ArrayList<String>();

@@ -2863,6 +2863,7 @@ public class FPostController extends BaseController {
             model.put("login", false);
             model.put("k6kt", -1);
             model.put("signIn", false);
+            model.put("packageCode","");
             return;
         }
 
@@ -2896,6 +2897,7 @@ public class FPostController extends BaseController {
         long stars = fLevelService.getStars(userEntry.getForumExperience());
         model.put("stars", stars);
         model.put("userId", sessionValue.getId());
+        model.put("packageCode",userEntry.getGenerateUserCode());
         model.put("login", true);
         model.put("k6kt", sessionValue.getK6kt());
         model.put("avatar", sessionValue.getMinAvatar());

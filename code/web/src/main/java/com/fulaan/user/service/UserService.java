@@ -103,6 +103,17 @@ public class UserService extends BaseService {
         return  FastCheck.replaceWith(text,'*');
     }
 
+    public List<String> recordSensitiveWords(String text){
+        List<String> list=new ArrayList<String>();
+        for(String item:KeyWordFilterUtil.split_list){
+            if(text.contains(item)){
+                list.add(item);
+            }
+        }
+        return list;
+    }
+
+
     public List<FLoginLog> getLoginLog(long start, long end) {
         List<FLoginLogEntry> loginLogEntries = loginLogDao.getLoginLog(start, end);
         List<FLoginLog> loginLogs = new ArrayList<FLoginLog>();
@@ -364,6 +375,10 @@ public class UserService extends BaseService {
      */
     public UserEntry findById(ObjectId id) {
         return userDao.getUserEntry(id, Constant.FIELDS);
+    }
+
+    public UserEntry findByGenerateCode(String generateCode) {
+        return userDao.getGenerateCodeEntry(generateCode);
     }
 
     /**
@@ -1176,5 +1191,9 @@ public class UserService extends BaseService {
 
     public void removeThirdBind(ObjectId userId, ThirdType thirdType) {
         thirdLoginDao.removeThirdBind(userId,thirdType);
+    }
+
+    public void addEntry(UserEntry userEntry){
+        userDao.addEntry(userEntry);
     }
 }

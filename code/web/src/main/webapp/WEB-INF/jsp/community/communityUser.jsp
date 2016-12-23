@@ -25,7 +25,7 @@
             <span class="sp2">
                 <span>
                     <em class="em1"></em>
-                    <em class="em2">${personId}</em>
+                    <em class="em2">${packageCode}</em>
                 </span>
             </span>
             <span class="sp3" style="display: none"></span>

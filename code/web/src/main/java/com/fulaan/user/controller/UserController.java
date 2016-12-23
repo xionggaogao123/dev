@@ -219,7 +219,10 @@ public class UserController extends BaseController {
         if (null == e) {
             faild.setMessage("accountError");
             return faild;
-        } else {
+        } else if(e.getIsRemove()==1){
+            faild.setMessage("用户名不存在！");
+            return faild;
+        } else{
             String emailValidateCode = e.getEmailValidateCode();
             if (StringUtils.isNotBlank(emailValidateCode)) {
                 if (e.getEmailStatus() == 0) {

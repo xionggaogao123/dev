@@ -219,7 +219,7 @@ public class CommunityService {
         List<AttachmentEntry> vedios = splitAttachements(message.getVedios(), uid);
         List<AttachmentEntry> images = splitAttachements(message.getImages(), uid);
         CommunityDetailEntry entry = new CommunityDetailEntry(new ObjectId(message.getCommunityId()),
-                uid, userService.filter(message.getTitle()), userService.filter(message.getContent()), message.getType(),
+                uid, userService.replaceSensitiveWord(message.getTitle()), userService.replaceSensitiveWord(message.getContent()), message.getType(),
                 new ArrayList<ObjectId>(), attachmentEntries, vedios, images,
                 message.getShareUrl(), message.getShareImage(), message.getShareTitle(), message.getSharePrice());
         communityDetailDao.save(entry);

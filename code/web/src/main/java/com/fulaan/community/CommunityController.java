@@ -25,6 +25,7 @@ import com.fulaan.user.service.UserService;
 import com.fulaan.util.GetImage;
 import com.fulaan.util.QRUtils;
 import com.fulaan.util.URLParseUtil;
+import com.fulaan.util.check.FastCheck;
 import com.pojo.activity.FriendApply;
 import com.pojo.app.FileUploadDTO;
 import com.pojo.app.Platform;
@@ -102,8 +103,8 @@ public class CommunityController extends BaseController {
                                    @RequestParam(required = false, defaultValue = "0") int open,
                                    @RequestParam(required = false, defaultValue = "") String userIds) throws Exception {
         //先进行敏感词过滤
-        name = userService.filter(name);
-        desc = userService.filter(desc);
+        name = userService.replaceSensitiveWord(name);
+        desc = userService.replaceSensitiveWord(desc);
         //先判断该社区名称是否使用过
         boolean flag = communityService.isCommunityNameUnique(name);
         if (!flag) {
@@ -166,8 +167,8 @@ public class CommunityController extends BaseController {
                                     @RequestParam(required = false, defaultValue = "0") int open,
                                     @RequestParam(required = false, defaultValue = "") String userIds) throws Exception {
         //先进行敏感词过滤
-        name = userService.filter(name);
-        desc = userService.filter(desc);
+        name = userService.replaceSensitiveWord(name);
+        desc = userService.replaceSensitiveWord(desc);
 
         //先判断该社区名称是否使用过
         boolean flag = communityService.isCommunityNameUnique(name);
@@ -504,7 +505,7 @@ public class CommunityController extends BaseController {
                                         @RequestParam(defaultValue = "1") int join,
                                         @RequestParam(defaultValue = "", required = false) String msg) {
         //先进行敏感词过滤
-        msg = userService.filter(msg);
+        msg = userService.replaceSensitiveWord(msg);
         ObjectId userId = getUserId();
         if (join == 1) {
             CommunityDetailDTO communityDetailDTO = communityService.findDetailById(communityDetailId);
@@ -1307,7 +1308,7 @@ public class CommunityController extends BaseController {
                                  @RequestParam(defaultValue = "", required = false) String vedios,
                                  @RequestParam(defaultValue = "", required = false) String attachements) {
         //先进行敏感词过滤
-        text = userService.filter(text);
+        text = userService.replaceSensitiveWord(text);
         ObjectId userId = getUserId();
         if (StringUtils.isNotBlank(text)) {
             communityService.saveReplyDetailText(communityId, detailId, userId, text, type);
@@ -1560,7 +1561,7 @@ public class CommunityController extends BaseController {
 
         try {
             //先进行敏感词过滤
-            shareCommend = userService.filter(shareCommend);
+            shareCommend = userService.replaceSensitiveWord(shareCommend);
             HttpClientBuilder httpClientBuilder = HttpClientBuilder.create();
             CloseableHttpClient client = httpClientBuilder.build();
             //抓取的数据
@@ -1587,7 +1588,7 @@ public class CommunityController extends BaseController {
                              @RequestParam(defaultValue = "", required = false) String description,
                              @RequestParam(defaultValue = "", required = false) String sharePrice) {
         //先进行敏感词过滤
-        shareCommend = userService.filter(shareCommend);
+        shareCommend = userService.replaceSensitiveWord(shareCommend);
         ObjectId uid = getUserId();
         communityService.saveCommunityRecommend(communityId, communityDetailId, uid, shareUrl, shareImage, description, sharePrice, shareCommend, type);
         return RespObj.SUCCESS("推荐学习用品成功！");

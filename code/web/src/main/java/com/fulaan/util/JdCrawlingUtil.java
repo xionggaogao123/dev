@@ -1,6 +1,7 @@
 package com.fulaan.util;
 
 import com.fulaan.pojo.ProductModel;
+import com.fulaan.util.crawl.CrawlData;
 import com.pojo.parentChild.ParentChildActivityEntry;
 import org.bson.types.ObjectId;
 import org.jsoup.Jsoup;
@@ -16,7 +17,8 @@ import java.util.List;
  */
 public class JdCrawlingUtil {
 
-    public static boolean ParseData(String html, List<ParentChildActivityEntry> entries, String cityName, ObjectId regionId, int expense, String startTime) {
+    public static boolean ParseData(String html, List<ParentChildActivityEntry> entries, String cityName, ObjectId regionId, int expense,
+                                    String startTime,CrawlData.Record record,int number) {
         //采用Jsoup解析
         Document doc = Jsoup.parse(html);
         Element element = doc.getElementsByClass("find_main_ul").first();
@@ -59,10 +61,30 @@ public class JdCrawlingUtil {
             entries.add(entry);
         }
 
-        if (elements.size()==20) {
-            return true;
-        } else {
-            return false;
+        if(number==1){
+           if(entries.size()==0){
+              return false;
+           }else{
+              record.setName(entries.get(0).getActivityName());
+              record.setDesc(entries.get(0).getActivityDescription());
+              record.setTime(entries.get(0).getActivityTime());
+              return true;
+           }
+        }else{
+            if(entries.size()==0){
+                return false;
+            }else{
+                ParentChildActivityEntry entry=entries.get(0);
+                String acName=entry.getActivityName();
+                String ac=entry.getActivityDescription();
+                String time=entry.getActivityTime();
+                if(record.getName().equals(acName)&&record.getDesc().equals(ac)&&record.getTime().equals(time)){
+                     entries.clear();
+                     return false;
+                }else{
+                    return true;
+                }
+            }
         }
     }
 

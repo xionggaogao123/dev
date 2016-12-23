@@ -2,6 +2,7 @@ package com.fulaan.util;
 
 import com.fulaan.mall.service.EGoodsService;
 import com.fulaan.pojo.ProductModel;
+import com.fulaan.util.crawl.CrawlData;
 import com.pojo.ebusiness.EGoodsDTO;
 import com.pojo.parentChild.ParentChildActivityEntry;
 import org.apache.http.HttpResponse;
@@ -20,7 +21,8 @@ public class URLParseUtil {
 
     private static EGoodsService eGoodsService = new EGoodsService();
 
-    public static boolean ParseHDBData(HttpClient client, String url,List<ParentChildActivityEntry> entries,String cityName,ObjectId regionId,int expense,String startTime) throws Exception {
+    public static boolean ParseHDBData(HttpClient client, String url,List<ParentChildActivityEntry> entries,String cityName,ObjectId regionId,int expense,
+                                       String startTime, CrawlData.Record record,int number) throws Exception {
         HttpResponse response = HttpUtils.getCrawlHtml(client, url);
         //获取响应状态码
         int StatusCode = response.getStatusLine().getStatusCode();
@@ -28,7 +30,7 @@ public class URLParseUtil {
         if (StatusCode == 200) {
             String entity = EntityUtils.toString(response.getEntity(), "utf-8");
             EntityUtils.consume(response.getEntity());
-            return  JdCrawlingUtil.ParseData(entity,entries,cityName,regionId,expense,startTime);
+            return  JdCrawlingUtil.ParseData(entity,entries,cityName,regionId,expense,startTime,record,number);
         } else {
             //否则，消耗掉实体
             EntityUtils.consume(response.getEntity());

@@ -95,8 +95,16 @@ public class SessionValue implements Serializable{
 		}
 	}
 
+	public String getPackageCode(){
+		return get("packageCode");
+	}
+
 	public void setK6kt(Integer k6kt){
 		put("k6kt", k6kt.toString());
+	}
+
+	public void setPackageCode(String packageCode){
+		put("packageCode",packageCode);
 	}
 
 	public String getChatid() {

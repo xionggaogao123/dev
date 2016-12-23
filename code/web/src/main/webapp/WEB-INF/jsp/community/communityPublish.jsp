@@ -165,7 +165,8 @@
         </div>
         <div class="com-right">
             <div class="com-right-s clearfix">
-                <div class="com-tit">当前社区</div>
+                <div class="com-tit">当前社区<c:if test="${login == true}"><a href="/community/manageCurrentCommunity.do?communityId=${communityId}"><span
+                        class="com-set-my-btn1"></span></a></c:if></div>
                 <div class="com-now">
                     <img src="/static/images/community/result.png" width="60px" height="60px">
                     <p class="p1">复兰社区</p>
@@ -247,7 +248,7 @@
 <div class="wind wind-yq">
     <p class="p1">邀请玩伴<em>×</em></p>
     <p class="p2">
-        <input type="text" id="uid" placeholder="输入用户名/昵称/UID">
+        <input type="text" id="uid" placeholder="输入用户名/昵称/ID">
         <button class="btn1">查找</button>
     </p>
     <div id="load" style="width: 85px;height: 20px;margin-left: 151px;display: none">正在查找中...</div>
@@ -359,6 +360,7 @@
     </li>
     {{~}}
 </script>
+
 
 <script type="text/template" id="memberTmpl">
     {{~it:value:index}}

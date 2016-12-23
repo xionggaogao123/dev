@@ -366,7 +366,15 @@ public class UserController extends BaseController {
             ex.printStackTrace();
         }
 
+        //检查是否生成GenerateUserCode
+        if(StringUtils.isBlank(e.getGenerateUserCode())){
+            //若code为空，则生成code
+            e.setGenerateUserCode(ObjectIdPackageUtil.getPackage(e.getID()));
+            userService.addEntry(e);
+        }
+
         RespObj respObj = new RespObj(Constant.SUCCESS_CODE);
+        value.setPackageCode(e.getGenerateUserCode());
         respObj.setMessage(value);
 
         //检查是否注册环信
@@ -388,12 +396,7 @@ public class UserController extends BaseController {
         }
         mateService.updateAged(e.getID(), e.getBirthDate());
 
-        //检查是否生成GenerateUserCode
-        if(StringUtils.isBlank(e.getGenerateUserCode())){
-            //若code为空，则生成code
-            e.setGenerateUserCode(ObjectIdPackageUtil.getPackage(e.getID()));
-            userService.addEntry(e);
-        }
+
         return respObj;
     }
 

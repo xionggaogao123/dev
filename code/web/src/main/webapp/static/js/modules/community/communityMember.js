@@ -8,7 +8,9 @@ define(['jquery', 'pagination', 'common'], function (require, exports, module) {
     var initPage = 1;
     //该社区副社长数目
     var communitySecondCount = 0;
+    var saveFlag = false;
     var activity_cur = 1;
+    var fulanId=$('body').attr('fulanId');
     communityMember.init = function () {
         getMemberList(initPage);
         getCurrCommunity();
@@ -270,7 +272,90 @@ define(['jquery', 'pagination', 'common'], function (require, exports, module) {
             $('.si-s5').fadeOut();
             $('.bg').fadeOut();
         })
+
+        $('body').on('click', '.em-edit', function () {
+            common.getData('/community/' + communityId, {}, function (resp) {
+                if (resp.code == "200") {
+                    $('.wind-com-edit').data('id', communityId);
+                    $('#communityName').val(resp.message.name);
+                    $('#communityLogo').attr('src', resp.message.logo);
+                    $('#communityDesc').next().val(resp.message.desc);
+                    $('#selectOpen').val(resp.message.open);
+                    $('.wind-com-edit').fadeIn();
+                    $('.bg').fadeIn();
+                }
+            })
+        })
+
+
+        $('body').on('click', '.btn-save', function () {
+            saveOperation();
+        });
+
+        $('body').on('click', '.quit', function () {
+            quitCommunity(communityId);
+        });
+
     })
+
+    function quitCommunity(communtiyId) {
+        var data = {
+            communityId: communtiyId
+        };
+        common.getData("/community/quit.do", data, function (result) {
+            if (result.code = "200") {
+                alert("退出成功");
+                window.location.href="/community/communityPublish?communityId="+fulanId;
+            } else {
+                alert(result.message);
+            }
+        });
+    }
+
+    function saveOperation() {
+        var param = {};
+        validateCommunityInfo();
+        param.logo = $('#communityLogo').attr('src');
+        param.desc = $('#communityDesc').next().val();
+        param.name = $('#communityName').val();
+        param.open = $('#selectOpen').val();
+        param.communityId = $('.wind-com-edit').data('id');
+        if(saveFlag) {
+            common.getData('/community/update.do', param, function (resp) {
+                if (resp.code == '200') {
+                    $('.wind-com-edit').fadeOut();
+                    $('.bg').fadeOut();
+                    getCurrCommunity();
+                    getMyCommunity();
+                    alert("保存成功！");
+                } else {
+                    alert(resp.message);
+                }
+            });
+        }
+    }
+
+    function validateCommunityInfo() {
+        var communityName = $('#communityName').val();
+        var communityDes = $('#communityDesc').next().val();
+        if (communityName == "" || communityName == undefined) {
+            alert("社区名称不能为空！");
+            saveFlag = false;
+        }
+        if (communityName.length > 15) {
+            alert("社区名称不能超过15个字！");
+            saveFlag = false;
+        }
+        if (communityDes == "" || communityDes == undefined) {
+            alert("社区简介不能为空！");
+            rsaveFlag = false;
+        }
+        if (communityDes.length > 100) {
+            alert("社区简介字数不能超过100！");
+            saveFlag = false;
+        }
+        saveFlag = true;
+    }
 
 
     function applyFriend() {
@@ -309,8 +394,10 @@ define(['jquery', 'pagination', 'common'], function (require, exports, module) {
     function getCurrCommunity() {
         common.getData('/community/' + communityId, {}, function (resp) {
             if (resp.code == "200") {
-                $('.com-now').find('.p1').html(resp.message.name);
-                $('.com-now').find('img').attr('src', resp.message.logo);
+                $('.com-rlt2').find('.p1').html(resp.message.name);
+                $('.com-rlt2').find('img').attr('src', resp.message.logo);
+                $('.com-rlt2').find('.p2').html("社区ID:" + resp.message.searchId);
+                $('.com-rlt2').find('.p3').html("社区简介：" + resp.message.desc);
             } else {
                 alert(resp.message);
             }

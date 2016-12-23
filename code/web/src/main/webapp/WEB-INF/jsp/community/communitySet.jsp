@@ -28,7 +28,7 @@
             <div class="com-left-s">
                 <div class="com-tit">管理社区</div>
                 <div class="my-comm-container clearfix">
-                    <ul class="ul-com" id="myCommunity">
+                    <ul class="ul-com clearfix" id="myCommunity">
 
                     </ul>
                 </div>
@@ -193,6 +193,7 @@
                 <%--{{?}}--%>
             </p>
         </div>
+        <span class="com-mine"></span>
     </li>
     {{~}}
 </script>

@@ -272,7 +272,6 @@ public class CommunityController extends BaseController {
         List<FileUploadDTO> fileInfos = new ArrayList<FileUploadDTO>();
         try {
             Map<String, MultipartFile> fileMap = request.getFileMap();
-
             List<String> list = new ArrayList<String>(fileMap.keySet());
             if (list.size() == 0) {
                 obj.setMessage("未上传图片");

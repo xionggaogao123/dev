@@ -2327,10 +2327,10 @@ pre{white-space: pre-wrap;word-wrap: break-word;}
 }
 .act-title .p1{
     height: 38px;
-    line-height: 38px;
+    line-height: 26px;
     font-weight: bold;
     font-size: 18px;
-    padding-left: 62px;
+    padding: 6px 0 6px 62px;
     overflow: hidden;
 }
 .act-title .p-wrap{
@@ -3234,6 +3234,16 @@ text-align: center
     height: 131px;
     margin: 0 24px 16px;
     float: left;
+    position: relative;
+}
+.ul-com li .com-mine{
+    display: inline-block;
+    position: absolute;
+    top:0;
+    right: -20px;
+    width: 12px;
+    height:16px;
+    background: url("/static/images/community/mine.png") no-repeat;
 }
 .ul-com li img{
     display: block;

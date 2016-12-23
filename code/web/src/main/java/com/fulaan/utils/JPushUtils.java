@@ -1,4 +1,4 @@
-package com.fulaan.jpush;
+package com.fulaan.utils;
 
 import cn.jiguang.common.resp.APIConnectionException;
 import cn.jiguang.common.resp.APIRequestException;

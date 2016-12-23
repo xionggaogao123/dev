@@ -29,10 +29,10 @@ define(['jquery', 'pagination', 'common'], function (require, exports, module) {
             $('.bg').fadeOut();
         })
 
-        $('.mine-er').click(function(){
-            $('.wind-erw').fadeIn();
-            $('.bg').fadeIn();
-        })
+        // $('.mine-er').click(function(){
+        //     $('.wind-erw').fadeIn();
+        //     $('.bg').fadeIn();
+        // })
 
         $('body').on('click', '.wind-jwb .btn1', function () {
             var regular = $('#jwbUid').val();
@@ -178,6 +178,21 @@ define(['jquery', 'pagination', 'common'], function (require, exports, module) {
                 });
             }
         });
+
+        $('body').on('click','#myInfo',function(){
+            common.getData('/community/getMyInfo.do',{},function(resp){
+                if(resp.code=="200"){
+                    var message=resp.message;
+                    $('.wind-myInfo .d1').find('img').attr('src',message.avatar);
+                    $('.wind-myInfo .d1 .dp1').html(message.nickName);
+                    $('.wind-myInfo .d1 .dp2').html("UID:"+message.uid);
+                    $('.wind-myInfo .d2').find('img').attr('src',message.qrCode);
+                    $('.wind-myInfo').fadeIn();
+                    $('.bg').fadeIn();
+                }
+
+            })
+        })
 
     });
 

@@ -1164,5 +1164,19 @@ public class UserEntry extends BaseDBObject {
 
     }
 
+    public String getGenerateUserCode(){
+        if(getBaseEntry().containsField("gugc")) {
+            return getSimpleStringValue("gugc");
+        }else{
+            return Constant.EMPTY;
+        }
+    }
+
+    public void setGenerateUserCode(String generateUserCode){
+        setSimpleValue("gugc",generateUserCode);
+    }
+
+
+
 
 }

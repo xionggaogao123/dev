@@ -32,7 +32,14 @@ define(['jquery', 'pagination', 'common'], function (require, exports, module) {
             $('.container .hd-cont-f1').hide();
             $('.container .hd-cont-f2').show();
         });
-
+        $('.em-edit').click(function(){
+            $('.wind-com-edit').fadeIn();
+            $('.bg').fadeIn();
+        });
+        $('.wind-com-edit .p1 em').click(function(){
+            $('.wind-com-edit').fadeOut();
+            $('.bg').fadeOut();
+        })
         $('body').on('click', '#my-community-span', function () {
             $('#myActivity-span').removeClass('hd-green-cur');
             $(this).addClass('hd-green-cur');

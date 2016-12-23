@@ -35,7 +35,7 @@
                 <span class="sp2">
                     <span>
                         <em class="em1"></em>
-                        <em class="em2">UID:${userId}</em>
+                        <em class="em2">ID:${packageCode}</em>
                     </span>
                 </span>
                 <span class="sp3" style="display: none"></span>

@@ -26,9 +26,22 @@
     </div>
     <div class="hd-cont-f hd-cont-f1">
         <div class="com-left">
+
+            <div class="com-rlt com-rlt2">
+                <img class="img1" src="http://7xiclj.com1.z0.glb.clouddn.com/582effea3d4df91126ff2b9a.png">
+                <p class="p1">复兰社区</p>
+                <p class="p4">
+                    <em class="em1" >退出社区</em>
+                    <em class="em1 em-edit">编辑社区</em>
+                </p>
+                <p class="p2">社区ID:100001</p>
+                <p class="p3">社区简介：复兰青少年素质教育社区，为全国青少年群体量身打造，集兴趣交流、学习社交、素质拓展为一体，是中国最专业的青少年素质教育社区。</p>
+            </div>
+
+
             <div class="com-left-s">
                 <div class="com-tit">
-                    社区成员
+                    管理社区成员
                     <c:if test="${operation==1}">
                         <div class="com-b comb1">
                             <button class="btn1 b1">批量管理</button>
@@ -119,7 +132,7 @@
 
         </div>
         <div class="com-right">
-            <div class="com-right-s clearfix">
+<%--            <div class="com-right-s clearfix">
                 <div class="com-tit">当前社区</div>
                 <div class="com-now">
                     <img src="/static/images/communit y/result.png"
@@ -128,7 +141,7 @@
                     <p class="p1">弗兰社区</p>
                     <p class="p2">社区ID：${searchId}</p>
                 </div>
-            </div>
+            </div>--%>
             <div class="com-right-s">
                 <div class="com-tit">我的社区<a href="/community/communitySet.do" target="_blank"><span
                         class="com-set-my-btn"></span></a></div>
@@ -247,6 +260,41 @@
         <button class="alert-btn-esc">取消</button>
     </div>
 </div>
+
+<%--编辑社区窗口--%>
+<div class="wind-com-edit" >
+    <div class="p1">编辑社区<em id="cancel">×</em></div>
+    <div class="p2 clearfix">
+        <span class="sp1">社区名称：</span>
+        <input id="communityName" type="text">
+    </div>
+    <div class="p2 clearfix">
+        <span class="sp1">社区logo：</span>
+        <p>
+            <img src="http://www.fulaan.com/static/images/community/upload.png" id="communityLogo">
+            <label for="image-upload" style="cursor: pointer"><span class="btn-up">上传图片</span></label>
+            <span class="img-tx">你可以上传JPG、GIF或PNG格式的文件，文件大小不能超过2M</span>
+            <input name="image-upload" id="image-upload" accept="image/*" size="1" type="file" hidden="hidden">
+        </p>
+    </div>
+    <div class="p2 clearfix">
+        <span class="sp1" id="communityDesc">社区简介：</span>
+        <textarea></textarea>
+    </div>
+    <div class="p2 clearfix">
+        <span class="sp1">是否公开：</span>
+        <select id="selectOpen">
+            <option class="op1" value="0">不公开</option>
+            <option class="op2" value="1">公开</option>
+        </select>
+        <span class="gk-tx xt1" id="xt1">"不公开"社区，系统将不会将本社区作为热门社区推荐给其他用户</span>
+        <span class="gk-tx xt2" id="xt2">"公开"社区，系统将会降本社区作为热门社区推荐给其他用户</span>
+    </div>
+    <div class="p2">
+        <button class="btn-save">保存</button>
+    </div>
+</div>
+
 
 <div class="bg"></div>
 <script src="/static/js/sea.js"></script>

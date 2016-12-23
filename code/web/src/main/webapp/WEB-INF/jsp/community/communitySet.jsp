@@ -42,11 +42,11 @@
             </div>
             <div class="com-right-s clearfix">
                 <div class="com-tit">热门社区</div>
-                <ul class="ul-my-com" id="hotCommunity">
+                <ul class="ul-my-com clearfix" id="hotCommunity">
 
                 </ul>
+                <p class="member-more" onclick="window.open('/community/searchHotCommunity.do')">更多</p>
             </div>
-            <p class="member-more" onclick="window.open('/community/searchHotCommunity.do')">更多</p>
         </div>
     </div>
 

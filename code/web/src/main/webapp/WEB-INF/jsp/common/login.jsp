@@ -82,6 +82,7 @@
                 if ('accountError' == resp.message) {
                     $('.store-MF').show();
                 } else {
+                    $('.error').html(resp.message);
                     $('.error').show();
                 }
             }

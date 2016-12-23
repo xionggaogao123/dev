@@ -15,6 +15,7 @@ import com.fulaan.pojo.FLoginLog;
 import com.fulaan.user.dao.ThirdLoginDao;
 import com.fulaan.user.model.ThirdLoginEntry;
 import com.fulaan.user.model.ThirdType;
+import com.fulaan.util.check.FastCheck;
 import com.fulaan.utils.KeyWordFilterUtil;
 import com.mongodb.BasicDBObject;
 import com.mongodb.DBObject;
@@ -90,6 +91,16 @@ public class UserService extends BaseService {
 
     public String filter(String content) {
         return org.apache.commons.lang.StringUtils.replaceEach(content, KeyWordFilterUtil.split_list.toArray(new String[]{}), KeyWordFilterUtil.replace_list.toArray(new String[]{}));
+    }
+
+    public String replaceSensitiveWord(String text){
+        //先添加词汇
+        if(FastCheck.hash.size()==0){
+            for(String item:KeyWordFilterUtil.split_list){
+                FastCheck.addWord(item);
+            }
+        }
+        return  FastCheck.replaceWith(text,'*');
     }
 
     public List<FLoginLog> getLoginLog(long start, long end) {

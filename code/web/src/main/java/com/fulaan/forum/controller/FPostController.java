@@ -1822,8 +1822,8 @@ public class FPostController extends BaseController {
             return RespObj.FAILD("sss");
         }
 
-        comment = userService.filter(comment);
-        plainText = userService.filter(plainText);
+        comment = userService.replaceSensitiveWord(comment);
+        plainText = userService.replaceSensitiveWord(plainText);
         FReplyDTO fReplyDTO = new FReplyDTO();
         fReplyDTO.setPostSectionId(postSectionId);
         fReplyDTO.setPlainText(plainText);
@@ -2366,7 +2366,7 @@ public class FPostController extends BaseController {
         fPostDTO.setOfferedScore(offeredScore);
         fPostDTO.setOfferedCompleted(offeredCompleted);
 
-        comment = userService.filter(comment);
+        comment = userService.replaceSensitiveWord(comment);
 
         fPostDTO.setBackUpComment(comment);
         String content = dealData(comment);

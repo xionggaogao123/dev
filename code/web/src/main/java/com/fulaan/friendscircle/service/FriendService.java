@@ -18,6 +18,7 @@ import com.pojo.user.UserEntry;
 import com.pojo.user.UserRole;
 import com.sys.constants.Constant;
 import com.sys.utils.AvatarUtils;
+import org.apache.commons.lang3.StringUtils;
 import org.bson.types.ObjectId;
 import org.springframework.stereotype.Service;
 
@@ -438,7 +439,7 @@ public class FriendService {
                 user.setId(userEntry.getID().toString());
                 user.setAvator(AvatarUtils.getAvatar(userEntry.getAvatar(), AvatarType.MIN_AVATAR.getType()));
                 user.setUserName(userEntry.getUserName());
-                user.setNickName(userEntry.getNickName());
+                user.setNickName(StringUtils.isBlank(userEntry.getNickName()) ? userEntry.getUserName() : userEntry.getNickName());
                 user.setSex(userEntry.getSex());
                 user.setUserId(userEntry.getID().toString());
                 users.add(user);

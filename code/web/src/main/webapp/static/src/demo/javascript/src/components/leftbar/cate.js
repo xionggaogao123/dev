@@ -1,10 +1,10 @@
-var React = require("react");
+const React = require("react");
 
 
 module.exports = React.createClass({
 
     render: function () {
-        var cur = this.props.cur === this.props.name ? ' selected' : '';
+        const cur = this.props.cur === this.props.name ? ' selected' : '';
         var topClass = '';
 
         var icon,

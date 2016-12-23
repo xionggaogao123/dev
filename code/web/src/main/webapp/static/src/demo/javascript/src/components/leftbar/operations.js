@@ -44,13 +44,13 @@ module.exports = React.createClass({
     logout: function () {
         LoginOutSheet.show();
         this.setState({
-          hide: 'hide'
+            hide: 'hide'
         });
     },
 
     inviteMember: function () {
-      MemberSheet.show();
-      this.update();
+        MemberSheet.show();
+        this.update();
     },
 
     render: function () {

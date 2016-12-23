@@ -2,16 +2,13 @@ const webpack = require('webpack');
 
 module.exports = {
     entry: {
-        './src/main/webapp/static/src/sdk/dist/websdk-1.1.3': './src/main/webapp/static/src/sdk/src/connection',
-        './src/main/webapp/static/src/demo/javascript/dist/demo': './src/main/webapp/static/src/demo/javascript/src/entry',
-        './src/main/webapp/static/src/webrtc/dist/webrtc-1.0.0': './src/main/webapp/static/src/webrtc/src/webrtc',
+        './src/main/webapp/static/dist/webim/demo/javascript/dist/demo': './src/main/webapp/static/src/demo/javascript/src/entry',
     },
     output: {
         path: './',
         publicPath: './',
         filename: '[name].js'
     },
-    // devtool: '#eval-cheap-module-source-map',
     resolve: {
         extensions: ['', '.js', '.jsx']
     },
@@ -47,5 +44,5 @@ module.exports = {
                 warnings: false
             }
         })
-    ],
+    ]
 };

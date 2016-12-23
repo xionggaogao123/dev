@@ -1,19 +1,17 @@
-var React = require("react");
-var ReactDOM = require('react-dom');
-var Avatar = require('../common/avatar');
+const React = require("react");
+const ReactDOM = require('react-dom');
+const Avatar = require('../common/avatar');
 
 
-var VideoMsg = React.createClass({
+const VideoMsg = React.createClass({
 
     componentDidMount: function () {
-        var me = this;
+        const me = this;
 
-        var options = {url: me.props.value};
+        const options = {url: me.props.value};
 
         options.onFileDownloadComplete = function (response) {
-            var objectURL = WebIM.utils.parseDownloadResponse.call(Demo.conn, response);
-
-            me.refs.video.src = objectURL;
+            me.refs.video.src = WebIM.utils.parseDownloadResponse.call(Demo.conn, response);
         };
 
         options.onFileDownloadError = function () {
@@ -28,8 +26,7 @@ var VideoMsg = React.createClass({
     },
 
     render: function () {
-        var icon = this.props.className === 'left' ? 'H' : 'I';
-
+        const icon = this.props.className === 'left' ? 'H' : 'I';
         return (
             <div className={'rel pointer ' + this.props.className}>
                 <Avatar src={this.props.src} className={this.props.className + ' small'}/>
@@ -51,7 +48,7 @@ var VideoMsg = React.createClass({
 });
 
 module.exports = function (options, sentByMe) {
-    var props = {
+    const props = {
         src: options.avatar || 'demo/images/default.png',
         time: options.time || new Date().toLocaleString(),
         value: options.value || '',
@@ -69,7 +66,7 @@ module.exports = function (options, sentByMe) {
       props.name = options.ext.nickName
     }
 
-    var node = document.createElement('div');
+    const node = document.createElement('div');
     node.className = 'webim-msg-container rel';
     options.wrapper.appendChild(node);
 

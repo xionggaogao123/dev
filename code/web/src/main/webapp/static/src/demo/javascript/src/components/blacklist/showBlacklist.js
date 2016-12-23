@@ -1,14 +1,14 @@
-var React = require("react");
-var ReactDOM = require('react-dom');
+const React = require("react");
+const ReactDOM = require('react-dom');
 
-var componentsNode = document.getElementById('components');
-var dom = document.createElement('div');
+const componentsNode = document.getElementById('components');
+const dom = document.createElement('div');
 componentsNode.appendChild(dom);
 
-var UI = require('../common/webim-demo');
-var Button = UI.Button;
+const UI = require('../common/webim-demo');
+const Button = UI.Button;
 
-var ShowBlacklist = React.createClass({
+const ShowBlacklist = React.createClass({
 
     getInitialState: function () {
         return {
@@ -19,7 +19,7 @@ var ShowBlacklist = React.createClass({
     // used for blacklist
     onRemoveFromBlackList: function (value) {
         //TODO by lwz 重构
-        var me = this;
+        const me = this;
         if (WebIM.config.isWindowSDK) {
             WebIM.doQuery('{"type":"removeFromBlackList", "username": "' + value + '"}',
                 function success(str) {
@@ -31,7 +31,7 @@ var ShowBlacklist = React.createClass({
                     Demo.api.NotifyError('getRoster:' + errCode);
                 });
         } else {
-            var list = Demo.api.blacklist.remove(value);
+            const list = Demo.api.blacklist.remove(value);
             Demo.conn.removeFromBlackList({
                 // must the whole new blacklist
                 list: list,

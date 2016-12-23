@@ -50,7 +50,7 @@ var ShowGroupBlacklist = React.createClass({
     },
 
     render: function () {
-        var items = [];
+        const items = [];
         _.each(this.state.list, (item, k) => {
             items.push(
                 (

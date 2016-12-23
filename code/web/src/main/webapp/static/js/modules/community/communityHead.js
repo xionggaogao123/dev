@@ -194,7 +194,7 @@ define(['jquery', 'pagination', 'common'], function (require, exports, module) {
             })
         })
 
-        $('body').on('click','.wind-myInfo d-x',function(){
+        $('body').on('click','.wind-myInfo .d-x',function(){
             $('.wind-myInfo').fadeOut();
             $('.bg').fadeOut();
         })

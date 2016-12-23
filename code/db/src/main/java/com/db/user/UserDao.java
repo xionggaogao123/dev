@@ -884,8 +884,7 @@ public class UserDao extends BaseDao {
     }
 
 
-    public UserEntry findByObjectId(ObjectId id) {
-
+    public UserEntry findByUserId(ObjectId id) {
         FieldValuePair fieldValuePair = new FieldValuePair(Constant.ID, id);
         return query(fieldValuePair);
     }
@@ -908,7 +907,7 @@ public class UserDao extends BaseDao {
     }
 
     public long score(ObjectId uid) {
-        UserEntry entry = findByObjectId(uid);
+        UserEntry entry = findByUserId(uid);
         return entry.getForumScore();
     }
 

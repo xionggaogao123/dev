@@ -31,7 +31,7 @@ public class MemberService {
      * @param groupId
      */
     public void saveMember(ObjectId userId, ObjectId groupId, int role) {
-        UserEntry user = userDao.findByObjectId(userId);
+        UserEntry user = userDao.findByUserId(userId);
         String nickName = StringUtils.isNotBlank(user.getNickName()) ? user.getNickName() : user.getUserName();
         String userName = user.getUserName();
         MemberEntry entry = new MemberEntry(userId, groupId, nickName, user.getAvatar(), role, userName);
@@ -46,7 +46,7 @@ public class MemberService {
      * @param groupId
      */
     public void saveMember(ObjectId userId, ObjectId groupId) {
-        UserEntry user = userDao.findByObjectId(userId);
+        UserEntry user = userDao.findByUserId(userId);
         String nickName = StringUtils.isNotBlank(user.getNickName()) ? user.getNickName() : user.getUserName();
         String userName = user.getUserName();
         MemberEntry entry = new MemberEntry(userId, groupId, nickName, user.getAvatar(), 0, userName);

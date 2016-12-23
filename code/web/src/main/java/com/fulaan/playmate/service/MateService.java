@@ -50,6 +50,9 @@ public class MateService extends BaseService {
         System.out.println(query.toString());
         int count = fMateDao.countByPage(query);
         int totalPages = count % pageSize == 0 ? count / pageSize : (int) Math.ceil(count / pageSize) + 1;
+        if(totalPages == 0) {
+            totalPages = 1;
+        }
         page = page > totalPages ? totalPages : page;
         List<FMateEntry> fMateEntries = fMateDao.findByPage(query, page, pageSize);
         FriendEntry myFriendEnty = null;
@@ -92,7 +95,7 @@ public class MateService extends BaseService {
             myFriendList.retainAll(userFriendList);
 
             for (ObjectId uid : myFriendList) {
-                UserEntry entry = userDao.findByObjectId(uid);
+                UserEntry entry = userDao.findByUserId(uid);
                 if (entry != null) {
                     User user = new User();
                     if (entry.getAvatar() != null) {
@@ -120,22 +123,24 @@ public class MateService extends BaseService {
             distance = filterDistance(distanceDouble.longValue());
         }
         FMateDTO fMateDTO = new FMateDTO();
-        UserEntry userEntry = userDao.findByObjectId(mateEntry.getUserId());
+        UserEntry userEntry = userDao.findByUserId(mateEntry.getUserId());
         fMateDTO.setDistance(distance);
-        fMateDTO.setUserId(userEntry.getID().toString());
-        fMateDTO.setNickName(userEntry.getNickName());
-        fMateDTO.setUserName(userEntry.getUserName());
+        if(userEntry != null) {
+            fMateDTO.setUserId(userEntry.getID().toString());
+            fMateDTO.setNickName(userEntry.getNickName());
+            fMateDTO.setUserName(userEntry.getUserName());
+            fMateDTO.setAvatar(AvatarUtils.getAvatar(userEntry.getAvatar(), AvatarType.MIN_AVATAR.getType()));
+            List<UserEntry.UserTagEntry> userTagEntries = userEntry.getUserTag();
+            List<UserTag> tagList = new ArrayList<UserTag>();
+            for (UserEntry.UserTagEntry tagEntry : userTagEntries) {
+                UserTag userTag = new UserTag(tagEntry.getCode(), tagEntry.getTag());
+                tagList.add(userTag);
+            }
+            fMateDTO.setTags(tagList);
+        }
 
         List<MateData> onsList = getMateDatas(mateEntry);
         fMateDTO.setOns(onsList);
-        fMateDTO.setAvatar(AvatarUtils.getAvatar(userEntry.getAvatar(), AvatarType.MIN_AVATAR.getType()));
-        List<UserTag> tagList = new ArrayList<UserTag>();
-        List<UserEntry.UserTagEntry> userTagEntries = userEntry.getUserTag();
-        for (UserEntry.UserTagEntry tagEntry : userTagEntries) {
-            UserTag userTag = new UserTag(tagEntry.getCode(), tagEntry.getTag());
-            tagList.add(userTag);
-        }
-        fMateDTO.setTags(tagList);
         return fMateDTO;
     }
 

@@ -132,7 +132,7 @@ public class CommunityService {
         List<PartInContentEntry> partInContentEntries = partInContentDao.getPartInContent(communityDetailEntry.getID(), -1, 1, 10);
         CommunityDetailDTO communityDetailDTO = new CommunityDetailDTO(communityDetailEntry, partInContentEntries);
         ObjectId userId = communityDetailEntry.getCommunityUserId();
-        UserEntry userEntry = userDao.findByObjectId(userId);
+        UserEntry userEntry = userDao.findByUserId(userId);
         if (StringUtils.isNotBlank(userEntry.getNickName())) {
             communityDetailDTO.setNickName(userEntry.getNickName());
         } else {
@@ -799,13 +799,6 @@ public class CommunityService {
     }
 
     /**
-     * 根据id删除成员
-     */
-    public void deleteMembers(List<ObjectId> ids) {
-        memberDao.deleteMember(ids);
-    }
-
-    /**
      * 查出副社长人数
      *
      * @param communityId
@@ -1136,7 +1129,7 @@ public class CommunityService {
             return null;
         }
 
-        UserEntry userEntry = userDao.findByObjectId(entry.getCommunityUserId());
+        UserEntry userEntry = userDao.findByUserId(entry.getCommunityUserId());
         CommunityDetailDTO communityDetailDTO = new CommunityDetailDTO(entry);
         communityDetailDTO.setImageUrl(AvatarUtils.getAvatar(userEntry.getAvatar(), AvatarType.MIN_AVATAR.getType()));
         if (StringUtils.isNotBlank(userEntry.getNickName())) {
@@ -1221,7 +1214,7 @@ public class CommunityService {
 
 
     public void setTop(ObjectId community, ObjectId userId, int top) {
-        MineCommunityEntry entry = mineCommunityDao.find(community, userId);
+        MineCommunityEntry entry = mineCommunityDao.findByUserAndCommunity(community, userId);
         entry.setTop(top);
         mineCommunityDao.save(entry);
     }
@@ -1231,6 +1224,6 @@ public class CommunityService {
     }
 
     public MineCommunityEntry getTopEntry(ObjectId community, ObjectId userId) {
-        return mineCommunityDao.find(community, userId);
+        return mineCommunityDao.findByUserAndCommunity(community, userId);
     }
 }

@@ -76,7 +76,7 @@ public class FActivityService extends BaseService{
             FActivityDTO fActivityDTO = new FActivityDTO(entry);
             fActivityDTO.setSignCount(fActivityDao.countSignUser(entry.getID()));
             ObjectId userId = entry.getUserId();
-            UserEntry userEntry = userDao.findByObjectId(userId);
+            UserEntry userEntry = userDao.findByUserId(userId);
             String nickName = userEntry.getNickName();
             String userName = userEntry.getUserName();
             String avatar = AvatarUtils.getAvatar(userEntry.getAvatar(), AvatarType.MIN_AVATAR.getType());
@@ -115,7 +115,7 @@ public class FActivityService extends BaseService{
     }
 
     private User getMateUser(ObjectId userId) {
-        UserEntry userEntry = userDao.findByObjectId(userId);
+        UserEntry userEntry = userDao.findByUserId(userId);
         if (userEntry == null) {
             return null;
         }
@@ -167,7 +167,7 @@ public class FActivityService extends BaseService{
         List<Map<String, Object>> sheets = new ArrayList<Map<String, Object>>();
         for (FASignEntry signEntry : signEntries) {
             ObjectId userId = signEntry.getUserId();
-            UserEntry userEntry = userDao.findByObjectId(userId);
+            UserEntry userEntry = userDao.findByUserId(userId);
             if (userEntry == null) {
                 continue;
             }

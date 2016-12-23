@@ -336,7 +336,7 @@ define(['jquery', 'pagination', 'common'], function (require, exports, module) {
             if (thirdBind.qq) {
                 $('#isRemoveBind').fadeIn();
                 $('.bg').fadeIn();
-                bind = 1;
+                bind = 2;
             } else {
                 window.open('/account/qqBind.do', "TencentLogin", "width=800,height=600,menubar=0,scrollbars=1, resizable=1,status=1,titlebar=0,toolbar=0,location=1");
             }
@@ -346,7 +346,7 @@ define(['jquery', 'pagination', 'common'], function (require, exports, module) {
             if (thirdBind.wechat) {
                 $('#isRemoveBind').fadeIn();
                 $('.bg').fadeIn();
-                bind = 2;
+                bind = 1;
             } else {
                 window.open('/account/wechatBind.do', "TencentLogin", "width=800,height=600,menubar=0,scrollbars=1, resizable=1,status=1,titlebar=0,toolbar=0,location=1");
             }

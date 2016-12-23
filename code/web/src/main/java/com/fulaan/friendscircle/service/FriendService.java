@@ -432,7 +432,7 @@ public class FriendService {
     private List<User> get(List<ObjectId> uids) {
         List<User> users = new ArrayList<User>();
         for (ObjectId oid : uids) {
-            UserEntry userEntry = userDao.findByObjectId(oid);
+            UserEntry userEntry = userDao.findByUserId(oid);
             if (userEntry != null) {
                 User user = new User();
                 user.setId(userEntry.getID().toString());

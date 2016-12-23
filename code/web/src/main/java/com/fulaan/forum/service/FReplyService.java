@@ -72,7 +72,7 @@ public class FReplyService {
         List<FReplyEntry> replyEntries = fReplyDao.getReplyList(postId);
         List<LikeInfo> likeInfos = new ArrayList<LikeInfo>();
         for (FReplyEntry entry : replyEntries) {
-            UserEntry userEntry = userDao.findByObjectId(entry.getPersonId());
+            UserEntry userEntry = userDao.findByUserId(entry.getPersonId());
             LikeInfo likeInfo = new LikeInfo();
             likeInfo.setReplyId(entry.getID().toString());
             likeInfo.setFloor(entry.getFloor());
@@ -87,7 +87,7 @@ public class FReplyService {
             List<ObjectId> userIdList = entry.getUserReplyList();
             List<LikeInfo.UserInfo> userInfos = new ArrayList<LikeInfo.UserInfo>();
             for (ObjectId uid : userIdList) {
-                UserEntry user = userDao.findByObjectId(uid);
+                UserEntry user = userDao.findByUserId(uid);
                 if (user != null) {
                     LikeInfo.UserInfo userInfo = new LikeInfo.UserInfo();
                     userInfo.setId(user.getID().toString());

@@ -683,7 +683,7 @@ public class EBusinessUserController extends BaseController {
         Pattern phonePattern = Pattern.compile("^1[3|4|5|7|8][0-9]\\d{8}$");
         Matcher emailMatcher = emailPattern.matcher(account);
         Matcher phoneMatcher = phonePattern.matcher(account);
-        UserEntry userEntry = null;
+        UserEntry userEntry ;
         if (emailMatcher.matches()) {//邮箱登录
             userEntry = userService.findByEmail(account);
         } else if (phoneMatcher.matches()) {//手机号登录

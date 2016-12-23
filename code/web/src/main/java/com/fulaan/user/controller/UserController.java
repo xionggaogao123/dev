@@ -1690,7 +1690,6 @@ public class UserController extends BaseController {
             return RespObj.SUCCESS(MapUtil.put("isExist", "No"));
         }
         SessionValue value = userService.setCookieValue(getIP(), userEntry, response, request);
-
         //检查是否注册环信
         boolean isRegister = userEntry.isRegisterHuanXin();
         String nickName2 = StringUtils.isNotBlank(userEntry.getNickName()) ? userEntry.getNickName() : userEntry.getUserName();

@@ -24,6 +24,10 @@ define(['jquery', 'pagination', 'common'], function (require, exports, module) {
             $('.wind-jwb').fadeIn();
             $('.bg').fadeIn();
         });
+        $('.wind-erw .d-x').click(function(){
+            $('.wind-erw').fadeOut();
+            $('.bg').fadeOut();
+        })
 
         $('.mine-er').click(function(){
             $('.wind-erw').fadeIn();

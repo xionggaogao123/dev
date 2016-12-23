@@ -3504,9 +3504,18 @@ text-align: center
 }
 .com-set-my-btn{
     float: right;
-    width: 78px;
+    width: 100px;
     height: 18px;
-    background: url("/static/images/community/com_sett.png") no-repeat;
+    background: url("/static/images/community/manageAll.png") no-repeat;
+    margin: 15px 14px 0 0;
+    cursor: pointer;
+}
+
+.com-set-my-btn1{
+    float: right;
+    width: 100px;
+    height: 18px;
+    background: url("/static/images/community/manageCurrent.png") no-repeat;
     margin: 15px 14px 0 0;
     cursor: pointer;
 }

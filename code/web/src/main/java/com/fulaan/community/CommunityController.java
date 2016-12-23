@@ -954,8 +954,33 @@ public class CommunityController extends BaseController {
         model.put("communityId", communityId);
         model.put("searchId", community.getSearchId());
 
+        model.put("menuItem",0);
         ObjectId groupId = communityService.getGroupId(new ObjectId(communityId));
         if (memberService.isManager(groupId, getUserId())) {
+            model.put("operation", 1);
+        }
+        return "/community/communityMember";
+    }
+
+    @RequestMapping("/manageCurrentCommunity")
+    @LoginInfo
+    public String manageCurrentCommunity(Map<String, Object> model) {
+        String communityId = getRequest().getParameter("communityId");
+        CommunityDTO community = communityService.findByObjectId(new ObjectId(communityId));
+        model.put("communityId", communityId);
+        model.put("searchId", community.getSearchId());
+
+        model.put("menuItem",1);
+        model.put("fuflaan", 0);
+        if(StringUtils.isNotBlank(community.getName())) {
+            if (community.getName().equals("复兰社区")) {
+                model.put("fuflaan", 1);
+            }
+        }
+        CommunityDTO fulanDto = communityService.getCommunityByName("复兰社区");
+        model.put("fulanId",fulanDto.getId());
+        ObjectId groupId = communityService.getGroupId(new ObjectId(communityId));
+        if (memberService.isHead(groupId, getUserId())) {
             model.put("operation", 1);
         }
         return "/community/communityMember";

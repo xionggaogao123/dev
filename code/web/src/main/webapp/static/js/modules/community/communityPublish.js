@@ -327,6 +327,8 @@ define(['jquery', 'pagination', 'common'], function (require, exports, module) {
             })
         })
 
+
+
         $('body').on('click','.spread',function () {
             spread($(this));
         })

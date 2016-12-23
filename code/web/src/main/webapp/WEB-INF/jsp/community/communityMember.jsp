@@ -8,7 +8,7 @@
     <script type="text/javascript" src="/static/js/modules/forum/jquery-1.11.1.js"></script>
     <link rel="stylesheet" type="text/css" href="/static/css/friend/nearby.css">
 </head>
-<body style="background: #f5f5f5;" communityId="${communityId}">
+<body style="background: #f5f5f5;" communityId="${communityId}" fulanId="${fulanId}">
 <%--==============头部===================--%>
 <%@ include file="../common/head.jsp" %>
 <div class="container">
@@ -27,12 +27,12 @@
     <div class="hd-cont-f hd-cont-f1">
         <div class="com-left">
 
-            <div class="com-rlt com-rlt2">
+            <div class="com-rlt com-rlt2" <c:if test="${menuItem==0}">style="display: none" </c:if>>
                 <img class="img1" src="http://7xiclj.com1.z0.glb.clouddn.com/582effea3d4df91126ff2b9a.png">
                 <p class="p1">复兰社区</p>
                 <p class="p4">
-                    <em class="em1" >退出社区</em>
-                    <em class="em1 em-edit">编辑社区</em>
+                    <c:if test="${operation!=1&&fuflaan!=1}"><em class="em1 quit">退出社区</em></c:if>
+                    <c:if test="${operation==1}"><em class="em1 em-edit">编辑社区</em></c:if>
                 </p>
                 <p class="p2">社区ID:100001</p>
                 <p class="p3">社区简介：复兰青少年素质教育社区，为全国青少年群体量身打造，集兴趣交流、学习社交、素质拓展为一体，是中国最专业的青少年素质教育社区。</p>
@@ -299,9 +299,29 @@
 <div class="bg"></div>
 <script src="/static/js/sea.js"></script>
 <script src="/static/js/modules/core/0.1.0/config.js?v=2015041602"></script>
+<script type="text/javascript"
+        src="/static/js/modules/core/0.1.0/jquery-upload/vendor/jquery.ui.widget.js?v=1"></script>
+<script type="text/javascript" src="/static/js/modules/core/0.1.0/jquery-upload/jquery.fileupload.js"></script>
 <script>
     seajs.use('/static/js/modules/community/communityMember.js', function (communityMember) {
         communityMember.init();
+    });
+
+
+    //上传图片
+    $('#image-upload').fileupload({
+        url: '/community/images.do',
+        done: function (e, response) {
+            if (response.result.code != '500') {
+                var image = response.result.message[0].path;
+                $('#communityLogo').attr('src', image);
+            } else {
+                alert("上传失败，请重新上传！");
+            }
+        },
+        progressall: function (e, data) {
+            $(this).closest('.tp-bm-box').find('.vote-vedio-container ul').html('正在上传...');
+        }
     });
 </script>
 </body>

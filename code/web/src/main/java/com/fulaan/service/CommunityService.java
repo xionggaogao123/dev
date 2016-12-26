@@ -736,6 +736,7 @@ public class CommunityService {
 
     public List<CommunityDTO> search(String regular, ObjectId userId) {
         List<CommunityDTO> dtos = new ArrayList<CommunityDTO>();
+        List<CommunityDTO> returnData = new ArrayList<CommunityDTO>();
         List<CommunityEntry> entries = communityDao.findByRegularName(regular);
         for (CommunityEntry communityEntry : entries) {
             CommunityDTO communityDTO = new CommunityDTO(communityEntry);
@@ -758,10 +759,13 @@ public class CommunityService {
         for (CommunityDTO dto : dtos) {
             MemberDTO head = memberService.getHead(new ObjectId(dto.getGroupId()));
             int count = memberService.getMemberCount(new ObjectId(dto.getGroupId()));
-            dto.setMemberCount(count);
-            dto.setHead(head);
+            if(null!=head) {
+                dto.setMemberCount(count);
+                dto.setHead(head);
+                returnData.add(dto);
+            }
         }
-        return dtos;
+        return returnData;
     }
 
     private List<AttachmentEntry> splitAttachements(List<Attachement> attachements, ObjectId uid) {

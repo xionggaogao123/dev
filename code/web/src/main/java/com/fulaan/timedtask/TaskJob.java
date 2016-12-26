@@ -217,6 +217,10 @@ public class TaskJob {
     }
 
 
+    public void doParentChildTask(){
+
+    }
+
     /**
      * 商城每日报告
      */

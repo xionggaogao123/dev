@@ -13,7 +13,7 @@
                        onclick="window.open('/community/myPartners.do')">${friendCount}</p>
                     <p class="p3">
                         <a href="/account/accountSafe.do">
-                            <button>论坛空间</button>
+                            <span class="head-space"></span>
                         </a>
                     </p>
                 </div>
@@ -22,7 +22,7 @@
                     <p class="p2" style="cursor: pointer;"
                        onclick="window.open('/community/friendList.do')">${concernCount}</p>
                     <p class="p3">
-                        <button id="chat">加玩伴</button>
+                        <span id="chat" class="head-add1"></span>
                     </p>
                 </div>
             </div>
@@ -159,7 +159,7 @@
         <img src="/static/images/newIndex/store-WEII.jpg" class="ddimg">
     </div>
     <div class="d3">
-        <p>*温馨提示：<br>请使用“复兰社区社区APP”扫描二维码<br>添加玩伴
+        <p style="text-align: center;">请使用“复兰社区社区APP”扫描二维码<br>添加玩伴
         </p>
     </div>
 </div>

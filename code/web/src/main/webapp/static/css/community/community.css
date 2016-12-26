@@ -1008,6 +1008,20 @@ pre{white-space: pre-wrap;word-wrap: break-word;}
     color: #23CD77;
     border-bottom: 4px solid #23CD77 !important;
 }
+.huodong-ss .p3 .head-space{
+    display: inline-block;
+    width: 107px;
+    height: 29px;
+    background: url("/static/images/forum/head_space.png") no-repeat;
+    cursor: pointer;
+}
+.huodong-ss .p3 .head-add1{
+    display: inline-block;
+    width: 107px;
+    height: 29px;
+    background: url("/static/images/forum/head_add1.png") no-repeat;
+    cursor: pointer;
+}
 .f-cont{
     background: #fff;
 }

@@ -20,13 +20,27 @@ import java.util.List;
 public class CrawlData {
 
 
-    public static void main(String[] args) throws Exception{
+    public static void cycleData() throws Exception{
+        int type=1;
+        crawlParentData(type,"");
+    }
+
+    public static void todayData() throws Exception{
+        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
+        long nowTime=System.currentTimeMillis();
+        int type=2;
+        String startTime=sdf.format(new Date(nowTime));
+        crawlParentData(type,startTime);
+    }
+
+
+    public static void crawlParentData(int type,String startTime) throws  Exception{
         HttpClientBuilder httpClientBuilder = HttpClientBuilder.create();
         CloseableHttpClient client = httpClientBuilder.build();
-        String startTime="2016-12-24";
-        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
-        Date date = sdf.parse(startTime);
-        sdf.format(new Date(date.getTime() - 2 * 24 * 60 * 60 * 1000));
+//        String startTime="2016-12-24";
+//        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
+//        Date date = sdf.parse(startTime);
+//        sdf.format(new Date(date.getTime() - 2 * 24 * 60 * 60 * 1000));
         RegionService regionService=new RegionService();
         ParentChildActivityDao parentChildActivityDao=new ParentChildActivityDao();
         RegionEntry regionEntry=regionService.getRegionEntry("上海市");
@@ -54,6 +68,9 @@ public class CrawlData {
             flag=true;
             number=1;
         }
+    }
+
+    public static void main(String[] args) throws Exception{
 
     }
 

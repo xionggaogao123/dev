@@ -126,7 +126,7 @@ define(['jquery', 'pagination', 'common'], function (require, exports, module) {
 
         setInterval(hx_update,1000 * 60);
 
-        $('.sign-activity .alert-btn-sure').click(function () {
+        $('body').on('click','.sign-activity .alert-btn-sure',function () {
             var requestData = {
                 communityId: communityId,
                 communityDetailId: detailId,
@@ -153,7 +153,7 @@ define(['jquery', 'pagination', 'common'], function (require, exports, module) {
         });
 
 
-        $('.sign-activity .alert-btn-sure_cancel').click(function () {
+        $('body').on('click','.alert-btn-sure_cancel',function () {
             var requestData = {
                 communityId: communityId,
                 communityDetailId: detailId,

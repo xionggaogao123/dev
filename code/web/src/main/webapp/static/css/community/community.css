@@ -1031,6 +1031,35 @@ pre{white-space: pre-wrap;word-wrap: break-word;}
     /*background: #fff;*/
     /*overflow: hidden;*/
 }
+.tab-sys{
+    height: 36px;
+    text-align: center;
+    padding-top: 19px;
+}
+.tab-sys span{
+    display: inline-block;
+    width: 88px;
+    height: 30px;
+    line-height: 30px;
+    color: #23CD77;
+    border: 1px solid #23CD77;
+    text-align: center;
+    cursor: pointer;
+    transition: all .3s;
+    position: relative;
+}
+.tab-sys span i{
+    position: absolute;
+    top:7px;
+    right: 7px;
+    padding: 3px;
+    border-radius: 100%;
+    background: #ff6600;
+}
+.span-sys{
+    background: #23CD77 !important;
+    color: #fff !important;
+}
 #partInContent{
     min-height: 200px;
 }
@@ -2490,6 +2519,9 @@ pre{white-space: pre-wrap;word-wrap: break-word;}
 .sign-alert .alert-main span{
     display: block;
     margin: 30px 0 15px 0;
+}
+.sign-alert .alert-main span em{
+    color: #FF9926;
 }
 .sign-alert .alert-main input{
     width: 265px;
@@ -3962,7 +3994,7 @@ text-align: center
     line-height: 50px;
 }
 .ul-sysNotice li{
-    height: 50px;
+    min-height: 50px;
     line-height: 50px;
     padding-left: 29px;
     border-bottom: 1px dashed #D7D7D7;
@@ -3975,12 +4007,57 @@ text-align: center
     height: 50px;
     line-height: 50px;
 }
+.ul-sysNotice li .sp1 em{
+    color: #FF9926;
+    margin: 0 3px;
+}
+.ul-sysNotice li .sp1 .i2{
+    float: right;
+    width: 59px;
+    text-align: center;
+    height: 22px;
+    line-height: 22px;
+    color: #8080B3;
+    border:1px solid #8080B3;
+    margin:12px 0 0 10px;
+    cursor: pointer;
+    font-size: 12px;
+}
+.ul-sysNotice li .sp1 .i4{
+    float: right;
+    width: 59px;
+    text-align: center;
+    height: 22px;
+    line-height: 22px;
+    color: #8080B3;
+    border:1px solid #8080B3;
+    margin:12px 71px 0 0;
+    cursor: pointer;
+    font-size: 12px;
+}
+.ul-sysNotice li .sp1 .i3{
+    float: right;
+    width: 130px;
+    height: 49px;
+    line-height: 49px;
+    color: #8080B3;
+    font-size: 12px;
+}
 .ul-sysNotice li .sp2{
-     float: right;
-     height: 50px;
-     line-height: 50px;
- }
-.ul-sysNotice li .sp1 i{
+    float: right;
+    height: 50px;
+    line-height: 50px;
+}
+.ul-sysNotice li .sp3{
+    float: left;
+    height: 12px;
+    line-height: 12px;
+    font-size: 12px;
+    color: #999;
+    position: relative;
+    bottom: 9px;
+}
+.ul-sysNotice li .sp1 .i1{
     float: left;
     width: 22px;
     height: 22px;

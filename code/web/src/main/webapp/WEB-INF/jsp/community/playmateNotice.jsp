@@ -83,32 +83,57 @@
             </div>
             <div class="com-left-s" id="SysInfo" style="display: none">
                 <div class="com-tit">系统消息</div>
+                <div class="tab-sys" style="display: none;">
+                    <span class="span-sys">系统消息<i></i></span><span>加入请求<i></i></span>
+                </div>
+
+                <ul class="ul-sysNotice" style="display: none;">
+                    <li class="clearfix">
+                        <span class="sp1">用户<em>哎哎哎</em>请求加入<em>复兰教育社区</em>（来自扫描二维码）<i class="i2">√ 同意</i><i class="i2">× 拒绝</i></span>
+                        <span class="sp2">2016-11-21 15:00</span>
+                    </li>
+                    <li class="clearfix">
+                        <span class="sp1">用户<em>哎哎哎</em>请求加入<em>复兰教育社区</em>（来自搜索社区ID）<i class="i3">您已拒绝TA的请求</i></span>
+                        <span class="sp2">2016-11-21 15:00</span>
+                    </li>
+                    <li class="clearfix">
+                        <span class="sp1">用户<em>哎哎哎</em>请求加入<em>复兰教育社区</em>（来自搜索社区ID）<i class="i3">您已通过TA的请求</i></span>
+                        <span class="sp2">2016-11-21 15:00</span>
+                        <span class="sp3">备注：我是AAA</span>
+                    </li>
+                    <li class="clearfix">
+                        <span class="sp1">用户<em>哎哎哎</em>请求加入<em>复兰教育社区</em>（来自搜索社区ID）<i class="i4 i-retry">再次请求</i></span>
+                        <span class="sp2">2016-11-21 15:00</span>
+                    </li>
+                </ul>
+
+
                 <ul class="ul-sysNotice" id="mySystemInfo">
                 </ul>
                 <script type="text/template" id="mySystemInfoTmpl">
                     {{~it:value:index}}
                     {{?value.type==1}}
-                    <li>
+                    <li class="clearfix">
                         <span class="sp1">{{=value.roleStr}}<em>{{=value.nickName}}</em>退出{{=value.communityName}}</span>
                         <span class="sp2">{{=value.time}}</span>
                     </li>
                     {{??value.type==2}}
-                    <li>
+                    <li class="clearfix">
                         <span class="sp1">人事任命”— {{=value.roleStr}}<em>{{=value.nickName}}</em>成为{{=value.communityName}}新一任社长了</span>
                         <span class="sp2">{{=value.time}}</span>
                     </li>
                     {{??value.type==3}}
-                    <li>
+                    <li class="clearfix">
                         <span class="sp1">“人事任命”— 恭喜您成为{{=value.communityName}}的社长，您有权对本社区进行管理......</span>
                         <span class="sp2">{{=value.time}}</span>
                     </li>
                     {{??value.type==4}}
-                    <li>
+                    <li class="clearfix">
                         <span class="sp1">Hi，恭喜您{{=value.communityName}}创建成功，祝您学习愉快。如有问题，随时与我联系。</span>
                         <span class="sp2">{{=value.time}}</span>
                     </li>
                     {{??}}
-                    <li>
+                    <li class="clearfix">
                         <span class="sp1">恭喜您成为{{=value.communityName}}的社长，您有权对本社区进行管理......</span>
                         <span class="sp2">{{=value.time}}</span>
                     </li>
@@ -164,6 +189,21 @@
     <span class="sp2" id="hx-icon"></span>
     <span class="sp3" id="hx-msg-count">您有0条未读消息</span>
 </div>
+
+
+<!--权限start-->
+<div class="sign-alert si-retry">
+    <p class="alert-title">申请提示<em>×</em></p>
+    <div class="alert-main">
+        <span>您确认申请加入“<em>复兰教育社区</em>”吗？</span>
+        <input type="text" placeholder="备注" >
+    </div>
+    <div class="alert-btn">
+        <button class="alert-btn-sure">确认</button>
+        <button class="alert-btn-esc">取消</button>
+    </div>
+</div>
+<!--权限end-->
 
 
 <!--权限start-->

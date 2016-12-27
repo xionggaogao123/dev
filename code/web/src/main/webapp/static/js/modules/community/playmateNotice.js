@@ -85,6 +85,13 @@ define(['jquery', 'pagination', 'common'], function (require, exports, module) {
         $('body').on('click','#sureCancel',function(){
             sureCancel();
         })
+        $('.tab-sys span').click(function(){
+            $(this).addClass('span-sys').siblings('.tab-sys span').removeClass('span-sys');
+        });
+        $('body').on('click','.i-retry',function(){
+            $('.si-retry').fadeIn();
+            $('.bg').fadeIn();
+        })
 
     })
 

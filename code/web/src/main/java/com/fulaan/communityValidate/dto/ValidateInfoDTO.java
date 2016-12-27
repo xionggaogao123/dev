@@ -16,11 +16,21 @@ public class ValidateInfoDTO {
     private int type;
     private String communityId;
     private int authority;
+    private int way;
+    private int reviewState;
+    private String reviewKeyId;
+
+
+
+    private int owner;
+    private String communityName;
 
 
     public ValidateInfoDTO(ValidateInfoEntry entry){
         this.id=entry.getID().toString();
-        this.userId=entry.getUserId().toString();
+        if(null!=entry.getUserId()) {
+            this.userId = entry.getUserId().toString();
+        }
         this.reviewedId=entry.getReviewedId().toString();
         this.applyMessage=entry.getApplyMessage();
         if(null!=entry.getApprovedId()){
@@ -31,6 +41,9 @@ public class ValidateInfoDTO {
         this.type=entry.getType();
         this.communityId=entry.getCommunityId().toString();
         this.authority=entry.getAuthority();
+        this.way=entry.getWay();
+        this.reviewState=entry.getReviewState();
+        this.reviewKeyId=entry.getReviewKeyId().toString();
     }
 
     public String getId() {
@@ -111,5 +124,21 @@ public class ValidateInfoDTO {
 
     public void setAuthority(int authority) {
         this.authority = authority;
+    }
+
+    public int getOwner() {
+        return owner;
+    }
+
+    public void setOwner(int owner) {
+        this.owner = owner;
+    }
+
+    public String getCommunityName() {
+        return communityName;
+    }
+
+    public void setCommunityName(String communityName) {
+        this.communityName = communityName;
     }
 }

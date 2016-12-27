@@ -147,12 +147,12 @@ define(['jquery', 'pagination', 'common'], function (require, exports, module) {
             common.getData("/community/search.do",param,function(result){
                 if(result.code=="200"){
                     template('#searchCommuntyTmpl','#searchCommunty',result.message);
-                    $('.hd-cont-f2').show();
+                    // $('.hd-cont-f2').show();
                 }else{
                     alert(result.message);
                 }
             })
-        })
+        });
 
         $('body').on('click','.lookUp',function(){
             judge($(this));

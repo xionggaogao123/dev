@@ -1,5 +1,6 @@
 package com.fulaan.dto;
 
+import com.fulaan.util.DateUtils;
 import com.fulaan.util.OperationType;
 import com.pojo.fcommunity.MemberEntry;
 import com.pojo.user.AvatarType;
@@ -42,13 +43,17 @@ public class MemberDTO {
     public MemberDTO(MemberEntry entry) {
         this.id = entry.getID().toString();
         this.userId = entry.getUserId().toString();
-        this.time = entry.getAvator();
+        this.time = DateUtils.timeStampToStr(entry.getID().getTimestamp());
         this.nickName = entry.getNickName();
         this.status = entry.getStatus();
         this.role = entry.getRole();
         this.roleStr = getRoleStr(entry.getRole());
         this.userName = entry.getUserName();
-        this.avator = AvatarUtils.getAvatar(entry.getAvator(), AvatarType.MIN_AVATAR.getType());
+        if(entry.getAvator() != null && entry.getAvator().contains("qlogo")) {
+            this.avator = entry.getAvator();
+        } else {
+            this.avator = AvatarUtils.getAvatar(entry.getAvator(), AvatarType.MIN_AVATAR.getType());
+        }
         if (null != entry.getGroupId()) {
             this.groupId = entry.getGroupId().toString();
         }
@@ -57,7 +62,6 @@ public class MemberDTO {
 
     private String getRoleStr(int role) {
         String roleStr;
-
         switch (role) {
             case 0:
                 roleStr = OperationType.NORMAL.getDecs();

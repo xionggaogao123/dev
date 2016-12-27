@@ -376,7 +376,7 @@ public class CommunityController extends BaseController {
             if (null != fulanDto) {
                 //加入复兰社区
                 joinFulaanCommunity(getUserId(), new ObjectId(fulanDto.getId()));
-                communityService.cleanNecessaryCommunity(getUserId(),new ObjectId(fulanDto.getId()));
+//                communityService.cleanNecessaryCommunity(getUserId(),new ObjectId(fulanDto.getId()));
             }
             communityDTOList = communityService.getCommunitys(userId, page, pageSize);
             if ("web".equals(platform)) {

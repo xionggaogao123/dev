@@ -607,7 +607,11 @@ public class CommunityController extends BaseController {
      */
     @RequestMapping("/join")
     @ResponseBody
-    public RespObj joinCommunity(@ObjectIdType ObjectId communityId) {
+    public RespObj joinCommunity(@ObjectIdType ObjectId communityId,@RequestParam(defaultValue = "1", required = false) int type) {
+
+//        if(type==2){
+//            System.out.println("扫描二维码加的"+type);
+//        }
         ObjectId userId = getUserId();
         if (joinCommunity(userId, communityId)) {
             return RespObj.SUCCESS("操作成功!");

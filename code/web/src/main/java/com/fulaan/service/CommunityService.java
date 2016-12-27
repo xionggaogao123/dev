@@ -620,7 +620,7 @@ public class CommunityService {
             boolean flag = true;
             List<ObjectId> unReadList = entry.getUnReadList();
             for (ObjectId item : unReadList) {
-                if (item.equals(userId)) {
+                if (userId.equals(item)) {
                     flag = false;
                     break;
                 }

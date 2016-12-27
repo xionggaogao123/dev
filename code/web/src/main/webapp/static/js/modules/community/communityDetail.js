@@ -387,7 +387,7 @@ define(['jquery', 'pagination', 'common'], function (require, exports, module) {
             if (resp.code == "200") {
                 $('.com-now').find('.p1').html(resp.message.name);
                 $('.com-now').find('img').attr('src', resp.message.logo);
-                $('.com-rlt').find('.p2').html("社区ID:" + resp.message.searchId);
+                $('.com-now').find('.p2').html("社区ID:" + resp.message.searchId);
             } else {
                 alert(resp.message);
             }

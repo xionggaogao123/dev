@@ -617,6 +617,8 @@ public class Constant {
 
     public static final String COLLECTION_FORUM_COMMUNITY_SYSTEMINFO = "fcomunitySysInfo";
 
+    public static final String COLLECTION_FORUM_COMMUNITY_VALIDATE_INFO="communityValidateInfo";
+
     //找培训
     public static final String COLLECTION_TRAIN_INSTITUTE="institute";
 

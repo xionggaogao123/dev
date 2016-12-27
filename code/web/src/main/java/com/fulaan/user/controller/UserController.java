@@ -323,6 +323,14 @@ public class UserController extends BaseController {
         }
 
 
+        //检查是否生成GenerateUserCode
+        if(StringUtils.isBlank(e.getGenerateUserCode())){
+            //若code为空，则生成code
+            e.setGenerateUserCode(ObjectIdPackageUtil.getPackage(e.getID()));
+            userService.addEntry(e);
+        }
+        value.setPackageCode(e.getGenerateUserCode());
+
         //放入缓存
         ObjectId cacheUserKey = new ObjectId();
 
@@ -366,15 +374,7 @@ public class UserController extends BaseController {
             ex.printStackTrace();
         }
 
-        //检查是否生成GenerateUserCode
-        if(StringUtils.isBlank(e.getGenerateUserCode())){
-            //若code为空，则生成code
-            e.setGenerateUserCode(ObjectIdPackageUtil.getPackage(e.getID()));
-            userService.addEntry(e);
-        }
-
         RespObj respObj = new RespObj(Constant.SUCCESS_CODE);
-        value.setPackageCode(e.getGenerateUserCode());
         respObj.setMessage(value);
 
         //检查是否注册环信
@@ -465,6 +465,11 @@ public class UserController extends BaseController {
         boolean isMateExist = mateService.isMateRecoreExist(userEntry.getID());
         if (!isMateExist) {
             mateService.saveMateEntry(userEntry.getID());
+        }
+
+        //检查是否生成个人Id
+        if(StringUtils.isBlank(userEntry.getGenerateUserCode())){
+            userEntry.setGenerateUserCode(ObjectIdPackageUtil.getPackage(userEntry.getID()));
         }
 
         userService.addUser(userEntry);
@@ -1575,6 +1580,13 @@ public class UserController extends BaseController {
             EaseMobAPI.createUser(userEntry.getID().toString(), nickName2);
         }
 
+        //检查是否生成个人ID
+        if(StringUtils.isBlank(userEntry.getGenerateUserCode())){
+            //若code为空，则生成code
+            userEntry.setGenerateUserCode(ObjectIdPackageUtil.getPackage(userEntry.getID()));
+            userService.addEntry(userEntry);
+        }
+
         String redirectUrl = userService.getRedirectUrl(request);
         userService.setCookieValue(getIP(), userEntry, response, request);
         if (StringUtils.isNotBlank(redirectUrl) && getPlatform() != Platform.PC) {
@@ -1680,6 +1692,15 @@ public class UserController extends BaseController {
             EaseMobAPI.createUser(userEntry.getID().toString(), nickName2);
         }
 
+        //检查是否生成个人Id
+        if(StringUtils.isBlank(userEntry.getGenerateUserCode())){
+            //若code为空，则生成code
+            userEntry.setGenerateUserCode(ObjectIdPackageUtil.getPackage(userEntry.getID()));
+            userService.addEntry(userEntry);
+        }
+
+
+
         String redirectUrl = userService.getRedirectUrl(request);
         userService.setCookieValue(getIP(), userEntry, response, request);
         if (redirectUrl != null && getPlatform() != Platform.PC) {
@@ -1705,6 +1726,15 @@ public class UserController extends BaseController {
         if (userEntry == null) {
             return RespObj.SUCCESS(MapUtil.put("isExist", "No"));
         }
+
+        //生成个人ID
+        //检查是否生成GenerateUserCode
+        if(StringUtils.isBlank(userEntry.getGenerateUserCode())){
+            //若code为空，则生成code
+            userEntry.setGenerateUserCode(ObjectIdPackageUtil.getPackage(userEntry.getID()));
+            userService.addEntry(userEntry);
+        }
+
         SessionValue value = userService.setCookieValue(getIP(), userEntry, response, request);
         //检查是否注册环信
         boolean isRegister = userEntry.isRegisterHuanXin();
@@ -1755,6 +1785,15 @@ public class UserController extends BaseController {
             ThirdLoginEntry thirdLoginEntry = new ThirdLoginEntry(userEntry.getID(), openId, unionId, ThirdType.getThirdType(type));
             userService.saveThirdEntry(thirdLoginEntry);
         }
+
+        //生成个人ID
+        //检查是否生成GenerateUserCode
+        if(StringUtils.isBlank(userEntry.getGenerateUserCode())){
+            //若code为空，则生成code
+            userEntry.setGenerateUserCode(ObjectIdPackageUtil.getPackage(userEntry.getID()));
+            userService.addEntry(userEntry);
+        }
+
         SessionValue value = userService.setCookieValue(getIP(), userEntry, response, request);
         return RespObj.SUCCESS(value);
     }

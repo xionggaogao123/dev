@@ -4,6 +4,7 @@ import com.db.businessactivity.FieryActivityDao;
 import com.db.ebusiness.EVoucherDao;
 import com.db.microblog.MicroBlogDao;
 import com.fulaan.logreport.service.BuildLogReportService;
+import com.fulaan.util.crawl.CrawlData;
 import com.pojo.app.RegionEntry;
 import com.pojo.emailmanage.EmailManageEntry;
 import com.pojo.forum.FLogEntry;
@@ -218,6 +219,12 @@ public class TaskJob {
 
 
     public void doParentChildTask(){
+        CrawlData crawlData=new CrawlData();
+        try {
+            crawlData.crawlParentData();
+        }catch (Exception e){
+            cLogger.error(e.getMessage());
+        }
 
     }
 

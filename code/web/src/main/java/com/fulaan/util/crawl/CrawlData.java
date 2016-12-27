@@ -20,58 +20,70 @@ import java.util.List;
 public class CrawlData {
 
 
-    public static void cycleData() throws Exception{
-        int type=1;
-        crawlParentData(type,"");
-    }
-
-    public static void todayData() throws Exception{
+    private List<String> doCycleData() throws Exception{
+        List<String> times=new ArrayList<String>();
         SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
         long nowTime=System.currentTimeMillis();
-        int type=2;
         String startTime=sdf.format(new Date(nowTime));
-        crawlParentData(type,startTime);
+        times.add(startTime);
+        for(int i=1;i<=30;i++){
+            long time=i*24L*60L*60L*1000L+nowTime;
+            String item=sdf.format(new Date(time));
+            String[] str=item.split("-");
+            StringBuffer buffer = new StringBuffer();
+            buffer.append(str[0]);
+            buffer.append("-");
+            buffer.append(Integer.valueOf(str[1]));
+            buffer.append("-");
+            buffer.append(Integer.valueOf(str[2]));
+            times.add(buffer.toString());
+        }
+      return times;
     }
 
 
-    public static void crawlParentData(int type,String startTime) throws  Exception{
-        HttpClientBuilder httpClientBuilder = HttpClientBuilder.create();
-        CloseableHttpClient client = httpClientBuilder.build();
-//        String startTime="2016-12-24";
-//        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
-//        Date date = sdf.parse(startTime);
-//        sdf.format(new Date(date.getTime() - 2 * 24 * 60 * 60 * 1000));
-        RegionService regionService=new RegionService();
-        ParentChildActivityDao parentChildActivityDao=new ParentChildActivityDao();
-        RegionEntry regionEntry=regionService.getRegionEntry("上海市");
-        List<Integer> expenses=new ArrayList<Integer>();
+    public  void crawlParentData() throws Exception{
+        List<String> times=doCycleData();
+        List<Integer> expenses = new ArrayList<Integer>();
         expenses.add(0);
         expenses.add(1);
-        String city="shanghai";
-        int number=1;
-        boolean flag=true;
-        List<ParentChildActivityEntry> entries=new ArrayList<ParentChildActivityEntry>();
-        //数据记录,防止循环爬取
-        Record record=new Record();
-        for(Integer expense:expenses) {
-            while(flag) {
-                String url = "http://www.hdb.com/find/" + city + "-flzj-fy" + expense + "-p" + number + "?start_time=" + startTime;
-                String cityName="上海";
-                ObjectId regionId=regionEntry.getID();
-                flag=URLParseUtil.ParseHDBData(client, url, entries,cityName,regionId,expense,startTime,record,number);
-                number++;
-                if(entries.size()>0) {
-                    parentChildActivityDao.batchAddData(entries);
+        RegionService regionService = new RegionService();
+        RegionEntry regionEntry = regionService.getRegionEntry("上海市");
+        String city = "shanghai";
+        boolean flag = true;
+        int number = 1;
+        for(String startTime:times) {
+            HttpClientBuilder httpClientBuilder = HttpClientBuilder.create();
+            CloseableHttpClient client = httpClientBuilder.build();
+            ParentChildActivityDao parentChildActivityDao = new ParentChildActivityDao();
+            List<ParentChildActivityEntry> entries = new ArrayList<ParentChildActivityEntry>();
+            //数据记录,防止循环爬取
+            Record record = new Record();
+            for (Integer expense : expenses) {
+                while (flag) {
+                    String url = "http://www.hdb.com/find/" + city + "-flzj-fy" + expense + "-p" + number + "?start_time=" + startTime;
+                    String cityName = "上海";
+                    ObjectId regionId = regionEntry.getID();
+                    flag = URLParseUtil.ParseHDBData(client, url, entries, cityName, regionId, expense, startTime, record, number);
+                    number++;
+                    if (entries.size() > 0) {
+                        //删除数据
+                        parentChildActivityDao.removeData(startTime,expense);
+                        parentChildActivityDao.batchAddData(entries);
+                    }
+                    entries.clear();
                 }
-                entries.clear();
+                flag = true;
+                number = 1;
             }
-            flag=true;
-            number=1;
         }
     }
 
     public static void main(String[] args) throws Exception{
-
+//        CrawlData crawlData=new CrawlData();
+//        crawlData.crawlParentData();
+//        cycleData();
+//        todayData();
     }
 
     public static class Record{

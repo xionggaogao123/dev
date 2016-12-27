@@ -23,6 +23,12 @@ public class ParentChildActivityDao extends BaseDao{
         List<DBObject> list= MongoUtils.fetchDBObjectList(entries);
         save(MongoFacroty.getAppDB(), Constant.COLLECTION_PARENT_CHILD_ACTIVITY,list);
     }
+
+    public void removeData(String startTime,int expense){
+        BasicDBObject query=new BasicDBObject("sti",startTime).append("eps",expense);
+        remove(MongoFacroty.getAppDB(),Constant.COLLECTION_PARENT_CHILD_ACTIVITY,query);
+    }
+
     public ParentChildActivityEntry getEntryByCondition(String activityName,String activityTime){
 
         BasicDBObject query=new BasicDBObject()

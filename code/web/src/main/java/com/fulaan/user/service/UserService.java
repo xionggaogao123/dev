@@ -1048,6 +1048,8 @@ public class UserService extends BaseService {
     public SessionValue setCookieValue(String ip, UserEntry e, HttpServletResponse response, HttpServletRequest request) {
 
         SessionValue value = getSessionValue(e);
+        //保存generateCode
+        value.setPackageCode(e.getGenerateUserCode());
         //放入缓存
         ObjectId cacheUserKey = new ObjectId();
         String ipKey = CacheHandler.getKeyString(CacheHandler.CACHE_USER_KEY_IP, cacheUserKey.toString());

@@ -1765,8 +1765,10 @@ public class UserController extends BaseController {
     @SessionNeedless
     @RequestMapping("/third/users")
     @ResponseBody
-    public RespObj createUserFromThird(String openId, Integer type, String unionId, String nickName,
-                                       String avatar, HttpServletResponse response, HttpServletRequest request, Integer sex) {
+    public RespObj createUserFromThird(String openId, Integer type, String unionId,
+                                       @RequestParam(value = "nickName",defaultValue = "") String nickName,
+                                       @RequestParam(value = "avatar",defaultValue = "") String avatar,
+                                       @RequestParam(value = "sex",defaultValue = "0") Integer sex,HttpServletResponse response, HttpServletRequest request) {
         if (type == null) {
             return RespObj.FAILD("参数不对");
         }
@@ -1792,6 +1794,13 @@ public class UserController extends BaseController {
             //若code为空，则生成code
             userEntry.setGenerateUserCode(ObjectIdPackageUtil.getPackage(userEntry.getID()));
             userService.addEntry(userEntry);
+        }
+
+        //检查是否注册环信
+        boolean isRegister = userEntry.isRegisterHuanXin();
+        String nickName2 = StringUtils.isNotBlank(userEntry.getNickName()) ? userEntry.getNickName() : userEntry.getUserName();
+        if (!isRegister) {
+            EaseMobAPI.createUser(userEntry.getID().toString(), nickName2);
         }
 
         SessionValue value = userService.setCookieValue(getIP(), userEntry, response, request);

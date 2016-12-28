@@ -688,7 +688,10 @@ public class EBusinessUserController extends BaseController {
             userEntry = userService.findByEmail(account);
         } else if (phoneMatcher.matches()) {//手机号登录
             userEntry = userService.findByPhone(account);
-        } else {//用户名登陆
+            if(null==userEntry){
+                userEntry = userService.findByMobile(account);
+            }
+        }else {//用户名登陆
             userEntry = userService.findByUserName(account);
         }
 

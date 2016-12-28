@@ -909,7 +909,17 @@ public class UserDao extends BaseDao {
     }
 
     public UserEntry findByPhone(String phone) {
-        FieldValuePair fieldValuePair = new FieldValuePair("mn", phone);
+        FieldValuePair fieldValuePair = new FieldValuePair("pn", phone);
+        return query(fieldValuePair);
+    }
+
+    public UserEntry findByMobile(String mobile){
+        FieldValuePair fieldValuePair = new FieldValuePair("mn", mobile);
+        return query(fieldValuePair);
+    }
+
+    public UserEntry findByPersonalID(String personalId){
+        FieldValuePair fieldValuePair = new FieldValuePair("gugc", personalId);
         return query(fieldValuePair);
     }
 

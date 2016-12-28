@@ -44,6 +44,8 @@ import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;
 import java.text.Collator;
 import java.util.*;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 /**
  * Created by yan on 2015/2/27.
@@ -355,6 +357,10 @@ public class UserService extends BaseService {
 
     public UserEntry findByPhone(String phone) {
         return userDao.findByPhone(phone);
+    }
+
+    public UserEntry findByMobile(String mobile){
+        return userDao.findByMobile(mobile);
     }
 
     /**
@@ -943,13 +949,28 @@ public class UserService extends BaseService {
     }
 
     public UserEntry login(String login) {
-        UserEntry user = userDao.findByName(login);
-        if (user == null) {
+
+        Pattern emailPattern = Pattern.compile("^.+@.+\\..+$");
+        Pattern phonePattern = Pattern.compile("^1[3|4|5|7|8][0-9]\\d{8}$");
+        Pattern personalIdPattern= Pattern.compile("^[\\d]{10}");
+        Matcher emailMatcher = emailPattern.matcher(login);
+        Matcher phoneMatcher = phonePattern.matcher(login);
+        Matcher personalIdMatcher = personalIdPattern.matcher(login);
+        UserEntry user;
+        if (emailMatcher.matches()) {
             user = userDao.findByEmail(login);
-        }
-        if (user == null) {
+        }else if(phoneMatcher.matches()){
             user = userDao.findByPhone(login);
+            if(null==user){
+                user = userDao.findByMobile(login);
+            }
+        } else if(personalIdMatcher.matches()){
+            user=userDao.findByPersonalID(login);
+        }else {
+           user = userDao.findByName(login);
         }
+
+
         return user;
     }
 

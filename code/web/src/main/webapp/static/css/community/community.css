@@ -2115,26 +2115,52 @@ pre{white-space: pre-wrap;word-wrap: break-word;}
     cursor: pointer;
 }
 .p-doc{
-    float: left;
-    line-height: 24px;
-    height: 24px;
-    margin-right: 20px;
+    /*float: left;*/
+    line-height: 28px;
+    height: 28px;
+    margin: 0 3px 5px;
     color: #222;
     font-size: 12px;
     position: relative;
 }
 .p-doc span{
     display: inline-block;
-    max-width:70px;
+    /*max-width:70px;
     text-overflow: ellipsis;
     white-space: nowrap;
-    overflow: hidden;
+    overflow: hidden;*/
     float: left;
+    margin-left: 35px;
+}
+.p-doc>img{
+    position: absolute;
+    left:1px;
+}
+.p-doc .img1{
+    top:2px;
+}
+.p-doc .img2{
+    top:2px;
+}
+.p-doc .img3{
+    top:2px;
+}
+.p-doc .img4{
+    top:2px;
+}
+.p-doc .img5{
+    top:5px;
+}
+.p-doc .img6{
+    top:2px;
+}
+.p-doc .img7{
+    top:2px;
 }
 .p-doc em{
-    position: absolute;
-    top: 0;
-    right: -14px;
+    position: relative;
+    margin-left: 10px;
+    top: 3px;
     z-index: 1;
     display: inline-block;
     width: 12px;

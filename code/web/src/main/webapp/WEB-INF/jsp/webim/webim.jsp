@@ -29,7 +29,7 @@
     }
 </script>
 <!--sdk-->
-<script src='/static/dist/webim/sdk/websdk-1.1.3.js'></script>
+<script src='/static/dist/webim/demo/javascript/dist/websdk.js'></script>
 <!--webrtc-->
 <script>
     if (WebIM.config.isWebRTC) {

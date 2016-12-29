@@ -21,6 +21,8 @@ public abstract class MessageBody implements BodyWrapper {
 
     private Map<String, String> ext;
 
+    private Map<String, String> sendMessage;
+
     private boolean init = false;
 
     public MessageBody(String targetType, String[] targets, String from, Map<String, String> ext) {
@@ -28,6 +30,14 @@ public abstract class MessageBody implements BodyWrapper {
         this.targets = targets;
         this.from = from;
         this.ext = ext;
+    }
+
+    public MessageBody(String targetType, String[] targets, String from, Map<String, String> ext, Map<String, String> sendMessage) {
+        this.targetType = targetType;
+        this.targets = targets;
+        this.from = from;
+        this.ext = ext;
+        this.sendMessage=sendMessage;
     }
 
     public String getTargetType() {
@@ -45,6 +55,10 @@ public abstract class MessageBody implements BodyWrapper {
 
     public Map<String, String> getExt() {
         return ext;
+    }
+
+    public Map<String, String> getSendMessage() {
+        return sendMessage;
     }
 
     public boolean isInit() {
@@ -71,6 +85,15 @@ public abstract class MessageBody implements BodyWrapper {
                 while (iter.hasNext()) {
                     String key = iter.next();
                     extNode.put(key, ext.get(key));
+                }
+            }
+
+            if (null != sendMessage) {
+                ObjectNode extNode = msgBody.putObject("msg");
+                Iterator<String> iter = sendMessage.keySet().iterator();
+                while (iter.hasNext()) {
+                    String key = iter.next();
+                    extNode.put(key, sendMessage.get(key));
                 }
             }
         }

@@ -57,7 +57,7 @@
                 <%--<button id="join">加入社区</button>--%>
                 <%--<button class="btn-yq">+邀请玩伴</button>--%>
             </div>
-            <div class="publish-cont" >
+            <div class="publish-cont" <c:if test="${login==false}">style="display: none"</c:if>>
                 <ul class="publish-nav">
                     <c:if test="${operation!=1}">
                     <li class="li3" type="3" class="green">
@@ -667,10 +667,33 @@
 //                $('.vote-vedio-container ul').html('');
                 $('.wind-wait').hide();
                 var url = response.result.message[0].path;
-                var url = response.result.message[0].path;
                 var fileName = response.result.message[0].fileName;
-                var str = "<p class=\"p-doc\" url=\"" + url + "\"" + ">" +
-                        "<span>" + fileName + "</span><em></em></p> ";
+                var image;
+                var imageUrl ="/static/images/community/";
+                if(fileName.indexOf(".doc")>-1||fileName.indexOf(".docx")>-1){
+                    image="img1";
+                    imageUrl=imageUrl+"c_img1.png";
+                }else  if(fileName.indexOf(".ppt")>-1){
+                    image="img2";
+                    imageUrl=imageUrl+"c_img2.png";
+                }else  if(fileName.indexOf(".xls")>-1||fileName.indexOf(".xlsx")>-1){
+                    image="img3";
+                    imageUrl=imageUrl+"c_img3.png";
+                }else  if(fileName.indexOf(".jpg")>-1||fileName.indexOf(".png")>-1||fileName.indexOf(".gif")>-1){
+                    image="img4";
+                    imageUrl=imageUrl+"c_img4.png";
+                }else  if(fileName.indexOf(".zip")>-1){
+                    image="img6";
+                    imageUrl=imageUrl+"c_img6.png";
+                }else  if(fileName.indexOf(".avi")>-1||fileName.indexOf(".mp4")>-1||fileName.indexOf(".wav")>-1){
+                    image="img7";
+                    imageUrl=imageUrl+"c_img7.png";
+                }else{
+                    image="img5";
+                    imageUrl=imageUrl+"c_img5.png";
+                }
+                var str = "<p class=\"p-doc\" url=\"" + url + "\"" + ">" +"<img class=\""+image+"\" src=\""+imageUrl+"\" >"+
+                        "<span>" + fileName + "</span><em></em></p>";
                 $('.pub-fj-doc').append(str);
             } else {
                 alert("上传失败，请重新上传！");

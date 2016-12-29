@@ -218,10 +218,10 @@ public class UserController extends BaseController {
         //数据库验证
         UserEntry e = userService.login(name);
         if (null == e) {
-            faild.setMessage("accountError");
+            faild.setMessage("用户名或密码错误!");
             return faild;
         } else if(e.getIsRemove()==1){
-            faild.setMessage("用户名不存在！");
+            faild.setMessage("用户名或密码错误！");
             return faild;
         } else{
             String emailValidateCode = e.getEmailValidateCode();
@@ -245,7 +245,7 @@ public class UserController extends BaseController {
                 return faild;
             }
             if (!e.getPassword().equalsIgnoreCase(MD5Utils.getMD5String(pwd)) && !e.getPassword().equalsIgnoreCase(pwd)) {
-                faild.setMessage("密码错误");
+                faild.setMessage("用户名或密码错误");
                 return faild;
             }
         }

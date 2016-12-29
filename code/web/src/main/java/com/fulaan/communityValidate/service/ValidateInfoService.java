@@ -42,7 +42,7 @@ public class ValidateInfoService {
      * @param communityId
      * @param message
      */
-    public boolean saveValidateInfos(ObjectId userId,ObjectId communityId,String message,int way){
+    public boolean saveValidateInfos(ObjectId userId,ObjectId communityId,String message,int way,List<MemberDTO> memberDTOs){
         //先校验是否申请过，若申请过的话返回已经申请过了。
         ValidateInfoEntry entry1=validateInfoDao.getIsApplyEntry(userId,communityId);
         if(null!=entry1){
@@ -52,8 +52,6 @@ public class ValidateInfoService {
             List<ValidateInfoEntry> entries = new ArrayList<ValidateInfoEntry>();
             ValidateInfoEntry entry = new ValidateInfoEntry(userId, message, communityId, 0, way, reviewKeyId);
             entries.add(entry);
-            ObjectId groupId = communityService.getGroupId(communityId);
-            List<MemberDTO> memberDTOs = memberService.getManagers(groupId);
             for (MemberDTO memberDTO : memberDTOs) {
                 ValidateInfoEntry validateInfoEntry = new ValidateInfoEntry(userId, new ObjectId(memberDTO.getUserId()),
                         message, communityId, 1, way, reviewKeyId);

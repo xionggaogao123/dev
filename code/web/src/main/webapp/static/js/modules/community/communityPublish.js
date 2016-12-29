@@ -237,13 +237,23 @@ define(['jquery', 'pagination', 'common'], function (require, exports, module) {
             $('.publish-nav li span').removeClass('disn');
             $(this).children('.sp1').addClass('disn');
             $(this).addClass('green').siblings('.publish-nav li').removeClass('green');
-            $('.publish-btn span').show();
+            // $('.publish-btn span').show();
             $('.pub-fj-pro').hide();
 
+            $('.publish-fj').css('border-top','1px solid #C2C2C2');
+            $('#content').show();
+            $('#title').show();
+            $('.publish-btn').find('span').eq(0).show();
+            $('.publish-btn').find('span').eq(1).hide();
             if (type == 1) {
                 $('.publish-btn .sp2').hide();
             } else if (type == 6) {
                 $('.pub-fj-pro').show();
+            } else if(type==4){
+                $('.publish-fj').css('border-top','0px solid #C2C2C2');
+                $('#content').hide();
+                $('#title').hide();
+                $('.publish-btn').find('span').eq(1).show();
             }
             //清空数据
             emptyData();
@@ -609,10 +619,14 @@ define(['jquery', 'pagination', 'common'], function (require, exports, module) {
         $('.pub-fj-img').html($('.publish-nav').data('pubIm' + type));
         $('.pub-fj-doc').html($('.publish-nav').data('pubDoc' + type));
         $('#voice_notice').html($('.publish-nav').data("pubVoice" + type));
+        $('#title').val($('.publish-nav').data('title' + type));
+        $('#content').val($('.publish-nav').data('content' + type));
     }
 
     //清空数据
     function emptyData() {
+        $('#title').val("");
+        $('#content').val("");
         $('.pub-fj-img').empty();
         $('.pub-fj-doc').empty();
         $('#voice_notice').empty();
@@ -620,6 +634,8 @@ define(['jquery', 'pagination', 'common'], function (require, exports, module) {
 
     //存储数据
     function storeData(type) {
+        $('.publish-nav').data('title' + type, $('#title').val());
+        $('.publish-nav').data('content' + type, $('#content').val());
         $('.publish-nav').data('pubIm' + type, $('.pub-fj-img').html());
         $('.publish-nav').data('pubDoc' + type, $('.pub-fj-doc').html());
         $('.publish-nav').data("pubVoice" + type, $('#voice_notice').html());
@@ -674,7 +690,7 @@ define(['jquery', 'pagination', 'common'], function (require, exports, module) {
     function publish() {
         if (validate()) {
             var message = {};
-            var type = $('.publish-nav').data('type')
+            var type = $('.publish-nav').data('type');
             message.communityId = communityId;
             message.title = $('#title').val();
             var content = $('#content').val();
@@ -746,9 +762,13 @@ define(['jquery', 'pagination', 'common'], function (require, exports, module) {
     function validate() {
         var title = $('#title').val();
         var content = $('#content').val();
-        if (title == "" || title == undefined) {
-            alert("标题不能为空!");
-            return false;
+        var type = $('.publish-nav').data('type');
+
+        if(type!=4) {
+            if (title == "" || title == undefined) {
+                alert("标题不能为空!");
+                return false;
+            }
         }
 
         var titleLen=strlen(title);
@@ -756,13 +776,18 @@ define(['jquery', 'pagination', 'common'], function (require, exports, module) {
             alert("标题字节数不能超过48个");
             return false;
         }
-        if (content == "" || content == undefined) {
-            alert("内容不能为空!");
-            return false;
+
+        if(type!=4){
+            if (content == "" || content == undefined) {
+                alert("内容不能为空!");
+                return false;
+            }
         }
+
+
         var contentLen=strlen(content);
-        if(contentLen>500){
-            alert("内容字节数不能超过500个!");
+        if(contentLen>1000){
+            alert("内容字节数不能超过1000个!");
             return false;
         }
         return true;

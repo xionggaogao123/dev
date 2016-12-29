@@ -1,6 +1,7 @@
 package com.fulaan.communityValidate.dto;
 
 import com.pojo.fcommunity.ValidateInfoEntry;
+import com.sys.utils.DateTimeUtils;
 
 /**
  * Created by admin on 2016/12/26.
@@ -19,11 +20,16 @@ public class ValidateInfoDTO {
     private int way;
     private int reviewState;
     private String reviewKeyId;
+    private String time;
+    private String roleStr;
 
 
 
     private int owner;
     private String communityName;
+
+    private String userName;
+    private String reviewName;
 
 
     public ValidateInfoDTO(ValidateInfoEntry entry){
@@ -44,6 +50,8 @@ public class ValidateInfoDTO {
         this.way=entry.getWay();
         this.reviewState=entry.getReviewState();
         this.reviewKeyId=entry.getReviewKeyId().toString();
+        this.roleStr=entry.getRoleStr();
+        this.time= DateTimeUtils.convert(entry.getID().getTime(),DateTimeUtils.DATE_YYYY_MM_DD_HH_MM_A);
     }
 
     public String getId() {
@@ -140,5 +148,61 @@ public class ValidateInfoDTO {
 
     public void setCommunityName(String communityName) {
         this.communityName = communityName;
+    }
+
+    public int getWay() {
+        return way;
+    }
+
+    public void setWay(int way) {
+        this.way = way;
+    }
+
+    public int getReviewState() {
+        return reviewState;
+    }
+
+    public void setReviewState(int reviewState) {
+        this.reviewState = reviewState;
+    }
+
+    public String getReviewKeyId() {
+        return reviewKeyId;
+    }
+
+    public void setReviewKeyId(String reviewKeyId) {
+        this.reviewKeyId = reviewKeyId;
+    }
+
+    public String getTime() {
+        return time;
+    }
+
+    public void setTime(String time) {
+        this.time = time;
+    }
+
+    public String getUserName() {
+        return userName;
+    }
+
+    public void setUserName(String userName) {
+        this.userName = userName;
+    }
+
+    public String getReviewName() {
+        return reviewName;
+    }
+
+    public void setReviewName(String reviewName) {
+        this.reviewName = reviewName;
+    }
+
+    public String getRoleStr() {
+        return roleStr;
+    }
+
+    public void setRoleStr(String roleStr) {
+        this.roleStr = roleStr;
     }
 }

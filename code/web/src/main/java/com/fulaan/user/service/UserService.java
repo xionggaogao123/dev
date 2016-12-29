@@ -12,6 +12,7 @@ import com.fulaan.cache.CacheHandler;
 import com.fulaan.dto.UserDTO;
 import com.fulaan.mall.service.EBusinessVoucherService;
 import com.fulaan.pojo.FLoginLog;
+import com.fulaan.pojo.User;
 import com.fulaan.user.dao.ThirdLoginDao;
 import com.fulaan.user.model.ThirdLoginEntry;
 import com.fulaan.user.model.ThirdType;
@@ -923,6 +924,11 @@ public class UserService extends BaseService {
 
     public UserEntry findByUserName(String name) {
         return userDao.findByName(name);
+    }
+
+
+    public UserEntry findByPersonalID(String personalId){
+        return userDao.findByPersonalID(personalId);
     }
 
 

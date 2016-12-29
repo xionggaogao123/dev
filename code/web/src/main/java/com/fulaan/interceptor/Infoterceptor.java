@@ -1,6 +1,7 @@
 package com.fulaan.interceptor;
 
 import com.fulaan.annotation.LoginInfo;
+import com.fulaan.communityValidate.service.ValidateInfoService;
 import com.fulaan.friendscircle.service.FriendApplyService;
 import com.fulaan.service.CommunitySystemInfoService;
 import com.fulaan.service.ConcernService;
@@ -50,6 +51,8 @@ public class Infoterceptor extends HandlerInterceptorAdapter {
     private CommunitySystemInfoService communitySystemInfoService;
     @Autowired
     private FriendApplyService friendApplyService;
+    @Autowired
+    private ValidateInfoService validateInfoService;
 
 
     @Override
@@ -90,7 +93,8 @@ public class Infoterceptor extends HandlerInterceptorAdapter {
         }
 
         int systemInfoCount = communitySystemInfoService.findUnReadInfo(new ObjectId(sessionValue.getId()));
-        model.put("systemInfoCount", systemInfoCount);
+        int applyValidateInfoCount = validateInfoService.getValidateInfoCount(new ObjectId(sessionValue.getId()));
+        model.put("systemInfoCount", systemInfoCount+applyValidateInfoCount);
         int friendApplyCount = friendApplyService.countNoResponseReply(sessionValue.getId());
         model.put("friendApplyCount", friendApplyCount);
         model.put("infoCount",systemInfoCount+friendApplyCount);

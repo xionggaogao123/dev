@@ -230,7 +230,7 @@ define(['jquery', 'pagination', 'common'], function (require, exports, module) {
         $('body').on('click', '.publish-nav li', function () {
             //存储数据
             storeData(parseInt($('.green').attr('type')));
-            var type = parseInt($(this).attr('type'))
+            var type = parseInt($(this).attr('type'));
             $('.publish-nav').data('type', type);
             $('.publish-nav li span').removeClass('disb');
             $(this).children('.sp2').addClass('disb');
@@ -677,7 +677,9 @@ define(['jquery', 'pagination', 'common'], function (require, exports, module) {
             var type = $('.publish-nav').data('type')
             message.communityId = communityId;
             message.title = $('#title').val();
-            message.content = $('#content').val();
+            var content = $('#content').val();
+           //创建正则RegExp对象
+            message.content=content.replace(/\n/g,"<br/>");
             message.type = type;
             //加载附件信息
             var attachements = new Array();
@@ -749,16 +751,18 @@ define(['jquery', 'pagination', 'common'], function (require, exports, module) {
             return false;
         }
 
-        if(title.length>=15){
-            alert("标题字数不能超过15个");
-            return;
+        var titleLen=strlen(title);
+        if(titleLen>48){
+            alert("标题字节数不能超过48个");
+            return false;
         }
         if (content == "" || content == undefined) {
             alert("内容不能为空!");
             return false;
         }
-        if(content.length>=200){
-            alert("内容字数不能超过200个!");
+        var contentLen=strlen(content);
+        if(contentLen>500){
+            alert("内容字节数不能超过500个!");
             return false;
         }
         return true;
@@ -800,6 +804,22 @@ define(['jquery', 'pagination', 'common'], function (require, exports, module) {
                 alert(result.message);
             }
         })
+    }
+
+    //字符长度
+    function strlen(str){
+        var len = 0;
+        for (var i=0; i<str.length; i++) {
+            var c = str.charCodeAt(i);
+            //单字节加1
+            if ((c >= 0x0001 && c <= 0x007e) || (0xff60<=c && c<=0xff9f)) {
+                len++;
+            }
+            else {
+                len+=2;
+            }
+        }
+        return len;
     }
 
     //获取该社区详情信息

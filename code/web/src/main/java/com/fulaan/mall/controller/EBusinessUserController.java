@@ -681,8 +681,10 @@ public class EBusinessUserController extends BaseController {
 
         Pattern emailPattern = Pattern.compile("^.+@.+\\..+$");
         Pattern phonePattern = Pattern.compile("^1[3|4|5|7|8][0-9]\\d{8}$");
+        Pattern personalIdPattern= Pattern.compile("^[\\d]{10}");
         Matcher emailMatcher = emailPattern.matcher(account);
         Matcher phoneMatcher = phonePattern.matcher(account);
+        Matcher personalIdMatcher = personalIdPattern.matcher(account);
         UserEntry userEntry ;
         if (emailMatcher.matches()) {//邮箱登录
             userEntry = userService.findByEmail(account);
@@ -691,6 +693,8 @@ public class EBusinessUserController extends BaseController {
             if(null==userEntry){
                 userEntry = userService.findByMobile(account);
             }
+        }else if(personalIdMatcher.matches()){
+            userEntry=userService.findByPersonalID(account);
         }else {//用户名登陆
             userEntry = userService.findByUserName(account);
         }

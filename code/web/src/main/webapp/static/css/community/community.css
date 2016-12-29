@@ -2060,7 +2060,7 @@ pre{white-space: pre-wrap;word-wrap: break-word;}
 .publish-fj{
     width: 778px;
     border-top: 1px solid #C2C2C2;
-    /*padding-top: 13px;*/
+    padding-top: 10px;
     margin-top: 6px;
 }
 .publish-fj-2{
@@ -2079,6 +2079,11 @@ pre{white-space: pre-wrap;word-wrap: break-word;}
     height: 60px;
     position: relative;
     margin-right: 10px;
+}
+.publish-fj .pub-img img{
+    min-height: 40px;
+    min-width: 60px;
+    max-height: 40px;
 }
 #jwbUid{
     width: 280px;
@@ -2546,6 +2551,7 @@ pre{white-space: pre-wrap;word-wrap: break-word;}
     display: block;
     margin: 30px 0 15px 0;
 }
+
 .sign-alert .alert-main span em{
     color: #FF9926;
 }

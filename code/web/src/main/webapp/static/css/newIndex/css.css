@@ -471,6 +471,7 @@ button{cursor: pointer;}
 	cursor: pointer;
 	transition: all .5s;
 	font-weight: bold;
+	background: rgba(0,0,0,.3);
 }
 .ul-photo li span:hover{
 	background: #fff;

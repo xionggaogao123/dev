@@ -108,7 +108,7 @@ define(['jquery', 'pagination', 'common'], function (require, exports, module) {
             var prev = $('#prev-p');
             var next = $('#next-p');
             var index = 1;
-            var len = 3;
+            var len = 2;
             var interval = 3000;
             var timer;
 

@@ -214,7 +214,7 @@
         </div>
         <div class="photo-show">
             <div class="d-photo">
-                <script id="talentTml" type="text/template">
+ <%--               <script id="talentTml" type="text/template">
                     {{~it:value:index}}
                     <li>
                         <img src="{{=value.activityImage}}">
@@ -227,8 +227,36 @@
                         </div>
                     </li>
                     {{~}}
-                </script>
+                </script>--%>
                 <ul class="ul-photo" style="left: 0;" id="talentList">
+                    <li>
+                        <img src="/static/images/community/hanghai_mini.jpg">
+                        <span onclick="window.open('http://hanghai.fulaan.com')">更多</span>
+                        <div class="photo-text">
+                            <h3 style="margin-top: 86px;font-size: 24px;" onclick="window.open('http://hanghai.fulaan.com')">帆迪全球在线<br>航海课程</h3>
+                        </div>
+                    </li>
+                    <li>
+                        <img src="/static/images/community/jixian_mini.jpg">
+                        <span onclick="window.open('/forum/postIndex.do?pSectionId=575d4d8e0cf2ca0383166bba')">更多</span>
+                        <div class="photo-text">
+                            <h3 style="margin-top: 86px;font-size: 24px;" onclick="window.open('/forum/postIndex.do?pSectionId=575d4d8e0cf2ca0383166bba')">极限航海巅峰<br>挑战</h3>
+                        </div>
+                    </li>
+                    <li>
+                        <img src="/static/images/community/hanghai_mini.jpg">
+                        <span onclick="window.open('http://hanghai.fulaan.com')">更多</span>
+                        <div class="photo-text">
+                            <h3 style="margin-top: 86px;font-size: 24px;" onclick="window.open('http://hanghai.fulaan.com')">帆迪全球在线<br>航海课程</h3>
+                        </div>
+                    </li>
+                    <li>
+                        <img src="/static/images/community/jixian_mini.jpg">
+                        <span onclick="window.open('/forum/postIndex.do?pSectionId=575d4d8e0cf2ca0383166bba')">更多</span>
+                        <div class="photo-text">
+                            <h3 style="margin-top: 86px;font-size: 24px;" onclick="window.open('/forum/postIndex.do?pSectionId=575d4d8e0cf2ca0383166bba')">极限航海巅峰<br>挑战</h3>
+                        </div>
+                    </li>
                 </ul>
 
                 <div class="photo-btn">

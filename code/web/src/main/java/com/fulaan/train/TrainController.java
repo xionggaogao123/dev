@@ -304,9 +304,14 @@ public class TrainController extends BaseController {
         List<String> itemTypeIds = new ArrayList<String>();
         if (StringUtils.isNotBlank(region) && StringUtils.isBlank(area)) {
             List<RegionDTO> dtos = regionService.getRegionList(3, new ObjectId(region));
-            for (RegionDTO regionDTO : dtos) {
-                regionsIds.add(regionDTO.getId());
+            if(dtos.size()>0){
+                for (RegionDTO regionDTO : dtos) {
+                    regionsIds.add(regionDTO.getId());
+                }
+            }else{
+                regionsIds.add(region);
             }
+
         }
 
         if (StringUtils.isNotBlank(itemType) && StringUtils.isBlank(type)) {

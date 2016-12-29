@@ -83,29 +83,77 @@
             </div>
             <div class="com-left-s" id="SysInfo" style="display: none">
                 <div class="com-tit">系统消息</div>
-                <div class="tab-sys" style="display: none;">
-                    <span class="span-sys">系统消息<i></i></span><span>加入请求<i></i></span>
+                <div class="tab-sys">
+                    <span class="span-sys" id="sysinfocount">系统消息<i ></i></span><span id="applycount">加入请求<i></i></span>
                 </div>
 
-                <ul class="ul-sysNotice" style="display: none;">
-                    <li class="clearfix">
-                        <span class="sp1">用户<em>哎哎哎</em>请求加入<em>复兰教育社区</em>（来自扫描二维码）<i class="i2">√ 同意</i><i class="i2">× 拒绝</i></span>
-                        <span class="sp2">2016-11-21 15:00</span>
-                    </li>
-                    <li class="clearfix">
-                        <span class="sp1">用户<em>哎哎哎</em>请求加入<em>复兰教育社区</em>（来自搜索社区ID）<i class="i3">您已拒绝TA的请求</i></span>
-                        <span class="sp2">2016-11-21 15:00</span>
-                    </li>
-                    <li class="clearfix">
-                        <span class="sp1">用户<em>哎哎哎</em>请求加入<em>复兰教育社区</em>（来自搜索社区ID）<i class="i3">您已通过TA的请求</i></span>
-                        <span class="sp2">2016-11-21 15:00</span>
-                        <span class="sp3">备注：我是AAA</span>
-                    </li>
-                    <li class="clearfix">
-                        <span class="sp1">用户<em>哎哎哎</em>请求加入<em>复兰教育社区</em>（来自搜索社区ID）<i class="i4 i-retry">再次请求</i></span>
-                        <span class="sp2">2016-11-21 15:00</span>
-                    </li>
+                <ul class="ul-sysNotice" id="sysNotice" style="display: none">
+                    <%--<li class="clearfix">--%>
+                        <%--<span class="sp1">用户<em>哎哎哎</em>请求加入<em>复兰教育社区</em>（来自扫描二维码）<i class="i2">√ 同意</i><i class="i2">× 拒绝</i></span>--%>
+                        <%--<span class="sp2">2016-11-21 15:00</span>--%>
+                    <%--</li>--%>
+                    <%--<li class="clearfix">--%>
+                        <%--<span class="sp1">用户<em>哎哎哎</em>请求加入<em>复兰教育社区</em>（来自搜索社区ID）<i class="i3">您已拒绝TA的请求</i></span>--%>
+                        <%--<span class="sp2">2016-11-21 15:00</span>--%>
+                    <%--</li>--%>
+                    <%--<li class="clearfix">--%>
+                        <%--<span class="sp1">用户<em>哎哎哎</em>请求加入<em>复兰教育社区</em>（来自搜索社区ID）<i class="i3">您已通过TA的请求</i></span>--%>
+                        <%--<span class="sp2">2016-11-21 15:00</span>--%>
+                        <%--<span class="sp3">备注：我是AAA</span>--%>
+                    <%--</li>--%>
+                    <%--<li class="clearfix">--%>
+                        <%--<span class="sp1">用户<em>哎哎哎</em>请求加入<em>复兰教育社区</em>（来自搜索社区ID）<i class="i4 i-retry">再次请求</i></span>--%>
+                        <%--<span class="sp2">2016-11-21 15:00</span>--%>
+                    <%--</li>--%>
                 </ul>
+                <script type="text/template" id="sysNoticeTmpl">
+                    {{~it:value:index}}
+                    <li class="clearfix">
+                      {{?value.type==0}}
+                        <span class="sp1">你已通过{{?value.way==1}}搜索ID{{??value.way==2}}扫描二维码{{?}}请求加入<em>{{=value.communityName}}</em>
+                            {{?value.status==1}}
+                              {{?value.reviewState==0}}
+                                  <i class="i3">您的请求已被接受</i>
+                              {{??}}
+                               <i class="i4 i-retry" arg="{{=value.communityId}}" arg1="{{=value.communityName}}">再次申请</i><i class="i3">您的请求已被拒绝</i>
+                              {{?}}
+                            {{??}}
+                             <i class="i3">等待回复</i>
+                            {{?}}
+                        </span>
+                        <span class="sp2">{{=value.time}}</span>
+                      {{??}}
+                        <span class="sp1">用户<em>{{=value.userName}}</em>请求加入<em>{{=value.communityName}}</em>（来自{{?value.way==1}}搜索ID{{??value.way==2}}扫描二维码{{?}}）
+                            {{?value.authority==1}}
+                              {{?value.status==0}}
+                              <i class="i3">你没有权限处理该信息</i>
+                              {{??}}
+                               {{?value.owner==1}}
+                                 <i class="i3">您已{{?value.approvedStatus==0}}通过{{??value.approvedStatus==1}}拒绝{{?}}TA的请求</i>
+                               {{??}}
+                                 <i class="i3">{{=value.roleStr}}{{=value.reviewName}}已{{?value.approvedStatus==0}}通过{{??value.approvedStatus==1}}拒绝{{?}}TA的请求</i>
+                               {{?}}
+                              {{?}}
+                            {{??value.authority==0}}
+                              {{?value.status==0}}
+                               <i class="i2 agreeApply" arg0="{{=value.userId}}" arg1="{{=value.reviewKeyId}}" arg2="{{=value.communityId}}" arg3="{{=value.userName}}">√ 同意</i><i class="i2 refuseApply">× 拒绝</i>
+                              {{??}}
+                                 {{?value.owner==1}}
+                                 <i class="i3">您已{{?value.approvedStatus==0}}通过{{??value.approvedStatus==1}}拒绝{{?}}TA的请求</i>
+                                 {{??value.owner==0}}
+                                 <i class="i3">{{=value.roleStr}}{{=value.reviewName}}已{{?value.approvedStatus==0}}通过{{??value.approvedStatus==1}}拒绝{{?}}TA的请求</i>
+                                 {{?}}
+                              {{?}}
+                            {{?}}
+                        </span>
+                        <span class="sp2">{{=value.time}}</span>
+                        {{?value.applyMessage!=""}}
+                        <span class="sp3">备注：{{=value.applyMessage}}</span>
+                        {{?}}
+                      {{?}}
+                    </li>
+                    {{~}}
+                </script>
 
 
                 <ul class="ul-sysNotice" id="mySystemInfo">
@@ -195,12 +243,12 @@
 <div class="sign-alert si-retry">
     <p class="alert-title">申请提示<em>×</em></p>
     <div class="alert-main">
-        <span>您确认申请加入“<em>复兰教育社区</em>”吗？</span>
-        <input type="text" placeholder="备注" >
+        <span>您确认申请加入“<em id="retryName"></em>”吗？</span>
+        <input type="text" id="beizhumsg" placeholder="备注" >
     </div>
     <div class="alert-btn">
-        <button class="alert-btn-sure">确认</button>
-        <button class="alert-btn-esc">取消</button>
+        <button class="alert-btn-sure" id="applytip">确认</button>
+        <button class="alert-btn-esc" id="retryCancel">取消</button>
     </div>
 </div>
 <!--权限end-->

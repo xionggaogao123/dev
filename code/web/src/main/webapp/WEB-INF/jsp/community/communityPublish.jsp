@@ -57,8 +57,21 @@
                 <%--<button id="join">加入社区</button>--%>
                 <%--<button class="btn-yq">+邀请玩伴</button>--%>
             </div>
-            <div class="publish-cont" <c:if test="${operation!=1}">style="display: none"</c:if>>
+            <div class="publish-cont" >
                 <ul class="publish-nav">
+                    <c:if test="${operation!=1}">
+                    <li class="li3" type="3" class="green">
+                        <span class="sp1" class="disn"></span>
+                        <span class="sp2" class="disb"></span>
+                        火热分享
+                    </li>
+                    <li class="li4" type="4">
+                        <span class="sp1"></span>
+                        <span class="sp2"></span>
+                        学习资料
+                    </li>
+                   </c:if>
+                   <c:if test="${operation==1}">
                     <li class="li1" type="1" class="green">
                         <span class="sp1" class="disn"></span>
                         <span class="sp2" class="disb"></span>
@@ -89,6 +102,7 @@
                         <span class="sp2"></span>
                         发布学习用品需求
                     </li>
+                    </c:if>
                 </ul>
                 <div class="publish-putin">
                     <input type="text" placeholder="请输入大标题" id="title">

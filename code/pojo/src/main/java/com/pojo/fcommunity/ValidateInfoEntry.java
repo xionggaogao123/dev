@@ -2,6 +2,7 @@ package com.pojo.fcommunity;
 
 import com.mongodb.BasicDBObject;
 import com.pojo.base.BaseDBObject;
+import com.sys.constants.Constant;
 import org.bson.types.ObjectId;
 
 /**
@@ -16,9 +17,10 @@ import org.bson.types.ObjectId;
  *     ty:type 0:(针对申请人) 1:(针对审核人)
  *     st:status 审核状态(0:未审核 1:已审核(若没有权限,判断是否为本人审核))
  *     aut:authority 权限状态(0:有权限 1:没有权限->针对审核人)
- *     way:way 途径 1:扫描二维码 2:申请加入
+ *     way:way 途径 1:搜索ID  2:扫描二维码
  *     rws:reviewState 审核状态(针对申请人 0:审核通过 1:审核失败)
  *     rei:reviewKeyId(为了区分是否是再次申请的,若申请失败可以再申请一次，每次申请都会出现这个关键字Id,申请人和审核人的绑定关系)
+ *     ros:roleStr 标明(社长,副社长)
  *     ir:remove
  * }
  */
@@ -62,18 +64,31 @@ public class ValidateInfoEntry extends BaseDBObject {
      * @param reviewKeyId
      */
      public ValidateInfoEntry(ObjectId userId, ObjectId reviewedId, String applyMessage,
-                              ObjectId communityId, int type,ObjectId reviewKeyId){
+                              ObjectId communityId, int type,int way,ObjectId reviewKeyId){
          BasicDBObject dbObject=new BasicDBObject()
                  .append("uid",userId)
                  .append("rw",reviewedId)
                  .append("msg",applyMessage)
                  .append("cmId",communityId)
                  .append("ty",type)
+                 .append("way",way)
                  .append("rei",reviewKeyId)
                  .append("st",0)
                  .append("aut",0)
                  .append("ir",0);
          setBaseEntry((BasicDBObject)dbObject);
+     }
+
+     public String getRoleStr(){
+         if(getBaseEntry().containsField("ros")){
+             return getSimpleStringValue("ros");
+         }else{
+             return Constant.EMPTY;
+         }
+     }
+
+     public void setRoleStr(String roleStr){
+         setSimpleValue("ros",roleStr);
      }
 
      public ObjectId getUserId(){
@@ -117,7 +132,7 @@ public class ValidateInfoEntry extends BaseDBObject {
      }
 
      public int getWay(){
-         return getSimpleIntegerValueDef("way",-1);
+         return getSimpleIntegerValue("way");
      }
 
      public int getReviewState(){

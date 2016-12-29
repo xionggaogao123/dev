@@ -10,6 +10,8 @@ import com.fulaan.community.dto.CommunityDTO;
 import com.fulaan.community.dto.CommunityDetailDTO;
 import com.fulaan.community.dto.CommunitySystemInfoDTO;
 import com.fulaan.community.dto.PartInContentDTO;
+import com.fulaan.communityValidate.dto.ValidateInfoDTO;
+import com.fulaan.communityValidate.service.ValidateInfoService;
 import com.fulaan.dto.*;
 import com.fulaan.fgroup.dto.GroupDTO;
 import com.fulaan.fgroup.service.EmService;
@@ -92,6 +94,8 @@ public class CommunityController extends BaseController {
     private CommunitySystemInfoService communitySystemInfoService;
     @Autowired
     private MateService mateService;
+    @Autowired
+    private ValidateInfoService validateInfoService;
 
     public static final String suffix = "/static/images/community/upload.png";
 
@@ -601,22 +605,138 @@ public class CommunityController extends BaseController {
     }
 
     /**
+     * 处理验证申请信息
+     * @param reviewKeyId
+     * @param userId
+     * @param communityId
+     * @param approvedStatus
+     * @return
+     */
+    @RequestMapping("/reviewApply")
+    @ResponseBody
+    public RespObj reviewApply(@ObjectIdType ObjectId reviewKeyId,@ObjectIdType ObjectId userId,@ObjectIdType ObjectId communityId,int approvedStatus){
+        ObjectId groupId = communityService.getGroupId(communityId);
+        ObjectId reviewedId=getUserId();
+        int authority=1;
+        String roleStr;
+        if(memberService.isHead(groupId,reviewedId)){
+            roleStr="社长";
+        }else{
+            roleStr="副社长";
+        }
+        //先判断是否有权限
+        if(!memberService.isManager(groupId,reviewedId)){
+            //更新权限状态
+            validateInfoService.updateAuthority(reviewedId,communityId,authority);
+            return RespObj.FAILD("该用户没有权限操作,请刷新页面!");
+        }else{
+            //先判断是否审核了
+            ValidateInfoEntry validateInfoEntry=validateInfoService.getEntry(userId,reviewKeyId,communityId);
+            if(null!=validateInfoEntry) {
+                if(validateInfoEntry.getStatus()==0) {
+                    //查询所有的管理员
+                    List<ValidateInfoEntry> entries = validateInfoService.getEntries(userId, communityId, reviewKeyId);
+                    for (ValidateInfoEntry entry : entries) {
+                        entry.setStatus(1);
+                        entry.setApprovedId(reviewedId);
+                        entry.setRoleStr(roleStr);
+                        entry.setApprovedStatus(approvedStatus);
+                        validateInfoService.saveOrUpdate(entry);
+                    }
+//                    validateInfoService.batchSaveInfo(entries);
+                    ValidateInfoEntry entry=validateInfoService.getApplyEntry(userId,reviewKeyId,communityId);
+                    if(null!=entry){
+                        entry.setReviewState(approvedStatus);
+                        entry.setStatus(1);
+                        validateInfoService.saveOrUpdate(entry);
+
+
+                        //该用户加入社区
+                        if(approvedStatus==0) {
+                            CommunityDTO dto = communityService.findByObjectId(communityId);
+                            int saveState = 1;
+                            if ("复兰社区".equals(dto.getName())) {
+                                saveState = 3;
+                            }
+                            joinCommunity(userId, communityId, groupId, saveState);
+                        }
+                        return RespObj.FAILD("审核成功,请刷新页面!");
+                    }else{
+                        return RespObj.FAILD("该申请人信息不存在,请刷新页面!");
+                    }
+                }else{
+                    return RespObj.FAILD("该用户信息已经审核了,请刷新页面!");
+                }
+
+            }else{
+                return RespObj.FAILD("该审核信息不存在!");
+            }
+        }
+    }
+
+
+    /**
+     * 获取验证消息
+     * @param page
+     * @param pageSize
+     * @return
+     */
+    @RequestMapping("/getValidateInfos")
+    @ResponseBody
+    public RespObj getValidateInfos(@RequestParam(defaultValue = "1",required = false)int page,
+                                    @RequestParam(defaultValue = "10",required = false)int pageSize){
+        Map<String,Object> map=new HashMap<String,Object>();
+        ObjectId userId=getUserId();
+        List<ValidateInfoDTO> list=validateInfoService.getValidateInfos(userId,page,pageSize);
+        int count=validateInfoService.countValidateInfos(userId);
+        map.put("list",list);
+        map.put("count",count);
+        map.put("page",page);
+        map.put("pageSize",pageSize);
+        return RespObj.SUCCESS(map);
+    }
+
+
+    /**
      * 加入社区
      * @param communityId
      * @return
      */
     @RequestMapping("/join")
     @ResponseBody
-    public RespObj joinCommunity(@ObjectIdType ObjectId communityId,@RequestParam(defaultValue = "1", required = false) int type) {
+    public RespObj joinCommunity(@ObjectIdType ObjectId communityId,
+                                 @RequestParam(defaultValue = "1", required = false) int type,
+                                 @RequestParam(defaultValue = "", required = false) String msg) {
 
 //        if(type==2){
 //            System.out.println("扫描二维码加的"+type);
 //        }
+        CommunityDTO dto=communityService.findByObjectId(communityId);
         ObjectId userId = getUserId();
-        if (joinCommunity(userId, communityId)) {
-            return RespObj.SUCCESS("操作成功!");
-        } else {
-            return RespObj.FAILD("该用户已经是该社区成员了");
+        ObjectId groupId = communityService.getGroupId(communityId);
+        int saveState=1;
+        if("复兰社区".equals(dto.getName())){
+            saveState=3;
+        }
+        if(dto.getOpen()==1) {
+            if (joinCommunity(userId, communityId,groupId,saveState)) {
+                return RespObj.SUCCESS("操作成功!");
+            } else {
+                return RespObj.FAILD("该用户已经是该社区成员了");
+            }
+        }else{
+            //私密社区
+            if(memberService.isGroupMember(groupId, userId)){
+                return RespObj.FAILD("该用户已经是该社区成员了");
+            }else{
+                //申请加入私密社区
+                boolean flag=validateInfoService.saveValidateInfos(userId,communityId,msg,type);
+                if(flag) {
+                    return RespObj.FAILD("申请加入私密社区成功!");
+                }else{
+                    return RespObj.SUCCESS("已经申请加入该私密社区了!");
+                }
+            }
         }
 
     }
@@ -628,9 +748,7 @@ public class CommunityController extends BaseController {
      * @param communityId
      * @return
      */
-    private boolean joinCommunity(ObjectId userId, ObjectId communityId) {
-
-        ObjectId groupId = communityService.getGroupId(communityId);
+    private boolean joinCommunity(ObjectId userId, ObjectId communityId,ObjectId groupId,int saveState) {
         GroupDTO groupDTO = groupService.findById(groupId);
         if (memberService.isGroupMember(groupId, userId)) {
             return false;
@@ -639,16 +757,18 @@ public class CommunityController extends BaseController {
         if (memberService.isBeforeMember(groupId, userId)) {
             if (emService.addUserToEmGroup(groupDTO.getEmChatId(), userId)) {
                 memberService.updateMember(groupId, userId, 0);
-                communityService.pushToUser(communityId, userId, 1);
+//                communityService.pushToUser(communityId, userId, 1);
                 //设置先前该用户所发表的数据
                 communityService.setPartIncontentStatus(communityId, userId, 0);
-                communityService.pushToUser(communityId, userId, 1);
+
+                communityService.pushToUser(communityId, userId, saveState);
+
             }
 
         } else {
             if (emService.addUserToEmGroup(groupDTO.getEmChatId(), userId)) {
                 memberService.saveMember(userId, groupId, 0);
-                communityService.pushToUser(communityId, userId, 1);
+                communityService.pushToUser(communityId, userId, saveState);
             }
         }
         return true;
@@ -1142,7 +1262,18 @@ public class CommunityController extends BaseController {
         if (userIds.contains(new ObjectId(communityDTO.getOwerId()))) {
             return RespObj.FAILD("不能设置社长为副社长");
         }
+
         communityService.setSecondMembers(objectIds, role);
+
+        //更新申请状态
+        for(ObjectId item:userIds){
+            if(role==1) {
+                validateInfoService.updateAuthority(item, communityId, 0);
+            }else{
+                validateInfoService.updateAuthority(item, communityId, 1);
+            }
+        }
+
 
         return RespObj.SUCCESS("操作成功");
     }

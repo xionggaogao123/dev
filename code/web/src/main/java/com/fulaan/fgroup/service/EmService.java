@@ -6,6 +6,9 @@ import com.fasterxml.jackson.databind.node.ObjectNode;
 import org.bson.types.ObjectId;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
+import java.util.Map;
+
 /**
  * Created by jerry on 2016/11/21.
  * 环信服务
@@ -48,6 +51,21 @@ public class EmService {
      */
     public boolean removeUserFromEmGroup(String emChatId, ObjectId userId) {
         ResponseWrapper responseWrapper = EaseMobAPI.removeSingleUserFromChatGroup(emChatId, userId.toString());
+        return responseWrapper.getResponseStatus() == 200;
+    }
+
+
+    /**
+     * 发送文本消息
+     * @param targetType
+     * @param targets
+     * @param from
+     * @param ext
+     * @param msg
+     * @return
+     */
+    public boolean sendTextMessage(String targetType, List<String> targets, String from, Map<String, String> ext, Map<String, String> msg){
+        ResponseWrapper responseWrapper = EaseMobAPI.sendTextMessage(targetType, targets, from, ext, msg);
         return responseWrapper.getResponseStatus() == 200;
     }
 }

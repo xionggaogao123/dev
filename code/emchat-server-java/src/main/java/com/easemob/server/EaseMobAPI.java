@@ -2,6 +2,7 @@ package com.easemob.server;
 
 import com.easemob.server.api.ChatGroupAPI;
 import com.easemob.server.api.IMUserAPI;
+import com.easemob.server.api.SendMessageAPI;
 import com.easemob.server.comm.ClientContext;
 import com.easemob.server.comm.EasemobRestAPIFactory;
 import com.easemob.server.comm.body.*;
@@ -22,7 +23,7 @@ public class EaseMobAPI {
     private static EasemobRestAPIFactory factory = ClientContext.getInstance().init(ClientContext.INIT_FROM_PROPERTIES).getAPIFactory();
     private static IMUserAPI user = (IMUserAPI) factory.newInstance(EasemobRestAPIFactory.USER_CLASS);
     private static ChatGroupAPI chatgroup = (ChatGroupAPI) factory.newInstance(EasemobRestAPIFactory.CHATGROUP_CLASS);
-
+    private static SendMessageAPI sendMessageAPI =(SendMessageAPI) factory.newInstance(EasemobRestAPIFactory.SEND_MESSAGE_CLASS);
     /**
      * 创建用户 - 无昵称
      *
@@ -70,6 +71,22 @@ public class EaseMobAPI {
         BodyWrapper chat = new ChatGroupBody(groupName, desc, false, (long) 2000, false, owner, null);
         return (ResponseWrapper) chatgroup.createChatGroup(chat);
     }
+
+
+    /**
+     * 发送文本消息
+     * @param targetType
+     * @param targets
+     * @param from
+     * @param ext
+     * @param msg
+     * @return
+     */
+    public static ResponseWrapper sendTextMessage(String targetType, List<String> targets, String from, Map<String, String> ext, Map<String, String> msg) {
+        MessageBody messageBody = new TextMessageBody(targetType,targets.toArray(new String[targets.size()]),from,ext,msg);
+        return (ResponseWrapper) sendMessageAPI.sendMessage(messageBody);
+    }
+
 
     /**
      * 更改群组信息

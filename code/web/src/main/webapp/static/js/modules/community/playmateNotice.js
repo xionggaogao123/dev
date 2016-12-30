@@ -134,6 +134,10 @@ define(['jquery', 'pagination', 'common'], function (require, exports, module) {
 
     function applytip() {
         var msg = $('#beizhumsg').val();
+        if(msg.length>40){
+            alert("备注长度不能超过40个!");
+            return;
+        }
         var communityId = $('.si-retry').data("cmId");
         common.getData('/community/join', {communityId: communityId, msg: msg}, function (resp) {
             alert(resp.message);

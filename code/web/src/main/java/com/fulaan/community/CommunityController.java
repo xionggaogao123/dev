@@ -1,6 +1,7 @@
 package com.fulaan.community;
 
 
+import com.easemob.server.comm.constant.MsgType;
 import com.fulaan.annotation.LoginInfo;
 import com.fulaan.annotation.ObjectIdType;
 import com.fulaan.annotation.SessionNeedless;
@@ -27,7 +28,6 @@ import com.fulaan.user.service.UserService;
 import com.fulaan.util.GetImage;
 import com.fulaan.util.QRUtils;
 import com.fulaan.util.URLParseUtil;
-import com.fulaan.util.check.FastCheck;
 import com.pojo.activity.FriendApply;
 import com.pojo.app.FileUploadDTO;
 import com.pojo.app.Platform;
@@ -729,12 +729,37 @@ public class CommunityController extends BaseController {
             if(memberService.isGroupMember(groupId, userId)){
                 return RespObj.FAILD("该用户已经是该社区成员了");
             }else{
-                //申请加入私密社区
-                boolean flag=validateInfoService.saveValidateInfos(userId,communityId,msg,type);
-                if(flag) {
-                    return RespObj.FAILD("申请加入私密社区成功!");
+                UserEntry userEntry=userService.findById(userId);
+                Map<String,String> ext=new HashMap<String, String>();
+                String nickName=StringUtils.isNotBlank(userEntry.getNickName())?userEntry.getNickName():userEntry.getUserName();
+                ext.put("avatar",AvatarUtils.getAvatar(userEntry.getAvatar(),AvatarType.MIN_AVATAR.getType()));
+                ext.put("nickName",nickName);
+                ext.put("userId",userId.toString());
+                ext.put("joinPrivate","YES");
+                List<MemberDTO> memberDTOs = memberService.getManagers(groupId);
+                List<String> targets=new ArrayList<String>();
+                for(MemberDTO memberDTO:memberDTOs){
+                    targets.add(memberDTO.getUserId());
+                }
+                String message;
+                if(type==1) {
+                    message= "用户" + nickName + "请求加入" + dto.getName() + "（来自搜索ID）";
                 }else{
-                    return RespObj.SUCCESS("已经申请加入该私密社区了!");
+                    message= "用户" + nickName + "请求加入" + dto.getName() + "（来自扫描二维码）";
+                }
+                Map<String,String> sendMessage=new HashMap<String, String>();
+                sendMessage.put("type", MsgType.TEXT);
+                sendMessage.put("msg",message);
+                if(emService.sendTextMessage("users",targets,userId.toString(),ext,sendMessage)) {
+                    //申请加入私密社区
+                    boolean flag = validateInfoService.saveValidateInfos(userId, communityId, msg, type,memberDTOs);
+                    if (flag) {
+                        return RespObj.FAILD("申请加入私密社区成功!");
+                    } else {
+                        return RespObj.FAILD("已经申请加入该私密社区了!");
+                    }
+                }else{
+                    return  RespObj.FAILD("申请加入该私密社区失败!");
                 }
             }
         }

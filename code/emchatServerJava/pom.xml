@@ -20,7 +20,7 @@
     <modelVersion>4.0.0</modelVersion>
 
     <groupId>com.easemob.rest</groupId>
-    <artifactId>emchat-server-java</artifactId>
+    <artifactId>emchatServerJava</artifactId>
     <version>1.0</version>
     <name>emchat-server-java</name>
     <description>Easemob REST</description>

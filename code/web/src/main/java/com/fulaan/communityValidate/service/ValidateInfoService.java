@@ -9,8 +9,10 @@ import com.fulaan.service.MemberService;
 import com.fulaan.user.service.UserService;
 import com.pojo.fcommunity.CommunityEntry;
 import com.pojo.fcommunity.ValidateInfoEntry;
+import com.pojo.user.AvatarType;
 import com.pojo.user.UserEntry;
 import com.sys.constants.Constant;
+import com.sys.utils.AvatarUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.bson.types.ObjectId;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -72,9 +74,9 @@ public class ValidateInfoService {
      */
     public int getValidateInfoCount(ObjectId userId){
         //分两种情况
-        int applyCount=validateInfoDao.getApplyCount(userId,0);
+//        int applyCount=validateInfoDao.getApplyCount(userId,0);
         int approvedCount=validateInfoDao.getApprovedCount(userId,1);
-        return applyCount+approvedCount;
+        return approvedCount;
     }
 
 
@@ -109,6 +111,7 @@ public class ValidateInfoService {
             UserEntry userEntry=userMap.get(entry.getUserId());
             if(null!=userEntry){
                 dto.setUserName(StringUtils.isNotBlank(userEntry.getNickName())?userEntry.getNickName():userEntry.getUserName());
+                dto.setAvatar(AvatarUtils.getAvatar(userEntry.getAvatar(), AvatarType.MIN_AVATAR.getType()));
             }
 
             if (StringUtils.isNotBlank(dto.getApprovedId())) {
@@ -173,6 +176,10 @@ public class ValidateInfoService {
 
     public void saveOrUpdate(ValidateInfoEntry entry){
         validateInfoDao.saveOrUpdate(entry);
+    }
+
+    public ValidateInfoEntry getNewsInfo(ObjectId communityId){
+        return validateInfoDao.getNewsInfo(communityId);
     }
 
 }

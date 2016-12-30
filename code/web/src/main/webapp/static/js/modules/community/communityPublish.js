@@ -695,7 +695,8 @@ define(['jquery', 'pagination', 'common'], function (require, exports, module) {
             message.title = $('#title').val();
             var content = $('#content').val();
            //创建正则RegExp对象
-            message.content=content.replace(/\n/g,"<br/>");
+           //  message.content=content.replace(/\n/g,"<br/>");
+            message.content=content;
             message.type = type;
             //加载附件信息
             var attachements = new Array();
@@ -847,6 +848,38 @@ define(['jquery', 'pagination', 'common'], function (require, exports, module) {
         return len;
     }
 
+    function contentDeal(obj){
+        var str="...<em class=\"spread\">[展开全文]</em>";
+        var tempStr=obj.html().replace(/\n/g,"<br/>");
+        if(tempStr.indexOf("<br/>")>-1){
+            var list=tempStr.split("<br/>");
+            var contentStr="";
+            var totalCount=0;
+            for(var j=0;j<list.length;j++){
+                if(list[j]!=""){
+                    if(contentStr==""){
+                        contentStr=list[j];
+                    }else{
+                        contentStr=contentStr+"<br />"+list[j];
+                    }
+                    totalCount=totalCount+list[j].length;
+                }
+            }
+            if(list.length==1){
+                if(totalCount>93){
+                  obj.next().html(str);
+                }
+            }else if(list.length==2){
+                if(totalCount>43){
+                    obj.next().html(str);
+                }
+            }else if(list.length>2){
+                obj.next().html(str);
+            }
+            obj.html(contentStr);
+        }
+    }
+
     //获取该社区详情信息
     function getCommunityDetail() {
         var param = {};
@@ -861,6 +894,7 @@ define(['jquery', 'pagination', 'common'], function (require, exports, module) {
                 var homework = resp.message.homework;
                 var materials = resp.message.materials;
 
+
                 template('#announcementTmpl', '#announcement', announcement);
                 template('#activityTmpl', '#activity', activity);
                 template('#shareTmpl', '#share', share);
@@ -868,23 +902,37 @@ define(['jquery', 'pagination', 'common'], function (require, exports, module) {
                 template('#homeworkTmpl', '#homework', homework);
                 template('#materialsTmpl', '#materials', materials);
 
-
                 var tempStr="<div class=\"notice-container clearfix com-nothing\">";
                 if (announcement.length == 0) {
                     var prev="<div class=\"com-tit\" id=\"announce_all\">通知<em>全部</em></div>";
                     var str=prev+tempStr+"该社区还未发布通知"+"</div>";
                     $('#announcement').append(str);
+                }else{
+                    $('.announcementContent').each(function(){
+                      contentDeal($(this));
+                   })
                 }
+
                 if (activity.length == 0) {
                     var prev="<div class=\"com-tit\" id=\"activity_all\">组织活动报名<em>全部</em></div>";
                     var str=prev+tempStr+"该社区还未发布活动报名"+"</div>";
                     $('#activity').append(str);
+                }else{
+                    $('.activityContent').each(function(){
+                        contentDeal($(this));
+                    });
                 }
+
                 if (share.length == 0) {
                     var prev="<div class=\"com-tit\" id=\"share_all\">火热分享<em>全部</em></div>";
                     var str=prev+tempStr+"该社区还未发布火热分享"+"</div>";
                     $('#share').append(str);
+                }else{
+                    $('.shareContent').each(function(){
+                        contentDeal($(this));
+                    })
                 }
+
                 if (means.length == 0) {
                     var prev="<div class=\"com-tit\" id=\"means_all\">学习资料<em>全部</em></div>";
                     var str=prev+tempStr+"该社区还未发布学习资料"+"</div>";
@@ -894,11 +942,20 @@ define(['jquery', 'pagination', 'common'], function (require, exports, module) {
                     var prev="<div class=\"com-tit\" id=\"homework_all\">作业<em>全部</em></div>";
                     var str=prev+tempStr+"该社区还未发布作业"+"</div>";
                     $('#homework').append(str);
+                }else{
+                    $('.homeworkContent').each(function(){
+                        contentDeal($(this));
+                    });
                 }
+
                 if (materials.length == 0) {
                     var prev="<div class=\"com-tit\" id=\"materials_all\">学习用品<em>全部</em></div>";
                     var str=prev+tempStr+"该社区还未发布学习用品需求"+"</div>";
                     $('#materials').append(str);
+                }else{
+                    $('.materialsContent').each(function(){
+                        contentDeal($(this));
+                    });
                 }
             }
         })

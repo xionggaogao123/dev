@@ -41,6 +41,6 @@
 <script src="/static/dist/webim/demo/javascript/dist/swfupload/swfupload.min.js"></script>
 <![endif]-->
 <!--demo javascript-->
-<script src="/static/dist/webim/demo/javascript/dist/demo.js"></script>
+<script src="/static/dist/webim/demo/javascript/dist/chat.js"></script>
 </body>
 </html>

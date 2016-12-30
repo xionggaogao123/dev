@@ -1,6 +1,7 @@
 *.iml
 code/db/target
 code/indexsearch/target
+code/emchatServerJava/target/
 code/oneconf/.idea
 code/pojo/target
 code/sys/target
@@ -60,3 +61,4 @@ code/sys/.rebel-remote.xml.bak
 code/web/.rebel-remote.xml.bak
 
 code/web/node_modules/
+code/emchatServerJava/src/main/resources/rebel.xml

@@ -605,11 +605,31 @@ public class CommunityController extends BaseController {
     }
 
     /**
-     * 处理验证申请信息
-     * @param reviewKeyId
-     * @param userId
+     * 查询最新谁申请加入私密社区的消息
      * @param communityId
-     * @param approvedStatus
+     * @return
+     */
+    @RequestMapping("/getNewValidateInfo")
+    @ResponseBody
+    public RespObj getNewValidateInfo(@ObjectIdType ObjectId communityId){
+
+        ValidateInfoEntry entry=validateInfoService.getNewsInfo(communityId);
+        if(null==entry){
+            return RespObj.FAILD("没有审核消息");
+        }else{
+            ValidateInfoDTO dto=new ValidateInfoDTO(entry);
+            UserEntry userEntry=userService.findById(entry.getUserId());
+            dto.setUserName(StringUtils.isNotBlank(userEntry.getNickName())?userEntry.getNickName():userEntry.getUserName());
+            return RespObj.SUCCESS(dto);
+        }
+    }
+
+    /**
+     * 处理验证申请信息
+     * @param reviewKeyId (为了区分是否是再次申请的,若申请失败可以再申请一次，每次申请都会出现这个关键字Id,申请人和审核人的绑定关系)
+     * @param userId (申请人ID)
+     * @param communityId （社区Id）
+     * @param approvedStatus (批准状态（0:已批准 1:未批准)
      * @return
      */
     @RequestMapping("/reviewApply")
@@ -660,7 +680,7 @@ public class CommunityController extends BaseController {
                             }
                             joinCommunity(userId, communityId, groupId, saveState);
                         }
-                        return RespObj.FAILD("审核成功,请刷新页面!");
+                        return RespObj.SUCCESS("审核成功,请刷新页面!");
                     }else{
                         return RespObj.FAILD("该申请人信息不存在,请刷新页面!");
                     }
@@ -695,6 +715,8 @@ public class CommunityController extends BaseController {
         map.put("pageSize",pageSize);
         return RespObj.SUCCESS(map);
     }
+
+
 
 
     /**

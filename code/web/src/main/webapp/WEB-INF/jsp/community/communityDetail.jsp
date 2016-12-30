@@ -44,7 +44,13 @@
                         <div class="act-title">
                             <p class="p1" id="type">${detail.title}</p>
                             <div class="txt-wrap">
-                                <p class="p-wrap">${detail.content}</p>
+                                <p class="p-wrap" id="detailContent"></p>
+                                <span content="${detail.content}" id="getContent" style="display:none;"></span>
+                                <script type="text/javascript">
+                                    var content=$('#getContent').attr('content');
+                                    var dealContent=content.replace(/\n/g,"<br/>");
+                                    $('#detailContent').html(dealContent);
+                                </script>
                                 <c:forEach items="${detail.images}" var="image">
                                     <a class="fancybox" style="cursor:pointer;" href="${image.url}"
                                        data-fancybox-group="home" title="预览">

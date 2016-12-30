@@ -2418,6 +2418,7 @@ pre{white-space: pre-wrap;word-wrap: break-word;}
     line-height: 28px;
     text-align: left;
     margin: 10px;
+    word-break: break-all;
 }
 .txt-wrap img{
     max-height: 300px;

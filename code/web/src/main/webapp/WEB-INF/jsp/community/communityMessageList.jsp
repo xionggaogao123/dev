@@ -236,7 +236,7 @@
             </div>
             <div class="notice-cont">
                 <p class="p-zl p1" style="cursor: pointer"
-                   onclick="window.open('/community/communityDetail?detailId={{=value.id}}')">{{=value.title}}</p>
+                   onclick="window.open('/community/communityDetail?detailId={{=value.id}}')">学习资料详情</p>
                 <p class="p-hw">
                     {{~value.attachements:attachment:i}}
                     <span class="sp-hw">{{=attachment.flnm}}<a><span

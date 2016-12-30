@@ -111,7 +111,7 @@ public class BaseController {
             e.printStackTrace();
             return avatar;
         }
-        return QiniuFileUtils.getPath(QiniuFileUtils.TYPE_IMAGE, key.toString());
+        return key.toString();
     }
 
     protected HttpServletRequest getRequest() {

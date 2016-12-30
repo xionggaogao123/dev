@@ -28,6 +28,7 @@ public class RespObj implements Serializable {
 
     public String code;
     public Object message;
+    public String errorMessage;
 
     public RespObj(String code) {
         super();
@@ -58,6 +59,14 @@ public class RespObj implements Serializable {
         this.message = message;
     }
 
+    public String getErrorMessage() {
+        return errorMessage;
+    }
+
+    public void setErrorMessage(String errorMessage) {
+        this.errorMessage = errorMessage;
+    }
+
     public static RespObj SUCCESS(Object message) {
 
         RespObj respObj = new RespObj(Constant.SUCCESS_CODE);
@@ -68,6 +77,12 @@ public class RespObj implements Serializable {
     public static RespObj FAILD(Object message) {
         RespObj respObj = new RespObj(Constant.FAILD_CODE);
         respObj.setMessage(message);
+        return respObj;
+    }
+
+    public static RespObj FAILDWithErrorMsg(String errorMsg) {
+        RespObj respObj = new RespObj(Constant.FAILD_CODE);
+        respObj.setErrorMessage(errorMsg);
         return respObj;
     }
 

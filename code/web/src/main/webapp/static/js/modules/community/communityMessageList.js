@@ -365,6 +365,11 @@ define(['jquery', 'pagination', 'common'], function (require, exports, module) {
                 obj.next().html(str);
             }
             obj.html(contentStr);
+        }else{
+            totalCount=tempStr.length;
+            if(totalCount>=143){
+                obj.next().html(str);
+            }
         }
     }
 

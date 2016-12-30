@@ -105,12 +105,11 @@
 }
 .re-form li button{
     width: 300px;
-    height: 48px;
+    height: 40px;
     border: none;
     color: #fff;
     background: #FF9F19;
     font-size: 15px;
-    margin-top: 4px;
 }
 .re-form input[type="checkbox"]{
     position: relative;
@@ -153,9 +152,10 @@
 .re-form input[type="password"]{
     display: block;
     border: 1px solid #C9C9C9;
-    width: 306px;
+    width: 300px;
     height: 39px;
     padding-left: 6px;
+    box-sizing: border-box;
 }
 
 .re-form input:hover{

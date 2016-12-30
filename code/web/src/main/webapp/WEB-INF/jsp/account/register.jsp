@@ -56,7 +56,7 @@
             <li>
                 <input type="text" style="display: inline;width: 178px" id="verifyCode">
                 <span class="sp1">验证码 : </span>
-                <img id="imgObj" alt="" src="/verify/verifyCode.do" style="position: relative;top: 7px;left: 2px"/>
+                <img id="imgObj" alt="" src="/verify/verifyCode.do" style="position: absolute;top: 0;right: 0;width: 106px;height: 39px;"/>
                 <span class="sp3" style="display: none">验证码不正确</span>
             </li>
             <li>

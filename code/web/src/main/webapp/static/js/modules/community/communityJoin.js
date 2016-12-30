@@ -146,7 +146,11 @@ define(['jquery', 'pagination', 'common'], function (require, exports, module) {
             param.relax=searchId;
             common.getData("/community/search.do",param,function(result){
                 if(result.code=="200"){
-                    template('#searchCommuntyTmpl','#searchCommunty',result.message);
+                    if(result.message.length > 0) {
+                        template('#searchCommuntyTmpl','#searchCommunty',result.message);
+                    } else {
+                        alert('没有搜索到任何社区');
+                    }
                     // $('.hd-cont-f2').show();
                 }else{
                     alert(result.message);

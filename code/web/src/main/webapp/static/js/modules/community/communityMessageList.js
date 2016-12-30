@@ -175,6 +175,15 @@ define(['jquery', 'pagination', 'common'], function (require, exports, module) {
             ss4();
         })
 
+        $('body').on('click', '.spread', function () {
+            spread($(this));
+        });
+
+        $('body').on('click', '.collect', function () {
+            collect($(this));
+        });
+
+
     });
 
     function ss4(){
@@ -263,24 +272,94 @@ define(['jquery', 'pagination', 'common'], function (require, exports, module) {
 
                 if (type == 1) {
                     template('#announcementTmpl', '#content', result.message.result);
+                    if(result.message.result.length>0){
+                        $('.announcementContent').each(function(){
+                            contentDeal($(this));
+                        })
+                    }
                 }
                 if (type == 2) {
                     template('#activityTmpl', '#content', result.message.result);
+                    if(result.message.result.length>0){
+                        $('.activityContent').each(function(){
+                            contentDeal($(this));
+                        })
+                    }
                 }
                 if (type == 3) {
                     template('#shareTmpl', '#content', result.message.result);
+                    if(result.message.result.length>0){
+                        $('.shareContent').each(function(){
+                            contentDeal($(this));
+                        })
+                    }
                 }
                 if (type == 4) {
                     template('#meansTmpl', '#content', result.message.result);
                 }
                 if (type == 5) {
                     template('#homeworkTmpl', '#content', result.message.result);
+                    if(result.message.result.length>0){
+                        $('.homeworkContent').each(function(){
+                            contentDeal($(this));
+                        })
+                    }
                 }
                 if (type == 6) {
                     template('#materialsTmpl', '#content', result.message.result);
+                    if(result.message.result.length>0){
+                        $('.materialsContent').each(function(){
+                            contentDeal($(this));
+                        })
+                    }
                 }
             }
         });
+    }
+
+    function spread(obj) {
+        obj.closest('p').css('max-height', '783px');
+        obj.closest('span').html('<em class="spread">[收起全文]</em>').removeClass('spread').addClass('collect');
+    }
+
+    function collect(obj) {
+        obj.closest('p').css('max-height', '60px');
+        obj.closest('span').html('<em class="spread">[展开全文]</em>').removeClass('collect').addClass('spread');
+    }
+
+    function contentDeal(obj){
+        var str="<em class=\"spread\">[展开全文]</em>";
+        var tempStr=obj.html().replace(/\n/g,"<br/>");
+        if(tempStr.indexOf("<br/>")>-1){
+            var list=tempStr.split("<br/>");
+            var contentStr="";
+            var totalCount=0;
+            for(var j=0;j<list.length;j++){
+
+                if(contentStr==""){
+                    contentStr=list[j];
+                }else{
+                    contentStr=contentStr+"<br />"+list[j];
+                }
+                if(list[j]!=""){
+                    totalCount=totalCount+list[j].length;
+                }
+
+
+            }
+            if(list.length==1){
+                if(totalCount>93){
+                    obj.next().html(str);
+                }
+            }else if(list.length==2){
+                if(totalCount>43){
+                    obj.next().html(str);
+                }
+            }else if(list.length>2){
+                obj.next().html(str);
+            }
+            obj.html(contentStr);
+        }
     }
 
     //加载模板

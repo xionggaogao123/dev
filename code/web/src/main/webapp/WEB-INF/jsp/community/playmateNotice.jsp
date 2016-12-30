@@ -82,9 +82,10 @@
                 <div class="new-page-links" id="friendInformPage"></div>
             </div>
             <div class="com-left-s" id="SysInfo" style="display: none">
-                <div class="com-tit">系统消息</div>
+                <div class="com-tit">社区通知</div>
                 <div class="tab-sys">
-                    <span class="span-sys" id="sysinfocount">系统消息<i ></i></span><span id="applycount">加入请求<i></i></span>
+                    <span class="span-sys" id="sysinfocount">系统消息<i <c:if test="${xitongCount<=0}">style="display: none" </c:if>></i></span>
+                    <span id="applycount">加入请求<i <c:if test="${applyComCount<=0}">style="display: none" </c:if>></i></span>
                 </div>
 
                 <ul class="ul-sysNotice" id="sysNotice" style="display: none">
@@ -208,7 +209,7 @@
                         <c:if test="${menuItem==2||menuItem==3}">class="btn1"</c:if>>${friendApplyCount}</button>
                     </li>
                     <li class="li4 <c:if test="${menuItem==3}">blue-cur</c:if>" style="cursor: pointer">
-                        <em class="em1" <c:if test="${menuItem==3}">style="display: none"</c:if>></em><em class="em2" <c:if test="${menuItem==3}">style="display: block;"</c:if>></em><span onclick="window.location.href='/community/mySystemInfo.do'">系统消息</span><button <c:if test="${menuItem==3}">class="btn2"</c:if>
+                        <em class="em1" <c:if test="${menuItem==3}">style="display: none"</c:if>></em><em class="em2" <c:if test="${menuItem==3}">style="display: block;"</c:if>></em><span onclick="window.location.href='/community/mySystemInfo.do'">社区通知</span><button <c:if test="${menuItem==3}">class="btn2"</c:if>
                         <c:if test="${menuItem==2||menuItem==1}">class="btn1"</c:if>>${systemInfoCount}</button>
                     </li>
                 </ul>

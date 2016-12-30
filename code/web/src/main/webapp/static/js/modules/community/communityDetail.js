@@ -659,6 +659,7 @@ define(['jquery', 'pagination', 'common'], function (require, exports, module) {
         //活动报名
         common.getData("/community/partInUsers.do", requestData, function (resp) {
 
+            console.log(resp);
             if (resp.code == 200) {
                 if(resp.message.length>0){
                     template('#userTmpl', '#partInContent', resp.message);

@@ -25,6 +25,7 @@ import com.fulaan.pojo.PageModel;
 import com.fulaan.pojo.ProductModel;
 import com.fulaan.service.*;
 import com.fulaan.user.service.UserService;
+import com.fulaan.util.DateUtils;
 import com.fulaan.util.GetImage;
 import com.fulaan.util.QRUtils;
 import com.fulaan.util.URLParseUtil;
@@ -1347,8 +1348,7 @@ public class CommunityController extends BaseController {
             PartInContentDTO partInContentDTO = communityService.getPartInContent(detailId, new ObjectId(user.getId()));
             if (partInContentDTO != null) {
                 user1.setContent(partInContentDTO.getInformation());
-                user1.setTime(DateTimeUtils.convert(new ObjectId(partInContentDTO.getPartInContentId()).getTimestamp() * 1000,
-                        DateTimeUtils.DATE_YYYY_MM_DD_HH_MM_A));
+                user1.setTime(DateUtils.timeStampToStr(new ObjectId(partInContentDTO.getPartInContentId()).getTimestamp()));
             }
 
             users.add(user1);

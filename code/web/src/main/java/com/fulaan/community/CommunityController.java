@@ -438,6 +438,7 @@ public class CommunityController extends BaseController {
         } else {
             if (communityService.isCommunityNameUnique(name)) {
                 communityService.updateCommunity(communityId, name, desc, logo, open);
+                groupService.updateGroupName(new ObjectId(community.getGroupId()),name);
             } else {
                 return RespObj.FAILD("该社区名称已经存在");
             }

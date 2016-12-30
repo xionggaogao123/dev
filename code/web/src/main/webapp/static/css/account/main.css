@@ -50,12 +50,12 @@
     background: #FF9F19;
 }
 .re-form{
-    width: 314px;
+    width: 300px;
     margin: 0 auto;
 }
 .re-form li{
     position: relative;
-    margin-bottom: 13px;
+    margin-bottom: 20px;
 }
 .re-form li .sp1{
     position: absolute;
@@ -73,7 +73,7 @@
     right: 0;
     display: inline-block;
     width: 106px;
-    height: 41px;
+    height: 39px;
     line-height: 41px;
     text-align: center;
     color: #fff;
@@ -104,7 +104,7 @@
     width: 186px;
 }
 .re-form li button{
-    width: 314px;
+    width: 300px;
     height: 48px;
     border: none;
     color: #fff;
@@ -125,9 +125,29 @@
 .re-form input[type="text"]{
     display: block;
     border: 1px solid #C9C9C9;
-    width: 306px;
+    width: 300px;
     height: 39px;
     padding-left: 6px;
+    box-sizing:border-box;
+}
+
+.re-form .um2{
+    border: 1px solid #C9C9C9 !important;
+    width: 300px !important;
+    height: 39px !important;
+    border-radius: 1px !important;
+    padding-left: 50px !important;
+    background: url("/static/images/input_cont.png") no-repeat !important;
+    box-sizing:border-box;
+}
+.re-form .psw2{
+    border: 1px solid #C9C9C9 !important;
+    width: 300px !important;
+    height: 39px !important;
+    border-radius: 1px !important;
+    padding-left: 50px !important;
+    background: url("/static/images/input_psw.png") no-repeat !important;
+    box-sizing:border-box;
 }
 
 .re-form input[type="password"]{

@@ -12,20 +12,18 @@
 
 <div class="reg-container" style="margin-bottom: 100px">
     <div class="tit">
-        <span class="sp1">注册复兰教育社区帐号</span>
+        <span class="sp1">登录复兰教育社区帐号</span>
         <span class="sp2">如果你的学校正在使用K6KT平台，请使用实名直接登录！&nbsp;&nbsp;&nbsp;没有帐号？<a href="/account/register">马上注册</a></span>
     </div>
     <div class="re-cont">
         <div class="h67"></div>
         <ul class="re-form ul1">
             <li>
-                <input type="text" class="username">
-                <span class="sp1" >用户名 : </span>
+                <input class="username um2" type="text" placeholder="用户名/邮箱/手机号">
                 <span class="sp3" style="display: none">请输入用户名</span>
             </li>
             <li>
-                <input type="password" class="password">
-                <span class="sp1">密码 : </span>
+                <input type="password" class="password psw2" placeholder="请输入登录密码">
                 <span class="sp5 forget-password">忘记密码？</span>
             </li>
             <li>

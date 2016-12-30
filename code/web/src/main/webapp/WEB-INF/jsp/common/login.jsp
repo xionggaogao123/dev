@@ -14,14 +14,14 @@
             <div class="store-MF" hidden>该登录名不存在<a href="/account/register.do">免费注册？</a></div>
         </dd>
         <dd>
-            <em>用户名：</em><input type="text" placeholder="用户名/邮箱/手机号" id="account">
+            <input class="inp1" type="text" placeholder="用户名/邮箱/手机号" id="account">
         </dd>
         <dd>
-            <em>密码：</em><input type="password" id="password">
+            <input class="inp2" type="password" id="password" placeholder="请输入登录密码">
             <span class="mm-forget" onclick="window.open('/account/findPassword.do')">忘记密码</span>
         </dd>
         <dd>
-            <em></em><span class="store-DL" id="logIn">登录</span>
+            <span class="store-DL" id="logIn">登录</span>
         </dd>
         <dd>
             <em></em>

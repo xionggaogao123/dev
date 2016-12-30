@@ -43,11 +43,9 @@
             <ul class="re-form ul1">
                 <li>
                     <input type="text" placeholder="请输入注册的用户名/邮箱/手机号" class="username">
-                    <span class="sp1">用户名 : </span>
                 </li>
                 <li>
-                    <input type="text" class="in1 verifyCode1">
-                    <span class="sp1">验证码 : </span>
+                    <input type="text" class="in1 verifyCode1" placeholder="请输入验证码">
                     <img id="verifyImg2" alt="" src="/verify/verifyCode.do" class="sp6"
                          style="top: 5px;width: auto;height: auto"/>
                 </li>
@@ -79,7 +77,7 @@
                     <span class="sp4" id="sendCode">发送验证码</span>
                 </li>
                 <li>
-                    <span class="sp2"><label><input type="checkbox" class="next2-argument">我同意<a href="/agreement.html" target="_blank">《复兰教育社区协议》</a></label></span>
+                    <%--<span class="sp2"><label><input type="checkbox" class="next2-argument">我同意<a href="/agreement.html" target="_blank">《复兰教育社区协议》</a></label></span>--%>
                     <button class="re-btn2 next2">下一步</button>
                     <span class="sp3" style="display: none;top: 24px">未勾选社区协议</span>
                 </li>

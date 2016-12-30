@@ -689,17 +689,23 @@ button{cursor: pointer;}
 }
 
 .store-register dd input {
-	border: 1px solid #959595;
-	width: 232px;
-	height: 37px;
-	border-radius: 5px;
-	text-indent: 0.5em;
+    border: 1px solid #C9C9C9;
+    width: 300px;
+    height: 39px;
+    border-radius: 1px;
+    padding-left: 50px;
+}
+.store-register dd .inp1 {
+    background: url("/static/images/input_cont.png") no-repeat;
+}
+.store-register dd .inp2 {
+    background: url("/static/images/input_psw.png") no-repeat;
 }
 
 .mm-forget {
 	position: absolute;
-	right: 92px;
-	bottom: 15px;
+    right: 147px;
+    bottom: -14px;
 	font-size: 13px;
 	display: inline-block;
 	line-height: 15px;
@@ -785,15 +791,15 @@ button{cursor: pointer;}
 
 .store-register dd .store-DL {
 	display: inline-block;
-	width: 234px;
-	height: 37px;
-	line-height: 37px;
+	width: 300px;
+	height: 39px;
+	line-height: 39px;
 	text-align: center;
 	background: #ffac09;
 	color: #ffffff;
 	font-size: 16px;
 	cursor: pointer;
-	border-radius: 5px;
+	border-radius: 1px;
 }
 
 .store-register dd a {

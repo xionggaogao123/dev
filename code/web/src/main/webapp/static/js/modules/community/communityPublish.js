@@ -851,10 +851,10 @@ define(['jquery', 'pagination', 'common'], function (require, exports, module) {
     function contentDeal(obj){
         var str="<em class=\"spread\">[展开全文]</em>";
         var tempStr=obj.html().replace(/\n/g,"<br/>");
+        var totalCount=0;
         if(tempStr.indexOf("<br/>")>-1){
             var list=tempStr.split("<br/>");
             var contentStr="";
-            var totalCount=0;
             for(var j=0;j<list.length;j++){
 
                  if(contentStr==""){
@@ -880,6 +880,11 @@ define(['jquery', 'pagination', 'common'], function (require, exports, module) {
                 obj.next().html(str);
             }
             obj.html(contentStr);
+        }else{
+            totalCount=tempStr.length;
+            if(totalCount>=143){
+                obj.next().html(str);
+            }
         }
     }
 

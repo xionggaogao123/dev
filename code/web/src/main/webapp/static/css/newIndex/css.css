@@ -451,6 +451,7 @@ button{cursor: pointer;}
 	width: 718px;
 	height: 248px;
 	position: relative;
+    cursor: pointer;
 }
 .ul-photo li>img{
 	float: left;

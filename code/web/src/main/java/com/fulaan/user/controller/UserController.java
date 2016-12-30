@@ -1768,7 +1768,7 @@ public class UserController extends BaseController {
     public RespObj createUserFromThird(String openId, Integer type, String unionId,
                                        @RequestParam(value = "nickName",defaultValue = "") String nickName,
                                        @RequestParam(value = "avatar",defaultValue = "") String avatar,
-                                       @RequestParam(value = "sex",defaultValue = "0") Integer sex,HttpServletResponse response, HttpServletRequest request) {
+                                       @RequestParam(value = "sex",defaultValue = "0") Integer sex,HttpServletResponse response, HttpServletRequest request) throws IOException {
         if (type == null) {
             return RespObj.FAILD("参数不对");
         }
@@ -1776,9 +1776,10 @@ public class UserController extends BaseController {
         if (userEntry == null) { //第一次进入应用
             userEntry = userService.createUser(nickName, sex);
             if (avatar != null) {
-                userEntry.setAvatar(avatar);
+                String qiniuAvatar = uploadAvatarToQiniu(avatar);
+                userEntry.setAvatar(qiniuAvatar);
                 try {
-                    userService.updateAvatar(userEntry.getID().toString(), avatar);
+                    userService.updateAvatar(userEntry.getID().toString(), qiniuAvatar);
                 } catch (Exception e) {
                     e.printStackTrace();
                 }

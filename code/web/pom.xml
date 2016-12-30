@@ -297,7 +297,7 @@
         <!-- 环信 -->
         <dependency>
             <groupId>com.easemob.rest</groupId>
-            <artifactId>emchat-server-java</artifactId>
+            <artifactId>emchatServerJava</artifactId>
             <version>1.0</version>
         </dependency>
 

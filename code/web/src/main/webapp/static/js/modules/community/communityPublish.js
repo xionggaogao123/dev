@@ -465,13 +465,13 @@ define(['jquery', 'pagination', 'common'], function (require, exports, module) {
     }
 
     function  spread(obj) {
-        obj.closest('p').css('max-height','140px');
+        obj.closest('p').css('max-height','783px');
         obj.closest('span').html('<em class="spread">[收起全文]</em>').removeClass('spread').addClass('collect');
     }
 
     function collect(obj) {
         obj.closest('p').css('max-height','60px');
-        obj.closest('span').html('...<em class="spread">[展开全文]</em>').removeClass('collect').addClass('spread');
+        obj.closest('span').html('<em class="spread">[展开全文]</em>').removeClass('collect').addClass('spread');
     }
 
     function getUserInfo(page) {
@@ -849,21 +849,24 @@ define(['jquery', 'pagination', 'common'], function (require, exports, module) {
     }
 
     function contentDeal(obj){
-        var str="...<em class=\"spread\">[展开全文]</em>";
+        var str="<em class=\"spread\">[展开全文]</em>";
         var tempStr=obj.html().replace(/\n/g,"<br/>");
         if(tempStr.indexOf("<br/>")>-1){
             var list=tempStr.split("<br/>");
             var contentStr="";
             var totalCount=0;
             for(var j=0;j<list.length;j++){
-                if(list[j]!=""){
-                    if(contentStr==""){
-                        contentStr=list[j];
-                    }else{
-                        contentStr=contentStr+"<br />"+list[j];
-                    }
-                    totalCount=totalCount+list[j].length;
-                }
+
+                 if(contentStr==""){
+                     contentStr=list[j];
+                 }else{
+                     contentStr=contentStr+"<br />"+list[j];
+                 }
+                 if(list[j]!=""){
+                     totalCount=totalCount+list[j].length;
+                 }
+
+
             }
             if(list.length==1){
                 if(totalCount>93){
@@ -938,6 +941,7 @@ define(['jquery', 'pagination', 'common'], function (require, exports, module) {
                     var str=prev+tempStr+"该社区还未发布学习资料"+"</div>";
                     $('#means').append(str);
                 }
+
                 if (homework.length == 0) {
                     var prev="<div class=\"com-tit\" id=\"homework_all\">作业<em>全部</em></div>";
                     var str=prev+tempStr+"该社区还未发布作业"+"</div>";

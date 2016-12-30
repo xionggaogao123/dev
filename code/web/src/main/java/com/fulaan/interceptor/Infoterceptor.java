@@ -97,7 +97,7 @@ public class Infoterceptor extends HandlerInterceptorAdapter {
         model.put("systemInfoCount", systemInfoCount+applyValidateInfoCount);
         int friendApplyCount = friendApplyService.countNoResponseReply(sessionValue.getId());
         model.put("friendApplyCount", friendApplyCount);
-        model.put("infoCount",systemInfoCount+friendApplyCount);
+        model.put("infoCount",systemInfoCount+friendApplyCount+applyValidateInfoCount);
         Map<String, Object> map = fMissionService.findTodayMissionByUserId(sessionValue.getId());
         model.put("signIn", map.get("signIn"));
         model.put("userPermission", sessionValue.getUserRole());

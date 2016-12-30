@@ -125,7 +125,7 @@
                     <div class="d2-img"></div>
                     <div class="d2-mk">
                         <div class="p1" onclick="window.location.href='/community/playmateNotice.do'"><span></span>玩伴通知<em <c:if test="${friendApplyCount==0}">style="display: none" </c:if>>${friendApplyCount}</em></div>
-                        <div class="p2" onclick="window.location.href='/community/mySystemInfo.do'"><span></span>系统消息<em <c:if test="${systemInfoCount==0}">style="display: none" </c:if>>${systemInfoCount}</em></div>
+                        <div class="p2" onclick="window.location.href='/community/mySystemInfo.do'"><span></span>社区通知<em <c:if test="${systemInfoCount==0}">style="display: none" </c:if>>${systemInfoCount}</em></div>
 
                     </div>
                 </div>

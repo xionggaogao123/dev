@@ -2407,6 +2407,7 @@ pre{white-space: pre-wrap;word-wrap: break-word;}
     font-size: 18px;
     padding: 6px 0 6px 62px;
     overflow: hidden;
+    min-height: 30px;
 }
 .act-title .p-wrap{
     display: block;

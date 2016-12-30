@@ -23,7 +23,7 @@
 }
 .re-cont{
     border: 1px solid #D2D2D2;
-    height: 625px;
+    min-height: 545px;
 }
 .re-cont .tab{
     height: 40px;
@@ -51,7 +51,7 @@
 }
 .re-form{
     width: 300px;
-    margin: 0 auto;
+    margin: 0 auto 30px;
 }
 .re-form li{
     position: relative;

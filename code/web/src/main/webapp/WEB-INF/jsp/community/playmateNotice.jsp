@@ -81,11 +81,10 @@
                 </script>
                 <div class="new-page-links" id="friendInformPage"></div>
             </div>
-            <div class="com-left-s" id="SysInfo" style="display: none">
+            <div class="com-left-s cmls1" id="SysInfo" style="display: none">
                 <div class="com-tit">社区通知</div>
                 <div class="tab-sys">
-                    <span class="span-sys" id="sysinfocount">系统消息<i <c:if test="${xitongCount<=0}">style="display: none" </c:if>></i></span>
-                    <span id="applycount">加入请求<i <c:if test="${applyComCount<=0}">style="display: none" </c:if>></i></span>
+                    <span class="span-sys" id="sysinfocount">系统消息<i <c:if test="${xitongCount<=0}">style="display: none" </c:if>></i></span><span id="applycount">加入请求<i <c:if test="${applyComCount<=0}">style="display: none" </c:if>></i></span>
                 </div>
 
                 <ul class="ul-sysNotice" id="sysNotice" style="display: none">

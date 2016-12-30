@@ -21,6 +21,13 @@ define(['jquery', 'pagination', 'common'], function (require, exports, module) {
 
     $(document).ready(function () {
 
+        $(".hx-notice").click(function () {
+            window.open('/webim/index', '_blank');
+        });
+
+        hx_update();
+        setInterval(hx_update, 1000 * 60);
+
         $('#activity-signed-div').show();
         $('#activity-published-dev').hide();
         $('#activity-attended-div').hide();
@@ -121,10 +128,6 @@ define(['jquery', 'pagination', 'common'], function (require, exports, module) {
             activity_cur = 3;
             renderActivity();
         });
-
-        hx_update();
-
-        setInterval(hx_update,1000 * 60);
 
         $('body').on('click','.sign-activity .alert-btn-sure',function () {
             var requestData = {

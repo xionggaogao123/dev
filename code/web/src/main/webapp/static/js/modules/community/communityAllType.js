@@ -84,10 +84,6 @@ define(['jquery', 'pagination', 'common'], function (require, exports, module) {
             }
         });
 
-        $(".hx-notice").click(function () {
-            window.open('/webim/index', '_blank');
-        });
-
         $('body').on('click', '.spread', function () {
             spread($(this));
         });
@@ -96,6 +92,9 @@ define(['jquery', 'pagination', 'common'], function (require, exports, module) {
             collect($(this));
         });
 
+        $(".hx-notice").click(function () {
+            window.open('/webim/index', '_blank');
+        });
         hx_update();
         setInterval(hx_update, 1000 * 60);
 

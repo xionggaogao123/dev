@@ -1,7 +1,7 @@
 *.iml
 code/db/target
 code/indexsearch/target
-code/emchat-server-java/target
+code/emchat-server-java/target/*
 code/oneconf/.idea
 code/pojo/target
 code/sys/target

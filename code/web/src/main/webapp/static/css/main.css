@@ -4140,6 +4140,7 @@ ol.bjqs-markers li:last-child {
     height: 39px;
     border-radius: 1px;
     padding-left: 50px;
+    box-sizing: border-box;
 }
 .store-register dd .inp1 {
     background: url("/static/images/input_cont.png") no-repeat;

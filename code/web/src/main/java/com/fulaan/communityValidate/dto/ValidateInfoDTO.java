@@ -9,6 +9,7 @@ import com.sys.utils.DateTimeUtils;
 public class ValidateInfoDTO {
     private String id;
     private String userId;
+    private String avatar;
     private String reviewedId;
     private String applyMessage;
     private String approvedId;
@@ -204,5 +205,13 @@ public class ValidateInfoDTO {
 
     public void setRoleStr(String roleStr) {
         this.roleStr = roleStr;
+    }
+
+    public String getAvatar() {
+        return avatar;
+    }
+
+    public void setAvatar(String avatar) {
+        this.avatar = avatar;
     }
 }

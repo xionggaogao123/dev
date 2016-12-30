@@ -84,6 +84,21 @@ public class ValidateInfoDao extends BaseDao {
         }
     }
 
+    /**
+     * 最心一条消息
+     * @param communityId
+     * @return
+     */
+    public ValidateInfoEntry getNewsInfo(ObjectId communityId){
+        BasicDBObject query=new BasicDBObject("cmId",communityId).append("st",0).append("ty",1);
+        DBObject dbObject=findOne(MongoFacroty.getAppDB(), Constant.COLLECTION_FORUM_COMMUNITY_VALIDATE_INFO,query);
+        if(null!=dbObject){
+            return new ValidateInfoEntry((BasicDBObject) dbObject);
+        }else{
+            return null;
+        }
+    }
+
     public ValidateInfoEntry getIsApplyEntry(ObjectId userId,ObjectId communityId){
         BasicDBObject query=new BasicDBObject("uid",userId).append("cmId",communityId).append("st",0);
         DBObject dbObject=findOne(MongoFacroty.getAppDB(), Constant.COLLECTION_FORUM_COMMUNITY_VALIDATE_INFO,query);

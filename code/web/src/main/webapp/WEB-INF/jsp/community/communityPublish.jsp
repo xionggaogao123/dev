@@ -447,8 +447,8 @@
         <div class="notice-cont">
             <p class="p-zy p1" style="cursor: pointer"
                onclick="window.open('/community/communityDetail?detailId={{=value.id}}')">{{=value.title}}</p>
-            <p class="p-cont">{{=value.content}}<span
-                    class="sp-more">{{?value.content.length>=90}}...<em class="spread">[展开全文]</em>{{?}}</span></p>
+            <p class="p-cont"><span class="homeworkContent">{{=value.content}}</span><span
+                    class="sp-more"></span></p>
             <p class="p-infor">
                 <span>消息来源：{{=value.communityName}}</span>
                 <span>发表时间：{{=value.time}}</span>
@@ -481,8 +481,8 @@
         <div class="notice-cont">
             <p class="p-tz p1" style="cursor: pointer"
                onclick="window.open('/community/communityDetail?detailId={{=value.id}}')">{{=value.title}}</p>
-            <p class="p-cont">{{=value.content}}<span
-                    class="sp-more">{{?value.content.length>=143}}...<em class="spread">[展开全文]</em>{{?}}</span></p>
+            <p class="p-cont"><span class="announcementContent">{{=value.content}}</span><span
+                    class="sp-more"></span></p>
             <p class="p-infor">
                 <span>消息来源：{{=value.communityName}}</span>
                 <span>发表时间：{{=value.time}}</span>
@@ -512,8 +512,8 @@
         <div class="notice-cont">
             <p class="p-fx p1" style="cursor: pointer"
                onclick="window.open('/community/communityDetail?detailId={{=value.id}}')">{{=value.title}}</p>
-            <p class="p-cont">{{=value.content}}<span
-                    class="sp-more">{{?value.content.length>=90}}...<em class="spread">[展开全文]</em>{{?}}</span></p>
+            <p class="p-cont"><span class="shareContent">{{=value.content}}</span><span
+                    class="sp-more"></span></p>
             {{?value.images.length>0}}
             <p class="p-img clearfix">
                 {{~value.images:image:i}}
@@ -556,8 +556,8 @@
         <div class="notice-cont">
             <p class="p-hd p1" style="cursor: pointer"
                onclick="window.open('/community/communityDetail?detailId={{=value.id}}')">{{=value.title}}</p>
-            <p class="p-cont">{{=value.content}}<span
-                    class="sp-more">{{?value.content.length>=90}}...<em class="spread">[展开全文]</em>{{?}}</span></p>
+            <p class="p-cont"><span class="activityContent">{{=value.content}}</span><span
+                    class="sp-more"></span></p>
             <p class="p-infor">
                 <span>消息来源：{{=value.communityName}}</span>
                 <span>发表时间：{{=value.time}}</span>
@@ -591,8 +591,8 @@
         <div class="notice-cont">
             <p class="p-tj p1" style="cursor: pointer"
                onclick="window.open('/community/communityDetail?detailId={{=value.id}}')">{{=value.title}}</p>
-            <p class="p-cont">{{=value.content}}<span
-                    class="sp-more">{{?value.content.length>=90}}...<em class="spread">[展开全文]</em>{{?}}</span></p>
+            <p class="p-cont"><span class="materialsContent">{{=value.content}}</span><span
+                    class="sp-more"></span></p>
             <p class="p-img clearfix">
                 {{?value.shareImage!=null&&value.shareImage!=""}}
                 <img src="{{=value.shareImage}}">

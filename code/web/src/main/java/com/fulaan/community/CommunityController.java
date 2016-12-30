@@ -607,14 +607,15 @@ public class CommunityController extends BaseController {
 
     /**
      * 查询最新谁申请加入私密社区的消息
-     * @param communityId
+     * @param emChatId
      * @return
      */
     @RequestMapping("/getNewValidateInfo")
     @ResponseBody
-    public RespObj getNewValidateInfo(@ObjectIdType ObjectId communityId){
-
-        ValidateInfoEntry entry=validateInfoService.getNewsInfo(communityId);
+    public RespObj getNewValidateInfo(String emChatId){
+        ObjectId groupId=groupService.getGroupIdByChatId(emChatId);
+        GroupDTO groupDTO=groupService.findById(groupId);
+        ValidateInfoEntry entry=validateInfoService.getNewsInfo(new ObjectId(groupDTO.getCommunityId()));
         if(null==entry){
             return RespObj.FAILD("没有审核消息");
         }else{

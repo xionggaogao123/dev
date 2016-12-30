@@ -46,7 +46,7 @@
             <ul class="ul-infor">
                 <li class="clearfix">
                     <div class="l1">用户名 :</div>
-                    <div class="l2 username">shawn</div>
+                    <div class="l2 username"></div>
                 </li>
                 <li class="clearfix">
                     <div class="l1">昵称 :</div>

@@ -49,11 +49,7 @@ public class MemberDTO {
         this.role = entry.getRole();
         this.roleStr = getRoleStr(entry.getRole());
         this.userName = entry.getUserName();
-        if(entry.getAvator() != null && entry.getAvator().contains("qlogo")) {
-            this.avator = entry.getAvator();
-        } else {
-            this.avator = AvatarUtils.getAvatar(entry.getAvator(), AvatarType.MIN_AVATAR.getType());
-        }
+        this.avator = AvatarUtils.getAvatar(entry.getAvator(), AvatarType.MIN_AVATAR.getType());
         if (null != entry.getGroupId()) {
             this.groupId = entry.getGroupId().toString();
         }

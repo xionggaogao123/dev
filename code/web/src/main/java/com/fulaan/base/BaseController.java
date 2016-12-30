@@ -1,17 +1,25 @@
 package com.fulaan.base;
 
+import com.fulaan.util.ImageUtils;
+import com.fulaan.utils.QiniuFileUtils;
 import com.pojo.app.Platform;
 import com.pojo.app.SessionValue;
 import com.sys.constants.Constant;
+import com.sys.exceptions.IllegalParamException;
+import org.apache.commons.io.FilenameUtils;
+import org.apache.commons.io.IOUtils;
 import org.bson.types.ObjectId;
 import org.springframework.web.context.request.RequestContextHolder;
 import org.springframework.web.context.request.ServletRequestAttributes;
 
+import javax.imageio.ImageIO;
 import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
-import java.io.File;
+import java.awt.image.BufferedImage;
+import java.io.*;
+import java.net.URL;
 
 
 public class BaseController {
@@ -90,6 +98,20 @@ public class BaseController {
             return prefix + "****" + stufix;
         }
         return mobile;
+    }
+
+    protected String uploadAvatarToQiniu(String avatar) throws IOException {
+        File savedFile = File.createTempFile(new ObjectId().toString(), ".jpg");
+        BufferedImage bufferedImage = ImageIO.read(new URL(avatar));
+        ImageIO.write(bufferedImage, "JPG", savedFile);
+        ObjectId key = new ObjectId();
+        try {
+            QiniuFileUtils.uploadFile(key.toString(), new FileInputStream(savedFile), QiniuFileUtils.TYPE_IMAGE);
+        } catch (IllegalParamException e) {
+            e.printStackTrace();
+            return avatar;
+        }
+        return QiniuFileUtils.getPath(QiniuFileUtils.TYPE_IMAGE, key.toString());
     }
 
     protected HttpServletRequest getRequest() {

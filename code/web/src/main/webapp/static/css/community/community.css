@@ -2410,6 +2410,7 @@ pre{white-space: pre-wrap;word-wrap: break-word;}
     font-size: 18px;
     padding: 6px 0 6px 62px;
     overflow: hidden;
+    min-height: 30px;
 }
 .act-title .p-wrap{
     display: block;
@@ -2417,6 +2418,7 @@ pre{white-space: pre-wrap;word-wrap: break-word;}
     line-height: 28px;
     text-align: left;
     margin: 10px;
+    word-break: break-all;
 }
 .txt-wrap img{
     max-height: 300px;

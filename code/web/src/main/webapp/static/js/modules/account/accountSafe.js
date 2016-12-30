@@ -150,8 +150,8 @@ define(['jquery', 'pagination', 'common'], function (require, exports, module) {
             var requestData = {};
             requestData.nickName = $('.nickname').val();
 
-            if (requestData.nickName.length > 8) {
-                alert("昵称最多8个字符");
+            if (requestData.nickName.length > 20) {
+                alert("昵称最多20个字符");
                 return;
             }
             requestData.sex = $('input[type="radio"][name="sex"]:checked').val();

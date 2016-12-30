@@ -806,12 +806,9 @@ public class CommunityController extends BaseController {
         if (memberService.isBeforeMember(groupId, userId)) {
             if (emService.addUserToEmGroup(groupDTO.getEmChatId(), userId)) {
                 memberService.updateMember(groupId, userId, 0);
-//                communityService.pushToUser(communityId, userId, 1);
                 //设置先前该用户所发表的数据
                 communityService.setPartIncontentStatus(communityId, userId, 0);
-
                 communityService.pushToUser(communityId, userId, saveState);
-
             }
 
         } else {
@@ -840,7 +837,7 @@ public class CommunityController extends BaseController {
         //判断该用户是否曾经加入过该社区
         if (memberService.isBeforeMember(groupId, userId)) {
             memberService.updateMember(groupId, userId, 0);
-            communityService.pushToUser(communityId, userId, 2);
+            communityService.pushToUser(communityId, userId, 3);
             //设置先前该用户所发表的数据
             communityService.setPartIncontentStatus(communityId, userId, 0);
         } else {

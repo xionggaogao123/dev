@@ -72,6 +72,12 @@
                          style="top: 5px;width: auto;height: auto"/>
                 </li>
                 <li>
+                    <span class="sp1">请选择找回的用户名:</span>
+                    <label><input type="radio" name="check-id">aaa</label>
+                    <label><input type="radio" name="check-id">bbb</label>
+                    <label><input type="radio" name="check-id">ccc</label>
+                </li>
+                <li>
                     <input type="text" class="in1" id="code">
                     <span class="sp1">短信验证码 : </span>
                     <span class="sp4" id="sendCode">发送验证码</span>

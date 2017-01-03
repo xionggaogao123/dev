@@ -107,6 +107,7 @@
                 <div class="publish-putin">
                     <input type="text" placeholder="请输入大标题" id="title">
                     <textarea placeholder="请输入内容" id="content"></textarea>
+                    <span style="float:left;font-size:12px;"></span>
                     <div class="publish-fj clearfix">
                         <div class="pub-fj-img clearfix">
 

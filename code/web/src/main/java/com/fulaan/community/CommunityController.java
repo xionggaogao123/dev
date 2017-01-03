@@ -100,6 +100,16 @@ public class CommunityController extends BaseController {
 
     public static final String suffix = "/static/images/community/upload.png";
 
+    private boolean judgeIsNumber(String charStr){
+        for(int i=0;i<charStr.length();i++){
+            char c=charStr.charAt(i);
+            if((byte)c<48||(byte)c>57){
+                return false;
+            }
+        }
+        return true;
+    }
+
     @RequestMapping("/create")
     @ResponseBody
     public RespObj createCommunity(String name,
@@ -107,6 +117,10 @@ public class CommunityController extends BaseController {
                                    @RequestParam(required = false, defaultValue = "") String logo,
                                    @RequestParam(required = false, defaultValue = "0") int open,
                                    @RequestParam(required = false, defaultValue = "") String userIds) throws Exception {
+        //先判断社区名称是否是纯数字
+        if(judgeIsNumber(name)){
+            return RespObj.FAILD("社区名称不能是纯数字!");
+        }
         //先进行敏感词过滤
         List<String> words=userService.recordSensitiveWords(name);
         if(words.size()>0){

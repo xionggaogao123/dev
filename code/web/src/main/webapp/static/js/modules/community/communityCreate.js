@@ -268,8 +268,13 @@ define(['jquery', 'pagination', 'common'], function (require, exports, module) {
             return false;
         }
 
-        if(communityName.length>15){
-            alert("社区名称不能超过15个字！");
+        if(!isNaN(communityName)){
+            alert("填写的社区名称不能纯数字");
+            return ;
+        }
+
+        if(getCharLen(communityName)>30){
+            alert("社区名称不能超过30个字符！");
             return false;
         }
 
@@ -277,14 +282,30 @@ define(['jquery', 'pagination', 'common'], function (require, exports, module) {
             alert("社区简介不能为空！");
             return false;
         }
-        if(communityDes.length>150){
-            alert("社区简介字数不能超过150！");
+        if(getCharLen(communityDes)>300){
+            alert("社区简介字数不能超过300字符！");
             return false;
         }
 
 
         return true;
 
+    }
+
+    //字符长度
+    function getCharLen(str){
+        var len = 0;
+        for (var i=0; i<str.length; i++) {
+            var c = str.charCodeAt(i);
+            //单字节加1
+            if ((c >= 0x0001 && c <= 0x007e) || (0xff60<=c && c<=0xff9f)) {
+                len++;
+            }
+            else {
+                len+=2;
+            }
+        }
+        return len;
     }
 
     function getPublishedActivitys(n) {

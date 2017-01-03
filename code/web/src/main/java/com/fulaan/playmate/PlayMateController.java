@@ -86,8 +86,14 @@ public class PlayMateController extends BaseController {
         }
         if (distance < 0) {
             distance = 10000000;
-        } else {
-            distance *= 500;
+        } else if (distance == 1){
+            distance = 500;
+        } else if(distance == 2) {
+            distance = 1000;
+        } else if(distance == 3) {
+            distance = 2000;
+        } else if(distance == 4) {
+            distance = 5000;
         }
 
         List<Integer> onsList = new ArrayList<Integer>();

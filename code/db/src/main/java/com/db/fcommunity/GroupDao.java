@@ -63,6 +63,16 @@ public class GroupDao extends BaseDao {
         return dbo == null ? null : (ObjectId) dbo.get(Constant.ID);
     }
 
+    public List<GroupEntry> getGroupEntrysByEmchatIds(List<String> emchatIds) {
+        BasicDBObject query = new BasicDBObject("grcd", new BasicDBObject(Constant.MONGO_IN, emchatIds));
+        List<DBObject> dbos = find(MongoFacroty.getAppDB(), Constant.COLLECTION_FORUM_COMMUNITY_GROUP, query, Constant.FIELDS);
+        List<GroupEntry> groupEntries = new ArrayList<GroupEntry>();
+        for (DBObject dbo : dbos) {
+            groupEntries.add(new GroupEntry(dbo));
+        }
+        return groupEntries;
+    }
+
     /**
      * 获取群聊头像
      *

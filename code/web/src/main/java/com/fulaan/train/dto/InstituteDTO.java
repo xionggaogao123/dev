@@ -30,6 +30,7 @@ public class InstituteDTO {
     private double lat;
     private String distance;
     private String imageUrl;
+    private String rangeMeter;
 
     public InstituteDTO(){
 
@@ -217,5 +218,13 @@ public class InstituteDTO {
 
     public void setImageUrl(String imageUrl) {
         this.imageUrl = imageUrl;
+    }
+
+    public String getRangeMeter() {
+        return rangeMeter;
+    }
+
+    public void setRangeMeter(String rangeMeter) {
+        this.rangeMeter = rangeMeter;
     }
 }

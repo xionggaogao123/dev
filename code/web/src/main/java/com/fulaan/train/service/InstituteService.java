@@ -9,6 +9,7 @@ import com.sys.constants.Constant;
 import org.bson.types.ObjectId;
 import org.springframework.stereotype.Service;
 
+import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -54,11 +55,18 @@ public class InstituteService {
 
             InstituteEntry.Locations locations=instituteEntry.getLocations();
             String range = "未知";
+            DecimalFormat df= new DecimalFormat("######0.0");
             if (lon != 0 && lat != 0) {
                 if(null!=locations){
                     List<Double> accordinates=locations.getCoordinates();
                     Double distanceDouble = DistanceUtils.distance(lon, lat, accordinates.get(0),accordinates.get(1));
                     range = String.valueOf(distanceDouble.longValue());
+                    if(distanceDouble>=1000){
+                        Double dis=distanceDouble/1000;
+                        instituteDTO.setRangeMeter(df.format(dis)+"km");
+                    }else{
+                        instituteDTO.setRangeMeter(distanceDouble.longValue()+"m");
+                    }
                 }
             }
             instituteDTO.setDistance(range);

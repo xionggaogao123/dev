@@ -1,13 +1,10 @@
 package com.fulaan.base;
 
-import com.fulaan.util.ImageUtils;
 import com.fulaan.utils.QiniuFileUtils;
 import com.pojo.app.Platform;
 import com.pojo.app.SessionValue;
 import com.sys.constants.Constant;
 import com.sys.exceptions.IllegalParamException;
-import org.apache.commons.io.FilenameUtils;
-import org.apache.commons.io.IOUtils;
 import org.bson.types.ObjectId;
 import org.springframework.web.context.request.RequestContextHolder;
 import org.springframework.web.context.request.ServletRequestAttributes;
@@ -18,7 +15,9 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 import java.awt.image.BufferedImage;
-import java.io.*;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.IOException;
 import java.net.URL;
 
 

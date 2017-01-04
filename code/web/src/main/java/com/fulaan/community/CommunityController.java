@@ -1383,8 +1383,7 @@ public class CommunityController extends BaseController {
             PartInContentDTO partInContentDTO = communityService.getPartInContent(detailId, new ObjectId(userDetailInfoDTO.getId()));
             if (partInContentDTO != null) {
                 user1.setContent(partInContentDTO.getInformation());
-                user1.setTime(DateTimeUtils.convert(new ObjectId(partInContentDTO.getPartInContentId()).getTimestamp() * 1000,
-                        DateTimeUtils.DATE_YYYY_MM_DD_HH_MM_A));
+                user1.setTime(DateUtils.timeStampToStr(new ObjectId(partInContentDTO.getPartInContentId()).getTimestamp()));
             }
 
             users.add(user1);

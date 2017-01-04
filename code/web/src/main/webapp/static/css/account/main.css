@@ -60,12 +60,20 @@
 .re-form li .sp1{
     position: absolute;
     top: 0;
-    left: -135px;
+    left: -160px;
     display: inline-block;
-    width: 120px;
+    width: 150px;
     height: 39px;
     line-height: 39px;
     text-align: right;
+}
+.re-form li>label{
+    display: block;
+    height: 28px;
+    line-height: 38px;
+}
+.re-form li>label input{
+    margin: 0 8px 0 6px;
 }
 .re-form li .sp4{
     position: absolute;

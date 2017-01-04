@@ -116,6 +116,7 @@ public class GroupController extends BaseController {
         if (groupDTO.isBindCommunity()) {
             ObjectId communityId = new ObjectId(groupDTO.getCommunityId());
             CommunityDetailDTO groupAnnounceDTO = communityService.getLatestAnnouncement(communityId);
+
             groupDTO.setCurAnnounceMent(groupAnnounceDTO);
         } else {
             GroupAnnounceDTO groupAnnounceDTO = groupNoticeService.getEarlyAnnounce(groupId);

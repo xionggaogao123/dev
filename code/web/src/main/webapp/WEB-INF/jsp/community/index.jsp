@@ -143,12 +143,28 @@
             </c:if>
         </div>
         <div class="link-mk clearfix">
-            <div class="mk-s">
-                <div class="mk3-pho"></div>
+            <div class="mk-s mk-ls" id="forum">
+                <div class="mk8-pho"></div>
                 <div class="mk-name">
-                    <span>找家教</span>
+                    <span>才艺之星</span>
                 </div>
-                <div class="mk-intro">便捷安全一对一，<br>名师家教自由选择</div>
+                <div class="mk-intro">各种版块，无论是发碎碎念<br>还是秀才艺</div>
+            </div>
+            <div class="line-thr"></div>
+            <div class="mk-s mk-ls" id="competition">
+                <div class="mk7-pho"></div>
+                <div class="mk-name">
+                    <span>大赛</span>
+                </div>
+                <div class="mk-intro">不定期开展各种竞赛项目，<br>总有适合你的</div>
+            </div>
+            <div class="line-thr"></div>
+            <div class="mk-s mk-ls" id="playmate">
+                <div class="mk1-pho"></div>
+                <div class="mk-name">
+                    <span>找玩伴</span>
+                </div>
+                <div class="mk-intro">结识附近志趣相投的小伙伴，<br>安全快乐的玩耍</div>
             </div>
             <div class="line-thr"></div>
             <div class="mk-s mk-ls" id="train">
@@ -157,6 +173,19 @@
                     <span>找培训</span>
                 </div>
                 <div class="mk-intro">系统定位，培训机构不仅<br>要口碑好还要离家近</div>
+            </div>
+            <div class="line-acc">
+                <div></div>
+                <div></div>
+                <div></div>
+                <div></div>
+            </div>
+            <div class="mk-s mk-ls" id="forumIndex">
+                <div class="mk6-pho"></div>
+                <div class="mk-name">
+                    <span>教育商城</span>
+                </div>
+                <div class="mk-intro">创科教育、汇聚精品<br>全额积分兑换商品</div>
             </div>
             <div class="line-thr"></div>
             <div class="mk-s">
@@ -168,48 +197,19 @@
             </div>
             <div class="line-thr"></div>
             <div class="mk-s">
+                <div class="mk3-pho"></div>
+                <div class="mk-name">
+                    <span>找家教</span>
+                </div>
+                <div class="mk-intro">便捷安全一对一，<br>名师家教自由选择</div>
+            </div>
+            <div class="line-thr"></div>
+            <div class="mk-s">
                 <div class="mk2-pho"></div>
                 <div class="mk-name">
                     <span>亲子活动</span>
                 </div>
                 <div class="mk-intro">优质亲子活动，<br>陪伴有质量的成长</div>
-            </div>
-            <div class="line-acc">
-                <div></div>
-                <div></div>
-                <div></div>
-                <div></div>
-            </div>
-            <div class="mk-s mk-ls" id="playmate">
-                <div class="mk1-pho"></div>
-                <div class="mk-name">
-                    <span>找玩伴</span>
-                </div>
-                <div class="mk-intro">结识附近志趣相投的小伙伴，<br>安全快乐的玩耍</div>
-            </div>
-            <div class="line-thr"></div>
-            <div class="mk-s mk-ls" id="forumIndex">
-                <div class="mk6-pho"></div>
-                <div class="mk-name">
-                    <span>教育商城</span>
-                </div>
-                <div class="mk-intro">创科教育、汇聚精品<br>全额积分兑换商品</div>
-            </div>
-            <div class="line-thr"></div>
-            <div class="mk-s mk-ls" id="competition">
-                <div class="mk7-pho"></div>
-                <div class="mk-name">
-                    <span>大赛</span>
-                </div>
-                <div class="mk-intro">不定期开展各种竞赛项目，<br>总有适合你的</div>
-            </div>
-            <div class="line-thr"></div>
-            <div class="mk-s mk-ls" id="forum">
-                <div class="mk8-pho"></div>
-                <div class="mk-name">
-                    <span>素质教育论坛</span>
-                </div>
-                <div class="mk-intro">各种版块，无论是发碎碎念<br>还是秀才艺</div>
             </div>
         </div>
         <div class="photo-show">

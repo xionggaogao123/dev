@@ -245,6 +245,7 @@ define(['jquery', 'pagination', 'common'], function (require, exports, module) {
             $('#title').show();
             $('.publish-btn').find('span').eq(0).show();
             $('.publish-btn').find('span').eq(1).hide();
+            $('#content').next().show();
             if (type == 1) {
                 $('.publish-btn .sp2').hide();
             } else if (type == 6) {
@@ -252,6 +253,7 @@ define(['jquery', 'pagination', 'common'], function (require, exports, module) {
             } else if(type==4){
                 $('.publish-fj').css('border-top','0px solid #C2C2C2');
                 $('#content').hide();
+                $('#content').next().hide();
                 $('#title').hide();
                 $('.publish-btn').find('span').eq(1).show();
             }
@@ -373,6 +375,17 @@ define(['jquery', 'pagination', 'common'], function (require, exports, module) {
 
         $('body').on('click','#cancel',function () {
             setTop($(this),0);
+        })
+
+        $('body').on('input','#content',function(){
+            var len=strlen($(this).val());
+            var str="输入的字符数:";
+            if(len>1000){
+              $(this).next().html("<span color=\"#999\">"+str+"</span>"+"<span style='color:#f00' id='contentCount'>"+len+"</span>"+"<span color=\"#999\">/1000</span>");
+            }else{
+                $(this).next().css("color","#999");
+                $(this).next().html(str+"<span id='contentCount'>"+len+"</span>"+"/1000");
+            }
         })
 
     })
@@ -621,6 +634,8 @@ define(['jquery', 'pagination', 'common'], function (require, exports, module) {
         $('#voice_notice').html($('.publish-nav').data("pubVoice" + type));
         $('#title').val($('.publish-nav').data('title' + type));
         $('#content').val($('.publish-nav').data('content' + type));
+        $('#contentCount').text($('.publish-nav').data("contentCount" + type));
+        $('#contentCount').css("color", $('.publish-nav').data("contentCountColor" + type));
     }
 
     //清空数据
@@ -630,6 +645,8 @@ define(['jquery', 'pagination', 'common'], function (require, exports, module) {
         $('.pub-fj-img').empty();
         $('.pub-fj-doc').empty();
         $('#voice_notice').empty();
+        $('#contentCount').text("0");
+        $('#contentCount').css("color","#999");
     }
 
     //存储数据
@@ -639,6 +656,8 @@ define(['jquery', 'pagination', 'common'], function (require, exports, module) {
         $('.publish-nav').data('pubIm' + type, $('.pub-fj-img').html());
         $('.publish-nav').data('pubDoc' + type, $('.pub-fj-doc').html());
         $('.publish-nav').data("pubVoice" + type, $('#voice_notice').html());
+        $('.publish-nav').data("contentCount" + type, $('#contentCount').text());
+        $('.publish-nav').data("contentCountColor" + type, $('#contentCount').css("color"));
     }
 
     //添加附件信息
@@ -837,12 +856,14 @@ define(['jquery', 'pagination', 'common'], function (require, exports, module) {
         var len = 0;
         for (var i=0; i<str.length; i++) {
             var c = str.charCodeAt(i);
-            //单字节加1
-            if ((c >= 0x0001 && c <= 0x007e) || (0xff60<=c && c<=0xff9f)) {
-                len++;
-            }
-            else {
-                len+=2;
+            //空字符不算
+            if(c!=0x0020){
+                if ((c >= 0x0001 && c <= 0x007e) || (0xff60<=c && c<=0xff9f)) {
+                    len++;
+                }
+                else {
+                    len+=2;
+                }
             }
         }
         return len;

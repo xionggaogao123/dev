@@ -1,6 +1,7 @@
 package com.fulaan.user.controller;
 
 import com.easemob.server.EaseMobAPI;
+import com.fulaan.account.service.AccountService;
 import com.fulaan.annotation.ObjectIdType;
 import com.fulaan.annotation.SessionNeedless;
 import com.fulaan.annotation.UserRoles;
@@ -105,6 +106,8 @@ public class UserController extends BaseController {
     private FScoreService fScoreService;
     @Autowired
     private MateService mateService;
+    @Autowired
+    private AccountService accountService;
 
     /**
      * 通过sso登录
@@ -395,7 +398,9 @@ public class UserController extends BaseController {
             mateService.saveMateEntry(e.getID());
         }
         mateService.updateAged(e.getID(), e.getBirthDate());
-
+        if(StringUtils.isNotBlank(e.getMobileNumber())) {
+            accountService.bindMobile(e.getID(),e.getMobileNumber());
+        }
 
         return respObj;
     }

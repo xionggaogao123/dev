@@ -2,17 +2,14 @@ package com.db.playmate;
 
 import com.db.base.BaseDao;
 import com.db.factory.MongoFacroty;
-import com.mongodb.BasicDBList;
 import com.mongodb.BasicDBObject;
 import com.mongodb.DBObject;
 import com.pojo.playmate.FMateEntry;
-import com.pojo.user.UserTag;
 import com.sys.constants.Constant;
 import org.bson.types.ObjectId;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Objects;
 
 /**
  * Created by moslpc on 2016/11/30.

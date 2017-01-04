@@ -93,7 +93,7 @@ public class MongoUtils {
     /**
      * 得到ObjectId的list;注意：该field为ObjectId
      *
-     * @param col
+     * @param dbo
      * @param field
      * @return
      */
@@ -227,7 +227,7 @@ public class MongoUtils {
 
     public static List<ObjectId> convertObjectIds(String memberId) {
         List<ObjectId> objectIds = new ArrayList<ObjectId>();
-        if(StringUtils.isNotBlank(memberId)) {
+        if (StringUtils.isNotBlank(memberId)) {
             String[] members = memberId.split(",");
             for (String item : members) {
                 objectIds.add(new ObjectId(item));
@@ -261,6 +261,18 @@ public class MongoUtils {
             }
         }
         return retList;
+    }
+
+    public static List<ObjectId> getObjectIdListByDBList(Object dbList) {
+        List<ObjectId> result = new ArrayList<ObjectId>();
+        if (null != dbList && dbList instanceof BasicDBList) {
+            for (Object o : (BasicDBList)dbList) {
+                if (null != o && o instanceof ObjectId) {
+                    result.add((ObjectId) o);
+                }
+            }
+        }
+        return result;
     }
 
     public static BasicDBObject buildGeometry(double lon, double lat, int maxDistance) {

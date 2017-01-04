@@ -938,7 +938,7 @@ public class UserService extends BaseService {
         if (entry != null) {
             return new UserDTO(entry);
         }
-        entry = userDao.findByPhone(regular);
+        entry = userDao.findByMobile(regular);
         if (entry != null) {
             return new UserDTO(entry);
         }

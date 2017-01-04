@@ -573,6 +573,9 @@ public class Constant {
     //论坛-积分记录表
     public static final String COLLECTION_FORUM_SCORE = "fscore";
 
+    public static final String COLLECTION_USER_MOBILE = "userMobile";
+
+
     //==========================第二版新加的表=================================
 
     //找玩伴

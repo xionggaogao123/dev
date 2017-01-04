@@ -1,20 +1,22 @@
 package com.fulaan.account.service;
 
+import com.db.mobile.UserMobileDao;
 import com.fulaan.base.BaseService;
 import com.fulaan.cache.CacheHandler;
-import com.pojo.user.UserEntry;
+import com.pojo.mobile.UserMobileEntry;
 import com.sys.mails.MailUtils;
-import com.sys.utils.MD5Utils;
-import com.sys.utils.RespObj;
+import org.bson.types.ObjectId;
 import org.springframework.stereotype.Service;
 
 /**
  * Created by moslpc on 2016/12/12.
  */
 @Service
-public class AccountService extends BaseService{
+public class AccountService extends BaseService {
 
     private static final String validateUrl = "http://fulaan.com/account/emailValidate.do?";
+
+    private UserMobileDao userMobileDao = new UserMobileDao();
 
     public Boolean checkVerifyCode(String verifyCode, String verifyKey) {
         //验证码
@@ -32,7 +34,7 @@ public class AccountService extends BaseService{
         return !"".equals(verifyCode) && verifyCode.equals(validateCode);
     }
 
-    public void sendEmailForFindPassword(String userName,String email, String code) {
+    public void sendEmailForFindPassword(String userName, String email, String code) {
         //发送邮箱
         MailUtils sendMail = new MailUtils();
         StringBuilder stringBuffer = getEmailText(userName, email, code);
@@ -53,5 +55,17 @@ public class AccountService extends BaseService{
         stringBuffer.append(" >" + emailContent + "</a><br/>如果点击无效，请把下面网页地址复制到浏览器地址栏中打开<br/><br/>");
         stringBuffer.append("这是一封系统邮件，请勿回复</p>\n");
         return stringBuffer;
+    }
+
+    public void bindMobile(ObjectId userId, String mobile) {
+        if (!userMobileDao.isCanBind(mobile)) {
+            return;
+        }
+        if (userMobileDao.isExist(mobile)) {
+            userMobileDao.pushUserId(mobile, userId);
+        } else {
+            UserMobileEntry userMobileEntry = new UserMobileEntry(mobile, userId);
+            userMobileDao.save(userMobileEntry);
+        }
     }
 }

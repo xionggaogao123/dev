@@ -186,10 +186,10 @@ public class AccountController extends BaseController {
         if (!accountService.checkVerifyCode(verifyCode, verifyKey)) {
             return RespObj.FAILD("验证码不正确");
         }
-
         if (userService.findByRegular(name) == null) {
             return RespObj.FAILD("用户不存在");
         }
+
         ObjectId key = new ObjectId();
         String cacheKey = CacheHandler.getKeyString(CacheHandler.CACHE_FW_USERNAME_KEY, key.toString());
         CacheHandler.cache(cacheKey, name, Constant.SESSION_FIVE_MINUTE);//5分钟

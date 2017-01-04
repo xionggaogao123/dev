@@ -7,6 +7,7 @@ import com.mongodb.BasicDBObject;
 import com.mongodb.DBObject;
 import com.mongodb.WriteResult;
 import com.pojo.app.FieldValuePair;
+import com.pojo.mobile.UserMobileEntry;
 import com.pojo.user.UserEntry;
 import com.pojo.user.UserInfoDTO;
 import com.pojo.user.UserRole;

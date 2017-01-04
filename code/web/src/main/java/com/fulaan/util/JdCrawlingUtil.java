@@ -142,11 +142,11 @@ public class JdCrawlingUtil {
         Document doc = Jsoup.parse(html);
         //获取html标签中的内容
         Element ele = doc.getElementById("spec-n1");
-        Element ele1 = doc.getElementById("name");
-        Element ele2 = doc.getElementById("mini-jd-price");
-        String url = ele.child(0).attr("src");
-        String decs = ele1.child(0).html();
-        String price = ele2.html();
-        return setModel(url, decs, price);
+//        Element ele1 = doc.getElementById("name");
+//        Element ele2 = doc.getElementById("mini-jd-price");
+        String url = ele.child(0).attr("data-origin");
+        String decs = ele.child(0).attr("alt");
+//        String price = ele2.html();
+        return setModel("http:"+url, decs, "");
     }
 }

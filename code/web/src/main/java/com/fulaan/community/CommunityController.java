@@ -56,15 +56,14 @@ import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.multipart.MultipartRequest;
-
+import sun.net.www.protocol.https.HttpsURLConnectionImpl;
 import javax.servlet.ServletInputStream;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.*;
-import java.net.MalformedURLException;
-import java.net.URL;
-import java.net.URLDecoder;
+import java.net.*;
 import java.util.*;
+import java.util.concurrent.*;
 
 
 /**
@@ -100,10 +99,10 @@ public class CommunityController extends BaseController {
 
     public static final String suffix = "/static/images/community/upload.png";
 
-    private boolean judgeIsNumber(String charStr){
-        for(int i=0;i<charStr.length();i++){
-            char c=charStr.charAt(i);
-            if((byte)c<48||(byte)c>57){
+    private boolean judgeIsNumber(String charStr) {
+        for (int i = 0; i < charStr.length(); i++) {
+            char c = charStr.charAt(i);
+            if ((byte) c < 48 || (byte) c > 57) {
                 return false;
             }
         }
@@ -118,19 +117,19 @@ public class CommunityController extends BaseController {
                                    @RequestParam(required = false, defaultValue = "0") int open,
                                    @RequestParam(required = false, defaultValue = "") String userIds) throws Exception {
         //先判断社区名称是否是纯数字
-        if(judgeIsNumber(name)){
+        if (judgeIsNumber(name)) {
             return RespObj.FAILD("社区名称不能是纯数字!");
         }
         //先进行敏感词过滤
-        List<String> words=userService.recordSensitiveWords(name);
-        if(words.size()>0){
-            StringBuffer buffer=new StringBuffer();
+        List<String> words = userService.recordSensitiveWords(name);
+        if (words.size() > 0) {
+            StringBuffer buffer = new StringBuffer();
             buffer.append("这些词语 ");
-            for(String item:words){
-                buffer.append("“"+item+"”"+"、");
+            for (String item : words) {
+                buffer.append("“" + item + "”" + "、");
             }
-            String str=buffer.toString().substring(0,buffer.toString().length()-1);
-            str=str+"是违禁词!";
+            String str = buffer.toString().substring(0, buffer.toString().length() - 1);
+            str = str + "是违禁词!";
             return RespObj.FAILD(str);
         }
         desc = userService.replaceSensitiveWord(desc);
@@ -153,7 +152,7 @@ public class CommunityController extends BaseController {
             String prev = "http://www.fulaan.com";
             logo = prev + suffix;
         }
-        if(suffix.equals(logo)){
+        if (suffix.equals(logo)) {
             String prev = "http://www.fulaan.com";
             logo = prev + suffix;
         }
@@ -196,15 +195,15 @@ public class CommunityController extends BaseController {
                                     @RequestParam(required = false, defaultValue = "0") int open,
                                     @RequestParam(required = false, defaultValue = "") String userIds) throws Exception {
         //先进行敏感词过滤
-        List<String> words=userService.recordSensitiveWords(name);
-        if(words.size()>0){
-            StringBuffer buffer=new StringBuffer();
+        List<String> words = userService.recordSensitiveWords(name);
+        if (words.size() > 0) {
+            StringBuffer buffer = new StringBuffer();
             buffer.append("这些词语 ");
-            for(String item:words){
-                buffer.append("“"+item+"”"+"、");
+            for (String item : words) {
+                buffer.append("“" + item + "”" + "、");
             }
-            String str=buffer.toString().substring(0,buffer.toString().length()-1);
-            str=str+"是违禁词!";
+            String str = buffer.toString().substring(0, buffer.toString().length() - 1);
+            str = str + "是违禁词!";
             CommunityDTO communityDTO = new CommunityDTO();
             communityDTO.setErrorMsg(str);
             return RespObj.FAILD(communityDTO);
@@ -453,7 +452,7 @@ public class CommunityController extends BaseController {
         } else {
             if (communityService.isCommunityNameUnique(name)) {
                 communityService.updateCommunity(communityId, name, desc, logo, open);
-                groupService.updateGroupName(new ObjectId(community.getGroupId()),name);
+                groupService.updateGroupName(new ObjectId(community.getGroupId()), name);
             } else {
                 return RespObj.FAILD("该社区名称已经存在");
             }
@@ -622,55 +621,57 @@ public class CommunityController extends BaseController {
 
     /**
      * 查询最新谁申请加入私密社区的消息
+     *
      * @param emChatId
      * @return
      */
     @RequestMapping("/getNewValidateInfo")
     @ResponseBody
-    public RespObj getNewValidateInfo(String emChatId){
-        ObjectId groupId=groupService.getGroupIdByChatId(emChatId);
-        GroupDTO groupDTO=groupService.findById(groupId);
-        ValidateInfoEntry entry=validateInfoService.getNewsInfo(new ObjectId(groupDTO.getCommunityId()));
-        if(null==entry){
+    public RespObj getNewValidateInfo(String emChatId) {
+        ObjectId groupId = groupService.getGroupIdByChatId(emChatId);
+        GroupDTO groupDTO = groupService.findById(groupId);
+        ValidateInfoEntry entry = validateInfoService.getNewsInfo(new ObjectId(groupDTO.getCommunityId()));
+        if (null == entry) {
             return RespObj.FAILD("没有审核消息");
-        }else{
-            ValidateInfoDTO dto=new ValidateInfoDTO(entry);
-            UserEntry userEntry=userService.findById(entry.getUserId());
-            dto.setUserName(StringUtils.isNotBlank(userEntry.getNickName())?userEntry.getNickName():userEntry.getUserName());
+        } else {
+            ValidateInfoDTO dto = new ValidateInfoDTO(entry);
+            UserEntry userEntry = userService.findById(entry.getUserId());
+            dto.setUserName(StringUtils.isNotBlank(userEntry.getNickName()) ? userEntry.getNickName() : userEntry.getUserName());
             return RespObj.SUCCESS(dto);
         }
     }
 
     /**
      * 处理验证申请信息
-     * @param reviewKeyId (为了区分是否是再次申请的,若申请失败可以再申请一次，每次申请都会出现这个关键字Id,申请人和审核人的绑定关系)
-     * @param userId (申请人ID)
-     * @param communityId （社区Id）
+     *
+     * @param reviewKeyId    (为了区分是否是再次申请的,若申请失败可以再申请一次，每次申请都会出现这个关键字Id,申请人和审核人的绑定关系)
+     * @param userId         (申请人ID)
+     * @param communityId    （社区Id）
      * @param approvedStatus (批准状态（0:已批准 1:未批准)
      * @return
      */
     @RequestMapping("/reviewApply")
     @ResponseBody
-    public RespObj reviewApply(@ObjectIdType ObjectId reviewKeyId,@ObjectIdType ObjectId userId,@ObjectIdType ObjectId communityId,int approvedStatus){
+    public RespObj reviewApply(@ObjectIdType ObjectId reviewKeyId, @ObjectIdType ObjectId userId, @ObjectIdType ObjectId communityId, int approvedStatus) {
         ObjectId groupId = communityService.getGroupId(communityId);
-        ObjectId reviewedId=getUserId();
-        int authority=1;
+        ObjectId reviewedId = getUserId();
+        int authority = 1;
         String roleStr;
-        if(memberService.isHead(groupId,reviewedId)){
-            roleStr="社长";
-        }else{
-            roleStr="副社长";
+        if (memberService.isHead(groupId, reviewedId)) {
+            roleStr = "社长";
+        } else {
+            roleStr = "副社长";
         }
         //先判断是否有权限
-        if(!memberService.isManager(groupId,reviewedId)){
+        if (!memberService.isManager(groupId, reviewedId)) {
             //更新权限状态
-            validateInfoService.updateAuthority(reviewedId,communityId,authority);
+            validateInfoService.updateAuthority(reviewedId, communityId, authority);
             return RespObj.FAILD("该用户没有权限操作,请刷新页面!");
-        }else{
+        } else {
             //先判断是否审核了
-            ValidateInfoEntry validateInfoEntry=validateInfoService.getEntry(userId,reviewKeyId,communityId);
-            if(null!=validateInfoEntry) {
-                if(validateInfoEntry.getStatus()==0) {
+            ValidateInfoEntry validateInfoEntry = validateInfoService.getEntry(userId, reviewKeyId, communityId);
+            if (null != validateInfoEntry) {
+                if (validateInfoEntry.getStatus() == 0) {
                     //查询所有的管理员
                     List<ValidateInfoEntry> entries = validateInfoService.getEntries(userId, communityId, reviewKeyId);
                     for (ValidateInfoEntry entry : entries) {
@@ -681,15 +682,15 @@ public class CommunityController extends BaseController {
                         validateInfoService.saveOrUpdate(entry);
                     }
 //                    validateInfoService.batchSaveInfo(entries);
-                    ValidateInfoEntry entry=validateInfoService.getApplyEntry(userId,reviewKeyId,communityId);
-                    if(null!=entry){
+                    ValidateInfoEntry entry = validateInfoService.getApplyEntry(userId, reviewKeyId, communityId);
+                    if (null != entry) {
                         entry.setReviewState(approvedStatus);
                         entry.setStatus(1);
                         validateInfoService.saveOrUpdate(entry);
 
 
                         //该用户加入社区
-                        if(approvedStatus==0) {
+                        if (approvedStatus == 0) {
                             CommunityDTO dto = communityService.findByObjectId(communityId);
                             int saveState = 1;
                             if ("复兰社区".equals(dto.getName())) {
@@ -698,14 +699,14 @@ public class CommunityController extends BaseController {
                             joinCommunity(userId, communityId, groupId, saveState);
                         }
                         return RespObj.SUCCESS("审核成功,请刷新页面!");
-                    }else{
+                    } else {
                         return RespObj.FAILD("该申请人信息不存在,请刷新页面!");
                     }
-                }else{
+                } else {
                     return RespObj.FAILD("该用户信息已经审核了,请刷新页面!");
                 }
 
-            }else{
+            } else {
                 return RespObj.FAILD("该审核信息不存在!");
             }
         }
@@ -714,30 +715,30 @@ public class CommunityController extends BaseController {
 
     /**
      * 获取验证消息
+     *
      * @param page
      * @param pageSize
      * @return
      */
     @RequestMapping("/getValidateInfos")
     @ResponseBody
-    public RespObj getValidateInfos(@RequestParam(defaultValue = "1",required = false)int page,
-                                    @RequestParam(defaultValue = "10",required = false)int pageSize){
-        Map<String,Object> map=new HashMap<String,Object>();
-        ObjectId userId=getUserId();
-        List<ValidateInfoDTO> list=validateInfoService.getValidateInfos(userId,page,pageSize);
-        int count=validateInfoService.countValidateInfos(userId);
-        map.put("list",list);
-        map.put("count",count);
-        map.put("page",page);
-        map.put("pageSize",pageSize);
+    public RespObj getValidateInfos(@RequestParam(defaultValue = "1", required = false) int page,
+                                    @RequestParam(defaultValue = "10", required = false) int pageSize) {
+        Map<String, Object> map = new HashMap<String, Object>();
+        ObjectId userId = getUserId();
+        List<ValidateInfoDTO> list = validateInfoService.getValidateInfos(userId, page, pageSize);
+        int count = validateInfoService.countValidateInfos(userId);
+        map.put("list", list);
+        map.put("count", count);
+        map.put("page", page);
+        map.put("pageSize", pageSize);
         return RespObj.SUCCESS(map);
     }
 
 
-
-
     /**
      * 加入社区
+     *
      * @param communityId
      * @return
      */
@@ -750,55 +751,55 @@ public class CommunityController extends BaseController {
 //        if(type==2){
 //            System.out.println("扫描二维码加的"+type);
 //        }
-        CommunityDTO dto=communityService.findByObjectId(communityId);
+        CommunityDTO dto = communityService.findByObjectId(communityId);
         ObjectId userId = getUserId();
         ObjectId groupId = communityService.getGroupId(communityId);
-        int saveState=1;
-        if("复兰社区".equals(dto.getName())){
-            saveState=3;
+        int saveState = 1;
+        if ("复兰社区".equals(dto.getName())) {
+            saveState = 3;
         }
-        if(dto.getOpen()==1) {
-            if (joinCommunity(userId, communityId,groupId,saveState)) {
+        if (dto.getOpen() == 1) {
+            if (joinCommunity(userId, communityId, groupId, saveState)) {
                 return RespObj.SUCCESS("操作成功!");
             } else {
                 return RespObj.FAILD("该用户已经是该社区成员了");
             }
-        }else{
+        } else {
             //私密社区
-            if(memberService.isGroupMember(groupId, userId)){
+            if (memberService.isGroupMember(groupId, userId)) {
                 return RespObj.FAILD("该用户已经是该社区成员了");
-            }else{
-                UserEntry userEntry=userService.findById(userId);
-                Map<String,String> ext=new HashMap<String, String>();
-                String nickName=StringUtils.isNotBlank(userEntry.getNickName())?userEntry.getNickName():userEntry.getUserName();
-                ext.put("avatar",AvatarUtils.getAvatar(userEntry.getAvatar(),AvatarType.MIN_AVATAR.getType()));
-                ext.put("nickName",nickName);
-                ext.put("userId",userId.toString());
-                ext.put("joinPrivate","YES");
+            } else {
+                UserEntry userEntry = userService.findById(userId);
+                Map<String, String> ext = new HashMap<String, String>();
+                String nickName = StringUtils.isNotBlank(userEntry.getNickName()) ? userEntry.getNickName() : userEntry.getUserName();
+                ext.put("avatar", AvatarUtils.getAvatar(userEntry.getAvatar(), AvatarType.MIN_AVATAR.getType()));
+                ext.put("nickName", nickName);
+                ext.put("userId", userId.toString());
+                ext.put("joinPrivate", "YES");
                 List<MemberDTO> memberDTOs = memberService.getManagers(groupId);
-                List<String> targets=new ArrayList<String>();
-                for(MemberDTO memberDTO:memberDTOs){
+                List<String> targets = new ArrayList<String>();
+                for (MemberDTO memberDTO : memberDTOs) {
                     targets.add(memberDTO.getUserId());
                 }
                 String message;
-                if(type==1) {
-                    message= "用户" + nickName + "请求加入" + dto.getName() + "（来自搜索ID）";
-                }else{
-                    message= "用户" + nickName + "请求加入" + dto.getName() + "（来自扫描二维码）";
+                if (type == 1) {
+                    message = "用户" + nickName + "请求加入" + dto.getName() + "（来自搜索ID）";
+                } else {
+                    message = "用户" + nickName + "请求加入" + dto.getName() + "（来自扫描二维码）";
                 }
-                Map<String,String> sendMessage=new HashMap<String, String>();
+                Map<String, String> sendMessage = new HashMap<String, String>();
                 sendMessage.put("type", MsgType.TEXT);
-                sendMessage.put("msg",message);
-                if(emService.sendTextMessage("users",targets,userId.toString(),ext,sendMessage)) {
+                sendMessage.put("msg", message);
+                if (emService.sendTextMessage("users", targets, userId.toString(), ext, sendMessage)) {
                     //申请加入私密社区
-                    boolean flag = validateInfoService.saveValidateInfos(userId, communityId, msg, type,memberDTOs);
+                    boolean flag = validateInfoService.saveValidateInfos(userId, communityId, msg, type, memberDTOs);
                     if (flag) {
                         return RespObj.FAILD("申请加入私密社区成功!");
                     } else {
                         return RespObj.FAILD("已经申请加入该私密社区了!");
                     }
-                }else{
-                    return  RespObj.FAILD("申请加入该私密社区失败!");
+                } else {
+                    return RespObj.FAILD("申请加入该私密社区失败!");
                 }
             }
         }
@@ -812,7 +813,7 @@ public class CommunityController extends BaseController {
      * @param communityId
      * @return
      */
-    private boolean joinCommunity(ObjectId userId, ObjectId communityId,ObjectId groupId,int saveState) {
+    private boolean joinCommunity(ObjectId userId, ObjectId communityId, ObjectId groupId, int saveState) {
         GroupDTO groupDTO = groupService.findById(groupId);
         if (memberService.isGroupMember(groupId, userId)) {
             return false;
@@ -838,6 +839,7 @@ public class CommunityController extends BaseController {
     /**
      * 加入社区但是不加入环信群组---这里只有复兰社区调用
      * 加入复兰社区--- 复兰社区很特殊，特殊对待
+     *
      * @param userId
      * @param communityId
      * @return
@@ -1138,7 +1140,7 @@ public class CommunityController extends BaseController {
         model.put("communityId", communityId);
         model.put("searchId", community.getSearchId());
 
-        model.put("menuItem",0);
+        model.put("menuItem", 0);
         ObjectId groupId = communityService.getGroupId(new ObjectId(communityId));
         if (memberService.isManager(groupId, getUserId())) {
             model.put("operation", 1);
@@ -1154,15 +1156,15 @@ public class CommunityController extends BaseController {
         model.put("communityId", communityId);
         model.put("searchId", community.getSearchId());
 
-        model.put("menuItem",1);
+        model.put("menuItem", 1);
         model.put("fuflaan", 0);
-        if(StringUtils.isNotBlank(community.getName())) {
+        if (StringUtils.isNotBlank(community.getName())) {
             if (community.getName().equals("复兰社区")) {
                 model.put("fuflaan", 1);
             }
         }
         CommunityDTO fulanDto = communityService.getCommunityByName("复兰社区");
-        model.put("fulanId",fulanDto.getId());
+        model.put("fulanId", fulanDto.getId());
         ObjectId groupId = communityService.getGroupId(new ObjectId(communityId));
         if (memberService.isHead(groupId, getUserId())) {
             model.put("operation", 1);
@@ -1327,10 +1329,10 @@ public class CommunityController extends BaseController {
         communityService.setSecondMembers(objectIds, role);
 
         //更新申请状态
-        for(ObjectId item:userIds){
-            if(role==1) {
+        for (ObjectId item : userIds) {
+            if (role == 1) {
                 validateInfoService.updateAuthority(item, communityId, 0);
-            }else{
+            } else {
                 validateInfoService.updateAuthority(item, communityId, 1);
             }
         }
@@ -1635,7 +1637,7 @@ public class CommunityController extends BaseController {
                 if (null != userEntry1) {
                     dtos.add(getDto(userEntry1));
                 }
-                if(dtos.size()==0) {
+                if (dtos.size() == 0) {
                     //用户名精确查找
                     List<UserEntry> userEntryList = userService.getInfoByName("nm", regular);
                     if (userEntryList.size() > 0) {
@@ -1807,24 +1809,83 @@ public class CommunityController extends BaseController {
                             @RequestParam(defaultValue = "", required = false) String shareCommend,
                             @RequestParam(defaultValue = "", required = false) String shareUrl) {
 
+        ObjectId uid = getUserId();
+        boolean isLegal = true;
         try {
             //先进行敏感词过滤
             shareCommend = userService.replaceSensitiveWord(shareCommend);
             HttpClientBuilder httpClientBuilder = HttpClientBuilder.create();
             CloseableHttpClient client = httpClientBuilder.build();
+            //先判断是否是合法的路径
+            if (!isLegalUrl(shareUrl)) {
+                isLegal = false;
+            }
             //抓取的数据
             ProductModel productModel = URLParseUtil.urlParser(client, shareUrl);
             if (StringUtils.isBlank(productModel.getImageUrl())) {
-                return RespObj.FAILD("解析不了该链接或者该链接无效");
+                if (isLegalUrl(shareUrl)) {
+                    isLegal = false;
+                    return RespObj.SUCCESS("操作成功");
+                } else {
+                    return RespObj.FAILD("解析不了该链接或者该链接无效");
+                }
+            } else {
+                if (isLegal) {
+                    communityService.saveCommunityShare(communityId, communityDetailId, uid, productModel, shareCommend, 6);
+                }
             }
-            ObjectId uid = getUserId();
-            communityService.saveCommunityShare(communityId, communityDetailId, uid, productModel, shareCommend, 6);
             return RespObj.SUCCESS("操作成功");
         } catch (Exception e) {
-            return RespObj.FAILD("解析不了该链接或者该链接无效");
+            e.printStackTrace();
+            isLegal = !isLegal;
+            if (!isLegal) {
+                return RespObj.SUCCESS("操作成功");
+            } else {
+                return RespObj.FAILD("访问不了此链接!");
+            }
+        } finally {
+            if (!isLegal) {
+                communityService.saveCommunityRecommend(communityId, communityDetailId, uid, shareUrl, "", "", "", shareCommend, 6);
+            }
         }
     }
 
+    private boolean isLegalUrl(String urlStr) {
+        String urlStr1;
+        String urlStr2;
+        if (!urlStr.contains("http")) {
+            urlStr1 = "http://" + urlStr;
+            urlStr2 = "https://" + urlStr;
+        }else{
+            urlStr1=urlStr;
+            urlStr2=urlStr;
+        }
+        boolean isUrl = false;
+        try {
+            URL url = new URL(urlStr1);
+            HttpURLConnection.setFollowRedirects(false);
+            HttpURLConnection con = (HttpURLConnection) url.openConnection();
+            con.setRequestMethod("HEAD");
+            if(con.getResponseCode() == HttpURLConnection.HTTP_OK){
+                isUrl=true;
+            }
+            con.disconnect();
+            return isUrl;
+        } catch (Exception ex) {
+            try {
+                URL url = new URL(urlStr2);
+                URLConnection con = url.openConnection();
+                String strFiled=con.getHeaderField(0);
+                if(strFiled.indexOf("OK")>0){
+                    isUrl=true;
+                }
+                return isUrl;
+            }catch (Exception e){
+                e.printStackTrace();
+                return false;
+            }
+        }
+    }
 
     @RequestMapping("/recommend")
     @ResponseBody
@@ -2055,10 +2116,10 @@ public class CommunityController extends BaseController {
 
         }
         model.put("personId", personId.toString());
-        if(org.apache.commons.lang.StringUtils.isNotBlank(userEntry.getGenerateUserCode())){
-            model.put("packageCode",userEntry.getGenerateUserCode());
-        }else{
-            model.put("packageCode",personId.toString());
+        if (org.apache.commons.lang.StringUtils.isNotBlank(userEntry.getGenerateUserCode())) {
+            model.put("packageCode", userEntry.getGenerateUserCode());
+        } else {
+            model.put("packageCode", personId.toString());
         }
         model.put("communityNames", communityService.generateCommunityNames(personId));
 
@@ -2416,35 +2477,32 @@ public class CommunityController extends BaseController {
     @ResponseBody
     public RespObj getMyInfo() {
         ObjectId userId = getUserId();
-        Map<String,String> map=new HashMap<String, String>();
+        Map<String, String> map = new HashMap<String, String>();
         UserEntry userEntry = userService.findById(userId);
-        if(StringUtils.isNotBlank(userEntry.getGenerateUserCode())){
-            map.put("uid",userEntry.getGenerateUserCode());
-        }else{
-            map.put("uid",userEntry.getID().toString());
+        if (StringUtils.isNotBlank(userEntry.getGenerateUserCode())) {
+            map.put("uid", userEntry.getGenerateUserCode());
+        } else {
+            map.put("uid", userEntry.getID().toString());
         }
-        map.put("avatar",AvatarUtils.getAvatar(userEntry.getAvatar(),AvatarType.MIN_AVATAR.getType()));
-        if(StringUtils.isNotBlank(userEntry.getNickName())){
-            map.put("nickName",userEntry.getNickName());
-        }else{
-            map.put("nickName",userEntry.getUserName());
+        map.put("avatar", AvatarUtils.getAvatar(userEntry.getAvatar(), AvatarType.MIN_AVATAR.getType()));
+        if (StringUtils.isNotBlank(userEntry.getNickName())) {
+            map.put("nickName", userEntry.getNickName());
+        } else {
+            map.put("nickName", userEntry.getUserName());
         }
         if (StringUtils.isBlank(userEntry.getQRCode())) {
             String qrCode = QRUtils.getPersonQrUrl(userId);
             userEntry.setQRCode(qrCode);
             userService.addUser(userEntry);
-            map.put("qrCode",qrCode);
+            map.put("qrCode", qrCode);
 
             return RespObj.SUCCESS(map);
         } else {
-            map.put("qrCode",userEntry.getQRCode());
+            map.put("qrCode", userEntry.getQRCode());
             return RespObj.SUCCESS(map);
         }
 
     }
-
-
-
 
 
     @RequestMapping("/updateCommunityPrio")

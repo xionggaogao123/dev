@@ -11,18 +11,6 @@ public class ShareContent {
     private String shareTitle;
     private String sharePrice;
 
-    public ShareContent() {
-
-    }
-
-    public ShareContent(String shareUrl, String shareImage, String shareTitle, String sharePrice) {
-
-        this.shareImage = shareImage;
-        this.sharePrice = sharePrice;
-        this.shareTitle = shareTitle;
-        this.shareUrl = shareUrl;
-    }
-
     public String getShareUrl() {
         return shareUrl;
     }

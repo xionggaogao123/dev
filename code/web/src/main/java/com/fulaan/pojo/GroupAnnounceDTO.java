@@ -18,7 +18,6 @@ public class GroupAnnounceDTO {
     private String content;
     private List<String> images;
 
-
     public GroupAnnounceDTO(GroupAnnounceEntry entry) {
         this.id = entry.getID().toString();
         this.groupId = entry.getGroupId().toString();

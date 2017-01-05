@@ -1,7 +1,7 @@
 package com.fulaan.account.dto;
 
 /**
- * Created by moslpc on 2016/12/13.
+ * Created by jerry on 2016/12/13.
  */
 public class VerifyData {
     private boolean verify;

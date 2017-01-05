@@ -88,7 +88,7 @@ public class IndexController extends BaseController {
         model.put("levelCategoryId", getRequest().getParameter("levelCategoryId"));
         List<Banner> banners = mBannerDao.getBanner(2);
         model.put("banners", banners);
-        model.put("haha","sdfdsf");
+        model.put("haha", "sdfdsf");
         return "/mall/jsp_index";
     }
 
@@ -98,7 +98,6 @@ public class IndexController extends BaseController {
     public String newIndex() {
         return "/community/index";
     }
-
 
     @RequestMapping("/communityCreate")
     @LoginInfo
@@ -110,24 +109,6 @@ public class IndexController extends BaseController {
     @LoginInfo
     public String communityJoin() {
         return "/community/communityJoin";
-    }
-
-    @SessionNeedless
-    @RequestMapping("/preview/pdf")
-    public String previewPdf() {
-        return "forum/previewPdf";
-    }
-
-    @SessionNeedless
-    @RequestMapping("/preview/images")
-    public String images() {
-        return "forum/previewWord";
-    }
-
-    @RequestMapping("/friendCenter")
-    @SessionNeedless
-    public String friendCenter() {
-        return "/friend/friendCenter";
     }
 
 }

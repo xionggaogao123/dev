@@ -9,7 +9,8 @@ import org.bson.types.ObjectId;
 import org.springframework.stereotype.Service;
 
 /**
- * Created by moslpc on 2016/12/12.
+ * Created by jerry on 2016/12/12.
+ * 账户 Service
  */
 @Service
 public class AccountService extends BaseService {

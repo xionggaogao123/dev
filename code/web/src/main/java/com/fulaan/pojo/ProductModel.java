@@ -12,12 +12,6 @@ public class ProductModel {
     public ProductModel() {
     }
 
-    public ProductModel(String imageUrl, String productDescription, String productPrice) {
-        this.imageUrl = imageUrl;
-        this.productDescription = productDescription;
-        this.productPrice = productPrice;
-    }
-
     public String getImageUrl() {
         return imageUrl;
     }

@@ -108,7 +108,7 @@ define(['jquery', 'pagination', 'common'], function (require, exports, module) {
             var prev = $('#prev-p');
             var next = $('#next-p');
             var index = 1;
-            var len = 2;
+            var len = 4;
             var interval = 3000;
             var timer;
 
@@ -122,12 +122,20 @@ define(['jquery', 'pagination', 'common'], function (require, exports, module) {
                     offset = '-=' + Math.abs(offset);
                 }
                 list.animate({'left': offset}, 300, function () {
-                    if (left > -200) {
-                        list.css('left', -718 * len);
+                    // if (left > -200) {
+                    //     list.css('left', -718 * len);
+                    // }
+                    // if (left < (-718 * len)) {
+                    //     list.css('left', -718);
+                    // }
+                    if (left ==(-718 * len)){
+                        list.css('left', 0);
                     }
-                    if (left < (-718 * len)) {
-                        list.css('left', -718);
+
+                    if (left == 718){
+                        list.css('left', -718 * (len-1));
                     }
+
                 });
             }
 
@@ -136,7 +144,7 @@ define(['jquery', 'pagination', 'common'], function (require, exports, module) {
                 if (list.is(':animated')) {
                     return;
                 }
-                if (index == 3) {
+                if (index == 4) {
                     index = 1;
                 }
                 else {
@@ -150,7 +158,7 @@ define(['jquery', 'pagination', 'common'], function (require, exports, module) {
                     return;
                 }
                 if (index == 1) {
-                    index = 3;
+                    index = 4;
                 }
                 else {
                     index -= 1;

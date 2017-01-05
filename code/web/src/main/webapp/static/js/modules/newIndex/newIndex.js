@@ -16,7 +16,7 @@ define(['jquery', 'pagination', 'common'], function (require, exports, module) {
         getCommunityNews();
 
         //获取大赛帖子
-        // getFPost("/forum/fPostsActivity.do", '#talentTml');
+        getFPost("/forum/fPostsActivity.do", '#talentTml');
 
         getMyCommunitys();
     }
@@ -268,16 +268,25 @@ define(['jquery', 'pagination', 'common'], function (require, exports, module) {
         requestData.cream = -1;
         requestData.gtTime = 0;
         requestData.postSection = "";
-        requestData.pageSize = 4;
+        requestData.pageSize = 2;
         requestData.inSet = 1;
         common.getData(url, requestData, function (resp) {
             var total = resp.list;
-            common.render({
-                tmpl: template,
-                data: total,
-                context: '#talentList',
-                overwrite: true
-            });
+            var str="";
+            for(var i in total){
+                str=str+"<li><img src=\""+total[i].activityImage+"\">" +
+                    "<span onclick=\"window.open('/competition')\">更多</span>" +
+                "<div class=\"photo-text\"> <h3 onclick=\"window.open('/competition')\""+">"+total[i].mainTitle+"</h3>"+
+                "<p class=\"p1\">"+total[i].title+"</p> <p class=\"p5\">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;"+total[i].partContent+
+                "</p> </div> </li>";
+            }
+            $('#talentList').append(str);
+            // common.render({
+            //     tmpl: template,
+            //     data: total,
+            //     context: '#talentList',
+            //     overwrite: true
+            // });
         })
     }
 

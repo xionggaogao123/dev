@@ -1838,7 +1838,7 @@ public class CommunityController extends BaseController {
             e.printStackTrace();
             isLegal = !isLegal;
             if (!isLegal) {
-                return RespObj.SUCCESS("操作成功");
+                return RespObj.SUCCESS("");
             } else {
                 return RespObj.FAILD("访问不了此链接!");
             }
@@ -1866,23 +1866,22 @@ public class CommunityController extends BaseController {
             HttpURLConnection con = (HttpURLConnection) url.openConnection();
             con.setRequestMethod("HEAD");
             if(con.getResponseCode() == HttpURLConnection.HTTP_OK){
-                isUrl=true;
+               isUrl=true;
             }
             con.disconnect();
+            if(!urlStr1.equals(urlStr2)) {
+                if (!isUrl) {
+                    URL url2 = new URL(urlStr2);
+                    URLConnection con2 = url2.openConnection();
+                    String strFiled = con2.getHeaderField(0);
+                    if (strFiled.indexOf("OK") > 0) {
+                        isUrl = true;
+                    }
+                }
+            }
             return isUrl;
         } catch (Exception ex) {
-            try {
-                URL url = new URL(urlStr2);
-                URLConnection con = url.openConnection();
-                String strFiled=con.getHeaderField(0);
-                if(strFiled.indexOf("OK")>0){
-                    isUrl=true;
-                }
-                return isUrl;
-            }catch (Exception e){
-                e.printStackTrace();
-                return false;
-            }
+            return false;
         }
     }
 

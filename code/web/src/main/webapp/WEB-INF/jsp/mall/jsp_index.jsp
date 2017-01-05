@@ -244,7 +244,7 @@
 <div class="christ-bg" <c:if test="${login==false}">style="display: none" </c:if>></div>
 
 <%--圣诞节活动 st--%>
-<div class="christmas-wind" <c:if test="${login==false}">style="display: none" </c:if>>
+<div class="christmas-wind" style="display: none">
     <img class="christ-light1" src="/static/images/mallSection/christ_1.png">
     <img class="christ-light2" src="/static/images/mallSection/christ_2.png">
     <div class="hide-light1 hl">

@@ -93,7 +93,7 @@ public class JdCrawlingUtil {
         Document doc = Jsoup.parse(html);
 
         Element element = doc.getElementById("slide");
-        Element element1 = element.child(0).child(0).child(0);
+        Element element1 = element.child(0).child(0).child(0).child(0);
         Element element2 = doc.getElementsByClass("title-text").get(0);
         Element element3 = doc.getElementsByClass("big-price").first();
         String url = element1.attr("src");

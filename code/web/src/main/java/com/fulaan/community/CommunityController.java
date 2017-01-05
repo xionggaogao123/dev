@@ -1838,7 +1838,7 @@ public class CommunityController extends BaseController {
             e.printStackTrace();
             isLegal = !isLegal;
             if (!isLegal) {
-                return RespObj.SUCCESS("");
+                return RespObj.SUCCESS("操作成功");
             } else {
                 return RespObj.FAILD("访问不了此链接!");
             }

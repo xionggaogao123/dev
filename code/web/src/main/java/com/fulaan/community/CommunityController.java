@@ -1822,12 +1822,8 @@ public class CommunityController extends BaseController {
             //抓取的数据
             ProductModel productModel = URLParseUtil.urlParser(client, shareUrl);
             if (StringUtils.isBlank(productModel.getImageUrl())) {
-                if (isLegalUrl(shareUrl)) {
-                    isLegal = false;
-                    return RespObj.SUCCESS("操作成功");
-                } else {
-                    return RespObj.FAILD("解析不了该链接或者该链接无效");
-                }
+                isLegal = false;
+                return RespObj.SUCCESS("操作成功");
             } else {
                 if (isLegal) {
                     communityService.saveCommunityShare(communityId, communityDetailId, uid, productModel, shareCommend, 6);

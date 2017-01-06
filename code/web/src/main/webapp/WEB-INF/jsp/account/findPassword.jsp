@@ -71,7 +71,7 @@
                     <img id="verifyImg" alt="" class="sp6"
                          style="top: 5px;width: auto;height: auto"/>
                 </li>
-                <li>
+                <li hidden>
                     <span class="sp1">请选择找回的用户名:</span>
                     <label><input type="radio" name="check-id">aaa</label>
                     <label><input type="radio" name="check-id">bbb</label>

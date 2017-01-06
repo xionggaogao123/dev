@@ -338,22 +338,22 @@ public class CommunityService {
             setRoleStr(communityDetailDTO, communityEntry, entry.getCommunityUserId());
             int totalCount = partInContentDao.countPartPartInContent(entry.getID());
             communityDetailDTO.setPartIncotentCount(totalCount);
-            //先获取群昵称
-            MemberEntry entry1= memberMap.get(groupId + "$" + entry.getCommunityUserId());
 
             if (null != userEntry) {
                 communityDetailDTO.setImageUrl(AvatarUtils.getAvatar(userEntry.getAvatar(), AvatarType.MIN_AVATAR.getType()));
             }
 
-            if(null!=entry1){
+            //先获取群昵称
+            MemberEntry entry1= memberMap.get(groupId + "$" + entry.getCommunityUserId());
+            if(entry1 != null) {
                 if(StringUtils.isNotBlank(entry1.getNickName())){
                     communityDetailDTO.setNickName(entry1.getNickName());
-                } else{
+                }else{
                     if(null != userEntry){
                         communityDetailDTO.setNickName(StringUtils.isNotBlank(userEntry.getNickName())?userEntry.getNickName():userEntry.getUserName());
                     }
                 }
-            }else{
+            } else {
                 if(null != userEntry){
                     communityDetailDTO.setNickName(StringUtils.isNotBlank(userEntry.getNickName())?userEntry.getNickName():userEntry.getUserName());
                 }

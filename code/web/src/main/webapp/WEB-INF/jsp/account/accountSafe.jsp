@@ -220,6 +220,7 @@
 
 <div class="windd" id="isRemoveBind">
     <p class="p1" style="text-align: center">是否确认解绑<em>×</em></p>
+     <p class="p2">注意：若您的账号是新建的将会被清空</p>
     <p class="p-btn-ok" style="margin-top: 50px;margin-bottom: 20px">确认</p>
 </div>
 

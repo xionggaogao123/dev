@@ -251,7 +251,8 @@ public class AccountController extends BaseController {
     @SessionNeedless
     @RequestMapping("/phoneValidate")
     @ResponseBody
-    public RespObj phoneValidate(String phone, String code, String cacheKeyId, @CookieValue(Constant.FWCODE) String fwCode, HttpServletResponse response) {
+    public RespObj phoneValidate(String phone, String code, String cacheKeyId, @CookieValue(Constant.FWCODE) String fwCode,
+                                 HttpServletResponse response) {
         String fwUser = CacheHandler.getStringValue(CacheHandler.getKeyString(CacheHandler.CACHE_FW_USERNAME_KEY, fwCode));
         if (fwUser == null) {
             return RespObj.FAILD(new VerifyData(false, "时间失效或不存在"));
@@ -476,17 +477,6 @@ public class AccountController extends BaseController {
     }
 
     /**
-     * 清空用户手机  -- 测试用
-     */
-    @RequestMapping("/cleanUserPhone")
-    @ResponseBody
-    @UserRoles(UserRole.DISCUSS_MANAGER)
-    public RespObj cleanUserPhone(String userName) {
-        userService.clearUserPhoneAndEmail(userName);
-        return RespObj.SUCCESS;
-    }
-
-    /**
      * 解除第三方绑定
      * @param type
      * @return
@@ -494,10 +484,6 @@ public class AccountController extends BaseController {
     @RequestMapping("/removeThirdBind")
     @ResponseBody
     public RespObj removeThirdBind(int type) {
-        UserDetailInfoDTO user = userService.getUserInfoById(getUserId().toString());
-        if("*".equals(user.getPassWord())) {
-            return RespObj.FAILD("不能解除绑定");
-        }
         userService.removeThirdBind(getUserId(), ThirdType.getThirdType(type));
         return RespObj.SUCCESS;
     }

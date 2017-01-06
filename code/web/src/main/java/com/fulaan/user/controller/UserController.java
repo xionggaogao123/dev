@@ -15,6 +15,7 @@ import com.fulaan.playmate.service.MateService;
 import com.fulaan.pojo.FLoginLog;
 import com.fulaan.pojo.User;
 import com.fulaan.school.SchoolService;
+import com.fulaan.service.MemberService;
 import com.fulaan.user.model.ThirdLoginEntry;
 import com.fulaan.user.model.ThirdType;
 import com.fulaan.user.service.UserService;
@@ -108,6 +109,8 @@ public class UserController extends BaseController {
     private MateService mateService;
     @Autowired
     private AccountService accountService;
+    @Autowired
+    private MemberService memberService;
 
     /**
      * 通过sso登录
@@ -223,10 +226,10 @@ public class UserController extends BaseController {
         if (null == e) {
             faild.setMessage("用户名或密码错误!");
             return faild;
-        } else if(e.getIsRemove()==1){
+        } else if (e.getIsRemove() == 1) {
             faild.setMessage("用户名或密码错误！");
             return faild;
-        } else{
+        } else {
             String emailValidateCode = e.getEmailValidateCode();
             if (StringUtils.isNotBlank(emailValidateCode)) {
                 if (e.getEmailStatus() == 0) {
@@ -310,6 +313,8 @@ public class UserController extends BaseController {
         value.setAvatar(e.getAvatar());
         value.setK6kt(e.getK6KT());
         value.setUserRole(e.getRole());
+        value.setPackageCode(e.getGenerateUserCode());
+
         if (e.getK6KT() == 1) {//k6kt用户
             value.setSchoolId(e.getSchoolID().toString());
             if (schoolEntry != null && schoolEntry.getLogo() != null) {
@@ -324,15 +329,6 @@ public class UserController extends BaseController {
             value.setSchoolNavs(schoolEntry.getSchoolNavs());
             value.setSchoolName(schoolEntry.getName());
         }
-
-
-        //检查是否生成GenerateUserCode
-        if(StringUtils.isBlank(e.getGenerateUserCode())){
-            //若code为空，则生成code
-            e.setGenerateUserCode(ObjectIdPackageUtil.getPackage(e.getID()));
-            userService.addEntry(e);
-        }
-        value.setPackageCode(e.getGenerateUserCode());
 
         //放入缓存
         ObjectId cacheUserKey = new ObjectId();
@@ -379,91 +375,22 @@ public class UserController extends BaseController {
 
         RespObj respObj = new RespObj(Constant.SUCCESS_CODE);
         respObj.setMessage(value);
-
-        //检查是否注册环信
-        boolean isRegister = e.isRegisterHuanXin();
-        String nickName = StringUtils.isNotBlank(e.getNickName()) ? e.getNickName() : e.getUserName();
-        if (!isRegister) {
-            EaseMobAPI.createUser(e.getID().toString(), nickName);
-        }
-
-        if (StringUtils.isBlank(e.getNickName())) {
-            userService.updateNickNameAndSexById(e.getID().toString(), e.getUserName(), e.getSex());
-        }
-        userService.updateHuanXinTag(e.getID());
-
-        //找玩伴
-        boolean isMateExist = mateService.isMateRecoreExist(e.getID());
-        if (!isMateExist) {
-            mateService.saveMateEntry(e.getID());
-        }
-        mateService.updateAged(e.getID(), e.getBirthDate());
-        if(StringUtils.isNotBlank(e.getMobileNumber())) {
-            accountService.bindMobile(e.getID(),e.getMobileNumber());
-        }
+        initUser(e);
 
         return respObj;
     }
 
-
-    /**
-     * 用户登录
-     *
-     * @param name
-     * @param pwd
-     * @return
-     */
-    @SessionNeedless
-    @RequestMapping("/third/login")
-    @ResponseBody
-    public RespObj login(String name, String pwd, String cacheThirdId, HttpServletResponse response, RedirectAttributes redirectAttributes) {
-        redirectAttributes.addFlashAttribute("name", name);
-        redirectAttributes.addFlashAttribute("pwd", pwd);
-        RespObj respObj = login(name, pwd, response);
-        if (respObj.getCode().equals("200")) {
-            SessionValue sessionValue = CacheHandler.getSessionValue(cacheThirdId);
-            String openId = sessionValue.get("openId");
-            //保存第三方登录数据
-            String unionid = sessionValue.get("unionId");
-            int type = Integer.parseInt(sessionValue.get("type"));
-            SessionValue userSession = (SessionValue) respObj.getMessage();
-            ObjectId userId = new ObjectId(userSession.getId());
-            ThirdLoginEntry thirdLoginEntry = new ThirdLoginEntry(userId, openId, unionid, ThirdType.getThirdType(type));
-            userService.saveThirdEntry(thirdLoginEntry);
-        }
-
-        return respObj;
-    }
-
-
-    @SessionNeedless
-    @RequestMapping("/third/create")
-    @ResponseBody
-    public RespObj create(String cacheThirdId, HttpServletResponse response) {
-        UserEntry userEntry;
-        SessionValue sessionValue = CacheHandler.getSessionValue(cacheThirdId);
-        String openId = sessionValue.get("openId");
-        String unionId = sessionValue.get("unionId");
-        String nickName = sessionValue.get("nickName");
-        String avatar = sessionValue.get("avatar");
-        int sex = 1;
-        int type = Integer.parseInt(sessionValue.get("type"));
-        UserEntry userEntry1 = userService.findByUserName(nickName);
-        String userName = nickName;
-        if (userEntry1 == null) {
-            userEntry = new UserEntry(userName, userName, "*", avatar, sex);
-        } else {
-
-            String uuidName = new ObjectId().toString();
-            userName = userName + uuidName;
-            userEntry = new UserEntry(userName, userName, "*", avatar, sex);
-        }
-
+    private void initUser(UserEntry userEntry) {
         //检查是否注册环信
         boolean isRegister = userEntry.isRegisterHuanXin();
-        String nickName2 = StringUtils.isNotBlank(userEntry.getNickName()) ? userEntry.getNickName() : userEntry.getUserName();
         if (!isRegister) {
-            EaseMobAPI.createUser(userEntry.getID().toString(), nickName2);
+            String nickName = StringUtils.isNotBlank(userEntry.getNickName()) ? userEntry.getNickName() : userEntry.getUserName();
+            EaseMobAPI.createUser(userEntry.getID().toString(), nickName);
+            userService.updateHuanXinTag(userEntry.getID());
+        }
+
+        if (StringUtils.isBlank(userEntry.getNickName())) {
+            userService.updateNickNameAndSexById(userEntry.getID().toString(), userEntry.getUserName(), userEntry.getSex());
         }
 
         //找玩伴
@@ -471,20 +398,23 @@ public class UserController extends BaseController {
         if (!isMateExist) {
             mateService.saveMateEntry(userEntry.getID());
         }
-
-        //检查是否生成个人Id
-        if(StringUtils.isBlank(userEntry.getGenerateUserCode())){
-            userEntry.setGenerateUserCode(ObjectIdPackageUtil.getPackage(userEntry.getID()));
+        mateService.updateAged(userEntry.getID(), userEntry.getBirthDate());
+        if (StringUtils.isNotBlank(userEntry.getMobileNumber())) {
+            accountService.bindMobile(userEntry.getID(), userEntry.getMobileNumber());
         }
 
-        userService.addUser(userEntry);
-        userEntry = userService.findByUserName(userName);
-        //保存第三方登录数据
-        ThirdLoginEntry thirdLoginEntry = new ThirdLoginEntry(userEntry.getID(), openId, unionId, ThirdType.getThirdType(type));
-        userService.saveThirdEntry(thirdLoginEntry);
-        return login(userEntry.getUserName(), userEntry.getPassword(), response);
-    }
+        //检查是否生成GenerateUserCode
+        if (StringUtils.isBlank(userEntry.getGenerateUserCode())) {
+            //若code为空，则生成code
+            userEntry.setGenerateUserCode(ObjectIdPackageUtil.getPackage(userEntry.getID()));
+            userService.addEntry(userEntry);
+        }
 
+        if (StringUtils.isNotBlank(userEntry.getAvatar())) {
+            memberService.updateAllAvatar(userEntry.getID(), userEntry.getAvatar());
+        }
+
+    }
 
     @SessionNeedless
     @RequestMapping("/cloud/login")
@@ -1531,31 +1461,34 @@ public class UserController extends BaseController {
         }
 
         Map<String, String> result = QQLoginUtil.getAccessToken(code);
-        logger.info("" + result);
+        logger.info("qqcallback----" + result);
         String access_token = result.get("access_token");
         Map<String, Object> maps = QQLoginUtil.getOpenId(access_token);
         String openId = (String) maps.get("openid");
         Map<String, Object> userInfoMaps = QQLoginUtil.getUserInfo(access_token, openId);
         String nickName = (String) userInfoMaps.get("nickname");
+        String avatar = (String)userInfoMaps.get("figureurl_qq_2");
 
-        Cookie[] cookies = request.getCookies();
-        for (Cookie cookie : cookies) {
+        if(getUserId() != null) {
+            Cookie[] cookies = request.getCookies();
+            for (Cookie cookie : cookies) {
 
-            if (cookie.getName().equals("bindQQ") && getUserId() != null) {
-                if (cookie.getValue().equals(getUserId().toString())) {
-                    //绑定qq
-                    boolean isBind = userService.isOpenIdBindQQ(openId);
-                    if (isBind) {
-                        redirectAttributes.addAttribute("bindSuccess", 0);
+                if (cookie.getName().equals("bindQQ")) {
+                    if (cookie.getValue().equals(getUserId().toString())) {
+                        //绑定qq
+                        boolean isBind = userService.isOpenIdBindQQ(openId);
+                        if (isBind) {
+                            redirectAttributes.addAttribute("bindSuccess", 0);
+                            return "redirect:/account/thirdLoginSuccess";
+                        }
+
+                        //开始绑定
+                        ThirdLoginEntry thirdLoginEntry = new ThirdLoginEntry(getUserId(), openId, null, ThirdType.QQ);
+                        userService.saveThirdEntry(thirdLoginEntry);
+
+                        redirectAttributes.addAttribute("bindSuccess", 1);
                         return "redirect:/account/thirdLoginSuccess";
                     }
-
-                    //开始绑定
-                    ThirdLoginEntry thirdLoginEntry = new ThirdLoginEntry(getUserId(), openId, null, ThirdType.QQ);
-                    userService.saveThirdEntry(thirdLoginEntry);
-
-                    redirectAttributes.addAttribute("bindSuccess", 1);
-                    return "redirect:/account/thirdLoginSuccess";
                 }
             }
         }
@@ -1570,27 +1503,9 @@ public class UserController extends BaseController {
             sex = 1;
         }
 
-        UserEntry userEntry = userService.getThirdEntryByMap(query);
-        if (userEntry == null) { //创建用户
-            userEntry = userService.createUser(nickName, sex);
-            //保存第三方登录数据
-            ThirdLoginEntry thirdLoginEntry = new ThirdLoginEntry(userEntry.getID(), openId, null, ThirdType.QQ);
-            userService.saveThirdEntry(thirdLoginEntry);
-        }
+        UserEntry userEntry = saveThirdInfo(null, openId, nickName, avatar, query, sex);
 
-        //检查是否注册环信
-        boolean isRegister = userEntry.isRegisterHuanXin();
-        String nickName2 = StringUtils.isNotBlank(userEntry.getNickName()) ? userEntry.getNickName() : userEntry.getUserName();
-        if (!isRegister) {
-            EaseMobAPI.createUser(userEntry.getID().toString(), nickName2);
-        }
-
-        //检查是否生成个人ID
-        if(StringUtils.isBlank(userEntry.getGenerateUserCode())){
-            //若code为空，则生成code
-            userEntry.setGenerateUserCode(ObjectIdPackageUtil.getPackage(userEntry.getID()));
-            userService.addEntry(userEntry);
-        }
+        initUser(userEntry);
 
         String redirectUrl = userService.getRedirectUrl(request);
         userService.setCookieValue(getIP(), userEntry, response, request);
@@ -1598,6 +1513,36 @@ public class UserController extends BaseController {
             return redirectUrl;
         }
         return "redirect:/account/thirdLoginSuccess";
+    }
+
+    private UserEntry saveThirdInfo(String unionId, String openId, String nickName, String avatar, Map<String, Object> query, int sex) throws IOException {
+        UserEntry userEntry = userService.getThirdEntryByMap(query);
+        if (userEntry == null) { //创建用户
+            userEntry = userService.createUser(nickName, sex);
+            updateAvatar(userEntry,avatar);
+            if(openId != null) {
+                //保存第三方登录数据
+                ThirdLoginEntry thirdLoginEntry = new ThirdLoginEntry(userEntry.getID(), openId, null, ThirdType.QQ);
+                userService.saveThirdEntry(thirdLoginEntry);
+            } else if(unionId != null) {
+                ThirdLoginEntry thirdLoginEntry = new ThirdLoginEntry(userEntry.getID(), null, unionId, ThirdType.WECHAT);
+                userService.saveThirdEntry(thirdLoginEntry);
+            }
+
+        }
+        return userEntry;
+    }
+
+    private void updateAvatar(UserEntry userEntry,String avatar) throws IOException {
+        if (StringUtils.isNotBlank(avatar)) {
+            String qiniuAvatar = uploadAvatarToQiniu(avatar);
+            userEntry.setAvatar(qiniuAvatar);
+            try {
+                userService.updateAvatar(userEntry.getID().toString(), qiniuAvatar);
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        }
     }
 
     /**
@@ -1650,61 +1595,41 @@ public class UserController extends BaseController {
         Map<String, Object> userInfoMaps = WeChatLoginUtil.getWeChatUserInfo(access_token, openid);
 
         String unionId = (String) userInfoMaps.get("unionid");
-        //拿到unionid之后要去数据库查询，找一遍有没有这个用户
-        logger.info("查询数据库");
-
         Map<String, Object> query = new HashMap<String, Object>();
         query.put("unionid", unionId);
         query.put("type", ThirdType.WECHAT.getCode());
 
-        Cookie[] cookies = request.getCookies();
-        for (Cookie cookie : cookies) {
+        if(getUserId() != null) {
+            Cookie[] cookies = request.getCookies();
+            for (Cookie cookie : cookies) {
 
-            if (cookie.getName().equals("bindWechat") && getUserId() != null) {
-                if (cookie.getValue().equals(getUserId().toString())) {
-                    //绑定qq
-                    boolean isBind = userService.isUnionIdBindWechat(unionId);
-                    if (isBind) {
-                        redirectAttributes.addAttribute("bindSuccess", 0);
+                if (cookie.getName().equals("bindWechat")) {
+                    if (cookie.getValue().equals(getUserId().toString())) {
+                        //绑定qq
+                        boolean isBind = userService.isUnionIdBindWechat(unionId);
+                        if (isBind) {
+                            redirectAttributes.addAttribute("bindSuccess", 0);
+                            return "redirect:/account/thirdLoginSuccess";
+                        }
+
+                        //开始绑定
+                        ThirdLoginEntry thirdLoginEntry = new ThirdLoginEntry(getUserId(), null, unionId, ThirdType.WECHAT);
+                        userService.saveThirdEntry(thirdLoginEntry);
+
+                        redirectAttributes.addAttribute("bindSuccess", 1);
                         return "redirect:/account/thirdLoginSuccess";
                     }
-
-                    //开始绑定
-                    ThirdLoginEntry thirdLoginEntry = new ThirdLoginEntry(getUserId(), null, unionId, ThirdType.WECHAT);
-                    userService.saveThirdEntry(thirdLoginEntry);
-
-                    redirectAttributes.addAttribute("bindSuccess", 1);
-                    return "redirect:/account/thirdLoginSuccess";
                 }
             }
         }
 
-        UserEntry userEntry = userService.getThirdEntryByMap(query);
 
-        if (userEntry == null) { //不存在,创建账号
-            String nickName = (String) userInfoMaps.get("nickname");
-            Integer sex = (Integer) userInfoMaps.get("sex");
-            userEntry = userService.createUser(nickName, sex);
-            //保存第三方登录数据
-            ThirdLoginEntry thirdLoginEntry = new ThirdLoginEntry(userEntry.getID(), openid, unionId, ThirdType.WECHAT);
-            userService.saveThirdEntry(thirdLoginEntry);
-        }
+        String nickName = (String) userInfoMaps.get("nickname");
+        Integer sex = (Integer) userInfoMaps.get("sex");
+        String avatar = (String) userInfoMaps.get("headimgurl");
 
-        //检查是否注册环信
-        boolean isRegister = userEntry.isRegisterHuanXin();
-        String nickName2 = StringUtils.isNotBlank(userEntry.getNickName()) ? userEntry.getNickName() : userEntry.getUserName();
-        if (!isRegister) {
-            EaseMobAPI.createUser(userEntry.getID().toString(), nickName2);
-        }
-
-        //检查是否生成个人Id
-        if(StringUtils.isBlank(userEntry.getGenerateUserCode())){
-            //若code为空，则生成code
-            userEntry.setGenerateUserCode(ObjectIdPackageUtil.getPackage(userEntry.getID()));
-            userService.addEntry(userEntry);
-        }
-
-
+        UserEntry userEntry = saveThirdInfo(unionId, null, nickName, avatar, query, sex);
+        initUser(userEntry);
 
         String redirectUrl = userService.getRedirectUrl(request);
         userService.setCookieValue(getIP(), userEntry, response, request);
@@ -1731,28 +1656,8 @@ public class UserController extends BaseController {
         if (userEntry == null) {
             return RespObj.SUCCESS(MapUtil.put("isExist", "No"));
         }
-
-        //生成个人ID
-        //检查是否生成GenerateUserCode
-        if(StringUtils.isBlank(userEntry.getGenerateUserCode())){
-            //若code为空，则生成code
-            userEntry.setGenerateUserCode(ObjectIdPackageUtil.getPackage(userEntry.getID()));
-            userService.addEntry(userEntry);
-        }
-
+        initUser(userEntry);
         SessionValue value = userService.setCookieValue(getIP(), userEntry, response, request);
-        //检查是否注册环信
-        boolean isRegister = userEntry.isRegisterHuanXin();
-        String nickName2 = StringUtils.isNotBlank(userEntry.getNickName()) ? userEntry.getNickName() : userEntry.getUserName();
-        if (!isRegister) {
-            EaseMobAPI.createUser(userEntry.getID().toString(), nickName2);
-        }
-
-        //找玩伴
-        boolean isMateExist = mateService.isMateRecoreExist(userEntry.getID());
-        if (!isMateExist) {
-            mateService.saveMateEntry(userEntry.getID());
-        }
 
         return RespObj.SUCCESS(value);
     }
@@ -1771,43 +1676,23 @@ public class UserController extends BaseController {
     @RequestMapping("/third/users")
     @ResponseBody
     public RespObj createUserFromThird(String openId, Integer type, String unionId,
-                                       @RequestParam(value = "nickName",defaultValue = "") String nickName,
-                                       @RequestParam(value = "avatar",defaultValue = "") String avatar,
-                                       @RequestParam(value = "sex",defaultValue = "0") Integer sex,HttpServletResponse response, HttpServletRequest request) throws IOException {
+                                       @RequestParam(value = "nickName", defaultValue = "") String nickName,
+                                       @RequestParam(value = "avatar", defaultValue = "") String avatar,
+                                       @RequestParam(value = "sex", defaultValue = "0") Integer sex,
+                                       HttpServletResponse response, HttpServletRequest request) throws IOException {
         if (type == null) {
             return RespObj.FAILD("参数不对");
         }
         UserEntry userEntry = userService.searchThirdEntry(openId, unionId, ThirdType.getThirdType(type));
         if (userEntry == null) { //第一次进入应用
             userEntry = userService.createUser(nickName, sex);
-            if (avatar != null) {
-                String qiniuAvatar = uploadAvatarToQiniu(avatar);
-                userEntry.setAvatar(qiniuAvatar);
-                try {
-                    userService.updateAvatar(userEntry.getID().toString(), qiniuAvatar);
-                } catch (Exception e) {
-                    e.printStackTrace();
-                }
-            }
+            updateAvatar(userEntry,avatar);
             //保存第三方登录数据
             ThirdLoginEntry thirdLoginEntry = new ThirdLoginEntry(userEntry.getID(), openId, unionId, ThirdType.getThirdType(type));
             userService.saveThirdEntry(thirdLoginEntry);
         }
 
-        //生成个人ID
-        //检查是否生成GenerateUserCode
-        if(StringUtils.isBlank(userEntry.getGenerateUserCode())){
-            //若code为空，则生成code
-            userEntry.setGenerateUserCode(ObjectIdPackageUtil.getPackage(userEntry.getID()));
-            userService.addEntry(userEntry);
-        }
-
-        //检查是否注册环信
-        boolean isRegister = userEntry.isRegisterHuanXin();
-        String nickName2 = StringUtils.isNotBlank(userEntry.getNickName()) ? userEntry.getNickName() : userEntry.getUserName();
-        if (!isRegister) {
-            EaseMobAPI.createUser(userEntry.getID().toString(), nickName2);
-        }
+        initUser(userEntry);
 
         SessionValue value = userService.setCookieValue(getIP(), userEntry, response, request);
         return RespObj.SUCCESS(value);
@@ -1875,56 +1760,6 @@ public class UserController extends BaseController {
         getResponse().sendRedirect("http://www.k6kt.com/user/mall/login.do?mallToken=" + mallToken);
     }
 
-    /**
-     * 验证用户是否绑定手机号
-     *
-     * @return
-     */
-    @RequestMapping("/isBindPhone")
-    @ResponseBody
-    public RespObj isBindPhone() {
-        ObjectId uid = getUserId();
-        UserEntry user = userService.findById(uid);
-        Map<String, Object> map = new HashMap<String, Object>();
-        if (StringUtils.isNotBlank(user.getMobileNumber())) {
-            map.put("isBind", true);
-            map.put("phone", user.getMobileNumber());
-            return RespObj.SUCCESS(map);
-        }
-        map.put("isBind", false);
-        return RespObj.SUCCESS(map);
-    }
-
-    /**
-     * 绑定手机号
-     *
-     * @param mobile
-     * @return
-     */
-    @RequestMapping("/addUserPhone")
-    @ResponseBody
-    public RespObj addUserPhone(String mobile) {
-        if (StringUtils.isBlank(mobile)) {
-            return RespObj.FAILD("手机号为空");
-        }
-        if (!Validator.isMobile(mobile)) {
-            return RespObj.FAILD("手机号不合法");
-        }
-        ObjectId uid = getUserId();
-        UserEntry user = userService.findById(uid);
-        Map<String, Object> map = new HashMap<String, Object>();
-        if (StringUtils.isNotBlank(user.getPhoneNumber())) {
-            if (mobile.endsWith(user.getPhoneNumber())) {
-                map.put("bind", false);
-                map.put("msg", "被别人绑定了");
-                return RespObj.SUCCESS(map);
-            }
-        }
-        userService.addUserPhone(uid, mobile);
-        map.put("bind", true);
-        return RespObj.SUCCESS(map);
-    }
-
     @RequestMapping(value = "/userInfo")
     @ResponseBody
     @SessionNeedless
@@ -1976,8 +1811,21 @@ public class UserController extends BaseController {
             user.setSex(e.getSex());
             userDatas.add(user);
         }
-
         return RespObj.SUCCESS(userDatas);
+    }
+
+    @RequestMapping("/updateAvatarTemp")
+    @ResponseBody
+    public RespObj updateAvatarTemp(String avatar) throws Exception {
+        try {
+            String tempAvatar = uploadAvatarToQiniu(avatar);
+            userService.updateAvatar(getUserId().toString(), tempAvatar);
+            memberService.updateAllAvatar(ObjectId.get(), tempAvatar);
+        } catch (IOException e) {
+            e.printStackTrace();
+            return RespObj.FAILDWithErrorMsg("更新失败");
+        }
+        return RespObj.SUCCESS("更新成功");
     }
 
 }

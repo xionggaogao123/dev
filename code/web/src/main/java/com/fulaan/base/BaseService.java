@@ -34,7 +34,7 @@ public class BaseService {
      */
     protected String filterDistance(long distance) {
         if(distance <= 500) {
-            return "≤500m";
+            return "≤0.5km";
         } else if(distance <= 1000) {
             return "≤1km";
         } else if(distance <= 2000) {

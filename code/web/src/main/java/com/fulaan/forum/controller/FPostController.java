@@ -318,6 +318,7 @@ public class FPostController extends BaseController {
             FPostDTO fPostDTO = fPostService.detail(new ObjectId(request.getParameter("postId")));
             model.put("postTitle", fPostDTO.getPostTitle());
             model.put("InSet", fPostDTO.getInSet());
+            model.put("cate",fPostDTO.getCate());
             if (null != sv && !sv.isEmpty()) {
                 int type = fPostDTO.getType();
                 if (type == 3) {
@@ -1034,6 +1035,7 @@ public class FPostController extends BaseController {
         SessionValue sv = getSessionValue();
         String version = Item.getVersion();
         String versionVideo = Item.getVersionVideo();
+        model.put("cate",Item.getCate());
         int type = Item.getType();
         if (type == 2) {
             model.put("type", 1);
@@ -1086,7 +1088,7 @@ public class FPostController extends BaseController {
                 model.put("IsLogin", 0);
             }
         } else {
-            model.put("InSet", 0);
+            model.put("InSet", inSet);
         }
 
         //投票贴显示
@@ -1685,9 +1687,15 @@ public class FPostController extends BaseController {
             List<FReplyDTO> fReplyDTOs = new ArrayList<FReplyDTO>();
             ObjectId postId = new ObjectId(post);
             FPostDTO fPostDTO = fPostService.detail(postId);
+
+            if(fPostDTO.getInSet() == -1 && fPostDTO.getCate() == 1 && sortType != 11) {
+                sortType = 2;
+            }
+
             if (fPostDTO.getInSet() == 1 && sortType != 11) {
                 sortType = 2;
             }
+
             List<FReplyDTO> fReplyDTOList = fReplyService.getFRepliesList(sortType, postSection, post, person, -1, "", page, pageSize, client);
             for (FReplyDTO item : fReplyDTOList) {
                 List<FReplyDTO> f = fReplyService.getFRepliesList(sortType, postSection, "", person, 1, item.getfReplyId(), 1, 1, client);

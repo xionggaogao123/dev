@@ -122,6 +122,11 @@ public class CommunityService {
         mineCommunityDao.updatePriority(communityId, prio);
     }
 
+
+    public  Map<String,MemberEntry> getMemberEntryMap(List<ObjectId> groupIds,List<ObjectId> userIds){
+        return memberDao.getGroupNick(groupIds,userIds);
+    }
+
     /**
      * 根据ObjectId 获取详情
      *
@@ -129,15 +134,28 @@ public class CommunityService {
      * @return
      */
     public CommunityDetailDTO findDetailById(ObjectId communityDetailId) {
+
         CommunityDetailEntry communityDetailEntry = communityDetailDao.findByObjectId(communityDetailId);
+        ObjectId userId = communityDetailEntry.getCommunityUserId();
+        ObjectId groupId=getGroupId(new ObjectId(communityDetailEntry.getCommunityId()));
+        List<ObjectId> groupIds=new ArrayList<ObjectId>();
+        groupIds.add(groupId);
+        List<ObjectId> userIds=new ArrayList<ObjectId>();
+        userIds.add(userId);
+        Map<String,MemberEntry> memberEntryMap=memberDao.getGroupNick(groupIds,userIds);
         List<PartInContentEntry> partInContentEntries = partInContentDao.getPartInContent(communityDetailEntry.getID(), -1, 1, 10);
         CommunityDetailDTO communityDetailDTO = new CommunityDetailDTO(communityDetailEntry, partInContentEntries);
-        ObjectId userId = communityDetailEntry.getCommunityUserId();
         UserEntry userEntry = userDao.findByUserId(userId);
-        if (StringUtils.isNotBlank(userEntry.getNickName())) {
-            communityDetailDTO.setNickName(userEntry.getNickName());
-        } else {
-            communityDetailDTO.setNickName(userEntry.getUserName());
+
+        if(null!=memberEntryMap){
+            MemberEntry entry1= memberEntryMap.get(groupId + "$" + userId);
+            if(StringUtils.isNotBlank(entry1.getNickName())){
+                communityDetailDTO.setNickName(entry1.getNickName());
+            }else {
+                communityDetailDTO.setNickName(StringUtils.isNotBlank(userEntry.getNickName())?userEntry.getNickName():userEntry.getUserName());
+            }
+        }else {
+            communityDetailDTO.setNickName(StringUtils.isNotBlank(userEntry.getNickName())?userEntry.getNickName():userEntry.getUserName());
         }
         int partIncontentCount = partInContentDao.countPartPartInContent(communityDetailId);
         communityDetailDTO.setPartIncotentCount(partIncontentCount);
@@ -297,6 +315,12 @@ public class CommunityService {
             if (type.getType() == CommunityDetailType.MATERIALS.getType()) {
                 List<PartInContentDTO> partInContentDTOs = new ArrayList<PartInContentDTO>();
                 List<PartInContentEntry> partInContentEntries = partInContentDao.getPartInContent(entry.getID(), 6, 1, 1);
+                Set<ObjectId> partinUserIds=new HashSet<ObjectId>();
+                for (PartInContentEntry partEntry : partInContentEntries) {
+                    partinUserIds.add(partEntry.getUserId());
+                }
+                List<ObjectId> tempUserIds=new ArrayList<ObjectId>(partinUserIds);
+                Map<String, MemberEntry> partInMembermap = memberDao.getGroupNick(groupIdList, tempUserIds);
                 for (PartInContentEntry partEntry : partInContentEntries) {
                     PartInContentDTO dto = new PartInContentDTO(partEntry);
                     UserEntry user = userService.findById(partEntry.getUserId());
@@ -304,7 +328,7 @@ public class CommunityService {
                     if (null != user) {
                         dto.setUserName(user.getUserName());
                         dto.setAvator(AvatarUtils.getAvatar(user.getAvatar(), AvatarType.MIN_AVATAR.getType()));
-                        MemberEntry entry2= memberMap.get(groupId + "$" + partEntry.getUserId());
+                        MemberEntry entry2= partInMembermap.get(groupId + "$" + partEntry.getUserId());
                         if(null!=entry2){
                             if(StringUtils.isNotBlank(entry2.getNickName())){
                                 dto.setNickName(entry2.getNickName());
@@ -642,12 +666,18 @@ public class CommunityService {
 
             List<PartInContentDTO> partInContentDTOs = new ArrayList<PartInContentDTO>();
             List<PartInContentEntry> partInContentEntries = partInContentDao.getPartInContent(entry.getID(), -1, 1, 1);
+            Set<ObjectId> partInUserIds=new HashSet<ObjectId>();
+            for (PartInContentEntry partInContentEntry : partInContentEntries) {
+                partInUserIds.add(partInContentEntry.getUserId());
+            }
+            Map<String, MemberEntry> partInMembermap = memberDao.getGroupNick(groupIdList, new ArrayList<ObjectId>(partInUserIds));
             for (PartInContentEntry partInContentEntry : partInContentEntries) {
                 PartInContentDTO partInContentDTO = new PartInContentDTO(partInContentEntry);
                 UserEntry userEntry1 = userService.findById(partInContentEntry.getUserId());
                 partInContentDTO.setUserName(userEntry1.getUserName());
                 partInContentDTO.setAvator(AvatarUtils.getAvatar(userEntry1.getAvatar(), AvatarType.MIN_AVATAR.getType()));
-                MemberEntry entry2= memberMap.get(groupId + "$" + partInContentEntry.getUserId());
+
+                MemberEntry entry2= partInMembermap.get(groupId + "$" + partInContentEntry.getUserId());
                 if(null!=entry2){
                     if(StringUtils.isNotBlank(entry2.getNickName())){
                         partInContentDTO.setNickName(entry2.getNickName());
@@ -964,23 +994,55 @@ public class CommunityService {
         pageModel.setPageSize(pageSize);
         pageModel.setPage(page);
         boolean isManager = false;
+        ObjectId groupId=new ObjectId();
         List<PartInContentEntry> entrys = partInContentDao.getPartInContent(detailId, -1, page, pageSize);
+        List<ObjectId> communityIds=new ArrayList<ObjectId>();
         if (entrys.size() > 0) {
             ObjectId communityId = entrys.get(0).getCommunityId();
-            ObjectId groupId = getGroupId(communityId);
+            communityIds.add(communityId);
+            groupId= getGroupId(communityId);
             if (null != userId) {
                 if (memberDao.isManager(groupId, userId)) {
                     isManager = true;
                 }
             }
         }
+
+        Set<ObjectId> uuids=new HashSet<ObjectId>();
+        for (PartInContentEntry entry : entrys) {
+            uuids.add(entry.getUserId());
+        }
         List<PartInContentDTO> parts = new ArrayList<PartInContentDTO>();
+        List<ObjectId> groupIdList = new ArrayList<ObjectId>();
+        Map<String, MemberEntry> memberMap =new HashMap<String, MemberEntry>();
+        Map<ObjectId, ObjectId> groupIds;
+        if(communityIds.size()>0){
+            groupIds= communityDao.getGroupIds(communityIds);
+            for (Map.Entry<ObjectId, ObjectId> item : groupIds.entrySet()) {
+                groupIdList.add(item.getValue());
+            }
+            List<ObjectId> objectIds=new ArrayList<ObjectId>(uuids);
+            memberMap=memberDao.getGroupNick(groupIdList, objectIds);
+        }
+
         for (PartInContentEntry entry : entrys) {
             UserEntry userEntry = userService.findById(entry.getUserId());
             PartInContentDTO dto = new PartInContentDTO(entry);
             dto.setUserName(userEntry.getUserName());
             dto.setAvator(AvatarUtils.getAvatar(userEntry.getAvatar(), AvatarType.MIN_AVATAR.getType()));
-            dto.setNickName(StringUtils.isNotBlank(userEntry.getNickName()) ? userEntry.getNickName() : userEntry.getUserName());
+
+            MemberEntry entry1= memberMap.get(groupId + "$" + entry.getUserId());
+            if(null!=entry1){
+                if(StringUtils.isNotBlank(entry1.getNickName())){
+                    dto.setNickName(entry1.getNickName());
+                }else{
+                    dto.setNickName(StringUtils.isNotBlank(userEntry.getNickName()) ? userEntry.getNickName() : userEntry.getUserName());
+                }
+            }else{
+                dto.setNickName(StringUtils.isNotBlank(userEntry.getNickName()) ? userEntry.getNickName() : userEntry.getUserName());
+            }
+
+
             dto.setTime(DateUtils.timeStampToStr(entry.getID().getTimestamp()));
             //判断该用户是否点过赞
             if (null != userId) {

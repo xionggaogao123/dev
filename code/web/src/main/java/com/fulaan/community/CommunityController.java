@@ -579,12 +579,29 @@ public class CommunityController extends BaseController {
     public RespObj joinActivitySheet(@ObjectIdType ObjectId communityDetailId) {
         CommunityDetailDTO communityDetailDTO = communityService.findDetailById(communityDetailId);
         List<String> partInList = communityDetailDTO.getPartInList();
+        Set<ObjectId> userIds=new HashSet<ObjectId>();
+        for (String id : partInList) {
+            userIds.add(new ObjectId(id));
+        }
+        ObjectId groupId=communityService.getGroupId(new ObjectId(communityDetailDTO.getCommunityId()));
+        List<ObjectId> groupIds=new ArrayList<ObjectId>();
+        groupIds.add(groupId);
+        Map<String,MemberEntry> memberEntryMap=communityService.getMemberEntryMap(groupIds,new ArrayList<ObjectId>(userIds));
         List<User> users = new ArrayList<User>();
         for (String id : partInList) {
             UserDetailInfoDTO user = userService.getUserInfoById(id);
             User user1 = new User();
             user1.setImg(user.getImgUrl());
-            user1.setName(StringUtils.isNotBlank(user.getNickName()) ? user.getNickName() : user.getUserName());
+            MemberEntry entry1= memberEntryMap.get(groupId + "$" + new ObjectId(id));
+            if(null!=entry1){
+                if(StringUtils.isNotBlank(entry1.getNickName())){
+                    user1.setName(entry1.getNickName());
+                }else{
+                    user1.setName(StringUtils.isNotBlank(user.getNickName()) ? user.getNickName() : user.getUserName());
+                }
+            }else {
+                user1.setName(StringUtils.isNotBlank(user.getNickName()) ? user.getNickName() : user.getUserName());
+            }
             user1.setId(user.getId());
             users.add(user1);
             PartInContentDTO partInContentDTO = communityService.getPartInContent(communityDetailId, new ObjectId(user.getId()));

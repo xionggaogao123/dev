@@ -26,7 +26,96 @@
         <div class="cir-bg-s"></div>
     </div>
     <div class="c-list">
-        <div class="hj-divss" onclick="window.open('/competionStatus')"></div>
+        <div class="photolist">
+            <div class="div1">
+                <div class="doudiv mb8">
+                    <img src="/static/images/forum/comp01.png">
+                    <i></i>
+                    <div class="bg20"></div>
+                </div>
+                <div class="doudiv">
+                    <img src="/static/images/forum/comp02.png">
+                    <i></i>
+                    <div class="bg20"></div>
+                </div>
+            </div>
+            <div class="div2">
+                <div class="trediv mb8">
+                    <img src="/static/images/forum/comp03.png">
+                    <i></i>
+                    <div class="bg20"></div>
+                </div>
+                <div class="trediv mb8">
+                    <img src="/static/images/forum/comp04.png">
+                    <i></i>
+                    <div class="bg20"></div>
+                </div>
+                <div class="trediv">
+                    <img src="/static/images/forum/comp05.png">
+                    <i></i>
+                    <div class="bg20"></div>
+                </div>
+            </div>
+            <div class="div1">
+                <div class="doudiv mb8">
+                    <img src="/static/images/forum/comp06.png">
+                    <i></i>
+                    <div class="bg20"></div>
+                </div>
+                <div class="doudiv">
+                    <img src="/static/images/forum/comp07.png">
+                    <i></i>
+                    <div class="bg20"></div>
+                </div>
+            </div>
+            <div class="div2">
+                <div class="trediv mb8">
+                    <img src="/static/images/forum/comp08.png">
+                    <i></i>
+                    <div class="bg20"></div>
+                </div>
+                <div class="trediv mb8">
+                    <img src="/static/images/forum/comp09.png">
+                    <i></i>
+                    <div class="bg20"></div>
+                </div>
+                <div class="trediv">
+                    <img src="/static/images/forum/comp10.png">
+                    <i></i>
+                    <div class="bg20"></div>
+                </div>
+            </div>
+            <div class="div1">
+                <div class="doudiv mb8">
+                    <img src="/static/images/forum/comp11.png">
+                    <i></i>
+                    <div class="bg20"></div>
+                </div>
+                <div class="doudiv">
+                    <img src="/static/images/forum/comp12.png">
+                    <i></i>
+                    <div class="bg20"></div>
+                </div>
+            </div>
+            <div class="div2 mr0">
+                <div class="trediv mb8">
+                    <img src="/static/images/forum/comp13.png">
+                    <i></i>
+                    <div class="bg20"></div>
+                </div>
+                <div class="trediv mb8">
+                    <img src="/static/images/forum/comp14.png">
+                    <i></i>
+                    <div class="bg20"></div>
+                </div>
+                <div class="trediv">
+                    <img src="/static/images/forum/comp15.png">
+                    <i></i>
+                    <div class="bg20"></div>
+                </div>
+            </div>
+        </div>
+        <div class="hj-divss" onclick="window.open('/competionStatus')">获奖名单</div>
         <div class="c-topsq1">
             <img src="/static/images/forum/golden_jiangbei.png" class="img-gj">
             <div>

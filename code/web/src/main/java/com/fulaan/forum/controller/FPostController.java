@@ -1073,7 +1073,7 @@ public class FPostController extends BaseController {
             }
         }
         int inSet = Item.getInSet();
-        if (inSet == 1) {
+        if (inSet == 1 || inSet == -1 && Item.getCate() == 1) {
             model.put("InSet", 1);
             List<FReplyDTO> fReplyDTOList = fReplyService.getFReplyListRank(postId);
             model.put("fReplyDTOList", fReplyDTOList);

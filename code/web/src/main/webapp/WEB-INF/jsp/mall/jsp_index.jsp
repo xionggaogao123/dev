@@ -241,7 +241,7 @@
 
 <%--圣诞背景--%>
 <div class="christ-quan-wind">恭喜你获得<span id="christmasPrice">5</span>元优惠券<br><button style="width: 130px;height: 30px;margin-top:10px;color: #fff;border:none;border-radius: 3px;background: #FE4600" onclick="document.location.href=('/integrate')">快去选购...</button></div>
-<div class="christ-bg" <c:if test="${login==false}">style="display: none" </c:if>></div>
+<div class="christ-bg" style="display: none"></div>
 
 <%--圣诞节活动 st--%>
 <div class="christmas-wind" style="display: none">

@@ -652,7 +652,7 @@
         {{~ }}
         {{?}}
 
-        {{?value.InSet==1}}
+        {{? value.InSet == 1 || (value.InSet == -1 && value.cate == 1) }}
 
         <div class="hdphb">
             <span>活动排行榜</span>

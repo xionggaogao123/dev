@@ -1125,9 +1125,7 @@ button{cursor: pointer;}
 	width: 299px;
 	text-align: left;
 	color: #888;
-	position: absolute;
-	bottom: 18px;
-	left: 148px;
+	margin: 0 auto;
 }
 .p-outc .i-qq{
 	display: inline-block;

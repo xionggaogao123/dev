@@ -4035,7 +4035,7 @@ ol.bjqs-markers li:last-child {
 .store-register {
     /*display: none;*/
     width: 645px;
-    height: 390px;
+    /*height: 390px;*/
     background: #ffffff;
     border: 7px solid rgba(76, 136, 181, 0.6);
     position: fixed;
@@ -4107,8 +4107,30 @@ ol.bjqs-markers li:last-child {
     margin-top: 20px;
     width: 100%;
     text-align: center;
-    height: 45px;
     line-height: 45px;
+}
+.p-ps{
+    position: absolute;
+    top:-13px;
+    color: #FF4918;
+    left:148px;
+    height: 22px;
+    line-height: 22px;
+}
+.store-register dd label{
+    display: block;
+    width: 288px;
+    text-align: left;
+    margin:0 auto;
+    height: 22px;
+    line-height: 45px;
+    cursor: pointer;
+}
+.store-register dd input[type=radio]{
+    height: 22px;
+    line-height:22px;
+    cursor: pointer;
+    margin: 0 6px 0 0;
 }
 
 .store-register dd div {
@@ -4134,7 +4156,7 @@ ol.bjqs-markers li:last-child {
     margin-left: -70px;
 }
 
-.store-register dd input {
+.store-register dd input[type=text],.store-register dd input[type=password] {
     border: 1px solid #C9C9C9;
     width: 300px;
     height: 39px;
@@ -4361,6 +4383,34 @@ ol.bjqs-markers li:last-child {
 
 .register-main dl dd .register-wrong {
     border: 1px solid #ff878e;
+}
+
+.p-outc{
+    height: 30px;
+    line-height: 30px;
+    width: 299px;
+    text-align: left;
+    color: #888;
+    margin: 0 auto;
+}
+.p-outc .i-qq{
+    display: inline-block;
+    width:17px;
+    height: 17px;
+    background: url("/static/images/newIndex/iconbg.jpg") -64px -53px no-repeat;
+    margin: 0 16px 0 11px;
+    position: relative;
+    top: 4px;
+    cursor: pointer;
+}
+.p-outc .i-wx{
+    display: inline-block;
+    width:17px;
+    height: 17px;
+    background: url("/static/images/newIndex/iconbg.jpg") -61px -105px no-repeat;
+    position: relative;
+    top: 4px;
+    cursor: pointer;
 }
 
 .register-main dl dd span {

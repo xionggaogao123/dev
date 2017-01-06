@@ -22,12 +22,12 @@
                 <input class="username um2" type="text" placeholder="用户名/邮箱/手机号">
                 <span class="sp3" style="display: none">请输入用户名</span>
             </li>
-            <li>
-                <p style="color:#FF4918;">该手机已绑定多个账号，请选择要登录的账号：</p>
-                <label><input type="radio" name="s-count">账号一 </label>
-                <label><input type="radio" name="s-count">账号二 </label>
-                <label><input type="radio" name="s-count">账号三 </label>
-            </li>
+            <%--<li>--%>
+                <%--<p style="color:#FF4918;">该手机已绑定多个账号，请选择要登录的账号：</p>--%>
+                <%--<label><input type="radio" name="s-count">账号一 </label>--%>
+                <%--<label><input type="radio" name="s-count">账号二 </label>--%>
+                <%--<label><input type="radio" name="s-count">账号三 </label>--%>
+            <%--</li>--%>
             <li>
                 <input type="password" class="password psw2" placeholder="请输入登录密码">
                 <span class="sp5 forget-password">忘记密码？</span>
@@ -35,11 +35,11 @@
             <li>
                 <button>确认</button>
             </li>
-            <li>
-                <span class="sp-fl" >快捷登录</span>
-                <span class="sp-qq" style="cursor: pointer">QQ登录</span>
-                <span class="sp-wx" style="cursor: pointer">微信登录</span>
-            </li>
+            <%--<li>--%>
+                <%--<span class="sp-fl" >快捷登录</span>--%>
+                <%--<span class="sp-qq" style="cursor: pointer">QQ登录</span>--%>
+                <%--<span class="sp-wx" style="cursor: pointer">微信登录</span>--%>
+            <%--</li>--%>
         </ul>
     </div>
 </div>

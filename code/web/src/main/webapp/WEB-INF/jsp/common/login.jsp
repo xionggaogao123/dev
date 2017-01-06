@@ -16,12 +16,12 @@
         <dd>
             <input class="inp1" type="text" placeholder="用户名/邮箱/手机号" id="account">
         </dd>
-        <dd>
-            <p class="p-ps">该手机已绑定多个账号，请选择要登录的账号：</p>
-            <label><input type="radio" name="s-count">账号一</label>
-            <label><input type="radio" name="s-count">账号二</label>
-            <label><input type="radio" name="s-count">账号三</label>
-        </dd>
+        <%--<dd>--%>
+            <%--<p class="p-ps">该手机已绑定多个账号，请选择要登录的账号：</p>--%>
+            <%--<label><input type="radio" name="s-count">账号一</label>--%>
+            <%--<label><input type="radio" name="s-count">账号二</label>--%>
+            <%--<label><input type="radio" name="s-count">账号三</label>--%>
+        <%--</dd>--%>
         <dd>
             <input class="inp2" type="password" id="password" placeholder="请输入登录密码">
             <span class="mm-forget" onclick="window.open('/account/findPassword.do')">忘记密码</span>
@@ -29,9 +29,9 @@
         <dd>
             <span class="store-DL" id="logIn">登录</span>
         </dd>
-        <dd>
-            <p class="p-outc">或使用其他账号登录：<i class="i-qq"></i><i class="i-wx"></i></p>
-        </dd>
+        <%--<dd>--%>
+            <%--<p class="p-outc">或使用其他账号登录：<i class="i-qq"></i><i class="i-wx"></i></p>--%>
+        <%--</dd>--%>
     </dl>
 </div>
 <!--==========背景============-->

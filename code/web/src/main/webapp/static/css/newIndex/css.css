@@ -589,8 +589,8 @@ button{cursor: pointer;}
 /***********************注册弹出框*************************/
 .store-register {
 	/*display: none;*/
-	width: 645px;
-	height: 390px;
+	width: 645px;/*
+	height: 390px;*/
 	background: #ffffff;
 	border: 7px solid rgba(76, 136, 181, 0.6);
 	position: fixed;
@@ -662,8 +662,32 @@ button{cursor: pointer;}
 	margin-top: 20px;
 	width: 100%;
 	text-align: center;
-	height: 45px;
 	line-height: 45px;
+}
+.p-ps{
+	position: absolute;
+	top:-13px;
+	color: #FF4918;
+	left:148px;
+	height: 22px;
+	line-height: 22px;
+}
+.store-register dd label{
+	display: block;
+	width: 288px;
+	text-align: left;
+	margin:0 auto;
+	height: 22px;
+	line-height: 45px;
+	cursor: pointer;
+}
+.store-register dd input[type=radio]{
+	height: 22px;
+	line-height:22px;
+	cursor: pointer;
+	position: relative;
+	top: 6px;
+	margin: 0 6px 0 0;
 }
 
 .store-register dd div {
@@ -689,7 +713,7 @@ button{cursor: pointer;}
 	margin-left: -70px;
 }
 
-.store-register dd input {
+.store-register dd input[type=text] ,.store-register dd input[type=password] {
     border: 1px solid #C9C9C9;
     width: 300px;
     height: 39px;
@@ -1094,4 +1118,33 @@ button{cursor: pointer;}
 	border-radius: 3px;
 	top: 15px;
 	right: 1px;
+}
+.p-outc{
+	height: 30px;
+	line-height: 30px;
+	width: 299px;
+	text-align: left;
+	color: #888;
+	position: absolute;
+	bottom: 18px;
+	left: 148px;
+}
+.p-outc .i-qq{
+	display: inline-block;
+	width:17px;
+	height: 17px;
+	background: url("/static/images/newIndex/iconbg.jpg") -64px -53px no-repeat;
+	margin: 0 16px 0 11px;
+	position: relative;
+	top: 4px;
+	cursor: pointer;
+}
+.p-outc .i-wx{
+	display: inline-block;
+	width:17px;
+	height: 17px;
+	background: url("/static/images/newIndex/iconbg.jpg") -61px -105px no-repeat;
+	position: relative;
+	top: 4px;
+	cursor: pointer;
 }

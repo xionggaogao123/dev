@@ -23,6 +23,12 @@
                 <span class="sp3" style="display: none">请输入用户名</span>
             </li>
             <li>
+                <p style="color:#FF4918;">该手机已绑定多个账号，请选择要登录的账号：</p>
+                <label><input type="radio" name="s-count">账号一 </label>
+                <label><input type="radio" name="s-count">账号二 </label>
+                <label><input type="radio" name="s-count">账号三 </label>
+            </li>
+            <li>
                 <input type="password" class="password psw2" placeholder="请输入登录密码">
                 <span class="sp5 forget-password">忘记密码？</span>
             </li>

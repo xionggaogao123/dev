@@ -1166,13 +1166,5 @@ public class AdminController extends BaseController {
         return RespObj.SUCCESS;
     }
 
-    @RequestMapping("/updateDasaiName")
-    @SessionNeedless
-    @ResponseBody
-    public RespObj updateDasaiName() {
-        fPostService.generateDaSaiName();
-        return RespObj.SUCCESS("success");
-    }
-
 
 }

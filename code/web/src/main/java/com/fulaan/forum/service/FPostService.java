@@ -787,26 +787,4 @@ public class FPostService {
     public void updateRewardCountValue(ObjectId userId) {
         fPostDao.updateRewardCountValue(userId);
     }
-
-    public void generateDaSaiName() {
-
-        List<FPostDTO> posts = getFPostsListByActivityAll();
-
-        for (FPostDTO dto : posts) {
-            String title = dto.getActivityMemo();
-            String hello = "";
-            String[] splites = title.split("、");
-            String hi = splites[0].trim();
-            if (hi.length() == 1) {
-                hello += "00" + hi + "-" + splites[1].trim();
-            }
-
-            if (hi.length() == 2) {
-                hello += "0" + hi + "-" + splites[1].trim();
-            }
-
-            fPostDao.updatePosttitle(new ObjectId(dto.getFpostId()), hello);
-
-        }
-    }
 }

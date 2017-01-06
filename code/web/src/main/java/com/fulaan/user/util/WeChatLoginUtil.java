@@ -59,13 +59,11 @@ public class WeChatLoginUtil {
         userInfoParms.put("openid", openId);
         try {
             String content = HttpClientUtils.get(Constant.WECHAT_GET_USERINFO_URL, userInfoParms);
-
             Map<String, Object> maps = JsonUtil.json2Map(content);
             return maps;
         } catch (IOException e) {
             e.printStackTrace();
         }
-
         return null;
     }
 

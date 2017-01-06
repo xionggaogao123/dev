@@ -28,6 +28,7 @@ define(['jquery','pagination','social', 'common'], function (require, exports, m
         page = pageV;
     }
     var sort = $('#sortType').val();
+    var cate = $('#cate').val();
     if (sort) {
         sortType = sort;
     }
@@ -412,7 +413,7 @@ define(['jquery','pagination','social', 'common'], function (require, exports, m
                         return;
                     }
                     var offset = 0;
-                    if (inSet == 1) {
+                    if (inSet == 1 || (inSet == -1 && cate == 1) ) {
                         offset = 80;
                     }
                     if ($("#" + data.message).length > 0) {
@@ -484,7 +485,7 @@ define(['jquery','pagination','social', 'common'], function (require, exports, m
             });
         });
         $('#zan').click(function () {
-            if (inSet == 1) {
+            if (inSet == 1 || (inSet == -1 && cate == 1)) {
                 ll();
                 return;
             }
@@ -1001,7 +1002,7 @@ define(['jquery','pagination','social', 'common'], function (require, exports, m
                 $('.li-diand').hide();
             });
 
-            if (resp[0].InSet == 1) {
+            if (resp[0].InSet == 1 || (resp[0].InSet == -1 && resp[0].cate == 1 )) {
                 $("#ssl").hide();
                 $("#comment").html("我要参与");
                 $("#areahh").html("参与活动区");

@@ -56,6 +56,7 @@
 <input id="floor" type="hidden" value="${floor}">
 <input id="timeText" type="hidden" value="${timeText}">
 <input id="InSet" type="hidden" value="${InSet}">
+<input id="cate" type="hidden" value="${cate}">
 <input id="sortType" type="hidden" value="${sortType}">
 <input id="reward" type="hidden" value="${reward}">
 <input id="drt" type="hidden" value="${drt}">
@@ -358,7 +359,7 @@
 
     function comment() {
         $(".bg").fadeIn();
-        $(".wind-circle").fadeIn();
+//        $(".wind-circle").fadeIn();
 
         var requestData = {};
         requestData.comment = content;
@@ -395,7 +396,7 @@
                         pageCount = 1;
                     }
                     redC();
-                    $(".wind-circle").fadeOut();
+//                    $(".wind-circle").fadeOut();
 
                     $('.wind-postok').fadeIn(2000, function () {
                         $(".bg").fadeOut();
@@ -437,12 +438,8 @@
                     $('#title').show();
                     return;
                 }
-                if ($('#InSet').val() == 1) {
-                    validatePhoneNumber();
-                } else {
-                    comment();
-                }
 
+                comment();
             }
         });
     }

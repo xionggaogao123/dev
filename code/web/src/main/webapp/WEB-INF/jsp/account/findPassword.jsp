@@ -74,15 +74,6 @@
                     <img id="verifyImg" alt="" class="sp6"
                          style="top: 5px;width: auto;height: auto"/>
                 </li>
-<<<<<<< HEAD
-=======
-                <li hidden>
-                    <span class="sp1">请选择找回的用户名:</span>
-                    <label><input type="radio" name="check-id">aaa</label>
-                    <label><input type="radio" name="check-id">bbb</label>
-                    <label><input type="radio" name="check-id">ccc</label>
-                </li>
->>>>>>> b704e248c4afc579e6bf7e66f9c8fc53b54e6d49
                 <li>
                     <input type="text" class="in1" id="code">
                     <span class="sp1">短信验证码 : </span>

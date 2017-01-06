@@ -33,6 +33,14 @@ public class FReplyDao extends BaseDao {
     }
 
     /**
+     * 保存楼层
+     * @param fReplyEntry
+     */
+    public void saveFReplyEntryForFloor(FReplyEntry fReplyEntry){
+        save(MongoFacroty.getAppDB(), getCollection(), fReplyEntry.getBaseEntry());
+    }
+
+    /**
      * 更新回复
      */
     public void updateReplyList(FReplyEntry e, boolean flag, ObjectId replyId) {

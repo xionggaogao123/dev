@@ -7,10 +7,7 @@ import com.fulaan.annotation.ObjectIdType;
 import com.fulaan.annotation.SessionNeedless;
 import com.fulaan.base.BaseController;
 import com.fulaan.cache.RedisUtils;
-import com.fulaan.community.dto.CommunityDTO;
-import com.fulaan.community.dto.CommunityDetailDTO;
-import com.fulaan.community.dto.CommunitySystemInfoDTO;
-import com.fulaan.community.dto.PartInContentDTO;
+import com.fulaan.community.dto.*;
 import com.fulaan.communityValidate.dto.ValidateInfoDTO;
 import com.fulaan.communityValidate.service.ValidateInfoService;
 import com.fulaan.dto.*;
@@ -1207,14 +1204,15 @@ public class CommunityController extends BaseController {
     /**
      * 设置备注名
      *
-     * @param remarkId
-     * @param endUserId
-     * @param remark
+     * @param remarkId 关键字Id
+     * @param endUserId 被设置备注名的人的Id
+     * @param remark 备注名
      * @return
      */
     @RequestMapping("/setRemark")
     @ResponseBody
-    public RespObj setRemark(String remarkId, String endUserId, String remark) {
+    public RespObj setRemark(@RequestParam(defaultValue = "",required = false) String remarkId,
+                             String endUserId, String remark) {
         ObjectId userId = getUserId();
         if (StringUtils.isNotBlank(remarkId)) {
             communityService.updateRemark(new ObjectId(remarkId), remark);
@@ -2526,6 +2524,18 @@ public class CommunityController extends BaseController {
     public RespObj setDefaultSort() {
         communityService.setDefaultSort();
         return RespObj.SUCCESS;
+    }
+
+    /**
+     * 获取登录人所有的备注名
+     * @return
+     */
+    @RequestMapping("/getMyAllRemarks")
+    @ResponseBody
+    public RespObj getMyAllRemarks(){
+        ObjectId userId=getUserId();
+        List<RemarkDTO> remarkDTOs=communityService.getRemarkDtos(userId);
+        return RespObj.SUCCESS(remarkDTOs);
     }
 
 

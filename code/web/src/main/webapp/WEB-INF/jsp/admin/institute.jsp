@@ -44,6 +44,13 @@
     <div id="r-result-ll">输入删除的Id:<input placeholder="请输入Id(用;隔开)" type="text" id="deleteIds" style="width:350px;"/>
     </div>
     <button id="deleteData">批量删除数据</button>
+    <br />
+    <div id="r-result-llll">
+        回帖Id:<input placeholder="请输入回帖Id" type="text" id="replyId" style="width:200px;"/>
+        楼层数:<input placeholder="请输入楼层数" type="text" id="floor" style="width:200px;"/>
+    </div>
+    <button id="setReplyFloor">设置回帖楼层数</button>
+
 
 </layout:override>
 <%-- 填充script --%>
@@ -55,6 +62,27 @@
     <script type="text/javascript">
 
         $(function () {
+
+            $('#setReplyFloor').click(function () {
+                var param={
+                    replyId:$('#replyId').val(),
+                    floor:$('#floor').val()
+                };
+                $.ajax({
+                    type: "GET",
+                    data: param,
+                    url: '/reply/saveFReplyFloor.do',
+                    async: false,
+                    dataType: "json",
+                    contentType: "application/x-www-form-urlencoded; charset=UTF-8",
+                    success: function (resp) {
+                        if (resp.code == "200") {
+                            alert("设置回帖楼层成功!");
+                        }
+                    }
+                });
+            });
+
 
             $('#remainImage').click(function () {
                 var startDataId = $('#startDataId').val();

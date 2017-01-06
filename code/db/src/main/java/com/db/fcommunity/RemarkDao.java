@@ -9,6 +9,7 @@ import com.pojo.fcommunity.RemarkEntry;
 import com.sys.constants.Constant;
 import org.bson.types.ObjectId;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -51,6 +52,22 @@ public class RemarkDao extends BaseDao {
             }
         }
         return retMap;
+    }
+
+    /**
+     * 查询该人修改的所有备注名
+     */
+    public List<RemarkEntry> getRemarkEntries(ObjectId startUserId){
+        List<RemarkEntry> entries=new ArrayList<RemarkEntry>();
+        BasicDBObject query = new BasicDBObject()
+                .append("suid", startUserId);
+        List<DBObject> list = find(MongoFacroty.getAppDB(), Constant.COLLECTION_FORUM_REMARK, query, Constant.FIELDS);
+        if (null != list && !list.isEmpty()) {
+            for (DBObject dbo : list) {
+                entries.add(new RemarkEntry(dbo));
+            }
+        }
+        return entries;
     }
 
 

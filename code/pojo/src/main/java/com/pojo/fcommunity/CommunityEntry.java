@@ -93,8 +93,8 @@ public class CommunityEntry extends BaseDBObject {
     setSimpleValue("r", remove);
   }
 
-  public String getGroupId() {
-    return getSimpleStringValue("grid");
+  public ObjectId getGroupId() {
+    return getSimpleObjecIDValue("grid");
   }
 
   public String getEmChatId() {

@@ -801,6 +801,23 @@ public class FReplyService {
     }
 
     /**
+     * entry详情
+     * @param Id
+     * @return
+     */
+    public FReplyEntry find(ObjectId Id){
+        return fReplyDao.getFReplyEntry(Id);
+    }
+
+    /**
+     * 保存楼层
+     * @param fReplyEntry
+     */
+    public void saveFReplyEntryForFloor(FReplyEntry fReplyEntry){
+        fReplyDao.saveFReplyEntryForFloor(fReplyEntry);
+    }
+
+    /**
      * 新增和覆盖
      *
      * @param fReplyDTO

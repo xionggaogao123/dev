@@ -11,6 +11,7 @@ import com.fulaan.forum.service.FReplyService;
 import com.google.common.io.Files;
 import com.pojo.forum.FReplyDTO;
 import com.pojo.forum.FReplyEntry;
+import com.sys.utils.RespObj;
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.IOUtils;
 import org.apache.commons.lang.StringUtils;
@@ -22,6 +23,7 @@ import org.bson.types.ObjectId;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.ResponseBody;
 
 import javax.servlet.http.HttpServletResponse;
 import java.io.*;
@@ -37,6 +39,21 @@ public class FReplyController extends BaseController {
 
     @Autowired
     private FReplyService fReplyService;
+
+    /**
+     * 设置楼层数，为老数据服务
+     * @param replyId
+     * @param floor
+     * @return
+     */
+    @RequestMapping("/saveFReplyFloor")
+    @ResponseBody
+    public RespObj saveFReplyFloor(@ObjectIdType ObjectId replyId,int floor){
+        FReplyEntry entry=fReplyService.find(replyId);
+        entry.setFloor(floor);
+        fReplyService.saveFReplyEntryForFloor(entry);
+        return RespObj.SUCCESS;
+    }
 
     @RequestMapping("/downloadAttach")
     @SessionNeedless

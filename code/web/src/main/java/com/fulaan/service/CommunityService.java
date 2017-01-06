@@ -5,6 +5,7 @@ import com.db.user.UserDao;
 import com.fulaan.community.dto.CommunityDTO;
 import com.fulaan.community.dto.CommunityDetailDTO;
 import com.fulaan.community.dto.PartInContentDTO;
+import com.fulaan.community.dto.RemarkDTO;
 import com.fulaan.dto.MemberDTO;
 import com.fulaan.fgroup.service.EmService;
 import com.fulaan.fgroup.service.GroupService;
@@ -272,14 +273,23 @@ public class CommunityService {
 
         List<CommunityDetailDTO> dtos = new ArrayList<CommunityDetailDTO>();
         List<ObjectId> objectIds = new ArrayList<ObjectId>();
+        List<ObjectId> communities=new ArrayList<ObjectId>();
         for (CommunityDetailEntry entry : communitys) {
             objectIds.add(entry.getCommunityUserId());
+            communities.add(new ObjectId(entry.getCommunityId()));
         }
         Map<ObjectId, UserEntry> map = userService.getUserEntryMap(objectIds, Constant.FIELDS);
+        //获取群昵称
+        List<ObjectId> groupIdList = new ArrayList<ObjectId>();
+        Map<ObjectId, ObjectId> groupIds =communityDao.getGroupIds(communities);
+        for (Map.Entry<ObjectId, ObjectId> item : groupIds.entrySet()) {
+            groupIdList.add(item.getValue());
+        }
+        Map<String, MemberEntry> memberMap = memberDao.getGroupNick(groupIdList, objectIds);
         for (CommunityDetailEntry entry : communitys) {
-
             UserEntry userEntry = map.get(entry.getCommunityUserId());
             CommunityDetailDTO communityDetailDTO = new CommunityDetailDTO(entry);
+            ObjectId groupId = groupIds.get(new ObjectId(entry.getCommunityId()));
             //判断是否为学习用品
             if (type.getType() == CommunityDetailType.MATERIALS.getType()) {
                 List<PartInContentDTO> partInContentDTOs = new ArrayList<PartInContentDTO>();
@@ -291,7 +301,16 @@ public class CommunityService {
                     if (null != user) {
                         dto.setUserName(user.getUserName());
                         dto.setAvator(AvatarUtils.getAvatar(user.getAvatar(), AvatarType.MIN_AVATAR.getType()));
-                        dto.setNickName(StringUtils.isNotBlank(user.getNickName()) ? user.getNickName() : user.getUserName());
+                        MemberEntry entry2= memberMap.get(groupId + "$" + partEntry.getUserId());
+                        if(null!=entry2){
+                            if(StringUtils.isNotBlank(entry2.getNickName())){
+                                dto.setNickName(entry2.getNickName());
+                            }else{
+                                dto.setNickName(StringUtils.isNotBlank(user.getNickName()) ? user.getNickName() : user.getUserName());
+                            }
+                        }else {
+                            dto.setNickName(StringUtils.isNotBlank(user.getNickName()) ? user.getNickName() : user.getUserName());
+                        }
                         dto.setTime(DateUtils.timeStampToStr(partEntry.getID().getTimestamp()));
                         partInContentDTOs.add(dto);
                     }
@@ -307,7 +326,6 @@ public class CommunityService {
             communityDetailDTO.setOperation(0);
 
             if (null != userId) {
-                ObjectId groupId = getGroupId(new ObjectId(entry.getCommunityId()));
                 if (memberService.isManager(groupId, userId)) {
                     communityDetailDTO.setOperation(1);
                 }
@@ -317,12 +335,18 @@ public class CommunityService {
             setRoleStr(communityDetailDTO, communityEntry, entry.getCommunityUserId());
             int totalCount = partInContentDao.countPartPartInContent(entry.getID());
             communityDetailDTO.setPartIncotentCount(totalCount);
+            //先获取群昵称
+            MemberEntry entry1= memberMap.get(groupId + "$" + entry.getCommunityUserId());
+
             if (null != userEntry) {
                 communityDetailDTO.setImageUrl(AvatarUtils.getAvatar(userEntry.getAvatar(), AvatarType.MIN_AVATAR.getType()));
-                if (StringUtils.isNotBlank(userEntry.getNickName())) {
-                    communityDetailDTO.setNickName(userEntry.getNickName());
-                } else {
-                    communityDetailDTO.setNickName(userEntry.getUserName());
+            }
+
+            if(StringUtils.isNotBlank(entry1.getNickName())){
+                communityDetailDTO.setNickName(entry1.getNickName());
+            } else{
+                if(null != userEntry){
+                    communityDetailDTO.setNickName(StringUtils.isNotBlank(userEntry.getNickName())?userEntry.getNickName():userEntry.getUserName());
                 }
             }
             communityDetailDTO.setUnReadCount(unreadCount);
@@ -333,11 +357,11 @@ public class CommunityService {
     }
 
     private void setRoleStr(CommunityDetailDTO communityDetailDTO, CommunityEntry communityEntry, ObjectId userId) {
-        String groupId = communityEntry.getGroupId();
+        ObjectId groupId = communityEntry.getGroupId();
         if (userId.equals(communityEntry.getOwerID())) {
             communityDetailDTO.setRoleStr("社长");
         } else {
-            if (memberService.isManager(new ObjectId(groupId), userId)) {
+            if (memberService.isManager(groupId, userId)) {
                 communityDetailDTO.setRoleStr("副社长");
             } else {
                 communityDetailDTO.setRoleStr("社区成员");
@@ -564,15 +588,30 @@ public class CommunityService {
             objectIds.add(entry.getCommunityUserId());
         }
         Map<ObjectId, UserEntry> map = userService.getUserEntryMap(objectIds, Constant.FIELDS);
+        //获取群昵称
+        List<ObjectId> communityIds=new ArrayList<ObjectId>();
+        communityIds.add(communityId);
+        List<ObjectId> groupIdList = new ArrayList<ObjectId>();
+        Map<ObjectId, ObjectId> groupIds = communityDao.getGroupIds(communityIds);
+        for (Map.Entry<ObjectId, ObjectId> item : groupIds.entrySet()) {
+            groupIdList.add(item.getValue());
+        }
+        Map<String, MemberEntry> memberMap = memberDao.getGroupNick(groupIdList, objectIds);
         for (CommunityDetailEntry entry : entries) {
             UserEntry userEntry = map.get(entry.getCommunityUserId());
             CommunityDetailDTO communityDetailDTO = new CommunityDetailDTO(entry);
             if (userEntry != null) {
                 communityDetailDTO.setImageUrl(AvatarUtils.getAvatar(userEntry.getAvatar(), AvatarType.MIN_AVATAR.getType()));
-                if (StringUtils.isNotBlank(userEntry.getNickName())) {
-                    communityDetailDTO.setNickName(userEntry.getNickName());
-                } else {
-                    communityDetailDTO.setNickName(userEntry.getUserName());
+            }
+
+            ObjectId groupId = groupIds.get(new ObjectId(entry.getCommunityId()));
+            MemberEntry entry1= memberMap.get(groupId + "$" + entry.getCommunityUserId());
+
+            if(StringUtils.isNotBlank(entry1.getNickName())){
+                communityDetailDTO.setNickName(entry1.getNickName());
+            } else{
+                if(null != userEntry){
+                    communityDetailDTO.setNickName(StringUtils.isNotBlank(userEntry.getNickName())?userEntry.getNickName():userEntry.getUserName());
                 }
             }
 
@@ -590,7 +629,16 @@ public class CommunityService {
                 UserEntry userEntry1 = userService.findById(partInContentEntry.getUserId());
                 partInContentDTO.setUserName(userEntry1.getUserName());
                 partInContentDTO.setAvator(AvatarUtils.getAvatar(userEntry1.getAvatar(), AvatarType.MIN_AVATAR.getType()));
-                partInContentDTO.setNickName(StringUtils.isNotBlank(userEntry1.getNickName()) ? userEntry1.getNickName() : userEntry1.getUserName());
+                MemberEntry entry2= memberMap.get(groupId + "$" + partInContentEntry.getUserId());
+                if(null!=entry2){
+                    if(StringUtils.isNotBlank(entry2.getNickName())){
+                        partInContentDTO.setNickName(entry2.getNickName());
+                    }else{
+                        partInContentDTO.setNickName(StringUtils.isNotBlank(userEntry1.getNickName()) ? userEntry1.getNickName() : userEntry1.getUserName());
+                    }
+                }else {
+                    partInContentDTO.setNickName(StringUtils.isNotBlank(userEntry1.getNickName()) ? userEntry1.getNickName() : userEntry1.getUserName());
+                }
                 partInContentDTO.setTime(DateUtils.timeStampToStr(partInContentEntry.getID().getTimestamp()));
                 partInContentDTOs.add(partInContentDTO);
             }
@@ -714,14 +762,28 @@ public class CommunityService {
             objectIds.add(entry.getCommunityUserId());
         }
         Map<ObjectId, UserEntry> map = userService.getUserEntryMap(objectIds, Constant.FIELDS);
+        //获取群昵称
+        Map<ObjectId,ObjectId>  groupIds=communityDao.getGroupIds(myCommunitys);
+        List<ObjectId> groupIdList=new ArrayList<ObjectId>();
+        for(Map.Entry<ObjectId,ObjectId> item:groupIds.entrySet()){
+            groupIdList.add(item.getValue());
+        }
+        Map<String,MemberEntry> memberMap=memberDao.getGroupNick(groupIdList,objectIds);
         for (CommunityDetailEntry entry : entries) {
             UserEntry userEntry = map.get(entry.getCommunityUserId());
             CommunityDetailDTO communityDetailDTO = new CommunityDetailDTO(entry);
             communityDetailDTO.setImageUrl(AvatarUtils.getAvatar(userEntry.getAvatar(), AvatarType.MIN_AVATAR.getType()));
-            if (StringUtils.isNotBlank(userEntry.getNickName())) {
-                communityDetailDTO.setNickName(userEntry.getNickName());
-            } else {
-                communityDetailDTO.setNickName(userEntry.getUserName());
+            //先获取群昵称
+            ObjectId groupId=groupIds.get(new ObjectId(entry.getCommunityId()));
+            MemberEntry entry1=memberMap.get(groupId+"$"+entry.getCommunityUserId());
+            if(null!=entry1){
+                if(StringUtils.isNotBlank(entry1.getNickName())){
+                    communityDetailDTO.setNickName(entry1.getNickName());
+                } else{
+                    communityDetailDTO.setNickName(StringUtils.isNotBlank(userEntry.getNickName())?userEntry.getNickName():userEntry.getUserName());
+                }
+            }else{
+                communityDetailDTO.setNickName(StringUtils.isNotBlank(userEntry.getNickName())?userEntry.getNickName():userEntry.getUserName());
             }
 
             dtos.add(communityDetailDTO);
@@ -945,7 +1007,7 @@ public class CommunityService {
         } else {
             for (CommunityEntry communityEntry : communityEntries) {
                 if (null != communityEntry.getOwerID()) {
-                    if (!memberService.isGroupMember(new ObjectId(communityEntry.getGroupId()), userId)) {
+                    if (!memberService.isGroupMember(communityEntry.getGroupId(), userId)) {
                         CommunityDTO communityDTO = new CommunityDTO(communityEntry);
                         communityDTOs.add(communityDTO);
                     }
@@ -987,7 +1049,7 @@ public class CommunityService {
                 for (CommunityEntry communityEntry : communityEntries1) {
                     if (pageSize == communityDTOs.size()) {
                         break;
-                    } else if (!memberService.isGroupMember(new ObjectId(communityEntry.getGroupId()), userId)) {
+                    } else if (!memberService.isGroupMember(communityEntry.getGroupId(), userId)) {
                         CommunityDTO communityDTO = new CommunityDTO(communityEntry);
                         communityDTOs.add(communityDTO);
                     }
@@ -1245,4 +1307,15 @@ public class CommunityService {
     public void cleanNecessaryCommunity(ObjectId userId, ObjectId communityId) {
         mineCommunityDao.cleanNecessaryCommunity(userId,communityId);
     }
+
+
+    public List<RemarkDTO> getRemarkDtos(ObjectId userId){
+        List<RemarkDTO> dtos=new ArrayList<RemarkDTO>();
+        List<RemarkEntry> entries=remarkDao.getRemarkEntries(userId);
+        for(RemarkEntry entry:entries){
+            dtos.add(new RemarkDTO(entry));
+        }
+        return dtos;
+    }
+
 }

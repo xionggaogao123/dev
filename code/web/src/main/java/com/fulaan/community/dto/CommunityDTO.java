@@ -3,6 +3,7 @@ package com.fulaan.community.dto;
 import com.fulaan.dto.MemberDTO;
 import com.fulaan.util.DateUtils;
 import com.pojo.fcommunity.CommunityEntry;
+import com.sys.constants.Constant;
 
 import java.util.List;
 
@@ -52,7 +53,12 @@ public class CommunityDTO {
         this.desc = communityEntry.getCommunityDescription();
         this.qrUrl = communityEntry.getCommunityQRCode();
         this.createTime = DateUtils.timeStampToStr(communityEntry.getCommunityTime() / 1000);
-        this.groupId = communityEntry.getGroupId();
+        if(null!=communityEntry.getGroupId()){
+            this.groupId = communityEntry.getGroupId().toString();
+        }else {
+            this.groupId = Constant.EMPTY;
+        }
+
         this.owerId = communityEntry.getOwerID().toString();
         this.emChatId = communityEntry.getEmChatId();
         this.open = communityEntry.getOpen();

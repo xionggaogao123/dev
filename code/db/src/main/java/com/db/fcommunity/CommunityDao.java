@@ -219,4 +219,21 @@ public class CommunityDao extends BaseDao {
         }
         return retMap;
     }
+
+
+    public Map<ObjectId,ObjectId> getGroupIds(List<ObjectId> ids){
+        Map<ObjectId,ObjectId> groupIds=new HashMap<ObjectId, ObjectId>();
+        BasicDBObject query = new BasicDBObject()
+                .append(Constant.ID, new BasicDBObject(Constant.MONGO_IN, ids)).append("r", 0);
+        Map<ObjectId, CommunityEntry> retMap = new HashMap<ObjectId, CommunityEntry>();
+        List<DBObject> list = find(MongoFacroty.getAppDB(), Constant.COLLECTION_FORUM_COMMUNITY, query, Constant.FIELDS);
+        if (null != list && !list.isEmpty()) {
+            CommunityEntry e;
+            for (DBObject dbo : list) {
+                e = new CommunityEntry(dbo);
+                groupIds.put(e.getID(),e.getGroupId());
+            }
+        }
+        return groupIds;
+    }
 }

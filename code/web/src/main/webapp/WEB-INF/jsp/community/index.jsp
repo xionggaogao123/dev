@@ -243,7 +243,7 @@
                             <h3 style="margin-top: 86px;font-size: 24px;">极限航海巅峰<br>挑战</h3>
                         </div>
                     </li>
-                    <%--<li onclick="window.open('http://hanghai.fulaan.com')">--%>
+                    <%--<li onclick="window.open('http://hanghai. .com')">--%>
                         <%--<img src="/static/images/community/hanghai_mini.jpg">--%>
                         <%--<span>更多</span>--%>
                         <%--<div class="photo-text">--%>

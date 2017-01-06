@@ -67,7 +67,7 @@ public class MemberDao extends BaseDao {
     public Map<String,MemberEntry> getGroupNick(List<ObjectId> groupIds,List<ObjectId> userIds){
         Map<String,MemberEntry> map=new HashMap<String, MemberEntry>();
         BasicDBObject query = new BasicDBObject("grid", new BasicDBObject(Constant.MONGO_IN, groupIds)).
-                append("uid",userIds).
+                append("uid",new BasicDBObject(Constant.MONGO_IN, userIds)).
                 append("r", Constant.ZERO);
         List<DBObject> dbObjects = find(MongoFacroty.getAppDB(), Constant.COLLECTION_FORUM_COMMUNITY_MEMBER, query, Constant.FIELDS);
         for (DBObject dbo : dbObjects) {

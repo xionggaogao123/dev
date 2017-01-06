@@ -272,12 +272,15 @@ public class CommunityService {
         }
 
         List<CommunityDetailDTO> dtos = new ArrayList<CommunityDetailDTO>();
-        List<ObjectId> objectIds = new ArrayList<ObjectId>();
-        List<ObjectId> communities=new ArrayList<ObjectId>();
+        Set<ObjectId> uuids=new HashSet<ObjectId>();
+        Set<ObjectId> uuuids=new HashSet<ObjectId>();
+
         for (CommunityDetailEntry entry : communitys) {
-            objectIds.add(entry.getCommunityUserId());
-            communities.add(new ObjectId(entry.getCommunityId()));
+            uuids.add(entry.getCommunityUserId());
+            uuuids.add(new ObjectId(entry.getCommunityId()));
         }
+        List<ObjectId> objectIds = new ArrayList<ObjectId>(uuids);
+        List<ObjectId> communities=new ArrayList<ObjectId>(uuuids);
         Map<ObjectId, UserEntry> map = userService.getUserEntryMap(objectIds, Constant.FIELDS);
         //获取群昵称
         List<ObjectId> groupIdList = new ArrayList<ObjectId>();
@@ -342,13 +345,20 @@ public class CommunityService {
                 communityDetailDTO.setImageUrl(AvatarUtils.getAvatar(userEntry.getAvatar(), AvatarType.MIN_AVATAR.getType()));
             }
 
-            if(StringUtils.isNotBlank(entry1.getNickName())){
-                communityDetailDTO.setNickName(entry1.getNickName());
-            } else{
+            if(null!=entry1){
+                if(StringUtils.isNotBlank(entry1.getNickName())){
+                    communityDetailDTO.setNickName(entry1.getNickName());
+                } else{
+                    if(null != userEntry){
+                        communityDetailDTO.setNickName(StringUtils.isNotBlank(userEntry.getNickName())?userEntry.getNickName():userEntry.getUserName());
+                    }
+                }
+            }else{
                 if(null != userEntry){
                     communityDetailDTO.setNickName(StringUtils.isNotBlank(userEntry.getNickName())?userEntry.getNickName():userEntry.getUserName());
                 }
             }
+
             communityDetailDTO.setUnReadCount(unreadCount);
             communityDetailDTO.setPartInCount(communityDetailDTO.getPartInList().size());
             dtos.add(communityDetailDTO);
@@ -583,10 +593,11 @@ public class CommunityService {
         }
         CommunityEntry communityEntry = communityDao.findByObjectId(communityId);
         List<CommunityDetailDTO> dtos = new ArrayList<CommunityDetailDTO>();
-        List<ObjectId> objectIds = new ArrayList<ObjectId>();
+        Set<ObjectId> userIds=new HashSet<ObjectId>();
         for (CommunityDetailEntry entry : entries) {
-            objectIds.add(entry.getCommunityUserId());
+            userIds.add(entry.getCommunityUserId());
         }
+        List<ObjectId> objectIds = new ArrayList<ObjectId>(userIds);
         Map<ObjectId, UserEntry> map = userService.getUserEntryMap(objectIds, Constant.FIELDS);
         //获取群昵称
         List<ObjectId> communityIds=new ArrayList<ObjectId>();
@@ -607,13 +618,20 @@ public class CommunityService {
             ObjectId groupId = groupIds.get(new ObjectId(entry.getCommunityId()));
             MemberEntry entry1= memberMap.get(groupId + "$" + entry.getCommunityUserId());
 
-            if(StringUtils.isNotBlank(entry1.getNickName())){
-                communityDetailDTO.setNickName(entry1.getNickName());
-            } else{
+            if(null!=entry1){
+                if(StringUtils.isNotBlank(entry1.getNickName())){
+                    communityDetailDTO.setNickName(entry1.getNickName());
+                } else{
+                    if(null != userEntry){
+                        communityDetailDTO.setNickName(StringUtils.isNotBlank(userEntry.getNickName())?userEntry.getNickName():userEntry.getUserName());
+                    }
+                }
+            }else{
                 if(null != userEntry){
                     communityDetailDTO.setNickName(StringUtils.isNotBlank(userEntry.getNickName())?userEntry.getNickName():userEntry.getUserName());
                 }
             }
+
 
             if (null != userId) {
                 communityDetailDTO.setReadFlag(0);
@@ -742,11 +760,12 @@ public class CommunityService {
     public PageModel<CommunityDetailDTO> getMyMessages(ObjectId userId, int page, int pageSize, int order) {
 
         List<MineCommunityEntry> mineCommunityEntries = mineCommunityDao.findAll(userId, -1, 0);
-        List<ObjectId> myCommunitys = new ArrayList<ObjectId>();
+        Set<ObjectId> uuuids=new HashSet<ObjectId>();
         for (MineCommunityEntry mineCommunityEntry : mineCommunityEntries) {
-            myCommunitys.add(mineCommunityEntry.getCommunityId());
-        }
+            uuuids.add(mineCommunityEntry.getCommunityId());
 
+        }
+        List<ObjectId> myCommunitys = new ArrayList<ObjectId>(uuuids);
         int totalCount = communityDetailDao.count(myCommunitys);
         int totalPages = totalCount % pageSize == 0 ? totalCount / pageSize : (int) Math.ceil(totalCount / pageSize) + 1;
         page = page > totalPages ? totalPages : page;
@@ -757,10 +776,11 @@ public class CommunityService {
         PageModel<CommunityDetailDTO> pageModel = new PageModel<CommunityDetailDTO>();
         List<CommunityDetailEntry> entries = communityDetailDao.getDetailsByUserId(myCommunitys, page, pageSize, order);
         List<CommunityDetailDTO> dtos = new ArrayList<CommunityDetailDTO>();
-        List<ObjectId> objectIds = new ArrayList<ObjectId>();
+        Set<ObjectId> uuids=new HashSet<ObjectId>();
         for (CommunityDetailEntry entry : entries) {
-            objectIds.add(entry.getCommunityUserId());
+            uuids.add(entry.getCommunityUserId());
         }
+        List<ObjectId> objectIds = new ArrayList<ObjectId>(uuids);
         Map<ObjectId, UserEntry> map = userService.getUserEntryMap(objectIds, Constant.FIELDS);
         //获取群昵称
         Map<ObjectId,ObjectId>  groupIds=communityDao.getGroupIds(myCommunitys);

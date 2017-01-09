@@ -163,6 +163,7 @@
                     <span>大赛</span>
                 </div>
                 <div class="mk-intro">不定期开展各种竞赛项目，<br>总有适合你的</div>
+                <div class="i-hot"></div>
             </div>
             <div class="line-thr"></div>
             <div class="mk-s mk-ls" id="playmate">
@@ -253,7 +254,7 @@
                     </li>
                     {{~}}
                 </script>--%>
-                <ul class="ul-photo" style="left: 0;" id="talentList">
+                <ul class="ul-photo" style="left: 1px;" id="talentList">
                     <li onclick="window.open('http://hanghai.fulaan.com')">
                         <img src="/static/images/community/hanghai_mini.jpg">
                         <span >更多</span>

@@ -35,12 +35,12 @@ button{cursor: pointer;}
 }
 .index-left .logo{
 	display: block;
-	margin: 33px 0 0 0;
+	margin: 19px 0 0 0;
 }
 .index-left>h1{
 	font-size: 28px;
 	color: #FF9F19;
-	margin-top: 40px; 
+	margin-top: 25px;
 	height: 30px;
 	line-height: 30px;
 }
@@ -83,7 +83,7 @@ button{cursor: pointer;}
 	box-shadow: 0 0 5px #FF9F19 inset;
 }
 .index-focus{
-	margin-top: 44px;
+	margin-top: 45px;
 	height: 305px;
 	position: relative;
 	overflow: hidden;
@@ -256,7 +256,7 @@ button{cursor: pointer;}
 	float: right;
 }
 .login-mk{
-	height: 85px;
+	height: 64px;
 	padding-right: 60px;
 }
 .login-mk .wx-l{
@@ -310,16 +310,16 @@ button{cursor: pointer;}
 }
 .link-mk .mk-s{
 	width:178px;
-	height:255px;
+	height:168px;
 	float: left;
 	transition: all .5s;
 }
 .link-mk .line-thr{
-	height: 103px;
+	height: 68px;
 	width: 1px;
-	background: #FFBB84;
+	background: #dcdcdc;
 	float: left;
-	margin: 75px 0 0 0;
+	margin: 50px 0 0 0;
 }
 .line-acc{
 	height: 1px;
@@ -327,11 +327,11 @@ button{cursor: pointer;}
 	width: 100%;
 }
 .line-acc>div{
-	width: 70px;
-	background: #FFBB84;
+	width: 68px;
+	background: #dcdcdc;
 	height: 1px;
 	float: left;
-	margin: 0 54px;
+	margin: 0 55px;
 }
 .link-mk .mk-ls:hover{
 	background: #FF9F19;
@@ -342,122 +342,181 @@ button{cursor: pointer;}
 	border-color: #fff;
 }
 .link-mk .mk-ls:hover>.mk1-pho{
-	background: url('/static/images/newIndex/find_s1_white.png') no-repeat;
+	background: url('/static/images/newIndex/find_s1_white.png') 3px 15px no-repeat;
 }
 .link-mk .mk-ls:hover>.mk2-pho{
-	background: url('/static/images/newIndex/find_s2_white.png') no-repeat;
+	background: url('/static/images/newIndex/find_s2_white.png') 8px 13px no-repeat;
 }
 .link-mk .mk-ls:hover>.mk3-pho{
-	background: url('/static/images/newIndex/find_s3_white.png') no-repeat;
+	background: url('/static/images/newIndex/find_s3_white.png') 8px 12px no-repeat;
 }
 .link-mk .mk-ls:hover>.mk4-pho{
-	background: url('/static/images/newIndex/find_s4_white.png') 9px 0 no-repeat;
+	background: url('/static/images/newIndex/find_s4_white.png') 15px 16px no-repeat;
 }
 .link-mk .mk-ls:hover>.mk5-pho{
-	background: url('/static/images/newIndex/find_s5_white.png') no-repeat;
+	background: url('/static/images/newIndex/find_s5_white.png') 4px 13px no-repeat;
 }
 .link-mk .mk-ls:hover>.mk6-pho{
-	background: url('/static/images/newIndex/find_s6_white.png') 5px 0 no-repeat;
+	background: url('/static/images/newIndex/find_s6_white.png') 6px 13px no-repeat;
 }
 .link-mk .mk-ls:hover>.mk7-pho{
-	background: url('/static/images/newIndex/find_s7_white.png') 6px 0 no-repeat;
+	background: url('/static/images/newIndex/find_s7_white.png') 9px 12px no-repeat;
 }
 .link-mk .mk-ls:hover>.mk8-pho{
-	background: url('/static/images/newIndex/find_s8_white.png') 4px 0 no-repeat;
+	background: url('/static/images/newIndex/find_s8_white.png') 15px 11px no-repeat;
 }
 .mk-s .mk1-pho{
-	background: url('/static/images/newIndex/find_s1_green.png')no-repeat;
-	margin:41px auto 0; 
+	background: url('/static/images/newIndex/find_s1_green.png') 3px 15px no-repeat;
+	margin:10px auto 0;
 	width: 59px;
 	height: 60px;
 }
 .mk-s .mk2-pho{
-	background: url('/static/images/newIndex/find_s2_green.png')no-repeat;
-	margin:41px auto 0; 
+	background: url('/static/images/newIndex/find_s2_green.png') 8px 13px no-repeat;
+	margin:10px auto 0;
 	width: 62px;
 	height: 60px;
 }
 .mk-s .mk3-pho{
-	background: url('/static/images/newIndex/find_s3_green.png')no-repeat;
-	margin:41px auto 0; 
+	background: url('/static/images/newIndex/find_s3_green.png') 8px 12px no-repeat;
+	margin:10px auto 0;
 	width: 60px;
 	height: 60px;
 }
 .mk-s .mk4-pho{
-	background: url('/static/images/newIndex/find_s4_green.png') 9px 0 no-repeat;
-	margin:41px auto 0; 
+	background: url('/static/images/newIndex/find_s4_green.png') 15px 16px no-repeat;
+	margin:10px auto 0;
 	width: 77px;
 	height: 60px;
 }
 .mk-s .mk5-pho{
-	background: url('/static/images/newIndex/find_s5_green.png')no-repeat;
-	margin:41px auto 0; 
+	background: url('/static/images/newIndex/find_s5_green.png') 4px 13px no-repeat;
+	margin:10px auto 0;
 	width: 61px;
 	height: 62px;
 }
 .mk-s .mk6-pho{
-	background: url('/static/images/newIndex/find_s6_green.png') 5px 0 no-repeat;
-	margin:41px auto 0; 
+	background: url('/static/images/newIndex/find_s6_green.png') 6px 13px no-repeat;
+	margin:10px auto 0;
 	width: 60px;
 	height: 60px;
 }
 .mk-s .mk7-pho{
-	background: url('/static/images/newIndex/find_s7_green.png') 6px 0 no-repeat;
-	margin:41px auto 0; 
+	background: url('/static/images/newIndex/find_s7_green.png') 9px 12px no-repeat;
+	margin:10px auto 0;
 	width: 60px;
 	height: 60px;
 }
 .mk-s .mk8-pho{
-	background: url('/static/images/newIndex/find_s8_green.png') 4px 0 no-repeat;
-	margin:41px auto 0; 
+	background: url('/static/images/newIndex/find_s8_green.png') 15px 11px no-repeat;
+	margin:10px auto 0;
 	width: 60px;
 	height: 60px;
 }
 .mk-name{
-	margin: 18px 0 16px;
 	text-align: center;
+	margin-bottom: 6px;
 }
 .mk-name span{
-	padding: 0 13px;
+	padding: 0 36px;
 	display: inline-block;
 	height: 38px;
 	line-height: 38px;
 	font-size: 19px;
 	color: #000;
-	font-weight: bold; 
-	border-top: 1px solid #222;
-	border-bottom: 1px solid #222;
+	font-weight: bold;
+	border-bottom: 1px solid #666;
 }
 .mk-intro{
 	text-align: center;
-	line-height: 20px;
+	line-height: 17px;
 	color: #777;
 	font-size: 12px;
 }
+.ivideo{
+	height: 146px;
+	background: url("/static/images/newIndex/iv_bg.png") no-repeat;
+	border-bottom: 1px solid #dcdcdc;
+	border-top: 1px solid #dcdcdc;
+}
+.ivideo ul{
+	width: 572px;
+	float: right;
+	padding: 6px 24px;
+}
+.ivideo li{
+	float: right;
+	margin:14px 0 0 5px;
+	width: 65px;
+	height: 45px;
+	position: relative;
+}
+.ivideo li>div{
+	width: 100%;
+	height: 100%;
+	background: rgba(0,0,0,0.2);
+	transition: all .3s;
+}
+.ivideo li a{
+	position: absolute;
+	display: inline-block;
+	width: 21px;
+	height: 21px;
+	border-radius: 100%;
+	background: url("/static/images/newIndex/iv_play.png");
+	top:11px;
+	left:20px;
+	opacity: 0.8;
+	transition: all .3s;
+	cursor: pointer;
+}
+.ivideo li:hover>div{
+	display: none;
+}
+.ivideo li:hover>a{
+	opacity: 1;
+	box-shadow: 0 0 6px cyan;
+}
+
+.ivideo .li1{background: url("/static/images/newIndex/iv1.png")}
+.ivideo .li2{background: url("/static/images/newIndex/iv2.png")}
+.ivideo .li3{background: url("/static/images/newIndex/iv3.png")}
+.ivideo .li4{background: url("/static/images/newIndex/iv4.png")}
+.ivideo .li5{background: url("/static/images/newIndex/iv5.png")}
+.ivideo .li6{background: url("/static/images/newIndex/iv6.png")}
+.ivideo .li7{background: url("/static/images/newIndex/iv7.png");margin-left: 20px !important;}
+.ivideo .li8{background: url("/static/images/newIndex/iv8.png")}
+.ivideo .li9{background: url("/static/images/newIndex/iv9.png")}
+.ivideo .li10{background: url("/static/images/newIndex/iv10.png")}
+.ivideo .li11{background: url("/static/images/newIndex/iv11.png")}
+.ivideo .li12{background: url("/static/images/newIndex/iv12.png")}
+.ivideo .li13{background: url("/static/images/newIndex/iv13.png")}
+.ivideo .li14{background: url("/static/images/newIndex/iv14.png")}
+.ivideo .li15{background: url("/static/images/newIndex/iv15.png")}
 .d-photo{
 	width: 718px;
-	height: 248px;
+	height: 268px;
 	overflow: hidden;
 	position: relative;
 	float: left;
 }
 .ul-photo{
 	width: 5000px;
-	height: 248px;
+	height: 268px;
 	position: absolute;
 	top: 0;
 }
 .ul-photo li{
 	float: left;
 	width: 718px;
-	height: 248px;
+	height: 268px;
 	position: relative;
     cursor: pointer;
 }
 .ul-photo li>img{
 	float: left;
-	width: 491px;
-	height: 248px;
+	width: 466px;
+	height: 268px;
 }
 .ul-photo li span{
 	display: inline-block;
@@ -487,8 +546,8 @@ button{cursor: pointer;}
 	padding-right: 20px;
 }
 .photo-text{
-	width: 226px;
-	height: 248px;
+	width: 251px;
+	height: 268px;
 	float: right;
 	text-align: center;
 }
@@ -511,7 +570,7 @@ button{cursor: pointer;}
 .photo-btn{
 	position: absolute;
 	bottom: 0;
-	left: 407px;
+	left: 382px;
 	width: 84px;
 	height: 43px;
 }

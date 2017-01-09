@@ -1159,16 +1159,23 @@ pre {
 .height10 {
     height: 10px;
 }
+.forin-zx li{
+    height: 31px;
+    line-height:31px;
+    margin:0 9px;
+    border-bottom:1px dashed #D2D2D2;
+    text-overflow: ellipsis;
+    overflow: hidden;
+    white-space: nowrap;
+}
 
 .iwant {
-    width: 142px;
     height: 40px;
     line-height: 40px;
     text-align: center;
     color: #fff;
-    background: #F44336;
+    background: #3AC66A;
     font-size: 17px;
-    margin: 10px auto;
     cursor: pointer;
 }
 
@@ -4017,7 +4024,7 @@ pre {
     height: 36px;
     cursor: pointer;
     z-index: 8040;
-    background-image: url('/static/plugins/fancyBox/fancybox_sprite.png');
+    background-image: url('/static/js/modules/core/0.1.0/fancyBox/fancybox_sprite.png');
 }
 
 .dialog-bg {
@@ -5550,7 +5557,7 @@ pre {
     cursor: pointer;
 }
 .photolist i:hover{
-    background: url("/static/images/forum/play_031.png") no-repeat;;
+    background: url("/static/images/forum/play_031.png") no-repeat;
 }
 .mr0{
     margin-right: 0 !important;
@@ -6184,7 +6191,7 @@ pre {
 
 .ul-control li {
     height: 78px;
-    background: #DCDCDC;
+    background: #fff;
     border: 1px solid #dcdcdc;
     margin-bottom: 9px;
     transition: all .3s;
@@ -6192,7 +6199,7 @@ pre {
 }
 
 #ulButtons .on {
-    border-left: 4px solid #F44336 !important;
+    border: 1px solid #F44336 !important;
     background: #fff !important;
 }
 
@@ -7014,3 +7021,9 @@ pre {
 .post-right img {
     max-width: 750px;
 }
+
+/** **/
+.photoButton { position:absolute; z-index:99999; bottom:12px; right:12px; filter:Alpha(Opacity="80");}
+.photoButton .big, .photoButton .small, .photoButton .normal { background:url(/static/images/forum/button.png) top right no-repeat; height:33px; line-height:33px; width:60px; display:inline-block; cursor:pointer;}
+.photoButton .small { background-position:left top;}
+.photoButton .normal { background-position:-61px 0; width:50px;}

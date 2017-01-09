@@ -271,8 +271,21 @@ define(['jquery','pagination','social', 'common'], function (require, exports, m
             goToPost(pSectionId);
         });
         $('.post-jb').click(function () {
-            $('.wind-jb').fadeIn();
-            $('.bg').fadeIn();
+            $.ajax({
+                url: "/forum/loginInfo.do?date=" + new Date(),
+                type: "get",
+                dataType: "json",
+                data: {},
+                success: function (resp) {
+                    if (resp.login) {
+                        $('.wind-jb').fadeIn();
+                        $('.bg').fadeIn();
+                    } else {
+                        $('.store-register').fadeToggle();
+                        $('.bg').fadeToggle();
+                    }
+                }
+            });
         });
         $('.wind-jb .p1 em,.wind-jb .btn-jb-x').click(function () {
             $('.wind-jb').fadeOut();

@@ -19,6 +19,12 @@
         F = $.fancybox = function () {
             F.open.apply(this, arguments);
         },
+        normalWidth=0,
+        normalHeight=0,
+        normalInnerWidth=0,
+        normalWrapWidth=0,
+        normalInnerHeight=0,
+        recordWidth=0,
         IE = navigator.userAgent.match(/msie/i),
         didUpdate = null,
         isTouch = document.createTouch !== undefined,
@@ -80,6 +86,7 @@
 
             arrows: true,
             closeBtn: true,
+            zoom:true,
             closeClick: false,
             nextClick: false,
             mouseWheel: true,
@@ -143,7 +150,8 @@
                 error: '<p class="fancybox-error">The requested content cannot be loaded.<br/>Please try again later.</p>',
                 closeBtn: '<a title="Close" class="fancybox-item fancybox-close" href="javascript:;"></a>',
                 next: '<a title="Next" class="fancybox-nav fancybox-next" href="javascript:;"><span></span></a>',
-                prev: '<a title="Previous" class="fancybox-nav fancybox-prev" href="javascript:;"><span></span></a>'
+                prev: '<a title="Previous" class="fancybox-nav fancybox-prev" href="javascript:;"><span></span></a>',
+                zoom: '<div class="photoButton"></div>'
             },
 
             // Properties for each animation type
@@ -805,6 +813,7 @@
             if (coming.modal) {
                 $.extend(true, coming, {
                     closeBtn: false,
+                    zoom:false,
                     closeClick: false,
                     nextClick: false,
                     arrows: false,
@@ -1452,14 +1461,105 @@
                 });
             }
 
+            if(recordWidth==0){
+                normalHeight=$('.fancybox-image').css("width");
+                normalWidth=$('.fancybox-image').css("height");
+                normalInnerWidth=$('.fancybox-inner').css("width");
+                normalInnerHeight=$('.fancybox-inner').css("height");
+                normalWrapWidth=$('.fancybox-wrap').css("width");
+            }
+
+            if (current.zoom){
+                // $(current.tpl.zoom).appendTo(F.outer);
+                var child1='<a class="small" title="缩小"></a>';
+                var child2='<a class="normal" title="正常大小"></a>';
+                var child3='<a class="big" title="放大"></a>';
+                $(child1).appendTo(F.skin).bind('click.fb',function(e){
+                    var photoWidth = parseInt($('.fancybox-image').css("width"));
+                    var w = photoWidth - photoWidth*0.1;
+                    var photoHeight = parseInt($('.fancybox-image').css("height"));
+                    var h = photoHeight - photoHeight*0.1;
+                    var innerWidth = parseInt($('.fancybox-inner').css("width"));
+                    var iw= innerWidth - photoWidth*0.1;
+                    var innerHeigth = parseInt($('.fancybox-inner').css("height"));
+                    var ih= innerHeigth - photoHeight*0.1;
+                    var wrapWidth=parseInt($('.fancybox-wrap').css("width"));
+                    var iwrap= wrapWidth- photoWidth*0.1;
+                    if (w <= 200 || h <=100){
+                        alert("图片已经不能再缩小啦")
+                    }
+                    else{
+                        recordWidth=1;
+                        $('.fancybox-image').css('width',w+'px');
+                        $('.fancybox-image').css('height',h+'px');
+                        $('.fancybox-inner').css('width',iw+'px');
+                        $('.fancybox-inner').css('height',ih+'px');
+                        $('.fancybox-wrap').css("width",iwrap+'px');
+                    }
+                });
+
+                $(child2).appendTo(F.skin).bind('click.fb',function(e) {
+                    $('.fancybox-image').css('width', normalWidth);
+                    $('.fancybox-image').css('height', normalHeight);
+                    $('.fancybox-inner').css("width", normalInnerWidth);
+                    $('.fancybox-inner').css("height", normalInnerHeight);
+                    $('.fancybox-wrap').css("width", normalWrapWidth);
+                });
+
+                $(child3).appendTo(F.skin).bind('click.fb',function(e){
+                    var photoWidth = parseInt($('.fancybox-image').css("width"));
+                    var w = photoWidth + photoWidth*0.1;
+                    var photoHeight = parseInt($('.fancybox-image').css("height"));
+                    var h = photoHeight + photoHeight*0.1;
+                    var innerWidth = parseInt($('.fancybox-inner').css("width"));
+                    var iw= innerWidth + photoWidth*0.1;
+                    var innerHeigth = parseInt($('.fancybox-inner').css("height"));
+                    var ih= innerHeigth + photoHeight*0.1;
+                    var wrapWidth=parseInt($('.fancybox-wrap').css("width"));
+                    var iwrap= wrapWidth+ photoWidth*0.1;
+                    if (w >= 1024 || h >=500){
+                        if(w<parseInt(normalWidth)){
+                            recordWidth=2;
+                            $('.fancybox-image').css('width',w+'px');
+                            $('.fancybox-image').css('height',h+'px');
+                            $('.fancybox-inner').css('width',iw+'px');
+                            $('.fancybox-inner').css('height',ih+'px');
+                            $('.fancybox-wrap').css("width",iwrap+'px');
+                        }else{
+                            alert("图片已经不能再放大啦");
+                        }
+                    }
+                    else{
+                        recordWidth=2;
+                        $('.fancybox-image').css('width',w+'px');
+                        $('.fancybox-image').css('height',h+'px');
+                        $('.fancybox-inner').css('width',iw+'px');
+                        $('.fancybox-inner').css('height',ih+'px');
+                        $('.fancybox-wrap').css("width",iwrap+'px');
+                    }
+                });
+            }
+
             // Create navigation arrows
             if (current.arrows && F.group.length > 1) {
                 if (current.loop || current.index > 0) {
+                    recordWidth=0;
                     $(current.tpl.prev).appendTo(F.outer).bind('click.fb', F.prev);
+                    normalWidth=$('.fancybox-image').css("width");
+                    normalHeight=$('.fancybox-image').css("height");
+                    normalInnerWidth=$('.fancybox-inner').css("width");
+                    normalInnerHeight=$('.fancybox-inner').css("height");
+                    normalWrapWidth=$('.fancybox-wrap').css("width");
                 }
 
                 if (current.loop || current.index < F.group.length - 1) {
+                    recordWidth=0;
                     $(current.tpl.next).appendTo(F.outer).bind('click.fb', F.next);
+                    normalWidth=$('.fancybox-image').css("width");
+                    normalHeight=$('.fancybox-image').css("height");
+                    normalInnerWidth=$('.fancybox-inner').css("width");
+                    normalInnerHeight=$('.fancybox-inner').css("height");
+                    normalWrapWidth=$('.fancybox-wrap').css("width");
                 }
             }
 

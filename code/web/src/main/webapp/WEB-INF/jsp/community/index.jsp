@@ -212,6 +212,25 @@
                 <div class="mk-intro">优质亲子活动，<br>陪伴有质量的成长</div>
             </div>
         </div>
+        <div class="ivideo" style="height: 146px;">
+                <ul>
+                    <li class="li1"><div></div><a></a></li>
+                    <li class="li2"><div></div><a></a></li>
+                    <li class="li3"><div></div><a></a></li>
+                    <li class="li4"><div></div><a></a></li>
+                    <li class="li5"><div></div><a></a></li>
+                    <li class="li6"><div></div><a></a></li>
+                    <li class="li7"><div></div><a></a></li>
+                    <li class="li8"><div></div><a></a></li>
+                    <li class="li9"><div></div><a></a></li>
+                    <li class="li10"><div></div><a></a></li>
+                    <li class="li11"><div></div><a></a></li>
+                    <li class="li12"><div></div><a></a></li>
+                    <li class="li13"><div></div><a></a></li>
+                    <li class="li14"><div></div><a></a></li>
+                    <li class="li15"><div></div><a></a></li>
+                </ul>
+        </div>
         <div class="photo-show">
             <div class="d-photo">
  <%--               <script id="talentTml" type="text/template">

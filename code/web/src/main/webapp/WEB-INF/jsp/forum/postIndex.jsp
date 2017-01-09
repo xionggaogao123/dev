@@ -212,7 +212,7 @@
                 <div class="wh-title mission-to">今日任务</div>
                 <div class="iwant" id="getTask">领取今日任务</div>
             </div>
-            <div class="ltwh">
+            <div class="ltwh" style="display: none">
                 <div class="wh-title mission-to">资讯</div>
                 <ul class="forin-zx">
                     <li>> 五毛拿走不谢！</li>

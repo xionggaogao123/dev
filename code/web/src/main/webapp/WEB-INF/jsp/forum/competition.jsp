@@ -129,7 +129,7 @@
             <div class="div2">
                 <div class="trediv mb8">
                     <img src="/static/images/forum/comp03.png">
-                    <a class="fancybox" href="http://7xiclj.com1.z0.glb.clouddn.com/57b6c46ede04cb06131ced0d.JPG" data-fancybox-group="home" title="预览"><i>
+                    <a class="fancybox" onclick="setZoom()" href="http://7xiclj.com1.z0.glb.clouddn.com/57b6c46ede04cb06131ced0d.JPG" data-fancybox-group="home" title="预览"><i>
                     </i> </a>
                     <div class="bg20"></div>
                 </div>
@@ -246,9 +246,16 @@
         </ul>
     </div>
 </div>
+
+
+
 <script type="text/javascript" src="/static/js/modules/core/0.1.0/fancyBox/jquery.fancybox.js"></script>
 <script type="text/javascript">
     $(".fancybox").fancybox({});
+    function setZoom(){
+        var str="<div class=\"photoButton\"> <a class=\"small\" title=\"缩小\"></a><a class=\"normal\" title=\"正常大小\"></a><a class=\"big\" title=\"放大\"></a></div>";
+        $('.ul-compit').append(str);
+    }
 </script>
 
 <c:if test="${ipScan == false}">

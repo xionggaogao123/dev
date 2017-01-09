@@ -210,7 +210,19 @@
             </div>
             <div class="ltwh" <c:if test="${login==false}">style="display: none" </c:if>>
                 <div class="wh-title mission-to">今日任务</div>
-                <div class="iwant" id="getTask">我要领取任务</div>
+                <div class="iwant" id="getTask">领取今日任务</div>
+            </div>
+            <div class="ltwh">
+                <div class="wh-title mission-to">资讯</div>
+                <ul class="forin-zx">
+                    <li>> 五毛拿走不谢！</li>
+                    <li>> 五毛拿走不谢！</li>
+                    <li>> 五毛拿走不谢！五毛拿走不谢！五毛拿走不谢！</li>
+                    <li>> 五毛拿走不谢！</li>
+                    <li>> 五毛拿走不谢！</li>
+                    <li>> 五毛拿走不谢！</li>
+                    <li>> 五毛拿走不谢！</li>
+                </ul>
             </div>
             <div class="ltwh">
                 <div class="wh-title clearfix">

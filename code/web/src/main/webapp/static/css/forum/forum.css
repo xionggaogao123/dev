@@ -7021,3 +7021,9 @@ pre {
 .post-right img {
     max-width: 750px;
 }
+
+/** **/
+.photoButton { position:absolute; z-index:99999; bottom:12px; right:12px; filter:Alpha(Opacity="80");}
+.photoButton .big, .photoButton .small, .photoButton .normal { background:url(/static/images/forum/button.png) top right no-repeat; height:33px; line-height:33px; width:60px; display:inline-block; cursor:pointer;}
+.photoButton .small { background-position:left top;}
+.photoButton .normal { background-position:-61px 0; width:50px;}

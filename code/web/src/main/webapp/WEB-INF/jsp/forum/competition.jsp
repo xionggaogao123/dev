@@ -246,11 +246,13 @@
         </ul>
     </div>
 </div>
+
+
+
 <script type="text/javascript" src="/static/js/modules/core/0.1.0/fancyBox/jquery.fancybox.js"></script>
 <script type="text/javascript">
     $(".fancybox").fancybox({});
 </script>
-
 <c:if test="${ipScan == false}">
     <div class="wind-winner">
         <div class="ww-cont">

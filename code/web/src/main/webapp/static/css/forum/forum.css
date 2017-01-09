@@ -6184,7 +6184,7 @@ pre {
 
 .ul-control li {
     height: 78px;
-    background: #DCDCDC;
+    background: #fff;
     border: 1px solid #dcdcdc;
     margin-bottom: 9px;
     transition: all .3s;
@@ -6192,7 +6192,7 @@ pre {
 }
 
 #ulButtons .on {
-    border-left: 4px solid #F44336 !important;
+    border: 1px solid #F44336 !important;
     background: #fff !important;
 }
 

@@ -37,7 +37,7 @@ define(['jquery', 'pagination', 'common'], function (require, exports, module) {
             var lineHeight = $self.find("li:nth-child(1)").height();
             $self.animate({
                 "marginTop": -lineHeight - 20 + "px"
-            }, 684, function () {
+            }, 400, function () {
                 $self.css({
                     marginTop: 0
                 }).find("li:first").appendTo($self);

@@ -1159,16 +1159,23 @@ pre {
 .height10 {
     height: 10px;
 }
+.forin-zx li{
+    height: 31px;
+    line-height:31px;
+    margin:0 9px;
+    border-bottom:1px dashed #D2D2D2;
+    text-overflow: ellipsis;
+    overflow: hidden;
+    white-space: nowrap;
+}
 
 .iwant {
-    width: 142px;
     height: 40px;
     line-height: 40px;
     text-align: center;
     color: #fff;
-    background: #F44336;
+    background: #3AC66A;
     font-size: 17px;
-    margin: 10px auto;
     cursor: pointer;
 }
 
@@ -6184,7 +6191,7 @@ pre {
 
 .ul-control li {
     height: 78px;
-    background: #DCDCDC;
+    background: #fff;
     border: 1px solid #dcdcdc;
     margin-bottom: 9px;
     transition: all .3s;
@@ -6192,7 +6199,7 @@ pre {
 }
 
 #ulButtons .on {
-    border-left: 4px solid #F44336 !important;
+    border: 1px solid #F44336 !important;
     background: #fff !important;
 }
 

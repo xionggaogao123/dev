@@ -5557,7 +5557,7 @@ pre {
     cursor: pointer;
 }
 .photolist i:hover{
-    background: url("/static/images/forum/play_031.png") no-repeat;;
+    background: url("/static/images/forum/play_031.png") no-repeat;
 }
 .mr0{
     margin-right: 0 !important;

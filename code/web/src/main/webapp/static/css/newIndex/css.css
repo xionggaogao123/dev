@@ -313,6 +313,7 @@ button{cursor: pointer;}
 	height:168px;
 	float: left;
 	transition: all .5s;
+	position: relative;
 }
 .link-mk .line-thr{
 	height: 68px;
@@ -362,6 +363,9 @@ button{cursor: pointer;}
 .link-mk .mk-ls:hover>.mk7-pho{
 	background: url('/static/images/newIndex/find_s7_white.png') 9px 12px no-repeat;
 }
+.link-mk .mk-ls:hover>.i-hot{
+	background: url("/static/images/newIndex/hot_white.png");
+}
 .link-mk .mk-ls:hover>.mk8-pho{
 	background: url('/static/images/newIndex/find_s8_white.png') 15px 11px no-repeat;
 }
@@ -370,6 +374,14 @@ button{cursor: pointer;}
 	margin:10px auto 0;
 	width: 59px;
 	height: 60px;
+}
+.i-hot{
+	position: absolute;
+	top:12px;
+	right: 39px;
+	background: url("/static/images/newIndex/hot_orange.png");
+	width: 24px;
+	height: 12px;
 }
 .mk-s .mk2-pho{
 	background: url('/static/images/newIndex/find_s2_green.png') 8px 13px no-repeat;
@@ -570,7 +582,7 @@ button{cursor: pointer;}
 .photo-btn{
 	position: absolute;
 	bottom: 0;
-	left: 382px;
+	left: 383px;
 	width: 84px;
 	height: 43px;
 }
@@ -1203,5 +1215,79 @@ button{cursor: pointer;}
 	background: url("/static/images/newIndex/iconbg.jpg") -61px -105px no-repeat;
 	position: relative;
 	top: 4px;
+	cursor: pointer;
+}
+
+/*播放器*/
+.player-container {
+	position: fixed;
+	top: 50%;
+	left: 50%;
+	margin-left: -415px;
+	margin-top: -240px;
+	z-index: 1000;
+	overflow: visible;
+	display: none;
+	background-color: white;
+	box-shadow: 0 10px 25px #000;
+	box-sizing: content-box;
+	border-radius: 4px;
+	padding: 15px;
+	z-index: 9999999999999999999999999;
+}
+
+.player-container * {
+	overflow: visible;
+}
+
+.player-div {
+	background: #000;
+	width: 800px;
+	height: 450px;
+	overflow: hidden;
+}
+
+.player-close-btn {
+	position: absolute;
+	top: -18px;
+	right: -18px;
+	width: 36px;
+	height: 36px;
+	cursor: pointer;
+	z-index: 8040;
+	background-image: url('/static/js/modules/core/0.1.0/fancyBox/fancybox_sprite.png');
+}
+
+.dialog-bg {
+	background-color: #000;
+	left: 0;
+	position: fixed;
+	top: 0;
+	z-index: 30;
+	opacity: 0.5;
+	filter: alpha(opacity=50);
+	-moz-opacity: 0.5;
+	-khtml-opacity: 0.5;
+	width: 100%;
+	height: 100%;
+	display: none;
+}
+
+.content-DV {
+	position: relative;
+}
+
+.content-Im {
+	width: 80px;
+	height: 80px;
+	cursor: pointer;
+}
+
+.video-play-btn {
+	width: 40px;
+	height: 40px;
+	position: absolute;
+	left: 20px;
+	top: 20px;
 	cursor: pointer;
 }

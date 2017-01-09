@@ -6,6 +6,12 @@
     <meta charset="utf-8">
     <link rel="stylesheet" type="text/css" href="/static/css/newIndex/css.css">
     <script type="text/javascript" src="/static/js/modules/newIndex/jquery-1.11.1.js"></script>
+    <link href="/static/js/modules/core/0.1.0/fancyBox/jquery.fancybox.css?v=2015041602" rel="stylesheet"
+          type="text/css" media="screen">
+    <script type="text/javascript" src="/static/js/swfobject.js"></script>
+    <script type="text/javascript" src="/static/js/recorder.js"></script>
+    <script type="text/javascript" src="/static/js/main.js"></script>
+    <script type="text/javascript" src="/static/js/template.js"></script>
     <style type="text/css">
         body {
             background: #E6EAF2;
@@ -157,6 +163,7 @@
                     <span>大赛</span>
                 </div>
                 <div class="mk-intro">不定期开展各种竞赛项目，<br>总有适合你的</div>
+                <div class="i-hot"></div>
             </div>
             <div class="line-thr"></div>
             <div class="mk-s mk-ls" id="playmate">
@@ -214,21 +221,21 @@
         </div>
         <div class="ivideo" style="height: 146px;">
                 <ul>
-                    <li class="li1"><div></div><a></a></li>
-                    <li class="li2"><div></div><a></a></li>
-                    <li class="li3"><div></div><a></a></li>
-                    <li class="li4"><div></div><a></a></li>
-                    <li class="li5"><div></div><a></a></li>
-                    <li class="li6"><div></div><a></a></li>
-                    <li class="li7"><div></div><a></a></li>
-                    <li class="li8"><div></div><a></a></li>
-                    <li class="li9"><div></div><a></a></li>
-                    <li class="li10"><div></div><a></a></li>
-                    <li class="li11"><div></div><a></a></li>
-                    <li class="li12"><div></div><a></a></li>
-                    <li class="li13"><div></div><a></a></li>
-                    <li class="li14"><div></div><a></a></li>
-                    <li class="li15"><div></div><a></a></li>
+                    <li class="li1"><div></div><a onclick="tryPlayYCourse('http://7sbrbl.com1.z0.glb.clouddn.com/m3u8/57a45540de04cb45ae60bc7c.mp4.m3u8')" href="javascript:void(0)"></a></li>
+                    <li class="li2"><div></div> <a class="fancybox" href="http://7xiclj.com1.z0.glb.clouddn.com/58656c823d4df96ad47517a3.jpg?imageView/1/h/500/w/500" data-fancybox-group="home" title="预览"></a></li>
+                    <li class="li3"><div></div><a onclick="tryPlayYCourse('http://7sbrbl.com1.z0.glb.clouddn.com/m3u8/57ae5eb2de04cb5082f8ede3.mp4.m3u8')" href="javascript:void(0)"></a></li>
+                    <li class="li4"><div></div><a class="fancybox" href="http://7xiclj.com1.z0.glb.clouddn.com/57b6c46ede04cb06131ced0d.JPG" data-fancybox-group="home" title="预览"></a></li>
+                    <li class="li5"><div></div><a onclick="tryPlayYCourse('http://7sbrbl.com1.z0.glb.clouddn.com/m3u8/57ac8ba7de04cb644c2430c1.mp4.m3u8')" href="javascript:void(0)"></a></li>
+                    <li class="li6"><div></div><a onclick="tryPlayYCourse('http://7sbrbl.com1.z0.glb.clouddn.com/m3u8/579ac9b03d4df94c677d4f8d.mp4.m3u8')" href="javascript:void(0)"></a></li>
+                    <li class="li7"><div></div><a onclick="tryPlayYCourse('http://7sbrbl.com1.z0.glb.clouddn.com/m3u8/5873638fcab6ec204895f1e4.m3u8')" href="javascript:void(0)"></a></li>
+                    <li class="li8"><div></div><a onclick="tryPlayYCourse('http://7sbrbl.com1.z0.glb.clouddn.com/m3u8/57a09f683d4df94e7349721f.mp4.m3u8')" href="javascript:void(0)"></a></li>
+                    <li class="li9"><div></div><a class="fancybox" href="http://7xiclj.com1.z0.glb.clouddn.com/57a51bab3d4df9703fd552a1.jpg?imageView/1/h/500/w/500" data-fancybox-group="home" title="预览"></a></li>
+                    <li class="li10"><div></div><a onclick="tryPlayYCourse('http://7sbrbl.com1.z0.glb.clouddn.com/m3u8/57a4609b3d4df9703fd53a0f.mp4.m3u8')" href="javascript:void(0)"></a></li>
+                    <li class="li11"><div></div><a onclick="tryPlayYCourse('http://7sbrbl.com1.z0.glb.clouddn.com/m3u8/57a5133d3d4df9703fd55161.mp4.m3u8')" href="javascript:void(0)"></a></li>
+                    <li class="li12"><div></div><a onclick="tryPlayYCourse('http://7sbrbl.com1.z0.glb.clouddn.com/m3u8/57bbcda93d4df95eda9bc7ea.mp4.m3u8')" href="javascript:void(0)"></a></li>
+                    <li class="li13"><div></div><a class="fancybox" href="http://7xiclj.com1.z0.glb.clouddn.com/57a493543d4df9703fd54c37.jpg?imageView/1/h/500/w/500" data-fancybox-group="home" title="预览"></a></li>
+                    <li class="li14"><div></div><a onclick="tryPlayYCourse('http://7sbrbl.com1.z0.glb.clouddn.com/m3u8/57aebf8d3d4df92a03183502.mp4.m3u8')" href="javascript:void(0)"></a></li>
+                    <li class="li15"><div></div><a onclick="tryPlayYCourse('http://7sbrbl.com1.z0.glb.clouddn.com/m3u8/57a5ee3a3d4df9703fd57bff.mp4.m3u8')" href="javascript:void(0)"></a></li>
                 </ul>
         </div>
         <div class="photo-show">
@@ -247,7 +254,7 @@
                     </li>
                     {{~}}
                 </script>--%>
-                <ul class="ul-photo" style="left: 0;" id="talentList">
+                <ul class="ul-photo" style="left: 1px;" id="talentList">
                     <li onclick="window.open('http://hanghai.fulaan.com')">
                         <img src="/static/images/community/hanghai_mini.jpg">
                         <span >更多</span>
@@ -318,6 +325,89 @@
 <div class="bg"></div>
 <!--============登录================-->
 <%@ include file="../common/login.jsp" %>
+<div id="YCourse_player" class="player-container" style="display: none">
+    <div id="player_div" class="player-div"></div>
+    <div id="sewise-div"
+         style="display: none; width: 630px; height: 360px; max-width: 800px;">
+        <script type="text/javascript"
+                src="/static/plugins/sewiseplayer/sewise.player.min.js"></script>
+
+        <span class="player-close-btn"></span>
+        <script type="text/javascript">
+            SewisePlayer.setup({
+                server: "vod",
+                type: "m3u8",
+                skin: "vodFlowPlayer",
+                logo: "none",
+                lang: "zh_CN",
+                topbardisplay: 'enable',
+                videourl: ''
+            });
+        </script>
+    </div>
+</div>
+
+<script type="text/javascript">
+    var isFlash = false;
+    function getVideoType(url) {
+        if (url.indexOf('polyv.net') > -1) {
+            return "POLYV";
+        }
+        if (url.indexOf('.swf') > 0) {
+            return 'FLASH';
+        }
+        return 'HLS';
+    }
+
+    function playerReady(name) {
+        if (isFlash) {
+            SewisePlayer.toPlay(playerReady.videoURL, "视频", 0, false);
+        }
+    }
+
+    $('.player-close-btn').click(function () {
+        $('#YCourse_player').hide();
+        $(".bg").hide();
+    });
+
+    function download(url) {
+        location.href = "/forum/userCenter/m3u8ToMp4DownLoad.do?filePath=" + url;
+    }
+    function tryPlayYCourse(url) {
+        $("#YCourse_player").show();
+        $(".player-close-btn").css({
+            "display": 'block'
+        });
+        var videoSourceType = getVideoType(url);
+        $('.bg').fadeIn('fast');
+        var $player_container = $("#YCourse_player");
+        $player_container.fadeIn();
+
+        if (videoSourceType == "POLYV") {
+            $('#sewise-div').hide();
+            $('#player_div').show();
+            var player = polyvObject('#player_div').videoPlayer({
+                'width': '800',
+                'height': '450',
+                'vid': url.match(/.+(?=\.swf)/)[0].replace(/.+\//, '')
+            });
+        } else {
+            $('#player_div').hide();
+            $('#sewise-div').show();
+            try {
+                SewisePlayer.toPlay(url, "视频", 0, true);
+            } catch (e) {
+                playerReady.videoURL = url;
+                isFlash = true;
+            }
+        }
+    }
+</script>
+
+<script type="text/javascript" src="/static/js/modules/core/0.1.0/fancyBox/jquery.fancybox.js"></script>
+<script type="text/javascript">
+    $(".fancybox").fancybox({});
+</script>
 <script src="/static/js/sea.js"></script>
 <script src="/static/js/modules/core/0.1.0/config.js?v=2015041602"></script>
 

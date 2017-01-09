@@ -178,7 +178,7 @@
             <div class="div1">
                 <div class="doudiv mb8">
                     <img src="/static/images/forum/comp11.png">
-                    <i onclick="tryPlayYCourse('http://7sbrbl.com1.z0.glb.clouddn.com/m3u8/579c64443d4df937a1b2609c.mp4.m3u8')"></i>
+                    <i onclick="tryPlayYCourse('http://7sbrbl.com1.z0.glb.clouddn.com/m3u8/5873638fcab6ec204895f1e4.m3u8')"></i>
                     <div class="bg20"></div>
                 </div>
                 <div class="doudiv">

@@ -256,6 +256,22 @@
     background: rgba(0, 0, 0, .8);
 }
 
+
+ .big, .small,.normal { background:url(/static/images/forum/button.png) top right no-repeat; height:33px; line-height:33px; width:60px; display:inline-block; cursor:pointer;}
+ .small { background-position:left top;}
+ .normal { background-position:-61px 0; width:50px;}
+
+ /*.small{*/
+     /*position: absolute;*/
+     /*top: 290px;*/
+     /*right: 97px;*/
+     /*width: 36px;*/
+     /*height: 36px;*/
+     /*cursor: pointer;*/
+     /*z-index: 8040;*/
+
+ /*}*/
+
 /*Retina graphics!*/
 @media only screen and (-webkit-min-device-pixel-ratio: 1.5), only screen and (min--moz-device-pixel-ratio: 1.5), only screen and (min-device-pixel-ratio: 1.5) {
 

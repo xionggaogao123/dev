@@ -4017,7 +4017,7 @@ pre {
     height: 36px;
     cursor: pointer;
     z-index: 8040;
-    background-image: url('/static/plugins/fancyBox/fancybox_sprite.png');
+    background-image: url('/static/js/modules/core/0.1.0/fancyBox/fancybox_sprite.png');
 }
 
 .dialog-bg {

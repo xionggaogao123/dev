@@ -107,6 +107,8 @@ define(['jquery', 'pagination', 'common'], function (require, exports, module) {
             var list = $('#talentList');
             var prev = $('#prev-p');
             var next = $('#next-p');
+            var bf = $('.greenControl');
+            var buttons = $('.greenControl div');
             var index = 1;
             var len = 4;
             var interval = 3000;
@@ -139,6 +141,19 @@ define(['jquery', 'pagination', 'common'], function (require, exports, module) {
                 });
             }
 
+            function showButton() {
+                $('.greenControl div').eq(index - 1).addClass('g-on').siblings().removeClass('g-on');
+            }
+            function play() {
+                timer = setTimeout(function () {
+                    next.trigger('click');
+                    play();
+                }, interval);
+            }
+
+            function stop() {
+                clearTimeout(timer);
+            }
 
             next.bind('click', function () {
                 if (list.is(':animated')) {
@@ -151,6 +166,7 @@ define(['jquery', 'pagination', 'common'], function (require, exports, module) {
                     index += 1;
                 }
                 animate(-718);
+                showButton();
             });
 
             prev.bind('click', function () {
@@ -164,8 +180,24 @@ define(['jquery', 'pagination', 'common'], function (require, exports, module) {
                     index -= 1;
                 }
                 animate(718);
+                showButton();
             });
 
+            buttons.each(function () {
+                $(this).bind('click', function () {
+                    if (list.is(':animated') || $(this).attr('class')=='g-on') {
+                        return;
+                    }
+                    var myIndex = parseInt($(this).attr('index'));
+                    var offset = -718 * (myIndex - index);
+
+                    animate(offset);
+                    index = myIndex;
+                    showButton();
+                })
+            });
+            list.hover(stop, play);
+            bf.hover(stop, play);
 
         });
     })
@@ -283,12 +315,12 @@ define(['jquery', 'pagination', 'common'], function (require, exports, module) {
             var start;
             var str="";
             var start1="<li onclick=\"window.open('http://hanghai.fulaan.com')\"> <img src=\"/static/images/community/hanghai_mini.jpg\"> <span >更多</span> " +
-                "<div class=\"photo-text\"> <h3 style=\"margin-top: 86px;font-size: 24px;\">帆迪全球在线<br>航海课程</h3> </div></li>";
+                "<div class=\"photo-text\"> <h3 style=\"margin-top: 86px;font-size: 24px;\" onclick=\"window.open('http://hanghai.fulaan.com')\">帆迪全球在线<br>航海课程</h3> </div></li>";
             var start2="<li onclick=\"window.open('/forum/postIndex.do?pSectionId=575d4d8e0cf2ca0383166bba')\"><img src=\"/static/images/community/jixian_mini.jpg\"><span >更多</span>" +
-            " <div class=\"photo-text\"> <h3 style=\"margin-top: 86px;font-size: 24px;\">极限航海巅峰<br>挑战</h3> </div> </li>";
+            " <div class=\"photo-text\"> <h3 style=\"margin-top: 86px;font-size: 24px;\" onclick=\"window.open('/forum/postIndex.do?pSectionId=575d4d8e0cf2ca0383166bba')\">极限航海巅峰<br>挑战</h3> </div> </li>";
 
             for(var i in total){
-                var temp="<li><img src=\""+total[i].activityImage+"\">" +
+                var temp="<li><img src=\""+total[i].activityImage+"\" onclick=\"window.open('/competition')\">" +
                     "<span onclick=\"window.open('/competition')\">更多</span>" +
                     "<div class=\"photo-text\"> <h3 onclick=\"window.open('/competition')\""+">"+total[i].mainTitle+"</h3>"+
                     "<p class=\"p1\">"+total[i].title+"</p> <p class=\"p5\">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;"+total[i].partContent+

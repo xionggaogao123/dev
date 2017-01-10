@@ -254,7 +254,7 @@
                     </li>
                     {{~}}
                 </script>--%>
-                <ul class="ul-photo" style="left: 1px;" id="talentList">
+                <ul class="ul-photo" style="left: -718px;" id="talentList">
 
                     <%--<li onclick="window.open('http://hanghai. .com')">--%>
                         <%--<img src="/static/images/community/hanghai_mini.jpg">--%>
@@ -275,6 +275,12 @@
                 <div class="photo-btn">
                     <span class="sp1" id="prev-p"> < </span>
                     <span class="sp2" id="next-p"> > </span>
+                </div>
+                <div class="greenControl clearfix">
+                    <div class="g-on" index="1"></div>
+                    <div index="2"></div>
+                    <div index="3"></div>
+                    <div index="4"></div>
                 </div>
             </div>
 

@@ -36,6 +36,11 @@ public class FSectionService {
         return fSectionDao.addFSectionEntry(fSectionDTO.exportEntry());
     }
 
+
+    public void saveOrUpdate(FSectionEntry entry){
+        fSectionDao.addFSectionEntry(entry);
+    }
+
     /**
      * 更新板块
      */
@@ -84,6 +89,10 @@ public class FSectionService {
         entry.setCount(count);
         entry.setTotalCount(themeCount);
         return new FSectionDTO(entry);
+    }
+
+    public FSectionEntry find(ObjectId id){
+        return fSectionDao.getFSection(id);
     }
 
     /**

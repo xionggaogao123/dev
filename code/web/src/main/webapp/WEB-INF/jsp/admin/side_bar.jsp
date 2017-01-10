@@ -37,6 +37,9 @@
             <a href="/admin/optimizationPlate.do">优化板块管理</a>
         </li>
         <li>
+            <a href="/admin/Section.do">论坛板块管理</a>
+        </li>
+        <li>
             <a href="/admin/appBannerManager.do">AppBanner管理</a>
         </li>
         <li>

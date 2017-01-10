@@ -189,15 +189,45 @@
         }
 
         $scope.uploadImg = function (id) {
-            uploadImg(id, '/admin//section/uploadImg.do');
+            uploadImg(id, '/admin/section/uploadImg.do');
+        }
+
+        $scope.setRemove = function (id) {
+            $('#remove').data("sectionId",id);
+            $('#remove').show();
+        }
+
+        $scope.closeRemove = function (){
+            $('#remove').hide();
+        }
+
+        $scope.submitRemove = function (){
+            var rmV=$('#removeValue').val();
+            setRemove($('#remove').data("sectionId"),rmV);
+        }
+
+        function setRemove(fSectionId,remove){
+            var url="/admin/section/setRemove";
+            $.ajax({
+                url: url+"/"+fSectionId,
+                type: 'POST',
+                data: {remove:remove},
+                dataType: 'json',
+                success: function (resp) {
+                   if(resp.code=="200"){
+                       $('#remove').hide();
+                       alert("设置成功！");
+                   }
+                }
+            });
         }
 
         $scope.uploadImgAppSrc = function (id) {
-            uploadImg(id, '/admin//section/uploadImgApp.do');
+            uploadImg(id, '/admin/section/uploadImgApp.do');
         }
 
         $scope.uploadImgBigAppSrc = function (id) {
-            uploadImg(id, '/admin//section/uploadImgBigApp.do');
+            uploadImg(id, '/admin/section/uploadImgBigApp.do');
         }
         $scope.closeImg = function () {
             $('#upload').hide();

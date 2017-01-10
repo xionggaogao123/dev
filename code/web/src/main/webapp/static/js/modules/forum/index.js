@@ -14,6 +14,8 @@ define(function (require, exports, module) {
 
         getFPost();
 
+        getCreamData();
+
         getUserList("1");
 
         var show_day = new Array('星期一', '星期二', '星期三', '星期四', '星期五', '星期六', '星期日');
@@ -220,6 +222,17 @@ define(function (require, exports, module) {
                 tmpl: '#userListTml',
                 data: resp,
                 context: '#lsU',
+                overwrite: 1
+            });
+        });
+    }
+
+    function getCreamData(){
+        Common.getPostData("/forum/getCreamData.do", {cream:1}, function (resp) {
+            Common.render({
+                tmpl: '#creamDataTmpl',
+                data: resp.message,
+                context: '#creamData',
                 overwrite: 1
             });
         });

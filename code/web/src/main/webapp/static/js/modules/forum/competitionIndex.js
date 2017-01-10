@@ -12,6 +12,7 @@ define(function (require, exports, module) {
 
         getFPost("/forum/fPostActivityAll.do");
         getUserList("1");
+        getCreamData();
 
         $('body').on('click', '#rely', function () {
             postList(page, pSectionId, -1, 0);
@@ -198,6 +199,17 @@ define(function (require, exports, module) {
         }
 
     });
+
+    function getCreamData(){
+        Common.getPostData("/forum/getCreamData.do", {cream:1}, function (resp) {
+            Common.render({
+                tmpl: '#creamDataTmpl',
+                data: resp.message,
+                context: '#creamData',
+                overwrite: 1
+            });
+        });
+    }
 
     function goToTask() {
         $.ajax({

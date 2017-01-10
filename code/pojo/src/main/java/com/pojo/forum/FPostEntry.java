@@ -800,6 +800,11 @@ public class FPostEntry extends BaseDBObject{
         setSimpleValue("cate",cate);
     }
 
+
+    public void setCreamTime(long creamTime){
+        setSimpleValue("crti",creamTime);
+    }
+
     public static class Reported extends BaseDBObject{
 
 

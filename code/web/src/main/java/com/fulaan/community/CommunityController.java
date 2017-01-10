@@ -1015,11 +1015,30 @@ public class CommunityController extends BaseController {
                                 @RequestParam(required = false, defaultValue = "1") int page,
                                 @RequestParam(required = false, defaultValue = "4") int pageSize,
                                 @RequestParam(required = false, defaultValue = "-1") int order) {
+          return  getTypeInfo(communityId,page,pageSize,order);
+    }
+
+
+    @RequestMapping("/getTypeMessages")
+    @ResponseBody
+    @SessionNeedless
+    public RespObj getTypeMessages(@RequestParam @ObjectIdType ObjectId communityId,
+                                @RequestParam(required = false, defaultValue = "1") int page,
+                                @RequestParam(required = false, defaultValue = "4") int pageSize,
+                                @RequestParam(required = false, defaultValue = "-1") int order) {
+        return  getTypeInfo(communityId,page,pageSize,order);
+    }
+
+
+    private RespObj getTypeInfo(ObjectId communityId,int page,int pageSize,int order){
         ObjectId userId = getUserId();
         List<ObjectId> objectIds = new ArrayList<ObjectId>();
         objectIds.add(communityId);
+        System.out.println(DateTimeUtils.convert(System.currentTimeMillis(),DateTimeUtils.DATE_YYYY_MM_DD_HH_MM_SS));
         return RespObj.SUCCESS(communityService.getNews(objectIds, page, pageSize, order, userId, 1));
     }
+
+
 
     @RequestMapping("/getMessage")
     @ResponseBody

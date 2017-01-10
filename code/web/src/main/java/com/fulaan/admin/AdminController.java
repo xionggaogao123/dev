@@ -298,7 +298,7 @@ public class AdminController extends BaseController {
     @RequestMapping("/sectionManage")
     @UserRoles(UserRole.DISCUSS_MANAGER)
     public String sectionManage(Map<String, Object> map) {
-        List<FSectionCountDTO> fSectionDTOs = fSectionService.getFSectionList();
+        List<FSectionCountDTO> fSectionDTOs = fSectionService.getFSectionList(1);
         map.put("sections", fSectionDTOs);
         map.put("masters", mUserDao.getMasters());
         map.put("managers", mUserDao.getManagers());

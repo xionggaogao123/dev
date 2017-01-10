@@ -143,7 +143,7 @@ public class FPostController extends BaseController {
             FSectionDTO fSectionDTO = fSectionService.findFSectionById(new ObjectId(request.getParameter("pSectionId")));
             model.put("pSectionName", fSectionDTO.getName());
         }
-        List<FSectionCountDTO> sectionDTOs = fSectionService.getFSectionList();
+        List<FSectionCountDTO> sectionDTOs = fSectionService.getFSectionList(2);
         model.put("sections", sectionDTOs);
         return "/forum/postIndex";
     }
@@ -152,7 +152,7 @@ public class FPostController extends BaseController {
     @RequestMapping("/competitionIndex")
     @LoginInfo
     public String competitionIndex(Map<String, Object> model) {
-        List<FSectionCountDTO> sectionDTOs = fSectionService.getFSectionList();
+        List<FSectionCountDTO> sectionDTOs = fSectionService.getFSectionList(2);
         model.put("sections", sectionDTOs);
         model.put("count", fPostService.competitionPostCount());
         return "forum/competitionIndex";
@@ -865,7 +865,7 @@ public class FPostController extends BaseController {
     @RequestMapping(value = "/fSectionData", method = RequestMethod.GET)
     @ResponseBody
     public List<FSectionCountDTO> getFSectionListById() {
-        return fSectionService.getFSectionList();
+        return fSectionService.getFSectionList(2);
     }
 
     /**

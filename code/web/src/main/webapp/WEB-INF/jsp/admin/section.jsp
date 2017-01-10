@@ -33,6 +33,7 @@
                 <span style="position: relative; left: 100px;cursor: pointer;" ng-click="up()">↑</span>
                 <span style="position: relative; left: 110px;cursor: pointer;" ng-click="down()">↓</span>
                 <span style="position: relative; left: 140px;cursor: pointer;" ng-click="uploadImg(section.fSectionId)">上传首页图片</span>
+                <span style="position: relative; left: 140px;cursor: pointer;" ng-click="setRemove(section.fSectionId)">删除板块</span>
                 <span style="position: relative; left: 140px;cursor: pointer;"
                       ng-click="uploadImgAppSrc(section.fSectionId)">上传移动端首页图片</span>
                 <span style="position: relative; left: 140px;cursor: pointer;"
@@ -49,6 +50,13 @@
                    size="1" style="width: 200px; height: 20px; opacity: 1"
                    accept="image/*">
             <button class="btn btn-primary" style="margin:10px 70px;" ng-click="closeImg()">取消</button>
+        </div>
+
+        <div id="remove"
+             style="position:absolute;top:300px;left:50%;border:1px solid #aaa;background-color:#aaa;padding:5px;display:none;">
+             <input id="removeValue" placeholder="请输入设置删除的字段(0|1),1代表删除"/>
+             <button id="btn-setRemove" ng-click="submitRemove()">提交</button>
+             <button ng-click="closeRemove()">取消</button>
         </div>
 
         <div id="addSecondary"

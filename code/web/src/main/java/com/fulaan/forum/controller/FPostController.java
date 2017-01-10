@@ -192,21 +192,23 @@ public class FPostController extends BaseController {
         int floor = Integer.parseInt(request.getParameter("floor"));
         int orFloor = floor;
         String postId = request.getParameter("postId");
+
+        int pageSize=Integer.parseInt(request.getParameter("pageSize"));
         FPostDTO fPostDTO = fPostService.detail(new ObjectId(postId));
         int inSet = fPostDTO.getInSet();
         double cp;
         if (inSet == 1) {
             //查询未删除楼层总数
             int count = fReplyService.getFRepliesCount("", postId, "", "", -1);
-            if (count <= 8) {
+            if (count <= pageSize) {
                 cp = 1;
             } else {
                 if (count > floor) {
                     int temp = count - floor;
-                    if (temp <= 8) {
+                    if (temp <= pageSize) {
                         cp = 1;
                     } else {
-                        cp = Math.ceil(temp / 8) + 1;
+                        cp = Math.ceil(temp / pageSize) + 1;
                     }
                 } else {
                     cp = 1;
@@ -214,23 +216,23 @@ public class FPostController extends BaseController {
             }
         } else {
             int count = fReplyService.getFRepliesCount("", postId, "", "", -1);
-            if (count <= 8) {
+            if (count <= pageSize) {
                 cp = 1;
             } else {
                 if (count > floor) {
                     int temp = count - floor;
-                    if (temp <= 8) {
-                        cp = Math.ceil(count / 8) + 1;
+                    if (temp <= pageSize) {
+                        cp = Math.ceil(count / pageSize) + 1;
                     } else {
-                        cp = Math.ceil(count / 8) - Math.ceil(temp / 8) + 1;
+                        cp = Math.ceil(count / pageSize) - Math.ceil(temp / pageSize) + 1;
                     }
                 } else {
-                    cp = Math.ceil(count / 8) + 1;
+                    cp = Math.ceil(count / pageSize) + 1;
                 }
             }
         }
-        if (floor > 8) {
-            floor = floor % 8;
+        if (floor > pageSize) {
+            floor = floor % pageSize;
         }
         String url = "/forum/postDetail.do?pSectionId=" + fPostDTO.getPostSectionId() + "&postId=" + fPostDTO.getFpostId() + "&personId=" + fPostDTO.getPersonId() + "&page=" + (int) cp + "&floor=" + orFloor;
         return "redirect:" + url;
@@ -249,20 +251,20 @@ public class FPostController extends BaseController {
         //查询最大的楼层
         int maxFloor = fReplyService.getMaxFloor(postId);
         double cp = 0;
-        if (count > 8) {
+        if (count > 15) {
             if (floor == 0) {
                 cp = 1;
             } else {
                 //根据楼层数来计算它处于未删除的那个楼层
                 int t = fReplyService.getFloor(floor, postId);
                 if (maxFloor >= floor) {
-                    if (t <= 8) {
+                    if (t <= 15) {
                         cp = 1;
                     } else {
-                        if (t % 8 == 0) {
-                            cp = Math.ceil(t / 8);
+                        if (t % 15 == 0) {
+                            cp = Math.ceil(t / 15);
                         } else {
-                            cp = Math.ceil(t / 8) + 1;
+                            cp = Math.ceil(t / 15) + 1;
                         }
                     }
                 } else {

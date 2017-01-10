@@ -21,6 +21,7 @@ import com.pojo.fcommunity.Banner;
 import com.pojo.forum.FPostDTO;
 import com.pojo.forum.FSectionCountDTO;
 import com.pojo.forum.FSectionDTO;
+import com.pojo.forum.FSectionEntry;
 import com.pojo.user.UserEntry;
 import com.pojo.user.UserRole;
 import com.sys.constants.Constant;
@@ -567,6 +568,17 @@ public class AdminController extends BaseController {
         RespObj respObj = RespObj.SUCCESS;
         respObj.setMessage("更新成功！");
         return respObj;
+    }
+
+
+    @RequestMapping(value = "/section/setRemove/{fSectionId}", method = RequestMethod.POST)
+    @ResponseBody
+    @UserRoles(UserRole.DISCUSS_MANAGER)
+    public RespObj setSectionRemove(@PathVariable @ObjectIdType ObjectId fSectionId,int remove){
+        FSectionEntry entry=fSectionService.find(fSectionId);
+        entry.setRemove(remove);
+        fSectionService.saveOrUpdate(entry);
+        return RespObj.SUCCESS;
     }
 
     /**

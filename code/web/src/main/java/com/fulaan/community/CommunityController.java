@@ -54,6 +54,7 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.multipart.MultipartRequest;
 import sun.net.www.protocol.https.HttpsURLConnectionImpl;
+
 import javax.servlet.ServletInputStream;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -96,44 +97,16 @@ public class CommunityController extends BaseController {
 
     public static final String suffix = "/static/images/community/upload.png";
 
-    private boolean judgeIsNumber(String charStr) {
-        for (int i = 0; i < charStr.length(); i++) {
-            char c = charStr.charAt(i);
-            if ((byte) c < 48 || (byte) c > 57) {
-                return false;
-            }
-        }
-        return true;
-    }
-
     @RequestMapping("/create")
     @ResponseBody
     public RespObj createCommunity(String name,
-                                   @RequestParam(required = false, defaultValue = "") String desc,
-                                   @RequestParam(required = false, defaultValue = "") String logo,
+                                   @RequestParam(required = false, defaultValue = "") StringBuffer desc,
+                                   @RequestParam(required = false, defaultValue = "") StringBuffer logo,
                                    @RequestParam(required = false, defaultValue = "0") int open,
                                    @RequestParam(required = false, defaultValue = "") String userIds) throws Exception {
-        //先判断社区名称是否是纯数字
-        if (judgeIsNumber(name)) {
-            return RespObj.FAILDWithErrorMsg("社区名称不能是纯数字!");
-        }
-        //先进行敏感词过滤
-        List<String> words = userService.recordSensitiveWords(name);
-        if (words.size() > 0) {
-            StringBuffer buffer = new StringBuffer();
-            buffer.append("这些词语 ");
-            for (String item : words) {
-                buffer.append("“" + item + "”" + "、");
-            }
-            String str = buffer.toString().substring(0, buffer.toString().length() - 1);
-            str = str + "是违禁词!";
-            return RespObj.FAILDWithErrorMsg(str);
-        }
-        desc = userService.replaceSensitiveWord(desc);
-        //先判断该社区名称是否使用过
-        boolean flag = communityService.isCommunityNameUnique(name);
-        if (!flag) {
-            return RespObj.FAILDWithErrorMsg("该社区名称已使用过！");
+        RespObj respObj = detectCondition(name, desc, logo);
+        if (respObj.getCode().equals("500")) {
+            return respObj;
         }
         ObjectId uid = getUserId();
         ObjectId communityId = new ObjectId();
@@ -145,19 +118,10 @@ public class CommunityController extends BaseController {
         if (StringUtils.isBlank(seqId)) {
             return RespObj.FAILDWithErrorMsg("社区序列值不够");
         }
-        if (StringUtils.isBlank(logo)) {
-            String prev = "http://www.fulaan.com";
-            logo = prev + suffix;
-        }
-        if (suffix.equals(logo)) {
-            String prev = "http://www.fulaan.com";
-            logo = prev + suffix;
-        }
-        ObjectId commId = communityService.createCommunity(communityId, uid, name, desc, logo, qrUrl, seqId, open);
+        ObjectId commId = communityService.createCommunity(communityId, uid, name, desc.toString(), logo.toString(), qrUrl, seqId, open);
         if (commId == null) {
-            return RespObj.FAILDWithErrorMsg("无法创建社区");
+            return RespObj.FAILDWithErrorMsg("创建社区失败");
         }
-        communityService.pushToUser(commId, uid, 2);
         CommunityDTO communityDTO = communityService.findByObjectId(commId);
         //创建社区系统消息通知
         communitySystemInfoService.saveOrupdateEntry(getUserId(), getUserId(), "社长", 4, commId);
@@ -181,6 +145,40 @@ public class CommunityController extends BaseController {
         String headImage = groupService.getHeadImage(new ObjectId(communityDTO.getGroupId()));
         communityDTO.setHeadImage(headImage);
         return RespObj.SUCCESS(communityDTO);
+    }
+
+    private RespObj detectCondition(String name, StringBuffer desc, StringBuffer logo) {
+        //先判断社区名称是否是纯数字
+        if (StringUtils.isNumeric(name)) {
+            return RespObj.FAILDWithErrorMsg("社区名称不能是纯数字!");
+        }
+        //先进行敏感词过滤
+        List<String> words = userService.recordSensitiveWords(name);
+        if (words.size() > 0) {
+            StringBuffer buffer = new StringBuffer();
+            buffer.append("这些词语 ");
+            for (String item : words) {
+                buffer.append("“" + item + "”" + "、");
+            }
+            String str = buffer.toString().substring(0, buffer.toString().length() - 1);
+            str = str + "是违禁词!";
+            return RespObj.FAILDWithErrorMsg(str);
+        }
+        String filterStr = userService.replaceSensitiveWord(desc.toString());
+        desc.setLength(0);
+        desc.append(filterStr);
+        //先判断该社区名称是否使用过
+        boolean flag = communityService.isCommunityNameUnique(name);
+        if (!flag) {
+            return RespObj.FAILDWithErrorMsg("该社区名称已使用过！");
+        }
+        if (StringUtils.isBlank(logo) || suffix.equals(logo.toString())) {
+            String prev = "http://www.fulaan.com";
+            String preLogo = prev + suffix;
+            logo.setLength(0);
+            logo.append(preLogo);
+        }
+        return RespObj.SUCCESS;
     }
 
     /**
@@ -311,18 +309,13 @@ public class CommunityController extends BaseController {
         ObjectId userId = getUserId();
         List<CommunityDTO> communityDTOList = new ArrayList<CommunityDTO>();
         CommunityDTO fulanDto = communityService.getCommunityByName("复兰社区");
-        if (null == userId) {
-            if (null != fulanDto) {
-                communityDTOList.add(fulanDto);
-            }
+        if (null == userId && null != fulanDto) {
+            communityDTOList.add(fulanDto);
             return RespObj.SUCCESS(communityDTOList);
         } else {
-            //登录状态
-            //判断是否为复兰社区会员
             if (null != fulanDto) {
                 //加入复兰社区
                 joinFulaanCommunity(getUserId(), new ObjectId(fulanDto.getId()));
-//                communityService.cleanNecessaryCommunity(getUserId(),new ObjectId(fulanDto.getId()));
             }
             communityDTOList = communityService.getCommunitys(userId, page, pageSize);
             if ("web".equals(platform)) {
@@ -510,27 +503,27 @@ public class CommunityController extends BaseController {
     public RespObj joinActivitySheet(@ObjectIdType ObjectId communityDetailId) {
         CommunityDetailDTO communityDetailDTO = communityService.findDetailById(communityDetailId);
         List<String> partInList = communityDetailDTO.getPartInList();
-        Set<ObjectId> userIds=new HashSet<ObjectId>();
+        Set<ObjectId> userIds = new HashSet<ObjectId>();
         for (String id : partInList) {
             userIds.add(new ObjectId(id));
         }
-        ObjectId groupId=communityService.getGroupId(new ObjectId(communityDetailDTO.getCommunityId()));
-        List<ObjectId> groupIds=new ArrayList<ObjectId>();
+        ObjectId groupId = communityService.getGroupId(new ObjectId(communityDetailDTO.getCommunityId()));
+        List<ObjectId> groupIds = new ArrayList<ObjectId>();
         groupIds.add(groupId);
-        Map<String,MemberEntry> memberEntryMap=communityService.getMemberEntryMap(groupIds,new ArrayList<ObjectId>(userIds));
+        Map<String, MemberEntry> memberEntryMap = communityService.getMemberEntryMap(groupIds, new ArrayList<ObjectId>(userIds));
         List<User> users = new ArrayList<User>();
         for (String id : partInList) {
             UserDetailInfoDTO user = userService.getUserInfoById(id);
             User user1 = new User();
             user1.setImg(user.getImgUrl());
-            MemberEntry entry1= memberEntryMap.get(groupId + "$" + new ObjectId(id));
-            if(null!=entry1){
-                if(StringUtils.isNotBlank(entry1.getNickName())){
+            MemberEntry entry1 = memberEntryMap.get(groupId + "$" + new ObjectId(id));
+            if (null != entry1) {
+                if (StringUtils.isNotBlank(entry1.getNickName())) {
                     user1.setName(entry1.getNickName());
-                }else{
+                } else {
                     user1.setName(StringUtils.isNotBlank(user.getNickName()) ? user.getNickName() : user.getUserName());
                 }
-            }else {
+            } else {
                 user1.setName(StringUtils.isNotBlank(user.getNickName()) ? user.getNickName() : user.getUserName());
             }
             user1.setId(user.getId());
@@ -692,10 +685,6 @@ public class CommunityController extends BaseController {
     public RespObj joinCommunity(@ObjectIdType ObjectId communityId,
                                  @RequestParam(defaultValue = "1", required = false) int type,
                                  @RequestParam(defaultValue = "", required = false) String msg) {
-
-//        if(type==2){
-//            System.out.println("扫描二维码加的"+type);
-//        }
         CommunityDTO dto = communityService.findByObjectId(communityId);
         ObjectId userId = getUserId();
         ObjectId groupId = communityService.getGroupId(communityId);
@@ -946,7 +935,7 @@ public class CommunityController extends BaseController {
                                 @RequestParam(required = false, defaultValue = "1") int page,
                                 @RequestParam(required = false, defaultValue = "4") int pageSize,
                                 @RequestParam(required = false, defaultValue = "-1") int order) {
-          return  getTypeInfo(communityId,page,pageSize,order);
+        return getTypeInfo(communityId, page, pageSize, order);
     }
 
 
@@ -954,21 +943,20 @@ public class CommunityController extends BaseController {
     @ResponseBody
     @SessionNeedless
     public RespObj getTypeMessages(@RequestParam @ObjectIdType ObjectId communityId,
-                                @RequestParam(required = false, defaultValue = "1") int page,
-                                @RequestParam(required = false, defaultValue = "4") int pageSize,
-                                @RequestParam(required = false, defaultValue = "-1") int order) {
-        return  getTypeInfo(communityId,page,pageSize,order);
+                                   @RequestParam(required = false, defaultValue = "1") int page,
+                                   @RequestParam(required = false, defaultValue = "4") int pageSize,
+                                   @RequestParam(required = false, defaultValue = "-1") int order) {
+        return getTypeInfo(communityId, page, pageSize, order);
     }
 
 
-    private RespObj getTypeInfo(ObjectId communityId,int page,int pageSize,int order){
+    private RespObj getTypeInfo(ObjectId communityId, int page, int pageSize, int order) {
         ObjectId userId = getUserId();
         List<ObjectId> objectIds = new ArrayList<ObjectId>();
         objectIds.add(communityId);
-        System.out.println(DateTimeUtils.convert(System.currentTimeMillis(),DateTimeUtils.DATE_YYYY_MM_DD_HH_MM_SS));
+        System.out.println(DateTimeUtils.convert(System.currentTimeMillis(), DateTimeUtils.DATE_YYYY_MM_DD_HH_MM_SS));
         return RespObj.SUCCESS(communityService.getNews(objectIds, page, pageSize, order, userId, 1));
     }
-
 
 
     @RequestMapping("/getMessage")
@@ -1171,14 +1159,14 @@ public class CommunityController extends BaseController {
     /**
      * 设置备注名
      *
-     * @param remarkId 关键字Id
+     * @param remarkId  关键字Id
      * @param endUserId 被设置备注名的人的Id
-     * @param remark 备注名
+     * @param remark    备注名
      * @return
      */
     @RequestMapping("/setRemark")
     @ResponseBody
-    public RespObj setRemark(@RequestParam(defaultValue = "",required = false) String remarkId,
+    public RespObj setRemark(@RequestParam(defaultValue = "", required = false) String remarkId,
                              String endUserId, String remark) {
         ObjectId userId = getUserId();
         if (StringUtils.isNotBlank(remarkId)) {
@@ -1816,9 +1804,9 @@ public class CommunityController extends BaseController {
         if (!urlStr.contains("http")) {
             urlStr1 = "http://" + urlStr;
             urlStr2 = "https://" + urlStr;
-        }else{
-            urlStr1=urlStr;
-            urlStr2=urlStr;
+        } else {
+            urlStr1 = urlStr;
+            urlStr2 = urlStr;
         }
         boolean isUrl = false;
         try {
@@ -1826,11 +1814,11 @@ public class CommunityController extends BaseController {
             HttpURLConnection.setFollowRedirects(false);
             HttpURLConnection con = (HttpURLConnection) url.openConnection();
             con.setRequestMethod("HEAD");
-            if(con.getResponseCode() == HttpURLConnection.HTTP_OK){
-               isUrl=true;
+            if (con.getResponseCode() == HttpURLConnection.HTTP_OK) {
+                isUrl = true;
             }
             con.disconnect();
-            if(!urlStr1.equals(urlStr2)) {
+            if (!urlStr1.equals(urlStr2)) {
                 if (!isUrl) {
                     URL url2 = new URL(urlStr2);
                     URLConnection con2 = url2.openConnection();
@@ -2495,13 +2483,14 @@ public class CommunityController extends BaseController {
 
     /**
      * 获取登录人所有的备注名
+     *
      * @return
      */
     @RequestMapping("/getMyAllRemarks")
     @ResponseBody
-    public RespObj getMyAllRemarks(){
-        ObjectId userId=getUserId();
-        List<RemarkDTO> remarkDTOs=communityService.getRemarkDtos(userId);
+    public RespObj getMyAllRemarks() {
+        ObjectId userId = getUserId();
+        List<RemarkDTO> remarkDTOs = communityService.getRemarkDtos(userId);
         return RespObj.SUCCESS(remarkDTOs);
     }
 

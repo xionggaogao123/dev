@@ -68,7 +68,6 @@ public class RespObj implements Serializable {
     }
 
     public static RespObj SUCCESS(Object message) {
-
         RespObj respObj = new RespObj(Constant.SUCCESS_CODE);
         respObj.setMessage(message);
         return respObj;
@@ -88,8 +87,10 @@ public class RespObj implements Serializable {
 
     @Override
     public String toString() {
-        return "RespObj [code=" + code + ", message=" + message + "]";
+        return "RespObj{" +
+                "code='" + code + '\'' +
+                ", message=" + message +
+                ", errorMessage='" + errorMessage + '\'' +
+                '}';
     }
-
-
 }

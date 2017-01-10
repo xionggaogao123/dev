@@ -12,6 +12,8 @@ import com.fulaan.playmate.service.MateService;
 import com.fulaan.user.model.ThirdType;
 import com.fulaan.user.service.UserService;
 import com.fulaan.user.util.QQLoginUtil;
+import com.fulaan.util.Validator;
+import com.pojo.mobile.UserMobileEntry;
 import com.pojo.user.UserDetailInfoDTO;
 import com.pojo.user.UserEntry;
 import com.pojo.user.UserRole;
@@ -38,7 +40,9 @@ import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.text.SimpleDateFormat;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
+import java.util.regex.Pattern;
 
 /**
  * Created by jerry on 2016/12/12.
@@ -183,18 +187,57 @@ public class AccountController extends BaseController {
     @SessionNeedless
     @ResponseBody
     public RespObj verifyCodeWithName(String name, String verifyCode, @CookieValue(Constant.COOKIE_VALIDATE_CODE) String verifyKey, HttpServletResponse response) {
+        Map<String,Object> result = new HashMap<String,Object>();
         if (!accountService.checkVerifyCode(verifyCode, verifyKey)) {
             return RespObj.FAILD("验证码不正确");
         }
-        if (userService.findByRegular(name) == null) {
-            return RespObj.FAILD("用户不存在");
+
+        Pattern userNamePattern = Pattern.compile(Validator.REGEX_USERNAME);
+        if(userNamePattern.matcher(name).matches()) {
+            if(userService.findByUserName(name) == null) {
+                return RespObj.FAILDWithErrorMsg("账号不存在");
+            }
+            ObjectId key = new ObjectId();
+            String cacheKey = CacheHandler.getKeyString(CacheHandler.CACHE_FW_USERNAME_KEY, key.toString());
+            CacheHandler.cache(cacheKey, name, Constant.SESSION_FIVE_MINUTE);//5分钟
+            response.addCookie(new Cookie(Constant.FWCODE, key.toString()));
+
+            result.put("type","userName");
+            result.put("userName",name);
         }
 
-        ObjectId key = new ObjectId();
-        String cacheKey = CacheHandler.getKeyString(CacheHandler.CACHE_FW_USERNAME_KEY, key.toString());
-        CacheHandler.cache(cacheKey, name, Constant.SESSION_FIVE_MINUTE);//5分钟
-        response.addCookie(new Cookie(Constant.FWCODE, key.toString()));
-        return RespObj.SUCCESS;
+        Pattern emailPattern = Pattern.compile(Validator.REGEX_EMAIL);
+        if(emailPattern.matcher(name).matches()) {
+
+            if(userService.findByEmail(name) == null) {
+                return RespObj.FAILDWithErrorMsg("账号不存在");
+            }
+            ObjectId key = new ObjectId();
+            String cacheKey = CacheHandler.getKeyString(CacheHandler.CACHE_FW_USERNAME_KEY, key.toString());
+            CacheHandler.cache(cacheKey, name, Constant.SESSION_FIVE_MINUTE);//5分钟
+            response.addCookie(new Cookie(Constant.FWCODE, key.toString()));
+
+            result.put("type","email");
+            result.put("email",name);
+        }
+
+        Pattern mobilePattern = Pattern.compile(Validator.REGEX_MOBILE);
+        if(mobilePattern.matcher(name).matches()) {
+            if(userService.findByMobile(name) == null) {
+                return RespObj.FAILDWithErrorMsg("账号不存在");
+            }
+            UserMobileEntry mobileEntry = accountService.findByMobile(name);
+            if(mobileEntry != null) {
+                List<ObjectId> userIdList = mobileEntry.getUserIds();
+                List<UserDetailInfoDTO> userDetailInfoDTOS = userService.findUserInfoByIds(userIdList);
+                result.put("users",userDetailInfoDTOS);
+            }
+            result.put("type","mobile");
+            result.put("mobile",name);
+            result.put("protectedMobile",getProtectedMobile(name));
+        }
+
+        return RespObj.SUCCESS(result);
     }
 
     /**

@@ -59,11 +59,14 @@
             <div class="tab">
                 <span class="tab-cur">手机验证</span><span>邮箱验证</span>
             </div>
-            <ul class="re-form ul1">
+            <ul class="re-form ul1 step2">
                 <li>
                     <input type="text" id="phone">
                     <span class="sp1">手机验证 : </span>
                     <span class="sp3">请输入11位正确的手机号码</span>
+                </li>
+                <li id="choose-name" hidden>
+                    <span class="sp1">请选择找回的用户名:</span>
                 </li>
                 <li>
                     <input type="text" class="in1" id="verifyCode">
@@ -71,19 +74,12 @@
                     <img id="verifyImg" alt="" class="sp6"
                          style="top: 5px;width: auto;height: auto"/>
                 </li>
-                <li hidden>
-                    <span class="sp1">请选择找回的用户名:</span>
-                    <label><input type="radio" name="check-id">aaa</label>
-                    <label><input type="radio" name="check-id">bbb</label>
-                    <label><input type="radio" name="check-id">ccc</label>
-                </li>
                 <li>
                     <input type="text" class="in1" id="code">
                     <span class="sp1">短信验证码 : </span>
                     <span class="sp4" id="sendCode">发送验证码</span>
                 </li>
                 <li>
-                    <%--<span class="sp2"><label><input type="checkbox" class="next2-argument">我同意<a href="/agreement.html" target="_blank">《复兰教育社区协议》</a></label></span>--%>
                     <button class="re-btn2 next2">下一步</button>
                     <span class="sp3" style="display: none;top: 24px">未勾选社区协议</span>
                 </li>

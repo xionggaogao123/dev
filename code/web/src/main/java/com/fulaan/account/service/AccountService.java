@@ -69,4 +69,8 @@ public class AccountService extends BaseService {
             userMobileDao.save(userMobileEntry);
         }
     }
+
+    public UserMobileEntry findByMobile(String mobile) {
+        return userMobileDao.findByMobile(mobile);
+    }
 }

@@ -115,7 +115,7 @@ public class CommunityController extends BaseController {
                                    @RequestParam(required = false, defaultValue = "") String userIds) throws Exception {
         //先判断社区名称是否是纯数字
         if (judgeIsNumber(name)) {
-            return RespObj.FAILD("社区名称不能是纯数字!");
+            return RespObj.FAILDWithErrorMsg("社区名称不能是纯数字!");
         }
         //先进行敏感词过滤
         List<String> words = userService.recordSensitiveWords(name);
@@ -127,23 +127,23 @@ public class CommunityController extends BaseController {
             }
             String str = buffer.toString().substring(0, buffer.toString().length() - 1);
             str = str + "是违禁词!";
-            return RespObj.FAILD(str);
+            return RespObj.FAILDWithErrorMsg(str);
         }
         desc = userService.replaceSensitiveWord(desc);
         //先判断该社区名称是否使用过
         boolean flag = communityService.isCommunityNameUnique(name);
         if (!flag) {
-            return RespObj.FAILD("该社区名称已使用过！");
+            return RespObj.FAILDWithErrorMsg("该社区名称已使用过！");
         }
         ObjectId uid = getUserId();
         ObjectId communityId = new ObjectId();
         String qrUrl = QRUtils.getCommunityQrUrl(communityId);
         if (qrUrl == null) {
-            return RespObj.FAILD("无法生成二维码");
+            return RespObj.FAILDWithErrorMsg("无法生成二维码");
         }
         String seqId = communityService.getSeq();
         if (StringUtils.isBlank(seqId)) {
-            return RespObj.FAILD("社区序列值不够");
+            return RespObj.FAILDWithErrorMsg("社区序列值不够");
         }
         if (StringUtils.isBlank(logo)) {
             String prev = "http://www.fulaan.com";
@@ -155,7 +155,7 @@ public class CommunityController extends BaseController {
         }
         ObjectId commId = communityService.createCommunity(communityId, uid, name, desc, logo, qrUrl, seqId, open);
         if (commId == null) {
-            return RespObj.FAILD("无法创建社区");
+            return RespObj.FAILDWithErrorMsg("无法创建社区");
         }
         communityService.pushToUser(commId, uid, 2);
         CommunityDTO communityDTO = communityService.findByObjectId(commId);
@@ -182,75 +182,6 @@ public class CommunityController extends BaseController {
         communityDTO.setHeadImage(headImage);
         return RespObj.SUCCESS(communityDTO);
     }
-
-
-    @RequestMapping("/create2")
-    @ResponseBody
-    public RespObj createCommunity2(String name,
-                                    @RequestParam(required = false, defaultValue = "") String desc,
-                                    @RequestParam(required = false, defaultValue = "") String logo,
-                                    @RequestParam(required = false, defaultValue = "0") int open,
-                                    @RequestParam(required = false, defaultValue = "") String userIds) throws Exception {
-        //先进行敏感词过滤
-        List<String> words = userService.recordSensitiveWords(name);
-        if (words.size() > 0) {
-            StringBuffer buffer = new StringBuffer();
-            buffer.append("这些词语 ");
-            for (String item : words) {
-                buffer.append("“" + item + "”" + "、");
-            }
-            String str = buffer.toString().substring(0, buffer.toString().length() - 1);
-            str = str + "是违禁词!";
-            CommunityDTO communityDTO = new CommunityDTO();
-            communityDTO.setErrorMsg(str);
-            return RespObj.FAILD(communityDTO);
-        }
-        desc = userService.replaceSensitiveWord(desc);
-
-        //先判断该社区名称是否使用过
-        boolean flag = communityService.isCommunityNameUnique(name);
-        if (!flag) {
-            CommunityDTO communityDTO = new CommunityDTO();
-            communityDTO.setErrorMsg("该社区名称已使用过！");
-            return RespObj.FAILD(communityDTO);
-        }
-        ObjectId uid = getUserId();
-        ObjectId communityId = new ObjectId();
-        String qrUrl = QRUtils.getCommunityQrUrl(communityId);
-        String seqId = communityService.getSeq();
-        if (StringUtils.isBlank(seqId)) {
-            CommunityDTO communityDTO = new CommunityDTO();
-            communityDTO.setErrorMsg("社区序列值不够");
-            return RespObj.FAILD(communityDTO);
-        }
-        if (StringUtils.isBlank(logo)) {
-            String prev = "http://www.fulaan.com";
-            logo = prev + suffix;
-        }
-        ObjectId commId = communityService.createCommunity(communityId, uid, name, desc, logo, qrUrl, seqId, open);
-        communityService.pushToUser(commId, uid, 2);
-        CommunityDTO communityDTO = communityService.findByObjectId(commId);
-        if (StringUtils.isNotBlank(userIds)) {
-            GroupDTO groupDTO = groupService.findById(new ObjectId(communityDTO.getGroupId()));
-            List<ObjectId> userList = MongoUtils.convertObjectIds(userIds);
-            for (ObjectId userId : userList) {
-                if (emService.addUserToEmGroup(groupDTO.getEmChatId(), userId)) {
-                    memberService.saveMember(userId, new ObjectId(groupDTO.getId()), 0);
-                    communityService.pushToUser(communityId, userId, 1);
-                }
-            }
-        }
-        int memberCount = memberService.getMemberCount(new ObjectId(communityDTO.getGroupId()));
-        communityDTO.setMemberCount(memberCount);
-        List<MemberDTO> members = memberService.getMembers(new ObjectId(communityDTO.getGroupId()), 20);
-        communityDTO.setMembers(members);
-        MemberDTO mine = memberService.getUser(new ObjectId(communityDTO.getGroupId()), getUserId());
-        communityDTO.setMine(mine);
-        String headImage = groupService.getHeadImage(new ObjectId(communityDTO.getGroupId()));
-        communityDTO.setHeadImage(headImage);
-        return RespObj.SUCCESS(communityDTO);
-    }
-
 
     /**
      * 获取社区详情

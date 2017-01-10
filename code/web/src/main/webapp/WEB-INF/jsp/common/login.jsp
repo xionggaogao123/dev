@@ -29,9 +29,9 @@
         <dd>
             <span class="store-DL" id="logIn">登录</span>
         </dd>
-        <%--<dd>--%>
-            <%--<p class="p-outc">或使用其他账号登录：<i class="i-qq"></i><i class="i-wx"></i></p>--%>
-        <%--</dd>--%>
+        <dd>
+            <p class="p-outc">或使用其他账号登录：<i class="i-qq"></i><i class="i-wx"></i></p>
+        </dd>
     </dl>
 </div>
 <!--==========背景============-->

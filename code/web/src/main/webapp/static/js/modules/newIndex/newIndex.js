@@ -198,7 +198,7 @@ define(['jquery', 'pagination', 'common'], function (require, exports, module) {
             });
             list.hover(stop, play);
             bf.hover(stop, play);
-
+            play();
         });
     })
     function getCommunityNews() {

@@ -26,6 +26,9 @@ import org.bson.types.ObjectId;
  *     tcc:totalCommentCount 总评论量（回帖量）
  *     tc:themeCount 发帖量
  *     pc:postCount 总发帖量（发帖量+回帖量）
+ *
+ *     ir:remove 删除标志
+ *
  * }
  */
 public class FSectionEntry extends BaseDBObject {
@@ -221,6 +224,19 @@ public class FSectionEntry extends BaseDBObject {
 
     public void setPostCount(Long postCount) {
         setSimpleValue("pc", postCount);
+    }
+
+
+    public int getRemove(){
+        if(this.getBaseEntry().containsField("ir")){
+            return getSimpleIntegerValue("ir");
+        }else{
+            return 0;
+        }
+    }
+
+    public void setRemove(int remove){
+        setSimpleValue("ir",remove);
     }
 
 

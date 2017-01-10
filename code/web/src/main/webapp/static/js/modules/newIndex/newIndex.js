@@ -107,6 +107,8 @@ define(['jquery', 'pagination', 'common'], function (require, exports, module) {
             var list = $('#talentList');
             var prev = $('#prev-p');
             var next = $('#next-p');
+            var bf = $('.greenControl');
+            var buttons = $('.greenControl div');
             var index = 1;
             var len = 4;
             var interval = 3000;
@@ -122,23 +124,36 @@ define(['jquery', 'pagination', 'common'], function (require, exports, module) {
                     offset = '-=' + Math.abs(offset);
                 }
                 list.animate({'left': offset}, 300, function () {
-                    // if (left > -200) {
-                    //     list.css('left', -718 * len);
-                    // }
-                    // if (left < (-718 * len)) {
-                    //     list.css('left', -718);
-                    // }
-                    if (left ==(-718 * len)){
-                        list.css('left', 0);
+                    if (left > -200) {
+                        list.css('left', -718 * len);
                     }
-
-                    if (left == 718){
-                        list.css('left', -718 * (len-1));
+                    if (left < (-718 * len)) {
+                        list.css('left', -718);
                     }
+                    // if (left ==(-718 * len+1)||left ==(-718 * len)){
+                    //     list.css('left', 0);
+                    // }
+                    //
+                    // if (left == 717||left == 718){
+                    //     list.css('left', -718 * (len-1)+1);
+                    // }
 
                 });
             }
 
+            function showButton() {
+                $('.greenControl div').eq(index - 1).addClass('g-on').siblings().removeClass('g-on');
+            }
+            function play() {
+                timer = setTimeout(function () {
+                    next.trigger('click');
+                    play();
+                }, interval);
+            }
+
+            function stop() {
+                clearTimeout(timer);
+            }
 
             next.bind('click', function () {
                 if (list.is(':animated')) {
@@ -151,6 +166,7 @@ define(['jquery', 'pagination', 'common'], function (require, exports, module) {
                     index += 1;
                 }
                 animate(-718);
+                showButton();
             });
 
             prev.bind('click', function () {
@@ -164,9 +180,25 @@ define(['jquery', 'pagination', 'common'], function (require, exports, module) {
                     index -= 1;
                 }
                 animate(718);
+                showButton();
             });
 
+            buttons.each(function () {
+                $(this).bind('click', function () {
+                    if (list.is(':animated') || $(this).attr('class')=='g-on') {
+                        return;
+                    }
+                    var myIndex = parseInt($(this).attr('index'));
+                    var offset = -718 * (myIndex - index);
 
+                    animate(offset);
+                    index = myIndex;
+                    showButton();
+                })
+            });
+            list.hover(stop, play);
+            bf.hover(stop, play);
+            play();
         });
     })
     function getCommunityNews() {
@@ -280,15 +312,26 @@ define(['jquery', 'pagination', 'common'], function (require, exports, module) {
         requestData.inSet = 1;
         common.getData(url, requestData, function (resp) {
             var total = resp.list;
+            var start;
             var str="";
+            var start1="<li onclick=\"window.open('http://hanghai.fulaan.com')\"> <img src=\"/static/images/community/hanghai_mini.jpg\"> <span >更多</span> " +
+                "<div class=\"photo-text\"> <h3 style=\"margin-top: 86px;font-size: 24px;\" onclick=\"window.open('http://hanghai.fulaan.com')\">帆迪全球在线<br>航海课程</h3> </div></li>";
+            var start2="<li onclick=\"window.open('/forum/postIndex.do?pSectionId=575d4d8e0cf2ca0383166bba')\"><img src=\"/static/images/community/jixian_mini.jpg\"><span >更多</span>" +
+            " <div class=\"photo-text\"> <h3 style=\"margin-top: 86px;font-size: 24px;\" onclick=\"window.open('/forum/postIndex.do?pSectionId=575d4d8e0cf2ca0383166bba')\">极限航海巅峰<br>挑战</h3> </div> </li>";
+
             for(var i in total){
-                str=str+"<li><img src=\""+total[i].activityImage+"\">" +
+                var temp="<li><img src=\""+total[i].activityImage+"\" onclick=\"window.open('/competition')\">" +
                     "<span onclick=\"window.open('/competition')\">更多</span>" +
-                "<div class=\"photo-text\"> <h3 onclick=\"window.open('/competition')\""+">"+total[i].mainTitle+"</h3>"+
-                "<p class=\"p1\">"+total[i].title+"</p> <p class=\"p5\">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;"+total[i].partContent+
-                "</p> </div> </li>";
+                    "<div class=\"photo-text\"> <h3 onclick=\"window.open('/competition')\""+">"+total[i].mainTitle+"</h3>"+
+                    "<p class=\"p1\">"+total[i].title+"</p> <p class=\"p5\">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;"+total[i].partContent+
+                    "</p> </div> </li>";
+                if(i==1){
+                    start=temp;
+                }
+                str=str+temp;
             }
-            $('#talentList').append(str);
+            var totalStr=start+start1+start2+str+start1;
+            $('#talentList').append(totalStr);
             // common.render({
             //     tmpl: template,
             //     data: total,

@@ -254,21 +254,8 @@
                     </li>
                     {{~}}
                 </script>--%>
-                <ul class="ul-photo" style="left: 1px;" id="talentList">
-                    <li onclick="window.open('http://hanghai.fulaan.com')">
-                        <img src="/static/images/community/hanghai_mini.jpg">
-                        <span >更多</span>
-                        <div class="photo-text">
-                            <h3 style="margin-top: 86px;font-size: 24px;">帆迪全球在线<br>航海课程</h3>
-                        </div>
-                    </li>
-                    <li onclick="window.open('/forum/postIndex.do?pSectionId=575d4d8e0cf2ca0383166bba')">
-                        <img src="/static/images/community/jixian_mini.jpg">
-                        <span >更多</span>
-                        <div class="photo-text">
-                            <h3 style="margin-top: 86px;font-size: 24px;">极限航海巅峰<br>挑战</h3>
-                        </div>
-                    </li>
+                <ul class="ul-photo" style="left: -717px;" id="talentList">
+
                     <%--<li onclick="window.open('http://hanghai. .com')">--%>
                         <%--<img src="/static/images/community/hanghai_mini.jpg">--%>
                         <%--<span>更多</span>--%>
@@ -288,6 +275,12 @@
                 <div class="photo-btn">
                     <span class="sp1" id="prev-p"> < </span>
                     <span class="sp2" id="next-p"> > </span>
+                </div>
+                <div class="greenControl clearfix">
+                    <div class="g-on" index="1"></div>
+                    <div index="2"></div>
+                    <div index="3"></div>
+                    <div index="4"></div>
                 </div>
             </div>
 

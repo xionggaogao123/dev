@@ -432,7 +432,11 @@ define(['jquery','pagination','social', 'common'], function (require, exports, m
                     if ($("#" + data.message).length > 0) {
                         $("html,body").animate({scrollTop: $("#" + data.message).offset().top - offset}, 1000);
                     } else {
-                        location.href = '/forum/floorPosition.do?floor=' + t + '&postId=' + $('#postId').val();
+                        if(inSet == 1 || (inSet == -1 && cate == 1) ) {
+                            location.href = '/forum/floorPosition.do?floor=' + t + '&postId=' + $('#postId').val() +'&pageSize=15';
+                        }else{
+                            location.href = '/forum/floorPosition.do?floor=' + t + '&postId=' + $('#postId').val() +'&pageSize=8';
+                        }
                     }
                 },
                 error: function (data) {
@@ -1157,7 +1161,7 @@ define(['jquery','pagination','social', 'common'], function (require, exports, m
         requestData.sortType = sortType;
         requestData.page = page;
         requestData.pageSize = 8;
-        if (inSet == 1) {
+        if (inSet == 1 || (inSet == -1 && cate == 1)) {
             requestData.pageSize = 15;
         }
         requestData.person = personId;
@@ -1244,7 +1248,11 @@ define(['jquery','pagination','social', 'common'], function (require, exports, m
                         if ($("#" + data.message).length > 0) {
                             $("html,body").animate({scrollTop: $("#" + data.message).offset().top - offset}, 1000);
                         } else {
-                            location.href = '/forum/floorPosition.do?floor=' + t + '&postId=' + $('#postId').val();
+                            if(inSet == 1 || (inSet == -1 && cate == 1) ) {
+                                location.href = '/forum/floorPosition.do?floor=' + t + '&postId=' + $('#postId').val() +'&pageSize=15';
+                            }else{
+                                location.href = '/forum/floorPosition.do?floor=' + t + '&postId=' + $('#postId').val() +'&pageSize=8';
+                            }
                         }
                     },
                     error: function (data) {

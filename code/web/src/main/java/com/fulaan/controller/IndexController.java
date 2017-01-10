@@ -74,7 +74,7 @@ public class IndexController extends BaseController {
         if (StringUtils.isNotBlank(uId)) {
             CacheHandler.cache("trackId", uId, Constant.SECONDS_IN_DAY);
         }
-        List<FSectionCountDTO> fSectionDTOs = fSectionService.getFSectionList();
+        List<FSectionCountDTO> fSectionDTOs = fSectionService.getFSectionList(2);
         Collections.sort(fSectionDTOs);
         map.put("sections", fSectionDTOs);
         return "/forum/index";

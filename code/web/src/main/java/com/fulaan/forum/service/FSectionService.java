@@ -36,6 +36,11 @@ public class FSectionService {
         return fSectionDao.addFSectionEntry(fSectionDTO.exportEntry());
     }
 
+
+    public void saveOrUpdate(FSectionEntry entry){
+        fSectionDao.addFSectionEntry(entry);
+    }
+
     /**
      * 更新板块
      */
@@ -67,7 +72,9 @@ public class FSectionService {
         List<FSectionDTO> fSectionDTOArrayList = new ArrayList<FSectionDTO>();
         List<FSectionEntry> fSectionEntries = fSectionDao.getFSectionListByLevel(level, id, Name);
         for (FSectionEntry fSectionEntry : fSectionEntries) {
-            fSectionDTOArrayList.add(new FSectionDTO(fSectionEntry));
+            if(fSectionEntry.getRemove()==0) {
+                fSectionDTOArrayList.add(new FSectionDTO(fSectionEntry));
+            }
         }
         return fSectionDTOArrayList;
     }
@@ -82,6 +89,10 @@ public class FSectionService {
         entry.setCount(count);
         entry.setTotalCount(themeCount);
         return new FSectionDTO(entry);
+    }
+
+    public FSectionEntry find(ObjectId id){
+        return fSectionDao.getFSection(id);
     }
 
     /**
@@ -127,28 +138,40 @@ public class FSectionService {
     }
 
     /**
-     * 通过板块Id查找所有数据
+     * 通过板块Id查找所有数据,type 1:查找所有 2:查找未删除的
      */
-    public List<FSectionCountDTO> getFSectionList() {
+    public List<FSectionCountDTO> getFSectionList(int type) {
         List<FSectionCountDTO> retList = new ArrayList<FSectionCountDTO>();
         List<FSectionEntry> ll = fSectionDao.getFSection();
         for (FSectionEntry item : ll) {
-            FSectionCountDTO fSectionCountDTO = new FSectionCountDTO();
-            fSectionCountDTO.setMemo(item.getMemo());
-            fSectionCountDTO.setfSectionId(item.getID().toString());
-            fSectionCountDTO.setMemoName(item.getMemoName());
-            fSectionCountDTO.setName(item.getName());
-            fSectionCountDTO.setSectionName(item.getSectionName());
-            fSectionCountDTO.setImageAppSrc(item.getImageAppSrc());
-            fSectionCountDTO.setImageBigAppSrc(item.getImageBigAppSrc());
-            fSectionCountDTO.setTotalScanCount(item.getTotalScanCount());
-            fSectionCountDTO.setTotalCommentCount(item.getTotalCommentCount());
-            fSectionCountDTO.setThemeCount(item.getThemeCount());
-            fSectionCountDTO.setPostCount(item.getPostCount());
-            fSectionCountDTO.setSort(item.getSort());
-            retList.add(fSectionCountDTO);
+            if(type==1){
+                FSectionCountDTO fSectionCountDTO =constructDto(item);
+                retList.add(fSectionCountDTO);
+            }else{
+                if(item.getRemove()==0){
+                    FSectionCountDTO fSectionCountDTO =constructDto(item);
+                    retList.add(fSectionCountDTO);
+                }
+            }
         }
         return retList;
+    }
+
+    public FSectionCountDTO constructDto(FSectionEntry entry){
+        FSectionCountDTO fSectionCountDTO = new FSectionCountDTO();
+        fSectionCountDTO.setMemo(entry.getMemo());
+        fSectionCountDTO.setfSectionId(entry.getID().toString());
+        fSectionCountDTO.setMemoName(entry.getMemoName());
+        fSectionCountDTO.setName(entry.getName());
+        fSectionCountDTO.setSectionName(entry.getSectionName());
+        fSectionCountDTO.setImageAppSrc(entry.getImageAppSrc());
+        fSectionCountDTO.setImageBigAppSrc(entry.getImageBigAppSrc());
+        fSectionCountDTO.setTotalScanCount(entry.getTotalScanCount());
+        fSectionCountDTO.setTotalCommentCount(entry.getTotalCommentCount());
+        fSectionCountDTO.setThemeCount(entry.getThemeCount());
+        fSectionCountDTO.setPostCount(entry.getPostCount());
+        fSectionCountDTO.setSort(entry.getSort());
+        return fSectionCountDTO;
     }
 
     /**

@@ -47,6 +47,18 @@ public class FPostDao extends BaseDao {
     return retList;
   }
 
+  public List<FPostEntry> getCreamData(int cream){
+    BasicDBObject query=new BasicDBObject("cr",cream);
+    BasicDBObject order=new BasicDBObject("crti",-1);
+    List<FPostEntry> retList = new ArrayList<FPostEntry>();
+    List<DBObject> dbObjectList = find(MongoFacroty.getAppDB(), getCollection(), query, Constant.FIELDS, order, 0, 10);
+    for (DBObject dbObject : dbObjectList) {
+      retList.add(new FPostEntry((BasicDBObject) dbObject));
+    }
+    return retList;
+
+  }
+
   /**
    * 获取下线的帖子
    *

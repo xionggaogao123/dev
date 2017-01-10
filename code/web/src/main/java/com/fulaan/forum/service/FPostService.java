@@ -631,6 +631,11 @@ public class FPostService {
         return new FPostDTO(fPostEntry);
     }
 
+    public FPostEntry find(ObjectId Id){
+        FPostEntry fPostEntry = fPostDao.getFPostEntry(Id);
+        return fPostEntry;
+    }
+
     /**
      * 新增和覆盖
      *
@@ -638,6 +643,11 @@ public class FPostService {
      */
     public ObjectId addFPostEntry(FPostDTO fPostDTO) {
         return fPostDao.addFPost(fPostDTO.exportEntry());
+    }
+
+
+    public void addEntry(FPostEntry entry){
+        fPostDao.addFPost(entry);
     }
 
     /**
@@ -786,5 +796,14 @@ public class FPostService {
 
     public void updateRewardCountValue(ObjectId userId) {
         fPostDao.updateRewardCountValue(userId);
+    }
+
+    public List<FPostDTO> getCreamData(int cream){
+        List<FPostDTO> fPostDTOs=new ArrayList<FPostDTO>();
+        List<FPostEntry> entries=fPostDao.getCreamData(cream);
+        for(FPostEntry entry:entries){
+            fPostDTOs.add(new FPostDTO(entry));
+        }
+        return fPostDTOs;
     }
 }

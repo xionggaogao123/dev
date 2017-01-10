@@ -2604,6 +2604,18 @@ public class FPostController extends BaseController {
     }
 
     /**
+     * 获取资讯消息
+     * @param cream
+     * @return
+     */
+    @RequestMapping(value = "/getCreamData", method = RequestMethod.POST)
+    @ResponseBody
+    public RespObj updateFPostCream(int cream) {
+        List<FPostDTO> fPostDTOs=fPostService.getCreamData(cream);
+        return RespObj.SUCCESS(fPostDTOs);
+    }
+
+    /**
      * 更新精华帖子
      *
      * @param post
@@ -2615,7 +2627,11 @@ public class FPostController extends BaseController {
     @ResponseBody
     public RespObj updateFPostCream(String post, String personId, int cream) {
         try {
-            fPostService.updateCream(new ObjectId(post), cream);
+//            fPostService.updateCream(new ObjectId(post), cream);
+            FPostEntry fPostEntry=fPostService.find(new ObjectId(post));
+            fPostEntry.setCream(cream);
+            fPostEntry.setCreamTime(System.currentTimeMillis());
+            fPostService.addEntry(fPostEntry);
             //楼主精华帖子加积分
             if (cream == 1) {
                 userService.updateForumScore(new ObjectId(personId), 15);

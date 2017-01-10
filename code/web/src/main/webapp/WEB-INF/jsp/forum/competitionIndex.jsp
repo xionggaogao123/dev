@@ -203,17 +203,15 @@
             <div class="ltwh" <c:if test="${login==false}">style="display: none" </c:if>>
                 <div class="iwant" id="getTask">领取今日任务</div>
             </div>
-            <div class="ltwh" style="display: none">
+            <div class="ltwh">
                 <div class="wh-title mission-to">资讯</div>
-                <ul class="forin-zx">
-                    <li>> 五毛拿走不谢！</li>
-                    <li>> 五毛拿走不谢！</li>
-                    <li>> 五毛拿走不谢！五毛拿走不谢！五毛拿走不谢！</li>
-                    <li>> 五毛拿走不谢！</li>
-                    <li>> 五毛拿走不谢！</li>
-                    <li>> 五毛拿走不谢！</li>
-                    <li>> 五毛拿走不谢！</li>
+                <ul class="forin-zx" id="creamData">
                 </ul>
+                <script type="text/template" id="creamDataTmpl">
+                    {{~it:value:index}}
+                    <li style="cursor:pointer;" onclick="window.open('/forum/postDetail.do?pSectionId={{=value.postSectionId}}&postId={{=value.fpostId}}&personId={{=value.personId}}')">> {{=value.postTitle}}！</li>
+                    {{~}}
+                </script>
             </div>
             <div class="ltwh">
                 <div class="wh-title clearfix">

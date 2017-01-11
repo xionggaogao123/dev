@@ -53,8 +53,8 @@
         </div>
 
         <div id="remove"
-             style="position:absolute;top:300px;left:50%;border:1px solid #aaa;background-color:#aaa;padding:5px;display:none;">
-             <input id="removeValue" placeholder="请输入设置删除的字段(0|1),1代表删除"/>
+             style="position:absolute;top:300px;left:50%;border:1px solid #aaa;background-color:#aaa;padding:5px;display:none; width: 330px">
+             <input id="removeValue" placeholder="请输入设置删除的字段(0|1),1代表删除" style="width: 228px"/>
              <button id="btn-setRemove" ng-click="submitRemove()">提交</button>
              <button ng-click="closeRemove()">取消</button>
         </div>

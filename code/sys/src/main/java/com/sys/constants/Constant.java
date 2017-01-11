@@ -575,6 +575,9 @@ public class Constant {
 
     public static final String COLLECTION_USER_MOBILE = "userMobile";
 
+    //大赛人员记录表
+    public static final String COLLECTION_FORUM_PARTICIPATE="fparticipate";
+
 
     //==========================第二版新加的表=================================
 

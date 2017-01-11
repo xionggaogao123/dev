@@ -288,12 +288,11 @@
                 <img src="/static/images/forum/entrance_down.png">
             </span>
         </div>
-        <div class="green-qd">
-            <span id="dateR"></span>&nbsp;<span id="dayR"></span><em
-                <c:if test="${login == false}">style="display: none;" </c:if>><c:if test="${signIn == false}">
-            <sapn id="qDao">每日签到</sapn>
-        </c:if>
-            <c:if test="${signIn == true}">已签到</c:if></em>
+        <div class="green-qd" style="display: none">
+            <span id="dateR"></span>&nbsp;<span id="dayR"></span>
+            <em <c:if test="${login == false}">style="display: none;" </c:if>><c:if test="${signIn == false}">
+            <span id="qDao">每日签到</span>
+            </c:if><c:if test="${signIn == true}">已签到</c:if></em>
         </div>
         <div class="clearfix" <c:if test="${login == true}">style="margin: 0 auto; display: none;"</c:if>>
             <div class="btn-dl-red" id="loginText">登录</div>
@@ -396,7 +395,7 @@
                 </button>
             </div>
         </div>
-        <div class="div-bkrk clearfix">
+        <div class="div-bkrk clearfix" style="display: none">
             <p>论坛搜索</p>
             <input onkeydown="Event()" class="input-ss" type="text">
             <button class="btn-ss">搜索</button>
@@ -430,7 +429,7 @@
                 {{~}}
             </script>
         </div>
-        <div class="ltwh">
+        <div class="ltwh" style="display: none">
             <div class="wh-title clearfix">
                 <span value="1">活跃会员排行榜</span>
                 <span value="2" class="wh-cur">新入会员排行榜</span>

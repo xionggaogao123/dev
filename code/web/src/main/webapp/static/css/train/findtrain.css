@@ -16,7 +16,7 @@ i{font-style:normal;}
 button{cursor:pointer;}
 img { border:none; }
 ol,ul,li { list-style:none; }
-input, textarea, select, button { font:14px Verdana,Helvetica,Arial,sans-serif; }
+input, textarea, select, button { font:14px  Microsoft YaHei,Helvetica,Arial,sans-serif }
 table { border-collapse:collapse; }
 html {overflow-y: scroll;}
 pre{white-space: pre-wrap;word-wrap: break-word;}

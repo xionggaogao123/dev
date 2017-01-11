@@ -405,7 +405,7 @@
                     } else {
                         pageCount = 1;
                     }
-                    if ($('#InSet').val() == 1) {
+                    if ($('#InSet').val() == 1 ||($('#InSet').val() == -1 && $('#cate').val() == 1)) {
                         pageCount = 1;
                     }
                     redC();

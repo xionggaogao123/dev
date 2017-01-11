@@ -80,11 +80,11 @@
             <div class="new-page-links"></div>
         </div>
         <div class="cont-right">
-            <div class="green-qd">
-                <span id="dateR"></span>&nbsp;<span id="dayR"></span><em
-                    <c:if test="${login == false}">style="display: none;" </c:if>><c:if test="${signIn == false}">
-                <sapn id="qDao">每日签到</sapn>
-            </c:if>
+            <div class="green-qd" style="display: none">
+                <span id="dateR"></span>&nbsp;<span id="dayR"></span>
+                <em <c:if test="${login == false}">style="display: none;" </c:if>><c:if test="${signIn == false}">
+                <span id="qDao">每日签到</span>
+                </c:if>
                 <c:if test="${signIn == true}">已签到</c:if></em>
             </div>
             <div class="clearfix" <c:if test="${login == true}">style="margin: 0 auto; display: none;"</c:if>>
@@ -187,7 +187,7 @@
                     </button>
                 </div>
             </div>
-            <div class="div-bkrk clearfix">
+            <div class="div-bkrk clearfix" style="display: none">
                 <p>论坛搜索</p>
                 <input onkeydown="Event()" class="input-ss" type="text">
                 <button class="btn-ss">搜索</button>
@@ -201,7 +201,7 @@
                     }
                 }
             </script>
-            <div class="div-bkrk clearfix">
+            <div class="div-bkrk clearfix" style="display: none">
                 <p>版块分类</p>
                 <c:forEach items="${sections}" var="section" varStatus="status">
                     <span class="span${status.index + 1}"
@@ -209,7 +209,7 @@
                 </c:forEach>
             </div>
             <div class="ltwh" <c:if test="${login==false}">style="display: none" </c:if>>
-                <div class="wh-title mission-to">今日任务</div>
+                <div class="wh-title mission-to" style="display: none">今日任务</div>
                 <div class="iwant" id="getTask">领取今日任务</div>
             </div>
             <div class="ltwh">
@@ -222,7 +222,7 @@
                     {{~}}
                 </script>
             </div>
-            <div class="ltwh">
+            <div class="ltwh" style="display: none">
                 <div class="wh-title clearfix">
                     <span value="1">活跃会员排行榜</span>
                     <span value="2" class="wh-cur">新入会员排行榜</span>

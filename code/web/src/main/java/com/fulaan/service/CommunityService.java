@@ -79,11 +79,7 @@ public class CommunityService {
         ObjectId groupId = groupService.createGroupWithCommunity(communityId, userId, emChatId, name, desc, qrUrl);
         CommunityEntry entry = new CommunityEntry(communityId, seqId, groupId, emChatId, name, logo, desc, qrUrl, open, userId);
         communityDao.save(entry);
-        try {
-            groupService.updateHeadImage(groupId);
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
+        pushToUser(communityId, userId, 2);
         return communityId;
     }
 

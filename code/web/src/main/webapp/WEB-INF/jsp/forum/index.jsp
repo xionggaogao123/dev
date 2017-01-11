@@ -297,7 +297,7 @@
         </div>
         <div class="clearfix" <c:if test="${login == true}">style="margin: 0 auto; display: none;"</c:if>>
             <div class="btn-dl-red" id="loginText">登录</div>
-            <div class="btn-zc-red" onclick="window.open('/mall/register.do')">注册</div>
+            <div class="btn-zc-red" onclick="window.open('/account/register.do')">注册</div>
         </div>
         <div class="personal-c clearfix" <c:if test="${login == false}">style="display: none;" </c:if>>
             <img onclick="window.open('/forum/personal.do?personId=${userId}')" style="cursor: pointer"

@@ -6190,36 +6190,36 @@ pre {
 }
 
 .ul-control li {
-    height: 78px;
+    height: 76px;
     background: #fff;
-    border: 1px solid #dcdcdc;
+    border: 2px solid #dcdcdc;
     margin-bottom: 9px;
     transition: all .3s;
     cursor: pointer;
 }
 
 #ulButtons .on {
-    border: 1px solid #F44336 !important;
+    border: 2px solid #F44336 !important;
     background: #fff !important;
 }
 
 .ul-control li img {
     float: left;
-    margin: 18px 13px 0;
+    margin: 14px 12px 0;
     border-radius: 3px;
-    width: 48px;
-    height: 48px;
+    width: 75px;
+    height: 52px;
     cursor: pointer;
 }
 
 .ul-control li p {
     float: left;
-    width: 172px;
+    width: 139px;
     height: 48px;
     overflow: hidden;
-    line-height: 16px;
+    line-height: 17px;
     color: #555;
-    margin: 18px 0 0 0;
+    margin: 14px 0 0 0;
     cursor: pointer;
 }
 .ul-control li p:hover{

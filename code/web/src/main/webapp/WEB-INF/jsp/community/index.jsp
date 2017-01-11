@@ -254,7 +254,7 @@
                     </li>
                     {{~}}
                 </script>--%>
-                <ul class="ul-photo" style="left: -718px;" id="talentList">
+                <ul class="ul-photo" style="left: -717px;" id="talentList">
 
                     <%--<li onclick="window.open('http://hanghai. .com')">--%>
                         <%--<img src="/static/images/community/hanghai_mini.jpg">--%>

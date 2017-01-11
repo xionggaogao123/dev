@@ -466,7 +466,7 @@ button{cursor: pointer;}
 .ivideo li>div{
 	width: 100%;
 	height: 100%;
-	background: rgba(0,0,0,0.2);
+	background: rgba(0,0,0,0.3);
 	transition: all .3s;
 }
 .ivideo li a{
@@ -478,7 +478,6 @@ button{cursor: pointer;}
 	background: url("/static/images/newIndex/iv_play.png");
 	top:11px;
 	left:20px;
-	opacity: 0.8;
 	transition: all .3s;
 	cursor: pointer;
 }
@@ -486,7 +485,6 @@ button{cursor: pointer;}
 	display: none;
 }
 .ivideo li:hover>a{
-	opacity: 1;
 	box-shadow: 0 0 6px cyan;
 }
 
@@ -555,7 +553,9 @@ button{cursor: pointer;}
 
 .ul-photo .p5{
 	padding-left: 20px;
-	padding-right: 20px;
+	padding-right: 20px;;
+	max-height: 160px;
+	overflow: hidden;
 }
 .photo-text{
 	width: 251px;
@@ -571,7 +571,6 @@ button{cursor: pointer;}
 }
 .photo-text p{
 	line-height: 20px;
-	height: 20px;
 	color: #A1A1A1;
 }
 .photo-text .p1{

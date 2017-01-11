@@ -3,6 +3,9 @@ define(['jquery', 'pagination', 'common'], function (require, exports, module) {
     var common = require('common');
     require('pagination');
     var findPassword = {};
+
+    var mobileInit = false;
+    var mobile = '';
     findPassword.init = function () {
 
     };
@@ -59,67 +62,58 @@ define(['jquery', 'pagination', 'common'], function (require, exports, module) {
             var verifyCode = $('.verifyCode1').val();
             var name = $('.username').val();
             common.getData("/account/verifyCodeWithName.do", {name: name, verifyCode: verifyCode}, function (resp) {
+
+                alert(JSON.stringify(resp));
                 if (resp.code == '200') {
                     $('.re-conts').hide();
                     $('.re-cont2').show();
                     $('.ul-luc li:nth-child(2)').addClass('orali');
                     $('#verifyImg').attr('src','/verify/verifyCode.do?date'+ new Date());
+
+                    if(resp.message.type === 'mobile') {
+                        for(var i=0;i<resp.message.users.length;i++) {
+                            if(i == 0 ) {
+                                $('#choose-name').append('<label><input type="radio" name="check-id" checked>'+resp.message.users[i].nickName+'</label>');
+                            } else {
+                                $('#choose-name').append('<label><input type="radio" name="check-id">'+resp.message.users[i].nickName+'</label>');
+                            }
+                        }
+                        $('#choose-name').show();
+                        $('#phone').val(resp.message.protectedMobile);
+                        mobile = resp.message.mobile;
+                        $('#phone').attr("disabled","disabled");
+                        $('.step2 > li').eq(0).find('.sp3').hide();
+                        mobileInit = true;
+                    } else {
+                        blurMobile();
+                    }
+
                 } else {
                     alert(resp.message);
                 }
             })
-        });
-
-        $('#phone').blur(function () {
-            var self = $(this);
-            var pattern = /^1[3|4|5|7|8][0-9]{9}$/;
-            if (pattern.test(self.val())) {
-                var requestParm = {phone: self.val()};
-                common.getData('/account/verifyUserPhone', requestParm, function (resp) {
-                    if(resp.code == '200' && resp.message.verify) {
-                        self.parent().find('.sp3').hide();
-                        phoneVerifyCheck.phone = true;
-                    } else {
-                        self.parent().find('.sp3').text(resp.message.msg);
-                        self.parent().find('.sp3').show();
-                        phoneVerifyCheck.phone = false;
-                    }
-                });
-            } else {
-                self.parent().find('.sp3').text('手机号不合法');
-                self.parent().find('.sp3').show();
-                phoneVerifyCheck.phone = false;
-            }
         });
 
         $('#sendCode').click(function () {
-            var phone = $('#phone').val();
+            var phone = mobileInit ? mobile : $('#phone').val();
             var verifyCode = $('#verifyCode').val();
-            if(!phoneVerifyCheck.phone) {
-                return;
+            if(phoneVerifyCheck.phone || mobileInit) {
+                var self = $(this);
+                self.css('color','#aaa');
+                common.getData("/mall/users/messages.do", {mobile: phone, verifyCode: verifyCode}, function (resp) {
+                    alert(JSON.stringify(resp));
+                    if (resp.code == '200') {
+                        phoneVerifyCheck.code = true;
+                        cacheKeyId = resp.cacheKeyId;
+                    } else {
+                        alert(resp.message);
+                        phoneVerifyCheck.code = false;
+                    }
+                });
             }
-            var self = $(this);
-            self.css('color','#aaa');
-            common.getData("/mall/users/messages.do", {mobile: phone, verifyCode: verifyCode}, function (resp) {
-                if (resp.code == '200') {
-                    phoneVerifyCheck.code = true;
-                    cacheKeyId = resp.cacheKeyId;
-                } else {
-                    alert(resp.message);
-                    phoneVerifyCheck.code = false;
-                }
-
-            })
         });
 
         body.on('click','.next2',function () {
-            if (!$('.next2-argument').is(':checked')) {
-                $(this).parent().find('.sp3').text('未勾选社区协议');
-                $(this).parent().find('.sp3').show();
-                return;
-            } else {
-                $(this).parent().find('.sp3').hide();
-            }
 
             if(phoneVerifyCheck.code && phoneVerifyCheck.phone ) {
                 $(this).parent().find('.sp3').hide();
@@ -205,6 +199,31 @@ define(['jquery', 'pagination', 'common'], function (require, exports, module) {
         });
 
     });
+
+
+    function blurMobile() {
+        $('#phone').blur(function () {
+            var self = $(this);
+            var pattern = /^1[3|4|5|7|8][0-9]{9}$/;
+            if (pattern.test(self.val())) {
+                var requestParm = {phone: self.val()};
+                common.getData('/account/verifyUserPhone', requestParm, function (resp) {
+                    if(resp.code == '200' && resp.message.verify) {
+                        self.parent().find('.sp3').hide();
+                        phoneVerifyCheck.phone = true;
+                    } else {
+                        self.parent().find('.sp3').text(resp.message.msg);
+                        self.parent().find('.sp3').show();
+                        phoneVerifyCheck.phone = false;
+                    }
+                });
+            } else {
+                self.parent().find('.sp3').text('手机号不合法');
+                self.parent().find('.sp3').show();
+                phoneVerifyCheck.phone = false;
+            }
+        });
+    }
 
     module.exports = findPassword;
 });

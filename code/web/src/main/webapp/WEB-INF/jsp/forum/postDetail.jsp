@@ -188,13 +188,26 @@
                         return '/forum/userCenter/uploadVideo.do';
                     } else if (action == 'uploadimage') {
                         return '/forum/userCenter/uploadImage.do';
-                    } else if (action == 'uploadfile') {
+                    } else if (action == 'uploadfile') {po
                         return '/forum/userCenter/uploadFile.do';
                     } else {
                         return this._bkGetActionUrl.call(this, action);
                     }
                 }
             </script>
+            <div class="join-cont">
+                <div class="sp1">创建参赛者</div>
+                <div class="sp2">参赛者</div>
+                <div class="sp3">
+                    <p class="p1 bord">未选择</p>
+                    <p class="p2">
+                        <span>选手零<i class="i1"></i><i class="i2"></i></span>
+                        <span>选手一<i class="i1"></i><i class="i2"></i></span>
+                        <span>选手二<i class="i1"></i><i class="i2"></i></span>
+                    </p>
+                </div>
+                <div class="sp4">有没有要选择的参赛者</div>
+            </div>
             <span id="title" style="display: none">回复的帖子不能为空，请重新回复！</span><br/>
             <button class="btn-hf" id="comment">发表回复</button>
         </div>
@@ -1070,6 +1083,39 @@
     </div>
     {{~}}
 </script>
+<div class="wind-join">
+    <p class="p1">参赛信息<em>×</em></p>
+    <p class="p2">*此信息仅用作官方联系参赛者使用，不对外公开。</p>
+    <ul>
+        <li>
+            <span>姓名</span>
+            <input class="inp1" type="text" placeholder="真实姓名">
+        </li>
+        <li>
+            <span>年龄</span>
+            <input class="inp2" type="text" placeholder="年龄">
+            <em>性别</em>
+            <label>
+                <input type="radio" name="sex">男
+            </label>
+            <label>
+                <input type="radio" name="sex">女
+            </label>
+        </li>
+        <li>
+            <span>联系方式</span>
+            <input class="inp1" type="text" placeholder="常用邮箱或手机号">
+        </li>
+        <li>
+            <span>就读学校</span>
+            <input class="inp1" type="text" placeholder="例：上海市普陀区第一中心小学">
+        </li>
+        <li>
+            <button class="btn1">保存</button>
+            <button class="btn2 btn-cancel">取消</button>
+        </li>
+    </ul>
+</div>
 
 <script src="/static/dist/pdfobject/pdfobject.min.js"></script>
 <script src="/static/dist/musicplayer/APlayer.min.js"></script>

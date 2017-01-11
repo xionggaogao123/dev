@@ -205,6 +205,22 @@ define(['jquery','pagination','social', 'common'], function (require, exports, m
             var option=share($(this).attr("ti"));
             weiFriendShare(this, option);
         });
+        $('body').on('click','.join-cont .sp3 .p1',function(){
+            $('.join-cont .sp3 .p2').slideToggle();
+            $('.join-cont .sp3 .p1').removeClass('bord');
+        });
+        $('body').on('click','.join-cont .sp3 .p2 span',function(){
+            $('.join-cont .sp3 .p2').slideUp();
+            $('.join-cont .sp3 .p1').removeClass('bord');
+        });
+        $('body').on('click','.join-cont .sp1, .join-cont .sp3 .p2 .i2',function(){
+            $('.wind-join').fadeIn();
+            $('.bg').fadeIn();
+        })
+        $('body').on('click','.wind-join .p1 em , .wind-join .btn-cancel',function(){
+            $('.wind-join').fadeOut();
+            $('.bg').fadeOut();
+        })
 
         //分享按钮
         $('body').on("click", ".msb_main", function () {

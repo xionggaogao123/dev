@@ -4,6 +4,7 @@
 <head>
     <title>复兰教育社区</title>
     <meta charset="utf-8">
+    <meta name="renderer" content="webkit">
     <link rel="stylesheet" type="text/css" href="/static/css/newIndex/css.css">
     <script type="text/javascript" src="/static/js/modules/newIndex/jquery-1.11.1.js"></script>
     <link href="/static/js/modules/core/0.1.0/fancyBox/jquery.fancybox.css?v=2015041602" rel="stylesheet"

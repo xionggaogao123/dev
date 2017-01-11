@@ -1495,6 +1495,11 @@
                         $('.fancybox-inner').css('width',iw+'px');
                         $('.fancybox-inner').css('height',ih+'px');
                         $('.fancybox-wrap').css("width",iwrap+'px');
+                        $(".fancybox-wrap").css({
+                            position:'absolute',
+                            left:($(".fancybox-overlay").width() - $(".fancybox-wrap").outerWidth())/2,
+                            top:($(".fancybox-overlay").height() - $(".fancybox-wrap").outerHeight())/2 + $(document).scrollTop()
+                        });
                     }
                 });
 
@@ -1504,6 +1509,11 @@
                     $('.fancybox-inner').css("width", normalInnerWidth);
                     $('.fancybox-inner').css("height", normalInnerHeight);
                     $('.fancybox-wrap').css("width", normalWrapWidth);
+                    $(".fancybox-wrap").css({
+                        position:'absolute',
+                        left:($(".fancybox-overlay").width() - $(".fancybox-wrap").outerWidth())/2,
+                        top:($(".fancybox-overlay").height() - $(".fancybox-wrap").outerHeight())/2 + $(document).scrollTop()
+                    });
                 });
 
                 $(child3).appendTo(F.skin).bind('click.fb',function(e){
@@ -1525,6 +1535,11 @@
                             $('.fancybox-inner').css('width',iw+'px');
                             $('.fancybox-inner').css('height',ih+'px');
                             $('.fancybox-wrap').css("width",iwrap+'px');
+                            $(".fancybox-wrap").css({
+                                position:'absolute',
+                                left:($(".fancybox-overlay").width() - $(".fancybox-wrap").outerWidth())/2,
+                                top:($(".fancybox-overlay").height() - $(".fancybox-wrap").outerHeight())/2 + $(document).scrollTop()
+                            });
                         }else{
                             alert("图片已经不能再放大啦");
                         }
@@ -1536,6 +1551,11 @@
                         $('.fancybox-inner').css('width',iw+'px');
                         $('.fancybox-inner').css('height',ih+'px');
                         $('.fancybox-wrap').css("width",iwrap+'px');
+                        $(".fancybox-wrap").css({
+                            position:'absolute',
+                            left:($(".fancybox-overlay").width() - $(".fancybox-wrap").outerWidth())/2,
+                            top:($(".fancybox-overlay").height() - $(".fancybox-wrap").outerHeight())/2 + $(document).scrollTop()
+                        });
                     }
                 });
             }

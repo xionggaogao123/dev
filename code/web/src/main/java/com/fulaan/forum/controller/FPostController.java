@@ -94,6 +94,8 @@ public class FPostController extends BaseController {
     private FInformationService fInformationService;
     @Autowired
     private ConcernService concernService;
+    @Autowired
+    private ParticipantsInfoService participantsInfoService;
 
     /**
      * 搜索界面
@@ -2609,6 +2611,7 @@ public class FPostController extends BaseController {
      * @return
      */
     @RequestMapping(value = "/getCreamData", method = RequestMethod.POST)
+    @SessionNeedless
     @ResponseBody
     public RespObj updateFPostCream(int cream) {
         List<FPostDTO> fPostDTOs=fPostService.getCreamData(cream);
@@ -2679,6 +2682,69 @@ public class FPostController extends BaseController {
             return RespObj.FAILD("更新精华失败");
         }
         return RespObj.SUCCESS;
+    }
+
+
+    /**
+     * 获取参赛人列表消息
+     * @return
+     */
+    @RequestMapping("/getParticipates")
+    @ResponseBody
+    public RespObj getParticipates(){
+        ObjectId creator=getUserId();
+        List<ParticipantsInfoDTO> dtos=participantsInfoService.getParticipates(creator);
+        return RespObj.SUCCESS(dtos);
+    }
+
+    /**
+     * 删除参赛者消息
+     * @param participateId
+     * @return
+     */
+    @RequestMapping("/removeParticipate")
+    @ResponseBody
+    public RespObj removeParticipate(@ObjectIdType ObjectId participateId){
+        participantsInfoService.removeParticipateInfo(participateId);
+        return RespObj.SUCCESS("删除成功!");
+    }
+
+
+
+    /**
+     * 保存或更新参赛者信息
+     * @param id
+     * @param name
+     * @param relation
+     * @param sex
+     * @param age
+     * @param school
+     * @return
+     */
+    @RequestMapping("/saveParticipator")
+    @ResponseBody
+    public RespObj saveParticipator(@RequestParam(defaultValue = "",required = false) String id,
+                                    @RequestParam(defaultValue = "",required = false) String name,
+                                    @RequestParam(defaultValue = "",required = false) String relation,
+                                    @RequestParam(defaultValue = "-1",required = false) int sex,
+                                    @RequestParam(defaultValue = "0",required = false) int age,
+                                    @RequestParam(defaultValue = "",required = false)String school){
+        if(StringUtils.isBlank(id)){
+            ObjectId creator=getUserId();
+            boolean result=participantsInfoService.saveParticipateInfo(name,relation,sex,age,school,creator);
+            if(result){
+                return RespObj.SUCCESS("保存成功!");
+            }else{
+                return RespObj.FAILD("联系方式不符合规范!");
+            }
+        }else{
+            boolean result=participantsInfoService.updateParticipateInfo(new ObjectId(id),name,relation,sex,age,school);
+            if(result){
+                return RespObj.SUCCESS("更新成功!");
+            }else{
+                return RespObj.FAILD("联系方式不符合规范或更新失败!");
+            }
+        }
     }
 
     /**

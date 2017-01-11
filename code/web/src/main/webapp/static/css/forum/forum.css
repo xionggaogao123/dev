@@ -2061,7 +2061,7 @@ pre {
     color: #fff;
     background: #D53053;
     border: none;
-    margin: 12px 0 0 48px;
+    margin: 12px 0 0 0;
 }
 
 .post-right label {

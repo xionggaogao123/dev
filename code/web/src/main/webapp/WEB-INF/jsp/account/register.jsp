@@ -31,32 +31,15 @@
         </div>
         <ul class="re-form ul1">
             <li>
-                <input type="text" class="user-name">
-                <span class="sp1">用户名 : </span>
-                <span class="sp2">3-20位字符（汉字、字母、数字、下划线）</span>
-                <span class="sp3" style="display: none">请输入用户名</span>
-            </li>
-            <li>
-                <input type="password" class="password">
-                <span class="sp1">设置密码 : </span>
-                <span class="sp2">6-20位字符（字母、数字、下划线、特殊符号）</span>
-                <span class="sp3" style="display: none">密码</span>
-            </li>
-            <li>
-                <input type="password" class="r-password">
-                <span class="sp1">确认密码 : </span>
-                <span class="sp2">6-20位字符（字母、数字、下划线、特殊符号）</span>
-                <span class="sp3" style="display: none">两次输入的密码不一致</span>
-            </li>
-            <li>
                 <input type="text" id="phone">
-                <span class="sp1">手机验证 : </span>
-                <span class="sp3" style="display: none">请输入11位正确的手机号码</span>
+                <span class="sp1">手机号 : </span>
+                <span class="sp3" style="display: none" id="phone-alert">请输入11位正确的手机号码</span>
             </li>
             <li>
                 <input type="text" style="display: inline;width: 178px" id="verifyCode">
                 <span class="sp1">验证码 : </span>
-                <img id="imgObj" alt="" src="/verify/verifyCode.do" style="position: absolute;top: 0;right: 0;width: 106px;height: 39px;"/>
+                <img id="imgObj" alt="" src="/verify/verifyCode.do"
+                     style="position: absolute;top: 0;right: 0;width: 106px;height: 39px;"/>
                 <span class="sp3" style="display: none">验证码不正确</span>
             </li>
             <li>
@@ -66,39 +49,46 @@
                 <span class="sp3" style="display: none">参数不完整</span>
             </li>
             <li>
-                <span class="sp2"><label><input type="checkbox" class="argument" checked>我同意<a href="/agreement.html" target="_blank">《复兰教育社区协议》</a></label></span>
-                <button>确认</button>
+                <span class="sp2"><label><input type="checkbox" class="argument" checked>我同意<a href="/agreement.html"
+                                                                                               target="_blank">《复兰教育社区协议》</a></label></span>
+                <button>下一步</button>
                 <span class="sp3" style="display: none;top: 26px">请填写参数</span>
             </li>
         </ul>
         <ul class="re-form ul2">
             <li>
-                <input type="text" class="user-name">
+                <input type="text" id="user-email">
                 <span class="sp1">邮箱账号 : </span>
-                <span class="sp2">3-20位字符（汉字、字母、数字、下划线）</span>
-                <span class="sp3" style="display: none">请输入用户名</span>
             </li>
             <li>
-                <input type="password" class="password">
+                <span class="sp2"><label><input type="checkbox" class="argument" name="argument" value="1" checked>我同意<a
+                        href="/agreement.html" target="_blank">《复兰教育社区协议》</a></label></span>
+                <button>下一步</button>
+                <span class="sp3" id="email-alert" style="display: none;top: 26px">请填写参数</span>
+            </li>
+        </ul>
+
+        <ul class="re-form ul3" hidden>
+            <li>
+                <input type="text" id="nick">
+                <span class="sp1">设置昵称: </span>
+                <span class="sp2">3-20位字符（汉字、字母、数字、下划线）</span>
+                <span class="sp3" id="nick-alert" style="display: none">请输入昵称</span>
+            </li>
+            <li>
+                <input type="password" id="password">
                 <span class="sp1">设置密码 : </span>
                 <span class="sp2">6-20位字符（字母、数字、下划线、特殊符号）</span>
-                <span class="sp3" style="display: none">密码</span>
+                <span class="sp3" id="password-alert" style="display: none">密码</span>
             </li>
             <li>
-                <input type="password" class="r-password">
+                <input type="password" id="re-password">
                 <span class="sp1">确认密码 : </span>
                 <span class="sp2">6-20位字符（字母、数字、下划线、特殊符号）</span>
-                <span class="sp3" style="display: none">您两次输入的密码不一致</span>
+                <span class="sp3" id="re-password-alert" style="display: none">您两次输入的密码不一致</span>
             </li>
             <li>
-                <input type="text" class="email-input">
-                <span class="sp1">邮箱验证 : </span>
-                <span class="sp3" style="display: none">请输入正确的邮箱地址</span>
-            </li>
-            <li>
-                <span class="sp2"><label><input type="checkbox" class="argument" name="argument" value="1" checked>我同意<a href="/agreement.html" target="_blank">《复兰教育社区协议》</a></label></span>
                 <button>确认</button>
-                <span class="sp3" style="display: none;top: 26px">请填写参数</span>
             </li>
         </ul>
     </div>

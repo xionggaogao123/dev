@@ -411,9 +411,10 @@ public class EBusinessUserController extends BaseController {
     @RequestMapping(method = RequestMethod.POST)
     @ResponseBody
     public Map<String, Object> addUser(String cacheKeyId, String code, String email, String userName, String passWord, String phoneNumber,
+                                       @RequestParam(defaultValue = "",required = false) String nickName,
                                        HttpServletResponse response, HttpServletRequest request) {
 
-        ObjectId userId = null;
+        ObjectId userId;
         boolean flag = false;
         Map<String, Object> model = new HashMap<String, Object>();
         model.put("code", 500);
@@ -448,7 +449,7 @@ public class EBusinessUserController extends BaseController {
             flag = true;
         }
         if (flag) {
-            UserEntry userEntry = new UserEntry(userName, MD5Utils.getMD5String(passWord), phoneNumber, email);
+            UserEntry userEntry = new UserEntry(userName, MD5Utils.getMD5String(passWord), phoneNumber, email,nickName);
             userEntry.setK6KT(0);
             userEntry.setIsRemove(0);
 
@@ -524,15 +525,6 @@ public class EBusinessUserController extends BaseController {
             userService.giveVoucher(userId);//发优惠券
             // 登录
             login(userName, passWord, "", response, request);
-
-            //注册环信
-            String nickName = StringUtils.isNotBlank(userEntry.getNickName()) ? userEntry.getNickName() : userEntry.getUserName();
-            EaseMobAPI.createUser(userEntry.getID().toString(), nickName);
-            if (StringUtils.isBlank(userEntry.getNickName())) {
-                userService.updateNickNameAndSexById(userEntry.getID().toString(), userEntry.getUserName(), userEntry.getSex());
-            }
-            userService.updateHuanXinTag(userEntry.getID());
-
         } else {
             model.put("message", "注册错误");
         }
@@ -621,28 +613,14 @@ public class EBusinessUserController extends BaseController {
 
 
     private Boolean checkEmailUserNamePhoneNumber(String email, String userName, String phoneNumber, Map<String, String> map) {
-        if (email.equals(userName) || email.equals(phoneNumber) || userName.equals(phoneNumber)) {
-            map.put("msg", "注册失败：邮箱、用户名、手机号存在重复");
-            return false;
-        }
 
         Pattern emailPattern = Pattern.compile("^.+@.+\\..+$");
-        Matcher emailMatcher = emailPattern.matcher(userName);
-        if (emailMatcher.matches()) {
-            map.put("msg", "注册失败：用户名不能是邮箱");
-            return false;
-        }
         if (!"".equals(email) && !emailPattern.matcher(email).matches()) {
             map.put("msg", "注册失败：邮箱格式不正确");
             return false;
         }
 
         Pattern phonePattern = Pattern.compile("^1[3|4|5|7|8][0-9]\\d{8}$");
-        Matcher phoneMatcher = phonePattern.matcher(userName);
-        if (phoneMatcher.matches()) {
-            map.put("msg", "注册失败：用户名不能是手机号");
-            return false;
-        }
         if (!"".equals(phoneNumber) && !phonePattern.matcher(phoneNumber).matches()) {
             map.put("msg", "注册失败：手机号不正确");
             return false;

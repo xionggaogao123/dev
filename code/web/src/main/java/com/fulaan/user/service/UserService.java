@@ -12,7 +12,6 @@ import com.fulaan.cache.CacheHandler;
 import com.fulaan.dto.UserDTO;
 import com.fulaan.mall.service.EBusinessVoucherService;
 import com.fulaan.pojo.FLoginLog;
-import com.fulaan.pojo.User;
 import com.fulaan.user.dao.ThirdLoginDao;
 import com.fulaan.user.model.ThirdLoginEntry;
 import com.fulaan.user.model.ThirdType;
@@ -195,7 +194,7 @@ public class UserService extends BaseService {
     }
 
     public UserDetailInfoDTO getUserInfoByUserName(String userName) {
-        UserEntry userEntry = userDao.findByName(userName);
+        UserEntry userEntry = userDao.findByUserName(userName);
         return userEntry == null ? null : new UserDetailInfoDTO(userEntry);
     }
 
@@ -357,7 +356,7 @@ public class UserService extends BaseService {
     }
 
     public UserEntry findByPhone(String phone) {
-        return userDao.findByPhone(phone);
+        return userDao.findByMobile(phone);
     }
 
     public UserEntry findByMobile(String mobile){
@@ -923,7 +922,7 @@ public class UserService extends BaseService {
     }
 
     public UserEntry findByUserName(String name) {
-        return userDao.findByName(name);
+        return userDao.findByUserName(name);
     }
 
 
@@ -934,7 +933,7 @@ public class UserService extends BaseService {
 
     public UserDTO findByRegular(String regular) {
         UserEntry entry;
-        entry = userDao.findByName(regular);
+        entry = userDao.findByUserName(regular);
         if (entry != null) {
             return new UserDTO(entry);
         }
@@ -963,20 +962,19 @@ public class UserService extends BaseService {
         Matcher phoneMatcher = phonePattern.matcher(login);
         Matcher personalIdMatcher = personalIdPattern.matcher(login);
         UserEntry user;
+
         if (emailMatcher.matches()) {
             user = userDao.findByEmail(login);
         }else if(phoneMatcher.matches()){
-            user = userDao.findByPhone(login);
+            user = userDao.findByMobile(login);
             if(null==user){
                 user = userDao.findByMobile(login);
             }
         } else if(personalIdMatcher.matches()){
             user=userDao.findByPersonalID(login);
         }else {
-           user = userDao.findByName(login);
+           user = userDao.findByUserName(login);
         }
-
-
         return user;
     }
 
@@ -1187,7 +1185,7 @@ public class UserService extends BaseService {
     }
 
     public Object checkUserNameExist(String userName) {
-        return userDao.findByName(userName) != null;
+        return userDao.findByUserName(userName) != null;
     }
 
     public void resetPassword(ObjectId userId, String password) {

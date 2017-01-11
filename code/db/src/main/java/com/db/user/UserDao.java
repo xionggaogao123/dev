@@ -652,13 +652,6 @@ public class UserDao extends BaseDao {
         update(MongoFacroty.getAppDB(), Constant.COLLECTION_USER_NAME, query, updateValue);
     }
 
-
-    public void updateForumExpAndScore(ObjectId userId, long score, long forumExperience) {
-        DBObject query = new BasicDBObject(Constant.ID, userId);
-        DBObject updateValue = new BasicDBObject(Constant.MONGO_INC, new BasicDBObject("frs", score)).append(Constant.MONGO_INC, new BasicDBObject("fexp", forumExperience));
-        update(MongoFacroty.getAppDB(), Constant.COLLECTION_USER_NAME, query, updateValue);
-    }
-
     public void updateForum(ObjectId userId, long score, long forumExperience) {
         DBObject query = new BasicDBObject(Constant.ID, userId);
         BasicDBObject updateValue = new BasicDBObject(Constant.MONGO_SET, new BasicDBObject("pti", System.currentTimeMillis()));
@@ -897,7 +890,7 @@ public class UserDao extends BaseDao {
         return query(fieldValuePair);
     }
 
-    public UserEntry findByName(String userName) {
+    public UserEntry findByUserName(String userName) {
         BasicDBObject query = new BasicDBObject()
                 .append("nm", userName.toLowerCase());
         DBObject dbo = findOne(MongoFacroty.getAppDB(), Constant.COLLECTION_USER_NAME, query, Constant.FIELDS);
@@ -906,11 +899,6 @@ public class UserDao extends BaseDao {
 
     public UserEntry findByEmail(String email) {
         FieldValuePair fieldValuePair = new FieldValuePair("e", email);
-        return query(fieldValuePair);
-    }
-
-    public UserEntry findByPhone(String phone) {
-        FieldValuePair fieldValuePair = new FieldValuePair("pn", phone);
         return query(fieldValuePair);
     }
 

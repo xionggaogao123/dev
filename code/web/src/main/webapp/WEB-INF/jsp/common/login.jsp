@@ -10,18 +10,13 @@
         <dd>
             <div hidden id="accountError" class="error">帐户名与密码不匹配，请重新输入</div>
             <h1 class="notice-dl">中国最专业的青少年素质教育社区!</h1>
-
             <div class="store-MF" hidden>该登录名不存在<a href="/account/register.do">免费注册？</a></div>
         </dd>
         <dd>
             <input class="inp1" type="text" placeholder="用户名/邮箱/手机号" id="account">
         </dd>
-        <%--<dd>--%>
-            <%--<p class="p-ps">该手机已绑定多个账号，请选择要登录的账号：</p>--%>
-            <%--<label><input type="radio" name="s-count">账号一</label>--%>
-            <%--<label><input type="radio" name="s-count">账号二</label>--%>
-            <%--<label><input type="radio" name="s-count">账号三</label>--%>
-        <%--</dd>--%>
+        <dd id="user-names" hidden>
+        </dd>
         <dd>
             <input class="inp2" type="password" id="password" placeholder="请输入登录密码">
             <span class="mm-forget" onclick="window.open('/account/findPassword.do')">忘记密码</span>
@@ -30,15 +25,16 @@
             <span class="store-DL" id="logIn">登录</span>
         </dd>
         <dd>
-            <p class="p-outc">或使用其他账号登录：<i class="i-qq"></i><i class="i-wx"></i></p>
+            <p class="p-outc">或使用其他账号登录：<i class="i-qq" onclick="redirectQ()"></i><i class="i-wx" onclick="loginWeiXin()"></i></p>
         </dd>
     </dl>
 </div>
 <!--==========背景============-->
 <div class="bg" hidden></div>
 
-
 <script>
+    var isMutilUser = false;
+
     $('body').on('click', '#close', function () {
         $('.store-register').fadeToggle();
         $('.bg').fadeToggle();
@@ -59,17 +55,17 @@
         $('.error').hide();
 
         var requestData = {};
-        requestData.name = $.trim($('#account').val());
+
+        if(isMutilUser) {
+            requestData.name = $.trim($("input[name='s-count']:checked").val());
+        } else {
+            requestData.name = $.trim($('#account').val());
+        }
         requestData.pwd = $.trim($('#password').val());
         requestData.verifyCode = "";
         $.post('/user/login.do', requestData, function (resp) {
             if ('200' == resp.code) {
 
-                try {
-                    loginK6ktSso();
-                } catch (x) {
-
-                }
                 $('.store-register').fadeToggle();
                 $('.bg').fadeToggle();
 
@@ -93,6 +89,36 @@
                 }
             }
         })
+    }
+
+    $('body').on('blur','#account',function () {
+        var account = $('#account').val();
+        var pattern = /(^(([0+]\d{2,3}-)?(0\d{2,3})-)(\d{7,8})(-(\d{3,}))?$)|(^0{0,1}1[3|4|5|6|7|8|9][0-9]{9}$)/;
+        if(pattern.test(account)) {
+            $.ajax({
+                url:'/account/listBindUserName.do',
+                data:{phone: account},
+                success:function (resp) {
+                    if(resp.message.length > 1) {
+                        $('#user-names').show();
+                        $('#user-names').empty();
+                        $('#user-names').append('<p class="p-ps">该手机已绑定多个账号，请选择要登录的账号：</p>');
+                        isMutilUser = true;
+                        for(var i=0;i<resp.message.length;i++) {
+                            $('#user-names').append('<label><input value="'+ resp.message[i] +'" type="radio" name="s-count">'+ resp.message[i]+'</label>');
+                        }
+                    }
+                }
+            });
+        }
+    });
+
+    function redirectQ() {
+        window.open('/user/qqlogin.do', "TencentLogin", "width=800,height=600,menubar=0,scrollbars=1, resizable=1,status=1,titlebar=0,toolbar=0,location=1");
+    }
+
+    function loginWeiXin() {
+        window.open('/user/wechatlogin.do', "TencentLogin", "width=800,height=600,menubar=0,scrollbars=1, resizable=1,status=1,titlebar=0,toolbar=0,location=1");
     }
 </script>
 <script type="text/javascript" src="http://www.k6kt.com/static/js/k6kt-sso.js"></script>

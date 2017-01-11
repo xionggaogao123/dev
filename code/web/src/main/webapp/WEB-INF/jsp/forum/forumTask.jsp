@@ -254,7 +254,7 @@
             <img src="/static/images/forum/img_mission_flower.png">
             <h2>每日签到</h2>
             <p>签到获得1个经验值和1个积分，连续签到会得到更多的经验值与积分奖励哦！</p>
-            <button class="btn-gray" id="sign"><span id="span1">领取任务</span></button>
+            <button class="btn-gray" id="sign"><span id="span1">每日签到</span></button>
         </div>
         <div class="mission-li clearfix">
             <img src="/static/images/forum/img_mission_golden.png">
@@ -309,10 +309,26 @@
 
         if (signIn == "true") {
             $('#sign').addClass('btn-pass').removeClass('btn-gray');
-            $('#span1').html('任务完成');
+            $('#span1').html('已签到');
         } else {
             $('body').on('click', '#sign', function () {
-                $('#closedDialog').show();
+                  //签到
+                $.ajax({
+                    type: "post",
+                    data: {},
+                    url: '/forum/userCenter/signIn.do',
+                    async: false,
+                    dataType: "json",
+                    traditional: true,
+                    success: function (rep) {
+                        if (rep.code == "200") {
+                            window.location.href = window.location.href;
+                        } else {
+                            alert(rep.message);
+                        }
+                    }
+                });
+//                $('#closedDialog').show();
             })
         }
 

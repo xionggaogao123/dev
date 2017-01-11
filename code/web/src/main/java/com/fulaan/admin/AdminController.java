@@ -490,7 +490,7 @@ public class AdminController extends BaseController {
         if (!"".equals(parentId)) {
             e = new ObjectId(parentId);
         }
-        return fSectionService.getFSectionListByLevel(level, e, "");
+        return fSectionService.getFSectionListByLevel(level, e, "",0);
     }
 
     /**

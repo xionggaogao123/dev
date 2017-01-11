@@ -68,11 +68,15 @@ public class FSectionService {
      * @param level
      * @return
      */
-    public List<FSectionDTO> getFSectionListByLevel(int level, ObjectId id, String Name) {
+    public List<FSectionDTO> getFSectionListByLevel(int level, ObjectId id, String Name,int type) {
         List<FSectionDTO> fSectionDTOArrayList = new ArrayList<FSectionDTO>();
         List<FSectionEntry> fSectionEntries = fSectionDao.getFSectionListByLevel(level, id, Name);
         for (FSectionEntry fSectionEntry : fSectionEntries) {
-            if(fSectionEntry.getRemove()==0) {
+            if(type==1) {
+                if (fSectionEntry.getRemove() == 0) {
+                    fSectionDTOArrayList.add(new FSectionDTO(fSectionEntry));
+                }
+            }else{
                 fSectionDTOArrayList.add(new FSectionDTO(fSectionEntry));
             }
         }

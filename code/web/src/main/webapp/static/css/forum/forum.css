@@ -219,7 +219,7 @@ pre {
 .type-nav span {
     float: left;
     line-height: 38px;
-    border-bottom: 3px solid #fff;
+    /*border-bottom: 3px solid #fff;*/
     margin-right: 30px;
     font-size: 18px;
     font-weight: bold;
@@ -970,7 +970,7 @@ pre {
 
 .cont-main .cont-left {
     border: 1px solid #E6E6E6;
-    margin-top: 11px;
+    margin-top: 15px;
     padding-bottom: 20px;
     background: #fff;
 }
@@ -6782,6 +6782,7 @@ pre {
     margin-bottom: 10px;
     cursor: pointer;
     transition: all .3s;
+    background: #fff;
 }
 
 .bk-li:hover {
@@ -6976,35 +6977,35 @@ pre {
 }
 
 .bkl1 {
-    border-left: 2px solid #FF6600;
+    border-left: 2px solid #aa99ff;
 }
 
 .bkl2 {
-    border-left: 2px solid #FFAE00;
+    border-left: 2px solid #36d7b7;
 }
 
 .bkl3 {
-    border-left: 2px solid #0095DD;
+    border-left: 2px solid #ea65a2;
 }
 
 .bkl4 {
-    border-left: 2px solid #51C1BA;
+    border-left: 2px solid #dad579;
 }
 
 .bkl5 {
-    border-left: 2px solid #BD3FDC;
+    border-left: 2px solid #3db39e;
 }
 
 .bkl6 {
-    border-left: 2px solid #2BB24C;
+    border-left: 2px solid #f5bb3d;
 }
 
 .bkl7 {
-    border-left: 2px solid #2BB24C;
+    border-left: 2px solid #405966;
 }
 
 .bkl8 {
-    border-left: 2px solid #009BBB;
+    border-left: 2px solid #e04f5f;
 }
 
 .pdf-rt {

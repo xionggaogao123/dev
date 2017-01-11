@@ -862,7 +862,7 @@ public class FPostController extends BaseController {
         if (ObjectId.isValid(id)) {
             e = new ObjectId(id);
         }
-        return fSectionService.getFSectionListByLevel(level, e, name);
+        return fSectionService.getFSectionListByLevel(level, e, name,1);
     }
 
     @SessionNeedless

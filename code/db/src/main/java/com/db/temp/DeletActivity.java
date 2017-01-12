@@ -31,7 +31,7 @@ public class DeletActivity {
      */
     public void deleteActivityByUserName(String userName) {
         // 找到用户id
-        UserEntry userEntry = userDao.findByName(userName);
+        UserEntry userEntry = userDao.findByUserName(userName);
 
         //王子恒8
         if (userEntry != null) {
@@ -65,7 +65,7 @@ public class DeletActivity {
      */
     public void deleteAllSpeak(String userName) {
         // 找到用户id
-        UserEntry userEntry = userDao.findByName(userName);
+        UserEntry userEntry = userDao.findByUserName(userName);
         if (userEntry != null) {
             ObjectId userId = userEntry.getID();
             List<ActivityEntry> activityEntryList = activityDao.getAllList();

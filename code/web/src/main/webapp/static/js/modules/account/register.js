@@ -5,24 +5,14 @@ define(['jquery', 'pagination', 'common'], function (require, exports, module) {
     var register = {};
 
     var cacheKeyId = '';
-    var phoneRegisterCheck = {
-        userName: false,
-        phone: false,
-        password: false,
-        identifyCode: false
-    };
 
-    var emailRegisterCheck = {
-        userName: false,
-        password: false,
-        email: false
-    };
+    var validatePhone = false;
+    var validateImageYZM = false;
+    var validateCode = false;
 
     register.init = function () {
 
     };
-
-    var isPressEmailSend = false;
 
     $(function () {
         $('.re-cont .tab span').click(function () {
@@ -32,11 +22,13 @@ define(['jquery', 'pagination', 'common'], function (require, exports, module) {
         $('.re-cont .tab span:nth-child(1)').click(function () {
             $('.re-cont .ul1').show();
             $('.re-cont .ul2').hide();
+            $('.re-cont .ul3').hide();
         });
 
         $('.re-cont .tab span:nth-child(2)').click(function () {
             $('.re-cont .ul2').show();
             $('.re-cont .ul1').hide();
+            $('.re-cont .ul3').hide();
         });
 
         $("#phone").blur(function () {
@@ -46,139 +38,17 @@ define(['jquery', 'pagination', 'common'], function (require, exports, module) {
                 var requestParm = {phone: self.val()};
                 common.getData('/account/userPhoneCheck', requestParm, function (resp) {
                     if (resp.message) {
-                        self.parent().find('.sp3').text('该手机号已被使用');
-                        self.parent().find('.sp3').show();
-                        phoneRegisterCheck.phone = false;
+                        $('#phone-alert').text('该手机号已被使用');
+                        $('#phone-alert').show();
+                        validatePhone = false;
                     } else {
-                        phoneRegisterCheck.phone = true;
+                        validatePhone = true;
                         self.parent().find('.sp3').hide();
                     }
                 });
             } else {
-                self.parent().find('.sp3').show();
-                phoneRegisterCheck.phone = false;
-            }
-        });
-
-        $('.ul2 .email-input').blur(function () {
-            var self = $(this);
-            var pattern = /^([a-zA-Z0-9._-])+@([a-zA-Z0-9_-])+(.[a-zA-Z0-9_-])+/;
-            if (pattern.test($(this).val())) {
-                var requestParm = {email: $(this).val()};
-                common.getData('/account/userEmailCheck', requestParm, function (resp) {
-                    if (resp.message) {
-                        self.parent().find('.sp3').text('该邮箱已被使用');
-                        self.parent().find('.sp3').show();
-                        emailRegisterCheck.email = false;
-                    } else {
-                        self.parent().find('.sp3').hide();
-                        emailRegisterCheck.email = true;
-                    }
-                });
-            } else {
-                $(this).parent().find('.sp3').text('邮箱不合法');
-                $(this).parent().find('.sp3').show();
-                emailRegisterCheck.email = false;
-            }
-        });
-
-        $('.ul1 .password,.ul2 .password').blur(function () {
-            var self = $(this);
-            if (self.val() == '') {
-                self.parent().find('.sp3').text('密码不能为空');
-                self.parent().find('.sp3').show();
-            } else {
-                var pattern = /[a-zA-Z0-9!@#*\^$%()-+=_&]{6,20}$/;
-                if (!pattern.test(self.val())) {
-                    self.parent().find('.sp3').text('密码不符合格式');
-                    self.parent().find('.sp3').show();
-                } else {
-                    self.parent().find('.sp3').hide();
-                }
-            }
-        });
-
-        $('.ul1 .r-password').blur(function () {
-            var self = $(this);
-            if ($('.ul1 .r-password').val() == $('.ul1 .password').val()) {
-                self.parent().find('.sp3').hide();
-                phoneRegisterCheck.password = true;
-            } else {
-                self.parent().find('.sp3').text('两次输入的密码不一致');
-                self.parent().find('.sp3').show();
-                phoneRegisterCheck.password = false;
-            }
-        });
-
-        $('.ul2 .r-password').blur(function () {
-            var self = $(this);
-            var pattern = /[a-zA-Z0-9!@#*\^$%()-+=_&]{6,20}$/;
-            if (!pattern.test(self.val())) {
-                self.parent().find('.sp3').text('密码不符合格式');
-                self.parent().find('.sp3').show();
-                return;
-            }
-
-            if (self.val() == $('.ul2 .r-password').val()) {
-                self.parent().find('.sp3').hide();
-                emailRegisterCheck.password = true;
-            } else {
-                self.parent().find('.sp3').text('两次输入的密码不一致');
-                self.parent().find('.sp3').show();
-            }
-        });
-
-        $('.ul1 .user-name').blur(function () {
-            var self = $(this);
-            var pattern = /[a-zA-Z0-9_\u4e00-\u9fa5]{3,20}$/;
-            if(!pattern.test(self.val())) {
-                self.parent().find('.sp3').text('用户名不符合规范');
-                self.parent().find('.sp3').show();
-                return;
-            }
-            if (self.val() != '') {
-                self.parent().find('.sp3').hide();
-                var requestParm = {userName: self.val()};
-                common.getData('/account/userNameCheck', requestParm, function (resp) {
-                    if (resp.message) {
-                        self.parent().find('.sp3').text('用户名被占用了');
-                        self.parent().find('.sp3').show();
-                        phoneRegisterCheck.userName = false;
-                    } else {
-                        phoneRegisterCheck.userName = true;
-                    }
-                });
-            } else {
-                self.parent().find('.sp3').text('请输入用户名');
-                self.parent().find('.sp3').show();
-                phoneRegisterCheck.userName = false;
-            }
-        });
-
-        $('.ul2 .user-name').blur(function () {
-            var self = $(this);
-            var pattern = /[a-zA-Z0-9_\u4e00-\u9fa5]{3,20}$/;
-            if(!pattern.test(self.val())) {
-                self.parent().find('.sp3').text('用户名不符合规范');
-                self.parent().find('.sp3').show();
-                return;
-            }
-            if (self.val() != '') {
-                self.parent().find('.sp3').hide();
-                var requestParm = {userName: self.val()};
-                common.getData('/account/userNameCheck', requestParm, function (resp) {
-                    if (resp.message) {
-                        self.parent().find('.sp3').text('用户名被占用了');
-                        self.parent().find('.sp3').show();
-                        emailRegisterCheck.userName = false;
-                    } else {
-                        emailRegisterCheck.userName = true;
-                    }
-                });
-            } else {
-                self.parent().find('.sp3').text('请输入用户名');
-                self.parent().find('.sp3').show();
-                emailRegisterCheck.userName = false;
+                $('#phone-alert').show();
+                validatePhone = false;
             }
         });
 
@@ -187,15 +57,15 @@ define(['jquery', 'pagination', 'common'], function (require, exports, module) {
             if (self.val() == '') {
                 self.parent().find('.sp3').text('请填写验证码');
                 self.parent().find('.sp3').show();
-                phoneRegisterCheck.identifyCode = false;
+                validateImageYZM = false;
             } else {
                 self.parent().find('.sp3').hide();
-                phoneRegisterCheck.identifyCode = true;
+                validateImageYZM = true;
             }
         });
 
         $('.sendYZM').click(function () {
-            if (phoneRegisterCheck.userName && phoneRegisterCheck.password && phoneRegisterCheck.phone) {
+            if (validatePhone && validateImageYZM) {
                 $(this).parent().find('.sp3').hide();
                 sendVerifyCode($('#phone').val(), $('#verifyCode').val());
             } else {
@@ -204,7 +74,7 @@ define(['jquery', 'pagination', 'common'], function (require, exports, module) {
         });
 
         $('#code').blur(function () {
-            if($(this).val() == '') {
+            if ($(this).val() == '') {
                 $(this).parent().find('.sp3').text('参数不完整');
                 $(this).parent().find('.sp3').show();
             } else {
@@ -213,20 +83,10 @@ define(['jquery', 'pagination', 'common'], function (require, exports, module) {
         });
 
         $('.ul1 button').click(function () {
-            if (!$('.ul1 .argument').is(':checked')) {
-                $(this).parent().find('.sp3').text('未勾选社区协议');
-                $(this).parent().find('.sp3').show();
-                return;
-            } else {
-                $(this).parent().find('.sp3').hide();
-            }
-
-            if (phoneRegisterCheck.userName && phoneRegisterCheck.password && phoneRegisterCheck.phone && phoneRegisterCheck.identifyCode) {
+            if (validatePhone && validateCode) {
                 var code = $.trim($('#code').val());
-                var userName = $.trim($('.ul1 .user-name').val());
-                var password = $.trim($('.ul1 .password').val());
                 var phone = $.trim($('#phone').val());
-                registerUser(code, userName, password, phone, '');
+                validate_phone(phone,code);
             } else {
                 $(this).parent().find('.sp3').text('输入不完整');
                 $(this).parent().find('.sp3').show();
@@ -234,30 +94,69 @@ define(['jquery', 'pagination', 'common'], function (require, exports, module) {
         });
 
         $('.ul2 button').click(function () {
-            if(isPressEmailSend) {
-                return;
+            var email = $('#user-email').val();
+            var pattern = /^([a-zA-Z0-9._-])+@([a-zA-Z0-9_-])+(.[a-zA-Z0-9_-])+/;
+            if(pattern.test(email)) {
+                var requestParm = {email: email};
+                common.getData('/account/userEmailCheck.do',requestParm,function (resp) {
+                    if(resp.code === '200') {
+                        if(resp.message) {
+                            $('#email-alert').text('邮箱已经被注册了');
+                            $('#email-alert').show();
+                        } else {
+                            $('.re-cont .ul1').hide();
+                            $('.re-cont .ul2').hide();
+                            $('.re-cont .ul3').show();
+                        }
+                    } else {
+                        alert(resp.message);
+                    }
+                });
             } else {
-                isPressEmailSend = true;
+                $('#email-alert').text('邮箱不符合格式');
+                $('#email-alert').show();
             }
-            if (!$('.ul2 .argument').is(':checked')) {
-                $(this).parent().find('.sp3').text('未勾选社区协议');
-                $(this).parent().find('.sp3').show();
-                return;
+        });
+
+        $('.ul3 #nick').blur(function () {
+            var nick = $(this).val();
+            var pattern = /[a-zA-Z0-9_\u4e00-\u9fa5]{3,20}$/;
+            if(!pattern.test(nick)) {
+                $('#nick-alert').text('昵称不符合规范');
+                $('#nick-alert').show();
             } else {
-                $(this).parent().find('.sp3').hide();
+                $('#nick-alert').hide();
+            }
+        });
+
+        $('.ul3 #password').blur(function () {
+            var password = $(this).val();
+            var pattern = /[a-zA-Z0-9!@#*\^$%()-+=_&]{6,20}$/;
+            if(!pattern.test(password)) {
+                $('#password-alert').text('密码不符合规范');
+                $('#password-alert').show();
+            } else {
+                $('#password-alert').hide();
+            }
+        });
+
+        $('.ul3 #re-password').blur(function () {
+            var password = $('#password').val();
+            var rePassword = $('#re-password').val();
+            if(password === rePassword) {
+
+            } else {
+                $('#re-password-alert').text('两次密码不一致');
+                $('#re-password-alert').show();
             }
 
-            if (emailRegisterCheck.email && emailRegisterCheck.password && emailRegisterCheck.userName) {
+        });
 
-                $(this).parent().find('.sp3').hide();
-                var userName = $.trim($('.ul2 .user-name').val());
-                var password = $.trim($('.ul2 .password').val());
-                var email = $.trim($('.email-input').val());
-                registerUser('', userName, password, '', email);
-            } else {
-                $(this).parent().find('.sp3').text('输入不完整');
-                $(this).parent().find('.sp3').show();
-            }
+        $('.ul3 button').click(function () {
+            var email = $('#user-email').val();
+            var nickName = $('#nick').val();
+            var password = $('#password').val();
+            registerUser('',email,password,'',email,nickName);
         });
 
         $('body').on('click', '#imgObj', function () {
@@ -268,17 +167,33 @@ define(['jquery', 'pagination', 'common'], function (require, exports, module) {
     });
 
     function sendVerifyCode(phone, verifyCode) {
-        common.getData("/mall/users/messages.do", {mobile: phone, verifyCode: verifyCode}, function (resp) {
+        common.getData("/mall/users/messages.do", {
+            mobile: phone,
+            verifyCode: verifyCode
+        }, function (resp) {
             if (resp.code == '200') {
                 cacheKeyId = resp.cacheKeyId;
+                validateCode = true;
             } else {
                 alert(resp.message);
+                validateCode = false;
             }
         });
     }
 
+    function validate_phone(phone, code) {
+        common.getData("/account/validatePhone.do", {
+            phone: phone,
+            code: code,
+            cacheKeyId: cacheKeyId
+        }, function (resp) {
+            alert(JSON.stringify(resp));
+        });
+    }
+
     var isRegister = false;
-    function registerUser(code, userName, password, phone, email) {
+
+    function registerUser(code, userName, password, phone, email,nickName) {
         var requestData = {};
         requestData.cacheKeyId = cacheKeyId;
         requestData.code = code;
@@ -286,7 +201,8 @@ define(['jquery', 'pagination', 'common'], function (require, exports, module) {
         requestData.userName = userName;
         requestData.passWord = password;
         requestData.phoneNumber = phone;
-        if(isRegister) {
+        requestData.nickName = nickName;
+        if (isRegister) {
             return;
         }
         isRegister = true;

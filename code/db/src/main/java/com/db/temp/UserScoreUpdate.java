@@ -18,7 +18,7 @@ public class UserScoreUpdate {
         List<String> list = FileUtils.readLines(new File("/home/stuts1.txt"));
         System.out.println("共有学生：" + list.size());
         for (String name : list) {
-            UserEntry ue = dao.findByName(name);
+            UserEntry ue = dao.findByUserName(name);
             if (null != ue) {
                 try {
                     System.out.println(ue.getUserName() + "" + ue.getExperiencevalue() + " ");

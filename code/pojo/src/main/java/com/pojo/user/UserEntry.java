@@ -288,6 +288,47 @@ public class UserEntry extends BaseDBObject {
                 Constant.EMPTY, 0);
     }
 
+    public UserEntry(String userName, String password,
+                     String mobile, String email,String nickName) {
+        this(userName,  //userName
+                password,  //password
+                Constant.NEGATIVE_ONE,    //sex
+                nickName, //nickName
+                Constant.DEFAULT_VALUE_INT,//role
+                Constant.EMPTY,//permission
+                Constant.EMPTY,//removePermission
+                mobile,//mobileNumber
+                Constant.EMPTY, //phoneNumber
+                email, //email
+                Constant.EMPTY, //qq
+                Constant.EMPTY, //weiXin
+                Constant.EMPTY, //weiBo
+                Constant.EMPTY, //address
+                Constant.EMPTY, //postCode
+                Constant.NEGATIVE_ONE, //bloodType
+                System.currentTimeMillis(), //registerTime
+                Constant.EMPTY, //registerIP
+                null, //schoolID
+                Constant.DEFAULT_VALUE_LONG, //birthDate
+                0L, //lastActiveDate
+                Constant.ZERO, //experiencevalue
+                Constant.EMPTY,//studyNum
+                Constant.EMPTY,//registerNum
+                Constant.EMPTY,//job
+                Constant.EMPTY,//introduce
+                Constant.EMPTY,//jobnumber
+                Constant.SYN_YES_NEED,//syn，
+                null, //connectId,
+                Constant.EMPTY, //avatar
+                null,
+                Constant.DEFAULT_VALUE_LONG,
+                Constant.DEFAULT_VALUE_LONG,
+                Constant.DEFAULT_VALUE_INT,
+                Constant.DEFAULT_VALUE_LONG,
+                1,
+                Constant.EMPTY, 0);
+    }
+
 
     public UserEntry(String userName, String password,
                      int sex, List<IdValuePair> groupInfoList) {

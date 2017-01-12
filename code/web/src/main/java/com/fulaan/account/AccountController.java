@@ -39,6 +39,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -181,20 +182,66 @@ public class AccountController extends BaseController {
     }
 
     /**
+     * 验证 手机号
+     * @param phone
+     * @param code
+     * @param cacheKeyId
+     * @return
+     */
+    @SessionNeedless
+    @ResponseBody
+    @RequestMapping("/validatePhone")
+    public RespObj validatePhone(String phone, String code, String cacheKeyId) {
+        String cacheKey = CacheHandler.getKeyString(CacheHandler.CACHE_SHORTMESSAGE, cacheKeyId);
+        String value = CacheHandler.getStringValue(cacheKey);
+        if (StringUtils.isBlank(value)) {
+            return RespObj.FAILD("验证码失效，请重新获取");
+        }
+        String[] cache = value.split(",");
+        if (!cache[1].equals(phone)) {
+            return RespObj.FAILD("注册失败：手机号码与验证码不匹配");
+        }
+
+        if (cache[0].equals(code)) {
+            return RespObj.SUCCESS("验证成功");
+        } else {
+            return RespObj.FAILD("短信验证码输入错误");
+        }
+    }
+
+    @SessionNeedless
+    @ResponseBody
+    @RequestMapping("/listBindUserName")
+    public RespObj listBindUserName(String phone) {
+        List<String> userNameList = new ArrayList<String>();
+        UserMobileEntry userMobileEntry = accountService.findByMobile(phone);
+        List<ObjectId> userIds = userMobileEntry.getUserIds();
+        UserEntry userEntry = userService.findByUserName(phone);
+        List<UserEntry> userEntries = userService.getUserByList(userIds);
+        if(userEntry != null) {
+            userNameList.add(userEntry.getUserName());
+        }
+        for(UserEntry userEntry1 : userEntries) {
+            userNameList.add(userEntry1.getUserName());
+        }
+        return RespObj.SUCCESS(userNameList);
+    }
+
+    /**
      * 验证用户名与验证码
      */
     @RequestMapping("/verifyCodeWithName")
     @SessionNeedless
     @ResponseBody
     public RespObj verifyCodeWithName(String name, String verifyCode, @CookieValue(Constant.COOKIE_VALIDATE_CODE) String verifyKey, HttpServletResponse response) {
-        Map<String,Object> result = new HashMap<String,Object>();
+        Map<String, Object> result = new HashMap<String, Object>();
         if (!accountService.checkVerifyCode(verifyCode, verifyKey)) {
             return RespObj.FAILD("验证码不正确");
         }
 
         Pattern userNamePattern = Pattern.compile(Validator.REGEX_USERNAME);
-        if(userNamePattern.matcher(name).matches()) {
-            if(userService.findByUserName(name) == null) {
+        if (userNamePattern.matcher(name).matches()) {
+            if (userService.findByUserName(name) == null) {
                 return RespObj.FAILDWithErrorMsg("账号不存在");
             }
             ObjectId key = new ObjectId();
@@ -202,14 +249,14 @@ public class AccountController extends BaseController {
             CacheHandler.cache(cacheKey, name, Constant.SESSION_FIVE_MINUTE);//5分钟
             response.addCookie(new Cookie(Constant.FWCODE, key.toString()));
 
-            result.put("type","userName");
-            result.put("userName",name);
+            result.put("type", "userName");
+            result.put("userName", name);
         }
 
         Pattern emailPattern = Pattern.compile(Validator.REGEX_EMAIL);
-        if(emailPattern.matcher(name).matches()) {
+        if (emailPattern.matcher(name).matches()) {
 
-            if(userService.findByEmail(name) == null) {
+            if (userService.findByEmail(name) == null) {
                 return RespObj.FAILDWithErrorMsg("账号不存在");
             }
             ObjectId key = new ObjectId();
@@ -217,24 +264,24 @@ public class AccountController extends BaseController {
             CacheHandler.cache(cacheKey, name, Constant.SESSION_FIVE_MINUTE);//5分钟
             response.addCookie(new Cookie(Constant.FWCODE, key.toString()));
 
-            result.put("type","email");
-            result.put("email",name);
+            result.put("type", "email");
+            result.put("email", name);
         }
 
         Pattern mobilePattern = Pattern.compile(Validator.REGEX_MOBILE);
-        if(mobilePattern.matcher(name).matches()) {
-            if(userService.findByMobile(name) == null) {
+        if (mobilePattern.matcher(name).matches()) {
+            if (userService.findByMobile(name) == null) {
                 return RespObj.FAILDWithErrorMsg("账号不存在");
             }
             UserMobileEntry mobileEntry = accountService.findByMobile(name);
-            if(mobileEntry != null) {
+            if (mobileEntry != null) {
                 List<ObjectId> userIdList = mobileEntry.getUserIds();
                 List<UserDetailInfoDTO> userDetailInfoDTOS = userService.findUserInfoByIds(userIdList);
-                result.put("users",userDetailInfoDTOS);
+                result.put("users", userDetailInfoDTOS);
             }
-            result.put("type","mobile");
-            result.put("mobile",name);
-            result.put("protectedMobile",getProtectedMobile(name));
+            result.put("type", "mobile");
+            result.put("mobile", name);
+            result.put("protectedMobile", getProtectedMobile(name));
         }
 
         return RespObj.SUCCESS(result);
@@ -521,6 +568,7 @@ public class AccountController extends BaseController {
 
     /**
      * 解除第三方绑定
+     *
      * @param type
      * @return
      */
@@ -533,6 +581,7 @@ public class AccountController extends BaseController {
 
     /**
      * 获取账户信息
+     *
      * @param userName
      * @return
      */
@@ -541,14 +590,14 @@ public class AccountController extends BaseController {
     @SessionNeedless
     public RespObj accountSafeInfo(String userName) {
         UserDetailInfoDTO user = userService.getUserInfoByUserName(userName);
-        if(user == null) {
+        if (user == null) {
             return RespObj.FAILD("用户不存在");
         }
         Map<String, Object> result = new HashMap<String, Object>();
         result.put("userName", user.getUserName());
         result.put("nickName", user.getNickName());
         result.put("sex", user.getSex());
-        result.put("phone",getProtectedMobile(user.getMobileNumber()));
+        result.put("phone", getProtectedMobile(user.getMobileNumber()));
         SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd");
         String date = format.format(user.getBirthDate());
         String[] dateArr = date.split("-");
@@ -559,9 +608,9 @@ public class AccountController extends BaseController {
         result.put("year", year);
         result.put("month", month);
         result.put("day", day);
-        result.put("avatar",user.getImgUrl());
+        result.put("avatar", user.getImgUrl());
 
-        result.put("email",user.getEmail());
+        result.put("email", user.getEmail());
         return RespObj.SUCCESS(result);
     }
 }

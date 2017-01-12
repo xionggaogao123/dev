@@ -1908,7 +1908,7 @@ pre{white-space: pre-wrap;word-wrap: break-word;}
 .publish-cont{
     background: #fff;
     padding: 8px 24px 15px;
-    overflow: hidden;
+    /*overflow: hidden;*/
     margin-bottom: 16px;
 }
 .publish-nav{
@@ -1928,7 +1928,7 @@ pre{white-space: pre-wrap;word-wrap: break-word;}
 .green{
     color: #21CE77;
 }
-.publish-nav .li1 .sp1,.publish-nav .li1 .sp2,.publish-nav .li2 .sp1,.publish-nav .li2 .sp2,.publish-nav .li4 .sp1,.publish-nav .li4 .sp2,.publish-nav .li5 .sp1,.publish-nav .li5 .sp2,.publish-nav .li6 .sp2,.publish-nav .li6 .sp1{
+.publish-nav  li span{
     float: left;
     width: 16px;
     height: 16px;
@@ -1966,6 +1966,9 @@ pre{white-space: pre-wrap;word-wrap: break-word;}
 .publish-nav .li6 .sp1{
     background: url('/static/images/community/li61.png') no-repeat;
 }
+.publish-nav .li7 .sp1{
+    background: url('/static/images/community/li71.png') no-repeat;
+}
 
 .publish-nav .li1 .sp2{
     background: url('/static/images/community/li12.png') no-repeat;
@@ -1985,6 +1988,9 @@ pre{white-space: pre-wrap;word-wrap: break-word;}
 .publish-nav .li6 .sp2{
     background: url('/static/images/community/li62.png') no-repeat;
 }
+.publish-nav .li7 .sp2{
+    background: url('/static/images/community/li71.png') no-repeat;
+}
 .publish-nav li:hover>.sp1{
     display: none;
 }
@@ -1993,6 +1999,259 @@ pre{white-space: pre-wrap;word-wrap: break-word;}
 }
 .publish-nav li:hover{
     color: #21CE77;
+}
+.vote-cont{
+    position: relative;
+    height: 30px;
+    margin-bottom: 10px;
+}
+.vote-cont>button{
+    padding:0 10px;
+    background: #FF8140;
+    color: #fff;
+    height: 30px;
+    border:none;
+}
+.vote-detail h3{
+    height: 40px;
+    line-height: 40px;
+}
+.vote-detail h3 em{
+    color: #FF8400;
+}
+.vote-detail .vote-btn{
+    height: 36px;
+    line-height: 36px;
+    text-align: center;
+    margin: 15px 0;
+}
+.vote-detail .vote-btn button{
+    color: #fff;
+    height: 32px;
+    width: 80px;
+    background: #23CD77;
+    border:none;
+    cursor: pointer;
+}
+
+.vote-detail .vote-btn span{
+    color: #23CD77;
+}
+.vote-detail .ul1 li{
+    height: 34px;
+    line-height: 34px;
+    border-bottom: #E5E5E5 1px solid ;
+}
+
+.vote-detail .ul1 li label{
+    cursor: pointer;
+}
+.vote-detail .ul1 li input{
+    margin:0 6px 0 3px;
+}
+.vote-detail .ul2{
+    padding-left: 9px;
+}
+.vote-detail .ul2 li{
+    height: 52px;
+}
+.vote-detail .ul2 li .p1s{
+    height: 34px;
+    line-height: 34px;
+}
+.vote-detail .ul2 li .p2s{
+    height: 16px;
+    line-height: 16px;
+}
+.line-f{
+    float: left;
+    width: 484px;
+    height: 16px;
+    border-radius:0 5px 5px 0;
+    background: url("/static/images/community/vote_bg.png");
+}
+.vote-detail .ul2 li .p2s>span{
+    margin: 0 0 0 10px;
+}
+.vote-detail .ul2 li:nth-child(1) .line-f span{
+    background: #E92725;
+}
+.vote-detail .ul2 li:nth-child(1) .p2s>span em{
+    color: #E92725;
+}
+.vote-detail .ul2 li:nth-child(2) .line-f span{
+    background: #F27B21;
+}
+.vote-detail .ul2 li:nth-child(2) .p2s>span em{
+    color: #F27B21;
+}
+.vote-detail .ul2 li:nth-child(3) .line-f span{
+    background: #F2A61F;
+}
+.vote-detail .ul2 li:nth-child(3) .p2s>span em{
+    color: #F2A61F;
+}
+.vote-detail .ul2 li:nth-child(4) .line-f span{
+    background: #5AAF4A;
+}
+.vote-detail .ul2 li:nth-child(4) .p2s>span em{
+    color: #5AAF4A;
+}
+.vote-detail .ul2 li:nth-child(5) .line-f span{
+    background: #42C4F5;
+}
+.vote-detail .ul2 li:nth-child(5) .p2s>span em{
+    color: #42C4F5;
+}
+.vote-detail .ul2 li:nth-child(6) .line-f span{
+    background: #0099CC;
+}
+.vote-detail .ul2 li:nth-child(6) .p2s>span em{
+    color: #0099CC;
+}
+.vote-detail .ul2 li:nth-child(7) .line-f span{
+    background: #3365AE;
+}
+.vote-detail .ul2 li:nth-child(7) .p2s>span em{
+    color: #3365AE;
+}
+.vote-detail .ul2 li:nth-child(8) .line-f span{
+    background: #2A3591;
+}
+.vote-detail .ul2 li:nth-child(8) .p2s>span em{
+    color: #2A3591;
+}
+.vote-detail .ul2 li:nth-child(9) .line-f span{
+    background: #592D8E;
+}
+.vote-detail .ul2 li:nth-child(9) .p2s>span em{
+    color: #592D8E;
+}
+.vote-detail .ul2 li:nth-child(10) .line-f span{
+    background: #DB3191;
+}
+.vote-detail .ul2 li:nth-child(10) .p2s>span em{
+    color: #DB3191;
+}
+.vote-detail .ul2 li:nth-child(11) .line-f span{
+    background: #E92725;
+}
+.vote-detail .ul2 li:nth-child(11) .p2s>span em{
+    color: #E92725;
+}
+.vote-detail .ul2 li:nth-child(12) .line-f span{
+    background: #F27B21;
+}
+.vote-detail .ul2 li:nth-child(12) .p2s>span em{
+    color: #F27B21;
+}
+
+.vote-detail .ul2 li .line-f span{
+    display: block;
+    border-radius:0 5px 5px 0;
+    height: 16px;
+}
+.vote-cont>.div2{
+    display: none;
+    position: absolute;
+    top:40px;
+    left:0;
+    width: 380px;
+    padding:0 16px 15px;
+    background: #fff;
+    border:#CCCCCC 1px solid;
+    z-index: 1;
+}
+.vote-cont>div .p1{
+    height: 24px;
+}
+.vote-cont>div .p1 em{
+    float: right;
+    font-size: 24px;
+    line-height: 24px;
+    height: 24px;
+    cursor: pointer;
+}
+.vote-cont .li1{
+    height: 30px;
+    line-height: 30px;
+    font-weight: bold;
+}
+.vote-cont .li2{
+    height: 28px;
+    line-height: 28px;
+    border:1px solid #ccc;
+    margin-bottom: 8px;
+    padding: 0 6px;
+}
+.vote-cont .li3{
+    height: 28px;
+    line-height: 28px;
+    background: #F2F2F5;
+    text-align: center;
+    margin-bottom: 8px;
+    cursor: pointer;
+}
+.vote-cont .li4{
+    height: 36px;
+    line-height: 36px;
+    text-align: center;
+}
+.downT{
+    display: none;
+    width: 17px;
+    height: 9px;
+    background: url("/static/images/train/down-train1.png") no-repeat;
+    position: absolute;
+    top: 33px;
+    left: 46px;
+    z-index: 2;
+}
+.vote-cont .li4 button{
+    width: 62px;
+    height: 26px;
+    color:#fff;
+    background: #FF8140;
+    border:none;
+    border-radius: 4px;
+}
+.vote-cont .li4 input{
+    float: left;
+    width: 110px;
+    border:1px solid #aaa;
+    height: 21px;
+    line-height: 20px;
+    margin: 6px 7px 0 0;
+}
+.vote-cont .li4 em{
+    float: left;
+    height: 26px;
+    line-height: 36px;
+}
+.vote-cont .li4 select{
+    float: left;
+    width: 60px;
+    border:1px solid #aaa;
+    height: 23px;
+    margin: 6px 5px 0 0;
+}
+.vote-cont .li4 span{
+    float: left;
+    width: 80px;
+    font-weight: bold;
+}
+.vote-cont .li2 input{
+    border: none;
+    height: 28px;
+    line-height: 28px;
+    width: 350px;
+    float: right;
+    font-size: 12px;
+}
+.vote-cont .li1{
+    height: 30px;
+    line-height: 30px;
+    font-weight: bold;
 }
 .publish-putin{
     width: 780px;

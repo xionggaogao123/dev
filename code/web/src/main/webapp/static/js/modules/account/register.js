@@ -204,7 +204,6 @@ define(['jquery', 'pagination', 'common'], function (require, exports, module) {
                 $('.re-cont .ul1').hide();
                 $('.re-cont .ul2').hide();
                 $('.re-cont .ul3').show();
-
                 registerType = 'phone';
             }
         });

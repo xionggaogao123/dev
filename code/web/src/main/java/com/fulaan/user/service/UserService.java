@@ -378,10 +378,6 @@ public class UserService extends BaseService {
         }
     }
 
-    public UserEntry findByPhone(String phone) {
-        return userDao.findByMobile(phone);
-    }
-
     public UserEntry findByMobile(String mobile) {
         return userDao.findByMobile(mobile);
     }
@@ -1003,7 +999,7 @@ public class UserService extends BaseService {
         UserEntry e = findByUserName(name);
 
         if (null == e && ValidationUtils.isRequestModile(name)) {
-            e = findByPhone(name);
+            e = findByMobile(name);
         }
         if (null == e && ValidationUtils.isEmail(name)) {
             e = findByEmail(name);
@@ -1229,12 +1225,12 @@ public class UserService extends BaseService {
         return thirdLoginDao.isBindWechat(userId);
     }
 
-    public void clearUserPhoneAndEmail(String userName) {
-        userDao.cleanUserPhoneAndEmail(userName);
-    }
-
     public void updateUserPhone(ObjectId userId, String mobile) {
         userDao.updateUserMobile(userId, mobile);
+    }
+
+    public void clearUserPhone(String phone) {
+        userDao.clearUserMobile(phone);
     }
 
     public void removeThirdBind(ObjectId userId, ThirdType thirdType) {

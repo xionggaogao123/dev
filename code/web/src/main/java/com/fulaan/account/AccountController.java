@@ -133,7 +133,7 @@ public class AccountController extends BaseController {
     @SessionNeedless
     @ResponseBody
     public RespObj userPhoneCheck(String phone) {
-        return RespObj.SUCCESS(userService.findByPhone(phone) != null);
+        return RespObj.SUCCESS(userService.findByMobile(phone) != null);
     }
 
     /**
@@ -512,7 +512,7 @@ public class AccountController extends BaseController {
     @RequestMapping("/changeUserPhone")
     @ResponseBody
     public RespObj changeUserPhone(String mobile, String code, String cacheKeyId) {
-        UserEntry userEntry = userService.findByPhone(mobile);
+        UserEntry userEntry = userService.findByMobile(mobile);
         if (userEntry != null && getUserId().equals(userEntry.getID())) {
             return RespObj.FAILD("手机号是自己的，已经绑定了无需绑定");
         }
@@ -560,7 +560,7 @@ public class AccountController extends BaseController {
     @RequestMapping("/checkPhoneCanUse")
     @ResponseBody
     public RespObj checkPhoneCanUse(String mobile) {
-        UserEntry userEntry = userService.findByPhone(mobile);
+        UserEntry userEntry = userService.findByMobile(mobile);
         if (userEntry != null && userEntry.getID().equals(getUserId())) {
             return RespObj.FAILD("你已经绑定这个手机号了");
         }
@@ -622,8 +622,8 @@ public class AccountController extends BaseController {
 
     @RequestMapping("/unsetPhone")
     @ResponseBody
-    public RespObj unsetPhone() {
-        userService.updateUserPhone(getUserId(), "");
+    public RespObj unsetPhone(String phone) {
+        userService.clearUserPhone(phone);
         return RespObj.SUCCESS;
     }
 

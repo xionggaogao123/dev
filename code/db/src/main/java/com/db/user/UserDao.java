@@ -268,6 +268,16 @@ public class UserDao extends BaseDao {
         return writeResult.getN();
     }
 
+    public void clearUserMobile(String mobile) {
+        BasicDBObject query = new BasicDBObject()
+                .append("mn", mobile);
+        BasicDBObject updateValue = new BasicDBObject()
+                .append("mn", "");
+        BasicDBObject update = new BasicDBObject()
+                .append(Constant.MONGO_SET, updateValue);
+        update(MongoFacroty.getAppDB(), Constant.COLLECTION_USER_NAME, query, update);
+    }
+
 
     /**
      * 逻辑删除用户；
@@ -995,12 +1005,6 @@ public class UserDao extends BaseDao {
                 .append(Constant.ID, uid);
         BasicDBObject update = new BasicDBObject()
                 .append(Constant.MONGO_PULL, new BasicDBObject("ustg", new BasicDBObject("co", code)));
-        update(MongoFacroty.getAppDB(), Constant.COLLECTION_USER_NAME, query, update);
-    }
-
-    public void cleanUserPhoneAndEmail(String userName) {
-        BasicDBObject query = new BasicDBObject("nm", userName);
-        BasicDBObject update = new BasicDBObject(Constant.MONGO_SET, new BasicDBObject("e", "").append("mn", ""));
         update(MongoFacroty.getAppDB(), Constant.COLLECTION_USER_NAME, query, update);
     }
 

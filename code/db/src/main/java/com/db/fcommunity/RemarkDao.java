@@ -31,6 +31,18 @@ public class RemarkDao extends BaseDao {
         update(MongoFacroty.getAppDB(), Constant.COLLECTION_FORUM_REMARK, query, update);
     }
 
+    public RemarkEntry getEntry(ObjectId userId,ObjectId endUserId){
+        BasicDBObject query=new BasicDBObject()
+                .append("suid", userId)
+                .append("euid",endUserId);
+        DBObject dbObject=findOne(MongoFacroty.getAppDB(), Constant.COLLECTION_FORUM_REMARK, query);
+        if(null!=dbObject){
+            return new RemarkEntry(dbObject);
+        }else{
+            return null;
+        }
+    }
+
     /**
      * 查询出被修改备注的名称
      *

@@ -1815,8 +1815,41 @@ public class FPostController extends BaseController {
                 videoStr,
                 audioStr,
                 voiceFile,
+                "",
                 headers);
     }
+
+    /**
+     * 兼容语音上传
+     */
+    @RequestMapping(value = "/addFReplyForParticipate", method = RequestMethod.POST)
+    @ResponseBody
+    public RespObj addFReplyForParticipate(
+            String comment, String plainText, String personId, String postSectionId, String postId,
+            int postFlagId,
+            String postReplyId,
+            String nickName, //回復列表呢稱
+            String content, //回復列表內容
+            String imageStr,
+            String videoStr,
+            String audioStr,
+            String voiceFile,
+            String participateId,
+            @RequestHeader HttpHeaders headers
+    ) {
+        return addFReplyItem(comment, plainText, personId, postSectionId, postId,
+                postFlagId,
+                postReplyId,
+                nickName, //回復列表呢稱
+                content, //回復列表內容
+                imageStr,
+                videoStr,
+                audioStr,
+                voiceFile,
+                participateId,
+                headers);
+    }
+
 
     private RespObj addFReplyItem(String comment, String plainText, String personId, String postSectionId, String postId,
                                   int postFlagId,
@@ -1826,7 +1859,7 @@ public class FPostController extends BaseController {
                                   String imageStr,
                                   String videoStr,
                                   String audioStr,
-                                  String voiceFile, HttpHeaders headers) {
+                                  String voiceFile,String participateId, HttpHeaders headers) {
 
         RespObj respObj = new RespObj(Constant.FAILD_CODE);
         SessionValue sv = getSessionValue();
@@ -1840,6 +1873,9 @@ public class FPostController extends BaseController {
         fReplyDTO.setPostSectionId(postSectionId);
         fReplyDTO.setPlainText(plainText);
         fReplyDTO.setVoiceFile(voiceFile);
+        if(StringUtils.isNotBlank(participateId)){
+            fReplyDTO.setParticipateId(participateId);
+        }
         String client = headers.getFirst("User-Agent");
         Platform pf = getPlatform();
         if ((pf == Platform.Android || pf == Platform.IOS) && postFlagId == 1) {
@@ -2094,6 +2130,7 @@ public class FPostController extends BaseController {
                 imageStr,
                 videoStr,
                 audioStr,
+                "",
                 "",
                 headers);
 
@@ -2731,16 +2768,17 @@ public class FPostController extends BaseController {
                                     @RequestParam(defaultValue = "",required = false)String school){
         if(StringUtils.isBlank(id)){
             ObjectId creator=getUserId();
-            boolean result=participantsInfoService.saveParticipateInfo(name,relation,sex,age,school,creator);
+            ObjectId participateId=new ObjectId();
+            boolean result=participantsInfoService.saveParticipateInfo(participateId,name,relation,sex,age,school,creator);
             if(result){
-                return RespObj.SUCCESS("保存成功!");
+                return RespObj.SUCCESS(participateId.toString());
             }else{
                 return RespObj.FAILD("联系方式不符合规范!");
             }
         }else{
             boolean result=participantsInfoService.updateParticipateInfo(new ObjectId(id),name,relation,sex,age,school);
             if(result){
-                return RespObj.SUCCESS("更新成功!");
+                return RespObj.SUCCESS(id);
             }else{
                 return RespObj.FAILD("联系方式不符合规范或更新失败!");
             }

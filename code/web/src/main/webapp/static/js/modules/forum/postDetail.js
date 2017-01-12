@@ -62,6 +62,8 @@ define(['jquery','pagination','social', 'common'], function (require, exports, m
 
         getBtnZan();
 
+        getParticipates(0);
+
         if (timeText) {
             window.location.href = "#" + timeText;
         } else {
@@ -206,21 +208,12 @@ define(['jquery','pagination','social', 'common'], function (require, exports, m
             weiFriendShare(this, option);
         });
         $('body').on('click','.join-cont .sp3 .p1',function(){
-            $('.join-cont .sp3 .p2').slideToggle();
-            $('.join-cont .sp3 .p1').removeClass('bord');
+             getParticipates(1);
         });
-        $('body').on('click','.join-cont .sp3 .p2 span',function(){
+        $('body').on('click','.join-cont .sp3 .p2 em',function(){
             $('.join-cont .sp3 .p2').slideUp();
             $('.join-cont .sp3 .p1').removeClass('bord');
         });
-        $('body').on('click','.join-cont .sp1, .join-cont .sp3 .p2 .i2',function(){
-            $('.wind-join').fadeIn();
-            $('.bg').fadeIn();
-        })
-        $('body').on('click','.wind-join .p1 em , .wind-join .btn-cancel',function(){
-            $('.wind-join').fadeOut();
-            $('.bg').fadeOut();
-        })
 
         //分享按钮
         $('body').on("click", ".msb_main", function () {
@@ -772,6 +765,111 @@ define(['jquery','pagination','social', 'common'], function (require, exports, m
                 }
             });
         });
+
+        $('body').on('click','.join-cont .sp3 .p2 .i1',function(e){
+            var name=$(this).attr('participateName');
+            if(confirm("确定删除"+name+"这个参赛者吗?")){
+                var id=$(this).attr('participateId');
+                $.ajax({
+                    type: "GET",
+                    data: {participateId:id},
+                    url: "/forum/removeParticipate.do",
+                    async: false,
+                    dataType: "json",
+                    contentType: "application/x-www-form-urlencoded; charset=UTF-8",
+                    success: function (rep) {
+                        if(rep.code=="200"){
+                            getParticipates(0);
+                        }else{
+                            alert(rep.message);
+                        }
+                    }
+                });
+            }
+        });
+
+        $('body').on('click','.wind-join .btn1',function(){
+            var $name=$('#participateName');
+            var $age=$('#participateAge');
+            var $relation=$('#participateRelation');
+            var $sex=$("[name='sex']:checked");
+            var $school=$('#participateSchool');
+
+            if($name.val()==""){
+                $name.css("border","1px solid #f00");
+                $name.next('.nameClass').show();
+                return;
+            }
+
+            if($age.val()!=""){
+                if(isNaN($age.val())){
+                    $('.ageClass').html("填写的年龄必须是数字");
+                    $('.ageClass').show();
+                    return;
+                }else{
+                    if(parseInt($age.val())<=0){
+                        $('.ageClass').html("填写的年龄不能小于或等于0");
+                        $('.ageClass').show();
+                        return;
+                    }
+                }
+            }
+            if($relation.val()==""){
+//                $name.css("border","1px solid #E6E6E6");
+                $relation.css("border","1px solid #f00");
+                $relation.next('.relationRegular').html("联系方式不能为空");
+                $relation.next('.relationRegular').show();
+                return;
+            }
+            var phonePattern = /(^(([0+]\d{2,3}-)?(0\d{2,3})-)(\d{7,8})(-(\d{3,}))?$)|(^0{0,1}1[3|4|5|6|7|8|9][0-9]{9}$)/;
+            var emailPattern = /^([a-zA-Z0-9._-])+@([a-zA-Z0-9_-])+(.[a-zA-Z0-9_-])+/;
+            if(phonePattern.test($relation.val())||emailPattern.test($relation.val())){
+            }else{
+                $relation.css("border","1px solid #f00");
+                $relation.next('.relationRegular').html("请填写符合规范的邮箱或者手机号");
+                $relation.next('.relationRegular').show();
+                return;
+            }
+            var sex=-1;
+            if(undefined!=sex){
+                sex=$sex.val();
+            }
+            var joinId=$('.wind-join').data("joinId");
+            var param={
+                id:joinId,
+                name:$name.val(),
+                relation:$relation.val(),
+                sex:sex,
+                age:$age.val(),
+                school:$school.val()
+            };
+            $.ajax({
+                type: "GET",
+                data: param,
+                url: "/forum/saveParticipator.do",
+                async: false,
+                dataType: "json",
+                contentType: "application/x-www-form-urlencoded; charset=UTF-8",
+                success: function (rep) {
+                    if(rep.code=="200"){
+                        $('.wind-join').removeData("joinId");
+                        initJoin();
+                        $('.wind-join').fadeOut();
+                        $('.bg').fadeOut();
+                        getParticipates(0);
+                        if(joinId==""){
+                            alert("保存成功!");
+                        }else{
+                            alert("更新成功!");
+                        }
+
+                    }else{
+                        alert(rep.message);
+                    }
+                }
+            });
+
+        });
         $('body').on('click', '.ppl', function () {
             $('.wind-besta').show();
             $('.bg').show();
@@ -787,6 +885,40 @@ define(['jquery','pagination','social', 'common'], function (require, exports, m
         }
 
     })
+
+
+    function getParticipates(type){
+        $('#participateList').data("count",0);
+        if(type==0){
+            $('.join-cont .sp3 .p2').slideUp();
+        }
+        $('.join-cont .p1').html('');
+        Common.getData('/forum/getParticipates.do',{},function(resp){
+            if(resp.code=="200"){
+                if(resp.message.length>0) {
+                    $('#participateList').data("count",1);
+                    $('.join-cont .p1').html('未选择');
+                    Common.render({
+                        tmpl: '#participateListTmpl',
+                        data: resp.message,
+                        context: '#participateList',
+                        overwrite: 1
+                    });
+                    for(var i in resp.message){
+                        $('#participateList').data(resp.message[i].id,resp.message[i]);
+                    }
+                    if(type==1){
+                        $('.join-cont .sp3 .p2').slideToggle();
+                    }
+
+                    // $('.join-cont .sp3 .p1').removeClass('bord');
+                }else{
+                    $('.join-cont .sp3 .p2').slideUp();
+                    $('#participateList').empty();
+                }
+            }
+        });
+    }
 
     function ll() {
         var h = $(document).height() - $(window).height();

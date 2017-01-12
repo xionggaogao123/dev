@@ -222,7 +222,7 @@ public class UserController extends BaseController {
         logger.info("try login;the name=" + name + ";pwd=" + pwd);
 
         //数据库验证
-        UserEntry e = userService.login(name);
+        UserEntry e = userService.getUserEntryByAccount(name);
         if (null == e) {
             faild.setMessage("用户名或密码错误!");
             return faild;
@@ -296,7 +296,6 @@ public class UserController extends BaseController {
                 }
             }
         }
-
 
         SchoolEntry schoolEntry = null;
         try {

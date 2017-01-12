@@ -19,15 +19,11 @@
         <div class="h67"></div>
         <ul class="re-form ul1">
             <li>
-                <input class="username um2" type="text" placeholder="用户名/邮箱/手机号">
+                <input class="username um2" type="text" placeholder="用户名/邮箱/手机号" id="account">
                 <span class="sp3" style="display: none">请输入用户名</span>
             </li>
-            <%--<li>--%>
-                <%--<p style="color:#FF4918;">该手机已绑定多个账号，请选择要登录的账号：</p>--%>
-                <%--<label><input type="radio" name="s-count">账号一 </label>--%>
-                <%--<label><input type="radio" name="s-count">账号二 </label>--%>
-                <%--<label><input type="radio" name="s-count">账号三 </label>--%>
-            <%--</li>--%>
+            <li id="user-names" hidden>
+            </li>
             <li>
                 <input type="password" class="password psw2" placeholder="请输入登录密码">
                 <span class="sp5 forget-password">忘记密码？</span>
@@ -53,5 +49,7 @@
     seajs.use('/static/js/modules/account/login.js', function (login) {
         login.init();
     });
+
+
 </script>
 </html>

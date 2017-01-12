@@ -21,11 +21,11 @@ public class ParticipantsInfoService {
     private ParticipantsInfoDao participantsInfoDao=new ParticipantsInfoDao();
 
 
-    public boolean saveParticipateInfo(String name, String relation, int sex, int age,String school,ObjectId creator){
+    public boolean saveParticipateInfo(ObjectId participateId,String name, String relation, int sex, int age,String school,ObjectId creator){
 
         if(validateRelation(relation)){
             ObjectId participator=new ObjectId();
-            ParticipantsInfoEntry entry=new ParticipantsInfoEntry(creator,participator,name,age,sex,relation,school);
+            ParticipantsInfoEntry entry=new ParticipantsInfoEntry(participateId,creator,participator,name,age,sex,relation,school);
             participantsInfoDao.saveOrUpdate(entry);
             return true;
         }else{

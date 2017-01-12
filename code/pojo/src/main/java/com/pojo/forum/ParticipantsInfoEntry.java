@@ -3,6 +3,7 @@ package com.pojo.forum;
 import com.mongodb.BasicDBObject;
 import com.mongodb.DBObject;
 import com.pojo.base.BaseDBObject;
+import com.sys.constants.Constant;
 import org.bson.types.ObjectId;
 
 /**
@@ -25,9 +26,10 @@ public class ParticipantsInfoEntry extends BaseDBObject {
     }
 
 
-    public ParticipantsInfoEntry(ObjectId creator,ObjectId participator,String name,
+    public ParticipantsInfoEntry(ObjectId participateId,ObjectId creator,ObjectId participator,String name,
                                  int age,int sex,String relation,String school){
         BasicDBObject dbObject=new BasicDBObject()
+                .append(Constant.ID,participateId)
                 .append("ctr",creator)
                 .append("ptr",participator)
                 .append("nm",name)

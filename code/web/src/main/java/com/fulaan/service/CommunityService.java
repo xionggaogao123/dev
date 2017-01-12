@@ -902,6 +902,10 @@ public class CommunityService {
         remarkDao.save(entry);
     }
 
+    public RemarkEntry getRemarkEntry(ObjectId userId,ObjectId endUserId){
+        return remarkDao.getEntry(userId, endUserId);
+    }
+
     /**
      * 查出副社长人数
      *

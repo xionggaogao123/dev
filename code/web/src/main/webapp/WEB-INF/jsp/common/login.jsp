@@ -99,14 +99,19 @@
                 url:'/account/listBindUserName.do',
                 data:{phone: account},
                 success:function (resp) {
-                    if(resp.message.length > 1) {
-                        $('#user-names').show();
-                        $('#user-names').empty();
-                        $('#user-names').append('<p class="p-ps">该手机已绑定多个账号，请选择要登录的账号：</p>');
-                        isMutilUser = true;
-                        for(var i=0;i<resp.message.length;i++) {
-                            $('#user-names').append('<label><input value="'+ resp.message[i] +'" type="radio" name="s-count">'+ resp.message[i]+'</label>');
+                    if(resp.code === '200') {
+                        if(resp.message.length > 1) {
+                            $('#user-names').show();
+                            $('#user-names').empty();
+                            $('#user-names').append('<p class="p-ps">该手机已绑定多个账号，请选择要登录的账号：</p>');
+                            isMutilUser = true;
+                            for(var i=0;i<resp.message.length;i++) {
+                                $('#user-names').append('<label><input value="'+ resp.message[i] +'" type="radio" name="s-count">'+ resp.message[i]+'</label>');
+                            }
                         }
+                    } else {
+                        $('#user-names').empty();
+                        $('#user-names').hide();
                     }
                 }
             });

@@ -1,5 +1,6 @@
 package com.pojo.forum;
 
+import org.apache.commons.lang.StringUtils;
 import org.bson.types.ObjectId;
 
 import java.io.Serializable;
@@ -72,6 +73,8 @@ public class FReplyDTO implements Serializable{
     private String voiceFile;
     private List<Map<String,String>> voiceList;
 
+    //参赛人员信息Id
+    private String participateId;
 
     //========================================作文比赛
     private String word;
@@ -154,6 +157,10 @@ public class FReplyDTO implements Serializable{
         if(null!=fReplyEntry.getReplyPostId()){
             this.replyPostId=fReplyEntry.getReplyPostId().toString();
         }
+
+        if(null!=fReplyEntry.getParticipateId()){
+            this.participateId=fReplyEntry.getParticipateId().toString();
+        }
         for(ObjectId id : fReplyEntry.getUserReplyList()){
             this.userReplyList.add(id.toString());
         }
@@ -207,6 +214,10 @@ public class FReplyDTO implements Serializable{
         }
         if(personId !=null && !personId.equals("")){
             fReplyEntry.setPersonId(new ObjectId(personId));
+        }
+
+        if(StringUtils.isNotBlank(participateId)){
+            fReplyEntry.setParticipateId(new ObjectId(participateId));
         }
         if(replyPostId !=null && !replyPostId.equals("")){
             fReplyEntry.setReplyPostId(new ObjectId(replyPostId));
@@ -538,6 +549,13 @@ public class FReplyDTO implements Serializable{
         this.voiceList = voiceList;
     }
 
+    public String getParticipateId() {
+        return participateId;
+    }
+
+    public void setParticipateId(String participateId) {
+        this.participateId = participateId;
+    }
 
     @Override
     public String toString() {

@@ -1,14 +1,14 @@
 package com.fulaan.mall.controller;
 
-import com.easemob.server.EaseMobAPI;
 import com.fulaan.annotation.SessionNeedless;
-import com.fulaan.cache.RedisUtils;
 import com.fulaan.base.BaseController;
 import com.fulaan.cache.CacheHandler;
-import com.fulaan.mall.service.EBusinessVoucherService;
+import com.fulaan.cache.RedisUtils;
 import com.fulaan.forum.service.FInformationService;
 import com.fulaan.forum.service.FInvitationService;
 import com.fulaan.forum.service.FScoreService;
+import com.fulaan.mall.service.EBusinessVoucherService;
+import com.fulaan.pojo.Validate;
 import com.fulaan.user.controller.UserController;
 import com.fulaan.user.service.UserService;
 import com.pojo.app.SessionValue;
@@ -46,7 +46,6 @@ import java.net.URLDecoder;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.*;
-import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 /**
@@ -137,6 +136,7 @@ public class EBusinessUserController extends BaseController {
 
     /**
      * 获取验证码无图片验证码
+     *
      * @param mobile
      * @return
      */
@@ -185,15 +185,12 @@ public class EBusinessUserController extends BaseController {
     }
 
 
-
     private Boolean checkVerifyCode(String verifyCode, HttpServletRequest request, HttpServletResponse response) {
         //验证码
         String validateCode = "";
         String vckey = "";
         //获得请求信息中的Cookie数据
         Cookie[] cookies = request.getCookies();
-
-
         if (null != cookies && cookies.length > 0) {
             for (Cookie c : cookies) {
                 if (Constant.COOKIE_VALIDATE_CODE.equals(c.getName())) {
@@ -214,10 +211,7 @@ public class EBusinessUserController extends BaseController {
         if (verifyCode == null || "".equals(verifyCode)) {
             return false;
         }
-        if (!verifyCode.equals(validateCode)) {
-            return false;
-        }
-        return true;
+        return verifyCode.equals(validateCode);
     }
 
     /**
@@ -342,7 +336,7 @@ public class EBusinessUserController extends BaseController {
         return model;
     }
 
-    public void processRegister(String email, String code) {
+    private void processRegister(String email, String code) {
         ///如果处于安全，可以将激活码处理的更复杂点，这里我稍做简单处理
         //发送邮箱
         MailUtils sendMail = new MailUtils();
@@ -411,63 +405,28 @@ public class EBusinessUserController extends BaseController {
     @RequestMapping(method = RequestMethod.POST)
     @ResponseBody
     public Map<String, Object> addUser(String cacheKeyId, String code, String email, String userName, String passWord, String phoneNumber,
-                                       @RequestParam(defaultValue = "",required = false) String nickName,
+                                       @RequestParam(defaultValue = "", required = false) String nickName,
                                        HttpServletResponse response, HttpServletRequest request) {
-
-        ObjectId userId;
         boolean flag = false;
         Map<String, Object> model = new HashMap<String, Object>();
         model.put("code", 500);
         model.put("type", 1);
-        Map<String, String> map = new HashMap<String, String>();
-        if (!checkEmailUserNamePhoneNumber(email, userName, phoneNumber, map)) {
-            model.put("message", map.get("msg"));
+        if (!checkEmailUserNamePhoneNumber(email, userName, phoneNumber, model)) {
             return model;
         }
-
-
-        if (!"".equals(cacheKeyId)) {
-            String cacheKey = CacheHandler.getKeyString(CacheHandler.CACHE_SHORTMESSAGE, cacheKeyId);
-            String value = CacheHandler.getStringValue(cacheKey);
-            if (StringUtils.isBlank(value)) {
-                model.put("message", "验证码失效，请重新获取");
-                return model;
-            }
-            String[] cache = value.split(",");
-            if (!cache[1].equals(phoneNumber)) {
-                model.put("message", "注册失败：手机号码与验证码不匹配");
-                return model;
-            }
-
-            if (cache[0].equals(code)) {
-                flag = true;
-            } else {
-                model.put("message", "短信验证码输入错误");
+        if (!"".equals(cacheKeyId) && !"".equals(phoneNumber) && !"".equals(code)) {
+            Validate validate = userService.validatePhoneNumber(phoneNumber, code, cacheKeyId);
+            flag = validate.isOk();
+            if (!flag) {
+                model.put("message",validate.getMessage());
                 return model;
             }
         } else if (!"".equals(email)) {
             flag = true;
         }
         if (flag) {
-            UserEntry userEntry = new UserEntry(userName, MD5Utils.getMD5String(passWord), phoneNumber, email,nickName);
-            userEntry.setK6KT(0);
-            userEntry.setIsRemove(0);
-
-            userEntry.setStatisticTime(0L);
-            userEntry.setRegisterIP(getIP());
-
-            userEntry.setSilencedStatus(0);
-
-            userEntry.setEmailStatus(0);
-            if (StringUtils.isNotBlank(email)) {
-                ObjectId ukId = new ObjectId();
-                userEntry.setEmailValidateCode(ukId.toString());
-            } else {
-                userEntry.setEmailValidateCode(Constant.EMPTY);
-            }
-
-            userId = userService.addUser(userEntry);
-
+            UserEntry userEntry = registerUserEntry(email, userName, passWord, phoneNumber, nickName);
+            ObjectId userId = userService.addUser(userEntry);
             //发起激活
             if (StringUtils.isNotBlank(email)) {
                 processRegister(email, userEntry.getEmailValidateCode());
@@ -476,60 +435,80 @@ public class EBusinessUserController extends BaseController {
                 model.put("message", userEntry.getEmail() + "$" + userEntry.getEmailValidateCode());
                 return model;
             }
-            //更新第一次访问Ip
-            userService.updateInterviewIPValue(userId, getIP());
-            //更新第一次访问时间
-            userService.updateInterviewTimeValue(userId);
-            //更新第一次退出时间
-            userService.updateQuitTimeValue(userId);
+            initRegister(userId);
+            model.put("message", "注册成功");
+            model.put("code", 200);
+            // 登录
+            login(userName, passWord, response);
+        } else {
+            model.put("message", "注册错误");
+        }
+        return model;
+    }
 
-            //判断是否为邀请的
-            String trackId = CacheHandler.getStringValue("trackId");
-            if (StringUtils.isNotBlank(trackId)) {
-                userService.updateForumExperience(new ObjectId(trackId), 10);
-                userService.updateForumScore(new ObjectId(trackId), 10);
+    private UserEntry registerUserEntry(String email, String userName, String passWord, String phoneNumber, String nickName) {
+        UserEntry userEntry = new UserEntry(userName, MD5Utils.getMD5String(passWord), phoneNumber, email, nickName);
+        userEntry.setK6KT(0);
+        userEntry.setIsRemove(0);
+        userEntry.setStatisticTime(0L);
+        userEntry.setRegisterIP(getIP());
+        userEntry.setSilencedStatus(0);
+        userEntry.setEmailStatus(0);
+        if (StringUtils.isNotBlank(email)) {
+            userEntry.setEmailValidateCode(new ObjectId().toString());
+        } else {
+            userEntry.setEmailValidateCode(Constant.EMPTY);
+        }
+        return userEntry;
+    }
 
-                FScoreDTO fScoreDTO = new FScoreDTO();
-                fScoreDTO.setTime(System.currentTimeMillis());
-                fScoreDTO.setType(1);
-                fScoreDTO.setOperation("邀请好友");
-                fScoreDTO.setPersonId(trackId);
-                fScoreDTO.setScoreOrigin("邀请好友用户奖励积分");
-                fScoreDTO.setScore(10);
-                fScoreService.addFScore(fScoreDTO);
-                //邀请成功注册
-                FInvitationEntry fInvitationEntry = fInvitationService.getFInvitation(new ObjectId(trackId));
-                if (null == fInvitationEntry) {
-                    fInvitationService.saveOrUpdate(new ObjectId(trackId), userId, 1L);
-                } else {
-                    fInvitationService.updateCount(new ObjectId(trackId), userId);
-                }
-            }
+    private void initRegister(ObjectId userId) {
+        //更新第一次访问Ip
+        userService.updateInterviewIPValue(userId, getIP());
+        //更新第一次访问时间
+        userService.updateInterviewTimeValue(userId);
+        //更新第一次退出时间
+        userService.updateQuitTimeValue(userId);
 
-            //注册成功赠送1个积分和1个经验值
-            userService.updateForumExperience(userId, 1);
-            userService.updateForumScore(userId, 1);
+        //判断是否为邀请的
+        String trackId = CacheHandler.getStringValue("trackId");
+        if (StringUtils.isNotBlank(trackId)) {
+            userService.updateForumExperience(new ObjectId(trackId), 10);
+            userService.updateForumScore(new ObjectId(trackId), 10);
 
             FScoreDTO fScoreDTO = new FScoreDTO();
             fScoreDTO.setTime(System.currentTimeMillis());
             fScoreDTO.setType(1);
-            fScoreDTO.setOperation("注册");
+            fScoreDTO.setOperation("邀请好友");
             fScoreDTO.setPersonId(trackId);
-            fScoreDTO.setScoreOrigin("注册用户获得积分奖励");
-            fScoreDTO.setScore(1);
+            fScoreDTO.setScoreOrigin("邀请好友用户奖励积分");
+            fScoreDTO.setScore(10);
             fScoreService.addFScore(fScoreDTO);
-            //发送系统消息
-            fInformationService.addFInformation(new ObjectId("568dd46a0cf2316dfff62d81"), userId.toString(), 1, "", 0);
-            model.put("message", "注册成功");
-            model.put("code", 200);
-            userService.giveVoucher(userId);//发优惠券
-            // 登录
-            login(userName, passWord, "", response, request);
-        } else {
-            model.put("message", "注册错误");
+            //邀请成功注册
+            FInvitationEntry fInvitationEntry = fInvitationService.getFInvitation(new ObjectId(trackId));
+            if (null == fInvitationEntry) {
+                fInvitationService.saveOrUpdate(new ObjectId(trackId), userId, 1L);
+            } else {
+                fInvitationService.updateCount(new ObjectId(trackId), userId);
+            }
         }
 
-        return model;
+        //注册成功赠送1个积分和1个经验值
+        userService.updateForumExperience(userId, 1);
+        userService.updateForumScore(userId, 1);
+
+        FScoreDTO fScoreDTO = new FScoreDTO();
+        fScoreDTO.setTime(System.currentTimeMillis());
+        fScoreDTO.setType(1);
+        fScoreDTO.setOperation("注册");
+        fScoreDTO.setPersonId(trackId);
+        fScoreDTO.setScoreOrigin("注册用户获得积分奖励");
+        fScoreDTO.setScore(1);
+        fScoreService.addFScore(fScoreDTO);
+        //发送系统消息
+        fInformationService.addFInformation(new ObjectId("568dd46a0cf2316dfff62d81"), userId.toString(), 1, "", 0);
+
+        userService.giveVoucher(userId);//发优惠券
     }
 
     /**
@@ -546,63 +525,62 @@ public class EBusinessUserController extends BaseController {
     }
 
 
-    @RequestMapping(value="/getChristReward")
+    @RequestMapping(value = "/getChristReward")
     @ResponseBody
-    public RespObj getChristReward()throws Exception{
-     try {
-         long startTime=getTime("2016-12-22 00:00:00");
-         long endTime=getTime("2016-12-26 23:59:59");
-         long deadTime=getTime("2016-12-31 23:59:59");
-         long currentTime=System.currentTimeMillis();
-         if(currentTime<startTime){
-             return RespObj.FAILD("该活动还没开始!");
-         }else if(currentTime>endTime){
-             return RespObj.FAILD("该活动已经结束!");
-         }else{
-             ObjectId userId=getUserId();
-             String key="Christmas"+userId.toString();
-             String value= RedisUtils.getString(key);
-             if(StringUtils.isBlank(value)){
-                //以三万作为基数，5元40%、10元30%、20元20%、50元10%
-                 String num = String.valueOf(System.currentTimeMillis());
-                 num += RandomUtils.nextInt(Constant.MIN_PASSWORD);
-                 int random=1+(int)(Math.random()*30000);
-                 int voucher;
-                 EVoucherEntry eVoucherEntry;
-                 if(30000*0.7<random&&random<=30000*0.8){
-                     eVoucherEntry=new EVoucherEntry(userId,num,5000,deadTime,0,1);
-                     voucher=50;
-                 }else if(30000*0.4<random&&random<=30000*0.7){
-                     eVoucherEntry=new EVoucherEntry(userId,num,1000,deadTime,0,1);
-                     voucher=10;
-                 }else if(30000*0.1<random&&random<=30000*0.3){
-                     eVoucherEntry=new EVoucherEntry(userId,num,2000,deadTime,0,1);
-                     voucher=20;
-                 }else{
-                     eVoucherEntry=new EVoucherEntry(userId,num,500,deadTime,0,1);
-                     voucher=5;
-                 }
-                 ObjectId voucherId=eBusinessVoucherService.addEVoucher(eVoucherEntry);
-                 RedisUtils.cacheString(key,voucherId.toString(),Constant.SECONDS_IN_FIVE_DAY);
-                 return RespObj.SUCCESS(voucher);
-             }else{
-//                 RedisUtils.deleteKey(key);
-                 return RespObj.FAILD("你已经获取到优惠券了，<br/>每个人只有一次机会哦!");
-             }
-         }
-     }catch (Exception e){
-         throw e;
-     }
+    public RespObj getChristReward() throws Exception {
+        try {
+            long startTime = getTime("2016-12-22 00:00:00");
+            long endTime = getTime("2016-12-26 23:59:59");
+            long deadTime = getTime("2016-12-31 23:59:59");
+            long currentTime = System.currentTimeMillis();
+            if (currentTime < startTime) {
+                return RespObj.FAILD("该活动还没开始!");
+            } else if (currentTime > endTime) {
+                return RespObj.FAILD("该活动已经结束!");
+            } else {
+                ObjectId userId = getUserId();
+                String key = "Christmas" + userId.toString();
+                String value = RedisUtils.getString(key);
+                if (StringUtils.isBlank(value)) {
+                    //以三万作为基数，5元40%、10元30%、20元20%、50元10%
+                    String num = String.valueOf(System.currentTimeMillis());
+                    num += RandomUtils.nextInt(Constant.MIN_PASSWORD);
+                    int random = 1 + (int) (Math.random() * 30000);
+                    int voucher;
+                    EVoucherEntry eVoucherEntry;
+                    if (30000 * 0.7 < random && random <= 30000 * 0.8) {
+                        eVoucherEntry = new EVoucherEntry(userId, num, 5000, deadTime, 0, 1);
+                        voucher = 50;
+                    } else if (30000 * 0.4 < random && random <= 30000 * 0.7) {
+                        eVoucherEntry = new EVoucherEntry(userId, num, 1000, deadTime, 0, 1);
+                        voucher = 10;
+                    } else if (30000 * 0.1 < random && random <= 30000 * 0.3) {
+                        eVoucherEntry = new EVoucherEntry(userId, num, 2000, deadTime, 0, 1);
+                        voucher = 20;
+                    } else {
+                        eVoucherEntry = new EVoucherEntry(userId, num, 500, deadTime, 0, 1);
+                        voucher = 5;
+                    }
+                    ObjectId voucherId = eBusinessVoucherService.addEVoucher(eVoucherEntry);
+                    RedisUtils.cacheString(key, voucherId.toString(), Constant.SECONDS_IN_FIVE_DAY);
+                    return RespObj.SUCCESS(voucher);
+                } else {
+                    return RespObj.FAILD("你已经获取到优惠券了，<br/>每个人只有一次机会哦!");
+                }
+            }
+        } catch (Exception e) {
+            throw e;
+        }
     }
 
     public long getTime(String strTime) throws ParseException {
         SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
-        Date  endDate= sdf.parse(strTime);
+        Date endDate = sdf.parse(strTime);
         return endDate.getTime();
     }
 
 
-    public EVoucherEntry getActivityEVouchers(ObjectId userId, int amount, String time) throws Exception {
+    private EVoucherEntry getActivityEVouchers(ObjectId userId, int amount, String time) throws Exception {
         String num = String.valueOf(System.currentTimeMillis());
         num += RandomUtils.nextInt(Constant.MIN_PASSWORD);
         SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
@@ -612,30 +590,27 @@ public class EBusinessUserController extends BaseController {
     }
 
 
-    private Boolean checkEmailUserNamePhoneNumber(String email, String userName, String phoneNumber, Map<String, String> map) {
-
+    private Boolean checkEmailUserNamePhoneNumber(String email, String userName, String phoneNumber, Map<String, Object> map) {
         Pattern emailPattern = Pattern.compile("^.+@.+\\..+$");
         if (!"".equals(email) && !emailPattern.matcher(email).matches()) {
-            map.put("msg", "注册失败：邮箱格式不正确");
+            map.put("message", "注册失败：邮箱格式不正确");
             return false;
         }
-
         Pattern phonePattern = Pattern.compile("^1[3|4|5|7|8][0-9]\\d{8}$");
         if (!"".equals(phoneNumber) && !phonePattern.matcher(phoneNumber).matches()) {
-            map.put("msg", "注册失败：手机号不正确");
+            map.put("message", "注册失败：手机号不正确");
             return false;
         }
-
         if (!"".equals(email) && (Integer) checkUser(email, "", "").get("isExit") == 1) {
-            map.put("msg", "注册失败：邮箱已被使用");
+            map.put("message", "注册失败：邮箱已被使用");
             return false;
         }
         if (!"".equals(phoneNumber) && (Integer) checkUser("", phoneNumber, "").get("isExit") == 1) {
-            map.put("msg", "注册失败：手机号已被使用");
+            map.put("message", "注册失败：手机号已被使用");
             return false;
         }
         if ((Integer) checkUser("", "", userName).get("isExit") == 1) {
-            map.put("msg", "注册失败：用户名已被使用");
+            map.put("message", "注册失败：用户名已被使用");
             return false;
         }
         return true;
@@ -647,36 +622,14 @@ public class EBusinessUserController extends BaseController {
      * @param account  用户名/邮箱/手机号
      * @param password
      * @param response
-     * @param request
      * @return
      */
     @SessionNeedless
     @RequestMapping("/login")
     @ResponseBody
-    public RespObj login(String account, String password, @RequestParam(required = false, defaultValue = "") String verifyCode,
-                         HttpServletResponse response, HttpServletRequest request) {
+    public RespObj login(String account, String password, HttpServletResponse response) {
         RespObj respObj = RespObj.FAILD;
-
-        Pattern emailPattern = Pattern.compile("^.+@.+\\..+$");
-        Pattern phonePattern = Pattern.compile("^1[3|4|5|7|8][0-9]\\d{8}$");
-        Pattern personalIdPattern= Pattern.compile("^[\\d]{10}");
-        Matcher emailMatcher = emailPattern.matcher(account);
-        Matcher phoneMatcher = phonePattern.matcher(account);
-        Matcher personalIdMatcher = personalIdPattern.matcher(account);
-        UserEntry userEntry ;
-        if (emailMatcher.matches()) {//邮箱登录
-            userEntry = userService.findByEmail(account);
-        } else if (phoneMatcher.matches()) {//手机号登录
-            userEntry = userService.findByPhone(account);
-            if(null==userEntry){
-                userEntry = userService.findByMobile(account);
-            }
-        }else if(personalIdMatcher.matches()){
-            userEntry=userService.findByPersonalID(account);
-        }else {//用户名登陆
-            userEntry = userService.findByUserName(account);
-        }
-
+        UserEntry userEntry = userService.getUserEntryByAccount(account);
         if (userEntry == null) {
             respObj.setMessage("accountError");
         } else {

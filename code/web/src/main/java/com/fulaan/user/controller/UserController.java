@@ -23,7 +23,6 @@ import com.fulaan.user.util.MapUtil;
 import com.fulaan.user.util.QQLoginUtil;
 import com.fulaan.user.util.WeChatLoginUtil;
 import com.fulaan.util.ObjectIdPackageUtil;
-import com.fulaan.util.Validator;
 import com.fulaan.utils.CollectionUtil;
 import com.google.gson.Gson;
 import com.mongodb.BasicDBObject;
@@ -867,7 +866,7 @@ public class UserController extends BaseController {
                     return ret;
                 }
 
-                e = userService.findByPhone(mobile);
+                e = userService.findByMobile(mobile);
                 if (null != e) {
                     ret.setMessage("手机号码被占用");
                     return ret;
@@ -1296,7 +1295,7 @@ public class UserController extends BaseController {
             return ret;
         }
 
-        UserEntry mobileEntry = userService.findByPhone(mobile);
+        UserEntry mobileEntry = userService.findByMobile(mobile);
 
         if (null != mobileEntry && !mobileEntry.getUserName().toLowerCase().equals(ue.getUserName())) {
             ret.setMessage("此手机已经被占用");

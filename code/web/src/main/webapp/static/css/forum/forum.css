@@ -7113,7 +7113,6 @@ pre {
     max-height:95px;
     min-height: 0px;
     overflow:scroll;
-    overflow-x: hidden;
 }
 .join-cont .sp3 .p2 span{
     display: block;
@@ -7153,6 +7152,19 @@ pre {
     width: 150px;
     color:#D53053;
     margin-left: 12px;
+}
+#dataLoad{
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    width: 100px;
+    height: 106px;
+    margin-left: -70px;
+    margin-top: -36px;
+    background: #d8d31a;
+    padding: 0 20px;
+    border: 1px solid #D4D4D4;
+    z-index: 3000;
 }
 .wind-join{
     display: none;
@@ -7266,6 +7278,22 @@ pre {
     margin-top: 10px;
 }
 .wind-join ul li .btn2{
+    padding:0 10px;
+    border:1px solid #666666;
+    height: 24px;
+    color: #666666;
+    background: #fff;
+    margin-top: 10px;
+}
+.wind-join ul li .btn3{
+    padding:0 10px;
+    border:1px solid #D52F53;
+    height: 24px;
+    color: #D52F53;
+    background: #fff;
+    margin-top: 10px;
+}
+.wind-join ul li .btn4{
     padding:0 10px;
     border:1px solid #666666;
     height: 24px;

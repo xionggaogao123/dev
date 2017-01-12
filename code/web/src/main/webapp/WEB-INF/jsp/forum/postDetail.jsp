@@ -188,7 +188,8 @@
                         return '/forum/userCenter/uploadVideo.do';
                     } else if (action == 'uploadimage') {
                         return '/forum/userCenter/uploadImage.do';
-                    } else if (action == 'uploadfile') {po
+                    } else if (action == 'uploadfile') {
+                        po
                         return '/forum/userCenter/uploadFile.do';
                     } else {
                         return this._bkGetActionUrl.call(this, action);
@@ -319,105 +320,220 @@
 
     $(function () {
         $('#comment').click(function () {
-            var count=$('#participateList').data("count");
-            if(count==0){
-                goToPost("");
+            if($('#InSet').val()==1){
+                var count = $('#participateList').data("count");
+                if (count == 0) {
+                    if(validate()){
+                        $('.wind-join').fadeIn();
+                        $('.bg').fadeIn();
+                        $('.wind-join .btn1').hide();
+                        $('.wind-join .btn2').hide();
+                        $('.wind-join .btn3').show();
+                        $('.wind-join .btn4').show();
+                    }else{
+                        $('#title').show();
+                    }
+                } else {
+                    if ($('.join-cont .p1').hasClass('bord')) {
+                        goToPost("");
+                    } else {
+                        if (undefined != $('#comment').data('participateId') &&
+                                null != $('#comment').data('participateId') &&
+                                "" != $('#comment').data('participateId')) {
+                            $('.join-cont .sp4').hide();
+                            goToPost($('#comment').data('participateId'));
+                        } else {
+                            $('.join-cont .p1').addClass('bord');
+                            $('.join-cont .sp4').show();
+                        }
+                    }
+
+                }
             }else{
-               if($('.join-cont .p1').hasClass('bord')){
-                   goToPost("");
-               }else{
-                   if(undefined!=$('#comment').data('participateId')&&
-                           null!=$('#comment').data('participateId')&&
-                           ""!=$('#comment').data('participateId')){
-                       $('.join-cont .sp4').hide();
-                       goToPost($('#comment').data('participateId'));
-                   }else{
-                       $('.join-cont .p1').addClass('bord');
-                       $('.join-cont .sp4').show();
-                   }
-               }
-
+                goToPost("");
             }
+
         });
 
-        $('body').on('click','.wind-join .btn-cancel',function(){
+        $('body').on('click', '.wind-join .btn-cancel', function () {
             initJoin();
             $('.wind-join').fadeOut();
             $('.bg').fadeOut();
         });
-        $('body').on('click','.wind-join .p1 em',function(){
+
+        $('body').on('click', '.wind-join .btn4', function () {
             initJoin();
+            $('.wind-join').fadeOut();
+            $('.bg').fadeOut();
+            goToPost("");
+        });
+
+        $('body').on('click', '.wind-join .p1 em', function () {
+            initJoin();
+            $('#comment').removeData('remove');
             $('.wind-join').fadeOut();
             $('.bg').fadeOut();
         });
 
+        $('body').on('click', '.wind-join .btn3', function () {
+            var $name = $('#participateName');
+            var $age = $('#participateAge');
+            var $relation = $('#participateRelation');
+            var $sex = $("[name='sex']:checked");
+            var $school = $('#participateSchool');
 
-        $('body').on('blur','#participateName',function(){
-            if($('#participateName').val()!=""){
-                $('#participateName').css("border","1px solid #E6E6E6");
+            if ($name.val() == "") {
+                $name.css("border", "1px solid #f00");
+                $name.next('.nameClass').html('姓名不能为空');
+                $name.next('.nameClass').show();
+                return;
+            } else {
+                if ($name.val().length > 10) {
+                    $name.css("border", "1px solid #f00");
+                    $name.next('.nameClass').html('姓名长度不要超过10个字');
+                    $name.next('.nameClass').show();
+                }
+            }
+
+            if ($age.val() != "") {
+                if (isNaN($age.val())) {
+                    $('.ageClass').html("填写的年龄必须是数字");
+                    $('.ageClass').show();
+                    return;
+                } else {
+                    if (parseInt($age.val()) <= 0) {
+                        $('.ageClass').html("填写的年龄不能小于或等于0");
+                        $('.ageClass').show();
+                        return;
+                    }
+                }
+            }
+            if ($relation.val() == "") {
+//                $name.css("border","1px solid #E6E6E6");
+                $relation.css("border", "1px solid #f00");
+                $relation.next('.relationRegular').html("联系方式不能为空");
+                $relation.next('.relationRegular').show();
+                return;
+            }
+            var phonePattern = /(^(([0+]\d{2,3}-)?(0\d{2,3})-)(\d{7,8})(-(\d{3,}))?$)|(^0{0,1}1[3|4|5|6|7|8|9][0-9]{9}$)/;
+            var emailPattern = /^([a-zA-Z0-9._-])+@([a-zA-Z0-9_-])+(.[a-zA-Z0-9_-])+/;
+            if (phonePattern.test($relation.val()) || emailPattern.test($relation.val())) {
+            } else {
+                $relation.css("border", "1px solid #f00");
+                $relation.next('.relationRegular').html("请填写符合规范的邮箱或者手机号");
+                $relation.next('.relationRegular').show();
+                return;
+            }
+            var sex = -1;
+            if (undefined != sex) {
+                sex = $sex.val();
+            }
+            var joinId = $('.wind-join').data("joinId");
+            var param = {
+                id: joinId,
+                name: $name.val(),
+                relation: $relation.val(),
+                sex: sex,
+                age: $age.val(),
+                school: $school.val()
+            };
+            $.ajax({
+                type: "GET",
+                data: param,
+                url: "/forum/saveParticipator.do",
+                async: true,
+                dataType: "json",
+                contentType: "application/x-www-form-urlencoded; charset=UTF-8",
+                success: function (rep) {
+                    if (rep.code == "200") {
+                        $('#dataLoad').show();
+                        goToPost(rep.message);
+                    } else {
+                        alert(rep.message);
+                    }
+                }
+            });
+        });
+
+        $('body').on('blur', '#participateName', function () {
+            if ($('#participateName').val() != "") {
+                $('#participateName').css("border", "1px solid #E6E6E6");
                 $('#participateName').next('.nameClass').hide();
+                if ($('#participateName').val().length > 10) {
+                    $('#participateName').next('.nameClass').html('姓名长度不要超过10个字');
+                    $('#participateName').next('.nameClass').show();
+                }
+            } else {
+                $('#participateName').next('.nameClass').html('姓名不能为空');
+                $('#participateName').next('.nameClass').show();
             }
         });
 
-        $('body').on('blur','#participateRelation',function(){
-            if($('#participateRelation').val()!=""){
+        $('body').on('blur', '#participateRelation', function () {
+            if ($('#participateRelation').val() != "") {
                 var phonePattern = /(^(([0+]\d{2,3}-)?(0\d{2,3})-)(\d{7,8})(-(\d{3,}))?$)|(^0{0,1}1[3|4|5|6|7|8|9][0-9]{9}$)/;
                 var emailPattern = /^([a-zA-Z0-9._-])+@([a-zA-Z0-9_-])+(.[a-zA-Z0-9_-])+/;
-                if(phonePattern.test($('#participateRelation').val())||emailPattern.test($('#participateRelation').val())){
-                    $('#participateRelation').css("border","1px solid #E6E6E6");
+                if (phonePattern.test($('#participateRelation').val()) || emailPattern.test($('#participateRelation').val())) {
+                    $('#participateRelation').css("border", "1px solid #E6E6E6");
                     $('#participateRelation').next('.relationRegular').hide();
                 }
             }
         });
 
-        $('body').on('blur','#participateAge',function(){
-              if($('#participateAge').val()==""){
-                  $('.ageClass').hide();
-              }else{
-                  if(isNaN($('#participateAge').val())){
-                      $('.ageClass').html("填写的年龄必须是数字");
-                      $('.ageClass').show();
-                  }else{
-                      if(parseInt($('#participateAge').val())<=0){
-                          $('.ageClass').html("填写的年龄不能小于或等于0");
-                          $('.ageClass').show();
-                      }else{
-                          $('.ageClass').hide();
-                      }
-                  }
-              }
+        $('body').on('blur', '#participateAge', function () {
+            if ($('#participateAge').val() == "") {
+                $('.ageClass').hide();
+            } else {
+                if (isNaN($('#participateAge').val())) {
+                    $('.ageClass').html("填写的年龄必须是数字");
+                    $('.ageClass').show();
+                } else {
+                    if (parseInt($('#participateAge').val()) <= 0) {
+                        $('.ageClass').html("填写的年龄不能小于或等于0");
+                        $('.ageClass').show();
+                    } else {
+                        $('.ageClass').hide();
+                    }
+                }
+            }
         });
 
 
-        $('body').on('click','.selectPart',function (e) {
-            var id=$(this).attr('participateId');
-            var name=$(this).attr('participateName');
+        $('body').on('click', '.selectPart', function (e) {
+            var id = $(this).attr('participateId');
+            var name = $(this).attr('participateName');
             $('.join-cont .p1').html(name);
-            $('#comment').data('participateId',id);
-            if($('.join-cont .p1').hasClass('bord')){
+            $('#comment').data('participateId', id);
+            if ($('.join-cont .p1').hasClass('bord')) {
                 $('.join-cont .p1').removeClass('bord');
             }
             e.stopPropagation();
         })
 
-        $('body').on('click','.join-cont .sp1',function(){
+        $('body').on('click', '.join-cont .sp1', function () {
             $('#title').hide();
-            $('.wind-join').data("joinId","");
+            $('.wind-join').data("joinId", "");
             $('.wind-join').fadeIn();
+            $('.wind-join .btn1').html('保存');
+            $('.wind-join .btn-cancel').html('取消');
+            $('.wind-join .btn1').show();
+            $('.wind-join .btn2').show();
+            $('.wind-join .btn3').hide();
+            $('.wind-join .btn4').hide();
             $('.bg').fadeIn();
         });
 
-        $('body').on('click','.join-cont .sp3 .p2 .i2',function(e){
-            var id=$(this).attr('participateId');
-            var obj= $('#participateList').data(id);
-            $('.wind-join').data("joinId",id);
+        $('body').on('click', '.join-cont .sp3 .p2 .i2', function (e) {
+            var id = $(this).attr('participateId');
+            var obj = $('#participateList').data(id);
+            $('.wind-join').data("joinId", id);
             $('#participateName').val(obj.name);
             $('#participateRelation').val(obj.relation);
             $('#participateSchool').val(obj.school);
-            if(obj.age!=0){
+            if (obj.age != 0) {
                 $('#participateAge').val(obj.age);
             }
-            if(obj.sex!=-1){
+            if (obj.sex != -1) {
                 $(":radio[name='sex'][value='" + obj.sex + "']").prop("checked", "checked");
             }
             $('.wind-join').fadeIn();
@@ -428,13 +544,13 @@
     });
 
 
-    function initJoin(){
-        $('#participateName').css("border","1px solid #E6E6E6");
+    function initJoin() {
+        $('#participateName').css("border", "1px solid #E6E6E6");
         $('#participateName').next('.nameClass').hide();
-        $('#participateRelation').css("border","1px solid #E6E6E6");
+        $('#participateRelation').css("border", "1px solid #E6E6E6");
         $('#participateRelation').next('.relationRegular').hide();
         $('.ageClass').hide();
-        $("[name='sex']:checked").attr("checked",false);
+        $("[name='sex']:checked").attr("checked", false);
         $('#participateSchool').val('');
         $('#participateName').val('');
         $('#participateRelation').val('');
@@ -460,7 +576,7 @@
                     $(".wind-num").fadeIn();
                     return;
                 }
-                comment('/forum/addFReply.do',"");
+                comment('/forum/addFReply.do', "");
             }
         });
     }
@@ -477,7 +593,7 @@
                 if (resp.message.bind) {
                     $('.bg').fadeOut();
                     $('.wind-num').fadeOut();
-                    comment('/forum/addFReply.do',"");
+                    comment('/forum/addFReply.do', "");
                 } else {
                     alert(resp.message);
                 }
@@ -485,7 +601,7 @@
         });
     }
 
-    function getParam(participateId){
+    function getParam(participateId) {
         var requestData = {};
         requestData.comment = content;
         requestData.postSectionId = pSectionId;
@@ -499,16 +615,16 @@
         requestData.imageStr = "";
         requestData.videoStr = "";
         requestData.audioStr = "";
-        if(participateId!=""){
-            requestData.participateId=participateId;
+        if (participateId != "") {
+            requestData.participateId = participateId;
         }
         return requestData;
     }
 
-    function comment(url,participateId) {
+    function comment(url, participateId) {
         $(".bg").fadeIn();
 
-        var requestData=getParam(participateId);
+        var requestData = getParam(participateId);
 
         $.ajax({
             type: "post",
@@ -527,7 +643,7 @@
                     } else {
                         pageCount = 1;
                     }
-                    if ($('#InSet').val() == 1 ||($('#InSet').val() == -1 && $('#cate').val() == 1)) {
+                    if ($('#InSet').val() == 1 || ($('#InSet').val() == -1 && $('#cate').val() == 1)) {
                         pageCount = 1;
                     }
                     redC();
@@ -574,7 +690,7 @@
                     return;
                 }
 
-                comment('/forum/addFReplyForParticipate.do',participateId);
+                comment('/forum/addFReplyForParticipate.do', participateId);
             }
         });
     }
@@ -595,8 +711,9 @@
 
 <script id="participateListTmpl" type="text/template">
     {{~it:value:index}}
-    <span ><em class="selectPart" participateId="{{=value.id}}" participateName="{{=value.name}}">{{=value.name}}</em>
-        <i class="i1" participateId="{{=value.id}}" participateName="{{=value.name}}"></i><i class="i2" participateId="{{=value.id}}"></i></span>
+    <span><em class="selectPart" participateId="{{=value.id}}" participateName="{{=value.name}}">{{=value.name}}</em>
+        <i class="i1" participateId="{{=value.id}}" participateName="{{=value.name}}"></i><i class="i2"
+                                                                                             participateId="{{=value.id}}"></i></span>
     {{~}}
 </script>
 
@@ -1212,6 +1329,15 @@
     </div>
     {{~}}
 </script>
+
+<div id="dataLoad" style="display:none"><!--页面载入显示-->
+    <table width=100% height=100% border=0 align=center valign=middle>
+        <tr height=50%><td align=center>&nbsp;</td></tr>
+        <tr><td align=center><img src="/static/images/forum/forumLoading.png"/></td></tr>
+        <tr><td align=center>数据正在发表中，请稍后......</td></tr>
+        <tr height=50%><td align=center>&nbsp;</td></tr>
+    </table>
+</div>
 <div class="wind-join">
     <p class="p1">参赛信息<em>×</em></p>
     <p class="p2">*此信息仅用作官方联系参赛者使用，不对外公开。</p>
@@ -1245,6 +1371,8 @@
         <li>
             <button class="btn1">保存</button>
             <button class="btn2 btn-cancel">取消</button>
+            <button class="btn3" style="display: none">保存并发表</button>
+            <button class="btn4" style="display: none">跳过填写,并发表</button>
         </li>
     </ul>
 </div>

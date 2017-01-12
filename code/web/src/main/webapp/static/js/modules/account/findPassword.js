@@ -10,20 +10,19 @@ define(['jquery', 'pagination', 'common'], function (require, exports, module) {
 
     };
 
-    var phoneVerifyCheck = {
-        phone : false,
-        code: false
-    };
+    var phoneCheck = false;
 
     var resetPasswordCheck = {
-        password : false,
+        password: false,
         rePassword: false
     };
+
+    var userName = '';
 
     var cacheKeyId = '';
 
     $(function () {
-        
+
         var body = $('body');
         $('.tab span:nth-child(1)').click(function () {
             $(this).addClass('tab-cur').siblings('.tab span').removeClass('tab-cur');
@@ -34,9 +33,8 @@ define(['jquery', 'pagination', 'common'], function (require, exports, module) {
             $(this).addClass('tab-cur').siblings('.tab span').removeClass('tab-cur');
             $('.re-cont .ul2').show().siblings('.re-cont ul').hide();
         });
-        
-        $('.re-btn-email').click(function () {
 
+        $('.re-btn-email').click(function () {
             var email = $('#email').val();
             common.getData("/account/verifyUserEmail.do", {email: email}, function (resp) {
                 if (resp.code == '200') {
@@ -61,31 +59,33 @@ define(['jquery', 'pagination', 'common'], function (require, exports, module) {
         $('.re-btn1').click(function () {
             var verifyCode = $('.verifyCode1').val();
             var name = $('.username').val();
-            common.getData("/account/verifyCodeWithName.do", {name: name, verifyCode: verifyCode}, function (resp) {
-
-                alert(JSON.stringify(resp));
+            common.getData("/account/verifyAccount.do", {name: name, verifyCode: verifyCode}, function (resp) {
                 if (resp.code == '200') {
                     $('.re-conts').hide();
                     $('.re-cont2').show();
                     $('.ul-luc li:nth-child(2)').addClass('orali');
-                    $('#verifyImg').attr('src','/verify/verifyCode.do?date'+ new Date());
+                    $('#verifyImg').attr('src', '/verify/verifyCode.do?date' + new Date());
 
-                    if(resp.message.type === 'mobile') {
-                        for(var i=0;i<resp.message.users.length;i++) {
-                            if(i == 0 ) {
-                                $('#choose-name').append('<label><input type="radio" name="check-id" checked>'+resp.message.users[i].nickName+'</label>');
+                    if (resp.message.type === 'mobile') {
+                        for (var i = 0; i < resp.message.users.length; i++) {
+                            if (i == 0) {
+                                $('#choose-name').append('<label><input type="radio" name="check-id" checked>' + resp.message.users[i].nickName + '</label>');
                             } else {
-                                $('#choose-name').append('<label><input type="radio" name="check-id">'+resp.message.users[i].nickName+'</label>');
+                                $('#choose-name').append('<label><input type="radio" value="' + resp.message.users[i].nickName + '" name="s-count">' + resp.message.users[i].nickName + '</label>');
                             }
                         }
                         $('#choose-name').show();
                         $('#phone').val(resp.message.protectedMobile);
                         mobile = resp.message.mobile;
-                        $('#phone').attr("disabled","disabled");
+                        $('#phone').attr("disabled", "disabled");
                         $('.step2 > li').eq(0).find('.sp3').hide();
                         mobileInit = true;
-                    } else {
+                    } else if (resp.message.type === 'userName') {
                         blurMobile();
+                        userName = name;
+                    } else if (resp.message.type === 'email') {
+                        blurMobile();
+                        userName = resp.message.userName;
                     }
 
                 } else {
@@ -97,66 +97,42 @@ define(['jquery', 'pagination', 'common'], function (require, exports, module) {
         $('#sendCode').click(function () {
             var phone = mobileInit ? mobile : $('#phone').val();
             var verifyCode = $('#verifyCode').val();
-            if(phoneVerifyCheck.phone || mobileInit) {
-                var self = $(this);
-                self.css('color','#aaa');
-                common.getData("/mall/users/messages.do", {mobile: phone, verifyCode: verifyCode}, function (resp) {
-                    alert(JSON.stringify(resp));
-                    if (resp.code == '200') {
-                        phoneVerifyCheck.code = true;
-                        cacheKeyId = resp.cacheKeyId;
-                    } else {
-                        alert(resp.message);
-                        phoneVerifyCheck.code = false;
-                    }
-                });
-            }
-        });
-
-        body.on('click','.next2',function () {
-
-            if(phoneVerifyCheck.code && phoneVerifyCheck.phone ) {
-                $(this).parent().find('.sp3').hide();
-
-                var phone = $('#phone').val();
-                var code = $('#code').val();
-
-                var requestParm = {
-                    phone: phone,
-                    code: code,
-                    cacheKeyId: cacheKeyId
-                };
-                common.getData("/account/phoneValidate.do", requestParm, function (resp) {
-                    if (resp.code == '200') {
-                        $('.re-conts').hide();
-                        $('.re-cont3').show();
-                        $('.ul-luc li:nth-child(3)').addClass('orali');
-                    } else {
-                        alert(resp.message);
-                    }
-
-                });
-
-            } else {
-                $(this).parent().find('.sp3').text('输入不完整');
-                $(this).parent().find('.sp3').show();
-            }
-        });
-
-        body.on('click','.re-btn3',function () {
-            var password = $('#reset-password').val();
-            if(!resetPasswordCheck.password || !resetPasswordCheck.rePassword ) {
-                return;
-            }
-            common.getData("/account/resetPassword.do", {password: password}, function (resp) {
+            common.getData("/mall/users/messages.do", {mobile: phone, verifyCode: verifyCode}, function (resp) {
+                alert(JSON.stringify(resp));
                 if (resp.code == '200') {
-                    $('.re-conts').hide();
-                    $('.re-cont4').show();
-                    $('.ul-luc li:nth-child(4)').addClass('orali');
+                    cacheKeyId = resp.cacheKeyId;
                 } else {
                     alert(resp.message);
                 }
             });
+        });
+
+        body.on('click', '.next2', function () {
+            var phone = mobileInit ? mobile : $('#phone').val();
+            var code = $('#code').val();
+            var requestParm = {
+                phone: phone,
+                code: code,
+                cacheKeyId: cacheKeyId
+            };
+            common.getData("/account/phoneValidate.do", requestParm, function (resp) {
+                if (resp.code == '200') {
+                    $('.re-conts').hide();
+                    $('.re-cont3').show();
+                    $('.ul-luc li:nth-child(3)').addClass('orali');
+                } else {
+                    alert(resp.message);
+                }
+
+            });
+        });
+
+        body.on('click', '.re-btn3', function () {
+            var phone = mobileInit ? mobile : $('#phone').val();
+            var code = $('#code').val();
+            var password = $('.step3 .password').val();
+            userName = mobileInit ? $.trim($("input[name='s-count']:checked").val()) : userName;
+            resetPassword(userName, phone, code, password);
         });
 
         $('.step3 .password').blur(function () {
@@ -194,10 +170,6 @@ define(['jquery', 'pagination', 'common'], function (require, exports, module) {
             window.location.href = '/account/login.do';
         });
 
-        $('.receiveEmail').click(function () {
-
-        });
-
     });
 
 
@@ -208,20 +180,34 @@ define(['jquery', 'pagination', 'common'], function (require, exports, module) {
             if (pattern.test(self.val())) {
                 var requestParm = {phone: self.val()};
                 common.getData('/account/verifyUserPhone', requestParm, function (resp) {
-                    if(resp.code == '200' && resp.message.verify) {
+                    if (resp.code == '200' && resp.message.verify) {
                         self.parent().find('.sp3').hide();
-                        phoneVerifyCheck.phone = true;
+                        phoneCheck = true;
                     } else {
                         self.parent().find('.sp3').text(resp.message.msg);
                         self.parent().find('.sp3').show();
-                        phoneVerifyCheck.phone = false;
+                        phoneCheck = false;
                     }
                 });
             } else {
                 self.parent().find('.sp3').text('手机号不合法');
                 self.parent().find('.sp3').show();
-                phoneVerifyCheck.phone = false;
+                phoneCheck = false;
             }
+        });
+    }
+    
+    function resetPassword(userName, phone, code, password) {
+        var requestParm = {
+            phone: phone,
+            code: code,
+            userName: userName,
+            password: password,
+            cacheKeyId: cacheKeyId
+        };
+        alert(JSON.stringify(requestParm));
+        common.getData('/account/resetPassword.do', requestParm, function (resp) {
+            alert(JSON.stringify(resp));
         });
     }
 

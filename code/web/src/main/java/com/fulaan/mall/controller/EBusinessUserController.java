@@ -324,7 +324,7 @@ public class EBusinessUserController extends BaseController {
         if (StringUtils.isNotBlank(email)) {
             userEntry = userService.findByEmail(email);
         } else if (StringUtils.isNotBlank(phone)) {
-            userEntry = userService.findByPhone(phone);
+            userEntry = userService.findByMobile(phone);
         } else if (StringUtils.isNotBlank(name)) {
             userEntry = userService.findByUserName(name);
         }

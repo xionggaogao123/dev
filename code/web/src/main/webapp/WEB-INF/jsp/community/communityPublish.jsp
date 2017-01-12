@@ -114,7 +114,7 @@
                 <div class="publish-putin">
                     <input type="text" placeholder="请输入大标题" id="title">
                     <textarea placeholder="请输入内容" id="content"></textarea>
-                    <div class="vote-cont">
+                    <div class="vote-cont" style="display: none">
                         <button>设置投票选项</button>
                         <span class="downT"></span>
                         <div class="div2">
@@ -320,13 +320,13 @@
             <div class="com-left-s" id="homework">
             </div>
 
+            <div class="com-left-s" id="share">
+            </div>
+
             <div class="com-left-s" id="activity">
             </div>
 
             <div class="com-left-s" id="materials">
-            </div>
-
-            <div class="com-left-s" id="share">
             </div>
 
             <div class="com-left-s" id="means">

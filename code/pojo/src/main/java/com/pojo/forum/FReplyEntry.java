@@ -47,6 +47,9 @@ import java.util.List;
  *     //语音上传
  *     vcl: voiceFile 语音列表
  *
+ *     //参赛人员信息Id
+ *     pct:participateId
+ *
  * }
  */
 public class FReplyEntry extends BaseDBObject {
@@ -170,6 +173,19 @@ public class FReplyEntry extends BaseDBObject {
 
     public void setReplyPostId(ObjectId replyPostId){
         setSimpleValue("rpid",replyPostId);
+    }
+
+
+    public ObjectId getParticipateId(){
+        if(getBaseEntry().containsField("pct")){
+            return getSimpleObjecIDValue("pct");
+        }else{
+            return null;
+        }
+    }
+
+    public void setParticipateId(ObjectId participateId){
+        setSimpleValue("pct",participateId);
     }
 
 

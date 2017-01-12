@@ -1166,11 +1166,32 @@ public class CommunityController extends BaseController {
      */
     @RequestMapping("/setRemark")
     @ResponseBody
-    public RespObj setRemark(@RequestParam(defaultValue = "", required = false) String remarkId,
+    public RespObj setRemark(String remarkId,
                              String endUserId, String remark) {
         ObjectId userId = getUserId();
         if (StringUtils.isNotBlank(remarkId)) {
             communityService.updateRemark(new ObjectId(remarkId), remark);
+        } else {
+            RemarkEntry entry = new RemarkEntry(userId, new ObjectId(endUserId), remark);
+            communityService.saveRemark(entry);
+        }
+        return RespObj.SUCCESS;
+    }
+
+    /**
+     * 设置备注名
+     *
+     * @param endUserId 被设置备注名的人的Id
+     * @param remark    备注名
+     * @return
+     */
+    @RequestMapping("/setAppRemark")
+    @ResponseBody
+    public RespObj setAppRemark(String endUserId, String remark) {
+        ObjectId userId = getUserId();
+        RemarkEntry remarkEntry=communityService.getRemarkEntry(userId,new ObjectId(endUserId));
+        if (null!=remarkEntry) {
+            communityService.updateRemark(remarkEntry.getID(), remark);
         } else {
             RemarkEntry entry = new RemarkEntry(userId, new ObjectId(endUserId), remark);
             communityService.saveRemark(entry);

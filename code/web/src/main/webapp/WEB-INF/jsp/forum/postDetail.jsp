@@ -195,18 +195,16 @@
                     }
                 }
             </script>
-            <div class="join-cont">
+            <div class="join-cont" <c:if test="${InSet!=1||login==false}">style="display: none"</c:if>>
                 <div class="sp1">创建参赛者</div>
                 <div class="sp2">参赛者</div>
                 <div class="sp3">
-                    <p class="p1 bord">未选择</p>
-                    <p class="p2">
-                        <span>选手零<i class="i1"></i><i class="i2"></i></span>
-                        <span>选手一<i class="i1"></i><i class="i2"></i></span>
-                        <span>选手二<i class="i1"></i><i class="i2"></i></span>
+                    <%--bord--%>
+                    <p class="p1"></p>
+                    <p class="p2" id="participateList">
                     </p>
                 </div>
-                <div class="sp4">有没有要选择的参赛者</div>
+                <div class="sp4" style="display: none">有没有要选择的参赛者</div>
             </div>
             <span id="title" style="display: none">回复的帖子不能为空，请重新回复！</span><br/>
             <button class="btn-hf" id="comment">发表回复</button>
@@ -321,11 +319,128 @@
 
     $(function () {
         $('#comment').click(function () {
-            goToPost(pSectionId, postId, personId);
+            var count=$('#participateList').data("count");
+            if(count==0){
+                goToPost("");
+            }else{
+               if($('.join-cont .p1').hasClass('bord')){
+                   goToPost("");
+               }else{
+                   if(undefined!=$('#comment').data('participateId')&&
+                           null!=$('#comment').data('participateId')&&
+                           ""!=$('#comment').data('participateId')){
+                       $('.join-cont .sp4').hide();
+                       goToPost($('#comment').data('participateId'));
+                   }else{
+                       $('.join-cont .p1').addClass('bord');
+                       $('.join-cont .sp4').show();
+                   }
+               }
+
+            }
+        });
+
+        $('body').on('click','.wind-join .btn-cancel',function(){
+            initJoin();
+            $('.wind-join').fadeOut();
+            $('.bg').fadeOut();
+        });
+        $('body').on('click','.wind-join .p1 em',function(){
+            initJoin();
+            $('.wind-join').fadeOut();
+            $('.bg').fadeOut();
+        });
+
+
+        $('body').on('blur','#participateName',function(){
+            if($('#participateName').val()!=""){
+                $('#participateName').css("border","1px solid #E6E6E6");
+                $('#participateName').next('.nameClass').hide();
+            }
+        });
+
+        $('body').on('blur','#participateRelation',function(){
+            if($('#participateRelation').val()!=""){
+                var phonePattern = /(^(([0+]\d{2,3}-)?(0\d{2,3})-)(\d{7,8})(-(\d{3,}))?$)|(^0{0,1}1[3|4|5|6|7|8|9][0-9]{9}$)/;
+                var emailPattern = /^([a-zA-Z0-9._-])+@([a-zA-Z0-9_-])+(.[a-zA-Z0-9_-])+/;
+                if(phonePattern.test($('#participateRelation').val())||emailPattern.test($('#participateRelation').val())){
+                    $('#participateRelation').css("border","1px solid #E6E6E6");
+                    $('#participateRelation').next('.relationRegular').hide();
+                }
+            }
+        });
+
+        $('body').on('blur','#participateAge',function(){
+              if($('#participateAge').val()==""){
+                  $('.ageClass').hide();
+              }else{
+                  if(isNaN($('#participateAge').val())){
+                      $('.ageClass').html("填写的年龄必须是数字");
+                      $('.ageClass').show();
+                  }else{
+                      if(parseInt($('#participateAge').val())<=0){
+                          $('.ageClass').html("填写的年龄不能小于或等于0");
+                          $('.ageClass').show();
+                      }else{
+                          $('.ageClass').hide();
+                      }
+                  }
+              }
+        });
+
+
+        $('body').on('click','.selectPart',function (e) {
+            var id=$(this).attr('participateId');
+            var name=$(this).attr('participateName');
+            $('.join-cont .p1').html(name);
+            $('#comment').data('participateId',id);
+            if($('.join-cont .p1').hasClass('bord')){
+                $('.join-cont .p1').removeClass('bord');
+            }
+            e.stopPropagation();
+        })
+
+        $('body').on('click','.join-cont .sp1',function(){
+            $('#title').hide();
+            $('.wind-join').data("joinId","");
+            $('.wind-join').fadeIn();
+            $('.bg').fadeIn();
+        });
+
+        $('body').on('click','.join-cont .sp3 .p2 .i2',function(e){
+            var id=$(this).attr('participateId');
+            var obj= $('#participateList').data(id);
+            $('.wind-join').data("joinId",id);
+            $('#participateName').val(obj.name);
+            $('#participateRelation').val(obj.relation);
+            $('#participateSchool').val(obj.school);
+            if(obj.age!=0){
+                $('#participateAge').val(obj.age);
+            }
+            if(obj.sex!=-1){
+                $(":radio[name='sex'][value='" + obj.sex + "']").prop("checked", "checked");
+            }
+            $('.wind-join').fadeIn();
+            $('.bg').fadeIn();
+            e.stopPropagation();
         });
 
     });
 
+
+    function initJoin(){
+        $('#participateName').css("border","1px solid #E6E6E6");
+        $('#participateName').next('.nameClass').hide();
+        $('#participateRelation').css("border","1px solid #E6E6E6");
+        $('#participateRelation').next('.relationRegular').hide();
+        $('.ageClass').hide();
+        $("[name='sex']:checked").attr("checked",false);
+        $('#participateSchool').val('');
+        $('#participateName').val('');
+        $('#participateRelation').val('');
+        $('#participateAge').val('');
+
+    }
     function validate() {
         if (UE.getEditor('editor').getContent() == "") {
             return false;
@@ -345,7 +460,7 @@
                     $(".wind-num").fadeIn();
                     return;
                 }
-                comment();
+                comment('/forum/addFReply.do',"");
             }
         });
     }
@@ -362,7 +477,7 @@
                 if (resp.message.bind) {
                     $('.bg').fadeOut();
                     $('.wind-num').fadeOut();
-                    comment();
+                    comment('/forum/addFReply.do',"");
                 } else {
                     alert(resp.message);
                 }
@@ -370,10 +485,7 @@
         });
     }
 
-    function comment() {
-        $(".bg").fadeIn();
-//        $(".wind-circle").fadeIn();
-
+    function getParam(participateId){
         var requestData = {};
         requestData.comment = content;
         requestData.postSectionId = pSectionId;
@@ -387,11 +499,21 @@
         requestData.imageStr = "";
         requestData.videoStr = "";
         requestData.audioStr = "";
+        if(participateId!=""){
+            requestData.participateId=participateId;
+        }
+        return requestData;
+    }
+
+    function comment(url,participateId) {
+        $(".bg").fadeIn();
+
+        var requestData=getParam(participateId);
 
         $.ajax({
             type: "post",
             data: requestData,
-            url: '/forum/addFReply.do',
+            url: url,
             async: false,
             dataType: "json",
             traditional: true,
@@ -432,7 +554,7 @@
         }
     }
 
-    function goToPost(pSectionId, postId, personId) {
+    function goToPost(participateId) {
         $.ajax({
             url: "/forum/loginInfo.do?date=" + new Date(),
             type: "get",
@@ -452,7 +574,7 @@
                     return;
                 }
 
-                comment();
+                comment('/forum/addFReplyForParticipate.do',participateId);
             }
         });
     }
@@ -468,6 +590,13 @@
         &nbsp;>&nbsp;{{=value.sectionName}}
     </span>
     </span>
+    {{~}}
+</script>
+
+<script id="participateListTmpl" type="text/template">
+    {{~it:value:index}}
+    <span ><em class="selectPart" participateId="{{=value.id}}" participateName="{{=value.name}}">{{=value.name}}</em>
+        <i class="i1" participateId="{{=value.id}}" participateName="{{=value.name}}"></i><i class="i2" participateId="{{=value.id}}"></i></span>
     {{~}}
 </script>
 
@@ -1089,26 +1218,29 @@
     <ul>
         <li>
             <span>姓名</span>
-            <input class="inp1" type="text" placeholder="真实姓名">
+            <input class="inp1" type="text" placeholder="真实姓名" id="participateName">
+            <i class="nameClass" style="display: none">姓名不能为空</i>
         </li>
         <li>
             <span>年龄</span>
-            <input class="inp2" type="text" placeholder="年龄">
+            <input class="inp2" type="text" placeholder="年龄" id="participateAge">
             <em>性别</em>
             <label>
-                <input type="radio" name="sex">男
+                <input type="radio" name="sex" value="1">男
             </label>
             <label>
-                <input type="radio" name="sex">女
+                <input type="radio" name="sex" value="0">女
             </label>
+            <i class="ageClass" style="display: none">填写的年龄必须是数字</i>
         </li>
         <li>
             <span>联系方式</span>
-            <input class="inp1" type="text" placeholder="常用邮箱或手机号">
+            <input class="inp1" type="text" placeholder="常用邮箱或手机号" id="participateRelation">
+            <i class="relationRegular" style="display: none">请填写符合规范的邮箱或者手机号</i>
         </li>
         <li>
             <span>就读学校</span>
-            <input class="inp1" type="text" placeholder="例：上海市普陀区第一中心小学">
+            <input class="inp1" type="text" placeholder="例：上海市普陀区第一中心小学" id="participateSchool">
         </li>
         <li>
             <button class="btn1">保存</button>

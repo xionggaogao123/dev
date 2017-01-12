@@ -103,6 +103,7 @@ import java.util.List;
  *
  *     //回帖超过100时，标志位代表着只加一次
  *     pfl:postFlag 标志位 0:默认 1:加了
+ *
  *}
  *
  */

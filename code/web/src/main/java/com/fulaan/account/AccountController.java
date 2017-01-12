@@ -4,11 +4,11 @@ import com.fulaan.account.dto.VerifyData;
 import com.fulaan.account.service.AccountService;
 import com.fulaan.annotation.LoginInfo;
 import com.fulaan.annotation.SessionNeedless;
-import com.fulaan.annotation.UserRoles;
 import com.fulaan.base.BaseController;
 import com.fulaan.cache.CacheHandler;
 import com.fulaan.dto.UserDTO;
 import com.fulaan.playmate.service.MateService;
+import com.fulaan.pojo.Validate;
 import com.fulaan.user.model.ThirdType;
 import com.fulaan.user.service.UserService;
 import com.fulaan.user.util.QQLoginUtil;
@@ -16,7 +16,6 @@ import com.fulaan.util.Validator;
 import com.pojo.mobile.UserMobileEntry;
 import com.pojo.user.UserDetailInfoDTO;
 import com.pojo.user.UserEntry;
-import com.pojo.user.UserRole;
 import com.sys.constants.Constant;
 import com.sys.exceptions.UnLoginException;
 import com.sys.utils.DateTimeUtils;
@@ -75,7 +74,7 @@ public class AccountController extends BaseController {
     /**
      * 登录界面
      *
-     * @return login page
+     * @return getUserEntryByAccount page
      */
     @RequestMapping("/login")
     @SessionNeedless
@@ -182,46 +181,55 @@ public class AccountController extends BaseController {
     }
 
     /**
-     * 验证 手机号
-     * @param phone
+     * 绑定 手机号
+     *
+     * @param phoneNumber
      * @param code
      * @param cacheKeyId
      * @return
      */
-    @SessionNeedless
+    @RequestMapping("/bindPhoneNumber")
     @ResponseBody
-    @RequestMapping("/validatePhone")
-    public RespObj validatePhone(String phone, String code, String cacheKeyId) {
-        String cacheKey = CacheHandler.getKeyString(CacheHandler.CACHE_SHORTMESSAGE, cacheKeyId);
-        String value = CacheHandler.getStringValue(cacheKey);
-        if (StringUtils.isBlank(value)) {
-            return RespObj.FAILD("验证码失效，请重新获取");
+    public Map<String, Object> bindPhone(String phoneNumber, String code, String cacheKeyId) {
+        Map<String, Object> result = new HashMap<String, Object>();
+        result.put("code", "500");
+        Validate validate = userService.validatePhoneNumber(phoneNumber, code, cacheKeyId);
+        if (!validate.isOk()) {
+            result.put("message", validate.getMessage());
+            return result;
         }
-        String[] cache = value.split(",");
-        if (!cache[1].equals(phone)) {
-            return RespObj.FAILD("注册失败：手机号码与验证码不匹配");
-        }
-
-        if (cache[0].equals(code)) {
-            return RespObj.SUCCESS("验证成功");
+        Validate bindValidate = accountService.bindMobile(getUserId(), phoneNumber);
+        if (bindValidate.isOk()) {
+            result.put("code", "200");
+            result.put("message", "绑定成功");
         } else {
-            return RespObj.FAILD("短信验证码输入错误");
+            result.put("message", bindValidate.getMessage());
         }
+        return result;
     }
 
+    /**
+     * 列出绑定的用户名
+     *
+     * @param phone
+     * @return
+     */
     @SessionNeedless
     @ResponseBody
     @RequestMapping("/listBindUserName")
     public RespObj listBindUserName(String phone) {
         List<String> userNameList = new ArrayList<String>();
         UserMobileEntry userMobileEntry = accountService.findByMobile(phone);
+        if (userMobileEntry == null) {
+            return RespObj.FAILDWithErrorMsg("老账号请直接登录");
+        }
         List<ObjectId> userIds = userMobileEntry.getUserIds();
         UserEntry userEntry = userService.findByUserName(phone);
         List<UserEntry> userEntries = userService.getUserByList(userIds);
-        if(userEntry != null) {
+        if (userEntry != null) {
             userNameList.add(userEntry.getUserName());
         }
-        for(UserEntry userEntry1 : userEntries) {
+        for (UserEntry userEntry1 : userEntries) {
             userNameList.add(userEntry1.getUserName());
         }
         return RespObj.SUCCESS(userNameList);
@@ -238,7 +246,6 @@ public class AccountController extends BaseController {
         if (!accountService.checkVerifyCode(verifyCode, verifyKey)) {
             return RespObj.FAILD("验证码不正确");
         }
-
         Pattern userNamePattern = Pattern.compile(Validator.REGEX_USERNAME);
         if (userNamePattern.matcher(name).matches()) {
             if (userService.findByUserName(name) == null) {
@@ -252,10 +259,8 @@ public class AccountController extends BaseController {
             result.put("type", "userName");
             result.put("userName", name);
         }
-
         Pattern emailPattern = Pattern.compile(Validator.REGEX_EMAIL);
         if (emailPattern.matcher(name).matches()) {
-
             if (userService.findByEmail(name) == null) {
                 return RespObj.FAILDWithErrorMsg("账号不存在");
             }
@@ -612,5 +617,24 @@ public class AccountController extends BaseController {
 
         result.put("email", user.getEmail());
         return RespObj.SUCCESS(result);
+    }
+
+
+    @RequestMapping("/unsetPhone")
+    @ResponseBody
+    public RespObj unsetPhone() {
+        userService.updateUserPhone(getUserId(), "");
+        return RespObj.SUCCESS;
+    }
+
+    @RequestMapping("/validatePhone")
+    @SessionNeedless
+    @ResponseBody
+    public RespObj validatePhone(String phone, String code, String cacheKeyId) {
+        Validate validate = userService.validatePhoneNumber(phone, code, cacheKeyId);
+        if (!validate.isOk()) {
+            return RespObj.FAILDWithErrorMsg(validate.getMessage());
+        }
+        return RespObj.SUCCESS("验证成功");
     }
 }

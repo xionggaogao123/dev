@@ -3,6 +3,7 @@ package com.fulaan.account.service;
 import com.db.mobile.UserMobileDao;
 import com.fulaan.base.BaseService;
 import com.fulaan.cache.CacheHandler;
+import com.fulaan.pojo.Validate;
 import com.pojo.mobile.UserMobileEntry;
 import com.sys.mails.MailUtils;
 import org.bson.types.ObjectId;
@@ -58,9 +59,11 @@ public class AccountService extends BaseService {
         return stringBuffer;
     }
 
-    public void bindMobile(ObjectId userId, String mobile) {
+    public Validate bindMobile(ObjectId userId, String mobile) {
+        Validate validate = new Validate();
         if (!userMobileDao.isCanBind(mobile)) {
-            return;
+            validate.setMessage("手机号绑定已达三个");
+            return validate;
         }
         if (userMobileDao.isExist(mobile)) {
             userMobileDao.pushUserId(mobile, userId);
@@ -68,6 +71,8 @@ public class AccountService extends BaseService {
             UserMobileEntry userMobileEntry = new UserMobileEntry(mobile, userId);
             userMobileDao.save(userMobileEntry);
         }
+        validate.setOk(true);
+        return validate;
     }
 
     public UserMobileEntry findByMobile(String mobile) {

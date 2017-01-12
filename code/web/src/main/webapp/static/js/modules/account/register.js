@@ -10,6 +10,8 @@ define(['jquery', 'pagination', 'common'], function (require, exports, module) {
     var validateImageYZM = false;
     var validateCode = false;
 
+    var registerType = 'phone';
+
     register.init = function () {
 
     };
@@ -107,6 +109,8 @@ define(['jquery', 'pagination', 'common'], function (require, exports, module) {
                             $('.re-cont .ul1').hide();
                             $('.re-cont .ul2').hide();
                             $('.re-cont .ul3').show();
+
+                            registerType = 'email';
                         }
                     } else {
                         alert(resp.message);
@@ -156,7 +160,15 @@ define(['jquery', 'pagination', 'common'], function (require, exports, module) {
             var email = $('#user-email').val();
             var nickName = $('#nick').val();
             var password = $('#password').val();
-            registerUser('',email,password,'',email,nickName);
+            var phone = $('#phone').val();
+            var code = $('#code').val();
+
+            if(registerType === 'phone') {
+                registerUser(code,email,password,phone,'',nickName);
+            } else {
+                registerUser('',email,password,'',email,nickName);
+            }
+
         });
 
         $('body').on('click', '#imgObj', function () {
@@ -188,6 +200,13 @@ define(['jquery', 'pagination', 'common'], function (require, exports, module) {
             cacheKeyId: cacheKeyId
         }, function (resp) {
             alert(JSON.stringify(resp));
+            if(resp.code === '200') {
+                $('.re-cont .ul1').hide();
+                $('.re-cont .ul2').hide();
+                $('.re-cont .ul3').show();
+
+                registerType = 'phone';
+            }
         });
     }
 

@@ -12,6 +12,7 @@ import com.fulaan.cache.CacheHandler;
 import com.fulaan.dto.UserDTO;
 import com.fulaan.mall.service.EBusinessVoucherService;
 import com.fulaan.pojo.FLoginLog;
+import com.fulaan.pojo.Validate;
 import com.fulaan.user.dao.ThirdLoginDao;
 import com.fulaan.user.model.ThirdLoginEntry;
 import com.fulaan.user.model.ThirdType;
@@ -95,20 +96,20 @@ public class UserService extends BaseService {
         return org.apache.commons.lang.StringUtils.replaceEach(content, KeyWordFilterUtil.split_list.toArray(new String[]{}), KeyWordFilterUtil.replace_list.toArray(new String[]{}));
     }
 
-    public String replaceSensitiveWord(String text){
+    public String replaceSensitiveWord(String text) {
         //先添加词汇
-        if(FastCheck.hash.size()==0){
-            for(String item:KeyWordFilterUtil.split_list){
+        if (FastCheck.hash.size() == 0) {
+            for (String item : KeyWordFilterUtil.split_list) {
                 FastCheck.addWord(item);
             }
         }
-        return  FastCheck.replaceWith(text,'*');
+        return FastCheck.replaceWith(text, '*');
     }
 
-    public List<String> recordSensitiveWords(String text){
-        List<String> list=new ArrayList<String>();
-        for(String item:KeyWordFilterUtil.split_list){
-            if(text.contains(item)){
+    public List<String> recordSensitiveWords(String text) {
+        List<String> list = new ArrayList<String>();
+        for (String item : KeyWordFilterUtil.split_list) {
+            if (text.contains(item)) {
                 list.add(item);
             }
         }
@@ -152,6 +153,28 @@ public class UserService extends BaseService {
             }
         }
     }
+
+    public Validate validatePhoneNumber(String phoneNumber, String code, String cacheKeyId) {
+        Validate validate = new Validate();
+        validate.setOk(false);
+        String cacheKey = CacheHandler.getKeyString(CacheHandler.CACHE_SHORTMESSAGE, cacheKeyId);
+        String value = CacheHandler.getStringValue(cacheKey);
+        if (StringUtils.isBlank(value)) {
+            validate.setMessage("验证码失效，请重新获取");
+        }
+        String[] cache = value.split(",");
+        if (!cache[1].equals(phoneNumber)) {
+            validate.setMessage("注册失败：手机号码与验证码不匹配");
+        }
+
+        if (cache[0].equals(code)) {
+            validate.setOk(true);
+        } else {
+            validate.setMessage("短信验证码输入错误");
+        }
+        return validate;
+    }
+
 
     /**
      * 通过用户id获取用户所在学校的注册地址id
@@ -359,7 +382,7 @@ public class UserService extends BaseService {
         return userDao.findByMobile(phone);
     }
 
-    public UserEntry findByMobile(String mobile){
+    public UserEntry findByMobile(String mobile) {
         return userDao.findByMobile(mobile);
     }
 
@@ -926,7 +949,7 @@ public class UserService extends BaseService {
     }
 
 
-    public UserEntry findByPersonalID(String personalId){
+    public UserEntry findByPersonalID(String personalId) {
         return userDao.findByPersonalID(personalId);
     }
 
@@ -953,27 +976,25 @@ public class UserService extends BaseService {
         return userDao.updateUserPermission(uid, role);
     }
 
-    public UserEntry login(String login) {
+    public UserEntry getUserEntryByAccount(String account) {
 
         Pattern emailPattern = Pattern.compile("^.+@.+\\..+$");
         Pattern phonePattern = Pattern.compile("^1[3|4|5|7|8][0-9]\\d{8}$");
-        Pattern personalIdPattern= Pattern.compile("^[\\d]{10}");
-        Matcher emailMatcher = emailPattern.matcher(login);
-        Matcher phoneMatcher = phonePattern.matcher(login);
-        Matcher personalIdMatcher = personalIdPattern.matcher(login);
+        Pattern personalIdPattern = Pattern.compile("^[\\d]{10}");
+        Matcher emailMatcher = emailPattern.matcher(account);
+        Matcher phoneMatcher = phonePattern.matcher(account);
+        Matcher personalIdMatcher = personalIdPattern.matcher(account);
         UserEntry user;
 
-        if (emailMatcher.matches()) {
-            user = userDao.findByEmail(login);
-        }else if(phoneMatcher.matches()){
-            user = userDao.findByMobile(login);
-            if(null==user){
-                user = userDao.findByMobile(login);
-            }
-        } else if(personalIdMatcher.matches()){
-            user=userDao.findByPersonalID(login);
-        }else {
-           user = userDao.findByUserName(login);
+        user = userDao.findByUserName(account);
+        if (user != null) {
+            return user;
+        } else if (emailMatcher.matches()) {
+            user = userDao.findByEmail(account);
+        } else if (phoneMatcher.matches()) {
+            user = userDao.findByMobile(account);
+        } else if (personalIdMatcher.matches()) {
+            user = userDao.findByPersonalID(account);
         }
         return user;
     }
@@ -1217,10 +1238,10 @@ public class UserService extends BaseService {
     }
 
     public void removeThirdBind(ObjectId userId, ThirdType thirdType) {
-        thirdLoginDao.removeThirdBind(userId,thirdType);
+        thirdLoginDao.removeThirdBind(userId, thirdType);
     }
 
-    public void addEntry(UserEntry userEntry){
+    public void addEntry(UserEntry userEntry) {
         userDao.addEntry(userEntry);
     }
 }

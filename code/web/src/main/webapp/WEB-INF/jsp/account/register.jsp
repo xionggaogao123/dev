@@ -49,8 +49,9 @@
                 <span class="sp3" style="display: none">参数不完整</span>
             </li>
             <li>
-                <span class="sp2"><label><input type="checkbox" class="argument" checked>我同意<a href="/agreement.html"
-                                                                                               target="_blank">《复兰教育社区协议》</a></label></span>
+                <span class="sp2"><label><input type="checkbox" class="argument" checked>我同意
+                    <a href="/agreement.html" target="_blank">《复兰教育社区协议》</a></label>
+                </span>
                 <button>下一步</button>
                 <span class="sp3" style="display: none;top: 26px">请填写参数</span>
             </li>

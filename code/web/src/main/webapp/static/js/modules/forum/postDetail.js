@@ -1,7 +1,7 @@
 /**
  * Created by admin on 2016/6/3.
  */
-define(['jquery','pagination','social', 'common'], function (require, exports, module) {
+define(['jquery', 'pagination', 'social', 'common'], function (require, exports, module) {
     var Common = require('common');
     require('pagination');
     var postDetail = {};
@@ -88,11 +88,11 @@ define(['jquery','pagination','social', 'common'], function (require, exports, m
         });
 
 
-        $('body').on('click','.deleteLOL',function () {
-            var that=this;
+        $('body').on('click', '.deleteLOL', function () {
+            var that = this;
             var replyId = $(this).attr("replyId");
             var rpid = $(this).attr("rpid");
-            if(confirm("你确定要删除该评论？")){
+            if (confirm("你确定要删除该评论？")) {
                 $.ajax({
                     url: "/admin/deletelol",
                     data: {
@@ -127,7 +127,7 @@ define(['jquery','pagination','social', 'common'], function (require, exports, m
             }
         });
 
-        function share(ti){
+        function share(ti) {
             var ul = location.href;
             var sendUrl = getSendUrl(ti, ul);
             var option;
@@ -145,7 +145,7 @@ define(['jquery','pagination','social', 'common'], function (require, exports, m
 
         //分享
         $('body').on("click", ".tQQ", function () {
-            var option=share($(this).attr("ti"));
+            var option = share($(this).attr("ti"));
             tQQ(this, option);
         });
 
@@ -175,27 +175,27 @@ define(['jquery','pagination','social', 'common'], function (require, exports, m
         });
 
         $('body').on("click", ".qZone", function () {
-            var option=share($(this).attr("ti"));
+            var option = share($(this).attr("ti"));
             qZone(this, option);
         });
 
         $('body').on("click", ".sina", function () {
-            var option=share($(this).attr("ti"));
+            var option = share($(this).attr("ti"));
             sinaWeibo(this, option);
         });
 
         $('body').on("click", ".douban", function () {
-            var option=share($(this).attr("ti"));
+            var option = share($(this).attr("ti"));
             doubanShare(this, option);
         });
 
         $('body').on("click", ".weixin", function () {
-            var option=share($(this).attr("ti"));
+            var option = share($(this).attr("ti"));
             weixinShare(this, option);
         });
 
         $('body').on("click", ".friendQQ", function () {
-            var option=share($(this).attr("ti"));
+            var option = share($(this).attr("ti"));
             qqShare(this, option);
         });
 
@@ -204,13 +204,13 @@ define(['jquery','pagination','social', 'common'], function (require, exports, m
         });
 
         $('body').on("click", ".weixinFriend", function () {
-            var option=share($(this).attr("ti"));
+            var option = share($(this).attr("ti"));
             weiFriendShare(this, option);
         });
-        $('body').on('click','.join-cont .sp3 .p1',function(){
-             getParticipates(1);
+        $('body').on('click', '.join-cont .sp3 .p1', function () {
+            getParticipates(1);
         });
-        $('body').on('click','.join-cont .sp3 .p2 em',function(){
+        $('body').on('click', '.join-cont .sp3 .p2 em', function () {
             $('.join-cont .sp3 .p2').slideUp();
             $('.join-cont .sp3 .p1').removeClass('bord');
         });
@@ -435,16 +435,16 @@ define(['jquery','pagination','social', 'common'], function (require, exports, m
                         return;
                     }
                     var offset = 0;
-                    if (inSet == 1 || (inSet == -1 && cate == 1) ) {
+                    if (inSet == 1 || (inSet == -1 && cate == 1)) {
                         offset = 80;
                     }
                     if ($("#" + data.message).length > 0) {
                         $("html,body").animate({scrollTop: $("#" + data.message).offset().top - offset}, 1000);
                     } else {
-                        if(inSet == 1 || (inSet == -1 && cate == 1) ) {
-                            location.href = '/forum/floorPosition.do?floor=' + t + '&postId=' + $('#postId').val() +'&pageSize=15';
-                        }else{
-                            location.href = '/forum/floorPosition.do?floor=' + t + '&postId=' + $('#postId').val() +'&pageSize=8';
+                        if (inSet == 1 || (inSet == -1 && cate == 1)) {
+                            location.href = '/forum/floorPosition.do?floor=' + t + '&postId=' + $('#postId').val() + '&pageSize=15';
+                        } else {
+                            location.href = '/forum/floorPosition.do?floor=' + t + '&postId=' + $('#postId').val() + '&pageSize=8';
                         }
                     }
                 },
@@ -766,21 +766,26 @@ define(['jquery','pagination','social', 'common'], function (require, exports, m
             });
         });
 
-        $('body').on('click','.join-cont .sp3 .p2 .i1',function(e){
-            var name=$(this).attr('participateName');
-            if(confirm("确定删除"+name+"这个参赛者吗?")){
-                var id=$(this).attr('participateId');
+        $('body').on('click', '.join-cont .sp3 .p2 .i1', function (e) {
+            var name = $(this).attr('participateName');
+            if (confirm("确定删除" + name + "这个参赛者吗?")) {
+                var id = $(this).attr('participateId');
+                if (id == $('#comment').data('participateId')) {
+                    $('#comment').data('remove', 0);
+                    $('#comment').removeData('participateId');
+                }
                 $.ajax({
                     type: "GET",
-                    data: {participateId:id},
+                    data: {participateId: id},
                     url: "/forum/removeParticipate.do",
                     async: false,
                     dataType: "json",
                     contentType: "application/x-www-form-urlencoded; charset=UTF-8",
                     success: function (rep) {
-                        if(rep.code=="200"){
+                        if (rep.code == "200") {
                             getParticipates(0);
-                        }else{
+                            alert("删除成功!");
+                        } else {
                             alert(rep.message);
                         }
                     }
@@ -788,60 +793,68 @@ define(['jquery','pagination','social', 'common'], function (require, exports, m
             }
         });
 
-        $('body').on('click','.wind-join .btn1',function(){
-            var $name=$('#participateName');
-            var $age=$('#participateAge');
-            var $relation=$('#participateRelation');
-            var $sex=$("[name='sex']:checked");
-            var $school=$('#participateSchool');
 
-            if($name.val()==""){
-                $name.css("border","1px solid #f00");
+        $('body').on('click', '.wind-join .btn1', function () {
+            var $name = $('#participateName');
+            var $age = $('#participateAge');
+            var $relation = $('#participateRelation');
+            var $sex = $("[name='sex']:checked");
+            var $school = $('#participateSchool');
+
+            if ($name.val() == "") {
+                $name.css("border", "1px solid #f00");
+                $name.next('.nameClass').html('姓名不能为空');
                 $name.next('.nameClass').show();
                 return;
+            } else {
+                if ($name.val().length > 10) {
+                    $name.css("border", "1px solid #f00");
+                    $name.next('.nameClass').html('姓名长度不要超过10个字');
+                    $name.next('.nameClass').show();
+                }
             }
 
-            if($age.val()!=""){
-                if(isNaN($age.val())){
+            if ($age.val() != "") {
+                if (isNaN($age.val())) {
                     $('.ageClass').html("填写的年龄必须是数字");
                     $('.ageClass').show();
                     return;
-                }else{
-                    if(parseInt($age.val())<=0){
+                } else {
+                    if (parseInt($age.val()) <= 0) {
                         $('.ageClass').html("填写的年龄不能小于或等于0");
                         $('.ageClass').show();
                         return;
                     }
                 }
             }
-            if($relation.val()==""){
+            if ($relation.val() == "") {
 //                $name.css("border","1px solid #E6E6E6");
-                $relation.css("border","1px solid #f00");
+                $relation.css("border", "1px solid #f00");
                 $relation.next('.relationRegular').html("联系方式不能为空");
                 $relation.next('.relationRegular').show();
                 return;
             }
             var phonePattern = /(^(([0+]\d{2,3}-)?(0\d{2,3})-)(\d{7,8})(-(\d{3,}))?$)|(^0{0,1}1[3|4|5|6|7|8|9][0-9]{9}$)/;
             var emailPattern = /^([a-zA-Z0-9._-])+@([a-zA-Z0-9_-])+(.[a-zA-Z0-9_-])+/;
-            if(phonePattern.test($relation.val())||emailPattern.test($relation.val())){
-            }else{
-                $relation.css("border","1px solid #f00");
+            if (phonePattern.test($relation.val()) || emailPattern.test($relation.val())) {
+            } else {
+                $relation.css("border", "1px solid #f00");
                 $relation.next('.relationRegular').html("请填写符合规范的邮箱或者手机号");
                 $relation.next('.relationRegular').show();
                 return;
             }
-            var sex=-1;
-            if(undefined!=sex){
-                sex=$sex.val();
+            var sex = -1;
+            if (undefined != sex) {
+                sex = $sex.val();
             }
-            var joinId=$('.wind-join').data("joinId");
-            var param={
-                id:joinId,
-                name:$name.val(),
-                relation:$relation.val(),
-                sex:sex,
-                age:$age.val(),
-                school:$school.val()
+            var joinId = $('.wind-join').data("joinId");
+            var param = {
+                id: joinId,
+                name: $name.val(),
+                relation: $relation.val(),
+                sex: sex,
+                age: $age.val(),
+                school: $school.val()
             };
             $.ajax({
                 type: "GET",
@@ -851,24 +864,23 @@ define(['jquery','pagination','social', 'common'], function (require, exports, m
                 dataType: "json",
                 contentType: "application/x-www-form-urlencoded; charset=UTF-8",
                 success: function (rep) {
-                    if(rep.code=="200"){
+                    if (rep.code == "200") {
                         $('.wind-join').removeData("joinId");
                         initJoin();
                         $('.wind-join').fadeOut();
                         $('.bg').fadeOut();
                         getParticipates(0);
-                        if(joinId==""){
+                        if (joinId == "") {
                             alert("保存成功!");
-                        }else{
+                        } else {
                             alert("更新成功!");
                         }
 
-                    }else{
+                    } else {
                         alert(rep.message);
                     }
                 }
             });
-
         });
         $('body').on('click', '.ppl', function () {
             $('.wind-besta').show();
@@ -887,34 +899,45 @@ define(['jquery','pagination','social', 'common'], function (require, exports, m
     })
 
 
-    function getParticipates(type){
-        $('#participateList').data("count",0);
-        if(type==0){
+    function getParticipates(type) {
+        $('#participateList').data("count", 0);
+        if (type == 0) {
             $('.join-cont .sp3 .p2').slideUp();
         }
-        $('.join-cont .p1').html('');
-        Common.getData('/forum/getParticipates.do',{},function(resp){
-            if(resp.code=="200"){
-                if(resp.message.length>0) {
-                    $('#participateList').data("count",1);
-                    $('.join-cont .p1').html('未选择');
+        Common.getData('/forum/getParticipates.do', {}, function (resp) {
+            if (resp.code == "200") {
+                if (resp.message.length > 0) {
+                    $('#participateList').data("count", 1);
+                    if ($('#comment').data('remove') == 0) {
+                        $('.join-cont .p1').html('未选择');
+                    } else if ($('.join-cont .p1').html() == "") {
+                        $('.join-cont .p1').html('未选择');
+                    }
+
+                    if(resp.message.length ==1){
+                        $('.join-cont .p1').html(''+resp.message[0].name);
+                        $('#comment').data('participateId', resp.message[0].id);
+                    }
                     Common.render({
                         tmpl: '#participateListTmpl',
                         data: resp.message,
                         context: '#participateList',
                         overwrite: 1
                     });
-                    for(var i in resp.message){
-                        $('#participateList').data(resp.message[i].id,resp.message[i]);
+                    for (var i in resp.message) {
+                        $('#participateList').data(resp.message[i].id, resp.message[i]);
                     }
-                    if(type==1){
+                    if (type == 1) {
                         $('.join-cont .sp3 .p2').slideToggle();
                     }
 
                     // $('.join-cont .sp3 .p1').removeClass('bord');
-                }else{
+                } else {
+                    $('.join-cont .p1').html('');
                     $('.join-cont .sp3 .p2').slideUp();
                     $('#participateList').empty();
+                    $('.wind-join .btn1').html('保存并发表');
+                    $('.wind-join .btn-cancel').html('跳过填写,并发表');
                 }
             }
         });
@@ -1396,10 +1419,10 @@ define(['jquery','pagination','social', 'common'], function (require, exports, m
                         if ($("#" + data.message).length > 0) {
                             $("html,body").animate({scrollTop: $("#" + data.message).offset().top - offset}, 1000);
                         } else {
-                            if(inSet == 1 || (inSet == -1 && cate == 1) ) {
-                                location.href = '/forum/floorPosition.do?floor=' + t + '&postId=' + $('#postId').val() +'&pageSize=15';
-                            }else{
-                                location.href = '/forum/floorPosition.do?floor=' + t + '&postId=' + $('#postId').val() +'&pageSize=8';
+                            if (inSet == 1 || (inSet == -1 && cate == 1)) {
+                                location.href = '/forum/floorPosition.do?floor=' + t + '&postId=' + $('#postId').val() + '&pageSize=15';
+                            } else {
+                                location.href = '/forum/floorPosition.do?floor=' + t + '&postId=' + $('#postId').val() + '&pageSize=8';
                             }
                         }
                     },

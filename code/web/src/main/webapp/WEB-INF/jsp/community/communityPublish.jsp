@@ -42,12 +42,14 @@
                 <p class="p1">复兰社区</p>
                 <p class="p4">
                     <c:if test="${top==0}">
-                    <em class="em1" id="cancel"><img src="/static/images/community/shequ_em1.png">取消置顶</em>
-                    <em class="em2" id="top" style="display: none"><img src="/static/images/community/shequ_em2.png">置顶社区</em>
+                        <em class="em1" id="cancel"><img src="/static/images/community/shequ_em1.png">取消置顶</em>
+                        <em class="em2" id="top" style="display: none"><img
+                                src="/static/images/community/shequ_em2.png">置顶社区</em>
                     </c:if>
                     <c:if test="${top==1}">
-                    <em class="em1" id="cancel" style="display: none"><img src="/static/images/community/shequ_em1.png">取消置顶</em>
-                    <em class="em2" id="top"><img src="/static/images/community/shequ_em2.png">置顶社区</em>
+                        <em class="em1" id="cancel" style="display: none"><img
+                                src="/static/images/community/shequ_em1.png">取消置顶</em>
+                        <em class="em2" id="top"><img src="/static/images/community/shequ_em2.png">置顶社区</em>
                     </c:if>
                     <em class="em2 btn-yq"><img src="/static/images/community/shequ_em3.png">邀请玩伴</em>
                     <em class="em-com-er em4"><img src="/static/images/community/shequ_em4.png">社区二维码</em>
@@ -60,53 +62,53 @@
             <div class="publish-cont" <c:if test="${login==false}">style="display: none"</c:if>>
                 <ul class="publish-nav">
                     <c:if test="${operation!=1}">
-                    <li class="li3" type="3" class="green">
-                        <span class="sp1" class="disn"></span>
-                        <span class="sp2" class="disb"></span>
-                        火热分享
-                    </li>
-                    <li class="li4" type="4">
-                        <span class="sp1"></span>
-                        <span class="sp2"></span>
-                        学习资料
-                    </li>
-                   </c:if>
-                   <c:if test="${operation==1}">
-                    <li class="li1" type="1" class="green">
-                        <span class="sp1" class="disn"></span>
-                        <span class="sp2" class="disb"></span>
-                        发通知
-                    </li>
-                    <li class="li2" type="2">
-                        <span class="sp1"></span>
-                        <span class="sp2"></span>
-                        组织活动报名
-                    </li>
-                    <li class="li3" type="3">
-                        <span class="sp1"></span>
-                        <span class="sp2"></span>
-                        火热分享
-                    </li>
-                    <li class="li4" type="4">
-                        <span class="sp1"></span>
-                        <span class="sp2"></span>
-                        学习资料
-                    </li>
-                    <li class="li5" type="5">
-                        <span class="sp1"></span>
-                        <span class="sp2"></span>
-                        布置作业
-                    </li>
-                   <li class="li6" type="6">
-                       <span class="sp1"></span>
-                       <span class="sp2"></span>
-                       发布学习用品需求
-                   </li>
-                   <li class="li7" type="7">
-                       <span class="sp1"></span>
-                       <span class="sp2"></span>
-                       投票
-                   </li>
+                        <li class="li3" type="3" class="green">
+                            <span class="sp1" class="disn"></span>
+                            <span class="sp2" class="disb"></span>
+                            火热分享
+                        </li>
+                        <li class="li4" type="4">
+                            <span class="sp1"></span>
+                            <span class="sp2"></span>
+                            学习资料
+                        </li>
+                    </c:if>
+                    <c:if test="${operation==1}">
+                        <li class="li1" type="1" class="green">
+                            <span class="sp1" class="disn"></span>
+                            <span class="sp2" class="disb"></span>
+                            发通知
+                        </li>
+                        <li class="li2" type="2">
+                            <span class="sp1"></span>
+                            <span class="sp2"></span>
+                            组织活动报名
+                        </li>
+                        <li class="li3" type="3">
+                            <span class="sp1"></span>
+                            <span class="sp2"></span>
+                            火热分享
+                        </li>
+                        <li class="li4" type="4">
+                            <span class="sp1"></span>
+                            <span class="sp2"></span>
+                            学习资料
+                        </li>
+                        <li class="li5" type="5">
+                            <span class="sp1"></span>
+                            <span class="sp2"></span>
+                            布置作业
+                        </li>
+                        <li class="li6" type="6">
+                            <span class="sp1"></span>
+                            <span class="sp2"></span>
+                            发布学习用品需求
+                        </li>
+                        <li class="li7" type="7">
+                            <span class="sp1"></span>
+                            <span class="sp2"></span>
+                            投票
+                        </li>
                     </c:if>
                 </ul>
                 <div class="publish-putin">
@@ -231,7 +233,9 @@
                                         <option>匿名</option>
                                     </select>
                                 </li>
-                                <li class="li4"><button>发起</button></li>
+                                <li class="li4">
+                                    <button>发起</button>
+                                </li>
                             </ul>
                         </div>
                     </div>
@@ -288,6 +292,28 @@
                     <button id="submit">发布</button>
                 </div>
             </div>
+
+            <div class="com-left-s" >
+                <div class="com-tit"  style="cursor: pointer">投票 <span class="i-newtips">7</span></div>
+                <div class="notice-container clearfix">
+                    <div class="notice-holder"><img src="http://7xiclj.com1.z0.glb.clouddn.com/head-0.47150365147468287.jpg">
+                        <p>凯特老师</p>
+                        <p class="p1">副社长</p></div>
+                    <div class="notice-cont">
+                        <p class="p-tp p1"  onclick="">投票</p>
+                        <p class="p-votit">
+                            <a>阿森纳2-0伯恩茅斯全场最佳评选</a>阿森纳客场2-0伯恩茅斯，谁是你心中的最佳球员，快来为他投上一票！
+                        </p>
+                        <p class="p-vocont">
+                            <span class="sp-bg"></span>
+                            <span class="sp1">阿森纳2-0伯恩茅斯全场最佳评选</span>
+                            <span class="sp1">参与人数：10</span>
+                            <span class="sp-btn">点击投票</span>
+                        </p>
+                        <p class="p-infor"><span>消息来源：复兰社区</span> <span>发表时间：2016-12-28 17:19:48</span></p></div>
+                </div>
+            </div>
+
             <div class="com-left-s" id="announcement">
             </div>
 
@@ -308,7 +334,8 @@
         </div>
         <div class="com-right">
             <div class="com-right-s clearfix">
-                <div class="com-tit">当前社区<c:if test="${login == true}"><a href="/community/manageCurrentCommunity.do?communityId=${communityId}"><span
+                <div class="com-tit">当前社区<c:if test="${login == true}"><a
+                        href="/community/manageCurrentCommunity.do?communityId=${communityId}"><span
                         class="com-set-my-btn1"></span></a></c:if></div>
                 <div class="com-now">
                     <img src="/static/images/community/result.png" width="60px" height="60px">
@@ -798,30 +825,30 @@
                 var url = response.result.message[0].path;
                 var fileName = response.result.message[0].fileName;
                 var image;
-                var imageUrl ="/static/images/community/";
-                if(fileName.indexOf(".doc")>-1||fileName.indexOf(".docx")>-1){
-                    image="img1";
-                    imageUrl=imageUrl+"c_img1.png";
-                }else  if(fileName.indexOf(".ppt")>-1){
-                    image="img2";
-                    imageUrl=imageUrl+"c_img2.png";
-                }else  if(fileName.indexOf(".xls")>-1||fileName.indexOf(".xlsx")>-1){
-                    image="img3";
-                    imageUrl=imageUrl+"c_img3.png";
-                }else  if(fileName.indexOf(".jpg")>-1||fileName.indexOf(".png")>-1||fileName.indexOf(".gif")>-1){
-                    image="img4";
-                    imageUrl=imageUrl+"c_img4.png";
-                }else  if(fileName.indexOf(".zip")>-1){
-                    image="img6";
-                    imageUrl=imageUrl+"c_img6.png";
-                }else  if(fileName.indexOf(".avi")>-1||fileName.indexOf(".mp4")>-1||fileName.indexOf(".wav")>-1){
-                    image="img7";
-                    imageUrl=imageUrl+"c_img7.png";
-                }else{
-                    image="img5";
-                    imageUrl=imageUrl+"c_img5.png";
+                var imageUrl = "/static/images/community/";
+                if (fileName.indexOf(".doc") > -1 || fileName.indexOf(".docx") > -1) {
+                    image = "img1";
+                    imageUrl = imageUrl + "c_img1.png";
+                } else if (fileName.indexOf(".ppt") > -1) {
+                    image = "img2";
+                    imageUrl = imageUrl + "c_img2.png";
+                } else if (fileName.indexOf(".xls") > -1 || fileName.indexOf(".xlsx") > -1) {
+                    image = "img3";
+                    imageUrl = imageUrl + "c_img3.png";
+                } else if (fileName.indexOf(".jpg") > -1 || fileName.indexOf(".png") > -1 || fileName.indexOf(".gif") > -1) {
+                    image = "img4";
+                    imageUrl = imageUrl + "c_img4.png";
+                } else if (fileName.indexOf(".zip") > -1) {
+                    image = "img6";
+                    imageUrl = imageUrl + "c_img6.png";
+                } else if (fileName.indexOf(".avi") > -1 || fileName.indexOf(".mp4") > -1 || fileName.indexOf(".wav") > -1) {
+                    image = "img7";
+                    imageUrl = imageUrl + "c_img7.png";
+                } else {
+                    image = "img5";
+                    imageUrl = imageUrl + "c_img5.png";
                 }
-                var str = "<p class=\"p-doc\" url=\"" + url + "\"" + ">" +"<img class=\""+image+"\" src=\""+imageUrl+"\" >"+
+                var str = "<p class=\"p-doc\" url=\"" + url + "\"" + ">" + "<img class=\"" + image + "\" src=\"" + imageUrl + "\" >" +
                         "<span>" + fileName + "</span><em></em></p>";
                 $('.pub-fj-doc').append(str);
             } else {

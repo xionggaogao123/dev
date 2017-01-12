@@ -164,7 +164,7 @@ define(['jquery', 'pagination', 'common'], function (require, exports, module) {
             var code = $('#code').val();
 
             if(registerType === 'phone') {
-                registerUser(code,email,password,phone,'',nickName);
+                registerUser(code,phone,password,phone,'',nickName);
             } else {
                 registerUser('',email,password,'',email,nickName);
             }

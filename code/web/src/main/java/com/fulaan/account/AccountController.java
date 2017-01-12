@@ -627,6 +627,13 @@ public class AccountController extends BaseController {
         return RespObj.SUCCESS;
     }
 
+    /**
+     * 验证手机号
+     * @param phone
+     * @param code
+     * @param cacheKeyId
+     * @return
+     */
     @RequestMapping("/validatePhone")
     @SessionNeedless
     @ResponseBody

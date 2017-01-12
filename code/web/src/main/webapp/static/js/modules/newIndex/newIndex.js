@@ -214,8 +214,8 @@ define(['jquery', 'pagination', 'common'], function (require, exports, module) {
                 var materials = resp.message.materials;
                 loadAnnouncement(announcement);
                 loadHomework(homework);
-                loadActivity(activity);
                 loadShare(share);
+                loadActivity(activity);
                 loadMaterials(materials);
                 loadMeans(means);
             }else{

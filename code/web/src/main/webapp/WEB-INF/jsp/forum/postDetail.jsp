@@ -320,34 +320,39 @@
 
     $(function () {
         $('#comment').click(function () {
-            var count = $('#participateList').data("count");
-            if (count == 0) {
-                if(validate()){
-                    $('.wind-join').fadeIn();
-                    $('.bg').fadeIn();
-                    $('.wind-join .btn1').hide();
-                    $('.wind-join .btn2').hide();
-                    $('.wind-join .btn3').show();
-                    $('.wind-join .btn4').show();
-                }else{
-                    $('#title').show();
-                }
-            } else {
-                if ($('.join-cont .p1').hasClass('bord')) {
-                    goToPost("");
-                } else {
-                    if (undefined != $('#comment').data('participateId') &&
-                            null != $('#comment').data('participateId') &&
-                            "" != $('#comment').data('participateId')) {
-                        $('.join-cont .sp4').hide();
-                        goToPost($('#comment').data('participateId'));
-                    } else {
-                        $('.join-cont .p1').addClass('bord');
-                        $('.join-cont .sp4').show();
+            if($('#InSet').val()==1){
+                var count = $('#participateList').data("count");
+                if (count == 0) {
+                    if(validate()){
+                        $('.wind-join').fadeIn();
+                        $('.bg').fadeIn();
+                        $('.wind-join .btn1').hide();
+                        $('.wind-join .btn2').hide();
+                        $('.wind-join .btn3').show();
+                        $('.wind-join .btn4').show();
+                    }else{
+                        $('#title').show();
                     }
-                }
+                } else {
+                    if ($('.join-cont .p1').hasClass('bord')) {
+                        goToPost("");
+                    } else {
+                        if (undefined != $('#comment').data('participateId') &&
+                                null != $('#comment').data('participateId') &&
+                                "" != $('#comment').data('participateId')) {
+                            $('.join-cont .sp4').hide();
+                            goToPost($('#comment').data('participateId'));
+                        } else {
+                            $('.join-cont .p1').addClass('bord');
+                            $('.join-cont .sp4').show();
+                        }
+                    }
 
+                }
+            }else{
+                goToPost("");
             }
+
         });
 
         $('body').on('click', '.wind-join .btn-cancel', function () {
@@ -432,7 +437,6 @@
                 age: $age.val(),
                 school: $school.val()
             };
-            $('#dataLoad').show();
             $.ajax({
                 type: "GET",
                 data: param,
@@ -441,8 +445,8 @@
                 dataType: "json",
                 contentType: "application/x-www-form-urlencoded; charset=UTF-8",
                 success: function (rep) {
-                    $('#dataLoad').hide();
                     if (rep.code == "200") {
+                        $('#dataLoad').show();
                         goToPost(rep.message);
                     } else {
                         alert(rep.message);

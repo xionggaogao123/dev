@@ -60,6 +60,8 @@
             </div>
             <div class="com-left-s" id="homework">
             </div>
+            <div class="com-left-s" id="share">
+            </div>
             <script type="text/template" id="activityTmpl">
                 <div class="com-tit" id="activity_all">组织活动报名</div>
                 {{~it:value:index}}
@@ -147,8 +149,6 @@
                 </div>
                 {{~}}
             </script>
-            <div class="com-left-s" id="share">
-            </div>
             <script type="text/template" id="homeworkTmpl">
                 <div class="com-tit" id="homework_all">作业</div>
                 {{~it:value:index}}

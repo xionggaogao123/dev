@@ -933,6 +933,8 @@ define(['jquery', 'pagination', 'social', 'common'], function (require, exports,
 
                     // $('.join-cont .sp3 .p1').removeClass('bord');
                 } else {
+                    $('.join-cont .sp3 .p1').removeClass('bord');
+                    $('.join-cont .sp4').hide();
                     $('.join-cont .p1').html('');
                     $('.join-cont .sp3 .p2').slideUp();
                     $('#participateList').empty();

@@ -808,9 +808,9 @@ define(['jquery', 'pagination', 'social', 'common'], function (require, exports,
                 $name.next('.nameClass').show();
                 return;
             } else {
-                if ($name.val().length > 10) {
+                if ($name.val().length > 5) {
                     $name.css("border", "1px solid #f00");
-                    $name.next('.nameClass').html('姓名长度不要超过10个字');
+                    $name.next('.nameClass').html('姓名长度不要超过5个字');
                     $name.next('.nameClass').show();
                 }
             }
@@ -910,10 +910,10 @@ define(['jquery', 'pagination', 'social', 'common'], function (require, exports,
                 if (resp.message.length > 0) {
                     $('#participateList').data("count", 1);
                     if ($('#comment').data('remove') == 0) {
-                        $('.join-cont .p1').html('未选择');
+                        $('.join-cont .p1').html('请选择');
                         $('#comment').removeData('remove');
                     } else if ($('.join-cont .p1').html() == "") {
-                        $('.join-cont .p1').html('未选择');
+                        $('.join-cont .p1').html('请选择');
                     }
 
                     if(resp.message.length ==1){

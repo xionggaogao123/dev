@@ -12,6 +12,9 @@ define(['jquery', 'pagination', 'common'], function (require, exports, module) {
 
     var registerType = 'phone';
 
+    var timer = '';
+    var isClick = false;
+
     register.init = function () {
 
     };
@@ -67,11 +70,14 @@ define(['jquery', 'pagination', 'common'], function (require, exports, module) {
         });
 
         $('.sendYZM').click(function () {
-            if (validatePhone && validateImageYZM) {
-                $(this).parent().find('.sp3').hide();
-                sendVerifyCode($('#phone').val(), $('#verifyCode').val());
-            } else {
-                $(this).parent().find('.sp3').show();
+            if(!isClick) {
+                isClick = true;
+                if (validatePhone && validateImageYZM) {
+                    $(this).parent().find('.sp3').hide();
+                    sendVerifyCode($('#phone').val(), $('#verifyCode').val());
+                } else {
+                    $(this).parent().find('.sp3').show();
+                }
             }
         });
 
@@ -88,7 +94,7 @@ define(['jquery', 'pagination', 'common'], function (require, exports, module) {
             if (validatePhone && validateCode) {
                 var code = $.trim($('#code').val());
                 var phone = $.trim($('#phone').val());
-                validate_phone(phone,code);
+                validate_phone(phone, code);
             } else {
                 $(this).parent().find('.sp3').text('输入不完整');
                 $(this).parent().find('.sp3').show();
@@ -98,11 +104,11 @@ define(['jquery', 'pagination', 'common'], function (require, exports, module) {
         $('.ul2 button').click(function () {
             var email = $('#user-email').val();
             var pattern = /^([a-zA-Z0-9._-])+@([a-zA-Z0-9_-])+(.[a-zA-Z0-9_-])+/;
-            if(pattern.test(email)) {
+            if (pattern.test(email)) {
                 var requestParm = {email: email};
-                common.getData('/account/userEmailCheck.do',requestParm,function (resp) {
-                    if(resp.code === '200') {
-                        if(resp.message) {
+                common.getData('/account/userEmailCheck.do', requestParm, function (resp) {
+                    if (resp.code === '200') {
+                        if (resp.message) {
                             $('#email-alert').text('邮箱已经被注册了');
                             $('#email-alert').show();
                         } else {
@@ -125,7 +131,7 @@ define(['jquery', 'pagination', 'common'], function (require, exports, module) {
         $('.ul3 #nick').blur(function () {
             var nick = $(this).val();
             var pattern = /[a-zA-Z0-9_\u4e00-\u9fa5]{3,20}$/;
-            if(!pattern.test(nick)) {
+            if (!pattern.test(nick)) {
                 $('#nick-alert').text('昵称不符合规范');
                 $('#nick-alert').show();
             } else {
@@ -136,7 +142,7 @@ define(['jquery', 'pagination', 'common'], function (require, exports, module) {
         $('.ul3 #password').blur(function () {
             var password = $(this).val();
             var pattern = /[a-zA-Z0-9!@#*\^$%()-+=_&]{6,20}$/;
-            if(!pattern.test(password)) {
+            if (!pattern.test(password)) {
                 $('#password-alert').text('密码不符合规范');
                 $('#password-alert').show();
             } else {
@@ -147,7 +153,7 @@ define(['jquery', 'pagination', 'common'], function (require, exports, module) {
         $('.ul3 #re-password').blur(function () {
             var password = $('#password').val();
             var rePassword = $('#re-password').val();
-            if(password === rePassword) {
+            if (password === rePassword) {
 
             } else {
                 $('#re-password-alert').text('两次密码不一致');
@@ -163,10 +169,10 @@ define(['jquery', 'pagination', 'common'], function (require, exports, module) {
             var phone = $('#phone').val();
             var code = $('#code').val();
 
-            if(registerType === 'phone') {
-                registerUser(code,phone,password,phone,'',nickName);
+            if (registerType === 'phone') {
+                registerUser(code, phone, password, phone, '', nickName);
             } else {
-                registerUser('',email,password,'',email,nickName);
+                registerUser('', email, password, '', email, nickName);
             }
 
         });
@@ -186,6 +192,26 @@ define(['jquery', 'pagination', 'common'], function (require, exports, module) {
             if (resp.code == '200') {
                 cacheKeyId = resp.cacheKeyId;
                 validateCode = true;
+
+                $('.sendYZM').css({
+                    "background-color": '#B5B5B5'
+                });
+                $('.sendYZM').text('60');
+                var number = 59;
+                timer = window.setInterval(function () {
+                    if (number === 0) {
+                        clearInterval(timer);
+                        $('.sendYZM').css({
+                            "background-color": '#FF9F19'
+                        });
+                        $('.sendYZM').text('发送验证码');
+                        isClick = false;
+                    } else {
+                        $('.sendYZM').text(number--);
+                    }
+                }, 1000);
+
+
             } else {
                 alert(resp.message);
                 validateCode = false;
@@ -200,7 +226,7 @@ define(['jquery', 'pagination', 'common'], function (require, exports, module) {
             cacheKeyId: cacheKeyId
         }, function (resp) {
             alert(JSON.stringify(resp));
-            if(resp.code === '200') {
+            if (resp.code === '200') {
                 $('.re-cont .ul1').hide();
                 $('.re-cont .ul2').hide();
                 $('.re-cont .ul3').show();
@@ -211,7 +237,7 @@ define(['jquery', 'pagination', 'common'], function (require, exports, module) {
 
     var isRegister = false;
 
-    function registerUser(code, userName, password, phone, email,nickName) {
+    function registerUser(code, userName, password, phone, email, nickName) {
         var requestData = {};
         requestData.cacheKeyId = cacheKeyId;
         requestData.code = code;

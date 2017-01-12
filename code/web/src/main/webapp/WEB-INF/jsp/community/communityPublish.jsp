@@ -104,7 +104,7 @@
                             <span class="sp2"></span>
                             发布学习用品需求
                         </li>
-                        <li class="li7" type="7">
+                        <li class="li7" type="7" style="display: none">
                             <span class="sp1"></span>
                             <span class="sp2"></span>
                             投票
@@ -114,7 +114,7 @@
                 <div class="publish-putin">
                     <input type="text" placeholder="请输入大标题" id="title">
                     <textarea placeholder="请输入内容" id="content"></textarea>
-                    <div class="vote-cont" style="display: none">
+                    <div class="vote-cont" >
                         <button>设置投票选项</button>
                         <span class="downT"></span>
                         <div class="div2">
@@ -293,7 +293,7 @@
                 </div>
             </div>
 
-            <div class="com-left-s" >
+            <div class="com-left-s" style="display: none;">
                 <div class="com-tit"  style="cursor: pointer">投票 <span class="i-newtips">7</span></div>
                 <div class="notice-container clearfix">
                     <div class="notice-holder"><img src="http://7xiclj.com1.z0.glb.clouddn.com/head-0.47150365147468287.jpg">

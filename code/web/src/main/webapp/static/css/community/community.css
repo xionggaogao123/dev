@@ -2054,10 +2054,12 @@ pre{white-space: pre-wrap;word-wrap: break-word;}
     color: #21CE77;
 }
 .vote-cont{
+    display: none !important;
     position: relative;
     height: 30px;
     margin-bottom: 10px;
 }
+.vote-detail{display: none}
 .vote-cont>button{
     padding:0 10px;
     background: #FF8140;

@@ -206,6 +206,7 @@
                     </p>
                 </div>
                 <div class="sp4" style="display: none">有没有要选择的参赛者</div>
+                <div class="sp5">*此信息仅用作官方联系参赛者使用，不对外公开。</div>
             </div>
             <span id="title" style="display: none">回复的帖子不能为空，请重新回复！</span><br/>
             <button class="btn-hf" id="comment">发表回复</button>

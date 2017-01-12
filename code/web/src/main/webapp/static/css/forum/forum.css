@@ -7154,6 +7154,13 @@ pre {
     color:#D53053;
     margin-left: 12px;
 }
+
+.join-cont .sp5{
+    float: right;
+    width: 270px;
+    font-size: 0.25px;
+    margin-left: 20px;
+}
 #dataLoad{
     position: fixed;
     top: 50%;

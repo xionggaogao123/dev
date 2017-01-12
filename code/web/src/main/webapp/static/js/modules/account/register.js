@@ -192,7 +192,6 @@ define(['jquery', 'pagination', 'common'], function (require, exports, module) {
             if (resp.code == '200') {
                 cacheKeyId = resp.cacheKeyId;
                 validateCode = true;
-
                 $('.sendYZM').css({
                     "background-color": '#B5B5B5'
                 });
@@ -210,8 +209,6 @@ define(['jquery', 'pagination', 'common'], function (require, exports, module) {
                         $('.sendYZM').text(number--);
                     }
                 }, 1000);
-
-
             } else {
                 alert(resp.message);
                 validateCode = false;

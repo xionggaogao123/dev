@@ -238,10 +238,10 @@ public class AccountController extends BaseController {
     /**
      * 验证用户名与验证码
      */
-    @RequestMapping("/verifyCodeWithName")
+    @RequestMapping("/verifyAccount")
     @SessionNeedless
     @ResponseBody
-    public RespObj verifyCodeWithName(String name, String verifyCode, @CookieValue(Constant.COOKIE_VALIDATE_CODE) String verifyKey, HttpServletResponse response) {
+    public RespObj verifyAccount(String name, String verifyCode, @CookieValue(Constant.COOKIE_VALIDATE_CODE) String verifyKey) {
         Map<String, Object> result = new HashMap<String, Object>();
         if (!accountService.checkVerifyCode(verifyCode, verifyKey)) {
             return RespObj.FAILD("验证码不正确");
@@ -251,26 +251,18 @@ public class AccountController extends BaseController {
             if (userService.findByUserName(name) == null) {
                 return RespObj.FAILDWithErrorMsg("账号不存在");
             }
-            ObjectId key = new ObjectId();
-            String cacheKey = CacheHandler.getKeyString(CacheHandler.CACHE_FW_USERNAME_KEY, key.toString());
-            CacheHandler.cache(cacheKey, name, Constant.SESSION_FIVE_MINUTE);//5分钟
-            response.addCookie(new Cookie(Constant.FWCODE, key.toString()));
-
             result.put("type", "userName");
             result.put("userName", name);
         }
         Pattern emailPattern = Pattern.compile(Validator.REGEX_EMAIL);
         if (emailPattern.matcher(name).matches()) {
-            if (userService.findByEmail(name) == null) {
+            UserEntry e = userService.findByEmail(name);
+            if (e == null) {
                 return RespObj.FAILDWithErrorMsg("账号不存在");
             }
-            ObjectId key = new ObjectId();
-            String cacheKey = CacheHandler.getKeyString(CacheHandler.CACHE_FW_USERNAME_KEY, key.toString());
-            CacheHandler.cache(cacheKey, name, Constant.SESSION_FIVE_MINUTE);//5分钟
-            response.addCookie(new Cookie(Constant.FWCODE, key.toString()));
-
             result.put("type", "email");
             result.put("email", name);
+            result.put("userName", e.getUserName());
         }
 
         Pattern mobilePattern = Pattern.compile(Validator.REGEX_MOBILE);
@@ -346,40 +338,12 @@ public class AccountController extends BaseController {
     @SessionNeedless
     @RequestMapping("/phoneValidate")
     @ResponseBody
-    public RespObj phoneValidate(String phone, String code, String cacheKeyId, @CookieValue(Constant.FWCODE) String fwCode,
-                                 HttpServletResponse response) {
-        String fwUser = CacheHandler.getStringValue(CacheHandler.getKeyString(CacheHandler.CACHE_FW_USERNAME_KEY, fwCode));
-        if (fwUser == null) {
-            return RespObj.FAILD(new VerifyData(false, "时间失效或不存在"));
+    public RespObj phoneValidate(String phone, String code, String cacheKeyId) {
+        Validate validate = userService.validatePhoneNumber(phone, code, cacheKeyId);
+        if (!validate.isOk()) {
+            return RespObj.FAILDWithErrorMsg(validate.getMessage());
         }
-        UserDTO userDTO = userService.findByRegular(fwUser);
-        if (userDTO == null) {
-            return RespObj.FAILD(new VerifyData(false, "用户不存在"));
-        }
-        if (!phone.equals(userDTO.getPhone())) {
-            return RespObj.FAILD("用户未绑定此手机号");
-        }
-
-        String cacheKey = CacheHandler.getKeyString(CacheHandler.CACHE_SHORTMESSAGE, cacheKeyId);
-        String value = CacheHandler.getStringValue(cacheKey);
-        if (StringUtils.isBlank(value)) {
-            return RespObj.FAILD("验证码失效，请重新获取");
-        }
-        String[] cache = value.split(",");
-        if (!cache[1].equals(phone)) {
-            return RespObj.FAILD("注册失败：手机号码与验证码不匹配");
-        }
-
-        if (cache[0].equals(code)) {
-            ObjectId keyId = new ObjectId();
-            String resetCacheKey = CacheHandler.getKeyString(CacheHandler.CACHE_FW_RESET_PASSWORD, keyId.toString());
-            CacheHandler.cache(resetCacheKey, userDTO.getUserName(), Constant.SESSION_FIVE_MINUTE);
-            response.addCookie(new Cookie(Constant.FW_RESET_PASSWORD_CODE, keyId.toString()));
-            CacheHandler.deleteKey(CacheHandler.CACHE_SHORTMESSAGE, cacheKeyId);
-            return RespObj.SUCCESS("验证成功");
-        } else {
-            return RespObj.FAILD("短信验证码输入错误");
-        }
+        return RespObj.SUCCESS("验证成功");
     }
 
     /**
@@ -387,13 +351,7 @@ public class AccountController extends BaseController {
      */
     @SessionNeedless
     @RequestMapping("/emailValidate")
-    public ModelAndView emailValidate(String validateCode, HttpServletResponse response) throws Exception {
-        String cacheKey = CacheHandler.getKeyString(CacheHandler.CACHE_FW_VALIDATE_EMAIL, validateCode);
-        String userName = CacheHandler.getStringValue(cacheKey);
-        if (userName == null) {
-            throw new UnLoginException();
-        }
-
+    public ModelAndView emailValidate(String userName, String validateCode, HttpServletResponse response) throws Exception {
         CacheHandler.deleteKey(CacheHandler.CACHE_FW_VALIDATE_EMAIL, validateCode);
         ObjectId key = new ObjectId();
         String resetPassKey = CacheHandler.getKeyString(CacheHandler.CACHE_FW_RESET_PASSWORD, key.toString());
@@ -408,18 +366,16 @@ public class AccountController extends BaseController {
     @SessionNeedless
     @RequestMapping("/resetPassword")
     @ResponseBody
-    public RespObj resetPassword(String password, @CookieValue(Constant.FW_RESET_PASSWORD_CODE) String resetCode) {
-        String cacheKey = CacheHandler.getKeyString(CacheHandler.CACHE_FW_RESET_PASSWORD, resetCode);
-        String userName = CacheHandler.getStringValue(cacheKey);
-        if (userName == null) {
-            return RespObj.FAILD("时间失效或不合法");
+    public RespObj resetPassword(String userName, String phone, String code, String cacheKeyId, String password) {
+        Validate validate = userService.validatePhoneNumber(phone, code, cacheKeyId);
+        if (!validate.isOk()) {
+            return RespObj.FAILDWithErrorMsg(validate.getMessage());
         }
         UserEntry userEntry = userService.findByUserName(userName);
         if (userEntry == null) {
-            return RespObj.FAILD("用户不存在");
+            return RespObj.FAILDWithErrorMsg("用户不存在");
         }
         userService.resetPassword(userEntry.getID(), MD5Utils.getMD5String(password));
-        CacheHandler.deleteKey(CacheHandler.CACHE_FW_RESET_PASSWORD, resetCode);
         return RespObj.SUCCESS("重置密码成功");
     }
 
@@ -629,6 +585,7 @@ public class AccountController extends BaseController {
 
     /**
      * 验证手机号
+     *
      * @param phone
      * @param code
      * @param cacheKeyId

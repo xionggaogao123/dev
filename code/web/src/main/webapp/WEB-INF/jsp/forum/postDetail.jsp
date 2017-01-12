@@ -323,15 +323,21 @@
             if($('#InSet').val()==1){
                 var count = $('#participateList').data("count");
                 if (count == 0) {
-                    if(validate()){
-                        $('.wind-join').fadeIn();
-                        $('.bg').fadeIn();
-                        $('.wind-join .btn1').hide();
-                        $('.wind-join .btn2').hide();
-                        $('.wind-join .btn3').show();
-                        $('.wind-join .btn4').show();
+                    var login=${login};
+                    if(login) {
+                        if (validate()) {
+                            $('.wind-join').fadeIn();
+                            $('.bg').fadeIn();
+                            $('.wind-join .btn1').hide();
+                            $('.wind-join .btn2').hide();
+                            $('.wind-join .btn3').show();
+                            $('.wind-join .btn4').show();
+                        } else {
+                            $('#title').show();
+                        }
                     }else{
-                        $('#title').show();
+                        $('.store-register').fadeToggle();
+                        $('.bg').fadeToggle();
                     }
                 } else {
                     if ($('.join-cont .p1').hasClass('bord')) {
@@ -382,15 +388,15 @@
             var $sex = $("[name='sex']:checked");
             var $school = $('#participateSchool');
 
-            if ($name.val() == "") {
+            if ($.trim($name.val()) == "") {
                 $name.css("border", "1px solid #f00");
                 $name.next('.nameClass').html('姓名不能为空');
                 $name.next('.nameClass').show();
                 return;
             } else {
-                if ($name.val().length > 10) {
+                if ($name.val().length > 5) {
                     $name.css("border", "1px solid #f00");
-                    $name.next('.nameClass').html('姓名长度不要超过10个字');
+                    $name.next('.nameClass').html('姓名长度不要超过5个字');
                     $name.next('.nameClass').show();
                 }
             }
@@ -408,7 +414,7 @@
                     }
                 }
             }
-            if ($relation.val() == "") {
+            if ($.trim($relation.val()) == "") {
 //                $name.css("border","1px solid #E6E6E6");
                 $relation.css("border", "1px solid #f00");
                 $relation.next('.relationRegular').html("联系方式不能为空");
@@ -456,7 +462,7 @@
         });
 
         $('body').on('blur', '#participateName', function () {
-            if ($('#participateName').val() != "") {
+            if ($.trim($('#participateName').val()) != "") {
                 $('#participateName').css("border", "1px solid #E6E6E6");
                 $('#participateName').next('.nameClass').hide();
                 if ($('#participateName').val().length > 10) {
@@ -470,7 +476,7 @@
         });
 
         $('body').on('blur', '#participateRelation', function () {
-            if ($('#participateRelation').val() != "") {
+            if ($.trim($('#participateRelation').val())!= "") {
                 var phonePattern = /(^(([0+]\d{2,3}-)?(0\d{2,3})-)(\d{7,8})(-(\d{3,}))?$)|(^0{0,1}1[3|4|5|6|7|8|9][0-9]{9}$)/;
                 var emailPattern = /^([a-zA-Z0-9._-])+@([a-zA-Z0-9_-])+(.[a-zA-Z0-9_-])+/;
                 if (phonePattern.test($('#participateRelation').val()) || emailPattern.test($('#participateRelation').val())) {
@@ -507,7 +513,6 @@
             if ($('.join-cont .p1').hasClass('bord')) {
                 $('.join-cont .p1').removeClass('bord');
             }
-            e.stopPropagation();
         })
 
         $('body').on('click', '.join-cont .sp1', function () {

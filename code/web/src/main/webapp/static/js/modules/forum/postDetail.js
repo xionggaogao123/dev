@@ -213,6 +213,7 @@ define(['jquery', 'pagination', 'social', 'common'], function (require, exports,
         $('body').on('click', '.join-cont .sp3 .p2 em', function () {
             $('.join-cont .sp3 .p2').slideUp();
             $('.join-cont .sp3 .p1').removeClass('bord');
+            $('.join-cont .sp4').hide();
         });
 
         //分享按钮
@@ -801,7 +802,7 @@ define(['jquery', 'pagination', 'social', 'common'], function (require, exports,
             var $sex = $("[name='sex']:checked");
             var $school = $('#participateSchool');
 
-            if ($name.val() == "") {
+            if ($.trim($name.val()) == "") {
                 $name.css("border", "1px solid #f00");
                 $name.next('.nameClass').html('姓名不能为空');
                 $name.next('.nameClass').show();
@@ -827,7 +828,7 @@ define(['jquery', 'pagination', 'social', 'common'], function (require, exports,
                     }
                 }
             }
-            if ($relation.val() == "") {
+            if ($.trim($relation.val()) == "") {
 //                $name.css("border","1px solid #E6E6E6");
                 $relation.css("border", "1px solid #f00");
                 $relation.next('.relationRegular').html("联系方式不能为空");
@@ -910,6 +911,7 @@ define(['jquery', 'pagination', 'social', 'common'], function (require, exports,
                     $('#participateList').data("count", 1);
                     if ($('#comment').data('remove') == 0) {
                         $('.join-cont .p1').html('未选择');
+                        $('#comment').removeData('remove');
                     } else if ($('.join-cont .p1').html() == "") {
                         $('.join-cont .p1').html('未选择');
                     }
@@ -933,6 +935,7 @@ define(['jquery', 'pagination', 'social', 'common'], function (require, exports,
 
                     // $('.join-cont .sp3 .p1').removeClass('bord');
                 } else {
+                    $('#comment').removeData('participateId');
                     $('.join-cont .sp3 .p1').removeClass('bord');
                     $('.join-cont .sp4').hide();
                     $('.join-cont .p1').html('');

@@ -7113,6 +7113,7 @@ pre {
     max-height:95px;
     min-height: 0px;
     overflow:scroll;
+    overflow-x:hidden;
 }
 .join-cont .sp3 .p2 span{
     display: block;

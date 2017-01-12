@@ -44,6 +44,147 @@
                         <div class="act-title">
                             <p class="p1" id="type">${detail.title}</p>
                             <div class="txt-wrap">
+
+                                <div class="vote-detail">
+                                    <h3>多选投票：（最多可选3项），共有<em>3</em>人参与投票</h3>
+                                    <ul class="ul1">
+                                        <li>
+                                            <label><input type="checkbox">1.爱奇艺TV版</label>
+                                        </li>
+                                        <li>
+                                            <label><input type="checkbox">2.爱奇艺TV版</label>
+                                        </li>
+                                        <li>
+                                            <label><input type="checkbox">3.爱奇艺TV版</label>
+                                        </li>
+                                        <li>
+                                            <label><input type="checkbox">4.爱奇艺TV版</label>
+                                        </li>
+                                        <li>
+                                            <label><input type="checkbox">5.爱奇艺TV版</label>
+                                        </li>
+                                        <li>
+                                            <label><input type="checkbox">6.爱奇艺TV版</label>
+                                        </li>
+                                    </ul>
+                                    <div class="vote-btn">
+                                        <button>提交</button>
+                                        <span>投票已经结束</span>
+                                    </div>
+                                    <ul class="ul2">
+                                        <li>
+                                            <div class="p1s">1.爱奇艺TV版</div>
+                                            <div class="p2s">
+                                                <div class="line-f">
+                                                    <span style="width: 10%"></span>
+                                                </div>
+                                                <span>10%<em>(100)</em></span>
+                                            </div>
+                                        </li>
+                                        <li>
+                                            <div class="p1s">2.爱奇艺TV版</div>
+                                            <div class="p2s">
+                                                <div class="line-f">
+                                                    <span style="width: 10%"></span>
+                                                </div>
+                                                <span>10%<em>(100)</em></span>
+                                            </div>
+                                        </li>
+                                        <li>
+                                            <div class="p1s">3.爱奇艺TV版</div>
+                                            <div class="p2s">
+                                                <div class="line-f">
+                                                    <span style="width: 10%"></span>
+                                                </div>
+                                                <span>10%<em>(100)</em></span>
+                                            </div>
+                                        </li>
+                                        <li>
+                                            <div class="p1s">4.爱奇艺TV版</div>
+                                            <div class="p2s">
+                                                <div class="line-f">
+                                                    <span style="width: 10%"></span>
+                                                </div>
+                                                <span>10%<em>(100)</em></span>
+                                            </div>
+                                        </li>
+                                        <li>
+                                            <div class="p1s">5.爱奇艺TV版</div>
+                                            <div class="p2s">
+                                                <div class="line-f">
+                                                    <span style="width: 10%"></span>
+                                                </div>
+                                                <span>10%<em>(100)</em></span>
+                                            </div>
+                                        </li>
+                                        <li>
+                                            <div class="p1s">6.爱奇艺TV版</div>
+                                            <div class="p2s">
+                                                <div class="line-f">
+                                                    <span style="width: 10%"></span>
+                                                </div>
+                                                <span>10%<em>(100)</em></span>
+                                            </div>
+                                        </li>
+                                        <li>
+                                            <div class="p1s">7.爱奇艺TV版</div>
+                                            <div class="p2s">
+                                                <div class="line-f">
+                                                    <span style="width: 10%"></span>
+                                                </div>
+                                                <span>10%<em>(100)</em></span>
+                                            </div>
+                                        </li>
+                                        <li>
+                                            <div class="p1s">8.爱奇艺TV版</div>
+                                            <div class="p2s">
+                                                <div class="line-f">
+                                                    <span style="width: 10%"></span>
+                                                </div>
+                                                <span>10%<em>(100)</em></span>
+                                            </div>
+                                        </li>
+                                        <li>
+                                            <div class="p1s">9.爱奇艺TV版</div>
+                                            <div class="p2s">
+                                                <div class="line-f">
+                                                    <span style="width: 10%"></span>
+                                                </div>
+                                                <span>10%<em>(100)</em></span>
+                                            </div>
+                                        </li>
+                                        <li>
+                                            <div class="p1s">10.爱奇艺TV版</div>
+                                            <div class="p2s">
+                                                <div class="line-f">
+                                                    <span style="width: 10%"></span>
+                                                </div>
+                                                <span>10%<em>(100)</em></span>
+                                            </div>
+                                        </li>
+                                        <li>
+                                            <div class="p1s">11.爱奇艺TV版</div>
+                                            <div class="p2s">
+                                                <div class="line-f">
+                                                    <span style="width: 10%"></span>
+                                                </div>
+                                                <span>10%<em>(100)</em></span>
+                                            </div>
+                                        </li>
+                                        <li>
+                                            <div class="p1s">12.爱奇艺TV版</div>
+                                            <div class="p2s">
+                                                <div class="line-f">
+                                                    <span style="width: 10%"></span>
+                                                </div>
+                                                <span>10%<em>(100)</em></span>
+                                            </div>
+                                        </li>
+                                    </ul>
+                                    <p style="margin:6px 0 0 0;">您已经投过票感谢您的参与</p>
+                                </div>
+
+
                                 <p class="p-wrap" id="detailContent"></p>
                                 <span content="${detail.content}" id="getContent" style="display:none;"></span>
                                 <script type="text/javascript">

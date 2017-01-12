@@ -118,6 +118,14 @@ define(['jquery', 'pagination', 'common'], function (require, exports, module) {
             activity_cur = 2;
             renderActivity();
         });
+        $('body').on('click','.vote-cont > button',function(){
+            $('.vote-cont .downT').slideToggle();
+            $('.vote-cont .div2').slideToggle();
+        });
+        $('body').on('click','.vote-cont > div .p1 em',function(){
+            $('.vote-cont .downT').slideUp();
+            $('.vote-cont .div2').slideUp();
+        });
 
         $('body').on('click', '#my-community-3', function () {
             $('#my-community-1').removeClass('hd-cf-cur2');

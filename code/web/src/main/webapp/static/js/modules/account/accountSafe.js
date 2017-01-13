@@ -270,29 +270,13 @@ define(['jquery', 'pagination', 'common'], function (require, exports, module) {
         });
 
         body.on('blur', '.wind-phone .phone', function () {
-            var self = $(this);
-            var pattern = /(^(([0\+]\d{2,3}-)?(0\d{2,3})-)(\d{7,8})(-(\d{3,}))?$)|(^0{0,1}1[3|4|5|6|7|8|9][0-9]{9}$)/;
+            var pattern = /^1[3|4|5|7|8][0-9]{9}$/;
             var phone = $('#phone').val();
-            var verifyCode = $('#verifyCode').val();
-            var code = $('#code').val();
-            if (pattern.test(self.val())) {
-                common.getData('/account/bindPhoneNumber.do', {
-                    phone: phone,
-                    cacheKeyId: cacheKeyId,
-                    code: code
-                }, function (resp) {
-                    if (resp.code == '200') {
-                        self.parent().find('.phone-tip').hide();
-                        edit_phone_check.phone = true;
-                    } else {
-                        self.parent().find('.phone-tip').text(resp.message);
-                        self.parent().find('.phone-tip').show();
-                        edit_phone_check.phone = false;
-                    }
-                });
+            if (pattern.test(phone)) {
+
             } else {
-                self.parent().find('.phone-tip').text('手机号不合法');
-                self.parent().find('.phone-tip').show();
+                $('.phone-tip').text('手机号不合法');
+                $('.phone-tip').show();
                 edit_phone_check.phone = false;
             }
         });

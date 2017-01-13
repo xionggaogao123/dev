@@ -139,7 +139,7 @@ define(['jquery', 'pagination', 'common'], function (require, exports, module) {
         body.on('click', '.re-btn3', function () {
             if(passwordValid && rePasswordValid) {
                 var password = $('.step3 .password').val();
-                if(verifyType === 'email') {
+                if(verifyType && verifyType === 'email') {
                     resetPasswordByEmail(password);
                 } else {
                     var phone = mobileInit ? mobile : $('#phone').val();

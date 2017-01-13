@@ -242,13 +242,6 @@ public class AccountController extends BaseController {
             return RespObj.FAILDWithErrorMsg("验证码不正确");
         }
 
-        UserEntry userEntry = userService.findByUserName(name);
-        if (userEntry != null) {
-            result.put("type", "userName");
-            result.put("userName", name);
-            return RespObj.SUCCESS(result);
-        }
-
         Pattern emailPattern = Pattern.compile(Validator.REGEX_EMAIL);
         if (emailPattern.matcher(name).matches()) {
             UserEntry e = userService.findByEmail(name);
@@ -274,6 +267,13 @@ public class AccountController extends BaseController {
             result.put("type", "mobile");
             result.put("mobile", name);
             result.put("protectedMobile", getProtectedMobile(name));
+            return RespObj.SUCCESS(result);
+        }
+
+        UserEntry userEntry = userService.findByUserName(name);
+        if (userEntry != null) {
+            result.put("type", "userName");
+            result.put("userName", name);
             return RespObj.SUCCESS(result);
         }
 

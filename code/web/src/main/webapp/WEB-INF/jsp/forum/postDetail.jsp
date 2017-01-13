@@ -327,6 +327,7 @@
                     var login=${login};
                     if(login) {
                         if (validate()) {
+                            $('#title').hide();
                             $('.wind-join').fadeIn();
                             $('.bg').fadeIn();
                             $('.wind-join .btn1').hide();
@@ -405,14 +406,23 @@
 
             if ($age.val() != "") {
                 if (isNaN($age.val())) {
+                    $age.css("border", "1px solid #f00");
                     $('.ageClass').html("填写的年龄必须是数字");
                     $('.ageClass').show();
                     return;
                 } else {
                     if (parseInt($age.val()) <= 0) {
+                        $age.css("border", "1px solid #f00");
                         $('.ageClass').html("填写的年龄不能小于或等于0");
                         $('.ageClass').show();
                         return;
+                    }else{
+                        if($.trim($age.val()).length>3) {
+                            $age.css("border", "1px solid #f00");
+                            $('.ageClass').html("填写的年龄长度不能超过3个字");
+                            $('.ageClass').show();
+                            return;
+                        }
                     }
                 }
             }
@@ -468,10 +478,12 @@
                 $('#participateName').css("border", "1px solid #E6E6E6");
                 $('#participateName').next('.nameClass').hide();
                 if ($('#participateName').val().length > 5) {
+                    $('#participateName').css("border", "1px solid #f00");
                     $('#participateName').next('.nameClass').html('姓名长度不要超过5个字');
                     $('#participateName').next('.nameClass').show();
                 }
             } else {
+                $('#participateName').css("border", "1px solid #f00");
                 $('#participateName').next('.nameClass').html('姓名不能为空');
                 $('#participateName').next('.nameClass').show();
             }
@@ -484,23 +496,36 @@
                 if (phonePattern.test($('#participateRelation').val()) || emailPattern.test($('#participateRelation').val())) {
                     $('#participateRelation').css("border", "1px solid #E6E6E6");
                     $('#participateRelation').next('.relationRegular').hide();
+                }else{
+                    $('#participateRelation').css("border", "1px solid #f00");
+                    $('#participateRelation').next('.relationRegular').show();
                 }
             }
         });
 
         $('body').on('blur', '#participateAge', function () {
             if ($('#participateAge').val() == "") {
+                $('#participateAge').css("border", "1px solid #E6E6E6");
                 $('.ageClass').hide();
             } else {
                 if (isNaN($('#participateAge').val())) {
+                    $('#participateAge').css("border", "1px solid #f00");
                     $('.ageClass').html("填写的年龄必须是数字");
                     $('.ageClass').show();
                 } else {
                     if (parseInt($('#participateAge').val()) <= 0) {
+                        $('#participateAge').css("border", "1px solid #f00");
                         $('.ageClass').html("填写的年龄不能小于或等于0");
                         $('.ageClass').show();
                     } else {
-                        $('.ageClass').hide();
+                        if($.trim($('#participateAge').val()).length>3){
+                            $('#participateAge').css("border", "1px solid #f00");
+                            $('.ageClass').html("填写的年龄长度不能超过3个字");
+                            $('.ageClass').show();
+                        }else {
+                            $('#participateAge').css("border", "1px solid #E6E6E6");
+                            $('.ageClass').hide();
+                        }
                     }
                 }
             }
@@ -562,6 +587,7 @@
         $('#participateName').val('');
         $('#participateRelation').val('');
         $('#participateAge').val('');
+        $('#participateAge').css("border", "1px solid #E6E6E6");
 
     }
     function validate() {

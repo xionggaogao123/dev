@@ -826,6 +826,13 @@ define(['jquery', 'pagination', 'social', 'common'], function (require, exports,
                         $('.ageClass').html("填写的年龄不能小于或等于0");
                         $('.ageClass').show();
                         return;
+                    }else{
+                        if($.trim($age.val()).length>3) {
+                            $age.css("border", "1px solid #f00");
+                            $('.ageClass').html("填写的年龄长度不能超过3个字");
+                            $('.ageClass').show();
+                            return;
+                        }
                     }
                 }
             }

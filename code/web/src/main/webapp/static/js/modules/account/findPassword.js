@@ -111,6 +111,7 @@ define(['jquery', 'pagination', 'common'], function (require, exports, module) {
                             }
                         }, 1000);
                     } else {
+                        isClick = false;
                         alert(resp.message);
                     }
                 });

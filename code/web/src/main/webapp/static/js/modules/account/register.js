@@ -67,6 +67,10 @@ define(['jquery', 'pagination', 'common'], function (require, exports, module) {
         $('.ul1 button').click(function () {
             var code = $.trim($('#code').val());
             var phone = $.trim($('#phone').val());
+            if(!$('#argument1').is(':checked')) {
+                alert('未同意社区协议');
+                return;
+            }
             if(phoneValid() && validateCode && codeValid()) {
                 validate_phone(phone, code);
             }
@@ -75,12 +79,10 @@ define(['jquery', 'pagination', 'common'], function (require, exports, module) {
         $('.ul2 button').click(function () {
             var email = $('#user-email').val();
             var pattern = /^([a-zA-Z0-9._-])+@([a-zA-Z0-9_-])+(.[a-zA-Z0-9_-])+/;
-
             if(!$('#argument2').is(':checked')) {
                 alert('未同意社区协议');
                 return;
             }
-
             if (pattern.test(email)) {
                 var requestParm = {email: email};
                 common.getData('/account/userEmailCheck.do', requestParm, function (resp) {
@@ -122,11 +124,6 @@ define(['jquery', 'pagination', 'common'], function (require, exports, module) {
             var password = $('#password').val();
             var phone = $('#phone').val();
             var code = $('#code').val();
-
-            if(!$('#argument1').is(':checked')) {
-                alert('未同意社区协议');
-                return;
-            }
             if(nickNameValid() && passwordValid() && rePasswordValid()) {
                 if (registerType === 'phone') {
                     registerUser(code, phone, password, phone, '', nickName);
@@ -256,7 +253,7 @@ define(['jquery', 'pagination', 'common'], function (require, exports, module) {
                 $('.re-cont .ul3').show();
                 registerType = 'phone';
             } else {
-                alert(resp.message);
+                alert(resp.errorMessage);
             }
         });
     }

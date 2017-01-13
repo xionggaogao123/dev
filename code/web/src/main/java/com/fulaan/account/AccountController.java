@@ -487,7 +487,6 @@ public class AccountController extends BaseController {
             userService.clearUserPhone(phone);
             accountService.clearPhone(phone);
         }
-
         if(StringUtils.isNotBlank(email)) {
             userService.clearUserEmail(email);
         }

@@ -14,6 +14,7 @@ import com.fulaan.log.service.LogService;
 import com.fulaan.playmate.service.MateService;
 import com.fulaan.pojo.FLoginLog;
 import com.fulaan.pojo.User;
+import com.fulaan.pojo.Validate;
 import com.fulaan.school.SchoolService;
 import com.fulaan.service.MemberService;
 import com.fulaan.user.model.ThirdLoginEntry;
@@ -411,6 +412,7 @@ public class UserController extends BaseController {
         //移动手机号
         if (StringUtils.isNotBlank(userEntry.getMobileNumber())) {
             accountService.bindMobile(userEntry.getID(), userEntry.getMobileNumber());
+            userService.updateBindUserMobile(getUserId(), userEntry.getMobileNumber());
         }
 
         //检查是否生成GenerateUserCode

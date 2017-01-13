@@ -50,6 +50,7 @@ define(['jquery', 'pagination', 'common'], function (require, exports, module) {
         $('#account').bind('input',function () {
             var account = $('#account').val();
             var pattern = /^1(3|4|5|7|8)\d{9}$/;
+            isMutilUser = false;
             if (pattern.test(account)) {
                 $.ajax({
                     url: '/account/listBindUserName.do',

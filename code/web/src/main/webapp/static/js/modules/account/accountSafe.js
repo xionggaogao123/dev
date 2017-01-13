@@ -383,7 +383,7 @@ define(['jquery', 'pagination', 'common'], function (require, exports, module) {
                 $('.wind-phone input.phone').val('');
                 getInfo();
             } else {
-                alert(resp.message);
+                alert(resp.errorMessage);
             }
         });
     }

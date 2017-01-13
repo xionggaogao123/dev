@@ -63,7 +63,6 @@
                 <li>
                     <input type="text" id="phone">
                     <span class="sp1">手机验证 : </span>
-                    <span class="sp3" id="phone-tips">请输入11位正确的手机号码</span>
                 </li>
                 <li id="choose-name" hidden>
                     <span class="sp1">请选择找回的用户名:</span>

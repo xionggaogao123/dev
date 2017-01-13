@@ -193,24 +193,22 @@ define(['jquery', 'pagination', 'common'], function (require, exports, module) {
     });
 
     function blurMobile() {
-        $('#phone').blur(function () {
-            var self = $(this);
-            var pattern = /^1[3|4|5|7|8][0-9]{9}$/;
-            if (pattern.test(self.val())) {
-                var requestParm = {phone: self.val()};
-                common.getDataAsync('/account/verifyUserPhone', requestParm, function (resp) {
-                    if (resp.code == '200' && resp.message.verify) {
-                        $('#phone-tips').hide();
-                    } else {
-                        $('#phone-tips').text(resp.message.msg);
-                        $('#phone-tips').show();
-                    }
-                });
-            } else {
-                $('#phone-tips').text('手机号不合法');
-                $('#phone-tips').show();
-            }
-        });
+        // var self = $('#phone');
+        // var pattern = /^1[3|4|5|7|8][0-9]{9}$/;
+        // if (pattern.test(self.val())) {
+        //     var requestParm = {phone: self.val()};
+        //     common.getDataAsync('/account/verifyUserPhone', requestParm, function (resp) {
+        //         if (resp.code == '200' && resp.message.verify) {
+        //             $('#phone-tips').hide();
+        //         } else {
+        //             $('#phone-tips').text(resp.message.msg);
+        //             $('#phone-tips').show();
+        //         }
+        //     });
+        // } else {
+        //     $('#phone-tips').text('手机号不合法');
+        //     $('#phone-tips').show();
+        // }
     }
 
     function resetPassword(userName, phone, code, password) {

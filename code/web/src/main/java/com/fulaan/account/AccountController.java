@@ -255,9 +255,6 @@ public class AccountController extends BaseController {
         }
         Pattern mobilePattern = Pattern.compile(Validator.REGEX_MOBILE);
         if (mobilePattern.matcher(name).matches()) {
-            if (userService.findByMobile(name) == null) {
-                return RespObj.FAILDWithErrorMsg("账号不存在");
-            }
             UserMobileEntry mobileEntry = accountService.findByMobile(name);
             if (mobileEntry != null) {
                 List<ObjectId> userIdList = mobileEntry.getUserIds();

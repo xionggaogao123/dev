@@ -165,7 +165,7 @@ define(['jquery', 'pagination', 'common'], function (require, exports, module) {
 
     function nickNameValid() {
         var nick = $('.ul3 #nick').val();
-        var pattern = /^[a-zA-Z0-9_\u4e00-\u9fa5]{3,20}$/;
+        var pattern = /^[a-zA-Z0-9_\u4e00-\u9fa5]{2,20}$/;
         if (!pattern.test(nick)) {
             $('#nick-alert').text('昵称不符合规范');
             $('#nick-alert').show();

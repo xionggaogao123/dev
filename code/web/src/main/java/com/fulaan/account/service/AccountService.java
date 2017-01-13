@@ -36,15 +36,20 @@ public class AccountService extends BaseService {
         return !"".equals(verifyCode) && verifyCode.equals(validateCode);
     }
 
-    public void sendEmailForFindPassword(String userName, String email, String code) {
+    public void sendEmailForFindPassword(final String userName, final String email, final String code) {
         //发送邮箱
-        MailUtils sendMail = new MailUtils();
-        StringBuilder stringBuffer = getEmailText(userName, email, code);
-        try {
-            sendMail.sendMail("用户邮箱验证", email, stringBuffer.toString());
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
+        new Thread(new Runnable() {
+            @Override
+            public void run() {
+                MailUtils sendMail = new MailUtils();
+                StringBuilder stringBuffer = getEmailText(userName, email, code);
+                try {
+                    sendMail.sendMail("用户邮箱验证", email, stringBuffer.toString());
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+            }
+        }).start();
     }
 
     private StringBuilder getEmailText(String userName, String email, String code) {

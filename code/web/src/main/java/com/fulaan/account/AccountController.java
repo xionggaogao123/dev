@@ -21,6 +21,7 @@ import com.sys.utils.DateTimeUtils;
 import com.sys.utils.HttpClientUtils;
 import com.sys.utils.MD5Utils;
 import com.sys.utils.RespObj;
+import freemarker.ext.beans.HashAdapter;
 import org.apache.commons.lang.StringUtils;
 import org.bson.types.ObjectId;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -189,23 +190,21 @@ public class AccountController extends BaseController {
      */
     @RequestMapping("/bindPhoneNumber")
     @ResponseBody
-    public Map<String, Object> bindPhone(String phone, String code, String cacheKeyId) {
-        Map<String, Object> result = new HashMap<String, Object>();
-        result.put("code", "500");
+    public RespObj bindPhone(String phone, String code, String cacheKeyId) {
+        UserEntry userEntry = userService.findById(getUserId());
+        if(phone.equals(userEntry.getBindMobile())) {
+            return RespObj.FAILDWithErrorMsg("你已经绑定了此手机号，无需再次绑定");
+        }
         Validate validate = userService.validatePhoneNumber(phone, code, cacheKeyId);
         if (!validate.isOk()) {
-            result.put("message", validate.getMessage());
-            return result;
+            return RespObj.FAILDWithErrorMsg(validate.getMessage());
         }
         Validate bindValidate = accountService.bindMobile(getUserId(), phone);
         if (bindValidate.isOk()) {
-            result.put("code", "200");
-            result.put("message", "绑定成功");
             userService.updateBindUserMobile(getUserId(), phone);
-        } else {
-            result.put("message", bindValidate.getMessage());
+            return RespObj.SUCCESS("绑定成功");
         }
-        return result;
+        return RespObj.FAILDWithErrorMsg(bindValidate.getMessage());
     }
 
     /**
@@ -240,7 +239,7 @@ public class AccountController extends BaseController {
     public RespObj verifyAccount(String name, String verifyCode, @CookieValue(Constant.COOKIE_VALIDATE_CODE) String verifyKey) {
         Map<String, Object> result = new HashMap<String, Object>();
         if (!accountService.checkVerifyCode(verifyCode, verifyKey)) {
-            return RespObj.FAILD("验证码不正确");
+            return RespObj.FAILDWithErrorMsg("验证码不正确");
         }
         Pattern userNamePattern = Pattern.compile(Validator.REGEX_USERNAME);
         if (userNamePattern.matcher(name).matches()) {
@@ -282,32 +281,6 @@ public class AccountController extends BaseController {
     }
 
     /**
-     * 验证 用户与邮箱是否匹配
-     */
-    @SessionNeedless
-    @RequestMapping("/verifyUserEmail")
-    @ResponseBody
-    public RespObj verifyUserEmail(String email, @CookieValue(Constant.FWCODE) String fwCode) {
-        String fwUser = CacheHandler.getStringValue(CacheHandler.getKeyString(CacheHandler.CACHE_FW_USERNAME_KEY, fwCode));
-        if (fwUser == null) {
-            return RespObj.FAILD(new VerifyData(false, "时间失效或不存在"));
-        }
-        UserDTO userDTO = userService.findByRegular(fwUser);
-        if (userDTO == null) {
-            return RespObj.FAILD(new VerifyData(false, "用户不存在"));
-        }
-        if (email.equals(userDTO.getEmail())) {
-            ObjectId key = new ObjectId();
-            String cacheKey = CacheHandler.getKeyString(CacheHandler.CACHE_FW_VALIDATE_EMAIL, key.toString());
-            CacheHandler.cache(cacheKey, userDTO.getUserName(), Constant.SECONDS_IN_DAY);//1天
-            accountService.sendEmailForFindPassword(userDTO.getUserName(), email, key.toString());
-            return RespObj.SUCCESS(new VerifyData(true, "发送成功"));
-        } else {
-            return RespObj.FAILD(new VerifyData(false, "该用户未绑定此邮箱"));
-        }
-    }
-
-    /**
      * 手机验证
      */
     @SessionNeedless
@@ -321,18 +294,46 @@ public class AccountController extends BaseController {
         return RespObj.SUCCESS("验证成功");
     }
 
+    @SessionNeedless
+    @RequestMapping("/sendVerifyEmail")
+    @ResponseBody
+    public RespObj sendVerifyEmail(String email) {
+        UserEntry user = userService.findByEmail(email);
+        if(user == null) {
+            return RespObj.FAILDWithErrorMsg("邮箱未绑定账号");
+        }
+        ObjectId key = new ObjectId();
+        String cacheKey = CacheHandler.getKeyString(CacheHandler.CACHE_FW_VALIDATE_EMAIL, key.toString());
+        CacheHandler.cache(cacheKey, email, Constant.SECONDS_IN_DAY);//1天
+        accountService.sendEmailForFindPassword(user.getUserName(), email, key.toString());
+        return RespObj.SUCCESS(new VerifyData(true, "发送成功"));
+    }
+
     /**
      * 邮箱验证
      */
     @SessionNeedless
     @RequestMapping("/emailValidate")
-    public ModelAndView emailValidate(String userName, String validateCode, HttpServletResponse response) throws Exception {
+    public ModelAndView emailValidate(String validateCode, HttpServletResponse response) throws Exception {
+        response.addCookie(new Cookie(Constant.FW_RESET_PASSWORD_CODE, validateCode));
+        Map<String,Object> map = new HashMap<String,Object>();
+        map.put("verify",true);
+        return new ModelAndView("/account/findPassword", map);
+    }
+
+    @SessionNeedless
+    @RequestMapping("/resetPasswordByEmail")
+    @ResponseBody
+    public RespObj resetPasswordByEmail(String password,@CookieValue(value = Constant.FW_RESET_PASSWORD_CODE) String validateCode) {
+        String cacheKey = CacheHandler.getKeyString(CacheHandler.CACHE_FW_VALIDATE_EMAIL, validateCode);
+        if(StringUtils.isBlank(cacheKey)) {
+            return RespObj.FAILDWithErrorMsg("链接已失效");
+        }
+        String email = CacheHandler.getStringValue(cacheKey);
+        UserEntry e = userService.findByEmail(email);
+        userService.resetPassword(e.getID(),MD5Utils.getMD5String(password));
         CacheHandler.deleteKey(CacheHandler.CACHE_FW_VALIDATE_EMAIL, validateCode);
-        ObjectId key = new ObjectId();
-        String resetPassKey = CacheHandler.getKeyString(CacheHandler.CACHE_FW_RESET_PASSWORD, key.toString());
-        CacheHandler.cache(resetPassKey, userName, Constant.SESSION_FIVE_MINUTE);
-        response.addCookie(new Cookie(Constant.FW_RESET_PASSWORD_CODE, key.toString()));
-        return new ModelAndView("/account/findPassword", "verify", true);
+        return RespObj.SUCCESS("重置密码成功");
     }
 
     /**

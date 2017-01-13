@@ -466,8 +466,8 @@
             if ($.trim($('#participateName').val()) != "") {
                 $('#participateName').css("border", "1px solid #E6E6E6");
                 $('#participateName').next('.nameClass').hide();
-                if ($('#participateName').val().length > 10) {
-                    $('#participateName').next('.nameClass').html('姓名长度不要超过10个字');
+                if ($('#participateName').val().length > 5) {
+                    $('#participateName').next('.nameClass').html('姓名长度不要超过5个字');
                     $('#participateName').next('.nameClass').show();
                 }
             } else {

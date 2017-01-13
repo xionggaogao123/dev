@@ -224,11 +224,7 @@ public class AccountController extends BaseController {
             return RespObj.FAILDWithErrorMsg("老账号请直接登录");
         }
         List<ObjectId> userIds = userMobileEntry.getUserIds();
-        UserEntry userEntry = userService.findByUserName(phone);
         List<UserEntry> userEntries = userService.getUserByList(userIds);
-        if (userEntry != null) {
-            userNameList.add(userEntry.getUserName());
-        }
         for (UserEntry userEntry1 : userEntries) {
             userNameList.add(userEntry1.getUserName());
         }

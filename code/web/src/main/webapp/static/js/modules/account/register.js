@@ -67,7 +67,7 @@ define(['jquery', 'pagination', 'common'], function (require, exports, module) {
         $('.ul1 button').click(function () {
             var code = $.trim($('#code').val());
             var phone = $.trim($('#phone').val());
-            if(phoneValid() && validateCode) {
+            if(phoneValid() && validateCode && codeValid()) {
                 validate_phone(phone, code);
             }
         });

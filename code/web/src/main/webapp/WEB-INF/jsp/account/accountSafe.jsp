@@ -185,12 +185,17 @@
         <span class="sp1">请输入手机号码：</span>
         <span class="sp3 phone-tip" style="display: none"> </span>
     </p>
-    <input type="text" title="" class="phone">
+    <input type="text" title="" id="phone">
+    <p class="p2">
+        <span class="sp1">图片验证码：</span>
+    </p>
+    <input type="text" style="display: inline;width: 178px" id="verifyCode">
+    <img id="imgObj" alt="" src="/verify/verifyCode.do"/>
     <p class="p2">
         <span class="sp1">请输入验证码：</span>
     </p>
     <div class="d-yz">
-        <input type="text" title="" class="code">
+        <input type="text" title="" class="code" id="code">
         <span id="sendText">发送验证码</span>
     </div>
     <p class="p-btn-ok">确定</p>

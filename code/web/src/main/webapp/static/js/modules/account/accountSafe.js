@@ -11,6 +11,8 @@ define(['jquery', 'pagination', 'common'], function (require, exports, module) {
     };
     var bind = 1;
 
+    var validateCode = false;
+
     var edit_pass_check = {
         password: false,
         n_password: false,
@@ -43,6 +45,7 @@ define(['jquery', 'pagination', 'common'], function (require, exports, module) {
             $('.wind-psw').fadeIn();
             $('.bg').fadeIn();
         });
+
         $('.btn-xg-phone').click(function () {
             $('.wind-phone').fadeIn();
             $('.bg').fadeIn();
@@ -68,7 +71,6 @@ define(['jquery', 'pagination', 'common'], function (require, exports, module) {
             edit_pass_check.n_password = false;
             edit_pass_check.n_r_password = false;
         });
-
 
         $('.btn-xg-email').click(function () {
             $('.wind-email1').fadeIn();
@@ -270,8 +272,15 @@ define(['jquery', 'pagination', 'common'], function (require, exports, module) {
         body.on('blur', '.wind-phone .phone', function () {
             var self = $(this);
             var pattern = /(^(([0\+]\d{2,3}-)?(0\d{2,3})-)(\d{7,8})(-(\d{3,}))?$)|(^0{0,1}1[3|4|5|6|7|8|9][0-9]{9}$)/;
+            var phone = $('#phone').val();
+            var verifyCode = $('#verifyCode').val();
+            var code = $('#code').val();
             if (pattern.test(self.val())) {
-                common.getData('/account/checkPhoneCanUse.do', {mobile: self.val()}, function (resp) {
+                common.getData('/account/bindPhoneNumber.do', {
+                    phone: phone,
+                    cacheKeyId: cacheKeyId,
+                    code: code
+                }, function (resp) {
                     if (resp.code == '200') {
                         self.parent().find('.phone-tip').hide();
                         edit_phone_check.phone = true;
@@ -289,43 +298,15 @@ define(['jquery', 'pagination', 'common'], function (require, exports, module) {
         });
 
         body.on('click', '#sendText', function () {
-            var mobile = $('.wind-phone .phone').val();
-            if (!edit_phone_check.phone) {
-                return;
-            }
-            common.getData('/mall/users/textMessags.do', {mobile: mobile}, function (resp) {
-                if (resp.code == '200') {
-                    cacheKeyId = resp.cacheKeyId;
-                    edit_phone_check.code = true;
-                } else {
-                    edit_phone_check.code = false;
-                }
-            });
+            var mobile = $('#phone').val();
+            var verifyCode = $('#verifyCode').val();
+            sendPhoneText(mobile,verifyCode);
         });
 
         body.on('click', '.wind-phone p.p-btn-ok', function () {
-            var code = $('.wind-phone input.code').val();
-            var mobile = $('.wind-phone input.phone').val();
-            if (edit_phone_check.phone && edit_phone_check.code) {
-                var requestData = {
-                    phone: mobile,
-                    code: code,
-                    cacheKeyId: cacheKeyId
-                };
-                common.getData('/account/bindPhoneNumber.do', requestData, function (resp) {
-                    if (resp.code == '200') {
-                        $('.windd').fadeOut();
-                        $('.bg').fadeOut();
-                        $('.wind-phone input.code').val('');
-                        $('.wind-phone input.phone').val('');
-                        getInfo();
-                    } else {
-                        alert(resp.message);
-                    }
-                });
-            } else {
-                alert("数据填写不正确");
-            }
+            var code = $('#code').val();
+            var mobile = $('#phone').val();
+            bindPhoneNumber(mobile,code);
         });
 
         body.on('click', '.third-qq button', function () {
@@ -353,12 +334,59 @@ define(['jquery', 'pagination', 'common'], function (require, exports, module) {
         });
     });
 
+    function sendPhoneText(phone, verifyCode) {
+        if(phoneValid()) {
+            common.getData("/mall/users/messages.do", {
+                mobile: phone,
+                verifyCode: verifyCode
+            }, function (resp) {
+                if (resp.code == '200') {
+                    cacheKeyId = resp.cacheKeyId;
+                    validateCode = true;
+                } else {
+                    alert(resp.message);
+                }
+            });
+        }
+    }
+
     function getMyTags() {
         common.getData('/mate/getUserMateData.do', {}, function (resp) {
             basicData.tags = resp.message.tags;
             basicData.times = resp.message.times;
             update(basicData);
         });
+    }
+
+    function bindPhoneNumber(mobile,code) {
+        var requestData = {
+            phone: mobile,
+            code: code,
+            cacheKeyId: cacheKeyId
+        };
+        common.getData('/account/bindPhoneNumber.do', requestData, function (resp) {
+            if (resp.code == '200') {
+                $('.windd').fadeOut();
+                $('.bg').fadeOut();
+                $('.wind-phone input.code').val('');
+                $('.wind-phone input.phone').val('');
+                getInfo();
+            } else {
+                alert(resp.message);
+            }
+        });
+    }
+
+    function phoneValid() {
+        var pattern = /^1[3|4|5|7|8][0-9]{9}$/;
+        if (pattern.test($('#phone').val())) {
+            $('.phone-tip').hide();
+            return true;
+        } else {
+            $('.phone-tip').text('手机不合法');
+            $('.phone-tip').show();
+        }
+        return false;
     }
 
     function update(data) {

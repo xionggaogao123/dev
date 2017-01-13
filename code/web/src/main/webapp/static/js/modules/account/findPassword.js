@@ -224,6 +224,8 @@ define(['jquery', 'pagination', 'common'], function (require, exports, module) {
         common.getDataAsync('/account/resetPassword.do', requestParm, function (resp) {
             if(resp.code === '200') {
                 setp4();
+            } else {
+                alert(resp.errorMessage);
             }
         });
     }
@@ -235,6 +237,8 @@ define(['jquery', 'pagination', 'common'], function (require, exports, module) {
         common.getDataAsync('/account/resetPasswordByEmail.do', requestParm, function (resp) {
             if(resp.code === '200') {
                 setp4();
+            } else {
+                alert(resp.errorMessage);
             }
         });
     }

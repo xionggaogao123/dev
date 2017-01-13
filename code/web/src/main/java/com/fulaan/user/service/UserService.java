@@ -941,7 +941,7 @@ public class UserService extends BaseService {
     }
 
     public UserEntry findByUserName(String name) {
-        return userDao.findByUserName(name);
+        return userDao.findByUserName(name.toLowerCase());
     }
 
 

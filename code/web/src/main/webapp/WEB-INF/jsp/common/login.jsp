@@ -91,9 +91,9 @@
         })
     }
 
-    $('body').on('blur','#account',function () {
+    $('#account').bind('input',function () {
         var account = $('#account').val();
-        var pattern = /(^(([0+]\d{2,3}-)?(0\d{2,3})-)(\d{7,8})(-(\d{3,}))?$)|(^0{0,1}1[3|4|5|6|7|8|9][0-9]{9}$)/;
+        var pattern = /^1(3|4|5|7|8)\d{9}$/;
         if(pattern.test(account)) {
             $.ajax({
                 url:'/account/listBindUserName.do',
@@ -106,17 +106,29 @@
                             $('#user-names').append('<p class="p-ps">该手机已绑定多个账号，请选择要登录的账号：</p>');
                             isMutilUser = true;
                             for(var i=0;i<resp.message.length;i++) {
-                                $('#user-names').append('<label><input value="'+ resp.message[i] +'" type="radio" name="s-count">'+ resp.message[i]+'</label>');
+                                if(i === 0 ) {
+                                    $('#user-names').append('<label><input value="'+ resp.message[i] +'" type="radio" name="s-count" checked>'+ resp.message[i]+'</label>');
+                                } else {
+                                    $('#user-names').append('<label><input value="'+ resp.message[i] +'" type="radio" name="s-count">'+ resp.message[i]+'</label>');
+                                }
                             }
+                        } else {
+                            hideNames();
                         }
                     } else {
-                        $('#user-names').empty();
-                        $('#user-names').hide();
+                        hideNames();
                     }
                 }
             });
+        } else {
+            hideNames();
         }
     });
+
+    function hideNames() {
+        $('#user-names').empty();
+        $('#user-names').hide();
+    }
 
     function redirectQ() {
         window.open('/user/qqlogin.do', "TencentLogin", "width=800,height=600,menubar=0,scrollbars=1, resizable=1,status=1,titlebar=0,toolbar=0,location=1");

@@ -17,7 +17,6 @@ import com.pojo.mobile.UserMobileEntry;
 import com.pojo.user.UserDetailInfoDTO;
 import com.pojo.user.UserEntry;
 import com.sys.constants.Constant;
-import com.sys.exceptions.UnLoginException;
 import com.sys.utils.DateTimeUtils;
 import com.sys.utils.HttpClientUtils;
 import com.sys.utils.MD5Utils;
@@ -183,22 +182,22 @@ public class AccountController extends BaseController {
     /**
      * 绑定 手机号
      *
-     * @param phoneNumber
+     * @param phone
      * @param code
      * @param cacheKeyId
      * @return
      */
     @RequestMapping("/bindPhoneNumber")
     @ResponseBody
-    public Map<String, Object> bindPhone(String phoneNumber, String code, String cacheKeyId) {
+    public Map<String, Object> bindPhone(String phone, String code, String cacheKeyId) {
         Map<String, Object> result = new HashMap<String, Object>();
         result.put("code", "500");
-        Validate validate = userService.validatePhoneNumber(phoneNumber, code, cacheKeyId);
+        Validate validate = userService.validatePhoneNumber(phone, code, cacheKeyId);
         if (!validate.isOk()) {
             result.put("message", validate.getMessage());
             return result;
         }
-        Validate bindValidate = accountService.bindMobile(getUserId(), phoneNumber);
+        Validate bindValidate = accountService.bindMobile(getUserId(), phone);
         if (bindValidate.isOk()) {
             result.put("code", "200");
             result.put("message", "绑定成功");
@@ -253,6 +252,7 @@ public class AccountController extends BaseController {
             }
             result.put("type", "userName");
             result.put("userName", name);
+            return RespObj.SUCCESS(result);
         }
         Pattern emailPattern = Pattern.compile(Validator.REGEX_EMAIL);
         if (emailPattern.matcher(name).matches()) {
@@ -263,8 +263,8 @@ public class AccountController extends BaseController {
             result.put("type", "email");
             result.put("email", name);
             result.put("userName", e.getUserName());
+            return RespObj.SUCCESS(result);
         }
-
         Pattern mobilePattern = Pattern.compile(Validator.REGEX_MOBILE);
         if (mobilePattern.matcher(name).matches()) {
             if (userService.findByMobile(name) == null) {
@@ -282,28 +282,6 @@ public class AccountController extends BaseController {
         }
 
         return RespObj.SUCCESS(result);
-    }
-
-    /**
-     * 验证用户与手机是否匹配
-     */
-    @SessionNeedless
-    @RequestMapping("/verifyUserPhone")
-    @ResponseBody
-    public RespObj verifyUserPhone(String phone, @CookieValue(Constant.FWCODE) String fwCode) {
-        String fwUser = CacheHandler.getStringValue(CacheHandler.getKeyString(CacheHandler.CACHE_FW_USERNAME_KEY, fwCode));
-        if (fwUser == null) {
-            return RespObj.FAILD(new VerifyData(false, "时间失效或不存在"));
-        }
-        UserDTO userDTO = userService.findByRegular(fwUser);
-        if (userDTO == null) {
-            return RespObj.FAILD(new VerifyData(false, "用户不存在"));
-        }
-        if (phone.equals(userDTO.getPhone())) {
-            return RespObj.SUCCESS(new VerifyData(true, "验证成功"));
-        } else {
-            return RespObj.FAILD(new VerifyData(false, "该用户未绑定此手机号"));
-        }
     }
 
     /**

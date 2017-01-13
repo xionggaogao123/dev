@@ -221,7 +221,7 @@ public class UserController extends BaseController {
         logger.info("try login;the name=" + name + ";pwd=" + pwd);
 
         //数据库验证
-        UserEntry e = userService.getUserEntryByAccount(name);
+        final UserEntry e = userService.getUserEntryByAccount(name);
         if (null == e) {
             faild.setMessage("用户名或密码错误!");
             return faild;
@@ -373,7 +373,13 @@ public class UserController extends BaseController {
 
         RespObj respObj = new RespObj(Constant.SUCCESS_CODE);
         respObj.setMessage(value);
-        initUser(e);
+
+        new Thread(new Runnable() {
+            @Override
+            public void run() {
+                initUser(e);
+            }
+        }).start();
 
         return respObj;
     }

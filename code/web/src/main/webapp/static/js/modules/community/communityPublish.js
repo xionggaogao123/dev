@@ -286,15 +286,77 @@ define(['jquery', 'pagination', 'common'], function (require, exports, module) {
            if(length==10){
                alert("选项最多10条");
            }else{
-
+               var str;
                var len=length+1;
-               var str="<li class=\"li2\">"+len+".<i></i><input type=\"text\"></li>";
+               var option;
+               if(length==0||length==1){
+                   str="<li class=\"li2\"><em>"+len+"</em>.<i style='display: none'></i><input type=\"text\"></li>";
+               }else{
+                   $('.vote-cont .div2 .li2').find('i').show();
+                   str="<li class=\"li2\"><em>"+len+"</em>.<i></i><input type=\"text\"></li>";
+               }
+               // if(len==1){
+               //     option="<option value=\""+len+"\">单选</option>";
+               // }else{
+               //     option="<option value=\""+len+"\">最多可选"+len+"项</option>";
+               // }
+               //
+               // $('#voteCount').append(option);
                $(this).before(str);
            }
         })
+        $('body').on('focus','.vote-cont .div2 .li2',function(){
+            $(this).css("border","1px solid #FF8140");
+        });
+        $('body').on('blur','.vote-cont .div2 .li2',function(){
+            $(this).css("border","1px solid #ccc");
+        });
+
+        $('body').on('input','.vote-cont .div2 .li2',function(){
+            var count=0;
+            $('#voteCount').empty();
+            var initOption="<option value=\"1\">单选</option>";
+            $('#voteCount').append(initOption);
+            $('#voteCount').css("width","60px");
+            $('.vote-cont .div2 .li2').each(function(){
+                if($.trim($(this).find('input').val())){
+                    count++;
+                }
+            });
+            if(count>1){
+                for(var i=2;i<=count;i++){
+                   var option="<option value=\""+i+"\">最多可选"+i+"项</option>";
+                   $('#voteCount').append(option);
+                }
+                if(count==10){
+                    $('#voteCount').css("width","96px");
+                }else{
+                    $('#voteCount').css("width","87px");
+                }
+
+            }
+        });
 
         $('body').on('click','.vote-cont .div2 .li2 i',function(){
             $(this).closest('li').remove();
+            var length=$('.vote-cont .div2 .li2').length;
+            if(length==1||length==2){
+                $('.vote-cont .div2 .li2').find('i').hide();
+            }
+            var count=0;
+            var trimCount=0;
+            $('.vote-cont .div2 .li2').each(function(){
+                count++;
+                // var option;
+                // if(count==1){
+                //    option="<option value=\""+count+"\">单选</option>";
+                // }else{
+                //    option="<option value=\""+count+"\">最多可选"+count+"项</option>";
+                // }
+                //
+                // $('#voteCount').append(option);
+                $(this).find('em').html(count);
+            })
         })
 
         $('body').on('click', '.p-doc em', function () {
@@ -416,6 +478,7 @@ define(['jquery', 'pagination', 'common'], function (require, exports, module) {
         })
 
     })
+
 
     function  setTop(obj,top) {
         common.getData('/community/updateCommunityTop.do',{communityId:communityId,top:top},function (resp) {

@@ -57,6 +57,9 @@ public class UserDetailInfoDTO extends UserInfoDTO implements Serializable {
     private int jinyan;
     private List<String> connectIds;
 
+    //个人Id
+    private String generateUserCode;
+
     public int getRelation() {
         return relation;
     }
@@ -119,6 +122,7 @@ public class UserDetailInfoDTO extends UserInfoDTO implements Serializable {
     }
 
     public UserDetailInfoDTO(UserEntry userEntry) {
+        this.generateUserCode=userEntry.getGenerateUserCode();
         this.address = userEntry.getAddress();
         this.imgUrl = AvatarUtils.getAvatar(userEntry.getAvatar(), 1);
         this.birthDate = new Date(userEntry.getBirthDate());
@@ -385,10 +389,18 @@ public class UserDetailInfoDTO extends UserInfoDTO implements Serializable {
         this.imgUrl = imgUrl;
     }
 
+    public String getGenerateUserCode() {
+        return generateUserCode;
+    }
+
+    public void setGenerateUserCode(String generateUserCode) {
+        this.generateUserCode = generateUserCode;
+    }
+
     /*
-    * 学校管理中 班级添加学生所用
-    *
-    * */
+        * 学校管理中 班级添加学生所用
+        *
+        * */
     public UserEntry exportEntry() {
         UserEntry userEntry = new UserEntry(userName, passWord, getSex(), null);
         userEntry.setAddress(this.address);

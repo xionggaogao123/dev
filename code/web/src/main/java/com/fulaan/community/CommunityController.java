@@ -2429,6 +2429,10 @@ public class CommunityController extends BaseController {
     public RespObj getMyQRCode() {
         ObjectId userId = getUserId();
         UserEntry userEntry = userService.findById(userId);
+        return getQRCode(userEntry,userId);
+    }
+
+    public RespObj getQRCode(UserEntry userEntry,ObjectId userId){
         if (StringUtils.isBlank(userEntry.getQRCode())) {
             String qrCode = QRUtils.getPersonQrUrl(userId);
             userEntry.setQRCode(qrCode);
@@ -2437,7 +2441,14 @@ public class CommunityController extends BaseController {
         } else {
             return RespObj.SUCCESS(userEntry.getQRCode());
         }
+    }
 
+    @RequestMapping("/getMyQRCodeByUserId")
+    @ResponseBody
+    @SessionNeedless
+    public RespObj getMyQRCodeByUserId(@ObjectIdType  ObjectId userId) {
+        UserEntry userEntry = userService.findById(userId);
+        return getQRCode(userEntry,userId);
     }
 
 

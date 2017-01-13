@@ -2209,7 +2209,7 @@ pre{white-space: pre-wrap;word-wrap: break-word;}
     position: absolute;
     top:40px;
     left:0;
-    width: 380px;
+    width: 393px;
     padding:0 16px 15px;
     background: #fff;
     border:#CCCCCC 1px solid;
@@ -2236,6 +2236,7 @@ pre{white-space: pre-wrap;word-wrap: break-word;}
     border:1px solid #ccc;
     margin-bottom: 8px;
     padding: 0 6px;
+    position: relative;
 }
 .vote-cont .li3{
     height: 28px;
@@ -2249,6 +2250,16 @@ pre{white-space: pre-wrap;word-wrap: break-word;}
     height: 36px;
     line-height: 36px;
     text-align: center;
+}
+.vote-cont .li4 input[type=radio]{
+    width: 10px;
+    position: relative;
+    right: 5px;
+}
+.vote-cont .li4 label{
+    float: left;
+    width: 50px;
+    height: 24px;
 }
 .downT{
     display: none;
@@ -2268,7 +2279,7 @@ pre{white-space: pre-wrap;word-wrap: break-word;}
     border:none;
     border-radius: 4px;
 }
-.vote-cont .li4 input{
+.vote-cont .li4 #datepicker{
     float: left;
     width: 110px;
     border:1px solid #aaa;
@@ -2298,7 +2309,7 @@ pre{white-space: pre-wrap;word-wrap: break-word;}
     height: 28px;
     line-height: 28px;
     width: 330px;
-    margin: 0 4px 0 0;
+    margin: 0 13px 0 0;
     float: right;
     font-size: 12px;
 }
@@ -2308,11 +2319,13 @@ pre{white-space: pre-wrap;word-wrap: break-word;}
     font-weight: bold;
 }
 .vote-cont li i{
-    float: right;
+    display: inline-block;
+    position: absolute;
+    right: 3px;
+    top:9px;
     width: 12px;
     height: 12px;
     background: url("/static/images/del.png");
-    margin:9px 1px 0 0;
     cursor: pointer;
 }
 

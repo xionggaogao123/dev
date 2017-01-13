@@ -399,6 +399,7 @@
                     $name.css("border", "1px solid #f00");
                     $name.next('.nameClass').html('姓名长度不要超过5个字');
                     $name.next('.nameClass').show();
+                    return;
                 }
             }
 

@@ -45,7 +45,7 @@
                             <p class="p1" id="type">${detail.title}</p>
                             <div class="txt-wrap">
 
-                                <div class="vote-detail">
+                                <div class="vote-detail" style="display: none">
                                     <h3>多选投票：（最多可选3项），共有<em>3</em>人参与投票</h3>
                                     <ul class="ul1">
                                         <li>

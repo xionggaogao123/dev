@@ -79,56 +79,56 @@
                             <span class="sp2" class="disb"></span>
                             发通知
                         </li>
-                        <li class="li2" type="2">
+                        <li class="li5" type="5">
                             <span class="sp1"></span>
                             <span class="sp2"></span>
-                            组织活动报名
+                            布置作业
                         </li>
                         <li class="li3" type="3">
                             <span class="sp1"></span>
                             <span class="sp2"></span>
                             火热分享
                         </li>
-                        <li class="li4" type="4">
+                        <li class="li7" type="7" style="display: none">
                             <span class="sp1"></span>
                             <span class="sp2"></span>
-                            学习资料
+                            投票
                         </li>
-                        <li class="li5" type="5">
+                        <li class="li2" type="2">
                             <span class="sp1"></span>
                             <span class="sp2"></span>
-                            布置作业
+                            组织活动报名
                         </li>
                         <li class="li6" type="6">
                             <span class="sp1"></span>
                             <span class="sp2"></span>
                             发布学习用品需求
                         </li>
-                        <li class="li7" type="7">
+                        <li class="li4" type="4">
                             <span class="sp1"></span>
                             <span class="sp2"></span>
-                            投票
+                            学习资料
                         </li>
                     </c:if>
                 </ul>
                 <div class="publish-putin">
                     <input type="text" placeholder="请输入大标题" id="title">
                     <textarea placeholder="请输入内容" id="content"></textarea>
-                    <div class="vote-cont" >
+                    <span style="font-size:12px;display: block;height: 30px;"></span>
+                    <div class="vote-cont" style="display: none" >
                         <button>设置投票选项</button>
                         <span class="downT"></span>
                         <div class="div2">
                             <p class="p1"><em>×</em></p>
                             <ul>
                                 <li class="li1">投票选项</li>
-                                <li class="li2">1.<i style="display: none"></i><input type="text" value="haha"></li>
-                                <li class="li2">2.<i style="display: none"></i><input type="text" value="haha"></li>
+                                <li class="li2"><em>1</em>.<i style="display: none"></i><input type="text"></li>
+                                <li class="li2"><em>2</em>.<i style="display: none"></i><input type="text"></li>
                                 <li class="li3">添加选项</li>
                                 <li class="li4">
                                     <span>单选/多选：</span>
-                                    <select>
-                                        <option>单选</option>
-                                        <option>多选</option>
+                                    <select id="voteCount">
+                                        <option value="1">单选</option>
                                     </select>
                                 </li>
                                 <li class="li4">
@@ -227,10 +227,8 @@
                                 </li>
                                 <li class="li4">
                                     <span>记名投票：</span>
-                                    <select>
-                                        <option>公开</option>
-                                        <option>匿名</option>
-                                    </select>
+                                    <label><input type="radio" name="sign">是</label>
+                                    <label><input type="radio" name="sign">否</label>
                                 </li>
                                 <li class="li4">
                                     <button>发起</button>
@@ -238,7 +236,6 @@
                             </ul>
                         </div>
                     </div>
-                    <span style="float:left;font-size:12px;"></span>
                     <div class="publish-fj clearfix">
                         <div class="pub-fj-img clearfix">
 
@@ -301,7 +298,7 @@
             <div class="com-left-s" id="share">
             </div>
 
-            <div class="com-left-s">
+            <div class="com-left-s" style="display: none">
                 <div class="com-tit"  style="cursor: pointer">投票 <span class="i-newtips">7</span></div>
                 <div class="notice-container clearfix">
                     <div class="notice-holder"><img src="http://7xiclj.com1.z0.glb.clouddn.com/head-0.47150365147468287.jpg">

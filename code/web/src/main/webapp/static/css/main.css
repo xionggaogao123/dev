@@ -1230,7 +1230,12 @@ ul.bjqs-controls.v-centered li.bjqs-prev a {
     margin-top: 35px;
     margin-right: 25px;
 }
-
+span#title{
+    display: inline-block;
+    line-height: 30px;
+    height: 30px;
+    color: #D53053;
+}
 .store-news h1 {
     display: inline-block;
     height: 150px;

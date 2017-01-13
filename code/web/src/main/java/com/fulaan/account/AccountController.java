@@ -241,15 +241,14 @@ public class AccountController extends BaseController {
         if (!accountService.checkVerifyCode(verifyCode, verifyKey)) {
             return RespObj.FAILDWithErrorMsg("验证码不正确");
         }
-        Pattern userNamePattern = Pattern.compile(Validator.REGEX_USERNAME);
-        if (userNamePattern.matcher(name).matches()) {
-            if (userService.findByUserName(name) == null) {
-                return RespObj.FAILDWithErrorMsg("账号不存在");
-            }
+
+        UserEntry userEntry = userService.findByUserName(name);
+        if (userEntry != null) {
             result.put("type", "userName");
             result.put("userName", name);
             return RespObj.SUCCESS(result);
         }
+
         Pattern emailPattern = Pattern.compile(Validator.REGEX_EMAIL);
         if (emailPattern.matcher(name).matches()) {
             UserEntry e = userService.findByEmail(name);
@@ -275,9 +274,10 @@ public class AccountController extends BaseController {
             result.put("type", "mobile");
             result.put("mobile", name);
             result.put("protectedMobile", getProtectedMobile(name));
+            return RespObj.SUCCESS(result);
         }
 
-        return RespObj.SUCCESS(result);
+        return RespObj.FAILDWithErrorMsg("失败");
     }
 
     /**

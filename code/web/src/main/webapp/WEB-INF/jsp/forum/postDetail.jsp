@@ -208,8 +208,8 @@
                 <div class="sp4" style="display: none">有没有要选择的参赛者?参赛者可作为选填项</div>
                 <%--<div class="sp5">*此信息仅用作官方联系参赛者使用，不对外公开。</div>--%>
             </div>
-            <span id="title" style="display: none">回复的帖子不能为空，请重新回复！</span><br/>
             <button class="btn-hf" id="comment">发表回复</button>
+            <span id="title" style="display: none">回复的帖子不能为空，请重新回复！</span>
         </div>
     </div>
     <div class="post-wind">
@@ -466,8 +466,8 @@
             if ($.trim($('#participateName').val()) != "") {
                 $('#participateName').css("border", "1px solid #E6E6E6");
                 $('#participateName').next('.nameClass').hide();
-                if ($('#participateName').val().length > 10) {
-                    $('#participateName').next('.nameClass').html('姓名长度不要超过10个字');
+                if ($('#participateName').val().length > 5) {
+                    $('#participateName').next('.nameClass').html('姓名长度不要超过5个字');
                     $('#participateName').next('.nameClass').show();
                 }
             } else {

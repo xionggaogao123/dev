@@ -79,6 +79,29 @@ public class EBusinessUserController extends BaseController {
     @Autowired
     private FScoreService fScoreService;
 
+    @SessionNeedless
+    @RequestMapping(value = "/sendInsetMessage", method = RequestMethod.GET)
+    @ResponseBody
+    public Map<String, Object> shortMessage(HttpServletRequest request, HttpServletResponse response) {
+
+        Map<String, Object> model = new HashMap<String, Object>();
+        String mobile="18817366135";
+        String msg = "【复兰教育社区】冬季大赛来袭！火热“春节才艺秀”、“家乡的冬天”摄影比赛，缤纷大奖，邀你参加！登录“复兰教育社区”APP，进入【发现】中的【大赛】版块或访问www.fulaan.com的【大赛】版块参与比赛。";
+        try {
+            String resp = batchSend(url, account, pswd, mobile, msg, needstatus, product, extno);
+            String responseCode = resp.split("\\n")[0].split(",")[1];
+            if (responseCode.equals("0")) {
+                model.put("code", 200);
+                model.put("message", resp);
+            }
+
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return model;
+    }
+
+
     /**
      * 获取验证码
      *

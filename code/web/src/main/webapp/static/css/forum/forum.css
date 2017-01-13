@@ -2061,7 +2061,6 @@ pre {
     color: #fff;
     background: #D53053;
     border: none;
-    margin: 12px 0 0 0;
 }
 
 .post-right label {
@@ -7036,7 +7035,7 @@ pre {
     line-height: 41px;
     background: #ECECEC;
     position: absolute;
-    bottom: 83px;
+    bottom: 51px;
     z-index: 1000;
     width: 815px;
     left: 11px;
@@ -7150,7 +7149,7 @@ pre {
 }
 .join-cont .sp4{
     float: left;
-    width: 150px;
+    width: 300px;
     color:#D53053;
     margin-left: 12px;
 }
@@ -7278,7 +7277,7 @@ pre {
     right: 4px;
 }
 .wind-join ul li .btn1{
-    padding:0 10px;
+    width: 60px;
     border:1px solid #D52F53;
     height: 24px;
     color: #D52F53;
@@ -7286,7 +7285,7 @@ pre {
     margin-top: 10px;
 }
 .wind-join ul li .btn2{
-    padding:0 10px;
+    width: 60px;
     border:1px solid #666666;
     height: 24px;
     color: #666666;
@@ -7294,7 +7293,7 @@ pre {
     margin-top: 10px;
 }
 .wind-join ul li .btn3{
-    padding:0 10px;
+    width: 60px;
     border:1px solid #D52F53;
     height: 24px;
     color: #D52F53;
@@ -7302,7 +7301,7 @@ pre {
     margin-top: 10px;
 }
 .wind-join ul li .btn4{
-    padding:0 10px;
+    width: 60px;
     border:1px solid #666666;
     height: 24px;
     color: #666666;

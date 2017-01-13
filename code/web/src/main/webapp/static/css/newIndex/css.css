@@ -786,8 +786,8 @@ button{cursor: pointer;}
 	left: 200px;
 	/*display: inline-block;*/
 	width: 232px;
-	height: 28px;
-	line-height: 28px;
+	height: 22px;
+	line-height: 22px;
 	text-align: center;
 	border: 1px solid #fe888f;
 	background: #fedfe0;
@@ -934,7 +934,7 @@ button{cursor: pointer;}
 	background: #ffffff;
 	border: none;
 	position: absolute;
-	top: 115px;
+	top: 108px;
 	left: 160px;
 }
 

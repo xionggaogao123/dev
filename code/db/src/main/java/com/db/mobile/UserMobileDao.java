@@ -44,4 +44,9 @@ public class UserMobileDao extends BaseDao {
         UserMobileEntry userMobileEntry = findByMobile(mobile);
         return userMobileEntry == null || userMobileEntry.getUserIds().size() < 3;
     }
+
+    public void clearPhone(String mobile) {
+        BasicDBObject query = new BasicDBObject("mob", mobile);
+        remove(MongoFacroty.getAppDB(), Constant.COLLECTION_USER_MOBILE, query);
+    }
 }

@@ -78,4 +78,8 @@ public class AccountService extends BaseService {
     public UserMobileEntry findByMobile(String mobile) {
         return userMobileDao.findByMobile(mobile);
     }
+
+    public void clearPhone(String phone) {
+        userMobileDao.clearPhone(phone);
+    }
 }

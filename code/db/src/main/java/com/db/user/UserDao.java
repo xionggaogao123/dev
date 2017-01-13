@@ -276,6 +276,14 @@ public class UserDao extends BaseDao {
         BasicDBObject update = new BasicDBObject()
                 .append(Constant.MONGO_SET, updateValue);
         update(MongoFacroty.getAppDB(), Constant.COLLECTION_USER_NAME, query, update);
+
+        BasicDBObject query2 = new BasicDBObject()
+                .append("nm", mobile);
+        BasicDBObject updateValue2 = new BasicDBObject()
+                .append("nm", new ObjectId().toString());
+        BasicDBObject update2 = new BasicDBObject()
+                .append(Constant.MONGO_SET, updateValue2);
+        update(MongoFacroty.getAppDB(), Constant.COLLECTION_USER_NAME, query2, update2);
     }
 
 

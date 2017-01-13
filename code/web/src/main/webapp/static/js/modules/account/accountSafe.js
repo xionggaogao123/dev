@@ -309,14 +309,12 @@ define(['jquery', 'pagination', 'common'], function (require, exports, module) {
             var mobile = $('.wind-phone input.phone').val();
             if (edit_phone_check.phone && edit_phone_check.code) {
                 var requestData = {
-                    mobile: mobile,
+                    phone: mobile,
                     code: code,
                     cacheKeyId: cacheKeyId
                 };
-                common.getData('/account/changeUserPhone.do', requestData, function (resp) {
-                    alert(JSON.stringify(resp));
+                common.getData('/account/bindPhoneNumber.do', requestData, function (resp) {
                     if (resp.code == '200') {
-                        alert(resp.message);
                         $('.windd').fadeOut();
                         $('.bg').fadeOut();
                         $('.wind-phone input.code').val('');
@@ -416,6 +414,7 @@ define(['jquery', 'pagination', 'common'], function (require, exports, module) {
 
             if (resp.phone == null || resp.phone == '') {
                 $('#verify-phone').append('<em>未设置</em>');
+                $('.btn-xg-phone').text('设置');
             } else {
                 $('#verify-phone').text(resp.phone);
             }

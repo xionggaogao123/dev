@@ -111,13 +111,11 @@ define(['jquery', 'pagination', 'common'], function (require, exports, module) {
         });
 
         $('.ul3 button').click(function () {
-
             var email = $('#user-email').val();
             var nickName = $('#nick').val();
             var password = $('#password').val();
             var phone = $('#phone').val();
             var code = $('#code').val();
-
             if(nickNameValid() && passwordValid() && rePasswordValid()) {
                 if (registerType === 'phone') {
                     registerUser(code, phone, password, phone, '', nickName);
@@ -241,12 +239,13 @@ define(['jquery', 'pagination', 'common'], function (require, exports, module) {
             code: code,
             cacheKeyId: cacheKeyId
         }, function (resp) {
-            alert(JSON.stringify(resp));
             if (resp.code === '200') {
                 $('.re-cont .ul1').hide();
                 $('.re-cont .ul2').hide();
                 $('.re-cont .ul3').show();
                 registerType = 'phone';
+            } else {
+                alert(resp.message);
             }
         });
     }
@@ -282,7 +281,6 @@ define(['jquery', 'pagination', 'common'], function (require, exports, module) {
                 alert(resp.message);
                 isRegister = false;
             }
-
         });
     }
 

@@ -412,8 +412,8 @@ public class EBusinessUserController extends BaseController {
         model.put("code", 500);
         model.put("type", 1);
 
-        if(nickName.length() > 20) {
-            model.put("message","昵称太长");
+        if (nickName.length() > 20) {
+            model.put("message", "昵称太长");
             return model;
         }
         if (!checkEmailUserNamePhoneNumber(email, userName, phoneNumber, model)) {
@@ -423,7 +423,7 @@ public class EBusinessUserController extends BaseController {
             Validate validate = userService.validatePhoneNumber(phoneNumber, code, cacheKeyId);
             flag = validate.isOk();
             if (!flag) {
-                model.put("message",validate.getMessage());
+                model.put("message", validate.getMessage());
                 return model;
             }
         } else if (!"".equals(email)) {
@@ -446,13 +446,11 @@ public class EBusinessUserController extends BaseController {
                         processRegister(email, userEntry.getEmailValidateCode());
                     }
                 }).start();
-
                 model.put("code", 200);
                 model.put("type", 2);
                 model.put("message", userEntry.getEmail() + "$" + userEntry.getEmailValidateCode());
                 return model;
             }
-
             model.put("message", "注册成功");
             model.put("code", 200);
             // 登录
@@ -601,8 +599,7 @@ public class EBusinessUserController extends BaseController {
         num += RandomUtils.nextInt(Constant.MIN_PASSWORD);
         SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
         Date t = sdf.parse(time);
-        EVoucherEntry eVoucherEntry = new EVoucherEntry(userId, num, amount, t.getTime(), 0, 1);
-        return eVoucherEntry;
+        return new EVoucherEntry(userId, num, amount, t.getTime(), 0, 1);
     }
 
 

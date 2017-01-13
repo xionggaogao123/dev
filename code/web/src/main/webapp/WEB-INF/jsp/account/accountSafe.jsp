@@ -118,7 +118,7 @@
                 <li>
                     <span>验证邮箱：</span>
                     <span id="verify-email"></span>
-                    <button class="btn-xg-email">修改</button>
+                    <button class="btn-xg-email" hidden>修改</button>
                 </li>
                 <li>
                     <span>验证手机：</span>

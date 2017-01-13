@@ -201,6 +201,7 @@ public class AccountController extends BaseController {
         if (bindValidate.isOk()) {
             result.put("code", "200");
             result.put("message", "绑定成功");
+            userService.updateUserPhone(getUserId(), phone);
         } else {
             result.put("message", bindValidate.getMessage());
         }
@@ -424,56 +425,6 @@ public class AccountController extends BaseController {
     }
 
     /**
-     * 更改用户邮箱
-     */
-    @RequestMapping("/changeUserEmail")
-    @ResponseBody
-    public RespObj changeUserEmail(String email) {
-        UserEntry userEntry = userService.findByEmail(email);
-        if (userEntry != null && getUserId().equals(userEntry.getID())) {
-            return RespObj.FAILD("邮箱已经绑定自己了，无需再次绑定");
-        }
-        if (userEntry != null && !getUserId().equals(userEntry.getID())) {
-            return RespObj.FAILD("邮箱被别人绑定了");
-        }
-        userService.updateUserEmail(getUserId(), email);
-        return RespObj.SUCCESS("修改成功");
-    }
-
-    /**
-     * 更改用户手机号
-     */
-    @RequestMapping("/changeUserPhone")
-    @ResponseBody
-    public RespObj changeUserPhone(String mobile, String code, String cacheKeyId) {
-        UserEntry userEntry = userService.findByMobile(mobile);
-        if (userEntry != null && getUserId().equals(userEntry.getID())) {
-            return RespObj.FAILD("手机号是自己的，已经绑定了无需绑定");
-        }
-
-        if (userEntry != null && !getUserId().equals(userEntry.getID())) {
-            return RespObj.FAILD("该手机号已经被别人绑定了");
-        }
-
-        String cacheKey = CacheHandler.getKeyString(CacheHandler.CACHE_SHORTMESSAGE, cacheKeyId);
-        String value = CacheHandler.getStringValue(cacheKey);
-        if (StringUtils.isBlank(value)) {
-            return RespObj.FAILD("验证码失效，请重新获取");
-        }
-        String[] cache = value.split(",");
-        if (!cache[1].equals(mobile)) {
-            return RespObj.FAILD("注册失败：手机号码与验证码不匹配");
-        }
-
-        if (cache[0].equals(code)) {
-            userService.updateUserPhone(getUserId(), mobile);
-            return RespObj.SUCCESS("验证成功");
-        }
-
-        return RespObj.FAILD("验证失败");
-    }
-
-    /**
      * 第三方登录信息
      */
     @RequestMapping("/thirdLoginInfo")
@@ -483,26 +434,6 @@ public class AccountController extends BaseController {
         map.put("isBindQQ", userService.isBindQQ(getUserId()));
         map.put("isBindWechat", userService.isBindWechat(getUserId()));
         return RespObj.SUCCESS(map);
-    }
-
-    /**
-     * 三种情况：
-     * 1.手机号是自己的
-     * 2.手机号被别人绑定
-     * 3.手机号未被绑定
-     */
-    @RequestMapping("/checkPhoneCanUse")
-    @ResponseBody
-    public RespObj checkPhoneCanUse(String mobile) {
-        UserEntry userEntry = userService.findByMobile(mobile);
-        if (userEntry != null && userEntry.getID().equals(getUserId())) {
-            return RespObj.FAILD("你已经绑定这个手机号了");
-        }
-        if (userEntry != null && !userEntry.getID().equals(getUserId())) {
-            return RespObj.FAILD("手机被别人绑定了");
-        }
-
-        return RespObj.SUCCESS;
     }
 
     /**
@@ -558,6 +489,7 @@ public class AccountController extends BaseController {
     @ResponseBody
     public RespObj unsetPhone(String phone) {
         userService.clearUserPhone(phone);
+        accountService.clearPhone(phone);
         return RespObj.SUCCESS;
     }
 

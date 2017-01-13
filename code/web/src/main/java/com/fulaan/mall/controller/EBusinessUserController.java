@@ -65,7 +65,7 @@ public class EBusinessUserController extends BaseController {
 
     //激活邮箱地址
     private static final String validateUrl = "http://fulaan.com/mall/users/emailValidate.do?";
-    private static final Logger EBusinessUserController = Logger.getLogger("EBusinessUserController");
+    private static final Logger EBusinessUserController = Logger.getLogger(EBusinessUserController.class);
 
     @Autowired
     private UserService userService;
@@ -84,34 +84,25 @@ public class EBusinessUserController extends BaseController {
     @RequestMapping(value = "/sendInsetMessage", method = RequestMethod.GET)
     @ResponseBody
     public Map<String, Object> shortMessage(HttpServletRequest request, HttpServletResponse response) {
-
+        EBusinessUserController.info("进入-------");
         Map<String, Object> model = new HashMap<String, Object>();
         List<String> mobiles= KeyWordFilterUtil.message_list;
+        EBusinessUserController.info(mobiles);
         String msg = "【复兰教育社区】冬季大赛来袭！火热“春节才艺秀”、“家乡的冬天”摄影比赛，缤纷大奖，邀你参加！登录“复兰教育社区”APP，进入【发现】中的【大赛】版块或访问www.fulaan.com的【大赛】版块参与比赛。";
         try {
-            List<String> send=new ArrayList<String>();
+            EBusinessUserController.info("开始-----");
             for(String mobile:mobiles) {
-                send.add(mobile);
-                if(send.size()==2) {
-                    sendMessageInfo(send,msg);
-                    send.clear();
-                }
+                sendMessageInfo(mobile,msg);
             }
-            if(send.size()>0){
-                sendMessageInfo(send,msg);
-            }
+            EBusinessUserController.info("结束-------");
         } catch (Exception e) {
-            e.printStackTrace();
+            EBusinessUserController.error("", e);
         }
         return model;
     }
 
-    private void sendMessageInfo(List<String> send,String msg)throws Exception{
-        StringBuffer buffer=new StringBuffer();
-        for(String item:send){
-            buffer.append(item+",");
-        }
-        String mobile=buffer.toString().substring(0,buffer.toString().length()-1);
+    private void sendMessageInfo(String mobile,String msg)throws Exception{
+        System.out.println(mobile);
         String resp = batchSend(url, account, pswd, mobile, msg, needstatus, product, extno);
         String responseCode = resp.split("\\n")[0].split(",")[1];
         if (responseCode.equals("0")) {
@@ -119,6 +110,7 @@ public class EBusinessUserController extends BaseController {
             Thread.sleep(2000);
         } else {
             Thread.sleep(2000);
+            EBusinessUserController.info("失败"+mobile);
         }
     }
 

@@ -282,8 +282,19 @@ define(['jquery', 'pagination', 'common'], function (require, exports, module) {
         })
 
         $('body').on('click','.vote-cont .div2 .li3',function(){
-          var length=$('.vote-cont .div2 .li2').length;
+           var length=$('.vote-cont .div2 .li2').length;
+           if(length==10){
+               alert("选项最多10条");
+           }else{
 
+               var len=length+1;
+               var str="<li class=\"li2\">"+len+".<i></i><input type=\"text\"></li>";
+               $(this).before(str);
+           }
+        })
+
+        $('body').on('click','.vote-cont .div2 .li2 i',function(){
+            $(this).closest('li').remove();
         })
 
         $('body').on('click', '.p-doc em', function () {

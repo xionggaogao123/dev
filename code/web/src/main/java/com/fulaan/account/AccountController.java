@@ -235,7 +235,7 @@ public class AccountController extends BaseController {
     public RespObj verifyAccount(String name, String verifyCode, @CookieValue(Constant.COOKIE_VALIDATE_CODE) String verifyKey) {
         Map<String, Object> result = new HashMap<String, Object>();
         if (!accountService.checkVerifyCode(verifyCode, verifyKey)) {
-            return RespObj.FAILD("验证码不正确");
+            return RespObj.FAILDWithErrorMsg("验证码不正确");
         }
         Pattern userNamePattern = Pattern.compile(Validator.REGEX_USERNAME);
         if (userNamePattern.matcher(name).matches()) {

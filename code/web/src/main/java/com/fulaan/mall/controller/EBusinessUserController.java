@@ -11,6 +11,7 @@ import com.fulaan.mall.service.EBusinessVoucherService;
 import com.fulaan.pojo.Validate;
 import com.fulaan.user.controller.UserController;
 import com.fulaan.user.service.UserService;
+import com.fulaan.utils.KeyWordFilterUtil;
 import com.pojo.app.SessionValue;
 import com.pojo.ebusiness.EVoucherEntry;
 import com.pojo.forum.FInvitationEntry;
@@ -64,7 +65,7 @@ public class EBusinessUserController extends BaseController {
 
     //激活邮箱地址
     private static final String validateUrl = "http://fulaan.com/mall/users/emailValidate.do?";
-    private static final Logger EBusinessUserController = Logger.getLogger("EBusinessUserController");
+    private static final Logger EBusinessUserController = Logger.getLogger(EBusinessUserController.class);
 
     @Autowired
     private UserService userService;
@@ -83,24 +84,35 @@ public class EBusinessUserController extends BaseController {
     @RequestMapping(value = "/sendInsetMessage", method = RequestMethod.GET)
     @ResponseBody
     public Map<String, Object> shortMessage(HttpServletRequest request, HttpServletResponse response) {
-
+        EBusinessUserController.info("进入-------");
         Map<String, Object> model = new HashMap<String, Object>();
-        String mobile="18817366135";
+        List<String> mobiles= KeyWordFilterUtil.message_list;
+        EBusinessUserController.info(mobiles);
         String msg = "【复兰教育社区】冬季大赛来袭！火热“春节才艺秀”、“家乡的冬天”摄影比赛，缤纷大奖，邀你参加！登录“复兰教育社区”APP，进入【发现】中的【大赛】版块或访问www.fulaan.com的【大赛】版块参与比赛。";
         try {
-            String resp = batchSend(url, account, pswd, mobile, msg, needstatus, product, extno);
-            String responseCode = resp.split("\\n")[0].split(",")[1];
-            if (responseCode.equals("0")) {
-                model.put("code", 200);
-                model.put("message", resp);
+            EBusinessUserController.info("开始-----");
+            for(String mobile:mobiles) {
+                sendMessageInfo(mobile,msg);
             }
-
+            EBusinessUserController.info("结束-------");
         } catch (Exception e) {
-            e.printStackTrace();
+            EBusinessUserController.error("", e);
         }
         return model;
     }
 
+    private void sendMessageInfo(String mobile,String msg)throws Exception{
+        System.out.println(mobile);
+        String resp = batchSend(url, account, pswd, mobile, msg, needstatus, product, extno);
+        String responseCode = resp.split("\\n")[0].split(",")[1];
+        if (responseCode.equals("0")) {
+            EBusinessUserController.info(mobile);
+            Thread.sleep(2000);
+        } else {
+            Thread.sleep(2000);
+            EBusinessUserController.info("失败"+mobile);
+        }
+    }
 
     /**
      * 获取验证码
@@ -156,57 +168,6 @@ public class EBusinessUserController extends BaseController {
         }
         return model;
     }
-
-    /**
-     * 获取验证码无图片验证码
-     *
-     * @param mobile
-     * @return
-     */
-    @SessionNeedless
-    @RequestMapping(value = "/textMessags", method = RequestMethod.GET)
-    @ResponseBody
-    public Map<String, Object> textMessags(String mobile) {
-
-        Map<String, Object> model = new HashMap<String, Object>();
-        model.put("code", 500);
-        if (!ValidationUtils.isRequestModile(mobile)) {
-            model.put("message", "非法手机");
-            return model;
-        }
-        String mobileNumber = CacheHandler.getKeyString(CacheHandler.CACHE_MOBILE, mobile);
-
-        String mobileNumberTime = CacheHandler.getStringValue(mobileNumber);
-        if (StringUtils.isNotBlank(mobileNumberTime)) {
-            model.put("message", "获取验证码太频繁");
-            return model;
-        }
-
-        model.put("message", "获取验证码失败");
-        Random random = new Random();
-        int num = random.nextInt(899999) + 100000;
-        String cacheKeyId = new ObjectId().toString();
-        model.put("cacheKeyId", cacheKeyId);
-        String cacheKey = CacheHandler.getKeyString(CacheHandler.CACHE_SHORTMESSAGE, cacheKeyId);
-        CacheHandler.cache(cacheKey, num + "," + mobile, Constant.SESSION_FIVE_MINUTE);//5分钟
-
-        CacheHandler.cache(mobileNumber, String.valueOf(System.currentTimeMillis()), Constant.SESSION_ONE_MINUTE);//一分钟
-
-        String msg = "亲爱的客户您好，您的验证码为" + num + "，有效期为5分钟。复兰商城客服绝不会索取此验证码，请勿将验证码告诉他人。";
-        try {
-            String resp = batchSend(url, account, pswd, mobile, msg, needstatus, product, extno);
-            String responseCode = resp.split("\\n")[0].split(",")[1];
-            if (responseCode.equals("0")) {
-                model.put("code", 200);
-                model.put("message", resp);
-            }
-
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-        return model;
-    }
-
 
     private Boolean checkVerifyCode(String verifyCode, HttpServletRequest request, HttpServletResponse response) {
         //验证码
@@ -415,13 +376,6 @@ public class EBusinessUserController extends BaseController {
 
     /**
      * 用户注册
-     *
-     * @param cacheKeyId
-     * @param code
-     * @param email
-     * @param userName
-     * @param passWord
-     * @param phoneNumber
      * @return
      */
     @SessionNeedless

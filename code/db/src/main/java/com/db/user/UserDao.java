@@ -268,6 +268,17 @@ public class UserDao extends BaseDao {
         return writeResult.getN();
     }
 
+    public int updateBindUserMobile(ObjectId uid, String mobile) {
+        BasicDBObject query = new BasicDBObject()
+                .append(Constant.ID, uid);
+        BasicDBObject updateValue = new BasicDBObject()
+                .append("bmn", mobile);
+        BasicDBObject update = new BasicDBObject()
+                .append(Constant.MONGO_SET, updateValue);
+        WriteResult writeResult = update(MongoFacroty.getAppDB(), Constant.COLLECTION_USER_NAME, query, update);
+        return writeResult.getN();
+    }
+
     public void clearUserMobile(String mobile) {
         BasicDBObject query = new BasicDBObject()
                 .append("mn", mobile);
@@ -279,6 +290,24 @@ public class UserDao extends BaseDao {
 
         BasicDBObject query2 = new BasicDBObject()
                 .append("nm", mobile);
+        BasicDBObject updateValue2 = new BasicDBObject()
+                .append("nm", new ObjectId().toString());
+        BasicDBObject update2 = new BasicDBObject()
+                .append(Constant.MONGO_SET, updateValue2);
+        update(MongoFacroty.getAppDB(), Constant.COLLECTION_USER_NAME, query2, update2);
+    }
+
+    public void clearUserEmail(String email) {
+        BasicDBObject query = new BasicDBObject()
+                .append("e", email);
+        BasicDBObject updateValue = new BasicDBObject()
+                .append("e", "");
+        BasicDBObject update = new BasicDBObject()
+                .append(Constant.MONGO_SET, updateValue);
+        update(MongoFacroty.getAppDB(), Constant.COLLECTION_USER_NAME, query, update);
+
+        BasicDBObject query2 = new BasicDBObject()
+                .append("nm", email);
         BasicDBObject updateValue2 = new BasicDBObject()
                 .append("nm", new ObjectId().toString());
         BasicDBObject update2 = new BasicDBObject()

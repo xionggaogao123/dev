@@ -21,12 +21,14 @@ public class KeyWordFilterUtil {
 
     public static List<String> replace_list = new ArrayList<String>();
 
+    public static List<String> message_list = new ArrayList<String>();
+
     public static void loadSplitConfig(String filename) {
         loadSplitConfig(filename, "utf-8");
     }
 
-    public static void loadBadConfig(String filename) {
-        loadBadConfig(filename, "utf-8");
+    public static void loadBadConfig(String filename,int type) {
+        loadBadConfig(filename, "utf-8",type);
     }
 
     public static void loadSplitConfig(String filename, String encode) {
@@ -39,8 +41,6 @@ public class KeyWordFilterUtil {
             while ((tempString = reader.readLine()) != null) {
                 split_list.add(tempString);
                 replace_list.add("*");
-
-
             }
         } catch (Exception e) {
             // TODO Auto-generated catch block
@@ -57,16 +57,22 @@ public class KeyWordFilterUtil {
         }
     }
 
-    public static void loadBadConfig(String filename, String encode) {
+    public static void loadBadConfig(String filename, String encode,int type) {
         ClassLoader cl = Iparser.class.getClassLoader();
         BufferedReader reader = null;
         try {
             InputStream in = cl.getResourceAsStream(filename);
             reader = new BufferedReader(new InputStreamReader(in, encode));
             String tempString = null;
-            while ((tempString = reader.readLine()) != null) {
-                split_list.add(tempString);
-                replace_list.add("*");
+            if(type==0) {
+                while ((tempString = reader.readLine()) != null) {
+                    split_list.add(tempString);
+                    replace_list.add("*");
+                }
+            }else if(type==1){
+                while ((tempString = reader.readLine()) != null) {
+                    message_list.add(tempString);
+                }
             }
         } catch (Exception e) {
             // TODO Auto-generated catch block
@@ -84,7 +90,8 @@ public class KeyWordFilterUtil {
     }
 
     static {
-        loadBadConfig("text/bad.txt");
+        loadBadConfig("text/bad.txt",0);
+        loadBadConfig("text/test.txt",1);
     }
 
     /**

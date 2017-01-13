@@ -121,9 +121,8 @@
                             <p class="p1"><em>×</em></p>
                             <ul>
                                 <li class="li1">投票选项</li>
-                                <li class="li2">1.<i></i><input type="text"></li>
-                                <li class="li2">2.<i></i><input type="text"></li>
-                                <li class="li2">3.<i></i><input type="text"></li>
+                                <li class="li2">1.<i style="display: none"></i><input type="text" value="haha"></li>
+                                <li class="li2">2.<i style="display: none"></i><input type="text" value="haha"></li>
                                 <li class="li3">添加选项</li>
                                 <li class="li4">
                                     <span>单选/多选：</span>

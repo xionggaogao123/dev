@@ -11,11 +11,16 @@ define(['jquery', 'pagination', 'common'], function (require, exports, module) {
     };
     var bind = 1;
 
+    var validateCode = false;
+
     var edit_pass_check = {
         password: false,
         n_password: false,
         n_r_password: false
     };
+
+    var timer = '';
+    var isClick = false;
 
     var edit_phone_check = {
         phone: false,
@@ -43,6 +48,7 @@ define(['jquery', 'pagination', 'common'], function (require, exports, module) {
             $('.wind-psw').fadeIn();
             $('.bg').fadeIn();
         });
+
         $('.btn-xg-phone').click(function () {
             $('.wind-phone').fadeIn();
             $('.bg').fadeIn();
@@ -68,7 +74,6 @@ define(['jquery', 'pagination', 'common'], function (require, exports, module) {
             edit_pass_check.n_password = false;
             edit_pass_check.n_r_password = false;
         });
-
 
         $('.btn-xg-email').click(function () {
             $('.wind-email1').fadeIn();
@@ -149,9 +154,13 @@ define(['jquery', 'pagination', 'common'], function (require, exports, module) {
         body.on('click', '.ul-infor button', function () {
             var requestData = {};
             requestData.nickName = $('.nickname').val();
-
             if (requestData.nickName.length > 20) {
                 alert("昵称最多20个字符");
+                return;
+            }
+
+            if(requestData.nickName.length < 2) {
+                alert("昵称最少2个字符");
                 return;
             }
             requestData.sex = $('input[type="radio"][name="sex"]:checked').val();
@@ -210,7 +219,6 @@ define(['jquery', 'pagination', 'common'], function (require, exports, module) {
                         alert("修改成功");
                         $('.edit-pass').fadeOut();
                         $('.bg').fadeOut();
-
                         $('.edit-pass .password').val('');
                         $('.edit-pass .n-password').val('');
                         $('.edit-pass .n-r-password').val('');
@@ -243,7 +251,6 @@ define(['jquery', 'pagination', 'common'], function (require, exports, module) {
 
 
         body.on('click', '.wind-email2 p.p-btn-ok', function () {
-
             var email_tip = $('.wind-email2 .sp3');
             var email = $('.wind-email2 input.email-input').val();
             var pattern = /^([a-zA-Z0-9._-])+@([a-zA-Z0-9_-])+(.[a-zA-Z0-9_-])+/;
@@ -269,68 +276,33 @@ define(['jquery', 'pagination', 'common'], function (require, exports, module) {
         });
 
         body.on('blur', '.wind-phone .phone', function () {
-            var self = $(this);
-            var pattern = /(^(([0\+]\d{2,3}-)?(0\d{2,3})-)(\d{7,8})(-(\d{3,}))?$)|(^0{0,1}1[3|4|5|6|7|8|9][0-9]{9}$)/;
-            if (pattern.test(self.val())) {
-                common.getData('/account/checkPhoneCanUse.do', {mobile: self.val()}, function (resp) {
-                    if (resp.code == '200') {
-                        self.parent().find('.phone-tip').hide();
-                        edit_phone_check.phone = true;
-                    } else {
-                        self.parent().find('.phone-tip').text(resp.message);
-                        self.parent().find('.phone-tip').show();
-                        edit_phone_check.phone = false;
-                    }
-                });
+            var pattern = /^1[3|4|5|7|8][0-9]{9}$/;
+            var phone = $('#phone').val();
+            if (pattern.test(phone)) {
+
             } else {
-                self.parent().find('.phone-tip').text('手机号不合法');
-                self.parent().find('.phone-tip').show();
-                edit_phone_check.phone = false;
+                $('.phone-tip').text('手机号不合法');
+                $('.phone-tip').show();
             }
+        });
+
+        body.on('click','#imgObj',function () {
+            $(this).attr('src','/verify/verifyCode.do?date=' + new Date());
         });
 
         body.on('click', '#sendText', function () {
-            var mobile = $('.wind-phone .phone').val();
-            if (!edit_phone_check.phone) {
-                return;
-            }
-            common.getData('/mall/users/textMessags.do', {mobile: mobile}, function (resp) {
-                if (resp.code == '200') {
-                    cacheKeyId = resp.cacheKeyId;
-                    edit_phone_check.code = true;
-                } else {
-                    edit_phone_check.code = false;
-                }
-            });
+            var mobile = $('#phone').val();
+            var verifyCode = $('#verifyCode').val();
+            sendPhoneText(mobile,verifyCode);
         });
 
         body.on('click', '.wind-phone p.p-btn-ok', function () {
-            var code = $('.wind-phone input.code').val();
-            var mobile = $('.wind-phone input.phone').val();
-            if (edit_phone_check.phone && edit_phone_check.code) {
-                var requestData = {
-                    phone: mobile,
-                    code: code,
-                    cacheKeyId: cacheKeyId
-                };
-                common.getData('/account/bindPhoneNumber.do', requestData, function (resp) {
-                    if (resp.code == '200') {
-                        $('.windd').fadeOut();
-                        $('.bg').fadeOut();
-                        $('.wind-phone input.code').val('');
-                        $('.wind-phone input.phone').val('');
-                        getInfo();
-                    } else {
-                        alert(resp.message);
-                    }
-                });
-            } else {
-                alert("数据填写不正确");
-            }
+            var code = $('#code').val();
+            var mobile = $('#phone').val();
+            bindPhoneNumber(mobile,code);
         });
 
         body.on('click', '.third-qq button', function () {
-
             if (thirdBind.qq) {
                 $('#isRemoveBind').fadeIn();
                 $('.bg').fadeIn();
@@ -348,7 +320,6 @@ define(['jquery', 'pagination', 'common'], function (require, exports, module) {
             } else {
                 window.open('/account/wechatBind.do', "TencentLogin", "width=800,height=600,menubar=0,scrollbars=1, resizable=1,status=1,titlebar=0,toolbar=0,location=1");
             }
-
         });
 
         body.on('click', '#isRemoveBind .p-btn-ok', function () {
@@ -356,12 +327,77 @@ define(['jquery', 'pagination', 'common'], function (require, exports, module) {
         });
     });
 
+    function sendPhoneText(phone, verifyCode) {
+        if(phoneValid() && !isClick) {
+            common.getData("/mall/users/messages.do", {
+                mobile: phone,
+                verifyCode: verifyCode
+            }, function (resp) {
+                if (resp.code == '200') {
+                    cacheKeyId = resp.cacheKeyId;
+                    validateCode = true;
+                    isClick = true;
+                    $('#sendText').css({
+                        "background-color": '#B5B5B5'
+                    });
+                    $('#sendText').text('60');
+                    var number = 59;
+                    timer = window.setInterval(function () {
+                        if (number === 0) {
+                            clearInterval(timer);
+                            $('#sendText').css({
+                                "background-color": '#FF9F19'
+                            });
+                            $('#sendText').text('发送验证码');
+                            isClick = false;
+                        } else {
+                            $('#sendText').text(number--);
+                        }
+                    }, 1000);
+                } else {
+                    alert(resp.message);
+                }
+            });
+        }
+    }
+
     function getMyTags() {
         common.getData('/mate/getUserMateData.do', {}, function (resp) {
             basicData.tags = resp.message.tags;
             basicData.times = resp.message.times;
             update(basicData);
         });
+    }
+
+    function bindPhoneNumber(mobile,code) {
+        var requestData = {
+            phone: mobile,
+            code: code,
+            cacheKeyId: cacheKeyId
+        };
+        common.getData('/account/bindPhoneNumber.do', requestData, function (resp) {
+            if (resp.code == '200') {
+                $('.windd').fadeOut();
+                $('.bg').fadeOut();
+                $('.wind-phone input.code').val('');
+                $('.wind-phone input.phone').val('');
+                getInfo();
+            } else {
+                alert(resp.errorMessage);
+            }
+        });
+    }
+
+    function phoneValid() {
+        var pattern = /^1[3|4|5|7|8][0-9]{9}$/;
+        if (pattern.test($('#phone').val())) {
+            $('.phone-tip').hide();
+            return true;
+        } else {
+            $('.phone-tip').text('手机不合法');
+            $('.phone-tip').show();
+        }
+        return false;
     }
 
     function update(data) {
@@ -415,6 +451,7 @@ define(['jquery', 'pagination', 'common'], function (require, exports, module) {
             if (resp.phone == null || resp.phone == '') {
                 $('#verify-phone').append('<em>未设置</em>');
                 $('.btn-xg-phone').text('设置');
+                $('.btn-xg-phone').show();
             } else {
                 $('#verify-phone').text(resp.phone);
             }

@@ -5,7 +5,9 @@ import com.db.app.RegionDao;
 import com.db.fcommunity.LoginLogDao;
 import com.db.forum.FLevelDao;
 import com.db.forum.FPostDao;
-import com.db.school.*;
+import com.db.school.ClassDao;
+import com.db.school.InterestClassDao;
+import com.db.school.SchoolDao;
 import com.db.user.UserDao;
 import com.fulaan.base.BaseService;
 import com.fulaan.cache.CacheHandler;
@@ -20,17 +22,22 @@ import com.fulaan.util.check.FastCheck;
 import com.fulaan.utils.KeyWordFilterUtil;
 import com.mongodb.BasicDBObject;
 import com.mongodb.DBObject;
-import com.pojo.app.*;
+import com.pojo.app.FieldValuePair;
+import com.pojo.app.Platform;
+import com.pojo.app.RegionEntry;
+import com.pojo.app.SessionValue;
 import com.pojo.ebusiness.SortType;
 import com.pojo.fcommunity.FLoginLogEntry;
-import com.pojo.school.*;
+import com.pojo.school.ClassEntry;
+import com.pojo.school.ClassInfoDTO;
+import com.pojo.school.InterestClassEntry;
+import com.pojo.school.SchoolEntry;
 import com.pojo.user.*;
 import com.pojo.utils.LoginLog;
 import com.sys.constants.Constant;
 import com.sys.exceptions.IllegalParamException;
 import com.sys.utils.AvatarUtils;
 import com.sys.utils.DateTimeUtils;
-import com.sys.utils.MD5Utils;
 import com.sys.utils.ValidationUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.log4j.Logger;
@@ -161,10 +168,12 @@ public class UserService extends BaseService {
         String value = CacheHandler.getStringValue(cacheKey);
         if (StringUtils.isBlank(value)) {
             validate.setMessage("验证码失效，请重新获取");
+            return validate;
         }
         String[] cache = value.split(",");
         if (!cache[1].equals(phoneNumber)) {
             validate.setMessage("注册失败：手机号码与验证码不匹配");
+            return validate;
         }
 
         if (cache[0].equals(code)) {
@@ -944,12 +953,6 @@ public class UserService extends BaseService {
         return userDao.findByUserName(name.toLowerCase());
     }
 
-
-    public UserEntry findByPersonalID(String personalId) {
-        return userDao.findByPersonalID(personalId);
-    }
-
-
     public UserDTO findByRegular(String regular) {
         UserEntry entry;
         entry = userDao.findByUserName(regular);
@@ -1006,56 +1009,6 @@ public class UserService extends BaseService {
         }
 
         return e;
-    }
-
-    /**
-     * 密码验证
-     *
-     * @param password
-     * @param user
-     * @return
-     */
-    public boolean isValidPassword(String password, UserEntry user) {
-
-        if (!ValidationUtils.isRequestPassword(password) || (!user.getPassword().equalsIgnoreCase(MD5Utils.getMD5String(password)) && !user.getPassword().equalsIgnoreCase(password))) {
-
-            if (!ValidationUtils.isRequestPassword(password)) {
-                return false;
-            }
-            if (!user.getPassword().equalsIgnoreCase(MD5Utils.getMD5String(password)) && !user.getPassword().equalsIgnoreCase(password)) {
-                return false;
-            }
-        }
-
-        return true;
-    }
-
-    /**
-     * 是否是有效用户
-     *
-     * @param user
-     * @return
-     */
-    public boolean isValidUser(UserEntry user) {
-
-        if (Constant.ONE == user.getUserType()) //有效时间用户
-        {
-            long validBeginTime = user.getValidBeginTime();
-            long validTime = user.getValidTime();
-            if (0L == validBeginTime) //第一次登陆
-            {
-                try {
-                    update(user.getID(), "vabt", System.currentTimeMillis());
-                } catch (IllegalParamException e1) {
-                    e1.printStackTrace();
-                }
-            } else {
-                if (System.currentTimeMillis() > validBeginTime + validTime * 1000) {
-                    return false;
-                }
-            }
-        }
-        return true;
     }
 
     public void addScore(ObjectId uid, long score) {
@@ -1151,10 +1104,6 @@ public class UserService extends BaseService {
         return value;
     }
 
-    public void addUserPhone(ObjectId uid, String phone) {
-        userDao.updateUserMobile(uid, phone);
-    }
-
     public void updateUserEmailStatusById(ObjectId id) {
         userDao.updateUserEmailStatusById(id);
     }
@@ -1213,10 +1162,6 @@ public class UserService extends BaseService {
         userDao.updateSexById(userId, sex);
     }
 
-    public void updateUserEmail(ObjectId userId, String email) {
-        userDao.updateEmailById(userId, email);
-    }
-
     public boolean isBindQQ(ObjectId userId) {
         return thirdLoginDao.isBindQQ(userId);
     }
@@ -1225,12 +1170,16 @@ public class UserService extends BaseService {
         return thirdLoginDao.isBindWechat(userId);
     }
 
-    public void updateUserPhone(ObjectId userId, String mobile) {
-        userDao.updateUserMobile(userId, mobile);
+    public void updateBindUserMobile(ObjectId userId,String mobile) {
+        userDao.updateBindUserMobile(userId,mobile);
     }
 
     public void clearUserPhone(String phone) {
         userDao.clearUserMobile(phone);
+    }
+
+    public void clearUserEmail(String email) {
+        userDao.clearUserEmail(email);
     }
 
     public void removeThirdBind(ObjectId userId, ThirdType thirdType) {

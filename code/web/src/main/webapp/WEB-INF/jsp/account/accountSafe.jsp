@@ -123,7 +123,7 @@
                 <li>
                     <span>验证手机：</span>
                     <span id="verify-phone"></span>
-                    <button class="btn-xg-phone">修改</button>
+                    <button class="btn-xg-phone" hidden>修改</button>
                 </li>
             </ul>
         </div>
@@ -134,14 +134,14 @@
             <div>
                 <div class="d-qq dq fl third-qq">
                     <img src="" class="avatar">
-                    <span class="sp1"><!--class="sp2"时显示为已关联状态-->
+                    <span class="sp1">
                                 <img class="img1" src="/static/images/account/white_qq.png">
                             </span>
                     <button class="btn1">立即关联</button>
                 </div>
                 <div class="d-qq dw fr third-wechat">
                     <img src="" class="avatar">
-                    <span class="sp2"><!--class="sp1"时显示为未关联状态-->
+                    <span class="sp2">
                                 <img class="img2" src="/static/images/account/white_wechat.png">
                             </span>
                     <button class="btn2">解除关联</button>
@@ -177,7 +177,6 @@
     <p class="p-btn-ok">确定</p>
 </div>
 
-
 <!-- 设置手机弹窗 -->
 <div class="wind-phone windd">
     <p class="p1">设置手机号<em>×</em></p>
@@ -185,17 +184,21 @@
         <span class="sp1">请输入手机号码：</span>
         <span class="sp3 phone-tip" style="display: none"> </span>
     </p>
-    <input type="text" title="" class="phone">
+    <input type="text" title="" id="phone">
+    <p class="p2">
+        <span class="sp1">图片验证码：</span>
+    </p>
+    <input type="text" style="display: inline;width: 178px" id="verifyCode">
+    <img id="imgObj" alt="" src="/verify/verifyCode.do"/>
     <p class="p2">
         <span class="sp1">请输入验证码：</span>
     </p>
     <div class="d-yz">
-        <input type="text" title="" class="code">
+        <input type="text" title="" class="code" id="code">
         <span id="sendText">发送验证码</span>
     </div>
     <p class="p-btn-ok">确定</p>
 </div>
-
 
 <!-- 修改邮箱 -->
 <div class="wind-email1 windd" id="verify-wind">

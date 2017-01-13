@@ -67,7 +67,11 @@ define(['jquery', 'pagination', 'common'], function (require, exports, module) {
         $('.ul1 button').click(function () {
             var code = $.trim($('#code').val());
             var phone = $.trim($('#phone').val());
-            if(phoneValid() && validateCode) {
+            if(!$('#argument1').is(':checked')) {
+                alert('未同意社区协议');
+                return;
+            }
+            if(phoneValid() && validateCode && codeValid()) {
                 validate_phone(phone, code);
             }
         });
@@ -75,6 +79,10 @@ define(['jquery', 'pagination', 'common'], function (require, exports, module) {
         $('.ul2 button').click(function () {
             var email = $('#user-email').val();
             var pattern = /^([a-zA-Z0-9._-])+@([a-zA-Z0-9_-])+(.[a-zA-Z0-9_-])+/;
+            if(!$('#argument2').is(':checked')) {
+                alert('未同意社区协议');
+                return;
+            }
             if (pattern.test(email)) {
                 var requestParm = {email: email};
                 common.getData('/account/userEmailCheck.do', requestParm, function (resp) {
@@ -170,7 +178,7 @@ define(['jquery', 'pagination', 'common'], function (require, exports, module) {
 
     function codeValid() {
         if ($('#code').val() == '') {
-            $('#code-alert').text('参数不完整');
+            $('#code-alert').text('请填写验证码');
             $('#code-alert').show();
         } else {
             $('#code-alert').hide();
@@ -245,7 +253,7 @@ define(['jquery', 'pagination', 'common'], function (require, exports, module) {
                 $('.re-cont .ul3').show();
                 registerType = 'phone';
             } else {
-                alert(resp.message);
+                alert(resp.errorMessage);
             }
         });
     }

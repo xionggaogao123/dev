@@ -166,6 +166,8 @@
             $('.ul-luc li:nth-child(2)').addClass('orali');
             $('.ul-luc li:nth-child(1)').addClass('orali');
         });
+
+        var verifyType = 'email';
     </c:if>
 </script>
 </html>

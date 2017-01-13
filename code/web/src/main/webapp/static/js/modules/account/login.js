@@ -68,7 +68,6 @@ define(['jquery', 'pagination', 'common'], function (require, exports, module) {
                                     } else {
                                         $('#user-names').append('<label><input value="' + resp.message[i] + '" type="radio" name="s-count">' + resp.message[i] + '</label>');
                                     }
-
                                 }
                             } else {
                                 hideNames();

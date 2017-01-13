@@ -260,17 +260,24 @@ public class AccountController extends BaseController {
                 List<ObjectId> userIdList = mobileEntry.getUserIds();
                 List<UserDetailInfoDTO> userDetailInfoDTOS = userService.findUserInfoByIds(userIdList);
                 result.put("users", userDetailInfoDTOS);
+                result.put("type", "mobile");
+                result.put("mobile", name);
+                result.put("protectedMobile", getProtectedMobile(name));
+                return RespObj.SUCCESS(result);
             }
-            result.put("type", "mobile");
-            result.put("mobile", name);
-            result.put("protectedMobile", getProtectedMobile(name));
-            return RespObj.SUCCESS(result);
         }
 
         UserEntry userEntry = userService.findByUserName(name);
         if (userEntry != null) {
             result.put("type", "userName");
             result.put("userName", name);
+            return RespObj.SUCCESS(result);
+        }
+
+        if (mobilePattern.matcher(name).matches()) {
+            userEntry = userService.findByMobile(name);
+            result.put("type", "userName");
+            result.put("userName", userEntry.getUserName());
             return RespObj.SUCCESS(result);
         }
 

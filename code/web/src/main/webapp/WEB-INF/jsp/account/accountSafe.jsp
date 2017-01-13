@@ -177,7 +177,6 @@
     <p class="p-btn-ok">确定</p>
 </div>
 
-
 <!-- 设置手机弹窗 -->
 <div class="wind-phone windd">
     <p class="p1">设置手机号<em>×</em></p>
@@ -200,7 +199,6 @@
     </div>
     <p class="p-btn-ok">确定</p>
 </div>
-
 
 <!-- 修改邮箱 -->
 <div class="wind-email1 windd" id="verify-wind">

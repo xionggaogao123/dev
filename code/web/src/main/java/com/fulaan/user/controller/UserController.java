@@ -213,6 +213,16 @@ public class UserController extends BaseController {
             return RespObj.FAILD(validate.getMessage());
         }
         UserEntry e = (UserEntry)validate.getData();
+        SessionValue value = getSessionValue(e);
+        setCookieValue(name, response, ip, e, value);
+
+        RespObj respObj = new RespObj(Constant.SUCCESS_CODE);
+        respObj.setMessage(value);
+        syncHandleInitLogin(e,getIP(),getPlatform());
+        return respObj;
+    }
+
+    private SessionValue getSessionValue(UserEntry e) {
 
         SchoolEntry schoolEntry = null;
         try {
@@ -245,7 +255,10 @@ public class UserController extends BaseController {
             value.setSchoolNavs(schoolEntry.getSchoolNavs());
             value.setSchoolName(schoolEntry.getName());
         }
+        return value;
+    }
 
+    private void setCookieValue(String name, HttpServletResponse response, String ip, UserEntry e, SessionValue value) {
         //放入缓存
         ObjectId cacheUserKey = new ObjectId();
 
@@ -269,11 +282,6 @@ public class UserController extends BaseController {
         } catch (UnsupportedEncodingException e1) {
             logger.error("", e1);
         }
-
-        RespObj respObj = new RespObj(Constant.SUCCESS_CODE);
-        respObj.setMessage(value);
-        syncHandleInitLogin(e,getIP(),getPlatform());
-        return respObj;
     }
 
     /**
@@ -345,7 +353,6 @@ public class UserController extends BaseController {
             @Override
             public void run() {
 
-                System.out.println("haaa================================");
                 if (0l == e.getLastActiveDate()) {
                     String params = e.getID().toString() + 0l;
                     String flkey = CacheHandler.getKeyString(CacheHandler.CACHE_USER_FIRST_LOGIN, params);
@@ -382,21 +389,13 @@ public class UserController extends BaseController {
                 fLogService.loginLog(log);
 
                 initUser(e);
-
-                System.out.println("haaa================================");
             }
         }).start();
     }
 
     private void initUser(UserEntry userEntry) {
 
-        System.out.println("===============================");
         //检查是否注册环信
-
-        UserService userService = new UserService();
-        MateService mateService = new MateService();
-        AccountService accountService = new AccountService();
-        MemberService memberService = new MemberService();
         boolean isRegister = userEntry.isRegisterHuanXin();
         if (!isRegister) {
             String nickName = StringUtils.isNotBlank(userEntry.getNickName()) ? userEntry.getNickName() : userEntry.getUserName();
@@ -430,10 +429,6 @@ public class UserController extends BaseController {
         if (StringUtils.isNotBlank(userEntry.getAvatar())) {
             memberService.updateAllAvatar(userEntry.getID(), userEntry.getAvatar());
         }
-
-        System.out.println("===============================");
-
-
     }
 
     @SessionNeedless

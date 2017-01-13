@@ -242,7 +242,6 @@ public class UserController extends BaseController {
         long time = System.currentTimeMillis();
         FLoginLog log = new FLoginLog(e.getUserName(), e.getNickName(), time, getIP(), getPlatform());
         fLogService.loginLog(log);
-
         if (!ValidationUtils.isRequestPassword(pwd) || (!e.getPassword().equalsIgnoreCase(MD5Utils.getMD5String(pwd)) && !e.getPassword().equalsIgnoreCase(pwd))) {
 
             if (!ValidationUtils.isRequestPassword(pwd)) {
@@ -254,26 +253,32 @@ public class UserController extends BaseController {
                 return faild;
             }
         }
-
         try {
             if (0l == e.getLastActiveDate()) {
                 String params = e.getID().toString() + 0l;
                 String flkey = CacheHandler.getKeyString(CacheHandler.CACHE_USER_FIRST_LOGIN, params);
                 CacheHandler.cache(flkey, Constant.USER_FIRST_LOGIN, Constant.SESSION_FIVE_MINUTE);
             }
-            //更新最后登录日期
-            userService.updateLastActiveDate(e.getID());
-
-            //登录日志
-            FLogDTO fLogDTO = new FLogDTO();
-            fLogDTO.setActionName("login");
-            fLogDTO.setPersonId(e.getID().toString());
-            fLogDTO.setPath("/user/login.do");
-            fLogDTO.setTime(System.currentTimeMillis());
-            fLogService.addFLog(fLogDTO);
-
-            //更新本次活动时间
-            userService.updateInterviewTimeValue(e.getID());
+            new Thread(new Runnable() {
+                @Override
+                public void run() {
+                    //更新最后登录日期
+                    try {
+                        userService.updateLastActiveDate(e.getID());
+                    } catch (IllegalParamException e1) {
+                        e1.printStackTrace();
+                    }
+                    //登录日志
+                    FLogDTO fLogDTO = new FLogDTO();
+                    fLogDTO.setActionName("login");
+                    fLogDTO.setPersonId(e.getID().toString());
+                    fLogDTO.setPath("/user/login.do");
+                    fLogDTO.setTime(System.currentTimeMillis());
+                    fLogService.addFLog(fLogDTO);
+                    //更新本次活动时间
+                    userService.updateInterviewTimeValue(e.getID());
+                }
+            }).start();
         } catch (Exception ex) {
             logger.error("", ex);
         }
@@ -403,6 +408,7 @@ public class UserController extends BaseController {
             mateService.saveMateEntry(userEntry.getID());
         }
         mateService.updateAged(userEntry.getID(), userEntry.getBirthDate());
+        //移动手机号
         if (StringUtils.isNotBlank(userEntry.getMobileNumber())) {
             accountService.bindMobile(userEntry.getID(), userEntry.getMobileNumber());
         }

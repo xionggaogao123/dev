@@ -415,13 +415,6 @@ public class EBusinessUserController extends BaseController {
 
     /**
      * 用户注册
-     *
-     * @param cacheKeyId
-     * @param code
-     * @param email
-     * @param userName
-     * @param passWord
-     * @param phoneNumber
      * @return
      */
     @SessionNeedless

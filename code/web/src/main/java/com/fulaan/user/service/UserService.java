@@ -1229,8 +1229,16 @@ public class UserService extends BaseService {
         userDao.updateUserMobile(userId, mobile);
     }
 
+    public void updateBindUserMobile(ObjectId userId,String mobile) {
+        userDao.updateBindUserMobile(userId,mobile);
+    }
+
     public void clearUserPhone(String phone) {
         userDao.clearUserMobile(phone);
+    }
+
+    public void clearUserEmail(String email) {
+        userDao.clearUserEmail(email);
     }
 
     public void removeThirdBind(ObjectId userId, ThirdType thirdType) {

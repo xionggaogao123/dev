@@ -201,7 +201,7 @@ public class AccountController extends BaseController {
         if (bindValidate.isOk()) {
             result.put("code", "200");
             result.put("message", "绑定成功");
-            userService.updateUserPhone(getUserId(), phone);
+            userService.updateBindUserMobile(getUserId(), phone);
         } else {
             result.put("message", bindValidate.getMessage());
         }
@@ -378,7 +378,6 @@ public class AccountController extends BaseController {
                 return RespObj.FAILD(e.getMessage());
             }
         }
-
         if (StringUtils.isNotBlank(nickName)) {
             userService.updateNickNameById(getUserId().toString(), nickName);
         }
@@ -485,11 +484,17 @@ public class AccountController extends BaseController {
     }
 
 
-    @RequestMapping("/unsetPhone")
+    @RequestMapping("/unsetData")
     @ResponseBody
-    public RespObj unsetPhone(String phone) {
-        userService.clearUserPhone(phone);
-        accountService.clearPhone(phone);
+    public RespObj unsetPhone(String phone,String email) {
+        if(StringUtils.isNotBlank(phone)) {
+            userService.clearUserPhone(phone);
+            accountService.clearPhone(phone);
+        }
+
+        if(StringUtils.isNotBlank(email)) {
+            userService.clearUserEmail(email);
+        }
         return RespObj.SUCCESS;
     }
 

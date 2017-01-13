@@ -243,7 +243,6 @@ define(['jquery', 'pagination', 'common'], function (require, exports, module) {
 
 
         body.on('click', '.wind-email2 p.p-btn-ok', function () {
-
             var email_tip = $('.wind-email2 .sp3');
             var email = $('.wind-email2 input.email-input').val();
             var pattern = /^([a-zA-Z0-9._-])+@([a-zA-Z0-9_-])+(.[a-zA-Z0-9_-])+/;
@@ -330,7 +329,6 @@ define(['jquery', 'pagination', 'common'], function (require, exports, module) {
         });
 
         body.on('click', '.third-qq button', function () {
-
             if (thirdBind.qq) {
                 $('#isRemoveBind').fadeIn();
                 $('.bg').fadeIn();
@@ -348,7 +346,6 @@ define(['jquery', 'pagination', 'common'], function (require, exports, module) {
             } else {
                 window.open('/account/wechatBind.do', "TencentLogin", "width=800,height=600,menubar=0,scrollbars=1, resizable=1,status=1,titlebar=0,toolbar=0,location=1");
             }
-
         });
 
         body.on('click', '#isRemoveBind .p-btn-ok', function () {
@@ -415,6 +412,7 @@ define(['jquery', 'pagination', 'common'], function (require, exports, module) {
             if (resp.phone == null || resp.phone == '') {
                 $('#verify-phone').append('<em>未设置</em>');
                 $('.btn-xg-phone').text('设置');
+                $('.btn-xg-phone').show();
             } else {
                 $('#verify-phone').text(resp.phone);
             }

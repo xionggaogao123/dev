@@ -170,7 +170,7 @@ define(['jquery', 'pagination', 'common'], function (require, exports, module) {
 
     function codeValid() {
         if ($('#code').val() == '') {
-            $('#code-alert').text('参数不完整');
+            $('#code-alert').text('请填写验证码');
             $('#code-alert').show();
         } else {
             $('#code-alert').hide();

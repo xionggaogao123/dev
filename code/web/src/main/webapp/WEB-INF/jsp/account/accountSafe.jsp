@@ -123,7 +123,7 @@
                 <li>
                     <span>验证手机：</span>
                     <span id="verify-phone"></span>
-                    <button class="btn-xg-phone">修改</button>
+                    <button class="btn-xg-phone" hidden>修改</button>
                 </li>
             </ul>
         </div>
@@ -134,14 +134,14 @@
             <div>
                 <div class="d-qq dq fl third-qq">
                     <img src="" class="avatar">
-                    <span class="sp1"><!--class="sp2"时显示为已关联状态-->
+                    <span class="sp1">
                                 <img class="img1" src="/static/images/account/white_qq.png">
                             </span>
                     <button class="btn1">立即关联</button>
                 </div>
                 <div class="d-qq dw fr third-wechat">
                     <img src="" class="avatar">
-                    <span class="sp2"><!--class="sp1"时显示为未关联状态-->
+                    <span class="sp2">
                                 <img class="img2" src="/static/images/account/white_wechat.png">
                             </span>
                     <button class="btn2">解除关联</button>

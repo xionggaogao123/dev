@@ -115,6 +115,7 @@ public class EBusinessUserController extends BaseController {
         String resp = batchSend(url, account, pswd, mobile, msg, needstatus, product, extno);
         String responseCode = resp.split("\\n")[0].split(",")[1];
         if (responseCode.equals("0")) {
+            EBusinessUserController.info(mobile);
             Thread.sleep(2000);
         } else {
             Thread.sleep(2000);

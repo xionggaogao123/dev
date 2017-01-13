@@ -1801,6 +1801,18 @@ public class UserController extends BaseController {
         result.put("year", year);
         result.put("month", month);
         result.put("day", day);
+
+        //检查是否生成GenerateUserCode
+        if (StringUtils.isBlank(user.getGenerateUserCode())) {
+            UserEntry userEntry=userService.findById(userId);
+            //若code为空，则生成code
+            String packageCode=ObjectIdPackageUtil.getPackage(userEntry.getID());
+            userEntry.setGenerateUserCode(packageCode);
+            userService.addEntry(userEntry);
+            result.put("packageCode", packageCode);
+        }else{
+            result.put("packageCode", user.getGenerateUserCode());
+        }
         return result;
     }
 

@@ -19,6 +19,9 @@ define(['jquery', 'pagination', 'common'], function (require, exports, module) {
         n_r_password: false
     };
 
+    var timer = '';
+    var isClick = false;
+
     var edit_phone_check = {
         phone: false,
         code: false
@@ -151,9 +154,13 @@ define(['jquery', 'pagination', 'common'], function (require, exports, module) {
         body.on('click', '.ul-infor button', function () {
             var requestData = {};
             requestData.nickName = $('.nickname').val();
-
             if (requestData.nickName.length > 20) {
                 alert("昵称最多20个字符");
+                return;
+            }
+
+            if(requestData.nickName.length < 2) {
+                alert("昵称最少2个字符");
                 return;
             }
             requestData.sex = $('input[type="radio"][name="sex"]:checked').val();
@@ -212,7 +219,6 @@ define(['jquery', 'pagination', 'common'], function (require, exports, module) {
                         alert("修改成功");
                         $('.edit-pass').fadeOut();
                         $('.bg').fadeOut();
-
                         $('.edit-pass .password').val('');
                         $('.edit-pass .n-password').val('');
                         $('.edit-pass .n-r-password').val('');
@@ -277,8 +283,11 @@ define(['jquery', 'pagination', 'common'], function (require, exports, module) {
             } else {
                 $('.phone-tip').text('手机号不合法');
                 $('.phone-tip').show();
-                edit_phone_check.phone = false;
             }
+        });
+
+        body.on('click','#imgObj',function () {
+            $(this).attr('src','/verify/verifyCode.do?date=' + new Date());
         });
 
         body.on('click', '#sendText', function () {
@@ -319,7 +328,7 @@ define(['jquery', 'pagination', 'common'], function (require, exports, module) {
     });
 
     function sendPhoneText(phone, verifyCode) {
-        if(phoneValid()) {
+        if(phoneValid() && !isClick) {
             common.getData("/mall/users/messages.do", {
                 mobile: phone,
                 verifyCode: verifyCode
@@ -327,6 +336,24 @@ define(['jquery', 'pagination', 'common'], function (require, exports, module) {
                 if (resp.code == '200') {
                     cacheKeyId = resp.cacheKeyId;
                     validateCode = true;
+                    isClick = true;
+                    $('#sendText').css({
+                        "background-color": '#B5B5B5'
+                    });
+                    $('#sendText').text('60');
+                    var number = 59;
+                    timer = window.setInterval(function () {
+                        if (number === 0) {
+                            clearInterval(timer);
+                            $('#sendText').css({
+                                "background-color": '#FF9F19'
+                            });
+                            $('#sendText').text('发送验证码');
+                            isClick = false;
+                        } else {
+                            $('#sendText').text(number--);
+                        }
+                    }, 1000);
                 } else {
                     alert(resp.message);
                 }

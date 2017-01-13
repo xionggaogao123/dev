@@ -1,20 +1,12 @@
 define(['jquery', 'pagination', 'common'], function (require, exports, module) {
 
     var common = require('common');
-    require('pagination');
-    var findPassword = {};
 
+    var findPassword = {};
     var mobileInit = false;
     var mobile = '';
     findPassword.init = function () {
 
-    };
-
-    var phoneCheck = false;
-
-    var resetPasswordCheck = {
-        password: false,
-        rePassword: false
     };
 
     var userName = '';
@@ -71,7 +63,7 @@ define(['jquery', 'pagination', 'common'], function (require, exports, module) {
                             if (i == 0) {
                                 $('#choose-name').append('<label><input type="radio" name="check-id" checked>' + resp.message.users[i].nickName + '</label>');
                             } else {
-                                $('#choose-name').append('<label><input type="radio" value="' + resp.message.users[i].nickName + '" name="s-count">' + resp.message.users[i].nickName + '</label>');
+                                $('#choose-name').append('<label><input type="radio" value="' + resp.message.users[i].userName + '" name="s-count">' + resp.message.users[i].userName + '</label>');
                             }
                         }
                         $('#choose-name').show();
@@ -140,16 +132,13 @@ define(['jquery', 'pagination', 'common'], function (require, exports, module) {
             if (self.val() == '') {
                 self.parent().find('.sp3').text('密码不能为空');
                 self.parent().find('.sp3').show();
-                resetPasswordCheck.password = false;
             } else {
                 var pattern = /[a-zA-Z0-9!@#*\^$%()-+=_&]{6,20}$/;
                 if (!pattern.test(self.val())) {
                     self.parent().find('.sp3').text('密码不符合格式');
                     self.parent().find('.sp3').show();
-                    resetPasswordCheck.password = false;
                 } else {
                     self.parent().find('.sp3').hide();
-                    resetPasswordCheck.password = true;
                 }
             }
         });
@@ -158,11 +147,9 @@ define(['jquery', 'pagination', 'common'], function (require, exports, module) {
             var self = $(this);
             if ($('.step3 .password').val() == $('.step3 .re-password').val()) {
                 self.parent().find('.sp3').hide();
-                resetPasswordCheck.rePassword = true;
             } else {
                 self.parent().find('.sp3').text('两次输入的密码不一致');
                 self.parent().find('.sp3').show();
-                resetPasswordCheck.rePassword = false;
             }
         });
 
@@ -171,7 +158,6 @@ define(['jquery', 'pagination', 'common'], function (require, exports, module) {
         });
 
     });
-
 
     function blurMobile() {
         $('#phone').blur(function () {
@@ -182,21 +168,18 @@ define(['jquery', 'pagination', 'common'], function (require, exports, module) {
                 common.getData('/account/verifyUserPhone', requestParm, function (resp) {
                     if (resp.code == '200' && resp.message.verify) {
                         self.parent().find('.sp3').hide();
-                        phoneCheck = true;
                     } else {
                         self.parent().find('.sp3').text(resp.message.msg);
                         self.parent().find('.sp3').show();
-                        phoneCheck = false;
                     }
                 });
             } else {
                 self.parent().find('.sp3').text('手机号不合法');
                 self.parent().find('.sp3').show();
-                phoneCheck = false;
             }
         });
     }
-    
+
     function resetPassword(userName, phone, code, password) {
         var requestParm = {
             phone: phone,

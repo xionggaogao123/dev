@@ -427,13 +427,18 @@ public class EBusinessUserController extends BaseController {
     @SessionNeedless
     @RequestMapping(method = RequestMethod.POST)
     @ResponseBody
-    public Map<String, Object> addUser(String cacheKeyId, String code, String email, String userName, String passWord, String phoneNumber,
+    public Map<String, Object> addUser(String cacheKeyId, String code, final String email, String userName, String passWord, String phoneNumber,
                                        @RequestParam(defaultValue = "", required = false) String nickName,
-                                       HttpServletResponse response, HttpServletRequest request) {
+                                       HttpServletResponse response) {
         boolean flag = false;
         Map<String, Object> model = new HashMap<String, Object>();
         model.put("code", 500);
         model.put("type", 1);
+
+        if(nickName.length() > 20) {
+            model.put("message","昵称太长");
+            return model;
+        }
         if (!checkEmailUserNamePhoneNumber(email, userName, phoneNumber, model)) {
             return model;
         }
@@ -448,17 +453,29 @@ public class EBusinessUserController extends BaseController {
             flag = true;
         }
         if (flag) {
-            UserEntry userEntry = registerUserEntry(email, userName, passWord, phoneNumber, nickName);
-            ObjectId userId = userService.addUser(userEntry);
+            final UserEntry userEntry = registerUserEntry(email, userName, passWord, phoneNumber, nickName);
+            final ObjectId userId = userService.addUser(userEntry);
+            new Thread(new Runnable() {
+                @Override
+                public void run() {
+                    initRegister(userId);
+                }
+            }).start();
             //发起激活
             if (StringUtils.isNotBlank(email)) {
-                processRegister(email, userEntry.getEmailValidateCode());
+                new Thread(new Runnable() {
+                    @Override
+                    public void run() {
+                        processRegister(email, userEntry.getEmailValidateCode());
+                    }
+                }).start();
+
                 model.put("code", 200);
                 model.put("type", 2);
                 model.put("message", userEntry.getEmail() + "$" + userEntry.getEmailValidateCode());
                 return model;
             }
-            initRegister(userId);
+
             model.put("message", "注册成功");
             model.put("code", 200);
             // 登录
@@ -530,7 +547,6 @@ public class EBusinessUserController extends BaseController {
         fScoreService.addFScore(fScoreDTO);
         //发送系统消息
         fInformationService.addFInformation(new ObjectId("568dd46a0cf2316dfff62d81"), userId.toString(), 1, "", 0);
-
         userService.giveVoucher(userId);//发优惠券
     }
 

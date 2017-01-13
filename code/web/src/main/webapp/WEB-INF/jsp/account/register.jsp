@@ -40,13 +40,13 @@
                 <span class="sp1">验证码 : </span>
                 <img id="imgObj" alt="" src="/verify/verifyCode.do"
                      style="position: absolute;top: 0;right: 0;width: 106px;height: 39px;"/>
-                <span class="sp3" style="display: none">验证码不正确</span>
+                <span class="sp3" style="display: none" id="verifyCode-alert">验证码不正确</span>
             </li>
             <li>
                 <input type="text" class="in1" id="code">
                 <span class="sp1">短信验证码 : </span>
                 <span class="sp4 sendYZM">发送验证码</span>
-                <span class="sp3" style="display: none">参数不完整</span>
+                <span class="sp3" id="code-alert" style="display: none">参数不完整</span>
             </li>
             <li>
                 <span class="sp2"><label><input type="checkbox" class="argument" checked>我同意

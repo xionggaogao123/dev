@@ -5,8 +5,8 @@ import com.fulaan.account.service.AccountService;
 import com.fulaan.annotation.ObjectIdType;
 import com.fulaan.annotation.SessionNeedless;
 import com.fulaan.annotation.UserRoles;
-import com.fulaan.cache.CacheHandler;
 import com.fulaan.base.BaseController;
+import com.fulaan.cache.CacheHandler;
 import com.fulaan.forum.service.FLogService;
 import com.fulaan.forum.service.FScoreService;
 import com.fulaan.friendscircle.service.FriendService;
@@ -205,102 +205,14 @@ public class UserController extends BaseController {
     @RequestMapping("/login")
     @ResponseBody
     public RespObj login(String name, String pwd, HttpServletResponse response) {
-        RespObj faild = new RespObj(Constant.FAILD_CODE);
         String ip = getIP();
-
         //判断用户登录平台，只对PC登录用户进行密码输入错误3次，需要验证码
-        String client = getRequest().getHeader("User-Agent");
-        Platform pf;
-        if (client.contains("iOS")) {
-            pf = Platform.IOS;
-        } else if (client.contains("Android")) {
-            pf = Platform.Android;
-        } else {
-            pf = Platform.PC;
-        }
-
         logger.info("try login;the name=" + name + ";pwd=" + pwd);
-
-        //数据库验证
-        final UserEntry e = userService.getUserEntryByAccount(name);
-        if (null == e) {
-            faild.setMessage("用户名或密码错误!");
-            return faild;
-        } else if (e.getIsRemove() == 1) {
-            faild.setMessage("用户名或密码错误！");
-            return faild;
-        } else {
-            String emailValidateCode = e.getEmailValidateCode();
-            if (StringUtils.isNotBlank(emailValidateCode)) {
-                if (e.getEmailStatus() == 0) {
-                    faild.setMessage("邮箱未被激活！");
-                    return faild;
-                }
-            }
+        Validate validate = validateAccount(name,pwd);
+        if(!validate.isOk()) {
+            return RespObj.FAILD(validate.getMessage());
         }
-
-        //登录日志
-        long time = System.currentTimeMillis();
-        FLoginLog log = new FLoginLog(e.getUserName(), e.getNickName(), time, getIP(), getPlatform());
-        fLogService.loginLog(log);
-        if (!ValidationUtils.isRequestPassword(pwd) || (!e.getPassword().equalsIgnoreCase(MD5Utils.getMD5String(pwd)) && !e.getPassword().equalsIgnoreCase(pwd))) {
-
-            if (!ValidationUtils.isRequestPassword(pwd)) {
-                faild.setMessage("密码非法");
-                return faild;
-            }
-            if (!e.getPassword().equalsIgnoreCase(MD5Utils.getMD5String(pwd)) && !e.getPassword().equalsIgnoreCase(pwd)) {
-                faild.setMessage("用户名或密码错误");
-                return faild;
-            }
-        }
-        try {
-            if (0l == e.getLastActiveDate()) {
-                String params = e.getID().toString() + 0l;
-                String flkey = CacheHandler.getKeyString(CacheHandler.CACHE_USER_FIRST_LOGIN, params);
-                CacheHandler.cache(flkey, Constant.USER_FIRST_LOGIN, Constant.SESSION_FIVE_MINUTE);
-            }
-            new Thread(new Runnable() {
-                @Override
-                public void run() {
-                    //更新最后登录日期
-                    try {
-                        userService.updateLastActiveDate(e.getID());
-                    } catch (IllegalParamException e1) {
-                        e1.printStackTrace();
-                    }
-                    //登录日志
-                    FLogDTO fLogDTO = new FLogDTO();
-                    fLogDTO.setActionName("login");
-                    fLogDTO.setPersonId(e.getID().toString());
-                    fLogDTO.setPath("/user/login.do");
-                    fLogDTO.setTime(System.currentTimeMillis());
-                    fLogService.addFLog(fLogDTO);
-                    //更新本次活动时间
-                    userService.updateInterviewTimeValue(e.getID());
-                }
-            }).start();
-        } catch (Exception ex) {
-            logger.error("", ex);
-        }
-        if (Constant.ONE == e.getUserType()) //有效时间用户
-        {
-            long validBeginTime = e.getValidBeginTime();
-            long validTime = e.getValidTime();
-            if (0L == validBeginTime) //第一次登陆
-            {
-                try {
-                    userService.update(e.getID(), "vabt", System.currentTimeMillis());
-                } catch (IllegalParamException e1) {
-
-                }
-            } else {
-                if (System.currentTimeMillis() > validBeginTime + validTime * 1000) {
-                    faild.setMessage("该用户已经失效");
-                    return faild;
-                }
-            }
-        }
+        UserEntry e = (UserEntry)validate.getData();
 
         SchoolEntry schoolEntry = null;
         try {
@@ -357,41 +269,134 @@ public class UserController extends BaseController {
         } catch (UnsupportedEncodingException e1) {
             logger.error("", e1);
         }
-        try {
-            LoginLog loginLog = new LoginLog();
-            loginLog.setIpAddr(ip + e.getUserName());
-            loginLog.setPlatform(pf.getName());
-            loginLog.setUserId(e.getID().toString());
-            loginLog.setUserName(e.getUserName());
-            if (null != schoolEntry) {
-                RegionEntry region = schoolService.getRegionEntry(schoolEntry.getRegionId());
-                //获取客户端信息
-                if (e.getK6KT() == 1) {//k6kt用户
-                    loginLog.setRole(e.getRole());
-                    loginLog.setSchoolId(schoolEntry.getID().toString());
-                    loginLog.setSchoolName(schoolEntry.getName());
-                    loginLog.setCity(region.getName());
-                }
-            }
-        } catch (Exception ex) {
-            ex.printStackTrace();
-        }
 
         RespObj respObj = new RespObj(Constant.SUCCESS_CODE);
         respObj.setMessage(value);
-
-        new Thread(new Runnable() {
-            @Override
-            public void run() {
-                initUser(e);
-            }
-        }).start();
-
+        syncHandleInitLogin(e,getIP(),getPlatform());
         return respObj;
     }
 
+    /**
+     * 验证账户
+     * @param account
+     * @param pwd
+     * @return
+     */
+    private Validate validateAccount(String account,String pwd) {
+        Validate validate = new Validate();
+        validate.setOk(false);
+        //数据库验证
+        UserEntry e = userService.getUserEntryByAccount(account);
+        if (null == e) {
+            validate.setMessage("用户名或密码错误!");
+            return validate;
+        } else if (e.getIsRemove() == 1) {
+            validate.setMessage("用户名或密码错误！");
+            return validate;
+        } else {
+            String emailValidateCode = e.getEmailValidateCode();
+            if (StringUtils.isNotBlank(emailValidateCode)) {
+                if (e.getEmailStatus() == 0) {
+                    validate.setMessage("邮箱未被激活！");
+                    return validate;
+                }
+            }
+        }
+        if (!ValidationUtils.isRequestPassword(pwd) || (!e.getPassword().equalsIgnoreCase(MD5Utils.getMD5String(pwd)) && !e.getPassword().equalsIgnoreCase(pwd))) {
+            if (!ValidationUtils.isRequestPassword(pwd)) {
+                validate.setMessage("密码非法");
+                return validate;
+            }
+            if (!e.getPassword().equalsIgnoreCase(MD5Utils.getMD5String(pwd)) && !e.getPassword().equalsIgnoreCase(pwd)) {
+                validate.setMessage("用户名或密码错误");
+                return validate;
+            }
+        }
+
+        if (Constant.ONE == e.getUserType()) //有效时间用户
+        {
+            long validBeginTime = e.getValidBeginTime();
+            long validTime = e.getValidTime();
+            if (0L == validBeginTime) //第一次登陆
+            {
+                try {
+                    userService.update(e.getID(), "vabt", System.currentTimeMillis());
+                } catch (IllegalParamException e1) {
+
+                }
+            } else {
+                if (System.currentTimeMillis() > validBeginTime + validTime * 1000) {
+                    validate.setMessage("该用户已经失效");
+                    return validate;
+                }
+            }
+        }
+        validate.setOk(true);
+        validate.setData(e);
+        return validate;
+    }
+
+    /**
+     * 异步处理初始登录
+     * @param e
+     */
+    private void syncHandleInitLogin(final UserEntry e,final String ip,final Platform platForm) {
+        new Thread(new Runnable() {
+            @Override
+            public void run() {
+
+                System.out.println("haaa================================");
+                if (0l == e.getLastActiveDate()) {
+                    String params = e.getID().toString() + 0l;
+                    String flkey = CacheHandler.getKeyString(CacheHandler.CACHE_USER_FIRST_LOGIN, params);
+                    CacheHandler.cache(flkey, Constant.USER_FIRST_LOGIN, Constant.SESSION_FIVE_MINUTE);
+                }
+                //更新最后登录日期
+                try {
+                    userService.updateLastActiveDate(e.getID());
+                } catch (IllegalParamException e1) {
+                    e1.printStackTrace();
+                }
+                //登录日志
+                FLogDTO fLogDTO = new FLogDTO();
+                fLogDTO.setActionName("login");
+                fLogDTO.setPersonId(e.getID().toString());
+                fLogDTO.setPath("/user/login.do");
+                fLogDTO.setTime(System.currentTimeMillis());
+                fLogService.addFLog(fLogDTO);
+                //更新本次活动时间
+                userService.updateInterviewTimeValue(e.getID());
+                try {
+                    LoginLog loginLog = new LoginLog();
+                    loginLog.setIpAddr(ip + e.getUserName());
+                    loginLog.setPlatform(platForm.getName());
+                    loginLog.setUserId(e.getID().toString());
+                    loginLog.setUserName(e.getUserName());
+                } catch (Exception ex) {
+                    ex.printStackTrace();
+                }
+
+                //登录日志
+                long time = System.currentTimeMillis();
+                FLoginLog log = new FLoginLog(e.getUserName(), e.getNickName(), time, ip, platForm);
+                fLogService.loginLog(log);
+
+                initUser(e);
+
+                System.out.println("haaa================================");
+            }
+        }).start();
+    }
+
     private void initUser(UserEntry userEntry) {
+
+        System.out.println("===============================");
         //检查是否注册环信
+
+        UserService userService = new UserService();
+        MateService mateService = new MateService();
+        AccountService accountService = new AccountService();
+        MemberService memberService = new MemberService();
         boolean isRegister = userEntry.isRegisterHuanXin();
         if (!isRegister) {
             String nickName = StringUtils.isNotBlank(userEntry.getNickName()) ? userEntry.getNickName() : userEntry.getUserName();
@@ -412,7 +417,7 @@ public class UserController extends BaseController {
         //移动手机号
         if (StringUtils.isNotBlank(userEntry.getMobileNumber())) {
             accountService.bindMobile(userEntry.getID(), userEntry.getMobileNumber());
-            userService.updateBindUserMobile(getUserId(), userEntry.getMobileNumber());
+            userService.updateBindUserMobile(userEntry.getID(), userEntry.getMobileNumber());
         }
 
         //检查是否生成GenerateUserCode
@@ -425,6 +430,9 @@ public class UserController extends BaseController {
         if (StringUtils.isNotBlank(userEntry.getAvatar())) {
             memberService.updateAllAvatar(userEntry.getID(), userEntry.getAvatar());
         }
+
+        System.out.println("===============================");
+
 
     }
 
@@ -1670,7 +1678,6 @@ public class UserController extends BaseController {
         }
         initUser(userEntry);
         SessionValue value = userService.setCookieValue(getIP(), userEntry, response, request);
-
         return RespObj.SUCCESS(value);
     }
 
@@ -1703,9 +1710,7 @@ public class UserController extends BaseController {
             ThirdLoginEntry thirdLoginEntry = new ThirdLoginEntry(userEntry.getID(), openId, unionId, ThirdType.getThirdType(type));
             userService.saveThirdEntry(thirdLoginEntry);
         }
-
         initUser(userEntry);
-
         SessionValue value = userService.setCookieValue(getIP(), userEntry, response, request);
         return RespObj.SUCCESS(value);
     }
@@ -1727,7 +1732,7 @@ public class UserController extends BaseController {
         if (StringUtils.isBlank(userId) || type == null) {
             return RespObj.FAILD("参数不完整");
         }
-        if (type == 1) { //微信
+        if (ThirdType.getThirdType(type).getCode() == ThirdType.WECHAT.getCode()) { //微信
             if (unionId == null || openId == null) {
                 return RespObj.FAILD("参数不完整");
             }

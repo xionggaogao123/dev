@@ -73,7 +73,7 @@
             <li>
                 <input type="text" id="nick">
                 <span class="sp1">设置昵称: </span>
-                <span class="sp2">3-20位字符（汉字、字母、数字、下划线）</span>
+                <span class="sp2">2-20位字符（汉字、字母、数字、下划线）</span>
                 <span class="sp3" id="nick-alert" style="display: none">请输入昵称</span>
             </li>
             <li>

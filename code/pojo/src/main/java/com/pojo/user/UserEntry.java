@@ -560,11 +560,7 @@ public class UserEntry extends BaseDBObject {
     }
 
     public String getMobileNumber() {
-        String mob = getSimpleStringValue("mn");
-        if (null == mob) {
-            return Constant.EMPTY;
-        }
-        return mob;
+        return getBaseEntry().getString("mn","");
     }
 
     public void setMobileNumber(String mobileNumber) {

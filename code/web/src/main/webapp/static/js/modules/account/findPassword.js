@@ -91,7 +91,6 @@ define(['jquery', 'pagination', 'common'], function (require, exports, module) {
             if(!isClick) {
                 isClick = true;
                 common.getDataAsync("/mall/users/messages.do", {mobile: phone, verifyCode: verifyCode}, function (resp) {
-                    alert(JSON.stringify(resp));
                     if (resp.code == '200') {
                         cacheKeyId = resp.cacheKeyId;
                         $('#sendCode').css({
@@ -138,29 +137,37 @@ define(['jquery', 'pagination', 'common'], function (require, exports, module) {
         });
 
         body.on('click', '.re-btn3', function () {
-            var password = $('.step3 .password').val();
-            if(verifyType === 'email') {
-                resetPasswordByEmail(password);
-            } else {
-                var phone = mobileInit ? mobile : $('#phone').val();
-                var code = $('#code').val();
-                userName = mobileInit ? $.trim($("input[name='s-count']:checked").val()) : userName;
-                resetPassword(userName, phone, code, password);
+            if(passwordValid && rePasswordValid) {
+                var password = $('.step3 .password').val();
+                if(verifyType === 'email') {
+                    resetPasswordByEmail(password);
+                } else {
+                    var phone = mobileInit ? mobile : $('#phone').val();
+                    var code = $('#code').val();
+                    userName = mobileInit ? $.trim($("input[name='s-count']:checked").val()) : userName;
+                    resetPassword(userName, phone, code, password);
+                }
             }
         });
+
+        var passwordValid = false;
+        var rePasswordValid = false;
 
         $('.step3 .password').blur(function () {
             var self = $(this);
             if (self.val() == '') {
                 self.parent().find('.sp3').text('密码不能为空');
                 self.parent().find('.sp3').show();
+                passwordValid = false;
             } else {
                 var pattern = /[a-zA-Z0-9!@#*\^$%()-+=_&]{6,20}$/;
                 if (!pattern.test(self.val())) {
                     self.parent().find('.sp3').text('密码不符合格式');
                     self.parent().find('.sp3').show();
+                    passwordValid = false;
                 } else {
                     self.parent().find('.sp3').hide();
+                    passwordValid = true;
                 }
             }
         });
@@ -169,9 +176,11 @@ define(['jquery', 'pagination', 'common'], function (require, exports, module) {
             var self = $(this);
             if ($('.step3 .password').val() == $('.step3 .re-password').val()) {
                 self.parent().find('.sp3').hide();
+                rePasswordValid = true;
             } else {
                 self.parent().find('.sp3').text('两次输入的密码不一致');
                 self.parent().find('.sp3').show();
+                rePasswordValid = false;
             }
         });
 

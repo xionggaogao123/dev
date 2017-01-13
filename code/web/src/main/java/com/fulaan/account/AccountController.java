@@ -191,6 +191,10 @@ public class AccountController extends BaseController {
     @RequestMapping("/bindPhoneNumber")
     @ResponseBody
     public RespObj bindPhone(String phone, String code, String cacheKeyId) {
+        UserEntry userEntry = userService.findById(getUserId());
+        if(phone.equals(userEntry.getBindMobile())) {
+            return RespObj.FAILDWithErrorMsg("你已经绑定了此手机号，无需再次绑定");
+        }
         Validate validate = userService.validatePhoneNumber(phone, code, cacheKeyId);
         if (!validate.isOk()) {
             return RespObj.FAILDWithErrorMsg(validate.getMessage());

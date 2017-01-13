@@ -7,6 +7,7 @@ public class Validate {
 
     private boolean isOk = false;
     private String message;
+    private Object data;
 
     public boolean isOk() {
         return isOk;
@@ -22,5 +23,13 @@ public class Validate {
 
     public void setMessage(String message) {
         this.message = message;
+    }
+
+    public Object getData() {
+        return data;
+    }
+
+    public void setData(Object data) {
+        this.data = data;
     }
 }

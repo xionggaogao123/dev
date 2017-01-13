@@ -198,15 +198,15 @@ define(['jquery', 'pagination', 'common'], function (require, exports, module) {
                 var requestParm = {phone: self.val()};
                 common.getDataAsync('/account/verifyUserPhone', requestParm, function (resp) {
                     if (resp.code == '200' && resp.message.verify) {
-                        self.parent().find('.sp3').hide();
+                        $('#phone-tips').hide();
                     } else {
-                        self.parent().find('.sp3').text(resp.message.msg);
-                        self.parent().find('.sp3').show();
+                        $('#phone-tips').text(resp.message.msg);
+                        $('#phone-tips').show();
                     }
                 });
             } else {
-                self.parent().find('.sp3').text('手机号不合法');
-                self.parent().find('.sp3').show();
+                $('#phone-tips').text('手机号不合法');
+                $('#phone-tips').show();
             }
         });
     }
@@ -219,6 +219,7 @@ define(['jquery', 'pagination', 'common'], function (require, exports, module) {
             password: password,
             cacheKeyId: cacheKeyId
         };
+        alert(JSON.stringify(requestParm));
         common.getDataAsync('/account/resetPassword.do', requestParm, function (resp) {
             if(resp.code === '200') {
                 setp4();

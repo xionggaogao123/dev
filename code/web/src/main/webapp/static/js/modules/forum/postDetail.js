@@ -812,6 +812,7 @@ define(['jquery', 'pagination', 'social', 'common'], function (require, exports,
                     $name.css("border", "1px solid #f00");
                     $name.next('.nameClass').html('姓名长度不要超过5个字');
                     $name.next('.nameClass').show();
+                    return;
                 }
             }
 
@@ -849,6 +850,7 @@ define(['jquery', 'pagination', 'social', 'common'], function (require, exports,
                 sex = $sex.val();
             }
             var joinId = $('.wind-join').data("joinId");
+            var name=$name.val();
             var param = {
                 id: joinId,
                 name: $name.val(),
@@ -875,6 +877,9 @@ define(['jquery', 'pagination', 'social', 'common'], function (require, exports,
                             alert("保存成功!");
                         } else {
                             alert("更新成功!");
+                            if(joinId==$('#comment').data('participateId')){
+                                $('.join-cont .p1').html(name);
+                            }
                         }
 
                     } else {

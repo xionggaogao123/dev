@@ -254,6 +254,7 @@ define(['jquery', 'pagination', 'common'], function (require, exports, module) {
             $('.publish-btn').find('span').eq(0).show();
             $('.publish-btn').find('span').eq(1).hide();
             $('#content').next().show();
+            $('.vote-cont').hide();
             if (type == 1) {
                 $('.publish-btn .sp2').hide();
             } else if (type == 6) {
@@ -264,6 +265,8 @@ define(['jquery', 'pagination', 'common'], function (require, exports, module) {
                 $('#content').next().hide();
                 $('#title').hide();
                 $('.publish-btn').find('span').eq(1).show();
+            } else if(type==7){
+                $('.vote-cont').show();
             }
             //清空数据
             emptyData();
@@ -276,6 +279,11 @@ define(['jquery', 'pagination', 'common'], function (require, exports, module) {
 
         $('body').on('click', '.pub-img em', function () {
             $(this).closest('.pub-img').remove();
+        })
+
+        $('body').on('click','.vote-cont .div2 .li3',function(){
+          var length=$('.vote-cont .div2 .li2').length;
+
         })
 
         $('body').on('click', '.p-doc em', function () {

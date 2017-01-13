@@ -168,10 +168,12 @@ public class UserService extends BaseService {
         String value = CacheHandler.getStringValue(cacheKey);
         if (StringUtils.isBlank(value)) {
             validate.setMessage("验证码失效，请重新获取");
+            return validate;
         }
         String[] cache = value.split(",");
         if (!cache[1].equals(phoneNumber)) {
             validate.setMessage("注册失败：手机号码与验证码不匹配");
+            return validate;
         }
 
         if (cache[0].equals(code)) {

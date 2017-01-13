@@ -286,9 +286,10 @@ define(['jquery', 'pagination', 'common'], function (require, exports, module) {
            if(length==10){
                alert("选项最多10条");
            }else{
+
                var len=length+1;
-               var str="<li class=\"li2\">"+len+".<i></i><input type=\"text\" value=\"haha\"></li>";
-               $('#voteItem').append(str);
+               var str="<li class=\"li2\">"+len+".<i></i><input type=\"text\"></li>";
+               $(this).before(str);
            }
         })
 

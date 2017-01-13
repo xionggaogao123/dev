@@ -104,7 +104,7 @@
                             <span class="sp2"></span>
                             发布学习用品需求
                         </li>
-                        <li class="li7" type="7" style="display: none">
+                        <li class="li7" type="7">
                             <span class="sp1"></span>
                             <span class="sp2"></span>
                             投票
@@ -134,17 +134,17 @@
                                 </li>
                                 <li class="li4">
                                     <span>结束时间：</span>
-                                    <input type="text">
+                                    <input type="text" id="datepicker">
                                     <select>
-                                        <option>1</option>
-                                        <option>2</option>
-                                        <option>3</option>
-                                        <option>4</option>
-                                        <option>5</option>
-                                        <option>6</option>
-                                        <option>7</option>
-                                        <option>8</option>
-                                        <option>9</option>
+                                        <option>01</option>
+                                        <option>02</option>
+                                        <option>03</option>
+                                        <option>04</option>
+                                        <option>05</option>
+                                        <option>06</option>
+                                        <option>07</option>
+                                        <option>08</option>
+                                        <option>09</option>
                                         <option>10</option>
                                         <option>11</option>
                                         <option>12</option>
@@ -293,7 +293,16 @@
                 </div>
             </div>
 
-            <div class="com-left-s" style="display: none;">
+            <div class="com-left-s" id="announcement">
+            </div>
+
+            <div class="com-left-s" id="homework">
+            </div>
+
+            <div class="com-left-s" id="share">
+            </div>
+
+            <div class="com-left-s">
                 <div class="com-tit"  style="cursor: pointer">投票 <span class="i-newtips">7</span></div>
                 <div class="notice-container clearfix">
                     <div class="notice-holder"><img src="http://7xiclj.com1.z0.glb.clouddn.com/head-0.47150365147468287.jpg">
@@ -312,15 +321,6 @@
                         </p>
                         <p class="p-infor"><span>消息来源：复兰社区</span> <span>发表时间：2016-12-28 17:19:48</span></p></div>
                 </div>
-            </div>
-
-            <div class="com-left-s" id="announcement">
-            </div>
-
-            <div class="com-left-s" id="homework">
-            </div>
-
-            <div class="com-left-s" id="share">
             </div>
 
             <div class="com-left-s" id="activity">
@@ -915,6 +915,20 @@
         $(".fancybox").fancybox({});
 
     })
+</script>
+
+<link rel="stylesheet" href="//apps.bdimg.com/libs/jqueryui/1.10.4/css/jquery-ui.min.css">
+<script src="//apps.bdimg.com/libs/jquery/1.10.2/jquery.min.js"></script>
+<script src="//apps.bdimg.com/libs/jqueryui/1.10.4/jquery-ui.min.js"></script>
+<script>
+    $(function () {
+        $("#datepicker").datepicker({
+            dateFormat: 'yy-mm-dd',
+            monthNames: ['一月', '二月', '三月', '四月', '五月', '六月', '七月', '八月', '九月', '十月', '十一月', '十二月'],
+            dayNames: ['星期日', '星期一', '星期二', '星期三', '星期四', '星期五', '星期六'],
+            dayNamesShort: ['周日', '周一', '周二', '周三', '周四', '周五', '周六'],
+        });
+    });
 </script>
 
 

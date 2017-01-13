@@ -139,13 +139,15 @@ define(['jquery', 'pagination', 'common'], function (require, exports, module) {
         body.on('click', '.re-btn3', function () {
             if(passwordValid && rePasswordValid) {
                 var password = $('.step3 .password').val();
-                if(verifyType && verifyType === 'email') {
-                    resetPasswordByEmail(password);
-                } else {
+                if(typeof(verifyType) == "undefined" ) {
                     var phone = mobileInit ? mobile : $('#phone').val();
                     var code = $('#code').val();
                     userName = mobileInit ? $.trim($("input[name='s-count']:checked").val()) : userName;
                     resetPassword(userName, phone, code, password);
+                } else {
+                    if(verifyType === 'email') {
+                        resetPasswordByEmail(password);
+                    }
                 }
             }
         });

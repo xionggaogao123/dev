@@ -8,6 +8,7 @@ ol, ul {
     list-style: none;
 }
 
+input{box-shadow: 0 0 0 50px #fff inset;outline: 0px;}
 :focus {
     outline: 1;
 }
@@ -4138,7 +4139,7 @@ ol.bjqs-markers li:last-child {
     margin: 0 6px 0 0;
 }
 
-.store-register dd div {
+.store-register dd .error {
     position: absolute;
     top: 40px;
     left: 200px;
@@ -4161,13 +4162,19 @@ ol.bjqs-markers li:last-child {
     margin-left: -70px;
 }
 
-.store-register dd input[type=text],.store-register dd input[type=password] {
+.store-register dd input[type=text] ,.store-register dd input[type=password] {
+    border: none;
+    width: 254px;
+    height: 39px;
+    float: right;
+}
+
+.store-register dd .te-df{
     border: 1px solid #C9C9C9;
     width: 300px;
     height: 39px;
     border-radius: 1px;
-    padding-left: 50px;
-    box-sizing: border-box;
+    margin: 0 auto;
 }
 .store-register dd .inp1 {
     background: url("/static/images/input_cont.png") no-repeat;

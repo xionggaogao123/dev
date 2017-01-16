@@ -16,6 +16,7 @@ i{font-style: normal;}
 img { border:none; }
 ol,ul,li { list-style:none; }
 input, textarea, select, button { font:14px Verdana,Helvetica,Arial,sans-serif; }
+input{box-shadow: 0 0 0 50px #fff inset;outline: 0px;}
 table { border-collapse:collapse; }
 html {overflow-y: scroll;}
 /* css common */
@@ -780,7 +781,7 @@ button{cursor: pointer;}
 	margin: 0 6px 0 0;
 }
 
-.store-register dd div {
+.store-register dd .error {
 	position: absolute;
 	top: 40px;
 	left: 200px;
@@ -804,11 +805,18 @@ button{cursor: pointer;}
 }
 
 .store-register dd input[type=text] ,.store-register dd input[type=password] {
-    border: 1px solid #C9C9C9;
-    width: 300px;
+	border: none;
+    width: 254px;
     height: 39px;
-    border-radius: 1px;
-    padding-left: 50px;
+	float: right;
+}
+
+.store-register dd .te-df{
+	border: 1px solid #C9C9C9;
+	width: 300px;
+	height: 39px;
+	border-radius: 1px;
+	margin: 0 auto;
 }
 .store-register dd .inp1 {
     background: url("/static/images/input_cont.png") no-repeat;

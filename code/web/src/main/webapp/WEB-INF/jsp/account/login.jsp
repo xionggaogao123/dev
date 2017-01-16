@@ -19,13 +19,17 @@
         <div class="h67"></div>
         <ul class="re-form ul1">
             <li>
-                <input class="username um2" type="text" placeholder="用户名/邮箱/手机号" id="account">
+                <div class="um2">
+                    <input class="username" type="text" placeholder="用户名/邮箱/手机号" id="account">
+                </div>
                 <span class="sp3" style="display: none">请输入用户名</span>
             </li>
             <li id="user-names" hidden>
             </li>
             <li>
-                <input type="password" class="password psw2" placeholder="请输入登录密码">
+                <div class="psw2">
+                    <input type="password" class="password" placeholder="请输入登录密码">
+                </div>
                 <span class="sp5 forget-password">忘记密码？</span>
             </li>
             <li>

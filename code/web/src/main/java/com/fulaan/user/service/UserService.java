@@ -134,12 +134,9 @@ public class UserService extends BaseService {
             validate.setMessage("密码非法");
             return validate;
         }
-        //居然有明文 ==
         if (!e.getPassword().equalsIgnoreCase(MD5Utils.getMD5String(pwd)) && !e.getPassword().equalsIgnoreCase(pwd)) {
-            if (!e.getPassword().equalsIgnoreCase(MD5Utils.getMD5String(pwd)) && !e.getPassword().equalsIgnoreCase(pwd)) {
-                validate.setMessage("用户名或密码错误");
-                return validate;
-            }
+            validate.setMessage("用户名或密码错误");
+            return validate;
         }
 
         if (Constant.ONE == e.getUserType()) //有效时间用户
@@ -166,7 +163,8 @@ public class UserService extends BaseService {
     }
 
     public String filter(String content) {
-        return org.apache.commons.lang.StringUtils.replaceEach(content, KeyWordFilterUtil.split_list.toArray(new String[]{}), KeyWordFilterUtil.replace_list.toArray(new String[]{}));
+        return StringUtils.replaceEach(content, KeyWordFilterUtil.split_list.toArray(new String[]{}),
+                KeyWordFilterUtil.replace_list.toArray(new String[]{}));
     }
 
     public String replaceSensitiveWord(String text) {
@@ -188,7 +186,6 @@ public class UserService extends BaseService {
         }
         return list;
     }
-
 
     public List<FLoginLog> getLoginLog(long start, long end) {
         List<FLoginLogEntry> loginLogEntries = loginLogDao.getLoginLog(start, end);

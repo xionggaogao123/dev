@@ -152,7 +152,6 @@ public class UserEntry extends BaseDBObject {
         this((BasicDBObject) dbo);
     }
 
-
     public UserEntry(BasicDBObject baseEntry) {
         super(baseEntry);
     }
@@ -423,7 +422,6 @@ public class UserEntry extends BaseDBObject {
                      String introduce, String jobnumber, int syn, List<ObjectId> connectId, String avatar, List<IdValuePair> groupInfoList, long schoolHomeDate, long familyHomeDate, int jinyan, long jinyanDate, int postion, String postionDec, int chat) {
 
         super();
-
         BasicDBObject dbo = new BasicDBObject()
                 .append("nm", userName.toLowerCase())
                 .append("pw", password)
@@ -465,8 +463,6 @@ public class UserEntry extends BaseDBObject {
                 .append("pos", postion)
                 .append("posdec", postionDec)
                 .append("ic", chat);
-
-
         setBaseEntry(dbo);
     }
 
@@ -523,10 +519,7 @@ public class UserEntry extends BaseDBObject {
     }
 
     public boolean isRegisterHuanXin() {
-        if (this.getBaseEntry().containsField("ieasd")) {
-            return getSimpleIntegerValue("ieasd") == 1;
-        }
-        return false;
+        return getBaseEntry().getInt("ieasd",-1) == 1;
     }
 
     public void setNickName(String nickName) {
@@ -574,13 +567,8 @@ public class UserEntry extends BaseDBObject {
     }
 
     public String getEmail() {
-        String e = getSimpleStringValue("e");
-        if (null == e) {
-            return Constant.EMPTY;
-        }
-        return e;
+        return getBaseEntry().getString("e",Constant.EMPTY);
     }
-
 
     public void setEmail(String email) {
         setSimpleValue("e", email);
@@ -651,7 +639,6 @@ public class UserEntry extends BaseDBObject {
         setSimpleValue("ri", registerIP);
     }
 
-
     public ObjectId getSchoolID() {
         return getSimpleObjecIDValue("si");
     }
@@ -685,10 +672,7 @@ public class UserEntry extends BaseDBObject {
     }
 
     public String getStudyNum() {
-        if (this.getBaseEntry().containsField("sn")) {
-            return getSimpleStringValue("sn");
-        }
-        return "";
+        return getBaseEntry().getString("sn",Constant.EMPTY);
     }
 
     public void setStudyNum(String studyNum) {
@@ -798,17 +782,11 @@ public class UserEntry extends BaseDBObject {
     }
 
     public String getJob() {
-        if (this.getBaseEntry().containsField("jo")) {
-            return getSimpleStringValue("jo");
-        }
-        return Constant.EMPTY;
+        return getBaseEntry().getString("jo",Constant.EMPTY);
     }
 
     public int getIsRemove() {
-        if (this.getBaseEntry().containsField("ir")) {
-            return getSimpleIntegerValue("ir");
-        }
-        return Constant.ZERO;
+        return getBaseEntry().getInt("ir",Constant.ZERO);
     }
 
     public void setIsRemove(int isRemove) {
@@ -932,11 +910,7 @@ public class UserEntry extends BaseDBObject {
     }
 
     public String getLoginName() {
-        String s = getSimpleStringValue("logn");
-        if (null == s) {
-            return Constant.EMPTY;
-        }
-        return s;
+        return getBaseEntry().getString("logn",Constant.EMPTY);
     }
 
     public void setLoginName(String loginName) {
@@ -988,12 +962,7 @@ public class UserEntry extends BaseDBObject {
     }
 
     public long getForumExperience() {
-        if (getBaseEntry().containsField("fexp")) {
-            return getSimpleLongValue("fexp");
-        } else {
-            return 0L;
-        }
-
+        return getBaseEntry().getLong("fexp",0L);
     }
 
     public void setForumExperience(long forumExperience) {
@@ -1001,11 +970,7 @@ public class UserEntry extends BaseDBObject {
     }
 
     public String getInterviewIP() {
-        if (getBaseEntry().containsField("ivp")) {
-            return getSimpleStringValue("ivp");
-        } else {
-            return "";
-        }
+        return getBaseEntry().getString("ivp",Constant.EMPTY);
     }
 
     public void setInterviewIP(String interviewIP) {
@@ -1013,11 +978,7 @@ public class UserEntry extends BaseDBObject {
     }
 
     public long getStatisticTime() {
-        if (getBaseEntry().containsField("sti")) {
-            return getSimpleLongValue("sti");
-        } else {
-            return -1L;
-        }
+        return getBaseEntry().getLong("sti",-1L);
     }
 
     public void setStatisticTime(Long statisticTime) {
@@ -1025,47 +986,19 @@ public class UserEntry extends BaseDBObject {
     }
 
     public long getInterviewTime() {
-        if (getBaseEntry().containsField("iti")) {
-            return getSimpleLongValue("iti");
-        } else {
-            return -1L;
-        }
-    }
-
-    public void setInterviewTime(Long interviewTime) {
-        setSimpleValue("iti", interviewTime);
+        return getBaseEntry().getLong("iti",-1L);
     }
 
     public long getQuitTime() {
-        if (getBaseEntry().containsField("qti")) {
-            return getSimpleLongValue("qti");
-        } else {
-            return -1L;
-        }
-    }
-
-    public void setQuitTime(Long quitTime) {
-        setSimpleValue("qti", quitTime);
+        return getBaseEntry().getLong("qti", -1L);
     }
 
     public long getInterviewPostTime() {
-        if (getBaseEntry().containsField("pti")) {
-            return getSimpleLongValue("pti");
-        } else {
-            return -1L;
-        }
-    }
-
-    public void setInterviewPostTime(Long interviewPostTime) {
-        setSimpleValue("pti", interviewPostTime);
+        return getBaseEntry().getLong("pti",-1L);
     }
 
     public int getSilencedStatus() {
-        if (getBaseEntry().containsField("sls")) {
-            return getSimpleIntegerValue("sls");
-        } else {
-            return 0;
-        }
+        return getBaseEntry().getInt("sls",0);
     }
 
     public void setSilencedStatus(int silencedStatus) {
@@ -1078,11 +1011,7 @@ public class UserEntry extends BaseDBObject {
      * @return
      */
     public long getSilencedTime() {
-        if (getBaseEntry().containsField("slti")) {
-            return getSimpleLongValue("slti");
-        } else {
-            return 0L;
-        }
+        return getBaseEntry().getLong("slti",0L);
     }
 
     public void setSilencedTime(long silencedTime) {
@@ -1090,11 +1019,7 @@ public class UserEntry extends BaseDBObject {
     }
 
     public String getSilencedReason() {
-        if (getBaseEntry().containsField("slr")) {
-            return getSimpleStringValue("slr");
-        } else {
-            return "";
-        }
+        return getBaseEntry().getString("slr",Constant.EMPTY);
     }
 
     public void setSilencedReason(String silencedReason) {
@@ -1102,11 +1027,7 @@ public class UserEntry extends BaseDBObject {
     }
 
     public int getSilencedTen() {
-        if (getBaseEntry().containsField("slt")) {
-            return getSimpleIntegerValue("slt");
-        } else {
-            return -1;
-        }
+        return getBaseEntry().getInt("slt",-1);
     }
 
     public void setSilencedTen(int silencedTen) {
@@ -1114,11 +1035,7 @@ public class UserEntry extends BaseDBObject {
     }
 
     public int getEmailStatus() {
-        if (getBaseEntry().containsField("ems")) {
-            return getSimpleIntegerValue("ems");
-        } else {
-            return 0;
-        }
+        return getBaseEntry().getInt("ems",0);
     }
 
     public void setEmailStatus(int emailStatus) {
@@ -1126,19 +1043,7 @@ public class UserEntry extends BaseDBObject {
     }
 
     public String getEmailValidateCode() {
-        if (getBaseEntry().containsField("emv")) {
-            return getSimpleStringValue("emv");
-        } else {
-            return "";
-        }
-    }
-
-    public void setSids(ObjectId sid) {
-        setSimpleValue("sdis", sid);
-    }
-
-    public ObjectId getSidS(ObjectId sid) {
-        return getSimpleObjecIDValue("sids");
+        return getBaseEntry().getString("emv",Constant.EMPTY);
     }
 
     public void setEmailValidateCode(String emailValidateCode) {
@@ -1167,11 +1072,7 @@ public class UserEntry extends BaseDBObject {
 
 
     public String getQRCode() {
-        if (getBaseEntry().containsField("qrc")) {
-            return getSimpleStringValue("qrc");
-        } else {
-            return Constant.EMPTY;
-        }
+        return getBaseEntry().getString("qrc",Constant.EMPTY);
     }
 
     public void setQRCode(String qrCode) {
@@ -1201,18 +1102,11 @@ public class UserEntry extends BaseDBObject {
     }
 
     public String getGenerateUserCode(){
-        if(getBaseEntry().containsField("gugc")) {
-            return getSimpleStringValue("gugc");
-        }else{
-            return Constant.EMPTY;
-        }
+        return getBaseEntry().getString("gugc",Constant.EMPTY);
     }
 
     public void setGenerateUserCode(String generateUserCode){
         setSimpleValue("gugc",generateUserCode);
     }
-
-
-
 
 }

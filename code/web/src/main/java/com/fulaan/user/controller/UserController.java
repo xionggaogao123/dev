@@ -209,9 +209,7 @@ public class UserController extends BaseController {
         SessionValue value = getSessionValue(e);
         userService.setCookieValue(e, value, getIP(), response, request);
         syncHandleInitLogin(e, getIP(), getPlatform());
-        RespObj respObj = new RespObj(Constant.SUCCESS_CODE);
-        respObj.setMessage(value);
-        return respObj;
+        return RespObj.SUCCESS(value);
     }
 
     private SessionValue getSessionValue(UserEntry e) {
@@ -230,7 +228,6 @@ public class UserController extends BaseController {
         value.setK6kt(e.getK6KT());
         value.setUserRole(e.getRole());
         value.setPackageCode(e.getGenerateUserCode());
-
         if (e.getK6KT() == 1) {//k6kt用户
             value.setSchoolId(e.getSchoolID().toString());
             if (schoolEntry != null && schoolEntry.getLogo() != null) {
@@ -247,7 +244,6 @@ public class UserController extends BaseController {
         }
         return value;
     }
-
 
     /**
      * 异步处理初始登录
@@ -299,17 +295,12 @@ public class UserController extends BaseController {
     }
 
     private void initUser(UserEntry userEntry) {
-
         //检查是否注册环信
         boolean isRegister = userEntry.isRegisterHuanXin();
         if (!isRegister) {
             String nickName = StringUtils.isNotBlank(userEntry.getNickName()) ? userEntry.getNickName() : userEntry.getUserName();
             EaseMobAPI.createUser(userEntry.getID().toString(), nickName);
             userService.updateHuanXinTag(userEntry.getID());
-        }
-
-        if (StringUtils.isBlank(userEntry.getNickName())) {
-            userService.updateNickNameAndSexById(userEntry.getID().toString(), userEntry.getUserName(), userEntry.getSex());
         }
 
         //找玩伴

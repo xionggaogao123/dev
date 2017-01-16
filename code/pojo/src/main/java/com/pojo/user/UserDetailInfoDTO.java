@@ -18,7 +18,6 @@ public class UserDetailInfoDTO extends UserInfoDTO implements Serializable {
     private String nickName;
     private String imgUrl;
     private String mobileNumber;
-    private String bindMobileNumber;
     private String phoneNumber;
     private String email;
     private String qq;
@@ -145,7 +144,6 @@ public class UserDetailInfoDTO extends UserInfoDTO implements Serializable {
         this.registerIP = userEntry.getRegisterIP();
         this.registerNum = userEntry.getRegisterNum();
         this.registerTime = new Date(userEntry.getRegisterTime());
-        this.bindMobileNumber = userEntry.getBindMobile();
 
         try {
             this.relationId = (userEntry.getConnectIds().size() == 0) ? null : userEntry.getConnectIds().get(0).toString();
@@ -215,14 +213,6 @@ public class UserDetailInfoDTO extends UserInfoDTO implements Serializable {
 
     public String getMobileNumber() {
         return mobileNumber;
-    }
-
-    public String getBindMobileNumber() {
-        return bindMobileNumber;
-    }
-
-    public void setBindMobileNumber(String bindMobileNumber) {
-        this.bindMobileNumber = bindMobileNumber;
     }
 
     public void setMobileNumber(String mobileNumber) {

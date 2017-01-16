@@ -133,8 +133,6 @@ import java.util.List;
  *
  *  qrCode:个人二维码
  *
- *  bmn: 绑定的手机号 - 与登录无关
- *
  * }
  * </pre>
  *
@@ -1208,10 +1206,6 @@ public class UserEntry extends BaseDBObject {
         }else{
             return Constant.EMPTY;
         }
-    }
-
-    public String getBindMobile() {
-        return getBaseEntry().getString("bmn",Constant.EMPTY);
     }
 
     public void setGenerateUserCode(String generateUserCode){

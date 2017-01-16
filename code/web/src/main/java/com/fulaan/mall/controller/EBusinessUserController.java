@@ -127,7 +127,7 @@ public class EBusinessUserController extends BaseController {
 
         Map<String, Object> model = new HashMap<String, Object>();
         model.put("code", 500);
-        if (!ValidationUtils.isRequestModile(mobile)) {
+        if (!ValidationUtils.isValidMobile(mobile)) {
             model.put("message", "非法手机");
             return model;
         }
@@ -247,7 +247,7 @@ public class EBusinessUserController extends BaseController {
 
     @SessionNeedless
     @RequestMapping(value = "/emailValidate")
-    public String emailValidate(String email, String validateCode, HttpServletResponse response,
+    public String emailValidate(String email, String validateCode, HttpServletResponse response,HttpServletRequest request,
                                 Map<String, Object> model) {
         UserEntry userEntry = userService.findByEmail(email);
         //验证用户是否存在
@@ -264,7 +264,7 @@ public class EBusinessUserController extends BaseController {
                     if (validateCode.equals(MD5Utils.getMD5String(userEntry.getEmailValidateCode()))) {
                         try {
                             userService.updateUserEmailStatusById(userEntry.getID());
-                            userController.login(userEntry.getUserName(), userEntry.getPassword(), response);
+                            userController.login(userEntry.getUserName(), userEntry.getPassword(), response,request);
                             model.put("message", "激活成功！");
                         } catch (Exception e) {
                             e.printStackTrace();
@@ -278,7 +278,7 @@ public class EBusinessUserController extends BaseController {
             } else {
                 try {
                     model.put("message", "邮箱已激活，请登录！");
-                    userController.login(userEntry.getUserName(), userEntry.getPassword(), response);
+                    userController.login(userEntry.getUserName(), userEntry.getPassword(), response,request);
                 } catch (Exception e) {
                     e.printStackTrace();
                 }
@@ -383,7 +383,7 @@ public class EBusinessUserController extends BaseController {
     @ResponseBody
     public Map<String, Object> addUser(String cacheKeyId, String code, final String email, String userName, String passWord, String phoneNumber,
                                        @RequestParam(defaultValue = "", required = false) String nickName,
-                                       HttpServletResponse response) {
+                                       HttpServletResponse response,HttpServletRequest request) {
         boolean flag = false;
         Map<String, Object> model = new HashMap<String, Object>();
         model.put("code", 500);
@@ -397,7 +397,7 @@ public class EBusinessUserController extends BaseController {
             return model;
         }
         if (!"".equals(cacheKeyId) && !"".equals(phoneNumber) && !"".equals(code)) {
-            Validate validate = userService.validatePhoneNumber(phoneNumber, code, cacheKeyId);
+            Validate validate = userService.validatePhoneNumberCode(phoneNumber, code, cacheKeyId);
             flag = validate.isOk();
             if (!flag) {
                 model.put("message", validate.getMessage());
@@ -431,7 +431,7 @@ public class EBusinessUserController extends BaseController {
             model.put("message", "注册成功");
             model.put("code", 200);
             // 登录
-            login(userName, passWord, response);
+            login(userName, passWord, response,request);
         } else {
             model.put("message", "注册错误");
         }
@@ -617,9 +617,9 @@ public class EBusinessUserController extends BaseController {
     @SessionNeedless
     @RequestMapping("/login")
     @ResponseBody
-    public RespObj login(String account, String password, HttpServletResponse response) {
+    public RespObj login(String account, String password, HttpServletResponse response,HttpServletRequest request) {
         RespObj respObj = RespObj.FAILD;
-        UserEntry userEntry = userService.getUserEntryByAccount(account);
+        UserEntry userEntry = userService.getUserByAccount(account);
         if (userEntry == null) {
             respObj.setMessage("accountError");
         } else {
@@ -630,7 +630,7 @@ public class EBusinessUserController extends BaseController {
                     return respObj;
                 }
             }
-            respObj = userController.login(userEntry.getUserName(), password, response);
+            respObj = userController.login(userEntry.getUserName(), password, response,request);
         }
 
         return respObj;

@@ -500,7 +500,7 @@ public class EBusinessGoodsController extends BaseController {
             return model;
         }
 
-        if (!ValidationUtils.isRequestModile(phoneNumber)) {
+        if (!ValidationUtils.isValidMobile(phoneNumber)) {
             model.put("message", "手机格式不对，非法手机");
             return model;
         }

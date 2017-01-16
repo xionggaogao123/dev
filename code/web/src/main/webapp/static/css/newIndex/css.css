@@ -762,6 +762,7 @@ button{cursor: pointer;}
 	left:148px;
 	height: 22px;
 	line-height: 22px;
+	width: 300px;
 }
 .store-register dd label{
 	display: block;

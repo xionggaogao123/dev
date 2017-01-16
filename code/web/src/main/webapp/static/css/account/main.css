@@ -130,14 +130,21 @@ input{box-shadow: 0 0 0 50px #fff inset;outline: 0px;}
     height: 37px;
 }
 
-.re-form input[type="text"],.re-form input[type="password"]{
+.re-form .um2 input[type="text"],.re-form .psw2 input[type="password"]{
     border: none;
     width:252px;
     height: 37px;
     box-sizing:border-box;
     float: right;
 }
-
+.re-form input[type="text"] {
+    display: block;
+    border: 1px solid #C9C9C9;
+    width: 300px;
+    height: 39px;
+    padding-left: 6px;
+    box-sizing: border-box;
+}
 .re-form .um2{
     border: 1px solid #C9C9C9 !important;
     width: 300px !important;

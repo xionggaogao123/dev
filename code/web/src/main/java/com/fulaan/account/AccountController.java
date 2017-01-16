@@ -6,7 +6,6 @@ import com.fulaan.annotation.LoginInfo;
 import com.fulaan.annotation.SessionNeedless;
 import com.fulaan.base.BaseController;
 import com.fulaan.cache.CacheHandler;
-import com.fulaan.dto.UserDTO;
 import com.fulaan.playmate.service.MateService;
 import com.fulaan.pojo.Validate;
 import com.fulaan.user.model.ThirdType;
@@ -21,7 +20,6 @@ import com.sys.utils.DateTimeUtils;
 import com.sys.utils.HttpClientUtils;
 import com.sys.utils.MD5Utils;
 import com.sys.utils.RespObj;
-import freemarker.ext.beans.HashAdapter;
 import org.apache.commons.lang.StringUtils;
 import org.bson.types.ObjectId;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -74,7 +72,7 @@ public class AccountController extends BaseController {
     /**
      * 登录界面
      *
-     * @return getUserEntryByAccount page
+     * @return login page
      */
     @RequestMapping("/login")
     @SessionNeedless
@@ -192,16 +190,16 @@ public class AccountController extends BaseController {
     @ResponseBody
     public RespObj bindPhone(String phone, String code, String cacheKeyId) {
         UserEntry userEntry = userService.findById(getUserId());
-        if(phone.equals(userEntry.getBindMobile())) {
+        if(phone.equals(userEntry.getMobileNumber())) {
             return RespObj.FAILDWithErrorMsg("你已经绑定了此手机号，无需再次绑定");
         }
-        Validate validate = userService.validatePhoneNumber(phone, code, cacheKeyId);
+        Validate validate = userService.validatePhoneNumberCode(phone, code, cacheKeyId);
         if (!validate.isOk()) {
             return RespObj.FAILDWithErrorMsg(validate.getMessage());
         }
         Validate bindValidate = accountService.bindMobile(getUserId(), phone);
         if (bindValidate.isOk()) {
-            userService.updateBindUserMobile(getUserId(), phone);
+            userService.updateUserMobile(getUserId(), phone);
             return RespObj.SUCCESS("绑定成功");
         }
         return RespObj.FAILDWithErrorMsg(bindValidate.getMessage());
@@ -291,7 +289,7 @@ public class AccountController extends BaseController {
     @RequestMapping("/phoneValidate")
     @ResponseBody
     public RespObj phoneValidate(String phone, String code, String cacheKeyId) {
-        Validate validate = userService.validatePhoneNumber(phone, code, cacheKeyId);
+        Validate validate = userService.validatePhoneNumberCode(phone, code, cacheKeyId);
         if (!validate.isOk()) {
             return RespObj.FAILDWithErrorMsg(validate.getMessage());
         }
@@ -347,7 +345,7 @@ public class AccountController extends BaseController {
     @RequestMapping("/resetPassword")
     @ResponseBody
     public RespObj resetPassword(String userName, String phone, String code, String cacheKeyId, String password) {
-        Validate validate = userService.validatePhoneNumber(phone, code, cacheKeyId);
+        Validate validate = userService.validatePhoneNumberCode(phone, code, cacheKeyId);
         if (!validate.isOk()) {
             return RespObj.FAILDWithErrorMsg(validate.getMessage());
         }
@@ -510,7 +508,7 @@ public class AccountController extends BaseController {
     @SessionNeedless
     @ResponseBody
     public RespObj validatePhone(String phone, String code, String cacheKeyId) {
-        Validate validate = userService.validatePhoneNumber(phone, code, cacheKeyId);
+        Validate validate = userService.validatePhoneNumberCode(phone, code, cacheKeyId);
         if (!validate.isOk()) {
             return RespObj.FAILDWithErrorMsg(validate.getMessage());
         }

@@ -436,7 +436,7 @@ public class UserCenterController extends BaseController {
         result.put("name", user.getUserName());
         result.put("nickName", user.getNickName());
         result.put("sex", user.getSex());
-        result.put("phone",getProtectedMobile(user.getBindMobileNumber()));
+        result.put("phone",getProtectedMobile(user.getMobileNumber()));
         Date birthdate = user.getBirthDate();
         SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd");
         String date = format.format(birthdate);

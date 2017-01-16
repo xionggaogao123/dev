@@ -236,7 +236,7 @@ public class EBusinessPersonalCenterController extends BaseController {
             return model;
         }
 
-        if (!ValidationUtils.isRequestModile(phoneNumber)) {
+        if (!ValidationUtils.isValidMobile(phoneNumber)) {
             model.put("message", "手机非法");
             return model;
         }

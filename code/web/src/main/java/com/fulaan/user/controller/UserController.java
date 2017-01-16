@@ -1,7 +1,6 @@
 package com.fulaan.user.controller;
 
 import com.easemob.server.EaseMobAPI;
-import com.fulaan.account.service.AccountService;
 import com.fulaan.annotation.ObjectIdType;
 import com.fulaan.annotation.SessionNeedless;
 import com.fulaan.annotation.UserRoles;
@@ -85,9 +84,6 @@ public class UserController extends BaseController {
 
     private static final Logger logger = Logger.getLogger(UserController.class);
     private static final Logger loginLogger = Logger.getLogger("LOGIN");
-    private final static String cas_url = Resources.getProperty("ssoservice.cas.url", "http://ah.sso.cycore.cn/sso");
-    private final static String service_url = Resources.getProperty("ssoservice.service.url", "http://www.k6kt.com/user/sso/login.do");
-    private final static String cas_login_url = Resources.getProperty("ssoservice.cas.login.url", "http://ah.sso.cycore.cn/sso/login");
     //找回密码邮箱链接
     private final static String linkFormat = Resources.getProperty("domain", "http://www.k6kt.com") + "/user/email/callback.do?ukId={0}&email={1}&token={2}";
     //k6kt单点登录URl
@@ -107,8 +103,6 @@ public class UserController extends BaseController {
     private FScoreService fScoreService;
     @Autowired
     private MateService mateService;
-    @Autowired
-    private AccountService accountService;
     @Autowired
     private MemberService memberService;
 
@@ -204,33 +198,29 @@ public class UserController extends BaseController {
     @SessionNeedless
     @RequestMapping("/login")
     @ResponseBody
-    public RespObj login(String name, String pwd, HttpServletResponse response) {
-        String ip = getIP();
+    public RespObj login(String name, String pwd, HttpServletResponse response, HttpServletRequest request) {
         //判断用户登录平台，只对PC登录用户进行密码输入错误3次，需要验证码
         logger.info("try login;the name=" + name + ";pwd=" + pwd);
-        Validate validate = validateAccount(name,pwd);
-        if(!validate.isOk()) {
+        Validate validate = userService.validateAccount(name, pwd);
+        if (!validate.isOk()) {
             return RespObj.FAILD(validate.getMessage());
         }
-        UserEntry e = (UserEntry)validate.getData();
+        UserEntry e = (UserEntry) validate.getData();
         SessionValue value = getSessionValue(e);
-        setCookieValue(name, response, ip, e, value);
-
+        userService.setCookieValue(e, value, getIP(), response, request);
+        syncHandleInitLogin(e, getIP(), getPlatform());
         RespObj respObj = new RespObj(Constant.SUCCESS_CODE);
         respObj.setMessage(value);
-        syncHandleInitLogin(e,getIP(),getPlatform());
         return respObj;
     }
 
     private SessionValue getSessionValue(UserEntry e) {
-
         SchoolEntry schoolEntry = null;
         try {
             schoolEntry = schoolService.getSchoolEntryByUserId(e.getID());
         } catch (IllegalParamException ie) {
             logger.error("Can not find school for user:" + e);
         }
-
         //处理SessionValue
         SessionValue value = new SessionValue();
         value.setId(e.getID().toString());
@@ -258,97 +248,13 @@ public class UserController extends BaseController {
         return value;
     }
 
-    private void setCookieValue(String name, HttpServletResponse response, String ip, UserEntry e, SessionValue value) {
-        //放入缓存
-        ObjectId cacheUserKey = new ObjectId();
-
-        String ipKey = CacheHandler.getKeyString(CacheHandler.CACHE_USER_KEY_IP, cacheUserKey.toString());
-        CacheHandler.cache(ipKey, ip, Constant.SECONDS_IN_DAY);
-        //ck_key
-        CacheHandler.cacheUserKey(e.getID().toString(), cacheUserKey.toString(), Constant.SECONDS_IN_DAY);
-        //s_key
-        CacheHandler.cacheSessionValue(cacheUserKey.toString(), value, Constant.SECONDS_IN_DAY);
-        //处理cookie
-        Cookie userKeycookie = new Cookie(Constant.COOKIE_USER_KEY, cacheUserKey.toString());
-        userKeycookie.setMaxAge(Constant.SECONDS_IN_DAY);
-        userKeycookie.setPath(Constant.BASE_PATH);
-        response.addCookie(userKeycookie);
-
-        try {
-            Cookie nameCookie = new Cookie(Constant.COOKIE_USERNAME_KEY, URLEncoder.encode(name, Constant.UTF_8));
-            nameCookie.setMaxAge(Constant.SECONDS_IN_MONTH);
-            nameCookie.setPath(Constant.BASE_PATH);
-            response.addCookie(nameCookie);
-        } catch (UnsupportedEncodingException e1) {
-            logger.error("", e1);
-        }
-    }
-
-    /**
-     * 验证账户
-     * @param account
-     * @param pwd
-     * @return
-     */
-    private Validate validateAccount(String account,String pwd) {
-        Validate validate = new Validate();
-        validate.setOk(false);
-        //数据库验证
-        UserEntry e = userService.getUserEntryByAccount(account);
-        if (null == e) {
-            validate.setMessage("用户名或密码错误!");
-            return validate;
-        } else if (e.getIsRemove() == 1) {
-            validate.setMessage("用户名或密码错误！");
-            return validate;
-        } else {
-            String emailValidateCode = e.getEmailValidateCode();
-            if (StringUtils.isNotBlank(emailValidateCode)) {
-                if (e.getEmailStatus() == 0) {
-                    validate.setMessage("邮箱未被激活！");
-                    return validate;
-                }
-            }
-        }
-        if (!ValidationUtils.isRequestPassword(pwd) || (!e.getPassword().equalsIgnoreCase(MD5Utils.getMD5String(pwd)) && !e.getPassword().equalsIgnoreCase(pwd))) {
-            if (!ValidationUtils.isRequestPassword(pwd)) {
-                validate.setMessage("密码非法");
-                return validate;
-            }
-            if (!e.getPassword().equalsIgnoreCase(MD5Utils.getMD5String(pwd)) && !e.getPassword().equalsIgnoreCase(pwd)) {
-                validate.setMessage("用户名或密码错误");
-                return validate;
-            }
-        }
-
-        if (Constant.ONE == e.getUserType()) //有效时间用户
-        {
-            long validBeginTime = e.getValidBeginTime();
-            long validTime = e.getValidTime();
-            if (0L == validBeginTime) //第一次登陆
-            {
-                try {
-                    userService.update(e.getID(), "vabt", System.currentTimeMillis());
-                } catch (IllegalParamException e1) {
-
-                }
-            } else {
-                if (System.currentTimeMillis() > validBeginTime + validTime * 1000) {
-                    validate.setMessage("该用户已经失效");
-                    return validate;
-                }
-            }
-        }
-        validate.setOk(true);
-        validate.setData(e);
-        return validate;
-    }
 
     /**
      * 异步处理初始登录
+     *
      * @param e
      */
-    private void syncHandleInitLogin(final UserEntry e,final String ip,final Platform platForm) {
+    private void syncHandleInitLogin(final UserEntry e, final String ip, final Platform platForm) {
         new Thread(new Runnable() {
             @Override
             public void run() {
@@ -382,7 +288,6 @@ public class UserController extends BaseController {
                 } catch (Exception ex) {
                     ex.printStackTrace();
                 }
-
                 //登录日志
                 long time = System.currentTimeMillis();
                 FLoginLog log = new FLoginLog(e.getUserName(), e.getNickName(), time, ip, platForm);
@@ -413,17 +318,12 @@ public class UserController extends BaseController {
             mateService.saveMateEntry(userEntry.getID());
         }
         mateService.updateAged(userEntry.getID(), userEntry.getBirthDate());
-        //移动手机号
-        if (StringUtils.isNotBlank(userEntry.getMobileNumber())) {
-            accountService.bindMobile(userEntry.getID(), userEntry.getMobileNumber());
-            userService.updateBindUserMobile(userEntry.getID(), userEntry.getMobileNumber());
-        }
 
         //检查是否生成GenerateUserCode
         if (StringUtils.isBlank(userEntry.getGenerateUserCode())) {
             //若code为空，则生成code
             userEntry.setGenerateUserCode(ObjectIdPackageUtil.getPackage(userEntry.getID()));
-            userService.addEntry(userEntry);
+            userService.addUser(userEntry);
         }
 
         if (StringUtils.isNotBlank(userEntry.getAvatar())) {
@@ -459,7 +359,6 @@ public class UserController extends BaseController {
         } catch (Exception ex) {
             logger.error("", ex);
         }
-
 
         if (Constant.ONE == e.getUserType()) //有效时间用户
         {
@@ -523,7 +422,6 @@ public class UserController extends BaseController {
         userKeycookie.setMaxAge(Constant.SECONDS_IN_DAY);
         userKeycookie.setPath(Constant.BASE_PATH);
         response.addCookie(userKeycookie);
-
 
         try {
             Cookie nameCookie = new Cookie(Constant.COOKIE_USERNAME_KEY, URLEncoder.encode(e.getUserName(), Constant.UTF_8));
@@ -878,7 +776,7 @@ public class UserController extends BaseController {
 
         if (!ue.getMobileNumber().equals(mobile)) {
             if (StringUtils.isNotBlank(mobile)) {
-                if (!ValidationUtils.isRequestModile(mobile)) {
+                if (!ValidationUtils.isValidMobile(mobile)) {
                     ret.setMessage("手机错误");
                     return ret;
                 }
@@ -1307,7 +1205,7 @@ public class UserController extends BaseController {
         }
 
 
-        if (!ValidationUtils.isRequestModile(mobile)) {
+        if (!ValidationUtils.isValidMobile(mobile)) {
             ret.setMessage("手机非法");
             return ret;
         }
@@ -1482,9 +1380,9 @@ public class UserController extends BaseController {
         String openId = (String) maps.get("openid");
         Map<String, Object> userInfoMaps = QQLoginUtil.getUserInfo(access_token, openId);
         String nickName = (String) userInfoMaps.get("nickname");
-        String avatar = (String)userInfoMaps.get("figureurl_qq_2");
+        String avatar = (String) userInfoMaps.get("figureurl_qq_2");
 
-        if(getUserId() != null) {
+        if (getUserId() != null) {
             Cookie[] cookies = request.getCookies();
             for (Cookie cookie : cookies) {
 
@@ -1520,10 +1418,17 @@ public class UserController extends BaseController {
 
         UserEntry userEntry = saveThirdInfo(null, openId, nickName, avatar, query, sex);
 
-        initUser(userEntry);
+        final UserEntry e = userEntry;
+        new Thread(new Runnable() {
+            @Override
+            public void run() {
+                initUser(e);
+            }
+        }).start();
 
         String redirectUrl = userService.getRedirectUrl(request);
-        userService.setCookieValue(getIP(), userEntry, response, request);
+        SessionValue value = getSessionValue(e);
+        userService.setCookieValue(userEntry, value, getIP(), response, request);
         if (StringUtils.isNotBlank(redirectUrl) && getPlatform() != Platform.PC) {
             return redirectUrl;
         }
@@ -1534,21 +1439,20 @@ public class UserController extends BaseController {
         UserEntry userEntry = userService.getThirdEntryByMap(query);
         if (userEntry == null) { //创建用户
             userEntry = userService.createUser(nickName, sex);
-            updateAvatar(userEntry,avatar);
-            if(openId != null) {
+            updateAvatar(userEntry, avatar);
+            if (openId != null) {
                 //保存第三方登录数据
                 ThirdLoginEntry thirdLoginEntry = new ThirdLoginEntry(userEntry.getID(), openId, null, ThirdType.QQ);
                 userService.saveThirdEntry(thirdLoginEntry);
-            } else if(unionId != null) {
+            } else if (unionId != null) {
                 ThirdLoginEntry thirdLoginEntry = new ThirdLoginEntry(userEntry.getID(), null, unionId, ThirdType.WECHAT);
                 userService.saveThirdEntry(thirdLoginEntry);
             }
-
         }
         return userEntry;
     }
 
-    private void updateAvatar(UserEntry userEntry,String avatar) throws IOException {
+    private void updateAvatar(UserEntry userEntry, String avatar) throws IOException {
         if (StringUtils.isNotBlank(avatar)) {
             String qiniuAvatar = uploadAvatarToQiniu(avatar);
             userEntry.setAvatar(qiniuAvatar);
@@ -1614,7 +1518,7 @@ public class UserController extends BaseController {
         query.put("unionid", unionId);
         query.put("type", ThirdType.WECHAT.getCode());
 
-        if(getUserId() != null) {
+        if (getUserId() != null) {
             Cookie[] cookies = request.getCookies();
             for (Cookie cookie : cookies) {
 
@@ -1643,11 +1547,16 @@ public class UserController extends BaseController {
         Integer sex = (Integer) userInfoMaps.get("sex");
         String avatar = (String) userInfoMaps.get("headimgurl");
 
-        UserEntry userEntry = saveThirdInfo(unionId, null, nickName, avatar, query, sex);
-        initUser(userEntry);
+        final UserEntry e = saveThirdInfo(unionId, null, nickName, avatar, query, sex);
+        new Thread(new Runnable() {
+            @Override
+            public void run() {
+                initUser(e);
+            }
+        }).start();
 
         String redirectUrl = userService.getRedirectUrl(request);
-        userService.setCookieValue(getIP(), userEntry, response, request);
+        userService.setCookieValue(e, getSessionValue(e), getIP(), response, request);
         if (redirectUrl != null && getPlatform() != Platform.PC) {
             return redirectUrl;
         }
@@ -1671,8 +1580,14 @@ public class UserController extends BaseController {
         if (userEntry == null) {
             return RespObj.SUCCESS(MapUtil.put("isExist", "No"));
         }
-        initUser(userEntry);
-        SessionValue value = userService.setCookieValue(getIP(), userEntry, response, request);
+        final UserEntry e = userEntry;
+        new Thread(new Runnable() {
+            @Override
+            public void run() {
+                initUser(e);
+            }
+        }).start();
+        SessionValue value = userService.setCookieValue(e, getSessionValue(e), getIP(), response, request);
         return RespObj.SUCCESS(value);
     }
 
@@ -1700,13 +1615,19 @@ public class UserController extends BaseController {
         UserEntry userEntry = userService.searchThirdEntry(openId, unionId, ThirdType.getThirdType(type));
         if (userEntry == null) { //第一次进入应用
             userEntry = userService.createUser(nickName, sex);
-            updateAvatar(userEntry,avatar);
+            updateAvatar(userEntry, avatar);
             //保存第三方登录数据
             ThirdLoginEntry thirdLoginEntry = new ThirdLoginEntry(userEntry.getID(), openId, unionId, ThirdType.getThirdType(type));
             userService.saveThirdEntry(thirdLoginEntry);
         }
-        initUser(userEntry);
-        SessionValue value = userService.setCookieValue(getIP(), userEntry, response, request);
+        final UserEntry e = userEntry;
+        new Thread(new Runnable() {
+            @Override
+            public void run() {
+                initUser(e);
+            }
+        }).start();
+        SessionValue value = userService.setCookieValue(e, getSessionValue(e), getIP(), response, request);
         return RespObj.SUCCESS(value);
     }
 
@@ -1716,7 +1637,7 @@ public class UserController extends BaseController {
      *
      * @param openId
      * @param unionId
-     * @param type
+     * @param type    1.微信  2.QQ
      * @param userId
      * @return
      */
@@ -1799,22 +1720,21 @@ public class UserController extends BaseController {
 
         //检查是否生成GenerateUserCode
         if (StringUtils.isBlank(user.getGenerateUserCode())) {
-            UserEntry userEntry=userService.findById(userId);
+            UserEntry userEntry = userService.findById(userId);
             //若code为空，则生成code
-            String packageCode=ObjectIdPackageUtil.getPackage(userEntry.getID());
+            String packageCode = ObjectIdPackageUtil.getPackage(userEntry.getID());
             userEntry.setGenerateUserCode(packageCode);
-            userService.addEntry(userEntry);
+            userService.addUser(userEntry);
             result.put("packageCode", packageCode);
-        }else{
+        } else {
             result.put("packageCode", user.getGenerateUserCode());
         }
         return result;
     }
 
     @RequestMapping("/userInfos")
-    public
     @ResponseBody
-    RespObj getUserInfos(String userIds) {
+    public RespObj getUserInfos(String userIds) {
         List<ObjectId> userList = new ArrayList<ObjectId>();
         String[] userStr = userIds.split(",");
         for (String e : userStr) {
@@ -1822,10 +1742,8 @@ public class UserController extends BaseController {
                 userList.add(new ObjectId(e));
             }
         }
-
         List<User> userDatas = new ArrayList<User>();
         List<UserDetailInfoDTO> userDetailInfoDTOS = userService.findUserInfoByIds(userList);
-
         for (UserDetailInfoDTO e : userDetailInfoDTOS) {
             User user = new User();
             user.setId(e.getId());
@@ -1836,20 +1754,6 @@ public class UserController extends BaseController {
             userDatas.add(user);
         }
         return RespObj.SUCCESS(userDatas);
-    }
-
-    @RequestMapping("/updateAvatarTemp")
-    @ResponseBody
-    public RespObj updateAvatarTemp(String avatar) throws Exception {
-        try {
-            String tempAvatar = uploadAvatarToQiniu(avatar);
-            userService.updateAvatar(getUserId().toString(), tempAvatar);
-            memberService.updateAllAvatar(ObjectId.get(), tempAvatar);
-        } catch (IOException e) {
-            e.printStackTrace();
-            return RespObj.FAILDWithErrorMsg("更新失败");
-        }
-        return RespObj.SUCCESS("更新成功");
     }
 
 }

@@ -38,6 +38,7 @@ import com.sys.constants.Constant;
 import com.sys.exceptions.IllegalParamException;
 import com.sys.utils.AvatarUtils;
 import com.sys.utils.DateTimeUtils;
+import com.sys.utils.MD5Utils;
 import com.sys.utils.ValidationUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.log4j.Logger;
@@ -97,6 +98,71 @@ public class UserService extends BaseService {
                 return false;
             }
         }
+    }
+
+    public void updateUserMobile(ObjectId userId,String mobile) {
+        userDao.updateUserMobile(userId,mobile);
+    }
+
+    /**
+     * 验证账户
+     * @param account
+     * @param pwd
+     * @return
+     */
+    public Validate validateAccount(String account,String pwd) {
+        Validate validate = new Validate();
+        validate.setOk(false);
+        //数据库验证
+        UserEntry e = getUserByAccount(account);
+        if (null == e) {
+            validate.setMessage("用户名或密码错误!");
+            return validate;
+        } else if (e.getIsRemove() == 1) {
+            validate.setMessage("用户名或密码错误！");
+            return validate;
+        } else {
+            String emailValidateCode = e.getEmailValidateCode();
+            if (StringUtils.isNotBlank(emailValidateCode)) {
+                if (e.getEmailStatus() == 0) {
+                    validate.setMessage("邮箱未被激活！");
+                    return validate;
+                }
+            }
+        }
+        if (!ValidationUtils.isValidPassword(pwd)) {
+            validate.setMessage("密码非法");
+            return validate;
+        }
+        //居然有明文 ==
+        if (!e.getPassword().equalsIgnoreCase(MD5Utils.getMD5String(pwd)) && !e.getPassword().equalsIgnoreCase(pwd)) {
+            if (!e.getPassword().equalsIgnoreCase(MD5Utils.getMD5String(pwd)) && !e.getPassword().equalsIgnoreCase(pwd)) {
+                validate.setMessage("用户名或密码错误");
+                return validate;
+            }
+        }
+
+        if (Constant.ONE == e.getUserType()) //有效时间用户
+        {
+            long validBeginTime = e.getValidBeginTime();
+            long validTime = e.getValidTime();
+            if (0L == validBeginTime) //第一次登陆
+            {
+                try {
+                    update(e.getID(), "vabt", System.currentTimeMillis());
+                } catch (IllegalParamException e1) {
+
+                }
+            } else {
+                if (System.currentTimeMillis() > validBeginTime + validTime * 1000) {
+                    validate.setMessage("该用户已经失效");
+                    return validate;
+                }
+            }
+        }
+        validate.setOk(true);
+        validate.setData(e);
+        return validate;
     }
 
     public String filter(String content) {
@@ -161,7 +227,7 @@ public class UserService extends BaseService {
         }
     }
 
-    public Validate validatePhoneNumber(String phoneNumber, String code, String cacheKeyId) {
+    public Validate validatePhoneNumberCode(String phoneNumber, String code, String cacheKeyId) {
         Validate validate = new Validate();
         validate.setOk(false);
         String cacheKey = CacheHandler.getKeyString(CacheHandler.CACHE_SHORTMESSAGE, cacheKeyId);
@@ -975,8 +1041,7 @@ public class UserService extends BaseService {
         return userDao.updateUserPermission(uid, role);
     }
 
-    public UserEntry getUserEntryByAccount(String account) {
-
+    public UserEntry getUserByAccount(String account) {
         Pattern emailPattern = Pattern.compile("^.+@.+\\..+$");
         Pattern phonePattern = Pattern.compile("^1[3|4|5|7|8][0-9]\\d{8}$");
         Pattern personalIdPattern = Pattern.compile("^[\\d]{10}");
@@ -1001,7 +1066,7 @@ public class UserService extends BaseService {
     public UserEntry getUserEntry(String name) {
         UserEntry e = findByUserName(name);
 
-        if (null == e && ValidationUtils.isRequestModile(name)) {
+        if (null == e && ValidationUtils.isValidMobile(name)) {
             e = findByMobile(name);
         }
         if (null == e && ValidationUtils.isEmail(name)) {
@@ -1040,9 +1105,7 @@ public class UserService extends BaseService {
      * @param request
      * @return
      */
-    public SessionValue setCookieValue(String ip, UserEntry e, HttpServletResponse response, HttpServletRequest request) {
-
-        SessionValue value = getSessionValue(e);
+    public SessionValue setCookieValue(UserEntry e,SessionValue value,String ip, HttpServletResponse response, HttpServletRequest request) {
         //保存generateCode
         value.setPackageCode(e.getGenerateUserCode());
         //放入缓存
@@ -1091,17 +1154,6 @@ public class UserService extends BaseService {
         } catch (Exception ex) {
             ex.printStackTrace();
         }
-    }
-
-    private SessionValue getSessionValue(UserEntry e) {
-        //处理SessionValue
-        SessionValue value = new SessionValue();
-        value.setId(e.getID().toString());
-        value.setUserName(e.getUserName());
-        value.setRealName(e.getNickName());
-        value.setAvatar(e.getAvatar());
-        value.setK6kt(e.getK6KT());
-        return value;
     }
 
     public void updateUserEmailStatusById(ObjectId id) {
@@ -1170,10 +1222,6 @@ public class UserService extends BaseService {
         return thirdLoginDao.isBindWechat(userId);
     }
 
-    public void updateBindUserMobile(ObjectId userId,String mobile) {
-        userDao.updateBindUserMobile(userId,mobile);
-    }
-
     public void clearUserPhone(String phone) {
         userDao.clearUserMobile(phone);
     }
@@ -1184,9 +1232,5 @@ public class UserService extends BaseService {
 
     public void removeThirdBind(ObjectId userId, ThirdType thirdType) {
         thirdLoginDao.removeThirdBind(userId, thirdType);
-    }
-
-    public void addEntry(UserEntry userEntry) {
-        userDao.addEntry(userEntry);
     }
 }

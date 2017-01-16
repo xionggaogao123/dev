@@ -703,7 +703,7 @@ public class EBusinessOrderController extends BaseController {
         }
         EBusinessLog.info("OrderAddressAdd;user:" + getSessionValue().getMap() + ";学校：" + getSessionValue().getSchoolName());
 
-        if (ValidationUtils.isRequestModile(tel)) {
+        if (ValidationUtils.isValidMobile(tel)) {
             EOrderAddressEntry eAddress = new EOrderAddressEntry(province, city, district, getUserId(), user, address, tel, 0);
             orderService.addOrderAddress(eAddress);
         }
@@ -771,7 +771,7 @@ public class EBusinessOrderController extends BaseController {
         EBusinessLog.info("OrderAddressUpdate,orderAddressId:" + addressId);
 
         ObjectId id = null;
-        if (ValidationUtils.isRequestModile(tel)) {
+        if (ValidationUtils.isValidMobile(tel)) {
             EOrderAddressEntry eAddress = orderService.getEOrderAddressEntry(new ObjectId(addressId));
             eAddress.setProvince(province);
             eAddress.setCity(city);

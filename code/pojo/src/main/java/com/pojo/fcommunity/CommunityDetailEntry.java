@@ -45,6 +45,10 @@ import java.util.List;
  * shim:shareImage 分享图片
  * shti:shareTitle 分享主题
  * shpr:sharePrice 分享价格
+ * vc:voteContent投票内容
+ * vmc:voteMaxCount选项个数
+ * vdt:voteDeadTime投票截止时间
+ * vt:voteType投票类型
  * r:remove 0:未删除 1：已删除
  * <p/>
  * }
@@ -59,7 +63,8 @@ public class CommunityDetailEntry extends BaseDBObject {
                               String communityContent, int communityType,List<ObjectId> unReadList,
                               List<AttachmentEntry> attachmentList,
                               List<AttachmentEntry> voiceList, List<AttachmentEntry> imageList,
-                              String shareUrl,String shareImage,String shareTitle,String sharePrice) {
+                              String shareUrl,String shareImage,String shareTitle,String sharePrice,
+                              String voteContent,int voteMaxCount,long voteDeadTime,int voteType) {
     BasicDBList attachmentDbList = new BasicDBList();
     BasicDBList vedioDbList = new BasicDBList();
     BasicDBList imageDbList = new BasicDBList();
@@ -87,8 +92,44 @@ public class CommunityDetailEntry extends BaseDBObject {
             .append("shti",shareTitle)
             .append("shpr",sharePrice)
             .append("ti", System.currentTimeMillis())
+            .append("vc",voteContent)
+            .append("vmc",voteMaxCount)
+            .append("vdt",voteDeadTime)
+            .append("vt",voteType)
             .append("r", 0);
     setBaseEntry(basicDBObject);
+  }
+
+  public int getVoteMaxCount(){
+    if(getBaseEntry().containsField("vmc")){
+      return getSimpleIntegerValueDef("vmc",-1);
+    }else{
+      return -1;
+    }
+  }
+
+  public long getVoteDeadTime(){
+    if(getBaseEntry().containsField("vdt")){
+      return getSimpleLongValueDef("vdt",-1L);
+    }else{
+      return -1L;
+    }
+  }
+
+  public  int getVoteType(){
+    if(getBaseEntry().containsField("vt")){
+      return getSimpleIntegerValueDef("vt",-1);
+    }else{
+      return -1;
+    }
+  }
+
+  public String getVoteContent(){
+    if(getBaseEntry().containsField("vc")){
+      return getSimpleStringValue("vc");
+    }else{
+      return Constant.EMPTY;
+    }
   }
 
   public String getCommunityId() {

@@ -119,10 +119,17 @@ define(['jquery', 'pagination', 'common'], function (require, exports, module) {
             renderActivity();
         });
         $('body').on('click','.vote-cont > button',function(){
-            $('.vote-cont .downT').slideToggle();
-            $('.vote-cont .div2').slideToggle();
+            if($.trim($('#title').val())!=""){
+                $('.vote-cont .div2').data("initContent",$('.vote-cont .div2').html());
+                $('.vote-cont .downT').slideToggle();
+                $('.vote-cont .div2').slideToggle();
+            }else{
+                alert("请先输入标题");
+            }
+
         });
         $('body').on('click','.vote-cont > div .p1 em',function(){
+            // clearVote();
             $('.vote-cont .downT').slideUp();
             $('.vote-cont .div2').slideUp();
         });
@@ -212,6 +219,11 @@ define(['jquery', 'pagination', 'common'], function (require, exports, module) {
             window.open(url, '_blank');
         });
 
+        $('body').on('click', '#vote_all', function () {
+            var url = '/community/communityMessageList?communityId=' + communityId + "&type=7";
+            window.open(url, '_blank');
+        });
+
         $('body').on('click', '#share_all', function () {
             var url = '/community/communityMessageList?communityId=' + communityId + "&type=3";
             window.open(url, '_blank');
@@ -255,6 +267,7 @@ define(['jquery', 'pagination', 'common'], function (require, exports, module) {
             $('.publish-btn').find('span').eq(1).hide();
             $('#content').next().show();
             $('.vote-cont').hide();
+            $('#content').next().next().hide();
             if (type == 1) {
                 $('.publish-btn .sp2').hide();
             } else if (type == 6) {
@@ -267,6 +280,7 @@ define(['jquery', 'pagination', 'common'], function (require, exports, module) {
                 $('.publish-btn').find('span').eq(1).show();
             } else if(type==7){
                 $('.vote-cont').show();
+                $('#content').next().next().show();
             }
             //清空数据
             emptyData();
@@ -313,29 +327,13 @@ define(['jquery', 'pagination', 'common'], function (require, exports, module) {
         });
 
         $('body').on('input','.vote-cont .div2 .li2',function(){
-            var count=0;
-            $('#voteCount').empty();
-            var initOption="<option value=\"1\">单选</option>";
-            $('#voteCount').append(initOption);
-            $('#voteCount').css("width","60px");
-            $('.vote-cont .div2 .li2').each(function(){
-                if($.trim($(this).find('input').val())){
-                    count++;
-                }
-            });
-            if(count>1){
-                for(var i=2;i<=count;i++){
-                   var option="<option value=\""+i+"\">最多可选"+i+"项</option>";
-                   $('#voteCount').append(option);
-                }
-                if(count==10){
-                    $('#voteCount').css("width","96px");
-                }else{
-                    $('#voteCount').css("width","87px");
-                }
-
-            }
+            setVoteContent();
         });
+
+
+
+
+
 
         $('body').on('click','.vote-cont .div2 .li2 i',function(){
             $(this).closest('li').remove();
@@ -344,19 +342,11 @@ define(['jquery', 'pagination', 'common'], function (require, exports, module) {
                 $('.vote-cont .div2 .li2').find('i').hide();
             }
             var count=0;
-            var trimCount=0;
             $('.vote-cont .div2 .li2').each(function(){
                 count++;
-                // var option;
-                // if(count==1){
-                //    option="<option value=\""+count+"\">单选</option>";
-                // }else{
-                //    option="<option value=\""+count+"\">最多可选"+count+"项</option>";
-                // }
-                //
-                // $('#voteCount').append(option);
                 $(this).find('em').html(count);
-            })
+            });
+            setVoteContent();
         })
 
         $('body').on('click', '.p-doc em', function () {
@@ -477,7 +467,93 @@ define(['jquery', 'pagination', 'common'], function (require, exports, module) {
             }
         })
 
-    })
+        $('body').on('click','#voteSubmit',function(){
+            voteSubmit();
+        })
+
+        $('body').on('input','#title',function(){
+            if($('#content').data('vote')==1){
+                if($.trim($(this).val())){
+                    var len=strlen($(this).val());
+                    if(len<48){
+                        $('#content').next().next().html("我发起了一个投票 【"+$(this).val()+"】");
+                    }
+                }
+            }
+        })
+    });
+
+    function voteSubmit(){
+        var voteContent="";
+        var voteCount=0;
+        $('.vote-cont .div2 .li2 input').each(function(){
+            var vItem=$(this).val();
+            if($.trim(vItem)!=""){
+                if(voteContent!=""){
+                    voteContent=voteContent+","+vItem;
+                }else{
+                    voteContent=vItem;
+                }
+
+                voteCount=voteCount+1;
+            }
+        });
+        if(voteCount<2){
+            alert("设置的投票选项至少两项");
+            return ;
+        }
+        var voteMaxCount=$('#voteCount').val();
+        var voteTime=$('#datepicker').val();
+        if($.trim(voteTime)==""){
+            alert("结束时间不能为空");
+            return;
+        }
+        var voteDeadTime=voteTime+" "+$('#hour').val()+":"+$('#minute').val();
+        var voteType=$(':radio[name="sign"]:checked').val();
+        $('#content').data('voteContent',voteContent);
+        $('#content').data('voteMaxCount',voteMaxCount);
+        $('#content').data('voteDeadTime',voteDeadTime);
+        $('#content').data('voteType',voteType);
+
+        var str="我发起了一个投票 【"+$('#title').val()+"】";
+        $('#content').next().next().html(str);
+        $('#content').data('vote',1);
+        clearVote();
+    }
+
+    function clearVote(){
+        // var initContent=$('.vote-cont .div2').data("initContent");
+        // $('.vote-cont .div2').empty();
+        // $('.vote-cont .div2').html(initContent);
+        $('.vote-cont .downT').slideToggle();
+        $('.vote-cont .div2').slideToggle();
+    }
+
+
+    function setVoteContent(){
+        var count=0;
+        $('#voteCount').empty();
+        var initOption="<option value=\"1\">单选</option>";
+        $('#voteCount').append(initOption);
+        $('#voteCount').css("width","60px");
+        $('.vote-cont .div2 .li2').each(function(){
+            if($.trim($(this).find('input').val())){
+                count++;
+            }
+        });
+        if(count>1){
+            for(var i=2;i<=count;i++){
+                var option="<option value=\""+i+"\">最多可选"+i+"项</option>";
+                $('#voteCount').append(option);
+            }
+            if(count==10){
+                $('#voteCount').css("width","96px");
+            }else{
+                $('#voteCount').css("width","87px");
+            }
+        }
+    }
+
 
 
     function  setTop(obj,top) {
@@ -780,6 +856,13 @@ define(['jquery', 'pagination', 'common'], function (require, exports, module) {
         })
     }
 
+    function setMessageInfo(message){
+        message.voteContent="";
+        message.voteMaxCount=-1;
+        message.voteDeadTime="";
+        message.voteType=-1;
+    }
+
     //设置空值
     function setMessage(message) {
         if($('.pub-pro-show').data('shareUrl')!=undefined&&
@@ -805,7 +888,12 @@ define(['jquery', 'pagination', 'common'], function (require, exports, module) {
             var content = $('#content').val();
            //创建正则RegExp对象
            //  message.content=content.replace(/\n/g,"<br/>");
-            message.content=content;
+            if(type==7){
+                message.content=content+$('#content').next().next().html();
+            }else{
+                message.content=content;
+            }
+
             message.type = type;
             //加载附件信息
             var attachements = new Array();
@@ -821,6 +909,15 @@ define(['jquery', 'pagination', 'common'], function (require, exports, module) {
             message.attachements = attachements;
             message.images = images;
             message.vedios = vedios;
+            if(type ==7){
+                message.voteContent=$('#content').data('voteContent');
+                message.voteMaxCount=$('#content').data('voteMaxCount');
+                message.voteDeadTime=$('#content').data('voteDeadTime');
+                message.voteType=$('#content').data('voteType');
+            }else{
+                setMessageInfo(message);
+            }
+
             if (type == 6) {
                 if ($('.pub-pro-show').html() == "") {
                     setMessage(message);
@@ -829,9 +926,8 @@ define(['jquery', 'pagination', 'common'], function (require, exports, module) {
                     message.shareImage = $('.pub-pro-show').find('img').attr('src');
                     message.shareTitle = $('.pub-pro-show').find('a').html();
                     message.sharePrice = $('.pub-pro-show').find('.p2').html();
-                    ;
                 }
-            } else {
+            } {
                 setMessage(message);
             }
             var url = "/community/newMessage.do";
@@ -852,6 +948,18 @@ define(['jquery', 'pagination', 'common'], function (require, exports, module) {
                         if(type==6){
                             $('.pub-pro-show').empty();
                             $('#shareUrl').val("");
+                        }
+
+                        if(type==7){
+                            $('#content').removeData('voteContent');
+                            $('#content').removeData('voteMaxCount');
+                            $('#content').removeData('voteDeadTime');
+                            $('#content').removeData('voteType');
+                            $('#content').next().next().empty();
+                            var initContent=$('.vote-cont .div2').data("initContent");
+                            $('.vote-cont .div2').empty();
+                            $('.vote-cont .div2').html(initContent);
+                            $('#content').removeData('vote');
                         }
                         $('#announcement').empty();
                         $('#activity').empty();
@@ -887,7 +995,14 @@ define(['jquery', 'pagination', 'common'], function (require, exports, module) {
             return false;
         }
 
-        if(type!=4){
+        if(type==7){
+            if($('#content').data('voteContent')==undefined){
+                alert("发布前请先设置投票选项!");
+                return false;
+            }
+        }
+
+        if(type!=4&&type!=7){
             if (content == "" || content == undefined) {
                 alert("内容不能为空!");
                 return false;
@@ -900,6 +1015,7 @@ define(['jquery', 'pagination', 'common'], function (require, exports, module) {
             alert("内容字节数不能超过1000个!");
             return false;
         }
+
         return true;
     }
 
@@ -1012,6 +1128,7 @@ define(['jquery', 'pagination', 'common'], function (require, exports, module) {
                 var means = resp.message.means;
                 var homework = resp.message.homework;
                 var materials = resp.message.materials;
+                var vote = resp.message.vote;
 
 
                 template('#announcementTmpl', '#announcement', announcement);
@@ -1020,6 +1137,7 @@ define(['jquery', 'pagination', 'common'], function (require, exports, module) {
                 template('#meansTmpl', '#means', means);
                 template('#homeworkTmpl', '#homework', homework);
                 template('#materialsTmpl', '#materials', materials);
+                template('#voteTmpl','#vote',vote);
 
                 var tempStr="<div class=\"notice-container clearfix com-nothing\">";
                 if (announcement.length == 0) {
@@ -1030,6 +1148,16 @@ define(['jquery', 'pagination', 'common'], function (require, exports, module) {
                     $('.announcementContent').each(function(){
                       contentDeal($(this));
                    })
+                }
+
+                if (vote.length == 0) {
+                    var prev="<div class=\"com-tit\" id=\"vote_all\">投票<em>全部</em></div>";
+                    var str=prev+tempStr+"该社区还未发布投票"+"</div>";
+                    $('#vote').append(str);
+                }else{
+                    $('.voteContent').each(function(){
+                        contentDeal($(this));
+                    });
                 }
 
                 if (activity.length == 0) {

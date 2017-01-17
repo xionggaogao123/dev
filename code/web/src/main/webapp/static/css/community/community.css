@@ -17,7 +17,7 @@ button{cursor:pointer;}
 img { border:none; }
 ol,ul,li { list-style:none; }
 input, textarea, select, button { font:14px Verdana,Helvetica,Arial,sans-serif; }
-input{box-shadow: 0 0 0 50px #fff inset;outline: 0px;}
+input[type=text],input[type=password]{box-shadow: 0 0 0 50px #fff inset;outline: 0px;}
 table { border-collapse:collapse; }
 html {overflow-y: scroll;}
 pre{white-space: pre-wrap;word-wrap: break-word;}

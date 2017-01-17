@@ -11,7 +11,9 @@ import com.sys.constants.Constant;
 import org.bson.types.ObjectId;
 
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 /**
  * Created by admin on 2016/7/13.
@@ -96,29 +98,35 @@ public class FVoteDao extends BaseDao {
         if (voteId != null) {
             query.append("vid", voteId);
         }
-        List<FVoteEntry> fVoteEntryList = new ArrayList<FVoteEntry>();
-        List<FVoteEntry> retList = new ArrayList<FVoteEntry>();
+//        List<FVoteEntry> fVoteEntryList = new ArrayList<FVoteEntry>();
+        Set<ObjectId> userIds=new HashSet<ObjectId>();
+//        List<FVoteEntry> retList = new ArrayList<FVoteEntry>();
         List<DBObject> dbObjectList = find(MongoFacroty.getAppDB(), Constant.COLLECTION_FORUM_VOTE, query, Constant.FIELDS);
 
 
         for (DBObject dbObject : dbObjectList) {
-            retList.add(new FVoteEntry((BasicDBObject) dbObject));
+            FVoteEntry entry=new FVoteEntry((BasicDBObject) dbObject);
+            userIds.add(entry.getUserId());
+//            retList.add(new FVoteEntry((BasicDBObject) dbObject));
         }
-        if (retList.size() > 0) {
-            fVoteEntryList.add(retList.get(0));
-            for (FVoteEntry fVoteEntry : retList) {
-                boolean flag = true;
-                for (FVoteEntry item : fVoteEntryList) {
-                    if (item.getUserId().equals(fVoteEntry.getUserId())) {
-                        flag = false;
-                        break;
-                    }
-                }
-                if (flag) {
-                    fVoteEntryList.add(fVoteEntry);
-                }
-            }
-        }
-        return fVoteEntryList.size();
+        return userIds.size();
+
+
+//        if (retList.size() > 0) {
+//            fVoteEntryList.add(retList.get(0));
+//            for (FVoteEntry fVoteEntry : retList) {
+//                boolean flag = true;
+//                for (FVoteEntry item : fVoteEntryList) {
+//                    if (item.getUserId().equals(fVoteEntry.getUserId())) {
+//                        flag = false;
+//                        break;
+//                    }
+//                }
+//                if (flag) {
+//                    fVoteEntryList.add(fVoteEntry);
+//                }
+//            }
+//        }
+//        return fVoteEntryList.size();
     }
 }

@@ -20,6 +20,10 @@ public class CommunityMessage {
     private List<Attachement> attachements = new ArrayList<Attachement>();
     private List<Attachement> vedios = new ArrayList<Attachement>();
     private List<Attachement> images = new ArrayList<Attachement>();
+    private String voteContent;
+    private int voteMaxCount;
+    private String voteDeadTime;
+    private int voteType;
 
     public String getCommunityId() {
         return communityId;
@@ -107,5 +111,37 @@ public class CommunityMessage {
 
     public void setImages(List<Attachement> images) {
         this.images = images;
+    }
+
+    public String getVoteContent() {
+        return voteContent;
+    }
+
+    public void setVoteContent(String voteContent) {
+        this.voteContent = voteContent;
+    }
+
+    public int getVoteMaxCount() {
+        return voteMaxCount;
+    }
+
+    public void setVoteMaxCount(int voteMaxCount) {
+        this.voteMaxCount = voteMaxCount;
+    }
+
+    public int getVoteType() {
+        return voteType;
+    }
+
+    public void setVoteType(int voteType) {
+        this.voteType = voteType;
+    }
+
+    public String getVoteDeadTime() {
+        return voteDeadTime;
+    }
+
+    public void setVoteDeadTime(String voteDeadTime) {
+        this.voteDeadTime = voteDeadTime;
     }
 }

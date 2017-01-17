@@ -54,6 +54,12 @@ public class CommunityDetailDTO {
 
     private int readFlag;
 
+    //投票
+    //投票截止标志 1:未截止已:未截止
+    private int voteDead;
+    //投票人数
+    private int voteCount;
+
 
     private List<PartInContentDTO> partList = new ArrayList<PartInContentDTO>();
 
@@ -389,5 +395,21 @@ public class CommunityDetailDTO {
 
     public void setReadFlag(int readFlag) {
         this.readFlag = readFlag;
+    }
+
+    public int getVoteDead() {
+        return voteDead;
+    }
+
+    public void setVoteDead(int voteDead) {
+        this.voteDead = voteDead;
+    }
+
+    public int getVoteCount() {
+        return voteCount;
+    }
+
+    public void setVoteCount(int voteCount) {
+        this.voteCount = voteCount;
     }
 }

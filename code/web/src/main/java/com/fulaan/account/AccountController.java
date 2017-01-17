@@ -6,11 +6,11 @@ import com.fulaan.annotation.LoginInfo;
 import com.fulaan.annotation.SessionNeedless;
 import com.fulaan.base.BaseController;
 import com.fulaan.cache.CacheHandler;
+import com.fulaan.connect.QQAuth;
 import com.fulaan.playmate.service.MateService;
 import com.fulaan.pojo.Validate;
 import com.fulaan.user.model.ThirdType;
 import com.fulaan.user.service.UserService;
-import com.fulaan.user.util.QQLoginUtil;
 import com.fulaan.util.Validator;
 import com.pojo.mobile.UserMobileEntry;
 import com.pojo.user.UserDetailInfoDTO;
@@ -57,6 +57,8 @@ public class AccountController extends BaseController {
     private AccountService accountService;
     @Autowired
     private MateService mateService;
+
+    private QQAuth qqAuth = new QQAuth();
 
     /**
      * 注册界面
@@ -150,12 +152,7 @@ public class AccountController extends BaseController {
     @SessionNeedless
     @RequestMapping(value = "/qqBind")
     public void QQLogin(HttpServletRequest request, HttpServletResponse response) throws IOException {
-        String state = "123456";
-        request.getSession().setAttribute("qq_connect_state", state);
-        String redirect_URI = HttpClientUtils.strURLEncodeUTF8(QQLoginUtil.getValue("redirect_URI").trim());
-        String authorizeURL = QQLoginUtil.getValue("authorizeURL").trim();
-        String app_ID = QQLoginUtil.getValue("app_ID").trim();
-        String url = authorizeURL + "?client_id=" + app_ID + "&redirect_uri=" + redirect_URI + "&response_type=" + "code" + "&state=" + state;
+        String url = qqAuth.getAuthUrl();
         Cookie userKeycookie = new Cookie("bindQQ", getUserId().toString());
         userKeycookie.setMaxAge(Constant.SECONDS_IN_DAY);
         userKeycookie.setPath(Constant.BASE_PATH);

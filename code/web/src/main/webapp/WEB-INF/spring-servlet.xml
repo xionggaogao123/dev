@@ -49,12 +49,6 @@
         <context:include-filter type="annotation" expression="org.springframework.stereotype.Service"/>
     </context:component-scan>
 
-    <context:component-scan base-package="com.db" use-default-filters="false">
-        <context:include-filter type="annotation" expression="org.springframework.stereotype.Controller"/>
-        <context:include-filter type="annotation" expression="org.springframework.stereotype.Service"/>
-    </context:component-scan>
-
-
     <!-- 资源视图解析-->
     <bean class="org.springframework.web.servlet.view.ResourceBundleViewResolver">
         <property name="basename" value="views"/>
@@ -124,11 +118,6 @@
     <bean id="exceptionResolver"
           class="com.fulaan.interceptor.ExceptionResolver">
     </bean>
-
-    <!--&lt;!&ndash; 文件上传 &ndash;&gt;-->
-    <!--<bean id="multipartResolver"-->
-          <!--class="org.springframework.web.multipart.support.StandardServletMultipartResolver">-->
-    <!--</bean>-->
 
     <!-- 定时任务 -->
     <bean id="taskJob"

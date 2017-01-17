@@ -3031,5 +3031,6 @@ public class FPostController extends BaseController {
         model.put("login", true);
         model.put("k6kt", sessionValue.getK6kt());
         model.put("avatar", sessionValue.getMinAvatar());
+        model.put("mobileNumber",userEntry.getMobileNumber());
     }
 }

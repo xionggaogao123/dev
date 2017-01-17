@@ -23,7 +23,6 @@ import com.fulaan.user.model.ThirdLoginEntry;
 import com.fulaan.user.model.ThirdType;
 import com.fulaan.user.service.UserService;
 import com.fulaan.user.util.MapUtil;
-import com.fulaan.user.util.QQLoginUtil;
 import com.fulaan.user.util.WeChatLoginUtil;
 import com.fulaan.util.ObjectIdPackageUtil;
 import com.fulaan.utils.CollectionUtil;

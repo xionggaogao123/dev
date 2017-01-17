@@ -70,7 +70,7 @@
                                         <c:if test="${login==true&&voteDeadFlag==0}">
                                         <button id="submitVote">提交</button>
                                         </c:if>
-                                        <c:if test="${voteDead==1}">
+                                        <c:if test="${voteDeadFlag==1}">
                                         <span>投票已经结束</span>
                                         </c:if>
                                     </div>

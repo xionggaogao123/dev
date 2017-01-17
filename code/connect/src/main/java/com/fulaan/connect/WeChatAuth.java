@@ -6,9 +6,9 @@ import com.fulaan.model.Sex;
 import com.fulaan.model.TokenObj;
 import com.fulaan.model.UserInfo;
 import com.fulaan.model.WeChatInfo;
+import com.fulaan.util.JsonUtil;
 import com.fulaan.util.Util;
 import org.apache.commons.lang3.StringUtils;
-import org.codehaus.jackson.map.ObjectMapper;
 
 import java.io.IOException;
 import java.util.HashMap;
@@ -67,8 +67,7 @@ public class WeChatAuth implements Auth {
         parms.put("code", authCode);
         parms.put("grant_type", "authorization_code");
         String content = HttpClient.get(ACCESS_TOKEN_URL,parms);
-        ObjectMapper mapper = new ObjectMapper();
-        return mapper.readValue(content, TokenObj.class);
+        return JsonUtil.fromJson(content, TokenObj.class);
     }
 
     private UserInfo getUserInfo(TokenObj tokenObj) {
@@ -77,8 +76,7 @@ public class WeChatAuth implements Auth {
         parms.put("openid", tokenObj.getUnionid());
         try {
             String content = HttpClient.get(USER_INFO_URL, parms);
-            ObjectMapper mapper = new ObjectMapper();
-            WeChatInfo weChatInfo = mapper.readValue(content,WeChatInfo.class);
+            WeChatInfo weChatInfo = JsonUtil.fromJson(content,WeChatInfo.class);
             UserInfo userInfo = new UserInfo();
             userInfo.setAvatar(weChatInfo.getHeadimgurl());
             userInfo.setSex(Sex.get(weChatInfo.getSex()));

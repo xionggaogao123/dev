@@ -336,9 +336,9 @@ public class CommunityService {
                 communityDetailDTO.setVoteCount(voteCount);
                 long nowTime=System.currentTimeMillis();
                 if(nowTime<entry.getVoteDeadTime()){
-                    communityDetailDTO.setVoteDead(1);
+                    communityDetailDTO.setVoteDeadFlag(0);
                 }else{
-                    communityDetailDTO.setVoteDead(0);
+                    communityDetailDTO.setVoteDeadFlag(1);
                 }
             }
             if (null != communityEntry.getOwerID()) {

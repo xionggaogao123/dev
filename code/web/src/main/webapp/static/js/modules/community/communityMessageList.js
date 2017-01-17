@@ -284,6 +284,15 @@ define(['jquery', 'pagination', 'common'], function (require, exports, module) {
                         })
                     }
                 }
+                if (type == 7) {
+                    template('#voteTmpl', '#content', result.message.result);
+                    if(result.message.result.length>0){
+                        $('.voteContent').each(function(){
+                            contentDeal($(this));
+                        })
+                    }
+                }
+
                 if (type == 2) {
                     template('#activityTmpl', '#content', result.message.result);
                     if(result.message.result.length>0){

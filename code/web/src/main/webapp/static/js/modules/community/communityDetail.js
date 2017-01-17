@@ -3,7 +3,8 @@ define(['jquery', 'pagination', 'common'], function (require, exports, module) {
     var common = require('common');
     require('pagination');
     var communityId = $('#communityId').attr('communityId');
-    var detailId=$('#communityId').attr('detailId');
+    var detailId = $('#communityId').attr('detailId');
+    var voteType=$('#communityId').attr('voteType');
     var communityDetail = {};
     var activity_cur = 1;
     var acid = '';
@@ -61,7 +62,7 @@ define(['jquery', 'pagination', 'common'], function (require, exports, module) {
                 acid: acid
             };
 
-            if(select == 'signed') {
+            if (select == 'signed') {
                 common.getData("/factivity/cancelSign.do", requestParm, function (resp) {
                     if (resp.code == '200') {
                         $('.alert-diglog').fadeOut();
@@ -129,7 +130,7 @@ define(['jquery', 'pagination', 'common'], function (require, exports, module) {
             renderActivity();
         });
 
-        $('body').on('click','.sign-activity .alert-btn-sure',function () {
+        $('body').on('click', '.sign-activity .alert-btn-sure', function () {
             var requestData = {
                 communityId: communityId,
                 communityDetailId: detailId,
@@ -156,7 +157,7 @@ define(['jquery', 'pagination', 'common'], function (require, exports, module) {
         });
 
 
-        $('body').on('click','.alert-btn-sure_cancel',function () {
+        $('body').on('click', '.alert-btn-sure_cancel', function () {
             var requestData = {
                 communityId: communityId,
                 communityDetailId: detailId,
@@ -193,19 +194,19 @@ define(['jquery', 'pagination', 'common'], function (require, exports, module) {
             zan($(this));
         })
 
-        $('body').on('click','.un-mark',function(){
+        $('body').on('click', '.un-mark', function () {
             markContent($(this));
         })
 
 
-        $('body').on('click','.alert-btn-esc,.sign-activity em',function () {
+        $('body').on('click', '.alert-btn-esc,.sign-activity em', function () {
 
             $('.sign-activity').fadeOut();
             $('.bg').fadeOut();
         });
 
 
-        $('body').on('click','.alert-btn-esc_cancel,.esc-alert em',function () {
+        $('body').on('click', '.alert-btn-esc_cancel,.esc-alert em', function () {
 
             $('.esc-alert').fadeOut();
             $('.bg').fadeOut();
@@ -213,7 +214,7 @@ define(['jquery', 'pagination', 'common'], function (require, exports, module) {
         });
 
         $('.share-btn').click(function () {
-            var that=this;
+            var that = this;
             $.ajax({
                 url: "/forum/loginInfo.do?date=" + new Date(),
                 type: "get",
@@ -231,10 +232,40 @@ define(['jquery', 'pagination', 'common'], function (require, exports, module) {
                             $('.esc-alert').fadeIn();
                             $('.bg').fadeIn();
                         }
-                    }else{
+                    } else {
                         $('.store-register').fadeToggle();
                         $('.bg').fadeToggle();
                     }
+                }
+            });
+
+        });
+
+        $('body').on('click', '#submitVote', function () {
+            var param = {};
+            var number = "";
+            //var number=$('input[name="radio-s"]:checked').attr('value');
+            $(".checkVote").each(function () {
+                if ($(this).is(':checked')) {
+                    var item = $(this).attr('value');
+                    if (number != "") {
+                        number = number + "," + item;
+                    } else {
+                        number = item;
+                    }
+                }
+            })
+            if (number == "") {
+                alert("请选择一个");
+                return;
+            }
+            param.number = number;
+            param.voteId = detailId;
+            common.getPostData('/forum/userCenter/addFVote.do', param, function (resp) {
+                if (resp.code == "200") {
+                    window.location.href=window.location.href;
+                } else {
+                    alert(resp.message);
                 }
             });
 
@@ -254,6 +285,15 @@ define(['jquery', 'pagination', 'common'], function (require, exports, module) {
                         var sendText = $('#send').text();
                         if (sendText == '提交作业') {
                             submitHomeWork();
+                            return;
+                        }
+
+                        if(sendText ==  '我要留言'){
+                            if(voteType=="1"){
+                                submitHomeWork();
+                            }else{
+                                alert("留言前请投票");
+                            }
                             return;
                         }
 
@@ -279,7 +319,7 @@ define(['jquery', 'pagination', 'common'], function (require, exports, module) {
                                 alert(resp.message);
                             }
                         });
-                    }else{
+                    } else {
                         $('.store-register').fadeToggle();
                         $('.bg').fadeToggle();
                     }
@@ -298,7 +338,7 @@ define(['jquery', 'pagination', 'common'], function (require, exports, module) {
                     var flag = resp.login;
                     if (flag) {
                         submitRecommend();
-                    }else{
+                    } else {
                         $('.store-register').fadeToggle();
                         $('.bg').fadeToggle();
                     }
@@ -308,7 +348,7 @@ define(['jquery', 'pagination', 'common'], function (require, exports, module) {
 
 
         $('.file-download').click(function () {
-            var that=this;
+            var that = this;
             $.ajax({
                 url: "/forum/loginInfo.do?date=" + new Date(),
                 type: "get",
@@ -336,7 +376,7 @@ define(['jquery', 'pagination', 'common'], function (require, exports, module) {
                                 alert("记录下载数据失败");
                             }
                         });
-                    }else{
+                    } else {
                         $('.store-register').fadeToggle();
                         $('.bg').fadeToggle();
                     }
@@ -356,12 +396,12 @@ define(['jquery', 'pagination', 'common'], function (require, exports, module) {
             $(this).closest('.p-doc').remove();
         })
 
-        $('body').on('click','.login-mk-btn .d2',function () {
+        $('body').on('click', '.login-mk-btn .d2', function () {
             $('.store-register').fadeToggle();
             $('.bg').fadeToggle();
         })
 
-        $('body').on('click','#outResult',function(){
+        $('body').on('click', '#outResult', function () {
             $.ajax({
                 url: "/forum/loginInfo.do?date=" + new Date(),
                 type: "get",
@@ -372,7 +412,7 @@ define(['jquery', 'pagination', 'common'], function (require, exports, module) {
                     var flag = resp.login;
                     if (flag) {
                         exportPartInData();
-                    }else{
+                    } else {
                         $('.store-register').fadeToggle();
                         $('.bg').fadeToggle();
                     }
@@ -397,14 +437,14 @@ define(['jquery', 'pagination', 'common'], function (require, exports, module) {
         })
     }
 
-    function markContent(obj){
-        var contentId=obj.attr('contentId');
-        var param={};
-        param.contentId=contentId;
-        common.getData('/community/mark.do',param,function(resp){
-            if(resp.code=="200"){
-               getPartInContent(1);
-            }else{
+    function markContent(obj) {
+        var contentId = obj.attr('contentId');
+        var param = {};
+        param.contentId = contentId;
+        common.getData('/community/mark.do', param, function (resp) {
+            if (resp.code == "200") {
+                getPartInContent(1);
+            } else {
                 alert(resp.message);
             }
         })
@@ -425,12 +465,12 @@ define(['jquery', 'pagination', 'common'], function (require, exports, module) {
             if (resp.message) {
                 if (zan == 1) {
                     obj.text(parseInt(obj.text()) + 1);
-                    obj.attr('ownerZan',1);
+                    obj.attr('ownerZan', 1);
                     obj.addClass('yidianzan').removeClass('dianzan');
                     alert("点赞成功！");
                 } else {
                     obj.text(parseInt(obj.text()) - 1);
-                    obj.attr('ownerZan',0);
+                    obj.attr('ownerZan', 0);
                     obj.addClass('dianzan').removeClass('yidianzan');
                     alert("取消赞成功！");
                 }
@@ -451,9 +491,9 @@ define(['jquery', 'pagination', 'common'], function (require, exports, module) {
             // alert("路径不能为空！");
             return;
         }
-        var Expression=/http(s)?:\/\/([\w-]+\.)+[\w-]+(\/[\w- .\/?%&=]*)?/;
-        var objExp=new RegExp(Expression);
-        if(objExp.test(url)==false){
+        var Expression = /http(s)?:\/\/([\w-]+\.)+[\w-]+(\/[\w- .\/?%&=]*)?/;
+        var objExp = new RegExp(Expression);
+        if (objExp.test(url) == false) {
             alert("路径不符合规范！");
             return;
         }
@@ -465,7 +505,7 @@ define(['jquery', 'pagination', 'common'], function (require, exports, module) {
             $('.pub-pro-show').empty();
             if (resp.code == "200") {
                 var str = "<img src=\"" + resp.message.imageUrl + "\"" + ">" +
-                    "<span style=\"color: #3379A8;cursor: pointer\" onclick=\"window.open('"+url+"')\">" + resp.message.productDescription + "</span>" +
+                    "<span style=\"color: #3379A8;cursor: pointer\" onclick=\"window.open('" + url + "')\">" + resp.message.productDescription + "</span>" +
                     "<p class=\"p2\">" + resp.message.productPrice + "</p>";
                 $('.pub-pro-show').append(str);
                 $('.pub-pro-show').data("share", true);
@@ -550,6 +590,26 @@ define(['jquery', 'pagination', 'common'], function (require, exports, module) {
                     $('.sign-details').show();
                     getPartInContent(1);
                 }
+
+                if(resp.message.type==7){
+                    $('#outResult').hide();
+                    $('#communityType').data('type', 7);
+                    type.addClass("p-fx");
+                    send.text('我要留言');
+                    title.text("投票详情");
+                    result.text('留言列表');
+                    $('#input_title').text('我要留言');
+                    $('.publish-btn .sp2').hide();
+                    $('#partInContent').show();
+                    $('.new-page-links').show();
+                    $('.share-upload').show();
+                    $('.sign-details').show();
+                    $('.publish-btn .sp1').hide();
+                    $('.publish-btn .sp2').hide();
+                    $('.publish-btn .sp4').hide();
+                    getPartInContent(1);
+                }
+
                 if (resp.message.type == 4) {
                     $('#outResult').hide();
                     $('#communityType').data('type', 4);
@@ -605,18 +665,18 @@ define(['jquery', 'pagination', 'common'], function (require, exports, module) {
     /**
      * 加载下载数据
      */
-    function getDownloadData(n){
+    function getDownloadData(n) {
         var isInit = true;
         var requestData = {
             communityDetailId: detailId,
             page: n,
-            pageSize:24
+            pageSize: 24
         };
         //活动报名
         common.getData("/community/partInContent.do", requestData, function (resp) {
             if (resp.code == 200) {
                 $('.new-page-links').show().html('');
-                if(resp.message.result.length>0){
+                if (resp.message.result.length > 0) {
                     $('.new-page-links').jqPaginator({
                         totalPages: resp.message.totalPages,
                         visiblePages: 5,//分多少页
@@ -637,9 +697,9 @@ define(['jquery', 'pagination', 'common'], function (require, exports, module) {
                     });
 
                     template('#downLoadTmpl', '#signData', resp.message.result);
-                }else{
+                } else {
                     $('#signData').empty();
-                    var image="<img src=\"/static/images/community/no-info.jpg\">"
+                    var image = "<img src=\"/static/images/community/no-info.jpg\">"
                     $('#signData').append(image);
                 }
 
@@ -647,8 +707,8 @@ define(['jquery', 'pagination', 'common'], function (require, exports, module) {
         });
     }
 
-    function exportPartInData(){
-        location.href = "/community/exportPartInData.do?detailId=" + detailId ;
+    function exportPartInData() {
+        location.href = "/community/exportPartInData.do?detailId=" + detailId;
     }
 
 
@@ -661,11 +721,11 @@ define(['jquery', 'pagination', 'common'], function (require, exports, module) {
 
             console.log(resp);
             if (resp.code == 200) {
-                if(resp.message.length>0){
+                if (resp.message.length > 0) {
                     template('#userTmpl', '#partInContent', resp.message);
-                }else{
+                } else {
                     $('#partInContent').empty();
-                    var image="<img src=\"/static/images/community/no-info.jpg\">"
+                    var image = "<img src=\"/static/images/community/no-info.jpg\">"
                     $('#partInContent').append(image);
                 }
 
@@ -685,7 +745,7 @@ define(['jquery', 'pagination', 'common'], function (require, exports, module) {
 
             if (resp.code == 200) {
                 $('.new-page-links').html('');
-                if(resp.message.result.length>0){
+                if (resp.message.result.length > 0) {
                     $('.new-page-links').jqPaginator({
                         totalPages: resp.message.totalPages,
                         visiblePages: 5,//分多少页
@@ -706,10 +766,10 @@ define(['jquery', 'pagination', 'common'], function (require, exports, module) {
                     });
 
                     template('#textTempl', '#partInContent', resp.message.result);
-                }else{
-                   $('#partInContent').empty();
-                   var image="<img src=\"/static/images/community/no-info.jpg\" class='img-noinfor'>"
-                   $('#partInContent').append(image);
+                } else {
+                    $('#partInContent').empty();
+                    var image = "<img src=\"/static/images/community/no-info.jpg\" class='img-noinfor'>"
+                    $('#partInContent').append(image);
                 }
 
             }
@@ -753,27 +813,27 @@ define(['jquery', 'pagination', 'common'], function (require, exports, module) {
         param.shareCommend = $('#comment').val();
         param.type = type;
         param.communityId = communityId;
-        var image=$('.pub-pro-show').find('img').attr('src')
-        if (image!=undefined&&image!=null&&image!="") {
+        var image = $('.pub-pro-show').find('img').attr('src')
+        if (image != undefined && image != null && image != "") {
             param.description = $('.pub-pro-show').find('span').html();
             param.shareUrl = $('.pub-pro-show').data('shareUrl');
             param.shareImage = $('.pub-pro-show').find('img').attr('src');
             param.sharePrice = $('.pub-pro-show').find('p').html();
-        }else{
-            if($('.pub-pro-show').data('shareUrl')){
+        } else {
+            if ($('.pub-pro-show').data('shareUrl')) {
                 param.shareUrl = $('.pub-pro-show').data('shareUrl');
-            }else{
-                var url=$('#shareUrl').val();
-                if(url!=""){
-                    var Expression=/http(s)?:\/\/([\w-]+\.)+[\w-]+(\/[\w- .\/?%&=]*)?/;
-                    var objExp=new RegExp(Expression);
-                    if(objExp.test(url)==true){
-                        param.shareUrl=$('#shareUrl').val();
-                    }else{
+            } else {
+                var url = $('#shareUrl').val();
+                if (url != "") {
+                    var Expression = /http(s)?:\/\/([\w-]+\.)+[\w-]+(\/[\w- .\/?%&=]*)?/;
+                    var objExp = new RegExp(Expression);
+                    if (objExp.test(url) == true) {
+                        param.shareUrl = $('#shareUrl').val();
+                    } else {
                         alert("路径不符合规范");
                         return;
                     }
-                }else{
+                } else {
                     // alert("推荐路径不能为空！");
                     return;
                 }
@@ -828,6 +888,10 @@ define(['jquery', 'pagination', 'common'], function (require, exports, module) {
                 alert(resp.message);
             }
         });
+
+    }
+
+    function submitVote(){
 
     }
 
@@ -911,7 +975,7 @@ define(['jquery', 'pagination', 'common'], function (require, exports, module) {
         var init = true;
         common.getData("/factivity/published.do", requestParm, function (resp) {
             if (resp.code == '200') {
-                if(resp.message.result.length <= 0 ) {
+                if (resp.message.result.length <= 0) {
                     $('#activity-published-dev img').show();
                     $('#ul-activity-published').hide();
                     $('.published-page').hide();
@@ -950,7 +1014,7 @@ define(['jquery', 'pagination', 'common'], function (require, exports, module) {
         common.getData("/factivity/signed.do", requestParm, function (resp) {
             if (resp.code == '200') {
 
-                if(resp.message.result.length <= 0 ) {
+                if (resp.message.result.length <= 0) {
                     $('#activity-signed-div img').show();
                     $('#ul-activity-signed').hide();
                     $('.signed-page').hide();
@@ -985,7 +1049,7 @@ define(['jquery', 'pagination', 'common'], function (require, exports, module) {
         var init = true;
         common.getData("/factivity/attended.do", requestParm, function (resp) {
             if (resp.code == '200') {
-                if(resp.message.result.length <= 0 ) {
+                if (resp.message.result.length <= 0) {
                     $('#activity-attended-div img').show();
                     $('#ul-activity-attended').hide();
                     $('.attended-page').hide();
@@ -1038,11 +1102,11 @@ define(['jquery', 'pagination', 'common'], function (require, exports, module) {
     function hx_update() {
 
         $.ajax({
-            url:'/group/offlineMsgCount.do',
-            success: function(resp){
+            url: '/group/offlineMsgCount.do',
+            success: function (resp) {
                 var offCount = resp.message.offlineCount;
 
-                if(offCount > 0) {
+                if (offCount > 0) {
                     $('#hx-icon').removeClass("sp2");
                     $('#hx-icon').addClass('sp1');
                 } else {
@@ -1052,7 +1116,6 @@ define(['jquery', 'pagination', 'common'], function (require, exports, module) {
             }
         });
     }
-
 
 
     module.exports = communityDetail;

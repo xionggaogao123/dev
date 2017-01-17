@@ -613,7 +613,7 @@
             <p class="p-tp p1"style="cursor: pointer"
                onclick="window.open('/community/communityDetail?detailId={{=value.id}}')">投票</p>
             <p class="p-votit">
-                <a style="cursor: pointer" href="javascript:void(0)" onclick="window.open('/community/communityDetail?detailId={{=value.id}}')">{{=value.title}}</a><span class="shareContent">{{=value.content}}</span><span
+                <a style="cursor: pointer" href="javascript:void(0)" onclick="window.open('/community/communityDetail?detailId={{=value.id}}')">{{=value.title}}</a><span class="voteContent">{{=value.content}}</span><span
                     class="sp-more"></span>
             </p>
             {{?value.images.length>0}}

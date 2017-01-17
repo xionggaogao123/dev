@@ -71,22 +71,26 @@ public class WeChatAuth implements Auth {
     }
 
     private UserInfo getUserInfo(TokenObj tokenObj) {
-        Map<String, String> parms = new HashMap<String, String>();
-        parms.put("access_token", tokenObj.getAccess_token());
-        parms.put("openid", tokenObj.getUnionid());
+        Map<String, String> map = new HashMap<String, String>();
+        map.put("access_token", tokenObj.getAccess_token());
+        map.put("openid", tokenObj.getUnionid());
         try {
-            String content = HttpClient.get(USER_INFO_URL, parms);
+            String content = HttpClient.get(USER_INFO_URL, map);
             WeChatInfo weChatInfo = JsonUtil.fromJson(content,WeChatInfo.class);
-            UserInfo userInfo = new UserInfo();
-            userInfo.setAvatar(weChatInfo.getHeadimgurl());
-            userInfo.setSex(Sex.get(weChatInfo.getSex()));
-            userInfo.setNickName(weChatInfo.getNickname());
-            userInfo.setUniqueId(weChatInfo.getUnionid());
-            return userInfo;
+            return convertToUserInfo(weChatInfo);
         } catch (IOException e) {
             e.printStackTrace();
         }
         return null;
+    }
+
+    private UserInfo convertToUserInfo(WeChatInfo weChatInfo) {
+        UserInfo userInfo = new UserInfo();
+        userInfo.setAvatar(weChatInfo.getHeadimgurl());
+        userInfo.setSex(Sex.get(weChatInfo.getSex()));
+        userInfo.setNickName(weChatInfo.getNickname());
+        userInfo.setUniqueId(weChatInfo.getUnionid());
+        return userInfo;
     }
 
     @Override

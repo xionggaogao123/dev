@@ -1,5 +1,6 @@
 package com.fulaan.http;
 
+import com.fulaan.util.Util;
 import org.apache.commons.io.IOUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.http.HttpEntity;
@@ -60,18 +61,12 @@ public class HttpClient {
      * @param map
      * @return
      */
-    public static String urlEncode(Map<String,String> map) {
+    private static String urlEncode(Map<String, String> map) {
         String retVal = "";
         if(map == null) return retVal;
-        Iterator<String> keys = map.keySet().iterator();
-        while (keys.hasNext()) {
-            String key = keys.next();
+        for(String key : map.keySet()) {
             String value = map.get(key);
-            try {
-                String encodeValue = URLEncoder.encode(value, "UTF8");
-                retVal += key + "=" + encodeValue + "&";
-            } catch (UnsupportedEncodingException ex) {
-            }
+            retVal += key + "=" + Util.strURLEncodeUTF8(value) + "&";
         }
         return retVal.substring(0,retVal.length() - 1);
     }

@@ -43,10 +43,6 @@ public class QQAuth implements Auth {
         ACCESS_TOKEN_URL = properties.getProperty("accessTokenURL").trim();
     }
 
-    public QQAuth() {
-
-    }
-
     @Override
     public String getAuthUrl() {
         String authorizeURL = properties.getProperty("authorizeURL").trim();
@@ -64,22 +60,26 @@ public class QQAuth implements Auth {
             String openId = openIDObj.getUserOpenID();
             com.qq.connect.api.qzone.UserInfo qzoneUser = new com.qq.connect.api.qzone.UserInfo(accessToken.getAccessToken(), openId);
             UserInfoBean userInfoBean = qzoneUser.getUserInfo();
-            UserInfo userInfo = new UserInfo();
-            userInfo.setUniqueId(openId);
-            userInfo.setNickName(userInfoBean.getNickname());
-            userInfo.setSex(Sex.get(userInfoBean.getGender()));
-            if(!"".equals(userInfoBean.getAvatar().getAvatarURL100())) {
-                userInfo.setAvatar(userInfoBean.getAvatar().getAvatarURL100());
-            } else if(!"".equals(userInfoBean.getAvatar().getAvatarURL50())) {
-                userInfo.setAvatar(userInfoBean.getAvatar().getAvatarURL50());
-            } else {
-                userInfo.setAvatar(userInfoBean.getAvatar().getAvatarURL30());
-            }
-            return userInfo;
+            return convertToUserInfo(openId, userInfoBean);
         } catch (QQConnectException e) {
             e.printStackTrace();
             throw new ConnectException();
         }
+    }
+
+    private UserInfo convertToUserInfo(String openId, UserInfoBean userInfoBean) {
+        UserInfo userInfo = new UserInfo();
+        userInfo.setUniqueId(openId);
+        userInfo.setNickName(userInfoBean.getNickname());
+        userInfo.setSex(Sex.get(userInfoBean.getGender()));
+        if(!"".equals(userInfoBean.getAvatar().getAvatarURL100())) {
+            userInfo.setAvatar(userInfoBean.getAvatar().getAvatarURL100());
+        } else if(!"".equals(userInfoBean.getAvatar().getAvatarURL50())) {
+            userInfo.setAvatar(userInfoBean.getAvatar().getAvatarURL50());
+        } else {
+            userInfo.setAvatar(userInfoBean.getAvatar().getAvatarURL30());
+        }
+        return userInfo;
     }
 
     @Override

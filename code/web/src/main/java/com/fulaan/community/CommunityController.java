@@ -14,6 +14,7 @@ import com.fulaan.dto.*;
 import com.fulaan.fgroup.dto.GroupDTO;
 import com.fulaan.fgroup.service.EmService;
 import com.fulaan.fgroup.service.GroupService;
+import com.fulaan.forum.service.FVoteService;
 import com.fulaan.friendscircle.service.FriendApplyService;
 import com.fulaan.friendscircle.service.FriendService;
 import com.fulaan.playmate.service.MateService;
@@ -30,6 +31,8 @@ import com.pojo.activity.FriendApply;
 import com.pojo.app.FileUploadDTO;
 import com.pojo.app.Platform;
 import com.pojo.fcommunity.*;
+import com.pojo.forum.FVoteDTO;
+import com.pojo.forum.FVoteEntry;
 import com.pojo.user.*;
 import com.pojo.utils.MongoUtils;
 import com.sys.constants.Constant;
@@ -60,6 +63,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.*;
 import java.net.*;
+import java.text.NumberFormat;
 import java.util.*;
 import java.util.concurrent.*;
 
@@ -94,6 +98,8 @@ public class CommunityController extends BaseController {
     private MateService mateService;
     @Autowired
     private ValidateInfoService validateInfoService;
+    @Autowired
+    private FVoteService fVoteService;
 
     public static final String suffix = "/static/images/community/upload.png";
 
@@ -913,6 +919,74 @@ public class CommunityController extends BaseController {
                 if (null != fulanDto) {
                     communitys.add(fulanDto);
                 }
+            }
+            //判断是否是投票模块
+            model.put("type",0);
+            if(detail.getType()==7){
+                model.put("type",1);
+                model.put("voteType", 0);
+                //判断当前用户是否已登录
+                if(null!=uid){
+                    //判断该用户是否已投票
+                    FVoteEntry fVoteEntry = fVoteService.getFVote(detail.getId(), uid.toString());
+                    if (null != fVoteEntry) {
+                        //已经投票了
+                        model.put("voteType",1);
+                        model.put("voteMine",1);
+                    }
+                }
+
+                List<String> voteOptions = new ArrayList<String>();
+                List<Map<String, Object>> mapList = new ArrayList<Map<String, Object>>();
+                String voteContent=detail.getVoteContent();
+                long voteDeadTime=detail.getVoteDeadTime();
+                int voteMaxCount=detail.getVoteMaxCount();
+                int voteUserCount = fVoteService.getFVoteCount(detail.getId());
+                model.put("voteMaxCount",voteMaxCount);
+                model.put("voteUserCount",voteUserCount);
+                model.put("voteDeadFlag", 0);
+                if(System.currentTimeMillis()>voteDeadTime){
+                    model.put("voteDeadFlag", 1);
+                }
+                if (voteContent.contains(",")) {
+                    String[] votes = voteContent.split(",");
+                    for (String vote : votes) {
+                        voteOptions.add(vote);
+                    }
+                    model.put("voteOptions", voteOptions);
+                } else {
+                    voteOptions.add(voteContent);
+                    model.put("voteOptions", voteOptions);
+                }
+                if(voteMaxCount>1){
+                    model.put("check",1);
+                }
+                List<FVoteDTO> fVoteEntryList = fVoteService.getFVoteList(detail.getId());
+                int totalCount = fVoteEntryList.size();
+                NumberFormat nt = NumberFormat.getPercentInstance();
+                nt.setMinimumFractionDigits(0);
+
+                for (int i = 0; i < voteOptions.size(); i++) {
+                    int j = i + 1;
+                    int count = 0;
+                    Map<String, Object> map = new HashMap<String, Object>();
+                    for (FVoteDTO fVoteDTO : fVoteEntryList) {
+                        int number = fVoteDTO.getNumber();
+                        if (j == number) {
+                            count++;
+                        }
+                    }
+                    double pItem = (double) count / (double) totalCount;
+                    map.put("voteItemStr", voteOptions.get(i));
+                    map.put("voteItemCount", count);
+                    map.put("voteItemPercent", nt.format(pItem));
+                    mapList.add(map);
+                }
+
+                model.put("voteMapList", mapList);
+                //该帖投票人数
+                int voteCount = fVoteService.getFVoteCount(detail.getId());
+                model.put("voteCount", voteCount);
             }
             model.put("detail", detail);
             model.put("detailId", detailId.toString());

@@ -56,9 +56,16 @@ public class CommunityDetailDTO {
 
     //投票
     //投票截止标志 1:未截止已:未截止
-    private int voteDead;
+    private int voteDeadFlag;
     //投票人数
     private int voteCount;
+    //投票信息
+    //投票内容
+    private String voteContent;
+    private int voteMaxCount;
+    private int voteType;
+    private long voteDeadTime;
+
 
 
     private List<PartInContentDTO> partList = new ArrayList<PartInContentDTO>();
@@ -104,6 +111,10 @@ public class CommunityDetailDTO {
         this.shareUrl = communityDetailEntry.getShareUrl();
         this.shareTitle = communityDetailEntry.getShareTitle();
         this.sharePrice = communityDetailEntry.getSharePrice();
+        this.voteContent = communityDetailEntry.getVoteContent();
+        this.voteMaxCount = communityDetailEntry.getVoteMaxCount();
+        this.voteDeadTime = communityDetailEntry.getVoteDeadTime();
+        this.voteType = communityDetailEntry.getVoteType();
     }
 
     public CommunityDetailDTO(CommunityDetailEntry communityDetailEntry) {
@@ -142,6 +153,10 @@ public class CommunityDetailDTO {
         this.vedios = getAttachments(communityDetailEntry.getVoiceList());
 
         this.timeStr = getTimeStr(communityDetailEntry.getCreateTime());
+        this.voteContent = communityDetailEntry.getVoteContent();
+        this.voteMaxCount = communityDetailEntry.getVoteMaxCount();
+        this.voteDeadTime = communityDetailEntry.getVoteDeadTime();
+        this.voteType = communityDetailEntry.getVoteType();
     }
 
     private String getTimeStr(long time) {
@@ -397,19 +412,51 @@ public class CommunityDetailDTO {
         this.readFlag = readFlag;
     }
 
-    public int getVoteDead() {
-        return voteDead;
-    }
-
-    public void setVoteDead(int voteDead) {
-        this.voteDead = voteDead;
-    }
-
     public int getVoteCount() {
         return voteCount;
     }
 
     public void setVoteCount(int voteCount) {
         this.voteCount = voteCount;
+    }
+
+    public String getVoteContent() {
+        return voteContent;
+    }
+
+    public void setVoteContent(String voteContent) {
+        this.voteContent = voteContent;
+    }
+
+    public int getVoteMaxCount() {
+        return voteMaxCount;
+    }
+
+    public void setVoteMaxCount(int voteMaxCount) {
+        this.voteMaxCount = voteMaxCount;
+    }
+
+    public int getVoteType() {
+        return voteType;
+    }
+
+    public void setVoteType(int voteType) {
+        this.voteType = voteType;
+    }
+
+    public long getVoteDeadTime() {
+        return voteDeadTime;
+    }
+
+    public void setVoteDeadTime(long voteDeadTime) {
+        this.voteDeadTime = voteDeadTime;
+    }
+
+    public int getVoteDeadFlag() {
+        return voteDeadFlag;
+    }
+
+    public void setVoteDeadFlag(int voteDeadFlag) {
+        this.voteDeadFlag = voteDeadFlag;
     }
 }

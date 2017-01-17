@@ -572,38 +572,41 @@ public class UserCenterController extends BaseController {
     @RequestMapping(value = "/addFVote", method = RequestMethod.POST)
     @ResponseBody
     public RespObj addFVote(String number, String voteId) {
-        RespObj respObj = new RespObj(Constant.FAILD_CODE);
+//        RespObj respObj = new RespObj(Constant.FAILD_CODE);
         try {
-            respObj.setCode(Constant.SUCCESS_CODE);
             SessionValue sv = getSessionValue();
             String userId = "";
             if (null != sv && !sv.isEmpty()) {
                 userId = sv.getId();
             }
-            List<FVoteEntry> fVoteEntryList = new ArrayList<FVoteEntry>();
-            if (number.contains(",")) {
-                String[] nu = number.split(",");
-                for (String myItem : nu) {
-                    FVoteEntry fVoteEntry = new FVoteEntry();
-                    fVoteEntry.setNumber(Integer.parseInt(myItem));
-                    fVoteEntry.setUserId(new ObjectId(userId));
-                    fVoteEntry.setVoteId(new ObjectId(voteId));
-                    fVoteEntryList.add(fVoteEntry);
+            FVoteEntry entry=fVoteService.getFVote(voteId,userId);
+            if(null!=entry){
+               return  RespObj.FAILD("已经投过票了!");
+            }else {
+                List<FVoteEntry> fVoteEntryList = new ArrayList<FVoteEntry>();
+                if (number.contains(",")) {
+                    String[] nu = number.split(",");
+                    for (String myItem : nu) {
+                        FVoteEntry fVoteEntry = new FVoteEntry();
+                        fVoteEntry.setNumber(Integer.parseInt(myItem));
+                        fVoteEntry.setUserId(new ObjectId(userId));
+                        fVoteEntry.setVoteId(new ObjectId(voteId));
+                        fVoteEntryList.add(fVoteEntry);
+                    }
+                    fVoteService.addFVoteList(fVoteEntryList);
+                } else {
+                    FVoteDTO fVoteDTO = new FVoteDTO();
+                    fVoteDTO.setNumber(Integer.parseInt(number));
+                    fVoteDTO.setUserId(userId);
+                    fVoteDTO.setVoteId(voteId);
+                    fVoteService.addFVote(fVoteDTO);
                 }
-                fVoteService.addFVoteList(fVoteEntryList);
-            } else {
-                FVoteDTO fVoteDTO = new FVoteDTO();
-                fVoteDTO.setNumber(Integer.parseInt(number));
-                fVoteDTO.setUserId(userId);
-                fVoteDTO.setVoteId(voteId);
-                fVoteService.addFVote(fVoteDTO);
+                return RespObj.SUCCESS;
             }
-
         } catch (Exception e) {
             e.printStackTrace();
-            respObj.setMessage("更新失败");
+            return RespObj.FAILD("更新失败");
         }
-        return respObj;
     }
 
     /**

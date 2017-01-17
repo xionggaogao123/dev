@@ -319,6 +319,55 @@
         {{~}}
     </script>
 
+    <script type="text/template" id="voteTmpl">
+    {{~it:value:index}}
+    <div class="com-tit">投票
+        <c:if test="${login==true}">
+            {{?value.readFlag==1}}
+            <span class="i-unreadTip">已读</span>
+            {{??}}
+            <span class="i-newtips">未读</span>
+            {{?}}
+        </c:if>
+    </div>
+    <div class="notice-container clearfix">
+        <div class="notice-holder"><img src="{{=value.imageUrl}}">
+            <p>{{=value.nickName}}</p>
+            <p class="p1">{{=value.roleStr}}</p>
+        </div>
+        <div class="notice-cont">
+            <p class="p-tp p1" style="cursor: pointer"
+               onclick="window.open('/community/communityDetail?detailId={{=value.id}}')">投票</p>
+            <p class="p-votit">
+                <a style="cursor: pointer" href="javascript:void(0)"
+                   onclick="window.open('/community/communityDetail?detailId={{=value.id}}')">{{=value.title}}</a><span
+                    class="voteContent">{{=value.content}}</span><span
+                    class="sp-more"></span>
+            </p>
+            {{?value.images.length>0}}
+            <p class="p-img clearfix">
+                {{~value.images:image:i}}
+                <a class="fancybox" style="cursor:pointer;" href="{{=image.url}}" data-fancybox-group="home" title="预览">
+                    <img src="{{=image.url}}?imageView2/1/w/100/h/100"><br/>
+                </a>
+                {{~}}
+            </p>
+            {{??}}
+            <p class="p-vocont">
+                <span class="sp-bg"></span>
+                <span class="sp1">{{=value.title}}</span>
+                <span class="sp1">参与人数：{{=value.voteCount}}</span>
+                {{?value.voteDead==1}}
+                <span class="sp-btn" style="cursor: pointer"
+                      onclick="window.open('/community/communityDetail?detailId={{=value.id}}')">点击投票</span>
+                {{?}}
+            </p>
+            {{?}}
+            <p class="p-infor"><span>消息来源：{{=value.nickName}}</span> <span>发表时间：{{=value.time}}</span></p></div>
+    </div>
+    {{~}}
+</script>
+
 
     <script type="text/template" id="shareTmpl">
         {{~it:value:index}}

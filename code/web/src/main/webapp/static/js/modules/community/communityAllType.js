@@ -313,12 +313,14 @@ define(['jquery', 'pagination', 'common'], function (require, exports, module) {
                 var means = resp.message.means;
                 var homework = resp.message.homework;
                 var materials = resp.message.materials;
+                var vote = resp.message.vote;
                 template('#announcementTmpl', '#announcement', announcement);
                 template('#activityTmpl', '#activity', activity);
                 template('#shareTmpl', '#share', share);
                 template('#meansTmpl', '#means', means);
                 template('#homeworkTmpl', '#homework', homework);
                 template('#materialsTmpl', '#materials', materials);
+                template('#voteTmpl', '#vote', vote);
 
                 var tempStr = "<div class=\"notice-container clearfix com-nothing\">";
                 if (announcement.length == 0) {
@@ -328,6 +330,15 @@ define(['jquery', 'pagination', 'common'], function (require, exports, module) {
                     $('.announcementContent').each(function(){
                         contentDeal($(this));
                     })
+                }
+
+                if (vote.length == 0) {
+                    var str = tempStr + "还未发布投票" + "</div>";
+                    $('#vote').append(str);
+                }else{
+                    $('.voteContent').each(function(){
+                        contentDeal($(this));
+                    });
                 }
 
                 if (activity.length == 0) {

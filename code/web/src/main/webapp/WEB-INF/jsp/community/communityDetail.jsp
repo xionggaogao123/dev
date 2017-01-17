@@ -27,7 +27,7 @@
         </div>
     </div>
     <div id="communityType"></div>
-    <span id="communityId" communityId="${detail.communityId}" detailId="${detailId}"></span>
+    <span id="communityId" communityId="${detail.communityId}" detailId="${detailId}" voteType="${voteType}"></span>
 
     <div class="container">
         <div class="hd-cont-f hd-cont-f1 clearfix">
@@ -44,146 +44,66 @@
                         <div class="act-title">
                             <p class="p1" id="type">${detail.title}</p>
                             <div class="txt-wrap">
-
-                                <div class="vote-detail">
-                                    <h3>多选投票：（最多可选3项），共有<em>3</em>人参与投票</h3>
+                                <c:if test="${type==1}">
+                                <div class="vote-detail" >
+                                    <h3>多选投票：（最多可选${voteMaxCount}项），共有<em id="voteUserCount" count="${voteUserCount}">${voteUserCount}</em>人参与投票</h3>
+                                    <c:if test="${voteType==0&&voteDeadFlag==0}">
                                     <ul class="ul1">
-                                        <li>
-                                            <label><input type="checkbox">1.爱奇艺TV版</label>
-                                        </li>
-                                        <li>
-                                            <label><input type="checkbox">2.爱奇艺TV版</label>
-                                        </li>
-                                        <li>
-                                            <label><input type="checkbox">3.爱奇艺TV版</label>
-                                        </li>
-                                        <li>
-                                            <label><input type="checkbox">4.爱奇艺TV版</label>
-                                        </li>
-                                        <li>
-                                            <label><input type="checkbox">5.爱奇艺TV版</label>
-                                        </li>
-                                        <li>
-                                            <label><input type="checkbox">6.爱奇艺TV版</label>
-                                        </li>
+                                        <c:if test="${check==1}">
+                                        <c:forEach items="${voteOptions}" var="voteOption" varStatus="status">
+                                            <li>
+                                                <label><input <c:if test="${login==false}">style="display: none" </c:if> onchange="voteCheck(this)" class="checkVote" type="checkbox" name="radio-s" value="${status.index + 1}">${status.index + 1}.${voteOption}</label>
+                                            </li>
+                                        </c:forEach>
+                                        </c:if>
+                                        <c:if test="${check!=1}">
+                                            <c:forEach items="${voteOptions}" var="voteOption" varStatus="status">
+                                                <li>
+                                                    <label><input <c:if test="${login==false}">style="display: none" </c:if> class="checkVote" type="radio" name="radio-s" value="${status.index + 1}">${status.index + 1}.${voteOption}</label>
+                                                </li>
+                                            </c:forEach>
+                                        </c:if>
                                     </ul>
+                                    </c:if>
+                                    <c:if test="${voteType==0}">
                                     <div class="vote-btn">
-                                        <button>提交</button>
+                                        <c:if test="${login==true&&voteDeadFlag==0}">
+                                        <button id="submitVote">提交</button>
+                                        </c:if>
+                                        <c:if test="${voteDead==1}">
                                         <span>投票已经结束</span>
+                                        </c:if>
                                     </div>
+                                    </c:if>
+                                    <c:if test="${voteType==1||voteDeadFlag==1}">
                                     <ul class="ul2">
-                                        <li>
-                                            <div class="p1s">1.爱奇艺TV版</div>
-                                            <div class="p2s">
-                                                <div class="line-f">
-                                                    <span style="width: 10%"></span>
+                                        <c:forEach items="${voteMapList}" var="map" varStatus="status">
+                                            <li>
+                                                <div class="p1s">${status.index + 1}.${map.voteItemStr}</div>
+                                                <div class="p2s">
+                                                    <div class="line-f">
+                                                        <span style="width: ${map.voteItemPercent}"></span>
+                                                    </div>
+                                                    <span>${map.voteItemPercent}<em>(${map.voteItemCount})</em></span>
                                                 </div>
-                                                <span>10%<em>(100)</em></span>
-                                            </div>
-                                        </li>
-                                        <li>
-                                            <div class="p1s">2.爱奇艺TV版</div>
-                                            <div class="p2s">
-                                                <div class="line-f">
-                                                    <span style="width: 10%"></span>
-                                                </div>
-                                                <span>10%<em>(100)</em></span>
-                                            </div>
-                                        </li>
-                                        <li>
-                                            <div class="p1s">3.爱奇艺TV版</div>
-                                            <div class="p2s">
-                                                <div class="line-f">
-                                                    <span style="width: 10%"></span>
-                                                </div>
-                                                <span>10%<em>(100)</em></span>
-                                            </div>
-                                        </li>
-                                        <li>
-                                            <div class="p1s">4.爱奇艺TV版</div>
-                                            <div class="p2s">
-                                                <div class="line-f">
-                                                    <span style="width: 10%"></span>
-                                                </div>
-                                                <span>10%<em>(100)</em></span>
-                                            </div>
-                                        </li>
-                                        <li>
-                                            <div class="p1s">5.爱奇艺TV版</div>
-                                            <div class="p2s">
-                                                <div class="line-f">
-                                                    <span style="width: 10%"></span>
-                                                </div>
-                                                <span>10%<em>(100)</em></span>
-                                            </div>
-                                        </li>
-                                        <li>
-                                            <div class="p1s">6.爱奇艺TV版</div>
-                                            <div class="p2s">
-                                                <div class="line-f">
-                                                    <span style="width: 10%"></span>
-                                                </div>
-                                                <span>10%<em>(100)</em></span>
-                                            </div>
-                                        </li>
-                                        <li>
-                                            <div class="p1s">7.爱奇艺TV版</div>
-                                            <div class="p2s">
-                                                <div class="line-f">
-                                                    <span style="width: 10%"></span>
-                                                </div>
-                                                <span>10%<em>(100)</em></span>
-                                            </div>
-                                        </li>
-                                        <li>
-                                            <div class="p1s">8.爱奇艺TV版</div>
-                                            <div class="p2s">
-                                                <div class="line-f">
-                                                    <span style="width: 10%"></span>
-                                                </div>
-                                                <span>10%<em>(100)</em></span>
-                                            </div>
-                                        </li>
-                                        <li>
-                                            <div class="p1s">9.爱奇艺TV版</div>
-                                            <div class="p2s">
-                                                <div class="line-f">
-                                                    <span style="width: 10%"></span>
-                                                </div>
-                                                <span>10%<em>(100)</em></span>
-                                            </div>
-                                        </li>
-                                        <li>
-                                            <div class="p1s">10.爱奇艺TV版</div>
-                                            <div class="p2s">
-                                                <div class="line-f">
-                                                    <span style="width: 10%"></span>
-                                                </div>
-                                                <span>10%<em>(100)</em></span>
-                                            </div>
-                                        </li>
-                                        <li>
-                                            <div class="p1s">11.爱奇艺TV版</div>
-                                            <div class="p2s">
-                                                <div class="line-f">
-                                                    <span style="width: 10%"></span>
-                                                </div>
-                                                <span>10%<em>(100)</em></span>
-                                            </div>
-                                        </li>
-                                        <li>
-                                            <div class="p1s">12.爱奇艺TV版</div>
-                                            <div class="p2s">
-                                                <div class="line-f">
-                                                    <span style="width: 10%"></span>
-                                                </div>
-                                                <span>10%<em>(100)</em></span>
-                                            </div>
-                                        </li>
+                                            </li>
+                                        </c:forEach>
+                                        <%--<li>--%>
+                                            <%--<div class="p1s">1.爱奇艺TV版</div>--%>
+                                            <%--<div class="p2s">--%>
+                                                <%--<div class="line-f">--%>
+                                                    <%--<span style="width: 10%"></span>--%>
+                                                <%--</div>--%>
+                                                <%--<span>10%<em>(100)</em></span>--%>
+                                            <%--</div>--%>
+                                        <%--</li>--%>
                                     </ul>
+                                    </c:if>
+                                    <c:if test="${voteType==1}">
                                     <p style="margin:6px 0 0 0;">您已经投过票感谢您的参与</p>
+                                    </c:if>
                                 </div>
-
+                                </c:if>
 
                                 <p class="p-wrap" id="detailContent"></p>
                                 <span content="${detail.content}" id="getContent" style="display:none;"></span>
@@ -306,7 +226,17 @@
                 </div>
             </div>
 
-
+            <script type="text/javascript">
+                function voteCheck(obj) {
+                    var voteCount = ${voteMaxCount};
+                    var voteLength = $("input[type='checkbox']:checked").length;
+                    if (voteCount == voteLength) {
+                        $("input[type='checkbox']").not("input:checked").attr('disabled', 'disabled');
+                    } else {
+                        $("input[type='checkbox']").removeAttr('disabled');
+                    }
+                }
+            </script>
             <div class="com-right">
                 <div class="com-right-s clearfix">
                     <div class="com-tit">当前社区</div>

@@ -1,6 +1,6 @@
 package com.fulaan.connect;
 
-import com.fulaan.ConnectException;
+import com.fulaan.exception.ConnectException;
 import com.fulaan.model.UserInfo;
 
 /**
@@ -10,5 +10,8 @@ public interface Auth {
 
     String getAuthUrl();
 
-    UserInfo getUserInfo(String uniqueId) throws ConnectException;
+    UserInfo getUserInfo(String authCode) throws ConnectException;
+
+    UserInfo getUserInfoByWap(String authCode) throws ConnectException;
+
 }

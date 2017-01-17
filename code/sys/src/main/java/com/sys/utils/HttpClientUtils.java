@@ -104,7 +104,7 @@ public class HttpClientUtils {
 		return null;
 	}
 
-	public static String convertStreamToString(java.io.InputStreamReader inputStream) {
+	private static String convertStreamToString(InputStreamReader inputStream) {
         BufferedReader reader = new BufferedReader(inputStream);
         StringBuilder sb = new StringBuilder();      
        

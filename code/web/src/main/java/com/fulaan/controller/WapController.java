@@ -2,7 +2,9 @@ package com.fulaan.controller;
 
 import com.fulaan.annotation.SessionNeedless;
 import com.fulaan.base.BaseController;
+import com.fulaan.connect.Auth;
 import com.fulaan.connect.QQAuth;
+import com.fulaan.factory.AuthFactory;
 import com.sys.constants.Constant;
 import com.sys.utils.HttpClientUtils;
 import org.springframework.stereotype.Controller;
@@ -19,7 +21,7 @@ import java.util.Map;
 public class WapController extends BaseController {
 
 
-    private QQAuth qqAuth = new QQAuth();
+    private Auth qqAuth = AuthFactory.getQQAuth();
 
     @RequestMapping("/page")
     @SessionNeedless

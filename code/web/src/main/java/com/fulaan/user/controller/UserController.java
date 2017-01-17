@@ -6,8 +6,11 @@ import com.fulaan.annotation.SessionNeedless;
 import com.fulaan.annotation.UserRoles;
 import com.fulaan.base.BaseController;
 import com.fulaan.cache.CacheHandler;
+import com.fulaan.connect.Auth;
 import com.fulaan.connect.QQAuth;
 import com.fulaan.connect.WeChatAuth;
+import com.fulaan.exception.ConnectException;
+import com.fulaan.factory.AuthFactory;
 import com.fulaan.forum.service.FLogService;
 import com.fulaan.forum.service.FScoreService;
 import com.fulaan.friendscircle.service.FriendService;
@@ -23,7 +26,6 @@ import com.fulaan.user.model.ThirdLoginEntry;
 import com.fulaan.user.model.ThirdType;
 import com.fulaan.user.service.UserService;
 import com.fulaan.user.util.MapUtil;
-import com.fulaan.user.util.QQLoginUtil;
 import com.fulaan.user.util.WeChatLoginUtil;
 import com.fulaan.util.ObjectIdPackageUtil;
 import com.fulaan.utils.CollectionUtil;
@@ -109,7 +111,8 @@ public class UserController extends BaseController {
     @Autowired
     private MemberService memberService;
 
-    private QQAuth qqAuth = new QQAuth();
+    private Auth qqAuth = AuthFactory.getQQAuth();
+    private Auth wechatAuth = AuthFactory.getWechatAuth();
 
     /**
      * 通过sso登录
@@ -1463,10 +1466,7 @@ public class UserController extends BaseController {
     @SessionNeedless
     @RequestMapping(value = "/wechatlogin")
     public void weChatLogin(HttpServletResponse response) throws IOException {
-//        String urlEncodeRedirectUrl = HttpClientUtils.strURLEncodeUTF8(Constant.WECHAT_REDIRECT_URL);
-//        String strWeChatConnectUrl = String.format(Constant.WECHAT_CONNECT_URL, Constant.WECHAT_APPID, urlEncodeRedirectUrl);
-        String authUrl = new WeChatAuth().getAuthUrl();
-        response.sendRedirect(authUrl);
+        response.sendRedirect(wechatAuth.getAuthUrl());
     }
 
     /**
@@ -1487,58 +1487,34 @@ public class UserController extends BaseController {
             return "redirect:/";
         }
 
+        UserInfo userInfo = null;
+
         //PC端登录
         if (getPlatform() == Platform.PC) {
-            maps = WeChatLoginUtil.getAccess_Token(code, Constant.WECHAT_APPID, Constant.WECHAT_APPSECRET);
+            try {
+                userInfo = wechatAuth.getUserInfo(code);
+            } catch (ConnectException e) {
+                e.printStackTrace();
+            }
         } else {
             //Wap 端登录
-            maps = WeChatLoginUtil.getAccess_Token(code, Constant.WECHAT_THIRD_PART_APPID, Constant.WECHAT_THIRD_PART_APPSECRET);
+            try {
+                userInfo = wechatAuth.getUserInfoByWap(code);
+            } catch (ConnectException e) {
+                e.printStackTrace();
+            }
         }
-
-        if (maps != null && !maps.containsKey("access_token")) { //没有取得access_token
+        if(userInfo == null) {
             return "redirect:/";
         }
 
-        String access_token = (String) maps.get("access_token");
-        String openid = (String) maps.get("openid");
-
-        Map<String, Object> userInfoMaps = WeChatLoginUtil.getWeChatUserInfo(access_token, openid);
-
-        String unionId = (String) userInfoMaps.get("unionid");
         Map<String, Object> query = new HashMap<String, Object>();
-        query.put("unionid", unionId);
+        query.put("unionid", userInfo.getUniqueId());
         query.put("type", ThirdType.WECHAT.getCode());
 
-        if (getUserId() != null) {
-            Cookie[] cookies = request.getCookies();
-            for (Cookie cookie : cookies) {
+        if (bindWeChat(request, redirectAttributes, userInfo)) return "redirect:/account/thirdLoginSuccess";
 
-                if (cookie.getName().equals("bindWechat")) {
-                    if (cookie.getValue().equals(getUserId().toString())) {
-                        //绑定qq
-                        boolean isBind = userService.isUnionIdBindWechat(unionId);
-                        if (isBind) {
-                            redirectAttributes.addAttribute("bindSuccess", 0);
-                            return "redirect:/account/thirdLoginSuccess";
-                        }
-
-                        //开始绑定
-                        ThirdLoginEntry thirdLoginEntry = new ThirdLoginEntry(getUserId(), null, unionId, ThirdType.WECHAT);
-                        userService.saveThirdEntry(thirdLoginEntry);
-
-                        redirectAttributes.addAttribute("bindSuccess", 1);
-                        return "redirect:/account/thirdLoginSuccess";
-                    }
-                }
-            }
-        }
-
-
-        String nickName = (String) userInfoMaps.get("nickname");
-        Integer sex = (Integer) userInfoMaps.get("sex");
-        String avatar = (String) userInfoMaps.get("headimgurl");
-
-        final UserEntry e = saveThirdInfo(unionId, null, nickName, avatar, query, sex);
+        final UserEntry e = saveThirdInfo(userInfo.getUniqueId(), null, userInfo.getNickName(), userInfo.getAvatar(), query, userInfo.getSex().getType());
         new Thread(new Runnable() {
             @Override
             public void run() {
@@ -1552,6 +1528,33 @@ public class UserController extends BaseController {
             return redirectUrl;
         }
         return "redirect:/account/thirdLoginSuccess";
+    }
+
+    private boolean bindWeChat(HttpServletRequest request, RedirectAttributes redirectAttributes, UserInfo userInfo) {
+        if (getUserId() != null) {
+            Cookie[] cookies = request.getCookies();
+            for (Cookie cookie : cookies) {
+
+                if (cookie.getName().equals("bindWechat")) {
+                    if (cookie.getValue().equals(getUserId().toString())) {
+                        //绑定qq
+                        boolean isBind = userService.isUnionIdBindWechat(userInfo.getUniqueId());
+                        if (isBind) {
+                            redirectAttributes.addAttribute("bindSuccess", 0);
+                            return true;
+                        }
+
+                        //开始绑定
+                        ThirdLoginEntry thirdLoginEntry = new ThirdLoginEntry(getUserId(), null, userInfo.getUniqueId(), ThirdType.WECHAT);
+                        userService.saveThirdEntry(thirdLoginEntry);
+
+                        redirectAttributes.addAttribute("bindSuccess", 1);
+                        return true;
+                    }
+                }
+            }
+        }
+        return false;
     }
 
     /**

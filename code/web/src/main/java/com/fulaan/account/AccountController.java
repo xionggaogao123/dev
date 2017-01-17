@@ -6,7 +6,9 @@ import com.fulaan.annotation.LoginInfo;
 import com.fulaan.annotation.SessionNeedless;
 import com.fulaan.base.BaseController;
 import com.fulaan.cache.CacheHandler;
+import com.fulaan.connect.Auth;
 import com.fulaan.connect.QQAuth;
+import com.fulaan.factory.AuthFactory;
 import com.fulaan.playmate.service.MateService;
 import com.fulaan.pojo.Validate;
 import com.fulaan.user.model.ThirdType;
@@ -58,7 +60,8 @@ public class AccountController extends BaseController {
     @Autowired
     private MateService mateService;
 
-    private QQAuth qqAuth = new QQAuth();
+    private Auth qqAuth = AuthFactory.getQQAuth();
+    private Auth wechatAuth = AuthFactory.getWechatAuth();
 
     /**
      * 注册界面
@@ -166,8 +169,7 @@ public class AccountController extends BaseController {
     @SessionNeedless
     @RequestMapping(value = "/wechatBind")
     public void weChatLogin(HttpServletResponse response) throws IOException {
-        String urlEncodeRedirectUrl = HttpClientUtils.strURLEncodeUTF8(Constant.WECHAT_REDIRECT_URL);
-        String strWeChatConnectUrl = String.format(Constant.WECHAT_CONNECT_URL, Constant.WECHAT_APPID, urlEncodeRedirectUrl);
+        String strWeChatConnectUrl = wechatAuth.getAuthUrl();
         Cookie userKeycookie = new Cookie("bindWechat", getUserId().toString());
         userKeycookie.setMaxAge(Constant.SECONDS_IN_DAY);
         userKeycookie.setPath(Constant.BASE_PATH);

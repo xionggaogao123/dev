@@ -73,7 +73,6 @@ public class SessionValue implements Serializable{
 		return get(USER_NAME);
 	}
 
-
 	public void setUserName(String userName) {
 		put(USER_NAME, userName);
 	}

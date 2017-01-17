@@ -2,7 +2,7 @@ package com.fulaan.controller;
 
 import com.fulaan.annotation.SessionNeedless;
 import com.fulaan.base.BaseController;
-import com.fulaan.user.util.QQLoginUtil;
+import com.fulaan.connect.QQAuth;
 import com.sys.constants.Constant;
 import com.sys.utils.HttpClientUtils;
 import org.springframework.stereotype.Controller;
@@ -18,6 +18,9 @@ import java.util.Map;
 @RequestMapping("/wap")
 public class WapController extends BaseController {
 
+
+    private QQAuth qqAuth = new QQAuth();
+
     @RequestMapping("/page")
     @SessionNeedless
     public String wapPage(String page) {
@@ -27,11 +30,7 @@ public class WapController extends BaseController {
     @RequestMapping("/qq")
     @SessionNeedless
     public String qq() {
-        String redirect_URI = HttpClientUtils.strURLEncodeUTF8(QQLoginUtil.getValue("redirect_URI").trim());
-        String authorizeURL = QQLoginUtil.getValue("authorizeURL").trim();
-        String app_ID = QQLoginUtil.getValue("app_ID").trim();
-        String url = authorizeURL + "?client_id=" + app_ID + "&redirect_uri=" + redirect_URI + "&response_type=" + "code" + "&state=123456";
-        return "redirect:" + url;
+        return "redirect:" + qqAuth.getAuthUrl();
     }
 
     @RequestMapping("/wechat")

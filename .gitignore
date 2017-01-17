@@ -6,6 +6,7 @@ code/oneconf/.idea
 code/pojo/target
 code/sys/target
 code/web/target
+code/connect/target
 code/k6kt/.idea
 .idea
 *.rej
@@ -40,6 +41,8 @@ code/web/src/main/webapp/upload/
 code/k6ktsso/*
 code/k6ktsso1/*
 
+*/target/*
+
 code/db/src/main/resources/rebel.xml
 code/emchat-server-java/src/main/resources/rebel.xml
 code/indexsearch/src/main/resources/rebel.xml
@@ -62,3 +65,4 @@ code/web/.rebel-remote.xml.bak
 
 code/web/node_modules/
 code/emchatServerJava/src/main/resources/rebel.xml
+code/connect/src/main/resources/rebel.xml

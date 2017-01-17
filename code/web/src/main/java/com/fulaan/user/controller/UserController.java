@@ -6,10 +6,13 @@ import com.fulaan.annotation.SessionNeedless;
 import com.fulaan.annotation.UserRoles;
 import com.fulaan.base.BaseController;
 import com.fulaan.cache.CacheHandler;
+import com.fulaan.connect.QQAuth;
+import com.fulaan.connect.WeChatAuth;
 import com.fulaan.forum.service.FLogService;
 import com.fulaan.forum.service.FScoreService;
 import com.fulaan.friendscircle.service.FriendService;
 import com.fulaan.log.service.LogService;
+import com.fulaan.model.UserInfo;
 import com.fulaan.playmate.service.MateService;
 import com.fulaan.pojo.FLoginLog;
 import com.fulaan.pojo.User;
@@ -105,6 +108,8 @@ public class UserController extends BaseController {
     private MateService mateService;
     @Autowired
     private MemberService memberService;
+
+    private QQAuth qqAuth = new QQAuth();
 
     /**
      * 通过sso登录
@@ -228,7 +233,7 @@ public class UserController extends BaseController {
         value.setK6kt(e.getK6KT());
         value.setUserRole(e.getRole());
         value.setPackageCode(e.getGenerateUserCode());
-        if (e.getK6KT() == 1) {//k6kt用户
+        if (e.getK6KT() == 1 && schoolEntry != null) {//k6kt用户
             value.setSchoolId(e.getSchoolID().toString());
             if (schoolEntry != null && schoolEntry.getLogo() != null) {
                 value.setSchoolLogo(schoolEntry.getLogo());
@@ -1339,13 +1344,8 @@ public class UserController extends BaseController {
     @SessionNeedless
     @RequestMapping(value = "/qqlogin")
     public void QQLogin(HttpServletRequest request, HttpServletResponse response) throws IOException {
-        String state = "123456";
-        request.getSession().setAttribute("qq_connect_state", state);
-        String redirect_URI = HttpClientUtils.strURLEncodeUTF8(QQLoginUtil.getValue("redirect_URI").trim());
-        String authorizeURL = QQLoginUtil.getValue("authorizeURL").trim();
-        String app_ID = QQLoginUtil.getValue("app_ID").trim();
-        String url = authorizeURL + "?client_id=" + app_ID + "&redirect_uri=" + redirect_URI + "&response_type=" + "code" + "&state=" + state;
-        response.sendRedirect(url);
+        QQAuth qqAuth = new QQAuth();
+        response.sendRedirect(qqAuth.getAuthUrl());
     }
 
 
@@ -1364,50 +1364,22 @@ public class UserController extends BaseController {
             return "redirect:/";
         }
 
-        Map<String, String> result = QQLoginUtil.getAccessToken(code);
-        logger.info("qqcallback----" + result);
-        String access_token = result.get("access_token");
-        Map<String, Object> maps = QQLoginUtil.getOpenId(access_token);
-        String openId = (String) maps.get("openid");
-        Map<String, Object> userInfoMaps = QQLoginUtil.getUserInfo(access_token, openId);
-        String nickName = (String) userInfoMaps.get("nickname");
-        String avatar = (String) userInfoMaps.get("figureurl_qq_2");
-
-        if (getUserId() != null) {
-            Cookie[] cookies = request.getCookies();
-            for (Cookie cookie : cookies) {
-
-                if (cookie.getName().equals("bindQQ")) {
-                    if (cookie.getValue().equals(getUserId().toString())) {
-                        //绑定qq
-                        boolean isBind = userService.isOpenIdBindQQ(openId);
-                        if (isBind) {
-                            redirectAttributes.addAttribute("bindSuccess", 0);
-                            return "redirect:/account/thirdLoginSuccess";
-                        }
-
-                        //开始绑定
-                        ThirdLoginEntry thirdLoginEntry = new ThirdLoginEntry(getUserId(), openId, null, ThirdType.QQ);
-                        userService.saveThirdEntry(thirdLoginEntry);
-
-                        redirectAttributes.addAttribute("bindSuccess", 1);
-                        return "redirect:/account/thirdLoginSuccess";
-                    }
-                }
-            }
+        UserInfo userInfo;
+        try {
+            userInfo = qqAuth.getUserInfo(code);
+        } catch (Exception e) {
+            e.printStackTrace();
+            return "redirect:/";
         }
+        System.out.println(userInfo);
+
+        if (bindQQ(request, redirectAttributes, userInfo)) return "redirect:/account/thirdLoginSuccess";
 
         Map<String, Object> query = new HashMap<String, Object>();
-        query.put("oid", openId);
+        query.put("oid", userInfo.getUniqueId());
         query.put("type", ThirdType.QQ.getCode());
 
-        int sex = 2;
-        String gender = (String) userInfoMaps.get("gender");
-        if (gender != null && gender.equals("男")) {
-            sex = 1;
-        }
-
-        UserEntry userEntry = saveThirdInfo(null, openId, nickName, avatar, query, sex);
+        UserEntry userEntry = saveThirdInfo(null, userInfo.getUniqueId(), userInfo.getNickName(), userInfo.getAvatar(), query, userInfo.getSex().getType());
 
         final UserEntry e = userEntry;
         new Thread(new Runnable() {
@@ -1424,6 +1396,33 @@ public class UserController extends BaseController {
             return redirectUrl;
         }
         return "redirect:/account/thirdLoginSuccess";
+    }
+
+    private boolean bindQQ(HttpServletRequest request, RedirectAttributes redirectAttributes, UserInfo userInfo) {
+        if (getUserId() != null) {
+            Cookie[] cookies = request.getCookies();
+            for (Cookie cookie : cookies) {
+
+                if (cookie.getName().equals("bindQQ")) {
+                    if (cookie.getValue().equals(getUserId().toString())) {
+                        //绑定qq
+                        boolean isBind = userService.isOpenIdBindQQ(userInfo.getUniqueId());
+                        if (isBind) {
+                            redirectAttributes.addAttribute("bindSuccess", 0);
+                            return true;
+                        }
+
+                        //开始绑定
+                        ThirdLoginEntry thirdLoginEntry = new ThirdLoginEntry(getUserId(), userInfo.getUniqueId(), null, ThirdType.QQ);
+                        userService.saveThirdEntry(thirdLoginEntry);
+
+                        redirectAttributes.addAttribute("bindSuccess", 1);
+                        return true;
+                    }
+                }
+            }
+        }
+        return false;
     }
 
     private UserEntry saveThirdInfo(String unionId, String openId, String nickName, String avatar, Map<String, Object> query, int sex) throws IOException {
@@ -1464,9 +1463,10 @@ public class UserController extends BaseController {
     @SessionNeedless
     @RequestMapping(value = "/wechatlogin")
     public void weChatLogin(HttpServletResponse response) throws IOException {
-        String urlEncodeRedirectUrl = HttpClientUtils.strURLEncodeUTF8(Constant.WECHAT_REDIRECT_URL);
-        String strWeChatConnectUrl = String.format(Constant.WECHAT_CONNECT_URL, Constant.WECHAT_APPID, urlEncodeRedirectUrl);
-        response.sendRedirect(strWeChatConnectUrl);
+//        String urlEncodeRedirectUrl = HttpClientUtils.strURLEncodeUTF8(Constant.WECHAT_REDIRECT_URL);
+//        String strWeChatConnectUrl = String.format(Constant.WECHAT_CONNECT_URL, Constant.WECHAT_APPID, urlEncodeRedirectUrl);
+        String authUrl = new WeChatAuth().getAuthUrl();
+        response.sendRedirect(authUrl);
     }
 
     /**

@@ -10,12 +10,12 @@
     <url>http://maven.apache.org</url>
 
     <modules>
-        <module>../indexsearch</module>
         <module>../sys</module>
         <module>../pojo</module>
         <module>../db</module>
         <module>../web</module>
         <module>../emchatServerJava</module>
+        <module>../connect</module>
     </modules>
 
     <properties>

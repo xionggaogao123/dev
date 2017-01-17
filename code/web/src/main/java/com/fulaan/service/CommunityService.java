@@ -195,24 +195,6 @@ public class CommunityService {
                 list.add(communityDTO);
             }
         }
-
-        Set<CommunityDTO> set = new TreeSet<CommunityDTO>(new Comparator<Object>() {
-
-            @Override
-            public int compare(Object o1, Object o2) {
-                if (o1 != null && o2 != null) {
-                    if (o1 instanceof CommunityDTO && o2 instanceof CommunityDTO) {
-                        return ((CommunityDTO) o1).getId().equals(((CommunityDTO) o2).getId()) ? 0 : 1;
-                    }
-                }
-                return 1;
-            }
-        });
-
-        set.addAll(list);
-        list.clear();
-        list.addAll(set);
-
         return list;
     }
 

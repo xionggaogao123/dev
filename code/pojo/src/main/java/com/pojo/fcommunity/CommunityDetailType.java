@@ -17,7 +17,8 @@ public enum CommunityDetailType {
     SHARE(3, "SHARE"),
     MEANS(4, "MEANS"),
     HOMEWORK(5, "HOMEWORK"),
-    MATERIALS(6, "MATERIALS"),;
+    MATERIALS(6, "MATERIALS"),
+    VOTE(7,"VOTE");
 
     CommunityDetailType(int type, String decs) {
         this.type = type;
@@ -41,6 +42,8 @@ public enum CommunityDetailType {
                 return HOMEWORK;
             case 6:
                 return MATERIALS;
+            case 7:
+                return VOTE;
         }
         return ANNOUNCEMENT;
     }

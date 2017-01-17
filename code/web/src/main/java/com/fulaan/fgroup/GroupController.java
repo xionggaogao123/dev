@@ -582,8 +582,12 @@ public class GroupController extends BaseController {
             message.setType(CommunityDetailType.ANNOUNCEMENT.getType());
             message.setCommunityId(groupDTO.getCommunityId());
             message.setTitle(title);
-            communityService.saveMessage(userId, message);
-            return RespObj.SUCCESS("发布成功");
+            try {
+                communityService.saveMessage(userId, message);
+                return RespObj.SUCCESS("发布成功");
+            }catch (Exception e){
+                return RespObj.SUCCESS("发布失败");
+            }
         }
 
         List<String> imageArray = new ArrayList<String>();

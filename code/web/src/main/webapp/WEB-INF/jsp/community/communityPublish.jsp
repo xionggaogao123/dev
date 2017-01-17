@@ -13,6 +13,18 @@
     <script type="text/javascript" src="/static/js/main.js"></script>
     <script type="text/javascript" src="/static/js/recorder.js"></script>
     <script type="text/javascript" src="/static/js/swfobject.js"></script>
+    <style  type="text/css">
+        .account-input {
+            vertical-align: top;
+            border: 1px solid darkgray;
+            height: 28px;
+            line-height: 22px;
+            border-radius: 4px;
+            width: 180px;
+            padding: 0 10px;
+            margin: 0 5px;
+        }
+    </style>
 </head>
 <body style="background: #f5f5f5;" communityId="${communityId}" userId="${userId}">
 <%--==============头部===================--%>
@@ -89,7 +101,7 @@
                             <span class="sp2"></span>
                             火热分享
                         </li>
-                        <li class="li7" type="7" style="display: none">
+                        <li class="li7" type="7">
                             <span class="sp1"></span>
                             <span class="sp2"></span>
                             投票
@@ -113,8 +125,9 @@
                 </ul>
                 <div class="publish-putin">
                     <input type="text" placeholder="请输入大标题" id="title">
-                    <textarea placeholder="请输入内容" id="content"></textarea>
+                    <textarea typeof="text" placeholder="请输入内容" id="content" ></textarea>
                     <span style="font-size:12px;display: block;height: 30px;"></span>
+                    <i style="color: #00a0e9"></i>
                     <div class="vote-cont" style="display: none" >
                         <button>设置投票选项</button>
                         <span class="downT"></span>
@@ -133,105 +146,106 @@
                                 </li>
                                 <li class="li4">
                                     <span>结束时间：</span>
-                                    <input type="text" id="datepicker">
-                                    <select>
-                                        <option>01</option>
-                                        <option>02</option>
-                                        <option>03</option>
-                                        <option>04</option>
-                                        <option>05</option>
-                                        <option>06</option>
-                                        <option>07</option>
-                                        <option>08</option>
-                                        <option>09</option>
-                                        <option>10</option>
-                                        <option>11</option>
-                                        <option>12</option>
-                                        <option>13</option>
-                                        <option>14</option>
-                                        <option>15</option>
-                                        <option>16</option>
-                                        <option>17</option>
-                                        <option>18</option>
-                                        <option>19</option>
-                                        <option>10</option>
-                                        <option>21</option>
-                                        <option>22</option>
-                                        <option>23</option>
-                                        <option>24</option>
+                                    <input type="text" id="datepicker" class="Wdate account-input"
+                                           onfocus="WdatePicker({dateFmt:'yyyy-MM-dd',minDate:'%y-%M-%d'})">
+                                    <select id="hour">
+                                        <option value="00">00</option>
+                                        <option value="01">01</option>
+                                        <option value="02">02</option>
+                                        <option value="03">03</option>
+                                        <option value="04">04</option>
+                                        <option value="05">05</option>
+                                        <option value="06">06</option>
+                                        <option value="07">07</option>
+                                        <option value="08">08</option>
+                                        <option value="09">09</option>
+                                        <option value="10">10</option>
+                                        <option value="11">11</option>
+                                        <option value="12">12</option>
+                                        <option value="13">13</option>
+                                        <option value="14">14</option>
+                                        <option value="15">15</option>
+                                        <option value="16">16</option>
+                                        <option value="17">17</option>
+                                        <option value="18">18</option>
+                                        <option value="19">19</option>
+                                        <option value="20">20</option>
+                                        <option value="21">21</option>
+                                        <option value="22">22</option>
+                                        <option value="23">23</option>
                                     </select>
                                     <em>时</em>
-                                    <select>
-                                        <option>00</option>
-                                        <option>01</option>
-                                        <option>02</option>
-                                        <option>03</option>
-                                        <option>04</option>
-                                        <option>05</option>
-                                        <option>06</option>
-                                        <option>07</option>
-                                        <option>08</option>
-                                        <option>09</option>
-                                        <option>10</option>
-                                        <option>11</option>
-                                        <option>12</option>
-                                        <option>13</option>
-                                        <option>14</option>
-                                        <option>15</option>
-                                        <option>16</option>
-                                        <option>17</option>
-                                        <option>18</option>
-                                        <option>19</option>
-                                        <option>20</option>
-                                        <option>21</option>
-                                        <option>22</option>
-                                        <option>23</option>
-                                        <option>24</option>
-                                        <option>25</option>
-                                        <option>26</option>
-                                        <option>27</option>
-                                        <option>28</option>
-                                        <option>29</option>
-                                        <option>30</option>
-                                        <option>31</option>
-                                        <option>32</option>
-                                        <option>33</option>
-                                        <option>34</option>
-                                        <option>35</option>
-                                        <option>36</option>
-                                        <option>37</option>
-                                        <option>38</option>
-                                        <option>39</option>
-                                        <option>40</option>
-                                        <option>41</option>
-                                        <option>42</option>
-                                        <option>43</option>
-                                        <option>44</option>
-                                        <option>45</option>
-                                        <option>46</option>
-                                        <option>47</option>
-                                        <option>48</option>
-                                        <option>49</option>
-                                        <option>50</option>
-                                        <option>51</option>
-                                        <option>52</option>
-                                        <option>53</option>
-                                        <option>54</option>
-                                        <option>55</option>
-                                        <option>56</option>
-                                        <option>57</option>
-                                        <option>58</option>
-                                        <option>59</option>
+                                    <select id="minute">
+                                        <option value="00">00</option>
+                                        <option value="01">01</option>
+                                        <option value="02">02</option>
+                                        <option value="03">03</option>
+                                        <option value="04">04</option>
+                                        <option value="05">05</option>
+                                        <option value="06">06</option>
+                                        <option value="07">07</option>
+                                        <option value="08">08</option>
+                                        <option value="09">09</option>
+                                        <option value="10">10</option>
+                                        <option value="11">11</option>
+                                        <option value="12">12</option>
+                                        <option value="13">13</option>
+                                        <option value="14">14</option>
+                                        <option value="15">15</option>
+                                        <option value="16">16</option>
+                                        <option value="17">17</option>
+                                        <option value="18">18</option>
+                                        <option value="19">19</option>
+                                        <option value="20">20</option>
+                                        <option value="21">21</option>
+                                        <option value="22">22</option>
+                                        <option value="23">23</option>
+                                        <option value="24">24</option>
+                                        <option value="25">25</option>
+                                        <option value="26">26</option>
+                                        <option value="27">27</option>
+                                        <option value="28">28</option>
+                                        <option value="29">29</option>
+                                        <option value="30">30</option>
+                                        <option value="31">31</option>
+                                        <option value="32">32</option>
+                                        <option value="33">33</option>
+                                        <option value="34">34</option>
+                                        <option value="35">35</option>
+                                        <option value="36">36</option>
+                                        <option value="37">37</option>
+                                        <option value="38">38</option>
+                                        <option value="39">39</option>
+                                        <option value="40">40</option>
+                                        <option value="41">41</option>
+                                        <option value="42">42</option>
+                                        <option value="43">43</option>
+                                        <option value="44">44</option>
+                                        <option value="45">45</option>
+                                        <option value="46">46</option>
+                                        <option value="47">47</option>
+                                        <option value="48">48</option>
+                                        <option value="49">49</option>
+                                        <option value="50">50</option>
+                                        <option value="51">51</option>
+                                        <option value="52">52</option>
+                                        <option value="53">53</option>
+                                        <option value="54">54</option>
+                                        <option value="55">55</option>
+                                        <option value="56">56</option>
+                                        <option value="57">57</option>
+                                        <option value="58">58</option>
+                                        <option value="59">59</option>
                                     </select>
                                     <em>分</em>
                                 </li>
                                 <li class="li4">
                                     <span>记名投票：</span>
-                                    <label><input type="radio" name="sign">是</label>
-                                    <label><input type="radio" name="sign">否</label>
+                                    <label><input type="radio" name="sign" checked="checked" value="0">是</label>
+                                    <label><input type="radio" name="sign" value="1">否</label>
                                 </li>
                                 <li class="li4">
-                                    <button>发起</button>
+                                    <button id="voteSubmit">发起</button>
                                 </li>
                             </ul>
                         </div>
@@ -298,25 +312,25 @@
             <div class="com-left-s" id="share">
             </div>
 
-            <div class="com-left-s" style="display: none">
-                <div class="com-tit"  style="cursor: pointer">投票 <span class="i-newtips">7</span></div>
-                <div class="notice-container clearfix">
-                    <div class="notice-holder"><img src="http://7xiclj.com1.z0.glb.clouddn.com/head-0.47150365147468287.jpg">
-                        <p>凯特老师</p>
-                        <p class="p1">副社长</p></div>
-                    <div class="notice-cont">
-                        <p class="p-tp p1"  onclick="">投票</p>
-                        <p class="p-votit">
-                            <a>阿森纳2-0伯恩茅斯全场最佳评选</a>阿森纳客场2-0伯恩茅斯，谁是你心中的最佳球员，快来为他投上一票！
-                        </p>
-                        <p class="p-vocont">
-                            <span class="sp-bg"></span>
-                            <span class="sp1">阿森纳2-0伯恩茅斯全场最佳评选</span>
-                            <span class="sp1">参与人数：10</span>
-                            <span class="sp-btn">点击投票</span>
-                        </p>
-                        <p class="p-infor"><span>消息来源：复兰社区</span> <span>发表时间：2016-12-28 17:19:48</span></p></div>
-                </div>
+            <div class="com-left-s" id="vote">
+                <%--<div class="com-tit"  style="cursor: pointer">投票 <span class="i-newtips">7</span></div>--%>
+                <%--<div class="notice-container clearfix">--%>
+                    <%--<div class="notice-holder"><img src="http://7xiclj.com1.z0.glb.clouddn.com/head-0.47150365147468287.jpg">--%>
+                        <%--<p>凯特老师</p>--%>
+                        <%--<p class="p1">副社长</p></div>--%>
+                    <%--<div class="notice-cont">--%>
+                        <%--<p class="p-tp p1"  onclick="">投票</p>--%>
+                        <%--<p class="p-votit">--%>
+                            <%--<a>阿森纳2-0伯恩茅斯全场最佳评选</a>阿森纳客场2-0伯恩茅斯，谁是你心中的最佳球员，快来为他投上一票！--%>
+                        <%--</p>--%>
+                        <%--<p class="p-vocont">--%>
+                            <%--<span class="sp-bg"></span>--%>
+                            <%--<span class="sp1">阿森纳2-0伯恩茅斯全场最佳评选</span>--%>
+                            <%--<span class="sp1">参与人数：10</span>--%>
+                            <%--<span class="sp-btn">点击投票</span>--%>
+                        <%--</p>--%>
+                        <%--<p class="p-infor"><span>消息来源：复兰社区</span> <span>发表时间：2016-12-28 17:19:48</span></p></div>--%>
+                <%--</div>--%>
             </div>
 
             <div class="com-left-s" id="activity">
@@ -577,6 +591,50 @@
                 <c:if test="${operation==1}"><span class="delete-detail" detailId="{{=value.id}}">删除</span></c:if>
             </p>
         </div>
+    </div>
+    {{~}}
+</script>
+
+<script type="text/template" id="voteTmpl">
+    {{~it:value:index}}
+    <div class="com-tit" id="vote_all" style="cursor: pointer">投票
+        {{?value.unReadCount==0}}
+        <em>全部</em>
+        {{??}}
+        <span class="i-newtips">{{=value.unReadCount}}</span>
+        {{?}}
+    </div>
+    <div class="notice-container clearfix">
+        <div class="notice-holder"><img src="{{=value.imageUrl}}">
+            <p>{{=value.nickName}}</p>
+            <p class="p1">{{=value.roleStr}}</p>
+        </div>
+        <div class="notice-cont">
+            <p class="p-tp p1"style="cursor: pointer"
+               onclick="window.open('/community/communityDetail?detailId={{=value.id}}')">投票</p>
+            <p class="p-votit">
+                <a style="cursor: pointer" href="javascript:void(0)" onclick="window.open('/community/communityDetail?detailId={{=value.id}}')">{{=value.title}}</a><span class="shareContent">{{=value.content}}</span><span
+                    class="sp-more"></span>
+            </p>
+            {{?value.images.length>0}}
+            <p class="p-img clearfix">
+                {{~value.images:image:i}}
+                <a class="fancybox" style="cursor:pointer;" href="{{=image.url}}" data-fancybox-group="home" title="预览">
+                    <img src="{{=image.url}}?imageView2/1/w/100/h/100"><br/>
+                </a>
+                {{~}}
+            </p>
+            {{??}}
+            <p class="p-vocont">
+                <span class="sp-bg"></span>
+                <span class="sp1">{{=value.title}}</span>
+                <span class="sp1">参与人数：{{=value.voteCount}}</span>
+                {{?value.voteDead==1}}
+                <span class="sp-btn" style="cursor: pointer" onclick="window.open('/community/communityDetail?detailId={{=value.id}}')">点击投票</span>
+                {{?}}
+            </p>
+            {{?}}
+            <p class="p-infor"><span>消息来源：{{=value.communityName}}</span> <span>发表时间：{{=value.time}}</span></p></div>
     </div>
     {{~}}
 </script>
@@ -905,28 +963,23 @@
     {{~}}
 </script>
 
+
+<%--<link rel="stylesheet" href="//apps.bdimg.com/libs/jqueryui/1.10.4/css/jquery-ui.min.css">--%>
+<%--<script src="//apps.bdimg.com/libs/jquery/1.10.2/jquery.min.js"></script>--%>
+<%--<script src="//apps.bdimg.com/libs/jqueryui/1.10.4/jquery-ui.min.js"></script>--%>
 <script type="text/javascript" src="/static/js/modules/core/0.1.0/fancyBox/jquery.fancybox.js"></script>
+<script type="text/javascript" src="/static/js/WdatePicker.js"></script>
 <script type="text/javascript">
     $(document).ready(function () {
         $(".fancybox").fancybox({});
-
+//        $("#datepicker").datepicker({
+//            dateFormat: 'yy-mm-dd',
+//            monthNames: ['一月', '二月', '三月', '四月', '五月', '六月', '七月', '八月', '九月', '十月', '十一月', '十二月'],
+//            dayNames: ['星期日', '星期一', '星期二', '星期三', '星期四', '星期五', '星期六'],
+//            dayNamesShort: ['周日', '周一', '周二', '周三', '周四', '周五', '周六'],
+//        });
     })
 </script>
-
-<link rel="stylesheet" href="//apps.bdimg.com/libs/jqueryui/1.10.4/css/jquery-ui.min.css">
-<script src="//apps.bdimg.com/libs/jquery/1.10.2/jquery.min.js"></script>
-<script src="//apps.bdimg.com/libs/jqueryui/1.10.4/jquery-ui.min.js"></script>
-<script>
-    $(function () {
-        $("#datepicker").datepicker({
-            dateFormat: 'yy-mm-dd',
-            monthNames: ['一月', '二月', '三月', '四月', '五月', '六月', '七月', '八月', '九月', '十月', '十一月', '十二月'],
-            dayNames: ['星期日', '星期一', '星期二', '星期三', '星期四', '星期五', '星期六'],
-            dayNamesShort: ['周日', '周一', '周二', '周三', '周四', '周五', '周六'],
-        });
-    });
-</script>
-
 
 </body>
 </html>

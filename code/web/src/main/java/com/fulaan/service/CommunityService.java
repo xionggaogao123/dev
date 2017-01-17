@@ -9,6 +9,7 @@ import com.fulaan.community.dto.RemarkDTO;
 import com.fulaan.dto.MemberDTO;
 import com.fulaan.fgroup.service.EmService;
 import com.fulaan.fgroup.service.GroupService;
+import com.fulaan.forum.service.FVoteService;
 import com.fulaan.friendscircle.service.FriendApplyService;
 import com.fulaan.friendscircle.service.FriendService;
 import com.fulaan.pojo.Attachement;
@@ -28,7 +29,9 @@ import org.bson.types.ObjectId;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.text.SimpleDateFormat;
 import java.util.*;
+import java.util.logging.SimpleFormatter;
 
 /**
  * Created by jerry on 2016/10/24.
@@ -48,6 +51,8 @@ public class CommunityService {
     private FriendApplyService friendApplyService;
     @Autowired
     private EmService emService;
+    @Autowired
+    private FVoteService fVoteService;
 
     private UserDao userDao = new UserDao();
     private CommunityDao communityDao = new CommunityDao();
@@ -229,15 +234,28 @@ public class CommunityService {
      * @param uid
      * @param message
      */
-    public void saveMessage(ObjectId uid, CommunityMessage message) {
+    public void saveMessage(ObjectId uid, CommunityMessage message) throws Exception{
         List<AttachmentEntry> attachmentEntries = splitAttachements(message.getAttachements(), uid);
         List<AttachmentEntry> vedios = splitAttachements(message.getVedios(), uid);
         List<AttachmentEntry> images = splitAttachements(message.getImages(), uid);
         CommunityDetailEntry entry = new CommunityDetailEntry(new ObjectId(message.getCommunityId()),
                 uid, userService.replaceSensitiveWord(message.getTitle()), userService.replaceSensitiveWord(message.getContent()), message.getType(),
                 new ArrayList<ObjectId>(), attachmentEntries, vedios, images,
-                message.getShareUrl(), message.getShareImage(), message.getShareTitle(), message.getSharePrice());
+                message.getShareUrl(), message.getShareImage(), message.getShareTitle(), message.getSharePrice(),message.getVoteContent(),message.getVoteMaxCount(),
+                ConvertStrToLong(message.getVoteDeadTime()),message.getVoteType()
+                );
         communityDetailDao.save(entry);
+    }
+
+    private long ConvertStrToLong(String voteDeadTime) throws Exception{
+        if(StringUtils.isNotBlank(voteDeadTime)){
+            SimpleDateFormat format=new SimpleDateFormat("yyyy-MM-dd HH:mm");
+            Date time=format.parse(voteDeadTime);
+            return time.getTime();
+        }else{
+            return -1L;
+        }
+
     }
 
     /**
@@ -313,6 +331,15 @@ public class CommunityService {
                     }
                 }
                 communityDetailDTO.setPartList(partInContentDTOs);
+            }else if(type.getType() == CommunityDetailType.VOTE.getType()){
+                int voteCount=fVoteService.getFVoteCount(entry.getID().toString());
+                communityDetailDTO.setVoteCount(voteCount);
+                long nowTime=System.currentTimeMillis();
+                if(nowTime<entry.getVoteDeadTime()){
+                    communityDetailDTO.setVoteDead(1);
+                }else{
+                    communityDetailDTO.setVoteDead(0);
+                }
             }
             if (null != communityEntry.getOwerID()) {
                 communityDetailDTO.setCommunityName(communityEntry.getCommunityName());
@@ -752,6 +779,7 @@ public class CommunityService {
         map.put(CommunityDetailType.MEANS.getDecs().toLowerCase(), getNews(communityIds, CommunityDetailType.MEANS, page, pageSize, order, userId, operation));
         map.put(CommunityDetailType.HOMEWORK.getDecs().toLowerCase(), getNews(communityIds, CommunityDetailType.HOMEWORK, page, pageSize, order, userId, operation));
         map.put(CommunityDetailType.MATERIALS.getDecs().toLowerCase(), getNews(communityIds, CommunityDetailType.MATERIALS, page, pageSize, order, userId, operation));
+        map.put(CommunityDetailType.VOTE.getDecs().toLowerCase(),getNews(communityIds, CommunityDetailType.VOTE, page, pageSize, order, userId, operation));
         return map;
     }
 

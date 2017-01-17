@@ -391,8 +391,13 @@ public class CommunityController extends BaseController {
     @ResponseBody
     public RespObj newMessage(@RequestBody CommunityMessage message) {
         ObjectId uid = getUserId();
-        communityService.saveMessage(uid, message);
-        return RespObj.SUCCESS;
+        try{
+            communityService.saveMessage(uid, message);
+            return RespObj.SUCCESS;
+        }catch (Exception e){
+            return RespObj.FAILD("投票截止时间格式不规范");
+        }
+
     }
 
     /**

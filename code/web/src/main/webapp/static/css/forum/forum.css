@@ -2518,8 +2518,8 @@ pre {
 }
 
 .new-page-links {
-    width: 540px;
-    margin: 17px 26% 3px;
+    width: 100%;
+    margin: 17px 0 3px;
     height: 42px;
     text-align: center;
 }

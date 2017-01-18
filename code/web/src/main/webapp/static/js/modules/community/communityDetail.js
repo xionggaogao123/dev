@@ -599,7 +599,7 @@ define(['jquery', 'pagination', 'common'], function (require, exports, module) {
                 if(resp.message.type==7){
                     $('#outResult').hide();
                     $('#communityType').data('type', 7);
-                    type.addClass("p-fx");
+                    type.addClass("p-ve");
                     send.text('我要留言');
                     title.text("投票详情");
                     result.text('留言列表');

@@ -32,7 +32,7 @@ public class HttpClient {
 
     private static String getStrFromInputStream(InputStream inputStream) {
         try {
-            return IOUtils.toString(inputStream,"utf-8");
+            return IOUtils.toString(inputStream,"UTF-8");
         } catch (IOException e) {
             e.printStackTrace();
             return null;

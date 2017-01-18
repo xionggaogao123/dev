@@ -234,11 +234,9 @@ public class UserController extends BaseController {
         value.setPackageCode(e.getGenerateUserCode());
         if (e.getK6KT() == 1 && schoolEntry != null) {//k6kt用户
             value.setSchoolId(e.getSchoolID().toString());
-            if (schoolEntry != null && schoolEntry.getLogo() != null) {
+            if (schoolEntry.getLogo() != null) {
                 value.setSchoolLogo(schoolEntry.getLogo());
             }
-            value.setUserRole(e.getRole());
-            value.setAvatar(e.getAvatar());
             value.setUserPermission(e.getPermission());
             value.setUserRemovePermission(e.getRemovePermission());
             value.setExperience(e.getExperiencevalue());

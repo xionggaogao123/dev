@@ -188,10 +188,7 @@ public class EaseMobAPI {
         ResponseWrapper responseWrapper = (ResponseWrapper) user.getIMUserStatus(userId);
         if (responseWrapper.getResponseStatus() == 200) {
             String status = ((ObjectNode) responseWrapper.getResponseBody()).get("data").get("stliu").asText();
-            if ("online".endsWith(status)) {
-                return true;
-            }
-            return false;
+            return "online".endsWith(status);
         }
         return false;
     }

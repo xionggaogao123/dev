@@ -979,7 +979,12 @@ public class CommunityController extends BaseController {
                     double pItem = (double) count / (double) totalCount;
                     map.put("voteItemStr", voteOptions.get(i));
                     map.put("voteItemCount", count);
-                    map.put("voteItemPercent", nt.format(pItem));
+                    if(count==0){
+                        map.put("voteItemPercent", "0%");
+                    }else{
+                        map.put("voteItemPercent", nt.format(pItem));
+                    }
+
                     mapList.add(map);
                 }
 

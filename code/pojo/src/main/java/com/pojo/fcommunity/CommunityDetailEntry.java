@@ -64,15 +64,19 @@ public class CommunityDetailEntry extends BaseDBObject {
                               List<AttachmentEntry> attachmentList,
                               List<AttachmentEntry> voiceList, List<AttachmentEntry> imageList,
                               String shareUrl,String shareImage,String shareTitle,String sharePrice,
-                              String voteContent,int voteMaxCount,long voteDeadTime,int voteType) {
+                              String voteContent,int voteMaxCount,long voteDeadTime,int voteType,List<VideoEntry> videoList) {
     BasicDBList attachmentDbList = new BasicDBList();
-    BasicDBList vedioDbList = new BasicDBList();
+    BasicDBList voiceDbList = new BasicDBList();
     BasicDBList imageDbList = new BasicDBList();
+    BasicDBList videoDBList = new BasicDBList();
+    for (VideoEntry videoEntry : videoList) {
+      videoDBList.add(videoEntry.getBaseEntry());
+    }
     for(AttachmentEntry attachmentEntry:attachmentList){
       attachmentDbList.add(attachmentEntry.getBaseEntry());
     }
     for(AttachmentEntry attachment:voiceList){
-      vedioDbList.add(attachment.getBaseEntry());
+      voiceDbList.add(attachment.getBaseEntry());
     }
     for(AttachmentEntry attachment:imageList){
       imageDbList.add(attachment.getBaseEntry());
@@ -85,8 +89,9 @@ public class CommunityDetailEntry extends BaseDBObject {
             .append("cmty", communityType)
             .append("unrl",unReadList)
             .append("atl", attachmentDbList)
-            .append("vil", vedioDbList)
+            .append("vil", voiceDbList)
             .append("iml", imageDbList)
+            .append("vol", videoDBList)
             .append("shul",shareUrl)
             .append("shim",shareImage)
             .append("shti",shareTitle)
@@ -114,6 +119,16 @@ public class CommunityDetailEntry extends BaseDBObject {
     }else{
       return -1L;
     }
+  }
+
+  public List<VideoEntry> getVideoList() {
+    BasicDBList list = getDbList("vol");
+    List<VideoEntry> videoEntries = new ArrayList<VideoEntry>();
+    for (Object dbo : list) {
+      BasicDBObject dbObject = (BasicDBObject) dbo;
+      videoEntries.add(new VideoEntry(dbObject));
+    }
+    return videoEntries;
   }
 
   public  int getVoteType(){

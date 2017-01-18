@@ -5,6 +5,7 @@ define(['jquery', 'pagination', 'common'], function (require, exports, module) {
     var communityId = $('#communityId').attr('communityId');
     var detailId = $('#communityId').attr('detailId');
     var voteType=$('#communityId').attr('voteType');
+    var voteDeadFlag=$('#communityId').attr('voteDeadFlag');
     var communityDetail = {};
     var activity_cur = 1;
     var acid = '';
@@ -284,15 +285,19 @@ define(['jquery', 'pagination', 'common'], function (require, exports, module) {
                     if (flag) {
                         var sendText = $('#send').text();
                         if (sendText == '提交作业') {
-                            submitHomeWork();
+                            submitHomeWork(0);
                             return;
                         }
 
                         if(sendText ==  '我要留言'){
-                            if(voteType=="1"){
-                                submitHomeWork();
+                            if(voteDeadFlag=="0"){
+                                if(voteType=="1"){
+                                    submitHomeWork(1);
+                                }else{
+                                    alert("留言前请投票");
+                                }
                             }else{
-                                alert("留言前请投票");
+                                submitHomeWork(1);
                             }
                             return;
                         }
@@ -848,9 +853,16 @@ define(['jquery', 'pagination', 'common'], function (require, exports, module) {
         })
     }
 
-    function submitHomeWork() {
+    function submitHomeWork(type) {
 
         var text = $('textarea').val();
+
+        if(type==1){
+            if($.trim(text)==""){
+              alert("留言不能为空!");
+              return;
+            }
+        }
         //加载附件信息
         var attachements = new Array();
         var images = new Array();

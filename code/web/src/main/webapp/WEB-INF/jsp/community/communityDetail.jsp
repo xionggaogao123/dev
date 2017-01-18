@@ -27,7 +27,8 @@
         </div>
     </div>
     <div id="communityType"></div>
-    <span id="communityId" communityId="${detail.communityId}" detailId="${detailId}" voteType="${voteType}"></span>
+    <span id="communityId" communityId="${detail.communityId}" detailId="${detailId}" voteType="${voteType}"
+          voteDeadFlag="${voteDeadFlag}"></span>
 
     <div class="container">
         <div class="hd-cont-f hd-cont-f1 clearfix">
@@ -44,67 +45,6 @@
                         <div class="act-title">
                             <p class="p1" id="type">${detail.title}</p>
                             <div class="txt-wrap">
-                                <c:if test="${type==1}">
-                                <div class="vote-detail" >
-                                    <h3>多选投票：（最多可选${voteMaxCount}项），共有<em id="voteUserCount" count="${voteUserCount}">${voteUserCount}</em>人参与投票</h3>
-                                    <c:if test="${voteType==0&&voteDeadFlag==0}">
-                                    <ul class="ul1">
-                                        <c:if test="${check==1}">
-                                        <c:forEach items="${voteOptions}" var="voteOption" varStatus="status">
-                                            <li>
-                                                <label><input <c:if test="${login==false}">style="display: none" </c:if> onchange="voteCheck(this)" class="checkVote" type="checkbox" name="radio-s" value="${status.index + 1}">${status.index + 1}.${voteOption}</label>
-                                            </li>
-                                        </c:forEach>
-                                        </c:if>
-                                        <c:if test="${check!=1}">
-                                            <c:forEach items="${voteOptions}" var="voteOption" varStatus="status">
-                                                <li>
-                                                    <label><input <c:if test="${login==false}">style="display: none" </c:if> class="checkVote" type="radio" name="radio-s" value="${status.index + 1}">${status.index + 1}.${voteOption}</label>
-                                                </li>
-                                            </c:forEach>
-                                        </c:if>
-                                    </ul>
-                                    </c:if>
-                                    <c:if test="${voteType==0}">
-                                    <div class="vote-btn">
-                                        <c:if test="${login==true&&voteDeadFlag==0}">
-                                        <button id="submitVote">提交</button>
-                                        </c:if>
-                                        <c:if test="${voteDeadFlag==1}">
-                                        <span>投票已经结束</span>
-                                        </c:if>
-                                    </div>
-                                    </c:if>
-                                    <c:if test="${voteType==1||voteDeadFlag==1}">
-                                    <ul class="ul2">
-                                        <c:forEach items="${voteMapList}" var="map" varStatus="status">
-                                            <li>
-                                                <div class="p1s">${status.index + 1}.${map.voteItemStr}</div>
-                                                <div class="p2s">
-                                                    <div class="line-f">
-                                                        <span style="width: ${map.voteItemPercent}"></span>
-                                                    </div>
-                                                    <span>${map.voteItemPercent}<em>(${map.voteItemCount})</em></span>
-                                                </div>
-                                            </li>
-                                        </c:forEach>
-                                        <%--<li>--%>
-                                            <%--<div class="p1s">1.爱奇艺TV版</div>--%>
-                                            <%--<div class="p2s">--%>
-                                                <%--<div class="line-f">--%>
-                                                    <%--<span style="width: 10%"></span>--%>
-                                                <%--</div>--%>
-                                                <%--<span>10%<em>(100)</em></span>--%>
-                                            <%--</div>--%>
-                                        <%--</li>--%>
-                                    </ul>
-                                    </c:if>
-                                    <c:if test="${voteType==1}">
-                                    <p style="margin:6px 0 0 0;">您已经投过票感谢您的参与</p>
-                                    </c:if>
-                                </div>
-                                </c:if>
-
                                 <p class="p-wrap" id="detailContent"></p>
                                 <span content="${detail.content}" id="getContent" style="display:none;"></span>
                                 <script type="text/javascript">
@@ -118,6 +58,12 @@
                                         <img src="${image.url}?imageView2/2/h/300"/>
                                     </a>
                                 </c:forEach>
+                                <c:forEach items="${detail.videoDTOs}" var="video">
+                                    <div class="content-DV">
+                                        <img class="content-img content-Im videoshow2" vurl="${video.videourl}" src="${video.imageurl}">
+                                        <img src="/static/images/play.png" class="video-play-btn" onclick="tryPlayYCourse('${video.videourl}')">
+                                    </div>
+                                </c:forEach>
                                 <c:if test="${detail.attachements != null}">
                                     <dl class="file-wrap">
                                         <dt>附件下载：</dt>
@@ -129,6 +75,70 @@
                                             </dd>
                                         </c:forEach>
                                     </dl>
+                                </c:if>
+                                <c:if test="${type==1}">
+                                    <div class="vote-detail" >
+                                        <h3>多选投票：（最多可选${voteMaxCount}项），共有<em id="voteUserCount" count="${voteUserCount}">${voteUserCount}</em>人参与投票</h3>
+                                        <c:if test="${voteType==0&&voteDeadFlag==0}">
+                                            <ul class="ul1">
+                                                <c:if test="${check==1}">
+                                                    <c:forEach items="${voteOptions}" var="voteOption" varStatus="status">
+                                                        <li>
+                                                            <label><input <c:if test="${login==false}">style="display: none" </c:if> onchange="voteCheck(this)" class="checkVote" type="checkbox" name="radio-s" value="${status.index + 1}">${status.index + 1}.${voteOption}</label>
+                                                        </li>
+                                                    </c:forEach>
+                                                </c:if>
+                                                <c:if test="${check!=1}">
+                                                    <c:forEach items="${voteOptions}" var="voteOption" varStatus="status">
+                                                        <li>
+                                                            <label><input <c:if test="${login==false}">style="display: none" </c:if> class="checkVote" type="radio" name="radio-s" value="${status.index + 1}">${status.index + 1}.${voteOption}</label>
+                                                        </li>
+                                                    </c:forEach>
+                                                </c:if>
+                                            </ul>
+                                        </c:if>
+                                        <c:if test="${voteType==0}">
+                                            <div class="vote-btn">
+                                                <c:if test="${login==true&&voteDeadFlag==0}">
+                                                    <button id="submitVote">提交</button>
+                                                </c:if>
+                                                <c:if test="${voteDeadFlag==1}">
+                                                    <span>投票已经结束</span>
+                                                </c:if>
+                                            </div>
+                                        </c:if>
+                                        <c:if test="${voteType==1||voteDeadFlag==1}">
+                                            <ul class="ul2" <c:if test="${login==false}">style="display: none" </c:if>>
+                                                <c:forEach items="${voteMapList}" var="map" varStatus="status">
+                                                    <li>
+                                                        <div class="p1s">${status.index + 1}.${map.voteItemStr}</div>
+                                                        <div class="p2s">
+                                                            <div class="line-f">
+                                                                <span style="width: ${map.voteItemPercent}"></span>
+                                                            </div>
+                                                            <span>${map.voteItemPercent}<em>(${map.voteItemCount})</em></span>
+                                                        </div>
+                                                    </li>
+                                                </c:forEach>
+                                                    <%--<li>--%>
+                                                    <%--<div class="p1s">1.爱奇艺TV版</div>--%>
+                                                    <%--<div class="p2s">--%>
+                                                    <%--<div class="line-f">--%>
+                                                    <%--<span style="width: 10%"></span>--%>
+                                                    <%--</div>--%>
+                                                    <%--<span>10%<em>(100)</em></span>--%>
+                                                    <%--</div>--%>
+                                                    <%--</li>--%>
+                                            </ul>
+                                        </c:if>
+                                        <c:if test="${voteType==1}">
+                                            <p style="margin:6px 0 0 0;">您已经投过票感谢您的参与</p>
+                                        </c:if>
+                                        <c:if test="${login==false}">
+                                            <p style="margin-top:-63px;">您没有投票的权限，请先登录相关帐号
+                                            </p>
+                                        </c:if>
+                                    </div>
                                 </c:if>
                             </div>
 

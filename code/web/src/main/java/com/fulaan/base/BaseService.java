@@ -32,7 +32,7 @@ public class BaseService {
      * @param distance
      * @return
      */
-    protected String filterDistance(long distance) {
+    protected String fromDistance(long distance) {
         if(distance <= 500) {
             return "≤0.5km";
         } else if(distance <= 1000) {

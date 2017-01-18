@@ -522,20 +522,9 @@ public class UserService extends BaseService {
      * @param sex
      * @return
      */
-    public UserEntry createUser(final String nickName, int sex) {
-
-        UserEntry userEntry = findByUserName(nickName);
-        String userName = nickName;
-        if (userEntry == null) {
-            userEntry = new UserEntry(userName, nickName, "*", "", sex);
-        } else {
-            String uuidName = new ObjectId().toString();
-            userName = nickName + uuidName;
-            userEntry = new UserEntry(userName, nickName, "*", "", sex);
-        }
-
+    public UserEntry createUser(String userName,String nickName,int sex) {
+        UserEntry userEntry = new UserEntry(userName, nickName, "*", "", sex);
         addUser(userEntry);
-        userEntry = findByUserName(userName);
         return userEntry;
     }
 
@@ -597,14 +586,9 @@ public class UserService extends BaseService {
     }
 
     public String getRedirectUrl(HttpServletRequest request) {
-
         Cookie[] cookies = request.getCookies();
         if (cookies == null) return null;
         for (Cookie cookie : cookies) {
-
-
-            logger.info("++++++++++++++" + cookie.getName());
-
             if (cookie.getName() != null && cookie.getName().equals(Constant.APP_SHARE)) {
                 String cacheVale = cookie.getValue();
                 SessionValue cacheSessionValue = CacheHandler.getSessionValue(cacheVale);

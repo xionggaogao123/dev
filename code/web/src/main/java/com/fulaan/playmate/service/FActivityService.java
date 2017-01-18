@@ -104,7 +104,7 @@ public class FActivityService extends BaseService{
             BasicDBList locs = entry.getLocations();
             if (locs != null) {
                 Double distance = DistanceUtils.distance(lon, lat, (Double) locs.get(0), (Double) locs.get(1));
-                fActivityDTO.setDistance(filterDistance(distance.longValue()));
+                fActivityDTO.setDistance(fromDistance(distance.longValue()));
             }
             FActivityDTOS.add(fActivityDTO);
         }

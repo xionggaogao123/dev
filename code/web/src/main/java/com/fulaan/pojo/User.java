@@ -12,7 +12,6 @@ public class User {
     private String avator;
     private int sex;
 
-
     public String getId() {
         return id;
     }

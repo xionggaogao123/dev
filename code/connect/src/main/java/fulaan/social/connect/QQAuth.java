@@ -19,6 +19,7 @@ import java.util.Properties;
  */
 public class QQAuth implements Auth {
 
+    private static final String PROPERTIES_NAME = "qqconnectconfig.properties";
     private static Properties properties;
     private HttpClient client = new HttpClient();
     private static String APP_ID;
@@ -33,7 +34,7 @@ public class QQAuth implements Auth {
     private static void init() {
         properties = new Properties();
         try {
-            properties.load(QQAuth.class.getClassLoader().getResourceAsStream("qqconnectconfig.properties"));
+            properties.load(QQAuth.class.getClassLoader().getResourceAsStream(PROPERTIES_NAME));
         } catch (IOException e) {
             e.printStackTrace();
         }

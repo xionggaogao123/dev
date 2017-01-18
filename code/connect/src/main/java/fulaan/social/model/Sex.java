@@ -42,4 +42,12 @@ public enum Sex {
     public void setSex(String sex) {
         this.sex = sex;
     }
+
+    @Override
+    public String toString() {
+        return "Sex{" +
+                "type=" + type +
+                ", sex='" + sex + '\'' +
+                '}';
+    }
 }

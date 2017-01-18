@@ -120,7 +120,7 @@ public class MateService extends BaseService {
         String distance = "未知";
         if (lon != 0 && lat != 0 && dbList != null) {
             Double distanceDouble = DistanceUtils.distance(lon, lat, (Double) dbList.get(0), (Double) dbList.get(1));
-            distance = filterDistance(distanceDouble.longValue());
+            distance = fromDistance(distanceDouble.longValue());
         }
         FMateDTO fMateDTO = new FMateDTO();
         UserEntry userEntry = userDao.findByUserId(mateEntry.getUserId());

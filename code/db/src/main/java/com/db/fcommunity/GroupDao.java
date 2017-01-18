@@ -34,6 +34,12 @@ public class GroupDao extends BaseDao {
         return dbo == null ? null : new GroupEntry(dbo);
     }
 
+    public GroupEntry findByEmchatId(String emChatId) {
+        BasicDBObject query = new BasicDBObject("grcd", emChatId);
+        DBObject dbo = findOne(MongoFacroty.getAppDB(), Constant.COLLECTION_FORUM_COMMUNITY_GROUP, query, Constant.FIELDS);
+        return dbo == null ? null : new GroupEntry(dbo);
+    }
+
     /**
      * 获得 List
      *

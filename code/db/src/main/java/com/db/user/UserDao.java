@@ -447,9 +447,9 @@ public class UserDao extends BaseDao {
     }
 
 
-    public void resetPwd(ObjectId id, String initPwd) {
+    public void resetPwd(ObjectId id, String pwd) {
         BasicDBObject query = new BasicDBObject(Constant.ID, id);
-        BasicDBObject update = new BasicDBObject(Constant.MONGO_SET, new BasicDBObject("pw", initPwd));
+        BasicDBObject update = new BasicDBObject(Constant.MONGO_SET, new BasicDBObject("pw", pwd));
         update(MongoFacroty.getAppDB(), Constant.COLLECTION_USER_NAME, query, update);
     }
 

@@ -26,7 +26,6 @@ public class ThirdLoginEntry extends BaseDBObject {
                 .append("oid", oid)
                 .append("unionid", unionid)
                 .append("type", type.getCode());
-
         setBaseEntry(baseEntry);
 
     }

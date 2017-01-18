@@ -13,6 +13,7 @@ import com.sys.utils.QiniuFileUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.bson.types.ObjectId;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
 
 import javax.imageio.ImageIO;
@@ -76,6 +77,15 @@ public class GroupService {
         return new GroupDTO(groupEntry, members, managers);
     }
 
+    public GroupDTO findByEmChatId(String emChatId) {
+        GroupEntry groupEntry = groupDao.findByEmchatId(emChatId);
+        if(groupEntry == null) return null;
+        ObjectId groupId = groupEntry.getID();
+        List<MemberDTO> managers = memberService.getManagers(groupId);
+        List<MemberDTO> members = memberService.getMembers(groupId, 20);
+        return new GroupDTO(groupEntry, members, managers);
+    }
+
     /**
      * 获取群聊头像
      *
@@ -94,9 +104,33 @@ public class GroupService {
      * @throws IOException
      * @throws IllegalParamException
      */
+    @Async
     public void updateHeadImage(ObjectId groupId) throws IOException, IllegalParamException {
         String url = generateHeadImage(groupId);
         groupDao.updateHeadImage(groupId, url);
+    }
+
+    /**
+     * 更新群聊名称-按照用户名,的方式拼接
+     *
+     * @param groupId
+     */
+    @Async
+    public void asyncUpdateGroupNameByMember(ObjectId groupId) {
+        String name = generateGroupName(groupId);
+        groupDao.updateGroupName(groupId, name);
+    }
+
+    /**
+     * 更新 - 群聊名称
+     *
+     * @param groupId
+     * @param groupName
+     */
+    @Async
+    public void asyncUpdateGroupName(ObjectId groupId, String groupName) {
+        groupDao.updateIsM(groupId, 1);
+        groupDao.updateGroupName(groupId, groupName);
     }
 
     private String generateHeadImage(ObjectId groupId) throws IOException, IllegalParamException {
@@ -111,20 +145,9 @@ public class GroupService {
         ObjectId fileKey = new ObjectId();
         File outFile = File.createTempFile(fileKey.toString(), ".jpg");
         ImageIO.write(bufferedImage, "JPG", outFile);
-
         QiniuFileUtils.uploadFile(fileKey.toString() + ".jpg", new FileInputStream(outFile), QiniuFileUtils.TYPE_IMAGE);
         outFile.delete();
         return QiniuFileUtils.getPath(QiniuFileUtils.TYPE_IMAGE, fileKey.toString() + ".jpg");
-    }
-
-    /**
-     * 更新群聊名称-按照用户名,的方式拼接
-     *
-     * @param groupId
-     */
-    public void updateGroupNameByMember(ObjectId groupId) {
-        String name = generateGroupName(groupId);
-        groupDao.updateGroupName(groupId, name);
     }
 
     private String generateGroupName(ObjectId groupId) {
@@ -140,16 +163,7 @@ public class GroupService {
     }
 
 
-    /**
-     * 更新 - 群聊名称
-     *
-     * @param groupId
-     * @param groupName
-     */
-    public void updateGroupName(ObjectId groupId, String groupName) {
-        groupDao.updateIsM(groupId, 1);
-        groupDao.updateGroupName(groupId, groupName);
-    }
+
 
     /**
      * 是否 - 是群聊成员

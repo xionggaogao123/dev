@@ -8,6 +8,7 @@ import com.pojo.fcommunity.MemberEntry;
 import com.pojo.user.UserEntry;
 import org.apache.commons.lang.StringUtils;
 import org.bson.types.ObjectId;
+import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
@@ -255,6 +256,7 @@ public class MemberService {
      * @param userId
      * @param nickName
      */
+    @Async
     public void updateMyNickname(ObjectId groupId, ObjectId userId, String nickName) {
         memberDao.updateMyNickname(groupId, userId, nickName);
     }
@@ -266,6 +268,7 @@ public class MemberService {
      * @param userId
      * @param status
      */
+    @Async
     public void updateMyStatus(ObjectId groupId, ObjectId userId, int status) {
         memberDao.updateMyStatus(groupId, userId, status);
     }
@@ -301,6 +304,7 @@ public class MemberService {
      * @param userId
      * @param avatar
      */
+    @Async
     public void updateAllAvatar(ObjectId userId, String avatar) {
         memberDao.updateAllAvatar(userId, avatar);
     }

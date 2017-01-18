@@ -127,7 +127,7 @@ public class EBusinessUserController extends BaseController {
 
         Map<String, Object> model = new HashMap<String, Object>();
         model.put("code", 500);
-        if (!ValidationUtils.isValidMobile(mobile)) {
+        if (!ValidationUtils.isMobile(mobile)) {
             model.put("message", "非法手机");
             return model;
         }

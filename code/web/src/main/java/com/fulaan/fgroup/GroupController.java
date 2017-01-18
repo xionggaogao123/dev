@@ -11,7 +11,9 @@ import com.fulaan.fgroup.service.EmService;
 import com.fulaan.fgroup.service.GroupService;
 import com.fulaan.friendscircle.service.FriendService;
 import com.fulaan.pojo.*;
-import com.fulaan.service.*;
+import com.fulaan.service.CommunityService;
+import com.fulaan.service.GroupNoticeService;
+import com.fulaan.service.MemberService;
 import com.fulaan.user.service.UserService;
 import com.pojo.fcommunity.CommunityDetailType;
 import com.pojo.user.AvatarType;
@@ -86,7 +88,7 @@ public class GroupController extends BaseController {
             }
         }
         groupService.updateHeadImage(groupId);
-        groupService.updateGroupNameByMember(groupId);
+        groupService.asyncUpdateGroupNameByMember(groupId);
         return RespObj.SUCCESS(groupService.findById(groupId));
     }
 
@@ -107,7 +109,7 @@ public class GroupController extends BaseController {
         if (groupDTO.isBindCommunity()) {
             CommunityDTO communityDTO = communityService.getByEmChatId(groupDTO.getEmChatId());
             groupDTO.setSearchId(communityDTO.getSearchId());
-            groupDTO.setHeadImage(communityDTO.getLogo());
+//            groupDTO.setHeadImage(communityDTO.getLogo());
             groupDTO.setName(communityDTO.getName());
         }
         MemberDTO mine = memberService.getUser(groupId, getUserId());
@@ -214,7 +216,7 @@ public class GroupController extends BaseController {
         //更新群聊头像
         groupService.updateHeadImage(groupId);
         if (groupDTO.getIsM() == 0) {
-            groupService.updateGroupNameByMember(new ObjectId(groupDTO.getId()));
+            groupService.asyncUpdateGroupNameByMember(new ObjectId(groupDTO.getId()));
         }
         return RespObj.SUCCESS("操作成功");
     }
@@ -230,14 +232,19 @@ public class GroupController extends BaseController {
     @RequestMapping("/join")
     @ResponseBody
     public RespObj join(String emChatId) throws IOException, IllegalParamException {
-        ObjectId groupId = groupService.getGroupIdByChatId(emChatId);
-        GroupDTO groupDTO = groupService.findById(groupId);
+        GroupDTO groupDTO = groupService.findByEmChatId(emChatId);
+        if(groupDTO == null) {
+            return RespObj.FAILDWithErrorMsg("不存在此群聊或社区");
+        }
+        ObjectId groupId = new ObjectId(groupDTO.getId());
         ObjectId userId = getUserId();
         if (!memberService.isGroupMember(groupId, userId)) {
             if (memberService.isBeforeMember(groupId, userId)) {
                 if (emService.addUserToEmGroup(emChatId, userId)) {
                     memberService.updateMember(userId, groupId, 0);
-                    communityService.setPartIncontentStatus(new ObjectId(groupDTO.getCommunityId()), userId, 0);
+                    if(groupDTO.isBindCommunity()) {
+                        communityService.setPartIncontentStatus(new ObjectId(groupDTO.getCommunityId()), userId, 0);
+                    }
                 }
             } else {
                 if (emService.addUserToEmGroup(emChatId, userId)) {
@@ -248,7 +255,7 @@ public class GroupController extends BaseController {
         //更新群聊头像
         groupService.updateHeadImage(groupId);
         if (groupDTO.getIsM() == 0) {
-            groupService.updateGroupNameByMember(new ObjectId(groupDTO.getId()));
+            groupService.asyncUpdateGroupNameByMember(new ObjectId(groupDTO.getId()));
         }
         return RespObj.SUCCESS("操作成功");
     }
@@ -293,7 +300,7 @@ public class GroupController extends BaseController {
         if (!groupDTO.isBindCommunity()) {
             groupService.updateHeadImage(groupId);
             if (groupDTO.getIsM() == 0) {
-                groupService.updateGroupNameByMember(new ObjectId(groupDTO.getId()));
+                groupService.asyncUpdateGroupNameByMember(new ObjectId(groupDTO.getId()));
             }
         }
         return RespObj.SUCCESS("退出成功");
@@ -349,7 +356,7 @@ public class GroupController extends BaseController {
         }
         groupService.updateHeadImage(groupId);
         if (groupDTO.getIsM() == 0) {
-            groupService.updateGroupNameByMember(new ObjectId(groupDTO.getId()));
+            groupService.asyncUpdateGroupNameByMember(new ObjectId(groupDTO.getId()));
         }
         return RespObj.SUCCESS("退出成功");
     }
@@ -426,7 +433,7 @@ public class GroupController extends BaseController {
         if (groupDTO.isBindCommunity()) {
             communityService.updateCommunityName(new ObjectId(groupDTO.getCommunityId()), groupName);
         }
-        groupService.updateGroupName(groupId, groupName);
+        groupService.asyncUpdateGroupName(groupId, groupName);
         return RespObj.SUCCESS("操作成功");
     }
 

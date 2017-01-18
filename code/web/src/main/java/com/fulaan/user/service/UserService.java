@@ -1047,7 +1047,7 @@ public class UserService extends BaseService {
     public UserEntry getUserEntry(String name) {
         UserEntry e = findByUserName(name);
 
-        if (null == e && ValidationUtils.isValidMobile(name)) {
+        if (null == e && ValidationUtils.isMobile(name)) {
             e = findByMobile(name);
         }
         if (null == e && ValidationUtils.isEmail(name)) {

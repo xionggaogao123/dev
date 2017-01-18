@@ -21,6 +21,7 @@ import com.fulaan.playmate.service.MateService;
 import com.fulaan.pojo.CommunityMessage;
 import com.fulaan.pojo.PageModel;
 import com.fulaan.pojo.ProductModel;
+import com.fulaan.pojo.Validate;
 import com.fulaan.service.*;
 import com.fulaan.user.service.UserService;
 import com.fulaan.util.DateUtils;
@@ -56,7 +57,6 @@ import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.multipart.MultipartRequest;
-import sun.net.www.protocol.https.HttpsURLConnectionImpl;
 
 import javax.servlet.ServletInputStream;
 import javax.servlet.http.HttpServletRequest;
@@ -65,7 +65,6 @@ import java.io.*;
 import java.net.*;
 import java.text.NumberFormat;
 import java.util.*;
-import java.util.concurrent.*;
 
 
 /**
@@ -110,9 +109,9 @@ public class CommunityController extends BaseController {
                                    @RequestParam(required = false, defaultValue = "") StringBuffer logo,
                                    @RequestParam(required = false, defaultValue = "0") int open,
                                    @RequestParam(required = false, defaultValue = "") String userIds) throws Exception {
-        RespObj respObj = detectCondition(name, desc, logo);
-        if (respObj.getCode().equals("500")) {
-            return respObj;
+        Validate validate = detectCondition(name, desc, logo);
+        if (!validate.isOk()) {
+            return RespObj.FAILDWithErrorMsg(validate.getMessage());
         }
         ObjectId uid = getUserId();
         ObjectId communityId = new ObjectId();
@@ -150,13 +149,17 @@ public class CommunityController extends BaseController {
         communityDTO.setMine(mine);
         String headImage = groupService.getHeadImage(new ObjectId(communityDTO.getGroupId()));
         communityDTO.setHeadImage(headImage);
+        groupService.updateHeadImage(new ObjectId(communityDTO.getGroupId()));
         return RespObj.SUCCESS(communityDTO);
     }
 
-    private RespObj detectCondition(String name, StringBuffer desc, StringBuffer logo) {
+    private Validate detectCondition(String name, StringBuffer desc, StringBuffer logo) {
+        Validate validate = new Validate();
+        validate.setOk(false);
         //先判断社区名称是否是纯数字
         if (StringUtils.isNumeric(name)) {
-            return RespObj.FAILDWithErrorMsg("社区名称不能是纯数字!");
+            validate.setMessage("社区名称不能是纯数字!");
+            return validate;
         }
         //先进行敏感词过滤
         List<String> words = userService.recordSensitiveWords(name);
@@ -168,7 +171,8 @@ public class CommunityController extends BaseController {
             }
             String str = buffer.toString().substring(0, buffer.toString().length() - 1);
             str = str + "是违禁词!";
-            return RespObj.FAILDWithErrorMsg(str);
+            validate.setMessage(str);
+            return validate;
         }
         String filterStr = userService.replaceSensitiveWord(desc.toString());
         desc.setLength(0);
@@ -176,7 +180,8 @@ public class CommunityController extends BaseController {
         //先判断该社区名称是否使用过
         boolean flag = communityService.isCommunityNameUnique(name);
         if (!flag) {
-            return RespObj.FAILDWithErrorMsg("该社区名称已使用过！");
+            validate.setMessage("该社区名称已使用过！");
+            return validate;
         }
         if (StringUtils.isBlank(logo) || suffix.equals(logo.toString())) {
             String prev = "http://www.fulaan.com";
@@ -184,7 +189,8 @@ public class CommunityController extends BaseController {
             logo.setLength(0);
             logo.append(preLogo);
         }
-        return RespObj.SUCCESS;
+        validate.setOk(true);
+        return validate;
     }
 
     /**
@@ -379,7 +385,7 @@ public class CommunityController extends BaseController {
         } else {
             if (communityService.isCommunityNameUnique(name)) {
                 communityService.updateCommunity(communityId, name, desc, logo, open);
-                groupService.updateGroupName(new ObjectId(community.getGroupId()), name);
+                groupService.asyncUpdateGroupName(new ObjectId(community.getGroupId()), name);
             } else {
                 return RespObj.FAILD("该社区名称已经存在");
             }

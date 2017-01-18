@@ -59,12 +59,10 @@ public class HttpClient {
      */
     private static String urlEncode(Map<String, String> map) {
         String retVal = "";
-        if(map == null) return retVal;
         for(String key : map.keySet()) {
-            String value = map.get(key);
-            retVal += key + "=" + Util.strURLEncodeUTF8(value) + "&";
+            retVal += key + "=" + Util.strURLEncodeUTF8(map.get(key)) + "&";
         }
-        return retVal.substring(0,retVal.length() - 1);
+        return retVal;
     }
 
 }

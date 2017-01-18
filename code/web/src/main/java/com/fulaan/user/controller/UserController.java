@@ -768,7 +768,7 @@ public class UserController extends BaseController {
 
         if (!ue.getMobileNumber().equals(mobile)) {
             if (StringUtils.isNotBlank(mobile)) {
-                if (!ValidationUtils.isValidMobile(mobile)) {
+                if (!ValidationUtils.isMobile(mobile)) {
                     ret.setMessage("手机错误");
                     return ret;
                 }
@@ -1197,7 +1197,7 @@ public class UserController extends BaseController {
         }
 
 
-        if (!ValidationUtils.isValidMobile(mobile)) {
+        if (!ValidationUtils.isMobile(mobile)) {
             ret.setMessage("手机非法");
             return ret;
         }

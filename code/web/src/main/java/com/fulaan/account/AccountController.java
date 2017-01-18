@@ -18,6 +18,7 @@ import com.sys.constants.Constant;
 import com.sys.utils.DateTimeUtils;
 import com.sys.utils.MD5Utils;
 import com.sys.utils.RespObj;
+import com.sys.utils.ValidationUtils;
 import fulaan.social.connect.Auth;
 import fulaan.social.factory.AuthFactory;
 import org.apache.commons.lang.StringUtils;
@@ -152,7 +153,7 @@ public class AccountController extends BaseController {
      */
     @SessionNeedless
     @RequestMapping(value = "/qqBind")
-    public void QQLogin(HttpServletRequest request, HttpServletResponse response) throws IOException {
+    public void QQLogin(HttpServletResponse response) throws IOException {
         String url = qqAuth.getAuthUrl();
         Cookie userKeycookie = new Cookie("bindQQ", getUserId().toString());
         userKeycookie.setMaxAge(Constant.SECONDS_IN_DAY);
@@ -236,9 +237,7 @@ public class AccountController extends BaseController {
         if (!accountService.checkVerifyCode(verifyCode, verifyKey)) {
             return RespObj.FAILDWithErrorMsg("验证码不正确");
         }
-
-        Pattern emailPattern = Pattern.compile(Validator.REGEX_EMAIL);
-        if (emailPattern.matcher(name).matches()) {
+        if (ValidationUtils.isEmail(name)) {
             UserEntry e = userService.findByEmail(name);
             if (e == null) {
                 return RespObj.FAILDWithErrorMsg("账号不存在");
@@ -246,10 +245,10 @@ public class AccountController extends BaseController {
             result.put("type", "email");
             result.put("email", name);
             result.put("userName", e.getUserName());
+            result.put("phone",e.getMobileNumber());
             return RespObj.SUCCESS(result);
         }
-        Pattern mobilePattern = Pattern.compile(Validator.REGEX_MOBILE);
-        if (mobilePattern.matcher(name).matches()) {
+        if (ValidationUtils.isMobile(name)) {
             UserMobileEntry mobileEntry = accountService.findByMobile(name);
             if (mobileEntry != null) {
                 List<ObjectId> userIdList = mobileEntry.getUserIds();
@@ -261,26 +260,31 @@ public class AccountController extends BaseController {
                 return RespObj.SUCCESS(result);
             }
         }
-
         UserEntry userEntry = userService.findByUserName(name);
         if (userEntry != null) {
             result.put("type", "userName");
             result.put("userName", name);
+            result.put("email", userEntry.getEmail());
+            result.put("phone",userEntry.getMobileNumber());
             return RespObj.SUCCESS(result);
         }
-
-        if (mobilePattern.matcher(name).matches()) {
+        if (ValidationUtils.isMobile(name)) {
             userEntry = userService.findByMobile(name);
             result.put("type", "userName");
             result.put("userName", userEntry.getUserName());
+            result.put("email", userEntry.getEmail());
+            result.put("phone",userEntry.getMobileNumber());
             return RespObj.SUCCESS(result);
         }
-
         return RespObj.FAILDWithErrorMsg("失败");
     }
 
     /**
-     * 手机验证
+     * 验证 手机号 验证码是否匹配
+     * @param phone
+     * @param code
+     * @param cacheKeyId
+     * @return
      */
     @SessionNeedless
     @RequestMapping("/phoneValidate")
@@ -293,6 +297,28 @@ public class AccountController extends BaseController {
         return RespObj.SUCCESS("验证成功");
     }
 
+    /**
+     * 验证用户名 和 手机号是否匹配
+     * @param userName
+     * @param phone
+     * @return
+     */
+    @SessionNeedless
+    @RequestMapping("/verifyUserNameAndPhone")
+    @ResponseBody
+    public RespObj verifyUserNameAndPhone(String userName,String phone) {
+        UserEntry userEntry = userService.findByUserName(userName);
+        if(StringUtils.isNotBlank(phone) && phone.equals(userEntry.getMobileNumber())) {
+            return RespObj.SUCCESS;
+        }
+        return RespObj.FAILDWithErrorMsg("验证失败");
+    }
+
+    /**
+     * 发送验证邮件
+     * @param email
+     * @return
+     */
     @SessionNeedless
     @RequestMapping("/sendVerifyEmail")
     @ResponseBody
@@ -310,6 +336,10 @@ public class AccountController extends BaseController {
 
     /**
      * 邮箱验证
+     * @param validateCode
+     * @param response
+     * @return
+     * @throws Exception
      */
     @SessionNeedless
     @RequestMapping("/emailValidate")
@@ -320,6 +350,12 @@ public class AccountController extends BaseController {
         return new ModelAndView("/account/findPassword", map);
     }
 
+    /**
+     * 通过邮箱重置密码
+     * @param password
+     * @param validateCode
+     * @return
+     */
     @SessionNeedless
     @RequestMapping("/resetPasswordByEmail")
     @ResponseBody
@@ -337,6 +373,12 @@ public class AccountController extends BaseController {
 
     /**
      * 重置密码
+     * @param userName
+     * @param phone
+     * @param code
+     * @param cacheKeyId
+     * @param password
+     * @return
      */
     @SessionNeedless
     @RequestMapping("/resetPassword")
@@ -349,6 +391,9 @@ public class AccountController extends BaseController {
         UserEntry userEntry = userService.findByUserName(userName);
         if (userEntry == null) {
             return RespObj.FAILDWithErrorMsg("用户不存在");
+        }
+        if(!userEntry.getMobileNumber().equals(phone)) {
+            return RespObj.FAILDWithErrorMsg("手机号与用户不匹配");
         }
         userService.resetPassword(userEntry.getID(), MD5Utils.getMD5String(password));
         return RespObj.SUCCESS("重置密码成功");

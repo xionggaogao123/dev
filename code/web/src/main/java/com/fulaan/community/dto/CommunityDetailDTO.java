@@ -1,10 +1,12 @@
 package com.fulaan.community.dto;
 
+import com.fulaan.dto.VideoDTO;
 import com.fulaan.pojo.Attachement;
 import com.fulaan.util.DateUtils;
 import com.pojo.fcommunity.AttachmentEntry;
 import com.pojo.fcommunity.CommunityDetailEntry;
 import com.pojo.fcommunity.PartInContentEntry;
+import com.pojo.fcommunity.VideoEntry;
 import com.sys.utils.DateTimeUtils;
 import org.bson.types.ObjectId;
 
@@ -65,6 +67,8 @@ public class CommunityDetailDTO {
     private int voteMaxCount;
     private int voteType;
     private long voteDeadTime;
+    //视频字段
+    private List<VideoDTO> videoDTOs=new ArrayList<VideoDTO>();
 
 
 
@@ -115,6 +119,7 @@ public class CommunityDetailDTO {
         this.voteMaxCount = communityDetailEntry.getVoteMaxCount();
         this.voteDeadTime = communityDetailEntry.getVoteDeadTime();
         this.voteType = communityDetailEntry.getVoteType();
+        this.videoDTOs = getVideos(communityDetailEntry.getVideoList());
     }
 
     public CommunityDetailDTO(CommunityDetailEntry communityDetailEntry) {
@@ -157,6 +162,7 @@ public class CommunityDetailDTO {
         this.voteMaxCount = communityDetailEntry.getVoteMaxCount();
         this.voteDeadTime = communityDetailEntry.getVoteDeadTime();
         this.voteType = communityDetailEntry.getVoteType();
+        this.videoDTOs = getVideos(communityDetailEntry.getVideoList());
     }
 
     private String getTimeStr(long time) {
@@ -186,6 +192,14 @@ public class CommunityDetailDTO {
             attachements.add(new Attachement(entry));
         }
         return attachements;
+    }
+
+    private List<VideoDTO> getVideos(List<VideoEntry> entries){
+        List<VideoDTO> videoDTOs= new ArrayList<VideoDTO>();
+        for(VideoEntry videoEntry:entries){
+            videoDTOs.add(new VideoDTO(videoEntry));
+        }
+        return videoDTOs;
     }
 
     public String getId() {
@@ -458,5 +472,13 @@ public class CommunityDetailDTO {
 
     public void setVoteDeadFlag(int voteDeadFlag) {
         this.voteDeadFlag = voteDeadFlag;
+    }
+
+    public List<VideoDTO> getVideoDTOs() {
+        return videoDTOs;
+    }
+
+    public void setVideoDTOs(List<VideoDTO> videoDTOs) {
+        this.videoDTOs = videoDTOs;
     }
 }

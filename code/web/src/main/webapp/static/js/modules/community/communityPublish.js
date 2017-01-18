@@ -265,6 +265,7 @@ define(['jquery', 'pagination', 'common'], function (require, exports, module) {
             $('#title').show();
             $('.publish-btn').find('span').eq(0).show();
             $('.publish-btn').find('span').eq(1).hide();
+            $('.publish-btn').find('span').eq(2).hide();
             $('#content').next().show();
             $('.vote-cont').hide();
             $('#content').next().next().hide();
@@ -281,6 +282,8 @@ define(['jquery', 'pagination', 'common'], function (require, exports, module) {
             } else if(type==7){
                 $('.vote-cont').show();
                 $('#content').next().next().show();
+            } else if(type==2||type==3){
+                $('.publish-btn').find('span').eq(2).show();
             }
             //清空数据
             emptyData();
@@ -802,6 +805,7 @@ define(['jquery', 'pagination', 'common'], function (require, exports, module) {
         $('#content').val($('.publish-nav').data('content' + type));
         $('#contentCount').text($('.publish-nav').data("contentCount" + type));
         $('#contentCount').css("color", $('.publish-nav').data("contentCountColor" + type));
+        $('.pub-fj-vedio').html($('.publish-nav').data("pubVideo" + type));
     }
 
     //清空数据
@@ -813,6 +817,7 @@ define(['jquery', 'pagination', 'common'], function (require, exports, module) {
         $('#voice_notice').empty();
         $('#contentCount').text("0");
         $('#contentCount').css("color","#999");
+        $('.pub-fj-vedio').empty();
     }
 
     //存储数据
@@ -824,6 +829,7 @@ define(['jquery', 'pagination', 'common'], function (require, exports, module) {
         $('.publish-nav').data("pubVoice" + type, $('#voice_notice').html());
         $('.publish-nav').data("contentCount" + type, $('#contentCount').text());
         $('.publish-nav').data("contentCountColor" + type, $('#contentCount').css("color"));
+        $('.publish-nav').data("pubVideo" + type,$('.pub-fj-vedio').html());
     }
 
     //添加附件信息
@@ -843,6 +849,16 @@ define(['jquery', 'pagination', 'common'], function (require, exports, module) {
             item.url = $(this).find('img').attr('src');
             item.flnm = $(this).attr('fileName');
             images.push(item);
+        })
+    }
+
+    //添加视频信息
+    function addVideoData(videos) {
+        $('.uploadContent').each(function () {
+            var item = {};
+            item.imageurl = $(this).find('img').eq(0).attr('src');
+            item.videourl = $(this).find('img').eq(0).attr('vurl');
+            videos.push(item);
         })
     }
 
@@ -899,16 +915,20 @@ define(['jquery', 'pagination', 'common'], function (require, exports, module) {
             var attachements = new Array();
             var images = new Array();
             var vedios = new Array();
+            var videoDTOs = new Array();
             //添加附件信息
             addAttachData(attachements);
             //添加图片信息
             addImageData(images);
             //添加语音信息
             addVoice(vedios);
+            //添加视频信息
+            addVideoData(videoDTOs);
 
             message.attachements = attachements;
             message.images = images;
             message.vedios = vedios;
+            message.videoDTOs = videoDTOs;
             if(type ==7){
                 message.voteContent=$('#content').data('voteContent');
                 message.voteMaxCount=$('#content').data('voteMaxCount');

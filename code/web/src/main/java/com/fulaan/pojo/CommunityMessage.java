@@ -1,5 +1,7 @@
 package com.fulaan.pojo;
 
+import com.fulaan.dto.VideoDTO;
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -24,6 +26,10 @@ public class CommunityMessage {
     private int voteMaxCount;
     private String voteDeadTime;
     private int voteType;
+
+    //视频
+    private List<VideoDTO> videoDTOs=new ArrayList<VideoDTO>();
+
 
     public String getCommunityId() {
         return communityId;
@@ -143,5 +149,13 @@ public class CommunityMessage {
 
     public void setVoteDeadTime(String voteDeadTime) {
         this.voteDeadTime = voteDeadTime;
+    }
+
+    public List<VideoDTO> getVideoDTOs() {
+        return videoDTOs;
+    }
+
+    public void setVideoDTOs(List<VideoDTO> videoDTOs) {
+        this.videoDTOs = videoDTOs;
     }
 }

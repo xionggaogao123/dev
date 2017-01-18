@@ -6,7 +6,8 @@ import com.fulaan.community.dto.CommunityDTO;
 import com.fulaan.community.dto.CommunityDetailDTO;
 import com.fulaan.community.dto.PartInContentDTO;
 import com.fulaan.community.dto.RemarkDTO;
-import com.fulaan.dto.MemberDTO;
+import com.fulaan.dto.*;
+import com.fulaan.dto.VideoDTO;
 import com.fulaan.fgroup.service.EmService;
 import com.fulaan.fgroup.service.GroupService;
 import com.fulaan.forum.service.FVoteService;
@@ -20,8 +21,10 @@ import com.fulaan.user.service.UserService;
 import com.fulaan.util.DateUtils;
 import com.pojo.activity.FriendApplyEntry;
 import com.pojo.fcommunity.*;
+import com.pojo.fcommunity.VideoEntry;
 import com.pojo.user.AvatarType;
 import com.pojo.user.UserEntry;
+import com.pojo.video.*;
 import com.sys.constants.Constant;
 import com.sys.utils.AvatarUtils;
 import org.apache.commons.lang3.StringUtils;
@@ -238,11 +241,12 @@ public class CommunityService {
         List<AttachmentEntry> attachmentEntries = splitAttachements(message.getAttachements(), uid);
         List<AttachmentEntry> vedios = splitAttachements(message.getVedios(), uid);
         List<AttachmentEntry> images = splitAttachements(message.getImages(), uid);
+        List<VideoEntry> videoEntries= splitVideos(message.getVideoDTOs(),uid);
         CommunityDetailEntry entry = new CommunityDetailEntry(new ObjectId(message.getCommunityId()),
                 uid, userService.replaceSensitiveWord(message.getTitle()), userService.replaceSensitiveWord(message.getContent()), message.getType(),
                 new ArrayList<ObjectId>(), attachmentEntries, vedios, images,
                 message.getShareUrl(), message.getShareImage(), message.getShareTitle(), message.getSharePrice(),message.getVoteContent(),message.getVoteMaxCount(),
-                ConvertStrToLong(message.getVoteDeadTime()),message.getVoteType()
+                ConvertStrToLong(message.getVoteDeadTime()),message.getVoteType(),videoEntries
                 );
         communityDetailDao.save(entry);
     }
@@ -866,6 +870,17 @@ public class CommunityService {
             }
         }
         return returnData;
+    }
+
+    private List<VideoEntry> splitVideos(List<VideoDTO> videoDTOs,ObjectId uid){
+        List<VideoEntry> videoEntries = new ArrayList<VideoEntry>();
+        if (videoDTOs == null) return videoEntries;
+        for (VideoDTO videoDTO : videoDTOs) {
+            long time = System.currentTimeMillis();
+            VideoEntry entry = new VideoEntry(videoDTO.getVideourl(), videoDTO.getImageurl(), time, uid);
+            videoEntries.add(entry);
+        }
+        return videoEntries;
     }
 
     private List<AttachmentEntry> splitAttachements(List<Attachement> attachements, ObjectId uid) {

@@ -278,6 +278,9 @@
                         <div class="pub-fj-doc clearfix">
 
                         </div>
+                        <div class="pub-fj-vedio clearfix">
+
+                        </div>
                         <div class="pub-fj-pro">
                             <div class="pub-pro-input">
                                 <span>分享该用品的网址：</span>
@@ -295,9 +298,11 @@
                 </div>
                 <input type="file" name="image-upload" id="image-upload" accept="image/*" size="1" hidden="hidden"/>
                 <input type="file" name="attach-upload" id="attach-upload" hidden="hidden" size="1"/>
+                <input type="file" name="vedio-upload" id="vedio-upload" accept="video/*" hidden>
                 <div class="publish-btn">
                     <span class="sp1"><label for="image-upload">上传照片</label></span>
                     <span class="sp2"><label for="attach-upload">上传附件</label></span>
+                    <span class="sp4"><label for="vedio-upload">上传视频</label></span>
                     <%--<span class="sp3" onclick="showflash('container')">语音</span>--%>
                     <button id="submit">发布</button>
                 </div>
@@ -732,6 +737,13 @@
                 </a>
                 {{~}}
             </p>
+            {{??value.videoDTOs.length>0}}
+            {{~value.videoDTOs:video:i}}
+            <div class="content-DV">
+            <img class="content-img content-Im videoshow2" vurl="{{=video.videourl}}" src="{{=video.imageurl}}">
+            <img src="/static/images/play.png" class="video-play-btn" onclick="tryPlayYCourse('{{=video.videourl}}')">
+            </div>
+            {{~}}
             {{?}}
             <p class="p-infor">
                 <span>消息来源：{{=value.communityName}}</span>
@@ -768,6 +780,22 @@
                onclick="window.open('/community/communityDetail?detailId={{=value.id}}')">{{=value.title}}</p>
             <p class="p-cont"><span class="activityContent">{{=value.content}}</span><span
                     class="sp-more"></span></p>
+            {{?value.images.length>0}}
+            <p class="p-img clearfix">
+                {{~value.images:image:i}}
+                <a class="fancybox" style="cursor:pointer;" href="{{=image.url}}" data-fancybox-group="home" title="预览">
+                    <img src="{{=image.url}}?imageView2/1/w/100/h/100"><br/>
+                </a>
+                {{~}}
+            </p>
+            {{??value.videoDTOs.length>0}}
+             {{~value.videoDTOs:video:i}}
+            <div class="content-DV">
+                <img class="content-img content-Im videoshow2" vurl="{{=video.videourl}}" src="{{=video.imageurl}}">
+                <img src="/static/images/play.png" class="video-play-btn" onclick="tryPlayYCourse('{{=video.videourl}}')">
+            </div>
+            {{~}}
+            {{?}}
             <p class="p-infor">
                 <span>消息来源：{{=value.communityName}}</span>
                 <span>发表时间：{{=value.time}}</span>
@@ -860,9 +888,50 @@
                 alert('上传附件了不能再上传图片！');
                 return false;
             }
+            if ($('.uploadContent').length > 0) {
+                alert('上传视频了不能再上传图片！');
+                return false;
+            }
             if ($('.pub-img') != undefined) {
                 if ($('.pub-img').length >= 9) {
                     alert("上传照片不能超过9张！");
+                    return false;
+                }
+            }
+        }
+    });
+
+    //上传视频
+    $('#vedio-upload').fileupload({
+        url: '/commonupload/video.do',
+        done: function (e, response) {
+            if (response.result.result) {
+                $(this).closest('div').find('.vote-vedio-container ul').html('');
+                var str = "<div class=\"content-DV uploadContent\" >" +
+                        "<img class=\"content-img content-Im videoshow2\" vurl=\"" + response.result.videoInfo.url + "\" src=\"" + response.result.videoInfo.imageUrl + "\">" +
+                        "<img src=\"/static/images/play.png\" class=\"video-play-btn\" onclick=\"tryPlayYCourse('" + response.result.videoInfo.url + "')\"> </div>";
+                $('.pub-fj-vedio').append(str);
+            } else {
+                alert("上传失败，请重新上传！");
+            }
+        },
+        progressall: function (e, data) {
+            $(this).closest('div').find('.vote-vedio-container ul').html('正在上传...');
+        },
+        submit: function (e) {
+            if ($('.pub-img').length > 0) {
+                alert("上传图片了不能再上传视频！");
+                return false;
+            }
+
+            if ($('.p-doc').length > 0) {
+                alert("上传附件了不能再上传视频！");
+                return false;
+            }
+
+            if ($('.uploadContent') != undefined) {
+                if ($('.uploadContent').length >= 1) {
+                    alert("上传视频不能超过1个！");
                     return false;
                 }
             }
@@ -918,6 +987,10 @@
                 alert("上传图片了不能再上传附件！");
                 return false;
             }
+            if ($('.uploadContent').length > 0) {
+                alert('上传视频了不能再上传附件！');
+                return false;
+            }
         }
     });
 
@@ -946,6 +1019,101 @@
     }
 
 
+</script>
+
+<div id="YCourse_player" class="player-container" style="display: none">
+    <div id="player_div" class="player-div"></div>
+    <div id="sewise-div"
+         style="display: none; width: 630px; height: 360px; max-width: 800px;">
+        <script type="text/javascript"
+                src="/static/plugins/sewiseplayer/sewise.player.min.js"></script>
+
+        <span class="player-close-btn"></span>
+        <script type="text/javascript">
+            SewisePlayer.setup({
+                server: "vod",
+                type: "m3u8",
+                skin: "vodFlowPlayer",
+                logo: "none",
+                lang: "zh_CN",
+                topbardisplay: 'enable',
+                videourl: ''
+            });
+        </script>
+    </div>
+</div>
+
+<script type="text/javascript">
+
+    var isFlash = false;
+    function getVideoType(url) {
+        if (url.indexOf('polyv.net') > -1) {
+            return "POLYV";
+        }
+        if (url.indexOf('.swf') > 0) {
+            return 'FLASH';
+        }
+        return 'HLS';
+    }
+
+    function playerReady(name) {
+        if (isFlash) {
+            SewisePlayer.toPlay(playerReady.videoURL, "视频", 0, false);
+        }
+    }
+
+    $('.player-close-btn').click(function () {
+        $('#YCourse_player').hide();
+        $(".bg").hide();
+    });
+
+    function download(url) {
+        $.ajax({
+            url: "/forum/loginInfo.do?date=" + new Date(),
+            type: "get",
+            dataType: "json",
+            async: false,
+            data: {},
+            success: function (resp) {
+                var flag = resp.login;
+                if (flag) {
+                    location.href = "/forum/userCenter/m3u8ToMp4DownLoad.do?filePath=" + url;
+                } else {
+                    $('.store-register').fadeToggle();
+                    $('.bg').fadeToggle();
+                }
+            }
+        });
+    }
+    function tryPlayYCourse(url) {
+        $("#YCourse_player").show();
+        $(".player-close-btn").css({
+            "display": 'block'
+        });
+        var videoSourceType = getVideoType(url);
+        $('.bg').fadeIn('fast');
+        var $player_container = $("#YCourse_player");
+        $player_container.fadeIn();
+
+        if (videoSourceType == "POLYV") {
+            $('#sewise-div').hide();
+            $('#player_div').show();
+            var player = polyvObject('#player_div').videoPlayer({
+                'width': '800',
+                'height': '450',
+                'vid': url.match(/.+(?=\.swf)/)[0].replace(/.+\//, '')
+            });
+        } else {
+            $('#player_div').hide();
+            $('#sewise-div').show();
+            try {
+                SewisePlayer.toPlay(url, "视频", 0, true);
+            } catch (e) {
+                playerReady.videoURL = url;
+                isFlash = true;
+            }
+        }
+    }
 </script>
 
 <script type="text/template" id="activityBox">

@@ -60,8 +60,8 @@
                                 </c:forEach>
                                 <c:forEach items="${detail.videoDTOs}" var="video">
                                     <div class="content-DV">
-                                        <img class="content-img content-Im videoshow2" vurl="${video.videourl}" src="${video.imageurl}">
-                                        <img src="/static/images/play.png" class="video-play-btn" onclick="tryPlayYCourse('${video.videourl}')">
+                                        <img class="content-img content-Im videoshow2" vurl="${video.videoUrl}" src="${video.imageUrl}">
+                                        <img src="/static/images/play.png" class="video-play-btn" onclick="tryPlayYCourse('${video.videoUrl}')">
                                     </div>
                                 </c:forEach>
                                 <c:if test="${detail.attachements != null}">

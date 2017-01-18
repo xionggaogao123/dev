@@ -741,8 +741,8 @@
             {{??value.videoDTOs.length>0}}
             {{~value.videoDTOs:video:i}}
             <div class="content-DV">
-            <img class="content-img content-Im videoshow2" vurl="{{=video.videourl}}" src="{{=video.imageurl}}">
-            <img src="/static/images/play.png" class="video-play-btn" onclick="tryPlayYCourse('{{=video.videourl}}')">
+            <img class="content-img content-Im videoshow2" vurl="{{=video.videoUrl}}" src="{{=video.imageUrl}}">
+            <img src="/static/images/play.png" class="video-play-btn" onclick="tryPlayYCourse('{{=video.videoUrl}}')">
             </div>
             {{~}}
             {{?}}
@@ -792,8 +792,8 @@
             {{??value.videoDTOs.length>0}}
              {{~value.videoDTOs:video:i}}
             <div class="content-DV">
-                <img class="content-img content-Im videoshow2" vurl="{{=video.videourl}}" src="{{=video.imageurl}}">
-                <img src="/static/images/play.png" class="video-play-btn" onclick="tryPlayYCourse('{{=video.videourl}}')">
+                <img class="content-img content-Im videoshow2" vurl="{{=video.videoUrl}}" src="{{=video.imageUrl}}">
+                <img src="/static/images/play.png" class="video-play-btn" onclick="tryPlayYCourse('{{=video.videoUrl}}')">
             </div>
             {{~}}
             {{?}}

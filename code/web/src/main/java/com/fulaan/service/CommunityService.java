@@ -153,11 +153,7 @@ public class CommunityService {
 
         if(null!=memberEntryMap){
             MemberEntry entry1= memberEntryMap.get(groupId + "$" + userId);
-            if(StringUtils.isNotBlank(entry1.getNickName())){
-                communityDetailDTO.setNickName(entry1.getNickName());
-            }else {
-                communityDetailDTO.setNickName(StringUtils.isNotBlank(userEntry.getNickName())?userEntry.getNickName():userEntry.getUserName());
-            }
+            setCommunityDetailInfo(communityDetailDTO,userEntry,entry1);
         }else {
             communityDetailDTO.setNickName(StringUtils.isNotBlank(userEntry.getNickName())?userEntry.getNickName():userEntry.getUserName());
         }
@@ -877,7 +873,7 @@ public class CommunityService {
         if (videoDTOs == null) return videoEntries;
         for (VideoDTO videoDTO : videoDTOs) {
             long time = System.currentTimeMillis();
-            VideoEntry entry = new VideoEntry(videoDTO.getVideourl(), videoDTO.getImageurl(), time, uid);
+            VideoEntry entry = new VideoEntry(videoDTO.getVideoUrl(), videoDTO.getImageUrl(), time, uid);
             videoEntries.add(entry);
         }
         return videoEntries;

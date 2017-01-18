@@ -9,16 +9,16 @@ import com.pojo.fcommunity.VideoEntry;
 
 public class VideoDTO {
 
-    private String videourl;
-    private String imageurl;
+    private String videoUrl;
+    private String imageUrl;
     private String time;
     private String userId;
 
 
     public VideoDTO(VideoEntry videoEntry) {
-        this.videourl = videoEntry.getVideoUrl();
+        this.videoUrl = videoEntry.getVideoUrl();
         this.userId = videoEntry.getUserId().toString();
-        this.imageurl = videoEntry.getImageUrl();
+        this.imageUrl = videoEntry.getImageUrl();
         this.time = DateUtils.timeStampToStr(videoEntry.getTime() / 1000);
     }
 
@@ -26,20 +26,20 @@ public class VideoDTO {
 
     }
 
-    public String getVideourl() {
-        return videourl;
+    public String getVideoUrl() {
+        return videoUrl;
     }
 
-    public void setVideourl(String videourl) {
-        this.videourl = videourl;
+    public void setVideoUrl(String videoUrl) {
+        this.videoUrl = videoUrl;
     }
 
-    public String getImageurl() {
-        return imageurl;
+    public String getImageUrl() {
+        return imageUrl;
     }
 
-    public void setImageurl(String imageurl) {
-        this.imageurl = imageurl;
+    public void setImageUrl(String imageUrl) {
+        this.imageUrl = imageUrl;
     }
 
     public String getTime() {

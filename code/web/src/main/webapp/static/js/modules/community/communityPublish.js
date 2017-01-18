@@ -856,8 +856,8 @@ define(['jquery', 'pagination', 'common'], function (require, exports, module) {
     function addVideoData(videos) {
         $('.uploadContent').each(function () {
             var item = {};
-            item.imageurl = $(this).find('img').eq(0).attr('src');
-            item.videourl = $(this).find('img').eq(0).attr('vurl');
+            item.imageUrl = $(this).find('img').eq(0).attr('src');
+            item.videoUrl = $(this).find('img').eq(0).attr('vurl');
             videos.push(item);
         })
     }

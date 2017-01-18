@@ -1,4 +1,4 @@
-package com.fulaan.model;
+package fulaan.social.model;
 
 /**
  * Created by moslpc on 2017/1/16.

@@ -1,4 +1,4 @@
-package com.fulaan.exception;
+package fulaan.social.exception;
 
 /**
  * Created by moslpc on 2017/1/17.

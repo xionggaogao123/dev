@@ -66,3 +66,4 @@ code/web/.rebel-remote.xml.bak
 code/web/node_modules/
 code/emchatServerJava/src/main/resources/rebel.xml
 code/connect/src/main/resources/rebel.xml
+code/emchat/src/main/resources/rebel.xml

@@ -6,16 +6,10 @@ import com.fulaan.annotation.SessionNeedless;
 import com.fulaan.annotation.UserRoles;
 import com.fulaan.base.BaseController;
 import com.fulaan.cache.CacheHandler;
-import com.fulaan.connect.Auth;
-import com.fulaan.connect.QQAuth;
-import com.fulaan.connect.WeChatAuth;
-import com.fulaan.exception.ConnectException;
-import com.fulaan.factory.AuthFactory;
 import com.fulaan.forum.service.FLogService;
 import com.fulaan.forum.service.FScoreService;
 import com.fulaan.friendscircle.service.FriendService;
 import com.fulaan.log.service.LogService;
-import com.fulaan.model.UserInfo;
 import com.fulaan.playmate.service.MateService;
 import com.fulaan.pojo.FLoginLog;
 import com.fulaan.pojo.User;
@@ -25,8 +19,6 @@ import com.fulaan.service.MemberService;
 import com.fulaan.user.model.ThirdLoginEntry;
 import com.fulaan.user.model.ThirdType;
 import com.fulaan.user.service.UserService;
-import com.fulaan.user.util.MapUtil;
-import com.fulaan.user.util.WeChatLoginUtil;
 import com.fulaan.util.ObjectIdPackageUtil;
 import com.fulaan.utils.CollectionUtil;
 import com.google.gson.Gson;
@@ -51,6 +43,10 @@ import com.sys.exceptions.UnLoginException;
 import com.sys.mails.MailUtils;
 import com.sys.props.Resources;
 import com.sys.utils.*;
+import fulaan.social.connect.Auth;
+import fulaan.social.exception.ConnectException;
+import fulaan.social.factory.AuthFactory;
+import fulaan.social.model.UserInfo;
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.lang.StringUtils;
 import org.apache.http.client.ClientProtocolException;
@@ -340,13 +336,12 @@ public class UserController extends BaseController {
             throw new UnLoginException();
         }
         //todo 判断pf是否是合法的云平台
-        String id = key;
-        if (StringUtils.isBlank(id)) {
+        if (StringUtils.isBlank(key)) {
             logger.info("UnLoginException");
             throw new UnLoginException();
         }
         //数据库验证
-        UserEntry e = userService.findById(new ObjectId(id));
+        UserEntry e = userService.findById(new ObjectId(key));
         if (null == e) {
             logger.info("UnLoginException");
             throw new UnLoginException();
@@ -1347,7 +1342,6 @@ public class UserController extends BaseController {
     @SessionNeedless
     @RequestMapping(value = "/qqlogin")
     public void QQLogin(HttpServletRequest request, HttpServletResponse response) throws IOException {
-        QQAuth qqAuth = new QQAuth();
         response.sendRedirect(qqAuth.getAuthUrl());
     }
 
@@ -1571,8 +1565,10 @@ public class UserController extends BaseController {
     public RespObj checkUserFromThird(String openId, Integer type, String unionId,
                                       HttpServletResponse response, HttpServletRequest request) {
         UserEntry userEntry = userService.searchThirdEntry(openId, unionId, ThirdType.getThirdType(type));
+        Map<String,Object> map = new HashMap<String,Object>();
         if (userEntry == null) {
-            return RespObj.SUCCESS(MapUtil.put("isExist", "No"));
+            map.put("isExist","No");
+            return RespObj.SUCCESS(map);
         }
         final UserEntry e = userEntry;
         new Thread(new Runnable() {

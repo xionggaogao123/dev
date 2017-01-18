@@ -1,15 +1,15 @@
-package com.fulaan.connect;
+package fulaan.social.connect;
 
-import com.fulaan.exception.ConnectException;
-import com.fulaan.model.Sex;
-import com.fulaan.model.UserInfo;
-import com.fulaan.util.Util;
 import com.qq.connect.QQConnectException;
 import com.qq.connect.api.OpenID;
 import com.qq.connect.javabeans.AccessToken;
 import com.qq.connect.javabeans.qzone.UserInfoBean;
 import com.qq.connect.utils.http.HttpClient;
 import com.qq.connect.utils.http.PostParameter;
+import fulaan.social.exception.ConnectException;
+import fulaan.social.model.Sex;
+import fulaan.social.model.UserInfo;
+import fulaan.social.util.Util;
 
 import java.io.IOException;
 import java.util.Properties;

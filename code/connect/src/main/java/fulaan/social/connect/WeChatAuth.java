@@ -1,13 +1,13 @@
-package com.fulaan.connect;
+package fulaan.social.connect;
 
-import com.fulaan.exception.ConnectException;
-import com.fulaan.http.HttpClient;
-import com.fulaan.model.Sex;
-import com.fulaan.model.TokenObj;
-import com.fulaan.model.UserInfo;
-import com.fulaan.model.WeChatInfo;
-import com.fulaan.util.JsonUtil;
-import com.fulaan.util.Util;
+import fulaan.social.exception.ConnectException;
+import fulaan.social.http.HttpClient;
+import fulaan.social.model.Sex;
+import fulaan.social.model.TokenObj;
+import fulaan.social.model.UserInfo;
+import fulaan.social.model.WeChatInfo;
+import fulaan.social.util.JsonUtil;
+import fulaan.social.util.Util;
 import org.apache.commons.lang3.StringUtils;
 
 import java.io.IOException;
@@ -55,7 +55,7 @@ public class WeChatAuth implements Auth {
         return String.format(CONNECT_URL, APP_ID, Util.strURLEncodeUTF8(REDIRECT_URL));
     }
 
-    private TokenObj getAccessToken(String authCode,String pf) throws IOException {
+    private TokenObj getAccessToken(String authCode, String pf) throws IOException {
         Map<String, String> parms = new HashMap<String, String>();
         if(StringUtils.isNotBlank(pf) && pf.equals("wap")) {
             parms.put("appid", WAP_APP_ID);

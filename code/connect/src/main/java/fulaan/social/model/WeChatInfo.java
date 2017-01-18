@@ -1,4 +1,4 @@
-package com.fulaan.model;
+package fulaan.social.model;
 
 import java.util.List;
 

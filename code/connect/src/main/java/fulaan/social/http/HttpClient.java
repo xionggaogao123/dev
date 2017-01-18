@@ -1,8 +1,7 @@
-package com.fulaan.http;
+package fulaan.social.http;
 
-import com.fulaan.util.Util;
+import fulaan.social.util.Util;
 import org.apache.commons.io.IOUtils;
-import org.apache.commons.lang3.StringUtils;
 import org.apache.http.HttpEntity;
 import org.apache.http.HttpResponse;
 import org.apache.http.client.ClientProtocolException;
@@ -12,9 +11,6 @@ import org.apache.http.impl.client.HttpClientBuilder;
 
 import java.io.IOException;
 import java.io.InputStream;
-import java.io.UnsupportedEncodingException;
-import java.net.URLEncoder;
-import java.util.Iterator;
 import java.util.Map;
 
 /**

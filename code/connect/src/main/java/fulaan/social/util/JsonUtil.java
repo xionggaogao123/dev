@@ -1,4 +1,4 @@
-package com.fulaan.util;
+package fulaan.social.util;
 
 import org.codehaus.jackson.map.ObjectMapper;
 

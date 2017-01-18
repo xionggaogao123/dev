@@ -2,11 +2,10 @@ package com.fulaan.controller;
 
 import com.fulaan.annotation.SessionNeedless;
 import com.fulaan.base.BaseController;
-import com.fulaan.connect.Auth;
-import com.fulaan.connect.QQAuth;
-import com.fulaan.factory.AuthFactory;
 import com.sys.constants.Constant;
 import com.sys.utils.HttpClientUtils;
+import fulaan.social.connect.Auth;
+import fulaan.social.factory.AuthFactory;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 

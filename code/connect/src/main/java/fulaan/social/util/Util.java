@@ -1,4 +1,4 @@
-package com.fulaan.util;
+package fulaan.social.util;
 
 import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;

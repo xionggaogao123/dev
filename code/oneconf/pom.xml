@@ -14,7 +14,7 @@
         <module>../pojo</module>
         <module>../db</module>
         <module>../web</module>
-        <module>../emchatServerJava</module>
+        <module>../emchat</module>
         <module>../connect</module>
     </modules>
 

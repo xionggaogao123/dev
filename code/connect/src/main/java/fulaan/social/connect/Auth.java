@@ -1,7 +1,8 @@
-package com.fulaan.connect;
+package fulaan.social.connect;
 
-import com.fulaan.exception.ConnectException;
-import com.fulaan.model.UserInfo;
+
+import fulaan.social.exception.ConnectException;
+import fulaan.social.model.UserInfo;
 
 /**
  * Created by moslpc on 2017/1/16.

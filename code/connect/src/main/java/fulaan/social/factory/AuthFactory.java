@@ -1,8 +1,8 @@
-package com.fulaan.factory;
+package fulaan.social.factory;
 
-import com.fulaan.connect.Auth;
-import com.fulaan.connect.QQAuth;
-import com.fulaan.connect.WeChatAuth;
+import fulaan.social.connect.Auth;
+import fulaan.social.connect.QQAuth;
+import fulaan.social.connect.WeChatAuth;
 
 /**
  * Created by moslpc on 2017/1/17.

@@ -634,9 +634,10 @@
                 <span class="sp-bg"></span>
                 <span class="sp1">{{=value.title}}</span>
                 <span class="sp1">参与人数：{{=value.voteCount}}</span>
-                {{?value.voteDead==1}}
+                {{?value.voteDeadFlag==1}}
                 <span class="sp-btn" style="cursor: pointer" onclick="window.open('/community/communityDetail?detailId={{=value.id}}')">点击投票</span>
                 {{?}}
+                <c:if test="${operation==1}"><span class="delete-detail" detailId="{{=value.id}}">删除</span></c:if>
             </p>
             {{?}}
             <p class="p-infor"><span>消息来源：{{=value.communityName}}</span> <span>发表时间：{{=value.time}}</span></p></div>

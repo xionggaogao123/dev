@@ -67,3 +67,6 @@ code/web/node_modules/
 code/emchatServerJava/src/main/resources/rebel.xml
 code/connect/src/main/resources/rebel.xml
 code/emchat/src/main/resources/rebel.xml
+code/emchat/target/
+code/oneconf/target/classes/rebel-remote.xml
+code/oneconf/target/classes/rebel.xml

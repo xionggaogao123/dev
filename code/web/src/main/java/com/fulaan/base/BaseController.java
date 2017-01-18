@@ -80,12 +80,10 @@ public class BaseController {
         HttpServletRequest request = getRequest();
         String client = request.getHeader("User-Agent");
         Platform pf = Platform.PC;
-        if (client.contains("iPhone")) {
+        if (client.contains("iPhone") || client.contains("iOS")) {
             pf = Platform.IOS;
         } else if (client.contains("Android")) {
             pf = Platform.Android;
-        } else if (client.contains("iOS")) {
-            pf = Platform.IOS;
         }
         return pf;
     }

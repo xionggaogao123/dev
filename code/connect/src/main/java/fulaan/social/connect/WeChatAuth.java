@@ -20,6 +20,7 @@ import java.util.Properties;
  */
 public class WeChatAuth implements Auth {
 
+    private static final String PROPERTIES_NAME = "wechatconnectconfig.properties";
     private static String APP_ID;
     private static String APP_SECRET;
     private static String ACCESS_TOKEN_URL;
@@ -36,7 +37,7 @@ public class WeChatAuth implements Auth {
     private static void init() {
         Properties properties = new Properties();
         try {
-            properties.load(QQAuth.class.getClassLoader().getResourceAsStream("wechatconnectconfig.properties"));
+            properties.load(QQAuth.class.getClassLoader().getResourceAsStream(PROPERTIES_NAME));
         } catch (IOException e) {
             e.printStackTrace();
         }
@@ -56,17 +57,17 @@ public class WeChatAuth implements Auth {
     }
 
     private TokenObj getAccessToken(String authCode, String pf) throws IOException {
-        Map<String, String> parms = new HashMap<String, String>();
+        Map<String, String> maps = new HashMap<String, String>();
         if(StringUtils.isNotBlank(pf) && pf.equals("wap")) {
-            parms.put("appid", WAP_APP_ID);
-            parms.put("secret", WAP_APP_SECRET);
+            maps.put("appid", WAP_APP_ID);
+            maps.put("secret", WAP_APP_SECRET);
         } else {
-            parms.put("appid", APP_ID);
-            parms.put("secret", APP_SECRET);
+            maps.put("appid", APP_ID);
+            maps.put("secret", APP_SECRET);
         }
-        parms.put("code", authCode);
-        parms.put("grant_type", "authorization_code");
-        String content = HttpClient.get(ACCESS_TOKEN_URL,parms);
+        maps.put("code", authCode);
+        maps.put("grant_type", "authorization_code");
+        String content = HttpClient.get(ACCESS_TOKEN_URL,maps);
         return JsonUtil.fromJson(content, TokenObj.class);
     }
 

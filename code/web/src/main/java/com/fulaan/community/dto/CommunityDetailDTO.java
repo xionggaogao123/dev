@@ -12,6 +12,7 @@ import org.bson.types.ObjectId;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 /**
  * Created by admin on 2016/10/24.
@@ -69,6 +70,14 @@ public class CommunityDetailDTO {
     private long voteDeadTime;
     //视频字段
     private List<VideoDTO> videoDTOs=new ArrayList<VideoDTO>();
+    //判断是否投票了 1:已投票，2:未投票
+    private int hasVoted;
+
+    //内容列表
+    private List<String> voteOptions;
+
+    //投票结果列表
+    List<Map<String, Object>> mapList = new ArrayList<Map<String, Object>>();
 
 
 
@@ -480,5 +489,29 @@ public class CommunityDetailDTO {
 
     public void setVideoDTOs(List<VideoDTO> videoDTOs) {
         this.videoDTOs = videoDTOs;
+    }
+
+    public int getHasVoted() {
+        return hasVoted;
+    }
+
+    public void setHasVoted(int hasVoted) {
+        this.hasVoted = hasVoted;
+    }
+
+    public List<String> getVoteOptions() {
+        return voteOptions;
+    }
+
+    public void setVoteOptions(List<String> voteOptions) {
+        this.voteOptions = voteOptions;
+    }
+
+    public List<Map<String, Object>> getMapList() {
+        return mapList;
+    }
+
+    public void setMapList(List<Map<String, Object>> mapList) {
+        this.mapList = mapList;
     }
 }

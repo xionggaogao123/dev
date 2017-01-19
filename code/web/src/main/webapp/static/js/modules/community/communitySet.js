@@ -2,9 +2,11 @@
  * Created by jerry on 2016/10/27.
  *
  */
-define(['jquery', 'pagination', 'common'], function (require, exports, module) {
+define(['jquery', 'pagination', 'common','grid','sample'], function (require, exports, module) {
 
     var common = require('common');
+    require('sample');
+    require('grid');
     require('pagination');
     var communitySet = {};
     var page = 1;
@@ -287,6 +289,11 @@ define(['jquery', 'pagination', 'common'], function (require, exports, module) {
                     } else {
                         template('#myCommunityTmpl', '#myCommunity', resp.message);
                     }
+                    // $('#myCommunity').gridly({
+                    //     base: 60,
+                    //     gutter: 20,
+                    //     columns: 12
+                    // });
                 } else {
                     alert(resp.message);
                 }

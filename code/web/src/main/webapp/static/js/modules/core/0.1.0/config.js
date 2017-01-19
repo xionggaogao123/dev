@@ -58,6 +58,8 @@ seajs.config({
         'curricula': 'modules/myclass/0.1.0/curricula.js?v=1',
         'curriculaI': 'modules/myschool/0.1.0/curriculaI.js?v=2',
         'pagination': 'modules/pagination/0.1.0/jqPaginator.min.js?v=1',
+        'grid':'modules/community/plugins/drag/jquery.gridly.js',
+        'sample':'modules/community/plugins/drag/sample.js',
         'competition': 'modules/competition/0.1.0/competition.js?v=1',
         'viewSalary': 'modules/salary/0.1.0/viewSalary.js?v=1',
         'documentCreate': 'modules/docflow/0.1.0/documentCreate.js?v=1',

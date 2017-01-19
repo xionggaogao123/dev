@@ -22,6 +22,8 @@ import com.fulaan.util.DateUtils;
 import com.pojo.activity.FriendApplyEntry;
 import com.pojo.fcommunity.*;
 import com.pojo.fcommunity.VideoEntry;
+import com.pojo.forum.FVoteDTO;
+import com.pojo.forum.FVoteEntry;
 import com.pojo.user.AvatarType;
 import com.pojo.user.UserEntry;
 import com.pojo.video.*;
@@ -33,6 +35,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
 
+import java.text.NumberFormat;
 import java.text.SimpleDateFormat;
 import java.util.*;
 import java.util.logging.SimpleFormatter;
@@ -161,6 +164,61 @@ public class CommunityService {
         int partIncontentCount = partInContentDao.countPartPartInContent(communityDetailId);
         communityDetailDTO.setPartIncotentCount(partIncontentCount);
         communityDetailDTO.setImageUrl(AvatarUtils.getAvatar(userEntry.getAvatar(), AvatarType.MIN_AVATAR.getType()));
+
+        if(communityDetailDTO.getType() == CommunityDetailType.VOTE.getType()) {
+            int voteCount = fVoteService.getFVoteCount(communityDetailEntry.getID().toString());
+            communityDetailDTO.setVoteCount(voteCount);
+            long nowTime = System.currentTimeMillis();
+            if (nowTime < communityDetailEntry.getVoteDeadTime()) {
+                communityDetailDTO.setVoteDeadFlag(0);
+            } else {
+                communityDetailDTO.setVoteDeadFlag(1);
+            }
+            communityDetailDTO.setHasVoted(0);
+            if (null != userId) {
+                FVoteEntry fVoteEntry = fVoteService.getFVote(communityDetailEntry.getID().toString(), userId.toString());
+                if (null != fVoteEntry) {
+                    communityDetailDTO.setHasVoted(1);
+                }
+            }
+            String voteContent=communityDetailEntry.getVoteContent();
+            List<String> voteOptions=new ArrayList<String>();
+            if(voteContent.contains(",")){
+                String[] str=voteContent.split(",");
+                for(String item:str){
+                    voteOptions.add(item);
+                }
+            }else{
+                voteOptions.add(voteContent);
+            }
+            communityDetailDTO.setVoteOptions(voteOptions);
+            List<Map<String, Object>> mapList = new ArrayList<Map<String, Object>>();
+            List<FVoteDTO> fVoteEntryList = fVoteService.getFVoteList(communityDetailEntry.getID().toString());
+            int totalCount = fVoteEntryList.size();
+            NumberFormat nt = NumberFormat.getPercentInstance();
+            nt.setMinimumFractionDigits(0);
+            for (int i = 0; i < voteOptions.size(); i++) {
+                int j = i + 1;
+                int count = 0;
+                Map<String, Object> map = new HashMap<String, Object>();
+                for (FVoteDTO fVoteDTO : fVoteEntryList) {
+                    int number = fVoteDTO.getNumber();
+                    if (j == number) {
+                        count++;
+                    }
+                }
+                double pItem = (double) count / (double) totalCount;
+                map.put("voteItemStr", voteOptions.get(i));
+                map.put("voteItemCount", count);
+                if(count==0){
+                    map.put("voteItemPercent", "0%");
+                }else{
+                    map.put("voteItemPercent", nt.format(pItem));
+                }
+                mapList.add(map);
+            }
+            communityDetailDTO.setMapList(mapList);
+        }
         return communityDetailDTO;
     }
 
@@ -342,6 +400,24 @@ public class CommunityService {
                 }else{
                     communityDetailDTO.setVoteDeadFlag(1);
                 }
+                communityDetailDTO.setHasVoted(0);
+                if(null!=userId){
+                    FVoteEntry fVoteEntry = fVoteService.getFVote(entry.getID().toString(), userId.toString());
+                    if (null != fVoteEntry) {
+                        communityDetailDTO.setHasVoted(1);
+                    }
+                }
+                String voteContent=entry.getVoteContent();
+                List<String> voteOptions=new ArrayList<String>();
+                if(voteContent.contains(",")){
+                    String[] str=voteContent.split(",");
+                    for(String item:str){
+                        voteOptions.add(item);
+                    }
+                }else{
+                    voteOptions.add(voteContent);
+                }
+                communityDetailDTO.setVoteOptions(voteOptions);
             }
             if (null != communityEntry.getOwerID()) {
                 communityDetailDTO.setCommunityName(communityEntry.getCommunityName());
@@ -667,6 +743,35 @@ public class CommunityService {
                 if (entry.getUnReadList().size() > 0 && entry.getUnReadList().contains(userId)) {
                     communityDetailDTO.setReadFlag(1);
                 }
+            }
+
+           if(type.getType() == CommunityDetailType.VOTE.getType()){
+                int voteCount=fVoteService.getFVoteCount(entry.getID().toString());
+                communityDetailDTO.setVoteCount(voteCount);
+                long nowTime=System.currentTimeMillis();
+                if(nowTime<entry.getVoteDeadTime()){
+                    communityDetailDTO.setVoteDeadFlag(0);
+                }else{
+                    communityDetailDTO.setVoteDeadFlag(1);
+                }
+                communityDetailDTO.setHasVoted(0);
+                if(null!=userId){
+                    FVoteEntry fVoteEntry = fVoteService.getFVote(entry.getID().toString(), userId.toString());
+                    if (null != fVoteEntry) {
+                        communityDetailDTO.setHasVoted(1);
+                    }
+                }
+                String voteContent=entry.getVoteContent();
+                List<String> voteOptions=new ArrayList<String>();
+                if(voteContent.contains(",")){
+                    String[] str=voteContent.split(",");
+                    for(String item:str){
+                        voteOptions.add(item);
+                    }
+                }else{
+                    voteOptions.add(voteContent);
+                }
+                communityDetailDTO.setVoteOptions(voteOptions);
             }
 
             List<PartInContentDTO> partInContentDTOs = new ArrayList<PartInContentDTO>();

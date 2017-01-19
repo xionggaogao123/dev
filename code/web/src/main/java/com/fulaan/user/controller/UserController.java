@@ -244,6 +244,29 @@ public class UserController extends BaseController {
             value.setSchoolNavs(schoolEntry.getSchoolNavs());
             value.setSchoolName(schoolEntry.getName());
         }
+        try {
+            RegionEntry region = null;
+            if(schoolEntry != null) {
+                region = schoolService.getRegionEntry(schoolEntry.getRegionId());
+            }
+            //获取客户端信息
+            LoginLog loginLog = new LoginLog();
+            loginLog.setIpAddr(getIP() + e.getUserName());
+            loginLog.setPlatform(getPlatform().getName());
+            loginLog.setUserId(e.getID().toString());
+            loginLog.setUserName(e.getUserName());
+            if (e.getK6KT() == 1) {//k6kt用户
+                loginLog.setRole(e.getRole());
+                loginLog.setSchoolId(schoolEntry.getID().toString());
+                loginLog.setSchoolName(schoolEntry.getName());
+                if(region != null) {
+                    loginLog.setCity(region.getName());
+                }
+            }
+            loginLogger.info(loginLog);
+            logService.insertLog(e, getPlatform(), LogType.CLICK_LOGIN, "login.do");
+        } catch (Exception ex) {
+        }
         return value;
     }
 
@@ -256,7 +279,6 @@ public class UserController extends BaseController {
         new Thread(new Runnable() {
             @Override
             public void run() {
-
                 if (0l == e.getLastActiveDate()) {
                     String params = e.getID().toString() + 0l;
                     String flkey = CacheHandler.getKeyString(CacheHandler.CACHE_USER_FIRST_LOGIN, params);
@@ -466,13 +488,7 @@ public class UserController extends BaseController {
     public RespObj logout(HttpServletRequest request) {
         SessionValue sv = getSessionValue();
         if (null != sv) {
-            //更新退出时间
-            userService.updateQuitTimeValue(new ObjectId(sv.getId()));
-            //更新上次访问Ip
-            userService.updateInterviewIPValue(new ObjectId(sv.getId()), getIP());
-            //更新在线时间
-            userService.updateStatisticTimeValue(new ObjectId(sv.getId()));
-
+            userService.updateLogout(new ObjectId(sv.getId()),getIP());
             String yearMonth = DateTimeUtils.convert(System.currentTimeMillis(), DateTimeUtils.DATE_YYYY_MM);
             CacheHandler.deleteKey(CacheHandler.CACHE_USER_CALENDAR, sv.getId(), yearMonth);
 
@@ -1369,7 +1385,7 @@ public class UserController extends BaseController {
 
         if (bindQQ(redirectAttributes, userInfo)) return "redirect:/account/thirdLoginSuccess";
 
-        final UserEntry e = getThirdInfo(userInfo,ThirdType.QQ);
+        final UserEntry e = getThirdInfo(userInfo, ThirdType.QQ);
 
         new Thread(new Runnable() {
             @Override
@@ -1390,7 +1406,7 @@ public class UserController extends BaseController {
     private boolean bindQQ(RedirectAttributes redirectAttributes, UserInfo userInfo) {
         if (getUserId() != null) {
             String value = getCookieValue("bindQQ");
-            if(StringUtils.isNotBlank(value) && value.equals(getUserId().toString())) {
+            if (StringUtils.isNotBlank(value) && value.equals(getUserId().toString())) {
                 //绑定qq
                 boolean isBind = userService.isOpenIdBindQQ(userInfo.getUniqueId());
                 if (isBind) {
@@ -1408,18 +1424,18 @@ public class UserController extends BaseController {
         return false;
     }
 
-    private UserEntry getThirdInfo(UserInfo userInfo,ThirdType type) throws IOException {
+    private UserEntry getThirdInfo(UserInfo userInfo, ThirdType type) throws IOException {
         Map<String, Object> query = new HashMap<String, Object>();
-        if(type.getCode() == ThirdType.QQ.getCode()) {
+        if (type.getCode() == ThirdType.QQ.getCode()) {
             query.put("oid", userInfo.getUniqueId());
             query.put("type", ThirdType.QQ.getCode());
-        } else if(type.getCode() == ThirdType.WECHAT.getCode()) {
+        } else if (type.getCode() == ThirdType.WECHAT.getCode()) {
             query.put("unionid", userInfo.getUniqueId());
             query.put("type", ThirdType.WECHAT.getCode());
         }
         UserEntry userEntry = userService.getThirdEntryByMap(query);
         if (userEntry == null) { //创建用户
-            userEntry = userService.createUser(new ObjectId().toString(), userInfo.getNickName(),userInfo.getSex().getType());
+            userEntry = userService.createUser(new ObjectId().toString(), userInfo.getNickName(), userInfo.getSex().getType());
             updateAvatar(userEntry, userInfo.getAvatar());
             if (type.getCode() == 2) {
                 //保存第三方登录数据
@@ -1466,7 +1482,7 @@ public class UserController extends BaseController {
      */
     @SessionNeedless
     @RequestMapping(value = "/wechatcallback")
-    public String wechatCallBack(String code,HttpServletRequest request, HttpServletResponse response, RedirectAttributes redirectAttributes) throws IOException {
+    public String wechatCallBack(String code, HttpServletRequest request, HttpServletResponse response, RedirectAttributes redirectAttributes) throws IOException {
         //没有授权，重定向
         if (code == null) {
             return "redirect:/";
@@ -1485,13 +1501,13 @@ public class UserController extends BaseController {
             e.printStackTrace();
         }
 
-        if(userInfo == null) {
+        if (userInfo == null) {
             return "redirect:/";
         }
 
         if (bindWeChat(redirectAttributes, userInfo)) return "redirect:/account/thirdLoginSuccess";
 
-        final UserEntry e = getThirdInfo(userInfo,ThirdType.WECHAT);
+        final UserEntry e = getThirdInfo(userInfo, ThirdType.WECHAT);
         new Thread(new Runnable() {
             @Override
             public void run() {
@@ -1510,7 +1526,7 @@ public class UserController extends BaseController {
     private boolean bindWeChat(RedirectAttributes redirectAttributes, UserInfo userInfo) {
         if (getUserId() != null) {
             String value = getCookieValue("bindWechat");
-            if(StringUtils.isNotBlank(value) && value.equals(getUserId().toString())) {
+            if (StringUtils.isNotBlank(value) && value.equals(getUserId().toString())) {
                 //绑定qq
                 boolean isBind = userService.isUnionIdBindWechat(userInfo.getUniqueId());
                 if (isBind) {
@@ -1541,9 +1557,9 @@ public class UserController extends BaseController {
     public RespObj checkUserFromThird(String openId, Integer type, String unionId,
                                       HttpServletResponse response, HttpServletRequest request) {
         UserEntry userEntry = userService.searchThirdEntry(openId, unionId, ThirdType.getThirdType(type));
-        Map<String,Object> map = new HashMap<String,Object>();
+        Map<String, Object> map = new HashMap<String, Object>();
         if (userEntry == null) {
-            map.put("isExist","No");
+            map.put("isExist", "No");
             return RespObj.SUCCESS(map);
         }
         final UserEntry e = userEntry;
@@ -1580,7 +1596,7 @@ public class UserController extends BaseController {
         }
         UserEntry userEntry = userService.searchThirdEntry(openId, unionId, ThirdType.getThirdType(type));
         if (userEntry == null) { //第一次进入应用
-            userEntry = userService.createUser(new ObjectId().toString(),nickName, sex);
+            userEntry = userService.createUser(new ObjectId().toString(), nickName, sex);
             updateAvatar(userEntry, avatar);
             //保存第三方登录数据
             ThirdLoginEntry thirdLoginEntry = new ThirdLoginEntry(userEntry.getID(), openId, unionId, ThirdType.getThirdType(type));

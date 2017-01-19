@@ -44,6 +44,7 @@ import org.apache.commons.lang3.StringUtils;
 import org.apache.log4j.Logger;
 import org.bson.types.ObjectId;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
 
 import javax.servlet.http.Cookie;
@@ -100,17 +101,18 @@ public class UserService extends BaseService {
         }
     }
 
-    public void updateUserMobile(ObjectId userId,String mobile) {
-        userDao.updateUserMobile(userId,mobile);
+    public void updateUserMobile(ObjectId userId, String mobile) {
+        userDao.updateUserMobile(userId, mobile);
     }
 
     /**
      * 验证账户
+     *
      * @param account
      * @param pwd
      * @return
      */
-    public Validate validateAccount(String account,String pwd) {
+    public Validate validateAccount(String account, String pwd) {
         Validate validate = new Validate();
         validate.setOk(false);
         //数据库验证
@@ -522,7 +524,7 @@ public class UserService extends BaseService {
      * @param sex
      * @return
      */
-    public UserEntry createUser(String userName,String nickName,int sex) {
+    public UserEntry createUser(String userName, String nickName, int sex) {
         UserEntry userEntry = new UserEntry(userName, nickName, "*", "", sex);
         addUser(userEntry);
         return userEntry;
@@ -1086,7 +1088,7 @@ public class UserService extends BaseService {
      * @param request
      * @return
      */
-    public SessionValue setCookieValue(UserEntry e,SessionValue value,String ip, HttpServletResponse response, HttpServletRequest request) {
+    public SessionValue setCookieValue(UserEntry e, SessionValue value, String ip, HttpServletResponse response, HttpServletRequest request) {
         //保存generateCode
         value.setPackageCode(e.getGenerateUserCode());
         //放入缓存
@@ -1112,6 +1114,16 @@ public class UserService extends BaseService {
         }
         loginLog(request, e);
         return value;
+    }
+
+    @Async
+    public void updateLogout(ObjectId userId, String ip) {
+        //更新退出时间
+        updateQuitTimeValue(userId);
+        //更新上次访问Ip
+        updateInterviewIPValue(userId, ip);
+        //更新在线时间
+        updateStatisticTimeValue(userId);
     }
 
     private void loginLog(HttpServletRequest request, UserEntry e) {

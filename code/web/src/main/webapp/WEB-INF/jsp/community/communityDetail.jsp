@@ -97,16 +97,16 @@
                                                 </c:if>
                                             </ul>
                                         </c:if>
-                                        <c:if test="${voteType==0}">
-                                            <div class="vote-btn">
+                                        <div class="vote-btn">
+                                            <c:if test="${voteType==0}">
                                                 <c:if test="${login==true&&voteDeadFlag==0}">
                                                     <button id="submitVote">提交</button>
                                                 </c:if>
-                                                <c:if test="${voteDeadFlag==1}">
+                                            </c:if>
+                                            <c:if test="${voteDeadFlag==1}">
                                                     <span>投票已经结束</span>
-                                                </c:if>
-                                            </div>
-                                        </c:if>
+                                            </c:if>
+                                        </div>
                                         <c:if test="${voteType==1||voteDeadFlag==1}">
                                             <ul class="ul2" <c:if test="${login==false}">style="display: none" </c:if>>
                                                 <c:forEach items="${voteMapList}" var="map" varStatus="status">

@@ -5,11 +5,14 @@ import com.db.factory.MongoFacroty;
 import com.mongodb.BasicDBObject;
 import com.mongodb.DBObject;
 import com.pojo.fcommunity.MineCommunityEntry;
+import com.pojo.utils.MongoUtils;
 import com.sys.constants.Constant;
 import org.bson.types.ObjectId;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 /**
  * Created by jerry on 2016/11/17.
@@ -24,12 +27,18 @@ public class MineCommunityDao extends BaseDao {
         save(MongoFacroty.getAppDB(), Constant.COLLECTION_FORUM_MINE_COMMUNITY, entry.getBaseEntry());
     }
 
+    public void batchSave(List<MineCommunityEntry> entries){
+        List<DBObject> list= MongoUtils.fetchDBObjectList(entries);
+        save(MongoFacroty.getAppDB(), Constant.COLLECTION_FORUM_MINE_COMMUNITY, list);
+    }
+
     public List<MineCommunityEntry> findAll(ObjectId userId, int page, int pageSize) {
         BasicDBObject query = new BasicDBObject()
                 .append("uid", userId);
         BasicDBObject orderBy = new BasicDBObject()
                 .append("prio", -1)
-                .append("tp", -1)
+//                .append("tp", -1)
+                .append("cust",-1)
                 .append(Constant.ID, Constant.DESC);
         List<DBObject> dbos;
         if (page != -1) {
@@ -58,6 +67,28 @@ public class MineCommunityDao extends BaseDao {
     public void delete(ObjectId communityId, ObjectId userId) {
         BasicDBObject query = new BasicDBObject().append("uid", userId).append("cmid", communityId);
         remove(MongoFacroty.getAppDB(), Constant.COLLECTION_FORUM_MINE_COMMUNITY, query);
+    }
+
+    public void updateInitSort(ObjectId userId){
+        List<Integer> integers=new ArrayList<Integer>();
+        integers.add(0);
+        BasicDBObject query=new BasicDBObject("uid", userId).append("cust",new BasicDBObject(Constant.MONGO_NOTIN,integers));
+        BasicDBObject updateValue=new BasicDBObject(Constant.MONGO_SET,new BasicDBObject("cust",0));
+        update(MongoFacroty.getAppDB(), Constant.COLLECTION_FORUM_MINE_COMMUNITY, query,updateValue);
+    }
+
+
+    public Map<ObjectId,MineCommunityEntry> getMySortCommunities(ObjectId userId, List<ObjectId> communityIds){
+        Map<ObjectId,MineCommunityEntry> mineCommunityEntries = new HashMap<ObjectId, MineCommunityEntry>();
+        BasicDBObject query=new BasicDBObject("uid", userId).append("cmid",new BasicDBObject(Constant.MONGO_IN,communityIds));
+        List<DBObject> dbos = find(MongoFacroty.getAppDB(), Constant.COLLECTION_FORUM_MINE_COMMUNITY, query, Constant.FIELDS);
+        if(null!=dbos&&!dbos.isEmpty()){
+            for(DBObject dbo : dbos){
+                MineCommunityEntry entry=new MineCommunityEntry(dbo);
+                mineCommunityEntries.put(entry.getCommunityId(),entry);
+            }
+        }
+        return mineCommunityEntries;
     }
 
     public List<MineCommunityEntry> findByCount(ObjectId userId, int count) {

@@ -345,6 +345,38 @@ public class CommunityController extends BaseController {
     }
 
 
+    @RequestMapping("/sortMyCommunities")
+    @ResponseBody
+    public RespObj sortMyCommunities(String params){
+        ObjectId userId=getUserId();
+        //初始化状态
+        communityService.updateInitSort(userId);
+        Map<ObjectId,Integer> map=new HashMap<ObjectId, Integer>();
+        List<ObjectId> communities=new ArrayList<ObjectId>();
+        if(params.contains(",")){
+            String[] param=params.split(",");
+            for(String item:param){
+                String[] temp=item.split("@");
+                communities.add(new ObjectId(temp[0]));
+                map.put(new ObjectId(temp[0]),Integer.parseInt(temp[1]));
+            }
+        }else{
+            String[] temp=params.split("@");
+            communities.add(new ObjectId(temp[0]));
+            map.put(new ObjectId(temp[0]),Integer.parseInt(temp[1]));
+        }
+        List<MineCommunityEntry> entries=new ArrayList<MineCommunityEntry>();
+        Map<ObjectId,MineCommunityEntry> mineCommunityEntryMap=communityService.getMySortCommunities(userId,communities);
+        for(Map.Entry<ObjectId,MineCommunityEntry> entry:mineCommunityEntryMap.entrySet()){
+            MineCommunityEntry mineCommunityEntry=entry.getValue();
+            Integer customSort=map.get(entry.getKey());
+            mineCommunityEntry.setCustomSort(customSort);
+            entries.add(mineCommunityEntry);
+        }
+        communityService.batchSave(entries);
+        return RespObj.SUCCESS;
+    }
+
     /**
      * 获取热门社区
      *

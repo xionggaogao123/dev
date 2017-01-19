@@ -363,7 +363,11 @@
                 {{?}}
             </p>
             {{?}}
-            <p class="p-infor"><span>消息来源：{{=value.nickName}}</span> <span>发表时间：{{=value.time}}</span></p></div>
+            <p class="p-infor">
+                <span>消息来源：{{=value.nickName}}</span>
+                <span>发表时间：{{=value.time}}</span>
+                <c:if test="${operation==1}"><span class="delete-detail" detailId="{{=value.id}}">删除</span></c:if>
+            </p></div>
     </div>
     {{~}}
 </script>

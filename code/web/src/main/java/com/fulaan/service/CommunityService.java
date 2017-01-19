@@ -743,6 +743,35 @@ public class CommunityService {
                 }
             }
 
+           if(type.getType() == CommunityDetailType.VOTE.getType()){
+                int voteCount=fVoteService.getFVoteCount(entry.getID().toString());
+                communityDetailDTO.setVoteCount(voteCount);
+                long nowTime=System.currentTimeMillis();
+                if(nowTime<entry.getVoteDeadTime()){
+                    communityDetailDTO.setVoteDeadFlag(0);
+                }else{
+                    communityDetailDTO.setVoteDeadFlag(1);
+                }
+                communityDetailDTO.setHasVoted(0);
+                if(null!=userId){
+                    FVoteEntry fVoteEntry = fVoteService.getFVote(entry.getID().toString(), userId.toString());
+                    if (null != fVoteEntry) {
+                        communityDetailDTO.setHasVoted(1);
+                    }
+                }
+                String voteContent=entry.getVoteContent();
+                List<String> voteOptions=new ArrayList<String>();
+                if(voteContent.contains(",")){
+                    String[] str=voteContent.split(",");
+                    for(String item:str){
+                        voteOptions.add(item);
+                    }
+                }else{
+                    voteOptions.add(voteContent);
+                }
+                communityDetailDTO.setVoteOptions(voteOptions);
+            }
+
             List<PartInContentDTO> partInContentDTOs = new ArrayList<PartInContentDTO>();
             List<PartInContentEntry> partInContentEntries = partInContentDao.getPartInContent(entry.getID(), -1, 1, 1);
             Set<ObjectId> partInUserIds=new HashSet<ObjectId>();

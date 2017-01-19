@@ -357,7 +357,7 @@
                 <span class="sp-bg"></span>
                 <span class="sp1">{{=value.title}}</span>
                 <span class="sp1">参与人数：{{=value.voteCount}}</span>
-                {{?value.voteDead==1}}
+                {{?value.voteDeadFlag==1}}
                 <span class="sp-btn" style="cursor: pointer"
                       onclick="window.open('/community/communityDetail?detailId={{=value.id}}')">点击投票</span>
                 {{?}}

@@ -132,7 +132,7 @@
                                             </ul>
                                         </c:if>
                                         <c:if test="${voteType==1}">
-                                            <p style="margin:6px 0 0 0;">您已经投过票感谢您的参与</p>
+                                            <p style="margin:6px 0 0 0;">您已给<span style="color: #FF9F19">选项</span>&nbsp;<span style="color: #FF9F19">${voteSelected}</span>&nbsp;投票,感谢您的参与</p>
                                         </c:if>
                                         <c:if test="${login==false}">
                                             <p style="margin-top:-63px;">您没有投票的权限，请先登录相关帐号

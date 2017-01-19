@@ -141,7 +141,7 @@ public class CommunityService {
      * @param communityDetailId
      * @return
      */
-    public CommunityDetailDTO findDetailById(ObjectId communityDetailId) {
+    public CommunityDetailDTO findDetailById(ObjectId communityDetailId,ObjectId loginUserId) {
 
         CommunityDetailEntry communityDetailEntry = communityDetailDao.findByObjectId(communityDetailId);
         ObjectId userId = communityDetailEntry.getCommunityUserId();
@@ -201,20 +201,31 @@ public class CommunityService {
                 CommunityDetailDTO.VoteResult voteResult=new CommunityDetailDTO.VoteResult();
                 int j = i + 1;
                 int count = 0;
-                Map<String, Object> map = new HashMap<String, Object>();
+                int hasVoted=0;
                 for (FVoteDTO fVoteDTO : fVoteEntryList) {
                     int number = fVoteDTO.getNumber();
                     if (j == number) {
                         count++;
+                        if(null!=loginUserId){
+                            if(new ObjectId(fVoteDTO.getUserId()).equals(loginUserId)){
+                                hasVoted=1;
+                            }
+                        }
                     }
                 }
+                voteResult.setHasVoted(hasVoted);
                 double pItem = (double) count / (double) totalCount;
                 voteResult.setVoteItemStr(voteOptions.get(i));
                 voteResult.setVoteItemCount(count);
                 if(count==0){
                     voteResult.setVoteItemPercent("0%");
                 }else{
-                    voteResult.setVoteItemPercent( nt.format(pItem));
+                    voteResult.setVoteItemPercent(nt.format(pItem));
+                }
+                if(null!=loginUserId){
+
+                }else{
+                    voteResult.setHasVoted(0);
                 }
                 mapList.add(voteResult);
             }

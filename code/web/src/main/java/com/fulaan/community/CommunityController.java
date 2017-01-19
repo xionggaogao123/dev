@@ -518,7 +518,7 @@ public class CommunityController extends BaseController {
         msg = userService.replaceSensitiveWord(msg);
         ObjectId userId = getUserId();
         if (join == 1) {
-            CommunityDetailDTO communityDetailDTO = communityService.findDetailById(communityDetailId);
+            CommunityDetailDTO communityDetailDTO = communityService.findDetailById(communityDetailId,userId);
             List<String> partInList = communityDetailDTO.getPartInList();
             boolean flag = false;
             for (String item : partInList) {
@@ -550,7 +550,8 @@ public class CommunityController extends BaseController {
     @RequestMapping("/joinActivitySheet")
     @ResponseBody
     public RespObj joinActivitySheet(@ObjectIdType ObjectId communityDetailId) {
-        CommunityDetailDTO communityDetailDTO = communityService.findDetailById(communityDetailId);
+        ObjectId userId=getUserId();
+        CommunityDetailDTO communityDetailDTO = communityService.findDetailById(communityDetailId,userId);
         List<String> partInList = communityDetailDTO.getPartInList();
         Set<ObjectId> userIds = new HashSet<ObjectId>();
         for (String id : partInList) {
@@ -594,7 +595,7 @@ public class CommunityController extends BaseController {
     @ResponseBody
     public RespObj isEnterCommunityDetail(@ObjectIdType ObjectId communityDetailId) {
         ObjectId userId = getUserId();
-        CommunityDetailDTO communityDetailDTO = communityService.findDetailById(communityDetailId);
+        CommunityDetailDTO communityDetailDTO = communityService.findDetailById(communityDetailId,userId);
         List<String> partInList = communityDetailDTO.getPartInList();
         boolean flag = false;
         for (String item : partInList) {
@@ -930,7 +931,7 @@ public class CommunityController extends BaseController {
     public String communityMessage(@ObjectIdType ObjectId detailId, Map<String, Object> model) throws Exception {
         try {
             ObjectId uid = getUserId();
-            CommunityDetailDTO detail = communityService.findDetailById(detailId);
+            CommunityDetailDTO detail = communityService.findDetailById(detailId,uid);
             List<CommunityDTO> communitys = new ArrayList<CommunityDTO>();
             model.put("operation", false);
             //已读
@@ -1004,6 +1005,7 @@ public class CommunityController extends BaseController {
                 NumberFormat nt = NumberFormat.getPercentInstance();
                 nt.setMinimumFractionDigits(0);
 
+                StringBuffer buffer=new StringBuffer();
                 for (int i = 0; i < voteOptions.size(); i++) {
                     int j = i + 1;
                     int count = 0;
@@ -1012,6 +1014,11 @@ public class CommunityController extends BaseController {
                         int number = fVoteDTO.getNumber();
                         if (j == number) {
                             count++;
+                            if(null!=uid){
+                                if(new ObjectId(fVoteDTO.getUserId()).equals(uid)){
+                                    buffer.append(j+"、");
+                                }
+                            }
                         }
                     }
                     double pItem = (double) count / (double) totalCount;
@@ -1024,6 +1031,10 @@ public class CommunityController extends BaseController {
                     }
 
                     mapList.add(map);
+                }
+                String temp=buffer.toString();
+                if(StringUtils.isNotBlank(temp)){
+                    model.put("voteSelected",temp.substring(0,temp.length()-1));
                 }
 
                 model.put("voteMapList", mapList);
@@ -1165,7 +1176,8 @@ public class CommunityController extends BaseController {
     @ResponseBody
     @SessionNeedless
     public RespObj messageDetail(@ObjectIdType ObjectId detailId) {
-        CommunityDetailDTO detailDTO = communityService.findDetailById(detailId);
+        ObjectId userId=getUserId();
+        CommunityDetailDTO detailDTO = communityService.findDetailById(detailId,userId);
         Platform pf = getPlatform();
         if (pf == Platform.Android || pf == Platform.IOS) {
             if (null != getUserId()) {
@@ -1448,7 +1460,8 @@ public class CommunityController extends BaseController {
     @ResponseBody
     @SessionNeedless
     public RespObj partInUsers(@ObjectIdType ObjectId detailId) {
-        CommunityDetailDTO communityDetailDTO = communityService.findDetailById(detailId);
+        ObjectId userId=getUserId();
+        CommunityDetailDTO communityDetailDTO = communityService.findDetailById(detailId,userId);
         List<String> partInList = communityDetailDTO.getPartInList();
         List<User> users = new ArrayList<User>();
         for (String id : partInList) {
@@ -1469,7 +1482,7 @@ public class CommunityController extends BaseController {
     }
 
     public List<User> getPartInData(ObjectId detailId) {
-        CommunityDetailDTO communityDetailDTO = communityService.findDetailById(detailId);
+        CommunityDetailDTO communityDetailDTO = communityService.findDetailById(detailId,null);
         List<String> partInList = communityDetailDTO.getPartInList();
         List<User> users = new ArrayList<User>();
         for (String id : partInList) {

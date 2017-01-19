@@ -91,6 +91,7 @@ public class CommunityDetailDTO {
         private String voteItemStr;
         private int voteItemCount;
         private String voteItemPercent;
+        private int hasVoted;
 
         public VoteResult(){
 
@@ -118,6 +119,14 @@ public class CommunityDetailDTO {
 
         public void setVoteItemPercent(String voteItemPercent) {
             this.voteItemPercent = voteItemPercent;
+        }
+
+        public int getHasVoted() {
+            return hasVoted;
+        }
+
+        public void setHasVoted(int hasVoted) {
+            this.hasVoted = hasVoted;
         }
     }
 

@@ -7,6 +7,7 @@ import com.sys.exceptions.UnLoginException;
 import com.sys.utils.RespObj;
 import org.apache.log4j.Logger;
 import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.method.HandlerMethod;
 import org.springframework.web.servlet.HandlerExceptionResolver;
 import org.springframework.web.servlet.ModelAndView;
 
@@ -33,7 +34,7 @@ public class ExceptionResolver implements HandlerExceptionResolver {
     public ModelAndView resolveException(HttpServletRequest request,
                                          HttpServletResponse response, Object handler, Exception ex) {
 
-        org.springframework.web.method.HandlerMethod method = (org.springframework.web.method.HandlerMethod) handler;
+        HandlerMethod method = (HandlerMethod) handler;
         ResponseBody rb = method.getMethodAnnotation(ResponseBody.class);
 
         if (!(ex instanceof UnLoginException)) {

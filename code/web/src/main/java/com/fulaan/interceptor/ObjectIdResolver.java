@@ -14,7 +14,7 @@ import com.sys.exceptions.IllegalParamException;
 public class ObjectIdResolver implements HandlerMethodArgumentResolver {
 
 
-    public static Class<?> CLASS_TYPE = null;
+    private static Class<?> CLASS_TYPE = null;
 
     static {
         try {
@@ -27,13 +27,8 @@ public class ObjectIdResolver implements HandlerMethodArgumentResolver {
 
     @Override
     public boolean supportsParameter(MethodParameter parameter) {
-
         ObjectIdType type = parameter.getParameterAnnotation(ObjectIdType.class);
-        if (null != type && CLASS_TYPE.equals(parameter.getParameterType())) {
-            return true;
-        }
-
-        return false;
+        return null != type && CLASS_TYPE.equals(parameter.getParameterType());
     }
 
 
@@ -47,10 +42,7 @@ public class ObjectIdResolver implements HandlerMethodArgumentResolver {
         if (StringUtils.isNotBlank(type.field())) {
             field = type.field();
         }
-
         String fieldValue = webRequest.getParameter(field);
-
-
         if (!type.isRequire()) {
             if (null == fieldValue || !ObjectId.isValid(fieldValue)) {
                 return null;

@@ -28,8 +28,7 @@ public class CommunityMessage {
     private int voteType;
 
     //视频
-    private List<VideoDTO> videoDTOs=new ArrayList<VideoDTO>();
-
+    private List<VideoDTO> videoDTOs = new ArrayList<VideoDTO>();
 
     public String getCommunityId() {
         return communityId;

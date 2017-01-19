@@ -57,7 +57,7 @@ public class Infoterceptor extends HandlerInterceptorAdapter {
 
     @Override
     public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler) throws Exception {
-        HandlerMethod method = (org.springframework.web.method.HandlerMethod) handler;
+        HandlerMethod method = (HandlerMethod) handler;
         LoginInfo loginInfo = method.getMethodAnnotation(LoginInfo.class);
         if (loginInfo != null) {
             SessionValue sessionValue = getSessionValue(request);
@@ -78,7 +78,7 @@ public class Infoterceptor extends HandlerInterceptorAdapter {
     public void postHandle(HttpServletRequest request, HttpServletResponse response,
                            Object handler, ModelAndView modelAndView)
             throws Exception {
-        HandlerMethod method = (org.springframework.web.method.HandlerMethod) handler;
+        HandlerMethod method = (HandlerMethod) handler;
         LoginInfo loginInfo = method.getMethodAnnotation(LoginInfo.class);
         if (loginInfo != null) {
             loginInfo(request, modelAndView.getModel());
@@ -133,17 +133,17 @@ public class Infoterceptor extends HandlerInterceptorAdapter {
             }else{
                 model.put("packageCode",sessionValue.getId());
             }
+            //获取自己的标签信息
+            List<UserEntry.UserTagEntry> userTagEntries = userEntry.getUserTag();
+            List<String> tags = new ArrayList<String>();
+            for (UserEntry.UserTagEntry userTagEntry : userTagEntries) {
+                tags.add(userTagEntry.getTag());
+            }
+            model.put("tags", tags);
         } else {
             model.put("forumScore", 0L);
             model.put("forumExperience", 0L);
         }
-        //获取自己的标签信息
-        List<UserEntry.UserTagEntry> userTagEntries = userEntry.getUserTag();
-        List<String> tags = new ArrayList<String>();
-        for (UserEntry.UserTagEntry userTagEntry : userTagEntries) {
-            tags.add(userTagEntry.getTag());
-        }
-        model.put("tags", tags);
     }
 
     protected SessionValue getSessionValue(HttpServletRequest request) {

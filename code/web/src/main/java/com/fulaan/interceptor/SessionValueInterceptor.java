@@ -1,16 +1,13 @@
 package com.fulaan.interceptor;
 
 
-import com.fulaan.cache.CacheHandler;
 import com.fulaan.annotation.SessionNeedless;
-import com.fulaan.forum.service.FLogService;
+import com.fulaan.cache.CacheHandler;
 import com.pojo.app.SessionValue;
-import com.pojo.forum.FLogDTO;
 import com.sys.constants.Constant;
 import com.sys.exceptions.UnLoginException;
 import org.apache.commons.lang.StringUtils;
 import org.apache.log4j.Logger;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.method.HandlerMethod;
 import org.springframework.web.servlet.handler.HandlerInterceptorAdapter;
 
@@ -27,14 +24,10 @@ public class SessionValueInterceptor extends HandlerInterceptorAdapter {
 
     private static final String sso_homepage = "/user/homepage.do?type=sso";
 
-
-    @Autowired
-    private FLogService fLogService;
-
     @Override
     public boolean preHandle(HttpServletRequest request, HttpServletResponse response,
                              Object arg2) throws Exception {
-        HandlerMethod method = (org.springframework.web.method.HandlerMethod) arg2;
+        HandlerMethod method = (HandlerMethod) arg2;
         SessionNeedless s = method.getMethodAnnotation(SessionNeedless.class);
         String ui = getCookieUserKeyValue(request);
         if (null != s) {
@@ -63,29 +56,6 @@ public class SessionValueInterceptor extends HandlerInterceptorAdapter {
             }
             return false;
         }
-    }
-
-    /**
-     * 日志
-     *
-     * @param ui
-     * @param path
-     * @param method
-     */
-    private void handleLogService(String ui, String path, String method) {
-
-        SessionValue sv = null;
-        if (StringUtils.isNotBlank(ui)) {
-            sv = CacheHandler.getSessionValue(ui);
-        }
-        FLogDTO fLogDTO = new FLogDTO();
-        fLogDTO.setActionName(method);
-        if (null != sv && !sv.isEmpty()) {
-            fLogDTO.setPersonId(sv.getId());
-        }
-        fLogDTO.setPath(path);
-        fLogDTO.setTime(System.currentTimeMillis());
-        fLogService.addFLog(fLogDTO);
     }
 
     private String getCookieUserKeyValue(HttpServletRequest request) {

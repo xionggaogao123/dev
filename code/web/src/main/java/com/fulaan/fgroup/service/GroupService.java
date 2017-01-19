@@ -162,9 +162,6 @@ public class GroupService {
         return name;
     }
 
-
-
-
     /**
      * 是否 - 是群聊成员
      *

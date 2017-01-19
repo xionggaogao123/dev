@@ -27,7 +27,7 @@ public class PermissionInterceptor implements HandlerInterceptor {
     public boolean preHandle(HttpServletRequest request,
                              HttpServletResponse response, Object handler) throws Exception {
 
-        HandlerMethod method = (org.springframework.web.method.HandlerMethod) handler;
+        HandlerMethod method = (HandlerMethod) handler;
         UserPermissions up = method.getMethodAnnotation(UserPermissions.class);
         UserRoles ur = method.getMethodAnnotation(UserRoles.class);
 
@@ -42,14 +42,14 @@ public class PermissionInterceptor implements HandlerInterceptor {
 
                 String removePermission = sv.getUserRemovePermission();
                 if (StringUtils.isNotBlank(removePermission)) {
-                    if (removePermission.indexOf(permissionFormat) >= 0) {
+                    if (removePermission.contains(permissionFormat)) {
                         throw new PermissionUnallowedException(handler.toString());
                     }
                 }
 
                 String havePermission = sv.getUserPermission();
                 if (StringUtils.isNotBlank(havePermission)) {
-                    if (havePermission.indexOf(permissionFormat) >= 0) {
+                    if (havePermission.contains(permissionFormat)) {
                         return true;
                     }
                 }

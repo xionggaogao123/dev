@@ -46,6 +46,7 @@ import com.sys.utils.*;
 import fulaan.social.connect.Auth;
 import fulaan.social.exception.ConnectException;
 import fulaan.social.factory.AuthFactory;
+import fulaan.social.model.AuthType;
 import fulaan.social.model.UserInfo;
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.lang.StringUtils;
@@ -107,8 +108,8 @@ public class UserController extends BaseController {
     @Autowired
     private MemberService memberService;
 
-    private Auth qqAuth = AuthFactory.getQQAuth();
-    private Auth wechatAuth = AuthFactory.getWechatAuth();
+    private Auth qqAuth = AuthFactory.getAuth(AuthType.QQ);
+    private Auth wechatAuth = AuthFactory.getAuth(AuthType.WECHAT);
 
     /**
      * 通过sso登录
@@ -246,7 +247,7 @@ public class UserController extends BaseController {
         }
         try {
             RegionEntry region = null;
-            if(schoolEntry != null) {
+            if (schoolEntry != null) {
                 region = schoolService.getRegionEntry(schoolEntry.getRegionId());
             }
             //获取客户端信息
@@ -259,7 +260,7 @@ public class UserController extends BaseController {
                 loginLog.setRole(e.getRole());
                 loginLog.setSchoolId(schoolEntry.getID().toString());
                 loginLog.setSchoolName(schoolEntry.getName());
-                if(region != null) {
+                if (region != null) {
                     loginLog.setCity(region.getName());
                 }
             }
@@ -488,7 +489,7 @@ public class UserController extends BaseController {
     public RespObj logout(HttpServletRequest request) {
         SessionValue sv = getSessionValue();
         if (null != sv) {
-            userService.updateLogout(new ObjectId(sv.getId()),getIP());
+            userService.updateLogout(new ObjectId(sv.getId()), getIP());
             String yearMonth = DateTimeUtils.convert(System.currentTimeMillis(), DateTimeUtils.DATE_YYYY_MM);
             CacheHandler.deleteKey(CacheHandler.CACHE_USER_CALENDAR, sv.getId(), yearMonth);
 

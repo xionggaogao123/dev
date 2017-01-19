@@ -1739,8 +1739,8 @@ pre{white-space: pre-wrap;word-wrap: break-word;}
     float: right;
     width: 276px;
     margin: 10px 10px 0 0;
-    height: 16px;
-    line-height: 16px;
+    height: 40px;
+    line-height: 20px;
 }
 .p-vocont .sp-btn{
     position: absolute;

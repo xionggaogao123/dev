@@ -32,6 +32,7 @@ import com.sys.utils.AvatarUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.bson.types.ObjectId;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
 
 import java.text.NumberFormat;
@@ -273,6 +274,7 @@ public class CommunityService {
      * @param desc 简介
      * @param logo 图标
      */
+    @Async
     public void updateCommunity(ObjectId cid, String name, String desc, String logo, int open) {
         communityDao.updateCommunityOpenStatus(cid, open);
         if (StringUtils.isNotBlank(name)) {

@@ -15,6 +15,7 @@ import com.pojo.playmate.FActivityEntry;
 import com.pojo.user.AvatarType;
 import com.pojo.user.UserEntry;
 import com.pojo.user.UserTag;
+import com.sys.constants.Constant;
 import com.sys.utils.AvatarUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.bson.types.ObjectId;
@@ -67,10 +68,10 @@ public class FActivityService extends BaseService{
     public PageModel<FActivityDTO> getNearActivitys(double lon, double lat, int page, int pageSize) {
         BasicDBObject query = fActivityDao.buildQuery(lon, lat, 10000000);
         int totalCount = fActivityDao.coutByQuery(query);
-        int totalPages = totalCount % pageSize == 0 ? totalCount / pageSize : (int) Math.ceil(totalCount / pageSize) + 1;
+        int totalPages = totalCount % pageSize == Constant.ZERO ? totalCount / pageSize : (int) Math.ceil(totalCount / pageSize) + Constant.ONE;
         page = page > totalPages ? totalPages : page;
-        if(totalPages == 0 || page < 1) {
-            page = 1;
+        if(totalPages == Constant.ZERO || page < Constant.ONE) {
+            page = Constant.ONE;
         }
         List<MateData> allTags = fMateTypeService.getTags();
         List<FActivityDTO> FActivityDTOS = new ArrayList<FActivityDTO>();
@@ -142,10 +143,10 @@ public class FActivityService extends BaseService{
 
     public FActivityDTO getActivityById(ObjectId acid) {
         FActivityEntry fActivityEntry = fActivityDao.getActivityById(acid);
-        FActivityDTO fActivityDTO = new FActivityDTO(fActivityEntry);
         if (fActivityEntry == null) {
             return null;
         }
+        FActivityDTO fActivityDTO = new FActivityDTO(fActivityEntry);
         List<MateData> allTags = fMateTypeService.getTags();
         for (MateData mateData : allTags) {
             if (mateData.getCode() == fActivityEntry.getACode()) {
@@ -155,7 +156,6 @@ public class FActivityService extends BaseService{
         if (fActivityDTO.getActivityTheme() == null) {
             fActivityDTO.setActivityTheme(new MateData(-1, "不限"));
         }
-
         fActivityDTO.setSignCount(fActivityDao.countSignUser(acid));
         fActivityDTO.setUser(getMateUser(fActivityEntry.getUserId()));
         return fActivityDTO;

@@ -59,8 +59,8 @@ public class QQAuth implements Auth {
             }
             OpenID openIDObj =  new OpenID(accessToken.getAccessToken());
             String openId = openIDObj.getUserOpenID();
-            com.qq.connect.api.qzone.UserInfo qzoneUser = new com.qq.connect.api.qzone.UserInfo(accessToken.getAccessToken(), openId);
-            UserInfoBean userInfoBean = qzoneUser.getUserInfo();
+            com.qq.connect.api.qzone.UserInfo qZoneUser = new com.qq.connect.api.qzone.UserInfo(accessToken.getAccessToken(), openId);
+            UserInfoBean userInfoBean = qZoneUser.getUserInfo();
             return convertToUserInfo(openId, userInfoBean);
         } catch (QQConnectException e) {
             e.printStackTrace();

@@ -23,11 +23,11 @@ public class AccountService extends BaseService {
     public Boolean checkVerifyCode(String verifyCode, String verifyKey) {
         //验证码
         String validateCode;
-        String vckey;
+        String vcKey;
         //获得请求信息中的Cookie数据
-        vckey = CacheHandler.getKeyString(CacheHandler.CACHE_VALIDATE_CODE, verifyKey);
-        validateCode = CacheHandler.getStringValue(vckey);
-        CacheHandler.deleteKey(CacheHandler.CACHE_VALIDATE_CODE, vckey);
+        vcKey = CacheHandler.getKeyString(CacheHandler.CACHE_VALIDATE_CODE, verifyKey);
+        validateCode = CacheHandler.getStringValue(vcKey);
+        CacheHandler.deleteKey(CacheHandler.CACHE_VALIDATE_CODE, vcKey);
 
         if (validateCode == null || "".equals(validateCode)) {
             return false;

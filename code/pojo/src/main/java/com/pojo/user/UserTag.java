@@ -8,9 +8,6 @@ public class UserTag {
   private int code;
   private String tag;
 
-  public UserTag(){
-
-  }
   public UserTag(int code,String tag){
     this.code=code;
     this.tag=tag;

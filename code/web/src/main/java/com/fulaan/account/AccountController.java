@@ -152,10 +152,10 @@ public class AccountController extends BaseController {
     @RequestMapping(value = "/qqBind")
     public void QQLogin(HttpServletResponse response) throws IOException {
         String url = qqAuth.getAuthUrl();
-        Cookie userKeycookie = new Cookie("bindQQ", getUserId().toString());
-        userKeycookie.setMaxAge(Constant.SECONDS_IN_DAY);
-        userKeycookie.setPath(Constant.BASE_PATH);
-        response.addCookie(userKeycookie);
+        Cookie cookie = new Cookie("bindQQ", getUserId().toString());
+        cookie.setMaxAge(Constant.SECONDS_IN_DAY);
+        cookie.setPath(Constant.BASE_PATH);
+        response.addCookie(cookie);
         response.sendRedirect(url);
     }
 
@@ -166,10 +166,10 @@ public class AccountController extends BaseController {
     @RequestMapping(value = "/wechatBind")
     public void weChatLogin(HttpServletResponse response) throws IOException {
         String strWeChatConnectUrl = wechatAuth.getAuthUrl();
-        Cookie userKeycookie = new Cookie("bindWechat", getUserId().toString());
-        userKeycookie.setMaxAge(Constant.SECONDS_IN_DAY);
-        userKeycookie.setPath(Constant.BASE_PATH);
-        response.addCookie(userKeycookie);
+        Cookie cookie = new Cookie("bindWechat", getUserId().toString());
+        cookie.setMaxAge(Constant.SECONDS_IN_DAY);
+        cookie.setPath(Constant.BASE_PATH);
+        response.addCookie(cookie);
         response.sendRedirect(strWeChatConnectUrl);
     }
 

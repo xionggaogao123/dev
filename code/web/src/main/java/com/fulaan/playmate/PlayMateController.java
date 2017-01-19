@@ -77,10 +77,10 @@ public class PlayMateController extends BaseController {
         if (lon == 0 && lat == 0) {
             if (getUserId() != null) {
                 ObjectId userId = getUserId();
-                List<Double> locs = mateService.getCoordinates(userId);
-                if (locs != null && locs.size() == 2) {
-                    lon = locs.get(0);
-                    lat = locs.get(1);
+                List<Double> locations = mateService.getCoordinates(userId);
+                if (locations != null && locations.size() == 2) {
+                    lon = locations.get(0);
+                    lat = locations.get(1);
                 }
             }
         }
@@ -175,7 +175,7 @@ public class PlayMateController extends BaseController {
      * 创建索引
      * =_= 创建 地理位置索引
      *
-     * @return
+     * @return 200
      */
     @RequestMapping("/create2dsphereIndex")
     @ResponseBody
@@ -264,7 +264,6 @@ public class PlayMateController extends BaseController {
     }
 
     private void updateTag(ObjectId userId, String tags) {
-
         if (StringUtils.isNotBlank(tags)) {
             List<String> tagList = StrUtils.splitToList(tags);
             List<Integer> tagIntegerList = new ArrayList<Integer>();
@@ -273,9 +272,9 @@ public class PlayMateController extends BaseController {
             }
             mateService.updateTags(userId, tagIntegerList);
             List<UserTag> userTagList = new ArrayList<UserTag>();
-            List<MateData> mateDatas = fMateTypeService.getTags();
+            List<MateData> mate = fMateTypeService.getTags();
             for (int code : tagIntegerList) {
-                for (MateData mateData : mateDatas) {
+                for (MateData mateData : mate) {
                     if (mateData.getCode() == code) {
                         userTagList.add(new UserTag(mateData.getCode(), mateData.getData()));
                     }

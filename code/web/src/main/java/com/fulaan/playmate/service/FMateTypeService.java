@@ -3,6 +3,7 @@ package com.fulaan.playmate.service;
 import com.db.factory.MongoFacroty;
 import com.db.playmate.FMateTypeDao;
 import com.fulaan.playmate.pojo.MateData;
+import com.fulaan.playmate.pojo.MateType;
 import com.mongodb.BasicDBList;
 import com.mongodb.DBObject;
 import com.pojo.playmate.FMateTypeEntry;
@@ -24,19 +25,18 @@ public class FMateTypeService {
 
     public Map<String, List<MateData>> getAllSortTypes() {
         Map<String, List<MateData>> data = new HashMap<String, List<MateData>>();
-        data.put("tags", getMateType(1));
-        data.put("ages", getMateType(2));
-        data.put("distances", getMateType(3));
-        data.put("times", getMateType(4));
+        data.put("tags", getMateType(MateType.TAG));
+        data.put("ages", getMateType(MateType.AGE));
+        data.put("distances", getMateType(MateType.DISTANCE));
+        data.put("times", getMateType(MateType.TIME));
         return data;
     }
 
-    private List<MateData> getMateType(int type) {
-        FMateTypeEntry fMateTypeEntry = fMateTypeDao.getType(type);
+    private List<MateData> getMateType(MateType mateType) {
+        FMateTypeEntry fMateTypeEntry = fMateTypeDao.getType(mateType.getCode());
         if (fMateTypeEntry == null) {
             return new ArrayList<MateData>();
         }
-
         BasicDBList dbList = fMateTypeEntry.getData();
         return getMateData(dbList);
     }
@@ -71,12 +71,12 @@ public class FMateTypeService {
         return tags;
     }
 
-    public void saveType(int type) {
+    private void saveType(int type) {
         FMateTypeEntry mateTypeEntry = new FMateTypeEntry(type);
         fMateTypeDao.save(mateTypeEntry);
     }
 
-    public void pushType(int type, int code, String data) {
+    private void pushType(int type, int code, String data) {
         fMateTypeDao.pushType(type, code, data);
     }
 
@@ -132,6 +132,6 @@ public class FMateTypeService {
 //        fMateTypeDao.dropCollection(MongoFacroty.getAppDB(),Constant.COLLECTION_FORUM_MATE_SEEKMATE);
 //        fMateTypeDao.dropCollection(MongoFacroty.getAppDB(),Constant.COLLECTION_FORUM_ACTIVITY);
 //        fMateTypeDao.dropCollection(MongoFacroty.getAppDB(),Constant.COLLECTION_FORM_SIGN_ACTIVITY_SHEET);
-        fMateTypeDao.dropCollection(MongoFacroty.getAppDB(),Constant.COLLECTION_FORUM_F_MATETYPE);
+        fMateTypeDao.dropCollection(MongoFacroty.getAppDB(), Constant.COLLECTION_FORUM_F_MATETYPE);
     }
 }

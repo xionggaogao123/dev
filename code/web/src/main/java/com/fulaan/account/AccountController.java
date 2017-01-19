@@ -10,7 +10,6 @@ import com.fulaan.playmate.service.MateService;
 import com.fulaan.pojo.Validate;
 import com.fulaan.user.model.ThirdType;
 import com.fulaan.user.service.UserService;
-import com.fulaan.util.Validator;
 import com.pojo.mobile.UserMobileEntry;
 import com.pojo.user.UserDetailInfoDTO;
 import com.pojo.user.UserEntry;
@@ -33,7 +32,6 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.servlet.ModelAndView;
 
 import javax.servlet.http.Cookie;
-import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.text.SimpleDateFormat;
@@ -41,7 +39,6 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.regex.Pattern;
 
 /**
  * Created by jerry on 2016/12/12.

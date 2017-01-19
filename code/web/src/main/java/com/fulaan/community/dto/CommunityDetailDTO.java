@@ -77,7 +77,7 @@ public class CommunityDetailDTO {
     private List<String> voteOptions;
 
     //投票结果列表
-    List<Map<String, Object>> mapList = new ArrayList<Map<String, Object>>();
+    List<VoteResult> mapList = new ArrayList<VoteResult>();
 
 
 
@@ -85,6 +85,40 @@ public class CommunityDetailDTO {
 
     public CommunityDetailDTO() {
 
+    }
+
+    public static class VoteResult{
+        private String voteItemStr;
+        private int voteItemCount;
+        private String voteItemPercent;
+
+        public VoteResult(){
+
+        }
+
+        public String getVoteItemStr() {
+            return voteItemStr;
+        }
+
+        public void setVoteItemStr(String voteItemStr) {
+            this.voteItemStr = voteItemStr;
+        }
+
+        public int getVoteItemCount() {
+            return voteItemCount;
+        }
+
+        public void setVoteItemCount(int voteItemCount) {
+            this.voteItemCount = voteItemCount;
+        }
+
+        public String getVoteItemPercent() {
+            return voteItemPercent;
+        }
+
+        public void setVoteItemPercent(String voteItemPercent) {
+            this.voteItemPercent = voteItemPercent;
+        }
     }
 
     public CommunityDetailDTO(CommunityDetailEntry communityDetailEntry, List<PartInContentEntry> partInContentEntrys) {
@@ -507,11 +541,11 @@ public class CommunityDetailDTO {
         this.voteOptions = voteOptions;
     }
 
-    public List<Map<String, Object>> getMapList() {
+    public List<VoteResult> getMapList() {
         return mapList;
     }
 
-    public void setMapList(List<Map<String, Object>> mapList) {
+    public void setMapList(List<VoteResult> mapList) {
         this.mapList = mapList;
     }
 }

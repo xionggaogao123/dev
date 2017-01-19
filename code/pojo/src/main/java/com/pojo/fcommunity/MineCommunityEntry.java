@@ -48,6 +48,18 @@ public class MineCommunityEntry extends BaseDBObject {
       }
   }
 
+  public int getCustomSort(){
+      if(getBaseEntry().containsField("cust")){
+          return getSimpleIntegerValueDef("cust",0);
+      }else{
+          return 0;
+      }
+  }
+
+  public void setCustomSort(int customSort){
+      setSimpleValue("cust",customSort);
+  }
+
   public void setTop(int top){
       setSimpleValue("tp",top);
   }

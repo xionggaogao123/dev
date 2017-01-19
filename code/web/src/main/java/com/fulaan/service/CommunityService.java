@@ -191,12 +191,13 @@ public class CommunityService {
                 voteOptions.add(voteContent);
             }
             communityDetailDTO.setVoteOptions(voteOptions);
-            List<Map<String, Object>> mapList = new ArrayList<Map<String, Object>>();
+            List<CommunityDetailDTO.VoteResult> mapList = new ArrayList<CommunityDetailDTO.VoteResult>();
             List<FVoteDTO> fVoteEntryList = fVoteService.getFVoteList(communityDetailEntry.getID().toString());
             int totalCount = fVoteEntryList.size();
             NumberFormat nt = NumberFormat.getPercentInstance();
             nt.setMinimumFractionDigits(0);
             for (int i = 0; i < voteOptions.size(); i++) {
+                CommunityDetailDTO.VoteResult voteResult=new CommunityDetailDTO.VoteResult();
                 int j = i + 1;
                 int count = 0;
                 Map<String, Object> map = new HashMap<String, Object>();
@@ -207,14 +208,14 @@ public class CommunityService {
                     }
                 }
                 double pItem = (double) count / (double) totalCount;
-                map.put("voteItemStr", voteOptions.get(i));
-                map.put("voteItemCount", count);
+                voteResult.setVoteItemStr(voteOptions.get(i));
+                voteResult.setVoteItemCount(count);
                 if(count==0){
-                    map.put("voteItemPercent", "0%");
+                    voteResult.setVoteItemPercent("0%");
                 }else{
-                    map.put("voteItemPercent", nt.format(pItem));
+                    voteResult.setVoteItemPercent( nt.format(pItem));
                 }
-                mapList.add(map);
+                mapList.add(voteResult);
             }
             communityDetailDTO.setMapList(mapList);
         }
@@ -1498,6 +1499,18 @@ public class CommunityService {
             dtos.add(new RemarkDTO(entry));
         }
         return dtos;
+    }
+
+    public void updateInitSort(ObjectId userId){
+        mineCommunityDao.updateInitSort(userId);
+    }
+
+    public Map<ObjectId,MineCommunityEntry> getMySortCommunities(ObjectId userId,List<ObjectId> communityIds){
+        return mineCommunityDao.getMySortCommunities(userId, communityIds);
+    }
+
+    public void batchSave(List<MineCommunityEntry> entries){
+        mineCommunityDao.batchSave(entries);
     }
 
 }

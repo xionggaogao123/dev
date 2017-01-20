@@ -1718,7 +1718,7 @@ pre{white-space: pre-wrap;word-wrap: break-word;}
     text-overflow: ellipsis;
     overflow: hidden;
     white-space: nowrap;
-    margin-left: 11px;
+    margin: 0 11px;
 }
 .p-vocont{
     width: 390px;
@@ -1759,7 +1759,7 @@ pre{white-space: pre-wrap;word-wrap: break-word;}
 }
 .p-votit a{
     color: #307D74;
-    padding:0 5px 0 20px;
+    padding:0 2px 0 20px;
     background: url("/static/images/community/vote_small.png") no-repeat 1px 4px;
     cursor: pointer;
 }
@@ -2096,9 +2096,10 @@ pre{white-space: pre-wrap;word-wrap: break-word;}
     color: #23CD77;
 }
 .vote-detail .ul1 li{
-    height: 34px;
-    line-height: 34px;
-    border-bottom: #E5E5E5 1px solid ;
+    line-height: 22px;
+    border-bottom: #E5E5E5 1px solid;
+    word-break: break-all;
+    padding: 7px 0;
 }
 
 .vote-detail .ul1 li label{
@@ -2113,8 +2114,9 @@ pre{white-space: pre-wrap;word-wrap: break-word;}
 .vote-detail .ul2 li{
 }
 .vote-detail .ul2 li .p1s{
-    line-height: 34px;
+    line-height: 22px;
     word-break: break-all;
+    padding: 7px 0;
 }
 .vote-detail .ul2 li .p2s{
     height: 16px;
@@ -2290,6 +2292,7 @@ pre{white-space: pre-wrap;word-wrap: break-word;}
     height: 21px;
     line-height: 20px;
     margin: 6px 7px 0 0;
+    font-size: 14px;
 }
 .vote-cont .li4 em{
     float: left;

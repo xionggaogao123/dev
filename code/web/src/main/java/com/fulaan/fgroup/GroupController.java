@@ -109,7 +109,8 @@ public class GroupController extends BaseController {
         if (groupDTO.isBindCommunity()) {
             CommunityDTO communityDTO = communityService.getByEmChatId(groupDTO.getEmChatId());
             groupDTO.setSearchId(communityDTO.getSearchId());
-//            groupDTO.setHeadImage(communityDTO.getLogo());
+            String image = StringUtils.isNotBlank(groupDTO.getHeadImage()) ? groupDTO.getHeadImage() : communityDTO.getLogo();
+            groupDTO.setHeadImage(image);
             groupDTO.setName(communityDTO.getName());
         }
         MemberDTO mine = memberService.getUser(groupId, getUserId());

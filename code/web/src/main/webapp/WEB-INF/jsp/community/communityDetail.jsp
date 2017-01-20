@@ -78,7 +78,7 @@
                                 </c:if>
                                 <c:if test="${type==1}">
                                     <div class="vote-detail" >
-                                        <h3>多选投票：（最多可选${voteMaxCount}项），共有<em id="voteUserCount" count="${voteUserCount}">${voteUserCount}</em>人参与投票</h3>
+                                        <h3>多选投票：（最多可选${voteMaxCount}项），共有<em id="voteUserCount" count="${voteUserCount}">${voteUserCount}</em>人参与投票<a >查看投票参与人</a></h3>
                                         <c:if test="${voteType==0&&voteDeadFlag==0}">
                                             <ul class="ul1">
                                                 <c:if test="${check==1}">
@@ -323,6 +323,55 @@
             <button class="btn2">取消</button>
         </p>
     </div>
+
+
+    <%--参与投票会员--%>
+    <div class="wind wind-jv" style="display: block;">
+        <p class="p1"><em>×</em></p>
+        <div class="ds">
+            <select>
+                <option>太难了太难了太难了太难了太难了太难了太难</option>
+                <option>太难了太难了太难了太难了太难了太难了太难</option>
+                <option>太难了太难了太难了太难了太难了太难了太难</option>
+            </select>
+        </div>
+        <ul class="ul-vj">
+            <li>十多个佛挡</li>
+            <li>十多个佛挡</li>
+            <li>十多个佛挡</li>
+            <li>十多个佛挡</li>
+            <li>十多个佛挡</li>
+            <li>十多个佛挡</li>
+            <li>十多个佛挡</li>
+            <li>十多个佛挡</li>
+            <li>十多个佛挡</li>
+            <li>十多个佛挡</li>
+            <li>十多个佛挡</li>
+            <li>十多个佛挡</li>
+            <li>十多个佛挡</li>
+            <li>十多个佛挡</li>
+            <li>十多个佛挡</li>
+            <li>十多个佛挡</li>
+            <li>十多个佛挡</li>
+            <li>十多个佛挡</li>
+            <li>十多个佛挡</li>
+            <li>十多个佛挡</li>
+            <li>十多个佛挡</li>
+            <li>十多个佛挡</li>
+            <li>十多个佛挡</li>
+            <li>十多个佛挡</li>
+            <li>十多个佛挡</li>
+            <li>十多个佛挡</li>
+            <li>十多个佛挡</li>
+            <li>十多个佛挡</li>
+            <li>十多个佛挡</li>
+            <li>十多个佛挡</li>
+            <li>十多个佛挡</li>
+        </ul>
+    </div>
+
+
+
     <!--报名提示start-->
     <div class="sign-alert sign-activity">
         <p class="alert-title">提示<em>×</em></p>

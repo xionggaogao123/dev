@@ -41,11 +41,7 @@ define(['jquery', 'pagination', 'common'], function (require, exports, module) {
             });
         });
 
-        $('#verifyImg').click(function () {
-            $(this).attr('src', '/verify/verifyCode.do?time=' + new Date());
-        });
-
-        $('#verifyImg2').click(function () {
+        $('#verifyImg,#verifyImg2').click(function () {
             $(this).attr('src', '/verify/verifyCode.do?time=' + new Date());
         });
 
@@ -73,19 +69,23 @@ define(['jquery', 'pagination', 'common'], function (require, exports, module) {
                         $('.step2 > li').eq(0).find('.sp3').hide();
                         mobileInit = true;
                     } else if (resp.message.type === 'userName') {
-                        blurMobile();
                         userName = name;
+                        $('#phone').val(resp.message.protectedMobile);
+                        $('#phone').attr("disabled", "disabled");
+                        mobile = resp.message.mobile;
+                        $('#email').val(resp.message.email);
                     } else if (resp.message.type === 'email') {
-                        blurMobile();
                         userName = resp.message.userName;
+                        $('#email').val(resp.message.email);
                     }
                 } else {
                     alert(resp.errorMessage);
                 }
             })
         });
-
-        $('#sendCode').click(function () {
+        
+        var sendCode = $('#sendCode');
+        sendCode.click(function () {
             var phone = mobileInit ? mobile : $('#phone').val();
             var verifyCode = $('#verifyCode').val();
             if(!isClick) {
@@ -93,21 +93,21 @@ define(['jquery', 'pagination', 'common'], function (require, exports, module) {
                 common.getDataAsync("/mall/users/messages.do", {mobile: phone, verifyCode: verifyCode}, function (resp) {
                     if (resp.code == '200') {
                         cacheKeyId = resp.cacheKeyId;
-                        $('#sendCode').css({
+                        sendCode.css({
                             "background-color": '#B5B5B5'
                         });
-                        $('#sendCode').text('60');
+                        sendCode.text('60');
                         var number = 59;
                         timer = window.setInterval(function () {
                             if (number === 0) {
                                 clearInterval(timer);
-                                $('#sendCode').css({
+                                sendCode.css({
                                     "background-color": '#FF9F19'
                                 });
-                                $('#sendCode').text('发送验证码');
+                                sendCode.text('发送验证码');
                                 isClick = false;
                             } else {
-                                $('#sendCode').text(number--);
+                                sendCode.text(number--);
                             }
                         }, 1000);
                     } else {
@@ -119,10 +119,9 @@ define(['jquery', 'pagination', 'common'], function (require, exports, module) {
         });
 
         body.on('click', '.next2', function () {
-            var phone = mobileInit ? mobile : $('#phone').val();
             var code = $('#code').val();
             var requestParm = {
-                phone: phone,
+                phone: mobile,
                 code: code,
                 cacheKeyId: cacheKeyId
             };
@@ -192,25 +191,6 @@ define(['jquery', 'pagination', 'common'], function (require, exports, module) {
         });
 
     });
-
-    function blurMobile() {
-        // var self = $('#phone');
-        // var pattern = /^1[3|4|5|7|8][0-9]{9}$/;
-        // if (pattern.test(self.val())) {
-        //     var requestParm = {phone: self.val()};
-        //     common.getDataAsync('/account/verifyUserPhone', requestParm, function (resp) {
-        //         if (resp.code == '200' && resp.message.verify) {
-        //             $('#phone-tips').hide();
-        //         } else {
-        //             $('#phone-tips').text(resp.message.msg);
-        //             $('#phone-tips').show();
-        //         }
-        //     });
-        // } else {
-        //     $('#phone-tips').text('手机号不合法');
-        //     $('#phone-tips').show();
-        // }
-    }
 
     function resetPassword(userName, phone, code, password) {
         var requestParm = {

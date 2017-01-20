@@ -8,12 +8,6 @@
     <script type="text/javascript" src="/static/js/modules/forum/jquery-1.11.1.js"></script>
 
     <link rel="stylesheet" type="text/css" href="/static/css/friend/nearby.css">
-    <%--<link href="/static/js/modules/community/plugins/drag/css/jquery.gridly.css" rel='stylesheet' type='text/css'>--%>
-    <%--<link href='/static/js/modules/community/plugins/drag/css/sample.css' rel='stylesheet' type='text/css'>--%>
-    <%--<script src='/static/js/modules/community/plugins/drag/jquery.js' type='text/javascript'></script>--%>
-    <%--<script src='javascripts/jquery.gridly.js' type='text/javascript'></script>--%>
-    <%--<script src='/static/js/modules/community/plugins/drag/sample.js' type='text/javascript'></script>--%>
-    <%--<script src='/static/js/modules/community/plugins/drag/rainbow.js' type='text/javascript'></script>--%>
 </head>
 <body style="background: #f5f5f5;">
 <%--==============头部===================--%>

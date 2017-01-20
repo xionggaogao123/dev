@@ -2,6 +2,7 @@ package com.fulaan.community.dto;
 
 import com.fulaan.dto.VideoDTO;
 import com.fulaan.pojo.Attachement;
+import com.fulaan.pojo.User;
 import com.fulaan.util.DateUtils;
 import com.pojo.fcommunity.AttachmentEntry;
 import com.pojo.fcommunity.CommunityDetailEntry;
@@ -10,9 +11,7 @@ import com.pojo.fcommunity.VideoEntry;
 import com.sys.utils.DateTimeUtils;
 import org.bson.types.ObjectId;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 /**
  * Created by admin on 2016/10/24.
@@ -62,6 +61,8 @@ public class CommunityDetailDTO {
     private int voteDeadFlag;
     //投票人数
     private int voteCount;
+    //投票数
+    private int voteTotalCount;
     //投票信息
     //投票内容
     private String voteContent;
@@ -79,7 +80,8 @@ public class CommunityDetailDTO {
     //投票结果列表
     List<VoteResult> mapList = new ArrayList<VoteResult>();
 
-
+    //选项人员列表
+    private List<User> voteUsers=new ArrayList<User>();
 
     private List<PartInContentDTO> partList = new ArrayList<PartInContentDTO>();
 
@@ -92,6 +94,9 @@ public class CommunityDetailDTO {
         private int voteItemCount;
         private String voteItemPercent;
         private int hasVoted;
+
+        private Set<ObjectId> userIds=new HashSet<ObjectId>();
+        private List<User> voteUsers=new ArrayList<User>();
 
         public VoteResult(){
 
@@ -127,6 +132,22 @@ public class CommunityDetailDTO {
 
         public void setHasVoted(int hasVoted) {
             this.hasVoted = hasVoted;
+        }
+
+        public Set<ObjectId> getUserIds() {
+            return userIds;
+        }
+
+        public void setUserIds(Set<ObjectId> userIds) {
+            this.userIds = userIds;
+        }
+
+        public List<User> getVoteUsers() {
+            return voteUsers;
+        }
+
+        public void setVoteUsers(List<User> voteUsers) {
+            this.voteUsers = voteUsers;
         }
     }
 
@@ -556,5 +577,21 @@ public class CommunityDetailDTO {
 
     public void setMapList(List<VoteResult> mapList) {
         this.mapList = mapList;
+    }
+
+    public int getVoteTotalCount() {
+        return voteTotalCount;
+    }
+
+    public void setVoteTotalCount(int voteTotalCount) {
+        this.voteTotalCount = voteTotalCount;
+    }
+
+    public List<User> getVoteUsers() {
+        return voteUsers;
+    }
+
+    public void setVoteUsers(List<User> voteUsers) {
+        this.voteUsers = voteUsers;
     }
 }

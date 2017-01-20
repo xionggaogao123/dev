@@ -212,9 +212,11 @@ define(['jquery', 'pagination', 'common'], function (require, exports, module) {
                 var means = resp.message.means;
                 var homework = resp.message.homework;
                 var materials = resp.message.materials;
+                var vote = resp.message.vote;
                 loadAnnouncement(announcement);
                 loadHomework(homework);
                 loadShare(share);
+                loadVote(vote);
                 loadActivity(activity);
                 loadMaterials(materials);
                 loadMeans(means);
@@ -409,6 +411,29 @@ define(['jquery', 'pagination', 'common'], function (require, exports, module) {
                 "<p class=\"p1\"><em class=\"em1\">火热分享</em><br>" +
                 "<em class=\"em2\">" + data[i].timeStr + "</em> </p>" +
                 "<img src=\"/static/images/newIndex/blue_share.png\">" +
+                "<p class=\"p-red\"></p>" +
+                "<span class=\"spa-train\"></span>" +
+                "<p class=\"p2\">" +
+                " <span class=\"spa-active\">" +
+                "<span class=\"sp1\">" + data[i].title + "</span>" +
+                "<span class=\"sp3\">" + data[i].content + "</span></span><span>";
+            // var images = data[i].images;
+            // for (var j in images) {
+            //     temp += "<img width='62' height='42' src=\"" + images[j].url + "\">";
+            // }
+
+            temp += "</span></p></li>";
+        }
+        $('#communityNews').append(temp);
+    }
+
+    function loadVote(data){
+        var temp = "";
+        for (var i in data) {
+            temp += "<li class=\"clearfix\">" +
+                "<p class=\"p1\"><em class=\"em1\">投票</em><br>" +
+                "<em class=\"em2\">" + data[i].timeStr + "</em> </p>" +
+                "<img src=\"/static/images/newIndex/blue_vote.png\">" +
                 "<p class=\"p-red\"></p>" +
                 "<span class=\"spa-train\"></span>" +
                 "<p class=\"p2\">" +

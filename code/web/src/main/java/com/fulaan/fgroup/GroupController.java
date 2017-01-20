@@ -1,6 +1,7 @@
 package com.fulaan.fgroup;
 
 import com.easemob.server.EaseMobAPI;
+import com.fulaan.annotation.ObjectIdType;
 import com.fulaan.annotation.SessionNeedless;
 import com.fulaan.base.BaseController;
 import com.fulaan.community.dto.CommunityDTO;
@@ -87,7 +88,7 @@ public class GroupController extends BaseController {
                 }
             }
         }
-        groupService.updateHeadImage(groupId);
+        groupService.asyncUpdateHeadImage(groupId);
         groupService.asyncUpdateGroupNameByMember(groupId);
         return RespObj.SUCCESS(groupService.findById(groupId));
     }
@@ -215,7 +216,7 @@ public class GroupController extends BaseController {
             }
         }
         //更新群聊头像
-        groupService.updateHeadImage(groupId);
+        groupService.asyncUpdateHeadImage(groupId);
         if (groupDTO.getIsM() == 0) {
             groupService.asyncUpdateGroupNameByMember(new ObjectId(groupDTO.getId()));
         }
@@ -234,7 +235,7 @@ public class GroupController extends BaseController {
     @ResponseBody
     public RespObj join(String emChatId) throws IOException, IllegalParamException {
         GroupDTO groupDTO = groupService.findByEmChatId(emChatId);
-        if(groupDTO == null) {
+        if (groupDTO == null) {
             return RespObj.FAILDWithErrorMsg("不存在此群聊或社区");
         }
         ObjectId groupId = new ObjectId(groupDTO.getId());
@@ -243,7 +244,7 @@ public class GroupController extends BaseController {
             if (memberService.isBeforeMember(groupId, userId)) {
                 if (emService.addUserToEmGroup(emChatId, userId)) {
                     memberService.updateMember(userId, groupId, 0);
-                    if(groupDTO.isBindCommunity()) {
+                    if (groupDTO.isBindCommunity()) {
                         communityService.setPartIncontentStatus(new ObjectId(groupDTO.getCommunityId()), userId, 0);
                     }
                 }
@@ -254,7 +255,7 @@ public class GroupController extends BaseController {
             }
         }
         //更新群聊头像
-        groupService.updateHeadImage(groupId);
+        groupService.asyncUpdateHeadImage(groupId);
         if (groupDTO.getIsM() == 0) {
             groupService.asyncUpdateGroupNameByMember(new ObjectId(groupDTO.getId()));
         }
@@ -299,7 +300,7 @@ public class GroupController extends BaseController {
             }
         }
         if (!groupDTO.isBindCommunity()) {
-            groupService.updateHeadImage(groupId);
+            groupService.asyncUpdateHeadImage(groupId);
             if (groupDTO.getIsM() == 0) {
                 groupService.asyncUpdateGroupNameByMember(new ObjectId(groupDTO.getId()));
             }
@@ -355,7 +356,7 @@ public class GroupController extends BaseController {
                 }
             }
         }
-        groupService.updateHeadImage(groupId);
+        groupService.asyncUpdateHeadImage(groupId);
         if (groupDTO.getIsM() == 0) {
             groupService.asyncUpdateGroupNameByMember(new ObjectId(groupDTO.getId()));
         }
@@ -593,7 +594,7 @@ public class GroupController extends BaseController {
             try {
                 communityService.saveMessage(userId, message);
                 return RespObj.SUCCESS("发布成功");
-            }catch (Exception e){
+            } catch (Exception e) {
                 return RespObj.SUCCESS("发布失败");
             }
         }
@@ -605,6 +606,20 @@ public class GroupController extends BaseController {
         }
         groupNoticeService.save(groupId, title, content, getUserId(), imageArray);
         return RespObj.SUCCESS("发布成功");
+    }
+
+    @RequestMapping("/updateHeadImage")
+    @SessionNeedless
+    @ResponseBody
+    public RespObj updateHeadImage(@ObjectIdType ObjectId groupId) {
+        try {
+            groupService.asyncUpdateHeadImage(groupId);
+        } catch (IOException e) {
+            e.printStackTrace();
+        } catch (IllegalParamException e) {
+            e.printStackTrace();
+        }
+        return RespObj.SUCCESS;
     }
 
     /**

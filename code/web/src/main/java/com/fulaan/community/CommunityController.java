@@ -149,7 +149,7 @@ public class CommunityController extends BaseController {
         communityDTO.setMine(mine);
         String headImage = groupService.getHeadImage(new ObjectId(communityDTO.getGroupId()));
         communityDTO.setHeadImage(headImage);
-        groupService.updateHeadImage(new ObjectId(communityDTO.getGroupId()));
+        groupService.asyncUpdateHeadImage(new ObjectId(communityDTO.getGroupId()));
         return RespObj.SUCCESS(communityDTO);
     }
 

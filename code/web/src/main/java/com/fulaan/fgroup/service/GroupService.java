@@ -105,7 +105,7 @@ public class GroupService {
      * @throws IllegalParamException
      */
     @Async
-    public void updateHeadImage(ObjectId groupId) throws IOException, IllegalParamException {
+    public void asyncUpdateHeadImage(ObjectId groupId) throws IOException, IllegalParamException {
         String url = generateHeadImage(groupId);
         groupDao.updateHeadImage(groupId, url);
     }

@@ -57,7 +57,7 @@ define(['jquery', 'pagination', 'common'], function (require, exports, module) {
                     if (resp.message.type === 'mobile') {
                         for (var i = 0; i < resp.message.users.length; i++) {
                             if (i == 0) {
-                                $('#choose-name').append('<label><input type="radio" value="' + resp.message.users[i].userName + '" name="s-count" checked>' + resp.message.users[i].nickName + '</label>');
+                                $('#choose-name').append('<label><input type="radio" value="' + resp.message.users[i].userName + '" name="s-count" checked>' + resp.message.users[i].userName + '</label>');
                             } else {
                                 $('#choose-name').append('<label><input type="radio" value="' + resp.message.users[i].userName + '" name="s-count">' + resp.message.users[i].userName + '</label>');
                             }

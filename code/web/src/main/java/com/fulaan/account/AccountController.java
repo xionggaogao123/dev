@@ -278,7 +278,7 @@ public class AccountController extends BaseController {
             result.put("protectedMobile", getProtectedMobile(name));
             return RespObj.SUCCESS(result);
         }
-        return RespObj.FAILDWithErrorMsg("失败");
+        return RespObj.FAILDWithErrorMsg("验证失败，账号不存在");
     }
 
     /**

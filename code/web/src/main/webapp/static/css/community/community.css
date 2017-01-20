@@ -1741,6 +1741,7 @@ pre{white-space: pre-wrap;word-wrap: break-word;}
     margin: 10px 10px 0 0;
     height: 40px;
     line-height: 20px;
+    word-break: break-all;
 }
 .p-vocont .sp-btn{
     position: absolute;
@@ -2110,11 +2111,10 @@ pre{white-space: pre-wrap;word-wrap: break-word;}
     padding-left: 9px;
 }
 .vote-detail .ul2 li{
-    height: 52px;
 }
 .vote-detail .ul2 li .p1s{
-    height: 34px;
     line-height: 34px;
+    word-break: break-all;
 }
 .vote-detail .ul2 li .p2s{
     height: 16px;
@@ -3457,8 +3457,17 @@ pre{white-space: pre-wrap;word-wrap: break-word;}
     margin: 33px 0 0 0;
     cursor: pointer;
 }
-
-
+.i-myvote{
+    color: rgb(0, 160, 233);
+    display: block;
+    height: 30px;
+    line-height: 30px;
+    overflow: hidden;
+    width: 757px;
+    word-break: break-all;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
 /**分页**/
 .new-page-links {
     width: 100%;

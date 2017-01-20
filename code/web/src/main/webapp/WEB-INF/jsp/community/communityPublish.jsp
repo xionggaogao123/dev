@@ -127,7 +127,7 @@
                     <input type="text" placeholder="请输入大标题" id="title">
                     <textarea typeof="text" placeholder="请输入内容" id="content" ></textarea>
                     <span style="font-size:12px;display: block;height: 30px;"></span>
-                    <i style="color: #00a0e9"></i>
+                    <i class="i-myvote"></i>
                     <div class="vote-cont" style="display: none" >
                         <button>设置投票选项</button>
                         <span class="downT"></span>

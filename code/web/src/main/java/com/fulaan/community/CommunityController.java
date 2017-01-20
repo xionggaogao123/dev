@@ -981,6 +981,7 @@ public class CommunityController extends BaseController {
             }
             //判断是否是投票模块
             model.put("type",0);
+            model.put("voteMaxCount",0);
             if(detail.getType()==7){
                 model.put("type",1);
                 model.put("voteType", 0);

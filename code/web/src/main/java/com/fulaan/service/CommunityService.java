@@ -198,14 +198,13 @@ public class CommunityService {
             nt.setMinimumFractionDigits(0);
             communityDetailDTO.setVoteTotalCount(totalCount);
             Set<ObjectId> totalUserIds=new HashSet<ObjectId>();
-            Set<ObjectId> selectUserIds=new HashSet<ObjectId>();
             Map<ObjectId,Long> timeRecord=new HashMap<ObjectId, Long>();
             for (int i = 0; i < voteOptions.size(); i++) {
+                Set<ObjectId> selectUserIds=new HashSet<ObjectId>();
                 CommunityDetailDTO.VoteResult voteResult = new CommunityDetailDTO.VoteResult();
                 int j = i + 1;
                 int count = 0;
                 int hasVoted = 0;
-                selectUserIds.clear();
                 for (FVoteDTO fVoteDTO : fVoteEntryList) {
                     int number = fVoteDTO.getNumber();
                     timeRecord.put(new ObjectId(fVoteDTO.getUserId()),new ObjectId(fVoteDTO.getId()).getTime());
@@ -248,9 +247,9 @@ public class CommunityService {
             }
             communityDetailDTO.setVoteUsers(users);
             if(communityDetailDTO.getVoteType()==0){
-                List<User> voteUsers=new ArrayList<User>();
+
                 for(CommunityDetailDTO.VoteResult voteResult:mapList){
-                    voteUsers.clear();
+                    List<User> voteUsers=new ArrayList<User>();
                     Set<ObjectId> ItemUserIds=voteResult.getUserIds();
                     for(ObjectId id:ItemUserIds){
                         UserEntry user=userEntryMap.get(id);

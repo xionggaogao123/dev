@@ -1007,8 +1007,8 @@ public class CommunityController extends BaseController {
                 if(System.currentTimeMillis()>voteDeadTime){
                     model.put("voteDeadFlag", 1);
                 }
-                if (voteContent.contains(",")) {
-                    String[] votes = voteContent.split(",");
+                if (voteContent.contains("/n/r")) {
+                    String[] votes = voteContent.split("/n/r");
                     for (String vote : votes) {
                         voteOptions.add(vote);
                     }

@@ -182,8 +182,8 @@ public class CommunityService {
             }
             String voteContent = communityDetailEntry.getVoteContent();
             List<String> voteOptions = new ArrayList<String>();
-            if (voteContent.contains(",")) {
-                String[] str = voteContent.split(",");
+            if (voteContent.contains("/n/r")) {
+                String[] str = voteContent.split("/n/r");
                 for (String item : str) {
                     voteOptions.add(item);
                 }
@@ -465,8 +465,8 @@ public class CommunityService {
                 }
                 String voteContent = entry.getVoteContent();
                 List<String> voteOptions = new ArrayList<String>();
-                if (voteContent.contains(",")) {
-                    String[] str = voteContent.split(",");
+                if (voteContent.contains("/n/r")) {
+                    String[] str = voteContent.split("/n/r");
                     for (String item : str) {
                         voteOptions.add(item);
                     }
@@ -819,8 +819,8 @@ public class CommunityService {
                 }
                 String voteContent = entry.getVoteContent();
                 List<String> voteOptions = new ArrayList<String>();
-                if (voteContent.contains(",")) {
-                    String[] str = voteContent.split(",");
+                if (voteContent.contains("/n/r")) {
+                    String[] str = voteContent.split("/n/r");
                     for (String item : str) {
                         voteOptions.add(item);
                     }

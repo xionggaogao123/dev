@@ -493,7 +493,7 @@ define(['jquery', 'pagination', 'common'], function (require, exports, module) {
             var vItem=$(this).val();
             if($.trim(vItem)!=""){
                 if(voteContent!=""){
-                    voteContent=voteContent+","+vItem;
+                    voteContent=voteContent+"/n/r"+vItem;
                 }else{
                     voteContent=vItem;
                 }
@@ -540,8 +540,12 @@ define(['jquery', 'pagination', 'common'], function (require, exports, module) {
         $('#voteCount').append(initOption);
         $('#voteCount').css("width","60px");
         $('.vote-cont .div2 .li2').each(function(){
-            if($.trim($(this).find('input').val())){
+            var trimValue=$.trim($(this).find('input').val());
+            if(trimValue){
                 count++;
+                if(trimValue.length>20){
+                    $(this).find('input').val(trimValue.substr(0,20));
+                }
             }
         });
         if(count>1){

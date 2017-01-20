@@ -71,13 +71,28 @@
                 <%--<button id="join">加入社区</button>--%>
                 <%--<button class="btn-yq">+邀请玩伴</button>--%>
             </div>
-            <div class="publish-cont" <c:if test="${login==false}">style="display: none"</c:if>>
+            <div class="publish-cont" <c:if test="${login==false||operation!=1&&communityId=='582f00033d4df91126ff2b9b'}">style="display: none"</c:if>>
                 <ul class="publish-nav">
-                    <c:if test="${operation!=1}">
-                        <li class="li3" type="3" class="green">
-                            <span class="sp1" class="disn"></span>
-                            <span class="sp2" class="disb"></span>
+                    <c:if test="${operation!=1&&communityId!='582f00033d4df91126ff2b9b'}">
+                        <li class="li3" type="3">
+                            <span class="sp1"></span>
+                            <span class="sp2"></span>
                             火热分享
+                        </li>
+                        <li class="li7" type="7">
+                            <span class="sp1"></span>
+                            <span class="sp2"></span>
+                            投票
+                        </li>
+                        <li class="li2" type="2">
+                            <span class="sp1"></span>
+                            <span class="sp2"></span>
+                            组织活动报名
+                        </li>
+                        <li class="li6" type="6">
+                            <span class="sp1"></span>
+                            <span class="sp2"></span>
+                            发布学习用品需求
                         </li>
                         <li class="li4" type="4">
                             <span class="sp1"></span>
@@ -134,7 +149,7 @@
                         <div class="div2">
                             <p class="p1"><em>×</em></p>
                             <ul>
-                                <li class="li1">投票选项</li>
+                                <li class="li1">投票选项<span style="font-size: 12px; font-weight: initial;">(至少两项,每项最多20字)</span></li>
                                 <li class="li2"><em>1</em>.<i style="display: none"></i><input type="text"></li>
                                 <li class="li2"><em>2</em>.<i style="display: none"></i><input type="text"></li>
                                 <li class="li3">添加选项</li>

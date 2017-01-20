@@ -2112,6 +2112,7 @@ pre{white-space: pre-wrap;word-wrap: break-word;}
     padding-left: 9px;
 }
 .vote-detail .ul2 li{
+    margin-bottom: 10px;
 }
 .vote-detail .ul2 li .p1s{
     line-height: 22px;
@@ -2861,6 +2862,7 @@ pre{white-space: pre-wrap;word-wrap: break-word;}
     display: block;
     min-height: 35px;
     padding: 20px 0 0 3px;
+    word-break: break-all;
 }
 .sign-alert,.esc-alert{
     position: fixed;

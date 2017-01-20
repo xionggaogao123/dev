@@ -65,6 +65,11 @@ public class FVoteService {
         return fVoteDTOList;
     }
 
+    public int countTotalVote(String voteId){
+        ObjectId vote = voteId.equals("") ? null : new ObjectId(voteId);
+        return fVoteDao.countTotalVote(vote);
+    }
+
     /**
      * 获取该帖的投票人数
      *

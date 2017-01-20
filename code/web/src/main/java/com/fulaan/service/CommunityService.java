@@ -2,6 +2,7 @@ package com.fulaan.service;
 
 import com.db.fcommunity.*;
 import com.db.user.UserDao;
+import com.fulaan.cache.RedisUtils;
 import com.fulaan.community.dto.CommunityDTO;
 import com.fulaan.community.dto.CommunityDetailDTO;
 import com.fulaan.community.dto.PartInContentDTO;
@@ -13,10 +14,7 @@ import com.fulaan.fgroup.service.GroupService;
 import com.fulaan.forum.service.FVoteService;
 import com.fulaan.friendscircle.service.FriendApplyService;
 import com.fulaan.friendscircle.service.FriendService;
-import com.fulaan.pojo.Attachement;
-import com.fulaan.pojo.CommunityMessage;
-import com.fulaan.pojo.PageModel;
-import com.fulaan.pojo.ProductModel;
+import com.fulaan.pojo.*;
 import com.fulaan.user.service.UserService;
 import com.fulaan.util.DateUtils;
 import com.pojo.activity.FriendApplyEntry;
@@ -29,6 +27,7 @@ import com.pojo.user.UserEntry;
 import com.pojo.video.*;
 import com.sys.constants.Constant;
 import com.sys.utils.AvatarUtils;
+import com.sys.utils.DateTimeUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.bson.types.ObjectId;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -91,7 +90,7 @@ public class CommunityService {
         ObjectId groupId = groupService.createGroupWithCommunity(communityId, userId, emChatId, name, desc, qrUrl);
         CommunityEntry entry = new CommunityEntry(communityId, seqId, groupId, emChatId, name, logo, desc, qrUrl, open, userId);
         communityDao.save(entry);
-        pushToUser(communityId, userId, 2);
+        pushToUser(communityId, userId, 1);
         return communityId;
     }
 
@@ -131,8 +130,8 @@ public class CommunityService {
     }
 
 
-    public  Map<String,MemberEntry> getMemberEntryMap(List<ObjectId> groupIds,List<ObjectId> userIds){
-        return memberDao.getGroupNick(groupIds,userIds);
+    public Map<String, MemberEntry> getMemberEntryMap(List<ObjectId> groupIds, List<ObjectId> userIds) {
+        return memberDao.getGroupNick(groupIds, userIds);
     }
 
     /**
@@ -141,31 +140,31 @@ public class CommunityService {
      * @param communityDetailId
      * @return
      */
-    public CommunityDetailDTO findDetailById(ObjectId communityDetailId,ObjectId loginUserId) {
+    public CommunityDetailDTO findDetailById(ObjectId communityDetailId, ObjectId loginUserId) {
 
         CommunityDetailEntry communityDetailEntry = communityDetailDao.findByObjectId(communityDetailId);
         ObjectId userId = communityDetailEntry.getCommunityUserId();
-        ObjectId groupId=getGroupId(new ObjectId(communityDetailEntry.getCommunityId()));
-        List<ObjectId> groupIds=new ArrayList<ObjectId>();
+        ObjectId groupId = getGroupId(new ObjectId(communityDetailEntry.getCommunityId()));
+        List<ObjectId> groupIds = new ArrayList<ObjectId>();
         groupIds.add(groupId);
-        List<ObjectId> userIds=new ArrayList<ObjectId>();
+        List<ObjectId> userIds = new ArrayList<ObjectId>();
         userIds.add(userId);
-        Map<String,MemberEntry> memberEntryMap=memberDao.getGroupNick(groupIds,userIds);
+        Map<String, MemberEntry> memberEntryMap = memberDao.getGroupNick(groupIds, userIds);
         List<PartInContentEntry> partInContentEntries = partInContentDao.getPartInContent(communityDetailEntry.getID(), -1, 1, 10);
         CommunityDetailDTO communityDetailDTO = new CommunityDetailDTO(communityDetailEntry, partInContentEntries);
         UserEntry userEntry = userDao.findByUserId(userId);
 
-        if(null!=memberEntryMap){
-            MemberEntry entry1= memberEntryMap.get(groupId + "$" + userId);
-            setCommunityDetailInfo(communityDetailDTO,userEntry,entry1);
-        }else {
-            communityDetailDTO.setNickName(StringUtils.isNotBlank(userEntry.getNickName())?userEntry.getNickName():userEntry.getUserName());
+        if (null != memberEntryMap) {
+            MemberEntry entry1 = memberEntryMap.get(groupId + "$" + userId);
+            setCommunityDetailInfo(communityDetailDTO, userEntry, entry1);
+        } else {
+            communityDetailDTO.setNickName(StringUtils.isNotBlank(userEntry.getNickName()) ? userEntry.getNickName() : userEntry.getUserName());
         }
         int partIncontentCount = partInContentDao.countPartPartInContent(communityDetailId);
         communityDetailDTO.setPartIncotentCount(partIncontentCount);
         communityDetailDTO.setImageUrl(AvatarUtils.getAvatar(userEntry.getAvatar(), AvatarType.MIN_AVATAR.getType()));
 
-        if(communityDetailDTO.getType() == CommunityDetailType.VOTE.getType()) {
+        if (communityDetailDTO.getType() == CommunityDetailType.VOTE.getType()) {
             int voteCount = fVoteService.getFVoteCount(communityDetailEntry.getID().toString());
             communityDetailDTO.setVoteCount(voteCount);
             long nowTime = System.currentTimeMillis();
@@ -181,14 +180,14 @@ public class CommunityService {
                     communityDetailDTO.setHasVoted(1);
                 }
             }
-            String voteContent=communityDetailEntry.getVoteContent();
-            List<String> voteOptions=new ArrayList<String>();
-            if(voteContent.contains(",")){
-                String[] str=voteContent.split(",");
-                for(String item:str){
+            String voteContent = communityDetailEntry.getVoteContent();
+            List<String> voteOptions = new ArrayList<String>();
+            if (voteContent.contains(",")) {
+                String[] str = voteContent.split(",");
+                for (String item : str) {
                     voteOptions.add(item);
                 }
-            }else{
+            } else {
                 voteOptions.add(voteContent);
             }
             communityDetailDTO.setVoteOptions(voteOptions);
@@ -197,37 +196,72 @@ public class CommunityService {
             int totalCount = fVoteEntryList.size();
             NumberFormat nt = NumberFormat.getPercentInstance();
             nt.setMinimumFractionDigits(0);
+            communityDetailDTO.setVoteTotalCount(totalCount);
+            Set<ObjectId> totalUserIds=new HashSet<ObjectId>();
+            Set<ObjectId> selectUserIds=new HashSet<ObjectId>();
+            Map<ObjectId,Long> timeRecord=new HashMap<ObjectId, Long>();
             for (int i = 0; i < voteOptions.size(); i++) {
-                CommunityDetailDTO.VoteResult voteResult=new CommunityDetailDTO.VoteResult();
+                CommunityDetailDTO.VoteResult voteResult = new CommunityDetailDTO.VoteResult();
                 int j = i + 1;
                 int count = 0;
-                int hasVoted=0;
+                int hasVoted = 0;
+                selectUserIds.clear();
                 for (FVoteDTO fVoteDTO : fVoteEntryList) {
                     int number = fVoteDTO.getNumber();
+                    timeRecord.put(new ObjectId(fVoteDTO.getUserId()),new ObjectId(fVoteDTO.getId()).getTime());
                     if (j == number) {
                         count++;
-                        if(null!=loginUserId){
-                            if(new ObjectId(fVoteDTO.getUserId()).equals(loginUserId)){
-                                hasVoted=1;
+                        selectUserIds.add(new ObjectId(fVoteDTO.getUserId()));
+                        if (null != loginUserId) {
+                            if (new ObjectId(fVoteDTO.getUserId()).equals(loginUserId)) {
+                                hasVoted = 1;
                             }
                         }
                     }
                 }
+                totalUserIds.addAll(selectUserIds);
                 voteResult.setHasVoted(hasVoted);
+                voteResult.setUserIds(selectUserIds);
                 double pItem = (double) count / (double) totalCount;
                 voteResult.setVoteItemStr(voteOptions.get(i));
                 voteResult.setVoteItemCount(count);
-                if(count==0){
+                if (count == 0) {
                     voteResult.setVoteItemPercent("0%");
-                }else{
+                } else {
                     voteResult.setVoteItemPercent(nt.format(pItem));
                 }
-                if(null!=loginUserId){
+                if (null != loginUserId) {
 
-                }else{
+                } else {
                     voteResult.setHasVoted(0);
                 }
                 mapList.add(voteResult);
+            }
+
+            Map<ObjectId,UserEntry> userEntryMap=userService.getUserEntryMap(totalUserIds,Constant.FIELDS);
+            List<User> users=new ArrayList<User>();
+            for(Map.Entry<ObjectId,UserEntry> entryEntry:userEntryMap.entrySet()){
+                UserEntry userEntry1=entryEntry.getValue();
+                users.add(new User(userEntry1.getUserName(),userEntry1.getNickName(),userEntry1.getID().toString(),
+                        AvatarUtils.getAvatar(userEntry1.getAvatar(),AvatarType.MIN_AVATAR.getType()),
+                        userEntry1.getSex(), DateTimeUtils.convert(timeRecord.get(userEntry1.getID()),DateTimeUtils.DATE_YYYY_MM_DD)));
+            }
+            communityDetailDTO.setVoteUsers(users);
+            if(communityDetailDTO.getVoteType()==0){
+                List<User> voteUsers=new ArrayList<User>();
+                for(CommunityDetailDTO.VoteResult voteResult:mapList){
+                    voteUsers.clear();
+                    Set<ObjectId> ItemUserIds=voteResult.getUserIds();
+                    for(ObjectId id:ItemUserIds){
+                        UserEntry user=userEntryMap.get(id);
+                        if(null!=user){
+                            voteUsers.add(new User(user.getUserName(),user.getNickName(),user.getID().toString(),
+                                    AvatarUtils.getAvatar(user.getAvatar(),AvatarType.MIN_AVATAR.getType()),user.getSex(),
+                                    DateTimeUtils.convert(timeRecord.get(user.getID()),DateTimeUtils.DATE_YYYY_MM_DD)));
+                        }
+                    }
+                    voteResult.setVoteUsers(voteUsers);
+                }
             }
             communityDetailDTO.setMapList(mapList);
         }
@@ -235,7 +269,12 @@ public class CommunityService {
     }
 
     public void pushToUser(ObjectId communityId, ObjectId uid, int prioity) {
-        MineCommunityEntry mineCommunityEntry = new MineCommunityEntry(uid, communityId, prioity);
+        String customSortSort = RedisUtils.getString("customSort" + uid);
+        int customSort = 0;
+        if (StringUtils.isNotBlank(customSortSort)) {
+            customSort = Integer.parseInt(customSortSort);
+        }
+        MineCommunityEntry mineCommunityEntry = new MineCommunityEntry(uid, communityId, prioity, customSort);
         mineCommunityDao.save(mineCommunityEntry);
     }
 
@@ -252,6 +291,10 @@ public class CommunityService {
             CommunitySeqEntry entry = new CommunitySeqEntry(1, i);
             seqDao.save(entry);
         }
+    }
+
+    public void saveMimeEntry(MineCommunityEntry entry) {
+        mineCommunityDao.save(entry);
     }
 
     /**
@@ -305,26 +348,26 @@ public class CommunityService {
      * @param uid
      * @param message
      */
-    public void saveMessage(ObjectId uid, CommunityMessage message) throws Exception{
+    public void saveMessage(ObjectId uid, CommunityMessage message) throws Exception {
         List<AttachmentEntry> attachmentEntries = splitAttachements(message.getAttachements(), uid);
         List<AttachmentEntry> vedios = splitAttachements(message.getVedios(), uid);
         List<AttachmentEntry> images = splitAttachements(message.getImages(), uid);
-        List<VideoEntry> videoEntries= splitVideos(message.getVideoDTOs(),uid);
+        List<VideoEntry> videoEntries = splitVideos(message.getVideoDTOs(), uid);
         CommunityDetailEntry entry = new CommunityDetailEntry(new ObjectId(message.getCommunityId()),
                 uid, userService.replaceSensitiveWord(message.getTitle()), userService.replaceSensitiveWord(message.getContent()), message.getType(),
                 new ArrayList<ObjectId>(), attachmentEntries, vedios, images,
-                message.getShareUrl(), message.getShareImage(), message.getShareTitle(), message.getSharePrice(),message.getVoteContent(),message.getVoteMaxCount(),
-                ConvertStrToLong(message.getVoteDeadTime()),message.getVoteType(),videoEntries
-                );
+                message.getShareUrl(), message.getShareImage(), message.getShareTitle(), message.getSharePrice(), message.getVoteContent(), message.getVoteMaxCount(),
+                ConvertStrToLong(message.getVoteDeadTime()), message.getVoteType(), videoEntries
+        );
         communityDetailDao.save(entry);
     }
 
-    private long ConvertStrToLong(String voteDeadTime) throws Exception{
-        if(StringUtils.isNotBlank(voteDeadTime)){
-            SimpleDateFormat format=new SimpleDateFormat("yyyy-MM-dd HH:mm");
-            Date time=format.parse(voteDeadTime);
+    private long ConvertStrToLong(String voteDeadTime) throws Exception {
+        if (StringUtils.isNotBlank(voteDeadTime)) {
+            SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd HH:mm");
+            Date time = format.parse(voteDeadTime);
             return time.getTime();
-        }else{
+        } else {
             return -1L;
         }
 
@@ -358,19 +401,19 @@ public class CommunityService {
         }
 
         List<CommunityDetailDTO> dtos = new ArrayList<CommunityDetailDTO>();
-        Set<ObjectId> uuids=new HashSet<ObjectId>();
-        Set<ObjectId> uuuids=new HashSet<ObjectId>();
+        Set<ObjectId> uuids = new HashSet<ObjectId>();
+        Set<ObjectId> uuuids = new HashSet<ObjectId>();
 
         for (CommunityDetailEntry entry : communitys) {
             uuids.add(entry.getCommunityUserId());
             uuuids.add(new ObjectId(entry.getCommunityId()));
         }
         List<ObjectId> objectIds = new ArrayList<ObjectId>(uuids);
-        List<ObjectId> communities=new ArrayList<ObjectId>(uuuids);
+        List<ObjectId> communities = new ArrayList<ObjectId>(uuuids);
         Map<ObjectId, UserEntry> map = userService.getUserEntryMap(objectIds, Constant.FIELDS);
         //获取群昵称
         List<ObjectId> groupIdList = new ArrayList<ObjectId>();
-        Map<ObjectId, ObjectId> groupIds =communityDao.getGroupIds(communities);
+        Map<ObjectId, ObjectId> groupIds = communityDao.getGroupIds(communities);
         for (Map.Entry<ObjectId, ObjectId> item : groupIds.entrySet()) {
             groupIdList.add(item.getValue());
         }
@@ -383,11 +426,11 @@ public class CommunityService {
             if (type.getType() == CommunityDetailType.MATERIALS.getType()) {
                 List<PartInContentDTO> partInContentDTOs = new ArrayList<PartInContentDTO>();
                 List<PartInContentEntry> partInContentEntries = partInContentDao.getPartInContent(entry.getID(), 6, 1, 1);
-                Set<ObjectId> partinUserIds=new HashSet<ObjectId>();
+                Set<ObjectId> partinUserIds = new HashSet<ObjectId>();
                 for (PartInContentEntry partEntry : partInContentEntries) {
                     partinUserIds.add(partEntry.getUserId());
                 }
-                List<ObjectId> tempUserIds=new ArrayList<ObjectId>(partinUserIds);
+                List<ObjectId> tempUserIds = new ArrayList<ObjectId>(partinUserIds);
                 Map<String, MemberEntry> partInMembermap = memberDao.getGroupNick(groupIdList, tempUserIds);
                 for (PartInContentEntry partEntry : partInContentEntries) {
                     PartInContentDTO dto = new PartInContentDTO(partEntry);
@@ -396,37 +439,39 @@ public class CommunityService {
                     if (null != user) {
                         dto.setUserName(user.getUserName());
                         dto.setAvator(AvatarUtils.getAvatar(user.getAvatar(), AvatarType.MIN_AVATAR.getType()));
-                        MemberEntry entry2= partInMembermap.get(groupId + "$" + partEntry.getUserId());
-                        setPartInContentDTOInfo(dto,user,entry2);
+                        MemberEntry entry2 = partInMembermap.get(groupId + "$" + partEntry.getUserId());
+                        setPartInContentDTOInfo(dto, user, entry2);
                         dto.setTime(DateUtils.timeStampToStr(partEntry.getID().getTimestamp()));
                         partInContentDTOs.add(dto);
                     }
                 }
                 communityDetailDTO.setPartList(partInContentDTOs);
-            }else if(type.getType() == CommunityDetailType.VOTE.getType()){
-                int voteCount=fVoteService.getFVoteCount(entry.getID().toString());
+            } else if (type.getType() == CommunityDetailType.VOTE.getType()) {
+                int voteCount = fVoteService.getFVoteCount(entry.getID().toString());
+                int voteTotalCount = fVoteService.countTotalVote(entry.getID().toString());
+                communityDetailDTO.setVoteTotalCount(voteTotalCount);
                 communityDetailDTO.setVoteCount(voteCount);
-                long nowTime=System.currentTimeMillis();
-                if(nowTime<entry.getVoteDeadTime()){
+                long nowTime = System.currentTimeMillis();
+                if (nowTime < entry.getVoteDeadTime()) {
                     communityDetailDTO.setVoteDeadFlag(0);
-                }else{
+                } else {
                     communityDetailDTO.setVoteDeadFlag(1);
                 }
                 communityDetailDTO.setHasVoted(0);
-                if(null!=userId){
+                if (null != userId) {
                     FVoteEntry fVoteEntry = fVoteService.getFVote(entry.getID().toString(), userId.toString());
                     if (null != fVoteEntry) {
                         communityDetailDTO.setHasVoted(1);
                     }
                 }
-                String voteContent=entry.getVoteContent();
-                List<String> voteOptions=new ArrayList<String>();
-                if(voteContent.contains(",")){
-                    String[] str=voteContent.split(",");
-                    for(String item:str){
+                String voteContent = entry.getVoteContent();
+                List<String> voteOptions = new ArrayList<String>();
+                if (voteContent.contains(",")) {
+                    String[] str = voteContent.split(",");
+                    for (String item : str) {
                         voteOptions.add(item);
                     }
-                }else{
+                } else {
                     voteOptions.add(voteContent);
                 }
                 communityDetailDTO.setVoteOptions(voteOptions);
@@ -455,8 +500,8 @@ public class CommunityService {
             }
 
             //先获取群昵称
-            MemberEntry entry1= memberMap.get(groupId + "$" + entry.getCommunityUserId());
-            setCommunityDetailInfo(communityDetailDTO,userEntry,entry1);
+            MemberEntry entry1 = memberMap.get(groupId + "$" + entry.getCommunityUserId());
+            setCommunityDetailInfo(communityDetailDTO, userEntry, entry1);
 
             communityDetailDTO.setUnReadCount(unreadCount);
             communityDetailDTO.setPartInCount(communityDetailDTO.getPartInList().size());
@@ -466,31 +511,31 @@ public class CommunityService {
     }
 
 
-    private void setPartInContentDTOInfo(PartInContentDTO dto,UserEntry userEntry, MemberEntry entry){
-        if(null!=entry){
-            if(StringUtils.isNotBlank(entry.getNickName())){
+    private void setPartInContentDTOInfo(PartInContentDTO dto, UserEntry userEntry, MemberEntry entry) {
+        if (null != entry) {
+            if (StringUtils.isNotBlank(entry.getNickName())) {
                 dto.setNickName(entry.getNickName());
-            }else{
+            } else {
                 dto.setNickName(StringUtils.isNotBlank(userEntry.getNickName()) ? userEntry.getNickName() : userEntry.getUserName());
             }
-        }else {
+        } else {
             dto.setNickName(StringUtils.isNotBlank(userEntry.getNickName()) ? userEntry.getNickName() : userEntry.getUserName());
         }
     }
 
 
-    private void setCommunityDetailInfo(CommunityDetailDTO communityDetailDTO,UserEntry userEntry, MemberEntry entry){
-        if(entry != null) {
-            if(StringUtils.isNotBlank(entry.getNickName())){
+    private void setCommunityDetailInfo(CommunityDetailDTO communityDetailDTO, UserEntry userEntry, MemberEntry entry) {
+        if (entry != null) {
+            if (StringUtils.isNotBlank(entry.getNickName())) {
                 communityDetailDTO.setNickName(entry.getNickName());
-            }else{
-                if(null != userEntry){
-                    communityDetailDTO.setNickName(StringUtils.isNotBlank(userEntry.getNickName())?userEntry.getNickName():userEntry.getUserName());
+            } else {
+                if (null != userEntry) {
+                    communityDetailDTO.setNickName(StringUtils.isNotBlank(userEntry.getNickName()) ? userEntry.getNickName() : userEntry.getUserName());
                 }
             }
         } else {
-            if(null != userEntry){
-                communityDetailDTO.setNickName(StringUtils.isNotBlank(userEntry.getNickName())?userEntry.getNickName():userEntry.getUserName());
+            if (null != userEntry) {
+                communityDetailDTO.setNickName(StringUtils.isNotBlank(userEntry.getNickName()) ? userEntry.getNickName() : userEntry.getUserName());
             }
         }
     }
@@ -527,7 +572,7 @@ public class CommunityService {
         int totalCount = communityDetailDao.count(communityId);
         int totalPages = totalCount % pageSize == 0 ? totalCount / pageSize : (int) Math.ceil(totalCount / pageSize) + 1;
         page = page > totalPages ? totalPages : page;
-        if(totalPages == 0 || page < 1) {
+        if (totalPages == 0 || page < 1) {
             page = 1;
         }
         pageModel.setPage(page);
@@ -711,7 +756,7 @@ public class CommunityService {
 
         int totalPages = counts % pageSize == 0 ? counts / pageSize : (int) Math.ceil(counts / pageSize) + 1;
         page = page > totalPages ? totalPages : page;
-        if(totalPages == 0 || page < 1) {
+        if (totalPages == 0 || page < 1) {
             page = 1;
         }
 
@@ -722,14 +767,14 @@ public class CommunityService {
         }
         CommunityEntry communityEntry = communityDao.findByObjectId(communityId);
         List<CommunityDetailDTO> dtos = new ArrayList<CommunityDetailDTO>();
-        Set<ObjectId> userIds=new HashSet<ObjectId>();
+        Set<ObjectId> userIds = new HashSet<ObjectId>();
         for (CommunityDetailEntry entry : entries) {
             userIds.add(entry.getCommunityUserId());
         }
         List<ObjectId> objectIds = new ArrayList<ObjectId>(userIds);
         Map<ObjectId, UserEntry> map = userService.getUserEntryMap(objectIds, Constant.FIELDS);
         //获取群昵称
-        List<ObjectId> communityIds=new ArrayList<ObjectId>();
+        List<ObjectId> communityIds = new ArrayList<ObjectId>();
         communityIds.add(communityId);
         List<ObjectId> groupIdList = new ArrayList<ObjectId>();
         Map<ObjectId, ObjectId> groupIds = communityDao.getGroupIds(communityIds);
@@ -745,9 +790,9 @@ public class CommunityService {
             }
 
             ObjectId groupId = groupIds.get(new ObjectId(entry.getCommunityId()));
-            MemberEntry entry1= memberMap.get(groupId + "$" + entry.getCommunityUserId());
+            MemberEntry entry1 = memberMap.get(groupId + "$" + entry.getCommunityUserId());
 
-            setCommunityDetailInfo(communityDetailDTO,userEntry,entry1);
+            setCommunityDetailInfo(communityDetailDTO, userEntry, entry1);
 
 
             if (null != userId) {
@@ -757,30 +802,30 @@ public class CommunityService {
                 }
             }
 
-           if(type.getType() == CommunityDetailType.VOTE.getType()){
-                int voteCount=fVoteService.getFVoteCount(entry.getID().toString());
+            if (type.getType() == CommunityDetailType.VOTE.getType()) {
+                int voteCount = fVoteService.getFVoteCount(entry.getID().toString());
                 communityDetailDTO.setVoteCount(voteCount);
-                long nowTime=System.currentTimeMillis();
-                if(nowTime<entry.getVoteDeadTime()){
+                long nowTime = System.currentTimeMillis();
+                if (nowTime < entry.getVoteDeadTime()) {
                     communityDetailDTO.setVoteDeadFlag(0);
-                }else{
+                } else {
                     communityDetailDTO.setVoteDeadFlag(1);
                 }
                 communityDetailDTO.setHasVoted(0);
-                if(null!=userId){
+                if (null != userId) {
                     FVoteEntry fVoteEntry = fVoteService.getFVote(entry.getID().toString(), userId.toString());
                     if (null != fVoteEntry) {
                         communityDetailDTO.setHasVoted(1);
                     }
                 }
-                String voteContent=entry.getVoteContent();
-                List<String> voteOptions=new ArrayList<String>();
-                if(voteContent.contains(",")){
-                    String[] str=voteContent.split(",");
-                    for(String item:str){
+                String voteContent = entry.getVoteContent();
+                List<String> voteOptions = new ArrayList<String>();
+                if (voteContent.contains(",")) {
+                    String[] str = voteContent.split(",");
+                    for (String item : str) {
                         voteOptions.add(item);
                     }
-                }else{
+                } else {
                     voteOptions.add(voteContent);
                 }
                 communityDetailDTO.setVoteOptions(voteOptions);
@@ -788,7 +833,7 @@ public class CommunityService {
 
             List<PartInContentDTO> partInContentDTOs = new ArrayList<PartInContentDTO>();
             List<PartInContentEntry> partInContentEntries = partInContentDao.getPartInContent(entry.getID(), -1, 1, 1);
-            Set<ObjectId> partInUserIds=new HashSet<ObjectId>();
+            Set<ObjectId> partInUserIds = new HashSet<ObjectId>();
             for (PartInContentEntry partInContentEntry : partInContentEntries) {
                 partInUserIds.add(partInContentEntry.getUserId());
             }
@@ -799,8 +844,8 @@ public class CommunityService {
                 partInContentDTO.setUserName(userEntry1.getUserName());
                 partInContentDTO.setAvator(AvatarUtils.getAvatar(userEntry1.getAvatar(), AvatarType.MIN_AVATAR.getType()));
 
-                MemberEntry entry2= partInMembermap.get(groupId + "$" + partInContentEntry.getUserId());
-                setPartInContentDTOInfo(partInContentDTO,userEntry1,entry2);
+                MemberEntry entry2 = partInMembermap.get(groupId + "$" + partInContentEntry.getUserId());
+                setPartInContentDTOInfo(partInContentDTO, userEntry1, entry2);
                 partInContentDTO.setTime(DateUtils.timeStampToStr(partInContentEntry.getID().getTimestamp()));
                 partInContentDTOs.add(partInContentDTO);
             }
@@ -898,14 +943,14 @@ public class CommunityService {
         map.put(CommunityDetailType.MEANS.getDecs().toLowerCase(), getNews(communityIds, CommunityDetailType.MEANS, page, pageSize, order, userId, operation));
         map.put(CommunityDetailType.HOMEWORK.getDecs().toLowerCase(), getNews(communityIds, CommunityDetailType.HOMEWORK, page, pageSize, order, userId, operation));
         map.put(CommunityDetailType.MATERIALS.getDecs().toLowerCase(), getNews(communityIds, CommunityDetailType.MATERIALS, page, pageSize, order, userId, operation));
-        map.put(CommunityDetailType.VOTE.getDecs().toLowerCase(),getNews(communityIds, CommunityDetailType.VOTE, page, pageSize, order, userId, operation));
+        map.put(CommunityDetailType.VOTE.getDecs().toLowerCase(), getNews(communityIds, CommunityDetailType.VOTE, page, pageSize, order, userId, operation));
         return map;
     }
 
     public PageModel<CommunityDetailDTO> getMyMessages(ObjectId userId, int page, int pageSize, int order) {
 
         List<MineCommunityEntry> mineCommunityEntries = mineCommunityDao.findAll(userId, -1, 0);
-        Set<ObjectId> uuuids=new HashSet<ObjectId>();
+        Set<ObjectId> uuuids = new HashSet<ObjectId>();
         for (MineCommunityEntry mineCommunityEntry : mineCommunityEntries) {
             uuuids.add(mineCommunityEntry.getCommunityId());
 
@@ -914,34 +959,34 @@ public class CommunityService {
         int totalCount = communityDetailDao.count(myCommunitys);
         int totalPages = totalCount % pageSize == 0 ? totalCount / pageSize : (int) Math.ceil(totalCount / pageSize) + 1;
         page = page > totalPages ? totalPages : page;
-        if(totalPages == 0 || page < 1) {
+        if (totalPages == 0 || page < 1) {
             page = 1;
         }
 
         PageModel<CommunityDetailDTO> pageModel = new PageModel<CommunityDetailDTO>();
         List<CommunityDetailEntry> entries = communityDetailDao.getDetailsByUserId(myCommunitys, page, pageSize, order);
         List<CommunityDetailDTO> dtos = new ArrayList<CommunityDetailDTO>();
-        Set<ObjectId> uuids=new HashSet<ObjectId>();
+        Set<ObjectId> uuids = new HashSet<ObjectId>();
         for (CommunityDetailEntry entry : entries) {
             uuids.add(entry.getCommunityUserId());
         }
         List<ObjectId> objectIds = new ArrayList<ObjectId>(uuids);
         Map<ObjectId, UserEntry> map = userService.getUserEntryMap(objectIds, Constant.FIELDS);
         //获取群昵称
-        Map<ObjectId,ObjectId>  groupIds=communityDao.getGroupIds(myCommunitys);
-        List<ObjectId> groupIdList=new ArrayList<ObjectId>();
-        for(Map.Entry<ObjectId,ObjectId> item:groupIds.entrySet()){
+        Map<ObjectId, ObjectId> groupIds = communityDao.getGroupIds(myCommunitys);
+        List<ObjectId> groupIdList = new ArrayList<ObjectId>();
+        for (Map.Entry<ObjectId, ObjectId> item : groupIds.entrySet()) {
             groupIdList.add(item.getValue());
         }
-        Map<String,MemberEntry> memberMap=memberDao.getGroupNick(groupIdList,objectIds);
+        Map<String, MemberEntry> memberMap = memberDao.getGroupNick(groupIdList, objectIds);
         for (CommunityDetailEntry entry : entries) {
             UserEntry userEntry = map.get(entry.getCommunityUserId());
             CommunityDetailDTO communityDetailDTO = new CommunityDetailDTO(entry);
             communityDetailDTO.setImageUrl(AvatarUtils.getAvatar(userEntry.getAvatar(), AvatarType.MIN_AVATAR.getType()));
             //先获取群昵称
-            ObjectId groupId=groupIds.get(new ObjectId(entry.getCommunityId()));
-            MemberEntry entry1=memberMap.get(groupId+"$"+entry.getCommunityUserId());
-            setCommunityDetailInfo(communityDetailDTO,userEntry,entry1);
+            ObjectId groupId = groupIds.get(new ObjectId(entry.getCommunityId()));
+            MemberEntry entry1 = memberMap.get(groupId + "$" + entry.getCommunityUserId());
+            setCommunityDetailInfo(communityDetailDTO, userEntry, entry1);
 
             dtos.add(communityDetailDTO);
         }
@@ -978,7 +1023,7 @@ public class CommunityService {
         for (CommunityDTO dto : dtos) {
             MemberDTO head = memberService.getHead(new ObjectId(dto.getGroupId()));
             int count = memberService.getMemberCount(new ObjectId(dto.getGroupId()));
-            if(null!=head) {
+            if (null != head) {
                 dto.setMemberCount(count);
                 dto.setHead(head);
                 returnData.add(dto);
@@ -987,7 +1032,7 @@ public class CommunityService {
         return returnData;
     }
 
-    private List<VideoEntry> splitVideos(List<VideoDTO> videoDTOs,ObjectId uid){
+    private List<VideoEntry> splitVideos(List<VideoDTO> videoDTOs, ObjectId uid) {
         List<VideoEntry> videoEntries = new ArrayList<VideoEntry>();
         if (videoDTOs == null) return videoEntries;
         for (VideoDTO videoDTO : videoDTOs) {
@@ -1042,7 +1087,7 @@ public class CommunityService {
         remarkDao.save(entry);
     }
 
-    public RemarkEntry getRemarkEntry(ObjectId userId,ObjectId endUserId){
+    public RemarkEntry getRemarkEntry(ObjectId userId, ObjectId endUserId) {
         return remarkDao.getEntry(userId, endUserId);
     }
 
@@ -1109,20 +1154,20 @@ public class CommunityService {
         pageModel.setTotalCount(totalCount);
         int totalPages = totalCount % pageSize == 0 ? totalCount / pageSize : (int) Math.ceil(totalCount / pageSize) + 1;
         page = page > totalPages ? totalPages : page;
-        if(totalPages == 0 || page < 1) {
+        if (totalPages == 0 || page < 1) {
             page = 1;
         }
         pageModel.setTotalPages(totalPages);
         pageModel.setPageSize(pageSize);
         pageModel.setPage(page);
         boolean isManager = false;
-        ObjectId groupId=new ObjectId();
+        ObjectId groupId = new ObjectId();
         List<PartInContentEntry> entrys = partInContentDao.getPartInContent(detailId, -1, page, pageSize);
-        List<ObjectId> communityIds=new ArrayList<ObjectId>();
+        List<ObjectId> communityIds = new ArrayList<ObjectId>();
         if (entrys.size() > 0) {
             ObjectId communityId = entrys.get(0).getCommunityId();
             communityIds.add(communityId);
-            groupId= getGroupId(communityId);
+            groupId = getGroupId(communityId);
             if (null != userId) {
                 if (memberDao.isManager(groupId, userId)) {
                     isManager = true;
@@ -1130,21 +1175,21 @@ public class CommunityService {
             }
         }
 
-        Set<ObjectId> uuids=new HashSet<ObjectId>();
+        Set<ObjectId> uuids = new HashSet<ObjectId>();
         for (PartInContentEntry entry : entrys) {
             uuids.add(entry.getUserId());
         }
         List<PartInContentDTO> parts = new ArrayList<PartInContentDTO>();
         List<ObjectId> groupIdList = new ArrayList<ObjectId>();
-        Map<String, MemberEntry> memberMap =new HashMap<String, MemberEntry>();
+        Map<String, MemberEntry> memberMap = new HashMap<String, MemberEntry>();
         Map<ObjectId, ObjectId> groupIds;
-        if(communityIds.size()>0){
-            groupIds= communityDao.getGroupIds(communityIds);
+        if (communityIds.size() > 0) {
+            groupIds = communityDao.getGroupIds(communityIds);
             for (Map.Entry<ObjectId, ObjectId> item : groupIds.entrySet()) {
                 groupIdList.add(item.getValue());
             }
-            List<ObjectId> objectIds=new ArrayList<ObjectId>(uuids);
-            memberMap=memberDao.getGroupNick(groupIdList, objectIds);
+            List<ObjectId> objectIds = new ArrayList<ObjectId>(uuids);
+            memberMap = memberDao.getGroupNick(groupIdList, objectIds);
         }
 
         for (PartInContentEntry entry : entrys) {
@@ -1153,8 +1198,8 @@ public class CommunityService {
             dto.setUserName(userEntry.getUserName());
             dto.setAvator(AvatarUtils.getAvatar(userEntry.getAvatar(), AvatarType.MIN_AVATAR.getType()));
 
-            MemberEntry entry1= memberMap.get(groupId + "$" + entry.getUserId());
-            setPartInContentDTOInfo(dto,userEntry,entry1);
+            MemberEntry entry1 = memberMap.get(groupId + "$" + entry.getUserId());
+            setPartInContentDTOInfo(dto, userEntry, entry1);
 
 
             dto.setTime(DateUtils.timeStampToStr(entry.getID().getTimestamp()));
@@ -1501,29 +1546,33 @@ public class CommunityService {
     }
 
     public void cleanNecessaryCommunity(ObjectId userId, ObjectId communityId) {
-        mineCommunityDao.cleanNecessaryCommunity(userId,communityId);
+        mineCommunityDao.cleanNecessaryCommunity(userId, communityId);
     }
 
 
-    public List<RemarkDTO> getRemarkDtos(ObjectId userId){
-        List<RemarkDTO> dtos=new ArrayList<RemarkDTO>();
-        List<RemarkEntry> entries=remarkDao.getRemarkEntries(userId);
-        for(RemarkEntry entry:entries){
+    public List<RemarkDTO> getRemarkDtos(ObjectId userId) {
+        List<RemarkDTO> dtos = new ArrayList<RemarkDTO>();
+        List<RemarkEntry> entries = remarkDao.getRemarkEntries(userId);
+        for (RemarkEntry entry : entries) {
             dtos.add(new RemarkDTO(entry));
         }
         return dtos;
     }
 
-    public void updateInitSort(ObjectId userId){
+    public void updateInitSort(ObjectId userId) {
         mineCommunityDao.updateInitSort(userId);
     }
 
-    public Map<ObjectId,MineCommunityEntry> getMySortCommunities(ObjectId userId,List<ObjectId> communityIds){
+    public Map<ObjectId, MineCommunityEntry> getMySortCommunities(ObjectId userId, List<ObjectId> communityIds) {
         return mineCommunityDao.getMySortCommunities(userId, communityIds);
     }
 
-    public void batchSave(List<MineCommunityEntry> entries){
+    public void batchSave(List<MineCommunityEntry> entries) {
         mineCommunityDao.batchSave(entries);
+    }
+
+    public void cleanPrior(){
+        mineCommunityDao.cleanPrior();
     }
 
 }

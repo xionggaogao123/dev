@@ -37,9 +37,10 @@ public class MineCommunityDao extends BaseDao {
                 .append("uid", userId);
         BasicDBObject orderBy = new BasicDBObject()
                 .append("prio", -1)
-//                .append("tp", -1)
                 .append("cust",-1)
+                .append("tp", -1)
                 .append(Constant.ID, Constant.DESC);
+
         List<DBObject> dbos;
         if (page != -1) {
             dbos = find(MongoFacroty.getAppDB(), Constant.COLLECTION_FORUM_MINE_COMMUNITY, query, Constant.FIELDS, orderBy, (page - 1) * pageSize, pageSize);
@@ -125,8 +126,16 @@ public class MineCommunityDao extends BaseDao {
         BasicDBObject query = new BasicDBObject("uid", userId).append("cmid", communityId);
         if (count(MongoFacroty.getAppDB(), Constant.COLLECTION_FORUM_MINE_COMMUNITY, query) >= 2) {
             delete(communityId, userId);
-            MineCommunityEntry communityEntry = new MineCommunityEntry(userId, communityId, 3);
+            MineCommunityEntry communityEntry = new MineCommunityEntry(userId, communityId, 3 ,0);
             save(communityEntry);
         }
+    }
+
+    public void cleanPrior(){
+        List<ObjectId> communities=new ArrayList<ObjectId>();
+        communities.add(new ObjectId("582f00033d4df91126ff2b9b"));
+        BasicDBObject query=new BasicDBObject("cmid",new BasicDBObject(Constant.MONGO_NOTIN,communities)).append("prio",2);
+        BasicDBObject updateValue=new BasicDBObject(Constant.MONGO_SET,new BasicDBObject("prio",1));
+        update(MongoFacroty.getAppDB(), Constant.COLLECTION_FORUM_MINE_COMMUNITY, query,updateValue);
     }
 }

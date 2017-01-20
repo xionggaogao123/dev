@@ -349,6 +349,7 @@ public class CommunityController extends BaseController {
     @ResponseBody
     public RespObj sortMyCommunities(String params){
         ObjectId userId=getUserId();
+        int max=0;
         //初始化状态
         communityService.updateInitSort(userId);
         Map<ObjectId,Integer> map=new HashMap<ObjectId, Integer>();
@@ -358,13 +359,21 @@ public class CommunityController extends BaseController {
             for(String item:param){
                 String[] temp=item.split("@");
                 communities.add(new ObjectId(temp[0]));
-                map.put(new ObjectId(temp[0]),Integer.parseInt(temp[1]));
+                int customSort=Integer.parseInt(temp[1]);
+                if(max<=customSort){
+                    max=customSort;
+                }
+                map.put(new ObjectId(temp[0]),customSort);
             }
         }else{
             String[] temp=params.split("@");
             communities.add(new ObjectId(temp[0]));
-            map.put(new ObjectId(temp[0]),Integer.parseInt(temp[1]));
+            max=Integer.parseInt(temp[1]);
+            map.put(new ObjectId(temp[0]),max);
         }
+
+        RedisUtils.cacheString("customSort"+userId,String.valueOf(max),Constant.SECONDS_IN_MONTH);
+
         List<MineCommunityEntry> entries=new ArrayList<MineCommunityEntry>();
         Map<ObjectId,MineCommunityEntry> mineCommunityEntryMap=communityService.getMySortCommunities(userId,communities);
         for(Map.Entry<ObjectId,MineCommunityEntry> entry:mineCommunityEntryMap.entrySet()){
@@ -373,7 +382,10 @@ public class CommunityController extends BaseController {
             mineCommunityEntry.setCustomSort(customSort);
             entries.add(mineCommunityEntry);
         }
-        communityService.batchSave(entries);
+//        communityService.batchSave(entries);
+        for(MineCommunityEntry entry:entries){
+            communityService.saveMimeEntry(entry);
+        }
         return RespObj.SUCCESS;
     }
 
@@ -843,9 +855,17 @@ public class CommunityController extends BaseController {
             communityService.setPartIncontentStatus(communityId, userId, 0);
         } else {
             //新人
-            communityService.pushToUser(communityId, userId, 2);
+            communityService.pushToUser(communityId, userId, 3);
             memberService.saveMember(userId, groupId, 0);
         }
+    }
+
+    @RequestMapping("/cleanPrior")
+    @ResponseBody
+    @SessionNeedless
+    public RespObj cleanPrior(){
+        communityService.cleanPrior();
+        return RespObj.SUCCESS;
     }
 
 

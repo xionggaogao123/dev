@@ -19,11 +19,12 @@ public class MineCommunityEntry extends BaseDBObject {
     setBaseEntry((BasicDBObject)dbo);
   }
 
-  public MineCommunityEntry(ObjectId userId,ObjectId communityId,int priority){
+  public MineCommunityEntry(ObjectId userId,ObjectId communityId,int priority,int customSort){
     BasicDBObject basicDBObject = new BasicDBObject()
             .append("uid", userId)
             .append("cmid",communityId)
             .append("prio",priority)
+            .append("cust",customSort)
             .append("tp",0);
     setBaseEntry(basicDBObject);
   }

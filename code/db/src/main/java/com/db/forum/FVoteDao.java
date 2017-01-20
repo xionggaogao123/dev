@@ -89,6 +89,15 @@ public class FVoteDao extends BaseDao {
         return retList;
     }
 
+
+    public int  countTotalVote(ObjectId voteId){
+        BasicDBObject query = new BasicDBObject();
+        if (voteId != null) {
+            query.append("vid", voteId);
+        }
+        return count(MongoFacroty.getAppDB(), Constant.COLLECTION_FORUM_VOTE, query);
+    }
+
     /**
      * 获取投票人数
      */

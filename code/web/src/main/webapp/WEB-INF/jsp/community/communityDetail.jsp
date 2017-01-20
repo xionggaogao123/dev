@@ -87,7 +87,10 @@
                                                  <span>多选</span>
                                             </c:otherwise>
                                            </c:choose>投票：（最多可选${voteMaxCount}项），共有<em id="voteUserCount" count="${voteUserCount}">${voteUserCount}</em>人参与投票
-                                            <c:if test="${voteFlagType==0}">
+                                            <c:if test="${voteFlagType==0&&voteDeadFlag==1}">
+                                                <a href="javascript:void(0)" onclick="searchVote()">查看投票参与人</a>
+                                            </c:if>
+                                            <c:if test="${voteFlagType==0&&voteDeadFlag==0&&voteType==1}">
                                                 <a href="javascript:void(0)" onclick="searchVote()">查看投票参与人</a>
                                             </c:if>
                                           </h3>

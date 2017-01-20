@@ -28,6 +28,12 @@
             <version>2.0.0</version>
         </dependency>
 
+        <dependency>
+            <groupId>log4j</groupId>
+            <artifactId>log4j</artifactId>
+            <version>1.2.16</version>
+        </dependency>
+
         <!-- httpclient -->
         <dependency>
             <groupId>org.apache.httpcomponents</groupId>
@@ -41,7 +47,6 @@
             <artifactId>httpcore</artifactId>
             <version>4.4.5</version>
         </dependency>
-
 
         <!-- commons-lang3 -->
         <dependency>

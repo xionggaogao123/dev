@@ -547,11 +547,15 @@ public class EBusinessGoodsController extends BaseController {
 
         UserEntry e = userService.findByUserName(username.toLowerCase());
         if (null == e) {
-            obj.put("message", "找不到用户");
-            return obj;
+            e = userService.findByMobile(username);
+            if (e == null) {
+                obj.put("message", "找不到用户");
+                return obj;
+            }
         }
+
         obj.put("code", Constant.SUCCESS_CODE);
-        if(StringUtils.isNotBlank(e.getMobileNumber())) {
+        if (StringUtils.isNotBlank(e.getMobileNumber())) {
             obj.put("phone", e.getMobileNumber());
         }
         obj.put("k6kt", e.getK6KT());

@@ -1,5 +1,7 @@
 package fulaan.social.util;
 
+import fulaan.social.constant.Charset;
+
 import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;
 
@@ -10,7 +12,7 @@ public class Util {
 
     public static String strURLEncodeUTF8(String value){
         try {
-            return URLEncoder.encode(value, "UTF8");
+            return URLEncoder.encode(value, Charset.UTF_8);
         } catch (UnsupportedEncodingException e) {
             e.printStackTrace();
         }

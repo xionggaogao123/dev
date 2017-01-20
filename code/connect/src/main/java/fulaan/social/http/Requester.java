@@ -12,6 +12,7 @@ import org.apache.http.client.methods.*;
 import org.apache.http.impl.client.CloseableHttpClient;
 import org.apache.http.impl.client.HttpClientBuilder;
 import org.apache.http.message.BasicNameValuePair;
+import org.apache.log4j.Logger;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -29,6 +30,8 @@ import java.util.Map;
  *
  */
 public class Requester {
+
+    private static Logger logger = Logger.getLogger(Requester.class);
 
     private Method method = Method.GET;
     private String baseUrl;
@@ -120,7 +123,9 @@ public class Requester {
     }
 
     private String execute(HttpUriRequest request) throws IOException {
+        logger.debug("start execute =========== in Requester ");
         HttpResponse response = client.execute(request);
+        logger.debug("end execute =========== in Requester ");
         if (response.getStatusLine().getStatusCode() == 200) {
             HttpEntity entity = response.getEntity();
             return getContentFromInputStream(entity.getContent());
@@ -160,5 +165,8 @@ public class Requester {
         }
     }
 
+    public static void main(String[] args) {
+        logger.info("===========>");
+    }
 
 }

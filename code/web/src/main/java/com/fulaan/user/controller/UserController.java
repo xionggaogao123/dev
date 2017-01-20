@@ -1,6 +1,7 @@
 package com.fulaan.user.controller;
 
 import com.easemob.server.EaseMobAPI;
+import com.fulaan.account.service.AccountService;
 import com.fulaan.annotation.ObjectIdType;
 import com.fulaan.annotation.SessionNeedless;
 import com.fulaan.annotation.UserRoles;
@@ -107,6 +108,8 @@ public class UserController extends BaseController {
     private MateService mateService;
     @Autowired
     private MemberService memberService;
+    @Autowired
+    private AccountService accountService;
 
     private Auth qqAuth = AuthFactory.getAuth(AuthType.QQ);
     private Auth wechatAuth = AuthFactory.getAuth(AuthType.WECHAT);
@@ -256,7 +259,7 @@ public class UserController extends BaseController {
             loginLog.setPlatform(getPlatform().getName());
             loginLog.setUserId(e.getID().toString());
             loginLog.setUserName(e.getUserName());
-            if (e.getK6KT() == 1) {//k6kt用户
+            if (e.getK6KT() == 1 && schoolEntry != null) {//k6kt用户
                 loginLog.setRole(e.getRole());
                 loginLog.setSchoolId(schoolEntry.getID().toString());
                 loginLog.setSchoolName(schoolEntry.getName());
@@ -267,6 +270,7 @@ public class UserController extends BaseController {
             loginLogger.info(loginLog);
             logService.insertLog(e, getPlatform(), LogType.CLICK_LOGIN, "login.do");
         } catch (Exception ex) {
+            ex.printStackTrace();
         }
         return value;
     }
@@ -340,6 +344,10 @@ public class UserController extends BaseController {
             //若code为空，则生成code
             userEntry.setGenerateUserCode(ObjectIdPackageUtil.getPackage(userEntry.getID()));
             userService.addUser(userEntry);
+        }
+
+        if (StringUtils.isNotBlank(userEntry.getMobileNumber())) {
+            accountService.bindMobile(userEntry.getID(), userEntry.getMobileNumber());
         }
 
         if (StringUtils.isNotBlank(userEntry.getAvatar())) {

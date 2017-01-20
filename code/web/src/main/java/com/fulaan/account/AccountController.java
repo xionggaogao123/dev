@@ -185,7 +185,7 @@ public class AccountController extends BaseController {
     @ResponseBody
     public RespObj bindPhone(String phone, String code, String cacheKeyId) {
         UserEntry userEntry = userService.findById(getUserId());
-        if(phone.equals(userEntry.getMobileNumber())) {
+        if (phone.equals(userEntry.getMobileNumber())) {
             return RespObj.FAILDWithErrorMsg("你已经绑定了此手机号，无需再次绑定");
         }
         Validate validate = userService.validatePhoneNumberCode(phone, code, cacheKeyId);
@@ -242,7 +242,7 @@ public class AccountController extends BaseController {
             result.put("type", "email");
             result.put("email", name);
             result.put("userName", e.getUserName());
-            result.put("phone",e.getMobileNumber());
+            result.put("phone", e.getMobileNumber());
             return RespObj.SUCCESS(result);
         }
         if (ValidationUtils.isMobile(name)) {
@@ -262,7 +262,11 @@ public class AccountController extends BaseController {
             result.put("type", "userName");
             result.put("userName", name);
             result.put("email", userEntry.getEmail());
-            result.put("phone",userEntry.getMobileNumber());
+            result.put("mobile", userEntry.getMobileNumber());
+            result.put("protectedMobile", getProtectedMobile(userEntry.getMobileNumber()));
+            if (StringUtils.isBlank(userEntry.getEmail()) && StringUtils.isBlank(userEntry.getMobileNumber())) {
+                return RespObj.FAILDWithErrorMsg("此账号无法通过邮箱和手机找回!");
+            }
             return RespObj.SUCCESS(result);
         }
         if (ValidationUtils.isMobile(name)) {
@@ -270,7 +274,8 @@ public class AccountController extends BaseController {
             result.put("type", "userName");
             result.put("userName", userEntry.getUserName());
             result.put("email", userEntry.getEmail());
-            result.put("phone",userEntry.getMobileNumber());
+            result.put("mobile", userEntry.getMobileNumber());
+            result.put("protectedMobile", getProtectedMobile(name));
             return RespObj.SUCCESS(result);
         }
         return RespObj.FAILDWithErrorMsg("失败");
@@ -278,6 +283,7 @@ public class AccountController extends BaseController {
 
     /**
      * 验证 手机号 验证码是否匹配
+     *
      * @param phone
      * @param code
      * @param cacheKeyId
@@ -296,6 +302,7 @@ public class AccountController extends BaseController {
 
     /**
      * 验证用户名 和 手机号是否匹配
+     *
      * @param userName
      * @param phone
      * @return
@@ -303,9 +310,9 @@ public class AccountController extends BaseController {
     @SessionNeedless
     @RequestMapping("/verifyUserNameAndPhone")
     @ResponseBody
-    public RespObj verifyUserNameAndPhone(String userName,String phone) {
+    public RespObj verifyUserNameAndPhone(String userName, String phone) {
         UserEntry userEntry = userService.findByUserName(userName);
-        if(StringUtils.isNotBlank(phone) && phone.equals(userEntry.getMobileNumber())) {
+        if (StringUtils.isNotBlank(phone) && phone.equals(userEntry.getMobileNumber())) {
             return RespObj.SUCCESS;
         }
         return RespObj.FAILDWithErrorMsg("验证失败");
@@ -313,6 +320,7 @@ public class AccountController extends BaseController {
 
     /**
      * 发送验证邮件
+     *
      * @param email
      * @return
      */
@@ -321,7 +329,7 @@ public class AccountController extends BaseController {
     @ResponseBody
     public RespObj sendVerifyEmail(String email) {
         UserEntry user = userService.findByEmail(email);
-        if(user == null) {
+        if (user == null) {
             return RespObj.FAILDWithErrorMsg("邮箱未绑定账号");
         }
         ObjectId key = new ObjectId();
@@ -333,6 +341,7 @@ public class AccountController extends BaseController {
 
     /**
      * 邮箱验证
+     *
      * @param validateCode
      * @param response
      * @return
@@ -342,13 +351,14 @@ public class AccountController extends BaseController {
     @RequestMapping("/emailValidate")
     public ModelAndView emailValidate(String validateCode, HttpServletResponse response) throws Exception {
         response.addCookie(new Cookie(Constant.FW_RESET_PASSWORD_CODE, validateCode));
-        Map<String,Object> map = new HashMap<String,Object>();
-        map.put("verify",true);
+        Map<String, Object> map = new HashMap<String, Object>();
+        map.put("verify", true);
         return new ModelAndView("/account/findPassword", map);
     }
 
     /**
      * 通过邮箱重置密码
+     *
      * @param password
      * @param validateCode
      * @return
@@ -356,20 +366,21 @@ public class AccountController extends BaseController {
     @SessionNeedless
     @RequestMapping("/resetPasswordByEmail")
     @ResponseBody
-    public RespObj resetPasswordByEmail(String password,@CookieValue(value = Constant.FW_RESET_PASSWORD_CODE) String validateCode) {
+    public RespObj resetPasswordByEmail(String password, @CookieValue(value = Constant.FW_RESET_PASSWORD_CODE) String validateCode) {
         String cacheKey = CacheHandler.getKeyString(CacheHandler.CACHE_FW_VALIDATE_EMAIL, validateCode);
-        if(StringUtils.isBlank(cacheKey)) {
+        if (StringUtils.isBlank(cacheKey)) {
             return RespObj.FAILDWithErrorMsg("链接已失效");
         }
         String email = CacheHandler.getStringValue(cacheKey);
         UserEntry e = userService.findByEmail(email);
-        userService.resetPassword(e.getID(),MD5Utils.getMD5String(password));
+        userService.resetPassword(e.getID(), MD5Utils.getMD5String(password));
         CacheHandler.deleteKey(CacheHandler.CACHE_FW_VALIDATE_EMAIL, validateCode);
         return RespObj.SUCCESS("重置密码成功");
     }
 
     /**
      * 重置密码
+     *
      * @param userName
      * @param phone
      * @param code
@@ -389,7 +400,7 @@ public class AccountController extends BaseController {
         if (userEntry == null) {
             return RespObj.FAILDWithErrorMsg("用户不存在");
         }
-        if(!userEntry.getMobileNumber().equals(phone)) {
+        if (!userEntry.getMobileNumber().equals(phone)) {
             return RespObj.FAILDWithErrorMsg("手机号与用户不匹配");
         }
         userService.resetPassword(userEntry.getID(), MD5Utils.getMD5String(password));
@@ -524,12 +535,12 @@ public class AccountController extends BaseController {
 
     @RequestMapping("/unsetData")
     @ResponseBody
-    public RespObj unsetPhone(String phone,String email) {
-        if(StringUtils.isNotBlank(phone)) {
+    public RespObj unsetPhone(String phone, String email) {
+        if (StringUtils.isNotBlank(phone)) {
             userService.clearUserPhone(phone);
             accountService.clearPhone(phone);
         }
-        if(StringUtils.isNotBlank(email)) {
+        if (StringUtils.isNotBlank(email)) {
             userService.clearUserEmail(email);
         }
         return RespObj.SUCCESS;

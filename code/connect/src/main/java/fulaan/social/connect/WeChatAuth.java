@@ -2,6 +2,7 @@ package fulaan.social.connect;
 
 import fulaan.social.exception.ConnectException;
 import fulaan.social.http.HttpClient;
+import fulaan.social.http.Requester;
 import fulaan.social.model.Sex;
 import fulaan.social.model.TokenObj;
 import fulaan.social.model.UserInfo;
@@ -31,7 +32,7 @@ public class WeChatAuth implements Auth {
     private static String WAP_APP_SECRET;
 
     static {
-       init();
+        init();
     }
 
     private static void init() {
@@ -58,7 +59,7 @@ public class WeChatAuth implements Auth {
 
     private TokenObj getAccessToken(String authCode, String pf) throws IOException {
         Map<String, String> maps = new HashMap<String, String>();
-        if(StringUtils.isNotBlank(pf) && pf.equals("wap")) {
+        if (StringUtils.isNotBlank(pf) && pf.equals("wap")) {
             maps.put("appid", WAP_APP_ID);
             maps.put("secret", WAP_APP_SECRET);
         } else {
@@ -67,17 +68,16 @@ public class WeChatAuth implements Auth {
         }
         maps.put("code", authCode);
         maps.put("grant_type", "authorization_code");
-        String content = HttpClient.get(ACCESS_TOKEN_URL,maps);
+        String content = HttpClient.get(ACCESS_TOKEN_URL, maps);
         return JsonUtil.fromJson(content, TokenObj.class);
     }
 
     private UserInfo getUserInfo(TokenObj tokenObj) {
-        Map<String, String> map = new HashMap<String, String>();
+        Map<String, Object> map = new HashMap<String, Object>();
         map.put("access_token", tokenObj.getAccess_token());
         map.put("openid", tokenObj.getUnionid());
         try {
-            String content = HttpClient.get(USER_INFO_URL, map);
-            WeChatInfo weChatInfo = JsonUtil.fromJson(content,WeChatInfo.class);
+            WeChatInfo weChatInfo = new Requester(USER_INFO_URL).with(map).to("", WeChatInfo.class);
             return convertToUserInfo(weChatInfo);
         } catch (IOException e) {
             e.printStackTrace();
@@ -97,7 +97,7 @@ public class WeChatAuth implements Auth {
     @Override
     public UserInfo getUserInfo(String authCode) {
         try {
-            TokenObj tokenObj = getAccessToken(authCode,"pc");
+            TokenObj tokenObj = getAccessToken(authCode, "pc");
             return getUserInfo(tokenObj);
         } catch (IOException e) {
             e.printStackTrace();
@@ -108,7 +108,7 @@ public class WeChatAuth implements Auth {
     @Override
     public UserInfo getUserInfoByWap(String authCode) throws ConnectException {
         try {
-            TokenObj tokenObj = getAccessToken(authCode,"wap");
+            TokenObj tokenObj = getAccessToken(authCode, "wap");
             return getUserInfo(tokenObj);
         } catch (IOException e) {
             e.printStackTrace();

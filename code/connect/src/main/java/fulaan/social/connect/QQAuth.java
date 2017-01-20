@@ -96,4 +96,6 @@ public class QQAuth implements Auth {
         }
         return null;
     }
+
+
 }

@@ -86,7 +86,8 @@
                                             <c:otherwise>
                                                  <span>多选</span>
                                             </c:otherwise>
-                                           </c:choose>投票：（最多可选${voteMaxCount}项），共有<em id="voteUserCount" count="${voteUserCount}">${voteUserCount}</em>人参与投票<a >查看投票参与人</a></h3>
+                                           </c:choose>投票：（最多可选${voteMaxCount}项），共有<em id="voteUserCount" count="${voteUserCount}">${voteUserCount}</em>人参与投票
+                                            <c:if test="${voteFlagType==0}"><a href="javascript:void(0)" onclick="searchVote()">查看投票参与人</a></c:if></h3>
                                         <c:if test="${voteType==0&&voteDeadFlag==0}">
                                             <ul class="ul1">
                                                 <c:if test="${check==1}">
@@ -334,47 +335,16 @@
 
 
     <%--参与投票会员--%>
-    <div class="wind wind-jv" style="display: block;">
+    <div class="wind wind-jv"  id="wind-jv" style="display: none;">
         <p class="p1"><em>×</em></p>
         <div class="ds">
-            <select>
-                <option>太难了太难了太难了太难了太难了太难了太难</option>
-                <option>太难了太难了太难了太难了太难了太难了太难</option>
-                <option>太难了太难了太难了太难了太难了太难了太难</option>
+            <select id="voteSelect">
+                <c:forEach items="${voteMapList}" var="map" varStatus="status">
+                    <option value="${map.voteUserName}">${map.voteItemStr}</option>
+                </c:forEach>
             </select>
         </div>
         <ul class="ul-vj">
-            <li>十多个佛挡</li>
-            <li>十多个佛挡</li>
-            <li>十多个佛挡</li>
-            <li>十多个佛挡</li>
-            <li>十多个佛挡</li>
-            <li>十多个佛挡</li>
-            <li>十多个佛挡</li>
-            <li>十多个佛挡</li>
-            <li>十多个佛挡</li>
-            <li>十多个佛挡</li>
-            <li>十多个佛挡</li>
-            <li>十多个佛挡</li>
-            <li>十多个佛挡</li>
-            <li>十多个佛挡</li>
-            <li>十多个佛挡</li>
-            <li>十多个佛挡</li>
-            <li>十多个佛挡</li>
-            <li>十多个佛挡</li>
-            <li>十多个佛挡</li>
-            <li>十多个佛挡</li>
-            <li>十多个佛挡</li>
-            <li>十多个佛挡</li>
-            <li>十多个佛挡</li>
-            <li>十多个佛挡</li>
-            <li>十多个佛挡</li>
-            <li>十多个佛挡</li>
-            <li>十多个佛挡</li>
-            <li>十多个佛挡</li>
-            <li>十多个佛挡</li>
-            <li>十多个佛挡</li>
-            <li>十多个佛挡</li>
         </ul>
     </div>
 
@@ -586,6 +556,33 @@
                 }
             }
         }
+
+        function searchVote() {
+            $('#wind-jv').show();
+            $('.bg').show();
+        }
+
+        $('body').on('click','.wind-jv em',function(){
+            $('#wind-jv').hide();
+            $('.bg').hide();
+        })
+
+        $('body').on('change','#voteSelect',function(){
+            $('.ul-vj').empty();
+            var voteUserName=$(this).val().split(",");
+            var str="";
+            if(voteUserName!=""){
+                for(var i in voteUserName){
+                    str=str+"<li>"+voteUserName[i]+"</li>";
+                }
+                $('.ul-vj').append(str);
+            }
+        })
+
+        var value=$('#voteSelect').find('option').eq(0).val();
+        $('#voteSelect').val(value);
+        $('#voteSelect').trigger('change');
+
     </script>
 </layout:override>
 <layout:override name="script">

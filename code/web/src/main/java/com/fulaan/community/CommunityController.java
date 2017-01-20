@@ -1002,6 +1002,7 @@ public class CommunityController extends BaseController {
                 long voteDeadTime=detail.getVoteDeadTime();
                 int voteMaxCount=detail.getVoteMaxCount();
                 int voteUserCount = fVoteService.getFVoteCount(detail.getId());
+                model.put("voteFlagType", detail.getVoteType());
                 model.put("voteMaxCount",voteMaxCount);
                 model.put("voteUserCount",voteUserCount);
                 model.put("voteDeadFlag", 0);
@@ -1027,13 +1028,16 @@ public class CommunityController extends BaseController {
                 nt.setMinimumFractionDigits(0);
 
                 StringBuffer buffer=new StringBuffer();
+
                 for (int i = 0; i < voteOptions.size(); i++) {
                     int j = i + 1;
                     int count = 0;
+                    List<ObjectId> voteUsersId=new ArrayList<ObjectId>();
                     Map<String, Object> map = new HashMap<String, Object>();
                     for (FVoteDTO fVoteDTO : fVoteEntryList) {
                         int number = fVoteDTO.getNumber();
                         if (j == number) {
+                            voteUsersId.add(new ObjectId(fVoteDTO.getUserId()));
                             count++;
                             if(null!=uid){
                                 if(new ObjectId(fVoteDTO.getUserId()).equals(uid)){
@@ -1042,9 +1046,23 @@ public class CommunityController extends BaseController {
                             }
                         }
                     }
+                    StringBuffer voteUserName=new StringBuffer();
+                    Map<ObjectId,UserEntry> userEntryMap=userService.getUserEntryMap(voteUsersId,Constant.FIELDS);
+                    for(Map.Entry<ObjectId,UserEntry> entryEntry:userEntryMap.entrySet()){
+                        UserEntry user=entryEntry.getValue();
+                        String name=StringUtils.isNotBlank(user.getNickName())?user.getNickName():user.getUserName();
+                        voteUserName.append(name);
+                        voteUserName.append(",");
+                    }
                     double pItem = (double) count / (double) totalCount;
                     map.put("voteItemStr", voteOptions.get(i));
                     map.put("voteItemCount", count);
+                    if(StringUtils.isNotBlank(voteUserName.toString())){
+                        map.put("voteUserName",voteUserName.toString().substring(0,voteUserName.toString().length()-1));
+                    }else{
+                        map.put("voteUserName","");
+                    }
+
                     if(count==0){
                         map.put("voteItemPercent", "0%");
                     }else{

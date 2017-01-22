@@ -6,6 +6,7 @@ import com.fulaan.cache.CacheHandler;
 import com.fulaan.pojo.Validate;
 import com.pojo.mobile.UserMobileEntry;
 import com.sys.mails.MailUtils;
+import org.apache.commons.lang3.StringUtils;
 import org.bson.types.ObjectId;
 import org.springframework.stereotype.Service;
 
@@ -22,18 +23,15 @@ public class AccountService extends BaseService {
 
     public Boolean checkVerifyCode(String verifyCode, String verifyKey) {
         //验证码
-        String validateCode;
-        String vcKey;
         //获得请求信息中的Cookie数据
-        vcKey = CacheHandler.getKeyString(CacheHandler.CACHE_VALIDATE_CODE, verifyKey);
-        validateCode = CacheHandler.getStringValue(vcKey);
+        String vcKey = CacheHandler.getKeyString(CacheHandler.CACHE_VALIDATE_CODE, verifyKey);
+        String validateCode = CacheHandler.getStringValue(vcKey);
         CacheHandler.deleteKey(CacheHandler.CACHE_VALIDATE_CODE, vcKey);
-
-        if (validateCode == null || "".equals(validateCode)) {
+        if (StringUtils.isBlank(validateCode)) {
             return false;
         }
         verifyCode = verifyCode.toUpperCase();
-        return !"".equals(verifyCode) && verifyCode.equals(validateCode);
+        return verifyCode.equals(validateCode);
     }
 
     public void sendEmailForFindPassword(final String userName, final String email, final String code) {

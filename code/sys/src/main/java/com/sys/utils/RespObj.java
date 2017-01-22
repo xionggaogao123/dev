@@ -25,7 +25,6 @@ public class RespObj implements Serializable {
      */
     public static final RespObj FAILD = new RespObj(Constant.FAILD_CODE);
 
-
     private String code;
     private Object message;
     private String errorMessage;
@@ -35,13 +34,11 @@ public class RespObj implements Serializable {
         this.code = code;
     }
 
-
     public RespObj(String code, Object message) {
         super();
         this.code = code;
         this.message = message;
     }
-
 
     public String getCode() {
         return code;

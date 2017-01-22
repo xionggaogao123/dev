@@ -137,7 +137,7 @@
 
                         </div>
                     </div>
-                    <div class="login-name" id="userName">${userName}</div>
+                    <div class="login-name" id="userName">${nickName}</div>
                     <img src="${avatar}">
                 </div>
             </c:if>

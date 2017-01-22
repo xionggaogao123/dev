@@ -158,6 +158,11 @@ html {
 .zan-list .zan-li p {
     text-align: center;
     font-size: 14px;
+    width: 69px;
+    overflow: hidden;
+    height: 16px;
+    text-overflow: ellipsis;
+    white-space: nowrap;
 }
 
 .zan-list .zan-li p > img {
@@ -167,7 +172,8 @@ html {
 }
 
 .zan-f {
-    height: 115px;
+    width: 690px;
+    height: 96px;
     border-top: 1px solid #DFDFDF;
     padding-top: 20px;
     overflow-y: hidden;
@@ -178,7 +184,7 @@ html {
     text-align: center;
     width: 140px;
     height: 20px;
-    background: #fff;
+    background: #f6f6f6;
     color: #FF7900;
     font-size: 18px;
     line-height: 20px;

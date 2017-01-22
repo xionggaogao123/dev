@@ -68,6 +68,11 @@ public class QQAuth implements Auth {
         }
     }
 
+    @Override
+    public String getWapAuthUrl() {
+        return null;
+    }
+
     private UserInfo convertToUserInfo(String openId, UserInfoBean userInfoBean) {
         UserInfo userInfo = new UserInfo();
         userInfo.setUniqueId(openId);

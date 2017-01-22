@@ -643,32 +643,8 @@ public class Constant {
     //亲子活动
     public static final String COLLECTION_PARENT_CHILD_ACTIVITY="parentChild";
 
-
-    //=========第三方登录=======================================================
-    //微信APP ID
-    public static final String WECHAT_APPID = "wx71d74481f7f0aff0";
-    //微信回调域
-    public static final String WECHAT_REDIRECT_URL = Resources.getProperty("fulaan.domain", Resources.getProperty("domain")) + "/user/wechatcallback.do";
-    //微信登录域
-    public static final String WECHAT_CONNECT_URL = "https://open.weixin.qq.com/connect/qrconnect?appid=%s&redirect_uri=%s&response_type=code&scope=snsapi_login&state=123456#wechat_redirect";
-    //微信APPSECRET
-    public static final String WECHAT_APPSECRET = "906001ce1c387a866f3af0b9102bd630";
-    //微信获取AccessTokenUrl
-    public static final String WECHAT_ACCESS_TOKEN_URL = "https://api.weixin.qq.com/sns/oauth2/access_token";
-    //微信获取用户信息URL
-    public static final String WECHAT_GET_USERINFO_URL = "https://api.weixin.qq.com/sns/userinfo";
-    //微信第三方平台APPID
-    public static final String WECHAT_THIRD_PART_COMPONENT_APPID = "wx80f147a13fffc22f";
-    //微信第三方平台APPSECRET
-    public static final String WECHAT_THIRD_PART_COMPONENT_APPSECRET = "f6d7342394d30aab13e7c5ee95a39e7e";
-    //授权微信公众号登录域
-    public static final String WECHAT_THIRD_PART_CONNECT_URL = "https://open.weixin.qq.com/connect/oauth2/authorize?appid=%s&redirect_uri=%s&response_type=code&scope=snsapi_userinfo&state=%s#wechat_redirect";
-    //微信公众号APPID
-    public static final String WECHAT_THIRD_PART_APPID = "wx7ce915b6d1254c2a";
-    //微信公众号APPSECRET
-    public static final String WECHAT_THIRD_PART_APPSECRET = "b1637775874eaa6e0bcb054b676775c7";
-
     public static final String COLLECTION_MALL_MARKET_URL = "http://a.app.qq.com/o/simple.jsp?pkgname=com.fulan.mall";
+
     //---------------------------------------------------------------------------------------------论坛
 
 

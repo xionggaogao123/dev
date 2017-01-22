@@ -13,6 +13,8 @@ public interface Auth {
 
     UserInfo getUserInfo(String authCode) throws ConnectException;
 
+    String getWapAuthUrl();
+
     UserInfo getUserInfoByWap(String authCode) throws ConnectException;
 
 }

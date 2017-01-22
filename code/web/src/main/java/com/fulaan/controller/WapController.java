@@ -8,6 +8,7 @@ import com.sys.constants.Constant;
 import com.sys.utils.HttpClientUtils;
 import fulaan.social.connect.Auth;
 import fulaan.social.factory.AuthFactory;
+import fulaan.social.model.AuthType;
 import org.apache.commons.lang3.StringUtils;
 import org.bson.types.ObjectId;
 import org.springframework.stereotype.Controller;
@@ -26,8 +27,8 @@ import java.util.Map;
 @RequestMapping("/wap")
 public class WapController extends BaseController {
 
-
     private Auth qqAuth = AuthFactory.getQQAuth();
+    private Auth wechatAuth = AuthFactory.getAuth(AuthType.WECHAT);
 
     @RequestMapping("/page")
     @SessionNeedless
@@ -44,10 +45,7 @@ public class WapController extends BaseController {
     @RequestMapping("/wechat")
     @SessionNeedless
     public String wechat() {
-        String urlEncodeRedirectUrl = HttpClientUtils.strURLEncodeUTF8(Constant.WECHAT_REDIRECT_URL);
-        String strWeChatConnectUrl = String.format(Constant.WECHAT_THIRD_PART_CONNECT_URL, Constant.WECHAT_THIRD_PART_APPID,
-                urlEncodeRedirectUrl, "123456");
-        return "redirect:" + strWeChatConnectUrl;
+        return "redirect:" + wechatAuth.getWapAuthUrl();
     }
 
     @RequestMapping("/third")

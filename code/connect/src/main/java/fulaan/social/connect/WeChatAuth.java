@@ -30,6 +30,7 @@ public class WeChatAuth implements Auth {
     private static String USER_INFO_URL;
     private static String WAP_APP_ID;
     private static String WAP_APP_SECRET;
+    private static String WAP_CONNECT_URL;
 
     static {
         init();
@@ -50,6 +51,7 @@ public class WeChatAuth implements Auth {
         CONNECT_URL = properties.getProperty("connectURL").trim();
         APP_SECRET = properties.getProperty("app_SECRET").trim();
         USER_INFO_URL = properties.getProperty("getUserInfoURL").trim();
+        WAP_CONNECT_URL = properties.getProperty("wap_connectURL").trim();
     }
 
     @Override
@@ -103,6 +105,13 @@ public class WeChatAuth implements Auth {
             e.printStackTrace();
         }
         return null;
+    }
+
+    @Override
+    public String getWapAuthUrl() {
+        String urlEncodeRedirectUrl = Util.strURLEncodeUTF8(REDIRECT_URL);
+        return String.format(WAP_CONNECT_URL, WAP_APP_ID,
+                urlEncodeRedirectUrl, "123456");
     }
 
     @Override

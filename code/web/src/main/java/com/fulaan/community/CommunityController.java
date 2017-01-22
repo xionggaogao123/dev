@@ -572,7 +572,9 @@ public class CommunityController extends BaseController {
         ObjectId groupId = communityService.getGroupId(new ObjectId(communityDetailDTO.getCommunityId()));
         List<ObjectId> groupIds = new ArrayList<ObjectId>();
         groupIds.add(groupId);
-        Map<String, MemberEntry> memberEntryMap = communityService.getMemberEntryMap(groupIds, new ArrayList<ObjectId>(userIds));
+        List<ObjectId> partInUserIds=new ArrayList<ObjectId>(userIds);
+        Map<String, MemberEntry> memberEntryMap = communityService.getMemberEntryMap(groupIds, partInUserIds);
+        Map<ObjectId,RemarkEntry> remarkEntryMap=communityService.findRemarkEntries(userId,partInUserIds);
         List<User> users = new ArrayList<User>();
         for (String id : partInList) {
             UserDetailInfoDTO user = userService.getUserInfoById(id);
@@ -587,6 +589,12 @@ public class CommunityController extends BaseController {
                 }
             } else {
                 user1.setName(StringUtils.isNotBlank(user.getNickName()) ? user.getNickName() : user.getUserName());
+            }
+            if(null!=remarkEntryMap){
+                RemarkEntry remarkEntry=remarkEntryMap.get(new ObjectId(id));
+                if(null!=remarkEntry){
+                    user1.setName(remarkEntry.getRemark());
+                }
             }
             user1.setId(user.getId());
             users.add(user1);

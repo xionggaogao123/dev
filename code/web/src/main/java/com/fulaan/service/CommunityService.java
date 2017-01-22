@@ -150,6 +150,10 @@ public class CommunityService {
         List<ObjectId> userIds = new ArrayList<ObjectId>();
         userIds.add(userId);
         Map<String, MemberEntry> memberEntryMap = memberDao.getGroupNick(groupIds, userIds);
+        Map<ObjectId,RemarkEntry> remarkEntryMap=new HashMap<ObjectId, RemarkEntry>();
+        if(null!=loginUserId){
+            remarkEntryMap=remarkDao.find(loginUserId,userIds);
+        }
         List<PartInContentEntry> partInContentEntries = partInContentDao.getPartInContent(communityDetailEntry.getID(), -1, 1, 10);
         CommunityDetailDTO communityDetailDTO = new CommunityDetailDTO(communityDetailEntry, partInContentEntries);
         UserEntry userEntry = userDao.findByUserId(userId);
@@ -159,6 +163,13 @@ public class CommunityService {
             setCommunityDetailInfo(communityDetailDTO, userEntry, entry1);
         } else {
             communityDetailDTO.setNickName(StringUtils.isNotBlank(userEntry.getNickName()) ? userEntry.getNickName() : userEntry.getUserName());
+        }
+        //设置备注名
+        if(null!=remarkEntryMap){
+            RemarkEntry remarkEntry=remarkEntryMap.get(userId);
+            if(null!=remarkEntry){
+                communityDetailDTO.setNickName(remarkEntry.getRemark());
+            }
         }
         int partIncontentCount = partInContentDao.countPartPartInContent(communityDetailId);
         communityDetailDTO.setPartIncotentCount(partIncontentCount);
@@ -422,6 +433,12 @@ public class CommunityService {
             groupIdList.add(item.getValue());
         }
         Map<String, MemberEntry> memberMap = memberDao.getGroupNick(groupIdList, objectIds);
+        //查询备注名
+        Map<ObjectId, RemarkEntry> remarkEntryMap=new HashMap<ObjectId, RemarkEntry>();
+        if(null!=userId){
+            remarkEntryMap = remarkDao.find(userId, objectIds);
+        }
+
         for (CommunityDetailEntry entry : communitys) {
             UserEntry userEntry = map.get(entry.getCommunityUserId());
             CommunityDetailDTO communityDetailDTO = new CommunityDetailDTO(entry);
@@ -436,15 +453,26 @@ public class CommunityService {
                 }
                 List<ObjectId> tempUserIds = new ArrayList<ObjectId>(partinUserIds);
                 Map<String, MemberEntry> partInMembermap = memberDao.getGroupNick(groupIdList, tempUserIds);
+                //查询备注名
+                Map<ObjectId, RemarkEntry> remarkEntryHashMap=new HashMap<ObjectId, RemarkEntry>();
+                if(null!=userId){
+                    remarkEntryHashMap = remarkDao.find(userId, tempUserIds);
+                }
                 for (PartInContentEntry partEntry : partInContentEntries) {
                     PartInContentDTO dto = new PartInContentDTO(partEntry);
                     UserEntry user = userService.findById(partEntry.getUserId());
                     //判断用户是否为空
                     if (null != user) {
-                        dto.setUserName(user.getUserName());
                         dto.setAvator(AvatarUtils.getAvatar(user.getAvatar(), AvatarType.MIN_AVATAR.getType()));
                         MemberEntry entry2 = partInMembermap.get(groupId + "$" + partEntry.getUserId());
                         setPartInContentDTOInfo(dto, user, entry2);
+                        //设置备注名
+                        if(null!=remarkEntryHashMap){
+                            RemarkEntry remarkEntry=remarkEntryHashMap.get(partEntry.getUserId());
+                            if(null!=remarkEntry){
+                                dto.setNickName(remarkEntry.getRemark());
+                            }
+                        }
                         dto.setTime(DateUtils.timeStampToStr(partEntry.getID().getTimestamp()));
                         partInContentDTOs.add(dto);
                     }
@@ -507,6 +535,13 @@ public class CommunityService {
             MemberEntry entry1 = memberMap.get(groupId + "$" + entry.getCommunityUserId());
             setCommunityDetailInfo(communityDetailDTO, userEntry, entry1);
 
+            //设置备注名
+            if(null!=remarkEntryMap){
+                RemarkEntry entry2=remarkEntryMap.get(entry.getCommunityUserId());
+                if(null!=entry2){
+                    communityDetailDTO.setNickName(entry2.getRemark());
+                }
+            }
             communityDetailDTO.setUnReadCount(unreadCount);
             communityDetailDTO.setPartInCount(communityDetailDTO.getPartInList().size());
             dtos.add(communityDetailDTO);
@@ -786,6 +821,11 @@ public class CommunityService {
             groupIdList.add(item.getValue());
         }
         Map<String, MemberEntry> memberMap = memberDao.getGroupNick(groupIdList, objectIds);
+        //查询备注名
+        Map<ObjectId, RemarkEntry> remarkEntryMap=new HashMap<ObjectId, RemarkEntry>();
+        if(null!=userId){
+            remarkEntryMap=remarkDao.find(userId,objectIds);
+        }
         for (CommunityDetailEntry entry : entries) {
             UserEntry userEntry = map.get(entry.getCommunityUserId());
             CommunityDetailDTO communityDetailDTO = new CommunityDetailDTO(entry);
@@ -797,7 +837,13 @@ public class CommunityService {
             MemberEntry entry1 = memberMap.get(groupId + "$" + entry.getCommunityUserId());
 
             setCommunityDetailInfo(communityDetailDTO, userEntry, entry1);
-
+            //设置备注名
+            if(null!=remarkEntryMap){
+                RemarkEntry remarkEntry=remarkEntryMap.get(entry.getCommunityUserId());
+                if(null!=remarkEntry){
+                    communityDetailDTO.setNickName(remarkEntry.getRemark());
+                }
+            }
 
             if (null != userId) {
                 communityDetailDTO.setReadFlag(0);
@@ -841,7 +887,12 @@ public class CommunityService {
             for (PartInContentEntry partInContentEntry : partInContentEntries) {
                 partInUserIds.add(partInContentEntry.getUserId());
             }
-            Map<String, MemberEntry> partInMembermap = memberDao.getGroupNick(groupIdList, new ArrayList<ObjectId>(partInUserIds));
+            List<ObjectId> partInUsers= new ArrayList<ObjectId>(partInUserIds);
+            Map<String, MemberEntry> partInMembermap = memberDao.getGroupNick(groupIdList,partInUsers);
+            Map<ObjectId, RemarkEntry> remarkEntryHashMap=new HashMap<ObjectId, RemarkEntry>();
+            if(null!=userId){
+                remarkEntryHashMap=remarkDao.find(userId,partInUsers);
+            }
             for (PartInContentEntry partInContentEntry : partInContentEntries) {
                 PartInContentDTO partInContentDTO = new PartInContentDTO(partInContentEntry);
                 UserEntry userEntry1 = userService.findById(partInContentEntry.getUserId());
@@ -850,6 +901,13 @@ public class CommunityService {
 
                 MemberEntry entry2 = partInMembermap.get(groupId + "$" + partInContentEntry.getUserId());
                 setPartInContentDTOInfo(partInContentDTO, userEntry1, entry2);
+                //设置备注名
+                if(null!=remarkEntryHashMap){
+                    RemarkEntry remarkEntry=remarkEntryHashMap.get(partInContentEntry.getUserId());
+                    if(null!=remarkEntry){
+                        partInContentDTO.setNickName(remarkEntry.getRemark());
+                    }
+                }
                 partInContentDTO.setTime(DateUtils.timeStampToStr(partInContentEntry.getID().getTimestamp()));
                 partInContentDTOs.add(partInContentDTO);
             }
@@ -1186,6 +1244,7 @@ public class CommunityService {
         List<PartInContentDTO> parts = new ArrayList<PartInContentDTO>();
         List<ObjectId> groupIdList = new ArrayList<ObjectId>();
         Map<String, MemberEntry> memberMap = new HashMap<String, MemberEntry>();
+        Map<ObjectId,RemarkEntry> remarkEntryMap = new HashMap<ObjectId, RemarkEntry>();
         Map<ObjectId, ObjectId> groupIds;
         if (communityIds.size() > 0) {
             groupIds = communityDao.getGroupIds(communityIds);
@@ -1194,6 +1253,9 @@ public class CommunityService {
             }
             List<ObjectId> objectIds = new ArrayList<ObjectId>(uuids);
             memberMap = memberDao.getGroupNick(groupIdList, objectIds);
+            if(null!=userId){
+                remarkEntryMap=findRemarkEntries(userId,objectIds);
+            }
         }
 
         for (PartInContentEntry entry : entrys) {
@@ -1204,7 +1266,13 @@ public class CommunityService {
 
             MemberEntry entry1 = memberMap.get(groupId + "$" + entry.getUserId());
             setPartInContentDTOInfo(dto, userEntry, entry1);
-
+            //设置备注名
+            if(null!=remarkEntryMap){
+                RemarkEntry remarkEntry=remarkEntryMap.get(entry.getUserId());
+                if(null!=remarkEntry){
+                    dto.setNickName(remarkEntry.getRemark());
+                }
+            }
 
             dto.setTime(DateUtils.timeStampToStr(entry.getID().getTimestamp()));
             //判断该用户是否点过赞
@@ -1577,6 +1645,10 @@ public class CommunityService {
 
     public void cleanPrior(){
         mineCommunityDao.cleanPrior();
+    }
+
+    public Map<ObjectId, RemarkEntry> findRemarkEntries(ObjectId startUserId, List<ObjectId> endUserIds){
+        return remarkDao.find(startUserId,endUserIds);
     }
 
 }

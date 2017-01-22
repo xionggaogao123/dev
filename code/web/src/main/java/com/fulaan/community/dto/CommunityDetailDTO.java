@@ -55,6 +55,8 @@ public class CommunityDetailDTO {
     private int operation;
 
     private int readFlag;
+    //判断是否是发起者
+    private int isOwner;
 
     //投票
     //投票截止标志 1:未截止已:未截止
@@ -593,5 +595,13 @@ public class CommunityDetailDTO {
 
     public void setVoteUsers(List<User> voteUsers) {
         this.voteUsers = voteUsers;
+    }
+
+    public int getIsOwner() {
+        return isOwner;
+    }
+
+    public void setIsOwner(int isOwner) {
+        this.isOwner = isOwner;
     }
 }

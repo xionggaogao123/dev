@@ -950,6 +950,7 @@ public class CommunityController extends BaseController {
     @LoginInfo
     public String communityMessage(@ObjectIdType ObjectId detailId, Map<String, Object> model) throws Exception {
         try {
+            model.put("isOwner",0);
             ObjectId uid = getUserId();
             CommunityDetailDTO detail = communityService.findDetailById(detailId,uid);
             List<CommunityDTO> communitys = new ArrayList<CommunityDTO>();
@@ -973,12 +974,17 @@ public class CommunityController extends BaseController {
                 if (memberService.isManager(groupId, getUserId())) {
                     model.put("operation", true);
                 }
+                if(uid.equals(new ObjectId(detail.getUserId()))){
+                    model.put("isOwner",1);
+                }
+
             } else {
                 CommunityDTO fulanDto = communityService.getCommunityByName("复兰社区");
                 if (null != fulanDto) {
                     communitys.add(fulanDto);
                 }
             }
+
             //判断是否是投票模块
             model.put("type",0);
             model.put("voteMaxCount",0);

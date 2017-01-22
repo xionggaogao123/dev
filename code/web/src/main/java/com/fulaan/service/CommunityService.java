@@ -229,12 +229,17 @@ public class CommunityService {
                 } else {
                     voteResult.setVoteItemPercent(nt.format(pItem));
                 }
-                if (null != loginUserId) {
-
-                } else {
+                if (null == loginUserId) {
                     voteResult.setHasVoted(0);
                 }
                 mapList.add(voteResult);
+            }
+            communityDetailDTO.setIsOwner(0);
+
+            if(null!=loginUserId){
+                if(loginUserId.equals(communityDetailEntry.getCommunityUserId())){
+                    communityDetailDTO.setIsOwner(1);
+                }
             }
 
             Map<ObjectId,UserEntry> userEntryMap=userService.getUserEntryMap(totalUserIds,Constant.FIELDS);

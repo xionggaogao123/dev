@@ -1,3 +1,4 @@
-/target
+/target/
 *.iml
-*rebel*.xml
+*rebel*.xml*
+.idea/

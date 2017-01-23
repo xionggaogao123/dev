@@ -1,5 +1,5 @@
 /target/
 /node_modules/
 *.iml
-*rebel*.xml
+*rebel*.xml*
 /src/main/webapp/upload

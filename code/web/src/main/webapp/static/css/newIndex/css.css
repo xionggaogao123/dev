@@ -446,6 +446,80 @@ button{cursor: pointer;}
 	color: #777;
 	font-size: 12px;
 }
+.photolist{
+	width: 645px;
+	height:225px;
+	margin: 54px auto 0;
+}
+.photolist .div1 {
+	float: left;
+	margin-right: 4px;
+	width: 110px;
+	height: 225px;
+}
+.photolist .div2 {
+	float: left;
+	margin-right: 4px;
+	width: 96px;
+	height: 225px;
+}
+.photolist .div2 .trediv {
+	width: 96px;
+	height: 68px;
+	position: relative;
+	overflow: hidden;
+}
+.photolist img {
+	transition: all .3s;
+	width: 100%;
+	height: 100%;
+}
+.photolist .bg20 {
+	position: absolute;
+	width: 100%;
+	height: 100%;
+	left: 0;
+	top: 0;
+	background: rgba(0,0,0,0.2);
+	z-index: 1;
+	transition: all .3s;
+}
+.photolist>div>div:hover .bg20{
+	display: none;
+}
+.photolist i {
+	display: block;
+	width: 26px;
+	height: 26px;
+	position: absolute;
+	top: 50%;
+	left: 50%;
+	margin-left: -13px;
+	margin-top: -13px;
+	z-index: 2;
+	background: url("/static/images/newIndex/iv_play.png") no-repeat;
+	transition: all .3s;
+	cursor: pointer;
+	border-radius: 100%;
+}
+.photolist > div > div:hover > i {
+	box-shadow: 0 0 6px cyan;
+}
+.photolist > div > div:hover img {
+	width: 110%;
+	height: 110%;
+	margin-left: -5%;
+	margin-top: -5%;
+}
+.mb8 {
+	margin-bottom: 4px;
+}
+.photolist .div1 .doudiv {
+	width: 110px;
+	height: 104px;
+	position: relative;
+	overflow: hidden;
+}
 .ivideo{
 	height: 146px;
 	background: url("/static/images/newIndex/iv_bg.png") no-repeat;
@@ -506,14 +580,14 @@ button{cursor: pointer;}
 .ivideo .li15{background: url("/static/images/newIndex/iv15.png")}
 .d-photo{
 	width: 718px;
-	height: 268px;
+	height: 133px;
 	overflow: hidden;
 	position: relative;
 	float: left;
 }
 .ul-photo{
 	width: 5000px;
-	height: 268px;
+	height: 133px;
 	position: absolute;
 	top: 0;
 }
@@ -526,8 +600,8 @@ button{cursor: pointer;}
 }
 .ul-photo li>img{
 	float: left;
-	width: 466px;
-	height: 268px;
+	width: 718px;
+	height: 133px;
 }
 .ul-photo li span{
 	display: none;
@@ -559,6 +633,7 @@ button{cursor: pointer;}
 	overflow: hidden;
 }
 .photo-text{
+	display: none;
 	width: 251px;
 	height: 268px;
 	float: right;
@@ -687,7 +762,7 @@ button{cursor: pointer;}
 .greenControl{
 	position: absolute;
 	bottom: 7px;
-	left:188px;
+	left:316px;
 	background: rgba(0,0,0,0.4);
 	border-radius:10px;
 	border:1px solid rgba(255,255,255,0.5);

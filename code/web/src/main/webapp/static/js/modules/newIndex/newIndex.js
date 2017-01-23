@@ -125,10 +125,10 @@ define(['jquery', 'pagination', 'common'], function (require, exports, module) {
                 }
                 list.animate({'left': offset}, 300, function () {
                     if (left > -200) {
-                        list.css('left', -718 * len+1);
+                        list.css('left', -718 * len);
                     }
                     if (left < (-718 * len)) {
-                        list.css('left', -718+1);
+                        list.css('left', -718);
                     }
                     // if (left ==(-718 * len+1)||left ==(-718 * len)){
                     //     list.css('left', 0);

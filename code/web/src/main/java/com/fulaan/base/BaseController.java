@@ -59,9 +59,8 @@ public class BaseController {
     }
 
     protected String getCookieValue(String cookieName) {
-        HttpServletRequest request = getRequest();
-        Cookie[] cookies = request.getCookies();
-        if (null != cookies) {
+        Cookie[] cookies = getRequest().getCookies();
+        if (null != cookies && cookies.length > 0) {
             for (Cookie cookie : cookies) {
                 if (cookie.getName().equals(cookieName)) {
                     return cookie.getValue();

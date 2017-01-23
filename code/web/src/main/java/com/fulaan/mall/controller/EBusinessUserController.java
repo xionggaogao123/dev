@@ -86,13 +86,13 @@ public class EBusinessUserController extends BaseController {
     public Map<String, Object> shortMessage(HttpServletRequest request, HttpServletResponse response) {
         EBusinessUserController.info("进入-------");
         Map<String, Object> model = new HashMap<String, Object>();
-        List<String> mobiles= KeyWordFilterUtil.message_list;
+        List<String> mobiles = KeyWordFilterUtil.message_list;
         EBusinessUserController.info(mobiles);
         String msg = "【复兰教育社区】冬季大赛来袭！火热“春节才艺秀”、“家乡的冬天”摄影比赛，缤纷大奖，邀你参加！登录“复兰教育社区”APP，进入【发现】中的【大赛】版块或访问www.fulaan.com的【大赛】版块参与比赛。";
         try {
             EBusinessUserController.info("开始-----");
-            for(String mobile:mobiles) {
-                sendMessageInfo(mobile,msg);
+            for (String mobile : mobiles) {
+                sendMessageInfo(mobile, msg);
             }
             EBusinessUserController.info("结束-------");
         } catch (Exception e) {
@@ -101,7 +101,7 @@ public class EBusinessUserController extends BaseController {
         return model;
     }
 
-    private void sendMessageInfo(String mobile,String msg)throws Exception{
+    private void sendMessageInfo(String mobile, String msg) throws Exception {
         System.out.println(mobile);
         String resp = batchSend(url, account, pswd, mobile, msg, needstatus, product, extno);
         String responseCode = resp.split("\\n")[0].split(",")[1];
@@ -110,7 +110,7 @@ public class EBusinessUserController extends BaseController {
             Thread.sleep(2000);
         } else {
             Thread.sleep(2000);
-            EBusinessUserController.info("失败"+mobile);
+            EBusinessUserController.info("失败" + mobile);
         }
     }
 
@@ -132,14 +132,13 @@ public class EBusinessUserController extends BaseController {
             return model;
         }
         String mobileNumber = CacheHandler.getKeyString(CacheHandler.CACHE_MOBILE, mobile);
-
         String mobileNumberTime = CacheHandler.getStringValue(mobileNumber);
         if (StringUtils.isNotBlank(mobileNumberTime)) {
             model.put("message", "获取验证码太频繁");
             return model;
         }
 
-        if (!checkVerifyCode(verifyCode, request, response)) {
+        if (!checkVerifyCode(verifyCode)) {
             model.put("message", "图片验证码错误或已失效");
             return model;
         }
@@ -151,7 +150,6 @@ public class EBusinessUserController extends BaseController {
         model.put("cacheKeyId", cacheKeyId);
         String cacheKey = CacheHandler.getKeyString(CacheHandler.CACHE_SHORTMESSAGE, cacheKeyId);
         CacheHandler.cache(cacheKey, num + "," + mobile, Constant.SESSION_FIVE_MINUTE);//5分钟
-
         CacheHandler.cache(mobileNumber, String.valueOf(System.currentTimeMillis()), Constant.SESSION_ONE_MINUTE);//一分钟
 
         String msg = "亲爱的客户您好，您的验证码为" + num + "，有效期为5分钟。复兰商城客服绝不会索取此验证码，请勿将验证码告诉他人。";
@@ -169,32 +167,17 @@ public class EBusinessUserController extends BaseController {
         return model;
     }
 
-    private Boolean checkVerifyCode(String verifyCode, HttpServletRequest request, HttpServletResponse response) {
-        //验证码
-        String validateCode = "";
-        String vckey = "";
+    private Boolean checkVerifyCode(String verifyCode) {
         //获得请求信息中的Cookie数据
-        Cookie[] cookies = request.getCookies();
-        if (null != cookies && cookies.length > 0) {
-            for (Cookie c : cookies) {
-                if (Constant.COOKIE_VALIDATE_CODE.equals(c.getName())) {
-                    vckey = CacheHandler.getKeyString(CacheHandler.CACHE_VALIDATE_CODE, c.getValue());
-                    validateCode = CacheHandler.getStringValue(vckey);
-                    CacheHandler.deleteKey(CacheHandler.CACHE_VALIDATE_CODE, vckey);
-                    c.setMaxAge(0);
-                    c.setPath(Constant.BASE_PATH);
-                    response.addCookie(c);
-                }
-            }
-        }
+        String cookieValue = getCookieValue(Constant.COOKIE_VALIDATE_CODE);
+        String verifyCodeKey = CacheHandler.getKeyString(CacheHandler.CACHE_VALIDATE_CODE, cookieValue);
+        String validateCode = CacheHandler.getStringValue(verifyCodeKey);
+        CacheHandler.deleteKey(CacheHandler.CACHE_VALIDATE_CODE, verifyCodeKey);
 
-        if (validateCode == null || "".equals(validateCode)) {
+        if (StringUtils.isBlank(validateCode) || StringUtils.isBlank(verifyCode)) {
             return false;
         }
         verifyCode = verifyCode.toUpperCase();
-        if (verifyCode == null || "".equals(verifyCode)) {
-            return false;
-        }
         return verifyCode.equals(validateCode);
     }
 
@@ -247,7 +230,7 @@ public class EBusinessUserController extends BaseController {
 
     @SessionNeedless
     @RequestMapping(value = "/emailValidate")
-    public String emailValidate(String email, String validateCode, HttpServletResponse response,HttpServletRequest request,
+    public String emailValidate(String email, String validateCode, HttpServletResponse response, HttpServletRequest request,
                                 Map<String, Object> model) {
         UserEntry userEntry = userService.findByEmail(email);
         //验证用户是否存在
@@ -264,7 +247,7 @@ public class EBusinessUserController extends BaseController {
                     if (validateCode.equals(MD5Utils.getMD5String(userEntry.getEmailValidateCode()))) {
                         try {
                             userService.updateUserEmailStatusById(userEntry.getID());
-                            userController.login(userEntry.getUserName(), userEntry.getPassword(), response,request);
+                            userController.login(userEntry.getUserName(), userEntry.getPassword(), response, request);
                             model.put("message", "激活成功！");
                         } catch (Exception e) {
                             e.printStackTrace();
@@ -278,7 +261,7 @@ public class EBusinessUserController extends BaseController {
             } else {
                 try {
                     model.put("message", "邮箱已激活，请登录！");
-                    userController.login(userEntry.getUserName(), userEntry.getPassword(), response,request);
+                    userController.login(userEntry.getUserName(), userEntry.getPassword(), response, request);
                 } catch (Exception e) {
                     e.printStackTrace();
                 }
@@ -376,6 +359,7 @@ public class EBusinessUserController extends BaseController {
 
     /**
      * 用户注册
+     *
      * @return
      */
     @SessionNeedless
@@ -383,7 +367,7 @@ public class EBusinessUserController extends BaseController {
     @ResponseBody
     public Map<String, Object> addUser(String cacheKeyId, String code, final String email, String userName, String passWord, String phoneNumber,
                                        @RequestParam(defaultValue = "", required = false) String nickName,
-                                       HttpServletResponse response,HttpServletRequest request) {
+                                       HttpServletResponse response, HttpServletRequest request) {
         boolean flag = false;
         Map<String, Object> model = new HashMap<String, Object>();
         model.put("code", 500);
@@ -431,7 +415,7 @@ public class EBusinessUserController extends BaseController {
             model.put("message", "注册成功");
             model.put("code", 200);
             // 登录
-            login(userName, passWord, response,request);
+            login(userName, passWord, response, request);
         } else {
             model.put("message", "注册错误");
         }
@@ -617,7 +601,7 @@ public class EBusinessUserController extends BaseController {
     @SessionNeedless
     @RequestMapping("/login")
     @ResponseBody
-    public RespObj login(String account, String password, HttpServletResponse response,HttpServletRequest request) {
+    public RespObj login(String account, String password, HttpServletResponse response, HttpServletRequest request) {
         RespObj respObj = RespObj.FAILD;
         UserEntry userEntry = userService.getUserByAccount(account);
         if (userEntry == null) {
@@ -630,7 +614,7 @@ public class EBusinessUserController extends BaseController {
                     return respObj;
                 }
             }
-            respObj = userController.login(userEntry.getUserName(), password, response,request);
+            respObj = userController.login(userEntry.getUserName(), password, response, request);
         }
 
         return respObj;

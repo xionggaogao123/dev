@@ -4,9 +4,8 @@ import com.fulaan.annotation.LoginInfo;
 import com.fulaan.annotation.ObjectIdType;
 import com.fulaan.annotation.SessionNeedless;
 import com.fulaan.annotation.UserRoles;
-import com.fulaan.cache.RedisUtils;
 import com.fulaan.base.BaseController;
-import com.fulaan.playmate.service.MateService;
+import com.fulaan.cache.RedisUtils;
 import com.fulaan.train.dto.CriticismDTO;
 import com.fulaan.train.dto.InstituteDTO;
 import com.fulaan.train.dto.ItemTypeDTO;
@@ -15,7 +14,6 @@ import com.fulaan.train.service.CriticismService;
 import com.fulaan.train.service.InstituteService;
 import com.fulaan.train.service.ItemTypeService;
 import com.fulaan.train.service.RegionService;
-import com.fulaan.user.service.UserService;
 import com.fulaan.util.DownloadUtil;
 import com.fulaan.util.GetLocation;
 import com.fulaan.util.getProvinceInfo;
@@ -714,21 +712,6 @@ public class TrainController extends BaseController {
     public RespObj itemTypeSetSort(@PathVariable @ObjectIdType ObjectId id,int sort){
         itemTypeService.setSort(id,sort);
         return RespObj.SUCCESS;
-    }
-
-    protected String getIP() {
-        HttpServletRequest request = getRequest();
-        String ip = request.getHeader("x-forwarded-for");
-        if (ip == null || ip.length() == 0 || "unknown".equalsIgnoreCase(ip)) {
-            ip = request.getHeader("Proxy-Client-IP");
-        }
-        if (ip == null || ip.length() == 0 || "unknown".equalsIgnoreCase(ip)) {
-            ip = request.getHeader("WL-Proxy-Client-IP");
-        }
-        if (ip == null || ip.length() == 0 || "unknown".equalsIgnoreCase(ip)) {
-            ip = request.getRemoteAddr();
-        }
-        return ip;
     }
 
 

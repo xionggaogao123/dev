@@ -10,6 +10,7 @@
     app.controller('myCtrl', function ($http, $scope) {
         $scope.post = {
             fpostId: '',
+            actionHeadImage: '',
             activityImage: '',
             activityMemo: '',
             activityStartTime: '',
@@ -56,6 +57,18 @@
             url: '/mall/images.do',
             success: function (data) {
                 $scope.post.activityImage = data.message[0].path;
+                console.info(data);
+            },
+            error: function (err) {
+                console.info(err);
+                //
+            }
+        });
+
+        $('#headImage').diyUpload({
+            url: '/mall/images.do',
+            success: function (data) {
+                $scope.post.actionHeadImage = data.message[0].path;
                 console.info(data);
             },
             error: function (err) {

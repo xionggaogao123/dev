@@ -322,7 +322,13 @@ define(['jquery', 'pagination', 'common'], function (require, exports, module) {
             " <div class=\"photo-text\"> <h3 style=\"margin-top: 86px;font-size: 24px;\" onclick=\"window.open('/forum/postIndex.do?pSectionId=575d4d8e0cf2ca0383166bba')\">极限航海巅峰<br>挑战</h3> </div> </li>";
 
             for(var i in total){
-                var temp="<li><img src=\""+total[i].activityImage+"\" onclick=\"window.open('/competition')\">" +
+                var image="";
+                if(total[i].actionHeadImage!=""){
+                    image=total[i].actionHeadImage;
+                }else{
+                    image=total[i].activityImage;
+                }
+                var temp="<li><img src=\""+image+"\" onclick=\"window.open('/competition')\">" +
                     "<span onclick=\"window.open('/competition')\">更多</span>" +
                     "<div class=\"photo-text\"> <h3 onclick=\"window.open('/competition')\""+">"+total[i].mainTitle+"</h3>"+
                     "<p class=\"p1\">"+total[i].title+"</p> <p class=\"p5\">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;"+total[i].partContent+

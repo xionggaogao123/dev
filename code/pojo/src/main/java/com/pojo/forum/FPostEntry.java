@@ -44,6 +44,7 @@ import java.util.List;
  *     opc ：opposeCount 反对数
  *     opl : opposeList 记录反对人列表(反对人Id)
  *     //活动
+ *     him:actionHeadImage 活动标准图片
  *     acim:activityImage 活动图片
  *     acmm:activityMemo 活动描述
  *     acti:activityTime 活动日期
@@ -454,6 +455,19 @@ public class FPostEntry extends BaseDBObject{
 
     public void setActivityImage(String activityImage){
         setSimpleValue("acim",activityImage);
+    }
+
+
+    public String getActionHeadImage(){
+        if(getBaseEntry().containsField("him")) {
+            return getSimpleStringValue("him");
+        }else{
+            return "";
+        }
+    }
+
+    public void setActionHeadImage(String actionHeadImage){
+        setSimpleValue("him",actionHeadImage);
     }
 
     public String getActivityMemo(){

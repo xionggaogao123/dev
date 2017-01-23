@@ -49,6 +49,7 @@ public class FPostDTO {
   //是否回帖
   private int logReply;
   //活动
+  private String actionHeadImage;
   private String activityImage;
   private String activityMemo;
   private String activityTime;
@@ -171,6 +172,7 @@ public class FPostDTO {
     this.image = fPostEntry.getImage();
     this.praiseCount = fPostEntry.getPraiseCount();
     this.opposeCount = fPostEntry.getOpposeCount();
+    this.actionHeadImage = fPostEntry.getActionHeadImage();
     this.activityImage = fPostEntry.getActivityImage();
     this.activityMemo = fPostEntry.getActivityMemo();
     this.activityTime = fPostEntry.getActivityTime().toString();
@@ -261,6 +263,7 @@ public class FPostDTO {
     fPostEntry.setPraiseCount(praiseCount);
     fPostEntry.setOpposeCount(opposeCount);
     fPostEntry.setLogReply(logReply);
+    fPostEntry.setActionHeadImage(actionHeadImage);
     fPostEntry.setActivityImage(activityImage);
     fPostEntry.setActivityMemo(activityMemo);
     fPostEntry.setActivityStartTime(activityStartTime);
@@ -900,5 +903,13 @@ public class FPostDTO {
 
   public void setPartContent(String partContent) {
     this.partContent = partContent;
+  }
+
+  public String getActionHeadImage() {
+    return actionHeadImage;
+  }
+
+  public void setActionHeadImage(String actionHeadImage) {
+    this.actionHeadImage = actionHeadImage;
   }
 }

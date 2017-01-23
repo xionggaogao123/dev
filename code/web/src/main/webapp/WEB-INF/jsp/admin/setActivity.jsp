@@ -66,6 +66,12 @@
                                 <div id="suggestImg"></div>
                             </td>
                         </tr>
+                        <tr>
+                            <td>banner首页图片</td>
+                            <td>
+                                <div id="headImage"></div>
+                            </td>
+                        </tr>
                         <tr ng-if="post.cate == 1">
                             <td>上线开始时间</td>
                             <td>

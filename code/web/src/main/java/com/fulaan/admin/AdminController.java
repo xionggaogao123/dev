@@ -365,6 +365,9 @@ public class AdminController extends BaseController {
                 if (StringUtils.isNotBlank(fPostDTO.getActivityStartTime())) {
                     fPostDTO1.setActivityStartTime(fPostDTO.getActivityStartTime());
                 }
+                if (StringUtils.isNotBlank(fPostDTO.getActionHeadImage())){
+                    fPostDTO1.setActionHeadImage(fPostDTO.getActionHeadImage());
+                }
                 if (StringUtils.isNotBlank(fPostDTO.getActivityEndTime())) {
                     fPostDTO1.setActivityEndTime(fPostDTO.getActivityEndTime());
                 }

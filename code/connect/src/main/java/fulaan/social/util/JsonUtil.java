@@ -5,7 +5,9 @@ import org.codehaus.jackson.map.ObjectMapper;
 import java.io.IOException;
 
 /**
- * Created by moslpc on 2017/1/17.
+ * Created by jerry on 2017/1/17.
+ *
+ * @see ObjectMapper
  */
 public class JsonUtil {
 

@@ -14,7 +14,10 @@ import java.io.InputStream;
 import java.util.Map;
 
 /**
- * Created by moslpc on 2017/1/17.
+ * Created by jerry on 2017/1/17.
+ *
+ * @see CloseableHttpClient
+ * 一个简单
  */
 public class HttpClient {
 

@@ -17,7 +17,10 @@ import java.util.Map;
 import java.util.Properties;
 
 /**
- * Created by moslpc on 2017/1/16.
+ * Created by jerry on 2017/1/16.
+ *
+ * @see Auth
+ * 微信授权实现
  */
 public class WeChatAuth implements Auth {
 

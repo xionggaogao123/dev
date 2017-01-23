@@ -1,7 +1,9 @@
 package fulaan.social.constant;
 
 /**
- * Created by moslpc on 2017/1/20.
+ * Created by jerry on 2017/1/20.
+ *
+ * 常用字符集
  */
 public class Charset {
 

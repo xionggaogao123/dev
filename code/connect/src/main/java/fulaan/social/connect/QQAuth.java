@@ -15,7 +15,9 @@ import java.io.IOException;
 import java.util.Properties;
 
 /**
- * Created by moslpc on 2017/1/16.
+ * Created by jerry on 2017/1/16.
+ * @see Auth
+ * QQ 授权实现
  */
 public class QQAuth implements Auth {
 

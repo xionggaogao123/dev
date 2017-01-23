@@ -6,7 +6,10 @@ import fulaan.social.connect.WeChatAuth;
 import fulaan.social.model.AuthType;
 
 /**
- * Created by moslpc on 2017/1/17.
+ * Created by jerry on 2017/1/17.
+ *
+ * @see Auth
+ * 授权工厂
  */
 public class AuthFactory {
 

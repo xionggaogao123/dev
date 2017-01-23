@@ -1,7 +1,11 @@
 package fulaan.social.model;
 
 /**
- * Created by moslpc on 2017/1/19.
+ * Created by jerry on 2017/1/19.
+ *
+ * @see fulaan.social.connect.Auth
+ * 授权类型
+ * QQ 微信
  */
 public enum AuthType {
 

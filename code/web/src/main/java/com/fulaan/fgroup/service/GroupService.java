@@ -70,19 +70,19 @@ public class GroupService {
      * @param groupId
      * @return
      */
-    public GroupDTO findById(ObjectId groupId) {
+    public GroupDTO findById(ObjectId groupId,ObjectId userId) {
         GroupEntry groupEntry = groupDao.findByObjectId(groupId);
         List<MemberDTO> managers = memberService.getManagers(groupId);
-        List<MemberDTO> members = memberService.getMembers(groupId, 20);
+        List<MemberDTO> members = memberService.getMembers(groupId, 20,userId);
         return new GroupDTO(groupEntry, members, managers);
     }
 
-    public GroupDTO findByEmChatId(String emChatId) {
+    public GroupDTO findByEmChatId(String emChatId,ObjectId userId) {
         GroupEntry groupEntry = groupDao.findByEmchatId(emChatId);
         if(groupEntry == null) return null;
         ObjectId groupId = groupEntry.getID();
         List<MemberDTO> managers = memberService.getManagers(groupId);
-        List<MemberDTO> members = memberService.getMembers(groupId, 20);
+        List<MemberDTO> members = memberService.getMembers(groupId, 20,userId);
         return new GroupDTO(groupEntry, members, managers);
     }
 
@@ -134,7 +134,7 @@ public class GroupService {
     }
 
     private String generateHeadImage(ObjectId groupId) throws IOException, IllegalParamException {
-        List<MemberDTO> members = memberService.getMembers(groupId, 4);
+        List<MemberDTO> members = memberService.getMembers(groupId, 4,null);
         List<String> images = new ArrayList<String>();
         for (MemberDTO memberDTO : members) {
             if (StringUtils.isNotBlank(memberDTO.getAvator())) {
@@ -151,7 +151,7 @@ public class GroupService {
     }
 
     private String generateGroupName(ObjectId groupId) {
-        List<MemberDTO> members = memberService.getMembers(groupId, 3);
+        List<MemberDTO> members = memberService.getMembers(groupId, 3,null);
         String name = "";
         for (MemberDTO member : members) {
             name += member.getNickName() + ",";

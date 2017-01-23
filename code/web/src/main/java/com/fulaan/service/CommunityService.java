@@ -1512,22 +1512,26 @@ public class CommunityService {
      * @param communityId
      * @return
      */
-    public CommunityDetailDTO getLatestAnnouncement(ObjectId communityId) {
+    public CommunityDetailDTO getLatestAnnouncement(ObjectId communityId,ObjectId userId) {
 
         CommunityDetailEntry entry = communityDetailDao.getLatestDetails(communityId, CommunityDetailType.ANNOUNCEMENT.getType());
         if (entry == null) {
             return null;
         }
-
-        UserEntry userEntry = userDao.findByUserId(entry.getCommunityUserId());
         CommunityDetailDTO communityDetailDTO = new CommunityDetailDTO(entry);
+        UserEntry userEntry = userDao.findByUserId(entry.getCommunityUserId());
         communityDetailDTO.setImageUrl(AvatarUtils.getAvatar(userEntry.getAvatar(), AvatarType.MIN_AVATAR.getType()));
-        if (StringUtils.isNotBlank(userEntry.getNickName())) {
-            communityDetailDTO.setNickName(userEntry.getNickName());
-        } else {
-            communityDetailDTO.setNickName(userEntry.getUserName());
+        RemarkEntry remarkEntry=remarkDao.getEntry(userId,entry.getCommunityUserId());
+        if(null!=remarkEntry){
+            communityDetailDTO.setNickName(remarkEntry.getRemark());
+        }else{
+            if (StringUtils.isNotBlank(userEntry.getNickName())) {
+                communityDetailDTO.setNickName(userEntry.getNickName());
+            } else {
+                communityDetailDTO.setNickName(userEntry.getUserName());
+            }
+            communityDetailDTO.setPartInCount(communityDetailDTO.getPartInList().size());
         }
-        communityDetailDTO.setPartInCount(communityDetailDTO.getPartInList().size());
 
         return communityDetailDTO;
     }

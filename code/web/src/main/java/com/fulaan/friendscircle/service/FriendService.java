@@ -3,6 +3,7 @@ package com.fulaan.friendscircle.service;
 import com.db.activity.ActivityDao;
 import com.db.activity.FriendApplyDao;
 import com.db.activity.FriendDao;
+import com.db.fcommunity.RemarkDao;
 import com.db.school.ClassDao;
 import com.db.user.UserDao;
 import com.fulaan.pojo.User;
@@ -11,6 +12,7 @@ import com.pojo.activity.Activity;
 import com.pojo.activity.ActivityEntry;
 import com.pojo.activity.FriendApply;
 import com.pojo.activity.FriendApplyEntry;
+import com.pojo.fcommunity.RemarkEntry;
 import com.pojo.school.ClassEntry;
 import com.pojo.user.AvatarType;
 import com.pojo.user.UserDetailInfoDTO;
@@ -22,9 +24,7 @@ import org.apache.commons.lang3.StringUtils;
 import org.bson.types.ObjectId;
 import org.springframework.stereotype.Service;
 
-import java.util.ArrayList;
-import java.util.HashSet;
-import java.util.List;
+import java.util.*;
 import java.util.concurrent.CopyOnWriteArrayList;
 
 /**
@@ -43,6 +43,7 @@ public class FriendService {
     private UserDao userDao = new UserDao();
     private ClassDao classDao = new ClassDao();
     private ActivityDao activityDao = new ActivityDao();
+    private RemarkDao remarkDao = new RemarkDao();
 
     /*
     * 删除好友关系
@@ -380,7 +381,7 @@ public class FriendService {
         if (friendIds.contains(uid)) {
             friendIds.remove(uid);
         }
-        return get(friendIds);
+        return get(friendIds,uid);
     }
 
 
@@ -392,7 +393,7 @@ public class FriendService {
      */
     public List<User> getParters(ObjectId uid) {
         List<ObjectId> friendIds = friendDao.findMyIdfFriendIds(uid);
-        return get(friendIds);
+        return get(friendIds,uid);
     }
 
     public List<ObjectId> getObjectPartners(ObjectId uid) {
@@ -430,8 +431,9 @@ public class FriendService {
         return friendDao.recordIsExist(uid);
     }
 
-    private List<User> get(List<ObjectId> uids) {
+    private List<User> get(List<ObjectId> uids,ObjectId userId) {
         List<User> users = new ArrayList<User>();
+        Map<ObjectId,RemarkEntry> map=remarkDao.find(userId,uids);
         for (ObjectId oid : uids) {
             UserEntry userEntry = userDao.findByUserId(oid);
             if (userEntry != null) {
@@ -439,7 +441,12 @@ public class FriendService {
                 user.setId(userEntry.getID().toString());
                 user.setAvator(AvatarUtils.getAvatar(userEntry.getAvatar(), AvatarType.MIN_AVATAR.getType()));
                 user.setUserName(userEntry.getUserName());
-                user.setNickName(StringUtils.isBlank(userEntry.getNickName()) ? userEntry.getUserName() : userEntry.getNickName());
+                RemarkEntry remarkEntry=map.get(oid);
+                if(null!=remarkEntry){
+                    user.setNickName(remarkEntry.getRemark());
+                }else {
+                    user.setNickName(StringUtils.isBlank(userEntry.getNickName()) ? userEntry.getUserName() : userEntry.getNickName());
+                }
                 user.setSex(userEntry.getSex());
                 user.setUserId(userEntry.getID().toString());
                 users.add(user);

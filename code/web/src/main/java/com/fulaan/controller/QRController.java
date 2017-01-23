@@ -64,7 +64,7 @@ public class QRController extends BaseController {
             return null;
         }
 
-        GroupDTO groupDTO = groupService.findById(id);
+        GroupDTO groupDTO = groupService.findById(id,getUserId());
         CommunityDTO community = communityService.getByEmChatId(groupDTO.getEmChatId());
 
         if (groupDTO.isBindCommunity() && community != null) {

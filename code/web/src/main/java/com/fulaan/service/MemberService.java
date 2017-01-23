@@ -1,10 +1,12 @@
 package com.fulaan.service;
 
 import com.db.fcommunity.MemberDao;
+import com.db.fcommunity.RemarkDao;
 import com.db.user.UserDao;
 import com.fulaan.dto.MemberDTO;
 import com.fulaan.pojo.PageModel;
 import com.pojo.fcommunity.MemberEntry;
+import com.pojo.fcommunity.RemarkEntry;
 import com.pojo.user.UserEntry;
 import org.apache.commons.lang.StringUtils;
 import org.bson.types.ObjectId;
@@ -12,7 +14,9 @@ import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 /**
  * Created by jerry on 2016/11/1.
@@ -23,6 +27,7 @@ public class MemberService {
 
     private MemberDao memberDao = new MemberDao();
     private UserDao userDao = new UserDao();
+    private RemarkDao remarkDao = new RemarkDao();
 
     /**
      * 添加组成员
@@ -196,11 +201,26 @@ public class MemberService {
      * @param count
      * @return
      */
-    public List<MemberDTO> getMembers(ObjectId groupId, int count) {
+    public List<MemberDTO> getMembers(ObjectId groupId, int count,ObjectId userId) {
         List<MemberDTO> members = new ArrayList<MemberDTO>();
         List<MemberEntry> list = memberDao.getMembers(groupId, count);
+        List<ObjectId> userIds=new ArrayList<ObjectId>();
+        for(MemberEntry entry : list){
+            userIds.add(entry.getUserId());
+        }
+        Map<ObjectId,RemarkEntry> remarkEntryMap=new HashMap<ObjectId, RemarkEntry>();
+        if(null!=userId) {
+            remarkEntryMap=remarkDao.find(userId, userIds);
+        }
         for (MemberEntry entry : list) {
-            members.add(new MemberDTO(entry));
+            MemberDTO memberDTO=new MemberDTO(entry);
+            if(null!=remarkEntryMap){
+                RemarkEntry remarkEntry=remarkEntryMap.get(entry.getUserId());
+                if(null!=remarkEntry){
+                    memberDTO.setNickName(remarkEntry.getRemark());
+                }
+            }
+            members.add(memberDTO);
         }
         return members;
     }

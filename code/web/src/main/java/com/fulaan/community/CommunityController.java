@@ -132,7 +132,7 @@ public class CommunityController extends BaseController {
         communitySystemInfoService.saveOrupdateEntry(getUserId(), getUserId(), "社长", 4, commId);
         communitySystemInfoService.saveOrupdateEntry(getUserId(), getUserId(), "社长", 5, commId);
         if (StringUtils.isNotBlank(userIds)) {
-            GroupDTO groupDTO = groupService.findById(new ObjectId(communityDTO.getGroupId()));
+            GroupDTO groupDTO = groupService.findById(new ObjectId(communityDTO.getGroupId()),uid);
             List<ObjectId> userList = MongoUtils.convertObjectIds(userIds);
             for (ObjectId userId : userList) {
                 if (emService.addUserToEmGroup(groupDTO.getEmChatId(), userId)) {
@@ -143,7 +143,7 @@ public class CommunityController extends BaseController {
         }
         int memberCount = memberService.getMemberCount(new ObjectId(communityDTO.getGroupId()));
         communityDTO.setMemberCount(memberCount);
-        List<MemberDTO> members = memberService.getMembers(new ObjectId(communityDTO.getGroupId()), 20);
+        List<MemberDTO> members = memberService.getMembers(new ObjectId(communityDTO.getGroupId()), 20,uid);
         communityDTO.setMembers(members);
         MemberDTO mine = memberService.getUser(new ObjectId(communityDTO.getGroupId()), getUserId());
         communityDTO.setMine(mine);
@@ -205,7 +205,7 @@ public class CommunityController extends BaseController {
     public RespObj get(@PathVariable @ObjectIdType ObjectId id) {
         ObjectId groupId = communityService.getGroupId(id);
         CommunityDTO communityDTO = communityService.findByObjectId(id);
-        List<MemberDTO> members = memberService.getMembers(groupId, 12);
+        List<MemberDTO> members = memberService.getMembers(groupId, 12,getUserId());
         if (null != getUserId()) {
             MemberDTO mine = memberService.getUser(groupId, getUserId());
             communityDTO.setMine(mine);
@@ -265,7 +265,7 @@ public class CommunityController extends BaseController {
     public RespObj inviteMember(@ObjectIdType ObjectId communityId,
                                 @ObjectIdType ObjectId userId) {
         ObjectId groupId = communityService.getGroupId(communityId);
-        GroupDTO groupDTO = groupService.findById(groupId);
+        GroupDTO groupDTO = groupService.findById(groupId,getUserId());
         //判断该用户是否加过该社区
         if (memberService.isGroupMember(groupId, userId)) {
             return RespObj.FAILD("该用户已经是该社区成员了");
@@ -637,7 +637,7 @@ public class CommunityController extends BaseController {
     @ResponseBody
     public RespObj getNewValidateInfo(String emChatId) {
         ObjectId groupId = groupService.getGroupIdByChatId(emChatId);
-        GroupDTO groupDTO = groupService.findById(groupId);
+        GroupDTO groupDTO = groupService.findById(groupId,getUserId());
         ValidateInfoEntry entry = validateInfoService.getNewsInfo(new ObjectId(groupDTO.getCommunityId()));
         if (null == entry) {
             return RespObj.FAILD("没有审核消息");
@@ -818,7 +818,7 @@ public class CommunityController extends BaseController {
      * @return
      */
     private boolean joinCommunity(ObjectId userId, ObjectId communityId, ObjectId groupId, int saveState) {
-        GroupDTO groupDTO = groupService.findById(groupId);
+        GroupDTO groupDTO = groupService.findById(groupId,null);
         if (memberService.isGroupMember(groupId, userId)) {
             return false;
         }

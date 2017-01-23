@@ -90,7 +90,7 @@ public class GroupController extends BaseController {
         }
         groupService.asyncUpdateHeadImage(groupId);
         groupService.asyncUpdateGroupNameByMember(groupId);
-        return RespObj.SUCCESS(groupService.findById(groupId));
+        return RespObj.SUCCESS(groupService.findById(groupId,userId));
     }
 
     /**
@@ -106,7 +106,7 @@ public class GroupController extends BaseController {
         if (groupId == null) {
             return RespObj.FAILD("群组不存在");
         }
-        GroupDTO groupDTO = groupService.findById(groupId);
+        GroupDTO groupDTO = groupService.findById(groupId,getUserId());
         if (groupDTO.isBindCommunity()) {
             CommunityDTO communityDTO = communityService.getByEmChatId(groupDTO.getEmChatId());
             groupDTO.setSearchId(communityDTO.getSearchId());
@@ -119,7 +119,7 @@ public class GroupController extends BaseController {
         groupDTO.setMine(mine);
         if (groupDTO.isBindCommunity()) {
             ObjectId communityId = new ObjectId(groupDTO.getCommunityId());
-            CommunityDetailDTO groupAnnounceDTO = communityService.getLatestAnnouncement(communityId);
+            CommunityDetailDTO groupAnnounceDTO = communityService.getLatestAnnouncement(communityId,getUserId());
             groupDTO.setCurAnnounceMent(groupAnnounceDTO);
         } else {
             GroupAnnounceDTO groupAnnounceDTO = groupNoticeService.getEarlyAnnounce(groupId);
@@ -143,7 +143,7 @@ public class GroupController extends BaseController {
             ObjectId groupId = groupService.getGroupIdByChatId(emChatId);
             if (groupId == null) continue;
             try {
-                GroupDTO groupDTO = groupService.findById(groupId);
+                GroupDTO groupDTO = groupService.findById(groupId,getUserId());
                 MemberDTO mine = memberService.getUser(groupId, getUserId());
                 groupDTO.setCount(memberService.getMemberCount(groupId));
                 groupDTO.setMine(mine);
@@ -198,7 +198,7 @@ public class GroupController extends BaseController {
     public RespObj inviteMember(String emChatId,
                                 String userIds) throws IOException, IllegalParamException {
         ObjectId groupId = groupService.getGroupIdByChatId(emChatId);
-        GroupDTO groupDTO = groupService.findById(groupId);
+        GroupDTO groupDTO = groupService.findById(groupId,getUserId());
         List<ObjectId> userList = MongoUtils.convertObjectIds(userIds);
         for (ObjectId personId : userList) {
             if (!memberService.isGroupMember(groupId, personId)) {
@@ -234,7 +234,7 @@ public class GroupController extends BaseController {
     @RequestMapping("/join")
     @ResponseBody
     public RespObj join(String emChatId) throws IOException, IllegalParamException {
-        GroupDTO groupDTO = groupService.findByEmChatId(emChatId);
+        GroupDTO groupDTO = groupService.findByEmChatId(emChatId,getUserId());
         if (groupDTO == null) {
             return RespObj.FAILDWithErrorMsg("不存在此群聊或社区");
         }
@@ -278,7 +278,7 @@ public class GroupController extends BaseController {
             return RespObj.FAILD("userIds 为空 !");
         }
         ObjectId groupId = groupService.getGroupIdByChatId(emChatId);
-        GroupDTO groupDTO = groupService.findById(groupId);
+        GroupDTO groupDTO = groupService.findById(groupId,getUserId());
         ObjectId userId = getUserId();
         if (!memberService.isManager(groupId, userId)) {
             return RespObj.FAILD("您没有这个权限");
@@ -319,10 +319,10 @@ public class GroupController extends BaseController {
     public RespObj quitGroup(String emChatId) throws IOException, IllegalParamException {
 
         ObjectId groupId = groupService.getGroupIdByChatId(emChatId);
-        GroupDTO groupDTO = groupService.findById(groupId);
+        GroupDTO groupDTO = groupService.findById(groupId,getUserId());
         ObjectId userId = getUserId();
         if (memberService.isHead(groupId, userId)) {
-            List<MemberDTO> memberDTOs = memberService.getMembers(groupId, 2);
+            List<MemberDTO> memberDTOs = memberService.getMembers(groupId, 2,userId);
             //转让
             if (memberDTOs.size() == 2) {
                 MemberDTO memberDTO = memberDTOs.get(1);
@@ -431,7 +431,7 @@ public class GroupController extends BaseController {
         if (!memberService.isManager(groupId, userId)) {
             return RespObj.FAILD("对不起，您没有此权限");
         }
-        GroupDTO groupDTO = groupService.findById(groupId);
+        GroupDTO groupDTO = groupService.findById(groupId,userId);
         if (groupDTO.isBindCommunity()) {
             communityService.updateCommunityName(new ObjectId(groupDTO.getCommunityId()), groupName);
         }
@@ -540,7 +540,7 @@ public class GroupController extends BaseController {
                                    @RequestParam(defaultValue = "1", required = false) int page,
                                    @RequestParam(defaultValue = "10", required = false) int pageSize) {
         ObjectId groupId = groupService.getGroupIdByChatId(emChatId);
-        GroupDTO groupDTO = groupService.findById(groupId);
+        GroupDTO groupDTO = groupService.findById(groupId,getUserId());
         if (groupDTO.isBindCommunity()) { //有社区
             ObjectId communityId = new ObjectId(groupDTO.getCommunityId());
             PageModel<CommunityDetailDTO> pageModel = communityService.getMessages(communityId, page,
@@ -573,7 +573,7 @@ public class GroupController extends BaseController {
         if (!memberService.isManager(groupId, userId)) {
             return RespObj.FAILD("对不起，您没有权限");
         }
-        GroupDTO groupDTO = groupService.findById(groupId);
+        GroupDTO groupDTO = groupService.findById(groupId,userId);
         if (groupDTO.isBindCommunity()) { //有社区
             CommunityMessage message = new CommunityMessage();
             message.setContent(content);

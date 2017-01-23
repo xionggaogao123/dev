@@ -1,7 +1,7 @@
 package fulaan.social.model;
 
 /**
- * Created by moslpc on 2017/1/16.
+ * Created by jerry on 2017/1/16.
  */
 public class UserInfo {
 

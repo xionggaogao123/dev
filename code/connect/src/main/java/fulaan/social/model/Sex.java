@@ -1,7 +1,9 @@
 package fulaan.social.model;
 
 /**
- * Created by moslpc on 2017/1/17.
+ * Created by jerry on 2017/1/17.
+ *
+ * 性别 枚举
  */
 public enum Sex {
 

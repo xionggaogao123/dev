@@ -27,7 +27,7 @@ public class AccountService extends BaseService {
         String vcKey = CacheHandler.getKeyString(CacheHandler.CACHE_VALIDATE_CODE, verifyKey);
         String validateCode = CacheHandler.getStringValue(vcKey);
         CacheHandler.deleteKey(CacheHandler.CACHE_VALIDATE_CODE, vcKey);
-        if (StringUtils.isBlank(validateCode)) {
+        if (StringUtils.isBlank(validateCode) || StringUtils.isBlank(verifyCode)) {
             return false;
         }
         verifyCode = verifyCode.toUpperCase();

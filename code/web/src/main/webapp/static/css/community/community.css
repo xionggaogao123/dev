@@ -2944,7 +2944,7 @@ pre{white-space: pre-wrap;word-wrap: break-word;}
     width: 265px;
     height: 30px;
     background: #f5f5f5;
-    border:none;
+    border:1px solid #dcdcdc;
     padding-left: 5px;
 }
 .alert-btn{

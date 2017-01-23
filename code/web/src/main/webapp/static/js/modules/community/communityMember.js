@@ -66,6 +66,12 @@ define(['jquery', 'pagination', 'common'], function (require, exports, module) {
             renderActivity();
         });
 
+
+        $('body').on('click','.si-s1 .alert-title em',function () {
+            $('.si-s1').fadeOut();
+            $('.bg').fadeOut();
+        });
+
         $('body').on('click', '#my-community-3', function () {
             $('#my-community-1').removeClass('hd-cf-cur2');
             $('#my-community-2').removeClass('hd-cf-cur2');

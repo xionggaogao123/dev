@@ -644,7 +644,12 @@ public class CommunityController extends BaseController {
         } else {
             ValidateInfoDTO dto = new ValidateInfoDTO(entry);
             UserEntry userEntry = userService.findById(entry.getUserId());
-            dto.setUserName(StringUtils.isNotBlank(userEntry.getNickName()) ? userEntry.getNickName() : userEntry.getUserName());
+            RemarkEntry remarkEntry=communityService.getRemarkEntry(getUserId(),entry.getUserId());
+            if(null!=remarkEntry) {
+                dto.setUserName(remarkEntry.getRemark());
+            }else{
+                dto.setUserName(StringUtils.isNotBlank(userEntry.getNickName()) ? userEntry.getNickName() : userEntry.getUserName());
+            }
             return RespObj.SUCCESS(dto);
         }
     }

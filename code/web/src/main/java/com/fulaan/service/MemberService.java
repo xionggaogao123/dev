@@ -309,11 +309,26 @@ public class MemberService {
      * @param groupId
      * @return
      */
-    public Object getAllGroupMembers(ObjectId groupId) {
+    public Object getAllGroupMembers(ObjectId groupId,ObjectId userId) {
         List<MemberEntry> entries = memberDao.getAllMembers(groupId);
         List<MemberDTO> memberDTOs = new ArrayList<MemberDTO>();
+        List<ObjectId> userIds=new ArrayList<ObjectId>();
         for (MemberEntry entry : entries) {
-            memberDTOs.add(new MemberDTO(entry));
+            userIds.add(entry.getUserId());
+        }
+        Map<ObjectId,RemarkEntry> remarkEntryMap=new HashMap<ObjectId, RemarkEntry>();
+        if(null!=userId) {
+            remarkEntryMap=remarkDao.find(userId, userIds);
+        }
+        for (MemberEntry entry : entries) {
+            MemberDTO memberDTO=new MemberDTO(entry);
+            if(null!=remarkEntryMap){
+                RemarkEntry remarkEntry=remarkEntryMap.get(entry.getUserId());
+                if(null!=remarkEntry){
+                    memberDTO.setNickName(remarkEntry.getRemark());
+                }
+            }
+            memberDTOs.add(memberDTO);
         }
         return memberDTOs;
     }

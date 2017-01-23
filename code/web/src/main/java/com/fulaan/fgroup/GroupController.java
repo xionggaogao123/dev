@@ -183,7 +183,7 @@ public class GroupController extends BaseController {
     @ResponseBody
     public RespObj getMembers(String emChatId) {
         ObjectId groupId = groupService.getGroupIdByChatId(emChatId);
-        return RespObj.SUCCESS(memberService.getAllGroupMembers(groupId));
+        return RespObj.SUCCESS(memberService.getAllGroupMembers(groupId,getUserId()));
     }
 
     /**

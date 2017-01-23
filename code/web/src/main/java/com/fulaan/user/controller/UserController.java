@@ -16,6 +16,7 @@ import com.fulaan.pojo.FLoginLog;
 import com.fulaan.pojo.User;
 import com.fulaan.pojo.Validate;
 import com.fulaan.school.SchoolService;
+import com.fulaan.service.CommunityService;
 import com.fulaan.service.MemberService;
 import com.fulaan.user.model.ThirdLoginEntry;
 import com.fulaan.user.model.ThirdType;
@@ -29,6 +30,7 @@ import com.pojo.app.Platform;
 import com.pojo.app.RegionEntry;
 import com.pojo.app.SessionValue;
 import com.pojo.educationbureau.EducationBureauEntry;
+import com.pojo.fcommunity.RemarkEntry;
 import com.pojo.forum.FLogDTO;
 import com.pojo.forum.FScoreDTO;
 import com.pojo.log.LogType;
@@ -110,6 +112,8 @@ public class UserController extends BaseController {
     private MemberService memberService;
     @Autowired
     private AccountService accountService;
+    @Autowired
+    private CommunityService communityService;
 
     private Auth qqAuth = AuthFactory.getAuth(AuthType.QQ);
     private Auth wechatAuth = AuthFactory.getAuth(AuthType.WECHAT);
@@ -1690,8 +1694,17 @@ public class UserController extends BaseController {
     public Map<String, Object> getUserInfo(@ObjectIdType ObjectId userId) {
         UserDetailInfoDTO user = userService.getUserInfoById(userId.toString());
         Map<String, Object> result = new HashMap<String, Object>();
+        if(null!=getUserId()) {
+            RemarkEntry remarkEntry = communityService.getRemarkEntry(getUserId(),userId);
+            if(null!=remarkEntry){
+                result.put("nickName", remarkEntry.getRemark());
+            }else{
+                result.put("nickName", user.getNickName());
+            }
+        }else {
+            result.put("nickName", user.getNickName());
+        }
         result.put("userName", user.getUserName());
-        result.put("nickName", user.getNickName());
         result.put("sex", user.getSex());
         result.put("phone", user.getMobileNumber());
         result.put("userId", user.getId());

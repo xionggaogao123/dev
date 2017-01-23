@@ -90,6 +90,8 @@ public class Constant {
     public static final long MS_SECONDS_IN_WEEK = 60L * 60L * 24L * 7L * 1000L;
     //一月
     public static final int SECONDS_IN_MONTH = 60 * 60 * 24 * 30;
+    //半年
+    public static final int SECONDS_IN_HALF_YEAR =  60 * 60 * 24 * 30 * 6;
     //一月
     public static final long MS_SECONDS_IN_MONTH = 60L * 60L * 24L * 30L * 1000L;
 

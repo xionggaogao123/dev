@@ -372,7 +372,7 @@ public class CommunityController extends BaseController {
             map.put(new ObjectId(temp[0]),max);
         }
 
-        RedisUtils.cacheString("customSort"+userId,String.valueOf(max),Constant.SECONDS_IN_MONTH);
+        RedisUtils.cacheString("customSort"+userId,String.valueOf(max),Constant.SECONDS_IN_HALF_YEAR);
 
         List<MineCommunityEntry> entries=new ArrayList<MineCommunityEntry>();
         Map<ObjectId,MineCommunityEntry> mineCommunityEntryMap=communityService.getMySortCommunities(userId,communities);

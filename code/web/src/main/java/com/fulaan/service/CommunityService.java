@@ -850,6 +850,8 @@ public class CommunityService {
                 if (entry.getUnReadList().size() > 0 && entry.getUnReadList().contains(userId)) {
                     communityDetailDTO.setReadFlag(1);
                 }
+            } else{
+                communityDetailDTO.setReadFlag(1);
             }
 
             if (type.getType() == CommunityDetailType.VOTE.getType()) {

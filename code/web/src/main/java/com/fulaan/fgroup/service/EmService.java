@@ -51,7 +51,7 @@ public class EmService {
      */
     public boolean removeUserFromEmGroup(String emChatId, ObjectId userId) {
         ResponseWrapper responseWrapper = EaseMobAPI.removeSingleUserFromChatGroup(emChatId, userId.toString());
-        return responseWrapper.getResponseStatus() == 200;
+        return responseWrapper.getResponseStatus() == 200||responseWrapper.getResponseStatus() == 403;
     }
 
 

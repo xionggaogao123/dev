@@ -49,7 +49,6 @@ import com.sys.utils.*;
 import fulaan.social.connect.Auth;
 import fulaan.social.exception.ConnectException;
 import fulaan.social.factory.AuthFactory;
-import fulaan.social.model.AuthType;
 import fulaan.social.model.UserInfo;
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.lang.StringUtils;
@@ -115,8 +114,8 @@ public class UserController extends BaseController {
     @Autowired
     private CommunityService communityService;
 
-    private Auth qqAuth = AuthFactory.getAuth(AuthType.QQ);
-    private Auth wechatAuth = AuthFactory.getAuth(AuthType.WECHAT);
+    private Auth qqAuth = AuthFactory.getQQAuth();
+    private Auth wechatAuth = AuthFactory.getWechatAuth();
 
     /**
      * 通过sso登录

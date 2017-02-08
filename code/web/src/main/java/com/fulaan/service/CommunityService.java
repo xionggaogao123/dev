@@ -473,6 +473,7 @@ public class CommunityService {
                                 dto.setNickName(remarkEntry.getRemark());
                             }
                         }
+                        //时间转换
                         dto.setTime(DateUtils.timeStampToStr(partEntry.getID().getTimestamp()));
                         partInContentDTOs.add(dto);
                     }

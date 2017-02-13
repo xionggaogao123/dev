@@ -359,7 +359,7 @@ define(['jquery', 'pagination', 'common'], function (require, exports, module) {
                 "<img src=\"/static/images/newIndex/cafe_homework.png\">" +
                 "<p class=\"p-red\"></p>" +
                 "<span class=\"spa-train\"></span>" +
-                "<p class=\"p2\">" +
+                "<p class=\"p2\" style='cursor: pointer;' onclick=\"window.open('/community/communityDetail?detailId="+data[i].id+"')\">" +
                 " <span class=\"spa-active\">" +
                 "<span class=\"sp1\">" + data[i].title + "</span>";
             var attachements = data[i].attachements;
@@ -380,7 +380,7 @@ define(['jquery', 'pagination', 'common'], function (require, exports, module) {
                 "<img src=\"/static/images/newIndex/purple_study.png\">" +
                 "<p class=\"p-red\"></p>" +
                 "<span class=\"spa-train\"></span>" +
-                "<p class=\"p2\">" +
+                "<p class=\"p2\" style='cursor: pointer;' onclick=\"window.open('/community/communityDetail?detailId="+data[i].id+"')\">" +
                 " <span class=\"spa-active\">" +
                 "<span class=\"sp1\">" + data[i].title + "</span>";
             var attachements = data[i].attachements;
@@ -402,7 +402,7 @@ define(['jquery', 'pagination', 'common'], function (require, exports, module) {
                 "<img src=\"/static/images/newIndex/green_study.png\">" +
                 "<p class=\"p-red\"></p>" +
                 "<span class=\"spa-train\"></span>" +
-                "<p class=\"p2\">" +
+                "<p class=\"p2\" style='cursor: pointer;' onclick=\"window.open('/community/communityDetail?detailId="+data[i].id+"')\">" +
                 " <span class=\"spa-active\">" +
                 "<span class=\"sp1\">" + data[i].title + "</span>" +
                 "<span class=\"sp4\">" + data[i].content + "</span></span></p></li>";
@@ -419,7 +419,7 @@ define(['jquery', 'pagination', 'common'], function (require, exports, module) {
                 "<img src=\"/static/images/newIndex/blue_share.png\">" +
                 "<p class=\"p-red\"></p>" +
                 "<span class=\"spa-train\"></span>" +
-                "<p class=\"p2\">" +
+                "<p class=\"p2\" style='cursor: pointer;' onclick=\"window.open('/community/communityDetail?detailId="+data[i].id+"')\">" +
                 " <span class=\"spa-active\">" +
                 "<span class=\"sp1\">" + data[i].title + "</span>" +
                 "<span class=\"sp3\">" + data[i].content + "</span></span><span>";
@@ -442,7 +442,7 @@ define(['jquery', 'pagination', 'common'], function (require, exports, module) {
                 "<img src=\"/static/images/newIndex/blue_vote.png\">" +
                 "<p class=\"p-red\"></p>" +
                 "<span class=\"spa-train\"></span>" +
-                "<p class=\"p2\">" +
+                "<p class=\"p2\" style='cursor: pointer;' onclick=\"window.open('/community/communityDetail?detailId="+data[i].id+"')\">" +
                 " <span class=\"spa-active\">" +
                 "<span class=\"sp1\">" + data[i].title + "</span>" +
                 "<span class=\"sp3\">" + data[i].content + "</span></span><span>";
@@ -465,7 +465,7 @@ define(['jquery', 'pagination', 'common'], function (require, exports, module) {
                 "<img src=\"/static/images/newIndex/yellow_community.png\">" +
                 "<p class=\"p-red\"></p>" +
                 "<span class=\"spa-train\"></span>" +
-                "<p class=\"p2\">" +
+                "<p class=\"p2\" style='cursor: pointer;' onclick=\"window.open('/community/communityDetail?detailId="+data[i].id+"')\">" +
                 " <span class=\"spa-active\">" +
                 "<span class=\"sp1\">" + data[i].title + "</span>" +
                 "<span class=\"sp2\">" + data[i].content + "</span></span></p></li>";
@@ -482,7 +482,7 @@ define(['jquery', 'pagination', 'common'], function (require, exports, module) {
                 "<img src=\"/static/images/newIndex/red_notice.png\">" +
                 "<p class=\"p-red\"></p>" +
                 "<span class=\"spa-train\"></span>" +
-                "<p class=\"p2\">" +
+                "<p class=\"p2\" style='cursor: pointer;' onclick=\"window.open('/community/communityDetail?detailId="+data[i].id+"')\">" +
                 "<span class=\"spa-notice\">" + data[i].content + "</span></p></li>";
         }
         $('#communityNews').append(temp);

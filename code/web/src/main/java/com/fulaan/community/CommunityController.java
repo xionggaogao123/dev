@@ -449,6 +449,39 @@ public class CommunityController extends BaseController {
         ObjectId uid = getUserId();
         try{
             communityService.saveMessage(uid, message);
+            if(message.getType()==1||message.getType()==7) {
+                List<String> targets = new ArrayList<String>();
+                String msg = "发一条消息";
+                Map<String, String> sendMessage = new HashMap<String, String>();
+                sendMessage.put("type", MsgType.TEXT);
+                sendMessage.put("msg", msg);
+                ObjectId groupId = communityService.getGroupId(new ObjectId(message.getCommunityId()));
+                List<ObjectId> groupIds = new ArrayList<ObjectId>();
+                groupIds.add(groupId);
+                List<ObjectId> partInUserIds=new ArrayList<ObjectId>();
+                partInUserIds.add(uid);
+                String emchatId=groupService.getEmchatIdByGroupId(groupId);
+                targets.add(emchatId);
+                Map<String, MemberEntry> memberEntryMap = communityService.getMemberEntryMap(groupIds, partInUserIds);
+                MemberEntry entry1 = memberEntryMap.get(groupId + "$" + uid);
+                String nickName="";
+                UserEntry userEntry=userService.findById(uid);
+                if (null != entry1) {
+                    if (StringUtils.isNotBlank(entry1.getNickName())) {
+                        nickName=entry1.getNickName();
+                    } else {
+                        nickName=StringUtils.isNotBlank(userEntry.getNickName()) ? userEntry.getNickName() : userEntry.getUserName();
+                    }
+                } else {
+                    nickName=StringUtils.isNotBlank(userEntry.getNickName()) ? userEntry.getNickName() : userEntry.getUserName();
+                }
+                Map<String, String> ext=new HashMap<String, String>();
+                ext.put("type",message.getType()+"");
+                ext.put("nickName",nickName);
+                ext.put("userId",uid.toString());
+                ext.put("communityId",message.getCommunityId());
+                emService.sendTextMessage("chatgroups", targets, uid.toString(), ext, sendMessage);
+            }
             return RespObj.SUCCESS;
         }catch (Exception e){
             return RespObj.FAILD("投票截止时间格式不规范");

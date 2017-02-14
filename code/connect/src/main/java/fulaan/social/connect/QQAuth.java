@@ -6,18 +6,11 @@ import com.qq.connect.javabeans.AccessToken;
 import com.qq.connect.javabeans.qzone.UserInfoBean;
 import com.qq.connect.utils.http.HttpClient;
 import com.qq.connect.utils.http.PostParameter;
-import com.qq.connect.utils.json.JSONObject;
 import fulaan.social.exception.ConnectException;
-import fulaan.social.model.AuthType;
 import fulaan.social.model.Sex;
 import fulaan.social.model.UserInfo;
-import fulaan.social.util.HttpClientUtil;
-import fulaan.social.util.JsonUtil;
 import fulaan.social.util.Util;
-
 import java.io.IOException;
-import java.util.HashMap;
-import java.util.Map;
 import java.util.Properties;
 
 import static javafx.scene.input.KeyCode.H;
@@ -107,15 +100,6 @@ public class QQAuth implements Auth {
 
     private AccessToken getAccessTokenByRequest(String authCode) {
         try {
-//            HttpClientUtil httpClientUtil=new HttpClientUtil();
-//            Map<String,String> createMap = new HashMap<String,String>();
-//            createMap.put("client_id",APP_ID);
-//            createMap.put("client_secret",APP_KEY);
-//            createMap.put("grant_type","authorization_code");
-//            createMap.put("code",authCode);
-//            createMap.put("redirect_uri",QQ_REDIRECT_URL);
-//            String httpOrgCreateTestRtn = httpClientUtil.doPost(ACCESS_TOKEN_URL,createMap,"utf-8");
-//            Map map= JsonUtil.fromJson()
             return new AccessToken(this.client.post(ACCESS_TOKEN_URL,
                     new PostParameter[]{new PostParameter("client_id", APP_ID),
                             new PostParameter("client_secret", APP_KEY),

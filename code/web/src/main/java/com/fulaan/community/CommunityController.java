@@ -449,9 +449,15 @@ public class CommunityController extends BaseController {
         ObjectId uid = getUserId();
         try{
             communityService.saveMessage(uid, message);
-            if(message.getType()==1||message.getType()==7) {
+            int type=message.getType();
+            if(type==1||type==7) {
                 List<String> targets = new ArrayList<String>();
-                String msg = "发一条消息";
+                String msg ="";
+                if(type==1){
+                   msg=  "发布了一条通知";
+                }else{
+                    msg=  "发布了一条作业";
+                }
                 Map<String, String> sendMessage = new HashMap<String, String>();
                 sendMessage.put("type", MsgType.TEXT);
                 sendMessage.put("msg", msg);

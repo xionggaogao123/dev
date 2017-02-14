@@ -38,7 +38,7 @@ define(function (require, exports, module) {
                         commitDianZan(result.userId);
                     } else {
                         var url = $(location).attr('href');
-                        var encodedUrl = encodeURIComponent(url);
+                        var encodedUrl = encodeURI(encodeURI(url));
                         location.href = "/wap/third.do?redirectUrl=" + encodedUrl;
                     }
                 });

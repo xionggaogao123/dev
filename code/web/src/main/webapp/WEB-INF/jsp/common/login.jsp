@@ -136,7 +136,8 @@
     }
 
     function redirectQ() {
-        window.open('/user/qqlogin.do', "TencentLogin", "width=800,height=600,menubar=0,scrollbars=1, resizable=1,status=1,titlebar=0,toolbar=0,location=1");
+        var currentUrl=encodeURI(encodeURI(location.href));
+        window.open('/user/qqlogin.do?currentUrl='+currentUrl, "TencentLogin", "width=800,height=600,menubar=0,scrollbars=1, resizable=1,status=1,titlebar=0,toolbar=0,location=1");
     }
 
     function loginWeiXin() {

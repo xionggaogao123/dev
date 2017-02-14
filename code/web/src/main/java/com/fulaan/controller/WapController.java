@@ -17,6 +17,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 
 import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletResponse;
+import java.net.URLDecoder;
 import java.util.Map;
 
 /**
@@ -51,11 +52,11 @@ public class WapController extends BaseController {
     @RequestMapping("/third")
     @SessionNeedless
     public String third(String redirectUrl, @RequestHeader("User-Agent") String userAgent,
-                        HttpServletResponse response) {
+                        HttpServletResponse response) throws Exception{
 
         if (StringUtils.isNotBlank(redirectUrl)) {
             SessionValue value = new SessionValue();
-            value.put("redirectUrl", redirectUrl);
+            value.put("redirectUrl", URLDecoder.decode(redirectUrl, "UTF-8"));
             ObjectId cacheKey = new ObjectId();
             CacheHandler.cacheSessionValue(cacheKey.toString(), value, Constant.SESSION_FIVE_MINUTE);
             Cookie appShareCookie = new Cookie(Constant.APP_SHARE, cacheKey.toString());

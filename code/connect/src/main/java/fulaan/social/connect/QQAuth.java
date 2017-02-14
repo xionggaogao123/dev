@@ -6,13 +6,21 @@ import com.qq.connect.javabeans.AccessToken;
 import com.qq.connect.javabeans.qzone.UserInfoBean;
 import com.qq.connect.utils.http.HttpClient;
 import com.qq.connect.utils.http.PostParameter;
+import com.qq.connect.utils.json.JSONObject;
 import fulaan.social.exception.ConnectException;
+import fulaan.social.model.AuthType;
 import fulaan.social.model.Sex;
 import fulaan.social.model.UserInfo;
+import fulaan.social.util.HttpClientUtil;
+import fulaan.social.util.JsonUtil;
 import fulaan.social.util.Util;
 
 import java.io.IOException;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.Properties;
+
+import static javafx.scene.input.KeyCode.H;
 
 /**
  * Created by jerry on 2017/1/16.
@@ -27,6 +35,7 @@ public class QQAuth implements Auth {
     private static String APP_ID;
     private static String APP_KEY;
     private static String REDIRECT_URL;
+    private static String QQ_REDIRECT_URL;
     private static String ACCESS_TOKEN_URL;
 
     static {
@@ -42,6 +51,7 @@ public class QQAuth implements Auth {
         }
         APP_ID = properties.getProperty("app_ID").trim();
         APP_KEY = properties.getProperty("app_KEY").trim();
+        QQ_REDIRECT_URL = properties.getProperty("redirect_URI").trim();
         REDIRECT_URL = Util.strURLEncodeUTF8(properties.getProperty("redirect_URI").trim());
         ACCESS_TOKEN_URL = properties.getProperty("accessTokenURL").trim();
     }
@@ -97,7 +107,21 @@ public class QQAuth implements Auth {
 
     private AccessToken getAccessTokenByRequest(String authCode) {
         try {
-            return new AccessToken(this.client.post(ACCESS_TOKEN_URL, new PostParameter[]{new PostParameter("client_id", APP_ID), new PostParameter("client_secret", APP_KEY), new PostParameter("grant_type", "authorization_code"), new PostParameter("code", authCode), new PostParameter("redirect_uri", REDIRECT_URL)}, Boolean.TRUE));
+//            HttpClientUtil httpClientUtil=new HttpClientUtil();
+//            Map<String,String> createMap = new HashMap<String,String>();
+//            createMap.put("client_id",APP_ID);
+//            createMap.put("client_secret",APP_KEY);
+//            createMap.put("grant_type","authorization_code");
+//            createMap.put("code",authCode);
+//            createMap.put("redirect_uri",QQ_REDIRECT_URL);
+//            String httpOrgCreateTestRtn = httpClientUtil.doPost(ACCESS_TOKEN_URL,createMap,"utf-8");
+//            Map map= JsonUtil.fromJson()
+            return new AccessToken(this.client.post(ACCESS_TOKEN_URL,
+                    new PostParameter[]{new PostParameter("client_id", APP_ID),
+                            new PostParameter("client_secret", APP_KEY),
+                            new PostParameter("grant_type", "authorization_code"),
+                            new PostParameter("code", authCode),
+                            new PostParameter("redirect_uri", QQ_REDIRECT_URL)}, Boolean.TRUE));
         } catch (QQConnectException e) {
             e.printStackTrace();
         }

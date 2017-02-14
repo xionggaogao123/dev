@@ -55,6 +55,7 @@ import org.apache.commons.io.FileUtils;
 import org.apache.commons.lang.StringUtils;
 import org.apache.http.client.ClientProtocolException;
 import org.apache.log4j.Logger;
+import org.apache.xmlbeans.impl.regex.REUtil;
 import org.bson.types.ObjectId;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -71,6 +72,7 @@ import java.io.File;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.io.UnsupportedEncodingException;
+import java.net.URLDecoder;
 import java.net.URLEncoder;
 import java.text.Collator;
 import java.text.MessageFormat;
@@ -1369,7 +1371,19 @@ public class UserController extends BaseController {
     @SessionNeedless
     @RequestMapping(value = "/qqlogin")
     public void QQLogin(HttpServletRequest request, HttpServletResponse response) throws IOException {
-        response.sendRedirect(qqAuth.getAuthUrl());
+        String redirectUrl=request.getParameter("currentUrl");
+        if(StringUtils.isNotBlank(redirectUrl)) {
+            SessionValue value = new SessionValue();
+            String recordUrl= URLDecoder.decode(redirectUrl, "UTF-8");
+            value.put("redirectUrl",recordUrl);
+            ObjectId cacheKey = new ObjectId();
+            CacheHandler.cacheSessionValue(cacheKey.toString(), value, Constant.SESSION_TEN_MINUTE);
+            Cookie appShareCookie = new Cookie(Constant.APP_SHARE, cacheKey.toString());
+            appShareCookie.setMaxAge(Constant.SECONDS_IN_DAY);
+            appShareCookie.setPath(Constant.BASE_PATH);
+            response.addCookie(appShareCookie);
+            response.sendRedirect(qqAuth.getAuthUrl());
+        }
     }
 
 

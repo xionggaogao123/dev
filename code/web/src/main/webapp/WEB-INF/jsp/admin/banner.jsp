@@ -143,7 +143,7 @@
         });
 
         $('.delete').click(function () {
-            var id = $(this).parent().parent().find('.objectId').text();
+            var id = $(this).closest('tr').find('.objectId').text();
             var formData = {
                 id: id
             };
@@ -163,13 +163,12 @@
         });
 
         $('.onlineButton').click(function () {
-            var id = $(this).parent().parent().find('.objectId').text();
+            var id = $(this).closest('tr').find('.objectId').text();
             var text = $.trim($(this).text());
             var action = 1;
             if (text == '上线') {
                 action = 2;
             }
-            alert(action);
             var formData = {
                 id: id,
                 action: action

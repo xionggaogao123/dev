@@ -8,6 +8,7 @@ import com.fulaan.service.CommunityService;
 import com.fulaan.service.MemberService;
 import com.fulaan.user.service.UserService;
 import com.pojo.fcommunity.CommunityEntry;
+import com.pojo.fcommunity.RemarkEntry;
 import com.pojo.fcommunity.ValidateInfoEntry;
 import com.pojo.user.AvatarType;
 import com.pojo.user.UserEntry;
@@ -101,6 +102,7 @@ public class ValidateInfoService {
         List<ObjectId> userIds=new ArrayList<ObjectId>(ids);
         Map<ObjectId,UserEntry> userMap=userService.getUserEntryMap(userIds, Constant.FIELDS);
         Map<ObjectId,CommunityEntry> map=communityDao.findMapInfo(cmIds);
+        Map<ObjectId,RemarkEntry> remarkEntryMap=communityService.findRemarkEntries(reviewedId,userIds);
         for(ValidateInfoEntry entry:entries){
             ValidateInfoDTO dto=new ValidateInfoDTO(entry);
             CommunityEntry communityEntry=map.get(new ObjectId(dto.getCommunityId()));
@@ -110,7 +112,12 @@ public class ValidateInfoService {
 
             UserEntry userEntry=userMap.get(entry.getUserId());
             if(null!=userEntry){
-                dto.setUserName(StringUtils.isNotBlank(userEntry.getNickName())?userEntry.getNickName():userEntry.getUserName());
+                RemarkEntry remarkEntry=remarkEntryMap.get(entry.getUserId());
+                if(null!=remarkEntry){
+                    dto.setUserName(remarkEntry.getRemark());
+                }else {
+                    dto.setUserName(StringUtils.isNotBlank(userEntry.getNickName()) ? userEntry.getNickName() : userEntry.getUserName());
+                }
                 dto.setAvatar(AvatarUtils.getAvatar(userEntry.getAvatar(), AvatarType.MIN_AVATAR.getType()));
             }
 

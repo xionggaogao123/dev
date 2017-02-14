@@ -636,6 +636,7 @@ public class CommunityController extends BaseController {
     @RequestMapping("/getNewValidateInfo")
     @ResponseBody
     public RespObj getNewValidateInfo(String emChatId) {
+        ObjectId userId=getUserId();
         ObjectId groupId = groupService.getGroupIdByChatId(emChatId);
         GroupDTO groupDTO = groupService.findById(groupId,getUserId());
         ValidateInfoEntry entry = validateInfoService.getNewsInfo(new ObjectId(groupDTO.getCommunityId()));

@@ -13,8 +13,6 @@ import fulaan.social.util.Util;
 import java.io.IOException;
 import java.util.Properties;
 
-import static javafx.scene.input.KeyCode.H;
-
 /**
  * Created by jerry on 2017/1/16.
  * @see Auth

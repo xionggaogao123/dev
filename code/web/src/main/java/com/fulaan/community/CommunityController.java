@@ -522,7 +522,7 @@ public class CommunityController extends BaseController {
             ObjectId detailId=communityService.saveMessage(uid, message);
             int type=message.getType();
             String msg = "";
-            if(type==1||type==7) {
+            if(type==1||type==5) {
                 if (type == 1) {
                     msg = "发布了一条通知";
                 } else {

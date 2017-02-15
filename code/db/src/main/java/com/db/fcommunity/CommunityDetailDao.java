@@ -18,8 +18,9 @@ import java.util.List;
  */
 public class CommunityDetailDao extends BaseDao {
 
-    public void save(CommunityDetailEntry detailEntry) {
+    public ObjectId save(CommunityDetailEntry detailEntry) {
         save(MongoFacroty.getAppDB(), Constant.COLLECTION_FORUM_COMMUNITY_DETAIL, detailEntry.getBaseEntry());
+        return detailEntry.getID();
     }
 
     /**

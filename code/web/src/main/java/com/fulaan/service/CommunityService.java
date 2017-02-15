@@ -363,7 +363,7 @@ public class CommunityService {
      * @param uid
      * @param message
      */
-    public void saveMessage(ObjectId uid, CommunityMessage message) throws Exception {
+    public ObjectId saveMessage(ObjectId uid, CommunityMessage message) throws Exception {
         List<AttachmentEntry> attachmentEntries = splitAttachements(message.getAttachements(), uid);
         List<AttachmentEntry> vedios = splitAttachements(message.getVedios(), uid);
         List<AttachmentEntry> images = splitAttachements(message.getImages(), uid);
@@ -374,7 +374,7 @@ public class CommunityService {
                 message.getShareUrl(), message.getShareImage(), message.getShareTitle(), message.getSharePrice(), message.getVoteContent(), message.getVoteMaxCount(),
                 ConvertStrToLong(message.getVoteDeadTime()), message.getVoteType(), videoEntries
         );
-        communityDetailDao.save(entry);
+        return communityDetailDao.save(entry);
     }
 
     private long ConvertStrToLong(String voteDeadTime) throws Exception {

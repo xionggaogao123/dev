@@ -100,6 +100,9 @@ public class CommunityController extends BaseController {
     @Autowired
     private FVoteService fVoteService;
 
+    @Autowired
+    private LatestGroupDynamicService latestGroupDynamicService;
+
     public static final String suffix = "/static/images/community/upload.png";
 
     @RequestMapping("/create")
@@ -438,6 +441,74 @@ public class CommunityController extends BaseController {
     }
 
     /**
+     * 最新一条动态消息
+     * @param communityId
+     * @return
+     */
+    @RequestMapping(value = "/getLatestGroupInfo")
+    @ResponseBody
+    public RespObj getLatestGroupInfo(@ObjectIdType ObjectId communityId){
+        RespObj respObj=new RespObj(Constant.FAILD_CODE);
+        String userId=getUserId().toString();
+        LatestGroupDynamicEntry entry=latestGroupDynamicService.getLatestInfo(communityId);
+        if(null!=entry){
+            respObj.setCode(Constant.SUCCESS_CODE);
+            LatestGroupDynamicDTO dto=new LatestGroupDynamicDTO(entry);
+            List<String> readedList=dto.getReadedList();
+            boolean flag=false;
+            for(String uid:readedList){
+                if(uid.equals(userId)){
+                    flag=true;
+                    break;
+                }
+            }
+            if(flag){
+                dto.setReaded(1);
+            }else{
+                dto.setReaded(0);
+            }
+            ObjectId  partInUserId=new ObjectId(dto.getUserId());
+            RemarkEntry remarkEntry=communityService.getRemarkEntry(new ObjectId(userId),partInUserId);
+            if(null!=remarkEntry){
+                dto.setNickName(remarkEntry.getRemark());
+            }else{
+                ObjectId groupId = communityService.getGroupId(new ObjectId(dto.getCommunityId()));
+                List<ObjectId> groupIds = new ArrayList<ObjectId>();
+                groupIds.add(groupId);
+                List<ObjectId> partInUserIds=new ArrayList<ObjectId>();
+                partInUserIds.add(partInUserId);
+                Map<String, MemberEntry> memberEntryMap = communityService.getMemberEntryMap(groupIds, partInUserIds);
+                MemberEntry entry1 = memberEntryMap.get(groupId + "$" + partInUserId);
+                UserEntry userEntry=userService.findById(partInUserId);
+                String nickName=StringUtils.isNotBlank(userEntry.getNickName())?userEntry.getNickName():userEntry.getUserName();
+                if(null!=entry1){
+                    if(StringUtils.isNotBlank(entry1.getNickName())){
+                        dto.setNickName(entry1.getNickName());
+                    }else{
+                        dto.setNickName(nickName);
+                    }
+                }else{
+                    dto.setNickName(nickName);
+                }
+            }
+            respObj.setMessage(dto);
+        }
+        return respObj;
+    }
+
+    /**
+     * 设置最新动态消息已读
+     */
+    @RequestMapping(value = "/pushLatestReadedInfo")
+    @ResponseBody
+    public RespObj pushLatestReadedInfo(@ObjectIdType ObjectId id){
+        RespObj respObj=new RespObj(Constant.SUCCESS_CODE);
+        ObjectId userId=getUserId();
+        latestGroupDynamicService.pushRead(id,userId);
+        return respObj;
+    }
+
+    /**
      * 新建消息
      *
      * @param message
@@ -448,16 +519,18 @@ public class CommunityController extends BaseController {
     public RespObj newMessage(@RequestBody CommunityMessage message) {
         ObjectId uid = getUserId();
         try{
-            communityService.saveMessage(uid, message);
-//            int type=message.getType();
-//            if(type==1||type==7) {
-//                List<String> targets = new ArrayList<String>();
-//                String msg ="";
-//                if(type==1){
-//                   msg=  "发布了一条通知";
-//                }else{
-//                    msg=  "发布了一条作业";
-//                }
+            ObjectId detailId=communityService.saveMessage(uid, message);
+            int type=message.getType();
+            String msg = "";
+            if(type==1||type==7) {
+                if (type == 1) {
+                    msg = "发布了一条通知";
+                } else {
+                    msg = "发布了一条作业";
+                }
+                latestGroupDynamicService.saveLatestInfo(new ObjectId(message.getCommunityId()),detailId,msg,uid,type);
+            }
+
 //                Map<String, String> sendMessage = new HashMap<String, String>();
 //                sendMessage.put("type", MsgType.TEXT);
 //                sendMessage.put("msg", msg);

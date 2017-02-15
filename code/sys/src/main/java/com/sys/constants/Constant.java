@@ -581,6 +581,7 @@ public class Constant {
     public static final String COLLECTION_FORUM_PARTICIPATE="fparticipate";
 
 
+
     //==========================第二版新加的表=================================
 
     //找玩伴
@@ -605,6 +606,8 @@ public class Constant {
     public static final String COLLECTION_FORUM_COMMUNITY_MEMBER = "fmember";
 
     public static final String COLLECTION_FORUM_COMMUNITY_DETAIL = "fcommunitydetail";
+
+    public static final String COLLECTION_FPRUM_LATEST_GROUP_DYNAMIC = "latestgroupdynamic";
 
     //家校互动附件表
     public static final String COLLECTION_FORUM_COMMUNITY_ATTACHMENT = "communityattachment";

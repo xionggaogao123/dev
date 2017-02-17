@@ -917,7 +917,7 @@ public class CommunityController extends BaseController {
                 boolean flag = validateInfoService.saveValidateInfos(userId, communityId, msg, type, memberDTOs);
                 if (flag) {
                     if(emService.sendTextMessage("users", targets, userId.toString(), ext, sendMessage)){
-                        return RespObj.FAILD("申请加入私密社区成功!");
+                        return RespObj.FAILD("此群为私密社区群，请等待社长批准!");
                     }else{
                         return RespObj.FAILD("申请加入该私密社区失败!");
                     }

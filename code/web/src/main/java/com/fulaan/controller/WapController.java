@@ -64,12 +64,23 @@ public class WapController extends BaseController {
 
     @RequestMapping("/third")
     @SessionNeedless
-    public String third(String redirectUrl, @RequestHeader("User-Agent") String userAgent,
+    public void third(String redirectUrl, @RequestHeader("User-Agent") String userAgent,
                         HttpServletResponse response) throws Exception{
         if (userAgent.indexOf("MicroMessenger") > 0) { //是微信浏览器
-            return "redirect:wechat.do";
+            response.sendRedirect("/wap/wechat.do");
         } else {
-            return "redirect:qq.do?currentUrl="+redirectUrl;
+            if(org.apache.commons.lang.StringUtils.isNotBlank(redirectUrl)) {
+                SessionValue value = new SessionValue();
+                String recordUrl= URLDecoder.decode(redirectUrl, "UTF-8");
+                value.put("redirectUrl",recordUrl);
+                ObjectId cacheKey = new ObjectId();
+                CacheHandler.cacheSessionValue(cacheKey.toString(), value, Constant.SESSION_TEN_MINUTE);
+                Cookie appShareCookie = new Cookie(Constant.APP_SHARE, cacheKey.toString());
+                appShareCookie.setMaxAge(Constant.SECONDS_IN_DAY);
+                appShareCookie.setPath(Constant.BASE_PATH);
+                response.addCookie(appShareCookie);
+                response.sendRedirect(qqAuth.getAuthUrl());
+            }
         }
     }
 

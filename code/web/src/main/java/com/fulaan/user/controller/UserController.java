@@ -1414,12 +1414,7 @@ public class UserController extends BaseController {
 
         final UserEntry e = getThirdInfo(userInfo, ThirdType.QQ);
 
-        new Thread(new Runnable() {
-            @Override
-            public void run() {
-                initUser(e);
-            }
-        }).start();
+        initUser(e);
 
         String redirectUrl = userService.getRedirectUrl(request);
         logger.info("回调路径是"+redirectUrl);

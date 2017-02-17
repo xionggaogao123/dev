@@ -912,16 +912,17 @@ public class CommunityController extends BaseController {
                 Map<String, String> sendMessage = new HashMap<String, String>();
                 sendMessage.put("type", MsgType.TEXT);
                 sendMessage.put("msg", message);
-                if (emService.sendTextMessage("users", targets, userId.toString(), ext, sendMessage)) {
-                    //申请加入私密社区
-                    boolean flag = validateInfoService.saveValidateInfos(userId, communityId, msg, type, memberDTOs);
-                    if (flag) {
+
+                //申请加入私密社区
+                boolean flag = validateInfoService.saveValidateInfos(userId, communityId, msg, type, memberDTOs);
+                if (flag) {
+                    if(emService.sendTextMessage("users", targets, userId.toString(), ext, sendMessage)){
                         return RespObj.FAILD("申请加入私密社区成功!");
-                    } else {
-                        return RespObj.FAILD("已经申请加入该私密社区了!");
+                    }else{
+                        return RespObj.FAILD("申请加入该私密社区失败!");
                     }
                 } else {
-                    return RespObj.FAILD("申请加入该私密社区失败!");
+                    return RespObj.FAILD("已经申请加入该私密社区了!");
                 }
             }
         }

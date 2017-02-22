@@ -1035,7 +1035,12 @@ public class CommunityController extends BaseController {
     @RequestMapping("/search")
     @ResponseBody
     public RespObj searchCommunity(String relax) {
-        return RespObj.SUCCESS(communityService.search(relax, getUserId()));
+        Map<String,Object> retMap=new HashMap<String,Object>();
+        List<CommunityDTO> dtos=communityService.search(relax, getUserId());
+        List<CommunityService.UserSearchInfo> users=communityService.getUserSearchDtos(relax);
+        retMap.put("communities",dtos);
+        retMap.put("users",users);
+        return RespObj.SUCCESS(retMap);
     }
 
     @RequestMapping("/communityPublish")
@@ -1903,31 +1908,31 @@ public class CommunityController extends BaseController {
                                @RequestParam(defaultValue = "5", required = false) int pageSize) throws Exception {
         try {
             int count = 1;
-            List<UserSearchInfo> dtos = new ArrayList<UserSearchInfo>();
+            List<CommunityService.UserSearchInfo> dtos = new ArrayList<CommunityService.UserSearchInfo>();
             if (ObjectId.isValid(regular)) {
                 UserEntry userEntry = userService.findById(new ObjectId(regular));
                 if (null == userEntry) {
                     return RespObj.FAILD("查找不到该用户！");
                 } else {
-                    dtos.add(getDto(userEntry));
+                    dtos.add(communityService.getDto(userEntry));
                 }
             } else {
                 //新产生的Id查找
                 UserEntry userEntry1 = userService.findByGenerateCode(regular);
                 if (null != userEntry1) {
-                    dtos.add(getDto(userEntry1));
+                    dtos.add(communityService.getDto(userEntry1));
                 }
                 if (dtos.size() == 0) {
                     //用户名精确查找
                     List<UserEntry> userEntryList = userService.getInfoByName("nm", regular);
                     if (userEntryList.size() > 0) {
-                        dtos = getUserInfo(userEntryList);
+                        dtos = communityService.getUserInfo(userEntryList);
                         count = dtos.size();
                     } else {
                         //昵称精确查找
                         List<UserEntry> userEntryList1 = userService.getInfoByName("nnm", regular);
                         if (userEntryList1.size() > 0) {
-                            dtos = getUserInfo(userEntryList1);
+                            dtos = communityService.getUserInfo(userEntryList1);
                             count = dtos.size();
                         } else {
                             //判断是否存储了Id,存储时间为5分钟
@@ -1939,7 +1944,7 @@ public class CommunityController extends BaseController {
                             UserEntry userEntry = userService.getUserInfoEntry(regular);
                             if (null != userEntry) {
                                 List<UserEntry> userEntries = userService.getUserList(field1, regular, page, pageSize);
-                                dtos = getUserInfo(userEntries);
+                                dtos = communityService.getUserInfo(userEntries);
                                 if (null != map && map.size() != 0) {
                                     count = Integer.parseInt((String) map.get("count"));
                                 } else {
@@ -1947,7 +1952,7 @@ public class CommunityController extends BaseController {
                                 }
                             } else {
                                 List<UserEntry> userEntries = userService.getUserList(filed2, regular, page, pageSize);
-                                dtos = getUserInfo(userEntries);
+                                dtos = communityService.getUserInfo(userEntries);
                                 if (null != map && map.size() != 0) {
                                     count = Integer.parseInt((String) map.get("count"));
                                 } else {
@@ -1975,64 +1980,6 @@ public class CommunityController extends BaseController {
             return RespObj.FAILD("传递的参数不符合标准！");
         }
     }
-
-    public List<UserSearchInfo> getUserInfo(List<UserEntry> userEntries) {
-        List<UserSearchInfo> userSearchInfos = new ArrayList<UserSearchInfo>();
-        for (UserEntry item : userEntries) {
-            userSearchInfos.add(getDto(item));
-        }
-        return userSearchInfos;
-    }
-
-    private static class UserSearchInfo {
-        private String userId;
-        private String avator;
-        private String nickName;
-        private String userName;
-
-        public String getUserId() {
-            return userId;
-        }
-
-        public void setUserId(String userId) {
-            this.userId = userId;
-        }
-
-        public String getAvator() {
-            return avator;
-        }
-
-        public void setAvator(String avator) {
-            this.avator = avator;
-        }
-
-        public String getNickName() {
-            return nickName;
-        }
-
-        public void setNickName(String nickName) {
-            this.nickName = nickName;
-        }
-
-        public String getUserName() {
-            return userName;
-        }
-
-        public void setUserName(String userName) {
-            this.userName = userName;
-        }
-    }
-
-    public UserSearchInfo getDto(UserEntry userEntry) {
-        UserSearchInfo dto = new UserSearchInfo();
-        dto.setUserId(userEntry.getID().toString());
-        dto.setAvator(AvatarUtils.getAvatar(userEntry.getAvatar(), AvatarType.MIN_AVATAR.getType()));
-        dto.setNickName(userEntry.getNickName());
-        dto.setUserName(userEntry.getUserName());
-        return dto;
-    }
-
-
     /**
      * 提交作业
      *

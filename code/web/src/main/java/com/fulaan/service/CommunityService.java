@@ -23,11 +23,13 @@ import com.pojo.fcommunity.VideoEntry;
 import com.pojo.forum.FVoteDTO;
 import com.pojo.forum.FVoteEntry;
 import com.pojo.user.AvatarType;
+import com.pojo.user.UserDetailInfoDTO;
 import com.pojo.user.UserEntry;
 import com.pojo.video.*;
 import com.sys.constants.Constant;
 import com.sys.utils.AvatarUtils;
 import com.sys.utils.DateTimeUtils;
+import com.sys.utils.RespObj;
 import org.apache.commons.lang3.StringUtils;
 import org.bson.types.ObjectId;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -313,6 +315,49 @@ public class CommunityService {
     }
 
     /**
+     * 查询用户信息
+     */
+    public List<UserSearchInfo> getUserSearchDtos(String regular){
+        List<UserSearchInfo> dtos=new ArrayList<UserSearchInfo>();
+        if (ObjectId.isValid(regular)) {
+            UserEntry userEntry = userService.findById(new ObjectId(regular));
+            if(null!=userEntry){
+                dtos.add(getDto(userEntry));
+            }
+        }else{
+            //新产生的Id查找
+            UserEntry userEntry1 = userService.findByGenerateCode(regular);
+            if (null != userEntry1) {
+                dtos.add(getDto(userEntry1));
+            }
+            if (dtos.size() == 0) {
+                //用户名精确查找
+                List<UserEntry> userEntryList = userService.getInfoByName("nm", regular);
+                if (userEntryList.size() > 0) {
+                    dtos = getUserInfo(userEntryList);
+                } else {
+                    //昵称精确查找
+                    List<UserEntry> userEntryList1 = userService.getInfoByName("nnm", regular);
+                    if (userEntryList1.size() > 0) {
+                        dtos = getUserInfo(userEntryList1);
+                    } else {
+                        String field1 = "nm";
+                        String filed2 = "nnm";
+                        UserEntry userEntry = userService.getUserInfoEntry(regular);
+                        if (null != userEntry) {
+                            List<UserEntry> userEntries = userService.getUserList(field1, regular, 1, 100);
+                            dtos = getUserInfo(userEntries);
+                        } else {
+                            List<UserEntry> userEntries = userService.getUserList(filed2, regular, 1, 100);
+                            dtos = getUserInfo(userEntries);
+                        }
+                    }
+                }
+            }
+        }
+        return dtos;
+    }
+    /**
      * 获取我的社团
      *
      * @param uid
@@ -346,6 +391,63 @@ public class CommunityService {
 
     public int countMycommunitys(ObjectId userId) {
         return mineCommunityDao.count(userId);
+    }
+
+
+    public List<UserSearchInfo> getUserInfo(List<UserEntry> userEntries) {
+        List<UserSearchInfo> userSearchInfos = new ArrayList<UserSearchInfo>();
+        for (UserEntry item : userEntries) {
+            userSearchInfos.add(getDto(item));
+        }
+        return userSearchInfos;
+    }
+
+    public static class UserSearchInfo {
+        private String userId;
+        private String avator;
+        private String nickName;
+        private String userName;
+
+        public String getUserId() {
+            return userId;
+        }
+
+        public void setUserId(String userId) {
+            this.userId = userId;
+        }
+
+        public String getAvator() {
+            return avator;
+        }
+
+        public void setAvator(String avator) {
+            this.avator = avator;
+        }
+
+        public String getNickName() {
+            return nickName;
+        }
+
+        public void setNickName(String nickName) {
+            this.nickName = nickName;
+        }
+
+        public String getUserName() {
+            return userName;
+        }
+
+        public void setUserName(String userName) {
+            this.userName = userName;
+        }
+    }
+
+    public UserSearchInfo getDto(UserEntry userEntry) {
+        UserSearchInfo dto = new UserSearchInfo();
+        dto.setUserId(userEntry.getID().toString());
+        dto.setAvator(AvatarUtils.getAvatar(userEntry.getAvatar(), AvatarType.MIN_AVATAR.getType()));
+        dto.setNickName(userEntry.getNickName());
+        dto.setUserName(userEntry.getUserName());
+        return dto;
     }
 
     /**

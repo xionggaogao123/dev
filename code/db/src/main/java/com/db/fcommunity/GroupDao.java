@@ -9,7 +9,9 @@ import com.sys.constants.Constant;
 import org.bson.types.ObjectId;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 /**
  * Created by jerry on 2016/11/1.
@@ -77,6 +79,22 @@ public class GroupDao extends BaseDao {
             groupEntries.add(new GroupEntry(dbo));
         }
         return groupEntries;
+    }
+
+    /**
+     * 获取群组对应的组合头像
+     */
+    public Map<ObjectId,GroupEntry> getGroupEntries(List<ObjectId> ids){
+        Map<ObjectId,GroupEntry> retMap=new HashMap<ObjectId, GroupEntry>();
+        BasicDBObject query=new BasicDBObject(Constant.ID,new BasicDBObject(Constant.MONGO_IN,ids));
+        List<DBObject> dbObjects=find(MongoFacroty.getAppDB(), Constant.COLLECTION_FORUM_COMMUNITY_GROUP, query, Constant.FIELDS);
+        if(null!=dbObjects&&!dbObjects.isEmpty()){
+            for(DBObject dbObject:dbObjects){
+                GroupEntry entry=new GroupEntry(dbObject);
+                retMap.put(entry.getID(),entry);
+            }
+        }
+        return retMap;
     }
 
     /**

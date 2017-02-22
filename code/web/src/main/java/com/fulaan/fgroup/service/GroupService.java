@@ -7,7 +7,10 @@ import com.fulaan.dto.MemberDTO;
 import com.fulaan.service.MemberService;
 import com.fulaan.util.ImageUtils;
 import com.fulaan.util.QRUtils;
+import com.mongodb.BasicDBObject;
+import com.mongodb.DBObject;
 import com.pojo.fcommunity.GroupEntry;
+import com.sys.constants.Constant;
 import com.sys.exceptions.IllegalParamException;
 import com.sys.utils.QiniuFileUtils;
 import org.apache.commons.lang3.StringUtils;
@@ -23,6 +26,7 @@ import java.io.FileInputStream;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 /**
  * Created by jerry on 2016/11/1.
@@ -52,6 +56,10 @@ public class GroupService {
         groupDao.add(group);
         memberService.saveMember(owerId, groupId, 2);
         return groupId;
+    }
+
+    public Map<ObjectId,GroupEntry> getGroupEntries(List<ObjectId> ids){
+        return groupDao.getGroupEntries(ids);
     }
 
     /**

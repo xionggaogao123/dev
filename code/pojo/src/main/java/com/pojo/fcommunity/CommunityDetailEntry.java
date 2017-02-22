@@ -50,6 +50,10 @@ import java.util.List;
  * vdt:voteDeadTime投票截止时间
  * vt:voteType投票类型
  * r:remove 0:未删除 1：已删除
+ *
+ *
+ * //新加需求(加置顶的字段)
+ * tp:top
  * <p/>
  * }
  */
@@ -101,8 +105,17 @@ public class CommunityDetailEntry extends BaseDBObject {
             .append("vmc",voteMaxCount)
             .append("vdt",voteDeadTime)
             .append("vt",voteType)
+            .append("tp",0)
             .append("r", 0);
     setBaseEntry(basicDBObject);
+  }
+
+  public void setTop(int top){
+    setSimpleValue("tp",top);
+  }
+
+  public int getTop(){
+    return getSimpleIntegerValueDef("tp",0);
   }
 
   public int getVoteMaxCount(){

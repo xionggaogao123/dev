@@ -70,7 +70,7 @@ public class CommunityDetailDao extends BaseDao {
         List<CommunityDetailEntry> detailEntries = new ArrayList<CommunityDetailEntry>();
         BasicDBObject query = new BasicDBObject().append("cmid", communityId)
                 .append("cmty", type.getType()).append("r", 0);
-        BasicDBObject orderBy = new BasicDBObject().append(Constant.ID, order);
+        BasicDBObject orderBy = new BasicDBObject().append("tp",-1).append(Constant.ID, order);
         List<DBObject> dbObjects = find(MongoFacroty.getAppDB(), Constant.COLLECTION_FORUM_COMMUNITY_DETAIL, query, Constant.FIELDS, orderBy, (page - 1) * pageSize, pageSize);
         for (DBObject dbo : dbObjects) {
             detailEntries.add(new CommunityDetailEntry(dbo));
@@ -246,6 +246,17 @@ public class CommunityDetailDao extends BaseDao {
     public void removeCommunityDetail(ObjectId id) {
         BasicDBObject query = new BasicDBObject(Constant.ID, id);
         BasicDBObject updateValue = new BasicDBObject(Constant.MONGO_SET, new BasicDBObject("r", 1));
+        update(MongoFacroty.getAppDB(), Constant.COLLECTION_FORUM_COMMUNITY_DETAIL, query, updateValue);
+    }
+
+
+    /**
+     * 置顶详情数据
+     * @param id
+     */
+    public void updateCommunityDetailTop(ObjectId id){
+        BasicDBObject query=new BasicDBObject(Constant.ID,id);
+        BasicDBObject updateValue = new BasicDBObject(Constant.MONGO_SET, new BasicDBObject("tp", 1));
         update(MongoFacroty.getAppDB(), Constant.COLLECTION_FORUM_COMMUNITY_DETAIL, query, updateValue);
     }
 

@@ -87,6 +87,9 @@ public class CommunityDetailDTO {
 
     private List<PartInContentDTO> partList = new ArrayList<PartInContentDTO>();
 
+    //置顶标志
+    private int top;
+
     public CommunityDetailDTO() {
 
     }
@@ -195,6 +198,7 @@ public class CommunityDetailDTO {
         this.voteDeadTime = communityDetailEntry.getVoteDeadTime();
         this.voteType = communityDetailEntry.getVoteType();
         this.videoDTOs = getVideos(communityDetailEntry.getVideoList());
+        this.top=communityDetailEntry.getTop();
     }
 
     public CommunityDetailDTO(CommunityDetailEntry communityDetailEntry) {
@@ -238,6 +242,7 @@ public class CommunityDetailDTO {
         this.voteDeadTime = communityDetailEntry.getVoteDeadTime();
         this.voteType = communityDetailEntry.getVoteType();
         this.videoDTOs = getVideos(communityDetailEntry.getVideoList());
+        this.top=communityDetailEntry.getTop();
     }
 
     private String getTimeStr(long time) {
@@ -603,5 +608,13 @@ public class CommunityDetailDTO {
 
     public void setIsOwner(int isOwner) {
         this.isOwner = isOwner;
+    }
+
+    public int getTop() {
+        return top;
+    }
+
+    public void setTop(int top) {
+        this.top = top;
     }
 }

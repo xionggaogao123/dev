@@ -2781,4 +2781,17 @@ public class CommunityController extends BaseController {
     }
 
 
+    /**
+     * 置顶数据
+     * @return
+     */
+    @RequestMapping("/updateCommunityDetailTop")
+    @ResponseBody
+    public RespObj updateCommunityDetailTop(@ObjectIdType ObjectId detailId){
+        RespObj respObj=new RespObj(Constant.SUCCESS_CODE);
+        communityService.updateCommunityDetailTop(detailId);
+        return respObj;
+    }
+
+
 }

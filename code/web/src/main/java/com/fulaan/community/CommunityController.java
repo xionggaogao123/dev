@@ -1035,12 +1035,12 @@ public class CommunityController extends BaseController {
     @RequestMapping("/search")
     @ResponseBody
     public RespObj searchCommunity(String relax) {
-        Map<String,Object> retMap=new HashMap<String,Object>();
+//        Map<String,Object> retMap=new HashMap<String,Object>();
         List<CommunityDTO> dtos=communityService.search(relax, getUserId());
-        List<CommunityService.UserSearchInfo> users=communityService.getUserSearchDtos(relax);
-        retMap.put("communities",dtos);
-        retMap.put("users",users);
-        return RespObj.SUCCESS(retMap);
+//        List<CommunityService.UserSearchInfo> users=communityService.getUserSearchDtos(relax);
+//        retMap.put("communities",dtos);
+//        retMap.put("users",users);
+        return RespObj.SUCCESS(dtos);
     }
 
     @RequestMapping("/communityPublish")

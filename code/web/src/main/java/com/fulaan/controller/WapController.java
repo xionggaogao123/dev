@@ -72,7 +72,7 @@ public class WapController extends BaseController {
         SessionValue value = new SessionValue();
         value.put("redirectUrl", redirectUrl);
         ObjectId cacheKey = new ObjectId();
-        CacheHandler.cacheSessionValue(cacheKey.toString(), value, Constant.SESSION_TEN_MINUTE);
+        CacheHandler.cacheSessionValue(cacheKey.toString(), value, Constant.SECONDS_IN_DAY);
         Cookie appShareCookie = new Cookie(Constant.APP_SHARE, cacheKey.toString());
         appShareCookie.setMaxAge(Constant.SECONDS_IN_DAY);
         appShareCookie.setPath(Constant.BASE_PATH);

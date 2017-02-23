@@ -37,9 +37,9 @@ define(function (require, exports, module) {
                     if (result.login == true) {
                         commitDianZan(result.userId);
                     } else {
-                        var url = $(location).attr('href');
-                        var encodedUrl = encodeURI(encodeURI(url));
-                        location.href = "/wap/third.do?redirectUrl=" + encodedUrl;
+                        // var url = $(location).attr('href');
+                        // var encodedUrl = encodeURI(encodeURI(url));
+                        location.href = "/wap/third.do";
                     }
                 });
             });

@@ -66,21 +66,22 @@ public class WapController extends BaseController {
     @SessionNeedless
     public void third(String redirectUrl, @RequestHeader("User-Agent") String userAgent,
                         HttpServletResponse response) throws Exception{
+        if(org.apache.commons.lang.StringUtils.isNotBlank(redirectUrl)) {
+            SessionValue value = new SessionValue();
+            String recordUrl = URLDecoder.decode(redirectUrl, "UTF-8");
+            value.put("redirectUrl", recordUrl);
+            ObjectId cacheKey = new ObjectId();
+            CacheHandler.cacheSessionValue(cacheKey.toString(), value, Constant.SESSION_TEN_MINUTE);
+            Cookie appShareCookie = new Cookie(Constant.APP_SHARE, cacheKey.toString());
+            appShareCookie.setMaxAge(Constant.SECONDS_IN_DAY);
+            appShareCookie.setPath(Constant.BASE_PATH);
+            response.addCookie(appShareCookie);
+        }
         if (userAgent.indexOf("MicroMessenger") > 0) { //是微信浏览器
-            response.sendRedirect("/wap/wechat.do");
+//         response.sendRedirect("/wap/wechat.do");
+            response.sendRedirect(wechatAuth.getWapAuthUrl());
         } else {
-            if(org.apache.commons.lang.StringUtils.isNotBlank(redirectUrl)) {
-                SessionValue value = new SessionValue();
-                String recordUrl= URLDecoder.decode(redirectUrl, "UTF-8");
-                value.put("redirectUrl",recordUrl);
-                ObjectId cacheKey = new ObjectId();
-                CacheHandler.cacheSessionValue(cacheKey.toString(), value, Constant.SESSION_TEN_MINUTE);
-                Cookie appShareCookie = new Cookie(Constant.APP_SHARE, cacheKey.toString());
-                appShareCookie.setMaxAge(Constant.SECONDS_IN_DAY);
-                appShareCookie.setPath(Constant.BASE_PATH);
-                response.addCookie(appShareCookie);
-                response.sendRedirect(qqAuth.getAuthUrl());
-            }
+            response.sendRedirect(qqAuth.getAuthUrl());
         }
     }
 

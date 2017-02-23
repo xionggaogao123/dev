@@ -41,19 +41,7 @@ public class WapController extends BaseController {
     @RequestMapping("/qq")
     @SessionNeedless
     public void qq(HttpServletRequest request, HttpServletResponse response) throws Exception{
-        String redirectUrl=request.getParameter("currentUrl");
-        if(org.apache.commons.lang.StringUtils.isNotBlank(redirectUrl)) {
-            SessionValue value = new SessionValue();
-            String recordUrl= URLDecoder.decode(redirectUrl, "UTF-8");
-            value.put("redirectUrl",recordUrl);
-            ObjectId cacheKey = new ObjectId();
-            CacheHandler.cacheSessionValue(cacheKey.toString(), value, Constant.SESSION_TEN_MINUTE);
-            Cookie appShareCookie = new Cookie(Constant.APP_SHARE, cacheKey.toString());
-            appShareCookie.setMaxAge(Constant.SECONDS_IN_DAY);
-            appShareCookie.setPath(Constant.BASE_PATH);
-            response.addCookie(appShareCookie);
-            response.sendRedirect(qqAuth.getAuthUrl());
-        }
+        response.sendRedirect(qqAuth.getAuthUrl());
     }
 
     @RequestMapping("/wechat")
@@ -64,32 +52,31 @@ public class WapController extends BaseController {
 
     @RequestMapping("/third")
     @SessionNeedless
-    public void third(String redirectUrl, @RequestHeader("User-Agent") String userAgent,
+    public String third(@RequestHeader("User-Agent") String userAgent,
                         HttpServletResponse response) throws Exception{
-        if(org.apache.commons.lang.StringUtils.isNotBlank(redirectUrl)) {
-            SessionValue value = new SessionValue();
-            String recordUrl = URLDecoder.decode(redirectUrl, "UTF-8");
-            value.put("redirectUrl", recordUrl);
-            ObjectId cacheKey = new ObjectId();
-            CacheHandler.cacheSessionValue(cacheKey.toString(), value, Constant.SESSION_TEN_MINUTE);
-            Cookie appShareCookie = new Cookie(Constant.APP_SHARE, cacheKey.toString());
-            appShareCookie.setMaxAge(Constant.SECONDS_IN_DAY);
-            appShareCookie.setPath(Constant.BASE_PATH);
-            response.addCookie(appShareCookie);
-        }
         if (userAgent.indexOf("MicroMessenger") > 0) { //是微信浏览器
-//         response.sendRedirect("/wap/wechat.do");
-            response.sendRedirect(wechatAuth.getWapAuthUrl());
+            return "redirect:wechat.do";
         } else {
-            response.sendRedirect(qqAuth.getAuthUrl());
+            return "redirect:qq.do";
         }
     }
 
     @RequestMapping("/share")
     @SessionNeedless
-    public String shareFPost(String postId, String replyId, Map<String, Object> model) {
+    public String shareFPost(String postId, String replyId,
+                             Map<String, Object> model,HttpServletResponse response) {
         model.put("postId", postId);
         model.put("replyId", replyId);
+        //组装cookie
+        String redirectUrl="http://www.fulaan.com/wap/share.do?postId="+postId+"&replyId="+replyId;
+        SessionValue value = new SessionValue();
+        value.put("redirectUrl", redirectUrl);
+        ObjectId cacheKey = new ObjectId();
+        CacheHandler.cacheSessionValue(cacheKey.toString(), value, Constant.SESSION_TEN_MINUTE);
+        Cookie appShareCookie = new Cookie(Constant.APP_SHARE, cacheKey.toString());
+        appShareCookie.setMaxAge(Constant.SECONDS_IN_DAY);
+        appShareCookie.setPath(Constant.BASE_PATH);
+        response.addCookie(appShareCookie);
         return "wap/post";
     }
 

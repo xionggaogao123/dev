@@ -254,9 +254,9 @@ public class CommunityDetailDao extends BaseDao {
      * 置顶详情数据
      * @param id
      */
-    public void updateCommunityDetailTop(ObjectId id){
+    public void updateCommunityDetailTop(ObjectId id,int top){
         BasicDBObject query=new BasicDBObject(Constant.ID,id);
-        BasicDBObject updateValue = new BasicDBObject(Constant.MONGO_SET, new BasicDBObject("tp", 1));
+        BasicDBObject updateValue = new BasicDBObject(Constant.MONGO_SET, new BasicDBObject("tp", top));
         update(MongoFacroty.getAppDB(), Constant.COLLECTION_FORUM_COMMUNITY_DETAIL, query, updateValue);
     }
 

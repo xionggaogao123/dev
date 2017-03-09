@@ -462,11 +462,11 @@ define(['jquery', 'pagination', 'common'], function (require, exports, module) {
         $('body').on('input','#content',function(){
             var len=strlen($(this).val());
             var str="输入的字符数:";
-            if(len>1000){
-              $(this).next().html("<span color=\"#999\">"+str+"</span>"+"<span style='color:#f00' id='contentCount'>"+len+"</span>"+"<span color=\"#999\">/1000</span>");
+            if(len>5000){
+              $(this).next().html("<span color=\"#999\">"+str+"</span>"+"<span style='color:#f00' id='contentCount'>"+len+"</span>"+"<span color=\"#999\">/5000</span>");
             }else{
                 $(this).next().css("color","#999");
-                $(this).next().html(str+"<span id='contentCount'>"+len+"</span>"+"/1000");
+                $(this).next().html(str+"<span id='contentCount'>"+len+"</span>"+"/5000");
             }
         })
 
@@ -1035,8 +1035,8 @@ define(['jquery', 'pagination', 'common'], function (require, exports, module) {
 
 
         var contentLen=strlen(content);
-        if(contentLen>1000){
-            alert("内容字节数不能超过1000个!");
+        if(contentLen>5000){
+            alert("内容字节数不能超过5000个!");
             return false;
         }
 

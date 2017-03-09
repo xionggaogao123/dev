@@ -1040,7 +1040,19 @@ public class CommunityController extends BaseController {
 //        List<CommunityService.UserSearchInfo> users=communityService.getUserSearchDtos(relax);
 //        retMap.put("communities",dtos);
 //        retMap.put("users",users);
+        
         return RespObj.SUCCESS(dtos);
+    }
+
+    @RequestMapping("/searchCommunityAndUser")
+    @ResponseBody
+    public RespObj searchCommunityAndUser(String relax) {
+        Map<String,Object> retMap=new HashMap<String,Object>();
+        List<CommunityDTO> dtos=communityService.search(relax, getUserId());
+        List<CommunityService.UserSearchInfo> users=communityService.getUserSearchDtos(relax);
+        retMap.put("communities",dtos);
+        retMap.put("users",users);
+        return RespObj.SUCCESS(retMap);
     }
 
     @RequestMapping("/communityPublish")
@@ -2787,9 +2799,9 @@ public class CommunityController extends BaseController {
      */
     @RequestMapping("/updateCommunityDetailTop")
     @ResponseBody
-    public RespObj updateCommunityDetailTop(@ObjectIdType ObjectId detailId){
+    public RespObj updateCommunityDetailTop(@ObjectIdType ObjectId detailId,int top){
         RespObj respObj=new RespObj(Constant.SUCCESS_CODE);
-        communityService.updateCommunityDetailTop(detailId);
+        communityService.updateCommunityDetailTop(detailId,top);
         return respObj;
     }
 

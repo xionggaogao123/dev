@@ -1773,8 +1773,8 @@ public class CommunityService {
         return remarkDao.find(startUserId,endUserIds);
     }
 
-    public void updateCommunityDetailTop(ObjectId id){
-        communityDetailDao.updateCommunityDetailTop(id);
+    public void updateCommunityDetailTop(ObjectId id,int top){
+        communityDetailDao.updateCommunityDetailTop(id,top);
     }
 
 }

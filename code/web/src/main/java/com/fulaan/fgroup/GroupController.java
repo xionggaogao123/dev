@@ -465,7 +465,7 @@ public class GroupController extends BaseController {
             }
         } else {
             nickName=StringUtils.isNotBlank(userEntry.getNickName()) ? userEntry.getNickName() : userEntry.getUserName();
-        }String msg=nickName+"修改了群昵称";
+        }String msg=nickName+"修改了群名";
         sendMessage.put("msg", msg);
         Map<String, String> ext=new HashMap<String, String>();
         ext.put("userId",userId.toString());

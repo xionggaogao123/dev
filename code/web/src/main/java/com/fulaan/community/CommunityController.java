@@ -2848,7 +2848,7 @@ public class CommunityController extends BaseController {
     public RespObj removePartInContentInfo(@ObjectIdType ObjectId id){
         RespObj respObj=new RespObj(Constant.SUCCESS_CODE);
         communityService.removePartInContentInfo(id);
-        respObj.setCode("删除回复成功");
+        respObj.setMessage("删除回复成功");
         return respObj;
     }
 
@@ -2897,7 +2897,7 @@ public class CommunityController extends BaseController {
     public RespObj removeFeedBack(@ObjectIdType ObjectId id){
         RespObj respObj=new RespObj(Constant.SUCCESS_CODE);
         feedbackService.removeFeedBack(id);
-        respObj.setMessage("删除");
+        respObj.setMessage("删除留言成功");
         return respObj;
     }
 

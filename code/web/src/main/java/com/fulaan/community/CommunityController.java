@@ -36,6 +36,7 @@ import com.pojo.forum.FVoteDTO;
 import com.pojo.forum.FVoteEntry;
 import com.pojo.user.*;
 import com.pojo.utils.MongoUtils;
+import com.sun.xml.internal.bind.v2.runtime.reflect.opt.Const;
 import com.sys.constants.Constant;
 import com.sys.exceptions.IllegalParamException;
 import com.sys.utils.AvatarUtils;
@@ -99,6 +100,9 @@ public class CommunityController extends BaseController {
     private ValidateInfoService validateInfoService;
     @Autowired
     private FVoteService fVoteService;
+
+    @Autowired
+    private FeedbackService feedbackService;
 
     @Autowired
     private LatestGroupDynamicService latestGroupDynamicService;
@@ -2805,5 +2809,97 @@ public class CommunityController extends BaseController {
         return respObj;
     }
 
+
+    /**
+     * 点赞功能
+     */
+    @RequestMapping("/updateCommunityDetailZan")
+    @ResponseBody
+    public RespObj updateCommunityDetailZan(@ObjectIdType ObjectId detailId,int type){
+        RespObj respObj=new RespObj(Constant.FAILD_CODE);
+        ObjectId userId=getUserId();
+        CommunityDetailEntry entry=communityService.getEntryById(detailId);
+        List<ObjectId> userIds=entry.getZanList();
+        if(type==1){
+            if(userIds.contains(userId)){
+                respObj.setMessage("已经点过赞了");
+            }else{
+                respObj.setCode(Constant.SUCCESS_CODE);
+                communityService.updateCommunityDetailZan(detailId,userId,type);
+                respObj.setMessage("点赞成功");
+            }
+        }else{
+            if(userIds.contains(userId)){
+                respObj.setCode(Constant.SUCCESS_CODE);
+                communityService.updateCommunityDetailZan(detailId,userId,type);
+                respObj.setMessage("取消点赞成功");
+            }else{
+                respObj.setMessage("已经取消赞了,请刷新");
+            }
+        }
+        return respObj;
+    }
+
+
+    /**
+     * 删除回复
+     */
+    @RequestMapping("/removePartInContentInfo")
+    @ResponseBody
+    public RespObj removePartInContentInfo(@ObjectIdType ObjectId id){
+        RespObj respObj=new RespObj(Constant.SUCCESS_CODE);
+        communityService.removePartInContentInfo(id);
+        respObj.setCode("删除回复成功");
+        return respObj;
+    }
+
+
+    /**
+     * 新加功能(留言反馈)
+     */
+    @RequestMapping("/saveFeedbackContent")
+    @ResponseBody
+    public RespObj saveFeedbackContent(String content){
+        RespObj respObj=new RespObj(Constant.SUCCESS_CODE);
+        ObjectId userId=getUserId();
+        feedbackService.saveFeedBack(userId,content);
+        respObj.setMessage("添加留言成功");
+        return respObj;
+    }
+
+    /**
+     * 分页获取留言列表
+     * @param page
+     * @param pageSize
+     * @return
+     */
+    @RequestMapping("/getFeedbacks")
+    @ResponseBody
+    public RespObj getFeedbacks(@RequestParam(value="page",defaultValue = "1")int page,
+                                @RequestParam(value="pageSize",defaultValue = "10")int pageSize){
+        RespObj respObj=new RespObj(Constant.SUCCESS_CODE);
+        Map<String,Object> map=new HashMap<String,Object>();
+        ObjectId userId=getUserId();
+        List<FeedbackDTO> feedbackDTOs=feedbackService.getFeedbackDtos(page,pageSize,userId);
+        int count=feedbackService.countFeedBack();
+        map.put("list",feedbackDTOs);
+        map.put("count",count);
+        respObj.setMessage(map);
+        return respObj;
+    }
+
+    /**
+     * 删除留言反馈的信息
+     * @param id
+     * @return
+     */
+    @RequestMapping("/removeFeedBack")
+    @ResponseBody
+    public RespObj removeFeedBack(@ObjectIdType ObjectId id){
+        RespObj respObj=new RespObj(Constant.SUCCESS_CODE);
+        feedbackService.removeFeedBack(id);
+        respObj.setMessage("删除");
+        return respObj;
+    }
 
 }

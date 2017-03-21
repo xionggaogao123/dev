@@ -1,6 +1,7 @@
 package com.fulaan.fgroup;
 
 import com.easemob.server.EaseMobAPI;
+import com.easemob.server.comm.constant.MsgType;
 import com.fulaan.annotation.ObjectIdType;
 import com.fulaan.annotation.SessionNeedless;
 import com.fulaan.base.BaseController;
@@ -17,6 +18,7 @@ import com.fulaan.service.GroupNoticeService;
 import com.fulaan.service.MemberService;
 import com.fulaan.user.service.UserService;
 import com.pojo.fcommunity.CommunityDetailType;
+import com.pojo.fcommunity.MemberEntry;
 import com.pojo.user.AvatarType;
 import com.pojo.user.UserDetailInfoDTO;
 import com.pojo.user.UserEntry;
@@ -436,7 +438,41 @@ public class GroupController extends BaseController {
             communityService.updateCommunityName(new ObjectId(groupDTO.getCommunityId()), groupName);
         }
         groupService.asyncUpdateGroupName(groupId, groupName);
+        //向群里发送文本消息
+        sendGroupInfo(groupId,userId,groupName,emChatId);
         return RespObj.SUCCESS("操作成功");
+    }
+
+    public void sendGroupInfo(ObjectId groupId,ObjectId userId,String groupName,String emchatId){
+        Map<String, String> sendMessage = new HashMap<String, String>();
+        sendMessage.put("type", MsgType.TEXT);
+
+        List<ObjectId> groupIds = new ArrayList<ObjectId>();
+        groupIds.add(groupId);
+        List<ObjectId> partInUserIds=new ArrayList<ObjectId>();
+        partInUserIds.add(userId);
+        List<String> targets =new ArrayList<String>();
+        targets.add(emchatId);
+        Map<String, MemberEntry> memberEntryMap = communityService.getMemberEntryMap(groupIds, partInUserIds);
+        MemberEntry entry1 = memberEntryMap.get(groupId + "$" + userId);
+        String nickName="";
+        UserEntry userEntry=userService.findById(userId);
+        if (null != entry1) {
+            if (StringUtils.isNotBlank(entry1.getNickName())) {
+                nickName=entry1.getNickName();
+            } else {
+                nickName=StringUtils.isNotBlank(userEntry.getNickName()) ? userEntry.getNickName() : userEntry.getUserName();
+            }
+        } else {
+            nickName=StringUtils.isNotBlank(userEntry.getNickName()) ? userEntry.getNickName() : userEntry.getUserName();
+        }String msg=nickName+"修改了群昵称";
+        sendMessage.put("msg", msg);
+        Map<String, String> ext=new HashMap<String, String>();
+        ext.put("userId",userId.toString());
+        ext.put("groupName",groupName);
+        ext.put("updateGroupName","YES");
+        ext.put("nickName",nickName);
+        emService.sendTextMessage("chatgroups", targets, userId.toString(), ext, sendMessage);
     }
 
     /**

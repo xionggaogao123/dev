@@ -90,6 +90,11 @@ public class CommunityDetailDTO {
     //置顶标志
     private int top;
 
+    //点赞功能
+    private int zanCount;
+    private int isZan;
+    private List<String> zanList=new ArrayList<String>();
+
     public CommunityDetailDTO() {
 
     }
@@ -199,6 +204,13 @@ public class CommunityDetailDTO {
         this.voteType = communityDetailEntry.getVoteType();
         this.videoDTOs = getVideos(communityDetailEntry.getVideoList());
         this.top=communityDetailEntry.getTop();
+        this.zanCount=communityDetailEntry.getZanCount();
+        List<ObjectId> zans=communityDetailEntry.getZanList();
+        if(!zans.isEmpty()){
+            for(ObjectId userId:zans){
+                zanList.add(userId.toString());
+            }
+        }
     }
 
     public CommunityDetailDTO(CommunityDetailEntry communityDetailEntry) {
@@ -243,6 +255,13 @@ public class CommunityDetailDTO {
         this.voteType = communityDetailEntry.getVoteType();
         this.videoDTOs = getVideos(communityDetailEntry.getVideoList());
         this.top=communityDetailEntry.getTop();
+        this.zanCount=communityDetailEntry.getZanCount();
+        List<ObjectId> zans=communityDetailEntry.getZanList();
+        if(!zans.isEmpty()){
+            for(ObjectId userId:zans){
+                zanList.add(userId.toString());
+            }
+        }
     }
 
     private String getTimeStr(long time) {
@@ -280,6 +299,30 @@ public class CommunityDetailDTO {
             videoDTOs.add(new VideoDTO(videoEntry));
         }
         return videoDTOs;
+    }
+
+    public int getIsZan() {
+        return isZan;
+    }
+
+    public void setIsZan(int isZan) {
+        this.isZan = isZan;
+    }
+
+    public int getZanCount() {
+        return zanCount;
+    }
+
+    public void setZanCount(int zanCount) {
+        this.zanCount = zanCount;
+    }
+
+    public List<String> getZanList() {
+        return zanList;
+    }
+
+    public void setZanList(List<String> zanList) {
+        this.zanList = zanList;
     }
 
     public String getId() {

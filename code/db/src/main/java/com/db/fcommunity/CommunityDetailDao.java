@@ -260,4 +260,18 @@ public class CommunityDetailDao extends BaseDao {
         update(MongoFacroty.getAppDB(), Constant.COLLECTION_FORUM_COMMUNITY_DETAIL, query, updateValue);
     }
 
+    /**
+     * 点赞功能
+     */
+    public void updateCommunityDetailZan(ObjectId id,ObjectId userId,int type){
+        BasicDBObject query=new BasicDBObject(Constant.ID,id);
+        BasicDBObject updateValue=new BasicDBObject();
+        if(type==1) {
+            updateValue=new BasicDBObject(Constant.MONGO_PUSH, new BasicDBObject("zl", userId)).append(Constant.MONGO_INC, new BasicDBObject("zc",Constant.ONE));
+        }else{
+            updateValue=new BasicDBObject(Constant.MONGO_PULL,new BasicDBObject("zl",userId)).append(Constant.MONGO_INC,new BasicDBObject("zc",Constant.NEGATIVE_ONE));
+        }
+        update(MongoFacroty.getAppDB(), Constant.COLLECTION_FORUM_COMMUNITY_DETAIL, query, updateValue);
+    }
+
 }

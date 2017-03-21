@@ -11,6 +11,7 @@ import com.fulaan.dto.*;
 import com.fulaan.dto.VideoDTO;
 import com.fulaan.fgroup.service.EmService;
 import com.fulaan.fgroup.service.GroupService;
+import com.fulaan.forum.service.FInformationService;
 import com.fulaan.forum.service.FVoteService;
 import com.fulaan.friendscircle.service.FriendApplyService;
 import com.fulaan.friendscircle.service.FriendService;
@@ -61,6 +62,8 @@ public class CommunityService {
     private EmService emService;
     @Autowired
     private FVoteService fVoteService;
+    @Autowired
+    private FInformationService fInformationService;
 
     private UserDao userDao = new UserDao();
     private CommunityDao communityDao = new CommunityDao();
@@ -160,6 +163,11 @@ public class CommunityService {
         CommunityDetailDTO communityDetailDTO = new CommunityDetailDTO(communityDetailEntry, partInContentEntries);
         UserEntry userEntry = userDao.findByUserId(userId);
 
+        //先判断是否点过赞
+        communityDetailDTO.setIsZan(0);
+        if(null!=loginUserId&&communityDetailDTO.getZanList().contains(loginUserId.toString())){
+            communityDetailDTO.setIsZan(1);
+        }
         if (null != memberEntryMap) {
             MemberEntry entry1 = memberEntryMap.get(groupId + "$" + userId);
             setCommunityDetailInfo(communityDetailDTO, userEntry, entry1);
@@ -1034,6 +1042,12 @@ public class CommunityService {
             //设置权限
             setRoleStr(communityDetailDTO, communityEntry, entry.getCommunityUserId());
             communityDetailDTO.setPartList(partInContentDTOs);
+            //设置是否点过赞
+            List<String> zanList=communityDetailDTO.getZanList();
+            communityDetailDTO.setIsZan(0);
+            if(null!=userId&&zanList.contains(userId.toString())){
+                communityDetailDTO.setIsZan(1);
+            }
             dtos.add(communityDetailDTO);
         }
 
@@ -1717,7 +1731,26 @@ public class CommunityService {
     }
 
     public void removeCommunityDetailById(ObjectId id) {
+        //如果是通知或者火热分享发送系统通知
+        CommunityDetailEntry entry=communityDetailDao.findByObjectId(id);
+        if(entry.getCommunityType()==CommunityDetailType.ANNOUNCEMENT.getType()||
+                entry.getCommunityType()==CommunityDetailType.SHARE.getType()){
+            String title="";
+            if(entry.getCommunityTitle().length()>9){
+                title=entry.getCommunityTitle().substring(0,9)+"...";
+            }else{
+                title=entry.getCommunityTitle();
+            }
+            String msg="";
+            if(entry.getCommunityType()==CommunityDetailType.ANNOUNCEMENT.getType()){
+                msg="通知";
+            }else{
+                msg="火热分享";
+            }
+            fInformationService.sendSystemMessage(entry.getCommunityUserId(),"你的"+msg+"\""+title+"\"已被管理员删除");
+        }
         communityDetailDao.removeCommunityDetail(id);
+
     }
 
     public List<ObjectId> getAllMemberIds(ObjectId groupId) {
@@ -1775,6 +1808,24 @@ public class CommunityService {
 
     public void updateCommunityDetailTop(ObjectId id,int top){
         communityDetailDao.updateCommunityDetailTop(id,top);
+    }
+
+    /**
+     * 点赞功能
+     */
+    public void updateCommunityDetailZan(ObjectId id,ObjectId userId,int type){
+        communityDetailDao.updateCommunityDetailZan(id, userId, type);
+    }
+
+    public CommunityDetailEntry getEntryById(ObjectId communityDetailId){
+       return communityDetailDao.findByObjectId(communityDetailId);
+    }
+
+    /**
+     * 删除回复
+     */
+    public void removePartInContentInfo(ObjectId id){
+        partInContentDao.removePartInContentInfo(id);
     }
 
 }

@@ -54,6 +54,9 @@ import java.util.List;
  *
  * //新加需求(加置顶的字段)
  * tp:top
+ * //迭代添加功能(点赞功能)
+ * zans:点赞数目
+ * zanList:点赞列表
  * <p/>
  * }
  */
@@ -85,6 +88,7 @@ public class CommunityDetailEntry extends BaseDBObject {
     for(AttachmentEntry attachment:imageList){
       imageDbList.add(attachment.getBaseEntry());
     }
+    List<ObjectId> zanList=new ArrayList<ObjectId>();
     BasicDBObject basicDBObject = new BasicDBObject()
             .append("cmid", communityId)
             .append("cmuid", communityUserId)
@@ -106,8 +110,37 @@ public class CommunityDetailEntry extends BaseDBObject {
             .append("vdt",voteDeadTime)
             .append("vt",voteType)
             .append("tp",0)
+            .append("zc",Constant.ZERO)
+            .append("zl",MongoUtils.convert(zanList))
             .append("r", 0);
     setBaseEntry(basicDBObject);
+  }
+
+  public List<ObjectId> getZanList(){
+    List<ObjectId> zanList=new ArrayList<ObjectId>();
+    if (!getBaseEntry().containsField("zl")) {
+      return zanList;
+    } else {
+      BasicDBList basicDBList=(BasicDBList)getSimpleObjectValue("zl");
+      if(null!=basicDBList&&!basicDBList.isEmpty()){
+        for(Object o:basicDBList){
+          zanList.add((ObjectId)o);
+        }
+      }
+    }
+    return zanList;
+  }
+
+  public void setZanList(List<ObjectId> zanList){
+    setSimpleValue("zl",MongoUtils.convert(zanList));
+  }
+
+  public int getZanCount(){
+    return getSimpleIntegerValueDef("zc",Constant.ZERO);
+  }
+
+  public void setZanCount(int zanCount){
+    setSimpleValue("zc",zanCount);
   }
 
   public void setTop(int top){

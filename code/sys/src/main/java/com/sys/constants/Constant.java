@@ -648,6 +648,9 @@ public class Constant {
     //亲子活动
     public static final String COLLECTION_PARENT_CHILD_ACTIVITY="parentChild";
 
+    //留言反馈功能
+    public static final String COLLECTION_FEEDBACK_CONTENT="feedbackcontent";
+
     public static final String COLLECTION_MALL_MARKET_URL = "http://a.app.qq.com/o/simple.jsp?pkgname=com.fulan.mall";
 
     //---------------------------------------------------------------------------------------------论坛

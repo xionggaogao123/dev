@@ -115,6 +115,12 @@ public class PartInContentDao extends BaseDao {
         return null;
     }
 
+    public void removePartInContentInfo(ObjectId id){
+        BasicDBObject query=new BasicDBObject(Constant.ID,id);
+        BasicDBObject updateValue=new BasicDBObject(Constant.MONGO_SET,new BasicDBObject("r",Constant.ONE));
+        update(MongoFacroty.getAppDB(), Constant.COLLECTION_FORUM_PARTINCONTENT, query, updateValue);
+    }
+
 
     /**
      * 用户退出社区时对他所参与的该社区的内容置为废弃，即r=1加入时r=0

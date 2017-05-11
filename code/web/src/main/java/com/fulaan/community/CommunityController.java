@@ -2010,9 +2010,10 @@ public class CommunityController extends BaseController {
                                @ObjectIdType ObjectId communityDetailId, int type,
                                @RequestParam(required = false, defaultValue = "") String content,
                                @RequestParam(required = false, defaultValue = "") String images,
-                               @RequestParam(required = false, defaultValue = "") String attacheMents) {
+                               @RequestParam(required = false, defaultValue = "") String attacheMents,
+                               @RequestParam(required = false, defaultValue = "") String videoList) {
         ObjectId uid = getUserId();
-        communityService.saveHomeWork(communityId, communityDetailId, uid, content, images, attacheMents, type);
+        communityService.saveHomeWork(communityId, communityDetailId, uid, content, images, attacheMents,videoList, type);
         return RespObj.SUCCESS;
     }
 

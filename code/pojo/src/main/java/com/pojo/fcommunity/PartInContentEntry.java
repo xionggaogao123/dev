@@ -36,9 +36,9 @@ public class PartInContentEntry extends BaseDBObject {
    * @param attachmentList
    */
   public PartInContentEntry(ObjectId communityId,ObjectId detailId, ObjectId userId, String information, List<String> imageList,
-                            List<AttachmentEntry> attachmentList,int type) {
+                            List<AttachmentEntry> attachmentList,List<VideoEntry> videoEntries,int type) {
     this(communityId,detailId,userId,information,imageList,attachmentList,
-            new ArrayList<VideoEntry>(),Constant.EMPTY,Constant.EMPTY,Constant.EMPTY,Constant.EMPTY,Constant.EMPTY,type,new ArrayList<ObjectId>());
+            videoEntries,Constant.EMPTY,Constant.EMPTY,Constant.EMPTY,Constant.EMPTY,Constant.EMPTY,type,new ArrayList<ObjectId>());
   }
 
   /**

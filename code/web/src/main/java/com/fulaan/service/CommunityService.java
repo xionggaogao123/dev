@@ -1528,9 +1528,11 @@ public class CommunityService {
      * @param images
      * @param attacheMents
      */
-    public void saveHomeWork(ObjectId communityId, ObjectId communityDetailId, ObjectId uid, String content, String images, String attacheMents, int type) {
+    public void saveHomeWork(ObjectId communityId, ObjectId communityDetailId, ObjectId uid, String content, String images, String attacheMents,
+                             String videoList,int type) {
         List<String> imagesList = new ArrayList<String>();
         List<AttachmentEntry> dbAttacheMents = new ArrayList<AttachmentEntry>();
+        List<VideoEntry> videoEntries=new ArrayList<VideoEntry>();
         if (StringUtils.isNotBlank(images)) {
             String[] imageList = images.split(",");
             Collections.addAll(imagesList, imageList);
@@ -1544,7 +1546,22 @@ public class CommunityService {
                 dbAttacheMents.add(att);
             }
         }
-        PartInContentEntry partIn = new PartInContentEntry(communityId, communityDetailId, uid, content, imagesList, dbAttacheMents, type);
+
+        if (StringUtils.isNotBlank(videoList)) {
+            String[] attachMentList = videoList.split(",");
+            for (String attch : attachMentList) {
+                String[] names = attch.split("@");
+                if (names.length >= 2) {
+                    VideoEntry att = new VideoEntry(names[1], names[0], uid);
+                    videoEntries.add(att);
+                } else {
+                    VideoEntry att = new VideoEntry(names[0], uid);
+                    videoEntries.add(att);
+                }
+            }
+        }
+
+        PartInContentEntry partIn = new PartInContentEntry(communityId, communityDetailId, uid, content, imagesList, dbAttacheMents,videoEntries, type);
         partInContentDao.saveParInContent(partIn);
     }
 

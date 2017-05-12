@@ -581,14 +581,16 @@
         })
 
         $('body').on('change','#voteSelect',function(){
-            $('.ul-vj').empty();
-            var voteUserName=$(this).val().split(",");
-            var str="";
-            if(voteUserName!=""){
-                for(var i in voteUserName){
-                    str=str+"<li>"+voteUserName[i]+"</li>";
+            if(null!=$(this).val()) {
+                $('.ul-vj').empty();
+                var voteUserName = $(this).val().split(",");
+                var str = "";
+                if (voteUserName != "") {
+                    for (var i in voteUserName) {
+                        str = str + "<li>" + voteUserName[i] + "</li>";
+                    }
+                    $('.ul-vj').append(str);
                 }
-                $('.ul-vj').append(str);
             }
         })
 

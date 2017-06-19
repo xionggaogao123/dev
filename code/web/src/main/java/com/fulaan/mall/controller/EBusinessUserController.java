@@ -152,6 +152,11 @@ public class EBusinessUserController extends BaseController {
             return model;
         }
 
+        if(!referer.contains("fulaan.com")){
+            model.put("message", "非法攻击!");
+            return model;
+        }
+
         if (!ValidationUtils.isMobile(mobile)) {
             model.put("message", "非法手机");
             return model;

@@ -84,20 +84,20 @@ public class EBusinessUserController extends BaseController {
     @RequestMapping(value = "/sendInsetMessage", method = RequestMethod.GET)
     @ResponseBody
     public Map<String, Object> shortMessage(HttpServletRequest request, HttpServletResponse response) {
-        EBusinessUserController.info("进入-------");
+//        EBusinessUserController.info("进入-------");message_list
         Map<String, Object> model = new HashMap<String, Object>();
-        List<String> mobiles = KeyWordFilterUtil.message_list;
-        EBusinessUserController.info(mobiles);
-        String msg = "【复兰教育社区】冬季大赛来袭！火热“春节才艺秀”、“家乡的冬天”摄影比赛，缤纷大奖，邀你参加！登录“复兰教育社区”APP，进入【发现】中的【大赛】版块或访问www.fulaan.com的【大赛】版块参与比赛。";
-        try {
-            EBusinessUserController.info("开始-----");
-            for (String mobile : mobiles) {
-                sendMessageInfo(mobile, msg);
-            }
-            EBusinessUserController.info("结束-------");
-        } catch (Exception e) {
-            EBusinessUserController.error("", e);
-        }
+//        List<String> mobiles = KeyWordFilterUtil.;
+//        EBusinessUserController.info(mobiles);
+//        String msg = "【复兰教育社区】冬季大赛来袭！火热“春节才艺秀”、“家乡的冬天”摄影比赛，缤纷大奖，邀你参加！登录“复兰教育社区”APP，进入【发现】中的【大赛】版块或访问www.fulaan.com的【大赛】版块参与比赛。";
+//        try {
+//            EBusinessUserController.info("开始-----");
+//            for (String mobile : mobiles) {
+//                sendMessageInfo(mobile, msg);
+//            }
+//            EBusinessUserController.info("结束-------");
+//        } catch (Exception e) {
+//            EBusinessUserController.error("", e);
+//        }
         return model;
     }
 
@@ -114,6 +114,24 @@ public class EBusinessUserController extends BaseController {
         }
     }
 
+
+    /**
+     * 防盗链信息
+     * @param request
+     * @return
+     */
+    @SessionNeedless
+    @RequestMapping(value = "/securitychain", method = RequestMethod.GET)
+    @ResponseBody
+    public RespObj securitychain(HttpServletRequest request){
+        RespObj respObj=new RespObj(Constant.SUCCESS_CODE);
+        String referer = request.getHeader("referer");
+        // 如果是直接输入的地址，或者不是从本网站访问的重定向到本网站的首页
+        respObj.setMessage(referer);
+        return respObj;
+    }
+
+
     /**
      * 获取验证码
      *
@@ -124,9 +142,16 @@ public class EBusinessUserController extends BaseController {
     @RequestMapping(value = "/messages", method = RequestMethod.GET)
     @ResponseBody
     public Map<String, Object> shortMessage(String mobile, String verifyCode, HttpServletRequest request, HttpServletResponse response) {
-
         Map<String, Object> model = new HashMap<String, Object>();
         model.put("code", 500);
+
+        //加入防盗链结束
+        String referer = request.getHeader("referer");
+        if(referer==null){
+            model.put("message", "非法攻击!");
+            return model;
+        }
+
         if (!ValidationUtils.isMobile(mobile)) {
             model.put("message", "非法手机");
             return model;

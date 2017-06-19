@@ -13,6 +13,7 @@ import javax.imageio.ImageIO;
 import javax.servlet.ServletException;
 import javax.servlet.ServletOutputStream;
 import javax.servlet.http.Cookie;
+import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.awt.*;
 import java.awt.image.BufferedImage;
@@ -71,8 +72,16 @@ public class VerifyCodeController extends BaseController {
     @SessionNeedless
     @RequestMapping("/verifyCode")
     @ResponseBody
-    public void service()
+    public void service(HttpServletRequest request)
             throws ServletException, java.io.IOException {
+        String referer = request.getHeader("referer");
+        if(referer==null){
+            return;
+        }
+
+        if(!referer.contains("fulaan.com")){
+            return;
+        }
         HttpServletResponse resp = getResponse();
         initxuan();
         // 定义图像buffer

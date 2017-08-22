@@ -74,14 +74,14 @@ public class VerifyCodeController extends BaseController {
     @ResponseBody
     public void service(HttpServletRequest request)
             throws ServletException, java.io.IOException {
-        String referer = request.getHeader("referer");
-        if(referer==null){
-            return;
-        }
-
-        if(!referer.contains("fulaan.com")){
-            return;
-        }
+//        String referer = request.getHeader("referer");
+//        if(referer==null){
+//            return;
+//        }
+//
+//        if(!referer.contains("fulaan.com")){
+//            return;
+//        }
         HttpServletResponse resp = getResponse();
         initxuan();
         // 定义图像buffer

@@ -146,16 +146,16 @@ public class EBusinessUserController extends BaseController {
         model.put("code", 500);
 
         //加入防盗链结束
-        String referer = request.getHeader("referer");
-        if(referer==null){
-            model.put("message", "非法攻击!");
-            return model;
-        }
-
-        if(!referer.contains("fulaan.com")){
-            model.put("message", "非法攻击!");
-            return model;
-        }
+//        String referer = request.getHeader("referer");
+//        if(referer==null){
+//            model.put("message", "非法攻击!");
+//            return model;
+//        }
+//
+//        if(!referer.contains("fulaan.com")){
+//            model.put("message", "非法攻击!");
+//            return model;
+//        }
 
         if (!ValidationUtils.isMobile(mobile)) {
             model.put("message", "非法手机");

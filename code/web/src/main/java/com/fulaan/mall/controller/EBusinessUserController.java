@@ -1,5 +1,6 @@
 package com.fulaan.mall.controller;
 
+import com.db.user.NewVersionUserRoleDao;
 import com.fulaan.annotation.SessionNeedless;
 import com.fulaan.base.BaseController;
 import com.fulaan.cache.CacheHandler;
@@ -16,6 +17,7 @@ import com.pojo.app.SessionValue;
 import com.pojo.ebusiness.EVoucherEntry;
 import com.pojo.forum.FInvitationEntry;
 import com.pojo.forum.FScoreDTO;
+import com.pojo.user.NewVersionUserRoleEntry;
 import com.pojo.user.UserEntry;
 import com.sys.constants.Constant;
 import com.sys.mails.MailUtils;
@@ -79,6 +81,8 @@ public class EBusinessUserController extends BaseController {
     private EBusinessVoucherService eBusinessVoucherService;
     @Autowired
     private FScoreService fScoreService;
+
+    NewVersionUserRoleDao newVersionUserRoleDao =new NewVersionUserRoleDao();
 
     @SessionNeedless
     @RequestMapping(value = "/sendInsetMessage", method = RequestMethod.GET)
@@ -397,6 +401,7 @@ public class EBusinessUserController extends BaseController {
     @ResponseBody
     public Map<String, Object> addUser(String cacheKeyId, String code, final String email, String userName, String passWord, String phoneNumber,
                                        @RequestParam(defaultValue = "", required = false) String nickName,
+                                       @RequestParam(defaultValue = "-1",required = false) int newRole,
                                        HttpServletResponse response, HttpServletRequest request) {
         boolean flag = false;
         Map<String, Object> model = new HashMap<String, Object>();
@@ -423,6 +428,7 @@ public class EBusinessUserController extends BaseController {
         if (flag) {
             final UserEntry userEntry = registerUserEntry(email, userName, passWord, phoneNumber, nickName);
             final ObjectId userId = userService.addUser(userEntry);
+            newVersionUserRoleDao.saveEntry(new NewVersionUserRoleEntry(userId,newRole));
             new Thread(new Runnable() {
                 @Override
                 public void run() {

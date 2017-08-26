@@ -651,6 +651,9 @@ public class Constant {
     //留言反馈功能
     public static final String COLLECTION_FEEDBACK_CONTENT="feedbackcontent";
 
+    //新版本存储用户身份功能
+    public static final String COLLECTION_NEW_VERSION_USER_ROLE="newversion_userrole";
+
     public static final String COLLECTION_MALL_MARKET_URL = "http://a.app.qq.com/o/simple.jsp?pkgname=com.fulan.mall";
 
     //---------------------------------------------------------------------------------------------论坛

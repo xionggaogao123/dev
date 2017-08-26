@@ -810,4 +810,12 @@ public class Constant {
     //日志报表邮箱管理
     public static final String COLLECTION_EMAIL_MANAGE = "emailmanage";
 
+    //H5作业
+    //作业评论
+    public static final String COLLECTION_APP_COMMENT = "appcomment";
+    //作业
+    public static final String COLLECTION_APP_OPERATION = "appoperation";
+    //作业记录
+    public static final String COLLECTION_APP_RECORD = "apprecord";
+
 }

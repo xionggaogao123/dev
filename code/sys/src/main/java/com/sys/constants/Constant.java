@@ -1,7 +1,6 @@
 package com.sys.constants;
 
 import com.mongodb.BasicDBObject;
-import com.sys.props.Resources;
 
 import java.util.ArrayList;
 import java.util.List;

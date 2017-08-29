@@ -15,6 +15,8 @@ public class AppOperationDTO {
     private String description;
     private String fileUrl;
     private String dateTime;
+    private String userName;
+    private String userUrl;
 
     public AppOperationDTO(){
 
@@ -147,5 +149,21 @@ public class AppOperationDTO {
 
     public void setDateTime(String dateTime) {
         this.dateTime = dateTime;
+    }
+
+    public String getUserName() {
+        return userName;
+    }
+
+    public void setUserName(String userName) {
+        this.userName = userName;
+    }
+
+    public String getUserUrl() {
+        return userUrl;
+    }
+
+    public void setUserUrl(String userUrl) {
+        this.userUrl = userUrl;
     }
 }

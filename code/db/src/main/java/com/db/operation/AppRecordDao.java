@@ -20,11 +20,23 @@ public class AppRecordDao extends BaseDao {
         save(MongoFacroty.getAppDB(), Constant.COLLECTION_APP_RECORD, entry.getBaseEntry());
         return entry.getID().toString();
     }
+    //查询已签到列表
+    public AppRecordEntry getEntryListByParentId3(ObjectId userId,long dateTime) {
+        BasicDBObject query = new BasicDBObject();
+        query.append("isr",Constant.ZERO);
+        query.append("uid",userId);
+        query.append("dtm",dateTime);
+        DBObject obj =
+                findOne(MongoFacroty.getAppDB(), Constant.COLLECTION_APP_RECORD, query, Constant.FIELDS);
+        if (obj != null) {
+            return new AppRecordEntry((BasicDBObject) obj);
+        }
+        return null;
+    }
 
     //签到
-    public void updateEntry(ObjectId parentId){
-        BasicDBObject query = new BasicDBObject();
-        query.append("pid",parentId);
+    public void updateEntry(ObjectId id){
+        BasicDBObject query = new BasicDBObject(Constant.ID,id);
         BasicDBObject updateValue = new BasicDBObject()
                 .append(Constant.MONGO_SET,
                         new BasicDBObject("isl", 1));
@@ -50,5 +62,23 @@ public class AppRecordDao extends BaseDao {
         }
         return entryList;
     }
-
+    //查询已签到列表
+    public List<AppRecordEntry> getEntryListByParentId2(List<ObjectId> parentIds,ObjectId userId) {
+        BasicDBObject query = new BasicDBObject()
+                .append("pid", new BasicDBObject(Constant.MONGO_IN, parentIds))
+                .append("uid",userId)
+                .append("isr", 0); // 未删除
+        List<DBObject> dbList =
+                find(MongoFacroty.getAppDB(),
+                        Constant.COLLECTION_APP_RECORD,
+                        query, Constant.FIELDS,
+                        Constant.MONGO_SORTBY_DESC);
+        List<AppRecordEntry> entryList = new ArrayList<AppRecordEntry>();
+        if (dbList != null && !dbList.isEmpty()) {
+            for (DBObject obj : dbList) {
+                entryList.add(new AppRecordEntry((BasicDBObject) obj));
+            }
+        }
+        return entryList;
+    }
 }

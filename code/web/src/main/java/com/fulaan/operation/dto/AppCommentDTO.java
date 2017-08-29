@@ -4,6 +4,8 @@ import com.pojo.operation.AppCommentEntry;
 import com.sys.utils.DateTimeUtils;
 import org.bson.types.ObjectId;
 
+import java.util.List;
+
 /**
  * 作业
  * Created by James on 2017/8/25.
@@ -11,7 +13,7 @@ import org.bson.types.ObjectId;
 public class AppCommentDTO {
     private String id;
     private String description;
-    private String imageUrl;
+    private List<String> imageUrl;
     private String subject;
     private String adminId;
     private String recipientName;
@@ -19,7 +21,10 @@ public class AppCommentDTO {
     private String dateTime;
     private String createTime;
     private int month;
-    private int number;
+    private int number;//回复人数
+    private int type;//leixing
+    private String adminName;//发送人姓名
+    private String adminUrl;//发送人图片
 
     public AppCommentDTO(){
 
@@ -123,11 +128,11 @@ public class AppCommentDTO {
         this.description = description;
     }
 
-    public String getImageUrl() {
+    public List<String> getImageUrl() {
         return imageUrl;
     }
 
-    public void setImageUrl(String imageUrl) {
+    public void setImageUrl(List<String> imageUrl) {
         this.imageUrl = imageUrl;
     }
 
@@ -193,5 +198,29 @@ public class AppCommentDTO {
 
     public void setMonth(int month) {
         this.month = month;
+    }
+
+    public int getType() {
+        return type;
+    }
+
+    public void setType(int type) {
+        this.type = type;
+    }
+
+    public String getAdminName() {
+        return adminName;
+    }
+
+    public void setAdminName(String adminName) {
+        this.adminName = adminName;
+    }
+
+    public String getAdminUrl() {
+        return adminUrl;
+    }
+
+    public void setAdminUrl(String adminUrl) {
+        this.adminUrl = adminUrl;
     }
 }

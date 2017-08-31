@@ -42,12 +42,20 @@ public class AppRecordDao extends BaseDao {
                         new BasicDBObject("isl", 1));
         update(MongoFacroty.getAppDB(), Constant.COLLECTION_APP_RECORD, query, updateValue);
     }
+    //签到
+    public void updateEntry2(ObjectId id,long current){
+        BasicDBObject query = new BasicDBObject(Constant.ID,id);
+        BasicDBObject updateValue = new BasicDBObject()
+                .append(Constant.MONGO_SET,
+                        new BasicDBObject("dtm", current));
+        update(MongoFacroty.getAppDB(), Constant.COLLECTION_APP_RECORD, query, updateValue);
+    }
 
     //查询已签到列表
     public List<AppRecordEntry> getEntryListByParentId(ObjectId parentId,int type) {
         BasicDBObject query = new BasicDBObject()
                 .append("pid",parentId)
-                .append("typ",type)
+                .append("isl",type)
                 .append("isr", 0); // 未删除
         List<DBObject> dbList =
                 find(MongoFacroty.getAppDB(),

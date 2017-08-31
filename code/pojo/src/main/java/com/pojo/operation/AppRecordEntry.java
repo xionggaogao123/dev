@@ -9,7 +9,7 @@ import org.bson.types.ObjectId;
  * Created by James on 2017/8/25.
  * Id                                       	  id
  ParentId             关联作业id                pid
- isLoad               是否签到                  isl(0 未签到 1已签到)
+ isLoad               是否签到                  isl(1 未签到 2已签到)
  dateTime            签到时间                 dtm
  userId               用户id                  uid
  */

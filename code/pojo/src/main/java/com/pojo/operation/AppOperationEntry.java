@@ -13,6 +13,8 @@ import org.bson.types.ObjectId;
  dateTime           发表时间               dtm
  Description          描述                 des
  Type               1图片2视屏3录音	      typ
+ cover                封面图片           cov
+ second               秒数               sec
  fileUrl              文件地址           ful
  */
 public class AppOperationEntry  extends BaseDBObject {
@@ -29,6 +31,8 @@ public class AppOperationEntry  extends BaseDBObject {
             long dateTime,
             int type,
             String description,
+            int second,
+            String cover,
             String fileUrl
     ){
         BasicDBObject dbObject=new BasicDBObject()
@@ -36,7 +40,9 @@ public class AppOperationEntry  extends BaseDBObject {
                 .append("pid",parentId)
                 .append("uid",userId)
                 .append("typ",type)
-                .append("ful",fileUrl)
+                .append("sec",second)
+                .append("cov",cover)
+                .append("ful", fileUrl)
                 .append("dtm", dateTime)
                 .append("isr", 0);
         setBaseEntry(dbObject);
@@ -50,6 +56,8 @@ public class AppOperationEntry  extends BaseDBObject {
             long dateTime,
             int type,
             String description,
+            int second,
+            String cover,
             String fileUrl
     ){
         BasicDBObject dbObject=new BasicDBObject()
@@ -58,7 +66,9 @@ public class AppOperationEntry  extends BaseDBObject {
                 .append("pid",parentId)
                 .append("uid",userId)
                 .append("typ",type)
-                .append("ful",fileUrl)
+                .append("sec",second)
+                .append("cov",cover)
+                .append("ful", fileUrl)
                 .append("dtm", dateTime)
                 .append("isr", 0);
         setBaseEntry(dbObject);
@@ -93,6 +103,22 @@ public class AppOperationEntry  extends BaseDBObject {
 
     public void setType(int type){
         setSimpleValue("typ",type);
+    }
+
+    public int getSecond(){
+        return getSimpleIntegerValue("sec");
+    }
+
+    public void setSecond(int second){
+        setSimpleValue("sec",second);
+    }
+
+    public String getCover(){
+        return getSimpleStringValue("cov");
+    }
+
+    public void setCover(String cover){
+        setSimpleValue("cov",cover);
     }
 
     public String getFileUrl(){

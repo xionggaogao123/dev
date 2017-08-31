@@ -134,7 +134,7 @@ public class AppCommentController extends BaseController {
     }
 
     /**
-     * 是否签到
+     * 签到
      * @return
      */
     @RequestMapping("/goSign")
@@ -154,7 +154,7 @@ public class AppCommentController extends BaseController {
     }
 
     /**
-     * 查找当前当前月份用户发放作业情况名单
+     * 查找当前当前年份用户发放作业情况名单
      * @return
      */
     @RequestMapping("/selectResultList")

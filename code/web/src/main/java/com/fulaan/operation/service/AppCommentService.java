@@ -39,7 +39,7 @@ public class AppCommentService {
      */
     public String addCommentEntry(AppCommentDTO dto,String comList){
         Calendar cal = Calendar.getInstance();
-        int month = cal.get(Calendar.MONTH) + 1;
+        int month = cal.get(Calendar.YEAR);
         dto.setMonth(month);
         AppCommentEntry en = dto.buildAddEntry();
         //获得当前时间
@@ -121,25 +121,32 @@ public class AppCommentService {
         List<AppRecordDTO> dtos = new ArrayList<AppRecordDTO>();
         if(entries.size()>0){
             for(AppRecordEntry en : entries){
-                dtos.add(new AppRecordDTO(en));
+                AppRecordDTO dto = new AppRecordDTO(en);
+                String ctm = dto.getDateTime().substring(11,16);
+                dto.setDateTime(ctm);
+                dtos.add(dto);
             }
         }
        return dtos;
     }
 
     /**
-     * 按月查找用户发放作业情况
+     * 按年查找用户发放作业情况
      */
     public List<String> selectResultList(int month,ObjectId userId){
         List<AppCommentEntry> entries = appCommentDao.selectResultList(userId, month);
+        //Set<Integer> set=new HashSet<Integer>(list);
         List<String> dtos = new ArrayList<String>();
         if(entries.size()>0){
             for(AppCommentEntry en : entries){
                 AppCommentDTO dto = new AppCommentDTO(en);
-                dtos.add(dto.getDateTime());
+                dtos.add(dto.getDateTime().substring(0, 10));
             }
         }
-        return dtos;
+        Set<String> set=new HashSet<String>(dtos);
+        List<String> dtos2 = new ArrayList<String>();
+        dtos2.addAll(set);
+        return dtos2;
     }
     /**
      * 按日查找用户发放作业情况
@@ -282,7 +289,9 @@ public class AppCommentService {
      * 签到
      */
     public String goSign(ObjectId id){
+        long current=System.currentTimeMillis();
         appRecordDao.updateEntry(id);
+        appRecordDao.updateEntry2(id,current);
         return "签到成功";
     }
 }

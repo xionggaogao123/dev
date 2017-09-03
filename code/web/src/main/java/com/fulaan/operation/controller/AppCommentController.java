@@ -6,6 +6,7 @@ import com.fulaan.operation.dto.AppCommentDTO;
 import com.fulaan.operation.dto.AppOperationDTO;
 import com.fulaan.operation.dto.AppRecordDTO;
 import com.fulaan.operation.service.AppCommentService;
+import com.sys.utils.DateTimeUtils;
 import com.sys.utils.RespObj;
 import org.bson.types.ObjectId;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -15,6 +16,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import java.util.List;
+import java.util.Map;
 
 /**
  * Created by James on 2017/8/25.
@@ -32,7 +34,7 @@ public class AppCommentController extends BaseController {
      */
     @RequestMapping("/addCommentEntry")
     @ResponseBody
-    public String addCommentEntry(AppCommentDTO dto,@RequestParam("comList")List<String> comList){
+    public String addCommentEntry(AppCommentDTO dto,@RequestParam("comList") String comList){
         //
         dto.setAdminId(getUserId().toString());
         RespObj respObj=null;
@@ -111,7 +113,48 @@ public class AppCommentController extends BaseController {
     }
 
     /**
-     * 查找当前当前月份用户发放作业情况名单
+     * 是否签到
+     * @return
+     */
+    @RequestMapping("/isSign")
+    @ResponseBody
+    public String isSign(@RequestParam("date") String date){
+        RespObj respObj=null;
+        try {
+            respObj = RespObj.SUCCESS;
+            long dateTime = DateTimeUtils.getStrToLongTime(date, "yyyy-MM-dd");
+            Map<String,Object> result = appCommentService.isSign(getUserId(),dateTime);
+            respObj.setMessage(result);
+        } catch (Exception e) {
+            e.printStackTrace();
+            respObj = RespObj.FAILD;
+            respObj.setMessage("添加关键字失败!");
+        }
+        return JSON.toJSONString(respObj);
+    }
+
+    /**
+     * 签到
+     * @return
+     */
+    @RequestMapping("/goSign")
+    @ResponseBody
+    public String goSign(@RequestParam("qid") String qid){
+        RespObj respObj=null;
+        try {
+            respObj = RespObj.SUCCESS;
+            String result = appCommentService.goSign(new ObjectId(qid));
+            respObj.setMessage(result);
+        } catch (Exception e) {
+            e.printStackTrace();
+            respObj = RespObj.FAILD;
+            respObj.setMessage("添加关键字失败!");
+        }
+        return JSON.toJSONString(respObj);
+    }
+
+    /**
+     * 查找当前当前年份用户发放作业情况名单
      * @return
      */
     @RequestMapping("/selectResultList")
@@ -122,6 +165,28 @@ public class AppCommentController extends BaseController {
         try {
             respObj = RespObj.SUCCESS;
             List<String> dtos = appCommentService.selectResultList(month, getUserId());
+            respObj.setMessage(dtos);
+        } catch (Exception e) {
+            e.printStackTrace();
+            respObj = RespObj.FAILD;
+            respObj.setMessage("添加关键字失败!");
+        }
+        return JSON.toJSONString(respObj);
+    }
+
+    /**
+     * 查找当前点击的事件老师发放作业情况名单
+     * @return
+     */
+    @RequestMapping("/selectDateList")
+    @ResponseBody
+    public String selectDateList(@RequestParam("date") String date){
+
+        RespObj respObj=null;
+        try {
+            respObj = RespObj.SUCCESS;
+            long dateTime = DateTimeUtils.getStrToLongTime(date, "yyyy-MM-dd");
+           Map<String,Object> dtos = appCommentService.selectDateList(dateTime, getUserId());
             respObj.setMessage(dtos);
         } catch (Exception e) {
             e.printStackTrace();
@@ -164,13 +229,17 @@ public class AppCommentController extends BaseController {
         RespObj respObj=null;
         try {
             respObj = RespObj.SUCCESS;
+            dto.setUserId(getUserId().toString());
             String result = appCommentService.addOperationEntry(dto);
             respObj.setMessage(result);
         } catch (Exception e) {
             e.printStackTrace();
             respObj = RespObj.FAILD;
             respObj.setMessage("添加关键字失败!");
+
         }
         return JSON.toJSONString(respObj);
     }
+
+    //community/myCommunitys/page/pageSize/?platform=app
 }

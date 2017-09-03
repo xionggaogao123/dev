@@ -13,8 +13,12 @@ public class AppOperationDTO {
     private String userId;
     private int type;
     private String description;
+    private int second;
+    private String cover;
     private String fileUrl;
     private String dateTime;
+    private String userName;
+    private String userUrl;
 
     public AppOperationDTO(){
 
@@ -25,6 +29,8 @@ public class AppOperationDTO {
             this.description = e.getDescription();
             this.fileUrl = e.getFileUrl();
             this.type = e.getType();
+            this.second = e.getSecond();
+            this.cover = e.getCover();
             this.parentId = e.getParentId() == null ? "" : e.getParentId().toString();
             this.userId = e.getUserId() == null ? "" : e.getUserId().toString();
             if(e.getDateTime()!=0l){
@@ -57,6 +63,8 @@ public class AppOperationDTO {
                         dTm,
                         this.type,
                         this.description,
+                        this.second,
+                        this.cover,
                         this.fileUrl
                 );
         return openEntry;
@@ -87,6 +95,8 @@ public class AppOperationDTO {
                         dTm,
                         this.type,
                         this.description,
+                        this.second,
+                        this.cover,
                         this.fileUrl
                 );
         return openEntry;
@@ -147,5 +157,37 @@ public class AppOperationDTO {
 
     public void setDateTime(String dateTime) {
         this.dateTime = dateTime;
+    }
+
+    public String getUserName() {
+        return userName;
+    }
+
+    public void setUserName(String userName) {
+        this.userName = userName;
+    }
+
+    public String getUserUrl() {
+        return userUrl;
+    }
+
+    public void setUserUrl(String userUrl) {
+        this.userUrl = userUrl;
+    }
+
+    public String getCover() {
+        return cover;
+    }
+
+    public void setCover(String cover) {
+        this.cover = cover;
+    }
+
+    public int getSecond() {
+        return second;
+    }
+
+    public void setSecond(int second) {
+        this.second = second;
     }
 }

@@ -6,16 +6,17 @@ import com.sys.constants.Constant;
 import org.bson.types.ObjectId;
 
 import java.util.Date;
+import java.util.List;
 
 /**
  * Created by James on 2017/8/25.
- * Id                             		id
- Description      作业内容       		des
- ImageUrl        图片           		img
- Subject          学科标签         	 sub
+ * id                             		id
+ description      作业内容       		des
+ imageUrl         图片           		img
+ subject          学科标签         	 sub
  adminId          发布人id            aid
- RecipientName    接收人社区名         rec
- RecipientId        接收人社区id        rid
+ recipientName    接收人社区名         rec
+ recipientId      接收人社区id        rid
  dateTime         发布日期时间        dtm
  */
 public class AppCommentEntry extends BaseDBObject {
@@ -28,7 +29,7 @@ public class AppCommentEntry extends BaseDBObject {
     //添加构造
     public AppCommentEntry(
             String description,
-            String imageUrl,
+            List<String> imageUrl,
             String subject,
             ObjectId adminId,
             String recipientName,
@@ -54,7 +55,7 @@ public class AppCommentEntry extends BaseDBObject {
     public AppCommentEntry(
             ObjectId id,
             String description,
-            String imageUrl,
+            List<String> imageUrl,
             String subject,
             ObjectId adminId,
             String recipientName,
@@ -99,12 +100,13 @@ public class AppCommentEntry extends BaseDBObject {
     public void setDescription(String description){
         setSimpleValue("des",description);
     }
-    public String getImageUrl(){
-        return getSimpleStringValue("img");
-    }
-
-    public void setImageUrl(String imageUrl){
+    public void se(List<String> imageUrl){
         setSimpleValue("img",imageUrl);
+    }
+    public List<String> getImageUrl(){
+        @SuppressWarnings("rawtypes")
+        List imageUrl =(List)getSimpleObjectValue("img");
+        return imageUrl;
     }
     public String getSubject(){
         return getSimpleStringValue("sub");

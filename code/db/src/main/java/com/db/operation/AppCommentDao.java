@@ -70,4 +70,42 @@ public class AppCommentDao extends BaseDao {
         }
         return entryList;
     }
+    //老师日作业列表查询
+    public List<AppCommentEntry> selectDateList(ObjectId userId,long dateTime) {
+        BasicDBObject query = new BasicDBObject()
+                .append("aid",userId)
+                .append("dtm",dateTime)
+                .append("isr", 0); // 未删除
+        List<DBObject> dbList =
+                find(MongoFacroty.getAppDB(),
+                        Constant.COLLECTION_APP_COMMENT,
+                        query, Constant.FIELDS,
+                        Constant.MONGO_SORTBY_DESC);
+        List<AppCommentEntry> entryList = new ArrayList<AppCommentEntry>();
+        if (dbList != null && !dbList.isEmpty()) {
+            for (DBObject obj : dbList) {
+                entryList.add(new AppCommentEntry((BasicDBObject) obj));
+            }
+        }
+        return entryList;
+    }
+    //家长日作业列表查询
+    public List<AppCommentEntry> selectDateList2(List<ObjectId> userIds,long dateTime) {
+        BasicDBObject query = new BasicDBObject()
+                .append("rid",new BasicDBObject(Constant.MONGO_IN,userIds))
+                .append("dtm",dateTime)
+                .append("isr", 0); // 未删除
+        List<DBObject> dbList =
+                find(MongoFacroty.getAppDB(),
+                        Constant.COLLECTION_APP_COMMENT,
+                        query, Constant.FIELDS,
+                        Constant.MONGO_SORTBY_DESC);
+        List<AppCommentEntry> entryList = new ArrayList<AppCommentEntry>();
+        if (dbList != null && !dbList.isEmpty()) {
+            for (DBObject obj : dbList) {
+                entryList.add(new AppCommentEntry((BasicDBObject) obj));
+            }
+        }
+        return entryList;
+    }
 }

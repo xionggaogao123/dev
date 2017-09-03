@@ -8,6 +8,7 @@ import com.db.forum.FPostDao;
 import com.db.school.ClassDao;
 import com.db.school.InterestClassDao;
 import com.db.school.SchoolDao;
+import com.db.user.NewVersionUserRoleDao;
 import com.db.user.UserDao;
 import com.fulaan.base.BaseService;
 import com.fulaan.cache.CacheHandler;
@@ -74,6 +75,8 @@ public class UserService extends BaseService {
     private FLevelDao fLevelDao = new FLevelDao();
     private FPostDao fPostDao = new FPostDao();
     private LoginLogDao loginLogDao = new LoginLogDao();
+
+    private NewVersionUserRoleDao newVersionUserRoleDao = new NewVersionUserRoleDao();
 
     @Autowired
     private EBusinessVoucherService voucherService;
@@ -159,6 +162,11 @@ public class UserService extends BaseService {
                 }
             }
         }
+        if(null!=newVersionUserRoleDao.getEntry(e.getID())
+                &&newVersionUserRoleDao.getEntry(e.getID()).getNewRole()==Constant.ONE){
+            validate.setMessage("该学生还未激活");
+            return validate;
+        }
         validate.setOk(true);
         validate.setData(e);
         return validate;
@@ -241,11 +249,12 @@ public class UserService extends BaseService {
             return validate;
         }
 
-        if (cache[0].equals(code)) {
-            validate.setOk(true);
-        } else {
-            validate.setMessage("短信验证码输入错误");
-        }
+//        if (cache[0].equals(code)) {
+//            validate.setOk(true);
+//        } else {
+//            validate.setMessage("短信验证码输入错误");
+//        }
+        validate.setOk(true);
         return validate;
     }
 

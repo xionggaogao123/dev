@@ -9,6 +9,12 @@ import org.bson.types.ObjectId;
 
 /**
  * Created by scott  on 2017/8/23.
+ * {
+ *     0:家长
+ *     1:学生(未激活)
+ *     2:学生(激活)
+ *     3:老师
+ * }
  */
 public class NewVersionUserRoleEntry extends BaseDBObject {
 

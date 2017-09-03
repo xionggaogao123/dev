@@ -1,5 +1,7 @@
 package com.fulaan.controller;
 
+import com.db.user.NewVersionBindRelationDao;
+import com.db.user.NewVersionUserRoleDao;
 import com.fulaan.annotation.ObjectIdType;
 import com.fulaan.annotation.SessionNeedless;
 import com.fulaan.base.BaseController;
@@ -12,6 +14,8 @@ import com.fulaan.service.MemberService;
 import com.fulaan.user.service.UserService;
 import com.fulaan.util.DateUtils;
 import com.pojo.user.AvatarType;
+import com.pojo.user.NewVersionBindRelationEntry;
+import com.pojo.user.NewVersionUserRoleEntry;
 import com.pojo.user.UserEntry;
 import com.sys.constants.Constant;
 import com.sys.utils.AvatarUtils;
@@ -46,6 +50,12 @@ public class QRController extends BaseController {
     private GroupService groupService;
     @Autowired
     private UserService userService;
+
+    private NewVersionBindRelationDao newVersionBindRelationDao
+            = new NewVersionBindRelationDao();
+
+    private NewVersionUserRoleDao newVersionUserRoleDao
+            =new NewVersionUserRoleDao();
 
 
     /**
@@ -132,6 +142,20 @@ public class QRController extends BaseController {
         map.put("userId", userEntry.getID().toString());
         map.put("nickName", StringUtils.isNotBlank(userEntry.getNickName()) ? userEntry.getNickName() : userEntry.getUserName());
         map.put("avator", AvatarUtils.getAvatar(userEntry.getAvatar(), AvatarType.MIN_AVATAR.getType()));
+        //加入逻辑（绑定逻辑）
+        //判断该用户是否是未激活的学生且已经登录的用户是家长
+        NewVersionUserRoleEntry household=newVersionUserRoleDao.getEntry(getUserId());
+        NewVersionUserRoleEntry userRoleEntry=newVersionUserRoleDao.getEntry(id);
+        if(null!=household
+                &&household.getNewRole()==Constant.ZERO&&
+                null!=userRoleEntry &&userRoleEntry.getNewRole() ==Constant.ONE){
+            userRoleEntry.setNewRole(Constant.TWO);
+            newVersionUserRoleDao.saveEntry(userRoleEntry);
+            NewVersionBindRelationEntry
+                    relationEntry=new NewVersionBindRelationEntry(getUserId(),id);
+            newVersionBindRelationDao.saveNewVersionBindEntry(relationEntry);
+        }
+
         return RespObj.SUCCESS(map);
     }
 

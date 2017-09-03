@@ -84,6 +84,7 @@ public class EBusinessUserController extends BaseController {
 
     NewVersionUserRoleDao newVersionUserRoleDao =new NewVersionUserRoleDao();
 
+
     @SessionNeedless
     @RequestMapping(value = "/sendInsetMessage", method = RequestMethod.GET)
     @ResponseBody
@@ -428,7 +429,11 @@ public class EBusinessUserController extends BaseController {
         if (flag) {
             final UserEntry userEntry = registerUserEntry(email, userName, passWord, phoneNumber, nickName);
             final ObjectId userId = userService.addUser(userEntry);
-            newVersionUserRoleDao.saveEntry(new NewVersionUserRoleEntry(userId,newRole));
+            if(newRole!=-1) {
+                if(null==newVersionUserRoleDao.getEntry(userEntry.getID())){
+                    newVersionUserRoleDao.saveEntry(new NewVersionUserRoleEntry(userId, newRole));
+                }
+            }
             new Thread(new Runnable() {
                 @Override
                 public void run() {

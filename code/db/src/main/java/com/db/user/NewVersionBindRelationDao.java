@@ -2,7 +2,6 @@ package com.db.user;
 
 import com.db.base.BaseDao;
 import com.db.factory.MongoFacroty;
-import com.mongodb.BasicDBList;
 import com.mongodb.BasicDBObject;
 import com.mongodb.DBObject;
 import com.pojo.user.NewVersionBindRelationEntry;
@@ -45,7 +44,7 @@ public class NewVersionBindRelationDao extends BaseDao{
                         .append("rd",regionId).append("ra",regionAreaId).append("sn",schoolName));
         update(MongoFacroty.getAppDB(),Constant.COLLECTION_NEW_VERSION_BIND_RELATION,query,updateValue);
     }
-
+    //父id
     public List<NewVersionBindRelationEntry> getEntriesByMainUserId(
             ObjectId mainUserId
     ){

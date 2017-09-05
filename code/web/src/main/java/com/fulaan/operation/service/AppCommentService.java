@@ -3,7 +3,9 @@ package com.fulaan.operation.service;
 import com.db.operation.AppCommentDao;
 import com.db.operation.AppOperationDao;
 import com.db.operation.AppRecordDao;
+import com.db.user.NewVersionBindRelationDao;
 import com.fulaan.community.dto.CommunityDTO;
+import com.fulaan.dto.MemberDTO;
 import com.fulaan.operation.dto.AppCommentDTO;
 import com.fulaan.operation.dto.AppOperationDTO;
 import com.fulaan.operation.dto.AppRecordDTO;
@@ -13,6 +15,7 @@ import com.fulaan.utils.pojo.KeyValue;
 import com.pojo.operation.AppCommentEntry;
 import com.pojo.operation.AppOperationEntry;
 import com.pojo.operation.AppRecordEntry;
+import com.pojo.user.NewVersionBindRelationEntry;
 import com.pojo.user.UserDetailInfoDTO;
 import com.sys.utils.DateTimeUtils;
 import org.bson.types.ObjectId;
@@ -30,10 +33,12 @@ public class AppCommentService {
     private AppCommentDao appCommentDao = new AppCommentDao();
     private AppOperationDao appOperationDao = new AppOperationDao();
     private AppRecordDao appRecordDao = new AppRecordDao();
+    private NewVersionBindRelationDao newVersionBindRelationDao = new NewVersionBindRelationDao();
     @Autowired
     private CommunityService communityService;
     @Autowired
     private UserService userService;
+
 
     /**
      * 发布作业
@@ -62,7 +67,6 @@ public class AppCommentService {
                 }
             }
         }
-        //todo  查找社区(根据所选择的id,向社区中所有学生对象发送作业)
         for( CommunityDTO dto3 : sendList){
             en.setRecipientId(new ObjectId(dto3.getId()));
             en.setRecipientName(dto3.getName());
@@ -104,6 +108,14 @@ public class AppCommentService {
        // List<AppCommentEntry> ids = appCommentDao.getEntryListByUserId(userId,zero);
 
         //todo  查找出当前家长的孩子所收到的所有作业
+        List<NewVersionBindRelationEntry> nlist = newVersionBindRelationDao.getEntriesByMainUserId(userId);
+        List<ObjectId> olist = new ArrayList<ObjectId>();
+        if(nlist.size()>0){
+            for(NewVersionBindRelationEntry en : nlist){
+                olist.add(en.getUserId());
+            }
+        }
+        ;
         List<AppCommentDTO> dtos = new ArrayList<AppCommentDTO>();
        /* if(entries.size()>0){
             for(AppCommentEntry en : entries){
@@ -119,17 +131,33 @@ public class AppCommentService {
      * 查询当前作业签到名单
      */
     public List<AppRecordDTO> selectRecordList(ObjectId id,int type){
-        List<AppRecordEntry> entries = appRecordDao.getEntryListByParentId(id,type);
-        List<AppRecordDTO> dtos = new ArrayList<AppRecordDTO>();
-        if(entries.size()>0){
-            for(AppRecordEntry en : entries){
-                AppRecordDTO dto = new AppRecordDTO(en);
-                String ctm = dto.getDateTime().substring(11,16);
-                dto.setDateTime(ctm);
-                dtos.add(dto);
+        List<AppRecordEntry> entries = null;
+        if(type==1){
+            entries = appRecordDao.getEntryListByParentId(id,1);
+            List<AppRecordDTO> dtos = new ArrayList<AppRecordDTO>();
+            if(entries.size()>0){
+                for(AppRecordEntry en : entries){
+                    AppRecordDTO dto = new AppRecordDTO(en);
+                    String ctm = dto.getDateTime().substring(11,16);
+                    dto.setDateTime(ctm);
+                    dtos.add(dto);
+                }
             }
+            return dtos;
+        }else{
+            List<AppRecordEntry> entries2 = appRecordDao.getEntryListByParentId(id,1);
+            List<MemberDTO> melist = communityService.getMembers(id);
+            List<AppRecordDTO> dtos = new ArrayList<AppRecordDTO>();
+            if(melist.size()>0){
+                for(MemberDTO en : melist){
+                    AppRecordDTO dto = new AppRecordDTO();
+                    dto.setUserName(en.getUserName());
+                    dtos.add(dto);
+                }
+            }
+            return dtos;
         }
-       return dtos;
+
     }
 
     /**
@@ -155,7 +183,6 @@ public class AppCommentService {
      */
     public Map<String,Object> selectDateList(long dateTime,ObjectId userId){
         Map<String,Object> map2 = new HashMap<String, Object>();
-        List<CommunityDTO> communityDTOList = communityService.getCommunitys(userId, 1, 100);
         List<AppCommentEntry> entries = appCommentDao.selectDateList(userId, dateTime);
         List<String> uids = new ArrayList<String>();
         List<AppCommentDTO> dtos = new ArrayList<AppCommentDTO>();
@@ -171,7 +198,16 @@ public class AppCommentService {
                 dtos.add(dto);
             }
         }
+
+        List<NewVersionBindRelationEntry> nlist = newVersionBindRelationDao.getEntriesByMainUserId(userId);
         List<ObjectId> olist = new ArrayList<ObjectId>();
+        List<CommunityDTO> communityDTOList = new ArrayList<CommunityDTO>();
+        if(nlist.size()>0){
+            for(NewVersionBindRelationEntry en : nlist){
+                //获取孩子的社区
+                communityDTOList.addAll(communityService.getCommunitys(userId, 1, 100));
+            }
+        }
         if(communityDTOList != null){
             for(CommunityDTO dto2 : communityDTOList){
                 olist.add(new ObjectId(dto2.getId()));

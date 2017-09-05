@@ -16,8 +16,8 @@ import java.util.Date;
 @Service
 public class NewVersionBindService {
 
-    @Autowired
-    private NewVersionBindRelationDao newVersionBindRelationDao;
+
+    private NewVersionBindRelationDao newVersionBindRelationDao=new NewVersionBindRelationDao();
 
     @Autowired
     private UserService userService;

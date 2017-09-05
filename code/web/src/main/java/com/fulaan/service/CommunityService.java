@@ -31,6 +31,7 @@ import com.sys.constants.Constant;
 import com.sys.utils.AvatarUtils;
 import com.sys.utils.DateTimeUtils;
 import com.sys.utils.RespObj;
+import com.sys.utils.StringUtil;
 import org.apache.commons.lang3.StringUtils;
 import org.bson.types.ObjectId;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -791,6 +792,32 @@ public class CommunityService {
                 }
                 memberDTOs.add(memberDTO);
             }
+        }
+        return memberDTOs;
+    }
+
+
+    /**
+     * 获取该社区前100位社区成员
+     * @param communityId
+     * @return
+     */
+    public List<MemberDTO> getMembers(ObjectId communityId){
+        List<MemberDTO> memberDTOs = new ArrayList<MemberDTO>();
+        ObjectId groupId = getGroupId(communityId);
+        List<ObjectId> members = new ArrayList<ObjectId>();
+        List<MemberEntry> memberEntries = memberDao.getMembers(groupId,1, 100);
+        for (MemberEntry memberEntry : memberEntries) {
+            members.add(memberEntry.getUserId());
+        }
+        Map<ObjectId, UserEntry> userEntryMap = userService.getUserEntryMap(members, Constant.FIELDS);
+        for (MemberEntry memberEntry : memberEntries) {
+            MemberDTO memberDTO = new MemberDTO(memberEntry);
+            UserEntry userEntry=userEntryMap.get(memberEntry.getUserId());
+            if(null!=userEntry) {
+                memberDTO.setUserName(StringUtils.isNotBlank(userEntry.getUserName())?userEntry.getUserName():userEntry.getNickName());
+            }
+            memberDTOs.add(memberDTO);
         }
         return memberDTOs;
     }

@@ -225,7 +225,6 @@ public class AppCommentController extends BaseController {
     @RequestMapping("/addOperationEntry")
     @ResponseBody
     public String addOperationEntry(AppOperationDTO dto){
-        //todo  上传文件类型判断
         RespObj respObj=null;
         try {
             respObj = RespObj.SUCCESS;

@@ -9,10 +9,12 @@ import com.fulaan.operation.dto.AppOperationDTO;
 import com.fulaan.operation.dto.AppRecordDTO;
 import com.fulaan.service.CommunityService;
 import com.fulaan.user.service.UserService;
+import com.fulaan.utils.pojo.KeyValue;
 import com.pojo.operation.AppCommentEntry;
 import com.pojo.operation.AppOperationEntry;
 import com.pojo.operation.AppRecordEntry;
 import com.pojo.user.UserDetailInfoDTO;
+import com.sys.utils.DateTimeUtils;
 import org.bson.types.ObjectId;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -293,5 +295,46 @@ public class AppCommentService {
         appRecordDao.updateEntry(id);
         appRecordDao.updateEntry2(id,current);
         return "签到成功";
+    }
+
+    /**
+     * 获取当前学期
+     * @return
+     */
+    public KeyValue getCurrTermType() {
+        KeyValue value=new KeyValue();
+        DateTimeUtils time=new DateTimeUtils();
+        //取得当前月
+        int currMonth=time.getMonth();
+        //取得当前年
+        int currYear=time.getYear();
+        int numb=1;
+        for(int year=2017;year<=currYear;year++) {
+            String schoolYear;
+            if(year==currYear)
+            {
+                if (currMonth <= 2) {
+                    schoolYear = (year - 1) + "-" + year + "上半学期";
+                    value.setKey(numb++);
+                    value.setValue(schoolYear);
+                }else {
+                    numb++;
+                    if (currMonth < 9) {
+                        schoolYear = (year - 1) + "-" + year + "下半学期";
+                        value.setKey(numb++);
+                        value.setValue(schoolYear);
+                    }
+                    if (currMonth >= 9) {
+                        numb++;
+                        schoolYear = year + "-" + (year + 1) + "上半学期";
+                        value.setKey(numb++);
+                        value.setValue(schoolYear);
+                    }
+                }
+            }else {
+                numb+=2;
+            }
+        }
+        return value;
     }
 }

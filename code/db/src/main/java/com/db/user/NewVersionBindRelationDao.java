@@ -17,8 +17,33 @@ import java.util.List;
  */
 public class NewVersionBindRelationDao extends BaseDao{
 
-    public void saveNewVersionBindEntry(NewVersionBindRelationEntry entry){
+    public ObjectId saveNewVersionBindEntry(NewVersionBindRelationEntry entry){
         save(MongoFacroty.getAppDB(), Constant.COLLECTION_NEW_VERSION_BIND_RELATION,entry.getBaseEntry());
+        return entry.getID();
+    }
+
+    public NewVersionBindRelationEntry getEntry(ObjectId bindId){
+        BasicDBObject query = new BasicDBObject()
+                .append(Constant.ID,bindId);
+        DBObject dbObject=findOne(MongoFacroty.getAppDB(), Constant.COLLECTION_NEW_VERSION_BIND_RELATION,query,Constant.FIELDS);
+        if(null!=dbObject){
+            return new NewVersionBindRelationEntry(dbObject);
+        }else{
+            return null;
+        }
+    }
+
+    public void saveEntry(ObjectId bindId,ObjectId regionId,
+                          ObjectId regionAreaId,
+                          String relation,
+                          String schoolName){
+        BasicDBObject query = new BasicDBObject()
+                .append(Constant.ID,bindId);
+
+        BasicDBObject updateValue = new BasicDBObject(Constant.MONGO_SET,
+                new BasicDBObject("rl",relation)
+                        .append("rd",regionId).append("ra",regionAreaId).append("sn",schoolName));
+        update(MongoFacroty.getAppDB(),Constant.COLLECTION_NEW_VERSION_BIND_RELATION,query,updateValue);
     }
 
     public List<NewVersionBindRelationEntry> getEntriesByMainUserId(

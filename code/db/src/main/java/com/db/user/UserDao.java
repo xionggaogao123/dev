@@ -1048,4 +1048,16 @@ public class UserDao extends BaseDao {
     public void addEntry(UserEntry entry){
         save(MongoFacroty.getAppDB(), Constant.COLLECTION_USER_NAME,entry.getBaseEntry());
     }
+
+    public int updateUserBirthDateAndSex(ObjectId uid, int sex,long birthDate ) {
+        BasicDBObject query = new BasicDBObject()
+                .append(Constant.ID, uid);
+        BasicDBObject updateValue = new BasicDBObject()
+                .append("bir", birthDate)
+                .append("sex", sex);
+        BasicDBObject update = new BasicDBObject()
+                .append(Constant.MONGO_SET, updateValue);
+        WriteResult writeResult = update(MongoFacroty.getAppDB(), Constant.COLLECTION_USER_NAME, query, update);
+        return writeResult.getN();
+    }
 }

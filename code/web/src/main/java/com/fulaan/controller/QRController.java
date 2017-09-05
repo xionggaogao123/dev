@@ -153,7 +153,8 @@ public class QRController extends BaseController {
             newVersionUserRoleDao.saveEntry(userRoleEntry);
             NewVersionBindRelationEntry
                     relationEntry=new NewVersionBindRelationEntry(getUserId(),id);
-            newVersionBindRelationDao.saveNewVersionBindEntry(relationEntry);
+            ObjectId bindId=newVersionBindRelationDao.saveNewVersionBindEntry(relationEntry);
+            map.put("bindId",bindId.toString());
         }
 
         return RespObj.SUCCESS(map);

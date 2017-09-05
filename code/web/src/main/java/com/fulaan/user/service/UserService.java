@@ -1236,7 +1236,7 @@ public class UserService extends BaseService {
         thirdLoginDao.removeThirdBind(userId, thirdType);
     }
 
-    public void updateUserBirthDateAndSex(ObjectId uid, int sex,long birthDate ){
-        userDao.updateUserBirthDateAndSex(uid, sex, birthDate);
+    public void updateUserBirthDateAndSex(ObjectId uid, int sex,long birthDate,String avatar){
+        userDao.updateUserBirthDateAndSex(uid, sex, birthDate,avatar);
     }
 }

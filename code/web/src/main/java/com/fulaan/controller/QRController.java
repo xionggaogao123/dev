@@ -13,6 +13,7 @@ import com.fulaan.fgroup.service.GroupService;
 import com.fulaan.service.MemberService;
 import com.fulaan.user.service.UserService;
 import com.fulaan.util.DateUtils;
+import com.fulaan.util.ObjectIdPackageUtil;
 import com.pojo.user.AvatarType;
 import com.pojo.user.NewVersionBindRelationEntry;
 import com.pojo.user.NewVersionUserRoleEntry;
@@ -157,6 +158,16 @@ public class QRController extends BaseController {
             map.put("bindId",bindId.toString());
         }
 
+        //检查是否生成GenerateUserCode
+        if (StringUtils.isBlank(userEntry.getGenerateUserCode())) {
+            //若code为空，则生成code
+            String packageCode=ObjectIdPackageUtil.getPackage(userEntry.getID());
+            userEntry.setGenerateUserCode(packageCode);
+            userService.addUser(userEntry);
+            map.put("packageCode",packageCode);
+        }else{
+            map.put("packageCode",userEntry.getGenerateUserCode());
+        }
         return RespObj.SUCCESS(map);
     }
 

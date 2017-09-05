@@ -29,7 +29,8 @@ public class NewVersionBindService {
             ObjectId regionId,
             ObjectId regionAreaId,
             String relation,
-            String schoolName
+            String schoolName,
+            String avatar
     ){
         NewVersionBindRelationEntry entry= newVersionBindRelationDao.getEntry(bindId);
         if(null!=entry){
@@ -37,7 +38,7 @@ public class NewVersionBindService {
             try {
                 SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd");
                 Date dateBirth = format.parse(birthDate);
-                userService.updateUserBirthDateAndSex(userId,sex,dateBirth.getTime());
+                userService.updateUserBirthDateAndSex(userId,sex,dateBirth.getTime(),avatar);
                 newVersionBindRelationDao.saveEntry(bindId, regionId, regionAreaId, relation, schoolName);
             }catch (Exception e){
                 throw  new RuntimeException("传入的生日数据有误!");

@@ -30,7 +30,8 @@ public class NewVersionBindService {
             ObjectId regionAreaId,
             String relation,
             String schoolName,
-            String avatar
+            String avatar,
+            int gradeType
     ){
         NewVersionBindRelationEntry entry= newVersionBindRelationDao.getEntry(bindId);
         if(null!=entry){

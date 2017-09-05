@@ -654,6 +654,8 @@ public class Constant {
     public static final String COLLECTION_NEW_VERSION_USER_ROLE="newversion_userrole";
     //新版本存储用户绑定关系
     public static final String COLLECTION_NEW_VERSION_BIND_RELATION="newversion_bindrelation";
+    //新版本用户学年年级关系
+    public static final String COLLECTION_NEW_VERSION_GRADE="newversion_grade";
 
     public static final String COLLECTION_MALL_MARKET_URL = "http://a.app.qq.com/o/simple.jsp?pkgname=com.fulan.mall";
 

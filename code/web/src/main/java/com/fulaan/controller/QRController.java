@@ -1,5 +1,6 @@
 package com.fulaan.controller;
 
+import cn.jpush.api.push.model.audience.Audience;
 import com.db.user.NewVersionBindRelationDao;
 import com.db.user.NewVersionUserRoleDao;
 import com.fulaan.annotation.ObjectIdType;
@@ -14,6 +15,7 @@ import com.fulaan.service.MemberService;
 import com.fulaan.user.service.UserService;
 import com.fulaan.util.DateUtils;
 import com.fulaan.util.ObjectIdPackageUtil;
+import com.fulaan.utils.JPushUtils;
 import com.pojo.user.AvatarType;
 import com.pojo.user.NewVersionBindRelationEntry;
 import com.pojo.user.NewVersionUserRoleEntry;
@@ -32,7 +34,9 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 /**
@@ -156,6 +160,17 @@ public class QRController extends BaseController {
                     relationEntry=new NewVersionBindRelationEntry(getUserId(),id);
             ObjectId bindId=newVersionBindRelationDao.saveNewVersionBindEntry(relationEntry);
             map.put("bindId",bindId.toString());
+            //发送消息
+            List<String> alias=new ArrayList<String>();
+            alias.add(id.toString());
+            UserEntry user=userService.findById(id);
+            Audience audience = Audience.alias(alias);
+            JPushUtils jPushUtils = new JPushUtils();
+            Map<String, String> extras = new HashMap<String, String>();
+            extras.put("type","1");
+            jPushUtils.pushRestAndroid(audience, "你的账号已被激活!", user.getUserName(), "您有新的通知", extras);
+            jPushUtils.pushRestIos(audience, "你的账号已被激活!", extras);
+            jPushUtils.pushRestWinPhone(audience, "你的账号已被激活!");
         }
 
         //检查是否生成GenerateUserCode

@@ -2713,6 +2713,25 @@ public class CommunityController extends BaseController {
         }
     }
 
+    public RespObj getQRBindCode(UserEntry userEntry,ObjectId userId){
+        if (StringUtils.isBlank(userEntry.getQRCode())) {
+            String qrCode = QRUtils.getPersonBindQrUrl(userId);
+            userEntry.setQRBindCode(qrCode);
+            userService.addUser(userEntry);
+            return RespObj.SUCCESS(qrCode);
+        } else {
+            return RespObj.SUCCESS(userEntry.getQRBindCode());
+        }
+    }
+
+    @RequestMapping("/getMyQRBindCodeByUserId")
+    @ResponseBody
+    @SessionNeedless
+    public RespObj getMyQRBindCodeByUserId(@ObjectIdType  ObjectId userId) {
+        UserEntry userEntry = userService.findById(userId);
+        return getQRBindCode(userEntry,userId);
+    }
+
     @RequestMapping("/getMyQRCodeByUserId")
     @ResponseBody
     @SessionNeedless

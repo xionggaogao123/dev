@@ -21,6 +21,18 @@ public class NewVersionBindRelationDao extends BaseDao{
         return entry.getID();
     }
 
+    public NewVersionBindRelationEntry getBindEntry(ObjectId mainUserId,ObjectId userId){
+        BasicDBObject query = new BasicDBObject()
+                .append("muid",mainUserId)
+                .append("uid",userId);
+        DBObject dbObject=findOne(MongoFacroty.getAppDB(), Constant.COLLECTION_NEW_VERSION_BIND_RELATION,query,Constant.FIELDS);
+        if(null!=dbObject){
+            return new NewVersionBindRelationEntry(dbObject);
+        }else{
+            return null;
+        }
+    }
+
     public NewVersionBindRelationEntry getEntry(ObjectId bindId){
         BasicDBObject query = new BasicDBObject()
                 .append(Constant.ID,bindId);
@@ -32,12 +44,14 @@ public class NewVersionBindRelationDao extends BaseDao{
         }
     }
 
-    public void saveEntry(ObjectId bindId,ObjectId regionId,
+    public void saveEntry(ObjectId mainUserId,ObjectId userId,
+            ObjectId regionId,
                           ObjectId regionAreaId,
                           String relation,
                           String schoolName){
         BasicDBObject query = new BasicDBObject()
-                .append(Constant.ID,bindId);
+                .append("muid",mainUserId)
+                .append("uid",userId);
 
         BasicDBObject updateValue = new BasicDBObject(Constant.MONGO_SET,
                 new BasicDBObject("rl",relation)

@@ -453,6 +453,7 @@ public class EBusinessUserController extends BaseController {
                 model.put("message", userEntry.getEmail() + "$" + userEntry.getEmailValidateCode());
                 return model;
             }
+            model.put("userId",userId.toString());
             model.put("message", "注册成功");
             model.put("code", 200);
             // 登录

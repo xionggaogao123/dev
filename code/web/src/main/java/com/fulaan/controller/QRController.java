@@ -147,42 +147,79 @@ public class QRController extends BaseController {
         map.put("userId", userEntry.getID().toString());
         map.put("nickName", StringUtils.isNotBlank(userEntry.getNickName()) ? userEntry.getNickName() : userEntry.getUserName());
         map.put("avator", AvatarUtils.getAvatar(userEntry.getAvatar(), AvatarType.MIN_AVATAR.getType()));
-        //加入逻辑（绑定逻辑）
-        //判断该用户是否是未激活的学生且已经登录的用户是家长
-        NewVersionUserRoleEntry household=newVersionUserRoleDao.getEntry(getUserId());
-        NewVersionUserRoleEntry userRoleEntry=newVersionUserRoleDao.getEntry(id);
-        if(null!=household
-                &&household.getNewRole()==Constant.ZERO&&
-                null!=userRoleEntry &&userRoleEntry.getNewRole() ==Constant.ONE){
-            userRoleEntry.setNewRole(Constant.TWO);
-            newVersionUserRoleDao.saveEntry(userRoleEntry);
-            NewVersionBindRelationEntry
-                    relationEntry=new NewVersionBindRelationEntry(getUserId(),id);
-            ObjectId bindId=newVersionBindRelationDao.saveNewVersionBindEntry(relationEntry);
-            map.put("bindId",bindId.toString());
-            //发送消息
-            List<String> alias=new ArrayList<String>();
-            alias.add(id.toString());
-            UserEntry user=userService.findById(id);
-            Audience audience = Audience.alias(alias);
-            JPushUtils jPushUtils = new JPushUtils();
-            Map<String, String> extras = new HashMap<String, String>();
-            extras.put("type","1");
-            jPushUtils.pushRestAndroid(audience, "你的账号已被激活!", user.getUserName(), "您有新的通知", extras);
-            jPushUtils.pushRestIos(audience, "你的账号已被激活!", extras);
-            jPushUtils.pushRestWinPhone(audience, "你的账号已被激活!");
+        return RespObj.SUCCESS(map);
+    }
+
+
+    /**
+     * 绑定接口
+     * @param id
+     * @param response
+     * @return
+     * @throws IOException
+     */
+    @RequestMapping("/personBind/{id}")
+    @SessionNeedless
+    @ResponseBody
+    public RespObj personBindHandle(@PathVariable @ObjectIdType ObjectId id,
+                                HttpServletResponse response) throws IOException {
+        if (getUserId() == null) {
+            response.sendRedirect(Constant.COLLECTION_MALL_MARKET_URL);
+            return null;
         }
 
-        //检查是否生成GenerateUserCode
-        if (StringUtils.isBlank(userEntry.getGenerateUserCode())) {
-            //若code为空，则生成code
-            String packageCode=ObjectIdPackageUtil.getPackage(userEntry.getID());
-            userEntry.setGenerateUserCode(packageCode);
-            userService.addUser(userEntry);
-            map.put("packageCode",packageCode);
+        UserEntry userEntry = userService.findById(id);
+        Map<String, String> map = new HashMap<String, String>();
+        map.put("userId", userEntry.getID().toString());
+        map.put("nickName", StringUtils.isNotBlank(userEntry.getNickName()) ? userEntry.getNickName() : userEntry.getUserName());
+        map.put("avator", AvatarUtils.getAvatar(userEntry.getAvatar(), AvatarType.MIN_AVATAR.getType()));
+        //加入逻辑（绑定逻辑）
+        //判断该用户是否是未激活的学生且已经登录的用户是家长
+
+
+        NewVersionBindRelationEntry entry = newVersionBindRelationDao.getBindEntry(getUserId(),id);
+        /**
+         * 0:已绑定
+         * 1:扫描的是学生
+         * 2:条件符合
+         * 3:扫描二维码的是老用户
+         * 4:被扫描二维码的是老用户
+         *
+         * **/
+        if(null!=entry) {
+            map.put("isBind","0");
         }else{
-            map.put("packageCode",userEntry.getGenerateUserCode());
+            NewVersionUserRoleEntry household=newVersionUserRoleDao.getEntry(getUserId());
+            NewVersionUserRoleEntry userRoleEntry=newVersionUserRoleDao.getEntry(id);
+            if(null==household){
+                map.put("isBind","3");
+            }else if(null==userRoleEntry){
+                map.put("isBind","4");
+            }else {
+                if(userRoleEntry.getNewRole()==Constant.TWO){
+                    map.put("isBind","0");
+                }else {
+                    if (household.getNewRole() == Constant.ZERO ||
+                            household.getNewRole() == Constant.ONE) {
+                        map.put("isBind", "1");
+                    } else {
+                        map.put("isBind", "2");
+                    }
+                }
+            }
         }
+        map.put("phone",userEntry.getMobileNumber());
+
+        //检查是否生成GenerateUserCode
+//        if (StringUtils.isBlank(userEntry.getGenerateUserCode())) {
+//            //若code为空，则生成code
+//            String packageCode=ObjectIdPackageUtil.getPackage(userEntry.getID());
+//            userEntry.setGenerateUserCode(packageCode);
+//            userService.addUser(userEntry);
+//            map.put("packageCode",packageCode);
+//        }else{
+//            map.put("packageCode",userEntry.getGenerateUserCode());
+//        }
         return RespObj.SUCCESS(map);
     }
 

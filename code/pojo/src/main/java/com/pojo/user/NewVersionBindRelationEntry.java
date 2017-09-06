@@ -24,14 +24,19 @@ public class NewVersionBindRelationEntry extends BaseDBObject {
     }
 
     public NewVersionBindRelationEntry(ObjectId mainUserId,
-                                       ObjectId userId){
+                                       ObjectId userId,
+                                       String relation,
+                                       ObjectId regionId,
+                                       ObjectId regionAreaId,
+                                       String schoolName
+                                       ){
         BasicDBObject basicDBObject=new BasicDBObject()
                 .append("muid",mainUserId)
                 .append("uid",userId)
-                .append("rl", Constant.EMPTY)
-                .append("rd",null)
-                .append("ra",null)
-                .append("sn",Constant.EMPTY)
+                .append("rl", relation)
+                .append("rd",regionId)
+                .append("ra",regionAreaId)
+                .append("sn",schoolName)
                 .append("ir",Constant.ZERO);
         setBaseEntry(basicDBObject);
     }

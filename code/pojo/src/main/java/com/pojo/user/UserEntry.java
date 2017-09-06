@@ -1075,6 +1075,14 @@ public class UserEntry extends BaseDBObject {
         return getBaseEntry().getString("qrc",Constant.EMPTY);
     }
 
+    public String getQRBindCode(){
+        return getBaseEntry().getString("qrbc",Constant.EMPTY);
+    }
+
+    public void setQRBindCode(String qrBindCode){
+        setSimpleValue("qrbc", qrBindCode);
+    }
+
     public void setQRCode(String qrCode) {
         setSimpleValue("qrc", qrCode);
     }

@@ -102,7 +102,9 @@ public class BaseDBObject implements Serializable {
   protected ObjectId getSimpleObjecIDValue(String key) {
     return baseEntry.getObjectId(key);
   }
-
+  protected Boolean getSimpleBoolean(String key){
+    return baseEntry.getBoolean(key);
+  }
 
   protected int getComplexIntegerValue(String key) {
     ComplexValueDTO dto = getComplexValueDTO(key);

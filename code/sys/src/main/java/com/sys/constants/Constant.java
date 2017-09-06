@@ -820,5 +820,13 @@ public class Constant {
     public static final String COLLECTION_APP_OPERATION = "appoperation";
     //作业记录
     public static final String COLLECTION_APP_RECORD = "apprecord";
+    //错题本
+    public static final String COLLECTION_BOOK_ERROR = "bookError";
+    //名称转换
+    public static final String COLLECTION_NAME_CONVERT = "nameConvert";
+    //简易科目表
+    public static final String COLLECTION_SUBJECT_CLASS = "subjectClass";
+    //临时年级表
+    public static final String COLLECTION_CREATE_GRADE = "createGrade";
 
 }

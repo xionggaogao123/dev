@@ -150,9 +150,17 @@ public class AppCommentService {
             List<AppRecordDTO> dtos = new ArrayList<AppRecordDTO>();
             if(melist.size()>0){
                 for(MemberDTO en : melist){
-                    AppRecordDTO dto = new AppRecordDTO();
-                    dto.setUserName(en.getUserName());
-                    dtos.add(dto);
+                    boolean fla = true;
+                    for(AppRecordEntry entr : entries) {
+                        if(en.getUserId()!= null && en.getUserId().equals(entr.getUserId().toString())){
+                            fla = false;
+                        }
+                    }
+                    if(fla){
+                        AppRecordDTO dto = new AppRecordDTO();
+                        dto.setUserName(en.getUserName());
+                        dtos.add(dto);
+                    }
                 }
             }
             return dtos;

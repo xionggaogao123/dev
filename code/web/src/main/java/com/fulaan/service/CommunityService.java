@@ -1147,6 +1147,153 @@ public class CommunityService {
         return tagEntries;
     }
 
+
+    public PageModel<CommunityDetailDTO> getMyMessageByType(List<ObjectId> communityIds,ObjectId userId,int type, int page, int pageSize) {
+        PageModel<CommunityDetailDTO> pageModel = new PageModel<CommunityDetailDTO>();
+        List<CommunityDetailEntry> entries = communityDetailDao.getDetails(communityIds, page, pageSize, Constant.DESC, type);
+        int totalCount = communityDetailDao.count(communityIds, type);
+        int totalPages = totalCount % pageSize == 0 ? totalCount / pageSize : (int) Math.ceil(totalCount / pageSize) + 1;
+        page = page > totalPages ? totalPages : page;
+        if (totalPages == 0 || page < 1) {
+            page = 1;
+        }
+        List<CommunityDetailDTO> dtos = new ArrayList<CommunityDetailDTO>();
+        Map<ObjectId,CommunityEntry> communityEntryMap=communityDao.findMapInfo(communityIds);
+        Set<ObjectId> userIds=new HashSet<ObjectId>();
+        Set<ObjectId> uuuids = new HashSet<ObjectId>();
+        for (CommunityDetailEntry entry : entries) {
+            userIds.add(entry.getCommunityUserId());
+            uuuids.add(new ObjectId(entry.getCommunityId()));
+        }
+
+
+        List<ObjectId> communities = new ArrayList<ObjectId>(uuuids);
+        //获取群昵称
+        List<ObjectId> groupIdList = new ArrayList<ObjectId>();
+        Map<ObjectId, ObjectId> groupIds = communityDao.getGroupIds(communities);
+        for (Map.Entry<ObjectId, ObjectId> item : groupIds.entrySet()) {
+            groupIdList.add(item.getValue());
+        }
+        Map<String, MemberEntry> memberMap = memberDao.getGroupNick(groupIdList, new ArrayList<ObjectId>(userIds));
+        //查询备注名
+        Map<ObjectId, RemarkEntry> remarkEntryMap=new HashMap<ObjectId, RemarkEntry>();
+        if(null!=userId){
+            remarkEntryMap = remarkDao.find(userId, new ArrayList<ObjectId>(userIds));
+        }
+        Map<ObjectId,UserEntry> userEntryMap=userService.getUserEntryMap(userIds,Constant.FIELDS);
+        for (CommunityDetailEntry entry : entries) {
+            CommunityDetailDTO dto=new CommunityDetailDTO(entry);
+            if(null!=communityEntryMap.get(new ObjectId(entry.getCommunityId()))){
+                dto.setCommunityName(communityEntryMap.get(new ObjectId(entry.getCommunityId())).getCommunityName());
+            }
+            UserEntry userEntry=userEntryMap.get(entry.getCommunityUserId());
+            if(null!=userEntry){
+                dto.setNickName(userEntry.getUserName());
+                dto.setImageUrl(AvatarUtils.getAvatar(userEntry.getAvatar(), AvatarType.MIN_AVATAR.getType()));
+            }
+            ObjectId groupId = groupIds.get(new ObjectId(entry.getCommunityId()));
+            //判断是否为学习用品
+            if (type == CommunityDetailType.MATERIALS.getType()) {
+                List<PartInContentDTO> partInContentDTOs = new ArrayList<PartInContentDTO>();
+                List<PartInContentEntry> partInContentEntries = partInContentDao.getPartInContent(entry.getID(), 6, 1, 1);
+                Set<ObjectId> partinUserIds = new HashSet<ObjectId>();
+                for (PartInContentEntry partEntry : partInContentEntries) {
+                    partinUserIds.add(partEntry.getUserId());
+                }
+                List<ObjectId> tempUserIds = new ArrayList<ObjectId>(partinUserIds);
+                Map<String, MemberEntry> partInMembermap = memberDao.getGroupNick(groupIdList, tempUserIds);
+                //查询备注名
+                Map<ObjectId, RemarkEntry> remarkEntryHashMap=new HashMap<ObjectId, RemarkEntry>();
+                if(null!=userId){
+                    remarkEntryHashMap = remarkDao.find(userId, tempUserIds);
+                }
+                for (PartInContentEntry partEntry : partInContentEntries) {
+                    PartInContentDTO partInContentDTO = new PartInContentDTO(partEntry);
+                    UserEntry user = userService.findById(partEntry.getUserId());
+                    //判断用户是否为空
+                    if (null != user) {
+                        partInContentDTO.setAvator(AvatarUtils.getAvatar(user.getAvatar(), AvatarType.MIN_AVATAR.getType()));
+                        MemberEntry entry2 = partInMembermap.get(groupId + "$" + partEntry.getUserId());
+                        setPartInContentDTOInfo(partInContentDTO, user, entry2);
+                        //设置备注名
+                        if(null!=remarkEntryHashMap){
+                            RemarkEntry remarkEntry=remarkEntryHashMap.get(partEntry.getUserId());
+                            if(null!=remarkEntry){
+                                dto.setNickName(remarkEntry.getRemark());
+                            }
+                        }
+                        //时间转换
+                        dto.setTime(DateUtils.timeStampToStr(partEntry.getID().getTimestamp()));
+                        partInContentDTOs.add(partInContentDTO);
+                    }
+                }
+                dto.setPartList(partInContentDTOs);
+            } else if (type == CommunityDetailType.VOTE.getType()) {
+                int voteCount = fVoteService.getFVoteCount(entry.getID().toString());
+                int voteTotalCount = fVoteService.countTotalVote(entry.getID().toString());
+                dto.setVoteTotalCount(voteTotalCount);
+                dto.setVoteCount(voteCount);
+                long nowTime = System.currentTimeMillis();
+                if (nowTime < entry.getVoteDeadTime()) {
+                    dto.setVoteDeadFlag(0);
+                } else {
+                    dto.setVoteDeadFlag(1);
+                }
+                dto.setHasVoted(0);
+                if (null != userId) {
+                    FVoteEntry fVoteEntry = fVoteService.getFVote(entry.getID().toString(), userId.toString());
+                    if (null != fVoteEntry) {
+                        dto.setHasVoted(1);
+                    }
+                }
+                String voteContent = entry.getVoteContent();
+                List<String> voteOptions = new ArrayList<String>();
+                if (voteContent.contains("/n/r")) {
+                    String[] str = voteContent.split("/n/r");
+                    for (String item : str) {
+                        voteOptions.add(item);
+                    }
+                } else {
+                    voteOptions.add(voteContent);
+                }
+                dto.setVoteOptions(voteOptions);
+            }
+            dto.setOperation(0);
+            if (null != userId) {
+                if (memberService.isManager(groupId, userId)) {
+                    dto.setOperation(1);
+                }
+            }
+
+            //设置权限
+            if(null!= communityEntryMap.get(new ObjectId(entry.getCommunityId()))) {
+                setRoleStr(dto, communityEntryMap.get(new ObjectId(entry.getCommunityId())), entry.getCommunityUserId());
+            }
+            int totalCount = partInContentDao.countPartPartInContent(entry.getID());
+            dto.setPartIncotentCount(totalCount);
+
+            //先获取群昵称
+            MemberEntry entry1 = memberMap.get(groupId + "$" + entry.getCommunityUserId());
+            setCommunityDetailInfo(dto, userEntry, entry1);
+            //设置备注名
+            if(null!=remarkEntryMap){
+                RemarkEntry entry2=remarkEntryMap.get(entry.getCommunityUserId());
+                if(null!=entry2){
+                    dto.setNickName(entry2.getRemark());
+                }
+            }
+            dto.setPartInCount(dto.getPartInList().size());
+            dtos.add(dto);
+            dtos.add(dto);
+        }
+        pageModel.setPage(page);
+        pageModel.setPageSize(pageSize);
+        pageModel.setTotalCount(totalCount);
+        pageModel.setTotalPages(totalPages);
+        pageModel.setResult(dtos);
+        return pageModel;
+    }
+
     /**
      * 获取最新资讯
      *

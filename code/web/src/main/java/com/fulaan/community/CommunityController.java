@@ -2921,4 +2921,35 @@ public class CommunityController extends BaseController {
         return respObj;
     }
 
+    /**
+     * 获取与我有关的模块列表信息
+     * @param page
+     * @param pageSize
+     * @param type
+     * @return
+     */
+    @RequestMapping("/getMyMessageByType")
+    @ResponseBody
+    @SessionNeedless
+    public RespObj getMyMessageByType(@RequestParam(required = false, defaultValue = "1") int page,
+                                     @RequestParam(required = false, defaultValue = "4") int pageSize,
+                                     @RequestParam(required = false, defaultValue = "-1") int type) {
+        ObjectId userId = getUserId();
+        List<ObjectId> communityIds = new ArrayList<ObjectId>();
+        if (null == userId) {
+            CommunityDTO fulanDTO = communityService.getCommunityByName("复兰社区");
+            if (fulanDTO != null && fulanDTO.getId() != null) {
+                communityIds.add(new ObjectId(fulanDTO.getId()));
+                return RespObj.SUCCESS(communityService.getMyMessageByType(communityIds,userId,type,page,pageSize));
+            }
+            return RespObj.FAILD("没有数据");
+        } else {
+            List<CommunityDTO> communityDTOList = communityService.getCommunitys(userId, -1, 0);
+            for (CommunityDTO communityDTO : communityDTOList) {
+                communityIds.add(new ObjectId(communityDTO.getId()));
+            }
+            return RespObj.SUCCESS(communityService.getMyMessageByType(communityIds,userId, type,page,pageSize));
+        }
+    }
+
 }

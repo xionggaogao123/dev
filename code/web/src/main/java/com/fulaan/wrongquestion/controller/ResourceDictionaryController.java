@@ -9,10 +9,7 @@ import com.sys.constants.Constant;
 import com.sys.utils.RespObj;
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
@@ -32,11 +29,11 @@ public class ResourceDictionaryController extends BaseController {
      * 查询练习题目知识点
      * @return
      */
-    @SessionNeedless
-    @RequestMapping(value = "/getKnowledgePointList/{type}/{subjectName}",method= RequestMethod.GET)
+    @RequestMapping("/getKnowledgePointList")
+    @ResponseBody
     public String getKnowledgePointList(
-            @PathVariable String type,
-            @PathVariable String subjectName){
+            @RequestParam("type") String type,
+            @RequestParam("subjectName") String subjectName){
         RespObj respObj=new RespObj(Constant.SUCCESS_CODE);
         try {
             //群组种类list

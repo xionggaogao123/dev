@@ -2,7 +2,7 @@ package com.fulaan.wrongquestion.controller;
 
 import com.alibaba.fastjson.JSON;
 import com.fulaan.base.BaseController;
-import com.fulaan.utils.pojo.KeyValue;
+import com.fulaan.wrongquestion.dto.CreateGradeDTO;
 import com.fulaan.wrongquestion.dto.ErrorBookDTO;
 import com.fulaan.wrongquestion.dto.NewVersionGradeDTO;
 import com.fulaan.wrongquestion.dto.SubjectClassDTO;
@@ -42,8 +42,6 @@ public class WrongQuestionController extends BaseController {
     @ResponseBody
     public String addCommentEntry(NewVersionGradeDTO dto){
         //
-        KeyValue keyValue = wrongQuestionService.getCurrTermType();
-        dto.setYear(keyValue.getValue());
         RespObj respObj=null;
         try {
             String result = wrongQuestionService.addGradeFromUser(dto);
@@ -68,9 +66,9 @@ public class WrongQuestionController extends BaseController {
         //
         RespObj respObj=null;
         try {
-            //String result = wrongQuestionService.addGradeFromUser(dto);
+            String result = wrongQuestionService.addSubjectEntry(dto);
             respObj = RespObj.SUCCESS;
-           //respObj.setMessage(result);
+            respObj.setMessage(result);
         } catch (Exception e) {
             e.printStackTrace();
             respObj = RespObj.FAILD;
@@ -80,16 +78,37 @@ public class WrongQuestionController extends BaseController {
     }
 
     /**
+     * 添加年级
+     * @PARAM DTO
+     * @RETURN
+     */
+    @RequestMapping("/addGradeEntry")
+    @ResponseBody
+    public String addGradeEntry(CreateGradeDTO dto){
+        //
+        RespObj respObj=null;
+        try {
+            String result = wrongQuestionService.addGradeEntry(dto);
+            respObj = RespObj.SUCCESS;
+            respObj.setMessage(result);
+        } catch (Exception e) {
+            e.printStackTrace();
+            respObj = RespObj.FAILD;
+            respObj.setMessage("添加年级失败!");
+        }
+        return JSON.toJSONString(respObj);
+    }
+
+    /**
      * 年级、科目加载
-     * @param userId
      * @return
      */
     @RequestMapping("/getGradeAndSubject")
     @ResponseBody
-    public String getGradeAndSubject(@RequestParam("userId") String userId){
+    public String getGradeAndSubject(){
         RespObj respObj=null;
         try {
-            Map<String,Object> result = wrongQuestionService.getGradeAndSubject(new ObjectId(userId));
+            Map<String,Object> result = wrongQuestionService.getGradeAndSubject(getUserId());
             respObj = RespObj.SUCCESS;
             respObj.setMessage(result);
         } catch (Exception e) {

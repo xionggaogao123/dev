@@ -3,7 +3,6 @@ package com.fulaan.newVersionBind.controller;
 import com.fulaan.annotation.ObjectIdType;
 import com.fulaan.base.BaseController;
 import com.fulaan.newVersionBind.service.NewVersionBindService;
-import com.fulaan.service.ConcernService;
 import com.sys.constants.Constant;
 import com.sys.utils.RespObj;
 import org.apache.log4j.Logger;
@@ -11,6 +10,7 @@ import org.bson.types.ObjectId;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 /**
@@ -46,6 +46,20 @@ public class NewVersionBindController extends BaseController {
         try{
             newVersionBindService.saveNewVersionBindRelationEntry(getUserId(),userId, sex, birthDate,provinceName, regionName, regionAreaName, relation, schoolName,avatar,
                     gradeType,nickName);
+            respObj.setCode(Constant.SUCCESS_CODE);
+            respObj.setMessage("保存信息成功!");
+        }catch (Exception e){
+            respObj.setMessage(e.getMessage());
+        }
+        return respObj;
+    }
+
+    @RequestMapping("/addEntry")
+    @ResponseBody
+    public RespObj saveNewVersionEntry(@RequestParam("id") String id){
+        RespObj respObj = new RespObj(Constant.FAILD_CODE);
+        try{
+            newVersionBindService.saveNewVersionEntry(new ObjectId(id),getUserId());
             respObj.setCode(Constant.SUCCESS_CODE);
             respObj.setMessage("保存信息成功!");
         }catch (Exception e){

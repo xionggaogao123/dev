@@ -19,6 +19,9 @@ import org.bson.types.ObjectId;
  */
 public class NewVersionBindRelationEntry extends BaseDBObject {
 
+    public NewVersionBindRelationEntry(){
+
+    }
     public NewVersionBindRelationEntry(DBObject dbObject){
         setBaseEntry((BasicDBObject)dbObject);
     }

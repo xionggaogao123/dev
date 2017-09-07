@@ -89,11 +89,28 @@ public class WrongQuestionService {
      * 绑定年级
      */
     public String addGradeFromUser(NewVersionGradeDTO dto){
+        KeyValue keyValue = this.getCurrTermType();
+        dto.setYear(keyValue.getValue());
         NewVersionGradeEntry entry = dto.buildAddEntry();
         newVersionGradeDao.saveNewVersionGradeEntry(entry);
         return "成功绑定";
     }
 
+    /**
+     * 添加年级
+     */
+    public String addGradeEntry(CreateGradeDTO dto){
+        CreateGradeEntry entry = dto.buildAddEntry();
+        return createGradeDao.addCreateGradeEntry(entry).toString();
+    }
+
+    /**
+     * 添加年级
+     */
+    public String addSubjectEntry(SubjectClassDTO dto){
+        SubjectClassEntry entry = dto.buildAddEntry();
+        return subjectClassDao.addSubjectEntry(entry).toString();
+    }
     /**
      * 年级、科目加载
      */
@@ -315,4 +332,7 @@ public class WrongQuestionService {
         return errorBookDao.countQuestion(userId, subjectId, gradeId, pointList, keyword, isErrorQuestion);
     }
 
+  /*  public static void  main(String args[]){
+
+    }*/
 }

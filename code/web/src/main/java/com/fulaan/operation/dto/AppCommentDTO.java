@@ -25,6 +25,7 @@ public class AppCommentDTO {
     private int type;//leixing
     private String adminName;//发送人姓名
     private String adminUrl;//发送人图片
+    private String sendUser;//孩子名称
 
     public AppCommentDTO(){
 
@@ -222,5 +223,13 @@ public class AppCommentDTO {
 
     public void setAdminUrl(String adminUrl) {
         this.adminUrl = adminUrl;
+    }
+
+    public String getSendUser() {
+        return sendUser;
+    }
+
+    public void setSendUser(String sendUser) {
+        this.sendUser = sendUser;
     }
 }

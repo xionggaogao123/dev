@@ -21,7 +21,7 @@ public class CreateGradeDao extends BaseDao {
      * @param e
      * @return
      */
-    public ObjectId addSubjectEntry(CreateGradeEntry e)
+    public ObjectId addCreateGradeEntry(CreateGradeEntry e)
     {
         save(MongoFacroty.getAppDB(), Constant.COLLECTION_CREATE_GRADE, e.getBaseEntry());
         return e.getID();

@@ -98,4 +98,13 @@ public class NewVersionBindService {
         }
     }
 
+    public String saveNewVersionEntry(ObjectId bid,ObjectId userId){
+        NewVersionBindRelationEntry entry = new NewVersionBindRelationEntry();
+        entry.setMainUserId(userId);
+        entry.setUserId(bid);
+        newVersionBindRelationDao.saveNewVersionBindEntry(entry);
+        return "";
+    }
+
+
 }

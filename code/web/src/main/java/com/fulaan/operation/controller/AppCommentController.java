@@ -202,7 +202,6 @@ public class AppCommentController extends BaseController {
     @RequestMapping("/getStuLit")
     @ResponseBody
     public String getStuLit(@RequestParam("date") String date){
-
         RespObj respObj=null;
         try {
             respObj = RespObj.SUCCESS;

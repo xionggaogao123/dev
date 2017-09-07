@@ -1284,7 +1284,6 @@ public class CommunityService {
             }
             dto.setPartInCount(dto.getPartInList().size());
             dtos.add(dto);
-            dtos.add(dto);
         }
         pageModel.setPage(page);
         pageModel.setPageSize(pageSize);

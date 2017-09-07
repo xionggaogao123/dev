@@ -1269,8 +1269,8 @@ public class CommunityService {
             if(null!= communityEntryMap.get(new ObjectId(entry.getCommunityId()))) {
                 setRoleStr(dto, communityEntryMap.get(new ObjectId(entry.getCommunityId())), entry.getCommunityUserId());
             }
-            int totalCount = partInContentDao.countPartPartInContent(entry.getID());
-            dto.setPartIncotentCount(totalCount);
+            int countPartPartInContent = partInContentDao.countPartPartInContent(entry.getID());
+            dto.setPartIncotentCount(countPartPartInContent);
 
             //先获取群昵称
             MemberEntry entry1 = memberMap.get(groupId + "$" + entry.getCommunityUserId());

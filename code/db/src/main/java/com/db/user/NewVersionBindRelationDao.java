@@ -21,9 +21,8 @@ public class NewVersionBindRelationDao extends BaseDao{
         return entry.getID();
     }
 
-    public NewVersionBindRelationEntry getBindEntry(ObjectId mainUserId,ObjectId userId){
+    public NewVersionBindRelationEntry getBindEntry(ObjectId userId){
         BasicDBObject query = new BasicDBObject()
-                .append("muid",mainUserId)
                 .append("uid",userId);
         DBObject dbObject=findOne(MongoFacroty.getAppDB(), Constant.COLLECTION_NEW_VERSION_BIND_RELATION,query,Constant.FIELDS);
         if(null!=dbObject){

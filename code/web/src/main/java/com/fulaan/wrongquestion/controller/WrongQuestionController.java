@@ -62,7 +62,7 @@ public class WrongQuestionController extends BaseController {
      * @PARAM DTO
      * @RETURN
      */
-    @RequestMapping("/addNewVersionGradeEntry")
+    @RequestMapping("/addSubjectEntry")
     @ResponseBody
     public String addSubjectEntry(SubjectClassDTO dto){
         //

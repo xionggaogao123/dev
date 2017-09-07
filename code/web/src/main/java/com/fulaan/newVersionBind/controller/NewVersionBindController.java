@@ -33,6 +33,7 @@ public class NewVersionBindController extends BaseController {
     @ResponseBody
     public RespObj saveNewVersionEntry(
             @ObjectIdType ObjectId userId,
+            String nickName,
                                        int sex,String birthDate,
                                        @ObjectIdType ObjectId regionId,
                                        @ObjectIdType ObjectId regionAreaId,
@@ -43,7 +44,7 @@ public class NewVersionBindController extends BaseController {
         RespObj respObj = new RespObj(Constant.FAILD_CODE);
         try{
             newVersionBindService.saveNewVersionBindRelationEntry(getUserId(),userId, sex, birthDate, regionId, regionAreaId, relation, schoolName,avatar,
-                    gradeType);
+                    gradeType,nickName);
             respObj.setCode(Constant.SUCCESS_CODE);
             respObj.setMessage("保存信息成功!");
         }catch (Exception e){

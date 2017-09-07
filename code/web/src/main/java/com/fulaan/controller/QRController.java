@@ -177,7 +177,7 @@ public class QRController extends BaseController {
         //判断该用户是否是未激活的学生且已经登录的用户是家长
 
 
-        NewVersionBindRelationEntry entry = newVersionBindRelationDao.getBindEntry(getUserId(),id);
+        NewVersionBindRelationEntry entry = newVersionBindRelationDao.getBindEntry(id);
         /**
          * 0:已绑定
          * 1:扫描的是学生

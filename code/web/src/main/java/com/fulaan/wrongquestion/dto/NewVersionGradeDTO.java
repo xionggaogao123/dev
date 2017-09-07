@@ -16,6 +16,13 @@ public class NewVersionGradeDTO {
     public NewVersionGradeDTO(){
 
     }
+
+    public NewVersionGradeDTO(String userId,String year,int gradeType){
+        this.userId=userId;
+        this.year=year;
+        this.gradeType=gradeType;
+    }
+
     public NewVersionGradeDTO(NewVersionGradeEntry e){
         if(e!=null){
             this.id = e.getID()==null?"":e.getID().toString();

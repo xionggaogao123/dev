@@ -45,8 +45,9 @@ public class NewVersionBindService {
             ObjectId mainUserId,
             ObjectId userId,
             int sex,String birthDate,
-            ObjectId regionId,
-            ObjectId regionAreaId,
+            String provinceName,
+            String regionName,
+            String regionAreaName,
             String relation,
             String schoolName,
             String avatar,
@@ -63,8 +64,9 @@ public class NewVersionBindService {
                         =new NewVersionBindRelationEntry(mainUserId,
                         userId,
                         relation,
-                        regionId,
-                        regionAreaId,
+                        provinceName,
+                        regionName,
+                        regionAreaName,
                         schoolName);
                 newVersionBindRelationDao.saveNewVersionBindEntry(relationEntry);
                 NewVersionUserRoleEntry userRoleEntry=newVersionUserRoleDao.getEntry(userId);

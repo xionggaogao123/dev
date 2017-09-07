@@ -26,19 +26,45 @@ public class NewVersionBindRelationEntry extends BaseDBObject {
     public NewVersionBindRelationEntry(ObjectId mainUserId,
                                        ObjectId userId,
                                        String relation,
-                                       ObjectId regionId,
-                                       ObjectId regionAreaId,
+                                       String provinceName,
+                                       String regionName,
+                                       String regionAreaName,
                                        String schoolName
                                        ){
         BasicDBObject basicDBObject=new BasicDBObject()
                 .append("muid",mainUserId)
                 .append("uid",userId)
                 .append("rl", relation)
-                .append("rd",regionId)
-                .append("ra",regionAreaId)
+                .append("pn",provinceName)
+                .append("rd",regionName)
+                .append("ra",regionAreaName)
                 .append("sn",schoolName)
                 .append("ir",Constant.ZERO);
         setBaseEntry(basicDBObject);
+    }
+
+    public void setRegionAreaName(String regionAreaName){
+        setSimpleValue("ra",regionAreaName);
+    }
+
+    public String getRegionAreaName(){
+        return getSimpleStringValue("ra");
+    }
+
+    public void setRegionName(String regionName){
+        setSimpleValue("rd",regionName);
+    }
+
+    public String getRegionName(){
+        return getSimpleStringValue("rd");
+    }
+
+    public void setProvinceName(String provinceName){
+        setSimpleValue("pn",provinceName);
+    }
+
+    public String getProvinceName(){
+        return getSimpleStringValue("pn");
     }
 
     public void setSchoolName(String schoolName){
@@ -47,22 +73,6 @@ public class NewVersionBindRelationEntry extends BaseDBObject {
 
     public String getSchoolName(){
         return getSimpleStringValue("sn");
-    }
-
-    public ObjectId getRegionId(){
-        return getSimpleObjecIDValue("rd");
-    }
-
-    public void setRegionId(ObjectId regionId){
-        setSimpleValue("rd",regionId);
-    }
-
-    public ObjectId getRegionAreaId(){
-        return getSimpleObjecIDValue("ra");
-    }
-
-    public void setRegionAreaId(ObjectId regionAreaId){
-        setSimpleValue("ra",regionAreaId);
     }
 
     public String getRelation(){

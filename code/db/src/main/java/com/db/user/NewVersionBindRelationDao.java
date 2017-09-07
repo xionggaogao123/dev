@@ -43,20 +43,6 @@ public class NewVersionBindRelationDao extends BaseDao{
         }
     }
 
-    public void saveEntry(ObjectId mainUserId,ObjectId userId,
-            ObjectId regionId,
-                          ObjectId regionAreaId,
-                          String relation,
-                          String schoolName){
-        BasicDBObject query = new BasicDBObject()
-                .append("muid",mainUserId)
-                .append("uid",userId);
-
-        BasicDBObject updateValue = new BasicDBObject(Constant.MONGO_SET,
-                new BasicDBObject("rl",relation)
-                        .append("rd",regionId).append("ra",regionAreaId).append("sn",schoolName));
-        update(MongoFacroty.getAppDB(),Constant.COLLECTION_NEW_VERSION_BIND_RELATION,query,updateValue);
-    }
     //父id
     public List<NewVersionBindRelationEntry> getEntriesByMainUserId(
             ObjectId mainUserId

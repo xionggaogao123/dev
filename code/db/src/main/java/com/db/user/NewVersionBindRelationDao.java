@@ -60,4 +60,22 @@ public class NewVersionBindRelationDao extends BaseDao{
         }
         return entries;
     }
+
+    //子id
+    public List<NewVersionBindRelationEntry> getEntriesByUserId(
+            ObjectId userId
+    ){
+        List<NewVersionBindRelationEntry> entries
+                =new ArrayList<NewVersionBindRelationEntry>();
+        BasicDBObject query = new BasicDBObject()
+                .append("uid",userId);
+        List<DBObject> dbObjectList = find(MongoFacroty.getAppDB(), Constant.COLLECTION_NEW_VERSION_BIND_RELATION,
+                query,Constant.FIELDS);
+        if(null!=dbObjectList&&!dbObjectList.isEmpty()){
+            for(DBObject dbObject:dbObjectList){
+                entries.add(new NewVersionBindRelationEntry(dbObject));
+            }
+        }
+        return entries;
+    }
 }

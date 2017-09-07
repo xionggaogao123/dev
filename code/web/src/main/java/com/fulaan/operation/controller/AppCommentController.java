@@ -175,7 +175,7 @@ public class AppCommentController extends BaseController {
     }
 
     /**
-     * 查找当前点击的事件老师发放作业情况名单
+     * 查找当前点击的事件老师/家长发放作业情况名单
      * @return
      */
     @RequestMapping("/selectDateList")
@@ -195,7 +195,27 @@ public class AppCommentController extends BaseController {
         }
         return JSON.toJSONString(respObj);
     }
+    /**
+     * 查找当前点击的事件学生收到作业情况名单
+     * @return
+     */
+    @RequestMapping("/getStuLit")
+    @ResponseBody
+    public String getStuLit(@RequestParam("date") String date){
 
+        RespObj respObj=null;
+        try {
+            respObj = RespObj.SUCCESS;
+            long dateTime = DateTimeUtils.getStrToLongTime(date, "yyyy-MM-dd");
+            List<AppCommentDTO> dtos = appCommentService.getStuLit(dateTime, getUserId());
+            respObj.setMessage(dtos);
+        } catch (Exception e) {
+            e.printStackTrace();
+            respObj = RespObj.FAILD;
+            respObj.setMessage("添加关键字失败!");
+        }
+        return JSON.toJSONString(respObj);
+    }
     /**
      * 根据作业id查找当前评论列表
      * @return

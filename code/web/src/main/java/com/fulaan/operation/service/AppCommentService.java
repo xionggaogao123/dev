@@ -347,12 +347,52 @@ public class AppCommentService {
      * 学生端查询接受到的作业
      *
      */
-    public List<AppCommentDTO> getStuLit(ObjectId studentId){
+    public List<AppCommentDTO> getStuLit(long dateTime,ObjectId studentId){
+        List<AppCommentDTO> dtos = new ArrayList<AppCommentDTO>();
+        List<NewVersionBindRelationEntry> nlist = newVersionBindRelationDao.getEntriesByUserId(studentId);
+        List<String> olist = new ArrayList<String>();
+        List<ObjectId> blist = new ArrayList<ObjectId>();
+        List<String> uids = new ArrayList<String>();
+        //获取家长端的所有社区
+        List<CommunityDTO> communityDTOList = new ArrayList<CommunityDTO>();
+        if(nlist.size()>0){
+            for(NewVersionBindRelationEntry entry : nlist){
+                blist.add(entry.getMainUserId());
+                olist.add(entry.getMainUserId().toString());
+                communityDTOList.addAll(communityService.getCommunitys(entry.getMainUserId(), 1, 100));
+            }
+        }
+        //根据家长端的所有社区查找作业记录
+        List<String> stuList = new ArrayList<String>();
+        List<ObjectId> obList = new ArrayList<ObjectId>();
+        if(communityDTOList != null){
+            for(CommunityDTO dto2 : communityDTOList){
+                stuList.add(dto2.getId());
+                obList.add(new ObjectId(dto2.getId()));
+            }
+        }
+        List<AppCommentEntry> entries2 = appCommentDao.selectDateList2(obList, dateTime);
+        UserDetailInfoDTO studtos = userService.getUserInfoById(studentId.toString());
+        if(entries2.size()>0){
+            for(AppCommentEntry en : entries2){
+                AppCommentDTO dto3 = new AppCommentDTO(en);
+                if(dto3.getAdminId() != null && olist.contains(dto3.getAdminId())){
 
-
-
-
-        return null;
+                }else{
+                    int num = appOperationDao.getEntryCount(en.getID());
+                    String ctm = dto3.getCreateTime().substring(11,16);
+                    dto3.setCreateTime(ctm);
+                    dto3.setNumber(num);
+                    dto3.setType(2);
+                    if(studtos != null){
+                        dto3.setSendUser(studtos.getUserName());
+                    }
+                    uids.add(dto3.getAdminId());
+                    dtos.add(dto3);
+                }
+            }
+        }
+        return dtos;
     }
 
 

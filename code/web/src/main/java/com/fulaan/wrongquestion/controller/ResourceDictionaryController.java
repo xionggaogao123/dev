@@ -9,6 +9,7 @@ import com.sys.constants.Constant;
 import com.sys.utils.RespObj;
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -16,7 +17,7 @@ import java.util.List;
 /**
  * Created by guojing on 2017/3/13.
  */
-@RestController
+@Controller
 @RequestMapping("/resDict")
 public class ResourceDictionaryController extends BaseController {
 

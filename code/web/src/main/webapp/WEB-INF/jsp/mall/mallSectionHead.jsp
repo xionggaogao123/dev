@@ -212,7 +212,8 @@
             <span class="nav-txt">发现</span>
             <span class="sp-nav">
                 <span class="sp1">找家教</span>
-                <span class="sp2" onclick="window.open('/train/trainList')">找培训</span>
+                <!--onclick="window.open('/train/trainList')"-->
+                <span class="sp2">找培训</span>
                 <span class="sp3">在线学习</span>
                 <span class="sp4">亲子活动</span>
                 <span class="sp5" onclick="window.open('/mate/friend')">找玩伴</span>
@@ -259,7 +260,8 @@
             <span class="nav-txt">发现</span>
             <span class="sp-nav">
                 <span class="sp1">找家教</span>
-                <span class="sp2" onclick="window.open('/train/trainList')">找培训</span>
+                <!--onclick="window.open('/train/trainList')"-->
+                <span class="sp2">找培训</span>
                 <span class="sp3">在线学习</span>
                 <span class="sp4">亲子活动</span>
                 <span class="sp5" onclick="window.open('/mate/friend')">找玩伴</span>

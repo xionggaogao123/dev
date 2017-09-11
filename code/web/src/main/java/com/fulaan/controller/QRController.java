@@ -199,8 +199,8 @@ public class QRController extends BaseController {
                 if(userRoleEntry.getNewRole()==Constant.TWO){
                     map.put("isBind","0");
                 }else {
-                    if (household.getNewRole() == Constant.ZERO ||
-                            household.getNewRole() == Constant.ONE) {
+                    if (household.getNewRole() == Constant.ONE ||
+                            household.getNewRole() == Constant.TWO) {
                         map.put("isBind", "1");
                     } else {
                         map.put("isBind", "2");

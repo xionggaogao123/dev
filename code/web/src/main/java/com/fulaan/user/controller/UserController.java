@@ -1,5 +1,6 @@
 package com.fulaan.user.controller;
 
+import com.db.user.NewVersionUserRoleDao;
 import com.easemob.server.EaseMobAPI;
 import com.fulaan.account.service.AccountService;
 import com.fulaan.annotation.ObjectIdType;
@@ -36,6 +37,7 @@ import com.pojo.forum.FScoreDTO;
 import com.pojo.log.LogType;
 import com.pojo.school.ClassInfoDTO;
 import com.pojo.school.SchoolEntry;
+import com.pojo.user.NewVersionUserRoleEntry;
 import com.pojo.user.UserDetailInfoDTO;
 import com.pojo.user.UserEntry;
 import com.pojo.user.UserRole;
@@ -116,6 +118,8 @@ public class UserController extends BaseController {
     private AccountService accountService;
     @Autowired
     private CommunityService communityService;
+
+    private NewVersionUserRoleDao newVersionUserRoleDao= new NewVersionUserRoleDao();
 
     private Auth qqAuth = AuthFactory.getAuth(AuthType.QQ);
     private Auth wechatAuth = AuthFactory.getAuth(AuthType.WECHAT);
@@ -200,6 +204,41 @@ public class UserController extends BaseController {
         out.flush();
         out.close();
     }
+
+    /**
+     * 学生登录
+     * @param userId
+     * @param response
+     * @param request
+     * @return
+     */
+    @RequestMapping("/newVersionStudentLogin")
+    @SessionNeedless
+    @ResponseBody
+    public RespObj studentLogin(@ObjectIdType ObjectId userId, HttpServletResponse response, HttpServletRequest request){
+        RespObj respObj=new RespObj(Constant.FAILD_CODE);
+        NewVersionUserRoleEntry userRoleEntry=newVersionUserRoleDao.getEntry(userId);
+        if(userRoleEntry.getNewRole()==Constant.TWO){
+            UserEntry userEntry=userService.findById(userId);
+            Validate validate = userService.validateAccount(userEntry.getUserName(),userEntry.getPassword());
+            if (!validate.isOk()) {
+                respObj.setMessage(validate.getMessage());
+            }else {
+                UserEntry e = (UserEntry) validate.getData();
+                SessionValue value = getSessionValue(e);
+                userService.setCookieValue(e, value, getIP(), response, request);
+                syncHandleInitLogin(e, getIP(), getPlatform());
+                respObj.setCode(Constant.SUCCESS_CODE);
+                respObj.setMessage("登录成功!");
+            }
+        }else{
+            respObj.setMessage("学生账号未激活");
+        }
+        return respObj;
+    }
+
+
+
 
 
     /**

@@ -81,7 +81,7 @@ define(['jquery', 'pagination', 'common'], function (require, exports, module) {
         })
 
         $('body').on('click','#train',function(){
-            window.open('/train/trainList');
+            // window.open('/train/trainList');
         })
 
 

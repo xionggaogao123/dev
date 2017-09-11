@@ -175,7 +175,7 @@
                 <div class="mk-intro">结识附近志趣相投的小伙伴，<br>安全快乐的玩耍</div>
             </div>
             <div class="line-thr"></div>
-            <div class="mk-s mk-ls" id="train">
+            <div class="mk-s" id="train">
                 <div class="mk4-pho"></div>
                 <div class="mk-name">
                     <span>找培训</span>

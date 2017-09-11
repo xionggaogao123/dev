@@ -28,7 +28,7 @@ public class NewVersionBindRelationEntry extends BaseDBObject {
 
     public NewVersionBindRelationEntry(ObjectId mainUserId,
                                        ObjectId userId,
-                                       String relation,
+                                       int relation,
                                        String provinceName,
                                        String regionName,
                                        String regionAreaName,
@@ -78,11 +78,11 @@ public class NewVersionBindRelationEntry extends BaseDBObject {
         return getSimpleStringValue("sn");
     }
 
-    public String getRelation(){
-        return getSimpleStringValue("rl");
+    public int getRelation(){
+        return getSimpleIntegerValue("rl");
     }
 
-    public void setRelation(String relation){
+    public void setRelation(int relation){
         setSimpleValue("rl",relation);
     }
 

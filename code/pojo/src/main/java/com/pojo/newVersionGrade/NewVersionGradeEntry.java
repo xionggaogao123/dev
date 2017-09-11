@@ -1,6 +1,8 @@
 package com.pojo.newVersionGrade;
 
 import com.mongodb.BasicDBObject;
+import com.mongodb.DB;
+import com.mongodb.DBObject;
 import com.pojo.base.BaseDBObject;
 import com.sys.constants.Constant;
 import org.bson.types.ObjectId;
@@ -12,6 +14,10 @@ public class NewVersionGradeEntry extends BaseDBObject{
 
     public NewVersionGradeEntry(BasicDBObject baseEntry){
         super(baseEntry);
+    }
+
+    public NewVersionGradeEntry(DBObject dbObject){
+        setBaseEntry((BasicDBObject) dbObject);
     }
 
     public NewVersionGradeEntry(ObjectId userId,

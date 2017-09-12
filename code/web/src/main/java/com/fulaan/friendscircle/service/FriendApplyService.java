@@ -6,7 +6,6 @@ import com.db.activity.FriendDao;
 import com.db.user.UserDao;
 import com.pojo.activity.FriendApply;
 import com.pojo.activity.FriendApplyEntry;
-import com.pojo.user.AvatarType;
 import com.pojo.user.UserEntry;
 import com.sys.constants.Constant;
 import com.sys.utils.AvatarUtils;
@@ -141,7 +140,7 @@ public class FriendApplyService {
             if (friendApplyEntry.getUserId() != null && friendApplyEntry.getRespondent() != null) {
                 FriendApply friendApply = new FriendApply(friendApplyEntry);
                 UserEntry userEntry = userDao.getUserEntry(friendApplyEntry.getUserId(), Constant.FIELDS);
-                friendApply.setAvatar(AvatarUtils.getAvatar(userEntry.getAvatar(), AvatarType.MIN_AVATAR.getType()));
+                friendApply.setAvatar(AvatarUtils.getAvatar(userEntry.getAvatar(), userEntry.getRole(),userEntry.getSex()));
                 long time = friendApplyEntry.getApplyDate();
                 long nowTime = System.currentTimeMillis();
                 long day = (nowTime - time) / (1000 * 60 * 60 * 24);

@@ -17,6 +17,7 @@ import com.fulaan.fgroup.service.GroupService;
 import com.fulaan.forum.service.FVoteService;
 import com.fulaan.friendscircle.service.FriendApplyService;
 import com.fulaan.friendscircle.service.FriendService;
+import com.fulaan.operation.service.AppCommentService;
 import com.fulaan.playmate.service.MateService;
 import com.fulaan.pojo.CommunityMessage;
 import com.fulaan.pojo.PageModel;
@@ -99,6 +100,8 @@ public class CommunityController extends BaseController {
     private ValidateInfoService validateInfoService;
     @Autowired
     private FVoteService fVoteService;
+    @Autowired
+    private AppCommentService appCommentService;
 
     @Autowired
     private FeedbackService feedbackService;
@@ -346,6 +349,55 @@ public class CommunityController extends BaseController {
                 return RespObj.SUCCESS(map);
             } else {
                 return RespObj.SUCCESS(communityDTOList);
+            }
+        }
+    }
+    /**
+     * 获得我具有管理员权限的社区
+     *
+     * @return
+     */
+    @RequestMapping("/myRoleCommunitys")
+    @ResponseBody
+    @SessionNeedless
+    public RespObj myRoleCommunitys(@RequestParam(defaultValue = "1", required = false) int page,
+                                   @RequestParam(defaultValue = "100", required = false) int pageSize,
+                                   @RequestParam(defaultValue = "app", required = false) String platform) {
+        ObjectId userId = getUserId();
+        List<CommunityDTO> communityDTOList = new ArrayList<CommunityDTO>();
+        CommunityDTO fulanDto = communityService.getCommunityByName("复兰社区");
+        if (null == userId && null != fulanDto) {
+            communityDTOList.add(fulanDto);
+            return RespObj.SUCCESS(communityDTOList);
+        } else {
+            if (null != fulanDto) {
+                //加入复兰社区
+                joinFulaanCommunity(getUserId(), new ObjectId(fulanDto.getId()));
+            }
+            List<ObjectId> mlist = appCommentService.getMyRoleList(userId);
+            List<String> molist = new ArrayList<String>();
+            for(ObjectId oid: mlist){
+                molist.add(oid.toString());
+            }
+            communityDTOList = communityService.getCommunitys(userId, page, pageSize);
+            List<CommunityDTO> communityDTOList2 = new ArrayList<CommunityDTO>();
+            if(communityDTOList.size()>0){
+                for(CommunityDTO dto3 : communityDTOList){
+                    if(molist.contains(dto3.getId())){
+                        communityDTOList2.add(dto3);
+                    }
+                }
+            }
+            if ("web".equals(platform)) {
+                int count = communityService.countMycommunitys(userId);
+                Map<String, Object> map = new HashMap<String, Object>();
+                map.put("list", communityDTOList2);
+                map.put("count", count);
+                map.put("pageSize", pageSize);
+                map.put("page", page);
+                return RespObj.SUCCESS(map);
+            } else {
+                return RespObj.SUCCESS(communityDTOList2);
             }
         }
     }
@@ -897,7 +949,7 @@ public class CommunityController extends BaseController {
                 UserEntry userEntry = userService.findById(userId);
                 Map<String, String> ext = new HashMap<String, String>();
                 String nickName = StringUtils.isNotBlank(userEntry.getNickName()) ? userEntry.getNickName() : userEntry.getUserName();
-                ext.put("avatar", AvatarUtils.getAvatar(userEntry.getAvatar(), AvatarType.MIN_AVATAR.getType()));
+                ext.put("avatar", AvatarUtils.getAvatar(userEntry.getAvatar(), userEntry.getRole(),userEntry.getSex()));
                 ext.put("nickName", nickName);
                 ext.put("userId", userId.toString());
                 ext.put("joinPrivate", "YES");
@@ -2324,7 +2376,8 @@ public class CommunityController extends BaseController {
     public String redirectUser(Map<String, Object> model) {
         ObjectId personId = new ObjectId(getRequest().getParameter("userId"));
         UserEntry userEntry = userService.findById(personId);
-        model.put("avatar", AvatarUtils.getAvatar(userEntry.getAvatar(), AvatarType.MIN_AVATAR.getType()));
+
+        model.put("avatar", AvatarUtils.getAvatar(userEntry.getAvatar(), userEntry.getRole(),userEntry.getSex()));
         model.put("nickName", StringUtils.isNotBlank(userEntry.getNickName()) ? userEntry.getNickName() : userEntry.getUserName());
         if (getUserId() != null) {
             ObjectId userId = getUserId();
@@ -2752,7 +2805,7 @@ public class CommunityController extends BaseController {
         } else {
             map.put("uid", userEntry.getID().toString());
         }
-        map.put("avatar", AvatarUtils.getAvatar(userEntry.getAvatar(), AvatarType.MIN_AVATAR.getType()));
+        map.put("avatar", AvatarUtils.getAvatar(userEntry.getAvatar(), userEntry.getRole(),userEntry.getSex()));
         if (StringUtils.isNotBlank(userEntry.getNickName())) {
             map.put("nickName", userEntry.getNickName());
         } else {

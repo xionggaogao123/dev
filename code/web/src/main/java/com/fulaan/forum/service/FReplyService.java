@@ -364,7 +364,7 @@ public class FReplyService {
             } else {
                 fReplyDTO.setReplyNickName(ee.getUserName());
             }
-            fReplyDTO.setImageSrc(AvatarUtils.getAvatar(ee.getAvatar(), AvatarType.MIN_AVATAR.getType()));
+            fReplyDTO.setImageSrc(AvatarUtils.getAvatar(ee.getAvatar(), ee.getRole(),ee.getSex()));
         }
 
         if (!"".equals(fReplyDTO.getReplyComment())) {

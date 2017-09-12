@@ -1,5 +1,7 @@
 package com.fulaan.operation.service;
 
+import com.db.fcommunity.GroupDao;
+import com.db.fcommunity.MemberDao;
 import com.db.operation.AppCommentDao;
 import com.db.operation.AppOperationDao;
 import com.db.operation.AppRecordDao;
@@ -31,6 +33,8 @@ public class AppCommentService {
     private AppCommentDao appCommentDao = new AppCommentDao();
     private AppOperationDao appOperationDao = new AppOperationDao();
     private AppRecordDao appRecordDao = new AppRecordDao();
+    private MemberDao memberDao = new MemberDao();
+    private GroupDao groupDao = new GroupDao();
     private NewVersionBindRelationDao newVersionBindRelationDao = new NewVersionBindRelationDao();
     @Autowired
     private CommunityService communityService;
@@ -338,6 +342,12 @@ public class AppCommentService {
             dto5.setAdminName(map.get(dto5.getAdminId()).getUserName());
             dto5.setAdminUrl(map.get(dto5.getAdminId()).getImgUrl());
         }
+        List<ObjectId> mlist = this.getMyRoleList(userId);
+        if(mlist != null && mlist.size()>0){
+            map2.put("isTeacher",1);
+        }else{
+            map2.put("isTeacher",2);
+        }
         map2.put("list",dtos);
         Map<String,Object> map3 = this.isSign(userId, dateTime);
         map2.put("isload",map3);
@@ -482,5 +492,16 @@ public class AppCommentService {
         appRecordDao.updateEntry(id);
         appRecordDao.updateEntry2(id,current);
         return "签到成功";
+    }
+
+    /**
+     * 获得用户的所有具有管理员权限的社区id
+     *
+     */
+    public List<ObjectId> getMyRoleList(ObjectId userId){
+        List<ObjectId> olsit = memberDao.getGroupIdsList(userId);
+        List<ObjectId> clist = new ArrayList<ObjectId>();
+        List<ObjectId> mlist =   groupDao.getGroupIdsList(olsit);
+        return mlist;
     }
 }

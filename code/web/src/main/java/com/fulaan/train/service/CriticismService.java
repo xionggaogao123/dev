@@ -4,7 +4,6 @@ import com.db.train.CriticismDao;
 import com.fulaan.train.dto.CriticismDTO;
 import com.fulaan.user.service.UserService;
 import com.pojo.train.CriticismEntry;
-import com.pojo.user.AvatarType;
 import com.pojo.user.UserEntry;
 import com.sys.constants.Constant;
 import com.sys.utils.AvatarUtils;
@@ -52,8 +51,7 @@ public class CriticismService {
         for(CriticismEntry entry:entries){
             CriticismDTO criticismDTO=new CriticismDTO(entry);
             UserEntry userEntry=userEntryMap.get(entry.getUserId());
-            criticismDTO.setAvatar(AvatarUtils.getAvatar(userEntry.getAvatar(),
-                    AvatarType.MIN_AVATAR.getType()));
+            criticismDTO.setAvatar(AvatarUtils.getAvatar(userEntry.getAvatar(), userEntry.getRole(),userEntry.getSex()));
             criticismDTO.setNickName(StringUtils.isNotBlank(userEntry.getNickName())?userEntry.getNickName():userEntry.getUserName());
             int tip=1;
             int score=criticismDTO.getScore();

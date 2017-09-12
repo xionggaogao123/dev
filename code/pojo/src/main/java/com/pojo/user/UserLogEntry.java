@@ -2,7 +2,6 @@ package com.pojo.user;
 
 import com.mongodb.BasicDBObject;
 import com.pojo.base.BaseDBObject;
-import com.pojo.utils.MongoUtils;
 import org.bson.types.ObjectId;
 
 /**

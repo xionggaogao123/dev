@@ -417,4 +417,21 @@ public class MemberDao extends BaseDao {
         BasicDBObject update = new BasicDBObject(Constant.MONGO_SET, new BasicDBObject("av", avatar));
         update(MongoFacroty.getAppDB(), Constant.COLLECTION_FORUM_COMMUNITY_MEMBER, query, update);
     }
+    /**
+     * 根据用户id，查询管理员权限的gruopId列表
+     *
+     */
+    public List<ObjectId> getGroupIdsList(ObjectId userId) {
+        BasicDBObject query = new BasicDBObject().append("uid", userId).append("r", 0);
+        BasicDBObject orderBy = new BasicDBObject().append("rl", -1).append(Constant.ID, -1);
+        List<ObjectId> memberEntries = new ArrayList<ObjectId>();
+        List<DBObject> dbObjects = find(MongoFacroty.getAppDB(), Constant.COLLECTION_FORUM_COMMUNITY_MEMBER, query, Constant.FIELDS, orderBy);
+        for (DBObject dbo : dbObjects) {
+            MemberEntry memberEntry = new MemberEntry(dbo);
+            if(memberEntry.getRole()==1 || memberEntry.getRole()==2 ){
+                memberEntries.add(memberEntry.getGroupId());
+            }
+        }
+        return memberEntries;
+    }
 }

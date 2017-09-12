@@ -9,7 +9,6 @@ import com.pojo.ebusiness.SortType;
 import com.pojo.forum.FPostDTO;
 import com.pojo.forum.FPostEntry;
 import com.pojo.forum.ReportedDTO;
-import com.pojo.user.AvatarType;
 import com.pojo.user.UserEntry;
 import com.sys.constants.Constant;
 import com.sys.utils.AvatarUtils;
@@ -214,7 +213,7 @@ public class FPostService {
                 if (fPostDTO.getPersonId() != null && !"".equals(fPostDTO.getPersonId())) {
                     UserEntry dto = userDao.getUserEntry(new ObjectId(fPostDTO.getPersonId()), Constant.FIELDS);
                     if (dto != null) {
-                        fPostDTO.setImage(AvatarUtils.getAvatar(dto.getAvatar(), AvatarType.MIN_AVATAR.getType()));
+                        fPostDTO.setImage(AvatarUtils.getAvatar(dto.getAvatar(), dto.getRole(),dto.getSex()));
                         if (dto.getNickName() != null && !"".equals(dto.getNickName())) {
                             fPostDTO.setPersonName(dto.getNickName());
                         }

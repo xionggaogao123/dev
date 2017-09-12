@@ -4,14 +4,14 @@ import com.fulaan.annotation.LoginInfo;
 import com.fulaan.annotation.ObjectIdType;
 import com.fulaan.annotation.SessionNeedless;
 import com.fulaan.annotation.UserRoles;
-import com.fulaan.cache.CacheHandler;
 import com.fulaan.base.BaseController;
-import com.fulaan.service.ConcernService;
-import com.fulaan.user.service.UserService;
+import com.fulaan.cache.CacheHandler;
 import com.fulaan.forum.service.*;
 import com.fulaan.friendscircle.service.FriendService;
 import com.fulaan.screenshot.Encoder;
 import com.fulaan.screenshot.EncoderException;
+import com.fulaan.service.ConcernService;
+import com.fulaan.user.service.UserService;
 import com.fulaan.utils.QiniuFileUtils;
 import com.fulaan.video.service.VideoService;
 import com.pojo.app.FileUploadDTO;
@@ -19,7 +19,6 @@ import com.pojo.app.Platform;
 import com.pojo.app.SessionValue;
 import com.pojo.fcommunity.ConcernEntry;
 import com.pojo.forum.*;
-import com.pojo.user.AvatarType;
 import com.pojo.user.UserEntry;
 import com.pojo.user.UserInfoDTO;
 import com.pojo.user.UserRole;
@@ -487,7 +486,7 @@ public class FPostController extends BaseController {
         } else {
             model.put("personName", userEntry.getUserName());
         }
-        model.put("imageSrc", AvatarUtils.getAvatar(userEntry.getAvatar(), AvatarType.MIN_AVATAR.getType()));
+        model.put("imageSrc", AvatarUtils.getAvatar(userEntry.getAvatar(), userEntry.getRole(),userEntry.getSex()));
 
         model.put("uid", userEntry.getID());
         SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd");
@@ -1060,7 +1059,7 @@ public class FPostController extends BaseController {
                     } else {
                         model.put("solNickName", userEntry.getUserName());
                     }
-                    model.put("personImage", AvatarUtils.getAvatar(userEntry.getAvatar(), AvatarType.MIN_AVATAR.getType()));
+                    model.put("personImage", AvatarUtils.getAvatar(userEntry.getAvatar(), userEntry.getRole(),userEntry.getSex()));
                 } else {
                     model.put("solNickName", "改用户已被删除！");
                     model.put("personImage", "");
@@ -1250,7 +1249,7 @@ public class FPostController extends BaseController {
             } else {
                 model.put("personName", dto.getUserName());
             }
-            model.put("avt", AvatarUtils.getAvatar(dto.getAvatar(), AvatarType.MAX_AVATAR.getType()));
+            model.put("avt", AvatarUtils.getAvatar(dto.getAvatar(), dto.getRole(),dto.getSex()));
             if (dto.getK6KT() == 1) {
                 model.put("userRole", "管理员");
             } else {
@@ -1305,7 +1304,7 @@ public class FPostController extends BaseController {
             } else {
                 model.put("personName", dto.getUserName());
             }
-            model.put("avt", AvatarUtils.getAvatar(dto.getAvatar(), AvatarType.MAX_AVATAR.getType()));
+            model.put("avt", AvatarUtils.getAvatar(dto.getAvatar(), dto.getRole(),dto.getSex()));
             if (dto.getK6KT() == 1) {
                 model.put("userRole", "管理员");
             } else {

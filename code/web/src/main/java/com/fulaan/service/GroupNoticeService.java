@@ -8,7 +8,6 @@ import com.fulaan.pojo.PageModel;
 import com.fulaan.user.service.UserService;
 import com.fulaan.util.DateUtils;
 import com.pojo.fcommunity.GroupAnnounceEntry;
-import com.pojo.user.AvatarType;
 import com.pojo.user.UserEntry;
 import com.sys.utils.AvatarUtils;
 import org.apache.commons.lang3.StringUtils;
@@ -61,7 +60,7 @@ public class GroupNoticeService {
             communityDetailDTO.setTitle(entry.getTitle());
             communityDetailDTO.setContent(entry.getAnnounce());
             UserEntry userEntry = userService.findById(entry.getUserId());
-            communityDetailDTO.setImageUrl(AvatarUtils.getAvatar(userEntry.getAvatar(), AvatarType.MIN_AVATAR.getType()));
+            communityDetailDTO.setImageUrl(AvatarUtils.getAvatar(userEntry.getAvatar(), userEntry.getRole(),userEntry.getSex()));
             if (StringUtils.isNotBlank(userEntry.getNickName())) {
                 communityDetailDTO.setNickName(userEntry.getNickName());
             } else {

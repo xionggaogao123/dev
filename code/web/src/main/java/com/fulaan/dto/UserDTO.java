@@ -1,6 +1,5 @@
 package com.fulaan.dto;
 
-import com.pojo.user.AvatarType;
 import com.pojo.user.UserEntry;
 import com.sys.utils.AvatarUtils;
 import org.bson.types.ObjectId;
@@ -32,7 +31,7 @@ public class UserDTO {
         this.userName = entry.getUserName();
         this.nickName = entry.getNickName();
         this.sex = entry.getSex();
-        this.avator = AvatarUtils.getAvatar(entry.getAvatar(), AvatarType.MIN_AVATAR.getType());
+        this.avator = AvatarUtils.getAvatar(entry.getAvatar(), entry.getRole(),entry.getSex());
         this.birthday = entry.getBirthDate();
         this.phone = entry.getMobileNumber();
         this.email = entry.getEmail();

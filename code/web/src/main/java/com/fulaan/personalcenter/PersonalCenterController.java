@@ -2,14 +2,13 @@ package com.fulaan.personalcenter;
 
 import com.fulaan.base.BaseController;
 import com.fulaan.cache.CacheHandler;
-import com.fulaan.service.MemberService;
 import com.fulaan.experience.service.ExperienceService;
 import com.fulaan.forum.service.FScoreService;
+import com.fulaan.service.MemberService;
 import com.fulaan.user.service.UserService;
 import com.fulaan.utils.QiniuFileUtils;
 import com.pojo.app.SessionValue;
 import com.pojo.forum.FScoreDTO;
-import com.pojo.user.AvatarType;
 import com.pojo.user.ExpLogType;
 import com.pojo.user.UserEntry;
 import com.sys.constants.Constant;
@@ -75,7 +74,7 @@ public class PersonalCenterController extends BaseController {
     @RequestMapping("/settingpage")
     public String settingPage(Map<String, Object> model) {
         UserEntry e = userService.findById(getUserId());
-        String avatar = AvatarUtils.getAvatar(e.getAvatar(), AvatarType.MAX_AVATAR.getType());
+        String avatar = AvatarUtils.getAvatar(e.getAvatar(), e.getRole(),e.getSex());
         model.put("avatar", avatar);
         return "personalcenter/myAccountInfo";
     }

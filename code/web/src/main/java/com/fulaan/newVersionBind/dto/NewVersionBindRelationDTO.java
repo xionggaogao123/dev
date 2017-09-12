@@ -21,6 +21,7 @@ public class NewVersionBindRelationDTO {
     private String avatar;
     private int gradeType;
     private String nickName;
+    private String mobileNumber;
 
     public NewVersionBindRelationDTO(NewVersionBindRelationEntry  entry){
         this.bindId=entry.getID().toString();
@@ -64,6 +65,14 @@ public class NewVersionBindRelationDTO {
 
     public NewVersionBindRelationDTO(){
 
+    }
+
+    public String getMobileNumber() {
+        return mobileNumber;
+    }
+
+    public void setMobileNumber(String mobileNumber) {
+        this.mobileNumber = mobileNumber;
     }
 
     public String getBindId() {

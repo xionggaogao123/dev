@@ -220,7 +220,7 @@ public class UserController extends BaseController {
         NewVersionUserRoleEntry userRoleEntry=newVersionUserRoleDao.getEntry(userId);
         if(userRoleEntry.getNewRole()==Constant.TWO){
             UserEntry userEntry=userService.findById(userId);
-            Validate validate = userService.validateAccount(userEntry.getUserName(),userEntry.getPassword());
+            Validate validate = userService.validateAccount(userEntry.getUserName(),userEntry.getPassword(),2,getPlatform());
             if (!validate.isOk()) {
                 respObj.setMessage(validate.getMessage());
             }else {
@@ -251,10 +251,12 @@ public class UserController extends BaseController {
     @SessionNeedless
     @RequestMapping("/login")
     @ResponseBody
-    public RespObj login(String name, String pwd, HttpServletResponse response, HttpServletRequest request) {
+    public RespObj login(String name, String pwd,
+                         @RequestParam(value="type",defaultValue = "1") int type,
+                         HttpServletResponse response, HttpServletRequest request) {
         //判断用户登录平台，只对PC登录用户进行密码输入错误3次，需要验证码
         logger.info("try login;the name=" + name + ";pwd=" + pwd);
-        Validate validate = userService.validateAccount(name, pwd);
+        Validate validate = userService.validateAccount(name, pwd,type,getPlatform());
         if (!validate.isOk()) {
             return RespObj.FAILD(validate.getMessage());
         }
@@ -263,6 +265,18 @@ public class UserController extends BaseController {
         userService.setCookieValue(e, value, getIP(), response, request);
         syncHandleInitLogin(e, getIP(), getPlatform());
         return RespObj.SUCCESS(value);
+    }
+
+    protected Platform getPlatform() {
+        HttpServletRequest request = getRequest();
+        String client = request.getHeader("User-Agent");
+        Platform pf = Platform.PC;
+        if (client.toLowerCase().contains("iphone") || client.toLowerCase().contains("ios")) {
+            pf = Platform.IOS;
+        } else if (client.toLowerCase().contains("android")) {
+            pf = Platform.Android;
+        }
+        return pf;
     }
 
     private SessionValue getSessionValue(UserEntry e) {

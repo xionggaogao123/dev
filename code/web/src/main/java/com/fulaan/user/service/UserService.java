@@ -115,7 +115,7 @@ public class UserService extends BaseService {
      * @param pwd
      * @return
      */
-    public Validate validateAccount(String account, String pwd) {
+    public Validate validateAccount(String account, String pwd,int type,Platform pf) {
         Validate validate = new Validate();
         validate.setOk(false);
         //数据库验证
@@ -162,10 +162,23 @@ public class UserService extends BaseService {
                 }
             }
         }
-        if(null!=newVersionUserRoleDao.getEntry(e.getID())
-                &&newVersionUserRoleDao.getEntry(e.getID()).getNewRole()==Constant.ONE){
-            validate.setMessage("该学生还未激活");
-            return validate;
+        if(type==1) {
+            if (null != newVersionUserRoleDao.getEntry(e.getID())
+                    && (newVersionUserRoleDao.getEntry(e.getID()).getNewRole() == Constant.ONE||
+                    newVersionUserRoleDao.getEntry(e.getID()).getNewRole() == Constant.TWO)) {
+                if(pf.isMobile()) {
+                    validate.setMessage("该学生不能登录这个app!");
+                }else{
+                    validate.setMessage("你没有权限登录网页端");
+                }
+                return validate;
+            }
+        }else if(type==2){
+            if (null != newVersionUserRoleDao.getEntry(e.getID())
+                    && newVersionUserRoleDao.getEntry(e.getID()).getNewRole() == Constant.ONE) {
+                validate.setMessage("该学生还未激活");
+                return validate;
+            }
         }
         validate.setOk(true);
         validate.setData(e);

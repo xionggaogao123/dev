@@ -88,9 +88,10 @@ public class NewVersionBindService {
             NewVersionBindRelationDTO dto=new NewVersionBindRelationDTO(entry);
             UserEntry userEntry=userEntryMap.get(entry.getUserId());
             if(null!=userEntry){
+                dto.setMobileNumber(userEntry.getMobileNumber());
                 dto.setSex(userEntry.getSex());
                 dto.setNickName(userEntry.getNickName());
-                dto.setAvatar(AvatarUtils.getAvatar(userEntry.getAvatar(), AvatarType.MIN_AVATAR.getType()));
+                dto.setAvatar(userEntry.getAvatar());
                 SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd");
                 String birthDate=format.format(userEntry.getBirthDate());
                 dto.setBirthDate(birthDate);

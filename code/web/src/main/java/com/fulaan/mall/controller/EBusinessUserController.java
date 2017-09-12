@@ -282,7 +282,7 @@ public class EBusinessUserController extends BaseController {
                     if (validateCode.equals(MD5Utils.getMD5String(userEntry.getEmailValidateCode()))) {
                         try {
                             userService.updateUserEmailStatusById(userEntry.getID());
-                            userController.login(userEntry.getUserName(), userEntry.getPassword(), response, request);
+                            userController.login(userEntry.getUserName(), userEntry.getPassword(),1, response, request);
                             model.put("message", "激活成功！");
                         } catch (Exception e) {
                             e.printStackTrace();
@@ -296,7 +296,7 @@ public class EBusinessUserController extends BaseController {
             } else {
                 try {
                     model.put("message", "邮箱已激活，请登录！");
-                    userController.login(userEntry.getUserName(), userEntry.getPassword(), response, request);
+                    userController.login(userEntry.getUserName(), userEntry.getPassword(),1, response, request);
                 } catch (Exception e) {
                     e.printStackTrace();
                 }
@@ -656,7 +656,7 @@ public class EBusinessUserController extends BaseController {
                     return respObj;
                 }
             }
-            respObj = userController.login(userEntry.getUserName(), password, response, request);
+            respObj = userController.login(userEntry.getUserName(), password,1, response, request);
         }
 
         return respObj;

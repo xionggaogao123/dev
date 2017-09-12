@@ -70,6 +70,7 @@ public class AppCommentService {
             }
         }
         for( CommunityDTO dto3 : sendList){
+            en.setID(null);
             en.setRecipientId(new ObjectId(dto3.getId()));
             en.setRecipientName(dto3.getName());
             appCommentDao.addEntry(en);

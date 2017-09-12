@@ -897,7 +897,7 @@ public class CommunityController extends BaseController {
                 UserEntry userEntry = userService.findById(userId);
                 Map<String, String> ext = new HashMap<String, String>();
                 String nickName = StringUtils.isNotBlank(userEntry.getNickName()) ? userEntry.getNickName() : userEntry.getUserName();
-                ext.put("avatar", AvatarUtils.getAvatar(userEntry.getAvatar(), AvatarType.MIN_AVATAR.getType()));
+                ext.put("avatar", AvatarUtils.getAvatar(userEntry.getAvatar(), userEntry.getRole(),userEntry.getSex()));
                 ext.put("nickName", nickName);
                 ext.put("userId", userId.toString());
                 ext.put("joinPrivate", "YES");
@@ -2324,7 +2324,8 @@ public class CommunityController extends BaseController {
     public String redirectUser(Map<String, Object> model) {
         ObjectId personId = new ObjectId(getRequest().getParameter("userId"));
         UserEntry userEntry = userService.findById(personId);
-        model.put("avatar", AvatarUtils.getAvatar(userEntry.getAvatar(), AvatarType.MIN_AVATAR.getType()));
+
+        model.put("avatar", AvatarUtils.getAvatar(userEntry.getAvatar(), userEntry.getRole(),userEntry.getSex()));
         model.put("nickName", StringUtils.isNotBlank(userEntry.getNickName()) ? userEntry.getNickName() : userEntry.getUserName());
         if (getUserId() != null) {
             ObjectId userId = getUserId();
@@ -2752,7 +2753,7 @@ public class CommunityController extends BaseController {
         } else {
             map.put("uid", userEntry.getID().toString());
         }
-        map.put("avatar", AvatarUtils.getAvatar(userEntry.getAvatar(), AvatarType.MIN_AVATAR.getType()));
+        map.put("avatar", AvatarUtils.getAvatar(userEntry.getAvatar(), userEntry.getRole(),userEntry.getSex()));
         if (StringUtils.isNotBlank(userEntry.getNickName())) {
             map.put("nickName", userEntry.getNickName());
         } else {

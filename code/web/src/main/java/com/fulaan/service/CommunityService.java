@@ -7,7 +7,7 @@ import com.fulaan.community.dto.CommunityDTO;
 import com.fulaan.community.dto.CommunityDetailDTO;
 import com.fulaan.community.dto.PartInContentDTO;
 import com.fulaan.community.dto.RemarkDTO;
-import com.fulaan.dto.*;
+import com.fulaan.dto.MemberDTO;
 import com.fulaan.dto.VideoDTO;
 import com.fulaan.fgroup.service.EmService;
 import com.fulaan.fgroup.service.GroupService;
@@ -20,18 +20,13 @@ import com.fulaan.user.service.UserService;
 import com.fulaan.util.DateUtils;
 import com.pojo.activity.FriendApplyEntry;
 import com.pojo.fcommunity.*;
-import com.pojo.fcommunity.VideoEntry;
 import com.pojo.forum.FVoteDTO;
 import com.pojo.forum.FVoteEntry;
 import com.pojo.user.AvatarType;
-import com.pojo.user.UserDetailInfoDTO;
 import com.pojo.user.UserEntry;
-import com.pojo.video.*;
 import com.sys.constants.Constant;
 import com.sys.utils.AvatarUtils;
 import com.sys.utils.DateTimeUtils;
-import com.sys.utils.RespObj;
-import com.sys.utils.StringUtil;
 import org.apache.commons.lang3.StringUtils;
 import org.bson.types.ObjectId;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -41,7 +36,6 @@ import org.springframework.stereotype.Service;
 import java.text.NumberFormat;
 import java.text.SimpleDateFormat;
 import java.util.*;
-import java.util.logging.SimpleFormatter;
 
 /**
  * Created by jerry on 2016/10/24.
@@ -184,7 +178,7 @@ public class CommunityService {
         }
         int partIncontentCount = partInContentDao.countPartPartInContent(communityDetailId);
         communityDetailDTO.setPartIncotentCount(partIncontentCount);
-        communityDetailDTO.setImageUrl(AvatarUtils.getAvatar(userEntry.getAvatar(), AvatarType.MIN_AVATAR.getType()));
+        communityDetailDTO.setImageUrl(AvatarUtils.getAvatar(userEntry.getAvatar(), userEntry.getRole(),userEntry.getSex()));
 
         if (communityDetailDTO.getType() == CommunityDetailType.VOTE.getType()) {
             int voteCount = fVoteService.getFVoteCount(communityDetailEntry.getID().toString());
@@ -269,7 +263,7 @@ public class CommunityService {
             for(Map.Entry<ObjectId,UserEntry> entryEntry:userEntryMap.entrySet()){
                 UserEntry userEntry1=entryEntry.getValue();
                 users.add(new User(userEntry1.getUserName(),userEntry1.getNickName(),userEntry1.getID().toString(),
-                        AvatarUtils.getAvatar(userEntry1.getAvatar(),AvatarType.MIN_AVATAR.getType()),
+                        AvatarUtils.getAvatar(userEntry1.getAvatar(), userEntry1.getRole(),userEntry1.getSex()),
                         userEntry1.getSex(), DateTimeUtils.convert(timeRecord.get(userEntry1.getID()),DateTimeUtils.DATE_YYYY_MM_DD)));
             }
             communityDetailDTO.setVoteUsers(users);
@@ -453,7 +447,7 @@ public class CommunityService {
     public UserSearchInfo getDto(UserEntry userEntry) {
         UserSearchInfo dto = new UserSearchInfo();
         dto.setUserId(userEntry.getID().toString());
-        dto.setAvator(AvatarUtils.getAvatar(userEntry.getAvatar(), AvatarType.MIN_AVATAR.getType()));
+        dto.setAvator(AvatarUtils.getAvatar(userEntry.getAvatar(), userEntry.getRole(),userEntry.getSex()));
         dto.setNickName(userEntry.getNickName());
         dto.setUserName(userEntry.getUserName());
         return dto;
@@ -587,7 +581,7 @@ public class CommunityService {
                     UserEntry user = userService.findById(partEntry.getUserId());
                     //判断用户是否为空
                     if (null != user) {
-                        dto.setAvator(AvatarUtils.getAvatar(user.getAvatar(), AvatarType.MIN_AVATAR.getType()));
+                        dto.setAvator(AvatarUtils.getAvatar(user.getAvatar(), user.getRole(), user.getSex()));
                         MemberEntry entry2 = partInMembermap.get(groupId + "$" + partEntry.getUserId());
                         setPartInContentDTOInfo(dto, user, entry2);
                         //设置备注名
@@ -653,7 +647,7 @@ public class CommunityService {
             communityDetailDTO.setPartIncotentCount(totalCount);
 
             if (null != userEntry) {
-                communityDetailDTO.setImageUrl(AvatarUtils.getAvatar(userEntry.getAvatar(), AvatarType.MIN_AVATAR.getType()));
+                communityDetailDTO.setImageUrl(AvatarUtils.getAvatar(userEntry.getAvatar(), userEntry.getRole(),userEntry.getSex()));
             }
 
             //先获取群昵称
@@ -781,7 +775,7 @@ public class CommunityService {
                 partners1.retainAll(partners);
                 memberDTO.setRoleStr("好友");
                 memberDTO.setUserId(partner.toString());
-                memberDTO.setAvator(AvatarUtils.getAvatar(userEntry1.getAvatar(), AvatarType.MIN_AVATAR.getType()));
+                memberDTO.setAvator(AvatarUtils.getAvatar(userEntry1.getAvatar(), userEntry1.getRole(),userEntry1.getSex()));
                 memberDTO.setNickName(StringUtils.isNotBlank(userEntry1.getNickName()) ? userEntry1.getNickName() : userEntry1.getUserName());
                 memberDTO.setPlaymateCount(partners1.size());
                 memberDTO.setPlaymate(getPlaymate(partnerInfo, partners1));
@@ -981,7 +975,7 @@ public class CommunityService {
             UserEntry userEntry = map.get(entry.getCommunityUserId());
             CommunityDetailDTO communityDetailDTO = new CommunityDetailDTO(entry);
             if (userEntry != null) {
-                communityDetailDTO.setImageUrl(AvatarUtils.getAvatar(userEntry.getAvatar(), AvatarType.MIN_AVATAR.getType()));
+                communityDetailDTO.setImageUrl(AvatarUtils.getAvatar(userEntry.getAvatar(), userEntry.getRole(),userEntry.getSex()));
             }
 
             ObjectId groupId = groupIds.get(new ObjectId(entry.getCommunityId()));
@@ -1050,7 +1044,7 @@ public class CommunityService {
                 PartInContentDTO partInContentDTO = new PartInContentDTO(partInContentEntry);
                 UserEntry userEntry1 = userService.findById(partInContentEntry.getUserId());
                 partInContentDTO.setUserName(userEntry1.getUserName());
-                partInContentDTO.setAvator(AvatarUtils.getAvatar(userEntry1.getAvatar(), AvatarType.MIN_AVATAR.getType()));
+                partInContentDTO.setAvator(AvatarUtils.getAvatar(userEntry1.getAvatar(), userEntry1.getRole(),userEntry1.getSex()));
 
                 MemberEntry entry2 = partInMembermap.get(groupId + "$" + partInContentEntry.getUserId());
                 setPartInContentDTOInfo(partInContentDTO, userEntry1, entry2);
@@ -1189,7 +1183,7 @@ public class CommunityService {
             UserEntry userEntry=userEntryMap.get(entry.getCommunityUserId());
             if(null!=userEntry){
                 dto.setNickName(userEntry.getUserName());
-                dto.setImageUrl(AvatarUtils.getAvatar(userEntry.getAvatar(), AvatarType.MIN_AVATAR.getType()));
+                dto.setImageUrl(AvatarUtils.getAvatar(userEntry.getAvatar(), userEntry.getRole(),userEntry.getSex()));
             }
             ObjectId groupId = groupIds.get(new ObjectId(entry.getCommunityId()));
             //判断是否为学习用品
@@ -1212,7 +1206,7 @@ public class CommunityService {
                     UserEntry user = userService.findById(partEntry.getUserId());
                     //判断用户是否为空
                     if (null != user) {
-                        partInContentDTO.setAvator(AvatarUtils.getAvatar(user.getAvatar(), AvatarType.MIN_AVATAR.getType()));
+                        partInContentDTO.setAvator(AvatarUtils.getAvatar(user.getAvatar(), user.getRole(),user.getSex()));
                         MemberEntry entry2 = partInMembermap.get(groupId + "$" + partEntry.getUserId());
                         setPartInContentDTOInfo(partInContentDTO, user, entry2);
                         //设置备注名
@@ -1349,7 +1343,7 @@ public class CommunityService {
         for (CommunityDetailEntry entry : entries) {
             UserEntry userEntry = map.get(entry.getCommunityUserId());
             CommunityDetailDTO communityDetailDTO = new CommunityDetailDTO(entry);
-            communityDetailDTO.setImageUrl(AvatarUtils.getAvatar(userEntry.getAvatar(), AvatarType.MIN_AVATAR.getType()));
+            communityDetailDTO.setImageUrl(AvatarUtils.getAvatar(userEntry.getAvatar(), userEntry.getRole(),userEntry.getSex()));
             //先获取群昵称
             ObjectId groupId = groupIds.get(new ObjectId(entry.getCommunityId()));
             MemberEntry entry1 = memberMap.get(groupId + "$" + entry.getCommunityUserId());
@@ -1567,7 +1561,7 @@ public class CommunityService {
             UserEntry userEntry = userService.findById(entry.getUserId());
             PartInContentDTO dto = new PartInContentDTO(entry);
             dto.setUserName(userEntry.getUserName());
-            dto.setAvator(AvatarUtils.getAvatar(userEntry.getAvatar(), AvatarType.MIN_AVATAR.getType()));
+            dto.setAvator(AvatarUtils.getAvatar(userEntry.getAvatar(), userEntry.getRole(),userEntry.getSex()));
 
             MemberEntry entry1 = memberMap.get(groupId + "$" + entry.getUserId());
             setPartInContentDTOInfo(dto, userEntry, entry1);
@@ -1842,7 +1836,7 @@ public class CommunityService {
         }
         CommunityDetailDTO communityDetailDTO = new CommunityDetailDTO(entry);
         UserEntry userEntry = userDao.findByUserId(entry.getCommunityUserId());
-        communityDetailDTO.setImageUrl(AvatarUtils.getAvatar(userEntry.getAvatar(), AvatarType.MIN_AVATAR.getType()));
+        communityDetailDTO.setImageUrl(AvatarUtils.getAvatar(userEntry.getAvatar(), userEntry.getRole(),userEntry.getSex()));
         RemarkEntry remarkEntry=remarkDao.getEntry(userId,entry.getCommunityUserId());
         if(null!=remarkEntry){
             communityDetailDTO.setNickName(remarkEntry.getRemark());

@@ -14,7 +14,6 @@ import com.pojo.activity.FriendApply;
 import com.pojo.activity.FriendApplyEntry;
 import com.pojo.fcommunity.RemarkEntry;
 import com.pojo.school.ClassEntry;
-import com.pojo.user.AvatarType;
 import com.pojo.user.UserDetailInfoDTO;
 import com.pojo.user.UserEntry;
 import com.pojo.user.UserRole;
@@ -24,7 +23,10 @@ import org.apache.commons.lang3.StringUtils;
 import org.bson.types.ObjectId;
 import org.springframework.stereotype.Service;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Map;
 import java.util.concurrent.CopyOnWriteArrayList;
 
 /**
@@ -439,7 +441,7 @@ public class FriendService {
             if (userEntry != null) {
                 User user = new User();
                 user.setId(userEntry.getID().toString());
-                user.setAvator(AvatarUtils.getAvatar(userEntry.getAvatar(), AvatarType.MIN_AVATAR.getType()));
+                user.setAvator(AvatarUtils.getAvatar(userEntry.getAvatar(), userEntry.getRole(),userEntry.getSex()));
                 user.setUserName(userEntry.getUserName());
                 RemarkEntry remarkEntry=map.get(oid);
                 if(null!=remarkEntry){

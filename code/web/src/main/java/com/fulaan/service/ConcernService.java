@@ -4,7 +4,6 @@ import com.db.fcommunity.ConcernDao;
 import com.fulaan.dto.ConcernDTO;
 import com.fulaan.user.service.UserService;
 import com.pojo.fcommunity.ConcernEntry;
-import com.pojo.user.AvatarType;
 import com.pojo.user.UserEntry;
 import com.sys.utils.AvatarUtils;
 import org.apache.commons.lang3.StringUtils;
@@ -48,7 +47,7 @@ public class ConcernService {
         for (ConcernEntry concernEntry : concernEntries) {
             ConcernDTO concernDTO = new ConcernDTO(concernEntry);
             UserEntry userEntry = userService.findById(new ObjectId(concernDTO.getConcernId()));
-            concernDTO.setAvatar(AvatarUtils.getAvatar(userEntry.getAvatar(), AvatarType.MIN_AVATAR.getType()));
+            concernDTO.setAvatar(AvatarUtils.getAvatar(userEntry.getAvatar(), userEntry.getRole(),userEntry.getSex()));
             concernDTO.setNickName(StringUtils.isNotBlank(userEntry.getNickName()) ? userEntry.getNickName() : userEntry.getUserName());
             concernDTOs.add(concernDTO);
 

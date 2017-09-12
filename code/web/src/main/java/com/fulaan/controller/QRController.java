@@ -1,22 +1,18 @@
 package com.fulaan.controller;
 
-import cn.jpush.api.push.model.audience.Audience;
 import com.db.user.NewVersionBindRelationDao;
 import com.db.user.NewVersionUserRoleDao;
 import com.fulaan.annotation.ObjectIdType;
 import com.fulaan.annotation.SessionNeedless;
 import com.fulaan.base.BaseController;
 import com.fulaan.community.dto.CommunityDTO;
-import com.fulaan.fgroup.dto.GroupDTO;
 import com.fulaan.dto.MemberDTO;
-import com.fulaan.service.CommunityService;
+import com.fulaan.fgroup.dto.GroupDTO;
 import com.fulaan.fgroup.service.GroupService;
+import com.fulaan.service.CommunityService;
 import com.fulaan.service.MemberService;
 import com.fulaan.user.service.UserService;
 import com.fulaan.util.DateUtils;
-import com.fulaan.util.ObjectIdPackageUtil;
-import com.fulaan.utils.JPushUtils;
-import com.pojo.user.AvatarType;
 import com.pojo.user.NewVersionBindRelationEntry;
 import com.pojo.user.NewVersionUserRoleEntry;
 import com.pojo.user.UserEntry;
@@ -34,9 +30,7 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
-import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 
 /**
@@ -146,7 +140,7 @@ public class QRController extends BaseController {
         Map<String, String> map = new HashMap<String, String>();
         map.put("userId", userEntry.getID().toString());
         map.put("nickName", StringUtils.isNotBlank(userEntry.getNickName()) ? userEntry.getNickName() : userEntry.getUserName());
-        map.put("avator", AvatarUtils.getAvatar(userEntry.getAvatar(), AvatarType.MIN_AVATAR.getType()));
+        map.put("avator", AvatarUtils.getAvatar(userEntry.getAvatar(), userEntry.getRole(),userEntry.getSex()));
         return RespObj.SUCCESS(map);
     }
 
@@ -172,7 +166,7 @@ public class QRController extends BaseController {
         Map<String, String> map = new HashMap<String, String>();
         map.put("userId", userEntry.getID().toString());
         map.put("nickName", StringUtils.isNotBlank(userEntry.getNickName()) ? userEntry.getNickName() : userEntry.getUserName());
-        map.put("avator", AvatarUtils.getAvatar(userEntry.getAvatar(), AvatarType.MIN_AVATAR.getType()));
+        map.put("avator", AvatarUtils.getAvatar(userEntry.getAvatar(), userEntry.getRole(),userEntry.getSex()));
         //加入逻辑（绑定逻辑）
         //判断该用户是否是未激活的学生且已经登录的用户是家长
 

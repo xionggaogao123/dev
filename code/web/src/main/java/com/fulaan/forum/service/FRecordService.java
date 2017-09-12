@@ -6,7 +6,6 @@ import com.mongodb.BasicDBObject;
 import com.pojo.ebusiness.SortType;
 import com.pojo.forum.FRecordDTO;
 import com.pojo.forum.FRecordEntry;
-import com.pojo.user.AvatarType;
 import com.pojo.user.UserEntry;
 import com.sys.constants.Constant;
 import com.sys.utils.AvatarUtils;
@@ -48,7 +47,7 @@ public class FRecordService {
                 String content = "";
                 UserEntry userEntry = userDao.getUserEntry(new ObjectId(userId), Constant.FIELDS);
                 if (null != userEntry) {
-                    fRecordDTO.setImageSrc(AvatarUtils.getAvatar(userEntry.getAvatar(), AvatarType.MIN_AVATAR.getType()));
+                    fRecordDTO.setImageSrc(AvatarUtils.getAvatar(userEntry.getAvatar(), userEntry.getRole(),userEntry.getSex()));
                     if (null != userEntry.getNickName() && !"".equals(userEntry.getNickName())) {
                         nickName = userEntry.getNickName();
                     } else {

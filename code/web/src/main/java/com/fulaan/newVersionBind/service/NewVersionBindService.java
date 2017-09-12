@@ -1,34 +1,28 @@
 package com.fulaan.newVersionBind.service;
 
-import cn.jpush.api.push.model.audience.Audience;
 import com.db.newVersionGrade.NewVersionGradeDao;
 import com.db.user.NewVersionBindRelationDao;
 import com.db.user.NewVersionUserRoleDao;
 import com.fulaan.newVersionBind.dto.NewVersionBindRelationDTO;
-import com.fulaan.pojo.Validate;
-import com.fulaan.user.controller.UserController;
 import com.fulaan.user.service.UserService;
-import com.fulaan.utils.JPushUtils;
 import com.fulaan.utils.pojo.KeyValue;
 import com.fulaan.wrongquestion.dto.NewVersionGradeDTO;
 import com.fulaan.wrongquestion.service.WrongQuestionService;
-import com.pojo.app.SessionValue;
 import com.pojo.newVersionGrade.NewVersionGradeEntry;
-import com.pojo.user.AvatarType;
 import com.pojo.user.NewVersionBindRelationEntry;
 import com.pojo.user.NewVersionUserRoleEntry;
 import com.pojo.user.UserEntry;
 import com.sys.constants.Constant;
 import com.sys.utils.AvatarUtils;
-import com.sys.utils.RespObj;
 import org.bson.types.ObjectId;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
 import java.text.SimpleDateFormat;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.List;
+import java.util.Map;
 
 /**
  * Created by scott on 2017/9/5.
@@ -90,7 +84,7 @@ public class NewVersionBindService {
             if(null!=userEntry){
                 dto.setSex(userEntry.getSex());
                 dto.setNickName(userEntry.getNickName());
-                dto.setAvatar(AvatarUtils.getAvatar(userEntry.getAvatar(), AvatarType.MIN_AVATAR.getType()));
+                dto.setAvatar(AvatarUtils.getAvatar(userEntry.getAvatar(), userEntry.getRole(),userEntry.getSex()));
                 SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd");
                 String birthDate=format.format(userEntry.getBirthDate());
                 dto.setBirthDate(birthDate);

@@ -12,7 +12,6 @@ import com.mongodb.BasicDBList;
 import com.mongodb.BasicDBObject;
 import com.pojo.playmate.FASignEntry;
 import com.pojo.playmate.FActivityEntry;
-import com.pojo.user.AvatarType;
 import com.pojo.user.UserEntry;
 import com.pojo.user.UserTag;
 import com.sys.constants.Constant;
@@ -83,7 +82,7 @@ public class FActivityService extends BaseService{
             UserEntry userEntry = userDao.findByUserId(userId);
             String nickName = userEntry.getNickName();
             String userName = userEntry.getUserName();
-            String avatar = AvatarUtils.getAvatar(userEntry.getAvatar(), AvatarType.MIN_AVATAR.getType());
+            String avatar = AvatarUtils.getAvatar(userEntry.getAvatar(), userEntry.getRole(),userEntry.getSex());
             List<UserTag> tags = new ArrayList<UserTag>();
             List<UserEntry.UserTagEntry> userTagEntries = userEntry.getUserTag();
             for (UserEntry.UserTagEntry tagEntry : userTagEntries) {
@@ -125,7 +124,7 @@ public class FActivityService extends BaseService{
         }
         String nickName = userEntry.getNickName();
         String userName = userEntry.getUserName();
-        String avatar = AvatarUtils.getAvatar(userEntry.getAvatar(), AvatarType.MIN_AVATAR.getType());
+        String avatar = AvatarUtils.getAvatar(userEntry.getAvatar(), userEntry.getRole(),userEntry.getSex());
         List<UserTag> tags = new ArrayList<UserTag>();
         List<UserEntry.UserTagEntry> userTagEntries = userEntry.getUserTag();
         for (UserEntry.UserTagEntry tagEntry : userTagEntries) {
@@ -176,7 +175,7 @@ public class FActivityService extends BaseService{
             }
             String nickName = StringUtils.isBlank(userEntry.getNickName()) ? userEntry.getUserName() : userEntry.getNickName();
             String userName = userEntry.getUserName();
-            String avatar = AvatarUtils.getAvatar(userEntry.getAvatar(), AvatarType.MIN_AVATAR.getType());
+            String avatar = AvatarUtils.getAvatar(userEntry.getAvatar(), userEntry.getRole(),userEntry.getSex());
             Map<String, Object> map = new HashMap<String, Object>();
 
             List<UserTag> userTagList = new ArrayList<UserTag>();

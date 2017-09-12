@@ -6,7 +6,6 @@ import com.db.forum.FReplyDao;
 import com.db.forum.FSectionDao;
 import com.db.user.UserDao;
 import com.pojo.forum.*;
-import com.pojo.user.AvatarType;
 import com.pojo.user.UserEntry;
 import com.sys.constants.Constant;
 import com.sys.utils.AvatarUtils;
@@ -131,7 +130,7 @@ public class FCollectionService {
                         if (fPostEntry.getPersonId() != null) {
                             UserEntry dto = userDao.getUserEntry(fPostEntry.getPersonId(), Constant.FIELDS);
                             if (dto != null) {
-                                fAppCollectPostDTO.setUserImage(AvatarUtils.getAvatar(dto.getAvatar(), AvatarType.MIN_AVATAR.getType()));
+                                fAppCollectPostDTO.setUserImage(AvatarUtils.getAvatar(dto.getAvatar(), dto.getRole(),dto.getSex()));
                                 if (StringUtils.isNotBlank(dto.getNickName())) {
                                     fAppCollectPostDTO.setNickName(dto.getNickName());
                                 } else {

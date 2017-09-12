@@ -10,7 +10,6 @@ import com.fulaan.user.service.UserService;
 import com.pojo.fcommunity.CommunityEntry;
 import com.pojo.fcommunity.RemarkEntry;
 import com.pojo.fcommunity.ValidateInfoEntry;
-import com.pojo.user.AvatarType;
 import com.pojo.user.UserEntry;
 import com.sys.constants.Constant;
 import com.sys.utils.AvatarUtils;
@@ -118,7 +117,7 @@ public class ValidateInfoService {
                 }else {
                     dto.setUserName(StringUtils.isNotBlank(userEntry.getNickName()) ? userEntry.getNickName() : userEntry.getUserName());
                 }
-                dto.setAvatar(AvatarUtils.getAvatar(userEntry.getAvatar(), AvatarType.MIN_AVATAR.getType()));
+                dto.setAvatar(AvatarUtils.getAvatar(userEntry.getAvatar(), userEntry.getRole(),userEntry.getSex()));
             }
 
             if (StringUtils.isNotBlank(dto.getApprovedId())) {

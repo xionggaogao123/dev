@@ -19,7 +19,6 @@ import com.fulaan.service.MemberService;
 import com.fulaan.user.service.UserService;
 import com.pojo.fcommunity.CommunityDetailType;
 import com.pojo.fcommunity.MemberEntry;
-import com.pojo.user.AvatarType;
 import com.pojo.user.UserDetailInfoDTO;
 import com.pojo.user.UserEntry;
 import com.pojo.utils.MongoUtils;
@@ -411,7 +410,7 @@ public class GroupController extends BaseController {
             user.setUserId(userEntry.getID().toString());
             user.setUserName(userEntry.getUserName());
             user.setNickName(userEntry.getNickName());
-            user.setAvator(AvatarUtils.getAvatar(userEntry.getAvatar(), AvatarType.MIN_AVATAR.getType()));
+            user.setAvator(AvatarUtils.getAvatar(userEntry.getAvatar(), userEntry.getRole(),userEntry.getSex()));
             users.add(user);
         }
         return RespObj.SUCCESS(users);

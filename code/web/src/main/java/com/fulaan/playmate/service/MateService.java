@@ -14,7 +14,6 @@ import com.mongodb.BasicDBList;
 import com.mongodb.BasicDBObject;
 import com.pojo.activity.FriendEntry;
 import com.pojo.playmate.FMateEntry;
-import com.pojo.user.AvatarType;
 import com.pojo.user.UserEntry;
 import com.pojo.user.UserTag;
 import com.sys.utils.AvatarUtils;
@@ -100,7 +99,7 @@ public class MateService extends BaseService {
                 if (entry != null) {
                     User user = new User();
                     if (entry.getAvatar() != null) {
-                        user.setAvator(AvatarUtils.getAvatar(entry.getAvatar(), AvatarType.MIN_AVATAR.getType()));
+                        user.setAvator(AvatarUtils.getAvatar(entry.getAvatar(), entry.getRole(),entry.getSex()));
                     }
                     user.setSex(entry.getSex());
                     user.setId(entry.getID().toString());
@@ -130,7 +129,7 @@ public class MateService extends BaseService {
             fMateDTO.setUserId(userEntry.getID().toString());
             fMateDTO.setNickName(userEntry.getNickName());
             fMateDTO.setUserName(userEntry.getUserName());
-            fMateDTO.setAvatar(AvatarUtils.getAvatar(userEntry.getAvatar(), AvatarType.MIN_AVATAR.getType()));
+            fMateDTO.setAvatar(AvatarUtils.getAvatar(userEntry.getAvatar(), userEntry.getRole(),userEntry.getSex()));
             List<UserEntry.UserTagEntry> userTagEntries = userEntry.getUserTag();
             List<UserTag> tagList = new ArrayList<UserTag>();
             for (UserEntry.UserTagEntry tagEntry : userTagEntries) {

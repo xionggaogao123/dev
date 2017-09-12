@@ -6,14 +6,12 @@ import com.db.forum.FReplyDao;
 import com.db.user.UserDao;
 import com.fulaan.dto.MessageDTO;
 import com.pojo.forum.*;
-import com.pojo.user.AvatarType;
 import com.pojo.user.UserEntry;
 import com.pojo.user.UserInfoDTO;
 import com.sys.constants.Constant;
 import com.sys.utils.AvatarUtils;
 import com.sys.utils.DateTimeUtils;
 import org.bson.types.ObjectId;
-import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
@@ -103,7 +101,7 @@ public class FInformationService {
                 }
 
                 UserEntry userEntry = userDao.getUserEntry(fInformationEntry.getUserId(), Constant.FIELDS);
-                fInformationDTO.setImageSrc(AvatarUtils.getAvatar(userEntry.getAvatar(), AvatarType.MIN_AVATAR.getType()));
+                fInformationDTO.setImageSrc(AvatarUtils.getAvatar(userEntry.getAvatar(), userEntry.getRole(),userEntry.getSex()));
                 long time = fInformationEntry.getTime();
                 long nowTime = System.currentTimeMillis();
                 long day = (nowTime - time) / (1000 * 60 * 60 * 24);
@@ -190,7 +188,7 @@ public class FInformationService {
                     fInformationDTO.setAcceptType(2);
                 }
                 UserEntry userEntry = userDao.getUserEntry(fInformationEntry.getUserId(), Constant.FIELDS);
-                fInformationDTO.setImageSrc(AvatarUtils.getAvatar(userEntry.getAvatar(), AvatarType.MIN_AVATAR.getType()));
+                fInformationDTO.setImageSrc(AvatarUtils.getAvatar(userEntry.getAvatar(), userEntry.getRole(),userEntry.getSex()));
                 long time = fInformationEntry.getTime();
                 long nowTime = System.currentTimeMillis();
                 long day = (nowTime - time) / (1000 * 60 * 60 * 24);

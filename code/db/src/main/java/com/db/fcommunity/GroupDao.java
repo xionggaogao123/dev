@@ -181,4 +181,20 @@ public class GroupDao extends BaseDao {
         BasicDBObject update = new BasicDBObject(Constant.MONGO_SET, new BasicDBObject("ism", ism));
         update(MongoFacroty.getAppDB(), Constant.COLLECTION_FORUM_COMMUNITY_GROUP, query, update);
     }
+    /**
+     * 根据用户id，查询管理员权限的gruopId列表
+     *
+     */
+    public List<ObjectId> getGroupIdsList(List<ObjectId> groupId) {
+        BasicDBObject query = new BasicDBObject().append(Constant.ID, new BasicDBObject(Constant.MONGO_IN,groupId)).append("r", 0);
+        List<ObjectId> memberEntries = new ArrayList<ObjectId>();
+        List<DBObject> dbObjects = find(MongoFacroty.getAppDB(), Constant.COLLECTION_FORUM_COMMUNITY_GROUP, query, Constant.FIELDS);
+        for (DBObject dbo : dbObjects) {
+            GroupEntry memberEntry = new GroupEntry(dbo);
+            if(memberEntry.getCommunityId() != null){
+                memberEntries.add(memberEntry.getCommunityId());
+            }
+        }
+        return memberEntries;
+    }
 }

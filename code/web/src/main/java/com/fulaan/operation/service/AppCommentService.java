@@ -7,12 +7,12 @@ import com.db.operation.AppOperationDao;
 import com.db.operation.AppRecordDao;
 import com.db.user.NewVersionBindRelationDao;
 import com.fulaan.community.dto.CommunityDTO;
-import com.fulaan.dto.MemberDTO;
 import com.fulaan.operation.dto.AppCommentDTO;
 import com.fulaan.operation.dto.AppOperationDTO;
 import com.fulaan.operation.dto.AppRecordDTO;
 import com.fulaan.service.CommunityService;
 import com.fulaan.user.service.UserService;
+import com.pojo.fcommunity.MemberEntry;
 import com.pojo.operation.AppCommentEntry;
 import com.pojo.operation.AppOperationEntry;
 import com.pojo.operation.AppRecordEntry;
@@ -134,35 +134,49 @@ public class AppCommentService {
      * 查询当前作业签到名单
      */
     public List<AppRecordDTO> selectRecordList(ObjectId id,int type){
-        List<AppRecordEntry> entries = null;
-        if(type==1){
-            entries = appRecordDao.getEntryListByParentId(id,1);
+        //获得作业
+        AppCommentEntry aen = appCommentDao.getEntry(id);
+        //获得需要签到的id
+        List<String> objectIdList = this.getMyRoleList2(aen.getRecipientId());
+        List<ObjectId> oblist = new ArrayList<ObjectId>();
+        //获得当前时间
+        long current=System.currentTimeMillis();
+        //获得时间批次
+        long zero=current/(1000*3600*24)*(1000*3600*24)- TimeZone.getDefault().getRawOffset();//今天零点零分零秒的毫秒数
+        if(objectIdList.size()>0){
+            for(String str : objectIdList){
+                oblist.add(new ObjectId(str));
+            }
+        }
+        List<AppRecordEntry> entries = appRecordDao.getEntryListByParentId2(oblist,zero);
+        if(type==1){//已签到名单
             List<AppRecordDTO> dtos = new ArrayList<AppRecordDTO>();
             if(entries.size()>0){
                 for(AppRecordEntry en : entries){
-                    AppRecordDTO dto = new AppRecordDTO(en);
-                    String ctm = dto.getDateTime().substring(11,16);
-                    dto.setDateTime(ctm);
-                    dtos.add(dto);
+                    if(en.getIsLoad()==1){
+                        AppRecordDTO dto = new AppRecordDTO(en);
+                        String ctm = dto.getDateTime().substring(11,16);
+                        dto.setDateTime(ctm);
+                        dtos.add(dto);
+                    }
                 }
             }
             return dtos;
-        }else{
-            List<AppRecordEntry> entries2 = appRecordDao.getEntryListByParentId(id,1);
-            AppCommentEntry aen = appCommentDao.getEntry(id);
-            List<MemberDTO> melist = communityService.getMembers(aen.getRecipientId());
+        }else{//未签到名单
             List<AppRecordDTO> dtos = new ArrayList<AppRecordDTO>();
-            if(melist.size()>0){
-                for(MemberDTO en : melist){
-                    boolean fla = true;
-                    for(AppRecordEntry entr : entries2) {
-                        if(en.getUserId()!= null && en.getUserId().equals(entr.getUserId().toString())){
-                            fla = false;
-                        }
+            if(entries.size()>0){
+                for(AppRecordEntry en : entries){
+                    if(en.getIsLoad()==1){
+                        oblist.remove(en.getUserId());
                     }
-                    if(fla){
+                }
+            }
+            List<UserDetailInfoDTO> udtos =  userService.findUserInfoByUserIds(objectIdList);
+            for(ObjectId ob : oblist){
+                for(UserDetailInfoDTO dto4 : udtos){
+                    if(dto4.getId()!= null && dto4.getId().equals(ob.toString())){
                         AppRecordDTO dto = new AppRecordDTO();
-                        dto.setUserName(en.getUserName());
+                        dto.setUserName(dto4.getUserName());
                         dtos.add(dto);
                     }
                 }
@@ -505,4 +519,41 @@ public class AppCommentService {
         List<ObjectId> mlist =   groupDao.getGroupIdsList(olsit);
         return mlist;
     }
+
+    /**
+     * 获得用户的所有具有管理员权限的社区id
+     *
+     */
+    public List<String> getMyRoleList2(ObjectId id){
+        //获得groupId
+        ObjectId obj =   groupDao.getGroupIdByCommunityId(id);
+        List<MemberEntry> olist = memberDao.getMembers(obj, 1, 1000);
+        List<String> clist = new ArrayList<String>();
+        if(olist.size()>0){
+            for(MemberEntry en : olist){
+                if(en.getRole()==0){
+                    clist.add(en.getUserId().toString());
+                }
+            }
+        }
+        return clist;
+    }
+    /**
+     * 获得用户的所有不具有管理员权限的社区id
+     *
+     */
+  /*  public List<String> getMyRoleList2(ObjectId id){
+        //获得groupId
+        ObjectId obj =   groupDao.getGroupIdByCommunityId(id);
+        List<MemberEntry> olist = memberDao.getMembers(obj, 1, 10000);
+        List<String> clist = new ArrayList<String>();
+        if(olist.size()>0){
+            for(MemberEntry en : olist){
+                if(en.getRole()==1 || en.getRole()==2){
+                    clist.add(en.getUserId().toString());
+                }
+            }
+        }
+        return clist;
+    }*/
 }

@@ -71,10 +71,10 @@ public class AppRecordDao extends BaseDao {
         return entryList;
     }
     //查询已签到列表
-    public List<AppRecordEntry> getEntryListByParentId2(List<ObjectId> parentIds,ObjectId userId) {
+    public List<AppRecordEntry> getEntryListByParentId2(List<ObjectId> userIds,long zero) {
         BasicDBObject query = new BasicDBObject()
-                .append("pid", new BasicDBObject(Constant.MONGO_IN, parentIds))
-                .append("uid",userId)
+                .append("uid", new BasicDBObject(Constant.MONGO_IN, userIds))
+                .append("dtm",zero)
                 .append("isr", 0); // 未删除
         List<DBObject> dbList =
                 find(MongoFacroty.getAppDB(),

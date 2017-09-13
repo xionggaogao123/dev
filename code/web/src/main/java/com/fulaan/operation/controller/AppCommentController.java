@@ -186,7 +186,7 @@ public class AppCommentController extends BaseController {
         try {
             respObj = RespObj.SUCCESS;
             long dateTime = DateTimeUtils.getStrToLongTime(date, "yyyy-MM-dd");
-           Map<String,Object> dtos = appCommentService.selectDateList(dateTime, getUserId());
+            Map<String,Object> dtos = appCommentService.selectDateList(dateTime, getUserId());
             respObj.setMessage(dtos);
         } catch (Exception e) {
             e.printStackTrace();

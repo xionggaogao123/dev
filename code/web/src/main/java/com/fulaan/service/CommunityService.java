@@ -1177,6 +1177,14 @@ public class CommunityService {
         Map<ObjectId,UserEntry> userEntryMap=userService.getUserEntryMap(userIds,Constant.FIELDS);
         for (CommunityDetailEntry entry : entries) {
             CommunityDetailDTO dto=new CommunityDetailDTO(entry);
+            if (null != userId) {
+                dto.setReadFlag(0);
+                if (entry.getUnReadList().size() > 0 && entry.getUnReadList().contains(userId)) {
+                    dto.setReadFlag(1);
+                }
+            } else{
+                dto.setReadFlag(1);
+            }
             if(null!=communityEntryMap.get(new ObjectId(entry.getCommunityId()))){
                 dto.setCommunityName(communityEntryMap.get(new ObjectId(entry.getCommunityId())).getCommunityName());
             }

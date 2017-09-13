@@ -55,7 +55,7 @@ public class NewVersionBindService {
         if(null!=userEntry){
             dto.setSex(userEntry.getSex());
             dto.setNickName(userEntry.getNickName());
-            dto.setAvatar(userEntry.getAvatar());
+            dto.setAvatar(AvatarUtils.getAvatar(userEntry.getAvatar(), userEntry.getRole(),userEntry.getSex()));
             SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd");
             String birthDate=format.format(userEntry.getBirthDate());
             dto.setBirthDate(birthDate);

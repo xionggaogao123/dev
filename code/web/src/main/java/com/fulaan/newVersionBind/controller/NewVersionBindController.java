@@ -93,6 +93,10 @@ public class NewVersionBindController extends BaseController {
     }
 
 
+    /**
+     *
+     * @return
+     */
     @RequestMapping("/getNewVersionBindStudent")
     @ResponseBody
     public RespObj getNewVersionBindStudent(){
@@ -108,9 +112,11 @@ public class NewVersionBindController extends BaseController {
     }
 
 
-
-
-
+    /**
+     *
+     * @param id
+     * @return
+     */
     @RequestMapping("/addEntry")
     @ResponseBody
     public RespObj saveNewVersionEntry(@RequestParam("id") String id){

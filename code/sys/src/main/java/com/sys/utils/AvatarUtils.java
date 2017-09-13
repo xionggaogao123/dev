@@ -22,6 +22,7 @@ public class AvatarUtils {
     public static final String USER_AVATAR_FORMAT =Resources.getProperty("max.avatar.format");
     public static final String DEFAULT_AVATOR_FORMAT="http://7xiclj.com1.z0.glb.clouddn.com/d_{0}_{1}.png";
     public static final String DEFAULT_FORMAT="head-default-head.jpg";
+    public static final String DEFAULT_PREV="http://7xiclj.com1.z0.glb.clouddn.com";
 
     public static final int DEFAULT_ROLE=1;
     public static final int DEFAULT_SEX=1;
@@ -60,7 +61,11 @@ public class AvatarUtils {
     {
         if(StringUtils.isNotBlank(avatar) && !avatar.equals(DEFAULT_FORMAT))
         {
-            return MessageFormat.format(USER_AVATAR_FORMAT, avatar);
+            if(avatar.contains(DEFAULT_PREV)) {
+                return avatar;
+            }else{
+                return MessageFormat.format(USER_AVATAR_FORMAT, avatar);
+            }
         }
         else
         {

@@ -174,9 +174,16 @@ public class UserService extends BaseService {
                 return validate;
             }
         }else if(type==2){
-            if (null != newVersionUserRoleDao.getEntry(e.getID())
-                    && newVersionUserRoleDao.getEntry(e.getID()).getNewRole() == Constant.ONE) {
-                validate.setMessage("该学生还未激活");
+            if (null != newVersionUserRoleDao.getEntry(e.getID())) {
+                if(newVersionUserRoleDao.getEntry(e.getID()).getNewRole() == Constant.ONE) {
+                    validate.setMessage("该学生还未激活");
+                    return validate;
+                }else if(newVersionUserRoleDao.getEntry(e.getID()).getNewRole() != Constant.TWO){
+                    validate.setMessage("家长或者老师不能登录学生端!");
+                    return validate;
+                }
+            }else{
+                validate.setMessage("老用户不能登录学生端!");
                 return validate;
             }
         }

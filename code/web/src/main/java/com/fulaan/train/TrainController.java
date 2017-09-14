@@ -284,9 +284,14 @@ public class TrainController extends BaseController {
         instituteCookie.setMaxAge(Constant.SECONDS_IN_DAY);
         instituteCookie.setPath(Constant.BASE_PATH);
         response.addCookie(instituteCookie);
-        return getInstituteData(lon,lat,distance,page,pageSize,type,area,region,itemType,regular,sortType);
 
-
+//        return getInstituteData(lon, lat, distance, page, pageSize, type, area, region, itemType, regular, sortType);
+        Map<String, Object> map = new HashMap<String, Object>();
+        map.put("list", new ArrayList<InstituteDTO>());
+        map.put("count", 0);
+        map.put("page", page);
+        map.put("pageSize", pageSize);
+        return RespObj.SUCCESS(map);
     }
 
 
@@ -334,7 +339,13 @@ public class TrainController extends BaseController {
     public RespObj getInstitutesInDetail(@RequestParam(defaultValue = "10", required = false) int pageSize,
                                          @RequestParam(defaultValue = "1", required = false) int sortType,
                                          @RequestParam(defaultValue = "", required = false) String itemType){
-        return getInstituteData(0,0,-1,1,pageSize,"","","",itemType,"",sortType);
+//        return getInstituteData(0,0,-1,1,pageSize,"","","",itemType,"",sortType);
+        Map<String, Object> map = new HashMap<String, Object>();
+        map.put("list", new ArrayList<InstituteDTO>());
+        map.put("count", 0);
+        map.put("page", 1);
+        map.put("pageSize", pageSize);
+        return RespObj.SUCCESS(map);
     }
 
 

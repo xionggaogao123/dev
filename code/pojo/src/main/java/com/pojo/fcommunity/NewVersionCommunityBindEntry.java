@@ -22,7 +22,7 @@ public class NewVersionCommunityBindEntry extends BaseDBObject{
                  .append("cid",communityId)
                  .append("muid",mainUserId)
                  .append("uid",userId)
-                 .append("ir", Constant.ID);
+                 .append("ir", Constant.ZERO);
         setBaseEntry(basicDBObject);
     }
 

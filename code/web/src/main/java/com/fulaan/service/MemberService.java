@@ -1,6 +1,7 @@
 package com.fulaan.service;
 
 import com.db.fcommunity.MemberDao;
+import com.db.fcommunity.NewVersionCommunityBindDao;
 import com.db.fcommunity.RemarkDao;
 import com.db.user.UserDao;
 import com.fulaan.dto.MemberDTO;
@@ -28,6 +29,8 @@ public class MemberService {
     private MemberDao memberDao = new MemberDao();
     private UserDao userDao = new UserDao();
     private RemarkDao remarkDao = new RemarkDao();
+
+    private NewVersionCommunityBindDao newVersionCommunityBindDao = new NewVersionCommunityBindDao();
 
     /**
      * 添加组成员
@@ -137,6 +140,8 @@ public class MemberService {
      */
     public void deleteMember(ObjectId groupId, ObjectId userId) {
         memberDao.deleteMember(groupId, userId);
+        //剔除掉绑定关系
+
     }
 
     /**

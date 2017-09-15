@@ -236,4 +236,20 @@ public class CommunityDao extends BaseDao {
         }
         return groupIds;
     }
+
+    /**
+     * 根据社区id
+     *
+     */
+    public ObjectId getGroupIdByCommunityId(ObjectId cid) {
+        BasicDBObject query = new BasicDBObject();
+        query.append("r",Constant.ZERO);
+        query.append(Constant.ID,cid);
+        DBObject obj =
+                findOne(MongoFacroty.getAppDB(), Constant.COLLECTION_FORUM_COMMUNITY, query, Constant.FIELDS);
+        if (obj != null) {
+            return new CommunityEntry(obj).getGroupId();
+        }
+        return null;
+    }
 }

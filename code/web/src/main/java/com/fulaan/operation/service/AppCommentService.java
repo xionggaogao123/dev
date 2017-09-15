@@ -1,5 +1,6 @@
 package com.fulaan.operation.service;
 
+import com.db.fcommunity.CommunityDao;
 import com.db.fcommunity.GroupDao;
 import com.db.fcommunity.MemberDao;
 import com.db.operation.AppCommentDao;
@@ -35,6 +36,7 @@ public class AppCommentService {
     private AppRecordDao appRecordDao = new AppRecordDao();
     private MemberDao memberDao = new MemberDao();
     private GroupDao groupDao = new GroupDao();
+    private CommunityDao communityDao = new CommunityDao();
     private NewVersionBindRelationDao newVersionBindRelationDao = new NewVersionBindRelationDao();
     @Autowired
     private CommunityService communityService;
@@ -526,7 +528,7 @@ public class AppCommentService {
      */
     public List<String> getMyRoleList2(ObjectId id){
         //获得groupId
-        ObjectId obj =   groupDao.getGroupIdByCommunityId(id);
+        ObjectId obj =   communityDao.getGroupIdByCommunityId(id);
         List<MemberEntry> olist = memberDao.getMembers(obj, 1, 1000);
         List<String> clist = new ArrayList<String>();
         if(olist.size()>0){

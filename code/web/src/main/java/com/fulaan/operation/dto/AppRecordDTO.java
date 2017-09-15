@@ -14,6 +14,7 @@ public class AppRecordDTO {
     private String userName;
     private int isLoad;
     private String dateTime;
+    private String createTime;
 
 
     public AppRecordDTO(){
@@ -30,6 +31,11 @@ public class AppRecordDTO {
                 this.dateTime = DateTimeUtils.getLongToStrTimeTwo(e.getDateTime());
             }else{
                 this.dateTime = "";
+            }
+            if(e.getCreateTime()!=0l){
+                this.createTime = DateTimeUtils.getLongToStrTimeTwo(e.getCreateTime());
+            }else{
+                this.createTime = "";
             }
         }else{
             new AppRecordDTO();
@@ -49,12 +55,17 @@ public class AppRecordDTO {
         if(this.getDateTime() != null && this.getDateTime() != ""){
             dTm = DateTimeUtils.getStrToLongTime(this.getDateTime());
         }
+        long cTm = 0l;
+        if(this.getCreateTime() != null && this.getCreateTime() != ""){
+            cTm = DateTimeUtils.getStrToLongTime(this.getCreateTime());
+        }
         AppRecordEntry openEntry =
                 new AppRecordEntry(
                         pId,
                         uId,
                         this.userName,
                         dTm,
+                        cTm,
                         this.isLoad
                 );
         return openEntry;
@@ -77,6 +88,10 @@ public class AppRecordDTO {
         if(this.getDateTime() != null && this.getDateTime() != ""){
             dTm = DateTimeUtils.getStrToLongTime(this.getDateTime());
         }
+        long cTm = 0l;
+        if(this.getCreateTime() != null && this.getCreateTime() != ""){
+            cTm = DateTimeUtils.getStrToLongTime(this.getCreateTime());
+        }
         AppRecordEntry openEntry =
                 new AppRecordEntry(
                         Id,
@@ -84,6 +99,7 @@ public class AppRecordDTO {
                         uId,
                         this.userName,
                         dTm,
+                        cTm,
                         this.isLoad
                 );
         return openEntry;
@@ -137,5 +153,13 @@ public class AppRecordDTO {
 
     public void setUserName(String userName) {
         this.userName = userName;
+    }
+
+    public String getCreateTime() {
+        return createTime;
+    }
+
+    public void setCreateTime(String createTime) {
+        this.createTime = createTime;
     }
 }

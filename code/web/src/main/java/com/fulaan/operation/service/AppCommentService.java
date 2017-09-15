@@ -157,7 +157,7 @@ public class AppCommentService {
                 for(AppRecordEntry en : entries){
                     if(en.getIsLoad()==1){
                         AppRecordDTO dto = new AppRecordDTO(en);
-                        String ctm = dto.getDateTime().substring(11,16);
+                        String ctm = dto.getCreateTime().substring(11,16);
                         dto.setDateTime(ctm);
                         dtos.add(dto);
                     }

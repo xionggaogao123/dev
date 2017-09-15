@@ -136,7 +136,7 @@ public class WrongQuestionService {
             ndto.setUserId(userId.toString());
             ndto.setYear(keyValue.getValue());
             NewVersionGradeEntry entry1 = ndto.buildAddEntry();
-            newVersionGradeDao.saveNewVersionGradeEntry(entry1    );
+            newVersionGradeDao.saveNewVersionGradeEntry(entry1);
             entry = newVersionGradeDao.getEntryByCondition(userId, keyValue.getValue());
         }else{
 

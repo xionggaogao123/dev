@@ -26,13 +26,15 @@ public class AppRecordEntry  extends BaseDBObject {
             ObjectId userId,
             String userName,
             long dateTime,
+            long createTime,
             int isLoad
     ){
         BasicDBObject dbObject=new BasicDBObject()
                 .append("pid",parentId)
-                .append("uid",userId)
+                .append("uid", userId)
                 .append("una",userName)
                 .append("dtm", dateTime)
+                .append("ctm", createTime)
                 .append("isl",isLoad)
                 .append("isr", 0);
         setBaseEntry(dbObject);
@@ -45,6 +47,7 @@ public class AppRecordEntry  extends BaseDBObject {
             ObjectId userId,
             String userName,
             long dateTime,
+            long createTime,
             int isLoad
     ){
         BasicDBObject dbObject=new BasicDBObject()
@@ -53,7 +56,8 @@ public class AppRecordEntry  extends BaseDBObject {
                 .append("uid",userId)
                 .append("una",userName)
                 .append("dtm", dateTime)
-                .append("isl",isLoad)
+                .append("ctm", createTime)
+                .append("isl", isLoad)
                 .append("isr", 0);
         setBaseEntry(dbObject);
     }
@@ -95,6 +99,12 @@ public class AppRecordEntry  extends BaseDBObject {
     }
     public void setDateTime(long dateTime){
         setSimpleValue("dtm",dateTime);
+    }
+    public long getCreateTime(){
+        return getSimpleLongValue("ctm");
+    }
+    public void setCreateTime(long createTime){
+        setSimpleValue("ctm",createTime);
     }
 
     public int getIsRemove(){

@@ -47,7 +47,7 @@ public class AppRecordDao extends BaseDao {
         BasicDBObject query = new BasicDBObject(Constant.ID,id);
         BasicDBObject updateValue = new BasicDBObject()
                 .append(Constant.MONGO_SET,
-                        new BasicDBObject("dtm", current));
+                        new BasicDBObject("ctm", current));
         update(MongoFacroty.getAppDB(), Constant.COLLECTION_APP_RECORD, query, updateValue);
     }
 

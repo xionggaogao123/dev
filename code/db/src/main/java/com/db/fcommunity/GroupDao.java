@@ -201,7 +201,7 @@ public class GroupDao extends BaseDao {
      * 根据社区id
      *
      */
-    public ObjectId getGroupIdByCommunityId(ObjectId cid) {
+   /* public ObjectId getGroupIdByCommunityId(ObjectId cid) {
         BasicDBObject query = new BasicDBObject();
         query.append("isr",Constant.ZERO);
         query.append("cmid",cid);
@@ -211,5 +211,5 @@ public class GroupDao extends BaseDao {
             return new GroupEntry(obj).getID();
         }
         return null;
-    }
+    }*/
 }

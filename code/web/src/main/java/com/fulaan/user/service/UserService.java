@@ -269,10 +269,10 @@ public class UserService extends BaseService {
             return validate;
         }
 
-        if (!cache[0].equals(code)) {
-            validate.setMessage("短信验证码输入错误");
-            return validate;
-        }
+//        if (!cache[0].equals(code)) {
+//            validate.setMessage("短信验证码输入错误");
+//            return validate;
+//        }
         validate.setOk(true);
         return validate;
     }

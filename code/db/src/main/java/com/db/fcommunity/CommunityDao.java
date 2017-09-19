@@ -188,6 +188,15 @@ public class CommunityDao extends BaseDao {
         return dbo == null ? null : (ObjectId) dbo.get("grid");
     }
 
+    public ObjectId getCommunityIdByGroupId(ObjectId groupId){
+        BasicDBObject query = new BasicDBObject().append("grid", groupId);
+        BasicDBObject field = new BasicDBObject().append(Constant.ID, 1);
+        DBObject dbo = findOne(MongoFacroty.getAppDB(), Constant.COLLECTION_FORUM_COMMUNITY, query, field);
+        return dbo == null ? null : (ObjectId) dbo.get(Constant.ID);
+    }
+
+
+
 
     public Boolean isCommunityNameUnique(String communityName) {
         return findByName(communityName) == null;

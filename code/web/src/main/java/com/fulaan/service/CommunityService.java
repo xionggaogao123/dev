@@ -1144,7 +1144,7 @@ public class CommunityService {
 
     public PageModel<CommunityDetailDTO> getMyMessageByType(List<ObjectId> communityIds,ObjectId userId,int type, int page, int pageSize) {
         PageModel<CommunityDetailDTO> pageModel = new PageModel<CommunityDetailDTO>();
-        List<CommunityDetailEntry> entries = communityDetailDao.getDetails(communityIds, page, pageSize, Constant.DESC, type);
+        List<CommunityDetailEntry> entries = communityDetailDao.getRecordDetails(communityIds, page, pageSize, Constant.DESC, type,userId);
         int totalCount = communityDetailDao.count(communityIds, type);
         int totalPages = totalCount % pageSize == 0 ? totalCount / pageSize : (int) Math.ceil(totalCount / pageSize) + 1;
         page = page > totalPages ? totalPages : page;
@@ -1943,6 +1943,10 @@ public class CommunityService {
         }
         communityDetailDao.removeCommunityDetail(id);
 
+    }
+
+    public void recordDeleteUserIds(ObjectId id,ObjectId userId){
+        communityDetailDao.recordCommunityDetailDeleteUserIds(id, userId);
     }
 
     public List<ObjectId> getAllMemberIds(ObjectId groupId) {

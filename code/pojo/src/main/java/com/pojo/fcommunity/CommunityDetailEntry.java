@@ -89,6 +89,7 @@ public class CommunityDetailEntry extends BaseDBObject {
       imageDbList.add(attachment.getBaseEntry());
     }
     List<ObjectId> zanList=new ArrayList<ObjectId>();
+    List<ObjectId> deleteUserIds = new ArrayList<ObjectId>();
     BasicDBObject basicDBObject = new BasicDBObject()
             .append("cmid", communityId)
             .append("cmuid", communityUserId)
@@ -112,8 +113,28 @@ public class CommunityDetailEntry extends BaseDBObject {
             .append("tp",0)
             .append("zc",Constant.ZERO)
             .append("zl",MongoUtils.convert(zanList))
+            .append("dus",MongoUtils.convert(deleteUserIds))
             .append("r", 0);
     setBaseEntry(basicDBObject);
+  }
+
+  public void setDeleteUserIds(List<ObjectId> deleteUserIds){
+    setSimpleValue("dus",MongoUtils.convert(deleteUserIds));
+  }
+
+  public List<ObjectId> getDeleteUserIds(){
+    List<ObjectId> deleteUserIds = new ArrayList<ObjectId>();
+    if (!getBaseEntry().containsField("dus")) {
+      return deleteUserIds;
+    } else {
+      BasicDBList basicDBList=(BasicDBList)getSimpleObjectValue("dus");
+      if(null!=basicDBList&&!basicDBList.isEmpty()){
+        for(Object o:basicDBList){
+          deleteUserIds.add((ObjectId)o);
+        }
+      }
+    }
+    return deleteUserIds;
   }
 
   public List<ObjectId> getZanList(){

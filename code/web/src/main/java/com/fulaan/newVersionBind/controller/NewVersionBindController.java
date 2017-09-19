@@ -141,4 +141,26 @@ public class NewVersionBindController extends BaseController {
         return respObj;
     }
 
+
+    /**
+     * 绑定社区下的某个家长与某些学生
+     * @param userIds
+     * @param communityId
+     * @return
+     */
+    @RequestMapping("/addCommunityBindEntry")
+    @ResponseBody
+    public RespObj addCommunityBindEntry(String userIds,
+                                         @ObjectIdType ObjectId communityId){
+        RespObj respObj = new RespObj(Constant.FAILD_CODE);
+        try{
+            newVersionBindService.addCommunityBindEntry(userIds,communityId,getUserId());
+            respObj.setCode(Constant.SUCCESS_CODE);
+            respObj.setMessage("保存信息成功!");
+        }catch (Exception e){
+            respObj.setMessage(e.getMessage());
+        }
+        return respObj;
+    }
+
 }

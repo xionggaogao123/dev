@@ -291,4 +291,35 @@ public class CommunityDetailDao extends BaseDao {
         update(MongoFacroty.getAppDB(), Constant.COLLECTION_FORUM_COMMUNITY_DETAIL, query, updateValue);
     }
 
+
+    /**
+     * 记录哪些人员删除记录
+     * @param id
+     * @param userId
+     */
+    public void recordCommunityDetailDeleteUserIds(ObjectId id,ObjectId userId){
+        BasicDBObject query=new BasicDBObject(Constant.ID,id);
+        BasicDBObject updateValue=new BasicDBObject().append(Constant.MONGO_PUSH, new BasicDBObject("dus", userId));
+        update(MongoFacroty.getAppDB(), Constant.COLLECTION_FORUM_COMMUNITY_DETAIL, query, updateValue);
+    }
+
+
+    public List<CommunityDetailEntry> getRecordDetails(List<ObjectId> communityIds, int page, int pageSize, int order, int type,
+                                                       ObjectId userId) {
+        List<CommunityDetailEntry> detailEntries = new ArrayList<CommunityDetailEntry>();
+        BasicDBObject query = new BasicDBObject().append("cmid", new BasicDBObject(Constant.MONGO_IN,communityIds))
+                .append("cmty", type).append("r", 0);
+        if(null!=userId){
+            List<ObjectId> userIds=new ArrayList<ObjectId>();
+            userIds.add(userId);
+            query.append("dus",new BasicDBObject(Constant.MONGO_NOTIN,userIds));
+        }
+        BasicDBObject orderBy = new BasicDBObject().append("tp",-1).append(Constant.ID, order);
+        List<DBObject> dbObjects = find(MongoFacroty.getAppDB(), Constant.COLLECTION_FORUM_COMMUNITY_DETAIL, query, Constant.FIELDS, orderBy, (page - 1) * pageSize, pageSize);
+        for (DBObject dbo : dbObjects) {
+            detailEntries.add(new CommunityDetailEntry(dbo));
+        }
+        return detailEntries;
+    }
+
 }

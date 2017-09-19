@@ -2629,6 +2629,20 @@ public class CommunityController extends BaseController {
         return RespObj.SUCCESS;
     }
 
+
+    /**
+     * 记录删除消息的人员列表
+     * @param detailId
+     * @return
+     */
+    @RequestMapping("/recordDeleteUserIds")
+    @ResponseBody
+    public RespObj recordDeleteUserIds(@ObjectIdType ObjectId detailId) {
+        communityService.recordDeleteUserIds(detailId,getUserId());
+        return RespObj.SUCCESS;
+    }
+
+
     /**
      * 获取系统消息列表
      *

@@ -1,5 +1,6 @@
 package com.fulaan.newVersionBind.service;
 
+import com.db.fcommunity.NewVersionCommunityBindDao;
 import com.db.newVersionGrade.NewVersionGradeDao;
 import com.db.user.NewVersionBindRelationDao;
 import com.db.user.NewVersionUserRoleDao;
@@ -8,6 +9,7 @@ import com.fulaan.user.service.UserService;
 import com.fulaan.utils.pojo.KeyValue;
 import com.fulaan.wrongquestion.dto.NewVersionGradeDTO;
 import com.fulaan.wrongquestion.service.WrongQuestionService;
+import com.pojo.fcommunity.NewVersionCommunityBindEntry;
 import com.pojo.newVersionGrade.NewVersionGradeEntry;
 import com.pojo.user.NewVersionBindRelationEntry;
 import com.pojo.user.NewVersionUserRoleEntry;
@@ -36,6 +38,8 @@ public class NewVersionBindService {
     private NewVersionUserRoleDao newVersionUserRoleDao= new NewVersionUserRoleDao();
 
     private NewVersionGradeDao newVersionGradeDao = new NewVersionGradeDao();
+
+    private NewVersionCommunityBindDao newVersionCommunityBindDao = new NewVersionCommunityBindDao();
 
     @Autowired
     private UserService userService;
@@ -183,6 +187,18 @@ public class NewVersionBindService {
         entry.setUserId(bid);
         newVersionBindRelationDao.saveNewVersionBindEntry(entry);
         return "";
+    }
+
+    public void addCommunityBindEntry(String userIds,ObjectId communityId,ObjectId mainUserId){
+        String [] uIds=userIds.split(",");
+        List<NewVersionCommunityBindEntry> entries=new ArrayList<NewVersionCommunityBindEntry>();
+        for(String uId:uIds){
+            NewVersionCommunityBindEntry entry=new NewVersionCommunityBindEntry(communityId,mainUserId,new ObjectId(uId));
+            entries.add(entry);
+        }
+        if(entries.size()>0) {
+            newVersionCommunityBindDao.saveEntries(entries);
+        }
     }
 
 

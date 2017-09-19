@@ -5,8 +5,11 @@ import com.db.factory.MongoFacroty;
 import com.mongodb.BasicDBObject;
 import com.mongodb.DBObject;
 import com.pojo.fcommunity.NewVersionCommunityBindEntry;
+import com.pojo.utils.MongoUtils;
 import com.sys.constants.Constant;
 import org.bson.types.ObjectId;
+
+import java.util.List;
 
 /**
  * Created by scott on 2017/9/13.
@@ -16,6 +19,12 @@ public class NewVersionCommunityBindDao extends BaseDao{
     public void saveEntry(NewVersionCommunityBindEntry entry){
         save(MongoFacroty.getAppDB(), Constant.COLLECTION_NEW_VERSION_COMMUNITY_BIND,entry.getBaseEntry());
     }
+
+    public void saveEntries(List<NewVersionCommunityBindEntry> entryList){
+        save(MongoFacroty.getAppDB(), Constant.COLLECTION_NEW_VERSION_COMMUNITY_BIND, MongoUtils.fetchDBObjectList(entryList));
+    }
+
+
 
     public void removeNewVersionCommunity(ObjectId communityId,
                                           ObjectId mainUserId){

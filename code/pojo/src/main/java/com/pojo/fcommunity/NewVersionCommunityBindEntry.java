@@ -26,6 +26,10 @@ public class NewVersionCommunityBindEntry extends BaseDBObject{
         setBaseEntry(basicDBObject);
     }
 
+    public int getRemoveStatus(){
+        return getSimpleIntegerValue("ir");
+    }
+
     public ObjectId getUserId(){
         return getSimpleObjecIDValue("uid");
     }

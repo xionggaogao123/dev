@@ -191,13 +191,16 @@ public class NewVersionBindService {
 
     public void addCommunityBindEntry(String userIds,ObjectId communityId,ObjectId mainUserId){
         String [] uIds=userIds.split(",");
-        List<NewVersionCommunityBindEntry> entries=new ArrayList<NewVersionCommunityBindEntry>();
         for(String uId:uIds){
-            NewVersionCommunityBindEntry entry=new NewVersionCommunityBindEntry(communityId,mainUserId,new ObjectId(uId));
-            entries.add(entry);
-        }
-        if(entries.size()>0) {
-            newVersionCommunityBindDao.saveEntries(entries);
+            NewVersionCommunityBindEntry bindEntry=newVersionCommunityBindDao.getEntry(communityId,mainUserId,new ObjectId(uId));
+            if(null!=bindEntry) {
+                if(bindEntry.getRemoveStatus()==Constant.ONE) {
+                    newVersionCommunityBindDao.updateEntryStatus(bindEntry.getID());
+                }
+            }else{
+                NewVersionCommunityBindEntry entry = new NewVersionCommunityBindEntry(communityId, mainUserId, new ObjectId(uId));
+                newVersionCommunityBindDao.saveEntry(entry);
+            }
         }
     }
 

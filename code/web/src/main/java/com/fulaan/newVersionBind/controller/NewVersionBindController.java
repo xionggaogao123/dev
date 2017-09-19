@@ -1,13 +1,12 @@
 package com.fulaan.newVersionBind.controller;
 
 import com.fulaan.annotation.ObjectIdType;
-import com.fulaan.annotation.SessionNeedless;
 import com.fulaan.base.BaseController;
 import com.fulaan.newVersionBind.dto.NewVersionBindRelationDTO;
 import com.fulaan.newVersionBind.service.NewVersionBindService;
-import com.pojo.user.NewVersionBindRelationEntry;
 import com.sys.constants.Constant;
 import com.sys.utils.RespObj;
+import io.swagger.annotations.*;
 import org.apache.log4j.Logger;
 import org.bson.types.ObjectId;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -16,13 +15,12 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
 import java.util.List;
 
 /**
  * Created by scott on 2017/9/5.
  */
+@Api(value = "app家长孩子绑定逻辑")
 @Controller
 @RequestMapping("/newVersionBind")
 public class NewVersionBindController extends BaseController {
@@ -157,6 +155,29 @@ public class NewVersionBindController extends BaseController {
             newVersionBindService.addCommunityBindEntry(userIds,communityId,getUserId());
             respObj.setCode(Constant.SUCCESS_CODE);
             respObj.setMessage("保存信息成功!");
+        }catch (Exception e){
+            respObj.setMessage(e.getMessage());
+        }
+        return respObj;
+    }
+
+    /**
+     *
+     * @param parentId
+     * @param studentId
+     * @return
+     */
+    @ApiOperation(value = "个人中心解除绑定", httpMethod = "POST", produces = "application/json")
+    @ApiResponses( value = {@ApiResponse(code = 200, message = "Successful — 请求已完成",response = String.class),
+            @ApiResponse(code = 500, message = "服务器不能完成请求")})
+    @RequestMapping("/delEntry")
+    @ResponseBody
+    public RespObj delNewVersionEntry(@ApiParam(name = "parentId", required = true, value = "父母id") @RequestParam("parentId") String parentId,@ApiParam(name = "studentId", required = true, value = "学生id") @RequestParam("studentId") String studentId){
+        RespObj respObj = new RespObj(Constant.FAILD_CODE);
+        try{
+            newVersionBindService.delNewVersionEntry(new ObjectId(parentId), new ObjectId(studentId));
+            respObj.setCode(Constant.SUCCESS_CODE);
+            respObj.setMessage("解除绑定成功!");
         }catch (Exception e){
             respObj.setMessage(e.getMessage());
         }

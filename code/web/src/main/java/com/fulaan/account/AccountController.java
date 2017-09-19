@@ -20,6 +20,7 @@ import com.sys.utils.RespObj;
 import com.sys.utils.ValidationUtils;
 import fulaan.social.connect.Auth;
 import fulaan.social.factory.AuthFactory;
+import io.swagger.annotations.Api;
 import org.apache.commons.lang.StringUtils;
 import org.bson.types.ObjectId;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -47,6 +48,7 @@ import java.util.Map;
  */
 @Controller
 @RequestMapping("/account")
+@Api(value="修改密码，登录，账户安全，注册界面",hidden = true)
 public class AccountController extends BaseController {
 
     @Autowired

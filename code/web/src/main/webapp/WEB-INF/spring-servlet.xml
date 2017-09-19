@@ -42,7 +42,8 @@
             <bean class="com.fulaan.interceptor.ObjectIdResolver"/>
         </mvc:argument-resolvers>
     </mvc:annotation-driven>
-
+    <!-- swagger -->
+    <bean class="com.fulaan.swagger.OurSwaggerConfig" />
     <!-- 扫描组件-->
     <context:component-scan base-package="com.fulaan" use-default-filters="false">
         <context:include-filter type="annotation" expression="org.springframework.stereotype.Controller"/>
@@ -56,6 +57,7 @@
 
     <!-- Context Util -->
     <bean class="com.fulaan.utils.SpringContextUtil" id="springContextUtil"/>
+    <mvc:resources mapping="/api/**" location="/api/" />
 
     <!-- 视图解析器 -->
     <bean id="internalResourceViewResolver" class="org.springframework.web.servlet.view.InternalResourceViewResolver">
@@ -112,8 +114,16 @@
             <mvc:exclude-mapping path="/script/**"/>
             <bean class="com.fulaan.interceptor.Infoterceptor"/>
         </mvc:interceptor>
+        <mvc:interceptor>
+            <mvc:mapping path="/**"/>
+            <mvc:exclude-mapping path="/css/**"/>
+            <mvc:exclude-mapping path="/images/**"/>
+            <mvc:exclude-mapping path="/script/**"/>
+            <bean class="com.fulaan.interceptor.SwaggerHandlerInceptor"/>
+        </mvc:interceptor>
     </mvc:interceptors>
-
+    <!-- 放行swagger -->
+    <mvc:default-servlet-handler />
     <!-- 异常处理器 -->
     <bean id="exceptionResolver"
           class="com.fulaan.interceptor.ExceptionResolver">

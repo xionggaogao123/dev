@@ -2,6 +2,7 @@ package com.fulaan.operation.dto;
 
 import com.pojo.operation.AppCommentEntry;
 import com.sys.utils.DateTimeUtils;
+import io.swagger.annotations.ApiModelProperty;
 import org.bson.types.ObjectId;
 
 import java.util.List;
@@ -12,6 +13,7 @@ import java.util.List;
  */
 public class AppCommentDTO {
     private String id;
+    @ApiModelProperty(value = "描述", required = true)
     private String description;
     private List<String> imageUrl;
     private String subject;

@@ -8,9 +8,11 @@ import com.fulaan.operation.dto.AppRecordDTO;
 import com.fulaan.operation.service.AppCommentService;
 import com.sys.utils.DateTimeUtils;
 import com.sys.utils.RespObj;
+import io.swagger.annotations.*;
 import org.bson.types.ObjectId;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
@@ -21,6 +23,7 @@ import java.util.Map;
 /**
  * Created by James on 2017/8/25.
  */
+@Api(value = "作业相关接口")
 @Controller
 @RequestMapping("/appOperation")
 public class AppCommentController extends BaseController {
@@ -32,9 +35,15 @@ public class AppCommentController extends BaseController {
      * @param dto
      * @return
      */
+    @ApiOperation(value = "添加作业", httpMethod = "POST", produces = "application/json")
+    @ApiResponses( value = {@ApiResponse(code = 200, message = "Successful — 请求已完成",response = String.class),
+            @ApiResponse(code = 400, message = "请求中有语法问题，或不能满足请求"),
+            @ApiResponse(code = 401, message = "未授权客户机访问数据"),
+            @ApiResponse(code = 404, message = "服务器找不到给定的资源；文档不存在"),
+            @ApiResponse(code = 500, message = "服务器不能完成请求")})
     @RequestMapping("/addCommentEntry")
     @ResponseBody
-    public String addCommentEntry(AppCommentDTO dto,@RequestParam("comList") String comList){
+    public String addCommentEntry(@ApiParam @RequestBody AppCommentDTO dto,@ApiParam(name = "comList", required = true, value = "社区idList") @RequestParam("comList") String comList){
         //
         dto.setAdminId(getUserId().toString());
         RespObj respObj=null;
@@ -241,9 +250,11 @@ public class AppCommentController extends BaseController {
      * @param dto
      * @return
      */
+    @ApiOperation(value = "添加作业评论", httpMethod = "POST", produces = "application/json")
+    @ApiResponse(code = 200, message = "success", response = String.class)
     @RequestMapping("/addOperationEntry")
     @ResponseBody
-    public String addOperationEntry(AppOperationDTO dto){
+    public String addOperationEntry(@ApiParam @RequestBody AppOperationDTO dto){
         RespObj respObj=null;
         try {
             respObj = RespObj.SUCCESS;

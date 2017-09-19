@@ -203,6 +203,7 @@ public class WrongQuestionService {
             for(Object attach : attaDtoList) {
                 String attachJsonStr = JSON.toJSONString(attach);
                 ErrorBookAttachDTO attachDto = JSONObject.parseObject(attachJsonStr, ErrorBookAttachDTO.class);
+                attachDto.setType(2);
                 ErrorBookAttach attachEntry = attachDto.bulidEntry();
                 attachEntry.setIsExplainFileFlag(true);
                 attachList.add(attachEntry);

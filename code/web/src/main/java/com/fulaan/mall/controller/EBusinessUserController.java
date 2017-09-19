@@ -12,7 +12,6 @@ import com.fulaan.mall.service.EBusinessVoucherService;
 import com.fulaan.pojo.Validate;
 import com.fulaan.user.controller.UserController;
 import com.fulaan.user.service.UserService;
-import com.fulaan.utils.KeyWordFilterUtil;
 import com.pojo.app.SessionValue;
 import com.pojo.ebusiness.EVoucherEntry;
 import com.pojo.forum.FInvitationEntry;
@@ -24,6 +23,7 @@ import com.sys.mails.MailUtils;
 import com.sys.utils.MD5Utils;
 import com.sys.utils.RespObj;
 import com.sys.utils.ValidationUtils;
+import io.swagger.annotations.Api;
 import org.apache.commons.httpclient.HttpClient;
 import org.apache.commons.httpclient.HttpStatus;
 import org.apache.commons.httpclient.NameValuePair;
@@ -40,7 +40,6 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
-import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.ByteArrayOutputStream;
@@ -54,6 +53,7 @@ import java.util.regex.Pattern;
 /**
  * Created by fl on 2016/2/3.
  */
+@Api(value="创蓝短信平台",hidden = true)
 @Controller
 @RequestMapping("/mall/users")
 public class EBusinessUserController extends BaseController {

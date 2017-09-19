@@ -4,6 +4,7 @@ import com.fulaan.annotation.SessionNeedless;
 import com.fulaan.base.BaseController;
 import com.fulaan.cache.CacheHandler;
 import com.sys.constants.Constant;
+import io.swagger.annotations.Api;
 import org.bson.types.ObjectId;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -22,7 +23,7 @@ import java.util.Random;
 /**
  * Created by guojing on 2015/10/30.
  */
-
+@Api(value="图片验证",hidden = true)
 @Controller
 @RequestMapping("/verify")
 public class VerifyCodeController extends BaseController {

@@ -3,6 +3,7 @@ package com.fulaan.upload.download;
 import com.fulaan.base.BaseController;
 
 import com.sys.exceptions.IllegalParamException;
+import io.swagger.annotations.Api;
 import org.apache.commons.io.IOUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.stereotype.Controller;
@@ -23,6 +24,7 @@ import java.util.Map;
  * Created by qinbo on 15/6/9.
  * connondownload
  */
+@Api(value="下载远程文件并保存到本地",hidden = true)
 @Controller
 @RequestMapping("/commondownload")
 public class CommonDownloadController extends BaseController {

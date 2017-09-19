@@ -25,6 +25,7 @@ import com.pojo.utils.MongoUtils;
 import com.sys.exceptions.IllegalParamException;
 import com.sys.utils.AvatarUtils;
 import com.sys.utils.RespObj;
+import io.swagger.annotations.Api;
 import org.apache.commons.lang3.StringUtils;
 import org.bson.types.ObjectId;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -41,6 +42,7 @@ import java.util.*;
  * Created by jerry on 2016/10/31.
  * GroupController
  */
+@Api(value="GroupController",hidden = true)
 @Controller
 @RequestMapping("/group")
 public class GroupController extends BaseController {

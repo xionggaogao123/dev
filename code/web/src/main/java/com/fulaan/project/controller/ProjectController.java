@@ -10,6 +10,7 @@ import com.pojo.project.ProjectEntry;
 import com.pojo.project.SubProjectEntry;
 import com.pojo.user.UserEntry;
 import com.sys.utils.RespObj;
+import io.swagger.annotations.Api;
 import org.bson.types.ObjectId;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -21,7 +22,7 @@ import org.springframework.web.servlet.ModelAndView;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.*;
-
+@Api(value="",hidden = true)
 @Controller
 @RequestMapping("/project")
 public class ProjectController extends BaseController {

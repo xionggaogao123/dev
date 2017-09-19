@@ -10,6 +10,7 @@ import com.fulaan.forum.service.FSectionService;
 import com.pojo.fcommunity.Banner;
 import com.pojo.forum.FSectionCountDTO;
 import com.sys.constants.Constant;
+import io.swagger.annotations.Api;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -22,6 +23,7 @@ import java.util.*;
  * Created by jerry on 2016/9/8.
  * Index索引
  */
+@Api(value="Index索引",hidden = true)
 @Controller
 public class IndexController extends BaseController {
 

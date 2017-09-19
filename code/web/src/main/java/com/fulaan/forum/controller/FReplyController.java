@@ -12,6 +12,7 @@ import com.google.common.io.Files;
 import com.pojo.forum.FReplyDTO;
 import com.pojo.forum.FReplyEntry;
 import com.sys.utils.RespObj;
+import io.swagger.annotations.Api;
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.IOUtils;
 import org.apache.commons.lang.StringUtils;
@@ -33,6 +34,7 @@ import java.util.List;
  * Created by jerry on 2016/10/18.
  * 回复Controller
  */
+@Api(value=" 回复Controller",hidden = true)
 @Controller
 @RequestMapping("/reply")
 public class FReplyController extends BaseController {

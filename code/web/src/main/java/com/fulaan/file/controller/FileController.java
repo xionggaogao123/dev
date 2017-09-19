@@ -7,6 +7,7 @@ import com.fulaan.file.service.FileService;
 import com.sys.constants.Constant;
 import com.sys.exceptions.IllegalParamException;
 import com.sys.utils.RespObj;
+import io.swagger.annotations.Api;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -23,6 +24,7 @@ import java.util.Map;
 /**
  * Created by Caocui on 2015/8/25.
  */
+@Api(value="file1",hidden = true)
 @Controller
 @RequestMapping("/file1")
 public class FileController extends BaseController {

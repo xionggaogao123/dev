@@ -15,6 +15,7 @@ import com.pojo.user.UserRole;
 import com.pojo.user.UserTag;
 import com.sys.utils.DateTimeUtils;
 import com.sys.utils.RespObj;
+import io.swagger.annotations.Api;
 import org.apache.commons.lang3.StringUtils;
 import org.bson.types.ObjectId;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -28,6 +29,7 @@ import java.util.*;
 /**
  * Created by moslpc on 2016/11/30.
  */
+@Api(value="",hidden = true)
 @Controller
 @RequestMapping("/mate")
 public class PlayMateController extends BaseController {

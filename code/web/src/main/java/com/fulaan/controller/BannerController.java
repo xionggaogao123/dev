@@ -10,6 +10,7 @@ import com.pojo.fcommunity.BannerEntity;
 import com.pojo.user.UserRole;
 import com.sys.utils.QiniuFileUtils;
 import com.sys.utils.RespObj;
+import io.swagger.annotations.Api;
 import org.bson.types.ObjectId;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -24,6 +25,7 @@ import java.util.Map;
  * Created by jerry on 2016/9/7.
  * Banner管理
  */
+@Api(value="Banner管理",hidden = true)
 @Controller
 public class BannerController {
 

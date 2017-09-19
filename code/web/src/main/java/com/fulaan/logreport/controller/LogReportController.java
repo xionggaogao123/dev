@@ -7,6 +7,7 @@ import com.pojo.user.UserRole;
 import com.sys.mails.MailUtils;
 import com.sys.props.Resources;
 import com.sys.utils.DateTimeUtils;
+import io.swagger.annotations.Api;
 import org.apache.log4j.Logger;
 import org.apache.poi.hssf.usermodel.HSSFWorkbook;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -20,6 +21,7 @@ import java.util.Vector;
 /**
  * Created by guojing on 2016/5/18.
  */
+@Api(value="logreport",hidden = true)
 @Controller
 @RequestMapping("/logreport")
 public class LogReportController extends BaseController {

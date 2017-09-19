@@ -9,6 +9,7 @@ import com.fulaan.pojo.PageModel;
 import com.fulaan.util.DateUtils;
 import com.pojo.playmate.FActivityEntry;
 import com.sys.utils.RespObj;
+import io.swagger.annotations.Api;
 import org.apache.commons.lang3.StringUtils;
 import org.bson.types.ObjectId;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -23,6 +24,7 @@ import java.text.ParseException;
  * Created by moslpc on 2016/11/30.
  * 找活动
  */
+@Api(value="找活动",hidden = true)
 @Controller
 @RequestMapping("/factivity")
 public class FActivityController extends BaseController {

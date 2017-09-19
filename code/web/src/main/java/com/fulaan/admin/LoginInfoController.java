@@ -3,6 +3,7 @@ package com.fulaan.admin;
 import com.fulaan.pojo.FLoginLog;
 import com.fulaan.user.service.UserService;
 import com.fulaan.util.DateUtils;
+import io.swagger.annotations.Api;
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.IOUtils;
 import org.apache.poi.hssf.usermodel.HSSFWorkbook;
@@ -22,6 +23,7 @@ import java.util.List;
  * Created by jerry on 2016/10/20.
  * 登录数据
  */
+@Api(value="登录数据",hidden = true)
 @Controller
 @RequestMapping("/loginInfo")
 public class LoginInfoController {

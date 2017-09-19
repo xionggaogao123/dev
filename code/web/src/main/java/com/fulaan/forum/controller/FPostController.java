@@ -31,6 +31,7 @@ import com.sys.props.Resources;
 import com.sys.utils.AvatarUtils;
 import com.sys.utils.FileUtil;
 import com.sys.utils.RespObj;
+import io.swagger.annotations.Api;
 import org.apache.commons.io.FilenameUtils;
 import org.apache.commons.lang.StringUtils;
 import org.apache.log4j.Logger;
@@ -57,6 +58,7 @@ import java.util.regex.Pattern;
  * Created by admin on 2016/5/31.
  * 帖子、板块处理中心
  */
+@Api(value="帖子、板块处理中心",hidden = true)
 @Controller
 @RequestMapping("/forum")
 public class FPostController extends BaseController {

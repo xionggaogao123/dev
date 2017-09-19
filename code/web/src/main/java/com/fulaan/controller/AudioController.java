@@ -3,6 +3,7 @@ package com.fulaan.controller;
 import com.fulaan.annotation.SessionNeedless;
 import com.fulaan.utils.QiniuFileUtils;
 import com.sys.utils.RespObj;
+import io.swagger.annotations.Api;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
@@ -15,6 +16,7 @@ import org.springframework.web.multipart.MultipartFile;
  * Created by jerry on 2016/8/23.
  * 处理上传语音的接口
  */
+@Api(value="处理上传语音的接口",hidden = true)
 @Controller
 @RequestMapping("/audio")
 public class AudioController {

@@ -14,6 +14,7 @@ import com.pojo.user.UserEntry;
 import com.sys.constants.Constant;
 import com.sys.utils.AvatarUtils;
 import com.sys.utils.MD5Utils;
+import io.swagger.annotations.Api;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.log4j.Logger;
 import org.bson.types.ObjectId;
@@ -35,7 +36,7 @@ import java.util.Map;
 /**
  * Created by qinbo on 15/4/1.
  */
-
+@Api(value="个人中心",hidden = true)
 @Controller
 @RequestMapping("/personal")
 public class PersonalCenterController extends BaseController {

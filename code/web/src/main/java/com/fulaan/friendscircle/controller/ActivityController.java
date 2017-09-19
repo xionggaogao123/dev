@@ -22,6 +22,7 @@ import com.sys.constants.Constant;
 import com.sys.props.Resources;
 import com.sys.utils.HtmlUtils;
 import com.sys.utils.ImageUtils;
+import io.swagger.annotations.Api;
 import org.apache.commons.lang.StringUtils;
 import org.apache.log4j.Logger;
 import org.bson.types.ObjectId;
@@ -47,6 +48,7 @@ import java.util.*;
 /**
  * Created by yan on 2015/2/26.
  */
+@Api(value="activity",hidden = true)
 @Controller
 @RequestMapping("/activity")
 public class ActivityController extends BaseController {

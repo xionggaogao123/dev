@@ -11,6 +11,7 @@ import com.pojo.letter.LetterRecordEntry.LetterRecordState;
 import com.pojo.user.UserDetailInfoDTO;
 import com.pojo.user.UserEntry;
 import com.sys.constants.Constant;
+import io.swagger.annotations.Api;
 import org.apache.log4j.Logger;
 import org.bson.types.ObjectId;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -26,6 +27,7 @@ import java.util.*;
  *
  * @author fourer
  */
+@Api(value="信件controller",hidden = true)
 @Controller
 @RequestMapping("/letter")
 public class LetterController extends BaseController {

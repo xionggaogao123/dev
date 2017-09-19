@@ -53,11 +53,11 @@ import fulaan.social.exception.ConnectException;
 import fulaan.social.factory.AuthFactory;
 import fulaan.social.model.AuthType;
 import fulaan.social.model.UserInfo;
+import io.swagger.annotations.Api;
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.lang.StringUtils;
 import org.apache.http.client.ClientProtocolException;
 import org.apache.log4j.Logger;
-import org.apache.xmlbeans.impl.regex.REUtil;
 import org.bson.types.ObjectId;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -87,6 +87,7 @@ import java.util.*;
  *
  * @author fourer
  */
+@Api(value="用户controller,处理用户请求，比如登录",hidden = true)
 @Controller
 @RequestMapping("/user")
 public class UserController extends BaseController {

@@ -4,6 +4,7 @@ import com.fulaan.base.BaseController;
 import com.fulaan.dto.MessageDTO;
 import com.fulaan.forum.service.FInformationService;
 import com.sys.utils.RespObj;
+import io.swagger.annotations.Api;
 import org.bson.types.ObjectId;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -20,6 +21,7 @@ import java.util.Map;
  * Created by jerry on 2016/9/13.
  * 消息Rest API[私信，系统消息,点赞]
  */
+@Api(value="消息Rest API[私信，系统消息,点赞]",hidden = true)
 @Controller
 @RequestMapping("/v1/message")
 public class MessageController extends BaseController {

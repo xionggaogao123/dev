@@ -34,6 +34,7 @@ import com.sys.props.Resources;
 import com.sys.utils.DateTimeUtils;
 import com.sys.utils.RespObj;
 import com.sys.utils.ValidationUtils;
+import io.swagger.annotations.Api;
 import org.apache.commons.lang.StringUtils;
 import org.apache.log4j.Logger;
 import org.bson.types.ObjectId;
@@ -57,6 +58,7 @@ import java.util.*;
  *
  * @author fourer
  */
+@Api(value="电子商务订单实现",hidden = true)
 @Controller
 @RequestMapping("/mall/order")
 public class EBusinessOrderController extends BaseController {

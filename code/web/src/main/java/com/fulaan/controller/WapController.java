@@ -5,11 +5,10 @@ import com.fulaan.base.BaseController;
 import com.fulaan.cache.CacheHandler;
 import com.pojo.app.SessionValue;
 import com.sys.constants.Constant;
-import com.sys.utils.HttpClientUtils;
 import fulaan.social.connect.Auth;
 import fulaan.social.factory.AuthFactory;
 import fulaan.social.model.AuthType;
-import org.apache.commons.lang3.StringUtils;
+import io.swagger.annotations.Api;
 import org.bson.types.ObjectId;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestHeader;
@@ -18,13 +17,13 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import java.net.URLDecoder;
 import java.util.Map;
 
 /**
  * create by Jerry 2016/8/17
  * wap 端的 controller
  */
+@Api(value=" wap 端的 controller",hidden = true)
 @Controller
 @RequestMapping("/wap")
 public class WapController extends BaseController {

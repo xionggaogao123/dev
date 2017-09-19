@@ -23,6 +23,7 @@ import com.sys.exceptions.IllegalParamException;
 import com.sys.utils.MD5Utils;
 import com.sys.utils.RespObj;
 import com.sys.utils.ValidationUtils;
+import io.swagger.annotations.Api;
 import org.apache.commons.io.FilenameUtils;
 import org.apache.commons.lang.StringUtils;
 import org.apache.log4j.Logger;
@@ -45,6 +46,7 @@ import java.util.Map;
 /**
  * Created by fl on 2016/1/14.
  */
+@Api(value="购物车实现",hidden = true)
 @Controller
 @RequestMapping("/mall")
 public class EBusinessGoodsController extends BaseController {

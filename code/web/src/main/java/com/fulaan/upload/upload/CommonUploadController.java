@@ -12,7 +12,7 @@ import com.pojo.video.VideoEntry;
 import com.pojo.video.VideoSourceType;
 import com.sys.constants.Constant;
 import com.sys.utils.RespObj;
-
+import io.swagger.annotations.Api;
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.FilenameUtils;
 import org.apache.log4j.Logger;
@@ -25,18 +25,19 @@ import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.multipart.MultipartHttpServletRequest;
 import org.springframework.web.multipart.commons.CommonsMultipartResolver;
 
-
-import java.io.*;
-import java.util.*;
-
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import java.io.*;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 /**
  * 普通的文件，视频上传
  * Created by qinbo on 15/5/13.
  */
-
+@Api(value="普通的文件，视频上传",hidden = true)
 @Controller
 @RequestMapping("/commonupload")
 public class CommonUploadController extends BaseController {

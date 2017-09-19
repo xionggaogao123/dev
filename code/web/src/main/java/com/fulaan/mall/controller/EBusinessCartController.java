@@ -12,6 +12,7 @@ import com.pojo.forum.FLogDTO;
 import com.pojo.utils.MongoUtils;
 import com.sys.exceptions.IllegalParamException;
 import com.sys.utils.RespObj;
+import io.swagger.annotations.Api;
 import org.apache.log4j.Logger;
 import org.bson.types.ObjectId;
 import org.springframework.stereotype.Controller;
@@ -29,6 +30,7 @@ import java.util.Map;
  *
  * @author fourer
  */
+@Api(value="购物车实现",hidden = true)
 @Controller
 @RequestMapping("/mall/cars")
 public class EBusinessCartController extends BaseController {

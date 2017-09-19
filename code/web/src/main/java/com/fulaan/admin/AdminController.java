@@ -28,6 +28,7 @@ import com.sys.constants.Constant;
 import com.sys.exceptions.IllegalParamException;
 import com.sys.utils.DateTimeUtils;
 import com.sys.utils.RespObj;
+import io.swagger.annotations.Api;
 import org.apache.commons.lang.StringUtils;
 import org.apache.commons.lang.math.RandomUtils;
 import org.apache.log4j.Logger;
@@ -43,6 +44,7 @@ import java.util.*;
  * Created by fl on 2016/1/29.
  * 管理员
  */
+@Api(value="管理员",hidden = true)
 @RequestMapping("/admin")
 @Controller
 public class AdminController extends BaseController {

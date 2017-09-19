@@ -13,6 +13,7 @@ import com.pojo.user.UserDetailInfoDTO;
 import com.pojo.user.UserRole;
 import com.sys.constants.Constant;
 
+import io.swagger.annotations.Api;
 import org.apache.commons.lang.StringUtils;
 import org.apache.log4j.Logger;
 import org.bson.types.ObjectId;
@@ -29,6 +30,7 @@ import java.util.*;
 /**
  * Created by Hao on 15-2-26.
  */
+@Api(value="friendcircle",hidden = true)
 @Controller
 @RequestMapping("/friendcircle")
 public class FriendsController extends BaseController {

@@ -19,6 +19,7 @@ import com.pojo.user.UserEntry;
 import com.sys.constants.Constant;
 import com.sys.utils.AvatarUtils;
 import com.sys.utils.RespObj;
+import io.swagger.annotations.Api;
 import org.apache.commons.lang.StringUtils;
 import org.bson.types.ObjectId;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -37,6 +38,7 @@ import java.util.Map;
  * Created by jerry on 2016/10/25.
  * 二维码入口
  */
+@Api(value="二维码入口",hidden = true)
 @Controller
 @RequestMapping("/qr")
 public class QRController extends BaseController {

@@ -4,6 +4,7 @@ import com.fulaan.annotation.ObjectIdType;
 import com.fulaan.base.BaseController;
 import com.fulaan.mall.service.EBusinessVoucherService;
 import com.pojo.ebusiness.EVoucherDTO;
+import io.swagger.annotations.Api;
 import org.bson.types.ObjectId;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -16,6 +17,7 @@ import java.util.Map;
 /**
  * Created by fl on 2016/3/7.
  */
+@Api(value="优惠券",hidden = true)
 @Controller
 @RequestMapping("/mall/vouchers")
 public class EBusinessVoucherController extends BaseController {

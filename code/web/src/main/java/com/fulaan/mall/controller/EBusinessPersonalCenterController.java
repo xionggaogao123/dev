@@ -14,6 +14,7 @@ import com.pojo.user.UserEntry;
 import com.sys.utils.MD5Utils;
 import com.sys.utils.RespObj;
 import com.sys.utils.ValidationUtils;
+import io.swagger.annotations.Api;
 import org.apache.commons.lang.StringUtils;
 import org.bson.types.ObjectId;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -31,7 +32,7 @@ import java.util.*;
 /**
  * Created by wangkaidong on 2016/4/12.
  */
-
+@Api(value="",hidden = true)
 @Controller
 @RequestMapping("/mall/userCenter")
 public class EBusinessPersonalCenterController extends BaseController {

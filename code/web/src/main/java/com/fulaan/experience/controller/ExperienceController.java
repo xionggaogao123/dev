@@ -10,6 +10,7 @@ import com.pojo.log.LogType;
 import com.pojo.user.ExpLogType;
 import com.pojo.user.UserDetailInfoDTO;
 import com.pojo.user.UserRole;
+import io.swagger.annotations.Api;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -21,6 +22,7 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import java.util.HashMap;
 import java.util.Map;
 
+@Api(value="",hidden = true)
 @Controller
 @RequestMapping("/experience")
 public class ExperienceController extends BaseController {

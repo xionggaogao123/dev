@@ -7,6 +7,7 @@ import com.fulaan.friendscircle.service.FriendApplyService;
 import com.fulaan.friendscircle.service.FriendService;
 import com.pojo.activity.FriendApply;
 import com.sys.utils.RespObj;
+import io.swagger.annotations.Api;
 import org.bson.types.ObjectId;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -22,6 +23,7 @@ import java.util.Map;
  * Created by jerry on 2016/10/24.
  * 好友 Controller
  */
+@Api(value="好友 Controller",hidden = true)
 @Controller
 @RequestMapping("/friend")
 public class FriendController extends BaseController {

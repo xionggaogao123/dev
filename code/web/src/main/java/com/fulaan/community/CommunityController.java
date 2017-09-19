@@ -43,6 +43,7 @@ import com.sys.utils.AvatarUtils;
 import com.sys.utils.DateTimeUtils;
 import com.sys.utils.QiniuFileUtils;
 import com.sys.utils.RespObj;
+import io.swagger.annotations.Api;
 import org.apache.commons.codec.binary.Base64;
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.FilenameUtils;
@@ -72,6 +73,7 @@ import java.util.*;
  * Created by jerry on 2016/10/24.
  * 社区Controller
  */
+@Api(value="社区Controller",hidden = true)
 @Controller
 @RequestMapping("/community")
 public class CommunityController extends BaseController {

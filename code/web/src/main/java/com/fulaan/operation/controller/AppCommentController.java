@@ -63,6 +63,10 @@ public class AppCommentController extends BaseController {
      * 查找当前老师今天发布的作业
      * @return
      */
+    @ApiOperation(value = "查找当前老师今天发布的作业", httpMethod = "GET", produces = "application/json")
+    @ApiResponses( value = {@ApiResponse(code = 200, message = "Successful — 请求已完成",response = String.class),
+            @ApiResponse(code = 400, message = "请求中有语法问题，或不能满足请求"),
+            @ApiResponse(code = 500, message = "服务器不能完成请求")})
     @RequestMapping("/selectListByTeacherId")
     @ResponseBody
     public String selectListByTeacherId(){
@@ -84,6 +88,10 @@ public class AppCommentController extends BaseController {
      * 查找当前家长收到的作业
      * @return
      */
+    @ApiOperation(value = "查找当前家长收到的作业", httpMethod = "GET", produces = "application/json")
+    @ApiResponses( value = {@ApiResponse(code = 200, message = "Successful — 请求已完成",response = String.class),
+            @ApiResponse(code = 400, message = "请求中有语法问题，或不能满足请求"),
+            @ApiResponse(code = 500, message = "服务器不能完成请求")})
     @RequestMapping("/selectListFromParent")
     @ResponseBody
     public String selectListFromParent(){
@@ -104,9 +112,13 @@ public class AppCommentController extends BaseController {
      * 查找当前作业签到的家长名单
      * @return
      */
+    @ApiOperation(value = "查找当前作业签到的家长名单", httpMethod = "POST", produces = "application/json")
+    @ApiResponses( value = {@ApiResponse(code = 200, message = "Successful — 请求已完成",response = String.class),
+            @ApiResponse(code = 400, message = "请求中有语法问题，或不能满足请求"),
+            @ApiResponse(code = 500, message = "服务器不能完成请求")})
     @RequestMapping("/selectRecordList")
     @ResponseBody
-    public String selectRecordList(@RequestParam("id") String id,@RequestParam("type") int type){
+    public String selectRecordList(@ApiParam(name = "id", required = true, value = "作业id") @RequestParam("id") String id,@ApiParam(name = "type", required = true, value = "签到类型") @RequestParam("type") int type){
 
         RespObj respObj=null;
         try {
@@ -125,9 +137,13 @@ public class AppCommentController extends BaseController {
      * 是否签到
      * @return
      */
+    @ApiOperation(value = "是否签到", httpMethod = "POST", produces = "application/json")
+    @ApiResponses( value = {@ApiResponse(code = 200, message = "Successful — 请求已完成",response = String.class),
+            @ApiResponse(code = 400, message = "请求中有语法问题，或不能满足请求"),
+            @ApiResponse(code = 500, message = "服务器不能完成请求")})
     @RequestMapping("/isSign")
     @ResponseBody
-    public String isSign(@RequestParam("date") String date){
+    public String isSign(@ApiParam(name = "date", required = true, value = "日期（yyyy-MM-dd）") @RequestParam("date") String date){
         RespObj respObj=null;
         try {
             respObj = RespObj.SUCCESS;
@@ -146,9 +162,13 @@ public class AppCommentController extends BaseController {
      * 签到
      * @return
      */
+    @ApiOperation(value = "签到", httpMethod = "POST", produces = "application/json")
+    @ApiResponses( value = {@ApiResponse(code = 200, message = "Successful — 请求已完成",response = String.class),
+            @ApiResponse(code = 400, message = "请求中有语法问题，或不能满足请求"),
+            @ApiResponse(code = 500, message = "服务器不能完成请求")})
     @RequestMapping("/goSign")
     @ResponseBody
-    public String goSign(@RequestParam("qid") String qid){
+    public String goSign(@ApiParam(name = "qid", required = true, value = "签到id") @RequestParam("qid") String qid){
         RespObj respObj=null;
         try {
             respObj = RespObj.SUCCESS;
@@ -166,9 +186,13 @@ public class AppCommentController extends BaseController {
      * 查找当前当前年份用户发放作业情况名单
      * @return
      */
+    @ApiOperation(value = "查找当前当前年份用户发放作业情况名单", httpMethod = "POST", produces = "application/json")
+    @ApiResponses( value = {@ApiResponse(code = 200, message = "Successful — 请求已完成",response = String.class),
+            @ApiResponse(code = 400, message = "请求中有语法问题，或不能满足请求"),
+            @ApiResponse(code = 500, message = "服务器不能完成请求")})
     @RequestMapping("/selectResultList")
     @ResponseBody
-    public String selectResultList(@RequestParam("month") int month){
+    public String selectResultList(@ApiParam(name = "month", required = true, value = "年份（yyyy）") @RequestParam("month") int month){
 
         RespObj respObj=null;
         try {
@@ -187,9 +211,13 @@ public class AppCommentController extends BaseController {
      * 查找当前点击的事件老师/家长发放作业情况名单
      * @return
      */
+    @ApiOperation(value = "查找当前点击的事件老师/家长发放作业情况名单", httpMethod = "POST", produces = "application/json")
+    @ApiResponses( value = {@ApiResponse(code = 200, message = "Successful — 请求已完成",response = String.class),
+            @ApiResponse(code = 400, message = "请求中有语法问题，或不能满足请求"),
+            @ApiResponse(code = 500, message = "服务器不能完成请求")})
     @RequestMapping("/selectDateList")
     @ResponseBody
-    public String selectDateList(@RequestParam("date") String date){
+    public String selectDateList(@ApiParam(name = "date", required = true, value = "日期（yyyy-MM-dd）") @RequestParam("date") String date){
 
         RespObj respObj=null;
         try {
@@ -208,9 +236,13 @@ public class AppCommentController extends BaseController {
      * 查找当前点击的事件学生收到作业情况名单
      * @return
      */
+    @ApiOperation(value = "查找当前点击的事件学生收到作业情况名单", httpMethod = "POST", produces = "application/json")
+    @ApiResponses( value = {@ApiResponse(code = 200, message = "Successful — 请求已完成",response = String.class),
+            @ApiResponse(code = 400, message = "请求中有语法问题，或不能满足请求"),
+            @ApiResponse(code = 500, message = "服务器不能完成请求")})
     @RequestMapping("/getStuLit")
     @ResponseBody
-    public String getStuLit(@RequestParam("date") String date){
+    public String getStuLit(@ApiParam(name = "date", required = true, value = "日期（yyyy-MM-dd）") @RequestParam("date") String date){
         RespObj respObj=null;
         try {
             respObj = RespObj.SUCCESS;
@@ -228,9 +260,13 @@ public class AppCommentController extends BaseController {
      * 根据作业id查找当前评论列表
      * @return
      */
+    @ApiOperation(value = "根据作业id查找当前评论列表", httpMethod = "POST", produces = "application/json")
+    @ApiResponses( value = {@ApiResponse(code = 200, message = "Successful — 请求已完成",response = String.class),
+            @ApiResponse(code = 400, message = "请求中有语法问题，或不能满足请求"),
+            @ApiResponse(code = 500, message = "服务器不能完成请求")})
     @RequestMapping("/getOperationList")
     @ResponseBody
-    public String getOperationList(@RequestParam("id") String id){
+    public String getOperationList(@ApiParam(name = "id", required = true, value = "作业id") @RequestParam("id") String id){
 
         RespObj respObj=null;
         try {

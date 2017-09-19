@@ -26,6 +26,7 @@ import com.sys.constants.Constant;
 import com.sys.exceptions.FileUploadException;
 import com.sys.exceptions.IllegalParamException;
 import com.sys.utils.RespObj;
+import io.swagger.annotations.Api;
 import org.apache.commons.io.FilenameUtils;
 import org.apache.commons.lang.StringUtils;
 import org.apache.log4j.Logger;
@@ -51,6 +52,7 @@ import java.util.*;
  * <p/>
  * 论坛个人中心Controller
  */
+@Api(value="论坛个人中心Controller",hidden = true)
 @Controller
 @RequestMapping("/forum/userCenter")
 public class UserCenterController extends BaseController {

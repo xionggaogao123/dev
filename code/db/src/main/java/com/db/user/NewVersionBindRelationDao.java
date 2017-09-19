@@ -94,4 +94,14 @@ public class NewVersionBindRelationDao extends BaseDao{
         }
         return entries;
     }
+
+    public void delNewVersionEntry(ObjectId parentId,ObjectId studentId){
+        BasicDBObject query = new BasicDBObject();
+        query.append("muid",parentId);
+        query.append("uid",studentId);
+        BasicDBObject updateValue = new BasicDBObject()
+                .append(Constant.MONGO_SET,
+                        new BasicDBObject("ir", 1));
+        update(MongoFacroty.getAppDB(), Constant.COLLECTION_NEW_VERSION_BIND_RELATION, query, updateValue);
+    }
 }

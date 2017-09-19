@@ -202,4 +202,9 @@ public class NewVersionBindService {
     }
 
 
+    public void delNewVersionEntry(ObjectId parentId,ObjectId studentId){
+        newVersionBindRelationDao.delNewVersionEntry(parentId,studentId);
+    }
+
+
 }

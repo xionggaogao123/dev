@@ -22,6 +22,7 @@ public class CommunityDTO {
     private String qrUrl;
     private String createTime;
     private String owerId;
+    private String owerName;
 
     private List<MemberDTO> members;
     private MemberDTO head;
@@ -62,6 +63,14 @@ public class CommunityDTO {
         this.owerId = communityEntry.getOwerID().toString();
         this.emChatId = communityEntry.getEmChatId();
         this.open = communityEntry.getOpen();
+    }
+
+    public String getOwerName() {
+        return owerName;
+    }
+
+    public void setOwerName(String owerName) {
+        this.owerName = owerName;
     }
 
     public MemberDTO getMine() {

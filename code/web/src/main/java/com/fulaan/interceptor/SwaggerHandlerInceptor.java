@@ -16,7 +16,7 @@ public class SwaggerHandlerInceptor extends HandlerInterceptorAdapter {
         System.out.println(request.getContextPath());
         if(request.getRequestURI().contains("swagger-resources/configuration/ui.do")) {
             response.sendRedirect("/entrance.do");
-            return false;
+            return true;
         }else{
             return true;
         }

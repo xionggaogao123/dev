@@ -21,6 +21,22 @@ public class NewVersionBindRelationDao extends BaseDao{
         return entry.getID();
     }
 
+    public void perfectNewVersionInfo(ObjectId bindId,
+                                      String provinceName,
+                                      String regionName,
+                                      String regionAreaName,
+                                      String schoolName){
+        BasicDBObject query=new BasicDBObject(Constant.ID,bindId);
+        BasicDBObject updateValue= new BasicDBObject(Constant.MONGO_SET,new BasicDBObject()
+                .append("pn",provinceName)
+                .append("rd",regionName)
+                .append("ra",regionAreaName)
+                .append("sn",schoolName));
+        update(MongoFacroty.getAppDB(), Constant.COLLECTION_NEW_VERSION_BIND_RELATION,query,updateValue);
+    }
+
+
+
     public NewVersionBindRelationEntry getBindEntry(ObjectId userId){
         BasicDBObject query = new BasicDBObject()
                 .append("uid",userId);

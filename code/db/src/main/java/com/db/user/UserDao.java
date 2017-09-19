@@ -1052,11 +1052,19 @@ public class UserDao extends BaseDao {
     public int updateUserBirthDateAndSex(ObjectId uid, int sex,long birthDate,String avatar,String nickName) {
         BasicDBObject query = new BasicDBObject()
                 .append(Constant.ID, uid);
-        BasicDBObject updateValue = new BasicDBObject()
-                .append("bir", birthDate)
-                .append("avt", avatar)
-                .append("sex", sex)
-                .append("nnm",nickName);
+        BasicDBObject updateValue = new BasicDBObject();
+        if(birthDate!=-1) {
+            updateValue.append("bir", birthDate);
+        }
+        if(StringUtils.isNotBlank(avatar)) {
+            updateValue.append("avt", avatar);
+        }
+        if(sex!=-1) {
+            updateValue.append("sex", sex);
+        }
+        if(StringUtils.isNotBlank(nickName)) {
+            updateValue.append("nnm", nickName);
+        }
         BasicDBObject update = new BasicDBObject()
                 .append(Constant.MONGO_SET, updateValue);
         WriteResult writeResult = update(MongoFacroty.getAppDB(), Constant.COLLECTION_USER_NAME, query, update);

@@ -34,19 +34,36 @@ public class NewVersionBindController extends BaseController {
     private NewVersionBindService newVersionBindService;
 
 
+
+    @RequestMapping("/perfectNewVersionInfo")
+    @ResponseBody
+    public RespObj perfectNewVersionInfo(
+            @ObjectIdType ObjectId bindId,
+            int sex,String birthDate,
+            String provinceName,
+            String regionName,
+            String regionAreaName,
+            String avatar,
+            String schoolName,
+            int gradeType
+    ){
+        RespObj respObj = new RespObj(Constant.FAILD_CODE);
+        try{
+            newVersionBindService.perfectNewVersionInfo(bindId, sex, birthDate, provinceName, regionName, regionAreaName, schoolName, avatar,gradeType);
+            respObj.setCode(Constant.SUCCESS_CODE);
+            respObj.setMessage("完善信息成功！");
+        }catch (Exception e){
+            respObj.setMessage(e.getMessage());
+        }
+        return respObj;
+    }
+
+
     /**
      * 填写信息绑定接口
      * @param userId
      * @param nickName
-     * @param sex
-     * @param birthDate
-     * @param provinceName
-     * @param regionName
-     * @param regionAreaName
      * @param relation
-     * @param avatar
-     * @param schoolName
-     * @param gradeType
      * @return
      */
     @RequestMapping("/saveNewVersionEntry")
@@ -54,18 +71,11 @@ public class NewVersionBindController extends BaseController {
     public RespObj saveNewVersionEntry(
             @ObjectIdType ObjectId userId,
             String nickName,
-            int sex,String birthDate,
-            String provinceName,
-            String regionName,
-            String regionAreaName,
-            int relation,
-            String avatar,
-            String schoolName,
-            int gradeType){
+            int relation){
         RespObj respObj = new RespObj(Constant.FAILD_CODE);
         try{
-            newVersionBindService.saveNewVersionBindRelationEntry(getUserId(),userId, sex, birthDate,provinceName, regionName, regionAreaName, relation, schoolName,avatar,
-                    gradeType,nickName);
+            newVersionBindService.saveNewVersionBindRelationEntry(getUserId(),userId, relation,
+                    nickName);
             respObj.setCode(Constant.SUCCESS_CODE);
             respObj.setMessage("绑定成功！");
         }catch (Exception e){

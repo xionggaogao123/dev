@@ -44,6 +44,40 @@ public class NewVersionBindService {
     private WrongQuestionService wrongQuestionService;
 
 
+    public void perfectNewVersionInfo(
+            ObjectId bindId,
+            int sex,String birthDate,
+            String provinceName,
+            String regionName,
+            String regionAreaName,
+            String schoolName,
+            String avator,
+            int gradeType
+    ){
+        try {
+            NewVersionBindRelationEntry entry = newVersionBindRelationDao.getEntry(bindId);
+            if (null != entry) {
+                ObjectId userId = entry.getUserId();
+                SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd");
+                Date dateBirth = format.parse(birthDate);
+                userService.updateUserBirthDateAndSex(userId, sex, dateBirth.getTime(), avator, "");
+                //绑定年级
+                KeyValue keyValue = wrongQuestionService.getCurrTermType();
+                NewVersionGradeEntry gradeEntry = newVersionGradeDao.getEntryByCondition(userId, keyValue.getValue());
+                if (null == gradeEntry) {
+                    NewVersionGradeDTO dto = new NewVersionGradeDTO(userId.toString(), keyValue.getValue(), gradeType);
+                    wrongQuestionService.addGradeFromUser(dto);
+                } else {
+                    newVersionGradeDao.updateNewVersionGrade(userId, keyValue.getValue(), gradeType);
+                }
+                newVersionBindRelationDao.perfectNewVersionInfo(bindId, provinceName, regionName, regionAreaName, schoolName);
+            }
+        }catch (Exception e){
+            throw new RuntimeException("保存完善信息失败");
+        }
+    }
+
+
     public NewVersionBindRelationDTO getNewVersionBindStudent(ObjectId userId){
         NewVersionBindRelationEntry entry=newVersionBindRelationDao.getBindEntry(userId);
         NewVersionBindRelationDTO dto=new NewVersionBindRelationDTO(entry);
@@ -104,43 +138,25 @@ public class NewVersionBindService {
     public void saveNewVersionBindRelationEntry (
             ObjectId mainUserId,
             ObjectId userId,
-            int sex,String birthDate,
-            String provinceName,
-            String regionName,
-            String regionAreaName,
             int relation,
-            String schoolName,
-            String avatar,
-            int gradeType,
             String nickName
     ){
         NewVersionBindRelationEntry entry= newVersionBindRelationDao.getBindEntry(userId);
         if(null==entry){
             try {
-                SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd");
-                Date dateBirth = format.parse(birthDate);
-                userService.updateUserBirthDateAndSex(userId,sex,dateBirth.getTime(),avatar,nickName);
+                userService.updateUserBirthDateAndSex(userId,-1,-1,"",nickName);
                 NewVersionBindRelationEntry relationEntry
                         =new NewVersionBindRelationEntry(mainUserId,
                         userId,
                         relation,
-                        provinceName,
-                        regionName,
-                        regionAreaName,
-                        schoolName);
+                        Constant.EMPTY,
+                        Constant.EMPTY,
+                        Constant.EMPTY,
+                        Constant.EMPTY);
                 newVersionBindRelationDao.saveNewVersionBindEntry(relationEntry);
                 NewVersionUserRoleEntry userRoleEntry=newVersionUserRoleDao.getEntry(userId);
                 userRoleEntry.setNewRole(Constant.TWO);
                 newVersionUserRoleDao.saveEntry(userRoleEntry);
-                //绑定年级
-                KeyValue keyValue = wrongQuestionService.getCurrTermType();
-                NewVersionGradeEntry gradeEntry = newVersionGradeDao.getEntryByCondition(userId, keyValue.getValue());
-                if(null==gradeEntry) {
-                    NewVersionGradeDTO dto = new NewVersionGradeDTO(userId.toString(),keyValue.getValue(),gradeType);
-                    wrongQuestionService.addGradeFromUser(dto);
-                }else {
-                    newVersionGradeDao.updateNewVersionGrade(userId, keyValue.getValue(),gradeType);
-                }
                 //发送环信消息
 //                List<String> tags = new ArrayList<String>();
 //                tags.add(userId.toString());

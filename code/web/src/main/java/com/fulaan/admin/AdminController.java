@@ -28,7 +28,7 @@ import com.sys.constants.Constant;
 import com.sys.exceptions.IllegalParamException;
 import com.sys.utils.DateTimeUtils;
 import com.sys.utils.RespObj;
-import io.swagger.annotations.Api;
+import io.swagger.annotations.*;
 import org.apache.commons.lang.StringUtils;
 import org.apache.commons.lang.math.RandomUtils;
 import org.apache.log4j.Logger;
@@ -44,7 +44,7 @@ import java.util.*;
  * Created by fl on 2016/1/29.
  * 管理员
  */
-@Api(value="管理员",hidden = true)
+@Api(value="管理员")
 @RequestMapping("/admin")
 @Controller
 public class AdminController extends BaseController {
@@ -84,6 +84,8 @@ public class AdminController extends BaseController {
      *
      * @return /admin/admin
      */
+    @ApiOperation(value = "管理员入口", httpMethod = "GET", produces = "application/json")
+    @ApiResponses( value = {@ApiResponse(code = 200, message = "Successful — 请求已完成",response = String.class)})
     @RequestMapping(method = RequestMethod.GET)
     @UserRoles(UserRole.DISCUSS_MANAGER)
     public String showAdminPage() {
@@ -95,6 +97,8 @@ public class AdminController extends BaseController {
      *
      * @return /admin/addComment
      */
+    @ApiOperation(value = "添加评论、删除商品页面", httpMethod = "GET", produces = "application/json")
+    @ApiResponses( value = {@ApiResponse(code = 200, message = "Successful — 请求已完成",response = String.class)})
     @RequestMapping("/addComment")
     @UserRoles(UserRole.DISCUSS_MANAGER)
     public String showCommentPage() {
@@ -106,6 +110,8 @@ public class AdminController extends BaseController {
      *
      * @return /admin/upsetGoods
      */
+    @ApiOperation(value = "添加/编辑商品页面", httpMethod = "GET", produces = "application/json")
+    @ApiResponses( value = {@ApiResponse(code = 200, message = "Successful — 请求已完成",response = String.class)})
     @RequestMapping("/upsetGoods")
     @UserRoles(UserRole.DISCUSS_MANAGER)
     public String upsetGoods() {
@@ -117,6 +123,8 @@ public class AdminController extends BaseController {
      *
      * @return /admin/setActivity
      */
+    @ApiOperation(value = "编辑帖子页面", httpMethod = "GET", produces = "application/json")
+    @ApiResponses( value = {@ApiResponse(code = 200, message = "Successful — 请求已完成",response = String.class)})
     @RequestMapping("/setActivity")
     @UserRoles(UserRole.DISCUSS_MANAGER)
     public String setActivity() {
@@ -128,6 +136,8 @@ public class AdminController extends BaseController {
      *
      * @return /admin/category
      */
+    @ApiOperation(value = "商品分类", httpMethod = "GET", produces = "application/json")
+    @ApiResponses( value = {@ApiResponse(code = 200, message = "Successful — 请求已完成",response = String.class)})
     @RequestMapping("/category")
     @UserRoles(UserRole.DISCUSS_MANAGER)
     public String eGoodsCategory() {
@@ -139,6 +149,8 @@ public class AdminController extends BaseController {
      *
      * @return /admin/section
      */
+    @ApiOperation(value = "板块管理", httpMethod = "GET", produces = "application/json")
+    @ApiResponses( value = {@ApiResponse(code = 200, message = "Successful — 请求已完成",response = String.class)})
     @RequestMapping("/Section")
     @UserRoles(UserRole.DISCUSS_MANAGER)
     public String section() {
@@ -150,12 +162,15 @@ public class AdminController extends BaseController {
      *
      * @return admin/systemMessage
      */
+    @ApiOperation(value = "系统消息管理", httpMethod = "GET", produces = "application/json")
+    @ApiResponses( value = {@ApiResponse(code = 200, message = "Successful — 请求已完成",response = String.class)})
     @RequestMapping("/SystemMessage")
     @UserRoles(UserRole.DISCUSS_MANAGER)
     public String showSystemMessage() {
         return "admin/systemMessage";
     }
-
+    @ApiOperation(value = "optimizationPlate", httpMethod = "GET", produces = "application/json")
+    @ApiResponses( value = {@ApiResponse(code = 200, message = "Successful — 请求已完成",response = String.class)})
     @RequestMapping("/optimizationPlate")
     @UserRoles(UserRole.DISCUSS_MANAGER)
     public String optimizationPlate() {
@@ -165,6 +180,8 @@ public class AdminController extends BaseController {
     /**
      * 年级分类
      */
+    @ApiOperation(value = "年级分类", httpMethod = "GET", produces = "application/json")
+    @ApiResponses( value = {@ApiResponse(code = 200, message = "Successful — 请求已完成",response = String.class)})
     @RequestMapping("/gradeCategory")
     @UserRoles(UserRole.DISCUSS_MANAGER)
     public String eGradeCategory() {
@@ -174,6 +191,8 @@ public class AdminController extends BaseController {
     /**
      * 商品管理
      */
+    @ApiOperation(value = "商品管理", httpMethod = "GET", produces = "application/json")
+    @ApiResponses( value = {@ApiResponse(code = 200, message = "Successful — 请求已完成",response = String.class)})
     @RequestMapping("/goodsManage")
     @UserRoles(UserRole.DISCUSS_MANAGER)
     public String goodsManage() {
@@ -185,6 +204,8 @@ public class AdminController extends BaseController {
      *
      * @return
      */
+    @ApiOperation(value = "订单管理", httpMethod = "GET", produces = "application/json")
+    @ApiResponses( value = {@ApiResponse(code = 200, message = "Successful — 请求已完成",response = String.class)})
     @RequestMapping("/manageOrders")
     @UserRoles(UserRole.DISCUSS_MANAGER)
     public String manageOrders() {
@@ -196,6 +217,8 @@ public class AdminController extends BaseController {
      *
      * @return
      */
+    @ApiOperation(value = "抵用券管理", httpMethod = "GET", produces = "application/json")
+    @ApiResponses( value = {@ApiResponse(code = 200, message = "Successful — 请求已完成",response = String.class)})
     @RequestMapping("/manageVouchers")
     @UserRoles(UserRole.DISCUSS_MANAGER)
     public String manageVouchers() {
@@ -206,6 +229,8 @@ public class AdminController extends BaseController {
     /**
      * 商品分类上传视频
      */
+    @ApiOperation(value = "商品分类上传视频", httpMethod = "GET", produces = "application/json")
+    @ApiResponses( value = {@ApiResponse(code = 200, message = "Successful — 请求已完成",response = String.class)})
     @RequestMapping("/uploadVideo")
     @UserRoles(UserRole.DISCUSS_MANAGER)
     public String uploadVideo() {
@@ -218,6 +243,8 @@ public class AdminController extends BaseController {
      *
      * @return
      */
+    @ApiOperation(value = "论坛等级界面", httpMethod = "GET", produces = "application/json")
+    @ApiResponses( value = {@ApiResponse(code = 200, message = "Successful — 请求已完成",response = String.class)})
     @RequestMapping("/level")
     @UserRoles(UserRole.DISCUSS_MANAGER)//这个代表只有管理员可以访问
     public String level() {
@@ -230,6 +257,8 @@ public class AdminController extends BaseController {
      * @param model
      * @return appBanner page
      */
+    @ApiOperation(value = "app端banner 管理", httpMethod = "GET", produces = "application/json")
+    @ApiResponses( value = {@ApiResponse(code = 200, message = "Successful — 请求已完成",response = String.class)})
     @RequestMapping("/appBannerManager")
     @UserRoles(UserRole.DISCUSS_MANAGER)
     public String appBannerManager(Map<String, Object> model) {
@@ -244,6 +273,8 @@ public class AdminController extends BaseController {
      *
      * @return page
      */
+    @ApiOperation(value = "PC端banner管理", httpMethod = "GET", produces = "application/json")
+    @ApiResponses( value = {@ApiResponse(code = 200, message = "Successful — 请求已完成",response = String.class)})
     @RequestMapping("/bannerManager")
     @UserRoles(UserRole.DISCUSS_MANAGER)
     public String bannerManager() {
@@ -255,6 +286,8 @@ public class AdminController extends BaseController {
      * 处理数据
      * @return
      */
+    @ApiOperation(value = "处理数据", httpMethod = "GET", produces = "application/json")
+    @ApiResponses( value = {@ApiResponse(code = 200, message = "Successful — 请求已完成",response = String.class)})
     @RequestMapping("/institute")
     @UserRoles(UserRole.DISCUSS_MANAGER)
     public String instituteData() {
@@ -265,6 +298,8 @@ public class AdminController extends BaseController {
      * 处理数据
      * @return
      */
+    @ApiOperation(value = "处理数据", httpMethod = "GET", produces = "application/json")
+    @ApiResponses( value = {@ApiResponse(code = 200, message = "Successful — 请求已完成",response = String.class)})
     @RequestMapping("/batchImage")
     @UserRoles(UserRole.DISCUSS_MANAGER)
     public String batchImage() {
@@ -276,6 +311,8 @@ public class AdminController extends BaseController {
      * 管理评论
      * @return
      */
+    @ApiOperation(value = "管理评论", httpMethod = "GET", produces = "application/json")
+    @ApiResponses( value = {@ApiResponse(code = 200, message = "Successful — 请求已完成",response = String.class)})
     @RequestMapping("/manageCriticism")
     @UserRoles(UserRole.DISCUSS_MANAGER)
     public String manageCriticism() {
@@ -286,6 +323,8 @@ public class AdminController extends BaseController {
      * 管理评论
      * @return
      */
+    @ApiOperation(value = "管理评论", httpMethod = "GET", produces = "application/json")
+    @ApiResponses( value = {@ApiResponse(code = 200, message = "Successful — 请求已完成",response = String.class)})
     @RequestMapping("/manageItemType")
     @UserRoles(UserRole.DISCUSS_MANAGER)
     public String manageItemType() {
@@ -298,6 +337,8 @@ public class AdminController extends BaseController {
      * @param map
      * @return sectionManage page
      */
+    @ApiOperation(value = "板块管理", httpMethod = "POST", produces = "application/json")
+    @ApiResponses( value = {@ApiResponse(code = 200, message = "Successful — 请求已完成",response = String.class)})
     @RequestMapping("/sectionManage")
     @UserRoles(UserRole.DISCUSS_MANAGER)
     public String sectionManage(Map<String, Object> map) {
@@ -315,6 +356,8 @@ public class AdminController extends BaseController {
      * @param eGoodCommentDTO
      * @return
      */
+    @ApiOperation(value = "添加评论", httpMethod = "POST", produces = "application/json")
+    @ApiResponses( value = {@ApiResponse(code = 200, message = "Successful — 请求已完成",response = RespObj.class)})
     @RequestMapping(value = "/goods/{goodsId}/comments", method = RequestMethod.POST)
     @ResponseBody
     @UserRoles(UserRole.DISCUSS_MANAGER)
@@ -347,6 +390,8 @@ public class AdminController extends BaseController {
      * @param fPostDTO
      * @return
      */
+    @ApiOperation(value = "更新帖子信息", httpMethod = "PUT", produces = "application/json")
+    @ApiResponses( value = {@ApiResponse(code = 200, message = "Successful — 请求已完成",response = RespObj.class)})
     @RequestMapping(value = "/post/{fpostId}", method = RequestMethod.PUT)
     @ResponseBody
     @UserRoles(UserRole.DISCUSS_MANAGER)
@@ -394,6 +439,8 @@ public class AdminController extends BaseController {
      * @param eGoodsDTO 商品DTO
      * @return RespObj
      */
+    @ApiOperation(value = "更新商品信息", httpMethod = "PUT", produces = "application/json")
+    @ApiResponses( value = {@ApiResponse(code = 200, message = "Successful — 请求已完成",response = RespObj.class)})
     @RequestMapping(value = "/goods/{goodsId}", method = RequestMethod.PUT)
     @ResponseBody
     @UserRoles(UserRole.DISCUSS_MANAGER)
@@ -422,6 +469,8 @@ public class AdminController extends BaseController {
      * @param eGoodsDTO
      * @return
      */
+    @ApiOperation(value = "添加商品", httpMethod = "POST", produces = "application/json")
+    @ApiResponses( value = {@ApiResponse(code = 200, message = "Successful — 请求已完成",response = RespObj.class)})
     @RequestMapping(value = "/goods", method = RequestMethod.POST)
     @ResponseBody
     @UserRoles(UserRole.DISCUSS_MANAGER)
@@ -445,6 +494,8 @@ public class AdminController extends BaseController {
      * @param goodsId
      * @return
      */
+    @ApiOperation(value = "删除商品信息", httpMethod = "DELETE", produces = "application/json")
+    @ApiResponses( value = {@ApiResponse(code = 200, message = "Successful — 请求已完成",response = RespObj.class)})
     @RequestMapping(value = "/goods/{goodsId}", method = RequestMethod.DELETE)
     @ResponseBody
     @UserRoles(UserRole.DISCUSS_MANAGER)
@@ -465,6 +516,8 @@ public class AdminController extends BaseController {
     /**
      * 商品列表
      */
+    @ApiOperation(value = "商品列表", httpMethod = "POST", produces = "application/json")
+    @ApiResponses( value = {@ApiResponse(code = 200, message = "Successful — 请求已完成",response = Map.class)})
     @RequestMapping("/goodsList")
     @ResponseBody
     @UserRoles(UserRole.DISCUSS_MANAGER)
@@ -486,6 +539,8 @@ public class AdminController extends BaseController {
      * @param level
      * @return
      */
+    @ApiOperation(value = "板块列表", httpMethod = "GET", produces = "application/json")
+    @ApiResponses( value = {@ApiResponse(code = 200, message = "Successful — 请求已完成",response = RespObj.class)})
     @RequestMapping(value = "/section", method = RequestMethod.GET)
     @ResponseBody
     @UserRoles(value = {UserRole.DISCUSS_MANAGER, UserRole.DISCUSS_SECTION_MANAGER})
@@ -504,6 +559,8 @@ public class AdminController extends BaseController {
      * @param fSectionDTO
      * @return
      */
+    @ApiOperation(value = "新增板块", httpMethod = "POST", produces = "application/json")
+    @ApiResponses( value = {@ApiResponse(code = 200, message = "Successful — 请求已完成",response = RespObj.class)})
     @RequestMapping(value = "/section", method = RequestMethod.POST)
     @ResponseBody
     @UserRoles(UserRole.DISCUSS_MANAGER)
@@ -524,7 +581,8 @@ public class AdminController extends BaseController {
         }
         return respObj;
     }
-
+    @ApiOperation(value = "updateSection", httpMethod = "POST", produces = "application/json")
+    @ApiResponses( value = {@ApiResponse(code = 200, message = "Successful — 请求已完成",response = RespObj.class)})
     @RequestMapping("/updateSection")
     @ResponseBody
     @UserRoles(UserRole.DISCUSS_MANAGER) //这个代表只有管理员可以访问
@@ -536,6 +594,8 @@ public class AdminController extends BaseController {
     /**
      * 删除板块
      */
+    @ApiOperation(value = "删除板块", httpMethod = "DELETE", produces = "application/json")
+    @ApiResponses( value = {@ApiResponse(code = 200, message = "Successful — 请求已完成",response = RespObj.class)})
     @RequestMapping(value = "/section/{fSectionId}", method = RequestMethod.DELETE)
     @ResponseBody
     @UserRoles(UserRole.DISCUSS_MANAGER)
@@ -552,6 +612,8 @@ public class AdminController extends BaseController {
     /**
      * 更新板块
      */
+    @ApiOperation(value = "更新板块", httpMethod = "PUT", produces = "application/json")
+    @ApiResponses( value = {@ApiResponse(code = 200, message = "Successful — 请求已完成",response = RespObj.class)})
     @RequestMapping(value = "/section/{fSectionId}", method = RequestMethod.PUT)
     @ResponseBody
     @UserRoles(UserRole.DISCUSS_MANAGER)
@@ -565,6 +627,8 @@ public class AdminController extends BaseController {
     /**
      * 更新板块排序
      */
+    @ApiOperation(value = "更新板块排序", httpMethod = "POST", produces = "application/json")
+    @ApiResponses( value = {@ApiResponse(code = 200, message = "Successful — 请求已完成",response = RespObj.class)})
     @RequestMapping(value = "/section/changeSort", method = RequestMethod.POST)
     @ResponseBody
     @UserRoles(UserRole.DISCUSS_MANAGER)
@@ -575,7 +639,8 @@ public class AdminController extends BaseController {
         return respObj;
     }
 
-
+    @ApiOperation(value = "setSectionRemove", httpMethod = "POST", produces = "application/json")
+    @ApiResponses( value = {@ApiResponse(code = 200, message = "Successful — 请求已完成",response = RespObj.class)})
     @RequestMapping(value = "/section/setRemove/{fSectionId}", method = RequestMethod.POST)
     @ResponseBody
     @UserRoles(UserRole.DISCUSS_MANAGER)
@@ -589,6 +654,8 @@ public class AdminController extends BaseController {
     /**
      * 上传首页板块图片
      */
+    @ApiOperation(value = "上传首页板块图片", httpMethod = "POST", produces = "application/json")
+    @ApiResponses( value = {@ApiResponse(code = 200, message = "Successful — 请求已完成",response = RespObj.class)})
     @RequestMapping(value = "/section/uploadImg", method = RequestMethod.POST)
     @ResponseBody
     @UserRoles(UserRole.DISCUSS_MANAGER)
@@ -608,6 +675,8 @@ public class AdminController extends BaseController {
     /**
      * 上传移动端首页图片
      */
+    @ApiOperation(value = "上传移动端首页图片", httpMethod = "POST", produces = "application/json")
+    @ApiResponses( value = {@ApiResponse(code = 200, message = "Successful — 请求已完成",response = RespObj.class)})
     @RequestMapping(value = "/section/uploadImgApp")
     @ResponseBody
     @UserRoles(UserRole.DISCUSS_MANAGER)
@@ -627,6 +696,8 @@ public class AdminController extends BaseController {
     /**
      * 上传移动端首页大图片
      */
+    @ApiOperation(value = "上传移动端首页大图片", httpMethod = "POST", produces = "application/json")
+    @ApiResponses( value = {@ApiResponse(code = 200, message = "Successful — 请求已完成",response = RespObj.class)})
     @RequestMapping(value = "/section/uploadImgBigApp", method = RequestMethod.POST)
     @ResponseBody
     @UserRoles(UserRole.DISCUSS_MANAGER)
@@ -652,6 +723,8 @@ public class AdminController extends BaseController {
      * @param level
      * @return
      */
+    @ApiOperation(value = "商品分类列表", httpMethod = "GET", produces = "application/json")
+    @ApiResponses( value = {@ApiResponse(code = 200, message = "Successful — 请求已完成",response = List.class)})
     @RequestMapping(value = "/eGoodsCategorys", method = RequestMethod.GET)
     @ResponseBody
     @UserRoles(UserRole.DISCUSS_MANAGER)
@@ -670,6 +743,8 @@ public class AdminController extends BaseController {
      * @param eGoodsCategoryDTO
      * @return
      */
+    @ApiOperation(value = "新增商品分类", httpMethod = "POST", produces = "application/json")
+    @ApiResponses( value = {@ApiResponse(code = 200, message = "Successful — 请求已完成",response = RespObj.class)})
     @RequestMapping(value = "/eGoodsCategorys", method = RequestMethod.POST)
     @ResponseBody
     @UserRoles(UserRole.DISCUSS_MANAGER)
@@ -690,6 +765,8 @@ public class AdminController extends BaseController {
     /**
      * 删除商品分类
      */
+    @ApiOperation(value = "删除商品分类", httpMethod = "DELETE", produces = "application/json")
+    @ApiResponses( value = {@ApiResponse(code = 200, message = "Successful — 请求已完成",response = RespObj.class)})
     @RequestMapping(value = "/eGoodsCategorys/{eGoodsCategoryId}", method = RequestMethod.DELETE)
     @ResponseBody
     @UserRoles(UserRole.DISCUSS_MANAGER)
@@ -706,6 +783,8 @@ public class AdminController extends BaseController {
     /**
      * 更新商品分类
      */
+    @ApiOperation(value = "更新商品分类", httpMethod = "PUT", produces = "application/json")
+    @ApiResponses( value = {@ApiResponse(code = 200, message = "Successful — 请求已完成",response = RespObj.class)})
     @RequestMapping(value = "/eGoodsCategorys/{eGoodsCategoryId}", method = RequestMethod.PUT)
     @ResponseBody
     @UserRoles(UserRole.DISCUSS_MANAGER)
@@ -719,6 +798,8 @@ public class AdminController extends BaseController {
     /**
      * 更新商品分类排序
      */
+    @ApiOperation(value = "更新商品分类排序", httpMethod = "POST", produces = "application/json")
+    @ApiResponses( value = {@ApiResponse(code = 200, message = "Successful — 请求已完成",response = RespObj.class)})
     @RequestMapping(value = "/eGoodsCategorys/changeSort", method = RequestMethod.POST)
     @ResponseBody
     @UserRoles(UserRole.DISCUSS_MANAGER)
@@ -732,6 +813,8 @@ public class AdminController extends BaseController {
     /**
      * 上传首页分类图片
      */
+    @ApiOperation(value = "上传首页分类图片", httpMethod = "POST", produces = "application/json")
+    @ApiResponses( value = {@ApiResponse(code = 200, message = "Successful — 请求已完成",response = RespObj.class)})
     @RequestMapping(value = "/eGoodsCategorys/uploadImg", method = RequestMethod.POST)
     @ResponseBody
     @UserRoles(UserRole.DISCUSS_MANAGER)
@@ -751,6 +834,8 @@ public class AdminController extends BaseController {
     /**
      * 上传移动端首页分类图片
      */
+    @ApiOperation(value = "上传移动端首页分类图片", httpMethod = "POST", produces = "application/json")
+    @ApiResponses( value = {@ApiResponse(code = 200, message = "Successful — 请求已完成",response = RespObj.class)})
     @RequestMapping(value = "/eGoodsCategorys/uploadMoblieImg", method = RequestMethod.POST)
     @ResponseBody
     @UserRoles(UserRole.DISCUSS_MANAGER)
@@ -770,6 +855,8 @@ public class AdminController extends BaseController {
     /**
      * 上传移动端首页分类图片
      */
+    @ApiOperation(value = "进行微信绑定操作", httpMethod = "POST", produces = "application/json")
+    @ApiResponses( value = {@ApiResponse(code = 200, message = "Successful — 请求已完成",response = RespObj.class)})
     @RequestMapping(value = "/eGoodsCategorys/uploadMoblieCategoryImg", method = RequestMethod.POST)
     @ResponseBody
     @UserRoles(UserRole.DISCUSS_MANAGER)
@@ -792,6 +879,8 @@ public class AdminController extends BaseController {
     /**
      * 获取年级分类
      */
+    @ApiOperation(value = "获取年级分类", httpMethod = "GET", produces = "application/json")
+    @ApiResponses( value = {@ApiResponse(code = 200, message = "Successful — 请求已完成",response = List.class)})
     @RequestMapping(value = "/eGradeCategories", method = RequestMethod.GET)
     @ResponseBody
     @UserRoles(UserRole.DISCUSS_MANAGER)
@@ -802,6 +891,8 @@ public class AdminController extends BaseController {
     /**
      * 新增年级分类
      */
+    @ApiOperation(value = "新增年级分类", httpMethod = "POST", produces = "application/json")
+    @ApiResponses( value = {@ApiResponse(code = 200, message = "Successful — 请求已完成",response = RespObj.class)})
     @RequestMapping(value = "/eGradeCategories", method = RequestMethod.POST)
     @ResponseBody
     @UserRoles(UserRole.DISCUSS_MANAGER)
@@ -821,6 +912,8 @@ public class AdminController extends BaseController {
     /**
      * 删除年级分类
      */
+    @ApiOperation(value = "删除年级分类", httpMethod = "GET", produces = "application/json")
+    @ApiResponses( value = {@ApiResponse(code = 200, message = "Successful — 请求已完成",response = RespObj.class)})
     @RequestMapping("/deleteEGradeCategory")
     @ResponseBody
     @UserRoles(UserRole.DISCUSS_MANAGER)
@@ -839,7 +932,8 @@ public class AdminController extends BaseController {
 
 
     //======================================================订单==============================================================
-
+    @ApiOperation(value = "订单", httpMethod = "GET", produces = "application/json")
+    @ApiResponses( value = {@ApiResponse(code = 200, message = "Successful — 请求已完成",response = Map.class)})
     @RequestMapping(value = "/orders", method = RequestMethod.GET)
     @ResponseBody
     @UserRoles(UserRole.DISCUSS_MANAGER)
@@ -852,7 +946,8 @@ public class AdminController extends BaseController {
         model.put("pageSize", pageSize);
         return model;
     }
-
+    @ApiOperation(value = "修改订单", httpMethod = "POST", produces = "application/json")
+    @ApiResponses( value = {@ApiResponse(code = 200, message = "Successful — 请求已完成",response = Map.class)})
     @RequestMapping(value = "/orders/{orderId}", method = RequestMethod.POST)
     @ResponseBody
     @UserRoles(UserRole.DISCUSS_MANAGER)
@@ -868,7 +963,8 @@ public class AdminController extends BaseController {
         }
         return model;
     }
-
+    @ApiOperation(value = "修改订单", httpMethod = "POST", produces = "application/json")
+    @ApiResponses( value = {@ApiResponse(code = 200, message = "Successful — 请求已完成",response = RespObj.class)})
     @RequestMapping(value = "/orders/{orderId}/goods/{goodsId}", method = RequestMethod.POST)
     @ResponseBody
     @UserRoles(UserRole.DISCUSS_MANAGER)
@@ -888,6 +984,8 @@ public class AdminController extends BaseController {
     }
 
     //======================================================管理抵用券===============================================
+    @ApiOperation(value = "管理抵用券", httpMethod = "POST", produces = "application/json")
+    @ApiResponses( value = {@ApiResponse(code = 200, message = "Successful — 请求已完成",response = RespObj.class)})
     @RequestMapping(value = "/vouchers", method = RequestMethod.POST)
     @ResponseBody
     @UserRoles(UserRole.DISCUSS_MANAGER)
@@ -903,7 +1001,8 @@ public class AdminController extends BaseController {
         eBusinessVoucherService.addEVouchers(eVoucherEntries);
         return RespObj.SUCCESS;
     }
-
+    @ApiOperation(value = "管理抵用券", httpMethod = "GET", produces = "application/json")
+    @ApiResponses( value = {@ApiResponse(code = 200, message = "Successful — 请求已完成",response = Map.class)})
     @RequestMapping(value = "/vouchers", method = RequestMethod.GET)
     @ResponseBody
     @UserRoles(UserRole.DISCUSS_MANAGER)
@@ -922,6 +1021,8 @@ public class AdminController extends BaseController {
     /**
      * 运费模板界面
      */
+    @ApiOperation(value = "运费模板界面", httpMethod = "GET", produces = "application/json")
+    @ApiResponses( value = {@ApiResponse(code = 200, message = "Successful — 请求已完成",response = String.class)})
     @RequestMapping("/expressTemplate")
     @UserRoles(UserRole.DISCUSS_MANAGER)
     public String toExpTempPage() {
@@ -931,6 +1032,8 @@ public class AdminController extends BaseController {
     /**
      * 运费模板列表(分页)
      */
+    @ApiOperation(value = "运费模板列表(分页)", httpMethod = "GET", produces = "application/json")
+    @ApiResponses( value = {@ApiResponse(code = 200, message = "Successful — 请求已完成",response = Map.class)})
     @RequestMapping("/expTempList")
     @ResponseBody
     @UserRoles(UserRole.DISCUSS_MANAGER)
@@ -949,6 +1052,8 @@ public class AdminController extends BaseController {
     /**
      * 详情/编辑
      */
+    @ApiOperation(value = "详情/编辑", httpMethod = "GET", produces = "application/json")
+    @ApiResponses( value = {@ApiResponse(code = 200, message = "Successful — 请求已完成",response = EExpressTemplateDTO.class)})
     @RequestMapping("/expTempDetail")
     @ResponseBody
     @UserRoles(UserRole.DISCUSS_MANAGER)
@@ -960,6 +1065,8 @@ public class AdminController extends BaseController {
     /**
      * 新增或更新模板
      */
+    @ApiOperation(value = "新增或更新模板", httpMethod = "POST", produces = "application/json")
+    @ApiResponses( value = {@ApiResponse(code = 200, message = "Successful — 请求已完成",response = RespObj.class)})
     @RequestMapping("/saveExpTemplate")
     @ResponseBody
     @UserRoles(UserRole.DISCUSS_MANAGER)
@@ -972,6 +1079,8 @@ public class AdminController extends BaseController {
     /**
      * 删除模板
      */
+    @ApiOperation(value = "删除模板", httpMethod = "GET", produces = "application/json")
+    @ApiResponses( value = {@ApiResponse(code = 200, message = "Successful — 请求已完成",response = RespObj.class)})
     @RequestMapping("/removeExpTemplate")
     @ResponseBody
     @UserRoles(UserRole.DISCUSS_MANAGER)
@@ -984,6 +1093,8 @@ public class AdminController extends BaseController {
     /**
      * 获取运费模板列表(不分页)
      */
+    @ApiOperation(value = "获取运费模板列表(不分页)", httpMethod = "GET", produces = "application/json")
+    @ApiResponses( value = {@ApiResponse(code = 200, message = "Successful — 请求已完成",response = List.class)})
     @RequestMapping("/eTemplateList")
     @ResponseBody
     @UserRoles(UserRole.DISCUSS_MANAGER)
@@ -996,6 +1107,8 @@ public class AdminController extends BaseController {
     /**
      * 新增/更新商品分类视频
      */
+    @ApiOperation(value = "更新商品分类视频", httpMethod = "POST", produces = "application/json")
+    @ApiResponses( value = {@ApiResponse(code = 200, message = "Successful — 请求已完成",response = RespObj.class)})
     @RequestMapping(value = "/video", method = RequestMethod.POST)
     @ResponseBody
     @UserRoles(UserRole.DISCUSS_MANAGER)
@@ -1024,6 +1137,8 @@ public class AdminController extends BaseController {
     /**
      * 删除商品分类视频
      */
+    @ApiOperation(value = "删除商品分类视频", httpMethod = "DELETE", produces = "application/json")
+    @ApiResponses( value = {@ApiResponse(code = 200, message = "Successful — 请求已完成",response = RespObj.class)})
     @RequestMapping(value = "/video", method = RequestMethod.DELETE)
     @ResponseBody
     @UserRoles(UserRole.DISCUSS_MANAGER)
@@ -1042,6 +1157,8 @@ public class AdminController extends BaseController {
     /**
      * 获取商品分类视频列表
      */
+    @ApiOperation(value = "获取商品分类视频列表", httpMethod = "GET", produces = "application/json")
+    @ApiResponses( value = {@ApiResponse(code = 200, message = "Successful — 请求已完成",response = Map.class)})
     @RequestMapping(value = "/video", method = RequestMethod.GET)
     @ResponseBody
     @UserRoles(UserRole.DISCUSS_MANAGER) //这个代表只有管理员可以访问
@@ -1058,6 +1175,8 @@ public class AdminController extends BaseController {
     /**
      * 根据id查询视频
      */
+    @ApiOperation(value = "根据id查询视频", httpMethod = "GET", produces = "application/json")
+    @ApiResponses( value = {@ApiResponse(code = 200, message = "Successful — 请求已完成",response = String.class)})
     @RequestMapping("/video/{videoId}")
     @ResponseBody
     public ECategoryVideoDTO getVIdeoById(@PathVariable("videoId") String videoId) {
@@ -1066,6 +1185,8 @@ public class AdminController extends BaseController {
 
     //===============================================版主管理========================================================================
     //添加管理员
+    @ApiOperation(value = "添加管理员", httpMethod = "POST", produces = "application/json")
+    @ApiResponses( value = {@ApiResponse(code = 200, message = "Successful — 请求已完成",response = RespObj.class)})
     @RequestMapping("/addDiscussAdmin")
     @ResponseBody
     @UserRoles(UserRole.DISCUSS_MANAGER)
@@ -1079,6 +1200,8 @@ public class AdminController extends BaseController {
     }
 
     //添加版主
+    @ApiOperation(value = "添加版主", httpMethod = "POST", produces = "application/json")
+    @ApiResponses( value = {@ApiResponse(code = 200, message = "Successful — 请求已完成",response = RespObj.class)})
     @RequestMapping("/addSectionAdmin")
     @ResponseBody
     @UserRoles(UserRole.DISCUSS_MANAGER)
@@ -1090,7 +1213,8 @@ public class AdminController extends BaseController {
         userService.updateUserRole(entry.getID(), UserRole.DISCUSS_SECTION_MANAGER);
         return RespObj.SUCCESS("修改成功");
     }
-
+    @ApiOperation(value = "deleteMaster", httpMethod = "GET", produces = "application/json")
+    @ApiResponses( value = {@ApiResponse(code = 200, message = "Successful — 请求已完成",response = RespObj.class)})
     @RequestMapping("/deleteMaster")
     @ResponseBody
     @UserRoles(UserRole.DISCUSS_MANAGER)
@@ -1098,7 +1222,8 @@ public class AdminController extends BaseController {
         mUserDao.updateRole(new ObjectId(id), UserRole.STUDENT);
         return RespObj.SUCCESS;
     }
-
+    @ApiOperation(value = "deleteManager", httpMethod = "GET", produces = "application/json")
+    @ApiResponses( value = {@ApiResponse(code = 200, message = "Successful — 请求已完成",response = RespObj.class)})
     @RequestMapping("/deleteManager")
     @ResponseBody
     @UserRoles(UserRole.DISCUSS_MANAGER)
@@ -1108,7 +1233,8 @@ public class AdminController extends BaseController {
     }
 
     private static final Logger logger = Logger.getLogger(AdminController.class);
-
+    @ApiOperation(value = "goodgood", httpMethod = "POST", produces = "application/json")
+    @ApiResponses( value = {@ApiResponse(code = 200, message = "Successful — 请求已完成",response = RespObj.class)})
     @RequestMapping("/goodgood")
     @ResponseBody
     @UserRoles(UserRole.DISCUSS_MANAGER)
@@ -1125,6 +1251,8 @@ public class AdminController extends BaseController {
     /**
      * 系统消息
      **/
+    @ApiOperation(value = "系统消息", httpMethod = "POST", produces = "application/json")
+    @ApiResponses( value = {@ApiResponse(code = 200, message = "Successful — 请求已完成",response = RespObj.class)})
     @RequestMapping("/SystemMsgManage")
     @ResponseBody
     @UserRoles(UserRole.DISCUSS_MANAGER)
@@ -1147,19 +1275,22 @@ public class AdminController extends BaseController {
     }
 
     //========================================================================================================================
-
+    @ApiOperation(value = "showArticleManage", httpMethod = "GET", produces = "application/json")
+    @ApiResponses( value = {@ApiResponse(code = 200, message = "Successful — 请求已完成",response = String.class)})
     @RequestMapping("/articleManager")
     @UserRoles(UserRole.DISCUSS_MANAGER)
     public String showArticleManage() {
         return "admin/articleManager";
     }
-
+    @ApiOperation(value = "showPreview", httpMethod = "GET", produces = "application/json")
+    @ApiResponses( value = {@ApiResponse(code = 200, message = "Successful — 请求已完成",response = String.class)})
     @RequestMapping("/preview")
     @UserRoles(UserRole.DISCUSS_MANAGER)
     public String showPreview() {
         return "admin/preview";
     }
-
+    @ApiOperation(value = "loginInfo", httpMethod = "GET", produces = "application/json")
+    @ApiResponses( value = {@ApiResponse(code = 200, message = "Successful — 请求已完成",response = String.class)})
     @RequestMapping("/loginInfo")
     @UserRoles(UserRole.DISCUSS_MANAGER)
     public String loginInfo() {
@@ -1173,10 +1304,12 @@ public class AdminController extends BaseController {
      * @param lolId
      * @return
      */
+    @ApiOperation(value = "删除楼中楼", httpMethod = "GET", produces = "application/json")
+    @ApiResponses( value = {@ApiResponse(code = 200, message = "Successful — 请求已完成",response = RespObj.class)})
     @RequestMapping("/deletelol")
     @SessionNeedless
     @ResponseBody
-    public RespObj deletelol(@ObjectIdType ObjectId rpid, @ObjectIdType ObjectId lolId) {
+    public RespObj deletelol(@ApiParam(name = "rpid", required = true, value = "rpid") @ObjectIdType ObjectId rpid, @ApiParam(name = "lolId", required = true, value = "lolId") @ObjectIdType ObjectId lolId) {
 
         logger.info(rpid.toString() + "==" + lolId);
         fReplyService.deleteLol(rpid, lolId);

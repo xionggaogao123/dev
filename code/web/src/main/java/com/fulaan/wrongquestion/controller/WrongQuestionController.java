@@ -1,23 +1,27 @@
 package com.fulaan.wrongquestion.controller;
 
 import com.alibaba.fastjson.JSON;
+import com.fulaan.annotation.SessionNeedless;
 import com.fulaan.base.BaseController;
 import com.fulaan.wrongquestion.dto.CreateGradeDTO;
 import com.fulaan.wrongquestion.dto.ErrorBookDTO;
 import com.fulaan.wrongquestion.dto.NewVersionGradeDTO;
 import com.fulaan.wrongquestion.dto.SubjectClassDTO;
 import com.fulaan.wrongquestion.service.WrongQuestionService;
+import com.pojo.app.FileUploadDTO;
 import com.pojo.utils.MongoUtils;
 import com.sys.constants.Constant;
+import com.sys.utils.QiniuFileUtils;
 import com.sys.utils.RespObj;
+import io.swagger.annotations.*;
+import org.apache.commons.io.FilenameUtils;
 import org.apache.commons.lang.StringUtils;
 import org.bson.types.ObjectId;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
+import org.springframework.web.multipart.MultipartRequest;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -27,6 +31,7 @@ import java.util.Map;
 /**
  * Created by James on 2017/9/6.
  */
+@Api(value = "错题本")
 @Controller
 @RequestMapping("/wrongQuestion")
 public class WrongQuestionController extends BaseController {
@@ -38,9 +43,13 @@ public class WrongQuestionController extends BaseController {
      * @param dto
      * @return
      */
+    @ApiOperation(value = "绑定年级", httpMethod = "POST", produces = "application/json")
+    @ApiResponses( value = {@ApiResponse(code = 200, message = "Successful — 请求已完成",response = String.class),
+            @ApiResponse(code = 400, message = "请求中有语法问题，或不能满足请求"),
+            @ApiResponse(code = 500, message = "服务器不能完成请求")})
     @RequestMapping("/addNewVersionGradeEntry")
     @ResponseBody
-    public String addCommentEntry(NewVersionGradeDTO dto){
+    public String addCommentEntry(@ApiParam @RequestBody NewVersionGradeDTO dto){
         //
         RespObj respObj=null;
         try {
@@ -60,9 +69,13 @@ public class WrongQuestionController extends BaseController {
      * @PARAM DTO
      * @RETURN
      */
+    @ApiOperation(value = "添加学科", httpMethod = "POST", produces = "application/json")
+    @ApiResponses( value = {@ApiResponse(code = 200, message = "Successful — 请求已完成",response = String.class),
+            @ApiResponse(code = 400, message = "请求中有语法问题，或不能满足请求"),
+            @ApiResponse(code = 500, message = "服务器不能完成请求")})
     @RequestMapping("/addSubjectEntry")
     @ResponseBody
-    public String addSubjectEntry(SubjectClassDTO dto){
+    public String addSubjectEntry(@ApiParam @RequestBody SubjectClassDTO dto){
         //
         RespObj respObj=null;
         try {
@@ -82,9 +95,13 @@ public class WrongQuestionController extends BaseController {
      * @PARAM DTO
      * @RETURN
      */
+    @ApiOperation(value = "添加年级", httpMethod = "POST", produces = "application/json")
+    @ApiResponses( value = {@ApiResponse(code = 200, message = "Successful — 请求已完成",response = String.class),
+            @ApiResponse(code = 400, message = "请求中有语法问题，或不能满足请求"),
+            @ApiResponse(code = 500, message = "服务器不能完成请求")})
     @RequestMapping("/addGradeEntry")
     @ResponseBody
-    public String addGradeEntry(CreateGradeDTO dto){
+    public String addGradeEntry(@ApiParam @RequestBody CreateGradeDTO dto){
         //
         RespObj respObj=null;
         try {
@@ -103,6 +120,10 @@ public class WrongQuestionController extends BaseController {
      * 年级、科目加载
      * @return
      */
+    @ApiOperation(value = "年级、科目加载", httpMethod = "GET", produces = "application/json")
+    @ApiResponses( value = {@ApiResponse(code = 200, message = "Successful — 请求已完成",response = String.class),
+            @ApiResponse(code = 400, message = "请求中有语法问题，或不能满足请求"),
+            @ApiResponse(code = 500, message = "服务器不能完成请求")})
     @RequestMapping("/getGradeAndSubject")
     @ResponseBody
     public String getGradeAndSubject(){
@@ -125,9 +146,13 @@ public class WrongQuestionController extends BaseController {
      * @param errorDto
      * @return
      */
+    @ApiOperation(value = "年级、科目加载", httpMethod = "POST", produces = "application/json")
+    @ApiResponses( value = {@ApiResponse(code = 200, message = "Successful — 请求已完成",response = String.class),
+            @ApiResponse(code = 400, message = "请求中有语法问题，或不能满足请求"),
+            @ApiResponse(code = 500, message = "服务器不能完成请求")})
     @ResponseBody
     @RequestMapping(value = "/addNew")
-    public RespObj addWrongTitleToErrorBook(@RequestBody ErrorBookDTO errorDto) {
+    public RespObj addWrongTitleToErrorBook(@ApiParam @RequestBody ErrorBookDTO errorDto) {
 
         RespObj resp = new RespObj(Constant.FAILD_CODE);
 
@@ -148,9 +173,13 @@ public class WrongQuestionController extends BaseController {
      * @param id
      * @return
      */
+    @ApiOperation(value = "删除错题", httpMethod = "POST", produces = "application/json")
+    @ApiResponses( value = {@ApiResponse(code = 200, message = "Successful — 请求已完成",response = String.class),
+            @ApiResponse(code = 400, message = "请求中有语法问题，或不能满足请求"),
+            @ApiResponse(code = 500, message = "服务器不能完成请求")})
     @ResponseBody
     @RequestMapping(value = "/remove")
-    public RespObj removeFromErrorBook(@RequestParam ObjectId id) {
+    public RespObj removeFromErrorBook(@ApiParam(name = "id", required = true, value = "错题id") @RequestParam ObjectId id) {
 
         RespObj resp = new RespObj(Constant.FAILD_CODE);
 
@@ -173,9 +202,13 @@ public class WrongQuestionController extends BaseController {
      * 为错题添加新的解析
      * @return
      */
+    @ApiOperation(value = "为错题添加新的解析", httpMethod = "POST", produces = "application/json")
+    @ApiResponses( value = {@ApiResponse(code = 200, message = "Successful — 请求已完成",response = String.class),
+            @ApiResponse(code = 400, message = "请求中有语法问题，或不能满足请求"),
+            @ApiResponse(code = 500, message = "服务器不能完成请求")})
     @ResponseBody
     @RequestMapping(value = "/explain")
-    public RespObj addNewExplain(@RequestBody Map<String, Object> postMap) {
+    public RespObj addNewExplain(@ApiParam @RequestBody Map<String, Object> postMap) {
 
         RespObj resp = new RespObj(Constant.FAILD_CODE);
 
@@ -210,11 +243,15 @@ public class WrongQuestionController extends BaseController {
      * @param explainId
      * @return
      */
+    @ApiOperation(value = "删除解析", httpMethod = "POST", produces = "application/json")
+    @ApiResponses( value = {@ApiResponse(code = 200, message = "Successful — 请求已完成",response = String.class),
+            @ApiResponse(code = 400, message = "请求中有语法问题，或不能满足请求"),
+            @ApiResponse(code = 500, message = "服务器不能完成请求")})
     @ResponseBody
     @RequestMapping(value = "/remove/explain")
     public RespObj removeExplain(
-            @RequestParam ObjectId id,
-            @RequestParam ObjectId explainId) {
+            @ApiParam(name = "id", required = true, value = "错题id") @RequestParam ObjectId id,
+            @ApiParam(name = "explainId", required = true, value = "解析id") @RequestParam ObjectId explainId) {
 
         RespObj resp = new RespObj(Constant.FAILD_CODE);
 
@@ -239,9 +276,13 @@ public class WrongQuestionController extends BaseController {
      * @param id
      * @return
      */
+    @ApiOperation(value = "学会该错题", httpMethod = "POST", produces = "application/json")
+    @ApiResponses( value = {@ApiResponse(code = 200, message = "Successful — 请求已完成",response = String.class),
+            @ApiResponse(code = 400, message = "请求中有语法问题，或不能满足请求"),
+            @ApiResponse(code = 500, message = "服务器不能完成请求")})
     @ResponseBody
     @RequestMapping(value = "/grasp")
-    public RespObj updateQuestionGraspStatus(@RequestParam ObjectId id) {
+    public RespObj updateQuestionGraspStatus( @ApiParam(name = "id", required = true, value = "错题id") @RequestParam ObjectId id) {
 
         RespObj resp = new RespObj(Constant.FAILD_CODE);
 
@@ -272,12 +313,16 @@ public class WrongQuestionController extends BaseController {
      * @param pageSize
      * @return
      */
+    @ApiOperation(value = "分页查询错题", httpMethod = "POST", produces = "application/json")
+    @ApiResponses( value = {@ApiResponse(code = 200, message = "Successful — 请求已完成",response = String.class),
+            @ApiResponse(code = 400, message = "请求中有语法问题，或不能满足请求"),
+            @ApiResponse(code = 500, message = "服务器不能完成请求")})
     @ResponseBody
     @RequestMapping(value = "/find/questions")
     public RespObj queryQuestionWithPaging(
-            @RequestBody Map<String, Object> obj,
-            @RequestParam(required = false, defaultValue = "1") int page,
-            @RequestParam(required = false, defaultValue = "5") int pageSize) {
+            @ApiParam @RequestBody Map<String, Object> obj,
+            @ApiParam(name = "page", required = true, value = "分页起始页数") @RequestParam(required = true, defaultValue = "1") int page,
+            @ApiParam(name = "pageSize", required = true, value = "每页条数") @RequestParam(required = true, defaultValue = "5") int pageSize) {
 
         RespObj resp = new RespObj(Constant.FAILD_CODE);
 
@@ -313,12 +358,16 @@ public class WrongQuestionController extends BaseController {
      * @param pageSize
      * @return
      */
+    @ApiOperation(value = "分页查询掌握的错题", httpMethod = "POST", produces = "application/json")
+    @ApiResponses( value = {@ApiResponse(code = 200, message = "Successful — 请求已完成",response = String.class),
+            @ApiResponse(code = 400, message = "请求中有语法问题，或不能满足请求"),
+            @ApiResponse(code = 500, message = "服务器不能完成请求")})
     @ResponseBody
     @RequestMapping(value = "/find/grasp/questions")
     public RespObj queryGraspWithPaging(
-            @RequestBody Map<String, Object> obj,
-            @RequestParam(required = false, defaultValue = "1") int page,
-            @RequestParam(required = false, defaultValue = "5") int pageSize) {
+            @ApiParam @RequestBody Map<String, Object> obj,
+            @ApiParam(name = "page", required = true, value = "分页起始页数") @RequestParam(required = true, defaultValue = "1") int page,
+            @ApiParam(name = "pageSize", required = true, value = "每页条数") @RequestParam(required = true, defaultValue = "5") int pageSize) {
 
         RespObj resp = new RespObj(Constant.FAILD_CODE);
 
@@ -349,5 +398,40 @@ public class WrongQuestionController extends BaseController {
         return resp;
     }
 
-
+    /**
+     * 上传图片
+     *
+     * @param request
+     * @return
+     */
+    @RequestMapping(value = "/images", method = RequestMethod.POST)
+    @ResponseBody
+    @SessionNeedless
+    @ApiOperation(value = "上传图片到七牛", httpMethod = "GET", produces = "application/json")
+    @ApiResponses( value = {@ApiResponse(code = 200, message = "上传图片到七牛成功",response = RespObj.class),
+            @ApiResponse(code = 500, message = "上传图片到七牛失败")})
+    public RespObj uploadImage3(@ApiParam @RequestBody MultipartRequest request) {
+        RespObj obj = new RespObj(Constant.FAILD_CODE);
+        List<FileUploadDTO> fileInfos = new ArrayList<FileUploadDTO>();
+        try {
+            Map<String, MultipartFile> fileMap = request.getFileMap();
+            List<String> list = new ArrayList<String>(fileMap.keySet());
+            if (list.size() == 0) {
+                obj.setMessage("未上传图片");
+                return obj;
+            }
+            ObjectId id = new ObjectId();
+            MultipartFile file = fileMap.get(list.get(0));
+            String extensionName = FilenameUtils.getExtension(file.getOriginalFilename());
+            String fileKey = id.toString() + Constant.POINT + extensionName;
+            QiniuFileUtils.uploadFile(fileKey, file.getInputStream(), QiniuFileUtils.TYPE_IMAGE);
+            String path = QiniuFileUtils.getPath(QiniuFileUtils.TYPE_IMAGE, fileKey);
+            FileUploadDTO dto = new FileUploadDTO(id.toString(), fileKey, file.getOriginalFilename(), path);
+            fileInfos.add(dto);
+            obj = new RespObj(Constant.SUCCESS_CODE, fileInfos);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return obj;
+    }
 }

@@ -5,6 +5,9 @@ import com.fulaan.base.BaseController;
 import com.fulaan.mall.service.EBusinessVoucherService;
 import com.pojo.ebusiness.EVoucherDTO;
 import io.swagger.annotations.Api;
+import io.swagger.annotations.ApiOperation;
+import io.swagger.annotations.ApiResponse;
+import io.swagger.annotations.ApiResponses;
 import org.bson.types.ObjectId;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -32,6 +35,8 @@ public class EBusinessVoucherController extends BaseController {
      * @param state 优惠券状态   unused：未使用    used：已使用    expiration：已过期   默认 unused
      * @return
      */
+    @ApiOperation(value = "优惠券", httpMethod = "GET", produces = "application/json")
+    @ApiResponses( value = {@ApiResponse(code = 200, message = "Successful — 请求已完成",response = Map.class)})
     @RequestMapping(method = RequestMethod.GET)
     @ResponseBody
     public Map<String, Object> getVouchersByUserId(@RequestParam(required = false, defaultValue = "unused") String state) {
@@ -40,7 +45,8 @@ public class EBusinessVoucherController extends BaseController {
         model.put("vouchers", eVoucherDTOs);
         return model;
     }
-
+    @ApiOperation(value = "rechargeVoucher", httpMethod = "POST", produces = "application/json")
+    @ApiResponses( value = {@ApiResponse(code = 200, message = "Successful — 请求已完成",response = Map.class)})
     @RequestMapping(value = "/num/{voucherNo}", method = RequestMethod.POST)
     @ResponseBody
     public Map<String, Object> rechargeVoucher(@PathVariable("voucherNo") String voucherNo) {
@@ -55,7 +61,8 @@ public class EBusinessVoucherController extends BaseController {
         }
         return model;
     }
-
+    @ApiOperation(value = "changeVoucherState", httpMethod = "POST", produces = "application/json")
+    @ApiResponses( value = {@ApiResponse(code = 200, message = "Successful — 请求已完成",response = Map.class)})
     @RequestMapping(value = "/{voucherId}", method = RequestMethod.POST)
     @ResponseBody
     public Map<String, Object> changeVoucherState(@PathVariable("voucherId") @ObjectIdType ObjectId voucherId, int state) {

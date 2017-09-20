@@ -13,6 +13,9 @@ import com.pojo.video.VideoSourceType;
 import com.sys.constants.Constant;
 import com.sys.utils.RespObj;
 import io.swagger.annotations.Api;
+import io.swagger.annotations.ApiOperation;
+import io.swagger.annotations.ApiResponse;
+import io.swagger.annotations.ApiResponses;
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.FilenameUtils;
 import org.apache.log4j.Logger;
@@ -47,6 +50,8 @@ public class CommonUploadController extends BaseController {
 
     private VideoService videoService = new VideoService();
 
+    @ApiOperation(value = "uploadVideo", httpMethod = "POST", produces = "application/json")
+    @ApiResponses( value = {@ApiResponse(code = 200, message = "Successful — 请求已完成",response = Map.class)})
     @RequestMapping("/video")
     @ResponseBody
     @SessionNeedless
@@ -119,6 +124,8 @@ public class CommonUploadController extends BaseController {
 
     }
 
+    @ApiOperation(value = "uploadBase64Image", httpMethod = "POST", produces = "application/json")
+    @ApiResponses( value = {@ApiResponse(code = 200, message = "Successful — 请求已完成",response = Map.class)})
     @RequestMapping("/base64image")
     @ResponseBody
     public Map<String, Object> uploadBase64Image(String base64ImgData, HttpServletRequest req) throws Exception {
@@ -156,6 +163,8 @@ public class CommonUploadController extends BaseController {
      * @param request
      * @return
      */
+    @ApiOperation(value = "一般性文档上传", httpMethod = "POST", produces = "application/json")
+    @ApiResponses( value = {@ApiResponse(code = 200, message = "Successful — 请求已完成",response = RespObj.class)})
     @RequestMapping("/doc/upload")
     @ResponseBody
     @SessionNeedless
@@ -219,6 +228,8 @@ public class CommonUploadController extends BaseController {
      * @param response
      * @return
      */
+    @ApiOperation(value = "文件下载", httpMethod = "POST", produces = "application/json")
+    @ApiResponses( value = {@ApiResponse(code = 200, message = "Successful — 请求已完成",response = String.class)})
     @RequestMapping("/doc/down")
     public String downFile(int type, String fileKey, HttpServletResponse response, @RequestParam(required = false, defaultValue = "") String fileName) {
         try {

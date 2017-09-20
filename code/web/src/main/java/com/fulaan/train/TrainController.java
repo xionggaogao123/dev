@@ -27,7 +27,7 @@ import com.sys.constants.Constant;
 import com.sys.exceptions.IllegalParamException;
 import com.sys.utils.QiniuFileUtils;
 import com.sys.utils.RespObj;
-import io.swagger.annotations.Api;
+import io.swagger.annotations.*;
 import org.apache.commons.lang3.StringUtils;
 import org.bson.types.ObjectId;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -63,6 +63,8 @@ public class TrainController extends BaseController {
     @Autowired
     private CriticismService criticismService;
 
+    @ApiOperation(value = "trainList", httpMethod = "POST", produces = "application/json")
+    @ApiResponses( value = {@ApiResponse(code = 200, message = "Successful — 请求已完成",response = String.class)})
     @RequestMapping("/trainList")
     @SessionNeedless
     @LoginInfo
@@ -136,10 +138,12 @@ public class TrainController extends BaseController {
      * @return
      * @throws UnsupportedEncodingException
      */
+    @ApiOperation(value = "获取app端的区域数据", httpMethod = "POST", produces = "application/json")
+    @ApiResponses( value = {@ApiResponse(code = 200, message = "Successful — 请求已完成",response = RespObj.class)})
     @RequestMapping("/getAppRegions")
     @SessionNeedless
     @ResponseBody
-    public RespObj getAppRegions(@ObjectIdType ObjectId itemTypeId,
+    public RespObj getAppRegions(@ApiParam(name = "itemTypeId", required = true, value = "itemTypeId") @ObjectIdType ObjectId itemTypeId,
                                  @RequestParam(defaultValue = "",required = false) String name) throws UnsupportedEncodingException{
 //        String name="";
 //
@@ -166,7 +170,8 @@ public class TrainController extends BaseController {
         return RespObj.SUCCESS(retMap);
     }
 
-
+    @ApiOperation(value = "create2dsphereIndex", httpMethod = "POST", produces = "application/json")
+    @ApiResponses( value = {@ApiResponse(code = 200, message = "Successful — 请求已完成",response = RespObj.class)})
     @RequestMapping("/create2dsphereIndex")
     @ResponseBody
     @UserRoles(UserRole.DISCUSS_MANAGER)
@@ -175,18 +180,20 @@ public class TrainController extends BaseController {
         return RespObj.SUCCESS;
     }
 
-
+    @ApiOperation(value = "dealCriticism", httpMethod = "POST", produces = "application/json")
+    @ApiResponses( value = {@ApiResponse(code = 200, message = "Successful — 请求已完成",response = RespObj.class)})
     @RequestMapping("/dealCriticism")
     @ResponseBody
     @UserRoles(UserRole.DISCUSS_MANAGER)
-    public RespObj dealCriticism(@ObjectIdType ObjectId id,int remove) {
+    public RespObj dealCriticism(@ApiParam(name = "id", required = true, value = "id") @ObjectIdType ObjectId id,int remove) {
         criticismService.dealCriticism(id,remove);
         return RespObj.SUCCESS;
     }
 
 
 
-
+    @ApiOperation(value = "trainDetail", httpMethod = "POST", produces = "application/json")
+    @ApiResponses( value = {@ApiResponse(code = 200, message = "Successful — 请求已完成",response = String.class)})
     @RequestMapping("/trainDetail")
     @SessionNeedless
     @LoginInfo
@@ -201,7 +208,8 @@ public class TrainController extends BaseController {
         return "/train/trainDetail";
     }
 
-
+    @ApiOperation(value = "getRegions", httpMethod = "POST", produces = "application/json")
+    @ApiResponses( value = {@ApiResponse(code = 200, message = "Successful — 请求已完成",response = RespObj.class)})
     @RequestMapping("/getRegions")
     @SessionNeedless
     @ResponseBody
@@ -215,7 +223,8 @@ public class TrainController extends BaseController {
 
 
 
-
+    @ApiOperation(value = "getItemTypes", httpMethod = "POST", produces = "application/json")
+    @ApiResponses( value = {@ApiResponse(code = 200, message = "Successful — 请求已完成",response = RespObj.class)})
     @RequestMapping("/getItemTypes")
     @SessionNeedless
     @ResponseBody
@@ -241,6 +250,8 @@ public class TrainController extends BaseController {
      * @param sortType
      * @return
      */
+    @ApiOperation(value = "getInstitutes", httpMethod = "POST", produces = "application/json")
+    @ApiResponses( value = {@ApiResponse(code = 200, message = "Successful — 请求已完成",response = RespObj.class)})
     @RequestMapping("/getInstitutes")
     @SessionNeedless
     @ResponseBody
@@ -335,6 +346,8 @@ public class TrainController extends BaseController {
         return RespObj.SUCCESS(map);
     }
 
+    @ApiOperation(value = "getInstitutesInDetail", httpMethod = "POST", produces = "application/json")
+    @ApiResponses( value = {@ApiResponse(code = 200, message = "Successful — 请求已完成",response = RespObj.class)})
     @RequestMapping("/getInstitutesInDetail")
     @SessionNeedless
     @ResponseBody
@@ -362,6 +375,8 @@ public class TrainController extends BaseController {
      * @param pageSize
      * @return
      */
+    @ApiOperation(value = "获取用户评论信息", httpMethod = "POST", produces = "application/json")
+    @ApiResponses( value = {@ApiResponse(code = 200, message = "Successful — 请求已完成",response = RespObj.class)})
     @RequestMapping("/getTrainComments/{instituteId}")
     @SessionNeedless
     @ResponseBody
@@ -385,10 +400,11 @@ public class TrainController extends BaseController {
         return RespObj.SUCCESS(map);
     }
 
-
+    @ApiOperation(value = "addTrainComment", httpMethod = "POST", produces = "application/json")
+    @ApiResponses( value = {@ApiResponse(code = 200, message = "Successful — 请求已完成",response = RespObj.class)})
     @RequestMapping("/addTrainComment")
     @ResponseBody
-    public RespObj addTrainComment(@ObjectIdType ObjectId instituteId,
+    public RespObj addTrainComment(@ApiParam(name = "instituteId", required = true, value = "instituteId") @ObjectIdType ObjectId instituteId,
                                    @RequestParam(defaultValue = "1", required = false) int score,
                                    @RequestParam(defaultValue = "", required = false) String comment
     ) {
@@ -443,9 +459,11 @@ public class TrainController extends BaseController {
      * @param type
      * @return
      */
+    @ApiOperation(value = "根据两个Id处理这一段之间的数据", httpMethod = "POST", produces = "application/json")
+    @ApiResponses( value = {@ApiResponse(code = 200, message = "Successful — 请求已完成",response = RespObj.class)})
     @RequestMapping("/batchDealTwoId")
     @ResponseBody
-    public RespObj batchDealTwoId(@ObjectIdType ObjectId startId,@ObjectIdType ObjectId endId,int type){
+    public RespObj batchDealTwoId(@ApiParam(name = "startId", required = true, value = "startId") @ObjectIdType ObjectId startId,@ApiParam(name = "endId", required = true, value = "endId") @ObjectIdType ObjectId endId,int type){
         try {
             List<ObjectId> ids=new ArrayList<ObjectId>();
             String qiuNiuPath;
@@ -482,6 +500,8 @@ public class TrainController extends BaseController {
      * @param idOrNames
      * @return
      */
+    @ApiOperation(value = "处理默认图片数据", httpMethod = "POST", produces = "application/json")
+    @ApiResponses( value = {@ApiResponse(code = 200, message = "Successful — 请求已完成",response = RespObj.class)})
     @RequestMapping("/batchDefaultImage")
     @ResponseBody
     public RespObj batchDefaultImage(String idOrNames,int type){
@@ -536,6 +556,8 @@ public class TrainController extends BaseController {
     /**
      * 处理还未处理的图片
      */
+    @ApiOperation(value = "处理还未处理的图片", httpMethod = "POST", produces = "application/json")
+    @ApiResponses( value = {@ApiResponse(code = 200, message = "Successful — 请求已完成",response = ObjectId.class)})
     @RequestMapping("/batchImages")
     @ResponseBody
     public RespObj batchImages(String instituteIds){
@@ -564,9 +586,11 @@ public class TrainController extends BaseController {
      * @param endId
      * @return
      */
+    @ApiOperation(value = "批量处理残留数据", httpMethod = "POST", produces = "application/json")
+    @ApiResponses( value = {@ApiResponse(code = 200, message = "Successful — 请求已完成",response = RespObj.class)})
     @RequestMapping("/remainImage")
     @ResponseBody
-    public RespObj remainImage(@ObjectIdType ObjectId startId,@ObjectIdType ObjectId endId){
+    public RespObj remainImage(@ApiParam(name = "startId", required = true, value = "startId") @ObjectIdType ObjectId startId,@ApiParam(name = "startId", required = true, value = "startId") @ObjectIdType ObjectId endId){
         try{
             List<InstituteEntry> entries=instituteService.getEntriesByTwoId(startId,endId);
             batchImage(entries);
@@ -582,6 +606,8 @@ public class TrainController extends BaseController {
      * @param deleteIds
      * @return
      */
+    @ApiOperation(value = "批量删除数据", httpMethod = "POST", produces = "application/json")
+    @ApiResponses( value = {@ApiResponse(code = 200, message = "Successful — 请求已完成",response = RespObj.class)})
     @RequestMapping("/batchDeleteData")
     @ResponseBody
     public RespObj batchDeleteData(String deleteIds){
@@ -637,6 +663,8 @@ public class TrainController extends BaseController {
     /**
      * 批量处理图片
      */
+    @ApiOperation(value = "批量处理图片", httpMethod = "POST", produces = "application/json")
+    @ApiResponses( value = {@ApiResponse(code = 200, message = "Successful — 请求已完成",response = RespObj.class)})
     @RequestMapping("/batchDealImage")
     @ResponseBody
     public RespObj batchDealImage(@RequestParam(defaultValue = "1", required = false) int page,
@@ -655,6 +683,8 @@ public class TrainController extends BaseController {
      * @param parentId
      * @return
      */
+    @ApiOperation(value = "数据进行清理", httpMethod = "POST", produces = "application/json")
+    @ApiResponses( value = {@ApiResponse(code = 200, message = "Successful — 请求已完成",response = RespObj.class)})
     @RequestMapping("/replaceRegion/{parentId}")
     @ResponseBody
     public RespObj replaceRegion(@PathVariable @ObjectIdType ObjectId parentId){
@@ -677,6 +707,8 @@ public class TrainController extends BaseController {
      * 处理institute数据
      *
      */
+    @ApiOperation(value = "处理institute数据", httpMethod = "POST", produces = "application/json")
+    @ApiResponses( value = {@ApiResponse(code = 200, message = "Successful — 请求已完成",response = RespObj.class)})
     @RequestMapping("/instituteData")
     @ResponseBody
     public RespObj instituteData(@RequestParam(defaultValue = "1", required = false) int page,
@@ -712,14 +744,16 @@ public class TrainController extends BaseController {
         }
         return RespObj.SUCCESS;
     }
-
+    @ApiOperation(value = "regionSetSort", httpMethod = "POST", produces = "application/json")
+    @ApiResponses( value = {@ApiResponse(code = 200, message = "Successful — 请求已完成",response = RespObj.class)})
     @RequestMapping("/region/setSort/{id}")
     @ResponseBody
     public RespObj regionSetSort(@PathVariable @ObjectIdType ObjectId id,int sort){
         regionService.setSort(id,sort);
         return RespObj.SUCCESS;
     }
-
+    @ApiOperation(value = "itemTypeSetSort", httpMethod = "POST", produces = "application/json")
+    @ApiResponses( value = {@ApiResponse(code = 200, message = "Successful — 请求已完成",response = RespObj.class)})
     @RequestMapping("/itemType/setSort/{id}")
     @ResponseBody
     public RespObj itemTypeSetSort(@PathVariable @ObjectIdType ObjectId id,int sort){

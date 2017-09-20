@@ -34,7 +34,7 @@ import com.sys.props.Resources;
 import com.sys.utils.DateTimeUtils;
 import com.sys.utils.RespObj;
 import com.sys.utils.ValidationUtils;
-import io.swagger.annotations.Api;
+import io.swagger.annotations.*;
 import org.apache.commons.lang.StringUtils;
 import org.apache.log4j.Logger;
 import org.bson.types.ObjectId;
@@ -99,6 +99,8 @@ public class EBusinessOrderController extends BaseController {
      * @throws IOException
      * @throws ClassNotFoundException
      */
+    @ApiOperation(value = "订单提交页面", httpMethod = "POST", produces = "application/json")
+    @ApiResponses( value = {@ApiResponse(code = 200, message = "Successful — 请求已完成",response = String.class)})
     @RequestMapping("/address")
     @LoginInfo
     public String orderAddress(String ebcIds, HttpServletRequest request, Map<String, Object> model) throws IllegalParamException, ClassNotFoundException, IOException {
@@ -160,6 +162,8 @@ public class EBusinessOrderController extends BaseController {
      *
      * @return
      */
+    @ApiOperation(value = "订单页面", httpMethod = "POST", produces = "application/json")
+    @ApiResponses( value = {@ApiResponse(code = 200, message = "Successful — 请求已完成",response = String.class)})
     @RequestMapping("/page")
     public String orderInfoPage(HttpServletRequest request, Map<String, Object> model) {
         loginInfo(request, model);
@@ -189,7 +193,8 @@ public class EBusinessOrderController extends BaseController {
         }
     }
 
-
+    @ApiOperation(value = "isVoucher", httpMethod = "POST", produces = "application/json")
+    @ApiResponses( value = {@ApiResponse(code = 200, message = "Successful — 请求已完成",response = RespObj.class)})
     @RequestMapping("/isVoucher")
     @ResponseBody
     public RespObj isVoucher(@RequestParam(required = false, defaultValue = "") String voucherId) {
@@ -219,9 +224,11 @@ public class EBusinessOrderController extends BaseController {
      * @return
      * @throws Exception
      */
+    @ApiOperation(value = "生成订单并且支付(立即购买)", httpMethod = "POST", produces = "application/json")
+    @ApiResponses( value = {@ApiResponse(code = 200, message = "Successful — 请求已完成",response = String.class)})
     @RequestMapping("/createNow")
     @ResponseBody
-    public String createOrder(@ObjectIdType ObjectId addressId, @RequestParam(required = false, defaultValue = "0") int usedExp,
+    public String createOrder(@ApiParam(name = "addressId", required = true, value = "addressId") @ObjectIdType ObjectId addressId, @RequestParam(required = false, defaultValue = "0") int usedExp,
                               @RequestParam(required = false, defaultValue = "") String voucherId,
                               @RequestParam(required = false, defaultValue = "") String message,
                               String goodsList, HttpServletResponse response) throws Exception {
@@ -270,9 +277,11 @@ public class EBusinessOrderController extends BaseController {
      * @return
      * @throws Exception
      */
+    @ApiOperation(value = "生成订单并且支付(购物车)", httpMethod = "POST", produces = "application/json")
+    @ApiResponses( value = {@ApiResponse(code = 200, message = "Successful — 请求已完成",response = String.class)})
     @RequestMapping("/create")
     @ResponseBody
-    public String createOrder(@ObjectIdType ObjectId addressId, @RequestParam(required = false, defaultValue = "0") int usedExp,
+    public String createOrder(@ApiParam(name = "addressId", required = true, value = "addressId") @ObjectIdType ObjectId addressId, @RequestParam(required = false, defaultValue = "0") int usedExp,
                               @RequestParam(required = false, defaultValue = "") String voucherId,
                               @RequestParam(required = false, defaultValue = "") String message,
                               HttpServletResponse response) throws Exception {
@@ -312,6 +321,8 @@ public class EBusinessOrderController extends BaseController {
     /**
      * 学生推送订单给家长
      */
+    @ApiOperation(value = "学生推送订单给家长", httpMethod = "POST", produces = "application/json")
+    @ApiResponses( value = {@ApiResponse(code = 200, message = "Successful — 请求已完成",response = String.class)})
     @RequestMapping("/pushOrder")
     public String pushOrderToParent(@ObjectIdType ObjectId addressId,
                                     @RequestParam(required = false, defaultValue = "0") int usedExp,
@@ -357,6 +368,7 @@ public class EBusinessOrderController extends BaseController {
      * @throws NumberFormatException
      * @throws Exception
      */
+    @ApiOperation(value = "支付回调", httpMethod = "POST", produces = "application/json")
     @SessionNeedless
     @RequestMapping("/notify")
     public void callBackNotify(HttpServletRequest request) throws Exception {
@@ -432,9 +444,11 @@ public class EBusinessOrderController extends BaseController {
      * @param orderId
      * @return OrderInfo
      */
+    @ApiOperation(value = "获取订单信息(包含rsa签名)", httpMethod = "POST", produces = "application/json")
+    @ApiResponses( value = {@ApiResponse(code = 200, message = "Successful — 请求已完成",response = RespObj.class)})
     @RequestMapping("/mobile/getOrderInfo")
     @ResponseBody
-    public RespObj getOrderInfo(@ObjectIdType ObjectId orderId) {
+    public RespObj getOrderInfo(@ApiParam(name = "orderId", required = true, value = "orderId") @ObjectIdType ObjectId orderId) {
 
         EOrderEntry eoe = orderService.getEOrderEntry(orderId);
         if (null == eoe) {
@@ -460,9 +474,11 @@ public class EBusinessOrderController extends BaseController {
      * @return
      * @throws Exception
      */
+    @ApiOperation(value = "移动端生成订单", httpMethod = "POST", produces = "application/json")
+    @ApiResponses( value = {@ApiResponse(code = 200, message = "Successful — 请求已完成",response = RespObj.class)})
     @RequestMapping("/mobile/create")
     @ResponseBody
-    public RespObj createOrder1(@ObjectIdType ObjectId addressId, @RequestParam(required = false, defaultValue = "0") int usedExp,
+    public RespObj createOrder1(@ApiParam(name = "addressId", required = true, value = "addressId") @ObjectIdType ObjectId addressId, @RequestParam(required = false, defaultValue = "0") int usedExp,
                                 @RequestParam(required = false, defaultValue = "") String voucherId,
                                 @RequestParam(required = false, defaultValue = "") String message,
                                 HttpServletResponse response) throws Exception {
@@ -504,10 +520,12 @@ public class EBusinessOrderController extends BaseController {
      * @throws NumberFormatException
      * @throws Exception
      */
+    @ApiOperation(value = "移动支付回调", httpMethod = "POST", produces = "application/json")
+    @ApiResponses( value = {@ApiResponse(code = 200, message = "Successful — 请求已完成",response = RespObj.class)})
     @SessionNeedless
     @RequestMapping("/mobile/notify")
     @ResponseBody
-    public RespObj callBackNotify(@ObjectIdType ObjectId orderId,
+    public RespObj callBackNotify(@ApiParam(name = "orderId", required = true, value = "orderId") @ObjectIdType ObjectId orderId,
                                   String trade_no) throws Exception {
 
         return RespObj.SUCCESS;
@@ -519,6 +537,8 @@ public class EBusinessOrderController extends BaseController {
      * @return
      * @throws Exception
      */
+    @ApiOperation(value = "订单支付", httpMethod = "POST", produces = "application/json")
+    @ApiResponses( value = {@ApiResponse(code = 200, message = "Successful — 请求已完成",response = String.class)})
     @RequestMapping("/pay")
     @ResponseBody
     public String payOrder(@ObjectIdType ObjectId orderId) throws Exception {
@@ -533,7 +553,8 @@ public class EBusinessOrderController extends BaseController {
         return orderPay(eoe);
     }
 
-
+    @ApiOperation(value = "getUserExperience", httpMethod = "POST", produces = "application/json")
+    @ApiResponses( value = {@ApiResponse(code = 200, message = "Successful — 请求已完成",response = Map.class)})
     @RequestMapping("/experiences")
     @ResponseBody
     public Map<String, Object> getUserExperience() {
@@ -668,6 +689,8 @@ public class EBusinessOrderController extends BaseController {
      * @return
      * @throws Exception
      */
+    @ApiOperation(value = "订单地址", httpMethod = "POST", produces = "application/json")
+    @ApiResponses( value = {@ApiResponse(code = 200, message = "Successful — 请求已完成",response = List.class)})
     @RequestMapping("/address/list")
     @ResponseBody
     public List<EOrderAddressDTO> orderAddressList() throws Exception {
@@ -684,6 +707,8 @@ public class EBusinessOrderController extends BaseController {
      * @return
      * @throws Exception
      */
+    @ApiOperation(value = "增加订单地址", httpMethod = "POST", produces = "application/json")
+    @ApiResponses( value = {@ApiResponse(code = 200, message = "Successful — 请求已完成",response = List.class)})
     @RequestMapping("/address/add")
     @ResponseBody
     public List<EOrderAddressDTO> addOrderAddress(String province, String city, String district, String user, String address, String tel) throws Exception {
@@ -722,9 +747,11 @@ public class EBusinessOrderController extends BaseController {
      * @return
      * @throws Exception
      */
+    @ApiOperation(value = "地址详细", httpMethod = "POST", produces = "application/json")
+    @ApiResponses( value = {@ApiResponse(code = 200, message = "Successful — 请求已完成",response = EOrderAddressDTO.class)})
     @RequestMapping("/address/detail")
     @ResponseBody
-    public EOrderAddressDTO orderAddressDetail(@ObjectIdType ObjectId id) throws Exception {
+    public EOrderAddressDTO orderAddressDetail(@ApiParam(name = "id", required = true, value = "id") @ObjectIdType ObjectId id) throws Exception {
         EOrderAddressDTO dto = orderService.getEOrderAddressDTO(id);
         return dto;
     }
@@ -732,9 +759,11 @@ public class EBusinessOrderController extends BaseController {
     /**
      * 修改默认地址
      */
+    @ApiOperation(value = "修改默认地址", httpMethod = "POST", produces = "application/json")
+    @ApiResponses( value = {@ApiResponse(code = 200, message = "Successful — 请求已完成",response = RespObj.class)})
     @RequestMapping("/address/updateDefault")
     @ResponseBody
-    public RespObj updateDefaultAddress(@ObjectIdType ObjectId addressId) {
+    public RespObj updateDefaultAddress(@ApiParam(name = "addressId", required = true, value = "addressId") @ObjectIdType ObjectId addressId) {
         RespObj respObj = RespObj.FAILD;
         try {
             EBusinessLog.info("设置默认地址,OrderAddressId:" + addressId);
@@ -751,6 +780,8 @@ public class EBusinessOrderController extends BaseController {
     /**
      * 修改地址
      */
+    @ApiOperation(value = "修改地址", httpMethod = "POST", produces = "application/json")
+    @ApiResponses( value = {@ApiResponse(code = 200, message = "Successful — 请求已完成",response = Map.class)})
     @RequestMapping("/address/update")
     @ResponseBody
     public Map<String, Object> updateOrderAddress(String addressId, String province, String city, String district, String user, String address, String tel) throws Exception {
@@ -794,6 +825,8 @@ public class EBusinessOrderController extends BaseController {
     /**
      * 删除地址
      */
+    @ApiOperation(value = "删除地址", httpMethod = "POST", produces = "application/json")
+    @ApiResponses( value = {@ApiResponse(code = 200, message = "Successful — 请求已完成",response = RespObj.class)})
     @RequestMapping("/address/delete")
     @ResponseBody
     public RespObj deleteAddress(String id) {
@@ -815,6 +848,8 @@ public class EBusinessOrderController extends BaseController {
      *
      * @return
      */
+    @ApiOperation(value = "得到订单信息", httpMethod = "POST", produces = "application/json")
+    @ApiResponses( value = {@ApiResponse(code = 200, message = "Successful — 请求已完成",response = List.class)})
     @RequestMapping("/data")
     @ResponseBody
     public List<EOrderInfoDTO> orderInfoList(@RequestParam(required = false, defaultValue = "-1") int orderState) {
@@ -830,9 +865,11 @@ public class EBusinessOrderController extends BaseController {
      * @param id
      * @return
      */
+    @ApiOperation(value = "删除订单", httpMethod = "POST", produces = "application/json")
+    @ApiResponses( value = {@ApiResponse(code = 200, message = "Successful — 请求已完成",response = RespObj.class)})
     @RequestMapping("/remove")
     @ResponseBody
-    public RespObj removeOrder(@ObjectIdType ObjectId id) {
+    public RespObj removeOrder(@ApiParam(name = "id", required = true, value = "id") @ObjectIdType ObjectId id) {
         EBusinessLog.info("removeOrder;" + getSessionValue().getMap() + ";id=" + id.toString());
 
         EOrderEntry oe = orderService.getEOrderEntry(id);
@@ -852,6 +889,8 @@ public class EBusinessOrderController extends BaseController {
     /**
      * 跳转到物流信息界面
      */
+    @ApiOperation(value = "跳转到物流信息界面", httpMethod = "POST", produces = "application/json")
+    @ApiResponses( value = {@ApiResponse(code = 200, message = "Successful — 请求已完成",response = String.class)})
     @RequestMapping("/expressPage")
     public String toExpressPage(HttpServletRequest request, Map<String, Object> model, Model model1) {
         loginInfo(request, model);
@@ -892,6 +931,8 @@ public class EBusinessOrderController extends BaseController {
      * @param expressNo 快递单号
      * @return
      */
+    @ApiOperation(value = "查询物流信息", httpMethod = "POST", produces = "application/json")
+    @ApiResponses( value = {@ApiResponse(code = 200, message = "Successful — 请求已完成",response = Map.class)})
     @RequestMapping("/express")
     @ResponseBody
     public Map<String, String> getExpressInfo(String exCompanyNo, String expressNo) {
@@ -906,6 +947,8 @@ public class EBusinessOrderController extends BaseController {
      *
      * @return
      */
+    @ApiOperation(value = "计算运费", httpMethod = "POST", produces = "application/json")
+    @ApiResponses( value = {@ApiResponse(code = 200, message = "Successful — 请求已完成")})
     @RequestMapping("/expressAmount")
     @ResponseBody
     public double getExpressAmount(@RequestBody OrderGoodsExpTempDTO goodsExpTemp) {
@@ -916,6 +959,8 @@ public class EBusinessOrderController extends BaseController {
     /**
      * 订单详情页面
      */
+    @ApiOperation(value = "订单详情页面", httpMethod = "POST", produces = "application/json")
+    @ApiResponses( value = {@ApiResponse(code = 200, message = "Successful — 请求已完成",response = String.class)})
     @RequestMapping("/orderDetail")
     public String toOrderDetailPage(HttpServletRequest request, Map<String, Object> model) {
         loginInfo(request, model);
@@ -926,9 +971,11 @@ public class EBusinessOrderController extends BaseController {
     /**
      * 订单详情数据
      */
+    @ApiOperation(value = "订单详情数据", httpMethod = "POST", produces = "application/json")
+    @ApiResponses( value = {@ApiResponse(code = 200, message = "Successful — 请求已完成",response = EOrderDetailDTO.class)})
     @RequestMapping("/orderDetailInfo")
     @ResponseBody
-    public EOrderDetailDTO getEOrderDetailInfo(@ObjectIdType ObjectId orderId) {
+    public EOrderDetailDTO getEOrderDetailInfo(@ApiParam(name = "orderId", required = true, value = "orderId") @ObjectIdType ObjectId orderId) {
         return orderService.getEOrderDetailInfo(orderId);
     }
 }

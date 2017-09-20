@@ -31,7 +31,7 @@ import com.sys.props.Resources;
 import com.sys.utils.AvatarUtils;
 import com.sys.utils.FileUtil;
 import com.sys.utils.RespObj;
-import io.swagger.annotations.Api;
+import io.swagger.annotations.*;
 import org.apache.commons.io.FilenameUtils;
 import org.apache.commons.lang.StringUtils;
 import org.apache.log4j.Logger;
@@ -58,7 +58,7 @@ import java.util.regex.Pattern;
  * Created by admin on 2016/5/31.
  * 帖子、板块处理中心
  */
-@Api(value="帖子、板块处理中心",hidden = true)
+@Api(value="帖子、板块处理中心")
 @Controller
 @RequestMapping("/forum")
 public class FPostController extends BaseController {
@@ -105,6 +105,8 @@ public class FPostController extends BaseController {
      * @param model
      * @return
      */
+    @ApiOperation(value = "搜索界面", httpMethod = "POST", produces = "application/json")
+    @ApiResponses( value = {@ApiResponse(code = 200, message = "Successful — 请求已完成",response = String.class)})
     @SessionNeedless
     @RequestMapping("/postSearch")
     @LoginInfo
@@ -123,6 +125,8 @@ public class FPostController extends BaseController {
      *
      * @return
      */
+    @ApiOperation(value = "等级界面", httpMethod = "POST", produces = "application/json")
+    @ApiResponses( value = {@ApiResponse(code = 200, message = "Successful — 请求已完成",response = String.class)})
     @SessionNeedless
     @RequestMapping("/forumLevel")
     @LoginInfo
@@ -137,6 +141,8 @@ public class FPostController extends BaseController {
      * @param model
      * @return
      */
+    @ApiOperation(value = "板块发帖首页", httpMethod = "POST", produces = "application/json")
+    @ApiResponses( value = {@ApiResponse(code = 200, message = "Successful — 请求已完成",response = String.class)})
     @SessionNeedless
     @RequestMapping("/postIndex")
     @LoginInfo
@@ -150,7 +156,8 @@ public class FPostController extends BaseController {
         model.put("sections", sectionDTOs);
         return "/forum/postIndex";
     }
-
+    @ApiOperation(value = "competitionIndex", httpMethod = "POST", produces = "application/json")
+    @ApiResponses( value = {@ApiResponse(code = 200, message = "Successful — 请求已完成",response = String.class)})
     @SessionNeedless
     @RequestMapping("/competitionIndex")
     @LoginInfo
@@ -160,7 +167,8 @@ public class FPostController extends BaseController {
         model.put("count", fPostService.competitionPostCount());
         return "forum/competitionIndex";
     }
-
+    @ApiOperation(value = "sol", httpMethod = "POST", produces = "application/json")
+    @ApiResponses( value = {@ApiResponse(code = 200, message = "Successful — 请求已完成",response = RespObj.class)})
     @RequestMapping("/sol")
     @ResponseBody
     public RespObj sol(@RequestParam String sol, @RequestParam String postId) {
@@ -189,6 +197,8 @@ public class FPostController extends BaseController {
     }
 
     //楼层定位
+    @ApiOperation(value = "floorPosition", httpMethod = "POST", produces = "application/json")
+    @ApiResponses( value = {@ApiResponse(code = 200, message = "Successful — 请求已完成",response = String.class)})
     @SessionNeedless
     @RequestMapping("/floorPosition")
     public String floorPosition(HttpServletRequest request) {
@@ -242,6 +252,8 @@ public class FPostController extends BaseController {
     }
 
     //人物定位
+    @ApiOperation(value = "redirectFloor", httpMethod = "POST", produces = "application/json")
+    @ApiResponses( value = {@ApiResponse(code = 200, message = "Successful — 请求已完成",response = String.class)})
     @SessionNeedless
     @RequestMapping("/redirectFloor")
     public String redirectFloor(HttpServletRequest request, HttpServletResponse response) {
@@ -287,7 +299,8 @@ public class FPostController extends BaseController {
         }
         return "/mall/entrance";
     }
-
+    @ApiOperation(value = "rewordPost", httpMethod = "POST", produces = "application/json")
+    @ApiResponses( value = {@ApiResponse(code = 200, message = "Successful — 请求已完成",response = RespObj.class)})
     @RequestMapping("/rewordPost")
     @ResponseBody
     public RespObj rewordPost(String postId, @RequestParam(value = "score", defaultValue = "0") long score) {
@@ -307,7 +320,8 @@ public class FPostController extends BaseController {
         userService.minusScore(uid, score);
         return RespObj.SUCCESS(postId);
     }
-
+    @ApiOperation(value = "postDetail", httpMethod = "POST", produces = "application/json")
+    @ApiResponses( value = {@ApiResponse(code = 200, message = "Successful — 请求已完成",response = String.class)})
     @SessionNeedless
     @RequestMapping("/postDetail")
     @LoginInfo
@@ -379,7 +393,8 @@ public class FPostController extends BaseController {
         }
         return "/forum/postDetail";
     }
-
+    @ApiOperation(value = "newPost", httpMethod = "POST", produces = "application/json")
+    @ApiResponses( value = {@ApiResponse(code = 200, message = "Successful — 请求已完成",response = String.class)})
     @RequestMapping("/newPost")
     @LoginInfo
     public String newPost(HttpServletRequest request, HttpServletResponse response, Map<String, Object> model) {
@@ -421,7 +436,8 @@ public class FPostController extends BaseController {
         ObjectId userId = getUserId();
         return "/forum/newPost";
     }
-
+    @ApiOperation(value = "task", httpMethod = "POST", produces = "application/json")
+    @ApiResponses( value = {@ApiResponse(code = 200, message = "Successful — 请求已完成",response = String.class)})
     @RequestMapping("/task")
     public String task(Map<String, Object> model) {
         SessionValue sv = getSessionValue();
@@ -469,7 +485,8 @@ public class FPostController extends BaseController {
         }
         return "/forum/forumTask";
     }
-
+    @ApiOperation(value = "personal", httpMethod = "POST", produces = "application/json")
+    @ApiResponses( value = {@ApiResponse(code = 200, message = "Successful — 请求已完成",response = String.class)})
     @RequestMapping("/personal")
     @LoginInfo
     @SessionNeedless
@@ -532,7 +549,8 @@ public class FPostController extends BaseController {
         }
         return "/forum/personalCenter";
     }
-
+    @ApiOperation(value = "forumNotice", httpMethod = "POST", produces = "application/json")
+    @ApiResponses( value = {@ApiResponse(code = 200, message = "Successful — 请求已完成",response = String.class)})
     @RequestMapping("/forumNotice")
     @LoginInfo
     public String forumNotice(Map<String, Object> model) {
@@ -540,28 +558,32 @@ public class FPostController extends BaseController {
         fRecordService.updateDelete();
         return "/forum/forumNotice";
     }
-
+    @ApiOperation(value = "applyFriend", httpMethod = "POST", produces = "application/json")
+    @ApiResponses( value = {@ApiResponse(code = 200, message = "Successful — 请求已完成",response = String.class)})
     @RequestMapping("/applyFriend")
     @LoginInfo
     public String applyFriend(Map<String, Object> model) {
         model.put("menuItem", 3);
         return "/forum/forumNotice";
     }
-
+    @ApiOperation(value = "myMessage", httpMethod = "POST", produces = "application/json")
+    @ApiResponses( value = {@ApiResponse(code = 200, message = "Successful — 请求已完成",response = String.class)})
     @RequestMapping("/myMessage")
     @LoginInfo
     public String myMessage(Map<String, Object> model) {
         model.put("menuItem", 0);
         return "/forum/forumNotice";
     }
-
+    @ApiOperation(value = "floorTimeText", httpMethod = "POST", produces = "application/json")
+    @ApiResponses( value = {@ApiResponse(code = 200, message = "Successful — 请求已完成",response = RespObj.class)})
     @RequestMapping("/floorTimeText")
     @SessionNeedless
     @ResponseBody
-    public RespObj floorTimeText(@ObjectIdType ObjectId postId, int floor) {
+    public RespObj floorTimeText(@ApiParam(name = "postId", required = true, value = "postId") @ObjectIdType ObjectId postId, int floor) {
         return RespObj.SUCCESS(fReplyService.timeText(postId, floor));
     }
-
+    @ApiOperation(value = "mySystem", httpMethod = "POST", produces = "application/json")
+    @ApiResponses( value = {@ApiResponse(code = 200, message = "Successful — 请求已完成",response = String.class)})
     @RequestMapping("/mySystem")
     @LoginInfo
     public String mySystem(Map<String, Object> model) {
@@ -594,6 +616,8 @@ public class FPostController extends BaseController {
      * @param pageSize
      * @return
      */
+    @ApiOperation(value = "已删除帖子列表", httpMethod = "POST", produces = "application/json")
+    @ApiResponses( value = {@ApiResponse(code = 200, message = "Successful — 请求已完成",response = Map.class)})
     @SessionNeedless
     @RequestMapping("/fSubPosts")
     @ResponseBody
@@ -633,6 +657,8 @@ public class FPostController extends BaseController {
      * @param pageSize
      * @return
      */
+    @ApiOperation(value = "帖子列表", httpMethod = "POST", produces = "application/json")
+    @ApiResponses( value = {@ApiResponse(code = 200, message = "Successful — 请求已完成",response = Map.class)})
     @SessionNeedless
     @RequestMapping("/fPosts")
     @ResponseBody
@@ -673,6 +699,8 @@ public class FPostController extends BaseController {
      * @param pageSize
      * @return
      */
+    @ApiOperation(value = "帖子app列表", httpMethod = "POST", produces = "application/json")
+    @ApiResponses( value = {@ApiResponse(code = 200, message = "Successful — 请求已完成",response = Map.class)})
     @SessionNeedless
     @RequestMapping("/getAppPostList")
     @ResponseBody
@@ -709,6 +737,8 @@ public class FPostController extends BaseController {
      * @param pageSize
      * @return
      */
+    @ApiOperation(value = "根据回复人查询回复人回复的贴子", httpMethod = "POST", produces = "application/json")
+    @ApiResponses( value = {@ApiResponse(code = 200, message = "Successful — 请求已完成",response = Map.class)})
     @SessionNeedless
     @RequestMapping("/fPostsByReplyPerson")
     @ResponseBody
@@ -729,6 +759,8 @@ public class FPostController extends BaseController {
     /**
      * 获取热帖
      */
+    @ApiOperation(value = "获取热帖", httpMethod = "POST", produces = "application/json")
+    @ApiResponses( value = {@ApiResponse(code = 200, message = "Successful — 请求已完成",response = Map.class)})
     @SessionNeedless
     @RequestMapping("/fPostsByCondition")
     @ResponseBody
@@ -749,6 +781,8 @@ public class FPostController extends BaseController {
     /**
      * 获取精彩活动帖子
      */
+    @ApiOperation(value = "获取精彩活动帖子", httpMethod = "POST", produces = "application/json")
+    @ApiResponses( value = {@ApiResponse(code = 200, message = "Successful — 请求已完成",response = Map.class)})
     @SessionNeedless
     @RequestMapping("/fPostsActivity")
     @ResponseBody
@@ -773,6 +807,8 @@ public class FPostController extends BaseController {
     /**
      * 获取下线活动
      */
+    @ApiOperation(value = "获取下线活动", httpMethod = "GET", produces = "application/json")
+    @ApiResponses( value = {@ApiResponse(code = 200, message = "Successful — 请求已完成",response = Map.class)})
     @SessionNeedless
     @RequestMapping("/fPostsOffActivity")
     @ResponseBody
@@ -782,7 +818,8 @@ public class FPostController extends BaseController {
         model.put("list", fPostDTOList);
         return model;
     }
-
+    @ApiOperation(value = "fPostsActivityAll", httpMethod = "GET", produces = "application/json")
+    @ApiResponses( value = {@ApiResponse(code = 200, message = "Successful — 请求已完成",response = Map.class)})
     @SessionNeedless
     @RequestMapping("/fPostActivityAll")
     @ResponseBody
@@ -796,6 +833,8 @@ public class FPostController extends BaseController {
     /**
      * 获取记录列表
      */
+    @ApiOperation(value = "获取记录列表", httpMethod = "POST", produces = "application/json")
+    @ApiResponses( value = {@ApiResponse(code = 200, message = "Successful — 请求已完成",response = Map.class)})
     @RequestMapping("/fRecordList")
     @ResponseBody
     public Map<String, Object> fPostByCondition(String personId) {
@@ -811,6 +850,8 @@ public class FPostController extends BaseController {
      *
      * @return
      */
+    @ApiOperation(value = "获取记录数据", httpMethod = "GET", produces = "application/json")
+    @ApiResponses( value = {@ApiResponse(code = 200, message = "Successful — 请求已完成",response = Map.class)})
     @RequestMapping(value = "/fTip", method = RequestMethod.GET)
     @ResponseBody
     public Map<String, Object> fTip() {
@@ -832,6 +873,8 @@ public class FPostController extends BaseController {
      * @param
      * @return
      */
+    @ApiOperation(value = "更新回复浏览记录", httpMethod = "POST", produces = "application/json")
+    @ApiResponses( value = {@ApiResponse(code = 200, message = "Successful — 请求已完成",response = FRecordDTO.class)})
     @RequestMapping(value = "/updateScan", method = RequestMethod.POST)
     @ResponseBody
     public FRecordDTO updateScan(String fRecordId) {
@@ -853,6 +896,8 @@ public class FPostController extends BaseController {
      * @param name
      * @return
      */
+    @ApiOperation(value = "板块列表", httpMethod = "POST", produces = "application/json")
+    @ApiResponses( value = {@ApiResponse(code = 200, message = "Successful — 请求已完成",response = List.class)})
     @SessionNeedless
     @RequestMapping(value = "/fSection", method = RequestMethod.GET)
     @ResponseBody
@@ -865,7 +910,8 @@ public class FPostController extends BaseController {
         }
         return fSectionService.getFSectionListByLevel(level, e, name,1);
     }
-
+    @ApiOperation(value = "getFSectionListById", httpMethod = "GET", produces = "application/json")
+    @ApiResponses( value = {@ApiResponse(code = 200, message = "Successful — 请求已完成",response = List.class)})
     @SessionNeedless
     @RequestMapping(value = "/fSectionData", method = RequestMethod.GET)
     @ResponseBody
@@ -876,6 +922,8 @@ public class FPostController extends BaseController {
     /**
      * 通过板块Id查找总浏览数、总评论数、主题数、贴数
      */
+    @ApiOperation(value = "通过板块Id查找总浏览数、总评论数、主题数、贴数", httpMethod = "POST", produces = "application/json")
+    @ApiResponses( value = {@ApiResponse(code = 200, message = "Successful — 请求已完成",response = List.class)})
     @SessionNeedless
     @RequestMapping(value = "/fSectionCount", method = RequestMethod.GET)
     @ResponseBody
@@ -895,6 +943,8 @@ public class FPostController extends BaseController {
      * @param id
      * @return
      */
+    @ApiOperation(value = "根据板块Id获取版块信息", httpMethod = "POST", produces = "application/json")
+    @ApiResponses( value = {@ApiResponse(code = 200, message = "Successful — 请求已完成",response = List.class)})
     @SessionNeedless
     @RequestMapping(value = "/fSectionDetail", method = RequestMethod.GET)
     @ResponseBody
@@ -916,6 +966,8 @@ public class FPostController extends BaseController {
     /**
      * 楼中楼发帖
      */
+    @ApiOperation(value = "楼中楼发帖", httpMethod = "POST", produces = "application/json")
+    @ApiResponses( value = {@ApiResponse(code = 200, message = "Successful — 请求已完成",response = List.class)})
     @SessionNeedless
     @RequestMapping(value = "/forumReplyToReply", method = RequestMethod.GET)
     @ResponseBody
@@ -982,7 +1034,8 @@ public class FPostController extends BaseController {
         }
 
     }
-
+    @ApiOperation(value = "getReplyDataById", httpMethod = "POST", produces = "application/json")
+    @ApiResponses( value = {@ApiResponse(code = 200, message = "Successful — 请求已完成",response = List.class)})
     @SessionNeedless
     @RequestMapping(value = "/getReplyId", method = RequestMethod.GET)
     @ResponseBody
@@ -1012,6 +1065,8 @@ public class FPostController extends BaseController {
     /**
      * 通过发帖的Id获取发帖信息
      */
+    @ApiOperation(value = "通过发帖的Id获取发帖信息", httpMethod = "POST", produces = "application/json")
+    @ApiResponses( value = {@ApiResponse(code = 200, message = "Successful — 请求已完成",response = List.class)})
     @SessionNeedless
     @RequestMapping(value = "/fPostDetail", method = RequestMethod.GET)
     @ResponseBody
@@ -1272,6 +1327,8 @@ public class FPostController extends BaseController {
      * @param headers
      * @return
      */
+    @ApiOperation(value = "获取楼中楼中列表", httpMethod = "POST", produces = "application/json")
+    @ApiResponses( value = {@ApiResponse(code = 200, message = "Successful — 请求已完成",response = FReplyDTO.class)})
     @SessionNeedless
     @RequestMapping(value = "/getReply", method = RequestMethod.GET)
     @ResponseBody
@@ -1287,6 +1344,8 @@ public class FPostController extends BaseController {
      * @param personId
      * @return
      */
+    @ApiOperation(value = "根据personId获取该论坛用户的详细信息", httpMethod = "POST", produces = "application/json")
+    @ApiResponses( value = {@ApiResponse(code = 200, message = "Successful — 请求已完成",response = List.class)})
     @SessionNeedless
     @RequestMapping(value = "/fUserDetail", method = RequestMethod.GET)
     @ResponseBody
@@ -1323,6 +1382,8 @@ public class FPostController extends BaseController {
     /**
      * 通过classify分类查询某板块的数量
      */
+    @ApiOperation(value = "通过classify分类查询某板块的数量", httpMethod = "POST", produces = "application/json")
+    @ApiResponses( value = {@ApiResponse(code = 200, message = "Successful — 请求已完成",response = List.class)})
     @SessionNeedless
     @RequestMapping(value = "/fSectionCountById", method = RequestMethod.GET)
     @ResponseBody
@@ -1349,6 +1410,8 @@ public class FPostController extends BaseController {
     /**
      * 通过回帖人Id查询发帖人的基本信息（主题数/贴子数）
      */
+    @ApiOperation(value = "通过回帖人Id查询发帖人的基本信息（主题数/贴子数）", httpMethod = "POST", produces = "application/json")
+    @ApiResponses( value = {@ApiResponse(code = 200, message = "Successful — 请求已完成",response = RespObj.class)})
     @RequestMapping("/btnZan")
     @ResponseBody
     public RespObj getFlag(String userReplyId, String id) {
@@ -1375,6 +1438,8 @@ public class FPostController extends BaseController {
      * @param
      * @return
      */
+    @ApiOperation(value = "更新回帖点赞", httpMethod = "POST", produces = "application/json")
+    @ApiResponses( value = {@ApiResponse(code = 200, message = "Successful — 请求已完成",response = RespObj.class)})
     @RequestMapping(value = "/updateReplyBtnZan")
     @ResponseBody
     public RespObj updateReplyBtnZan(String replyId, String userReply) {
@@ -1402,6 +1467,8 @@ public class FPostController extends BaseController {
      * @param userReply 用户id
      * @return RespObj
      */
+    @ApiOperation(value = "更新点赞", httpMethod = "POST", produces = "application/json")
+    @ApiResponses( value = {@ApiResponse(code = 200, message = "Successful — 请求已完成",response = RespObj.class)})
     @RequestMapping(value = "/updateBtnZan", method = RequestMethod.POST)
     @ResponseBody
     public RespObj updateBtnZan(String post, boolean flag, String userReply) {
@@ -1438,6 +1505,8 @@ public class FPostController extends BaseController {
     /**
      * 通过回帖人Id查询发帖人的基本信息（主题数/贴子数）
      */
+    @ApiOperation(value = "通过回帖人Id查询发帖人的基本信息（主题数/贴子数）", httpMethod = "POST", produces = "application/json")
+    @ApiResponses( value = {@ApiResponse(code = 200, message = "Successful — 请求已完成",response = RespObj.class)})
     @RequestMapping("/oppose")
     @ResponseBody
     public RespObj oppose(String userReplyId, String id) {
@@ -1474,6 +1543,8 @@ public class FPostController extends BaseController {
      * @param
      * @return
      */
+    @ApiOperation(value = "更新点赞", httpMethod = "POST", produces = "application/json")
+    @ApiResponses( value = {@ApiResponse(code = 200, message = "Successful — 请求已完成",response = RespObj.class)})
     @RequestMapping(value = "/updateOppose", method = RequestMethod.POST)
     @ResponseBody
     public RespObj updateOppose(String post, boolean flag, String userReply) {
@@ -1520,6 +1591,8 @@ public class FPostController extends BaseController {
      * @throws IllegalStateException
      * @throws EncoderException
      */
+    @ApiOperation(value = "上传视频", httpMethod = "POST", produces = "application/json")
+    @ApiResponses( value = {@ApiResponse(code = 200, message = "Successful — 请求已完成",response = MultipartFile.class)})
     @RequestMapping("/video/uploadVideo")
     @ResponseBody
     @SessionNeedless
@@ -1598,6 +1671,8 @@ public class FPostController extends BaseController {
      * @param request
      * @return
      */
+    @ApiOperation(value = "上传帖子图片", httpMethod = "POST", produces = "application/json")
+    @ApiResponses( value = {@ApiResponse(code = 200, message = "Successful — 请求已完成",response = Map.class)})
     @RequestMapping(value = "/uploadImage", produces = "text/html; charset=utf-8")
     public
     @ResponseBody
@@ -1623,7 +1698,8 @@ public class FPostController extends BaseController {
         }
         return result;
     }
-
+    @ApiOperation(value = "uploadVoice", httpMethod = "POST", produces = "application/json")
+    @ApiResponses( value = {@ApiResponse(code = 200, message = "Successful — 请求已完成",response = RespObj.class)})
     @RequestMapping("/uploadVoice")
     @ResponseBody
     public RespObj uploadVoice(MultipartRequest request, HttpServletRequest req) {
@@ -1675,6 +1751,8 @@ public class FPostController extends BaseController {
      * @param pageSize
      * @return
      */
+    @ApiOperation(value = "查询回帖列表", httpMethod = "POST", produces = "application/json")
+    @ApiResponses( value = {@ApiResponse(code = 200, message = "Successful — 请求已完成",response = Map.class)})
     @SessionNeedless
     @RequestMapping("/fReply")
     @ResponseBody
@@ -1793,6 +1871,8 @@ public class FPostController extends BaseController {
     /**
      * 兼容语音上传
      */
+    @ApiOperation(value = "兼容语音上传", httpMethod = "POST", produces = "application/json")
+    @ApiResponses( value = {@ApiResponse(code = 200, message = "Successful — 请求已完成",response = RespObj.class)})
     @RequestMapping(value = "/addFReplyVoice", method = RequestMethod.POST)
     @ResponseBody
     public RespObj addFReplyVoice(
@@ -1823,6 +1903,8 @@ public class FPostController extends BaseController {
     /**
      * 兼容语音上传
      */
+    @ApiOperation(value = "兼容语音上传", httpMethod = "POST", produces = "application/json")
+    @ApiResponses( value = {@ApiResponse(code = 200, message = "Successful — 请求已完成",response = RespObj.class)})
     @RequestMapping(value = "/addFReplyForParticipate", method = RequestMethod.POST)
     @ResponseBody
     public RespObj addFReplyForParticipate(
@@ -2111,6 +2193,8 @@ public class FPostController extends BaseController {
      * @param headers
      * @return
      */
+    @ApiOperation(value = "添加回帖", httpMethod = "POST", produces = "application/json")
+    @ApiResponses( value = {@ApiResponse(code = 200, message = "Successful — 请求已完成",response = RespObj.class)})
     @RequestMapping(value = "/addFReply", method = RequestMethod.POST)
     @ResponseBody
     public RespObj addFReply(String comment, String plainText, String personId, String postSectionId, String postId,
@@ -2145,6 +2229,8 @@ public class FPostController extends BaseController {
      * @param fSectionId 板块id
      * @return RespObj
      */
+    @ApiOperation(value = "更新板块（移动板块）", httpMethod = "POST", produces = "application/json")
+    @ApiResponses( value = {@ApiResponse(code = 200, message = "Successful — 请求已完成",response = RespObj.class)})
     @RequestMapping(value = "/updateFPost", method = RequestMethod.POST)
     @ResponseBody
     @UserRoles(value = {UserRole.DISCUSS_MANAGER, UserRole.DISCUSS_SECTION_MANAGER})
@@ -2173,6 +2259,8 @@ public class FPostController extends BaseController {
      * @param reason
      * @return
      */
+    @ApiOperation(value = "添加举报", httpMethod = "POST", produces = "application/json")
+    @ApiResponses( value = {@ApiResponse(code = 200, message = "Successful — 请求已完成",response = RespObj.class)})
     @RequestMapping(value = "/addReported", method = RequestMethod.POST)
     @ResponseBody
     public RespObj addReported(String postId, String reason) {
@@ -2209,6 +2297,8 @@ public class FPostController extends BaseController {
     /**
      * 获取活跃排行榜
      */
+    @ApiOperation(value = "获取活跃排行榜", httpMethod = "POST", produces = "application/json")
+    @ApiResponses( value = {@ApiResponse(code = 200, message = "Successful — 请求已完成",response = List.class)})
     @SessionNeedless
     @RequestMapping(value = "/userList", method = RequestMethod.GET)
     @ResponseBody
@@ -2232,6 +2322,8 @@ public class FPostController extends BaseController {
      * @param request
      * @return
      */
+    @ApiOperation(value = "添加悬赏帖子", httpMethod = "POST", produces = "application/json")
+    @ApiResponses( value = {@ApiResponse(code = 200, message = "Successful — 请求已完成",response = RespObj.class)})
     @RequestMapping(value = "/addOfferedPost", method = RequestMethod.POST)
     @ResponseBody
     public RespObj addOfferedPost(int classify, String postId, String comment, String plainText, int draught, String postSectionId, String postTitle,
@@ -2273,6 +2365,8 @@ public class FPostController extends BaseController {
      * @param request
      * @return
      */
+    @ApiOperation(value = "添加投票贴", httpMethod = "POST", produces = "application/json")
+    @ApiResponses( value = {@ApiResponse(code = 200, message = "Successful — 请求已完成",response = RespObj.class)})
     @RequestMapping(value = "/addVote", method = RequestMethod.POST)
     @ResponseBody
     public RespObj addVote(int classify, String postId, String comment, String plainText, int draught, String postSectionId, String postTitle,
@@ -2313,6 +2407,8 @@ public class FPostController extends BaseController {
      * @param request
      * @return
      */
+    @ApiOperation(value = "添加回帖奖励帖子", httpMethod = "POST", produces = "application/json")
+    @ApiResponses( value = {@ApiResponse(code = 200, message = "Successful — 请求已完成",response = RespObj.class)})
     @RequestMapping(value = "/addFRewardPost", method = RequestMethod.POST)
     @ResponseBody
     public RespObj addFRewardPost(int classify, String postId, String comment, String plainText, int draught, String postSectionId, String postTitle,
@@ -2354,6 +2450,8 @@ public class FPostController extends BaseController {
      * @param request
      * @return
      */
+    @ApiOperation(value = "添加帖子", httpMethod = "POST", produces = "application/json")
+    @ApiResponses( value = {@ApiResponse(code = 200, message = "Successful — 请求已完成",response = RespObj.class)})
     @RequestMapping(value = "/addFPost", method = RequestMethod.POST)
     @ResponseBody
     public RespObj addFPost(int classify, String postId, String comment, String plainText, int draught, String postSectionId, String postTitle,
@@ -2584,6 +2682,8 @@ public class FPostController extends BaseController {
      * @param post
      * @return
      */
+    @ApiOperation(value = "删除帖子", httpMethod = "POST", produces = "application/json")
+    @ApiResponses( value = {@ApiResponse(code = 200, message = "Successful — 请求已完成",response = RespObj.class)})
     @RequestMapping(value = "/deletePost", method = RequestMethod.POST)
     @ResponseBody
     public RespObj deleteFPost(String post) {
@@ -2622,6 +2722,8 @@ public class FPostController extends BaseController {
      * @param post  帖子ID
      * @return RespObj
      */
+    @ApiOperation(value = "删除评论回帖", httpMethod = "POST", produces = "application/json")
+    @ApiResponses( value = {@ApiResponse(code = 200, message = "Successful — 请求已完成",response = RespObj.class)})
     @RequestMapping(value = "/deleteReply", method = RequestMethod.POST)
     @ResponseBody
     @UserRoles(value = {UserRole.DISCUSS_MANAGER, UserRole.DISCUSS_SECTION_MANAGER})
@@ -2648,6 +2750,8 @@ public class FPostController extends BaseController {
      * @param cream
      * @return
      */
+    @ApiOperation(value = "获取资讯消息", httpMethod = "POST", produces = "application/json")
+    @ApiResponses( value = {@ApiResponse(code = 200, message = "Successful — 请求已完成",response = RespObj.class)})
     @RequestMapping(value = "/getCreamData", method = RequestMethod.POST)
     @SessionNeedless
     @ResponseBody
@@ -2664,6 +2768,8 @@ public class FPostController extends BaseController {
      * @param cream
      * @return
      */
+    @ApiOperation(value = "更新精华帖子", httpMethod = "POST", produces = "application/json")
+    @ApiResponses( value = {@ApiResponse(code = 200, message = "Successful — 请求已完成",response = RespObj.class)})
     @RequestMapping(value = "/updatePostCream", method = RequestMethod.POST)
     @ResponseBody
     public RespObj updateFPostCream(String post, String personId, int cream) {
@@ -2711,9 +2817,11 @@ public class FPostController extends BaseController {
      * @param top
      * @return RespObj
      */
+    @ApiOperation(value = "更新置顶帖子", httpMethod = "POST", produces = "application/json")
+    @ApiResponses( value = {@ApiResponse(code = 200, message = "Successful — 请求已完成",response = RespObj.class)})
     @RequestMapping(value = "/updatePostTop", method = RequestMethod.POST)
     @ResponseBody
-    public RespObj updateFPostTop(@ObjectIdType ObjectId post, int top) {
+    public RespObj updateFPostTop(@ApiParam(name = "post", required = true, value = "post") @ObjectIdType ObjectId post, int top) {
         try {
             fPostService.updateTop(post, top);
         } catch (Exception e) {
@@ -2727,6 +2835,8 @@ public class FPostController extends BaseController {
      * 获取参赛人列表消息
      * @return
      */
+    @ApiOperation(value = "获取参赛人列表消息", httpMethod = "GET", produces = "application/json")
+    @ApiResponses( value = {@ApiResponse(code = 200, message = "Successful — 请求已完成",response = RespObj.class)})
     @RequestMapping("/getParticipates")
     @ResponseBody
     public RespObj getParticipates(){
@@ -2740,9 +2850,11 @@ public class FPostController extends BaseController {
      * @param participateId
      * @return
      */
+    @ApiOperation(value = "删除参赛者消息", httpMethod = "POST", produces = "application/json")
+    @ApiResponses( value = {@ApiResponse(code = 200, message = "Successful — 请求已完成",response = RespObj.class)})
     @RequestMapping("/removeParticipate")
     @ResponseBody
-    public RespObj removeParticipate(@ObjectIdType ObjectId participateId){
+    public RespObj removeParticipate(@ApiParam(name = "participateId", required = true, value = "participateId") @ObjectIdType ObjectId participateId){
         participantsInfoService.removeParticipateInfo(participateId);
         return RespObj.SUCCESS("删除成功!");
     }
@@ -2759,6 +2871,8 @@ public class FPostController extends BaseController {
      * @param school
      * @return
      */
+    @ApiOperation(value = "保存或更新参赛者信息", httpMethod = "POST", produces = "application/json")
+    @ApiResponses( value = {@ApiResponse(code = 200, message = "Successful — 请求已完成",response = RespObj.class)})
     @RequestMapping("/saveParticipator")
     @ResponseBody
     public RespObj saveParticipator(@RequestParam(defaultValue = "",required = false) String id,
@@ -2794,6 +2908,8 @@ public class FPostController extends BaseController {
      * @return
      * @throws Exception
      */
+    @ApiOperation(value = "getLoginInfo", httpMethod = "POST", produces = "application/json")
+    @ApiResponses( value = {@ApiResponse(code = 200, message = "Successful — 请求已完成",response = Map.class)})
     @SessionNeedless
     @RequestMapping("/loginInfo")
     @ResponseBody
@@ -2802,23 +2918,30 @@ public class FPostController extends BaseController {
         loginInfo(request, response, model);
         return model;
     }
-
+    @ApiOperation(value = "forumVisited", httpMethod = "GET", produces = "application/json")
+    @ApiResponses( value = {@ApiResponse(code = 200, message = "Successful — 请求已完成",response = String.class)})
     @RequestMapping("/forumVisited")
     public String forumVisited() {
         return "/forum/forumUnvisit";
     }
 
+    @ApiOperation(value = "forumSilenced", httpMethod = "GET", produces = "application/json")
+    @ApiResponses( value = {@ApiResponse(code = 200, message = "Successful — 请求已完成",response = String.class)})
     @RequestMapping("/forumSilenced")
     public String forumSilenced() {
         return "/forum/forumSilenced";
     }
 
+    @ApiOperation(value = "getValidate", httpMethod = "GET", produces = "application/json")
+    @ApiResponses( value = {@ApiResponse(code = 200, message = "Successful — 请求已完成",response = FSectionDTO.class)})
     @RequestMapping(value = "/sectionId", method = RequestMethod.GET)
     @ResponseBody
     public FSectionDTO getValidate(String pId) {
         return fSectionService.getValidate(new ObjectId(pId.trim()));
     }
 
+    @ApiOperation(value = "getValidate", httpMethod = "POST", produces = "application/json")
+    @ApiResponses( value = {@ApiResponse(code = 200, message = "Successful — 请求已完成",response = RespObj.class)})
     @RequestMapping(value = "/addFSections", method = RequestMethod.POST)
     @ResponseBody
     public RespObj getValidate(String pId, String memo) {

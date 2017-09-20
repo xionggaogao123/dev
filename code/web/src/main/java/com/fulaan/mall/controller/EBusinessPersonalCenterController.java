@@ -14,7 +14,7 @@ import com.pojo.user.UserEntry;
 import com.sys.utils.MD5Utils;
 import com.sys.utils.RespObj;
 import com.sys.utils.ValidationUtils;
-import io.swagger.annotations.Api;
+import io.swagger.annotations.*;
 import org.apache.commons.lang.StringUtils;
 import org.bson.types.ObjectId;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -63,6 +63,8 @@ public class EBusinessPersonalCenterController extends BaseController {
     /**
      * 抵用券
      */
+    @ApiOperation(value = "抵用券", httpMethod = "POST", produces = "application/json")
+    @ApiResponses( value = {@ApiResponse(code = 200, message = "Successful — 请求已完成",response = String.class)})
     @RequestMapping("/voucher")
     public String voucherIndexPage(HttpServletRequest request, Map<String, Object> model) {
         loginInfo(request, model);
@@ -73,6 +75,8 @@ public class EBusinessPersonalCenterController extends BaseController {
     /**
      * 收藏记录
      */
+    @ApiOperation(value = "收藏记录", httpMethod = "POST", produces = "application/json")
+    @ApiResponses( value = {@ApiResponse(code = 200, message = "Successful — 请求已完成",response = String.class)})
     @RequestMapping("/collection")
     public String collectionPage(HttpServletRequest request, Map<String, Object> model) {
         loginInfo(request, model);
@@ -83,6 +87,8 @@ public class EBusinessPersonalCenterController extends BaseController {
     /**
      * 浏览记录
      */
+    @ApiOperation(value = "浏览记录", httpMethod = "POST", produces = "application/json")
+    @ApiResponses( value = {@ApiResponse(code = 200, message = "Successful — 请求已完成",response = String.class)})
     @RequestMapping("/history")
     public String historyPage(HttpServletRequest request, Map<String, Object> model) {
         loginInfo(request, model);
@@ -93,6 +99,8 @@ public class EBusinessPersonalCenterController extends BaseController {
     /**
      * 个人中心
      */
+    @ApiOperation(value = "个人中心", httpMethod = "POST", produces = "application/json")
+    @ApiResponses( value = {@ApiResponse(code = 200, message = "Successful — 请求已完成",response = String.class)})
     @RequestMapping("/user")
     @LoginInfo
     public String userPage(HttpServletRequest request, Map<String, Object> model) {
@@ -106,6 +114,8 @@ public class EBusinessPersonalCenterController extends BaseController {
     /**
      * 地址管理
      */
+    @ApiOperation(value = "地址管理", httpMethod = "POST", produces = "application/json")
+    @ApiResponses( value = {@ApiResponse(code = 200, message = "Successful — 请求已完成",response = String.class)})
     @RequestMapping("/address")
     public String addressPage(HttpServletRequest request, Map<String, Object> model) {
         loginInfo(request, model);
@@ -116,6 +126,8 @@ public class EBusinessPersonalCenterController extends BaseController {
     /**
      * 获取浏览记录
      */
+    @ApiOperation(value = "获取浏览记录", httpMethod = "POST", produces = "application/json")
+    @ApiResponses( value = {@ApiResponse(code = 200, message = "Successful — 请求已完成",response = Map.class)})
     @RequestMapping("/historyList")
     @ResponseBody
     public Map<String, Object> getHistoryList() {
@@ -128,6 +140,8 @@ public class EBusinessPersonalCenterController extends BaseController {
     /**
      * 获取收藏记录
      */
+    @ApiOperation(value = "获取收藏记录", httpMethod = "POST", produces = "application/json")
+    @ApiResponses( value = {@ApiResponse(code = 200, message = "Successful — 请求已完成",response = Map.class)})
     @RequestMapping("/collectionList")
     @ResponseBody
     public Map<String, Object> getGoodsLogList() {
@@ -140,9 +154,11 @@ public class EBusinessPersonalCenterController extends BaseController {
     /**
      * 删除浏览/收藏记录
      */
+    @ApiOperation(value = "删除浏览/收藏记录", httpMethod = "POST", produces = "application/json")
+    @ApiResponses( value = {@ApiResponse(code = 200, message = "Successful — 请求已完成",response = RespObj.class)})
     @RequestMapping("/deleteLog/{logId}")
     @ResponseBody
-    public RespObj deleteCollection(@PathVariable("logId") @ObjectIdType ObjectId logId) {
+    public RespObj deleteCollection(@PathVariable("logId") @ApiParam(name = "logId", required = true, value = "logId") @ObjectIdType ObjectId logId) {
         RespObj respObj = RespObj.FAILD;
         try {
             eGoodsLogService.deleteLog(logId);
@@ -158,6 +174,8 @@ public class EBusinessPersonalCenterController extends BaseController {
     /**
      * 获取用户个人信息
      */
+    @ApiOperation(value = "获取用户个人信息", httpMethod = "POST", produces = "application/json")
+    @ApiResponses( value = {@ApiResponse(code = 200, message = "Successful — 请求已完成",response = Map.class)})
     @RequestMapping(value = "/userInfo", method = RequestMethod.GET)
     @ResponseBody
     public Map<String, Object> getUserInfo() {
@@ -185,6 +203,8 @@ public class EBusinessPersonalCenterController extends BaseController {
     /**
      * 修改个人基本信息
      */
+    @ApiOperation(value = "修改个人基本信息", httpMethod = "POST", produces = "application/json")
+    @ApiResponses( value = {@ApiResponse(code = 200, message = "Successful — 请求已完成",response = String.class)})
     @RequestMapping(value = "/userInfo", method = RequestMethod.POST)
     public String updateUserInfo(String nickName, int sex, int year, int month, int day) {
         try {
@@ -205,6 +225,8 @@ public class EBusinessPersonalCenterController extends BaseController {
      * @param password
      * @return
      */
+    @ApiOperation(value = "修改密码", httpMethod = "POST", produces = "application/json")
+    @ApiResponses( value = {@ApiResponse(code = 200, message = "Successful — 请求已完成",response = RespObj.class)})
     @RequestMapping("/modifyPassword")
     @ResponseBody
     public RespObj modifyPassword(String password) throws Exception {
@@ -220,7 +242,8 @@ public class EBusinessPersonalCenterController extends BaseController {
 
         return respObj;
     }
-
+    @ApiOperation(value = "ValidateUser", httpMethod = "POST", produces = "application/json")
+    @ApiResponses( value = {@ApiResponse(code = 200, message = "Successful — 请求已完成",response = Map.class)})
     @RequestMapping(value = "/validateUser", method = RequestMethod.POST)
     @ResponseBody
     public Map<String, Object> ValidateUser(String userName, String cacheKeyId, String code, String phoneNumber,

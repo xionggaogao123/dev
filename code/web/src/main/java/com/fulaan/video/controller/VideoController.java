@@ -4,6 +4,7 @@ import com.fulaan.annotation.SessionNeedless;
 import com.fulaan.base.BaseController;
 import com.fulaan.video.service.VideoService;
 import com.pojo.video.VideoEntry;
+import io.swagger.annotations.ApiOperation;
 import org.apache.log4j.Logger;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -22,6 +23,7 @@ public class VideoController extends BaseController {
     private VideoService videoService = new VideoService();
     private static final Logger logger = Logger.getLogger(VideoController.class);
 
+    @ApiOperation(value = "persistentNotify", httpMethod = "POST", produces = "application/json")
     @RequestMapping("/persistentNotify")
     @SessionNeedless
     public

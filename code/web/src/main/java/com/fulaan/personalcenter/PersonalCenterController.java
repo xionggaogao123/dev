@@ -15,6 +15,9 @@ import com.sys.constants.Constant;
 import com.sys.utils.AvatarUtils;
 import com.sys.utils.MD5Utils;
 import io.swagger.annotations.Api;
+import io.swagger.annotations.ApiOperation;
+import io.swagger.annotations.ApiResponse;
+import io.swagger.annotations.ApiResponses;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.log4j.Logger;
 import org.bson.types.ObjectId;
@@ -54,12 +57,15 @@ public class PersonalCenterController extends BaseController {
     @Autowired
     private MemberService memberService;
 
+    @ApiOperation(value = "letterPage", httpMethod = "POST", produces = "application/json")
+    @ApiResponses( value = {@ApiResponse(code = 200, message = "Successful — 请求已完成",response = String.class)})
     @RequestMapping("/letterpage")
     public String letterPage() {
         return "personalcenter/myMessage";
     }
 
-
+    @ApiOperation(value = "replyLetterPage", httpMethod = "POST", produces = "application/json")
+    @ApiResponses( value = {@ApiResponse(code = 200, message = "Successful — 请求已完成",response = String.class)})
     @RequestMapping("/replyletterpage")
     public String replyLetterPage(String replyId, Model model) {
         //把邮件表示为读过了
@@ -67,11 +73,15 @@ public class PersonalCenterController extends BaseController {
         return "personalcenter/replyMessage";
     }
 
+    @ApiOperation(value = "userHelpPage", httpMethod = "POST", produces = "application/json")
+    @ApiResponses( value = {@ApiResponse(code = 200, message = "Successful — 请求已完成",response = String.class)})
     @RequestMapping("/userhelp")
     public String userHelpPage() {
         return "personalcenter/userHelp";
     }
 
+    @ApiOperation(value = "settingPage", httpMethod = "POST", produces = "application/json")
+    @ApiResponses( value = {@ApiResponse(code = 200, message = "Successful — 请求已完成",response = String.class)})
     @RequestMapping("/settingpage")
     public String settingPage(Map<String, Object> model) {
         UserEntry e = userService.findById(getUserId());
@@ -86,6 +96,8 @@ public class PersonalCenterController extends BaseController {
      * @param model
      * @return
      */
+    @ApiOperation(value = "用户基本信息页面", httpMethod = "POST", produces = "application/json")
+    @ApiResponses( value = {@ApiResponse(code = 200, message = "Successful — 请求已完成",response = String.class)})
     @RequestMapping("/basic")
     public String basicPage(Map<String, Object> model) {
         UserEntry e = userService.findById(getUserId());
@@ -96,12 +108,15 @@ public class PersonalCenterController extends BaseController {
         return "personalcenter/myAccountBasic";
     }
 
-
+    @ApiOperation(value = "avatarPage", httpMethod = "POST", produces = "application/json")
+    @ApiResponses( value = {@ApiResponse(code = 200, message = "Successful — 请求已完成",response = String.class)})
     @RequestMapping("/avatarpage")
     public String avatarPage() {
         return "personalcenter/avatar";
     }
 
+    @ApiOperation(value = "passwordPage", httpMethod = "POST", produces = "application/json")
+    @ApiResponses( value = {@ApiResponse(code = 200, message = "Successful — 请求已完成",response = String.class)})
     @RequestMapping("/passwordpage")
     public String passwordPage(Map<String, Object> model) {
         String params = getUserId().toString() + 0l;
@@ -116,7 +131,8 @@ public class PersonalCenterController extends BaseController {
         return "personalcenter/myAccountPassword";
     }
 
-
+    @ApiOperation(value = "friendshipPage", httpMethod = "POST", produces = "application/json")
+    @ApiResponses( value = {@ApiResponse(code = 200, message = "Successful — 请求已完成",response = String.class)})
     @RequestMapping("/friendshippage")
     public String friendshipPage() {
         return "activity/friend-list";
@@ -126,6 +142,8 @@ public class PersonalCenterController extends BaseController {
     /**
      * 获取列表
      */
+    @ApiOperation(value = "获取列表", httpMethod = "POST", produces = "application/json")
+    @ApiResponses( value = {@ApiResponse(code = 200, message = "Successful — 请求已完成",response = Map.class)})
     @RequestMapping("/getAddressBook")
     @ResponseBody
     public Map<String, Object> getAddressBook(Integer page, Integer size) {
@@ -136,6 +154,8 @@ public class PersonalCenterController extends BaseController {
     /**
      * 编辑用户头像
      */
+    @ApiOperation(value = "编辑用户头像", httpMethod = "POST", produces = "application/json")
+    @ApiResponses( value = {@ApiResponse(code = 200, message = "Successful — 请求已完成",response = String.class)})
     @RequestMapping("/avataredit")
     @ResponseBody
     public String avatarEdit(String a,
@@ -182,6 +202,8 @@ public class PersonalCenterController extends BaseController {
     /**
      * 编辑用户头像
      */
+    @ApiOperation(value = "编辑用户头像", httpMethod = "POST", produces = "application/json")
+    @ApiResponses( value = {@ApiResponse(code = 200, message = "Successful — 请求已完成",response = MultipartFile.class)})
     @RequestMapping("/avatarupload")
     @ResponseBody
     public String avatarUpload(String input, MultipartFile Filedata) throws Exception {
@@ -192,6 +214,8 @@ public class PersonalCenterController extends BaseController {
     /**
      * 更新用户头像
      */
+    @ApiOperation(value = "更新用户头像", httpMethod = "POST", produces = "application/json")
+    @ApiResponses( value = {@ApiResponse(code = 200, message = "Successful — 请求已完成",response = Map.class)})
     @RequestMapping("/updateavatar")
     @ResponseBody
     public Map<String, Object> updateAvatar(String imgpath1) throws Exception {
@@ -220,6 +244,8 @@ public class PersonalCenterController extends BaseController {
     /**
      * 检查密码，在修改密码前调用
      */
+    @ApiOperation(value = "检查密码，在修改密码前调用", httpMethod = "POST", produces = "application/json")
+    @ApiResponses( value = {@ApiResponse(code = 200, message = "Successful — 请求已完成",response = Map.class)})
     @RequestMapping("/checkpass")
     @ResponseBody
     public Map<String, Object> checkPassword(String password) throws Exception {
@@ -243,6 +269,8 @@ public class PersonalCenterController extends BaseController {
      * @param password
      * @return
      */
+    @ApiOperation(value = "修改密码", httpMethod = "POST", produces = "application/json")
+    @ApiResponses( value = {@ApiResponse(code = 200, message = "Successful — 请求已完成",response = Map.class)})
     @RequestMapping("/modifypassword")
     public
     @ResponseBody

@@ -27,6 +27,9 @@ import com.sys.exceptions.FileUploadException;
 import com.sys.exceptions.IllegalParamException;
 import com.sys.utils.RespObj;
 import io.swagger.annotations.Api;
+import io.swagger.annotations.ApiOperation;
+import io.swagger.annotations.ApiResponse;
+import io.swagger.annotations.ApiResponses;
 import org.apache.commons.io.FilenameUtils;
 import org.apache.commons.lang.StringUtils;
 import org.apache.log4j.Logger;
@@ -91,7 +94,8 @@ public class UserCenterController extends BaseController {
         model.put("login", true);
         model.put("avatar", sessionValue.getMinAvatar());
     }
-
+    @ApiOperation(value = "userPage", httpMethod = "POST", produces = "application/json")
+    @ApiResponses( value = {@ApiResponse(code = 200, message = "Successful — 请求已完成",response = String.class)})
     @RequestMapping("/user")
     @LoginInfo
     public String userPage(Map<String, Object> model) {
@@ -103,7 +107,8 @@ public class UserCenterController extends BaseController {
         model.put("formExpermence", user.getForumExperience());
         return "/forum/user";
     }
-
+    @ApiOperation(value = "manageCenter", httpMethod = "POST", produces = "application/json")
+    @ApiResponses( value = {@ApiResponse(code = 200, message = "Successful — 请求已完成",response = String.class)})
     @RequestMapping("/manageCenter")
     @UserRoles(value = {UserRole.DISCUSS_MANAGER, UserRole.DISCUSS_SECTION_MANAGER})
     public String manageCenter(Map<String, Object> model) {
@@ -120,6 +125,8 @@ public class UserCenterController extends BaseController {
      * @param pageSize
      * @return
      */
+    @ApiOperation(value = "举报信息查找", httpMethod = "POST", produces = "application/json")
+    @ApiResponses( value = {@ApiResponse(code = 200, message = "Successful — 请求已完成",response = Map.class)})
     @RequestMapping("/reported")
     @ResponseBody
     @UserRoles(value = {UserRole.DISCUSS_MANAGER, UserRole.DISCUSS_SECTION_MANAGER})
@@ -141,6 +148,8 @@ public class UserCenterController extends BaseController {
      * @param pageSize
      * @return
      */
+    @ApiOperation(value = "用户管理数据查询", httpMethod = "POST", produces = "application/json")
+    @ApiResponses( value = {@ApiResponse(code = 200, message = "Successful — 请求已完成",response = Map.class)})
     @RequestMapping("/getForumUser")
     @ResponseBody
     @UserRoles(value = {UserRole.DISCUSS_MANAGER, UserRole.DISCUSS_SECTION_MANAGER})
@@ -160,6 +169,8 @@ public class UserCenterController extends BaseController {
      * @param postId
      * @return
      */
+    @ApiOperation(value = "后台批量逻辑处理帖子数据", httpMethod = "POST", produces = "application/json")
+    @ApiResponses( value = {@ApiResponse(code = 200, message = "Successful — 请求已完成",response = RespObj.class)})
     @RequestMapping("/FPostLogic")
     @ResponseBody
     @UserRoles(value = {UserRole.DISCUSS_MANAGER, UserRole.DISCUSS_SECTION_MANAGER})
@@ -193,6 +204,8 @@ public class UserCenterController extends BaseController {
      * @param userId
      * @return
      */
+    @ApiOperation(value = "后台批量逻辑删除用户数据", httpMethod = "POST", produces = "application/json")
+    @ApiResponses( value = {@ApiResponse(code = 200, message = "Successful — 请求已完成",response = RespObj.class)})
     @RequestMapping("/removeUserLogic")
     @ResponseBody
     @UserRoles(value = {UserRole.DISCUSS_MANAGER, UserRole.DISCUSS_SECTION_MANAGER})
@@ -210,6 +223,8 @@ public class UserCenterController extends BaseController {
     /**
      * 后台彻底删除数据
      */
+    @ApiOperation(value = "后台彻底删除数据", httpMethod = "POST", produces = "application/json")
+    @ApiResponses( value = {@ApiResponse(code = 200, message = "Successful — 请求已完成",response = RespObj.class)})
     @RequestMapping("/removePostData")
     @ResponseBody
     @UserRoles(value = {UserRole.DISCUSS_MANAGER, UserRole.DISCUSS_SECTION_MANAGER})
@@ -230,6 +245,8 @@ public class UserCenterController extends BaseController {
      * @param postId
      * @return
      */
+    @ApiOperation(value = "批量恢复帖子数据", httpMethod = "POST", produces = "application/json")
+    @ApiResponses( value = {@ApiResponse(code = 200, message = "Successful — 请求已完成",response = RespObj.class)})
     @RequestMapping("/recoverFPostLogic")
     @ResponseBody
     @UserRoles(value = {UserRole.DISCUSS_MANAGER, UserRole.DISCUSS_SECTION_MANAGER})
@@ -252,6 +269,8 @@ public class UserCenterController extends BaseController {
      * @param stars
      * @return
      */
+    @ApiOperation(value = "根据星星数获取最小经验值", httpMethod = "POST", produces = "application/json")
+    @ApiResponses( value = {@ApiResponse(code = 200, message = "Successful — 请求已完成",response = Map.class)})
     @RequestMapping(value = "/getMinLevel", method = RequestMethod.POST)
     @ResponseBody
     public Map<String, Object> getMinLevel(String stars) {
@@ -268,6 +287,8 @@ public class UserCenterController extends BaseController {
      * @param exp
      * @return
      */
+    @ApiOperation(value = "更新用户经验值", httpMethod = "POST", produces = "application/json")
+    @ApiResponses( value = {@ApiResponse(code = 200, message = "Successful — 请求已完成",response = RespObj.class)})
     @RequestMapping(value = "/updateForumExp", method = RequestMethod.POST)
     @ResponseBody
     public RespObj updateForumExp(String userId, String exp) {
@@ -292,6 +313,8 @@ public class UserCenterController extends BaseController {
      * @param together
      * @return
      */
+    @ApiOperation(value = "更新用户的禁言状态", httpMethod = "POST", produces = "application/json")
+    @ApiResponses( value = {@ApiResponse(code = 200, message = "Successful — 请求已完成",response = RespObj.class)})
     @RequestMapping(value = "/updateForumSilenced", method = RequestMethod.POST)
     @ResponseBody
     @UserRoles(value = {UserRole.DISCUSS_MANAGER, UserRole.DISCUSS_SECTION_MANAGER})
@@ -339,6 +362,8 @@ public class UserCenterController extends BaseController {
      * @param params
      * @return
      */
+    @ApiOperation(value = "批量处理删除举报信息", httpMethod = "POST", produces = "application/json")
+    @ApiResponses( value = {@ApiResponse(code = 200, message = "Successful — 请求已完成",response = RespObj.class)})
     @RequestMapping(value = "/removeFReported", method = RequestMethod.POST)
     @ResponseBody
     @UserRoles(value = {UserRole.DISCUSS_MANAGER, UserRole.DISCUSS_SECTION_MANAGER})
@@ -375,6 +400,8 @@ public class UserCenterController extends BaseController {
      * @param params
      * @return
      */
+    @ApiOperation(value = "批量处理举报信息", httpMethod = "POST", produces = "application/json")
+    @ApiResponses( value = {@ApiResponse(code = 200, message = "Successful — 请求已完成",response = RespObj.class)})
     @RequestMapping(value = "/addFReported", method = RequestMethod.POST)
     @ResponseBody
     @UserRoles(value = {UserRole.DISCUSS_MANAGER, UserRole.DISCUSS_SECTION_MANAGER})
@@ -430,6 +457,8 @@ public class UserCenterController extends BaseController {
     /**
      * 获取用户个人信息
      */
+    @ApiOperation(value = "获取用户个人信息", httpMethod = "POST", produces = "application/json")
+    @ApiResponses( value = {@ApiResponse(code = 200, message = "Successful — 请求已完成",response = Map.class)})
     @RequestMapping(value = "/userInfo", method = RequestMethod.GET)
     @ResponseBody
     public Map<String, Object> getUserInfo() {
@@ -459,6 +488,8 @@ public class UserCenterController extends BaseController {
     /**
      * 修改个人基本信息
      */
+    @ApiOperation(value = "修改个人基本信息", httpMethod = "POST", produces = "application/json")
+    @ApiResponses( value = {@ApiResponse(code = 200, message = "Successful — 请求已完成",response = RespObj.class)})
     @RequestMapping(value = "/updateUserInfo", method = RequestMethod.POST)
     @ResponseBody
     public RespObj updateUserInfo(String nickName, int sex, int year, int month, int day) {
@@ -481,6 +512,8 @@ public class UserCenterController extends BaseController {
      * @param nickName
      * @return
      */
+    @ApiOperation(value = "更新昵称", httpMethod = "POST", produces = "application/json")
+    @ApiResponses( value = {@ApiResponse(code = 200, message = "Successful — 请求已完成",response = RespObj.class)})
     @RequestMapping(value = "/updateUserNickName")
     @ResponseBody
     public RespObj updateUserNickName(String nickName) {
@@ -498,6 +531,8 @@ public class UserCenterController extends BaseController {
      *
      * @return
      */
+    @ApiOperation(value = "获取该用户的任务情况", httpMethod = "POST", produces = "application/json")
+    @ApiResponses( value = {@ApiResponse(code = 200, message = "Successful — 请求已完成",response = Map.class)})
     @RequestMapping("/getMission")
     @ResponseBody
     public Map<String, Object> getMission() {
@@ -510,6 +545,8 @@ public class UserCenterController extends BaseController {
      *
      * @return
      */
+    @ApiOperation(value = "获取论坛等级列表", httpMethod = "POST", produces = "application/json")
+    @ApiResponses( value = {@ApiResponse(code = 200, message = "Successful — 请求已完成",response = List.class)})
     @RequestMapping(value = "/getFLevel", method = RequestMethod.POST)
     @ResponseBody
     public List<FLevelDTO> getFLevel() {
@@ -519,6 +556,8 @@ public class UserCenterController extends BaseController {
     /**
      * 添加论坛等级信息
      */
+    @ApiOperation(value = "添加论坛等级信息", httpMethod = "POST", produces = "application/json")
+    @ApiResponses( value = {@ApiResponse(code = 200, message = "Successful — 请求已完成",response = RespObj.class)})
     @RequestMapping(value = "/removeFLevelById", method = RequestMethod.POST)
     @ResponseBody
     public RespObj removeFLevelById(String id) {
@@ -536,6 +575,8 @@ public class UserCenterController extends BaseController {
      *
      * @return
      */
+    @ApiOperation(value = "通过Id获取论坛等级", httpMethod = "POST", produces = "application/json")
+    @ApiResponses( value = {@ApiResponse(code = 200, message = "Successful — 请求已完成",response = FLevelDTO.class)})
     @RequestMapping(value = "/getFLevelById")
     @ResponseBody
     public FLevelDTO getFLevelById(String id) {
@@ -545,6 +586,8 @@ public class UserCenterController extends BaseController {
     /**
      * 添加论坛等级信息
      */
+    @ApiOperation(value = "添加论坛等级信息", httpMethod = "POST", produces = "application/json")
+    @ApiResponses( value = {@ApiResponse(code = 200, message = "Successful — 请求已完成",response = RespObj.class)})
     @RequestMapping(value = "/addFLevel", method = RequestMethod.POST)
     @ResponseBody
     public RespObj addFLevel(@RequestParam(required = false, defaultValue = "") String id,
@@ -571,6 +614,8 @@ public class UserCenterController extends BaseController {
     /**
      * 添加论坛投票贴信息
      */
+    @ApiOperation(value = "添加论坛投票贴信息", httpMethod = "POST", produces = "application/json")
+    @ApiResponses( value = {@ApiResponse(code = 200, message = "Successful — 请求已完成",response = RespObj.class)})
     @RequestMapping(value = "/addFVote", method = RequestMethod.POST)
     @ResponseBody
     public RespObj addFVote(String number, String voteId) {
@@ -616,6 +661,8 @@ public class UserCenterController extends BaseController {
      * @param personId
      * @return
      */
+    @ApiOperation(value = "sendInf", httpMethod = "POST", produces = "application/json")
+    @ApiResponses( value = {@ApiResponse(code = 200, message = "Successful — 请求已完成",response = RespObj.class)})
     @RequestMapping(value = "/sendInf", method = RequestMethod.POST)
     @ResponseBody
     public RespObj sendInf(String content, String personId) {
@@ -640,6 +687,8 @@ public class UserCenterController extends BaseController {
      * @param personId
      * @return
      */
+    @ApiOperation(value = "好友申请", httpMethod = "POST", produces = "application/json")
+    @ApiResponses( value = {@ApiResponse(code = 200, message = "Successful — 请求已完成",response = RespObj.class)})
     @RequestMapping(value = "/applyFriend", method = RequestMethod.POST)
     @ResponseBody
     public RespObj friendApplyList(String content, String personId) {
@@ -675,6 +724,8 @@ public class UserCenterController extends BaseController {
      * @param personId
      * @return
      */
+    @ApiOperation(value = "获取好友申请列表", httpMethod = "POST", produces = "application/json")
+    @ApiResponses( value = {@ApiResponse(code = 200, message = "Successful — 请求已完成",response = Map.class)})
     @RequestMapping("/friendList")
     @ResponseBody
     public Map<String, Object> friendList(String personId) {
@@ -690,6 +741,8 @@ public class UserCenterController extends BaseController {
      * @param personId
      * @return
      */
+    @ApiOperation(value = "获取发送消息列表", httpMethod = "POST", produces = "application/json")
+    @ApiResponses( value = {@ApiResponse(code = 200, message = "Successful — 请求已完成",response = Map.class)})
     @RequestMapping("/fMessageList")
     @ResponseBody
     public Map<String, Object> fMessageList(String personId) {
@@ -711,6 +764,8 @@ public class UserCenterController extends BaseController {
      *
      * @return
      */
+    @ApiOperation(value = "获取系统消息列表", httpMethod = "POST", produces = "application/json")
+    @ApiResponses( value = {@ApiResponse(code = 200, message = "Successful — 请求已完成",response = Map.class)})
     @RequestMapping("/fSystemList")
     @ResponseBody
     public Map<String, Object> fSystemList() {
@@ -728,6 +783,8 @@ public class UserCenterController extends BaseController {
      * @param messageId
      * @return
      */
+    @ApiOperation(value = "删除消息", httpMethod = "POST", produces = "application/json")
+    @ApiResponses( value = {@ApiResponse(code = 200, message = "Successful — 请求已完成",response = RespObj.class)})
     @RequestMapping("/removeMessage")
     @ResponseBody
     public RespObj removeMessage(String messageId) {
@@ -748,6 +805,8 @@ public class UserCenterController extends BaseController {
      * @param personId
      * @return
      */
+    @ApiOperation(value = "全部删除", httpMethod = "POST", produces = "application/json")
+    @ApiResponses( value = {@ApiResponse(code = 200, message = "Successful — 请求已完成",response = RespObj.class)})
     @RequestMapping("/removeInf")
     @ResponseBody
     public RespObj removeMessageByPerson(String personId) {
@@ -770,6 +829,8 @@ public class UserCenterController extends BaseController {
      * @param personId
      * @return
      */
+    @ApiOperation(value = "获取发送消息详细列表", httpMethod = "POST", produces = "application/json")
+    @ApiResponses( value = {@ApiResponse(code = 200, message = "Successful — 请求已完成",response = Map.class)})
     @RequestMapping("/fMessagesList")
     @ResponseBody
     public Map<String, Object> fMessagesList(String personId, int type) {
@@ -793,6 +854,8 @@ public class UserCenterController extends BaseController {
      *
      * @return
      */
+    @ApiOperation(value = "获取好友申请数", httpMethod = "GET", produces = "application/json")
+    @ApiResponses( value = {@ApiResponse(code = 200, message = "Successful — 请求已完成",response = Map.class)})
     @RequestMapping(value = "/countApplyFriend", method = RequestMethod.GET)
     @ResponseBody
     public Map<String, Object> countApplyFriend() {
@@ -814,6 +877,8 @@ public class UserCenterController extends BaseController {
      *
      * @return
      */
+    @ApiOperation(value = "获取消息提醒数", httpMethod = "GET", produces = "application/json")
+    @ApiResponses( value = {@ApiResponse(code = 200, message = "Successful — 请求已完成",response = Map.class)})
     @RequestMapping(value = "/countMessage", method = RequestMethod.GET)
     @ResponseBody
     public Map<String, Object> countMessage() {
@@ -833,6 +898,8 @@ public class UserCenterController extends BaseController {
      *
      * @return
      */
+    @ApiOperation(value = "获取系统消息未浏览数", httpMethod = "GET", produces = "application/json")
+    @ApiResponses( value = {@ApiResponse(code = 200, message = "Successful — 请求已完成",response = Map.class)})
     @RequestMapping(value = "/countSystem", method = RequestMethod.GET)
     @ResponseBody
     public Map<String, Object> countSystem() {
@@ -853,6 +920,8 @@ public class UserCenterController extends BaseController {
      *
      * @return
      */
+    @ApiOperation(value = "签到", httpMethod = "POST", produces = "application/json")
+    @ApiResponses( value = {@ApiResponse(code = 200, message = "Successful — 请求已完成",response = RespObj.class)})
     @RequestMapping(value = "/signIn", method = RequestMethod.POST)
     @ResponseBody
     public RespObj signIn() {
@@ -880,6 +949,8 @@ public class UserCenterController extends BaseController {
      * @param count
      * @return
      */
+    @ApiOperation(value = "抽奖", httpMethod = "POST", produces = "application/json")
+    @ApiResponses( value = {@ApiResponse(code = 200, message = "Successful — 请求已完成",response = RespObj.class)})
     @RequestMapping(value = "/welfare", method = RequestMethod.POST)
     @ResponseBody
     public RespObj welfare(int count) {
@@ -922,6 +993,8 @@ public class UserCenterController extends BaseController {
      * @param nickName
      * @return
      */
+    @ApiOperation(value = "修改个人基本信息", httpMethod = "POST", produces = "application/json")
+    @ApiResponses( value = {@ApiResponse(code = 200, message = "Successful — 请求已完成")})
     @RequestMapping("/existUserInfo")
     @ResponseBody
     public boolean existUserInfo(String nickName) {
@@ -932,6 +1005,8 @@ public class UserCenterController extends BaseController {
     /**
      * 收藏页
      */
+    @ApiOperation(value = "收藏页", httpMethod = "POST", produces = "application/json")
+    @ApiResponses( value = {@ApiResponse(code = 200, message = "Successful — 请求已完成",response = String.class)})
     @RequestMapping("/collection")
     public String collectionPage(Map<String, Object> model) {
         loginInfo(model);
@@ -941,6 +1016,8 @@ public class UserCenterController extends BaseController {
     /**
      * 消息页
      */
+    @ApiOperation(value = "消息页", httpMethod = "POST", produces = "application/json")
+    @ApiResponses( value = {@ApiResponse(code = 200, message = "Successful — 请求已完成",response = String.class)})
     @RequestMapping("/message")
     public String messagePage(Map<String, Object> model) {
         loginInfo(model);
@@ -950,6 +1027,8 @@ public class UserCenterController extends BaseController {
     /**
      * 查询收藏
      */
+    @ApiOperation(value = "查询收藏", httpMethod = "POST", produces = "application/json")
+    @ApiResponses( value = {@ApiResponse(code = 200, message = "Successful — 请求已完成",response = Map.class)})
     @RequestMapping("/getCollections")
     @ResponseBody
     public Map<String, Object> getCollections(int type) {
@@ -962,6 +1041,8 @@ public class UserCenterController extends BaseController {
     /**
      * 查询收藏
      */
+    @ApiOperation(value = "查询收藏", httpMethod = "POST", produces = "application/json")
+    @ApiResponses( value = {@ApiResponse(code = 200, message = "Successful — 请求已完成",response = Map.class)})
     @RequestMapping("/getAppCollect")
     @ResponseBody
     public Map<String, Object> getAppCollect(int type) {
@@ -978,6 +1059,8 @@ public class UserCenterController extends BaseController {
      * @param collectionId
      * @return
      */
+    @ApiOperation(value = "取消收藏", httpMethod = "POST", produces = "application/json")
+    @ApiResponses( value = {@ApiResponse(code = 200, message = "Successful — 请求已完成",response = RespObj.class)})
     @RequestMapping("/removeCollection")
     @ResponseBody
     public RespObj cancelCollection(String collectionId) {
@@ -998,6 +1081,8 @@ public class UserCenterController extends BaseController {
      * @param applyId
      * @return
      */
+    @ApiOperation(value = "接受好友申请", httpMethod = "POST", produces = "application/json")
+    @ApiResponses( value = {@ApiResponse(code = 200, message = "Successful — 请求已完成",response = RespObj.class)})
     @RequestMapping("/acceptFriend")
     @ResponseBody
     public RespObj acceptFriend(String applyId) {
@@ -1016,6 +1101,8 @@ public class UserCenterController extends BaseController {
      * @param applyId
      * @return
      */
+    @ApiOperation(value = "拒绝好友申请", httpMethod = "POST", produces = "application/json")
+    @ApiResponses( value = {@ApiResponse(code = 200, message = "Successful — 请求已完成",response = RespObj.class)})
     @RequestMapping("/refuseFriend")
     @ResponseBody
     public RespObj refuseFriend(String applyId) {
@@ -1031,6 +1118,8 @@ public class UserCenterController extends BaseController {
     /**
      * 收藏帖子或板块
      */
+    @ApiOperation(value = "收藏帖子或板块", httpMethod = "POST", produces = "application/json")
+    @ApiResponses( value = {@ApiResponse(code = 200, message = "Successful — 请求已完成",response = RespObj.class)})
     @RequestMapping(value = "/addCollection", method = RequestMethod.POST)
     @ResponseBody
     public RespObj addCollection(String postSectionId, int type) {
@@ -1063,6 +1152,8 @@ public class UserCenterController extends BaseController {
      *
      * @return
      */
+    @ApiOperation(value = "获取改帖子/板块收藏的人数", httpMethod = "POST", produces = "application/json")
+    @ApiResponses( value = {@ApiResponse(code = 200, message = "Successful — 请求已完成",response = Map.class)})
     @RequestMapping(value = "/getCountByCondition", method = RequestMethod.GET)
     @ResponseBody
     public Map<String, Object> getCountByCondition(String postSection) {
@@ -1141,6 +1232,7 @@ public class UserCenterController extends BaseController {
     /**
      * 上传图片到七牛
      */
+    @ApiOperation(value = "上传图片到七牛", httpMethod = "POST", produces = "application/json")
     @RequestMapping("/uploadFile")
     public void uploadFile(HttpServletRequest request, HttpServletResponse response) throws IllegalParamException, FileUploadException, IOException {
         MultipartHttpServletRequest multipartRequest = (MultipartHttpServletRequest) request;
@@ -1168,6 +1260,8 @@ public class UserCenterController extends BaseController {
     /**
      * 上传图片到七牛
      */
+    @ApiOperation(value = "上传图片到七牛", httpMethod = "POST", produces = "application/json")
+    @ApiResponses( value = {@ApiResponse(code = 200, message = "Successful — 请求已完成",response = String.class)})
     @RequestMapping("/uploadImage")
     public String uploadImage(HttpServletRequest request, HttpServletResponse response) throws IllegalParamException, FileUploadException, IOException {
         MultipartHttpServletRequest multipartRequest = (MultipartHttpServletRequest) request;
@@ -1194,6 +1288,8 @@ public class UserCenterController extends BaseController {
     /**
      * 上传视频到七牛
      */
+    @ApiOperation(value = "上传视频到七牛", httpMethod = "POST", produces = "application/json")
+    @ApiResponses( value = {@ApiResponse(code = 200, message = "Successful — 请求已完成",response = String.class)})
     @RequestMapping("/uploadVideo")
     @SessionNeedless
     public String uploadVideo(HttpServletRequest request, HttpServletResponse response) throws IllegalParamException, IllegalStateException, IOException, EncoderException {
@@ -1268,6 +1364,8 @@ public class UserCenterController extends BaseController {
     /**
      * 七牛视频下载
      */
+    @ApiOperation(value = "七牛视频下载", httpMethod = "POST", produces = "application/json")
+    @ApiResponses( value = {@ApiResponse(code = 200, message = "Successful — 请求已完成",response = Map.class)})
     @RequestMapping("/m3u8ToMp4DownLoad")
     @ResponseBody
     public Map m3u8ToMp4DownLoad(String filePath, HttpServletRequest request, HttpServletResponse response) throws IOException, IllegalParamException {

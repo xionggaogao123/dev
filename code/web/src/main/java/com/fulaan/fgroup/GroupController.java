@@ -26,6 +26,9 @@ import com.sys.exceptions.IllegalParamException;
 import com.sys.utils.AvatarUtils;
 import com.sys.utils.RespObj;
 import io.swagger.annotations.Api;
+import io.swagger.annotations.ApiOperation;
+import io.swagger.annotations.ApiResponse;
+import io.swagger.annotations.ApiResponses;
 import org.apache.commons.lang3.StringUtils;
 import org.bson.types.ObjectId;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -42,7 +45,7 @@ import java.util.*;
  * Created by jerry on 2016/10/31.
  * GroupController
  */
-@Api(value="GroupController",hidden = true)
+@Api(value="GroupController")
 @Controller
 @RequestMapping("/group")
 public class GroupController extends BaseController {
@@ -72,6 +75,8 @@ public class GroupController extends BaseController {
      * @return
      * @throws Exception
      */
+    @ApiOperation(value = "创建群聊", httpMethod = "POST", produces = "application/json")
+    @ApiResponses( value = {@ApiResponse(code = 200, message = "Successful — 请求已完成",response = RespObj.class)})
     @RequestMapping(value = "/create")
     @ResponseBody
     public RespObj createGroup(@RequestParam(defaultValue = "", required = false) String userIds) throws Exception {
@@ -102,6 +107,8 @@ public class GroupController extends BaseController {
      * @param id
      * @return
      */
+    @ApiOperation(value = "获取群聊详情", httpMethod = "GET", produces = "application/json")
+    @ApiResponses( value = {@ApiResponse(code = 200, message = "Successful — 请求已完成",response = RespObj.class)})
     @RequestMapping(value = "/{id}")
     @ResponseBody
     public RespObj detail(@PathVariable String id) {
@@ -137,6 +144,8 @@ public class GroupController extends BaseController {
      * @param emChatIds
      * @return
      */
+    @ApiOperation(value = "根据emChatids获取群组信息", httpMethod = "POST", produces = "application/json")
+    @ApiResponses( value = {@ApiResponse(code = 200, message = "Successful — 请求已完成",response = RespObj.class)})
     @RequestMapping("/listEmchat")
     @ResponseBody
     public RespObj listEmchat(String emChatIds) {
@@ -167,6 +176,8 @@ public class GroupController extends BaseController {
      * @param pageSize
      * @return
      */
+    @ApiOperation(value = "获取群聊成员", httpMethod = "POST", produces = "application/json")
+    @ApiResponses( value = {@ApiResponse(code = 200, message = "Successful — 请求已完成",response = RespObj.class)})
     @RequestMapping("/members")
     @ResponseBody
     public RespObj getMembers(String emChatId,
@@ -182,6 +193,8 @@ public class GroupController extends BaseController {
      * @param emChatId
      * @return
      */
+    @ApiOperation(value = "获取全部成员", httpMethod = "POST", produces = "application/json")
+    @ApiResponses( value = {@ApiResponse(code = 200, message = "Successful — 请求已完成",response = RespObj.class)})
     @RequestMapping("/allMembers")
     @ResponseBody
     public RespObj getMembers(String emChatId) {
@@ -196,6 +209,8 @@ public class GroupController extends BaseController {
      * @param userIds
      * @return
      */
+    @ApiOperation(value = "群主邀请人进群", httpMethod = "POST", produces = "application/json")
+    @ApiResponses( value = {@ApiResponse(code = 200, message = "Successful — 请求已完成",response = RespObj.class)})
     @RequestMapping("/inviteMember")
     @ResponseBody
     public RespObj inviteMember(String emChatId,
@@ -234,6 +249,8 @@ public class GroupController extends BaseController {
      * @throws IOException
      * @throws IllegalParamException
      */
+    @ApiOperation(value = "加入群组", httpMethod = "POST", produces = "application/json")
+    @ApiResponses( value = {@ApiResponse(code = 200, message = "Successful — 请求已完成",response = RespObj.class)})
     @RequestMapping("/join")
     @ResponseBody
     public RespObj join(String emChatId) throws IOException, IllegalParamException {
@@ -274,6 +291,8 @@ public class GroupController extends BaseController {
      * @throws IOException
      * @throws IllegalParamException
      */
+    @ApiOperation(value = "群主踢人", httpMethod = "POST", produces = "application/json")
+    @ApiResponses( value = {@ApiResponse(code = 200, message = "Successful — 请求已完成",response = RespObj.class)})
     @RequestMapping("/quitMember")
     @ResponseBody
     public RespObj quitMember(String emChatId, String userIds) throws IOException, IllegalParamException {
@@ -317,6 +336,8 @@ public class GroupController extends BaseController {
      * @param emChatId
      * @return
      */
+    @ApiOperation(value = "退出群聊", httpMethod = "POST", produces = "application/json")
+    @ApiResponses( value = {@ApiResponse(code = 200, message = "Successful — 请求已完成",response = RespObj.class)})
     @RequestMapping("/quit")
     @ResponseBody
     public RespObj quitGroup(String emChatId) throws IOException, IllegalParamException {
@@ -372,6 +393,8 @@ public class GroupController extends BaseController {
      * @param emChatId
      * @return
      */
+    @ApiOperation(value = "获取不在群聊的好友列表", httpMethod = "POST", produces = "application/json")
+    @ApiResponses( value = {@ApiResponse(code = 200, message = "Successful — 请求已完成",response = RespObj.class)})
     @RequestMapping("/getOnJoin")
     @ResponseBody
     public RespObj getOnJoin(String emChatId) {
@@ -400,6 +423,8 @@ public class GroupController extends BaseController {
      * @param emChatId
      * @return
      */
+    @ApiOperation(value = "获取在群里的可删列表", httpMethod = "POST", produces = "application/json")
+    @ApiResponses( value = {@ApiResponse(code = 200, message = "Successful — 请求已完成",response = RespObj.class)})
     @RequestMapping("/getOnQuitList")
     @ResponseBody
     public RespObj getQuitList(String emChatId) {
@@ -425,6 +450,8 @@ public class GroupController extends BaseController {
      * @param groupName
      * @return
      */
+    @ApiOperation(value = "更新群聊名称", httpMethod = "POST", produces = "application/json")
+    @ApiResponses( value = {@ApiResponse(code = 200, message = "Successful — 请求已完成",response = RespObj.class)})
     @RequestMapping("/updateGroupName")
     @ResponseBody
     public RespObj updateGroupName(String emChatId,
@@ -483,6 +510,8 @@ public class GroupController extends BaseController {
      * @param nickName
      * @return
      */
+    @ApiOperation(value = "更新在群组的昵称", httpMethod = "POST", produces = "application/json")
+    @ApiResponses( value = {@ApiResponse(code = 200, message = "Successful — 请求已完成",response = RespObj.class)})
     @RequestMapping("/updateMyNickname")
     @ResponseBody
     public RespObj updateMyNickname(String emChatId,
@@ -500,6 +529,8 @@ public class GroupController extends BaseController {
      * @param status
      * @return
      */
+    @ApiOperation(value = "更新设置 免打扰设置", httpMethod = "POST", produces = "application/json")
+    @ApiResponses( value = {@ApiResponse(code = 200, message = "Successful — 请求已完成",response = RespObj.class)})
     @RequestMapping("/updateMyStatus")
     @ResponseBody
     public RespObj updateMyStatus(String emChatId,
@@ -517,6 +548,8 @@ public class GroupController extends BaseController {
      * @param userIds
      * @return
      */
+    @ApiOperation(value = "设置副群主", httpMethod = "POST", produces = "application/json")
+    @ApiResponses( value = {@ApiResponse(code = 200, message = "Successful — 请求已完成",response = RespObj.class)})
     @RequestMapping("/setMaster")
     @ResponseBody
     public RespObj setRole(String emChatId,
@@ -548,6 +581,8 @@ public class GroupController extends BaseController {
      * @param userIds
      * @return
      */
+    @ApiOperation(value = "取消 副群主", httpMethod = "POST", produces = "application/json")
+    @ApiResponses( value = {@ApiResponse(code = 200, message = "Successful — 请求已完成",response = RespObj.class)})
     @RequestMapping("/unsetMaster")
     @ResponseBody
     public RespObj unsetMaster(String emChatId,
@@ -571,6 +606,8 @@ public class GroupController extends BaseController {
      * @param pageSize
      * @return
      */
+    @ApiOperation(value = "获取群公告 - 分页", httpMethod = "POST", produces = "application/json")
+    @ApiResponses( value = {@ApiResponse(code = 200, message = "Successful — 请求已完成",response = RespObj.class)})
     @RequestMapping("/getAnnounceMent")
     @ResponseBody
     public RespObj getAnnounceMent(String emChatId,
@@ -596,6 +633,8 @@ public class GroupController extends BaseController {
      * @param images
      * @return
      */
+    @ApiOperation(value = "发布群公告", httpMethod = "POST", produces = "application/json")
+    @ApiResponses( value = {@ApiResponse(code = 200, message = "Successful — 请求已完成",response = RespObj.class)})
     @RequestMapping("/setAnnounceMent")
     @ResponseBody
     public RespObj setAnnounceMent(String emChatId,
@@ -644,7 +683,8 @@ public class GroupController extends BaseController {
         groupNoticeService.save(groupId, title, content, getUserId(), imageArray);
         return RespObj.SUCCESS("发布成功");
     }
-
+    @ApiOperation(value = "updateHeadImage", httpMethod = "POST", produces = "application/json")
+    @ApiResponses( value = {@ApiResponse(code = 200, message = "Successful — 请求已完成",response = RespObj.class)})
     @RequestMapping("/updateHeadImage")
     @SessionNeedless
     @ResponseBody
@@ -664,6 +704,8 @@ public class GroupController extends BaseController {
      *
      * @return
      */
+    @ApiOperation(value = "获取未读消息个数", httpMethod = "GET", produces = "application/json")
+    @ApiResponses( value = {@ApiResponse(code = 200, message = "Successful — 请求已完成",response = RespObj.class)})
     @RequestMapping("/offlineMsgCount")
     @ResponseBody
     @SessionNeedless

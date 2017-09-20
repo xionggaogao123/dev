@@ -9,6 +9,9 @@ import fulaan.social.connect.Auth;
 import fulaan.social.factory.AuthFactory;
 import fulaan.social.model.AuthType;
 import io.swagger.annotations.Api;
+import io.swagger.annotations.ApiOperation;
+import io.swagger.annotations.ApiResponse;
+import io.swagger.annotations.ApiResponses;
 import org.bson.types.ObjectId;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestHeader;
@@ -23,32 +26,36 @@ import java.util.Map;
  * create by Jerry 2016/8/17
  * wap 端的 controller
  */
-@Api(value=" wap 端的 controller",hidden = true)
+@Api(value=" wap 端的 controller")
 @Controller
 @RequestMapping("/wap")
 public class WapController extends BaseController {
 
     private Auth qqAuth = AuthFactory.getQQAuth();
     private Auth wechatAuth = AuthFactory.getAuth(AuthType.WECHAT);
-
+    @ApiOperation(value = "wapPage", httpMethod = "GET", produces = "application/json")
+    @ApiResponses( value = {@ApiResponse(code = 200, message = "Successful — 请求已完成",response = String.class)})
     @RequestMapping("/page")
     @SessionNeedless
     public String wapPage(String page) {
         return "wap/" + page;
 }
-
+    @ApiOperation(value = "qq", httpMethod = "GET", produces = "application/json")
+    @ApiResponses( value = {@ApiResponse(code = 200, message = "Successful — 请求已完成")})
     @RequestMapping("/qq")
     @SessionNeedless
     public void qq(HttpServletRequest request, HttpServletResponse response) throws Exception{
         response.sendRedirect(qqAuth.getAuthUrl());
     }
-
+    @ApiOperation(value = "wechat", httpMethod = "GET", produces = "application/json")
+    @ApiResponses( value = {@ApiResponse(code = 200, message = "Successful — 请求已完成",response = String.class)})
     @RequestMapping("/wechat")
     @SessionNeedless
     public String wechat() {
         return "redirect:" + wechatAuth.getWapAuthUrl();
     }
-
+    @ApiOperation(value = "third", httpMethod = "POST", produces = "application/json")
+    @ApiResponses( value = {@ApiResponse(code = 200, message = "Successful — 请求已完成",response = String.class)})
     @RequestMapping("/third")
     @SessionNeedless
     public String third(@RequestHeader("User-Agent") String userAgent,
@@ -59,7 +66,8 @@ public class WapController extends BaseController {
             return "redirect:qq.do";
         }
     }
-
+    @ApiOperation(value = "shareFPost", httpMethod = "POST", produces = "application/json")
+    @ApiResponses( value = {@ApiResponse(code = 200, message = "Successful — 请求已完成",response = String.class)})
     @RequestMapping("/share")
     @SessionNeedless
     public String shareFPost(String postId, String replyId,
@@ -78,7 +86,8 @@ public class WapController extends BaseController {
         response.addCookie(appShareCookie);
         return "wap/post";
     }
-
+    @ApiOperation(value = "downloadApp", httpMethod = "GET", produces = "application/json")
+    @ApiResponses( value = {@ApiResponse(code = 200, message = "Successful — 请求已完成",response = String.class)})
     @RequestMapping("/download")
     @SessionNeedless
     public String downloadApp() {

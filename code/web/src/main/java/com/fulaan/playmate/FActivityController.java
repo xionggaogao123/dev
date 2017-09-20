@@ -9,7 +9,7 @@ import com.fulaan.pojo.PageModel;
 import com.fulaan.util.DateUtils;
 import com.pojo.playmate.FActivityEntry;
 import com.sys.utils.RespObj;
-import io.swagger.annotations.Api;
+import io.swagger.annotations.*;
 import org.apache.commons.lang3.StringUtils;
 import org.bson.types.ObjectId;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -43,6 +43,8 @@ public class FActivityController extends BaseController {
      * @param endTime
      * @return
      */
+    @ApiOperation(value = "发布活动", httpMethod = "POST", produces = "application/json")
+    @ApiResponses( value = {@ApiResponse(code = 200, message = "Successful — 请求已完成",response = RespObj.class)})
     @RequestMapping("/publish")
     @ResponseBody
     public RespObj publishActivity(double lon, double lat, int acode, String title,
@@ -71,6 +73,8 @@ public class FActivityController extends BaseController {
      * @param pageSize 每页个数
      * @return RespObj
      */
+    @ApiOperation(value = "附近的活动", httpMethod = "POST", produces = "application/json")
+    @ApiResponses( value = {@ApiResponse(code = 200, message = "Successful — 请求已完成",response = RespObj.class)})
     @RequestMapping("/nearActivitys")
     @ResponseBody
     @SessionNeedless
@@ -98,6 +102,8 @@ public class FActivityController extends BaseController {
      * @param signText
      * @return
      */
+    @ApiOperation(value = "报名某个活动", httpMethod = "POST", produces = "application/json")
+    @ApiResponses( value = {@ApiResponse(code = 200, message = "Successful — 请求已完成",response = RespObj.class)})
     @RequestMapping("/sign")
     @ResponseBody
     public RespObj signActivity(@RequestParam(value = "acid") @ObjectIdType ObjectId acid,
@@ -111,6 +117,8 @@ public class FActivityController extends BaseController {
      * @param acid
      * @return
      */
+    @ApiOperation(value = "活动详情", httpMethod = "POST", produces = "application/json")
+    @ApiResponses( value = {@ApiResponse(code = 200, message = "Successful — 请求已完成",response = RespObj.class)})
     @RequestMapping("/detail")
     @ResponseBody
     @SessionNeedless
@@ -138,6 +146,8 @@ public class FActivityController extends BaseController {
      * @param pageSize
      * @return
      */
+    @ApiOperation(value = "获取自己或别人发布的活动", httpMethod = "POST", produces = "application/json")
+    @ApiResponses( value = {@ApiResponse(code = 200, message = "Successful — 请求已完成",response = RespObj.class)})
     @RequestMapping("/published")
     @ResponseBody
     @SessionNeedless
@@ -164,6 +174,8 @@ public class FActivityController extends BaseController {
      * @param pageSize
      * @return
      */
+    @ApiOperation(value = "获取自己参加的活动", httpMethod = "POST", produces = "application/json")
+    @ApiResponses( value = {@ApiResponse(code = 200, message = "Successful — 请求已完成",response = RespObj.class)})
     @RequestMapping("/signed")
     @ResponseBody
     public RespObj signed(@RequestParam(value = "page", required = false, defaultValue = "1") int page,
@@ -178,6 +190,8 @@ public class FActivityController extends BaseController {
      * @param pageSize
      * @return
      */
+    @ApiOperation(value = "获取已经过期的活动", httpMethod = "POST", produces = "application/json")
+    @ApiResponses( value = {@ApiResponse(code = 200, message = "Successful — 请求已完成",response = RespObj.class)})
     @RequestMapping("/attended")
     @ResponseBody
     public RespObj attended(@RequestParam(value = "page", required = false, defaultValue = "1") int page,
@@ -191,9 +205,11 @@ public class FActivityController extends BaseController {
      * @param acid
      * @return
      */
+    @ApiOperation(value = "取消报名某活动", httpMethod = "POST", produces = "application/json")
+    @ApiResponses( value = {@ApiResponse(code = 200, message = "Successful — 请求已完成",response = RespObj.class)})
     @RequestMapping("/cancelSign")
     @ResponseBody
-    public RespObj cancel(@ObjectIdType ObjectId acid) {
+    public RespObj cancel(@ApiParam(name = "acid", required = true, value = "acid") @ObjectIdType ObjectId acid) {
         if (!fActivityService.isUserSigned(acid, getUserId())) {
             return RespObj.FAILD("您未参加此活动");
         }
@@ -211,9 +227,11 @@ public class FActivityController extends BaseController {
      * @param acid
      * @return
      */
+    @ApiOperation(value = "取消发布某活动", httpMethod = "POST", produces = "application/json")
+    @ApiResponses( value = {@ApiResponse(code = 200, message = "Successful — 请求已完成",response = RespObj.class)})
     @RequestMapping("/cancelPublish")
     @ResponseBody
-    public RespObj cancelPublish(@ObjectIdType ObjectId acid) {
+    public RespObj cancelPublish(@ApiParam(name = "acid", required = true, value = "acid") @ObjectIdType ObjectId acid) {
         fActivityService.cancelPublishActivity(acid, getUserId());
         return RespObj.SUCCESS;
     }

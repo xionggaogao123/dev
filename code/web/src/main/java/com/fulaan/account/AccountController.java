@@ -20,7 +20,7 @@ import com.sys.utils.RespObj;
 import com.sys.utils.ValidationUtils;
 import fulaan.social.connect.Auth;
 import fulaan.social.factory.AuthFactory;
-import io.swagger.annotations.Api;
+import io.swagger.annotations.*;
 import org.apache.commons.lang.StringUtils;
 import org.bson.types.ObjectId;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -66,6 +66,8 @@ public class AccountController extends BaseController {
      *
      * @return register page
      */
+    @ApiOperation(value = "注册界面", httpMethod = "GET", produces = "application/json")
+    @ApiResponses( value = {@ApiResponse(code = 200, message = "Successful — 请求已完成",response = String.class)})
     @RequestMapping("/register")
     @SessionNeedless
     public String registerPage() {
@@ -77,6 +79,8 @@ public class AccountController extends BaseController {
      *
      * @return login page
      */
+    @ApiOperation(value = "登录界面", httpMethod = "GET", produces = "application/json")
+    @ApiResponses( value = {@ApiResponse(code = 200, message = "Successful — 请求已完成",response = String.class)})
     @RequestMapping("/login")
     @SessionNeedless
     public String loginPage() {
@@ -88,6 +92,8 @@ public class AccountController extends BaseController {
      *
      * @return findPassword page
      */
+    @ApiOperation(value = "找回密码", httpMethod = "GET", produces = "application/json")
+    @ApiResponses( value = {@ApiResponse(code = 200, message = "Successful — 请求已完成",response = String.class)})
     @RequestMapping("/findPassword")
     @SessionNeedless
     public String findPasswordPage() {
@@ -99,6 +105,8 @@ public class AccountController extends BaseController {
      *
      * @return account page
      */
+    @ApiOperation(value = "我的账户", httpMethod = "GET", produces = "application/json")
+    @ApiResponses( value = {@ApiResponse(code = 200, message = "Successful — 请求已完成",response = String.class)})
     @RequestMapping("/accountSafe")
     @LoginInfo
     public String accountSafePage() {
@@ -110,9 +118,11 @@ public class AccountController extends BaseController {
      *
      * @return page
      */
+    @ApiOperation(value = "第三方登录成功", httpMethod = "GET", produces = "application/json")
+    @ApiResponses( value = {@ApiResponse(code = 200, message = "Successful — 请求已完成",response = String.class)})
     @RequestMapping("/thirdLoginSuccess")
     @SessionNeedless
-    public String thirdLoginSuccessPage(@RequestParam(value = "bindSuccess", required = false, defaultValue = "-1") int bindSuccess, Model model) {
+    public String thirdLoginSuccessPage(@ApiParam(name = "bindSuccess", required = true, value = "是否成功代码") @RequestParam(value = "bindSuccess", required = false, defaultValue = "-1") int bindSuccess, Model model) {
         model.addAttribute("bindSuccess", bindSuccess);
         return "/account/thirdLoginSuccess";
     }
@@ -120,6 +130,8 @@ public class AccountController extends BaseController {
     /**
      * 检查用户名是否可用
      */
+    @ApiOperation(value = "检查用户名是否可用", httpMethod = "GET", produces = "application/json")
+    @ApiResponses( value = {@ApiResponse(code = 200, message = "Successful — 请求已完成",response = RespObj.class)})
     @RequestMapping("/userNameCheck")
     @SessionNeedless
     @ResponseBody
@@ -130,6 +142,8 @@ public class AccountController extends BaseController {
     /**
      * 检查手机号是否可用
      */
+    @ApiOperation(value = "检查手机号是否可用", httpMethod = "GET", produces = "application/json")
+    @ApiResponses( value = {@ApiResponse(code = 200, message = "Successful — 请求已完成",response = RespObj.class)})
     @RequestMapping("/userPhoneCheck")
     @SessionNeedless
     @ResponseBody
@@ -140,6 +154,8 @@ public class AccountController extends BaseController {
     /**
      * 检查邮箱是否可用
      */
+    @ApiOperation(value = "检查邮箱是否可用", httpMethod = "GET", produces = "application/json")
+    @ApiResponses( value = {@ApiResponse(code = 200, message = "Successful — 请求已完成",response = RespObj.class)})
     @RequestMapping("/userEmailCheck")
     @SessionNeedless
     @ResponseBody
@@ -150,6 +166,8 @@ public class AccountController extends BaseController {
     /**
      * 进行QQ 绑定
      */
+    @ApiOperation(value = "进行QQ 绑定", httpMethod = "GET", produces = "application/json")
+    @ApiResponses( value = {@ApiResponse(code = 200, message = "Successful — 请求已完成",response = String.class)})
     @SessionNeedless
     @RequestMapping(value = "/qqBind")
     public void QQLogin(HttpServletResponse response) throws IOException {
@@ -164,6 +182,8 @@ public class AccountController extends BaseController {
     /**
      * 进行微信绑定操作
      */
+    @ApiOperation(value = "进行微信绑定操作", httpMethod = "GET", produces = "application/json")
+    @ApiResponses( value = {@ApiResponse(code = 200, message = "Successful — 请求已完成",response = String.class)})
     @SessionNeedless
     @RequestMapping(value = "/wechatBind")
     public void weChatLogin(HttpServletResponse response) throws IOException {
@@ -183,6 +203,8 @@ public class AccountController extends BaseController {
      * @param cacheKeyId
      * @return
      */
+    @ApiOperation(value = "绑定 手机号", httpMethod = "GET", produces = "application/json")
+    @ApiResponses( value = {@ApiResponse(code = 200, message = "Successful — 请求已完成",response = RespObj.class)})
     @RequestMapping("/bindPhoneNumber")
     @ResponseBody
     public RespObj bindPhone(String phone, String code, String cacheKeyId) {
@@ -208,6 +230,8 @@ public class AccountController extends BaseController {
      * @param phone
      * @return
      */
+    @ApiOperation(value = "列出绑定的用户名", httpMethod = "GET", produces = "application/json")
+    @ApiResponses( value = {@ApiResponse(code = 200, message = "Successful — 请求已完成",response = RespObj.class)})
     @SessionNeedless
     @ResponseBody
     @RequestMapping("/listBindUserName")
@@ -228,6 +252,8 @@ public class AccountController extends BaseController {
     /**
      * 验证用户名与验证码
      */
+    @ApiOperation(value = "验证用户名与验证码", httpMethod = "GET", produces = "application/json")
+    @ApiResponses( value = {@ApiResponse(code = 200, message = "Successful — 请求已完成",response = RespObj.class)})
     @RequestMapping("/verifyAccount")
     @SessionNeedless
     @ResponseBody
@@ -291,6 +317,8 @@ public class AccountController extends BaseController {
      * @param cacheKeyId
      * @return
      */
+    @ApiOperation(value = "验证 手机号 验证码是否匹配", httpMethod = "GET", produces = "application/json")
+    @ApiResponses( value = {@ApiResponse(code = 200, message = "Successful — 请求已完成",response = RespObj.class)})
     @SessionNeedless
     @RequestMapping("/phoneValidate")
     @ResponseBody
@@ -309,6 +337,8 @@ public class AccountController extends BaseController {
      * @param phone
      * @return
      */
+    @ApiOperation(value = "验证用户名 和 手机号是否匹配", httpMethod = "GET", produces = "application/json")
+    @ApiResponses( value = {@ApiResponse(code = 200, message = "Successful — 请求已完成",response = RespObj.class)})
     @SessionNeedless
     @RequestMapping("/verifyUserNameAndPhone")
     @ResponseBody
@@ -326,6 +356,8 @@ public class AccountController extends BaseController {
      * @param email
      * @return
      */
+    @ApiOperation(value = "发送验证邮件", httpMethod = "GET", produces = "application/json")
+    @ApiResponses( value = {@ApiResponse(code = 200, message = "Successful — 请求已完成",response = RespObj.class)})
     @SessionNeedless
     @RequestMapping("/sendVerifyEmail")
     @ResponseBody
@@ -349,6 +381,8 @@ public class AccountController extends BaseController {
      * @return
      * @throws Exception
      */
+    @ApiOperation(value = "邮箱验证", httpMethod = "GET", produces = "application/json")
+    @ApiResponses( value = {@ApiResponse(code = 200, message = "Successful — 请求已完成",response = ModelAndView.class)})
     @SessionNeedless
     @RequestMapping("/emailValidate")
     public ModelAndView emailValidate(String validateCode, HttpServletResponse response) throws Exception {
@@ -365,6 +399,8 @@ public class AccountController extends BaseController {
      * @param validateCode
      * @return
      */
+    @ApiOperation(value = "通过邮箱重置密码", httpMethod = "GET", produces = "application/json")
+    @ApiResponses( value = {@ApiResponse(code = 200, message = "Successful — 请求已完成",response = RespObj.class)})
     @SessionNeedless
     @RequestMapping("/resetPasswordByEmail")
     @ResponseBody
@@ -390,6 +426,8 @@ public class AccountController extends BaseController {
      * @param password
      * @return
      */
+    @ApiOperation(value = "重置密码", httpMethod = "GET", produces = "application/json")
+    @ApiResponses( value = {@ApiResponse(code = 200, message = "Successful — 请求已完成",response = RespObj.class)})
     @SessionNeedless
     @RequestMapping("/resetPassword")
     @ResponseBody
@@ -412,6 +450,8 @@ public class AccountController extends BaseController {
     /**
      * 更新出生年月 - 性别 - 昵称
      */
+    @ApiOperation(value = "更新出生年月 - 性别 - 昵称", httpMethod = "GET", produces = "application/json")
+    @ApiResponses( value = {@ApiResponse(code = 200, message = "Successful — 请求已完成",response = RespObj.class)})
     @RequestMapping("/updateNickSexAge")
     @ResponseBody
     public RespObj updateNickSexAge(@RequestParam(value = "year", defaultValue = "0", required = false) int year,
@@ -439,6 +479,8 @@ public class AccountController extends BaseController {
     /**
      * 检查用户密码
      */
+    @ApiOperation(value = "检查用户密码", httpMethod = "GET", produces = "application/json")
+    @ApiResponses( value = {@ApiResponse(code = 200, message = "Successful — 请求已完成",response = RespObj.class)})
     @RequestMapping("/checkUserPassword")
     @ResponseBody
     public RespObj checkUserPassword(String password) {
@@ -462,6 +504,8 @@ public class AccountController extends BaseController {
     /**
      * 修改用户密码
      */
+    @ApiOperation(value = "修改用户密码", httpMethod = "GET", produces = "application/json")
+    @ApiResponses( value = {@ApiResponse(code = 200, message = "Successful — 请求已完成",response = RespObj.class)})
     @RequestMapping("/changeUserPassword")
     @ResponseBody
     public RespObj changeUserPassword(String password) {
@@ -477,6 +521,8 @@ public class AccountController extends BaseController {
     /**
      * 第三方登录信息
      */
+    @ApiOperation(value = "第三方登录信息", httpMethod = "GET", produces = "application/json")
+    @ApiResponses( value = {@ApiResponse(code = 200, message = "Successful — 请求已完成",response = RespObj.class)})
     @RequestMapping("/thirdLoginInfo")
     @ResponseBody
     public RespObj thirdLoginInfo() {
@@ -492,6 +538,8 @@ public class AccountController extends BaseController {
      * @param type
      * @return
      */
+    @ApiOperation(value = "解除第三方绑定", httpMethod = "GET", produces = "application/json")
+    @ApiResponses( value = {@ApiResponse(code = 200, message = "Successful — 请求已完成",response = RespObj.class)})
     @RequestMapping("/removeThirdBind")
     @ResponseBody
     public RespObj removeThirdBind(int type) {
@@ -505,6 +553,8 @@ public class AccountController extends BaseController {
      * @param userName
      * @return
      */
+    @ApiOperation(value = "获取账户信息", httpMethod = "GET", produces = "application/json")
+    @ApiResponses( value = {@ApiResponse(code = 200, message = "Successful — 请求已完成",response = RespObj.class)})
     @RequestMapping("/accountSafeInfo")
     @ResponseBody
     @SessionNeedless
@@ -534,7 +584,8 @@ public class AccountController extends BaseController {
         return RespObj.SUCCESS(result);
     }
 
-
+    @ApiOperation(value = "电话和邮件", httpMethod = "GET", produces = "application/json")
+    @ApiResponses( value = {@ApiResponse(code = 200, message = "Successful — 请求已完成",response = RespObj.class)})
     @RequestMapping("/unsetData")
     @ResponseBody
     public RespObj unsetPhone(String phone, String email) {
@@ -556,6 +607,8 @@ public class AccountController extends BaseController {
      * @param cacheKeyId
      * @return
      */
+    @ApiOperation(value = "验证手机号", httpMethod = "GET", produces = "application/json")
+    @ApiResponses( value = {@ApiResponse(code = 200, message = "Successful — 请求已完成",response = RespObj.class)})
     @RequestMapping("/validatePhone")
     @SessionNeedless
     @ResponseBody

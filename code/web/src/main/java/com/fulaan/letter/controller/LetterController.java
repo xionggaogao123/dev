@@ -12,6 +12,9 @@ import com.pojo.user.UserDetailInfoDTO;
 import com.pojo.user.UserEntry;
 import com.sys.constants.Constant;
 import io.swagger.annotations.Api;
+import io.swagger.annotations.ApiOperation;
+import io.swagger.annotations.ApiResponse;
+import io.swagger.annotations.ApiResponses;
 import org.apache.log4j.Logger;
 import org.bson.types.ObjectId;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -27,7 +30,7 @@ import java.util.*;
  *
  * @author fourer
  */
-@Api(value="信件controller",hidden = true)
+@Api(value="信件controller")
 @Controller
 @RequestMapping("/letter")
 public class LetterController extends BaseController {
@@ -44,6 +47,8 @@ public class LetterController extends BaseController {
      *
      * @return
      */
+    @ApiOperation(value = "未读信件数量", httpMethod = "POST", produces = "application/json")
+    @ApiResponses( value = {@ApiResponse(code = 200, message = "Successful — 请求已完成")})
     @RequestMapping("/count")
     @ResponseBody
     public int getUnreadLetterCount() {
@@ -62,6 +67,8 @@ public class LetterController extends BaseController {
     /**
      * 获取列表
      */
+    @ApiOperation(value = "获取列表", httpMethod = "POST", produces = "application/json")
+    @ApiResponses( value = {@ApiResponse(code = 200, message = "Successful — 请求已完成",response = Map.class)})
     @RequestMapping("/list")
     @ResponseBody
     public Map<String, Object> listLetters(Integer page, Integer size) throws Exception {
@@ -164,6 +171,8 @@ public class LetterController extends BaseController {
      * @return
      * @throws Exception
      */
+    @ApiOperation(value = "得到与某个好友的所有对话", httpMethod = "POST", produces = "application/json")
+    @ApiResponses( value = {@ApiResponse(code = 200, message = "Successful — 请求已完成",response = Map.class)})
     @RequestMapping("/getreplyletters")
     @ResponseBody
     public Map<String, Object> getReplyLetters(String replyId,
@@ -242,6 +251,8 @@ public class LetterController extends BaseController {
      * @param message
      * @return
      */
+    @ApiOperation(value = "回复私信", httpMethod = "POST", produces = "application/json")
+    @ApiResponses( value = {@ApiResponse(code = 200, message = "Successful — 请求已完成",response = Map.class)})
     @RequestMapping("/reply")
     @ResponseBody
     public Map<String, Object> replyLetter(String[] recipient, String message) {
@@ -270,6 +281,8 @@ public class LetterController extends BaseController {
      * @param message
      * @return
      */
+    @ApiOperation(value = "给其他人发私信", httpMethod = "POST", produces = "application/json")
+    @ApiResponses( value = {@ApiResponse(code = 200, message = "Successful — 请求已完成",response = Map.class)})
     @RequestMapping("/add")
     @ResponseBody
     public Map<String, Object> addLetter(String recipient, String message, HttpServletRequest request) {
@@ -323,6 +336,8 @@ public class LetterController extends BaseController {
      *
      * @return
      */
+    @ApiOperation(value = "清空当前用户所有私信", httpMethod = "GET", produces = "application/json")
+    @ApiResponses( value = {@ApiResponse(code = 200, message = "Successful — 请求已完成",response = Map.class)})
     @RequestMapping("/clear")
     @ResponseBody
     public Map<String, Object> clear() {
@@ -340,6 +355,8 @@ public class LetterController extends BaseController {
      * @param letterId
      * @return
      */
+    @ApiOperation(value = "接收者删除", httpMethod = "POST", produces = "application/json")
+    @ApiResponses( value = {@ApiResponse(code = 200, message = "Successful — 请求已完成",response = Map.class)})
     @RequestMapping("/deletereply")
     @ResponseBody
     public Map<String, Object> deletereply(String letterId, String pairId) throws Exception {
@@ -366,6 +383,8 @@ public class LetterController extends BaseController {
      * @return
      * @throws Exception
      */
+    @ApiOperation(value = "删除与一个用户的所有对话", httpMethod = "POST", produces = "application/json")
+    @ApiResponses( value = {@ApiResponse(code = 200, message = "Successful — 请求已完成",response = Map.class)})
     @RequestMapping("/deleteallreply")
     @ResponseBody
     public Map<String, Object> deleteAllreply(String replyId) throws Exception {

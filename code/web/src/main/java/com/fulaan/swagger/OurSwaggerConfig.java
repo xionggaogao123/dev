@@ -29,7 +29,7 @@ import static springfox.documentation.builders.PathSelectors.regex;
 @Configuration    // 配置注解，自动在本类上下文加载一些环境变量信息
 @EnableSwagger2   // 使swagger2生效
 @EnableWebMvc
-@ComponentScan(basePackages = {"com.fulaan.operation"})  //需要扫描的包路径
+@ComponentScan(basePackages = {"com.fulaan"})  //需要扫描的包路径
 public class OurSwaggerConfig extends WebMvcConfigurationSupport {
     @Bean
     public Docket swaggerSpringMvcPlugin() {
@@ -37,7 +37,7 @@ public class OurSwaggerConfig extends WebMvcConfigurationSupport {
                 .apiInfo(apiInfo())
                 .groupName("business-api")
                 .select()   // 选择那些路径和api会生成document
-                .apis(RequestHandlerSelectors.basePackage("com.fulaan.operation"))
+                .apis(RequestHandlerSelectors.basePackage("com.fulaan"))
                 .paths(paths())
                         //.apis(RequestHandlerSelectors.any())  // 对所有api进行监控
                         //.paths(PathSelectors.any())   // 对所有路径进行监控
@@ -47,7 +47,7 @@ public class OurSwaggerConfig extends WebMvcConfigurationSupport {
     }
 
     private Predicate<String> paths() {
-        return or(regex("/appOperation.*"));
+        return or(regex("/*.*"));
     }
 
     private List<ApiKey> securitySchemes() {

@@ -8,6 +8,9 @@ import com.sys.mails.MailUtils;
 import com.sys.props.Resources;
 import com.sys.utils.DateTimeUtils;
 import io.swagger.annotations.Api;
+import io.swagger.annotations.ApiOperation;
+import io.swagger.annotations.ApiResponse;
+import io.swagger.annotations.ApiResponses;
 import org.apache.log4j.Logger;
 import org.apache.poi.hssf.usermodel.HSSFWorkbook;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -30,7 +33,8 @@ public class LogReportController extends BaseController {
 
     @Autowired
     private BuildLogReportService buildLogReportService;
-
+    @ApiOperation(value = "sendLogReportEmail", httpMethod = "GET", produces = "application/json")
+    @ApiResponses( value = {@ApiResponse(code = 200, message = "Successful — 请求已完成")})
     @RequestMapping("/sendLogReportEmail")
     public void sendLogReportEmail() throws Exception {
         int userRole = getSessionValue().getUserRole();

@@ -3,7 +3,11 @@ package com.fulaan.admin;
 import com.fulaan.pojo.FLoginLog;
 import com.fulaan.user.service.UserService;
 import com.fulaan.util.DateUtils;
+import com.sys.utils.RespObj;
 import io.swagger.annotations.Api;
+import io.swagger.annotations.ApiOperation;
+import io.swagger.annotations.ApiResponse;
+import io.swagger.annotations.ApiResponses;
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.IOUtils;
 import org.apache.poi.hssf.usermodel.HSSFWorkbook;
@@ -23,14 +27,15 @@ import java.util.List;
  * Created by jerry on 2016/10/20.
  * 登录数据
  */
-@Api(value="登录数据",hidden = true)
+@Api(value="登录数据")
 @Controller
 @RequestMapping("/loginInfo")
 public class LoginInfoController {
 
     @Autowired
     private UserService loginLogService;
-
+    @ApiOperation(value = "loginInfo", httpMethod = "POST", produces = "application/json")
+    @ApiResponses( value = {@ApiResponse(code = 200, message = "Successful — 请求已完成",response = RespObj.class)})
     @RequestMapping("/downloadXls")
     public void loginInfo(String date, HttpServletResponse response) throws IOException, ParseException {
 

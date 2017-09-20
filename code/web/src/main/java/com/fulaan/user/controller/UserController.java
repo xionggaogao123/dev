@@ -53,7 +53,7 @@ import fulaan.social.exception.ConnectException;
 import fulaan.social.factory.AuthFactory;
 import fulaan.social.model.AuthType;
 import fulaan.social.model.UserInfo;
-import io.swagger.annotations.Api;
+import io.swagger.annotations.*;
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.lang.StringUtils;
 import org.apache.http.client.ClientProtocolException;
@@ -132,6 +132,7 @@ public class UserController extends BaseController {
      * @param request
      * @throws IOException
      */
+    @ApiOperation(value = "通过sso登录", httpMethod = "POST", produces = "application/json")
     @SessionNeedless
     @RequestMapping("/k6kt/sso/login")
     public void k6ktssoLogin(HttpServletResponse response, HttpServletRequest request) throws IOException {
@@ -213,10 +214,12 @@ public class UserController extends BaseController {
      * @param request
      * @return
      */
+    @ApiOperation(value = "学生登录", httpMethod = "POST", produces = "application/json")
+    @ApiResponses( value = {@ApiResponse(code = 200, message = "Successful — 请求已完成",response = RespObj.class)})
     @RequestMapping("/newVersionStudentLogin")
     @SessionNeedless
     @ResponseBody
-    public RespObj studentLogin(@ObjectIdType ObjectId userId, HttpServletResponse response, HttpServletRequest request){
+    public RespObj studentLogin(@ApiParam(name = "userId", required = true, value = "userId") @ObjectIdType ObjectId userId, HttpServletResponse response, HttpServletRequest request){
         RespObj respObj=new RespObj(Constant.FAILD_CODE);
         NewVersionUserRoleEntry userRoleEntry=newVersionUserRoleDao.getEntry(userId);
         if(userRoleEntry.getNewRole()==Constant.TWO){
@@ -249,6 +252,8 @@ public class UserController extends BaseController {
      * @param pwd
      * @return
      */
+    @ApiOperation(value = "用户登录", httpMethod = "POST", produces = "application/json")
+    @ApiResponses( value = {@ApiResponse(code = 200, message = "Successful — 请求已完成",response = RespObj.class)})
     @SessionNeedless
     @RequestMapping("/login")
     @ResponseBody
@@ -415,6 +420,8 @@ public class UserController extends BaseController {
         }
     }
 
+    @ApiOperation(value = "loginForCloudPlatform", httpMethod = "POST", produces = "application/json")
+    @ApiResponses( value = {@ApiResponse(code = 200, message = "Successful — 请求已完成",response = String.class)})
     @SessionNeedless
     @RequestMapping("/cloud/login")
     public String loginForCloudPlatform(String key, String pf, @RequestParam(required = false, defaultValue = "0") Integer tag, HttpServletRequest req, HttpServletResponse response, HttpServletRequest request) throws UnLoginException, ClientProtocolException, IOException {
@@ -551,6 +558,8 @@ public class UserController extends BaseController {
         return "redirect:/user/homepage.do";
     }
 
+    @ApiOperation(value = "logout", httpMethod = "POST", produces = "application/json")
+    @ApiResponses( value = {@ApiResponse(code = 200, message = "Successful — 请求已完成",response = RespObj.class)})
     @SessionNeedless
     @RequestMapping("/logout")
     @ResponseBody
@@ -581,6 +590,8 @@ public class UserController extends BaseController {
      *
      * @return
      */
+    @ApiOperation(value = "得到用户基本信息", httpMethod = "POST", produces = "application/json")
+    @ApiResponses( value = {@ApiResponse(code = 200, message = "Successful — 请求已完成",response = UserDetailInfoDTO.class)})
     @RequestMapping("/info")
     @ResponseBody
     public UserDetailInfoDTO getUserDetailInfoDTO() {
@@ -605,6 +616,8 @@ public class UserController extends BaseController {
     /**
      * @return
      */
+    @ApiOperation(value = "getSchoolTeacher", httpMethod = "POST", produces = "application/json")
+    @ApiResponses( value = {@ApiResponse(code = 200, message = "Successful — 请求已完成",response = List.class)})
     @UserRoles(noValue = {UserRole.STUDENT, UserRole.PARENT})
     @RequestMapping("/school/teacher")
     @ResponseBody
@@ -618,7 +631,8 @@ public class UserController extends BaseController {
         return retList;
     }
 
-
+    @ApiOperation(value = "getAddressBookPc", httpMethod = "POST", produces = "application/json")
+    @ApiResponses( value = {@ApiResponse(code = 200, message = "Successful — 请求已完成",response = Map.class)})
     @SuppressWarnings("unchecked")
     @RequestMapping("getAddressBookPc")
     @ResponseBody
@@ -801,6 +815,8 @@ public class UserController extends BaseController {
      *
      * @return
      */
+    @ApiOperation(value = "得到用户所在的班级", httpMethod = "POST", produces = "application/json")
+    @ApiResponses( value = {@ApiResponse(code = 200, message = "Successful — 请求已完成",response = List.class)})
     @RequestMapping("classes")
     @ResponseBody
     public List<ClassInfoDTO> getUserClasses() {
@@ -820,6 +836,8 @@ public class UserController extends BaseController {
      * @return
      * @throws IllegalParamException
      */
+    @ApiOperation(value = "更新用户基本信息", httpMethod = "POST", produces = "application/json")
+    @ApiResponses( value = {@ApiResponse(code = 200, message = "Successful — 请求已完成",response = RespObj.class)})
     @RequestMapping("/update/basic")
     @ResponseBody
     public RespObj updateUserBasicInfos(@RequestParam(defaultValue = "") String userLoginName, @RequestParam(defaultValue = "") String mobile, String valiCode, String cacheKeyId, String email, Integer sex) throws IllegalParamException {
@@ -899,7 +917,8 @@ public class UserController extends BaseController {
         return RespObj.SUCCESS;
     }
 
-
+    @ApiOperation(value = "userpage", httpMethod = "POST", produces = "application/json")
+    @ApiResponses( value = {@ApiResponse(code = 200, message = "Successful — 请求已完成",response = String.class)})
     @RequestMapping("/userpage")
     public String userpage(Map<String, Object> model, HttpServletResponse res) {
         String url = "homepage/homepage";
@@ -932,7 +951,8 @@ public class UserController extends BaseController {
         return null;
     }
 
-
+    @ApiOperation(value = "homepage", httpMethod = "POST", produces = "application/json")
+    @ApiResponses( value = {@ApiResponse(code = 200, message = "Successful — 请求已完成",response = String.class)})
     @RequestMapping("/homepage")
     public String homepage(Map<String, Object> model, HttpServletResponse res) throws IOException {
         if (getSessionValue().getUserRole() == UserRole.EDUCATION.getRole()) {
@@ -1047,6 +1067,8 @@ public class UserController extends BaseController {
         return null;
     }
 
+    @ApiOperation(value = "userSchoolYearExpManage", httpMethod = "POST", produces = "application/json")
+    @ApiResponses( value = {@ApiResponse(code = 200, message = "Successful — 请求已完成",response = String.class)})
     @RequestMapping("/userSchoolYearExpManage")
     public String userSchoolYearExpManage() {
         String url = "";
@@ -1056,6 +1078,8 @@ public class UserController extends BaseController {
         return url;
     }
 
+    @ApiOperation(value = "getScores", httpMethod = "POST", produces = "application/json")
+    @ApiResponses( value = {@ApiResponse(code = 200, message = "Successful — 请求已完成",response = RespObj.class)})
     @RequestMapping("/scores")
     @SessionNeedless
     @ResponseBody
@@ -1067,11 +1091,13 @@ public class UserController extends BaseController {
         return RespObj.SUCCESS(fScoreEntries);
     }
 
+    @ApiOperation(value = "updSchoolHomeDate", httpMethod = "POST", produces = "application/json")
     @RequestMapping("/updSchoolHomeDate")
     public void updSchoolHomeDate() {
         userService.updateSchoolHomeDate(getUserId());
     }
 
+    @ApiOperation(value = "updFamilyHomeDate", httpMethod = "POST", produces = "application/json")
     @RequestMapping("/updFamilyHomeDate")
     public void updFamilyHomeDate() {
         userService.updateFamilyHomeDate(getUserId());
@@ -1082,6 +1108,7 @@ public class UserController extends BaseController {
      *
      * @param name
      */
+    @ApiOperation(value = "k6kt增加经验值", httpMethod = "POST", produces = "application/json")
     @RequestMapping("/updateExp")
     public void updateExp(String name) {
         userService.updateExp(name);
@@ -1092,6 +1119,8 @@ public class UserController extends BaseController {
      *
      * @param name
      */
+    @ApiOperation(value = "找回密码", httpMethod = "POST", produces = "application/json")
+    @ApiResponses( value = {@ApiResponse(code = 200, message = "Successful — 请求已完成",response = String.class)})
     @SessionNeedless
     @RequestMapping("/findPwd")
     public String findPwd(String name) {
@@ -1106,6 +1135,8 @@ public class UserController extends BaseController {
      * @param vCode
      * @return
      */
+    @ApiOperation(value = "找回密码第一次验证", httpMethod = "POST", produces = "application/json")
+    @ApiResponses( value = {@ApiResponse(code = 200, message = "Successful — 请求已完成",response = RespObj.class)})
     @SessionNeedless
     @ResponseBody
     @RequestMapping("/check/first")
@@ -1150,6 +1181,8 @@ public class UserController extends BaseController {
      * @param username
      * @return
      */
+    @ApiOperation(value = "移动端找回密码第一次验证", httpMethod = "POST", produces = "application/json")
+    @ApiResponses( value = {@ApiResponse(code = 200, message = "Successful — 请求已完成",response = RespObj.class)})
     @SessionNeedless
     @ResponseBody
     @RequestMapping("/mobile/check/first")
@@ -1197,6 +1230,8 @@ public class UserController extends BaseController {
      * @param vCode
      * @return
      */
+    @ApiOperation(value = "重设密码", httpMethod = "POST", produces = "application/json")
+    @ApiResponses( value = {@ApiResponse(code = 200, message = "Successful — 请求已完成",response = RespObj.class)})
     @SessionNeedless
     @ResponseBody
     @RequestMapping("/resetPwd")
@@ -1264,6 +1299,8 @@ public class UserController extends BaseController {
      * @return
      * @throws IllegalParamException
      */
+    @ApiOperation(value = "用户更新基本信息", httpMethod = "POST", produces = "application/json")
+    @ApiResponses( value = {@ApiResponse(code = 200, message = "Successful — 请求已完成",response = RespObj.class)})
     @SessionNeedless
     @RequestMapping("/update/basic2")
     @ResponseBody
@@ -1333,6 +1370,8 @@ public class UserController extends BaseController {
      * @return
      * @throws IllegalParamException
      */
+    @ApiOperation(value = "sendEmail", httpMethod = "POST", produces = "application/json")
+    @ApiResponses( value = {@ApiResponse(code = 200, message = "Successful — 请求已完成",response = RespObj.class)})
     @SessionNeedless
     @RequestMapping("/email")
     @ResponseBody
@@ -1369,6 +1408,8 @@ public class UserController extends BaseController {
      * @return
      * @throws Exception
      */
+    @ApiOperation(value = "邮件认证用户回调", httpMethod = "POST", produces = "application/json")
+    @ApiResponses( value = {@ApiResponse(code = 200, message = "Successful — 请求已完成",response = String.class)})
     @SessionNeedless
     @RequestMapping("/email/callback")
     public String emailCall(String ukId, String email, Map<String, Object> model, HttpServletRequest req) throws Exception {
@@ -1397,6 +1438,8 @@ public class UserController extends BaseController {
      * @param request
      * @return
      */
+    @ApiOperation(value = "复兰商城登录前通知", httpMethod = "POST", produces = "application/json")
+    @ApiResponses( value = {@ApiResponse(code = 200, message = "Successful — 请求已完成",response = RespObj.class)})
     @ResponseBody
     @SessionNeedless
     @RequestMapping("/mall/cachekey")
@@ -1422,6 +1465,7 @@ public class UserController extends BaseController {
      * @param response
      * @throws IOException
      */
+    @ApiOperation(value = "进行QQ登录", httpMethod = "POST", produces = "application/json")
     @SessionNeedless
     @RequestMapping(value = "/qqlogin")
     public void QQLogin(HttpServletRequest request, HttpServletResponse response) throws IOException {
@@ -1448,6 +1492,8 @@ public class UserController extends BaseController {
      * @param response
      * @throws IOException
      */
+    @ApiOperation(value = "PC QQ登录回调", httpMethod = "POST", produces = "application/json")
+    @ApiResponses( value = {@ApiResponse(code = 200, message = "Successful — 请求已完成",response = RedirectAttributes.class)})
     @SessionNeedless
     @RequestMapping(value = "/qqcallback")
     public String afterQQLogin(HttpServletRequest request, HttpServletResponse response, String state, RedirectAttributes redirectAttributes) throws IOException {
@@ -1544,6 +1590,7 @@ public class UserController extends BaseController {
      * @param response
      * @throws IOException
      */
+    @ApiOperation(value = "进行微信登录", httpMethod = "POST", produces = "application/json")
     @SessionNeedless
     @RequestMapping(value = "/wechatlogin")
     public void weChatLogin(HttpServletResponse response) throws IOException {
@@ -1557,6 +1604,8 @@ public class UserController extends BaseController {
      * @param response
      * @return
      */
+    @ApiOperation(value = "微信登录回调接口", httpMethod = "POST", produces = "application/json")
+    @ApiResponses( value = {@ApiResponse(code = 200, message = "Successful — 请求已完成",response = String.class)})
     @SessionNeedless
     @RequestMapping(value = "/wechatcallback")
     public String wechatCallBack(String code, HttpServletRequest request, HttpServletResponse response, RedirectAttributes redirectAttributes) throws IOException {
@@ -1628,6 +1677,8 @@ public class UserController extends BaseController {
      * @param unionId
      * @return
      */
+    @ApiOperation(value = "判断数据库中是否存在", httpMethod = "POST", produces = "application/json")
+    @ApiResponses( value = {@ApiResponse(code = 200, message = "Successful — 请求已完成",response = RespObj.class)})
     @SessionNeedless
     @RequestMapping("/third/check")
     @ResponseBody
@@ -1660,6 +1711,8 @@ public class UserController extends BaseController {
      * @param avatar
      * @return
      */
+    @ApiOperation(value = "创建账户", httpMethod = "POST", produces = "application/json")
+    @ApiResponses( value = {@ApiResponse(code = 200, message = "Successful — 请求已完成",response = RespObj.class)})
     @SessionNeedless
     @RequestMapping("/third/users")
     @ResponseBody
@@ -1700,6 +1753,8 @@ public class UserController extends BaseController {
      * @param userId
      * @return
      */
+    @ApiOperation(value = "第三方登录提交绑定接口", httpMethod = "POST", produces = "application/json")
+    @ApiResponses( value = {@ApiResponse(code = 200, message = "Successful — 请求已完成",response = RespObj.class)})
     @SessionNeedless
     @RequestMapping(value = "/third/bind")
     @ResponseBody
@@ -1737,6 +1792,7 @@ public class UserController extends BaseController {
      * @throws ClientProtocolException
      * @throws IOException
      */
+    @ApiOperation(value = "跳转到k6kt", httpMethod = "POST", produces = "application/json")
     @SessionNeedless
     @RequestMapping("/loginK6kt")
     public void tryLoginK6kt() throws IOException {
@@ -1752,6 +1808,8 @@ public class UserController extends BaseController {
         getResponse().sendRedirect("http://www.k6kt.com/user/mall/login.do?mallToken=" + mallToken);
     }
 
+    @ApiOperation(value = "getUserInfo", httpMethod = "POST", produces = "application/json")
+    @ApiResponses( value = {@ApiResponse(code = 200, message = "Successful — 请求已完成",response = Map.class)})
     @RequestMapping(value = "/userInfo")
     @ResponseBody
     @SessionNeedless
@@ -1800,6 +1858,8 @@ public class UserController extends BaseController {
         return result;
     }
 
+    @ApiOperation(value = "getUserInfos", httpMethod = "POST", produces = "application/json")
+    @ApiResponses( value = {@ApiResponse(code = 200, message = "Successful — 请求已完成",response = RespObj.class)})
     @RequestMapping("/userInfos")
     @ResponseBody
     public RespObj getUserInfos(String userIds) {

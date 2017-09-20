@@ -1,14 +1,18 @@
 package com.fulaan.wrongquestion.dto;
 
 import com.pojo.wrongquestion.SubjectClassEntry;
+import io.swagger.annotations.ApiModelProperty;
 import org.bson.types.ObjectId;
 
 /**
  * Created by James on 2017/9/6.
  */
 public class SubjectClassDTO {
+    @ApiModelProperty(name="id",value = "id", required = false)
     private String id;
+    @ApiModelProperty(name="subjectId",value = "subjectId", required = false)
     private String subjectId;
+    @ApiModelProperty(name="name",value = "数学32", required = true)
     private String name;
 
 

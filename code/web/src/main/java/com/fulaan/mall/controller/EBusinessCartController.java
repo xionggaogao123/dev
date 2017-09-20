@@ -12,7 +12,7 @@ import com.pojo.forum.FLogDTO;
 import com.pojo.utils.MongoUtils;
 import com.sys.exceptions.IllegalParamException;
 import com.sys.utils.RespObj;
-import io.swagger.annotations.Api;
+import io.swagger.annotations.*;
 import org.apache.log4j.Logger;
 import org.bson.types.ObjectId;
 import org.springframework.stereotype.Controller;
@@ -38,7 +38,8 @@ public class EBusinessCartController extends BaseController {
     private static final Logger EBusinessLog = Logger.getLogger("EBusiness");
     private EBusinessCartService eShoppingCartService = new EBusinessCartService();
     private FLogService fLogService = new FLogService();
-
+    @ApiOperation(value = "获取群聊详情", httpMethod = "GET", produces = "application/json")
+    @ApiResponses( value = {@ApiResponse(code = 200, message = "Successful — 请求已完成",response = String.class)})
     @RequestMapping("/load")
     @LoginInfo
     public String loadCart(HttpServletRequest request, Map<String, Object> model) {
@@ -77,9 +78,11 @@ public class EBusinessCartController extends BaseController {
      * @return
      * @throws Exception
      */
+    @ApiOperation(value = "将商品添加到购物车", httpMethod = "POST", produces = "application/json")
+    @ApiResponses( value = {@ApiResponse(code = 200, message = "Successful — 请求已完成",response = List.class)})
     @RequestMapping("/add")
     @ResponseBody
-    public List<EBusinessCartGoods> addGoods(@ObjectIdType ObjectId goodsId, String kinds,
+    public List<EBusinessCartGoods> addGoods(@ApiParam(name = "goodsId", required = true, value = "goodsId") @ObjectIdType ObjectId goodsId, String kinds,
                                              @RequestParam(defaultValue = "0") int count,
                                              @RequestParam(defaultValue = "0", required = false) Integer type) throws Exception {
 
@@ -97,6 +100,8 @@ public class EBusinessCartController extends BaseController {
      * @throws ClassNotFoundException
      * @throws IOException
      */
+    @ApiOperation(value = "从购物车取出商品", httpMethod = "POST", produces = "application/json")
+    @ApiResponses( value = {@ApiResponse(code = 200, message = "Successful — 请求已完成",response = EBusinessCartPageDTO.class)})
     @RequestMapping("/list")
     @ResponseBody
     public EBusinessCartPageDTO getGoodsFromCars(@RequestParam(defaultValue = "-1", required = false) Integer type) throws ClassNotFoundException, IOException {
@@ -114,9 +119,11 @@ public class EBusinessCartController extends BaseController {
      * @throws ClassNotFoundException
      * @throws IOException
      */
+    @ApiOperation(value = "删除商品", httpMethod = "POST", produces = "application/json")
+    @ApiResponses( value = {@ApiResponse(code = 200, message = "Successful — 请求已完成",response = List.class)})
     @RequestMapping("/del")
     @ResponseBody
-    public List<EBusinessCartGoods> deleteEGoods(@ObjectIdType ObjectId ebcId) throws ClassNotFoundException, IOException {
+    public List<EBusinessCartGoods> deleteEGoods(@ApiParam(name = "ebcId", required = true, value = "ebcId") @ObjectIdType ObjectId ebcId) throws ClassNotFoundException, IOException {
         EBusinessLog.info("CarDel:" + "userId:" + getUserId().toString() + ";学校：" + getSessionValue().getSchoolName());
         List<EBusinessCartGoods> list = eShoppingCartService.deleteEGoods(getUserId(), ebcId);
         return list;
@@ -125,6 +132,8 @@ public class EBusinessCartController extends BaseController {
     /**
      * 批量删除商品
      */
+    @ApiOperation(value = "批量删除商品", httpMethod = "POST", produces = "application/json")
+    @ApiResponses( value = {@ApiResponse(code = 200, message = "Successful — 请求已完成",response = List.class)})
     @RequestMapping("/delMultiple")
     @ResponseBody
     public List<EBusinessCartGoods> deleteEGoods(String ebcIds) throws ClassNotFoundException, IOException {
@@ -143,9 +152,11 @@ public class EBusinessCartController extends BaseController {
      * @throws ClassNotFoundException
      * @throws IOException
      */
+    @ApiOperation(value = "更改所售商品数量", httpMethod = "POST", produces = "application/json")
+    @ApiResponses( value = {@ApiResponse(code = 200, message = "Successful — 请求已完成",response = RespObj.class)})
     @RequestMapping("/update")
     @ResponseBody
-    public RespObj updateCount(@ObjectIdType ObjectId ebcId, int count) throws ClassNotFoundException, IOException {
+    public RespObj updateCount(@ApiParam(name = "ebcId", required = true, value = "ebcId") @ObjectIdType ObjectId ebcId, int count) throws ClassNotFoundException, IOException {
         EBusinessLog.info("CarUpdate:" + "userId:" + getUserId().toString() + ";ebcId=" + ebcId.toString() + ";count=" + count + ";学校：" + getSessionValue().getSchoolName());
         eShoppingCartService.updateCount(getUserId(), ebcId, count);
         return RespObj.SUCCESS;
@@ -161,6 +172,8 @@ public class EBusinessCartController extends BaseController {
      * @throws IOException
      * @throws IllegalParamException
      */
+    @ApiOperation(value = "选择要购买的商品", httpMethod = "POST", produces = "application/json")
+    @ApiResponses( value = {@ApiResponse(code = 200, message = "Successful — 请求已完成",response = RespObj.class)})
     @RequestMapping("/select")
     @ResponseBody
     public RespObj seleteEGoods(String ebcIds) throws ClassNotFoundException, IOException, IllegalParamException {

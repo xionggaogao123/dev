@@ -8,6 +8,7 @@ import com.sys.constants.Constant;
 import com.sys.exceptions.IllegalParamException;
 import com.sys.utils.RespObj;
 import io.swagger.annotations.Api;
+import io.swagger.annotations.ApiOperation;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -24,7 +25,7 @@ import java.util.Map;
 /**
  * Created by Caocui on 2015/8/25.
  */
-@Api(value="file1",hidden = true)
+@Api(value="file1")
 @Controller
 @RequestMapping("/file1")
 public class FileController extends BaseController {
@@ -37,6 +38,7 @@ public class FileController extends BaseController {
      * @param request
      * @return
      */
+    @ApiOperation(value = "文件上传", httpMethod = "POST", produces = "application/json")
     @SessionNeedless
     @RequestMapping("/upload")
     public void upload(HttpServletRequest request, HttpServletResponse response) {
@@ -75,6 +77,7 @@ public class FileController extends BaseController {
      * @param response
      * @return
      */
+    @ApiOperation(value = "文件上传", httpMethod = "POST", produces = "application/json")
     @SessionNeedless
     @RequestMapping("/download")
     public void download(HttpServletRequest request, HttpServletResponse response) {
@@ -92,6 +95,7 @@ public class FileController extends BaseController {
      *
      * @return
      */
+    @ApiOperation(value = "文件上传", httpMethod = "POST", produces = "application/json")
     @SessionNeedless
     @RequestMapping("/getResourceUrl")
     @ResponseBody

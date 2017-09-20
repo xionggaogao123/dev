@@ -12,7 +12,7 @@ import com.google.common.io.Files;
 import com.pojo.forum.FReplyDTO;
 import com.pojo.forum.FReplyEntry;
 import com.sys.utils.RespObj;
-import io.swagger.annotations.Api;
+import io.swagger.annotations.*;
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.IOUtils;
 import org.apache.commons.lang.StringUtils;
@@ -34,7 +34,7 @@ import java.util.List;
  * Created by jerry on 2016/10/18.
  * 回复Controller
  */
-@Api(value=" 回复Controller",hidden = true)
+@Api(value=" 回复Controller")
 @Controller
 @RequestMapping("/reply")
 public class FReplyController extends BaseController {
@@ -48,18 +48,20 @@ public class FReplyController extends BaseController {
      * @param floor
      * @return
      */
+    @ApiOperation(value = "设置楼层数，为老数据服务", httpMethod = "POST", produces = "application/json")
+    @ApiResponses( value = {@ApiResponse(code = 200, message = "Successful — 请求已完成",response = RespObj.class)})
     @RequestMapping("/saveFReplyFloor")
     @ResponseBody
-    public RespObj saveFReplyFloor(@ObjectIdType ObjectId replyId,int floor){
+    public RespObj saveFReplyFloor(@ApiParam(name = "replyId", required = true, value = "replyId") @ObjectIdType ObjectId replyId,int floor){
         FReplyEntry entry=fReplyService.find(replyId);
         entry.setFloor(floor);
         fReplyService.saveFReplyEntryForFloor(entry);
         return RespObj.SUCCESS;
     }
-
+    @ApiOperation(value = "downloadAttach", httpMethod = "POST", produces = "application/json")
     @RequestMapping("/downloadAttach")
     @SessionNeedless
-    public void downloadAttach(@ObjectIdType ObjectId replyId, HttpServletResponse response) throws UnsupportedEncodingException {
+    public void downloadAttach(@ApiParam(name = "replyId", required = true, value = "replyId") @ObjectIdType ObjectId replyId, HttpServletResponse response) throws UnsupportedEncodingException {
 
         FReplyDTO fReplyDTO = fReplyService.detail(replyId);
         String wordUrl = fReplyDTO.getWord();
@@ -81,10 +83,10 @@ public class FReplyController extends BaseController {
             e.printStackTrace();
         }
     }
-
+    @ApiOperation(value = "downloadLikeInfos", httpMethod = "POST", produces = "application/json")
     @RequestMapping("/likeinfo")
     @SessionNeedless
-    public void downloadLikeInfos(@ObjectIdType ObjectId postId, HttpServletResponse response) throws IOException {
+    public void downloadLikeInfos(@ApiParam(name = "postId", required = true, value = "postId") @ObjectIdType ObjectId postId, HttpServletResponse response) throws IOException {
 
         response.setCharacterEncoding("utf-8");
         response.setContentType("multipart/form-data");
@@ -161,10 +163,10 @@ public class FReplyController extends BaseController {
             e.printStackTrace();
         }
     }
-
+    @ApiOperation(value = "downloadLikeInfosZip", httpMethod = "POST", produces = "application/json")
     @RequestMapping("/likeinfoZip")
     @SessionNeedless
-    public void downloadLikeInfosZip(@ObjectIdType ObjectId postId, HttpServletResponse response) throws IOException {
+    public void downloadLikeInfosZip(@ApiParam(name = "postId", required = true, value = "postId") @ObjectIdType ObjectId postId, HttpServletResponse response) throws IOException {
         response.setCharacterEncoding("utf-8");
         response.setContentType("multipart/form-data");
         response.setHeader("Content-Disposition", "attachment;fileName="

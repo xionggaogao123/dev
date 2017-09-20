@@ -16,6 +16,9 @@ import com.pojo.user.UserTag;
 import com.sys.utils.DateTimeUtils;
 import com.sys.utils.RespObj;
 import io.swagger.annotations.Api;
+import io.swagger.annotations.ApiOperation;
+import io.swagger.annotations.ApiResponse;
+import io.swagger.annotations.ApiResponses;
 import org.apache.commons.lang3.StringUtils;
 import org.bson.types.ObjectId;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -43,7 +46,8 @@ public class PlayMateController extends BaseController {
     @Autowired
     private FMateTypeService fMateTypeService;
 
-
+    @ApiOperation(value = "friend", httpMethod = "POST", produces = "application/json")
+    @ApiResponses( value = {@ApiResponse(code = 200, message = "Successful — 请求已完成",response = RespObj.class)})
     @SessionNeedless
     @RequestMapping("/friend")
     @LoginInfo
@@ -58,6 +62,8 @@ public class PlayMateController extends BaseController {
         return "/friend/index";
     }
 
+    @ApiOperation(value = "getSortType", httpMethod = "POST", produces = "application/json")
+    @ApiResponses( value = {@ApiResponse(code = 200, message = "Successful — 请求已完成",response = RespObj.class)})
     @SessionNeedless
     @RequestMapping("/sortType")
     @ResponseBody
@@ -65,6 +71,8 @@ public class PlayMateController extends BaseController {
         return RespObj.SUCCESS(fMateTypeService.getAllSortTypes());
     }
 
+    @ApiOperation(value = "getPlayMates", httpMethod = "POST", produces = "application/json")
+    @ApiResponses( value = {@ApiResponse(code = 200, message = "Successful — 请求已完成",response = RespObj.class)})
     @RequestMapping("/getPlayMates")
     @ResponseBody
     @SessionNeedless
@@ -116,6 +124,8 @@ public class PlayMateController extends BaseController {
         return RespObj.SUCCESS(mateService.findMates(getUserId(), lon, lat, tagList, aged, onsList, page, pageSize, distance));
     }
 
+    @ApiOperation(value = "updateLocation", httpMethod = "POST", produces = "application/json")
+    @ApiResponses( value = {@ApiResponse(code = 200, message = "Successful — 请求已完成",response = RespObj.class)})
     @RequestMapping("/updateMateData")
     @ResponseBody
     public RespObj updateLocation(@RequestParam(value = "lon", required = false, defaultValue = "0") double lon,
@@ -144,6 +154,8 @@ public class PlayMateController extends BaseController {
      *
      * @return
      */
+    @ApiOperation(value = "获取我的标签", httpMethod = "POST", produces = "application/json")
+    @ApiResponses( value = {@ApiResponse(code = 200, message = "Successful — 请求已完成",response = RespObj.class)})
     @RequestMapping("/getMyTags")
     @ResponseBody
     public RespObj getMyTags() {
@@ -153,6 +165,8 @@ public class PlayMateController extends BaseController {
         return RespObj.SUCCESS(tags);
     }
 
+    @ApiOperation(value = "getMyOns", httpMethod = "POST", produces = "application/json")
+    @ApiResponses( value = {@ApiResponse(code = 200, message = "Successful — 请求已完成",response = RespObj.class)})
     @RequestMapping("/getMyOns")
     @ResponseBody
     public RespObj getMyOns() {
@@ -165,6 +179,8 @@ public class PlayMateController extends BaseController {
      *
      * @return
      */
+    @ApiOperation(value = "生成排序数据", httpMethod = "POST", produces = "application/json")
+    @ApiResponses( value = {@ApiResponse(code = 200, message = "Successful — 请求已完成",response = RespObj.class)})
     @RequestMapping("/generateSortData")
     @ResponseBody
     @UserRoles(UserRole.DISCUSS_MANAGER)
@@ -179,6 +195,8 @@ public class PlayMateController extends BaseController {
      *
      * @return 200
      */
+    @ApiOperation(value = "创建索引", httpMethod = "POST", produces = "application/json")
+    @ApiResponses( value = {@ApiResponse(code = 200, message = "Successful — 请求已完成",response = RespObj.class)})
     @RequestMapping("/create2dsphereIndex")
     @ResponseBody
     @UserRoles(UserRole.DISCUSS_MANAGER)
@@ -187,6 +205,8 @@ public class PlayMateController extends BaseController {
         return RespObj.SUCCESS;
     }
 
+    @ApiOperation(value = "clearHeap", httpMethod = "POST", produces = "application/json")
+    @ApiResponses( value = {@ApiResponse(code = 200, message = "Successful — 请求已完成",response = RespObj.class)})
     @RequestMapping("/clearHeap")
     @ResponseBody
     @UserRoles(UserRole.DISCUSS_MANAGER)
@@ -195,6 +215,8 @@ public class PlayMateController extends BaseController {
         return RespObj.SUCCESS;
     }
 
+    @ApiOperation(value = "getUserMateData", httpMethod = "POST", produces = "application/json")
+    @ApiResponses( value = {@ApiResponse(code = 200, message = "Successful — 请求已完成",response = RespObj.class)})
     @RequestMapping("/getUserMateData")
     @ResponseBody
     @SessionNeedless
@@ -226,6 +248,8 @@ public class PlayMateController extends BaseController {
         return RespObj.SUCCESS(map);
     }
 
+    @ApiOperation(value = "updateUserAge", httpMethod = "POST", produces = "application/json")
+    @ApiResponses( value = {@ApiResponse(code = 200, message = "Successful — 请求已完成",response = RespObj.class)})
     @RequestMapping("/updateUserAge")
     @ResponseBody
     public RespObj updateUserAge(int year, int month, int day) {
@@ -240,6 +264,8 @@ public class PlayMateController extends BaseController {
         return RespObj.SUCCESS("修改成功");
     }
 
+    @ApiOperation(value = "updateUserTag", httpMethod = "POST", produces = "application/json")
+    @ApiResponses( value = {@ApiResponse(code = 200, message = "Successful — 请求已完成",response = RespObj.class)})
     @RequestMapping("/updateUserTag")
     @ResponseBody
     public RespObj updateUserTag(String tags) {
@@ -248,6 +274,8 @@ public class PlayMateController extends BaseController {
         return RespObj.SUCCESS("修改成功");
     }
 
+    @ApiOperation(value = "updateUserTime", httpMethod = "POST", produces = "application/json")
+    @ApiResponses( value = {@ApiResponse(code = 200, message = "Successful — 请求已完成",response = RespObj.class)})
     @RequestMapping("/updateUserTime")
     @ResponseBody
     public RespObj updateUserTime(String times) {
@@ -255,6 +283,8 @@ public class PlayMateController extends BaseController {
         return RespObj.SUCCESS("修改成功");
     }
 
+    @ApiOperation(value = "updateUserTagAndTime", httpMethod = "POST", produces = "application/json")
+    @ApiResponses( value = {@ApiResponse(code = 200, message = "Successful — 请求已完成",response = RespObj.class)})
     @RequestMapping("/updateUserTagAndTime")
     @ResponseBody
     public RespObj updateUserTagAndTime(@RequestParam(value = "tags", required = false, defaultValue = "") String tags,

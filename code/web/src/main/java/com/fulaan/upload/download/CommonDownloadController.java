@@ -1,9 +1,11 @@
 package com.fulaan.upload.download;
 
 import com.fulaan.base.BaseController;
-
 import com.sys.exceptions.IllegalParamException;
 import io.swagger.annotations.Api;
+import io.swagger.annotations.ApiOperation;
+import io.swagger.annotations.ApiResponse;
+import io.swagger.annotations.ApiResponses;
 import org.apache.commons.io.IOUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.stereotype.Controller;
@@ -13,7 +15,6 @@ import org.springframework.web.bind.annotation.ResponseBody;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-
 import java.io.*;
 import java.net.HttpURLConnection;
 import java.net.URL;
@@ -35,6 +36,7 @@ public class CommonDownloadController extends BaseController {
      *
      * @param remoteFilePath 远程文件路径
      */
+    @ApiOperation(value = "下载远程文件并保存到本地", httpMethod = "POST", produces = "application/json")
     @RequestMapping("/downloadFile")
     @ResponseBody
     public void downloadFile(String remoteFilePath, String fileName, HttpServletResponse response) throws IOException, IllegalParamException {
@@ -59,6 +61,8 @@ public class CommonDownloadController extends BaseController {
         IOUtils.closeQuietly(outs);
     }
 
+    @ApiOperation(value = "downloadFile", httpMethod = "POST", produces = "application/json")
+    @ApiResponses( value = {@ApiResponse(code = 200, message = "Successful — 请求已完成",response = Map.class)})
     @RequestMapping("/file")
     @ResponseBody
     public Map<String, Object> downloadFile(HttpServletRequest req, HttpServletResponse response, String url,

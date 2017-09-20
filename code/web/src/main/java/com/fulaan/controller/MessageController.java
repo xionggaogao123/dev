@@ -5,6 +5,9 @@ import com.fulaan.dto.MessageDTO;
 import com.fulaan.forum.service.FInformationService;
 import com.sys.utils.RespObj;
 import io.swagger.annotations.Api;
+import io.swagger.annotations.ApiOperation;
+import io.swagger.annotations.ApiResponse;
+import io.swagger.annotations.ApiResponses;
 import org.bson.types.ObjectId;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -21,14 +24,15 @@ import java.util.Map;
  * Created by jerry on 2016/9/13.
  * 消息Rest API[私信，系统消息,点赞]
  */
-@Api(value="消息Rest API[私信，系统消息,点赞]",hidden = true)
+@Api(value="消息Rest API[私信，系统消息,点赞]")
 @Controller
 @RequestMapping("/v1/message")
 public class MessageController extends BaseController {
 
     @Autowired
     private FInformationService fInformationService;
-
+    @ApiOperation(value = "获得信息", httpMethod = "GET", produces = "application/json")
+    @ApiResponses( value = {@ApiResponse(code = 200, message = "Successful — 请求已完成",response = RespObj.class)})
     @RequestMapping(method = RequestMethod.GET)
     @ResponseBody
     public RespObj getMessage(@RequestParam(value = "clear", defaultValue = "0") int clear) {
@@ -43,7 +47,8 @@ public class MessageController extends BaseController {
         }
         return RespObj.SUCCESS;
     }
-
+    @ApiOperation(value = "getUnReadSystemMessageCount", httpMethod = "GET", produces = "application/json")
+    @ApiResponses( value = {@ApiResponse(code = 200, message = "Successful — 请求已完成",response = RespObj.class)})
     @RequestMapping(value = "/unReadSysCount", method = RequestMethod.GET)
     @ResponseBody
     public RespObj getUnReadSystemMessageCount() {

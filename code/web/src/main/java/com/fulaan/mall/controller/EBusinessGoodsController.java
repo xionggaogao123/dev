@@ -23,7 +23,7 @@ import com.sys.exceptions.IllegalParamException;
 import com.sys.utils.MD5Utils;
 import com.sys.utils.RespObj;
 import com.sys.utils.ValidationUtils;
-import io.swagger.annotations.Api;
+import io.swagger.annotations.*;
 import org.apache.commons.io.FilenameUtils;
 import org.apache.commons.lang.StringUtils;
 import org.apache.log4j.Logger;
@@ -64,7 +64,8 @@ public class EBusinessGoodsController extends BaseController {
     private UserService userService;
     @Autowired
     private FLogService fLogService;
-
+    @ApiOperation(value = "index", httpMethod = "POST", produces = "application/json")
+    @ApiResponses( value = {@ApiResponse(code = 200, message = "Successful — 请求已完成",response = String.class)})
     @SessionNeedless
     @RequestMapping("/index")
     @LoginInfo
@@ -100,7 +101,8 @@ public class EBusinessGoodsController extends BaseController {
         model.put("levelCategoryId", request.getParameter("levelCategoryId"));
         return "/mall/index";
     }
-
+    @ApiOperation(value = "detail", httpMethod = "POST", produces = "application/json")
+    @ApiResponses( value = {@ApiResponse(code = 200, message = "Successful — 请求已完成",response = String.class)})
     @SessionNeedless
     @RequestMapping("/detail")
     @LoginInfo
@@ -124,7 +126,8 @@ public class EBusinessGoodsController extends BaseController {
         model.put("isCollection", eGoodsLogService.isCollected(getUserId(), goodsId));
         return "/mall/detail";
     }
-
+    @ApiOperation(value = "register", httpMethod = "POST", produces = "application/json")
+    @ApiResponses( value = {@ApiResponse(code = 200, message = "Successful — 请求已完成",response = String.class)})
     @SessionNeedless
     @RequestMapping("/register")
     public String register(HttpServletRequest request, Map<String, Object> model) {
@@ -132,7 +135,8 @@ public class EBusinessGoodsController extends BaseController {
         return "/mall/register";
     }
 
-
+    @ApiOperation(value = "getLoginInfo", httpMethod = "GET", produces = "application/json")
+    @ApiResponses( value = {@ApiResponse(code = 200, message = "Successful — 请求已完成",response = Map.class)})
     @SessionNeedless
     @RequestMapping("/loginInfo")
     @ResponseBody
@@ -141,7 +145,8 @@ public class EBusinessGoodsController extends BaseController {
         loginInfo(model);
         return model;
     }
-
+    @ApiOperation(value = "toDiscountPage", httpMethod = "GET", produces = "application/json")
+    @ApiResponses( value = {@ApiResponse(code = 200, message = "Successful — 请求已完成",response = String.class)})
     @SessionNeedless
     @RequestMapping("/discount")
     public String toDiscountPage(HttpServletRequest request, Map<String, Object> model) {
@@ -149,7 +154,8 @@ public class EBusinessGoodsController extends BaseController {
         return "/mall/discount";
     }
 
-
+    @ApiOperation(value = "toDiscountPage_h5", httpMethod = "GET", produces = "application/json")
+    @ApiResponses( value = {@ApiResponse(code = 200, message = "Successful — 请求已完成",response = String.class)})
     @SessionNeedless
     @RequestMapping("/discount_h5")
     public String toDiscountPage_h5(Map<String, Object> model) {
@@ -185,6 +191,8 @@ public class EBusinessGoodsController extends BaseController {
      * @param goodsCategory
      * @return
      */
+    @ApiOperation(value = "商品列表", httpMethod = "POST", produces = "application/json")
+    @ApiResponses( value = {@ApiResponse(code = 200, message = "Successful — 请求已完成",response = Map.class)})
     @SessionNeedless
     @RequestMapping("/goods")
     @ResponseBody
@@ -231,6 +239,8 @@ public class EBusinessGoodsController extends BaseController {
      * @param state 0正常销售 1已经下架 2未发布
      * @return
      */
+    @ApiOperation(value = "商品列表", httpMethod = "POST", produces = "application/json")
+    @ApiResponses( value = {@ApiResponse(code = 200, message = "Successful — 请求已完成",response = Map.class)})
     @SessionNeedless
     @RequestMapping("/integrateGoods")
     @ResponseBody
@@ -270,6 +280,8 @@ public class EBusinessGoodsController extends BaseController {
      * @param pageSize
      * @return
      */
+    @ApiOperation(value = "商品爆款列表", httpMethod = "POST", produces = "application/json")
+    @ApiResponses( value = {@ApiResponse(code = 200, message = "Successful — 请求已完成",response = Map.class)})
     @SessionNeedless
     @RequestMapping("/maxOut")
     @ResponseBody
@@ -297,6 +309,8 @@ public class EBusinessGoodsController extends BaseController {
     /**
      * 商品详情
      */
+    @ApiOperation(value = "商品详情", httpMethod = "GET", produces = "application/json")
+    @ApiResponses( value = {@ApiResponse(code = 200, message = "Successful — 请求已完成",response = Map.class)})
     @SessionNeedless
     @RequestMapping(value = "/goods/{goodsId}", method = RequestMethod.GET)
     @ResponseBody
@@ -309,7 +323,8 @@ public class EBusinessGoodsController extends BaseController {
         eGoodsLog(dto, 1);//浏览记录
         return model;
     }
-
+    @ApiOperation(value = "commentList", httpMethod = "POST", produces = "application/json")
+    @ApiResponses( value = {@ApiResponse(code = 200, message = "Successful — 请求已完成",response = Map.class)})
     @SessionNeedless
     @RequestMapping(value = "/goods/{goodsId}/comments", method = RequestMethod.GET)
     @ResponseBody
@@ -330,6 +345,8 @@ public class EBusinessGoodsController extends BaseController {
      * @param eGoodCommentDTO
      * @return
      */
+    @ApiOperation(value = "新增评论", httpMethod = "POST", produces = "application/json")
+    @ApiResponses( value = {@ApiResponse(code = 200, message = "Successful — 请求已完成",response = RespObj.class)})
     @RequestMapping(value = "/goods/{goodsId}/comments", method = RequestMethod.POST)
     @ResponseBody
     public RespObj addComment(@PathVariable("goodsId") String goodsId, @RequestBody EGoodCommentDTO eGoodCommentDTO) {
@@ -349,7 +366,8 @@ public class EBusinessGoodsController extends BaseController {
         }
         return respObj;
     }
-
+    @ApiOperation(value = "uploadImage", httpMethod = "POST", produces = "application/json")
+    @ApiResponses( value = {@ApiResponse(code = 200, message = "Successful — 请求已完成",response = MultipartRequest.class)})
     @RequestMapping(value = "/images", method = RequestMethod.POST)
     @ResponseBody
     public RespObj uploadImage(MultipartRequest request) {
@@ -402,7 +420,8 @@ public class EBusinessGoodsController extends BaseController {
 
         eGoodsLogService.addEGoodsLog(getUserId(), eGoodsLogEntry);
     }
-
+    @ApiOperation(value = "categories", httpMethod = "POST", produces = "application/json")
+    @ApiResponses( value = {@ApiResponse(code = 200, message = "Successful — 请求已完成",response = Map.class)})
     @SessionNeedless
     @RequestMapping(value = "/categories", method = RequestMethod.GET)
     @ResponseBody
@@ -424,10 +443,12 @@ public class EBusinessGoodsController extends BaseController {
     /**
      * 根据地区计算运费
      */
+    @ApiOperation(value = "根据地区计算运费", httpMethod = "POST", produces = "application/json")
+    @ApiResponses( value = {@ApiResponse(code = 200, message = "Successful — 请求已完成",response = Map.class)})
     @SessionNeedless
     @RequestMapping("/goods/{goodsId}/expressPrice")
     @ResponseBody
-    public Map<String, Double> getExpressPrice(@ObjectIdType ObjectId goodsId, @RequestParam String province) {
+    public Map<String, Double> getExpressPrice(@ApiParam(name = "goodsId", required = true, value = "goodsId") @ObjectIdType ObjectId goodsId, @RequestParam String province) {
         String p = "";
         try {
             p = URLDecoder.decode(province, "utf-8");
@@ -441,9 +462,11 @@ public class EBusinessGoodsController extends BaseController {
     /**
      * 收藏商品
      */
+    @ApiOperation(value = "收藏商品", httpMethod = "POST", produces = "application/json")
+    @ApiResponses( value = {@ApiResponse(code = 200, message = "Successful — 请求已完成",response = RespObj.class)})
     @RequestMapping(value = "/goods/{goodsId}/collection", method = RequestMethod.POST)
     @ResponseBody
-    public RespObj collection(@PathVariable("goodsId") @ObjectIdType ObjectId goodsId) {
+    public RespObj collection(@PathVariable("goodsId") @ApiParam(name = "goodsId", required = true, value = "goodsId") @ObjectIdType ObjectId goodsId) {
         RespObj respObj = RespObj.FAILD;
         if (eGoodsLogService.isCollected(getUserId(), goodsId)) {
             respObj.setMessage("您已收藏过该商品！");
@@ -466,6 +489,8 @@ public class EBusinessGoodsController extends BaseController {
      *
      * @return
      */
+    @ApiOperation(value = "跳转到找回密码界面", httpMethod = "GET", produces = "application/json")
+    @ApiResponses( value = {@ApiResponse(code = 200, message = "Successful — 请求已完成",response = String.class)})
     @SessionNeedless
     @RequestMapping("/findUserPwd")
     public String findPwd(HttpServletRequest request, Map<String, Object> model) {
@@ -485,6 +510,8 @@ public class EBusinessGoodsController extends BaseController {
      * @param request
      * @return
      */
+    @ApiOperation(value = "手机验证身份", httpMethod = "POST", produces = "application/json")
+    @ApiResponses( value = {@ApiResponse(code = 200, message = "Successful — 请求已完成",response = Map.class)})
     @SessionNeedless
     @RequestMapping(value = "/findUser/validate", method = RequestMethod.POST)
     @ResponseBody
@@ -533,7 +560,8 @@ public class EBusinessGoodsController extends BaseController {
         }
         return model;
     }
-
+    @ApiOperation(value = "mobile", httpMethod = "POST", produces = "application/json")
+    @ApiResponses( value = {@ApiResponse(code = 200, message = "Successful — 请求已完成",response = Map.class)})
     @SessionNeedless
     @RequestMapping("/findUser/userCheck/mobile")
     @ResponseBody
@@ -576,7 +604,8 @@ public class EBusinessGoodsController extends BaseController {
         return obj;
     }
 
-
+    @ApiOperation(value = "checkFirst", httpMethod = "POST", produces = "application/json")
+    @ApiResponses( value = {@ApiResponse(code = 200, message = "Successful — 请求已完成",response = Map.class)})
     @SessionNeedless
     @RequestMapping("/findUser/userCheck")
     @ResponseBody
@@ -633,6 +662,8 @@ public class EBusinessGoodsController extends BaseController {
     /**
      * 重设密码
      */
+    @ApiOperation(value = "重设密码", httpMethod = "POST", produces = "application/json")
+    @ApiResponses( value = {@ApiResponse(code = 200, message = "Successful — 请求已完成",response = RespObj.class)})
     @SessionNeedless
     @ResponseBody
     @RequestMapping("/findUser/resetPwd/mobile")
@@ -661,6 +692,8 @@ public class EBusinessGoodsController extends BaseController {
      * @param vCode
      * @return
      */
+    @ApiOperation(value = "重设密码", httpMethod = "POST", produces = "application/json")
+    @ApiResponses( value = {@ApiResponse(code = 200, message = "Successful — 请求已完成",response = RespObj.class)})
     @SessionNeedless
     @ResponseBody
     @RequestMapping("/findUser/resetPwd")

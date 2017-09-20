@@ -1,15 +1,20 @@
 package com.fulaan.wrongquestion.dto;
 
 import com.pojo.newVersionGrade.NewVersionGradeEntry;
+import io.swagger.annotations.ApiModelProperty;
 import org.bson.types.ObjectId;
 
 /**
  * Created by James on 2017/9/6.
  */
 public class NewVersionGradeDTO {
+    @ApiModelProperty(name="id",value = "id", required = false)
     private String id;
+    @ApiModelProperty(name="userId",value = "String", required = true)
     private String userId;
+    @ApiModelProperty(name="year",value = "学年", required = false)
     private String year;
+    @ApiModelProperty(name="gradeType",value = "1", required = true)
     private int gradeType;
 
 

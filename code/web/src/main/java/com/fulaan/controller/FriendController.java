@@ -2,12 +2,12 @@ package com.fulaan.controller;
 
 import com.fulaan.annotation.ObjectIdType;
 import com.fulaan.base.BaseController;
-import com.fulaan.user.service.UserService;
 import com.fulaan.friendscircle.service.FriendApplyService;
 import com.fulaan.friendscircle.service.FriendService;
+import com.fulaan.user.service.UserService;
 import com.pojo.activity.FriendApply;
 import com.sys.utils.RespObj;
-import io.swagger.annotations.Api;
+import io.swagger.annotations.*;
 import org.bson.types.ObjectId;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -23,7 +23,7 @@ import java.util.Map;
  * Created by jerry on 2016/10/24.
  * 好友 Controller
  */
-@Api(value="好友 Controller",hidden = true)
+@Api(value="好友 Controller")
 @Controller
 @RequestMapping("/friend")
 public class FriendController extends BaseController {
@@ -34,14 +34,16 @@ public class FriendController extends BaseController {
     private FriendApplyService friendApplyService;
     @Autowired
     private UserService userService;
-
+    @ApiOperation(value = "getFriends", httpMethod = "GET", produces = "application/json")
+    @ApiResponses( value = {@ApiResponse(code = 200, message = "Successful — 请求已完成",response = RespObj.class)})
     @RequestMapping("/getFriends")
     @ResponseBody
     public RespObj getFriends() {
         ObjectId uid = getUserId();
         return RespObj.SUCCESS(friendService.getFrinds(uid));
     }
-
+    @ApiOperation(value = "getPartners", httpMethod = "GET", produces = "application/json")
+    @ApiResponses( value = {@ApiResponse(code = 200, message = "Successful — 请求已完成",response = RespObj.class)})
     @RequestMapping("/getParters")
     @ResponseBody
     public RespObj getPartners() {
@@ -55,9 +57,11 @@ public class FriendController extends BaseController {
      * @param applyId
      * @return
      */
+    @ApiOperation(value = "接受好友申请", httpMethod = "GET", produces = "application/json")
+    @ApiResponses( value = {@ApiResponse(code = 200, message = "Successful — 请求已完成",response = RespObj.class)})
     @RequestMapping("/accept")
     @ResponseBody
-    public RespObj acceptFriend(@ObjectIdType ObjectId applyId) {
+    public RespObj acceptFriend(@ApiParam(name = "applyId", required = true, value = "ObjectId") @ObjectIdType ObjectId applyId) {
         friendApplyService.acceptApply(applyId.toString());
         return RespObj.SUCCESS("操作成功");
     }
@@ -68,9 +72,11 @@ public class FriendController extends BaseController {
      * @param applyId
      * @return
      */
+    @ApiOperation(value = "拒绝好友申请", httpMethod = "POST", produces = "application/json")
+    @ApiResponses( value = {@ApiResponse(code = 200, message = "Successful — 请求已完成",response = RespObj.class)})
     @RequestMapping("/refuse")
     @ResponseBody
-    public RespObj refuseFriend(@ObjectIdType ObjectId applyId) {
+    public RespObj refuseFriend(@ApiParam(name = "applyId", required = true, value = "ObjectId") @ObjectIdType ObjectId applyId) {
         try {
             friendApplyService.refuseApply(applyId.toString());
         } catch (Exception e) {
@@ -87,6 +93,8 @@ public class FriendController extends BaseController {
      * @param personId
      * @return
      */
+    @ApiOperation(value = "好友申请", httpMethod = "POST", produces = "application/json")
+    @ApiResponses( value = {@ApiResponse(code = 200, message = "Successful — 请求已完成",response = RespObj.class)})
     @RequestMapping(value = "/apply")
     @ResponseBody
     public RespObj friendApplyList(@RequestParam(required = false, defaultValue = "") String content, String personId) {
@@ -106,6 +114,8 @@ public class FriendController extends BaseController {
      *
      * @return
      */
+    @ApiOperation(value = "获取好友申请列表", httpMethod = "POST", produces = "application/json")
+    @ApiResponses( value = {@ApiResponse(code = 200, message = "Successful — 请求已完成",response = Map.class)})
     @RequestMapping("/newFriends")
     @ResponseBody
     public Map<String, Object> friendList(@RequestParam(required = false, defaultValue = "0") int accpeted) {
@@ -115,7 +125,8 @@ public class FriendController extends BaseController {
         model.put("list", friendApplyList);
         return model;
     }
-
+    @ApiOperation(value = "search", httpMethod = "POST", produces = "application/json")
+    @ApiResponses( value = {@ApiResponse(code = 200, message = "Successful — 请求已完成",response = RespObj.class)})
     @RequestMapping("/search")
     @ResponseBody
     public RespObj search(String relax) {
@@ -128,6 +139,8 @@ public class FriendController extends BaseController {
      * @param userIds
      * @return
      */
+    @ApiOperation(value = "删除好友", httpMethod = "POST", produces = "application/json")
+    @ApiResponses( value = {@ApiResponse(code = 200, message = "Successful — 请求已完成",response = RespObj.class)})
     @RequestMapping("/delete")
     @ResponseBody
     public RespObj deleteFriend(@RequestParam String userIds) {
@@ -146,9 +159,11 @@ public class FriendController extends BaseController {
      * @param friendId
      * @return
      */
+    @ApiOperation(value = "判断是否是好友", httpMethod = "POST", produces = "application/json")
+    @ApiResponses( value = {@ApiResponse(code = 200, message = "Successful — 请求已完成",response = RespObj.class)})
     @RequestMapping("/isFriend")
     @ResponseBody
-    public RespObj isFriend(@ObjectIdType ObjectId friendId) {
+    public RespObj isFriend(@ApiParam(name = "friendId", required = true, value = "ObjectId") @ObjectIdType  ObjectId friendId) {
         ObjectId uid = getUserId();
         boolean isFriend = friendService.isFriend(uid.toString(), friendId.toString());
         Map<String, Object> map = new HashMap<String, Object>();

@@ -45,10 +45,12 @@ public class NewVersionBindController extends BaseController {
      * @param gradeType
      * @return
      */
+    @ApiOperation(value = "完善绑定的信息", httpMethod = "POST", produces = "application/json")
+    @ApiResponses( value = {@ApiResponse(code = 200, message = "Successful — 请求已完成",response = RespObj.class)})
     @RequestMapping("/supplementNewVersionInfo")
     @ResponseBody
     public RespObj supplementNewVersionInfo(
-            @ObjectIdType ObjectId bindId,
+            @ApiParam(name = "bindId", required = true, value = "bindId") @ObjectIdType ObjectId bindId,
             int sex,String birthDate,
             String provinceName,
             String regionName,
@@ -61,8 +63,8 @@ public class NewVersionBindController extends BaseController {
     ){
         RespObj respObj = new RespObj(Constant.FAILD_CODE);
         try{
-            newVersionBindService.supplementNewVersionInfo(bindId, sex, birthDate, provinceName, regionName, regionAreaName, schoolName, avatar,gradeType,
-                    nickName,relation);
+            newVersionBindService.supplementNewVersionInfo(bindId, sex, birthDate, provinceName, regionName, regionAreaName, schoolName, avatar, gradeType,
+                    nickName, relation);
             respObj.setCode(Constant.SUCCESS_CODE);
             respObj.setMessage("完善信息成功！");
         }catch (Exception e){
@@ -79,10 +81,12 @@ public class NewVersionBindController extends BaseController {
      * @param relation
      * @return
      */
+    @ApiOperation(value = "填写信息绑定接口", httpMethod = "POST", produces = "application/json")
+    @ApiResponses( value = {@ApiResponse(code = 200, message = "Successful — 请求已完成",response = RespObj.class)})
     @RequestMapping("/saveNewVersionEntry")
     @ResponseBody
     public RespObj saveNewVersionEntry(
-            @ObjectIdType ObjectId userId,
+            @ApiParam(name = "userId", required = true, value = "userId") @ObjectIdType ObjectId userId,
             String nickName,
             String avatar,
             int relation){
@@ -102,6 +106,8 @@ public class NewVersionBindController extends BaseController {
      * 获取某个家长的绑定的所有的学生列表
      * @return
      */
+    @ApiOperation(value = "获取某个家长的绑定的所有的学生列表", httpMethod = "GET", produces = "application/json")
+    @ApiResponses( value = {@ApiResponse(code = 200, message = "Successful — 请求已完成",response = RespObj.class)})
     @RequestMapping("/getNewVersionBindDtos")
     @ResponseBody
     public RespObj getNewVersionBindDtos(){
@@ -121,6 +127,8 @@ public class NewVersionBindController extends BaseController {
      *
      * @return
      */
+    @ApiOperation(value = "获取", httpMethod = "GET", produces = "application/json")
+    @ApiResponses( value = {@ApiResponse(code = 200, message = "Successful — 请求已完成",response = RespObj.class)})
     @RequestMapping("/getNewVersionBindStudent")
     @ResponseBody
     public RespObj getNewVersionBindStudent(){
@@ -141,6 +149,8 @@ public class NewVersionBindController extends BaseController {
      * @param id
      * @return
      */
+    @ApiOperation(value = "保存", httpMethod = "POST", produces = "application/json")
+    @ApiResponses( value = {@ApiResponse(code = 200, message = "Successful — 请求已完成",response = RespObj.class)})
     @RequestMapping("/addEntry")
     @ResponseBody
     public RespObj saveNewVersionEntry(@RequestParam("id") String id){
@@ -162,10 +172,12 @@ public class NewVersionBindController extends BaseController {
      * @param communityId
      * @return
      */
+    @ApiOperation(value = "绑定社区下的某个家长与某些学生", httpMethod = "POST", produces = "application/json")
+    @ApiResponses( value = {@ApiResponse(code = 200, message = "Successful — 请求已完成",response = RespObj.class)})
     @RequestMapping("/addCommunityBindEntry")
     @ResponseBody
     public RespObj addCommunityBindEntry(String userIds,
-                                         @ObjectIdType ObjectId communityId){
+                                         @ApiParam(name = "communityId", required = true, value = "communityId") @ObjectIdType ObjectId communityId){
         RespObj respObj = new RespObj(Constant.FAILD_CODE);
         try{
             newVersionBindService.addCommunityBindEntry(userIds,communityId,getUserId());

@@ -19,7 +19,7 @@ import com.pojo.user.UserEntry;
 import com.sys.constants.Constant;
 import com.sys.utils.AvatarUtils;
 import com.sys.utils.RespObj;
-import io.swagger.annotations.Api;
+import io.swagger.annotations.*;
 import org.apache.commons.lang.StringUtils;
 import org.bson.types.ObjectId;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -38,7 +38,7 @@ import java.util.Map;
  * Created by jerry on 2016/10/25.
  * 二维码入口
  */
-@Api(value="二维码入口",hidden = true)
+@Api(value="二维码入口")
 @Controller
 @RequestMapping("/qr")
 public class QRController extends BaseController {
@@ -65,10 +65,12 @@ public class QRController extends BaseController {
      * @param request
      * @param response
      */
+    @ApiOperation(value = "群组二维码入口", httpMethod = "GET", produces = "application/json")
+    @ApiResponses( value = {@ApiResponse(code = 200, message = "Successful — 请求已完成",response = RespObj.class)})
     @RequestMapping("/group/{id}")
     @SessionNeedless
     @ResponseBody
-    public RespObj groupHandle(@PathVariable @ObjectIdType ObjectId id, HttpServletRequest request,
+    public RespObj groupHandle(@ApiParam(name = "id", required = true, value = "id") @PathVariable @ObjectIdType ObjectId id, HttpServletRequest request,
                                HttpServletResponse response) throws IOException {
         if (getUserId() == null) {
             response.sendRedirect(Constant.COLLECTION_MALL_MARKET_URL);
@@ -128,10 +130,12 @@ public class QRController extends BaseController {
      *
      * @param response
      */
+    @ApiOperation(value = "个人二维码入口", httpMethod = "GET", produces = "application/json")
+    @ApiResponses( value = {@ApiResponse(code = 200, message = "Successful — 请求已完成",response = RespObj.class)})
     @RequestMapping("/person/{id}")
     @SessionNeedless
     @ResponseBody
-    public RespObj personHandle(@PathVariable @ObjectIdType ObjectId id,
+    public RespObj personHandle(@ApiParam(name = "id", required = true, value = "id") @PathVariable @ObjectIdType ObjectId id,
                                 HttpServletResponse response) throws IOException {
         if (getUserId() == null) {
             response.sendRedirect(Constant.COLLECTION_MALL_MARKET_URL);
@@ -154,10 +158,12 @@ public class QRController extends BaseController {
      * @return
      * @throws IOException
      */
+    @ApiOperation(value = "绑定接口", httpMethod = "GET", produces = "application/json")
+    @ApiResponses( value = {@ApiResponse(code = 200, message = "Successful — 请求已完成",response = RespObj.class)})
     @RequestMapping("/personBind/{id}")
     @SessionNeedless
     @ResponseBody
-    public RespObj personBindHandle(@PathVariable @ObjectIdType ObjectId id,
+    public RespObj personBindHandle(@ApiParam(name = "id", required = true, value = "id") @PathVariable @ObjectIdType ObjectId id,
                                 HttpServletResponse response) throws IOException {
         if (getUserId() == null) {
             response.sendRedirect(Constant.COLLECTION_MALL_MARKET_URL);
@@ -218,11 +224,12 @@ public class QRController extends BaseController {
 //        }
         return RespObj.SUCCESS(map);
     }
-
+    @ApiOperation(value = "communityHandle", httpMethod = "GET", produces = "application/json")
+    @ApiResponses( value = {@ApiResponse(code = 200, message = "Successful — 请求已完成",response = RespObj.class)})
     @RequestMapping("/community/{communityId}")
     @SessionNeedless
     @ResponseBody
-    public RespObj communityHandle(@PathVariable @ObjectIdType ObjectId communityId,
+    public RespObj communityHandle(@ApiParam(name = "communityId", required = true, value = "communityId") @PathVariable @ObjectIdType ObjectId communityId,
                                    HttpServletResponse response) throws IOException {
         if (getUserId() == null) {
             response.sendRedirect(Constant.COLLECTION_MALL_MARKET_URL);

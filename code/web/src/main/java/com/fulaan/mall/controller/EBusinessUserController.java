@@ -24,6 +24,9 @@ import com.sys.utils.MD5Utils;
 import com.sys.utils.RespObj;
 import com.sys.utils.ValidationUtils;
 import io.swagger.annotations.Api;
+import io.swagger.annotations.ApiOperation;
+import io.swagger.annotations.ApiResponse;
+import io.swagger.annotations.ApiResponses;
 import org.apache.commons.httpclient.HttpClient;
 import org.apache.commons.httpclient.HttpStatus;
 import org.apache.commons.httpclient.NameValuePair;
@@ -84,7 +87,8 @@ public class EBusinessUserController extends BaseController {
 
     NewVersionUserRoleDao newVersionUserRoleDao =new NewVersionUserRoleDao();
 
-
+    @ApiOperation(value = "shortMessage", httpMethod = "POST", produces = "application/json")
+    @ApiResponses( value = {@ApiResponse(code = 200, message = "Successful — 请求已完成",response = Map.class)})
     @SessionNeedless
     @RequestMapping(value = "/sendInsetMessage", method = RequestMethod.GET)
     @ResponseBody
@@ -125,6 +129,8 @@ public class EBusinessUserController extends BaseController {
      * @param request
      * @return
      */
+    @ApiOperation(value = "防盗链信息", httpMethod = "POST", produces = "application/json")
+    @ApiResponses( value = {@ApiResponse(code = 200, message = "Successful — 请求已完成",response = RespObj.class)})
     @SessionNeedless
     @RequestMapping(value = "/securitychain", method = RequestMethod.GET)
     @ResponseBody
@@ -143,6 +149,8 @@ public class EBusinessUserController extends BaseController {
      * @param mobile 手机号
      * @return
      */
+    @ApiOperation(value = "获取验证码", httpMethod = "POST", produces = "application/json")
+    @ApiResponses( value = {@ApiResponse(code = 200, message = "Successful — 请求已完成",response = Map.class)})
     @SessionNeedless
     @RequestMapping(value = "/messages", method = RequestMethod.GET)
     @ResponseBody
@@ -262,7 +270,8 @@ public class EBusinessUserController extends BaseController {
         }
 
     }
-
+    @ApiOperation(value = "emailValidate", httpMethod = "POST", produces = "application/json")
+    @ApiResponses( value = {@ApiResponse(code = 200, message = "Successful — 请求已完成",response = String.class)})
     @SessionNeedless
     @RequestMapping(value = "/emailValidate")
     public String emailValidate(String email, String validateCode, HttpServletResponse response, HttpServletRequest request,
@@ -315,6 +324,8 @@ public class EBusinessUserController extends BaseController {
      * @param name
      * @return
      */
+    @ApiOperation(value = "检查用户是否存在", httpMethod = "POST", produces = "application/json")
+    @ApiResponses( value = {@ApiResponse(code = 200, message = "Successful — 请求已完成",response = Map.class)})
     @SessionNeedless
     @RequestMapping(method = RequestMethod.GET)
     @ResponseBody
@@ -359,7 +370,8 @@ public class EBusinessUserController extends BaseController {
             }
         }
     }
-
+    @ApiOperation(value = "processValidate", httpMethod = "POST", produces = "application/json")
+    @ApiResponses( value = {@ApiResponse(code = 200, message = "Successful — 请求已完成",response = RespObj.class)})
     @SessionNeedless
     @RequestMapping(value = "/processValidate")
     @ResponseBody
@@ -368,7 +380,8 @@ public class EBusinessUserController extends BaseController {
         processRegister(email, emailValidateCode);
         return respObj;
     }
-
+    @ApiOperation(value = "sendEmail", httpMethod = "POST", produces = "application/json")
+    @ApiResponses( value = {@ApiResponse(code = 200, message = "Successful — 请求已完成",response = String.class)})
     @SessionNeedless
     @RequestMapping(value = "/sendEmail")
     public String sendEmail(HttpServletRequest request, HttpServletResponse response, Map<String, Object> model) {
@@ -397,6 +410,8 @@ public class EBusinessUserController extends BaseController {
      *
      * @return
      */
+    @ApiOperation(value = "用户注册", httpMethod = "POST", produces = "application/json")
+    @ApiResponses( value = {@ApiResponse(code = 200, message = "Successful — 请求已完成",response = Map.class)})
     @SessionNeedless
     @RequestMapping(method = RequestMethod.POST)
     @ResponseBody
@@ -531,6 +546,7 @@ public class EBusinessUserController extends BaseController {
     /**
      *
      */
+    @ApiOperation(value = "giveVoucher", httpMethod = "POST", produces = "application/json")
     @RequestMapping(value = "/giveVoucher")
     public void giveVoucher() throws Exception {
         List<EVoucherEntry> entries = new ArrayList<EVoucherEntry>();
@@ -541,7 +557,8 @@ public class EBusinessUserController extends BaseController {
         eBusinessVoucherService.addActivityEVoucher(entries);
     }
 
-
+    @ApiOperation(value = "getChristReward", httpMethod = "POST", produces = "application/json")
+    @ApiResponses( value = {@ApiResponse(code = 200, message = "Successful — 请求已完成",response = RespObj.class)})
     @RequestMapping(value = "/getChristReward")
     @ResponseBody
     public RespObj getChristReward() throws Exception {
@@ -640,6 +657,8 @@ public class EBusinessUserController extends BaseController {
      * @param response
      * @return
      */
+    @ApiOperation(value = "登录", httpMethod = "POST", produces = "application/json")
+    @ApiResponses( value = {@ApiResponse(code = 200, message = "Successful — 请求已完成",response = RespObj.class)})
     @SessionNeedless
     @RequestMapping("/login")
     @ResponseBody

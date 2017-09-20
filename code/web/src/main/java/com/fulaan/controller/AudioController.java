@@ -4,6 +4,9 @@ import com.fulaan.annotation.SessionNeedless;
 import com.fulaan.utils.QiniuFileUtils;
 import com.sys.utils.RespObj;
 import io.swagger.annotations.Api;
+import io.swagger.annotations.ApiOperation;
+import io.swagger.annotations.ApiResponse;
+import io.swagger.annotations.ApiResponses;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
@@ -16,7 +19,7 @@ import org.springframework.web.multipart.MultipartFile;
  * Created by jerry on 2016/8/23.
  * 处理上传语音的接口
  */
-@Api(value="处理上传语音的接口",hidden = true)
+@Api(value="处理上传语音的接口")
 @Controller
 @RequestMapping("/audio")
 public class AudioController {
@@ -30,6 +33,8 @@ public class AudioController {
      * @return RespObj
      * @throws Exception
      */
+    @ApiOperation(value = "处理上传语音的接口", httpMethod = "POST", produces = "application/json")
+    @ApiResponses( value = {@ApiResponse(code = 200, message = "Successful — 请求已完成",response = RespObj.class)})
     @SessionNeedless
     @RequestMapping(value = "/upload", method = RequestMethod.POST)
     @ResponseBody

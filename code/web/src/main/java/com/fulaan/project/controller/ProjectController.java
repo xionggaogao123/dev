@@ -11,6 +11,9 @@ import com.pojo.project.SubProjectEntry;
 import com.pojo.user.UserEntry;
 import com.sys.utils.RespObj;
 import io.swagger.annotations.Api;
+import io.swagger.annotations.ApiOperation;
+import io.swagger.annotations.ApiResponse;
+import io.swagger.annotations.ApiResponses;
 import org.bson.types.ObjectId;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -39,6 +42,8 @@ public class ProjectController extends BaseController {
     /**
      * 列表页面跳转
      */
+    @ApiOperation(value = "列表页面跳转", httpMethod = "GET", produces = "application/json")
+    @ApiResponses( value = {@ApiResponse(code = 200, message = "Successful — 请求已完成",response = ModelAndView.class)})
     @SessionNeedless
     @RequestMapping("/listPage")
     @ResponseBody
@@ -52,6 +57,8 @@ public class ProjectController extends BaseController {
     /**
      * 新增页面跳转
      */
+    @ApiOperation(value = "新增页面跳转", httpMethod = "GET", produces = "application/json")
+    @ApiResponses( value = {@ApiResponse(code = 200, message = "Successful — 请求已完成",response = ModelAndView.class)})
     @SessionNeedless
     @RequestMapping("/addPage")
     @ResponseBody
@@ -64,6 +71,8 @@ public class ProjectController extends BaseController {
     /**
      * 详情页面跳转
      */
+    @ApiOperation(value = "详情页面跳转", httpMethod = "POST", produces = "application/json")
+    @ApiResponses( value = {@ApiResponse(code = 200, message = "Successful — 请求已完成",response = ModelAndView.class)})
     @SessionNeedless
     @RequestMapping("/detailPage")
     @ResponseBody
@@ -109,6 +118,8 @@ public class ProjectController extends BaseController {
      *
      * @return
      */
+    @ApiOperation(value = "新增一个课题信息", httpMethod = "POST", produces = "application/json")
+    @ApiResponses( value = {@ApiResponse(code = 200, message = "Successful — 请求已完成",response = String.class)})
     @SessionNeedless
     @RequestMapping("/addProject")
     @ResponseBody
@@ -137,6 +148,8 @@ public class ProjectController extends BaseController {
      *
      * @return
      */
+    @ApiOperation(value = "根据条件查询列表信息", httpMethod = "POST", produces = "application/json")
+    @ApiResponses( value = {@ApiResponse(code = 200, message = "Successful — 请求已完成",response = String.class)})
     @SessionNeedless
     @RequestMapping("/queryList")
     @ResponseBody

@@ -11,6 +11,9 @@ import com.pojo.user.UserRole;
 import com.sys.utils.QiniuFileUtils;
 import com.sys.utils.RespObj;
 import io.swagger.annotations.Api;
+import io.swagger.annotations.ApiOperation;
+import io.swagger.annotations.ApiResponse;
+import io.swagger.annotations.ApiResponses;
 import org.bson.types.ObjectId;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -25,14 +28,15 @@ import java.util.Map;
  * Created by jerry on 2016/9/7.
  * Banner管理
  */
-@Api(value="Banner管理",hidden = true)
+@Api(value="Banner管理")
 @Controller
 public class BannerController {
 
     private BannerDao bannerDao = new BannerDao();
 
     private BannerDao appBannerDao = new BannerDao();
-
+    @ApiOperation(value = "manager", httpMethod = "POST", produces = "application/json")
+    @ApiResponses( value = {@ApiResponse(code = 200, message = "Successful — 请求已完成",response = String.class)})
     @RequestMapping("/vv/banners")
     @UserRoles(UserRole.DISCUSS_MANAGER) //这个代表只有管理员可以访问
     public String manager(Map<String, Object> map) {
@@ -41,7 +45,8 @@ public class BannerController {
         map.put("count", bannerDao.countBanner(2));
         return "/admin/banner";
     }
-
+    @ApiOperation(value = "add", httpMethod = "POST", produces = "application/json")
+    @ApiResponses( value = {@ApiResponse(code = 200, message = "Successful — 请求已完成",response = String.class)})
     @RequestMapping("/vv/add")
     @UserRoles(UserRole.DISCUSS_MANAGER)//这个代表只有管理员可以访问
     public String add(String name, String targetId, int status, @RequestParam("file") MultipartFile file) throws Exception {
@@ -57,7 +62,8 @@ public class BannerController {
         }
         return "redirect:banners.do";
     }
-
+    @ApiOperation(value = "delete", httpMethod = "POST", produces = "application/json")
+    @ApiResponses( value = {@ApiResponse(code = 200, message = "Successful — 请求已完成",response = RespObj.class)})
     @RequestMapping("/vv/delete")
     @ResponseBody
     @UserRoles(UserRole.DISCUSS_MANAGER) //这个代表只有管理员可以访问
@@ -74,6 +80,8 @@ public class BannerController {
      * @param id
      * @return
      */
+    @ApiOperation(value = "下线", httpMethod = "POST", produces = "application/json")
+    @ApiResponses( value = {@ApiResponse(code = 200, message = "Successful — 请求已完成",response = RespObj.class)})
     @RequestMapping("/vv/updateStatus")
     @ResponseBody
     @UserRoles(UserRole.DISCUSS_MANAGER) //这个代表只有管理员可以访问
@@ -88,13 +96,16 @@ public class BannerController {
      *
      * @return
      */
+    @ApiOperation(value = "给App的banner", httpMethod = "GET", produces = "application/json")
+    @ApiResponses( value = {@ApiResponse(code = 200, message = "Successful — 请求已完成",response = RespObj.class)})
     @RequestMapping("/v1/app/banner")
     @SessionNeedless
     @ResponseBody
     public RespObj getBanners() {
         return RespObj.SUCCESS(AppBanner.getList(appBannerDao.get()));
     }
-
+    @ApiOperation(value = "deleteApp", httpMethod = "POST", produces = "application/json")
+    @ApiResponses( value = {@ApiResponse(code = 200, message = "Successful — 请求已完成",response = RespObj.class)})
     @ResponseBody
     @RequestMapping("/v1/app/deleteBanner")
     @UserRoles(UserRole.DISCUSS_MANAGER)//这个代表只有管理员可以访问
@@ -102,7 +113,8 @@ public class BannerController {
         appBannerDao.deleteAppBanner(id);
         return RespObj.SUCCESS;
     }
-
+    @ApiOperation(value = "bannerActionApp", httpMethod = "POST", produces = "application/json")
+    @ApiResponses( value = {@ApiResponse(code = 200, message = "Successful — 请求已完成",response = RespObj.class)})
     @RequestMapping("/v1/app/updateStatus")
     @ResponseBody
     @UserRoles(UserRole.DISCUSS_MANAGER) //这个代表只有管理员可以访问
@@ -110,7 +122,8 @@ public class BannerController {
         appBannerDao.updateAppStatus(id, action);
         return RespObj.SUCCESS;
     }
-
+    @ApiOperation(value = "insertBanner", httpMethod = "POST", produces = "application/json")
+    @ApiResponses( value = {@ApiResponse(code = 200, message = "Successful — 请求已完成",response = String.class)})
     @RequestMapping("/v1/app/insertBanner")
     @UserRoles(UserRole.DISCUSS_MANAGER) //这个代表只有管理员可以访问
     public String insertBanner(String goodId, int status, String goodName,
@@ -123,7 +136,8 @@ public class BannerController {
         }
         return "redirect:/admin/appBannerManager";
     }
-
+    @ApiOperation(value = "insertBanner", httpMethod = "POST", produces = "application/json")
+    @ApiResponses( value = {@ApiResponse(code = 200, message = "Successful — 请求已完成",response = RespObj.class)})
     @RequestMapping("/v1/app/countBanner")
     @ResponseBody
     @UserRoles(UserRole.DISCUSS_MANAGER) //这个代表只有管理员可以访问

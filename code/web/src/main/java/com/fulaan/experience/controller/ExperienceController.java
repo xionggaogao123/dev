@@ -11,10 +11,14 @@ import com.pojo.user.ExpLogType;
 import com.pojo.user.UserDetailInfoDTO;
 import com.pojo.user.UserRole;
 import io.swagger.annotations.Api;
+import io.swagger.annotations.ApiOperation;
+import io.swagger.annotations.ApiResponse;
+import io.swagger.annotations.ApiResponses;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
@@ -22,7 +26,7 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import java.util.HashMap;
 import java.util.Map;
 
-@Api(value="",hidden = true)
+@Api(value="")
 @Controller
 @RequestMapping("/experience")
 public class ExperienceController extends BaseController {
@@ -33,6 +37,8 @@ public class ExperienceController extends BaseController {
     private UserService userService;
 
     //  学生积分统计页面
+    @ApiOperation(value = "学生积分统计页面", httpMethod = "POST", produces = "application/json")
+    @ApiResponses( value = {@ApiResponse(code = 200, message = "Successful — 请求已完成",response = String.class)})
     @RequestMapping("/studentScoreList")
     public String studentExpList(String studentId, Map<String, Object> model) {
         //判断studentId是否是null或""
@@ -50,7 +56,8 @@ public class ExperienceController extends BaseController {
         }
 
     }
-
+    @ApiOperation(value = "experienceRule", httpMethod = "POST", produces = "application/json")
+    @ApiResponses( value = {@ApiResponse(code = 200, message = "Successful — 请求已完成",response = String.class)})
     @RequestMapping("/experienceRule")
     public String experienceRule(Map<String, Object> model) {
         int role = getSessionValue().getUserRole();
@@ -64,10 +71,12 @@ public class ExperienceController extends BaseController {
      *
      * @return
      */
+    @ApiOperation(value = "学生经验值Log的取得", httpMethod = "POST", produces = "application/json")
+    @ApiResponses( value = {@ApiResponse(code = 200, message = "Successful — 请求已完成",response = Page.class)})
     @RequestMapping("/getStuScoreInfo")//原名“getStuScoreInfo”
     public
     @ResponseBody
-    Page<ExperienceLogDTO> getUserExpInfo(@RequestParam("userid") String usreid, Pageable pageable) {
+    Page<ExperienceLogDTO> getUserExpInfo(@RequestParam("userid") String usreid, @RequestBody Pageable pageable) {
         //分页查询用户积分日志
         return experienceService.selUserExperienceInfoList(usreid, pageable);
     }
@@ -77,6 +86,8 @@ public class ExperienceController extends BaseController {
      *
      * @return
      */
+    @ApiOperation(value = "学生经验值记录", httpMethod = "POST", produces = "application/json")
+    @ApiResponses( value = {@ApiResponse(code = 200, message = "Successful — 请求已完成",response = Map.class)})
     @RequestMapping("/studentScoreLog")
     public
     @ResponseBody

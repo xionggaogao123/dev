@@ -12,8 +12,7 @@ import com.pojo.school.SchoolEntry;
 import com.pojo.user.UserDetailInfoDTO;
 import com.pojo.user.UserRole;
 import com.sys.constants.Constant;
-
-import io.swagger.annotations.Api;
+import io.swagger.annotations.*;
 import org.apache.commons.lang.StringUtils;
 import org.apache.log4j.Logger;
 import org.bson.types.ObjectId;
@@ -24,13 +23,13 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import javax.annotation.Resource;
-
+import javax.servlet.http.HttpSession;
 import java.util.*;
 
 /**
  * Created by Hao on 15-2-26.
  */
-@Api(value="friendcircle",hidden = true)
+@Api(value="friendcircle")
 @Controller
 @RequestMapping("/friendcircle")
 public class FriendsController extends BaseController {
@@ -71,6 +70,8 @@ public class FriendsController extends BaseController {
     * 拒绝邀请
     *
     * */
+    @ApiOperation(value = "拒绝邀请", httpMethod = "POST", produces = "application/json")
+    @ApiResponses( value = {@ApiResponse(code = 200, message = "Successful — 请求已完成",response = Map.class)})
     @RequestMapping("/reject")
     @ResponseBody
     public Map<String, Object> refuseApply(String applyId) {
@@ -99,6 +100,8 @@ public class FriendsController extends BaseController {
     *
     *sponsorId 发起人ID
     * */
+    @ApiOperation(value = "发起人ID", httpMethod = "POST", produces = "application/json")
+    @ApiResponses( value = {@ApiResponse(code = 200, message = "Successful — 请求已完成",response = Map.class)})
     @RequestMapping("accept")
     @ResponseBody
     public Map<String, Object> acceptApply(@RequestParam String sponsorId, String fromDevice) {
@@ -126,8 +129,10 @@ public class FriendsController extends BaseController {
     * 好友申请
     *
     * */
+    @ApiOperation(value = "好友申请", httpMethod = "POST", produces = "application/json")
+    @ApiResponses( value = {@ApiResponse(code = 200, message = "Successful — 请求已完成",response = Model.class)})
     @RequestMapping("applys")
-    public String friendApplyList(Integer page, Model model) {
+    public String friendApplyList(Integer page, @ApiParam(hidden = true) Model model) {
         headInfo(model);
         if (page == null) page = 0;
         String userId = getUserId().toString();
@@ -177,7 +182,8 @@ public class FriendsController extends BaseController {
         model.addAttribute("currentUser", info);
         return "activity/friend-application";
     }
-
+    @ApiOperation(value = "getFriendApplyList", httpMethod = "POST", produces = "application/json")
+    @ApiResponses( value = {@ApiResponse(code = 200, message = "Successful — 请求已完成",response = Map.class)})
     @RequestMapping("getFriendApplys")
     @ResponseBody
     public Map<String, Object> getFriendApplyList(Integer page) {
@@ -236,6 +242,8 @@ public class FriendsController extends BaseController {
     * 移动端 收到的好友申请
     *
     * */
+    @ApiOperation(value = "收到的好友申请", httpMethod = "POST", produces = "application/json")
+    @ApiResponses( value = {@ApiResponse(code = 200, message = "Successful — 请求已完成",response = Map.class)})
     @RequestMapping("friendApply")
     @ResponseBody
     public Map<String, Object> applies(@RequestParam Integer page, @RequestParam Integer pageSize) {
@@ -291,6 +299,8 @@ public class FriendsController extends BaseController {
     * 好友申请数量
     *
     * */
+    @ApiOperation(value = "好友申请数量", httpMethod = "GET", produces = "application/json")
+    @ApiResponses( value = {@ApiResponse(code = 200, message = "Successful — 请求已完成",response = Map.class)})
     @RequestMapping("/friendApplyCount")
     @ResponseBody
     public Map<String, Object> friendApplyCountMap() {
@@ -305,6 +315,8 @@ public class FriendsController extends BaseController {
     * 好友列表
     *
     * */
+    @ApiOperation(value = "好友列表", httpMethod = "POST", produces = "application/json")
+    @ApiResponses( value = {@ApiResponse(code = 200, message = "Successful — 请求已完成",response = String.class)})
     @RequestMapping("/friendlist")
     public String friends(Integer page, Model model) {
         if (page == null) page = 1;
@@ -350,6 +362,8 @@ public class FriendsController extends BaseController {
      * @param page
      * @return
      */
+    @ApiOperation(value = "异步获取好友列表", httpMethod = "POST", produces = "application/json")
+    @ApiResponses( value = {@ApiResponse(code = 200, message = "Successful — 请求已完成",response = Map.class)})
     @RequestMapping("/ajaxGetFriendlist")
     @ResponseBody
     public Map<String, Object> getfriends(Integer page) {
@@ -390,7 +404,8 @@ public class FriendsController extends BaseController {
 
         return model;
     }
-
+    @ApiOperation(value = "getFriendsListByRole", httpMethod = "POST", produces = "application/json")
+    @ApiResponses( value = {@ApiResponse(code = 200, message = "Successful — 请求已完成",response = Map.class)})
     @RequestMapping("/getfriendlistgroupbyrole")
     @ResponseBody
     public Map<String, Object> getFriendsListByRole(Integer roleid, Integer page) {
@@ -442,13 +457,15 @@ public class FriendsController extends BaseController {
 
         return model;
     }
-
+    @ApiOperation(value = "goToPage", httpMethod = "POST", produces = "application/json")
+    @ApiResponses( value = {@ApiResponse(code = 200, message = "Successful — 请求已完成",response = String.class)})
     @RequestMapping("/getFriendList")
     public String goToPage(@RequestParam int type, Model model) {
         model.addAttribute("type", type);
         return "activity/friendList";
     }
-
+    @ApiOperation(value = "goToPage2", httpMethod = "POST", produces = "application/json")
+    @ApiResponses( value = {@ApiResponse(code = 200, message = "Successful — 请求已完成",response = String.class)})
     @RequestMapping("/friendSearch")
     public String goToPage2(@RequestParam String keyWords, Model model) {
         model.addAttribute("keyWords", keyWords);
@@ -460,6 +477,8 @@ public class FriendsController extends BaseController {
      *
      * @return
      */
+    @ApiOperation(value = "按照角色获取", httpMethod = "POST", produces = "application/json")
+    @ApiResponses( value = {@ApiResponse(code = 200, message = "Successful — 请求已完成",response = String.class)})
     @RequestMapping("/friendlistgroupbyrole")
     public String friendsListByRole(Integer roleid, Integer page, Model model) {
         if (page == null) page = 1;
@@ -513,6 +532,8 @@ public class FriendsController extends BaseController {
     * 学校类型 1全部学校  2本校  3本年级
     * 角色类型 -1全部 1老师 4家长 0学生 对应数据库
     * */
+    @ApiOperation(value = "好友搜索", httpMethod = "POST", produces = "application/json")
+    @ApiResponses( value = {@ApiResponse(code = 200, message = "Successful — 请求已完成",response = Map.class)})
     @RequestMapping("/search")
     @ResponseBody
     public Map<String, Object> search(@RequestParam String keyWord,
@@ -606,6 +627,8 @@ public class FriendsController extends BaseController {
     /*
     * 查询好友并分组
     * */
+    @ApiOperation(value = "查询好友并分组", httpMethod = "POST", produces = "application/json")
+    @ApiResponses( value = {@ApiResponse(code = 200, message = "Successful — 请求已完成",response = Map.class)})
     @RequestMapping("/findMyFriend")
     @ResponseBody
     public Map<String, Object> findMyFriend() {
@@ -639,6 +662,8 @@ public class FriendsController extends BaseController {
     *
     * 添加好友申请
     * */
+    @ApiOperation(value = "添加好友申请", httpMethod = "POST", produces = "application/json")
+    @ApiResponses( value = {@ApiResponse(code = 200, message = "Successful — 请求已完成")})
     @RequestMapping("/addFriendApply")
     @ResponseBody
     public boolean addFriendApply(@RequestParam String friendId, String message) {
@@ -660,6 +685,8 @@ public class FriendsController extends BaseController {
     * 删除好友关系关系
     *
     * */
+    @ApiOperation(value = "删除好友关系关系", httpMethod = "POST", produces = "application/json")
+    @ApiResponses( value = {@ApiResponse(code = 200, message = "Successful — 请求已完成",response = HttpSession.class)})
     @RequestMapping("/delete")
     @ResponseBody
     public boolean deleteFriend(@RequestParam String friendId) {
@@ -675,6 +702,8 @@ public class FriendsController extends BaseController {
     * 推荐好友
     *
     * */
+    @ApiOperation(value = "推荐好友", httpMethod = "POST", produces = "application/json")
+    @ApiResponses( value = {@ApiResponse(code = 200, message = "Successful — 请求已完成",response = Map.class)})
     @RequestMapping("/recommendedFriends")
     @ResponseBody
     public Map<String, Object> findRecommendedFriends(@RequestParam Integer page, @RequestParam Integer pageSize) {
@@ -726,6 +755,8 @@ public class FriendsController extends BaseController {
     /**
      * 得到我的全部好友
      */
+    @ApiOperation(value = "得到我的全部好友", httpMethod = "GET", produces = "application/json")
+    @ApiResponses( value = {@ApiResponse(code = 200, message = "Successful — 请求已完成",response = List.class)})
     @RequestMapping("/listAll")
     @ResponseBody
     public List<UserDetailInfoDTO> findMyFriends() {

@@ -23,6 +23,9 @@ import com.sys.props.Resources;
 import com.sys.utils.HtmlUtils;
 import com.sys.utils.ImageUtils;
 import io.swagger.annotations.Api;
+import io.swagger.annotations.ApiOperation;
+import io.swagger.annotations.ApiResponse;
+import io.swagger.annotations.ApiResponses;
 import org.apache.commons.lang.StringUtils;
 import org.apache.log4j.Logger;
 import org.bson.types.ObjectId;
@@ -103,7 +106,8 @@ public class ActivityController extends BaseController {
         binder.registerCustomEditor(Date.class, new CustomDateEditor(dateFormat, true));
     }
 
-
+    @ApiOperation(value = "activityMainPage", httpMethod = "POST", produces = "application/json")
+    @ApiResponses( value = {@ApiResponse(code = 200, message = "Successful — 请求已完成",response = String.class)})
     @RequestMapping("/activityMain")
     public String activityMainPage(Model model, HttpServletRequest request) {
         UserDetailInfoDTO userInfo = userService.getUserInfoById(getUserId().toString());
@@ -143,6 +147,8 @@ public class ActivityController extends BaseController {
     * 活动邀请数量
     *
     * */
+    @ApiOperation(value = "活动邀请数量", httpMethod = "GET", produces = "application/json")
+    @ApiResponses( value = {@ApiResponse(code = 200, message = "Successful — 请求已完成",response = Map.class)})
     @RequestMapping("/invitationCount")
     @ResponseBody
     public Map<String, Object> actInvitationCount() {
@@ -155,6 +161,8 @@ public class ActivityController extends BaseController {
     /*
     抽取热门活动
     */
+    @ApiOperation(value = "抽取热门活动", httpMethod = "POST", produces = "application/json")
+    @ApiResponses( value = {@ApiResponse(code = 200, message = "Successful — 请求已完成",response = List.class)})
     @RequestMapping("/selectHotActivity")
     @ResponseBody
     public List<Activity> selectHotActivity(@RequestParam Integer page, Integer pageSize) {
@@ -173,6 +181,8 @@ public class ActivityController extends BaseController {
     * 动态
     *
     * */
+    @ApiOperation(value = "动态", httpMethod = "POST", produces = "application/json")
+    @ApiResponses( value = {@ApiResponse(code = 200, message = "Successful — 请求已完成",response = Map.class)})
     @RequestMapping("/actTrackList")
     @ResponseBody
     public Map<String, Object> actTrackList(Integer page, Integer pageSize) {
@@ -237,6 +247,8 @@ public class ActivityController extends BaseController {
      * @param pageSize
      * @return
      */
+    @ApiOperation(value = "好友活动", httpMethod = "POST", produces = "application/json")
+    @ApiResponses( value = {@ApiResponse(code = 200, message = "Successful — 请求已完成",response = Map.class)})
     @RequestMapping("/friendsActivity")
     @ResponseBody
     public Map<String, Object> friendsActivity(int page, int pageSize) {
@@ -283,6 +295,8 @@ public class ActivityController extends BaseController {
      * @param pageSize
      * @return
      */
+    @ApiOperation(value = "推荐活动", httpMethod = "POST", produces = "application/json")
+    @ApiResponses( value = {@ApiResponse(code = 200, message = "Successful — 请求已完成",response = Map.class)})
     @RequestMapping("/recommendActivity")
     @ResponseBody
     public Map<String, Object> recommendActivity(int page, int pageSize) {
@@ -322,6 +336,8 @@ public class ActivityController extends BaseController {
     * 我发布的活动   适用移动端
     *
     * */
+    @ApiOperation(value = "我发布的活动", httpMethod = "POST", produces = "application/json")
+    @ApiResponses( value = {@ApiResponse(code = 200, message = "Successful — 请求已完成",response = Map.class)})
     @RequestMapping("/myOrganizedActivity")
     @ResponseBody
     public Map<String, Object> myOrganizedActivity(Integer page, Integer pageSize) {
@@ -344,6 +360,8 @@ public class ActivityController extends BaseController {
      * @param pageSize
      * @return
      */
+    @ApiOperation(value = "我参加的活动", httpMethod = "POST", produces = "application/json")
+    @ApiResponses( value = {@ApiResponse(code = 200, message = "Successful — 请求已完成",response = Map.class)})
     @RequestMapping("/myAttendActivity")
     @ResponseBody
     public Map<String, Object> myAttendActivity(int page, int pageSize) {
@@ -378,6 +396,9 @@ public class ActivityController extends BaseController {
     *
     *
     * */
+
+    @ApiOperation(value = "活动细节    移动端", httpMethod = "POST", produces = "application/json")
+    @ApiResponses( value = {@ApiResponse(code = 200, message = "Successful — 请求已完成",response = Activity.class)})
     @RequestMapping("/activityDetail")
     @ResponseBody
     public Activity activityDetail(@RequestParam String activityId) {
@@ -388,6 +409,8 @@ public class ActivityController extends BaseController {
     * 参加某个活动的人 移动端
     *
     * */
+    @ApiOperation(value = "参加某个活动的人 移动端", httpMethod = "POST", produces = "application/json")
+    @ApiResponses( value = {@ApiResponse(code = 200, message = "Successful — 请求已完成",response = Map.class)})
     @RequestMapping("/usersInActivity")
     @ResponseBody
     public Map<String, Object> usersInActivity(@RequestParam String activityId,
@@ -430,6 +453,8 @@ public class ActivityController extends BaseController {
     * 我的好友  移动端
     *
     * */
+    @ApiOperation(value = "我的好友  移动端", httpMethod = "POST", produces = "application/json")
+    @ApiResponses( value = {@ApiResponse(code = 200, message = "Successful — 请求已完成",response = Map.class)})
     @RequestMapping("myFriends")
     @ResponseBody
     public Map<String, Object> myFriends() {
@@ -443,6 +468,8 @@ public class ActivityController extends BaseController {
     /**
      * 邀请一个朋友 移动端
      */
+    @ApiOperation(value = "邀请一个朋友 移动端", httpMethod = "POST", produces = "application/json")
+    @ApiResponses( value = {@ApiResponse(code = 200, message = "Successful — 请求已完成",response = Map.class)})
     @RequestMapping("/inviteOneFriend")
     @ResponseBody
     public Map<String, String> inviteOneFriend(@RequestParam String activityId,
@@ -471,6 +498,8 @@ public class ActivityController extends BaseController {
     * 关于某个活动的 输入的userId的被邀记录  移动端
     *
     * */
+    @ApiOperation(value = "关于某个活动的 输入的userId的被邀记录  移动端", httpMethod = "POST", produces = "application/json")
+    @ApiResponses( value = {@ApiResponse(code = 200, message = "Successful — 请求已完成",response = ActInvitation.class)})
     @RequestMapping("/actInvitation")
     @ResponseBody
     public ActInvitation invitation4UserId(@RequestParam String userId, @RequestParam String activityId) {
@@ -492,6 +521,8 @@ public class ActivityController extends BaseController {
     /**
      * 无邀请   参加活动 移动端
      */
+    @ApiOperation(value = "无邀请   参加活动 移动端", httpMethod = "POST", produces = "application/json")
+    @ApiResponses( value = {@ApiResponse(code = 200, message = "Successful — 请求已完成",response = Boolean.class)})
     @RequestMapping("/joinActivity")
     @ResponseBody
     public Boolean attendAct(@RequestParam String activityId,
@@ -556,6 +587,8 @@ public class ActivityController extends BaseController {
      *            memberCount : 人数,
      *            coverImage : 封面
     * */
+    @ApiOperation(value = "移动端", httpMethod = "POST", produces = "application/json")
+    @ApiResponses( value = {@ApiResponse(code = 200, message = "Successful — 请求已完成",response = String.class)})
     @RequestMapping("/promoteActivity")
     @ResponseBody
     public String newActivity4Mobile(String eventStartDate,
@@ -645,6 +678,8 @@ public class ActivityController extends BaseController {
      * @param activityView
      * @return
      */
+    @ApiOperation(value = "发起活动接口", httpMethod = "POST", produces = "application/json")
+    @ApiResponses( value = {@ApiResponse(code = 200, message = "Successful — 请求已完成",response = ActivityView.class)})
     @RequestMapping("/promote")
     @ResponseBody
     public ActivityView newActivity(@RequestBody ActivityView activityView, HttpServletRequest request) {
@@ -715,6 +750,8 @@ public class ActivityController extends BaseController {
      * @param file
      * @return 链接地址
      */
+    @ApiOperation(value = "上传图片接口", httpMethod = "POST", produces = "application/json")
+    @ApiResponses( value = {@ApiResponse(code = 200, message = "Successful — 请求已完成",response = String.class)})
     @RequestMapping("/uploadPic")
     @ResponseBody
     public String uploadPic(MultipartFile file, HttpSession session) {
@@ -758,6 +795,8 @@ public class ActivityController extends BaseController {
      * @param file    图片
      * @return
      */
+    @ApiOperation(value = "增加一个活动讨论,可带有图片 web端使用", httpMethod = "POST", produces = "application/json")
+    @ApiResponses( value = {@ApiResponse(code = 200, message = "Successful — 请求已完成",response = Map.class)})
     @RequestMapping("/addwebdiscuss")
     @ResponseBody
     public Map<String, Object> addWebDiscuss(@RequestParam String actId, String content, MultipartFile file, HttpSession session) {
@@ -833,6 +872,8 @@ public class ActivityController extends BaseController {
      * @param file    图片
      * @return
      */
+    @ApiOperation(value = "增加一个活动讨论,可带有图片 移动端使用", httpMethod = "POST", produces = "application/json")
+    @ApiResponses( value = {@ApiResponse(code = 200, message = "Successful — 请求已完成",response = String.class)})
     @RequestMapping("/adddiscuss")
     @ResponseBody
     public String addDiscuss(@RequestParam String actId, String content, MultipartFile file, HttpSession session) {
@@ -989,6 +1030,8 @@ public class ActivityController extends BaseController {
      * @param content 评论内容
      * @return
      */
+    @ApiOperation(value = "由于移动端无图片时报错，所以增加此接口，单独适配没有上传图片的情况", httpMethod = "POST", produces = "application/json")
+    @ApiResponses( value = {@ApiResponse(code = 200, message = "Successful — 请求已完成",response = String.class)})
     @RequestMapping("/mobile/adddiscuss")
     @ResponseBody
     public String adddiscuss(@RequestParam String actId,
@@ -1025,6 +1068,8 @@ public class ActivityController extends BaseController {
      * @param repId   回复的ID
      * @return
      */
+    @ApiOperation(value = "增加一个子评论", httpMethod = "POST", produces = "application/json")
+    @ApiResponses( value = {@ApiResponse(code = 200, message = "Successful — 请求已完成",response = String.class)})
     @RequestMapping("/addSubdiscuss")
     @ResponseBody
     public String addSubdiscuss(@RequestParam String actId,
@@ -1056,6 +1101,8 @@ public class ActivityController extends BaseController {
      * @param repId   回复的ID
      * @return
      */
+    @ApiOperation(value = "增加一个子评论", httpMethod = "POST", produces = "application/json")
+    @ApiResponses( value = {@ApiResponse(code = 200, message = "Successful — 请求已完成",response = Map.class)})
     @RequestMapping("/addWebSubdiscuss")
     @ResponseBody
     public Map<String, Object> addWebSubdiscuss(@RequestParam String actId,
@@ -1092,6 +1139,8 @@ public class ActivityController extends BaseController {
      * @param msg
      * @return
      */
+    @ApiOperation(value = "邀请朋友", httpMethod = "POST", produces = "application/json")
+    @ApiResponses( value = {@ApiResponse(code = 200, message = "Successful — 请求已完成")})
     @RequestMapping("/invite")
     @ResponseBody
     public boolean invite(String actId,
@@ -1136,6 +1185,8 @@ public class ActivityController extends BaseController {
      * @param model
      * @return
      */
+    @ApiOperation(value = "查看活动页面", httpMethod = "POST", produces = "application/json")
+    @ApiResponses( value = {@ApiResponse(code = 200, message = "Successful — 请求已完成",response = String.class)})
     @RequestMapping("/view")
     public String viewAct(String actId, Map<String, Object> model, HttpSession session) {
         String userId = getUserId().toString();
@@ -1297,6 +1348,8 @@ public class ActivityController extends BaseController {
      *
      * @return
      */
+    @ApiOperation(value = "跳转到活动详情页面", httpMethod = "POST", produces = "application/json")
+    @ApiResponses( value = {@ApiResponse(code = 200, message = "Successful — 请求已完成",response = String.class)})
     @RequestMapping("/activityView")
     public String activityView(@RequestParam String actId, Model model) {
         model.addAttribute("actId", actId);
@@ -1315,6 +1368,8 @@ public class ActivityController extends BaseController {
      * @param actId
      * @return
      */
+    @ApiOperation(value = "异步获取活动内容", httpMethod = "POST", produces = "application/json")
+    @ApiResponses( value = {@ApiResponse(code = 200, message = "Successful — 请求已完成",response = Map.class)})
     @RequestMapping("/ajaxActivityView")
     @ResponseBody
     public Map<String, Object> getActivityViewById(@RequestParam String actId) {
@@ -1495,6 +1550,8 @@ public class ActivityController extends BaseController {
      * @param actId 活动ID
      * @return
      */
+    @ApiOperation(value = "取消活动", httpMethod = "POST", produces = "application/json")
+    @ApiResponses( value = {@ApiResponse(code = 200, message = "Successful — 请求已完成",response = Map.class)})
     @RequestMapping("/cancel")
     @ResponseBody
     public Map cancelAct(@RequestParam String actId) {
@@ -1618,6 +1675,8 @@ public class ActivityController extends BaseController {
      * @param actId 活动ID
      * @return
      */
+    @ApiOperation(value = "参加活动", httpMethod = "POST", produces = "application/json")
+    @ApiResponses( value = {@ApiResponse(code = 200, message = "Successful — 请求已完成",response = Map.class)})
     @RequestMapping("/attend")
     @ResponseBody
     public Map<String, Object> attendActivity(@RequestParam String actId, @RequestParam String fromDevice) {
@@ -1681,6 +1740,8 @@ public class ActivityController extends BaseController {
      * @param actId
      * @return
      */
+    @ApiOperation(value = "退出活动", httpMethod = "POST", produces = "application/json")
+    @ApiResponses( value = {@ApiResponse(code = 200, message = "Successful — 请求已完成",response = Map.class)})
     @RequestMapping("/quit")
     @ResponseBody
     public Map<String, Object> quitAct(@RequestParam String actId) {
@@ -1700,6 +1761,8 @@ public class ActivityController extends BaseController {
      * @param id 邀请ID
      * @return
      */
+    @ApiOperation(value = "接受邀请", httpMethod = "POST", produces = "application/json")
+    @ApiResponses( value = {@ApiResponse(code = 200, message = "Successful — 请求已完成",response = Map.class)})
     @RequestMapping("/accept")
     @ResponseBody
     public Map<String, Object> acceptInvite(String id, @RequestParam String fromDevice) {
@@ -1741,6 +1804,8 @@ public class ActivityController extends BaseController {
      * @param id
      * @return
      */
+    @ApiOperation(value = "拒绝邀请", httpMethod = "POST", produces = "application/json")
+    @ApiResponses( value = {@ApiResponse(code = 200, message = "Successful — 请求已完成",response = Map.class)})
     @RequestMapping("/reject")
     @ResponseBody
     public Map<String, Object> rejectInvite(@RequestParam String id) {
@@ -1761,6 +1826,8 @@ public class ActivityController extends BaseController {
      * @param id
      * @return
      */
+    @ApiOperation(value = "犹豫", httpMethod = "POST", produces = "application/json")
+    @ApiResponses( value = {@ApiResponse(code = 200, message = "Successful — 请求已完成",response = Map.class)})
     @RequestMapping("/hesitate")
     @ResponseBody
     public Map<String, Object> hesitateInvite(@RequestParam String id) {
@@ -1809,6 +1876,8 @@ public class ActivityController extends BaseController {
     * 动态  适用移动端
     *
     * */
+    @ApiOperation(value = "动态  适用移动端", httpMethod = "POST", produces = "application/json")
+    @ApiResponses( value = {@ApiResponse(code = 200, message = "Successful — 请求已完成",response = Map.class)})
     @RequestMapping("/recentActTracks")
     @ResponseBody
     public Map<String, Object> recentActTracks(@RequestParam Integer page, @RequestParam Integer pageSize) {
@@ -1834,6 +1903,8 @@ public class ActivityController extends BaseController {
     /**
      * 最热活动
      */
+    @ApiOperation(value = "最热活动", httpMethod = "POST", produces = "application/json")
+    @ApiResponses( value = {@ApiResponse(code = 200, message = "Successful — 请求已完成",response = List.class)})
     @RequestMapping("/hot")
     @ResponseBody
     public List<Activity> findHotActivity(int topN) {
@@ -1853,7 +1924,8 @@ public class ActivityController extends BaseController {
         activityMemberCount(list);
         return list;
     }
-
+    @ApiOperation(value = "删除某个活动的所有评论  仅移动端", httpMethod = "POST", produces = "application/json")
+    @ApiResponses( value = {@ApiResponse(code = 200, message = "Successful — 请求已完成",response = Map.class)})
     @RequestMapping("/deleteInvitation")
     @ResponseBody
     public Map<String, Object> deleteActInvitation(@RequestParam String actInvitationId) {
@@ -1892,6 +1964,9 @@ public class ActivityController extends BaseController {
     * 获取某个活动的所有评论  仅移动端
     *
     * */
+
+    @ApiOperation(value = "获取某个活动的所有评论  仅移动端", httpMethod = "POST", produces = "application/json")
+    @ApiResponses( value = {@ApiResponse(code = 200, message = "Successful — 请求已完成",response = Map.class)})
     @RequestMapping("/activityDiscuss")
     @ResponseBody
     public Map<String, Object> findActivityDiscuss(@RequestParam String activityId, @RequestParam Integer page, @RequestParam Integer pageSize) {
@@ -1911,6 +1986,8 @@ public class ActivityController extends BaseController {
     * 获取活动的图片
     *
     * */
+    @ApiOperation(value = "获取活动的图片", httpMethod = "POST", produces = "application/json")
+    @ApiResponses( value = {@ApiResponse(code = 200, message = "Successful — 请求已完成",response = Map.class)})
     @RequestMapping("/activityPicture")
     @ResponseBody
     public Map<String, Object> findActivityPic(@RequestParam String activityId, @RequestParam Integer page, @RequestParam Integer pageSize) {
@@ -1923,7 +2000,8 @@ public class ActivityController extends BaseController {
         map.put("pageSize", pageSize);
         return map;
     }
-
+    @ApiOperation(value = "friendSearch", httpMethod = "POST", produces = "application/json")
+    @ApiResponses( value = {@ApiResponse(code = 200, message = "Successful — 请求已完成",response = String.class)})
     @RequestMapping("/friendSearch")
     public String friendSearch(Model model) {
         headInfo(model);
@@ -1938,6 +2016,8 @@ public class ActivityController extends BaseController {
      * @param actId
      * @param repId
      */
+    @ApiOperation(value = "删除好友圈回复，repid可以是评论，也可以是子评论", httpMethod = "POST", produces = "application/json")
+    @ApiResponses( value = {@ApiResponse(code = 200, message = "Successful — 请求已完成",response = Map.class)})
     @RequestMapping("/deleteReply")
     @ResponseBody
     public Map<String, Object> deleteReply(@RequestParam String actId, @RequestParam String repId, @RequestParam boolean hasPic) {

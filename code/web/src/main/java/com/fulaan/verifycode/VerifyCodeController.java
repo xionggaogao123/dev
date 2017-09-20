@@ -5,6 +5,7 @@ import com.fulaan.base.BaseController;
 import com.fulaan.cache.CacheHandler;
 import com.sys.constants.Constant;
 import io.swagger.annotations.Api;
+import io.swagger.annotations.ApiOperation;
 import org.bson.types.ObjectId;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -69,7 +70,7 @@ public class VerifyCodeController extends BaseController {
         fontHeight = height - 2;
         codeY = height - 4;
     }
-
+    @ApiOperation(value = "初始化验证图片属性", httpMethod = "POST", produces = "application/json")
     @SessionNeedless
     @RequestMapping("/verifyCode")
     @ResponseBody

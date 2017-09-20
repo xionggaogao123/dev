@@ -84,11 +84,12 @@ public class NewVersionBindController extends BaseController {
     public RespObj saveNewVersionEntry(
             @ObjectIdType ObjectId userId,
             String nickName,
+            String avatar,
             int relation){
         RespObj respObj = new RespObj(Constant.FAILD_CODE);
         try{
             newVersionBindService.saveNewVersionBindRelationEntry(getUserId(),userId, relation,
-                    nickName);
+                    nickName,avatar);
             respObj.setCode(Constant.SUCCESS_CODE);
             respObj.setMessage("绑定成功！");
         }catch (Exception e){

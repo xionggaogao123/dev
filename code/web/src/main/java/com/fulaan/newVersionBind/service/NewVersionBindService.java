@@ -130,7 +130,7 @@ public class NewVersionBindService {
                 String birthDate=format.format(userEntry.getBirthDate());
                 dto.setBirthDate(birthDate);
             }
-            dto.setGradeType(1);
+            dto.setGradeType(0);
             NewVersionGradeEntry gradeEntry=newVersionGradeEntryMap.get(entry.getUserId());
             if(null!=gradeEntry){
                 dto.setGradeType(gradeEntry.getGradeType());
@@ -145,12 +145,13 @@ public class NewVersionBindService {
             ObjectId mainUserId,
             ObjectId userId,
             int relation,
-            String nickName
+            String nickName,
+            String avatar
     ){
         NewVersionBindRelationEntry entry= newVersionBindRelationDao.getBindEntry(userId);
         if(null==entry){
             try {
-                userService.updateUserBirthDateAndSex(userId,-1,-1,"",nickName);
+                userService.updateUserBirthDateAndSex(userId,-1,-1,avatar,nickName);
                 NewVersionBindRelationEntry relationEntry
                         =new NewVersionBindRelationEntry(mainUserId,
                         userId,

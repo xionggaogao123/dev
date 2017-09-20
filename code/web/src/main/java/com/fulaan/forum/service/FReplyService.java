@@ -607,7 +607,7 @@ public class FReplyService {
                     } else {
                         fReplyDTO.setReplyNickName(ee.getUserName());
                     }
-                    fReplyDTO.setImageSrc(AvatarUtils.getAvatar(ee.getAvatar(), AvatarType.MIN_AVATAR.getType()));
+                    fReplyDTO.setImageSrc(AvatarUtils.getAvatar(ee.getAvatar(), ee.getRole(),ee.getSex()));
                 }
 
                 //判断是回复给主题还是回复给某个回帖

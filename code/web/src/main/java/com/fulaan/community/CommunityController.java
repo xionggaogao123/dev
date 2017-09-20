@@ -43,7 +43,7 @@ import com.sys.utils.AvatarUtils;
 import com.sys.utils.DateTimeUtils;
 import com.sys.utils.QiniuFileUtils;
 import com.sys.utils.RespObj;
-import io.swagger.annotations.Api;
+import io.swagger.annotations.*;
 import org.apache.commons.codec.binary.Base64;
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.FilenameUtils;
@@ -73,7 +73,7 @@ import java.util.*;
  * Created by jerry on 2016/10/24.
  * 社区Controller
  */
-@Api(value="社区Controller",hidden = true)
+@Api(value="社区Controller",description = "社区的相关接口")
 @Controller
 @RequestMapping("/community")
 public class CommunityController extends BaseController {
@@ -113,13 +113,16 @@ public class CommunityController extends BaseController {
 
     public static final String suffix = "/static/images/community/upload.png";
 
+    @ApiOperation(value = "创建新社区", httpMethod = "GET", produces = "application/json")
+    @ApiResponses( value = {@ApiResponse(code = 200, message = "创建社区成功",response = RespObj.class),
+            @ApiResponse(code = 500, message = "创建社区失败")})
     @RequestMapping("/create")
     @ResponseBody
-    public RespObj createCommunity(String name,
-                                   @RequestParam(required = false, defaultValue = "") StringBuffer desc,
-                                   @RequestParam(required = false, defaultValue = "") StringBuffer logo,
-                                   @RequestParam(required = false, defaultValue = "0") int open,
-                                   @RequestParam(required = false, defaultValue = "") String userIds) throws Exception {
+    public RespObj createCommunity(@ApiParam(name = "name", required = true, value = "社区名称")String name,
+                                   @ApiParam(name = "desc", required = false, value = "社区描述") @RequestParam(required = false, defaultValue = "") StringBuffer desc,
+                                   @ApiParam(name = "logo", required = false, value = "社区logo") @RequestParam(required = false, defaultValue = "") StringBuffer logo,
+                                   @ApiParam(name = "open", required = false, value = "社区是否公开标志位,0是公开，1是不公开") @RequestParam(required = false, defaultValue = "0") int open,
+                                   @ApiParam(name = "userIds", required = false, value = "加入群组人员列表") @RequestParam(required = false, defaultValue = "") String userIds) throws Exception {
         Validate validate = detectCondition(name, desc, logo);
         if (!validate.isOk()) {
             return RespObj.FAILDWithErrorMsg(validate.getMessage());
@@ -213,7 +216,10 @@ public class CommunityController extends BaseController {
     @RequestMapping(value = "/{id}")
     @SessionNeedless
     @ResponseBody
-    public RespObj get(@PathVariable @ObjectIdType ObjectId id) {
+    @ApiOperation(value = "获取社区信息", httpMethod = "GET", produces = "application/json")
+    @ApiResponses( value = {@ApiResponse(code = 200, message = "获取社区信息成功",response = RespObj.class),
+            @ApiResponse(code = 500, message = "获取社区信息失败")})
+    public RespObj get(@ApiParam(name = "id", required = true, value = "社区Id")@PathVariable @ObjectIdType ObjectId id) {
         ObjectId groupId = communityService.getGroupId(id);
         CommunityDTO communityDTO = communityService.findByObjectId(id);
         List<MemberDTO> members = memberService.getMembers(groupId, 12,getUserId());
@@ -234,6 +240,9 @@ public class CommunityController extends BaseController {
     @RequestMapping(value = "/images", method = RequestMethod.POST)
     @ResponseBody
     @SessionNeedless
+    @ApiOperation(value = "上传图片到七牛", httpMethod = "GET", produces = "application/json")
+    @ApiResponses( value = {@ApiResponse(code = 200, message = "上传图片到七牛成功",response = RespObj.class),
+            @ApiResponse(code = 500, message = "上传图片到七牛失败")})
     public RespObj uploadImage(MultipartRequest request) {
         RespObj obj = new RespObj(Constant.FAILD_CODE);
         List<FileUploadDTO> fileInfos = new ArrayList<FileUploadDTO>();
@@ -273,8 +282,11 @@ public class CommunityController extends BaseController {
      */
     @RequestMapping("/inviteMember")
     @ResponseBody
-    public RespObj inviteMember(@ObjectIdType ObjectId communityId,
-                                @ObjectIdType ObjectId userId) {
+    @ApiOperation(value = "邀请伙伴加入社区", httpMethod = "GET", produces = "application/json")
+    @ApiResponses(value = {@ApiResponse(code = 200, message = "邀请伙伴加入社区成功",response = RespObj.class),
+            @ApiResponse(code = 500, message = "邀请伙伴加入社区失败")})
+    public RespObj inviteMember(@ApiParam(name="communityId",required = true,value = "社区Id")@ObjectIdType ObjectId communityId,
+                                @ApiParam(name="userId",required = true,value = "伙伴Id")@ObjectIdType ObjectId userId) {
         ObjectId groupId = communityService.getGroupId(communityId);
         GroupDTO groupDTO = groupService.findById(groupId,getUserId());
         //判断该用户是否加过该社区
@@ -303,8 +315,11 @@ public class CommunityController extends BaseController {
      */
     @RequestMapping("/removeMember")
     @ResponseBody
-    public RespObj removeMember(@ObjectIdType ObjectId communityId,
-                                @ObjectIdType ObjectId userId) {
+    @ApiOperation(value = "删除该社区的成员", httpMethod = "GET", produces = "application/json")
+    @ApiResponses(value = {@ApiResponse(code = 200, message = "删除该社区的成员成功",response = RespObj.class),
+            @ApiResponse(code = 500, message = "删除该社区的成员失败")})
+    public RespObj removeMember(@ApiParam(name="communityId",required = true,value = "社区Id")@ObjectIdType ObjectId communityId,
+                                @ApiParam(name="userId",required = true,value = "用户Id")@ObjectIdType ObjectId userId) {
         CommunityDTO communityDTO = communityService.findByObjectId(communityId);
         String emChatId = communityDTO.getEmChatId();
         if (memberService.isHead(new ObjectId(communityDTO.getGroupId()), userId)) {
@@ -326,9 +341,12 @@ public class CommunityController extends BaseController {
     @RequestMapping("/myCommunitys")
     @ResponseBody
     @SessionNeedless
-    public RespObj getMyCommunitys(@RequestParam(defaultValue = "1", required = false) int page,
-                                   @RequestParam(defaultValue = "100", required = false) int pageSize,
-                                   @RequestParam(defaultValue = "app", required = false) String platform) {
+    @ApiOperation(value = "获取我的社区列表", httpMethod = "GET", produces = "application/json")
+    @ApiResponses(value = {@ApiResponse(code = 200, message = "获取我的社区列表成功",response = RespObj.class),
+            @ApiResponse(code = 500, message = "获取我的社区列表失败")})
+    public RespObj getMyCommunitys(@ApiParam(name="page",required = false,value = "页码")@RequestParam(defaultValue = "1", required = false) int page,
+                                   @ApiParam(name="pageSize",required = false,value = "页数")@RequestParam(defaultValue = "100", required = false) int pageSize,
+                                   @ApiParam(name="platform",required = false,value = "平台参数，标明是pc端，还是移动端")@RequestParam(defaultValue = "app", required = false) String platform) {
         ObjectId userId = getUserId();
         List<CommunityDTO> communityDTOList = new ArrayList<CommunityDTO>();
         CommunityDTO fulanDto = communityService.getCommunityByName("复兰社区");
@@ -362,9 +380,12 @@ public class CommunityController extends BaseController {
     @RequestMapping("/myRoleCommunitys")
     @ResponseBody
     @SessionNeedless
-    public RespObj myRoleCommunitys(@RequestParam(defaultValue = "1", required = false) int page,
-                                   @RequestParam(defaultValue = "100", required = false) int pageSize,
-                                   @RequestParam(defaultValue = "app", required = false) String platform) {
+    @ApiOperation(value = "获得我具有管理员权限的社区列表", httpMethod = "GET", produces = "application/json")
+    @ApiResponses(value = {@ApiResponse(code = 200, message = "获得我具有管理员权限的社区列表成功",response = RespObj.class),
+            @ApiResponse(code = 500, message = "获得我具有管理员权限的社区列表失败")})
+    public RespObj myRoleCommunitys(@ApiParam(name="page",required = false,value = "页码")@RequestParam(defaultValue = "1", required = false) int page,
+                                    @ApiParam(name="pageSize",required = false,value = "页数")@RequestParam(defaultValue = "100", required = false) int pageSize,
+                                    @ApiParam(name="platform",required = false,value = "平台参数，标明是pc端，还是移动端")@RequestParam(defaultValue = "app", required = false) String platform) {
         ObjectId userId = getUserId();
         List<CommunityDTO> communityDTOList = new ArrayList<CommunityDTO>();
         CommunityDTO fulanDto = communityService.getCommunityByName("复兰社区");
@@ -407,7 +428,10 @@ public class CommunityController extends BaseController {
 
     @RequestMapping("/sortMyCommunities")
     @ResponseBody
-    public RespObj sortMyCommunities(String params){
+    @ApiOperation(value = "我的社区列表进行优先级排序", httpMethod = "GET", produces = "application/json")
+    @ApiResponses(value = {@ApiResponse(code = 200, message = "我的社区列表进行优先级排序成功",response = RespObj.class),
+            @ApiResponse(code = 500, message = "我的社区列表进行优先级排序失败")})
+    public RespObj sortMyCommunities(@ApiParam(name="params",required = true,value = "社区Id和优先级参数") String params){
         ObjectId userId=getUserId();
         int max=0;
         //初始化状态
@@ -457,9 +481,12 @@ public class CommunityController extends BaseController {
     @RequestMapping("/hotCommunitys")
     @ResponseBody
     @SessionNeedless
-    public RespObj hotCommunitys(@RequestParam(defaultValue = "1", required = false) int page,
-                                 @RequestParam(defaultValue = "21", required = false) int pageSize,
-                                 @RequestParam(defaultValue = "", required = false) String lastId) {
+    @ApiOperation(value = "获取热门社区列表", httpMethod = "GET", produces = "application/json")
+    @ApiResponses(value = {@ApiResponse(code = 200, message = "获取热门社区列表成功",response = RespObj.class),
+            @ApiResponse(code = 500, message = "获取热门社区列表失败")})
+    public RespObj hotCommunitys(@ApiParam(name="page",required = false,value = "页码")@RequestParam(defaultValue = "1", required = false) int page,
+                                 @ApiParam(name="pageSize",required = false,value = "页数")@RequestParam(defaultValue = "21", required = false) int pageSize,
+                                 @ApiParam(name="lastId",required = false,value = "索引Id,查询效率更快")@RequestParam(defaultValue = "", required = false) String lastId) {
         ObjectId userId = getUserId();
         return RespObj.SUCCESS(communityService.getOpenCommunityS(userId, page, pageSize, lastId));
     }
@@ -475,11 +502,14 @@ public class CommunityController extends BaseController {
      */
     @RequestMapping("/update")
     @ResponseBody
-    public RespObj updateCommunity(@ObjectIdType ObjectId communityId,
-                                   @RequestParam(required = false, defaultValue = "") String name,
-                                   @RequestParam(required = false, defaultValue = "") String desc,
-                                   @RequestParam(required = false, defaultValue = "") String logo,
-                                   @RequestParam(required = false, defaultValue = "0") int open) {
+    @ApiOperation(value = "更新社区信息", httpMethod = "GET", produces = "application/json")
+    @ApiResponses(value = {@ApiResponse(code = 200, message = "更新社区信息成功",response = RespObj.class),
+            @ApiResponse(code = 500, message = "更新社区信息失败")})
+    public RespObj updateCommunity(@ApiParam(name="communityId",required = true,value = "社区Id")@ObjectIdType ObjectId communityId,
+                                   @ApiParam(name="communityId",required = false,value = "社区名称") @RequestParam(required = false, defaultValue = "") String name,
+                                   @ApiParam(name="communityId",required = false,value = "社区描述")@RequestParam(required = false, defaultValue = "") String desc,
+                                   @ApiParam(name="communityId",required = false,value = "社区logo")@RequestParam(required = false, defaultValue = "") String logo,
+                                   @ApiParam(name="communityId",required = false,value = "社区是否公开标志位,0是公开，1是不公开")@RequestParam(required = false, defaultValue = "0") int open) {
         if (StringUtils.isBlank(name) || StringUtils.isBlank(logo)) {
             return RespObj.FAILD("参数不合法");
         }
@@ -504,7 +534,10 @@ public class CommunityController extends BaseController {
      */
     @RequestMapping(value = "/getLatestGroupInfo")
     @ResponseBody
-    public RespObj getLatestGroupInfo(@ObjectIdType ObjectId communityId){
+    @ApiOperation(value = "获取最新一条动态消息", httpMethod = "GET", produces = "application/json")
+    @ApiResponses(value = {@ApiResponse(code = 200, message = "获取最新一条动态消息成功",response = RespObj.class),
+            @ApiResponse(code = 500, message = "获取最新一条动态消息失败")})
+    public RespObj getLatestGroupInfo(@ApiParam(name="communityId",required = true,value = "社区Id")@ObjectIdType ObjectId communityId){
         RespObj respObj=new RespObj(Constant.FAILD_CODE);
         String userId=getUserId().toString();
         LatestGroupDynamicEntry entry=latestGroupDynamicService.getLatestInfo(communityId);
@@ -558,7 +591,10 @@ public class CommunityController extends BaseController {
      */
     @RequestMapping(value = "/pushLatestReadedInfo")
     @ResponseBody
-    public RespObj pushLatestReadedInfo(@ObjectIdType ObjectId id){
+    @ApiOperation(value = "设置最新动态消息已读", httpMethod = "GET", produces = "application/json")
+    @ApiResponses(value = {@ApiResponse(code = 200, message = "设置最新动态消息已读成功",response = RespObj.class),
+            @ApiResponse(code = 500, message = "设置最新动态消息已读失败")})
+    public RespObj pushLatestReadedInfo(@ApiParam(name="id",required = true,value = "动态消息Id")@ObjectIdType ObjectId id){
         RespObj respObj=new RespObj(Constant.SUCCESS_CODE);
         ObjectId userId=getUserId();
         latestGroupDynamicService.pushRead(id,userId);
@@ -573,7 +609,10 @@ public class CommunityController extends BaseController {
      */
     @RequestMapping(value = "/newMessage")
     @ResponseBody
-    public RespObj newMessage(@RequestBody CommunityMessage message) {
+    @ApiOperation(value = "新建通知或者作业消息", httpMethod = "POST", produces = "application/json")
+    @ApiResponses(value = {@ApiResponse(code = 200, message = "新建通知或者作业消息成功",response = RespObj.class),
+            @ApiResponse(code = 500, message = "新建通知或者作业消息失败")})
+    public RespObj newMessage(@ApiParam @RequestBody CommunityMessage message) {
         ObjectId uid = getUserId();
         try{
             ObjectId detailId=communityService.saveMessage(uid, message);
@@ -636,9 +675,12 @@ public class CommunityController extends BaseController {
     @RequestMapping("/news")
     @ResponseBody
     @SessionNeedless
-    public RespObj news(@RequestParam(required = false, defaultValue = "1") int page,
-                        @RequestParam(required = false, defaultValue = "10") int pageSize,
-                        @RequestParam(required = false, defaultValue = "-1") int order) {
+    @ApiOperation(value = "获取最新的消息", httpMethod = "GET", produces = "application/json")
+    @ApiResponses(value = {@ApiResponse(code = 200, message = "获取最新的消息成功",response = RespObj.class),
+            @ApiResponse(code = 500, message = "获取最新的消息失败")})
+    public RespObj news(@ApiParam(name="page",required = false,value = "页码")@RequestParam(required = false, defaultValue = "1") int page,
+                        @ApiParam(name="pageSize",required = false,value = "页数")@RequestParam(required = false, defaultValue = "10") int pageSize,
+                        @ApiParam(name="order",required = false,value = "排序值")@RequestParam(required = false, defaultValue = "-1") int order) {
         ObjectId userId = getUserId();
         return RespObj.SUCCESS(communityService.getNews(new ArrayList<ObjectId>(), page, pageSize, order, userId, 2));
     }
@@ -655,10 +697,13 @@ public class CommunityController extends BaseController {
     @RequestMapping("/getCurrDetail")
     @ResponseBody
     @SessionNeedless
-    public RespObj news(@ObjectIdType ObjectId communityId,
-                        @RequestParam(required = false, defaultValue = "1") int page,
-                        @RequestParam(required = false, defaultValue = "10") int pageSize,
-                        @RequestParam(required = false, defaultValue = "-1") int order) {
+    @ApiOperation(value = "获取当前页面中的最新社区详情数据", httpMethod = "GET", produces = "application/json")
+    @ApiResponses(value = {@ApiResponse(code = 200, message = "获取当前页面中的最新社区详情数据成功",response = RespObj.class),
+            @ApiResponse(code = 500, message = "获取当前页面中的最新社区详情数据失败")})
+    public RespObj news( @ApiParam(name="communityId",required = true,value = "社区Id")@ObjectIdType ObjectId communityId,
+                        @ApiParam(name="page",required = false,value = "页码")@RequestParam(required = false, defaultValue = "1") int page,
+                        @ApiParam(name="pageSize",required = false,value = "页数")@RequestParam(required = false, defaultValue = "10") int pageSize,
+                        @ApiParam(name="order",required = false,value = "排序值")@RequestParam(required = false, defaultValue = "-1") int order) {
         ObjectId userId = getUserId();
         List<ObjectId> objectIds = new ArrayList<ObjectId>();
         objectIds.add(communityId);
@@ -676,10 +721,13 @@ public class CommunityController extends BaseController {
      */
     @RequestMapping("/message")
     @ResponseBody
-    public RespObj messages(@ObjectIdType ObjectId communityId,
-                            @RequestParam(required = false, defaultValue = "1") int page,
-                            @RequestParam(required = false, defaultValue = "10") int pageSize,
-                            @RequestParam(required = false, defaultValue = "-1") int order) {
+    @ApiOperation(value = "获取该社区最新的消息列表", httpMethod = "GET", produces = "application/json")
+    @ApiResponses(value = {@ApiResponse(code = 200, message = "获取该社区最新的消息列表成功",response = RespObj.class),
+            @ApiResponse(code = 500, message = "获取该社区最新的消息列表失败")})
+    public RespObj messages(@ApiParam(name="communityId",required = true,value = "社区Id")@ObjectIdType ObjectId communityId,
+                            @ApiParam(name="page",required = false,value = "页码")@RequestParam(required = false, defaultValue = "1") int page,
+                            @ApiParam(name="pageSize",required = false,value = "页数")@RequestParam(required = false, defaultValue = "10") int pageSize,
+                            @ApiParam(name="order",required = false,value = "排序值")@RequestParam(required = false, defaultValue = "-1") int order) {
         return RespObj.SUCCESS(communityService.getMessages(communityId, page, pageSize, order));
     }
 
@@ -691,10 +739,13 @@ public class CommunityController extends BaseController {
      */
     @RequestMapping("/enterCommunityDetail")
     @ResponseBody
-    public RespObj enterCommunityDetail(@ObjectIdType ObjectId communityId,
-                                        @ObjectIdType ObjectId communityDetailId,
-                                        @RequestParam(defaultValue = "1") int join,
-                                        @RequestParam(defaultValue = "", required = false) String msg) {
+    @ApiOperation(value = "参与社区活动接口", httpMethod = "GET", produces = "application/json")
+    @ApiResponses(value = {@ApiResponse(code = 200, message = "参与社区活动成功",response = RespObj.class),
+            @ApiResponse(code = 500, message = "参与社区活动失败")})
+    public RespObj enterCommunityDetail(@ApiParam(name="communityId",required = true,value = "社区Id")@ObjectIdType ObjectId communityId,
+                                        @ApiParam(name="communityDetailId",required = true,value = "社区消息Id")@ObjectIdType ObjectId communityDetailId,
+                                        @ApiParam(name="join",required = true,value = "参与标志，1参与")@RequestParam(defaultValue = "1") int join,
+                                        @ApiParam(name="msg",required = false,value = "参与填写的信息")@RequestParam(defaultValue = "", required = false) String msg) {
         //先进行敏感词过滤
         msg = userService.replaceSensitiveWord(msg);
         ObjectId userId = getUserId();
@@ -730,7 +781,10 @@ public class CommunityController extends BaseController {
      */
     @RequestMapping("/joinActivitySheet")
     @ResponseBody
-    public RespObj joinActivitySheet(@ObjectIdType ObjectId communityDetailId) {
+    @ApiOperation(value = "查询参加活动的名单", httpMethod = "GET", produces = "application/json")
+    @ApiResponses(value = {@ApiResponse(code = 200, message = "查询参加活动的名单成功",response = RespObj.class),
+            @ApiResponse(code = 500, message = "查询参加活动的名单失败")})
+    public RespObj joinActivitySheet(@ApiParam(name="communityDetailId",required = true,value = "活动Id")@ObjectIdType ObjectId communityDetailId) {
         ObjectId userId=getUserId();
         CommunityDetailDTO communityDetailDTO = communityService.findDetailById(communityDetailId,userId);
         List<String> partInList = communityDetailDTO.getPartInList();
@@ -782,7 +836,10 @@ public class CommunityController extends BaseController {
      */
     @RequestMapping("/isEnterCommunityDetail")
     @ResponseBody
-    public RespObj isEnterCommunityDetail(@ObjectIdType ObjectId communityDetailId) {
+    @ApiOperation(value = "判断是否参与活动中", httpMethod = "GET", produces = "application/json")
+    @ApiResponses(value = {@ApiResponse(code = 200, message = "判断是否参与活动中成功",response = RespObj.class),
+            @ApiResponse(code = 500, message = "判断是否参与活动中失败")})
+    public RespObj isEnterCommunityDetail(@ApiParam(name="communityDetailId",required = true,value = "活动Id")@ObjectIdType ObjectId communityDetailId) {
         ObjectId userId = getUserId();
         CommunityDetailDTO communityDetailDTO = communityService.findDetailById(communityDetailId,userId);
         List<String> partInList = communityDetailDTO.getPartInList();
@@ -804,7 +861,10 @@ public class CommunityController extends BaseController {
      */
     @RequestMapping("/getNewValidateInfo")
     @ResponseBody
-    public RespObj getNewValidateInfo(String emChatId) {
+    @ApiOperation(value = "查询最新谁申请加入私密社区的消息", httpMethod = "GET", produces = "application/json")
+    @ApiResponses(value = {@ApiResponse(code = 200, message = "查询最新谁申请加入私密社区的消息成功",response = RespObj.class),
+            @ApiResponse(code = 500, message = "查询最新谁申请加入私密社区的消息失败")})
+    public RespObj getNewValidateInfo(@ApiParam(name="emChatId",required = true,value = "环信Id") String emChatId) {
         ObjectId userId=getUserId();
         ObjectId groupId = groupService.getGroupIdByChatId(emChatId);
         GroupDTO groupDTO = groupService.findById(groupId,getUserId());
@@ -835,7 +895,14 @@ public class CommunityController extends BaseController {
      */
     @RequestMapping("/reviewApply")
     @ResponseBody
-    public RespObj reviewApply(@ObjectIdType ObjectId reviewKeyId, @ObjectIdType ObjectId userId, @ObjectIdType ObjectId communityId, int approvedStatus) {
+    @ApiOperation(value = "处理验证申请信息", httpMethod = "GET", produces = "application/json")
+    @ApiResponses(value = {@ApiResponse(code = 200, message = "处理验证申请信息成功",response = RespObj.class),
+            @ApiResponse(code = 500, message = "处理验证申请信息失败")})
+    public RespObj reviewApply(@ApiParam(name="reviewKeyId",required = true,value =
+            "为了区分是否是再次申请的,若申请失败可以再申请一次，每次申请都会出现这个关键字Id,申请人和审核人的绑定关系")@ObjectIdType ObjectId reviewKeyId,
+                               @ApiParam(name="userId",required = true,value = "申请人ID")@ObjectIdType ObjectId userId,
+                               @ApiParam(name="communityId",required = true,value = "社区Id")@ObjectIdType ObjectId communityId,
+                               @ApiParam(name="approvedStatus",required = true,value = "批准状态（0:已批准 1:未批准)")int approvedStatus) {
         ObjectId groupId = communityService.getGroupId(communityId);
         ObjectId reviewedId = getUserId();
         int authority = 1;
@@ -905,8 +972,11 @@ public class CommunityController extends BaseController {
      */
     @RequestMapping("/getValidateInfos")
     @ResponseBody
-    public RespObj getValidateInfos(@RequestParam(defaultValue = "1", required = false) int page,
-                                    @RequestParam(defaultValue = "10", required = false) int pageSize) {
+    @ApiOperation(value = "获取申请私密社区的验证消息列表", httpMethod = "GET", produces = "application/json")
+    @ApiResponses(value = {@ApiResponse(code = 200, message = "获取申请私密社区的验证消息列表成功",response = RespObj.class),
+            @ApiResponse(code = 500, message = "获取申请私密社区的验证消息列表失败")})
+    public RespObj getValidateInfos(@ApiParam(name="page",required = false,value = "页码")@RequestParam(defaultValue = "1", required = false) int page,
+                                    @ApiParam(name="pageSize",required = false,value = "页数")@RequestParam(defaultValue = "10", required = false) int pageSize) {
         Map<String, Object> map = new HashMap<String, Object>();
         ObjectId userId = getUserId();
         List<ValidateInfoDTO> list = validateInfoService.getValidateInfos(userId, page, pageSize);
@@ -927,9 +997,12 @@ public class CommunityController extends BaseController {
      */
     @RequestMapping("/join")
     @ResponseBody
-    public RespObj joinCommunity(@ObjectIdType ObjectId communityId,
-                                 @RequestParam(defaultValue = "1", required = false) int type,
-                                 @RequestParam(defaultValue = "", required = false) String msg) {
+    @ApiOperation(value = "加入社区", httpMethod = "GET", produces = "application/json")
+    @ApiResponses(value = {@ApiResponse(code = 200, message = "加入社区成功",response = RespObj.class),
+            @ApiResponse(code = 500, message = "加入社区失败")})
+    public RespObj joinCommunity(@ApiParam(name="communityId",required = true,value = "社区Id")@ObjectIdType ObjectId communityId,
+                                 @ApiParam(name="type",required = false,value = "加入社区的来源，1来自搜索ID，2来自扫描二维码")@RequestParam(defaultValue = "1", required = false) int type,
+                                 @ApiParam(name="msg",required = false,value = "申请加入社区填写的申请消息")@RequestParam(defaultValue = "", required = false) String msg) {
         CommunityDTO dto = communityService.findByObjectId(communityId);
         ObjectId userId = getUserId();
         ObjectId groupId = communityService.getGroupId(communityId);
@@ -1047,6 +1120,9 @@ public class CommunityController extends BaseController {
     @RequestMapping("/cleanPrior")
     @ResponseBody
     @SessionNeedless
+    @ApiOperation(value = "清空社区优先级", httpMethod = "GET", produces = "application/json")
+    @ApiResponses(value = {@ApiResponse(code = 200, message = "清空社区优先级成功",response = RespObj.class),
+            @ApiResponse(code = 500, message = "清空社区优先级失败")})
     public RespObj cleanPrior(){
         communityService.cleanPrior();
         return RespObj.SUCCESS;
@@ -1063,7 +1139,10 @@ public class CommunityController extends BaseController {
      */
     @RequestMapping("/quit")
     @ResponseBody
-    public RespObj quit(@ObjectIdType ObjectId communityId) {
+    @ApiOperation(value = "退出社区", httpMethod = "GET", produces = "application/json")
+    @ApiResponses(value = {@ApiResponse(code = 200, message = "退出社区成功",response = RespObj.class),
+            @ApiResponse(code = 500, message = "退出社区失败")})
+    public RespObj quit(@ApiParam(name="communityId",required = true,value = "社区Id")@ObjectIdType ObjectId communityId) {
 
         ObjectId groupId = communityService.getGroupId(communityId);
         String emChatId = groupService.getEmchatIdByGroupId(groupId);
@@ -1091,7 +1170,10 @@ public class CommunityController extends BaseController {
 
     @RequestMapping("/search")
     @ResponseBody
-    public RespObj searchCommunity(String relax) {
+    @ApiOperation(value = "查询社区列表", httpMethod = "GET", produces = "application/json")
+    @ApiResponses(value = {@ApiResponse(code = 200, message = "查询社区列表成功",response = RespObj.class),
+            @ApiResponse(code = 500, message = "查询社区列表失败")})
+    public RespObj searchCommunity(@ApiParam(name="relax",required = true,value = "关键字")String relax) {
 //        Map<String,Object> retMap=new HashMap<String,Object>();
         List<CommunityDTO> dtos=communityService.search(relax, getUserId());
 //        List<CommunityService.UserSearchInfo> users=communityService.getUserSearchDtos(relax);
@@ -1103,7 +1185,10 @@ public class CommunityController extends BaseController {
 
     @RequestMapping("/searchCommunityAndUser")
     @ResponseBody
-    public RespObj searchCommunityAndUser(String relax) {
+    @ApiOperation(value = "查询社区列表和用户信息", httpMethod = "GET", produces = "application/json")
+    @ApiResponses(value = {@ApiResponse(code = 200, message = "查询社区列表和用户信息成功",response = RespObj.class),
+            @ApiResponse(code = 500, message = "查询社区列表和用户信息失败")})
+    public RespObj searchCommunityAndUser(@ApiParam(name="relax",required = true,value = "关键字")String relax) {
         Map<String,Object> retMap=new HashMap<String,Object>();
         List<CommunityDTO> dtos=communityService.search(relax, getUserId());
         List<CommunityService.UserSearchInfo> users=communityService.getUserSearchDtos(relax);
@@ -1115,6 +1200,7 @@ public class CommunityController extends BaseController {
     @RequestMapping("/communityPublish")
     @SessionNeedless
     @LoginInfo
+    @ApiOperation(value = "跳转社区发布界面", httpMethod = "GET", produces = "application/json")
     public String communityPublish(Map<String, Object> model) {
         String communityId = getRequest().getParameter("communityId");
         ObjectId groupId = communityService.getGroupId(new ObjectId(communityId));
@@ -1140,6 +1226,7 @@ public class CommunityController extends BaseController {
     @RequestMapping("/communityAllType")
     @SessionNeedless
     @LoginInfo
+    @ApiOperation(value = "跳转社区详情界面", httpMethod = "GET", produces = "application/json")
     public String communityAllType(Map<String, Object> model,
                                    @RequestParam(value = "target", defaultValue = "") String target) {
         model.put("target", target);
@@ -1149,6 +1236,7 @@ public class CommunityController extends BaseController {
     @RequestMapping("/communityDetail")
     @SessionNeedless
     @LoginInfo
+    @ApiOperation(value = "跳转社区最新消息界面", httpMethod = "GET", produces = "application/json")
     public String communityMessage(@ObjectIdType ObjectId detailId, Map<String, Object> model) throws Exception {
         try {
             model.put("isOwner",0);
@@ -1300,9 +1388,12 @@ public class CommunityController extends BaseController {
 
     @RequestMapping("/myMessages")
     @ResponseBody
-    public RespObj myMessages(@RequestParam(required = false, defaultValue = "1") int page,
-                              @RequestParam(required = false, defaultValue = "10") int pageSize,
-                              @RequestParam(required = false, defaultValue = "-1") int order) {
+    @ApiOperation(value = "查询我所在社区的消息列表", httpMethod = "GET", produces = "application/json")
+    @ApiResponses(value = {@ApiResponse(code = 200, message = "查询我所在社区的消息列表成功",response = RespObj.class),
+            @ApiResponse(code = 500, message = "查询我所在社区的消息列表失败")})
+    public RespObj myMessages(@ApiParam(name="page",required = false,value = "页码")@RequestParam(required = false, defaultValue = "1") int page,
+                              @ApiParam(name="pageSize",required = false,value = "页数")@RequestParam(required = false, defaultValue = "10") int pageSize,
+                              @ApiParam(name="order",required = false,value = "排序值")@RequestParam(required = false, defaultValue = "-1") int order) {
         ObjectId userId = getUserId();
         return RespObj.SUCCESS(communityService.getMyMessages(userId, page, pageSize, order));
     }
@@ -1310,10 +1401,13 @@ public class CommunityController extends BaseController {
     @RequestMapping("/typeMessages")
     @ResponseBody
     @SessionNeedless
-    public RespObj typeMessages(@RequestParam @ObjectIdType ObjectId communityId,
-                                @RequestParam(required = false, defaultValue = "1") int page,
-                                @RequestParam(required = false, defaultValue = "4") int pageSize,
-                                @RequestParam(required = false, defaultValue = "-1") int order) {
+    @ApiOperation(value = "获取该社区的最新消息的列表", httpMethod = "GET", produces = "application/json")
+    @ApiResponses(value = {@ApiResponse(code = 200, message = "获取该社区的最新消息的列表成功",response = RespObj.class),
+            @ApiResponse(code = 500, message = "获取该社区的最新消息的列表失败")})
+    public RespObj typeMessages(@ApiParam(name="communityId",required = true,value = "社区Id")@RequestParam @ObjectIdType ObjectId communityId,
+                                @ApiParam(name="page",required = true,value = "页码")@RequestParam(required = false, defaultValue = "1") int page,
+                                @ApiParam(name="pageSize",required = true,value = "页数")@RequestParam(required = false, defaultValue = "4") int pageSize,
+                                @ApiParam(name="order",required = true,value = "排序值")@RequestParam(required = false, defaultValue = "-1") int order) {
         return getTypeInfo(communityId, page, pageSize, order);
     }
 
@@ -1321,10 +1415,13 @@ public class CommunityController extends BaseController {
     @RequestMapping("/getTypeMessages")
     @ResponseBody
     @SessionNeedless
-    public RespObj getTypeMessages(@RequestParam @ObjectIdType ObjectId communityId,
-                                   @RequestParam(required = false, defaultValue = "1") int page,
-                                   @RequestParam(required = false, defaultValue = "4") int pageSize,
-                                   @RequestParam(required = false, defaultValue = "-1") int order) {
+    @ApiOperation(value = "获取该社区的最新消息的列表", httpMethod = "GET", produces = "application/json")
+    @ApiResponses(value = {@ApiResponse(code = 200, message = "获取该社区的最新消息的列表成功",response = RespObj.class),
+            @ApiResponse(code = 500, message = "获取该社区的最新消息的列表失败")})
+    public RespObj getTypeMessages(@ApiParam(name="communityId",required = true,value = "社区Id")@RequestParam @ObjectIdType ObjectId communityId,
+                                   @ApiParam(name="page",required = true,value = "页码")@RequestParam(required = false, defaultValue = "1") int page,
+                                   @ApiParam(name="pageSize",required = true,value = "页数")@RequestParam(required = false, defaultValue = "4") int pageSize,
+                                   @ApiParam(name="order",required = true,value = "排序值")@RequestParam(required = false, defaultValue = "-1") int order) {
         return getTypeInfo(communityId, page, pageSize, order);
     }
 
@@ -1341,10 +1438,13 @@ public class CommunityController extends BaseController {
     @RequestMapping("/getMessage")
     @ResponseBody
     @SessionNeedless
-    public RespObj getMessage(@RequestParam @ObjectIdType ObjectId communityId,
-                              @RequestParam(required = false, defaultValue = "1") int page,
-                              @RequestParam(required = false, defaultValue = "4") int pageSize,
-                              @RequestParam(required = false, defaultValue = "1") int type) {
+    @ApiOperation(value = "查询某个社区类别的列表", httpMethod = "GET", produces = "application/json")
+    @ApiResponses(value = {@ApiResponse(code = 200, message = "查询某个社区类别的列表成功",response = RespObj.class),
+            @ApiResponse(code = 500, message = "查询某个社区类别的列表失败")})
+    public RespObj getMessage(@ApiParam(name="communityId",required = true,value = "社区Id")@RequestParam @ObjectIdType ObjectId communityId,
+                              @ApiParam(name="page",required = false,value = "页码")@RequestParam(required = false, defaultValue = "1") int page,
+                              @ApiParam(name="pageSize",required = false,value = "页数")@RequestParam(required = false, defaultValue = "4") int pageSize,
+                              @ApiParam(name="type",required = false,value = "社区类别")@RequestParam(required = false, defaultValue = "1") int type) {
         Platform pf = getPlatform();
         boolean isApp = false;
         if (pf == Platform.Android || pf == Platform.IOS) {
@@ -1356,9 +1456,12 @@ public class CommunityController extends BaseController {
     @RequestMapping("/getAllTypeMessage")
     @ResponseBody
     @SessionNeedless
-    public RespObj getAllTypeMessage(@RequestParam(required = false, defaultValue = "1") int page,
-                                     @RequestParam(required = false, defaultValue = "4") int pageSize,
-                                     @RequestParam(required = false, defaultValue = "-1") int order) {
+    @ApiOperation(value = "查询我所在社区的所有类别的最新列表", httpMethod = "GET", produces = "application/json")
+    @ApiResponses(value = {@ApiResponse(code = 200, message = "查询我所在社区的所有类别的最新列表成功",response = RespObj.class),
+            @ApiResponse(code = 500, message = "查询我所在社区的所有类别的最新列表失败")})
+    public RespObj getAllTypeMessage( @ApiParam(name="page",required = false,value = "页码")@RequestParam(required = false, defaultValue = "1") int page,
+                                      @ApiParam(name="pageSize",required = false,value = "页数")@RequestParam(required = false, defaultValue = "4") int pageSize,
+                                      @ApiParam(name="order",required = false,value = "排序值")@RequestParam(required = false, defaultValue = "-1") int order) {
         ObjectId userId = getUserId();
         List<ObjectId> communityIds = new ArrayList<ObjectId>();
         if (null == userId) {
@@ -1380,7 +1483,10 @@ public class CommunityController extends BaseController {
 
     @RequestMapping("/judgeMember")
     @ResponseBody
-    public RespObj judgeMember(@ObjectIdType ObjectId communityId) {
+    @ApiOperation(value = "判断该成员是否在这个社区中", httpMethod = "GET", produces = "application/json")
+    @ApiResponses(value = {@ApiResponse(code = 200, message = "判断该成员是否在这个社区中成功",response = RespObj.class),
+            @ApiResponse(code = 500, message = "判断该成员是否在这个社区中失败")})
+    public RespObj judgeMember(@ApiParam(name="communityId",required = true,value = "社区Id")@ObjectIdType ObjectId communityId) {
         ObjectId groupId = communityService.getGroupId(communityId);
         ObjectId userId = getUserId();
         return RespObj.SUCCESS(memberService.isGroupMember(groupId, userId));
@@ -1396,7 +1502,10 @@ public class CommunityController extends BaseController {
     @RequestMapping("/shareUrl")
     @SessionNeedless
     @ResponseBody
-    public RespObj getInfoByUrl(String url) {
+    @ApiOperation(value = "分享链接解析", httpMethod = "GET", produces = "application/json")
+    @ApiResponses(value = {@ApiResponse(code = 200, message = "分享链接解析成功",response = RespObj.class),
+            @ApiResponse(code = 500, message = "分享链接解析失败")})
+    public RespObj getInfoByUrl(@ApiParam(name="url",required = true,value = "分享链接地址")String url) {
         try {
             //创建HttpClientBuilder
             HttpClientBuilder httpClientBuilder = HttpClientBuilder.create();
@@ -1421,7 +1530,10 @@ public class CommunityController extends BaseController {
     @RequestMapping("/messageDetail")
     @ResponseBody
     @SessionNeedless
-    public RespObj messageDetail(@ObjectIdType ObjectId detailId) {
+    @ApiOperation(value = "查询消息详情", httpMethod = "GET", produces = "application/json")
+    @ApiResponses(value = {@ApiResponse(code = 200, message = "查询消息详情成功",response = RespObj.class),
+            @ApiResponse(code = 500, message = "查询消息详情失败")})
+    public RespObj messageDetail(@ApiParam(name="detailId",required = true,value = "消息Id")@ObjectIdType ObjectId detailId) {
         ObjectId userId=getUserId();
         CommunityDetailDTO detailDTO = communityService.findDetailById(detailId,userId);
         Platform pf = getPlatform();
@@ -1452,7 +1564,10 @@ public class CommunityController extends BaseController {
      */
     @RequestMapping("/judge")
     @ResponseBody
-    public RespObj judge(@ObjectIdType ObjectId communityId) {
+    @ApiOperation(value = "判断当前用户是否是该社区成员", httpMethod = "GET", produces = "application/json")
+    @ApiResponses(value = {@ApiResponse(code = 200, message = "判断当前用户是否是该社区成员成功",response = RespObj.class),
+            @ApiResponse(code = 500, message = "判断当前用户是否是该社区成员失败")})
+    public RespObj judge(@ApiParam(name="communityId",required = true,value = "社区Id")@ObjectIdType ObjectId communityId) {
         ObjectId userId = getUserId();
         ObjectId groupId = communityService.getGroupId(communityId);
         return RespObj.SUCCESS(memberService.isGroupMember(groupId, userId));
@@ -1466,6 +1581,7 @@ public class CommunityController extends BaseController {
      */
     @RequestMapping("/communityMember")
     @LoginInfo
+    @ApiOperation(value = "跳转到社区成员列表界面", httpMethod = "GET", produces = "application/json")
     public String getCommunityMember(Map<String, Object> model) {
         String communityId = getRequest().getParameter("communityId");
         CommunityDTO community = communityService.findByObjectId(new ObjectId(communityId));
@@ -1482,6 +1598,7 @@ public class CommunityController extends BaseController {
 
     @RequestMapping("/manageCurrentCommunity")
     @LoginInfo
+    @ApiOperation(value = "跳转到管理社区界面", httpMethod = "GET", produces = "application/json")
     public String manageCurrentCommunity(Map<String, Object> model) {
         String communityId = getRequest().getParameter("communityId");
         CommunityDTO community = communityService.findByObjectId(new ObjectId(communityId));
@@ -1515,9 +1632,12 @@ public class CommunityController extends BaseController {
     @RequestMapping("/getMemberList")
     @ResponseBody
     @SessionNeedless
-    public RespObj getMemberList(@RequestParam(required = false, defaultValue = "1") int page,
-                                 @RequestParam(required = false, defaultValue = "10") int pageSize,
-                                 @ObjectIdType ObjectId communityId) {
+    @ApiOperation(value = "获取社区成员列表", httpMethod = "GET", produces = "application/json")
+    @ApiResponses(value = {@ApiResponse(code = 200, message = "获取社区成员列表成功",response = RespObj.class),
+            @ApiResponse(code = 500, message = "获取社区成员列表失败")})
+    public RespObj getMemberList(@ApiParam(name="page",required = false,value = "页码")@RequestParam(required = false, defaultValue = "1") int page,
+                                 @ApiParam(name="pageSize",required = false,value = "页数")@RequestParam(required = false, defaultValue = "10") int pageSize,
+                                 @ApiParam(name="communityId",required = true,value = "社区Id")@ObjectIdType ObjectId communityId) {
         PageModel<MemberDTO> members = communityService.getMemberList(page, pageSize, getUserId(), communityId);
         return RespObj.SUCCESS(members);
     }
@@ -1530,6 +1650,9 @@ public class CommunityController extends BaseController {
     @RequestMapping("/getMyPartners")
     @ResponseBody
     @SessionNeedless
+    @ApiOperation(value = "获取我的玩伴列表信息", httpMethod = "GET", produces = "application/json")
+    @ApiResponses(value = {@ApiResponse(code = 200, message = "获取我的玩伴列表信息成功",response = RespObj.class),
+            @ApiResponse(code = 500, message = "获取我的玩伴列表信息失败")})
     public RespObj getMyPartners() {
         List<MemberDTO> members = communityService.getMyPartners(getUserId());
         return RespObj.SUCCESS(members);
@@ -1546,8 +1669,12 @@ public class CommunityController extends BaseController {
      */
     @RequestMapping("/setRemark")
     @ResponseBody
-    public RespObj setRemark(String remarkId,
-                             String endUserId, String remark) {
+    @ApiOperation(value = "设置备注名", httpMethod = "GET", produces = "application/json")
+    @ApiResponses(value = {@ApiResponse(code = 200, message = "设置备注名成功",response = RespObj.class),
+            @ApiResponse(code = 500, message = "设置备注名失败")})
+    public RespObj setRemark(@ApiParam(name="remarkId",required = true,value = "备注Id")String remarkId,
+                             @ApiParam(name="endUserId",required = true,value = "被设置备注名的人的Id")String endUserId,
+                             @ApiParam(name="remark",required = true,value = "备注名")String remark) {
         ObjectId userId = getUserId();
         if (StringUtils.isNotBlank(remarkId)) {
             communityService.updateRemark(new ObjectId(remarkId), remark);
@@ -1567,7 +1694,11 @@ public class CommunityController extends BaseController {
      */
     @RequestMapping("/setAppRemark")
     @ResponseBody
-    public RespObj setAppRemark(String endUserId, String remark) {
+    @ApiOperation(value = "设置备注名", httpMethod = "GET", produces = "application/json")
+    @ApiResponses(value = {@ApiResponse(code = 200, message = "设置备注名成功",response = RespObj.class),
+            @ApiResponse(code = 500, message = "设置备注名失败")})
+    public RespObj setAppRemark( @ApiParam(name="endUserId",required = true,value = "被设置备注名的人的Id")String endUserId,
+                                 @ApiParam(name="remark",required = true,value = "备注名")String remark) {
         ObjectId userId = getUserId();
         RemarkEntry remarkEntry=communityService.getRemarkEntry(userId,new ObjectId(endUserId));
         if (null!=remarkEntry) {
@@ -1582,6 +1713,7 @@ public class CommunityController extends BaseController {
     @RequestMapping("/communityMessageList")
     @SessionNeedless
     @LoginInfo
+    @ApiOperation(value = "跳转到社区详情信息列表界面", httpMethod = "GET", produces = "application/json")
     public String communityMessageList(Map<String, Object> model) {
         String communityId = getRequest().getParameter("communityId");
         int type = Integer.parseInt(getRequest().getParameter("type"));
@@ -1605,7 +1737,11 @@ public class CommunityController extends BaseController {
      */
     @RequestMapping("/deleteMembers")
     @ResponseBody
-    public RespObj deleteMembers(@ObjectIdType ObjectId communityId, String memberUserId) {
+    @ApiOperation(value = "删除该社区选中的人员列表", httpMethod = "GET", produces = "application/json")
+    @ApiResponses(value = {@ApiResponse(code = 200, message = "删除该社区选中的人员列表成功",response = RespObj.class),
+            @ApiResponse(code = 500, message = "删除该社区选中的人员列表失败")})
+    public RespObj deleteMembers(@ApiParam(name="communityId",required = true,value = "社区Id")@ObjectIdType ObjectId communityId,
+                                 @ApiParam(name="memberUserId",required = true,value = "社区人员列表")String memberUserId) {
         List<ObjectId> userIds = MongoUtils.convertObjectIds(memberUserId);
         CommunityDTO community = communityService.findByObjectId(communityId);
         ObjectId groupId = communityService.getGroupId(communityId);
@@ -1636,7 +1772,10 @@ public class CommunityController extends BaseController {
      */
     @RequestMapping("/countSecondMember")
     @ResponseBody
-    public RespObj countSecondMember(@ObjectIdType ObjectId communityId) {
+    @ApiOperation(value = "查询出副社长人数", httpMethod = "GET", produces = "application/json")
+    @ApiResponses(value = {@ApiResponse(code = 200, message = "查询出副社长人数成功",response = RespObj.class),
+            @ApiResponse(code = 500, message = "查询出副社长人数失败")})
+    public RespObj countSecondMember(@ApiParam(name="communityId",required = true,value = "社区Id")@ObjectIdType ObjectId communityId) {
         int count = communityService.countSecondMember(communityId);
         return RespObj.SUCCESS(count);
     }
@@ -1650,7 +1789,10 @@ public class CommunityController extends BaseController {
      */
     @RequestMapping("/judgeOperation")
     @ResponseBody
-    public RespObj judgeOperation(@ObjectIdType ObjectId communityId) {
+    @ApiOperation(value = "判断是否是管理员", httpMethod = "GET", produces = "application/json")
+    @ApiResponses(value = {@ApiResponse(code = 200, message = "判断是否是管理员成功",response = RespObj.class),
+            @ApiResponse(code = 500, message = "判断是否是管理员失败")})
+    public RespObj judgeOperation(@ApiParam(name="communityId",required = true,value = "社区Id")@ObjectIdType ObjectId communityId) {
         ObjectId groupId = communityService.getGroupId(communityId);
         return RespObj.SUCCESS(memberService.isManager(groupId, getUserId()));
     }
@@ -1665,7 +1807,13 @@ public class CommunityController extends BaseController {
      */
     @RequestMapping("/setSecondMembers")
     @ResponseBody
-    public RespObj setSecondMembers(@ObjectIdType ObjectId communityId, String memberUserId, String memberId, int role) {
+    @ApiOperation(value = "设置该社区的副社长，并移交权限", httpMethod = "GET", produces = "application/json")
+    @ApiResponses(value = {@ApiResponse(code = 200, message = "设置该社区的副社长成功",response = RespObj.class),
+            @ApiResponse(code = 500, message = "设置该社区的副社长失败")})
+    public RespObj setSecondMembers(@ApiParam(name="communityId",required = true,value = "社区Id")@ObjectIdType ObjectId communityId,
+                                    @ApiParam(name="memberUserId",required = true,value = "副社长人员列表")String memberUserId,
+                                    @ApiParam(name="memberId",required = true,value = "副社长人员列表对应的Id列表")String memberId,
+                                    @ApiParam(name="role",required = true,value = "副社长的权限设置")int role) {
         List<ObjectId> objectIds = MongoUtils.convertObjectIds(memberId);
         List<ObjectId> userIds = MongoUtils.convertObjectIds(memberUserId);
         ObjectId userId = getUserId();
@@ -1705,7 +1853,10 @@ public class CommunityController extends BaseController {
     @RequestMapping("/partInUsers")
     @ResponseBody
     @SessionNeedless
-    public RespObj partInUsers(@ObjectIdType ObjectId detailId) {
+    @ApiOperation(value = "获取某个活动参与的人数列表", httpMethod = "GET", produces = "application/json")
+    @ApiResponses(value = {@ApiResponse(code = 200, message = "获取某个活动参与的人数列表成功",response = RespObj.class),
+            @ApiResponse(code = 500, message = "获取某个活动参与的人数列表失败")})
+    public RespObj partInUsers(@ApiParam(name="detailId",required = true,value = "活动Id")@ObjectIdType ObjectId detailId) {
         ObjectId userId=getUserId();
         CommunityDetailDTO communityDetailDTO = communityService.findDetailById(detailId,userId);
         List<String> partInList = communityDetailDTO.getPartInList();
@@ -1757,7 +1908,10 @@ public class CommunityController extends BaseController {
      */
     @RequestMapping("/exportPartInData")
     @ResponseBody
-    public void exportPartInData(@ObjectIdType ObjectId detailId, HttpServletRequest request, HttpServletResponse response) throws IOException, IllegalParamException {
+    @ApiOperation(value = "导出用户报名数据", httpMethod = "GET", produces = "application/json")
+    @ApiResponses(value = {@ApiResponse(code = 200, message = "导出用户报名数据成功",response = RespObj.class),
+            @ApiResponse(code = 500, message = "导出用户报名数据失败")})
+    public void exportPartInData(@ApiParam(name="detailId",required = true,value = "活动Id")@ObjectIdType ObjectId detailId, HttpServletRequest request, HttpServletResponse response) throws IOException, IllegalParamException {
 
         List<User> users = getPartInData(detailId);
         String parentPath = request.getServletContext().getRealPath("/upload") + "/partInData/";
@@ -1898,12 +2052,16 @@ public class CommunityController extends BaseController {
 
     @RequestMapping("/replyToDetail")
     @ResponseBody
-    public RespObj replyToDetail(@ObjectIdType ObjectId detailId,
-                                 @ObjectIdType ObjectId communityId, int type,
-                                 @RequestParam(defaultValue = "", required = false) String text,
-                                 @RequestParam(defaultValue = "", required = false) String images,
-                                 @RequestParam(defaultValue = "", required = false) String vedios,
-                                 @RequestParam(defaultValue = "", required = false) String attachements) {
+    @ApiOperation(value = "回复活动消息", httpMethod = "GET", produces = "application/json")
+    @ApiResponses(value = {@ApiResponse(code = 200, message = "回复活动消息成功",response = RespObj.class),
+            @ApiResponse(code = 500, message = "回复活动消息失败")})
+    public RespObj replyToDetail(@ApiParam(name="detailId",required = true,value = "活动Id")@ObjectIdType ObjectId detailId,
+                                 @ApiParam(name="communityId",required = true,value = "社区Id")@ObjectIdType ObjectId communityId,
+                                 @ApiParam(name="type",required = true,value = "社区类别")int type,
+                                 @ApiParam(name="text",required = false,value = "活动回复文本")@RequestParam(defaultValue = "", required = false) String text,
+                                 @ApiParam(name="images",required = false,value = "活动回复图片列表")@RequestParam(defaultValue = "", required = false) String images,
+                                 @ApiParam(name="vedios",required = false,value = "活动回复视频列表")@RequestParam(defaultValue = "", required = false) String vedios,
+                                 @ApiParam(name="attachements",required = false,value = "活动回复附件列表")@RequestParam(defaultValue = "", required = false) String attachements) {
         //先进行敏感词过滤
         text = userService.replaceSensitiveWord(text);
         ObjectId userId = getUserId();
@@ -1925,10 +2083,13 @@ public class CommunityController extends BaseController {
     @RequestMapping("/partInContent")
     @ResponseBody
     @SessionNeedless
-    public RespObj partInContent(@ObjectIdType ObjectId communityDetailId,
-                                 @RequestParam(required = false, defaultValue = "1") int page,
-                                 @RequestParam(required = false, defaultValue = "10") int pageSize,
-                                 @RequestParam(required = false, defaultValue = "-1") int order) {
+    @ApiOperation(value = "查询回复活动消息列表", httpMethod = "GET", produces = "application/json")
+    @ApiResponses(value = {@ApiResponse(code = 200, message = "查询回复活动消息列表成功",response = RespObj.class),
+            @ApiResponse(code = 500, message = "查询回复活动消息列表失败")})
+    public RespObj partInContent(@ApiParam(name="communityDetailId",required = true,value = "活动Id")@ObjectIdType ObjectId communityDetailId,
+                                 @ApiParam(name="page",required = false,value = "页码")@RequestParam(required = false, defaultValue = "1") int page,
+                                 @ApiParam(name="pageSize",required = false,value = "页数")@RequestParam(required = false, defaultValue = "10") int pageSize,
+                                 @ApiParam(name="order",required = false,value = "排序值")@RequestParam(required = false, defaultValue = "-1") int order) {
         ObjectId userId = getUserId();
         return RespObj.SUCCESS(communityService.getPartInContent(userId, communityDetailId, page, pageSize));
     }
@@ -1942,7 +2103,10 @@ public class CommunityController extends BaseController {
      */
     @RequestMapping("/judgeManager")
     @ResponseBody
-    public RespObj judgeCommunityManager(@ObjectIdType ObjectId communityId) {
+    @ApiOperation(value = "判断是否为社长", httpMethod = "GET", produces = "application/json")
+    @ApiResponses(value = {@ApiResponse(code = 200, message = "判断是否为社长成功",response = RespObj.class),
+            @ApiResponse(code = 500, message = "判断是否为社长失败")})
+    public RespObj judgeCommunityManager(@ApiParam(name="communityId",required = true,value = "社区Id")@ObjectIdType ObjectId communityId) {
         ObjectId groupId = communityService.getGroupId(communityId);
         return RespObj.SUCCESS(memberService.isHead(groupId, getUserId()));
     }
@@ -1956,8 +2120,11 @@ public class CommunityController extends BaseController {
      */
     @RequestMapping("/zanToPartInContent")
     @ResponseBody
-    public RespObj zanToPartInContent(@ObjectIdType ObjectId partInContentId,
-                                      @RequestParam(defaultValue = "1", required = false) int zan) {
+    @ApiOperation(value = "对一条回复进行点赞", httpMethod = "GET", produces = "application/json")
+    @ApiResponses(value = {@ApiResponse(code = 200, message = "对一条回复进行点赞成功",response = RespObj.class),
+            @ApiResponse(code = 500, message = "对一条回复进行点赞失败")})
+    public RespObj zanToPartInContent(@ApiParam(name="partInContentId",required = true,value = "回复消息的Id")@ObjectIdType ObjectId partInContentId,
+                                      @ApiParam(name="zan",required = true,value = "点赞的标志位，1赞")@RequestParam(defaultValue = "1", required = false) int zan) {
         Boolean message = communityService.zanToPartInContent(partInContentId, getUserId(), zan);
         return RespObj.SUCCESS(message);
     }
@@ -1972,9 +2139,12 @@ public class CommunityController extends BaseController {
      */
     @RequestMapping("/getUserInfo")
     @ResponseBody
-    public RespObj getUserInfo(@RequestParam(defaultValue = "", required = false) String regular,
-                               @RequestParam(defaultValue = "1", required = false) int page,
-                               @RequestParam(defaultValue = "5", required = false) int pageSize) throws Exception {
+    @ApiOperation(value = "获取用户信息列表", httpMethod = "GET", produces = "application/json")
+    @ApiResponses(value = {@ApiResponse(code = 200, message = "获取用户信息列表成功",response = RespObj.class),
+            @ApiResponse(code = 500, message = "获取用户信息列表失败")})
+    public RespObj getUserInfo(@ApiParam(name="regular",required = false,value = "关键字")@RequestParam(defaultValue = "", required = false) String regular,
+                               @ApiParam(name="page",required = false,value = "页码")@RequestParam(defaultValue = "1", required = false) int page,
+                               @ApiParam(name="pageSize",required = false,value = "页数")@RequestParam(defaultValue = "5", required = false) int pageSize) throws Exception {
         try {
             int count = 1;
             List<CommunityService.UserSearchInfo> dtos = new ArrayList<CommunityService.UserSearchInfo>();
@@ -2060,12 +2230,16 @@ public class CommunityController extends BaseController {
      */
     @RequestMapping("/submitHWork")
     @ResponseBody
-    public RespObj submitHWork(@ObjectIdType ObjectId communityId,
-                               @ObjectIdType ObjectId communityDetailId, int type,
-                               @RequestParam(required = false, defaultValue = "") String content,
-                               @RequestParam(required = false, defaultValue = "") String images,
-                               @RequestParam(required = false, defaultValue = "") String attacheMents,
-                               @RequestParam(required = false, defaultValue = "") String videoList) {
+    @ApiOperation(value = "提交作业的接口", httpMethod = "GET", produces = "application/json")
+    @ApiResponses(value = {@ApiResponse(code = 200, message = "提交作业成功",response = RespObj.class),
+            @ApiResponse(code = 500, message = "提交作业失败")})
+    public RespObj submitHWork(@ApiParam(name="communityId",required = true,value = "社区Id")@ObjectIdType ObjectId communityId,
+                               @ApiParam(name="communityDetailId",required = true,value = "活动消息Id")@ObjectIdType ObjectId communityDetailId,
+                               @ApiParam(name="type",required = true,value = "社区类别")int type,
+                               @ApiParam(name="content",required = false,value = "内容")@RequestParam(required = false, defaultValue = "") String content,
+                               @ApiParam(name="images",required = false,value = "图片")@RequestParam(required = false, defaultValue = "") String images,
+                               @ApiParam(name="attacheMents",required = false,value = "附件")@RequestParam(required = false, defaultValue = "") String attacheMents,
+                               @ApiParam(name="videoList",required = false,value = "视频")@RequestParam(required = false, defaultValue = "") String videoList) {
         ObjectId uid = getUserId();
         communityService.saveHomeWork(communityId, communityDetailId, uid, content, images, attacheMents,videoList, type);
         return RespObj.SUCCESS;
@@ -2082,11 +2256,15 @@ public class CommunityController extends BaseController {
      */
     @RequestMapping("/shareImages")
     @ResponseBody
-    public RespObj shareImages(@ObjectIdType ObjectId communityId,
-                               @ObjectIdType ObjectId communityDetailId, int type,
-                               @RequestParam(required = false, defaultValue = "") String content,
-                               @RequestParam(required = false, defaultValue = "") String images,
-                               @RequestParam(required = false, defaultValue = "") String vedios) {
+    @ApiOperation(value = "分享图片视频", httpMethod = "GET", produces = "application/json")
+    @ApiResponses(value = {@ApiResponse(code = 200, message = "分享图片视频成功",response = RespObj.class),
+            @ApiResponse(code = 500, message = "分享图片视频失败")})
+    public RespObj shareImages(@ApiParam(name="communityId",required = true,value = "社区Id")@ObjectIdType ObjectId communityId,
+                               @ApiParam(name="communityDetailId",required = true,value = "活动消息Id")@ObjectIdType ObjectId communityDetailId,
+                               @ApiParam(name="type",required = true,value = "社区类别")int type,
+                               @ApiParam(name="content",required = false,value = "内容")@RequestParam(required = false, defaultValue = "") String content,
+                               @ApiParam(name="images",required = false,value = "图片")@RequestParam(required = false, defaultValue = "") String images,
+                               @ApiParam(name="videoList",required = false,value = "视频")@RequestParam(required = false, defaultValue = "") String vedios) {
         ObjectId uid = getUserId();
         communityService.saveCommunityShare(communityId, communityDetailId, uid, content, images, vedios, type);
         return RespObj.SUCCESS("操作成功");
@@ -2101,10 +2279,13 @@ public class CommunityController extends BaseController {
      */
     @RequestMapping("/shareUrls")
     @ResponseBody
-    public RespObj shareUrl(@ObjectIdType ObjectId communityId,
-                            @ObjectIdType ObjectId communityDetailId,
-                            @RequestParam(defaultValue = "", required = false) String shareCommend,
-                            @RequestParam(defaultValue = "", required = false) String shareUrl) {
+    @ApiOperation(value = "分享链接", httpMethod = "GET", produces = "application/json")
+    @ApiResponses(value = {@ApiResponse(code = 200, message = "分享链接成功",response = RespObj.class),
+            @ApiResponse(code = 500, message = "分享链接失败")})
+    public RespObj shareUrl(@ApiParam(name="communityId",required = true,value = "社区Id")@ObjectIdType ObjectId communityId,
+                            @ApiParam(name="communityDetailId",required = true,value = "活动消息Id") @ObjectIdType ObjectId communityDetailId,
+                            @ApiParam(name="shareCommend",required = false,value = "分享内容")@RequestParam(defaultValue = "", required = false) String shareCommend,
+                            @ApiParam(name="shareUrl",required = false,value = "分享链接地址")@RequestParam(defaultValue = "", required = false) String shareUrl) {
 
         ObjectId uid = getUserId();
         boolean isLegal = true;
@@ -2181,13 +2362,17 @@ public class CommunityController extends BaseController {
 
     @RequestMapping("/recommend")
     @ResponseBody
-    public RespObj recommend(@ObjectIdType ObjectId communityId,
-                             @ObjectIdType ObjectId communityDetailId, int type,
-                             @RequestParam(defaultValue = "", required = false) String shareCommend,
-                             @RequestParam(defaultValue = "", required = false) String shareUrl,
-                             @RequestParam(defaultValue = "", required = false) String shareImage,
-                             @RequestParam(defaultValue = "", required = false) String description,
-                             @RequestParam(defaultValue = "", required = false) String sharePrice) {
+    @ApiOperation(value = "保存分享链接的详情接口", httpMethod = "GET", produces = "application/json")
+    @ApiResponses(value = {@ApiResponse(code = 200, message = "保存分享链接成功",response = RespObj.class),
+            @ApiResponse(code = 500, message = "保存分享链接失败")})
+    public RespObj recommend(@ApiParam(name="communityId",required = true,value = "社区Id")@ObjectIdType ObjectId communityId,
+                             @ApiParam(name="communityDetailId",required = true,value = "活动消息Id")@ObjectIdType ObjectId communityDetailId,
+                             @ApiParam(name="type",required = true,value = "社区类别")int type,
+                             @ApiParam(name="shareCommend",required = false,value = "分享内容")@RequestParam(defaultValue = "", required = false) String shareCommend,
+                             @ApiParam(name="shareUrl",required = false,value = "分享链接地址")@RequestParam(defaultValue = "", required = false) String shareUrl,
+                             @ApiParam(name="shareImage",required = false,value = "分享商品图片")@RequestParam(defaultValue = "", required = false) String shareImage,
+                             @ApiParam(name="description",required = false,value = "分享商品描述")@RequestParam(defaultValue = "", required = false) String description,
+                             @ApiParam(name="sharePrice",required = false,value = "分享商品价格")@RequestParam(defaultValue = "", required = false) String sharePrice) {
         //先进行敏感词过滤
         shareCommend = userService.replaceSensitiveWord(shareCommend);
         ObjectId uid = getUserId();
@@ -2211,8 +2396,11 @@ public class CommunityController extends BaseController {
      */
     @RequestMapping("/inviteMembers")
     @ResponseBody
-    public RespObj inviteMembers(@ObjectIdType ObjectId communityId,
-                                 String userIds) {
+    @ApiOperation(value = "邀请多人进社区接口", httpMethod = "GET", produces = "application/json")
+    @ApiResponses(value = {@ApiResponse(code = 200, message = "邀请多人进社区成功",response = RespObj.class),
+            @ApiResponse(code = 500, message = "邀请多人进社区失败")})
+    public RespObj inviteMembers(@ApiParam(name="communityId",required = true,value = "社区Id")@ObjectIdType ObjectId communityId,
+                                 @ApiParam(name="userIds",required = true,value = "邀请人员列表")String userIds) {
         ObjectId groupId = communityService.getGroupId(communityId);
         String emChatId = groupService.getEmchatIdByGroupId(groupId);
         List<ObjectId> userIdList = MongoUtils.convertObjectIds(userIds);
@@ -2244,8 +2432,11 @@ public class CommunityController extends BaseController {
      */
     @RequestMapping("/getFriendApplys")
     @ResponseBody
-    public RespObj getFriendApplys(@RequestParam(defaultValue = "1", required = false) int page,
-                                   @RequestParam(defaultValue = "10", required = false) int pageSize) {
+    @ApiOperation(value = "查询玩伴通知列表", httpMethod = "GET", produces = "application/json")
+    @ApiResponses(value = {@ApiResponse(code = 200, message = "查询玩伴通知列表成功",response = RespObj.class),
+            @ApiResponse(code = 500, message = "查询玩伴通知列表失败")})
+    public RespObj getFriendApplys(@ApiParam(name="page",required = false,value = "页码")@RequestParam(defaultValue = "1", required = false) int page,
+                                   @ApiParam(name="pageSize",required = false,value = "页数")@RequestParam(defaultValue = "10", required = false) int pageSize) {
         ObjectId userId = getUserId();
         PageModel<FriendApply> pageModel = new PageModel<FriendApply>();
         pageModel.setResult(friendApplyService.findFriendApplys(userId.toString(), 0, page, pageSize));
@@ -2264,8 +2455,11 @@ public class CommunityController extends BaseController {
      */
     @RequestMapping("/getConcernList")
     @ResponseBody
-    public RespObj getConcernList(@RequestParam(defaultValue = "1", required = false) int page,
-                                  @RequestParam(defaultValue = "10", required = false) int pageSize) {
+    @ApiOperation(value = "查询我关注的人列表", httpMethod = "GET", produces = "application/json")
+    @ApiResponses(value = {@ApiResponse(code = 200, message = "查询我关注的人列表成功",response = RespObj.class),
+            @ApiResponse(code = 500, message = "查询我关注的人列表失败")})
+    public RespObj getConcernList(@ApiParam(name="page",required = false,value = "页码")@RequestParam(defaultValue = "1", required = false) int page,
+                                  @ApiParam(name="pageSize",required = false,value = "页数")@RequestParam(defaultValue = "10", required = false) int pageSize) {
         ObjectId userId = getUserId();
         PageModel<ConcernDTO> pageModel = new PageModel<ConcernDTO>();
         pageModel.setResult(concernService.getConcernByUserId(userId, page, pageSize));
@@ -2277,6 +2471,7 @@ public class CommunityController extends BaseController {
 
     @RequestMapping("/playmateNotice")
     @LoginInfo
+    @ApiOperation(value = "跳转到玩伴通知界面", httpMethod = "GET", produces = "application/json")
     public String playmateNotice(Map<String, Object> model) {
         model.put("menuItem", 1);
         return "/community/playmateNotice";
@@ -2284,6 +2479,7 @@ public class CommunityController extends BaseController {
 
     @RequestMapping("/mySystemInfo")
     @LoginInfo
+    @ApiOperation(value = "跳转到系统消息界面", httpMethod = "GET", produces = "application/json")
     public String mySystemInfo(Map<String, Object> model) {
         model.put("menuItem", 3);
         return "/community/playmateNotice";
@@ -2292,6 +2488,7 @@ public class CommunityController extends BaseController {
 
     @RequestMapping("/myPartners")
     @LoginInfo
+    @ApiOperation(value = "跳转到我的玩伴列表界面", httpMethod = "GET", produces = "application/json")
     public String myPartners(Map<String, Object> model) {
         model.put("menuItem", 2);
         return "/community/playmateNotice";
@@ -2300,6 +2497,7 @@ public class CommunityController extends BaseController {
 
     @RequestMapping("/friendList")
     @LoginInfo
+    @ApiOperation(value = "跳转到我的朋友的界面", httpMethod = "GET", produces = "application/json")
     public String getFriendList(Map<String, Object> model) {
         return "forum/friend_list";
     }
@@ -2309,7 +2507,11 @@ public class CommunityController extends BaseController {
      */
     @RequestMapping("/concernPerson")
     @ResponseBody
-    public RespObj setConcernPerson(@ObjectIdType ObjectId concernId, int remove) {
+    @ApiOperation(value = "(取消)关注某人", httpMethod = "GET", produces = "application/json")
+    @ApiResponses(value = {@ApiResponse(code = 200, message = "(取消)关注某人成功",response = RespObj.class),
+            @ApiResponse(code = 500, message = "(取消)关注某人失败")})
+    public RespObj setConcernPerson(@ApiParam(name="concernId",required = true,value = "关注的Id")@ObjectIdType ObjectId concernId,
+                                    @ApiParam(name="remove",required = true,value = "删除标志位")int remove) {
         ConcernEntry concernEntry = concernService.getConcernData(getUserId(), concernId, -1);
         if (null != concernEntry) {
             concernService.setConcernData(getUserId(), concernId, remove);
@@ -2328,7 +2530,10 @@ public class CommunityController extends BaseController {
      */
     @RequestMapping("/pullConcern")
     @ResponseBody
-    public RespObj pullConcern(@ObjectIdType ObjectId concernId) {
+    @ApiOperation(value = "取消关注", httpMethod = "GET", produces = "application/json")
+    @ApiResponses(value = {@ApiResponse(code = 200, message = "取消关注成功",response = RespObj.class),
+            @ApiResponse(code = 500, message = "取消关注失败")})
+    public RespObj pullConcern(@ApiParam(name="concernId",required = true,value = "关注的Id")@ObjectIdType ObjectId concernId) {
         concernService.pullConcern(concernId);
         return RespObj.SUCCESS;
     }
@@ -2336,6 +2541,7 @@ public class CommunityController extends BaseController {
 
     @RequestMapping("/communitySet")
     @LoginInfo
+    @ApiOperation(value = "跳转到社区设置界面", httpMethod = "GET", produces = "application/json")
     public String communitySet() {
         return "/community/communitySet";
     }
@@ -2343,6 +2549,7 @@ public class CommunityController extends BaseController {
 
     @RequestMapping("/searchHotCommunity")
     @LoginInfo
+    @ApiOperation(value = "跳转到查询热门社区界面", httpMethod = "GET", produces = "application/json")
     public String searchHotCommunity() {
         return "/community/hotCommunity";
     }
@@ -2355,7 +2562,10 @@ public class CommunityController extends BaseController {
      */
     @RequestMapping("/judgeCreate")
     @ResponseBody
-    public RespObj judgeCreateCommunity(String communityName) {
+    @ApiOperation(value = "判断取的名称是否唯一", httpMethod = "GET", produces = "application/json")
+    @ApiResponses(value = {@ApiResponse(code = 200, message = "判断取的名称是否唯一成功",response = RespObj.class),
+            @ApiResponse(code = 500, message = "判断取的名称是否唯一失败")})
+    public RespObj judgeCreateCommunity(@ApiParam(name="communityName",required = true,value = "社区名称")String communityName) {
         return RespObj.SUCCESS(!communityService.isCommunityNameUnique(communityName));
     }
 
@@ -2368,13 +2578,18 @@ public class CommunityController extends BaseController {
      */
     @RequestMapping("/judgeCommunityName")
     @ResponseBody
-    public RespObj judgeCommunityName(String communityName, @ObjectIdType ObjectId id) {
+    @ApiOperation(value = "辑社区时判断是否修改了社区名称", httpMethod = "GET", produces = "application/json")
+    @ApiResponses(value = {@ApiResponse(code = 200, message = "辑社区时判断是否修改了社区名称成功",response = RespObj.class),
+            @ApiResponse(code = 500, message = "辑社区时判断是否修改了社区名称失败")})
+    public RespObj judgeCommunityName(@ApiParam(name="communityName",required = true,value = "社区名称")String communityName,
+                                      @ApiParam(name="id",required = true,value = "社区Id")@ObjectIdType ObjectId id) {
         return RespObj.SUCCESS(communityService.judgeCommunityName(communityName, id));
     }
 
 
     @RequestMapping("/userData")
     @SessionNeedless
+    @ApiOperation(value = "跳转到社区个人中心界面", httpMethod = "GET", produces = "application/json")
     public String redirectUser(Map<String, Object> model) {
         ObjectId personId = new ObjectId(getRequest().getParameter("userId"));
         UserEntry userEntry = userService.findById(personId);
@@ -2421,7 +2636,10 @@ public class CommunityController extends BaseController {
 
     @RequestMapping("/pushUserTag")
     @ResponseBody
-    public RespObj pushUserTag(@RequestBody UserTag userTag) {
+    @ApiOperation(value = "配置用户的用户标签", httpMethod = "GET", produces = "application/json")
+    @ApiResponses(value = {@ApiResponse(code = 200, message = "配置用户的用户标签成功",response = RespObj.class),
+            @ApiResponse(code = 500, message = "配置用户的用户标签失败")})
+    public RespObj pushUserTag(@ApiParam @RequestBody UserTag userTag) {
         ObjectId userId = getUserId();
         userService.pushUserTag(userId, userTag.getCode(), userTag.getTag());
         mateService.pushUserTag(userId, userTag.getCode());
@@ -2430,7 +2648,10 @@ public class CommunityController extends BaseController {
 
     @RequestMapping("/pullUserTag")
     @ResponseBody
-    public RespObj pullUserTag(int code) {
+    @ApiOperation(value = "去除掉用户的用户标签", httpMethod = "GET", produces = "application/json")
+    @ApiResponses(value = {@ApiResponse(code = 200, message = "去除掉用户的用户标签成功",response = RespObj.class),
+            @ApiResponse(code = 500, message = "去除掉用户的用户标签失败")})
+    public RespObj pullUserTag(@ApiParam(name="code",required = true,value = "用户标签的关键值")int code) {
         ObjectId userId = getUserId();
         userService.pullUserTag(userId, code);
         mateService.pullUserTag(userId, code);
@@ -2445,7 +2666,10 @@ public class CommunityController extends BaseController {
      */
     @RequestMapping("/judgeTag")
     @ResponseBody
-    public RespObj judgeTag(int code) {
+    @ApiOperation(value = "判断该用户是否包含该标签", httpMethod = "GET", produces = "application/json")
+    @ApiResponses(value = {@ApiResponse(code = 200, message = "判断该用户是否包含该标签成功",response = RespObj.class),
+            @ApiResponse(code = 500, message = "判断该用户是否包含该标签失败")})
+    public RespObj judgeTag(@ApiParam(name="code",required = true,value = "用户标签的关键值")int code) {
         ObjectId userId = getUserId();
         UserEntry userEntry = userService.findById(userId);
         List<UserEntry.UserTagEntry> userTagEntries = userEntry.getUserTag();
@@ -2466,6 +2690,9 @@ public class CommunityController extends BaseController {
      */
     @RequestMapping("/getMyTags")
     @ResponseBody
+    @ApiOperation(value = "获取我的标签", httpMethod = "GET", produces = "application/json")
+    @ApiResponses(value = {@ApiResponse(code = 200, message = "获取我的标签成功",response = RespObj.class),
+            @ApiResponse(code = 500, message = "获取我的标签失败")})
     public RespObj getMyTags() {
         ObjectId userId = getUserId();
         UserEntry userEntry = userService.findById(userId);
@@ -2485,6 +2712,9 @@ public class CommunityController extends BaseController {
     @RequestMapping("/generateSeq")
     @ResponseBody
     @SessionNeedless
+    @ApiOperation(value = "生成社区的唯一序列号", httpMethod = "GET", produces = "application/json")
+    @ApiResponses(value = {@ApiResponse(code = 200, message = "生成社区的唯一序列号成功",response = RespObj.class),
+            @ApiResponse(code = 500, message = "生成社区的唯一序列号失败")})
     public RespObj generateSeq() {
         communityService.generateSeq();
         return RespObj.SUCCESS;
@@ -2500,7 +2730,10 @@ public class CommunityController extends BaseController {
      */
     @RequestMapping("/getImage")
     @ResponseBody
-    public RespObj getImage(String url, HttpServletRequest request) throws IOException {
+    @ApiOperation(value = "通过url获取下载图片到本地", httpMethod = "GET", produces = "application/json")
+    @ApiResponses(value = {@ApiResponse(code = 200, message = "通过url获取下载图片到本地成功",response = RespObj.class),
+            @ApiResponse(code = 500, message = "通过url获取下载图片到本地失败")})
+    public RespObj getImage(@ApiParam(name="url",required = true,value = "路径") String url, HttpServletRequest request) throws IOException {
         String parentPath = request.getServletContext().getRealPath("/");
         File parentFile = new File(parentPath);
         if (!parentFile.exists()) {
@@ -2536,7 +2769,10 @@ public class CommunityController extends BaseController {
     */
     @RequestMapping("/getQiuNiuImage")
     @ResponseBody
-    public Map<String, Object> getQiuNiuImage(HttpServletRequest req, String imageUrl) {
+    @ApiOperation(value = "下载七牛地址到本地服务器", httpMethod = "GET", produces = "application/json")
+    @ApiResponses(value = {@ApiResponse(code = 200, message = "下载七牛地址到本地服务器成功",response = Map.class),
+            @ApiResponse(code = 500, message = "下载七牛地址到本地服务器失败")})
+    public Map<String, Object> getQiuNiuImage(HttpServletRequest req, @ApiParam(name="imageUrl",required = true,value = "路径") String imageUrl) {
         Map<String, Object> model = new HashMap<String, Object>();
         String parentPath = req.getServletContext().getRealPath("/upload") + "/qiuNiu/";
         File parentFile = new File(parentPath);
@@ -2587,7 +2823,12 @@ public class CommunityController extends BaseController {
     @RequestMapping(value = "/saveTuYaImage", method = RequestMethod.POST)
     @SessionNeedless
     @ResponseBody
-    public RespObj saveEditedImage(@ObjectIdType ObjectId partInContentId, String oldImagePath, @RequestParam("file") MultipartFile multipartFile) throws Exception {
+    @ApiOperation(value = "保存涂鸦地址", httpMethod = "GET", produces = "application/json")
+    @ApiResponses(value = {@ApiResponse(code = 200, message = "保存涂鸦地址成功",response = Map.class),
+            @ApiResponse(code = 500, message = "保存涂鸦地址失败")})
+    public RespObj saveEditedImage(@ApiParam(name="partInContentId",required = true,value = "回复消息的Id")@ObjectIdType ObjectId partInContentId,
+                                   @ApiParam(name="oldImagePath",required = true,value = "老的图片地址")String oldImagePath,
+                                   @ApiParam(name="multipartFile",required = true,value = "新的图片流")@RequestParam("file") MultipartFile multipartFile) throws Exception {
         String fileKey = new ObjectId().toString() + ".jpg";
         QiniuFileUtils.uploadFile(fileKey, multipartFile.getInputStream(), QiniuFileUtils.TYPE_IMAGE);
         String newImagePath = QiniuFileUtils.getPath(QiniuFileUtils.TYPE_IMAGE, fileKey);
@@ -2604,7 +2845,10 @@ public class CommunityController extends BaseController {
      */
     @RequestMapping("/mark")
     @ResponseBody
-    public RespObj setMark(@ObjectIdType ObjectId contentId) {
+    @ApiOperation(value = "批阅", httpMethod = "GET", produces = "application/json")
+    @ApiResponses(value = {@ApiResponse(code = 200, message = "批阅成功",response = Map.class),
+            @ApiResponse(code = 500, message = "批阅失败")})
+    public RespObj setMark(@ApiParam(name="contentId",required = true,value = "回复消息的Id")@ObjectIdType ObjectId contentId) {
         PartInContentEntry partInContentEntry = communityService.findPartIncontById(contentId);
         ObjectId groupId = communityService.getGroupId(partInContentEntry.getCommunityId());
         ObjectId userId = getUserId();
@@ -2626,7 +2870,10 @@ public class CommunityController extends BaseController {
      */
     @RequestMapping("/removeDetailById")
     @ResponseBody
-    public RespObj removeDetailById(@ObjectIdType ObjectId detailId) {
+    @ApiOperation(value = "删除社区消息", httpMethod = "GET", produces = "application/json")
+    @ApiResponses(value = {@ApiResponse(code = 200, message = "删除社区消息成功",response = Map.class),
+            @ApiResponse(code = 500, message = "删除社区消息失败")})
+    public RespObj removeDetailById(@ApiParam(name="detailId",required = true,value = "社区消息的Id")@ObjectIdType ObjectId detailId) {
         communityService.removeCommunityDetailById(detailId);
         return RespObj.SUCCESS;
     }
@@ -2639,7 +2886,10 @@ public class CommunityController extends BaseController {
      */
     @RequestMapping("/recordDeleteUserIds")
     @ResponseBody
-    public RespObj recordDeleteUserIds(@ObjectIdType ObjectId detailId) {
+    @ApiOperation(value = "记录删除这条消息的人员列表", httpMethod = "GET", produces = "application/json")
+    @ApiResponses(value = {@ApiResponse(code = 200, message = "记录删除这条消息的人员列表成功",response = Map.class),
+            @ApiResponse(code = 500, message = "记录删除这条消息的人员列表失败")})
+    public RespObj recordDeleteUserIds(@ApiParam(name="detailId",required = true,value = "社区消息的Id")@ObjectIdType ObjectId detailId) {
         communityService.recordDeleteUserIds(detailId,getUserId());
         return RespObj.SUCCESS;
     }
@@ -2654,8 +2904,11 @@ public class CommunityController extends BaseController {
      */
     @RequestMapping("/getCommunitySysInfo")
     @ResponseBody
-    public Map<String, Object> getCommunitySysInfo(@RequestParam(required = false, defaultValue = "1") int page,
-                                                   @RequestParam(required = false, defaultValue = "20") int pageSize) {
+    @ApiOperation(value = "获取系统消息列表", httpMethod = "GET", produces = "application/json")
+    @ApiResponses(value = {@ApiResponse(code = 200, message = "获取系统消息列表成功",response = Map.class),
+            @ApiResponse(code = 500, message = "获取系统消息列表失败")})
+    public Map<String, Object> getCommunitySysInfo(@ApiParam(name="page",required = false,value = "页码")@RequestParam(required = false, defaultValue = "1") int page,
+                                                   @ApiParam(name="pageSize",required = false,value = "页数")@RequestParam(required = false, defaultValue = "20") int pageSize) {
         Map<String, Object> map = new HashMap<String, Object>();
         ObjectId userId = getUserId();
         List<CommunitySystemInfoDTO> dtos = communitySystemInfoService.findInfoByUserIdAndType(userId, page, pageSize);
@@ -2682,7 +2935,12 @@ public class CommunityController extends BaseController {
      */
     @RequestMapping("/base64image")
     @ResponseBody
-    public RespObj uploadBase64Image(String base64ImgData, String oldImage, String partContentId, HttpServletRequest req) throws Exception {
+    @ApiOperation(value = "上传本地涂鸦文件到七牛", httpMethod = "GET", produces = "application/json")
+    @ApiResponses(value = {@ApiResponse(code = 200, message = "上传本地涂鸦文件到七牛成功",response = Map.class),
+            @ApiResponse(code = 500, message = "上传本地涂鸦文件到七牛失败")})
+    public RespObj uploadBase64Image(@ApiParam(name="base64ImgData",required = true,value = "base64位图片流的数据") String base64ImgData,
+                                     @ApiParam(name="oldImage",required = true,value = "老的七牛图片地址")String oldImage,
+                                     @ApiParam(name="partContentId",required = true,value = "回复社区消息的Id")String partContentId, HttpServletRequest req) throws Exception {
         String temp = base64ImgData.substring(base64ImgData.indexOf("base64") + 7, base64ImgData.length());
 //        BASE64Decoder d = new BASE64Decoder();
 //        byte[] bs = d.decodeBuffer(temp);
@@ -2738,6 +2996,9 @@ public class CommunityController extends BaseController {
      */
     @RequestMapping("/saveEditedImage")
     @ResponseBody
+    @ApiOperation(value = "上传本地路径的图片到七牛", httpMethod = "GET", produces = "application/json")
+    @ApiResponses(value = {@ApiResponse(code = 200, message = "上传本地路径的图片到七牛成功",response = Map.class),
+            @ApiResponse(code = 500, message = "上传本地路径的图片到七牛失败")})
     public RespObj saveEditedImage(HttpServletRequest request) throws Exception {
         String filekey = "qiuNiu-" + new ObjectId().toString() + ".png";
         String parentPath = request.getServletContext().getRealPath("/upload") + "/qiuNiu/";
@@ -2765,6 +3026,9 @@ public class CommunityController extends BaseController {
 
     @RequestMapping("/getMyQRCode")
     @ResponseBody
+    @ApiOperation(value = "获取我的个人信息的二维码", httpMethod = "GET", produces = "application/json")
+    @ApiResponses(value = {@ApiResponse(code = 200, message = "获取我的个人信息的二维码成功",response = Map.class),
+            @ApiResponse(code = 500, message = "获取我的个人信息的二维码失败")})
     public RespObj getMyQRCode() {
         ObjectId userId = getUserId();
         UserEntry userEntry = userService.findById(userId);
@@ -2796,7 +3060,10 @@ public class CommunityController extends BaseController {
     @RequestMapping("/getMyQRBindCodeByUserId")
     @ResponseBody
     @SessionNeedless
-    public RespObj getMyQRBindCodeByUserId(@ObjectIdType  ObjectId userId) {
+    @ApiOperation(value = "获取该人的绑定信息的二维码", httpMethod = "GET", produces = "application/json")
+    @ApiResponses(value = {@ApiResponse(code = 200, message = "获取该人的绑定信息的二维码成功",response = Map.class),
+            @ApiResponse(code = 500, message = "获取该人的绑定信息的二维码失败")})
+    public RespObj getMyQRBindCodeByUserId(@ApiParam(name="userId",required = true,value = "用户Id")@ObjectIdType  ObjectId userId) {
         UserEntry userEntry = userService.findById(userId);
         return getQRBindCode(userEntry,userId);
     }
@@ -2804,7 +3071,10 @@ public class CommunityController extends BaseController {
     @RequestMapping("/getMyQRCodeByUserId")
     @ResponseBody
     @SessionNeedless
-    public RespObj getMyQRCodeByUserId(@ObjectIdType  ObjectId userId) {
+    @ApiOperation(value = "获取该人的个人信息的二维码", httpMethod = "GET", produces = "application/json")
+    @ApiResponses(value = {@ApiResponse(code = 200, message = "获取该人的个人信息的二维码成功",response = Map.class),
+            @ApiResponse(code = 500, message = "获取该人的个人信息的二维码失败")})
+    public RespObj getMyQRCodeByUserId(@ApiParam(name="userId",required = true,value = "用户Id")@ObjectIdType  ObjectId userId) {
         UserEntry userEntry = userService.findById(userId);
         return getQRCode(userEntry,userId);
     }
@@ -2812,6 +3082,9 @@ public class CommunityController extends BaseController {
 
     @RequestMapping("/getMyInfo")
     @ResponseBody
+    @ApiOperation(value = "获取我的个人信息", httpMethod = "GET", produces = "application/json")
+    @ApiResponses(value = {@ApiResponse(code = 200, message = "获取我的个人信息成功",response = Map.class),
+            @ApiResponse(code = 500, message = "获取我的个人信息失败")})
     public RespObj getMyInfo() {
         ObjectId userId = getUserId();
         Map<String, String> map = new HashMap<String, String>();
@@ -2844,7 +3117,11 @@ public class CommunityController extends BaseController {
 
     @RequestMapping("/updateCommunityPrio")
     @ResponseBody
-    public RespObj updateCommunityPrio(@ObjectIdType ObjectId cmid, int prio) {
+    @ApiOperation(value = "更新社区的优先级", httpMethod = "GET", produces = "application/json")
+    @ApiResponses(value = {@ApiResponse(code = 200, message = "更新社区的优先级成功",response = Map.class),
+            @ApiResponse(code = 500, message = "更新社区的优先级失败")})
+    public RespObj updateCommunityPrio(@ApiParam(name="cmid",required = true,value = "社区Id")@ObjectIdType ObjectId cmid,
+                                       @ApiParam(name="prio",required = true,value = "社区优先级值")int prio) {
         communityService.updateCommunityPrio(cmid, prio);
         return RespObj.SUCCESS;
     }
@@ -2859,13 +3136,20 @@ public class CommunityController extends BaseController {
      */
     @RequestMapping("/updateCommunityTop")
     @ResponseBody
-    public RespObj updateCommunityTop(@ObjectIdType ObjectId communityId, int top) {
+    @ApiOperation(value = "设置我的社区置顶", httpMethod = "GET", produces = "application/json")
+    @ApiResponses(value = {@ApiResponse(code = 200, message = "设置我的社区置顶成功",response = Map.class),
+            @ApiResponse(code = 500, message = "设置我的社区置顶失败")})
+    public RespObj updateCommunityTop(@ApiParam(name="communityId",required = true,value = "社区Id")@ObjectIdType ObjectId communityId,
+                                      @ApiParam(name="top",required = true,value = "置顶值")int top) {
         communityService.setTop(communityId, getUserId(), top);
         return RespObj.SUCCESS;
     }
 
     @RequestMapping("/setDefaultSort")
     @ResponseBody
+    @ApiOperation(value = "保存社区默认顺序", httpMethod = "GET", produces = "application/json")
+    @ApiResponses(value = {@ApiResponse(code = 200, message = "保存社区默认顺序成功",response = Map.class),
+            @ApiResponse(code = 500, message = "保存社区默认顺序失败")})
     public RespObj setDefaultSort() {
         communityService.setDefaultSort();
         return RespObj.SUCCESS;
@@ -2878,6 +3162,9 @@ public class CommunityController extends BaseController {
      */
     @RequestMapping("/getMyAllRemarks")
     @ResponseBody
+    @ApiOperation(value = "获取登录人所有的备注名", httpMethod = "GET", produces = "application/json")
+    @ApiResponses(value = {@ApiResponse(code = 200, message = "获取登录人所有的备注名成功",response = Map.class),
+            @ApiResponse(code = 500, message = "获取登录人所有的备注名失败")})
     public RespObj getMyAllRemarks() {
         ObjectId userId = getUserId();
         List<RemarkDTO> remarkDTOs = communityService.getRemarkDtos(userId);
@@ -2891,7 +3178,11 @@ public class CommunityController extends BaseController {
      */
     @RequestMapping("/updateCommunityDetailTop")
     @ResponseBody
-    public RespObj updateCommunityDetailTop(@ObjectIdType ObjectId detailId,int top){
+    @ApiOperation(value = "更新社区消息置顶顺序", httpMethod = "GET", produces = "application/json")
+    @ApiResponses(value = {@ApiResponse(code = 200, message = "更新社区消息置顶顺序成功",response = Map.class),
+            @ApiResponse(code = 500, message = "更新社区消息置顶顺序失败")})
+    public RespObj updateCommunityDetailTop(@ApiParam(name="detailId",required = true,value = "社区消息Id")@ObjectIdType ObjectId detailId,
+                                            @ApiParam(name="top",required = true,value = "置顶值")int top){
         RespObj respObj=new RespObj(Constant.SUCCESS_CODE);
         communityService.updateCommunityDetailTop(detailId,top);
         return respObj;
@@ -2903,7 +3194,11 @@ public class CommunityController extends BaseController {
      */
     @RequestMapping("/updateCommunityDetailZan")
     @ResponseBody
-    public RespObj updateCommunityDetailZan(@ObjectIdType ObjectId detailId,int type){
+    @ApiOperation(value = "给社区消息点赞", httpMethod = "GET", produces = "application/json")
+    @ApiResponses(value = {@ApiResponse(code = 200, message = "给社区消息点赞成功",response = Map.class),
+            @ApiResponse(code = 500, message = "给社区消息点赞失败")})
+    public RespObj updateCommunityDetailZan(@ApiParam(name="detailId",required = true,value = "社区消息Id")@ObjectIdType ObjectId detailId,
+                                            @ApiParam(name="type",required = true,value = "社区类别值")int type){
         RespObj respObj=new RespObj(Constant.FAILD_CODE);
         ObjectId userId=getUserId();
         CommunityDetailEntry entry=communityService.getEntryById(detailId);
@@ -2934,7 +3229,10 @@ public class CommunityController extends BaseController {
      */
     @RequestMapping("/removePartInContentInfo")
     @ResponseBody
-    public RespObj removePartInContentInfo(@ObjectIdType ObjectId id){
+    @ApiOperation(value = "删除回复", httpMethod = "GET", produces = "application/json")
+    @ApiResponses(value = {@ApiResponse(code = 200, message = "删除回复成功",response = Map.class),
+            @ApiResponse(code = 500, message = "删除回复失败")})
+    public RespObj removePartInContentInfo(@ApiParam(name="id",required = true,value = "社区回复消息Id")@ObjectIdType ObjectId id){
         RespObj respObj=new RespObj(Constant.SUCCESS_CODE);
         communityService.removePartInContentInfo(id);
         respObj.setMessage("删除回复成功");
@@ -2947,7 +3245,10 @@ public class CommunityController extends BaseController {
      */
     @RequestMapping("/saveFeedbackContent")
     @ResponseBody
-    public RespObj saveFeedbackContent(String content){
+    @ApiOperation(value = "新加功能(留言反馈)", httpMethod = "GET", produces = "application/json")
+    @ApiResponses(value = {@ApiResponse(code = 200, message = "新加功能(留言反馈)成功",response = Map.class),
+            @ApiResponse(code = 500, message = "新加功能(留言反馈)失败")})
+    public RespObj saveFeedbackContent(@ApiParam(name="content",required = true,value = "留言反馈的内容")String content){
         RespObj respObj=new RespObj(Constant.SUCCESS_CODE);
         ObjectId userId=getUserId();
         feedbackService.saveFeedBack(userId,content);
@@ -2963,8 +3264,11 @@ public class CommunityController extends BaseController {
      */
     @RequestMapping("/getFeedbacks")
     @ResponseBody
-    public RespObj getFeedbacks(@RequestParam(value="page",defaultValue = "1")int page,
-                                @RequestParam(value="pageSize",defaultValue = "10")int pageSize){
+    @ApiOperation(value = "分页获取留言列表", httpMethod = "GET", produces = "application/json")
+    @ApiResponses(value = {@ApiResponse(code = 200, message = "分页获取留言列表成功",response = Map.class),
+            @ApiResponse(code = 500, message = "分页获取留言列表失败")})
+    public RespObj getFeedbacks(@ApiParam(name="page",required = true,value = "页码")@RequestParam(value="page",defaultValue = "1")int page,
+                                @ApiParam(name="pageSize",required = true,value = "页数")@RequestParam(value="pageSize",defaultValue = "10")int pageSize){
         RespObj respObj=new RespObj(Constant.SUCCESS_CODE);
         Map<String,Object> map=new HashMap<String,Object>();
         ObjectId userId=getUserId();
@@ -2983,7 +3287,10 @@ public class CommunityController extends BaseController {
      */
     @RequestMapping("/removeFeedBack")
     @ResponseBody
-    public RespObj removeFeedBack(@ObjectIdType ObjectId id){
+    @ApiOperation(value = "删除留言反馈的信息", httpMethod = "GET", produces = "application/json")
+    @ApiResponses(value = {@ApiResponse(code = 200, message = "删除留言反馈的信息成功",response = Map.class),
+            @ApiResponse(code = 500, message = "删除留言反馈的信息失败")})
+    public RespObj removeFeedBack(@ApiParam(name="id",required = true,value = "留言反馈id")@ObjectIdType ObjectId id){
         RespObj respObj=new RespObj(Constant.SUCCESS_CODE);
         feedbackService.removeFeedBack(id);
         respObj.setMessage("删除留言成功");
@@ -3000,9 +3307,12 @@ public class CommunityController extends BaseController {
     @RequestMapping("/getMyMessageByType")
     @ResponseBody
     @SessionNeedless
-    public RespObj getMyMessageByType(@RequestParam(required = false, defaultValue = "1") int page,
-                                     @RequestParam(required = false, defaultValue = "4") int pageSize,
-                                     @RequestParam(required = false, defaultValue = "-1") int type) {
+    @ApiOperation(value = "获取与我有关的模块列表信息", httpMethod = "GET", produces = "application/json")
+    @ApiResponses(value = {@ApiResponse(code = 200, message = "获取与我有关的模块列表信息成功",response = Map.class),
+            @ApiResponse(code = 500, message = "获取与我有关的模块列表信息失败")})
+    public RespObj getMyMessageByType(@ApiParam(name="page",required = false,value = "页码")@RequestParam(required = false, defaultValue = "1") int page,
+                                      @ApiParam(name="pageSize",required = false,value = "页数")@RequestParam(required = false, defaultValue = "4") int pageSize,
+                                      @ApiParam(name="type",required = false,value = "社区类别")@RequestParam(required = false, defaultValue = "-1") int type) {
         ObjectId userId = getUserId();
         List<ObjectId> communityIds = new ArrayList<ObjectId>();
         if (null == userId) {

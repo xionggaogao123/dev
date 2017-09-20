@@ -48,7 +48,7 @@ public class NewVersionBindService {
     private WrongQuestionService wrongQuestionService;
 
 
-    public void perfectNewVersionInfo(
+    public void supplementNewVersionInfo(
             ObjectId bindId,
             int sex,String birthDate,
             String provinceName,
@@ -56,7 +56,9 @@ public class NewVersionBindService {
             String regionAreaName,
             String schoolName,
             String avator,
-            int gradeType
+            int gradeType,
+            String nickName,
+            int relation
     ){
         try {
             NewVersionBindRelationEntry entry = newVersionBindRelationDao.getEntry(bindId);
@@ -64,7 +66,7 @@ public class NewVersionBindService {
                 ObjectId userId = entry.getUserId();
                 SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd");
                 Date dateBirth = format.parse(birthDate);
-                userService.updateUserBirthDateAndSex(userId, sex, dateBirth.getTime(), avator, "");
+                userService.updateUserBirthDateAndSex(userId, sex, dateBirth.getTime(), avator, nickName);
                 //绑定年级
                 KeyValue keyValue = wrongQuestionService.getCurrTermType();
                 NewVersionGradeEntry gradeEntry = newVersionGradeDao.getEntryByCondition(userId, keyValue.getValue());
@@ -74,7 +76,7 @@ public class NewVersionBindService {
                 } else {
                     newVersionGradeDao.updateNewVersionGrade(userId, keyValue.getValue(), gradeType);
                 }
-                newVersionBindRelationDao.perfectNewVersionInfo(bindId, provinceName, regionName, regionAreaName, schoolName);
+                newVersionBindRelationDao.supplementNewVersionInfo(bindId, provinceName, regionName, regionAreaName, schoolName,relation);
             }
         }catch (Exception e){
             throw new RuntimeException("保存完善信息失败");
@@ -207,6 +209,8 @@ public class NewVersionBindService {
 
     public void delNewVersionEntry(ObjectId parentId,ObjectId studentId){
         newVersionBindRelationDao.delNewVersionEntry(parentId,studentId);
+        //删除对应的社区绑定关系
+        newVersionCommunityBindDao.removeNewVersionCommunityBindRelation(parentId, studentId);
     }
 
 

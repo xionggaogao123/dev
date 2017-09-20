@@ -41,6 +41,16 @@ public class NewVersionCommunityBindDao extends BaseDao{
         update(MongoFacroty.getAppDB(), Constant.COLLECTION_NEW_VERSION_COMMUNITY_BIND,query,updateValue);
     }
 
+
+    public void removeNewVersionCommunityBindRelation(ObjectId mainUserId,
+                                                      ObjectId userId){
+        BasicDBObject query = new BasicDBObject()
+                .append("muid",mainUserId)
+                .append("uid",userId);
+        BasicDBObject updateValue=new BasicDBObject(Constant.MONGO_SET,new BasicDBObject("ir", Constant.ZERO));
+        update(MongoFacroty.getAppDB(), Constant.COLLECTION_NEW_VERSION_COMMUNITY_BIND,query,updateValue);
+    }
+
     public NewVersionCommunityBindEntry getEntry(ObjectId communityId,
                                                  ObjectId mainUserId,
                                                  ObjectId userId){

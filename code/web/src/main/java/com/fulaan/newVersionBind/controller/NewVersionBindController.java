@@ -32,10 +32,22 @@ public class NewVersionBindController extends BaseController {
     private NewVersionBindService newVersionBindService;
 
 
-
-    @RequestMapping("/perfectNewVersionInfo")
+    /**
+     * 完善绑定的信息
+     * @param bindId
+     * @param sex
+     * @param birthDate
+     * @param provinceName
+     * @param regionName
+     * @param regionAreaName
+     * @param avatar
+     * @param schoolName
+     * @param gradeType
+     * @return
+     */
+    @RequestMapping("/supplementNewVersionInfo")
     @ResponseBody
-    public RespObj perfectNewVersionInfo(
+    public RespObj supplementNewVersionInfo(
             @ObjectIdType ObjectId bindId,
             int sex,String birthDate,
             String provinceName,
@@ -43,11 +55,14 @@ public class NewVersionBindController extends BaseController {
             String regionAreaName,
             String avatar,
             String schoolName,
+            String nickName,
+            int relation,
             int gradeType
     ){
         RespObj respObj = new RespObj(Constant.FAILD_CODE);
         try{
-            newVersionBindService.perfectNewVersionInfo(bindId, sex, birthDate, provinceName, regionName, regionAreaName, schoolName, avatar,gradeType);
+            newVersionBindService.supplementNewVersionInfo(bindId, sex, birthDate, provinceName, regionName, regionAreaName, schoolName, avatar,gradeType,
+                    nickName,relation);
             respObj.setCode(Constant.SUCCESS_CODE);
             respObj.setMessage("完善信息成功！");
         }catch (Exception e){

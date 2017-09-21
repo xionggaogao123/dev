@@ -22,7 +22,6 @@ import com.pojo.activity.FriendApplyEntry;
 import com.pojo.fcommunity.*;
 import com.pojo.forum.FVoteDTO;
 import com.pojo.forum.FVoteEntry;
-import com.pojo.user.AvatarType;
 import com.pojo.user.UserEntry;
 import com.sys.constants.Constant;
 import com.sys.utils.AvatarUtils;
@@ -276,7 +275,7 @@ public class CommunityService {
                         UserEntry user=userEntryMap.get(id);
                         if(null!=user){
                             voteUsers.add(new User(user.getUserName(),user.getNickName(),user.getID().toString(),
-                                    AvatarUtils.getAvatar(user.getAvatar(),AvatarType.MIN_AVATAR.getType()),user.getSex(),
+                                    AvatarUtils.getAvatar(user.getAvatar(),user.getRole(),user.getSex()),user.getSex(),
                                     DateTimeUtils.convert(timeRecord.get(user.getID()),DateTimeUtils.DATE_YYYY_MM_DD)));
                         }
                     }

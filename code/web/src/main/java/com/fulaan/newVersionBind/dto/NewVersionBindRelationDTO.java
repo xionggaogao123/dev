@@ -23,6 +23,8 @@ public class NewVersionBindRelationDTO {
     private String nickName;
     private String mobileNumber;
 
+    private int isBindCommunity;
+
     public NewVersionBindRelationDTO(NewVersionBindRelationEntry  entry){
         this.bindId=entry.getID().toString();
         this.mainUserId=entry.getMainUserId().toString();
@@ -65,6 +67,14 @@ public class NewVersionBindRelationDTO {
 
     public NewVersionBindRelationDTO(){
 
+    }
+
+    public int getIsBindCommunity() {
+        return isBindCommunity;
+    }
+
+    public void setIsBindCommunity(int isBindCommunity) {
+        this.isBindCommunity = isBindCommunity;
     }
 
     public String getMobileNumber() {

@@ -16,15 +16,13 @@ import com.pojo.user.NewVersionUserRoleEntry;
 import com.pojo.user.UserEntry;
 import com.sys.constants.Constant;
 import com.sys.utils.AvatarUtils;
+import org.apache.commons.lang3.StringUtils;
 import org.bson.types.ObjectId;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.text.SimpleDateFormat;
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 /**
  * Created by scott on 2017/9/5.
@@ -108,18 +106,24 @@ public class NewVersionBindService {
        return dto;
     }
 
-    public List<NewVersionBindRelationDTO> getNewVersionBindDtos (ObjectId mainUserId){
+
+    public List<NewVersionBindRelationDTO> getNewVersionBindDtos (ObjectId mainUserId,ObjectId communityId){
         List<NewVersionBindRelationDTO> dtos = new ArrayList<NewVersionBindRelationDTO>();
         List<NewVersionBindRelationEntry> entries=newVersionBindRelationDao.getEntriesByMainUserId(mainUserId);
         List<ObjectId> userIds= new ArrayList<ObjectId>();
         for(NewVersionBindRelationEntry entry:entries){
             userIds.add(entry.getUserId());
         }
+        Map<ObjectId,NewVersionCommunityBindEntry> map=new HashMap<ObjectId, NewVersionCommunityBindEntry>();
+        if(null!=communityId){
+            map=newVersionCommunityBindDao.getCommunityBindMap(communityId,mainUserId);
+        }
         KeyValue keyValue = wrongQuestionService.getCurrTermType();
         Map<ObjectId,UserEntry> userEntryMap=userService.getUserEntryMap(userIds,Constant.FIELDS);
         Map<ObjectId,NewVersionGradeEntry> newVersionGradeEntryMap=newVersionGradeDao.getNewVersionGradeMap(userIds,keyValue.getValue());
         for(NewVersionBindRelationEntry entry:entries){
             NewVersionBindRelationDTO dto=new NewVersionBindRelationDTO(entry);
+            dto.setIsBindCommunity(0);
             UserEntry userEntry=userEntryMap.get(entry.getUserId());
             if(null!=userEntry){
                 dto.setMobileNumber(userEntry.getMobileNumber());
@@ -129,6 +133,9 @@ public class NewVersionBindService {
                 SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd");
                 String birthDate=format.format(userEntry.getBirthDate());
                 dto.setBirthDate(birthDate);
+                if(null!=map.get(userEntry.getID())){
+                    dto.setIsBindCommunity(1);
+                }
             }
             dto.setGradeType(0);
             NewVersionGradeEntry gradeEntry=newVersionGradeEntryMap.get(entry.getUserId());
@@ -193,16 +200,20 @@ public class NewVersionBindService {
     }
 
     public void addCommunityBindEntry(String userIds,ObjectId communityId,ObjectId mainUserId){
-        String [] uIds=userIds.split(",");
-        for(String uId:uIds){
-            NewVersionCommunityBindEntry bindEntry=newVersionCommunityBindDao.getEntry(communityId,mainUserId,new ObjectId(uId));
-            if(null!=bindEntry) {
-                if(bindEntry.getRemoveStatus()==Constant.ONE) {
-                    newVersionCommunityBindDao.updateEntryStatus(bindEntry.getID());
+        //先删除绑定关系
+        newVersionCommunityBindDao.removeNewVersionCommunity(communityId,mainUserId);
+        if(StringUtils.isNotBlank(userIds)) {
+            String[] uIds = userIds.split(",");
+            for (String uId : uIds) {
+                NewVersionCommunityBindEntry bindEntry = newVersionCommunityBindDao.getEntry(communityId, mainUserId, new ObjectId(uId));
+                if (null != bindEntry) {
+                    if (bindEntry.getRemoveStatus() == Constant.ONE) {
+                        newVersionCommunityBindDao.updateEntryStatus(bindEntry.getID());
+                    }
+                } else {
+                    NewVersionCommunityBindEntry entry = new NewVersionCommunityBindEntry(communityId, mainUserId, new ObjectId(uId));
+                    newVersionCommunityBindDao.saveEntry(entry);
                 }
-            }else{
-                NewVersionCommunityBindEntry entry = new NewVersionCommunityBindEntry(communityId, mainUserId, new ObjectId(uId));
-                newVersionCommunityBindDao.saveEntry(entry);
             }
         }
     }
@@ -212,6 +223,16 @@ public class NewVersionBindService {
         newVersionBindRelationDao.delNewVersionEntry(parentId,studentId);
         //删除对应的社区绑定关系
         newVersionCommunityBindDao.removeNewVersionCommunityBindRelation(parentId, studentId);
+    }
+
+
+    public List<ObjectId> getCommunityIdsByUserId(ObjectId userId){
+        List<NewVersionCommunityBindEntry> entries=newVersionCommunityBindDao.getAllStudentBindEntries(userId);
+        List<ObjectId> communityIds=new ArrayList<ObjectId>();
+        for(NewVersionCommunityBindEntry bindEntry:entries){
+            communityIds.add(bindEntry.getCommunityId());
+        }
+        return communityIds;
     }
 
 

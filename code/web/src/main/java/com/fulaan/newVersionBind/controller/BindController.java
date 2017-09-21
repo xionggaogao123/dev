@@ -22,11 +22,11 @@ import java.util.List;
  */
 @Api(value = "app家长孩子绑定逻辑")
 @Controller
-@RequestMapping("/newVersionBind")
-public class NewVersionBindController extends BaseController {
+@RequestMapping("/bind")
+public class BindController extends BaseController {
 
 
-    private static final Logger logger = Logger.getLogger(NewVersionBindController.class);
+    private static final Logger logger = Logger.getLogger(BindController.class);
 
     @Autowired
     private NewVersionBindService newVersionBindService;
@@ -50,7 +50,7 @@ public class NewVersionBindController extends BaseController {
     @RequestMapping("/supplementNewVersionInfo")
     @ResponseBody
     public RespObj supplementNewVersionInfo(
-            @ApiParam(name = "bindId", required = true, value = "bindId") @ObjectIdType ObjectId bindId,
+            @ApiParam(name = "bindId", required = true, value = "绑定Id") @ObjectIdType ObjectId bindId,
             int sex,String birthDate,
             String provinceName,
             String regionName,
@@ -108,12 +108,12 @@ public class NewVersionBindController extends BaseController {
      */
     @ApiOperation(value = "获取某个家长的绑定的所有的学生列表", httpMethod = "GET", produces = "application/json")
     @ApiResponses( value = {@ApiResponse(code = 200, message = "Successful — 请求已完成",response = RespObj.class)})
-    @RequestMapping("/getNewVersionBindDtos")
+    @RequestMapping("/getBindDtos")
     @ResponseBody
     public RespObj getNewVersionBindDtos(){
         RespObj respObj = new RespObj(Constant.FAILD_CODE);
         try{
-            List<NewVersionBindRelationDTO> dtoList=newVersionBindService.getNewVersionBindDtos(getUserId());
+            List<NewVersionBindRelationDTO> dtoList=newVersionBindService.getNewVersionBindDtos(getUserId(),null);
             respObj.setCode(Constant.SUCCESS_CODE);
             respObj.setMessage(dtoList);
         }catch (Exception e){
@@ -129,7 +129,7 @@ public class NewVersionBindController extends BaseController {
      */
     @ApiOperation(value = "获取", httpMethod = "GET", produces = "application/json")
     @ApiResponses( value = {@ApiResponse(code = 200, message = "Successful — 请求已完成",response = RespObj.class)})
-    @RequestMapping("/getNewVersionBindStudent")
+    @RequestMapping("/getBindStudent")
     @ResponseBody
     public RespObj getNewVersionBindStudent(){
         RespObj respObj = new RespObj(Constant.FAILD_CODE);
@@ -208,6 +208,23 @@ public class NewVersionBindController extends BaseController {
             respObj.setMessage("解除绑定成功!");
         }catch (Exception e){
             respObj.setMessage(e.getMessage());
+        }
+        return respObj;
+    }
+
+
+    @ApiOperation(value = "获取某个社区下绑定的孩子有哪些", httpMethod = "GET", produces = "application/json")
+    @ApiResponses( value = {@ApiResponse(code = 200, message = "Successful — 请求已完成",response = RespObj.class)})
+    @RequestMapping("/getCommunityBindList")
+    @ResponseBody
+    public RespObj getCommunityBindList(@ObjectIdType ObjectId communityId){
+        RespObj respObj = new RespObj(Constant.FAILD_CODE);
+        try{
+            List<NewVersionBindRelationDTO> dtoList=newVersionBindService.getNewVersionBindDtos(getUserId(),communityId);
+            respObj.setCode(Constant.SUCCESS_CODE);
+            respObj.setMessage(dtoList);
+        }catch (Exception e){
+            respObj.setErrorMessage(e.getMessage());
         }
         return respObj;
     }

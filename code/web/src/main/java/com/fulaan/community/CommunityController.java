@@ -17,6 +17,7 @@ import com.fulaan.fgroup.service.GroupService;
 import com.fulaan.forum.service.FVoteService;
 import com.fulaan.friendscircle.service.FriendApplyService;
 import com.fulaan.friendscircle.service.FriendService;
+import com.fulaan.newVersionBind.service.NewVersionBindService;
 import com.fulaan.operation.service.AppCommentService;
 import com.fulaan.playmate.service.MateService;
 import com.fulaan.pojo.CommunityMessage;
@@ -107,6 +108,9 @@ public class CommunityController extends BaseController {
 
     @Autowired
     private FeedbackService feedbackService;
+
+    @Autowired
+    private NewVersionBindService newVersionBindService;
 
     @Autowired
     private LatestGroupDynamicService latestGroupDynamicService;
@@ -3323,11 +3327,23 @@ public class CommunityController extends BaseController {
             }
             return RespObj.FAILD("没有数据");
         } else {
-            List<CommunityDTO> communityDTOList = communityService.getCommunitys(userId, -1, 0);
-            for (CommunityDTO communityDTO : communityDTOList) {
-                communityIds.add(new ObjectId(communityDTO.getId()));
+//            List<CommunityDTO> communityDTOList = communityService.getCommunitys(userId, -1, 0);
+//            for (CommunityDTO communityDTO : communityDTOList) {
+//                communityIds.add(new ObjectId(communityDTO.getId()));
+//            }
+            List<ObjectId> cmIds=newVersionBindService.getCommunityIdsByUserId(userId);
+            communityIds.addAll(cmIds);
+            if(communityIds.size()>0) {
+                return RespObj.SUCCESS(communityService.getMyMessageByType(communityIds, userId, type, page, pageSize));
+            }else{
+                PageModel<CommunityDetailDTO> pageModel = new PageModel<CommunityDetailDTO>();
+                pageModel.setPage(page);
+                pageModel.setPageSize(pageSize);
+                pageModel.setTotalCount(0);
+                pageModel.setTotalPages(0);
+                pageModel.setResult(new ArrayList<CommunityDetailDTO>());
+                return RespObj.SUCCESS(pageModel);
             }
-            return RespObj.SUCCESS(communityService.getMyMessageByType(communityIds,userId, type,page,pageSize));
         }
     }
 

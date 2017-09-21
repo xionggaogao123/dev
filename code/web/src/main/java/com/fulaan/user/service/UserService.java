@@ -1122,19 +1122,24 @@ public class UserService extends BaseService {
         //放入缓存
         ObjectId cacheUserKey = new ObjectId();
         String ipKey = CacheHandler.getKeyString(CacheHandler.CACHE_USER_KEY_IP, cacheUserKey.toString());
-        CacheHandler.cache(ipKey, ip, Constant.SECONDS_IN_DAY);
+//        CacheHandler.cache(ipKey, ip, Constant.SECONDS_IN_DAY);
+        CacheHandler.cache(ipKey, ip, Constant.SECONDS_IN_HALF_YEAR);
         //ck_key
-        CacheHandler.cacheUserKey(e.getID().toString(), cacheUserKey.toString(), Constant.SECONDS_IN_DAY);
+//        CacheHandler.cacheUserKey(e.getID().toString(), cacheUserKey.toString(), Constant.SECONDS_IN_DAY);
+        CacheHandler.cacheUserKey(e.getID().toString(), cacheUserKey.toString(), Constant.SECONDS_IN_HALF_YEAR);
         //s_key
-        CacheHandler.cacheSessionValue(cacheUserKey.toString(), value, Constant.SECONDS_IN_DAY);
+//        CacheHandler.cacheSessionValue(cacheUserKey.toString(), value, Constant.SECONDS_IN_DAY);
+        CacheHandler.cacheSessionValue(cacheUserKey.toString(), value, Constant.SECONDS_IN_HALF_YEAR);
         //处理cookie
         Cookie userKeycookie = new Cookie(Constant.COOKIE_USER_KEY, cacheUserKey.toString());
-        userKeycookie.setMaxAge(Constant.SECONDS_IN_DAY);
+//        userKeycookie.setMaxAge(Constant.SECONDS_IN_DAY);
+        userKeycookie.setMaxAge(Constant.SECONDS_IN_HALF_YEAR);
         userKeycookie.setPath(Constant.BASE_PATH);
         response.addCookie(userKeycookie);
         try {
             Cookie nameCookie = new Cookie(Constant.COOKIE_USERNAME_KEY, URLEncoder.encode(e.getUserName(), Constant.UTF_8));
-            nameCookie.setMaxAge(Constant.SECONDS_IN_MONTH);
+//            nameCookie.setMaxAge(Constant.SECONDS_IN_MONTH);
+            nameCookie.setMaxAge(Constant.SECONDS_IN_HALF_YEAR);
             nameCookie.setPath(Constant.BASE_PATH);
             response.addCookie(nameCookie);
         } catch (UnsupportedEncodingException e1) {

@@ -9,7 +9,10 @@ import com.pojo.utils.MongoUtils;
 import com.sys.constants.Constant;
 import org.bson.types.ObjectId;
 
+import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 /**
  * Created by scott on 2017/9/13.
@@ -30,6 +33,37 @@ public class NewVersionCommunityBindDao extends BaseDao{
         update(MongoFacroty.getAppDB(), Constant.COLLECTION_NEW_VERSION_COMMUNITY_BIND,query,updateValue);
     }
 
+    public List<NewVersionCommunityBindEntry> getAllStudentBindEntries(ObjectId userId){
+        List<NewVersionCommunityBindEntry> entries=new ArrayList<NewVersionCommunityBindEntry>();
+        BasicDBObject query=new BasicDBObject()
+                .append("uid",userId)
+                .append("ir", Constant.ZERO);
+        List<DBObject> dbObjectList=find(MongoFacroty.getAppDB(), Constant.COLLECTION_NEW_VERSION_COMMUNITY_BIND,query,Constant.FIELDS);
+        if(null!=dbObjectList&&!dbObjectList.isEmpty()){
+            for(DBObject dbObject:dbObjectList){
+                entries.add(new NewVersionCommunityBindEntry(dbObject));
+            }
+        }
+        return entries;
+    }
+
+
+    public Map<ObjectId,NewVersionCommunityBindEntry> getCommunityBindMap(ObjectId communityId, ObjectId mainUserId){
+        Map<ObjectId,NewVersionCommunityBindEntry> map=new HashMap<ObjectId, NewVersionCommunityBindEntry>();
+        BasicDBObject query=new BasicDBObject()
+                .append("cid",communityId)
+                .append("ir", Constant.ZERO)
+                .append("muid",mainUserId);
+        List<DBObject> dbObjectList=find(MongoFacroty.getAppDB(), Constant.COLLECTION_NEW_VERSION_COMMUNITY_BIND,query,Constant.FIELDS);
+        if(null!=dbObjectList&&!dbObjectList.isEmpty()){
+            for(DBObject dbObject:dbObjectList){
+                NewVersionCommunityBindEntry entry=new NewVersionCommunityBindEntry(dbObject);
+                map.put(entry.getUserId(),entry);
+            }
+        }
+        return map;
+    }
+
 
 
     public void removeNewVersionCommunity(ObjectId communityId,
@@ -47,7 +81,7 @@ public class NewVersionCommunityBindDao extends BaseDao{
         BasicDBObject query = new BasicDBObject()
                 .append("muid",mainUserId)
                 .append("uid",userId);
-        BasicDBObject updateValue=new BasicDBObject(Constant.MONGO_SET,new BasicDBObject("ir", Constant.ZERO));
+        BasicDBObject updateValue=new BasicDBObject(Constant.MONGO_SET,new BasicDBObject("ir", Constant.ONE));
         update(MongoFacroty.getAppDB(), Constant.COLLECTION_NEW_VERSION_COMMUNITY_BIND,query,updateValue);
     }
 

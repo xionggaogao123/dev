@@ -8,6 +8,7 @@ import com.db.operation.AppOperationDao;
 import com.db.operation.AppRecordDao;
 import com.db.user.NewVersionBindRelationDao;
 import com.fulaan.community.dto.CommunityDTO;
+import com.fulaan.newVersionBind.service.NewVersionBindService;
 import com.fulaan.operation.dto.AppCommentDTO;
 import com.fulaan.operation.dto.AppOperationDTO;
 import com.fulaan.operation.dto.AppRecordDTO;
@@ -42,6 +43,8 @@ public class AppCommentService {
     private CommunityService communityService;
     @Autowired
     private UserService userService;
+    @Autowired
+    private NewVersionBindService newVersionBindService;
 
 
     /**
@@ -376,12 +379,12 @@ public class AppCommentService {
      */
     public List<AppCommentDTO> getStuLit(long dateTime,ObjectId studentId){
         List<AppCommentDTO> dtos = new ArrayList<AppCommentDTO>();
-        List<NewVersionBindRelationEntry> nlist = newVersionBindRelationDao.getEntriesByUserId(studentId);
+        //List<NewVersionBindRelationEntry> nlist = newVersionBindRelationDao.getEntriesByUserId(studentId);
         List<String> olist = new ArrayList<String>();
-        List<ObjectId> blist = new ArrayList<ObjectId>();
+        //List<ObjectId> blist = new ArrayList<ObjectId>();
         List<String> uids = new ArrayList<String>();
         //获取家长端的所有社区
-        List<CommunityDTO> communityDTOList = new ArrayList<CommunityDTO>();
+        /*List<CommunityDTO> communityDTOList = new ArrayList<CommunityDTO>();
         if(nlist.size()>0){
             for(NewVersionBindRelationEntry entry : nlist){
                 blist.add(entry.getMainUserId());
@@ -397,7 +400,8 @@ public class AppCommentService {
                 stuList.add(dto2.getId());
                 obList.add(new ObjectId(dto2.getId()));
             }
-        }
+        }*/
+        List<ObjectId> obList = newVersionBindService.getCommunityIdsByUserId(studentId);
         List<AppCommentEntry> entries2 = appCommentDao.selectDateList2(obList, dateTime);
         UserDetailInfoDTO studtos = userService.getUserInfoById(studentId.toString());
         if(entries2.size()>0){

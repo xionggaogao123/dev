@@ -132,7 +132,11 @@ public class WrongQuestionService {
             NewVersionGradeDTO ndto = new NewVersionGradeDTO();
             //获得最大的type
             int number = newVersionGradeDao.getMaxGradeType(userId);
-            ndto.setGradeType(number +1);
+            if(number ==12){
+                ndto.setGradeType(number);
+            }else{
+                ndto.setGradeType(number +1);
+            }
             ndto.setUserId(userId.toString());
             ndto.setYear(keyValue.getValue());
             NewVersionGradeEntry entry1 = ndto.buildAddEntry();

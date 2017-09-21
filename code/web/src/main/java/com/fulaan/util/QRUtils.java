@@ -13,6 +13,9 @@ import java.io.FileOutputStream;
  */
 public class QRUtils {
 
+//    private static final String prev_url="http://www.fulaan.com";
+    private static final String prev_url="http://121.40.229.225:8080";
+
     /**
      * 生成社区二维码路径
      *
@@ -20,7 +23,7 @@ public class QRUtils {
      * @return
      */
     public static String getCommunityQrUrl(ObjectId communityId) {
-        String qrCode = "http://www.fulaan.com/qr/community/" + communityId.toString();
+        String qrCode = prev_url+"/qr/community/" + communityId.toString();
         try {
             return getQrUrl(qrCode);
         } catch (Exception e) {
@@ -36,7 +39,7 @@ public class QRUtils {
      * @return
      */
     public static String getPersonQrUrl(ObjectId userId) {
-        String qrCode = "http://www.fulaan.com/qr/person/" + userId.toString();
+        String qrCode = prev_url+"/qr/person/" + userId.toString();
         try {
             return getQrUrl(qrCode);
         } catch (Exception e) {
@@ -46,7 +49,7 @@ public class QRUtils {
     }
 
     public static String getPersonBindQrUrl(ObjectId userId) {
-        String qrCode = "http://www.fulaan.com/qr/personBind/" + userId.toString();
+        String qrCode = prev_url+"/qr/personBind/" + userId.toString();
         try {
             return getQrUrl(qrCode);
         } catch (Exception e) {
@@ -62,7 +65,7 @@ public class QRUtils {
      * @return
      */
     public static String getGroupQrUrl(ObjectId groupId) {
-        String qrCode = "http://www.fulaan.com/qr/group/" + groupId.toString();
+        String qrCode = prev_url+"/qr/group/" + groupId.toString();
         try {
             return getQrUrl(qrCode);
         } catch (Exception e) {

@@ -295,7 +295,7 @@ public class AppCommentController extends BaseController {
         RespObj respObj=null;
         try {
             respObj = RespObj.SUCCESS;
-            List<AppOperationDTO> dtos = appCommentService.getOperationList(new ObjectId(id),role,getUserId(),page,pageSize);
+            Map<String,Object> dtos = appCommentService.getOperationList(new ObjectId(id),role,getUserId(),page,pageSize);
             respObj.setMessage(dtos);
         } catch (Exception e) {
             e.printStackTrace();
@@ -382,6 +382,30 @@ public class AppCommentController extends BaseController {
 
     }
 
+    /**
+     * 查询作业详情
+     */
+    /*@ApiOperation(value="查询作业详情",httpMethod = "POST",produces = "application/json")
+    @ApiResponse(code=200,message = "success", response = String.class)
+    @RequestMapping("/addSecondOperation")
+    @ResponseBody
+    public String selectCommentDesc(@ApiParam(name="id",value="作业id") @RequestParam(value="id") String id){
+        RespObj respObj=null;
+        try {
+            respObj = RespObj.SUCCESS;
+            dto.setUserId(getUserId().toString());
+            dto.setLevel(2);
+            String result = appCommentService.addSecondOperation(dto);
+            respObj.setMessage(result);
+        } catch (Exception e) {
+            e.printStackTrace();
+            respObj = RespObj.FAILD;
+            respObj.setMessage("添加评论失败!");
+
+        }
+        return JSON.toJSONString(respObj);
+
+    }*/
 
 
 

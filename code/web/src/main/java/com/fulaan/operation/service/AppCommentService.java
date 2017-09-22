@@ -409,7 +409,14 @@ public class AppCommentService {
     /**
      * 根据作业id查找当前评论列表
      */
-    public List<AppOperationDTO> getOperationList(ObjectId id,int role,ObjectId userId,int page,int pageSize){
+    public Map<String,Object> getOperationList(ObjectId id,int role,ObjectId userId,int page,int pageSize){
+        Map<String,Object> map2 = new HashMap<String, Object>();
+        AppCommentEntry entry2 = appCommentDao.getEntry(id);
+        UserDetailInfoDTO studtos = userService.getUserInfoById(entry2.getAdminId().toString());
+        AppCommentDTO dto2 = new AppCommentDTO(entry2);
+        dto2.setAdminName(studtos.getUserName());
+        dto2.setAdminUrl(studtos.getImgUrl());
+        map2.put("desc",dto2);
         //添加一级评论
         AppCommentEntry entry = appCommentDao.getEntry(id);
         List<AppOperationEntry> entries = null;
@@ -457,7 +464,8 @@ public class AppCommentService {
                 dto5.setBackName(map.get(dto5.getBackId()).getUserName());
             }
         }
-        return dtos;
+        map2.put("list",dtos);
+        return map2;
     }
 
 
@@ -607,10 +615,25 @@ public class AppCommentService {
         }
         return clist;
     }
-    /**
+ /*   *//**
      * 获得用户的所有不具有管理员权限的社区id
      *
-     */
+     *//*
+    public List<String> getMyRoleList2(ObjectId id){
+        //获得groupId
+        ObjectId obj =   communityDao.getGroupIdByCommunityId(id);
+        List<MemberEntry> olist = memberDao.getMembers(obj, 1, 1000);
+        List<String> clist = new ArrayList<String>();
+        if(olist.size()>0){
+            for(MemberEntry en : olist){
+                if(en.getRole()==0){
+                    clist.add(en.getUserId().toString());
+                }
+            }
+        }
+        return clist;
+    }
+    */
   /*  public List<String> getMyRoleList2(ObjectId id){
         //获得groupId
         ObjectId obj =   groupDao.getGroupIdByCommunityId(id);

@@ -659,6 +659,8 @@ public class Constant {
     //新版本绑定社区中家长与孩子的关系表
     public static final String COLLECTION_NEW_VERSION_COMMUNITY_BIND="newversion_community_bind";
 
+    public static final String COLLECTION_NEW_VERSION_APP_NOTICE="newversion_app_notice";
+
     public static final String COLLECTION_MALL_MARKET_URL = "http://a.app.qq.com/o/simple.jsp?pkgname=com.fulan.mall";
 
     //---------------------------------------------------------------------------------------------论坛

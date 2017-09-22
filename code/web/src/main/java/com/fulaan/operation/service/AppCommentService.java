@@ -147,7 +147,7 @@ public class AppCommentService {
         Map<String,Object> map = new HashMap<String, Object>();
         //查询已提交
         List<AppOperationEntry> entries =appOperationDao.getEntryListByParentId(id,3,page,pageSize);
-
+        int num = appOperationDao.countStudentLoadTimes(id, 3);
         //获得该作业的所有发放学生
         //获得作业
         AppCommentEntry aen = appCommentDao.getEntry(id);
@@ -180,7 +180,7 @@ public class AppCommentService {
         //已提交
         map.put("loadList",dtos);
         //已提交人数
-        map.put("loadNumber",dtos.size());
+        map.put("loadNumber",num);
         //未提交
         map.put("unLoadList",unList);
         //未提交人数
@@ -390,10 +390,8 @@ public class AppCommentService {
                 if(dto3.getAdminId() != null && olist.contains(dto3.getAdminId())){
 
                 }else{
-                    int num = appOperationDao.getEntryCount(en.getID());
                     String ctm = dto3.getCreateTime().substring(11,16);
                     dto3.setCreateTime(ctm);
-                    dto3.setNumber(num);
                     dto3.setType(2);
                     if(studtos != null){
                         dto3.setSendUser(studtos.getUserName());

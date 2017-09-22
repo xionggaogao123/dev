@@ -132,6 +132,30 @@ public class AppCommentController extends BaseController {
         }
         return JSON.toJSONString(respObj);
     }
+    /**
+     * 查找当前作业提交的学生名单
+     * @return
+     */
+    @ApiOperation(value = "查找当前作业提交的学生名单", httpMethod = "POST", produces = "application/json")
+    @ApiResponses( value = {@ApiResponse(code = 200, message = "Successful — 请求已完成",response = String.class),
+            @ApiResponse(code = 400, message = "请求中有语法问题，或不能满足请求"),
+            @ApiResponse(code = 500, message = "服务器不能完成请求")})
+    @RequestMapping("/selectStudentLoad")
+    @ResponseBody
+    public String selectStudentLoad(@ApiParam(name = "id", required = true, value = "作业id") @RequestParam("id") String id,int page,int pageSize){
+
+        RespObj respObj=null;
+        try {
+            respObj = RespObj.SUCCESS;
+            Map<String,Object> dtos = appCommentService.selectStudentLoad(new ObjectId(id), page, pageSize);
+            respObj.setMessage(dtos);
+        } catch (Exception e) {
+            e.printStackTrace();
+            respObj = RespObj.FAILD;
+            respObj.setMessage("添加关键字失败!");
+        }
+        return JSON.toJSONString(respObj);
+    }
 
     /**
      * 是否签到
@@ -286,9 +310,9 @@ public class AppCommentController extends BaseController {
      * @param dto
      * @return
      */
-    @ApiOperation(value = "添加作业评论", httpMethod = "POST", produces = "application/json")
+    @ApiOperation(value = "添加学生作业", httpMethod = "POST", produces = "application/json")
     @ApiResponse(code = 200, message = "success", response = String.class)
-    @RequestMapping("/addOperationEntry")
+    @RequestMapping("/addOperationEntryFromStrudent")
     @ResponseBody
     public String addOperationEntryFromStrudent(@ApiParam(value = "contactId为作业id，role为3学生提交") @RequestBody AppOperationDTO dto){
         RespObj respObj=null;

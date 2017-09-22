@@ -22,9 +22,9 @@ public class AppOperationDao extends BaseDao {
     }
 
     //老师评论列表查询
-    public List<AppOperationEntry> getEntryListByParentId(ObjectId parentId,int role,int page,int pageSize) {
+    public List<AppOperationEntry> getEntryListByParentId(ObjectId contactId,int role,int page,int pageSize) {
         BasicDBObject query = new BasicDBObject()
-                .append("pid",parentId)
+                .append("cid",contactId)
                 .append("rol",role)
                 .append("lev", Constant.ONE)//一级
                 .append("isr", 0); // 未删除
@@ -41,12 +41,24 @@ public class AppOperationDao extends BaseDao {
         }
         return entryList;
     }
+    //查询所有已提交的数量
+    public int countStudentLoadTimes(ObjectId contactId, int role) {
+        BasicDBObject query = new BasicDBObject()
+                .append("cid",contactId)
+                .append("rol", role)
+                .append("isr",Constant.ZERO); // 未删除
+        int count =
+                count(MongoFacroty.getAppDB(),
+                        Constant.COLLECTION_APP_OPERATION,
+                        query);
+        return count;
+    }
 
     //家长、学生评论列表查询
-    public List<AppOperationEntry> getEntryListByUserId(ObjectId userId,int role,ObjectId parentId,int page,int pageSize) {
+    public List<AppOperationEntry> getEntryListByUserId(ObjectId userId,int role,ObjectId contactId,int page,int pageSize) {
         BasicDBObject query = new BasicDBObject()
                 .append("uid",userId)
-                .append("pid", parentId)
+                .append("cid", contactId)
                 .append("rol",role)
                 .append("lev", Constant.ONE)//一级
                 .append("isr", 0); // 未删除
@@ -64,9 +76,9 @@ public class AppOperationDao extends BaseDao {
         return entryList;
     }
     //二级评论列表查询
-    public List<AppOperationEntry> getSecondList(List<ObjectId> userIds) {
+    public List<AppOperationEntry> getSecondList(List<ObjectId> parentIds) {
         BasicDBObject query = new BasicDBObject()
-                .append("pid", new BasicDBObject(Constant.MONGO_IN,userIds))
+                .append("pid", new BasicDBObject(Constant.MONGO_IN,parentIds))
                 .append("lev",Constant.TWO)//二级
                 .append("isr", 0); // 未删除
         List<DBObject> dbList =

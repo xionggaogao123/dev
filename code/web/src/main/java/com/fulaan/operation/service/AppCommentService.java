@@ -20,6 +20,7 @@ import com.pojo.operation.AppOperationEntry;
 import com.pojo.operation.AppRecordEntry;
 import com.pojo.user.NewVersionBindRelationEntry;
 import com.pojo.user.UserDetailInfoDTO;
+import com.sys.utils.DateTimeUtils;
 import org.bson.types.ObjectId;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -55,13 +56,18 @@ public class AppCommentService {
         Calendar cal = Calendar.getInstance();
         int month = cal.get(Calendar.YEAR);
         dto.setMonth(month);
+        long zero = 0l;
+        if(dto.getDateTime() ==null && dto.getDateTime()==""){
+            //获得当前时间
+            long current=System.currentTimeMillis();
+            //获得时间批次
+            zero = current/(1000*3600*24)*(1000*3600*24)- TimeZone.getDefault().getRawOffset();//今天零点零分零秒的毫秒数
+        }else{
+            zero = DateTimeUtils.getStrToLongTime(dto.getDateTime(), "yyyy-MM-dd");
+        }
+        dto.setDateTime("");
         AppCommentEntry en = dto.buildAddEntry();
-        //获得当前时间
-        long current=System.currentTimeMillis();
-        //获得时间批次
-        long zero=current/(1000*3600*24)*(1000*3600*24)- TimeZone.getDefault().getRawOffset();//今天零点零分零秒的毫秒数
         en.setDateTime(zero);
-
         List<CommunityDTO> communityDTOList = communityService.getCommunitys(new ObjectId(dto.getAdminId()), 1, 100);
         List<CommunityDTO> sendList = new ArrayList<CommunityDTO>();
         String[]  strar = comList.split(",");

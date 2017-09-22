@@ -13,12 +13,20 @@ import java.util.List;
  * Created by James on 2017/8/25.
  * id                             		id
  description      作业内容       		des
+ loadTime         作业提交时间          ltm
+ status             作业状态            sta  0 已发布    1 定时发布   2 暂不发布
+ writeNumber      家长签字数            wnm
+ talkNumber       家长讨论数            tnm
+ loadNumber       学生提交数            lnm
+ questionNumber   学生提问数            qnm
  imageUrl         图片           		img
- subject          学科标签         	   sub
- adminId          发布人id             aid
- recipientName    接收人社区名         rec
- recipientId      接收人社区id         rid
- dateTime         发布日期时间         dtm
+ subject          学科标签         	    sub
+ adminId          发布人id              aid
+ recipientName    接收人社区名          rec
+ recipientId      接收人社区id          rid
+ createTime       创建日期              ctm
+ dateTime         发布日期时间          dtm
+ month            月份                  mon
  */
 public class AppCommentEntry extends BaseDBObject {
     public AppCommentEntry(){
@@ -30,6 +38,12 @@ public class AppCommentEntry extends BaseDBObject {
     //添加构造
     public AppCommentEntry(
             String description,
+            long loadTime,
+            int status,
+            int writeNumber,
+            int talkNumber,
+            int loadNumber,
+            int questionNumber,
             List<String> imageUrl,
             String subject,
             ObjectId adminId,
@@ -40,10 +54,16 @@ public class AppCommentEntry extends BaseDBObject {
     ){
         BasicDBObject dbObject=new BasicDBObject()
                 .append("des",description)
+                .append("ltm", loadTime)
+                .append("sta", status)
+                .append("wnm", writeNumber)
+                .append("tnm",talkNumber)
+                .append("lnm",loadNumber)
+                .append("qnm",questionNumber)
                 .append("img", imageUrl)
                 .append("sub",subject)
                 .append("aid",adminId)
-                .append("rec",recipientName)
+                .append("rec", recipientName)
                 .append("rid",recipientId)
                 .append("dtm", dateTime)
                 .append("mon",month)
@@ -56,6 +76,12 @@ public class AppCommentEntry extends BaseDBObject {
     public AppCommentEntry(
             ObjectId id,
             String description,
+            long loadTime,
+            int status,
+            int writeNumber,
+            int talkNumber,
+            int loadNumber,
+            int questionNumber,
             List<String> imageUrl,
             String subject,
             ObjectId adminId,
@@ -67,7 +93,13 @@ public class AppCommentEntry extends BaseDBObject {
         BasicDBObject dbObject=new BasicDBObject()
                 .append(Constant.ID,id)
                 .append("des", description)
-                .append("img",imageUrl)
+                .append("ltm", loadTime)
+                .append("sta", status)
+                .append("wnm", writeNumber)
+                .append("tnm",talkNumber)
+                .append("lnm", loadNumber)
+                .append("qnm",questionNumber)
+                .append("img", imageUrl)
                 .append("sub",subject)
                 .append("aid",adminId)
                 .append("rec",recipientName)
@@ -101,6 +133,42 @@ public class AppCommentEntry extends BaseDBObject {
     public void setDescription(String description){
         setSimpleValue("des",description);
     }
+
+    public int getStatus(){
+        return getSimpleIntegerValue("sta");
+    }
+
+    public void setStatus(int status){
+        setSimpleValue("sta",status);
+    }
+    public int getWriteNumber(){
+        return getSimpleIntegerValue("wnm");
+    }
+
+    public void setWriteNumber(int writeNumber){
+        setSimpleValue("wnm",writeNumber);
+    }  public int getTalkNumber(){
+        return getSimpleIntegerValue("tnm");
+    }
+
+    public void setTalkNumber(int talkNumber){
+        setSimpleValue("tnm",talkNumber);
+    }
+    public int getLoadNumber(){
+        return getSimpleIntegerValue("lnm");
+    }
+
+    public void setLoadNumber(int loadNumber){
+        setSimpleValue("lnm",loadNumber);
+    }
+    public int getQuestionNumber(){
+        return getSimpleIntegerValue("qnm");
+    }
+
+    public void setQuestionNumber(int questionNumber){
+        setSimpleValue("qnm",questionNumber);
+    }
+
     public void se(List<String> imageUrl){
         setSimpleValue("img",imageUrl);
     }
@@ -129,6 +197,12 @@ public class AppCommentEntry extends BaseDBObject {
     }
     public void setDateTime(long dateTime){
         setSimpleValue("dtm",dateTime);
+    }
+    public long getLoadTime(){
+        return getSimpleLongValue("ltm");
+    }
+    public void setLoadTime(long loadTime){
+        setSimpleValue("ltm",loadTime);
     }
     public long getCreateTime(){
         return getSimpleLongValue("ctm");

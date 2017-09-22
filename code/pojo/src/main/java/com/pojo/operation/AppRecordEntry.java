@@ -6,6 +6,8 @@ import com.sys.constants.Constant;
 import org.bson.types.ObjectId;
 
 /**
+ *
+ * 签到提交表
  * Created by James on 2017/8/25.
  * Id                                       	  id
  ParentId             关联作业id                pid

@@ -15,11 +15,22 @@ public class AppCommentDTO {
     private String id;
     @ApiModelProperty(value = "描述", required = true)
     private String description;
+    @ApiModelProperty(value = "作业提交时间 (yyyy-MM-dd HH:mm:ss)", required = true)
+    private String loadTime;
+    @ApiModelProperty(value = "作业提交状态", required = true)
+    private int status;
+    private int writeNumber;
+    private int talkNumber;
+    private int loadNumber;
+    private int questionNumber;
+    @ApiModelProperty(value = "图片url", required = true)
     private List<String> imageUrl;
+    @ApiModelProperty(value = "学科名", required = true)
     private String subject;
     private String adminId;
     private String recipientName;
     private String recipientId;
+    @ApiModelProperty(value = "作业发布时间（yyyy-MM-dd）", required = false)
     private String dateTime;
     private String createTime;
     private int month;
@@ -36,6 +47,16 @@ public class AppCommentDTO {
         if(e!=null){
             this.id = e.getID()==null?"":e.getID().toString();
             this.description = e.getDescription();
+            if(e.getLoadTime()!=0l){
+                this.loadTime = DateTimeUtils.getLongToStrTimeTwo(e.getDateTime());
+            }else{
+                this.loadTime = "";
+            }
+            this.status = e.getStatus();
+            this.writeNumber = e.getWriteNumber();
+            this.talkNumber = e.getTalkNumber();
+            this.loadNumber = e.getLoadNumber();
+            this.questionNumber = e.getQuestionNumber();
             this.imageUrl = e.getImageUrl();
             this.subject = e.getSubject();
             this.adminId = e.getAdminId() == null ? "" : e.getAdminId().toString();
@@ -66,6 +87,11 @@ public class AppCommentDTO {
         if(this.getRecipientId()!=null&&!"".equals(this.getRecipientId())){
             rId=new ObjectId(this.getRecipientId());
         }
+        long lTm = 0l;
+        if(this.getLoadTime() != null && this.getLoadTime() != ""){
+            lTm = DateTimeUtils.getStrToLongTime(this.getLoadTime());
+        }
+
         long dTm = 0l;
         if(this.getDateTime() != null && this.getDateTime() != ""){
             dTm = DateTimeUtils.getStrToLongTime(this.getDateTime());
@@ -73,6 +99,12 @@ public class AppCommentDTO {
         AppCommentEntry openEntry =
                 new AppCommentEntry(
                         this.description,
+                        lTm,
+                        this.status,
+                        this.writeNumber,
+                        this.talkNumber,
+                        this.loadNumber,
+                        this.questionNumber,
                         this.imageUrl,
                         this.subject,
                         aId,
@@ -96,6 +128,10 @@ public class AppCommentDTO {
         if(this.getRecipientId()!=null&&!"".equals(this.getRecipientId())){
             rId=new ObjectId(this.getRecipientId());
         }
+        long lTm = 0l;
+        if(this.getLoadTime() != null && this.getLoadTime() != ""){
+            lTm = DateTimeUtils.getStrToLongTime(this.getLoadTime());
+        }
         long dTm = 0l;
         if(this.getDateTime() != null && this.getDateTime() != ""){
             dTm = DateTimeUtils.getStrToLongTime(this.getDateTime());
@@ -104,6 +140,12 @@ public class AppCommentDTO {
                 new AppCommentEntry(
                         Id,
                         this.description,
+                        lTm,
+                        this.status,
+                        this.writeNumber,
+                        this.talkNumber,
+                        this.loadNumber,
+                        this.questionNumber,
                         this.imageUrl,
                         this.subject,
                         aId,
@@ -233,5 +275,53 @@ public class AppCommentDTO {
 
     public void setSendUser(String sendUser) {
         this.sendUser = sendUser;
+    }
+
+    public String getLoadTime() {
+        return loadTime;
+    }
+
+    public void setLoadTime(String loadTime) {
+        this.loadTime = loadTime;
+    }
+
+    public int getStatus() {
+        return status;
+    }
+
+    public void setStatus(int status) {
+        this.status = status;
+    }
+
+    public int getWriteNumber() {
+        return writeNumber;
+    }
+
+    public void setWriteNumber(int writeNumber) {
+        this.writeNumber = writeNumber;
+    }
+
+    public int getTalkNumber() {
+        return talkNumber;
+    }
+
+    public void setTalkNumber(int talkNumber) {
+        this.talkNumber = talkNumber;
+    }
+
+    public int getLoadNumber() {
+        return loadNumber;
+    }
+
+    public void setLoadNumber(int loadNumber) {
+        this.loadNumber = loadNumber;
+    }
+
+    public int getQuestionNumber() {
+        return questionNumber;
+    }
+
+    public void setQuestionNumber(int questionNumber) {
+        this.questionNumber = questionNumber;
     }
 }

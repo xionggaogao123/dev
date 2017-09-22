@@ -15,6 +15,7 @@ public class AppOperationDTO {
     private String backId;
     private int level;
     private int type;
+    private int role;
     private String description;
     private int second;
     private String cover;
@@ -33,6 +34,7 @@ public class AppOperationDTO {
             this.description = e.getDescription();
             this.fileUrl = e.getFileUrl();
             this.type = e.getType();
+            this.role = e.getRole();
             this.level = e.getLevel();
             this.second = e.getSecond();
             this.cover = e.getCover();
@@ -74,6 +76,7 @@ public class AppOperationDTO {
                         this.level,
                         dTm,
                         this.type,
+                        this.role,
                         this.description,
                         this.second,
                         this.cover,
@@ -112,6 +115,7 @@ public class AppOperationDTO {
                         this.level,
                         dTm,
                         this.type,
+                        this.role,
                         this.description,
                         this.second,
                         this.cover,
@@ -231,5 +235,13 @@ public class AppOperationDTO {
 
     public void setBackName(String backName) {
         this.backName = backName;
+    }
+
+    public int getRole() {
+        return role;
+    }
+
+    public void setRole(int role) {
+        this.role = role;
     }
 }

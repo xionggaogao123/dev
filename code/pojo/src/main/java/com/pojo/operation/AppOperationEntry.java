@@ -6,6 +6,8 @@ import com.sys.constants.Constant;
 import org.bson.types.ObjectId;
 
 /**
+ *
+ *  通用评论表
  * Created by James on 2017/8/25.
  * Id                                 	 id
  parentId            关联作业id    		  pid
@@ -15,6 +17,7 @@ import org.bson.types.ObjectId;
  dateTime           发表时间               dtm
  Description          描述                 des
  Type               1图片2视屏3录音	      typ
+ role                 1 家长 2学生        rol
  cover                封面图片           cov
  second               秒数               sec
  fileUrl              文件地址           ful
@@ -34,6 +37,7 @@ public class AppOperationEntry  extends BaseDBObject {
             int level,
             long dateTime,
             int type,
+            int role,
             String description,
             int second,
             String cover,
@@ -46,6 +50,7 @@ public class AppOperationEntry  extends BaseDBObject {
                 .append("bid",backId)
                 .append("lev",level)
                 .append("typ",type)
+                .append("rol",role)
                 .append("sec", second)
                 .append("cov",cover)
                 .append("ful", fileUrl)
@@ -63,6 +68,7 @@ public class AppOperationEntry  extends BaseDBObject {
             int level,
             long dateTime,
             int type,
+            int role,
             String description,
             int second,
             String cover,
@@ -76,7 +82,8 @@ public class AppOperationEntry  extends BaseDBObject {
                 .append("bid", backId)
                 .append("lev",level)
                 .append("typ", type)
-                .append("sec",second)
+                .append("rol", role)
+                .append("sec", second)
                 .append("cov",cover)
                 .append("ful", fileUrl)
                 .append("dtm", dateTime)
@@ -120,6 +127,13 @@ public class AppOperationEntry  extends BaseDBObject {
 
     public void setType(int type){
         setSimpleValue("typ",type);
+    }
+    public int getRole(){
+        return getSimpleIntegerValue("rol");
+    }
+
+    public void setRole(int role){
+        setSimpleValue("rol",role);
     }
     public int getLevel(){
         return getSimpleIntegerValue("lev");

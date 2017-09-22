@@ -54,7 +54,7 @@ public class AppCommentController extends BaseController {
         } catch (Exception e) {
             e.printStackTrace();
             respObj = RespObj.FAILD;
-            respObj.setMessage("添加关键字失败!");
+            respObj.setErrorMessage("添加作业失败!");
         }
         return JSON.toJSONString(respObj);
     }
@@ -79,7 +79,7 @@ public class AppCommentController extends BaseController {
         } catch (Exception e) {
             e.printStackTrace();
             respObj = RespObj.FAILD;
-            respObj.setMessage("添加关键字失败!");
+            respObj.setErrorMessage("查找当前老师今天发布的作业失败!");
         }
         return JSON.toJSONString(respObj);
     }
@@ -104,7 +104,7 @@ public class AppCommentController extends BaseController {
         } catch (Exception e) {
             e.printStackTrace();
             respObj = RespObj.FAILD;
-            respObj.setMessage("添加关键字失败!");
+            respObj.setErrorMessage("查找当前家长收到的作业失败!");
         }
         return JSON.toJSONString(respObj);
     }
@@ -128,7 +128,7 @@ public class AppCommentController extends BaseController {
         } catch (Exception e) {
             e.printStackTrace();
             respObj = RespObj.FAILD;
-            respObj.setMessage("添加关键字失败!");
+            respObj.setErrorMessage("查找当前作业签到的家长名单失败!");
         }
         return JSON.toJSONString(respObj);
     }
@@ -152,7 +152,7 @@ public class AppCommentController extends BaseController {
         } catch (Exception e) {
             e.printStackTrace();
             respObj = RespObj.FAILD;
-            respObj.setMessage("添加关键字失败!");
+            respObj.setErrorMessage("查找当前作业提交的学生名单失败!");
         }
         return JSON.toJSONString(respObj);
     }
@@ -177,7 +177,7 @@ public class AppCommentController extends BaseController {
         } catch (Exception e) {
             e.printStackTrace();
             respObj = RespObj.FAILD;
-            respObj.setMessage("添加关键字失败!");
+            respObj.setErrorMessage("是否签到!");
         }
         return JSON.toJSONString(respObj);
     }
@@ -201,7 +201,7 @@ public class AppCommentController extends BaseController {
         } catch (Exception e) {
             e.printStackTrace();
             respObj = RespObj.FAILD;
-            respObj.setMessage("添加关键字失败!");
+            respObj.setErrorMessage("签到失败!");
         }
         return JSON.toJSONString(respObj);
     }
@@ -226,7 +226,7 @@ public class AppCommentController extends BaseController {
         } catch (Exception e) {
             e.printStackTrace();
             respObj = RespObj.FAILD;
-            respObj.setMessage("添加关键字失败!");
+            respObj.setErrorMessage("查找当前当前月份用户发放作业情况名单失败!");
         }
         return JSON.toJSONString(respObj);
     }
@@ -252,7 +252,7 @@ public class AppCommentController extends BaseController {
         } catch (Exception e) {
             e.printStackTrace();
             respObj = RespObj.FAILD;
-            respObj.setMessage("添加关键字失败!");
+            respObj.setErrorMessage("查找当前点击的事件老师失败!");
         }
         return JSON.toJSONString(respObj);
     }
@@ -276,7 +276,7 @@ public class AppCommentController extends BaseController {
         } catch (Exception e) {
             e.printStackTrace();
             respObj = RespObj.FAILD;
-            respObj.setMessage("添加关键字失败!");
+            respObj.setErrorMessage("查找当前点击的事件学生收到作业情况名单失败!");
         }
         return JSON.toJSONString(respObj);
     }
@@ -300,7 +300,7 @@ public class AppCommentController extends BaseController {
         } catch (Exception e) {
             e.printStackTrace();
             respObj = RespObj.FAILD;
-            respObj.setMessage("添加关键字失败!");
+            respObj.setErrorMessage("根据作业id查找当前评论列表失败!");
         }
         return JSON.toJSONString(respObj);
     }
@@ -325,7 +325,7 @@ public class AppCommentController extends BaseController {
         } catch (Exception e) {
             e.printStackTrace();
             respObj = RespObj.FAILD;
-            respObj.setMessage("添加评论失败!");
+            respObj.setErrorMessage("添加学生作业失败!");
 
         }
         return JSON.toJSONString(respObj);
@@ -351,7 +351,7 @@ public class AppCommentController extends BaseController {
         } catch (Exception e) {
             e.printStackTrace();
             respObj = RespObj.FAILD;
-            respObj.setMessage("添加评论失败!");
+            respObj.setErrorMessage("添加作业评论失败!");
 
         }
         return JSON.toJSONString(respObj);
@@ -375,7 +375,7 @@ public class AppCommentController extends BaseController {
         } catch (Exception e) {
             e.printStackTrace();
             respObj = RespObj.FAILD;
-            respObj.setMessage("添加评论失败!");
+            respObj.setErrorMessage("添加作业二级评论失败!");
 
         }
         return JSON.toJSONString(respObj);

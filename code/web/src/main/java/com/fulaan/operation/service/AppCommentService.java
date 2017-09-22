@@ -416,6 +416,7 @@ public class AppCommentService {
         AppCommentDTO dto2 = new AppCommentDTO(entry2);
         dto2.setAdminName(studtos.getUserName());
         dto2.setAdminUrl(studtos.getImgUrl());
+         //上面的描述
         map2.put("desc",dto2);
         //添加一级评论
         AppCommentEntry entry = appCommentDao.getEntry(id);
@@ -464,6 +465,7 @@ public class AppCommentService {
                 dto5.setBackName(map.get(dto5.getBackId()).getUserName());
             }
         }
+        //分页评论列表
         map2.put("list",dtos);
         return map2;
     }

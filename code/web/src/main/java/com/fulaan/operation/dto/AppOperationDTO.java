@@ -11,6 +11,7 @@ import org.bson.types.ObjectId;
 public class AppOperationDTO {
     private String id;
     private String parentId;
+    private String contactId;
     private String userId;
     private String backId;
     private int level;
@@ -39,6 +40,7 @@ public class AppOperationDTO {
             this.second = e.getSecond();
             this.cover = e.getCover();
             this.parentId = e.getParentId() == null ? "" : e.getParentId().toString();
+            this.contactId = e.getContactId() == null ? "" : e.getContactId().toString();
             this.userId = e.getUserId() == null ? "" : e.getUserId().toString();
             this.backId = e.getBackId() == null ? "" : e.getBackId().toString();
             if(e.getDateTime()!=0l){
@@ -56,6 +58,10 @@ public class AppOperationDTO {
         if(this.getUserId()!=null&&!"".equals(this.getUserId())){
             uId=new ObjectId(this.getUserId());
         }
+        ObjectId cId=null;
+        if(this.getContactId()!=null&&!"".equals(this.getContactId())){
+            cId=new ObjectId(this.getContactId());
+        }
         ObjectId bId=null;
         if(this.getBackId()!=null&&!"".equals(this.getBackId())){
             bId=new ObjectId(this.getBackId());
@@ -70,6 +76,7 @@ public class AppOperationDTO {
         }
         AppOperationEntry openEntry =
                 new AppOperationEntry(
+                        cId,
                         pId,
                         uId,
                         bId,
@@ -90,6 +97,10 @@ public class AppOperationDTO {
         if(this.getId()!=null&&!"".equals(this.getId())){
             Id=new ObjectId(this.getId());
         }
+        ObjectId cId=null;
+        if(this.getContactId()!=null&&!"".equals(this.getContactId())){
+            cId=new ObjectId(this.getContactId());
+        }
         ObjectId bId=null;
         if(this.getBackId()!=null&&!"".equals(this.getBackId())){
             bId=new ObjectId(this.getBackId());
@@ -109,6 +120,7 @@ public class AppOperationDTO {
         AppOperationEntry openEntry =
                 new AppOperationEntry(
                         Id,
+                        cId,
                         pId,
                         uId,
                         bId,
@@ -123,6 +135,14 @@ public class AppOperationDTO {
                 );
         return openEntry;
 
+    }
+
+    public String getContactId() {
+        return contactId;
+    }
+
+    public void setContactId(String contactId) {
+        this.contactId = contactId;
     }
 
     public String getId() {

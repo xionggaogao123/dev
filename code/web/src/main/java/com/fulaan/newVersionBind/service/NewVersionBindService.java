@@ -235,5 +235,19 @@ public class NewVersionBindService {
         return communityIds;
     }
 
+    /**
+     *
+     * @param communityId
+     * @return
+     */
+    public List<String> getStudentIdListByCommunityId(ObjectId communityId){
+        List<NewVersionCommunityBindEntry> entries=newVersionCommunityBindDao.getStudentIdListByCommunityId(communityId);
+        List<String> studentIds=new ArrayList<String>();
+        for(NewVersionCommunityBindEntry bindEntry:entries){
+            studentIds.add(bindEntry.getUserId().toString());
+        }
+        return studentIds;
+    }
+
 
 }

@@ -9,15 +9,16 @@ import org.bson.types.ObjectId;
  *
  *  通用评论表
  * Created by James on 2017/8/25.
- * Id                                 	 id
- parentId            关联作业id    		  pid
+ * Id                                      id
+ * contactId        关联作业id            cid
+ parentId            父id    		  pid
  userId              评论人id       	 uid
  backId               回复人id           bid
  level               层级                 lev
  dateTime           发表时间               dtm
  Description          描述                 des
  Type               1图片2视屏3录音	      typ
- role                 1 家长 2学生        rol
+ role                 1 家长 2学生 3学生提交  rol
  cover                封面图片           cov
  second               秒数               sec
  fileUrl              文件地址           ful
@@ -31,6 +32,7 @@ public class AppOperationEntry  extends BaseDBObject {
     }
     //添加构造
     public AppOperationEntry(
+            ObjectId contactId,
             ObjectId parentId,
             ObjectId userId,
             ObjectId backId,
@@ -44,6 +46,7 @@ public class AppOperationEntry  extends BaseDBObject {
             String fileUrl
     ){
         BasicDBObject dbObject=new BasicDBObject()
+                .append("cid",contactId)
                 .append("des", description)
                 .append("pid",parentId)
                 .append("uid",userId)
@@ -62,6 +65,7 @@ public class AppOperationEntry  extends BaseDBObject {
     //修改构造
     public AppOperationEntry(
             ObjectId id,
+            ObjectId contactId,
             ObjectId parentId,
             ObjectId userId,
             ObjectId backId,
@@ -76,6 +80,7 @@ public class AppOperationEntry  extends BaseDBObject {
     ){
         BasicDBObject dbObject=new BasicDBObject()
                 .append(Constant.ID,id)
+                .append("cid",contactId)
                 .append("des", description)
                 .append("pid", parentId)
                 .append("uid",userId)
@@ -97,6 +102,13 @@ public class AppOperationEntry  extends BaseDBObject {
 
     public void setParentId(ObjectId parentId){
         setSimpleValue("pid",parentId);
+    }
+    public ObjectId getContactId(){
+        return getSimpleObjecIDValue("cid");
+    }
+
+    public void setContactId(ObjectId contactId){
+        setSimpleValue("cid",contactId);
     }
     public ObjectId getUserId(){
         return getSimpleObjecIDValue("uid");

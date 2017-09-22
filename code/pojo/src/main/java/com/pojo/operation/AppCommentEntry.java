@@ -27,6 +27,7 @@ import java.util.List;
  createTime       创建日期              ctm
  dateTime         发布日期时间          dtm
  month            月份                  mon
+ year             年份                  yea
  */
 public class AppCommentEntry extends BaseDBObject {
     public AppCommentEntry(){

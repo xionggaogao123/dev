@@ -20,6 +20,22 @@ public class AppRecordDao extends BaseDao {
         save(MongoFacroty.getAppDB(), Constant.COLLECTION_APP_RECORD, entry.getBaseEntry());
         return entry.getID().toString();
     }
+
+    /**\
+     * 单查询
+     * @param id
+     * @return
+     */
+    public AppRecordEntry getEntry(ObjectId id) {
+        BasicDBObject query =new BasicDBObject(Constant.ID, id);
+        query.append("isr", Constant.ZERO);
+        DBObject dbo =findOne(MongoFacroty.getAppDB(), Constant.COLLECTION_APP_RECORD, query, Constant.FIELDS);
+        if(null!=dbo)
+        {
+            return new AppRecordEntry((BasicDBObject)dbo);
+        }
+        return null;
+    }
     //查询已签到列表
     public AppRecordEntry getEntryListByParentId3(ObjectId userId,long dateTime) {
         BasicDBObject query = new BasicDBObject();

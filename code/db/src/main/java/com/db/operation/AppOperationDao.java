@@ -22,9 +22,10 @@ public class AppOperationDao extends BaseDao {
     }
 
     //老师评论列表查询
-    public List<AppOperationEntry> getEntryListByParentId(ObjectId parentId,int page,int pageSize) {
+    public List<AppOperationEntry> getEntryListByParentId(ObjectId parentId,int role,int page,int pageSize) {
         BasicDBObject query = new BasicDBObject()
                 .append("pid",parentId)
+                .append("rol",role)
                 .append("lev", Constant.ONE)//一级
                 .append("isr", 0); // 未删除
         List<DBObject> dbList =
@@ -40,12 +41,14 @@ public class AppOperationDao extends BaseDao {
         }
         return entryList;
     }
-    //家长评论列表查询
-    public List<AppOperationEntry> getEntryListByUserId(ObjectId userId,ObjectId id,int page,int pageSize) {
+
+    //家长、学生评论列表查询
+    public List<AppOperationEntry> getEntryListByUserId(ObjectId userId,int role,ObjectId parentId,int page,int pageSize) {
         BasicDBObject query = new BasicDBObject()
                 .append("uid",userId)
-                .append("pid", id)
-                .append("lev",Constant.ONE)//一级
+                .append("pid", parentId)
+                .append("rol",role)
+                .append("lev", Constant.ONE)//一级
                 .append("isr", 0); // 未删除
         List<DBObject> dbList =
                 find(MongoFacroty.getAppDB(),

@@ -10,6 +10,8 @@ import org.bson.types.ObjectId;
  * Id                                 	 id
  parentId            关联作业id    		  pid
  userId              评论人id       	 uid
+ backId               回复人id           bid
+ level               层级                 lev
  dateTime           发表时间               dtm
  Description          描述                 des
  Type               1图片2视屏3录音	      typ
@@ -28,6 +30,8 @@ public class AppOperationEntry  extends BaseDBObject {
     public AppOperationEntry(
             ObjectId parentId,
             ObjectId userId,
+            ObjectId backId,
+            int level,
             long dateTime,
             int type,
             String description,
@@ -39,8 +43,10 @@ public class AppOperationEntry  extends BaseDBObject {
                 .append("des", description)
                 .append("pid",parentId)
                 .append("uid",userId)
+                .append("bid",backId)
+                .append("lev",level)
                 .append("typ",type)
-                .append("sec",second)
+                .append("sec", second)
                 .append("cov",cover)
                 .append("ful", fileUrl)
                 .append("dtm", dateTime)
@@ -53,6 +59,8 @@ public class AppOperationEntry  extends BaseDBObject {
             ObjectId id,
             ObjectId parentId,
             ObjectId userId,
+            ObjectId backId,
+            int level,
             long dateTime,
             int type,
             String description,
@@ -63,9 +71,11 @@ public class AppOperationEntry  extends BaseDBObject {
         BasicDBObject dbObject=new BasicDBObject()
                 .append(Constant.ID,id)
                 .append("des", description)
-                .append("pid",parentId)
+                .append("pid", parentId)
                 .append("uid",userId)
-                .append("typ",type)
+                .append("bid", backId)
+                .append("lev",level)
+                .append("typ", type)
                 .append("sec",second)
                 .append("cov",cover)
                 .append("ful", fileUrl)
@@ -88,6 +98,13 @@ public class AppOperationEntry  extends BaseDBObject {
     public void setUserId(ObjectId userId){
         setSimpleValue("uid",userId);
     }
+    public ObjectId getBackId(){
+        return getSimpleObjecIDValue("bid");
+    }
+
+    public void setBackId(ObjectId backId){
+        setSimpleValue("bid",backId);
+    }
 
     public String getDescription(){
         return getSimpleStringValue("des");
@@ -103,6 +120,13 @@ public class AppOperationEntry  extends BaseDBObject {
 
     public void setType(int type){
         setSimpleValue("typ",type);
+    }
+    public int getLevel(){
+        return getSimpleIntegerValue("lev");
+    }
+
+    public void setLevel(int level){
+        setSimpleValue("lev",level);
     }
 
     public int getSecond(){

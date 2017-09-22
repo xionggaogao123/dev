@@ -5,12 +5,15 @@ import com.sys.utils.DateTimeUtils;
 import org.bson.types.ObjectId;
 
 /**
+ * 评论表
  * Created by James on 2017/8/25.
  */
 public class AppOperationDTO {
     private String id;
     private String parentId;
     private String userId;
+    private String backId;
+    private int level;
     private int type;
     private String description;
     private int second;
@@ -19,6 +22,7 @@ public class AppOperationDTO {
     private String dateTime;
     private String userName;
     private String userUrl;
+    private String backName;
 
     public AppOperationDTO(){
 
@@ -29,10 +33,12 @@ public class AppOperationDTO {
             this.description = e.getDescription();
             this.fileUrl = e.getFileUrl();
             this.type = e.getType();
+            this.level = e.getLevel();
             this.second = e.getSecond();
             this.cover = e.getCover();
             this.parentId = e.getParentId() == null ? "" : e.getParentId().toString();
             this.userId = e.getUserId() == null ? "" : e.getUserId().toString();
+            this.backId = e.getBackId() == null ? "" : e.getBackId().toString();
             if(e.getDateTime()!=0l){
                 this.dateTime = DateTimeUtils.getLongToStrTimeTwo(e.getDateTime());
             }else{
@@ -48,6 +54,10 @@ public class AppOperationDTO {
         if(this.getUserId()!=null&&!"".equals(this.getUserId())){
             uId=new ObjectId(this.getUserId());
         }
+        ObjectId bId=null;
+        if(this.getBackId()!=null&&!"".equals(this.getBackId())){
+            bId=new ObjectId(this.getBackId());
+        }
         ObjectId pId=null;
         if(this.getParentId()!=null&&!"".equals(this.getParentId())){
             pId=new ObjectId(this.getParentId());
@@ -60,6 +70,8 @@ public class AppOperationDTO {
                 new AppOperationEntry(
                         pId,
                         uId,
+                        bId,
+                        this.level,
                         dTm,
                         this.type,
                         this.description,
@@ -74,6 +86,10 @@ public class AppOperationDTO {
         ObjectId Id=null;
         if(this.getId()!=null&&!"".equals(this.getId())){
             Id=new ObjectId(this.getId());
+        }
+        ObjectId bId=null;
+        if(this.getBackId()!=null&&!"".equals(this.getBackId())){
+            bId=new ObjectId(this.getBackId());
         }
         ObjectId uId=null;
         if(this.getUserId()!=null&&!"".equals(this.getUserId())){
@@ -92,6 +108,8 @@ public class AppOperationDTO {
                         Id,
                         pId,
                         uId,
+                        bId,
+                        this.level,
                         dTm,
                         this.type,
                         this.description,
@@ -189,5 +207,29 @@ public class AppOperationDTO {
 
     public void setSecond(int second) {
         this.second = second;
+    }
+
+    public String getBackId() {
+        return backId;
+    }
+
+    public void setBackId(String backId) {
+        this.backId = backId;
+    }
+
+    public int getLevel() {
+        return level;
+    }
+
+    public void setLevel(int level) {
+        this.level = level;
+    }
+
+    public String getBackName() {
+        return backName;
+    }
+
+    public void setBackName(String backName) {
+        this.backName = backName;
     }
 }

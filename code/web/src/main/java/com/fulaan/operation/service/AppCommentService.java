@@ -431,20 +431,36 @@ public class AppCommentService {
     /**
      * 根据作业id查找当前评论列表
      */
-    public List<AppOperationDTO> getOperationList(ObjectId id,ObjectId userId){
+    public List<AppOperationDTO> getOperationList(ObjectId id,ObjectId userId,int page,int pageSize){
+        //添加一级评论
         AppCommentEntry entry = appCommentDao.getEntry(id);
         List<AppOperationEntry> entries = null;
         if(entry.getAdminId() != null && entry.getAdminId().equals(userId)){
-            entries= appOperationDao.getEntryListByParentId(id);
+            entries= appOperationDao.getEntryListByParentId(id,page,pageSize);
         }else{
-            entries= appOperationDao.getEntryListByUserId(userId, id);
+            entries= appOperationDao.getEntryListByUserId(userId, id,page,pageSize);
         }
+        //添加二级评论
+        List<ObjectId> plist = new ArrayList<ObjectId>();
+        if(entries != null && entries.size()>0){
+            for(AppOperationEntry entry1 : entries){
+                plist.add(entry1.getID());
+            }
+        }
+        List<AppOperationEntry> entries2= appOperationDao.getSecondList(plist);
+        entries.addAll(entries2);
+
+
+        //取图和姓名
         List<AppOperationDTO> dtos = new ArrayList<AppOperationDTO>();
         List<String> uids = new ArrayList<String>();
         if(entries != null && entries.size()>0){
             for(AppOperationEntry en : entries){
                 AppOperationDTO dto = new AppOperationDTO(en);
                 uids.add(dto.getUserId());
+                if(dto.getBackId() != null && dto.getBackId() != ""){
+                    uids.add(dto.getBackId());
+                }
                 dtos.add(dto);
             }
         }
@@ -458,6 +474,9 @@ public class AppCommentService {
         for(AppOperationDTO dto5 : dtos){
             dto5.setUserName(map.get(dto5.getUserId()).getUserName());
             dto5.setUserUrl(map.get(dto5.getUserId()).getImgUrl());
+            if(dto5.getBackId() != null && dto5.getBackId() != ""){
+                dto5.setBackName(map.get(dto5.getBackId()).getUserName());
+            }
         }
         return dtos;
     }
@@ -467,6 +486,18 @@ public class AppCommentService {
      * @return
      */
     public String addOperationEntry(AppOperationDTO dto){
+        AppOperationEntry en = dto.buildAddEntry();
+        //获得当前时间
+        long current=System.currentTimeMillis();
+        en.setDateTime(current);
+        String id = appOperationDao.addEntry(en);
+        return id;
+    }
+    /**
+     * 发布评论
+     * @return
+     */
+    public String addSecondOperation(AppOperationDTO dto){
         AppOperationEntry en = dto.buildAddEntry();
         //获得当前时间
         long current=System.currentTimeMillis();
@@ -527,7 +558,7 @@ public class AppCommentService {
     }
 
     /**
-     * 获得用户的所有具有管理员权限的社区id
+     *根据社区id返回社区中不具有管理员权限的人
      *
      */
     public List<String> getMyRoleList2(ObjectId id){

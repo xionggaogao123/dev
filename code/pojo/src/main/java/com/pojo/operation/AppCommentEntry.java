@@ -9,15 +9,16 @@ import java.util.Date;
 import java.util.List;
 
 /**
+ * title: 作业表
  * Created by James on 2017/8/25.
  * id                             		id
  description      作业内容       		des
  imageUrl         图片           		img
- subject          学科标签         	 sub
- adminId          发布人id            aid
+ subject          学科标签         	   sub
+ adminId          发布人id             aid
  recipientName    接收人社区名         rec
- recipientId      接收人社区id        rid
- dateTime         发布日期时间        dtm
+ recipientId      接收人社区id         rid
+ dateTime         发布日期时间         dtm
  */
 public class AppCommentEntry extends BaseDBObject {
     public AppCommentEntry(){

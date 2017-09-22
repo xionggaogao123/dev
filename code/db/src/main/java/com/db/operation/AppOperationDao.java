@@ -22,15 +22,16 @@ public class AppOperationDao extends BaseDao {
     }
 
     //老师评论列表查询
-    public List<AppOperationEntry> getEntryListByParentId(ObjectId parentId) {
+    public List<AppOperationEntry> getEntryListByParentId(ObjectId parentId,int page,int pageSize) {
         BasicDBObject query = new BasicDBObject()
                 .append("pid",parentId)
+                .append("lev", Constant.ONE)//一级
                 .append("isr", 0); // 未删除
         List<DBObject> dbList =
                 find(MongoFacroty.getAppDB(),
                         Constant.COLLECTION_APP_OPERATION,
                         query, Constant.FIELDS,
-                        Constant.MONGO_SORTBY_DESC);
+                        Constant.MONGO_SORTBY_DESC, page, pageSize);
         List<AppOperationEntry> entryList = new ArrayList<AppOperationEntry>();
         if (dbList != null && !dbList.isEmpty()) {
             for (DBObject obj : dbList) {
@@ -40,10 +41,30 @@ public class AppOperationDao extends BaseDao {
         return entryList;
     }
     //家长评论列表查询
-    public List<AppOperationEntry> getEntryListByUserId(ObjectId userId,ObjectId id) {
+    public List<AppOperationEntry> getEntryListByUserId(ObjectId userId,ObjectId id,int page,int pageSize) {
         BasicDBObject query = new BasicDBObject()
                 .append("uid",userId)
-                .append("pid",id)
+                .append("pid", id)
+                .append("lev",Constant.ONE)//一级
+                .append("isr", 0); // 未删除
+        List<DBObject> dbList =
+                find(MongoFacroty.getAppDB(),
+                        Constant.COLLECTION_APP_OPERATION,
+                        query, Constant.FIELDS,
+                        Constant.MONGO_SORTBY_DESC, page, pageSize);
+        List<AppOperationEntry> entryList = new ArrayList<AppOperationEntry>();
+        if (dbList != null && !dbList.isEmpty()) {
+            for (DBObject obj : dbList) {
+                entryList.add(new AppOperationEntry((BasicDBObject) obj));
+            }
+        }
+        return entryList;
+    }
+    //二级评论列表查询
+    public List<AppOperationEntry> getSecondList(List<ObjectId> userIds) {
+        BasicDBObject query = new BasicDBObject()
+                .append("pid", new BasicDBObject(Constant.MONGO_IN,userIds))
+                .append("lev",Constant.TWO)//二级
                 .append("isr", 0); // 未删除
         List<DBObject> dbList =
                 find(MongoFacroty.getAppDB(),

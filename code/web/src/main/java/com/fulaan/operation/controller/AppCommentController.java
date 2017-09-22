@@ -266,12 +266,12 @@ public class AppCommentController extends BaseController {
             @ApiResponse(code = 500, message = "服务器不能完成请求")})
     @RequestMapping("/getOperationList")
     @ResponseBody
-    public String getOperationList(@ApiParam(name = "id", required = true, value = "作业id") @RequestParam("id") String id){
+    public String getOperationList(@ApiParam(name = "id", required = true, value = "作业id") @RequestParam("id") String id,int page,int pageSize){
 
         RespObj respObj=null;
         try {
             respObj = RespObj.SUCCESS;
-            List<AppOperationDTO> dtos = appCommentService.getOperationList(new ObjectId(id),getUserId());
+            List<AppOperationDTO> dtos = appCommentService.getOperationList(new ObjectId(id),getUserId(),page,pageSize);
             respObj.setMessage(dtos);
         } catch (Exception e) {
             e.printStackTrace();
@@ -290,21 +290,52 @@ public class AppCommentController extends BaseController {
     @ApiResponse(code = 200, message = "success", response = String.class)
     @RequestMapping("/addOperationEntry")
     @ResponseBody
-    public String addOperationEntry(@ApiParam @RequestBody AppOperationDTO dto){
+    public String addOperationEntry(@ApiParam(value = "照旧") @RequestBody AppOperationDTO dto){
         RespObj respObj=null;
         try {
             respObj = RespObj.SUCCESS;
             dto.setUserId(getUserId().toString());
+            dto.setLevel(1);
             String result = appCommentService.addOperationEntry(dto);
             respObj.setMessage(result);
         } catch (Exception e) {
             e.printStackTrace();
             respObj = RespObj.FAILD;
-            respObj.setMessage("添加关键字失败!");
+            respObj.setMessage("添加评论失败!");
 
         }
         return JSON.toJSONString(respObj);
     }
+
+    /**
+     * 添加作业二级评论
+     */
+    @ApiOperation(value="添加二级回复",httpMethod = "POST",produces = "application/json")
+    @ApiResponse(code=200,message = "success", response = String.class)
+    @RequestMapping("/addSecondOperation")
+    @ResponseBody
+    public String addSecondOperation(@ApiParam(value = "parentId为上级评论id,backId为回复的对象id") @RequestBody AppOperationDTO dto){
+        RespObj respObj=null;
+        try {
+            respObj = RespObj.SUCCESS;
+            dto.setUserId(getUserId().toString());
+            dto.setLevel(2);
+            String result = appCommentService.addSecondOperation(dto);
+            respObj.setMessage(result);
+        } catch (Exception e) {
+            e.printStackTrace();
+            respObj = RespObj.FAILD;
+            respObj.setMessage("添加评论失败!");
+
+        }
+        return JSON.toJSONString(respObj);
+
+    }
+
+
+
+
+
 
     //community/myCommunitys/page/pageSize/?platform=app
 }

@@ -4,7 +4,6 @@ import com.alibaba.fastjson.JSON;
 import com.fulaan.base.BaseController;
 import com.fulaan.operation.dto.AppCommentDTO;
 import com.fulaan.operation.dto.AppOperationDTO;
-import com.fulaan.operation.dto.AppRecordDTO;
 import com.fulaan.operation.service.AppCommentService;
 import com.sys.utils.DateTimeUtils;
 import com.sys.utils.RespObj;
@@ -63,7 +62,7 @@ public class AppCommentController extends BaseController {
      * 查找当前老师今天发布的作业
      * @return
      */
-    @ApiOperation(value = "查找当前老师今天发布的作业", httpMethod = "GET", produces = "application/json")
+  /*  @ApiOperation(value = "查找当前老师今天发布的作业", httpMethod = "GET", produces = "application/json")
     @ApiResponses( value = {@ApiResponse(code = 200, message = "Successful — 请求已完成",response = String.class),
             @ApiResponse(code = 400, message = "请求中有语法问题，或不能满足请求"),
             @ApiResponse(code = 500, message = "服务器不能完成请求")})
@@ -82,13 +81,13 @@ public class AppCommentController extends BaseController {
             respObj.setErrorMessage("查找当前老师今天发布的作业失败!");
         }
         return JSON.toJSONString(respObj);
-    }
+    }*/
 
     /**
      * 查找当前家长收到的作业
      * @return
      */
-    @ApiOperation(value = "查找当前家长收到的作业", httpMethod = "GET", produces = "application/json")
+   /* @ApiOperation(value = "查找当前家长收到的作业", httpMethod = "GET", produces = "application/json")
     @ApiResponses( value = {@ApiResponse(code = 200, message = "Successful — 请求已完成",response = String.class),
             @ApiResponse(code = 400, message = "请求中有语法问题，或不能满足请求"),
             @ApiResponse(code = 500, message = "服务器不能完成请求")})
@@ -107,7 +106,7 @@ public class AppCommentController extends BaseController {
             respObj.setErrorMessage("查找当前家长收到的作业失败!");
         }
         return JSON.toJSONString(respObj);
-    }
+    }*/
     /**
      * 查找当前作业签到的家长名单
      * @return
@@ -118,12 +117,12 @@ public class AppCommentController extends BaseController {
             @ApiResponse(code = 500, message = "服务器不能完成请求")})
     @RequestMapping("/selectRecordList")
     @ResponseBody
-    public String selectRecordList(@ApiParam(name = "id", required = true, value = "作业id") @RequestParam("id") String id,@ApiParam(name = "type", required = true, value = "签到类型") @RequestParam("type") int type){
+    public String selectRecordList(@ApiParam(name = "id", required = true, value = "作业id") @RequestParam("id") String id){
 
         RespObj respObj=null;
         try {
             respObj = RespObj.SUCCESS;
-            List<AppRecordDTO> dtos = appCommentService.selectRecordList(new ObjectId(id),type);
+            Map<String,Object> dtos = appCommentService.selectRecordList(new ObjectId(id));
             respObj.setMessage(dtos);
         } catch (Exception e) {
             e.printStackTrace();
@@ -142,7 +141,7 @@ public class AppCommentController extends BaseController {
             @ApiResponse(code = 500, message = "服务器不能完成请求")})
     @RequestMapping("/selectStudentLoad")
     @ResponseBody
-    public String selectStudentLoad(@ApiParam(name = "id", required = true, value = "作业id") @RequestParam("id") String id,int page,int pageSize){
+    public String selectStudentLoad(@ApiParam(name = "id", required = true, value = "作业id") @RequestParam("id") String id,@ApiParam(name = "page", required = true, value = "page") @RequestParam("page") int page,@ApiParam(name = "pageSize", required = true, value = "pageSize") @RequestParam("pageSize") int pageSize){
 
         RespObj respObj=null;
         try {
@@ -207,16 +206,16 @@ public class AppCommentController extends BaseController {
     }
 
     /**
-     * 查找当前当前月份用户发放作业情况名单
+     * 查找当前当前月份用户发放作业情况列表
      * @return
      */
-    @ApiOperation(value = "查找当前当前年份用户发放作业情况名单", httpMethod = "POST", produces = "application/json")
+    @ApiOperation(value = "查找当前当前年份用户发放作业情况列表", httpMethod = "POST", produces = "application/json")
     @ApiResponses( value = {@ApiResponse(code = 200, message = "Successful — 请求已完成",response = String.class),
             @ApiResponse(code = 400, message = "请求中有语法问题，或不能满足请求"),
             @ApiResponse(code = 500, message = "服务器不能完成请求")})
     @RequestMapping("/selectResultList")
     @ResponseBody
-    public String selectResultList(@ApiParam(name = "month", required = true, value = "月份（yyyy）") @RequestParam("month") int month){
+    public String selectResultList(@ApiParam(name = "month", required = true, value = "月份（MM）") @RequestParam("month") int month){
 
         RespObj respObj=null;
         try {
@@ -232,10 +231,10 @@ public class AppCommentController extends BaseController {
     }
 
     /**
-     * 查找当前点击的事件老师/家长发放作业情况名单
+     * 查找当前点击的事件老师/家长发放作业情况列表
      * @return
      */
-    @ApiOperation(value = "查找当前点击的事件老师/家长发放作业情况名单", httpMethod = "POST", produces = "application/json")
+    @ApiOperation(value = "查找当前点击的事件老师/家长发放作业情况列表", httpMethod = "POST", produces = "application/json")
     @ApiResponses( value = {@ApiResponse(code = 200, message = "Successful — 请求已完成",response = String.class),
             @ApiResponse(code = 400, message = "请求中有语法问题，或不能满足请求"),
             @ApiResponse(code = 500, message = "服务器不能完成请求")})
@@ -257,10 +256,10 @@ public class AppCommentController extends BaseController {
         return JSON.toJSONString(respObj);
     }
     /**
-     * 查找当前点击的事件学生收到作业情况名单
+     * 查找当前点击的事件学生收到作业情况列表
      * @return
      */
-    @ApiOperation(value = "查找当前点击的事件学生收到作业情况名单", httpMethod = "POST", produces = "application/json")
+    @ApiOperation(value = "查找当前点击的事件学生收到作业情况列表", httpMethod = "POST", produces = "application/json")
     @ApiResponses( value = {@ApiResponse(code = 200, message = "Successful — 请求已完成",response = String.class),
             @ApiResponse(code = 400, message = "请求中有语法问题，或不能满足请求"),
             @ApiResponse(code = 500, message = "服务器不能完成请求")})
@@ -276,15 +275,15 @@ public class AppCommentController extends BaseController {
         } catch (Exception e) {
             e.printStackTrace();
             respObj = RespObj.FAILD;
-            respObj.setErrorMessage("查找当前点击的事件学生收到作业情况名单失败!");
+            respObj.setErrorMessage("查找当前点击的事件学生收到作业情况列表失败!");
         }
         return JSON.toJSONString(respObj);
     }
     /**
-     * 根据作业id查找当前评论列表
+     * 根据作业id查找当前评论列表(带作业详情)
      * @return
      */
-    @ApiOperation(value = "根据作业id查找当前评论列表", httpMethod = "POST", produces = "application/json")
+    @ApiOperation(value = "根据作业id查找当前评论列表(带作业详情)", httpMethod = "POST", produces = "application/json")
     @ApiResponses( value = {@ApiResponse(code = 200, message = "Successful — 请求已完成",response = String.class),
             @ApiResponse(code = 400, message = "请求中有语法问题，或不能满足请求"),
             @ApiResponse(code = 500, message = "服务器不能完成请求")})
@@ -383,29 +382,103 @@ public class AppCommentController extends BaseController {
     }
 
     /**
-     * 查询作业详情
+     * 删除作业
      */
-    /*@ApiOperation(value="查询作业详情",httpMethod = "POST",produces = "application/json")
+    @ApiOperation(value="删除作业",httpMethod = "POST",produces = "application/json")
     @ApiResponse(code=200,message = "success", response = String.class)
-    @RequestMapping("/addSecondOperation")
+    @RequestMapping("/delAppCommentEntry")
+    @ResponseBody
+    public String delAppCommentEntry(@ApiParam(name = "id", required = true, value = "作业id") @RequestParam("id") String id){
+        RespObj respObj=null;
+        try {
+            respObj = RespObj.SUCCESS;
+           appCommentService.delAppcommentEntry(new ObjectId(id));
+           respObj.setMessage("删除成功！");
+        } catch (Exception e) {
+            e.printStackTrace();
+            respObj = RespObj.FAILD;
+            respObj.setErrorMessage("删除失败!");
+
+        }
+
+
+        return JSON.toJSONString(respObj);
+    }
+
+
+
+    /**
+     * 删除评论
+     */
+    @ApiOperation(value="删除评论",httpMethod = "POST",produces = "application/json")
+    @ApiResponse(code=200,message = "success", response = String.class)
+    @RequestMapping("/delAppOperationEntry")
+    @ResponseBody
+    public String delAppOperationEntry(@ApiParam(name = "id", required = true, value = "作业id") @RequestParam("id") String id,
+                                       @ApiParam(name = "pingId", required = true, value = "评论id") @RequestParam("pingId") String pingId,
+                                       @ApiParam(name = "role",required = true,value= "role=1,家长讨论区，role=2学生提问区，role=3学生提交区")@RequestParam("role") int role){
+        RespObj respObj=null;
+        try {
+            respObj = RespObj.SUCCESS;
+            appCommentService.delAppOperationEntry(new ObjectId(id),new ObjectId(pingId),role);
+            respObj.setMessage("删除成功！");
+        } catch (Exception e) {
+            e.printStackTrace();
+            respObj = RespObj.FAILD;
+            respObj.setErrorMessage("删除失败!");
+
+        }
+
+
+        return JSON.toJSONString(respObj);
+    }
+
+
+    /**
+     * 编辑作业后添加
+     */
+    @ApiOperation(value="编辑作业后添加",httpMethod = "POST",produces = "application/json")
+    @ApiResponse(code=200,message = "success", response = String.class)
+    @RequestMapping("/updateEntry")
+    @ResponseBody
+    public String updateEntry(@RequestBody AppCommentDTO dto){
+        RespObj respObj=null;
+        try {
+            respObj = RespObj.SUCCESS;
+            appCommentService.updateEntry(dto);
+            respObj.setMessage("修改成功");
+        } catch (Exception e) {
+            e.printStackTrace();
+            respObj = RespObj.FAILD;
+            respObj.setMessage("查询暂不发布的作业失败!");
+
+        }
+        return JSON.toJSONString(respObj);
+
+    }
+
+    /**
+     * 查询暂不发布的作业
+     */
+    @ApiOperation(value="查询作业详情",httpMethod = "POST",produces = "application/json")
+    @ApiResponse(code=200,message = "success", response = String.class)
+    @RequestMapping("/selectCommentDesc")
     @ResponseBody
     public String selectCommentDesc(@ApiParam(name="id",value="作业id") @RequestParam(value="id") String id){
         RespObj respObj=null;
         try {
             respObj = RespObj.SUCCESS;
-            dto.setUserId(getUserId().toString());
-            dto.setLevel(2);
-            String result = appCommentService.addSecondOperation(dto);
+            AppCommentDTO result = appCommentService.selectAppCommentEntry(new ObjectId(id));
             respObj.setMessage(result);
         } catch (Exception e) {
             e.printStackTrace();
             respObj = RespObj.FAILD;
-            respObj.setMessage("添加评论失败!");
+            respObj.setMessage("查询暂不发布的作业失败!");
 
         }
         return JSON.toJSONString(respObj);
 
-    }*/
+    }
 
 
 

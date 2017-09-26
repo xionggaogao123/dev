@@ -20,6 +20,13 @@ public class AppOperationDao extends BaseDao {
         save(MongoFacroty.getAppDB(), Constant.COLLECTION_APP_OPERATION, entry.getBaseEntry());
         return entry.getID().toString();
     }
+    //删除评论
+    public void delAppOperationEntry(ObjectId id){
+        BasicDBObject query = new BasicDBObject(Constant.ID,id);
+        BasicDBObject updateValue=new BasicDBObject(Constant.MONGO_SET,new BasicDBObject("isr",Constant.ONE));
+        update(MongoFacroty.getAppDB(), Constant.COLLECTION_APP_OPERATION, query,updateValue);
+    }
+
 
     //老师评论列表查询
     public List<AppOperationEntry> getEntryListByParentId(ObjectId contactId,int role,int page,int pageSize) {

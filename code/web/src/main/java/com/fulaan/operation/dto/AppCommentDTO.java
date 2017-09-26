@@ -2,6 +2,7 @@ package com.fulaan.operation.dto;
 
 import com.pojo.operation.AppCommentEntry;
 import com.sys.utils.DateTimeUtils;
+import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import org.bson.types.ObjectId;
 
@@ -11,13 +12,14 @@ import java.util.List;
  * 作业
  * Created by James on 2017/8/25.
  */
+@ApiModel
 public class AppCommentDTO {
     private String id;
     @ApiModelProperty(value = "描述", required = true)
     private String description;
     @ApiModelProperty(value = "作业提交时间 (yyyy-MM-dd HH:mm:ss)", required = true)
     private String loadTime;
-    @ApiModelProperty(value = "作业提交状态", required = true)
+    @ApiModelProperty(value = "作业提交状态:0 已发布    1 定时发布   2 暂不发布", required = true)
     private int status;
     private int writeNumber;
     private int talkNumber;

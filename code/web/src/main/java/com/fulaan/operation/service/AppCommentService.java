@@ -192,7 +192,8 @@ public class AppCommentService {
     /**
      * 查询当前作业签到名单
      */
-    public List<AppRecordDTO> selectRecordList(ObjectId id,int type){
+    public Map<String,Object> selectRecordList(ObjectId id){
+        Map<String,Object> map = new HashMap<String, Object>();
         //获得作业
         AppCommentEntry aen = appCommentDao.getEntry(id);
         //获得需要签到的id
@@ -208,41 +209,42 @@ public class AppCommentService {
             }
         }
         List<AppRecordEntry> entries = appRecordDao.getEntryListByParentId2(oblist,zero);
-        if(type==1){//已签到名单
-            List<AppRecordDTO> dtos = new ArrayList<AppRecordDTO>();
-            if(entries.size()>0){
-                for(AppRecordEntry en : entries){
-                    if(en.getIsLoad()==1){
-                        AppRecordDTO dto = new AppRecordDTO(en);
-                        String ctm = dto.getCreateTime().substring(11,16);
-                        dto.setDateTime(ctm);
-                        dtos.add(dto);
-                    }
+        //已签到名单
+        List<AppRecordDTO> dtos = new ArrayList<AppRecordDTO>();
+        if(entries.size()>0){
+            for(AppRecordEntry en : entries){
+                if(en.getIsLoad()==1){
+                    AppRecordDTO dto = new AppRecordDTO(en);
+                    String ctm = dto.getCreateTime().substring(11,16);
+                    dto.setDateTime(ctm);
+                    dtos.add(dto);
                 }
             }
-            return dtos;
-        }else{//未签到名单
-            List<AppRecordDTO> dtos = new ArrayList<AppRecordDTO>();
-            if(entries.size()>0){
-                for(AppRecordEntry en : entries){
-                    if(en.getIsLoad()==1){
-                        oblist.remove(en.getUserId());
-                    }
-                }
-            }
-            List<UserDetailInfoDTO> udtos =  userService.findUserInfoByUserIds(objectIdList);
-            for(ObjectId ob : oblist){
-                for(UserDetailInfoDTO dto4 : udtos){
-                    if(dto4.getId()!= null && dto4.getId().equals(ob.toString())){
-                        AppRecordDTO dto = new AppRecordDTO();
-                        dto.setUserName(dto4.getUserName());
-                        dtos.add(dto);
-                    }
-                }
-            }
-            return dtos;
         }
-
+        map.put("SignList",dtos);
+        map.put("SignListNum",dtos.size());
+       //未签到名单
+        List<AppRecordDTO> dtos2 = new ArrayList<AppRecordDTO>();
+        if(entries.size()>0){
+            for(AppRecordEntry en : entries){
+                if(en.getIsLoad()==1){
+                    oblist.remove(en.getUserId());
+                }
+            }
+        }
+        List<UserDetailInfoDTO> udtos =  userService.findUserInfoByUserIds(objectIdList);
+        for(ObjectId ob : oblist){
+            for(UserDetailInfoDTO dto4 : udtos){
+                if(dto4.getId()!= null && dto4.getId().equals(ob.toString())){
+                    AppRecordDTO dto = new AppRecordDTO();
+                    dto.setUserName(dto4.getUserName());
+                    dtos2.add(dto);
+                }
+            }
+        }
+        map.put("UnSignList",dtos2);
+        map.put("UnSignListNum",dtos2.size());
+        return map;
     }
 
 
@@ -617,6 +619,54 @@ public class AppCommentService {
         }
         return clist;
     }
+    /**
+     *查询详情
+     *
+     */
+    public AppCommentDTO selectAppCommentEntry(ObjectId id){
+        AppCommentEntry entry = appCommentDao.getEntry(id);
+        return new AppCommentDTO(entry);
+    }
+    /**
+     *查询详情
+     *
+     */
+    public void updateEntry(AppCommentDTO dto){
+        AppCommentEntry entry = dto.updateEntry();
+        appCommentDao.updEntry(entry);
+    }
+
+    /**
+     *删除作业
+     *
+     */
+    public void delAppcommentEntry(ObjectId id){
+        appCommentDao.delAppCommentEntry(id);
+    }
+    /**
+     *删除评论
+     *
+     */
+    public void delAppOperationEntry(ObjectId id,ObjectId pingId,int role){
+        //删除评论
+        appOperationDao.delAppOperationEntry(pingId);
+        //修改作业的评论数量
+        AppCommentEntry entry = appCommentDao.getEntry(id);
+        if(role==1){
+            entry.setTalkNumber(entry.getTalkNumber()-1);
+        }else if(role==2){
+            entry.setQuestionNumber(entry.getQuestionNumber() - 1);
+        }else{
+            entry.setLoadNumber(entry.getLoadNumber() - 1);
+        }
+        appCommentDao.updEntry(entry);
+    }
+
+
+    /**
+     * 编辑作业
+     */
+
  /*   *//**
      * 获得用户的所有不具有管理员权限的社区id
      *

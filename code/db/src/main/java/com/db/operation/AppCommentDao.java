@@ -21,7 +21,7 @@ public class AppCommentDao extends BaseDao {
         return entry.getID().toString();
     }
     /**
-     * 修改出入记录
+     * 修改
      */
     public void updEntry(AppCommentEntry e) {
         BasicDBObject query=new BasicDBObject(Constant.ID,e.getID());
@@ -152,5 +152,11 @@ public class AppCommentDao extends BaseDao {
             }
         }
         return entryList;
+    }
+    //删除作业
+    public void delAppCommentEntry(ObjectId id){
+        BasicDBObject query = new BasicDBObject(Constant.ID,id);
+        BasicDBObject updateValue=new BasicDBObject(Constant.MONGO_SET,new BasicDBObject("isr",Constant.ONE));
+        update(MongoFacroty.getAppDB(), Constant.COLLECTION_APP_COMMENT, query,updateValue);
     }
 }

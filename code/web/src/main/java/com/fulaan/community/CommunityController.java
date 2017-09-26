@@ -3347,4 +3347,23 @@ public class CommunityController extends BaseController {
         }
     }
 
+    @RequestMapping("/getManageCommunitysByUserId")
+    @ResponseBody
+    @SessionNeedless
+    @ApiOperation(value = "获取我具有管理员权限的社区列表", httpMethod = "GET", produces = "application/json")
+    @ApiResponses(value = {@ApiResponse(code = 200, message = "获取我具有管理员权限的社区列表成功",response = Map.class),
+            @ApiResponse(code = 500, message = "获取我具有管理员权限的社区列表失败")})
+    public RespObj getManageCommunitysByUserId(){
+        RespObj respObj=new RespObj(Constant.FAILD_CODE);
+        try{
+            List<CommunityDTO> dtos=memberService.getManageCommunitysByUserId(getUserId());
+            respObj.setMessage(dtos);
+            respObj.setCode(Constant.SUCCESS_CODE);
+        }catch (Exception e){
+            respObj.setErrorMessage(e.getMessage());
+        }
+        return respObj;
+    }
+
+
 }

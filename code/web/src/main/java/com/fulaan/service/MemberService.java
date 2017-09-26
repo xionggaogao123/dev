@@ -5,8 +5,10 @@ import com.db.fcommunity.MemberDao;
 import com.db.fcommunity.NewVersionCommunityBindDao;
 import com.db.fcommunity.RemarkDao;
 import com.db.user.UserDao;
+import com.fulaan.community.dto.CommunityDTO;
 import com.fulaan.dto.MemberDTO;
 import com.fulaan.pojo.PageModel;
+import com.pojo.fcommunity.CommunityEntry;
 import com.pojo.fcommunity.MemberEntry;
 import com.pojo.fcommunity.RemarkEntry;
 import com.pojo.user.UserEntry;
@@ -353,5 +355,16 @@ public class MemberService {
     @Async
     public void updateAllAvatar(ObjectId userId, String avatar) {
         memberDao.updateAllAvatar(userId, avatar);
+    }
+
+
+    public List<CommunityDTO>  getManageCommunitysByUserId(ObjectId userId){
+        List<CommunityDTO> dtos=new ArrayList<CommunityDTO>();
+        List<ObjectId> groupIds=memberDao.getManagerGroupIdsByUserId(userId);
+        List<CommunityEntry> entries=communityDao.getCommunityEntriesByGroupIds(groupIds);
+        for(CommunityEntry entry:entries){
+            dtos.add(new CommunityDTO(entry));
+        }
+        return dtos;
     }
 }

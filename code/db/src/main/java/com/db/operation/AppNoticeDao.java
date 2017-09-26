@@ -2,15 +2,18 @@ package com.db.operation;
 
 import com.db.base.BaseDao;
 import com.db.factory.MongoFacroty;
+import com.mongodb.BasicDBList;
 import com.mongodb.BasicDBObject;
 import com.mongodb.DBObject;
 import com.pojo.appnotice.AppNoticeEntry;
 import com.pojo.utils.MongoUtils;
 import com.sys.constants.Constant;
+import org.apache.commons.lang.StringUtils;
 import org.bson.types.ObjectId;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.regex.Pattern;
 
 /**
  * Created by scott on 2017/9/22.
@@ -23,6 +26,12 @@ public class AppNoticeDao extends BaseDao{
      */
     public void saveAppNoticeEntry(AppNoticeEntry entry){
         save(MongoFacroty.getAppDB(), Constant.COLLECTION_NEW_VERSION_APP_NOTICE,entry.getBaseEntry());
+    }
+
+    public void removeAppNoticeEntry(ObjectId noticeId){
+        BasicDBObject query=new BasicDBObject(Constant.ID,noticeId);
+        BasicDBObject updateValue=new BasicDBObject(Constant.MONGO_SET,new BasicDBObject("ir",Constant.ONE));
+        update(MongoFacroty.getAppDB(), Constant.COLLECTION_NEW_VERSION_APP_NOTICE,query,updateValue);
     }
 
     /**
@@ -66,6 +75,7 @@ public class AppNoticeDao extends BaseDao{
         BasicDBObject query=new BasicDBObject()
                 .append("gi",new BasicDBObject(Constant.MONGO_IN,groupIds))
                 .append("uid",new BasicDBObject(Constant.MONGO_NE,userId))
+                .append("wp",Constant.ONE)
                 .append("ir",Constant.ZERO);
         List<DBObject> dbObjectList=find(MongoFacroty.getAppDB(), Constant.COLLECTION_NEW_VERSION_APP_NOTICE,query,
                 Constant.FIELDS,Constant.MONGO_SORTBY_DESC,(page-1)*pageSize,pageSize);
@@ -111,6 +121,47 @@ public class AppNoticeDao extends BaseDao{
         }else{
             return null;
         }
+    }
+
+
+    public List<AppNoticeEntry> getMyReceivedAppNoticeEntriesForStudent(List<ObjectId> groupIds,int page,int pageSize){
+        List<AppNoticeEntry> entries=new ArrayList<AppNoticeEntry>();
+        BasicDBObject query=new BasicDBObject()
+                .append("gi",new BasicDBObject(Constant.MONGO_IN,groupIds))
+                .append("wp",Constant.TWO)
+                .append("ir",Constant.ZERO);
+        List<DBObject> dbObjectList=find(MongoFacroty.getAppDB(), Constant.COLLECTION_NEW_VERSION_APP_NOTICE,query,
+                Constant.FIELDS,Constant.MONGO_SORTBY_DESC,(page-1)*pageSize,pageSize);
+        if(null!=dbObjectList&&!dbObjectList.isEmpty()){
+            for(DBObject dbObject:dbObjectList){
+                entries.add(new AppNoticeEntry(dbObject));
+            }
+        }
+        return entries;
+    }
+
+
+
+    public List<AppNoticeEntry> searchAppNotice(String keyWord,int page,int pageSize){
+        List<AppNoticeEntry> entries=new ArrayList<AppNoticeEntry>();
+        BasicDBObject query=new BasicDBObject()
+                .append("ir",Constant.ZERO);
+        BasicDBList list = new BasicDBList();
+        if(StringUtils.isNotBlank(keyWord)){
+            Pattern pattern = Pattern.compile("^.*" + keyWord + ".*$", Pattern.CASE_INSENSITIVE);
+            list.add(new BasicDBObject().append("gn", new BasicDBObject(Constant.MONGO_REGEX, pattern)));
+            list.add(new BasicDBObject().append("un", new BasicDBObject(Constant.MONGO_REGEX, pattern)));
+            list.add(new BasicDBObject().append("su", new BasicDBObject(Constant.MONGO_REGEX, pattern)));
+        }
+        query.append(Constant.MONGO_OR, list);
+        List<DBObject> dbObjectList=find(MongoFacroty.getAppDB(), Constant.COLLECTION_NEW_VERSION_APP_NOTICE,query,
+                Constant.FIELDS,Constant.MONGO_SORTBY_DESC,(page-1)*pageSize,pageSize);
+        if(null!=dbObjectList&&!dbObjectList.isEmpty()){
+            for(DBObject dbObject:dbObjectList){
+                entries.add(new AppNoticeEntry(dbObject));
+            }
+        }
+        return entries;
     }
 
 

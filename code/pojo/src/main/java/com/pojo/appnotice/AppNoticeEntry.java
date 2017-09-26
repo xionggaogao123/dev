@@ -17,7 +17,7 @@ import java.util.List;
 /**
  * Created by scott on 2017/9/22.
  * {
- *
+ * watchPermission 1:家长2:学生3:家长，学生
  * }
  */
 public class AppNoticeEntry extends BaseDBObject{
@@ -34,6 +34,9 @@ public class AppNoticeEntry extends BaseDBObject{
             ObjectId groupId,
             int watchPermission,
             List<VideoEntry> videoList,
+            List<AttachmentEntry> attachmentEntries,
+            String groupName,
+            String userName,
             List<AttachmentEntry> imageList){
        BasicDBObject basicDBObject=new BasicDBObject()
                .append("uid",userId)
@@ -44,12 +47,49 @@ public class AppNoticeEntry extends BaseDBObject{
                .append("rl", MongoUtils.convert(new ArrayList<ObjectId>()))
                .append("cc", Constant.ZERO)
                .append("gi",groupId)
+               .append("gn",groupName)
+               .append("un",userName)
                .append("wp",watchPermission)
+               .append("ats",MongoUtils.fetchDBObjectList(attachmentEntries))
                .append("vl",MongoUtils.fetchDBObjectList(videoList))
                .append("il",MongoUtils.fetchDBObjectList(imageList))
                .append("ir",Constant.ZERO);
         setBaseEntry(basicDBObject);
     }
+
+    public String getUserName(){
+        return getSimpleStringValue("un");
+    }
+
+    public void setUserName(String userName){
+        setSimpleValue("un",userName);
+    }
+
+
+    public String getGroupName(){
+        return getSimpleStringValue("gn");
+    }
+
+    public void setGroupName(String groupName){
+        setSimpleValue("gn",groupName);
+    }
+
+
+
+    public void setAttachmentEntries(List<AttachmentEntry> attachmentEntries){
+        setSimpleValue("ats",MongoUtils.fetchDBObjectList(attachmentEntries));
+    }
+
+    public List<AttachmentEntry> getAttachmentEntries() {
+        BasicDBList list = getDbList("ats");
+        List<AttachmentEntry> attachmentEntries = new ArrayList<AttachmentEntry>();
+        for (Object dbo : list) {
+            BasicDBObject dbObject = (BasicDBObject) dbo;
+            attachmentEntries.add(new AttachmentEntry(dbObject));
+        }
+        return attachmentEntries;
+    }
+
 
     public void setImageList(List<AttachmentEntry> imageList){
         setSimpleValue("il",MongoUtils.fetchDBObjectList(imageList));

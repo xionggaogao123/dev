@@ -49,6 +49,23 @@ public class AppNoticeController extends BaseController {
         return respObj;
     }
 
+    @RequestMapping("/removeAppNoticeEntry")
+    @ResponseBody
+    @ApiOperation(value = "删除通知信息", httpMethod = "GET", produces = "application/json")
+    @ApiResponses( value = {@ApiResponse(code = 200, message = "删除通知信息已完成",response = RespObj.class),
+            @ApiResponse(code = 500, message = "服务器不能完成请求")})
+    public RespObj removeAppNoticeEntry(@ObjectIdType ObjectId noticeId){
+        RespObj respObj=new RespObj(Constant.FAILD_CODE);
+        try{
+            appNoticeService.removeAppNoticeEntry(noticeId);
+            respObj.setMessage("删除通知信息成功！");
+            respObj.setCode(Constant.SUCCESS_CODE);
+        }catch (Exception e){
+            respObj.setErrorMessage(e.getMessage());
+        }
+        return respObj;
+    }
+
 
     @RequestMapping("/saveAppNoticeEntry")
     @ResponseBody
@@ -89,12 +106,12 @@ public class AppNoticeController extends BaseController {
     }
 
 
-    @RequestMapping("/getMyReceivedAppNoticeDtos")
+    @RequestMapping("/getMyReceivedAppNoticeDtosForParent")
     @ResponseBody
-    @ApiOperation(value = "获取我接收到的通知", httpMethod = "GET", produces = "application/json")
+    @ApiOperation(value = "获取我接收到的通知(家长)", httpMethod = "GET", produces = "application/json")
     @ApiResponses( value = {@ApiResponse(code = 200, message = "Successful — 请求已完成",response = RespObj.class),
             @ApiResponse(code = 500, message = "服务器不能完成请求")})
-    public RespObj getMyReceivedAppNoticeDtos(
+    public RespObj getMyReceivedAppNoticeDtosForParent(
             @RequestParam(required = false, defaultValue = "1")int page,
             @RequestParam(required = false, defaultValue = "10")int pageSize
     ){
@@ -179,6 +196,49 @@ public class AppNoticeController extends BaseController {
         }
         return JSON.toJSONString(respObj);
 
+    }
+
+
+    @RequestMapping("/getMyReceivedAppNoticeDtosForStudent")
+    @ResponseBody
+    @ApiOperation(value = "获取我接收到的通知(学生)", httpMethod = "GET", produces = "application/json")
+    @ApiResponses( value = {@ApiResponse(code = 200, message = "Successful — 请求已完成",response = RespObj.class),
+            @ApiResponse(code = 500, message = "服务器不能完成请求")})
+    public RespObj getMyReceivedAppNoticeDtosForStudent(
+            @RequestParam(required = false, defaultValue = "1")int page,
+            @RequestParam(required = false, defaultValue = "10")int pageSize
+    ){
+        RespObj respObj=new RespObj(Constant.FAILD_CODE);
+        try{
+            List<AppNoticeDTO> dtos=appNoticeService.getMyReceivedAppNoticeDtosForStudent(getUserId(),page,pageSize);
+            respObj.setMessage(dtos);
+            respObj.setCode(Constant.SUCCESS_CODE);
+        }catch (Exception e){
+            respObj.setErrorMessage(e.getMessage());
+        }
+        return respObj;
+    }
+
+
+    @RequestMapping("/searchAppNotice")
+    @ResponseBody
+    @ApiOperation(value = "搜索合适条件的通知", httpMethod = "GET", produces = "application/json")
+    @ApiResponses( value = {@ApiResponse(code = 200, message = "搜索合适条件的通知成功",response = RespObj.class),
+            @ApiResponse(code = 500, message = "搜索合适条件的通知失败")})
+    public RespObj searchAppNotice(
+            @RequestParam(required = true, defaultValue = "")String keyWord,
+            @RequestParam(required = false, defaultValue = "1")int page,
+            @RequestParam(required = false, defaultValue = "10")int pageSize
+    ){
+        RespObj respObj=new RespObj(Constant.FAILD_CODE);
+        try{
+            List<AppNoticeDTO> dtos=appNoticeService.searchAppNotice(keyWord,getUserId(),page,pageSize);
+            respObj.setMessage(dtos);
+            respObj.setCode(Constant.SUCCESS_CODE);
+        }catch (Exception e){
+            respObj.setErrorMessage(e.getMessage());
+        }
+        return respObj;
     }
 
 }

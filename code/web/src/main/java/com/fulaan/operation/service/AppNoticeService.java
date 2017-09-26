@@ -1,13 +1,17 @@
 package com.fulaan.operation.service;
 
+import com.db.fcommunity.CommunityDao;
 import com.db.fcommunity.MemberDao;
+import com.db.fcommunity.NewVersionCommunityBindDao;
 import com.db.operation.AppNoticeDao;
 import com.db.operation.AppOperationDao;
+import com.fulaan.newVersionBind.service.NewVersionBindService;
 import com.fulaan.operation.dto.AppNoticeDTO;
 import com.fulaan.operation.dto.AppOperationDTO;
 import com.fulaan.pojo.User;
 import com.fulaan.user.service.UserService;
 import com.pojo.appnotice.AppNoticeEntry;
+import com.pojo.fcommunity.NewVersionCommunityBindEntry;
 import com.pojo.operation.AppOperationEntry;
 import com.pojo.user.UserEntry;
 import com.sys.constants.Constant;
@@ -30,8 +34,13 @@ public class AppNoticeService {
 
     private AppOperationDao appOperationDao = new AppOperationDao();
 
+    private CommunityDao communityDao=new CommunityDao();
+
+    private NewVersionCommunityBindDao newVersionCommunityBindDao=new NewVersionCommunityBindDao();
+
     @Autowired
     private UserService userService;
+
 
 
     /**
@@ -41,6 +50,7 @@ public class AppNoticeService {
     public void saveAppNoticeEntry(AppNoticeDTO dto,ObjectId userId){
         String gId=dto.getGroupId();
         String[] groupIds=gId.split(",");
+        UserEntry userEntry=userService.findById(userId);
         for(String groupId:groupIds){
             AppNoticeDTO appNoticeDTO=new AppNoticeDTO(dto.getSubject(),
                     dto.getTitle(),
@@ -48,10 +58,18 @@ public class AppNoticeService {
                     groupId,
                     dto.getWatchPermission(),
                     dto.getVideoList(),
-                    dto.getImageList());
+                    dto.getImageList(),
+                    dto.getAttachements(),
+                    dto.getGroupName(),
+                    dto.getUserName());
             appNoticeDTO.setUserId(userId.toString());
             appNoticeDao.saveAppNoticeEntry(appNoticeDTO.buildEntry());
         }
+    }
+
+
+    public void removeAppNoticeEntry(ObjectId noticeId){
+        appNoticeDao.removeAppNoticeEntry(noticeId);
     }
 
     /**
@@ -127,18 +145,26 @@ public class AppNoticeService {
         return dtos;
     }
 
-    /**
-     * 获取我接收到的通知
-     * @param userId
-     * @param page
-     * @param pageSize
-     * @return
-     */
-    public List<AppNoticeDTO> getMyReceivedAppNoticeDtos(ObjectId userId,int page,int pageSize){
-        List<AppNoticeDTO> dtos=new ArrayList<AppNoticeDTO>();
-        List<ObjectId> groupIds=memberDao.getUnManagerGroupIdsByUserId(userId);
-        List<AppNoticeEntry> entries=appNoticeDao.getMyReceivedAppNoticeEntries(groupIds,page,pageSize,userId);
 
+    public List<AppNoticeDTO> searchAppNotice(String keyWord,ObjectId userId,int page,int pageSize){
+        List<AppNoticeEntry> entries=appNoticeDao.searchAppNotice(keyWord,page,pageSize);
+        return getAppNoticeDtos(entries,userId);
+    }
+
+
+    public List<AppNoticeDTO> getMyReceivedAppNoticeDtosForStudent(ObjectId userId,int page,int pageSize){
+        List<NewVersionCommunityBindEntry> bindEntries=newVersionCommunityBindDao.getAllStudentBindEntries(userId);
+        List<ObjectId> communityIds=new ArrayList<ObjectId>();
+        for(NewVersionCommunityBindEntry bindEntry:bindEntries){
+            communityIds.add(bindEntry.getCommunityId());
+        }
+        List<ObjectId> groupIds=communityDao.getGroupIdsByCommunityIds(communityIds);
+        List<AppNoticeEntry> entries=appNoticeDao.getMyReceivedAppNoticeEntriesForStudent(groupIds,page,pageSize);
+        return getAppNoticeDtos(entries,userId);
+    }
+
+    public  List<AppNoticeDTO> getAppNoticeDtos( List<AppNoticeEntry> entries,ObjectId userId){
+        List<AppNoticeDTO> dtos=new ArrayList<AppNoticeDTO>();
         List<ObjectId> userIds=new ArrayList<ObjectId>();
         for(AppNoticeEntry entry:entries){
             userIds.add(entry.getUserId());
@@ -158,6 +184,20 @@ public class AppNoticeService {
             dtos.add(dto);
         }
         return dtos;
+    }
+
+    /**
+     * 获取我接收到的通知
+     * @param userId
+     * @param page
+     * @param pageSize
+     * @return
+     */
+    public List<AppNoticeDTO> getMyReceivedAppNoticeDtos(ObjectId userId,int page,int pageSize){
+
+        List<ObjectId> groupIds=memberDao.getGroupIdsByUserId(userId);
+        List<AppNoticeEntry> entries=appNoticeDao.getMyReceivedAppNoticeEntries(groupIds,page,pageSize,userId);
+        return getAppNoticeDtos(entries,userId);
     }
 
     public void pushRead(ObjectId id,ObjectId userId){

@@ -441,8 +441,29 @@ public class MemberDao extends BaseDao {
      * @param userId
      * @return
      */
-    public List<ObjectId> getUnManagerGroupIdsByUserId(ObjectId userId) {
+    public List<ObjectId> getGroupIdsByUserId(ObjectId userId) {
         BasicDBObject query = new BasicDBObject().append("uid", userId).append("r", Constant.ZERO);
+        BasicDBObject orderBy = new BasicDBObject().append("rl", -1).append(Constant.ID, -1);
+        List<ObjectId> memberEntries = new ArrayList<ObjectId>();
+        List<DBObject> dbObjects = find(MongoFacroty.getAppDB(), Constant.COLLECTION_FORUM_COMMUNITY_MEMBER, query, Constant.FIELDS, orderBy);
+        for (DBObject dbo : dbObjects) {
+            MemberEntry memberEntry = new MemberEntry(dbo);
+            memberEntries.add(memberEntry.getGroupId());
+        }
+        return memberEntries;
+    }
+
+
+    /**
+     * 查询该用户具有管理员权限的群组列表
+     * @param userId
+     * @return
+     */
+    public List<ObjectId> getManagerGroupIdsByUserId(ObjectId userId) {
+        List<Integer> roles=new ArrayList<Integer>();
+        roles.add(Constant.ONE);
+        roles.add(Constant.TWO);
+        BasicDBObject query = new BasicDBObject().append("uid", userId).append("rl", new BasicDBObject(Constant.MONGO_IN,roles)).append("r", Constant.ZERO);
         BasicDBObject orderBy = new BasicDBObject().append("rl", -1).append(Constant.ID, -1);
         List<ObjectId> memberEntries = new ArrayList<ObjectId>();
         List<DBObject> dbObjects = find(MongoFacroty.getAppDB(), Constant.COLLECTION_FORUM_COMMUNITY_MEMBER, query, Constant.FIELDS, orderBy);

@@ -196,6 +196,24 @@ public class CommunityDao extends BaseDao {
     }
 
 
+    /**
+     * 通过群组Ids列表查询社区列表
+     * @param groupIds
+     * @return
+     */
+    public List<CommunityEntry> getCommunityEntriesByGroupIds(List<ObjectId> groupIds){
+        List<CommunityEntry> entries=new ArrayList<CommunityEntry>();
+        BasicDBObject query = new BasicDBObject().append("grid", new BasicDBObject(Constant.MONGO_IN,groupIds));
+        List<DBObject> dbObjectList=find(MongoFacroty.getAppDB(), Constant.COLLECTION_FORUM_COMMUNITY, query,Constant.FIELDS);
+        if(null!=dbObjectList&&!dbObjectList.isEmpty()){
+            for(DBObject dbObject:dbObjectList){
+                entries.add(new CommunityEntry(dbObject));
+            }
+        }
+        return entries;
+    }
+
+
 
 
     public Boolean isCommunityNameUnique(String communityName) {
@@ -228,6 +246,22 @@ public class CommunityDao extends BaseDao {
         }
         return retMap;
     }
+
+    public List<ObjectId> getGroupIdsByCommunityIds(List<ObjectId> ids){
+        List<ObjectId> groupIds=new ArrayList<ObjectId>();
+        BasicDBObject query = new BasicDBObject()
+                .append(Constant.ID, new BasicDBObject(Constant.MONGO_IN, ids)).append("r", 0);
+        Map<ObjectId, CommunityEntry> retMap = new HashMap<ObjectId, CommunityEntry>();
+        List<DBObject> list = find(MongoFacroty.getAppDB(), Constant.COLLECTION_FORUM_COMMUNITY, query, Constant.FIELDS);
+        if (null != list && !list.isEmpty()) {
+            for(DBObject dbObject:list){
+                CommunityEntry entry=new CommunityEntry(dbObject);
+                groupIds.add(entry.getGroupId());
+            }
+        }
+        return groupIds;
+    }
+
 
 
     public Map<ObjectId,ObjectId> getGroupIds(List<ObjectId> ids){

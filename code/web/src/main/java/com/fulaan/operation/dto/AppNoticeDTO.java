@@ -28,7 +28,9 @@ public class AppNoticeDTO {
     private int watchPermission;
     private List<VideoDTO> videoList=new ArrayList<VideoDTO>();
     private List<Attachement> imageList=new ArrayList<Attachement>();
+    private List<Attachement> attachements=new ArrayList<Attachement>();
     private int commentCount;
+    private String groupName;
 
     private String time;
     private String userName;
@@ -46,7 +48,10 @@ public class AppNoticeDTO {
                         String groupId,
                         int watchPermission,
                         List<VideoDTO> videoList,
-                        List<Attachement> imageList){
+                        List<Attachement> imageList,
+                        List<Attachement> attachements,
+                        String groupName,
+                        String userName){
         this.subject=subject;
         this.title=title;
         this.content=content;
@@ -54,6 +59,9 @@ public class AppNoticeDTO {
         this.watchPermission=watchPermission;
         this.videoList=videoList;
         this.imageList=imageList;
+        this.attachements=attachements;
+        this.groupName=groupName;
+        this.userName=userName;
     }
 
     public AppNoticeDTO(){
@@ -76,8 +84,17 @@ public class AppNoticeDTO {
                         new ObjectId(userId)));
             }
         }
+
+        List<AttachmentEntry> attachmentEntries=new ArrayList<AttachmentEntry>();
+        if(attachements.size()>0){
+            for(Attachement attachement:attachements){
+                attachmentEntries.add(new AttachmentEntry(attachement.getUrl(), attachement.getFlnm(),
+                        System.currentTimeMillis(),
+                        new ObjectId(userId)));
+            }
+        }
         AppNoticeEntry entry=new AppNoticeEntry(new ObjectId(userId), subject, title, content,
-                new ObjectId(groupId), watchPermission, videoEntries, imageEntries);
+                new ObjectId(groupId), watchPermission, videoEntries, attachmentEntries,groupName,userName,imageEntries);
         return entry;
     }
 
@@ -103,6 +120,22 @@ public class AppNoticeDTO {
         }
         this.commentCount=entry.getCommentCount();
         this.time= DateTimeUtils.convert(entry.getSubmitTime(),DateTimeUtils.DATE_YYYY_MM_DD_HH_MM_SS_H);
+    }
+
+    public String getGroupName() {
+        return groupName;
+    }
+
+    public void setGroupName(String groupName) {
+        this.groupName = groupName;
+    }
+
+    public List<Attachement> getAttachements() {
+        return attachements;
+    }
+
+    public void setAttachements(List<Attachement> attachements) {
+        this.attachements = attachements;
     }
 
     public int getReadCount() {

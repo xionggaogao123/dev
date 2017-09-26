@@ -1,16 +1,15 @@
 package com.fulaan.operation.controller;
 
+import com.alibaba.fastjson.JSON;
 import com.fulaan.annotation.ObjectIdType;
 import com.fulaan.base.BaseController;
 import com.fulaan.operation.dto.AppNoticeDTO;
+import com.fulaan.operation.dto.AppOperationDTO;
 import com.fulaan.operation.service.AppNoticeService;
 import com.fulaan.pojo.User;
 import com.sys.constants.Constant;
 import com.sys.utils.RespObj;
-import io.swagger.annotations.Api;
-import io.swagger.annotations.ApiOperation;
-import io.swagger.annotations.ApiResponse;
-import io.swagger.annotations.ApiResponses;
+import io.swagger.annotations.*;
 import org.bson.types.ObjectId;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -129,6 +128,57 @@ public class AppNoticeController extends BaseController {
             respObj.setErrorMessage(e.getMessage());
         }
         return respObj;
+    }
+
+    /**
+     * 添加通知评论
+     * @param dto
+     * @return
+     */
+    @ApiOperation(value = "添加通知评论", httpMethod = "POST", produces = "application/json")
+    @ApiResponse(code = 200, message = "success", response = String.class)
+    @RequestMapping("/addOperationEntry")
+    @ResponseBody
+    public String addOperationEntry(@ApiParam(value = "parentId为上级评论id,backId为回复的对象id,contactId为通知id，role为2学生评论区，role为1家长评论区") @RequestBody AppOperationDTO dto){
+        RespObj respObj=null;
+        try {
+            respObj = RespObj.SUCCESS;
+            dto.setUserId(getUserId().toString());
+            dto.setLevel(1);
+            String result = appNoticeService.addOperationEntry(dto);
+            respObj.setMessage(result);
+        } catch (Exception e) {
+            e.printStackTrace();
+            respObj = RespObj.FAILD;
+            respObj.setErrorMessage("添加作业评论失败!");
+
+        }
+        return JSON.toJSONString(respObj);
+    }
+
+    /**
+     * 添加通知二级评论
+     */
+    @ApiOperation(value="添加二级回复",httpMethod = "POST",produces = "application/json")
+    @ApiResponse(code=200,message = "success", response = String.class)
+    @RequestMapping("/addSecondOperation")
+    @ResponseBody
+    public String addSecondOperation(@ApiParam(value = "parentId为上级评论id,backId为回复的对象id,contactId为通知id，role为1家长评论区，role为2学生评论区") @RequestBody AppOperationDTO dto){
+        RespObj respObj=null;
+        try {
+            respObj = RespObj.SUCCESS;
+            dto.setUserId(getUserId().toString());
+            dto.setLevel(2);
+            String result = appNoticeService.addOperationEntry(dto);
+            respObj.setMessage(result);
+        } catch (Exception e) {
+            e.printStackTrace();
+            respObj = RespObj.FAILD;
+            respObj.setErrorMessage("添加作业二级评论失败!");
+
+        }
+        return JSON.toJSONString(respObj);
+
     }
 
 }

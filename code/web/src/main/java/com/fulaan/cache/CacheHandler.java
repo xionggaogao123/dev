@@ -26,6 +26,8 @@ public final class CacheHandler {
     public static final String CACHE_USER_CALENDAR = "cal_{0}_{1}";
     //用户缓存的Key
     public static final String CACHE_USER_KEY = "ck_{0}";
+    //手机端学生登录缓存的key
+    public static final String CACHE_STUDENT_USER_KEY="stu_user_{0}";
     //作业筛选项   hw_用户ID
     public static final String CACHE_HWSECTION_KEY = "hw_{0}";
     //云资源默认加载
@@ -105,6 +107,18 @@ public final class CacheHandler {
     public static void cacheUserKey(String userId, String userKey, int timeouts) {
         String key = MessageFormat.format(CACHE_USER_KEY, userId);
         RedisUtils.cacheString(key, userKey, timeouts);
+    }
+
+
+    public static void setCacheStudentUserKey(String userId,int timeouts){
+        String key = MessageFormat.format(CACHE_STUDENT_USER_KEY, userId);
+        RedisUtils.cacheString(key, userId, timeouts);
+    }
+
+
+    public static String getCacheStudentUserKey(String userId){
+        String key = MessageFormat.format(CACHE_STUDENT_USER_KEY, userId);
+        return RedisUtils.getString(key);
     }
 
 

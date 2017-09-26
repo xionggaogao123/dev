@@ -90,6 +90,13 @@ public class AppNoticeDao extends BaseDao{
         update(MongoFacroty.getAppDB(), Constant.COLLECTION_NEW_VERSION_APP_NOTICE,query,updateValue);
     }
 
+    public void updateCommentCount(ObjectId id){
+        BasicDBObject query=new BasicDBObject()
+                .append(Constant.ID,id);
+        BasicDBObject updateValue=new BasicDBObject(Constant.MONGO_INC,new BasicDBObject("cc",Constant.ONE));
+        update(MongoFacroty.getAppDB(), Constant.COLLECTION_NEW_VERSION_APP_NOTICE,query,updateValue);
+    }
+
 
     /**
      * 查询entry

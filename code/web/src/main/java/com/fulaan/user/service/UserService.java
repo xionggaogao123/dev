@@ -1108,6 +1108,18 @@ public class UserService extends BaseService {
         return thirdLoginDao.isUnionIdBindWechat(unionId);
     }
 
+
+    protected Platform getPlatform(HttpServletRequest request) {
+        String client = request.getHeader("User-Agent");
+        Platform pf = Platform.PC;
+        if (client.toLowerCase().contains("iphone") || client.toLowerCase().contains("ios")) {
+            pf = Platform.IOS;
+        } else if (client.contains("android")) {
+            pf = Platform.Android;
+        }
+        return pf;
+    }
+
     /**
      * 获取SessionValue
      *
@@ -1117,6 +1129,18 @@ public class UserService extends BaseService {
      * @return
      */
     public SessionValue setCookieValue(UserEntry e, SessionValue value, String ip, HttpServletResponse response, HttpServletRequest request) {
+        //判断是不是手机端登录的
+        Platform platform=getPlatform(request);
+        if(!platform.isMobile()){
+            if(StringUtils.isNotBlank(CacheHandler.getCacheStudentUserKey(e.getID().toString()))) {
+                String cacheUserKey=CacheHandler.getUserKey(e.getID().toString());
+                CacheHandler.deleteKey(CacheHandler.CACHE_USER_KEY_IP, cacheUserKey);
+                CacheHandler.deleteKey(CacheHandler.CACHE_USER_KEY, e.getID().toString());
+                CacheHandler.deleteKey(CacheHandler.CACHE_SESSION_KEY, cacheUserKey);
+            }
+            CacheHandler.setCacheStudentUserKey(e.getID().toString(),Constant.SECONDS_IN_HALF_YEAR);
+        }
+
         //保存generateCode
         value.setPackageCode(e.getGenerateUserCode());
         //放入缓存

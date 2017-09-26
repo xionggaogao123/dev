@@ -2,10 +2,13 @@ package com.fulaan.operation.service;
 
 import com.db.fcommunity.MemberDao;
 import com.db.operation.AppNoticeDao;
+import com.db.operation.AppOperationDao;
 import com.fulaan.operation.dto.AppNoticeDTO;
+import com.fulaan.operation.dto.AppOperationDTO;
 import com.fulaan.pojo.User;
 import com.fulaan.user.service.UserService;
 import com.pojo.appnotice.AppNoticeEntry;
+import com.pojo.operation.AppOperationEntry;
 import com.pojo.user.UserEntry;
 import com.sys.constants.Constant;
 import com.sys.utils.AvatarUtils;
@@ -24,6 +27,8 @@ public class AppNoticeService {
     private AppNoticeDao appNoticeDao=new AppNoticeDao();
 
     private MemberDao memberDao=new MemberDao();
+
+    private AppOperationDao appOperationDao = new AppOperationDao();
 
     @Autowired
     private UserService userService;
@@ -157,6 +162,17 @@ public class AppNoticeService {
 
     public void pushRead(ObjectId id,ObjectId userId){
         appNoticeDao.pushReadList(userId,id);
+    }
+
+
+    public String addOperationEntry(AppOperationDTO dto){
+        AppOperationEntry en = dto.buildAddEntry();
+        //获得当前时间
+        long current=System.currentTimeMillis();
+        en.setDateTime(current);
+        String id = appOperationDao.addEntry(en);
+        appNoticeDao.updateCommentCount(en.getContactId());
+        return id;
     }
 
 }

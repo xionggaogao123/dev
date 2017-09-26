@@ -186,6 +186,13 @@ public class UserService extends BaseService {
                 validate.setMessage("老用户不能登录学生端!");
                 return validate;
             }
+            if(StringUtils.isNotBlank(CacheHandler.getCacheStudentUserKey(e.getID().toString()))) {
+                String cacheUserKey=CacheHandler.getUserKey(e.getID().toString());
+                CacheHandler.deleteKey(CacheHandler.CACHE_USER_KEY_IP, cacheUserKey);
+                CacheHandler.deleteKey(CacheHandler.CACHE_USER_KEY, e.getID().toString());
+                CacheHandler.deleteKey(CacheHandler.CACHE_SESSION_KEY, cacheUserKey);
+            }
+            CacheHandler.setCacheStudentUserKey(e.getID().toString(),Constant.SECONDS_IN_HALF_YEAR);
         }
         validate.setOk(true);
         validate.setData(e);
@@ -1129,17 +1136,6 @@ public class UserService extends BaseService {
      * @return
      */
     public SessionValue setCookieValue(UserEntry e, SessionValue value, String ip, HttpServletResponse response, HttpServletRequest request) {
-        //判断是不是手机端登录的
-        Platform platform=getPlatform(request);
-        if(!platform.isMobile()){
-            if(StringUtils.isNotBlank(CacheHandler.getCacheStudentUserKey(e.getID().toString()))) {
-                String cacheUserKey=CacheHandler.getUserKey(e.getID().toString());
-                CacheHandler.deleteKey(CacheHandler.CACHE_USER_KEY_IP, cacheUserKey);
-                CacheHandler.deleteKey(CacheHandler.CACHE_USER_KEY, e.getID().toString());
-                CacheHandler.deleteKey(CacheHandler.CACHE_SESSION_KEY, cacheUserKey);
-            }
-            CacheHandler.setCacheStudentUserKey(e.getID().toString(),Constant.SECONDS_IN_HALF_YEAR);
-        }
 
         //保存generateCode
         value.setPackageCode(e.getGenerateUserCode());

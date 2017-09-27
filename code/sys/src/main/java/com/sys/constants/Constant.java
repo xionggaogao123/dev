@@ -833,4 +833,12 @@ public class Constant {
     //临时年级表
     public static final String COLLECTION_CREATE_GRADE = "createGrade";
 
+
+    //复兰小课堂
+    //小课程表
+    public static final String COLLECTION_SMALL_LESSON = "smalllesson";
+    //小课程用户活跃表
+    public static final String COLLECTION_LESSON_RESULT = "lessonuserresult";
+    //小课程用户答案
+    public static final String COLLECTION_LESSON_ANSWER = "lessonuseranswer";
 }

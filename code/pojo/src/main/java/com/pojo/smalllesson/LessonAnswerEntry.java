@@ -13,6 +13,7 @@ import org.bson.types.ObjectId;
  * userId        用户id         uid
  * number        次数           num
  * time          用时           tim
+ * isTrue        是否正确       ist  0 未答  1 错  2 对
  * answer        答案           ans
  *
  */
@@ -30,6 +31,7 @@ public class LessonAnswerEntry extends BaseDBObject {
             String userName,
             int number,
             long time,
+            int isTrue,
             String answer
     ){
         BasicDBObject dbObject=new BasicDBObject()
@@ -38,7 +40,8 @@ public class LessonAnswerEntry extends BaseDBObject {
                 .append("unm", userName)
                 .append("num",number)
                 .append("tim",time)
-                .append("ans",answer)
+                .append("ist",isTrue)
+                .append("ans", answer)
                 .append("isr", 0);
         setBaseEntry(dbObject);
     }
@@ -51,6 +54,7 @@ public class LessonAnswerEntry extends BaseDBObject {
             String userName,
             int number,
             long time,
+            int isTrue,
             String answer
     ){
         BasicDBObject dbObject=new BasicDBObject()
@@ -60,7 +64,8 @@ public class LessonAnswerEntry extends BaseDBObject {
                 .append("unm", userName)
                 .append("num",number)
                 .append("tim",time)
-                .append("ans",answer)
+                .append("ist", isTrue)
+                .append("ans", answer)
                 .append("isr", 0);
         setBaseEntry(dbObject);
     }
@@ -109,6 +114,13 @@ public class LessonAnswerEntry extends BaseDBObject {
 
     public void setTime(int time){
         setSimpleValue("tim",time);
+    }
+    public int getIsTrue(){
+        return getSimpleIntegerValue("ist");
+    }
+
+    public void setIsTrue(int isTrue){
+        setSimpleValue("ist",isTrue);
     }
 
 

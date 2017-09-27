@@ -194,22 +194,26 @@ public class UserService extends BaseService {
             }
             CacheHandler.setCacheStudentUserKey(e.getID().toString(),Constant.SECONDS_IN_HALF_YEAR);
         }else if(type==3){
-            if(newVersionUserRoleDao.getEntry(e.getID()).getNewRole() == Constant.ONE) {
-                validate.setMessage("该学生还未激活");
-                return validate;
+            if (null != newVersionUserRoleDao.getEntry(e.getID())) {
+                if (newVersionUserRoleDao.getEntry(e.getID()).getNewRole() == Constant.ONE) {
+                    validate.setMessage("该学生还未激活");
+                    return validate;
+                }
             }
         }else if(type==4){
-            if(newVersionUserRoleDao.getEntry(e.getID()).getNewRole() == Constant.ONE) {
-                validate.setMessage("该学生还未激活");
-                return validate;
+            if (null != newVersionUserRoleDao.getEntry(e.getID())) {
+                if (newVersionUserRoleDao.getEntry(e.getID()).getNewRole() == Constant.ONE) {
+                    validate.setMessage("该学生还未激活");
+                    return validate;
+                }
             }
-            if(StringUtils.isNotBlank(CacheHandler.getCacheStudentUserKey(e.getID().toString()))) {
-                String cacheUserKey=CacheHandler.getUserKey(e.getID().toString());
+            if (StringUtils.isNotBlank(CacheHandler.getCacheStudentUserKey(e.getID().toString()))) {
+                String cacheUserKey = CacheHandler.getUserKey(e.getID().toString());
                 CacheHandler.deleteKey(CacheHandler.CACHE_USER_KEY_IP, cacheUserKey);
                 CacheHandler.deleteKey(CacheHandler.CACHE_USER_KEY, e.getID().toString());
                 CacheHandler.deleteKey(CacheHandler.CACHE_SESSION_KEY, cacheUserKey);
             }
-            CacheHandler.setCacheStudentUserKey(e.getID().toString(),Constant.SECONDS_IN_HALF_YEAR);
+            CacheHandler.setCacheStudentUserKey(e.getID().toString(), Constant.SECONDS_IN_HALF_YEAR);
         }
         validate.setOk(true);
         validate.setData(e);

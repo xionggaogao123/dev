@@ -94,7 +94,7 @@ public class QRUtils {
 
 
     public static String getSmallLessonUserCodeQrUrl(ObjectId userId) {
-        String qrCode = prev_url+"/smallLesson/addStuEntry" + userId.toString();
+        String qrCode = prev_url+"/smallLesson/addStuEntry/" + userId.toString();
         try {
             return getQrUrl(qrCode);
         } catch (Exception e) {

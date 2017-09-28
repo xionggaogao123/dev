@@ -31,6 +31,7 @@ public class AppNoticeDTO {
     private List<Attachement> attachements=new ArrayList<Attachement>();
     private int commentCount;
     private String groupName;
+    private String subjectId;
 
     private String time;
     private String userName;
@@ -42,7 +43,9 @@ public class AppNoticeDTO {
     private int unReadCount;
 
 
-    public AppNoticeDTO(String subject,
+    public AppNoticeDTO(
+                        String subjectId,
+                        String subject,
                         String title,
                         String content,
                         String groupId,
@@ -52,6 +55,7 @@ public class AppNoticeDTO {
                         List<Attachement> attachements,
                         String groupName,
                         String userName){
+        this.subjectId=subjectId;
         this.subject=subject;
         this.title=title;
         this.content=content;
@@ -94,17 +98,19 @@ public class AppNoticeDTO {
             }
         }
         AppNoticeEntry entry=new AppNoticeEntry(new ObjectId(userId), subject, title, content,
-                new ObjectId(groupId), watchPermission, videoEntries, attachmentEntries,groupName,userName,imageEntries);
+                new ObjectId(groupId), watchPermission, videoEntries, attachmentEntries,groupName,userName,new ObjectId(subjectId),imageEntries);
         return entry;
     }
 
     public AppNoticeDTO(AppNoticeEntry entry){
         this.id=entry.getID().toString();
         this.userId=entry.getUserId().toString();
+        this.subjectId=entry.getSubjectId().toString();
         this.subject=entry.getSubject();
         this.title=entry.getTitle();
         this.content=entry.getContent();
         this.groupId=entry.getGroupId().toString();
+        this.groupName=entry.getGroupName();
         List<ObjectId> entryReaList=entry.getReaList();
         for(ObjectId readItem:entryReaList){
             readList.add(readItem.toString());
@@ -120,6 +126,14 @@ public class AppNoticeDTO {
         }
         this.commentCount=entry.getCommentCount();
         this.time= DateTimeUtils.convert(entry.getSubmitTime(),DateTimeUtils.DATE_YYYY_MM_DD_HH_MM_SS_H);
+    }
+
+    public String getSubjectId() {
+        return subjectId;
+    }
+
+    public void setSubjectId(String subjectId) {
+        this.subjectId = subjectId;
     }
 
     public String getGroupName() {

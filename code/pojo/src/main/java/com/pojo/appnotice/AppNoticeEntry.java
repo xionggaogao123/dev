@@ -37,6 +37,7 @@ public class AppNoticeEntry extends BaseDBObject{
             List<AttachmentEntry> attachmentEntries,
             String groupName,
             String userName,
+            ObjectId subjectId,
             List<AttachmentEntry> imageList){
        BasicDBObject basicDBObject=new BasicDBObject()
                .append("uid",userId)
@@ -53,8 +54,18 @@ public class AppNoticeEntry extends BaseDBObject{
                .append("ats",MongoUtils.fetchDBObjectList(attachmentEntries))
                .append("vl",MongoUtils.fetchDBObjectList(videoList))
                .append("il",MongoUtils.fetchDBObjectList(imageList))
+               .append("sid",subjectId)
                .append("ir",Constant.ZERO);
         setBaseEntry(basicDBObject);
+    }
+
+
+    public void setSubjectId(ObjectId subjectId){
+        setSimpleValue("sid",subjectId);
+    }
+
+    public ObjectId getSubjectId(){
+        return getSimpleObjecIDValue("sid");
     }
 
     public String getUserName(){

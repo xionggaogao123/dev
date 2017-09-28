@@ -52,7 +52,9 @@ public class AppNoticeService {
         String[] groupIds=gId.split(",");
         UserEntry userEntry=userService.findById(userId);
         for(String groupId:groupIds){
-            AppNoticeDTO appNoticeDTO=new AppNoticeDTO(dto.getSubject(),
+            AppNoticeDTO appNoticeDTO=new AppNoticeDTO(
+                    dto.getSubjectId(),
+                    dto.getSubject(),
                     dto.getTitle(),
                     dto.getContent(),
                     groupId,
@@ -61,7 +63,7 @@ public class AppNoticeService {
                     dto.getImageList(),
                     dto.getAttachements(),
                     dto.getGroupName(),
-                    dto.getUserName());
+                    userEntry.getUserName());
             appNoticeDTO.setUserId(userId.toString());
             appNoticeDao.saveAppNoticeEntry(appNoticeDTO.buildEntry());
         }

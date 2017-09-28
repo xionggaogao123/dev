@@ -12,6 +12,7 @@ import io.swagger.annotations.*;
 import org.bson.types.ObjectId;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
@@ -95,13 +96,13 @@ public class SmallLessonController extends BaseController {
      * 加入课程 （学生扫描进入）
      */
     @SessionNeedless
-    @ApiOperation(value = "加入课程 （学生扫描进入）", httpMethod = "POST", produces = "application/json")
+    @ApiOperation(value = "加入课程 （学生扫描进入）", httpMethod = "GET", produces = "application/json")
     @ApiResponses( value = {@ApiResponse(code = 200, message = "Successful — 请求已完成",response = String.class),
             @ApiResponse(code = 400, message = "请求中有语法问题，或不能满足请求"),
             @ApiResponse(code = 500, message = "服务器不能完成请求")})
-    @RequestMapping("/addStuEntry")
+    @RequestMapping("/addStuEntry/{teacherId}")
     @ResponseBody
-    public String addStuEntry(@ApiParam(name = "userId", required = true, value = "用户id") @RequestParam("userId") String userId){
+    public String addStuEntry(@ApiParam(name = "teacherId", required = true, value = "老师id") @PathVariable(value = "teacherId") String teacherId){
 
         RespObj respObj=null;
         try {

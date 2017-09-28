@@ -59,4 +59,10 @@ public class LessonUserResultDao extends BaseDao {
         update(MongoFacroty.getAppDB(), Constant.COLLECTION_LESSON_RESULT, query,updateValue);
     }
 
+
+    public ObjectId addEntry(LessonUserResultEntry e) {
+        save(MongoFacroty.getAppDB(), Constant.COLLECTION_LESSON_RESULT, e.getBaseEntry());
+        return e.getID();
+    }
+
 }

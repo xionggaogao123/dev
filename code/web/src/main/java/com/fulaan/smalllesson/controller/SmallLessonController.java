@@ -6,6 +6,7 @@ import com.fulaan.base.BaseController;
 import com.fulaan.smalllesson.dto.LessonAnswerDTO;
 import com.fulaan.smalllesson.dto.LessonUserResultDTO;
 import com.fulaan.smalllesson.dto.SmallLessonDTO;
+import com.fulaan.smalllesson.dto.SmallLessonUserCodeDTO;
 import com.fulaan.smalllesson.service.SmallLessonService;
 import com.sys.utils.RespObj;
 import io.swagger.annotations.*;
@@ -56,8 +57,8 @@ public class SmallLessonController extends BaseController {
         RespObj respObj=null;
         try {
             respObj = RespObj.SUCCESS;
-           smallLessonService.addLessonEntry(userId,userName);
-           respObj.setMessage("添加课程（点击开课）成功!");
+            SmallLessonUserCodeDTO str = smallLessonService.addLessonEntry(userId,userName);
+           respObj.setMessage(str);
         } catch (Exception e) {
             e.printStackTrace();
             respObj = RespObj.FAILD;
@@ -107,8 +108,9 @@ public class SmallLessonController extends BaseController {
         RespObj respObj=null;
         try {
             respObj = RespObj.SUCCESS;
-           // smallLessonService.updLessonEntry(userId,time);
-            respObj.setMessage("加入课程 （学生扫描进入）成功!");
+            ObjectId userId = getUserId();
+            Map<String,Object> str = smallLessonService.addStuEntry(userId, getSessionValue().getUserName(), new ObjectId(teacherId));
+            respObj.setMessage(str);
         } catch (Exception e) {
             e.printStackTrace();
             respObj = RespObj.FAILD;
@@ -116,6 +118,10 @@ public class SmallLessonController extends BaseController {
         }
         return JSON.toJSONString(respObj);
     }
+    /**
+     * 加入课程 （学生输入码进入）
+     */
+
     /**
      * 查找当前用户的课程列表（倒序）
      * @return

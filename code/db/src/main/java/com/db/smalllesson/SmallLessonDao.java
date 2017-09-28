@@ -65,6 +65,18 @@ public class SmallLessonDao extends BaseDao {
         }
         return null;
     }
+    public SmallLessonEntry getEntryByUserId(ObjectId id) {
+        BasicDBObject query = new BasicDBObject();
+        query.append("isr",Constant.ZERO);
+        query.append("uid",id);
+        query.append("typ",0);
+        DBObject obj =
+                findOne(MongoFacroty.getAppDB(), Constant.COLLECTION_SMALL_LESSON, query, Constant.FIELDS);
+        if (obj != null) {
+            return new SmallLessonEntry((BasicDBObject) obj);
+        }
+        return null;
+    }
     public SmallLessonEntry getEntry2(ObjectId userId) {
         BasicDBObject query = new BasicDBObject();
         query.append("isr",Constant.ZERO);

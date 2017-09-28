@@ -367,4 +367,8 @@ public class MemberService {
         }
         return dtos;
     }
+
+    public boolean judgeManagePermissionOfUser(ObjectId userId){
+        return memberDao.judgeManagePermissionOfUser(userId);
+    }
 }

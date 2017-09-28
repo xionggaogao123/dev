@@ -474,4 +474,13 @@ public class MemberDao extends BaseDao {
         return memberEntries;
     }
 
+
+    public boolean judgeManagePermissionOfUser(ObjectId userId){
+        List<Integer> roles=new ArrayList<Integer>();
+        roles.add(Constant.ONE);
+        roles.add(Constant.TWO);
+        BasicDBObject query = new BasicDBObject().append("uid", userId).append("rl", new BasicDBObject(Constant.MONGO_IN,roles)).append("r", Constant.ZERO);
+        return count(MongoFacroty.getAppDB(), Constant.COLLECTION_FORUM_COMMUNITY_MEMBER, query)>0;
+    }
+
 }

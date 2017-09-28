@@ -91,4 +91,15 @@ public class QRUtils {
         file.delete();
         return QiniuFileUtils.getPath(QiniuFileUtils.TYPE_IMAGE, id.toString());
     }
+
+
+    public static String getSmallLessonUserCodeQrUrl(ObjectId userId) {
+        String qrCode = prev_url+"/smallLesson/addStuEntry" + userId.toString();
+        try {
+            return getQrUrl(qrCode);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return null;
+    }
 }

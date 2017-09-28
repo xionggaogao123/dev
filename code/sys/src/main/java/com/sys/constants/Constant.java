@@ -841,4 +841,5 @@ public class Constant {
     public static final String COLLECTION_LESSON_RESULT = "lessonuserresult";
     //小课程用户答案
     public static final String COLLECTION_LESSON_ANSWER = "lessonuseranswer";
+    public static final String COLLECTION_SMALL_LESSON_USER_CODE = "smalllesson_user_code";
 }

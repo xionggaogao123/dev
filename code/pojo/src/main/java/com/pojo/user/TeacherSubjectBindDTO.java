@@ -14,7 +14,7 @@ public class TeacherSubjectBindDTO {
     private String userId;
     private String userName;
     private List<String> subjectIds=new ArrayList<String>();
-    private List<SubjectDto> subjectId=new ArrayList<SubjectDto>();
+    private List<SubjectDto> subjectDtos=new ArrayList<SubjectDto>();
 
     public TeacherSubjectBindDTO(){
 
@@ -63,12 +63,20 @@ public class TeacherSubjectBindDTO {
         this.userName = userName;
     }
 
-    public List<SubjectDto> getSubjectId() {
-        return subjectId;
+    public List<String> getSubjectIds() {
+        return subjectIds;
     }
 
-    public void setSubjectId(List<SubjectDto> subjectId) {
-        this.subjectId = subjectId;
+    public void setSubjectIds(List<String> subjectIds) {
+        this.subjectIds = subjectIds;
+    }
+
+    public List<SubjectDto> getSubjectDtos() {
+        return subjectDtos;
+    }
+
+    public void setSubjectDtos(List<SubjectDto> subjectDtos) {
+        this.subjectDtos = subjectDtos;
     }
 
     static class SubjectDto{

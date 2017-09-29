@@ -4,6 +4,7 @@ import com.fulaan.annotation.ObjectIdType;
 import com.fulaan.base.BaseController;
 import com.fulaan.newVersionBind.dto.NewVersionBindRelationDTO;
 import com.fulaan.newVersionBind.service.NewVersionBindService;
+import com.pojo.user.TeacherSubjectBindDTO;
 import com.sys.constants.Constant;
 import com.sys.utils.RespObj;
 import io.swagger.annotations.*;
@@ -11,6 +12,7 @@ import org.apache.log4j.Logger;
 import org.bson.types.ObjectId;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
@@ -228,5 +230,22 @@ public class BindController extends BaseController {
         }
         return respObj;
     }
+
+    @ApiOperation(value = "绑定该老师学科信息", httpMethod = "GET", produces = "application/json")
+    @ApiResponses( value = {@ApiResponse(code = 200, message = "Successful — 请求已完成",response = RespObj.class)})
+    @RequestMapping("/getCommunityBindList")
+    @ResponseBody
+    public RespObj getCommunityBindList(@RequestBody TeacherSubjectBindDTO bindDTO){
+        RespObj respObj = new RespObj(Constant.FAILD_CODE);
+        try{
+            newVersionBindService.saveTeacherSubjectBind(bindDTO,getUserId());
+            respObj.setCode(Constant.SUCCESS_CODE);
+            respObj.setMessage("绑定该老师学科信息成功！");
+        }catch (Exception e){
+            respObj.setErrorMessage(e.getMessage());
+        }
+        return respObj;
+    }
+
 
 }

@@ -129,9 +129,16 @@ public class SmallLessonService {
 
     }
     //加入课程（输码）
-    public Map<String,Object> addStuEntry2(ObjectId userId,String userName,ObjectId teacherId){
-        SmallLessonEntry entry = smallLessonDao.getEntryByUserId(teacherId);
+    public Map<String,Object> addStuEntryByCode(ObjectId userId,String userName,String str){
+        String code = str.toLowerCase();
+        SmallLessonUserCodeDTO dto2 = smallLessonUserCodeService.getDtoByCode(code);
         Map<String,Object> map = new HashMap<String, Object>();
+        if(dto2 == null){
+            map.put("code",1);
+            map.put("msg","该课程码不存在");
+            return map;
+        }
+        SmallLessonEntry entry = smallLessonDao.getEntryByUserId(new ObjectId(dto2.getUserId()));
         if(entry == null){
             map.put("code",1);
             map.put("msg","该课程已结束");

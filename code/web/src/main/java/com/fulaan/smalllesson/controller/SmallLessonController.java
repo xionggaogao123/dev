@@ -83,11 +83,11 @@ public class SmallLessonController extends BaseController {
         try {
             respObj = RespObj.SUCCESS;
             smallLessonService.updLessonEntry(userId,time);
-            respObj.setMessage("添加课程（点击开课）成功!");
+            respObj.setMessage("下课(修改课程)成功!");
         } catch (Exception e) {
             e.printStackTrace();
             respObj = RespObj.FAILD;
-            respObj.setErrorMessage(" 添加课程（点击开课）失败!");
+            respObj.setErrorMessage("下课(修改课程)失败!");
         }
         return JSON.toJSONString(respObj);
     }
@@ -121,7 +121,27 @@ public class SmallLessonController extends BaseController {
     /**
      * 加入课程 （学生输入码进入）
      */
+    @ApiOperation(value = "加入课程 （学生扫描进入）", httpMethod = "GET", produces = "application/json")
+    @ApiResponses( value = {@ApiResponse(code = 200, message = "Successful — 请求已完成",response = String.class),
+            @ApiResponse(code = 400, message = "请求中有语法问题，或不能满足请求"),
+            @ApiResponse(code = 500, message = "服务器不能完成请求")})
+    @RequestMapping("/addStuEntryByCode/{code}")
+    @ResponseBody
+    public String addStuEntryByCode(@ApiParam(name = "code", required = true, value = "课程id") @PathVariable(value = "code") String code){
 
+        RespObj respObj=null;
+        try {
+            respObj = RespObj.SUCCESS;
+            ObjectId userId = getUserId();
+            Map<String,Object> str = smallLessonService.addStuEntryByCode(userId, getSessionValue().getUserName(), code);
+            respObj.setMessage(str);
+        } catch (Exception e) {
+            e.printStackTrace();
+            respObj = RespObj.FAILD;
+            respObj.setErrorMessage("加入课程 （学生扫描进入）失败!");
+        }
+        return JSON.toJSONString(respObj);
+    }
     /**
      * 查找当前用户的课程列表（倒序）
      * @return

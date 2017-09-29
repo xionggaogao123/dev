@@ -7,6 +7,7 @@ import com.db.operation.AppCommentDao;
 import com.db.operation.AppOperationDao;
 import com.db.operation.AppRecordDao;
 import com.db.user.NewVersionBindRelationDao;
+import com.db.wrongquestion.SubjectClassDao;
 import com.fulaan.community.dto.CommunityDTO;
 import com.fulaan.newVersionBind.service.NewVersionBindService;
 import com.fulaan.operation.dto.AppCommentDTO;
@@ -14,12 +15,14 @@ import com.fulaan.operation.dto.AppOperationDTO;
 import com.fulaan.operation.dto.AppRecordDTO;
 import com.fulaan.service.CommunityService;
 import com.fulaan.user.service.UserService;
+import com.fulaan.wrongquestion.dto.SubjectClassDTO;
 import com.pojo.fcommunity.MemberEntry;
 import com.pojo.operation.AppCommentEntry;
 import com.pojo.operation.AppOperationEntry;
 import com.pojo.operation.AppRecordEntry;
 import com.pojo.user.NewVersionBindRelationEntry;
 import com.pojo.user.UserDetailInfoDTO;
+import com.pojo.wrongquestion.SubjectClassEntry;
 import com.sys.utils.DateTimeUtils;
 import org.bson.types.ObjectId;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -39,6 +42,7 @@ public class AppCommentService {
     private MemberDao memberDao = new MemberDao();
     private GroupDao groupDao = new GroupDao();
     private CommunityDao communityDao = new CommunityDao();
+    private SubjectClassDao subjectClassDao = new SubjectClassDao();
     private NewVersionBindRelationDao newVersionBindRelationDao = new NewVersionBindRelationDao();
     @Autowired
     private CommunityService communityService;
@@ -46,6 +50,8 @@ public class AppCommentService {
     private UserService userService;
     @Autowired
     private NewVersionBindService newVersionBindService;
+
+
 
 
     /**
@@ -662,6 +668,32 @@ public class AppCommentService {
         appCommentDao.updEntry(entry);
     }
 
+    /**
+     * 查询老师绑定的学科
+     */
+    public List<SubjectClassDTO> selectTeacherSubjectList(ObjectId userId){
+        List<SubjectClassDTO> dtos = new ArrayList<SubjectClassDTO>();
+        //todo
+
+
+
+        return dtos;
+    }
+
+    /**
+     * 根据课程id 查询用户的课程列表
+     *
+     */
+    public List<SubjectClassDTO> getSubjectByList(List<ObjectId> olist){
+        List<SubjectClassDTO> dtos = new ArrayList<SubjectClassDTO>();
+        List<SubjectClassEntry> enties = subjectClassDao.getListByList(olist);
+        if(enties.size()>0){
+            for(SubjectClassEntry entry : enties){
+                dtos.add(new SubjectClassDTO(entry));
+            }
+        }
+        return dtos;
+    }
 
     /**
      * 编辑作业

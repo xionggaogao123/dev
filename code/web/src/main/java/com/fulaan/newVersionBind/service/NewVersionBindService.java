@@ -4,6 +4,7 @@ import com.db.fcommunity.NewVersionCommunityBindDao;
 import com.db.newVersionGrade.NewVersionGradeDao;
 import com.db.user.NewVersionBindRelationDao;
 import com.db.user.NewVersionUserRoleDao;
+import com.db.user.TeacherSubjectBindDao;
 import com.fulaan.newVersionBind.dto.NewVersionBindRelationDTO;
 import com.fulaan.user.service.UserService;
 import com.fulaan.utils.pojo.KeyValue;
@@ -11,9 +12,7 @@ import com.fulaan.wrongquestion.dto.NewVersionGradeDTO;
 import com.fulaan.wrongquestion.service.WrongQuestionService;
 import com.pojo.fcommunity.NewVersionCommunityBindEntry;
 import com.pojo.newVersionGrade.NewVersionGradeEntry;
-import com.pojo.user.NewVersionBindRelationEntry;
-import com.pojo.user.NewVersionUserRoleEntry;
-import com.pojo.user.UserEntry;
+import com.pojo.user.*;
 import com.sys.constants.Constant;
 import com.sys.utils.AvatarUtils;
 import org.apache.commons.lang3.StringUtils;
@@ -38,6 +37,8 @@ public class NewVersionBindService {
     private NewVersionGradeDao newVersionGradeDao = new NewVersionGradeDao();
 
     private NewVersionCommunityBindDao newVersionCommunityBindDao = new NewVersionCommunityBindDao();
+
+    private TeacherSubjectBindDao teacherSubjectBindDao= new TeacherSubjectBindDao();
 
     @Autowired
     private UserService userService;
@@ -104,6 +105,15 @@ public class NewVersionBindService {
             dto.setGradeType(gradeEntry.getGradeType());
         }
        return dto;
+    }
+
+    public void saveTeacherSubjectBind(TeacherSubjectBindDTO bindDTO,ObjectId userId){
+        TeacherSubjectBindEntry entry=teacherSubjectBindDao.getEntry(userId);
+        if(null!=entry){
+            teacherSubjectBindDao.removeEntryByTeacherId(userId);
+        }
+        bindDTO.setUserId(userId.toString());
+        teacherSubjectBindDao.saveTeacherSubjectEntry(bindDTO.buildEntry());
     }
 
 

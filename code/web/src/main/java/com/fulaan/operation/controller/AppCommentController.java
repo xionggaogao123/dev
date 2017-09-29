@@ -5,6 +5,7 @@ import com.fulaan.base.BaseController;
 import com.fulaan.operation.dto.AppCommentDTO;
 import com.fulaan.operation.dto.AppOperationDTO;
 import com.fulaan.operation.service.AppCommentService;
+import com.fulaan.wrongquestion.dto.SubjectClassDTO;
 import com.sys.utils.DateTimeUtils;
 import com.sys.utils.RespObj;
 import io.swagger.annotations.*;
@@ -480,6 +481,28 @@ public class AppCommentController extends BaseController {
 
     }
 
+    /**
+     * 查询老师绑定的学科
+     */
+    @ApiOperation(value="查询作业详情",httpMethod = "POST",produces = "application/json")
+    @ApiResponse(code=200,message = "success", response = String.class)
+    @RequestMapping("/selectTeacherSubjectList")
+    @ResponseBody
+    public String selectTeacherSubjectList(){
+        RespObj respObj=null;
+        try {
+            respObj = RespObj.SUCCESS;
+            List<SubjectClassDTO> result = appCommentService.selectTeacherSubjectList(getUserId());
+            respObj.setMessage(result);
+        } catch (Exception e) {
+            e.printStackTrace();
+            respObj = RespObj.FAILD;
+            respObj.setMessage("查询暂不发布的作业失败!");
+
+        }
+        return JSON.toJSONString(respObj);
+
+    }
 
 
 

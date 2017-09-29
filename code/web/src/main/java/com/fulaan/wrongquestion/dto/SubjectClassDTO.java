@@ -15,6 +15,8 @@ public class SubjectClassDTO {
     @ApiModelProperty(name="name",value = "数学32", required = true)
     private String name;
 
+    private String imageUrl;
+
 
     public SubjectClassDTO(){
 
@@ -24,6 +26,7 @@ public class SubjectClassDTO {
             this.id = e.getID()==null?"":e.getID().toString();
             this.subjectId = e.getSubjectId() == null ? "" : e.getSubjectId().toString();
             this.name = e.getName();
+            this.imageUrl = e.getImageUrl();
         }else{
             new SubjectClassDTO();
         }
@@ -37,7 +40,8 @@ public class SubjectClassDTO {
         SubjectClassEntry openEntry =
                 new SubjectClassEntry(
                         sId,
-                        this.name
+                        this.name,
+                        this.imageUrl
                 );
         return openEntry;
 
@@ -56,12 +60,20 @@ public class SubjectClassDTO {
                 new SubjectClassEntry(
                         Id,
                         sId,
-                        this.name
+                        this.name,
+                        this.imageUrl
                 );
         return openEntry;
 
     }
 
+    public String getImageUrl() {
+        return imageUrl;
+    }
+
+    public void setImageUrl(String imageUrl) {
+        this.imageUrl = imageUrl;
+    }
 
     public String getId() {
         return id;

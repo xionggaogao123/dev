@@ -21,6 +21,7 @@ import java.util.List;
  questionNumber   学生提问数            qnm
  imageUrl         图片           		img
  subject          学科标签         	    sub
+ subjectId        学科id                sid
  adminId          发布人id              aid
  recipientName    接收人社区名          rec
  recipientId      接收人社区id          rid
@@ -47,6 +48,7 @@ public class AppCommentEntry extends BaseDBObject {
             int questionNumber,
             List<String> imageUrl,
             String subject,
+            ObjectId subjectId,
             ObjectId adminId,
             String recipientName,
             ObjectId recipientId,
@@ -63,6 +65,7 @@ public class AppCommentEntry extends BaseDBObject {
                 .append("qnm",questionNumber)
                 .append("img", imageUrl)
                 .append("sub",subject)
+                .append("sid",subjectId)
                 .append("aid",adminId)
                 .append("rec", recipientName)
                 .append("rid",recipientId)
@@ -85,6 +88,7 @@ public class AppCommentEntry extends BaseDBObject {
             int questionNumber,
             List<String> imageUrl,
             String subject,
+            ObjectId subjectId,
             ObjectId adminId,
             String recipientName,
             ObjectId recipientId,
@@ -102,7 +106,8 @@ public class AppCommentEntry extends BaseDBObject {
                 .append("qnm",questionNumber)
                 .append("img", imageUrl)
                 .append("sub",subject)
-                .append("aid",adminId)
+                .append("sid",subjectId)
+                .append("aid", adminId)
                 .append("rec",recipientName)
                 .append("rid",recipientId)
                 .append("dtm", dateTime)
@@ -184,6 +189,13 @@ public class AppCommentEntry extends BaseDBObject {
 
     public void setSubject(String subject){
         setSimpleValue("sub",subject);
+    }
+    public ObjectId getSubjectId(){
+        return getSimpleObjecIDValue("sid");
+    }
+
+    public void setSubjectId(ObjectId subjectId){
+        setSimpleValue("sid",subjectId);
     }
     public String getRecipientName(){
         return getSimpleStringValue("rec");

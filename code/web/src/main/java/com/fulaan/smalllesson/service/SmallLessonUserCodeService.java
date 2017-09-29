@@ -47,6 +47,14 @@ public class SmallLessonUserCodeService {
             return new SmallLessonUserCodeDTO(userCodeEntry);
         }
     }
+    public SmallLessonUserCodeDTO getDtoByCode(String code){
+        SmallLessonUserCodeEntry codeEntry=smallLessonUserCodeDao.getEntryByCode(code);
+        if(codeEntry != null){
+            return new SmallLessonUserCodeDTO(codeEntry);
+        }
+        return null;
+
+    }
 
 
 

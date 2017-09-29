@@ -27,8 +27,9 @@ public class AppCommentDTO {
     private int questionNumber;
     @ApiModelProperty(value = "图片url", required = true)
     private List<String> imageUrl;
-    @ApiModelProperty(value = "学科名", required = true)
     private String subject;
+    @ApiModelProperty(value = "学科id", required = true)
+    private String subjectId;
     private String adminId;
     private String recipientName;
     private String recipientId;
@@ -61,6 +62,7 @@ public class AppCommentDTO {
             this.questionNumber = e.getQuestionNumber();
             this.imageUrl = e.getImageUrl();
             this.subject = e.getSubject();
+            this.subjectId = e.getSubjectId()==null?"":e.getSubjectId().toString();
             this.adminId = e.getAdminId() == null ? "" : e.getAdminId().toString();
             this.recipientName = e.getRecipientName();
             this.recipientId = e.getRecipientId() == null ? "" : e.getRecipientId().toString();
@@ -89,6 +91,10 @@ public class AppCommentDTO {
         if(this.getRecipientId()!=null&&!"".equals(this.getRecipientId())){
             rId=new ObjectId(this.getRecipientId());
         }
+        ObjectId sId=null;
+        if(this.getSubjectId()!=null&&!"".equals(this.getSubjectId())){
+            sId=new ObjectId(this.getSubjectId());
+        }
         long lTm = 0l;
         if(this.getLoadTime() != null && this.getLoadTime() != ""){
             lTm = DateTimeUtils.getStrToLongTime(this.getLoadTime());
@@ -109,6 +115,7 @@ public class AppCommentDTO {
                         this.questionNumber,
                         this.imageUrl,
                         this.subject,
+                        sId,
                         aId,
                         this.recipientName,
                         rId,
@@ -130,6 +137,10 @@ public class AppCommentDTO {
         if(this.getRecipientId()!=null&&!"".equals(this.getRecipientId())){
             rId=new ObjectId(this.getRecipientId());
         }
+        ObjectId sId=null;
+        if(this.getSubjectId()!=null&&!"".equals(this.getSubjectId())){
+            sId=new ObjectId(this.getSubjectId());
+        }
         long lTm = 0l;
         if(this.getLoadTime() != null && this.getLoadTime() != ""){
             lTm = DateTimeUtils.getStrToLongTime(this.getLoadTime());
@@ -150,6 +161,7 @@ public class AppCommentDTO {
                         this.questionNumber,
                         this.imageUrl,
                         this.subject,
+                        sId,
                         aId,
                         this.recipientName,
                         rId,
@@ -157,6 +169,14 @@ public class AppCommentDTO {
                         dTm);
         return openEntry;
 
+    }
+
+    public String getSubjectId() {
+        return subjectId;
+    }
+
+    public void setSubjectId(String subjectId) {
+        this.subjectId = subjectId;
     }
 
     public String getId() {

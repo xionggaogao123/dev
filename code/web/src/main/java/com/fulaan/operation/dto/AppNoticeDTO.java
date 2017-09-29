@@ -73,11 +73,23 @@ public class AppNoticeDTO {
     }
 
     public AppNoticeEntry buildEntry(){
+        ObjectId uuId=null;
+        if(org.apache.commons.lang.StringUtils.isNotBlank(userId)&&ObjectId.isValid(userId)){
+            uuId=new ObjectId(userId);
+        }
+        ObjectId subId=null;
+        if(org.apache.commons.lang.StringUtils.isNotBlank(subjectId)&&ObjectId.isValid(subjectId)){
+            subId=new ObjectId(subjectId);
+        }
+        ObjectId gId=null;
+        if(org.apache.commons.lang.StringUtils.isNotBlank(groupId)&&ObjectId.isValid(groupId)){
+            gId=new ObjectId(groupId);
+        }
         List<VideoEntry> videoEntries=new ArrayList<VideoEntry>();
         if(videoList.size()>0){
             for(VideoDTO videoDTO:videoList){
                 videoEntries.add(new VideoEntry(videoDTO.getVideoUrl(),
-                videoDTO.getImageUrl(),System.currentTimeMillis(), new ObjectId(userId)));
+                videoDTO.getImageUrl(),System.currentTimeMillis(), uuId));
             }
         }
         List<AttachmentEntry> imageEntries=new ArrayList<AttachmentEntry>();
@@ -85,7 +97,7 @@ public class AppNoticeDTO {
             for(Attachement image:imageList){
                 imageEntries.add(new AttachmentEntry(image.getUrl(), image.getFlnm(),
                         System.currentTimeMillis(),
-                        new ObjectId(userId)));
+                        uuId));
             }
         }
 
@@ -94,22 +106,22 @@ public class AppNoticeDTO {
             for(Attachement attachement:attachements){
                 attachmentEntries.add(new AttachmentEntry(attachement.getUrl(), attachement.getFlnm(),
                         System.currentTimeMillis(),
-                        new ObjectId(userId)));
+                        uuId));
             }
         }
-        AppNoticeEntry entry=new AppNoticeEntry(new ObjectId(userId), subject, title, content,
-                new ObjectId(groupId), watchPermission, videoEntries, attachmentEntries,groupName,userName,new ObjectId(subjectId),imageEntries);
+        AppNoticeEntry entry=new AppNoticeEntry(uuId, subject, title, content,
+                gId, watchPermission, videoEntries, attachmentEntries,groupName,userName,subId,imageEntries);
         return entry;
     }
 
     public AppNoticeDTO(AppNoticeEntry entry){
         this.id=entry.getID().toString();
-        this.userId=entry.getUserId().toString();
-        this.subjectId=entry.getSubjectId().toString();
+        this.userId=entry.getUserId()==null?"":entry.getUserId().toString();
+        this.subjectId=entry.getSubjectId()==null?"":entry.getSubjectId().toString();
         this.subject=entry.getSubject();
         this.title=entry.getTitle();
         this.content=entry.getContent();
-        this.groupId=entry.getGroupId().toString();
+        this.groupId=entry.getGroupId()==null?"":entry.getGroupId().toString();
         this.groupName=entry.getGroupName();
         List<ObjectId> entryReaList=entry.getReaList();
         for(ObjectId readItem:entryReaList){

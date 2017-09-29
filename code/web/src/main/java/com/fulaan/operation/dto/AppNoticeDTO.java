@@ -24,6 +24,7 @@ public class AppNoticeDTO {
     private String title;
     private String content;
     private String groupId;
+    private String communityId;
     private List<String> readList= new ArrayList<String>();
     private int watchPermission;
     private List<VideoDTO> videoList=new ArrayList<VideoDTO>();
@@ -49,6 +50,7 @@ public class AppNoticeDTO {
                         String title,
                         String content,
                         String groupId,
+                        String communityId,
                         int watchPermission,
                         List<VideoDTO> videoList,
                         List<Attachement> imageList,
@@ -56,6 +58,7 @@ public class AppNoticeDTO {
                         String groupName,
                         String userName){
         this.subjectId=subjectId;
+        this.communityId=communityId;
         this.subject=subject;
         this.title=title;
         this.content=content;
@@ -85,6 +88,10 @@ public class AppNoticeDTO {
         if(org.apache.commons.lang.StringUtils.isNotBlank(groupId)&&ObjectId.isValid(groupId)){
             gId=new ObjectId(groupId);
         }
+        ObjectId cmId=null;
+        if(org.apache.commons.lang.StringUtils.isNotBlank(communityId)&&ObjectId.isValid(communityId)){
+            cmId=new ObjectId(communityId);
+        }
         List<VideoEntry> videoEntries=new ArrayList<VideoEntry>();
         if(videoList.size()>0){
             for(VideoDTO videoDTO:videoList){
@@ -110,7 +117,7 @@ public class AppNoticeDTO {
             }
         }
         AppNoticeEntry entry=new AppNoticeEntry(uuId, subject, title, content,
-                gId, watchPermission, videoEntries, attachmentEntries,groupName,userName,subId,imageEntries);
+                gId, watchPermission, videoEntries, attachmentEntries,groupName,userName,subId,cmId,imageEntries);
         return entry;
     }
 
@@ -122,6 +129,7 @@ public class AppNoticeDTO {
         this.title=entry.getTitle();
         this.content=entry.getContent();
         this.groupId=entry.getGroupId()==null?"":entry.getGroupId().toString();
+        this.communityId=entry.getCommunityId()==null?"":entry.getCommunityId().toString();
         this.groupName=entry.getGroupName();
         List<ObjectId> entryReaList=entry.getReaList();
         for(ObjectId readItem:entryReaList){
@@ -138,6 +146,14 @@ public class AppNoticeDTO {
         }
         this.commentCount=entry.getCommentCount();
         this.time= DateTimeUtils.convert(entry.getSubmitTime(),DateTimeUtils.DATE_YYYY_MM_DD_HH_MM_SS_H);
+    }
+
+    public String getCommunityId() {
+        return communityId;
+    }
+
+    public void setCommunityId(String communityId) {
+        this.communityId = communityId;
     }
 
     public String getSubjectId() {

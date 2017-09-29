@@ -49,15 +49,17 @@ public class AppNoticeService {
      */
     public void saveAppNoticeEntry(AppNoticeDTO dto,ObjectId userId){
         String gId=dto.getGroupId();
-        String[] groupIds=gId.split(",");
+        String[] groupCommunityIds=gId.split(",");
         UserEntry userEntry=userService.findById(userId);
-        for(String groupId:groupIds){
+        for(String groupCommunityId:groupCommunityIds){
+            String[] gComIds=groupCommunityId.split("\\$");
             AppNoticeDTO appNoticeDTO=new AppNoticeDTO(
                     dto.getSubjectId(),
                     dto.getSubject(),
                     dto.getTitle(),
                     dto.getContent(),
-                    groupId,
+                    gComIds[0],
+                    gComIds[1],
                     dto.getWatchPermission(),
                     dto.getVideoList(),
                     dto.getImageList(),

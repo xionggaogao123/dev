@@ -38,6 +38,7 @@ public class AppNoticeEntry extends BaseDBObject{
             String groupName,
             String userName,
             ObjectId subjectId,
+            ObjectId communityId,
             List<AttachmentEntry> imageList){
        BasicDBObject basicDBObject=new BasicDBObject()
                .append("uid",userId)
@@ -51,12 +52,21 @@ public class AppNoticeEntry extends BaseDBObject{
                .append("gn",groupName)
                .append("un",userName)
                .append("wp",watchPermission)
+               .append("cmId",communityId)
                .append("ats",MongoUtils.fetchDBObjectList(attachmentEntries))
                .append("vl",MongoUtils.fetchDBObjectList(videoList))
                .append("il",MongoUtils.fetchDBObjectList(imageList))
                .append("sid",subjectId)
                .append("ir",Constant.ZERO);
         setBaseEntry(basicDBObject);
+    }
+
+    public ObjectId getCommunityId(){
+        return getSimpleObjecIDValue("cmId");
+    }
+
+    public void setCommunityId(ObjectId communityId){
+        setSimpleValue("cmId",communityId);
     }
 
 

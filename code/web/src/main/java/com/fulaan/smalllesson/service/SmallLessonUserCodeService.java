@@ -29,10 +29,16 @@ public class SmallLessonUserCodeService {
         }else{
             boolean flag=true;
             while (flag){
-                code=generateCode();
+                code=generateCode(1);
                 SmallLessonUserCodeEntry codeEntry=smallLessonUserCodeDao.getEntryByCode(code);
-                if(null==codeEntry){
-                    flag=false;
+                if(null!=codeEntry){
+                    code=generateCode(2);
+                    SmallLessonUserCodeEntry entryByCode=smallLessonUserCodeDao.getEntryByCode(code);
+                    if(null==entryByCode) {
+                        flag = false;
+                    }
+                }else{
+                    flag = false;
                 }
             }
             String qrUrl= QRUtils.getSmallLessonUserCodeQrUrl(userId);
@@ -42,7 +48,9 @@ public class SmallLessonUserCodeService {
         }
     }
 
-    public String generateCode(){
+
+
+    public String generateCode(int type){
         int max=6;
         int min=0;
         Random random = new Random();
@@ -50,7 +58,11 @@ public class SmallLessonUserCodeService {
         int num=6-argNum;
         String argStr=generateArg(argNum);
         String numStr=generateNum(num);
-        return argStr+numStr;
+        if(type==1) {
+            return argStr + numStr;
+        }else{
+            return numStr + argStr;
+        }
     }
 
     public  String generateArg(int num){

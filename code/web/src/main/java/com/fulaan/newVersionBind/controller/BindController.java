@@ -233,9 +233,9 @@ public class BindController extends BaseController {
 
     @ApiOperation(value = "绑定该老师学科信息", httpMethod = "GET", produces = "application/json")
     @ApiResponses( value = {@ApiResponse(code = 200, message = "Successful — 请求已完成",response = RespObj.class)})
-    @RequestMapping("/getCommunityBindList")
+    @RequestMapping("/bindTeacherSubject")
     @ResponseBody
-    public RespObj getCommunityBindList(@RequestBody TeacherSubjectBindDTO bindDTO){
+    public RespObj bindTeacherSubject(@RequestBody TeacherSubjectBindDTO bindDTO){
         RespObj respObj = new RespObj(Constant.FAILD_CODE);
         try{
             newVersionBindService.saveTeacherSubjectBind(bindDTO,getUserId());

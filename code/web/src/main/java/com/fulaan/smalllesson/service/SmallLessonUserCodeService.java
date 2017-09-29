@@ -109,7 +109,7 @@ public class SmallLessonUserCodeService {
         String argStr=generateArg(argNum);
         String numStr=generateNum(num);
         if(type==1) {
-            return argStr + numStr;
+                return argStr + numStr;
         }else{
             return numStr + argStr;
         }

@@ -95,15 +95,30 @@ public class SmallLessonService {
     }
 
     //添加课程
-    public SmallLessonUserCodeDTO addLessonEntry(String userId,String userName){
-        SmallLessonDTO dto = new SmallLessonDTO();
-        dto.setUserId(userId);
-        dto.setName(this.getName(new ObjectId(userId),userName));
-        dto.setType(0);
-        SmallLessonEntry entry = dto.buildAddEntry();
-        smallLessonDao.addEntry(entry);
-        SmallLessonUserCodeDTO dto2 = smallLessonUserCodeService.getDto(new ObjectId(userId));
-        return dto2;
+    public SmallLessonDTO addLessonEntry(String userId,String userName){
+        SmallLessonEntry entry2 = smallLessonDao.getEntryByUserId(new ObjectId(userId));
+        if(entry2==null){
+            SmallLessonDTO dto = new SmallLessonDTO();
+            dto.setUserId(userId);
+            dto.setName(this.getName(new ObjectId(userId),userName));
+            dto.setType(0);
+            SmallLessonEntry entry = dto.buildAddEntry();
+            ObjectId lessonId = smallLessonDao.addEntry(entry);
+            Map<String,String> dto2 = smallLessonUserCodeService.getSmallLessonCode(lessonId);
+            //
+            String imagUrl = dto2.get("qrUrl");
+            String code = dto2.get("code");
+            entry.setImageUrl(imagUrl);
+            entry.setCode(code);
+            entry.setID(lessonId);
+            smallLessonDao.updEntry(entry);
+            SmallLessonDTO dto3 = new SmallLessonDTO(entry);
+            return dto3;
+            //return null;
+        }else{
+            return null;
+        }
+
     }
 
     //加入课程（扫码）

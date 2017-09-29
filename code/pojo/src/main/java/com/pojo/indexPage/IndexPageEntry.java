@@ -9,7 +9,7 @@ import org.bson.types.ObjectId;
  * 首页加载表
  * Created by James on 2017/9/28.
  * id
- * type         类型           typ
+ * type         类型           typ    1 作业    2 通知
  * communityId  社区id         cid
  * contactId    联系记录id     tid
  */

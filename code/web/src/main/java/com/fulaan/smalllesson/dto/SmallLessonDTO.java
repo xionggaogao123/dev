@@ -12,6 +12,8 @@ public class SmallLessonDTO {
     private String name;
     private String dateTime;
     private String userId;
+    private String imageUrl;
+    private String code;
     private int type;
     private int nodeTime;
 
@@ -29,6 +31,8 @@ public class SmallLessonDTO {
                 this.dateTime = "";
             }
             this.type = e.getType();
+            this.imageUrl = e.getImageUrl();
+            this.code = e.getCode();
             this.nodeTime = e.getNodeTime();
         }else{
             new SmallLessonDTO();
@@ -49,6 +53,8 @@ public class SmallLessonDTO {
                 new SmallLessonEntry(
                         this.name,
                         uId,
+                        this.imageUrl,
+                        this.code,
                         this.type,
                         this.nodeTime
                 );
@@ -74,6 +80,8 @@ public class SmallLessonDTO {
                         Id,
                         this.name,
                         uId,
+                        this.imageUrl,
+                        this.code,
                         this.type,
                         this.nodeTime
                 );
@@ -81,6 +89,21 @@ public class SmallLessonDTO {
 
     }
 
+    public String getCode() {
+        return code;
+    }
+
+    public void setCode(String code) {
+        this.code = code;
+    }
+
+    public String getImageUrl() {
+        return imageUrl;
+    }
+
+    public void setImageUrl(String imageUrl) {
+        this.imageUrl = imageUrl;
+    }
 
     public String getId() {
         return id;

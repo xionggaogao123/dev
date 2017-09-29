@@ -6,7 +6,6 @@ import com.fulaan.base.BaseController;
 import com.fulaan.smalllesson.dto.LessonAnswerDTO;
 import com.fulaan.smalllesson.dto.LessonUserResultDTO;
 import com.fulaan.smalllesson.dto.SmallLessonDTO;
-import com.fulaan.smalllesson.dto.SmallLessonUserCodeDTO;
 import com.fulaan.smalllesson.service.SmallLessonService;
 import com.sys.utils.RespObj;
 import io.swagger.annotations.*;
@@ -56,9 +55,15 @@ public class SmallLessonController extends BaseController {
 
         RespObj respObj=null;
         try {
-            respObj = RespObj.SUCCESS;
-            SmallLessonUserCodeDTO str = smallLessonService.addLessonEntry(userId,userName);
-           respObj.setMessage(str);
+
+            SmallLessonDTO str = smallLessonService.addLessonEntry(userId,userName);
+            if(str == null){
+                respObj = RespObj.FAILD;
+                respObj.setErrorMessage("正在上课中!");
+            }else{
+                respObj = RespObj.SUCCESS;
+                respObj.setMessage(str);
+            }
         } catch (Exception e) {
             e.printStackTrace();
             respObj = RespObj.FAILD;
@@ -121,13 +126,13 @@ public class SmallLessonController extends BaseController {
     /**
      * 加入课程 （学生输入码进入）
      */
-    @ApiOperation(value = "加入课程 （学生扫描进入）", httpMethod = "GET", produces = "application/json")
+    @ApiOperation(value = "加入课程 （学生扫描进入）", httpMethod = "POST", produces = "application/json")
     @ApiResponses( value = {@ApiResponse(code = 200, message = "Successful — 请求已完成",response = String.class),
             @ApiResponse(code = 400, message = "请求中有语法问题，或不能满足请求"),
             @ApiResponse(code = 500, message = "服务器不能完成请求")})
-    @RequestMapping("/addStuEntryByCode/{code}")
+    @RequestMapping("/addStuEntryByCode")
     @ResponseBody
-    public String addStuEntryByCode(@ApiParam(name = "code", required = true, value = "课程id") @PathVariable(value = "code") String code){
+    public String addStuEntryByCode(@ApiParam(name = "code", required = true, value = "课程id") @RequestParam(value = "code") String code){
 
         RespObj respObj=null;
         try {

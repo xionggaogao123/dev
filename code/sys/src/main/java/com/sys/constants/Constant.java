@@ -843,6 +843,8 @@ public class Constant {
     public static final String COLLECTION_LESSON_ANSWER = "lessonuseranswer";
     //小课程用户编码表
     public static final String COLLECTION_SMALL_LESSON_USER_CODE = "smalllesson_user_code";
+
+    public static final String COLLECTION_SMALL_LESSON_CODE = "smalllesson_code";
     //老师绑定学科表
     public static final String COLLECTION_TEACHER_SUBJECT_BIND="tea_subject_bind";
 

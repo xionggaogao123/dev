@@ -1,12 +1,16 @@
 package com.fulaan.smalllesson.service;
 
+import com.db.smalllesson.SmallLessonCodeDao;
 import com.db.smalllesson.SmallLessonUserCodeDao;
 import com.fulaan.smalllesson.dto.SmallLessonUserCodeDTO;
 import com.fulaan.util.QRUtils;
+import com.pojo.smalllesson.SmallLessonCodeEntry;
 import com.pojo.smalllesson.SmallLessonUserCodeEntry;
 import org.bson.types.ObjectId;
 import org.springframework.stereotype.Service;
 
+import java.util.HashMap;
+import java.util.Map;
 import java.util.Random;
 
 /**
@@ -20,6 +24,41 @@ public class SmallLessonUserCodeService {
 
 
     SmallLessonUserCodeDao smallLessonUserCodeDao=new SmallLessonUserCodeDao();
+
+    SmallLessonCodeDao smallLessonCodeDao = new SmallLessonCodeDao();
+
+    /**
+     * 获取课程对应的二维码以及课程编码code
+     * @param lessonId
+     * @return
+     */
+    public Map<String,String> getSmallLessonCode(ObjectId lessonId){
+        Map<String,String> retMap=new HashMap<String, String>();
+        String qrUrl= QRUtils.getSmallLessonUserCodeQrUrl(lessonId);
+        retMap.put("qrUrl",qrUrl);
+        //生成code
+        String code="";
+        boolean flag=true;
+        while(flag) {
+            code= generateNum(6);
+            SmallLessonCodeEntry codeEntry=smallLessonCodeDao.getCodeEntry(code);
+            if(null==codeEntry){
+                flag=false;
+            }
+        }
+        SmallLessonCodeEntry entry=new SmallLessonCodeEntry(code);
+        smallLessonCodeDao.saveSmallLessonCodeEntry(entry);
+        retMap.put("code",code);
+        return retMap;
+    }
+
+    /**
+     * 下课时删除对应的课程编码
+     * @param code
+     */
+    public void removeSmallLessonCode(String code){
+        smallLessonCodeDao.removeSmallLessonCodeEntry(code);
+    }
 
     public SmallLessonUserCodeDTO getDto(ObjectId userId){
         SmallLessonUserCodeEntry entry=smallLessonUserCodeDao.getEntryByUserId(userId);
@@ -47,6 +86,9 @@ public class SmallLessonUserCodeService {
             return new SmallLessonUserCodeDTO(userCodeEntry);
         }
     }
+
+
+
     public SmallLessonUserCodeDTO getDtoByCode(String code){
         SmallLessonUserCodeEntry codeEntry=smallLessonUserCodeDao.getEntryByCode(code);
         if(codeEntry != null){
@@ -85,6 +127,7 @@ public class SmallLessonUserCodeService {
         }
         return str;
     }
+
     public String generateNum(int num){
         String str="";
         int max=9;

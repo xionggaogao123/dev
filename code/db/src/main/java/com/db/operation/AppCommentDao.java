@@ -58,6 +58,27 @@ public class AppCommentDao extends BaseDao {
         }
         return entryList;
     }
+
+    //根据idList查询作业信息
+    public List<AppCommentEntry> getEntryListByIds(List<ObjectId> ids) {
+        BasicDBObject query = new BasicDBObject(Constant.ID,new BasicDBObject(Constant.MONGO_IN,ids))
+                .append("isr", 0); // 未删除
+        List<DBObject> dbList =
+                find(MongoFacroty.getAppDB(),
+                        Constant.COLLECTION_APP_COMMENT,
+                        query, Constant.FIELDS,
+                        Constant.MONGO_SORTBY_DESC);
+        List<AppCommentEntry> entryList = new ArrayList<AppCommentEntry>();
+        if (dbList != null && !dbList.isEmpty()) {
+            for (DBObject obj : dbList) {
+                entryList.add(new AppCommentEntry((BasicDBObject) obj));
+            }
+        }
+        return entryList;
+    }
+
+
+
     //老师月作业列表查询
     public List<AppCommentEntry> selectResultList(ObjectId userId,List<Integer> monthList) {
         BasicDBObject query = new BasicDBObject()

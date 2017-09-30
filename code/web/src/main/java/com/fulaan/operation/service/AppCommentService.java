@@ -3,12 +3,14 @@ package com.fulaan.operation.service;
 import com.db.fcommunity.CommunityDao;
 import com.db.fcommunity.GroupDao;
 import com.db.fcommunity.MemberDao;
+import com.db.indexPage.IndexPageDao;
 import com.db.operation.AppCommentDao;
 import com.db.operation.AppOperationDao;
 import com.db.operation.AppRecordDao;
 import com.db.user.NewVersionBindRelationDao;
 import com.db.wrongquestion.SubjectClassDao;
 import com.fulaan.community.dto.CommunityDTO;
+import com.fulaan.indexpage.dto.IndexPageDTO;
 import com.fulaan.newVersionBind.service.NewVersionBindService;
 import com.fulaan.operation.dto.AppCommentDTO;
 import com.fulaan.operation.dto.AppOperationDTO;
@@ -17,6 +19,8 @@ import com.fulaan.service.CommunityService;
 import com.fulaan.user.service.UserService;
 import com.fulaan.wrongquestion.dto.SubjectClassDTO;
 import com.pojo.fcommunity.MemberEntry;
+import com.pojo.indexPage.IndexPageEntry;
+import com.pojo.newVersionGrade.CommunityType;
 import com.pojo.operation.AppCommentEntry;
 import com.pojo.operation.AppOperationEntry;
 import com.pojo.operation.AppRecordEntry;
@@ -43,6 +47,7 @@ public class AppCommentService {
     private GroupDao groupDao = new GroupDao();
     private CommunityDao communityDao = new CommunityDao();
     private SubjectClassDao subjectClassDao = new SubjectClassDao();
+    private IndexPageDao indexPageDao = new IndexPageDao();
     private NewVersionBindRelationDao newVersionBindRelationDao = new NewVersionBindRelationDao();
     @Autowired
     private CommunityService communityService;
@@ -90,7 +95,16 @@ public class AppCommentService {
             en.setID(null);
             en.setRecipientId(new ObjectId(dto3.getId()));
             en.setRecipientName(dto3.getName());
-            appCommentDao.addEntry(en);
+            String oid = appCommentDao.addEntry(en);
+
+            //添加临时记录表
+            IndexPageDTO dto1 = new IndexPageDTO();
+            dto1.setType(CommunityType.appComment.getType());
+            dto1.setCommunityId(dto3.getId());
+            dto1.setContactId(oid);
+            IndexPageEntry entry = dto1.buildAddEntry();
+            indexPageDao.addEntry(entry);
+
         }
         return "成功导入";
     }

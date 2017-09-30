@@ -16,10 +16,37 @@ import java.util.List;
  */
 public class GroupExamDetailDao extends BaseDao{
 
-    public void saveGroupExamDetailEntry(GroupExamDetailEntry examDetailEntry){
+    public ObjectId saveGroupExamDetailEntry(GroupExamDetailEntry examDetailEntry){
         save(MongoFacroty.getAppDB(), Constant.COLLECTION_REPORT_CARD_GROUP_EXAM_DETAIL,examDetailEntry.getBaseEntry());
+        return examDetailEntry.getID();
     }
 
+
+    /**
+     * 获取学生接收的成绩单列表
+     * @param userId
+     * @param page
+     * @param pageSize
+     * @return
+     */
+    public List<GroupExamDetailEntry> getReceivedExams(ObjectId userId,
+                                                       int page,int pageSize){
+        List<GroupExamDetailEntry> entries=new ArrayList<GroupExamDetailEntry>();
+        List<Integer> status=new ArrayList<Integer>();
+        status.add(Constant.ZERO);
+        status.add(Constant.TWO);
+        BasicDBObject query=new BasicDBObject()
+                .append("urs.uid",userId)
+                .append("urs.st",new BasicDBObject(Constant.MONGO_IN,status));
+        List<DBObject> dbObjectList=find(MongoFacroty.getAppDB(), Constant.COLLECTION_REPORT_CARD_GROUP_EXAM_DETAIL,
+                query,Constant.FIELDS,Constant.MONGO_SORTBY_DESC,(page-1)*pageSize,pageSize);
+        if(null!=dbObjectList&&!dbObjectList.isEmpty()){
+            for(DBObject dbObject:dbObjectList){
+                entries.add(new GroupExamDetailEntry(dbObject));
+            }
+        }
+        return entries;
+    }
 
     /**
      * 获取我接收的成绩单列表
@@ -77,36 +104,6 @@ public class GroupExamDetailDao extends BaseDao{
     }
 
     /**
-     * 阅读该条信息
-     * @param id
-     * @param userId
-     */
-    public void pushSign(ObjectId id,
-                         ObjectId userId){
-        BasicDBObject query=new BasicDBObject()
-                .append(Constant.ID,id)
-                .append("urs.uid",userId);
-        BasicDBObject updateValue=new BasicDBObject(Constant.MONGO_SET,new BasicDBObject("urs.$.st",Constant.TWO));
-        update(MongoFacroty.getAppDB(), Constant.COLLECTION_REPORT_CARD_GROUP_EXAM_DETAIL,query,updateValue);
-    }
-
-    /**
-     * 更新状态
-     * @param communityId
-     * @param userId
-     * @param status
-     */
-    public void updateGroupExamDetail(ObjectId communityId,
-                                      ObjectId userId,
-                                      int status){
-        BasicDBObject query=new BasicDBObject()
-                .append("cmId",communityId)
-                .append("urs.uid",userId);
-        BasicDBObject updateValue=new BasicDBObject(Constant.MONGO_SET,new BasicDBObject("urs.$.st",status));
-        update(MongoFacroty.getAppDB(), Constant.COLLECTION_REPORT_CARD_GROUP_EXAM_DETAIL,query,updateValue);
-    }
-
-    /**
      * 更新状态
      * @param id
      * @param status
@@ -116,6 +113,18 @@ public class GroupExamDetailDao extends BaseDao{
                 .append(Constant.ID,id);
         BasicDBObject updateValue=new BasicDBObject()
                 .append(Constant.MONGO_SET,new BasicDBObject("st",status));
+        update(MongoFacroty.getAppDB(), Constant.COLLECTION_REPORT_CARD_GROUP_EXAM_DETAIL,query,updateValue);
+    }
+
+    /**
+     * 删除这次的考次
+     * @param id
+     */
+    public void removeGroupExamDetailEntry(ObjectId id){
+        BasicDBObject query=new BasicDBObject()
+                .append(Constant.ID,id);
+        BasicDBObject updateValue=new BasicDBObject()
+                .append(Constant.MONGO_SET,new BasicDBObject("ir", Constant.ONE));
         update(MongoFacroty.getAppDB(), Constant.COLLECTION_REPORT_CARD_GROUP_EXAM_DETAIL,query,updateValue);
     }
 

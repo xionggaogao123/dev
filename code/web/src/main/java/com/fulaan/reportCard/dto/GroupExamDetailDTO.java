@@ -27,7 +27,6 @@ public class GroupExamDetailDTO {
     private long examTime;
     private long submitTime;
     private String examStrTime;
-    private List<UserRecordDTO> userRecordDTOs=new ArrayList<UserRecordDTO>();
 
     private String userName;
     private String subjectName;
@@ -43,7 +42,9 @@ public class GroupExamDetailDTO {
     private int signCount;
     private int unSignCount;
 
+    public GroupExamDetailDTO(){
 
+    }
 
     public GroupExamDetailEntry buildEntry(){
         ObjectId uid=null;
@@ -62,13 +63,10 @@ public class GroupExamDetailDTO {
         if(StringUtils.isNotBlank(subjectId)&&ObjectId.isValid(subjectId)){
             sId=new ObjectId(subjectId);
         }
-        List<GroupExamDetailEntry.UserRecordEntry> entries=new ArrayList<GroupExamDetailEntry.UserRecordEntry>();
-        for(UserRecordDTO dto:userRecordDTOs){
-            entries.add(dto.buildEntry());
-        }
+
         return new GroupExamDetailEntry(gId,
                 cId, examType, recordScoreType, uid, examName,
-                sId, maxScore, qualifyScore, excellentScore, examTime, entries);
+                sId, maxScore, qualifyScore, excellentScore, examTime);
     }
 
     public GroupExamDetailDTO(GroupExamDetailEntry entry){
@@ -86,10 +84,6 @@ public class GroupExamDetailDTO {
         this.examTime=entry.getExamTime();
         this.submitTime=entry.getSubmitTime();
         this.examStrTime= DateTimeUtils.convert(entry.getExamTime(),DateTimeUtils.DATE_YYYY_MM_DD);
-        List<GroupExamDetailEntry.UserRecordEntry> entries=entry.getUserRecordEntries();
-        for(GroupExamDetailEntry.UserRecordEntry recordEntry:entries){
-            userRecordDTOs.add(new UserRecordDTO(recordEntry));
-        }
     }
 
     public int getSignCount() {
@@ -290,13 +284,5 @@ public class GroupExamDetailDTO {
 
     public void setExcellentScore(int excellentScore) {
         this.excellentScore = excellentScore;
-    }
-
-    public List<UserRecordDTO> getUserRecordDTOs() {
-        return userRecordDTOs;
-    }
-
-    public void setUserRecordDTOs(List<UserRecordDTO> userRecordDTOs) {
-        this.userRecordDTOs = userRecordDTOs;
     }
 }

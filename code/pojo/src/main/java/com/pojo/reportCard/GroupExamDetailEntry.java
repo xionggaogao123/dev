@@ -43,8 +43,7 @@ public class GroupExamDetailEntry extends BaseDBObject{
                                 int maxScore,
                                 int qualifyScore,
                                 int excellentScore,
-                                long examTime,
-                                List<UserRecordEntry> userRecordEntries
+                                long examTime
                                 ){
         BasicDBObject basicDBObject=new BasicDBObject()
                 .append("ms",maxScore)
@@ -59,7 +58,6 @@ public class GroupExamDetailEntry extends BaseDBObject{
                 .append("et",examTime)
                 .append("ti",System.currentTimeMillis())
                 .append("sid",subjectId)
-                .append("urs", MongoUtils.fetchDBObjectList(userRecordEntries))
                 .append("st",Constant.ZERO)
                 .append("ir", Constant.ZERO);
         setBaseEntry(basicDBObject);
@@ -79,20 +77,6 @@ public class GroupExamDetailEntry extends BaseDBObject{
 
     public long getExamTime(){
         return getSimpleLongValue("et");
-    }
-
-    public void setUserRecordEntries(List<UserRecordEntry> userRecordEntries){
-        setSimpleValue("urs",MongoUtils.fetchDBObjectList(userRecordEntries));
-    }
-
-    public List<UserRecordEntry> getUserRecordEntries(){
-        List<UserRecordEntry> userRecordEntries=new ArrayList<UserRecordEntry>();
-        BasicDBList dbList=getDbList("urs");
-        for(Object o:dbList){
-            UserRecordEntry entry=new UserRecordEntry((DBObject)o);
-            userRecordEntries.add(entry);
-        }
-        return userRecordEntries;
     }
 
     public void setStatus(int status){
@@ -181,36 +165,5 @@ public class GroupExamDetailEntry extends BaseDBObject{
 
     public void setSubjectId(ObjectId subjectId){
         setSimpleValue("sid",subjectId);
-    }
-
-
-
-    public static class UserRecordEntry extends BaseDBObject{
-        public UserRecordEntry(DBObject dbObject){
-            setBaseEntry((BasicDBObject) dbObject);
-        }
-
-        public UserRecordEntry(ObjectId userId){
-            BasicDBObject basicDBObject=new BasicDBObject()
-                    .append("uid",userId)
-                    .append("st",Constant.ZERO);
-            setBaseEntry(basicDBObject);
-        }
-
-        public void setStatus(int status){
-            setSimpleValue("st",status);
-        }
-
-        public int getStatus(){
-            return getSimpleIntegerValue("st");
-        }
-
-        public ObjectId getUserId(){
-            return getSimpleObjecIDValue("uid");
-        }
-
-        public void setUserId(ObjectId userId){
-            setSimpleValue("uid",userId);
-        }
     }
 }

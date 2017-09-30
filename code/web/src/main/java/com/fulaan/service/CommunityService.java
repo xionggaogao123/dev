@@ -2,6 +2,7 @@ package com.fulaan.service;
 
 import com.db.fcommunity.*;
 import com.db.reportCard.GroupExamDetailDao;
+import com.db.reportCard.GroupExamUserRecordDao;
 import com.db.user.UserDao;
 import com.fulaan.cache.RedisUtils;
 import com.fulaan.community.dto.CommunityDTO;
@@ -69,7 +70,7 @@ public class CommunityService {
     private RemarkDao remarkDao = new RemarkDao();
     private MemberDao memberDao = new MemberDao();
 
-    private GroupExamDetailDao groupExamDetailDao=new GroupExamDetailDao();
+    private GroupExamUserRecordDao groupExamUserRecordDao=new GroupExamUserRecordDao();
 
     /**
      * 创建社区
@@ -299,13 +300,13 @@ public class CommunityService {
         MineCommunityEntry mineCommunityEntry = new MineCommunityEntry(uid, communityId, prioity, customSort);
         mineCommunityDao.save(mineCommunityEntry);
         //加入到数组中
-        groupExamDetailDao.updateGroupExamDetail(communityId,uid,Constant.ZERO);
+        groupExamUserRecordDao.updateGroupExamDetailUserRecord(communityId,uid,Constant.ZERO);
     }
 
     public void pullFromUser(ObjectId communityId, ObjectId uid) {
         mineCommunityDao.delete(communityId, uid);
         //删除中
-        groupExamDetailDao.updateGroupExamDetail(communityId,uid,Constant.ONE);
+        groupExamUserRecordDao.updateGroupExamDetailUserRecord(communityId,uid,Constant.ONE);
     }
 
     public String getSeq() {

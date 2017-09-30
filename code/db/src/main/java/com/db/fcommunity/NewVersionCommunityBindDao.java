@@ -78,6 +78,25 @@ public class NewVersionCommunityBindDao extends BaseDao{
     }
 
 
+    /**
+     * 获取家长绑定的社区
+     * @return
+     */
+    public List<NewVersionCommunityBindEntry> getEntriesByMainUserId(ObjectId mainUserId){
+        List<NewVersionCommunityBindEntry> entries=new ArrayList<NewVersionCommunityBindEntry>();
+        BasicDBObject query=new BasicDBObject()
+                .append("ir", Constant.ZERO)
+                .append("muid",mainUserId);
+        List<DBObject> dbObjectList=find(MongoFacroty.getAppDB(), Constant.COLLECTION_NEW_VERSION_COMMUNITY_BIND,query,
+                Constant.FIELDS);
+        if(null!=dbObjectList&&dbObjectList.isEmpty()){
+            for(DBObject dbObject:dbObjectList){
+                entries.add(new NewVersionCommunityBindEntry(dbObject));
+            }
+        }
+        return entries;
+    }
+
 
     public void removeNewVersionCommunity(ObjectId communityId,
                                           ObjectId mainUserId){

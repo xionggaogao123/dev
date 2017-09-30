@@ -82,7 +82,7 @@ public class SmallLessonController extends BaseController {
     @RequestMapping("/updLessonEntry")
     @ResponseBody
     public String updLessonEntry(@ApiParam(name = "userId", required = true, value = "用户id") @RequestParam("userId") String userId,
-                                 @ApiParam(name = "time", required = true, value = "持续时间") @RequestParam("userName") int time){
+                                 @ApiParam(name = "time", required = true, value = "持续时间") @RequestParam("time") int time){
 
         RespObj respObj=null;
         try {
@@ -243,12 +243,13 @@ public class SmallLessonController extends BaseController {
             @ApiResponse(code = 500, message = "服务器不能完成请求")})
     @RequestMapping("/addUserResult")
     @ResponseBody
-    public String addUserResult(@ApiParam(name = "userIds", required = true, value = "用户id") @RequestParam("userIds") List<String> userIds){
+    public String addUserResult(@ApiParam(name = "userIds", required = true, value = "用户id") @RequestParam("userIds") List<String> userIds,
+                                @ApiParam(name = "lessonId", required = true, value = "课程记录id") @RequestParam("lessonId") String lessonId){
 
         RespObj respObj=null;
         try {
             respObj = RespObj.SUCCESS;
-            smallLessonService.addUserResult(userIds);
+            smallLessonService.addUserResult(userIds,new ObjectId(lessonId));
             respObj.setMessage("添加活跃用户idlist成功!");
         } catch (Exception e) {
             e.printStackTrace();
@@ -337,7 +338,7 @@ public class SmallLessonController extends BaseController {
      *
      */
     @SessionNeedless
-    @ApiOperation(value = "删除课程", httpMethod = "POST", produces = "application/json")
+    @ApiOperation(value = "用户的登陆基本信息展示", httpMethod = "POST", produces = "application/json")
     @ApiResponses( value = {@ApiResponse(code = 200, message = "Successful — 请求已完成",response = String.class),
             @ApiResponse(code = 400, message = "请求中有语法问题，或不能满足请求"),
             @ApiResponse(code = 500, message = "服务器不能完成请求")})
@@ -350,6 +351,30 @@ public class SmallLessonController extends BaseController {
             respObj = RespObj.SUCCESS;
             Map<String,Object> map = smallLessonService.getUserInfo(new ObjectId(userId));
             respObj.setMessage(map);
+        } catch (Exception e) {
+            e.printStackTrace();
+            respObj = RespObj.FAILD;
+            respObj.setErrorMessage("删除课程失败");
+        }
+        return JSON.toJSONString(respObj);
+    }
+
+    /**
+     * 一分钟调用接口
+     *
+     */
+    @SessionNeedless
+    @ApiOperation(value = "一分钟调用接口", httpMethod = "POST", produces = "application/json")
+    @ApiResponses( value = {@ApiResponse(code = 200, message = "Successful — 请求已完成",response = String.class)})
+    @RequestMapping("/getTimeLoading")
+    @ResponseBody
+    public String getTimeLoading(@ApiParam(name = "userId", required = true, value = "用户id") @RequestParam("userId") String userId){
+
+        RespObj respObj=null;
+        try {
+            respObj = RespObj.SUCCESS;
+            smallLessonService.getTimeLoading(new ObjectId(userId));
+            respObj.setMessage("成功！");
         } catch (Exception e) {
             e.printStackTrace();
             respObj = RespObj.FAILD;

@@ -96,6 +96,7 @@ public class SmallLessonService {
 
     //添加课程
     public SmallLessonDTO addLessonEntry(String userId,String userName){
+        long current=System.currentTimeMillis();
         SmallLessonEntry entry2 = smallLessonDao.getEntryByUserId(new ObjectId(userId));
         if(entry2==null){
             SmallLessonDTO dto = new SmallLessonDTO();
@@ -116,7 +117,32 @@ public class SmallLessonService {
             return dto3;
             //return null;
         }else{
-            return null;
+            if(current - entry2.getCreateTime() > 1000*70 ){
+                //非正常下课判断
+                entry2.setType(1);
+                long time2 = entry2.getCreateTime()-entry2.getDateTime();
+                int time = (int)time2%60000;
+                entry2.setNodeTime(time);
+                smallLessonDao.updEntry(entry2);
+                SmallLessonDTO dto = new SmallLessonDTO();
+                dto.setUserId(userId);
+                dto.setName(this.getName(new ObjectId(userId),userName));
+                dto.setType(0);
+                SmallLessonEntry entry = dto.buildAddEntry();
+                ObjectId lessonId = smallLessonDao.addEntry(entry);
+                Map<String,String> dto2 = smallLessonUserCodeService.getSmallLessonCode(lessonId);
+                //
+                String imagUrl = dto2.get("qrUrl");
+                String code = dto2.get("code");
+                entry.setImageUrl(imagUrl);
+                entry.setCode(code);
+                entry.setID(lessonId);
+                smallLessonDao.updEntry(entry);
+                SmallLessonDTO dto4 = new SmallLessonDTO(entry);
+                return dto4;
+            }else{
+                return null;
+            }
         }
 
     }
@@ -181,6 +207,12 @@ public class SmallLessonService {
         entry.setNodeTime(time);
         smallLessonDao.updEntry(entry);
     }
+    //一分钟调用接口
+    public void getTimeLoading(ObjectId userId){
+        SmallLessonEntry entry = smallLessonDao.getEntry2(userId);
+        long current=System.currentTimeMillis();
+        smallLessonDao.getTimeLoading(entry.getID(), current);
+    }
 
     private String getName(ObjectId userId,String userName){
         List<SmallLessonEntry> entries = smallLessonDao.getLessonList(userId);
@@ -205,26 +237,30 @@ public class SmallLessonService {
         List<SmallLessonEntry> entries = smallLessonDao.getLessonList(userId);
         int number = 0;
         int time = 0;
+        String loginTime = "";
         if(entries.size()>0){
             for(SmallLessonEntry entry : entries){
                 time += entry.getNodeTime();
             }
             number = entries.size();
+            SmallLessonDTO dto = new SmallLessonDTO(entries.get(0));
+            loginTime = dto.getDateTime();
         }
+        map.put("loginTime",loginTime);
         map.put("number",number);
         map.put("time",time);
         return map;
     }
 
     //添加活跃用户信息
-    public void addUserResult(List<String> userIds){
+    public void addUserResult(List<String> userIds,ObjectId lessonId){
         List<ObjectId> olist = new ArrayList<ObjectId>();
         if(userIds != null && userIds.size()>0){
             for(String str : userIds){
                 olist.add(new ObjectId(str));
             }
         }
-        List<LessonUserResultEntry> entries = lessonUserResultDao.getLetterUserResultList(olist);
+        List<LessonUserResultEntry> entries = lessonUserResultDao.getLetterUserResultList(olist,lessonId);
         if(entries.size()>0){
             for(LessonUserResultEntry entry : entries){
                 entry.setScore(entry.getScore()+1);

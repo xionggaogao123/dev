@@ -19,6 +19,7 @@ import java.util.Date;
  * type         是否上课中       typ  ( type=0(活跃) type=1(已结束))
  * nodeTime     持续时间         ntm  ( 分钟)
  * isRemove     是否删除         isr
+ * createTime    时间改变        ctm
  * 
  *
  */
@@ -41,6 +42,7 @@ public class SmallLessonEntry extends BaseDBObject {
         BasicDBObject dbObject=new BasicDBObject()
                 .append("nam",name)
                 .append("dtm", new Date().getTime())
+                .append("ctm", new Date().getTime())
                 .append("uid", userId)
                 .append("img",imageUrl)
                 .append("cod",code)
@@ -64,6 +66,7 @@ public class SmallLessonEntry extends BaseDBObject {
                 .append(Constant.ID, id)
                 .append("nam", name)
                 .append("dtm", new Date().getTime())
+                .append("ctm", new Date().getTime())
                 .append("uid", userId)
                 .append("img", imageUrl)
                 .append("cod",code)
@@ -130,7 +133,12 @@ public class SmallLessonEntry extends BaseDBObject {
     public void setDateTime(long dateTime){
         setSimpleValue("dtm",dateTime);
     }
-
+    public long getCreateTime(){
+        return getSimpleLongValue("ctm");
+    }
+    public void setCreateTime(long createTime){
+        setSimpleValue("ctm",createTime);
+    }
 
     public int getIsRemove(){
         return getSimpleIntegerValue("isr");

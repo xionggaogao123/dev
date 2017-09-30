@@ -34,9 +34,10 @@ public class LessonUserResultDao extends BaseDao {
 
 
     //查询相关用户
-    public List<LessonUserResultEntry> getLetterUserResultList(List<ObjectId> userIds) {
+    public List<LessonUserResultEntry> getLetterUserResultList(List<ObjectId> userIds,ObjectId lessonId) {
         BasicDBObject query =new BasicDBObject();
         query.append("isr", Constant.ZERO);
+        query.append("lid",lessonId);
         query.append("uid",new BasicDBObject(Constant.MONGO_IN,userIds));
         List<DBObject> dboList=find(MongoFacroty.getAppDB(), Constant.COLLECTION_LESSON_RESULT, query, Constant.FIELDS,new BasicDBObject("sco",Constant.DESC));
         List<LessonUserResultEntry> retList =new ArrayList<LessonUserResultEntry>();

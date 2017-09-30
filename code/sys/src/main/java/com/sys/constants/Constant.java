@@ -862,7 +862,9 @@ public class Constant {
 
     //首页记录表
     public static final String COLLECTION_INDEX_PAGE="indexpage";
-
-
+    //错题本2.0
+    public static final String COLLECTION_QUESTION_BOOK = "questionbook";
+    //解析表
+    public static final String COLLECTION_QUESTION_ADDITION = "questionaddition";
 
 }

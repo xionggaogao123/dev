@@ -12,7 +12,7 @@ public class IndexPageDTO {
             ObjectId communityId,
             ObjectId contactId*/
     private String id;
-    private int type;
+    private int type;// 1 作业    2 通知
     private String communityId;
     private String contactId;
 

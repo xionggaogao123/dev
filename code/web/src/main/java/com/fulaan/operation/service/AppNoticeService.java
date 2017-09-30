@@ -3,15 +3,18 @@ package com.fulaan.operation.service;
 import com.db.fcommunity.CommunityDao;
 import com.db.fcommunity.MemberDao;
 import com.db.fcommunity.NewVersionCommunityBindDao;
+import com.db.indexPage.IndexPageDao;
 import com.db.operation.AppNoticeDao;
 import com.db.operation.AppOperationDao;
-import com.fulaan.newVersionBind.service.NewVersionBindService;
+import com.fulaan.indexpage.dto.IndexPageDTO;
 import com.fulaan.operation.dto.AppNoticeDTO;
 import com.fulaan.operation.dto.AppOperationDTO;
 import com.fulaan.pojo.User;
 import com.fulaan.user.service.UserService;
 import com.pojo.appnotice.AppNoticeEntry;
 import com.pojo.fcommunity.NewVersionCommunityBindEntry;
+import com.pojo.indexPage.IndexPageEntry;
+import com.pojo.newVersionGrade.CommunityType;
 import com.pojo.operation.AppOperationEntry;
 import com.pojo.user.UserEntry;
 import com.sys.constants.Constant;
@@ -20,7 +23,10 @@ import org.bson.types.ObjectId;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 /**
  * Created by scott on 2017/9/22.
@@ -35,6 +41,8 @@ public class AppNoticeService {
     private AppOperationDao appOperationDao = new AppOperationDao();
 
     private CommunityDao communityDao=new CommunityDao();
+
+    private IndexPageDao indexPageDao = new IndexPageDao();
 
     private NewVersionCommunityBindDao newVersionCommunityBindDao=new NewVersionCommunityBindDao();
 
@@ -67,7 +75,17 @@ public class AppNoticeService {
                     dto.getGroupName(),
                     userEntry.getUserName());
             appNoticeDTO.setUserId(userId.toString());
-            appNoticeDao.saveAppNoticeEntry(appNoticeDTO.buildEntry());
+
+
+            ObjectId oid = appNoticeDao.saveAppNoticeEntry(appNoticeDTO.buildEntry());
+
+            //添加临时记录表
+            IndexPageDTO dto1 = new IndexPageDTO();
+            dto1.setType(CommunityType.appNotice.getType());
+            dto1.setCommunityId(gComIds[1]);
+            dto1.setContactId(oid.toString());
+            IndexPageEntry entry = dto1.buildAddEntry();
+            indexPageDao.addEntry(entry);
         }
     }
 

@@ -848,4 +848,10 @@ public class Constant {
     //老师绑定学科表
     public static final String COLLECTION_TEACHER_SUBJECT_BIND="tea_subject_bind";
 
+
+    //首页记录表
+    public static final String COLLECTION_INDEX_PAGE="indexpage";
+
+
+
 }

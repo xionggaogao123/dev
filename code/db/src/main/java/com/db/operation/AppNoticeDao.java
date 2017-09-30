@@ -24,8 +24,9 @@ public class AppNoticeDao extends BaseDao{
      * 保存
      * @param entry
      */
-    public void saveAppNoticeEntry(AppNoticeEntry entry){
+    public ObjectId saveAppNoticeEntry(AppNoticeEntry entry){
         save(MongoFacroty.getAppDB(), Constant.COLLECTION_NEW_VERSION_APP_NOTICE,entry.getBaseEntry());
+        return entry.getID();
     }
 
     public void removeAppNoticeEntry(ObjectId noticeId){
@@ -86,7 +87,23 @@ public class AppNoticeDao extends BaseDao{
         }
         return entries;
     }
-
+    /**
+     * 根据idlist查询通知信息
+     * @return
+     */
+    public List<AppNoticeEntry> getAppNoticeEntriesByIds(List<ObjectId> ids){
+        List<AppNoticeEntry> entries=new ArrayList<AppNoticeEntry>();
+        BasicDBObject query=new BasicDBObject(Constant.ID,new BasicDBObject(Constant.MONGO_IN,ids))
+                .append("ir", Constant.ZERO);
+        List<DBObject> dbObjectList=find(MongoFacroty.getAppDB(), Constant.COLLECTION_NEW_VERSION_APP_NOTICE,query,
+                Constant.FIELDS,Constant.MONGO_SORTBY_DESC);
+        if(null!=dbObjectList&&!dbObjectList.isEmpty()){
+            for(DBObject dbObject:dbObjectList){
+                entries.add(new AppNoticeEntry(dbObject));
+            }
+        }
+        return entries;
+    }
 
     /**
      * 已阅读

@@ -8,6 +8,14 @@ import org.bson.types.ObjectId;
 
 /**
  * Created by scott on 2017/9/30.
+ * {
+ *    groupExamDetailId:考试Id
+ *    mainUserId:发起人Id
+ *    userId:学生Id
+ *    groupId:群组Id
+ *    communityId:社区Id
+ *    status: 0保存（待发送） 1表示已删除 2已发送 3已读
+ * }
  */
 public class GroupExamUserRecordEntry extends BaseDBObject{
 
@@ -16,18 +24,58 @@ public class GroupExamUserRecordEntry extends BaseDBObject{
     }
 
     public GroupExamUserRecordEntry(ObjectId groupExamDetailId,
+                                    ObjectId mainUserId,
                                     ObjectId userId,
                                     ObjectId groupId,
                                     ObjectId communityId,
+                                    double score,
+                                    int scoreLevel,
+                                    int rank,
                                     int status){
         BasicDBObject basicDBObject=new BasicDBObject()
                 .append("eid",groupExamDetailId)
                 .append("uid",userId)
+                .append("muid",mainUserId)
                 .append("st",status)
                 .append("gid",groupId)
+                .append("sc",score)
+                .append("scl",scoreLevel)
+                .append("rk",rank)
                 .append("cmId",communityId)
                 .append("ir", Constant.ZERO);
         setBaseEntry(basicDBObject);
+    }
+
+    public int getRank(){
+        return getSimpleIntegerValue("rk");
+    }
+
+    public void setRank(int rank){
+        setSimpleValue("rk",rank);
+    }
+
+    public int getScoreLevel(){
+        return getSimpleIntegerValue("scl");
+    }
+
+    public void setScoreLevel(int scoreLevel){
+        setSimpleValue("scl",scoreLevel);
+    }
+
+    public double getScore(){
+        return getSimpleDoubleValueDef("sc",-1D);
+    }
+
+    public void setScore(double score){
+        setSimpleValue("sc",score);
+    }
+
+    public void setMainUserId(ObjectId mainUserId){
+        setSimpleValue("muid",mainUserId);
+    }
+
+    public ObjectId getMainUserId(){
+        return getSimpleObjecIDValue("muid");
     }
 
     public void setGroupId(ObjectId groupId){

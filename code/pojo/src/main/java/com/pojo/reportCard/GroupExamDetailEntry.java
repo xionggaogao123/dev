@@ -17,14 +17,14 @@ import java.util.List;
  *     groupId:群组Id
  *     communityId:社区Id
  *     examType:考试类型
- *     recordScoreType:考分类型
+ *     recordScoreType:考分类型 1分值计算 2A率计算
  *     userId:创建人Id
  *     examName:考试名称
  *     subjectId:学科Id
  *     maxScore:满分
  *     qualifyScore:合格分
  *     excellentScore:优秀分
- *     status:状态 0副本状态 1保存（待发送） 2已发送
+ *     status:状态 0保存（待发送） 1表示已删除 2已发送
  * }
  */
 public class GroupExamDetailEntry extends BaseDBObject{
@@ -43,7 +43,9 @@ public class GroupExamDetailEntry extends BaseDBObject{
                                 int maxScore,
                                 int qualifyScore,
                                 int excellentScore,
-                                long examTime
+                                long examTime,
+                                int signCount,
+                                int signedCount
                                 ){
         BasicDBObject basicDBObject=new BasicDBObject()
                 .append("ms",maxScore)
@@ -58,9 +60,27 @@ public class GroupExamDetailEntry extends BaseDBObject{
                 .append("et",examTime)
                 .append("ti",System.currentTimeMillis())
                 .append("sid",subjectId)
+                .append("sc",signCount)
+                .append("sec",signedCount)
                 .append("st",Constant.ZERO)
                 .append("ir", Constant.ZERO);
         setBaseEntry(basicDBObject);
+    }
+
+    public void setSignedCount(int signedCount){
+        setSimpleValue("sec",signedCount);
+    }
+
+    public int getSignedCount(){
+        return getSimpleIntegerValue("sec");
+    }
+
+    public void setSignCount(int signCount){
+        setSimpleValue("sc",signCount);
+    }
+
+    public int getSignCount(){
+        return getSimpleIntegerValue("sc");
     }
 
     public void setSubmitTime(long submitTime){

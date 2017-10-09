@@ -300,7 +300,7 @@ public class CommunityService {
         MineCommunityEntry mineCommunityEntry = new MineCommunityEntry(uid, communityId, prioity, customSort);
         mineCommunityDao.save(mineCommunityEntry);
         //加入到数组中
-        groupExamUserRecordDao.updateGroupExamDetailUserRecord(communityId,uid,Constant.ZERO);
+        groupExamUserRecordDao.updateGroupExamDetailUserRecord(communityId,uid,Constant.TWO);
     }
 
     public void pullFromUser(ObjectId communityId, ObjectId uid) {

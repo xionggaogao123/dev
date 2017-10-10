@@ -21,21 +21,22 @@ public class AppDetailEntry extends BaseDBObject{
         setBaseEntry((BasicDBObject)dbObject);
     }
 
-    public AppDetailEntry(
-            ObjectId id,
-            String appPackageName,
+    public AppDetailEntry(ObjectId id,
+                          String appPackageName,
                           String logo,
                           int type,
                           long size,
                           List<AttachmentEntry> imageList,
                           String version,
-                          String description){
+                          String description,
+                          String url){
         BasicDBObject basicDBObject=new BasicDBObject()
                 .append(Constant.ID,id)
                 .append("apn",appPackageName)
                 .append("lg",logo)
                 .append("ty",type)
                 .append("sz",size)
+                .append("ur",url)
                 .append("il", MongoUtils.fetchDBObjectList(imageList))
                 .append("vs",version)
                 .append("des",description)
@@ -50,18 +51,29 @@ public class AppDetailEntry extends BaseDBObject{
                           long size,
                           List<AttachmentEntry> imageList,
                           String version,
-                          String description){
+                          String description,
+                          String url){
         BasicDBObject basicDBObject=new BasicDBObject()
                 .append("apn",appPackageName)
                 .append("lg",logo)
                 .append("ty",type)
                 .append("sz",size)
+                .append("ur",url)
                 .append("il", MongoUtils.fetchDBObjectList(imageList))
                 .append("vs",version)
                 .append("des",description)
                 .append("ti",System.currentTimeMillis())
                 .append("ir", Constant.ZERO);
         setBaseEntry(basicDBObject);
+    }
+
+    public void setUrl(String url){
+        setSimpleValue("ur",url);
+    }
+
+
+    public String getUrl(){
+        return getSimpleStringValue("ur");
     }
 
     public long getTime(){

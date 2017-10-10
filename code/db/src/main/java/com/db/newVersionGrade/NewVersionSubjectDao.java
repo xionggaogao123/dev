@@ -27,4 +27,14 @@ public class NewVersionSubjectDao extends BaseDao{
             return null;
         }
     }
+
+    public NewVersionSubjectEntry getAllEntryByUserId(){
+        BasicDBObject query=new BasicDBObject();
+        DBObject dbObject=findOne(MongoFacroty.getAppDB(), Constant.COLLECTION_NEW_VERSION_SUBJECT,query,Constant.FIELDS);
+        if(null!=dbObject){
+            return new NewVersionSubjectEntry(dbObject);
+        }else{
+            return null;
+        }
+    }
 }

@@ -4,6 +4,7 @@ import com.db.fcommunity.CommunityDao;
 import com.db.fcommunity.GroupDao;
 import com.db.fcommunity.MemberDao;
 import com.db.indexPage.IndexPageDao;
+import com.db.newVersionGrade.NewVersionSubjectDao;
 import com.db.operation.AppCommentDao;
 import com.db.operation.AppOperationDao;
 import com.db.operation.AppRecordDao;
@@ -21,6 +22,7 @@ import com.fulaan.wrongquestion.dto.SubjectClassDTO;
 import com.pojo.fcommunity.MemberEntry;
 import com.pojo.indexPage.IndexPageEntry;
 import com.pojo.newVersionGrade.CommunityType;
+import com.pojo.newVersionGrade.NewVersionSubjectEntry;
 import com.pojo.operation.AppCommentEntry;
 import com.pojo.operation.AppOperationEntry;
 import com.pojo.operation.AppRecordEntry;
@@ -48,6 +50,7 @@ public class AppCommentService {
     private CommunityDao communityDao = new CommunityDao();
     private SubjectClassDao subjectClassDao = new SubjectClassDao();
     private IndexPageDao indexPageDao = new IndexPageDao();
+    private NewVersionSubjectDao newVersionSubjectDao = new NewVersionSubjectDao();
     private NewVersionBindRelationDao newVersionBindRelationDao = new NewVersionBindRelationDao();
     @Autowired
     private CommunityService communityService;
@@ -688,9 +691,17 @@ public class AppCommentService {
     public List<SubjectClassDTO> selectTeacherSubjectList(ObjectId userId){
         List<SubjectClassDTO> dtos = new ArrayList<SubjectClassDTO>();
         //todo
-
-
-
+        NewVersionSubjectEntry entry = newVersionSubjectDao.getEntryByUserId(userId);
+        if(entry==null || entry.getSubjectList().size()==0){
+            entry = newVersionSubjectDao.getAllEntryByUserId();
+        }
+        List<ObjectId> olist = entry.getSubjectList();
+        List<SubjectClassEntry> entries = subjectClassDao.getListByList(olist);
+        if(entries.size()>0){
+            for(SubjectClassEntry entry1 : entries){
+                dtos.add(new SubjectClassDTO(entry1));
+            }
+        }
         return dtos;
     }
 

@@ -43,4 +43,24 @@ public class IndexPageController extends BaseController {
         return JSON.toJSONString(respObj);
     }
 
+    @ApiOperation(value = "添加首页list", httpMethod = "POST", produces = "application/json")
+    @ApiResponses( value = {@ApiResponse(code = 200, message = "Successful — 请求已完成",response = String.class)})
+    @RequestMapping("/addIndexList")
+    @ResponseBody
+    public String addIndexList(@ApiParam(name = "contactId", required = true, value = "关联对象id") @RequestParam("contactId") String contactId,
+                               @ApiParam(name = "type", required = true, value = "类型") @RequestParam("type") int type,
+                               @ApiParam(name = "communityId", required = true, value = "社区id") @RequestParam("communityId") String communityId){
+        RespObj respObj=null;
+        try {
+            respObj = RespObj.SUCCESS;
+            indexPageService.addIndexPage(communityId, contactId, type);
+            respObj.setMessage("添加成功");
+        } catch (Exception e) {
+            e.printStackTrace();
+            respObj = RespObj.FAILD;
+            respObj.setErrorMessage("修改课程名失败");
+        }
+        return JSON.toJSONString(respObj);
+    }
+
 }

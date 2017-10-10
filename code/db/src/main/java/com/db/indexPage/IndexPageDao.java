@@ -27,7 +27,7 @@ public class IndexPageDao extends BaseDao {
         List<IndexPageEntry> entryList=new ArrayList<IndexPageEntry>();
         BasicDBObject query=new BasicDBObject()
                 .append("cid",new BasicDBObject(Constant.MONGO_IN,olist))
-                .append("ir",Constant.ZERO);
+                .append("isr",Constant.ZERO);
         List<DBObject> dbList=find(MongoFacroty.getAppDB(), Constant.COLLECTION_INDEX_PAGE,query,
                 Constant.FIELDS,Constant.MONGO_SORTBY_DESC,(page-1)*pageSize,pageSize);
         if (dbList != null && !dbList.isEmpty()) {

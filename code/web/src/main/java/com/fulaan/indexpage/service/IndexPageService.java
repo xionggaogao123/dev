@@ -4,6 +4,7 @@ import com.db.indexPage.IndexPageDao;
 import com.db.operation.AppCommentDao;
 import com.db.operation.AppNoticeDao;
 import com.fulaan.community.dto.CommunityDTO;
+import com.fulaan.indexpage.dto.IndexPageDTO;
 import com.fulaan.operation.dto.AppCommentDTO;
 import com.fulaan.operation.dto.AppNoticeDTO;
 import com.fulaan.service.CommunityService;
@@ -147,6 +148,15 @@ public class IndexPageService {
 
 
         return list;
+    }
+    public void addIndexPage(String communityId,String contactId,int type){
+        //添加临时记录表
+        IndexPageDTO dto1 = new IndexPageDTO();
+        dto1.setType(type);
+        dto1.setCommunityId(communityId);
+        dto1.setContactId(contactId);
+        IndexPageEntry entry = dto1.buildAddEntry();
+        indexPageDao.addEntry(entry);
     }
 
 }

@@ -484,7 +484,7 @@ public class AppCommentController extends BaseController {
     /**
      * 查询老师绑定的学科
      */
-    @ApiOperation(value="查询作业详情",httpMethod = "POST",produces = "application/json")
+    @ApiOperation(value="查询老师绑定的学科",httpMethod = "POST",produces = "application/json")
     @ApiResponse(code=200,message = "success", response = String.class)
     @RequestMapping("/selectTeacherSubjectList")
     @ResponseBody
@@ -497,7 +497,7 @@ public class AppCommentController extends BaseController {
         } catch (Exception e) {
             e.printStackTrace();
             respObj = RespObj.FAILD;
-            respObj.setMessage("查询暂不发布的作业失败!");
+            respObj.setMessage("查询老师绑定的学科失败!");
 
         }
         return JSON.toJSONString(respObj);

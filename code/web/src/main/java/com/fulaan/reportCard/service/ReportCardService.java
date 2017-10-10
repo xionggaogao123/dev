@@ -150,6 +150,7 @@ public class ReportCardService {
                     if(null!=mainUserEntry){
                         detailDTO.setUserName(mainUserEntry.getUserName());
                     }
+                    detailDTO.setStatus(recordEntry.getStatus());
                     detailDTO.setSingleScoreId(recordEntry.getID().toString());
                     groupExamDetailDTOs.add(detailDTO);
                 }

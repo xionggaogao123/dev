@@ -48,12 +48,23 @@ public class GroupExamDetailDao extends BaseDao{
      * @param userId
      * @return
      */
-    public List<GroupExamDetailEntry> getMySendGroupExamDetailEntries(ObjectId userId,
-                                                                      int page,int pageSize){
+    public List<GroupExamDetailEntry> getMySendGroupExamDetailEntries(
+            ObjectId subjectId,int examType,int status,
+            ObjectId userId,
+            int page,int pageSize){
         List<GroupExamDetailEntry> entries=new ArrayList<GroupExamDetailEntry>();
         BasicDBObject query=new BasicDBObject()
                 .append("uid",userId)
                 .append("ir", Constant.ZERO);
+        if(null!=subjectId){
+            query.append("sid",subjectId);
+        }
+        if(examType!=-1){
+            query.append("etp",examType);
+        }
+        if(status!=-1){
+            query.append("st",status);
+        }
         List<DBObject> dbObjectList=find(MongoFacroty.getAppDB(), Constant.COLLECTION_REPORT_CARD_GROUP_EXAM_DETAIL,
                 query,Constant.FIELDS,Constant.MONGO_SORTBY_DESC,(page-1)*pageSize,pageSize);
         if(null!=dbObjectList&&!dbObjectList.isEmpty()){

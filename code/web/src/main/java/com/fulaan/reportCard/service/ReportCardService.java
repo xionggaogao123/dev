@@ -12,6 +12,7 @@ import com.pojo.fcommunity.NewVersionCommunityBindEntry;
 import com.pojo.reportCard.*;
 import com.pojo.user.UserEntry;
 import com.sys.constants.Constant;
+import org.apache.commons.lang3.StringUtils;
 import org.bson.types.ObjectId;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -97,10 +98,12 @@ public class ReportCardService {
      * @return
      */
     public List<GroupExamDetailDTO> getReceiveExams(
+            String subjectId,int examType,int status,
             ObjectId userId,int page,int pageSize
     ){
+        ObjectId suId= StringUtils.isNotBlank(subjectId)?new ObjectId(subjectId):null;
         List<GroupExamUserRecordEntry> recordEntries=groupExamUserRecordDao.getStudentReceivedEntries(
-                userId, page, pageSize
+                suId,examType,status,userId, page, pageSize
         );
         return getGroupExamDetailDtos(recordEntries);
     }
@@ -164,14 +167,16 @@ public class ReportCardService {
      * @return
      */
     public List<GroupExamDetailDTO> getParentReceivedGroupExamDetailDTOs(
+            String subjectId,int examType,int status,
             ObjectId userId,int page,int pageSize){
         Set<ObjectId> userIds=new HashSet<ObjectId>();
+        ObjectId suId= StringUtils.isNotBlank(subjectId)?new ObjectId(subjectId):null;
         List<NewVersionCommunityBindEntry> bindEntries=newVersionCommunityBindDao.getEntriesByMainUserId(userId);
         for(NewVersionCommunityBindEntry bindEntry:bindEntries){
             userIds.add(bindEntry.getUserId());
         }
         List<GroupExamUserRecordEntry> userRecordEntries=groupExamUserRecordDao.getParentReceivedEntries(
-                userId,new ArrayList<ObjectId>(userIds),page,pageSize
+                suId,examType,status,userId,new ArrayList<ObjectId>(userIds),page,pageSize
         );
 
         return getGroupExamDetailDtos(userRecordEntries);
@@ -184,9 +189,12 @@ public class ReportCardService {
      * @return
      */
     public List<GroupExamDetailDTO> getMySendGroupExamDetailDTOs(
+            String subjectId,int examType,int status,
             ObjectId userId,int page,int pageSize){
         List<GroupExamDetailDTO> groupExamDetailDTOs=new ArrayList<GroupExamDetailDTO>();
-        List<GroupExamDetailEntry> entries=groupExamDetailDao.getMySendGroupExamDetailEntries(userId,
+        ObjectId suId= StringUtils.isNotBlank(subjectId)?new ObjectId(subjectId):null;
+        List<GroupExamDetailEntry> entries=groupExamDetailDao.getMySendGroupExamDetailEntries(
+                suId,examType,status,userId,
                 page,pageSize);
         Set<ObjectId> communityIds = new HashSet<ObjectId>();
         for(GroupExamDetailEntry examDetailEntry:entries){
@@ -244,6 +252,8 @@ public class ReportCardService {
                     userId,
                     uId,
                     new ObjectId(dto.getGroupId()),
+                    dto.getExamType(),
+                    new ObjectId(dto.getSubjectId()),
                     new ObjectId(dto.getCommunityId()),
                     -1D,
                     -1,
@@ -262,6 +272,15 @@ public class ReportCardService {
     public void saveRecordExamScore(List<GroupExamUserRecordDTO> examScoreDTOs, int status){
         if(examScoreDTOs.size()>0) {
             String groupExamDetailId = examScoreDTOs.get(0).getGroupExamDetailId();
+            for(GroupExamUserRecordDTO dto:examScoreDTOs){
+                groupExamUserRecordDao.updateGroupExamUserRecordScore(new ObjectId(dto.getId()),
+                        dto.getScore(),dto.getScoreLevel(),dto.getRank());
+            }
+            List<GroupExamUserRecordEntry> recordEntries=groupExamUserRecordDao.getExamUserRecordEntries(new ObjectId(groupExamDetailId));
+            examScoreDTOs.clear();
+            for(GroupExamUserRecordEntry entry:recordEntries){
+                examScoreDTOs.add(new GroupExamUserRecordDTO(entry));
+            }
             GroupExamDetailEntry detailEntry=groupExamDetailDao.getEntryById(new ObjectId(groupExamDetailId));
             if(detailEntry.getRecordScoreType()== Constant.ONE){
                 Collections.sort(examScoreDTOs, new Comparator<GroupExamUserRecordDTO>() {

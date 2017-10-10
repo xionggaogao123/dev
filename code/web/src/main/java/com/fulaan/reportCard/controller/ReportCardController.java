@@ -58,13 +58,16 @@ public class ReportCardController extends BaseController{
     @RequestMapping("/getMySendGroupExam")
     @ResponseBody
     public RespObj getMySendGroupExam(
+            @RequestParam(required = false, defaultValue = "")String subjectId,
+            @RequestParam(required = false, defaultValue = "-1")int examType,
+            @RequestParam(required = false, defaultValue = "-1")int status,
             @RequestParam(required = false, defaultValue = "1")int page,
             @RequestParam(required = false, defaultValue = "10")int pageSize
     ){
         RespObj respObj=new RespObj(Constant.FAILD_CODE);
         try{
             List<GroupExamDetailDTO> groupExamDetailDTOs=reportCardService.getMySendGroupExamDetailDTOs(
-                    getUserId(),page,pageSize
+                   subjectId,examType,status,getUserId(),page,pageSize
             );
             respObj.setMessage(groupExamDetailDTOs);
             respObj.setCode(Constant.SUCCESS_CODE);
@@ -84,13 +87,16 @@ public class ReportCardController extends BaseController{
     @RequestMapping("/getStudentReceiveExams")
     @ResponseBody
     public RespObj getStudentReceiveExams(
+            @RequestParam(required = false, defaultValue = "")String subjectId,
+            @RequestParam(required = false, defaultValue = "-1")int examType,
+            @RequestParam(required = false, defaultValue = "-1")int status,
             @RequestParam(required = false, defaultValue = "1")int page,
             @RequestParam(required = false, defaultValue = "10")int pageSize
     ){
         RespObj respObj=new RespObj(Constant.FAILD_CODE);
         try{
             List<GroupExamDetailDTO> groupExamDetailDTOs=reportCardService.getReceiveExams(
-                    getUserId(),page,pageSize
+                    subjectId,examType,status,getUserId(),page,pageSize
             );
             respObj.setMessage(groupExamDetailDTOs);
             respObj.setCode(Constant.SUCCESS_CODE);
@@ -111,13 +117,16 @@ public class ReportCardController extends BaseController{
     @RequestMapping("/getParentReceiveExams")
     @ResponseBody
     public RespObj getParentReceiveExams(
+            @RequestParam(required = false, defaultValue = "")String subjectId,
+            @RequestParam(required = false, defaultValue = "-1")int examType,
+            @RequestParam(required = false, defaultValue = "-1")int status,
             @RequestParam(required = false, defaultValue = "1")int page,
             @RequestParam(required = false, defaultValue = "10")int pageSize
     ){
         RespObj respObj=new RespObj(Constant.FAILD_CODE);
         try{
             List<GroupExamDetailDTO> groupExamDetailDTOs=reportCardService.getParentReceivedGroupExamDetailDTOs(
-                    getUserId(),page,pageSize
+                    subjectId,examType,status,getUserId(),page,pageSize
             );
             respObj.setMessage(groupExamDetailDTOs);
             respObj.setCode(Constant.SUCCESS_CODE);

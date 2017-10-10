@@ -53,7 +53,7 @@ public class GroupExamDetailEntry extends BaseDBObject{
                 .append("es",excellentScore)
                 .append("gid",groupId)
                 .append("uid",userId)
-                .append("et",examType)
+                .append("etp",examType)
                 .append("rt",recordScoreType)
                 .append("en",examName)
                 .append("cmId",communityId)
@@ -148,11 +148,11 @@ public class GroupExamDetailEntry extends BaseDBObject{
     }
 
     public void setExamType(int examType){
-        setSimpleValue("et",examType);
+        setSimpleValue("etp",examType);
     }
 
     public int getExamType(){
-        return getSimpleIntegerValue("et");
+        return getSimpleIntegerValue("etp");
     }
 
     public void setCommunityId(ObjectId communityId){

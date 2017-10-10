@@ -18,6 +18,8 @@ public class GroupExamUserRecordDTO {
     private String groupId;
     private String communityId;
     private int rank;
+    private int examType;
+    private String subjectId;
 
 
     public GroupExamUserRecordDTO(){
@@ -33,6 +35,24 @@ public class GroupExamUserRecordDTO {
         this.communityId=examUserRecordEntry.getCommunityId().toString();
         this.groupId=examUserRecordEntry.getGroupId().toString();
         this.mainUserId=examUserRecordEntry.getMainUserId().toString();
+        this.examType=examUserRecordEntry.getExamType();
+        this.subjectId=examUserRecordEntry.getSubjectId().toString();
+    }
+
+    public String getSubjectId() {
+        return subjectId;
+    }
+
+    public void setSubjectId(String subjectId) {
+        this.subjectId = subjectId;
+    }
+
+    public int getExamType() {
+        return examType;
+    }
+
+    public void setExamType(int examType) {
+        this.examType = examType;
     }
 
     public int getRank() {

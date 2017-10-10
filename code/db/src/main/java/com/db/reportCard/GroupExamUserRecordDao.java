@@ -69,17 +69,32 @@ public class GroupExamUserRecordDao extends BaseDao{
      * @param pageSize
      * @return
      */
-    public List<GroupExamUserRecordEntry> getStudentReceivedEntries(ObjectId userId,
-                                                             int page,int pageSize){
-        List<Integer> status=new ArrayList<Integer>();
-        status.add(Constant.ZERO);
-        status.add(Constant.TWO);
-        status.add(Constant.THREE);
+    public List<GroupExamUserRecordEntry> getStudentReceivedEntries(
+            ObjectId subjectId,int examType,int status,
+            ObjectId userId,
+            int page,int pageSize){
+        List<Integer> statuses=new ArrayList<Integer>();
         List<GroupExamUserRecordEntry> entries=new ArrayList<GroupExamUserRecordEntry>();
         BasicDBObject query=new BasicDBObject()
                 .append("uid",userId)
-                .append("st",new BasicDBObject(Constant.MONGO_IN,status))
                 .append("ir", Constant.ZERO);
+        if(null!=subjectId){
+            query.append("sid",subjectId);
+        }
+
+        if(examType!=-1){
+            query.append("etp",examType);
+        }
+
+        if(status!=-1){
+            statuses.add(status);
+            statuses.add(Constant.THREE);
+        }else{
+            statuses.add(Constant.ZERO);
+            statuses.add(Constant.TWO);
+            statuses.add(Constant.THREE);
+            query.append("st",new BasicDBObject(Constant.MONGO_IN,statuses));
+        }
         List<DBObject> dbObjects=find(MongoFacroty.getAppDB(), Constant.COLLECTION_REPORT_CARD_EXAM_USER_RECORD,
                 query,Constant.FIELDS,Constant.MONGO_SORTBY_DESC,(page-1)*pageSize,pageSize);
         if(null!=dbObjects&&!dbObjects.isEmpty()){
@@ -98,19 +113,32 @@ public class GroupExamUserRecordDao extends BaseDao{
      * @param pageSize
      * @return
      */
-    public List<GroupExamUserRecordEntry> getParentReceivedEntries(ObjectId mainUserId,
-                                                               List<ObjectId> userIds,
-                                                               int page,int pageSize){
-        List<Integer> status=new ArrayList<Integer>();
-        status.add(Constant.ZERO);
-        status.add(Constant.TWO);
-        status.add(Constant.THREE);
+    public List<GroupExamUserRecordEntry> getParentReceivedEntries(
+            ObjectId subjectId,int examType,int status,
+            ObjectId mainUserId,
+            List<ObjectId> userIds,
+            int page,int pageSize){
+        List<Integer> statuses=new ArrayList<Integer>();
         List<GroupExamUserRecordEntry> entries=new ArrayList<GroupExamUserRecordEntry>();
         BasicDBObject query=new BasicDBObject()
                 .append("muid",new BasicDBObject(Constant.MONGO_NE,mainUserId))
                 .append("uid",new BasicDBObject(Constant.MONGO_IN,userIds))
-                .append("st",new BasicDBObject(Constant.MONGO_IN,status))
                 .append("ir", Constant.ZERO);
+        if(null!=subjectId){
+            query.append("sid",subjectId);
+        }
+        if(examType!=-1){
+            query.append("etp",examType);
+        }
+        if(status!=-1){
+            statuses.add(status);
+            statuses.add(Constant.THREE);
+        }else{
+            statuses.add(Constant.ZERO);
+            statuses.add(Constant.TWO);
+            statuses.add(Constant.THREE);
+            query.append("st",new BasicDBObject(Constant.MONGO_IN,statuses));
+        }
         List<DBObject> dbObjects=find(MongoFacroty.getAppDB(), Constant.COLLECTION_REPORT_CARD_EXAM_USER_RECORD,
                 query,Constant.FIELDS,Constant.MONGO_SORTBY_DESC,(page-1)*pageSize,pageSize);
         if(null!=dbObjects&&!dbObjects.isEmpty()){

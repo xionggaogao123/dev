@@ -656,6 +656,8 @@ public class Constant {
     public static final String COLLECTION_NEW_VERSION_BIND_RELATION="newversion_bindrelation";
     //新版本用户学年年级关系
     public static final String COLLECTION_NEW_VERSION_GRADE="newversion_grade";
+    //新版本绑定学科的关系表
+    public static final String COLLECTION_NEW_VERSION_SUBJECT="newversion_subject";
     //新版本绑定社区中家长与孩子的关系表
     public static final String COLLECTION_NEW_VERSION_COMMUNITY_BIND="newversion_community_bind";
 

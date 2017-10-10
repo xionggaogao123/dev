@@ -11,24 +11,51 @@ define(['doT', 'common','easing', 'jquery','pagination'], function (require, exp
     fulanIndex.init = function(){
         fulanIndex.getList(page);
         $("body").on("click",".sp-x",function(){
-            var id = $(this).attr("name");
-            fulanIndex.delEntry(id);
+            if(confirm("是否删除该课程？")){
+                var id = $(this).attr("name");
+                fulanIndex.delEntry(id);
+            }
         })
         $("body").on("click",".sp-e",function(){
             var id = $(this).attr("name");
             fulanIndex.updateEntry(id);
         })
-        $("body").on("click",".sp-x",function(){
-
+        $("body").on("click",".attr",function(){
+            var userId = $("#userId").val();
+            var userName = $("#userName").val();
+            var id = $(this).attr("name");
+            window.location.href = "/changeLesson/description.do?userId="+userId+"&userName="+userName+"&id="+id;
         })
 
     }
     fulanIndex.delEntry = function(id){
-
+        var paramData = {};
+        paramData.lessonId = id;
+        Common.getPostData("/smallLesson/delLessonEntry.do",paramData,function(rep){
+            if(rep.code==200){
+                alert("删除成功！");
+            }
+        })
+    }
+    fulanIndex.getEntry = function(id){
+        var paramData = {};
+        paramData.lessonId = id;
+        Common.getPostData("/smallLesson/delLessonEntry.do",paramData,function(rep){
+            if(rep.code==200){
+                alert("删除成功！");
+            }
+        })
     }
 
-    fulanIndex.updateEntry = function(id){
-
+    fulanIndex.updateEntry = function(id,name){
+        var paramData = {};
+        paramData.lessonId = id;
+        paramData.name = name;
+        Common.getPostData("/smallLesson/updateLessonName.do",paramData,function(rep){
+            if(rep.code==200){
+                alert("修改成功！");
+            }
+        })
     }
 
 

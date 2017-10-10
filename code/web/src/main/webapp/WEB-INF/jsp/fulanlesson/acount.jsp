@@ -1,19 +1,23 @@
-<!DOCTYPE html>
+<%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8" %>
 <html>
 <head>
 	<meta charset='utf-8'>
 	<title>平台统计管理</title>
-	<link rel="stylesheet" type="text/css" href="css/plateform.css">
-	<script type="text/javascript" src="js/jquery-2.1.1.min.js"></script>
-	<script type="text/javascript" src="js/echarts.min.js"></script>
-	<script type="text/javascript" src="js/macarons.js"></script>
-	<script type="text/javascript" src="js/plateform.js"></script>
+	<link rel="stylesheet" type="text/css" href="/wap/css/plateform.css">
+	<script type="text/javascript" src="/wap/js/jquery-2.1.1.min.js"></script>
+	<script type="text/javascript" src="/wap/js/echarts.min.js"></script>
+	<script type="text/javascript" src="/wap/js/macarons.js"></script>
+	<script type="text/javascript" src="/wap/js/plateform.js"></script>
 </head>
 <body>
 	<div class="head">
 		<div class="head-cont">
-			<img src="images/logo.png">
-			<div class="head-info">欢迎您，史珍香</div>
+			<img src="/wap/images/logo.png">
+			<div class="head-info">欢迎您，${userName}</div>
+			<input id="userId" type="hidden" value="${userId}">
+			<input id="id" type="hidden" value="${id}">
+			<input id="userName" type="hidden" value="${userName}">
+
 		</div>
 	</div>
 	<div class="static-main">

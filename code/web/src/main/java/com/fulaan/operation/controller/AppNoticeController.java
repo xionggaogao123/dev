@@ -96,8 +96,8 @@ public class AppNoticeController extends BaseController {
             ){
         RespObj respObj=new RespObj(Constant.FAILD_CODE);
         try{
-            List<AppNoticeDTO> dtos=appNoticeService.getMySendAppNoticeDtos(getUserId(),page,pageSize);
-            respObj.setMessage(dtos);
+            Map<String,Object>  retMap=appNoticeService.getMySendAppNoticeDtos(getUserId(),page,pageSize);
+            respObj.setMessage(retMap);
             respObj.setCode(Constant.SUCCESS_CODE);
         }catch (Exception e){
             respObj.setErrorMessage(e.getMessage());
@@ -117,8 +117,8 @@ public class AppNoticeController extends BaseController {
     ){
         RespObj respObj=new RespObj(Constant.FAILD_CODE);
         try{
-            List<AppNoticeDTO> dtos=appNoticeService.getMyReceivedAppNoticeDtos(getUserId(),page,pageSize);
-            respObj.setMessage(dtos);
+            Map<String,Object> retMap=appNoticeService.getMyReceivedAppNoticeDtos(getUserId(),page,pageSize);
+            respObj.setMessage(retMap);
             respObj.setCode(Constant.SUCCESS_CODE);
         }catch (Exception e){
             respObj.setErrorMessage(e.getMessage());
@@ -210,8 +210,8 @@ public class AppNoticeController extends BaseController {
     ){
         RespObj respObj=new RespObj(Constant.FAILD_CODE);
         try{
-            List<AppNoticeDTO> dtos=appNoticeService.getMyReceivedAppNoticeDtosForStudent(getUserId(),page,pageSize);
-            respObj.setMessage(dtos);
+            Map<String,Object> retMap=appNoticeService.getMyReceivedAppNoticeDtosForStudent(getUserId(),page,pageSize);
+            respObj.setMessage(retMap);
             respObj.setCode(Constant.SUCCESS_CODE);
         }catch (Exception e){
             respObj.setErrorMessage(e.getMessage());

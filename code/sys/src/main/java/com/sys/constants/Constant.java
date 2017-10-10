@@ -663,6 +663,13 @@ public class Constant {
 
     public static final String COLLECTION_NEW_VERSION_APP_NOTICE="newversion_app_notice";
 
+    //应用市场
+    public static final String COLLECTION_APP_MARKET_DETAIL="app_market_detail";
+
+    public static final String COLLECTION_APP_MARKET_DETAIL_STAR_STATISTIC="app_market_detail_star_sts";
+
+    public static final String COLLECTION_APP_MARKET_DETAIL_COMMENT="app_market_detail_comment";
+
     public static final String COLLECTION_MALL_MARKET_URL = "http://a.app.qq.com/o/simple.jsp?pkgname=com.fulan.mall";
 
     //---------------------------------------------------------------------------------------------论坛

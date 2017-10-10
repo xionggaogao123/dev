@@ -6,9 +6,12 @@ import com.db.fcommunity.NewVersionCommunityBindDao;
 import com.db.indexPage.IndexPageDao;
 import com.db.operation.AppNoticeDao;
 import com.db.operation.AppOperationDao;
+import com.db.user.UserDao;
+import com.fulaan.dto.VideoDTO;
 import com.fulaan.indexpage.dto.IndexPageDTO;
 import com.fulaan.operation.dto.AppNoticeDTO;
 import com.fulaan.operation.dto.AppOperationDTO;
+import com.fulaan.pojo.Attachement;
 import com.fulaan.pojo.User;
 import com.fulaan.user.service.UserService;
 import com.pojo.appnotice.AppNoticeEntry;
@@ -50,7 +53,35 @@ public class AppNoticeService {
     private UserService userService;
 
 
-
+    public static void main(String[] args){
+        UserDao userDao=new UserDao();
+        AppNoticeDao appNoticeDao=new AppNoticeDao();
+        for(int i=0;i<25;i++) {
+            AppNoticeDTO dto = new AppNoticeDTO();
+            dto.setSubjectId("55935198f6f28b7261c9bf5f");
+            dto.setSubject("英语");
+            dto.setTitle("今天我最帅，我是品牌代言人"+i);
+            dto.setContent("党的十八大以来，从八项规定到反“四风”和“三严三实”的具体要求，党的作风建设从立规、践行推向纵深发展，党风为之一" +
+                    "新，社会风气大为好转。新华社《学习进行时》原创品牌栏目“讲习所”推出文章，回顾、梳理5年来习近平是怎样抓党风建设的。");
+            dto.setGroupId("59c32cc6670ab23fb82dc4ae");
+            dto.setCommunityId("59c32cc5670ab23fb82dc4ac");
+            dto.setWatchPermission(Constant.THREE);
+            dto.setVideoList(new ArrayList<VideoDTO>());
+            List<Attachement> imageList = new ArrayList<Attachement>();
+            Attachement attachement = new Attachement();
+            attachement.setUrl("http://7xiclj.com1.z0.glb.clouddn.com/582effea3d4df91126ff2b9a.png");
+            attachement.setFlnm("啦啦啦啦");
+            imageList.add(attachement);
+            dto.setAttachements(new ArrayList<Attachement>());
+            dto.setImageList(imageList);
+            dto.setGroupName("本地我最帅-scott");
+            ObjectId userId = new ObjectId("59c32c8c670ab23fb82dc49a");
+            UserEntry userEntry = userDao.getUserEntry(userId, Constant.FIELDS);
+            dto.setUserName(userEntry.getUserName());
+            dto.setUserId(userId.toString());
+            appNoticeDao.saveAppNoticeEntry(dto.buildEntry());
+        }
+    }
 
     /**
      * 保存信息
@@ -122,7 +153,7 @@ public class AppNoticeService {
 
 
 
-    public void saveUser( List<User> users,List<ObjectId> userIds){
+    public void saveUser(List<User> users,List<ObjectId> userIds){
         Map<ObjectId,UserEntry> userEntryMap=userService.getUserEntryMap(userIds,Constant.FIELDS);
         for(Map.Entry<ObjectId,UserEntry> userEntryEntry:userEntryMap.entrySet()){
             UserEntry userEntry=userEntryEntry.getValue();
@@ -144,8 +175,9 @@ public class AppNoticeService {
      * @param pageSize
      * @return
      */
-    public List<AppNoticeDTO> getMySendAppNoticeDtos(ObjectId userId,int page,int pageSize){
+    public Map<String,Object> getMySendAppNoticeDtos(ObjectId userId,int page,int pageSize){
         List<AppNoticeDTO> dtos=new ArrayList<AppNoticeDTO>();
+        Map<String,Object> retMap=new HashMap<String,Object>();
         List<AppNoticeEntry> entries=appNoticeDao.getMySendAppNoticeEntries(userId,page,pageSize);
         UserEntry userEntry=userService.findById(userId);
         for(AppNoticeEntry entry:entries){
@@ -165,7 +197,12 @@ public class AppNoticeService {
             dto.setUnReadCount(members.size());
             dtos.add(dto);
         }
-        return dtos;
+        int count=appNoticeDao.countMySendAppNoticeEntries(userId);
+        retMap.put("page",page);
+        retMap.put("pageSize",pageSize);
+        retMap.put("list",dtos);
+        retMap.put("count",count);
+        return retMap;
     }
 
 
@@ -175,7 +212,8 @@ public class AppNoticeService {
     }
 
 
-    public List<AppNoticeDTO> getMyReceivedAppNoticeDtosForStudent(ObjectId userId,int page,int pageSize){
+    public Map<String,Object> getMyReceivedAppNoticeDtosForStudent(ObjectId userId,int page,int pageSize){
+        Map<String,Object> retMap=new HashMap<String,Object>();
         List<NewVersionCommunityBindEntry> bindEntries=newVersionCommunityBindDao.getAllStudentBindEntries(userId);
         List<ObjectId> communityIds=new ArrayList<ObjectId>();
         for(NewVersionCommunityBindEntry bindEntry:bindEntries){
@@ -183,7 +221,13 @@ public class AppNoticeService {
         }
         List<ObjectId> groupIds=communityDao.getGroupIdsByCommunityIds(communityIds);
         List<AppNoticeEntry> entries=appNoticeDao.getMyReceivedAppNoticeEntriesForStudent(groupIds,page,pageSize);
-        return getAppNoticeDtos(entries,userId);
+        List<AppNoticeDTO> dtos=getAppNoticeDtos(entries,userId);
+        int count=appNoticeDao.countMyReceivedAppNoticeEntriesForStudent(groupIds);
+        retMap.put("list",dtos);
+        retMap.put("count",count);
+        retMap.put("page",page);
+        retMap.put("pageSize",pageSize);
+        return retMap;
     }
 
     public  List<AppNoticeDTO> getAppNoticeDtos( List<AppNoticeEntry> entries,ObjectId userId){
@@ -216,11 +260,17 @@ public class AppNoticeService {
      * @param pageSize
      * @return
      */
-    public List<AppNoticeDTO> getMyReceivedAppNoticeDtos(ObjectId userId,int page,int pageSize){
-
+    public Map<String,Object> getMyReceivedAppNoticeDtos(ObjectId userId,int page,int pageSize){
+        Map<String,Object> retMap=new HashMap<String,Object>();
         List<ObjectId> groupIds=memberDao.getGroupIdsByUserId(userId);
         List<AppNoticeEntry> entries=appNoticeDao.getMyReceivedAppNoticeEntries(groupIds,page,pageSize,userId);
-        return getAppNoticeDtos(entries,userId);
+        List<AppNoticeDTO> appNoticeDtos=getAppNoticeDtos(entries,userId);
+        int count=appNoticeDao.countMyReceivedAppNoticeEntries(groupIds,userId);
+        retMap.put("list",appNoticeDtos);
+        retMap.put("count",count);
+        retMap.put("page",page);
+        retMap.put("pageSize",pageSize);
+        return retMap;
     }
 
     public void pushRead(ObjectId id,ObjectId userId){

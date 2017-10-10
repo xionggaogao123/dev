@@ -64,6 +64,31 @@ public class AppNoticeDao extends BaseDao{
         return entries;
     }
 
+    public int countMySendAppNoticeEntries(ObjectId userId){
+        BasicDBObject query=new BasicDBObject()
+                .append("uid",userId)
+                .append("ir",Constant.ZERO);
+        return count(MongoFacroty.getAppDB(), Constant.COLLECTION_NEW_VERSION_APP_NOTICE,query);
+    }
+
+
+    public int countMyReceivedAppNoticeEntries(List<ObjectId> groupIds, ObjectId userId){
+        return count(MongoFacroty.getAppDB(), Constant.COLLECTION_NEW_VERSION_APP_NOTICE,
+                getMyReceivedAppNoticeQueryCondition(groupIds, userId));
+    }
+
+
+    public BasicDBObject getMyReceivedAppNoticeQueryCondition(List<ObjectId> groupIds, ObjectId userId){
+        List<Integer> watchPermissions=new ArrayList<Integer>();
+        watchPermissions.add(Constant.ONE);
+        watchPermissions.add(Constant.THREE);
+        BasicDBObject query=new BasicDBObject()
+                .append("gi",new BasicDBObject(Constant.MONGO_IN,groupIds))
+                .append("uid",new BasicDBObject(Constant.MONGO_NE,userId))
+                .append("wp",new BasicDBObject(Constant.MONGO_IN,watchPermissions))
+                .append("ir",Constant.ZERO);
+        return query;
+    }
 
     /**
      * 获取我接收到的通知
@@ -73,15 +98,8 @@ public class AppNoticeDao extends BaseDao{
     public List<AppNoticeEntry> getMyReceivedAppNoticeEntries(List<ObjectId> groupIds,int page,int pageSize,
             ObjectId userId){
         List<AppNoticeEntry> entries=new ArrayList<AppNoticeEntry>();
-        List<Integer> watchPermissions=new ArrayList<Integer>();
-        watchPermissions.add(Constant.ONE);
-        watchPermissions.add(Constant.THREE);
-        BasicDBObject query=new BasicDBObject()
-                .append("gi",new BasicDBObject(Constant.MONGO_IN,groupIds))
-                .append("uid",new BasicDBObject(Constant.MONGO_NE,userId))
-                .append("wp",new BasicDBObject(Constant.MONGO_IN,watchPermissions))
-                .append("ir",Constant.ZERO);
-        List<DBObject> dbObjectList=find(MongoFacroty.getAppDB(), Constant.COLLECTION_NEW_VERSION_APP_NOTICE,query,
+        List<DBObject> dbObjectList=find(MongoFacroty.getAppDB(), Constant.COLLECTION_NEW_VERSION_APP_NOTICE,
+                getMyReceivedAppNoticeQueryCondition(groupIds, userId),
                 Constant.FIELDS,Constant.MONGO_SORTBY_DESC,(page-1)*pageSize,pageSize);
         if(null!=dbObjectList&&!dbObjectList.isEmpty()){
             for(DBObject dbObject:dbObjectList){
@@ -143,9 +161,12 @@ public class AppNoticeDao extends BaseDao{
         }
     }
 
+    public int countMyReceivedAppNoticeEntriesForStudent(List<ObjectId> groupIds){
+        return count(MongoFacroty.getAppDB(), Constant.COLLECTION_NEW_VERSION_APP_NOTICE,
+                getQueryMyReceivedAppNoticeEntriesForStudentCondition(groupIds));
+    }
 
-    public List<AppNoticeEntry> getMyReceivedAppNoticeEntriesForStudent(List<ObjectId> groupIds,int page,int pageSize){
-        List<AppNoticeEntry> entries=new ArrayList<AppNoticeEntry>();
+    public BasicDBObject getQueryMyReceivedAppNoticeEntriesForStudentCondition(List<ObjectId> groupIds){
         List<Integer> watchPermissions=new ArrayList<Integer>();
         watchPermissions.add(Constant.TWO);
         watchPermissions.add(Constant.THREE);
@@ -153,7 +174,15 @@ public class AppNoticeDao extends BaseDao{
                 .append("gi",new BasicDBObject(Constant.MONGO_IN,groupIds))
                 .append("wp",new BasicDBObject(Constant.MONGO_IN,watchPermissions))
                 .append("ir",Constant.ZERO);
-        List<DBObject> dbObjectList=find(MongoFacroty.getAppDB(), Constant.COLLECTION_NEW_VERSION_APP_NOTICE,query,
+        return query;
+    }
+
+
+    public List<AppNoticeEntry> getMyReceivedAppNoticeEntriesForStudent(List<ObjectId> groupIds,int page,int pageSize){
+        List<AppNoticeEntry> entries=new ArrayList<AppNoticeEntry>();
+
+        List<DBObject> dbObjectList=find(MongoFacroty.getAppDB(), Constant.COLLECTION_NEW_VERSION_APP_NOTICE,
+                getQueryMyReceivedAppNoticeEntriesForStudentCondition(groupIds),
                 Constant.FIELDS,Constant.MONGO_SORTBY_DESC,(page-1)*pageSize,pageSize);
         if(null!=dbObjectList&&!dbObjectList.isEmpty()){
             for(DBObject dbObject:dbObjectList){

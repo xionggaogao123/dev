@@ -73,10 +73,13 @@ public class AppNoticeDao extends BaseDao{
     public List<AppNoticeEntry> getMyReceivedAppNoticeEntries(List<ObjectId> groupIds,int page,int pageSize,
             ObjectId userId){
         List<AppNoticeEntry> entries=new ArrayList<AppNoticeEntry>();
+        List<Integer> watchPermissions=new ArrayList<Integer>();
+        watchPermissions.add(Constant.ONE);
+        watchPermissions.add(Constant.THREE);
         BasicDBObject query=new BasicDBObject()
                 .append("gi",new BasicDBObject(Constant.MONGO_IN,groupIds))
                 .append("uid",new BasicDBObject(Constant.MONGO_NE,userId))
-                .append("wp",Constant.ONE)
+                .append("wp",new BasicDBObject(Constant.MONGO_IN,watchPermissions))
                 .append("ir",Constant.ZERO);
         List<DBObject> dbObjectList=find(MongoFacroty.getAppDB(), Constant.COLLECTION_NEW_VERSION_APP_NOTICE,query,
                 Constant.FIELDS,Constant.MONGO_SORTBY_DESC,(page-1)*pageSize,pageSize);
@@ -143,9 +146,12 @@ public class AppNoticeDao extends BaseDao{
 
     public List<AppNoticeEntry> getMyReceivedAppNoticeEntriesForStudent(List<ObjectId> groupIds,int page,int pageSize){
         List<AppNoticeEntry> entries=new ArrayList<AppNoticeEntry>();
+        List<Integer> watchPermissions=new ArrayList<Integer>();
+        watchPermissions.add(Constant.TWO);
+        watchPermissions.add(Constant.THREE);
         BasicDBObject query=new BasicDBObject()
                 .append("gi",new BasicDBObject(Constant.MONGO_IN,groupIds))
-                .append("wp",Constant.TWO)
+                .append("wp",new BasicDBObject(Constant.MONGO_IN,watchPermissions))
                 .append("ir",Constant.ZERO);
         List<DBObject> dbObjectList=find(MongoFacroty.getAppDB(), Constant.COLLECTION_NEW_VERSION_APP_NOTICE,query,
                 Constant.FIELDS,Constant.MONGO_SORTBY_DESC,(page-1)*pageSize,pageSize);

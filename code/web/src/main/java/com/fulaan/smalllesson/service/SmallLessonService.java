@@ -32,7 +32,8 @@ public class SmallLessonService {
     @Autowired
     private SmallLessonUserCodeService smallLessonUserCodeService;
     //列表查询用户课程
-    public List<SmallLessonDTO> getLessonList(ObjectId userId,int page,int pageSize){
+    public Map<String,Object> getLessonList(ObjectId userId,int page,int pageSize){
+        Map<String,Object> map = new HashMap<String, Object>();
         List<SmallLessonDTO> dtos = new ArrayList<SmallLessonDTO>();
         List<SmallLessonEntry> entries = smallLessonDao.getLessonPageList(userId, page, pageSize);
         if(entries.size() >0){
@@ -40,7 +41,10 @@ public class SmallLessonService {
                 dtos.add(new SmallLessonDTO(entry));
             }
         }
-        return dtos;
+        int count = smallLessonDao.getNumber(userId);
+        map.put("rows",dtos);
+        map.put("count",count);
+        return map;
     }
 
     //查询课程用户活跃列表
@@ -151,6 +155,7 @@ public class SmallLessonService {
     public Map<String,Object> addStuEntry(ObjectId userId,String userName,ObjectId teacherId){
         SmallLessonEntry entry = smallLessonDao.getEntryByUserId(teacherId);
         Map<String,Object> map = new HashMap<String, Object>();
+        map.put("lessonId",teacherId.toString());
         if(entry == null){
             map.put("code",1);
             map.put("msg","该课程已结束");
@@ -179,6 +184,7 @@ public class SmallLessonService {
             map.put("msg","该课程码不存在");
             return map;
         }
+        map.put("lessonId",dto2.getId());
         SmallLessonEntry entry = smallLessonDao.getEntryByUserId(new ObjectId(dto2.getUserId()));
         if(entry == null){
             map.put("code",1);

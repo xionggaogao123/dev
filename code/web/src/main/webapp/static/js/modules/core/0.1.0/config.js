@@ -191,7 +191,8 @@ seajs.config({
         'xunshiScore': 'modules/zouban/0.1.0/attendance/xunshiscore.js?v=1',
         'goodsManage': 'modules/mall/0.1.0/admin/goodsManage.js?v=1',
         'ueditor': 'modules/forum/ueditor.all.js?v=1',
-        'tou': '/wap/js/TouchSlide.1.1.js?v=1'
+        'tou': '/wap/js/TouchSlide.1.1.js?v=1',
+        'fulanlesson': '/wap/js/fulanIndex.js?v=1'
     },
     preload: [
         Function.prototype.bind ? '' : 'es5-safe',

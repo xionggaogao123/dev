@@ -148,3 +148,38 @@ body{
 .mb100{
     margin-bottom: 100px;
 }
+.new-page-links {
+    width: 100%;
+    text-align: center;
+    margin-top: 25px;
+    height: 45px;
+}
+.new-page-links ul{
+    width: 520px;
+    margin: 0 auto;
+}
+.page-prev, .page-next {
+    width: 56px !important;
+}
+.new-page-links a.page-now {
+    background: #c94d16;
+    color: #fff;
+    border: 1px solid #c94d16;
+}
+.new-page-links a {
+    display: inline-block;
+    text-align: center;
+    border: 1px solid #bfbfbf;
+    margin-left: 8px;
+    background: #F6F7F6;
+    color: #838383;
+    border-radius: 5px;
+    padding: 3px 10px;
+}
+.new-page-links>ul>li{
+    float: left;
+}
+.new-page-links .active a{
+    background-color: #E6E6E6;
+    color: #779554;
+}

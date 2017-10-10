@@ -111,4 +111,19 @@ public class SmallLessonDao extends BaseDao {
         save(MongoFacroty.getAppDB(), Constant.COLLECTION_SMALL_LESSON, e.getBaseEntry());
         return e.getID();
     }
+
+    /**
+     * 符合搜索条件的对象个数
+     * @return
+     */
+    public int getNumber(ObjectId userId) {
+        BasicDBObject query =new BasicDBObject();
+        query.append("isr", Constant.ZERO);
+        query.append("uid",userId);
+        int count =
+                count(MongoFacroty.getAppDB(),
+                        Constant.COLLECTION_SMALL_LESSON,
+                        query);
+        return count;
+    }
 }

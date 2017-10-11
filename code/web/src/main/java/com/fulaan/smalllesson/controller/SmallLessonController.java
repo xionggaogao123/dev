@@ -114,7 +114,7 @@ public class SmallLessonController extends BaseController {
         try {
             respObj = RespObj.SUCCESS;
             ObjectId userId = getUserId();
-            Map<String,Object> str = smallLessonService.addStuEntry(new ObjectId("55934c26f6f28b7261c1bab0"),"geng", new ObjectId(teacherId));
+            Map<String,Object> str = smallLessonService.addStuEntry(userId, getSessionValue().getUserName(), new ObjectId(teacherId));
             respObj.setMessage(str);
         } catch (Exception e) {
             e.printStackTrace();

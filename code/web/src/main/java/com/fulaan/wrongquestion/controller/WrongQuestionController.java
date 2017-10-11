@@ -117,7 +117,7 @@ public class WrongQuestionController extends BaseController {
     }
 
     /**
-     * 年级、科目加载
+     * 年级加载
      * @return
      */
     @ApiOperation(value = "年级、科目加载", httpMethod = "GET", produces = "application/json")

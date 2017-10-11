@@ -26,7 +26,9 @@
 				<li>
 					<img src="/wap/images/table.png">
 					<span class="sp-x" name="{{=obj.id}}"></span>
+					<span class="sp-r" name="{{=obj.id}}"></span>
 					<span class="sp-e" name="{{=obj.id}}"></span>
+					<input type="text">
 					<p class="p1 attr" name="{{=obj.id}}" style="cursor:pointer">{{=obj.name}}</p>
 					<p class="p2 attr" name="{{=obj.id}}" style="cursor:pointer">{{=obj.dateTime}}</p>
 				</li>

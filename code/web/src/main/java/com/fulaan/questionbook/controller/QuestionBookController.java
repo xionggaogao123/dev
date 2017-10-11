@@ -2,6 +2,7 @@ package com.fulaan.questionbook.controller;
 
 import com.alibaba.fastjson.JSON;
 import com.fulaan.base.BaseController;
+import com.fulaan.questionbook.dto.QuestionAdditionDTO;
 import com.fulaan.questionbook.dto.QuestionBookDTO;
 import com.fulaan.questionbook.service.QuestionBookService;
 import com.sys.utils.RespObj;
@@ -15,6 +16,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import java.util.List;
+import java.util.Map;
 
 /**
  * Created by James on 2017/9/30.
@@ -151,5 +153,85 @@ public class QuestionBookController extends BaseController {
         }
         return JSON.toJSONString(respObj);
     }
+    /**
+     *  查询单个错题
+     */
+    @ApiOperation(value = "查询单个错题", httpMethod = "POST", produces = "application/json")
+    @ApiResponses( value = {@ApiResponse(code = 200, message = "Successful — 请求已完成",response = String.class)})
+    @RequestMapping("/getEntry")
+    @ResponseBody
+    public String getEntry(@ApiParam(name="id",required = false,value="错题id") @RequestParam(value="id",defaultValue = "") String id){
+        RespObj respObj=null;
+        try {
+            respObj = RespObj.SUCCESS;
+            Map<String,Object> dtos = questionBookService.getEntry(new ObjectId(id));
+            respObj.setMessage(dtos);
+        } catch (Exception e) {
+            e.printStackTrace();
+            respObj = RespObj.FAILD;
+            respObj.setErrorMessage("查询单个错题失败!");
+        }
+        return JSON.toJSONString(respObj);
+    }
 
+    /**
+     *  添加解析/答案/回答
+     */
+    @ApiOperation(value = "添加解析/答案/回答", httpMethod = "POST", produces = "application/json")
+    @ApiResponses( value = {@ApiResponse(code = 200, message = "Successful — 请求已完成",response = String.class)})
+    @RequestMapping("/addAnswerEntry")
+    @ResponseBody
+    public String addAnswerEntry(@ApiParam(name="dto",required = true,value="解析对象") @RequestBody QuestionAdditionDTO dto){
+        RespObj respObj=null;
+        try {
+            respObj = RespObj.SUCCESS;
+            questionBookService.addAnswerEntry(dto);
+            respObj.setMessage("添加解析/答案/回答成功");
+        } catch (Exception e) {
+            e.printStackTrace();
+            respObj = RespObj.FAILD;
+            respObj.setErrorMessage("添加解析/答案/回答失败!");
+        }
+        return JSON.toJSONString(respObj);
+    }
+    /**
+     * 修改错题
+     */
+    @ApiOperation(value = "修改错题", httpMethod = "POST", produces = "application/json")
+    @ApiResponses( value = {@ApiResponse(code = 200, message = "Successful — 请求已完成",response = String.class)})
+    @RequestMapping("/updateEntry")
+    @ResponseBody
+    public String updateEntry(@ApiParam(name="dto",required = true,value="解析对象") @RequestBody QuestionBookDTO dto){
+        RespObj respObj=null;
+        try {
+            respObj = RespObj.SUCCESS;
+            questionBookService.updateEntry(dto);
+            respObj.setMessage("修改错题成功");
+        } catch (Exception e) {
+            e.printStackTrace();
+            respObj = RespObj.FAILD;
+            respObj.setErrorMessage("修改错题失败!");
+        }
+        return JSON.toJSONString(respObj);
+    }
+    /**
+     * 修改单个解析/答案/回答
+     */
+    @ApiOperation(value = "修改解析/答案/回答", httpMethod = "POST", produces = "application/json")
+    @ApiResponses( value = {@ApiResponse(code = 200, message = "Successful — 请求已完成",response = String.class)})
+    @RequestMapping("/updateAnswerEntry")
+    @ResponseBody
+    public String updateAnswerEntry(@ApiParam(name="dto",required = true,value="解析对象") @RequestBody QuestionAdditionDTO dto){
+        RespObj respObj=null;
+        try {
+            respObj = RespObj.SUCCESS;
+            questionBookService.updateAnswerEntry(dto);
+            respObj.setMessage("修改解析/答案/回答成功");
+        } catch (Exception e) {
+            e.printStackTrace();
+            respObj = RespObj.FAILD;
+            respObj.setErrorMessage("修改解析/答案/回答失败!");
+        }
+        return JSON.toJSONString(respObj);
+    }
 }

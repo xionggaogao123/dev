@@ -63,12 +63,29 @@ body{
     background: url(../images/x.png);
     cursor: pointer;
     margin:15px 0 0 60px;
-} 
+}
+
+.ul-tab li input {
+    display: none;
+    width: 200px;
+    background: #dcdcdc;
+    border: none;
+    height: 40px;
+}
 .ul-tab li .sp-e{
     float: right;
     width: 31px;
     height: 32px;
     background: url(../images/greenpen.png);
+    margin:15px 0 0 0;
+    cursor: pointer;
+}
+.ul-tab li .sp-r{
+    float: right;
+    display: none;
+    width: 30px;
+    height: 30px;
+    background: url(../images/cgou.jpg);
     margin:15px 0 0 0;
     cursor: pointer;
 }

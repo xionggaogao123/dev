@@ -16,10 +16,28 @@ import java.util.List;
  * Created by James on 2017/9/30.
  */
 public class QuestionBookDao extends BaseDao{
+    //单个年级（根据type）
+    public QuestionBookEntry getEntryById(ObjectId id) {
+        BasicDBObject query = new BasicDBObject(Constant.ID,id);
+        query.append("isr",Constant.ZERO);
+        DBObject obj =
+                findOne(MongoFacroty.getAppDB(), Constant.COLLECTION_QUESTION_BOOK, query, Constant.FIELDS);
+        if (obj != null) {
+            return new QuestionBookEntry((BasicDBObject) obj);
+        }
+        return null;
+    }
     //添加错题
     public ObjectId addEntry(QuestionBookEntry entry){
         save(MongoFacroty.getAppDB(), Constant.COLLECTION_QUESTION_BOOK, entry.getBaseEntry());
         return entry.getID();
+    }
+    //修改错题内容和图片
+    public void updateEntry(QuestionBookEntry e){
+        BasicDBObject query=new BasicDBObject(Constant.ID,e.getID());
+        BasicDBObject updateValue=new BasicDBObject(Constant.MONGO_SET,new BasicDBObject("dec",e.getDescription()));
+        updateValue.append(Constant.MONGO_SET,new BasicDBObject("img",e.getImageList()));
+        update(MongoFacroty.getAppDB(), Constant.COLLECTION_QUESTION_BOOK, query, updateValue);
     }
 
     //删除错题

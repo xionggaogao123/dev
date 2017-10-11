@@ -9,9 +9,7 @@ import com.pojo.questionbook.QuestionBookEntry;
 import org.bson.types.ObjectId;
 import org.springframework.stereotype.Service;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.TimeZone;
+import java.util.*;
 
 /**
  * Created by James on 2017/9/30.
@@ -70,6 +68,33 @@ public class QuestionBookService {
     public void delAlreadyEntry(ObjectId id){
         questionBookDao.delEntry(id);
     }
+    /**
+     * 修改错题
+     */
+    public void updateEntry(QuestionBookDTO dto){
+        questionBookDao.updateEntry(dto.buildAddEntry());
+    }
+    /**
+     * 修改解析
+     */
+    public void updateAnswerEntry(QuestionAdditionDTO dto){
+        questionAdditionDao.updateEntry(dto.buildAddEntry());
+    }
+
+    /**
+     * 查询一个错题
+     * @param id
+     */
+     public Map<String,Object> getEntry(ObjectId id){
+         Map<String,Object> map = new HashMap<String, Object>();
+         QuestionBookEntry entry = questionBookDao.getEntryById(id);
+         if(entry != null){
+             List<QuestionAdditionEntry> entries = questionAdditionDao.getListByParentId(entry.getID());
+             map.put("obj",new QuestionBookDTO(entry));
+             map.put("list",entries);
+         }
+         return map;
+    }
 
     /**
      * 多条件组合查询列表
@@ -83,6 +108,10 @@ public class QuestionBookService {
             }
         }
         return dtos;
+    }
+    public void addAnswerEntry(QuestionAdditionDTO dto){
+        QuestionAdditionEntry entry = dto.buildAddEntry();
+        questionAdditionDao.addEntry(entry);
     }
     /**
      * 今日复习

@@ -112,18 +112,18 @@ public class WrongQuestionService {
         return subjectClassDao.addSubjectEntry(entry).toString();
     }
     /**
-     * 年级、科目加载
+     * 年级加载
      */
     public Map<String,Object> getGradeAndSubject(ObjectId userId){
         Map<String,Object> map = new HashMap<String, Object>();
-        List<SubjectClassEntry> enties = subjectClassDao.getList();
+       /* List<SubjectClassEntry> enties = subjectClassDao.getList();
         List<SubjectClassDTO> dtos = new ArrayList<SubjectClassDTO>();
         if(enties.size()>0){
             for(SubjectClassEntry en : enties){
                 dtos.add(new SubjectClassDTO(en));
             }
         }
-        map.put("subjectList",dtos);
+        map.put("subjectList",dtos);*/
         //获取当前学期
         KeyValue keyValue = this.getCurrTermType();
         NewVersionGradeEntry entry = newVersionGradeDao.getEntryByCondition(userId, keyValue.getValue());

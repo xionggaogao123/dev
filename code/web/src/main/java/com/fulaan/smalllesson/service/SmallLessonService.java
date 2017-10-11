@@ -125,7 +125,7 @@ public class SmallLessonService {
                 //非正常下课判断
                 entry2.setType(1);
                 long time2 = entry2.getCreateTime()-entry2.getDateTime();
-                int time = (int)time2%60000;
+                int time = (int)time2/60000;
                 entry2.setNodeTime(time);
                 smallLessonDao.updEntry(entry2);
                 SmallLessonDTO dto = new SmallLessonDTO();

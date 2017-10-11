@@ -16,15 +16,36 @@ define(['doT', 'common','easing', 'jquery','pagination'], function (require, exp
                 fulanIndex.delEntry(id);
             }
         })
-        $("body").on("click",".sp-e",function(){
+      /*  $("body").on("click",".sp-e",function(){
             var id = $(this).attr("name");
             fulanIndex.updateEntry(id);
-        })
+        })*/
         $("body").on("click",".attr",function(){
             var userId = $("#userId").val();
             var userName = $("#userName").val();
             var id = $(this).attr("name");
             window.location.href = "/changeLesson/description.do?userId="+userId+"&userName="+userName+"&id="+id;
+        })
+        $("body").on("click",".sp-e",function(){
+            var tf = $(this).parent();
+            var p1 = tf.find('.p1');
+            var val = p1.text();
+            $(this).hide();
+            $(this).prev().show();
+            p1.hide();
+            tf.find('input').val(val).show();
+        });
+        $("body").on("click",".sp-r",function(){
+            var tf = $(this).parent();
+            var inp = tf.find('input');
+            var val = inp.val();
+            $(this).hide();
+            $(this).next().show();
+            inp.hide();
+            tf.find('.p1').text(val).show();
+            var id = $(this).attr("name");
+            var name = $(this).parent().find("input").val();
+            fulanIndex.updateEntry(id,name);
         })
 
     }
@@ -33,6 +54,7 @@ define(['doT', 'common','easing', 'jquery','pagination'], function (require, exp
         paramData.lessonId = id;
         Common.getPostData("/smallLesson/delLessonEntry.do",paramData,function(rep){
             if(rep.code==200){
+                fulanIndex.getList(page);
                 alert("删除成功！");
             }
         })
@@ -42,15 +64,16 @@ define(['doT', 'common','easing', 'jquery','pagination'], function (require, exp
         paramData.lessonId = id;
         Common.getPostData("/smallLesson/delLessonEntry.do",paramData,function(rep){
             if(rep.code==200){
-                alert("删除成功！");
+                alert("查询成功！");
             }
         })
     }
 
     fulanIndex.updateEntry = function(id,name){
         var paramData = {};
-        paramData.lessonId = id;
+        paramData.userId = id;
         paramData.name = name;
+        //alert(id+":"+name);
         Common.getPostData("/smallLesson/updateLessonName.do",paramData,function(rep){
             if(rep.code==200){
                 alert("修改成功！");

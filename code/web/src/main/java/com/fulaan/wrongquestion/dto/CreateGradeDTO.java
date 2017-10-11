@@ -4,6 +4,9 @@ import com.pojo.wrongquestion.CreateGradeEntry;
 import io.swagger.annotations.ApiModelProperty;
 import org.bson.types.ObjectId;
 
+import java.util.ArrayList;
+import java.util.List;
+
 /**
  * Created by James on 2017/9/6.
  */
@@ -16,6 +19,8 @@ public class CreateGradeDTO {
     private int type;
     @ApiModelProperty(name="ename",value = "英文标识", required = true)
     private String ename;
+    @ApiModelProperty(name="subjectList",value = "包含学科list", required = true)
+    private List<String> subjectList;
 
 
 
@@ -28,17 +33,26 @@ public class CreateGradeDTO {
             this.gradeName = e.getGradeName();
             this.type = e.getType();
             this.ename = e.getEname();
+            List<ObjectId> uIdList = e.getSubjectList();
+            for(ObjectId uId : uIdList){
+                subjectList.add(uId.toString());
+            }
         }else{
             new SubjectClassDTO();
         }
     }
 
     public CreateGradeEntry buildAddEntry(){
+        List<ObjectId> uIdList = new ArrayList<ObjectId>();
+        for(String uId : subjectList){
+            uIdList.add(new ObjectId(uId));
+        }
         CreateGradeEntry openEntry =
                 new CreateGradeEntry(
                         this.gradeName,
                         this.type,
-                        this.ename
+                        this.ename,
+                        uIdList
                 );
         return openEntry;
 
@@ -49,16 +63,30 @@ public class CreateGradeDTO {
         if(this.getId()!=null&&!"".equals(this.getId())){
             Id=new ObjectId(this.getId());
         }
+        List<ObjectId> uIdList = new ArrayList<ObjectId>();
+        for(String uId : subjectList){
+            uIdList.add(new ObjectId(uId));
+        }
 
         CreateGradeEntry openEntry =
                 new CreateGradeEntry(
                         Id,
                         this.gradeName,
                         this.type,
-                        this.ename
+                        this.ename,
+                        uIdList
                 );
         return openEntry;
 
+    }
+
+
+    public List<String> getSubjectList() {
+        return subjectList;
+    }
+
+    public void setSubjectList(List<String> subjectList) {
+        this.subjectList = subjectList;
     }
 
     public String getId() {

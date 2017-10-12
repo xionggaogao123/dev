@@ -4,24 +4,15 @@ package com.fulaan.wrongquestion.service;
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
 import com.db.newVersionGrade.NewVersionGradeDao;
-import com.db.wrongquestion.CreateGradeDao;
-import com.db.wrongquestion.ErrorBookDao;
-import com.db.wrongquestion.QuestionTypeDao;
-import com.db.wrongquestion.SubjectClassDao;
+import com.db.wrongquestion.*;
 import com.fulaan.utils.pojo.KeyValue;
-import com.fulaan.wrongquestion.dto.CreateGradeDTO;
-import com.fulaan.wrongquestion.dto.ErrorBookDTO;
+import com.fulaan.wrongquestion.dto.*;
 import com.fulaan.wrongquestion.dto.ErrorBookDTO.AnswerExplainDTO;
 import com.fulaan.wrongquestion.dto.ErrorBookDTO.ErrorBookAttachDTO;
-import com.fulaan.wrongquestion.dto.NewVersionGradeDTO;
-import com.fulaan.wrongquestion.dto.SubjectClassDTO;
 import com.pojo.newVersionGrade.NewVersionGradeEntry;
-import com.pojo.wrongquestion.CreateGradeEntry;
-import com.pojo.wrongquestion.ErrorBookEntry;
+import com.pojo.wrongquestion.*;
 import com.pojo.wrongquestion.ErrorBookEntry.AnswerExplain;
 import com.pojo.wrongquestion.ErrorBookEntry.ErrorBookAttach;
-import com.pojo.wrongquestion.QuestionTypeEntry;
-import com.pojo.wrongquestion.SubjectClassEntry;
 import com.sys.constants.Constant;
 import com.sys.utils.DateTimeUtils;
 import org.bson.types.ObjectId;
@@ -45,6 +36,10 @@ public class WrongQuestionService {
     private ErrorBookDao errorBookDao = new ErrorBookDao();
 
     private CreateGradeDao createGradeDao = new CreateGradeDao();
+
+    private QuestionTypeDao questionTypeDao = new QuestionTypeDao();
+
+    private TestTypeDao testTypeDao = new TestTypeDao();
 
     /**
      * 获取当前学期
@@ -114,7 +109,7 @@ public class WrongQuestionService {
         return subjectClassDao.addSubjectEntry(entry).toString();
     }
     /**
-     * 年级加载
+     * 初次加载
      */
     public Map<String,Object> getGradeAndSubject(ObjectId userId){
         Map<String,Object> map = new HashMap<String, Object>();
@@ -158,6 +153,53 @@ public class WrongQuestionService {
             }
         }
         map.put("gradeList",mlist);
+
+        //加载学科
+        List<String> stringList =new ArrayList<String>();
+        String sename = mlist.get(0).getEname();
+        if(mlist.size()>0){
+            stringList =  mlist.get(0).getSubjectList();
+        }
+        List<ObjectId> objectIdList = new ArrayList<ObjectId>();
+        for(String str : stringList){
+            objectIdList.add(new ObjectId(str));
+        }
+        List<SubjectClassEntry> entries = subjectClassDao.getListByList(objectIdList);
+        List<SubjectClassDTO> dtoList =   new ArrayList<SubjectClassDTO>();
+        if(entries.size()>0){
+            for(SubjectClassEntry entry1 : entries){
+                dtoList.add(new SubjectClassDTO(entry1));
+            }
+        }
+        map.put("subjectList",dtoList);
+
+
+        //加载问题类型
+        List<QuestionTypeDTO> dtoList1 = new ArrayList<QuestionTypeDTO>();
+        if(dtoList.size()>0){
+            ObjectId subjectId = new ObjectId(dtoList.get(0).getId());
+            List<QuestionTypeEntry> entries1 = questionTypeDao.getList(subjectId,sename);
+            if(entries1.size()>0){
+                for(QuestionTypeEntry entry2 : entries1){
+                    dtoList1.add(new QuestionTypeDTO(entry2));
+                }
+            }
+
+        }
+        map.put("questionTypeList",dtoList1);
+
+        //加载测试类型
+        List<TestTypeDTO> dtoList2 = new ArrayList<TestTypeDTO>();
+        if(dtoList.size()>0){
+            List<TestTypeEntry> entries2 = testTypeDao.getList(sename);
+            if(entries2.size()>0){
+                for(TestTypeEntry entry3 : entries2){
+                    dtoList2.add(new TestTypeDTO(entry3));
+                }
+            }
+
+        }
+        map.put("TestTypeList",dtoList2);
         return map;
     }
 
@@ -346,15 +388,14 @@ public class WrongQuestionService {
 
     }*/
     public static void main(String[] args){
-        QuestionTypeDao questionTypeDao = new QuestionTypeDao();
-        //选择题、填空题、阅读、解答、基础知识、语言运用、其他
-        String[] str = {"选择题","填空题","阅读","解答","基础知识","语言运用","其他"};
+        TestTypeDao questionTypeDao = new TestTypeDao();
+        //单元测试、期中测试、期末测试、月考、同步练习、模拟测试、竞赛试题、高考真题、其他
+        String[] str = {"单元测试","期中测试","期末测试","月考","同步练习","模拟测试","竞赛试题","高考真题","其他"};
         for(int a= 0;a <str.length;a++){
-            QuestionTypeEntry entry = new QuestionTypeEntry();
+            TestTypeEntry entry = new TestTypeEntry();
             entry.setName(str[a]);
-            entry.setSename("junior");
-            entry.setSubjectId(new ObjectId("59b5fbd4bf2e791bb445cdb5"));
-            questionTypeDao.addQuestionTypeEntry(entry);
+            entry.setSename("senior");
+            questionTypeDao.addTestTypeEntry(entry);
         }
     }
 }

@@ -762,7 +762,6 @@ public class AppCommentService {
      */
     public List<SubjectClassDTO> selectTeacherSubjectList(ObjectId userId){
         List<SubjectClassDTO> dtos = new ArrayList<SubjectClassDTO>();
-        //todo
         NewVersionSubjectEntry entry = newVersionSubjectDao.getEntryByUserId(userId);
         List<SubjectClassEntry> entries = null;
         if(entry==null || entry.getSubjectList().size()==0){
@@ -783,7 +782,6 @@ public class AppCommentService {
      */
     public List<SubjectClassDTO> selectTeacherSubjectList2(ObjectId userId){
         List<SubjectClassDTO> dtos = new ArrayList<SubjectClassDTO>();
-        //todo
         NewVersionSubjectEntry entry = newVersionSubjectDao.getEntryByUserId(userId);
         List<SubjectClassEntry> entries = subjectClassDao.getList();
         List<ObjectId> objectIdList = new ArrayList<ObjectId>();

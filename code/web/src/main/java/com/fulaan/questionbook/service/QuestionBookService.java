@@ -130,6 +130,7 @@ public class QuestionBookService {
                 dtos.add(new QuestionBookDTO(entry));
             }
         }
+        //todo
         List<QuestionAdditionEntry> entries1 = questionAdditionDao.getListByParentIdList(olist);
         for(QuestionBookDTO dto : dtos){
             for(QuestionAdditionEntry entry : entries1){

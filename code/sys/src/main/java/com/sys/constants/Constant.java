@@ -841,7 +841,10 @@ public class Constant {
     public static final String COLLECTION_SUBJECT_CLASS = "subjectClass";
     //临时年级表
     public static final String COLLECTION_CREATE_GRADE = "createGrade";
-
+    //简易问题类型表
+    public static final String COLLECTION_QUESTION_TYPE = "questiontype";
+    //简易测试类型表
+    public static final String COLLECTION_TEST_TYPE = "testtype";
 
     //复兰小课堂
     //小课程表

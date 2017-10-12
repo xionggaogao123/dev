@@ -366,6 +366,7 @@ public class AppCommentController extends BaseController {
     public String addOperationEntry(@ApiParam(value = "parentId为上级评论id,backId为回复的对象id,contactId为作业id，role为2学生评论区，role为1家长评论区") @RequestBody AppOperationDTO dto){
         RespObj respObj=null;
         try {
+            //todo(角色判断)
             respObj = RespObj.SUCCESS;
             dto.setUserId(getUserId().toString());
             dto.setLevel(1);
@@ -375,7 +376,6 @@ public class AppCommentController extends BaseController {
             e.printStackTrace();
             respObj = RespObj.FAILD;
             respObj.setErrorMessage("添加作业评论失败!");
-
         }
         return JSON.toJSONString(respObj);
     }

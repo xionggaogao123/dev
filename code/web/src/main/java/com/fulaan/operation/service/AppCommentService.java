@@ -764,14 +764,41 @@ public class AppCommentService {
         List<SubjectClassDTO> dtos = new ArrayList<SubjectClassDTO>();
         //todo
         NewVersionSubjectEntry entry = newVersionSubjectDao.getEntryByUserId(userId);
+        List<SubjectClassEntry> entries = null;
         if(entry==null || entry.getSubjectList().size()==0){
-            entry = newVersionSubjectDao.getAllEntryByUserId();
+            entries = subjectClassDao.getList();
+        }else{
+            List<ObjectId> olist = entry.getSubjectList();
+           entries = subjectClassDao.getListByList(olist);
         }
-        List<ObjectId> olist = entry.getSubjectList();
-        List<SubjectClassEntry> entries = subjectClassDao.getListByList(olist);
         if(entries.size()>0){
             for(SubjectClassEntry entry1 : entries){
                 dtos.add(new SubjectClassDTO(entry1));
+            }
+        }
+        return dtos;
+    }
+    /**
+     * 查询老师绑定的学科
+     */
+    public List<SubjectClassDTO> selectTeacherSubjectList2(ObjectId userId){
+        List<SubjectClassDTO> dtos = new ArrayList<SubjectClassDTO>();
+        //todo
+        NewVersionSubjectEntry entry = newVersionSubjectDao.getEntryByUserId(userId);
+        List<SubjectClassEntry> entries = subjectClassDao.getList();
+        List<ObjectId> objectIdList = new ArrayList<ObjectId>();
+        if(entry != null && entry.getSubjectList().size()>0){
+            objectIdList = entry.getSubjectList();
+        }
+        if(entries.size()>0){
+            for(SubjectClassEntry entry1 : entries){
+                SubjectClassDTO dto = new SubjectClassDTO(entry1);
+                if(objectIdList.contains(entry1.getID())){
+                    dto.setType(2);
+                }else{
+                    dto.setType(1);
+                }
+                dtos.add(dto);
             }
         }
         return dtos;

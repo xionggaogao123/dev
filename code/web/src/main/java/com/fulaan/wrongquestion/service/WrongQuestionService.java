@@ -6,6 +6,7 @@ import com.alibaba.fastjson.JSONObject;
 import com.db.newVersionGrade.NewVersionGradeDao;
 import com.db.wrongquestion.CreateGradeDao;
 import com.db.wrongquestion.ErrorBookDao;
+import com.db.wrongquestion.QuestionTypeDao;
 import com.db.wrongquestion.SubjectClassDao;
 import com.fulaan.utils.pojo.KeyValue;
 import com.fulaan.wrongquestion.dto.CreateGradeDTO;
@@ -19,6 +20,7 @@ import com.pojo.wrongquestion.CreateGradeEntry;
 import com.pojo.wrongquestion.ErrorBookEntry;
 import com.pojo.wrongquestion.ErrorBookEntry.AnswerExplain;
 import com.pojo.wrongquestion.ErrorBookEntry.ErrorBookAttach;
+import com.pojo.wrongquestion.QuestionTypeEntry;
 import com.pojo.wrongquestion.SubjectClassEntry;
 import com.sys.constants.Constant;
 import com.sys.utils.DateTimeUtils;
@@ -343,4 +345,16 @@ public class WrongQuestionService {
    /* public void Test(){
 
     }*/
+    public static void main(String[] args){
+        QuestionTypeDao questionTypeDao = new QuestionTypeDao();
+        //选择题、填空题、阅读、解答、基础知识、语言运用、其他
+        String[] str = {"选择题","填空题","阅读","解答","基础知识","语言运用","其他"};
+        for(int a= 0;a <str.length;a++){
+            QuestionTypeEntry entry = new QuestionTypeEntry();
+            entry.setName(str[a]);
+            entry.setSename("junior");
+            entry.setSubjectId(new ObjectId("59b5fbd4bf2e791bb445cdb5"));
+            questionTypeDao.addQuestionTypeEntry(entry);
+        }
+    }
 }

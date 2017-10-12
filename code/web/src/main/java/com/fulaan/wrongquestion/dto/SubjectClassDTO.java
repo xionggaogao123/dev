@@ -17,6 +17,8 @@ public class SubjectClassDTO {
 
     private String imageUrl;
 
+    private int type;//1 未勾选 2.已勾选
+
 
     public SubjectClassDTO(){
 
@@ -65,6 +67,14 @@ public class SubjectClassDTO {
                 );
         return openEntry;
 
+    }
+
+    public int getType() {
+        return type;
+    }
+
+    public void setType(int type) {
+        this.type = type;
     }
 
     public String getImageUrl() {

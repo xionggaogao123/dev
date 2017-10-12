@@ -233,7 +233,7 @@ public class ReportCardService {
     public void  saveGroupExamDetail(GroupExamDetailDTO dto, ObjectId userId)throws Exception{
         String communityId=dto.getCommunityId();
         List<NewVersionCommunityBindEntry> entries
-                =newVersionCommunityBindDao.getAllStudentBindEntries(new ObjectId(communityId));
+                =newVersionCommunityBindDao.getStudentIdListByCommunityId(new ObjectId(communityId));
         Set<ObjectId> userIds=new HashSet<ObjectId>();
         for(NewVersionCommunityBindEntry bindEntry:entries){
             userIds.add(bindEntry.getUserId());

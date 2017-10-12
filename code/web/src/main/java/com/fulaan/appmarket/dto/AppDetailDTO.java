@@ -22,6 +22,7 @@ public class AppDetailDTO {
     private List<Attachement> imageList=new ArrayList<Attachement>();
     private String version;
     private String description;
+    private String appName;
     private String url;
 
     public AppDetailDTO(){
@@ -40,10 +41,10 @@ public class AppDetailDTO {
         }
         if(null!=aId){
             return new AppDetailEntry(aId,appPackageName,logo, type, size,
-            images, version, description,url);
+            images, version, description,appName,url);
         }else{
             return new AppDetailEntry(appPackageName,logo, type, size,
-                    images, version, description,url);
+                    images, version, description,appName,url);
         }
     }
 
@@ -60,6 +61,15 @@ public class AppDetailDTO {
         this.version=detailEntry.getVersion();
         this.description=detailEntry.getDescription();
         this.url=detailEntry.getUrl();
+        this.appName=detailEntry.getAppName();
+    }
+
+    public String getAppName() {
+        return appName;
+    }
+
+    public void setAppName(String appName) {
+        this.appName = appName;
     }
 
     public String getUrl() {

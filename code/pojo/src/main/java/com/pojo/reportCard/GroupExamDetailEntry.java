@@ -62,8 +62,7 @@ public class GroupExamDetailEntry extends BaseDBObject{
                 .append("sid",subjectId)
                 .append("sc",signCount)
                 .append("sec",signedCount)
-                .append("st",Constant.ZERO)
-                .append("ir", Constant.ZERO);
+                .append("st",Constant.ZERO);
         setBaseEntry(basicDBObject);
     }
 

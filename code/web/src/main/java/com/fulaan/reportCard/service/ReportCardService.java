@@ -59,7 +59,6 @@ public class ReportCardService {
      */
     public void removeGroupExamDetailEntry(ObjectId id){
         groupExamDetailDao.removeGroupExamDetailEntry(id);
-        groupExamUserRecordDao.updateStatus(id);
         groupExamUserRecordDao.updateGroupExamDetailStatus(id,Constant.ONE);
     }
 

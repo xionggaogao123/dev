@@ -55,16 +55,19 @@ public class GroupExamDetailDao extends BaseDao{
         List<GroupExamDetailEntry> entries=new ArrayList<GroupExamDetailEntry>();
         BasicDBObject query=new BasicDBObject()
                 .append("uid",userId)
-                .append("ir", Constant.ZERO);
+                .append("st", Constant.ZERO);
         if(null!=subjectId){
             query.append("sid",subjectId);
         }
         if(examType!=-1){
             query.append("etp",examType);
         }
+        List<Integer> statuses=new ArrayList<Integer>();
+        statuses.add(Constant.ZERO);
         if(status!=-1){
-            query.append("st",status);
+            statuses.add(status);
         }
+        query.append("st",new BasicDBObject(Constant.MONGO_IN,statuses));
         List<DBObject> dbObjectList=find(MongoFacroty.getAppDB(), Constant.COLLECTION_REPORT_CARD_GROUP_EXAM_DETAIL,
                 query,Constant.FIELDS,Constant.MONGO_SORTBY_DESC,(page-1)*pageSize,pageSize);
         if(null!=dbObjectList&&!dbObjectList.isEmpty()){
@@ -105,7 +108,7 @@ public class GroupExamDetailDao extends BaseDao{
         BasicDBObject query=new BasicDBObject()
                 .append(Constant.ID,id);
         BasicDBObject updateValue=new BasicDBObject()
-                .append(Constant.MONGO_SET,new BasicDBObject("ir", Constant.ONE));
+                .append(Constant.MONGO_SET,new BasicDBObject("st", Constant.ONE));
         update(MongoFacroty.getAppDB(), Constant.COLLECTION_REPORT_CARD_GROUP_EXAM_DETAIL,query,updateValue);
     }
 

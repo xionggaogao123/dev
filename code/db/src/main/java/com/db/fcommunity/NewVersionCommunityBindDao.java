@@ -27,6 +27,33 @@ public class NewVersionCommunityBindDao extends BaseDao{
         save(MongoFacroty.getAppDB(), Constant.COLLECTION_NEW_VERSION_COMMUNITY_BIND, MongoUtils.fetchDBObjectList(entryList));
     }
 
+    public void updateThirdName(ObjectId communityId,
+                             ObjectId mainUserId,
+                             ObjectId userId,
+                             String thirdName
+    ){
+        BasicDBObject query=new BasicDBObject()
+                .append("cid",communityId)
+                .append("muid",mainUserId)
+                .append("uid",userId);
+        BasicDBObject updateValue=new BasicDBObject()
+                .append(Constant.MONGO_SET,new BasicDBObject("tn",thirdName));
+        update(MongoFacroty.getAppDB(), Constant.COLLECTION_NEW_VERSION_COMMUNITY_BIND,query,updateValue);
+    }
+
+    public void updateNumber(ObjectId communityId,
+                             ObjectId mainUserId,
+                             ObjectId userId,
+                             int number){
+        BasicDBObject query=new BasicDBObject()
+                .append("cid",communityId)
+                .append("muid",mainUserId)
+                .append("uid",userId);
+        BasicDBObject updateValue=new BasicDBObject()
+                .append(Constant.MONGO_SET,new BasicDBObject("nm",number));
+        update(MongoFacroty.getAppDB(), Constant.COLLECTION_NEW_VERSION_COMMUNITY_BIND,query,updateValue);
+    }
+
     public void updateEntryStatus(ObjectId id){
         BasicDBObject query=new BasicDBObject(Constant.ID,id);
         BasicDBObject updateValue=new BasicDBObject(Constant.MONGO_SET,new BasicDBObject( "ir", Constant.ZERO));

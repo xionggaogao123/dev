@@ -38,6 +38,15 @@ public class AppMarketService {
         appDetailDao.saveAppDetailEntry(appDetailDTO.buildEntry());
     }
 
+    public List<AppDetailDTO> getAppByCondition(String regular){
+        List<AppDetailDTO> detailDTOs=new ArrayList<AppDetailDTO>();
+        List<AppDetailEntry> appDetailEntries=appDetailDao.getAppByCondition(regular);
+        for(AppDetailEntry entry:appDetailEntries){
+            detailDTOs.add(new AppDetailDTO(entry));
+        }
+        return detailDTOs;
+    }
+
     public List<AppDetailDTO> getAllAppDetails(){
         List<AppDetailDTO> detailDTOs=new ArrayList<AppDetailDTO>();
         List<AppDetailEntry> appDetailEntries=appDetailDao.getEntries();

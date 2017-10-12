@@ -45,8 +45,7 @@ public class GroupExamUserRecordEntry extends BaseDBObject{
                 .append("sc",score)
                 .append("scl",scoreLevel)
                 .append("rk",rank)
-                .append("cmId",communityId)
-                .append("ir", Constant.ZERO);
+                .append("cmId",communityId);
         setBaseEntry(basicDBObject);
     }
 

@@ -19,6 +19,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
+import javax.servlet.http.HttpServletRequest;
 import java.util.List;
 import java.util.Map;
 
@@ -32,6 +33,13 @@ public class AppMarketController extends BaseController{
 
     @Autowired
     private AppMarketService appMarketService;
+
+
+    @ApiOperation(value = "网页端跳转到管理应用界面", httpMethod = "POST", produces = "application/json")
+    @RequestMapping("/index")
+    public String redirectIndex(HttpServletRequest request, Map<String,Object> model){
+        return "/appmarket/manageIndex";
+    }
 
 
     @ApiOperation(value = "保存每个应用", httpMethod = "POST", produces = "application/json")
@@ -111,6 +119,26 @@ public class AppMarketController extends BaseController{
         return respObj;
     }
 
+
+    @ApiOperation(value = "根据查询条件查询应用", httpMethod = "POST", produces = "application/json")
+    @ApiResponses(value = {@ApiResponse(code = 200, message = "Successful — 请求已完成",response = RespObj.class),
+            @ApiResponse(code = 500, message = "服务器不能完成请求")})
+    @RequestMapping("/searchAppByCondition")
+    @ResponseBody
+    public RespObj searchAppByCondition(
+            @RequestParam(required = false,defaultValue = "")String regular
+    ){
+        RespObj respObj=new RespObj(Constant.FAILD_CODE);
+        try{
+            List<AppDetailDTO> appDetailDTOs=appMarketService.getAppByCondition(regular);
+            respObj.setMessage(appDetailDTOs);
+            respObj.setCode(Constant.SUCCESS_CODE);
+        }catch (Exception e){
+            e.printStackTrace();
+            respObj.setErrorMessage(e.getMessage());
+        }
+        return respObj;
+    }
 
 
 }

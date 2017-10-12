@@ -29,6 +29,7 @@ public class AppDetailEntry extends BaseDBObject{
                           List<AttachmentEntry> imageList,
                           String version,
                           String description,
+                          String appName,
                           String url){
         BasicDBObject basicDBObject=new BasicDBObject()
                 .append(Constant.ID,id)
@@ -37,6 +38,7 @@ public class AppDetailEntry extends BaseDBObject{
                 .append("ty",type)
                 .append("sz",size)
                 .append("ur",url)
+                .append("an",appName)
                 .append("il", MongoUtils.fetchDBObjectList(imageList))
                 .append("vs",version)
                 .append("des",description)
@@ -52,6 +54,7 @@ public class AppDetailEntry extends BaseDBObject{
                           List<AttachmentEntry> imageList,
                           String version,
                           String description,
+                          String appName,
                           String url){
         BasicDBObject basicDBObject=new BasicDBObject()
                 .append("apn",appPackageName)
@@ -59,12 +62,21 @@ public class AppDetailEntry extends BaseDBObject{
                 .append("ty",type)
                 .append("sz",size)
                 .append("ur",url)
+                .append("an",appName)
                 .append("il", MongoUtils.fetchDBObjectList(imageList))
                 .append("vs",version)
                 .append("des",description)
                 .append("ti",System.currentTimeMillis())
                 .append("ir", Constant.ZERO);
         setBaseEntry(basicDBObject);
+    }
+
+    public void setAppName(String appName){
+        setSimpleValue("an",appName);
+    }
+
+    public String getAppName(){
+        return getSimpleStringValue("an");
     }
 
     public void setUrl(String url){

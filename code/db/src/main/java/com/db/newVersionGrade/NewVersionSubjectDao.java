@@ -17,6 +17,13 @@ public class NewVersionSubjectDao extends BaseDao{
         save(MongoFacroty.getAppDB(), Constant.COLLECTION_NEW_VERSION_SUBJECT,entry.getBaseEntry());
     }
 
+
+    public void removeOldSubjectData(ObjectId userId){
+        BasicDBObject query=new BasicDBObject()
+                .append("uid",userId);
+        remove(MongoFacroty.getAppDB(), Constant.COLLECTION_NEW_VERSION_SUBJECT,query);
+    }
+
     public NewVersionSubjectEntry getEntryByUserId(ObjectId userId){
         BasicDBObject query=new BasicDBObject()
                 .append("uid",userId);

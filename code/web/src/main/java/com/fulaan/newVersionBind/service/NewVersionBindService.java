@@ -2,10 +2,12 @@ package com.fulaan.newVersionBind.service;
 
 import com.db.fcommunity.NewVersionCommunityBindDao;
 import com.db.newVersionGrade.NewVersionGradeDao;
+import com.db.newVersionGrade.NewVersionSubjectDao;
 import com.db.user.NewVersionBindRelationDao;
 import com.db.user.NewVersionUserRoleDao;
 import com.db.user.TeacherSubjectBindDao;
 import com.fulaan.newVersionBind.dto.NewVersionBindRelationDTO;
+import com.fulaan.newVersionBind.dto.NewVersionSubjectDTO;
 import com.fulaan.user.service.UserService;
 import com.fulaan.utils.pojo.KeyValue;
 import com.fulaan.wrongquestion.dto.NewVersionGradeDTO;
@@ -39,6 +41,8 @@ public class NewVersionBindService {
     private NewVersionCommunityBindDao newVersionCommunityBindDao = new NewVersionCommunityBindDao();
 
     private TeacherSubjectBindDao teacherSubjectBindDao= new TeacherSubjectBindDao();
+
+    private NewVersionSubjectDao newVersionSubjectDao= new NewVersionSubjectDao();
 
     @Autowired
     private UserService userService;
@@ -199,6 +203,26 @@ public class NewVersionBindService {
         }else {
             throw  new RuntimeException("已经绑定了!");
         }
+    }
+
+    public void saveNewVersionSubject(NewVersionSubjectDTO dto,ObjectId userId){
+        dto.setUserId(userId.toString());
+        newVersionSubjectDao.removeOldSubjectData(userId);
+        newVersionSubjectDao.saveNewVersionSubjectEntry(dto.buildAddEntry());
+    }
+
+    public void updateNumber(ObjectId communityId,
+                             ObjectId mainUserId,
+                             ObjectId userId,
+                             int number){
+        newVersionCommunityBindDao.updateNumber(communityId,mainUserId,userId, number);
+    }
+
+    public void updateThirdName(ObjectId communityId,
+                                ObjectId mainUserId,
+                                ObjectId userId,
+                                String thirdName){
+        newVersionCommunityBindDao.updateThirdName(communityId,mainUserId,userId, thirdName);
     }
 
     public String saveNewVersionEntry(ObjectId bid,ObjectId userId){

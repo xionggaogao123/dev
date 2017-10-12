@@ -3,6 +3,7 @@ package com.fulaan.newVersionBind.controller;
 import com.fulaan.annotation.ObjectIdType;
 import com.fulaan.base.BaseController;
 import com.fulaan.newVersionBind.dto.NewVersionBindRelationDTO;
+import com.fulaan.newVersionBind.dto.NewVersionSubjectDTO;
 import com.fulaan.newVersionBind.service.NewVersionBindService;
 import com.pojo.user.TeacherSubjectBindDTO;
 import com.sys.constants.Constant;
@@ -247,5 +248,59 @@ public class BindController extends BaseController {
         return respObj;
     }
 
+    @ApiOperation(value = "编辑学生学号信息", httpMethod = "GET", produces = "application/json")
+    @ApiResponses( value = {@ApiResponse(code = 200, message = "Successful — 请求已完成",response = RespObj.class)})
+    @RequestMapping("/editStudentNumber")
+    @ResponseBody
+    public RespObj editStudentNumber(@ObjectIdType ObjectId communityId,
+                                     @ObjectIdType ObjectId mainUserId,
+                                     @ObjectIdType ObjectId userId,
+                                     int number){
+        RespObj respObj = new RespObj(Constant.FAILD_CODE);
+        try{
+            newVersionBindService.updateNumber(communityId, mainUserId, userId, number);
+            respObj.setCode(Constant.SUCCESS_CODE);
+            respObj.setMessage("编辑学生学号信息成功！");
+        }catch (Exception e){
+            respObj.setErrorMessage(e.getMessage());
+        }
+        return respObj;
+    }
+
+    @ApiOperation(value = "编辑学生姓名信息", httpMethod = "GET", produces = "application/json")
+    @ApiResponses( value = {@ApiResponse(code = 200, message = "Successful — 请求已完成",response = RespObj.class)})
+    @RequestMapping("/editStudentThirdName")
+    @ResponseBody
+    public RespObj editStudentThirdName(@ObjectIdType ObjectId communityId,
+                                     @ObjectIdType ObjectId mainUserId,
+                                     @ObjectIdType ObjectId userId,
+                                     String thirdName){
+        RespObj respObj = new RespObj(Constant.FAILD_CODE);
+        try{
+            newVersionBindService.updateThirdName(communityId, mainUserId, userId, thirdName);
+            respObj.setCode(Constant.SUCCESS_CODE);
+            respObj.setMessage("编辑学生姓名信息！");
+        }catch (Exception e){
+            respObj.setErrorMessage(e.getMessage());
+        }
+        return respObj;
+    }
+
+
+    @ApiOperation(value = "保存老师与学科的绑定", httpMethod = "GET", produces = "application/json")
+    @ApiResponses( value = {@ApiResponse(code = 200, message = "Successful — 请求已完成",response = RespObj.class)})
+    @RequestMapping("/saveNewVersionSubject")
+    @ResponseBody
+    public RespObj saveNewVersionSubject(@RequestBody NewVersionSubjectDTO dto){
+        RespObj respObj = new RespObj(Constant.FAILD_CODE);
+        try{
+            newVersionBindService.saveNewVersionSubject(dto,getUserId());
+            respObj.setCode(Constant.SUCCESS_CODE);
+            respObj.setMessage("保存老师与学科的绑定！");
+        }catch (Exception e){
+            respObj.setErrorMessage(e.getMessage());
+        }
+        return respObj;
+    }
 
 }

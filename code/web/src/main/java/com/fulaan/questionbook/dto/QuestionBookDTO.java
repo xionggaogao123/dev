@@ -28,6 +28,9 @@ public class QuestionBookDTO {
     private String pageTime;
     private int level;
     private int type;
+    private List<QuestionAdditionDTO> jxList = new ArrayList<QuestionAdditionDTO>();
+    private List<QuestionAdditionDTO> daList = new ArrayList<QuestionAdditionDTO>();
+    private List<QuestionAdditionDTO> wdList = new ArrayList<QuestionAdditionDTO>();
 
     public QuestionBookDTO(){
 
@@ -127,6 +130,30 @@ public class QuestionBookDTO {
                         this.type
                 );
         return openEntry;
+    }
+
+    public List<QuestionAdditionDTO> getJxList() {
+        return jxList;
+    }
+
+    public void setJxList(List<QuestionAdditionDTO> jxList) {
+        this.jxList = jxList;
+    }
+
+    public List<QuestionAdditionDTO> getDaList() {
+        return daList;
+    }
+
+    public void setDaList(List<QuestionAdditionDTO> daList) {
+        this.daList = daList;
+    }
+
+    public List<QuestionAdditionDTO> getWdList() {
+        return wdList;
+    }
+
+    public void setWdList(List<QuestionAdditionDTO> wdList) {
+        this.wdList = wdList;
     }
 
     public String getUserId() {

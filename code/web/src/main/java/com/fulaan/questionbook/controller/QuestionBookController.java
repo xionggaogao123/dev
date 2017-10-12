@@ -234,4 +234,25 @@ public class QuestionBookController extends BaseController {
         }
         return JSON.toJSONString(respObj);
     }
+    /**
+     * 我又不会了
+     */
+    @ApiOperation(value = "我又不会了", httpMethod = "POST", produces = "application/json")
+    @ApiResponses( value = {@ApiResponse(code = 200, message = "Successful — 请求已完成",response = String.class)})
+    @RequestMapping("/changeEntryState")
+    @ResponseBody
+    public String changeEntryState(@ApiParam(name="id",required = true,value="错题id") @RequestParam(value = "id",required = true) String id){
+        RespObj respObj = null;
+        try{
+            respObj = RespObj.SUCCESS;
+            questionBookService.changeEntryState(new ObjectId(id));
+            respObj.setMessage("修改成功");
+        }catch (Exception e){
+            e.printStackTrace();
+            respObj = RespObj.FAILD;
+            respObj.setErrorMessage("我又不会了失败!");
+        }
+        return JSON.toJSONString(respObj);
+    }
+
 }

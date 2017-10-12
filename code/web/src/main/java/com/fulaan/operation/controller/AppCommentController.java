@@ -304,7 +304,30 @@ public class AppCommentController extends BaseController {
         }
         return JSON.toJSONString(respObj);
     }
+    /**
+     * 根据通知id查找当前评论列表(带通知详情)
+     * @return
+     */
+    @ApiOperation(value = "根据作业id查找当前评论列表(带作业详情)", httpMethod = "POST", produces = "application/json")
+    @ApiResponses( value = {@ApiResponse(code = 200, message = "Successful — 请求已完成",response = String.class),
+            @ApiResponse(code = 400, message = "请求中有语法问题，或不能满足请求"),
+            @ApiResponse(code = 500, message = "服务器不能完成请求")})
+    @RequestMapping("/getNoticeList")
+    @ResponseBody
+    public String getNoticeList(@ApiParam(name = "id", required = true, value = "通知id") @RequestParam("id") String id,@ApiParam(name = "role", required = true, value = "角色区") @RequestParam("role") int role,int page,int pageSize){
 
+        RespObj respObj=null;
+        try {
+            respObj = RespObj.SUCCESS;
+            Map<String,Object> dtos = appCommentService.getNoticeList(new ObjectId(id),role,getUserId(),page,pageSize);
+            respObj.setMessage(dtos);
+        } catch (Exception e) {
+            e.printStackTrace();
+            respObj = RespObj.FAILD;
+            respObj.setErrorMessage("根据作业id查找当前评论列表失败!");
+        }
+        return JSON.toJSONString(respObj);
+    }
     /**
      * 添加学生作业
      * @param dto

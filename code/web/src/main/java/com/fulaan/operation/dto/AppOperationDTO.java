@@ -4,6 +4,8 @@ import com.pojo.operation.AppOperationEntry;
 import com.sys.utils.DateTimeUtils;
 import org.bson.types.ObjectId;
 
+import java.util.List;
+
 /**
  * 评论表
  * Created by James on 2017/8/25.
@@ -25,6 +27,7 @@ public class AppOperationDTO {
     private String userName;
     private String userUrl;
     private String backName;
+    private List<AppOperationDTO> alist;
 
     public AppOperationDTO(){
 
@@ -263,5 +266,13 @@ public class AppOperationDTO {
 
     public void setRole(int role) {
         this.role = role;
+    }
+
+    public List<AppOperationDTO> getAlist() {
+        return alist;
+    }
+
+    public void setAlist(List<AppOperationDTO> alist) {
+        this.alist = alist;
     }
 }

@@ -33,13 +33,13 @@ public class AppOperationDao extends BaseDao {
         BasicDBObject query = new BasicDBObject()
                 .append("cid",contactId)
                 .append("rol",role)
-                .append("lev", Constant.ONE)//一级
+                .append("lev", 1)//一级
                 .append("isr", 0); // 未删除
         List<DBObject> dbList =
                 find(MongoFacroty.getAppDB(),
                         Constant.COLLECTION_APP_OPERATION,
                         query, Constant.FIELDS,
-                        Constant.MONGO_SORTBY_DESC, page, pageSize);
+                        Constant.MONGO_SORTBY_DESC, (page - 1) * pageSize, pageSize);
         List<AppOperationEntry> entryList = new ArrayList<AppOperationEntry>();
         if (dbList != null && !dbList.isEmpty()) {
             for (DBObject obj : dbList) {
@@ -47,6 +47,22 @@ public class AppOperationDao extends BaseDao {
             }
         }
         return entryList;
+    }
+    /**
+     * 符合搜索条件的对象个数
+     * @return
+     */
+    public int getEntryListByParentIdNum(ObjectId contactId,int role) {
+        BasicDBObject query = new BasicDBObject()
+                .append("cid",contactId)
+                .append("rol", role)
+                .append("lev", 1)
+                .append("isr", 0);
+        int count =
+                count(MongoFacroty.getAppDB(),
+                        Constant.COLLECTION_APP_OPERATION,
+                        query);
+        return count;
     }
     //查询所有已提交的数量
     public int countStudentLoadTimes(ObjectId contactId, int role) {
@@ -73,7 +89,7 @@ public class AppOperationDao extends BaseDao {
                 find(MongoFacroty.getAppDB(),
                         Constant.COLLECTION_APP_OPERATION,
                         query, Constant.FIELDS,
-                        Constant.MONGO_SORTBY_DESC, page, pageSize);
+                        Constant.MONGO_SORTBY_DESC, (page - 1) * pageSize, pageSize);
         List<AppOperationEntry> entryList = new ArrayList<AppOperationEntry>();
         if (dbList != null && !dbList.isEmpty()) {
             for (DBObject obj : dbList) {

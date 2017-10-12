@@ -6,6 +6,7 @@ import com.db.fcommunity.MemberDao;
 import com.db.indexPage.IndexPageDao;
 import com.db.newVersionGrade.NewVersionSubjectDao;
 import com.db.operation.AppCommentDao;
+import com.db.operation.AppNoticeDao;
 import com.db.operation.AppOperationDao;
 import com.db.operation.AppRecordDao;
 import com.db.user.NewVersionBindRelationDao;
@@ -44,6 +45,7 @@ public class AppCommentService {
 
     private AppCommentDao appCommentDao = new AppCommentDao();
     private AppOperationDao appOperationDao = new AppOperationDao();
+    private AppNoticeDao appNoticeDao=new AppNoticeDao();
     private AppRecordDao appRecordDao = new AppRecordDao();
     private MemberDao memberDao = new MemberDao();
     private GroupDao groupDao = new GroupDao();
@@ -492,6 +494,76 @@ public class AppCommentService {
         }
         //分页评论列表
         map2.put("list",dtos);
+        return map2;
+    }
+    /**
+     * 根据id查找当前评论列表
+     */
+    public Map<String,Object> getNoticeList(ObjectId id,int role,ObjectId userId,int page,int pageSize){
+        Map<String,Object> map2 = new HashMap<String, Object>();
+        //添加一级评论
+        //AppNoticeEntry entry = appNoticeDao.getAppNoticeEntry(id);
+        List<AppOperationEntry> entries = null;
+        if(role==1){
+            entries= appOperationDao.getEntryListByParentId(id,role,page,pageSize);
+        }else{
+            entries= appOperationDao.getEntryListByUserId(userId,role,id,page,pageSize);
+        }
+        //添加二级评论
+        List<ObjectId> plist = new ArrayList<ObjectId>();
+        if(entries != null && entries.size()>0){
+            for(AppOperationEntry entry1 : entries){
+                plist.add(entry1.getID());
+            }
+        }
+        List<AppOperationEntry> entries2= appOperationDao.getSecondList(plist);
+        entries.addAll(entries2);
+
+
+        //取图和姓名
+        List<AppOperationDTO> dtos = new ArrayList<AppOperationDTO>();
+        List<String> uids = new ArrayList<String>();
+        if(entries != null && entries.size()>0){
+            for(AppOperationEntry en : entries){
+                AppOperationDTO dto = new AppOperationDTO(en);
+                uids.add(dto.getUserId());
+                if(dto.getBackId() != null && dto.getBackId() != ""){
+                    uids.add(dto.getBackId());
+                }
+                dtos.add(dto);
+            }
+        }
+        List<UserDetailInfoDTO> udtos = userService.findUserInfoByUserIds(uids);
+        Map<String,UserDetailInfoDTO> map = new HashMap<String, UserDetailInfoDTO>();
+        if(udtos != null && udtos.size()>0){
+            for(UserDetailInfoDTO dto4 : udtos){
+                map.put(dto4.getId(),dto4);
+            }
+        }
+        for(AppOperationDTO dto5 : dtos){
+            dto5.setUserName(map.get(dto5.getUserId()).getUserName());
+            dto5.setUserUrl(map.get(dto5.getUserId()).getImgUrl());
+            if(dto5.getBackId() != null && dto5.getBackId() != ""){
+                dto5.setBackName(map.get(dto5.getBackId()).getUserName());
+            }
+        }
+        List<AppOperationDTO> olist = new ArrayList<AppOperationDTO>();
+        for(AppOperationDTO dto6 : dtos){
+            if(dto6.getLevel()==1){
+                List<AppOperationDTO> dtoList = new ArrayList<AppOperationDTO>();
+                for(AppOperationDTO dto7 : dtos){
+                    if(dto7.getLevel()==2 && dto6.getId().equals(dto7.getParentId())){
+                        dtoList.add(dto7);
+                    }
+                }
+                dto6.setAlist(dtoList);
+                olist.add(dto6);
+            }
+        }
+        int count = appOperationDao.getEntryListByParentIdNum(id,role);
+        //分页评论列表
+        map2.put("list",olist);
+        map2.put("count",count);
         return map2;
     }
 

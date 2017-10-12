@@ -45,6 +45,23 @@ public class QuestionAdditionDao extends BaseDao {
         }
         return entryList;
     }
+    public List<QuestionAdditionEntry> getListByParentIdList(List<ObjectId> parentIds) {
+        BasicDBObject query = new BasicDBObject()
+                .append("pid", new BasicDBObject(Constant.MONGO_IN, parentIds))
+                .append("isr", 0); // 未删除
+        List<DBObject> dbList =
+                find(MongoFacroty.getAppDB(),
+                        Constant.COLLECTION_QUESTION_ADDITION,
+                        query, Constant.FIELDS,
+                        Constant.MONGO_SORTBY_DESC);
+        List<QuestionAdditionEntry> entryList = new ArrayList<QuestionAdditionEntry>();
+        if (dbList != null && !dbList.isEmpty()) {
+            for (DBObject obj : dbList) {
+                entryList.add(new QuestionAdditionEntry((BasicDBObject) obj));
+            }
+        }
+        return entryList;
+    }
     //添加解析
     /*public ObjectId addEntry(QuestionBookEntry entry){
         save(MongoFacroty.getAppDB(), Constant.COLLECTION_QUESTION_BOOK, entry.getBaseEntry());

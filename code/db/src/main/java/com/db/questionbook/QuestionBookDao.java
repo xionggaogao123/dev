@@ -103,8 +103,10 @@ public class QuestionBookDao extends BaseDao{
     //修改复习题
     public void updateQuestionBook(ObjectId id,long time,int level){
         BasicDBObject query = new BasicDBObject(Constant.ID,id);
-        BasicDBObject updateValue=new BasicDBObject(Constant.MONGO_SET,new BasicDBObject("ptm",time));
-        updateValue.append(Constant.MONGO_SET,new BasicDBObject("lev",level));
+        BasicDBObject update = new BasicDBObject("ptm",time);
+        update.append("lev",level);
+        BasicDBObject updateValue=new BasicDBObject(Constant.MONGO_SET,update);
+        //updateValue.append(Constant.MONGO_SET,new BasicDBObject("lev",level));
         update(MongoFacroty.getAppDB(), Constant.COLLECTION_QUESTION_BOOK, query, updateValue);
     }
 
@@ -112,6 +114,15 @@ public class QuestionBookDao extends BaseDao{
     public void changeQuestionBook(ObjectId id){
         BasicDBObject query = new BasicDBObject(Constant.ID,id);
         BasicDBObject updateValue=new BasicDBObject(Constant.MONGO_SET,new BasicDBObject("typ",2));
+        update(MongoFacroty.getAppDB(), Constant.COLLECTION_QUESTION_BOOK, query, updateValue);
+    }
+    //未学会
+    public void changeUnQuestionBook(ObjectId id){
+        BasicDBObject query = new BasicDBObject(Constant.ID,id);
+        BasicDBObject update = new BasicDBObject("typ",1);
+        update.append("lev",1);
+        BasicDBObject updateValue=new BasicDBObject(Constant.MONGO_SET,update);
+        //updateValue.append(Constant.MONGO_SET,new BasicDBObject("lev",1));
         update(MongoFacroty.getAppDB(), Constant.COLLECTION_QUESTION_BOOK, query, updateValue);
     }
 }

@@ -356,7 +356,6 @@ public class AppCommentController extends BaseController {
 
     /**
      * 添加作业评论
-     * @param dto
      * @return
      */
     @ApiOperation(value = "添加作业评论", httpMethod = "POST", produces = "application/json")
@@ -364,9 +363,13 @@ public class AppCommentController extends BaseController {
     @RequestMapping("/addOperationEntry")
     @ResponseBody
     public String addOperationEntry(@ApiParam(value = "parentId为上级评论id,backId为回复的对象id,contactId为作业id，role为2学生评论区，role为1家长评论区") @RequestBody AppOperationDTO dto){
+   /* public String addOperationEntry(@ApiParam(name = "id", required = true, value = "通知id") @RequestParam("id") String contactId,
+                                    @ApiParam(name = "role", required = true, value = "角色区") @RequestParam("role") int role,
+                                    @ApiParam(name = "description", required = true, value = "角色区") @RequestParam("role") String description){*/
         RespObj respObj=null;
         try {
             //todo(角色判断)
+            //AppOperationDTO dto = new AppOperationDTO();
             respObj = RespObj.SUCCESS;
             dto.setUserId(getUserId().toString());
             dto.setLevel(1);

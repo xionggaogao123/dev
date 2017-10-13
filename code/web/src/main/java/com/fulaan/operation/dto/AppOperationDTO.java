@@ -4,6 +4,7 @@ import com.pojo.operation.AppOperationEntry;
 import com.sys.utils.DateTimeUtils;
 import org.bson.types.ObjectId;
 
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -27,7 +28,7 @@ public class AppOperationDTO {
     private String userName;
     private String userUrl;
     private String backName;
-    private List<AppOperationDTO> alist;
+    private List<AppOperationDTO> alist = new ArrayList<AppOperationDTO>();
 
     public AppOperationDTO(){
 

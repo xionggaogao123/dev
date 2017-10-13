@@ -25,6 +25,9 @@ public class NewVersionBindRelationDTO {
 
     private int isBindCommunity;
 
+    private String studentNumber;
+    private String thirdName;
+
     public NewVersionBindRelationDTO(NewVersionBindRelationEntry  entry){
         this.bindId=entry.getID().toString();
         this.mainUserId=entry.getMainUserId().toString();
@@ -67,6 +70,22 @@ public class NewVersionBindRelationDTO {
 
     public NewVersionBindRelationDTO(){
 
+    }
+
+    public String getStudentNumber() {
+        return studentNumber;
+    }
+
+    public void setStudentNumber(String studentNumber) {
+        this.studentNumber = studentNumber;
+    }
+
+    public String getThirdName() {
+        return thirdName;
+    }
+
+    public void setThirdName(String thirdName) {
+        this.thirdName = thirdName;
     }
 
     public int getIsBindCommunity() {

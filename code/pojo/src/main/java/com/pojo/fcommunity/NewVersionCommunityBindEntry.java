@@ -23,7 +23,7 @@ public class NewVersionCommunityBindEntry extends BaseDBObject{
                  .append("muid",mainUserId)
                  .append("uid",userId)
                  .append("tn",Constant.EMPTY)
-                 .append("nm",Constant.ZERO)
+                 .append("nm",Constant.EMPTY)
                  .append("ir", Constant.ZERO);
         setBaseEntry(basicDBObject);
     }
@@ -36,12 +36,12 @@ public class NewVersionCommunityBindEntry extends BaseDBObject{
         return getSimpleStringValue("tn");
     }
 
-    public void setNumber(int number){
+    public void setNumber(String number){
         setSimpleValue("nm",number);
     }
 
-    public int getNumber(){
-        return getSimpleIntegerValueDef("nm",0);
+    public String getNumber(){
+        return getSimpleStringValue("nm");
     }
 
     public int getRemoveStatus(){

@@ -259,10 +259,10 @@ public class BindController extends BaseController {
     @ResponseBody
     public RespObj editStudentNumber(@ObjectIdType ObjectId communityId,
                                      @ObjectIdType ObjectId userId,
-                                     int number){
+                                     String studentNumber){
         RespObj respObj = new RespObj(Constant.FAILD_CODE);
         try{
-            newVersionBindService.updateNumber(communityId, getUserId(), userId, number);
+            newVersionBindService.updateNumber(communityId, getUserId(), userId, studentNumber);
             respObj.setCode(Constant.SUCCESS_CODE);
             respObj.setMessage("编辑学生学号信息成功！");
         }catch (Exception e){
@@ -294,10 +294,10 @@ public class BindController extends BaseController {
     @ApiResponses( value = {@ApiResponse(code = 200, message = "Successful — 请求已完成",response = RespObj.class)})
     @RequestMapping("/saveNewVersionSubject")
     @ResponseBody
-    public RespObj saveNewVersionSubject(@RequestBody NewVersionSubjectDTO dto){
+    public RespObj saveNewVersionSubject(String subjectIds){
         RespObj respObj = new RespObj(Constant.FAILD_CODE);
         try{
-            newVersionBindService.saveNewVersionSubject(dto,getUserId());
+            newVersionBindService.saveNewVersionSubject(subjectIds,getUserId());
             respObj.setCode(Constant.SUCCESS_CODE);
             respObj.setMessage("保存老师与学科的绑定！");
         }catch (Exception e){

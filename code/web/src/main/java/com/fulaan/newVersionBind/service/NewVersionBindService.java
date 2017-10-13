@@ -22,6 +22,7 @@ import org.bson.types.ObjectId;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.lang.reflect.Array;
 import java.text.SimpleDateFormat;
 import java.util.*;
 
@@ -147,8 +148,11 @@ public class NewVersionBindService {
                 SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd");
                 String birthDate=format.format(userEntry.getBirthDate());
                 dto.setBirthDate(birthDate);
-                if(null!=map.get(userEntry.getID())){
+                NewVersionCommunityBindEntry bindEntry=map.get(userEntry.getID());
+                if(null!=bindEntry){
                     dto.setIsBindCommunity(1);
+                    dto.setStudentNumber(bindEntry.getNumber());
+                    dto.setThirdName(bindEntry.getThirdName());
                 }
             }
             dto.setGradeType(0);
@@ -205,7 +209,14 @@ public class NewVersionBindService {
         }
     }
 
-    public void saveNewVersionSubject(NewVersionSubjectDTO dto,ObjectId userId){
+    public void saveNewVersionSubject(String subjectIds,ObjectId userId){
+        NewVersionSubjectDTO dto =new NewVersionSubjectDTO();
+        String[] sIds=subjectIds.split(",");
+        List<String> suIds= new ArrayList<String>();
+        for(String sId:sIds){
+            suIds.add(sId);
+        }
+        dto.setSubjectId(suIds);
         dto.setUserId(userId.toString());
         newVersionSubjectDao.removeOldSubjectData(userId);
         newVersionSubjectDao.saveNewVersionSubjectEntry(dto.buildAddEntry());
@@ -214,8 +225,8 @@ public class NewVersionBindService {
     public void updateNumber(ObjectId communityId,
                              ObjectId mainUserId,
                              ObjectId userId,
-                             int number){
-        newVersionCommunityBindDao.updateNumber(communityId,mainUserId,userId, number);
+                             String studentNumber){
+        newVersionCommunityBindDao.updateNumber(communityId,mainUserId,userId, studentNumber);
     }
 
     public void updateThirdName(ObjectId communityId,

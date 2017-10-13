@@ -11,6 +11,7 @@ import com.fulaan.dto.VideoDTO;
 import com.fulaan.indexpage.dto.IndexPageDTO;
 import com.fulaan.operation.dto.AppNoticeDTO;
 import com.fulaan.operation.dto.AppOperationDTO;
+import com.fulaan.operation.dto.GroupOfCommunityDTO;
 import com.fulaan.pojo.Attachement;
 import com.fulaan.pojo.User;
 import com.fulaan.user.service.UserService;
@@ -105,23 +106,21 @@ public class AppNoticeService {
      * @param dto
      */
     public void saveAppNoticeEntry(AppNoticeDTO dto,ObjectId userId){
-        String gId=dto.getGroupId();
-        String[] groupCommunityIds=gId.split(",");
         UserEntry userEntry=userService.findById(userId);
-        for(String groupCommunityId:groupCommunityIds){
-            String[] gComIds=groupCommunityId.split("\\$");
+        List<GroupOfCommunityDTO> dtos=new ArrayList<GroupOfCommunityDTO>();
+        for(GroupOfCommunityDTO communityDTO:dtos){
             AppNoticeDTO appNoticeDTO=new AppNoticeDTO(
                     dto.getSubjectId(),
                     dto.getSubject(),
                     dto.getTitle(),
                     dto.getContent(),
-                    gComIds[0],
-                    gComIds[1],
+                    communityDTO.getGroupId(),
+                    communityDTO.getCommunityId(),
                     dto.getWatchPermission(),
                     dto.getVideoList(),
                     dto.getImageList(),
                     dto.getAttachements(),
-                    dto.getGroupName(),
+                    communityDTO.getGroupName(),
                     userEntry.getUserName());
             appNoticeDTO.setUserId(userId.toString());
 
@@ -131,7 +130,7 @@ public class AppNoticeService {
             //添加临时记录表
             IndexPageDTO dto1 = new IndexPageDTO();
             dto1.setType(CommunityType.appNotice.getType());
-            dto1.setCommunityId(gComIds[1]);
+            dto1.setCommunityId(communityDTO.getCommunityId());
             dto1.setContactId(oid.toString());
             IndexPageEntry entry = dto1.buildAddEntry();
             indexPageDao.addEntry(entry);

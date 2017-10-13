@@ -30,6 +30,7 @@ public class AppNoticeDTO {
     private List<VideoDTO> videoList=new ArrayList<VideoDTO>();
     private List<Attachement> imageList=new ArrayList<Attachement>();
     private List<Attachement> attachements=new ArrayList<Attachement>();
+    private List<GroupOfCommunityDTO> groupOfCommunityDTOs=new ArrayList<GroupOfCommunityDTO>();
     private int commentCount;
     private String groupName;
     private String subjectId;
@@ -146,6 +147,14 @@ public class AppNoticeDTO {
         }
         this.commentCount=entry.getCommentCount();
         this.time= DateTimeUtils.convert(entry.getSubmitTime(),DateTimeUtils.DATE_YYYY_MM_DD_HH_MM_SS_H);
+    }
+
+    public List<GroupOfCommunityDTO> getGroupOfCommunityDTOs() {
+        return groupOfCommunityDTOs;
+    }
+
+    public void setGroupOfCommunityDTOs(List<GroupOfCommunityDTO> groupOfCommunityDTOs) {
+        this.groupOfCommunityDTOs = groupOfCommunityDTOs;
     }
 
     public String getCommunityId() {

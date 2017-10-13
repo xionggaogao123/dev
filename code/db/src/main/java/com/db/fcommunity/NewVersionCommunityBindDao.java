@@ -44,13 +44,13 @@ public class NewVersionCommunityBindDao extends BaseDao{
     public void updateNumber(ObjectId communityId,
                              ObjectId mainUserId,
                              ObjectId userId,
-                             int number){
+                             String studentNumber){
         BasicDBObject query=new BasicDBObject()
                 .append("cid",communityId)
                 .append("muid",mainUserId)
                 .append("uid",userId);
         BasicDBObject updateValue=new BasicDBObject()
-                .append(Constant.MONGO_SET,new BasicDBObject("nm",number));
+                .append(Constant.MONGO_SET,new BasicDBObject("nm",studentNumber));
         update(MongoFacroty.getAppDB(), Constant.COLLECTION_NEW_VERSION_COMMUNITY_BIND,query,updateValue);
     }
 

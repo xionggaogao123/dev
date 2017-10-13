@@ -13,10 +13,7 @@ import io.swagger.annotations.*;
 import org.bson.types.ObjectId;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 import java.util.Map;
@@ -67,7 +64,7 @@ public class AppNoticeController extends BaseController {
     }
 
 
-    @RequestMapping("/saveAppNoticeEntry")
+    @RequestMapping(value="/saveAppNoticeEntry", method = RequestMethod.POST, consumes = "application/json")
     @ResponseBody
     @ApiOperation(value = "保存通知信息", httpMethod = "POST", produces = "application/json")
     @ApiResponses( value = {@ApiResponse(code = 200, message = "Successful — 请求已完成",response = RespObj.class),
@@ -147,16 +144,47 @@ public class AppNoticeController extends BaseController {
         return respObj;
     }
 
+    @ApiOperation(value = "添加通知评论", httpMethod = "POST", produces = "application/json")
+    @ApiResponse(code = 200, message = "success", response = String.class)
+    @RequestMapping(value="/addOperationEntry")
+    @ResponseBody
+    public String addOperationEntry(@RequestParam(required = false,defaultValue = "") String contactId,
+                                    @RequestParam(required = false,defaultValue = "0") int role,
+                                    @RequestParam(required = false,defaultValue = "") String backId,
+                                    @RequestParam(required = false,defaultValue = "") String parentId,
+                                    @RequestParam(required = false,defaultValue = "") String description){
+        RespObj respObj=null;
+        try {
+            AppOperationDTO dto=new AppOperationDTO();
+            dto.setContactId(contactId);
+            dto.setRole(role);
+            dto.setBackId(backId);
+            dto.setParentId(parentId);
+            dto.setDescription(description);
+            respObj = RespObj.SUCCESS;
+            dto.setUserId(getUserId().toString());
+            dto.setLevel(1);
+            String result = appNoticeService.addOperationEntry(dto);
+            respObj.setMessage(result);
+        } catch (Exception e) {
+            e.printStackTrace();
+            respObj = RespObj.FAILD;
+            respObj.setErrorMessage("添加作业评论失败!");
+
+        }
+        return JSON.toJSONString(respObj);
+    }
+
     /**
      * 添加通知评论
      * @param dto
      * @return
      */
-    @ApiOperation(value = "添加通知评论", httpMethod = "POST", produces = "application/json")
+    @ApiOperation(value = "添加通知评论1", httpMethod = "POST", produces = "application/json")
     @ApiResponse(code = 200, message = "success", response = String.class)
-    @RequestMapping("/addOperationEntry")
+    @RequestMapping(value="/addOperationEntry2")
     @ResponseBody
-    public String addOperationEntry(@ApiParam(value = "parentId为上级评论id,backId为回复的对象id,contactId为通知id，role为2学生评论区，role为1家长评论区") @RequestBody AppOperationDTO dto){
+    public String addOperationEntry2(@ApiParam(value = "parentId为上级评论id,backId为回复的对象id,contactId为通知id，role为2学生评论区，role为1家长评论区") @RequestBody AppOperationDTO dto){
         RespObj respObj=null;
         try {
             respObj = RespObj.SUCCESS;

@@ -49,7 +49,7 @@ public class GroupExamDetailDao extends BaseDao{
      * @return
      */
     public List<GroupExamDetailEntry> getMySendGroupExamDetailEntries(
-            ObjectId subjectId,int examType,int status,
+            ObjectId subjectId,ObjectId examTypeId,int status,
             ObjectId userId,
             int page,int pageSize){
         List<GroupExamDetailEntry> entries=new ArrayList<GroupExamDetailEntry>();
@@ -59,8 +59,8 @@ public class GroupExamDetailDao extends BaseDao{
         if(null!=subjectId){
             query.append("sid",subjectId);
         }
-        if(examType!=-1){
-            query.append("etp",examType);
+        if(null!=examTypeId){
+            query.append("etp",examTypeId);
         }
         List<Integer> statuses=new ArrayList<Integer>();
         statuses.add(Constant.ZERO);

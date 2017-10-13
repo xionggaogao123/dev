@@ -70,7 +70,7 @@ public class GroupExamUserRecordDao extends BaseDao{
      * @return
      */
     public List<GroupExamUserRecordEntry> getStudentReceivedEntries(
-            ObjectId subjectId,int examType,int status,
+            ObjectId subjectId,ObjectId examTypeId,int status,
             ObjectId userId,
             int page,int pageSize){
         List<Integer> statuses=new ArrayList<Integer>();
@@ -81,8 +81,8 @@ public class GroupExamUserRecordDao extends BaseDao{
             query.append("sid",subjectId);
         }
 
-        if(examType!=-1){
-            query.append("etp",examType);
+        if(null!=examTypeId){
+            query.append("etp",examTypeId);
         }
 
         if(status!=-1){
@@ -113,7 +113,7 @@ public class GroupExamUserRecordDao extends BaseDao{
      * @return
      */
     public List<GroupExamUserRecordEntry> getParentReceivedEntries(
-            ObjectId subjectId,int examType,int status,
+            ObjectId subjectId,ObjectId examTypeId,int status,
             ObjectId mainUserId,
             List<ObjectId> userIds,
             int page,int pageSize){
@@ -125,8 +125,8 @@ public class GroupExamUserRecordDao extends BaseDao{
         if(null!=subjectId){
             query.append("sid",subjectId);
         }
-        if(examType!=-1){
-            query.append("etp",examType);
+        if(null!=examTypeId){
+            query.append("etp",examTypeId);
         }
         if(status!=-1){
             statuses.add(status);

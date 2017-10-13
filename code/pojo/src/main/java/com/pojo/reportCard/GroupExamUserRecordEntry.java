@@ -27,7 +27,7 @@ public class GroupExamUserRecordEntry extends BaseDBObject{
                                     ObjectId mainUserId,
                                     ObjectId userId,
                                     ObjectId groupId,
-                                    int examType,
+                                    ObjectId examType,
                                     ObjectId subjectId,
                                     ObjectId communityId,
                                     double score,
@@ -57,12 +57,12 @@ public class GroupExamUserRecordEntry extends BaseDBObject{
         setSimpleValue("sid",subjectId);
     }
 
-    public void setExamType(int examType){
+    public void setExamType(ObjectId examType){
         setSimpleValue("etp",examType);
     }
 
-    public int getExamType(){
-        return getSimpleIntegerValue("etp");
+    public ObjectId getExamType(){
+        return getSimpleObjecIDValue("etp");
     }
 
     public int getRank(){

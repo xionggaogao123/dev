@@ -97,12 +97,13 @@ public class ReportCardService {
      * @return
      */
     public List<GroupExamDetailDTO> getReceiveExams(
-            String subjectId,int examType,int status,
+            String subjectId,String examType,int status,
             ObjectId userId,int page,int pageSize
     ){
         ObjectId suId= StringUtils.isNotBlank(subjectId)?new ObjectId(subjectId):null;
+        ObjectId examTypeId= StringUtils.isNotBlank(examType)?new ObjectId(examType):null;
         List<GroupExamUserRecordEntry> recordEntries=groupExamUserRecordDao.getStudentReceivedEntries(
-                suId,examType,status,userId, page, pageSize
+                suId,examTypeId,status,userId, page, pageSize
         );
         return getGroupExamDetailDtos(recordEntries);
     }
@@ -167,16 +168,17 @@ public class ReportCardService {
      * @return
      */
     public List<GroupExamDetailDTO> getParentReceivedGroupExamDetailDTOs(
-            String subjectId,int examType,int status,
+            String subjectId,String examType,int status,
             ObjectId userId,int page,int pageSize){
         Set<ObjectId> userIds=new HashSet<ObjectId>();
         ObjectId suId= StringUtils.isNotBlank(subjectId)?new ObjectId(subjectId):null;
+        ObjectId examTypeId= StringUtils.isNotBlank(examType)?new ObjectId(examType):null;
         List<NewVersionCommunityBindEntry> bindEntries=newVersionCommunityBindDao.getEntriesByMainUserId(userId);
         for(NewVersionCommunityBindEntry bindEntry:bindEntries){
             userIds.add(bindEntry.getUserId());
         }
         List<GroupExamUserRecordEntry> userRecordEntries=groupExamUserRecordDao.getParentReceivedEntries(
-                suId,examType,status,userId,new ArrayList<ObjectId>(userIds),page,pageSize
+                suId,examTypeId,status,userId,new ArrayList<ObjectId>(userIds),page,pageSize
         );
 
         return getGroupExamDetailDtos(userRecordEntries);
@@ -189,12 +191,13 @@ public class ReportCardService {
      * @return
      */
     public List<GroupExamDetailDTO> getMySendGroupExamDetailDTOs(
-            String subjectId,int examType,int status,
+            String subjectId,String examType,int status,
             ObjectId userId,int page,int pageSize){
         List<GroupExamDetailDTO> groupExamDetailDTOs=new ArrayList<GroupExamDetailDTO>();
         ObjectId suId= StringUtils.isNotBlank(subjectId)?new ObjectId(subjectId):null;
+        ObjectId examTypeId=StringUtils.isNotBlank(examType)?new ObjectId(examType):null;
         List<GroupExamDetailEntry> entries=groupExamDetailDao.getMySendGroupExamDetailEntries(
-                suId,examType,status,userId,
+                suId,examTypeId,status,userId,
                 page,pageSize);
         Set<ObjectId> communityIds = new HashSet<ObjectId>();
         for(GroupExamDetailEntry examDetailEntry:entries){
@@ -252,7 +255,7 @@ public class ReportCardService {
                     userId,
                     uId,
                     new ObjectId(dto.getGroupId()),
-                    dto.getExamType(),
+                    new ObjectId(dto.getExamType()),
                     new ObjectId(dto.getSubjectId()),
                     new ObjectId(dto.getCommunityId()),
                     -1D,

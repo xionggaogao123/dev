@@ -35,7 +35,7 @@ public class GroupExamDetailEntry extends BaseDBObject{
 
     public GroupExamDetailEntry(ObjectId groupId,
                                 ObjectId communityId,
-                                int examType,
+                                ObjectId examType,
                                 int recordScoreType,
                                 ObjectId userId,
                                 String examName,
@@ -146,12 +146,12 @@ public class GroupExamDetailEntry extends BaseDBObject{
         return getSimpleIntegerValue("rt");
     }
 
-    public void setExamType(int examType){
+    public void setExamType(ObjectId examType){
         setSimpleValue("etp",examType);
     }
 
-    public int getExamType(){
-        return getSimpleIntegerValue("etp");
+    public ObjectId getExamType(){
+        return getSimpleObjecIDValue("etp");
     }
 
     public void setCommunityId(ObjectId communityId){

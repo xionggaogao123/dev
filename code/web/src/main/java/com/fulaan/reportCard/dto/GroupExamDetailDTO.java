@@ -16,7 +16,7 @@ public class GroupExamDetailDTO {
     private String id;
     private String groupId;
     private String communityId;
-    private int examType;
+    private String examType;
     private int recordScoreType;
     private String userId;
     private String examName;
@@ -81,7 +81,7 @@ public class GroupExamDetailDTO {
         }
 
         return new GroupExamDetailEntry(gId,
-                cId, examType, recordScoreType, uid, examName,
+                cId, new ObjectId(examType), recordScoreType, uid, examName,
                 sId, maxScore, qualifyScore, excellentScore, examTime,signCount,signedCount);
     }
 
@@ -90,7 +90,7 @@ public class GroupExamDetailDTO {
         this.groupId=entry.getGroupId().toString();
         this.communityId=entry.getCommunityId().toString();
         this.examName=entry.getExamName();
-        this.examType=entry.getExamType();
+        this.examType=entry.getExamType().toString();
         this.recordScoreType=entry.getRecordScoreType();
         this.userId=entry.getUserId().toString();
         this.subjectId=entry.getSubjectId().toString();
@@ -337,11 +337,11 @@ public class GroupExamDetailDTO {
         this.communityId = communityId;
     }
 
-    public int getExamType() {
+    public String getExamType() {
         return examType;
     }
 
-    public void setExamType(int examType) {
+    public void setExamType(String examType) {
         this.examType = examType;
     }
 

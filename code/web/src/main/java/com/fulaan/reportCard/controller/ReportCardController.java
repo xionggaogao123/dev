@@ -59,7 +59,7 @@ public class ReportCardController extends BaseController{
     @ResponseBody
     public RespObj getMySendGroupExam(
             @RequestParam(required = false, defaultValue = "")String subjectId,
-            @RequestParam(required = false, defaultValue = "-1")int examType,
+            @RequestParam(required = false, defaultValue = "-1")String examType,
             @RequestParam(required = false, defaultValue = "-1")int status,
             @RequestParam(required = false, defaultValue = "1")int page,
             @RequestParam(required = false, defaultValue = "10")int pageSize
@@ -88,7 +88,7 @@ public class ReportCardController extends BaseController{
     @ResponseBody
     public RespObj getStudentReceiveExams(
             @RequestParam(required = false, defaultValue = "")String subjectId,
-            @RequestParam(required = false, defaultValue = "-1")int examType,
+            @RequestParam(required = false, defaultValue = "-1")String examType,
             @RequestParam(required = false, defaultValue = "-1")int status,
             @RequestParam(required = false, defaultValue = "1")int page,
             @RequestParam(required = false, defaultValue = "10")int pageSize
@@ -118,7 +118,7 @@ public class ReportCardController extends BaseController{
     @ResponseBody
     public RespObj getParentReceiveExams(
             @RequestParam(required = false, defaultValue = "")String subjectId,
-            @RequestParam(required = false, defaultValue = "-1")int examType,
+            @RequestParam(required = false, defaultValue = "-1")String examType,
             @RequestParam(required = false, defaultValue = "-1")int status,
             @RequestParam(required = false, defaultValue = "1")int page,
             @RequestParam(required = false, defaultValue = "10")int pageSize

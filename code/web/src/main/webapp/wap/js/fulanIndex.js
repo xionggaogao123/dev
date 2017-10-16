@@ -11,10 +11,11 @@ define(['doT', 'common','easing', 'jquery','pagination'], function (require, exp
     fulanIndex.init = function(){
         fulanIndex.getList(page);
         $("body").on("click",".sp-x",function(){
-            if(confirm("是否删除该课程？")){
+            /*if(confirm("是否删除该课程？")){
                 var id = $(this).attr("name");
                 fulanIndex.delEntry(id);
-            }
+            }*/
+            fulanIndex.dddd();
         })
       /*  $("body").on("click",".sp-e",function(){
             var id = $(this).attr("name");
@@ -48,6 +49,38 @@ define(['doT', 'common','easing', 'jquery','pagination'], function (require, exp
             fulanIndex.updateEntry(id,name);
         })
 
+    }
+    fulanIndex.dddd = function(){
+        var paramData = {};
+        paramData.description = "dfdsfasdf";
+        var data = JSON.stringify(paramData);
+       /* Common.getPostData("/appOperation/addOperationEntry.do",data,function(rep){
+            if(rep.code==200){
+                fulanIndex.getList(page);
+                alert("删除成功！");
+            }
+        })*/
+        $.ajax({
+            type: "post",
+            data: data,
+            url: "/appOperation/addOperationEntry.do",
+            async: false,
+            headers:{"Content-Type":"application/json;charset=UTF-8"},
+            traditional: true,
+            success: function (rep) {
+                if (!rep) {
+                    //$("#pageLoading").hide();
+                    return rep;
+                }
+                try {
+                    $.isPlainObject(rep);
+                } catch (e) {
+                    console.log("数据解析错误!");
+                    return;
+                }
+                callback.apply(this, arguments);
+            }
+        });
     }
     fulanIndex.delEntry = function(id){
         var paramData = {};

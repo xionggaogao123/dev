@@ -10,6 +10,7 @@ import com.fulaan.wrongquestion.dto.*;
 import com.fulaan.wrongquestion.dto.ErrorBookDTO.AnswerExplainDTO;
 import com.fulaan.wrongquestion.dto.ErrorBookDTO.ErrorBookAttachDTO;
 import com.pojo.newVersionGrade.NewVersionGradeEntry;
+import com.pojo.reportCard.ExamTypeEntry;
 import com.pojo.wrongquestion.*;
 import com.pojo.wrongquestion.ErrorBookEntry.AnswerExplain;
 import com.pojo.wrongquestion.ErrorBookEntry.ErrorBookAttach;
@@ -388,14 +389,13 @@ public class WrongQuestionService {
 
     }*/
     public static void main(String[] args){
-        TestTypeDao questionTypeDao = new TestTypeDao();
+        ExamTypeDao examTypeDao = new ExamTypeDao();
         //单元测试、期中测试、期末测试、月考、同步练习、模拟测试、竞赛试题、高考真题、其他
-        String[] str = {"单元测试","期中测试","期末测试","月考","同步练习","模拟测试","竞赛试题","高考真题","其他"};
+        String[] str = {"单元测试","期中测试","期末测试","月考","同步练习","周周练","模拟测试","竞赛试题","高考真题","其他"};
         for(int a= 0;a <str.length;a++){
-            TestTypeEntry entry = new TestTypeEntry();
-            entry.setName(str[a]);
-            entry.setSename("senior");
-            questionTypeDao.addTestTypeEntry(entry);
+            ExamTypeEntry entry = new ExamTypeEntry(str[a]);
+            //entry.setExamTypeName(str[a]);
+            examTypeDao.addExamTypeEntry(entry);
         }
     }
 }

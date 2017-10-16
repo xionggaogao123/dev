@@ -2,6 +2,8 @@ package com.fulaan.operation.dto;
 
 import com.pojo.operation.AppOperationEntry;
 import com.sys.utils.DateTimeUtils;
+import io.swagger.annotations.ApiModel;
+import io.swagger.annotations.ApiModelProperty;
 import org.bson.types.ObjectId;
 
 import java.util.ArrayList;
@@ -11,7 +13,9 @@ import java.util.List;
  * 评论表
  * Created by James on 2017/8/25.
  */
+@ApiModel
 public class AppOperationDTO {
+    @ApiModelProperty(value="dfsdfds")
     private String id;
     private String parentId;
     private String contactId;

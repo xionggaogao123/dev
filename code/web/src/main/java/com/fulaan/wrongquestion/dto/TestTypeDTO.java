@@ -50,7 +50,6 @@ public class TestTypeDTO {
         return openEntry;
 
     }
-
     public String getId() {
         return id;
     }

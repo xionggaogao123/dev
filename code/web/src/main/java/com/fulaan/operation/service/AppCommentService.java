@@ -79,7 +79,7 @@ public class AppCommentService {
             //获得时间批次
             zero = current/(1000*3600*24)*(1000*3600*24)- TimeZone.getDefault().getRawOffset();//今天零点零分零秒的毫秒数
         }else{
-            zero = DateTimeUtils.getStrToLongTime(dto.getDateTime(), "yyyy-MM-dd");
+            zero = DateTimeUtils.getStrToLongTime(dto.getDateTime(), "yyyy-MM-dd HH:mm");
         }
         dto.setDateTime("");
         AppCommentEntry en = dto.buildAddEntry();

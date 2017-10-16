@@ -6,6 +6,7 @@ import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import org.bson.types.ObjectId;
 
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -17,6 +18,7 @@ public class AppCommentDTO {
     private String id;
     @ApiModelProperty(value = "描述", required = true)
     private String description;
+    private String title;
     @ApiModelProperty(value = "作业提交时间 (yyyy-MM-dd HH:mm:ss)", required = true)
     private String loadTime;
     @ApiModelProperty(value = "作业提交状态:0 已发布    1 定时发布   2 暂不发布", required = true)
@@ -26,7 +28,7 @@ public class AppCommentDTO {
     private int loadNumber;
     private int questionNumber;
     @ApiModelProperty(value = "图片url", required = true)
-    private List<String> imageUrl;
+    private List<String> imageUrl = new ArrayList<String>();
     private String subject;
     @ApiModelProperty(value = "学科id", required = true)
     private String subjectId;
@@ -50,6 +52,7 @@ public class AppCommentDTO {
         if(e!=null){
             this.id = e.getID()==null?"":e.getID().toString();
             this.description = e.getDescription();
+            this.title = e.getTitle();
             if(e.getLoadTime()!=0l){
                 this.loadTime = DateTimeUtils.getLongToStrTimeTwo(e.getDateTime());
             }else{
@@ -107,6 +110,7 @@ public class AppCommentDTO {
         AppCommentEntry openEntry =
                 new AppCommentEntry(
                         this.description,
+                        this.title,
                         lTm,
                         this.status,
                         this.writeNumber,
@@ -153,6 +157,7 @@ public class AppCommentDTO {
                 new AppCommentEntry(
                         Id,
                         this.description,
+                        this.title,
                         lTm,
                         this.status,
                         this.writeNumber,
@@ -169,6 +174,14 @@ public class AppCommentDTO {
                         dTm);
         return openEntry;
 
+    }
+
+    public String getTitle() {
+        return title;
+    }
+
+    public void setTitle(String title) {
+        this.title = title;
     }
 
     public String getSubjectId() {

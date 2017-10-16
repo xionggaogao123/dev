@@ -845,6 +845,8 @@ public class Constant {
     public static final String COLLECTION_QUESTION_TYPE = "questiontype";
     //简易测试类型表
     public static final String COLLECTION_TEST_TYPE = "testtype";
+    //简易考试类型表
+    public static final String COLLECTION_EXAM_TYPE = "examtype";
 
     //复兰小课堂
     //小课程表

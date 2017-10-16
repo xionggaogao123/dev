@@ -186,11 +186,11 @@ public class QuestionBookController extends BaseController {
         try {
             respObj = RespObj.SUCCESS;
             questionBookService.addAnswerEntry(dto);
-            respObj.setMessage("添加解析/答案/回答成功");
+            respObj.setMessage("添加成功");
         } catch (Exception e) {
             e.printStackTrace();
             respObj = RespObj.FAILD;
-            respObj.setErrorMessage("添加解析/答案/回答失败!");
+            respObj.setErrorMessage("添加失败!");
         }
         return JSON.toJSONString(respObj);
     }

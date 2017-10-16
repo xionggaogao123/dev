@@ -26,7 +26,7 @@ public class TestTypeEntry extends BaseDBObject {
     ){
         BasicDBObject dbObject=new BasicDBObject()
                 .append("nam", name)
-                .append("ena",sename)
+                .append("ena", sename)
                 .append("isr", 0);
         setBaseEntry(dbObject);
     }
@@ -40,11 +40,10 @@ public class TestTypeEntry extends BaseDBObject {
         BasicDBObject dbObject=new BasicDBObject()
                 .append(Constant.ID,id)
                 .append("nam", name)
-                .append("ena",sename)
+                .append("ena", sename)
                 .append("isr", 0);
         setBaseEntry(dbObject);
     }
-
 
     public String getName(){
         return getSimpleStringValue("nam");

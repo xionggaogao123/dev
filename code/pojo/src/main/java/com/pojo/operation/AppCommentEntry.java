@@ -13,6 +13,7 @@ import java.util.List;
  * Created by James on 2017/8/25.
  * id                             		id
  description      作业内容       		des
+ title            标题                  tit
  loadTime         作业提交时间          ltm
  status             作业状态            sta  0 已发布    1 定时发布   2 暂不发布
  writeNumber      家长签字数            wnm
@@ -40,6 +41,7 @@ public class AppCommentEntry extends BaseDBObject {
     //添加构造
     public AppCommentEntry(
             String description,
+            String title,
             long loadTime,
             int status,
             int writeNumber,
@@ -57,6 +59,7 @@ public class AppCommentEntry extends BaseDBObject {
     ){
         BasicDBObject dbObject=new BasicDBObject()
                 .append("des",description)
+                .append("tit",title)
                 .append("ltm", loadTime)
                 .append("sta", status)
                 .append("wnm", writeNumber)
@@ -80,6 +83,7 @@ public class AppCommentEntry extends BaseDBObject {
     public AppCommentEntry(
             ObjectId id,
             String description,
+            String title,
             long loadTime,
             int status,
             int writeNumber,
@@ -98,6 +102,7 @@ public class AppCommentEntry extends BaseDBObject {
         BasicDBObject dbObject=new BasicDBObject()
                 .append(Constant.ID,id)
                 .append("des", description)
+                .append("tit", title)
                 .append("ltm", loadTime)
                 .append("sta", status)
                 .append("wnm", writeNumber)
@@ -189,6 +194,14 @@ public class AppCommentEntry extends BaseDBObject {
 
     public void setSubject(String subject){
         setSimpleValue("sub",subject);
+    }
+
+    public String getTitle(){
+        return getSimpleStringValue("tit");
+    }
+
+    public void setTitle(String title){
+        setSimpleValue("tit",title);
     }
     public ObjectId getSubjectId(){
         return getSimpleObjecIDValue("sid");

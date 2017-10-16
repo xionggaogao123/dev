@@ -10,6 +10,9 @@ import com.sys.constants.Constant;
  */
 public class ExamTypeEntry extends BaseDBObject{
 
+    public ExamTypeEntry(){
+
+    }
     public ExamTypeEntry(DBObject dbObject){
         setBaseEntry((BasicDBObject)dbObject);
     }

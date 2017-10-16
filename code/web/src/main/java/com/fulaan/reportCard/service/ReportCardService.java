@@ -3,10 +3,12 @@ package com.fulaan.reportCard.service;
 import com.db.fcommunity.CommunityDao;
 import com.db.fcommunity.NewVersionCommunityBindDao;
 import com.db.reportCard.*;
+import com.db.wrongquestion.ExamTypeDao;
 import com.fulaan.reportCard.dto.GroupExamDetailDTO;
 import com.fulaan.reportCard.dto.GroupExamUserRecordDTO;
 import com.fulaan.reportCard.dto.RecordLevelEnum;
 import com.fulaan.user.service.UserService;
+import com.fulaan.wrongquestion.dto.ExamTypeDTO;
 import com.pojo.fcommunity.CommunityEntry;
 import com.pojo.fcommunity.NewVersionCommunityBindEntry;
 import com.pojo.reportCard.*;
@@ -34,6 +36,8 @@ public class ReportCardService {
     private RecordLevelEvaluateDao recordLevelEvaluateDao=new RecordLevelEvaluateDao();
     private NewVersionCommunityBindDao newVersionCommunityBindDao=new NewVersionCommunityBindDao();
     private CommunityDao communityDao=new CommunityDao();
+
+    private ExamTypeDao examTypeDao=new ExamTypeDao();
 
     private GroupExamUserRecordDao groupExamUserRecordDao = new GroupExamUserRecordDao();
 
@@ -443,6 +447,16 @@ public class ReportCardService {
             }
         }
         return detailDTO;
+    }
+
+
+    public List<ExamTypeDTO> getExamTypeDTOs(){
+        List<ExamTypeDTO> examTypeDTOs=new ArrayList<ExamTypeDTO>();
+        List<ExamTypeEntry> examTypeEntries=examTypeDao.getList();
+        for(ExamTypeEntry examTypeEntry:examTypeEntries){
+            examTypeDTOs.add(new ExamTypeDTO(examTypeEntry));
+        }
+        return examTypeDTOs;
     }
 
 }

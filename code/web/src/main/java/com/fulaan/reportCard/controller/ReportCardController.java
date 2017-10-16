@@ -7,6 +7,7 @@ import com.fulaan.reportCard.dto.ExamGroupUserScoreDTO;
 import com.fulaan.reportCard.dto.GroupExamDetailDTO;
 import com.fulaan.reportCard.dto.GroupExamUserRecordDTO;
 import com.fulaan.reportCard.service.ReportCardService;
+import com.fulaan.wrongquestion.dto.ExamTypeDTO;
 import com.sys.constants.Constant;
 import com.sys.utils.RespObj;
 import io.swagger.annotations.Api;
@@ -289,5 +290,27 @@ public class ReportCardController extends BaseController{
         }
         return respObj;
     }
+
+    @ApiOperation(value = "获取所有的考试类型", httpMethod = "GET", produces = "application/json")
+    @ApiResponses( value = {@ApiResponse(code = 200, message = "保存或编辑成绩列表已完成",response = String.class),
+            @ApiResponse(code = 400, message = "请求中有语法问题，或不能满足请求"),
+            @ApiResponse(code = 500, message = "服务器不能完成请求")})
+    @RequestMapping("/getExamTypeList")
+    @ResponseBody
+    public RespObj getExamTypeList(){
+        RespObj respObj=new RespObj(Constant.FAILD_CODE);
+        try{
+            List<ExamTypeDTO> examTypeDTOs=reportCardService.getExamTypeDTOs();
+            respObj.setCode(Constant.SUCCESS_CODE);
+            respObj.setMessage(examTypeDTOs);
+        }catch (Exception e){
+            e.printStackTrace();
+            respObj.setErrorMessage(e.getMessage());
+        }
+        return respObj;
+    }
+
+
+
 
 }

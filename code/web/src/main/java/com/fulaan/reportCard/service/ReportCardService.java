@@ -356,13 +356,15 @@ public class ReportCardService {
                         }
                     }
                 }
-                double avgScore=totalScore/totalCount;
-                double excellentPercent=(double)excellentCount/(double)totalCount;
-                double qualifyPercent=(double)qualifyCount/(double)totalCount;
-                double unQualifyPercent=(double)unQualifyCount/(double)totalCount;
-                RecordScoreEvaluateEntry entry=new RecordScoreEvaluateEntry(new ObjectId(groupExamDetailId),
-                        excellentPercent, qualifyPercent, unQualifyPercent, avgScore, maxScore, minScore);
-                recordScoreEvaluateDao.saveRecordScoreEvaluateEntry(entry);
+                if(totalCount!=0) {
+                    double avgScore = totalScore / totalCount;
+                    double excellentPercent = (double) excellentCount / (double) totalCount;
+                    double qualifyPercent = (double) qualifyCount / (double) totalCount;
+                    double unQualifyPercent = (double) unQualifyCount / (double) totalCount;
+                    RecordScoreEvaluateEntry entry = new RecordScoreEvaluateEntry(new ObjectId(groupExamDetailId),
+                            excellentPercent, qualifyPercent, unQualifyPercent, avgScore, maxScore, minScore);
+                    recordScoreEvaluateDao.saveRecordScoreEvaluateEntry(entry);
+                }
             }else{
                 int totalCount=0;
                 int aCount=0;
@@ -387,13 +389,15 @@ public class ReportCardService {
                         }
                     }
                 }
-                double aPercent=(double)aCount/(double)totalCount;
-                double bPercent=(double)bCount/(double)totalCount;
-                double cPercent=(double)cCount/(double)totalCount;
-                double dPercent=(double)dCount/(double)totalCount;
-                RecordLevelEvaluateEntry evaluateEntry=new RecordLevelEvaluateEntry(
-                        new ObjectId(groupExamDetailId),aPercent,bPercent,cPercent,dPercent);
-                recordLevelEvaluateDao.saveRecordLevelEvaluate(evaluateEntry);
+                if(totalCount!=0) {
+                    double aPercent = (double) aCount / (double) totalCount;
+                    double bPercent = (double) bCount / (double) totalCount;
+                    double cPercent = (double) cCount / (double) totalCount;
+                    double dPercent = (double) dCount / (double) totalCount;
+                    RecordLevelEvaluateEntry evaluateEntry = new RecordLevelEvaluateEntry(
+                            new ObjectId(groupExamDetailId), aPercent, bPercent, cPercent, dPercent);
+                    recordLevelEvaluateDao.saveRecordLevelEvaluate(evaluateEntry);
+                }
             }
         }
     }

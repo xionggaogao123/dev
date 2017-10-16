@@ -43,6 +43,7 @@ public class AppNoticeDTO {
 
     private int readCount;
     private int unReadCount;
+    private int totalReadCount;
 
 
     public AppNoticeDTO(
@@ -331,5 +332,13 @@ public class AppNoticeDTO {
 
     public void setIsRead(int isRead) {
         this.isRead = isRead;
+    }
+
+    public int getTotalReadCount() {
+        return totalReadCount;
+    }
+
+    public void setTotalReadCount(int totalReadCount) {
+        this.totalReadCount = totalReadCount;
     }
 }

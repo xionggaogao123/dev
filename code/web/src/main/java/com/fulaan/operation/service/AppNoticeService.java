@@ -208,6 +208,7 @@ public class AppNoticeService {
             List<ObjectId> reads=entry.getReaList();
             List<ObjectId> members=memberDao.getAllMemberIds(entry.getGroupId());
             members.remove(userId);
+            dto.setTotalReadCount(members.size());
             members.removeAll(reads);
             dto.setReadCount(reads.size());
             dto.setUnReadCount(members.size());

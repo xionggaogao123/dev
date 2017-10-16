@@ -2,6 +2,8 @@ package com.fulaan.reportCard.controller;
 
 import com.fulaan.annotation.ObjectIdType;
 import com.fulaan.base.BaseController;
+import com.fulaan.reportCard.dto.ExamGroupDTO;
+import com.fulaan.reportCard.dto.ExamGroupUserScoreDTO;
 import com.fulaan.reportCard.dto.GroupExamDetailDTO;
 import com.fulaan.reportCard.dto.GroupExamUserRecordDTO;
 import com.fulaan.reportCard.service.ReportCardService;
@@ -19,6 +21,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -39,9 +42,10 @@ public class ReportCardController extends BaseController{
             @ApiResponse(code = 500, message = "服务器不能完成请求")})
     @RequestMapping("/saveGroupExamDetail")
     @ResponseBody
-    public RespObj saveGroupExamDetail(@RequestBody GroupExamDetailDTO groupExamDetailDTO){
+    public RespObj saveGroupExamDetail(@RequestBody ExamGroupDTO examGroupDTO){
         RespObj respObj=new RespObj(Constant.FAILD_CODE);
         try{
+            GroupExamDetailDTO groupExamDetailDTO=examGroupDTO.buildDTO();
             reportCardService.saveGroupExamDetail(groupExamDetailDTO,getUserId());
             respObj.setCode(Constant.SUCCESS_CODE);
         }catch (Exception e){
@@ -220,9 +224,13 @@ public class ReportCardController extends BaseController{
             @ApiResponse(code = 500, message = "服务器不能完成请求")})
     @RequestMapping("/saveRecordExamScore")
     @ResponseBody
-    public RespObj saveRecordExamScore(@RequestBody List<GroupExamUserRecordDTO> examScoreDTOs, int status){
+    public RespObj saveRecordExamScore(@RequestBody List<ExamGroupUserScoreDTO> examGroupUserScoreDTOs, int status){
         RespObj respObj=new RespObj(Constant.FAILD_CODE);
         try{
+            List<GroupExamUserRecordDTO> examScoreDTOs=new ArrayList<GroupExamUserRecordDTO>();
+            for(ExamGroupUserScoreDTO userScoreDTO:examGroupUserScoreDTOs){
+                examScoreDTOs.add(userScoreDTO.buildDTO());
+            }
             reportCardService.saveRecordExamScore(examScoreDTOs, status);
             respObj.setCode(Constant.SUCCESS_CODE);
         }catch (Exception e){

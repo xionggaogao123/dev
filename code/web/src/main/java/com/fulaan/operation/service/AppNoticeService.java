@@ -292,8 +292,16 @@ public class AppNoticeService {
         return retMap;
     }
 
-    public void pushRead(ObjectId id,ObjectId userId){
-        appNoticeDao.pushReadList(userId,id);
+    public void pushRead(ObjectId id,ObjectId userId)throws Exception{
+        AppNoticeEntry appNoticeEntry=appNoticeDao.getAppNoticeEntry(id);
+        if(null!=appNoticeEntry){
+            List<ObjectId> readList=appNoticeEntry.getReaList();
+            if(!readList.contains(userId)) {
+                appNoticeDao.pushReadList(userId, id);
+            }
+        }else{
+            throw new Exception("传入的id参数有误");
+        }
     }
 
 

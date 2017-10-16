@@ -20,7 +20,9 @@ public class CreateGradeDTO {
     @ApiModelProperty(name="ename",value = "英文标识", required = true)
     private String ename;
     @ApiModelProperty(name="subjectList",value = "包含学科list", required = true)
-    private List<String> subjectList;
+    private List<String> subjectList = new ArrayList<String>();
+
+    private List<SubjectClassDTO> subjectClassDTOs = new ArrayList<SubjectClassDTO>();
 
 
 
@@ -80,6 +82,13 @@ public class CreateGradeDTO {
 
     }
 
+    public List<SubjectClassDTO> getSubjectClassDTOs() {
+        return subjectClassDTOs;
+    }
+
+    public void setSubjectClassDTOs(List<SubjectClassDTO> subjectClassDTOs) {
+        this.subjectClassDTOs = subjectClassDTOs;
+    }
 
     public List<String> getSubjectList() {
         return subjectList;

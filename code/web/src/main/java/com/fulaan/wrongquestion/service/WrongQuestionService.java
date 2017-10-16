@@ -145,6 +145,7 @@ public class WrongQuestionService {
         }
         List<CreateGradeEntry> clist = new ArrayList<CreateGradeEntry>();
         CreateGradeEntry en3 = createGradeDao.getEntryByType(entry.getGradeType());
+
         clist.add(en3);
         CreateGradeEntry en4 = createGradeDao.getEntryByType(entry.getGradeType()+1);
         clist.add(en4);
@@ -159,6 +160,9 @@ public class WrongQuestionService {
         List<String> stringList =new ArrayList<String>();
         String sename = mlist.get(0).getEname();
         if(mlist.size()>0){
+            for(CreateGradeDTO dto3 : mlist){
+                stringList.add(dto3.getId());
+            }
             stringList =  mlist.get(0).getSubjectList();
         }
         List<ObjectId> objectIdList = new ArrayList<ObjectId>();
@@ -176,7 +180,7 @@ public class WrongQuestionService {
 
 
         //加载问题类型
-        List<QuestionTypeDTO> dtoList1 = new ArrayList<QuestionTypeDTO>();
+      /*  List<QuestionTypeDTO> dtoList1 = new ArrayList<QuestionTypeDTO>();
         if(dtoList.size()>0){
             ObjectId subjectId = new ObjectId(dtoList.get(0).getId());
             List<QuestionTypeEntry> entries1 = questionTypeDao.getList(subjectId,sename);
@@ -187,10 +191,10 @@ public class WrongQuestionService {
             }
 
         }
-        map.put("questionTypeList",dtoList1);
+        map.put("questionTypeList",dtoList1);*/
 
         //加载测试类型
-        List<TestTypeDTO> dtoList2 = new ArrayList<TestTypeDTO>();
+       /* List<TestTypeDTO> dtoList2 = new ArrayList<TestTypeDTO>();
         if(dtoList.size()>0){
             List<TestTypeEntry> entries2 = testTypeDao.getList(sename);
             if(entries2.size()>0){
@@ -200,7 +204,7 @@ public class WrongQuestionService {
             }
 
         }
-        map.put("TestTypeList",dtoList2);
+        map.put("TestTypeList",dtoList2);*/
         return map;
     }
 

@@ -1,7 +1,6 @@
 package com.fulaan.wrongquestion.dto;
 
 import com.pojo.reportCard.ExamTypeEntry;
-import com.pojo.wrongquestion.TestTypeEntry;
 
 /**
  * Created by James on 2017/10/13.
@@ -14,10 +13,10 @@ public class ExamTypeDTO {
     public ExamTypeDTO(){
 
     }
-    public ExamTypeDTO(TestTypeEntry e){
+    public ExamTypeDTO(ExamTypeEntry e){
         if(e!=null){
             this.id = e.getID()==null?"":e.getID().toString();
-            this.examTypeName = e.getName();
+            this.examTypeName = e.getExamTypeName();
         }else{
             new ExamTypeDTO();
         }

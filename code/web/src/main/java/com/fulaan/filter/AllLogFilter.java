@@ -76,6 +76,10 @@ public class AllLogFilter implements Filter {
         }
 
         long after = System.currentTimeMillis();
+        String str = "";
+        if((after - before)>1000){
+            str="$132";
+        }
         // 记录日志
         //context.log("过滤结束");
         // 再次记录日志
@@ -87,7 +91,8 @@ public class AllLogFilter implements Filter {
                 + "   %p - " + hrequest.getServletPath()
                 + "   %w - " + hrequest.getRequestURI()
                 + "   %t - " + (after - before)+"ms"
-                + "   %l - " + canList);
+                + "   %l - " + canList
+                + str);
         //"%a - " + ipconfig + "+++"
         //"   %c - " + Arrays.toString(cookies) + "+++"
         //"   %p - " + hrequest.getServletPath() + "+++"

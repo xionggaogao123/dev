@@ -35,6 +35,7 @@ public class AppNoticeEntry extends BaseDBObject{
             int watchPermission,
             List<VideoEntry> videoList,
             List<AttachmentEntry> attachmentEntries,
+            List<AttachmentEntry> voiceList,
             String groupName,
             String userName,
             ObjectId subjectId,
@@ -55,10 +56,25 @@ public class AppNoticeEntry extends BaseDBObject{
                .append("cmId",communityId)
                .append("ats",MongoUtils.fetchDBObjectList(attachmentEntries))
                .append("vl",MongoUtils.fetchDBObjectList(videoList))
+               .append("vt", MongoUtils.fetchDBObjectList(voiceList))
                .append("il",MongoUtils.fetchDBObjectList(imageList))
                .append("sid",subjectId)
                .append("ir",Constant.ZERO);
         setBaseEntry(basicDBObject);
+    }
+
+    public void setVoiceList(List<AttachmentEntry> voiceList){
+        setSimpleValue("vt",MongoUtils.fetchDBObjectList(voiceList));
+    }
+
+    public List<AttachmentEntry> getVoiceList() {
+        BasicDBList list = getDbList("vt");
+        List<AttachmentEntry> voiceList = new ArrayList<AttachmentEntry>();
+        for (Object dbo : list) {
+            BasicDBObject dbObject = (BasicDBObject) dbo;
+            voiceList.add(new AttachmentEntry(dbObject));
+        }
+        return voiceList;
     }
 
     public ObjectId getCommunityId(){

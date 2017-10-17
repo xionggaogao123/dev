@@ -38,7 +38,6 @@ public class GroupExamDetailDTO {
     private String childUserName;
     private double score;
     private int scoreLevel;
-    private String childrenName;
     private int isSign;
     private double avgScore;
     private double groupMaxScore;
@@ -264,14 +263,6 @@ public class GroupExamDetailDTO {
 
     public void setScoreLevel(int scoreLevel) {
         this.scoreLevel = scoreLevel;
-    }
-
-    public String getChildrenName() {
-        return childrenName;
-    }
-
-    public void setChildrenName(String childrenName) {
-        this.childrenName = childrenName;
     }
 
     public int getIsSign() {

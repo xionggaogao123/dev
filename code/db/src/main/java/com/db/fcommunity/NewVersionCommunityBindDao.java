@@ -136,7 +136,7 @@ public class NewVersionCommunityBindDao extends BaseDao{
                 .append("muid",mainUserId);
         List<DBObject> dbObjectList=find(MongoFacroty.getAppDB(), Constant.COLLECTION_NEW_VERSION_COMMUNITY_BIND,query,
                 Constant.FIELDS);
-        if(null!=dbObjectList&&dbObjectList.isEmpty()){
+        if(null!=dbObjectList&&!dbObjectList.isEmpty()){
             for(DBObject dbObject:dbObjectList){
                 entries.add(new NewVersionCommunityBindEntry(dbObject));
             }

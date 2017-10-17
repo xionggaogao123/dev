@@ -30,6 +30,7 @@ public class AppNoticeDTO {
     private List<VideoDTO> videoList=new ArrayList<VideoDTO>();
     private List<Attachement> imageList=new ArrayList<Attachement>();
     private List<Attachement> attachements=new ArrayList<Attachement>();
+    private List<Attachement> voiceList=new ArrayList<Attachement>();
     private List<GroupOfCommunityDTO> groupOfCommunityDTOs=new ArrayList<GroupOfCommunityDTO>();
     private int commentCount;
     private String groupName;
@@ -57,6 +58,7 @@ public class AppNoticeDTO {
                         List<VideoDTO> videoList,
                         List<Attachement> imageList,
                         List<Attachement> attachements,
+                        List<Attachement> voiceList,
                         String groupName,
                         String userName){
         this.subjectId=subjectId;
@@ -69,6 +71,7 @@ public class AppNoticeDTO {
         this.videoList=videoList;
         this.imageList=imageList;
         this.attachements=attachements;
+        this.voiceList=voiceList;
         this.groupName=groupName;
         this.userName=userName;
     }
@@ -118,8 +121,18 @@ public class AppNoticeDTO {
                         uuId));
             }
         }
+
+        List<AttachmentEntry> voiceEntries=new ArrayList<AttachmentEntry>();
+        if(voiceList.size()>0){
+            for(Attachement voice:voiceList){
+                voiceEntries.add(new AttachmentEntry(voice.getUrl(), voice.getFlnm(),
+                        System.currentTimeMillis(),
+                        uuId));
+            }
+        }
+
         AppNoticeEntry entry=new AppNoticeEntry(uuId, subject, title, content,
-                gId, watchPermission, videoEntries, attachmentEntries,groupName,userName,subId,cmId,imageEntries);
+                gId, watchPermission, videoEntries, attachmentEntries,voiceEntries,groupName,userName,subId,cmId,imageEntries);
         return entry;
     }
 
@@ -146,8 +159,20 @@ public class AppNoticeDTO {
         for(AttachmentEntry imageItem:images){
             imageList.add(new Attachement(imageItem));
         }
+        List<AttachmentEntry> voiceEntries=entry.getVoiceList();
+        for(AttachmentEntry voice:voiceEntries){
+            voiceList.add(new Attachement(voice));
+        }
         this.commentCount=entry.getCommentCount();
         this.time= DateTimeUtils.convert(entry.getSubmitTime(),DateTimeUtils.DATE_YYYY_MM_DD_HH_MM_SS_H);
+    }
+
+    public List<Attachement> getVoiceList() {
+        return voiceList;
+    }
+
+    public void setVoiceList(List<Attachement> voiceList) {
+        this.voiceList = voiceList;
     }
 
     public List<GroupOfCommunityDTO> getGroupOfCommunityDTOs() {

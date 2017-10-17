@@ -37,7 +37,7 @@ public class GroupExamDetailDao extends BaseDao{
 
     public void updateSignCount(ObjectId groupExamDetailId,int signCount){
         BasicDBObject query=new BasicDBObject(Constant.ID,groupExamDetailId);
-        BasicDBObject updateValue=new BasicDBObject(Constant.MONGO_SET,new BasicDBObject("sec",signCount));
+        BasicDBObject updateValue=new BasicDBObject(Constant.MONGO_SET,new BasicDBObject("sc",signCount));
         update(MongoFacroty.getAppDB(), Constant.COLLECTION_REPORT_CARD_GROUP_EXAM_DETAIL,
                 query,updateValue);
     }

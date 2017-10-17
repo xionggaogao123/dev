@@ -118,6 +118,7 @@ public class AppNoticeService {
                     dto.getWatchPermission(),
                     dto.getVideoList(),
                     dto.getImageList(),
+                    dto.getVoiceList(),
                     dto.getAttachements(),
                     communityDTO.getGroupName(),
                     userEntry.getUserName());

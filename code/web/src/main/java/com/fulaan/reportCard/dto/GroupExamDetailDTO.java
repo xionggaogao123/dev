@@ -31,6 +31,7 @@ public class GroupExamDetailDTO {
     private String userName;
     private String subjectName;
     private String groupName;
+    private String examTypeName;
 
     //我的孩子的分值
     private String childUserId;
@@ -103,6 +104,14 @@ public class GroupExamDetailDTO {
         this.signedCount=entry.getSignedCount();
         this.status=entry.getStatus();
         this.examStrTime= DateTimeUtils.convert(entry.getExamTime(),DateTimeUtils.DATE_YYYY_MM_DD);
+    }
+
+    public String getExamTypeName() {
+        return examTypeName;
+    }
+
+    public void setExamTypeName(String examTypeName) {
+        this.examTypeName = examTypeName;
     }
 
     public int getStatus() {

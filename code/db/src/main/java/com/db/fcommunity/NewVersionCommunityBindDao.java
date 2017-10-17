@@ -105,6 +105,26 @@ public class NewVersionCommunityBindDao extends BaseDao{
     }
 
 
+    public Map<ObjectId,NewVersionCommunityBindEntry> getUserEntryMapByCondition(
+         ObjectId communityId,List<ObjectId> userIds
+    ){
+        Map<ObjectId,NewVersionCommunityBindEntry>
+                bindUserMap=new HashMap<ObjectId, NewVersionCommunityBindEntry>();
+        BasicDBObject query=new BasicDBObject()
+                .append("cid",communityId)
+                .append("uid",new BasicDBObject(Constant.MONGO_IN,userIds))
+                .append("ir", Constant.ZERO);
+        List<DBObject> dbObjectList=find(MongoFacroty.getAppDB(), Constant.COLLECTION_NEW_VERSION_COMMUNITY_BIND,query,Constant.FIELDS);
+        if(null!=dbObjectList&&!dbObjectList.isEmpty()){
+            for(DBObject dbObject:dbObjectList){
+                NewVersionCommunityBindEntry
+                        entry=new NewVersionCommunityBindEntry(dbObject);
+                bindUserMap.put(entry.getUserId(),entry);
+            }
+        }
+        return bindUserMap;
+    }
+
     /**
      * 获取家长绑定的社区
      * @return

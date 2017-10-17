@@ -54,8 +54,7 @@ public class GroupExamDetailDao extends BaseDao{
             int page,int pageSize){
         List<GroupExamDetailEntry> entries=new ArrayList<GroupExamDetailEntry>();
         BasicDBObject query=new BasicDBObject()
-                .append("uid",userId)
-                .append("st", Constant.ZERO);
+                .append("uid",userId);
         if(null!=subjectId){
             query.append("sid",subjectId);
         }
@@ -64,8 +63,8 @@ public class GroupExamDetailDao extends BaseDao{
         }
         List<Integer> statuses=new ArrayList<Integer>();
         statuses.add(Constant.ZERO);
-        if(status!=-1){
-            statuses.add(status);
+        if(status!=0){
+            statuses.add(Constant.TWO);
         }
         query.append("st",new BasicDBObject(Constant.MONGO_IN,statuses));
         List<DBObject> dbObjectList=find(MongoFacroty.getAppDB(), Constant.COLLECTION_REPORT_CARD_GROUP_EXAM_DETAIL,

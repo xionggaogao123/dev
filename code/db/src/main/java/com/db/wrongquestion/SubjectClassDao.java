@@ -27,6 +27,16 @@ public class SubjectClassDao extends BaseDao {
         return e.getID();
     }
 
+    public SubjectClassEntry getEntry(ObjectId id){
+        BasicDBObject query=new BasicDBObject(Constant.ID,id);
+        DBObject dbObject=findOne(MongoFacroty.getAppDB(), Constant.COLLECTION_SUBJECT_CLASS,query,Constant.FIELDS);
+        if(null!=dbObject){
+            return new SubjectClassEntry((BasicDBObject) dbObject);
+        }else {
+            return null;
+        }
+    }
+
     /**
      * 查询所有的科目列表
      */

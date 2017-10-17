@@ -4,16 +4,19 @@ import com.db.fcommunity.CommunityDao;
 import com.db.fcommunity.NewVersionCommunityBindDao;
 import com.db.reportCard.*;
 import com.db.wrongquestion.ExamTypeDao;
+import com.db.wrongquestion.SubjectClassDao;
 import com.fulaan.reportCard.dto.ExamGroupUserScoreDTO;
 import com.fulaan.reportCard.dto.GroupExamDetailDTO;
 import com.fulaan.reportCard.dto.GroupExamUserRecordDTO;
 import com.fulaan.reportCard.dto.RecordLevelEnum;
 import com.fulaan.user.service.UserService;
 import com.fulaan.wrongquestion.dto.ExamTypeDTO;
+import com.fulaan.wrongquestion.dto.SubjectClassDTO;
 import com.pojo.fcommunity.CommunityEntry;
 import com.pojo.fcommunity.NewVersionCommunityBindEntry;
 import com.pojo.reportCard.*;
 import com.pojo.user.UserEntry;
+import com.pojo.wrongquestion.SubjectClassEntry;
 import com.sys.constants.Constant;
 import org.apache.commons.lang3.StringUtils;
 import org.bson.types.ObjectId;
@@ -42,6 +45,10 @@ public class ReportCardService {
 
     private GroupExamUserRecordDao groupExamUserRecordDao = new GroupExamUserRecordDao();
 
+    private SubjectClassDao subjectClassDao=new SubjectClassDao();
+
+
+
 
     public static void main(String[] args)throws Exception{
         ReportCardService reportCardService=new ReportCardService();
@@ -61,21 +68,41 @@ public class ReportCardService {
         reportCardService.saveGroupExamDetail(detailDTO,userId);
          **/
         /**-----------添加学生成绩---------**/
+//        /**
         List<GroupExamUserRecordDTO> examGroupUserScoreDTOs=new ArrayList<GroupExamUserRecordDTO>();
         GroupExamUserRecordDTO dto1=new GroupExamUserRecordDTO();
-        dto1.setId("59e44b34eeecc02c4c920e23");
-        dto1.setScore(90);
+        dto1.setId("59e5669b2675642a3c1f736d");
+        dto1.setScore(85);
         dto1.setScoreLevel(-1);
-        dto1.setGroupExamDetailId("59e44b34eeecc02c4c920e22");
+        dto1.setGroupExamDetailId("59e5669b2675642a3c1f736c");
         examGroupUserScoreDTOs.add(dto1);
         GroupExamUserRecordDTO dto2=new GroupExamUserRecordDTO();
-        dto2.setId("59e44b34eeecc02c4c920e24");
+        dto2.setId("59e5669b2675642a3c1f736e");
         dto2.setScore(75);
         dto2.setScoreLevel(-1);
-        dto2.setGroupExamDetailId("59e44b34eeecc02c4c920e22");
+        dto2.setGroupExamDetailId("59e5669b2675642a3c1f736c");
         examGroupUserScoreDTOs.add(dto2);
+        GroupExamUserRecordDTO dto3=new GroupExamUserRecordDTO();
+        dto3.setId("59e5669b2675642a3c1f736f");
+        dto3.setScore(55);
+        dto3.setScoreLevel(-1);
+        dto3.setGroupExamDetailId("59e5669b2675642a3c1f736c");
+        examGroupUserScoreDTOs.add(dto3);
+        GroupExamUserRecordDTO dto4=new GroupExamUserRecordDTO();
+        dto4.setId("59e5669b2675642a3c1f7370");
+        dto4.setScore(40);
+        dto4.setScoreLevel(-1);
+        dto4.setGroupExamDetailId("59e5669b2675642a3c1f736c");
+        examGroupUserScoreDTOs.add(dto4);
+        GroupExamUserRecordDTO dto5=new GroupExamUserRecordDTO();
+        dto5.setId("59e5669b2675642a3c1f7371");
+        dto5.setScore(60);
+        dto5.setScoreLevel(-1);
+        dto5.setGroupExamDetailId("59e5669b2675642a3c1f736c");
+        examGroupUserScoreDTOs.add(dto5);
         int status=2;
         reportCardService.saveRecordExamScore(examGroupUserScoreDTOs,status);
+//         **/
     }
 
 
@@ -112,21 +139,75 @@ public class ReportCardService {
 
     public List<GroupExamUserRecordDTO> searchRecordStudentScores(ObjectId groupExamDetailId){
         List<GroupExamUserRecordDTO> recordExamScoreDTOs=new ArrayList<GroupExamUserRecordDTO>();
-        List<GroupExamUserRecordEntry> recordEntries=groupExamUserRecordDao.getExamUserRecordEntries(groupExamDetailId);
+        final List<GroupExamUserRecordEntry> recordEntries=groupExamUserRecordDao.getExamUserRecordEntries(groupExamDetailId);
         Set<ObjectId> userIds=new HashSet<ObjectId>();
         for(GroupExamUserRecordEntry recordEntry:recordEntries){
             userIds.add(recordEntry.getUserId());
         }
-        Map<ObjectId,UserEntry> userEntryMap=userService.getUserEntryMap(userIds,Constant.FIELDS);
+        Map<ObjectId,UserEntry> userEntryMap=new HashMap<ObjectId, UserEntry>();
+        Map<ObjectId,NewVersionCommunityBindEntry> bindUserMap=new HashMap<ObjectId, NewVersionCommunityBindEntry>();
+        if(userIds.size()>0) {
+            userEntryMap=userService.getUserEntryMap(userIds, Constant.FIELDS);
+            bindUserMap=newVersionCommunityBindDao.getUserEntryMapByCondition(
+                    recordEntries.get(0).getCommunityId(),new ArrayList<ObjectId>(userIds));
+        }
+        boolean flag=false;
         for(GroupExamUserRecordEntry recordEntry:recordEntries){
             GroupExamUserRecordDTO userRecordDTO=new GroupExamUserRecordDTO(recordEntry);
-            UserEntry userEntry=userEntryMap.get(recordEntry.getUserId());
-            if(null!=userEntry){
-                userRecordDTO.setUserName(userEntry.getUserName());
+            NewVersionCommunityBindEntry
+                    entry=bindUserMap.get(recordEntry.getUserId());
+            if(null==entry) {
+                flag=true;
+            }else{
+                userRecordDTO.setUserNumber(entry.getNumber());
+                if(StringUtils.isNotBlank(entry.getThirdName())){
+                    userRecordDTO.setUserName(entry.getThirdName());
+                }else{
+                    flag=true;
+                }
+            }
+            if(flag){
+                UserEntry userEntry = userEntryMap.get(recordEntry.getUserId());
+                if (null != userEntry) {
+                    userRecordDTO.setUserName(
+                            StringUtils.isNotBlank(userEntry.getNickName())?userEntry.getNickName():userEntry.getUserName());
+
+                }
+                flag=false;
             }
             recordExamScoreDTOs.add(userRecordDTO);
         }
+        Collections.sort(recordExamScoreDTOs, new Comparator<GroupExamUserRecordDTO>() {
+            @Override
+            public int compare(GroupExamUserRecordDTO o1, GroupExamUserRecordDTO o2) {
+                int result=getCompareResult(o1.getUserNumber(),o2.getUserNumber());
+                if(result==0){
+                    result=getCompareResult(o1.getUserName(),o2.getUserName());
+                }
+                return result;
+            }
+        });
         return recordExamScoreDTOs;
+    }
+
+
+    public int getCompareResult(String itemOne, String itemTwo){
+        int result=0;
+        if(itemOne.length()>itemTwo.length()){
+            result=-1;
+        }else if(itemOne.length()<itemTwo.length()){
+            result=1;
+        }else{
+            int length=itemOne.length();
+            for(int i=0;i<length;i++){
+                if(itemOne.charAt(i)>itemTwo.charAt(i)){
+                    result=-1;
+                }else if(itemOne.charAt(i)<itemTwo.charAt(i)){
+                    result=1;
+                }
+            }
+        }
+        return result;
     }
 
 
@@ -241,16 +322,23 @@ public class ReportCardService {
                 suId,examTypeId,status,userId,
                 page,pageSize);
         Set<ObjectId> communityIds = new HashSet<ObjectId>();
+        Set<ObjectId> examTypeIds=new HashSet<ObjectId>();
         for(GroupExamDetailEntry examDetailEntry:entries){
             communityIds.add(examDetailEntry.getCommunityId());
+            examTypeIds.add(examDetailEntry.getExamType());
         }
         Map<ObjectId, CommunityEntry> communityEntryMap = communityDao.findMapInfo(new ArrayList<ObjectId>(communityIds));
+        Map<ObjectId,ExamTypeEntry> examTypeEntryMap=examTypeDao.getExamTypeEntryMap(new ArrayList<ObjectId>(examTypeIds));
         for(GroupExamDetailEntry examDetailEntry:entries){
             GroupExamDetailDTO detailDTO=new GroupExamDetailDTO(examDetailEntry);
             detailDTO.setUnSignCount(detailDTO.getSignCount()-detailDTO.getSignedCount());
             CommunityEntry communityEntry=communityEntryMap.get(examDetailEntry.getCommunityId());
             if (null!=communityEntry){
                 detailDTO.setGroupName(communityEntry.getCommunityName());
+            }
+            ExamTypeEntry examTypeEntry=examTypeEntryMap.get(examDetailEntry.getExamType());
+            if(null!=examTypeEntry){
+                detailDTO.setExamTypeName(examTypeEntry.getExamTypeName());
             }
             if(examDetailEntry.getRecordScoreType()==Constant.ONE){
                 RecordScoreEvaluateEntry evaluateEntry=recordScoreEvaluateDao.getEntryById(examDetailEntry.getID());
@@ -464,6 +552,22 @@ public class ReportCardService {
         GroupExamDetailEntry detailEntry=groupExamDetailDao.getGroupExamDetailEntry(groupExamDetailId);
         if(null!=detailEntry){
             detailDTO=new GroupExamDetailDTO(detailEntry);
+            SubjectClassEntry subjectClassEntry=subjectClassDao.getEntry(detailEntry.getSubjectId());
+            if(null!=subjectClassEntry){
+                detailDTO.setSubjectName(subjectClassEntry.getName());
+            }
+            UserEntry userEntry=userService.findById(detailEntry.getUserId());
+            if(null!=userEntry){
+                detailDTO.setUserName(StringUtils.isNotBlank(userEntry.getNickName())?userEntry.getNickName():userEntry.getUserName());
+            }
+            CommunityEntry communityEntry=communityDao.findByObjectId(detailEntry.getCommunityId());
+            if(null!=communityEntry){
+                detailDTO.setGroupName(communityEntry.getCommunityName());
+            }
+            ExamTypeEntry examTypeEntry=examTypeDao.getEntry(detailEntry.getExamType());
+            if(null!=examTypeEntry){
+                detailDTO.setExamTypeName(examTypeEntry.getExamTypeName());
+            }
             if(detailEntry.getRecordScoreType()==Constant.ONE){
                 RecordScoreEvaluateEntry evaluateEntry=recordScoreEvaluateDao.getEntryById(groupExamDetailId);
                 if(null!=evaluateEntry){

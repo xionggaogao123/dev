@@ -118,6 +118,25 @@ public class AppOperationDao extends BaseDao {
         return entryList;
     }
 
+    public List<AppOperationEntry> getSecondListByParentId(ObjectId parentId,int page,int pageSize) {
+        BasicDBObject query = new BasicDBObject()
+                .append("pid",parentId)
+                .append("lev",Constant.TWO)//二级
+                .append("isr", 0); // 未删除
+        List<DBObject> dbList =
+                find(MongoFacroty.getAppDB(),
+                        Constant.COLLECTION_APP_OPERATION,
+                        query, Constant.FIELDS,
+                        Constant.MONGO_SORTBY_DESC, (page - 1) * pageSize, pageSize);
+        List<AppOperationEntry> entryList = new ArrayList<AppOperationEntry>();
+        if (dbList != null && !dbList.isEmpty()) {
+            for (DBObject obj : dbList) {
+                entryList.add(new AppOperationEntry((BasicDBObject) obj));
+            }
+        }
+        return entryList;
+    }
+
     /**
      * 查询作业所有回复的数量
      * @param
@@ -126,6 +145,7 @@ public class AppOperationDao extends BaseDao {
     public int getEntryCount(ObjectId parentId) {
         BasicDBObject query = new BasicDBObject()
                 .append("pid",parentId)
+                .append("lev", Constant.TWO)//二级
                 .append("isr", 0); // 未删除
         int count =
                 count(MongoFacroty.getAppDB(),

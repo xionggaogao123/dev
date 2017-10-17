@@ -36,6 +36,19 @@
         <dispatcher>FORWARD</dispatcher>
     </filter-mapping>
     <filter>
+        <!-- Filter 的名字 -->
+        <filter-name>AllLogFilter</filter-name>
+        <!-- Filter 的实现类 -->
+        <filter-class> com.fulaan.filter.AllLogFilter</filter-class>
+    </filter>
+    <!-- 定义Filter 拦截地址 -->
+    <filter-mapping>
+        <!-- Filter 的名字 -->
+        <filter-name>AllLogFilter</filter-name>
+        <!-- Filter 负责拦截的URL -->
+        <url-pattern>*.do</url-pattern>
+    </filter-mapping>
+    <filter>
         <filter-name>rewriter</filter-name>
         <filter-class>com.fulaan.filter.ReWriteFilter</filter-class>
         <async-supported>true</async-supported>

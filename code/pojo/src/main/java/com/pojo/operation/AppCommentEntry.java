@@ -1,10 +1,15 @@
 package com.pojo.operation;
 
+import com.mongodb.BasicDBList;
 import com.mongodb.BasicDBObject;
 import com.pojo.base.BaseDBObject;
+import com.pojo.fcommunity.AttachmentEntry;
+import com.pojo.fcommunity.VideoEntry;
+import com.pojo.utils.MongoUtils;
 import com.sys.constants.Constant;
 import org.bson.types.ObjectId;
 
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
@@ -15,12 +20,15 @@ import java.util.List;
  description      作业内容       		des
  title            标题                  tit
  loadTime         作业提交时间          ltm
- status             作业状态            sta  0 已发布    1 定时发布   2 暂不发布
+ status           作业状态              sta  0 已发布    1 定时发布   2 暂不发布
  writeNumber      家长签字数            wnm
  talkNumber       家长讨论数            tnm
  loadNumber       学生提交数            lnm
  questionNumber   学生提问数            qnm
- imageUrl         图片           		img
+ List<VideoEntry> videoList,                    vl//视频
+ List<AttachmentEntry> attachmentEntries,       ats//文件
+ List<AttachmentEntry> imageList                il//图片
+ List<AttachmentEntry> voiceList                il//语音
  subject          学科标签         	    sub
  subjectId        学科id                sid
  adminId          发布人id              aid
@@ -48,7 +56,10 @@ public class AppCommentEntry extends BaseDBObject {
             int talkNumber,
             int loadNumber,
             int questionNumber,
-            List<String> imageUrl,
+            List<AttachmentEntry> imageList,
+            List<AttachmentEntry> voiceList,
+            List<VideoEntry> videoList,
+            List<AttachmentEntry> attachmentEntries,
             String subject,
             ObjectId subjectId,
             ObjectId adminId,
@@ -59,15 +70,18 @@ public class AppCommentEntry extends BaseDBObject {
     ){
         BasicDBObject dbObject=new BasicDBObject()
                 .append("des",description)
-                .append("tit",title)
+                .append("tit", title)
                 .append("ltm", loadTime)
                 .append("sta", status)
                 .append("wnm", writeNumber)
                 .append("tnm",talkNumber)
                 .append("lnm",loadNumber)
                 .append("qnm",questionNumber)
-                .append("img", imageUrl)
-                .append("sub",subject)
+                .append("ats", MongoUtils.fetchDBObjectList(attachmentEntries))
+                .append("vt", MongoUtils.fetchDBObjectList(voiceList))
+                .append("vl", MongoUtils.fetchDBObjectList(videoList))
+                .append("il", MongoUtils.fetchDBObjectList(imageList))
+                .append("sub", subject)
                 .append("sid",subjectId)
                 .append("aid",adminId)
                 .append("rec", recipientName)
@@ -90,7 +104,10 @@ public class AppCommentEntry extends BaseDBObject {
             int talkNumber,
             int loadNumber,
             int questionNumber,
-            List<String> imageUrl,
+            List<AttachmentEntry> imageList,
+            List<AttachmentEntry> voiceList,
+            List<VideoEntry> videoList,
+            List<AttachmentEntry> attachmentEntries,
             String subject,
             ObjectId subjectId,
             ObjectId adminId,
@@ -109,7 +126,10 @@ public class AppCommentEntry extends BaseDBObject {
                 .append("tnm",talkNumber)
                 .append("lnm", loadNumber)
                 .append("qnm",questionNumber)
-                .append("img", imageUrl)
+                .append("ats", MongoUtils.fetchDBObjectList(attachmentEntries))
+                .append("vt", MongoUtils.fetchDBObjectList(voiceList))
+                .append("vl", MongoUtils.fetchDBObjectList(videoList))
+                .append("il", MongoUtils.fetchDBObjectList(imageList))
                 .append("sub",subject)
                 .append("sid",subjectId)
                 .append("aid", adminId)
@@ -180,13 +200,60 @@ public class AppCommentEntry extends BaseDBObject {
         setSimpleValue("qnm",questionNumber);
     }
 
-    public void se(List<String> imageUrl){
-        setSimpleValue("img",imageUrl);
+    public void setVoiceList(List<AttachmentEntry> voiceList){
+        setSimpleValue("vt",MongoUtils.fetchDBObjectList(voiceList));
     }
-    public List<String> getImageUrl(){
-        @SuppressWarnings("rawtypes")
-        List imageUrl =(List)getSimpleObjectValue("img");
-        return imageUrl;
+
+    public List<AttachmentEntry> getVoiceList() {
+        BasicDBList list = getDbList("vt");
+        List<AttachmentEntry> voiceList = new ArrayList<AttachmentEntry>();
+        for (Object dbo : list) {
+            BasicDBObject dbObject = (BasicDBObject) dbo;
+            voiceList.add(new AttachmentEntry(dbObject));
+        }
+        return voiceList;
+    }
+    public void setAttachmentEntries(List<AttachmentEntry> attachmentEntries){
+        setSimpleValue("ats",MongoUtils.fetchDBObjectList(attachmentEntries));
+    }
+
+    public List<AttachmentEntry> getAttachmentEntries() {
+        BasicDBList list = getDbList("ats");
+        List<AttachmentEntry> attachmentEntries = new ArrayList<AttachmentEntry>();
+        for (Object dbo : list) {
+            BasicDBObject dbObject = (BasicDBObject) dbo;
+            attachmentEntries.add(new AttachmentEntry(dbObject));
+        }
+        return attachmentEntries;
+    }
+
+
+    public void setImageList(List<AttachmentEntry> imageList){
+        setSimpleValue("il",MongoUtils.fetchDBObjectList(imageList));
+    }
+
+    public List<AttachmentEntry> getImageList() {
+        BasicDBList list = getDbList("il");
+        List<AttachmentEntry> imageEntries = new ArrayList<AttachmentEntry>();
+        for (Object dbo : list) {
+            BasicDBObject dbObject = (BasicDBObject) dbo;
+            imageEntries.add(new AttachmentEntry(dbObject));
+        }
+        return imageEntries;
+    }
+
+    public void setVideoList(List<VideoEntry> videoList){
+        setSimpleValue("vl",MongoUtils.fetchDBObjectList(videoList));
+    }
+
+    public List<VideoEntry> getVideoList() {
+        BasicDBList list = getDbList("vl");
+        List<VideoEntry> videoEntries = new ArrayList<VideoEntry>();
+        for (Object dbo : list) {
+            BasicDBObject dbObject = (BasicDBObject) dbo;
+            videoEntries.add(new VideoEntry(dbObject));
+        }
+        return videoEntries;
     }
     public String getSubject(){
         return getSimpleStringValue("sub");

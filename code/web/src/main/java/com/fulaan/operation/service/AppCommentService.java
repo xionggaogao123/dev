@@ -73,7 +73,7 @@ public class AppCommentService {
         int month = cal.get(Calendar.MONTH)+ 1;
         dto.setMonth(month);
         long zero = 0l;
-        if(dto.getDateTime() ==null && dto.getDateTime()==""){
+        if(dto.getDateTime() ==null || dto.getDateTime().equals("")){
             //获得当前时间
             long current=System.currentTimeMillis();
             //获得时间批次
@@ -82,6 +82,7 @@ public class AppCommentService {
             zero = DateTimeUtils.getStrToLongTime(dto.getDateTime(), "yyyy-MM-dd HH:mm");
         }
         dto.setDateTime("");
+
         AppCommentEntry en = dto.buildAddEntry();
         en.setDateTime(zero);
         List<CommunityDTO> communityDTOList = communityService.getCommunitys(new ObjectId(dto.getAdminId()), 1, 100);
@@ -345,9 +346,9 @@ public class AppCommentService {
         //获得绑定关系(是否存在）
         List<NewVersionBindRelationEntry> nlist = newVersionBindRelationDao.getEntriesByMainUserId(userId);
         if(nlist.size() >0){
-            map2.put("isShow",1);
+            map2.put("isShow",1);//签到展示
         }else{
-            map2.put("isShow",2);
+            map2.put("isShow",2);//非家长
         }
         /*if(nlist.size()>0){
             for(NewVersionBindRelationEntry entry : nlist){
@@ -391,9 +392,9 @@ public class AppCommentService {
         }
         List<ObjectId> mlist = this.getMyRoleList(userId);
         if(mlist != null && mlist.size()>0){
-            map2.put("isTeacher",1);
+            map2.put("isTeacher",1);//是老师
         }else{
-            map2.put("isTeacher",2);
+            map2.put("isTeacher",2);//非老师
         }
         map2.put("list",dtos);
         Map<String,Object> map3 = this.isSign(userId, dateTime);
@@ -567,7 +568,21 @@ public class AppCommentService {
         return map2;
     }
 
-
+    //加载二级评论（分页）
+    public Map<String,Object> getSecondList(ObjectId parentId,int page,int pageSize){
+        Map<String,Object> map = new HashMap<String, Object>();
+        List<AppOperationDTO> dtoList = new ArrayList<AppOperationDTO>();
+        List<AppOperationEntry> entries = appOperationDao.getSecondListByParentId(parentId,page,pageSize);
+        if(entries.size()>0){
+            for(AppOperationEntry entry: entries){
+                dtoList.add(new AppOperationDTO(entry));
+            }
+        }
+        int count = appOperationDao.getEntryCount(parentId);
+        map.put("list",dtoList);
+        map.put("count",count);
+        return map;
+    }
     /**
      * 学生发布作品
      * @return

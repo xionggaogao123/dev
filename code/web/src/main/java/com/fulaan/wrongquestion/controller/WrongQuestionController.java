@@ -117,7 +117,7 @@ public class WrongQuestionController extends BaseController {
     }
 
     /**
-     * 年级加载
+     * 年级,科目加载
      * @return
      */
     @ApiOperation(value = "年级、科目加载", httpMethod = "GET", produces = "application/json")
@@ -139,6 +139,30 @@ public class WrongQuestionController extends BaseController {
         }
         return JSON.toJSONString(respObj);
     }
+    /**
+     * 问题,测试加载
+     * @return
+     */
+    @ApiOperation(value = "问题,测试加载", httpMethod = "GET", produces = "application/json")
+    @ApiResponses( value = {@ApiResponse(code = 200, message = "Successful — 请求已完成",response = String.class),
+            @ApiResponse(code = 400, message = "请求中有语法问题，或不能满足请求"),
+            @ApiResponse(code = 500, message = "服务器不能完成请求")})
+    @RequestMapping("/getQuestionAndTest")
+    @ResponseBody
+    public String getQuestionAndTest(@ApiParam(name = "subjectId", required = true, value = "学科id") @RequestParam String subjectId,
+                                     @ApiParam(name = "ename", required = true, value = "阶段名") @RequestParam String ename){
+        RespObj respObj=null;
+        try {
+            Map<String,Object> result = wrongQuestionService.getQuestionAndTest(new ObjectId(subjectId),ename);
+            respObj = RespObj.SUCCESS;
+            respObj.setMessage(result);
+        } catch (Exception e) {
+            e.printStackTrace();
+            respObj = RespObj.FAILD;
+            respObj.setMessage("年级、科目加载失败!");
+        }
+        return JSON.toJSONString(respObj);
+    }
 
     /**
      * 添加错题
@@ -146,7 +170,7 @@ public class WrongQuestionController extends BaseController {
      * @param errorDto
      * @return
      */
-    @ApiOperation(value = "年级、科目加载", httpMethod = "POST", produces = "application/json")
+    @ApiOperation(value = "添加错题", httpMethod = "POST", produces = "application/json")
     @ApiResponses( value = {@ApiResponse(code = 200, message = "Successful — 请求已完成",response = String.class),
             @ApiResponse(code = 400, message = "请求中有语法问题，或不能满足请求"),
             @ApiResponse(code = 500, message = "服务器不能完成请求")})
@@ -179,14 +203,14 @@ public class WrongQuestionController extends BaseController {
             @ApiResponse(code = 500, message = "服务器不能完成请求")})
     @ResponseBody
     @RequestMapping(value = "/remove")
-    public RespObj removeFromErrorBook(@ApiParam(name = "id", required = true, value = "错题id") @RequestParam ObjectId id) {
+    public RespObj removeFromErrorBook(@ApiParam(name = "id", required = true, value = "错题id") @RequestParam String id) {
 
         RespObj resp = new RespObj(Constant.FAILD_CODE);
 
         try {
-            ErrorBookDTO errorDto = wrongQuestionService.getErrorQuestion(id);
+            ErrorBookDTO errorDto = wrongQuestionService.getErrorQuestion(new ObjectId(id));
             if(errorDto != null) {
-                wrongQuestionService.removeErrorQuestion(id);
+                wrongQuestionService.removeErrorQuestion(new ObjectId(id));
                 resp.setCode(Constant.SUCCESS_CODE);
             } else {
                 resp.setMessage("不错在该错题！");
@@ -250,15 +274,15 @@ public class WrongQuestionController extends BaseController {
     @ResponseBody
     @RequestMapping(value = "/remove/explain")
     public RespObj removeExplain(
-            @ApiParam(name = "id", required = true, value = "错题id") @RequestParam ObjectId id,
-            @ApiParam(name = "explainId", required = true, value = "解析id") @RequestParam ObjectId explainId) {
+            @ApiParam(name = "id", required = true, value = "错题id") @RequestParam String id,
+            @ApiParam(name = "explainId", required = true, value = "解析id") @RequestParam String explainId) {
 
         RespObj resp = new RespObj(Constant.FAILD_CODE);
 
         try {
-            ErrorBookDTO errorDto = wrongQuestionService.getErrorQuestion(id);
+            ErrorBookDTO errorDto = wrongQuestionService.getErrorQuestion(new ObjectId(id));
             if(errorDto != null) {
-                wrongQuestionService.removeExplain(id, explainId);
+                wrongQuestionService.removeExplain(new ObjectId(id), new ObjectId(explainId));
                 resp.setCode(Constant.SUCCESS_CODE);
             } else {
                 resp.setMessage("不错在该错题！");
@@ -282,19 +306,19 @@ public class WrongQuestionController extends BaseController {
             @ApiResponse(code = 500, message = "服务器不能完成请求")})
     @ResponseBody
     @RequestMapping(value = "/grasp")
-    public RespObj updateQuestionGraspStatus( @ApiParam(name = "id", required = true, value = "错题id") @RequestParam ObjectId id) {
+    public RespObj updateQuestionGraspStatus( @ApiParam(name = "id", required = true, value = "错题id") @RequestParam String id) {
 
         RespObj resp = new RespObj(Constant.FAILD_CODE);
 
         try {
             String userId = getUserId().toString();
-            ErrorBookDTO errorDto = wrongQuestionService.getErrorQuestion(id);
+            ErrorBookDTO errorDto = wrongQuestionService.getErrorQuestion(new ObjectId(id));
             if (errorDto != null) {
                 String uid = errorDto.getUserId();
                 if (!uid.equals(userId.toString())) {
                     resp.setMessage("添加失败！");
                 } else {
-                    wrongQuestionService.updateQuestionGraspStatus(id);
+                    wrongQuestionService.updateQuestionGraspStatus(new ObjectId(id));
                     resp.setCode(Constant.SUCCESS_CODE);
                 }
             } else {

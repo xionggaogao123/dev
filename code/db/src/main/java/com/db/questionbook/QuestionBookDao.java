@@ -53,16 +53,16 @@ public class QuestionBookDao extends BaseDao{
                 .append("uid",userId)
                 .append("isr", 0); // 未删除
         if(gradeId != null && !gradeId.equals("")){
-            query.append("gid",gradeId);
+            query.append("gid",new ObjectId(gradeId));
         }
         if(subjectId != null && !subjectId.equals("")){
-            query.append("sid",subjectId);
+            query.append("sid",new ObjectId(subjectId));
         }
         if(questionTypeId != null && !questionTypeId.equals("")){
-            query.append("qid",questionTypeId);
+            query.append("qid",new ObjectId(questionTypeId));
         }
         if(testId != null && !testId.equals("")){
-            query.append("tid",testId);
+            query.append("tid",new ObjectId(testId));
         }
         if(keyword != null && !keyword.equals("")){
             query.append("dec", MongoUtils.buildRegex(keyword));
@@ -71,7 +71,7 @@ public class QuestionBookDao extends BaseDao{
                 find(MongoFacroty.getAppDB(),
                         Constant.COLLECTION_QUESTION_BOOK,
                         query, Constant.FIELDS,
-                        Constant.MONGO_SORTBY_DESC, page, pageSize);
+                        Constant.MONGO_SORTBY_DESC,(page - 1) * pageSize, pageSize);
         List<QuestionBookEntry> entryList = new ArrayList<QuestionBookEntry>();
         if (dbList != null && !dbList.isEmpty()) {
             for (DBObject obj : dbList) {

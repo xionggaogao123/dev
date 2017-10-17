@@ -108,7 +108,7 @@ public class IndexPageService {
                 ob1.put("title","作业");
                 ob1.put("time", TimeChangeUtils.getChangeStringTime(dto6.getCreateTime()));
                 ob1.put("description",dto6.getDescription());
-                ob1.put("imageUrl",dto6.getImageUrl());
+                ob1.put("imageUrl",dto6.getImageList());
                 ob1.put("talkNumber",dto6.getTalkNumber());
                 ob1.put("videoList","");
                 ob1.put("attachmentEntries","");

@@ -43,13 +43,13 @@ public class AppCommentController extends BaseController {
             @ApiResponse(code = 500, message = "服务器不能完成请求")})
     @RequestMapping("/addCommentEntry")
     @ResponseBody
-    public String addCommentEntry(@ApiParam @RequestBody AppCommentDTO dto,@ApiParam(name = "comList", required = true, value = "社区idList") @RequestParam("comList") String comList){
+    public String addCommentEntry(@ApiParam @RequestBody AppCommentDTO dto){
         //
         dto.setAdminId(getUserId().toString());
         RespObj respObj=null;
         try {
             respObj = RespObj.SUCCESS;
-            String result = appCommentService.addCommentEntry(dto,comList);
+            String result = appCommentService.addCommentEntry(dto,dto.getComList());
             respObj.setMessage(result);
         } catch (Exception e) {
             e.printStackTrace();
@@ -407,7 +407,30 @@ public class AppCommentController extends BaseController {
         return JSON.toJSONString(respObj);
 
     }
+    /**
+     * 分页查询二级评论列表
+     */
+    @ApiOperation(value="分页查询二级评论列表",httpMethod = "POST",produces = "application/json")
+    @ApiResponse(code=200,message = "success", response = String.class)
+    @RequestMapping("/selectSecondList")
+    @ResponseBody
+    public String selectSecondList(@ApiParam(name = "parentId", required = true, value = "一级评论id") @RequestParam("parentId") String parentId,
+                                   @ApiParam(name = "page", required = true, value = "page") @RequestParam("page") int page,
+                                   @ApiParam(name = "pageSize", required = true, value = "pageSize") @RequestParam("pageSize") int pageSize){
+        RespObj respObj=null;
+        try {
+            respObj = RespObj.SUCCESS;
+            Map<String,Object> result = appCommentService.getSecondList(new ObjectId(parentId),page,pageSize);
+            respObj.setMessage(result);
+        } catch (Exception e) {
+            e.printStackTrace();
+            respObj = RespObj.FAILD;
+            respObj.setErrorMessage("分页查询二级评论列表失败!");
 
+        }
+        return JSON.toJSONString(respObj);
+
+    }
     /**
      * 删除作业
      */

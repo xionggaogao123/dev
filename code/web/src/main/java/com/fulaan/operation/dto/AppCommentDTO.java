@@ -1,5 +1,9 @@
 package com.fulaan.operation.dto;
 
+import com.fulaan.dto.VideoDTO;
+import com.fulaan.pojo.Attachement;
+import com.pojo.fcommunity.AttachmentEntry;
+import com.pojo.fcommunity.VideoEntry;
 import com.pojo.operation.AppCommentEntry;
 import com.sys.utils.DateTimeUtils;
 import io.swagger.annotations.ApiModel;
@@ -27,8 +31,14 @@ public class AppCommentDTO {
     private int talkNumber;
     private int loadNumber;
     private int questionNumber;
-    @ApiModelProperty(value = "图片url", required = true)
-    private List<String> imageUrl = new ArrayList<String>();
+    @ApiModelProperty(value = "视屏", required = true)
+    private List<VideoDTO> videoList=new ArrayList<VideoDTO>();
+    @ApiModelProperty(value = "图片", required = true)
+    private List<Attachement> imageList=new ArrayList<Attachement>();
+    @ApiModelProperty(value = "附件", required = true)
+    private List<Attachement> attachements=new ArrayList<Attachement>();
+    @ApiModelProperty(value = "语音", required = true)
+    private List<Attachement> voiceList=new ArrayList<Attachement>();
     private String subject;
     @ApiModelProperty(value = "学科id", required = true)
     private String subjectId;
@@ -44,6 +54,7 @@ public class AppCommentDTO {
     private String adminName;//发送人姓名
     private String adminUrl;//发送人图片
     private String sendUser;//孩子名称
+    private String comList;
 
     public AppCommentDTO(){
 
@@ -63,7 +74,31 @@ public class AppCommentDTO {
             this.talkNumber = e.getTalkNumber();
             this.loadNumber = e.getLoadNumber();
             this.questionNumber = e.getQuestionNumber();
-            this.imageUrl = e.getImageUrl();
+            List<AttachmentEntry> attachmentEntries = e.getImageList();
+            if(attachmentEntries != null && attachmentEntries.size()>0){
+                for(AttachmentEntry entry : attachmentEntries){
+                    this.imageList.add(new Attachement(entry));
+                }
+            }
+            List<AttachmentEntry> attachmentEntries2 = e.getAttachmentEntries();
+            if(attachmentEntries2 != null && attachmentEntries2.size()>0){
+                for(AttachmentEntry entry2 : attachmentEntries2){
+                    this.attachements.add(new Attachement(entry2));
+                }
+            }
+            List<AttachmentEntry> attachmentEntries3 = e.getVoiceList();
+            if(attachmentEntries3 != null && attachmentEntries3.size()>0){
+                for(AttachmentEntry entry3 : attachmentEntries3){
+                    this.voiceList.add(new Attachement(entry3));
+                }
+            }
+            List<VideoEntry> videoEntries = e.getVideoList();
+            if(videoEntries != null && videoEntries.size()>0){
+                for(VideoEntry entry3 : videoEntries){
+                    this.videoList.add(new VideoDTO(entry3));
+                }
+            }
+
             this.subject = e.getSubject();
             this.subjectId = e.getSubjectId()==null?"":e.getSubjectId().toString();
             this.adminId = e.getAdminId() == null ? "" : e.getAdminId().toString();
@@ -100,12 +135,44 @@ public class AppCommentDTO {
         }
         long lTm = 0l;
         if(this.getLoadTime() != null && this.getLoadTime() != ""){
-            lTm = DateTimeUtils.getStrToLongTime(this.getLoadTime());
+            lTm = DateTimeUtils.getStrToLongTime(this.getLoadTime(), "yyyy-MM-dd HH:mm");
         }
 
         long dTm = 0l;
         if(this.getDateTime() != null && this.getDateTime() != ""){
             dTm = DateTimeUtils.getStrToLongTime(this.getDateTime());
+        }
+        List<VideoEntry> videoEntries=new ArrayList<VideoEntry>();
+        if(videoList.size()>0){
+            for(VideoDTO videoDTO:videoList){
+                videoEntries.add(new VideoEntry(videoDTO.getVideoUrl(),
+                        videoDTO.getImageUrl(),System.currentTimeMillis(), aId));
+            }
+        }
+        List<AttachmentEntry> imageEntries=new ArrayList<AttachmentEntry>();
+        if(imageList.size()>0){
+            for(Attachement image:imageList){
+                imageEntries.add(new AttachmentEntry(image.getUrl(), image.getFlnm(),
+                        System.currentTimeMillis(),
+                        aId));
+            }
+        }
+
+        List<AttachmentEntry> attachmentEntries=new ArrayList<AttachmentEntry>();
+        if(attachements.size()>0){
+            for(Attachement attachement:attachements){
+                attachmentEntries.add(new AttachmentEntry(attachement.getUrl(), attachement.getFlnm(),
+                        System.currentTimeMillis(),
+                        aId));
+            }
+        }
+        List<AttachmentEntry> voiceEntries=new ArrayList<AttachmentEntry>();
+        if(voiceList.size()>0){
+            for(Attachement attachement:voiceList){
+                voiceEntries.add(new AttachmentEntry(attachement.getUrl(), attachement.getFlnm(),
+                        System.currentTimeMillis(),
+                        aId));
+            }
         }
         AppCommentEntry openEntry =
                 new AppCommentEntry(
@@ -117,7 +184,10 @@ public class AppCommentDTO {
                         this.talkNumber,
                         this.loadNumber,
                         this.questionNumber,
-                        this.imageUrl,
+                        imageEntries,
+                        voiceEntries,
+                        videoEntries,
+                        attachmentEntries,
                         this.subject,
                         sId,
                         aId,
@@ -152,6 +222,36 @@ public class AppCommentDTO {
         long dTm = 0l;
         if(this.getDateTime() != null && this.getDateTime() != ""){
             dTm = DateTimeUtils.getStrToLongTime(this.getDateTime());
+        } List<VideoEntry> videoEntries=new ArrayList<VideoEntry>();
+        if(videoList.size()>0){
+            for(VideoDTO videoDTO:videoList){
+                videoEntries.add(new VideoEntry(videoDTO.getVideoUrl(),
+                        videoDTO.getImageUrl(),System.currentTimeMillis(), aId));
+            }
+        }
+        List<AttachmentEntry> imageEntries=new ArrayList<AttachmentEntry>();
+        if(imageList.size()>0){
+            for(Attachement image:imageList){
+                imageEntries.add(new AttachmentEntry(image.getUrl(), image.getFlnm(),
+                        System.currentTimeMillis(),
+                        aId));
+            }
+        }
+        List<AttachmentEntry> attachmentEntries=new ArrayList<AttachmentEntry>();
+        if(attachements.size()>0){
+            for(Attachement attachement:attachements){
+                attachmentEntries.add(new AttachmentEntry(attachement.getUrl(), attachement.getFlnm(),
+                        System.currentTimeMillis(),
+                        aId));
+            }
+        }
+        List<AttachmentEntry> voiceEntries=new ArrayList<AttachmentEntry>();
+        if(voiceList.size()>0){
+            for(Attachement attachement:voiceList){
+                voiceEntries.add(new AttachmentEntry(attachement.getUrl(), attachement.getFlnm(),
+                        System.currentTimeMillis(),
+                        aId));
+            }
         }
         AppCommentEntry openEntry =
                 new AppCommentEntry(
@@ -164,7 +264,10 @@ public class AppCommentDTO {
                         this.talkNumber,
                         this.loadNumber,
                         this.questionNumber,
-                        this.imageUrl,
+                        imageEntries,
+                        voiceEntries,
+                        videoEntries,
+                        attachmentEntries,
                         this.subject,
                         sId,
                         aId,
@@ -174,6 +277,22 @@ public class AppCommentDTO {
                         dTm);
         return openEntry;
 
+    }
+
+    public String getComList() {
+        return comList;
+    }
+
+    public void setComList(String comList) {
+        this.comList = comList;
+    }
+
+    public List<Attachement> getVoiceList() {
+        return voiceList;
+    }
+
+    public void setVoiceList(List<Attachement> voiceList) {
+        this.voiceList = voiceList;
     }
 
     public String getTitle() {
@@ -208,12 +327,28 @@ public class AppCommentDTO {
         this.description = description;
     }
 
-    public List<String> getImageUrl() {
-        return imageUrl;
+    public List<VideoDTO> getVideoList() {
+        return videoList;
     }
 
-    public void setImageUrl(List<String> imageUrl) {
-        this.imageUrl = imageUrl;
+    public void setVideoList(List<VideoDTO> videoList) {
+        this.videoList = videoList;
+    }
+
+    public List<Attachement> getImageList() {
+        return imageList;
+    }
+
+    public void setImageList(List<Attachement> imageList) {
+        this.imageList = imageList;
+    }
+
+    public List<Attachement> getAttachements() {
+        return attachements;
+    }
+
+    public void setAttachements(List<Attachement> attachements) {
+        this.attachements = attachements;
     }
 
     public String getSubject() {

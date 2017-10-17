@@ -160,7 +160,7 @@ public class GroupExamUserRecordDao extends BaseDao{
                 .append("cmId",communityId)
                 .append("uid",userId);
         BasicDBObject updateValue=new BasicDBObject(Constant.MONGO_SET,new BasicDBObject("st",status));
-        update(MongoFacroty.getAppDB(), Constant.COLLECTION_REPORT_CARD_GROUP_EXAM_DETAIL,query,updateValue);
+        update(MongoFacroty.getAppDB(), Constant.COLLECTION_REPORT_CARD_EXAM_USER_RECORD,query,updateValue);
     }
 
     /**
@@ -173,7 +173,7 @@ public class GroupExamUserRecordDao extends BaseDao{
         BasicDBObject query=new BasicDBObject()
                 .append("eid",groupExamDetailId);
         BasicDBObject updateValue=new BasicDBObject(Constant.MONGO_SET,new BasicDBObject("st",status));
-        update(MongoFacroty.getAppDB(), Constant.COLLECTION_REPORT_CARD_GROUP_EXAM_DETAIL,query,updateValue);
+        update(MongoFacroty.getAppDB(), Constant.COLLECTION_REPORT_CARD_EXAM_USER_RECORD,query,updateValue);
     }
 
 
@@ -186,7 +186,7 @@ public class GroupExamUserRecordDao extends BaseDao{
                 .append(Constant.ID,id);
         BasicDBObject updateValue=new BasicDBObject()
                 .append(Constant.MONGO_SET,new BasicDBObject("sc",score).append("scl",scoreLevel).append("rk",rank));
-        update(MongoFacroty.getAppDB(), Constant.COLLECTION_REPORT_CARD_GROUP_EXAM_DETAIL,query,updateValue);
+        update(MongoFacroty.getAppDB(), Constant.COLLECTION_REPORT_CARD_EXAM_USER_RECORD,query,updateValue);
     }
 
     /**
@@ -200,7 +200,7 @@ public class GroupExamUserRecordDao extends BaseDao{
                 .append("eid",groupExamDetailId)
                 .append("uid",userId);
         BasicDBObject updateValue=new BasicDBObject(Constant.MONGO_SET,new BasicDBObject("st",Constant.THREE));
-        update(MongoFacroty.getAppDB(), Constant.COLLECTION_REPORT_CARD_GROUP_EXAM_DETAIL,query,updateValue);
+        update(MongoFacroty.getAppDB(), Constant.COLLECTION_REPORT_CARD_EXAM_USER_RECORD,query,updateValue);
     }
 
     public GroupExamUserRecordEntry getUserRecordEntry(ObjectId groupExamDetailId,
@@ -209,7 +209,7 @@ public class GroupExamUserRecordDao extends BaseDao{
                 .append("eid",groupExamDetailId)
                 .append("st",Constant.THREE)
                 .append("uid",userId);
-        DBObject dbObject=findOne(MongoFacroty.getAppDB(), Constant.COLLECTION_REPORT_CARD_GROUP_EXAM_DETAIL,query,Constant.FIELDS);
+        DBObject dbObject=findOne(MongoFacroty.getAppDB(), Constant.COLLECTION_REPORT_CARD_EXAM_USER_RECORD,query,Constant.FIELDS);
         if(null!=dbObject){
             return new GroupExamUserRecordEntry(dbObject);
         }else{

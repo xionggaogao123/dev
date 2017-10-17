@@ -107,8 +107,7 @@ public class AppNoticeService {
      */
     public void saveAppNoticeEntry(AppNoticeDTO dto,ObjectId userId){
         UserEntry userEntry=userService.findById(userId);
-        List<GroupOfCommunityDTO> dtos=new ArrayList<GroupOfCommunityDTO>();
-        for(GroupOfCommunityDTO communityDTO:dtos){
+        for(GroupOfCommunityDTO communityDTO:dto.getGroupOfCommunityDTOs()){
             AppNoticeDTO appNoticeDTO=new AppNoticeDTO(
                     dto.getSubjectId(),
                     dto.getSubject(),

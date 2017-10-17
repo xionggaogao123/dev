@@ -99,7 +99,7 @@ public class AppMarketService {
         Collections.sort(initDatas, new Comparator<AppDetailStarStatisticDTO>() {
             @Override
             public int compare(AppDetailStarStatisticDTO o1, AppDetailStarStatisticDTO o2) {
-                return o1.getStar()-o2.getStar();
+                return o2.getStar()-o1.getStar();
             }
         });
         retMap.put("avgStar",avgStar);

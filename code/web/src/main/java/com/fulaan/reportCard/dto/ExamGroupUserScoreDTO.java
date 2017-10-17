@@ -8,15 +8,25 @@ public class ExamGroupUserScoreDTO {
     private String id;
     private double score;
     private int scoreLevel;
+    private String groupExamDetailId;
     private int rank;
 
     public GroupExamUserRecordDTO buildDTO(){
         GroupExamUserRecordDTO userRecordDTO=new GroupExamUserRecordDTO();
         userRecordDTO.setId(this.id);
+        userRecordDTO.setGroupExamDetailId(this.groupExamDetailId);
         userRecordDTO.setScore(this.score);
         userRecordDTO.setScoreLevel(this.scoreLevel);
         userRecordDTO.setRank(this.rank);
         return userRecordDTO;
+    }
+
+    public String getGroupExamDetailId() {
+        return groupExamDetailId;
+    }
+
+    public void setGroupExamDetailId(String groupExamDetailId) {
+        this.groupExamDetailId = groupExamDetailId;
     }
 
     public String getId() {

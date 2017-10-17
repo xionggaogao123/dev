@@ -4,6 +4,7 @@ import com.db.fcommunity.CommunityDao;
 import com.db.fcommunity.NewVersionCommunityBindDao;
 import com.db.reportCard.*;
 import com.db.wrongquestion.ExamTypeDao;
+import com.fulaan.reportCard.dto.ExamGroupUserScoreDTO;
 import com.fulaan.reportCard.dto.GroupExamDetailDTO;
 import com.fulaan.reportCard.dto.GroupExamUserRecordDTO;
 import com.fulaan.reportCard.dto.RecordLevelEnum;
@@ -40,6 +41,42 @@ public class ReportCardService {
     private ExamTypeDao examTypeDao=new ExamTypeDao();
 
     private GroupExamUserRecordDao groupExamUserRecordDao = new GroupExamUserRecordDao();
+
+
+    public static void main(String[] args)throws Exception{
+        ReportCardService reportCardService=new ReportCardService();
+        /**
+        GroupExamDetailDTO detailDTO=new GroupExamDetailDTO();
+        detailDTO.setGroupId("59c32cc6670ab23fb82dc4ae");
+        detailDTO.setCommunityId("59c32cc5670ab23fb82dc4ac");
+        detailDTO.setExamType("59e415a2bf2e7917683d7354");
+        detailDTO.setRecordScoreType(1);
+        detailDTO.setExamName("测试第一周数据");
+        detailDTO.setSubjectId("59b5fc0fbf2e791bb445cdb7");
+        detailDTO.setMaxScore(100);
+        detailDTO.setQualifyScore(60);
+        detailDTO.setExcellentScore(80);
+        detailDTO.setExamStrTime("2017-10-18");
+        ObjectId userId=new ObjectId("59c32c8c670ab23fb82dc49a");
+        reportCardService.saveGroupExamDetail(detailDTO,userId);
+         **/
+        /**-----------添加学生成绩---------**/
+        List<GroupExamUserRecordDTO> examGroupUserScoreDTOs=new ArrayList<GroupExamUserRecordDTO>();
+        GroupExamUserRecordDTO dto1=new GroupExamUserRecordDTO();
+        dto1.setId("59e44b34eeecc02c4c920e23");
+        dto1.setScore(90);
+        dto1.setScoreLevel(-1);
+        dto1.setGroupExamDetailId("59e44b34eeecc02c4c920e22");
+        examGroupUserScoreDTOs.add(dto1);
+        GroupExamUserRecordDTO dto2=new GroupExamUserRecordDTO();
+        dto2.setId("59e44b34eeecc02c4c920e24");
+        dto2.setScore(75);
+        dto2.setScoreLevel(-1);
+        dto2.setGroupExamDetailId("59e44b34eeecc02c4c920e22");
+        examGroupUserScoreDTOs.add(dto2);
+        int status=2;
+        reportCardService.saveRecordExamScore(examGroupUserScoreDTOs,status);
+    }
 
 
     /**
@@ -294,11 +331,11 @@ public class ReportCardService {
                     @Override
                     public int compare(GroupExamUserRecordDTO o1, GroupExamUserRecordDTO o2) {
                         if(o1.getScore()>o2.getScore()){
-                            return 1;
+                            return -1;
                         }else if(o1.getScore()==o2.getScore()){
                             return 0;
                         }else{
-                            return -1;
+                            return 1;
                         }
                     }
                 });
@@ -307,11 +344,11 @@ public class ReportCardService {
                     @Override
                     public int compare(GroupExamUserRecordDTO o1, GroupExamUserRecordDTO o2) {
                         if(o1.getScoreLevel()>o2.getScoreLevel()){
-                            return 1;
+                            return -1;
                         }else if(o1.getScoreLevel()==o2.getScoreLevel()){
                             return 0;
                         }else{
-                            return -1;
+                            return 1;
                         }
                     }
                 });

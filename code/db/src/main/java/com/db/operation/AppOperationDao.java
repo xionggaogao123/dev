@@ -20,6 +20,16 @@ public class AppOperationDao extends BaseDao {
         save(MongoFacroty.getAppDB(), Constant.COLLECTION_APP_OPERATION, entry.getBaseEntry());
         return entry.getID().toString();
     }
+    public AppOperationEntry getEntry(ObjectId id) {
+        BasicDBObject query = new BasicDBObject(Constant.ID,id);
+        query.append("isr",Constant.ZERO);
+        DBObject obj =
+                findOne(MongoFacroty.getAppDB(), Constant.COLLECTION_APP_OPERATION, query, Constant.FIELDS);
+        if (obj != null) {
+            return new AppOperationEntry((BasicDBObject) obj);
+        }
+        return null;
+    }
     //删除评论
     public void delAppOperationEntry(ObjectId id){
         BasicDBObject query = new BasicDBObject(Constant.ID,id);
@@ -118,7 +128,7 @@ public class AppOperationDao extends BaseDao {
         return entryList;
     }
 
-    public List<AppOperationEntry> getSecondListByParentId(ObjectId parentId,int page,int pageSize) {
+    public List<AppOperationEntry> getSecondListByParentId(ObjectId parentId) {
         BasicDBObject query = new BasicDBObject()
                 .append("pid",parentId)
                 .append("lev",Constant.TWO)//二级
@@ -127,7 +137,7 @@ public class AppOperationDao extends BaseDao {
                 find(MongoFacroty.getAppDB(),
                         Constant.COLLECTION_APP_OPERATION,
                         query, Constant.FIELDS,
-                        Constant.MONGO_SORTBY_DESC, (page - 1) * pageSize, pageSize);
+                        Constant.MONGO_SORTBY_DESC);
         List<AppOperationEntry> entryList = new ArrayList<AppOperationEntry>();
         if (dbList != null && !dbList.isEmpty()) {
             for (DBObject obj : dbList) {

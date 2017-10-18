@@ -143,6 +143,19 @@ public class WrongQuestionService {
         }else{
 
         }
+        CreateGradeDTO dto5 = new CreateGradeDTO();
+        dto5.setGradeName("不限");
+        dto5.setType(0);
+        dto5.setEname("");
+        dto5.setId("");
+        SubjectClassDTO dto6 = new SubjectClassDTO();
+        dto6.setName("不限");
+        dto6.setId("");
+        dto6.setSubjectId("");
+        List<SubjectClassDTO> subjectClassDTOs = new ArrayList<SubjectClassDTO>();
+        subjectClassDTOs.add(dto6);
+        dto5.setSubjectClassDTOs(subjectClassDTOs);
+        mlist.add(dto5);
         //List<CreateGradeEntry> clist = new ArrayList<CreateGradeEntry>();
         CreateGradeEntry en3 = createGradeDao.getEntryByType(entry.getGradeType());
         CreateGradeDTO dto3 = new CreateGradeDTO(en3);

@@ -91,7 +91,27 @@ public class QuestionBookService {
          if(entry != null){
              List<QuestionAdditionEntry> entries = questionAdditionDao.getListByParentId(entry.getID());
              map.put("obj",new QuestionBookDTO(entry));
-             map.put("list",entries);
+             List<QuestionAdditionDTO> dtos = new ArrayList<QuestionAdditionDTO>();
+             if(entries.size()>0){
+                 for(QuestionAdditionEntry entry1 : entries){
+                     dtos.add(new QuestionAdditionDTO(entry1));
+                 }
+             }
+             List<QuestionAdditionDTO> dtos1 = new ArrayList<QuestionAdditionDTO>();
+             List<QuestionAdditionDTO> dtos2 = new ArrayList<QuestionAdditionDTO>();
+             List<QuestionAdditionDTO> dtos3 = new ArrayList<QuestionAdditionDTO>();
+             for(QuestionAdditionDTO dto3 : dtos){
+                 if(dto3.getAnswerType()==1){
+                     dtos1.add(dto3);
+                 }else if(dto3.getAnswerType()==2){
+                     dtos2.add(dto3);
+                 }else{
+                     dtos3.add(dto3);
+                 }
+             }
+             map.put("list1",dtos1);//答案
+             map.put("list2",dtos2);//解析
+             map.put("list3",dtos3);//我的回答
          }
          return map;
     }

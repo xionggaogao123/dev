@@ -3,10 +3,7 @@ package com.fulaan.wrongquestion.controller;
 import com.alibaba.fastjson.JSON;
 import com.fulaan.annotation.SessionNeedless;
 import com.fulaan.base.BaseController;
-import com.fulaan.wrongquestion.dto.CreateGradeDTO;
-import com.fulaan.wrongquestion.dto.ErrorBookDTO;
-import com.fulaan.wrongquestion.dto.NewVersionGradeDTO;
-import com.fulaan.wrongquestion.dto.SubjectClassDTO;
+import com.fulaan.wrongquestion.dto.*;
 import com.fulaan.wrongquestion.service.WrongQuestionService;
 import com.pojo.app.FileUploadDTO;
 import com.pojo.utils.MongoUtils;
@@ -120,7 +117,7 @@ public class WrongQuestionController extends BaseController {
      * 年级,科目加载
      * @return
      */
-    @ApiOperation(value = "年级、科目加载", httpMethod = "GET", produces = "application/json")
+    @ApiOperation(value = "年级", httpMethod = "GET", produces = "application/json")
     @ApiResponses( value = {@ApiResponse(code = 200, message = "Successful — 请求已完成",response = String.class),
             @ApiResponse(code = 400, message = "请求中有语法问题，或不能满足请求"),
             @ApiResponse(code = 500, message = "服务器不能完成请求")})
@@ -149,13 +146,30 @@ public class WrongQuestionController extends BaseController {
             @ApiResponse(code = 500, message = "服务器不能完成请求")})
     @RequestMapping("/getQuestionAndTest")
     @ResponseBody
-    public String getQuestionAndTest(@ApiParam(name = "subjectId", required = true, value = "学科id") @RequestParam String subjectId,
-                                     @ApiParam(name = "ename", required = true, value = "阶段名") @RequestParam String ename){
+    public String getQuestionAndTest(@ApiParam(name = "subjectId", required = true, value = "学科id") @RequestParam(value="subjectId",defaultValue = "*") String subjectId,
+                                     @ApiParam(name = "ename", required = true, value = "阶段名") @RequestParam(value="ename",defaultValue = "*") String ename){
         RespObj respObj=null;
         try {
-            Map<String,Object> result = wrongQuestionService.getQuestionAndTest(new ObjectId(subjectId),ename);
-            respObj = RespObj.SUCCESS;
-            respObj.setMessage(result);
+            if(subjectId ==null || subjectId.equals("")||subjectId.equals("*")||ename == null || ename.equals("") || ename.equals("*") ){
+                Map<String,Object> map = new HashMap<String, Object>();
+                List<QuestionTypeDTO> dtoList1 = new ArrayList<QuestionTypeDTO>();
+             /*   QuestionTypeDTO dto = new QuestionTypeDTO();
+                dto.setName("不限");
+                dtoList1.add(dto);*/
+                map.put("questionTypeList",dtoList1);
+                List<TestTypeDTO> dtoList2 = new ArrayList<TestTypeDTO>();
+               /* TestTypeDTO dto1 = new TestTypeDTO();
+                dto1.setName("不限");
+                dtoList2.add(dto1);*/
+                map.put("TestTypeList",dtoList2);
+                respObj = RespObj.SUCCESS;
+                respObj.setMessage(map);
+            }else{
+                Map<String,Object> result = wrongQuestionService.getQuestionAndTest(new ObjectId(subjectId),ename);
+                respObj = RespObj.SUCCESS;
+                respObj.setMessage(result);
+            }
+
         } catch (Exception e) {
             e.printStackTrace();
             respObj = RespObj.FAILD;

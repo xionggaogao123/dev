@@ -330,11 +330,11 @@ public class AppCommentService {
         List<AppCommentDTO> dtos = new ArrayList<AppCommentDTO>();
         if(entries.size()>0){
             for(AppCommentEntry en : entries){
-                if(en.getDateTime() <= zero){
+                if(en.getDateTime() <= zero && en.getStatus()==1){
                     en.setStatus(0);
                 }
                 AppCommentDTO dto = new AppCommentDTO(en);
-                String ctm = dto.getCreateTime().substring(11,16);
+                String ctm = dto.getCreateTime();
                 dto.setCreateTime(ctm);
                 dto.setType(1);
                 uids.add(dto.getAdminId());
@@ -370,7 +370,7 @@ public class AppCommentService {
                 if(dto3.getAdminId() != null && dto3.getAdminId().equals(userId.toString())){
 
                 }else{
-                    String ctm = dto3.getCreateTime().substring(11,16);
+                    String ctm = dto3.getCreateTime();
                     dto3.setCreateTime(ctm);
                     dto3.setType(2);
                     uids.add(dto3.getAdminId());
@@ -569,19 +569,61 @@ public class AppCommentService {
     }
 
     //加载二级评论（分页）
-    public Map<String,Object> getSecondList(ObjectId parentId,int page,int pageSize){
-        Map<String,Object> map = new HashMap<String, Object>();
-        List<AppOperationDTO> dtoList = new ArrayList<AppOperationDTO>();
-        List<AppOperationEntry> entries = appOperationDao.getSecondListByParentId(parentId,page,pageSize);
-        if(entries.size()>0){
+    public List<AppOperationDTO> getSecondList(ObjectId parentId){
+        AppOperationEntry entry2 = appOperationDao.getEntry(parentId);
+        if(entry2==null){
+            return null;
+        }
+        //List<AppOperationDTO> dtoList = new ArrayList<AppOperationDTO>();
+        List<AppOperationEntry> entries = appOperationDao.getSecondListByParentId(parentId);
+        /*if(entries.size()>0){
             for(AppOperationEntry entry: entries){
                 dtoList.add(new AppOperationDTO(entry));
             }
+        }*/
+        entries.add(entry2);
+        List<AppOperationDTO> dtos = new ArrayList<AppOperationDTO>();
+        List<String> uids = new ArrayList<String>();
+        if(entries != null && entries.size()>0){
+            for(AppOperationEntry en : entries){
+                AppOperationDTO dto = new AppOperationDTO(en);
+                uids.add(dto.getUserId());
+                if(dto.getBackId() != null && dto.getBackId() != ""){
+                    uids.add(dto.getBackId());
+                }
+                dtos.add(dto);
+            }
         }
-        int count = appOperationDao.getEntryCount(parentId);
-        map.put("list",dtoList);
-        map.put("count",count);
-        return map;
+        List<UserDetailInfoDTO> udtos = userService.findUserInfoByUserIds(uids);
+        Map<String,UserDetailInfoDTO> map = new HashMap<String, UserDetailInfoDTO>();
+        if(udtos != null && udtos.size()>0){
+            for(UserDetailInfoDTO dto4 : udtos){
+                map.put(dto4.getId(),dto4);
+            }
+        }
+        for(AppOperationDTO dto5 : dtos){
+            dto5.setUserName(map.get(dto5.getUserId()).getUserName());
+            dto5.setUserUrl(map.get(dto5.getUserId()).getImgUrl());
+            if(dto5.getBackId() != null && dto5.getBackId() != ""){
+                dto5.setBackName(map.get(dto5.getBackId()).getUserName());
+            }
+        }
+        List<AppOperationDTO> olist = new ArrayList<AppOperationDTO>();
+        for(AppOperationDTO dto6 : dtos){
+            if(dto6.getLevel()==1){
+                List<AppOperationDTO> dtoList = new ArrayList<AppOperationDTO>();
+                for(AppOperationDTO dto7 : dtos){
+                    if(dto7.getLevel()==2 && dto6.getId().equals(dto7.getParentId())){
+                        dtoList.add(dto7);
+                    }
+                }
+                dto6.setAlist(dtoList);
+                olist.add(dto6);
+            }
+        }
+        return olist;
+
+
     }
     /**
      * 学生发布作品

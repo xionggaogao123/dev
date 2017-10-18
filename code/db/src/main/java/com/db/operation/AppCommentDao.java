@@ -103,6 +103,7 @@ public class AppCommentDao extends BaseDao {
         BasicDBObject query = new BasicDBObject()
                 .append("aid",userId)
                 .append("dtm",dateTime)
+                .append("sta",0)
                 .append("isr", 0); // 未删除
         List<DBObject> dbList =
                 find(MongoFacroty.getAppDB(),

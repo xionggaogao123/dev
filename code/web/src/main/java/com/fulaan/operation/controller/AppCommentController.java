@@ -408,19 +408,17 @@ public class AppCommentController extends BaseController {
 
     }
     /**
-     * 分页查询二级评论列表
+     * 查询二级评论列表
      */
-    @ApiOperation(value="分页查询二级评论列表",httpMethod = "POST",produces = "application/json")
+    @ApiOperation(value="查询二级评论列表",httpMethod = "POST",produces = "application/json")
     @ApiResponse(code=200,message = "success", response = String.class)
     @RequestMapping("/selectSecondList")
     @ResponseBody
-    public String selectSecondList(@ApiParam(name = "parentId", required = true, value = "一级评论id") @RequestParam("parentId") String parentId,
-                                   @ApiParam(name = "page", required = true, value = "page") @RequestParam("page") int page,
-                                   @ApiParam(name = "pageSize", required = true, value = "pageSize") @RequestParam("pageSize") int pageSize){
+    public String selectSecondList(@ApiParam(name = "parentId", required = true, value = "一级评论id") @RequestParam("parentId") String parentId){
         RespObj respObj=null;
         try {
             respObj = RespObj.SUCCESS;
-            Map<String,Object> result = appCommentService.getSecondList(new ObjectId(parentId),page,pageSize);
+            List<AppOperationDTO> result = appCommentService.getSecondList(new ObjectId(parentId));
             respObj.setMessage(result);
         } catch (Exception e) {
             e.printStackTrace();

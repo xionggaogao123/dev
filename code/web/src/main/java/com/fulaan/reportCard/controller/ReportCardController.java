@@ -20,7 +20,9 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 /**
  * Created by scott on 2017/9/30.
@@ -71,7 +73,13 @@ public class ReportCardController extends BaseController{
             List<GroupExamDetailDTO> groupExamDetailDTOs=reportCardService.getMySendGroupExamDetailDTOs(
                    subjectId,examType,status,getUserId(),page,pageSize
             );
-            respObj.setMessage(groupExamDetailDTOs);
+            int count=reportCardService.countMySendGroupExamDetailDTOs(subjectId,examType,status,getUserId());
+            Map<String,Object> retMap=new HashMap<String,Object>();
+            retMap.put("list",groupExamDetailDTOs);
+            retMap.put("count",count);
+            retMap.put("page",page);
+            retMap.put("pageSize",pageSize);
+            respObj.setMessage(retMap);
             respObj.setCode(Constant.SUCCESS_CODE);
         }catch (Exception e){
             e.printStackTrace();
@@ -100,7 +108,13 @@ public class ReportCardController extends BaseController{
             List<GroupExamDetailDTO> groupExamDetailDTOs=reportCardService.getReceiveExams(
                     subjectId,examType,status,getUserId(),page,pageSize
             );
-            respObj.setMessage(groupExamDetailDTOs);
+            int count=reportCardService.countReceiveExams(subjectId,examType,status,getUserId());
+            Map<String,Object> retMap=new HashMap<String,Object>();
+            retMap.put("list",groupExamDetailDTOs);
+            retMap.put("count",count);
+            retMap.put("page",page);
+            retMap.put("pageSize",pageSize);
+            respObj.setMessage(retMap);
             respObj.setCode(Constant.SUCCESS_CODE);
         }catch (Exception e){
             e.printStackTrace();
@@ -127,10 +141,10 @@ public class ReportCardController extends BaseController{
     ){
         RespObj respObj=new RespObj(Constant.FAILD_CODE);
         try{
-            List<GroupExamDetailDTO> groupExamDetailDTOs=reportCardService.getParentReceivedGroupExamDetailDTOs(
+            Map<String,Object> retMap=reportCardService.getParentReceivedGroupExamDetailDTOs(
                     subjectId,examType,status,getUserId(),page,pageSize
             );
-            respObj.setMessage(groupExamDetailDTOs);
+            respObj.setMessage(retMap);
             respObj.setCode(Constant.SUCCESS_CODE);
         }catch (Exception e){
             e.printStackTrace();

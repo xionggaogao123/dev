@@ -62,6 +62,40 @@ public class GroupExamUserRecordDao extends BaseDao{
     }
 
 
+    public int countStudentReceivedEntries(
+            ObjectId subjectId,ObjectId examTypeId,int status,
+            ObjectId userId
+    ){
+        BasicDBObject query=getStudentReceivedEntriesQueryCondition(subjectId, examTypeId, status, userId);
+        return count(MongoFacroty.getAppDB(), Constant.COLLECTION_REPORT_CARD_EXAM_USER_RECORD,
+                query);
+    }
+
+
+    public BasicDBObject getStudentReceivedEntriesQueryCondition(ObjectId subjectId,ObjectId examTypeId,int status,
+                                                                   ObjectId userId){
+        BasicDBObject query=new BasicDBObject()
+                .append("uid",userId);
+        if(null!=subjectId){
+            query.append("sid",subjectId);
+        }
+
+        if(null!=examTypeId){
+            query.append("etp",examTypeId);
+        }
+        List<Integer> statuses=new ArrayList<Integer>();
+        if(status!=-1){
+            statuses.add(status);
+            statuses.add(Constant.THREE);
+        }else{
+            statuses.add(Constant.ZERO);
+            statuses.add(Constant.TWO);
+            statuses.add(Constant.THREE);
+        }
+        query.append("st",new BasicDBObject(Constant.MONGO_IN,statuses));
+        return query;
+    }
+
     /**
      * 学生接收到的成绩单列表
      * @param userId
@@ -73,27 +107,9 @@ public class GroupExamUserRecordDao extends BaseDao{
             ObjectId subjectId,ObjectId examTypeId,int status,
             ObjectId userId,
             int page,int pageSize){
-        List<Integer> statuses=new ArrayList<Integer>();
+
         List<GroupExamUserRecordEntry> entries=new ArrayList<GroupExamUserRecordEntry>();
-        BasicDBObject query=new BasicDBObject()
-                .append("uid",userId);
-        if(null!=subjectId){
-            query.append("sid",subjectId);
-        }
-
-        if(null!=examTypeId){
-            query.append("etp",examTypeId);
-        }
-
-        if(status!=-1){
-            statuses.add(status);
-            statuses.add(Constant.THREE);
-        }else{
-            statuses.add(Constant.ZERO);
-            statuses.add(Constant.TWO);
-            statuses.add(Constant.THREE);
-        }
-        query.append("st",new BasicDBObject(Constant.MONGO_IN,statuses));
+        BasicDBObject query=getStudentReceivedEntriesQueryCondition(subjectId, examTypeId, status, userId);
         List<DBObject> dbObjects=find(MongoFacroty.getAppDB(), Constant.COLLECTION_REPORT_CARD_EXAM_USER_RECORD,
                 query,Constant.FIELDS,Constant.MONGO_SORTBY_DESC,(page-1)*pageSize,pageSize);
         if(null!=dbObjects&&!dbObjects.isEmpty()){
@@ -104,6 +120,42 @@ public class GroupExamUserRecordDao extends BaseDao{
         return entries;
     }
 
+    public BasicDBObject getParentReceivedEntriesCondition( ObjectId subjectId,
+                                                            ObjectId examTypeId,int status,
+                                                            ObjectId mainUserId,
+                                                            List<ObjectId> userIds){
+        BasicDBObject query=new BasicDBObject()
+                .append("muid",new BasicDBObject(Constant.MONGO_NE,mainUserId))
+                .append("uid",new BasicDBObject(Constant.MONGO_IN,userIds));
+        if(null!=subjectId){
+            query.append("sid",subjectId);
+        }
+        if(null!=examTypeId){
+            query.append("etp",examTypeId);
+        }
+        List<Integer> statuses=new ArrayList<Integer>();
+        if(status!=-1){
+            statuses.add(status);
+            statuses.add(Constant.THREE);
+        }else{
+            statuses.add(Constant.ZERO);
+            statuses.add(Constant.TWO);
+            statuses.add(Constant.THREE);
+        }
+        query.append("st",new BasicDBObject(Constant.MONGO_IN,statuses));
+        return query;
+
+    }
+
+    public int countParentReceivedEntries(
+            ObjectId subjectId,ObjectId examTypeId,int status,
+            ObjectId mainUserId,
+            List<ObjectId> userIds
+    ){
+        BasicDBObject query=getParentReceivedEntriesCondition(subjectId, examTypeId, status, mainUserId, userIds);
+        return count(MongoFacroty.getAppDB(), Constant.COLLECTION_REPORT_CARD_EXAM_USER_RECORD,
+                query);
+    }
     /**
      * 家长接收到的成绩单列表
      * @param mainUserId
@@ -117,26 +169,9 @@ public class GroupExamUserRecordDao extends BaseDao{
             ObjectId mainUserId,
             List<ObjectId> userIds,
             int page,int pageSize){
-        List<Integer> statuses=new ArrayList<Integer>();
+
         List<GroupExamUserRecordEntry> entries=new ArrayList<GroupExamUserRecordEntry>();
-        BasicDBObject query=new BasicDBObject()
-                .append("muid",new BasicDBObject(Constant.MONGO_NE,mainUserId))
-                .append("uid",new BasicDBObject(Constant.MONGO_IN,userIds));
-        if(null!=subjectId){
-            query.append("sid",subjectId);
-        }
-        if(null!=examTypeId){
-            query.append("etp",examTypeId);
-        }
-        if(status!=-1){
-            statuses.add(status);
-            statuses.add(Constant.THREE);
-        }else{
-            statuses.add(Constant.ZERO);
-            statuses.add(Constant.TWO);
-            statuses.add(Constant.THREE);
-        }
-        query.append("st",new BasicDBObject(Constant.MONGO_IN,statuses));
+        BasicDBObject query=getParentReceivedEntriesCondition(subjectId, examTypeId, status, mainUserId, userIds);
         List<DBObject> dbObjects=find(MongoFacroty.getAppDB(), Constant.COLLECTION_REPORT_CARD_EXAM_USER_RECORD,
                 query,Constant.FIELDS,Constant.MONGO_SORTBY_DESC,(page-1)*pageSize,pageSize);
         if(null!=dbObjects&&!dbObjects.isEmpty()){

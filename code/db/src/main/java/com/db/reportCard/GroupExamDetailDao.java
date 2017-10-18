@@ -42,7 +42,26 @@ public class GroupExamDetailDao extends BaseDao{
                 query,updateValue);
     }
 
-
+    public int countMySendGroupExamDetailEntries(
+            ObjectId subjectId,ObjectId examTypeId,int status,
+            ObjectId userId){
+        BasicDBObject query=new BasicDBObject()
+                .append("uid",userId);
+        if(null!=subjectId){
+            query.append("sid",subjectId);
+        }
+        if(null!=examTypeId){
+            query.append("etp",examTypeId);
+        }
+        List<Integer> statuses=new ArrayList<Integer>();
+        statuses.add(Constant.ZERO);
+        if(status!=0){
+            statuses.add(Constant.TWO);
+        }
+        query.append("st",new BasicDBObject(Constant.MONGO_IN,statuses));
+        return count(MongoFacroty.getAppDB(), Constant.COLLECTION_REPORT_CARD_GROUP_EXAM_DETAIL,
+                query);
+    }
     /**
      * 获取我发送的成绩单列表
      * @param userId

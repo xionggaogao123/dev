@@ -15,6 +15,7 @@ import com.pojo.reportCard.*;
 import com.pojo.user.UserEntry;
 import com.pojo.wrongquestion.SubjectClassEntry;
 import com.sys.constants.Constant;
+import org.apache.commons.collections.map.HashedMap;
 import org.apache.commons.lang3.StringUtils;
 import org.bson.types.ObjectId;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -56,13 +57,13 @@ public class ReportCardService {
         detailDTO.setGroupId("59c32cc6670ab23fb82dc4ae");
         detailDTO.setCommunityId("59c32cc5670ab23fb82dc4ac");
         detailDTO.setExamType("59e415a2bf2e7917683d7354");
-        detailDTO.setRecordScoreType(1);
-        detailDTO.setExamName("测试第一周数据");
+        detailDTO.setRecordScoreType(2);
+        detailDTO.setExamName("单周测试");
         detailDTO.setSubjectId("59b5fc0fbf2e791bb445cdb7");
-        detailDTO.setMaxScore(100);
-        detailDTO.setQualifyScore(60);
-        detailDTO.setExcellentScore(80);
-        detailDTO.setExamStrTime("2017-10-18");
+        detailDTO.setMaxScore(-1);
+        detailDTO.setQualifyScore(-1);
+        detailDTO.setExcellentScore(-1);
+        detailDTO.setExamStrTime("2017-10-20");
         ObjectId userId=new ObjectId("59c32c8c670ab23fb82dc49a");
         reportCardService.saveGroupExamDetail(detailDTO,userId);
          **/
@@ -70,42 +71,44 @@ public class ReportCardService {
  /**
         List<GroupExamUserRecordDTO> examGroupUserScoreDTOs=new ArrayList<GroupExamUserRecordDTO>();
         GroupExamUserRecordDTO dto1=new GroupExamUserRecordDTO();
-        dto1.setId("59e5669b2675642a3c1f736d");
-        dto1.setScore(85);
-        dto1.setScoreLevel(-1);
-        dto1.setGroupExamDetailId("59e5669b2675642a3c1f736c");
+        dto1.setId("59e6c86a267564078c9d07be");
+        dto1.setScore(-1);
+        dto1.setScoreLevel(99);
+        dto1.setGroupExamDetailId("59e6c86a267564078c9d07bd");
         examGroupUserScoreDTOs.add(dto1);
         GroupExamUserRecordDTO dto2=new GroupExamUserRecordDTO();
-        dto2.setId("59e5669b2675642a3c1f736e");
-        dto2.setScore(75);
-        dto2.setScoreLevel(-1);
-        dto2.setGroupExamDetailId("59e5669b2675642a3c1f736c");
+        dto2.setId("59e6c86a267564078c9d07bf");
+        dto2.setScore(-1);
+        dto2.setScoreLevel(98);
+        dto2.setGroupExamDetailId("59e6c86a267564078c9d07bd");
         examGroupUserScoreDTOs.add(dto2);
         GroupExamUserRecordDTO dto3=new GroupExamUserRecordDTO();
-        dto3.setId("59e5669b2675642a3c1f736f");
-        dto3.setScore(55);
-        dto3.setScoreLevel(-1);
-        dto3.setGroupExamDetailId("59e5669b2675642a3c1f736c");
+        dto3.setId("59e6c86a267564078c9d07c0");
+        dto3.setScore(-1);
+        dto3.setScoreLevel(90);
+        dto3.setGroupExamDetailId("59e6c86a267564078c9d07bd");
         examGroupUserScoreDTOs.add(dto3);
         GroupExamUserRecordDTO dto4=new GroupExamUserRecordDTO();
-        dto4.setId("59e5669b2675642a3c1f7370");
-        dto4.setScore(40);
-        dto4.setScoreLevel(-1);
-        dto4.setGroupExamDetailId("59e5669b2675642a3c1f736c");
+        dto4.setId("59e6c86a267564078c9d07c1");
+        dto4.setScore(-1);
+        dto4.setScoreLevel(93);
+        dto4.setGroupExamDetailId("59e6c86a267564078c9d07bd");
         examGroupUserScoreDTOs.add(dto4);
         GroupExamUserRecordDTO dto5=new GroupExamUserRecordDTO();
-        dto5.setId("59e5669b2675642a3c1f7371");
-        dto5.setScore(60);
-        dto5.setScoreLevel(-1);
-        dto5.setGroupExamDetailId("59e5669b2675642a3c1f736c");
+        dto5.setId("59e6c86a267564078c9d07c2");
+        dto5.setScore(-1);
+        dto5.setScoreLevel(96);
+        dto5.setGroupExamDetailId("59e6c86a267564078c9d07bd");
         examGroupUserScoreDTOs.add(dto5);
         int status=2;
         reportCardService.saveRecordExamScore(examGroupUserScoreDTOs,status);
          **/
        /**----------生成版本号--------------**/
-        GroupExamVersionEntry versionEntry=new GroupExamVersionEntry(new ObjectId("59e5669b2675642a3c1f736c"),1);
+       /**
+        GroupExamVersionEntry versionEntry=new GroupExamVersionEntry(new ObjectId("59e6c86a267564078c9d07bd"),1);
         GroupExamVersionDao groupExamVersionDao=new GroupExamVersionDao();
         groupExamVersionDao.saveGroupExamVersionEntry(versionEntry);
+        **/
     }
 
 
@@ -222,7 +225,14 @@ public class ReportCardService {
         return result;
     }
 
-
+    public int countReceiveExams(
+            String subjectId,String examType,int status,
+            ObjectId userId
+    ){
+        ObjectId suId= StringUtils.isNotBlank(subjectId)?new ObjectId(subjectId):null;
+        ObjectId examTypeId= StringUtils.isNotBlank(examType)?new ObjectId(examType):null;
+        return groupExamUserRecordDao.countStudentReceivedEntries(suId,examTypeId,status,userId);
+    }
     /**
      * 获取我接受的成绩单列表(学生)
      * @param userId
@@ -295,6 +305,7 @@ public class ReportCardService {
     }
 
 
+
     /**
      * 获取我接受的成绩单列表(家长)
      * @param userId
@@ -302,9 +313,10 @@ public class ReportCardService {
      * @param pageSize
      * @return
      */
-    public List<GroupExamDetailDTO> getParentReceivedGroupExamDetailDTOs(
+    public  Map<String,Object> getParentReceivedGroupExamDetailDTOs(
             String subjectId,String examType,int status,
             ObjectId userId,int page,int pageSize){
+        Map<String,Object> retMap=new HashMap<String,Object>();
         Set<ObjectId> userIds=new HashSet<ObjectId>();
         ObjectId suId= StringUtils.isNotBlank(subjectId)?new ObjectId(subjectId):null;
         ObjectId examTypeId= StringUtils.isNotBlank(examType)?new ObjectId(examType):null;
@@ -315,10 +327,22 @@ public class ReportCardService {
         List<GroupExamUserRecordEntry> userRecordEntries=groupExamUserRecordDao.getParentReceivedEntries(
                 suId,examTypeId,status,userId,new ArrayList<ObjectId>(userIds),page,pageSize
         );
-
-        return getGroupExamDetailDtos(userRecordEntries);
+        int count=groupExamUserRecordDao.countParentReceivedEntries(suId,examTypeId,status,userId,new ArrayList<ObjectId>(userIds));
+        List<GroupExamDetailDTO> groupExamDetailDTOs=getGroupExamDetailDtos(userRecordEntries);
+        retMap.put("list",groupExamDetailDTOs);
+        retMap.put("count",count);
+        retMap.put("page",page);
+        retMap.put("pageSize",pageSize);
+        return retMap;
     }
 
+
+    public int countMySendGroupExamDetailDTOs(String subjectId,String examType,int status,
+                                              ObjectId userId){
+        ObjectId suId= StringUtils.isNotBlank(subjectId)?new ObjectId(subjectId):null;
+        ObjectId examTypeId=StringUtils.isNotBlank(examType)?new ObjectId(examType):null;
+        return groupExamDetailDao.countMySendGroupExamDetailEntries(suId,examTypeId,status,userId);
+    }
 
     /**
      * 获取我发出的成绩单列表
@@ -510,8 +534,12 @@ public class ReportCardService {
                     double excellentPercent = (double) excellentCount / (double) totalCount;
                     double qualifyPercent = (double) qualifyCount / (double) totalCount;
                     double unQualifyPercent = (double) unQualifyCount / (double) totalCount;
+                    RecordScoreEvaluateEntry evaluateEntry=recordScoreEvaluateDao.getEntryById(new ObjectId(groupExamDetailId));
                     RecordScoreEvaluateEntry entry = new RecordScoreEvaluateEntry(new ObjectId(groupExamDetailId),
                             excellentPercent, qualifyPercent, unQualifyPercent, avgScore, maxScore, minScore);
+                    if(null!=evaluateEntry) {
+                        entry.setID(evaluateEntry.getID());
+                    }
                     recordScoreEvaluateDao.saveRecordScoreEvaluateEntry(entry);
                 }
             }else{
@@ -543,8 +571,12 @@ public class ReportCardService {
                     double bPercent = (double) bCount / (double) totalCount;
                     double cPercent = (double) cCount / (double) totalCount;
                     double dPercent = (double) dCount / (double) totalCount;
+                    RecordLevelEvaluateEntry entry=recordLevelEvaluateDao.getRecordLevelEvaluateEntry(new ObjectId(groupExamDetailId));
                     RecordLevelEvaluateEntry evaluateEntry = new RecordLevelEvaluateEntry(
                             new ObjectId(groupExamDetailId), aPercent, bPercent, cPercent, dPercent);
+                    if(null!=entry){
+                        evaluateEntry.setID(entry.getID());
+                    }
                     recordLevelEvaluateDao.saveRecordLevelEvaluate(evaluateEntry);
                 }
             }

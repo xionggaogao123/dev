@@ -5,10 +5,7 @@ import com.db.fcommunity.NewVersionCommunityBindDao;
 import com.db.reportCard.*;
 import com.db.wrongquestion.ExamTypeDao;
 import com.db.wrongquestion.SubjectClassDao;
-import com.fulaan.reportCard.dto.ExamGroupUserScoreDTO;
-import com.fulaan.reportCard.dto.GroupExamDetailDTO;
-import com.fulaan.reportCard.dto.GroupExamUserRecordDTO;
-import com.fulaan.reportCard.dto.RecordLevelEnum;
+import com.fulaan.reportCard.dto.*;
 import com.fulaan.user.service.UserService;
 import com.fulaan.wrongquestion.dto.ExamTypeDTO;
 import com.fulaan.wrongquestion.dto.SubjectClassDTO;
@@ -45,6 +42,8 @@ public class ReportCardService {
 
     private GroupExamUserRecordDao groupExamUserRecordDao = new GroupExamUserRecordDao();
 
+    private GroupExamVersionDao groupExamVersionDao=new GroupExamVersionDao();
+
     private SubjectClassDao subjectClassDao=new SubjectClassDao();
 
 
@@ -68,7 +67,7 @@ public class ReportCardService {
         reportCardService.saveGroupExamDetail(detailDTO,userId);
          **/
         /**-----------添加学生成绩---------**/
-//        /**
+ /**
         List<GroupExamUserRecordDTO> examGroupUserScoreDTOs=new ArrayList<GroupExamUserRecordDTO>();
         GroupExamUserRecordDTO dto1=new GroupExamUserRecordDTO();
         dto1.setId("59e5669b2675642a3c1f736d");
@@ -102,7 +101,11 @@ public class ReportCardService {
         examGroupUserScoreDTOs.add(dto5);
         int status=2;
         reportCardService.saveRecordExamScore(examGroupUserScoreDTOs,status);
-//         **/
+         **/
+       /**----------生成版本号--------------**/
+        GroupExamVersionEntry versionEntry=new GroupExamVersionEntry(new ObjectId("59e5669b2675642a3c1f736c"),1);
+        GroupExamVersionDao groupExamVersionDao=new GroupExamVersionDao();
+        groupExamVersionDao.saveGroupExamVersionEntry(versionEntry);
     }
 
 
@@ -134,6 +137,15 @@ public class ReportCardService {
     public void sendGroupExam(ObjectId groupExamDetailId){
         groupExamDetailDao.updateGroupExamDetailEntry(groupExamDetailId,Constant.TWO);
         groupExamUserRecordDao.updateGroupExamDetailStatus(groupExamDetailId,Constant.TWO);
+    }
+
+    public GroupExamVersionDTO getExamGroupVersion(ObjectId groupExamDetailId)throws Exception{
+        GroupExamVersionEntry entry=groupExamVersionDao.getVersionByGroupExamDetailId(groupExamDetailId);
+        if(null!=entry){
+            return new GroupExamVersionDTO(entry);
+        }else{
+            throw new Exception("传入的考试参数有误");
+        }
     }
 
 
@@ -396,6 +408,13 @@ public class ReportCardService {
         }
         groupExamUserRecordDao.saveEntries(userRecordEntries);
         groupExamDetailDao.updateSignCount(groupExamDetailId,userIds.size());
+        GroupExamVersionEntry versionEntry=new GroupExamVersionEntry(groupExamDetailId,1L);
+        groupExamVersionDao.saveGroupExamVersionEntry(versionEntry);
+    }
+
+    public void updateVersion(ObjectId groupExamDetailId,
+                              long version){
+        groupExamVersionDao.updateVersionByGroupExamDetailId(groupExamDetailId,version);
     }
 
     /**

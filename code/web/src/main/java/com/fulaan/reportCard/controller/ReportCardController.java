@@ -2,10 +2,7 @@ package com.fulaan.reportCard.controller;
 
 import com.fulaan.annotation.ObjectIdType;
 import com.fulaan.base.BaseController;
-import com.fulaan.reportCard.dto.ExamGroupDTO;
-import com.fulaan.reportCard.dto.ExamGroupUserScoreDTO;
-import com.fulaan.reportCard.dto.GroupExamDetailDTO;
-import com.fulaan.reportCard.dto.GroupExamUserRecordDTO;
+import com.fulaan.reportCard.dto.*;
 import com.fulaan.reportCard.service.ReportCardService;
 import com.fulaan.wrongquestion.dto.ExamTypeDTO;
 import com.sys.constants.Constant;
@@ -218,6 +215,25 @@ public class ReportCardController extends BaseController{
         return respObj;
     }
 
+    @ApiOperation(value = "获取该考试的版本号", httpMethod = "GET", produces = "application/json")
+    @ApiResponses( value = {@ApiResponse(code = 200, message = "保存或编辑成绩列表已完成",response = String.class),
+            @ApiResponse(code = 400, message = "请求中有语法问题，或不能满足请求"),
+            @ApiResponse(code = 500, message = "服务器不能完成请求")})
+    @RequestMapping("/getExamGroupVersion")
+    @ResponseBody
+    public RespObj getExamGroupVersion(@ObjectIdType ObjectId examGroupDetailId){
+        RespObj respObj=new RespObj(Constant.FAILD_CODE);
+        try{
+            GroupExamVersionDTO groupExamVersionDTO=reportCardService.getExamGroupVersion(examGroupDetailId);
+            respObj.setCode(Constant.SUCCESS_CODE);
+            respObj.setMessage(groupExamVersionDTO);
+        }catch (Exception e){
+            e.printStackTrace();
+            respObj.setErrorMessage(e.getMessage());
+        }
+        return respObj;
+    }
+
 
     @ApiOperation(value = "保存或编辑成绩列表", httpMethod = "GET", produces = "application/json")
     @ApiResponses( value = {@ApiResponse(code = 200, message = "保存或编辑成绩列表已完成",response = String.class),
@@ -225,15 +241,23 @@ public class ReportCardController extends BaseController{
             @ApiResponse(code = 500, message = "服务器不能完成请求")})
     @RequestMapping("/saveRecordExamScore")
     @ResponseBody
-    public RespObj saveRecordExamScore(@RequestBody List<ExamGroupUserScoreDTO> examGroupUserScoreDTOs, int status){
+    public RespObj saveRecordExamScore(@RequestBody ExamGroupScoreDTO examGroupScoreDTO){
         RespObj respObj=new RespObj(Constant.FAILD_CODE);
         try{
-            List<GroupExamUserRecordDTO> examScoreDTOs=new ArrayList<GroupExamUserRecordDTO>();
-            for(ExamGroupUserScoreDTO userScoreDTO:examGroupUserScoreDTOs){
-                examScoreDTOs.add(userScoreDTO.buildDTO());
+            GroupExamVersionDTO groupExamVersionDTO=reportCardService.getExamGroupVersion(
+                    new ObjectId(examGroupScoreDTO.getGroupExamDetailId()));
+            if(groupExamVersionDTO.getVersion()!=examGroupScoreDTO.getVersion()) {
+                List<GroupExamUserRecordDTO> examScoreDTOs = new ArrayList<GroupExamUserRecordDTO>();
+                for (ExamGroupUserScoreDTO userScoreDTO : examGroupScoreDTO.getExamGroupUserScoreDTOs()) {
+                    examScoreDTOs.add(userScoreDTO.buildDTO());
+                }
+                reportCardService.saveRecordExamScore(examScoreDTOs, examGroupScoreDTO.getStatus());
+                reportCardService.updateVersion(new ObjectId(examGroupScoreDTO.getGroupExamDetailId()),
+                        examGroupScoreDTO.getVersion());
+                respObj.setCode(Constant.SUCCESS_CODE);
+            }else{
+                respObj.setErrorMessage("不是最新的版本");
             }
-            reportCardService.saveRecordExamScore(examScoreDTOs, status);
-            respObj.setCode(Constant.SUCCESS_CODE);
         }catch (Exception e){
             e.printStackTrace();
             respObj.setErrorMessage(e.getMessage());

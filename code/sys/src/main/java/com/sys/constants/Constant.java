@@ -872,6 +872,8 @@ public class Constant {
     public static final String COLLECTION_REPORT_CARD_RECORD_LEVEL_EVALUATE="report_card_rec_lv_eva";
 
     public static final String COLLECTION_REPORT_CARD_EXAM_USER_RECORD="report_card_exam_user_rec";
+
+    public static final String COLLECTION_REPORT_CARD_EXAM_VERSION="report_card_exam_version";
     /**------------------------成绩单----------------------**/
 
     //首页记录表

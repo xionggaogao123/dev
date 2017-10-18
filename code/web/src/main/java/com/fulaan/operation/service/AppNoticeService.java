@@ -118,8 +118,8 @@ public class AppNoticeService {
                     dto.getWatchPermission(),
                     dto.getVideoList(),
                     dto.getImageList(),
-                    dto.getVoiceList(),
                     dto.getAttachements(),
+                    dto.getVoiceList(),
                     communityDTO.getGroupName(),
                     userEntry.getUserName());
             appNoticeDTO.setUserId(userId.toString());

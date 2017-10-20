@@ -61,6 +61,21 @@ public class QuestionBookService {
         questionAdditionDao.addEntry(entry2);
         return "添加成功";
     }
+    public String addQuestionNewBookEntry(QuestionBookDTO dto){
+        //保存作业
+        QuestionBookEntry entry = dto.buildAddEntry();
+        //获得当前时间
+        long current=System.currentTimeMillis();
+        //获得时间批次
+        long zero = current/(1000*3600*24)*(1000*3600*24)- TimeZone.getDefault().getRawOffset();//今天零点零分零秒的毫秒数
+        entry.setPageTime(zero);
+        entry.setType(1);
+        entry.setLevel(1);
+        entry.setDateTime(current);
+        ObjectId oid = questionBookDao.addEntry(entry);
+
+        return oid.toString();
+    }
 
     /**
      * 删除已学会的错题

@@ -5,9 +5,6 @@ import com.sys.utils.DateTimeUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.bson.types.ObjectId;
 
-import java.util.ArrayList;
-import java.util.List;
-
 /**
  * Created by scott on 2017/9/30.
  */
@@ -41,6 +38,7 @@ public class GroupExamDetailDTO {
     private int isSign;
     private double avgScore;
     private double groupMaxScore;
+    private double groupMinScore;
     private double excellentPercent;
     private double aPercent;
     private double bPercent;
@@ -103,6 +101,14 @@ public class GroupExamDetailDTO {
         this.signedCount=entry.getSignedCount();
         this.status=entry.getStatus();
         this.examStrTime= DateTimeUtils.convert(entry.getExamTime(),DateTimeUtils.DATE_YYYY_MM_DD);
+    }
+
+    public double getGroupMinScore() {
+        return groupMinScore;
+    }
+
+    public void setGroupMinScore(double groupMinScore) {
+        this.groupMinScore = groupMinScore;
     }
 
     public String getExamTypeName() {

@@ -12,6 +12,7 @@ public class AppRecordDTO {
     private String parentId;
     private String userId;
     private String userName;
+    private String imageUrl;
     private int isLoad;
     private String dateTime;
     private String createTime;
@@ -106,6 +107,14 @@ public class AppRecordDTO {
 
     }
 
+
+    public String getImageUrl() {
+        return imageUrl;
+    }
+
+    public void setImageUrl(String imageUrl) {
+        this.imageUrl = imageUrl;
+    }
 
     public String getId() {
         return id;

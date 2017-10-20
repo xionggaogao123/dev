@@ -29,7 +29,7 @@ public class ExamGroupDTO {
         detailDTO.setExamName(this.examName);
         detailDTO.setSubjectId(this.subjectId);
         detailDTO.setMaxScore(this.maxScore);
-        detailDTO.setQualifyPercent(this.qualifyScore);
+        detailDTO.setQualifyScore(this.qualifyScore);
         detailDTO.setExcellentScore(this.excellentScore);
         detailDTO.setExamStrTime(this.examStrTime);
         return detailDTO;

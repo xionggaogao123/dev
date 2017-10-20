@@ -5,17 +5,18 @@ import com.db.fcommunity.NewVersionCommunityBindDao;
 import com.db.reportCard.*;
 import com.db.wrongquestion.ExamTypeDao;
 import com.db.wrongquestion.SubjectClassDao;
-import com.fulaan.reportCard.dto.*;
+import com.fulaan.reportCard.dto.GroupExamDetailDTO;
+import com.fulaan.reportCard.dto.GroupExamUserRecordDTO;
+import com.fulaan.reportCard.dto.GroupExamVersionDTO;
+import com.fulaan.reportCard.dto.RecordLevelEnum;
 import com.fulaan.user.service.UserService;
 import com.fulaan.wrongquestion.dto.ExamTypeDTO;
-import com.fulaan.wrongquestion.dto.SubjectClassDTO;
 import com.pojo.fcommunity.CommunityEntry;
 import com.pojo.fcommunity.NewVersionCommunityBindEntry;
 import com.pojo.reportCard.*;
 import com.pojo.user.UserEntry;
 import com.pojo.wrongquestion.SubjectClassEntry;
 import com.sys.constants.Constant;
-import org.apache.commons.collections.map.HashedMap;
 import org.apache.commons.lang3.StringUtils;
 import org.bson.types.ObjectId;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -399,7 +400,7 @@ public class ReportCardService {
      * @param userId
      * @throws Exception
      */
-    public void  saveGroupExamDetail(GroupExamDetailDTO dto, ObjectId userId)throws Exception{
+    public String  saveGroupExamDetail(GroupExamDetailDTO dto, ObjectId userId)throws Exception{
         String communityId=dto.getCommunityId();
         List<NewVersionCommunityBindEntry> entries
                 =newVersionCommunityBindDao.getStudentIdListByCommunityId(new ObjectId(communityId));
@@ -434,6 +435,7 @@ public class ReportCardService {
         groupExamDetailDao.updateSignCount(groupExamDetailId,userIds.size());
         GroupExamVersionEntry versionEntry=new GroupExamVersionEntry(groupExamDetailId,1L);
         groupExamVersionDao.saveGroupExamVersionEntry(versionEntry);
+        return versionEntry.getID().toString();
     }
 
     public void updateVersion(ObjectId groupExamDetailId,
@@ -591,10 +593,15 @@ public class ReportCardService {
             detailDTO=getTeacherGroupExamDetail(groupExamDetailId);
             detailDTO.setSingleScoreId(singleId.toString());
             detailDTO.setChildUserId(examUserRecordEntry.getUserId().toString());
+            NewVersionCommunityBindEntry bindEntry = newVersionCommunityBindDao.getEntry(examUserRecordEntry.getCommunityId(),examUserRecordEntry.getMainUserId(),examUserRecordEntry.getUserId());
             UserEntry userEntry=userService.findById(examUserRecordEntry.getUserId());
-            detailDTO.setChildUserName(StringUtils.isNotBlank(userEntry.getNickName())?
-                    userEntry.getNickName():userEntry.getUserName()
-            );
+            if(bindEntry.getThirdName()!=null && !bindEntry.getThirdName().equals("")){
+                detailDTO.setChildUserName(bindEntry.getThirdName());
+            }else{
+                detailDTO.setChildUserName(StringUtils.isNotBlank(userEntry.getNickName())?
+                                userEntry.getNickName():userEntry.getUserName()
+                );
+            }
             if(detailDTO.getRecordScoreType()==Constant.ONE){
                 detailDTO.setScore(examUserRecordEntry.getScore());
                 detailDTO.setSingleRank(examUserRecordEntry.getRank());
@@ -634,6 +641,7 @@ public class ReportCardService {
                     detailDTO.setUnQualifyPercent(evaluateEntry.getUnQualifyPercent());
                     detailDTO.setAvgScore(evaluateEntry.getAvgScore());
                     detailDTO.setGroupMaxScore(evaluateEntry.getMaxScore());
+                    detailDTO.setGroupMinScore(evaluateEntry.getMinScore());
                 }
             }else{
                 RecordLevelEvaluateEntry levelEvaluateEntry=recordLevelEvaluateDao.getRecordLevelEvaluateEntry(groupExamDetailId);

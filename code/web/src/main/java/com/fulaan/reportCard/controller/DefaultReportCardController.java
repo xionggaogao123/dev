@@ -28,9 +28,9 @@ import java.util.Map;
  * Created by scott on 2017/9/30.
  */
 @Controller
-@RequestMapping(value="/reportCard")
+@RequestMapping(value="/jxmapi/reportCard")
 @Api(value = "成绩单的所有接口")
-public class ReportCardController extends BaseController{
+public class DefaultReportCardController extends BaseController{
 
     @Autowired
     private ReportCardService reportCardService;

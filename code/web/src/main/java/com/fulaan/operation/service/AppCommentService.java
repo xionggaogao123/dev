@@ -17,6 +17,7 @@ import com.fulaan.newVersionBind.service.NewVersionBindService;
 import com.fulaan.operation.dto.AppCommentDTO;
 import com.fulaan.operation.dto.AppOperationDTO;
 import com.fulaan.operation.dto.AppRecordDTO;
+import com.fulaan.pojo.User;
 import com.fulaan.service.CommunityService;
 import com.fulaan.user.service.UserService;
 import com.fulaan.wrongquestion.dto.SubjectClassDTO;
@@ -29,7 +30,10 @@ import com.pojo.operation.AppOperationEntry;
 import com.pojo.operation.AppRecordEntry;
 import com.pojo.user.NewVersionBindRelationEntry;
 import com.pojo.user.UserDetailInfoDTO;
+import com.pojo.user.UserEntry;
 import com.pojo.wrongquestion.SubjectClassEntry;
+import com.sys.constants.Constant;
+import com.sys.utils.AvatarUtils;
 import com.sys.utils.DateTimeUtils;
 import org.bson.types.ObjectId;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -104,12 +108,14 @@ public class AppCommentService {
             String oid = appCommentDao.addEntry(en);
 
             //添加临时记录表
-            IndexPageDTO dto1 = new IndexPageDTO();
-            dto1.setType(CommunityType.appComment.getType());
-            dto1.setCommunityId(dto3.getId());
-            dto1.setContactId(oid);
-            IndexPageEntry entry = dto1.buildAddEntry();
-            indexPageDao.addEntry(entry);
+            if(dto.getStatus()==0){
+                IndexPageDTO dto1 = new IndexPageDTO();
+                dto1.setType(CommunityType.appComment.getType());
+                dto1.setCommunityId(dto3.getId());
+                dto1.setContactId(oid);
+                IndexPageEntry entry = dto1.buildAddEntry();
+                indexPageDao.addEntry(entry);
+            }
 
         }
         return "成功导入";
@@ -194,11 +200,21 @@ public class AppCommentService {
         Map<String,UserDetailInfoDTO> map2 = new HashMap<String, UserDetailInfoDTO>();
         if(udtos != null && udtos.size()>0){
             for(UserDetailInfoDTO dto4 : udtos){
-                map.put(dto4.getId(),dto4);
+                map2.put(dto4.getId(),dto4);
             }
         }
         //未提交
         List<UserDetailInfoDTO> unList = userService.findUserInfoByUserIds(objectIdList);
+        List<User> ulsit = new ArrayList<User>();
+        for(UserDetailInfoDTO userDetailInfoDTO : unList){
+            User user = new User();
+            user.setAvator(userDetailInfoDTO.getImgUrl());
+            user.setSex(userDetailInfoDTO.getSex());
+            user.setNickName(userDetailInfoDTO.getNickName());
+            user.setUserName(userDetailInfoDTO.getUserName());
+            user.setUserId(userDetailInfoDTO.getId());
+            ulsit.add(user);
+        }
         for(AppOperationDTO dto5 : dtos){
             dto5.setUserName(map2.get(dto5.getUserId()).getUserName());
             dto5.setUserUrl(map2.get(dto5.getUserId()).getImgUrl());
@@ -208,9 +224,9 @@ public class AppCommentService {
         //已提交人数
         map.put("loadNumber",num);
         //未提交
-        map.put("unLoadList",unList);
+        map.put("unLoadList",ulsit);
         //未提交人数
-        map.put("unLoadNumber",unList.size());
+        map.put("unLoadNumber",ulsit.size());
 
         return map;
     }
@@ -237,42 +253,54 @@ public class AppCommentService {
         List<AppRecordEntry> entries = appRecordDao.getEntryListByParentId2(oblist,zero);
         //已签到名单
         List<AppRecordDTO> dtos = new ArrayList<AppRecordDTO>();
+        List<ObjectId> objectIdList1 = new ArrayList<ObjectId>();
         if(entries.size()>0){
             for(AppRecordEntry en : entries){
                 if(en.getIsLoad()==1){
                     AppRecordDTO dto = new AppRecordDTO(en);
-                    String ctm = dto.getCreateTime().substring(11,16);
+                    String ctm = dto.getCreateTime();
                     dto.setDateTime(ctm);
                     dtos.add(dto);
-                }
-            }
-        }
-        map.put("SignList",dtos);
-        map.put("SignListNum",dtos.size());
-       //未签到名单
-        List<AppRecordDTO> dtos2 = new ArrayList<AppRecordDTO>();
-        if(entries.size()>0){
-            for(AppRecordEntry en : entries){
-                if(en.getIsLoad()==1){
+                    objectIdList1.add(en.getUserId());
                     oblist.remove(en.getUserId());
                 }
             }
         }
-        List<UserDetailInfoDTO> udtos =  userService.findUserInfoByUserIds(objectIdList);
-        for(ObjectId ob : oblist){
-            for(UserDetailInfoDTO dto4 : udtos){
-                if(dto4.getId()!= null && dto4.getId().equals(ob.toString())){
-                    AppRecordDTO dto = new AppRecordDTO();
-                    dto.setUserName(dto4.getUserName());
-                    dtos2.add(dto);
-                }
-            }
+        Map<String,AppRecordDTO> map1 = new HashMap<String, AppRecordDTO>();
+        for(AppRecordDTO dto1 : dtos){
+            map1.put(dto1.getUserId(),dto1);
         }
-        map.put("UnSignList",dtos2);
-        map.put("UnSignListNum",dtos2.size());
+        List<User> sign=new ArrayList<User>();
+        if(objectIdList1.size()>0){
+            saveUser(sign,objectIdList1);
+        }
+        for(User user : sign){
+            user.setTime(map1.get(user.getUserId()).getCreateTime());
+        }
+        map.put("SignList",sign);
+        map.put("SignListNum",dtos.size());
+        List<User> unSign=new ArrayList<User>();
+        if(oblist.size()>0){
+            saveUser(unSign,oblist);
+        }
+        map.put("UnSignList",unSign);
+        map.put("UnSignListNum",unSign.size());
         return map;
     }
 
+    public void saveUser(List<User> users,List<ObjectId> userIds){
+        Map<ObjectId,UserEntry> userEntryMap=userService.getUserEntryMap(userIds, Constant.FIELDS);
+        for(Map.Entry<ObjectId,UserEntry> userEntryEntry:userEntryMap.entrySet()){
+            UserEntry userEntry=userEntryEntry.getValue();
+            User user=new User(userEntry.getUserName(),
+                    userEntry.getNickName(),
+                    userEntry.getID().toString(),
+                    AvatarUtils.getAvatar(userEntry.getAvatar(), userEntry.getRole(), userEntry.getSex()),
+                    userEntry.getSex(),
+                    "");
+            users.add(user);
+        }
+    }
 
     /**
      * 按月查找用户发放作业情况
@@ -447,7 +475,7 @@ public class AppCommentService {
          //上面的描述
         map2.put("desc",dto2);
         //添加一级评论
-        AppCommentEntry entry = appCommentDao.getEntry(id);
+       // AppCommentEntry entry = appCommentDao.getEntry(id);
         List<AppOperationEntry> entries = null;
         if(role==1){
             entries= appOperationDao.getEntryListByParentId(id,role,page,pageSize);
@@ -493,8 +521,23 @@ public class AppCommentService {
                 dto5.setBackName(map.get(dto5.getBackId()).getUserName());
             }
         }
+        List<AppOperationDTO> olist = new ArrayList<AppOperationDTO>();
+        for(AppOperationDTO dto6 : dtos){
+            if(dto6.getLevel()==1){
+                List<AppOperationDTO> dtoList = new ArrayList<AppOperationDTO>();
+                for(AppOperationDTO dto7 : dtos){
+                    if(dto7.getLevel()==2 && dto6.getId().equals(dto7.getParentId())){
+                        dtoList.add(dto7);
+                    }
+                }
+                dto6.setAlist(dtoList);
+                olist.add(dto6);
+            }
+        }
+        int count = appOperationDao.getEntryListByParentIdNum(id,role);
         //分页评论列表
-        map2.put("list",dtos);
+        map2.put("list",olist);
+        map2.put("count",count);
         return map2;
     }
     /**

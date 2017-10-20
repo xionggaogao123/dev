@@ -17,9 +17,9 @@ import java.util.Map;
  * Created by James on 2017/9/28.
  */
 @Controller
-@RequestMapping("/pageIndex")
+@RequestMapping("/jxmapi/pageIndex")
 @Api(value="大人端首页加载")
-public class IndexPageController extends BaseController {
+public class DefaultIndexPageController extends BaseController {
     @Autowired
     private IndexPageService indexPageService;
 

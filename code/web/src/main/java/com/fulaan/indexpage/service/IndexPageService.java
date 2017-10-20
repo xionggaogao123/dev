@@ -17,7 +17,6 @@ import com.pojo.user.UserDetailInfoDTO;
 import com.pojo.user.UserEntry;
 import com.sys.constants.Constant;
 import com.sys.utils.AvatarUtils;
-import com.sys.utils.TimeChangeUtils;
 import org.bson.types.ObjectId;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -44,7 +43,7 @@ public class IndexPageService {
 
 
 
-    public List<Map<String,Object>> getIndexList(ObjectId userId,int page,int pageSize){
+    public Map<String,Object> getIndexList(ObjectId userId,int page,int pageSize){
         List<Map<String,Object>> list = new ArrayList<Map<String, Object>>();
         List<CommunityDTO> communityDTOList =communityService.getCommunitys(userId, 1, 100);
         List<ObjectId>  dlist = new ArrayList<ObjectId>();
@@ -54,6 +53,7 @@ public class IndexPageService {
             }
         }
         List<IndexPageEntry> entrys = indexPageDao.getPageList(dlist, page, pageSize);
+        int count = indexPageDao.countPageList(dlist);
         //作业
         List<ObjectId> appList = new ArrayList<ObjectId>();
         Map<String,Object> appMap =new HashMap<String, Object>();
@@ -101,17 +101,19 @@ public class IndexPageService {
             }
             for(AppCommentDTO dto6 : dtos){
                 Map<String,Object> ob1 = new HashMap<String, Object>();
-                ob1.put("label", CommunityType.appComment.getDes());
-                ob1.put("communityName",dto6.getRecipientName());
+                ob1.put("tag", CommunityType.appComment.getDes());
+                ob1.put("groupName",dto6.getRecipientName());
                 ob1.put("userName",dto6.getAdminName());
-                ob1.put("userImg",dto6.getAdminUrl());
-                ob1.put("title","作业");
-                ob1.put("time", TimeChangeUtils.getChangeStringTime(dto6.getCreateTime()));
-                ob1.put("description",dto6.getDescription());
-                ob1.put("imageUrl",dto6.getImageList());
+                ob1.put("subject",dto6.getSubject());
+                ob1.put("avatar",dto6.getAdminUrl());
+                ob1.put("title",dto6.getTitle());
+                ob1.put("time", dto6.getCreateTime());
+                ob1.put("content",dto6.getDescription());
+                ob1.put("imageList",dto6.getImageList());
                 ob1.put("talkNumber",dto6.getTalkNumber());
-                ob1.put("videoList","");
-                ob1.put("attachmentEntries","");
+                ob1.put("videoList",dto6.getVideoList());
+                ob1.put("voiceList",dto6.getVoiceList());
+                ob1.put("attachements",dto6.getAttachements());
                 list.add(ob1);
             }
         }
@@ -131,26 +133,30 @@ public class IndexPageService {
                     dto8.setUserName(userEntry.getNickName());
                 }
                 Map<String,Object> ob1 = new HashMap<String, Object>();
-                ob1.put("label", CommunityType.appNotice.getDes());
-                ob1.put("communityName",dto8.getGroupName());
+                ob1.put("tag", CommunityType.appNotice.getDes());
+                ob1.put("groupName",dto8.getGroupName());
                 ob1.put("userName",dto8.getUserName());
-                ob1.put("userImg",dto8.getAvatar());
+                ob1.put("subject",dto8.getSubject());
+                ob1.put("avatar",dto8.getAvatar());
                 ob1.put("title",dto8.getTitle());
-                ob1.put("time",TimeChangeUtils.getChangeStringTime(dto8.getTime()));
-                ob1.put("description",dto8.getContent());
-                ob1.put("imageUrl",dto8.getImageList());
+                ob1.put("time",dto8.getTime());
+                ob1.put("content",dto8.getContent());
+                ob1.put("imageList",dto8.getImageList());
                 ob1.put("talkNumber",dto8.getCommentCount());
                 ob1.put("videoList",dto8.getVideoList());
-                ob1.put("attachmentEntries",dto8.getAttachements());
+                ob1.put("voiceList",dto8.getVoiceList());
+                ob1.put("attachements",dto8.getAttachements());
                 list.add(ob1);
 
             }
 
         }
+        Map<String,Object> map = new HashMap<String, Object>();
+        map.put("count",count);
+        map.put("list",list);
 
 
-
-        return list;
+        return map;
     }
     public void addIndexPage(String communityId,String contactId,int type){
         //添加临时记录表

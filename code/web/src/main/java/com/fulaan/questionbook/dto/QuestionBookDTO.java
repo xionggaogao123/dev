@@ -13,6 +13,7 @@ import java.util.List;
 public class QuestionBookDTO {
     private String id;
     private String description;
+    private String ename;
     private List<String> imageList = new ArrayList<String>();
     private String userId;
     private String gradeId;
@@ -130,6 +131,14 @@ public class QuestionBookDTO {
                         this.type
                 );
         return openEntry;
+    }
+
+    public String getEname() {
+        return ename;
+    }
+
+    public void setEname(String ename) {
+        this.ename = ename;
     }
 
     public List<QuestionAdditionDTO> getJxList() {

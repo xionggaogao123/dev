@@ -23,8 +23,8 @@ import java.util.Map;
  */
 @Api(value="错题本2.0")
 @Controller
-@RequestMapping("/questionBook")
-public class QuestionBookController extends BaseController {
+@RequestMapping("/jxmapi/questionBook")
+public class DefaultQuestionBookController extends BaseController {
     @Autowired
     private QuestionBookService questionBookService;
 
@@ -50,7 +50,7 @@ public class QuestionBookController extends BaseController {
         try {
             respObj = RespObj.SUCCESS;
             dto.setUserId(getUserId().toString());
-            String str = questionBookService.addQuestionBookEntry(dto,answerContent,answerList,analysisContent,analysisList);
+            String str = questionBookService.addQuestionBookEntry(dto, answerContent, answerList, analysisContent, analysisList);
             respObj.setMessage(str);
         } catch (Exception e) {
             e.printStackTrace();
@@ -68,7 +68,7 @@ public class QuestionBookController extends BaseController {
     @ApiResponses( value = {@ApiResponse(code = 200, message = "Successful — 请求已完成",response = String.class)})
     @RequestMapping("/addQuestionNewBookEntry")
     @ResponseBody
-    public String addQuestionNewBookEntry(@ApiParam(name="dto",required = true,value="作业对象")  QuestionBookDTO dto){
+    public String addQuestionNewBookEntry(@ApiParam(name="dto",required = true,value="作业对象") @RequestBody  QuestionBookDTO dto){
         RespObj respObj=null;
         try {
             respObj = RespObj.SUCCESS;

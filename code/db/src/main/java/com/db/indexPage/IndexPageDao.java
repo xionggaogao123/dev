@@ -41,4 +41,11 @@ public class IndexPageDao extends BaseDao {
 
     }
 
+    public int countPageList(List<ObjectId> olist){
+        BasicDBObject query=new BasicDBObject()
+                .append("cid",new BasicDBObject(Constant.MONGO_IN,olist))
+                .append("isr",Constant.ZERO);
+        return count(MongoFacroty.getAppDB(), Constant.COLLECTION_INDEX_PAGE,query);
+    }
+
 }

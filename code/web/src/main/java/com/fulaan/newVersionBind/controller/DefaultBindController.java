@@ -26,11 +26,11 @@ import java.util.List;
  */
 @Api(value = "app家长孩子绑定逻辑")
 @Controller
-@RequestMapping("/bind")
-public class BindController extends BaseController {
+@RequestMapping("/jxmapi/bind")
+public class DefaultBindController extends BaseController {
 
 
-    private static final Logger logger = Logger.getLogger(BindController.class);
+    private static final Logger logger = Logger.getLogger(DefaultBindController.class);
 
     @Autowired
     private NewVersionBindService newVersionBindService;

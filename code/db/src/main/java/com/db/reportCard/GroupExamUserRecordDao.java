@@ -42,7 +42,7 @@ public class GroupExamUserRecordDao extends BaseDao{
      * @param groupExamDetailId
      * @return
      */
-    public List<GroupExamUserRecordEntry> getExamUserRecordEntries(ObjectId groupExamDetailId){
+    public List<GroupExamUserRecordEntry> getExamUserRecordEntries(ObjectId groupExamDetailId,int score,int scoreLevel,int type){
         List<Integer> status=new ArrayList<Integer>();
         status.add(Constant.ZERO);
         status.add(Constant.TWO);
@@ -50,6 +50,21 @@ public class GroupExamUserRecordDao extends BaseDao{
         BasicDBObject query=new BasicDBObject()
                 .append("eid",groupExamDetailId)
                 .append("st",new BasicDBObject(Constant.MONGO_IN,status));
+        if(type==1) {
+            if (score != -1) {
+                query.append("sc", new BasicDBObject(Constant.MONGO_GTE, score));
+            }
+            if (scoreLevel != -1) {
+                query.append("scl", new BasicDBObject(Constant.MONGO_GTE, scoreLevel));
+            }
+        }else{
+            if (score != -1) {
+                query.append("sc", new BasicDBObject(Constant.MONGO_LT, score));
+            }
+            if (scoreLevel != -1) {
+                query.append("scl", new BasicDBObject(Constant.MONGO_LT, scoreLevel));
+            }
+        }
         List<GroupExamUserRecordEntry> entries=new ArrayList<GroupExamUserRecordEntry>();
         List<DBObject> dbObjects=find(MongoFacroty.getAppDB(), Constant.COLLECTION_REPORT_CARD_EXAM_USER_RECORD,
                 query,Constant.FIELDS);
@@ -86,7 +101,9 @@ public class GroupExamUserRecordDao extends BaseDao{
         List<Integer> statuses=new ArrayList<Integer>();
         if(status!=-1){
             statuses.add(status);
-            statuses.add(Constant.THREE);
+            if(status==Constant.TWO){
+                statuses.add(Constant.ZERO);
+            }
         }else{
             statuses.add(Constant.ZERO);
             statuses.add(Constant.TWO);
@@ -120,7 +137,7 @@ public class GroupExamUserRecordDao extends BaseDao{
         return entries;
     }
 
-    public BasicDBObject getParentReceivedEntriesCondition( ObjectId subjectId,
+    public BasicDBObject getParentReceivedEntriesCondition(ObjectId subjectId,
                                                             ObjectId examTypeId,int status,
                                                             ObjectId mainUserId,
                                                             List<ObjectId> userIds){
@@ -136,7 +153,9 @@ public class GroupExamUserRecordDao extends BaseDao{
         List<Integer> statuses=new ArrayList<Integer>();
         if(status!=-1){
             statuses.add(status);
-            statuses.add(Constant.THREE);
+            if(status==Constant.TWO) {
+                statuses.add(Constant.ZERO);
+            }
         }else{
             statuses.add(Constant.ZERO);
             statuses.add(Constant.TWO);

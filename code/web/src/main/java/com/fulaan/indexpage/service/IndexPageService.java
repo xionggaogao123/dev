@@ -78,13 +78,9 @@ public class IndexPageService {
             if(appCommentEntries.size()>0){
                 for(AppCommentEntry en : appCommentEntries){
                     AppCommentDTO dto3 = new AppCommentDTO(en);
-                    if(dto3.getAdminId() != null && dto3.getAdminId().equals(userId.toString())){
-
-                    }else{
-                        dto3.setType(2);
-                        uids.add(dto3.getAdminId());
-                        dtos.add(dto3);
-                    }
+                    dto3.setType(2);
+                    uids.add(dto3.getAdminId());
+                    dtos.add(dto3);
                 }
             }
 
@@ -103,6 +99,7 @@ public class IndexPageService {
                 Map<String,Object> ob1 = new HashMap<String, Object>();
                 ob1.put("tag", CommunityType.appComment.getDes());
                 ob1.put("groupName",dto6.getRecipientName());
+                ob1.put("id",dto6.getId());
                 ob1.put("userName",dto6.getAdminName());
                 ob1.put("subject",dto6.getSubject());
                 ob1.put("avatar",dto6.getAdminUrl());
@@ -135,6 +132,7 @@ public class IndexPageService {
                 Map<String,Object> ob1 = new HashMap<String, Object>();
                 ob1.put("tag", CommunityType.appNotice.getDes());
                 ob1.put("groupName",dto8.getGroupName());
+                ob1.put("id",dto8.getId());
                 ob1.put("userName",dto8.getUserName());
                 ob1.put("subject",dto8.getSubject());
                 ob1.put("avatar",dto8.getAvatar());

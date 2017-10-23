@@ -410,7 +410,7 @@ public class CommunityController extends BaseController {
             List<CommunityDTO> communityDTOList2 = new ArrayList<CommunityDTO>();
             if(communityDTOList.size()>0){
                 for(CommunityDTO dto3 : communityDTOList){
-                    if(molist.contains(dto3.getId())){
+                    if(molist.contains(dto3.getId()) && ! dto3.getName().equals("复兰社区")){
                         communityDTOList2.add(dto3);
                     }
                 }
@@ -606,7 +606,7 @@ public class CommunityController extends BaseController {
     }
 
     /**
-     * 新建消息
+     * 新建消息//火热分享
      *
      * @param message
      * @return

@@ -5,6 +5,7 @@ package com.fulaan.reportCard.dto;
  */
 public class ExamGroupDTO {
 
+    private String id;
     private String groupId;
     private String communityId;
     private String examType;
@@ -22,6 +23,7 @@ public class ExamGroupDTO {
 
     public GroupExamDetailDTO buildDTO(){
         GroupExamDetailDTO detailDTO=new GroupExamDetailDTO();
+        detailDTO.setId(this.id);
         detailDTO.setGroupId(this.groupId);
         detailDTO.setCommunityId(this.communityId);
         detailDTO.setExamType(this.examType);
@@ -33,6 +35,14 @@ public class ExamGroupDTO {
         detailDTO.setExcellentScore(this.excellentScore);
         detailDTO.setExamStrTime(this.examStrTime);
         return detailDTO;
+    }
+
+    public String getId() {
+        return id;
+    }
+
+    public void setId(String id) {
+        this.id = id;
     }
 
     public String getGroupId() {

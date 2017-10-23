@@ -167,6 +167,7 @@ public class DefaultReportCardController extends BaseController{
         try{
             reportCardService.pushSign(groupExamDetailId,userId);
             respObj.setCode(Constant.SUCCESS_CODE);
+            respObj.setMessage("签字成功！");
         }catch (Exception e){
             e.printStackTrace();
             respObj.setErrorMessage(e.getMessage());
@@ -185,6 +186,7 @@ public class DefaultReportCardController extends BaseController{
         try{
             reportCardService.removeGroupExamDetailEntry(groupExamDetailId);
             respObj.setCode(Constant.SUCCESS_CODE);
+            respObj.setMessage("删除成绩单成功！");
         }catch (Exception e){
             e.printStackTrace();
             respObj.setErrorMessage(e.getMessage());
@@ -203,6 +205,7 @@ public class DefaultReportCardController extends BaseController{
         try{
             reportCardService.sendGroupExam(groupExamDetailId);
             respObj.setCode(Constant.SUCCESS_CODE);
+            respObj.setMessage("发送成功！");
         }catch (Exception e){
             e.printStackTrace();
             respObj.setErrorMessage(e.getMessage());
@@ -217,10 +220,13 @@ public class DefaultReportCardController extends BaseController{
             @ApiResponse(code = 500, message = "服务器不能完成请求")})
     @RequestMapping("/searchRecordStudentScores")
     @ResponseBody
-    public RespObj searchRecordStudentScores(@ObjectIdType ObjectId examGroupDetailId){
+    public RespObj searchRecordStudentScores(@ObjectIdType ObjectId examGroupDetailId,
+                                             @RequestParam(required = false,defaultValue = "-1")int score,
+                                             @RequestParam(required = false,defaultValue = "-1")int scoreLevel,
+                                             @RequestParam(required = false,defaultValue = "1")int type){
         RespObj respObj=new RespObj(Constant.FAILD_CODE);
         try{
-            List<GroupExamUserRecordDTO> examScoreDTOs=reportCardService.searchRecordStudentScores(examGroupDetailId);
+            List<GroupExamUserRecordDTO> examScoreDTOs=reportCardService.searchRecordStudentScores(examGroupDetailId,score,scoreLevel,type);
             respObj.setMessage(examScoreDTOs);
             respObj.setCode(Constant.SUCCESS_CODE);
         }catch (Exception e){
@@ -270,6 +276,7 @@ public class DefaultReportCardController extends BaseController{
                 reportCardService.updateVersion(new ObjectId(examGroupScoreDTO.getGroupExamDetailId()),
                         examGroupScoreDTO.getVersion());
                 respObj.setCode(Constant.SUCCESS_CODE);
+                respObj.setMessage("保存或编辑成绩成功!");
             }else{
                 respObj.setErrorMessage("不是最新的版本");
             }

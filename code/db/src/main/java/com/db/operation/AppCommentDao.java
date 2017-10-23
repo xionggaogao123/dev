@@ -137,11 +137,15 @@ public class AppCommentDao extends BaseDao {
         }
         return entryList;
     }
-    //家长日作业列表查询
+    //家长日作业列表查询//收到的
     public List<AppCommentEntry> selectDateList2(List<ObjectId> userIds,long dateTime) {
+        List<Integer> ilist = new ArrayList<Integer>();
+        ilist.add(1);
+        ilist.add(0);
         BasicDBObject query = new BasicDBObject()
                 .append("rid",new BasicDBObject(Constant.MONGO_IN,userIds))
                 .append("dtm",dateTime)
+                .append("sta",new BasicDBObject(Constant.MONGO_IN,ilist))
                 .append("isr", 0); // 未删除
         List<DBObject> dbList =
                 find(MongoFacroty.getAppDB(),
@@ -158,9 +162,13 @@ public class AppCommentDao extends BaseDao {
     }
     //家长日作业列表查询
     public List<AppCommentEntry> selectDateListMonth(List<ObjectId> cids,List<Integer> monthList) {
+        List<Integer> ilist = new ArrayList<Integer>();
+        ilist.add(1);
+        ilist.add(0);
         BasicDBObject query = new BasicDBObject()
                 .append("rid",new BasicDBObject(Constant.MONGO_IN,cids))
                 .append("mon", new BasicDBObject(Constant.MONGO_IN, monthList))
+                .append("sta", new BasicDBObject(Constant.MONGO_IN, ilist))
                 .append("isr", 0); // 未删除
         List<DBObject> dbList =
                 find(MongoFacroty.getAppDB(),

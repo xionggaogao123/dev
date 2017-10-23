@@ -210,7 +210,7 @@ public class AppCommentController extends BaseController {
      * 查找当前当前月份用户发放作业情况列表
      * @return
      */
-    @ApiOperation(value = "查找当前当前年份用户发放作业情况列表", httpMethod = "POST", produces = "application/json")
+    @ApiOperation(value = "查找当前当前月份用户发放作业情况列表", httpMethod = "POST", produces = "application/json")
     @ApiResponses( value = {@ApiResponse(code = 200, message = "Successful — 请求已完成",response = String.class),
             @ApiResponse(code = 400, message = "请求中有语法问题，或不能满足请求"),
             @ApiResponse(code = 500, message = "服务器不能完成请求")})
@@ -290,12 +290,16 @@ public class AppCommentController extends BaseController {
             @ApiResponse(code = 500, message = "服务器不能完成请求")})
     @RequestMapping("/getOperationList")
     @ResponseBody
-    public String getOperationList(@ApiParam(name = "id", required = true, value = "作业id") @RequestParam("id") String id,@ApiParam(name = "role", required = true, value = "角色区") @RequestParam("role") int role,int page,int pageSize){
+    public String getOperationList(@ApiParam(name = "id", required = true, value = "作业id") @RequestParam("id") String id,
+                                   @ApiParam(name = "role", required = true, value = "角色区") @RequestParam("role") int role,
+                                   @RequestParam(value = "page",defaultValue = "1") int page,
+                                   @RequestParam(value = "pageSize",defaultValue = "10") int pageSize){
 
         RespObj respObj=null;
         try {
             respObj = RespObj.SUCCESS;
-            Map<String,Object> dtos = appCommentService.getOperationList(new ObjectId(id),role,getUserId(),page,pageSize);
+            int label = 1;
+            Map<String,Object> dtos = appCommentService.getOperationList(new ObjectId(id),role,label,getUserId(),page,pageSize);
             respObj.setMessage(dtos);
         } catch (Exception e) {
             e.printStackTrace();

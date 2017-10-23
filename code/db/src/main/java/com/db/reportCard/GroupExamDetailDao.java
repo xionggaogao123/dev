@@ -54,9 +54,11 @@ public class GroupExamDetailDao extends BaseDao{
             query.append("etp",examTypeId);
         }
         List<Integer> statuses=new ArrayList<Integer>();
-        statuses.add(Constant.ZERO);
-        if(status!=0){
+        if(status==-1){
+            statuses.add(Constant.ZERO);
             statuses.add(Constant.TWO);
+        }else{
+            statuses.add(status);
         }
         query.append("st",new BasicDBObject(Constant.MONGO_IN,statuses));
         return count(MongoFacroty.getAppDB(), Constant.COLLECTION_REPORT_CARD_GROUP_EXAM_DETAIL,
@@ -81,9 +83,11 @@ public class GroupExamDetailDao extends BaseDao{
             query.append("etp",examTypeId);
         }
         List<Integer> statuses=new ArrayList<Integer>();
-        statuses.add(Constant.ZERO);
-        if(status!=0){
+        if(status==-1){
+            statuses.add(Constant.ZERO);
             statuses.add(Constant.TWO);
+        }else{
+            statuses.add(status);
         }
         query.append("st",new BasicDBObject(Constant.MONGO_IN,statuses));
         List<DBObject> dbObjectList=find(MongoFacroty.getAppDB(), Constant.COLLECTION_REPORT_CARD_GROUP_EXAM_DETAIL,

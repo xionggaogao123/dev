@@ -73,6 +73,7 @@ public class AllLogFilter implements Filter {
             chain.doFilter(request, response);
         } catch (Exception e) {
             e.printStackTrace();
+            System.out.println("ip:" + cooks);
             logger.error("error" ,e);
         }
 

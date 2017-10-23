@@ -9,7 +9,9 @@ import com.sys.constants.Constant;
 import org.bson.types.ObjectId;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 /**
  * Created by James on 2017/9/6.
@@ -55,6 +57,24 @@ public class SubjectClassDao extends BaseDao {
             }
         }
         return entryList;
+    }
+
+    public Map<ObjectId,SubjectClassEntry> getSubjectClassEntryMap(List<ObjectId> objectIdList){
+        Map<ObjectId,SubjectClassEntry> subjectClassEntryMap=new HashMap<ObjectId, SubjectClassEntry>();
+        BasicDBObject query = new BasicDBObject(Constant.ID,new BasicDBObject(Constant.MONGO_IN,objectIdList))
+                .append("isr", 0); // 未删除
+        List<DBObject> dbList =
+                find(MongoFacroty.getAppDB(),
+                        Constant.COLLECTION_SUBJECT_CLASS,
+                        query, Constant.FIELDS,
+                        Constant.MONGO_SORTBY_ASC);
+        if (dbList != null && !dbList.isEmpty()) {
+            for (DBObject obj : dbList) {
+                SubjectClassEntry entry=new SubjectClassEntry((BasicDBObject) obj);
+                subjectClassEntryMap.put(entry.getID(),entry);
+            }
+        }
+        return subjectClassEntryMap;
     }
     public List<SubjectClassEntry> getListByList(List<ObjectId> objectIdList){
         BasicDBObject query = new BasicDBObject(Constant.ID,new BasicDBObject(Constant.MONGO_IN,objectIdList))

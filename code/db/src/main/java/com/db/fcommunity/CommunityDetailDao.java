@@ -78,6 +78,8 @@ public class CommunityDetailDao extends BaseDao {
         return detailEntries;
     }
 
+
+
     public List<CommunityDetailEntry> getDetails(List<ObjectId> communityIds, int page, int pageSize, int order, int type) {
         List<CommunityDetailEntry> detailEntries = new ArrayList<CommunityDetailEntry>();
         BasicDBObject query = new BasicDBObject().append("cmid", new BasicDBObject(Constant.MONGO_IN,communityIds))

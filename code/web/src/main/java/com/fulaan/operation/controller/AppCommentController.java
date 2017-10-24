@@ -230,7 +230,30 @@ public class AppCommentController extends BaseController {
         }
         return JSON.toJSONString(respObj);
     }
+    /**
+     * 查找当前当前月份学生收到作业情况列表
+     * @return
+     */
+    @ApiOperation(value = "查找当前当前月份学生收到作业情况列表", httpMethod = "POST", produces = "application/json")
+    @ApiResponses( value = {@ApiResponse(code = 200, message = "Successful — 请求已完成",response = String.class),
+            @ApiResponse(code = 400, message = "请求中有语法问题，或不能满足请求"),
+            @ApiResponse(code = 500, message = "服务器不能完成请求")})
+    @RequestMapping("/selectStudentResultList")
+    @ResponseBody
+    public String selectStudentResultList(@ApiParam(name = "month", required = true, value = "月份（MM）") @RequestParam("month") int month){
 
+        RespObj respObj=null;
+        try {
+            respObj = RespObj.SUCCESS;
+            List<String> dtos = appCommentService.selectStudentResultList(month, getUserId());
+            respObj.setMessage(dtos);
+        } catch (Exception e) {
+            e.printStackTrace();
+            respObj = RespObj.FAILD;
+            respObj.setErrorMessage("查找当前当前月份用户发放作业情况名单失败!");
+        }
+        return JSON.toJSONString(respObj);
+    }
     /**
      * 查找当前点击的事件老师/家长发放作业情况列表
      * @return

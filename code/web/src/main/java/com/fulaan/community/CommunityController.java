@@ -1439,6 +1439,22 @@ public class CommunityController extends BaseController {
     }
 
 
+    @RequestMapping("/getOtherMessage")
+    @ResponseBody
+    @SessionNeedless
+    @ApiOperation(value = "查询某个类别的列表", httpMethod = "GET", produces = "application/json")
+    @ApiResponses(value = {@ApiResponse(code = 200, message = "查询某个社区类别的列表成功",response = RespObj.class),
+            @ApiResponse(code = 500, message = "查询某个社区类别的列表失败")})
+    public RespObj getOtherMessage(@ApiParam(name="page",required = false,value = "页码")@RequestParam(required = false, defaultValue = "1") int page,
+                              @ApiParam(name="pageSize",required = false,value = "页数")@RequestParam(required = false, defaultValue = "4") int pageSize,
+                              @ApiParam(name="type",required = false,value = "社区类别")@RequestParam(required = false, defaultValue = "1") int type) {
+        Platform pf = getPlatform();
+        boolean isApp = false;
+        if (pf == Platform.Android || pf == Platform.IOS) {
+            isApp = true;
+        }
+        return RespObj.SUCCESS(communityService.getOtherMessages(page, pageSize, CommunityDetailType.getType(type), getUserId(), isApp));
+    }
     @RequestMapping("/getMessage")
     @ResponseBody
     @SessionNeedless

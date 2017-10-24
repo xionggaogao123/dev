@@ -373,6 +373,33 @@ public class AppCommentService {
         return dtos2;
     }
     /**
+     * 按月查找学生收到作业情况
+     */
+    public List<String> selectStudentResultList(int month,ObjectId userId){
+        List<Integer> ilist = new ArrayList<Integer>();
+        ilist.add(month);
+        ilist.add(month-1);
+        ilist.add(month+1);
+        List<ObjectId> obList = newVersionBindService.getCommunityIdsByUserId(userId);
+        //收到的
+        List<AppCommentEntry> entries = appCommentDao.selectDateListMonth(obList, ilist);
+        //Set<Integer> set=new HashSet<Integer>(list);
+        List<String> dtos = new ArrayList<String>();
+        if(entries.size()>0){
+            for(AppCommentEntry en : entries){
+                AppCommentDTO dto = new AppCommentDTO(en);
+                dtos.add(dto.getDateTime().substring(0, 10));
+            }
+        }
+
+
+        Set<String> set=new HashSet<String>(dtos);
+        List<String> dtos2 = new ArrayList<String>();
+        dtos2.addAll(set);
+        return dtos2;
+    }
+
+    /**
      * 按日查找用户发放作业情况
      */
     public Map<String,Object> selectDateList(long dateTime,ObjectId userId){
@@ -473,23 +500,33 @@ public class AppCommentService {
         List<String> uids = new ArrayList<String>();
         List<ObjectId> obList = newVersionBindService.getCommunityIdsByUserId(studentId);
         List<AppCommentEntry> entries2 = appCommentDao.selectDateList2(obList, dateTime);
-        UserDetailInfoDTO studtos = userService.getUserInfoById(studentId.toString());
+        //UserDetailInfoDTO studtos = userService.getUserInfoById(studentId.toString());
+        uids.add(studentId.toString());
         if(entries2.size()>0){
             for(AppCommentEntry en : entries2){
                 AppCommentDTO dto3 = new AppCommentDTO(en);
                 if(dto3.getAdminId() != null && olist.contains(dto3.getAdminId())){
 
                 }else{
-                    String ctm = dto3.getCreateTime().substring(11,16);
+                    String ctm = dto3.getCreateTime();
                     dto3.setCreateTime(ctm);
                     dto3.setType(2);
-                    if(studtos != null){
-                        dto3.setSendUser(studtos.getUserName());
-                    }
                     uids.add(dto3.getAdminId());
                     dtos.add(dto3);
                 }
             }
+        }
+        List<UserDetailInfoDTO> udtos = userService.findUserInfoByUserIds(uids);
+        Map<String,UserDetailInfoDTO> map = new HashMap<String, UserDetailInfoDTO>();
+        if(udtos != null && udtos.size()>0){
+            for(UserDetailInfoDTO dto4 : udtos){
+                map.put(dto4.getId(),dto4);
+            }
+        }
+        for(AppCommentDTO dto5 : dtos){
+            dto5.setAdminName(map.get(dto5.getAdminId()).getUserName());
+            dto5.setAdminUrl(map.get(dto5.getAdminId()).getImgUrl());
+            dto5.setSendUser(map.get(studentId.toString()).getImgUrl());
         }
         return dtos;
     }
@@ -862,6 +899,11 @@ public class AppCommentService {
      */
     public void updateEntry(AppCommentDTO dto){
         AppCommentEntry entry = dto.updateEntry();
+        //获得当前时间
+        long current=System.currentTimeMillis();
+        //获得时间批次
+        long zero=current/(1000*3600*24)*(1000*3600*24)- TimeZone.getDefault().getRawOffset();//今天零点零分零秒的毫秒数
+        entry.setDateTime(zero);
         appCommentDao.updEntry(entry);
     }
 

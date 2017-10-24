@@ -42,6 +42,16 @@ public class CommunityDao extends BaseDao {
         return dbObject == null ? null : new CommunityEntry(dbObject);
     }
 
+    public List<CommunityEntry> findByObjectIds(List<ObjectId> ids) {
+        BasicDBObject query = new BasicDBObject(Constant.ID, new BasicDBObject(Constant.MONGO_IN,ids));
+        List<DBObject> dbObjects = find(MongoFacroty.getAppDB(), Constant.COLLECTION_FORUM_COMMUNITY, query);
+        List<CommunityEntry> communitys = new ArrayList<CommunityEntry>();
+        for (DBObject dbo : dbObjects) {
+            communitys.add(new CommunityEntry(dbo));
+        }
+        return communitys;
+    }
+
     /**
      * 返回社区Entry
      *

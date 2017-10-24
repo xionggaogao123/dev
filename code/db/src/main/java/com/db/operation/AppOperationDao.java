@@ -79,6 +79,7 @@ public class AppOperationDao extends BaseDao {
         BasicDBObject query = new BasicDBObject()
                 .append("cid",contactId)
                 .append("rol", role)
+                .append("lev", 1)
                 .append("isr",Constant.ZERO); // 未删除
         int count =
                 count(MongoFacroty.getAppDB(),

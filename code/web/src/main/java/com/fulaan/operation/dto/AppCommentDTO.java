@@ -50,7 +50,7 @@ public class AppCommentDTO {
     private String createTime;
     private int month;
     private int number;//回复人数
-    private int type;//leixing
+    private int type;//leixing 1已发送 2 已接受
     private String adminName;//发送人姓名
     private String adminUrl;//发送人图片
     private String sendUser;//孩子名称
@@ -65,7 +65,7 @@ public class AppCommentDTO {
             this.description = e.getDescription();
             this.title = e.getTitle();
             if(e.getLoadTime()!=0l){
-                this.loadTime = DateTimeUtils.getLongToStrTimeTwo(e.getDateTime());
+                this.loadTime = DateTimeUtils.getLongToStrTimeTwo(e.getLoadTime());
             }else{
                 this.loadTime = "";
             }

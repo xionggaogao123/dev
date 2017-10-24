@@ -1,7 +1,6 @@
 package com.fulaan.service;
 
 import com.db.fcommunity.*;
-import com.db.reportCard.GroupExamDetailDao;
 import com.db.reportCard.GroupExamUserRecordDao;
 import com.db.user.UserDao;
 import com.fulaan.cache.RedisUtils;
@@ -60,6 +59,7 @@ public class CommunityService {
     private FVoteService fVoteService;
     @Autowired
     private FInformationService fInformationService;
+
 
     private UserDao userDao = new UserDao();
     private CommunityDao communityDao = new CommunityDao();
@@ -1096,7 +1096,181 @@ public class CommunityService {
         return pageModel;
 
     }
+    /**
+     * 获取某个Messages
+     *
+     * @param page
+     * @param pageSize
+     * @return
+     */
+    public PageModel<CommunityDetailDTO> getOtherMessages(int page, int pageSize, CommunityDetailType type, ObjectId userId, boolean isApp) {
+        PageModel<CommunityDetailDTO> pageModel = new PageModel<CommunityDetailDTO>();
+        List<CommunityDTO> communityDTOList =getCommunitys(userId, 1, 100);
+        List<ObjectId>  objectIdList = new ArrayList<ObjectId>();
+        if(communityDTOList.size() >0){
+            for(CommunityDTO dto : communityDTOList){
+                objectIdList.add(new ObjectId(dto.getId()));
+            }
+        }
+        List<CommunityDetailEntry> entries = communityDetailDao.getDetails(objectIdList, page, pageSize, Constant.DESC, type.getType());
+        int counts = communityDetailDao.count(objectIdList, type.getType());
 
+        int totalPages = counts % pageSize == 0 ? counts / pageSize : (int) Math.ceil(counts / pageSize) + 1;
+        page = page > totalPages ? totalPages : page;
+        if (totalPages == 0 || page < 1) {
+            page = 1;
+        }
+
+        if (type.getType() == CommunityDetailType.ANNOUNCEMENT.getType() && isApp) {
+            if (null != userId) {
+                setAppRead(userId, entries);
+            }
+        }
+        Set<ObjectId> set = new HashSet<ObjectId>();
+        for(CommunityDetailEntry ent : entries){
+            set.add(new ObjectId(ent.getCommunityId()));
+        }
+        List<ObjectId> idlist = new ArrayList<ObjectId>();
+        idlist.addAll(set);
+        List<CommunityEntry> communityEntrys = communityDao.findByObjectIds(idlist);
+        Map<ObjectId,CommunityEntry> cmap = new HashMap<ObjectId, CommunityEntry>();
+        for(CommunityEntry ce : communityEntrys){
+            cmap.put(ce.getID(),ce);
+        }
+        List<CommunityDetailDTO> dtos = new ArrayList<CommunityDetailDTO>();
+        Set<ObjectId> userIds = new HashSet<ObjectId>();
+        for (CommunityDetailEntry entry : entries) {
+            userIds.add(entry.getCommunityUserId());
+        }
+        List<ObjectId> objectIds = new ArrayList<ObjectId>(userIds);
+        Map<ObjectId, UserEntry> map = userService.getUserEntryMap(objectIds, Constant.FIELDS);
+        //获取群昵称
+        List<ObjectId> communityIds = new ArrayList<ObjectId>();
+        communityIds.addAll(idlist);
+        List<ObjectId> groupIdList = new ArrayList<ObjectId>();
+        Map<ObjectId, ObjectId> groupIds = communityDao.getGroupIds(communityIds);
+        for (Map.Entry<ObjectId, ObjectId> item : groupIds.entrySet()) {
+            groupIdList.add(item.getValue());
+        }
+        Map<String, MemberEntry> memberMap = memberDao.getGroupNick(groupIdList, objectIds);
+        //查询备注名
+        Map<ObjectId, RemarkEntry> remarkEntryMap=new HashMap<ObjectId, RemarkEntry>();
+        if(null!=userId){
+            remarkEntryMap=remarkDao.find(userId,objectIds);
+        }
+        for (CommunityDetailEntry entry : entries) {
+            UserEntry userEntry = map.get(entry.getCommunityUserId());
+            CommunityDetailDTO communityDetailDTO = new CommunityDetailDTO(entry);
+            if (userEntry != null) {
+                communityDetailDTO.setImageUrl(AvatarUtils.getAvatar(userEntry.getAvatar(), userEntry.getRole(),userEntry.getSex()));
+            }
+
+            ObjectId groupId = groupIds.get(new ObjectId(entry.getCommunityId()));
+            MemberEntry entry1 = memberMap.get(groupId + "$" + entry.getCommunityUserId());
+
+            setCommunityDetailInfo(communityDetailDTO, userEntry, entry1);
+            //设置备注名
+            if(null!=remarkEntryMap){
+                RemarkEntry remarkEntry=remarkEntryMap.get(entry.getCommunityUserId());
+                if(null!=remarkEntry){
+                    communityDetailDTO.setNickName(remarkEntry.getRemark());
+                }
+            }
+
+            if (null != userId) {
+                communityDetailDTO.setReadFlag(0);
+                if (entry.getUnReadList().size() > 0 && entry.getUnReadList().contains(userId)) {
+                    communityDetailDTO.setReadFlag(1);
+                }
+            } else{
+                communityDetailDTO.setReadFlag(1);
+            }
+
+            if (type.getType() == CommunityDetailType.VOTE.getType()) {
+                int voteCount = fVoteService.getFVoteCount(entry.getID().toString());
+                communityDetailDTO.setVoteCount(voteCount);
+                long nowTime = System.currentTimeMillis();
+                if (nowTime < entry.getVoteDeadTime()) {
+                    communityDetailDTO.setVoteDeadFlag(0);
+                } else {
+                    communityDetailDTO.setVoteDeadFlag(1);
+                }
+                communityDetailDTO.setHasVoted(0);
+                if (null != userId) {
+                    FVoteEntry fVoteEntry = fVoteService.getFVote(entry.getID().toString(), userId.toString());
+                    if (null != fVoteEntry) {
+                        communityDetailDTO.setHasVoted(1);
+                    }
+                }
+                String voteContent = entry.getVoteContent();
+                List<String> voteOptions = new ArrayList<String>();
+                if (voteContent.contains("/n/r")) {
+                    String[] str = voteContent.split("/n/r");
+                    for (String item : str) {
+                        voteOptions.add(item);
+                    }
+                } else {
+                    voteOptions.add(voteContent);
+                }
+                communityDetailDTO.setVoteOptions(voteOptions);
+            }
+
+            List<PartInContentDTO> partInContentDTOs = new ArrayList<PartInContentDTO>();
+            List<PartInContentEntry> partInContentEntries = partInContentDao.getPartInContent(entry.getID(), -1, 1, 1);
+            Set<ObjectId> partInUserIds = new HashSet<ObjectId>();
+            for (PartInContentEntry partInContentEntry : partInContentEntries) {
+                partInUserIds.add(partInContentEntry.getUserId());
+            }
+            List<ObjectId> partInUsers= new ArrayList<ObjectId>(partInUserIds);
+            Map<String, MemberEntry> partInMembermap = memberDao.getGroupNick(groupIdList,partInUsers);
+            Map<ObjectId, RemarkEntry> remarkEntryHashMap=new HashMap<ObjectId, RemarkEntry>();
+            if(null!=userId){
+                remarkEntryHashMap=remarkDao.find(userId,partInUsers);
+            }
+            for (PartInContentEntry partInContentEntry : partInContentEntries) {
+                PartInContentDTO partInContentDTO = new PartInContentDTO(partInContentEntry);
+                UserEntry userEntry1 = userService.findById(partInContentEntry.getUserId());
+                partInContentDTO.setUserName(userEntry1.getUserName());
+                partInContentDTO.setAvator(AvatarUtils.getAvatar(userEntry1.getAvatar(), userEntry1.getRole(),userEntry1.getSex()));
+
+                MemberEntry entry2 = partInMembermap.get(groupId + "$" + partInContentEntry.getUserId());
+                setPartInContentDTOInfo(partInContentDTO, userEntry1, entry2);
+                //设置备注名
+                if(null!=remarkEntryHashMap){
+                    RemarkEntry remarkEntry=remarkEntryHashMap.get(partInContentEntry.getUserId());
+                    if(null!=remarkEntry){
+                        partInContentDTO.setNickName(remarkEntry.getRemark());
+                    }
+                }
+                partInContentDTO.setTime(DateUtils.timeStampToStr(partInContentEntry.getID().getTimestamp()));
+                partInContentDTOs.add(partInContentDTO);
+            }
+            int totalCount = partInContentDao.countPartPartInContent(entry.getID());
+            communityDetailDTO.setPartIncotentCount(totalCount);
+            //设置权限
+            setRoleStr(communityDetailDTO, cmap.get(new ObjectId(communityDetailDTO.getCommunityId())), entry.getCommunityUserId());
+            communityDetailDTO.setPartList(partInContentDTOs);
+            //设置是否点过赞
+            List<String> zanList=communityDetailDTO.getZanList();
+            communityDetailDTO.setIsZan(0);
+            if(null!=userId&&zanList.contains(userId.toString())){
+                communityDetailDTO.setIsZan(1);
+            }
+            dtos.add(communityDetailDTO);
+        }
+
+        pageModel.setPage(page);
+        pageModel.setPageSize(pageSize);
+        pageModel.setTotalCount(counts);
+        pageModel.setTotalPages(totalPages);
+        pageModel.setResult(dtos);
+        //int totalCount = communityDetailDao.count(communityId, type);
+        //int readCount = communityDetailDao.countRead(type, communityId, userId);
+        //int unreadCount = counts - readCount;
+        //pageModel.setTotalUnReadCount(unreadCount);
+        return pageModel;
+
+    }
     private void setAppRead(ObjectId userId, List<CommunityDetailEntry> entries) {
         for (CommunityDetailEntry entry : entries) {
             boolean flag = true;

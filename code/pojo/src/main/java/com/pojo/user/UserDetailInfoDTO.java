@@ -112,7 +112,7 @@ public class UserDetailInfoDTO extends UserInfoDTO implements Serializable {
     }
 
     public UserDetailInfoDTO(UserEntry userEntry, int type) {
-        this.imgUrl = AvatarUtils.getAvatar(userEntry.getAvatar(), 1);
+        this.imgUrl = AvatarUtils.getAvatar(userEntry.getAvatar(),userEntry.getRole(),userEntry.getSex());
         setId(userEntry.getID().toString());
         this.nickName = userEntry.getNickName();
         this.chatid = userEntry.getChatId();
@@ -123,7 +123,7 @@ public class UserDetailInfoDTO extends UserInfoDTO implements Serializable {
     public UserDetailInfoDTO(UserEntry userEntry) {
         this.generateUserCode=userEntry.getGenerateUserCode();
         this.address = userEntry.getAddress();
-        this.imgUrl = AvatarUtils.getAvatar(userEntry.getAvatar(), 1);
+        this.imgUrl = AvatarUtils.getAvatar(userEntry.getAvatar(),userEntry.getRole(),userEntry.getSex());
         this.birthDate = new Date(userEntry.getBirthDate());
         this.bloodType = userEntry.getBloodType();
         this.email = userEntry.getEmail();

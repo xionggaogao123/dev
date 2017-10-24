@@ -42,7 +42,7 @@ public class GroupExamUserRecordDao extends BaseDao{
      * @param groupExamDetailId
      * @return
      */
-    public List<GroupExamUserRecordEntry> getExamUserRecordEntries(ObjectId groupExamDetailId,int score,int scoreLevel,int type){
+    public List<GroupExamUserRecordEntry> getExamUserRecordEntries(ObjectId groupExamDetailId,int score,int maxScoreLevel,int scoreLevel,int type){
         List<Integer> status=new ArrayList<Integer>();
         status.add(Constant.ZERO);
         status.add(Constant.TWO);
@@ -55,7 +55,7 @@ public class GroupExamUserRecordDao extends BaseDao{
                 query.append("sc", new BasicDBObject(Constant.MONGO_GTE, score));
             }
             if (scoreLevel != -1) {
-                query.append("scl", new BasicDBObject(Constant.MONGO_GTE, scoreLevel));
+                query.append("scl", new BasicDBObject(Constant.MONGO_GTE, scoreLevel).append(Constant.MONGO_LTE,maxScoreLevel));
             }
         }else{
             if (score != -1) {
@@ -101,11 +101,11 @@ public class GroupExamUserRecordDao extends BaseDao{
         List<Integer> statuses=new ArrayList<Integer>();
         if(status!=-1){
             statuses.add(status);
-            if(status==Constant.TWO){
-                statuses.add(Constant.ZERO);
-            }
+//            if(status==Constant.TWO){
+//                statuses.add(Constant.ZERO);
+//            }
         }else{
-            statuses.add(Constant.ZERO);
+//            statuses.add(Constant.ZERO);
             statuses.add(Constant.TWO);
             statuses.add(Constant.THREE);
         }
@@ -153,11 +153,11 @@ public class GroupExamUserRecordDao extends BaseDao{
         List<Integer> statuses=new ArrayList<Integer>();
         if(status!=-1){
             statuses.add(status);
-            if(status==Constant.TWO) {
-                statuses.add(Constant.ZERO);
-            }
+//            if(status==Constant.TWO) {
+//                statuses.add(Constant.ZERO);
+//            }
         }else{
-            statuses.add(Constant.ZERO);
+//            statuses.add(Constant.ZERO);
             statuses.add(Constant.TWO);
             statuses.add(Constant.THREE);
         }

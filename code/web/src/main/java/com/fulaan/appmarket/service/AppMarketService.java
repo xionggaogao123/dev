@@ -34,8 +34,8 @@ public class AppMarketService {
     private UserService userService;
 
 
-    public void saveAppDetail(AppDetailDTO appDetailDTO){
-        appDetailDao.saveAppDetailEntry(appDetailDTO.buildEntry());
+    public void saveAppDetail(AppDetailDTO appDetailDTO,ObjectId userId){
+        appDetailDao.saveAppDetailEntry(appDetailDTO.buildEntry(userId));
     }
 
     public List<AppDetailDTO> getAppByCondition(String regular){

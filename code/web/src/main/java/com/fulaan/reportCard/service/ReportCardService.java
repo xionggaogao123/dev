@@ -157,7 +157,17 @@ public class ReportCardService {
 
     public List<GroupExamUserRecordDTO> searchRecordStudentScores(ObjectId groupExamDetailId,int score,int scoreLevel,int type){
         List<GroupExamUserRecordDTO> recordExamScoreDTOs=new ArrayList<GroupExamUserRecordDTO>();
-        final List<GroupExamUserRecordEntry> recordEntries=groupExamUserRecordDao.getExamUserRecordEntries(groupExamDetailId,score,scoreLevel,type);
+        int maxScoreLevel=100;
+        if(scoreLevel>=RecordLevelEnum.AP.getLevelScore()){
+            maxScoreLevel=100;
+        }else if(scoreLevel>=RecordLevelEnum.BP.getLevelScore()){
+            maxScoreLevel=97;
+        }else if(scoreLevel>=RecordLevelEnum.CP.getLevelScore()){
+            maxScoreLevel=94;
+        }else if(scoreLevel>=RecordLevelEnum.DP.getLevelScore()){
+            maxScoreLevel=91;
+        }
+        final List<GroupExamUserRecordEntry> recordEntries=groupExamUserRecordDao.getExamUserRecordEntries(groupExamDetailId,score,maxScoreLevel,scoreLevel,type);
         Set<ObjectId> userIds=new HashSet<ObjectId>();
         for(GroupExamUserRecordEntry recordEntry:recordEntries){
             userIds.add(recordEntry.getUserId());
@@ -459,7 +469,7 @@ public class ReportCardService {
             groupExamDetailDao.updateSignCount(groupExamDetailId, userIds.size());
             GroupExamVersionEntry versionEntry = new GroupExamVersionEntry(groupExamDetailId, 1L);
             groupExamVersionDao.saveGroupExamVersionEntry(versionEntry);
-            return versionEntry.getID().toString();
+            return groupExamDetailId.toString();
         }else{
             GroupExamDetailEntry oldEntry=groupExamDetailDao.getGroupExamDetailEntry(new ObjectId(id));
             if(null!=oldEntry) {
@@ -489,7 +499,7 @@ public class ReportCardService {
                 groupExamUserRecordDao.updateGroupExamUserRecordScore(new ObjectId(dto.getId()),
                         dto.getScore(),dto.getScoreLevel(),dto.getRank());
             }
-            List<GroupExamUserRecordEntry> recordEntries=groupExamUserRecordDao.getExamUserRecordEntries(new ObjectId(groupExamDetailId),-1,-1,1);
+            List<GroupExamUserRecordEntry> recordEntries=groupExamUserRecordDao.getExamUserRecordEntries(new ObjectId(groupExamDetailId),-1,-1,-1,1);
             examScoreDTOs.clear();
             for(GroupExamUserRecordEntry entry:recordEntries){
                 examScoreDTOs.add(new GroupExamUserRecordDTO(entry));

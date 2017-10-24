@@ -2,6 +2,7 @@ package com.fulaan.pojo;
 
 import com.fulaan.util.DateUtils;
 import com.pojo.fcommunity.AttachmentEntry;
+import com.sys.constants.Constant;
 
 /**
  * Created by jerry on 2016/10/25.
@@ -17,7 +18,7 @@ public class Attachement {
     public Attachement(AttachmentEntry entry) {
         this.url = entry.getUrl();
         this.flnm = entry.getFileName();
-        this.uploadUserId = entry.getUserId().toString();
+        this.uploadUserId = null!=entry.getUserId()?entry.getUserId().toString(): Constant.EMPTY;
         this.time = DateUtils.timeStampToStr(entry.getTime() / 1000);
     }
 

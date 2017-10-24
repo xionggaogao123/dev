@@ -50,7 +50,7 @@ public class DefaultAppMarketController extends BaseController{
     public RespObj saveAppDetail(@RequestBody AppDetailDTO appDetailDTO){
         RespObj respObj=new RespObj(Constant.FAILD_CODE);
         try{
-            appMarketService.saveAppDetail(appDetailDTO);
+            appMarketService.saveAppDetail(appDetailDTO,getUserId());
             respObj.setMessage("保存应用成功!");
             respObj.setCode(Constant.SUCCESS_CODE);
         }catch (Exception e){

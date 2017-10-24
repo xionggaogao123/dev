@@ -25,9 +25,11 @@ public class AppDetailEntry extends BaseDBObject{
                           String appPackageName,
                           String logo,
                           int type,
-                          long size,
+                          long appSize,
+                          int versionCode,
+                          String size,
                           List<AttachmentEntry> imageList,
-                          String version,
+                          String versionName,
                           String description,
                           String appName,
                           String url){
@@ -36,13 +38,16 @@ public class AppDetailEntry extends BaseDBObject{
                 .append("apn",appPackageName)
                 .append("lg",logo)
                 .append("ty",type)
+                .append("asz",appSize)
                 .append("sz",size)
                 .append("ur",url)
                 .append("an",appName)
                 .append("il", MongoUtils.fetchDBObjectList(imageList))
-                .append("vs",version)
+                .append("vs",versionName)
+                .append("vc",versionCode)
                 .append("des",description)
                 .append("ti",System.currentTimeMillis())
+                .append("iu",Constant.ZERO)
                 .append("ir", Constant.ZERO);
         setBaseEntry(basicDBObject);
     }
@@ -50,9 +55,11 @@ public class AppDetailEntry extends BaseDBObject{
     public AppDetailEntry(String appPackageName,
                           String logo,
                           int type,
-                          long size,
+                          long appSize,
+                          int versionCode,
+                          String size,
                           List<AttachmentEntry> imageList,
-                          String version,
+                          String versionName,
                           String description,
                           String appName,
                           String url){
@@ -60,15 +67,42 @@ public class AppDetailEntry extends BaseDBObject{
                 .append("apn",appPackageName)
                 .append("lg",logo)
                 .append("ty",type)
+                .append("asz",appSize)
                 .append("sz",size)
                 .append("ur",url)
                 .append("an",appName)
                 .append("il", MongoUtils.fetchDBObjectList(imageList))
-                .append("vs",version)
+                .append("vs",versionName)
+                .append("vc",versionCode)
                 .append("des",description)
                 .append("ti",System.currentTimeMillis())
+                .append("iu",Constant.ZERO)
                 .append("ir", Constant.ZERO);
         setBaseEntry(basicDBObject);
+    }
+
+    public int getIsUpdated(){
+        return getSimpleIntegerValue("iu");
+    }
+
+    public void setIsUpdated(int isUpdated){
+        setSimpleValue("iu",isUpdated);
+    }
+
+    public void setVersionCode(int versionCode){
+        setSimpleValue("vc",versionCode);
+    }
+
+    public int getVersionCode(){
+        return getSimpleIntegerValue("vc");
+    }
+
+    public void setAppSize(long appSize){
+        setSimpleValue("asz",appSize);
+    }
+
+    public long getAppSize(){
+        return getSimpleIntegerValue("asz");
     }
 
     public void setAppName(String appName){
@@ -104,12 +138,12 @@ public class AppDetailEntry extends BaseDBObject{
         setSimpleValue("des",description);
     }
 
-    public String getVersion(){
+    public String getVersionName(){
         return getSimpleStringValue("vs");
     }
 
-    public void setVersion(String version){
-        setSimpleValue("vs",version);
+    public void setVersionName(String versionName){
+        setSimpleValue("vs",versionName);
     }
 
 
@@ -126,11 +160,11 @@ public class AppDetailEntry extends BaseDBObject{
         return attachmentEntries;
     }
 
-    public long getSize(){
-        return getSimpleLongValue("sz");
+    public String getSize(){
+        return getSimpleStringValue("sz");
     }
 
-    public void setSize(long size){
+    public void setSize(String size){
         setSimpleValue("sz",size);
     }
 

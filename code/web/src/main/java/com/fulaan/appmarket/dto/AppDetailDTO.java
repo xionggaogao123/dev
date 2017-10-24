@@ -18,18 +18,21 @@ public class AppDetailDTO {
     private String appPackageName;
     private String logo;
     private int type;
-    private long size;
+    private String size;
+    private long appSize;
+    private int versionCode;
     private List<Attachement> imageList=new ArrayList<Attachement>();
-    private String version;
+    private String versionName;
     private String description;
     private String appName;
     private String url;
+    private int isUpdated;
 
     public AppDetailDTO(){
 
     }
 
-    public AppDetailEntry buildEntry(){
+    public AppDetailEntry buildEntry(ObjectId userId){
         ObjectId aId=null;
         if(StringUtils.isNotBlank(id)&&ObjectId.isValid(id)){
             aId=new ObjectId(id);
@@ -37,14 +40,14 @@ public class AppDetailDTO {
         List<AttachmentEntry> images=new ArrayList<AttachmentEntry>();
         for(Attachement attachement:imageList){
             images.add(new AttachmentEntry(attachement.getUrl(), attachement.getFlnm(),
-            System.currentTimeMillis(), null));
+            System.currentTimeMillis(), userId));
         }
         if(null!=aId){
-            return new AppDetailEntry(aId,appPackageName,logo, type, size,
-            images, version, description,appName,url);
+            return new AppDetailEntry(aId,appPackageName,logo, type,appSize,versionCode, size,
+            images, versionName, description,appName,url);
         }else{
-            return new AppDetailEntry(appPackageName,logo, type, size,
-                    images, version, description,appName,url);
+            return new AppDetailEntry(appPackageName,logo, type,appSize, versionCode,size,
+                    images, versionName, description,appName,url);
         }
     }
 
@@ -58,10 +61,37 @@ public class AppDetailDTO {
         for(AttachmentEntry item:images){
             imageList.add(new Attachement(item));
         }
-        this.version=detailEntry.getVersion();
+        this.versionName=detailEntry.getVersionName();
         this.description=detailEntry.getDescription();
         this.url=detailEntry.getUrl();
         this.appName=detailEntry.getAppName();
+        this.appSize=detailEntry.getAppSize();
+        this.versionCode=detailEntry.getVersionCode();
+        this.isUpdated=detailEntry.getIsUpdated();
+    }
+
+    public int getIsUpdated() {
+        return isUpdated;
+    }
+
+    public void setIsUpdated(int isUpdated) {
+        this.isUpdated = isUpdated;
+    }
+
+    public int getVersionCode() {
+        return versionCode;
+    }
+
+    public void setVersionCode(int versionCode) {
+        this.versionCode = versionCode;
+    }
+
+    public long getAppSize() {
+        return appSize;
+    }
+
+    public void setAppSize(long appSize) {
+        this.appSize = appSize;
     }
 
     public String getAppName() {
@@ -112,11 +142,11 @@ public class AppDetailDTO {
         this.type = type;
     }
 
-    public long getSize() {
+    public String getSize() {
         return size;
     }
 
-    public void setSize(long size) {
+    public void setSize(String size) {
         this.size = size;
     }
 
@@ -128,12 +158,12 @@ public class AppDetailDTO {
         this.imageList = imageList;
     }
 
-    public String getVersion() {
-        return version;
+    public String getVersionName() {
+        return versionName;
     }
 
-    public void setVersion(String version) {
-        this.version = version;
+    public void setVersionName(String versionName) {
+        this.versionName = versionName;
     }
 
     public String getDescription() {

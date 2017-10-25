@@ -110,7 +110,7 @@ public class AppCommentService {
             en.setRecipientName(dto3.getName());
             String oid = appCommentDao.addEntry(en);
             ObjectId groupId=communityDao.getGroupId(new ObjectId(dto3.getId()));
-            if(null!=groupId){
+            if(null!=groupId && dto.getStatus()==0){
                 List<MemberEntry> memberEntries=memberDao.getAllMembers(groupId);
                 Set<String> userIds=new HashSet<String>();
                 for(MemberEntry memberEntry:memberEntries){

@@ -117,7 +117,7 @@ public class AppCommentService {
                     userIds.add(memberEntry.getUserId().toString());
                 }
                 Audience audience = Audience.alias(new ArrayList<String>(userIds));
-                jPushUtils.pushRestIosbusywork(audience,"你有新的通知",new HashMap<String,String>());
+                jPushUtils.pushRestIosbusywork(audience,dto.getTitle(),new HashMap<String,String>());
             }
 
 

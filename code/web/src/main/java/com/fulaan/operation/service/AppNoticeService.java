@@ -1,5 +1,6 @@
 package com.fulaan.operation.service;
 
+import cn.jpush.api.push.model.audience.Audience;
 import com.db.fcommunity.CommunityDao;
 import com.db.fcommunity.MemberDao;
 import com.db.fcommunity.NewVersionCommunityBindDao;
@@ -15,7 +16,9 @@ import com.fulaan.operation.dto.GroupOfCommunityDTO;
 import com.fulaan.pojo.Attachement;
 import com.fulaan.pojo.User;
 import com.fulaan.user.service.UserService;
+import com.fulaan.utils.JPushUtils;
 import com.pojo.appnotice.AppNoticeEntry;
+import com.pojo.fcommunity.MemberEntry;
 import com.pojo.fcommunity.NewVersionCommunityBindEntry;
 import com.pojo.indexPage.IndexPageEntry;
 import com.pojo.newVersionGrade.CommunityType;
@@ -24,14 +27,12 @@ import com.pojo.user.UserEntry;
 import com.sys.constants.Constant;
 import com.sys.utils.AvatarUtils;
 import com.sys.utils.TimeChangeUtils;
+import org.apache.commons.lang.StringUtils;
 import org.bson.types.ObjectId;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 /**
  * Created by scott on 2017/9/22.
@@ -107,6 +108,7 @@ public class AppNoticeService {
      */
     public void saveAppNoticeEntry(AppNoticeDTO dto,ObjectId userId){
         UserEntry userEntry=userService.findById(userId);
+        JPushUtils jPushUtils=new JPushUtils();
         for(GroupOfCommunityDTO communityDTO:dto.getGroupOfCommunityDTOs()){
             AppNoticeDTO appNoticeDTO=new AppNoticeDTO(
                     dto.getSubjectId(),
@@ -124,7 +126,15 @@ public class AppNoticeService {
                     userEntry.getUserName());
             appNoticeDTO.setUserId(userId.toString());
 
-
+            if(StringUtils.isNotBlank(communityDTO.getGroupId())){
+                List<MemberEntry> memberEntries=memberDao.getAllMembers(new ObjectId(communityDTO.getGroupId()));
+                Set<String> userIds=new HashSet<String>();
+                for(MemberEntry memberEntry:memberEntries){
+                    userIds.add(memberEntry.getUserId().toString());
+                }
+                Audience audience = Audience.alias(new ArrayList<String>(userIds));
+                jPushUtils.pushRestIosbusywork(audience,dto.getTitle(),new HashMap<String,String>());
+            }
             ObjectId oid = appNoticeDao.saveAppNoticeEntry(appNoticeDTO.buildEntry());
 
             //添加临时记录表

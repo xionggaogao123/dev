@@ -38,6 +38,16 @@ public class AppMarketService {
         appDetailDao.saveAppDetailEntry(appDetailDTO.buildEntry(userId));
     }
 
+
+    public AppDetailDTO getApp(ObjectId appId){
+        AppDetailEntry appDetailEntry=appDetailDao.findEntryById(appId);
+        if(null!=appDetailEntry){
+            return new AppDetailDTO(appDetailEntry);
+        }else{
+            return null;
+        }
+    }
+
     public List<AppDetailDTO> getAppByCondition(String regular){
         List<AppDetailDTO> detailDTOs=new ArrayList<AppDetailDTO>();
         List<AppDetailEntry> appDetailEntries=appDetailDao.getAppByCondition(regular);

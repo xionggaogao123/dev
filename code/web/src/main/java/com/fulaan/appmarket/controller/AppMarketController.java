@@ -78,6 +78,25 @@ public class AppMarketController extends BaseController{
         return respObj;
     }
 
+
+    @ApiOperation(value = "获取该应用", httpMethod = "POST", produces = "application/json")
+    @ApiResponses( value = {@ApiResponse(code = 200, message = "Successful — 请求已完成",response = RespObj.class),
+            @ApiResponse(code = 500, message = "服务器不能完成请求")})
+    @RequestMapping("/getApp")
+    @ResponseBody
+    public RespObj getApp( @ObjectIdType ObjectId appDetailId){
+        RespObj respObj=new RespObj(Constant.FAILD_CODE);
+        AppDetailDTO appDetailDTO=appMarketService.getApp(appDetailId);
+        if(null!=appDetailDTO){
+            respObj.setCode(Constant.SUCCESS_CODE);
+            respObj.setMessage(appDetailDTO);
+        }else{
+            respObj.setErrorMessage("传递参数有误！");
+        }
+        return respObj;
+    }
+
+
     @ApiOperation(value = "获取评论列表以及评分比例", httpMethod = "POST", produces = "application/json")
     @ApiResponses( value = {@ApiResponse(code = 200, message = "Successful — 请求已完成",response = RespObj.class),
             @ApiResponse(code = 500, message = "服务器不能完成请求")})

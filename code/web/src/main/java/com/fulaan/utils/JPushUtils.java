@@ -39,6 +39,9 @@ public class JPushUtils {
     private String masterSecret_ios = Resources.getProperty("JPush.masterSecret.ios");
     private String appKey_ios = Resources.getProperty("JPush.appKey.ios");
 
+    private String masterSecret_ios_busywork=Resources.getProperty("JPush.masterSecret.ios.busywork");
+    private String appKey_ios_busywork=Resources.getProperty("JPush.appKey.ios.busywork");
+
 
     /**
      * 发送通知到手机端
@@ -196,6 +199,19 @@ public class JPushUtils {
                 ).build();
     }
 
+
+    public  void pushRestIosbusywork(Audience audience, String mesgname, Map<String, String> parms){
+        JPushClient jpushClient = new JPushClient(masterSecret_ios_busywork, appKey_ios_busywork, 3);
+        PushPayload payload = buildPushObject_all_tag_alert_IOS(audience, mesgname, parms);
+        try {
+            PushResult result = jpushClient.sendPush(payload);
+            System.out.println(result);
+        } catch (APIConnectionException e) {
+            e.printStackTrace();
+        } catch (APIRequestException e) {
+            e.printStackTrace();
+        }
+    }
 
     /**
      * 极光推送

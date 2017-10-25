@@ -7,6 +7,7 @@ import com.mongodb.DBObject;
 import com.pojo.appmarket.AppDetailEntry;
 import com.sys.constants.Constant;
 import org.apache.commons.lang.StringUtils;
+import org.bson.types.ObjectId;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -19,6 +20,16 @@ public class AppDetailDao extends BaseDao {
 
     public void saveAppDetailEntry(AppDetailEntry detailEntry){
         save(MongoFacroty.getAppDB(), Constant.COLLECTION_APP_MARKET_DETAIL,detailEntry.getBaseEntry());
+    }
+
+    public AppDetailEntry findEntryById(ObjectId id){
+        BasicDBObject query=new BasicDBObject(Constant.ID,id);
+        DBObject dbObject=findOne(MongoFacroty.getAppDB(), Constant.COLLECTION_APP_MARKET_DETAIL,query,Constant.FIELDS);
+        if(null!=dbObject){
+            return new AppDetailEntry(dbObject);
+        }else{
+            return null;
+        }
     }
 
     public List<AppDetailEntry> getAppByCondition(String regular){

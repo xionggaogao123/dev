@@ -1,5 +1,6 @@
 package com.fulaan.operation.service;
 
+import cn.jpush.api.push.model.audience.Audience;
 import com.db.fcommunity.CommunityDao;
 import com.db.fcommunity.GroupDao;
 import com.db.fcommunity.MemberDao;
@@ -20,6 +21,7 @@ import com.fulaan.operation.dto.AppRecordDTO;
 import com.fulaan.pojo.User;
 import com.fulaan.service.CommunityService;
 import com.fulaan.user.service.UserService;
+import com.fulaan.utils.JPushUtils;
 import com.fulaan.wrongquestion.dto.SubjectClassDTO;
 import com.pojo.fcommunity.MemberEntry;
 import com.pojo.indexPage.IndexPageEntry;
@@ -101,11 +103,23 @@ public class AppCommentService {
                 }
             }
         }
-        for( CommunityDTO dto3 : sendList){
+        JPushUtils jPushUtils=new JPushUtils();
+        for(CommunityDTO dto3 : sendList){
             en.setID(null);
             en.setRecipientId(new ObjectId(dto3.getId()));
             en.setRecipientName(dto3.getName());
             String oid = appCommentDao.addEntry(en);
+            ObjectId groupId=communityDao.getGroupId(new ObjectId(dto3.getId()));
+            if(null!=groupId){
+                List<MemberEntry> memberEntries=memberDao.getAllMembers(groupId);
+                Set<String> userIds=new HashSet<String>();
+                for(MemberEntry memberEntry:memberEntries){
+                    userIds.add(memberEntry.getUserId().toString());
+                }
+                Audience audience = Audience.alias(new ArrayList<String>(userIds));
+                jPushUtils.pushRestIosbusywork(audience,"你有新的通知",new HashMap<String,String>());
+            }
+
 
             //添加临时记录表
             if(dto.getStatus()==0){

@@ -45,7 +45,7 @@ public class MemberDao extends BaseDao {
 
 
     public List<ObjectId> getMembersByList(List<ObjectId> groupId) {
-        BasicDBObject query = new BasicDBObject("grid", groupId).append("r", Constant.ZERO);
+        BasicDBObject query = new BasicDBObject("grid", new BasicDBObject(Constant.MONGO_IN,groupId)).append("r", Constant.ZERO);
         query.append("rl",0);
         BasicDBObject orderBy = new BasicDBObject(Constant.ID, Constant.DESC);
         List<ObjectId> memberEntries = new ArrayList<ObjectId>();

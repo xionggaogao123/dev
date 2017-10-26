@@ -1,5 +1,6 @@
 package com.fulaan.instantmessage.controller;
 
+import cn.jiguang.commom.utils.StringUtils;
 import com.alibaba.fastjson.JSON;
 import com.fulaan.base.BaseController;
 import com.fulaan.instantmessage.service.RedDotService;
@@ -84,13 +85,18 @@ public class RedDotController extends BaseController {
     @ApiResponse(code=200,message = "success", response = String.class)
     @RequestMapping("/cleanResult")
     @ResponseBody
-    public String cleanResult(@ApiParam(name = "type", required = true, value = "应用类型") @RequestParam("type") int type,
-                              @ApiParam(name = "dataTime", required = true, value = "日期（2017-10-26）") @RequestParam("dataTime") String dataTime){
+    public String cleanResult(
+            @ApiParam(name = "type", required = true, value = "应用类型") @RequestParam(required = false,defaultValue = "1") int type,
+            @ApiParam(name = "dataTime", required = true, value = "日期（2017-10-26）") @RequestParam(required = false,defaultValue = "") String dataTime){
         RespObj respObj=null;
         try {
             respObj = RespObj.SUCCESS;
-            long time = DateTimeUtils.getStrToLongTime(dataTime, "yyyy-MM-dd");
-            redDotService.cleanResult(getUserId(),type,time);
+            if(StringUtils.isNotEmpty(dataTime)) {
+                long time = DateTimeUtils.getStrToLongTime(dataTime, "yyyy-MM-dd");
+                redDotService.cleanResult(getUserId(), type, time);
+            }else{
+                redDotService.cleanResult(getUserId(), type, 0L);
+            }
             respObj.setMessage("修改成功");
         } catch (Exception e) {
             e.printStackTrace();

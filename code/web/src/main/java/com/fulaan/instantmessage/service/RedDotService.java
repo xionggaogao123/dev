@@ -41,7 +41,9 @@ public class RedDotService {
             dbList.add(obj.getBaseEntry());
         }
         //导入新纪录
-        redDotDao.addBatch(dbList);
+        if(dbList.size()>0) {
+            redDotDao.addBatch(dbList);
+        }
     }
 
     /**
@@ -97,7 +99,11 @@ public class RedDotService {
             List<ObjectId> bid = new ArrayList<ObjectId>();
             bid.add(obid);
             List<ObjectId> list = communityDao.getListGroupIds(bid);
-            List<ObjectId> uids = memberDao.getMembersByList(list);
+            List<ObjectId> li = memberDao.getMembersByList(list);
+            Set<ObjectId> se = new HashSet<ObjectId>();
+            List<ObjectId> uids = new ArrayList<ObjectId>();
+            se.addAll(li);
+            uids.addAll(se);
             List<RedDotDTO> redDotDTOs = new ArrayList<RedDotDTO>();
             if(ApplyTypeEn.getProTypeEname(type).equals("other")){//作业类型
                 List<ObjectId> unid =  redDotDao.getOtherRedDotEntryByList(uids, zero, type);

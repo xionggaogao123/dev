@@ -26,7 +26,7 @@ import com.fulaan.utils.JPushUtils;
 import com.fulaan.wrongquestion.dto.SubjectClassDTO;
 import com.pojo.fcommunity.MemberEntry;
 import com.pojo.indexPage.IndexPageEntry;
-import com.pojo.instantmessage.ApplyType;
+import com.pojo.instantmessage.ApplyTypeEn;
 import com.pojo.newVersionGrade.CommunityType;
 import com.pojo.newVersionGrade.NewVersionSubjectEntry;
 import com.pojo.operation.AppCommentEntry;
@@ -136,7 +136,7 @@ public class AppCommentService {
                 indexPageDao.addEntry(entry);
                 objectIdList.add(new ObjectId(dto3.getId()));
             }
-            redDotService.addEntryList(objectIdList, ApplyType.operation.getType());
+            redDotService.addEntryList(objectIdList, ApplyTypeEn.operation.getType());
         }
         return "成功导入";
     }

@@ -22,7 +22,7 @@ import com.pojo.appnotice.AppNoticeEntry;
 import com.pojo.fcommunity.MemberEntry;
 import com.pojo.fcommunity.NewVersionCommunityBindEntry;
 import com.pojo.indexPage.IndexPageEntry;
-import com.pojo.instantmessage.ApplyType;
+import com.pojo.instantmessage.ApplyTypeEn;
 import com.pojo.newVersionGrade.CommunityType;
 import com.pojo.operation.AppOperationEntry;
 import com.pojo.user.UserEntry;
@@ -151,7 +151,7 @@ public class AppNoticeService {
             IndexPageEntry entry = dto1.buildAddEntry();
             indexPageDao.addEntry(entry);
         }
-        redDotService.addEntryList(objectIdList, ApplyType.notice.getType());
+        redDotService.addEntryList(objectIdList, ApplyTypeEn.notice.getType());
 
     }
 

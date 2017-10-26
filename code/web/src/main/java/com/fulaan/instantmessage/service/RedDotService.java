@@ -7,7 +7,7 @@ import com.fulaan.instantmessage.dto.RedDotDTO;
 import com.fulaan.newVersionBind.service.NewVersionBindService;
 import com.mongodb.DBObject;
 import com.pojo.fcommunity.MemberEntry;
-import com.pojo.instantmessage.ApplyType;
+import com.pojo.instantmessage.ApplyTypeEn;
 import com.pojo.instantmessage.RedDotEntry;
 import org.bson.types.ObjectId;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -56,9 +56,9 @@ public class RedDotService {
         //获得时间批次
         long zero=current/(1000*3600*24)*(1000*3600*24)- TimeZone.getDefault().getRawOffset();//今天零点零分零秒的毫秒数
         //作业
-        RedDotEntry entry = redDotDao.getOtherEntryByUserId(userId, zero, ApplyType.operation.getType());
+        RedDotEntry entry = redDotDao.getOtherEntryByUserId(userId, zero, ApplyTypeEn.operation.getType());
         //通知
-        RedDotEntry entry2 = redDotDao.getEntryByUserId(userId, ApplyType.notice.getType());
+        RedDotEntry entry2 = redDotDao.getEntryByUserId(userId, ApplyTypeEn.notice.getType());
         map.put("operation",new RedDotDTO(entry));
         map.put("notice",new RedDotDTO(entry2));
         return map;
@@ -77,9 +77,9 @@ public class RedDotService {
         long zero=current/(1000*3600*24)*(1000*3600*24)- TimeZone.getDefault().getRawOffset();//今天零点零分零秒的毫秒数
         List<ObjectId> obList = newVersionBindService.getCommunityIdsByUserId(userId);
         //作业
-        RedDotEntry entry = redDotDao.getOtherEntryByUserId(userId, zero, ApplyType.operation.getType());
+        RedDotEntry entry = redDotDao.getOtherEntryByUserId(userId, zero, ApplyTypeEn.operation.getType());
         //通知
-        RedDotEntry entry2 = redDotDao.getEntryByUserId(userId, ApplyType.notice.getType());
+        RedDotEntry entry2 = redDotDao.getEntryByUserId(userId, ApplyTypeEn.notice.getType());
         map.put("operation",new RedDotDTO(entry));
         map.put("notice",new RedDotDTO(entry2));
         return map;
@@ -99,7 +99,7 @@ public class RedDotService {
             List<ObjectId> list = communityDao.getListGroupIds(bid);
             List<ObjectId> uids = memberDao.getMembersByList(list);
             List<RedDotDTO> redDotDTOs = new ArrayList<RedDotDTO>();
-            if(ApplyType.getProTypeEname(type).equals("other")){//作业类型
+            if(ApplyTypeEn.getProTypeEname(type).equals("other")){//作业类型
                 List<ObjectId> unid =  redDotDao.getOtherRedDotEntryByList(uids, zero, type);
                 uids.removeAll(unid);
                 if(uids.size()>0){
@@ -113,7 +113,7 @@ public class RedDotService {
                     }
                 }
                 redDotDao.updateEntry1(unid, zero, type);
-            }else if(ApplyType.getProTypeEname(type).equals("same")){//通知类型
+            }else if(ApplyTypeEn.getProTypeEname(type).equals("same")){//通知类型
                 List<ObjectId> unid =  redDotDao.getRedDotEntryByList(uids, type);
                 uids.removeAll(unid);
                 if(uids.size()>0){
@@ -156,9 +156,9 @@ public class RedDotService {
 
 
     public void cleanResult(ObjectId userId,int type,long dataTime){
-        if(ApplyType.getProTypeEname(type).equals("other")) {//作业类型
+        if(ApplyTypeEn.getProTypeEname(type).equals("other")) {//作业类型
             redDotDao.cleanEntry1(userId,dataTime,type);
-        }else if(ApplyType.getProTypeEname(type).equals("same")){//通知类型
+        }else if(ApplyTypeEn.getProTypeEname(type).equals("same")){//通知类型
             redDotDao.cleanEntry2(userId, type);
         }else{
 

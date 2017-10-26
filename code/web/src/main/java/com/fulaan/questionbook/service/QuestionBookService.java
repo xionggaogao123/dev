@@ -213,7 +213,7 @@ public class QuestionBookService {
                 questionBookDao.updateQuestionBook(questionId,time,3);
             }else{
                 //改为已学会
-                questionBookDao.changeQuestionBook(questionId);
+                questionBookDao.changeQuestionBook(questionId,current);
             }
         }
     }
@@ -221,6 +221,10 @@ public class QuestionBookService {
      * 我又不会了
      */
     public void changeEntryState(ObjectId questionId){
-        questionBookDao.changeUnQuestionBook(questionId);
+        //获得当前时间
+        long current=System.currentTimeMillis();
+        //获得时间批次
+        long zero = current/(1000*3600*24)*(1000*3600*24)- TimeZone.getDefault().getRawOffset();//今天零点零分零秒的毫秒数
+        questionBookDao.changeUnQuestionBook(questionId,zero,current);
     }
 }

@@ -14,6 +14,7 @@ import com.db.user.NewVersionBindRelationDao;
 import com.db.wrongquestion.SubjectClassDao;
 import com.fulaan.community.dto.CommunityDTO;
 import com.fulaan.indexpage.dto.IndexPageDTO;
+import com.fulaan.instantmessage.service.RedDotService;
 import com.fulaan.newVersionBind.service.NewVersionBindService;
 import com.fulaan.operation.dto.AppCommentDTO;
 import com.fulaan.operation.dto.AppOperationDTO;
@@ -25,6 +26,7 @@ import com.fulaan.utils.JPushUtils;
 import com.fulaan.wrongquestion.dto.SubjectClassDTO;
 import com.pojo.fcommunity.MemberEntry;
 import com.pojo.indexPage.IndexPageEntry;
+import com.pojo.instantmessage.ApplyType;
 import com.pojo.newVersionGrade.CommunityType;
 import com.pojo.newVersionGrade.NewVersionSubjectEntry;
 import com.pojo.operation.AppCommentEntry;
@@ -66,6 +68,8 @@ public class AppCommentService {
     private UserService userService;
     @Autowired
     private NewVersionBindService newVersionBindService;
+    @Autowired
+    private RedDotService redDotService;
 
 
 
@@ -104,6 +108,7 @@ public class AppCommentService {
             }
         }
         JPushUtils jPushUtils=new JPushUtils();
+        List<ObjectId> objectIdList =new ArrayList<ObjectId>();
         for(CommunityDTO dto3 : sendList){
             en.setID(null);
             en.setRecipientId(new ObjectId(dto3.getId()));
@@ -129,8 +134,9 @@ public class AppCommentService {
                 dto1.setContactId(oid);
                 IndexPageEntry entry = dto1.buildAddEntry();
                 indexPageDao.addEntry(entry);
+                objectIdList.add(new ObjectId(dto3.getId()));
             }
-
+            redDotService.addEntryList(objectIdList, ApplyType.operation.getType());
         }
         return "成功导入";
     }
@@ -555,10 +561,15 @@ public class AppCommentService {
         AppCommentEntry entry2 = appCommentDao.getEntry(id);
         UserDetailInfoDTO studtos = userService.getUserInfoById(entry2.getAdminId().toString());
         AppCommentDTO dto2 = new AppCommentDTO(entry2);
+        if(entry2.getAdminId()!= null && entry2.getAdminId().equals(userId)){
+            dto2.setType(1);
+        }else{
+            dto2.setType(2);
+        }
         dto2.setAdminName(studtos.getUserName());
         dto2.setAdminUrl(studtos.getImgUrl());
          //上面的描述
-        map2.put("desc",dto2);
+         map2.put("desc",dto2);
         //添加一级评论
        // AppCommentEntry entry = appCommentDao.getEntry(id);
         List<AppOperationEntry> entries = null;
@@ -804,9 +815,9 @@ public class AppCommentService {
         String id = appOperationDao.addEntry(en);
         AppCommentEntry entry = appCommentDao.getEntry(en.getContactId());
         //修改讨论数
-        if (en.getRole() == 1) {//家长
+       /* if (en.getRole() == 1) {//家长
             entry.setTalkNumber(entry.getTalkNumber() + 1);
-        }
+        }*/
         appCommentDao.updEntry(entry);
         return id;
     }
@@ -908,17 +919,37 @@ public class AppCommentService {
         return new AppCommentDTO(entry);
     }
     /**
-     *查询详情
+     *修改
      *
      */
     public void updateEntry(AppCommentDTO dto){
+        List<CommunityDTO> communityDTOList = communityService.getCommunitys(new ObjectId(dto.getAdminId()), 1, 100);
         AppCommentEntry entry = dto.updateEntry();
+        String st = dto.getComList();
+        String[] str = st.split(",");
+        for(CommunityDTO dto2 : communityDTOList){
+            if(dto2.getId() != null && dto2.getId().equals(str[0])){
+                entry.setRecipientId(new ObjectId(str[0]));
+                entry.setRecipientName(dto2.getName());
+            }
+        }
         //获得当前时间
         long current=System.currentTimeMillis();
         //获得时间批次
         long zero=current/(1000*3600*24)*(1000*3600*24)- TimeZone.getDefault().getRawOffset();//今天零点零分零秒的毫秒数
         entry.setDateTime(zero);
         appCommentDao.updEntry(entry);
+        JPushUtils jPushUtils=new JPushUtils();
+        ObjectId groupId=communityDao.getGroupId(new ObjectId(str[0]));
+        if(null!=groupId && dto.getStatus()==0){
+            List<MemberEntry> memberEntries=memberDao.getAllMembers(groupId);
+            Set<String> userIds=new HashSet<String>();
+            for(MemberEntry memberEntry:memberEntries){
+                userIds.add(memberEntry.getUserId().toString());
+            }
+            Audience audience = Audience.alias(new ArrayList<String>(userIds));
+            jPushUtils.pushRestIosbusywork(audience,dto.getTitle(),new HashMap<String,String>());
+        }
     }
 
     /**

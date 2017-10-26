@@ -1,7 +1,7 @@
 package com.pojo.newVersionGrade;
 
 /**
- * Created by wang_xinxin on 2016/3/21.
+ * Created by James on 2016/3/21.
  */
 public enum ProType {
     bookSearch(1,"一年级", "primary"),

@@ -10,6 +10,7 @@ import com.db.operation.AppOperationDao;
 import com.db.user.UserDao;
 import com.fulaan.dto.VideoDTO;
 import com.fulaan.indexpage.dto.IndexPageDTO;
+import com.fulaan.instantmessage.service.RedDotService;
 import com.fulaan.operation.dto.AppNoticeDTO;
 import com.fulaan.operation.dto.AppOperationDTO;
 import com.fulaan.operation.dto.GroupOfCommunityDTO;
@@ -21,6 +22,7 @@ import com.pojo.appnotice.AppNoticeEntry;
 import com.pojo.fcommunity.MemberEntry;
 import com.pojo.fcommunity.NewVersionCommunityBindEntry;
 import com.pojo.indexPage.IndexPageEntry;
+import com.pojo.instantmessage.ApplyType;
 import com.pojo.newVersionGrade.CommunityType;
 import com.pojo.operation.AppOperationEntry;
 import com.pojo.user.UserEntry;
@@ -54,6 +56,8 @@ public class AppNoticeService {
 
     @Autowired
     private UserService userService;
+    @Autowired
+    private RedDotService redDotService;
 
 
     public static void main(String[] args){
@@ -109,6 +113,7 @@ public class AppNoticeService {
     public void saveAppNoticeEntry(AppNoticeDTO dto,ObjectId userId){
         UserEntry userEntry=userService.findById(userId);
         JPushUtils jPushUtils=new JPushUtils();
+        List<ObjectId> objectIdList = new ArrayList<ObjectId>();
         for(GroupOfCommunityDTO communityDTO:dto.getGroupOfCommunityDTOs()){
             AppNoticeDTO appNoticeDTO=new AppNoticeDTO(
                     dto.getSubjectId(),
@@ -141,10 +146,13 @@ public class AppNoticeService {
             IndexPageDTO dto1 = new IndexPageDTO();
             dto1.setType(CommunityType.appNotice.getType());
             dto1.setCommunityId(communityDTO.getCommunityId());
+            objectIdList.add(new ObjectId(communityDTO.getCommunityId()));
             dto1.setContactId(oid.toString());
             IndexPageEntry entry = dto1.buildAddEntry();
             indexPageDao.addEntry(entry);
         }
+        redDotService.addEntryList(objectIdList, ApplyType.notice.getType());
+
     }
 
 

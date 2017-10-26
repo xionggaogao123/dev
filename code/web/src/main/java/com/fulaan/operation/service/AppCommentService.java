@@ -7,7 +7,6 @@ import com.db.fcommunity.MemberDao;
 import com.db.indexPage.IndexPageDao;
 import com.db.newVersionGrade.NewVersionSubjectDao;
 import com.db.operation.AppCommentDao;
-import com.db.operation.AppNoticeDao;
 import com.db.operation.AppOperationDao;
 import com.db.operation.AppRecordDao;
 import com.db.user.NewVersionBindRelationDao;
@@ -53,7 +52,6 @@ public class AppCommentService {
 
     private AppCommentDao appCommentDao = new AppCommentDao();
     private AppOperationDao appOperationDao = new AppOperationDao();
-    private AppNoticeDao appNoticeDao=new AppNoticeDao();
     private AppRecordDao appRecordDao = new AppRecordDao();
     private MemberDao memberDao = new MemberDao();
     private GroupDao groupDao = new GroupDao();
@@ -70,6 +68,7 @@ public class AppCommentService {
     private NewVersionBindService newVersionBindService;
     @Autowired
     private RedDotService redDotService;
+
 
 
 
@@ -508,6 +507,9 @@ public class AppCommentService {
         map2.put("list",dtos);
         Map<String,Object> map3 = this.isSign(userId, dateTime);
         map2.put("isload",map3);
+
+        //清除红点
+        redDotService.cleanResult(userId,ApplyTypeEn.operation.getType(),dateTime);
         return map2;
     }
     /**
@@ -548,6 +550,8 @@ public class AppCommentService {
             dto5.setAdminUrl(map.get(dto5.getAdminId()).getImgUrl());
             dto5.setSendUser(map.get(studentId.toString()).getImgUrl());
         }
+        //清除红点
+        redDotService.cleanResult(studentId,ApplyTypeEn.operation.getType(),dateTime);
         return dtos;
     }
 

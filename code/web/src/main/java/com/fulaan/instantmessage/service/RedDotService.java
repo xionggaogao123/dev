@@ -2,6 +2,7 @@ package com.fulaan.instantmessage.service;
 
 import com.db.fcommunity.CommunityDao;
 import com.db.fcommunity.MemberDao;
+import com.db.fcommunity.NewVersionCommunityBindDao;
 import com.db.instantmessage.RedDotDao;
 import com.fulaan.instantmessage.dto.RedDotDTO;
 import com.fulaan.newVersionBind.service.NewVersionBindService;
@@ -28,6 +29,8 @@ public class RedDotService {
     private MemberDao memberDao = new MemberDao();
     @Autowired
     private NewVersionBindService newVersionBindService;
+
+    private NewVersionCommunityBindDao newVersionCommunityBindDao = new NewVersionCommunityBindDao();
 
     /**
      * 批量增加红点记录
@@ -97,13 +100,18 @@ public class RedDotService {
         long zero=current/(1000*3600*24)*(1000*3600*24)- TimeZone.getDefault().getRawOffset();//今天零点零分零秒的毫秒数
         for(ObjectId obid : commuityIds){
             List<ObjectId> bid = new ArrayList<ObjectId>();
+            //所有学生
+            List<ObjectId> sids = newVersionCommunityBindDao.getStudentListByCommunityId(obid);
             bid.add(obid);
+            //所有家长
             List<ObjectId> list = communityDao.getListGroupIds(bid);
             List<ObjectId> li = memberDao.getMembersByList(list);
             Set<ObjectId> se = new HashSet<ObjectId>();
             List<ObjectId> uids = new ArrayList<ObjectId>();
             se.addAll(li);
             uids.addAll(se);
+            //
+            uids.addAll(sids);
             List<RedDotDTO> redDotDTOs = new ArrayList<RedDotDTO>();
             if(ApplyTypeEn.getProTypeEname(type).equals("other")){//作业类型
                 List<ObjectId> unid =  redDotDao.getOtherRedDotEntryByList(uids, zero, type);

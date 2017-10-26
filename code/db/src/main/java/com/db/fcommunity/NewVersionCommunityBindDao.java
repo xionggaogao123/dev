@@ -86,6 +86,19 @@ public class NewVersionCommunityBindDao extends BaseDao{
         }
         return entries;
     }
+    public List<ObjectId> getStudentListByCommunityId(ObjectId communityId){
+        List<ObjectId> entries=new ArrayList<ObjectId>();
+        BasicDBObject query=new BasicDBObject()
+                .append("cid",communityId)
+                .append("ir", Constant.ZERO);
+        List<DBObject> dbObjectList=find(MongoFacroty.getAppDB(), Constant.COLLECTION_NEW_VERSION_COMMUNITY_BIND,query,Constant.FIELDS);
+        if(null!=dbObjectList&&!dbObjectList.isEmpty()){
+            for(DBObject dbObject:dbObjectList){
+                entries.add(new NewVersionCommunityBindEntry(dbObject).getUserId());
+            }
+        }
+        return entries;
+    }
 
 
     public Map<ObjectId,NewVersionCommunityBindEntry> getCommunityBindMap(ObjectId communityId, ObjectId mainUserId){

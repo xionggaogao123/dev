@@ -107,7 +107,7 @@ public class IndexPageService {
                 ob1.put("time", dto6.getCreateTime());
                 ob1.put("content",dto6.getDescription());
                 ob1.put("imageList",dto6.getImageList());
-                ob1.put("talkNumber",dto6.getTalkNumber());
+                ob1.put("commentCount",dto6.getTalkNumber());
                 ob1.put("videoList",dto6.getVideoList());
                 ob1.put("voiceList",dto6.getVoiceList());
                 ob1.put("attachements",dto6.getAttachements());
@@ -140,7 +140,7 @@ public class IndexPageService {
                 ob1.put("time",dto8.getTime());
                 ob1.put("content",dto8.getContent());
                 ob1.put("imageList",dto8.getImageList());
-                ob1.put("talkNumber",dto8.getCommentCount());
+                ob1.put("commentCount",dto8.getCommentCount());
                 ob1.put("videoList",dto8.getVideoList());
                 ob1.put("voiceList",dto8.getVoiceList());
                 ob1.put("attachements",dto8.getAttachements());

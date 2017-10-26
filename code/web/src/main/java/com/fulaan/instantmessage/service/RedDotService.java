@@ -2,10 +2,10 @@ package com.fulaan.instantmessage.service;
 
 import com.db.fcommunity.CommunityDao;
 import com.db.fcommunity.MemberDao;
+import com.db.fcommunity.NewVersionCommunityBindDao;
 import com.db.instantmessage.RedDotDao;
 import com.fulaan.instantmessage.dto.RedDotDTO;
 import com.fulaan.newVersionBind.service.NewVersionBindService;
-import com.mongodb.DBObject;
 import com.pojo.fcommunity.MemberEntry;
 import com.pojo.instantmessage.ApplyTypeEn;
 import com.pojo.instantmessage.RedDotEntry;
@@ -29,16 +29,18 @@ public class RedDotService {
     @Autowired
     private NewVersionBindService newVersionBindService;
 
+    private NewVersionCommunityBindDao newVersionCommunityBindDao = new NewVersionCommunityBindDao();
+
     /**
      * 批量增加红点记录
      * @param list
      */
     public void addRedDotEntryBatch(List<RedDotDTO> list) {
-        List<DBObject> dbList = new ArrayList<DBObject>();
+        List<RedDotEntry> dbList = new ArrayList<RedDotEntry>();
         for (int i = 0; list != null && i < list.size(); i++) {
             RedDotDTO si = list.get(i);
             RedDotEntry obj = si.buildAddEntry();
-            dbList.add(obj.getBaseEntry());
+            dbList.add(obj);
         }
         //导入新纪录
         redDotDao.addBatch(dbList);
@@ -95,9 +97,14 @@ public class RedDotService {
         long zero=current/(1000*3600*24)*(1000*3600*24)- TimeZone.getDefault().getRawOffset();//今天零点零分零秒的毫秒数
         for(ObjectId obid : commuityIds){
             List<ObjectId> bid = new ArrayList<ObjectId>();
+            //所有学生
+            List<ObjectId> sids = newVersionCommunityBindDao.getStudentListByCommunityId(obid);
             bid.add(obid);
+            //所有家长
             List<ObjectId> list = communityDao.getListGroupIds(bid);
             List<ObjectId> uids = memberDao.getMembersByList(list);
+            //一起
+            uids.addAll(sids);
             List<RedDotDTO> redDotDTOs = new ArrayList<RedDotDTO>();
             if(ApplyTypeEn.getProTypeEname(type).equals("other")){//作业类型
                 List<ObjectId> unid =  redDotDao.getOtherRedDotEntryByList(uids, zero, type);

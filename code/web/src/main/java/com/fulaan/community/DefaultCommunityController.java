@@ -366,16 +366,24 @@ public class DefaultCommunityController extends BaseController {
                 joinFulaanCommunity(getUserId(), new ObjectId(fulanDto.getId()));
             }
             communityDTOList = communityService.getCommunitys(userId, page, pageSize);
+            List<CommunityDTO> communityDTOList2 = new ArrayList<CommunityDTO>();
+            if(communityDTOList.size()>0){
+                for(CommunityDTO dto3 : communityDTOList){
+                    if(!dto3.getName().equals("复兰社区")){
+                        communityDTOList2.add(dto3);
+                    }
+                }
+            }
             if ("web".equals(platform)) {
                 int count = communityService.countMycommunitys(userId);
                 Map<String, Object> map = new HashMap<String, Object>();
-                map.put("list", communityDTOList);
+                map.put("list", communityDTOList2);
                 map.put("count", count);
                 map.put("pageSize", pageSize);
                 map.put("page", page);
                 return RespObj.SUCCESS(map);
             } else {
-                return RespObj.SUCCESS(communityDTOList);
+                return RespObj.SUCCESS(communityDTOList2);
             }
         }
     }
@@ -413,7 +421,7 @@ public class DefaultCommunityController extends BaseController {
             List<CommunityDTO> communityDTOList2 = new ArrayList<CommunityDTO>();
             if(communityDTOList.size()>0){
                 for(CommunityDTO dto3 : communityDTOList){
-                    if(molist.contains(dto3.getId())){
+                    if(molist.contains(dto3.getId()) && ! dto3.getName().equals("复兰社区")){
                         communityDTOList2.add(dto3);
                     }
                 }

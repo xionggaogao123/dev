@@ -1109,7 +1109,9 @@ public class CommunityService {
         List<ObjectId>  objectIdList = new ArrayList<ObjectId>();
         if(communityDTOList.size() >0){
             for(CommunityDTO dto : communityDTOList){
-                objectIdList.add(new ObjectId(dto.getId()));
+                if(!dto.getName().equals("复兰社区")){
+                    objectIdList.add(new ObjectId(dto.getId()));
+                }
             }
         }
         List<CommunityDetailEntry> entries = communityDetailDao.getDetails(objectIdList, page, pageSize, Constant.DESC, type.getType());

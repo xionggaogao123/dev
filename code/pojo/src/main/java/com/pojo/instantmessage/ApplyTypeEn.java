@@ -1,29 +1,19 @@
-package com.pojo.newVersionGrade;
+package com.pojo.instantmessage;
 
 /**
  * Created by James on 2016/3/21.
  */
-public enum ProType {
-    bookSearch(1,"一年级", "primary"),
-    baiJia(2,"二年级","primary"),
-    showEShow(3,"三年级", "primary"),
-    redCross(4,"四年级", "primary"),
-    challenge(5,"五年级", "primary"),
-    myShow(6,"六年级", "primary"),
-    woShiLaoShi(7,"初一", "junior"),
-    spiritualGurus(8,"初二", "junior"),
-    florilegium(9, "初三", "junior"),
-    onlineList(10, "高一", "senior"),
-    binFen(11, "高二", "senior"),
-    gongYi(12, "高三", "senior"),
-    gangwei(13,"已毕业", "senior");
+public enum ApplyTypeEn {
+    operation(1,"作业", "other"),
+    notice(2,"通知","same");
+
     private int type;
     private String des;
     private String eName;
 
 
 
-    private ProType(int type, String des, String eName) {
+    private ApplyTypeEn(int type, String des, String eName) {
         this.type = type;
         this.des = des;
         this.eName = eName;
@@ -57,9 +47,9 @@ public enum ProType {
     }
 
 
-    public static ProType getProType(int type)
+    public static ApplyTypeEn getProType(int type)
     {
-        for(ProType lt : ProType.values())
+        for(ApplyTypeEn lt : ApplyTypeEn.values())
         {
             if(lt.getType()==type)
             {
@@ -72,7 +62,7 @@ public enum ProType {
 
     public static String getProTypeEname(int type)
     {
-        for(ProType lt : ProType.values())
+        for(ApplyTypeEn lt : ApplyTypeEn.values())
         {
             if(lt.getType()==type)
             {
@@ -84,7 +74,7 @@ public enum ProType {
     }
     public static String getDes(int type)
     {
-        for(ProType lt : ProType.values())
+        for(ApplyTypeEn lt : ApplyTypeEn.values())
         {
             if(lt.getType()==type)
             {

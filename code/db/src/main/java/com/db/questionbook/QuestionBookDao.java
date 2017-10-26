@@ -85,6 +85,7 @@ public class QuestionBookDao extends BaseDao{
         BasicDBObject query = new BasicDBObject()
                 .append("uid", userId)
                 .append("ptm", new BasicDBObject(Constant.MONGO_LT, time))
+                .append("typ",1)
                 .append("isr", 0); // 未删除
         List<DBObject> dbList =
                 find(MongoFacroty.getAppDB(),
@@ -111,16 +112,18 @@ public class QuestionBookDao extends BaseDao{
     }
 
     //已学会
-    public void changeQuestionBook(ObjectId id){
+    public void changeQuestionBook(ObjectId id,long time){
         BasicDBObject query = new BasicDBObject(Constant.ID,id);
-        BasicDBObject updateValue=new BasicDBObject(Constant.MONGO_SET,new BasicDBObject("typ",2));
+        BasicDBObject updateValue=new BasicDBObject(Constant.MONGO_SET,new BasicDBObject("typ",2).append("dtm",time));
         update(MongoFacroty.getAppDB(), Constant.COLLECTION_QUESTION_BOOK, query, updateValue);
     }
     //未学会
-    public void changeUnQuestionBook(ObjectId id){
+    public void changeUnQuestionBook(ObjectId id,long time,long current){
         BasicDBObject query = new BasicDBObject(Constant.ID,id);
         BasicDBObject update = new BasicDBObject("typ",1);
         update.append("lev",1);
+        update.append("ptm",time);
+        update.append("dtm",current);
         BasicDBObject updateValue=new BasicDBObject(Constant.MONGO_SET,update);
         //updateValue.append(Constant.MONGO_SET,new BasicDBObject("lev",1));
         update(MongoFacroty.getAppDB(), Constant.COLLECTION_QUESTION_BOOK, query, updateValue);

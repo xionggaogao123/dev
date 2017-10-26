@@ -134,9 +134,18 @@ public class ReportCardService {
      * 删除成绩单
      * @param id
      */
-    public void removeGroupExamDetailEntry(ObjectId id){
-        groupExamDetailDao.removeGroupExamDetailEntry(id);
-        groupExamUserRecordDao.updateGroupExamDetailStatus(id,Constant.ONE);
+    public void removeGroupExamDetailEntry(ObjectId id,ObjectId userId)throws Exception{
+        GroupExamDetailEntry entry=groupExamDetailDao.getGroupExamDetailEntry(id);
+        if(null!=entry){
+            if(null!=entry.getUserId()&&null!=userId&&
+                    entry.getUserId().toString().equals(userId.toString())) {
+                groupExamDetailDao.removeGroupExamDetailEntry(id);
+                groupExamUserRecordDao.updateGroupExamDetailStatus(id, Constant.ONE);
+            }else{
+                throw new Exception("你没有权限删除成绩单！");
+            }
+        }
+
     }
 
 
@@ -465,7 +474,9 @@ public class ReportCardService {
                         Constant.ZERO
                 ));
             }
-            groupExamUserRecordDao.saveEntries(userRecordEntries);
+            for(GroupExamUserRecordEntry userRecordEntry:userRecordEntries){
+                groupExamUserRecordDao.saveGroupExamUserRecord(userRecordEntry);
+            }
             groupExamDetailDao.updateSignCount(groupExamDetailId, userIds.size());
             GroupExamVersionEntry versionEntry = new GroupExamVersionEntry(groupExamDetailId, 1L);
             groupExamVersionDao.saveGroupExamVersionEntry(versionEntry);

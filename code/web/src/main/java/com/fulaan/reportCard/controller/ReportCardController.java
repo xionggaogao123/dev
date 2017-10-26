@@ -184,7 +184,7 @@ public class ReportCardController extends BaseController{
     public RespObj removeGroupExam(@ObjectIdType ObjectId groupExamDetailId){
         RespObj respObj=new RespObj(Constant.FAILD_CODE);
         try{
-            reportCardService.removeGroupExamDetailEntry(groupExamDetailId);
+            reportCardService.removeGroupExamDetailEntry(groupExamDetailId,getUserId());
             respObj.setCode(Constant.SUCCESS_CODE);
             respObj.setMessage("删除成绩单成功！");
         }catch (Exception e){

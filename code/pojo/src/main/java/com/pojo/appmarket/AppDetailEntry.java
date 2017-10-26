@@ -47,6 +47,7 @@ public class AppDetailEntry extends BaseDBObject{
                 .append("vc",versionCode)
                 .append("des",description)
                 .append("ti",System.currentTimeMillis())
+                .append("upt",System.currentTimeMillis())
                 .append("iu",Constant.ZERO)
                 .append("ir", Constant.ZERO);
         setBaseEntry(basicDBObject);
@@ -76,9 +77,18 @@ public class AppDetailEntry extends BaseDBObject{
                 .append("vc",versionCode)
                 .append("des",description)
                 .append("ti",System.currentTimeMillis())
+                .append("upt",System.currentTimeMillis())
                 .append("iu",Constant.ZERO)
                 .append("ir", Constant.ZERO);
         setBaseEntry(basicDBObject);
+    }
+
+    public long getUpdateTime(){
+        return getSimpleLongValue("upt");
+    }
+
+    public void setUpdateTime(long updateTime){
+        setSimpleValue("upt",updateTime);
     }
 
     public int getIsUpdated(){

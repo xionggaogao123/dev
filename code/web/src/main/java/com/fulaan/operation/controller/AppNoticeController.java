@@ -54,7 +54,7 @@ public class AppNoticeController extends BaseController {
     public RespObj removeAppNoticeEntry(@ObjectIdType ObjectId noticeId){
         RespObj respObj=new RespObj(Constant.FAILD_CODE);
         try{
-            appNoticeService.removeAppNoticeEntry(noticeId);
+            appNoticeService.removeAppNoticeEntry(noticeId,getUserId());
             respObj.setMessage("删除通知信息成功！");
             respObj.setCode(Constant.SUCCESS_CODE);
         }catch (Exception e){

@@ -3,6 +3,7 @@ package com.fulaan.appmarket.dto;
 import com.fulaan.pojo.Attachement;
 import com.pojo.appmarket.AppDetailEntry;
 import com.pojo.fcommunity.AttachmentEntry;
+import com.sys.utils.DateTimeUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.bson.types.ObjectId;
 
@@ -27,6 +28,7 @@ public class AppDetailDTO {
     private String appName;
     private String url;
     private int isUpdated;
+    private String updateTime;
 
     public AppDetailDTO(){
 
@@ -68,6 +70,7 @@ public class AppDetailDTO {
         this.appSize=detailEntry.getAppSize();
         this.versionCode=detailEntry.getVersionCode();
         this.isUpdated=detailEntry.getIsUpdated();
+        this.updateTime= DateTimeUtils.convert(detailEntry.getUpdateTime(),DateTimeUtils.DATE_YYYY_MM_DD);
     }
 
     public int getIsUpdated() {

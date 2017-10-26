@@ -5,7 +5,6 @@ import com.db.factory.MongoFacroty;
 import com.mongodb.BasicDBObject;
 import com.mongodb.DBObject;
 import com.pojo.instantmessage.RedDotEntry;
-import com.pojo.utils.MongoUtils;
 import com.sys.constants.Constant;
 import org.bson.types.ObjectId;
 
@@ -21,8 +20,8 @@ public class RedDotDao extends BaseDao {
      *
      * @param list
      */
-    public void addBatch(List<RedDotEntry> list) {
-        save(MongoFacroty.getAppDB(), Constant.COLLECTION_RED_DOT, MongoUtils.fetchDBObjectList(list));
+    public void addBatch(List<DBObject> list) {
+        save(MongoFacroty.getAppDB(), Constant.COLLECTION_RED_DOT, list);
     }
 
     //单个查询 otner类型

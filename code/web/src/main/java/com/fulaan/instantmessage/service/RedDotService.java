@@ -6,6 +6,7 @@ import com.db.fcommunity.NewVersionCommunityBindDao;
 import com.db.instantmessage.RedDotDao;
 import com.fulaan.instantmessage.dto.RedDotDTO;
 import com.fulaan.newVersionBind.service.NewVersionBindService;
+import com.mongodb.DBObject;
 import com.pojo.fcommunity.MemberEntry;
 import com.pojo.instantmessage.ApplyTypeEn;
 import com.pojo.instantmessage.RedDotEntry;
@@ -36,11 +37,11 @@ public class RedDotService {
      * @param list
      */
     public void addRedDotEntryBatch(List<RedDotDTO> list) {
-        List<RedDotEntry> dbList = new ArrayList<RedDotEntry>();
+        List<DBObject> dbList = new ArrayList<DBObject>();
         for (int i = 0; list != null && i < list.size(); i++) {
             RedDotDTO si = list.get(i);
             RedDotEntry obj = si.buildAddEntry();
-            dbList.add(obj);
+            dbList.add(obj.getBaseEntry());
         }
         //导入新纪录
         redDotDao.addBatch(dbList);
@@ -103,7 +104,7 @@ public class RedDotService {
             //所有家长
             List<ObjectId> list = communityDao.getListGroupIds(bid);
             List<ObjectId> uids = memberDao.getMembersByList(list);
-            //一起
+            //
             uids.addAll(sids);
             List<RedDotDTO> redDotDTOs = new ArrayList<RedDotDTO>();
             if(ApplyTypeEn.getProTypeEname(type).equals("other")){//作业类型

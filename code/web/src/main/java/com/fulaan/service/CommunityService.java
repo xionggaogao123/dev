@@ -2113,7 +2113,28 @@ public class CommunityService {
         partInContentDao.saveParInContent(partInContentEntry);
     }
 
-    public void removeCommunityDetailById(ObjectId id,ObjectId userId) {
+    public void removeCommunityDetailById(ObjectId id,ObjectId userId){
+        //如果是通知或者火热分享发送系统通知
+        CommunityDetailEntry entry=communityDetailDao.findByObjectId(id);
+        if(entry.getCommunityType()==CommunityDetailType.ANNOUNCEMENT.getType()||
+                entry.getCommunityType()==CommunityDetailType.SHARE.getType()){
+            String title="";
+            if(entry.getCommunityTitle().length()>9){
+                title=entry.getCommunityTitle().substring(0,9)+"...";
+            }else{
+                title=entry.getCommunityTitle();
+            }
+            String msg="";
+            if(entry.getCommunityType()==CommunityDetailType.ANNOUNCEMENT.getType()){
+                msg="通知";
+            }else{
+                msg="火热分享";
+            }
+            fInformationService.sendSystemMessage(entry.getCommunityUserId(),"你的"+msg+"\""+title+"\"已被管理员删除");
+        }
+        communityDetailDao.removeCommunityDetail(id);
+    }
+    public void removeNewCommunityDetailById(ObjectId id,ObjectId userId) throws Exception {
         //如果是通知或者火热分享发送系统通知
         CommunityDetailEntry entry=communityDetailDao.findByObjectId(id);
         if(entry.getCommunityType()==CommunityDetailType.ANNOUNCEMENT.getType()||
@@ -2135,6 +2156,8 @@ public class CommunityService {
         CommunityDetailEntry en = communityDetailDao.findByObjectId(id);
         if(en != null && en.getCommunityUserId()!= null && en.getCommunityUserId().equals(userId)){
             communityDetailDao.removeCommunityDetail(id);
+        }else{
+            throw new Exception("没有权限！");
         }
     }
 
@@ -2199,6 +2222,14 @@ public class CommunityService {
         CommunityDetailEntry en = communityDetailDao.findByObjectId(id);
         if(en != null && en.getCommunityUserId()!= null && en.getCommunityUserId().equals(userId)){
             communityDetailDao.updateCommunityDetailTop(id,top);
+        }
+    }
+    public void updateNewCommunityDetailTop(ObjectId id,int top,ObjectId userId) throws Exception{
+        CommunityDetailEntry en = communityDetailDao.findByObjectId(id);
+        if(en != null && en.getCommunityUserId()!= null && en.getCommunityUserId().equals(userId)){
+            communityDetailDao.updateCommunityDetailTop(id,top);
+        }else{
+            throw new Exception("没有权限!");
         }
     }
 

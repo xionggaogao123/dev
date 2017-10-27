@@ -1,6 +1,7 @@
 package com.fulaan.community;
 
 
+import com.alibaba.fastjson.JSON;
 import com.easemob.server.comm.constant.MsgType;
 import com.fulaan.annotation.LoginInfo;
 import com.fulaan.annotation.ObjectIdType;
@@ -2902,8 +2903,31 @@ public class CommunityController extends BaseController {
     @ApiResponses(value = {@ApiResponse(code = 200, message = "删除社区消息成功",response = Map.class),
             @ApiResponse(code = 500, message = "删除社区消息失败")})
     public RespObj removeDetailById(@ApiParam(name="detailId",required = true,value = "社区消息的Id")@ObjectIdType ObjectId detailId) {
-        communityService.removeCommunityDetailById(detailId,getUserId());
+        communityService.removeCommunityDetailById(detailId, getUserId());
         return RespObj.SUCCESS;
+    }
+    /**
+     * 删除消息
+     *
+     * @param detailId
+     * @return
+     */
+    @RequestMapping("/removeNewDetailById")
+    @ResponseBody
+    @ApiOperation(value = "删除社区消息", httpMethod = "GET", produces = "application/json")
+    @ApiResponses(value = {@ApiResponse(code = 200, message = "删除社区消息成功",response = Map.class),
+            @ApiResponse(code = 500, message = "删除社区消息失败")})
+    public String removeNewDetailById(@ApiParam(name="detailId",required = true,value = "社区消息的Id")@ObjectIdType ObjectId detailId) {
+        RespObj respObj=null;
+        try {
+            respObj = RespObj.SUCCESS;
+            communityService.removeNewCommunityDetailById(detailId, getUserId());
+        } catch (Exception e) {
+            e.printStackTrace();
+            respObj = RespObj.FAILD;
+            respObj.setErrorMessage("你没有权限删除此消息");
+        }
+        return JSON.toJSONString(respObj);
     }
 
 
@@ -3214,6 +3238,28 @@ public class CommunityController extends BaseController {
         RespObj respObj=new RespObj(Constant.SUCCESS_CODE);
         communityService.updateCommunityDetailTop(detailId,top,getUserId());
         return respObj;
+    }
+    /**
+     * 置顶数据
+     * @return
+     */
+    @RequestMapping("/updateNewCommunityDetailTop")
+    @ResponseBody
+    @ApiOperation(value = "更新社区消息置顶顺序", httpMethod = "GET", produces = "application/json")
+    @ApiResponses(value = {@ApiResponse(code = 200, message = "更新社区消息置顶顺序成功",response = Map.class),
+            @ApiResponse(code = 500, message = "更新社区消息置顶顺序失败")})
+    public String updateNewCommunityDetailTop(@ApiParam(name="detailId",required = true,value = "社区消息Id")@ObjectIdType ObjectId detailId,
+                                            @ApiParam(name="top",required = true,value = "置顶值")int top){
+        RespObj respObj=null;
+        try {
+            respObj = RespObj.SUCCESS;
+            communityService.updateNewCommunityDetailTop(detailId, top, getUserId());
+        } catch (Exception e) {
+            e.printStackTrace();
+            respObj = RespObj.FAILD;
+            respObj.setErrorMessage("你没有权限置顶此消息");
+        }
+        return JSON.toJSONString(respObj);
     }
 
 

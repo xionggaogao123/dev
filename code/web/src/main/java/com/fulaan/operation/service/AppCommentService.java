@@ -1,5 +1,6 @@
 package com.fulaan.operation.service;
 
+import cn.jiguang.commom.utils.StringUtils;
 import cn.jpush.api.push.model.audience.Audience;
 import com.db.fcommunity.CommunityDao;
 import com.db.fcommunity.GroupDao;
@@ -238,14 +239,24 @@ public class AppCommentService {
             }
         }
         for(AppOperationDTO dto5 : dtos){
-            dto5.setUserName(map3.get(dto5.getUserId()).getUserName());
-            dto5.setUserUrl(map3.get(dto5.getUserId()).getImgUrl());
+            UserDetailInfoDTO dto9 = map3.get(dto5.getUserId());
+            if(dto9 != null){
+                String name = StringUtils.isNotEmpty(dto9.getNickName())?dto9.getNickName():dto9.getUserName();
+                dto5.setUserName(name);
+                dto5.setUserUrl(dto9.getImgUrl());
+            }
         }
         for(AppOperationDTO dto6 : dtos2){
-            dto6.setUserName(map3.get(dto6.getUserId()).getUserName());
-            dto6.setUserUrl(map3.get(dto6.getUserId()).getImgUrl());
-            if(dto6.getBackId() != null && dto6.getBackId() != ""){
-                dto6.setBackName(map3.get(dto6.getBackId()).getUserName());
+            UserDetailInfoDTO dto10 = map3.get(dto6.getUserId());
+            if(dto10 != null){
+                String name = StringUtils.isNotEmpty(dto10.getNickName())?dto10.getNickName():dto10.getUserName();
+                dto6.setUserName(name);
+                dto6.setUserUrl(dto10.getImgUrl());
+            }
+            if(dto6.getBackId() != null && dto6.getBackId() != "" && map3.get(dto6.getBackId())!= null){
+                UserDetailInfoDTO dto11 = map3.get(dto6.getBackId());
+                String name2 = StringUtils.isNotEmpty(dto11.getNickName())?dto11.getNickName():dto11.getUserName();
+                dto6.setBackName(name2);
             }
         }
         for(AppOperationDTO dto6 : dtos){
@@ -263,11 +274,12 @@ public class AppCommentService {
         List<UserDetailInfoDTO> unList = userService.findUserInfoByUserIds(objectIdList);
         List<User> ulsit = new ArrayList<User>();
         for(UserDetailInfoDTO userDetailInfoDTO : unList){
+            String name3 = StringUtils.isNotEmpty(userDetailInfoDTO.getNickName())?userDetailInfoDTO.getNickName():userDetailInfoDTO.getUserName();
             User user = new User();
             user.setAvator(userDetailInfoDTO.getImgUrl());
             user.setSex(userDetailInfoDTO.getSex());
-            user.setNickName(userDetailInfoDTO.getNickName());
-            user.setUserName(userDetailInfoDTO.getUserName());
+            user.setNickName(name3);
+            user.setUserName(name3);
             user.setUserId(userDetailInfoDTO.getId());
             ulsit.add(user);
         }
@@ -351,6 +363,9 @@ public class AppCommentService {
                     AvatarUtils.getAvatar(userEntry.getAvatar(), userEntry.getRole(), userEntry.getSex()),
                     userEntry.getSex(),
                     "");
+            String name = StringUtils.isNotEmpty(user.getNickName())?user.getNickName():user.getUserName();
+            user.setNickName(name);
+            user.setUserName(name);
             users.add(user);
         }
     }
@@ -495,8 +510,12 @@ public class AppCommentService {
             }
         }
         for(AppCommentDTO dto5 : dtos){
-            dto5.setAdminName(map.get(dto5.getAdminId()).getUserName());
-            dto5.setAdminUrl(map.get(dto5.getAdminId()).getImgUrl());
+            UserDetailInfoDTO dto9 = map.get(dto5.getAdminId());
+            if(dto9 != null){
+                String name = StringUtils.isNotEmpty(dto9.getNickName())?dto9.getNickName():dto9.getUserName();
+                dto5.setAdminName(name);
+                dto5.setAdminUrl(dto9.getImgUrl());
+            }
         }
         List<ObjectId> mlist = this.getMyRoleList(userId);
         if(mlist != null && mlist.size()>0){
@@ -546,9 +565,13 @@ public class AppCommentService {
             }
         }
         for(AppCommentDTO dto5 : dtos){
-            dto5.setAdminName(map.get(dto5.getAdminId()).getUserName());
-            dto5.setAdminUrl(map.get(dto5.getAdminId()).getImgUrl());
-            dto5.setSendUser(map.get(studentId.toString()).getImgUrl());
+            UserDetailInfoDTO dto9 = map.get(dto5.getAdminId());
+            if(dto9 != null){
+                String name = StringUtils.isNotEmpty(dto9.getNickName())?dto9.getNickName():dto9.getUserName();
+                dto5.setAdminName(name);
+                dto5.setAdminUrl(dto9.getImgUrl());
+                dto5.setSendUser(map.get(studentId.toString()).getImgUrl());
+            }
         }
         //清除红点
         redDotService.cleanResult(studentId,ApplyTypeEn.operation.getType(),dateTime);
@@ -615,10 +638,16 @@ public class AppCommentService {
             }
         }
         for(AppOperationDTO dto5 : dtos){
-            dto5.setUserName(map.get(dto5.getUserId()).getUserName());
-            dto5.setUserUrl(map.get(dto5.getUserId()).getImgUrl());
-            if(dto5.getBackId() != null && dto5.getBackId() != ""){
-                dto5.setBackName(map.get(dto5.getBackId()).getUserName());
+            UserDetailInfoDTO dto9 = map.get(dto5.getUserId());
+            if(dto9 != null) {
+                String name = StringUtils.isNotEmpty(dto9.getNickName()) ? dto9.getNickName() : dto9.getUserName();
+                dto5.setUserName(name);
+                dto5.setUserUrl(dto9.getImgUrl());
+            }
+            if(dto5.getBackId() != null && dto5.getBackId() != "" && map.get(dto5.getBackId())!= null){
+                UserDetailInfoDTO dto10 = map.get(dto5.getBackId());
+                String name2 = StringUtils.isNotEmpty(dto10.getNickName()) ? dto10.getNickName() : dto10.getUserName();
+                dto5.setBackName(name2);
             }
         }
         List<AppOperationDTO> olist = new ArrayList<AppOperationDTO>();
@@ -685,10 +714,16 @@ public class AppCommentService {
             }
         }
         for(AppOperationDTO dto5 : dtos){
-            dto5.setUserName(map.get(dto5.getUserId()).getUserName());
-            dto5.setUserUrl(map.get(dto5.getUserId()).getImgUrl());
-            if(dto5.getBackId() != null && dto5.getBackId() != ""){
-                dto5.setBackName(map.get(dto5.getBackId()).getUserName());
+            UserDetailInfoDTO dto9 = map.get(dto5.getUserId());
+            if(dto9 != null){
+                String name = StringUtils.isNotEmpty(dto9.getNickName()) ? dto9.getNickName() : dto9.getUserName();
+                dto5.setUserName(name);
+                dto5.setUserUrl(dto9.getImgUrl());
+            }
+            if(dto5.getBackId() != null && dto5.getBackId() != "" && map.get(dto5.getBackId())!= null){
+                UserDetailInfoDTO dto10 = map.get(dto5.getBackId());
+                String name2 = StringUtils.isNotEmpty(dto10.getNickName()) ? dto10.getNickName() : dto10.getUserName();
+                dto5.setBackName(name2);
             }
         }
         List<AppOperationDTO> olist = new ArrayList<AppOperationDTO>();
@@ -745,10 +780,16 @@ public class AppCommentService {
             }
         }
         for(AppOperationDTO dto5 : dtos){
-            dto5.setUserName(map.get(dto5.getUserId()).getUserName());
-            dto5.setUserUrl(map.get(dto5.getUserId()).getImgUrl());
-            if(dto5.getBackId() != null && dto5.getBackId() != ""){
-                dto5.setBackName(map.get(dto5.getBackId()).getUserName());
+            UserDetailInfoDTO dto9 = map.get(dto5.getUserId());
+            if(dto9 != null){
+                String name = StringUtils.isNotEmpty(dto9.getNickName())?dto9.getNickName():dto9.getUserName();
+                dto5.setUserName(name);
+                dto5.setUserUrl(dto9.getImgUrl());
+            }
+            if(dto5.getBackId() != null && dto5.getBackId() != "" && map.get(dto5.getBackId())!= null){
+                UserDetailInfoDTO dto10 = map.get(dto5.getBackId());
+                String name2 = StringUtils.isNotEmpty(dto10.getNickName())?dto10.getNickName():dto10.getUserName();
+                dto5.setBackName(name2);
             }
         }
         List<AppOperationDTO> olist = new ArrayList<AppOperationDTO>();

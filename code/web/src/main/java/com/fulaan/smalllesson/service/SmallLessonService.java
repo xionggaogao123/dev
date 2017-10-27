@@ -153,7 +153,7 @@ public class SmallLessonService {
 
     //加入课程（扫码）
     public Map<String,Object> addStuEntry(ObjectId userId,String userName,ObjectId teacherId){
-        SmallLessonEntry entry = smallLessonDao.getEntryByUserId(teacherId);
+        SmallLessonEntry entry = smallLessonDao.getActiveEntry(teacherId);
         Map<String,Object> map = new HashMap<String, Object>();
         map.put("lessonId",teacherId.toString());
         if(entry == null){

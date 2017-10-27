@@ -1,5 +1,6 @@
 package com.fulaan.indexpage.service;
 
+import cn.jiguang.commom.utils.StringUtils;
 import com.db.indexPage.IndexPageDao;
 import com.db.operation.AppCommentDao;
 import com.db.operation.AppNoticeDao;
@@ -92,8 +93,12 @@ public class IndexPageService {
                 }
             }
             for(AppCommentDTO dto5 : dtos){
-                dto5.setAdminName(map.get(dto5.getAdminId()).getUserName());
-                dto5.setAdminUrl(map.get(dto5.getAdminId()).getImgUrl());
+                UserDetailInfoDTO dto9 = map.get(dto5.getAdminId());
+                if(dto9 != null){
+                    String name = StringUtils.isNotEmpty(dto9.getNickName()) ? dto9.getNickName() : dto9.getUserName();
+                    dto5.setAdminName(name);
+                    dto5.setAdminUrl(dto9.getImgUrl());
+                }
             }
             for(AppCommentDTO dto6 : dtos){
                 Map<String,Object> ob1 = new HashMap<String, Object>();
@@ -127,7 +132,8 @@ public class IndexPageService {
                 UserEntry userEntry=userEntryMap.get(entry.getUserId());
                 if(null!=userEntry){
                     dto8.setAvatar(AvatarUtils.getAvatar(userEntry.getAvatar(), userEntry.getRole(), userEntry.getSex()));
-                    dto8.setUserName(userEntry.getNickName());
+                    String name = StringUtils.isNotEmpty(userEntry.getNickName()) ? userEntry.getNickName() : userEntry.getUserName();
+                    dto8.setUserName(name);
                 }
                 Map<String,Object> ob1 = new HashMap<String, Object>();
                 ob1.put("tag", CommunityType.appNotice.getDes());

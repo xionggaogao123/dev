@@ -13,7 +13,6 @@ import com.db.operation.AppRecordDao;
 import com.db.user.NewVersionBindRelationDao;
 import com.db.wrongquestion.SubjectClassDao;
 import com.fulaan.community.dto.CommunityDTO;
-import com.fulaan.indexpage.dto.IndexPageDTO;
 import com.fulaan.instantmessage.service.RedDotService;
 import com.fulaan.newVersionBind.service.NewVersionBindService;
 import com.fulaan.operation.dto.AppCommentDTO;
@@ -25,9 +24,7 @@ import com.fulaan.user.service.UserService;
 import com.fulaan.utils.JPushUtils;
 import com.fulaan.wrongquestion.dto.SubjectClassDTO;
 import com.pojo.fcommunity.MemberEntry;
-import com.pojo.indexPage.IndexPageEntry;
 import com.pojo.instantmessage.ApplyTypeEn;
-import com.pojo.newVersionGrade.CommunityType;
 import com.pojo.newVersionGrade.NewVersionSubjectEntry;
 import com.pojo.operation.AppCommentEntry;
 import com.pojo.operation.AppOperationEntry;
@@ -126,8 +123,8 @@ public class AppCommentService {
             }
 
 
-            //添加临时记录表
-            if(dto.getStatus()==0){
+            //添加临时记录表//暂时不显示
+          /*  if(dto.getStatus()==0){
                 IndexPageDTO dto1 = new IndexPageDTO();
                 dto1.setType(CommunityType.appComment.getType());
                 dto1.setCommunityId(dto3.getId());
@@ -135,7 +132,7 @@ public class AppCommentService {
                 IndexPageEntry entry = dto1.buildAddEntry();
                 indexPageDao.addEntry(entry);
                 objectIdList.add(new ObjectId(dto3.getId()));
-            }
+            }*/
             redDotService.addEntryList(objectIdList, ApplyTypeEn.operation.getType());
         }
         return "成功导入";

@@ -960,8 +960,11 @@ public class AppCommentService {
      *删除作业
      *
      */
-    public void delAppcommentEntry(ObjectId id){
-        appCommentDao.delAppCommentEntry(id);
+    public void delAppcommentEntry(ObjectId id,ObjectId userId){
+        AppCommentEntry e = appCommentDao.getEntry(id);
+        if(e!= null && e.getAdminId() != null && e.getAdminId().equals(userId)){
+            appCommentDao.delAppCommentEntry(id);
+        }
     }
     /**
      *删除评论

@@ -2902,7 +2902,7 @@ public class CommunityController extends BaseController {
     @ApiResponses(value = {@ApiResponse(code = 200, message = "删除社区消息成功",response = Map.class),
             @ApiResponse(code = 500, message = "删除社区消息失败")})
     public RespObj removeDetailById(@ApiParam(name="detailId",required = true,value = "社区消息的Id")@ObjectIdType ObjectId detailId) {
-        communityService.removeCommunityDetailById(detailId);
+        communityService.removeCommunityDetailById(detailId,getUserId());
         return RespObj.SUCCESS;
     }
 
@@ -3212,7 +3212,7 @@ public class CommunityController extends BaseController {
     public RespObj updateCommunityDetailTop(@ApiParam(name="detailId",required = true,value = "社区消息Id")@ObjectIdType ObjectId detailId,
                                             @ApiParam(name="top",required = true,value = "置顶值")int top){
         RespObj respObj=new RespObj(Constant.SUCCESS_CODE);
-        communityService.updateCommunityDetailTop(detailId,top);
+        communityService.updateCommunityDetailTop(detailId,top,getUserId());
         return respObj;
     }
 

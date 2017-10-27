@@ -134,15 +134,19 @@ public class QuestionBookService {
     /**
      * 多条件组合查询列表
      */
-    public List<QuestionBookDTO> getQuestionList(String gradeId,String subjectId,String questionTypeId,String testId,int type,int page,int pageSize,String keyword,ObjectId userId){
+    public  Map<String,Object> getQuestionList(String gradeId,String subjectId,String questionTypeId,String testId,int type,int page,int pageSize,String keyword,ObjectId userId){
         List<QuestionBookEntry> entries = questionBookDao.getQuestionList(gradeId, subjectId, questionTypeId, testId, type, page, pageSize, keyword,userId);
         List<QuestionBookDTO> dtos = new ArrayList<QuestionBookDTO>();
+        int count = questionBookDao.getQuestionListCount(gradeId, subjectId, questionTypeId, testId, type,keyword,userId);
+        Map<String,Object> map = new HashMap<String, Object>();
         if(entries.size()>0){
             for(QuestionBookEntry entry : entries){
                 dtos.add(new QuestionBookDTO(entry));
             }
         }
-        return dtos;
+        map.put("list",dtos);
+        map.put("count",count);
+        return map;
     }
     public void addAnswerEntry(QuestionAdditionDTO dto){
         QuestionAdditionEntry entry = dto.buildAddEntry();

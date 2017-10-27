@@ -2113,7 +2113,7 @@ public class CommunityService {
         partInContentDao.saveParInContent(partInContentEntry);
     }
 
-    public void removeCommunityDetailById(ObjectId id) {
+    public void removeCommunityDetailById(ObjectId id,ObjectId userId) {
         //如果是通知或者火热分享发送系统通知
         CommunityDetailEntry entry=communityDetailDao.findByObjectId(id);
         if(entry.getCommunityType()==CommunityDetailType.ANNOUNCEMENT.getType()||
@@ -2132,8 +2132,10 @@ public class CommunityService {
             }
             fInformationService.sendSystemMessage(entry.getCommunityUserId(),"你的"+msg+"\""+title+"\"已被管理员删除");
         }
-        communityDetailDao.removeCommunityDetail(id);
-
+        CommunityDetailEntry en = communityDetailDao.findByObjectId(id);
+        if(en != null && en.getCommunityUserId()!= null && en.getCommunityUserId().equals(userId)){
+            communityDetailDao.removeCommunityDetail(id);
+        }
     }
 
     public void recordDeleteUserIds(ObjectId id,ObjectId userId){
@@ -2193,8 +2195,11 @@ public class CommunityService {
         return remarkDao.find(startUserId,endUserIds);
     }
 
-    public void updateCommunityDetailTop(ObjectId id,int top){
-        communityDetailDao.updateCommunityDetailTop(id,top);
+    public void updateCommunityDetailTop(ObjectId id,int top,ObjectId userId){
+        CommunityDetailEntry en = communityDetailDao.findByObjectId(id);
+        if(en != null && en.getCommunityUserId()!= null && en.getCommunityUserId().equals(userId)){
+            communityDetailDao.updateCommunityDetailTop(id,top);
+        }
     }
 
     /**

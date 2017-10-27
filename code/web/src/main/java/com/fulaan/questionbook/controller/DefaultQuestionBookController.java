@@ -145,7 +145,7 @@ public class DefaultQuestionBookController extends BaseController {
         RespObj respObj=null;
         try {
             respObj = RespObj.SUCCESS;
-            List<QuestionBookDTO> dtos = questionBookService.getQuestionList(gradeId, subjectId, questionTypeId, testId, type, page, pageSize, keyword,getUserId());
+            Map<String,Object> dtos = questionBookService.getQuestionList(gradeId, subjectId, questionTypeId, testId, type, page, pageSize, keyword,getUserId());
             respObj.setMessage(dtos);
         } catch (Exception e) {
             e.printStackTrace();

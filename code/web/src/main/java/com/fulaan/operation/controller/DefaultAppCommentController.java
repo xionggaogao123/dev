@@ -466,7 +466,7 @@ public class DefaultAppCommentController extends BaseController {
         RespObj respObj=null;
         try {
             respObj = RespObj.SUCCESS;
-           appCommentService.delAppcommentEntry(new ObjectId(id));
+           appCommentService.delAppcommentEntry(new ObjectId(id),getUserId());
            respObj.setMessage("删除成功！");
         } catch (Exception e) {
             e.printStackTrace();

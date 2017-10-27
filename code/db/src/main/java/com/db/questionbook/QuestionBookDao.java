@@ -80,6 +80,34 @@ public class QuestionBookDao extends BaseDao{
         }
         return entryList;
     }
+
+    //查询所有已提交的数量
+    public int getQuestionListCount(String gradeId,String subjectId,String questionTypeId,String testId,int type,String keyword,ObjectId userId) {
+        BasicDBObject query = new BasicDBObject()
+                .append("typ", type)
+                .append("uid",userId)
+                .append("isr", 0); // 未删除
+        if(gradeId != null && !gradeId.equals("")){
+            query.append("gid",new ObjectId(gradeId));
+        }
+        if(subjectId != null && !subjectId.equals("")){
+            query.append("sid",new ObjectId(subjectId));
+        }
+        if(questionTypeId != null && !questionTypeId.equals("")){
+            query.append("qid",new ObjectId(questionTypeId));
+        }
+        if(testId != null && !testId.equals("")){
+            query.append("tid",new ObjectId(testId));
+        }
+        if(keyword != null && !keyword.equals("")){
+            query.append("dec", MongoUtils.buildRegex(keyword));
+        }
+        int count =
+                count(MongoFacroty.getAppDB(),
+                        Constant.COLLECTION_QUESTION_BOOK,
+                        query);
+        return count;
+    }
 //new BasicDBObject(Constant.MONGO_GT, 0))
     public List<QuestionBookEntry> getReviewList(ObjectId userId,long time) {
         BasicDBObject query = new BasicDBObject()

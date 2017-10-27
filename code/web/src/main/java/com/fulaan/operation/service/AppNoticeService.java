@@ -226,7 +226,7 @@ public class AppNoticeService {
         for(AppNoticeEntry entry:entries){
             AppNoticeDTO dto=new AppNoticeDTO(entry);
             dto.setAvatar(AvatarUtils.getAvatar(userEntry.getAvatar(),userEntry.getRole(),userEntry.getSex()));
-            dto.setUserName(userEntry.getNickName());
+            dto.setUserName(StringUtils.isNotEmpty(userEntry.getNickName())?userEntry.getNickName():userEntry.getUserName());
             dto.setIsRead(0);
             if(dto.getReadList().contains(userId.toString())){
                 dto.setIsRead(1);
@@ -289,7 +289,7 @@ public class AppNoticeService {
             UserEntry userEntry=userEntryMap.get(entry.getUserId());
             if(null!=userEntry){
                 dto.setAvatar(AvatarUtils.getAvatar(userEntry.getAvatar(),userEntry.getRole(),userEntry.getSex()));
-                dto.setUserName(userEntry.getNickName());
+                dto.setUserName(StringUtils.isNotEmpty(userEntry.getNickName())?userEntry.getNickName():userEntry.getUserName());
             }
             dto.setIsRead(0);
             if(dto.getReadList().contains(userId.toString())){

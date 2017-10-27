@@ -1569,6 +1569,10 @@ public class DefaultUserController extends BaseController {
                 userService.saveThirdEntry(thirdLoginEntry);
             }
         }
+        //保存为家长用户
+        if(null==newVersionUserRoleDao.getEntry(userEntry.getID())){
+            newVersionUserRoleDao.saveEntry(new NewVersionUserRoleEntry(userEntry.getID(), 0));
+        }
         return userEntry;
     }
 
@@ -1731,6 +1735,10 @@ public class DefaultUserController extends BaseController {
             //保存第三方登录数据
             ThirdLoginEntry thirdLoginEntry = new ThirdLoginEntry(userEntry.getID(), openId, unionId, ThirdType.getThirdType(type));
             userService.saveThirdEntry(thirdLoginEntry);
+        }
+        //保存为家长用户
+        if(null==newVersionUserRoleDao.getEntry(userEntry.getID())){
+            newVersionUserRoleDao.saveEntry(new NewVersionUserRoleEntry(userEntry.getID(), 0));
         }
         final UserEntry e = userEntry;
         new Thread(new Runnable() {

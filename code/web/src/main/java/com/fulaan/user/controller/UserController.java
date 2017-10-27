@@ -1569,6 +1569,10 @@ public class UserController extends BaseController {
                 userService.saveThirdEntry(thirdLoginEntry);
             }
         }
+        //保存为家长用户
+        if(null==newVersionUserRoleDao.getEntry(userEntry.getID())){
+            newVersionUserRoleDao.saveEntry(new NewVersionUserRoleEntry(userEntry.getID(), 0));
+        }
         return userEntry;
     }
 
@@ -1732,6 +1736,12 @@ public class UserController extends BaseController {
             ThirdLoginEntry thirdLoginEntry = new ThirdLoginEntry(userEntry.getID(), openId, unionId, ThirdType.getThirdType(type));
             userService.saveThirdEntry(thirdLoginEntry);
         }
+
+        //保存为家长用户
+        if(null==newVersionUserRoleDao.getEntry(userEntry.getID())){
+            newVersionUserRoleDao.saveEntry(new NewVersionUserRoleEntry(userEntry.getID(), 0));
+        }
+
         final UserEntry e = userEntry;
         new Thread(new Runnable() {
             @Override

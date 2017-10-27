@@ -2,6 +2,7 @@ package com.fulaan.service;
 
 import com.db.fcommunity.*;
 import com.db.reportCard.GroupExamUserRecordDao;
+import com.db.user.NewVersionUserRoleDao;
 import com.db.user.UserDao;
 import com.fulaan.cache.RedisUtils;
 import com.fulaan.community.dto.CommunityDTO;
@@ -23,6 +24,7 @@ import com.pojo.activity.FriendApplyEntry;
 import com.pojo.fcommunity.*;
 import com.pojo.forum.FVoteDTO;
 import com.pojo.forum.FVoteEntry;
+import com.pojo.user.NewVersionUserRoleEntry;
 import com.pojo.user.UserEntry;
 import com.sys.constants.Constant;
 import com.sys.utils.AvatarUtils;
@@ -69,6 +71,7 @@ public class CommunityService {
     private CommunitySeqDao seqDao = new CommunitySeqDao();
     private RemarkDao remarkDao = new RemarkDao();
     private MemberDao memberDao = new MemberDao();
+    private NewVersionUserRoleDao newVersionUserRoleDao=new NewVersionUserRoleDao();
 
     private GroupExamUserRecordDao groupExamUserRecordDao=new GroupExamUserRecordDao();
 
@@ -2212,4 +2215,31 @@ public class CommunityService {
         partInContentDao.removePartInContentInfo(id);
     }
 
+    public void setOldUserData(String communityName){
+        CommunityDTO communityDTO=getCommunityByName(communityName);
+        if(null!=communityDTO&&StringUtils.isNotBlank(communityDTO.getId())) {
+            ObjectId groupId = communityDao.getGroupId(new ObjectId(communityDTO.getId()));
+            if(null!=groupId) {
+                int page = 1;
+                int pageSize = 100;
+                boolean flag=true;
+                while (flag) {
+                    List<MemberEntry> memberEntries = memberDao.getMembers(groupId, page, pageSize);
+                    if(memberEntries.size()>0){
+                        for(MemberEntry memberEntry:memberEntries){
+                            NewVersionUserRoleEntry userRoleEntry=newVersionUserRoleDao.getEntry(memberEntry.getUserId());
+                            if(null==userRoleEntry){
+                                NewVersionUserRoleEntry
+                                        entry=new NewVersionUserRoleEntry(memberEntry.getUserId(),Constant.ZERO);
+                                newVersionUserRoleDao.saveEntry(entry);
+                            }
+                        }
+                    }else{
+                        flag=false;
+                    }
+                    page++;
+                }
+            }
+        }
+    }
 }

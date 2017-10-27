@@ -3408,4 +3408,16 @@ public class CommunityController extends BaseController {
         return respObj;
     }
 
+    @RequestMapping("/setOldUserData")
+    @ResponseBody
+    @SessionNeedless
+    @ApiOperation(value = "设置老用户数据为家长", httpMethod = "GET", produces = "application/json")
+    @ApiResponses(value = {@ApiResponse(code = 200, message = "设置老用户数据为家长",response = Map.class),
+            @ApiResponse(code = 500, message = "设置老用户数据为家长")})
+    public RespObj setOldUserData(String communityName){
+        RespObj respObj=new RespObj(Constant.SUCCESS_CODE);
+        communityService.setOldUserData(communityName);
+        return respObj;
+    }
+
 }

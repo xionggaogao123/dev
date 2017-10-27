@@ -69,8 +69,36 @@
               hidden="hidden"/>
        </div></span>
        <span id="submit" onclick="submit()" style="cursor: pointer;color: #5db75d">提交</span>
+       <br/>
+       <br/>
+       <br/>
+       <br/>
+       <br/>
+       <br/>
+       <br/>
+       <br/>
+       <br/>
+       <br/>
+       <span>社区名称:</span><span><input type="text" id="communityName"></span>
+       <span id="submitCommunity" onclick="submitCommunity()" style="cursor: pointer;color: #5db75d">设置老的用户为家长用户</span>
    </div>
    <script type="text/javascript">
+       function submitCommunity() {
+           var url="/community/setOldUserData.do";
+           var data={};
+           data.communityName=$.trim($('#communityName').val());
+           $.ajax({
+               type: "GET",
+               data: data,
+               url: url,
+               async: false,
+               dataType: "json",
+               contentType: "application/x-www-form-urlencoded; charset=UTF-8",
+               success: function (rep) {
+                   alert("设置老用户数据为家长成功!");
+               }
+           });
+       }
        function submit() {
            var message={};
            message.id=$.trim($('#id').val());

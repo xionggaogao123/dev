@@ -10,51 +10,51 @@ import org.bson.types.ObjectId;
  */
 public class GroupExamDetailDTO {
 
-    private String id;
-    private String groupId;
-    private String communityId;
-    private String examType;
-    private int recordScoreType;
-    private String userId;
-    private String examName;
-    private String subjectId;
-    private int maxScore;
-    private int qualifyScore;
-    private int excellentScore;
-    private long examTime;
-    private long submitTime;
-    private String examStrTime;
+    private String id; //关键字Id
+    private String groupId;//群组Id
+    private String communityId;//社区Id
+    private String examType;//考试类型Id
+    private int recordScoreType;//分数类型 1:分值制 2:等地址
+    private String userId;//用户Id
+    private String examName;//考试名称
+    private String subjectId;//学科Id
+    private int maxScore;//最高分
+    private int qualifyScore;//合格分
+    private int excellentScore;//优秀分
+    private long examTime;//考试时间
+    private long submitTime;//提交时间
+    private String examStrTime;//考试时间格式yyyy-MM-dd
 
-    private String userName;
-    private String subjectName;
-    private String groupName;
-    private String examTypeName;
+    private String userName;//用户名
+    private String subjectName;//学科名
+    private String groupName;//群组名
+    private String examTypeName;//考试类型名称
 
     //我的孩子的分值
-    private String childUserId;
-    private String childUserName;
-    private double score;
-    private int scoreLevel;
-    private int isSign;
-    private double avgScore;
-    private double groupMaxScore;
-    private double groupMinScore;
-    private double excellentPercent;
-    private double aPercent;
-    private double bPercent;
-    private double cPercent;
-    private double dPercent;
+    private String childUserId;//孩子用户Id
+    private String childUserName;//孩子用户姓名
+    private double score;//分数
+    private int scoreLevel;//等第制
+    private int isSign;//没有用
+    private double avgScore;//平均分
+    private double groupMaxScore;//群组最高分
+    private double groupMinScore;//群组最低分
+    private double excellentPercent;//优秀率
+    private double aPercent;//a率
+    private double bPercent;//b率
+    private double cPercent;//c率
+    private double dPercent;//d率
 
-    private int signCount;
-    private int signedCount;
-    private int unSignCount;
+    private int signCount;//签到总数
+    private int signedCount;//已签到人数
+    private int unSignCount;//未签到人数
 
-    private String singleScoreId;
-    private int singleRank;
+    private String singleScoreId;//每条成绩的Id
+    private int singleRank;//孩子排名
 
-    private double qualifyPercent;
-    private double unQualifyPercent;
-    private int status;
+    private double qualifyPercent;//合格率
+    private double unQualifyPercent;//不合格率
+    private int status;//状态 0保存 1删除 2发送（未签字）3已签字
 
     public GroupExamDetailDTO(){
 

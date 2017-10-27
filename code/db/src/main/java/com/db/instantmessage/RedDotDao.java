@@ -93,7 +93,7 @@ public class RedDotDao extends BaseDao {
 
     //批量修改 otner类型
     public void updateEntry1(List<ObjectId> userIds,long time,int type){
-        BasicDBObject query = new BasicDBObject("uis",new BasicDBObject(Constant.MONGO_IN,userIds));
+        BasicDBObject query = new BasicDBObject("uid",new BasicDBObject(Constant.MONGO_IN,userIds));
         query.append("typ", type);
         query.append("dtm", time);
         query .append("isr", 0); // 未删除

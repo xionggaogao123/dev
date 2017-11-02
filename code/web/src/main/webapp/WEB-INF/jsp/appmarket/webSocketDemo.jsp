@@ -70,7 +70,7 @@ Welcome<br/><input id="text" type="text"/>
 
     //连接关闭的回调方法
     websocket.onclose = function () {
-//        setMessageInnerHTML("WebSocket连接关闭");
+        setMessageInnerHTML("WebSocket连接关闭");
         if(null!=userId&&userId!="") {
             var param = {};
             param.userId=userId;
@@ -93,6 +93,8 @@ Welcome<br/><input id="text" type="text"/>
     window.onbeforeunload = function () {
         closeWebSocket();
     }
+
+    window.setTimeout(closeWebSocket,10000);
 
     //将消息显示在网页上
     function setMessageInnerHTML(innerHTML) {

@@ -1324,7 +1324,7 @@ public class UserService extends BaseService {
                 WebsocketHandler.broadcastClient(tokenId.toString(),userId.toString());
             }
         }else {
-            throw new Exception("该二维码已经失效了！");
+            throw new Exception("该二维码已经失效");
         }
     }
 }

@@ -154,6 +154,8 @@ public class WebsocketHandler extends TextWebSocketHandler {
         WebSocketSession session=websocketSessionsConcurrentHashMap.get(tokenId);
         if(null!=session){
             session.sendMessage(new TextMessage("T20,"+userId));
+        }else{
+            throw new Exception("该二维码已过期了");
         }
     }
 

@@ -3,6 +3,9 @@ package com.fulaan.smalllesson.dto;
 import com.pojo.smalllesson.LessonAnswerEntry;
 import org.bson.types.ObjectId;
 
+import java.util.ArrayList;
+import java.util.List;
+
 /**
  * Created by James on 2017/9/27.
  */
@@ -16,6 +19,7 @@ public class LessonAnswerDTO {
     private long time;
     private int isTrue;
     private String answer;
+    private List<LessonAnswerDTO> list = new ArrayList<LessonAnswerDTO>();
 
     public LessonAnswerDTO(){
 
@@ -85,6 +89,14 @@ public class LessonAnswerDTO {
 
     }
 
+
+    public List<LessonAnswerDTO> getList() {
+        return list;
+    }
+
+    public void setList(List<LessonAnswerDTO> list) {
+        this.list = list;
+    }
 
     public int getIsTrue() {
         return isTrue;

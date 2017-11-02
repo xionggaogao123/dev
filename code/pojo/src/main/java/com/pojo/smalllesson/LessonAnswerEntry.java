@@ -17,7 +17,7 @@ import org.bson.types.ObjectId;
  * answer        答案           ans
  *
  */
-public class LessonAnswerEntry extends BaseDBObject {
+public class  LessonAnswerEntry extends BaseDBObject {
     public LessonAnswerEntry(){
 
     }

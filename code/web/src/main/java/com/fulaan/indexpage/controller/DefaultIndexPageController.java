@@ -23,7 +23,7 @@ public class DefaultIndexPageController extends BaseController {
     @Autowired
     private IndexPageService indexPageService;
 
-    @ApiOperation(value = "修改课程名", httpMethod = "POST", produces = "application/json")
+    @ApiOperation(value = "首页list", httpMethod = "POST", produces = "application/json")
     @ApiResponses( value = {@ApiResponse(code = 200, message = "Successful — 请求已完成",response = String.class)})
     @RequestMapping("/getIndexList")
     @ResponseBody

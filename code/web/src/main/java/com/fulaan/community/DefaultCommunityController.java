@@ -2924,6 +2924,7 @@ public class DefaultCommunityController extends BaseController {
         RespObj respObj=null;
         try {
             respObj = RespObj.SUCCESS;
+            respObj.setMessage("");
             communityService.removeNewCommunityDetailById(detailId,getUserId());
         } catch (Exception e) {
             e.printStackTrace();
@@ -3256,6 +3257,7 @@ public class DefaultCommunityController extends BaseController {
         RespObj respObj=null;
         try {
             respObj = RespObj.SUCCESS;
+            respObj.setMessage("");
             communityService.updateNewCommunityDetailTop(detailId, top, getUserId());
         } catch (Exception e) {
             e.printStackTrace();

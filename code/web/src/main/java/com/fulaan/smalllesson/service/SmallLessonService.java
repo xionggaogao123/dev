@@ -2,14 +2,15 @@ package com.fulaan.smalllesson.service;
 
 import com.db.smalllesson.LessonAnswerDao;
 import com.db.smalllesson.LessonUserResultDao;
+import com.db.smalllesson.SmallLessonCodeDao;
 import com.db.smalllesson.SmallLessonDao;
 import com.fulaan.smalllesson.dto.LessonAnswerDTO;
 import com.fulaan.smalllesson.dto.LessonUserResultDTO;
 import com.fulaan.smalllesson.dto.SmallLessonDTO;
-import com.fulaan.smalllesson.dto.SmallLessonUserCodeDTO;
 import com.mongodb.DBObject;
 import com.pojo.smalllesson.LessonAnswerEntry;
 import com.pojo.smalllesson.LessonUserResultEntry;
+import com.pojo.smalllesson.SmallLessonCodeEntry;
 import com.pojo.smalllesson.SmallLessonEntry;
 import org.bson.types.ObjectId;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -31,6 +32,8 @@ public class SmallLessonService {
     private LessonAnswerDao lessonAnswerDao = new LessonAnswerDao();
     @Autowired
     private SmallLessonUserCodeService smallLessonUserCodeService;
+
+    private SmallLessonCodeDao smallLessonCodeDao = new SmallLessonCodeDao();
     //列表查询用户课程
     public Map<String,Object> getLessonList(ObjectId userId,int page,int pageSize){
         Map<String,Object> map = new HashMap<String, Object>();
@@ -128,6 +131,7 @@ public class SmallLessonService {
                 int time = (int)time2/60000;
                 entry2.setNodeTime(time);
                 smallLessonDao.updEntry(entry2);
+                smallLessonUserCodeService.removeSmallLessonCode(entry2.getCode());
                 SmallLessonDTO dto = new SmallLessonDTO();
                 dto.setUserId(userId);
                 dto.setName(this.getName(new ObjectId(userId),userName));
@@ -177,16 +181,18 @@ public class SmallLessonService {
     //加入课程（输码）
     public Map<String,Object> addStuEntryByCode(ObjectId userId,String userName,String str){
         String code = str.toLowerCase();
-        SmallLessonUserCodeDTO dto2 = smallLessonUserCodeService.getDtoByCode(code);
+        SmallLessonCodeEntry dto2=smallLessonCodeDao.getCodeEntry(code);
         Map<String,Object> map = new HashMap<String, Object>();
         if(dto2 == null){
+            map.put("lessonId","");
             map.put("code",1);
             map.put("msg","该课程码不存在");
             return map;
         }
-        map.put("lessonId",dto2.getId());
-        SmallLessonEntry entry = smallLessonDao.getEntryByUserId(new ObjectId(dto2.getUserId()));
+
+        SmallLessonEntry entry = smallLessonDao.getEntryByCode(code);
         if(entry == null){
+            map.put("lessonId","");
             map.put("code",1);
             map.put("msg","该课程已结束");
             return map;
@@ -198,6 +204,7 @@ public class SmallLessonService {
             dto.setScore(0);
             LessonUserResultEntry entry1 = dto.buildAddEntry();
             lessonUserResultDao.addEntry(entry1);
+            map.put("lessonId",entry.getID().toString());
             map.put("code",2);
             map.put("msg","该课程进行中");
             return map;
@@ -234,7 +241,11 @@ public class SmallLessonService {
 
     //删除课程
     public void delLessonEntry(ObjectId lessonId){
-       smallLessonDao.delSmallLessonEntry(lessonId);
+        SmallLessonEntry entry = smallLessonDao.getEntry(lessonId);
+        if(entry!= null){
+            smallLessonDao.delSmallLessonEntry(lessonId);
+            smallLessonUserCodeService.removeSmallLessonCode(entry.getCode());
+        }
     }
 
     //获得登陆信息

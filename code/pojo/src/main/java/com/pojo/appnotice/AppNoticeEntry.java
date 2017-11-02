@@ -9,6 +9,7 @@ import com.pojo.fcommunity.ValidateInfoEntry;
 import com.pojo.fcommunity.VideoEntry;
 import com.pojo.utils.MongoUtils;
 import com.sys.constants.Constant;
+import com.sys.utils.DateTimeUtils;
 import org.bson.types.ObjectId;
 
 import java.util.ArrayList;
@@ -47,6 +48,7 @@ public class AppNoticeEntry extends BaseDBObject{
                .append("tl",title)
                .append("ti",System.currentTimeMillis())
                .append("cn",content)
+               .append("sd", DateTimeUtils.convert(System.currentTimeMillis(),DateTimeUtils.DATE_YYYY_MM_DD))
                .append("rl", MongoUtils.convert(new ArrayList<ObjectId>()))
                .append("cc", Constant.ZERO)
                .append("gi",groupId)
@@ -61,6 +63,14 @@ public class AppNoticeEntry extends BaseDBObject{
                .append("sid",subjectId)
                .append("ir",Constant.ZERO);
         setBaseEntry(basicDBObject);
+    }
+
+    public long getSendDay(){
+        return getSimpleLongValueDef("sd",0L);
+    }
+
+    public void setSendDay(long sendDay){
+        setSimpleValue("sd",sendDay);
     }
 
     public void setVoiceList(List<AttachmentEntry> voiceList){

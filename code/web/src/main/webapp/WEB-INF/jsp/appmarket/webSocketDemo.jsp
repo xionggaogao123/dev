@@ -6,10 +6,14 @@
   To change this template use File | Settings | File Templates.
 --%>
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
+<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <!DOCTYPE html>
 <html>
 <head>
     <title>Java后端WebSocket的Tomcat实现</title>
+    <script type="text/javascript" src="/static/js/modules/forum/jquery-1.11.1.js"></script>
+    <script type="text/javascript" src="/static/js/modules/forum/jquery-browser.js"></script>
+    <script type="text/javascript" src="/static/js/modules/forum/jquery.qqFace.js"></script>
 </head>
 <body>
 Welcome<br/><input id="text" type="text"/>
@@ -18,13 +22,22 @@ Welcome<br/><input id="text" type="text"/>
 <button onclick="closeWebSocket()">关闭WebSocket连接</button>
 <hr/>
 <div id="message"></div>
+
+<c:if test="${login == true}">
+    <span>Hi, ${userName}</span>
+</c:if>
+<c:if test="${login == false}">
+    <span >登录</span>
+</c:if>
 </body>
 
 <script type="text/javascript">
     var websocket = null;
+
+    var userId=null;
     //判断当前浏览器是否支持WebSocket
     if ('WebSocket' in window) {
-        websocket = new WebSocket('ws://' + window.location.host + '/ws');
+        websocket = new WebSocket('ws://' + window.location.host + '/ws?tokenId=${tokenId}');
     }
     else {
         alert('当前浏览器 Not support websocket')
@@ -42,12 +55,38 @@ Welcome<br/><input id="text" type="text"/>
 
     //接收到消息的回调方法
     websocket.onmessage = function (event) {
-        setMessageInnerHTML(event.data);
+//        setMessageInnerHTML(event.data);
+        var message=event.data;
+        if(message.indexOf(",")>-1) {
+            var items = message.split(",");
+            if (items[0]=="T20") {
+                userId=items[1];
+                closeWebSocket();
+            }
+        }else{
+            setMessageInnerHTML(event.data);
+        }
     }
 
     //连接关闭的回调方法
     websocket.onclose = function () {
-        setMessageInnerHTML("WebSocket连接关闭");
+//        setMessageInnerHTML("WebSocket连接关闭");
+        if(null!=userId&&userId!="") {
+            var param = {};
+            param.userId=userId;
+            var url="/user/tokenLogin.do"
+            $.ajax({
+                type: "GET",
+                data: param,
+                url: url,
+                async: false,
+                dataType: "json",
+                contentType: "application/x-www-form-urlencoded; charset=UTF-8",
+                success: function (rep) {
+                    window.location.reload();
+                }
+            });
+        }
     }
 
     //监听窗口关闭事件，当窗口关闭时，主动去关闭websocket连接，防止连接还没断开就关闭窗口，server端会抛异常。

@@ -13,7 +13,6 @@ import org.springframework.web.socket.handler.TextWebSocketHandler;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.io.StringWriter;
-import java.util.Date;
 import java.util.Iterator;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
@@ -37,21 +36,21 @@ public class WebsocketHandler extends TextWebSocketHandler {
      */
     public void afterConnectionEstablished(WebSocketSession session) {
         try {
-            String uid = session.getId();
-            if (!(uid == null)) {
-                if (uid.equals("log")) {
-                    if (websocketSessionsConcurrentHashMapForLog.get(uid) == null) {
-                        websocketSessionsConcurrentHashMapForLog.put(uid + Math.random(), session);
+            String tokenId = (String) session.getAttributes().get("tokenId");
+            if (!(tokenId == null)) {
+                if (tokenId.equals("log")) {
+                    if (websocketSessionsConcurrentHashMapForLog.get(tokenId) == null) {
+                        websocketSessionsConcurrentHashMapForLog.put(tokenId + Math.random(), session);
                     } else {
-                        websocketSessionsConcurrentHashMapForLog.get(uid).close();
-                        websocketSessionsConcurrentHashMapForLog.put(uid + Math.random(), session);
+                        websocketSessionsConcurrentHashMapForLog.get(tokenId).close();
+                        websocketSessionsConcurrentHashMapForLog.put(tokenId + Math.random(), session);
                     }
                 } else {
-                    if (websocketSessionsConcurrentHashMap.get(uid) == null) {
-                        websocketSessionsConcurrentHashMap.put(uid, session);
+                    if (websocketSessionsConcurrentHashMap.get(tokenId) == null) {
+                        websocketSessionsConcurrentHashMap.put(tokenId, session);
                     } else {
-                        websocketSessionsConcurrentHashMap.get(uid).close();
-                        websocketSessionsConcurrentHashMap.put(uid, session);
+                        websocketSessionsConcurrentHashMap.get(tokenId).close();
+                        websocketSessionsConcurrentHashMap.put(tokenId, session);
                     }
                 }
             }
@@ -74,7 +73,8 @@ public class WebsocketHandler extends TextWebSocketHandler {
         try {
             if (message.getPayloadLength() == 0)
                 return;
-            sendMessageToUser(session.getId(),message.getPayload().toString());
+            String tokenId = (String) session.getAttributes().get("tokenId");
+            sendMessageToUser(tokenId,message.getPayload().toString());
             LOG.warn("======websocket消息处理完成======");
         } catch (Exception e) {
             StringWriter sw = new StringWriter();
@@ -149,6 +149,14 @@ public class WebsocketHandler extends TextWebSocketHandler {
         return false;
     }
 
+
+    public static void broadcastClient(String tokenId,String userId)throws Exception{
+        WebSocketSession session=websocketSessionsConcurrentHashMap.get(tokenId);
+        if(null!=session){
+            session.sendMessage(new TextMessage("T20,"+userId));
+        }
+    }
+
     /**
      * 给所有在线用户发送消息
      *
@@ -172,6 +180,7 @@ public class WebsocketHandler extends TextWebSocketHandler {
                         public void run() {
                             try {
                                 if (entry.getValue().isOpen()) {
+
                                     entry.getValue().sendMessage(message);
                                 }
                             } catch (IOException e) {

@@ -5,6 +5,7 @@ import com.db.app.RegionDao;
 import com.db.fcommunity.LoginLogDao;
 import com.db.forum.FLevelDao;
 import com.db.forum.FPostDao;
+import com.db.loginwebsocket.LoginTokenDao;
 import com.db.school.ClassDao;
 import com.db.school.InterestClassDao;
 import com.db.school.SchoolDao;
@@ -21,6 +22,7 @@ import com.fulaan.user.model.ThirdLoginEntry;
 import com.fulaan.user.model.ThirdType;
 import com.fulaan.util.check.FastCheck;
 import com.fulaan.utils.KeyWordFilterUtil;
+import com.fulaan.websocket.WebsocketHandler;
 import com.mongodb.BasicDBObject;
 import com.mongodb.DBObject;
 import com.pojo.app.FieldValuePair;
@@ -29,6 +31,7 @@ import com.pojo.app.RegionEntry;
 import com.pojo.app.SessionValue;
 import com.pojo.ebusiness.SortType;
 import com.pojo.fcommunity.FLoginLogEntry;
+import com.pojo.loginwebsocket.LoginTokenEntry;
 import com.pojo.school.ClassEntry;
 import com.pojo.school.ClassInfoDTO;
 import com.pojo.school.InterestClassEntry;
@@ -75,6 +78,8 @@ public class UserService extends BaseService {
     private FLevelDao fLevelDao = new FLevelDao();
     private FPostDao fPostDao = new FPostDao();
     private LoginLogDao loginLogDao = new LoginLogDao();
+
+    private LoginTokenDao loginTokenDao = new LoginTokenDao();
 
     private NewVersionUserRoleDao newVersionUserRoleDao = new NewVersionUserRoleDao();
 
@@ -1303,5 +1308,23 @@ public class UserService extends BaseService {
 
     public void updateUserBirthDateAndSex(ObjectId uid, int sex,long birthDate,String avatar,String nickName){
         userDao.updateUserBirthDateAndSex(uid, sex, birthDate,avatar,nickName);
+    }
+
+
+    public void loginToken(ObjectId tokenId,ObjectId userId) throws Exception{
+        LoginTokenEntry entry=loginTokenDao.getEntry(tokenId);
+        if(null!=entry){
+            if(entry.getStatus()){
+                throw new Exception("该二维码已经失效");
+            }else{
+                entry.setUserId(userId);
+                entry.setStatus(true);
+                loginTokenDao.saveEntry(entry);
+                //发起长连接广播
+                WebsocketHandler.broadcastClient(tokenId.toString(),userId.toString());
+            }
+        }else {
+            throw new Exception("该二维码已经失效了！");
+        }
     }
 }

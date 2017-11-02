@@ -61,6 +61,7 @@ import org.apache.log4j.Logger;
 import org.bson.types.ObjectId;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
@@ -237,6 +238,41 @@ public class UserController extends BaseController {
             }
         }else{
             respObj.setMessage("学生账号未激活");
+        }
+        return respObj;
+    }
+
+
+    /**
+     * token登录
+     * @param userId
+     * @param response
+     * @param request
+     * @return
+     */
+    @ApiOperation(value = "token用户登录", httpMethod = "POST", produces = "application/json")
+    @ApiResponses( value = {@ApiResponse(code = 200, message = "Successful — 请求已完成",response = RespObj.class)})
+    @SessionNeedless
+    @RequestMapping("/tokenLogin")
+    @ResponseBody
+    public RespObj tokenLogin(@ObjectIdType ObjectId userId,
+                              HttpServletResponse response, HttpServletRequest request){
+        UserEntry userEntry=userService.findById(userId);
+        return login(userEntry.getUserName(),userEntry.getPassword(),1,response,request);
+    }
+
+    @ApiOperation(value = "扫描二维码", httpMethod = "POST", produces = "application/json")
+    @ApiResponses(value = {@ApiResponse(code = 200, message = "Successful — 请求已完成",response = RespObj.class)})
+    @RequestMapping("/tokenQr/{tokenId}")
+    @ResponseBody
+    public RespObj tokenQr(@PathVariable @ObjectIdType ObjectId tokenId){
+        RespObj respObj=new RespObj(Constant.FAILD_CODE);
+        try{
+            userService.loginToken(tokenId,getUserId());
+            respObj.setMessage(Constant.SUCCESS_CODE);
+        }catch (Exception e){
+            e.printStackTrace();
+            respObj.setMessage(e.getMessage());
         }
         return respObj;
     }

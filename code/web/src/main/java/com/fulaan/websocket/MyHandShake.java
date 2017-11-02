@@ -33,10 +33,10 @@ public class MyHandShake implements HandshakeInterceptor {
             if (request instanceof ServletServerHttpRequest) {
                 ServletServerHttpRequest servletRequest = (ServletServerHttpRequest) request;
                 // 标记用户
-                String uid = servletRequest.getServletRequest().getParameter("uid");
-                LOG.warn("servlet request uid is :" + uid);
-                if (uid != null) {
-                    attributes.put("uid", uid);
+                String tokenId = servletRequest.getServletRequest().getParameter("tokenId");
+                LOG.warn("servlet request tokenId is :" + tokenId);
+                if (tokenId != null) {
+                    attributes.put("tokenId", tokenId);
                 } else {
                     return true;
                 }

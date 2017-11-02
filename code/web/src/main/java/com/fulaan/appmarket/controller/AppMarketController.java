@@ -1,10 +1,14 @@
 package com.fulaan.appmarket.controller;
 
+import com.db.loginwebsocket.LoginTokenDao;
+import com.fulaan.annotation.LoginInfo;
 import com.fulaan.annotation.ObjectIdType;
+import com.fulaan.annotation.SessionNeedless;
 import com.fulaan.appmarket.dto.AppDetailCommentDTO;
 import com.fulaan.appmarket.dto.AppDetailDTO;
 import com.fulaan.appmarket.service.AppMarketService;
 import com.fulaan.base.BaseController;
+import com.pojo.loginwebsocket.LoginTokenEntry;
 import com.sys.constants.Constant;
 import com.sys.utils.RespObj;
 import io.swagger.annotations.Api;
@@ -34,6 +38,8 @@ public class AppMarketController extends BaseController{
     @Autowired
     private AppMarketService appMarketService;
 
+    private LoginTokenDao loginTokenDao=new LoginTokenDao();
+
 
     @ApiOperation(value = "网页端跳转到管理应用界面", httpMethod = "POST", produces = "application/json")
     @RequestMapping("/index")
@@ -43,9 +49,21 @@ public class AppMarketController extends BaseController{
 
     @ApiOperation(value = "网页端跳转到管理应用界面", httpMethod = "POST", produces = "application/json")
     @RequestMapping("/websocket")
+    @LoginInfo
+    @SessionNeedless
     public String websocket(HttpServletRequest request, Map<String,Object> model){
+        LoginTokenEntry loginTokenEntry=loginTokenDao.getEntry();
+        if(null!=loginTokenEntry){
+            model.put("tokenId",loginTokenEntry.getTokenId().toString());
+        }else{
+            ObjectId tokenId=new ObjectId();
+            LoginTokenEntry tokenEntry=new LoginTokenEntry(tokenId);
+            loginTokenDao.saveEntry(tokenEntry);
+            model.put("tokenId",tokenEntry);
+        }
         return "/appmarket/webSocketDemo";
     }
+
 
     @ApiOperation(value = "保存每个应用", httpMethod = "POST", produces = "application/json")
     @ApiResponses( value = {@ApiResponse(code = 200, message = "Successful — 请求已完成",response = RespObj.class),

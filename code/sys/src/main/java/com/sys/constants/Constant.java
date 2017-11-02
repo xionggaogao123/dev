@@ -672,6 +672,9 @@ public class Constant {
 
     public static final String COLLECTION_MALL_MARKET_URL = "http://a.app.qq.com/o/simple.jsp?pkgname=com.fulan.mall";
 
+    //新加的token-user表
+    public static final String COLLECTION_TOKEN_USER_LOGIN="token_user_login";
+
     //---------------------------------------------------------------------------------------------论坛
 
 

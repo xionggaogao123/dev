@@ -10,6 +10,7 @@ import org.apache.commons.lang.StringUtils;
 import org.apache.log4j.Logger;
 import org.springframework.web.method.HandlerMethod;
 import org.springframework.web.servlet.handler.HandlerInterceptorAdapter;
+import org.springframework.web.socket.server.support.WebSocketHttpRequestHandler;
 
 import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
@@ -27,34 +28,40 @@ public class SessionValueInterceptor extends HandlerInterceptorAdapter {
     @Override
     public boolean preHandle(HttpServletRequest request, HttpServletResponse response,
                              Object arg2) throws Exception {
-        HandlerMethod method = (HandlerMethod) arg2;
-        SessionNeedless s = method.getMethodAnnotation(SessionNeedless.class);
-        String ui = getCookieUserKeyValue(request);
-        if (null != s) {
-            if (StringUtils.isNotBlank(ui)) {
-                SessionValue sv = CacheHandler.getSessionValue(ui);
-                if (null != sv && !sv.isEmpty()) {
-                    request.setAttribute(SESSION_VALUE, sv);
+        if(arg2 instanceof  HandlerMethod) {
+            HandlerMethod method = (HandlerMethod) arg2;
+            SessionNeedless s = method.getMethodAnnotation(SessionNeedless.class);
+            String ui = getCookieUserKeyValue(request);
+            if (null != s) {
+                if (StringUtils.isNotBlank(ui)) {
+                    SessionValue sv = CacheHandler.getSessionValue(ui);
+                    if (null != sv && !sv.isEmpty()) {
+                        request.setAttribute(SESSION_VALUE, sv);
+                    }
                 }
-            }
-            return true;
-        } else {
-            if (StringUtils.isNotBlank(ui)) {
-                SessionValue sv = CacheHandler.getSessionValue(ui);
-                if (null != sv && !sv.isEmpty()) {
-                    request.setAttribute(SESSION_VALUE, sv);
-                    return true;
-                }
-            }
-            String requestURL = getFullURL(request);
-
-            if (StringUtils.isNotBlank(requestURL) && requestURL.equalsIgnoreCase(sso_homepage)) {
-                response.sendRedirect("/user/sso/redirect.do");
+                return true;
             } else {
-                logger.info(method);
-                throw new UnLoginException();
+                if (StringUtils.isNotBlank(ui)) {
+                    SessionValue sv = CacheHandler.getSessionValue(ui);
+                    if (null != sv && !sv.isEmpty()) {
+                        request.setAttribute(SESSION_VALUE, sv);
+                        return true;
+                    }
+                }
+                String requestURL = getFullURL(request);
+
+                if (StringUtils.isNotBlank(requestURL) && requestURL.equalsIgnoreCase(sso_homepage)) {
+                    response.sendRedirect("/user/sso/redirect.do");
+                } else {
+                    logger.info(method);
+                    throw new UnLoginException();
+                }
+                return false;
             }
-            return false;
+        }else if(arg2 instanceof WebSocketHttpRequestHandler){
+            return true;
+        }else {
+            return true;
         }
     }
 

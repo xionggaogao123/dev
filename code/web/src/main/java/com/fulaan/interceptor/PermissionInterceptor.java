@@ -26,50 +26,51 @@ public class PermissionInterceptor implements HandlerInterceptor {
     @Override
     public boolean preHandle(HttpServletRequest request,
                              HttpServletResponse response, Object handler) throws Exception {
+        if(handler instanceof HandlerMethod) {
+            HandlerMethod method = (HandlerMethod) handler;
+            UserPermissions up = method.getMethodAnnotation(UserPermissions.class);
+            UserRoles ur = method.getMethodAnnotation(UserRoles.class);
 
-        HandlerMethod method = (HandlerMethod) handler;
-        UserPermissions up = method.getMethodAnnotation(UserPermissions.class);
-        UserRoles ur = method.getMethodAnnotation(UserRoles.class);
+            if (null != up || null != ur) {
+                SessionValue sv = (SessionValue) request.getAttribute(BaseController.SESSION_VALUE);
 
-        if (null != up || null != ur) {
-            SessionValue sv = (SessionValue) request.getAttribute(BaseController.SESSION_VALUE);
+                if (null == sv)
+                    throw new UnLoginException();
 
-            if (null == sv)
-                throw new UnLoginException();
+                if (null != up) {
+                    String permissionFormat = MessageFormat.format(FORMATAT, up.value());
 
-            if (null != up) {
-                String permissionFormat = MessageFormat.format(FORMATAT, up.value());
+                    String removePermission = sv.getUserRemovePermission();
+                    if (StringUtils.isNotBlank(removePermission)) {
+                        if (removePermission.contains(permissionFormat)) {
+                            throw new PermissionUnallowedException(handler.toString());
+                        }
+                    }
 
-                String removePermission = sv.getUserRemovePermission();
-                if (StringUtils.isNotBlank(removePermission)) {
-                    if (removePermission.contains(permissionFormat)) {
-                        throw new PermissionUnallowedException(handler.toString());
+                    String havePermission = sv.getUserPermission();
+                    if (StringUtils.isNotBlank(havePermission)) {
+                        if (havePermission.contains(permissionFormat)) {
+                            return true;
+                        }
                     }
                 }
 
-                String havePermission = sv.getUserPermission();
-                if (StringUtils.isNotBlank(havePermission)) {
-                    if (havePermission.contains(permissionFormat)) {
-                        return true;
+
+                if (null != ur) {
+                    int userRole = sv.getUserRole();
+                    logger.info(userRole + "======role");
+                    UserRole[] removeRoles = ur.noValue();
+                    if (removeRoles.length > Constant.ZERO) {
+                        boolean isIn = UserRole.isInRoles(userRole, removeRoles);
+                        if (isIn)
+                            throw new PermissionUnallowedException(handler.toString());
                     }
-                }
-            }
-
-
-            if (null != ur) {
-                int userRole = sv.getUserRole();
-                logger.info(userRole + "======role");
-                UserRole[] removeRoles = ur.noValue();
-                if (removeRoles.length > Constant.ZERO) {
-                    boolean isIn = UserRole.isInRoles(userRole, removeRoles);
-                    if (isIn)
-                        throw new PermissionUnallowedException(handler.toString());
-                }
-                UserRole[] allowRoles = ur.value();
-                if (allowRoles.length > Constant.ZERO) {
-                    boolean isIn = UserRole.isInRoles(userRole, allowRoles);
-                    if (!isIn)
-                        throw new PermissionUnallowedException(handler.toString());
+                    UserRole[] allowRoles = ur.value();
+                    if (allowRoles.length > Constant.ZERO) {
+                        boolean isIn = UserRole.isInRoles(userRole, allowRoles);
+                        if (!isIn)
+                            throw new PermissionUnallowedException(handler.toString());
+                    }
                 }
             }
         }

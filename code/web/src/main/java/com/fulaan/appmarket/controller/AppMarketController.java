@@ -41,6 +41,11 @@ public class AppMarketController extends BaseController{
         return "/appmarket/manageIndex";
     }
 
+    @ApiOperation(value = "网页端跳转到管理应用界面", httpMethod = "POST", produces = "application/json")
+    @RequestMapping("/websocket")
+    public String websocket(HttpServletRequest request, Map<String,Object> model){
+        return "/appmarket/webSocketDemo";
+    }
 
     @ApiOperation(value = "保存每个应用", httpMethod = "POST", produces = "application/json")
     @ApiResponses( value = {@ApiResponse(code = 200, message = "Successful — 请求已完成",response = RespObj.class),

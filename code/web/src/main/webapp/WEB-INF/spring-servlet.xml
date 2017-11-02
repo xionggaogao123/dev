@@ -2,6 +2,7 @@
 <beans xmlns:mvc="http://www.springframework.org/schema/mvc"
        xmlns:context="http://www.springframework.org/schema/context"
        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xmlns:websocket="http://www.springframework.org/schema/websocket"
        xmlns="http://www.springframework.org/schema/beans"
        xmlns:task="http://www.springframework.org/schema/task"
        xsi:schemaLocation="
@@ -12,7 +13,19 @@
         http://www.springframework.org/schema/context
         http://www.springframework.org/schema/context/spring-context.xsd
         http://www.springframework.org/schema/task
-        http://www.springframework.org/schema/task/spring-task.xsd">
+        http://www.springframework.org/schema/task/spring-task.xsd
+        http://www.springframework.org/schema/websocket
+        http://www.springframework.org/schema/websocket/spring-websocket.xsd">
+
+    <bean id="websocket" class="com.fulaan.websocket.WebsocketHandler" />
+    <websocket:handlers>
+        <websocket:mapping path="/ws.do" handler="websocket" />
+        <websocket:handshake-interceptors>
+            <bean class="com.fulaan.websocket.MyHandShake" />
+        </websocket:handshake-interceptors>
+    </websocket:handlers>
+
+    <context:component-scan base-package="com.fulaan.websocket"/>
 
     <!--映射驱动-->
     <mvc:annotation-driven content-negotiation-manager="contentNegotiationManager">

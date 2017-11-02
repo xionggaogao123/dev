@@ -10,6 +10,7 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.method.HandlerMethod;
 import org.springframework.web.servlet.HandlerExceptionResolver;
 import org.springframework.web.servlet.ModelAndView;
+import org.springframework.web.socket.server.support.WebSocketHttpRequestHandler;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -34,45 +35,49 @@ public class ExceptionResolver implements HandlerExceptionResolver {
     public ModelAndView resolveException(HttpServletRequest request,
                                          HttpServletResponse response, Object handler, Exception ex) {
 
-        HandlerMethod method = (HandlerMethod) handler;
-        ResponseBody rb = method.getMethodAnnotation(ResponseBody.class);
+        if(handler instanceof HandlerMethod) {
+            HandlerMethod method = (HandlerMethod) handler;
+            ResponseBody rb = method.getMethodAnnotation(ResponseBody.class);
 
-        if (!(ex instanceof UnLoginException)) {
-            logger.error("method=" + method);
-            logger.error("", ex);
-        }
-
-        if (null != rb) {
-            response.setCharacterEncoding(Constant.UTF_8);
-            response.setContentType("application/json; charset=utf-8");
-            PrintWriter out = null;
-            try {
-                out = response.getWriter();
-                out.append(ERROR_JSON_STR);
-            } catch (Exception e) {
-
-            } finally {
-                if (out != null) {
-                    out.close();
-                }
+            if (!(ex instanceof UnLoginException)) {
+                logger.error("method=" + method);
+                logger.error("", ex);
             }
-        } else {
-            if (ex instanceof UnLoginException) {
+
+            if (null != rb) {
+                response.setCharacterEncoding(Constant.UTF_8);
+                response.setContentType("application/json; charset=utf-8");
+                PrintWriter out = null;
                 try {
-                    request.getRequestDispatcher(Constant.BASE_PATH).forward(request, response);
-                    return null;
+                    out = response.getWriter();
+                    out.append(ERROR_JSON_STR);
                 } catch (Exception e) {
-                }
-            }
 
-            if (ex instanceof UnBindException) {
-                try {
-                    request.getRequestDispatcher("/ah").forward(request, response);
-                    return null;
-                } catch (Exception e) {
+                } finally {
+                    if (out != null) {
+                        out.close();
+                    }
                 }
+            } else {
+                if (ex instanceof UnLoginException) {
+                    try {
+                        request.getRequestDispatcher(Constant.BASE_PATH).forward(request, response);
+                        return null;
+                    } catch (Exception e) {
+                    }
+                }
+
+                if (ex instanceof UnBindException) {
+                    try {
+                        request.getRequestDispatcher("/ah").forward(request, response);
+                        return null;
+                    } catch (Exception e) {
+                    }
+                }
+                return new ModelAndView("error/error");
             }
-            return new ModelAndView("error/error");
+        }else if(handler instanceof WebSocketHttpRequestHandler){
+            ex.printStackTrace();
         }
         return null;
     }

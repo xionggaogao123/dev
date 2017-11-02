@@ -57,20 +57,22 @@ public class Infoterceptor extends HandlerInterceptorAdapter {
 
     @Override
     public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler) throws Exception {
-        HandlerMethod method = (HandlerMethod) handler;
-        LoginInfo loginInfo = method.getMethodAnnotation(LoginInfo.class);
-        if (loginInfo != null) {
-            SessionValue sessionValue = getSessionValue(request);
-            if (sessionValue != null) {
-                if (StringUtils.isNotBlank(sessionValue.getId())) {
-                    if (userService.isSilenced(sessionValue.getId())) {
-                        response.sendRedirect("/forum/forumVisited.do");
-                        return false;
+        if(handler instanceof HandlerMethod) {
+            HandlerMethod method = (HandlerMethod) handler;
+            LoginInfo loginInfo = method.getMethodAnnotation(LoginInfo.class);
+            if (loginInfo != null) {
+                SessionValue sessionValue = getSessionValue(request);
+                if (sessionValue != null) {
+                    if (StringUtils.isNotBlank(sessionValue.getId())) {
+                        if (userService.isSilenced(sessionValue.getId())) {
+                            response.sendRedirect("/forum/forumVisited.do");
+                            return false;
+                        }
                     }
                 }
             }
-        }
 
+        }
         return true;
     }
 
@@ -78,10 +80,12 @@ public class Infoterceptor extends HandlerInterceptorAdapter {
     public void postHandle(HttpServletRequest request, HttpServletResponse response,
                            Object handler, ModelAndView modelAndView)
             throws Exception {
-        HandlerMethod method = (HandlerMethod) handler;
-        LoginInfo loginInfo = method.getMethodAnnotation(LoginInfo.class);
-        if (loginInfo != null) {
-            loginInfo(request, modelAndView.getModel());
+        if(handler instanceof HandlerMethod) {
+            HandlerMethod method = (HandlerMethod) handler;
+            LoginInfo loginInfo = method.getMethodAnnotation(LoginInfo.class);
+            if (loginInfo != null) {
+                loginInfo(request, modelAndView.getModel());
+            }
         }
     }
 

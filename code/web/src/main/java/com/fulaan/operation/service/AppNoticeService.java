@@ -61,49 +61,12 @@ public class AppNoticeService {
 
 
     public static void main(String[] args){
-        UserDao userDao=new UserDao();
-        AppNoticeDao appNoticeDao=new AppNoticeDao();
-        for(int i=0;i<2;i++) {
-            AppNoticeDTO dto = new AppNoticeDTO();
-            dto.setSubjectId("55935198f6f28b7261c9bf5f");
-            dto.setSubject("英语");
-            dto.setTitle("今天我最帅，我是品牌代言人"+i);
-            dto.setContent("党的十八大以来");
-            dto.setGroupId("59c32cc6670ab23fb82dc4ae");
-            dto.setCommunityId("59c32cc5670ab23fb82dc4ac");
-            dto.setWatchPermission(Constant.THREE);
-            dto.setVideoList(new ArrayList<VideoDTO>());
-            List<Attachement> imageList = new ArrayList<Attachement>();
-            Attachement attachement = new Attachement();
-            attachement.setUrl("http://7xiclj.com1.z0.glb.clouddn.com/582effea3d4df91126ff2b9a.png");
-            attachement.setFlnm("啦啦啦啦");
-            Attachement attachement1= new Attachement();
-            attachement1.setUrl("http://7xiclj.com1.z0.glb.clouddn.com/57a51bab3d4df9703fd552a1.jpg");
-            attachement1.setFlnm("1111");
-            imageList.add(attachement1);
-            Attachement attachement2= new Attachement();
-            attachement2.setUrl("http://7xiclj.com1.z0.glb.clouddn.com/57b6c46ede04cb06131ced0d.JPG");
-            attachement2.setFlnm("323131");
-            imageList.add(attachement2);
-            Attachement attachement3= new Attachement();
-            attachement3.setUrl("http://7xiclj.com1.z0.glb.clouddn.com/20170321182122.jpg");
-            attachement3.setFlnm("wqa111");
-            imageList.add(attachement3);
-            if(i==1){
-                Attachement attachement4= new Attachement();
-                attachement4.setUrl("http://7xiclj.com1.z0.glb.clouddn.com/head-0.5721118256915361.jpg");
-                attachement4.setFlnm("wqa111");
-                imageList.add(attachement4);
-            }
-            dto.setAttachements(new ArrayList<Attachement>());
-            dto.setImageList(imageList);
-            dto.setGroupName("本地我最帅-scott");
-            ObjectId userId = new ObjectId("59c32c8c670ab23fb82dc49a");
-            UserEntry userEntry = userDao.getUserEntry(userId, Constant.FIELDS);
-            dto.setUserName(userEntry.getUserName());
-            dto.setUserId(userId.toString());
-            appNoticeDao.saveAppNoticeEntry(dto.buildEntry());
-        }
+        List<String> thistags =new ArrayList<String>();
+        thistags.add("59e81c77bf2e7906ec403844");
+        Audience audience = Audience.alias(thistags);
+        JPushUtils jPushUtils=new JPushUtils();
+        jPushUtils.pushRestAndroid(audience, "江经纬同学", "江经纬同学---江经纬同学", "您有新的通知", new HashMap<String, String>());
+//        jPushUtils.pushRestWinPhone(audience, "江经纬同学");
     }
 
     /**
@@ -139,6 +102,7 @@ public class AppNoticeService {
                 }
                 Audience audience = Audience.alias(new ArrayList<String>(userIds));
                 jPushUtils.pushRestIosbusywork(audience,dto.getTitle(),new HashMap<String,String>());
+                jPushUtils.pushRestAndroid(audience,dto.getContent(),dto.getUserName(),dto.getTitle(),new HashMap<String, String>());
             }
             ObjectId oid = appNoticeDao.saveAppNoticeEntry(appNoticeDTO.buildEntry());
 

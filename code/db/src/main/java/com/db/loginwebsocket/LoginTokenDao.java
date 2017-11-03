@@ -17,6 +17,13 @@ public class LoginTokenDao extends BaseDao{
         save(MongoFacroty.getAppDB(), Constant.COLLECTION_TOKEN_USER_LOGIN,entry.getBaseEntry());
     }
 
+    public void updateTokenStatus(ObjectId tokenId){
+        BasicDBObject query=new BasicDBObject()
+                .append("ti",tokenId);
+        BasicDBObject updateValue=new BasicDBObject(Constant.MONGO_SET,new BasicDBObject("st", false));
+        update(MongoFacroty.getAppDB(), Constant.COLLECTION_TOKEN_USER_LOGIN,query,updateValue);
+    }
+
     public LoginTokenEntry getEntry(){
         BasicDBObject query=new BasicDBObject()
                 .append("st", false);

@@ -9,6 +9,7 @@ import cn.jpush.api.push.model.Options;
 import cn.jpush.api.push.model.Platform;
 import cn.jpush.api.push.model.PushPayload;
 import cn.jpush.api.push.model.audience.Audience;
+import cn.jpush.api.push.model.notification.AndroidNotification;
 import cn.jpush.api.push.model.notification.IosNotification;
 import cn.jpush.api.push.model.notification.Notification;
 import cn.jpush.api.push.model.notification.WinphoneNotification;
@@ -154,11 +155,21 @@ public class JPushUtils {
     }
 
 
+
     private PushPayload buildPushObject_all_tag_alert_Android(Audience audience,
                                                               String mesgname, String userName, String title, Map<String, String> parms) {
+
+        AndroidNotification notification=AndroidNotification.newBuilder()
+                .setAlert(mesgname)
+                .setTitle(title)
+                .addExtras(parms)
+                .build();
+
+
         return PushPayload.newBuilder()
                 .setAudience(audience)
                 .setPlatform(Platform.android())
+                .setNotification(Notification.newBuilder().addPlatformNotification(notification).build())
                 .setMessage(Message.newBuilder()
                         .addExtra("title", title)
                         .addExtra("value", mesgname)
@@ -178,11 +189,7 @@ public class JPushUtils {
                 .build();
 
         return PushPayload.newBuilder().setPlatform(Platform.ios()).setAudience(audience)
-                .setNotification(
-                        Notification.newBuilder()
-                                .addPlatformNotification(
-                                        ifc
-                                ).build()
+                .setNotification(Notification.newBuilder().addPlatformNotification(ifc).build()
                 ).setOptions(Options.newBuilder().setApnsProduction(apnsProduction).build()).build();
     }
 

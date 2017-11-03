@@ -1,8 +1,11 @@
 package com.fulaan.websocket;
 
+import com.db.loginwebsocket.LoginTokenDao;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
+import com.pojo.loginwebsocket.LoginTokenEntry;
 import org.apache.log4j.Logger;
+import org.bson.types.ObjectId;
 import org.springframework.stereotype.Component;
 import org.springframework.web.socket.CloseStatus;
 import org.springframework.web.socket.TextMessage;
@@ -25,6 +28,8 @@ public class WebsocketHandler extends TextWebSocketHandler {
     private final static Logger LOG = Logger.getLogger(WebsocketHandler.class);
     public static ConcurrentHashMap<String, WebSocketSession> websocketSessionsConcurrentHashMap;
     public static ConcurrentHashMap<String, WebSocketSession> websocketSessionsConcurrentHashMapForLog;
+
+    private LoginTokenDao loginTokenDao = new LoginTokenDao();
 
     static {
         websocketSessionsConcurrentHashMap = new ConcurrentHashMap<String, WebSocketSession>();
@@ -98,14 +103,7 @@ public class WebsocketHandler extends TextWebSocketHandler {
             Iterator<Map.Entry<String, WebSocketSession>> it = websocketSessionsConcurrentHashMap.entrySet().iterator();
             LOG.warn("======websocket消息传输错误======");
             // 移除Socket会话
-            while (it.hasNext()) {
-                Map.Entry<String, WebSocketSession> entry = it.next();
-                if (entry.getValue().getId().equals(session.getId())) {
-                    websocketSessionsConcurrentHashMap.remove(entry.getKey());
-                    System.out.println("Socket会话已经移除:用户ID" + entry.getKey());
-                    break;
-                }
-            }
+            dealWithException(it,session);
         } catch (Exception e) {
             StringWriter sw = new StringWriter();
             PrintWriter pw = new PrintWriter(sw);
@@ -117,6 +115,21 @@ public class WebsocketHandler extends TextWebSocketHandler {
 
     }
 
+    public void dealWithException(Iterator<Map.Entry<String, WebSocketSession>> it,
+                                   WebSocketSession session){
+        while (it.hasNext()) {
+            Map.Entry<String, WebSocketSession> entry = it.next();
+            if (entry.getValue().getId().equals(session.getId())) {
+                websocketSessionsConcurrentHashMap.remove(entry.getKey());
+                LoginTokenEntry tokenEntry=loginTokenDao.getEntry(new ObjectId(entry.getKey()));
+                if(null==tokenEntry.getUserId()) {
+                    loginTokenDao.updateTokenStatus(new ObjectId(entry.getKey()));
+                }
+                break;
+            }
+        }
+    }
+
     /**
      * 关闭连接后
      */
@@ -126,14 +139,7 @@ public class WebsocketHandler extends TextWebSocketHandler {
             Iterator<Map.Entry<String, WebSocketSession>> it = websocketSessionsConcurrentHashMap.entrySet().iterator();
             // 移除Socket会话
             LOG.warn("======websocket关闭连接完成======");
-            while (it.hasNext()) {
-                Map.Entry<String, WebSocketSession> entry = it.next();
-                if (entry.getValue().getId().equals(session.getId())) {
-                    websocketSessionsConcurrentHashMap.remove(entry.getKey());
-                    System.out.println("Socket会话已经移除:用户ID" + entry.getKey());
-                    break;
-                }
-            }
+            dealWithException(it,session);
         } catch (Exception e) {
             StringWriter sw = new StringWriter();
             PrintWriter pw = new PrintWriter(sw);
@@ -150,9 +156,13 @@ public class WebsocketHandler extends TextWebSocketHandler {
     }
 
 
-    public static void broadcastClient(String tokenId,String userId)throws Exception{
+    public void broadcastClient(LoginTokenEntry entry,
+                                String tokenId, String userId)throws Exception{
         WebSocketSession session=websocketSessionsConcurrentHashMap.get(tokenId);
         if(null!=session){
+            entry.setUserId(new ObjectId(userId));
+            entry.setStatus(true);
+            loginTokenDao.saveEntry(entry);
             session.sendMessage(new TextMessage("T20,"+userId));
         }else{
             throw new Exception("该二维码已过期了");

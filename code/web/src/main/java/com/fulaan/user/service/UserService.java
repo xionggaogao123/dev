@@ -1314,14 +1314,13 @@ public class UserService extends BaseService {
     public void loginToken(ObjectId tokenId,ObjectId userId) throws Exception{
         LoginTokenEntry entry=loginTokenDao.getEntry(tokenId);
         if(null!=entry){
-            if(entry.getStatus()){
+            if(entry.getStatus()&&
+                    null!=entry.getUserId()){
                 throw new Exception("该二维码已经失效");
             }else{
-                entry.setUserId(userId);
-                entry.setStatus(true);
-                loginTokenDao.saveEntry(entry);
                 //发起长连接广播
-                WebsocketHandler.broadcastClient(tokenId.toString(),userId.toString());
+                WebsocketHandler websocketHandler=new WebsocketHandler();
+                websocketHandler.broadcastClient(entry,tokenId.toString(),userId.toString());
             }
         }else {
             throw new Exception("该二维码已经失效");

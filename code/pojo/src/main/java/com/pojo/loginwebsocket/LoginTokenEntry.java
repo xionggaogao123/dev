@@ -19,7 +19,7 @@ public class LoginTokenEntry extends BaseDBObject{
         BasicDBObject basicDBObject=new BasicDBObject()
                 .append("ti",tokenId)
                 .append("uid",null)
-                .append("st", false);
+                .append("st", true);
         setBaseEntry(basicDBObject);
     }
 

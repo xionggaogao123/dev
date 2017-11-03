@@ -120,6 +120,7 @@ public class AppCommentService {
                 }
                 Audience audience = Audience.alias(new ArrayList<String>(userIds));
                 jPushUtils.pushRestIosbusywork(audience,dto.getTitle(),new HashMap<String,String>());
+                jPushUtils.pushRestAndroid(audience,dto.getDescription(),dto.getSendUser(),dto.getTitle(),new HashMap<String, String>());
             }
 
 

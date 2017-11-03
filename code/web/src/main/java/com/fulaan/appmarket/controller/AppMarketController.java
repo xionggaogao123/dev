@@ -52,14 +52,18 @@ public class AppMarketController extends BaseController{
     @LoginInfo
     @SessionNeedless
     public String websocket(HttpServletRequest request, Map<String,Object> model){
-        LoginTokenEntry loginTokenEntry=loginTokenDao.getEntry();
-        if(null!=loginTokenEntry){
-            model.put("tokenId",loginTokenEntry.getTokenId().toString());
-        }else{
-            ObjectId tokenId=new ObjectId();
-            LoginTokenEntry tokenEntry=new LoginTokenEntry(tokenId);
-            loginTokenDao.saveEntry(tokenEntry);
-            model.put("tokenId",tokenEntry);
+        if(null==getUserId()) {
+            LoginTokenEntry loginTokenEntry = loginTokenDao.getEntry();
+            if (null != loginTokenEntry) {
+                loginTokenEntry.setStatus(true);
+                loginTokenDao.saveEntry(loginTokenEntry);
+                model.put("tokenId", loginTokenEntry.getTokenId().toString());
+            } else {
+                ObjectId tokenId = new ObjectId();
+                LoginTokenEntry tokenEntry = new LoginTokenEntry(tokenId);
+                loginTokenDao.saveEntry(tokenEntry);
+                model.put("tokenId", tokenId.toString());
+            }
         }
         return "/appmarket/webSocketDemo";
     }

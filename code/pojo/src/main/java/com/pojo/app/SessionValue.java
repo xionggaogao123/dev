@@ -38,6 +38,7 @@ public class SessionValue implements Serializable{
 	public static final String EDUCATION_LOGO="elogo";
 	public static final String CLOUD_URL="curl";
 	public static final String USER_SSO="sso";
+	public static final String INTERVIEW_TIME="iti";
     
 	
 	private Map<String,String> map =new HashMap<String, String>();
@@ -67,6 +68,14 @@ public class SessionValue implements Serializable{
 
 	public void setId(String id) {
 		put(USER_ID, id);
+	}
+
+	public String getInterviewTime(){
+		return get(INTERVIEW_TIME);
+	}
+
+	public void setInterviewTime(String interviewTime){
+		put(INTERVIEW_TIME,interviewTime);
 	}
 
 	public String getUserName() {

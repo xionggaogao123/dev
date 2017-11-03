@@ -11,6 +11,7 @@ import com.db.user.UserDao;
 import com.fulaan.dto.VideoDTO;
 import com.fulaan.indexpage.dto.IndexPageDTO;
 import com.fulaan.instantmessage.service.RedDotService;
+import com.fulaan.newVersionBind.service.NewVersionBindService;
 import com.fulaan.operation.dto.AppNoticeDTO;
 import com.fulaan.operation.dto.AppOperationDTO;
 import com.fulaan.operation.dto.GroupOfCommunityDTO;
@@ -59,6 +60,9 @@ public class AppNoticeService {
     @Autowired
     private RedDotService redDotService;
 
+    @Autowired
+    private NewVersionBindService newVersionBindService;
+
 
     public static void main(String[] args){
         List<String> thistags =new ArrayList<String>();
@@ -102,7 +106,10 @@ public class AppNoticeService {
                 }
                 Audience audience = Audience.alias(new ArrayList<String>(userIds));
                 jPushUtils.pushRestIosbusywork(audience,dto.getTitle(),new HashMap<String,String>());
-                jPushUtils.pushRestAndroid(audience,dto.getContent(),dto.getUserName(),dto.getTitle(),new HashMap<String, String>());
+                jPushUtils.pushRestAndroidParentBusyWork(audience,dto.getContent(),"",dto.getTitle(),new HashMap<String, String>());
+                List<String> bindUserIds=newVersionBindService.getStudentIdListByCommunityId(new ObjectId(communityDTO.getCommunityId()));
+                Audience studentAudience = Audience.alias(new ArrayList<String>(bindUserIds));
+                jPushUtils.pushRestAndroidStudentNotice(studentAudience,dto.getContent(),"",dto.getTitle(),new HashMap<String, String>());
             }
             ObjectId oid = appNoticeDao.saveAppNoticeEntry(appNoticeDTO.buildEntry());
 

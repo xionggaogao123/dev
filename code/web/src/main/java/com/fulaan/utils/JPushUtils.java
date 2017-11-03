@@ -43,6 +43,17 @@ public class JPushUtils {
     private String masterSecret_ios_busywork=Resources.getProperty("JPush.masterSecret.ios.busywork");
     private String appKey_ios_busywork=Resources.getProperty("JPush.appKey.ios.busywork");
 
+    private String masterSecret_android_student_busywork=Resources.getProperty("JPush.masterSecret.android.student.busywork");
+    private String appKey_android_student_busywork=Resources.getProperty("JPush.appKey.android.student.busywork");
+
+    private String masterSecret_android_parent_busywork=Resources.getProperty("JPush.masterSecret.android.parent.busywork");
+    private String appKey_android_parent_busywork=Resources.getProperty("JPush.appKey.android.parent.busywork");
+
+    private String masterSecret_android_student_notice=Resources.getProperty("JPush.masterSecret.android.student.notice");
+    private String appKey_android_student_notice=Resources.getProperty("JPush.appKey.android.student.notice");
+
+
+
 
     /**
      * 发送通知到手机端
@@ -249,6 +260,52 @@ public class JPushUtils {
     public void pushRestWinPhone(Audience audience, String mesgname) {
         JPushClient jpushClient = new JPushClient(masterSecret_android, appKey_android, 3);
         PushPayload payload = buildPushObject_all_tag_alert_WindowsPhone(audience, mesgname);
+        try {
+            PushResult result = jpushClient.sendPush(payload);
+            System.out.println(result);
+        } catch (APIConnectionException e) {
+            e.printStackTrace();
+        } catch (APIRequestException e) {
+            e.printStackTrace();
+        }
+    }
+
+    public void pushRestAndroidStudentNotice(Audience audience, String mesgname, String username, String title, Map<String, String> parms){
+        JPushClient jpushClient = new JPushClient(masterSecret_android_student_notice, appKey_android_student_notice, 3);
+        PushPayload payload = buildPushObject_all_tag_alert_Android(audience, mesgname, username, title, parms);
+        try {
+            PushResult result = jpushClient.sendPush(payload);
+            System.out.println(result);
+        } catch (APIConnectionException e) {
+            e.printStackTrace();
+        } catch (APIRequestException e) {
+            e.printStackTrace();
+        }
+    }
+    /**
+     *
+     * @param audience
+     * @param mesgname
+     * @param username
+     * @param title
+     * @param parms
+     */
+    public void pushRestAndroidStudentBusyWork(Audience audience, String mesgname, String username, String title, Map<String, String> parms){
+        JPushClient jpushClient = new JPushClient(masterSecret_android_student_busywork, appKey_android_student_busywork, 3);
+        PushPayload payload = buildPushObject_all_tag_alert_Android(audience, mesgname, username, title, parms);
+        try {
+            PushResult result = jpushClient.sendPush(payload);
+            System.out.println(result);
+        } catch (APIConnectionException e) {
+            e.printStackTrace();
+        } catch (APIRequestException e) {
+            e.printStackTrace();
+        }
+    }
+
+    public void pushRestAndroidParentBusyWork(Audience audience, String mesgname, String username, String title, Map<String, String> parms){
+        JPushClient jpushClient = new JPushClient(masterSecret_android_parent_busywork, appKey_android_parent_busywork, 3);
+        PushPayload payload = buildPushObject_all_tag_alert_Android(audience, mesgname, username, title, parms);
         try {
             PushResult result = jpushClient.sendPush(payload);
             System.out.println(result);

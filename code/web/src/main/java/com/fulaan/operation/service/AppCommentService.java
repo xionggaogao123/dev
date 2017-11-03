@@ -24,6 +24,7 @@ import com.fulaan.user.service.UserService;
 import com.fulaan.utils.JPushUtils;
 import com.fulaan.wrongquestion.dto.SubjectClassDTO;
 import com.pojo.fcommunity.MemberEntry;
+import com.pojo.fcommunity.NewVersionCommunityBindEntry;
 import com.pojo.instantmessage.ApplyTypeEn;
 import com.pojo.newVersionGrade.NewVersionSubjectEntry;
 import com.pojo.operation.AppCommentEntry;
@@ -120,7 +121,10 @@ public class AppCommentService {
                 }
                 Audience audience = Audience.alias(new ArrayList<String>(userIds));
                 jPushUtils.pushRestIosbusywork(audience,dto.getTitle(),new HashMap<String,String>());
-                jPushUtils.pushRestAndroid(audience,dto.getDescription(),dto.getSendUser(),dto.getTitle(),new HashMap<String, String>());
+                jPushUtils.pushRestAndroidParentBusyWork(audience,dto.getDescription(),"",dto.getTitle(),new HashMap<String, String>());
+                List<String> bindUserIds=newVersionBindService.getStudentIdListByCommunityId(new ObjectId(dto3.getId()));
+                Audience studentAudience = Audience.alias(new ArrayList<String>(bindUserIds));
+                jPushUtils.pushRestAndroidStudentBusyWork(studentAudience,dto.getDescription(),"",dto.getTitle(),new HashMap<String, String>());
             }
 
 
@@ -992,7 +996,10 @@ public class AppCommentService {
             }
             Audience audience = Audience.alias(new ArrayList<String>(userIds));
             jPushUtils.pushRestIosbusywork(audience,dto.getTitle(),new HashMap<String,String>());
-            jPushUtils.pushRestAndroid(audience,dto.getDescription(),dto.getSendUser(),dto.getTitle(),new HashMap<String, String>());
+            jPushUtils.pushRestAndroidParentBusyWork(audience,dto.getDescription(),"",dto.getTitle(),new HashMap<String, String>());
+            List<String> bindUserIds=newVersionBindService.getStudentIdListByCommunityId(new ObjectId(str[0]));
+            Audience studentAudience = Audience.alias(new ArrayList<String>(bindUserIds));
+            jPushUtils.pushRestAndroidStudentBusyWork(studentAudience,dto.getDescription(),"",dto.getTitle(),new HashMap<String, String>());
         }
     }
 

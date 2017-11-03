@@ -332,6 +332,7 @@ public class UserController extends BaseController {
         SessionValue value = new SessionValue();
         value.setId(e.getID().toString());
         value.setUserName(e.getUserName());
+        value.setInterviewTime(DateTimeUtils.convert(e.getInterviewTime(),DateTimeUtils.DATE_YYYY_MM_DD_HH_MM_A));
         value.setRealName(e.getNickName());
         value.setAvatar(e.getAvatar());
         value.setK6kt(e.getK6KT());

@@ -72,6 +72,7 @@ Welcome<br/><input id="text" type="text"/>
             if (null != userId && userId != "") {
                 var param = {};
                 param.userId = userId;
+                param.tokenId = ${tokenId};
                 var url = "/user/tokenLogin.do"
                 $.ajax({
                     type: "GET",
@@ -80,8 +81,12 @@ Welcome<br/><input id="text" type="text"/>
                     async: false,
                     dataType: "json",
                     contentType: "application/x-www-form-urlencoded; charset=UTF-8",
-                    success: function (rep) {
-                       $('#lg').show();
+                    success: function (result) {
+                        if(result.code=="200"){
+                            $('#lg').show();
+                        }else{
+                            alert(result.message);
+                        }
                     }
                 });
             }

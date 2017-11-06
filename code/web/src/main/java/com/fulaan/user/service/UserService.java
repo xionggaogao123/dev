@@ -1310,6 +1310,10 @@ public class UserService extends BaseService {
         userDao.updateUserBirthDateAndSex(uid, sex, birthDate,avatar,nickName);
     }
 
+    public LoginTokenEntry getLoginTokenEntry(ObjectId tokenId){
+        return loginTokenDao.getEntry(tokenId);
+    }
+
 
     public void loginToken(ObjectId tokenId,ObjectId userId) throws Exception{
         LoginTokenEntry entry=loginTokenDao.getEntry(tokenId);

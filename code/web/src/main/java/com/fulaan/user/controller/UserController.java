@@ -35,6 +35,7 @@ import com.pojo.fcommunity.RemarkEntry;
 import com.pojo.forum.FLogDTO;
 import com.pojo.forum.FScoreDTO;
 import com.pojo.log.LogType;
+import com.pojo.loginwebsocket.LoginTokenEntry;
 import com.pojo.school.ClassInfoDTO;
 import com.pojo.school.SchoolEntry;
 import com.pojo.user.NewVersionUserRoleEntry;
@@ -256,9 +257,21 @@ public class UserController extends BaseController {
     @RequestMapping("/tokenLogin")
     @ResponseBody
     public RespObj tokenLogin(@ObjectIdType ObjectId userId,
+                              @ObjectIdType ObjectId tokenId,
                               HttpServletResponse response, HttpServletRequest request){
-        UserEntry userEntry=userService.findById(userId);
-        return login(userEntry.getUserName(),userEntry.getPassword(),1,response,request);
+        RespObj respObj=new RespObj(Constant.FAILD_CODE);
+        LoginTokenEntry entry=userService.getLoginTokenEntry(tokenId);
+        if(null!=entry) {
+            if(entry.getUserId().toString().equals(userId.toString())) {
+                UserEntry userEntry = userService.findById(userId);
+                return login(userEntry.getUserName(), userEntry.getPassword(), 1, response, request);
+            }else{
+                respObj.setMessage("该用户非法登录");
+            }
+        }else {
+            respObj.setMessage("token过期了");
+        }
+        return respObj;
     }
 
     @ApiOperation(value = "扫描二维码", httpMethod = "POST", produces = "application/json")

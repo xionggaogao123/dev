@@ -60,6 +60,8 @@ public class AllLogFilter implements Filter {
         //System.out.println(cooks);
 
         //参数列表
+       // Enumeration enumeration = ((HttpServletRequest) request).getHeaderNames();
+
         Map<String ,String[]> map=request.getParameterMap();
         StringBuffer stringBuffer = new StringBuffer();
         for (String key : map.keySet()) {

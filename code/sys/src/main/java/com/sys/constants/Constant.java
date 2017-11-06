@@ -888,4 +888,9 @@ public class Constant {
     //解析表
     public static final String COLLECTION_QUESTION_ADDITION = "questionaddition";
 
+    /**--------------------------管控--------------------------**/
+
+    //管控手机号
+    public static final String COLLECTION_CONTROL_PHONE = "controlphone";
+
 }

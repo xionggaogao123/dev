@@ -113,6 +113,41 @@ public class UserService extends BaseService {
         userDao.updateUserMobile(userId, mobile);
     }
 
+
+    public String registerAvailableUser(HttpServletRequest request,String userName, String phoneNumber,int newRole,
+                                      String nickName)throws Exception{
+        UserEntry userEntry=userDao.findByUserName(userName);
+        if(null==userEntry){
+            UserEntry user=registerUserEntry(request,Constant.EMPTY,userName,"123456",phoneNumber,
+                    nickName);
+            ObjectId userId=userDao.addUserEntry(user);
+            if(newRole!=-1) {
+                if(null==newVersionUserRoleDao.getEntry(userId)){
+                    newVersionUserRoleDao.saveEntry(new NewVersionUserRoleEntry(userId, newRole));
+                }
+            }
+            return userId.toString();
+        }else{
+            throw new Exception("该用户名已用过");
+        }
+    }
+
+    private UserEntry registerUserEntry(HttpServletRequest request,String email, String userName, String passWord, String phoneNumber, String nickName) {
+        UserEntry userEntry = new UserEntry(userName, MD5Utils.getMD5String(passWord), phoneNumber, email, nickName);
+        userEntry.setK6KT(0);
+        userEntry.setIsRemove(0);
+        userEntry.setStatisticTime(0L);
+        userEntry.setRegisterIP(getIP(request));
+        userEntry.setSilencedStatus(0);
+        userEntry.setEmailStatus(0);
+        if (org.apache.commons.lang.StringUtils.isNotBlank(email)) {
+            userEntry.setEmailValidateCode(new ObjectId().toString());
+        } else {
+            userEntry.setEmailValidateCode(Constant.EMPTY);
+        }
+        return userEntry;
+    }
+
     /**
      * 验证账户
      *

@@ -81,8 +81,58 @@
        <br/>
        <span>社区名称:</span><span><input type="text" id="communityName"></span>
        <span id="submitCommunity" onclick="submitCommunity()" style="cursor: pointer;color: #5db75d">设置老的用户为家长用户</span>
+       <br/>
+       <br/>
+       <br/>
+       <br/>
+       <span>用户名:</span><span><input type="text" id="userName"></span>
+       <span>昵称:</span><span><input type="text" id="nickName"></span>
+       <span>默认号码:</span><span><input type="text" value="18817366135" id="phoneNumber"></span>
+       <span>设置角色:</span><span><input type="text" value="0" id="newRole"></span>
+       <span id="registerUser" onclick="registerUser()" style="cursor: pointer;color: #5db75d">注册账户</span>
    </div>
    <script type="text/javascript">
+
+       function registerUser(){
+           var userName=$.trim($('#userName').val());
+           if(null==userName||""==userName){
+               alert("用户名不能为空!");
+               return;
+           }
+           var phoneNumber=$.trim($('#phoneNumber').val());
+           if(null==phoneNumber||""==phoneNumber){
+               alert("手机号码不能为空!");
+               return;
+           }
+           var newRole=$.trim($('#newRole').val());
+           if(null==newRole||""==newRole){
+               alert("角色不能为空!");
+               return;
+           }
+           var nickName=$.trim($('#nickName').val());
+           if(null==nickName||""==nickName){
+               alert("昵称不能为空!");
+               return;
+           }
+           var param={};
+           param.userName=userName;
+           param.phoneNumber=phoneNumber;
+           param.newRole=newRole;
+           param.nickName=nickName;
+           var url="/user/registerUser.do"
+           $.ajax({
+               type: "GET",
+               data: param,
+               url: url,
+               async: false,
+               dataType: "json",
+               contentType: "application/x-www-form-urlencoded; charset=UTF-8",
+               success: function (resp) {
+                  alert(resp.message);
+               }
+           });
+       }
+
        function submitCommunity() {
            var url="/community/setOldUserData.do";
            var data={};

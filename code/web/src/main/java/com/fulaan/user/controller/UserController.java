@@ -244,6 +244,27 @@ public class UserController extends BaseController {
     }
 
 
+    @ApiOperation(value = "注册可用的测试账号", httpMethod = "POST", produces = "application/json")
+    @ApiResponses( value = {@ApiResponse(code = 200, message = "Successful — 请求已完成",response = RespObj.class)})
+    @SessionNeedless
+    @RequestMapping("/registerUser")
+    @ResponseBody
+    public RespObj registerUser(String userName, String phoneNumber,
+                                int newRole,
+                                String nickName,
+                                HttpServletRequest request){
+        RespObj respObj=new RespObj(Constant.FAILD_CODE);
+        try{
+            String userId=userService.registerAvailableUser(request, userName, phoneNumber,newRole,nickName);
+            respObj.setCode(Constant.SUCCESS_CODE);
+            respObj.setMessage(userId);
+        }catch (Exception e){
+            respObj.setMessage(e.getMessage());
+        }
+        return respObj;
+    }
+
+
     /**
      * token登录
      * @param userId

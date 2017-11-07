@@ -55,6 +55,7 @@ public class AppCommentController extends BaseController {
         } catch (Exception e) {
             e.printStackTrace();
             if("推送失败".equals(e.getMessage())) {
+                respObj.setCode(Constant.SUCCESS_CODE);
                 respObj.setMessage(e.getMessage());
             }else{
                 respObj.setErrorMessage("添加作业失败!");

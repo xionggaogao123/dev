@@ -77,6 +77,7 @@ public class DefaultAppNoticeController extends BaseController {
             respObj.setCode(Constant.SUCCESS_CODE);
         }catch (Exception e){
             if("推送失败".equals(e.getMessage())) {
+                respObj.setCode(Constant.SUCCESS_CODE);
                 respObj.setMessage(e.getMessage());
             }else{
                 respObj.setErrorMessage(e.getMessage());

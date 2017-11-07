@@ -1,8 +1,10 @@
 package com.fulaan.appvote.dto;
 
+import com.fulaan.operation.dto.GroupOfCommunityDTO;
 import com.fulaan.pojo.Attachement;
 import com.pojo.appvote.AppVoteEntry;
 import com.pojo.fcommunity.AttachmentEntry;
+import com.sys.utils.DateTimeUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.bson.types.ObjectId;
 
@@ -22,15 +24,56 @@ public class AppVoteDTO {
     private String content;
     private String groupId;
     private String communityId;
+    private String groupName;
     private List<Attachement> imageList = new ArrayList<Attachement>();
+    private List<GroupOfCommunityDTO> groupExamDetailDTOs = new ArrayList<GroupOfCommunityDTO>();
     private List<String> voteContent = new ArrayList<String>();
     private int voteMaxCount;
     private long voteDeadTime;
+    private String deadFormatTime;
     private int voteType;
     private int visiblePermission;
+    private int commentCount;
+    private int voteCount;
+
+    //额外添加字段
+    private int isVoted;
+    private String userName;
+    private String deadTime;
+    private String avatar;
+
 
     public AppVoteDTO() {
 
+    }
+
+    public AppVoteDTO(String subjectId, String userId,
+                      String subjectName,
+                      String title,
+                      String content,
+                      List<Attachement> attachements,
+                      List<String> voteContent,
+                      int voteMaxCount,
+                      long voteDeadTime,
+                      int voteType,
+                      int visiblePermission,
+                      String groupId,
+                      String communityId,
+                      String groupName) {
+        this.subjectId = subjectId;
+        this.userId = userId;
+        this.subjectName = subjectName;
+        this.title = title;
+        this.content = content;
+        this.imageList.addAll(attachements);
+        this.voteContent.addAll(voteContent);
+        this.voteMaxCount = voteMaxCount;
+        this.voteDeadTime = voteDeadTime;
+        this.voteType = voteType;
+        this.visiblePermission = visiblePermission;
+        this.groupId=groupId;
+        this.communityId=communityId;
+        this.groupName=groupName;
     }
 
     public AppVoteEntry buildEntry() {
@@ -61,6 +104,7 @@ public class AppVoteDTO {
                 content,
                 gId,
                 cid,
+                groupName,
                 ims,
                 voteContent,
                 voteMaxCount,
@@ -87,6 +131,81 @@ public class AppVoteDTO {
         this.voteDeadTime = appVoteEntry.getVoteDeadTime();
         this.voteType = appVoteEntry.getVoteType();
         this.visiblePermission = appVoteEntry.getVisiblePermission();
+        this.commentCount = appVoteEntry.getCommentCount();
+        this.deadTime = DateTimeUtils.convert(appVoteEntry.getVoteDeadTime(), DateTimeUtils.DATE_YYYY_MM_DD_HH_MM_SS_H);
+        this.voteCount = appVoteEntry.getVoteCount();
+    }
+
+    public String getDeadFormatTime() {
+        return deadFormatTime;
+    }
+
+    public void setDeadFormatTime(String deadFormatTime) {
+        this.deadFormatTime = deadFormatTime;
+    }
+
+    public List<GroupOfCommunityDTO> getGroupExamDetailDTOs() {
+        return groupExamDetailDTOs;
+    }
+
+    public void setGroupExamDetailDTOs(List<GroupOfCommunityDTO> groupExamDetailDTOs) {
+        this.groupExamDetailDTOs = groupExamDetailDTOs;
+    }
+
+    public int getVoteCount() {
+        return voteCount;
+    }
+
+    public void setVoteCount(int voteCount) {
+        this.voteCount = voteCount;
+    }
+
+    public int getCommentCount() {
+        return commentCount;
+    }
+
+    public void setCommentCount(int commentCount) {
+        this.commentCount = commentCount;
+    }
+
+    public int getIsVoted() {
+        return isVoted;
+    }
+
+    public void setIsVoted(int isVoted) {
+        this.isVoted = isVoted;
+    }
+
+    public String getUserName() {
+        return userName;
+    }
+
+    public void setUserName(String userName) {
+        this.userName = userName;
+    }
+
+    public String getGroupName() {
+        return groupName;
+    }
+
+    public void setGroupName(String groupName) {
+        this.groupName = groupName;
+    }
+
+    public String getDeadTime() {
+        return deadTime;
+    }
+
+    public void setDeadTime(String deadTime) {
+        this.deadTime = deadTime;
+    }
+
+    public String getAvatar() {
+        return avatar;
+    }
+
+    public void setAvatar(String avatar) {
+        this.avatar = avatar;
     }
 
     public String getId() {

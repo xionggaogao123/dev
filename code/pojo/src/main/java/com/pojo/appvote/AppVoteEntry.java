@@ -32,6 +32,7 @@ public class AppVoteEntry extends BaseDBObject{
                         String content,
                         ObjectId groupId,
                         ObjectId communityId,
+                        String groupName,
                         List<AttachmentEntry> imageList,
                         List<String> voteContent,
                         int voteMaxCount,
@@ -46,6 +47,7 @@ public class AppVoteEntry extends BaseDBObject{
                 .append("tl",title)
                 .append("cn",content)
                 .append("gid",groupId)
+                .append("gn",groupName)
                 .append("cid",communityId)
                 .append("il", MongoUtils.fetchDBObjectList(imageList))
                 .append("vt",MongoUtils.convert(voteContent))
@@ -53,8 +55,34 @@ public class AppVoteEntry extends BaseDBObject{
                 .append("vdt",voteDeadTime)
                 .append("vt",voteType)
                 .append("vp",visiblePermission)
+                .append("cc",Constant.ZERO)
+                .append("vc",Constant.ZERO)
                 .append("ir", Constant.ZERO);
         setBaseEntry(basicDBObject);
+    }
+
+    public void setGroupName(String groupName){
+        setSimpleValue("gn",groupName);
+    }
+
+    public String getGroupName(){
+        return getSimpleStringValue("gn");
+    }
+
+    public void setVoteCount(int voteCount){
+        setSimpleValue("vc",voteCount);
+    }
+
+    public int getVoteCount(){
+        return getSimpleIntegerValue("vc");
+    }
+
+    public void setCommentCount(int commentCount){
+        setSimpleValue("cc",commentCount);
+    }
+
+    public int getCommentCount(){
+        return getSimpleIntegerValue("cc");
     }
 
     public void setVisiblePermission(int visiblePermission){

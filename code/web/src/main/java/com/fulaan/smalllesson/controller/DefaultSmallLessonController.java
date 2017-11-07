@@ -405,5 +405,77 @@ public class DefaultSmallLessonController extends BaseController {
         }
         return JSON.toJSONString(respObj);
     }
+    /**
+     * 修改头像
+     *
+     */
+    @SessionNeedless
+    @ApiOperation(value = "修改头像", httpMethod = "POST", produces = "application/json")
+    @ApiResponses( value = {@ApiResponse(code = 200, message = "Successful — 请求已完成",response = String.class)})
+    @RequestMapping("/updateUserAvater")
+    @ResponseBody
+    public String updateUserAvater(@ApiParam(name = "avatar", required = true, value = "用户头像") @RequestParam("avatar") String avatar,
+                                   @ApiParam(name = "userId", required = true, value = "用户id") @RequestParam("userId") String userId){
 
+        RespObj respObj=null;
+        try {
+            respObj = RespObj.SUCCESS;
+            smallLessonService.updateAvatar(new ObjectId(userId),avatar);
+            respObj.setMessage("成功！");
+        } catch (Exception e) {
+            e.printStackTrace();
+            respObj = RespObj.FAILD;
+            respObj.setErrorMessage("修改头像失败");
+        }
+        return JSON.toJSONString(respObj);
+    }
+    /**
+     * 修改姓名
+     *
+     */
+    @SessionNeedless
+    @ApiOperation(value = "修改姓名", httpMethod = "POST", produces = "application/json")
+    @ApiResponses( value = {@ApiResponse(code = 200, message = "Successful — 请求已完成",response = String.class)})
+    @RequestMapping("/updateUserName")
+    @ResponseBody
+    public String updateUserName(@ApiParam(name = "userName", required = true, value = "用户姓名") @RequestParam("userName") String userName,
+                                 @ApiParam(name = "userId", required = true, value = "用户id") @RequestParam(value = "userId",defaultValue = "") String userId){
+
+        RespObj respObj=null;
+        try {
+            respObj = RespObj.SUCCESS;
+            smallLessonService.updateUserNickName(new ObjectId(userId), userName);
+            respObj.setMessage("成功！");
+        } catch (Exception e) {
+            e.printStackTrace();
+            respObj = RespObj.FAILD;
+            respObj.setErrorMessage("修改姓名失败");
+        }
+        return JSON.toJSONString(respObj);
+    }
+
+    /**
+     * 修改性别
+     *
+     */
+    @SessionNeedless
+    @ApiOperation(value = "修改性别", httpMethod = "POST", produces = "application/json")
+    @ApiResponses( value = {@ApiResponse(code = 200, message = "Successful — 请求已完成",response = String.class)})
+    @RequestMapping("/updateUserSex")
+    @ResponseBody
+    public String updateUserSex(@ApiParam(name = "sex", required = true, value = "用户性别") @RequestParam("userId") int sex,
+                                @ApiParam(name = "userId", required = true, value = "用户id") @RequestParam("userId") String userId){
+
+        RespObj respObj=null;
+        try {
+            respObj = RespObj.SUCCESS;
+            smallLessonService.updateUserSex(new ObjectId(userId), sex);
+            respObj.setMessage("成功！");
+        } catch (Exception e) {
+            e.printStackTrace();
+            respObj = RespObj.FAILD;
+            respObj.setErrorMessage("修改性别失败");
+        }
+        return JSON.toJSONString(respObj);
+    }
 }

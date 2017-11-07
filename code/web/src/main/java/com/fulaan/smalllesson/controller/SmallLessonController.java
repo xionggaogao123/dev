@@ -12,10 +12,7 @@ import io.swagger.annotations.*;
 import org.bson.types.ObjectId;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 import java.util.Map;
@@ -282,7 +279,33 @@ public class SmallLessonController extends BaseController {
         }
         return JSON.toJSONString(respObj);
     }
+    /**
+     * 批量添加答题实体类列表-新
+     */
+    @SessionNeedless
+    @ApiOperation(value = "批量添加答题实体类列表-新", httpMethod = "POST", produces = "application/json")
+    @ApiResponses( value = {@ApiResponse(code = 200, message = "Successful — 请求已完成",response = String.class),
+            @ApiResponse(code = 400, message = "请求中有语法问题，或不能满足请求"),
+            @ApiResponse(code = 500, message = "服务器不能完成请求")})
+    @RequestMapping("/addNewAnswerList")
+    @ResponseBody
+    public String addNewAnswerList(@ApiParam(name = "answerList", required = true, value = "答题列表") @RequestBody LessonAnswerDTO answerList){
 
+        RespObj respObj=null;
+        try {
+            respObj = RespObj.SUCCESS;
+            List<LessonAnswerDTO> dto = answerList.getList();
+            if(dto.size()>0){
+                smallLessonService.addAnswerList(dto);
+            }
+            respObj.setMessage("批量添加答题实体类列表成功!");
+        } catch (Exception e) {
+            e.printStackTrace();
+            respObj = RespObj.FAILD;
+            respObj.setErrorMessage("批量添加答题实体类列表失败!");
+        }
+        return JSON.toJSONString(respObj);
+    }
     /**
      * 修改课程名
      */
@@ -382,5 +405,30 @@ public class SmallLessonController extends BaseController {
         }
         return JSON.toJSONString(respObj);
     }
+
+    /**
+     * 一分钟调用接口
+     *
+     */
+    @SessionNeedless
+    @ApiOperation(value = "一分钟调用接口", httpMethod = "POST", produces = "application/json")
+    @ApiResponses( value = {@ApiResponse(code = 200, message = "Successful — 请求已完成",response = String.class)})
+    @RequestMapping("/updateUserAvatar")
+    @ResponseBody
+    public String updateUserAvatar(@ApiParam(name = "userId", required = true, value = "用户id") @RequestParam("userId") String userId){
+
+        RespObj respObj=null;
+        try {
+            respObj = RespObj.SUCCESS;
+            smallLessonService.getTimeLoading(new ObjectId(userId));
+            respObj.setMessage("成功！");
+        } catch (Exception e) {
+            e.printStackTrace();
+            respObj = RespObj.FAILD;
+            respObj.setErrorMessage("删除课程失败");
+        }
+        return JSON.toJSONString(respObj);
+    }
+
 
 }

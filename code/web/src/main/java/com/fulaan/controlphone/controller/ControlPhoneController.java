@@ -78,7 +78,6 @@ public class ControlPhoneController extends BaseController {
         return JSON.toJSONString(respObj);
     }
 
-
     /**
      * 删除手机号
      * @return
@@ -128,6 +127,9 @@ public class ControlPhoneController extends BaseController {
         }
         return JSON.toJSONString(respObj);
     }
+
+
+    /*家长端上传: 1.  应用包名, string ;2. 可用电话号码 ,string   学生端 : 1 .长连接mqtt接收指令  2. 获取包名  3.获取电话号码*/
 
 
 

@@ -7,7 +7,6 @@ import com.mongodb.BasicDBObject;
 import com.mongodb.DBObject;
 import com.mongodb.WriteResult;
 import com.pojo.app.FieldValuePair;
-import com.pojo.mobile.UserMobileEntry;
 import com.pojo.user.UserEntry;
 import com.pojo.user.UserInfoDTO;
 import com.pojo.user.UserRole;
@@ -1062,6 +1061,42 @@ public class UserDao extends BaseDao {
         if(sex!=-1) {
             updateValue.append("sex", sex);
         }
+        if(StringUtils.isNotBlank(nickName)) {
+            updateValue.append("nnm", nickName);
+        }
+        BasicDBObject update = new BasicDBObject()
+                .append(Constant.MONGO_SET, updateValue);
+        WriteResult writeResult = update(MongoFacroty.getAppDB(), Constant.COLLECTION_USER_NAME, query, update);
+        return writeResult.getN();
+    }
+    public int updateUserSex(ObjectId uid, int sex) {
+        BasicDBObject query = new BasicDBObject()
+                .append(Constant.ID, uid);
+        BasicDBObject updateValue = new BasicDBObject();
+        if(sex!=-1) {
+            updateValue.append("sex", sex);
+        }
+        BasicDBObject update = new BasicDBObject()
+                .append(Constant.MONGO_SET, updateValue);
+        WriteResult writeResult = update(MongoFacroty.getAppDB(), Constant.COLLECTION_USER_NAME, query, update);
+        return writeResult.getN();
+    }
+    public int updateAvater(ObjectId uid, String avatar) {
+        BasicDBObject query = new BasicDBObject()
+                .append(Constant.ID, uid);
+        BasicDBObject updateValue = new BasicDBObject();
+        if(StringUtils.isNotBlank(avatar)) {
+            updateValue.append("avt", avatar);
+        }
+        BasicDBObject update = new BasicDBObject()
+                .append(Constant.MONGO_SET, updateValue);
+        WriteResult writeResult = update(MongoFacroty.getAppDB(), Constant.COLLECTION_USER_NAME, query, update);
+        return writeResult.getN();
+    }
+    public int updateUserNickName(ObjectId uid, String nickName) {
+        BasicDBObject query = new BasicDBObject()
+                .append(Constant.ID, uid);
+        BasicDBObject updateValue = new BasicDBObject();
         if(StringUtils.isNotBlank(nickName)) {
             updateValue.append("nnm", nickName);
         }

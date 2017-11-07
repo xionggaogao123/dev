@@ -4,6 +4,7 @@ import com.db.smalllesson.LessonAnswerDao;
 import com.db.smalllesson.LessonUserResultDao;
 import com.db.smalllesson.SmallLessonCodeDao;
 import com.db.smalllesson.SmallLessonDao;
+import com.db.user.UserDao;
 import com.fulaan.smalllesson.dto.LessonAnswerDTO;
 import com.fulaan.smalllesson.dto.LessonUserResultDTO;
 import com.fulaan.smalllesson.dto.SmallLessonDTO;
@@ -30,6 +31,7 @@ public class SmallLessonService {
     private SmallLessonDao smallLessonDao = new SmallLessonDao();
     private LessonUserResultDao lessonUserResultDao = new LessonUserResultDao();
     private LessonAnswerDao lessonAnswerDao = new LessonAnswerDao();
+    private UserDao userDao = new UserDao();
     @Autowired
     private SmallLessonUserCodeService smallLessonUserCodeService;
 
@@ -299,4 +301,19 @@ public class SmallLessonService {
         //批量添加
         lessonAnswerDao.addBatch(dbList);
     }
+
+
+    //修改头像
+    public void updateAvatar(ObjectId userId,String avatar){
+        userDao.updateAvater(userId,avatar);
+    }
+    //修改姓名
+    public void updateUserNickName(ObjectId userId,String nickName){
+        userDao.updateUserNickName(userId, nickName);
+    }
+    //修改姓名
+    public void updateUserSex(ObjectId userId,int sex){
+        userDao.updateUserSex(userId, sex);
+    }
+
 }

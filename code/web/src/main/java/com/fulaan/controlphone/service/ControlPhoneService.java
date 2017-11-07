@@ -24,6 +24,10 @@ public class ControlPhoneService {
         if(entry != null){
             id = controlPhoneDao.addEntry(entry);
         }
+
+        //向学生端推送消息
+
+
         return id;
     }
 

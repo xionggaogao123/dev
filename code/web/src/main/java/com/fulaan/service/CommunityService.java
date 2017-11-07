@@ -1163,6 +1163,7 @@ public class CommunityService {
         if(null!=userId){
             remarkEntryMap=remarkDao.find(userId,objectIds);
         }
+        List<ObjectId> oblist = new ArrayList<ObjectId>();
         for (CommunityDetailEntry entry : entries) {
             UserEntry userEntry = map.get(entry.getCommunityUserId());
             CommunityDetailDTO communityDetailDTO = new CommunityDetailDTO(entry);
@@ -1262,8 +1263,22 @@ public class CommunityService {
                 communityDetailDTO.setIsZan(1);
             }
             dtos.add(communityDetailDTO);
+            oblist.add(new ObjectId(entry.getCommunityId()));
         }
-
+        Map<String,String> obmap= new HashMap<String, String>();
+        if(oblist.size()>0){
+            List<CommunityEntry> coEntry = communityDao.findByObjectIds(oblist);
+            if(coEntry.size()>0){
+                for(CommunityEntry e2 : coEntry){
+                    obmap.put(e2.getID().toString(),e2.getCommunityName());
+                }
+            }
+        }
+       if(dtos.size()>0){
+           for(CommunityDetailDTO dto3 : dtos){
+               dto3.setCommunityName(obmap.get(dto3.getCommunityId()));
+           }
+       }
         pageModel.setPage(page);
         pageModel.setPageSize(pageSize);
         pageModel.setTotalCount(counts);

@@ -1,5 +1,6 @@
 package com.fulaan.controller;
 
+import com.alibaba.fastjson.JSON;
 import com.fulaan.annotation.SessionNeedless;
 import com.fulaan.utils.QiniuFileUtils;
 import com.sys.utils.RespObj;
@@ -38,7 +39,7 @@ public class AudioController {
     @SessionNeedless
     @RequestMapping(value = "/upload", method = RequestMethod.POST)
     @ResponseBody
-    public RespObj uploadAudio(@RequestParam("name") String name,
+    public RespObj uploadAudio(@RequestParam(value = "name",defaultValue = "") String name,
                                @RequestParam("file") MultipartFile file,
                                @RequestParam("type") String type) throws Exception {
         String path;
@@ -50,5 +51,36 @@ public class AudioController {
             return RespObj.FAILD("文件为空");
         }
         return RespObj.SUCCESS(path);
+    }
+
+    /**
+     * 处理上传语音的接口
+     *
+     * @param name 文件名
+     * @param file 文件
+     * @param type 文件类型
+     * @return RespObj
+     * @throws Exception
+     */
+    @ApiOperation(value = "处理上传语音的接口", httpMethod = "POST", produces = "application/json")
+    @ApiResponses( value = {@ApiResponse(code = 200, message = "Successful — 请求已完成",response = RespObj.class)})
+    @SessionNeedless
+    @RequestMapping(value = "/upload2", method = RequestMethod.POST)
+    @ResponseBody
+    public String uploadAudio2(@RequestParam(value = "name",defaultValue = "") String name,
+                               @RequestParam("file") MultipartFile file,
+                               @RequestParam("type") String type) throws Exception {
+        String path;
+        RespObj respObj = null;
+        if (!file.isEmpty()) {
+            String fileName = String.valueOf(System.currentTimeMillis()) + "." + type;
+            QiniuFileUtils.uploadFile(fileName, file.getInputStream(), QiniuFileUtils.TYPE_SOUND);
+            path = QiniuFileUtils.getPath(QiniuFileUtils.TYPE_SOUND, fileName);
+            respObj = RespObj.SUCCESS(path);
+            return JSON.toJSONString(respObj);
+        } else {
+            respObj  = RespObj.FAILD("文件为空");
+            return JSON.toJSONString(respObj);
+        }
     }
 }

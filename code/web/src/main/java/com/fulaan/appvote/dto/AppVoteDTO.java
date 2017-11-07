@@ -2,6 +2,7 @@ package com.fulaan.appvote.dto;
 
 import com.fulaan.operation.dto.GroupOfCommunityDTO;
 import com.fulaan.pojo.Attachement;
+import com.fulaan.pojo.User;
 import com.pojo.appvote.AppVoteEntry;
 import com.pojo.fcommunity.AttachmentEntry;
 import com.sys.utils.DateTimeUtils;
@@ -27,6 +28,8 @@ public class AppVoteDTO {
     private String groupName;
     private List<Attachement> imageList = new ArrayList<Attachement>();
     private List<GroupOfCommunityDTO> groupExamDetailDTOs = new ArrayList<GroupOfCommunityDTO>();
+    private List<VoteResult> voteResultList=new ArrayList<VoteResult>();
+    private List<User> voteUsers=new ArrayList<User>();
     private List<String> voteContent = new ArrayList<String>();
     private int voteMaxCount;
     private long voteDeadTime;
@@ -35,6 +38,7 @@ public class AppVoteDTO {
     private int visiblePermission;
     private int commentCount;
     private int voteCount;
+    private int voteDeadFlag;
 
     //额外添加字段
     private int isVoted;
@@ -134,6 +138,22 @@ public class AppVoteDTO {
         this.commentCount = appVoteEntry.getCommentCount();
         this.deadTime = DateTimeUtils.convert(appVoteEntry.getVoteDeadTime(), DateTimeUtils.DATE_YYYY_MM_DD_HH_MM_SS_H);
         this.voteCount = appVoteEntry.getVoteCount();
+    }
+
+    public int getVoteDeadFlag() {
+        return voteDeadFlag;
+    }
+
+    public void setVoteDeadFlag(int voteDeadFlag) {
+        this.voteDeadFlag = voteDeadFlag;
+    }
+
+    public List<User> getVoteUsers() {
+        return voteUsers;
+    }
+
+    public void setVoteUsers(List<User> voteUsers) {
+        this.voteUsers = voteUsers;
     }
 
     public String getDeadFormatTime() {
@@ -318,5 +338,13 @@ public class AppVoteDTO {
 
     public void setVisiblePermission(int visiblePermission) {
         this.visiblePermission = visiblePermission;
+    }
+
+    public List<VoteResult> getVoteResultList() {
+        return voteResultList;
+    }
+
+    public void setVoteResultList(List<VoteResult> voteResultList) {
+        this.voteResultList = voteResultList;
     }
 }

@@ -77,7 +77,7 @@ public class AppNoticeService {
      * 保存信息
      * @param dto
      */
-    public void saveAppNoticeEntry(AppNoticeDTO dto,ObjectId userId){
+    public void saveAppNoticeEntry(AppNoticeDTO dto,ObjectId userId)throws Exception{
         UserEntry userEntry=userService.findById(userId);
         JPushUtils jPushUtils=new JPushUtils();
         List<ObjectId> objectIdList = new ArrayList<ObjectId>();
@@ -97,20 +97,6 @@ public class AppNoticeService {
                     communityDTO.getGroupName(),
                     userEntry.getUserName());
             appNoticeDTO.setUserId(userId.toString());
-
-            if(StringUtils.isNotBlank(communityDTO.getGroupId())){
-                List<MemberEntry> memberEntries=memberDao.getAllMembers(new ObjectId(communityDTO.getGroupId()));
-                Set<String> userIds=new HashSet<String>();
-                for(MemberEntry memberEntry:memberEntries){
-                    userIds.add(memberEntry.getUserId().toString());
-                }
-                Audience audience = Audience.alias(new ArrayList<String>(userIds));
-                jPushUtils.pushRestIosbusywork(audience,dto.getTitle(),new HashMap<String,String>());
-                jPushUtils.pushRestAndroidParentBusyWork(audience,dto.getContent(),"",dto.getTitle(),new HashMap<String, String>());
-                List<String> bindUserIds=newVersionBindService.getStudentIdListByCommunityId(new ObjectId(communityDTO.getCommunityId()));
-                Audience studentAudience = Audience.alias(new ArrayList<String>(bindUserIds));
-                jPushUtils.pushRestAndroidStudentNotice(studentAudience,dto.getContent(),"",dto.getTitle(),new HashMap<String, String>());
-            }
             ObjectId oid = appNoticeDao.saveAppNoticeEntry(appNoticeDTO.buildEntry());
 
             //添加临时记录表
@@ -121,6 +107,27 @@ public class AppNoticeService {
             dto1.setContactId(oid.toString());
             IndexPageEntry entry = dto1.buildAddEntry();
             indexPageDao.addEntry(entry);
+        }
+        try {
+            for (GroupOfCommunityDTO communityDTO : dto.getGroupOfCommunityDTOs()) {
+                if (StringUtils.isNotBlank(communityDTO.getGroupId())) {
+                    List<MemberEntry> memberEntries = memberDao.getAllMembers(new ObjectId(communityDTO.getGroupId()));
+                    Set<String> userIds = new HashSet<String>();
+                    for (MemberEntry memberEntry : memberEntries) {
+                        userIds.add(memberEntry.getUserId().toString());
+                    }
+                    Audience audience = Audience.alias(new ArrayList<String>(userIds));
+                    jPushUtils.pushRestIosbusywork(audience, dto.getTitle(), new HashMap<String, String>());
+                    jPushUtils.pushRestAndroidParentBusyWork(audience, dto.getContent(), "", dto.getTitle(), new HashMap<String, String>());
+                    List<String> bindUserIds = newVersionBindService.getStudentIdListByCommunityId(new ObjectId(communityDTO.getCommunityId()));
+                    if (bindUserIds.size() > 0) {
+                        Audience studentAudience = Audience.alias(new ArrayList<String>(bindUserIds));
+                        jPushUtils.pushRestAndroidStudentNotice(studentAudience, dto.getContent(), "", dto.getTitle(), new HashMap<String, String>());
+                    }
+                }
+            }
+        }catch (Exception e){
+            throw new Exception("推送失败");
         }
         redDotService.addEntryList(objectIdList, ApplyTypeEn.notice.getType());
 

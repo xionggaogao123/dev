@@ -6,6 +6,7 @@ import com.fulaan.operation.dto.AppCommentDTO;
 import com.fulaan.operation.dto.AppOperationDTO;
 import com.fulaan.operation.service.AppCommentService;
 import com.fulaan.wrongquestion.dto.SubjectClassDTO;
+import com.sys.constants.Constant;
 import com.sys.utils.DateTimeUtils;
 import com.sys.utils.RespObj;
 import io.swagger.annotations.*;
@@ -44,17 +45,19 @@ public class DefaultAppCommentController extends BaseController {
     @RequestMapping("/addCommentEntry")
     @ResponseBody
     public String addCommentEntry(@ApiParam @RequestBody AppCommentDTO dto){
-        //
         dto.setAdminId(getUserId().toString());
-        RespObj respObj=null;
+        RespObj respObj=new RespObj(Constant.FAILD_CODE);
         try {
-            respObj = RespObj.SUCCESS;
             String result = appCommentService.addCommentEntry(dto,dto.getComList());
+            respObj.setCode(Constant.SUCCESS_CODE);
             respObj.setMessage(result);
         } catch (Exception e) {
             e.printStackTrace();
-            respObj = RespObj.FAILD;
-            respObj.setErrorMessage("添加作业失败!");
+            if("推送失败".equals(e.getMessage())) {
+                respObj.setMessage("推送失败");
+            }else{
+                respObj.setErrorMessage("添加作业失败!");
+            }
         }
         return JSON.toJSONString(respObj);
     }
@@ -516,19 +519,21 @@ public class DefaultAppCommentController extends BaseController {
     @RequestMapping("/updateEntry")
     @ResponseBody
     public String updateEntry(@RequestBody AppCommentDTO dto){
-        RespObj respObj=null;
+        RespObj respObj=new RespObj(Constant.FAILD_CODE);
         try {
-            respObj = RespObj.SUCCESS;
             appCommentService.updateEntry(dto);
+            respObj.setCode(Constant.SUCCESS_CODE);
             respObj.setMessage("修改成功");
         } catch (Exception e) {
             e.printStackTrace();
-            respObj = RespObj.FAILD;
-            respObj.setMessage("查询暂不发布的作业失败!");
-
+            if("推送失败".equals(e.getMessage())) {
+                respObj.setCode(Constant.SUCCESS_CODE);
+                respObj.setMessage(e.getMessage());
+            }else {
+                respObj.setMessage("查询暂不发布的作业失败!");
+            }
         }
         return JSON.toJSONString(respObj);
-
     }
 
     /**

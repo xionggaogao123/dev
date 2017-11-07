@@ -76,7 +76,7 @@ public class AppCommentService {
      * 发布作业
      * @return
      */
-    public String addCommentEntry(AppCommentDTO dto,String comList){
+    public String addCommentEntry(AppCommentDTO dto,String comList)throws Exception{
         Calendar cal = Calendar.getInstance();
         int month = cal.get(Calendar.MONTH)+ 1;
         dto.setMonth(month);
@@ -112,20 +112,6 @@ public class AppCommentService {
             en.setRecipientId(new ObjectId(dto3.getId()));
             en.setRecipientName(dto3.getName());
             String oid = appCommentDao.addEntry(en);
-            ObjectId groupId=communityDao.getGroupId(new ObjectId(dto3.getId()));
-            if(null!=groupId && dto.getStatus()==0){
-                List<MemberEntry> memberEntries=memberDao.getAllMembers(groupId);
-                Set<String> userIds=new HashSet<String>();
-                for(MemberEntry memberEntry:memberEntries){
-                    userIds.add(memberEntry.getUserId().toString());
-                }
-                Audience audience = Audience.alias(new ArrayList<String>(userIds));
-                jPushUtils.pushRestIosbusywork(audience,dto.getTitle(),new HashMap<String,String>());
-                jPushUtils.pushRestAndroidParentBusyWork(audience,dto.getDescription(),"",dto.getTitle(),new HashMap<String, String>());
-                List<String> bindUserIds=newVersionBindService.getStudentIdListByCommunityId(new ObjectId(dto3.getId()));
-                Audience studentAudience = Audience.alias(new ArrayList<String>(bindUserIds));
-                jPushUtils.pushRestAndroidStudentBusyWork(studentAudience,dto.getDescription(),"",dto.getTitle(),new HashMap<String, String>());
-            }
 
 
             //添加临时记录表//暂时不显示
@@ -139,6 +125,29 @@ public class AppCommentService {
                 objectIdList.add(new ObjectId(dto3.getId()));
             }*/
             redDotService.addEntryList(objectIdList, ApplyTypeEn.operation.getType());
+        }
+        try {
+            for (CommunityDTO dto3 : sendList) {
+                ObjectId groupId = communityDao.getGroupId(new ObjectId(dto3.getId()));
+                if (null != groupId && dto.getStatus() == 0) {
+                    List<MemberEntry> memberEntries = memberDao.getAllMembers(groupId);
+                    Set<String> userIds = new HashSet<String>();
+                    for (MemberEntry memberEntry : memberEntries) {
+                        userIds.add(memberEntry.getUserId().toString());
+                    }
+                    Audience audience = Audience.alias(new ArrayList<String>(userIds));
+                    jPushUtils.pushRestIosbusywork(audience, dto.getTitle(), new HashMap<String, String>());
+                    jPushUtils.pushRestAndroidParentBusyWork(audience, dto.getDescription(), "", dto.getTitle(), new HashMap<String, String>());
+                    List<String> bindUserIds = newVersionBindService.getStudentIdListByCommunityId(new ObjectId(dto3.getId()));
+                    if (bindUserIds.size() > 0) {
+                        Audience studentAudience = Audience.alias(new ArrayList<String>(bindUserIds));
+                        jPushUtils.pushRestAndroidStudentBusyWork(studentAudience, dto.getDescription(), "", dto.getTitle(),
+                                new HashMap<String, String>());
+                    }
+                }
+            }
+        }catch (Exception e){
+            throw new Exception("推送失败");
         }
         return "成功导入";
     }
@@ -969,7 +978,7 @@ public class AppCommentService {
      *修改
      *
      */
-    public void updateEntry(AppCommentDTO dto){
+    public void updateEntry(AppCommentDTO dto)throws Exception{
         List<CommunityDTO> communityDTOList = communityService.getCommunitys(new ObjectId(dto.getAdminId()), 1, 100);
         AppCommentEntry entry = dto.updateEntry();
         String st = dto.getComList();
@@ -987,19 +996,26 @@ public class AppCommentService {
         entry.setDateTime(zero);
         appCommentDao.updEntry(entry);
         JPushUtils jPushUtils=new JPushUtils();
-        ObjectId groupId=communityDao.getGroupId(new ObjectId(str[0]));
-        if(null!=groupId && dto.getStatus()==0){
-            List<MemberEntry> memberEntries=memberDao.getAllMembers(groupId);
-            Set<String> userIds=new HashSet<String>();
-            for(MemberEntry memberEntry:memberEntries){
-                userIds.add(memberEntry.getUserId().toString());
+        try {
+            ObjectId groupId = communityDao.getGroupId(new ObjectId(str[0]));
+            if (null != groupId && dto.getStatus() == 0) {
+                List<MemberEntry> memberEntries = memberDao.getAllMembers(groupId);
+                Set<String> userIds = new HashSet<String>();
+                for (MemberEntry memberEntry : memberEntries) {
+                    userIds.add(memberEntry.getUserId().toString());
+                }
+                Audience audience = Audience.alias(new ArrayList<String>(userIds));
+                jPushUtils.pushRestIosbusywork(audience, dto.getTitle(), new HashMap<String, String>());
+                jPushUtils.pushRestAndroidParentBusyWork(audience, dto.getDescription(), "", dto.getTitle(), new HashMap<String, String>());
+                List<String> bindUserIds = newVersionBindService.getStudentIdListByCommunityId(new ObjectId(str[0]));
+                if (bindUserIds.size() > 0) {
+                    Audience studentAudience = Audience.alias(new ArrayList<String>(bindUserIds));
+                    jPushUtils.pushRestAndroidStudentBusyWork(studentAudience, dto.getDescription(), "", dto.getTitle(),
+                            new HashMap<String, String>());
+                }
             }
-            Audience audience = Audience.alias(new ArrayList<String>(userIds));
-            jPushUtils.pushRestIosbusywork(audience,dto.getTitle(),new HashMap<String,String>());
-            jPushUtils.pushRestAndroidParentBusyWork(audience,dto.getDescription(),"",dto.getTitle(),new HashMap<String, String>());
-            List<String> bindUserIds=newVersionBindService.getStudentIdListByCommunityId(new ObjectId(str[0]));
-            Audience studentAudience = Audience.alias(new ArrayList<String>(bindUserIds));
-            jPushUtils.pushRestAndroidStudentBusyWork(studentAudience,dto.getDescription(),"",dto.getTitle(),new HashMap<String, String>());
+        }catch (Exception e){
+            throw new Exception("推送失败");
         }
     }
 

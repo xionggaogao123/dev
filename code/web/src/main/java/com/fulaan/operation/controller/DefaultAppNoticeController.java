@@ -72,11 +72,15 @@ public class DefaultAppNoticeController extends BaseController {
     public RespObj getReadNoticeUserList(@RequestBody AppNoticeDTO dto){
         RespObj respObj=new RespObj(Constant.FAILD_CODE);
         try{
-           appNoticeService.saveAppNoticeEntry(dto,getUserId());
+            appNoticeService.saveAppNoticeEntry(dto,getUserId());
             respObj.setMessage("保存通知信息成功！");
             respObj.setCode(Constant.SUCCESS_CODE);
         }catch (Exception e){
-            respObj.setErrorMessage(e.getMessage());
+            if("推送失败".equals(e.getMessage())) {
+                respObj.setMessage(e.getMessage());
+            }else{
+                respObj.setErrorMessage(e.getMessage());
+            }
         }
         return respObj;
     }

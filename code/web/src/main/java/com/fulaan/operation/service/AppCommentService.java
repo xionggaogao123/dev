@@ -24,7 +24,6 @@ import com.fulaan.user.service.UserService;
 import com.fulaan.utils.JPushUtils;
 import com.fulaan.wrongquestion.dto.SubjectClassDTO;
 import com.pojo.fcommunity.MemberEntry;
-import com.pojo.fcommunity.NewVersionCommunityBindEntry;
 import com.pojo.instantmessage.ApplyTypeEn;
 import com.pojo.newVersionGrade.NewVersionSubjectEntry;
 import com.pojo.operation.AppCommentEntry;
@@ -111,6 +110,8 @@ public class AppCommentService {
             en.setID(null);
             en.setRecipientId(new ObjectId(dto3.getId()));
             en.setRecipientName(dto3.getName());
+            List<AppRecordEntry> aen =  appRecordDao.getEntryListByParentId(new ObjectId(dto3.getId()),1);
+            en.setWriteNumber(aen.size());
             String oid = appCommentDao.addEntry(en);
 
 
@@ -598,13 +599,14 @@ public class AppCommentService {
         Map<String,Object> map2 = new HashMap<String, Object>();
         AppCommentEntry entry2 = appCommentDao.getEntry(id);
         UserDetailInfoDTO studtos = userService.getUserInfoById(entry2.getAdminId().toString());
+        String name3= StringUtils.isNotEmpty(studtos.getNickName()) ? studtos.getNickName() : studtos.getUserName();
         AppCommentDTO dto2 = new AppCommentDTO(entry2);
         if(entry2.getAdminId()!= null && entry2.getAdminId().equals(userId)){
             dto2.setType(1);
         }else{
             dto2.setType(2);
         }
-        dto2.setAdminName(studtos.getUserName());
+        dto2.setAdminName(name3);
         dto2.setAdminUrl(studtos.getImgUrl());
          //上面的描述
          map2.put("desc",dto2);

@@ -894,5 +894,11 @@ public class Constant {
 
     //管控手机号
     public static final String COLLECTION_CONTROL_PHONE = "controlphone";
+    //管控社区推荐应用表
+    public static final String COLLECTION_CONTROL_APP = "controlapp";
+    //管控防沉迷时间设置
+    public static final String COLLECTION_CONTROL_TIME = "controltime";
+    //管控地图信息记录表
+    public static final String COLLECTION_CONTROL_MAP = "controlmap";
 
 }

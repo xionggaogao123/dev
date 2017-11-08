@@ -463,7 +463,7 @@ public class DefaultSmallLessonController extends BaseController {
     @ApiResponses( value = {@ApiResponse(code = 200, message = "Successful — 请求已完成",response = String.class)})
     @RequestMapping("/updateUserSex")
     @ResponseBody
-    public String updateUserSex(@ApiParam(name = "sex", required = true, value = "用户性别") @RequestParam("userId") int sex,
+    public String updateUserSex(@ApiParam(name = "sex", required = true, value = "用户性别") @RequestParam("sex") int sex,
                                 @ApiParam(name = "userId", required = true, value = "用户id") @RequestParam("userId") String userId){
 
         RespObj respObj=null;

@@ -1,10 +1,11 @@
 package com.fulaan.indexpage.service;
 
 import cn.jiguang.commom.utils.StringUtils;
+import com.db.fcommunity.CommunityDao;
+import com.db.fcommunity.MemberDao;
 import com.db.indexPage.IndexPageDao;
 import com.db.operation.AppCommentDao;
 import com.db.operation.AppNoticeDao;
-import com.fulaan.community.dto.CommunityDTO;
 import com.fulaan.indexpage.dto.IndexPageDTO;
 import com.fulaan.operation.dto.AppCommentDTO;
 import com.fulaan.operation.dto.AppNoticeDTO;
@@ -42,19 +43,24 @@ public class IndexPageService {
 
     private IndexPageDao indexPageDao = new IndexPageDao();
 
+    private MemberDao memberDao =new MemberDao();
+
+    private CommunityDao communityDao =new CommunityDao();
 
 
     public Map<String,Object> getIndexList(ObjectId userId,int page,int pageSize){
         List<Map<String,Object>> list = new ArrayList<Map<String, Object>>();
-        List<CommunityDTO> communityDTOList =communityService.getCommunitys(userId, 1, 100);
+        List<ObjectId> ids = memberDao.selectMyRoleList(userId);
+        List<ObjectId> obl = communityDao.selectCommunityByGroupIds(ids);
+        /*List<CommunityDTO> communityDTOList =communityService.getCommunitys(userId, 1, 100);
         List<ObjectId>  dlist = new ArrayList<ObjectId>();
         if(communityDTOList.size() >0){
             for(CommunityDTO dto : communityDTOList){
                 dlist.add(new ObjectId(dto.getId()));
             }
-        }
-        List<IndexPageEntry> entrys = indexPageDao.getPageList(dlist, page, pageSize);
-        int count = indexPageDao.countPageList(dlist);
+        }*/
+        List<IndexPageEntry> entrys = indexPageDao.getPageList(obl, page, pageSize);
+        int count = indexPageDao.countPageList(obl);
         //作业
         List<ObjectId> appList = new ArrayList<ObjectId>();
         Map<String,Object> appMap =new HashMap<String, Object>();

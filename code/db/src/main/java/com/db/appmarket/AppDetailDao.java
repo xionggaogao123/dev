@@ -63,4 +63,17 @@ public class AppDetailDao extends BaseDao {
         }
         return entries;
     }
+    public List<AppDetailEntry> getEntriesByIds(List<ObjectId> appIds){
+        List<AppDetailEntry> entries=new ArrayList<AppDetailEntry>();
+        BasicDBObject query=new BasicDBObject(Constant.ID,new BasicDBObject(Constant.MONGO_IN,appIds))
+                .append("ir",Constant.ZERO);
+        List<DBObject> dbObjectList=find(MongoFacroty.getAppDB(),Constant.COLLECTION_APP_MARKET_DETAIL,
+                query,Constant.FIELDS);
+        if(null!=dbObjectList&&!dbObjectList.isEmpty()){
+            for(DBObject dbObject:dbObjectList){
+                entries.add(new AppDetailEntry(dbObject));
+            }
+        }
+        return entries;
+    }
 }

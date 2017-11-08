@@ -306,6 +306,22 @@ public class CommunityDao extends BaseDao {
         return groupIds;
     }
 
+    public List<ObjectId> selectCommunityByGroupIds(List<ObjectId> ids){
+        List<ObjectId> groupIds=new ArrayList<ObjectId>();
+        BasicDBObject query = new BasicDBObject()
+                .append("grid", new BasicDBObject(Constant.MONGO_IN, ids)).append("r", 0);
+        Map<ObjectId, CommunityEntry> retMap = new HashMap<ObjectId, CommunityEntry>();
+        List<DBObject> list = find(MongoFacroty.getAppDB(), Constant.COLLECTION_FORUM_COMMUNITY, query, Constant.FIELDS);
+        if (null != list && !list.isEmpty()) {
+            CommunityEntry e;
+            for (DBObject dbo : list) {
+                e = new CommunityEntry(dbo);
+                groupIds.add(e.getID());
+            }
+        }
+        return groupIds;
+    }
+
     /**
      * 根据社区id
      *

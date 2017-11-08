@@ -89,6 +89,19 @@ public class MemberDao extends BaseDao {
         return map;
     }
 
+    //获得个人非管理员的groupId
+    public List<ObjectId> selectMyRoleList(ObjectId userId){
+        List<ObjectId> olist = new ArrayList<ObjectId>();
+        BasicDBObject query = new BasicDBObject().
+                append("uid",userId).append("r", Constant.ZERO).append("rl",0);
+        List<DBObject> dbObjects = find(MongoFacroty.getAppDB(), Constant.COLLECTION_FORUM_COMMUNITY_MEMBER, query, Constant.FIELDS);
+        for (DBObject dbo : dbObjects) {
+            MemberEntry entry=new MemberEntry(dbo);
+            olist.add(entry.getGroupId());
+        }
+        return olist;
+    }
+
     /**
      * 查询群聊人数
      *

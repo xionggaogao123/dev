@@ -52,7 +52,7 @@ public class DefaultIndexPageController extends BaseController {
         RespObj respObj=null;
         try {
             respObj = RespObj.SUCCESS;
-            indexPageService.addIndexPage(communityId, contactId, type);
+            indexPageService.addIndexPage(communityId, contactId, type,getUserId());
             respObj.setMessage("添加成功");
         } catch (Exception e) {
             e.printStackTrace();

@@ -91,27 +91,38 @@ public class RedDotService {
     }
 
     /**
-     * 添加记录
+     * 添加记录//1:家长2:学生3:家长，学生
+     *
+     * //  4其他类
      */
-    public void addEntryList(List<ObjectId> commuityIds,int type){
+    public void addEntryList(List<ObjectId> commuityIds,ObjectId userId,int type,int lei){
         //获得当前时间
         long current=System.currentTimeMillis();
         //获得时间批次
         long zero=current/(1000*3600*24)*(1000*3600*24)- TimeZone.getDefault().getRawOffset();//今天零点零分零秒的毫秒数
         for(ObjectId obid : commuityIds){
             List<ObjectId> bid = new ArrayList<ObjectId>();
+            List<ObjectId> uids = new ArrayList<ObjectId>();
             //所有学生
             List<ObjectId> sids = newVersionCommunityBindDao.getStudentListByCommunityId(obid);
+            if(lei ==2 || lei == 3 || lei==4){
+                uids.addAll(sids);
+            }
             bid.add(obid);
             //所有家长
             List<ObjectId> list = communityDao.getListGroupIds(bid);
             List<ObjectId> li = memberDao.getMembersByList(list);
-            Set<ObjectId> se = new HashSet<ObjectId>();
-            List<ObjectId> uids = new ArrayList<ObjectId>();
-            se.addAll(li);
-            uids.addAll(se);
-            //
-            uids.addAll(sids);
+            if(lei==4){
+                Set<ObjectId> se = new HashSet<ObjectId>();
+                se.addAll(li);
+                uids.addAll(se);
+            }
+            if(lei==1 || lei == 3){
+                List<ObjectId> li2 = memberDao.getMembersByList2(list,userId);
+                Set<ObjectId> se = new HashSet<ObjectId>();
+                se.addAll(li2);
+                uids.addAll(se);
+            }
             List<RedDotDTO> redDotDTOs = new ArrayList<RedDotDTO>();
             if(ApplyTypeEn.getProTypeEname(type).equals("other")){//作业类型
                 List<ObjectId> unid =  redDotDao.getOtherRedDotEntryByList(uids, zero, type);

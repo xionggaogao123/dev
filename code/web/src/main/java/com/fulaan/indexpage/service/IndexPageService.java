@@ -6,6 +6,7 @@ import com.db.fcommunity.MemberDao;
 import com.db.indexPage.IndexPageDao;
 import com.db.operation.AppCommentDao;
 import com.db.operation.AppNoticeDao;
+import com.fulaan.community.dto.CommunityDTO;
 import com.fulaan.indexpage.dto.IndexPageDTO;
 import com.fulaan.operation.dto.AppCommentDTO;
 import com.fulaan.operation.dto.AppNoticeDTO;
@@ -50,17 +51,19 @@ public class IndexPageService {
 
     public Map<String,Object> getIndexList(ObjectId userId,int page,int pageSize){
         List<Map<String,Object>> list = new ArrayList<Map<String, Object>>();
-        List<ObjectId> ids = memberDao.selectMyRoleList(userId);
-        List<ObjectId> obl = communityDao.selectCommunityByGroupIds(ids);
-        /*List<CommunityDTO> communityDTOList =communityService.getCommunitys(userId, 1, 100);
+        //作业逻辑
+        //List<ObjectId> ids = memberDao.selectMyRoleList(userId);
+       // List<ObjectId> obl = communityDao.selectCommunityByGroupIds(ids);
+        //通知逻辑
+        List<CommunityDTO> communityDTOList =communityService.getCommunitys(userId, 1, 100);
         List<ObjectId>  dlist = new ArrayList<ObjectId>();
         if(communityDTOList.size() >0){
             for(CommunityDTO dto : communityDTOList){
                 dlist.add(new ObjectId(dto.getId()));
             }
-        }*/
-        List<IndexPageEntry> entrys = indexPageDao.getPageList(obl, page, pageSize);
-        int count = indexPageDao.countPageList(obl);
+        }
+        List<IndexPageEntry> entrys = indexPageDao.getPageList(dlist,userId, page, pageSize);
+        int count = indexPageDao.countPageList(dlist,userId);
         //作业
         List<ObjectId> appList = new ArrayList<ObjectId>();
         Map<String,Object> appMap =new HashMap<String, Object>();
@@ -168,11 +171,12 @@ public class IndexPageService {
 
         return map;
     }
-    public void addIndexPage(String communityId,String contactId,int type){
+    public void addIndexPage(String communityId,String contactId,int type,ObjectId userId){
         //添加临时记录表
         IndexPageDTO dto1 = new IndexPageDTO();
         dto1.setType(type);
         dto1.setCommunityId(communityId);
+        dto1.setUserId(userId.toString());
         dto1.setContactId(contactId);
         IndexPageEntry entry = dto1.buildAddEntry();
         indexPageDao.addEntry(entry);

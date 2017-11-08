@@ -55,6 +55,17 @@ public class MemberDao extends BaseDao {
         }
         return memberEntries;
     }
+    public List<ObjectId> getMembersByList2(List<ObjectId> groupId,ObjectId userId) {
+        BasicDBObject query = new BasicDBObject("grid", new BasicDBObject(Constant.MONGO_IN,groupId)).append("r", Constant.ZERO);
+        query.append("uid", new BasicDBObject(Constant.MONGO_NE, userId));
+        BasicDBObject orderBy = new BasicDBObject(Constant.ID, Constant.DESC);
+        List<ObjectId> memberEntries = new ArrayList<ObjectId>();
+        List<DBObject> dbObjects = find(MongoFacroty.getAppDB(), Constant.COLLECTION_FORUM_COMMUNITY_MEMBER, query, Constant.FIELDS, orderBy);
+        for (DBObject dbo : dbObjects) {
+            memberEntries.add(new MemberEntry(dbo).getUserId());
+        }
+        return memberEntries;
+    }
     /**
      * 获取群聊成员  前20个
      *

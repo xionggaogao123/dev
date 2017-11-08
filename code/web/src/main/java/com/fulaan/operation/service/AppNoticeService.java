@@ -7,15 +7,12 @@ import com.db.fcommunity.NewVersionCommunityBindDao;
 import com.db.indexPage.IndexPageDao;
 import com.db.operation.AppNoticeDao;
 import com.db.operation.AppOperationDao;
-import com.db.user.UserDao;
-import com.fulaan.dto.VideoDTO;
 import com.fulaan.indexpage.dto.IndexPageDTO;
 import com.fulaan.instantmessage.service.RedDotService;
 import com.fulaan.newVersionBind.service.NewVersionBindService;
 import com.fulaan.operation.dto.AppNoticeDTO;
 import com.fulaan.operation.dto.AppOperationDTO;
 import com.fulaan.operation.dto.GroupOfCommunityDTO;
-import com.fulaan.pojo.Attachement;
 import com.fulaan.pojo.User;
 import com.fulaan.user.service.UserService;
 import com.fulaan.utils.JPushUtils;
@@ -102,6 +99,7 @@ public class AppNoticeService {
             //添加临时记录表
             IndexPageDTO dto1 = new IndexPageDTO();
             dto1.setType(CommunityType.appNotice.getType());
+            dto1.setUserId(userId.toString());
             dto1.setCommunityId(communityDTO.getCommunityId());
             objectIdList.add(new ObjectId(communityDTO.getCommunityId()));
             dto1.setContactId(oid.toString());
@@ -129,7 +127,8 @@ public class AppNoticeService {
         }catch (Exception e){
             throw new Exception("推送失败");
         }
-        redDotService.addEntryList(objectIdList, ApplyTypeEn.notice.getType());
+        //1:家长2:学生3:家长，学生
+        redDotService.addEntryList(objectIdList,userId, ApplyTypeEn.notice.getType(),dto.getWatchPermission());
 
     }
 

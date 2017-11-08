@@ -13,6 +13,7 @@ public class IndexPageDTO {
             ObjectId contactId*/
     private String id;
     private int type;// 1 作业    2 通知
+    private String userId;
     private String communityId;
     private String contactId;
 
@@ -23,6 +24,7 @@ public class IndexPageDTO {
         if(e!=null){
             this.id = e.getID()==null?"":e.getID().toString();
             this.type = e.getType();
+            this.userId = e.getUserId() == null ? "": e.getUserId().toString();
             this.communityId = e.getCommunityId() == null ? "" : e.getCommunityId().toString();
             this.contactId = e.getContactId() == null ? "" : e.getContactId().toString();
         }else{
@@ -35,6 +37,10 @@ public class IndexPageDTO {
         if(this.getCommunityId()!=null&&!"".equals(this.getCommunityId())){
             cId=new ObjectId(this.getCommunityId());
         }
+        ObjectId uId=null;
+        if(this.getUserId()!=null&&!"".equals(this.getUserId())){
+            uId=new ObjectId(this.getUserId());
+        }
         ObjectId tId=null;
         if(this.getContactId()!=null&&!"".equals(this.getContactId())){
             tId=new ObjectId(this.getContactId());
@@ -42,6 +48,7 @@ public class IndexPageDTO {
         IndexPageEntry openEntry =
                 new IndexPageEntry(
                         this.type,
+                        uId,
                         cId,
                         tId
                 );
@@ -57,6 +64,10 @@ public class IndexPageDTO {
         if(this.getCommunityId()!=null&&!"".equals(this.getCommunityId())){
             cId=new ObjectId(this.getCommunityId());
         }
+        ObjectId uId=null;
+        if(this.getUserId()!=null&&!"".equals(this.getUserId())){
+            uId=new ObjectId(this.getUserId());
+        }
         ObjectId tId=null;
         if(this.getContactId()!=null&&!"".equals(this.getContactId())){
             tId=new ObjectId(this.getContactId());
@@ -65,6 +76,7 @@ public class IndexPageDTO {
                 new IndexPageEntry(
                         Id,
                         this.type,
+                        uId,
                         cId,
                         tId
                 );
@@ -72,6 +84,13 @@ public class IndexPageDTO {
 
     }
 
+    public String getUserId() {
+        return userId;
+    }
+
+    public void setUserId(String userId) {
+        this.userId = userId;
+    }
 
     public String getId() {
         return id;

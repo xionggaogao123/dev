@@ -125,7 +125,7 @@ public class AppCommentService {
                 indexPageDao.addEntry(entry);
                 objectIdList.add(new ObjectId(dto3.getId()));
             }*/
-            redDotService.addEntryList(objectIdList, ApplyTypeEn.operation.getType());
+            redDotService.addEntryList(objectIdList,new ObjectId(dto.getAdminId()), ApplyTypeEn.operation.getType(),4);
         }
         try {
             for (CommunityDTO dto3 : sendList) {

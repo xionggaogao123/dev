@@ -23,11 +23,12 @@ public class IndexPageDao extends BaseDao {
     }
 
     //查询首页显示列表
-    public List<IndexPageEntry> getPageList(List<ObjectId> olist,int page,int pageSize){
+    public List<IndexPageEntry> getPageList(List<ObjectId> olist,ObjectId userId,int page,int pageSize){
         List<IndexPageEntry> entryList=new ArrayList<IndexPageEntry>();
         BasicDBObject query=new BasicDBObject()
                 .append("cid",new BasicDBObject(Constant.MONGO_IN,olist))
-                .append("isr",Constant.ZERO);
+                .append("uid",new BasicDBObject(Constant.MONGO_NE,userId))
+                .append("isr", Constant.ZERO);
         List<DBObject> dbList=find(MongoFacroty.getAppDB(), Constant.COLLECTION_INDEX_PAGE,query,
                 Constant.FIELDS,Constant.MONGO_SORTBY_DESC,(page-1)*pageSize,pageSize);
         if (dbList != null && !dbList.isEmpty()) {
@@ -41,10 +42,11 @@ public class IndexPageDao extends BaseDao {
 
     }
 
-    public int countPageList(List<ObjectId> olist){
+    public int countPageList(List<ObjectId> olist,ObjectId userId){
         BasicDBObject query=new BasicDBObject()
                 .append("cid",new BasicDBObject(Constant.MONGO_IN,olist))
-                .append("isr",Constant.ZERO);
+                .append("uid", new BasicDBObject(Constant.MONGO_NE, userId))
+                .append("isr", Constant.ZERO);
         return count(MongoFacroty.getAppDB(), Constant.COLLECTION_INDEX_PAGE,query);
     }
 

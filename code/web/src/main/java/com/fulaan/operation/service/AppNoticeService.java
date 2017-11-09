@@ -97,14 +97,16 @@ public class AppNoticeService {
             ObjectId oid = appNoticeDao.saveAppNoticeEntry(appNoticeDTO.buildEntry());
 
             //添加临时记录表
-            IndexPageDTO dto1 = new IndexPageDTO();
-            dto1.setType(CommunityType.appNotice.getType());
-            dto1.setUserId(userId.toString());
-            dto1.setCommunityId(communityDTO.getCommunityId());
-            objectIdList.add(new ObjectId(communityDTO.getCommunityId()));
-            dto1.setContactId(oid.toString());
-            IndexPageEntry entry = dto1.buildAddEntry();
-            indexPageDao.addEntry(entry);
+            if(dto.getWatchPermission()!=2){
+                IndexPageDTO dto1 = new IndexPageDTO();
+                dto1.setType(CommunityType.appNotice.getType());
+                dto1.setUserId(userId.toString());
+                dto1.setCommunityId(communityDTO.getCommunityId());
+                objectIdList.add(new ObjectId(communityDTO.getCommunityId()));
+                dto1.setContactId(oid.toString());
+                IndexPageEntry entry = dto1.buildAddEntry();
+                indexPageDao.addEntry(entry);
+            }
         }
         try {
             for (GroupOfCommunityDTO communityDTO : dto.getGroupOfCommunityDTOs()) {

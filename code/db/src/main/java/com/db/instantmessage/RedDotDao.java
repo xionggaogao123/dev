@@ -103,7 +103,7 @@ public class RedDotDao extends BaseDao {
 
     //批量修改 same类型
     public void updateEntry2(List<ObjectId> userIds,int type){
-        BasicDBObject query = new BasicDBObject("uis",new BasicDBObject(Constant.MONGO_IN,userIds));
+        BasicDBObject query = new BasicDBObject("uid",new BasicDBObject(Constant.MONGO_IN,userIds));
         query.append("typ", type);
         query .append("isr", 0); // 未删除
         BasicDBObject updateValue =  new BasicDBObject() .append(Constant.MONGO_INC, new BasicDBObject("num", 1));

@@ -17,12 +17,12 @@ import com.pojo.newVersionGrade.NewVersionGradeEntry;
 import com.pojo.user.*;
 import com.sys.constants.Constant;
 import com.sys.utils.AvatarUtils;
+import com.sys.utils.DateTimeUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.bson.types.ObjectId;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.lang.reflect.Array;
 import java.text.SimpleDateFormat;
 import java.util.*;
 
@@ -99,7 +99,12 @@ public class NewVersionBindService {
         if(null!=userEntry){
             dto.setSex(userEntry.getSex());
             dto.setNickName(userEntry.getNickName());
-            dto.setAvatar(AvatarUtils.getAvatar(userEntry.getAvatar(), userEntry.getRole(),userEntry.getSex()));
+            if(userEntry.getInterviewTime() !=0l){
+                dto.setLoadTime(DateTimeUtils.getLongToStrTimeTwo(userEntry.getInterviewTime()));
+            }else{
+                dto.setLoadTime(DateTimeUtils.getLongToStrTimeTwo(new Date().getTime()));
+            }
+            dto.setAvatar(AvatarUtils.getAvatar(userEntry.getAvatar(), userEntry.getRole(), userEntry.getSex()));
             SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd");
             String birthDate=format.format(userEntry.getBirthDate());
             dto.setBirthDate(birthDate);

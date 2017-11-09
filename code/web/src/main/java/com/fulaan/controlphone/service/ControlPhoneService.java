@@ -1,27 +1,25 @@
 package com.fulaan.controlphone.service;
 
 import com.db.appmarket.AppDetailDao;
-import com.db.controlphone.ControlAppDao;
-import com.db.controlphone.ControlMapDao;
-import com.db.controlphone.ControlPhoneDao;
-import com.db.controlphone.ControlTimeDao;
+import com.db.controlphone.*;
 import com.db.fcommunity.CommunityDao;
 import com.fulaan.appmarket.dto.AppDetailDTO;
+import com.fulaan.controlphone.dto.ControlAppResultDTO;
 import com.fulaan.controlphone.dto.ControlMapDTO;
 import com.fulaan.controlphone.dto.ControlPhoneDTO;
+import com.fulaan.controlphone.dto.ResultAppDTO;
 import com.fulaan.mqtt.MQTTSendMsg;
 import com.fulaan.newVersionBind.service.NewVersionBindService;
+import com.mongodb.DBObject;
 import com.pojo.appmarket.AppDetailEntry;
 import com.pojo.controlphone.*;
 import com.pojo.fcommunity.CommunityEntry;
+import com.sys.utils.DateTimeUtils;
 import org.bson.types.ObjectId;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.util.ArrayList;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
+import java.util.*;
 
 /**
  * Created by James on 2017/11/3.
@@ -40,6 +38,8 @@ public class ControlPhoneService {
     private ControlTimeDao  controlTimeDao = new ControlTimeDao();
 
     private ControlMapDao controlMapDao = new ControlMapDao();
+
+    private ControlAppResultDao controlAppResultDao = new ControlAppResultDao();
 
     @Autowired
     private NewVersionBindService newVersionBindService;
@@ -98,7 +98,7 @@ public class ControlPhoneService {
         if(entries.size()>0){
             for(ControlPhoneEntry entry1 :entries ){
                 if(!code.contains(entry1.getName())){
-                    code= code + entry1.getName()+"**";
+                    code= code + entry1.getName()+"##";
                 }
             }
         }
@@ -232,6 +232,77 @@ public class ControlPhoneService {
             MQTTSendMsg.sendMessage(MQTTType.mi.getEname(), userId.toString());
         }catch (Exception e){
 
+        }
+    }
+    //接受应用使用1情况记录表
+    public void acceptAppResultList(ResultAppDTO dto,ObjectId userId){
+        List<ControlAppResultDTO> dtos = dto.getAppList();
+        if(dtos != null && dtos.size()>0){
+            this.addRedDotEntryBatch(dtos,userId);
+        }
+    }
+
+    //接受地图情况
+    public void acceptMapResult(ControlMapDTO dto,ObjectId userId){
+        ControlMapEntry entry = dto.buildAddEntry();
+        entry.setUserId(userId);
+        controlMapDao.addEntry(entry);
+    }
+
+    //获得地图位置
+    public Map<String,Object> getMapNow(ObjectId parentId,ObjectId sonId) {
+        Map<String,Object> map = new HashMap<String, Object>();
+        //获得当前时间
+        long current = System.currentTimeMillis();
+        //获得时间批次
+        long zero = current / (1000 * 3600 * 24) * (1000 * 3600 * 24) - TimeZone.getDefault().getRawOffset();//今天零点零分零秒的毫秒数
+        ControlMapEntry entry = controlMapDao.getEntryByParentId(parentId, sonId, zero);
+        if (entry != null) {
+            map.put("dto",new ControlMapDTO(entry));
+        } else {
+            map.put("dto","");
+        }
+
+
+
+        return map;
+    }
+
+    public List<ControlMapDTO> getMapListEntry(ObjectId parentId,ObjectId sonId,String startTime,String endTime){
+        List<ControlMapDTO> dtos = new ArrayList<ControlMapDTO>();
+        long sl = 0l;
+        if(startTime != null && startTime != ""){
+            sl = DateTimeUtils.getStrToLongTime(startTime);
+        }
+        long el = 0l;
+        if(endTime != null && endTime != ""){
+            el = DateTimeUtils.getStrToLongTime(endTime);
+        }
+        List<ControlMapEntry> entries = controlMapDao.getMapListEntry(parentId,sonId,sl,el);
+        if(entries.size()>0){
+            for(ControlMapEntry entry : entries){
+                dtos.add(new ControlMapDTO(entry));
+            }
+        }
+        return dtos;
+    }
+
+
+    /**
+     * 批量增加应用记录
+     * @param list
+     */
+    public void addRedDotEntryBatch(List<ControlAppResultDTO> list,ObjectId userId) {
+        List<DBObject> dbList = new ArrayList<DBObject>();
+        for (int i = 0; list != null && i < list.size(); i++) {
+            ControlAppResultDTO si = list.get(i);
+            ControlAppResultEntry obj = si.buildAddEntry();
+            obj.setUserId(userId);
+            dbList.add(obj.getBaseEntry());
+        }
+        //导入新纪录
+        if(dbList.size()>0) {
+            controlAppResultDao.addBatch(dbList);
         }
     }
 }

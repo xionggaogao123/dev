@@ -28,7 +28,7 @@ public class ControlAppResultEntry extends BaseDBObject {
             ObjectId parentId,
             ObjectId userId,
             ObjectId appId,
-            ObjectId appName,
+            String appName,
             int useTime,
             long dateTime
     ){
@@ -49,7 +49,7 @@ public class ControlAppResultEntry extends BaseDBObject {
             ObjectId parentId,
             ObjectId userId,
             ObjectId appId,
-            ObjectId appName,
+            String appName,
             int useTime,
             long dateTime
     ){

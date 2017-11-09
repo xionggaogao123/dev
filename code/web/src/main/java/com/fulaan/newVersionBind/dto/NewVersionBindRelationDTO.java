@@ -28,6 +28,8 @@ public class NewVersionBindRelationDTO {
     private String studentNumber;
     private String thirdName;
 
+    private String loadTime;
+
     public NewVersionBindRelationDTO(NewVersionBindRelationEntry  entry){
         this.bindId=entry.getID().toString();
         this.mainUserId=entry.getMainUserId().toString();
@@ -70,6 +72,14 @@ public class NewVersionBindRelationDTO {
 
     public NewVersionBindRelationDTO(){
 
+    }
+
+    public String getLoadTime() {
+        return loadTime;
+    }
+
+    public void setLoadTime(String loadTime) {
+        this.loadTime = loadTime;
     }
 
     public String getStudentNumber() {

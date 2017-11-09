@@ -6,6 +6,7 @@ import com.fulaan.appmarket.dto.AppDetailDTO;
 import com.fulaan.base.BaseController;
 import com.fulaan.controlphone.dto.ControlMapDTO;
 import com.fulaan.controlphone.dto.ControlPhoneDTO;
+import com.fulaan.controlphone.dto.ResultAppDTO;
 import com.fulaan.controlphone.service.ControlPhoneService;
 import com.sys.utils.RespObj;
 import io.swagger.annotations.*;
@@ -18,6 +19,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import java.util.List;
+import java.util.Map;
 
 /**
  * Created by James on 2017/11/3.
@@ -29,7 +31,7 @@ public class ControlPhoneController extends BaseController {
 
     @Autowired
     private ControlPhoneService controlPhoneService;
-
+    //管控电话
     /**
      * 添加管控手机号
      * @param dto
@@ -154,7 +156,8 @@ public class ControlPhoneController extends BaseController {
         }
         return JSON.toJSONString(respObj);
     }
-    /*家长端上传: 1.  应用包名, string ;2. 可用电话号码 ,string   学生端 : 1 .长连接mqtt接收指令  2. 获取包名  3.获取电话号码*/
+
+    //管控应用
     /**
      * 查询推送应用（家长端）
      *
@@ -228,10 +231,10 @@ public class ControlPhoneController extends BaseController {
 
 
     /**
-     * 家长设置防沉迷时间
+     * 家长设置应用防沉迷时间
      *
      */
-    @ApiOperation(value = "学生获取推送应用", httpMethod = "POST", produces = "application/json")
+    @ApiOperation(value = "家长设置应用防沉迷时间", httpMethod = "POST", produces = "application/json")
     @ApiResponses( value = {@ApiResponse(code = 200, message = "Successful — 请求已完成",response = String.class),
             @ApiResponse(code = 400, message = "请求中有语法问题，或不能满足请求"),
             @ApiResponse(code = 500, message = "服务器不能完成请求")})
@@ -243,11 +246,11 @@ public class ControlPhoneController extends BaseController {
         try {
             respObj = RespObj.SUCCESS;
             controlPhoneService.addAppTimeEntry(new ObjectId(sonId),getUserId(),time);
-            respObj.setMessage("设置成功");
+            respObj.setMessage("家长设置应用防沉迷时间成功");
         } catch (Exception e) {
             e.printStackTrace();
             respObj = RespObj.FAILD;
-            respObj.setErrorMessage("学生获取推送应用失败!");
+            respObj.setErrorMessage("家长设置应用防沉迷时间失败!");
         }
         return JSON.toJSONString(respObj);
     }
@@ -255,27 +258,28 @@ public class ControlPhoneController extends BaseController {
     /**
      * 定时接受孩子的应用使用情况
      */
-    @ApiOperation(value = "学生获取推送应用", httpMethod = "POST", produces = "application/json")
+    @ApiOperation(value = "定时接受孩子的应用使用情况", httpMethod = "POST", produces = "application/json")
     @ApiResponses( value = {@ApiResponse(code = 200, message = "Successful — 请求已完成",response = String.class),
             @ApiResponse(code = 400, message = "请求中有语法问题，或不能满足请求"),
             @ApiResponse(code = 500, message = "服务器不能完成请求")})
     @RequestMapping("/acceptAppResultList")
     @ResponseBody
-    public String acceptAppResultList(@ApiParam(name = "sonId", required = true, value = "孩子id") @RequestParam("sonId") String sonId,
-                                  @ApiParam(name = "time", required = true, value = "时间") @RequestParam("time") long time){
+    public String acceptAppResultList(@ApiParam(name = "dto", required = true, value = "应用使用情况list") @RequestBody ResultAppDTO dto){
         RespObj respObj=null;
         try {
             respObj = RespObj.SUCCESS;
-            controlPhoneService.addAppTimeEntry(new ObjectId(sonId),getUserId(),time);
-            respObj.setMessage("设置成功");
+            controlPhoneService.acceptAppResultList(dto,getUserId());
+            respObj.setMessage("定时接受孩子的应用使用情况成功");
         } catch (Exception e) {
             e.printStackTrace();
             respObj = RespObj.FAILD;
-            respObj.setErrorMessage("学生获取推送应用失败!");
+            respObj.setErrorMessage("定时接受孩子的应用使用情况失败!");
         }
         return JSON.toJSONString(respObj);
     }
 
+
+    //管控地图
     /**
      * 定时接受孩子的位置信息
      */
@@ -285,12 +289,11 @@ public class ControlPhoneController extends BaseController {
             @ApiResponse(code = 500, message = "服务器不能完成请求")})
     @RequestMapping("/acceptMapResult")
     @ResponseBody
-    public String acceptMapResult(@ApiParam(name = "sonId", required = true, value = "孩子id") @RequestParam("sonId") String sonId,
-                                      @ApiParam(name = "time", required = true, value = "时间") @RequestParam("time") long time){
+    public String acceptMapResult(@ApiParam(name = "dto", required = true, value = "地图信息") @RequestBody ControlMapDTO dto){
         RespObj respObj=null;
         try {
             respObj = RespObj.SUCCESS;
-            controlPhoneService.addAppTimeEntry(new ObjectId(sonId),getUserId(),time);
+            controlPhoneService.acceptMapResult(dto,getUserId());
             respObj.setMessage("定时接受孩子的位置信息成功");
         } catch (Exception e) {
             e.printStackTrace();
@@ -299,6 +302,56 @@ public class ControlPhoneController extends BaseController {
         }
         return JSON.toJSONString(respObj);
     }
+
+    /**
+     * 获取孩子地图信息
+     */
+    @ApiOperation(value = "定时接受孩子的位置信息", httpMethod = "POST", produces = "application/json")
+    @ApiResponses( value = {@ApiResponse(code = 200, message = "Successful — 请求已完成",response = String.class),
+            @ApiResponse(code = 400, message = "请求中有语法问题，或不能满足请求"),
+            @ApiResponse(code = 500, message = "服务器不能完成请求")})
+    @RequestMapping("/getMapNow")
+    @ResponseBody
+    public String getMapNow(@ApiParam(name = "sonId", required = true, value = "孩子id") @RequestParam("sonId") String sonId){
+        RespObj respObj=null;
+        try {
+            respObj = RespObj.SUCCESS;
+            Map<String,Object> dto = controlPhoneService.getMapNow(getUserId(), new ObjectId(sonId));
+            respObj.setMessage(dto);
+        } catch (Exception e) {
+            e.printStackTrace();
+            respObj = RespObj.FAILD;
+            respObj.setErrorMessage("定时接受孩子的位置信息失败!");
+        }
+        return JSON.toJSONString(respObj);
+    }
+
+    /**
+     * 获取孩子地图信息记录
+     */
+    @ApiOperation(value = "获取孩子地图信息记录", httpMethod = "POST", produces = "application/json")
+    @ApiResponses( value = {@ApiResponse(code = 200, message = "Successful — 请求已完成",response = String.class),
+            @ApiResponse(code = 400, message = "请求中有语法问题，或不能满足请求"),
+            @ApiResponse(code = 500, message = "服务器不能完成请求")})
+    @RequestMapping("/getMapListEntry")
+    @ResponseBody
+    public String getMapListEntry(@ApiParam(name = "sonId", required = true, value = "孩子id") @RequestParam("sonId") String sonId,
+                                  @ApiParam(name = "startTime", required = true, value = "开始时间") @RequestParam("startTime") String startTime,
+                                  @ApiParam(name = "endTime", required = true, value = "结束时间") @RequestParam("endTime") String endTime){
+        RespObj respObj=null;
+        try {
+            respObj = RespObj.SUCCESS;
+            List<ControlMapDTO> dtos = controlPhoneService.getMapListEntry(getUserId(), new ObjectId(sonId), startTime, endTime);
+            respObj.setMessage(dtos);
+        } catch (Exception e) {
+            e.printStackTrace();
+            respObj = RespObj.FAILD;
+            respObj.setErrorMessage("获取孩子地图信息记录失败!");
+        }
+        return JSON.toJSONString(respObj);
+    }
+
+
 
 
 

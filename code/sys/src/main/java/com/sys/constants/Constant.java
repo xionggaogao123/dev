@@ -900,5 +900,7 @@ public class Constant {
     public static final String COLLECTION_CONTROL_TIME = "controltime";
     //管控地图信息记录表
     public static final String COLLECTION_CONTROL_MAP = "controlmap";
+    //管控应用使用记录表
+    public static final String COLLECTION_CONTROL_APP_RESULT = "controlappresult";
 
 }

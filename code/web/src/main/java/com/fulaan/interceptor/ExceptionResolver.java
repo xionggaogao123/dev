@@ -25,10 +25,14 @@ public class ExceptionResolver implements HandlerExceptionResolver {
 
     private static final Logger logger = Logger.getLogger(ExceptionResolver.class);
     private static final String ERROR_JSON_STR;
+    private static final String UNLOGIN_JSON_STR;
 
     static {
         RespObj FAILD = new RespObj(Constant.FAILD_CODE, "服务器太忙了，稍后在试下吧");
         ERROR_JSON_STR = new Gson().toJson(FAILD);
+        RespObj UNLOGIN_JSON = new RespObj("501");
+        UNLOGIN_JSON.setErrorMessage("未登录或已登出!");
+        UNLOGIN_JSON_STR = new Gson().toJson(UNLOGIN_JSON);
     }
 
     @Override
@@ -50,7 +54,11 @@ public class ExceptionResolver implements HandlerExceptionResolver {
                 PrintWriter out = null;
                 try {
                     out = response.getWriter();
-                    out.append(ERROR_JSON_STR);
+                    if(ex instanceof UnLoginException) {
+                        out.append(UNLOGIN_JSON_STR);
+                    }else{
+                        out.append(ERROR_JSON_STR);
+                    }
                 } catch (Exception e) {
 
                 } finally {

@@ -288,13 +288,18 @@ public class ReportCardService {
                 uIds.add(entry.getUserId());
                 communityIds.add(entry.getCommunityId());
                 subjectIds.add(entry.getSubjectId());
-                examTypeIds.add(entry.getExamType());
+                if(null!=entry.getExamType()) {
+                    examTypeIds.add(entry.getExamType());
+                }
             }
             Map<ObjectId, UserEntry> userEntryMap = userService.getUserEntryMap(uIds, Constant.FIELDS);
             Map<ObjectId, GroupExamDetailEntry> examDetailEntryMap = groupExamDetailDao.getGroupExamDetailMap(new ArrayList<ObjectId>(groupExamIds));
             Map<ObjectId, CommunityEntry> communityEntryMap = communityDao.findMapInfo(new ArrayList<ObjectId>(communityIds));
             Map<ObjectId,SubjectClassEntry> subjectClassEntryMap=subjectClassDao.getSubjectClassEntryMap(new ArrayList<ObjectId>(subjectIds));
-            Map<ObjectId,ExamTypeEntry> examTypeEntryMap=examTypeDao.getExamTypeEntryMap(new ArrayList<ObjectId>(examTypeIds));
+            Map<ObjectId,ExamTypeEntry> examTypeEntryMap=new HashMap<ObjectId, ExamTypeEntry>();
+            if(examTypeIds.size()>0) {
+                examTypeEntryMap = examTypeDao.getExamTypeEntryMap(new ArrayList<ObjectId>(examTypeIds));
+            }
             List<ObjectId> mainUserIds=new ArrayList<ObjectId>();
             Map<ObjectId,UserEntry> mainUserEntryMap=new HashMap<ObjectId, UserEntry>();
             for(Map.Entry<ObjectId, GroupExamDetailEntry>
@@ -320,9 +325,11 @@ public class ReportCardService {
                     if(null!=subjectClassEntry){
                         detailDTO.setSubjectName(subjectClassEntry.getName());
                     }
-                    ExamTypeEntry examTypeEntry=examTypeEntryMap.get(recordEntry.getExamType());
-                    if(null!=examTypeEntry){
-                        detailDTO.setExamTypeName(examTypeEntry.getExamTypeName());
+                    if(null!=recordEntry.getExamType()) {
+                        ExamTypeEntry examTypeEntry = examTypeEntryMap.get(recordEntry.getExamType());
+                        if (null != examTypeEntry) {
+                            detailDTO.setExamTypeName(examTypeEntry.getExamTypeName());
+                        }
                     }
                     detailDTO.setScore(recordEntry.getScore());
                     detailDTO.setScoreLevel(recordEntry.getScoreLevel());
@@ -398,11 +405,16 @@ public class ReportCardService {
         Set<ObjectId> subjectIds=new HashSet<ObjectId>();
         for(GroupExamDetailEntry examDetailEntry:entries){
             communityIds.add(examDetailEntry.getCommunityId());
-            examTypeIds.add(examDetailEntry.getExamType());
+            if(null!=examDetailEntry.getExamType()) {
+                examTypeIds.add(examDetailEntry.getExamType());
+            }
             subjectIds.add(examDetailEntry.getSubjectId());
         }
         Map<ObjectId, CommunityEntry> communityEntryMap = communityDao.findMapInfo(new ArrayList<ObjectId>(communityIds));
-        Map<ObjectId,ExamTypeEntry> examTypeEntryMap=examTypeDao.getExamTypeEntryMap(new ArrayList<ObjectId>(examTypeIds));
+        Map<ObjectId, ExamTypeEntry> examTypeEntryMap=new HashMap<ObjectId, ExamTypeEntry>();
+        if(examTypeIds.size()>0) {
+            examTypeEntryMap = examTypeDao.getExamTypeEntryMap(new ArrayList<ObjectId>(examTypeIds));
+        }
         Map<ObjectId,SubjectClassEntry> subjectClassEntryMap=subjectClassDao.getSubjectClassEntryMap(new ArrayList<ObjectId>(subjectIds));
         for(GroupExamDetailEntry examDetailEntry:entries){
             GroupExamDetailDTO detailDTO=new GroupExamDetailDTO(examDetailEntry);
@@ -411,9 +423,11 @@ public class ReportCardService {
             if (null!=communityEntry){
                 detailDTO.setGroupName(communityEntry.getCommunityName());
             }
-            ExamTypeEntry examTypeEntry=examTypeEntryMap.get(examDetailEntry.getExamType());
-            if(null!=examTypeEntry){
-                detailDTO.setExamTypeName(examTypeEntry.getExamTypeName());
+            if(null!=examDetailEntry.getExamType()) {
+                ExamTypeEntry examTypeEntry = examTypeEntryMap.get(examDetailEntry.getExamType());
+                if (null != examTypeEntry) {
+                    detailDTO.setExamTypeName(examTypeEntry.getExamTypeName());
+                }
             }
             SubjectClassEntry subjectClassEntry=subjectClassEntryMap.get(examDetailEntry.getSubjectId());
             if(null!=subjectClassEntry){

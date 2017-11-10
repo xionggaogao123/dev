@@ -1,6 +1,7 @@
 package com.fulaan.reportCard.dto;
 
 import com.pojo.reportCard.GroupExamDetailEntry;
+import com.sys.constants.Constant;
 import com.sys.utils.DateTimeUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.bson.types.ObjectId;
@@ -77,21 +78,24 @@ public class GroupExamDetailDTO {
         if(StringUtils.isNotBlank(subjectId)&&ObjectId.isValid(subjectId)){
             sId=new ObjectId(subjectId);
         }
-
+        ObjectId examTypeId=null;
+        if(StringUtils.isNotBlank(examType)&&ObjectId.isValid(examType)){
+            examTypeId=new ObjectId(examType);
+        }
         return new GroupExamDetailEntry(gId,
-                cId, new ObjectId(examType), recordScoreType, uid, examName,
+                cId, examTypeId, recordScoreType, uid, examName,
                 sId, maxScore, qualifyScore, excellentScore, examTime,signCount,signedCount);
     }
 
     public GroupExamDetailDTO(GroupExamDetailEntry entry){
-        this.id=entry.getID().toString();
-        this.groupId=entry.getGroupId().toString();
-        this.communityId=entry.getCommunityId().toString();
+        this.id=null!=entry.getID()?entry.getID().toString():Constant.EMPTY;
+        this.groupId=null!=entry.getGroupId()?entry.getGroupId().toString(): Constant.EMPTY;
+        this.communityId=null!=entry.getCommunityId()?entry.getCommunityId().toString():Constant.EMPTY;
         this.examName=entry.getExamName();
-        this.examType=entry.getExamType().toString();
+        this.examType=null!=entry.getExamType()?entry.getExamType().toString():Constant.EMPTY;
         this.recordScoreType=entry.getRecordScoreType();
-        this.userId=entry.getUserId().toString();
-        this.subjectId=entry.getSubjectId().toString();
+        this.userId=null!=entry.getUserId()?entry.getUserId().toString():Constant.EMPTY;
+        this.subjectId=null!=entry.getSubjectId()?entry.getSubjectId().toString():Constant.EMPTY;
         this.maxScore=entry.getMaxScore();
         this.qualifyScore=entry.getQualifyScore();
         this.excellentScore=entry.getExcellentScore();

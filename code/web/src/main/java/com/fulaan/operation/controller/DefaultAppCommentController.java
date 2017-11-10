@@ -18,6 +18,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
@@ -176,7 +177,7 @@ public class DefaultAppCommentController extends BaseController {
         try {
             respObj = RespObj.SUCCESS;
             long dateTime = DateTimeUtils.getStrToLongTime(date, "yyyy-MM-dd");
-            Map<String,Object> result = appCommentService.isSign(getUserId(),dateTime);
+            Map<String,Object> result = appCommentService.isSign(getUserId(),dateTime,new ArrayList<ObjectId>());
             respObj.setMessage(result);
         } catch (Exception e) {
             e.printStackTrace();

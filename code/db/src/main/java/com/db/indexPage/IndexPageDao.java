@@ -27,7 +27,7 @@ public class IndexPageDao extends BaseDao {
         List<IndexPageEntry> entryList=new ArrayList<IndexPageEntry>();
         BasicDBObject query=new BasicDBObject()
                 .append("cid",new BasicDBObject(Constant.MONGO_IN,olist))
-                .append("uid",new BasicDBObject(Constant.MONGO_NE,userId))
+                //.append("uid",new BasicDBObject(Constant.MONGO_NE,userId))
                 .append("isr", Constant.ZERO);
         List<DBObject> dbList=find(MongoFacroty.getAppDB(), Constant.COLLECTION_INDEX_PAGE,query,
                 Constant.FIELDS,Constant.MONGO_SORTBY_DESC,(page-1)*pageSize,pageSize);
@@ -45,7 +45,7 @@ public class IndexPageDao extends BaseDao {
     public int countPageList(List<ObjectId> olist,ObjectId userId){
         BasicDBObject query=new BasicDBObject()
                 .append("cid",new BasicDBObject(Constant.MONGO_IN,olist))
-                .append("uid", new BasicDBObject(Constant.MONGO_NE, userId))
+                //.append("uid", new BasicDBObject(Constant.MONGO_NE, userId))
                 .append("isr", Constant.ZERO);
         return count(MongoFacroty.getAppDB(), Constant.COLLECTION_INDEX_PAGE,query);
     }

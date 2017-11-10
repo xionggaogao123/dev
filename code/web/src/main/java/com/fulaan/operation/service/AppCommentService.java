@@ -10,6 +10,7 @@ import com.db.newVersionGrade.NewVersionSubjectDao;
 import com.db.operation.AppCommentDao;
 import com.db.operation.AppOperationDao;
 import com.db.operation.AppRecordDao;
+import com.db.operation.AppRecordResultDao;
 import com.db.user.NewVersionBindRelationDao;
 import com.db.wrongquestion.SubjectClassDao;
 import com.fulaan.community.dto.CommunityDTO;
@@ -18,17 +19,20 @@ import com.fulaan.newVersionBind.service.NewVersionBindService;
 import com.fulaan.operation.dto.AppCommentDTO;
 import com.fulaan.operation.dto.AppOperationDTO;
 import com.fulaan.operation.dto.AppRecordDTO;
+import com.fulaan.operation.dto.AppRecordResultDTO;
 import com.fulaan.pojo.User;
 import com.fulaan.service.CommunityService;
 import com.fulaan.user.service.UserService;
 import com.fulaan.utils.JPushUtils;
 import com.fulaan.wrongquestion.dto.SubjectClassDTO;
+import com.mongodb.DBObject;
 import com.pojo.fcommunity.MemberEntry;
 import com.pojo.instantmessage.ApplyTypeEn;
 import com.pojo.newVersionGrade.NewVersionSubjectEntry;
 import com.pojo.operation.AppCommentEntry;
 import com.pojo.operation.AppOperationEntry;
 import com.pojo.operation.AppRecordEntry;
+import com.pojo.operation.AppRecordResultEntry;
 import com.pojo.user.NewVersionBindRelationEntry;
 import com.pojo.user.UserDetailInfoDTO;
 import com.pojo.user.UserEntry;
@@ -58,6 +62,7 @@ public class AppCommentService {
     private IndexPageDao indexPageDao = new IndexPageDao();
     private NewVersionSubjectDao newVersionSubjectDao = new NewVersionSubjectDao();
     private NewVersionBindRelationDao newVersionBindRelationDao = new NewVersionBindRelationDao();
+    private AppRecordResultDao appRecordResultDao = new AppRecordResultDao();
     @Autowired
     private CommunityService communityService;
     @Autowired
@@ -110,8 +115,6 @@ public class AppCommentService {
             en.setID(null);
             en.setRecipientId(new ObjectId(dto3.getId()));
             en.setRecipientName(dto3.getName());
-            List<AppRecordEntry> aen =  appRecordDao.getEntryListByParentId(new ObjectId(dto3.getId()),1);
-            en.setWriteNumber(aen.size());
             String oid = appCommentDao.addEntry(en);
 
 
@@ -327,24 +330,22 @@ public class AppCommentService {
                 oblist.add(new ObjectId(str));
             }
         }
-        List<AppRecordEntry> entries = appRecordDao.getEntryListByParentId2(oblist,zero);
+        //List<AppRecordEntry> entries = appRecordDao.getEntryListByParentId2(oblist,zero);
         //已签到名单
-        List<AppRecordDTO> dtos = new ArrayList<AppRecordDTO>();
+       // List<AppRecordDTO> dtos = new ArrayList<AppRecordDTO>();
         List<ObjectId> objectIdList1 = new ArrayList<ObjectId>();
-        if(entries.size()>0){
-            for(AppRecordEntry en : entries){
-                if(en.getIsLoad()==1){
-                    AppRecordDTO dto = new AppRecordDTO(en);
-                    String ctm = dto.getCreateTime();
-                    dto.setDateTime(ctm);
-                    dtos.add(dto);
-                    objectIdList1.add(en.getUserId());
-                    oblist.remove(en.getUserId());
-                }
+        List<AppRecordResultEntry> entries1 = appRecordResultDao.getEntryListByParentId(id);
+        List<AppRecordResultDTO> dtoList = new ArrayList<AppRecordResultDTO>();
+        if(entries1.size()>0){
+            for(AppRecordResultEntry en1 : entries1){
+                //已签到的
+                objectIdList1.add(en1.getUserId());
+                dtoList.add(new AppRecordResultDTO(en1));
             }
         }
-        Map<String,AppRecordDTO> map1 = new HashMap<String, AppRecordDTO>();
-        for(AppRecordDTO dto1 : dtos){
+        oblist.removeAll(objectIdList1);
+        Map<String,AppRecordResultDTO> map1 = new HashMap<String, AppRecordResultDTO>();
+        for(AppRecordResultDTO dto1 : dtoList){
             map1.put(dto1.getUserId(),dto1);
         }
         List<User> sign=new ArrayList<User>();
@@ -355,7 +356,7 @@ public class AppCommentService {
             user.setTime(map1.get(user.getUserId()).getCreateTime());
         }
         map.put("SignList",sign);
-        map.put("SignListNum",dtos.size());
+        map.put("SignListNum",sign.size());
         List<User> unSign=new ArrayList<User>();
         if(oblist.size()>0){
             saveUser(unSign,oblist);
@@ -499,6 +500,7 @@ public class AppCommentService {
             }
         }
         List<AppCommentEntry> entries2 = appCommentDao.selectDateList2(dlist, dateTime);
+        List<ObjectId> dto4s = new ArrayList<ObjectId>();
         if(entries2.size()>0){
             for(AppCommentEntry en : entries2){
                 AppCommentDTO dto3 = new AppCommentDTO(en);
@@ -510,6 +512,7 @@ public class AppCommentService {
                     dto3.setType(2);
                     uids.add(dto3.getAdminId());
                     dtos.add(dto3);
+                    dto4s.add(en.getID());
                 }
             }
         }
@@ -536,7 +539,7 @@ public class AppCommentService {
             map2.put("isTeacher",2);//非老师
         }
         map2.put("list",dtos);
-        Map<String,Object> map3 = this.isSign(userId, dateTime);
+        Map<String,Object> map3 = this.isSign(userId, dateTime,dto4s);
         map2.put("isload",map3);
 
         //清除红点
@@ -883,7 +886,7 @@ public class AppCommentService {
     /**
      * 是否签到
      */
-    public Map<String,Object> isSign(ObjectId userId,long zero){
+    public Map<String,Object> isSign2(ObjectId userId,long zero){
         Map<String,Object> map = new HashMap<String, Object>();
         //String result = "1";//未签到
         UserDetailInfoDTO userInfo = userService.getUserInfoById(userId.toString());
@@ -911,9 +914,44 @@ public class AppCommentService {
     }
 
     /**
+     * 是否签到
+     */
+    public Map<String,Object> isSign(ObjectId userId,long zero,List<ObjectId> ids){
+        //查找有没有新的未签到
+        //已签到的list
+        Map<String,Object> map = new HashMap<String, Object>();
+        List<ObjectId> objectIdList = appRecordResultDao.getEntryList(userId,zero);
+        if(ids.size()>objectIdList.size()){
+            map.put("type","1");
+        }else{
+            map.put("type","2");
+        }
+        //String result = "1";//未签到
+        UserDetailInfoDTO userInfo = userService.getUserInfoById(userId.toString());
+        AppRecordEntry entry = appRecordDao.getEntryListByParentId3(userId, zero);
+        if(entry ==null){
+            AppRecordDTO dto = new AppRecordDTO();
+            dto.setUserId(userId.toString());
+            dto.setUserName(userInfo.getUserName());
+            dto.setIsLoad(0);
+            AppRecordEntry entry1 = dto.buildAddEntry();
+            entry1.setDateTime(zero);
+            String str = appRecordDao.addEntry(entry1);
+
+            map.put("id",str);
+        }else{
+            if(entry.getIsLoad()==0){
+                map.put("id",entry.getID().toString());
+            }else{
+                map.put("id",entry.getID().toString());
+            }
+        }
+        return map;
+    }
+    /**
      * 签到
      */
-    public String goSign(ObjectId id,ObjectId userId){
+    public String goSign2(ObjectId id,ObjectId userId){
         long current=System.currentTimeMillis();
         appRecordDao.updateEntry(id);
         appRecordDao.updateEntry2(id,current);
@@ -939,6 +977,61 @@ public class AppCommentService {
         return "签到成功";
     }
 
+    public String goSign(ObjectId id,ObjectId userId){
+        AppRecordEntry entry = appRecordDao.getEntry(id);
+        //所有社区
+        List<CommunityDTO> communityDTOList =communityService.getCommunitys(userId, 1, 100);
+        List<ObjectId>  dlist = new ArrayList<ObjectId>();
+        if(communityDTOList.size() >0){
+            for(CommunityDTO dto : communityDTOList){
+                dlist.add(new ObjectId(dto.getId()));
+            }
+        }
+        //收到的
+        List<AppCommentEntry> entries2 = appCommentDao.selectDateList2(dlist, entry.getDateTime());
+        //已签到的作业list
+        List<ObjectId> objectIdList = appRecordResultDao.getEntryList(userId,entry.getDateTime());
+        List<AppRecordResultDTO> dtOlist = new ArrayList<AppRecordResultDTO>();
+        if(entries2.size()>0){
+            for(AppCommentEntry en : entries2){
+                //修改签到数
+                if(!objectIdList.contains(en.getID())){
+                    en.setWriteNumber(en.getWriteNumber()+1);
+                    appCommentDao.updEntry(en);
+                    AppRecordResultDTO dto2 = new AppRecordResultDTO();
+                    dto2.setUserId(userId.toString());
+                    dto2.setIsLoad(2);
+                    dto2.setParentId(en.getID().toString());
+                    dtOlist.add(dto2);
+                }
+            }
+        }
+        if(dtOlist.size()>0){
+            addAppRecordResultList(dtOlist);
+        }
+        return "签到成功";
+    }
+    /**
+     * 批量增加红点记录
+     * @param list
+     */
+    public void addAppRecordResultList(List<AppRecordResultDTO> list) {
+        //获得当前时间
+        long current=System.currentTimeMillis();
+        //获得时间批次
+        long zero=current/(1000*3600*24)*(1000*3600*24)- TimeZone.getDefault().getRawOffset();//今天零点零分零秒的毫秒数
+        List<DBObject> dbList = new ArrayList<DBObject>();
+        for (int i = 0; list != null && i < list.size(); i++) {
+            AppRecordResultDTO si = list.get(i);
+            AppRecordResultEntry obj = si.buildAddEntry();
+            obj.setDateTime(zero);
+            dbList.add(obj.getBaseEntry());
+        }
+        //导入新纪录
+        if(dbList.size()>0) {
+            appRecordResultDao.addBatch(dbList);
+        }
+    }
     /**
      * 获得用户的所有具有管理员权限的社区id
      *

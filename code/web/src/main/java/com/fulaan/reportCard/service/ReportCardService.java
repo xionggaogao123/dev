@@ -587,7 +587,7 @@ public class ReportCardService {
                         }else{
                             unQualifyCount++;
                         }
-                        if(score>excellentScore){
+                        if(score>=excellentScore){
                             excellentCount++;
                         }
                     }

@@ -53,15 +53,20 @@ public class SmallLessonService {
     }
 
     //查询课程用户活跃列表
-    public List<LessonUserResultDTO> getUserResultList(ObjectId userId,int page,int pageSize){
+    public Map<String,Object> getUserResultList(ObjectId userId,int page,int pageSize){
+        Map<String,Object> map = new HashMap<String, Object>();
         List<LessonUserResultDTO> dtos = new ArrayList<LessonUserResultDTO>();
         List<LessonUserResultEntry> entries = lessonUserResultDao.getUserResultList(userId, page, pageSize);
+        int count = 0;
         if(entries.size() >0){
             for(LessonUserResultEntry entry : entries){
                 dtos.add(new LessonUserResultDTO(entry));
+                count  += entry.getScore();
             }
         }
-        return dtos;
+        map.put("dto",dtos);
+        map.put("count",count);
+        return map;
     }
 
     //查询答题列表

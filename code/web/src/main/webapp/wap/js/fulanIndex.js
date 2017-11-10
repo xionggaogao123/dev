@@ -25,7 +25,7 @@ define(['doT', 'common','easing', 'jquery','pagination'], function (require, exp
             var userId = $("#userId").val();
             var userName = $("#userName").val();
             var id = $(this).attr("name");
-            window.location.href = "/changeLesson/description.do?userId="+userId+"&userName="+userName+"&id="+id;
+            window.location.href = "/jxmapi/changeLesson/description.do?userId="+userId+"&userName="+userName+"&id="+id;
         })
         $("body").on("click",".sp-e",function(){
             var tf = $(this).parent();
@@ -63,7 +63,7 @@ define(['doT', 'common','easing', 'jquery','pagination'], function (require, exp
         $.ajax({
             type: "post",
             data: data,
-            url: "/appOperation/addOperationEntry.do",
+            url: "/jxmapi/appOperation/addOperationEntry.do",
             async: false,
             headers:{"Content-Type":"application/json;charset=UTF-8"},
             traditional: true,
@@ -85,7 +85,7 @@ define(['doT', 'common','easing', 'jquery','pagination'], function (require, exp
     fulanIndex.delEntry = function(id){
         var paramData = {};
         paramData.lessonId = id;
-        Common.getPostData("/smallLesson/delLessonEntry.do",paramData,function(rep){
+        Common.getPostData("/jxmapi/smallLesson/delLessonEntry.do",paramData,function(rep){
             if(rep.code==200){
                 fulanIndex.getList(page);
                 alert("删除成功！");
@@ -95,7 +95,7 @@ define(['doT', 'common','easing', 'jquery','pagination'], function (require, exp
     fulanIndex.getEntry = function(id){
         var paramData = {};
         paramData.lessonId = id;
-        Common.getPostData("/smallLesson/delLessonEntry.do",paramData,function(rep){
+        Common.getPostData("/jxmapi/smallLesson/delLessonEntry.do",paramData,function(rep){
             if(rep.code==200){
                 alert("查询成功！");
             }
@@ -107,7 +107,7 @@ define(['doT', 'common','easing', 'jquery','pagination'], function (require, exp
         paramData.userId = id;
         paramData.name = name;
         //alert(id+":"+name);
-        Common.getPostData("/smallLesson/updateLessonName.do",paramData,function(rep){
+        Common.getPostData("/jxmapi/smallLesson/updateLessonName.do",paramData,function(rep){
             if(rep.code==200){
                 alert("修改成功！");
             }
@@ -121,7 +121,7 @@ define(['doT', 'common','easing', 'jquery','pagination'], function (require, exp
         paramData.pageSize = 5;
         //paramData.dateTime = "";
         paramData.userId = $("#userId").val();
-        Common.getPostData('/smallLesson/selectLessonList.do',paramData,function(rep){
+        Common.getPostData('/jxmapi/smallLesson/selectLessonList.do',paramData,function(rep){
             if(rep.code==200){
                 //alert(rep);
                 var result = rep.message.rows;

@@ -217,7 +217,7 @@ public class AppCommentDTO {
         }
         long lTm = 0l;
         if(this.getLoadTime() != null && this.getLoadTime() != ""){
-            lTm = DateTimeUtils.getStrToLongTime(this.getLoadTime());
+            lTm = DateTimeUtils.getStrToLongTime(this.getLoadTime(), "yyyy-MM-dd HH:mm");
         }
         long dTm = 0l;
         if(this.getDateTime() != null && this.getDateTime() != ""){

@@ -32,6 +32,21 @@ public class LessonUserResultDao extends BaseDao {
         return retList;
     }
 
+    public List<LessonUserResultEntry> getUserResultCount(ObjectId lessonId,int page,int pageSize) {
+        BasicDBObject query =new BasicDBObject();
+        query.append("isr", Constant.ZERO);
+        query.append("lid",lessonId);
+        List<DBObject> dboList=find(MongoFacroty.getAppDB(), Constant.COLLECTION_LESSON_RESULT, query, Constant.FIELDS,new BasicDBObject("sco",Constant.DESC),(page - 1) * pageSize, pageSize);
+        List<LessonUserResultEntry> retList =new ArrayList<LessonUserResultEntry>();
+        if(null!=dboList && !dboList.isEmpty())
+        {
+            for(DBObject dbo:dboList)
+            {
+                retList.add(new LessonUserResultEntry((BasicDBObject)dbo));
+            }
+        }
+        return retList;
+    }
 
     //查询相关用户
     public List<LessonUserResultEntry> getLetterUserResultList(List<ObjectId> userIds,ObjectId lessonId) {

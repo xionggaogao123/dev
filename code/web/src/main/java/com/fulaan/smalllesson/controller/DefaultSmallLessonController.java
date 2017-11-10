@@ -4,7 +4,6 @@ import com.alibaba.fastjson.JSON;
 import com.fulaan.annotation.SessionNeedless;
 import com.fulaan.base.BaseController;
 import com.fulaan.smalllesson.dto.LessonAnswerDTO;
-import com.fulaan.smalllesson.dto.LessonUserResultDTO;
 import com.fulaan.smalllesson.dto.SmallLessonDTO;
 import com.fulaan.smalllesson.service.SmallLessonService;
 import com.sys.utils.RespObj;
@@ -190,7 +189,7 @@ public class DefaultSmallLessonController extends BaseController {
         RespObj respObj=null;
         try {
             respObj = RespObj.SUCCESS;
-            List<LessonUserResultDTO> dtos = smallLessonService.getUserResultList(new ObjectId(lessonId), page, pageSize);
+            Map<String,Object> dtos = smallLessonService.getUserResultList(new ObjectId(lessonId), page, pageSize);
             respObj.setMessage(dtos);
         } catch (Exception e) {
             e.printStackTrace();

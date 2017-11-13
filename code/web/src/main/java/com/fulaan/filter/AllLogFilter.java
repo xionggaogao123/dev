@@ -96,6 +96,7 @@ public class AllLogFilter implements Filter {
                 + "   %w - " + hrequest.getRequestURI()
                 + "   %t - " + (after - before)+"ms"
                 + "   %l - " + canList
+                + "timeOut:" + (after - before)
                 + str);
         //"%a - " + ipconfig + "+++"
         //"   %c - " + Arrays.toString(cookies) + "+++"

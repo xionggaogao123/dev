@@ -110,13 +110,13 @@ public class AppCommentService {
             }
         }
         JPushUtils jPushUtils=new JPushUtils();
-        List<ObjectId> objectIdList =new ArrayList<ObjectId>();
+
         for(CommunityDTO dto3 : sendList){
             en.setID(null);
             en.setRecipientId(new ObjectId(dto3.getId()));
             en.setRecipientName(dto3.getName());
             String oid = appCommentDao.addEntry(en);
-
+            List<ObjectId> objectIdList =new ArrayList<ObjectId>();
 
             //添加临时记录表//暂时不显示
           /*  if(dto.getStatus()==0){
@@ -128,6 +128,7 @@ public class AppCommentService {
                 indexPageDao.addEntry(entry);
                 objectIdList.add(new ObjectId(dto3.getId()));
             }*/
+            objectIdList.add(new ObjectId(dto3.getId()));
             redDotService.addEntryList(objectIdList,new ObjectId(dto.getAdminId()), ApplyTypeEn.operation.getType(),4);
         }
         try {

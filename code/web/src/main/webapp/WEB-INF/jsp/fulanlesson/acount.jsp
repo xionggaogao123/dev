@@ -21,7 +21,7 @@
 		</div>
 	</div>
 	<div class="static-main">
-		<div class="tit">学生总活跃度统计<em>（班级平均活跃度：28）</em></div>
+		<div class="tit">学生总活跃度统计<em id="all">（班级平均活跃度：28）</em></div>
 		<div class="clearfix">
 			<table class="gretab wd50">
 				<thead>
@@ -32,38 +32,22 @@
 						<th width="25%"></th>
 					</tr>
 				</thead>
-				<tbody>
-					<tr>
-						<td>1</td>
-						<td>肚子疼</td>
-						<td>23</td>
-						<td></td>
-					</tr>
-					<tr>
-						<td>1</td>
-						<td>肚子疼</td>
-						<td>23</td>
-						<td></td>
-					</tr>
-					<tr>
-						<td>1</td>
-						<td>肚子疼</td>
-						<td>23</td>
-						<td></td>
-					</tr>
-					<tr>
-						<td>1</td>
-						<td>肚子疼</td>
-						<td>23</td>
-						<td></td>
-					</tr>
-					<tr>
-						<td>1</td>
-						<td>肚子疼</td>
-						<td>23</td>
-						<td></td>
-					</tr>
+				<tbody id="it1">
+
 				</tbody>
+				<script type="text/template" id="it1_teml">
+					{{ if(it.message.dto1.length>0){ }}
+					{{ for (var i = 0, l = it.message.dto1.length; i < l; i++) { }}
+					{{var obj=it.message.dto1[i];}}
+					<tr>
+						<td>{{=obj.parming}}</td>
+						<td>{{=obj.userName}}</td>
+						<td>{{=obj.score}}</td>
+						<td></td>
+					</tr>
+					{{ } }}
+					{{ } }}
+				</script>
 			</table>
 			<table class="gretab wd50">
 				<thead>
@@ -74,49 +58,38 @@
 						<th width="25%">活跃值</th>
 					</tr>
 				</thead>
-				<tbody>
-					<tr>
-						<td></td>
-						<td>2</td>
-						<td>肚子疼</td>
-						<td>23</td>
-					</tr>
-					<tr>
-						<td></td>
-						<td>2</td>
-						<td>肚子疼</td>
-						<td>23</td>
-					</tr>
-					<tr>
-						<td></td>
-						<td>2</td>
-						<td>肚子疼</td>
-						<td>23</td>
-					</tr>
-					<tr>
-						<td></td>
-						<td>2</td>
-						<td>肚子疼</td>
-						<td>23</td>
-					</tr>
-					<tr>
-						<td></td>
-						<td>2</td>
-						<td>肚子疼</td>
-						<td>23</td>
-					</tr>
+				<tbody id="it2">
+
 				</tbody>
+				<script type="text/template" id="it2_teml">
+					{{ if(it.message.dto2.length>0){ }}
+					{{ for (var i = 0, l = it.message.dto2.length; i < l; i++) { }}
+					{{var obj2=it.message.dto2[i];}}
+					<tr>
+						<td></td>
+						<td>{{=obj2.parming}}</td>
+						<td>{{=obj2.userName}}</td>
+						<td>{{=obj2.score}}</td>
+					</tr>
+					{{ } }}
+					{{ } }}
+				</script>
 			</table>
 		</div>
-		<div class="tit">答题统计<em>（班级平均得分：28）</em></div>
-		<div class="divsel">
-			<select>
+		<!--分页-->
+		<div class="new-page-links">
+		</div>
+		<%--<div class="tit">答题统计<em>（班级平均得分：28）</em></div>--%>
+
+		<div class="chart" id="anna1" style="display:none"></div>
+
+		<div class="tit">答题结果详情</div>
+		<div class="divsel tit">
+			<select id="slist">
 				<option>第一次答题</option>
 			</select>
 		</div>
-		<div class="chart" id="anna1"></div>
-
-		<div class="tit">答题结果详情</div>
+		<div class="clearfix" id="answerList">
 			<table class="gretab wd100 mb100">
 				<thead>
 					<tr>
@@ -126,33 +99,27 @@
 						<th width="30%">用时</th>
 					</tr>
 				</thead>
-				<tbody>
-					<tr>
-						<td>1</td>
-						<td>肚子疼</td>
-						<td>A</td>
-						<td>23</td>
-					</tr>
-					<tr>
-						<td>1</td>
-						<td>肚子疼</td>
-						<td>A</td>
-						<td>23</td>
-					</tr>
-					<tr>
-						<td>1</td>
-						<td>肚子疼</td>
-						<td>A</td>
-						<td>23</td>
-					</tr>
-					<tr>
-						<td>1</td>
-						<td>肚子疼</td>
-						<td>A</td>
-						<td>23</td>
-					</tr>
+				<tbody id="it3">
+
 				</tbody>
+				<script type="text/template" id="it3_teml">
+					{{ if(it.message.list.length>0){ }}
+					{{ for (var i = 0, l = it.message.list.length; i < l; i++) { }}
+					{{var obj2=it.message.list[i];}}
+					<tr>
+						<td>{{=obj2.parming}}</td>
+						<td>{{=obj2.userName}}</td>
+						<td>{{=obj2.answer}}</td>
+						<td>{{=obj2.time}}</td>
+					</tr>
+					{{ } }}
+					{{ } }}
+				</script>
 			</table>
+			</div>
+		<!--分页-->
+		<div class="new-page-links2">
+		</div>
 	</div>
 	<script src="/static/js/sea.js"></script>
 	<script src="/static/js/modules/core/0.1.0/config.js?v=2015041602"></script>

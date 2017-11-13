@@ -12,6 +12,7 @@ public class LessonUserResultDTO {
     private String userId;
     private String userName;
     private int score;
+    private int parming;
 
     public LessonUserResultDTO(){
 
@@ -74,6 +75,13 @@ public class LessonUserResultDTO {
 
     }
 
+    public int getParming() {
+        return parming;
+    }
+
+    public void setParming(int parming) {
+        this.parming = parming;
+    }
 
     public String getId() {
         return id;

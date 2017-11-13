@@ -10,6 +10,7 @@ import com.mongodb.DBObject;
 import com.pojo.fcommunity.MemberEntry;
 import com.pojo.instantmessage.ApplyTypeEn;
 import com.pojo.instantmessage.RedDotEntry;
+import com.sys.utils.DateTimeUtils;
 import org.bson.types.ObjectId;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -100,6 +101,12 @@ public class RedDotService {
         long current=System.currentTimeMillis();
         //获得时间批次
         long zero=current/(1000*3600*24)*(1000*3600*24)- TimeZone.getDefault().getRawOffset();//今天零点零分零秒的毫秒数
+        String dateTime = "";
+        if(zero!=0l){
+            dateTime = DateTimeUtils.getLongToStrTimeTwo(zero);
+        }else{
+            dateTime = "";
+        }
         for(ObjectId obid : commuityIds){
             List<ObjectId> bid = new ArrayList<ObjectId>();
             List<ObjectId> uids = new ArrayList<ObjectId>();
@@ -131,7 +138,7 @@ public class RedDotService {
                     for(ObjectId oid : uids) {
                         RedDotDTO dto = new RedDotDTO();
                         dto.setType(type);
-                        dto.setDateTime(zero);
+                        dto.setDateTime(dateTime);
                         dto.setNewNumber(1);
                         dto.setUserId(oid.toString());
                         redDotDTOs.add(dto);

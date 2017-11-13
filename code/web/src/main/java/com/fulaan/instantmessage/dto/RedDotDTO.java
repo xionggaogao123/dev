@@ -1,6 +1,7 @@
 package com.fulaan.instantmessage.dto;
 
 import com.pojo.instantmessage.RedDotEntry;
+import com.sys.utils.DateTimeUtils;
 import org.bson.types.ObjectId;
 
 /**
@@ -9,7 +10,7 @@ import org.bson.types.ObjectId;
 public class RedDotDTO {
     private String id;
     private String userId;
-    private long dateTime;
+    private String dateTime;
     private int newNumber;
     private int type;
 
@@ -21,7 +22,11 @@ public class RedDotDTO {
         if(e!=null){
             this.id = e.getID()==null?"":e.getID().toString();
             this.userId = e.getUserId() == null ? "" : e.getUserId().toString();
-            this.dateTime = e.getDateTime();
+            if(e.getDateTime()!=0l){
+                this.dateTime = DateTimeUtils.getLongToStrTimeTwo(e.getDateTime());
+            }else{
+                this.dateTime = "";
+            }
             this.newNumber = e.getNewNumber();
             this.type = e.getType();
         }else{
@@ -34,10 +39,14 @@ public class RedDotDTO {
         if(this.getUserId()!=null&&!"".equals(this.getUserId())){
             uId=new ObjectId(this.getUserId());
         }
+        long dTm = 0l;
+        if(this.getDateTime() != null && this.getDateTime() != ""){
+            dTm = DateTimeUtils.getStrToLongTime(this.getDateTime());
+        }
         RedDotEntry openEntry =
                 new RedDotEntry(
                         uId,
-                        this.dateTime,
+                        dTm,
                         this.newNumber,
                         this.type
                 );
@@ -53,11 +62,15 @@ public class RedDotDTO {
         if(this.getUserId()!=null&&!"".equals(this.getUserId())){
             uId=new ObjectId(this.getUserId());
         }
+        long dTm = 0l;
+        if(this.getDateTime() != null && this.getDateTime() != ""){
+            dTm = DateTimeUtils.getStrToLongTime(this.getDateTime());
+        }
         RedDotEntry openEntry =
                 new RedDotEntry(
                         Id,
                         uId,
-                        this.dateTime,
+                        dTm,
                         this.newNumber,
                         this.type
                 );
@@ -82,11 +95,11 @@ public class RedDotDTO {
         this.userId = userId;
     }
 
-    public long getDateTime() {
+    public String getDateTime() {
         return dateTime;
     }
 
-    public void setDateTime(long dateTime) {
+    public void setDateTime(String dateTime) {
         this.dateTime = dateTime;
     }
 

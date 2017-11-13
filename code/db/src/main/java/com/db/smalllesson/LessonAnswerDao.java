@@ -22,13 +22,40 @@ public class LessonAnswerDao extends BaseDao {
         query.append("isr", Constant.ZERO);
         query.append("lid",lessonId);
         query.append("num",number);
-        List<DBObject> dboList=find(MongoFacroty.getAppDB(), Constant.COLLECTION_LESSON_ANSWER, query, Constant.FIELDS,new BasicDBObject("ist",Constant.DESC),(page - 1) * pageSize, pageSize);
+        List<DBObject> dboList=find(MongoFacroty.getAppDB(), Constant.COLLECTION_LESSON_ANSWER, query, Constant.FIELDS,new BasicDBObject("tim",Constant.ASC),(page - 1) * pageSize, pageSize);
         List<LessonAnswerEntry> retList =new ArrayList<LessonAnswerEntry>();
         if(null!=dboList && !dboList.isEmpty())
         {
             for(DBObject dbo:dboList)
             {
                 retList.add(new LessonAnswerEntry((BasicDBObject)dbo));
+            }
+        }
+        return retList;
+    }
+    public int getNumber(ObjectId lessonId,int number) {
+        BasicDBObject query =new BasicDBObject();
+        query.append("isr", Constant.ZERO);
+        query.append("num",number);
+        query.append("lid",lessonId);
+        int count =
+                count(MongoFacroty.getAppDB(),
+                        Constant.COLLECTION_LESSON_ANSWER,
+                        query);
+        return count;
+    }
+
+    public List<Integer> getIntResultList(ObjectId lessonId) {
+        BasicDBObject query =new BasicDBObject();
+        query.append("isr", Constant.ZERO);
+        query.append("lid",lessonId);
+        List<DBObject> dboList=find(MongoFacroty.getAppDB(), Constant.COLLECTION_LESSON_ANSWER, query, Constant.FIELDS,new BasicDBObject("ist",Constant.DESC));
+        List<Integer> retList =new ArrayList<Integer>();
+        if(null!=dboList && !dboList.isEmpty())
+        {
+            for(DBObject dbo:dboList)
+            {
+                retList.add(new LessonAnswerEntry((BasicDBObject)dbo).getNumber());
             }
         }
         return retList;

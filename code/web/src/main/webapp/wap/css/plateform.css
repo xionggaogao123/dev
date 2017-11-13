@@ -200,3 +200,36 @@ body{
     background-color: #E6E6E6;
     color: #779554;
 }
+.new-page-links2 {
+    width: 100%;
+    text-align: center;
+    margin-top: 25px;
+    height: 45px;
+}
+.new-page-links2 ul{
+    width: 520px;
+    margin: 0 auto;
+}
+
+.new-page-links2 a.page-now {
+    background: #c94d16;
+    color: #fff;
+    border: 1px solid #c94d16;
+}
+.new-page-links2 a {
+    display: inline-block;
+    text-align: center;
+    border: 1px solid #bfbfbf;
+    margin-left: 8px;
+    background: #F6F7F6;
+    color: #838383;
+    border-radius: 5px;
+    padding: 3px 10px;
+}
+.new-page-links2>ul>li{
+    float: left;
+}
+.new-page-links2 .active a{
+    background-color: #E6E6E6;
+    color: #779554;
+}

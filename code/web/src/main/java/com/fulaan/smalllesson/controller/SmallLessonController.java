@@ -182,7 +182,7 @@ public class SmallLessonController extends BaseController {
             @ApiResponse(code = 500, message = "服务器不能完成请求")})
     @RequestMapping("/selectUserResultList")
     @ResponseBody
-    public String selectUserResultList(@ApiParam(name = "lessonId", required = true, value = "课程id") @RequestParam("userId") String lessonId,
+    public String selectUserResultList(@ApiParam(name = "lessonId", required = true, value = "课程id") @RequestParam("lessonId") String lessonId,
                                    @ApiParam(name = "page", required = true, value = "page") @RequestParam("page") int page,
                                    @ApiParam(name = "pageSize", required = true, value = "pageSize") @RequestParam("pageSize") int pageSize){
 
@@ -210,7 +210,7 @@ public class SmallLessonController extends BaseController {
             @ApiResponse(code = 500, message = "服务器不能完成请求")})
     @RequestMapping("/selectAnswerList")
     @ResponseBody
-    public String selectAnswerList(@ApiParam(name = "lessonId", required = true, value = "课程id") @RequestParam("userId") String lessonId,
+    public String selectAnswerList(@ApiParam(name = "lessonId", required = true, value = "课程id") @RequestParam("lessonId") String lessonId,
                                        @ApiParam(name = "number",required = true,value = "答题次数") @RequestParam("number") int number,
                                        @ApiParam(name = "page", required = true, value = "page") @RequestParam("page") int page,
                                        @ApiParam(name = "type", required = true, value = "type") @RequestParam("type") int type,
@@ -220,6 +220,31 @@ public class SmallLessonController extends BaseController {
         try {
             respObj = RespObj.SUCCESS;
             Map<String,Object> dtos = smallLessonService.selectAnswerList(new ObjectId(lessonId), number, page, pageSize,type);
+            respObj.setMessage(dtos);
+        } catch (Exception e) {
+            e.printStackTrace();
+            respObj = RespObj.FAILD;
+            respObj.setErrorMessage("答题情况列表（倒序）失败!");
+        }
+        return JSON.toJSONString(respObj);
+    }
+    /**
+     * 答题情况次数
+     * @return
+     */
+    @SessionNeedless
+    @ApiOperation(value = "答题情况列表（倒序）", httpMethod = "POST", produces = "application/json")
+    @ApiResponses( value = {@ApiResponse(code = 200, message = "Successful — 请求已完成",response = String.class),
+            @ApiResponse(code = 400, message = "请求中有语法问题，或不能满足请求"),
+            @ApiResponse(code = 500, message = "服务器不能完成请求")})
+    @RequestMapping("/selectIntList")
+    @ResponseBody
+    public String selectIntList(@ApiParam(name = "lessonId", required = true, value = "课程id") @RequestParam("lessonId") String lessonId){
+
+        RespObj respObj=null;
+        try {
+            respObj = RespObj.SUCCESS;
+            List<Integer> dtos = smallLessonService.getIntList(new ObjectId(lessonId));
             respObj.setMessage(dtos);
         } catch (Exception e) {
             e.printStackTrace();

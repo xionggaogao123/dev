@@ -162,6 +162,8 @@ public class CommunityService {
         }
         List<PartInContentEntry> partInContentEntries = partInContentDao.getPartInContent(communityDetailEntry.getID(), -1, 1, 10);
         CommunityDetailDTO communityDetailDTO = new CommunityDetailDTO(communityDetailEntry, partInContentEntries);
+        CommunityEntry communityEntry = communityDao.findByObjectId(new ObjectId(communityDetailEntry.getCommunityId()));
+        communityDetailDTO.setCommunityName(communityEntry.getCommunityName());
         UserEntry userEntry = userDao.findByUserId(userId);
 
         //先判断是否点过赞

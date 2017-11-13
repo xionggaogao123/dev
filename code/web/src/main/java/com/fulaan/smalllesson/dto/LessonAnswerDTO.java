@@ -20,6 +20,7 @@ public class LessonAnswerDTO {
     private int isTrue;
     private String answer;
     private List<LessonAnswerDTO> list = new ArrayList<LessonAnswerDTO>();
+    private int parming;
 
     public LessonAnswerDTO(){
 
@@ -89,6 +90,14 @@ public class LessonAnswerDTO {
 
     }
 
+
+    public int getParming() {
+        return parming;
+    }
+
+    public void setParming(int parming) {
+        this.parming = parming;
+    }
 
     public List<LessonAnswerDTO> getList() {
         return list;

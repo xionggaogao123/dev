@@ -8,19 +8,18 @@ import com.db.user.UserDao;
 import com.fulaan.smalllesson.dto.LessonAnswerDTO;
 import com.fulaan.smalllesson.dto.LessonUserResultDTO;
 import com.fulaan.smalllesson.dto.SmallLessonDTO;
+import com.fulaan.user.service.UserService;
 import com.mongodb.DBObject;
 import com.pojo.smalllesson.LessonAnswerEntry;
 import com.pojo.smalllesson.LessonUserResultEntry;
 import com.pojo.smalllesson.SmallLessonCodeEntry;
 import com.pojo.smalllesson.SmallLessonEntry;
+import com.pojo.user.UserDetailInfoDTO;
 import org.bson.types.ObjectId;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 /**
  * Created by James on 2017/9/27.
@@ -34,6 +33,8 @@ public class SmallLessonService {
     private UserDao userDao = new UserDao();
     @Autowired
     private SmallLessonUserCodeService smallLessonUserCodeService;
+    @Autowired
+    private UserService userService;
 
     private SmallLessonCodeDao smallLessonCodeDao = new SmallLessonCodeDao();
     //列表查询用户课程
@@ -53,33 +54,96 @@ public class SmallLessonService {
     }
 
     //查询课程用户活跃列表
-    public Map<String,Object> getUserResultList(ObjectId userId,int page,int pageSize){
+    public Map<String,Object> getUserResultList(ObjectId lessonId,int page,int pageSize){
         Map<String,Object> map = new HashMap<String, Object>();
         List<LessonUserResultDTO> dtos = new ArrayList<LessonUserResultDTO>();
-        List<LessonUserResultEntry> entries = lessonUserResultDao.getUserResultList(userId, page, pageSize);
-        int count = 0;
+        List<LessonUserResultEntry> entries = lessonUserResultDao.getUserResultList(lessonId, page, pageSize);
+        int count2 = lessonUserResultDao.getNumber(lessonId);
+        Object count = lessonUserResultDao.getAllScore(lessonId);
+        List<String> uids = new ArrayList<String>();
         if(entries.size() >0){
             for(LessonUserResultEntry entry : entries){
                 dtos.add(new LessonUserResultDTO(entry));
-                count  += entry.getScore();
+                uids.add(entry.getUserId().toString());
             }
         }
-        map.put("dto",dtos);
-        map.put("count",count);
+        List<LessonUserResultDTO> udto3 = new ArrayList<LessonUserResultDTO>();
+        List<LessonUserResultDTO> udto4 = new ArrayList<LessonUserResultDTO>();
+        if(dtos.size()>0){
+            List<UserDetailInfoDTO> udtos2 = userService.findUserInfoByUserIds(uids);
+            Map<String,UserDetailInfoDTO> map3 = new HashMap<String, UserDetailInfoDTO>();
+            if(udtos2 != null && udtos2.size()>0){
+                for(UserDetailInfoDTO dto4 : udtos2){
+                    map3.put(dto4.getId(),dto4);
+                }
+            }
+            int i = 0;
+            for(LessonUserResultDTO dto2:dtos){
+                UserDetailInfoDTO dto = map3.get(dto2.getUserId());
+                if(dto != null){
+                    String name = dto.getNickName()!=null?dto.getNickName():dto.getName();
+                    dto2.setUserName(name);
+                }
+                dto2.setParming((page-1)*pageSize+i+1);
+                if( i <= 4){
+                    udto3.add(dto2);
+                }else{
+                    udto4.add(dto2);
+                }
+                i++;
+            }
+        }
+        map.put("dto1",udto3);
+        map.put("dto2",udto4);
+        map.put("count",count2);
+        map.put("all",count);
         return map;
     }
 
+    public List<Integer> getIntList(ObjectId lessonId){
+        List<Integer> ins = lessonAnswerDao.getIntResultList(lessonId);
+        Set<Integer> set = new HashSet<Integer>();
+        set.addAll(ins);
+        List<Integer> objectIdList = new ArrayList<Integer>();
+        objectIdList.addAll(set);
+        return objectIdList;
+    }
     //查询答题列表
     public Map<String,Object> selectAnswerList(ObjectId userId,int number,int page,int pageSize,int type){
         Map<String,Object> map = new HashMap<String, Object>();
         List<LessonAnswerDTO> dtos = new ArrayList<LessonAnswerDTO>();
         List<LessonAnswerEntry> entries = lessonAnswerDao.getUserResultPageList(userId, number, page, pageSize);
+        int count = lessonAnswerDao.getNumber(userId, number);
+        List<String> uids = new ArrayList<String>();
         if(entries.size() >0){
             for(LessonAnswerEntry entry : entries){
                 dtos.add(new LessonAnswerDTO(entry));
+                uids.add(entry.getUserId().toString());
             }
         }
+        if(dtos.size()>0){
+            List<UserDetailInfoDTO> udtos2 = userService.findUserInfoByUserIds(uids);
+            Map<String,UserDetailInfoDTO> map3 = new HashMap<String, UserDetailInfoDTO>();
+            if(udtos2 != null && udtos2.size()>0){
+                for(UserDetailInfoDTO dto4 : udtos2){
+                    map3.put(dto4.getId(),dto4);
+                }
+            }
+            int i = 1;
+            for(LessonAnswerDTO dto2:dtos){
+                UserDetailInfoDTO dto = map3.get(dto2.getUserId());
+                if(dto != null){
+                    String name = dto.getNickName()!=null?dto.getNickName():dto.getName();
+                    dto2.setUserName(name);
+                }
+                dto2.setParming((page-1)*pageSize+i);
+                i++;
+            }
+        }
+
         map.put("list",dtos);
+        map.put("count",count);
+
         if(type==2){
             List<LessonAnswerEntry> entries2 = lessonAnswerDao.getUserResultList(userId,number);
             int a = 0;//未答
@@ -172,16 +236,24 @@ public class SmallLessonService {
             map.put("msg","该课程已结束");
             return map;
         }else{
-            LessonUserResultDTO dto = new LessonUserResultDTO();
-            dto.setUserId(userId.toString());
-            dto.setUserName(userName);
-            dto.setLessonId(entry.getID().toString());
-            dto.setScore(0);
-            LessonUserResultEntry entry1 = dto.buildAddEntry();
-            lessonUserResultDao.addEntry(entry1);
-            map.put("code",2);
-            map.put("msg","该课程进行中");
-            return map;
+            LessonUserResultEntry entry2 = lessonUserResultDao.getEntry(teacherId,userId);
+            if(entry2!= null){
+                map.put("code",2);
+                map.put("msg","重新进入课堂");
+                return map;
+            }else{
+                LessonUserResultDTO dto = new LessonUserResultDTO();
+                dto.setUserId(userId.toString());
+                dto.setUserName(userName);
+                dto.setLessonId(entry.getID().toString());
+                dto.setScore(0);
+                LessonUserResultEntry entry1 = dto.buildAddEntry();
+                lessonUserResultDao.addEntry(entry1);
+                map.put("code",2);
+                map.put("msg","该课程进行中");
+                return map;
+            }
+
         }
 
     }
@@ -204,17 +276,24 @@ public class SmallLessonService {
             map.put("msg","该课程已结束");
             return map;
         }else{
-            LessonUserResultDTO dto = new LessonUserResultDTO();
-            dto.setUserId(userId.toString());
-            dto.setUserName(userName);
-            dto.setLessonId(entry.getID().toString());
-            dto.setScore(0);
-            LessonUserResultEntry entry1 = dto.buildAddEntry();
-            lessonUserResultDao.addEntry(entry1);
-            map.put("lessonId",entry.getID().toString());
-            map.put("code",2);
-            map.put("msg","该课程进行中");
-            return map;
+            LessonUserResultEntry entry2 = lessonUserResultDao.getEntry(entry.getID(),userId);
+            if(entry2!= null){
+                map.put("code",2);
+                map.put("msg","重新进入课堂");
+                return map;
+            }else {
+                LessonUserResultDTO dto = new LessonUserResultDTO();
+                dto.setUserId(userId.toString());
+                dto.setUserName(userName);
+                dto.setLessonId(entry.getID().toString());
+                dto.setScore(0);
+                LessonUserResultEntry entry1 = dto.buildAddEntry();
+                lessonUserResultDao.addEntry(entry1);
+                map.put("lessonId", entry.getID().toString());
+                map.put("code", 2);
+                map.put("msg", "该课程进行中");
+                return map;
+            }
         }
 
     }

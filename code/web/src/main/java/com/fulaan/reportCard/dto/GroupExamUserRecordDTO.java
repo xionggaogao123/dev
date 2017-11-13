@@ -1,6 +1,7 @@
 package com.fulaan.reportCard.dto;
 
 import com.pojo.reportCard.GroupExamUserRecordEntry;
+import com.sys.constants.Constant;
 
 /**
  * Created by scott on 2017/9/30.
@@ -28,15 +29,22 @@ public class GroupExamUserRecordDTO {
 
     public GroupExamUserRecordDTO(GroupExamUserRecordEntry examUserRecordEntry){
         this.id=examUserRecordEntry.getID().toString();
-        this.groupExamDetailId=examUserRecordEntry.getGroupExamDetailId().toString();
-        this.userId=examUserRecordEntry.getUserId().toString();
+        this.groupExamDetailId=null!=examUserRecordEntry.getGroupExamDetailId()?
+                examUserRecordEntry.getGroupExamDetailId().toString(): Constant.EMPTY;
+        this.userId=null!=examUserRecordEntry.getUserId()?
+                examUserRecordEntry.getUserId().toString():Constant.EMPTY;
         this.score=examUserRecordEntry.getScore();
         this.scoreLevel=examUserRecordEntry.getScoreLevel();
-        this.communityId=examUserRecordEntry.getCommunityId().toString();
-        this.groupId=examUserRecordEntry.getGroupId().toString();
-        this.mainUserId=examUserRecordEntry.getMainUserId().toString();
-        this.examType=examUserRecordEntry.getExamType().toString();
-        this.subjectId=examUserRecordEntry.getSubjectId().toString();
+        this.communityId=null!=examUserRecordEntry.getCommunityId()?
+                examUserRecordEntry.getCommunityId().toString():Constant.EMPTY;
+        this.groupId=null!=examUserRecordEntry.getGroupId()?
+                examUserRecordEntry.getGroupId().toString():Constant.EMPTY;
+        this.mainUserId=null!=examUserRecordEntry.getMainUserId()?
+                examUserRecordEntry.getMainUserId().toString():Constant.EMPTY;
+        this.examType=null!=examUserRecordEntry.getExamType()?
+                examUserRecordEntry.getExamType().toString():Constant.EMPTY;
+        this.subjectId=null!=examUserRecordEntry.getSubjectId()?
+                examUserRecordEntry.getSubjectId().toString():Constant.EMPTY;
     }
 
     public String getSubjectId() {

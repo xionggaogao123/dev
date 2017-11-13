@@ -129,7 +129,7 @@ public class DefaultCommunityController extends BaseController {
     public RespObj createCommunity(@ApiParam(name = "name", required = true, value = "社区名称")String name,
                                    @ApiParam(name = "desc", required = false, value = "社区描述") @RequestParam(required = false, defaultValue = "") StringBuffer desc,
                                    @ApiParam(name = "logo", required = false, value = "社区logo") @RequestParam(required = false, defaultValue = "") StringBuffer logo,
-                                   @ApiParam(name = "open", required = false, value = "社区是否公开标志位,0是公开，1是不公开") @RequestParam(required = false, defaultValue = "0") int open,
+                                   @ApiParam(name = "open", required = false, value = "社区是否公开标志位,0是不公开，1是公开") @RequestParam(required = false, defaultValue = "0") int open,
                                    @ApiParam(name = "userIds", required = false, value = "加入群组人员列表") @RequestParam(required = false, defaultValue = "") String userIds) throws Exception {
         Validate validate = detectCondition(name, desc, logo);
         if (!validate.isOk()) {

@@ -10,6 +10,7 @@ import com.fulaan.reportCard.dto.GroupExamUserRecordDTO;
 import com.fulaan.reportCard.dto.GroupExamVersionDTO;
 import com.fulaan.reportCard.dto.RecordLevelEnum;
 import com.fulaan.user.service.UserService;
+import com.fulaan.utils.HSSFUtils;
 import com.fulaan.wrongquestion.dto.ExamTypeDTO;
 import com.pojo.fcommunity.CommunityEntry;
 import com.pojo.fcommunity.NewVersionCommunityBindEntry;
@@ -25,8 +26,10 @@ import org.apache.poi.hssf.usermodel.HSSFWorkbook;
 import org.bson.types.ObjectId;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.web.multipart.MultipartFile;
 
 import javax.servlet.http.HttpServletResponse;
+import java.io.InputStream;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.text.SimpleDateFormat;
@@ -771,14 +774,71 @@ public class ReportCardService {
             String sheetName=detailEntry.getExamName()+"录入模板";
             HSSFWorkbook wb=new HSSFWorkbook();
             HSSFSheet sheet = wb.createSheet(sheetName);
-            HSSFRow firstRow = sheet.createRow(0);
+            HSSFRow row = sheet.createRow(0);
 
-            HSSFCell firstCell = firstRow.createCell(0);
-            firstCell.setCellValue("用户Id");
+            HSSFCell cell = row.createCell(0);
+            cell.setCellValue("用户Id");
+
+            cell = row.createCell(1);
+            cell.setCellValue("考试Id");
+
+            cell = row.createCell(2);
+            cell.setCellValue("用户姓名");
+
+            cell = row.createCell(3);
+            cell.setCellValue("用户学号");
+
+            cell = row.createCell(4);
+            cell.setCellValue("等第分值");
+
+            cell = row.createCell(5);
+            cell.setCellValue("考试分值");
+
+            int rowLine=1;
+
+            HSSFRow rowItem;
+            HSSFCell cellItem;
+            for(GroupExamUserRecordDTO recordDTO:recordDTOs){
+
+                rowItem = sheet.createRow(rowLine);
+
+                cellItem = rowItem.createCell(0);
+                cellItem.setCellValue(recordDTO.getUserId());
+
+                cellItem = rowItem.createCell(1);
+                cellItem.setCellValue(recordDTO.getGroupExamDetailId());
+
+                cellItem = rowItem.createCell(2);
+                cellItem.setCellValue(recordDTO.getUserName());
+
+                cellItem = rowItem.createCell(3);
+                cellItem.setCellValue(recordDTO.getUserNumber());
+
+                if(detailEntry.getRecordScoreType()==Constant.ONE){
+                    cellItem = rowItem.createCell(4);
+                    cellItem.setCellValue(-1);
+
+                    cellItem = rowItem.createCell(5);
+                    cellItem.setCellValue("");
+                }else{
+                    cellItem = rowItem.createCell(4);
+                    cellItem.setCellValue("");
+
+                    cellItem = rowItem.createCell(5);
+                    cellItem.setCellValue(-1);
+                }
+                rowLine++;
+            }
 
             String fileName = sheetName+ ".xls";
-//            HSSFUtils.exportExcel(response, wb, fileName);
+            HSSFUtils.exportExcel(response, wb, fileName);
         }
+    }
+
+
+
+    public void importTemplate(MultipartFile file, InputStream inputStream, String fileName){
+
     }
 
 }

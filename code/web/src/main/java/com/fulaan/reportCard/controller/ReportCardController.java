@@ -14,11 +14,9 @@ import io.swagger.annotations.ApiResponses;
 import org.bson.types.ObjectId;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.bind.annotation.*;
 
+import javax.servlet.http.HttpServletResponse;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -28,7 +26,7 @@ import java.util.Map;
  * Created by scott on 2017/9/30.
  */
 @Controller
-@RequestMapping(value="/reportCard")
+@RequestMapping(value="/web/reportCard")
 @Api(value = "成绩单的所有接口")
 public class ReportCardController extends BaseController{
 
@@ -356,6 +354,19 @@ public class ReportCardController extends BaseController{
         return respObj;
     }
 
+
+
+    @ApiOperation(value = "导出模板", httpMethod = "GET", produces = "application/json")
+    @RequestMapping("/exportTemplate/{examGroupDetailId}")
+    @ResponseBody
+    public void exportTemplate(@PathVariable @ObjectIdType ObjectId examGroupDetailId,
+                               HttpServletResponse response){
+        try {
+            reportCardService.exportTemplate(examGroupDetailId,response);
+        }catch (Exception e){
+            e.printStackTrace();
+        }
+    }
 
 
 

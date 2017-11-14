@@ -18,10 +18,15 @@ import com.pojo.user.UserEntry;
 import com.pojo.wrongquestion.SubjectClassEntry;
 import com.sys.constants.Constant;
 import org.apache.commons.lang3.StringUtils;
+import org.apache.poi.hssf.usermodel.HSSFCell;
+import org.apache.poi.hssf.usermodel.HSSFRow;
+import org.apache.poi.hssf.usermodel.HSSFSheet;
+import org.apache.poi.hssf.usermodel.HSSFWorkbook;
 import org.bson.types.ObjectId;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import javax.servlet.http.HttpServletResponse;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.text.SimpleDateFormat;
@@ -756,6 +761,24 @@ public class ReportCardService {
             examTypeDTOs.add(new ExamTypeDTO(examTypeEntry));
         }
         return examTypeDTOs;
+    }
+
+
+    public void exportTemplate(ObjectId examGroupDetailId, HttpServletResponse response){
+        List<GroupExamUserRecordDTO> recordDTOs=searchRecordStudentScores(examGroupDetailId,-1,-1,1);
+        GroupExamDetailEntry detailEntry=groupExamDetailDao.getGroupExamDetailEntry(examGroupDetailId);
+        if(null!=detailEntry){
+            String sheetName=detailEntry.getExamName()+"录入模板";
+            HSSFWorkbook wb=new HSSFWorkbook();
+            HSSFSheet sheet = wb.createSheet(sheetName);
+            HSSFRow firstRow = sheet.createRow(0);
+
+            HSSFCell firstCell = firstRow.createCell(0);
+            firstCell.setCellValue("用户Id");
+
+            String fileName = sheetName+ ".xls";
+//            HSSFUtils.exportExcel(response, wb, fileName);
+        }
     }
 
 }

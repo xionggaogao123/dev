@@ -26,6 +26,14 @@ public class GroupExamVersionDao extends BaseDao{
         update(MongoFacroty.getAppDB(), Constant.COLLECTION_REPORT_CARD_EXAM_VERSION,query,updateValue);
     }
 
+    public void increaseVersion(ObjectId groupExamDetailId){
+        BasicDBObject query=new BasicDBObject()
+                .append("eid",groupExamDetailId);
+        BasicDBObject updateValue=new BasicDBObject()
+                .append(Constant.MONGO_INC,new BasicDBObject("v",Constant.ONE));
+        update(MongoFacroty.getAppDB(), Constant.COLLECTION_REPORT_CARD_EXAM_VERSION,query,updateValue);
+    }
+
     public GroupExamVersionEntry getVersionByGroupExamDetailId(ObjectId groupExamDetailId){
         BasicDBObject query=new BasicDBObject()
                 .append("eid",groupExamDetailId);

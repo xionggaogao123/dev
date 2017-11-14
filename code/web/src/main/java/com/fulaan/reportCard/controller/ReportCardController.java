@@ -385,7 +385,7 @@ public class ReportCardController extends BaseController{
             for (List<MultipartFile> multipartFiles : fileMap.values()) {
                 for(MultipartFile file:multipartFiles) {
                     System.out.println("----" + file.getOriginalFilename());
-                    reportCardService.importTemplate(file,file.getInputStream(), file.getOriginalFilename());
+                    reportCardService.importTemplate(file.getInputStream());
                 }
             }
             respObj.setCode(Constant.SUCCESS_CODE);

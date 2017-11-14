@@ -26,7 +26,6 @@ import org.apache.poi.hssf.usermodel.HSSFWorkbook;
 import org.bson.types.ObjectId;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import org.springframework.web.multipart.MultipartFile;
 
 import javax.servlet.http.HttpServletResponse;
 import java.io.InputStream;
@@ -521,6 +520,10 @@ public class ReportCardService {
         groupExamVersionDao.updateVersionByGroupExamDetailId(groupExamDetailId,version);
     }
 
+    public void increaseVersion(ObjectId groupExamDetailId){
+        groupExamVersionDao.increaseVersion(groupExamDetailId);
+    }
+
     /**
      * 保存成绩列表
      * @param examScoreDTOs
@@ -776,8 +779,9 @@ public class ReportCardService {
             HSSFSheet sheet = wb.createSheet(sheetName);
             HSSFRow row = sheet.createRow(0);
 
+
             HSSFCell cell = row.createCell(0);
-            cell.setCellValue("用户Id");
+            cell.setCellValue("关键字Id");
 
             cell = row.createCell(1);
             cell.setCellValue("考试Id");
@@ -803,7 +807,7 @@ public class ReportCardService {
                 rowItem = sheet.createRow(rowLine);
 
                 cellItem = rowItem.createCell(0);
-                cellItem.setCellValue(recordDTO.getUserId());
+                cellItem.setCellValue(recordDTO.getId());
 
                 cellItem = rowItem.createCell(1);
                 cellItem.setCellValue(recordDTO.getGroupExamDetailId());
@@ -837,8 +841,64 @@ public class ReportCardService {
 
 
 
-    public void importTemplate(MultipartFile file, InputStream inputStream, String fileName){
-
+    public void importTemplate(InputStream inputStream)throws Exception{
+        HSSFWorkbook workbook = null;
+        workbook = new HSSFWorkbook(inputStream);
+        HSSFSheet sheet = workbook.getSheet(workbook.getSheetName(0));
+        int rowNum = sheet.getLastRowNum();
+        List<GroupExamUserRecordDTO> examScoreDTOs = new ArrayList<GroupExamUserRecordDTO>();
+        for (int j = 1; j <= rowNum; j++) {
+            GroupExamUserRecordDTO item=new GroupExamUserRecordDTO();
+            String id=sheet.getRow(j).getCell(0).getStringCellValue();
+            String groupExamDetailId=sheet.getRow(j).getCell(1).getStringCellValue();
+            item.setGroupExamDetailId(groupExamDetailId);
+            item.setId(id);
+            HSSFCell cell = sheet.getRow(j).getCell(4);
+            double score = getValue(cell);
+            item.setScore(score);
+            HSSFCell hssfCell = sheet.getRow(j).getCell(5);
+            int  scoreLevel = (new Double(getValue(hssfCell))).intValue();  ;
+            item.setScoreLevel(scoreLevel);
+            item.setRank(Constant.ZERO);
+            examScoreDTOs.add(item);
+        }
+        if(examScoreDTOs.size()>0) {
+            saveRecordExamScore(examScoreDTOs, Constant.ZERO);
+            increaseVersion(new ObjectId(examScoreDTOs.get(0).getGroupExamDetailId()));
+        }
     }
+
+    public double getValue(HSSFCell cell){
+        double cellValue=-1;
+        if (cell != null) {
+            String vvv = getStringCellValue(cell);
+            if (StringUtils.isNotBlank(vvv)) {
+                 cellValue = Double.valueOf(vvv);
+            }
+        }
+        return cellValue;
+    }
+
+    private String getStringCellValue(HSSFCell cell) {
+        if(cell==null) return Constant.EMPTY;
+        String strCell;
+        switch (cell.getCellType()) {
+            case HSSFCell.CELL_TYPE_STRING:
+                strCell = cell.getStringCellValue();
+                break;
+            case HSSFCell.CELL_TYPE_NUMERIC:
+                strCell = String.valueOf(cell.getNumericCellValue());
+                break;
+            case HSSFCell.CELL_TYPE_BOOLEAN:
+                strCell = String.valueOf(cell.getBooleanCellValue());
+                break;
+            default:
+                strCell = Constant.EMPTY;
+                break;
+        }
+
+        return org.apache.commons.lang.StringUtils.isBlank(strCell)?Constant.EMPTY:strCell;
+    }
+
 
 }

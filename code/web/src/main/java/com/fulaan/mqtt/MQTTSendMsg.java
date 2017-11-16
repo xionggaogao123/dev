@@ -154,6 +154,7 @@ public class MQTTSendMsg {
                 }
                 public void deliveryComplete(IMqttDeliveryToken iMqttDeliveryToken) {
                     System.out.println("deliveryComplete:" + iMqttDeliveryToken.getMessageId());
+                    System.out.println("time:" + new Date().getTime());
                 }
             });
             sampleClient.connect(connOpts);

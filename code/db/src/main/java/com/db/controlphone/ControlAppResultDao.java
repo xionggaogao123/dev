@@ -2,9 +2,13 @@ package com.db.controlphone;
 
 import com.db.base.BaseDao;
 import com.db.factory.MongoFacroty;
+import com.mongodb.BasicDBObject;
 import com.mongodb.DBObject;
+import com.pojo.controlphone.ControlAppResultEntry;
 import com.sys.constants.Constant;
+import org.bson.types.ObjectId;
 
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -18,5 +22,50 @@ public class ControlAppResultDao extends BaseDao {
      */
     public void addBatch(List<DBObject> list) {
         save(MongoFacroty.getAppDB(), Constant.COLLECTION_CONTROL_APP_RESULT, list);
+    }
+
+    //用户的所有课程列表
+    public List<ObjectId> getIsNewObjectId(ObjectId userId) {
+        BasicDBObject query =new BasicDBObject();
+        query.append("isr", Constant.ZERO);
+        query.append("isn", Constant.ZERO);
+        query.append("uid",userId);
+        List<DBObject> dboList=find(MongoFacroty.getAppDB(), Constant.COLLECTION_CONTROL_APP_RESULT, query, Constant.FIELDS);
+        List<ObjectId> retList =new ArrayList<ObjectId>();
+        if(null!=dboList && !dboList.isEmpty())
+        {
+            for(DBObject dbo:dboList)
+            {
+                retList.add(new ControlAppResultEntry((BasicDBObject)dbo).getID());
+            }
+        }
+        return retList;
+    }
+
+    //学生的实时使用时间
+    public int getAllTime(ObjectId userId) {
+        BasicDBObject query =new BasicDBObject();
+        query.append("isr", Constant.ZERO);
+        query.append("isn", Constant.ZERO);
+        query.append("uid",userId);
+        List<DBObject> dboList=find(MongoFacroty.getAppDB(), Constant.COLLECTION_CONTROL_APP_RESULT, query, Constant.FIELDS);
+        int retList = 0;
+        if(null!=dboList && !dboList.isEmpty())
+        {
+            for(DBObject dbo:dboList)
+            {
+                retList += (new ControlAppResultEntry((BasicDBObject)dbo).getUseTime());
+            }
+        }
+        return retList;
+    }
+
+    /**
+     * 修改
+     */
+    public void updEntry(List<ObjectId> ids) {
+        BasicDBObject query = new BasicDBObject(Constant.ID,new BasicDBObject(Constant.MONGO_IN,ids));
+        BasicDBObject updateValue=new BasicDBObject(Constant.MONGO_SET,new BasicDBObject("isn",Constant.ONE));
+        update(MongoFacroty.getAppDB(), Constant.COLLECTION_CONTROL_APP_RESULT, query,updateValue);
     }
 }

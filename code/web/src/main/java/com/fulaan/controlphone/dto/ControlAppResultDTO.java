@@ -20,7 +20,7 @@ public class ControlAppResultDTO {
     private String userId;
     private String appId;
     private String appName;
-    private int userTime;
+    private long userTime;
     private String dateTime;
 
     public ControlAppResultDTO(){
@@ -150,13 +150,7 @@ public class ControlAppResultDTO {
         this.appName = appName;
     }
 
-    public int getUserTime() {
-        return userTime;
-    }
 
-    public void setUserTime(int userTime) {
-        this.userTime = userTime;
-    }
 
     public String getDateTime() {
         return dateTime;

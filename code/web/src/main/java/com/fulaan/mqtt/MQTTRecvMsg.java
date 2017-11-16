@@ -5,6 +5,7 @@ import org.eclipse.paho.client.mqttv3.*;
 import org.eclipse.paho.client.mqttv3.persist.MemoryPersistence;
 
 import java.io.IOException;
+import java.util.Date;
 
 public class MQTTRecvMsg {
    public static void main(String[] args) throws IOException {
@@ -69,6 +70,7 @@ public class MQTTRecvMsg {
                 }
                 public void messageArrived(String topic, MqttMessage mqttMessage) throws Exception {
                     System.out.println("messageArrived:" + topic + "------" + new String(mqttMessage.getPayload()));
+                    System.out.println("time:" + new Date().getTime());
                 }
                 public void deliveryComplete(IMqttDeliveryToken iMqttDeliveryToken) {
                     System.out.println("deliveryComplete:" + iMqttDeliveryToken.getMessageId());

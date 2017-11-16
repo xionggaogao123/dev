@@ -90,6 +90,37 @@ public class RedDotService {
         map.put("notice",new RedDotDTO(entry2));
         return map;
     }
+    /**
+     * 添加红点成绩单(third)
+     *
+     */
+    public void addThirdList(ObjectId communityId,ObjectId userId,int type){
+        List<ObjectId> sids = newVersionCommunityBindDao.getStudentListByCommunityId(communityId);
+        List<ObjectId> pids = newVersionCommunityBindDao.getParentIdListByCommunityId(communityId);
+        List<ObjectId> uids = new ArrayList<ObjectId>();
+        uids.addAll(sids);
+        uids.addAll(pids);
+        uids.remove(userId);
+        List<RedDotDTO> redDotDTOs = new ArrayList<RedDotDTO>();
+        if(ApplyTypeEn.getProTypeEname(type).equals("third")){//通知类型
+            List<ObjectId> unid =  redDotDao.getRedDotEntryByList(uids, type);
+            uids.removeAll(unid);
+            if(uids.size()>0){
+                for(ObjectId oid : uids) {
+                    RedDotDTO dto = new RedDotDTO();
+                    dto.setType(type);
+                    dto.setNewNumber(1);
+                    dto.setUserId(oid.toString());
+                    redDotDTOs.add(dto);
+                }
+            }
+            redDotDao.updateEntry2(unid, type);
+        }else{
+
+        }
+        this.addRedDotEntryBatch(redDotDTOs);
+
+    }
 
     /**
      * 添加记录//1:家长2:学生3:家长，学生
@@ -166,7 +197,90 @@ public class RedDotService {
         }
     }
 
+    public void addOtherEntryList(List<ObjectId> commuityIds,ObjectId userId,int type,int lei){
+        //获得当前时间
+        long current=System.currentTimeMillis();
+        //获得时间批次
+        long zero=current/(1000*3600*24)*(1000*3600*24)- TimeZone.getDefault().getRawOffset();//今天零点零分零秒的毫秒数
+        String dateTime = "";
+        if(zero!=0l){
+            dateTime = DateTimeUtils.getLongToStrTimeTwo(zero);
+        }else{
+            dateTime = "";
+        }
+        for(ObjectId obid : commuityIds){
+            List<ObjectId> bid = new ArrayList<ObjectId>();
+            List<ObjectId> uids = new ArrayList<ObjectId>();
+            //所有学生
+            List<ObjectId> sids = newVersionCommunityBindDao.getStudentListByCommunityId(obid);
+            if(lei ==2 || lei == 3 || lei==4){
+                uids.addAll(sids);
+            }
+            bid.add(obid);
+            //所有家长
+            List<ObjectId> list = communityDao.getListGroupIds(bid);
+            List<ObjectId> li = memberDao.getMembersByList(list);
+            if(lei==4){
+                Set<ObjectId> se = new HashSet<ObjectId>();
+                se.addAll(li);
+                uids.addAll(se);
+            }
+            if(lei==1 || lei == 3){
+                List<ObjectId> li2 = memberDao.getMembersByList2(list,userId);
+                Set<ObjectId> se = new HashSet<ObjectId>();
+                se.addAll(li2);
+                uids.addAll(se);
+            }
+            List<RedDotDTO> redDotDTOs = new ArrayList<RedDotDTO>();
+            if(type==2){//活动报名
+                type=9;
+            }else if(type==3){//火热分享
+                type=3;
+            }else if(type==4){//参考资料
+                type=4;
+            }else if(type==5){//
+                type=10;
+            }else if(type==6){//学习用品
+                type=6;
+            }else if(type==7){//投票
+                type=7;
+            }else{
 
+            }
+            if(ApplyTypeEn.getProTypeEname(type).equals("other")){//作业类型
+                List<ObjectId> unid =  redDotDao.getOtherRedDotEntryByList(uids, zero, type);
+                uids.removeAll(unid);
+                if(uids.size()>0){
+                    for(ObjectId oid : uids) {
+                        RedDotDTO dto = new RedDotDTO();
+                        dto.setType(type);
+                        dto.setDateTime(dateTime);
+                        dto.setNewNumber(1);
+                        dto.setUserId(oid.toString());
+                        redDotDTOs.add(dto);
+                    }
+                }
+                redDotDao.updateEntry1(unid, zero, type);
+            }else if(ApplyTypeEn.getProTypeEname(type).equals("same")){//通知类型
+                List<ObjectId> unid =  redDotDao.getRedDotEntryByList(uids, type);
+                uids.removeAll(unid);
+                if(uids.size()>0){
+                    for(ObjectId oid : uids) {
+                        RedDotDTO dto = new RedDotDTO();
+                        dto.setType(type);
+                        dto.setNewNumber(1);
+                        dto.setUserId(oid.toString());
+                        redDotDTOs.add(dto);
+                    }
+                }
+                redDotDao.updateEntry2(unid,type);
+            }else{
+
+            }
+            this.addRedDotEntryBatch(redDotDTOs);
+
+        }
+    }
     /**
      *根据社区id返回社区中不具有管理员权限的人
      *
@@ -197,6 +311,26 @@ public class RedDotService {
         }
     }
 
+    public void cleanOtherResult(ObjectId userId,int type){
+        if(type==2){//活动报名
+            type=9;
+        }else if(type==3){//火热分享
+            type=3;
+        }else if(type==4){//参考资料
+            type=4;
+        }else if(type==5){//
+            type=10;
+        }else if(type==6){//学习用品
+            type=6;
+        }else if(type==7){//投票
+            type=7;
+        }else{
 
+        }
+        redDotDao.cleanEntry2(userId, type);
+    }
+    public void cleanThirdResult(ObjectId userId,int type){
+        redDotDao.cleanEntry2(userId, type);
+    }
 
 }

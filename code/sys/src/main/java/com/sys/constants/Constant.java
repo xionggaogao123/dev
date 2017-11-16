@@ -904,5 +904,7 @@ public class Constant {
     public static final String COLLECTION_CONTROL_MAP = "controlmap";
     //管控应用使用记录表
     public static final String COLLECTION_CONTROL_APP_RESULT = "controlappresult";
+    //信息表
+    public static final String COLLECTION_CONTROL_MESSAGE= "controlmessage";
 
 }

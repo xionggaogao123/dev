@@ -14,6 +14,7 @@ import org.bson.types.ObjectId;
  appName       应用名                    anm
  useTime       使用时间（int）           utm
  dateTime      使用日期（long）          dtm
+ isNew          是否最新                  isn
  */
 public class ControlAppResultEntry extends BaseDBObject {
     public ControlAppResultEntry(){
@@ -29,7 +30,7 @@ public class ControlAppResultEntry extends BaseDBObject {
             ObjectId userId,
             ObjectId appId,
             String appName,
-            int useTime,
+            long useTime,
             long dateTime
     ){
         BasicDBObject dbObject=new BasicDBObject()
@@ -39,7 +40,8 @@ public class ControlAppResultEntry extends BaseDBObject {
                 .append("anm", appName)
                 .append("utm", useTime)
                 .append("dtm", dateTime)
-                .append("isr", 0);
+                .append("isr", 0)
+                .append("isn",0);
         setBaseEntry(dbObject);
     }
 
@@ -50,7 +52,7 @@ public class ControlAppResultEntry extends BaseDBObject {
             ObjectId userId,
             ObjectId appId,
             String appName,
-            int useTime,
+            long useTime,
             long dateTime
     ){
         BasicDBObject dbObject=new BasicDBObject()
@@ -61,7 +63,8 @@ public class ControlAppResultEntry extends BaseDBObject {
                 .append("anm", appName)
                 .append("utm", useTime)
                 .append("dtm", dateTime)
-                .append("isr", 0);
+                .append("isr", 0)
+                .append("isn", 0);
         setBaseEntry(dbObject);
     }
 
@@ -90,10 +93,10 @@ public class ControlAppResultEntry extends BaseDBObject {
     public void setAppName(String appName){
         setSimpleValue("anm",appName);
     }
-    public int getUseTime(){
-        return getSimpleIntegerValue("utm");
+    public long getUseTime(){
+        return getSimpleLongValue("utm");
     }
-    public void setUseTime(int useTime){
+    public void setUseTime(long useTime){
         setSimpleValue("utm",useTime);
     }
     public long getDateTime(){
@@ -109,5 +112,12 @@ public class ControlAppResultEntry extends BaseDBObject {
 
     public void setIsRemove(int isRemove){
         setSimpleValue("isr",isRemove);
+    }
+    public int getIsNew(){
+        return getSimpleIntegerValue("isn");
+    }
+
+    public void setIsNew(int isNew){
+        setSimpleValue("isn",isNew);
     }
 }

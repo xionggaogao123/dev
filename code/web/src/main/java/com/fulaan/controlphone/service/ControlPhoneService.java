@@ -4,16 +4,15 @@ import com.db.appmarket.AppDetailDao;
 import com.db.controlphone.*;
 import com.db.fcommunity.CommunityDao;
 import com.fulaan.appmarket.dto.AppDetailDTO;
-import com.fulaan.controlphone.dto.ControlAppResultDTO;
-import com.fulaan.controlphone.dto.ControlMapDTO;
-import com.fulaan.controlphone.dto.ControlPhoneDTO;
-import com.fulaan.controlphone.dto.ResultAppDTO;
+import com.fulaan.controlphone.dto.*;
 import com.fulaan.mqtt.MQTTSendMsg;
 import com.fulaan.newVersionBind.service.NewVersionBindService;
+import com.fulaan.user.service.UserService;
 import com.mongodb.DBObject;
 import com.pojo.appmarket.AppDetailEntry;
 import com.pojo.controlphone.*;
 import com.pojo.fcommunity.CommunityEntry;
+import com.pojo.user.UserDetailInfoDTO;
 import com.sys.utils.DateTimeUtils;
 import org.bson.types.ObjectId;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -41,8 +40,13 @@ public class ControlPhoneService {
 
     private ControlAppResultDao controlAppResultDao = new ControlAppResultDao();
 
+    private ControlMessageDao controlMessageDao = new ControlMessageDao();
+
     @Autowired
     private NewVersionBindService newVersionBindService;
+    @Autowired
+    private UserService userService;
+
 
 
 
@@ -151,17 +155,36 @@ public class ControlPhoneService {
         controlPhoneDao.updateEntry(name,phone,id);
     }
 
-    //查询推送应用（家长端）
-    public List<AppDetailDTO> getCommunityAppList(ObjectId communityId){
+    //查询推送应用（学生端）
+    public List<AppDetailDTO> getCommunityAppList(ObjectId sonId){
+        List<Map<String,Object>>  mlist = new ArrayList<Map<String, Object>>();
         List<AppDetailDTO> dtos = new ArrayList<AppDetailDTO>();
-        ControlAppEntry entry = controlAppDao.getEntry(communityId);
-        List<ObjectId> olist = entry.getAppIdList();
-        List<AppDetailEntry> entries = appDetailDao.getEntriesByIds(olist);
+        //获得绑定的社区id
+        List<ObjectId> obList = newVersionBindService.getCommunityIdsByUserId(sonId);
+        //获得各个社区的推送应用记录
+        List<ControlAppEntry> entries = controlAppDao.getEntryListByCommunityId(obList);
+        List<ObjectId> objectIdList = new ArrayList<ObjectId>();
         if(entries.size()>0){
-            for(AppDetailEntry entry2 : entries){
-                dtos.add(new AppDetailDTO(entry2));
+            for(ControlAppEntry entry : entries){
+                if(entry.getAppIdList()!=null){
+                    objectIdList.addAll(entry.getAppIdList());
+                }
             }
         }
+        Set<ObjectId> set = new HashSet<ObjectId>();
+        set.addAll(objectIdList);
+        List<ObjectId> appIds =new ArrayList<ObjectId>();
+        appIds.addAll(set);
+        //查询所有的推送结果
+        if(appIds.size()>0){
+            List<AppDetailEntry> entries2 = appDetailDao.getEntriesByIds(appIds);
+            if(entries2.size()>0){
+                for(AppDetailEntry entry2 : entries2){
+                    dtos.add(new AppDetailDTO(entry2));
+                }
+            }
+        }
+
         return dtos;
     }
 
@@ -186,13 +209,21 @@ public class ControlPhoneService {
             controlAppDao.updEntry(entry);
         }
     }
-
-    public List<AppDetailDTO> getAppListForStudent(ObjectId studentId){
+    //家长端
+    public List<Map<String,Object>> getAppListForStudent(ObjectId studentId){
+        List<Map<String,Object>>  mlist = new ArrayList<Map<String, Object>>();
         List<AppDetailDTO> dtos = new ArrayList<AppDetailDTO>();
         //获得绑定的社区id
         List<ObjectId> obList = newVersionBindService.getCommunityIdsByUserId(studentId);
+        List<CommunityEntry> communityEntries = communityDao.findByObjectIds(obList);
         //获得各个社区的推送应用记录
         List<ControlAppEntry> entries = controlAppDao.getEntryListByCommunityId(obList);
+        Map<ObjectId,ControlAppEntry> cmap = new HashMap<ObjectId, ControlAppEntry>();
+        if(entries.size()>0){
+            for(ControlAppEntry entry3 : entries){
+                cmap.put(entry3.getCommunityId(),entry3);
+            }
+        }
         List<ObjectId> objectIdList = new ArrayList<ObjectId>();
         if(entries.size()>0){
             for(ControlAppEntry entry : entries){
@@ -206,13 +237,42 @@ public class ControlPhoneService {
         List<ObjectId> appIds =new ArrayList<ObjectId>();
         appIds.addAll(set);
         //查询所有的推送结果
-        List<AppDetailEntry> entries2 = appDetailDao.getEntriesByIds(appIds);
-        if(entries2.size()>0){
-            for(AppDetailEntry entry2 : entries2){
-                dtos.add(new AppDetailDTO(entry2));
-            }
+        List<AppDetailEntry> entries5 = new ArrayList<AppDetailEntry>();
+        if(appIds.size()>0){
+            List<AppDetailEntry> entries2 = appDetailDao.getEntriesByIds(appIds);
+            entries5 =entries2;
+         /*   if(entries2.size()>0){
+                for(AppDetailEntry entry2 : entries2){
+                    dtos.add(new AppDetailDTO(entry2));
+                }
+            }*/
         }
-        return dtos;
+        for(CommunityEntry entry4:communityEntries){
+            ControlAppEntry entry2 = cmap.get(entry4.getID());
+            if(entry2 != null){
+                List<ObjectId> objectIds =entry2.getAppIdList();
+                Map<String,Object> map =new HashMap<String, Object>();
+                List<AppDetailDTO> dtoList =new ArrayList<AppDetailDTO>();
+                for(AppDetailEntry dto2:entries5){
+                    if(objectIds != null && objectIds.contains(dto2.getID())){
+                        dtoList.add(new AppDetailDTO(dto2));
+                    }
+                }
+                map.put("list",dtoList);
+                map.put("name",entry4.getCommunityName());
+                map.put("count",dtoList.size());
+                mlist.add(map);
+            }else{
+                Map<String,Object> map =new HashMap<String, Object>();
+                map.put("list",new ArrayList<AppDetailDTO>());
+                map.put("name",entry4.getCommunityName());
+                map.put("count",0);
+                mlist.add(map);
+            }
+
+        }
+
+        return mlist;
     }
     public void addAppTimeEntry(ObjectId userId,ObjectId parentId,long time){
         ControlTimeEntry entry = controlTimeDao.getEntry(userId, parentId);
@@ -237,8 +297,13 @@ public class ControlPhoneService {
     //接受应用使用1情况记录表
     public void acceptAppResultList(ResultAppDTO dto,ObjectId userId){
         List<ControlAppResultDTO> dtos = dto.getAppList();
+        //变更最新数据
+        List<ObjectId> oids = controlAppResultDao.getIsNewObjectId(userId);
         if(dtos != null && dtos.size()>0){
             this.addRedDotEntryBatch(dtos,userId);
+        }
+        if(oids.size()>0){
+            controlAppResultDao.updEntry(oids);
         }
     }
 
@@ -248,9 +313,22 @@ public class ControlPhoneService {
         entry.setUserId(userId);
         controlMapDao.addEntry(entry);
     }
-
+    public static void main(String[] args){
+        ControlPhoneDTO entry = new ControlPhoneDTO();
+        ControlPhoneDao controlMapDao =new ControlPhoneDao();//59e71f222675642a181100fc
+        for(int i = 0;i <1;i++){
+            entry.setType(1);
+            entry.setName("客服电话");
+            entry.setPhone("400800");
+            entry.setUserId("59e71bedbf2e79192c36267b");
+            entry.setParentId("59e71c38bf2e79192c362681");
+            controlMapDao.addEntry(entry.buildAddEntry());
+        }
+    }
     //获得地图位置
     public Map<String,Object> getMapNow(ObjectId parentId,ObjectId sonId) {
+
+        //地图信息
         Map<String,Object> map = new HashMap<String, Object>();
         //获得当前时间
         long current = System.currentTimeMillis();
@@ -260,11 +338,56 @@ public class ControlPhoneService {
         if (entry != null) {
             map.put("dto",new ControlMapDTO(entry));
         } else {
-            map.put("dto","");
+            ControlMapDTO controlMapDTO =new ControlMapDTO();
+            controlMapDTO.setId("");
+            controlMapDTO.setUserId("");
+            controlMapDTO.setParentId("");
+            controlMapDTO.setLongitude("");
+            controlMapDTO.setLatitude("");
+            controlMapDTO.setAngle("");
+            controlMapDTO.setCreateTime("");
+            controlMapDTO.setDistance("");
+            map.put("dto",controlMapDTO);
         }
+        //亲情电话个数
+        int count = controlPhoneDao.getNumber(sonId);
+        map.put("phoneCount",count);
+        //已推送应用数量
+        //获得绑定的社区id
+        List<ObjectId> obList = newVersionBindService.getCommunityIdsByUserId(sonId);
+        //获得各个社区的推送应用记录
+        int size = 0;
+        if(obList.size()>0){
+            List<ControlAppEntry> entries = controlAppDao.getEntryListByCommunityId(obList);
+            if(entries.size()>0){
+                Set<ObjectId> set = new HashSet<ObjectId>();
+                for(ControlAppEntry entry1:entries){
+                    set.addAll(entry1.getAppIdList());
+                }
+                size = set.size();
+            }
+        }
+        map.put("appCount",size);
+        //防沉迷时间
+        ControlTimeEntry controlTimeEntry = controlTimeDao.getEntry(sonId, parentId);
+        long timecu = 0l;
+        if(controlTimeEntry != null){
+            timecu = controlTimeEntry.getTime();
 
-
-
+        }
+        map.put("time",timecu/60000);
+        //使用时间
+        int useTime  = controlAppResultDao.getAllTime(sonId);
+        map.put("useTime",useTime/60000);
+        //剩余时间
+        map.put("reTime",timecu/60000-useTime/60000);
+        UserDetailInfoDTO dto = userService.getUserInfoById(sonId.toString());
+        if(dto!= null){
+            String name = dto.getNickName()!=null?dto.getNickName():dto.getName();
+            map.put("userName",name);
+        }else{
+            map.put("userName","");
+        }
         return map;
     }
 
@@ -284,6 +407,47 @@ public class ControlPhoneService {
                 dtos.add(new ControlMapDTO(entry));
             }
         }
+        return dtos;
+    }
+
+    //家长获得信息列表
+    public Map<String,Object> getSonMessage(ObjectId parentId,ObjectId sonId,int page,int pageSize){
+        Map<String,Object> map = new HashMap<String, Object>();
+        List<ControlMessageEntry> entries = controlMessageDao.getUserResultPageList(parentId,sonId,page,pageSize);
+        int count = controlMessageDao.getNumber(parentId,sonId);
+        List<ControlMessageDTO> dtos = new ArrayList<ControlMessageDTO>();
+        if(entries.size()>0){
+            for(ControlMessageEntry entry : entries) {
+                dtos.add(new ControlMessageDTO(entry));
+            }
+        }
+        map.put("list",dtos);
+        map.put("count",count);
+        return map;
+    }
+
+    //学生登录获取所有信息
+    public Map<String,Object> getAllMessageForSon(ObjectId parentId,ObjectId sonId){
+        Map<String,Object> map = new HashMap<String, Object>();
+
+
+
+
+
+        return map;
+    }
+
+    //老师查询可推送应用
+    public List<AppDetailDTO> getShouldAppList(ObjectId communityId){
+        List<AppDetailDTO> dtos = new ArrayList<AppDetailDTO>();
+
+
+
+
+
+
+
+
         return dtos;
     }
 

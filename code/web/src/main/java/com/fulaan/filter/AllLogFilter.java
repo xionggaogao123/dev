@@ -90,14 +90,17 @@ public class AllLogFilter implements Filter {
         //context.log("Filter已经截获到用户的请求的地址: " + hrequest.getServletPath()+"    请求被定位到" + ((HttpServletRequest) request).getRequestURI()+ "所花的时间为: " + (after - before));
         //log4j
         //logger.warn("Filter已经截获到用户的请求的地址: " + hrequest.getServletPath() + "    请求被定位到" + ((HttpServletRequest) request).getRequestURI() + "所花的时间为: " + (after - before));
-        logger.warn(" %a - " + ipconfig
-                + "   %c - " + cooks
-                + "   %p - " + hrequest.getServletPath()
-                + "   %w - " + hrequest.getRequestURI()
-                + "   %t - " + (after - before)+"ms"
-                + "   %l - " + canList
-                + "timeOut:" + (after - before)
-                + str);
+        if(!hrequest.getServletPath().contains("entrance")){
+            logger.warn(" %a - " + ipconfig
+                    + "   %c - " + cooks
+                    + "   %p - " + hrequest.getServletPath()
+                    + "   %w - " + hrequest.getRequestURI()
+                    + "   %t - " + (after - before)+"ms"
+                    + "   %l - " + canList
+                    + "timeOut:" + (after - before)
+                    + str);
+        }
+
         //"%a - " + ipconfig + "+++"
         //"   %c - " + Arrays.toString(cookies) + "+++"
         //"   %p - " + hrequest.getServletPath() + "+++"

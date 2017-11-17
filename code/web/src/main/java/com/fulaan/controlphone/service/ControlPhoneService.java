@@ -652,6 +652,61 @@ public class ControlPhoneService {
         dtos.addAll(dtos3);
         return dtos;
     }
+    public List<AppDetailDTO> seacherParentAppList(ObjectId parentId,ObjectId sonId,String keyword){
+        //家长推荐app
+        ControlAppUserEntry entry2 = controlAppUserDao.getEntry(parentId,sonId);
+        List<AppDetailDTO> dtos = new ArrayList<AppDetailDTO>();
+        List<ObjectId> oblist = new ArrayList<ObjectId>();
+        if(entry2 != null ){
+            oblist.addAll(entry2.getAppIdList());
+        }
+
+        //获取所有可推送的第三方应用
+        List<AppDetailEntry> entries = appDetailDao.getThirdEntries();
+
+        //查询该社区推送的记录
+        List<ObjectId> obList = newVersionBindService.getCommunityIdsByUserId(sonId);
+        List<ControlAppEntry> entry3 = controlAppDao.getEntryListByCommunityId(obList);
+        Set<ObjectId> set = new HashSet<ObjectId>();
+        if(entry3.size()>0){
+            for(ControlAppEntry controlAppEntry : entry3){
+                set.addAll(controlAppEntry.getAppIdList());
+            }
+        }
+        List<ObjectId> capplist = new ArrayList<ObjectId>();
+        capplist.addAll(set);
+
+        List<AppDetailDTO> dtos1 = new ArrayList<AppDetailDTO>();
+        List<AppDetailDTO> dtos2 = new ArrayList<AppDetailDTO>();
+        List<AppDetailDTO> dtos3 = new ArrayList<AppDetailDTO>();
+        if(entries.size()>0){
+            for(AppDetailEntry detailEntry : entries){
+                AppDetailDTO dto = new AppDetailDTO(detailEntry);
+                if(oblist != null && oblist.contains(detailEntry.getID())){
+                    dto.setIsCheck(1);
+                    dtos1.add(dto);
+                }else if(capplist != null && capplist.contains(detailEntry.getID())){
+                    dto.setIsCheck(2);
+                    dtos2.add(dto);
+                }else{
+                    dto.setIsCheck(3);
+                    dtos3.add(dto);
+                }
+            }
+        }
+        dtos.addAll(dtos1);
+        dtos.addAll(dtos2);
+        dtos.addAll(dtos3);
+        List<AppDetailDTO> dtos4 = new ArrayList<AppDetailDTO>();
+        if(dtos.size()>0){
+            for(AppDetailDTO appDetailDTO : dtos){
+                if(appDetailDTO.getAppName().contains(keyword)){
+                    dtos4.add(appDetailDTO);
+                }
+            }
+        }
+        return dtos4;
+    }
 
     public Map<String,Object> getSimpleMessageForTea(ObjectId teacherId){
         Map<String,Object> map = new HashMap<String, Object>();

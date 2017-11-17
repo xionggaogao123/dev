@@ -228,6 +228,29 @@ public class ControlPhoneController extends BaseController {
         }
         return JSON.toJSONString(respObj);
     }
+    /**
+     * 家长查询可推送应用列表
+     */
+    @ApiOperation(value = "老师查询可推送应用列表", httpMethod = "POST", produces = "application/json")
+    @ApiResponses( value = {@ApiResponse(code = 200, message = "Successful — 请求已完成",response = String.class),
+            @ApiResponse(code = 400, message = "请求中有语法问题，或不能满足请求"),
+            @ApiResponse(code = 500, message = "服务器不能完成请求")})
+    @RequestMapping("/seacherParentAppList")
+    @ResponseBody
+    public String seacherParentAppList(@ApiParam(name = "sonId", required = true, value = "孩子id") @RequestParam("sonId") String sonId,
+                                       @ApiParam(name = "keyword", required = true, value = "关键字") @RequestParam("keyword") String keyword){
+        RespObj respObj=null;
+        try {
+            respObj = RespObj.SUCCESS;
+            List<AppDetailDTO> dtos = controlPhoneService.seacherParentAppList(getUserId(), new ObjectId(sonId),keyword);
+            respObj.setMessage(dtos);
+        } catch (Exception e) {
+            e.printStackTrace();
+            respObj = RespObj.FAILD;
+            respObj.setErrorMessage("老师查询可推送应用列表失败!");
+        }
+        return JSON.toJSONString(respObj);
+    }
 
     /**
      * 老师推送应用

@@ -5,6 +5,7 @@ import com.db.fcommunity.NewVersionCommunityBindDao;
 import com.db.reportCard.*;
 import com.db.wrongquestion.ExamTypeDao;
 import com.db.wrongquestion.SubjectClassDao;
+import com.fulaan.instantmessage.service.RedDotService;
 import com.fulaan.reportCard.dto.GroupExamDetailDTO;
 import com.fulaan.reportCard.dto.GroupExamUserRecordDTO;
 import com.fulaan.reportCard.dto.GroupExamVersionDTO;
@@ -14,6 +15,7 @@ import com.fulaan.utils.HSSFUtils;
 import com.fulaan.wrongquestion.dto.ExamTypeDTO;
 import com.pojo.fcommunity.CommunityEntry;
 import com.pojo.fcommunity.NewVersionCommunityBindEntry;
+import com.pojo.instantmessage.ApplyTypeEn;
 import com.pojo.reportCard.*;
 import com.pojo.user.UserEntry;
 import com.pojo.wrongquestion.SubjectClassEntry;
@@ -42,6 +44,8 @@ public class ReportCardService {
 
     @Autowired
     private UserService userService;
+    @Autowired
+    private RedDotService redDotService;
 
     private GroupExamDetailDao groupExamDetailDao = new GroupExamDetailDao();
     private RecordScoreEvaluateDao recordScoreEvaluateDao=new RecordScoreEvaluateDao();
@@ -384,6 +388,8 @@ public class ReportCardService {
         retMap.put("count",count);
         retMap.put("page",page);
         retMap.put("pageSize",pageSize);
+        //清除红点
+        redDotService.cleanThirdResult(userId, ApplyTypeEn.repordcard.getType());
         return retMap;
     }
 
@@ -465,6 +471,9 @@ public class ReportCardService {
      * @throws Exception
      */
     public String  saveGroupExamDetail(GroupExamDetailDTO dto, ObjectId userId)throws Exception{
+        //添加红点
+        redDotService.addThirdList(new ObjectId(dto.getCommunityId()),userId, ApplyTypeEn.repordcard.getType());
+
         String id=dto.getId();
         dto.setUserId(userId.toString());
         dto.setSignedCount(Constant.ZERO);

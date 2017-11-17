@@ -19,6 +19,8 @@ public class AppDetailDTO {
     private String appPackageName;
     private String logo;
     private int type;
+    private int isControl;
+    private int whiteOrBlack;
     private String size;
     private long appSize;
     private int versionCode;
@@ -45,10 +47,10 @@ public class AppDetailDTO {
             System.currentTimeMillis(), userId));
         }
         if(null!=aId){
-            return new AppDetailEntry(aId,appPackageName,logo, type,appSize,versionCode, size,
+            return new AppDetailEntry(aId,appPackageName,logo, type,appSize,versionCode,isControl,whiteOrBlack, size,
             images, versionName, description,appName,url);
         }else{
-            return new AppDetailEntry(appPackageName,logo, type,appSize, versionCode,size,
+            return new AppDetailEntry(appPackageName,logo, type,appSize, versionCode,isControl,whiteOrBlack,size,
                     images, versionName, description,appName,url);
         }
     }
@@ -58,6 +60,8 @@ public class AppDetailDTO {
         this.appPackageName=detailEntry.getAppPackageName();
         this.logo=detailEntry.getLogo();
         this.type=detailEntry.getType();
+        this.isControl = detailEntry.getIsControl();
+        this.whiteOrBlack = detailEntry.getWhiteOrBlack();
         this.size=detailEntry.getSize();
         List<AttachmentEntry> images=detailEntry.getImageList();
         for(AttachmentEntry item:images){
@@ -71,6 +75,30 @@ public class AppDetailDTO {
         this.versionCode=detailEntry.getVersionCode();
         this.isUpdated=detailEntry.getIsUpdated();
         this.updateTime= DateTimeUtils.convert(detailEntry.getUpdateTime(),DateTimeUtils.DATE_YYYY_MM_DD);
+    }
+
+    public int getIsControl() {
+        return isControl;
+    }
+
+    public void setIsControl(int isControl) {
+        this.isControl = isControl;
+    }
+
+    public int getWhiteOrBlack() {
+        return whiteOrBlack;
+    }
+
+    public void setWhiteOrBlack(int whiteOrBlack) {
+        this.whiteOrBlack = whiteOrBlack;
+    }
+
+    public String getUpdateTime() {
+        return updateTime;
+    }
+
+    public void setUpdateTime(String updateTime) {
+        this.updateTime = updateTime;
     }
 
     public int getIsUpdated() {

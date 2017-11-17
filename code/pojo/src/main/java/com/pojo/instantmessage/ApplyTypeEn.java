@@ -4,9 +4,16 @@ package com.pojo.instantmessage;
  * Created by James on 2016/3/21.
  */
 public enum ApplyTypeEn {
-    operation(1,"作业", "other"),
-    notice(2,"通知","same");
-
+    operation(1,"作业", "other"),  //除了自己的老师
+    notice(2,"通知","same"),       // 除了自己
+    hot(3,"火热分享","same"),
+    text(4,"参考资料","same"),
+    repordcard(5,"成绩单","third"),//已绑定用户
+    study(6,"学习用品","same"),
+    piao(7,"投票","same"),
+    happy(8,"兴趣小组","same"),
+    active(9,"活动报名","same");
+//成绩单 火热分享 活动报名 参考资料 学习用品 兴趣小组
     private int type;
     private String des;
     private String eName;

@@ -1,6 +1,7 @@
 package com.fulaan.controlphone.dto;
 
 import com.pojo.controlphone.ControlMapEntry;
+import com.sys.utils.DateTimeUtils;
 import org.bson.types.ObjectId;
 
 /**
@@ -15,6 +16,7 @@ public class ControlMapDTO {
     private String angle;
     private String distance;
     private long dateTime;
+    private String createTime;
     private int speed;
     private int isSafe;
 
@@ -35,6 +37,11 @@ public class ControlMapDTO {
             this.speed = e.getSpeed();
             this.isSafe = e.getIsSafe();
             this.dateTime = e.getDateTime();
+            if(e.getDateTime()!=0l){
+                this.createTime = DateTimeUtils.getLongToStrTimeTwo(e.getDateTime()).substring(0,16);
+            }else{
+                this.createTime = "";
+            }
         }else{
             new ControlMapDTO();
         }
@@ -171,5 +178,14 @@ public class ControlMapDTO {
 
     public void setIsSafe(int isSafe) {
         this.isSafe = isSafe;
+    }
+
+    public String getCreateTime() {
+        return createTime;
+    }
+
+    public void setCreateTime(String createTime) {
+
+        this.createTime = createTime;
     }
 }

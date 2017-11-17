@@ -89,4 +89,19 @@ public class ControlPhoneDao extends BaseDao {
         }
         return entryList;
     }
+
+    /**
+     * 符合搜索条件的对象个数
+     * @return
+     */
+    public int getNumber(ObjectId userId) {
+        BasicDBObject query =new BasicDBObject();
+        query.append("isr", Constant.ZERO);
+        query.append("uid",userId);
+        int count =
+                count(MongoFacroty.getAppDB(),
+                        Constant.COLLECTION_CONTROL_PHONE,
+                        query);
+        return count;
+    }
 }

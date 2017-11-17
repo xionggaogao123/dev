@@ -6,6 +6,7 @@ import com.fulaan.appmarket.dto.AppDetailDTO;
 import com.fulaan.base.BaseController;
 import com.fulaan.controlphone.dto.ControlMapDTO;
 import com.fulaan.controlphone.dto.ControlPhoneDTO;
+import com.fulaan.controlphone.dto.ControlSchoolTimeDTO;
 import com.fulaan.controlphone.dto.ResultAppDTO;
 import com.fulaan.controlphone.service.ControlPhoneService;
 import com.sys.utils.RespObj;
@@ -168,16 +169,39 @@ public class ControlPhoneController extends BaseController {
             @ApiResponse(code = 500, message = "服务器不能完成请求")})
     @RequestMapping("/getCommunityAppList")
     @ResponseBody
-    public String getCommunityAppList(@ApiParam(name = "communityId", required = true, value = "社区id") @RequestParam("communityId") String communityId){
+    public String getCommunityAppList(@ApiParam(name = "sonId", required = true, value = "孩子id") @RequestParam("sonId") String sonId){
         RespObj respObj=null;
         try {
             respObj = RespObj.SUCCESS;
-            List<AppDetailDTO> result = controlPhoneService.getCommunityAppList(new ObjectId(communityId));
+            List<Map<String,Object>> result = controlPhoneService.getAppListForStudent(new ObjectId(sonId));
             respObj.setMessage(result);
         } catch (Exception e) {
             e.printStackTrace();
             respObj = RespObj.FAILD;
             respObj.setErrorMessage("查询推送应用失败!");
+        }
+        return JSON.toJSONString(respObj);
+    }
+
+    /**
+     * 老师查询可推送应用列表
+     */
+    @ApiOperation(value = "老师查询可推送应用列表", httpMethod = "POST", produces = "application/json")
+    @ApiResponses( value = {@ApiResponse(code = 200, message = "Successful — 请求已完成",response = String.class),
+            @ApiResponse(code = 400, message = "请求中有语法问题，或不能满足请求"),
+            @ApiResponse(code = 500, message = "服务器不能完成请求")})
+    @RequestMapping("/getShouldAppList")
+    @ResponseBody
+    public String getShouldAppList(@ApiParam(name = "communityId", required = true, value = "社区id") @RequestParam("communityId") String communityId){
+        RespObj respObj=null;
+        try {
+            respObj = RespObj.SUCCESS;
+            //controlPhoneService.getShouldAppList(new ObjectId(communityId));
+            //respObj.setMessage("老师查询可推送应用列表成功");
+        } catch (Exception e) {
+            e.printStackTrace();
+            respObj = RespObj.FAILD;
+            respObj.setErrorMessage("老师查询可推送应用列表失败!");
         }
         return JSON.toJSONString(respObj);
     }
@@ -219,7 +243,7 @@ public class ControlPhoneController extends BaseController {
         RespObj respObj=null;
         try {
             respObj = RespObj.SUCCESS;
-            List<AppDetailDTO> result = controlPhoneService.getAppListForStudent(getUserId());
+            List<AppDetailDTO> result = controlPhoneService.getCommunityAppList(getUserId());
             respObj.setMessage(result);
         } catch (Exception e) {
             e.printStackTrace();
@@ -350,9 +374,76 @@ public class ControlPhoneController extends BaseController {
         }
         return JSON.toJSONString(respObj);
     }
+    /**
+     * 获取消息记录
+     */
+    @ApiOperation(value = "获取孩子地图信息记录", httpMethod = "POST", produces = "application/json")
+    @ApiResponses( value = {@ApiResponse(code = 200, message = "Successful — 请求已完成",response = String.class),
+            @ApiResponse(code = 400, message = "请求中有语法问题，或不能满足请求"),
+            @ApiResponse(code = 500, message = "服务器不能完成请求")})
+    @RequestMapping("/getSonMessage")
+    @ResponseBody
+    public String getSonMessage(@ApiParam(name = "sonId", required = true, value = "孩子id") @RequestParam("sonId") String sonId, @RequestParam("page") int page, @RequestParam("pageSize") int pageSize){
+        RespObj respObj=null;
+        try {
+            respObj = RespObj.SUCCESS;
+            Map<String,Object> dtos= controlPhoneService.getSonMessage(getUserId(), new ObjectId(sonId),page,pageSize);
+            respObj.setMessage(dtos);
+        } catch (Exception e) {
+            e.printStackTrace();
+            respObj = RespObj.FAILD;
+            respObj.setErrorMessage("获取孩子地图信息记录失败!");
+        }
+        return JSON.toJSONString(respObj);
+    }
+
+    /**
+     * 孩子登录获取所有信息
+     */
+    @ApiOperation(value = "获取孩子地图信息记录", httpMethod = "POST", produces = "application/json")
+    @ApiResponses( value = {@ApiResponse(code = 200, message = "Successful — 请求已完成",response = String.class),
+            @ApiResponse(code = 400, message = "请求中有语法问题，或不能满足请求"),
+            @ApiResponse(code = 500, message = "服务器不能完成请求")})
+    @RequestMapping("/getAllMessageForSon")
+    @ResponseBody
+    public String getAllMessageForSon(@ApiParam(name = "sonId", required = true, value = "孩子id") @RequestParam("sonId") String sonId){
+        RespObj respObj=null;
+        try {
+            respObj = RespObj.SUCCESS;
+            //Map<String,Object> dtos= controlPhoneService.getSonMessage(getUserId(), new ObjectId(sonId));
+            //respObj.setMessage(dtos);
+        } catch (Exception e) {
+            e.printStackTrace();
+            respObj = RespObj.FAILD;
+            respObj.setErrorMessage("获取孩子地图信息记录失败!");
+        }
+        return JSON.toJSONString(respObj);
+    }
 
 
-
+    /************************ 系统设置********************************/
+    /**
+     * 后台管控时间的录入
+     */
+    @ApiOperation(value = "获取孩子地图信息记录", httpMethod = "POST", produces = "application/json")
+    @ApiResponses( value = {@ApiResponse(code = 200, message = "Successful — 请求已完成",response = String.class),
+            @ApiResponse(code = 400, message = "请求中有语法问题，或不能满足请求"),
+            @ApiResponse(code = 500, message = "服务器不能完成请求")})
+    @RequestMapping("/addControlTime")
+    @ResponseBody
+    public String addControlTime(@RequestBody ControlSchoolTimeDTO dto){
+        RespObj respObj=null;
+        try {
+            respObj = RespObj.SUCCESS;
+            //Map<String,Object> dtos= controlPhoneService.getSonMessage(getUserId(), new ObjectId(sonId),page,pageSize);
+            //respObj.setMessage(dtos);
+        } catch (Exception e) {
+            e.printStackTrace();
+            respObj = RespObj.FAILD;
+            respObj.setErrorMessage("获取孩子地图信息记录失败!");
+        }
+        return JSON.toJSONString(respObj);
+    }
 
 
 

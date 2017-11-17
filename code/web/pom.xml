@@ -36,6 +36,20 @@
             <artifactId>spring-tx</artifactId>
         </dependency>
         <!-- spring end -->
+
+        <!-- aliyun图片鉴黄 -->
+
+        <dependency>
+            <groupId>com.aliyun</groupId>
+            <artifactId>aliyun-java-sdk-core</artifactId>
+            <version>3.0.7</version>
+        </dependency>
+        <dependency>
+            <groupId>com.aliyun</groupId>
+            <artifactId>aliyun-java-sdk-green</artifactId>
+            <version>3.0.0</version>
+        </dependency>
+        <!-- aliyun图片鉴黄 -->
         <!--  阿里云日志 -->
         <dependency>
             <groupId>com.google.protobuf</groupId>

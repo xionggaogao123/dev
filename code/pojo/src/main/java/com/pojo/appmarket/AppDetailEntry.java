@@ -14,6 +14,7 @@ import java.util.List;
 
 /**
  * Created by scott on 2017/10/10.
+ *
  */
 public class AppDetailEntry extends BaseDBObject{
 
@@ -27,6 +28,8 @@ public class AppDetailEntry extends BaseDBObject{
                           int type,
                           long appSize,
                           int versionCode,
+                          int isControl,
+                          int whiteOrBlack,
                           String size,
                           List<AttachmentEntry> imageList,
                           String versionName,
@@ -39,7 +42,9 @@ public class AppDetailEntry extends BaseDBObject{
                 .append("lg",logo)
                 .append("ty",type)
                 .append("asz",appSize)
-                .append("sz",size)
+                .append("isc",isControl)
+                .append("wob",whiteOrBlack)
+                .append("sz", size)
                 .append("ur",url)
                 .append("an",appName)
                 .append("il", MongoUtils.fetchDBObjectList(imageList))
@@ -58,6 +63,8 @@ public class AppDetailEntry extends BaseDBObject{
                           int type,
                           long appSize,
                           int versionCode,
+                          int isControl,
+                          int whiteOrBlack,
                           String size,
                           List<AttachmentEntry> imageList,
                           String versionName,
@@ -67,9 +74,11 @@ public class AppDetailEntry extends BaseDBObject{
         BasicDBObject basicDBObject=new BasicDBObject()
                 .append("apn",appPackageName)
                 .append("lg",logo)
-                .append("ty",type)
+                .append("ty", type)
                 .append("asz",appSize)
-                .append("sz",size)
+                .append("isc",isControl)
+                .append("wob",whiteOrBlack)
+                .append("sz", size)
                 .append("ur",url)
                 .append("an",appName)
                 .append("il", MongoUtils.fetchDBObjectList(imageList))
@@ -184,6 +193,20 @@ public class AppDetailEntry extends BaseDBObject{
 
     public void setType(int type){
         setSimpleValue("ty",type);
+    }
+    public int getIsControl(){
+        return getSimpleIntegerValue("isc");
+    }
+
+    public void setIsControl(int isControl){
+        setSimpleValue("isc",isControl);
+    }
+    public int getWhiteOrBlack(){
+        return getSimpleIntegerValue("wob");
+    }
+
+    public void setWhiteOrBlack(int whiteOrBlack){
+        setSimpleValue("wob",whiteOrBlack);
     }
 
     public String getLogo(){

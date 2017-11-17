@@ -17,6 +17,7 @@ import com.fulaan.forum.service.FInformationService;
 import com.fulaan.forum.service.FVoteService;
 import com.fulaan.friendscircle.service.FriendApplyService;
 import com.fulaan.friendscircle.service.FriendService;
+import com.fulaan.instantmessage.service.RedDotService;
 import com.fulaan.pojo.*;
 import com.fulaan.user.service.UserService;
 import com.fulaan.util.DateUtils;
@@ -24,6 +25,7 @@ import com.pojo.activity.FriendApplyEntry;
 import com.pojo.fcommunity.*;
 import com.pojo.forum.FVoteDTO;
 import com.pojo.forum.FVoteEntry;
+import com.pojo.instantmessage.ApplyTypeEn;
 import com.pojo.user.NewVersionUserRoleEntry;
 import com.pojo.user.UserEntry;
 import com.sys.constants.Constant;
@@ -61,6 +63,8 @@ public class CommunityService {
     private FVoteService fVoteService;
     @Autowired
     private FInformationService fInformationService;
+    @Autowired
+    private RedDotService redDotService;
 
 
     private UserDao userDao = new UserDao();
@@ -509,6 +513,11 @@ public class CommunityService {
                 message.getShareUrl(), message.getShareImage(), message.getShareTitle(), message.getSharePrice(), message.getVoteContent(), message.getVoteMaxCount(),
                 ConvertStrToLong(message.getVoteDeadTime()), message.getVoteType(), videoEntries
         );
+        //保存红点信息
+        List<ObjectId> oid = new ArrayList<ObjectId>();
+        oid.add(new ObjectId(message.getCommunityId()));
+        redDotService.addOtherEntryList(oid, uid, message.getType(), 3);
+
         return communityDetailDao.save(entry);
     }
 
@@ -1109,6 +1118,8 @@ public class CommunityService {
      * @return
      */
     public PageModel<CommunityDetailDTO> getOtherMessages(int page, int pageSize, CommunityDetailType type, ObjectId userId, boolean isApp) {
+        //清除红点
+        redDotService.cleanOtherResult(userId, type.getType());
         PageModel<CommunityDetailDTO> pageModel = new PageModel<CommunityDetailDTO>();
         List<CommunityDTO> communityDTOList =getCommunitys(userId, 1, 100);
         List<ObjectId>  objectIdList = new ArrayList<ObjectId>();

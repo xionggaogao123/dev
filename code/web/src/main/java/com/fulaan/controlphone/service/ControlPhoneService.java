@@ -3,7 +3,10 @@ package com.fulaan.controlphone.service;
 import com.db.appmarket.AppDetailDao;
 import com.db.controlphone.*;
 import com.db.fcommunity.CommunityDao;
+import com.db.fcommunity.GroupDao;
+import com.db.fcommunity.MemberDao;
 import com.fulaan.appmarket.dto.AppDetailDTO;
+import com.fulaan.community.dto.CommunityDTO;
 import com.fulaan.controlphone.dto.*;
 import com.fulaan.mqtt.MQTTSendMsg;
 import com.fulaan.newVersionBind.service.NewVersionBindService;
@@ -18,6 +21,7 @@ import org.bson.types.ObjectId;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.text.SimpleDateFormat;
 import java.util.*;
 
 /**
@@ -41,6 +45,16 @@ public class ControlPhoneService {
     private ControlAppResultDao controlAppResultDao = new ControlAppResultDao();
 
     private ControlMessageDao controlMessageDao = new ControlMessageDao();
+
+    private MemberDao memberDao = new MemberDao();
+
+    private GroupDao groupDao = new GroupDao();
+
+    private ControlSchoolTimeDao controlSchoolTimeDao = new ControlSchoolTimeDao();
+
+    private ControlAppUserDao controlAppUserDao = new ControlAppUserDao();
+
+    private ControlNowTimeDao controlNowTimeDao = new ControlNowTimeDao();
 
     @Autowired
     private NewVersionBindService newVersionBindService;
@@ -209,6 +223,34 @@ public class ControlPhoneService {
             controlAppDao.updEntry(entry);
         }
     }
+
+    //添加/修改推送应用（家长端）
+    public void addParentAppList(ObjectId parentId,ObjectId sonId,ObjectId appId,int type){
+        ControlAppUserEntry entry = controlAppUserDao.getEntry(parentId,sonId);
+        if(null == entry){
+            ControlAppUserDTO dto = new ControlAppUserDTO();
+            List<String> olist = new ArrayList<String>();
+            olist.add(appId.toString());
+            dto.setAppIdList(olist);
+            dto.setUserId(sonId.toString());
+            dto.setParentId(parentId.toString());
+            ControlAppUserEntry entry1 = dto.buildAddEntry();
+            controlAppUserDao.addEntry(entry1);
+        }else{
+            if(type==1){//卸载
+                List<ObjectId> appIds = entry.getAppIdList();
+                appIds.remove(appId);
+                entry.setAppIdList(appIds);
+                controlAppUserDao.updEntry(entry);
+            }else if (type==2){//推送
+                List<ObjectId> appIds = entry.getAppIdList();
+                appIds.add(appId);
+                entry.setAppIdList(appIds);
+                controlAppUserDao.updEntry(entry);
+            }
+
+        }
+    }
     //家长端
     public List<Map<String,Object>> getAppListForStudent(ObjectId studentId){
         List<Map<String,Object>>  mlist = new ArrayList<Map<String, Object>>();
@@ -314,16 +356,18 @@ public class ControlPhoneService {
         controlMapDao.addEntry(entry);
     }
     public static void main(String[] args){
-        ControlPhoneDTO entry = new ControlPhoneDTO();
-        ControlPhoneDao controlMapDao =new ControlPhoneDao();//59e71f222675642a181100fc
+       /* ControlAppUserDTO entry = new ControlAppUserDTO();
+        ControlAppUserDao controlMapDao =new ControlAppUserDao();//59e71f222675642a181100fc
         for(int i = 0;i <1;i++){
-            entry.setType(1);
-            entry.setName("客服电话");
-            entry.setPhone("400800");
-            entry.setUserId("59e71bedbf2e79192c36267b");
+            List<String> str = new ArrayList<String>();
+            str.add("59eeb4eb2675640f6cc88b39");
             entry.setParentId("59e71c38bf2e79192c362681");
+            entry.setUserId("59e71bedbf2e79192c36267b");
+            entry.setAppIdList(str);
             controlMapDao.addEntry(entry.buildAddEntry());
-        }
+        }*/
+        int i = 1;
+        System.out.println(i);
     }
     //获得地图位置
     public Map<String,Object> getMapNow(ObjectId parentId,ObjectId sonId) {
@@ -409,6 +453,20 @@ public class ControlPhoneService {
         }
         return dtos;
     }
+    public List<ControlMapDTO> getSimpleMapListEntry(ObjectId parentId,ObjectId sonId,String dateTime){
+        List<ControlMapDTO> dtos = new ArrayList<ControlMapDTO>();
+        long sl = 0l;
+        if(dateTime != null && dateTime != ""){
+            sl = DateTimeUtils.getStrToLongTime(dateTime, "yyyy-MM-dd");
+        }
+        List<ControlMapEntry> entries = controlMapDao.getSimpleMapListEntry(parentId,sonId,sl);
+        if(entries.size()>0){
+            for(ControlMapEntry entry : entries){
+                dtos.add(new ControlMapDTO(entry));
+            }
+        }
+        return dtos;
+    }
 
     //家长获得信息列表
     public Map<String,Object> getSonMessage(ObjectId parentId,ObjectId sonId,int page,int pageSize){
@@ -427,31 +485,334 @@ public class ControlPhoneService {
     }
 
     //学生登录获取所有信息
-    public Map<String,Object> getAllMessageForSon(ObjectId parentId,ObjectId sonId){
+    public Map<String,Object> getAllMessageForSon(ObjectId sonId){
+        ControlTimeEntry controlTimeEntry = controlTimeDao.getEntryByUserId(sonId);
+        ObjectId parentId = controlTimeEntry.getParentId();
         Map<String,Object> map = new HashMap<String, Object>();
-
-
-
-
-
+        //可用应用列表
+        List<ObjectId> obList = newVersionBindService.getCommunityIdsByUserId(sonId);
+        //获得各个社区的推送应用记录
+        List<ControlAppEntry> controlAppEntries = controlAppDao.getEntryListByCommunityId(obList);
+        List<ObjectId> objectIdList = new ArrayList<ObjectId>();
+        if(controlAppEntries.size()>0){
+            for(ControlAppEntry controlAppEntry : controlAppEntries){
+                objectIdList.addAll(controlAppEntry.getAppIdList());
+            }
+        }
+        List<AppDetailEntry> entries2 = appDetailDao.getEntriesByIds(objectIdList);
+        List<AppDetailEntry> entries3 =  appDetailDao.getAllByCondition();
+        entries2.addAll(entries3);
+        List<AppDetailDTO> detailDTOs = new ArrayList<AppDetailDTO>();                                                              
+        for(AppDetailEntry detailEntry : entries2){
+            detailDTOs.add(new AppDetailDTO(detailEntry));
+        }
+        map.put("app",detailDTOs);
+        //可用电话记录
+        List<ControlPhoneDTO> dtos = new ArrayList<ControlPhoneDTO>();
+        List<ControlPhoneEntry> entries = controlPhoneDao.getEntryListByparentIdAndUserId(parentId, sonId);
+        if(entries.size()>0){
+            for(ControlPhoneEntry entry : entries){
+                dtos.add(new ControlPhoneDTO(entry));
+            }
+        }
+        map.put("phone",dtos);
+        //管控时间
+        long timecu = 0l;
+        if(controlTimeEntry != null){
+            timecu = controlTimeEntry.getTime();
+        }
+        map.put("time",timecu/60000);
+        //获得当前时间
+        long current=System.currentTimeMillis();
+        //获得时间批次
+        long zero=current/(1000*3600*24)*(1000*3600*24)- TimeZone.getDefault().getRawOffset();//今天零点零分零秒的毫秒数
+        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
+        String dateNowStr = sdf.format(zero);
+        ControlSchoolTimeEntry entry2 = controlSchoolTimeDao.getOtherEntry(2,dateNowStr);
+        if(entry2 != null){
+            String stm = entry2.getStartTime();
+            long sl = 0l;
+            if(stm != null && stm != ""){
+                sl = DateTimeUtils.getStrToLongTime(dateNowStr+" "+stm, "yyyy-MM-dd HH:mm:ss");
+            }
+            String etm = entry2.getEndTime();
+            long el = 0l;
+            if(etm != null && etm != ""){
+                el = DateTimeUtils.getStrToLongTime(dateNowStr+" "+etm, "yyyy-MM-dd HH:mm:ss");
+            }
+            if(current>sl && current < el){
+                map.put("isControl",true);
+            }else{
+                map.put("isControl",false);
+            }
+            map.put("dto",new ControlSchoolTimeDTO(entry2));
+        }else{
+            //管控时间
+            Calendar cal = Calendar.getInstance();
+            int w = cal.get(Calendar.DAY_OF_WEEK) - 1;
+            ControlSchoolTimeEntry entry = controlSchoolTimeDao.getEntry(w);
+            if(entry != null){
+                String stm = entry.getStartTime();
+                long sl = 0l;
+                if(stm != null && stm != ""){
+                    sl = DateTimeUtils.getStrToLongTime(dateNowStr+" "+stm, "yyyy-MM-dd HH:mm:ss");
+                }
+                String etm = entry.getEndTime();
+                long el = 0l;
+                if(etm != null && etm != ""){
+                    el = DateTimeUtils.getStrToLongTime(dateNowStr+" "+etm, "yyyy-MM-dd HH:mm:ss");
+                }
+                if(current>sl && current < el){
+                    map.put("isControl",true);
+                }else{
+                    map.put("isControl",false);
+                }
+                map.put("dto",new ControlSchoolTimeDTO(entry));
+            }else{
+                map.put("isControl",false);
+                map.put("dto",new ControlSchoolTimeDTO());
+            }
+        }
         return map;
     }
 
     //老师查询可推送应用
     public List<AppDetailDTO> getShouldAppList(ObjectId communityId){
         List<AppDetailDTO> dtos = new ArrayList<AppDetailDTO>();
-
-
-
-
-
-
-
-
+        //获取所有可推送的第三方应用
+        List<AppDetailEntry> entries = appDetailDao.getThirdEntries();
+        //查询该社区推送的记录
+       ControlAppEntry entry = controlAppDao.getEntry(communityId);
+        if(null == entry){
+            for(AppDetailEntry entry1 : entries){
+                AppDetailDTO dto = new AppDetailDTO(entry1);
+                dto.setIsCheck(1);
+                dtos.add(dto);
+            }
+        }else{
+            for(AppDetailEntry entry1 : entries){
+                if(entry.getAppIdList() != null && entry.getAppIdList().contains(entry1.getID())){
+                    AppDetailDTO dto = new AppDetailDTO(entry1);
+                    dto.setIsCheck(2);
+                    dtos.add(dto);
+                }else{
+                    AppDetailDTO dto = new AppDetailDTO(entry1);
+                    dto.setIsCheck(1);
+                    dtos.add(dto);
+                }
+            }
+        }
         return dtos;
     }
 
+    public List<AppDetailDTO> getParentAppList(ObjectId parentId,ObjectId sonId){
+        //家长推荐app
+        ControlAppUserEntry entry2 = controlAppUserDao.getEntry(parentId,sonId);
+        List<AppDetailDTO> dtos = new ArrayList<AppDetailDTO>();
+        List<ObjectId> oblist = new ArrayList<ObjectId>();
+        if(entry2 != null ){
+            oblist.addAll(entry2.getAppIdList());
+        }
 
+        //获取所有可推送的第三方应用
+        List<AppDetailEntry> entries = appDetailDao.getThirdEntries();
+
+        //查询该社区推送的记录
+        List<ObjectId> obList = newVersionBindService.getCommunityIdsByUserId(sonId);
+        List<ControlAppEntry> entry3 = controlAppDao.getEntryListByCommunityId(obList);
+        Set<ObjectId> set = new HashSet<ObjectId>();
+        if(entry3.size()>0){
+            for(ControlAppEntry controlAppEntry : entry3){
+                set.addAll(controlAppEntry.getAppIdList());
+            }
+        }
+        List<ObjectId> capplist = new ArrayList<ObjectId>();
+        capplist.addAll(set);
+
+        List<AppDetailDTO> dtos1 = new ArrayList<AppDetailDTO>();
+        List<AppDetailDTO> dtos2 = new ArrayList<AppDetailDTO>();
+        List<AppDetailDTO> dtos3 = new ArrayList<AppDetailDTO>();
+        if(entries.size()>0){
+            for(AppDetailEntry detailEntry : entries){
+                AppDetailDTO dto = new AppDetailDTO(detailEntry);
+                if(oblist != null && oblist.contains(detailEntry.getID())){
+                    dto.setIsCheck(1);
+                    dtos1.add(dto);
+                }else if(capplist != null && capplist.contains(detailEntry.getID())){
+                    dto.setIsCheck(2);
+                    dtos2.add(dto);
+                }else{
+                    dto.setIsCheck(3);
+                    dtos3.add(dto);
+                }
+            }
+        }
+        dtos.addAll(dtos1);
+        dtos.addAll(dtos2);
+        dtos.addAll(dtos3);
+        return dtos;
+    }
+    public List<AppDetailDTO> seacherParentAppList(ObjectId parentId,ObjectId sonId,String keyword){
+        //家长推荐app
+        ControlAppUserEntry entry2 = controlAppUserDao.getEntry(parentId,sonId);
+        List<AppDetailDTO> dtos = new ArrayList<AppDetailDTO>();
+        List<ObjectId> oblist = new ArrayList<ObjectId>();
+        if(entry2 != null ){
+            oblist.addAll(entry2.getAppIdList());
+        }
+
+        //获取所有可推送的第三方应用
+        List<AppDetailEntry> entries = appDetailDao.getThirdEntries();
+
+        //查询该社区推送的记录
+        List<ObjectId> obList = newVersionBindService.getCommunityIdsByUserId(sonId);
+        List<ControlAppEntry> entry3 = controlAppDao.getEntryListByCommunityId(obList);
+        Set<ObjectId> set = new HashSet<ObjectId>();
+        if(entry3.size()>0){
+            for(ControlAppEntry controlAppEntry : entry3){
+                set.addAll(controlAppEntry.getAppIdList());
+            }
+        }
+        List<ObjectId> capplist = new ArrayList<ObjectId>();
+        capplist.addAll(set);
+
+        List<AppDetailDTO> dtos1 = new ArrayList<AppDetailDTO>();
+        List<AppDetailDTO> dtos2 = new ArrayList<AppDetailDTO>();
+        List<AppDetailDTO> dtos3 = new ArrayList<AppDetailDTO>();
+        if(entries.size()>0){
+            for(AppDetailEntry detailEntry : entries){
+                AppDetailDTO dto = new AppDetailDTO(detailEntry);
+                if(oblist != null && oblist.contains(detailEntry.getID())){
+                    dto.setIsCheck(1);
+                    dtos1.add(dto);
+                }else if(capplist != null && capplist.contains(detailEntry.getID())){
+                    dto.setIsCheck(2);
+                    dtos2.add(dto);
+                }else{
+                    dto.setIsCheck(3);
+                    dtos3.add(dto);
+                }
+            }
+        }
+        dtos.addAll(dtos1);
+        dtos.addAll(dtos2);
+        dtos.addAll(dtos3);
+        List<AppDetailDTO> dtos4 = new ArrayList<AppDetailDTO>();
+        if(dtos.size()>0){
+            for(AppDetailDTO appDetailDTO : dtos){
+                if(appDetailDTO.getAppName().contains(keyword)){
+                    dtos4.add(appDetailDTO);
+                }
+            }
+        }
+        return dtos4;
+    }
+
+    public Map<String,Object> getSimpleMessageForTea(ObjectId teacherId){
+        Map<String,Object> map = new HashMap<String, Object>();
+        List<ObjectId> oids = getMyRoleList(teacherId);
+        List<CommunityDTO> dtos = new ArrayList<CommunityDTO>();
+        if(oids.size()>0){
+            List<CommunityEntry> communityEntries = communityDao.findByObjectIds(oids);
+            for(CommunityEntry com : communityEntries){
+                dtos.add(new CommunityDTO(com));
+            }
+            map.put("list",dtos);
+            map.put("isTeacher",true);
+        }else{
+            map.put("isTeacher",false);
+            map.put("list",dtos);
+        }
+        //是否认证
+        map.put("isRen",true);
+        return map;
+    }
+
+    public Map<String,Object> getAllMessageForTea(ObjectId teacherId,ObjectId communityId){
+        Map<String,Object> map = new HashMap<String, Object>();
+        //获得当前时间
+        long current=System.currentTimeMillis();
+        //获得时间批次
+        long zero=current/(1000*3600*24)*(1000*3600*24)- TimeZone.getDefault().getRawOffset();//今天零点零分零秒的毫秒数
+        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
+        String dateNowStr = sdf.format(zero);
+        //通用设置
+        ControlSchoolTimeEntry entry2 = controlSchoolTimeDao.getOtherEntry(2,dateNowStr);
+        if(entry2 != null){
+            String stm = entry2.getStartTime();
+            long sl = 0l;
+            if(stm != null && stm != ""){
+                sl = DateTimeUtils.getStrToLongTime(dateNowStr+" "+stm, "yyyy-MM-dd HH:mm:ss");
+            }
+            String etm = entry2.getEndTime();
+            long el = 0l;
+            if(etm != null && etm != ""){
+                el = DateTimeUtils.getStrToLongTime(dateNowStr+" "+etm, "yyyy-MM-dd HH:mm:ss");
+            }
+            if(current>sl && current < el){
+                map.put("isControl",true);
+            }else{
+                map.put("isControl",false);
+            }
+            map.put("dto",new ControlSchoolTimeDTO(entry2));
+        }else{
+            //管控时间
+            Calendar cal = Calendar.getInstance();
+            int w = cal.get(Calendar.DAY_OF_WEEK) - 1;
+            ControlSchoolTimeEntry entry = controlSchoolTimeDao.getEntry(w);
+            if(entry != null){
+                String stm = entry.getStartTime();
+                long sl = 0l;
+                if(stm != null && stm != ""){
+                    sl = DateTimeUtils.getStrToLongTime(dateNowStr+" "+stm, "yyyy-MM-dd HH:mm:ss");
+                }
+                String etm = entry.getEndTime();
+                long el = 0l;
+                if(etm != null && etm != ""){
+                    el = DateTimeUtils.getStrToLongTime(dateNowStr+" "+etm, "yyyy-MM-dd HH:mm:ss");
+                }
+                if(current>sl && current < el){
+                    map.put("isControl",true);
+                }else{
+                    map.put("isControl",false);
+                }
+                map.put("dto",new ControlSchoolTimeDTO(entry));
+            }else{
+                map.put("isControl",false);
+                map.put("dto",new ControlSchoolTimeDTO());
+            }
+        }
+        //特殊设置
+        ControlNowTimeEntry entry3 = controlNowTimeDao.getOtherEntry(dateNowStr,communityId);
+        if(entry3 != null){
+            String stm = entry3.getStartTime();
+            long sl = 0l;
+            if(stm != null && stm != ""){
+                sl = DateTimeUtils.getStrToLongTime(dateNowStr+" "+stm, "yyyy-MM-dd HH:mm:ss");
+            }
+            String etm = entry3.getEndTime();
+            long el = 0l;
+            if(etm != null && etm != ""){
+                el = DateTimeUtils.getStrToLongTime(dateNowStr+" "+etm, "yyyy-MM-dd HH:mm:ss");
+            }
+            if(current>sl && current < el){
+                map.put("isControl",true);
+            }else{
+                map.put("isControl",false);
+            }
+            map.put("third",new ControlNowTimeDTO(entry3));
+        }else{
+            ControlNowTimeEntry controlNowTimeEntry = new ControlNowTimeEntry();
+            map.put("third",new ControlNowTimeDTO(controlNowTimeEntry));
+        }
+        return map;
+    }
+    public List<ObjectId> getMyRoleList(ObjectId userId){
+        List<ObjectId> olsit = memberDao.getGroupIdsList(userId);
+        List<ObjectId> clist = new ArrayList<ObjectId>();
+        List<ObjectId> mlist =   groupDao.getGroupIdsList(olsit);
+        return mlist;
+    }
     /**
      * 批量增加应用记录
      * @param list

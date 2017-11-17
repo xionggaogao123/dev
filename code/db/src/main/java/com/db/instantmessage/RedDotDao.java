@@ -37,6 +37,23 @@ public class RedDotDao extends BaseDao {
         }
         return null;
     }
+    public List<RedDotEntry> getAllEntry(ObjectId userId) {
+        BasicDBObject query = new BasicDBObject()
+                .append("uid", userId)
+                .append("isr", 0); // 未删除
+        List<DBObject> dbList =
+                find(MongoFacroty.getAppDB(),
+                        Constant.COLLECTION_RED_DOT,
+                        query, Constant.FIELDS,
+                        Constant.MONGO_SORTBY_DESC);
+        List<RedDotEntry> entryList = new ArrayList<RedDotEntry>();
+        if (dbList != null && !dbList.isEmpty()) {
+            for (DBObject obj : dbList) {
+                entryList.add(new RedDotEntry((BasicDBObject) obj));
+            }
+        }
+        return entryList;
+    }
     //单个查询 same类型
     public RedDotEntry getOtherEntryByUserId(ObjectId userId,long dataTime,int type){
         BasicDBObject query = new BasicDBObject();

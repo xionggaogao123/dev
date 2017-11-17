@@ -1,69 +1,56 @@
 package com.fulaan.controlphone.dto;
 
-import com.pojo.controlphone.ControlSchoolTimeEntry;
+import com.pojo.controlphone.ControlNowTimeEntry;
 import org.bson.types.ObjectId;
 
 /**
- * Created by James on 2017/11/16.
+ * Created by James on 2017/11/17.
  */
-public class ControlSchoolTimeDTO {
+public class ControlNowTimeDTO {
+
     private String id;
-    private String parentId;
     private String userId;
-    private int type;
     private String dataTime;
     private String startTime;
     private String endTime;
-    private int week;
     private String communityId;
-
-    public ControlSchoolTimeDTO(){
+    public ControlNowTimeDTO(){
 
     }
-    public ControlSchoolTimeDTO(ControlSchoolTimeEntry e){
+    public ControlNowTimeDTO(ControlNowTimeEntry e){
         if(e!=null){
             this.id = e.getID()==null?"":e.getID().toString();
-            this.parentId = e.getParentId() == null ? "" : e.getParentId().toString();
             this.userId = e.getUserId() == null ? "" : e.getUserId().toString();
             this.communityId = e.getCommunityId() == null ? "" : e.getCommunityId().toString();
-            this.type = e.getType();
             this.dataTime = e.getDataTime();
             this.startTime = e.getStartTime();
             this.endTime = e.getEndTime();
-            this.week = e.getWeek();
         }else{
-            new ControlSchoolTimeDTO();
+            new ControlNowTimeDTO();
         }
     }
 
-    public ControlSchoolTimeEntry buildAddEntry(){
+    public ControlNowTimeEntry buildAddEntry(){
         ObjectId uId=null;
         if(this.getUserId()!=null&&!"".equals(this.getUserId())){
             uId=new ObjectId(this.getUserId());
-        }
-        ObjectId pId=null;
-        if(this.getParentId()!=null&&!"".equals(this.getParentId())){
-            pId=new ObjectId(this.getParentId());
         }
         ObjectId cId=null;
         if(this.getCommunityId()!=null&&!"".equals(this.getCommunityId())){
             cId=new ObjectId(this.getCommunityId());
         }
-        ControlSchoolTimeEntry openEntry =
-                new ControlSchoolTimeEntry(
-                        pId,
+        ControlNowTimeEntry openEntry =
+                new ControlNowTimeEntry(
                         uId,
-                        this.type,
                         this.dataTime,
                         this.startTime,
                         this.endTime,
-                        this.week,
                         cId
                 );
         return openEntry;
 
     }
-    public ControlSchoolTimeEntry updateEntry(){
+    public ControlNowTimeEntry updateEntry(){
         ObjectId Id=null;
         if(this.getId()!=null&&!"".equals(this.getId())){
             Id=new ObjectId(this.getId());
@@ -72,30 +59,22 @@ public class ControlSchoolTimeDTO {
         if(this.getUserId()!=null&&!"".equals(this.getUserId())){
             uId=new ObjectId(this.getUserId());
         }
-        ObjectId pId=null;
-        if(this.getParentId()!=null&&!"".equals(this.getParentId())){
-            pId=new ObjectId(this.getParentId());
-        }
         ObjectId cId=null;
         if(this.getCommunityId()!=null&&!"".equals(this.getCommunityId())){
             cId=new ObjectId(this.getCommunityId());
         }
-        ControlSchoolTimeEntry openEntry =
-                new ControlSchoolTimeEntry(
+        ControlNowTimeEntry openEntry =
+                new ControlNowTimeEntry(
                         Id,
-                        pId,
                         uId,
-                        this.type,
                         this.dataTime,
                         this.startTime,
                         this.endTime,
-                        this.week,
                         cId
                 );
         return openEntry;
 
     }
-
 
     public String getId() {
         return id;
@@ -105,28 +84,12 @@ public class ControlSchoolTimeDTO {
         this.id = id;
     }
 
-    public String getParentId() {
-        return parentId;
-    }
-
-    public void setParentId(String parentId) {
-        this.parentId = parentId;
-    }
-
     public String getUserId() {
         return userId;
     }
 
     public void setUserId(String userId) {
         this.userId = userId;
-    }
-
-    public int getType() {
-        return type;
-    }
-
-    public void setType(int type) {
-        this.type = type;
     }
 
     public String getDataTime() {
@@ -151,14 +114,6 @@ public class ControlSchoolTimeDTO {
 
     public void setEndTime(String endTime) {
         this.endTime = endTime;
-    }
-
-    public int getWeek() {
-        return week;
-    }
-
-    public void setWeek(int week) {
-        this.week = week;
     }
 
     public String getCommunityId() {

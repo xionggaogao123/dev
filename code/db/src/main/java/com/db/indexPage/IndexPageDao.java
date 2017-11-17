@@ -22,6 +22,13 @@ public class IndexPageDao extends BaseDao {
         return entry.getID();
     }
 
+    //删除作业
+    public void delEntry(ObjectId id){
+        BasicDBObject query = new BasicDBObject();
+        query.append("tid",id);
+        BasicDBObject updateValue=new BasicDBObject(Constant.MONGO_SET,new BasicDBObject("isr",Constant.ONE));
+        update(MongoFacroty.getAppDB(), Constant.COLLECTION_INDEX_PAGE, query,updateValue);
+    }
     //查询首页显示列表
     public List<IndexPageEntry> getPageList(List<ObjectId> olist,ObjectId userId,int page,int pageSize){
         List<IndexPageEntry> entryList=new ArrayList<IndexPageEntry>();

@@ -153,6 +153,8 @@ public class AppNoticeService {
             if(null!=appNoticeEntry.getUserId()&&null!=userId
                     &&appNoticeEntry.getUserId().toString().equals(userId.toString())){
                 appNoticeDao.removeAppNoticeEntry(noticeId);
+                //删除首页记录
+                indexPageDao.delEntry(noticeId);
             }else {
                 throw new Exception("你没有权限删除该通知!");
             }

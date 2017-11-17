@@ -620,6 +620,7 @@ public class UserCenterController extends BaseController {
     @ResponseBody
     public RespObj addFVote(String number, String voteId) {
 //        RespObj respObj = new RespObj(Constant.FAILD_CODE);
+        RespObj respObj = null;
         try {
             SessionValue sv = getSessionValue();
             String userId = "";
@@ -628,7 +629,9 @@ public class UserCenterController extends BaseController {
             }
             FVoteEntry entry=fVoteService.getFVote(voteId,userId);
             if(null!=entry){
-               return  RespObj.FAILD("已经投过票了!");
+                respObj = RespObj.FAILD;
+                respObj.setErrorMessage("已经投过票了");
+                return  respObj;
             }else {
                 List<FVoteEntry> fVoteEntryList = new ArrayList<FVoteEntry>();
                 if (number.contains(",")) {
@@ -648,11 +651,15 @@ public class UserCenterController extends BaseController {
                     fVoteDTO.setVoteId(voteId);
                     fVoteService.addFVote(fVoteDTO);
                 }
-                return RespObj.SUCCESS;
+                respObj = RespObj.SUCCESS;
+                respObj.setMessage("成功");
+                return  respObj;
             }
         } catch (Exception e) {
             e.printStackTrace();
-            return RespObj.FAILD("更新失败");
+            respObj = RespObj.FAILD;
+            respObj.setErrorMessage("更新失败");
+            return  respObj;
         }
     }
 

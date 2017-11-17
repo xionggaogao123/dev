@@ -29,6 +29,17 @@ public class ControlTimeDao extends BaseDao {
         }
         return null;
     }
+     //单查询
+    public ControlTimeEntry getEntryByUserId(ObjectId userId) {
+        BasicDBObject query =new BasicDBObject();
+        query.append("isr", Constant.ZERO) .append("uid", userId);
+        DBObject dbo =findOne(MongoFacroty.getAppDB(), Constant.COLLECTION_CONTROL_TIME, query, Constant.FIELDS);
+        if(null!=dbo)
+        {
+            return new ControlTimeEntry((BasicDBObject)dbo);
+        }
+        return null;
+    }
 
     //修改
     public void updEntry(ControlTimeEntry e) {

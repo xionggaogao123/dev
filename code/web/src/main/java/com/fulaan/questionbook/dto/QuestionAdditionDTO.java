@@ -17,6 +17,7 @@ public class QuestionAdditionDTO {
     private List<String> answerList;
     private int answerType;
     private String createTime;
+    private int level;
 
     public QuestionAdditionDTO(){
 
@@ -28,6 +29,7 @@ public class QuestionAdditionDTO {
             this.parentId = e.getParentId() == null ? "" : e.getParentId().toString();
             this.content = e.getContent();
             this.answerList = e.getAnswerList();
+            this.level = e.getLevel();
             if(e.getCreateTime()!=0l){
                 this.createTime = DateTimeUtils.getLongToStrTimeTwo(e.getCreateTime());
             }else{
@@ -48,7 +50,8 @@ public class QuestionAdditionDTO {
                         pId,
                         this.content,
                         this.answerList,
-                        this.answerType
+                        this.answerType,
+                        this.level
                 );
         return openEntry;
 
@@ -73,7 +76,8 @@ public class QuestionAdditionDTO {
                         this.content,
                         cTm,
                         this.answerList,
-                        this.answerType
+                        this.answerType,
+                        this.level
                 );
         return openEntry;
 
@@ -126,5 +130,13 @@ public class QuestionAdditionDTO {
 
     public void setAnswerType(int answerType) {
         this.answerType = answerType;
+    }
+
+    public int getLevel() {
+        return level;
+    }
+
+    public void setLevel(int level) {
+        this.level = level;
     }
 }

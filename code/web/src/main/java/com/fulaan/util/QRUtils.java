@@ -14,7 +14,7 @@ import java.io.FileOutputStream;
 public class QRUtils {
 
 //    private static final String prev_url="http://www.fulaan.com";
-   private static final String prev_url="http://101.37.190.133";
+   private static final String prev_url="http://appapi.jiaxiaomei.com";
    // private static final String prev_url="http://121.40.229.225:8080";
    // private static final String prev_url="http://192.168.1.35:8087";
 
@@ -96,7 +96,7 @@ public class QRUtils {
 
 
     public static String getSmallLessonUserCodeQrUrl(ObjectId lessonId) {
-        String qrCode = prev_url+"/smallLesson/addStuEntry/" + lessonId.toString();
+        String qrCode = prev_url+"/jxmapi/smallLesson/addStuEntry/" + lessonId.toString();
         try {
             return getQrUrl(qrCode);
         } catch (Exception e) {

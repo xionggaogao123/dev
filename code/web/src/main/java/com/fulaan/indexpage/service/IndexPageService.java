@@ -167,10 +167,12 @@ public class IndexPageService {
         Map<String,Object> map = new HashMap<String, Object>();
         map.put("count",count);
         map.put("list",list);
-
-
         return map;
     }
+    public void delEntry(ObjectId id){
+        indexPageDao.delEntry(id);
+    }
+
     public void addIndexPage(String communityId,String contactId,int type,ObjectId userId){
         //添加临时记录表
         IndexPageDTO dto1 = new IndexPageDTO();

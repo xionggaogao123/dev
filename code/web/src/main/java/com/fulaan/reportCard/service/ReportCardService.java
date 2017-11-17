@@ -322,7 +322,9 @@ public class ReportCardService {
                 if (null != detailEntry) {
                     GroupExamDetailDTO detailDTO = new GroupExamDetailDTO(detailEntry);
                     UserEntry userEntry = userEntryMap.get(recordEntry.getUserId());
-                    detailDTO.setChildUserName(userEntry.getUserName());
+                    if(null!=userEntry) {
+                        detailDTO.setChildUserName(userEntry.getUserName());
+                    }
                     detailDTO.setChildUserId(recordEntry.getUserId().toString());
                     CommunityEntry communityEntry=communityEntryMap.get(recordEntry.getCommunityId());
                     if (null!=communityEntry){
@@ -701,9 +703,11 @@ public class ReportCardService {
             if(bindEntry != null && bindEntry.getThirdName()!=null && !bindEntry.getThirdName().equals("")){
                 detailDTO.setChildUserName(bindEntry.getThirdName());
             }else{
-                detailDTO.setChildUserName(StringUtils.isNotBlank(userEntry.getNickName())?
-                                userEntry.getNickName():userEntry.getUserName()
-                );
+                if(null!=userEntry) {
+                    detailDTO.setChildUserName(StringUtils.isNotBlank(userEntry.getNickName()) ?
+                            userEntry.getNickName() : userEntry.getUserName()
+                    );
+                }
             }
             if(detailDTO.getRecordScoreType()==Constant.ONE){
                 detailDTO.setScore(examUserRecordEntry.getScore());

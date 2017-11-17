@@ -17,10 +17,58 @@ public class VirtualUserEntry extends BaseDBObject{
     }
 
     public VirtualUserEntry(ObjectId communityId,
-                            ObjectId groupId){
+                            ObjectId groupId,
+                            String userNumber,
+                            ObjectId userId,
+                            String userName){
         BasicDBObject basicDBObject=new BasicDBObject()
                 .append("cid",communityId)
+                .append("unm",userName)
+                .append("uid",userId)
+                .append("un",userNumber)
                 .append("gid",groupId);
         setBaseEntry(basicDBObject);
     }
+
+    public void setGroupId(ObjectId groupId){
+        setSimpleValue("gid",groupId);
+    }
+
+    public ObjectId getGroupId(){
+        return getSimpleObjecIDValue("gid");
+    }
+
+    public void setUserNumber(String userNumber){
+        setSimpleValue("un",userNumber);
+    }
+
+    public String getUserNumber(){
+        return getSimpleStringValue("un");
+    }
+
+    public void setUserId(ObjectId userId){
+        setSimpleValue("uid",userId);
+    }
+
+    public ObjectId getUserId(){
+        return getSimpleObjecIDValue("uid");
+    }
+
+    public void setUserName(String userName){
+        setSimpleValue("unm",userName);
+    }
+
+    public String getUserName(){
+        return getSimpleStringValue("unm");
+    }
+
+    public void setCommunityId(ObjectId communityId){
+        setSimpleValue("cid",communityId);
+    }
+
+    public ObjectId getCommunityId(){
+        return getSimpleObjecIDValue("cid");
+    }
+
+
 }

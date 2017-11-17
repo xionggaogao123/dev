@@ -28,6 +28,11 @@ public class SessionValueInterceptor extends HandlerInterceptorAdapter {
     @Override
     public boolean preHandle(HttpServletRequest request, HttpServletResponse response,
                              Object arg2) throws Exception {
+        response.setHeader("Access-Control-Allow-Origin", "*");
+        response.setHeader("Access-Control-Allow-Methods", "*");
+        response.setHeader("Access-Control-Max-Age", "3600");
+        response.setHeader("Access-Control-Allow-Headers",
+                "Origin, X-Requested-With, Content-Type, Accept");
         if(arg2 instanceof  HandlerMethod) {
             HandlerMethod method = (HandlerMethod) arg2;
             SessionNeedless s = method.getMethodAnnotation(SessionNeedless.class);

@@ -883,6 +883,10 @@ public class Constant {
     public static final String COLLECTION_REPORT_CARD_EXAM_USER_RECORD="report_card_exam_user_rec";
 
     public static final String COLLECTION_REPORT_CARD_EXAM_VERSION="report_card_exam_version";
+
+    public static final String COLLECTION_REPORT_CARD_VIRTUAL_USER="report_card_virtual_user";
+
+    public static final String COLLECTION_WEB_HOME_PAGE_RECORD="web_home_page_record";
     /**------------------------成绩单----------------------**/
 
     //首页记录表

@@ -27,7 +27,7 @@ import java.util.Map;
  */
 @Api(value = "作业相关接口")
 @Controller
-@RequestMapping("/appOperation")
+@RequestMapping("/web/appOperation")
 public class AppCommentController extends BaseController {
 
     @Autowired

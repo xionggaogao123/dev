@@ -6,6 +6,7 @@ import com.db.fcommunity.CommunityDao;
 import com.db.fcommunity.GroupDao;
 import com.db.fcommunity.MemberDao;
 import com.db.indexPage.IndexPageDao;
+import com.db.indexPage.WebHomePageDao;
 import com.db.newVersionGrade.NewVersionSubjectDao;
 import com.db.operation.AppCommentDao;
 import com.db.operation.AppOperationDao;
@@ -27,6 +28,7 @@ import com.fulaan.utils.JPushUtils;
 import com.fulaan.wrongquestion.dto.SubjectClassDTO;
 import com.mongodb.DBObject;
 import com.pojo.fcommunity.MemberEntry;
+import com.pojo.indexPage.WebHomePageEntry;
 import com.pojo.instantmessage.ApplyTypeEn;
 import com.pojo.newVersionGrade.NewVersionSubjectEntry;
 import com.pojo.operation.AppCommentEntry;
@@ -60,6 +62,7 @@ public class AppCommentService {
     private CommunityDao communityDao = new CommunityDao();
     private SubjectClassDao subjectClassDao = new SubjectClassDao();
     private IndexPageDao indexPageDao = new IndexPageDao();
+    private WebHomePageDao webHomePageDao = new WebHomePageDao();
     private NewVersionSubjectDao newVersionSubjectDao = new NewVersionSubjectDao();
     private NewVersionBindRelationDao newVersionBindRelationDao = new NewVersionBindRelationDao();
     private AppRecordResultDao appRecordResultDao = new AppRecordResultDao();
@@ -128,6 +131,17 @@ public class AppCommentService {
                 indexPageDao.addEntry(entry);
                 objectIdList.add(new ObjectId(dto3.getId()));
             }*/
+            int status=Constant.ZERO;
+            if(dto.getStatus()==0){
+                status=Constant.TWO;
+            }
+            WebHomePageEntry pageEntry=new WebHomePageEntry(Constant.ONE, new ObjectId(dto.getAdminId()),
+                    new ObjectId(dto3.getId()),
+                    new ObjectId(oid),
+                    new ObjectId(dto.getSubjectId()),
+                    null, status);
+            webHomePageDao.saveWebHomeEntry(pageEntry);
+
             objectIdList.add(new ObjectId(dto3.getId()));
             redDotService.addEntryList(objectIdList,new ObjectId(dto.getAdminId()), ApplyTypeEn.operation.getType(),4);
         }

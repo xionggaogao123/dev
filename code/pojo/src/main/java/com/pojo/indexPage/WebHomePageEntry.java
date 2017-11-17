@@ -13,7 +13,7 @@ import org.bson.types.ObjectId;
  * userId:发起者Id
  * contactId:作业或者通知/成绩单消息Id,
  * subjectId:学科Id
- * status:状态针对作业或者通知以及成绩单
+ * status:状态针对作业或者通知以及成绩单 0默认保存,2已发送
  * receivedId:针对成绩单接收者Id(作业和通知是null)
  * ti:发送时间
  */

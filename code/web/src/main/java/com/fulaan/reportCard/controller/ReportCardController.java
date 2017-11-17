@@ -397,6 +397,43 @@ public class ReportCardController extends BaseController{
         return respObj;
     }
 
+    @ApiOperation(value = "导出模板", httpMethod = "GET", produces = "application/json")
+    @RequestMapping("/exportUserControl/{communityId}")
+    @ResponseBody
+    public void exportUserControl(@PathVariable @ObjectIdType ObjectId communityId,
+                               HttpServletResponse response){
+        try {
+            reportCardService.exportUserControl(communityId,response);
+        }catch (Exception e){
+            e.printStackTrace();
+        }
+    }
+
+
+    @ApiOperation(value = "导入模板", httpMethod = "GET", produces = "application/json")
+    @ApiResponses( value = {@ApiResponse(code = 200, message = "导入模板已完成",response = String.class),
+            @ApiResponse(code = 400, message = "请求中有语法问题，或不能满足请求"),
+            @ApiResponse(code = 500, message = "服务器不能完成请求")})
+    @RequestMapping("/importUserControl")
+    @ResponseBody
+    public RespObj importUserControl(MultipartRequest request)throws Exception{
+        RespObj respObj=new RespObj(Constant.FAILD_CODE);
+        try {
+            MultiValueMap<String, MultipartFile> fileMap = request.getMultiFileMap();
+            for (List<MultipartFile> multipartFiles : fileMap.values()) {
+                for(MultipartFile file:multipartFiles) {
+                    System.out.println("----" + file.getOriginalFilename());
+                    reportCardService.importUserControl(file.getInputStream());
+                }
+            }
+            respObj.setCode(Constant.SUCCESS_CODE);
+            respObj.setMessage("导入模板成功");
+        }catch (Exception e){
+            e.printStackTrace();
+            respObj.setMessage(e.getMessage());
+        }
+        return respObj;
+    }
 
 
 

@@ -5,6 +5,7 @@ import com.db.fcommunity.CommunityDao;
 import com.db.fcommunity.MemberDao;
 import com.db.fcommunity.NewVersionCommunityBindDao;
 import com.db.indexPage.IndexPageDao;
+import com.db.indexPage.WebHomePageDao;
 import com.db.operation.AppNoticeDao;
 import com.db.operation.AppOperationDao;
 import com.fulaan.indexpage.dto.IndexPageDTO;
@@ -20,6 +21,7 @@ import com.pojo.appnotice.AppNoticeEntry;
 import com.pojo.fcommunity.MemberEntry;
 import com.pojo.fcommunity.NewVersionCommunityBindEntry;
 import com.pojo.indexPage.IndexPageEntry;
+import com.pojo.indexPage.WebHomePageEntry;
 import com.pojo.instantmessage.ApplyTypeEn;
 import com.pojo.newVersionGrade.CommunityType;
 import com.pojo.operation.AppOperationEntry;
@@ -51,6 +53,8 @@ public class AppNoticeService {
     private IndexPageDao indexPageDao = new IndexPageDao();
 
     private NewVersionCommunityBindDao newVersionCommunityBindDao=new NewVersionCommunityBindDao();
+
+    private WebHomePageDao webHomePageDao = new WebHomePageDao();
 
     @Autowired
     private UserService userService;
@@ -106,6 +110,14 @@ public class AppNoticeService {
                 dto1.setContactId(oid.toString());
                 IndexPageEntry entry = dto1.buildAddEntry();
                 indexPageDao.addEntry(entry);
+
+                WebHomePageEntry pageEntry=new WebHomePageEntry(Constant.TWO, userId,
+                        StringUtils.isNotEmpty(communityDTO.getCommunityId())?
+                                new ObjectId(communityDTO.getCommunityId()):null, oid, StringUtils.isNotEmpty(dto.getSubjectId())?
+                        new ObjectId(dto.getSubjectId()):null,
+                        null,Constant.ZERO
+                );
+                webHomePageDao.saveWebHomeEntry(pageEntry);
             }
         }
         try {

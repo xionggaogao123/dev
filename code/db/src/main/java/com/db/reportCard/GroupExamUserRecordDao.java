@@ -17,8 +17,9 @@ import java.util.List;
  */
 public class GroupExamUserRecordDao extends BaseDao{
 
-    public void saveGroupExamUserRecord(GroupExamUserRecordEntry examUserRecordEntry){
+    public ObjectId saveGroupExamUserRecord(GroupExamUserRecordEntry examUserRecordEntry){
         save(MongoFacroty.getAppDB(), Constant.COLLECTION_REPORT_CARD_EXAM_USER_RECORD,examUserRecordEntry.getBaseEntry());
+        return examUserRecordEntry.getID();
     }
 
     public void saveEntries(List<GroupExamUserRecordEntry> entryList){

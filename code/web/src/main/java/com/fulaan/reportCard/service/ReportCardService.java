@@ -2,19 +2,18 @@ package com.fulaan.reportCard.service;
 
 import com.db.fcommunity.CommunityDao;
 import com.db.fcommunity.NewVersionCommunityBindDao;
+import com.db.indexPage.WebHomePageDao;
 import com.db.reportCard.*;
 import com.db.wrongquestion.ExamTypeDao;
 import com.db.wrongquestion.SubjectClassDao;
 import com.fulaan.instantmessage.service.RedDotService;
-import com.fulaan.reportCard.dto.GroupExamDetailDTO;
-import com.fulaan.reportCard.dto.GroupExamUserRecordDTO;
-import com.fulaan.reportCard.dto.GroupExamVersionDTO;
-import com.fulaan.reportCard.dto.RecordLevelEnum;
+import com.fulaan.reportCard.dto.*;
 import com.fulaan.user.service.UserService;
 import com.fulaan.utils.HSSFUtils;
 import com.fulaan.wrongquestion.dto.ExamTypeDTO;
 import com.pojo.fcommunity.CommunityEntry;
 import com.pojo.fcommunity.NewVersionCommunityBindEntry;
+import com.pojo.indexPage.WebHomePageEntry;
 import com.pojo.instantmessage.ApplyTypeEn;
 import com.pojo.reportCard.*;
 import com.pojo.user.UserEntry;
@@ -52,6 +51,7 @@ public class ReportCardService {
     private RecordLevelEvaluateDao recordLevelEvaluateDao=new RecordLevelEvaluateDao();
     private NewVersionCommunityBindDao newVersionCommunityBindDao=new NewVersionCommunityBindDao();
     private CommunityDao communityDao=new CommunityDao();
+    private VirtualUserDao virtualUserDao = new VirtualUserDao();
 
     private ExamTypeDao examTypeDao=new ExamTypeDao();
 
@@ -60,6 +60,8 @@ public class ReportCardService {
     private GroupExamVersionDao groupExamVersionDao=new GroupExamVersionDao();
 
     private SubjectClassDao subjectClassDao=new SubjectClassDao();
+
+    private WebHomePageDao webHomePageDao=new WebHomePageDao();
 
 
 
@@ -483,12 +485,17 @@ public class ReportCardService {
         dto.setExamTime(examTime);
         if(StringUtils.isEmpty(id)) {
             String communityId = dto.getCommunityId();
+            Set<ObjectId> userIds = new HashSet<ObjectId>();
             List<NewVersionCommunityBindEntry> entries
                     = newVersionCommunityBindDao.getStudentIdListByCommunityId(new ObjectId(communityId));
-            Set<ObjectId> userIds = new HashSet<ObjectId>();
             for (NewVersionCommunityBindEntry bindEntry : entries) {
                 userIds.add(bindEntry.getUserId());
             }
+//            List<VirtualUserEntry> virtualUserEntries=virtualUserDao.getAllVirtualUsers(new ObjectId(communityId));
+//            for (VirtualUserEntry virtualUserEntry : virtualUserEntries) {
+//                userIds.add(virtualUserEntry.getUserId());
+//            }
+
             ObjectId groupExamDetailId = groupExamDetailDao.saveGroupExamDetailEntry(dto.buildEntry());
             List<GroupExamUserRecordEntry> userRecordEntries = new ArrayList<GroupExamUserRecordEntry>();
             for (ObjectId uId : userIds) {
@@ -507,7 +514,13 @@ public class ReportCardService {
                 ));
             }
             for(GroupExamUserRecordEntry userRecordEntry:userRecordEntries){
-                groupExamUserRecordDao.saveGroupExamUserRecord(userRecordEntry);
+                ObjectId recordId=groupExamUserRecordDao.saveGroupExamUserRecord(userRecordEntry);
+                WebHomePageEntry pageEntry=new WebHomePageEntry(Constant.THREE, userId,
+                        userRecordEntry.getCommunityId(),
+                        recordId, userRecordEntry.getSubjectId(),
+                        userRecordEntry.getUserId(), Constant.ZERO
+                );
+                webHomePageDao.saveWebHomeEntry(pageEntry);
             }
             groupExamDetailDao.updateSignCount(groupExamDetailId, userIds.size());
             GroupExamVersionEntry versionEntry = new GroupExamVersionEntry(groupExamDetailId, 1L);
@@ -780,6 +793,93 @@ public class ReportCardService {
             examTypeDTOs.add(new ExamTypeDTO(examTypeEntry));
         }
         return examTypeDTOs;
+    }
+
+    public void importUserControl(InputStream inputStream)throws Exception{
+        HSSFWorkbook workbook = null;
+        workbook = new HSSFWorkbook(inputStream);
+        HSSFSheet sheet = workbook.getSheet(workbook.getSheetName(0));
+        int rowNum = sheet.getLastRowNum();
+        List<VirtualUserDTO> virtualUserDTOs=new ArrayList<VirtualUserDTO>();
+        for(int j = 1; j <= rowNum; j++){
+            String communityId=sheet.getRow(j).getCell(0).getStringCellValue();
+            String userName=sheet.getRow(j).getCell(1).getStringCellValue();
+            String userNumber=sheet.getRow(j).getCell(2).getStringCellValue();
+            if(StringUtils.isNotEmpty(communityId)&&
+                    StringUtils.isNotEmpty(userName)) {
+                VirtualUserDTO v = new VirtualUserDTO();
+                v.setCommunityId(communityId);
+                v.setUserName(userName);
+                v.setUserNumber(userNumber);
+                virtualUserDTOs.add(v);
+            }
+        }
+        if(virtualUserDTOs.size()>0){
+            ObjectId communityId=new ObjectId(virtualUserDTOs.get(0).getCommunityId());
+            List<NewVersionCommunityBindEntry>
+                    bindEntries=newVersionCommunityBindDao.getStudentIdListByCommunityId(communityId);
+            Map<String,ObjectId> userIds=new HashMap<String, ObjectId>();
+            for(NewVersionCommunityBindEntry bindEntry:bindEntries){
+                if(StringUtils.isNotEmpty(bindEntry.getThirdName())) {
+                    userIds.put(bindEntry.getThirdName(), bindEntry.getUserId());
+                }
+            }
+            List<VirtualUserEntry> entries=new ArrayList<VirtualUserEntry>();
+            for(VirtualUserDTO virtualUserDTO:virtualUserDTOs){
+                 String userName=virtualUserDTO.getUserName();
+                 if(null!=userIds.get(userName)){
+                     VirtualUserEntry userEntry=new VirtualUserEntry(communityId,virtualUserDTO.getUserNumber(),
+                             userIds.get(userName),virtualUserDTO.getUserName());
+                     entries.add(userEntry);
+                 }else{
+                     VirtualUserEntry userEntry=new VirtualUserEntry(communityId,virtualUserDTO.getUserNumber(),
+                            new ObjectId(),virtualUserDTO.getUserName());
+                     entries.add(userEntry);
+                 }
+            }
+            if(entries.size()>0){
+                virtualUserDao.removeOldData(communityId);
+                virtualUserDao.saveEntries(entries);
+            }
+        }
+    }
+
+    public void exportUserControl(ObjectId communityId, HttpServletResponse response){
+        List<VirtualUserEntry> virtualUserEntries=virtualUserDao.getAllVirtualUsers(communityId);
+        String sheetName="学生录入模板";
+        HSSFWorkbook wb=new HSSFWorkbook();
+        HSSFSheet sheet = wb.createSheet(sheetName);
+        HSSFRow row = sheet.createRow(0);
+
+        HSSFCell cell = row.createCell(0);
+        cell.setCellValue("社区Id");
+
+        cell = row.createCell(1);
+        cell.setCellValue("用户名");
+
+        cell = row.createCell(2);
+        cell.setCellValue("用户学号");
+
+        int rowLine=1;
+
+        HSSFRow rowItem;
+        HSSFCell cellItem;
+
+        for(VirtualUserEntry userEntry:virtualUserEntries){
+            rowItem = sheet.createRow(rowLine);
+
+            cellItem = rowItem.createCell(0);
+            cellItem.setCellValue(userEntry.getCommunityId().toString());
+
+            cellItem = rowItem.createCell(1);
+            cellItem.setCellValue(userEntry.getUserName());
+
+            cellItem = rowItem.createCell(2);
+            cellItem.setCellValue(userEntry.getUserNumber());
+            rowLine++;
+        }
+        String fileName = sheetName+ ".xls";
+        HSSFUtils.exportExcel(response, wb, fileName);
     }
 
 

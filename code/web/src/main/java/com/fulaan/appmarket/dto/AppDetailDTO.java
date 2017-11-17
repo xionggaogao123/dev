@@ -31,6 +31,7 @@ public class AppDetailDTO {
     private String url;
     private int isUpdated;
     private String updateTime;
+    private int isCheck;//1 家长推荐      2 老师推荐         3 不推荐
 
     public AppDetailDTO(){
 
@@ -203,5 +204,13 @@ public class AppDetailDTO {
 
     public void setDescription(String description) {
         this.description = description;
+    }
+
+    public int getIsCheck() {
+        return isCheck;
+    }
+
+    public void setIsCheck(int isCheck) {
+        this.isCheck = isCheck;
     }
 }

@@ -20,6 +20,19 @@ public class QuestionAdditionDao extends BaseDao {
          save(MongoFacroty.getAppDB(), Constant.COLLECTION_QUESTION_ADDITION, entry.getBaseEntry());
          return entry.getID();
      }
+    public QuestionAdditionEntry getEntry(ObjectId parentId,int type,int level) {
+        BasicDBObject query = new BasicDBObject();
+        query.append("isr",Constant.ZERO);
+        query.append("pid",parentId);
+        query.append("aty",type);
+        query.append("lev",level);
+        DBObject obj =
+                findOne(MongoFacroty.getAppDB(), Constant.COLLECTION_QUESTION_ADDITION, query, Constant.FIELDS);
+        if (obj != null) {
+            return new QuestionAdditionEntry((BasicDBObject) obj);
+        }
+        return null;
+    }
     //修改解析内容和图片
     public void updateEntry(QuestionAdditionEntry e){
         BasicDBObject query=new BasicDBObject(Constant.ID,e.getID());
@@ -61,6 +74,12 @@ public class QuestionAdditionDao extends BaseDao {
             }
         }
         return entryList;
+    }
+    //删除
+    public void delEntry(ObjectId id){
+        BasicDBObject query = new BasicDBObject(Constant.ID,id);
+        BasicDBObject updateValue=new BasicDBObject(Constant.MONGO_SET,new BasicDBObject("isr",Constant.ONE));
+        update(MongoFacroty.getAppDB(), Constant.COLLECTION_QUESTION_ADDITION, query,updateValue);
     }
     //添加解析
     /*public ObjectId addEntry(QuestionBookEntry entry){

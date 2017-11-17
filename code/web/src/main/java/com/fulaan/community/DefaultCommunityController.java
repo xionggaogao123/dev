@@ -618,7 +618,7 @@ public class DefaultCommunityController extends BaseController {
     }
 
     /**
-     * 新建消息
+     * 新建消息//火热分享
      *
      * @param message
      * @return
@@ -630,6 +630,7 @@ public class DefaultCommunityController extends BaseController {
             @ApiResponse(code = 500, message = "新建通知或者作业消息失败")})
     public RespObj newMessage(@ApiParam @RequestBody CommunityMessage message) {
         ObjectId uid = getUserId();
+        RespObj respObj =  null;
         try{
             ObjectId detailId=communityService.saveMessage(uid, message);
             int type=message.getType();
@@ -673,9 +674,13 @@ public class DefaultCommunityController extends BaseController {
 //                ext.put("communityId",message.getCommunityId());
 //                emService.sendTextMessage("chatgroups", targets, uid.toString(), ext, sendMessage);
 //            }
-            return RespObj.SUCCESS;
+            respObj = RespObj.SUCCESS;
+            respObj.setMessage("成功创建");
+            return respObj;
         }catch (Exception e){
-            return RespObj.FAILD("投票截止时间格式不规范");
+            respObj = RespObj.FAILD;
+            respObj.setMessage("投票截止时间格式不规范");
+            return respObj;
         }
 
     }

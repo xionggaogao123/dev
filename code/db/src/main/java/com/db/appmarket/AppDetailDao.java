@@ -50,6 +50,21 @@ public class AppDetailDao extends BaseDao {
         return entries;
     }
 
+    public List<AppDetailEntry> getAllByCondition(){
+        List<AppDetailEntry> entries=new ArrayList<AppDetailEntry>();
+        BasicDBObject query=new BasicDBObject()
+                .append("ir",Constant.ZERO);
+        query.append("ty",new BasicDBObject(Constant.MONGO_NE,2));
+        List<DBObject> dbObjectList=find(MongoFacroty.getAppDB(),Constant.COLLECTION_APP_MARKET_DETAIL,
+                query,Constant.FIELDS);
+        if(null!=dbObjectList&&!dbObjectList.isEmpty()){
+            for(DBObject dbObject:dbObjectList){
+                entries.add(new AppDetailEntry(dbObject));
+            }
+        }
+        return entries;
+    }
+
     public List<AppDetailEntry> getEntries(){
         List<AppDetailEntry> entries=new ArrayList<AppDetailEntry>();
         BasicDBObject query=new BasicDBObject()
@@ -66,6 +81,21 @@ public class AppDetailDao extends BaseDao {
     public List<AppDetailEntry> getEntriesByIds(List<ObjectId> appIds){
         List<AppDetailEntry> entries=new ArrayList<AppDetailEntry>();
         BasicDBObject query=new BasicDBObject(Constant.ID,new BasicDBObject(Constant.MONGO_IN,appIds))
+                .append("ir",Constant.ZERO);
+        List<DBObject> dbObjectList=find(MongoFacroty.getAppDB(),Constant.COLLECTION_APP_MARKET_DETAIL,
+                query,Constant.FIELDS);
+        if(null!=dbObjectList&&!dbObjectList.isEmpty()){
+            for(DBObject dbObject:dbObjectList){
+                entries.add(new AppDetailEntry(dbObject));
+            }
+        }
+        return entries;
+    }
+    //查询第三方应用
+    public List<AppDetailEntry> getThirdEntries(){
+        List<AppDetailEntry> entries=new ArrayList<AppDetailEntry>();
+        BasicDBObject query=new BasicDBObject()
+                .append("ty",2)
                 .append("ir",Constant.ZERO);
         List<DBObject> dbObjectList=find(MongoFacroty.getAppDB(),Constant.COLLECTION_APP_MARKET_DETAIL,
                 query,Constant.FIELDS);

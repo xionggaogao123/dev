@@ -17,6 +17,7 @@ import java.util.List;
  answerList                 	图片list             	anl
  answerType			    1 答案 2解析 3 解答			aty
  createTime                  创建时间                 ctm
+ level                    阶段（1.转1   2转7  3转30） lev
  */
 public class QuestionAdditionEntry  extends BaseDBObject {
     public QuestionAdditionEntry(){
@@ -30,7 +31,8 @@ public class QuestionAdditionEntry  extends BaseDBObject {
             ObjectId parentId,
             String content,
             List<String> answerList,
-            int answerType
+            int answerType,
+            int level
     ){
         BasicDBObject dbObject=new BasicDBObject()
                 .append("pid", parentId)
@@ -38,6 +40,7 @@ public class QuestionAdditionEntry  extends BaseDBObject {
                 .append("ctm", new Date().getTime())
                 .append("anl", answerList)
                 .append("aty", answerType)
+                .append("lev",level)
                 .append("isr", 0);
         setBaseEntry(dbObject);
     }
@@ -49,7 +52,8 @@ public class QuestionAdditionEntry  extends BaseDBObject {
             String content,
             long createTime,
             List<String> answerList,
-            int answerType
+            int answerType,
+            int level
     ){
         BasicDBObject dbObject=new BasicDBObject()
                 .append(Constant.ID,id)
@@ -58,6 +62,7 @@ public class QuestionAdditionEntry  extends BaseDBObject {
                 .append("ctm", createTime)
                 .append("anl", answerList)
                 .append("aty", answerType)
+                .append("lev",level)
                 .append("isr", 0);
         setBaseEntry(dbObject);
     }
@@ -101,6 +106,13 @@ public class QuestionAdditionEntry  extends BaseDBObject {
         @SuppressWarnings("rawtypes")
         List answerList =(List)getSimpleObjectValue("anl");
         return answerList;
+    }
+    public int getLevel(){
+        return getSimpleIntegerValue("lev");
+    }
+
+    public void setLevel(int level){
+        setSimpleValue("lev",level);
     }
 
     public int getIsRemove(){

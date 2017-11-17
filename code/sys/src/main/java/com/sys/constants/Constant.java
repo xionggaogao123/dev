@@ -902,6 +902,8 @@ public class Constant {
     public static final String COLLECTION_CONTROL_PHONE = "controlphone";
     //管控社区推荐应用表
     public static final String COLLECTION_CONTROL_APP = "controlapp";
+    //管控家长推荐应用表
+    public static final String COLLECTION_CONTROL_PARENT_APP = "controlparentapp";
     //管控防沉迷时间设置
     public static final String COLLECTION_CONTROL_TIME = "controltime";
     //管控地图信息记录表
@@ -910,5 +912,9 @@ public class Constant {
     public static final String COLLECTION_CONTROL_APP_RESULT = "controlappresult";
     //信息表
     public static final String COLLECTION_CONTROL_MESSAGE= "controlmessage";
+    //管控时间设置表
+    public static final String COLLECTION_CONTROL_SCHOOL_TIME= "controlschooltime";
+    //管控时间设置表
+    public static final String COLLECTION_CONTROL_NOW_TIME= "controlnowtime";
 
 }

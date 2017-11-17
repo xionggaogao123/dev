@@ -150,6 +150,10 @@ public class QuestionBookService {
     }
     public void addAnswerEntry(QuestionAdditionDTO dto){
         QuestionAdditionEntry entry = dto.buildAddEntry();
+        QuestionAdditionEntry additionEntry = questionAdditionDao.getEntry(entry.getParentId(),entry.getAnswerType(),entry.getLevel());
+        if(null != additionEntry){
+            questionAdditionDao.delEntry(additionEntry.getID());
+        }
         questionAdditionDao.addEntry(entry);
     }
     /**

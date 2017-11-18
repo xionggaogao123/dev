@@ -56,27 +56,19 @@ public class WebHomePageDao extends BaseDao{
             integers.add(Constant.TWO);
             BasicDBObject query1=new BasicDBObject("ty",new BasicDBObject(Constant.MONGO_IN,integers))
                     .append("uid",new BasicDBObject(Constant.MONGO_NE,userId));
-            if(communityIds.size()>0){
-                query1.append("cid",new BasicDBObject(Constant.MONGO_IN,communityIds));
-            }
+            query1.append("cid",new BasicDBObject(Constant.MONGO_IN,communityIds));
             values.add(query1);
             BasicDBObject query2=new BasicDBObject("ty",Constant.THREE)
                     .append("uid",new BasicDBObject(Constant.MONGO_NE,userId));
-            if(receiveIds.size()>0){
-                query2.append("rid",new BasicDBObject(Constant.MONGO_IN,receiveIds));
-            }
+            query2.append("rid",new BasicDBObject(Constant.MONGO_IN,receiveIds));
             values.add(query2);
             query.put(Constant.MONGO_OR, values);
         }else{
             query.append("ty",type).append("uid",new BasicDBObject(Constant.MONGO_NE,userId));
             if(type==Constant.ONE||type==Constant.TWO){
-                if(communityIds.size()>0){
-                    query.append("cid",new BasicDBObject(Constant.MONGO_IN,communityIds));
-                }
+                query.append("cid",new BasicDBObject(Constant.MONGO_IN,communityIds));
             }else{
-                if(receiveIds.size()>0){
-                    query.append("rid",new BasicDBObject(Constant.MONGO_IN,receiveIds));
-                }
+                query.append("rid",new BasicDBObject(Constant.MONGO_IN,receiveIds));
             }
         }
         if(subjectId!=null){

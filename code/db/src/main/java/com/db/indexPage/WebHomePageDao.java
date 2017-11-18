@@ -23,7 +23,7 @@ public class WebHomePageDao extends BaseDao{
 
 
     /**
-     * 我收到的首页消息
+     *
      * @param communityIds
      * @param receiveIds
      * @param type
@@ -32,22 +32,28 @@ public class WebHomePageDao extends BaseDao{
      * @param endTime
      * @param status
      * @param userId
-     * @param page
-     * @param pageSize
      * @return
      */
-    public List<WebHomePageEntry> getMyReceivedHomePageEntries(
-            List<ObjectId> communityIds,
-            List<ObjectId> receiveIds,
-            int type,
-            ObjectId subjectId,
-            long startTime,
-            long endTime,
-            int status,
-            ObjectId userId,
-            int page,int pageSize
-    ){
-        List<WebHomePageEntry> entries =new ArrayList<WebHomePageEntry>();
+    public int countMyReceivedHomePageEntries(List<ObjectId> communityIds,
+                                              List<ObjectId> receiveIds,
+                                              int type,
+                                              ObjectId subjectId,
+                                              long startTime,
+                                              long endTime,
+                                              int status,
+                                              ObjectId userId){
+        BasicDBObject query=getMyReceivedQueryCondition(communityIds, receiveIds, type, subjectId, startTime, endTime, status, userId);
+        return count(MongoFacroty.getAppDB(), Constant.COLLECTION_WEB_HOME_PAGE_RECORD,query);
+    }
+
+    public BasicDBObject getMyReceivedQueryCondition(List<ObjectId> communityIds,
+                                                     List<ObjectId> receiveIds,
+                                                     int type,
+                                                     ObjectId subjectId,
+                                                     long startTime,
+                                                     long endTime,
+                                                     int status,
+                                                     ObjectId userId){
         BasicDBObject query=new BasicDBObject();
         if(type==-1){
             BasicDBList values = new BasicDBList();
@@ -80,6 +86,36 @@ public class WebHomePageDao extends BaseDao{
         if(status!=-1){
             query.append("st",status);
         }
+        return query;
+    }
+
+    /**
+     * 我收到的首页消息
+     * @param communityIds
+     * @param receiveIds
+     * @param type
+     * @param subjectId
+     * @param startTime
+     * @param endTime
+     * @param status
+     * @param userId
+     * @param page
+     * @param pageSize
+     * @return
+     */
+    public List<WebHomePageEntry> getMyReceivedHomePageEntries(
+            List<ObjectId> communityIds,
+            List<ObjectId> receiveIds,
+            int type,
+            ObjectId subjectId,
+            long startTime,
+            long endTime,
+            int status,
+            ObjectId userId,
+            int page,int pageSize
+    ){
+        List<WebHomePageEntry> entries =new ArrayList<WebHomePageEntry>();
+        BasicDBObject query=getMyReceivedQueryCondition(communityIds, receiveIds, type, subjectId, startTime, endTime, status, userId);
         List<DBObject> dbObjectList=find(MongoFacroty.getAppDB(), Constant.COLLECTION_WEB_HOME_PAGE_RECORD,
                 query,Constant.FIELDS,Constant.MONGO_SORTBY_DESC,(page-1)*pageSize,pageSize);
         if(null!=dbObjectList&&!dbObjectList.isEmpty()){
@@ -90,6 +126,43 @@ public class WebHomePageDao extends BaseDao{
         return entries;
     }
 
+
+    public int countMySendHomePageEntries(ObjectId communityId, int type,
+                                          ObjectId subjectId,
+                                          long startTime,
+                                          long endTime,
+                                          int status,
+                                          ObjectId userId){
+        BasicDBObject query=getMySendQueryCondtion(communityId, type, subjectId, startTime, endTime, status, userId);
+        return count(MongoFacroty.getAppDB(), Constant.COLLECTION_WEB_HOME_PAGE_RECORD,query);
+    }
+
+
+    public BasicDBObject getMySendQueryCondtion(ObjectId communityId, int type,
+                                                ObjectId subjectId,
+                                                long startTime,
+                                                long endTime,
+                                                int status,
+                                                ObjectId userId){
+        BasicDBObject query=new BasicDBObject()
+                .append("uid",userId);
+        if(communityId!=null){
+            query.append("cid",communityId);
+        }
+        if(type!=-1){
+            query.append("ty",type);
+        }
+        if(subjectId!=null){
+            query.append("sid",subjectId);
+        }
+        if(startTime!=0L&&endTime!=0L){
+            query.append("ti",new BasicDBObject(Constant.MONGO_GTE,startTime).append(Constant.MONGO_LTE,endTime));
+        }
+        if(status!=-1){
+            query.append("st",status);
+        }
+        return query;
+    }
 
     /**
      * 我发出的首页消息
@@ -114,23 +187,7 @@ public class WebHomePageDao extends BaseDao{
             ObjectId userId,
             int page,int pageSize){
         List<WebHomePageEntry> entries =new ArrayList<WebHomePageEntry>();
-        BasicDBObject query=new BasicDBObject()
-                .append("uid",userId);
-        if(communityId!=null){
-            query.append("cid",communityId);
-        }
-        if(type!=-1){
-            query.append("ty",type);
-        }
-        if(subjectId!=null){
-            query.append("sid",subjectId);
-        }
-        if(startTime!=0L&&endTime!=0L){
-            query.append("ti",new BasicDBObject(Constant.MONGO_GTE,startTime).append(Constant.MONGO_LTE,endTime));
-        }
-        if(status!=-1){
-            query.append("st",status);
-        }
+        BasicDBObject query=getMySendQueryCondtion(communityId, type, subjectId, startTime, endTime, status, userId);
         List<DBObject> dbObjectList=find(MongoFacroty.getAppDB(), Constant.COLLECTION_WEB_HOME_PAGE_RECORD,
                 query,Constant.FIELDS,Constant.MONGO_SORTBY_DESC,(page-1)*pageSize,pageSize);
         if(null!=dbObjectList&&!dbObjectList.isEmpty()){

@@ -7,6 +7,7 @@ import com.fulaan.questionbook.dto.QuestionBookDTO;
 import com.fulaan.questionbook.service.QuestionBookService;
 import com.sys.utils.RespObj;
 import io.swagger.annotations.*;
+import org.apache.log4j.Logger;
 import org.bson.types.ObjectId;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -28,6 +29,7 @@ public class QuestionBookController extends BaseController {
     @Autowired
     private QuestionBookService questionBookService;
 
+    private static final Logger logger =Logger.getLogger(QuestionBookController.class);
     /**
      *  添加错题
      * @param dto
@@ -171,6 +173,7 @@ public class QuestionBookController extends BaseController {
         } catch (Exception e) {
             e.printStackTrace();
             respObj = RespObj.FAILD;
+            logger.error("error",e);
             respObj.setErrorMessage("今日复习失败!");
         }
         return JSON.toJSONString(respObj);

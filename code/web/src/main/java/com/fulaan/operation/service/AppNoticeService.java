@@ -143,6 +143,7 @@ public class AppNoticeService {
         }
         //1:家长2:学生3:家长，学生
         redDotService.addEntryList(objectIdList,userId, ApplyTypeEn.notice.getType(),dto.getWatchPermission());
+        redDotService.addOtherEntryList(objectIdList,userId, ApplyTypeEn.daynotice.getType(),dto.getWatchPermission());
 
     }
 

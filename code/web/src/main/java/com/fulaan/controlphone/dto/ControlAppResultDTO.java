@@ -19,6 +19,7 @@ public class ControlAppResultDTO {
     private String parentId;
     private String userId;
     private String appId;
+    private String logo;
     private String appName;
     private long userTime;
     private String dateTime;
@@ -109,6 +110,21 @@ public class ControlAppResultDTO {
     }
 
 
+    public String getLogo() {
+        return logo;
+    }
+
+    public void setLogo(String logo) {
+        this.logo = logo;
+    }
+
+    public long getUserTime() {
+        return userTime;
+    }
+
+    public void setUserTime(long userTime) {
+        this.userTime = userTime;
+    }
 
     public String getId() {
         return id;

@@ -14,6 +14,7 @@ import java.util.List;
 
 /**
  * Created by scott on 2017/10/10.
+ *whiteOrBlack: 管控是是否禁用（黑名单）
  *
  */
 public class AppDetailEntry extends BaseDBObject{

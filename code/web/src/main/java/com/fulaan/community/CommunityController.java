@@ -2275,8 +2275,11 @@ public class CommunityController extends BaseController {
                                @ApiParam(name="attacheMents",required = false,value = "附件")@RequestParam(required = false, defaultValue = "") String attacheMents,
                                @ApiParam(name="videoList",required = false,value = "视频")@RequestParam(required = false, defaultValue = "") String videoList) {
         ObjectId uid = getUserId();
+        RespObj respObj = null;
         communityService.saveHomeWork(communityId, communityDetailId, uid, content, images, attacheMents,videoList, type);
-        return RespObj.SUCCESS;
+        respObj = RespObj.SUCCESS;
+        respObj.setMessage("");
+        return respObj;
     }
 
     /**

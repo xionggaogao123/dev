@@ -13,6 +13,7 @@ import com.sys.utils.RespObj;
 import io.swagger.annotations.*;
 import org.apache.commons.io.FilenameUtils;
 import org.apache.commons.lang.StringUtils;
+import org.apache.log4j.Logger;
 import org.bson.types.ObjectId;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -34,7 +35,7 @@ import java.util.Map;
 public class DefaultWrongQuestionController extends BaseController {
     @Autowired
     private WrongQuestionService wrongQuestionService;
-
+    private static final Logger logger =Logger.getLogger(DefaultWrongQuestionController.class);
     /**
      *  绑定年级
      * @param dto
@@ -131,6 +132,7 @@ public class DefaultWrongQuestionController extends BaseController {
             respObj.setMessage(result);
         } catch (Exception e) {
             e.printStackTrace();
+            logger.error("error",e);
             respObj = RespObj.FAILD;
             respObj.setMessage("年级、科目加载失败!");
         }

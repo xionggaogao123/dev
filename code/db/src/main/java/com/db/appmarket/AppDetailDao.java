@@ -50,6 +50,7 @@ public class AppDetailDao extends BaseDao {
         return entries;
     }
 
+
     public List<AppDetailEntry> getAllByCondition(){
         List<AppDetailEntry> entries=new ArrayList<AppDetailEntry>();
         BasicDBObject query=new BasicDBObject()
@@ -64,7 +65,21 @@ public class AppDetailDao extends BaseDao {
         }
         return entries;
     }
-
+    public List<AppDetailEntry> getSimpleAppEntry(){
+        List<AppDetailEntry> entries=new ArrayList<AppDetailEntry>();
+        BasicDBObject query=new BasicDBObject()
+                .append("ir",Constant.ZERO);
+        query.append("wob",1);
+        query.append("ty",new BasicDBObject(Constant.MONGO_NE,2));
+        List<DBObject> dbObjectList=find(MongoFacroty.getAppDB(),Constant.COLLECTION_APP_MARKET_DETAIL,
+                query,Constant.FIELDS);
+        if(null!=dbObjectList&&!dbObjectList.isEmpty()){
+            for(DBObject dbObject:dbObjectList){
+                entries.add(new AppDetailEntry(dbObject));
+            }
+        }
+        return entries;
+    }
     public List<AppDetailEntry> getEntries(){
         List<AppDetailEntry> entries=new ArrayList<AppDetailEntry>();
         BasicDBObject query=new BasicDBObject()

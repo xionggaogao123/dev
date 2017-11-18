@@ -23,12 +23,17 @@ public class ControlAppResultDao extends BaseDao {
     public void addBatch(List<DBObject> list) {
         save(MongoFacroty.getAppDB(), Constant.COLLECTION_CONTROL_APP_RESULT, list);
     }
-
+    //添加
+    public String addEntry(ControlAppResultEntry entry) {
+        save(MongoFacroty.getAppDB(), Constant.COLLECTION_CONTROL_APP_RESULT, entry.getBaseEntry());
+        return entry.getID().toString() ;
+    }
     //用户的所有课程列表
-    public List<ObjectId> getIsNewObjectId(ObjectId userId) {
+    public List<ObjectId> getIsNewObjectId(ObjectId userId,long dateTime) {
         BasicDBObject query =new BasicDBObject();
         query.append("isr", Constant.ZERO);
         query.append("isn", Constant.ZERO);
+        query.append("dtm", dateTime);
         query.append("uid",userId);
         List<DBObject> dboList=find(MongoFacroty.getAppDB(), Constant.COLLECTION_CONTROL_APP_RESULT, query, Constant.FIELDS);
         List<ObjectId> retList =new ArrayList<ObjectId>();
@@ -37,6 +42,24 @@ public class ControlAppResultDao extends BaseDao {
             for(DBObject dbo:dboList)
             {
                 retList.add(new ControlAppResultEntry((BasicDBObject)dbo).getID());
+            }
+        }
+        return retList;
+    }
+
+    public List<ControlAppResultEntry> getIsNewEntryList(ObjectId userId,long dateTime) {
+        BasicDBObject query =new BasicDBObject();
+        query.append("isr", Constant.ZERO);
+        query.append("isn", Constant.ZERO);
+        query.append("dtm", dateTime);
+        query.append("uid",userId);
+        List<DBObject> dboList=find(MongoFacroty.getAppDB(), Constant.COLLECTION_CONTROL_APP_RESULT, query, Constant.FIELDS,new BasicDBObject("utm",Constant.DESC));
+        List<ControlAppResultEntry> retList =new ArrayList<ControlAppResultEntry>();
+        if(null!=dboList && !dboList.isEmpty())
+        {
+            for(DBObject dbo:dboList)
+            {
+                retList.add(new ControlAppResultEntry((BasicDBObject)dbo));
             }
         }
         return retList;

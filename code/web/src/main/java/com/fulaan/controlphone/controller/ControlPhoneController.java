@@ -9,6 +9,7 @@ import com.fulaan.controlphone.dto.ControlPhoneDTO;
 import com.fulaan.controlphone.dto.ControlSchoolTimeDTO;
 import com.fulaan.controlphone.dto.ResultAppDTO;
 import com.fulaan.controlphone.service.ControlPhoneService;
+import com.sys.utils.DateTimeUtils;
 import com.sys.utils.RespObj;
 import io.swagger.annotations.*;
 import org.bson.types.ObjectId;
@@ -184,7 +185,7 @@ public class ControlPhoneController extends BaseController {
     }
 
     /**
-     * 老师查询可推送应用列表
+     * 老师查询可推送应用列表(搜索)
      */
     @ApiOperation(value = "老师查询可推送应用列表", httpMethod = "POST", produces = "application/json")
     @ApiResponses( value = {@ApiResponse(code = 200, message = "Successful — 请求已完成",response = String.class),
@@ -192,11 +193,12 @@ public class ControlPhoneController extends BaseController {
             @ApiResponse(code = 500, message = "服务器不能完成请求")})
     @RequestMapping("/getShouldAppList")
     @ResponseBody
-    public String getShouldAppList(@ApiParam(name = "communityId", required = true, value = "社区id") @RequestParam("communityId") String communityId){
+    public String getShouldAppList(@ApiParam(name = "communityId", required = true, value = "社区id") @RequestParam("communityId") String communityId,
+                                   @ApiParam(name = "keyword", required = true, value = "关键字") @RequestParam(value = "keyword",defaultValue = "") String keyword){
         RespObj respObj=null;
         try {
             respObj = RespObj.SUCCESS;
-            List<AppDetailDTO> dtos = controlPhoneService.getShouldAppList(new ObjectId(communityId));
+            List<AppDetailDTO> dtos = controlPhoneService.getShouldAppList(new ObjectId(communityId),keyword);
             respObj.setMessage(dtos);
         } catch (Exception e) {
             e.printStackTrace();
@@ -229,9 +231,9 @@ public class ControlPhoneController extends BaseController {
         return JSON.toJSONString(respObj);
     }
     /**
-     * 家长查询可推送应用列表
+     * 家长查询可推送应用列表（搜索）
      */
-    @ApiOperation(value = "老师查询可推送应用列表", httpMethod = "POST", produces = "application/json")
+    @ApiOperation(value = "家长查询可推送应用列表（搜索）", httpMethod = "POST", produces = "application/json")
     @ApiResponses( value = {@ApiResponse(code = 200, message = "Successful — 请求已完成",response = String.class),
             @ApiResponse(code = 400, message = "请求中有语法问题，或不能满足请求"),
             @ApiResponse(code = 500, message = "服务器不能完成请求")})
@@ -242,12 +244,12 @@ public class ControlPhoneController extends BaseController {
         RespObj respObj=null;
         try {
             respObj = RespObj.SUCCESS;
-            List<AppDetailDTO> dtos = controlPhoneService.seacherParentAppList(getUserId(), new ObjectId(sonId),keyword);
+            List<AppDetailDTO> dtos = controlPhoneService.seacherParentAppList(getUserId(), new ObjectId(sonId), keyword);
             respObj.setMessage(dtos);
         } catch (Exception e) {
             e.printStackTrace();
             respObj = RespObj.FAILD;
-            respObj.setErrorMessage("老师查询可推送应用列表失败!");
+            respObj.setErrorMessage("家长查询可推送应用列表（搜索）失败!");
         }
         return JSON.toJSONString(respObj);
     }
@@ -262,11 +264,12 @@ public class ControlPhoneController extends BaseController {
     @RequestMapping("/addCommunityAppList")
     @ResponseBody
     public String addCommunityAppList(@ApiParam(name = "communityId", required = true, value = "社区id") @RequestParam("communityId") String communityId,
-                                      @ApiParam(name = "appIds", required = true, value = "推送应用idList") @RequestParam("appIds") List<String> appIds){
+                                      @ApiParam(name = "appId", required = true, value = "推送应用id") @RequestParam("appId") String appId,
+                                      @ApiParam(name = "type", required = true, value = "1卸载2推送") @RequestParam("type") int type){
         RespObj respObj=null;
         try {
             respObj = RespObj.SUCCESS;
-            controlPhoneService.addCommunityAppList(new ObjectId(communityId), appIds);
+            controlPhoneService.addTeaCommunityAppList(new ObjectId(communityId), new ObjectId(appId),type);
             respObj.setMessage("老师推送应用成功");
         } catch (Exception e) {
             e.printStackTrace();
@@ -371,6 +374,34 @@ public class ControlPhoneController extends BaseController {
             e.printStackTrace();
             respObj = RespObj.FAILD;
             respObj.setErrorMessage("定时接受孩子的应用使用情况失败!");
+        }
+        return JSON.toJSONString(respObj);
+    }
+
+    /**
+     * 定时获取孩子的应用使用情况（家长）
+     */
+    @ApiOperation(value = "定时获取孩子的应用使用情况（家长）", httpMethod = "POST", produces = "application/json")
+    @ApiResponses( value = {@ApiResponse(code = 200, message = "Successful — 请求已完成",response = String.class),
+            @ApiResponse(code = 400, message = "请求中有语法问题，或不能满足请求"),
+            @ApiResponse(code = 500, message = "服务器不能完成请求")})
+    @RequestMapping("/seacherAppResultList")
+    @ResponseBody
+    public String seacherAppResultList(@ApiParam(name = "sonId", required = true, value = "应用使用情况list") @RequestParam("sonId") String sonId,
+                                       @ApiParam(name = "dateTime", required = true, value = "dateTime") @RequestParam("dateTime") String dateTime){
+        RespObj respObj=null;
+        try {
+            respObj = RespObj.SUCCESS;
+            long dTm = 0l;
+            if(dateTime != null && dateTime != ""){
+                dTm = DateTimeUtils.getStrToLongTime(dateTime, "yyyy-MM-dd");
+            }
+            Map<String,Object> map = controlPhoneService.seacherAppResultList(getUserId(),new ObjectId(sonId),dTm);
+            respObj.setMessage(map);
+        } catch (Exception e) {
+            e.printStackTrace();
+            respObj = RespObj.FAILD;
+            respObj.setErrorMessage("定时获取孩子的应用使用情况（家长）失败!");
         }
         return JSON.toJSONString(respObj);
     }
@@ -515,6 +546,30 @@ public class ControlPhoneController extends BaseController {
         }
         return JSON.toJSONString(respObj);
     }
+
+    /**
+     * 孩子未登录获取默认信息
+     */
+    @SessionNeedless
+    @ApiOperation(value = "孩子登录获取所有信息", httpMethod = "POST", produces = "application/json")
+    @ApiResponses( value = {@ApiResponse(code = 200, message = "Successful — 请求已完成",response = String.class),
+            @ApiResponse(code = 400, message = "请求中有语法问题，或不能满足请求"),
+            @ApiResponse(code = 500, message = "服务器不能完成请求")})
+    @RequestMapping("/getSimpleMessageForSon")
+    @ResponseBody
+    public String getSimpleMessageForSon(){
+        RespObj respObj=null;
+        try {
+            respObj = RespObj.SUCCESS;
+            Map<String,Object> dtos= controlPhoneService.getSimpleMessageForSon();
+            respObj.setMessage(dtos);
+        } catch (Exception e) {
+            e.printStackTrace();
+            respObj = RespObj.FAILD;
+            respObj.setErrorMessage("孩子登录获取所有信息失败!");
+        }
+        return JSON.toJSONString(respObj);
+    }
     /**
      * 老师首页加载基础信息
      */
@@ -561,6 +616,54 @@ public class ControlPhoneController extends BaseController {
         return JSON.toJSONString(respObj);
     }
 
+    /**
+     * 老师切换到管控
+     * @return
+     */
+    @ApiOperation(value = "老师切换到管控", httpMethod = "POST", produces = "application/json")
+    @ApiResponses( value = {@ApiResponse(code = 200, message = "Successful — 请求已完成",response = String.class),
+            @ApiResponse(code = 400, message = "请求中有语法问题，或不能满足请求"),
+            @ApiResponse(code = 500, message = "服务器不能完成请求")})
+    @RequestMapping("/deleteControlTime")
+    @ResponseBody
+    public String deleteControlTime(@ApiParam(name = "communityId", required = true, value = "社区id") @RequestParam("communityId") String communityId){
+        RespObj respObj=null;
+        try {
+            respObj = RespObj.SUCCESS;
+           // Map<String,Object> dtos= controlPhoneService.getAllMessageForTea(getUserId(),new ObjectId(communityId));
+            //respObj.setMessage(dtos);
+        } catch (Exception e) {
+            e.printStackTrace();
+            respObj = RespObj.FAILD;
+            respObj.setErrorMessage("老师切换到管控!");
+        }
+        return JSON.toJSONString(respObj);
+    }
+
+    /**
+     * 老师设置自由时间
+     * @return
+     */
+    @ApiOperation(value = "老师设置自由时间", httpMethod = "POST", produces = "application/json")
+    @ApiResponses( value = {@ApiResponse(code = 200, message = "Successful — 请求已完成",response = String.class),
+            @ApiResponse(code = 400, message = "请求中有语法问题，或不能满足请求"),
+            @ApiResponse(code = 500, message = "服务器不能完成请求")})
+    @RequestMapping("/setControlTime")
+    @ResponseBody
+    public String setControlTime(@ApiParam(name = "time", required = true, value = "时间") @RequestParam("time") int time,
+                                 @ApiParam(name = "communityId", required = true, value = "社区id") @RequestParam("communityId") String communityId){
+        RespObj respObj=null;
+        try {
+            respObj = RespObj.SUCCESS;
+            // Map<String,Object> dtos= controlPhoneService.getAllMessageForTea(getUserId(),new ObjectId(communityId));
+            //respObj.setMessage(dtos);
+        } catch (Exception e) {
+            e.printStackTrace();
+            respObj = RespObj.FAILD;
+            respObj.setErrorMessage("老师设置自由时间!");
+        }
+        return JSON.toJSONString(respObj);
+    }
 
     /************************ 系统设置********************************/
     /**

@@ -894,7 +894,7 @@ public class Constant {
     //错题本2.0
     public static final String COLLECTION_QUESTION_BOOK = "questionbook";
     //解析表
-    public static final String COLLECTION_QUESTION_ADDITION = "questionaddition";
+    public static final String COLLECTION_QUESTION_ADDITION = "questionnewaddition";
 
     /**--------------------------管控--------------------------**/
 

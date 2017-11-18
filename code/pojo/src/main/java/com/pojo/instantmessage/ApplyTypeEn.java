@@ -12,7 +12,8 @@ public enum ApplyTypeEn {
     study(6,"学习用品","same"),
     piao(7,"投票","same"),
     happy(8,"兴趣小组","same"),
-    active(9,"活动报名","same");
+    active(9,"活动报名","same"),
+    daynotice(10,"每日通知","same");
 //成绩单 火热分享 活动报名 参考资料 学习用品 兴趣小组
     private int type;
     private String des;

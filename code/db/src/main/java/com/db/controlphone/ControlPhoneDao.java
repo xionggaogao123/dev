@@ -54,6 +54,24 @@ public class ControlPhoneDao extends BaseDao {
         }
         return entryList;
     }
+
+    public List<ControlPhoneEntry> getEntryListByType() {
+        BasicDBObject query = new BasicDBObject()
+                .append("typ", 1)
+                .append("isr", 0); // 未删除
+        List<DBObject> dbList =
+                find(MongoFacroty.getAppDB(),
+                        Constant.COLLECTION_CONTROL_PHONE,
+                        query, Constant.FIELDS,
+                        Constant.MONGO_SORTBY_DESC);
+        List<ControlPhoneEntry> entryList = new ArrayList<ControlPhoneEntry>();
+        if (dbList != null && !dbList.isEmpty()) {
+            for (DBObject obj : dbList) {
+                entryList.add(new ControlPhoneEntry((BasicDBObject) obj));
+            }
+        }
+        return entryList;
+    }
     public List<ControlPhoneEntry> getEntryListByUserId(ObjectId userId) {
         BasicDBObject query = new BasicDBObject()
                 .append("uid", userId)

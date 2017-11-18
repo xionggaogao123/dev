@@ -52,7 +52,29 @@ public class RedDotController extends BaseController {
 
     }
 
+    /**
+     * 首页获得该用户每日通知红点记录
+     * @return
+     */
+    @ApiOperation(value="首页获得该用户每日通知红点记录",httpMethod = "POST",produces = "application/json")
+    @ApiResponse(code=200,message = "success", response = String.class)
+    @RequestMapping("/getDayNotice")
+    @ResponseBody
+    public String getDayNotice(){
+        RespObj respObj=null;
+        try {
+            respObj = RespObj.SUCCESS;
+            Map<String,Object> result = redDotService.selectDayNotice(getUserId());
+            respObj.setMessage(result);
+        } catch (Exception e) {
+            e.printStackTrace();
+            respObj = RespObj.FAILD;
+            respObj.setErrorMessage("首页获得该用户每日通知红点记录失败!");
 
+        }
+        return JSON.toJSONString(respObj);
+
+    }
     /**
      * 学生端获得该用户的红点记录
      * @return

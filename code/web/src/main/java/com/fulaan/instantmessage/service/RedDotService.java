@@ -82,12 +82,52 @@ public class RedDotService {
         //获得时间批次
         long zero=current/(1000*3600*24)*(1000*3600*24)- TimeZone.getDefault().getRawOffset();//今天零点零分零秒的毫秒数
         List<RedDotEntry> entries = redDotDao.getAllEntry(userId);
-
-       // map.put("operation",new RedDotDTO(entry));
-       // map.put("notice",new RedDotDTO(entry2));
+        //作业
+        RedDotEntry entry = redDotDao.getOtherEntryByUserId(userId, zero, ApplyTypeEn.operation.getType());
+        map.put("operation",new RedDotDTO(entry));
+        for(RedDotEntry entry1 : entries){
+            if(entry1.getType()==ApplyTypeEn.notice.getType()){
+                map.put("operation",new RedDotDTO(entry1));
+            }else if(entry1.getType()==ApplyTypeEn.hot.getType()){
+                map.put("hot",new RedDotDTO(entry1));
+            }else if(entry1.getType()==ApplyTypeEn.text.getType()){
+                map.put("text",new RedDotDTO(entry1));
+            }else if(entry1.getType()==ApplyTypeEn.repordcard.getType()){
+                map.put("repordcard",new RedDotDTO(entry1));
+            }else if(entry1.getType()==ApplyTypeEn.study.getType()){
+                map.put("study",new RedDotDTO(entry1));
+            }else if(entry1.getType()==ApplyTypeEn.piao.getType()){
+                map.put("piao",new RedDotDTO(entry1));
+            }else if(entry1.getType()==ApplyTypeEn.happy.getType()){
+                map.put("happy",new RedDotDTO(entry1));
+            }else if(entry1.getType()==ApplyTypeEn.active.getType()){
+                map.put("active",new RedDotDTO(entry1));
+            }
+        }
         return map;
     }
-
+    /**
+     * 首页加载所有的红点记录
+     * @param userId
+     * @return
+     */
+    public Map<String,Object> selectDayNotice(ObjectId userId){
+        Map<String,Object> map = new HashMap<String, Object>();
+        //获得当前时间
+        long current=System.currentTimeMillis();
+        //获得时间批次
+        long zero=current/(1000*3600*24)*(1000*3600*24)- TimeZone.getDefault().getRawOffset();//今天零点零分零秒的毫秒数
+        List<RedDotEntry> entries = redDotDao.getAllEntry(userId);
+        //作业
+        RedDotEntry entry = redDotDao.getOtherEntryByUserId(userId, zero, ApplyTypeEn.operation.getType());
+        map.put("dayNotice",new RedDotDTO(entry));
+        for(RedDotEntry entry1 : entries){
+            if(entry1.getType()==ApplyTypeEn.daynotice.getType()){
+                map.put("dayNotice",new RedDotDTO(entry1));
+            }
+        }
+        return map;
+    }
     /**
      * 学生端加载红点信息
      * @param userId

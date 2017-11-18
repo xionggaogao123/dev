@@ -6,6 +6,7 @@ import com.sys.constants.Constant;
 import org.bson.types.ObjectId;
 
 /**
+ * 教师设置
  * Created by James on 2017/11/17.
  * id
  * userId         uid
@@ -13,6 +14,7 @@ import org.bson.types.ObjectId;
  * communityId     社区id                                              cid
  * startTime         stm
  * endTime           etm
+ *
  *
  */
 public class ControlNowTimeEntry extends BaseDBObject {

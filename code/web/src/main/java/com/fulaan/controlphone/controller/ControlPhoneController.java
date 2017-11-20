@@ -341,7 +341,7 @@ public class ControlPhoneController extends BaseController {
     @RequestMapping("/addAppTimeEntry")
     @ResponseBody
     public String addAppTimeEntry(@ApiParam(name = "sonId", required = true, value = "孩子id") @RequestParam("sonId") String sonId,
-                                  @ApiParam(name = "time", required = true, value = "时间") @RequestParam("time") long time){
+                                  @ApiParam(name = "time", required = true, value = "时间") @RequestParam("time") int time){
         RespObj respObj=null;
         try {
             respObj = RespObj.SUCCESS;
@@ -630,8 +630,8 @@ public class ControlPhoneController extends BaseController {
         RespObj respObj=null;
         try {
             respObj = RespObj.SUCCESS;
-           // Map<String,Object> dtos= controlPhoneService.getAllMessageForTea(getUserId(),new ObjectId(communityId));
-            //respObj.setMessage(dtos);
+            controlPhoneService.deleteControlTime(getUserId(),new ObjectId(communityId));
+            respObj.setMessage("改变成功");
         } catch (Exception e) {
             e.printStackTrace();
             respObj = RespObj.FAILD;
@@ -655,8 +655,8 @@ public class ControlPhoneController extends BaseController {
         RespObj respObj=null;
         try {
             respObj = RespObj.SUCCESS;
-            // Map<String,Object> dtos= controlPhoneService.getAllMessageForTea(getUserId(),new ObjectId(communityId));
-            //respObj.setMessage(dtos);
+            controlPhoneService.setControlTime(getUserId(),new ObjectId(communityId),time);
+            respObj.setMessage("设置成功");
         } catch (Exception e) {
             e.printStackTrace();
             respObj = RespObj.FAILD;

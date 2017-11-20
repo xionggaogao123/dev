@@ -41,7 +41,7 @@ public class TextKeywordScanSample extends BaseSample {
 
         Map<String, Object> task1 = new LinkedHashMap<String, Object>();
         task1.put("dataId", UUID.randomUUID().toString());
-        String oldStr = "蒙汗药法轮功";
+        String oldStr = "蒙汗药法轮功，我想买本书";
         String newStr = new String(oldStr.getBytes(), "UTF-8");
         task1.put("content", newStr);
 

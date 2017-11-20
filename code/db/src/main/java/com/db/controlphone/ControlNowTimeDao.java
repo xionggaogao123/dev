@@ -30,16 +30,26 @@ public class ControlNowTimeDao extends BaseDao {
         }
         return null;
     }
-
+public static void main(String[] args){
+    int i = 1;
+    System.out.println(i);
+}
     //单查询
     public ControlNowTimeEntry getOtherEntry(String dateTime,ObjectId userId) {
         BasicDBObject query =new BasicDBObject();
-        query.append("isr", Constant.ZERO).append("uid",userId).append("dtm",dateTime);
+        query.append("isr", Constant.ZERO).append("cid",userId).append("dtm",dateTime);
         DBObject dbo =findOne(MongoFacroty.getAppDB(), Constant.COLLECTION_CONTROL_NOW_TIME, query, Constant.FIELDS);
         if(null!=dbo)
         {
             return new ControlNowTimeEntry((BasicDBObject)dbo);
         }
         return null;
+    }
+    //删除作业
+    public void deleteControlTime(ObjectId communityId,String dateTime){
+        BasicDBObject query = new BasicDBObject("cid",communityId);
+        query.append("dtm",dateTime);
+        BasicDBObject updateValue=new BasicDBObject(Constant.MONGO_SET,new BasicDBObject("isr",Constant.ONE));
+        update(MongoFacroty.getAppDB(), Constant.COLLECTION_CONTROL_NOW_TIME, query,updateValue);
     }
 }

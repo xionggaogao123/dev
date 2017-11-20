@@ -347,16 +347,16 @@ public class ControlPhoneService {
 
         return mlist;
     }
-    public void addAppTimeEntry(ObjectId userId,ObjectId parentId,long time){
+    public void addAppTimeEntry(ObjectId userId,ObjectId parentId,int time){
         ControlTimeEntry entry = controlTimeDao.getEntry(userId, parentId);
         if(null == entry){
             ControlTimeEntry entry1 = new ControlTimeEntry();
             entry1.setParentId(parentId);
             entry1.setUserId(userId);
-            entry1.setTime(time);
+            entry1.setTime(time*60000);
             controlTimeDao.addEntry(entry1);
         }else{
-            entry.setTime(time);
+            entry.setTime(time*60000);
             controlTimeDao.updEntry(entry);
         }
         //推送孩子禁用时间
@@ -393,7 +393,16 @@ public class ControlPhoneService {
             timecu = controlTimeEntry.getTime();
 
         }
-        map.put("time",timecu/60000);
+        long hours2 = (timecu % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60);
+        long minutes2 = (timecu % (1000 * 60 * 60)) / (1000 * 60);
+        String timeStr = "";
+        if(hours2 != 0 ){
+            timeStr = timeStr + hours2+"小时";
+        }
+        if(minutes2 != 0){
+            timeStr = timeStr + minutes2+"分钟";
+        }
+        map.put("time",timeStr);
         List<ControlAppResultEntry> entries = controlAppResultDao.getIsNewEntryList(sonId,time);
         List<ControlAppResultDTO> dtos = new ArrayList<ControlAppResultDTO>();
         if(entries.size()>0){
@@ -433,7 +442,14 @@ public class ControlPhoneService {
             long hours = (atm % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60);
             long minutes = (atm % (1000 * 60 * 60)) / (1000 * 60);
             map.put("list",dtos);
-            map.put("allTime",hours+"小时"+minutes+"分钟");
+            String timeStr2 = "";
+            if(hours != 0 ){
+                timeStr2 = timeStr2 + hours+"小时";
+            }
+            if(minutes != 0){
+                timeStr2 = timeStr2 + minutes+"分钟";
+            }
+            map.put("allTime",timeStr2);
         }else{
             map.put("list",dtos);
             map.put("allTime","暂未使用");
@@ -759,7 +775,7 @@ public class ControlPhoneService {
                 }
             }
         }
-        return dtos;
+        return dtos4;
     }
 
     public List<AppDetailDTO> getParentAppList(ObjectId parentId,ObjectId sonId){
@@ -975,6 +991,39 @@ public class ControlPhoneService {
         List<ObjectId> mlist =   groupDao.getGroupIdsList(olsit);
         return mlist;
     }
+    //老师修改管控状态
+    public void deleteControlTime(ObjectId userId,ObjectId communityId){
+        //获得当前时间
+        long current=System.currentTimeMillis();
+        //获得时间批次
+        long zero=current/(1000*3600*24)*(1000*3600*24)- TimeZone.getDefault().getRawOffset();//今天零点零分零秒的毫秒数
+        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
+        String dateNowStr = sdf.format(zero);
+        controlNowTimeDao.deleteControlTime(communityId,dateNowStr);
+    }
+    public void setControlTime(ObjectId userId,ObjectId communityId,int time){
+        //获得当前时间
+        long current=System.currentTimeMillis();
+        //获得时间批次
+        long zero=current/(1000*3600*24)*(1000*3600*24)- TimeZone.getDefault().getRawOffset();//今天零点零分零秒的毫秒数
+        long tentTime = time*60*1000;
+        SimpleDateFormat sdf2 = new SimpleDateFormat("yyyy-MM-dd");
+        String dateNowStr3 = sdf2.format(zero);
+        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+        String dateNowStr = sdf.format(current);
+        String dateNowStr2 = sdf.format(current+tentTime);
+        ControlNowTimeDTO dto = new ControlNowTimeDTO();
+        dto.setCommunityId(communityId.toString());
+        dto.setUserId(userId.toString());
+        String startTime = dateNowStr.substring(11,dateNowStr.length());
+        String endTime = dateNowStr2.substring(11,dateNowStr2.length());
+        dto.setDataTime(dateNowStr3);
+        dto.setStartTime(startTime);
+        dto.setEndTime(endTime);
+        controlNowTimeDao.addEntry(dto.buildAddEntry());
+    }
+
+
     /**
      * 批量增加应用记录
      * @param list

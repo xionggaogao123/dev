@@ -60,6 +60,8 @@ public class ControlPhoneService {
 
     private NewVersionBindRelationDao newVersionBindRelationDao = new NewVersionBindRelationDao();
 
+    private ControlSetBackDao controlSetBackDao = new ControlSetBackDao();
+
     @Autowired
     private NewVersionBindService newVersionBindService;
     @Autowired
@@ -466,16 +468,13 @@ public class ControlPhoneService {
         controlMapDao.addEntry(entry);
     }
     public static void main(String[] args){
-        ControlTimeDTO entry = new ControlTimeDTO();
-        ControlTimeDao controlMapDao =new ControlTimeDao();//59e71f222675642a181100fc
-      /*  for(int i = 0;i <1;i++){
-            List<String> str = new ArrayList<String>();
-            str.add("59eeb4eb2675640f6cc88b39");
+        ControlMapDTO entry = new ControlMapDTO();
+        ControlMapDao controlMapDao =new ControlMapDao();//59e71f222675642a181100fc
+        for(int i = 0;i <1;i++){
             entry.setParentId("59e71c38bf2e79192c362681");
             entry.setUserId("59e71bedbf2e79192c36267b");
-            entry.setTime(120000);
             controlMapDao.addEntry(entry.buildAddEntry());
-        }*/
+        }
         int i = 1;
         System.out.println(i);
     }
@@ -618,6 +617,8 @@ public class ControlPhoneService {
         //可用时间
         long timecu = 0l;
         map.put("time",timecu/60000);
+        map.put("backTime",24*60);
+        map.put("appTime",24*60);
         //获得当前时间
         long current=System.currentTimeMillis();
         //获得时间批次
@@ -687,6 +688,14 @@ public class ControlPhoneService {
             timecu = controlTimeEntry.getTime();
         }
         map.put("time",timecu/60000);
+        ControlSetBackEntry setBackEntry = controlSetBackDao.getEntry();
+        if(null != setBackEntry){
+            map.put("backTime",setBackEntry.getBacktime());
+            map.put("appTime",setBackEntry.getAppTime());
+        }else{
+            map.put("backTime",24*60);
+            map.put("appTime",24*60);
+        }
         //获得当前时间
         long current=System.currentTimeMillis();
         //获得时间批次
@@ -758,11 +767,11 @@ public class ControlPhoneService {
             for(AppDetailEntry entry1 : entries){
                 if(entry.getAppIdList() != null && entry.getAppIdList().contains(entry1.getID())){
                     AppDetailDTO dto = new AppDetailDTO(entry1);
-                    dto.setIsCheck(2);
+                    dto.setIsCheck(2);//卸载显示
                     dtos.add(dto);
                 }else{
                     AppDetailDTO dto = new AppDetailDTO(entry1);
-                    dto.setIsCheck(1);
+                    dto.setIsCheck(1);//推送显示
                     dtos.add(dto);
                 }
             }

@@ -7,6 +7,8 @@ import com.mongodb.DBObject;
 import com.pojo.controlphone.ControlSchoolTimeEntry;
 import com.sys.constants.Constant;
 
+import java.util.List;
+
 /**
  * Created by James on 2017/11/16.
  */
@@ -40,4 +42,20 @@ public class ControlSchoolTimeDao extends BaseDao {
         }
         return null;
     }
+    public ControlSchoolTimeEntry getOtherEntry2(int type,String dateTime) {
+        BasicDBObject query = new BasicDBObject();
+        query.append("isr", Constant.ZERO) .append("typ", type).append("dtm", dateTime);
+        List<DBObject> dbList =
+                find(MongoFacroty.getAppDB(),
+                        Constant.COLLECTION_CONTROL_SCHOOL_TIME,
+                        query, Constant.FIELDS,
+                        Constant.MONGO_SORTBY_DESC);
+        ControlSchoolTimeEntry entryList = null;
+        if (dbList != null && !dbList.isEmpty()) {
+            DBObject obj = dbList.get(0);
+            entryList = new ControlSchoolTimeEntry((BasicDBObject)obj);
+        }
+        return entryList;
+    }
+
 }

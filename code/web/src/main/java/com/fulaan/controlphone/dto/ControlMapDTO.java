@@ -19,7 +19,7 @@ public class ControlMapDTO {
     private String createTime;
     private int speed;
     private int isSafe;
-
+    private String electricity;
 
 
     public ControlMapDTO(){
@@ -37,6 +37,7 @@ public class ControlMapDTO {
             this.speed = e.getSpeed();
             this.isSafe = e.getIsSafe();
             this.dateTime = e.getDateTime();
+            this.electricity = e.getElectricity();
             if(e.getDateTime()!=0l){
                 this.createTime = DateTimeUtils.getLongToStrTimeTwo(e.getDateTime()).substring(0,16);
             }else{
@@ -64,6 +65,7 @@ public class ControlMapDTO {
                         this.latitude,
                         this.angle,
                         this.distance,
+                        this.electricity,
                         this.speed,
                         this.isSafe
                 );
@@ -92,6 +94,7 @@ public class ControlMapDTO {
                         this.latitude,
                         this.angle,
                         this.distance,
+                        this.electricity,
                         this.speed,
                         this.isSafe
                 );
@@ -187,5 +190,13 @@ public class ControlMapDTO {
     public void setCreateTime(String createTime) {
 
         this.createTime = createTime;
+    }
+
+    public String getElectricity() {
+        return electricity;
+    }
+
+    public void setElectricity(String electricity) {
+        this.electricity = electricity;
     }
 }

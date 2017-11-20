@@ -38,6 +38,7 @@ public class ControlMapEntry extends BaseDBObject {
             String latitude,
             String angle,
             String distance,
+            String electricity,
             int speed,
             int isSafe
     ){
@@ -49,6 +50,7 @@ public class ControlMapEntry extends BaseDBObject {
                 .append("lat", latitude)
                 .append("ang", angle)
                 .append("dis", distance)
+                .append("ele",electricity)
                 .append("spe", speed)
                 .append("iss", isSafe)
                 .append("isr", 0);
@@ -64,6 +66,7 @@ public class ControlMapEntry extends BaseDBObject {
             String latitude,
             String angle,
             String distance,
+            String electricity,
             int speed,
             int isSafe
     ){
@@ -76,6 +79,7 @@ public class ControlMapEntry extends BaseDBObject {
                 .append("lat", latitude)
                 .append("ang", angle)
                 .append("dis", distance)
+                .append("ele", electricity)
                 .append("spe", speed)
                 .append("iss", isSafe)
                 .append("isr", 0);
@@ -115,6 +119,13 @@ public class ControlMapEntry extends BaseDBObject {
 
     public void setAngle(String angle){
         setSimpleValue("ang",angle);
+    }
+    public String getElectricity(){
+        return getSimpleStringValue("ele");
+    }
+
+    public void setElectricity(String electricity){
+        setSimpleValue("ele",electricity);
     }
 
 

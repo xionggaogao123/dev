@@ -250,7 +250,7 @@ public class AppCommentController extends BaseController {
 
         RespObj respObj=null;
         try {
-            respObj = RespObj.SUCCESS;
+            respObj = new RespObj(Constant.SUCCESS_CODE,"");
             List<String> dtos = appCommentService.selectStudentResultList(month, getUserId());
             respObj.setMessage(dtos);
         } catch (Exception e) {

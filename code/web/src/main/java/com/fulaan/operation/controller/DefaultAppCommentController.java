@@ -225,7 +225,7 @@ public class DefaultAppCommentController extends BaseController {
 
         RespObj respObj=null;
         try {
-            respObj = RespObj.SUCCESS;
+            respObj = new RespObj(Constant.SUCCESS_CODE,"");
             List<String> dtos = appCommentService.selectResultList(month, getUserId());
             respObj.setMessage(dtos);
         } catch (Exception e) {
@@ -249,7 +249,7 @@ public class DefaultAppCommentController extends BaseController {
 
         RespObj respObj=null;
         try {
-            respObj = RespObj.SUCCESS;
+            respObj = new RespObj(Constant.SUCCESS_CODE,"");
             List<String> dtos = appCommentService.selectStudentResultList(month, getUserId());
             respObj.setMessage(dtos);
         } catch (Exception e) {

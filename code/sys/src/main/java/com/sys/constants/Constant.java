@@ -916,5 +916,9 @@ public class Constant {
     public static final String COLLECTION_CONTROL_SCHOOL_TIME= "controlschooltime";
     //管控时间设置表
     public static final String COLLECTION_CONTROL_NOW_TIME= "controlnowtime";
+    //管控学生默认配置
+    public static final String COLLECTION_CONTROL_BACK_TIME= "controlbacktime";
+    //管控时间选项默认配置
+    public static final String COLLECTION_CONTROL_SET_TIME= "controlsettime";
 
 }

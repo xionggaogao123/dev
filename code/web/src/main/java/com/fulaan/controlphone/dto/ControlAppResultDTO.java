@@ -21,6 +21,8 @@ public class ControlAppResultDTO {
     private String appId;
     private String logo;
     private String appName;
+    private String packageName;
+    private int type;
     private long userTime;
     private String dateTime;
 
@@ -35,6 +37,8 @@ public class ControlAppResultDTO {
             this.appId = e.getAppid() == null ? "" : e.getAppid().toString();
             this.appName = e.getAppName();
             this.userTime = e.getUseTime();
+            this.packageName = e.getPackageName();
+            this.type = e.getType();
             if(e.getDateTime()!=0l){
                 this.dateTime = DateTimeUtils.getLongToStrTimeTwo(e.getDateTime());
             }else{
@@ -68,6 +72,8 @@ public class ControlAppResultDTO {
                         uId,
                         aId,
                         this.appName,
+                        this.packageName,
+                        this.type,
                         this.userTime,
                         dTm
                 );
@@ -102,6 +108,8 @@ public class ControlAppResultDTO {
                         uId,
                         aId,
                         this.appName,
+                        this.packageName,
+                        this.type,
                         this.userTime,
                         dTm
                 );
@@ -109,6 +117,21 @@ public class ControlAppResultDTO {
 
     }
 
+    public String getPackageName() {
+        return packageName;
+    }
+
+    public void setPackageName(String packageName) {
+        this.packageName = packageName;
+    }
+
+    public int getType() {
+        return type;
+    }
+
+    public void setType(int type) {
+        this.type = type;
+    }
 
     public String getLogo() {
         return logo;

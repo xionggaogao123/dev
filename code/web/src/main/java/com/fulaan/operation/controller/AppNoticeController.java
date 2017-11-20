@@ -158,7 +158,7 @@ public class AppNoticeController extends BaseController {
                                     @RequestParam(required = false,defaultValue = "") String backId,
                                     @RequestParam(required = false,defaultValue = "") String parentId,
                                     @RequestParam(required = false,defaultValue = "") String description){
-        RespObj respObj=null;
+        RespObj respObj=new RespObj(Constant.FAILD_CODE);
         try {
             AppOperationDTO dto=new AppOperationDTO();
             dto.setContactId(contactId);
@@ -166,14 +166,14 @@ public class AppNoticeController extends BaseController {
             dto.setBackId(backId);
             dto.setParentId(parentId);
             dto.setDescription(description);
-            respObj = RespObj.SUCCESS;
+            respObj.setCode(Constant.SUCCESS_CODE);
             dto.setUserId(getUserId().toString());
             dto.setLevel(1);
             String result = appNoticeService.addOperationEntry(dto);
             respObj.setMessage(result);
         } catch (Exception e) {
             e.printStackTrace();
-            respObj = RespObj.FAILD;
+            respObj.setCode(Constant.FAILD_CODE);
             respObj.setErrorMessage("添加作业评论失败!");
 
         }
@@ -190,16 +190,16 @@ public class AppNoticeController extends BaseController {
     @RequestMapping(value="/addOperationEntry2")
     @ResponseBody
     public String addOperationEntry2(@ApiParam(value = "parentId为上级评论id,backId为回复的对象id,contactId为通知id，role为2学生评论区，role为1家长评论区") @RequestBody AppOperationDTO dto){
-        RespObj respObj=null;
+        RespObj respObj=new RespObj(Constant.FAILD_CODE);
         try {
-            respObj = RespObj.SUCCESS;
+            respObj.setCode(Constant.SUCCESS_CODE);
             dto.setUserId(getUserId().toString());
             dto.setLevel(1);
             String result = appNoticeService.addOperationEntry(dto);
             respObj.setMessage(result);
         } catch (Exception e) {
             e.printStackTrace();
-            respObj = RespObj.FAILD;
+            respObj.setCode(Constant.FAILD_CODE);
             respObj.setErrorMessage("添加作业评论失败!");
 
         }
@@ -214,16 +214,16 @@ public class AppNoticeController extends BaseController {
     @RequestMapping("/addSecondOperation")
     @ResponseBody
     public String addSecondOperation(@ApiParam(value = "parentId为上级评论id,backId为回复的对象id,contactId为通知id，role为1家长评论区，role为2学生评论区") @RequestBody AppOperationDTO dto){
-        RespObj respObj=null;
+        RespObj respObj=new RespObj(Constant.FAILD_CODE);
         try {
-            respObj = RespObj.SUCCESS;
+            respObj.setCode(Constant.SUCCESS_CODE);
             dto.setUserId(getUserId().toString());
             dto.setLevel(2);
             String result = appNoticeService.addOperationEntry(dto);
             respObj.setMessage(result);
         } catch (Exception e) {
             e.printStackTrace();
-            respObj = RespObj.FAILD;
+            respObj.setCode(Constant.FAILD_CODE);
             respObj.setErrorMessage("添加作业二级评论失败!");
 
         }

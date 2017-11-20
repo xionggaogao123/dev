@@ -41,6 +41,7 @@ public class BackStageController extends BaseController {
             respObj.setMessage("设置成功");
         } catch (Exception e) {
             e.printStackTrace();
+            respObj.setCode(Constant.FAILD_CODE);
             respObj.setErrorMessage("后台设置学生端回调时间失败!");
         }
         return JSON.toJSONString(respObj);
@@ -63,6 +64,7 @@ public class BackStageController extends BaseController {
             respObj.setMessage("设置成功");
         } catch (Exception e) {
             e.printStackTrace();
+            respObj.setCode(Constant.FAILD_CODE);
             respObj.setErrorMessage("后台设置学生端应用回调时间失败!");
         }
         return JSON.toJSONString(respObj);
@@ -72,7 +74,32 @@ public class BackStageController extends BaseController {
      * 后台设置默认管控时间选择表
      *
      */
-    @ApiOperation(value = "后台设置学生端应用回调时间", httpMethod = "POST", produces = "application/json")
+    @ApiOperation(value = "后台设置默认管控时间选择表", httpMethod = "POST", produces = "application/json")
+    @ApiResponses( value = {@ApiResponse(code = 200, message = "Successful — 请求已完成",response = String.class),
+            @ApiResponse(code = 400, message = "请求中有语法问题，或不能满足请求"),
+            @ApiResponse(code = 500, message = "服务器不能完成请求")})
+    @RequestMapping("/addPhoneEntry")
+    @ResponseBody
+    public String addPhoneEntry(@ApiParam(name = "name", required = true, value = "名称") @RequestParam("name") String name,
+                                @ApiParam(name = "phone", required = true, value = "电话") @RequestParam("phone") String phone){
+        RespObj respObj=new RespObj(Constant.FAILD_CODE);
+        try {
+            respObj.setCode(Constant.SUCCESS_CODE);
+            //backStageService.addSetTimeListEntry(getUserId(), time);
+            respObj.setMessage("设置成功");
+        } catch (Exception e) {
+            e.printStackTrace();
+            respObj.setCode(Constant.FAILD_CODE);
+            respObj.setErrorMessage("后台设置默认管控时间选择表失败!");
+        }
+        return JSON.toJSONString(respObj);
+    }
+
+    /**
+     * 后台设置常用电话
+     *
+     */
+    @ApiOperation(value = "后台设置常用电话", httpMethod = "POST", produces = "application/json")
     @ApiResponses( value = {@ApiResponse(code = 200, message = "Successful — 请求已完成",response = String.class),
             @ApiResponse(code = 400, message = "请求中有语法问题，或不能满足请求"),
             @ApiResponse(code = 500, message = "服务器不能完成请求")})
@@ -86,12 +113,11 @@ public class BackStageController extends BaseController {
             respObj.setMessage("设置成功");
         } catch (Exception e) {
             e.printStackTrace();
+            respObj.setCode(Constant.FAILD_CODE);
             respObj.setErrorMessage("后台设置默认管控时间选择表失败!");
         }
         return JSON.toJSONString(respObj);
     }
-
-
 
 
 

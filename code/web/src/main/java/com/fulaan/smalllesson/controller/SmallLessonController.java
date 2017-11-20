@@ -6,6 +6,7 @@ import com.fulaan.base.BaseController;
 import com.fulaan.smalllesson.dto.LessonAnswerDTO;
 import com.fulaan.smalllesson.dto.SmallLessonDTO;
 import com.fulaan.smalllesson.service.SmallLessonService;
+import com.sys.constants.Constant;
 import com.sys.utils.RespObj;
 import io.swagger.annotations.*;
 import org.bson.types.ObjectId;
@@ -49,20 +50,20 @@ public class SmallLessonController extends BaseController {
     public String addLessonEntry(@ApiParam(name = "userId", required = true, value = "用户id") @RequestParam("userId") String userId,
                                  @ApiParam(name = "userName", required = true, value = "用户姓名") @RequestParam("userName") String userName){
 
-        RespObj respObj=null;
+        RespObj respObj=new RespObj(Constant.FAILD_CODE);
         try {
 
             SmallLessonDTO str = smallLessonService.addLessonEntry(userId,userName);
             if(str == null){
-                respObj = RespObj.FAILD;
+                respObj.setCode(Constant.FAILD_CODE);
                 respObj.setErrorMessage("正在上课中!");
             }else{
-                respObj = RespObj.SUCCESS;
+                respObj.setCode(Constant.SUCCESS_CODE);
                 respObj.setMessage(str);
             }
         } catch (Exception e) {
             e.printStackTrace();
-            respObj = RespObj.FAILD;
+            respObj.setCode(Constant.FAILD_CODE);
             respObj.setErrorMessage(" 添加课程（点击开课）失败!");
         }
         return JSON.toJSONString(respObj);
@@ -80,14 +81,14 @@ public class SmallLessonController extends BaseController {
     public String updLessonEntry(@ApiParam(name = "userId", required = true, value = "用户id") @RequestParam("userId") String userId,
                                  @ApiParam(name = "time", required = true, value = "持续时间") @RequestParam("time") int time){
 
-        RespObj respObj=null;
+        RespObj respObj=new RespObj(Constant.FAILD_CODE);
         try {
-            respObj = RespObj.SUCCESS;
+            respObj.setCode(Constant.SUCCESS_CODE);
             smallLessonService.updLessonEntry(userId,time);
             respObj.setMessage("下课(修改课程)成功!");
         } catch (Exception e) {
             e.printStackTrace();
-            respObj = RespObj.FAILD;
+            respObj.setCode(Constant.FAILD_CODE);
             respObj.setErrorMessage("下课(修改课程)失败!");
         }
         return JSON.toJSONString(respObj);
@@ -106,15 +107,15 @@ public class SmallLessonController extends BaseController {
     @ResponseBody
     public String addStuEntry(@ApiParam(name = "teacherId", required = true, value = "老师id") @PathVariable(value = "teacherId") String teacherId){
 
-        RespObj respObj=null;
+        RespObj respObj=new RespObj(Constant.FAILD_CODE);
         try {
-            respObj = RespObj.SUCCESS;
+            respObj.setCode(Constant.SUCCESS_CODE);
             ObjectId userId = getUserId();
             Map<String,Object> str = smallLessonService.addStuEntry(userId, getSessionValue().getUserName(), new ObjectId(teacherId));
             respObj.setMessage(str);
         } catch (Exception e) {
             e.printStackTrace();
-            respObj = RespObj.FAILD;
+            respObj.setCode(Constant.FAILD_CODE);
             respObj.setErrorMessage("加入课程 （学生扫描进入）失败!");
         }
         return JSON.toJSONString(respObj);
@@ -130,15 +131,15 @@ public class SmallLessonController extends BaseController {
     @ResponseBody
     public String addStuEntryByCode(@ApiParam(name = "code", required = true, value = "课程id") @RequestParam(value = "code") String code){
 
-        RespObj respObj=null;
+        RespObj respObj=new RespObj(Constant.FAILD_CODE);
         try {
-            respObj = RespObj.SUCCESS;
+            respObj.setCode(Constant.SUCCESS_CODE);
             ObjectId userId = getUserId();
             Map<String,Object> str = smallLessonService.addStuEntryByCode(userId, getSessionValue().getUserName(), code);
             respObj.setMessage(str);
         } catch (Exception e) {
             e.printStackTrace();
-            respObj = RespObj.FAILD;
+            respObj.setCode(Constant.FAILD_CODE);
             respObj.setErrorMessage("加入课程 （学生扫描进入）失败!");
         }
         return JSON.toJSONString(respObj);
@@ -158,14 +159,14 @@ public class SmallLessonController extends BaseController {
                                    @ApiParam(name = "page", required = true, value = "page") @RequestParam("page") int page,
                                    @ApiParam(name = "pageSize", required = true, value = "pageSize") @RequestParam("pageSize") int pageSize){
 
-        RespObj respObj=null;
+        RespObj respObj=new RespObj(Constant.FAILD_CODE);
         try {
-            respObj = RespObj.SUCCESS;
+            respObj.setCode(Constant.SUCCESS_CODE);
             Map<String,Object> dtos = smallLessonService.getLessonList(new ObjectId(userId), page, pageSize);
             respObj.setMessage(dtos);
         } catch (Exception e) {
             e.printStackTrace();
-            respObj = RespObj.FAILD;
+            respObj.setCode(Constant.FAILD_CODE);
             respObj.setErrorMessage("查找当前用户的课程列表（倒序）失败!");
         }
         return JSON.toJSONString(respObj);
@@ -186,14 +187,14 @@ public class SmallLessonController extends BaseController {
                                    @ApiParam(name = "page", required = true, value = "page") @RequestParam("page") int page,
                                    @ApiParam(name = "pageSize", required = true, value = "pageSize") @RequestParam("pageSize") int pageSize){
 
-        RespObj respObj=null;
+        RespObj respObj=new RespObj(Constant.FAILD_CODE);
         try {
-            respObj = RespObj.SUCCESS;
+            respObj.setCode(Constant.SUCCESS_CODE);
             Map<String,Object> dtos = smallLessonService.getUserResultList(new ObjectId(lessonId), page, pageSize);
             respObj.setMessage(dtos);
         } catch (Exception e) {
             e.printStackTrace();
-            respObj = RespObj.FAILD;
+            respObj.setCode(Constant.FAILD_CODE);
             respObj.setErrorMessage("查找当前课程的活跃列表（倒序）失败!");
         }
         return JSON.toJSONString(respObj);
@@ -216,14 +217,14 @@ public class SmallLessonController extends BaseController {
                                        @ApiParam(name = "type", required = true, value = "type") @RequestParam("type") int type,
                                        @ApiParam(name = "pageSize", required = true, value = "pageSize") @RequestParam("pageSize") int pageSize){
 
-        RespObj respObj=null;
+        RespObj respObj=new RespObj(Constant.FAILD_CODE);
         try {
-            respObj = RespObj.SUCCESS;
+            respObj.setCode(Constant.SUCCESS_CODE);
             Map<String,Object> dtos = smallLessonService.selectAnswerList(new ObjectId(lessonId), number, page, pageSize,type);
             respObj.setMessage(dtos);
         } catch (Exception e) {
             e.printStackTrace();
-            respObj = RespObj.FAILD;
+            respObj.setCode(Constant.FAILD_CODE);
             respObj.setErrorMessage("答题情况列表（倒序）失败!");
         }
         return JSON.toJSONString(respObj);
@@ -241,14 +242,14 @@ public class SmallLessonController extends BaseController {
     @ResponseBody
     public String selectIntList(@ApiParam(name = "lessonId", required = true, value = "课程id") @RequestParam("lessonId") String lessonId){
 
-        RespObj respObj=null;
+        RespObj respObj=new RespObj(Constant.FAILD_CODE);
         try {
-            respObj = RespObj.SUCCESS;
+            respObj.setCode(Constant.SUCCESS_CODE);
             List<Integer> dtos = smallLessonService.getIntList(new ObjectId(lessonId));
             respObj.setMessage(dtos);
         } catch (Exception e) {
             e.printStackTrace();
-            respObj = RespObj.FAILD;
+            respObj.setCode(Constant.FAILD_CODE);
             respObj.setErrorMessage("答题情况列表（倒序）失败!");
         }
         return JSON.toJSONString(respObj);
@@ -267,14 +268,14 @@ public class SmallLessonController extends BaseController {
     public String addUserResult(@ApiParam(name = "userIds", required = true, value = "用户id") @RequestParam("userIds") List<String> userIds,
                                 @ApiParam(name = "lessonId", required = true, value = "课程记录id") @RequestParam("lessonId") String lessonId){
 
-        RespObj respObj=null;
+        RespObj respObj=new RespObj(Constant.FAILD_CODE);
         try {
-            respObj = RespObj.SUCCESS;
+            respObj.setCode(Constant.SUCCESS_CODE);
             smallLessonService.addUserResult(userIds,new ObjectId(lessonId));
             respObj.setMessage("添加活跃用户idlist成功!");
         } catch (Exception e) {
             e.printStackTrace();
-            respObj = RespObj.FAILD;
+            respObj.setCode(Constant.FAILD_CODE);
             respObj.setErrorMessage("添加活跃用户idlist失败!");
         }
         return JSON.toJSONString(respObj);
@@ -291,14 +292,14 @@ public class SmallLessonController extends BaseController {
     @ResponseBody
     public String addAnswerList(@ApiParam(name = "answerList", required = true, value = "答题列表") @RequestParam("answerList") List<LessonAnswerDTO> answerList){
 
-        RespObj respObj=null;
+        RespObj respObj=new RespObj(Constant.FAILD_CODE);
         try {
-            respObj = RespObj.SUCCESS;
+            respObj.setCode(Constant.SUCCESS_CODE);
             smallLessonService.addAnswerList(answerList);
             respObj.setMessage("批量添加答题实体类列表成功!");
         } catch (Exception e) {
             e.printStackTrace();
-            respObj = RespObj.FAILD;
+            respObj.setCode(Constant.FAILD_CODE);
             respObj.setErrorMessage("批量添加答题实体类列表失败!");
         }
         return JSON.toJSONString(respObj);
@@ -315,9 +316,9 @@ public class SmallLessonController extends BaseController {
     @ResponseBody
     public String addNewAnswerList(@ApiParam(name = "answerList", required = true, value = "答题列表") @RequestBody LessonAnswerDTO answerList){
 
-        RespObj respObj=null;
+        RespObj respObj=new RespObj(Constant.FAILD_CODE);
         try {
-            respObj = RespObj.SUCCESS;
+            respObj.setCode(Constant.SUCCESS_CODE);
             List<LessonAnswerDTO> dto = answerList.getList();
             if(dto.size()>0){
                 smallLessonService.addAnswerList(dto);
@@ -325,7 +326,7 @@ public class SmallLessonController extends BaseController {
             respObj.setMessage("批量添加答题实体类列表成功!");
         } catch (Exception e) {
             e.printStackTrace();
-            respObj = RespObj.FAILD;
+            respObj.setCode(Constant.FAILD_CODE);
             respObj.setErrorMessage("批量添加答题实体类列表失败!");
         }
         return JSON.toJSONString(respObj);
@@ -343,14 +344,14 @@ public class SmallLessonController extends BaseController {
     public String updateLessonName(@ApiParam(name = "lessonId", required = true, value = "课程id") @RequestParam("userId") String lessonId,
                                    @ApiParam(name = "name",required = true,value = "课程名") @RequestParam("name") String name){
 
-        RespObj respObj=null;
+        RespObj respObj=new RespObj(Constant.FAILD_CODE);
         try {
-            respObj = RespObj.SUCCESS;
+            respObj.setCode(Constant.SUCCESS_CODE);
            smallLessonService.updateLessonName(new ObjectId(lessonId), name);
             respObj.setMessage("修改课程名成功");
         } catch (Exception e) {
             e.printStackTrace();
-            respObj = RespObj.FAILD;
+            respObj.setCode(Constant.FAILD_CODE);
             respObj.setErrorMessage("修改课程名失败");
         }
         return JSON.toJSONString(respObj);
@@ -368,14 +369,14 @@ public class SmallLessonController extends BaseController {
     @ResponseBody
     public String delLessonEntry(@ApiParam(name = "lessonId", required = true, value = "课程id") @RequestParam("lessonId") String lessonId){
 
-        RespObj respObj=null;
+        RespObj respObj=new RespObj(Constant.FAILD_CODE);
         try {
-            respObj = RespObj.SUCCESS;
+            respObj.setCode(Constant.SUCCESS_CODE);
             smallLessonService.delLessonEntry(new ObjectId(lessonId));
             respObj.setMessage("删除课程成功");
         } catch (Exception e) {
             e.printStackTrace();
-            respObj = RespObj.FAILD;
+            respObj.setCode(Constant.FAILD_CODE);
             respObj.setErrorMessage("删除课程失败");
         }
         return JSON.toJSONString(respObj);
@@ -393,14 +394,14 @@ public class SmallLessonController extends BaseController {
     @ResponseBody
     public String getUserInfo(@ApiParam(name = "userId", required = true, value = "用户id") @RequestParam("userId") String userId){
 
-        RespObj respObj=null;
+        RespObj respObj=new RespObj(Constant.FAILD_CODE);
         try {
-            respObj = RespObj.SUCCESS;
+            respObj.setCode(Constant.SUCCESS_CODE);
             Map<String,Object> map = smallLessonService.getUserInfo(new ObjectId(userId));
             respObj.setMessage(map);
         } catch (Exception e) {
             e.printStackTrace();
-            respObj = RespObj.FAILD;
+            respObj.setCode(Constant.FAILD_CODE);
             respObj.setErrorMessage("删除课程失败");
         }
         return JSON.toJSONString(respObj);
@@ -417,14 +418,14 @@ public class SmallLessonController extends BaseController {
     @ResponseBody
     public String getTimeLoading(@ApiParam(name = "userId", required = true, value = "用户id") @RequestParam("userId") String userId){
 
-        RespObj respObj=null;
+        RespObj respObj=new RespObj(Constant.FAILD_CODE);
         try {
-            respObj = RespObj.SUCCESS;
+            respObj.setCode(Constant.SUCCESS_CODE);
             smallLessonService.getTimeLoading(new ObjectId(userId));
             respObj.setMessage("成功！");
         } catch (Exception e) {
             e.printStackTrace();
-            respObj = RespObj.FAILD;
+            respObj.setCode(Constant.FAILD_CODE);
             respObj.setErrorMessage("删除课程失败");
         }
         return JSON.toJSONString(respObj);
@@ -441,14 +442,14 @@ public class SmallLessonController extends BaseController {
     @ResponseBody
     public String updateUserAvatar(@ApiParam(name = "userId", required = true, value = "用户id") @RequestParam("userId") String userId){
 
-        RespObj respObj=null;
+        RespObj respObj=new RespObj(Constant.FAILD_CODE);
         try {
-            respObj = RespObj.SUCCESS;
+            respObj.setCode(Constant.SUCCESS_CODE);
             smallLessonService.getTimeLoading(new ObjectId(userId));
             respObj.setMessage("成功！");
         } catch (Exception e) {
             e.printStackTrace();
-            respObj = RespObj.FAILD;
+            respObj.setCode(Constant.FAILD_CODE);
             respObj.setErrorMessage("删除课程失败");
         }
         return JSON.toJSONString(respObj);

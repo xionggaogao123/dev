@@ -4,6 +4,7 @@ import cn.jiguang.commom.utils.StringUtils;
 import com.alibaba.fastjson.JSON;
 import com.fulaan.base.BaseController;
 import com.fulaan.instantmessage.service.RedDotService;
+import com.sys.constants.Constant;
 import com.sys.utils.DateTimeUtils;
 import com.sys.utils.RespObj;
 import io.swagger.annotations.Api;
@@ -37,14 +38,14 @@ public class RedDotController extends BaseController {
     @RequestMapping("/selectResult")
     @ResponseBody
     public String selectResult(){
-        RespObj respObj=null;
+        RespObj respObj=new RespObj(Constant.FAILD_CODE);
         try {
-            respObj = RespObj.SUCCESS;
+            respObj.setCode(Constant.SUCCESS_CODE);
             Map<String,Object> result = redDotService.selectResult(getUserId());
             respObj.setMessage(result);
         } catch (Exception e) {
             e.printStackTrace();
-            respObj = RespObj.FAILD;
+            respObj.setCode(Constant.FAILD_CODE);
             respObj.setErrorMessage("获得该用户的红点记录失败!");
 
         }
@@ -61,14 +62,14 @@ public class RedDotController extends BaseController {
     @RequestMapping("/getDayNotice")
     @ResponseBody
     public String getDayNotice(){
-        RespObj respObj=null;
+        RespObj respObj=new RespObj(Constant.FAILD_CODE);
         try {
-            respObj = RespObj.SUCCESS;
+            respObj.setCode(Constant.SUCCESS_CODE);
             Map<String,Object> result = redDotService.selectDayNotice(getUserId());
             respObj.setMessage(result);
         } catch (Exception e) {
             e.printStackTrace();
-            respObj = RespObj.FAILD;
+            respObj.setCode(Constant.FAILD_CODE);
             respObj.setErrorMessage("首页获得该用户每日通知红点记录失败!");
 
         }
@@ -84,14 +85,14 @@ public class RedDotController extends BaseController {
     @RequestMapping("/selectStudentResult")
     @ResponseBody
     public String selectStudentResult(){
-        RespObj respObj=null;
+        RespObj respObj=new RespObj(Constant.FAILD_CODE);
         try {
-            respObj = RespObj.SUCCESS;
+            respObj.setCode(Constant.SUCCESS_CODE);
             Map<String,Object> result = redDotService.selectResult(getUserId());
             respObj.setMessage(result);
         } catch (Exception e) {
             e.printStackTrace();
-            respObj = RespObj.FAILD;
+            respObj.setCode(Constant.FAILD_CODE);
             respObj.setErrorMessage("获得该用户的红点记录失败!");
 
         }
@@ -110,9 +111,9 @@ public class RedDotController extends BaseController {
     public String cleanResult(
             @ApiParam(name = "type", required = true, value = "应用类型") @RequestParam(required = false,defaultValue = "1") int type,
             @ApiParam(name = "dataTime", required = true, value = "日期（2017-10-26）") @RequestParam(required = false,defaultValue = "") String dataTime){
-        RespObj respObj=null;
+        RespObj respObj=new RespObj(Constant.FAILD_CODE);
         try {
-            respObj = RespObj.SUCCESS;
+            respObj.setCode(Constant.SUCCESS_CODE);
             if(StringUtils.isNotEmpty(dataTime)) {
                 long time = DateTimeUtils.getStrToLongTime(dataTime, "yyyy-MM-dd");
                 redDotService.cleanResult(getUserId(), type, time);
@@ -122,7 +123,7 @@ public class RedDotController extends BaseController {
             respObj.setMessage("修改成功");
         } catch (Exception e) {
             e.printStackTrace();
-            respObj = RespObj.FAILD;
+            respObj.setCode(Constant.FAILD_CODE);
             respObj.setErrorMessage("获得该用户的红点记录失败!");
         }
         return JSON.toJSONString(respObj);

@@ -76,14 +76,14 @@ public class DefaultAppCommentController extends BaseController {
     @ResponseBody
     public String selectListByTeacherId(){
 
-        RespObj respObj=null;
+        RespObj respObj=new RespObj(Constant.FAILD_CODE);
         try {
-            respObj = RespObj.SUCCESS;
+            respObj.setCode(Constant.SUCCESS_CODE);
             List<AppCommentDTO> dtos = appCommentService.selectListByTeacherId(getUserId());
             respObj.setMessage(dtos);
         } catch (Exception e) {
             e.printStackTrace();
-            respObj = RespObj.FAILD;
+            respObj.setCode(Constant.FAILD_CODE);
             respObj.setErrorMessage("查找当前老师今天发布的作业失败!");
         }
         return JSON.toJSONString(respObj);
@@ -101,14 +101,14 @@ public class DefaultAppCommentController extends BaseController {
     @ResponseBody
     public String selectListFromParent(){
 
-        RespObj respObj=null;
+        RespObj respObj=new RespObj(Constant.FAILD_CODE);
         try {
-            respObj = RespObj.SUCCESS;
+            respObj.setCode(Constant.SUCCESS_CODE);
             List<AppCommentDTO> dtos = appCommentService.selectListFromParent(getUserId());
             respObj.setMessage(dtos);
         } catch (Exception e) {
             e.printStackTrace();
-            respObj = RespObj.FAILD;
+            respObj.setCode(Constant.FAILD_CODE);
             respObj.setErrorMessage("查找当前家长收到的作业失败!");
         }
         return JSON.toJSONString(respObj);
@@ -125,14 +125,14 @@ public class DefaultAppCommentController extends BaseController {
     @ResponseBody
     public String selectRecordList(@ApiParam(name = "id", required = true, value = "作业id") @RequestParam("id") String id){
 
-        RespObj respObj=null;
+        RespObj respObj=new RespObj(Constant.FAILD_CODE);
         try {
-            respObj = RespObj.SUCCESS;
+            respObj.setCode(Constant.SUCCESS_CODE);
             Map<String,Object> dtos = appCommentService.selectRecordList(new ObjectId(id));
             respObj.setMessage(dtos);
         } catch (Exception e) {
             e.printStackTrace();
-            respObj = RespObj.FAILD;
+            respObj.setCode(Constant.FAILD_CODE);
             respObj.setErrorMessage("查找当前作业签到的家长名单失败!");
         }
         return JSON.toJSONString(respObj);
@@ -149,14 +149,14 @@ public class DefaultAppCommentController extends BaseController {
     @ResponseBody
     public String selectStudentLoad(@ApiParam(name = "id", required = true, value = "作业id") @RequestParam("id") String id,@ApiParam(name = "page", required = true, value = "page") @RequestParam("page") int page,@ApiParam(name = "pageSize", required = true, value = "pageSize") @RequestParam("pageSize") int pageSize){
 
-        RespObj respObj=null;
+        RespObj respObj=new RespObj(Constant.FAILD_CODE);
         try {
-            respObj = RespObj.SUCCESS;
+            respObj.setCode(Constant.SUCCESS_CODE);
             Map<String,Object> dtos = appCommentService.selectStudentLoad(new ObjectId(id), page, pageSize);
             respObj.setMessage(dtos);
         } catch (Exception e) {
             e.printStackTrace();
-            respObj = RespObj.FAILD;
+            respObj.setCode(Constant.FAILD_CODE);
             respObj.setErrorMessage("查找当前作业提交的学生名单失败!");
         }
         return JSON.toJSONString(respObj);
@@ -173,15 +173,15 @@ public class DefaultAppCommentController extends BaseController {
     @RequestMapping("/isSign")
     @ResponseBody
     public String isSign(@ApiParam(name = "date", required = true, value = "日期（yyyy-MM-dd）") @RequestParam("date") String date){
-        RespObj respObj=null;
+        RespObj respObj=new RespObj(Constant.FAILD_CODE);
         try {
-            respObj = RespObj.SUCCESS;
+            respObj.setCode(Constant.SUCCESS_CODE);
             long dateTime = DateTimeUtils.getStrToLongTime(date, "yyyy-MM-dd");
             Map<String,Object> result = appCommentService.isSign(getUserId(),dateTime,new ArrayList<ObjectId>());
             respObj.setMessage(result);
         } catch (Exception e) {
             e.printStackTrace();
-            respObj = RespObj.FAILD;
+            respObj.setCode(Constant.FAILD_CODE);
             respObj.setErrorMessage("是否签到!");
         }
         return JSON.toJSONString(respObj);
@@ -198,14 +198,14 @@ public class DefaultAppCommentController extends BaseController {
     @RequestMapping("/goSign")
     @ResponseBody
     public String goSign(@ApiParam(name = "qid", required = true, value = "签到id") @RequestParam("qid") String qid){
-        RespObj respObj=null;
+        RespObj respObj=new RespObj(Constant.FAILD_CODE);
         try {
-            respObj = RespObj.SUCCESS;
+            respObj.setCode(Constant.SUCCESS_CODE);
             String result = appCommentService.goSign(new ObjectId(qid),getUserId());
             respObj.setMessage(result);
         } catch (Exception e) {
             e.printStackTrace();
-            respObj = RespObj.FAILD;
+            respObj.setCode(Constant.FAILD_CODE);
             respObj.setErrorMessage("签到失败!");
         }
         return JSON.toJSONString(respObj);
@@ -223,14 +223,14 @@ public class DefaultAppCommentController extends BaseController {
     @ResponseBody
     public String selectResultList(@ApiParam(name = "month", required = true, value = "月份（MM）") @RequestParam("month") int month){
 
-        RespObj respObj=null;
+        RespObj respObj=new RespObj(Constant.FAILD_CODE);
         try {
             respObj = new RespObj(Constant.SUCCESS_CODE,"");
             List<String> dtos = appCommentService.selectResultList(month, getUserId());
             respObj.setMessage(dtos);
         } catch (Exception e) {
             e.printStackTrace();
-            respObj = RespObj.FAILD;
+            respObj.setCode(Constant.FAILD_CODE);
             respObj.setErrorMessage("查找当前当前月份用户发放作业情况名单失败!");
         }
         return JSON.toJSONString(respObj);
@@ -247,14 +247,14 @@ public class DefaultAppCommentController extends BaseController {
     @ResponseBody
     public String selectStudentResultList(@ApiParam(name = "month", required = true, value = "月份（MM）") @RequestParam("month") int month){
 
-        RespObj respObj=null;
+        RespObj respObj=new RespObj(Constant.FAILD_CODE);
         try {
             respObj = new RespObj(Constant.SUCCESS_CODE,"");
             List<String> dtos = appCommentService.selectStudentResultList(month, getUserId());
             respObj.setMessage(dtos);
         } catch (Exception e) {
             e.printStackTrace();
-            respObj = RespObj.FAILD;
+            respObj.setCode(Constant.FAILD_CODE);
             respObj.setErrorMessage("查找当前当前月份用户发放作业情况名单失败!");
         }
         return JSON.toJSONString(respObj);
@@ -271,15 +271,15 @@ public class DefaultAppCommentController extends BaseController {
     @ResponseBody
     public String selectDateList(@ApiParam(name = "date", required = true, value = "日期（yyyy-MM-dd）") @RequestParam("date") String date){
 
-        RespObj respObj=null;
+        RespObj respObj=new RespObj(Constant.FAILD_CODE);
         try {
-            respObj = RespObj.SUCCESS;
+            respObj.setCode(Constant.SUCCESS_CODE);
             long dateTime = DateTimeUtils.getStrToLongTime(date, "yyyy-MM-dd");
             Map<String,Object> dtos = appCommentService.selectDateList(dateTime, getUserId());
             respObj.setMessage(dtos);
         } catch (Exception e) {
             e.printStackTrace();
-            respObj = RespObj.FAILD;
+            respObj.setCode(Constant.FAILD_CODE);
             respObj.setErrorMessage("查找当前点击的事件老师失败!");
         }
         return JSON.toJSONString(respObj);
@@ -295,15 +295,15 @@ public class DefaultAppCommentController extends BaseController {
     @RequestMapping("/getStuLit")
     @ResponseBody
     public String getStuLit(@ApiParam(name = "date", required = true, value = "日期（yyyy-MM-dd）") @RequestParam("date") String date){
-        RespObj respObj=null;
+        RespObj respObj=new RespObj(Constant.FAILD_CODE);
         try {
-            respObj = RespObj.SUCCESS;
+            respObj.setCode(Constant.SUCCESS_CODE);
             long dateTime = DateTimeUtils.getStrToLongTime(date, "yyyy-MM-dd");
             List<AppCommentDTO> dtos = appCommentService.getStuLit(dateTime, getUserId());
             respObj.setMessage(dtos);
         } catch (Exception e) {
             e.printStackTrace();
-            respObj = RespObj.FAILD;
+            respObj.setCode(Constant.FAILD_CODE);
             respObj.setErrorMessage("查找当前点击的事件学生收到作业情况列表失败!");
         }
         return JSON.toJSONString(respObj);
@@ -322,15 +322,15 @@ public class DefaultAppCommentController extends BaseController {
                                    @ApiParam(name = "role", required = true, value = "角色区") @RequestParam("role") int role,
                                    @RequestParam(value = "page",defaultValue = "1") int page,
                                    @RequestParam(value = "pageSize",defaultValue = "10") int pageSize){
-        RespObj respObj=null;
+        RespObj respObj=new RespObj(Constant.FAILD_CODE);
         try {
-            respObj = RespObj.SUCCESS;
+            respObj.setCode(Constant.SUCCESS_CODE);
             int label = 1;
             Map<String,Object> dtos = appCommentService.getOperationList(new ObjectId(id),role,label,getUserId(),page,pageSize);
             respObj.setMessage(dtos);
         } catch (Exception e) {
             e.printStackTrace();
-            respObj = RespObj.FAILD;
+            respObj.setCode(Constant.FAILD_CODE);
             respObj.setErrorMessage("根据作业id查找当前评论列表失败!");
         }
         return JSON.toJSONString(respObj);
@@ -347,14 +347,14 @@ public class DefaultAppCommentController extends BaseController {
     @ResponseBody
     public String getNoticeList(@ApiParam(name = "id", required = true, value = "通知id") @RequestParam("id") String id,@ApiParam(name = "role", required = true, value = "角色区") @RequestParam("role") int role,int page,int pageSize){
 
-        RespObj respObj=null;
+        RespObj respObj=new RespObj(Constant.FAILD_CODE);
         try {
-            respObj = RespObj.SUCCESS;
+            respObj.setCode(Constant.SUCCESS_CODE);
             Map<String,Object> dtos = appCommentService.getNoticeList(new ObjectId(id),role,getUserId(),page,pageSize);
             respObj.setMessage(dtos);
         } catch (Exception e) {
             e.printStackTrace();
-            respObj = RespObj.FAILD;
+            respObj.setCode(Constant.FAILD_CODE);
             respObj.setErrorMessage("根据作业id查找当前评论列表失败!");
         }
         return JSON.toJSONString(respObj);
@@ -369,16 +369,16 @@ public class DefaultAppCommentController extends BaseController {
     @RequestMapping("/addOperationEntryFromStrudent")
     @ResponseBody
     public String addOperationEntryFromStrudent(@ApiParam(value = "contactId为作业id，role为3学生提交") @RequestBody AppOperationDTO dto){
-        RespObj respObj=null;
+        RespObj respObj=new RespObj(Constant.FAILD_CODE);
         try {
-            respObj = RespObj.SUCCESS;
+            respObj.setCode(Constant.SUCCESS_CODE);
             dto.setUserId(getUserId().toString());
             dto.setLevel(1);
             String result = appCommentService.addOperationEntryFromStrudent(dto);
             respObj.setMessage(result);
         } catch (Exception e) {
             e.printStackTrace();
-            respObj = RespObj.FAILD;
+            respObj.setCode(Constant.FAILD_CODE);
             respObj.setErrorMessage("添加学生作业失败!");
 
         }
@@ -397,18 +397,18 @@ public class DefaultAppCommentController extends BaseController {
    /* public String addOperationEntry(@ApiParam(name = "id", required = true, value = "通知id") @RequestParam("id") String contactId,
                                     @ApiParam(name = "role", required = true, value = "角色区") @RequestParam("role") int role,
                                     @ApiParam(name = "description", required = true, value = "角色区") @RequestParam("role") String description){*/
-        RespObj respObj=null;
+        RespObj respObj=new RespObj(Constant.FAILD_CODE);
         try {
             //todo(角色判断)
             //AppOperationDTO dto = new AppOperationDTO();
-            respObj = RespObj.SUCCESS;
+            respObj.setCode(Constant.SUCCESS_CODE);
             dto.setUserId(getUserId().toString());
             dto.setLevel(1);
             String result = appCommentService.addOperationEntry(dto);
             respObj.setMessage(result);
         } catch (Exception e) {
             e.printStackTrace();
-            respObj = RespObj.FAILD;
+            respObj.setCode(Constant.FAILD_CODE);
             respObj.setErrorMessage("添加作业评论失败!");
         }
         return JSON.toJSONString(respObj);
@@ -422,16 +422,16 @@ public class DefaultAppCommentController extends BaseController {
     @RequestMapping("/addSecondOperation")
     @ResponseBody
     public String addSecondOperation(@ApiParam(value = "parentId为上级评论id,backId为回复的对象id,contactId为作业id，role为1家长评论区，role为2学生评论区") @RequestBody AppOperationDTO dto){
-        RespObj respObj=null;
+        RespObj respObj=new RespObj(Constant.FAILD_CODE);
         try {
-            respObj = RespObj.SUCCESS;
+            respObj.setCode(Constant.SUCCESS_CODE);
             dto.setUserId(getUserId().toString());
             dto.setLevel(2);
             String result = appCommentService.addSecondOperation(dto);
             respObj.setMessage(result);
         } catch (Exception e) {
             e.printStackTrace();
-            respObj = RespObj.FAILD;
+            respObj.setCode(Constant.FAILD_CODE);
             respObj.setErrorMessage("添加作业二级评论失败!");
 
         }
@@ -446,14 +446,14 @@ public class DefaultAppCommentController extends BaseController {
     @RequestMapping("/selectSecondList")
     @ResponseBody
     public String selectSecondList(@ApiParam(name = "parentId", required = true, value = "一级评论id") @RequestParam("parentId") String parentId){
-        RespObj respObj=null;
+        RespObj respObj=new RespObj(Constant.FAILD_CODE);
         try {
-            respObj = RespObj.SUCCESS;
+            respObj.setCode(Constant.SUCCESS_CODE);
             List<AppOperationDTO> result = appCommentService.getSecondList(new ObjectId(parentId));
             respObj.setMessage(result);
         } catch (Exception e) {
             e.printStackTrace();
-            respObj = RespObj.FAILD;
+            respObj.setCode(Constant.FAILD_CODE);
             respObj.setErrorMessage("分页查询二级评论列表失败!");
 
         }
@@ -468,14 +468,14 @@ public class DefaultAppCommentController extends BaseController {
     @RequestMapping("/delAppCommentEntry")
     @ResponseBody
     public String delAppCommentEntry(@ApiParam(name = "id", required = true, value = "作业id") @RequestParam("id") String id){
-        RespObj respObj=null;
+        RespObj respObj=new RespObj(Constant.FAILD_CODE);
         try {
-            respObj = RespObj.SUCCESS;
+            respObj.setCode(Constant.SUCCESS_CODE);
            appCommentService.delAppcommentEntry(new ObjectId(id),getUserId());
            respObj.setMessage("删除成功！");
         } catch (Exception e) {
             e.printStackTrace();
-            respObj = RespObj.FAILD;
+            respObj.setCode(Constant.FAILD_CODE);
             respObj.setErrorMessage("删除失败!");
 
         }
@@ -496,14 +496,14 @@ public class DefaultAppCommentController extends BaseController {
     public String delAppOperationEntry(@ApiParam(name = "id", required = true, value = "作业id") @RequestParam("id") String id,
                                        @ApiParam(name = "pingId", required = true, value = "评论id") @RequestParam("pingId") String pingId,
                                        @ApiParam(name = "role",required = true,value= "role=1,家长讨论区，role=2学生提问区，role=3学生提交区")@RequestParam("role") int role){
-        RespObj respObj=null;
+        RespObj respObj=new RespObj(Constant.FAILD_CODE);
         try {
-            respObj = RespObj.SUCCESS;
+            respObj.setCode(Constant.SUCCESS_CODE);
             appCommentService.delAppOperationEntry(new ObjectId(id),new ObjectId(pingId),role);
             respObj.setMessage("删除成功！");
         } catch (Exception e) {
             e.printStackTrace();
-            respObj = RespObj.FAILD;
+            respObj.setCode(Constant.FAILD_CODE);
             respObj.setErrorMessage("删除失败!");
 
         }
@@ -546,14 +546,14 @@ public class DefaultAppCommentController extends BaseController {
     @RequestMapping("/selectCommentDesc")
     @ResponseBody
     public String selectCommentDesc(@ApiParam(name="id",value="作业id") @RequestParam(value="id") String id){
-        RespObj respObj=null;
+        RespObj respObj=new RespObj(Constant.FAILD_CODE);
         try {
-            respObj = RespObj.SUCCESS;
+            respObj.setCode(Constant.SUCCESS_CODE);
             AppCommentDTO result = appCommentService.selectAppCommentEntry(new ObjectId(id));
             respObj.setMessage(result);
         } catch (Exception e) {
             e.printStackTrace();
-            respObj = RespObj.FAILD;
+            respObj.setCode(Constant.FAILD_CODE);
             respObj.setMessage("查询暂不发布的作业失败!");
 
         }
@@ -569,14 +569,14 @@ public class DefaultAppCommentController extends BaseController {
     @RequestMapping("/selectTeacherSubjectList")
     @ResponseBody
     public String selectTeacherSubjectList(){
-        RespObj respObj=null;
+        RespObj respObj=new RespObj(Constant.FAILD_CODE);
         try {
-            respObj = RespObj.SUCCESS;
+            respObj.setCode(Constant.SUCCESS_CODE);
             List<SubjectClassDTO> result = appCommentService.selectTeacherSubjectList(getUserId());
             respObj.setMessage(result);
         } catch (Exception e) {
             e.printStackTrace();
-            respObj = RespObj.FAILD;
+            respObj.setCode(Constant.FAILD_CODE);
             respObj.setMessage("查询老师绑定的学科失败!");
 
         }

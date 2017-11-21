@@ -392,7 +392,7 @@ public class ReportCardController extends BaseController{
             respObj.setMessage("导入模板成功");
         }catch (Exception e){
             e.printStackTrace();
-            respObj.setMessage(e.getMessage());
+            respObj.setErrorMessage(e.getMessage());
         }
         return respObj;
     }
@@ -430,7 +430,7 @@ public class ReportCardController extends BaseController{
             respObj.setMessage("导入模板成功");
         }catch (Exception e){
             e.printStackTrace();
-            respObj.setMessage(e.getMessage());
+            respObj.setErrorMessage(e.getMessage());
         }
         return respObj;
     }

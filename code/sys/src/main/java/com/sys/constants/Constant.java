@@ -921,4 +921,9 @@ public class Constant {
     //管控时间选项默认配置
     public static final String COLLECTION_CONTROL_SET_TIME= "controlsettime";
 
+    /*********************************后台管理*******************************************/
+    //图片鉴黄和垃圾文本
+    public static final String COLLECTION_PICTURE_TEXT= "picturetext";
+
+
 }

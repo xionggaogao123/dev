@@ -13,7 +13,8 @@ import java.util.Date;
  createTime          创建时间             ctm
  userId               用户id              uid
  function              功能               fun
- type                1 图片 2 文字       typ
+ contactId              联系id            cid
+ type                1 图片 2 文字        typ
  isCheck               是否通过           isc
  isRemove              是否删除           isr
  content               内容               con
@@ -31,6 +32,7 @@ public class UnlawfulPictureTextEntry extends BaseDBObject {
     public UnlawfulPictureTextEntry(
             ObjectId userId,
             int function,
+            ObjectId contactId,
             String content,
             int type
     ){
@@ -38,6 +40,7 @@ public class UnlawfulPictureTextEntry extends BaseDBObject {
                 .append("uid", userId)
                 .append("con", content)
                 .append("fun", function)
+                .append("cid",contactId)
                 .append("typ", type)
                 .append("ctm", new Date().getTime())
                 .append("isc", 0)
@@ -50,6 +53,7 @@ public class UnlawfulPictureTextEntry extends BaseDBObject {
             ObjectId id,
             ObjectId userId,
             int function,
+            ObjectId contactId,
             String content,
             int type
     ){
@@ -58,6 +62,7 @@ public class UnlawfulPictureTextEntry extends BaseDBObject {
                 .append("uid", userId)
                 .append("con", content)
                 .append("fun", function)
+                .append("cid", contactId)
                 .append("typ", type)
                 .append("ctm", new Date().getTime())
                 .append("isc", 0)
@@ -71,6 +76,12 @@ public class UnlawfulPictureTextEntry extends BaseDBObject {
     }
     public void setUserId(ObjectId userId){
         setSimpleValue("uid",userId);
+    }
+    public ObjectId getContactId(){
+        return getSimpleObjecIDValue("cid");
+    }
+    public void setContactId(ObjectId contactId){
+        setSimpleValue("cid",contactId);
     }
 
     public String getContent(){
@@ -90,11 +101,11 @@ public class UnlawfulPictureTextEntry extends BaseDBObject {
         setSimpleValue("typ",type);
     }
 
-    public String getFunction(){
-        return getSimpleStringValue("fun");
+    public int getFunction(){
+        return getSimpleIntegerValue("fun");
     }
 
-    public void setFunction(String function){
+    public void setFunction(int function){
         setSimpleValue("fun",function);
     }
 

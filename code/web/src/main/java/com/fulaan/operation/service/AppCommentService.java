@@ -561,6 +561,107 @@ public class AppCommentService {
         redDotService.cleanResult(userId,ApplyTypeEn.operation.getType(),dateTime);
         return map2;
     }
+
+    /**
+     * 按日查找用户发放作业情况
+     */
+    public Map<String,Object> selectDatePageList(long dateTime,ObjectId userId,int page,int pageSize){
+        Map<String,Object> map2 = new HashMap<String, Object>();
+        //获得当前时间
+        long current=System.currentTimeMillis();
+        //获得时间批次
+        long zero=current/(1000*3600*24)*(1000*3600*24)- TimeZone.getDefault().getRawOffset();//今天零点零分零秒的毫秒数
+        //发送的作业
+        List<AppCommentEntry> entries = appCommentDao.selectDateList(userId, dateTime);
+        if(dateTime==zero){
+            //保存的作业
+            List<AppCommentEntry> entries1 = appCommentDao.selectWillDateList(userId);
+            entries.addAll(entries1);
+        }
+        List<String> uids = new ArrayList<String>();
+        List<AppCommentDTO> dtos = new ArrayList<AppCommentDTO>();
+        if(entries.size()>0){
+            for(AppCommentEntry en : entries){
+                if(en.getDateTime() <= zero && en.getStatus()==1){
+                    en.setStatus(0);
+                }
+                AppCommentDTO dto = new AppCommentDTO(en);
+                String ctm = dto.getCreateTime();
+                dto.setCreateTime(ctm);
+                dto.setType(1);
+                uids.add(dto.getAdminId());
+                dtos.add(dto);
+            }
+        }
+
+        //获得所有收到的作业
+        //获得绑定关系(是否存在）
+        List<NewVersionBindRelationEntry> nlist = newVersionBindRelationDao.getEntriesByMainUserId(userId);
+        if(nlist.size() >0){
+            map2.put("isShow",1);//签到展示
+        }else{
+            map2.put("isShow",2);//非家长
+        }
+        /*if(nlist.size()>0){
+            for(NewVersionBindRelationEntry entry : nlist){
+                uids.add(entry.getUserId().toString());
+            }
+        }*/
+        //获得所有社区
+        List<CommunityDTO> communityDTOList =communityService.getCommunitys(userId, 1, 100);
+        List<ObjectId>  dlist = new ArrayList<ObjectId>();
+        if(communityDTOList.size() >0){
+            for(CommunityDTO dto : communityDTOList){
+                dlist.add(new ObjectId(dto.getId()));
+            }
+        }
+        List<AppCommentEntry> entries2 = appCommentDao.selectDateList2(dlist, dateTime);
+        List<ObjectId> dto4s = new ArrayList<ObjectId>();
+        if(entries2.size()>0){
+            for(AppCommentEntry en : entries2){
+                AppCommentDTO dto3 = new AppCommentDTO(en);
+                if(dto3.getAdminId() != null && dto3.getAdminId().equals(userId.toString())){
+
+                }else{
+                    String ctm = dto3.getCreateTime();
+                    dto3.setCreateTime(ctm);
+                    dto3.setType(2);
+                    uids.add(dto3.getAdminId());
+                    dtos.add(dto3);
+                    dto4s.add(en.getID());
+                }
+            }
+        }
+
+        List<UserDetailInfoDTO> udtos = userService.findUserInfoByUserIds(uids);
+        Map<String,UserDetailInfoDTO> map = new HashMap<String, UserDetailInfoDTO>();
+        if(udtos != null && udtos.size()>0){
+            for(UserDetailInfoDTO dto4 : udtos){
+                map.put(dto4.getId(),dto4);
+            }
+        }
+        for(AppCommentDTO dto5 : dtos){
+            UserDetailInfoDTO dto9 = map.get(dto5.getAdminId());
+            if(dto9 != null){
+                String name = StringUtils.isNotEmpty(dto9.getNickName())?dto9.getNickName():dto9.getUserName();
+                dto5.setAdminName(name);
+                dto5.setAdminUrl(dto9.getImgUrl());
+            }
+        }
+        List<ObjectId> mlist = this.getMyRoleList(userId);
+        if(mlist != null && mlist.size()>0){
+            map2.put("isTeacher",1);//是老师
+        }else{
+            map2.put("isTeacher",2);//非老师
+        }
+        map2.put("list",dtos);
+        Map<String,Object> map3 = this.isSign(userId, dateTime,dto4s);
+        map2.put("isload",map3);
+
+        //清除红点
+        redDotService.cleanResult(userId,ApplyTypeEn.operation.getType(),dateTime);
+        return map2;
+    }
     /**
      * 学生端查询接受到的作业
      *

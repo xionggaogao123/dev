@@ -30,7 +30,22 @@ public class ControlSchoolTimeDao extends BaseDao {
         }
         return null;
     }
-
+    public ControlSchoolTimeEntry getOtherEntry(String dateTime) {
+        BasicDBObject query =new BasicDBObject();
+        query.append("isr", Constant.ZERO) .append("dtn", dateTime);
+        DBObject dbo =findOne(MongoFacroty.getAppDB(), Constant.COLLECTION_CONTROL_SCHOOL_TIME, query, Constant.FIELDS);
+        if(null!=dbo)
+        {
+            return new ControlSchoolTimeEntry((BasicDBObject)dbo);
+        }
+        return null;
+    }
+    //修改
+    public void updEntry(ControlSchoolTimeEntry e) {
+        BasicDBObject query=new BasicDBObject(Constant.ID,e.getID());
+        BasicDBObject updateValue=new BasicDBObject(Constant.MONGO_SET,e.getBaseEntry());
+        update(MongoFacroty.getAppDB(), Constant.COLLECTION_CONTROL_SCHOOL_TIME, query,updateValue);
+    }
     //单查询
     public ControlSchoolTimeEntry getOtherEntry(int type,String dateTime) {
         BasicDBObject query =new BasicDBObject();

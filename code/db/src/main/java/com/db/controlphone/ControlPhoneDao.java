@@ -20,6 +20,17 @@ public class ControlPhoneDao extends BaseDao {
         save(MongoFacroty.getAppDB(), Constant.COLLECTION_CONTROL_PHONE, entry.getBaseEntry());
         return entry.getID().toString() ;
     }
+
+    public ControlPhoneEntry getEntry(String phone) {
+        BasicDBObject query =new BasicDBObject();
+        query.append("isr", Constant.ZERO) .append("pho", phone);
+        DBObject dbo =findOne(MongoFacroty.getAppDB(), Constant.COLLECTION_CONTROL_PHONE, query, Constant.FIELDS);
+        if(null!=dbo)
+        {
+            return new ControlPhoneEntry((BasicDBObject)dbo);
+        }
+        return null;
+    }
     //修改
     public void updateEntry(String name,String phone,ObjectId id){
         BasicDBObject query = new BasicDBObject(Constant.ID,id);
@@ -53,6 +64,12 @@ public class ControlPhoneDao extends BaseDao {
             }
         }
         return entryList;
+    }
+    //修改
+    public void updEntry(ControlPhoneEntry e) {
+        BasicDBObject query=new BasicDBObject(Constant.ID,e.getID());
+        BasicDBObject updateValue=new BasicDBObject(Constant.MONGO_SET,e.getBaseEntry());
+        update(MongoFacroty.getAppDB(), Constant.COLLECTION_CONTROL_PHONE, query,updateValue);
     }
 
     public List<ControlPhoneEntry> getEntryListByType() {

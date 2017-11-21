@@ -284,6 +284,33 @@ public class DefaultAppCommentController extends BaseController {
         }
         return JSON.toJSONString(respObj);
     }
+
+    /**
+     * 分页查找
+     * @param date
+     * @return
+     */
+    @ApiOperation(value = "查找当前点击的事件老师/家长发放作业情况列表", httpMethod = "POST", produces = "application/json")
+    @ApiResponses( value = {@ApiResponse(code = 200, message = "Successful — 请求已完成",response = String.class),
+            @ApiResponse(code = 400, message = "请求中有语法问题，或不能满足请求"),
+            @ApiResponse(code = 500, message = "服务器不能完成请求")})
+    @RequestMapping("/selectDatePageList")
+    @ResponseBody
+    public String selectDatePageList(@ApiParam(name = "date", required = true, value = "日期（yyyy-MM-dd）") @RequestParam("date") String date){
+
+        RespObj respObj=new RespObj(Constant.FAILD_CODE);
+        try {
+            respObj.setCode(Constant.SUCCESS_CODE);
+            long dateTime = DateTimeUtils.getStrToLongTime(date, "yyyy-MM-dd");
+            Map<String,Object> dtos = appCommentService.selectDateList(dateTime, getUserId());
+            respObj.setMessage(dtos);
+        } catch (Exception e) {
+            e.printStackTrace();
+            respObj.setCode(Constant.FAILD_CODE);
+            respObj.setErrorMessage("查找当前点击的事件老师失败!");
+        }
+        return JSON.toJSONString(respObj);
+    }
     /**
      * 查找当前点击的事件学生收到作业情况列表
      * @return

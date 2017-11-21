@@ -73,7 +73,7 @@ Welcome<br/><input id="text" type="text"/>
                 var param = {};
                 param.userId = userId;
                 param.tokenId = ${tokenId};
-                var url = "/user/tokenLogin.do"
+                var url = "/web/user/tokenLogin.do"
                 $.ajax({
                     type: "GET",
                     data: param,

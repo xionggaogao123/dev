@@ -1,16 +1,24 @@
 package com.fulaan.backstage.controller;
 
 import com.alibaba.fastjson.JSON;
+import com.fulaan.appmarket.service.AppMarketService;
 import com.fulaan.backstage.service.BackStageService;
 import com.fulaan.base.BaseController;
+import com.fulaan.reportCard.service.ReportCardService;
 import com.sys.constants.Constant;
 import com.sys.utils.RespObj;
 import io.swagger.annotations.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
+import org.springframework.util.MultiValueMap;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.multipart.MultipartFile;
+import org.springframework.web.multipart.MultipartRequest;
+
+import javax.servlet.http.HttpServletRequest;
+import java.util.List;
 
 /**
  * Created by James on 2017/11/18.
@@ -21,6 +29,9 @@ import org.springframework.web.bind.annotation.ResponseBody;
 public class BackStageController extends BaseController {
     @Autowired
     private BackStageService backStageService;
+
+    @Autowired
+    private AppMarketService appMarketService;
 
 
     /**
@@ -92,6 +103,27 @@ public class BackStageController extends BaseController {
     }
 
 
+    @RequestMapping("/importApkFile")
+    @ResponseBody
+    public RespObj importUserControl(HttpServletRequest servletRequest)throws Exception{
+        RespObj respObj=new RespObj(Constant.FAILD_CODE);
+        MultipartRequest request=(MultipartRequest)servletRequest;
+        try {
+            MultiValueMap<String, MultipartFile> fileMap = request.getMultiFileMap();
+            for (List<MultipartFile> multipartFiles : fileMap.values()) {
+                for(MultipartFile file:multipartFiles) {
+                    System.out.println("----" + file.getOriginalFilename());
+                    appMarketService.importApkFile(file,file.getInputStream(),file.getOriginalFilename());
+                }
+            }
+            respObj.setCode(Constant.SUCCESS_CODE);
+            respObj.setMessage("导入模板成功");
+        }catch (Exception e){
+            e.printStackTrace();
+            respObj.setMessage(e.getMessage());
+        }
+        return respObj;
+    }
 
 
 

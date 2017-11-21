@@ -35,6 +35,7 @@ public class ApkUtil {
     public static final String TARGET_SDK_VERSION = "targetSdkVersion";
     public static final String USES_PERMISSION = "uses-permission";
     public static final String APPLICATION_LABEL = "application-label";
+    public static final String APPLICATION_LABEL_N = "application: label";
     public static final String APPLICATION_ICON = "application-icon";
     public static final String USES_FEATURE = "uses-feature";
     public static final String USES_IMPLIED_FEATURE = "uses-implied-feature";
@@ -52,8 +53,6 @@ public class ApkUtil {
      * aapt所在的目录。
      */
     private String mAaptPath = "D:\\fulaangit\\code\\web\\src\\main\\java\\com\\fulaan\\apkForParse\\apkResolverParse\\lib\\";
-
-    private String linuxUrl="/apkParse/";
 
     public ApkUtil() {
         mBuilder = new ProcessBuilder();
@@ -74,12 +73,13 @@ public class ApkUtil {
             shellCommand[1] = "/C";
             softName = "aapt.exe";
             isOs=1;
-        } else {
-            // Unix, Linux ...
-            shellCommand[0] = "/bin/sh";
-            shellCommand[1] = "-c";
-            softName = "aapt";
         }
+//        else {
+            // Unix, Linux ...
+//            shellCommand[0] = "/bin/sh";
+//            shellCommand[1] = "-c";
+//            softName = "aapt";
+//        }
     }
 
     /**
@@ -90,20 +90,20 @@ public class ApkUtil {
      */
     public ApkInfo getApkInfo(String apkPath) throws Exception {
         String command="";
+        Process process;
         if(isOs==1) {
             command = mAaptPath + softName + " d badging \"" + apkPath
                     + "\"";
+            try {
+                process = Runtime.getRuntime().exec(
+                        new String[]{shellCommand[0], shellCommand[1], command});
+            } catch (IOException e) {
+                process = null;
+                throw e;
+            }
         }else{
-            command = linuxUrl + softName + " d badging \"" + apkPath
-                    + "\"";
-        }
-        Process process;
-        try {
-            process = Runtime.getRuntime().exec(
-                    new String[]{shellCommand[0], shellCommand[1], command});
-        } catch (IOException e) {
-            process = null;
-            throw e;
+            String aaptTool="/usr/local/apktool/aapt";
+            process = mBuilder.command(aaptTool, "d", "badging", apkPath).start();
         }
 //        Process process = mBuilder.command(mAaptPath, "d", "badging", apkPath)
 //                .start();

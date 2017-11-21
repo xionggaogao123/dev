@@ -193,7 +193,8 @@ seajs.config({
         'ueditor': 'modules/forum/ueditor.all.js?v=1',
         'tou': '/wap/js/TouchSlide.1.1.js?v=1',
         'fulanlesson': '/wap/js/fulanIndex.js?v=1',
-        'fulanlessonresult': '/wap/js/fulanacount.js?v=1'
+        'fulanlessonresult': '/wap/js/fulanacount.js?v=1',
+        'appMarketIndex':'modules/appmarket/0.1.0/appMarketIndex.js?v=1'
     },
     preload: [
         Function.prototype.bind ? '' : 'es5-safe',

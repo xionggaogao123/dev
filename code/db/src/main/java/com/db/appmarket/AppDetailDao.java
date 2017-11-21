@@ -32,6 +32,18 @@ public class AppDetailDao extends BaseDao {
         }
     }
 
+
+    public AppDetailEntry getEntryByApkPackageName(String packageName){
+        BasicDBObject query=new BasicDBObject()
+                .append("apn",packageName);
+        DBObject dbObject=findOne(MongoFacroty.getAppDB(), Constant.COLLECTION_APP_MARKET_DETAIL,query,Constant.FIELDS);
+        if(null!=dbObject){
+            return new AppDetailEntry(dbObject);
+        }else{
+            return null;
+        }
+    }
+
     public List<AppDetailEntry> getAppByCondition(String regular){
         List<AppDetailEntry> entries=new ArrayList<AppDetailEntry>();
         BasicDBObject query=new BasicDBObject()

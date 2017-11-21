@@ -32,7 +32,7 @@ import java.util.Map;
  */
 @Api(value = "应用市场相关接口")
 @Controller
-@RequestMapping("/appMarket")
+@RequestMapping("/web/appMarket")
 public class AppMarketController extends BaseController{
 
     @Autowired
@@ -44,7 +44,7 @@ public class AppMarketController extends BaseController{
     @ApiOperation(value = "网页端跳转到管理应用界面", httpMethod = "POST", produces = "application/json")
     @RequestMapping("/index")
     public String redirectIndex(HttpServletRequest request, Map<String,Object> model){
-        return "/appmarket/manageIndex";
+        return "/appmarket/appMarketIndex";
     }
 
 
@@ -195,6 +195,9 @@ public class AppMarketController extends BaseController{
         }
         return respObj;
     }
+
+
+
 
 
 }

@@ -94,15 +94,18 @@
     <br/>
     <br/>
     <br/>
-    <div id="qrcode"></div>
-    <script type="text/javascript">
-        $('#qrcode').qrcode({
-            render: "canvas", //也可以替换为table
-            width: 100,
-            height: 100,
-            text: "http://www.baidu.com"
-        });
-    </script>
+    <label class="btn import-btn">导入
+        <input style="display: none;" id="uploadImportTemplate" type="file" multiple="multiple" name="importTemplate" type="file" accept=".apk">
+    </label>
+    <%--<div id="qrcode"></div>--%>
+    <%--<script type="text/javascript">--%>
+        <%--$('#qrcode').qrcode({--%>
+            <%--render: "canvas", //也可以替换为table--%>
+            <%--width: 100,--%>
+            <%--height: 100,--%>
+            <%--text: "http://www.baidu.com"--%>
+        <%--});--%>
+    <%--</script>--%>
 </div>
 <script type="text/javascript">
 
@@ -132,7 +135,7 @@
         param.phoneNumber = phoneNumber;
         param.newRole = newRole;
         param.nickName = nickName;
-        var url = "/user/registerUser.do"
+        var url = "/web/user/registerUser.do"
         $.ajax({
             type: "GET",
             data: param,
@@ -147,7 +150,7 @@
     }
 
     function submitCommunity() {
-        var url = "/community/setOldUserData.do";
+        var url = "/web/community/setOldUserData.do";
         var data = {};
         data.communityName = $.trim($('#communityName').val());
         $.ajax({
@@ -186,7 +189,7 @@
             imageList.push(item);
         })
         message.imageList = imageList;
-        var url = "/appMarket/saveAppDetail.do";
+        var url = "/web/appMarket/saveAppDetail.do";
         $.ajax({
             type: "POST",
             url: url,
@@ -205,7 +208,7 @@
 <script type="text/javascript" src="/static/js/modules/core/0.1.0/jquery-upload/jquery.fileupload.js"></script>
 <script>
     $('#upload-image').fileupload({
-        url: '/community/images.do',
+        url: '/web/community/images.do',
         done: function (e, response) {
             if (response.result.code != '500') {
                 var image = response.result.message[0].path;
@@ -221,7 +224,7 @@
     });
     //上传图片
     $('#image-upload').fileupload({
-        url: '/community/images.do',
+        url: '/web/community/images.do',
         done: function (e, response) {
             if (response.result.code != '500') {
                 var image = response.result.message[0].path;
@@ -234,6 +237,11 @@
 
         }
     });
+</script>
+<script src="/static/js/sea.js"></script>
+<script src="/static/js/modules/core/0.1.0/config.js?v=2015041602"></script>
+<script>
+    seajs.use('/static/js/modules/appmarket/0.1.0/appMarketIndex.js');
 </script>
 </body>
 </html>

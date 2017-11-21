@@ -49,14 +49,14 @@ public class DefaultWrongQuestionController extends BaseController {
     @ResponseBody
     public String addCommentEntry(@ApiParam @RequestBody NewVersionGradeDTO dto){
         //
-        RespObj respObj=null;
+        RespObj respObj=new RespObj(Constant.FAILD_CODE);
         try {
             String result = wrongQuestionService.addGradeFromUser(dto);
-            respObj = RespObj.SUCCESS;
+            respObj.setCode(Constant.SUCCESS_CODE);
             respObj.setMessage(result);
         } catch (Exception e) {
             e.printStackTrace();
-            respObj = RespObj.FAILD;
+            respObj.setCode(Constant.FAILD_CODE);
             respObj.setMessage("绑定年级失败!");
         }
         return JSON.toJSONString(respObj);
@@ -75,14 +75,14 @@ public class DefaultWrongQuestionController extends BaseController {
     @ResponseBody
     public String addSubjectEntry(@ApiParam @RequestBody SubjectClassDTO dto){
         //
-        RespObj respObj=null;
+        RespObj respObj=new RespObj(Constant.FAILD_CODE);
         try {
             String result = wrongQuestionService.addSubjectEntry(dto);
-            respObj = RespObj.SUCCESS;
+            respObj.setCode(Constant.SUCCESS_CODE);
             respObj.setMessage(result);
         } catch (Exception e) {
             e.printStackTrace();
-            respObj = RespObj.FAILD;
+            respObj.setCode(Constant.FAILD_CODE);
             respObj.setMessage("绑定年级失败!");
         }
         return JSON.toJSONString(respObj);
@@ -101,14 +101,14 @@ public class DefaultWrongQuestionController extends BaseController {
     @ResponseBody
     public String addGradeEntry(@ApiParam @RequestBody CreateGradeDTO dto){
         //
-        RespObj respObj=null;
+        RespObj respObj=new RespObj(Constant.FAILD_CODE);
         try {
             String result = wrongQuestionService.addGradeEntry(dto);
-            respObj = RespObj.SUCCESS;
+            respObj.setCode(Constant.SUCCESS_CODE);
             respObj.setMessage(result);
         } catch (Exception e) {
             e.printStackTrace();
-            respObj = RespObj.FAILD;
+            respObj.setCode(Constant.FAILD_CODE);
             respObj.setMessage("添加年级失败!");
         }
         return JSON.toJSONString(respObj);
@@ -125,15 +125,15 @@ public class DefaultWrongQuestionController extends BaseController {
     @RequestMapping("/getGradeAndSubject")
     @ResponseBody
     public String getGradeAndSubject(){
-        RespObj respObj=null;
+        RespObj respObj=new RespObj(Constant.FAILD_CODE);
         try {
             Map<String,Object> result = wrongQuestionService.getGradeAndSubject(getUserId());
-            respObj = RespObj.SUCCESS;
+            respObj.setCode(Constant.SUCCESS_CODE);
             respObj.setMessage(result);
         } catch (Exception e) {
             e.printStackTrace();
             logger.error("error",e);
-            respObj = RespObj.FAILD;
+            respObj.setCode(Constant.FAILD_CODE);
             respObj.setMessage("年级、科目加载失败!");
         }
         return JSON.toJSONString(respObj);
@@ -150,7 +150,7 @@ public class DefaultWrongQuestionController extends BaseController {
     @ResponseBody
     public String getQuestionAndTest(@ApiParam(name = "subjectId", required = true, value = "学科id") @RequestParam(value="subjectId",defaultValue = "*") String subjectId,
                                      @ApiParam(name = "ename", required = true, value = "阶段名") @RequestParam(value="ename",defaultValue = "*") String ename){
-        RespObj respObj=null;
+        RespObj respObj=new RespObj(Constant.FAILD_CODE);
         try {
             if(subjectId ==null || subjectId.equals("")||subjectId.equals("*")||ename == null || ename.equals("") || ename.equals("*") ){
                 Map<String,Object> map = new HashMap<String, Object>();
@@ -164,17 +164,17 @@ public class DefaultWrongQuestionController extends BaseController {
                 dto1.setName("不限");
                 dtoList2.add(dto1);*/
                 map.put("TestTypeList",dtoList2);
-                respObj = RespObj.SUCCESS;
+                respObj.setCode(Constant.SUCCESS_CODE);
                 respObj.setMessage(map);
             }else{
                 Map<String,Object> result = wrongQuestionService.getQuestionAndTest(new ObjectId(subjectId),ename);
-                respObj = RespObj.SUCCESS;
+                respObj.setCode(Constant.SUCCESS_CODE);
                 respObj.setMessage(result);
             }
 
         } catch (Exception e) {
             e.printStackTrace();
-            respObj = RespObj.FAILD;
+            respObj.setCode(Constant.FAILD_CODE);
             respObj.setMessage("年级、科目加载失败!");
         }
         return JSON.toJSONString(respObj);

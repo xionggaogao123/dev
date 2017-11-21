@@ -2929,14 +2929,14 @@ public class DefaultCommunityController extends BaseController {
     @ApiResponses(value = {@ApiResponse(code = 200, message = "删除社区消息成功",response = Map.class),
             @ApiResponse(code = 500, message = "删除社区消息失败")})
     public String removeNewDetailById(@ApiParam(name="detailId",required = true,value = "社区消息的Id")@ObjectIdType ObjectId detailId) {
-        RespObj respObj=null;
+        RespObj respObj=new RespObj(Constant.FAILD_CODE);
         try {
-            respObj = RespObj.SUCCESS;
+            respObj.setCode(Constant.SUCCESS_CODE);
             respObj.setMessage("");
             communityService.removeNewCommunityDetailById(detailId,getUserId());
         } catch (Exception e) {
             e.printStackTrace();
-            respObj = RespObj.FAILD;
+            respObj.setCode(Constant.FAILD_CODE);
             respObj.setErrorMessage("你没有权限删除此消息");
         }
         return JSON.toJSONString(respObj);
@@ -3262,14 +3262,14 @@ public class DefaultCommunityController extends BaseController {
             @ApiResponse(code = 500, message = "更新社区消息置顶顺序失败")})
     public String updateNewCommunityDetailTop(@ApiParam(name="detailId",required = true,value = "社区消息Id")@ObjectIdType ObjectId detailId,
                                               @ApiParam(name="top",required = true,value = "置顶值")int top){
-        RespObj respObj=null;
+        RespObj respObj=new RespObj(Constant.FAILD_CODE);
         try {
-            respObj = RespObj.SUCCESS;
+            respObj.setCode(Constant.SUCCESS_CODE);
             respObj.setMessage("");
             communityService.updateNewCommunityDetailTop(detailId, top, getUserId());
         } catch (Exception e) {
             e.printStackTrace();
-            respObj = RespObj.FAILD;
+            respObj.setCode(Constant.FAILD_CODE);
             respObj.setErrorMessage("你没有权限置顶此消息");
         }
         return JSON.toJSONString(respObj);

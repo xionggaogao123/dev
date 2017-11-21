@@ -5,6 +5,7 @@ import com.fulaan.base.BaseController;
 import com.fulaan.questionbook.dto.QuestionAdditionDTO;
 import com.fulaan.questionbook.dto.QuestionBookDTO;
 import com.fulaan.questionbook.service.QuestionBookService;
+import com.sys.constants.Constant;
 import com.sys.utils.RespObj;
 import io.swagger.annotations.*;
 import org.apache.log4j.Logger;
@@ -48,15 +49,15 @@ public class QuestionBookController extends BaseController {
                                        @ApiParam(name="answerList",required = true,value="答案图片") @RequestParam(value="answerList",defaultValue = "") List<String> answerList,
                                        @ApiParam(name="analysisContent",required = true,value="解析内容") @RequestParam(value="analysisContent",defaultValue = "") String analysisContent,
                                        @ApiParam(name="analysisList",required = true,value="解析图片") @RequestParam(value="analysisList",defaultValue = "") List<String> analysisList){
-        RespObj respObj=null;
+        RespObj respObj=new RespObj(Constant.FAILD_CODE);
         try {
-            respObj = RespObj.SUCCESS;
+            respObj.setCode(Constant.SUCCESS_CODE);
             dto.setUserId(getUserId().toString());
             String str = questionBookService.addQuestionBookEntry(dto,answerContent,answerList,analysisContent,analysisList);
             respObj.setMessage(str);
         } catch (Exception e) {
             e.printStackTrace();
-            respObj = RespObj.FAILD;
+            respObj.setCode(Constant.FAILD_CODE);
             respObj.setErrorMessage("添加错题失败!");
         }
         return JSON.toJSONString(respObj);
@@ -71,15 +72,15 @@ public class QuestionBookController extends BaseController {
     @RequestMapping("/addQuestionNewBookEntry")
     @ResponseBody
     public String addQuestionNewBookEntry(@ApiParam(name="dto",required = true,value="作业对象")  QuestionBookDTO dto){
-        RespObj respObj=null;
+        RespObj respObj=new RespObj(Constant.FAILD_CODE);
         try {
-            respObj = RespObj.SUCCESS;
+            respObj.setCode(Constant.SUCCESS_CODE);
             dto.setUserId(getUserId().toString());
             String str = questionBookService.addQuestionNewBookEntry(dto);
             respObj.setMessage(str);
         } catch (Exception e) {
             e.printStackTrace();
-            respObj = RespObj.FAILD;
+            respObj.setCode(Constant.FAILD_CODE);
             respObj.setErrorMessage("添加错题失败!");
         }
         return JSON.toJSONString(respObj);
@@ -95,14 +96,14 @@ public class QuestionBookController extends BaseController {
     public String updateQuestionBook(@ApiParam(name="questionId",required = true,value="错题id") @RequestParam(value="questionId") String questionId,
                                        @ApiParam(name="type",required = true,value="点击类型 1 我还是不会 2 我已经会了") @RequestParam(value="type") int type,
                                        @ApiParam(name="level",required = true,value="处于阶段") @RequestParam(value="level") int level){
-        RespObj respObj=null;
+        RespObj respObj=new RespObj(Constant.FAILD_CODE);
         try {
-            respObj = RespObj.SUCCESS;
+            respObj.setCode(Constant.SUCCESS_CODE);
             questionBookService.updateQuestionBook(new ObjectId(questionId),type,level);
             respObj.setMessage("修改错题成功");
         } catch (Exception e) {
             e.printStackTrace();
-            respObj = RespObj.FAILD;
+            respObj.setCode(Constant.FAILD_CODE);
             respObj.setErrorMessage("修改错题失败!");
         }
         return JSON.toJSONString(respObj);
@@ -116,14 +117,14 @@ public class QuestionBookController extends BaseController {
     @RequestMapping("/delAlreadyEntry")
     @ResponseBody
     public String delAlreadyEntry(@ApiParam(name="questionId",required = true,value="错题id") @RequestParam(value="questionId") String questionId){
-        RespObj respObj=null;
+        RespObj respObj=new RespObj(Constant.FAILD_CODE);
         try {
-            respObj = RespObj.SUCCESS;
+            respObj.setCode(Constant.SUCCESS_CODE);
             questionBookService.delAlreadyEntry(new ObjectId(questionId));
             respObj.setMessage("删除成功！");
         } catch (Exception e) {
             e.printStackTrace();
-            respObj = RespObj.FAILD;
+            respObj.setCode(Constant.FAILD_CODE);
             respObj.setErrorMessage("删除错题失败!");
         }
         return JSON.toJSONString(respObj);
@@ -144,14 +145,14 @@ public class QuestionBookController extends BaseController {
                                   @ApiParam(name="page",required = true,value="page") @RequestParam(value="page",defaultValue = "1") int page,
                                   @ApiParam(name="pageSize",required = true,value="pageSize") @RequestParam(value="pageSize",defaultValue = "5") int pageSize,
                                   @ApiParam(name="keyword",required = false,value="关键字") @RequestParam(value="keyword",defaultValue = "") String keyword){
-        RespObj respObj=null;
+        RespObj respObj=new RespObj(Constant.FAILD_CODE);
         try {
-            respObj = RespObj.SUCCESS;
+            respObj.setCode(Constant.SUCCESS_CODE);
             Map<String,Object> dtos = questionBookService.getQuestionList(gradeId, subjectId, questionTypeId, testId, type, page, pageSize, keyword,getUserId());
             respObj.setMessage(dtos);
         } catch (Exception e) {
             e.printStackTrace();
-            respObj = RespObj.FAILD;
+            respObj.setCode(Constant.FAILD_CODE);
             respObj.setErrorMessage("多条件组合查询列表失败!");
         }
         return JSON.toJSONString(respObj);
@@ -165,14 +166,14 @@ public class QuestionBookController extends BaseController {
     @RequestMapping("/getReviewList")
     @ResponseBody
     public String getReviewList(){
-        RespObj respObj=null;
+        RespObj respObj=new RespObj(Constant.FAILD_CODE);
         try {
-            respObj = RespObj.SUCCESS;
+            respObj.setCode(Constant.SUCCESS_CODE);
             List<QuestionBookDTO> dtos = questionBookService.getReviewList(getUserId());
             respObj.setMessage(dtos);
         } catch (Exception e) {
             e.printStackTrace();
-            respObj = RespObj.FAILD;
+            respObj.setCode(Constant.FAILD_CODE);
             logger.error("error",e);
             respObj.setErrorMessage("今日复习失败!");
         }
@@ -186,14 +187,14 @@ public class QuestionBookController extends BaseController {
     @RequestMapping("/getEntry")
     @ResponseBody
     public String getEntry(@ApiParam(name="id",required = false,value="错题id") @RequestParam(value="id",defaultValue = "") String id){
-        RespObj respObj=null;
+        RespObj respObj=new RespObj(Constant.FAILD_CODE);
         try {
-            respObj = RespObj.SUCCESS;
+            respObj.setCode(Constant.SUCCESS_CODE);
             Map<String,Object> dtos = questionBookService.getEntry(new ObjectId(id));
             respObj.setMessage(dtos);
         } catch (Exception e) {
             e.printStackTrace();
-            respObj = RespObj.FAILD;
+            respObj.setCode(Constant.FAILD_CODE);
             respObj.setErrorMessage("查询单个错题失败!");
         }
         return JSON.toJSONString(respObj);
@@ -207,14 +208,14 @@ public class QuestionBookController extends BaseController {
     @RequestMapping("/addAnswerEntry")
     @ResponseBody
     public String addAnswerEntry(@ApiParam(name="dto",required = true,value="解析对象") @RequestBody QuestionAdditionDTO dto){
-        RespObj respObj=null;
+        RespObj respObj=new RespObj(Constant.FAILD_CODE);
         try {
-            respObj = RespObj.SUCCESS;
+            respObj.setCode(Constant.SUCCESS_CODE);
             questionBookService.addAnswerEntry(dto);
             respObj.setMessage("添加成功");
         } catch (Exception e) {
             e.printStackTrace();
-            respObj = RespObj.FAILD;
+            respObj.setCode(Constant.FAILD_CODE);
             respObj.setErrorMessage("添加失败!");
         }
         return JSON.toJSONString(respObj);
@@ -227,14 +228,14 @@ public class QuestionBookController extends BaseController {
     @RequestMapping("/updateEntry")
     @ResponseBody
     public String updateEntry(@ApiParam(name="dto",required = true,value="解析对象") @RequestBody QuestionBookDTO dto){
-        RespObj respObj=null;
+        RespObj respObj=new RespObj(Constant.FAILD_CODE);
         try {
-            respObj = RespObj.SUCCESS;
+            respObj.setCode(Constant.SUCCESS_CODE);
             questionBookService.updateEntry(dto);
             respObj.setMessage("修改错题成功");
         } catch (Exception e) {
             e.printStackTrace();
-            respObj = RespObj.FAILD;
+            respObj.setCode(Constant.FAILD_CODE);
             respObj.setErrorMessage("修改错题失败!");
         }
         return JSON.toJSONString(respObj);
@@ -247,14 +248,14 @@ public class QuestionBookController extends BaseController {
     @RequestMapping("/updateAnswerEntry")
     @ResponseBody
     public String updateAnswerEntry(@ApiParam(name="dto",required = true,value="解析对象") @RequestBody QuestionAdditionDTO dto){
-        RespObj respObj=null;
+        RespObj respObj=new RespObj(Constant.FAILD_CODE);
         try {
-            respObj = RespObj.SUCCESS;
+            respObj.setCode(Constant.SUCCESS_CODE);
             questionBookService.updateAnswerEntry(dto);
             respObj.setMessage("修改解析/答案/回答成功");
         } catch (Exception e) {
             e.printStackTrace();
-            respObj = RespObj.FAILD;
+            respObj.setCode(Constant.FAILD_CODE);
             respObj.setErrorMessage("修改解析/答案/回答失败!");
         }
         return JSON.toJSONString(respObj);
@@ -267,14 +268,14 @@ public class QuestionBookController extends BaseController {
     @RequestMapping("/changeEntryState")
     @ResponseBody
     public String changeEntryState(@ApiParam(name="id",required = true,value="错题id") @RequestParam(value = "id",required = true) String id){
-        RespObj respObj = null;
+        RespObj respObj=new RespObj(Constant.FAILD_CODE);
         try{
-            respObj = RespObj.SUCCESS;
+            respObj.setCode(Constant.SUCCESS_CODE);
             questionBookService.changeEntryState(new ObjectId(id));
             respObj.setMessage("修改成功");
         }catch (Exception e){
             e.printStackTrace();
-            respObj = RespObj.FAILD;
+            respObj.setCode(Constant.FAILD_CODE);
             respObj.setErrorMessage("我又不会了失败!");
         }
         return JSON.toJSONString(respObj);

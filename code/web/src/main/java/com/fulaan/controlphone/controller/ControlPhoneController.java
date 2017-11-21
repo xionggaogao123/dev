@@ -9,6 +9,7 @@ import com.fulaan.controlphone.dto.ControlPhoneDTO;
 import com.fulaan.controlphone.dto.ControlSchoolTimeDTO;
 import com.fulaan.controlphone.dto.ResultAppDTO;
 import com.fulaan.controlphone.service.ControlPhoneService;
+import com.sys.constants.Constant;
 import com.sys.utils.DateTimeUtils;
 import com.sys.utils.RespObj;
 import io.swagger.annotations.*;
@@ -48,14 +49,14 @@ public class ControlPhoneController extends BaseController {
     public String addControlPhone(@ApiParam @RequestBody ControlPhoneDTO dto){
         //
         dto.setParentId(getUserId().toString());
-        RespObj respObj=null;
+        RespObj respObj=new RespObj(Constant.FAILD_CODE);
         try {
-            respObj = RespObj.SUCCESS;
+            respObj.setCode(Constant.SUCCESS_CODE);
             String result = controlPhoneService.addControlPhone(dto);
             respObj.setMessage(result);
         } catch (Exception e) {
             e.printStackTrace();
-            respObj = RespObj.FAILD;
+            respObj.setCode(Constant.FAILD_CODE);
             respObj.setErrorMessage("添加管控手机号失败!");
         }
         return JSON.toJSONString(respObj);
@@ -72,14 +73,14 @@ public class ControlPhoneController extends BaseController {
     @RequestMapping("/getControlPhoneList")
     @ResponseBody
     public String getControlPhoneList(@ApiParam(name = "sonId", required = true, value = "孩子id") @RequestParam("sonId") String sonId){
-        RespObj respObj=null;
+        RespObj respObj=new RespObj(Constant.FAILD_CODE);
         try {
-            respObj = RespObj.SUCCESS;
+            respObj.setCode(Constant.SUCCESS_CODE);
             List<ControlPhoneDTO> result = controlPhoneService.getControlPhoneList(getUserId(),new ObjectId(sonId));
             respObj.setMessage(result);
         } catch (Exception e) {
             e.printStackTrace();
-            respObj = RespObj.FAILD;
+            respObj.setCode(Constant.FAILD_CODE);
             respObj.setErrorMessage("查询手机list失败!");
         }
         return JSON.toJSONString(respObj);
@@ -96,14 +97,14 @@ public class ControlPhoneController extends BaseController {
     @RequestMapping("/delControlPhone")
     @ResponseBody
     public String delControlPhone(@ApiParam(name = "id", required = true, value = "手机号id") @RequestParam("id") String id){
-        RespObj respObj=null;
+        RespObj respObj=new RespObj(Constant.FAILD_CODE);
         try {
-            respObj = RespObj.SUCCESS;
+            respObj.setCode(Constant.SUCCESS_CODE);
             controlPhoneService.delControlPhone(new ObjectId(id));
             respObj.setMessage("删除成功");
         } catch (Exception e) {
             e.printStackTrace();
-            respObj = RespObj.FAILD;
+            respObj.setCode(Constant.FAILD_CODE);
             respObj.setErrorMessage("删除手机号失败!");
         }
         return JSON.toJSONString(respObj);
@@ -122,14 +123,14 @@ public class ControlPhoneController extends BaseController {
     public String updateControlPhone(@ApiParam(name = "id", required = true, value = "手机号id") @RequestParam("id") String id,
                                      @ApiParam(name = "name", required = true, value = "姓名") @RequestParam("name") String name,
                                      @ApiParam(name = "phone", required = true, value = "手机号") @RequestParam("phone") String phone){
-        RespObj respObj=null;
+        RespObj respObj=new RespObj(Constant.FAILD_CODE);
         try {
-            respObj = RespObj.SUCCESS;
+            respObj.setCode(Constant.SUCCESS_CODE);
             controlPhoneService.updateControlPhone(new ObjectId(id),name,phone);
             respObj.setMessage("修改成功");
         } catch (Exception e) {
             e.printStackTrace();
-            respObj = RespObj.FAILD;
+            respObj.setCode(Constant.FAILD_CODE);
             respObj.setErrorMessage("修改手机号失败!");
         }
         return JSON.toJSONString(respObj);
@@ -146,14 +147,14 @@ public class ControlPhoneController extends BaseController {
     @RequestMapping("/getPhoneListForStudent")
     @ResponseBody
     public String getPhoneListForStudent(){
-        RespObj respObj=null;
+        RespObj respObj=new RespObj(Constant.FAILD_CODE);
         try {
-            respObj = RespObj.SUCCESS;
+            respObj.setCode(Constant.SUCCESS_CODE);
             List<ControlPhoneDTO> result= controlPhoneService.getPhoneListForStudent(getUserId());
             respObj.setMessage(result);
         } catch (Exception e) {
             e.printStackTrace();
-            respObj = RespObj.FAILD;
+            respObj.setCode(Constant.FAILD_CODE);
             respObj.setErrorMessage("查询管控手机号失败!");
         }
         return JSON.toJSONString(respObj);
@@ -171,14 +172,14 @@ public class ControlPhoneController extends BaseController {
     @RequestMapping("/getCommunityAppList")
     @ResponseBody
     public String getCommunityAppList(@ApiParam(name = "sonId", required = true, value = "孩子id") @RequestParam("sonId") String sonId){
-        RespObj respObj=null;
+        RespObj respObj=new RespObj(Constant.FAILD_CODE);
         try {
-            respObj = RespObj.SUCCESS;
+            respObj.setCode(Constant.SUCCESS_CODE);
             List<Map<String,Object>> result = controlPhoneService.getAppListForStudent(new ObjectId(sonId));
             respObj.setMessage(result);
         } catch (Exception e) {
             e.printStackTrace();
-            respObj = RespObj.FAILD;
+            respObj.setCode(Constant.FAILD_CODE);
             respObj.setErrorMessage("查询推送应用失败!");
         }
         return JSON.toJSONString(respObj);
@@ -195,14 +196,14 @@ public class ControlPhoneController extends BaseController {
     @ResponseBody
     public String getShouldAppList(@ApiParam(name = "communityId", required = true, value = "社区id") @RequestParam("communityId") String communityId,
                                    @ApiParam(name = "keyword", required = true, value = "关键字") @RequestParam(value = "keyword",defaultValue = "") String keyword){
-        RespObj respObj=null;
+        RespObj respObj=new RespObj(Constant.FAILD_CODE);
         try {
-            respObj = RespObj.SUCCESS;
+            respObj.setCode(Constant.SUCCESS_CODE);
             List<AppDetailDTO> dtos = controlPhoneService.getShouldAppList(new ObjectId(communityId),keyword);
             respObj.setMessage(dtos);
         } catch (Exception e) {
             e.printStackTrace();
-            respObj = RespObj.FAILD;
+            respObj.setCode(Constant.FAILD_CODE);
             respObj.setErrorMessage("老师查询可推送应用列表失败!");
         }
         return JSON.toJSONString(respObj);
@@ -218,14 +219,14 @@ public class ControlPhoneController extends BaseController {
     @RequestMapping("/getParentAppList")
     @ResponseBody
     public String getParentAppList(@ApiParam(name = "sonId", required = true, value = "孩子id") @RequestParam("sonId") String sonId){
-        RespObj respObj=null;
+        RespObj respObj=new RespObj(Constant.FAILD_CODE);
         try {
-            respObj = RespObj.SUCCESS;
+            respObj.setCode(Constant.SUCCESS_CODE);
             List<AppDetailDTO> dtos = controlPhoneService.getParentAppList(getUserId(),new ObjectId(sonId));
             respObj.setMessage(dtos);
         } catch (Exception e) {
             e.printStackTrace();
-            respObj = RespObj.FAILD;
+            respObj.setCode(Constant.FAILD_CODE);
             respObj.setErrorMessage("老师查询可推送应用列表失败!");
         }
         return JSON.toJSONString(respObj);
@@ -241,14 +242,14 @@ public class ControlPhoneController extends BaseController {
     @ResponseBody
     public String seacherParentAppList(@ApiParam(name = "sonId", required = true, value = "孩子id") @RequestParam("sonId") String sonId,
                                        @ApiParam(name = "keyword", required = true, value = "关键字") @RequestParam("keyword") String keyword){
-        RespObj respObj=null;
+        RespObj respObj=new RespObj(Constant.FAILD_CODE);
         try {
-            respObj = RespObj.SUCCESS;
+            respObj.setCode(Constant.SUCCESS_CODE);
             List<AppDetailDTO> dtos = controlPhoneService.seacherParentAppList(getUserId(), new ObjectId(sonId), keyword);
             respObj.setMessage(dtos);
         } catch (Exception e) {
             e.printStackTrace();
-            respObj = RespObj.FAILD;
+            respObj.setCode(Constant.FAILD_CODE);
             respObj.setErrorMessage("家长查询可推送应用列表（搜索）失败!");
         }
         return JSON.toJSONString(respObj);
@@ -266,14 +267,18 @@ public class ControlPhoneController extends BaseController {
     public String addCommunityAppList(@ApiParam(name = "communityId", required = true, value = "社区id") @RequestParam("communityId") String communityId,
                                       @ApiParam(name = "appId", required = true, value = "推送应用id") @RequestParam("appId") String appId,
                                       @ApiParam(name = "type", required = true, value = "1卸载2推送") @RequestParam("type") int type){
-        RespObj respObj=null;
+        RespObj respObj=new RespObj(Constant.FAILD_CODE);
         try {
-            respObj = RespObj.SUCCESS;
+            respObj.setCode(Constant.SUCCESS_CODE);
             controlPhoneService.addTeaCommunityAppList(new ObjectId(communityId), new ObjectId(appId),type);
-            respObj.setMessage("老师推送应用成功");
+            if(type==1){
+                respObj.setMessage("卸载成功");
+            }else{
+                respObj.setMessage("推送成功");
+            }
         } catch (Exception e) {
             e.printStackTrace();
-            respObj = RespObj.FAILD;
+            respObj.setCode(Constant.FAILD_CODE);
             respObj.setErrorMessage("老师推送应用失败!");
         }
         return JSON.toJSONString(respObj);
@@ -290,14 +295,14 @@ public class ControlPhoneController extends BaseController {
     public String addParentAppList(@ApiParam(name = "sonId", required = true, value = "孩子id") @RequestParam("sonId") String sonId,
                                    @ApiParam(name = "appId", required = true, value = "推送应用id") @RequestParam("appId") String appId,
                                    @ApiParam(name = "type", required = true, value = "1卸载2推送") @RequestParam("type") int type){
-        RespObj respObj=null;
+        RespObj respObj=new RespObj(Constant.FAILD_CODE);
         try {
-            respObj = RespObj.SUCCESS;
+            respObj.setCode(Constant.SUCCESS_CODE);
             controlPhoneService.addParentAppList(getUserId(),new ObjectId(sonId),new ObjectId(appId),type);
             respObj.setMessage("家长推送应用成功");
         } catch (Exception e) {
             e.printStackTrace();
-            respObj = RespObj.FAILD;
+            respObj.setCode(Constant.FAILD_CODE);
             respObj.setErrorMessage("家长推送应用失败!");
         }
         return JSON.toJSONString(respObj);
@@ -316,14 +321,14 @@ public class ControlPhoneController extends BaseController {
     @RequestMapping("/getAppListForStudent")
     @ResponseBody
     public String getAppListForStudent(){
-        RespObj respObj=null;
+        RespObj respObj=new RespObj(Constant.FAILD_CODE);
         try {
-            respObj = RespObj.SUCCESS;
+            respObj.setCode(Constant.SUCCESS_CODE);
             List<AppDetailDTO> result = controlPhoneService.getCommunityAppList(getUserId());
             respObj.setMessage(result);
         } catch (Exception e) {
             e.printStackTrace();
-            respObj = RespObj.FAILD;
+            respObj.setCode(Constant.FAILD_CODE);
             respObj.setErrorMessage("学生获取推送应用失败!");
         }
         return JSON.toJSONString(respObj);
@@ -342,14 +347,14 @@ public class ControlPhoneController extends BaseController {
     @ResponseBody
     public String addAppTimeEntry(@ApiParam(name = "sonId", required = true, value = "孩子id") @RequestParam("sonId") String sonId,
                                   @ApiParam(name = "time", required = true, value = "时间") @RequestParam("time") int time){
-        RespObj respObj=null;
+        RespObj respObj=new RespObj(Constant.FAILD_CODE);
         try {
-            respObj = RespObj.SUCCESS;
+            respObj.setCode(Constant.SUCCESS_CODE);
             controlPhoneService.addAppTimeEntry(new ObjectId(sonId),getUserId(),time);
             respObj.setMessage("家长设置应用防沉迷时间成功");
         } catch (Exception e) {
             e.printStackTrace();
-            respObj = RespObj.FAILD;
+            respObj.setCode(Constant.FAILD_CODE);
             respObj.setErrorMessage("家长设置应用防沉迷时间失败!");
         }
         return JSON.toJSONString(respObj);
@@ -365,14 +370,14 @@ public class ControlPhoneController extends BaseController {
     @RequestMapping("/acceptAppResultList")
     @ResponseBody
     public String acceptAppResultList(@ApiParam(name = "dto", required = true, value = "应用使用情况list") @RequestBody ResultAppDTO dto){
-        RespObj respObj=null;
+        RespObj respObj=new RespObj(Constant.FAILD_CODE);
         try {
-            respObj = RespObj.SUCCESS;
+            respObj.setCode(Constant.SUCCESS_CODE);
             controlPhoneService.acceptAppResultList(dto,getUserId());
             respObj.setMessage("定时接受孩子的应用使用情况成功");
         } catch (Exception e) {
             e.printStackTrace();
-            respObj = RespObj.FAILD;
+            respObj.setCode(Constant.FAILD_CODE);
             respObj.setErrorMessage("定时接受孩子的应用使用情况失败!");
         }
         return JSON.toJSONString(respObj);
@@ -389,9 +394,9 @@ public class ControlPhoneController extends BaseController {
     @ResponseBody
     public String seacherAppResultList(@ApiParam(name = "sonId", required = true, value = "应用使用情况list") @RequestParam("sonId") String sonId,
                                        @ApiParam(name = "dateTime", required = true, value = "dateTime") @RequestParam("dateTime") String dateTime){
-        RespObj respObj=null;
+        RespObj respObj=new RespObj(Constant.FAILD_CODE);
         try {
-            respObj = RespObj.SUCCESS;
+            respObj.setCode(Constant.SUCCESS_CODE);
             long dTm = 0l;
             if(dateTime != null && dateTime != ""){
                 dTm = DateTimeUtils.getStrToLongTime(dateTime, "yyyy-MM-dd");
@@ -400,7 +405,7 @@ public class ControlPhoneController extends BaseController {
             respObj.setMessage(map);
         } catch (Exception e) {
             e.printStackTrace();
-            respObj = RespObj.FAILD;
+            respObj.setCode(Constant.FAILD_CODE);
             respObj.setErrorMessage("定时获取孩子的应用使用情况（家长）失败!");
         }
         return JSON.toJSONString(respObj);
@@ -418,14 +423,14 @@ public class ControlPhoneController extends BaseController {
     @RequestMapping("/acceptMapResult")
     @ResponseBody
     public String acceptMapResult(@ApiParam(name = "dto", required = true, value = "地图信息") @RequestBody ControlMapDTO dto){
-        RespObj respObj=null;
+        RespObj respObj=new RespObj(Constant.FAILD_CODE);
         try {
-            respObj = RespObj.SUCCESS;
+            respObj.setCode(Constant.SUCCESS_CODE);
             controlPhoneService.acceptMapResult(dto,getUserId());
             respObj.setMessage("定时接受孩子的位置信息成功");
         } catch (Exception e) {
             e.printStackTrace();
-            respObj = RespObj.FAILD;
+            respObj.setCode(Constant.FAILD_CODE);
             respObj.setErrorMessage("定时接受孩子的位置信息失败!");
         }
         return JSON.toJSONString(respObj);
@@ -441,14 +446,14 @@ public class ControlPhoneController extends BaseController {
     @RequestMapping("/getMapNow")
     @ResponseBody
     public String getMapNow(@ApiParam(name = "sonId", required = true, value = "孩子id") @RequestParam("sonId") String sonId){
-        RespObj respObj=null;
+        RespObj respObj=new RespObj(Constant.FAILD_CODE);
         try {
-            respObj = RespObj.SUCCESS;
+            respObj.setCode(Constant.SUCCESS_CODE);
             Map<String,Object> dto = controlPhoneService.getMapNow(getUserId(), new ObjectId(sonId));
             respObj.setMessage(dto);
         } catch (Exception e) {
             e.printStackTrace();
-            respObj = RespObj.FAILD;
+            respObj.setCode(Constant.FAILD_CODE);
             respObj.setErrorMessage("定时接受孩子的位置信息失败!");
         }
         return JSON.toJSONString(respObj);
@@ -466,14 +471,14 @@ public class ControlPhoneController extends BaseController {
     public String getMapListEntry(@ApiParam(name = "sonId", required = true, value = "孩子id") @RequestParam("sonId") String sonId,
                                   @ApiParam(name = "startTime", required = true, value = "开始时间") @RequestParam("startTime") String startTime,
                                   @ApiParam(name = "endTime", required = true, value = "结束时间") @RequestParam("endTime") String endTime){
-        RespObj respObj=null;
+        RespObj respObj=new RespObj(Constant.FAILD_CODE);
         try {
-            respObj = RespObj.SUCCESS;
+            respObj.setCode(Constant.SUCCESS_CODE);
             List<ControlMapDTO> dtos = controlPhoneService.getMapListEntry(getUserId(), new ObjectId(sonId), startTime, endTime);
             respObj.setMessage(dtos);
         } catch (Exception e) {
             e.printStackTrace();
-            respObj = RespObj.FAILD;
+            respObj.setCode(Constant.FAILD_CODE);
             respObj.setErrorMessage("获取孩子地图信息记录失败!");
         }
         return JSON.toJSONString(respObj);
@@ -489,14 +494,14 @@ public class ControlPhoneController extends BaseController {
     @ResponseBody
     public String getSimpleMapListEntry(@ApiParam(name = "sonId", required = true, value = "孩子id") @RequestParam("sonId") String sonId,
                                   @ApiParam(name = "dataTime", required = true, value = "日期") @RequestParam("dataTime") String dataTime){
-        RespObj respObj=null;
+        RespObj respObj=new RespObj(Constant.FAILD_CODE);
         try {
-            respObj = RespObj.SUCCESS;
+            respObj.setCode(Constant.SUCCESS_CODE);
             List<ControlMapDTO> dtos = controlPhoneService.getSimpleMapListEntry(getUserId(), new ObjectId(sonId), dataTime);
             respObj.setMessage(dtos);
         } catch (Exception e) {
             e.printStackTrace();
-            respObj = RespObj.FAILD;
+            respObj.setCode(Constant.FAILD_CODE);
             respObj.setErrorMessage("获取孩子地图信息记录失败!");
         }
         return JSON.toJSONString(respObj);
@@ -511,14 +516,14 @@ public class ControlPhoneController extends BaseController {
     @RequestMapping("/getSonMessage")
     @ResponseBody
     public String getSonMessage(@ApiParam(name = "sonId", required = true, value = "孩子id") @RequestParam("sonId") String sonId, @RequestParam("page") int page, @RequestParam("pageSize") int pageSize){
-        RespObj respObj=null;
+        RespObj respObj=new RespObj(Constant.FAILD_CODE);
         try {
-            respObj = RespObj.SUCCESS;
+            respObj.setCode(Constant.SUCCESS_CODE);
             Map<String,Object> dtos= controlPhoneService.getSonMessage(getUserId(), new ObjectId(sonId),page,pageSize);
             respObj.setMessage(dtos);
         } catch (Exception e) {
             e.printStackTrace();
-            respObj = RespObj.FAILD;
+            respObj.setCode(Constant.FAILD_CODE);
             respObj.setErrorMessage("获取孩子地图信息记录失败!");
         }
         return JSON.toJSONString(respObj);
@@ -534,14 +539,14 @@ public class ControlPhoneController extends BaseController {
     @RequestMapping("/getAllMessageForSon")
     @ResponseBody
     public String getAllMessageForSon(){
-        RespObj respObj=null;
+        RespObj respObj=new RespObj(Constant.FAILD_CODE);
         try {
-            respObj = RespObj.SUCCESS;
+            respObj.setCode(Constant.SUCCESS_CODE);
             Map<String,Object> dtos= controlPhoneService.getAllMessageForSon(getUserId());
             respObj.setMessage(dtos);
         } catch (Exception e) {
             e.printStackTrace();
-            respObj = RespObj.FAILD;
+            respObj.setCode(Constant.FAILD_CODE);
             respObj.setErrorMessage("孩子登录获取所有信息失败!");
         }
         return JSON.toJSONString(respObj);
@@ -558,14 +563,14 @@ public class ControlPhoneController extends BaseController {
     @RequestMapping("/getSimpleMessageForSon")
     @ResponseBody
     public String getSimpleMessageForSon(){
-        RespObj respObj=null;
+        RespObj respObj=new RespObj(Constant.FAILD_CODE);
         try {
-            respObj = RespObj.SUCCESS;
+            respObj.setCode(Constant.SUCCESS_CODE);
             Map<String,Object> dtos= controlPhoneService.getSimpleMessageForSon();
             respObj.setMessage(dtos);
         } catch (Exception e) {
             e.printStackTrace();
-            respObj = RespObj.FAILD;
+            respObj.setCode(Constant.FAILD_CODE);
             respObj.setErrorMessage("孩子登录获取所有信息失败!");
         }
         return JSON.toJSONString(respObj);
@@ -580,14 +585,14 @@ public class ControlPhoneController extends BaseController {
     @RequestMapping("/getSimpleMessageForTea")
     @ResponseBody
     public String getSimpleMessageForTea(){
-        RespObj respObj=null;
+        RespObj respObj=new RespObj(Constant.FAILD_CODE);
         try {
-            respObj = RespObj.SUCCESS;
+            respObj.setCode(Constant.SUCCESS_CODE);
             Map<String,Object> dtos= controlPhoneService.getSimpleMessageForTea(getUserId());
             respObj.setMessage(dtos);
         } catch (Exception e) {
             e.printStackTrace();
-            respObj = RespObj.FAILD;
+            respObj.setCode(Constant.FAILD_CODE);
             respObj.setErrorMessage("老师首页加载失败!");
         }
         return JSON.toJSONString(respObj);
@@ -603,14 +608,14 @@ public class ControlPhoneController extends BaseController {
     @RequestMapping("/getAllMessageForTea")
     @ResponseBody
     public String getAllMessageForTea(@ApiParam(name = "communityId", required = true, value = "社区id") @RequestParam("communityId") String communityId){
-        RespObj respObj=null;
+        RespObj respObj=new RespObj(Constant.FAILD_CODE);
         try {
-            respObj = RespObj.SUCCESS;
+            respObj.setCode(Constant.SUCCESS_CODE);
             Map<String,Object> dtos= controlPhoneService.getAllMessageForTea(getUserId(),new ObjectId(communityId));
             respObj.setMessage(dtos);
         } catch (Exception e) {
             e.printStackTrace();
-            respObj = RespObj.FAILD;
+            respObj.setCode(Constant.FAILD_CODE);
             respObj.setErrorMessage("老师首页加载失败!");
         }
         return JSON.toJSONString(respObj);
@@ -627,14 +632,14 @@ public class ControlPhoneController extends BaseController {
     @RequestMapping("/deleteControlTime")
     @ResponseBody
     public String deleteControlTime(@ApiParam(name = "communityId", required = true, value = "社区id") @RequestParam("communityId") String communityId){
-        RespObj respObj=null;
+        RespObj respObj=new RespObj(Constant.FAILD_CODE);
         try {
-            respObj = RespObj.SUCCESS;
+            respObj.setCode(Constant.SUCCESS_CODE);
             controlPhoneService.deleteControlTime(getUserId(),new ObjectId(communityId));
             respObj.setMessage("改变成功");
         } catch (Exception e) {
             e.printStackTrace();
-            respObj = RespObj.FAILD;
+            respObj.setCode(Constant.FAILD_CODE);
             respObj.setErrorMessage("老师切换到管控!");
         }
         return JSON.toJSONString(respObj);
@@ -652,14 +657,14 @@ public class ControlPhoneController extends BaseController {
     @ResponseBody
     public String setControlTime(@ApiParam(name = "time", required = true, value = "时间") @RequestParam("time") int time,
                                  @ApiParam(name = "communityId", required = true, value = "社区id") @RequestParam("communityId") String communityId){
-        RespObj respObj=null;
+        RespObj respObj=new RespObj(Constant.FAILD_CODE);
         try {
-            respObj = RespObj.SUCCESS;
+            respObj.setCode(Constant.SUCCESS_CODE);
             controlPhoneService.setControlTime(getUserId(),new ObjectId(communityId),time);
             respObj.setMessage("设置成功");
         } catch (Exception e) {
             e.printStackTrace();
-            respObj = RespObj.FAILD;
+            respObj.setCode(Constant.FAILD_CODE);
             respObj.setErrorMessage("老师设置自由时间!");
         }
         return JSON.toJSONString(respObj);
@@ -676,14 +681,14 @@ public class ControlPhoneController extends BaseController {
     @RequestMapping("/addControlTime")
     @ResponseBody
     public String addControlTime(@RequestBody ControlSchoolTimeDTO dto){
-        RespObj respObj=null;
+        RespObj respObj=new RespObj(Constant.FAILD_CODE);
         try {
-            respObj = RespObj.SUCCESS;
+            respObj.setCode(Constant.SUCCESS_CODE);
             //Map<String,Object> dtos= controlPhoneService.getSonMessage(getUserId(), new ObjectId(sonId),page,pageSize);
             //respObj.setMessage(dtos);
         } catch (Exception e) {
             e.printStackTrace();
-            respObj = RespObj.FAILD;
+            respObj.setCode(Constant.FAILD_CODE);
             respObj.setErrorMessage("获取孩子地图信息记录失败!");
         }
         return JSON.toJSONString(respObj);
@@ -713,14 +718,14 @@ public class ControlPhoneController extends BaseController {
         dto.setUserId("55934c26f6f28b7261c1bae1");//hao
         dto.setPhone(phone);
         dto.setType(2);
-        RespObj respObj=null;
+        RespObj respObj=new RespObj(Constant.FAILD_CODE);
         try {
-            respObj = RespObj.SUCCESS;
+            respObj.setCode(Constant.SUCCESS_CODE);
             String result = controlPhoneService.addControlPhone(dto);
             respObj.setMessage(result);
         } catch (Exception e) {
             e.printStackTrace();
-            respObj = RespObj.FAILD;
+            respObj.setCode(Constant.FAILD_CODE);
             respObj.setErrorMessage("添加管控手机号失败!");
         }
         return JSON.toJSONString(respObj);
@@ -737,19 +742,19 @@ public class ControlPhoneController extends BaseController {
     @RequestMapping("/addSimpleCommunityAppList")
     @ResponseBody
     public String addSimpleCommunityAppList(@ApiParam(name = "code", required = true, value = "包名") @RequestParam("code") String code){
-        RespObj respObj=null;
+        RespObj respObj=new RespObj(Constant.FAILD_CODE);
         ControlPhoneDTO dto = new ControlPhoneDTO();
         dto.setParentId("55934c26f6f28b7261c1bab0");//geng
         dto.setName(code);
         dto.setUserId("55934c26f6f28b7261c1bae1");//hao
         dto.setType(1);
         try {
-            respObj = RespObj.SUCCESS;
+            respObj.setCode(Constant.SUCCESS_CODE);
             String result = controlPhoneService.addControlSimplePhone(dto);
             respObj.setMessage(result);
         } catch (Exception e) {
             e.printStackTrace();
-            respObj = RespObj.FAILD;
+            respObj.setCode(Constant.FAILD_CODE);
             respObj.setErrorMessage("老师推送应用失败!");
         }
         return JSON.toJSONString(respObj);
@@ -766,14 +771,14 @@ public class ControlPhoneController extends BaseController {
     @RequestMapping("/getSimpleAppList")
     @ResponseBody
     public String getSimpleAppList(){
-        RespObj respObj=null;
+        RespObj respObj=new RespObj(Constant.FAILD_CODE);
         try {
-            respObj = RespObj.SUCCESS;
+            respObj.setCode(Constant.SUCCESS_CODE);
             String result = controlPhoneService.getSimpleAppList(new ObjectId("55934c26f6f28b7261c1bae1"),1);
             respObj.setMessage(result);
         } catch (Exception e) {
             e.printStackTrace();
-            respObj = RespObj.FAILD;
+            respObj.setCode(Constant.FAILD_CODE);
             respObj.setErrorMessage("老师推送应用失败!");
         }
         return JSON.toJSONString(respObj);
@@ -790,14 +795,14 @@ public class ControlPhoneController extends BaseController {
     @RequestMapping("/getSimplePhoneList")
     @ResponseBody
     public String getSimplePhoneList(){
-        RespObj respObj=null;
+        RespObj respObj=new RespObj(Constant.FAILD_CODE);
         try {
-            respObj = RespObj.SUCCESS;
+            respObj.setCode(Constant.SUCCESS_CODE);
             List<ControlPhoneDTO> result = controlPhoneService.getSimpleAppList2(new ObjectId("55934c26f6f28b7261c1bae1"),2);
             respObj.setMessage(result);
         } catch (Exception e) {
             e.printStackTrace();
-            respObj = RespObj.FAILD;
+            respObj.setCode(Constant.FAILD_CODE);
             respObj.setErrorMessage("老师推送应用失败!");
         }
         return JSON.toJSONString(respObj);
@@ -815,9 +820,9 @@ public class ControlPhoneController extends BaseController {
     @ResponseBody
     public String addSimpleMapEntry(@ApiParam(name = "longitude", required = true, value = "经度") @RequestParam("longitude") String longitude,
                                     @ApiParam(name = "latitude", required = true, value = "纬度") @RequestParam("latitude") String latitude){
-        RespObj respObj=null;
+        RespObj respObj=new RespObj(Constant.FAILD_CODE);
         try {
-            respObj = RespObj.SUCCESS;
+            respObj.setCode(Constant.SUCCESS_CODE);
             ControlMapDTO dto = new ControlMapDTO();
             dto.setUserId("55934c26f6f28b7261c1bae1");
             dto.setLongitude(longitude);
@@ -826,7 +831,7 @@ public class ControlPhoneController extends BaseController {
             respObj.setMessage(result);
         } catch (Exception e) {
             e.printStackTrace();
-            respObj = RespObj.FAILD;
+            respObj.setCode(Constant.FAILD_CODE);
             respObj.setErrorMessage("老师推送应用失败!");
         }
         return JSON.toJSONString(respObj);

@@ -200,8 +200,12 @@ public class DefaultCommunityController extends BaseController {
         desc.setLength(0);
         desc.append(filterStr);
         //先判断该社区名称是否使用过
-        boolean flag = communityService.isCommunityNameUnique(name);
-        if (!flag) {
+//        boolean flag = communityService.isCommunityNameUnique(name);
+//        if (!flag) {
+//            validate.setMessage("该社区名称已使用过！");
+//            return validate;
+//        }
+        if(StringUtils.isNotEmpty(name)&&name.equals("复兰社区")){
             validate.setMessage("该社区名称已使用过！");
             return validate;
         }

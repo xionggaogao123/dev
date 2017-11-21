@@ -183,7 +183,11 @@ public class AppMarketService {
 
     public void importApkFile(MultipartFile file, InputStream inputStream, String fileName) throws Exception {
         ObjectId id = new ObjectId();
-        String bathPath = Resources.getProperty("uploads.file");
+        final String anOSName = System.getProperty("os.name");
+        String bathPath = Resources.getProperty("upload.apk.file");
+        if (anOSName.toLowerCase().startsWith("windows")) {
+            bathPath= Resources.getProperty("uploads.file");
+        }
         File dir = new File(bathPath);
         if (!dir.exists()) {
             dir.mkdirs();
@@ -219,7 +223,10 @@ public class AppMarketService {
         ApkUtil apkUtil = new ApkUtil();
         ApkInfo apkInfo = apkUtil.getApkInfo(destFile.getPath());
         String imageFileName = new ObjectId().toString() + Constant.POINT + "png";
-        String imageFilePath = bathPath + "\\" + imageFileName;
+        String imageFilePath = bathPath +"/"+ imageFileName;
+        if(anOSName.toLowerCase().startsWith("windows")) {
+            imageFilePath = bathPath + "\\" + imageFileName;
+        }
         File imageFile = new File(imageFilePath);
         IconUtil.extractFileFromApk(destFile.getPath(), apkInfo.getApplicationIcon(), imageFilePath);
         QiniuFileUtils.uploadFile(imageFileName, new FileInputStream(new File(imageFilePath)), QiniuFileUtils.TYPE_IMAGE);

@@ -49,9 +49,9 @@ public class AppMarketController extends BaseController{
 
 
     @ApiOperation(value = "网页端跳转到生成二维码界面", httpMethod = "POST", produces = "application/json")
-    @RequestMapping("/gegerateQrCode")
+    @RequestMapping("/generateQrCode")
     @SessionNeedless
-    public String gegerateQrCode(HttpServletRequest request, Map<String,Object> model){
+    public String generateQrCode(HttpServletRequest request, Map<String,Object> model){
         return "/appmarket/generateQrCode";
     }
 

@@ -184,7 +184,7 @@ public class AppMarketService {
     public void importApkFile(MultipartFile file, InputStream inputStream, String fileName) throws Exception {
         ObjectId id = new ObjectId();
         final String anOSName = System.getProperty("os.name");
-        String bathPath = Resources.getProperty("upload.apk.file");
+        String bathPath = Resources.getProperty("upload.file");
         if (anOSName.toLowerCase().startsWith("windows")) {
             bathPath= Resources.getProperty("uploads.file");
         }

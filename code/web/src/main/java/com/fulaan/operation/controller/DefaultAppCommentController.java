@@ -152,7 +152,7 @@ public class DefaultAppCommentController extends BaseController {
         RespObj respObj=new RespObj(Constant.FAILD_CODE);
         try {
             respObj.setCode(Constant.SUCCESS_CODE);
-            Map<String,Object> dtos = appCommentService.selectStudentLoad(new ObjectId(id), page, pageSize);
+            Map<String,Object> dtos = appCommentService.selectStudentLoad(getUserId(),new ObjectId(id), page, pageSize);
             respObj.setMessage(dtos);
         } catch (Exception e) {
             e.printStackTrace();

@@ -468,24 +468,21 @@ public class ControlPhoneService {
         controlMapDao.addEntry(entry);
     }
     public static void main(String[] args){
-        ControlAppResultDTO entry = new ControlAppResultDTO();
-        ControlAppResultDao controlMapDao =new ControlAppResultDao();//59e71f222675642a181100fc
+        ControlAppUserDTO entry = new ControlAppUserDTO();
+        ControlAppUserDao controlMapDao =new ControlAppUserDao();//59e71f222675642a181100fc
         long current = System.currentTimeMillis();
         //获得时间批次
         long zero = current / (1000 * 3600 * 24) * (1000 * 3600 * 24) - TimeZone.getDefault().getRawOffset();//今天零点零分零秒的毫秒数
         for(int i = 0;i <1;i++){
             entry.setParentId("5a00253d3d4df9241620d173");
-            entry.setUserId("5a0024143d4df9241620d167");
-            entry.setUserTime(100000l);
+            entry.setUserId("5a0022df3d4df9241620d15d");
+          /*  entry.setUserTime(100000l);
             entry.setAppId("5a15027294b5ea47fc6da688");
-            entry.setDateTime("2017-11-22 00:00:00");
-            /*entry.set
+            entry.setDateTime("2017-11-22 00:00:00");*/
+            //entry.set
             List<String> olist  = new ArrayList<String>();
             olist.add("5a15027294b5ea47fc6da688");
-            olist.add("5a150b7527fddd1f2454920c");
-            olist.add("5a150bc027fddd1f2454920f");
-            olist.add("5a150bf227fddd1f24549212");*/
-           // entry.setAppIdList(olist);
+            entry.setAppIdList(olist);
             controlMapDao.addEntry(entry.buildAddEntry());
         }
         int i = 1;

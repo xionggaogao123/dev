@@ -39,6 +39,11 @@ public class QuestionBookDao extends BaseDao{
         updateValue.append(Constant.MONGO_SET,new BasicDBObject("img",e.getImageList()));
         update(MongoFacroty.getAppDB(), Constant.COLLECTION_QUESTION_BOOK, query, updateValue);
     }
+    public void updateEntry(ObjectId id,String url){
+        BasicDBObject query=new BasicDBObject(Constant.ID,id);
+        BasicDBObject updateValue=new BasicDBObject(Constant.MONGO_SET,new BasicDBObject("img",url));
+        update(MongoFacroty.getAppDB(), Constant.COLLECTION_QUESTION_BOOK, query, updateValue);
+    }
 
     //删除错题
     public void delEntry(ObjectId id){

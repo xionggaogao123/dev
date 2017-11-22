@@ -225,7 +225,7 @@ public class AppCommentService {
     /**
      * 查询当前作业提交名单
      */
-    public Map<String,Object> selectStudentLoad(ObjectId id,int page,int pageSize){
+    public Map<String,Object> selectStudentLoad(ObjectId userId,ObjectId id,int page,int pageSize){
         Map<String,Object> map = new HashMap<String, Object>();
         //查询已提交
         List<AppOperationEntry> entries =appOperationDao.getEntryListByParentId(id,3,page,pageSize);
@@ -328,6 +328,11 @@ public class AppCommentService {
         String name = StringUtils.isNotEmpty(dto12.getNickName())?dto12.getNickName():dto12.getUserName();
         dtoa.setAdminName(name);
         dtoa.setAdminUrl(dto12.getImgUrl());
+        if(dtoa.getAdminId() != null && dtoa.getAdminId().equals(userId.toString())){
+            dtoa.setType(1);
+        }else{
+            dtoa.setType(2);
+        }
         map.put("desc",dtoa);
         return map;
     }

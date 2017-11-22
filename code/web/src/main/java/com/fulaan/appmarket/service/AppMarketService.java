@@ -19,7 +19,6 @@ import com.pojo.fcommunity.AttachmentEntry;
 import com.pojo.user.UserEntry;
 import com.sys.constants.Constant;
 import com.sys.props.Resources;
-import com.sys.utils.RespObj;
 import org.apache.commons.io.FilenameUtils;
 import org.bson.types.ObjectId;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -239,7 +238,7 @@ public class AppMarketService {
                     updateEntry = new AppDetailEntry(entry.getID(),
                     packageName,
                     imageFileUrl,
-                    Constant.ZERO,
+                    Constant.TWO,
                     size,
                     Integer.valueOf(apkInfo.getVersionCode()),
                     Constant.ONE,

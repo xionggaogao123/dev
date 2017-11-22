@@ -6,7 +6,7 @@ package com.pojo.newVersionGrade;
 public enum CommunityType {
     appComment(1,"作业", "zuoye"),
     appNotice(2,"通知","tongzhi"),
-    showEShow(3,"三年级", "primary"),
+    appOtherNotice(3,"通知另类", "tongzhiOther"),
     redCross(4,"四年级", "primary"),
     challenge(5,"五年级", "primary"),
     myShow(6,"六年级", "primary"),

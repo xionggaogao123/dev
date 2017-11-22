@@ -160,6 +160,11 @@ public class AppNoticeDao extends BaseDao{
             return null;
         }
     }
+    public void updEntry(AppNoticeEntry e) {
+        BasicDBObject query=new BasicDBObject(Constant.ID,e.getID());
+        BasicDBObject updateValue=new BasicDBObject(Constant.MONGO_SET,e.getBaseEntry());
+        update(MongoFacroty.getAppDB(), Constant.COLLECTION_NEW_VERSION_APP_NOTICE, query,updateValue);
+    }
 
     public int countMyReceivedAppNoticeEntriesForStudent(List<ObjectId> groupIds){
         return count(MongoFacroty.getAppDB(), Constant.COLLECTION_NEW_VERSION_APP_NOTICE,

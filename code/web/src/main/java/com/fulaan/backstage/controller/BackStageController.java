@@ -4,7 +4,6 @@ import com.alibaba.fastjson.JSON;
 import com.fulaan.appmarket.service.AppMarketService;
 import com.fulaan.backstage.service.BackStageService;
 import com.fulaan.base.BaseController;
-import com.fulaan.reportCard.service.ReportCardService;
 import com.sys.constants.Constant;
 import com.sys.utils.RespObj;
 import io.swagger.annotations.*;
@@ -20,7 +19,6 @@ import org.springframework.web.multipart.MultipartRequest;
 
 import javax.servlet.http.HttpServletRequest;
 import java.util.List;
-
 import java.util.Map;
 
 /**
@@ -170,7 +168,7 @@ public class BackStageController extends BaseController {
     @ResponseBody
     public String addOtherSchoolTime(@ApiParam(name = "startTime", required = true, value = "开始时间") @RequestParam("startTime") String startTime,
                                 @ApiParam(name = "endTime", required = true, value = "结束时间") @RequestParam("endTime") String endTime,
-                                @ApiParam(name = "endTime", required = true, value = "结束时间") @RequestParam("endTime") String dateTime){
+                                @ApiParam(name = "dateTime", required = true, value = "日期") @RequestParam("dateTime") String dateTime){
         RespObj respObj = new RespObj(Constant.FAILD_CODE);
         try{
             backStageService.addOtherSchoolTime(startTime,endTime,dateTime);
@@ -248,7 +246,7 @@ public class BackStageController extends BaseController {
     public String deleteContentEntry(@ApiParam(name = "id", required = true, value = "数据id") @RequestParam(value = "id",defaultValue = "") String id){
         RespObj respObj = new RespObj(Constant.FAILD_CODE);
         try{
-            backStageService.passContentEntry(new ObjectId(id));
+            backStageService.deleteContentEntry(new ObjectId(id));
             respObj.setCode(Constant.SUCCESS_CODE);
             respObj.setMessage("通过成功");
         }catch (Exception e){
@@ -259,7 +257,10 @@ public class BackStageController extends BaseController {
         return JSON.toJSONString(respObj);
     }
 
-
+    @ApiOperation(value = "导入apk", httpMethod = "POST", produces = "application/json")
+    @ApiResponses( value = {@ApiResponse(code = 200, message = "Successful — 请求已完成",response = String.class),
+            @ApiResponse(code = 400, message = "请求中有语法问题，或不能满足请求"),
+            @ApiResponse(code = 500, message = "服务器不能完成请求")})
     @RequestMapping("/importApkFile")
     @ResponseBody
     public RespObj importUserControl(HttpServletRequest servletRequest)throws Exception{

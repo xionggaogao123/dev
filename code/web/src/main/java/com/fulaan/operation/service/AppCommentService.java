@@ -237,6 +237,7 @@ public class AppCommentService {
         List<String> objectIdList = newVersionBindService.getStudentIdListByCommunityId(aen.getRecipientId());
         List<AppOperationDTO> dtos = new ArrayList<AppOperationDTO>();
         List<String> uids = new ArrayList<String>();
+        uids.add(aen.getAdminId().toString());
         List<ObjectId> plist = new ArrayList<ObjectId>();
         if(entries != null && entries.size()>0){
             for(AppOperationEntry en : entries){
@@ -322,10 +323,18 @@ public class AppCommentService {
         map.put("unLoadList",ulsit);
         //未提交人数
         map.put("unLoadNumber",ulsit.size());
-
+        AppCommentDTO dtoa = new AppCommentDTO(aen);
+        UserDetailInfoDTO dto12 = map3.get(dtoa.getAdminId());
+        String name = StringUtils.isNotEmpty(dto12.getNickName())?dto12.getNickName():dto12.getUserName();
+        dtoa.setAdminName(name);
+        dtoa.setAdminUrl(dto12.getImgUrl());
+        map.put("desc",dtoa);
         return map;
     }
-
+public static void main(String[] args){
+    int i = 1;
+    System.out.print(i);
+}
     /**
      * 查询当前作业签到名单
      */
@@ -565,74 +574,70 @@ public class AppCommentService {
     /**
      * 按日查找用户发放作业情况
      */
-    public Map<String,Object> selectDatePageList(long dateTime,ObjectId userId,int page,int pageSize){
-        Map<String,Object> map2 = new HashMap<String, Object>();
+    public Map<String,Object> selectDatePageList(long dateTime,ObjectId userId,int page,int pageSize,int type){
+        List<AppCommentDTO> dtos = new ArrayList<AppCommentDTO>();
         //获得当前时间
         long current=System.currentTimeMillis();
         //获得时间批次
         long zero=current/(1000*3600*24)*(1000*3600*24)- TimeZone.getDefault().getRawOffset();//今天零点零分零秒的毫秒数
-        //发送的作业
-        List<AppCommentEntry> entries = appCommentDao.selectDateList(userId, dateTime);
-        if(dateTime==zero){
-            //保存的作业
-            List<AppCommentEntry> entries1 = appCommentDao.selectWillDateList(userId);
-            entries.addAll(entries1);
-        }
+        Map<String,Object> map3 = new HashMap<String, Object>();
         List<String> uids = new ArrayList<String>();
-        List<AppCommentDTO> dtos = new ArrayList<AppCommentDTO>();
-        if(entries.size()>0){
-            for(AppCommentEntry en : entries){
-                if(en.getDateTime() <= zero && en.getStatus()==1){
-                    en.setStatus(0);
+        List<ObjectId> dto4s = new ArrayList<ObjectId>();
+        int count = 0;
+        if(type==1){
+            //发送的作业
+            List<AppCommentEntry> entries = appCommentDao.selectDateListPage(userId, page, pageSize);
+            count = appCommentDao.getNumber(userId);
+            if(page==1){
+                //保存的作业
+                List<AppCommentEntry> entries1 = appCommentDao.selectWillDateList(userId);
+                entries.addAll(entries1);
+            }
+            if(entries.size()>0){
+                for(AppCommentEntry en : entries){
+                    if(en.getDateTime() <= zero && en.getStatus()==1){
+                        en.setStatus(0);
+                    }
+                    AppCommentDTO dto = new AppCommentDTO(en);
+                    String ctm = dto.getCreateTime();
+                    dto.setCreateTime(ctm);
+                    dto.setType(1);
+                    uids.add(dto.getAdminId());
+                    dtos.add(dto);
                 }
-                AppCommentDTO dto = new AppCommentDTO(en);
-                String ctm = dto.getCreateTime();
-                dto.setCreateTime(ctm);
-                dto.setType(1);
-                uids.add(dto.getAdminId());
-                dtos.add(dto);
+            }
+        }else{
+            List<CommunityDTO> communityDTOList =communityService.getCommunitys(userId, 1, 100);
+            List<ObjectId>  dlist = new ArrayList<ObjectId>();
+            if(communityDTOList.size() >0){
+                for(CommunityDTO dto : communityDTOList){
+                    dlist.add(new ObjectId(dto.getId()));
+                }
+            }
+            List<AppCommentEntry> entries2 = appCommentDao.selectPageDateList2(dlist, userId, page, pageSize);
+            count = appCommentDao.getPageNumber(dlist, userId);
+            if(entries2.size()>0){
+                for(AppCommentEntry en : entries2){
+                    AppCommentDTO dto3 = new AppCommentDTO(en);
+                    if(dto3.getAdminId() != null && dto3.getAdminId().equals(userId.toString())){
+
+                    }else{
+                        String ctm = dto3.getCreateTime();
+                        dto3.setCreateTime(ctm);
+                        dto3.setType(2);
+                        uids.add(dto3.getAdminId());
+                        dtos.add(dto3);
+                        dto4s.add(en.getID());
+                    }
+                }
             }
         }
-
-        //获得所有收到的作业
-        //获得绑定关系(是否存在）
         List<NewVersionBindRelationEntry> nlist = newVersionBindRelationDao.getEntriesByMainUserId(userId);
         if(nlist.size() >0){
-            map2.put("isShow",1);//签到展示
+            map3.put("isShow",1);//签到展示
         }else{
-            map2.put("isShow",2);//非家长
+            map3.put("isShow",2);//非家长
         }
-        /*if(nlist.size()>0){
-            for(NewVersionBindRelationEntry entry : nlist){
-                uids.add(entry.getUserId().toString());
-            }
-        }*/
-        //获得所有社区
-        List<CommunityDTO> communityDTOList =communityService.getCommunitys(userId, 1, 100);
-        List<ObjectId>  dlist = new ArrayList<ObjectId>();
-        if(communityDTOList.size() >0){
-            for(CommunityDTO dto : communityDTOList){
-                dlist.add(new ObjectId(dto.getId()));
-            }
-        }
-        List<AppCommentEntry> entries2 = appCommentDao.selectDateList2(dlist, dateTime);
-        List<ObjectId> dto4s = new ArrayList<ObjectId>();
-        if(entries2.size()>0){
-            for(AppCommentEntry en : entries2){
-                AppCommentDTO dto3 = new AppCommentDTO(en);
-                if(dto3.getAdminId() != null && dto3.getAdminId().equals(userId.toString())){
-
-                }else{
-                    String ctm = dto3.getCreateTime();
-                    dto3.setCreateTime(ctm);
-                    dto3.setType(2);
-                    uids.add(dto3.getAdminId());
-                    dtos.add(dto3);
-                    dto4s.add(en.getID());
-                }
-            }
-        }
-
         List<UserDetailInfoDTO> udtos = userService.findUserInfoByUserIds(uids);
         Map<String,UserDetailInfoDTO> map = new HashMap<String, UserDetailInfoDTO>();
         if(udtos != null && udtos.size()>0){
@@ -650,17 +655,18 @@ public class AppCommentService {
         }
         List<ObjectId> mlist = this.getMyRoleList(userId);
         if(mlist != null && mlist.size()>0){
-            map2.put("isTeacher",1);//是老师
+            map3.put("isTeacher",1);//是老师
         }else{
-            map2.put("isTeacher",2);//非老师
+            map3.put("isTeacher",2);//非老师
         }
-        map2.put("list",dtos);
-        Map<String,Object> map3 = this.isSign(userId, dateTime,dto4s);
-        map2.put("isload",map3);
+        Map<String,Object> map4 = this.isSign(userId, dateTime,dto4s);
+        map3.put("isload",map4);
+        map3.put("list",dtos);
+        map3.put("count",count);
 
         //清除红点
         redDotService.cleanResult(userId,ApplyTypeEn.operation.getType(),dateTime);
-        return map2;
+        return map3;
     }
     /**
      * 学生端查询接受到的作业
@@ -709,7 +715,48 @@ public class AppCommentService {
         return dtos;
     }
 
+    public List<AppCommentDTO> getPageStuLit(long dateTime,ObjectId studentId,int page,int pageSize){
+        List<AppCommentDTO> dtos = new ArrayList<AppCommentDTO>();
+        List<String> olist = new ArrayList<String>();
+        List<String> uids = new ArrayList<String>();
+        List<ObjectId> obList = newVersionBindService.getCommunityIdsByUserId(studentId);
+        List<AppCommentEntry> entries2 = appCommentDao.selectPageDateList2(obList, studentId,page,pageSize);
+        //UserDetailInfoDTO studtos = userService.getUserInfoById(studentId.toString());
+        uids.add(studentId.toString());
+        if(entries2.size()>0){
+            for(AppCommentEntry en : entries2){
+                AppCommentDTO dto3 = new AppCommentDTO(en);
+                if(dto3.getAdminId() != null && olist.contains(dto3.getAdminId())){
 
+                }else{
+                    String ctm = dto3.getCreateTime();
+                    dto3.setCreateTime(ctm);
+                    dto3.setType(2);
+                    uids.add(dto3.getAdminId());
+                    dtos.add(dto3);
+                }
+            }
+        }
+        List<UserDetailInfoDTO> udtos = userService.findUserInfoByUserIds(uids);
+        Map<String,UserDetailInfoDTO> map = new HashMap<String, UserDetailInfoDTO>();
+        if(udtos != null && udtos.size()>0){
+            for(UserDetailInfoDTO dto4 : udtos){
+                map.put(dto4.getId(),dto4);
+            }
+        }
+        for(AppCommentDTO dto5 : dtos){
+            UserDetailInfoDTO dto9 = map.get(dto5.getAdminId());
+            if(dto9 != null){
+                String name = StringUtils.isNotEmpty(dto9.getNickName())?dto9.getNickName():dto9.getUserName();
+                dto5.setAdminName(name);
+                dto5.setAdminUrl(dto9.getImgUrl());
+                dto5.setSendUser(map.get(studentId.toString()).getImgUrl());
+            }
+        }
+        //清除红点
+        redDotService.cleanResult(studentId,ApplyTypeEn.operation.getType(),dateTime);
+        return dtos;
+    }
 
     /**
      * 根据作业id查找当前评论列表

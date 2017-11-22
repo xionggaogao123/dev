@@ -118,6 +118,15 @@ public class AppNoticeService {
                         null,Constant.ZERO
                 );
                 webHomePageDao.saveWebHomeEntry(pageEntry);
+            }else{
+                IndexPageDTO dto1 = new IndexPageDTO();
+                dto1.setType(CommunityType.appOtherNotice.getType());
+                dto1.setUserId(userId.toString());
+                dto1.setCommunityId(communityDTO.getCommunityId());
+                objectIdList.add(new ObjectId(communityDTO.getCommunityId()));
+                dto1.setContactId(oid.toString());
+                IndexPageEntry entry = dto1.buildAddEntry();
+                indexPageDao.addEntry(entry);
             }
         }
         try {

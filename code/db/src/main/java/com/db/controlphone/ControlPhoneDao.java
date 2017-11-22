@@ -23,7 +23,7 @@ public class ControlPhoneDao extends BaseDao {
 
     public ControlPhoneEntry getEntry(String phone) {
         BasicDBObject query =new BasicDBObject();
-        query.append("isr", Constant.ZERO) .append("pho", phone);
+        query.append("isr", Constant.ZERO) .append("pho", phone).append("typ",1);
         DBObject dbo =findOne(MongoFacroty.getAppDB(), Constant.COLLECTION_CONTROL_PHONE, query, Constant.FIELDS);
         if(null!=dbo)
         {
@@ -50,6 +50,23 @@ public class ControlPhoneDao extends BaseDao {
     public List<ControlPhoneEntry> getEntryListByparentIdAndUserId(ObjectId parentId,ObjectId userId) {
         BasicDBObject query = new BasicDBObject()
                 .append("pid",parentId)
+                .append("uid",userId)
+                .append("isr", 0); // 未删除
+        List<DBObject> dbList =
+                find(MongoFacroty.getAppDB(),
+                        Constant.COLLECTION_CONTROL_PHONE,
+                        query, Constant.FIELDS,
+                        Constant.MONGO_SORTBY_DESC);
+        List<ControlPhoneEntry> entryList = new ArrayList<ControlPhoneEntry>();
+        if (dbList != null && !dbList.isEmpty()) {
+            for (DBObject obj : dbList) {
+                entryList.add(new ControlPhoneEntry((BasicDBObject) obj));
+            }
+        }
+        return entryList;
+    }
+    public List<ControlPhoneEntry> getEntryListByparentIdAndUserId2(ObjectId userId) {
+        BasicDBObject query = new BasicDBObject()
                 .append("uid",userId)
                 .append("isr", 0); // 未删除
         List<DBObject> dbList =

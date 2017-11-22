@@ -30,6 +30,11 @@ public class AppOperationDao extends BaseDao {
         }
         return null;
     }
+    public void updEntry(AppOperationEntry e) {
+        BasicDBObject query=new BasicDBObject(Constant.ID,e.getID());
+        BasicDBObject updateValue=new BasicDBObject(Constant.MONGO_SET,e.getBaseEntry());
+        update(MongoFacroty.getAppDB(), Constant.COLLECTION_APP_OPERATION, query,updateValue);
+    }
     //删除评论
     public void delAppOperationEntry(ObjectId id){
         BasicDBObject query = new BasicDBObject(Constant.ID,id);

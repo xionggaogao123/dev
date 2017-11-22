@@ -4,9 +4,16 @@ package com.pojo.backstage;
  * Created by James on 2016/3/21.
  */
 public enum PictureType {
-    phone(100,"家长设置电话推送", "100"),
-    app(200,"推送app消息","200"),
-    mi(300,"防沉迷设置推送", "300");
+    userUrl(1,"用户头像", "avt"),
+    communityLogo(2,"社区logo","cmlg"),
+    noticeImage(3,"通知图片", "url"),
+    operationImage(4,"作业图片", "url2"),
+    activeImage(5,"活动报名图片", "url3"),
+    studyImage(6,"学习用品图片", "url4"),
+    happyImage(7,"兴趣小组图片", "url5"),
+    commentImage(8,"评论图片", "url6"),
+    wrongImage(9,"错题本图片","url7"),
+    answerImage(10,"解析图片","url8");
 
 
 

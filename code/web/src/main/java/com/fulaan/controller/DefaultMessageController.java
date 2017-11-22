@@ -3,6 +3,7 @@ package com.fulaan.controller;
 import com.fulaan.base.BaseController;
 import com.fulaan.dto.MessageDTO;
 import com.fulaan.forum.service.FInformationService;
+import com.sys.constants.Constant;
 import com.sys.utils.RespObj;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
@@ -16,6 +17,7 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -36,16 +38,27 @@ public class DefaultMessageController extends BaseController {
     @RequestMapping(method = RequestMethod.GET)
     @ResponseBody
     public RespObj getMessage(@RequestParam(value = "clear", defaultValue = "0") int clear) {
-        Map<String, Object> map = new HashMap<String, Object>();
-        if (clear == 0) {
-            List<MessageDTO> messageList = fInformationService.getInformationUnRead(getUserId());
-            map.put("count", messageList.size());
-            map.put("list", messageList);
-            return RespObj.SUCCESS(map);
-        } else if (clear == 1) {
-            fInformationService.clearReadedMessage(getUserId());
+        RespObj respObj = new RespObj(Constant.FAILD_CODE);
+        try{
+            Map<String, Object> map = new HashMap<String, Object>();
+            if (clear == 0) {
+                List<MessageDTO> messageList = fInformationService.getInformationUnRead(getUserId());
+                map.put("count", messageList.size());
+                map.put("list", messageList);
+                respObj.setCode(Constant.SUCCESS_CODE);
+                respObj.setMessage(map);
+            } else if (clear == 1) {
+                map.put("count", 0);
+                map.put("list", new ArrayList<MessageDTO>());
+                respObj.setCode(Constant.SUCCESS_CODE);
+                respObj.setMessage(map);
+                fInformationService.clearReadedMessage(getUserId());
+            }
+        }catch (Exception e){
+            respObj.setCode(Constant.FAILD_CODE);
+            respObj.setErrorMessage("获得信息出错！");
         }
-        return RespObj.SUCCESS;
+        return respObj;
     }
     @ApiOperation(value = "getUnReadSystemMessageCount", httpMethod = "GET", produces = "application/json")
     @ApiResponses( value = {@ApiResponse(code = 200, message = "Successful — 请求已完成",response = RespObj.class)})

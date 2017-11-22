@@ -28,6 +28,8 @@ public class MongoFacroty {
 
     private final static String res = "res";
 
+    private final static String jxm = "jxmDB";
+
     private static Mongo mongo = null;
 
     static {

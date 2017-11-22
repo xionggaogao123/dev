@@ -77,8 +77,6 @@ public class AppCommentDao extends BaseDao {
         return entryList;
     }
 
-
-
     //老师月作业列表查询
     public List<AppCommentEntry> selectResultList(ObjectId userId,List<Integer> monthList) {
         List<Integer> ilist = new ArrayList<Integer>();
@@ -125,6 +123,44 @@ public class AppCommentDao extends BaseDao {
         }
         return entryList;
     }
+    //老师所有作业列表查询
+    public List<AppCommentEntry> selectDateListPage(ObjectId userId,int page,int pageSize) {
+        List<Integer> ilist = new ArrayList<Integer>();
+        ilist.add(1);
+        ilist.add(0);
+        BasicDBObject query = new BasicDBObject()
+                .append("aid", userId)
+                .append("sta", new BasicDBObject(Constant.MONGO_IN, ilist))
+                .append("isr", 0); // 未删除
+        List<DBObject> dbList =
+                find(MongoFacroty.getAppDB(),
+                        Constant.COLLECTION_APP_COMMENT,
+                        query, Constant.FIELDS,
+                        Constant.MONGO_SORTBY_DESC,(page - 1) * pageSize, pageSize);
+        List<AppCommentEntry> entryList = new ArrayList<AppCommentEntry>();
+        if (dbList != null && !dbList.isEmpty()) {
+            for (DBObject obj : dbList) {
+                entryList.add(new AppCommentEntry((BasicDBObject) obj));
+            }
+        }
+        return entryList;
+    }
+
+    /**
+     * 符合搜索条件的对象个数
+     * @return
+     */
+    public int getNumber(ObjectId userId) {
+        BasicDBObject query =new BasicDBObject();
+        query.append("isr", Constant.ZERO);
+        query.append("uid", userId);
+        int count =
+                count(MongoFacroty.getAppDB(),
+                        Constant.COLLECTION_APP_COMMENT,
+                        query);
+        return count;
+    }
+
     //老师日作业列表查询
     public List<AppCommentEntry> selectWillDateList(ObjectId userId) {
         BasicDBObject query = new BasicDBObject()
@@ -145,6 +181,48 @@ public class AppCommentDao extends BaseDao {
         return entryList;
     }
     //家长日作业列表查询//收到的
+    public List<AppCommentEntry> selectPageDateList2(List<ObjectId> userIds,ObjectId adminId,int page,int pageSize) {
+        List<Integer> ilist = new ArrayList<Integer>();
+        ilist.add(1);
+        ilist.add(0);
+        BasicDBObject query = new BasicDBObject()
+                .append("rid",new BasicDBObject(Constant.MONGO_IN,userIds))
+                .append("aid",new BasicDBObject(Constant.MONGO_NE,adminId))
+                .append("sta", new BasicDBObject(Constant.MONGO_IN,ilist))
+                .append("isr", 0); // 未删除
+        List<DBObject> dbList =
+                find(MongoFacroty.getAppDB(),
+                        Constant.COLLECTION_APP_COMMENT,
+                        query, Constant.FIELDS,
+                        Constant.MONGO_SORTBY_DESC,(page - 1) * pageSize, pageSize);
+        List<AppCommentEntry> entryList = new ArrayList<AppCommentEntry>();
+        if (dbList != null && !dbList.isEmpty()) {
+            for (DBObject obj : dbList) {
+                entryList.add(new AppCommentEntry((BasicDBObject) obj));
+            }
+        }
+        return entryList;
+    }
+    /**
+     * 符合搜索条件的对象个数
+     * @return
+     */
+    public int getPageNumber(List<ObjectId> userIds,ObjectId adminId) {
+        List<Integer> ilist = new ArrayList<Integer>();
+        ilist.add(1);
+        ilist.add(0);
+        BasicDBObject query = new BasicDBObject()
+                .append("rid",new BasicDBObject(Constant.MONGO_IN,userIds))
+                .append("aid",new BasicDBObject(Constant.MONGO_NE,adminId))
+                .append("sta", new BasicDBObject(Constant.MONGO_IN,ilist))
+                .append("isr", 0); // 未删除
+        int count =
+                count(MongoFacroty.getAppDB(),
+                        Constant.COLLECTION_APP_COMMENT,
+                        query);
+        return count;
+    }
+
     public List<AppCommentEntry> selectDateList2(List<ObjectId> userIds,long dateTime) {
         List<Integer> ilist = new ArrayList<Integer>();
         ilist.add(1);

@@ -36,6 +36,11 @@ public class CommunityDetailDao extends BaseDao {
         return dbo == null ? null : new CommunityDetailEntry(dbo);
     }
 
+    public void updEntry(CommunityDetailEntry e) {
+        BasicDBObject query=new BasicDBObject(Constant.ID,e.getID());
+        BasicDBObject updateValue=new BasicDBObject(Constant.MONGO_SET,e.getBaseEntry());
+        update(MongoFacroty.getAppDB(), Constant.COLLECTION_FORUM_COMMUNITY_DETAIL, query,updateValue);
+    }
     /**
      * 分页-获取某个社区发表内容(按时间先后排序)
      *

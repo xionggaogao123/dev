@@ -379,7 +379,7 @@ public class ControlPhoneService {
         //变更最新数据
         List<ObjectId> oids = controlAppResultDao.getIsNewObjectId(userId,zero);
         if(dtos != null && dtos.size()>0){
-            this.addRedDotEntryBatch(dtos,userId,newEntry.getMainUserId());
+            this.addRedDotEntryBatch(dtos,userId,newEntry.getMainUserId(),zero);
         }
         if(oids.size()>0){
             controlAppResultDao.updEntry(oids);
@@ -468,11 +468,24 @@ public class ControlPhoneService {
         controlMapDao.addEntry(entry);
     }
     public static void main(String[] args){
-        ControlMapDTO entry = new ControlMapDTO();
-        ControlMapDao controlMapDao =new ControlMapDao();//59e71f222675642a181100fc
+        ControlAppResultDTO entry = new ControlAppResultDTO();
+        ControlAppResultDao controlMapDao =new ControlAppResultDao();//59e71f222675642a181100fc
+        long current = System.currentTimeMillis();
+        //获得时间批次
+        long zero = current / (1000 * 3600 * 24) * (1000 * 3600 * 24) - TimeZone.getDefault().getRawOffset();//今天零点零分零秒的毫秒数
         for(int i = 0;i <1;i++){
-            entry.setParentId("59e71c38bf2e79192c362681");
-            entry.setUserId("59e71bedbf2e79192c36267b");
+            entry.setParentId("5a00253d3d4df9241620d173");
+            entry.setUserId("5a0024143d4df9241620d167");
+            entry.setUserTime(100000l);
+            entry.setAppId("5a15027294b5ea47fc6da688");
+            entry.setDateTime("2017-11-22 00:00:00");
+            /*entry.set
+            List<String> olist  = new ArrayList<String>();
+            olist.add("5a15027294b5ea47fc6da688");
+            olist.add("5a150b7527fddd1f2454920c");
+            olist.add("5a150bc027fddd1f2454920f");
+            olist.add("5a150bf227fddd1f24549212");*/
+           // entry.setAppIdList(olist);
             controlMapDao.addEntry(entry.buildAddEntry());
         }
         int i = 1;
@@ -652,8 +665,11 @@ public class ControlPhoneService {
         if(null == newEntry){
             return this.getSimpleMessageForSon();
         }
+
         ControlTimeEntry controlTimeEntry = controlTimeDao.getEntryByUserId(sonId);
-        ObjectId parentId = controlTimeEntry.getParentId();
+       /* if(controlTimeEntry != null){
+            ObjectId parentId = controlTimeEntry.getParentId();
+        }*/
         Map<String,Object> map = new HashMap<String, Object>();
         //可用应用列表
         List<ObjectId> obList = newVersionBindService.getCommunityIdsByUserId(sonId);
@@ -675,7 +691,9 @@ public class ControlPhoneService {
         map.put("app",detailDTOs);
         //可用电话记录
         List<ControlPhoneDTO> dtos = new ArrayList<ControlPhoneDTO>();
-        List<ControlPhoneEntry> entries = controlPhoneDao.getEntryListByparentIdAndUserId(parentId, sonId);
+        List<ControlPhoneEntry> entries = controlPhoneDao.getEntryListByparentIdAndUserId2(sonId);
+        List<ControlPhoneEntry> entries6 = controlPhoneDao.getEntryListByType();
+        entries.addAll(entries6);
         if(entries.size()>0){
             for(ControlPhoneEntry entry : entries){
                 dtos.add(new ControlPhoneDTO(entry));
@@ -1037,13 +1055,14 @@ public class ControlPhoneService {
      * 批量增加应用记录
      * @param list
      */
-    public void addRedDotEntryBatch(List<ControlAppResultDTO> list,ObjectId userId,ObjectId parentId) {
+    public void addRedDotEntryBatch(List<ControlAppResultDTO> list,ObjectId userId,ObjectId parentId,long zero) {
         List<DBObject> dbList = new ArrayList<DBObject>();
         for (int i = 0; list != null && i < list.size(); i++) {
             ControlAppResultDTO si = list.get(i);
             ControlAppResultEntry obj = si.buildAddEntry();
             obj.setUserId(userId);
             obj.setParentId(parentId);
+            obj.setDateTime(zero);
             dbList.add(obj.getBaseEntry());
         }
         //导入新纪录

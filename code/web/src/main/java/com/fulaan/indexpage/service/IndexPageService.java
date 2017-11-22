@@ -77,6 +77,8 @@ public class IndexPageService {
                 }else if(entry.getType()==2){
                     //通知
                     noList.add(entry.getContactId());
+                }else if(entry.getType()==3 && entry.getUserId() != null && entry.getUserId().equals(userId)){
+                    noList.add(entry.getContactId());
                 }
             }
         }

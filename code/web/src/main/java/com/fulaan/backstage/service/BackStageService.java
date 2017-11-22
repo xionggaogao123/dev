@@ -5,14 +5,26 @@ import com.db.controlphone.ControlPhoneDao;
 import com.db.controlphone.ControlSchoolTimeDao;
 import com.db.controlphone.ControlSetBackDao;
 import com.db.controlphone.ControlSetTimeDao;
+import com.db.fcommunity.CommunityDao;
+import com.db.fcommunity.CommunityDetailDao;
+import com.db.operation.AppCommentDao;
+import com.db.operation.AppNoticeDao;
+import com.db.operation.AppOperationDao;
+import com.db.user.UserDao;
 import com.fulaan.backstage.dto.UnlawfulPictureTextDTO;
 import com.fulaan.controlphone.dto.ControlPhoneDTO;
 import com.fulaan.controlphone.dto.ControlSchoolTimeDTO;
+import com.pojo.appnotice.AppNoticeEntry;
+import com.pojo.backstage.PictureType;
 import com.pojo.backstage.UnlawfulPictureTextEntry;
 import com.pojo.controlphone.ControlPhoneEntry;
 import com.pojo.controlphone.ControlSchoolTimeEntry;
 import com.pojo.controlphone.ControlSetBackEntry;
 import com.pojo.controlphone.ControlSetTimeEntry;
+import com.pojo.fcommunity.AttachmentEntry;
+import com.pojo.fcommunity.CommunityDetailEntry;
+import com.pojo.operation.AppCommentEntry;
+import com.pojo.operation.AppOperationEntry;
 import org.bson.types.ObjectId;
 import org.springframework.stereotype.Service;
 
@@ -35,6 +47,20 @@ public class BackStageService {
     private ControlPhoneDao controlPhoneDao = new ControlPhoneDao();
 
     private ControlSchoolTimeDao controlSchoolTimeDao = new ControlSchoolTimeDao();
+
+    private UserDao userDao = new UserDao();
+
+    private CommunityDao communityDao =new CommunityDao();
+
+    private AppNoticeDao appNoticeDao = new AppNoticeDao();
+
+    private AppCommentDao appCommentDao = new AppCommentDao();
+
+    private CommunityDetailDao communityDetailDao = new CommunityDetailDao();
+
+    private AppOperationDao appOperationDao = new AppOperationDao();
+
+    private static String imageUrl = "";
 
 
     public static void main(String[] args){
@@ -172,7 +198,79 @@ public class BackStageService {
         unlawfulPictureTextDao.deleteContentEntry(id);
         UnlawfulPictureTextEntry entry = unlawfulPictureTextDao.getEntryById(id);
         if(entry != null) {
+            ObjectId cid = entry.getContactId();
+            String url = entry.getContent();
+            if(entry.getType()== PictureType.userUrl.getType()){//用户头像
+                //替换用户头像
+                userDao.updateAvater(cid,imageUrl);
+            }else if(entry.getType()== PictureType.communityLogo.getType()){//社区logo
+                //替换社区logo
+                communityDao.updateCommunityLogo(cid,imageUrl);
+            }else if(entry.getType()== PictureType.noticeImage.getType()){//通知
+                AppNoticeEntry entry1 = appNoticeDao.getAppNoticeEntry(cid);
+                List<AttachmentEntry> alist = entry1.getImageList();
+                if(alist != null && alist.size()>0){
+                    for(AttachmentEntry entry2 : alist){
+                        if(entry2.getUrl()!=null && entry2.getUrl().contains(url)){
+                            entry2.setUrl(imageUrl);
+                        }
+                    }
+                }
+                appNoticeDao.updEntry(entry1);
+            }else if(entry.getType()== PictureType.operationImage.getType()){//作业
+                AppCommentEntry entry1 = appCommentDao.getEntry(cid);
+                List<AttachmentEntry> alist = entry1.getImageList();
+                if(alist != null && alist.size()>0){
+                    for(AttachmentEntry entry2 : alist){
+                        if(entry2.getUrl()!=null && entry2.getUrl().contains(url)){
+                            entry2.setUrl(imageUrl);
+                        }
+                    }
+                }
+                appCommentDao.updEntry(entry1);
+            }else if(entry.getType()== PictureType.activeImage.getType()){//活动报名
+                CommunityDetailEntry entry1 = communityDetailDao.findByObjectId(cid);
+                List<AttachmentEntry> alist = entry1.getImageList();
+                if(alist != null && alist.size()>0){
+                    for(AttachmentEntry entry2 : alist){
+                        if(entry2.getUrl()!=null && entry2.getUrl().contains(url)){
+                            entry2.setUrl(imageUrl);
+                        }
+                    }
+                }
+                communityDetailDao.updEntry(entry1);
+            }else if(entry.getType()== PictureType.studyImage.getType()){//学习用品
+                CommunityDetailEntry entry1 = communityDetailDao.findByObjectId(cid);
+                List<AttachmentEntry> alist = entry1.getImageList();
+                if(alist != null && alist.size()>0){
+                    for(AttachmentEntry entry2 : alist){
+                        if(entry2.getUrl()!=null && entry2.getUrl().contains(url)){
+                            entry2.setUrl(imageUrl);
+                        }
+                    }
+                }
+                communityDetailDao.updEntry(entry1);
 
+            }else if(entry.getType()== PictureType.happyImage.getType()){//兴趣小组
+                CommunityDetailEntry entry1 = communityDetailDao.findByObjectId(cid);
+                List<AttachmentEntry> alist = entry1.getImageList();
+                if(alist != null && alist.size()>0){
+                    for(AttachmentEntry entry2 : alist){
+                        if(entry2.getUrl()!=null && entry2.getUrl().contains(url)){
+                            entry2.setUrl(imageUrl);
+                        }
+                    }
+                }
+                communityDetailDao.updEntry(entry1);
+            }else if(entry.getType()== PictureType.commentImage.getType()){//评论
+                AppOperationEntry entry1 = appOperationDao.getEntry(cid);
+                entry1.setFileUrl(imageUrl);
+                appOperationDao.updEntry(entry1);
+            }else if(entry.getType()== PictureType.wrongImage.getType()){//错题本
+
+            }else if(entry.getType()== PictureType.answerImage.getType()){//错题解析
+
+            }
         }
 
     }

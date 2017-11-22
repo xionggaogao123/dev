@@ -21,6 +21,7 @@ public class AppDetailDTO {
     private int type;
     private int isControl;
     private int whiteOrBlack;
+    private int order;
     private String size;
     private long appSize;
     private int versionCode;
@@ -68,6 +69,7 @@ public class AppDetailDTO {
         for(AttachmentEntry item:images){
             imageList.add(new Attachement(item));
         }
+        this.order = detailEntry.getOrder();
         this.versionName=detailEntry.getVersionName();
         this.description=detailEntry.getDescription();
         this.url=detailEntry.getUrl();
@@ -148,6 +150,14 @@ public class AppDetailDTO {
 
     public void setId(String id) {
         this.id = id;
+    }
+
+    public int getOrder() {
+        return order;
+    }
+
+    public void setOrder(int order) {
+        this.order = order;
     }
 
     public String getAppPackageName() {

@@ -45,6 +45,7 @@ public class AppDetailEntry extends BaseDBObject{
                 .append("asz",appSize)
                 .append("isc",isControl)
                 .append("wob",whiteOrBlack)
+                .append("ord",1)
                 .append("sz", size)
                 .append("ur",url)
                 .append("an",appName)
@@ -74,11 +75,12 @@ public class AppDetailEntry extends BaseDBObject{
                           String url){
         BasicDBObject basicDBObject=new BasicDBObject()
                 .append("apn",appPackageName)
-                .append("lg",logo)
+                .append("lg", logo)
                 .append("ty", type)
                 .append("asz",appSize)
                 .append("isc",isControl)
                 .append("wob",whiteOrBlack)
+                .append("ord", 1)
                 .append("sz", size)
                 .append("ur",url)
                 .append("an",appName)
@@ -142,6 +144,7 @@ public class AppDetailEntry extends BaseDBObject{
         return getSimpleStringValue("ur");
     }
 
+
     public long getTime(){
         return getSimpleLongValue("ti");
     }
@@ -195,6 +198,15 @@ public class AppDetailEntry extends BaseDBObject{
     public void setType(int type){
         setSimpleValue("ty",type);
     }
+
+    public int getOrder(){
+        return getSimpleIntegerValue("ord");
+    }
+
+    public void setOrder(int order){
+        setSimpleValue("ord",order);
+    }
+
     public int getIsControl(){
         return getSimpleIntegerValue("isc");
     }

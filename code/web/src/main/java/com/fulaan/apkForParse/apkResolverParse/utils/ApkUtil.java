@@ -102,7 +102,7 @@ public class ApkUtil {
                 throw e;
             }
         }else{
-            String aaptTool="aapt";
+            String aaptTool="/etc/profile; aapt";
             process = mBuilder.command(aaptTool, "d", "badging", apkPath).start();
         }
 //        Process process = mBuilder.command(mAaptPath, "d", "badging", apkPath)

@@ -188,6 +188,10 @@ public class AppMarketService {
         }
     }
 
+    public void setOrder(ObjectId apkId,int order){
+        appDetailDao.setOrder(apkId,order);
+    }
+
     public void importApkFile(MultipartFile file, InputStream inputStream, String fileName) throws Exception {
         ObjectId id = new ObjectId();
         final String anOSName = System.getProperty("os.name");

@@ -259,6 +259,16 @@ public class BackStageController extends BaseController {
         return JSON.toJSONString(respObj);
     }
 
+    @RequestMapping("/setOrder/{apkId}/{order}")
+    @ResponseBody
+    public RespObj setOrder(@PathVariable @ObjectIdType ObjectId apkId,
+                           @PathVariable int order){
+        RespObj respObj=new RespObj(Constant.SUCCESS_CODE);
+        appMarketService.setOrder(apkId,order);
+        respObj.setMessage("设置顺序成功");
+        return respObj;
+    }
+
 
     @RequestMapping("/deleteApk/{apkId}")
     @ResponseBody

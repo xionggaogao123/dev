@@ -22,6 +22,11 @@ public class AppDetailDao extends BaseDao {
         save(MongoFacroty.getAppDB(), Constant.COLLECTION_APP_MARKET_DETAIL,detailEntry.getBaseEntry());
     }
 
+    public void removeById(ObjectId id){
+        BasicDBObject query=new BasicDBObject(Constant.ID,id);
+        remove(MongoFacroty.getAppDB(), Constant.COLLECTION_APP_MARKET_DETAIL,query);
+    }
+
     public AppDetailEntry findEntryById(ObjectId id){
         BasicDBObject query=new BasicDBObject(Constant.ID,id);
         DBObject dbObject=findOne(MongoFacroty.getAppDB(), Constant.COLLECTION_APP_MARKET_DETAIL,query,Constant.FIELDS);

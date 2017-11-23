@@ -20,6 +20,7 @@ import com.pojo.user.UserEntry;
 import com.sys.constants.Constant;
 import com.sys.props.Resources;
 import org.apache.commons.io.FilenameUtils;
+import org.apache.commons.lang3.StringUtils;
 import org.bson.types.ObjectId;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -180,6 +181,13 @@ public class AppMarketService {
         }
     }
 
+    public void deleteApk(ObjectId apkId)throws Exception{
+        AppDetailEntry appDetailEntry=appDetailDao.findEntryById(apkId);
+        if(null!=appDetailEntry){
+            appDetailDao.removeById(apkId);
+        }
+    }
+
     public void importApkFile(MultipartFile file, InputStream inputStream, String fileName) throws Exception {
         ObjectId id = new ObjectId();
         final String anOSName = System.getProperty("os.name");
@@ -207,7 +215,6 @@ public class AppMarketService {
             QiniuFileUtils.uploadFile(fileKey, inputStream, QiniuFileUtils.TYPE_DOCUMENT);
             path = QiniuFileUtils.getPath(QiniuFileUtils.TYPE_DOCUMENT, fileKey);
         }
-
         Map<String, Object> apkSize = GetApkSize.getFilePath(destFile);
         long size = 0L;
         if (null != apkSize.get("size")) {
@@ -234,6 +241,7 @@ public class AppMarketService {
         String packageName = apkInfo.getPackageName();
         AppDetailEntry entry = appDetailDao.getEntryByApkPackageName(packageName);
         if (null != entry) {
+
             AppDetailEntry
                     updateEntry = new AppDetailEntry(entry.getID(),
                     packageName,
@@ -248,7 +256,8 @@ public class AppMarketService {
                     apkInfo.getVersionName(),
                     Constant.EMPTY,
                     apkInfo.getApplicationLable(),
-                    path);
+                    path,
+                    fileKey);
             appDetailDao.saveAppDetailEntry(updateEntry);
         } else {
             AppDetailEntry
@@ -265,7 +274,8 @@ public class AppMarketService {
                     apkInfo.getVersionName(),
                     Constant.EMPTY,
                     apkInfo.getApplicationLable(),
-                    path);
+                    path,
+                    fileKey);
             appDetailDao.saveAppDetailEntry(newEntry);
         }
         destFile.delete();

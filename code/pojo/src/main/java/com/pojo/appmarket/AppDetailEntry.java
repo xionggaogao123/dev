@@ -36,7 +36,8 @@ public class AppDetailEntry extends BaseDBObject{
                           String versionName,
                           String description,
                           String appName,
-                          String url){
+                          String url,
+                          String fileKey){
         BasicDBObject basicDBObject=new BasicDBObject()
                 .append(Constant.ID,id)
                 .append("apn",appPackageName)
@@ -53,6 +54,7 @@ public class AppDetailEntry extends BaseDBObject{
                 .append("vs",versionName)
                 .append("vc",versionCode)
                 .append("des",description)
+                .append("fk",fileKey)
                 .append("ti",System.currentTimeMillis())
                 .append("upt",System.currentTimeMillis())
                 .append("iu",Constant.ZERO)
@@ -72,7 +74,8 @@ public class AppDetailEntry extends BaseDBObject{
                           String versionName,
                           String description,
                           String appName,
-                          String url){
+                          String url,
+                          String fileKey){
         BasicDBObject basicDBObject=new BasicDBObject()
                 .append("apn",appPackageName)
                 .append("lg", logo)
@@ -91,8 +94,17 @@ public class AppDetailEntry extends BaseDBObject{
                 .append("ti",System.currentTimeMillis())
                 .append("upt",System.currentTimeMillis())
                 .append("iu",Constant.ZERO)
+                .append("fk",fileKey)
                 .append("ir", Constant.ZERO);
         setBaseEntry(basicDBObject);
+    }
+
+    public void setFileKey(String fileKey){
+        setSimpleValue("fk",fileKey);
+    }
+
+    public String getFileKey(){
+        return getSimpleStringValue("fk");
     }
 
     public long getUpdateTime(){
@@ -200,7 +212,7 @@ public class AppDetailEntry extends BaseDBObject{
     }
 
     public int getOrder(){
-        return getSimpleIntegerValue("ord");
+        return getSimpleIntegerValueDef("ord",1);
     }
 
     public void setOrder(int order){

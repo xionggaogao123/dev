@@ -1,6 +1,7 @@
 package com.fulaan.backstage.controller;
 
 import com.alibaba.fastjson.JSON;
+import com.fulaan.annotation.ObjectIdType;
 import com.fulaan.appmarket.service.AppMarketService;
 import com.fulaan.backstage.service.BackStageService;
 import com.fulaan.base.BaseController;
@@ -11,6 +12,7 @@ import org.bson.types.ObjectId;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.util.MultiValueMap;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
@@ -255,6 +257,22 @@ public class BackStageController extends BaseController {
             respObj.setMessage("通过失败");
         }
         return JSON.toJSONString(respObj);
+    }
+
+
+    @RequestMapping("/deleteApk/{apkId}")
+    @ResponseBody
+    public RespObj deleteApk(@PathVariable @ObjectIdType ObjectId apkId){
+        RespObj respObj=new RespObj(Constant.FAILD_CODE);
+        try{
+            appMarketService.deleteApk(apkId);
+            respObj.setCode(Constant.SUCCESS_CODE);
+            respObj.setMessage("删除apk文件成功");
+        }catch (Exception e){
+            e.printStackTrace();
+            respObj.setErrorMessage(e.getMessage());
+        }
+        return respObj;
     }
 
     @ApiOperation(value = "导入apk", httpMethod = "POST", produces = "application/json")

@@ -52,7 +52,7 @@ public class ApkUtil {
     /**
      * aapt所在的目录。
      */
-    private String mAaptPath = "D:\\";
+    private String mAaptPath = "D:\\fulaangit\\code\\web\\src\\main\\java\\com\\fulaan\\apkForParse\\apkResolverParse\\lib\\";
 
     public ApkUtil() {
         mBuilder = new ProcessBuilder();

@@ -34,6 +34,8 @@ public class AppDetailDTO {
     private String updateTime;
     private int isCheck;//1 家长推荐      2 老师推荐         3 不推荐
 
+    private String fileKey;
+
     public AppDetailDTO(){
 
     }
@@ -50,10 +52,10 @@ public class AppDetailDTO {
         }
         if(null!=aId){
             return new AppDetailEntry(aId,appPackageName,logo, type,appSize,versionCode,isControl,whiteOrBlack, size,
-            images, versionName, description,appName,url);
+            images, versionName, description,appName,url,fileKey);
         }else{
             return new AppDetailEntry(appPackageName,logo, type,appSize, versionCode,isControl,whiteOrBlack,size,
-                    images, versionName, description,appName,url);
+                    images, versionName, description,appName,url,fileKey);
         }
     }
 
@@ -77,7 +79,16 @@ public class AppDetailDTO {
         this.appSize=detailEntry.getAppSize();
         this.versionCode=detailEntry.getVersionCode();
         this.isUpdated=detailEntry.getIsUpdated();
+        this.fileKey=detailEntry.getFileKey();
         this.updateTime= DateTimeUtils.convert(detailEntry.getUpdateTime(),DateTimeUtils.DATE_YYYY_MM_DD);
+    }
+
+    public String getFileKey() {
+        return fileKey;
+    }
+
+    public void setFileKey(String fileKey) {
+        this.fileKey = fileKey;
     }
 
     public int getIsControl() {

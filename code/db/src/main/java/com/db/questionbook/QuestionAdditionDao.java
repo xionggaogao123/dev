@@ -33,6 +33,16 @@ public class QuestionAdditionDao extends BaseDao {
         }
         return null;
     }
+    public QuestionAdditionEntry getEntryByObjectId(ObjectId id) {
+        BasicDBObject query = new BasicDBObject(Constant.ID,id);
+        query.append("isr",Constant.ZERO);
+        DBObject obj =
+                findOne(MongoFacroty.getAppDB(), Constant.COLLECTION_QUESTION_ADDITION, query, Constant.FIELDS);
+        if (obj != null) {
+            return new QuestionAdditionEntry((BasicDBObject) obj);
+        }
+        return null;
+    }
     //修改解析内容和图片
     public void updateEntry(QuestionAdditionEntry e){
         BasicDBObject query=new BasicDBObject(Constant.ID,e.getID());

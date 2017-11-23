@@ -924,6 +924,7 @@ public class Constant {
     /*********************************后台管理*******************************************/
     //图片鉴黄和垃圾文本
     public static final String COLLECTION_PICTURE_TEXT= "picturetext";
-
+    //教师认证
+    public static final String COLLECTION_TEACHER_APPROVE= "teacherapprove";
 
 }

@@ -118,6 +118,10 @@ public class AppCommentService {
             en.setID(null);
             en.setRecipientId(new ObjectId(dto3.getId()));
             en.setRecipientName(dto3.getName());
+            List<String> objectIdList2 = this.getMyRoleList2(new ObjectId(dto3.getId()));
+            en.setAllWriterNumber(objectIdList2.size());
+            List<String> objectIdList3 = newVersionBindService.getStudentIdListByCommunityId(new ObjectId(dto3.getId()));
+            en.setAllLoadNumber(objectIdList3.size());
             String oid = appCommentDao.addEntry(en);
             List<ObjectId> objectIdList =new ArrayList<ObjectId>();
 
@@ -589,15 +593,18 @@ public static void main(String[] args){
         List<String> uids = new ArrayList<String>();
         List<ObjectId> dto4s = new ArrayList<ObjectId>();
         int count = 0;
+        List<ObjectId> objectIdList = new ArrayList<ObjectId>();
         if(type==1){
             //发送的作业
-            List<AppCommentEntry> entries = appCommentDao.selectDateListPage(userId, page, pageSize);
-            count = appCommentDao.getNumber(userId);
+            List<AppCommentEntry> entries1 = new ArrayList<AppCommentEntry>();
             if(page==1){
                 //保存的作业
-                List<AppCommentEntry> entries1 = appCommentDao.selectWillDateList(userId);
-                entries.addAll(entries1);
+                entries1 = appCommentDao.selectWillDateList(userId);
+
             }
+            List<AppCommentEntry> entries = appCommentDao.selectDateListPage(userId, page, pageSize);
+            count = appCommentDao.getNumber(userId);
+            entries.addAll(entries1);
             if(entries.size()>0){
                 for(AppCommentEntry en : entries){
                     if(en.getDateTime() <= zero && en.getStatus()==1){
@@ -621,12 +628,14 @@ public static void main(String[] args){
             }
             List<AppCommentEntry> entries2 = appCommentDao.selectPageDateList2(dlist, userId, page, pageSize);
             count = appCommentDao.getPageNumber(dlist, userId);
+            List<ObjectId> idList = new ArrayList<ObjectId>();
             if(entries2.size()>0){
                 for(AppCommentEntry en : entries2){
                     AppCommentDTO dto3 = new AppCommentDTO(en);
                     if(dto3.getAdminId() != null && dto3.getAdminId().equals(userId.toString())){
 
                     }else{
+                        idList.add(en.getID());
                         String ctm = dto3.getCreateTime();
                         dto3.setCreateTime(ctm);
                         dto3.setType(2);
@@ -636,6 +645,7 @@ public static void main(String[] args){
                     }
                 }
             }
+            objectIdList = appRecordResultDao.getEntryByParentList(idList,userId);
         }
         List<NewVersionBindRelationEntry> nlist = newVersionBindRelationDao.getEntriesByMainUserId(userId);
         if(nlist.size() >0){
@@ -656,6 +666,12 @@ public static void main(String[] args){
                 String name = StringUtils.isNotEmpty(dto9.getNickName())?dto9.getNickName():dto9.getUserName();
                 dto5.setAdminName(name);
                 dto5.setAdminUrl(dto9.getImgUrl());
+            }
+            dto5.setIsLoad(1);
+            if(objectIdList.size()>0){
+                if(objectIdList.contains(new ObjectId(dto5.getId()))){
+                    dto5.setIsLoad(2);
+                }
             }
         }
         List<ObjectId> mlist = this.getMyRoleList(userId);
@@ -993,6 +1009,8 @@ public static void main(String[] args){
 
 
     }
+
+
     /**
      * 学生发布作品
      * @return
@@ -1004,9 +1022,14 @@ public static void main(String[] args){
         en.setDateTime(current);
         String id = appOperationDao.addEntry(en);
         AppCommentEntry entry = appCommentDao.getEntry(en.getContactId());
+        List<AppOperationEntry> entries = appOperationDao.getEntryListByUserIdAndId(new ObjectId(dto.getUserId()), new ObjectId(dto.getContactId()), 3);
         //修改提交数
-        entry.setLoadNumber(entry.getLoadNumber() + 1);
-        appCommentDao.updEntry(entry);
+        if(entries.size()>0){
+
+        }else{
+            entry.setLoadNumber(entry.getLoadNumber() + 1);
+            appCommentDao.updEntry(entry);
+        }
         return id;
     }
 
@@ -1080,11 +1103,21 @@ public static void main(String[] args){
         }
         return map;
     }
-
     /**
      * 是否签到
      */
     public Map<String,Object> isSign(ObjectId userId,long zero,List<ObjectId> ids){
+        //查找有没有新的未签到
+        //已签到的list
+        Map<String,Object> map = new HashMap<String, Object>();
+        map.put("type","1");
+        map.put("id","");
+        return map;
+    }
+    /**
+     * 是否签到
+     */
+    public Map<String,Object> isSign3(ObjectId userId,long zero,List<ObjectId> ids){
         //查找有没有新的未签到
         //已签到的list
         Map<String,Object> map = new HashMap<String, Object>();
@@ -1145,7 +1178,7 @@ public static void main(String[] args){
         return "签到成功";
     }
 
-    public String goSign(ObjectId id,ObjectId userId){
+    public String goSign3(ObjectId id,ObjectId userId){
         AppRecordEntry entry = appRecordDao.getEntry(id);
         //所有社区
         List<CommunityDTO> communityDTOList =communityService.getCommunitys(userId, 1, 100);
@@ -1176,6 +1209,26 @@ public static void main(String[] args){
         }
         if(dtOlist.size()>0){
             addAppRecordResultList(dtOlist);
+        }
+        return "签到成功";
+    }
+    public String goSign(ObjectId id,ObjectId userId){
+        AppRecordResultEntry entry = appRecordResultDao.getEntry(id,userId);
+        long current=System.currentTimeMillis();
+        //获得时间批次
+        long zero=current/(1000*3600*24)*(1000*3600*24)- TimeZone.getDefault().getRawOffset();//今天零点零分零秒的毫秒数
+        if(entry == null){
+            AppRecordResultDTO dto = new AppRecordResultDTO();
+            dto.setParentId(id.toString());
+            dto.setUserId(userId.toString());
+            dto.setIsLoad(2);
+            AppRecordResultEntry obj = dto.buildAddEntry();
+            obj.setDateTime(zero);
+            appRecordResultDao.addEntry(obj);
+
+            AppCommentEntry entry1 = appCommentDao.getEntry(id);
+            entry1.setWriteNumber(entry1.getWriteNumber());
+            appCommentDao.updEntry(entry1);
         }
         return "签到成功";
     }

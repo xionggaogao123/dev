@@ -28,6 +28,10 @@ public class AppCommentDTO {
     @ApiModelProperty(value = "作业提交状态:0 已发布    1 定时发布   2 暂不发布", required = true)
     private int status;
     private int writeNumber;
+    //  int allWriterNumber,
+   // int allLoadNumber,
+    private int allWriterNumber;
+    private int allLoadNumber;
     private int talkNumber;
     private int loadNumber;
     private int questionNumber;
@@ -55,6 +59,7 @@ public class AppCommentDTO {
     private String adminUrl;//发送人图片
     private String sendUser;//孩子名称
     private String comList;
+    private int isLoad;
 
     public AppCommentDTO(){
 
@@ -71,6 +76,8 @@ public class AppCommentDTO {
             }
             this.status = e.getStatus();
             this.writeNumber = e.getWriteNumber();
+            this.allWriterNumber = e.getAllWriterNumber();
+            this.allLoadNumber = e.getAllLoadNumber();
             this.talkNumber = e.getTalkNumber();
             this.loadNumber = e.getLoadNumber();
             this.questionNumber = e.getQuestionNumber();
@@ -181,6 +188,8 @@ public class AppCommentDTO {
                         lTm,
                         this.status,
                         this.writeNumber,
+                        this.allWriterNumber,
+                        this.allLoadNumber,
                         this.talkNumber,
                         this.loadNumber,
                         this.questionNumber,
@@ -261,6 +270,8 @@ public class AppCommentDTO {
                         lTm,
                         this.status,
                         this.writeNumber,
+                        this.allWriterNumber,
+                        this.allLoadNumber,
                         this.talkNumber,
                         this.loadNumber,
                         this.questionNumber,
@@ -277,6 +288,30 @@ public class AppCommentDTO {
                         dTm);
         return openEntry;
 
+    }
+
+    public int getIsLoad() {
+        return isLoad;
+    }
+
+    public void setIsLoad(int isLoad) {
+        this.isLoad = isLoad;
+    }
+
+    public int getAllWriterNumber() {
+        return allWriterNumber;
+    }
+
+    public void setAllWriterNumber(int allWriterNumber) {
+        this.allWriterNumber = allWriterNumber;
+    }
+
+    public int getAllLoadNumber() {
+        return allLoadNumber;
+    }
+
+    public void setAllLoadNumber(int allLoadNumber) {
+        this.allLoadNumber = allLoadNumber;
     }
 
     public String getComList() {

@@ -22,6 +22,8 @@ import java.util.List;
  loadTime         作业提交时间          ltm
  status           作业状态              sta  0 已发布    1 定时发布   2 暂不发布
  writeNumber      家长签字数            wnm
+ allWriterNumber  家长签字总数          awm
+ allLoadNumber    学生提交总数          alm
  talkNumber       家长讨论数            tnm
  loadNumber       学生提交数            lnm
  questionNumber   学生提问数            qnm
@@ -53,6 +55,8 @@ public class AppCommentEntry extends BaseDBObject {
             long loadTime,
             int status,
             int writeNumber,
+            int allWriterNumber,
+            int allLoadNumber,
             int talkNumber,
             int loadNumber,
             int questionNumber,
@@ -74,6 +78,8 @@ public class AppCommentEntry extends BaseDBObject {
                 .append("ltm", loadTime)
                 .append("sta", status)
                 .append("wnm", writeNumber)
+                .append("awm",allWriterNumber)
+                .append("alm",allLoadNumber)
                 .append("tnm",talkNumber)
                 .append("lnm",loadNumber)
                 .append("qnm",questionNumber)
@@ -101,6 +107,8 @@ public class AppCommentEntry extends BaseDBObject {
             long loadTime,
             int status,
             int writeNumber,
+            int allWriterNumber,
+            int allLoadNumber,
             int talkNumber,
             int loadNumber,
             int questionNumber,
@@ -123,7 +131,9 @@ public class AppCommentEntry extends BaseDBObject {
                 .append("ltm", loadTime)
                 .append("sta", status)
                 .append("wnm", writeNumber)
-                .append("tnm",talkNumber)
+                .append("awm", allWriterNumber)
+                .append("alm",allLoadNumber)
+                .append("tnm", talkNumber)
                 .append("lnm", loadNumber)
                 .append("qnm",questionNumber)
                 .append("ats", MongoUtils.fetchDBObjectList(attachmentEntries))
@@ -163,6 +173,23 @@ public class AppCommentEntry extends BaseDBObject {
 
     public void setDescription(String description){
         setSimpleValue("des",description);
+    }
+
+    public int getAllWriterNumber(){
+        return getSimpleIntegerValueDef("awm", 0);
+    }
+
+    public void setAllWriterNumber(int allWriterNumber){
+        setSimpleValue("awm",allWriterNumber);
+    }
+
+
+    public int getAllLoadNumber(){
+        return getSimpleIntegerValueDef("alm",0);
+    }
+
+    public void setAllLoadNumber(int allLoadNumber){
+        setSimpleValue("alm",allLoadNumber);
     }
 
     public int getStatus(){

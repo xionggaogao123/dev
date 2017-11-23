@@ -556,7 +556,7 @@ public class ControlPhoneController extends BaseController {
      * 孩子未登录获取默认信息
      */
     @SessionNeedless
-    @ApiOperation(value = "孩子登录获取所有信息", httpMethod = "POST", produces = "application/json")
+    @ApiOperation(value = "孩子未登录获取默认信息", httpMethod = "POST", produces = "application/json")
     @ApiResponses( value = {@ApiResponse(code = 200, message = "Successful — 请求已完成",response = String.class),
             @ApiResponse(code = 400, message = "请求中有语法问题，或不能满足请求"),
             @ApiResponse(code = 500, message = "服务器不能完成请求")})

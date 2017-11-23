@@ -310,5 +310,55 @@ public class BackStageController extends BaseController {
         }
         return respObj;
     }
+    /**
+     * 查询申请验证老师的列表
+     * @return
+     */
+    @ApiOperation(value = "通过图片", httpMethod = "POST", produces = "application/json")
+    @ApiResponses( value = {@ApiResponse(code = 200, message = "Successful — 请求已完成",response = String.class),
+            @ApiResponse(code = 400, message = "请求中有语法问题，或不能满足请求"),
+            @ApiResponse(code = 500, message = "服务器不能完成请求")})
+    @RequestMapping("/selectTeacherList")
+    @ResponseBody
+    public String selectTeacherList(@ApiParam(name = "type", required = true, value = "1未验证，2 验证通过 3 验证不通过") @RequestParam(value = "type",defaultValue = "0") int type,
+                                    @ApiParam(name = "seachId", required = true, value = "查询用户id") @RequestParam(value = "seachId",defaultValue = "") String seachId,
+                                    @ApiParam(name = "page", required = true, value = "page") @RequestParam(value = "page",defaultValue = "1") int page,
+                                    @ApiParam(name = "pageSize", required = true, value = "pageSize") @RequestParam(value = "pageSize",defaultValue = "5") int pageSize){
+        RespObj respObj = new RespObj(Constant.FAILD_CODE);
+        try{
+            Map<String,Object> result = backStageService.selectTeacherList(getUserId(),type,seachId,page,pageSize);
+            respObj.setCode(Constant.SUCCESS_CODE);
+            respObj.setMessage(result);
+        }catch (Exception e){
+            e.printStackTrace();
+            respObj.setCode(Constant.SUCCESS_CODE);
+            respObj.setMessage("通过失败");
+        }
+        return JSON.toJSONString(respObj);
+    }
 
+    /**
+     * 通过验证？取消验证
+     * @return
+     */
+    @ApiOperation(value = "通过验证？取消验证", httpMethod = "POST", produces = "application/json")
+    @ApiResponses( value = {@ApiResponse(code = 200, message = "Successful — 请求已完成",response = String.class),
+            @ApiResponse(code = 400, message = "请求中有语法问题，或不能满足请求"),
+            @ApiResponse(code = 500, message = "服务器不能完成请求")})
+    @RequestMapping("/addTeacherList")
+    @ResponseBody
+    public String addTeacherList(@ApiParam(name = "type", required = true, value = "2验证通过，3 不通过") @RequestParam(value = "type",defaultValue = "0") int type,
+                                    @ApiParam(name = "id", required = true, value = "查询用户id") @RequestParam(value = "id",defaultValue = "") String id){
+        RespObj respObj = new RespObj(Constant.FAILD_CODE);
+        try{
+            backStageService.addTeacherList(new ObjectId(id), type);
+            respObj.setCode(Constant.SUCCESS_CODE);
+            respObj.setMessage("修改成功");
+        }catch (Exception e){
+            e.printStackTrace();
+            respObj.setCode(Constant.SUCCESS_CODE);
+            respObj.setMessage("修改失败");
+        }
+        return JSON.toJSONString(respObj);
+    }
 }

@@ -356,6 +356,7 @@ public class ControlPhoneService {
             entry1.setParentId(parentId);
             entry1.setUserId(userId);
             entry1.setTime(time*60000);
+            entry1.setIsRemove(0);
             controlTimeDao.addEntry(entry1);
         }else{
             entry.setTime(time*60000);
@@ -468,7 +469,7 @@ public class ControlPhoneService {
         controlMapDao.addEntry(entry);
     }
     public static void main(String[] args){
-        ControlAppUserDTO entry = new ControlAppUserDTO();
+       /* ControlAppUserDTO entry = new ControlAppUserDTO();
         ControlAppUserDao controlMapDao =new ControlAppUserDao();//59e71f222675642a181100fc
         long current = System.currentTimeMillis();
         //获得时间批次
@@ -476,15 +477,15 @@ public class ControlPhoneService {
         for(int i = 0;i <1;i++){
             entry.setParentId("5a00253d3d4df9241620d173");
             entry.setUserId("5a0022df3d4df9241620d15d");
-          /*  entry.setUserTime(100000l);
+          *//*  entry.setUserTime(100000l);
             entry.setAppId("5a15027294b5ea47fc6da688");
-            entry.setDateTime("2017-11-22 00:00:00");*/
+            entry.setDateTime("2017-11-22 00:00:00");*//*
             //entry.set
             List<String> olist  = new ArrayList<String>();
             olist.add("5a15027294b5ea47fc6da688");
             entry.setAppIdList(olist);
             controlMapDao.addEntry(entry.buildAddEntry());
-        }
+        }*/
         int i = 1;
         System.out.println(i);
     }

@@ -1,5 +1,6 @@
 package com.fulaan.backstage.service;
 
+import com.db.backstage.TeacherApproveDao;
 import com.db.backstage.UnlawfulPictureTextDao;
 import com.db.controlphone.ControlPhoneDao;
 import com.db.controlphone.ControlSchoolTimeDao;
@@ -10,12 +11,16 @@ import com.db.fcommunity.CommunityDetailDao;
 import com.db.operation.AppCommentDao;
 import com.db.operation.AppNoticeDao;
 import com.db.operation.AppOperationDao;
+import com.db.questionbook.QuestionAdditionDao;
+import com.db.questionbook.QuestionBookDao;
 import com.db.user.UserDao;
+import com.fulaan.backstage.dto.TeacherApproveDTO;
 import com.fulaan.backstage.dto.UnlawfulPictureTextDTO;
 import com.fulaan.controlphone.dto.ControlPhoneDTO;
 import com.fulaan.controlphone.dto.ControlSchoolTimeDTO;
 import com.pojo.appnotice.AppNoticeEntry;
 import com.pojo.backstage.PictureType;
+import com.pojo.backstage.TeacherApproveEntry;
 import com.pojo.backstage.UnlawfulPictureTextEntry;
 import com.pojo.controlphone.ControlPhoneEntry;
 import com.pojo.controlphone.ControlSchoolTimeEntry;
@@ -25,6 +30,8 @@ import com.pojo.fcommunity.AttachmentEntry;
 import com.pojo.fcommunity.CommunityDetailEntry;
 import com.pojo.operation.AppCommentEntry;
 import com.pojo.operation.AppOperationEntry;
+import com.pojo.questionbook.QuestionAdditionEntry;
+import com.pojo.questionbook.QuestionBookEntry;
 import org.bson.types.ObjectId;
 import org.springframework.stereotype.Service;
 
@@ -59,6 +66,12 @@ public class BackStageService {
     private CommunityDetailDao communityDetailDao = new CommunityDetailDao();
 
     private AppOperationDao appOperationDao = new AppOperationDao();
+
+    private QuestionBookDao questionBookDao = new QuestionBookDao();
+
+    private QuestionAdditionDao questionAdditionDao = new QuestionAdditionDao();
+    
+    private TeacherApproveDao teacherApproveDao = new TeacherApproveDao();
 
     private static String imageUrl = "";
 
@@ -163,6 +176,29 @@ public class BackStageService {
             controlSchoolTimeDao.updEntry(entry);
         }
     }
+    //教师认证
+    public Map<String,Object> selectTeacherList(ObjectId userId,int type,String searchId,int page,int pageSize){
+        Map<String,Object> map = new HashMap<String, Object>();
+        List<TeacherApproveEntry> entries = teacherApproveDao.selectContentList(searchId, type, page, pageSize);
+        int count = teacherApproveDao.getNumber(searchId, type);
+        List<TeacherApproveDTO> dtos = new ArrayList<TeacherApproveDTO>();
+        if(entries.size()>0){
+            for(TeacherApproveEntry entry : entries){
+
+                dtos.add(new TeacherApproveDTO(entry));
+            }
+        }
+
+        map.put("list",dtos);
+        map.put("count",count);
+        return map;
+    }
+    public void addTeacherList(ObjectId id,int type){
+        teacherApproveDao.updateEntry(id,type);
+    }
+
+
+
 
     //添加图片显示认证
     public void addYellowPicture(ObjectId userId,String imageUrl,int ename,ObjectId contactId){
@@ -176,7 +212,7 @@ public class BackStageService {
         unlawfulPictureTextDao.addEntry(dto.buildAddEntry());
     }
 
-
+    //列表
     public Map<String,Object> selectContentList(int isCheck,String id,int page,int pageSize){
         Map<String,Object> map = new HashMap<String, Object>();
         List<UnlawfulPictureTextEntry> entries = unlawfulPictureTextDao.selectContentList(isCheck,id,page,pageSize);
@@ -189,11 +225,13 @@ public class BackStageService {
         map.put("count",count);
         return map;
     }
-
+    //通过
     public void passContentEntry(ObjectId id){
         unlawfulPictureTextDao.passContentEntry(id);
     }
 
+
+    //删除
     public void deleteContentEntry(ObjectId id){
         unlawfulPictureTextDao.deleteContentEntry(id);
         UnlawfulPictureTextEntry entry = unlawfulPictureTextDao.getEntryById(id);
@@ -267,9 +305,36 @@ public class BackStageService {
                 entry1.setFileUrl(imageUrl);
                 appOperationDao.updEntry(entry1);
             }else if(entry.getType()== PictureType.wrongImage.getType()){//错题本
+                QuestionBookEntry entry1 = questionBookDao.getEntryById(cid);
+                List<String> slist = entry1.getImageList();
+                List<String> nList = new ArrayList<String>();
+                if(slist != null && slist.size()>0){
+                    for(String str : slist){
+                        if(str!=null && str.contains(url)){
+                            nList.add(imageUrl);
+                        }else{
+                            nList.add(str);
+                        }
+                    }
+                }
+                entry1.setImageList(nList);
+                questionBookDao.updateEntry(entry1);
 
             }else if(entry.getType()== PictureType.answerImage.getType()){//错题解析
-
+                QuestionAdditionEntry entry1 = questionAdditionDao.getEntryByObjectId(cid);
+                List<String> slist = entry1.getAnswerList();
+                List<String> nList = new ArrayList<String>();
+                if(slist != null && slist.size()>0){
+                    for(String str : slist){
+                        if(str!=null && str.contains(url)){
+                            nList.add(imageUrl);
+                        }else{
+                            nList.add(str);
+                        }
+                    }
+                }
+                entry1.setAnswerList(nList);
+                questionAdditionDao.updateEntry(entry1);
             }
         }
 

@@ -48,7 +48,7 @@ public class UnlawfulPictureTextDao extends BaseDao {
         query.append("isr", Constant.ZERO);
         query.append("isc", isCheck);
         if(id != null && !id.equals("")){
-            query.append(Constant.ID,id);
+            query.append(Constant.ID,new ObjectId(id));
         }
         List<DBObject> dboList=find(MongoFacroty.getAppDB(), Constant.COLLECTION_PICTURE_TEXT, query, Constant.FIELDS,new BasicDBObject("ctm",Constant.DESC),(page - 1) * pageSize, pageSize);
         List<UnlawfulPictureTextEntry> retList =new ArrayList<UnlawfulPictureTextEntry>();

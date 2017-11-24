@@ -74,12 +74,12 @@ public class ApkUtil {
             softName = "aapt.exe";
             isOs=1;
         }
-//        else {
-            // Unix, Linux ...
-//            shellCommand[0] = "/bin/sh";
-//            shellCommand[1] = "-c";
-//            softName = "aapt";
-//        }
+        else {
+//             Unix, Linux ...
+            shellCommand[0] = "/bin/sh";
+            shellCommand[1] = "-c";
+            softName = "aapt";
+        }
     }
 
     /**
@@ -91,20 +91,30 @@ public class ApkUtil {
     public ApkInfo getApkInfo(String apkPath) throws Exception {
         String command="";
         Process process;
-        if(isOs==1) {
+        if(isOs==1){
             command = mAaptPath + softName + " d badging \"" + apkPath
                     + "\"";
-            try {
+        }else {
+            command =" /etc/profile; aapt d badging \"" + apkPath
+                    + "\"";
+        }
+
+        try {
+            if(isOs==1) {
                 process = Runtime.getRuntime().exec(
                         new String[]{shellCommand[0], shellCommand[1], command});
-            } catch (IOException e) {
-                process = null;
-                throw e;
+            }else{
+                process = Runtime.getRuntime().exec(
+                        new String[]{shellCommand[0],command});
             }
-        }else{
-            String aaptTool="export LD_LIBRARY_PATH=/opt/glibc-2.14/lib && aapt";
-            process = mBuilder.command(aaptTool, "d", "badging", apkPath).start();
+        } catch (IOException e) {
+            process = null;
+            throw e;
         }
+
+//            String aaptTool="export LD_LIBRARY_PATH=/opt/glibc-2.14/lib && aapt";
+//            process = mBuilder.command(aaptTool, "d", "badging", apkPath).start();
+
 //        Process process = mBuilder.command(mAaptPath, "d", "badging", apkPath)
 //                .start();
         ApkInfo apkInfo=null;

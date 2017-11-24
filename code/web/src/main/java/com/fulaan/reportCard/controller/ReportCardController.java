@@ -409,6 +409,45 @@ public class ReportCardController extends BaseController{
         }
     }
 
+    @ApiOperation(value = "查看人员名单", httpMethod = "GET", produces = "application/json")
+    @ApiResponses( value = {@ApiResponse(code = 200, message = "导入模板已完成",response = String.class),
+            @ApiResponse(code = 400, message = "请求中有语法问题，或不能满足请求"),
+            @ApiResponse(code = 500, message = "服务器不能完成请求")})
+    @RequestMapping("/editVirtualUserItem")
+    @ResponseBody
+    public RespObj editVirtualUserItem(@ObjectIdType ObjectId itemId,
+                                       String userNumber,
+                                       String userName){
+        RespObj respObj=new RespObj(Constant.SUCCESS_CODE);
+        reportCardService.editVirtualUserItem(itemId,userName,userNumber);
+        respObj.setMessage("删除人员成功");
+        return respObj;
+    }
+
+    @RequestMapping("/searchUserList/{communityId}")
+    @ResponseBody
+    public RespObj searchUserList(@PathVariable @ObjectIdType ObjectId communityId){
+        RespObj respObj=new RespObj(Constant.SUCCESS_CODE);
+        List<VirtualUserDTO> dtos=reportCardService.searchUserList(communityId);
+        respObj.setMessage(dtos);
+        return respObj;
+    }
+
+
+    @ApiOperation(value = "获取群组名单", httpMethod = "GET", produces = "application/json")
+    @ApiResponses( value = {@ApiResponse(code = 200, message = "导入模板已完成",response = String.class),
+            @ApiResponse(code = 400, message = "请求中有语法问题，或不能满足请求"),
+            @ApiResponse(code = 500, message = "服务器不能完成请求")})
+    @RequestMapping("/getRoleCommunities")
+    @ResponseBody
+    public RespObj getRoleCommunities(){
+        RespObj respObj=new RespObj(Constant.SUCCESS_CODE);
+        List<VirtualCommunityUserDTO> dtos=reportCardService.getRoleCommunities(getUserId());
+        respObj.setMessage(dtos);
+        return respObj;
+    }
+
+
 
     @ApiOperation(value = "导入模板", httpMethod = "GET", produces = "application/json")
     @ApiResponses( value = {@ApiResponse(code = 200, message = "导入模板已完成",response = String.class),
@@ -436,6 +475,34 @@ public class ReportCardController extends BaseController{
         }
         return respObj;
     }
+
+    @ApiOperation(value = "删除人员,也就是清空人员", httpMethod = "GET", produces = "application/json")
+    @ApiResponses( value = {@ApiResponse(code = 200, message = "导入模板已完成",response = String.class),
+            @ApiResponse(code = 400, message = "请求中有语法问题，或不能满足请求"),
+            @ApiResponse(code = 500, message = "服务器不能完成请求")})
+    @RequestMapping("/removeVirtualUserList/{communityId}")
+    @ResponseBody
+    public RespObj removeVirtualUserList(@PathVariable @ObjectIdType ObjectId communityId){
+        RespObj respObj=new RespObj(Constant.SUCCESS_CODE);
+        reportCardService.removeVirtualUserList(communityId);
+        respObj.setMessage("删除名单成功!");
+        return respObj;
+    }
+
+
+    @ApiOperation(value = "删除虚拟用户", httpMethod = "GET", produces = "application/json")
+    @ApiResponses( value = {@ApiResponse(code = 200, message = "导入模板已完成",response = String.class),
+            @ApiResponse(code = 400, message = "请求中有语法问题，或不能满足请求"),
+            @ApiResponse(code = 500, message = "服务器不能完成请求")})
+    @RequestMapping("/removeItemId/{itemId}")
+    @ResponseBody
+    public RespObj removeItemId(@PathVariable @ObjectIdType ObjectId itemId){
+        RespObj respObj=new RespObj(Constant.SUCCESS_CODE);
+        reportCardService.removeItemId(itemId);
+        respObj.setMessage("删除名单成功!");
+        return respObj;
+    }
+
 
 
     @ApiOperation(value = "导出模板", httpMethod = "GET", produces = "application/json")

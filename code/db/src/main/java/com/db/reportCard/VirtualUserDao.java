@@ -25,6 +25,22 @@ public class VirtualUserDao extends BaseDao{
         save(MongoFacroty.getAppDB(), Constant.COLLECTION_REPORT_CARD_VIRTUAL_USER, MongoUtils.fetchDBObjectList(entries));
     }
 
+    public void editVirtualUserItem(ObjectId itemId,
+                                    String userName,
+                                    String userNumber){
+        BasicDBObject query=new BasicDBObject(Constant.ID,itemId);
+        BasicDBObject updateValue=new BasicDBObject(Constant.MONGO_SET,
+                new BasicDBObject().append("unm",userName)
+                        .append("un",userNumber));
+        update(MongoFacroty.getAppDB(), Constant.COLLECTION_REPORT_CARD_VIRTUAL_USER,query,updateValue);
+    }
+
+    public void removeItemById(ObjectId itemId){
+        BasicDBObject query=new BasicDBObject(Constant.ID,itemId);
+        BasicDBObject updateValue=new BasicDBObject(Constant.MONGO_SET,new BasicDBObject("ir",Constant.ONE));
+        update(MongoFacroty.getAppDB(), Constant.COLLECTION_REPORT_CARD_VIRTUAL_USER,query,updateValue);
+    }
+
     public void removeOldData(ObjectId communityId){
         BasicDBObject query=new BasicDBObject()
                 .append("cid",communityId)

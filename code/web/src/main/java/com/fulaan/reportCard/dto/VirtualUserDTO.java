@@ -12,6 +12,7 @@ public class VirtualUserDTO {
     private String userNumber;
     private String userId;
     private String userName;
+    private String id;
 
     public VirtualUserDTO(){
 
@@ -28,6 +29,15 @@ public class VirtualUserDTO {
         this.userNumber=entry.getUserNumber().toString();
         this.userId=entry.getUserId().toString();
         this.userName=entry.getUserName();
+        this.id=entry.getID().toString();
+    }
+
+    public String getId() {
+        return id;
+    }
+
+    public void setId(String id) {
+        this.id = id;
     }
 
     public String getCommunityId() {

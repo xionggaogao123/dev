@@ -1,6 +1,7 @@
 package com.fulaan.reportCard.service;
 
 import com.db.fcommunity.CommunityDao;
+import com.db.fcommunity.MemberDao;
 import com.db.fcommunity.NewVersionCommunityBindDao;
 import com.db.indexPage.WebHomePageDao;
 import com.db.reportCard.*;
@@ -62,6 +63,10 @@ public class ReportCardService {
     private SubjectClassDao subjectClassDao=new SubjectClassDao();
 
     private WebHomePageDao webHomePageDao=new WebHomePageDao();
+
+    private MemberDao memberDao =new MemberDao();
+
+    private VirtualCommunityDao virtualCommunityDao =new VirtualCommunityDao();
 
 
 
@@ -795,6 +800,53 @@ public class ReportCardService {
         return examTypeDTOs;
     }
 
+    public List<VirtualUserDTO> searchUserList(ObjectId communityId){
+        List<VirtualUserDTO>  virtualUserDTOs=new ArrayList<VirtualUserDTO>();
+        List<VirtualUserEntry> virtualUserEntries=virtualUserDao.getAllVirtualUsers(communityId);
+        for(VirtualUserEntry virtualUserEntry:virtualUserEntries){
+            VirtualUserDTO dto=new VirtualUserDTO(virtualUserEntry);
+            virtualUserDTOs.add(dto);
+        }
+        return virtualUserDTOs;
+    }
+
+    public List<VirtualCommunityUserDTO> getRoleCommunities(ObjectId userId){
+        List<VirtualCommunityUserDTO> virtualCommunityUserDTOs
+                =new ArrayList<VirtualCommunityUserDTO>();
+        List<ObjectId> groupIds=memberDao.getManagerGroupIdsByUserId(userId);
+        List<CommunityEntry> entries=communityDao.getCommunityEntriesByGroupIds(groupIds);
+        List<ObjectId> communityIds=new ArrayList<ObjectId>();
+        for(CommunityEntry communityEntry:entries){
+            communityIds.add(communityEntry.getID());
+        }
+        Map<ObjectId,VirtualCommunityEntry> map=virtualCommunityDao.getVirtualMap(communityIds);
+        for(CommunityEntry communityEntry:entries){
+            VirtualCommunityUserDTO userDTO=new VirtualCommunityUserDTO();
+            userDTO.setCommunityId(communityEntry.getID().toString());
+            userDTO.setCommunityName(communityEntry.getCommunityName());
+            userDTO.setUserCount(Constant.ZERO);
+            if(null!=map.get(communityEntry.getID())){
+                userDTO.setUserCount(map.get(communityEntry.getID()).getUserCount());
+            }
+            virtualCommunityUserDTOs.add(userDTO);
+        }
+        return virtualCommunityUserDTOs;
+    }
+
+    public void removeVirtualUserList(ObjectId communityId){
+        virtualUserDao.removeOldData(communityId);
+    }
+
+    public void removeItemId(ObjectId itemId){
+        virtualUserDao.removeItemById(itemId);
+    }
+
+    public void editVirtualUserItem(ObjectId itemId,
+                                    String userName,
+                                    String userNumber){
+        virtualUserDao.editVirtualUserItem(itemId,userName,userNumber);
+    }
+
     public void importUserTemplate(InputStream inputStream,String communityId)throws Exception{
         HSSFWorkbook workbook = null;
         workbook = new HSSFWorkbook(inputStream);
@@ -812,6 +864,7 @@ public class ReportCardService {
                 virtualUserDTOs.add(v);
             }
         }
+        dealData(virtualUserDTOs);
     }
 
     public void dealData(List<VirtualUserDTO> virtualUserDTOs){

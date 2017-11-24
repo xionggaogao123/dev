@@ -795,6 +795,10 @@ public class ReportCardService {
         return examTypeDTOs;
     }
 
+    public void importUserTemplate(InputStream inputStream,String communityId)throws Exception{
+
+    }
+
     public void importUserControl(InputStream inputStream)throws Exception{
         HSSFWorkbook workbook = null;
         workbook = new HSSFWorkbook(inputStream);
@@ -842,6 +846,22 @@ public class ReportCardService {
                 virtualUserDao.saveEntries(entries);
             }
         }
+    }
+
+    public void exportUserTemplate(HttpServletResponse response){
+        String sheetName="学生录入模板";
+        HSSFWorkbook wb=new HSSFWorkbook();
+        HSSFSheet sheet = wb.createSheet(sheetName);
+        HSSFRow row = sheet.createRow(0);
+
+        HSSFCell cell = row.createCell(0);
+        cell.setCellValue("用户名");
+
+        cell = row.createCell(1);
+        cell.setCellValue("用户学号");
+
+        String fileName = sheetName+ ".xls";
+        HSSFUtils.exportExcel(response, wb, fileName);
     }
 
     public void exportUserControl(ObjectId communityId, HttpServletResponse response){

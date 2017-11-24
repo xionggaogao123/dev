@@ -102,7 +102,7 @@ public class ApkUtil {
                 throw e;
             }
         }else{
-            String aaptTool="/etc/profile; aapt";
+            String aaptTool="export LD_LIBRARY_PATH=/opt/glibc-2.14/lib && aapt";
             process = mBuilder.command(aaptTool, "d", "badging", apkPath).start();
         }
 //        Process process = mBuilder.command(mAaptPath, "d", "badging", apkPath)

@@ -4,6 +4,7 @@ import com.mongodb.BasicDBObject;
 import com.mongodb.DB;
 import com.mongodb.DBObject;
 import com.pojo.base.BaseDBObject;
+import com.sys.constants.Constant;
 import org.bson.types.ObjectId;
 
 /**
@@ -24,6 +25,7 @@ public class VirtualUserEntry extends BaseDBObject{
                 .append("cid",communityId)
                 .append("unm",userName)
                 .append("uid",userId)
+                .append("ir", Constant.ZERO)
                 .append("un",userNumber);
         setBaseEntry(basicDBObject);
     }

@@ -886,6 +886,8 @@ public class Constant {
 
     public static final String COLLECTION_REPORT_CARD_VIRTUAL_USER="report_card_virtual_user";
 
+    public static final String COLLECTION_REPORT_CARD_VIRTUAL_COMMUNITY="report_card_virtual_community";
+
     public static final String COLLECTION_WEB_HOME_PAGE_RECORD="web_home_page_record";
     /**------------------------成绩单----------------------**/
 

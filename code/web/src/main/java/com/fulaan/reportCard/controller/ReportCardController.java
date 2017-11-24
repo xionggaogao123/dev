@@ -19,6 +19,7 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.multipart.MultipartRequest;
 
+import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -398,7 +399,47 @@ public class ReportCardController extends BaseController{
     }
 
     @ApiOperation(value = "导出模板", httpMethod = "GET", produces = "application/json")
-    @RequestMapping("/exportUserControl/{communityId}")
+    @RequestMapping("/exportUserTemplate")
+    @ResponseBody
+    public void exportUserTemplate(HttpServletResponse response){
+        try {
+            reportCardService.exportUserTemplate(response);
+        }catch (Exception e){
+            e.printStackTrace();
+        }
+    }
+
+
+    @ApiOperation(value = "导入模板", httpMethod = "GET", produces = "application/json")
+    @ApiResponses( value = {@ApiResponse(code = 200, message = "导入模板已完成",response = String.class),
+            @ApiResponse(code = 400, message = "请求中有语法问题，或不能满足请求"),
+            @ApiResponse(code = 500, message = "服务器不能完成请求")})
+    @RequestMapping("/importUserTemplate")
+    @ResponseBody
+    public RespObj importUserTemplate(HttpServletRequest request)throws Exception{
+        RespObj respObj=new RespObj(Constant.FAILD_CODE);
+        String communityId=request.getParameter("communityId");
+        MultipartRequest multipartRequest=(MultipartRequest)request;
+        try {
+            MultiValueMap<String, MultipartFile> fileMap = multipartRequest.getMultiFileMap();
+            for (List<MultipartFile> multipartFiles : fileMap.values()) {
+                for(MultipartFile file:multipartFiles) {
+                    System.out.println("----" + file.getOriginalFilename());
+                    reportCardService.importUserTemplate(file.getInputStream(),communityId);
+                }
+            }
+            respObj.setCode(Constant.SUCCESS_CODE);
+            respObj.setMessage("导入模板成功");
+        }catch (Exception e){
+            e.printStackTrace();
+            respObj.setErrorMessage(e.getMessage());
+        }
+        return respObj;
+    }
+
+
+    @ApiOperation(value = "导出模板", httpMethod = "GET", produces = "application/json")
+    @RequestMapping("/exportUserControl")
     @ResponseBody
     public void exportUserControl(@PathVariable @ObjectIdType ObjectId communityId,
                                HttpServletResponse response){

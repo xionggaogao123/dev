@@ -27,19 +27,16 @@ public class VirtualUserDao extends BaseDao{
 
     public void removeOldData(ObjectId communityId){
         BasicDBObject query=new BasicDBObject()
-                .append("cid",communityId);
-        remove(MongoFacroty.getAppDB(), Constant.COLLECTION_REPORT_CARD_VIRTUAL_USER,query);
-    }
-
-    public boolean judgeCommunityExport(ObjectId communityId){
-        BasicDBObject query=new BasicDBObject()
-                .append("cid",communityId);
-        return count(MongoFacroty.getAppDB(), Constant.COLLECTION_REPORT_CARD_VIRTUAL_USER,query)>0;
+                .append("cid",communityId)
+                .append("ir",Constant.ZERO);
+        BasicDBObject updateValue=new BasicDBObject(Constant.MONGO_SET,new BasicDBObject("ir",Constant.ONE));
+        update(MongoFacroty.getAppDB(), Constant.COLLECTION_REPORT_CARD_VIRTUAL_USER,query,updateValue);
     }
 
     public List<VirtualUserEntry> getAllVirtualUsers(ObjectId communityId){
         List<VirtualUserEntry> entries=new ArrayList<VirtualUserEntry>();
         BasicDBObject query=new BasicDBObject()
+                .append("ir",Constant.ZERO)
                 .append("cid",communityId);
         List<DBObject> dbObjectList=find(MongoFacroty.getAppDB(), Constant.COLLECTION_REPORT_CARD_VIRTUAL_USER,query,Constant.FIELDS);
         if(null!=dbObjectList&&!dbObjectList.isEmpty()){

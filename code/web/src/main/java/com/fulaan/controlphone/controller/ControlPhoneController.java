@@ -299,7 +299,11 @@ public class ControlPhoneController extends BaseController {
         try {
             respObj.setCode(Constant.SUCCESS_CODE);
             controlPhoneService.addParentAppList(getUserId(),new ObjectId(sonId),new ObjectId(appId),type);
-            respObj.setMessage("家长推送应用成功");
+            if(type==1){
+                respObj.setMessage("卸载成功");
+            }else{
+                respObj.setMessage("推送成功");
+            }
         } catch (Exception e) {
             e.printStackTrace();
             respObj.setCode(Constant.FAILD_CODE);

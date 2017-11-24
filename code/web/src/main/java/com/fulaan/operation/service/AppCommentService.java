@@ -21,6 +21,7 @@ import com.fulaan.operation.dto.AppCommentDTO;
 import com.fulaan.operation.dto.AppOperationDTO;
 import com.fulaan.operation.dto.AppRecordDTO;
 import com.fulaan.operation.dto.AppRecordResultDTO;
+import com.fulaan.picturetext.service.CheckTextAndPicture;
 import com.fulaan.pojo.User;
 import com.fulaan.service.CommunityService;
 import com.fulaan.user.service.UserService;
@@ -84,6 +85,13 @@ public class AppCommentService {
      * @return
      */
     public String addCommentEntry(AppCommentDTO dto,String comList)throws Exception{
+        //文本检测
+        /*Map<String,Object> flag = CheckTextAndPicture.checkText(dto.getDescription()+"345"+dto.getTitle());
+        String f = (String)flag.get("bl");
+        if(f.equals("1")){
+            return (String)flag.get("text");
+        }*/
+
         Calendar cal = Calendar.getInstance();
         int month = cal.get(Calendar.MONTH)+ 1;
         dto.setMonth(month);
@@ -123,6 +131,9 @@ public class AppCommentService {
             List<String> objectIdList3 = newVersionBindService.getStudentIdListByCommunityId(new ObjectId(dto3.getId()));
             en.setAllLoadNumber(objectIdList3.size());
             String oid = appCommentDao.addEntry(en);
+            //图片检测
+
+
             List<ObjectId> objectIdList =new ArrayList<ObjectId>();
 
             //添加临时记录表//暂时不显示
@@ -736,12 +747,14 @@ public static void main(String[] args){
         return dtos;
     }
 
-    public List<AppCommentDTO> getPageStuLit(long dateTime,ObjectId studentId,int page,int pageSize){
+    public Map<String,Object> getPageStuLit(long dateTime,ObjectId studentId,int page,int pageSize){
+        Map<String,Object> map2 = new HashMap<String, Object>();
         List<AppCommentDTO> dtos = new ArrayList<AppCommentDTO>();
         List<String> olist = new ArrayList<String>();
         List<String> uids = new ArrayList<String>();
         List<ObjectId> obList = newVersionBindService.getCommunityIdsByUserId(studentId);
         List<AppCommentEntry> entries2 = appCommentDao.selectPageDateList2(obList, studentId,page,pageSize);
+        int count = appCommentDao.getPageNumber(obList, studentId);
         //UserDetailInfoDTO studtos = userService.getUserInfoById(studentId.toString());
         uids.add(studentId.toString());
         if(entries2.size()>0){
@@ -774,9 +787,12 @@ public static void main(String[] args){
                 dto5.setSendUser(map.get(studentId.toString()).getImgUrl());
             }
         }
+
+        map2.put("list",dtos);
+        map2.put("count",count);
         //清除红点
         redDotService.cleanResult(studentId,ApplyTypeEn.operation.getType(),dateTime);
-        return dtos;
+        return map2;
     }
 
     /**

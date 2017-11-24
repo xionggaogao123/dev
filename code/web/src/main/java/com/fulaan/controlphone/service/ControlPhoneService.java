@@ -615,7 +615,8 @@ public class ControlPhoneService {
         for(AppDetailEntry detailEntry : detailEntries){
             detailDTOs2.add(new AppDetailDTO(detailEntry));
         }
-        map.put("app",detailDTOs2);
+        map.put("blackApp",detailDTOs2);
+        map.put("thirdApp",detailDTOs);
         //可用电话记录
         List<ControlPhoneDTO> dtos = new ArrayList<ControlPhoneDTO>();
         List<ControlPhoneEntry> entries = controlPhoneDao.getEntryListByType();
@@ -674,19 +675,41 @@ public class ControlPhoneService {
         //获得各个社区的推送应用记录
         List<ControlAppEntry> controlAppEntries = controlAppDao.getEntryListByCommunityId(obList);
         List<ObjectId> objectIdList = new ArrayList<ObjectId>();
+        //社区推荐
         if(controlAppEntries.size()>0){
             for(ControlAppEntry controlAppEntry : controlAppEntries){
                 objectIdList.addAll(controlAppEntry.getAppIdList());
             }
         }
-        List<AppDetailEntry> entries2 = appDetailDao.getEntriesByIds(objectIdList);
-        List<AppDetailEntry> entries3 =  appDetailDao.getAllByCondition();
-        entries2.addAll(entries3);
+        //家长推荐
+        if(controlTimeEntry != null){
+            ObjectId parentId = controlTimeEntry.getParentId();
+            ControlAppUserEntry controlAppUserEntry = controlAppUserDao.getEntry(parentId,sonId);
+            if(controlAppUserEntry!= null){
+                objectIdList.addAll(controlAppUserEntry.getAppIdList());
+            }
+        }
+        Set<ObjectId> set= new HashSet<ObjectId>();
+        set.addAll(objectIdList);
+        List<ObjectId> objectIdList1 =new ArrayList<ObjectId>();
+        objectIdList1.addAll(set);
+        List<AppDetailEntry> entries2 = appDetailDao.getEntriesByIds(objectIdList1);
+        /*List<AppDetailEntry> entries3 =  appDetailDao.getAllByCondition();
+        entries2.addAll(entries3);*/
         List<AppDetailDTO> detailDTOs = new ArrayList<AppDetailDTO>();                                                              
+        List<AppDetailDTO> detailDTOs2 = new ArrayList<AppDetailDTO>();
         for(AppDetailEntry detailEntry : entries2){
             detailDTOs.add(new AppDetailDTO(detailEntry));
         }
-        map.put("app",detailDTOs);
+     /*   map.put("blackApp",detailDTOs2);
+        map.put("thirdApp",detailDTOs);*/
+        map.put("thirdApp",detailDTOs);
+        //黑名单应用
+        List<AppDetailEntry> detailEntries =  appDetailDao.getSimpleAppEntry();
+        for(AppDetailEntry detailEntry : detailEntries){
+            detailDTOs2.add(new AppDetailDTO(detailEntry));
+        }
+        map.put("blackApp",detailDTOs2);
         //可用电话记录
         List<ControlPhoneDTO> dtos = new ArrayList<ControlPhoneDTO>();
         List<ControlPhoneEntry> entries = controlPhoneDao.getEntryListByparentIdAndUserId2(sonId);

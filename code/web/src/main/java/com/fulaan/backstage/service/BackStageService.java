@@ -77,12 +77,19 @@ public class BackStageService {
 
 
     public static void main(String[] args){
-        ControlSetBackDao controlSetBackDao = new ControlSetBackDao();
+       /* ControlSetBackDao controlSetBackDao = new ControlSetBackDao();
         ControlSetBackEntry entry1 = new ControlSetBackEntry();
         entry1.setType(1);
         entry1.setBackTime(15);
         entry1.setAppTime(15);
-        controlSetBackDao.addEntry(entry1);
+        controlSetBackDao.addEntry(entry1);*/
+        TeacherApproveDTO dto = new TeacherApproveDTO();
+        dto.setUserId("5a0021f03d4df9241620d155");
+        dto.setName("小佳和晓梅的爸爸");
+        dto.setType(1);
+        dto.setApplyTime("2011-11-23 17:04:00");
+        TeacherApproveDao teacherApproveDao1 = new TeacherApproveDao();
+        teacherApproveDao1.addEntry(dto.buildAddEntry());
     }
 
 
@@ -197,6 +204,9 @@ public class BackStageService {
         teacherApproveDao.updateEntry(id,type);
     }
 
+    /*public static void main(String[] args){
+
+    }*/
 
 
 

@@ -796,7 +796,53 @@ public class ReportCardService {
     }
 
     public void importUserTemplate(InputStream inputStream,String communityId)throws Exception{
+        HSSFWorkbook workbook = null;
+        workbook = new HSSFWorkbook(inputStream);
+        HSSFSheet sheet = workbook.getSheet(workbook.getSheetName(0));
+        int rowNum = sheet.getLastRowNum();
+        List<VirtualUserDTO> virtualUserDTOs=new ArrayList<VirtualUserDTO>();
+        for(int j = 1; j <= rowNum; j++){
+            String userName=sheet.getRow(j).getCell(0).getStringCellValue();
+            String userNumber=sheet.getRow(j).getCell(1).getStringCellValue();
+            if(StringUtils.isNotEmpty(userName)) {
+                VirtualUserDTO v = new VirtualUserDTO();
+                v.setCommunityId(communityId);
+                v.setUserNumber(userNumber);
+                v.setUserName(userName);
+                virtualUserDTOs.add(v);
+            }
+        }
+    }
 
+    public void dealData(List<VirtualUserDTO> virtualUserDTOs){
+        if(virtualUserDTOs.size()>0){
+            ObjectId communityId=new ObjectId(virtualUserDTOs.get(0).getCommunityId());
+            List<NewVersionCommunityBindEntry>
+                    bindEntries=newVersionCommunityBindDao.getStudentIdListByCommunityId(communityId);
+            Map<String,ObjectId> userIds=new HashMap<String, ObjectId>();
+            for(NewVersionCommunityBindEntry bindEntry:bindEntries){
+                if(StringUtils.isNotEmpty(bindEntry.getThirdName())) {
+                    userIds.put(bindEntry.getThirdName(), bindEntry.getUserId());
+                }
+            }
+            List<VirtualUserEntry> entries=new ArrayList<VirtualUserEntry>();
+            for(VirtualUserDTO virtualUserDTO:virtualUserDTOs){
+                String userName=virtualUserDTO.getUserName();
+                if(null!=userIds.get(userName)){
+                    VirtualUserEntry userEntry=new VirtualUserEntry(communityId,virtualUserDTO.getUserNumber(),
+                            userIds.get(userName),virtualUserDTO.getUserName());
+                    entries.add(userEntry);
+                }else{
+                    VirtualUserEntry userEntry=new VirtualUserEntry(communityId,virtualUserDTO.getUserNumber(),
+                            new ObjectId(),virtualUserDTO.getUserName());
+                    entries.add(userEntry);
+                }
+            }
+            if(entries.size()>0){
+                virtualUserDao.removeOldData(communityId);
+                virtualUserDao.saveEntries(entries);
+            }
+        }
     }
 
     public void importUserControl(InputStream inputStream)throws Exception{
@@ -818,34 +864,7 @@ public class ReportCardService {
                 virtualUserDTOs.add(v);
             }
         }
-        if(virtualUserDTOs.size()>0){
-            ObjectId communityId=new ObjectId(virtualUserDTOs.get(0).getCommunityId());
-            List<NewVersionCommunityBindEntry>
-                    bindEntries=newVersionCommunityBindDao.getStudentIdListByCommunityId(communityId);
-            Map<String,ObjectId> userIds=new HashMap<String, ObjectId>();
-            for(NewVersionCommunityBindEntry bindEntry:bindEntries){
-                if(StringUtils.isNotEmpty(bindEntry.getThirdName())) {
-                    userIds.put(bindEntry.getThirdName(), bindEntry.getUserId());
-                }
-            }
-            List<VirtualUserEntry> entries=new ArrayList<VirtualUserEntry>();
-            for(VirtualUserDTO virtualUserDTO:virtualUserDTOs){
-                 String userName=virtualUserDTO.getUserName();
-                 if(null!=userIds.get(userName)){
-                     VirtualUserEntry userEntry=new VirtualUserEntry(communityId,virtualUserDTO.getUserNumber(),
-                             userIds.get(userName),virtualUserDTO.getUserName());
-                     entries.add(userEntry);
-                 }else{
-                     VirtualUserEntry userEntry=new VirtualUserEntry(communityId,virtualUserDTO.getUserNumber(),
-                            new ObjectId(),virtualUserDTO.getUserName());
-                     entries.add(userEntry);
-                 }
-            }
-            if(entries.size()>0){
-                virtualUserDao.removeOldData(communityId);
-                virtualUserDao.saveEntries(entries);
-            }
-        }
+        dealData(virtualUserDTOs);
     }
 
     public void exportUserTemplate(HttpServletResponse response){

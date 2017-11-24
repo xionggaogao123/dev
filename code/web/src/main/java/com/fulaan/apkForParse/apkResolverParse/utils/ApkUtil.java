@@ -105,8 +105,12 @@ public class ApkUtil {
                 process = Runtime.getRuntime().exec(
                         new String[]{shellCommand[0], shellCommand[1], command});
             }else{
-                String aaptTool="export LD_LIBRARY_PATH=/opt/glibc-2.14/lib && aapt";
-                process = mBuilder.command(aaptTool, "d", "badging", apkPath).start();
+//                String aaptTool="export LD_LIBRARY_PATH=/opt/glibc-2.14/lib && aapt";
+                process = mBuilder.command(softName, "d", "badging", apkPath).start();
+//                command = softName + " d badging \"" + apkPath
+//                        + "\"";
+//                process = Runtime.getRuntime().exec(
+//                        new String[]{shellCommand[0], shellCommand[1], command});
 //                process = Runtime.getRuntime().exec(
 //                        new String[]{shellCommand[0],command});
             }

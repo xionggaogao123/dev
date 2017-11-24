@@ -30,28 +30,28 @@ import java.util.Map;
  * Created by scott on 2017/9/30.
  */
 @Controller
-@RequestMapping(value="/web/reportCard")
+@RequestMapping(value = "/web/reportCard")
 @Api(value = "成绩单的所有接口")
-public class ReportCardController extends BaseController{
+public class ReportCardController extends BaseController {
 
     @Autowired
     private ReportCardService reportCardService;
 
 
     @ApiOperation(value = "保存考试的信息", httpMethod = "POST", produces = "application/json")
-    @ApiResponses( value = {@ApiResponse(code = 200, message = "保存考试信息已完成",response = String.class),
+    @ApiResponses(value = {@ApiResponse(code = 200, message = "保存考试信息已完成", response = String.class),
             @ApiResponse(code = 400, message = "请求中有语法问题，或不能满足请求"),
             @ApiResponse(code = 500, message = "服务器不能完成请求")})
     @RequestMapping("/saveGroupExamDetail")
     @ResponseBody
-    public RespObj saveGroupExamDetail(@RequestBody ExamGroupDTO examGroupDTO){
-        RespObj respObj=new RespObj(Constant.FAILD_CODE);
-        try{
-            GroupExamDetailDTO groupExamDetailDTO=examGroupDTO.buildDTO();
-            String result = reportCardService.saveGroupExamDetail(groupExamDetailDTO,getUserId());
+    public RespObj saveGroupExamDetail(@RequestBody ExamGroupDTO examGroupDTO) {
+        RespObj respObj = new RespObj(Constant.FAILD_CODE);
+        try {
+            GroupExamDetailDTO groupExamDetailDTO = examGroupDTO.buildDTO();
+            String result = reportCardService.saveGroupExamDetail(groupExamDetailDTO, getUserId());
             respObj.setCode(Constant.SUCCESS_CODE);
             respObj.setMessage(result);
-        }catch (Exception e){
+        } catch (Exception e) {
             e.printStackTrace();
             respObj.setErrorMessage(e.getMessage());
         }
@@ -59,32 +59,32 @@ public class ReportCardController extends BaseController{
     }
 
     @ApiOperation(value = "获取老师发送的成绩单列表", httpMethod = "GET", produces = "application/json")
-    @ApiResponses( value = {@ApiResponse(code = 200, message = "保存考试信息已完成",response = String.class),
+    @ApiResponses(value = {@ApiResponse(code = 200, message = "保存考试信息已完成", response = String.class),
             @ApiResponse(code = 400, message = "请求中有语法问题，或不能满足请求"),
             @ApiResponse(code = 500, message = "服务器不能完成请求")})
     @RequestMapping("/getMySendGroupExam")
     @ResponseBody
     public RespObj getMySendGroupExam(
-            @RequestParam(required = false, defaultValue = "")String subjectId,
-            @RequestParam(required = false, defaultValue = "")String examType,
-            @RequestParam(required = false, defaultValue = "-1")int status,
-            @RequestParam(required = false, defaultValue = "1")int page,
-            @RequestParam(required = false, defaultValue = "10")int pageSize
-    ){
-        RespObj respObj=new RespObj(Constant.FAILD_CODE);
-        try{
-            List<GroupExamDetailDTO> groupExamDetailDTOs=reportCardService.getMySendGroupExamDetailDTOs(
-                   subjectId,examType,status,getUserId(),page,pageSize
+            @RequestParam(required = false, defaultValue = "") String subjectId,
+            @RequestParam(required = false, defaultValue = "") String examType,
+            @RequestParam(required = false, defaultValue = "-1") int status,
+            @RequestParam(required = false, defaultValue = "1") int page,
+            @RequestParam(required = false, defaultValue = "10") int pageSize
+    ) {
+        RespObj respObj = new RespObj(Constant.FAILD_CODE);
+        try {
+            List<GroupExamDetailDTO> groupExamDetailDTOs = reportCardService.getMySendGroupExamDetailDTOs(
+                    subjectId, examType, status, getUserId(), page, pageSize
             );
-            int count=reportCardService.countMySendGroupExamDetailDTOs(subjectId,examType,status,getUserId());
-            Map<String,Object> retMap=new HashMap<String,Object>();
-            retMap.put("list",groupExamDetailDTOs);
-            retMap.put("count",count);
-            retMap.put("page",page);
-            retMap.put("pageSize",pageSize);
+            int count = reportCardService.countMySendGroupExamDetailDTOs(subjectId, examType, status, getUserId());
+            Map<String, Object> retMap = new HashMap<String, Object>();
+            retMap.put("list", groupExamDetailDTOs);
+            retMap.put("count", count);
+            retMap.put("page", page);
+            retMap.put("pageSize", pageSize);
             respObj.setMessage(retMap);
             respObj.setCode(Constant.SUCCESS_CODE);
-        }catch (Exception e){
+        } catch (Exception e) {
             e.printStackTrace();
             respObj.setErrorMessage(e.getMessage());
         }
@@ -92,34 +92,33 @@ public class ReportCardController extends BaseController{
     }
 
 
-
     @ApiOperation(value = "获取学生接收的成绩单", httpMethod = "GET", produces = "application/json")
-    @ApiResponses( value = {@ApiResponse(code = 200, message = "保存考试信息已完成",response = String.class),
+    @ApiResponses(value = {@ApiResponse(code = 200, message = "保存考试信息已完成", response = String.class),
             @ApiResponse(code = 400, message = "请求中有语法问题，或不能满足请求"),
             @ApiResponse(code = 500, message = "服务器不能完成请求")})
     @RequestMapping("/getStudentReceiveExams")
     @ResponseBody
     public RespObj getStudentReceiveExams(
-            @RequestParam(required = false, defaultValue = "")String subjectId,
-            @RequestParam(required = false, defaultValue = "")String examType,
-            @RequestParam(required = false, defaultValue = "-1")int status,
-            @RequestParam(required = false, defaultValue = "1")int page,
-            @RequestParam(required = false, defaultValue = "10")int pageSize
-    ){
-        RespObj respObj=new RespObj(Constant.FAILD_CODE);
-        try{
-            List<GroupExamDetailDTO> groupExamDetailDTOs=reportCardService.getReceiveExams(
-                    subjectId,examType,status,getUserId(),page,pageSize
+            @RequestParam(required = false, defaultValue = "") String subjectId,
+            @RequestParam(required = false, defaultValue = "") String examType,
+            @RequestParam(required = false, defaultValue = "-1") int status,
+            @RequestParam(required = false, defaultValue = "1") int page,
+            @RequestParam(required = false, defaultValue = "10") int pageSize
+    ) {
+        RespObj respObj = new RespObj(Constant.FAILD_CODE);
+        try {
+            List<GroupExamDetailDTO> groupExamDetailDTOs = reportCardService.getReceiveExams(
+                    subjectId, examType, status, getUserId(), page, pageSize
             );
-            int count=reportCardService.countReceiveExams(subjectId,examType,status,getUserId());
-            Map<String,Object> retMap=new HashMap<String,Object>();
-            retMap.put("list",groupExamDetailDTOs);
-            retMap.put("count",count);
-            retMap.put("page",page);
-            retMap.put("pageSize",pageSize);
+            int count = reportCardService.countReceiveExams(subjectId, examType, status, getUserId());
+            Map<String, Object> retMap = new HashMap<String, Object>();
+            retMap.put("list", groupExamDetailDTOs);
+            retMap.put("count", count);
+            retMap.put("page", page);
+            retMap.put("pageSize", pageSize);
             respObj.setMessage(retMap);
             respObj.setCode(Constant.SUCCESS_CODE);
-        }catch (Exception e){
+        } catch (Exception e) {
             e.printStackTrace();
             respObj.setErrorMessage(e.getMessage());
         }
@@ -127,29 +126,27 @@ public class ReportCardController extends BaseController{
     }
 
 
-
-
     @ApiOperation(value = "获取家长接收的成绩单", httpMethod = "GET", produces = "application/json")
-    @ApiResponses( value = {@ApiResponse(code = 200, message = "保存考试信息已完成",response = String.class),
+    @ApiResponses(value = {@ApiResponse(code = 200, message = "保存考试信息已完成", response = String.class),
             @ApiResponse(code = 400, message = "请求中有语法问题，或不能满足请求"),
             @ApiResponse(code = 500, message = "服务器不能完成请求")})
     @RequestMapping("/getParentReceiveExams")
     @ResponseBody
     public RespObj getParentReceiveExams(
-            @RequestParam(required = false, defaultValue = "")String subjectId,
-            @RequestParam(required = false, defaultValue = "")String examType,
-            @RequestParam(required = false, defaultValue = "-1")int status,
-            @RequestParam(required = false, defaultValue = "1")int page,
-            @RequestParam(required = false, defaultValue = "10")int pageSize
-    ){
-        RespObj respObj=new RespObj(Constant.FAILD_CODE);
-        try{
-            Map<String,Object> retMap=reportCardService.getParentReceivedGroupExamDetailDTOs(
-                    subjectId,examType,status,getUserId(),page,pageSize
+            @RequestParam(required = false, defaultValue = "") String subjectId,
+            @RequestParam(required = false, defaultValue = "") String examType,
+            @RequestParam(required = false, defaultValue = "-1") int status,
+            @RequestParam(required = false, defaultValue = "1") int page,
+            @RequestParam(required = false, defaultValue = "10") int pageSize
+    ) {
+        RespObj respObj = new RespObj(Constant.FAILD_CODE);
+        try {
+            Map<String, Object> retMap = reportCardService.getParentReceivedGroupExamDetailDTOs(
+                    subjectId, examType, status, getUserId(), page, pageSize
             );
             respObj.setMessage(retMap);
             respObj.setCode(Constant.SUCCESS_CODE);
-        }catch (Exception e){
+        } catch (Exception e) {
             e.printStackTrace();
             respObj.setErrorMessage(e.getMessage());
         }
@@ -158,19 +155,19 @@ public class ReportCardController extends BaseController{
 
 
     @ApiOperation(value = "家长签字功能", httpMethod = "GET", produces = "application/json")
-    @ApiResponses( value = {@ApiResponse(code = 200, message = "保存考试信息已完成",response = String.class),
+    @ApiResponses(value = {@ApiResponse(code = 200, message = "保存考试信息已完成", response = String.class),
             @ApiResponse(code = 400, message = "请求中有语法问题，或不能满足请求"),
             @ApiResponse(code = 500, message = "服务器不能完成请求")})
     @RequestMapping("/pushSign")
     @ResponseBody
     public RespObj pushSign(@ObjectIdType ObjectId groupExamDetailId,
-                            @ObjectIdType ObjectId userId){
-        RespObj respObj=new RespObj(Constant.FAILD_CODE);
-        try{
-            reportCardService.pushSign(groupExamDetailId,userId);
+                            @ObjectIdType ObjectId userId) {
+        RespObj respObj = new RespObj(Constant.FAILD_CODE);
+        try {
+            reportCardService.pushSign(groupExamDetailId, userId);
             respObj.setCode(Constant.SUCCESS_CODE);
             respObj.setMessage("签字成功！");
-        }catch (Exception e){
+        } catch (Exception e) {
             e.printStackTrace();
             respObj.setErrorMessage(e.getMessage());
         }
@@ -178,18 +175,18 @@ public class ReportCardController extends BaseController{
     }
 
     @ApiOperation(value = "删除成绩单", httpMethod = "GET", produces = "application/json")
-    @ApiResponses( value = {@ApiResponse(code = 200, message = "删除成绩单已完成",response = String.class),
+    @ApiResponses(value = {@ApiResponse(code = 200, message = "删除成绩单已完成", response = String.class),
             @ApiResponse(code = 400, message = "请求中有语法问题，或不能满足请求"),
             @ApiResponse(code = 500, message = "服务器不能完成请求")})
     @RequestMapping("/removeGroupExam")
     @ResponseBody
-    public RespObj removeGroupExam(@ObjectIdType ObjectId groupExamDetailId){
-        RespObj respObj=new RespObj(Constant.FAILD_CODE);
-        try{
-            reportCardService.removeGroupExamDetailEntry(groupExamDetailId,getUserId());
+    public RespObj removeGroupExam(@ObjectIdType ObjectId groupExamDetailId) {
+        RespObj respObj = new RespObj(Constant.FAILD_CODE);
+        try {
+            reportCardService.removeGroupExamDetailEntry(groupExamDetailId, getUserId());
             respObj.setCode(Constant.SUCCESS_CODE);
             respObj.setMessage("删除成绩单成功！");
-        }catch (Exception e){
+        } catch (Exception e) {
             e.printStackTrace();
             respObj.setErrorMessage(e.getMessage());
         }
@@ -197,18 +194,18 @@ public class ReportCardController extends BaseController{
     }
 
     @ApiOperation(value = "发送成绩单", httpMethod = "GET", produces = "application/json")
-    @ApiResponses( value = {@ApiResponse(code = 200, message = "删除成绩单已完成",response = String.class),
+    @ApiResponses(value = {@ApiResponse(code = 200, message = "删除成绩单已完成", response = String.class),
             @ApiResponse(code = 400, message = "请求中有语法问题，或不能满足请求"),
             @ApiResponse(code = 500, message = "服务器不能完成请求")})
     @RequestMapping("/sendGroupExam")
     @ResponseBody
-    public RespObj sendGroupExam(@ObjectIdType ObjectId groupExamDetailId){
-        RespObj respObj=new RespObj(Constant.FAILD_CODE);
-        try{
+    public RespObj sendGroupExam(@ObjectIdType ObjectId groupExamDetailId) {
+        RespObj respObj = new RespObj(Constant.FAILD_CODE);
+        try {
             reportCardService.sendGroupExam(groupExamDetailId);
             respObj.setCode(Constant.SUCCESS_CODE);
             respObj.setMessage("发送成功！");
-        }catch (Exception e){
+        } catch (Exception e) {
             e.printStackTrace();
             respObj.setErrorMessage(e.getMessage());
         }
@@ -217,21 +214,21 @@ public class ReportCardController extends BaseController{
 
 
     @ApiOperation(value = "查询录入成绩的学生名单", httpMethod = "GET", produces = "application/json")
-    @ApiResponses( value = {@ApiResponse(code = 200, message = "保存或编辑成绩列表已完成",response = String.class),
+    @ApiResponses(value = {@ApiResponse(code = 200, message = "保存或编辑成绩列表已完成", response = String.class),
             @ApiResponse(code = 400, message = "请求中有语法问题，或不能满足请求"),
             @ApiResponse(code = 500, message = "服务器不能完成请求")})
     @RequestMapping("/searchRecordStudentScores")
     @ResponseBody
     public RespObj searchRecordStudentScores(@ObjectIdType ObjectId examGroupDetailId,
-                                             @RequestParam(required = false,defaultValue = "-1")int score,
-                                             @RequestParam(required = false,defaultValue = "-1")int scoreLevel,
-                                             @RequestParam(required = false,defaultValue = "1")int type){
-        RespObj respObj=new RespObj(Constant.FAILD_CODE);
-        try{
-            List<GroupExamUserRecordDTO> examScoreDTOs=reportCardService.searchRecordStudentScores(examGroupDetailId,score,scoreLevel,type);
+                                             @RequestParam(required = false, defaultValue = "-1") int score,
+                                             @RequestParam(required = false, defaultValue = "-1") int scoreLevel,
+                                             @RequestParam(required = false, defaultValue = "1") int type) {
+        RespObj respObj = new RespObj(Constant.FAILD_CODE);
+        try {
+            List<GroupExamUserRecordDTO> examScoreDTOs = reportCardService.searchRecordStudentScores(examGroupDetailId, score, scoreLevel, type);
             respObj.setMessage(examScoreDTOs);
             respObj.setCode(Constant.SUCCESS_CODE);
-        }catch (Exception e){
+        } catch (Exception e) {
             e.printStackTrace();
             respObj.setErrorMessage(e.getMessage());
         }
@@ -239,18 +236,18 @@ public class ReportCardController extends BaseController{
     }
 
     @ApiOperation(value = "获取该考试的版本号", httpMethod = "GET", produces = "application/json")
-    @ApiResponses( value = {@ApiResponse(code = 200, message = "保存或编辑成绩列表已完成",response = String.class),
+    @ApiResponses(value = {@ApiResponse(code = 200, message = "保存或编辑成绩列表已完成", response = String.class),
             @ApiResponse(code = 400, message = "请求中有语法问题，或不能满足请求"),
             @ApiResponse(code = 500, message = "服务器不能完成请求")})
     @RequestMapping("/getExamGroupVersion")
     @ResponseBody
-    public RespObj getExamGroupVersion(@ObjectIdType ObjectId examGroupDetailId){
-        RespObj respObj=new RespObj(Constant.FAILD_CODE);
-        try{
-            GroupExamVersionDTO groupExamVersionDTO=reportCardService.getExamGroupVersion(examGroupDetailId);
+    public RespObj getExamGroupVersion(@ObjectIdType ObjectId examGroupDetailId) {
+        RespObj respObj = new RespObj(Constant.FAILD_CODE);
+        try {
+            GroupExamVersionDTO groupExamVersionDTO = reportCardService.getExamGroupVersion(examGroupDetailId);
             respObj.setCode(Constant.SUCCESS_CODE);
             respObj.setMessage(groupExamVersionDTO);
-        }catch (Exception e){
+        } catch (Exception e) {
             e.printStackTrace();
             respObj.setErrorMessage(e.getMessage());
         }
@@ -259,17 +256,17 @@ public class ReportCardController extends BaseController{
 
 
     @ApiOperation(value = "保存或编辑成绩列表", httpMethod = "GET", produces = "application/json")
-    @ApiResponses( value = {@ApiResponse(code = 200, message = "保存或编辑成绩列表已完成",response = String.class),
+    @ApiResponses(value = {@ApiResponse(code = 200, message = "保存或编辑成绩列表已完成", response = String.class),
             @ApiResponse(code = 400, message = "请求中有语法问题，或不能满足请求"),
             @ApiResponse(code = 500, message = "服务器不能完成请求")})
     @RequestMapping("/saveRecordExamScore")
     @ResponseBody
-    public RespObj saveRecordExamScore(@RequestBody ExamGroupScoreDTO examGroupScoreDTO){
-        RespObj respObj=new RespObj(Constant.FAILD_CODE);
-        try{
-            GroupExamVersionDTO groupExamVersionDTO=reportCardService.getExamGroupVersion(
+    public RespObj saveRecordExamScore(@RequestBody ExamGroupScoreDTO examGroupScoreDTO) {
+        RespObj respObj = new RespObj(Constant.FAILD_CODE);
+        try {
+            GroupExamVersionDTO groupExamVersionDTO = reportCardService.getExamGroupVersion(
                     new ObjectId(examGroupScoreDTO.getGroupExamDetailId()));
-            if(groupExamVersionDTO.getVersion()!=examGroupScoreDTO.getVersion()) {
+            if (groupExamVersionDTO.getVersion() != examGroupScoreDTO.getVersion()) {
                 List<GroupExamUserRecordDTO> examScoreDTOs = new ArrayList<GroupExamUserRecordDTO>();
                 for (ExamGroupUserScoreDTO userScoreDTO : examGroupScoreDTO.getExamGroupUserScoreDTOs()) {
                     examScoreDTOs.add(userScoreDTO.buildDTO());
@@ -279,10 +276,10 @@ public class ReportCardController extends BaseController{
                         examGroupScoreDTO.getVersion());
                 respObj.setCode(Constant.SUCCESS_CODE);
                 respObj.setMessage("保存或编辑成绩成功!");
-            }else{
+            } else {
                 respObj.setErrorMessage("不是最新的版本");
             }
-        }catch (Exception e){
+        } catch (Exception e) {
             e.printStackTrace();
             respObj.setErrorMessage(e.getMessage());
         }
@@ -291,23 +288,24 @@ public class ReportCardController extends BaseController{
 
     /**
      * 查询详情信息
+     *
      * @param groupExamDetailId
      * @return
      */
     @ApiOperation(value = "获取该条成绩单的详情信息(针对老师)", httpMethod = "GET", produces = "application/json")
-    @ApiResponses( value = {@ApiResponse(code = 200, message = "保存或编辑成绩列表已完成",response = String.class),
+    @ApiResponses(value = {@ApiResponse(code = 200, message = "保存或编辑成绩列表已完成", response = String.class),
             @ApiResponse(code = 400, message = "请求中有语法问题，或不能满足请求"),
             @ApiResponse(code = 500, message = "服务器不能完成请求")})
     @RequestMapping("/getTeacherGroupExamDetail")
     @ResponseBody
-    public RespObj getTeacherGroupExamDetail(@ObjectIdType ObjectId groupExamDetailId){
-        RespObj respObj=new RespObj(Constant.FAILD_CODE);
-        try{
-            GroupExamDetailDTO detailDTO=reportCardService.
+    public RespObj getTeacherGroupExamDetail(@ObjectIdType ObjectId groupExamDetailId) {
+        RespObj respObj = new RespObj(Constant.FAILD_CODE);
+        try {
+            GroupExamDetailDTO detailDTO = reportCardService.
                     getTeacherGroupExamDetail(groupExamDetailId);
             respObj.setCode(Constant.SUCCESS_CODE);
             respObj.setMessage(detailDTO);
-        }catch (Exception e){
+        } catch (Exception e) {
             e.printStackTrace();
             respObj.setErrorMessage(e.getMessage());
         }
@@ -316,23 +314,24 @@ public class ReportCardController extends BaseController{
 
     /**
      * 查询详情信息
+     *
      * @param singleId
      * @return
      */
     @ApiOperation(value = "获取该条成绩单的详情信息(针对家长或学生)", httpMethod = "GET", produces = "application/json")
-    @ApiResponses( value = {@ApiResponse(code = 200, message = "保存或编辑成绩列表已完成",response = String.class),
+    @ApiResponses(value = {@ApiResponse(code = 200, message = "保存或编辑成绩列表已完成", response = String.class),
             @ApiResponse(code = 400, message = "请求中有语法问题，或不能满足请求"),
             @ApiResponse(code = 500, message = "服务器不能完成请求")})
     @RequestMapping("/getGroupExamDetail")
     @ResponseBody
-    public RespObj getGroupExamDetail(@ObjectIdType ObjectId singleId){
-        RespObj respObj=new RespObj(Constant.FAILD_CODE);
-        try{
-            GroupExamDetailDTO detailDTO=reportCardService.
+    public RespObj getGroupExamDetail(@ObjectIdType ObjectId singleId) {
+        RespObj respObj = new RespObj(Constant.FAILD_CODE);
+        try {
+            GroupExamDetailDTO detailDTO = reportCardService.
                     getGroupExamDetail(singleId);
             respObj.setCode(Constant.SUCCESS_CODE);
             respObj.setMessage(detailDTO);
-        }catch (Exception e){
+        } catch (Exception e) {
             e.printStackTrace();
             respObj.setErrorMessage(e.getMessage());
         }
@@ -340,18 +339,18 @@ public class ReportCardController extends BaseController{
     }
 
     @ApiOperation(value = "获取所有的考试类型", httpMethod = "GET", produces = "application/json")
-    @ApiResponses( value = {@ApiResponse(code = 200, message = "保存或编辑成绩列表已完成",response = String.class),
+    @ApiResponses(value = {@ApiResponse(code = 200, message = "保存或编辑成绩列表已完成", response = String.class),
             @ApiResponse(code = 400, message = "请求中有语法问题，或不能满足请求"),
             @ApiResponse(code = 500, message = "服务器不能完成请求")})
     @RequestMapping("/getExamTypeList")
     @ResponseBody
-    public RespObj getExamTypeList(){
-        RespObj respObj=new RespObj(Constant.FAILD_CODE);
-        try{
-            List<ExamTypeDTO> examTypeDTOs=reportCardService.getExamTypeDTOs();
+    public RespObj getExamTypeList() {
+        RespObj respObj = new RespObj(Constant.FAILD_CODE);
+        try {
+            List<ExamTypeDTO> examTypeDTOs = reportCardService.getExamTypeDTOs();
             respObj.setCode(Constant.SUCCESS_CODE);
             respObj.setMessage(examTypeDTOs);
-        }catch (Exception e){
+        } catch (Exception e) {
             e.printStackTrace();
             respObj.setErrorMessage(e.getMessage());
         }
@@ -359,39 +358,38 @@ public class ReportCardController extends BaseController{
     }
 
 
-
     @ApiOperation(value = "导出模板", httpMethod = "GET", produces = "application/json")
     @RequestMapping("/exportTemplate/{examGroupDetailId}")
     @ResponseBody
     public void exportTemplate(@PathVariable @ObjectIdType ObjectId examGroupDetailId,
-                               HttpServletResponse response){
+                               HttpServletResponse response) {
         try {
-            reportCardService.exportTemplate(examGroupDetailId,response);
-        }catch (Exception e){
+            reportCardService.exportTemplate(examGroupDetailId, response);
+        } catch (Exception e) {
             e.printStackTrace();
         }
     }
 
 
     @ApiOperation(value = "导入模板", httpMethod = "GET", produces = "application/json")
-    @ApiResponses( value = {@ApiResponse(code = 200, message = "导入模板已完成",response = String.class),
+    @ApiResponses(value = {@ApiResponse(code = 200, message = "导入模板已完成", response = String.class),
             @ApiResponse(code = 400, message = "请求中有语法问题，或不能满足请求"),
             @ApiResponse(code = 500, message = "服务器不能完成请求")})
     @RequestMapping("/importTemplate")
     @ResponseBody
-    public RespObj importTemplate(MultipartRequest request)throws Exception{
-        RespObj respObj=new RespObj(Constant.FAILD_CODE);
+    public RespObj importTemplate(MultipartRequest request) throws Exception {
+        RespObj respObj = new RespObj(Constant.FAILD_CODE);
         try {
             MultiValueMap<String, MultipartFile> fileMap = request.getMultiFileMap();
             for (List<MultipartFile> multipartFiles : fileMap.values()) {
-                for(MultipartFile file:multipartFiles) {
+                for (MultipartFile file : multipartFiles) {
                     System.out.println("----" + file.getOriginalFilename());
                     reportCardService.importTemplate(file.getInputStream());
                 }
             }
             respObj.setCode(Constant.SUCCESS_CODE);
             respObj.setMessage("导入模板成功");
-        }catch (Exception e){
+        } catch (Exception e) {
             e.printStackTrace();
             respObj.setErrorMessage(e.getMessage());
         }
@@ -401,75 +399,74 @@ public class ReportCardController extends BaseController{
     @ApiOperation(value = "导出模板", httpMethod = "GET", produces = "application/json")
     @RequestMapping("/exportUserTemplate")
     @ResponseBody
-    public void exportUserTemplate(HttpServletResponse response){
+    public void exportUserTemplate(HttpServletResponse response) {
         try {
             reportCardService.exportUserTemplate(response);
-        }catch (Exception e){
+        } catch (Exception e) {
             e.printStackTrace();
         }
     }
 
     @ApiOperation(value = "查看人员名单", httpMethod = "GET", produces = "application/json")
-    @ApiResponses( value = {@ApiResponse(code = 200, message = "导入模板已完成",response = String.class),
+    @ApiResponses(value = {@ApiResponse(code = 200, message = "导入模板已完成", response = String.class),
             @ApiResponse(code = 400, message = "请求中有语法问题，或不能满足请求"),
             @ApiResponse(code = 500, message = "服务器不能完成请求")})
     @RequestMapping("/editVirtualUserItem")
     @ResponseBody
     public RespObj editVirtualUserItem(@ObjectIdType ObjectId itemId,
                                        String userNumber,
-                                       String userName){
-        RespObj respObj=new RespObj(Constant.SUCCESS_CODE);
-        reportCardService.editVirtualUserItem(itemId,userName,userNumber);
+                                       String userName) {
+        RespObj respObj = new RespObj(Constant.SUCCESS_CODE);
+        reportCardService.editVirtualUserItem(itemId, userName, userNumber);
         respObj.setMessage("删除人员成功");
         return respObj;
     }
 
     @RequestMapping("/searchUserList/{communityId}")
     @ResponseBody
-    public RespObj searchUserList(@PathVariable @ObjectIdType ObjectId communityId){
-        RespObj respObj=new RespObj(Constant.SUCCESS_CODE);
-        List<VirtualUserDTO> dtos=reportCardService.searchUserList(communityId);
+    public RespObj searchUserList(@PathVariable @ObjectIdType ObjectId communityId) {
+        RespObj respObj = new RespObj(Constant.SUCCESS_CODE);
+        List<VirtualUserDTO> dtos = reportCardService.searchUserList(communityId);
         respObj.setMessage(dtos);
         return respObj;
     }
 
 
     @ApiOperation(value = "获取群组名单", httpMethod = "GET", produces = "application/json")
-    @ApiResponses( value = {@ApiResponse(code = 200, message = "导入模板已完成",response = String.class),
+    @ApiResponses(value = {@ApiResponse(code = 200, message = "导入模板已完成", response = String.class),
             @ApiResponse(code = 400, message = "请求中有语法问题，或不能满足请求"),
             @ApiResponse(code = 500, message = "服务器不能完成请求")})
     @RequestMapping("/getRoleCommunities")
     @ResponseBody
-    public RespObj getRoleCommunities(){
-        RespObj respObj=new RespObj(Constant.SUCCESS_CODE);
-        List<VirtualCommunityUserDTO> dtos=reportCardService.getRoleCommunities(getUserId());
+    public RespObj getRoleCommunities() {
+        RespObj respObj = new RespObj(Constant.SUCCESS_CODE);
+        List<VirtualCommunityUserDTO> dtos = reportCardService.getRoleCommunities(getUserId());
         respObj.setMessage(dtos);
         return respObj;
     }
 
 
-
     @ApiOperation(value = "导入模板", httpMethod = "GET", produces = "application/json")
-    @ApiResponses( value = {@ApiResponse(code = 200, message = "导入模板已完成",response = String.class),
+    @ApiResponses(value = {@ApiResponse(code = 200, message = "导入模板已完成", response = String.class),
             @ApiResponse(code = 400, message = "请求中有语法问题，或不能满足请求"),
             @ApiResponse(code = 500, message = "服务器不能完成请求")})
     @RequestMapping("/importUserTemplate")
     @ResponseBody
-    public RespObj importUserTemplate(HttpServletRequest request)throws Exception{
-        RespObj respObj=new RespObj(Constant.FAILD_CODE);
-        String communityId=request.getParameter("communityId");
-        MultipartRequest multipartRequest=(MultipartRequest)request;
+    public RespObj importUserTemplate(HttpServletRequest request) throws Exception {
+        RespObj respObj = new RespObj(Constant.FAILD_CODE);
+        String communityId = request.getParameter("communityId");
+        MultipartRequest multipartRequest = (MultipartRequest) request;
         try {
             MultiValueMap<String, MultipartFile> fileMap = multipartRequest.getMultiFileMap();
             for (List<MultipartFile> multipartFiles : fileMap.values()) {
-                for(MultipartFile file:multipartFiles) {
+                for (MultipartFile file : multipartFiles) {
                     System.out.println("----" + file.getOriginalFilename());
-                    reportCardService.importUserTemplate(file.getInputStream(),communityId);
+                    reportCardService.importUserTemplate(file.getInputStream(), communityId);
                 }
             }
             respObj.setCode(Constant.SUCCESS_CODE);
             respObj.setMessage("导入模板成功");
-        }catch (Exception e){
+        } catch (Exception e) {
             e.printStackTrace();
             respObj.setErrorMessage(e.getMessage());
         }
@@ -477,13 +474,13 @@ public class ReportCardController extends BaseController{
     }
 
     @ApiOperation(value = "删除人员,也就是清空人员", httpMethod = "GET", produces = "application/json")
-    @ApiResponses( value = {@ApiResponse(code = 200, message = "导入模板已完成",response = String.class),
+    @ApiResponses(value = {@ApiResponse(code = 200, message = "导入模板已完成", response = String.class),
             @ApiResponse(code = 400, message = "请求中有语法问题，或不能满足请求"),
             @ApiResponse(code = 500, message = "服务器不能完成请求")})
     @RequestMapping("/removeVirtualUserList/{communityId}")
     @ResponseBody
-    public RespObj removeVirtualUserList(@PathVariable @ObjectIdType ObjectId communityId){
-        RespObj respObj=new RespObj(Constant.SUCCESS_CODE);
+    public RespObj removeVirtualUserList(@PathVariable @ObjectIdType ObjectId communityId) {
+        RespObj respObj = new RespObj(Constant.SUCCESS_CODE);
         reportCardService.removeVirtualUserList(communityId);
         respObj.setMessage("删除名单成功!");
         return respObj;
@@ -491,58 +488,56 @@ public class ReportCardController extends BaseController{
 
 
     @ApiOperation(value = "删除虚拟用户", httpMethod = "GET", produces = "application/json")
-    @ApiResponses( value = {@ApiResponse(code = 200, message = "导入模板已完成",response = String.class),
+    @ApiResponses(value = {@ApiResponse(code = 200, message = "导入模板已完成", response = String.class),
             @ApiResponse(code = 400, message = "请求中有语法问题，或不能满足请求"),
             @ApiResponse(code = 500, message = "服务器不能完成请求")})
     @RequestMapping("/removeItemId/{itemId}")
     @ResponseBody
-    public RespObj removeItemId(@PathVariable @ObjectIdType ObjectId itemId){
-        RespObj respObj=new RespObj(Constant.SUCCESS_CODE);
+    public RespObj removeItemId(@PathVariable @ObjectIdType ObjectId itemId) {
+        RespObj respObj = new RespObj(Constant.SUCCESS_CODE);
         reportCardService.removeItemId(itemId);
         respObj.setMessage("删除名单成功!");
         return respObj;
     }
 
 
-
     @ApiOperation(value = "导出模板", httpMethod = "GET", produces = "application/json")
     @RequestMapping("/exportUserControl")
     @ResponseBody
     public void exportUserControl(@PathVariable @ObjectIdType ObjectId communityId,
-                               HttpServletResponse response){
+                                  HttpServletResponse response) {
         try {
-            reportCardService.exportUserControl(communityId,response);
-        }catch (Exception e){
+            reportCardService.exportUserControl(communityId, response);
+        } catch (Exception e) {
             e.printStackTrace();
         }
     }
 
 
     @ApiOperation(value = "导入模板", httpMethod = "GET", produces = "application/json")
-    @ApiResponses( value = {@ApiResponse(code = 200, message = "导入模板已完成",response = String.class),
+    @ApiResponses(value = {@ApiResponse(code = 200, message = "导入模板已完成", response = String.class),
             @ApiResponse(code = 400, message = "请求中有语法问题，或不能满足请求"),
             @ApiResponse(code = 500, message = "服务器不能完成请求")})
     @RequestMapping("/importUserControl")
     @ResponseBody
-    public RespObj importUserControl(MultipartRequest request)throws Exception{
-        RespObj respObj=new RespObj(Constant.FAILD_CODE);
+    public RespObj importUserControl(MultipartRequest request) throws Exception {
+        RespObj respObj = new RespObj(Constant.FAILD_CODE);
         try {
             MultiValueMap<String, MultipartFile> fileMap = request.getMultiFileMap();
             for (List<MultipartFile> multipartFiles : fileMap.values()) {
-                for(MultipartFile file:multipartFiles) {
+                for (MultipartFile file : multipartFiles) {
                     System.out.println("----" + file.getOriginalFilename());
                     reportCardService.importUserControl(file.getInputStream());
                 }
             }
             respObj.setCode(Constant.SUCCESS_CODE);
             respObj.setMessage("导入模板成功");
-        }catch (Exception e){
+        } catch (Exception e) {
             e.printStackTrace();
             respObj.setErrorMessage(e.getMessage());
         }
         return respObj;
     }
-
 
 
 }

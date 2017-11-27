@@ -1,5 +1,6 @@
 package com.fulaan.backstage.service;
 
+import com.db.backstage.JxmAppVersionDao;
 import com.db.backstage.TeacherApproveDao;
 import com.db.backstage.UnlawfulPictureTextDao;
 import com.db.controlphone.ControlPhoneDao;
@@ -14,11 +15,13 @@ import com.db.operation.AppOperationDao;
 import com.db.questionbook.QuestionAdditionDao;
 import com.db.questionbook.QuestionBookDao;
 import com.db.user.UserDao;
+import com.fulaan.backstage.dto.JxmAppVersionDTO;
 import com.fulaan.backstage.dto.TeacherApproveDTO;
 import com.fulaan.backstage.dto.UnlawfulPictureTextDTO;
 import com.fulaan.controlphone.dto.ControlPhoneDTO;
 import com.fulaan.controlphone.dto.ControlSchoolTimeDTO;
 import com.pojo.appnotice.AppNoticeEntry;
+import com.pojo.backstage.JxmAppVersionEntry;
 import com.pojo.backstage.PictureType;
 import com.pojo.backstage.TeacherApproveEntry;
 import com.pojo.backstage.UnlawfulPictureTextEntry;
@@ -72,6 +75,8 @@ public class BackStageService {
     private QuestionAdditionDao questionAdditionDao = new QuestionAdditionDao();
     
     private TeacherApproveDao teacherApproveDao = new TeacherApproveDao();
+
+    private JxmAppVersionDao jxmAppVersionDao = new JxmAppVersionDao();
 
     private static String imageUrl = "";
 
@@ -204,6 +209,16 @@ public class BackStageService {
         teacherApproveDao.updateEntry(id,type);
     }
 
+
+    public List<JxmAppVersionDTO> getAllAppVersion(){
+        List<JxmAppVersionDTO> dtos = new ArrayList<JxmAppVersionDTO>();
+        List<JxmAppVersionEntry> entries = jxmAppVersionDao.getIsNewObjectId();
+        for(JxmAppVersionEntry entry : entries){
+            dtos.add(new JxmAppVersionDTO(entry));
+        }
+
+        return dtos;
+    }
     /*public static void main(String[] args){
 
     }*/

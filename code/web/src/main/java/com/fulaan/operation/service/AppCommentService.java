@@ -21,7 +21,6 @@ import com.fulaan.operation.dto.AppCommentDTO;
 import com.fulaan.operation.dto.AppOperationDTO;
 import com.fulaan.operation.dto.AppRecordDTO;
 import com.fulaan.operation.dto.AppRecordResultDTO;
-import com.fulaan.picturetext.service.CheckTextAndPicture;
 import com.fulaan.pojo.User;
 import com.fulaan.service.CommunityService;
 import com.fulaan.user.service.UserService;
@@ -86,7 +85,7 @@ public class AppCommentService {
      */
     public String addCommentEntry(AppCommentDTO dto,String comList)throws Exception{
         //文本检测
-        /*Map<String,Object> flag = CheckTextAndPicture.checkText(dto.getDescription()+"345"+dto.getTitle());
+       /* Map<String,Object> flag = CheckTextAndPicture.checkText(dto.getDescription() + "-----------" + dto.getTitle());
         String f = (String)flag.get("bl");
         if(f.equals("1")){
             return (String)flag.get("text");
@@ -613,9 +612,11 @@ public static void main(String[] args){
                 entries1 = appCommentDao.selectWillDateList(userId);
 
             }
-            List<AppCommentEntry> entries = appCommentDao.selectDateListPage(userId, page, pageSize);
+            List<AppCommentEntry> entries = new ArrayList<AppCommentEntry>();
+            List<AppCommentEntry> entries3 = appCommentDao.selectDateListPage(userId, page, pageSize);
             count = appCommentDao.getNumber(userId);
             entries.addAll(entries1);
+            entries.addAll(entries3);
             if(entries.size()>0){
                 for(AppCommentEntry en : entries){
                     if(en.getDateTime() <= zero && en.getStatus()==1){

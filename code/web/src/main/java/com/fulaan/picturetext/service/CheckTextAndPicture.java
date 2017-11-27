@@ -64,8 +64,8 @@ public class CheckTextAndPicture extends BaseSample {
         /**
          * 请务必设置超时时间
          */
-        textScanRequest.setConnectTimeout(3000);
-        textScanRequest.setReadTimeout(6000);
+        textScanRequest.setConnectTimeout(10000);
+        textScanRequest.setReadTimeout(60000);
         try {
             HttpResponse httpResponse = client.doAction(textScanRequest);
 
@@ -141,21 +141,21 @@ public class CheckTextAndPicture extends BaseSample {
         } catch (ServerException e) {
             e.printStackTrace();
             map.put("bl", "1");
-            map.put("text","错误");
+            map.put("text","超时错误");
             return map;
         } catch (ClientException e) {
             e.printStackTrace();
             map.put("bl", "1");
-            map.put("text", "错误");
+            map.put("text", "超时错误");
             return map;
         } catch (Exception e){
             e.printStackTrace();
             map.put("bl", "1");
-            map.put("text", "错误");
+            map.put("text", "超时错误");
             return map;
         }
         map.put("bl", "2");
-        map.put("text","错误");
+        map.put("text","超时错误");
         return map;
     }
 

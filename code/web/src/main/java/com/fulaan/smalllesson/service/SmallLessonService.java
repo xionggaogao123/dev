@@ -278,6 +278,7 @@ public class SmallLessonService {
         }else{
             LessonUserResultEntry entry2 = lessonUserResultDao.getEntry(entry.getID(),userId);
             if(entry2!= null){
+                map.put("lessonId",entry2.getLessonId().toString());
                 map.put("code",2);
                 map.put("msg","重新进入课堂");
                 return map;

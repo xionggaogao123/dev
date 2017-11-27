@@ -928,5 +928,7 @@ public class Constant {
     public static final String COLLECTION_PICTURE_TEXT= "picturetext";
     //教师认证
     public static final String COLLECTION_TEACHER_APPROVE= "teacherapprove";
+    //复兰应用版本
+    public static final String COLLECTION_JXM_APP_VERSION= "jxmappversion";
 
 }

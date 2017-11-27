@@ -52,10 +52,11 @@ public class AppCommentController extends BaseController {
         try {
             String result = appCommentService.addCommentEntry(dto,dto.getComList());
             respObj.setCode(Constant.SUCCESS_CODE);
+            respObj.setMessage(result);
             if(!result.equals("成功导入")){
                 respObj.setCode(Constant.FAILD_CODE);
+                respObj.setErrorMessage(result);
             }
-            respObj.setMessage(result);
         } catch (Exception e) {
             e.printStackTrace();
             if("推送失败".equals(e.getMessage())) {

@@ -84,23 +84,24 @@ public class BackStageService {
 
     private JxmAppVersionDao jxmAppVersionDao = new JxmAppVersionDao();
 
-    private static String imageUrl = "";
+    private static String imageUrl = "http://7xiclj.com1.z0.glb.clouddn.com/5a1bdcfd27fddd15c8649dea.png";
 
 
     public static void main(String[] args){
+        JxmAppVersionDao controlSetBackDao = new JxmAppVersionDao();
        /* ControlSetBackDao controlSetBackDao = new ControlSetBackDao();
         ControlSetBackEntry entry1 = new ControlSetBackEntry();
         entry1.setType(1);
         entry1.setBackTime(15);
         entry1.setAppTime(15);
         controlSetBackDao.addEntry(entry1);*/
-        TeacherApproveDTO dto = new TeacherApproveDTO();
-        dto.setUserId("5a0021f03d4df9241620d155");
-        dto.setName("小佳和晓梅的爸爸");
-        dto.setType(1);
-        dto.setApplyTime("2011-11-23 17:04:00");
-        TeacherApproveDao teacherApproveDao1 = new TeacherApproveDao();
-        teacherApproveDao1.addEntry(dto.buildAddEntry());
+        JxmAppVersionDTO dto = new JxmAppVersionDTO();
+        dto.setFileUrl("http://7xiclj.com1.z0.glb.clouddn.com/5a16432794b5ea7a4cbde78e.apk");
+        dto.setName("cn.lt.appstore");
+        dto.setVersion("4.3.0");
+        //dto.setName("2011-11-23 17:04:00");
+        //TeacherApproveDao teacherApproveDao1 = new TeacherApproveDao();
+        controlSetBackDao.addEntry(dto.buildAddEntry());
     }
 
 
@@ -234,10 +235,10 @@ public class BackStageService {
 
         return dtos;
     }
-    /*public static void main(String[] args){
+   /* public static void main(String[] args){
 
-    }*/
-
+    }
+*/
 
 
     //添加图片显示认证
@@ -278,13 +279,13 @@ public class BackStageService {
         if(entry != null) {
             ObjectId cid = entry.getContactId();
             String url = entry.getContent();
-            if(entry.getType()== PictureType.userUrl.getType()){//用户头像
+            if(entry.getFunction()== PictureType.userUrl.getType()){//用户头像
                 //替换用户头像
                 userDao.updateAvater(cid,imageUrl);
-            }else if(entry.getType()== PictureType.communityLogo.getType()){//社区logo
+            }else if(entry.getFunction()== PictureType.communityLogo.getType()){//社区logo
                 //替换社区logo
                 communityDao.updateCommunityLogo(cid,imageUrl);
-            }else if(entry.getType()== PictureType.noticeImage.getType()){//通知
+            }else if(entry.getFunction()== PictureType.noticeImage.getType()){//通知
                 AppNoticeEntry entry1 = appNoticeDao.getAppNoticeEntry(cid);
                 List<AttachmentEntry> alist = entry1.getImageList();
                 if(alist != null && alist.size()>0){
@@ -295,7 +296,7 @@ public class BackStageService {
                     }
                 }
                 appNoticeDao.updEntry(entry1);
-            }else if(entry.getType()== PictureType.operationImage.getType()){//作业
+            }else if(entry.getFunction()== PictureType.operationImage.getType()){//作业
                 AppCommentEntry entry1 = appCommentDao.getEntry(cid);
                 List<AttachmentEntry> alist = entry1.getImageList();
                 if(alist != null && alist.size()>0){
@@ -306,7 +307,7 @@ public class BackStageService {
                     }
                 }
                 appCommentDao.updEntry(entry1);
-            }else if(entry.getType()== PictureType.activeImage.getType()){//活动报名
+            }else if(entry.getFunction()== PictureType.activeImage.getType()){//活动报名
                 CommunityDetailEntry entry1 = communityDetailDao.findByObjectId(cid);
                 List<AttachmentEntry> alist = entry1.getImageList();
                 if(alist != null && alist.size()>0){
@@ -317,7 +318,7 @@ public class BackStageService {
                     }
                 }
                 communityDetailDao.updEntry(entry1);
-            }else if(entry.getType()== PictureType.studyImage.getType()){//学习用品
+            }else if(entry.getFunction()== PictureType.studyImage.getType()){//学习用品
                 CommunityDetailEntry entry1 = communityDetailDao.findByObjectId(cid);
                 List<AttachmentEntry> alist = entry1.getImageList();
                 if(alist != null && alist.size()>0){
@@ -329,7 +330,7 @@ public class BackStageService {
                 }
                 communityDetailDao.updEntry(entry1);
 
-            }else if(entry.getType()== PictureType.happyImage.getType()){//兴趣小组
+            }else if(entry.getFunction()== PictureType.happyImage.getType()){//兴趣小组
                 CommunityDetailEntry entry1 = communityDetailDao.findByObjectId(cid);
                 List<AttachmentEntry> alist = entry1.getImageList();
                 if(alist != null && alist.size()>0){
@@ -340,11 +341,11 @@ public class BackStageService {
                     }
                 }
                 communityDetailDao.updEntry(entry1);
-            }else if(entry.getType()== PictureType.commentImage.getType()){//评论
+            }else if(entry.getFunction()== PictureType.commentImage.getType()){//评论
                 AppOperationEntry entry1 = appOperationDao.getEntry(cid);
                 entry1.setFileUrl(imageUrl);
                 appOperationDao.updEntry(entry1);
-            }else if(entry.getType()== PictureType.wrongImage.getType()){//错题本
+            }else if(entry.getFunction()== PictureType.wrongImage.getType()){//错题本
                 QuestionBookEntry entry1 = questionBookDao.getEntryById(cid);
                 List<String> slist = entry1.getImageList();
                 List<String> nList = new ArrayList<String>();
@@ -360,7 +361,7 @@ public class BackStageService {
                 entry1.setImageList(nList);
                 questionBookDao.updateEntry(entry1);
 
-            }else if(entry.getType()== PictureType.answerImage.getType()){//错题解析
+            }else if(entry.getFunction()== PictureType.answerImage.getType()){//错题解析
                 QuestionAdditionEntry entry1 = questionAdditionDao.getEntryByObjectId(cid);
                 List<String> slist = entry1.getAnswerList();
                 List<String> nList = new ArrayList<String>();

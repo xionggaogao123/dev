@@ -240,7 +240,7 @@ public class BackStageController extends BaseController {
      * 删除
      * @return
      */
-    @ApiOperation(value = "通过图片", httpMethod = "POST", produces = "application/json")
+    @ApiOperation(value = "删除", httpMethod = "POST", produces = "application/json")
     @ApiResponses( value = {@ApiResponse(code = 200, message = "Successful — 请求已完成",response = String.class),
             @ApiResponse(code = 400, message = "请求中有语法问题，或不能满足请求"),
             @ApiResponse(code = 500, message = "服务器不能完成请求")})
@@ -251,11 +251,11 @@ public class BackStageController extends BaseController {
         try{
             backStageService.deleteContentEntry(new ObjectId(id));
             respObj.setCode(Constant.SUCCESS_CODE);
-            respObj.setMessage("通过成功");
+            respObj.setMessage("删除成功");
         }catch (Exception e){
             e.printStackTrace();
             respObj.setCode(Constant.SUCCESS_CODE);
-            respObj.setMessage("通过失败");
+            respObj.setMessage("删除失败");
         }
         return JSON.toJSONString(respObj);
     }

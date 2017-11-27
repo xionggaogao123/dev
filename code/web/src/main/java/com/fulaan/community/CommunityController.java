@@ -1459,7 +1459,6 @@ public class CommunityController extends BaseController {
 
     @RequestMapping("/getOtherMessage")
     @ResponseBody
-    @SessionNeedless
     @ApiOperation(value = "查询某个类别的列表", httpMethod = "GET", produces = "application/json")
     @ApiResponses(value = {@ApiResponse(code = 200, message = "查询某个社区类别的列表成功",response = RespObj.class),
             @ApiResponse(code = 500, message = "查询某个社区类别的列表失败")})
@@ -3394,7 +3393,6 @@ public class CommunityController extends BaseController {
      */
     @RequestMapping("/getMyMessageByType")
     @ResponseBody
-    @SessionNeedless
     @ApiOperation(value = "获取与我有关的模块列表信息", httpMethod = "GET", produces = "application/json")
     @ApiResponses(value = {@ApiResponse(code = 200, message = "获取与我有关的模块列表信息成功",response = Map.class),
             @ApiResponse(code = 500, message = "获取与我有关的模块列表信息失败")})

@@ -14,6 +14,8 @@ import com.aliyuncs.http.FormatType;
 import com.aliyuncs.http.HttpResponse;
 import com.aliyuncs.profile.DefaultProfile;
 import com.aliyuncs.profile.IClientProfile;
+import com.db.backstage.UnlawfulPictureTextDao;
+import com.fulaan.backstage.dto.UnlawfulPictureTextDTO;
 import com.fulaan.picturetext.BaseSample;
 
 import java.util.*;
@@ -164,7 +166,7 @@ public class CheckTextAndPicture extends BaseSample {
      * @param content
      * @throws Exception
      */
-    public static void checkPicture(String content) throws Exception {
+    public static void checkPicture(final String contactId,final String userId,final int function,final int type,final String content) throws Exception {
         //请替换成你自己的accessKeyId、accessKeySecret
         IClientProfile profile = DefaultProfile.getProfile(regionId, accessKeyId, accessKeySecret);
         DefaultProfile.addEndpoint(getEndPointName(), regionId, "Green", getDomain());
@@ -236,8 +238,8 @@ public class CheckTextAndPicture extends BaseSample {
         }
     }
 
-
-    public static void syncScanCheck() throws Exception {
+    //同步检测
+    public static void syncScanCheck(final String contactId,final String userId,final int function,final int type,final String content) throws Exception {
         //请替换成你自己的accessKeyId、accessKeySecret
         IClientProfile profile = DefaultProfile.getProfile(regionId, accessKeyId, accessKeySecret);
         DefaultProfile.addEndpoint(getEndPointName(), regionId, "Green", getDomain());
@@ -254,7 +256,7 @@ public class CheckTextAndPicture extends BaseSample {
         List<Map<String, Object>> tasks = new ArrayList<Map<String, Object>>();
         Map<String, Object> task = new LinkedHashMap<String, Object>();
         task.put("dataId", UUID.randomUUID().toString());
-        task.put("url", "http://xxxx.jpg");
+        task.put("url", content);
         task.put("time", new Date());
 
         tasks.add(task);
@@ -266,7 +268,7 @@ public class CheckTextAndPicture extends BaseSample {
          * ad: 图片广告
          * ocr: 文字识别
          */
-        data.put("scenes", Arrays.asList("porn", "ocr", "qrcode", "sface"));
+        data.put("scenes", Arrays.asList("porn", "terrorism"));
         data.put("tasks", tasks);
 
         imageSyncScanRequest.setContent(data.toJSONString().getBytes("UTF-8"), "UTF-8", FormatType.JSON);
@@ -290,11 +292,23 @@ public class CheckTextAndPicture extends BaseSample {
                             JSONArray sceneResults = ((JSONObject)taskResult).getJSONArray("results");
                             for (Object sceneResult : sceneResults) {
                                 String scene = ((JSONObject)sceneResult).getString("scene");
+                                String label = ((JSONObject)sceneResult).getString("label");
                                 String suggestion = ((JSONObject)sceneResult).getString("suggestion");
                                 //根据scene和suggetion做相关的处理
                                 //do something
                                 System.out.println("args = [" + scene + "]");
                                 System.out.println("args = [" + suggestion + "]");
+                                if(label != null && label != "" && !label.equals("normal")) {
+                                    UnlawfulPictureTextDao unlawfulPictureTextDao = new UnlawfulPictureTextDao();
+                                    UnlawfulPictureTextDTO dto = new UnlawfulPictureTextDTO();
+                                    dto.setType(type);
+                                    dto.setContent(content);
+                                    dto.setUserId(userId.toString());
+                                    dto.setFunction(function);
+                                    dto.setIsCheck(0);
+                                    dto.setContactId(contactId.toString());
+                                    unlawfulPictureTextDao.addEntry(dto.buildAddEntry());
+                                }
                             }
                         }else{
                             System.out.println("task process fail:" + ((JSONObject)taskResult).getInteger("code"));

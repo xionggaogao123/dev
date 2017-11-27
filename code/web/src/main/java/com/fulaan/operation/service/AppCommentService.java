@@ -21,12 +21,16 @@ import com.fulaan.operation.dto.AppCommentDTO;
 import com.fulaan.operation.dto.AppOperationDTO;
 import com.fulaan.operation.dto.AppRecordDTO;
 import com.fulaan.operation.dto.AppRecordResultDTO;
+import com.fulaan.picturetext.runnable.PictureRunNable;
+import com.fulaan.picturetext.service.CheckTextAndPicture;
+import com.fulaan.pojo.Attachement;
 import com.fulaan.pojo.User;
 import com.fulaan.service.CommunityService;
 import com.fulaan.user.service.UserService;
 import com.fulaan.utils.JPushUtils;
 import com.fulaan.wrongquestion.dto.SubjectClassDTO;
 import com.mongodb.DBObject;
+import com.pojo.backstage.PictureType;
 import com.pojo.fcommunity.MemberEntry;
 import com.pojo.indexPage.WebHomePageEntry;
 import com.pojo.instantmessage.ApplyTypeEn;
@@ -85,11 +89,11 @@ public class AppCommentService {
      */
     public String addCommentEntry(AppCommentDTO dto,String comList)throws Exception{
         //文本检测
-       /* Map<String,Object> flag = CheckTextAndPicture.checkText(dto.getDescription() + "-----------" + dto.getTitle());
+        Map<String,Object> flag = CheckTextAndPicture.checkText(dto.getDescription() + "-----------" + dto.getTitle());
         String f = (String)flag.get("bl");
         if(f.equals("1")){
             return (String)flag.get("text");
-        }*/
+        }
 
         Calendar cal = Calendar.getInstance();
         int month = cal.get(Calendar.MONTH)+ 1;
@@ -131,6 +135,12 @@ public class AppCommentService {
             en.setAllLoadNumber(objectIdList3.size());
             String oid = appCommentDao.addEntry(en);
             //图片检测
+            List<Attachement> alist = dto.getImageList();
+            if(alist != null && alist.size()>0){
+                for(Attachement entry5 : alist){
+                    PictureRunNable.send(oid,dto.getAdminId(), PictureType.operationImage.getType(),1,entry5.getUrl());
+                }
+            }
 
 
             List<ObjectId> objectIdList =new ArrayList<ObjectId>();

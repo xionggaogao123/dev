@@ -41,7 +41,7 @@ public class ImageSyncScanRequestSample extends BaseSample {
         List<Map<String, Object>> tasks = new ArrayList<Map<String, Object>>();
         Map<String, Object> task = new LinkedHashMap<String, Object>();
         task.put("dataId", UUID.randomUUID().toString());
-        task.put("url", "http://xxxx.jpg");
+        task.put("url", "http://7xiclj.com1.z0.glb.clouddn.com/head-0.5303349416657666.jpg");
         task.put("time", new Date());
 
         tasks.add(task);

@@ -20,6 +20,7 @@ import com.fulaan.backstage.dto.TeacherApproveDTO;
 import com.fulaan.backstage.dto.UnlawfulPictureTextDTO;
 import com.fulaan.controlphone.dto.ControlPhoneDTO;
 import com.fulaan.controlphone.dto.ControlSchoolTimeDTO;
+import com.fulaan.user.service.UserService;
 import com.pojo.appnotice.AppNoticeEntry;
 import com.pojo.backstage.JxmAppVersionEntry;
 import com.pojo.backstage.PictureType;
@@ -35,19 +36,24 @@ import com.pojo.operation.AppCommentEntry;
 import com.pojo.operation.AppOperationEntry;
 import com.pojo.questionbook.QuestionAdditionEntry;
 import com.pojo.questionbook.QuestionBookEntry;
+import com.pojo.user.UserEntry;
+import com.sys.constants.Constant;
+import com.sys.utils.AvatarUtils;
 import org.bson.types.ObjectId;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 /**
  * Created by James on 2017/11/18.
  */
 @Service
 public class BackStageService {
+
+    @Autowired
+    private UserService userService;
+
     private UnlawfulPictureTextDao unlawfulPictureTextDao = new UnlawfulPictureTextDao();
 
     private ControlSetBackDao controlSetBackDao = new ControlSetBackDao();
@@ -195,9 +201,18 @@ public class BackStageService {
         int count = teacherApproveDao.getNumber(searchId, type);
         List<TeacherApproveDTO> dtos = new ArrayList<TeacherApproveDTO>();
         if(entries.size()>0){
+            Set<ObjectId> userIds=new HashSet<ObjectId>();
+            for(TeacherApproveEntry entry:entries){
+                userIds.add(entry.getUserId());
+            }
+            Map<ObjectId,UserEntry> userEntryMap=userService.getUserEntryMap(userIds, Constant.FIELDS);
             for(TeacherApproveEntry entry : entries){
-
-                dtos.add(new TeacherApproveDTO(entry));
+                TeacherApproveDTO dto=new TeacherApproveDTO(entry);
+                UserEntry userEntry=userEntryMap.get(entry.getUserId());
+                if(null!=userEntry){
+                    dto.setAvatar(AvatarUtils.getAvatar(userEntry.getAvatar(),userEntry.getRole(),userEntry.getSex()));
+                }
+                dtos.add(dto);
             }
         }
 

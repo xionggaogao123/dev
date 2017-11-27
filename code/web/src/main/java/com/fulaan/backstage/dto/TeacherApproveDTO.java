@@ -17,6 +17,7 @@ public class TeacherApproveDTO {
     private String approveId;
     private String loadTime;
     private String applyTime;
+    private String avatar;
     private int type;
     private String url;
     private List<String> communityList = new ArrayList<String>();
@@ -102,6 +103,13 @@ public class TeacherApproveDTO {
 
     }
 
+    public String getAvatar() {
+        return avatar;
+    }
+
+    public void setAvatar(String avatar) {
+        this.avatar = avatar;
+    }
 
     public String getId() {
         return id;

@@ -167,7 +167,16 @@ public class ControlPhoneService {
     }
     //删除可用电话
     public void  delControlPhone(ObjectId id){
-        controlPhoneDao.delEntry(id);
+        ControlPhoneEntry entry = controlPhoneDao.getEntry2(id);
+        if(null != entry){
+            controlPhoneDao.delEntry(id);
+            //向学生端推送消息
+            try {
+                MQTTSendMsg.sendMessage(MQTTType.app.getEname(), entry.getUserId().toString());
+            }catch (Exception e){
+
+            }
+        }
     }
 
     //修改可用电话
@@ -232,6 +241,13 @@ public class ControlPhoneService {
             }
 
         }
+        List<String> objectIdList = newVersionBindService.getStudentIdListByCommunityId(communityId);
+        //向学生端推送消息
+        try {
+            MQTTSendMsg.sendMessageList(MQTTType.phone.getEname(),objectIdList);
+        }catch (Exception e){
+
+        }
     }
 
     //添加/修改推送应用（老师端）
@@ -281,6 +297,12 @@ public class ControlPhoneService {
                 entry.setAppIdList(appIds);
                 controlAppUserDao.updEntry(entry);
             }
+
+        }
+        //向学生端推送消息
+        try {
+            MQTTSendMsg.sendMessage(MQTTType.app.getEname(), sonId.toString());
+        }catch (Exception e){
 
         }
     }
@@ -790,6 +812,24 @@ public class ControlPhoneService {
                 map.put("dto",new ControlSchoolTimeDTO());
             }
         }
+
+        //特殊设置
+        ControlNowTimeEntry entry3 = controlNowTimeDao.getOtherEntryByCommunityIds(dateNowStr, obList);
+        if(entry3 != null){
+            String stm = entry3.getStartTime();
+            long sl = 0l;
+            if(stm != null && stm != ""){
+                sl = DateTimeUtils.getStrToLongTime(dateNowStr+" "+stm, "yyyy-MM-dd HH:mm:ss");
+            }
+            String etm = entry3.getEndTime();
+            long el = 0l;
+            if(etm != null && etm != ""){
+                el = DateTimeUtils.getStrToLongTime(dateNowStr+" "+etm, "yyyy-MM-dd HH:mm:ss");
+            }
+            if(current>sl && current < el){
+                map.put("isControl",false);
+            }
+        }
         return map;
     }
 
@@ -1052,6 +1092,13 @@ public class ControlPhoneService {
         SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
         String dateNowStr = sdf.format(zero);
         controlNowTimeDao.deleteControlTime(communityId,dateNowStr);
+        List<String> objectIdList = newVersionBindService.getStudentIdListByCommunityId(communityId);
+        //向学生端推送消息
+        try {
+            MQTTSendMsg.sendMessageList(MQTTType.phone.getEname(),objectIdList);
+        }catch (Exception e){
+
+        }
     }
     public void setControlTime(ObjectId userId,ObjectId communityId,int time){
         //获得当前时间
@@ -1073,6 +1120,13 @@ public class ControlPhoneService {
         dto.setStartTime(startTime);
         dto.setEndTime(endTime);
         controlNowTimeDao.addEntry(dto.buildAddEntry());
+        List<String> objectIdList = newVersionBindService.getStudentIdListByCommunityId(communityId);
+        //向学生端推送消息
+        try {
+            MQTTSendMsg.sendMessageList(MQTTType.phone.getEname(),objectIdList);
+        }catch (Exception e){
+
+        }
     }
 
 

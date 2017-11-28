@@ -38,4 +38,27 @@ public class PictureRunNable{
         }.start();
     }
 
+
+    public static void sendMessage(final String contactId,final String userId,final int function,final int type,final String content) {
+        new Thread(){
+            public void run() {
+                UnlawfulPictureTextDao unlawfulPictureTextDao = new UnlawfulPictureTextDao();
+                System.out.println("新的线程在执行...");
+                //System.out.println(prtNo);
+                try{
+                    CheckTextAndPicture.syncScanCheck(contactId,userId,function,type,content);
+                }catch(Exception e){
+                    UnlawfulPictureTextDTO dto = new UnlawfulPictureTextDTO();
+                    dto.setType(type);
+                    dto.setContent(content);
+                    dto.setUserId(userId.toString());
+                    dto.setFunction(function);
+                    dto.setIsCheck(0);
+                    dto.setContactId(contactId.toString());
+                    unlawfulPictureTextDao.addEntry(dto.buildAddEntry());
+                    logger.error("error",e);
+                }
+            }
+        }.start();
+    }
 }

@@ -63,6 +63,22 @@ public static void main(String[] args){
         }
         return entryList;
     }
+
+    public ControlNowTimeEntry getOtherEntryByCommunityIds(String dateTime,List<ObjectId> userIds) {
+        BasicDBObject query = new BasicDBObject();
+        query.append("isr", Constant.ZERO).append("cid", new BasicDBObject(Constant.MONGO_IN,userIds)).append("dtm",dateTime);
+        List<DBObject> dbList =
+                find(MongoFacroty.getAppDB(),
+                        Constant.COLLECTION_CONTROL_NOW_TIME,
+                        query, Constant.FIELDS,
+                        Constant.MONGO_SORTBY_DESC);
+        ControlNowTimeEntry entryList = null;
+        if (dbList != null && !dbList.isEmpty()) {
+            DBObject obj = dbList.get(0);
+            entryList = new ControlNowTimeEntry((BasicDBObject)obj);
+        }
+        return entryList;
+    }
     //删除作业
     public void deleteControlTime(ObjectId communityId,String dateTime){
         BasicDBObject query = new BasicDBObject("cid",communityId);

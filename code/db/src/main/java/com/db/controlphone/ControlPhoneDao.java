@@ -31,6 +31,18 @@ public class ControlPhoneDao extends BaseDao {
         }
         return null;
     }
+    public ControlPhoneEntry getEntry2(ObjectId id) {
+        BasicDBObject query =new BasicDBObject(Constant.ID,id);
+        query.append("isr", Constant.ZERO);
+        DBObject dbo =findOne(MongoFacroty.getAppDB(), Constant.COLLECTION_CONTROL_PHONE, query, Constant.FIELDS);
+        if(null!=dbo)
+        {
+            return new ControlPhoneEntry((BasicDBObject)dbo);
+        }
+        return null;
+    }
+
+
     //修改
     public void updateEntry(String name,String phone,ObjectId id){
         BasicDBObject query = new BasicDBObject(Constant.ID,id);

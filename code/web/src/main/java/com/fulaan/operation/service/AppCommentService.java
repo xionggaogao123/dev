@@ -599,6 +599,56 @@ public static void main(String[] args){
         redDotService.cleanResult(userId,ApplyTypeEn.operation.getType(),dateTime);
         return map2;
     }
+    public Map<String,Object> selectNewListByCommunityId(ObjectId userId,ObjectId communityId,int page,int pageSize){
+        Map<String,Object> map = new HashMap<String, Object>();
+        List<AppCommentEntry> entries3 = appCommentDao.selectNewListByCommunityId(communityId, page, pageSize);
+        List<AppCommentDTO> dtos = new ArrayList<AppCommentDTO>();
+        List<String> uids = new ArrayList<String>();
+        List<ObjectId> idList = new ArrayList<ObjectId>();
+        for(AppCommentEntry en : entries3){
+            String str = en.getAdminId().toString();
+            AppCommentDTO dto = new AppCommentDTO(en);
+            if(str != null && str.equals(userId.toString())){
+                dto.setType(1);
+            }else{
+                dto.setType(2);
+                idList.add(en.getID());
+            }
+            String ctm = dto.getCreateTime();
+            dto.setCreateTime(ctm);
+
+            uids.add(dto.getAdminId());
+            dtos.add(dto);
+        }
+        List<ObjectId> objectIdList = appRecordResultDao.getEntryByParentList(idList,userId);
+        List<UserDetailInfoDTO> udtos = userService.findUserInfoByUserIds(uids);
+        Map<String,UserDetailInfoDTO> map2 = new HashMap<String, UserDetailInfoDTO>();
+        if(udtos != null && udtos.size()>0){
+            for(UserDetailInfoDTO dto4 : udtos){
+                map2.put(dto4.getId(),dto4);
+            }
+        }
+        for(AppCommentDTO dto5 : dtos){
+            UserDetailInfoDTO dto9 = map2.get(dto5.getAdminId());
+            if(dto9 != null){
+                String name = StringUtils.isNotEmpty(dto9.getNickName())?dto9.getNickName():dto9.getUserName();
+                dto5.setAdminName(name);
+                dto5.setAdminUrl(dto9.getImgUrl());
+            }
+            dto5.setIsLoad(1);
+            if(objectIdList.size()>0){
+                if(objectIdList.contains(new ObjectId(dto5.getId()))){
+                    dto5.setIsLoad(2);
+                }
+            }
+        }
+        int count = appCommentDao.selectNewListByCommunityIdNum(communityId);
+        map.put("list",dtos);
+        map.put("count",count);
+        return map;
+    }
+
+
 
     /**
      * 按日查找用户发放作业情况
@@ -1254,7 +1304,7 @@ public static void main(String[] args){
             appRecordResultDao.addEntry(obj);
 
             AppCommentEntry entry1 = appCommentDao.getEntry(id);
-            entry1.setWriteNumber(entry1.getWriteNumber());
+            entry1.setWriteNumber(entry1.getWriteNumber()+1);
             appCommentDao.updEntry(entry1);
         }
         return "签到成功";

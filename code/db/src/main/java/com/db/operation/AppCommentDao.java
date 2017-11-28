@@ -136,6 +136,28 @@ public class AppCommentDao extends BaseDao {
                 find(MongoFacroty.getAppDB(),
                         Constant.COLLECTION_APP_COMMENT,
                         query, Constant.FIELDS,
+                        Constant.MONGO_SORTBY_DESC, (page - 1) * pageSize, pageSize);
+        List<AppCommentEntry> entryList = new ArrayList<AppCommentEntry>();
+        if (dbList != null && !dbList.isEmpty()) {
+            for (DBObject obj : dbList) {
+                entryList.add(new AppCommentEntry((BasicDBObject) obj));
+            }
+        }
+        return entryList;
+    }
+    //根据社区id查询
+    public List<AppCommentEntry> selectNewListByCommunityId(ObjectId communityId,int page,int pageSize) {
+        List<Integer> ilist = new ArrayList<Integer>();
+        ilist.add(1);
+        ilist.add(0);
+        BasicDBObject query = new BasicDBObject()
+                .append("rid", communityId)
+                .append("sta", new BasicDBObject(Constant.MONGO_IN, ilist))
+                .append("isr", 0); // 未删除
+        List<DBObject> dbList =
+                find(MongoFacroty.getAppDB(),
+                        Constant.COLLECTION_APP_COMMENT,
+                        query, Constant.FIELDS,
                         Constant.MONGO_SORTBY_DESC,(page - 1) * pageSize, pageSize);
         List<AppCommentEntry> entryList = new ArrayList<AppCommentEntry>();
         if (dbList != null && !dbList.isEmpty()) {
@@ -144,6 +166,21 @@ public class AppCommentDao extends BaseDao {
             }
         }
         return entryList;
+    }
+
+    /**
+     * 符合搜索条件的对象个数
+     * @return
+     */
+    public int selectNewListByCommunityIdNum(ObjectId communityId) {
+        BasicDBObject query =new BasicDBObject();
+        query.append("isr", Constant.ZERO);
+        query.append("rid", communityId);
+        int count =
+                count(MongoFacroty.getAppDB(),
+                        Constant.COLLECTION_APP_COMMENT,
+                        query);
+        return count;
     }
 
     /**

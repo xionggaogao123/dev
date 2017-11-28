@@ -511,6 +511,12 @@ public class MemberDao extends BaseDao {
     }
 
 
+    public boolean  judgeIsParent(ObjectId userId){
+            BasicDBObject query = new BasicDBObject().append("uid", userId).append("rl", Constant.ZERO).append("r", Constant.ZERO);
+        return count(MongoFacroty.getAppDB(), Constant.COLLECTION_FORUM_COMMUNITY_MEMBER, query)>0;
+    }
+
+
     public boolean judgeManagePermissionOfUser(ObjectId userId){
         List<Integer> roles=new ArrayList<Integer>();
         roles.add(Constant.ONE);

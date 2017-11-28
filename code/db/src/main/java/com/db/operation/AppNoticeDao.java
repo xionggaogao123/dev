@@ -9,6 +9,7 @@ import com.pojo.appnotice.AppNoticeEntry;
 import com.pojo.utils.MongoUtils;
 import com.sys.constants.Constant;
 import org.apache.commons.lang.StringUtils;
+import org.apache.http.impl.nio.reactor.BaseIOReactor;
 import org.bson.types.ObjectId;
 
 import java.util.ArrayList;
@@ -42,6 +43,45 @@ public class AppNoticeDao extends BaseDao{
     public void saveAppNoticeEntries(List<AppNoticeEntry> entries){
         save(MongoFacroty.getAppDB(), Constant.COLLECTION_NEW_VERSION_APP_NOTICE, MongoUtils.fetchDBObjectList(entries));
     }
+
+    public List<AppNoticeEntry> getMyAppNotices(ObjectId communityId,
+                                                ObjectId userId,
+                                                int page,
+                                                int pageSize){
+        List<AppNoticeEntry> entries=new ArrayList<AppNoticeEntry>();
+        BasicDBObject query=getMyAppNoticesCondition(communityId,userId);
+        List<DBObject> dbObjectList=find(MongoFacroty.getAppDB(), Constant.COLLECTION_NEW_VERSION_APP_NOTICE,query,
+                Constant.FIELDS,Constant.MONGO_SORTBY_DESC,(page-1)*pageSize,pageSize);
+        if(null!=dbObjectList&&!dbObjectList.isEmpty()){
+            for(DBObject dbObject:dbObjectList){
+                entries.add(new AppNoticeEntry(dbObject));
+            }
+        }
+        return entries;
+    }
+
+
+    public BasicDBObject getMyAppNoticesCondition(ObjectId communityId,
+                                                  ObjectId userId){
+        BasicDBObject query=new BasicDBObject()
+                .append("ir",Constant.ZERO);
+        if(null!=communityId){
+            query.append("cmId",communityId);
+        }
+        BasicDBList values = new BasicDBList();
+        BasicDBObject query1=new BasicDBObject("uid",userId);
+        values.add(query1);
+        List<Integer> watchPermissions=new ArrayList<Integer>();
+        watchPermissions.add(Constant.ONE);
+        watchPermissions.add(Constant.THREE);
+        BasicDBObject query2=new BasicDBObject()
+                .append("uid",new BasicDBObject(Constant.MONGO_NE,userId))
+                .append("wp",new BasicDBObject(Constant.MONGO_IN,watchPermissions));
+        values.add(query2);
+        query.put(Constant.MONGO_OR,values);
+        return query;
+    }
+
 
 
     /**

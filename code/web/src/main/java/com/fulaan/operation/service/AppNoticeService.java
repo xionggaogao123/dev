@@ -222,6 +222,15 @@ public class AppNoticeService {
     }
 
 
+    public Map<String,Object> getMyAppNotices(String cId,ObjectId userId,int page,int pageSize){
+        Map<String,Object> result=new HashMap<String,Object>();
+        ObjectId communityId=StringUtils.isNotEmpty(cId)?new ObjectId(cId):null;
+        List<AppNoticeEntry> entries=appNoticeDao.getMyAppNotices(communityId,userId,page,pageSize);
+
+        return result;
+    }
+
+
     /**
      * 获取我发送的通知
      * @param userId

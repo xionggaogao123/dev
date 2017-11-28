@@ -8,8 +8,7 @@ import com.fulaan.annotation.SessionNeedless;
 import com.fulaan.annotation.UserRoles;
 import com.fulaan.base.BaseController;
 import com.fulaan.cache.CacheHandler;
-import com.fulaan.forum.service.FLogService;
-import com.fulaan.forum.service.FScoreService;
+import com.fulaan.forum.service.*;
 import com.fulaan.friendscircle.service.FriendService;
 import com.fulaan.log.service.LogService;
 import com.fulaan.playmate.service.MateService;
@@ -115,6 +114,12 @@ public class WebUserController extends BaseController {
     private FScoreService fScoreService;
     @Autowired
     private MateService mateService;
+    @Autowired
+    private FMissionService fMissionService;
+    @Autowired
+    private FCollectionService fCollectionService;
+    @Autowired
+    private FLevelService fLevelService;
     @Autowired
     private MemberService memberService;
     @Autowired
@@ -1963,6 +1968,68 @@ public class WebUserController extends BaseController {
             userDatas.add(user);
         }
         return RespObj.SUCCESS(userDatas);
+    }
+
+    @ApiOperation(value = "getLoginInfo", httpMethod = "POST", produces = "application/json")
+    @ApiResponses( value = {@ApiResponse(code = 200, message = "Successful — 请求已完成",response = Map.class)})
+    @SessionNeedless
+    @RequestMapping("/loginInfo")
+    @ResponseBody
+    public Map<String, Object> getLoginInfo(HttpServletRequest request, HttpServletResponse response) throws Exception {
+        Map<String, Object> model = new HashMap<String, Object>();
+        loginInfo(request, response, model);
+        return model;
+    }
+
+
+
+    private void loginInfo(HttpServletRequest request, HttpServletResponse response, Map<String, Object> model) throws Exception {
+        SessionValue sessionValue = getSessionValue();
+        if (null == sessionValue || sessionValue.isEmpty()) {
+            model.put("userName", "");
+            model.put("userId", "");
+            model.put("login", false);
+            model.put("k6kt", -1);
+            model.put("signIn", false);
+            model.put("packageCode","");
+            return;
+        }
+
+        if (userService.isSilenced(sessionValue.getId())) {
+            response.sendRedirect("/forum/forumVisited.do");
+            return;
+        }
+
+        Map<String, Object> map = fMissionService.findTodayMissionByUserId(sessionValue.getId());
+        model.put("signIn", map.get("signIn"));
+        model.put("userPermission", sessionValue.getUserRole());
+        model.put("userName", sessionValue.getUserName());
+        if ("".equals(sessionValue.getRealName())) {
+            model.put("nickName", sessionValue.getUserName());
+        } else {
+            model.put("nickName", sessionValue.getRealName());
+        }
+        String temp = request.getParameter("pSectionId");
+        if (null != temp && !"".equals(temp)) {
+            boolean collect = fCollectionService.isCollected(new ObjectId(sessionValue.getId()), temp);
+            model.put("collect", collect);
+        }
+
+        UserEntry userEntry = userService.findById(new ObjectId(sessionValue.getId()));
+        model.put("forumScore", userEntry.getForumScore());
+        if(StringUtils.isNotBlank(userEntry.getQRCode())){
+            model.put("qrCode",userEntry.getQRCode());
+        }
+
+        model.put("forumExperience", userEntry.getForumExperience());
+        long stars = fLevelService.getStars(userEntry.getForumExperience());
+        model.put("stars", stars);
+        model.put("userId", sessionValue.getId());
+        model.put("packageCode",userEntry.getGenerateUserCode());
+        model.put("login", true);
+        model.put("k6kt", sessionValue.getK6kt());
+        model.put("avatar", sessionValue.getMinAvatar());
+        model.put("mobileNumber",userEntry.getMobileNumber());
     }
 
 }

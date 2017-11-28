@@ -54,7 +54,31 @@ public class VirtualUserDao extends BaseDao{
         BasicDBObject query=new BasicDBObject()
                 .append("ir",Constant.ZERO)
                 .append("cid",communityId);
-        List<DBObject> dbObjectList=find(MongoFacroty.getAppDB(), Constant.COLLECTION_REPORT_CARD_VIRTUAL_USER,query,Constant.FIELDS);
+        List<DBObject> dbObjectList=find(MongoFacroty.getAppDB(), Constant.COLLECTION_REPORT_CARD_VIRTUAL_USER,
+                query,Constant.FIELDS);
+        if(null!=dbObjectList&&!dbObjectList.isEmpty()){
+            for(DBObject dbObject:dbObjectList){
+                entries.add(new VirtualUserEntry(dbObject));
+            }
+        }
+        return entries;
+    }
+
+    public int countAllVirtualUsers(ObjectId communityId){
+        BasicDBObject query=new BasicDBObject()
+                .append("ir",Constant.ZERO)
+                .append("cid",communityId);
+        return count(MongoFacroty.getAppDB(), Constant.COLLECTION_REPORT_CARD_VIRTUAL_USER,
+                query);
+    }
+
+    public List<VirtualUserEntry> getAllVirtualUsers(ObjectId communityId,int page,int pageSize){
+        List<VirtualUserEntry> entries=new ArrayList<VirtualUserEntry>();
+        BasicDBObject query=new BasicDBObject()
+                .append("ir",Constant.ZERO)
+                .append("cid",communityId);
+        List<DBObject> dbObjectList=find(MongoFacroty.getAppDB(), Constant.COLLECTION_REPORT_CARD_VIRTUAL_USER,
+                query,Constant.FIELDS,Constant.MONGO_SORTBY_DESC,(page-1)*pageSize,pageSize);
         if(null!=dbObjectList&&!dbObjectList.isEmpty()){
             for(DBObject dbObject:dbObjectList){
                 entries.add(new VirtualUserEntry(dbObject));

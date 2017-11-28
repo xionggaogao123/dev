@@ -150,7 +150,14 @@ public class WebHomePageDao extends BaseDao{
             query.append("cid",communityId);
         }
         if(type!=-1){
-            query.append("ty",type);
+            if(type==2){
+                List<Integer> types=new ArrayList<Integer>();
+                types.add(Constant.TWO);
+                types.add(Constant.FOUR);
+                query.append("ty", new BasicDBObject(Constant.MONGO_IN,types));
+            }else {
+                query.append("ty", type);
+            }
         }
         if(subjectId!=null){
             query.append("sid",subjectId);

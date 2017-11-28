@@ -396,7 +396,7 @@ public class ReportCardController extends BaseController {
         return respObj;
     }
 
-    @ApiOperation(value = "导出模板", httpMethod = "GET", produces = "application/json")
+    @ApiOperation(value = "学生管理下载模板", httpMethod = "GET", produces = "application/json")
     @RequestMapping("/exportUserTemplate")
     @ResponseBody
     public void exportUserTemplate(HttpServletResponse response) {
@@ -407,7 +407,7 @@ public class ReportCardController extends BaseController {
         }
     }
 
-    @ApiOperation(value = "查看人员名单", httpMethod = "GET", produces = "application/json")
+    @ApiOperation(value = "编辑学生信息", httpMethod = "GET", produces = "application/json")
     @ApiResponses(value = {@ApiResponse(code = 200, message = "导入模板已完成", response = String.class),
             @ApiResponse(code = 400, message = "请求中有语法问题，或不能满足请求"),
             @ApiResponse(code = 500, message = "服务器不能完成请求")})
@@ -421,18 +421,22 @@ public class ReportCardController extends BaseController {
         respObj.setMessage("删除人员成功");
         return respObj;
     }
-
+    @ApiOperation(value = "查询班级学生列表", httpMethod = "GET", produces = "application/json")
+    @ApiResponses(value = {@ApiResponse(code = 200, message = "导入模板已完成", response = String.class),
+            @ApiResponse(code = 400, message = "请求中有语法问题，或不能满足请求"),
+            @ApiResponse(code = 500, message = "服务器不能完成请求")})
     @RequestMapping("/searchUserList/{communityId}")
     @ResponseBody
-    public RespObj searchUserList(@PathVariable @ObjectIdType ObjectId communityId) {
+    public RespObj searchUserList(@PathVariable @ObjectIdType ObjectId communityId,
+                                  int page,int pageSize) {
         RespObj respObj = new RespObj(Constant.SUCCESS_CODE);
-        List<VirtualUserDTO> dtos = reportCardService.searchUserList(communityId);
-        respObj.setMessage(dtos);
+        Map<String,Object> result= reportCardService.searchUserList(communityId,page,pageSize);
+        respObj.setMessage(result);
         return respObj;
     }
 
 
-    @ApiOperation(value = "获取群组名单", httpMethod = "GET", produces = "application/json")
+    @ApiOperation(value = "获取班级名单", httpMethod = "GET", produces = "application/json")
     @ApiResponses(value = {@ApiResponse(code = 200, message = "导入模板已完成", response = String.class),
             @ApiResponse(code = 400, message = "请求中有语法问题，或不能满足请求"),
             @ApiResponse(code = 500, message = "服务器不能完成请求")})
@@ -446,7 +450,7 @@ public class ReportCardController extends BaseController {
     }
 
 
-    @ApiOperation(value = "导入模板", httpMethod = "GET", produces = "application/json")
+    @ApiOperation(value = "班级导入学生名单", httpMethod = "GET", produces = "application/json")
     @ApiResponses(value = {@ApiResponse(code = 200, message = "导入模板已完成", response = String.class),
             @ApiResponse(code = 400, message = "请求中有语法问题，或不能满足请求"),
             @ApiResponse(code = 500, message = "服务器不能完成请求")})
@@ -473,7 +477,7 @@ public class ReportCardController extends BaseController {
         return respObj;
     }
 
-    @ApiOperation(value = "删除人员,也就是清空人员", httpMethod = "GET", produces = "application/json")
+    @ApiOperation(value = "删除班级学生列表", httpMethod = "GET", produces = "application/json")
     @ApiResponses(value = {@ApiResponse(code = 200, message = "导入模板已完成", response = String.class),
             @ApiResponse(code = 400, message = "请求中有语法问题，或不能满足请求"),
             @ApiResponse(code = 500, message = "服务器不能完成请求")})
@@ -487,7 +491,7 @@ public class ReportCardController extends BaseController {
     }
 
 
-    @ApiOperation(value = "删除虚拟用户", httpMethod = "GET", produces = "application/json")
+    @ApiOperation(value = "删除学生信息", httpMethod = "GET", produces = "application/json")
     @ApiResponses(value = {@ApiResponse(code = 200, message = "导入模板已完成", response = String.class),
             @ApiResponse(code = 400, message = "请求中有语法问题，或不能满足请求"),
             @ApiResponse(code = 500, message = "服务器不能完成请求")})

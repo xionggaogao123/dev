@@ -8,7 +8,7 @@ import org.bson.types.ObjectId;
 
 /**
  * Created by scott on 2017/11/17.
- * type:1 作业    2 通知  3成绩单
+ * type:1 作业  2 通知  3成绩单
  * communityId:群组Id
  * userId:发起者Id
  * contactId:作业或者通知/成绩单消息Id,

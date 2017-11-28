@@ -800,14 +800,20 @@ public class ReportCardService {
         return examTypeDTOs;
     }
 
-    public List<VirtualUserDTO> searchUserList(ObjectId communityId){
+    public Map<String,Object> searchUserList(ObjectId communityId,int page,int pageSize){
+        Map<String,Object> result=new HashMap<String,Object>();
         List<VirtualUserDTO>  virtualUserDTOs=new ArrayList<VirtualUserDTO>();
-        List<VirtualUserEntry> virtualUserEntries=virtualUserDao.getAllVirtualUsers(communityId);
+        List<VirtualUserEntry> virtualUserEntries=virtualUserDao.getAllVirtualUsers(communityId,page,pageSize);
         for(VirtualUserEntry virtualUserEntry:virtualUserEntries){
             VirtualUserDTO dto=new VirtualUserDTO(virtualUserEntry);
             virtualUserDTOs.add(dto);
         }
-        return virtualUserDTOs;
+        int count=virtualUserDao.countAllVirtualUsers(communityId);
+        result.put("page",page);
+        result.put("pageSize",pageSize);
+        result.put("count",count);
+        result.put("list",virtualUserDTOs);
+        return result;
     }
 
     public List<VirtualCommunityUserDTO> getRoleCommunities(ObjectId userId){

@@ -127,6 +127,14 @@ public class AppNoticeService {
                 dto1.setContactId(oid.toString());
                 IndexPageEntry entry = dto1.buildAddEntry();
                 indexPageDao.addEntry(entry);
+
+                WebHomePageEntry pageEntry=new WebHomePageEntry(Constant.FOUR, userId,
+                        StringUtils.isNotEmpty(communityDTO.getCommunityId())?
+                                new ObjectId(communityDTO.getCommunityId()):null, oid, StringUtils.isNotEmpty(dto.getSubjectId())?
+                        new ObjectId(dto.getSubjectId()):null,
+                        null,Constant.ZERO
+                );
+                webHomePageDao.saveWebHomeEntry(pageEntry);
             }
         }
         try {

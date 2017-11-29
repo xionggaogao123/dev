@@ -3475,4 +3475,17 @@ public class WebCommunityController extends BaseController {
         return respObj;
     }
 
+
+    @RequestMapping("/searchUserList")
+    @ResponseBody
+    @ApiOperation(value = "查询用户信息列表", httpMethod = "GET", produces = "application/json")
+    @ApiResponses(value = {@ApiResponse(code = 200, message = "查询社区列表和用户信息成功",response = RespObj.class),
+            @ApiResponse(code = 500, message = "查询社区列表和用户信息失败")})
+    public RespObj searchUserList(@ApiParam(name="relax",required = true,value = "关键字")String relax) {
+        Map<String,Object> retMap=new HashMap<String,Object>();
+        List<CommunityService.UserSearchInfo> users=communityService.getUserSearchDtos(relax);
+        retMap.put("users",users);
+        return RespObj.SUCCESS(retMap);
+    }
+
 }

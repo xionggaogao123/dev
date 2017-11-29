@@ -3,6 +3,7 @@ package com.fulaan.backstage.service;
 import com.db.backstage.JxmAppVersionDao;
 import com.db.backstage.TeacherApproveDao;
 import com.db.backstage.UnlawfulPictureTextDao;
+import com.db.backstage.UserRoleOfPathDao;
 import com.db.controlphone.ControlPhoneDao;
 import com.db.controlphone.ControlSchoolTimeDao;
 import com.db.controlphone.ControlSetBackDao;
@@ -18,14 +19,12 @@ import com.db.user.UserDao;
 import com.fulaan.backstage.dto.JxmAppVersionDTO;
 import com.fulaan.backstage.dto.TeacherApproveDTO;
 import com.fulaan.backstage.dto.UnlawfulPictureTextDTO;
+import com.fulaan.backstage.dto.UserRoleOfPathDTO;
 import com.fulaan.controlphone.dto.ControlPhoneDTO;
 import com.fulaan.controlphone.dto.ControlSchoolTimeDTO;
 import com.fulaan.user.service.UserService;
 import com.pojo.appnotice.AppNoticeEntry;
-import com.pojo.backstage.JxmAppVersionEntry;
-import com.pojo.backstage.PictureType;
-import com.pojo.backstage.TeacherApproveEntry;
-import com.pojo.backstage.UnlawfulPictureTextEntry;
+import com.pojo.backstage.*;
 import com.pojo.controlphone.ControlPhoneEntry;
 import com.pojo.controlphone.ControlSchoolTimeEntry;
 import com.pojo.controlphone.ControlSetBackEntry;
@@ -83,6 +82,8 @@ public class BackStageService {
     private TeacherApproveDao teacherApproveDao = new TeacherApproveDao();
 
     private JxmAppVersionDao jxmAppVersionDao = new JxmAppVersionDao();
+
+    private UserRoleOfPathDao userRoleOfPathDao = new UserRoleOfPathDao();
 
     private static String imageUrl = "http://7xiclj.com1.z0.glb.clouddn.com/5a1bdcfd27fddd15c8649dea.png";
 
@@ -380,6 +381,32 @@ public class BackStageService {
         }
 
     }
+
+    public List<UserRoleOfPathDTO> getUserRoleOfPathDTO(){
+        List<UserRoleOfPathDTO> pathDTOs=new ArrayList<UserRoleOfPathDTO>();
+        List<UserRoleOfPathEntry> entries=userRoleOfPathDao.getRoleEntries();
+        for(UserRoleOfPathEntry pathEntry:entries){
+            pathDTOs.add(new UserRoleOfPathDTO(pathEntry));
+        }
+        return pathDTOs;
+    }
+
+
+    public void saveUserRoleOfPath(String pathStr,
+                                   int role){
+        UserRoleOfPathEntry entry=userRoleOfPathDao.getEntryByRole(role);
+        String[] paths=pathStr.split(",");
+        List<String> pathList=new ArrayList<String>();
+        for(String item:paths){
+            pathList.add(item);
+        }
+        UserRoleOfPathEntry pathEntry=new UserRoleOfPathEntry(pathList,role);
+        if(null!=entry){
+            pathEntry.setID(entry.getID());
+        }
+        userRoleOfPathDao.saveUserRoleOfPath(pathEntry);
+    }
+
 
 
 }

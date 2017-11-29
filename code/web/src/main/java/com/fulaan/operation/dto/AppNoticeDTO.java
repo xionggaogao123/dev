@@ -46,6 +46,8 @@ public class AppNoticeDTO {
     private int unReadCount;
     private int totalReadCount;
 
+    private boolean isOwner;
+
 
     public AppNoticeDTO(
                         String subjectId,
@@ -165,6 +167,14 @@ public class AppNoticeDTO {
         }
         this.commentCount=entry.getCommentCount();
         this.time= DateTimeUtils.convert(entry.getSubmitTime(),DateTimeUtils.DATE_YYYY_MM_DD_HH_MM_SS_H);
+    }
+
+    public boolean isOwner() {
+        return isOwner;
+    }
+
+    public void setOwner(boolean owner) {
+        isOwner = owner;
     }
 
     public List<Attachement> getVoiceList() {

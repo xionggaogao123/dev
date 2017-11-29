@@ -930,5 +930,9 @@ public class Constant {
     public static final String COLLECTION_TEACHER_APPROVE= "teacherapprove";
     //复兰应用版本
     public static final String COLLECTION_JXM_APP_VERSION= "jxmappversion";
+    //用户角色管理
+    public static final String COLLECTION_USER_LOG_RESULT="jxm_user_log_result";
+    //角色对应的路径管理
+    public static final String COLLECTION_USER_ROLE_OF_PATH="jxm_user_role_of_path";
 
 }

@@ -371,4 +371,19 @@ public class MemberService {
     public boolean judgeManagePermissionOfUser(ObjectId userId){
         return memberDao.judgeManagePermissionOfUser(userId);
     }
+
+    public int judgePersonPermission(ObjectId userId){
+        int status=0;
+        if(memberDao.judgeIsParent(userId)){
+            status=2;
+            if(memberDao.judgeManagePermissionOfUser(userId)){
+                status=3;
+            }
+        }else{
+            if(memberDao.judgeManagePermissionOfUser(userId)){
+                status=1;
+            }
+        }
+        return status;
+    }
 }

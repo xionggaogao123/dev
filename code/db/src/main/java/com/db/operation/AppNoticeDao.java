@@ -44,6 +44,12 @@ public class AppNoticeDao extends BaseDao{
         save(MongoFacroty.getAppDB(), Constant.COLLECTION_NEW_VERSION_APP_NOTICE, MongoUtils.fetchDBObjectList(entries));
     }
 
+    public int countMyAppNotices(ObjectId communityId,
+                                 ObjectId userId){
+        BasicDBObject query=getMyAppNoticesCondition(communityId,userId);
+        return count(MongoFacroty.getAppDB(), Constant.COLLECTION_NEW_VERSION_APP_NOTICE,query);
+    }
+
     public List<AppNoticeEntry> getMyAppNotices(ObjectId communityId,
                                                 ObjectId userId,
                                                 int page,

@@ -226,7 +226,12 @@ public class AppNoticeService {
         Map<String,Object> result=new HashMap<String,Object>();
         ObjectId communityId=StringUtils.isNotEmpty(cId)?new ObjectId(cId):null;
         List<AppNoticeEntry> entries=appNoticeDao.getMyAppNotices(communityId,userId,page,pageSize);
-
+        int count=appNoticeDao.countMyAppNotices(communityId,userId);
+        List<AppNoticeDTO> appNoticeDTOs=getAppNoticeDtos(entries,userId);
+        result.put("list",appNoticeDTOs);
+        result.put("count",count);
+        result.put("page",page);
+        result.put("pageSize",pageSize);
         return result;
     }
 
@@ -314,6 +319,18 @@ public class AppNoticeService {
             dto.setIsRead(0);
             if(dto.getReadList().contains(userId.toString())){
                 dto.setIsRead(1);
+            }
+            dto.setOwner(false);
+            if(entry.getUserId().equals(userId)){
+                //设置已阅和未阅的人数
+                List<ObjectId> reads=entry.getReaList();
+                List<ObjectId> members=memberDao.getAllMemberIds(entry.getGroupId());
+                members.remove(userId);
+                dto.setTotalReadCount(members.size());
+                members.removeAll(reads);
+                dto.setReadCount(reads.size());
+                dto.setUnReadCount(members.size());
+                dto.setOwner(true);
             }
             dto.setTimeExpression(TimeChangeUtils.getChangeTime(entry.getSubmitTime()));
             dtos.add(dto);

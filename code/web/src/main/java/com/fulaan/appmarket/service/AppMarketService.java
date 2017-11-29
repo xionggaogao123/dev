@@ -192,6 +192,13 @@ public class AppMarketService {
         appDetailDao.setOrder(apkId,order);
     }
 
+    public void updateApkByType(String id, int type){
+        if(StringUtils.isNotEmpty(id)) {
+            ObjectId apkId = new ObjectId(id);
+            appDetailDao.updateApkByType(apkId,type);
+        }
+    }
+
     public void importApkFile(MultipartFile file, InputStream inputStream, String fileName) throws Exception {
         ObjectId id = new ObjectId();
         final String anOSName = System.getProperty("os.name");
@@ -268,7 +275,7 @@ public class AppMarketService {
                     newEntry = new AppDetailEntry(
                     packageName,
                     imageFileUrl,
-                    Constant.ZERO,
+                    Constant.TWO,
                     size,
                     Integer.valueOf(apkInfo.getVersionCode()),
                     Constant.ONE,

@@ -43,6 +43,13 @@ public class AppDetailDao extends BaseDao {
         }
     }
 
+    public void updateApkByType(ObjectId id,int type){
+        BasicDBObject query=new BasicDBObject()
+                .append(Constant.ID,id);
+        BasicDBObject updateValue=new BasicDBObject(Constant.MONGO_SET,new BasicDBObject("ty",type));
+        update(MongoFacroty.getAppDB(), Constant.COLLECTION_APP_MARKET_DETAIL,query,updateValue);
+    }
+
 
     public AppDetailEntry getEntryByApkPackageName(String packageName){
         BasicDBObject query=new BasicDBObject()

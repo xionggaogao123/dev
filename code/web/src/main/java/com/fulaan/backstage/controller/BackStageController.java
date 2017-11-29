@@ -414,4 +414,14 @@ public class BackStageController extends BaseController {
         }
         return JSON.toJSONString(respObj);
     }
+
+
+    @RequestMapping("/updateApkByType")
+    @ResponseBody
+    public RespObj updateApkByType(String id, int type){
+        RespObj respObj=new RespObj(Constant.SUCCESS_CODE);
+        appMarketService.updateApkByType(id,type);
+        return respObj;
+    }
+
 }

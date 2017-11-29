@@ -20,7 +20,7 @@ import com.pojo.user.UserEntry;
 import com.sys.constants.Constant;
 import com.sys.props.Resources;
 import org.apache.commons.io.FilenameUtils;
-import org.apache.commons.lang3.StringUtils;
+import org.apache.commons.lang.StringUtils;
 import org.bson.types.ObjectId;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;

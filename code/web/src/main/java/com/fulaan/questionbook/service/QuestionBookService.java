@@ -2,8 +2,10 @@ package com.fulaan.questionbook.service;
 
 import com.db.questionbook.QuestionAdditionDao;
 import com.db.questionbook.QuestionBookDao;
+import com.fulaan.picturetext.runnable.PictureRunNable;
 import com.fulaan.questionbook.dto.QuestionAdditionDTO;
 import com.fulaan.questionbook.dto.QuestionBookDTO;
+import com.pojo.backstage.PictureType;
 import com.pojo.questionbook.QuestionAdditionEntry;
 import com.pojo.questionbook.QuestionBookEntry;
 import org.bson.types.ObjectId;
@@ -74,6 +76,13 @@ public class QuestionBookService {
         entry.setDateTime(current);
         ObjectId oid = questionBookDao.addEntry(entry);
 
+        //图片检测
+        List<String> alist = dto.getImageList();
+        if(alist != null && alist.size()>0){
+            for(String entry5 : alist){
+                PictureRunNable.send(oid.toString(), dto.getUserId(), PictureType.wrongImage.getType(), 1, entry5);
+            }
+        }
         return oid.toString();
     }
 
@@ -87,12 +96,26 @@ public class QuestionBookService {
      * 修改错题
      */
     public void updateEntry(QuestionBookDTO dto){
+        //图片检测
+        List<String> alist = dto.getImageList();
+        if(alist != null && alist.size()>0){
+            for(String entry5 : alist){
+                PictureRunNable.send(dto.getId(), dto.getUserId(), PictureType.wrongImage.getType(), 1, entry5);
+            }
+        }
         questionBookDao.updateEntry(dto.buildAddEntry());
     }
     /**
      * 修改解析
      */
-    public void updateAnswerEntry(QuestionAdditionDTO dto){
+    public void updateAnswerEntry(ObjectId userId,QuestionAdditionDTO dto){
+        //图片检测
+        List<String> alist = dto.getAnswerList();
+        if(alist != null && alist.size()>0){
+            for(String entry5 : alist){
+                PictureRunNable.send(dto.getId(), userId.toString(), PictureType.answerImage.getType(), 1, entry5);
+            }
+        }
         questionAdditionDao.updateEntry(dto.buildAddEntry());
     }
 
@@ -148,13 +171,21 @@ public class QuestionBookService {
         map.put("count",count);
         return map;
     }
-    public void addAnswerEntry(QuestionAdditionDTO dto){
+    public void addAnswerEntry(ObjectId userId,QuestionAdditionDTO dto){
         QuestionAdditionEntry entry = dto.buildAddEntry();
         QuestionAdditionEntry additionEntry = questionAdditionDao.getEntry(entry.getParentId(),entry.getAnswerType(),entry.getLevel());
         if(null != additionEntry){
             questionAdditionDao.delEntry(additionEntry.getID());
         }
-        questionAdditionDao.addEntry(entry);
+        ObjectId oid = questionAdditionDao.addEntry(entry);
+
+        //图片检测
+        List<String> alist = dto.getAnswerList();
+        if(alist != null && alist.size()>0){
+            for(String entry5 : alist){
+                PictureRunNable.send(oid.toString(), userId.toString(), PictureType.answerImage.getType(), 1, entry5);
+            }
+        }
     }
     /**
      * 今日复习

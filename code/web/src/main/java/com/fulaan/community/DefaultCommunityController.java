@@ -535,10 +535,10 @@ public class DefaultCommunityController extends BaseController {
         }
         CommunityDTO community = communityService.findByObjectId(communityId);
         if (name.equals(community.getName())) {
-            communityService.updateCommunity(communityId, name, desc, logo, open);
+            communityService.updateCommunity(getUserId(),communityId, name, desc, logo, open);
         } else {
             if (communityService.isCommunityNameUnique(name)) {
-                communityService.updateCommunity(communityId, name, desc, logo, open);
+                communityService.updateCommunity(getUserId(),communityId, name, desc, logo, open);
                 groupService.asyncUpdateGroupName(new ObjectId(community.getGroupId()), name);
             } else {
                 return RespObj.FAILD("该社区名称已经存在");

@@ -18,14 +18,15 @@ import com.fulaan.forum.service.FVoteService;
 import com.fulaan.friendscircle.service.FriendApplyService;
 import com.fulaan.friendscircle.service.FriendService;
 import com.fulaan.instantmessage.service.RedDotService;
+import com.fulaan.picturetext.runnable.PictureRunNable;
 import com.fulaan.pojo.*;
 import com.fulaan.user.service.UserService;
 import com.fulaan.util.DateUtils;
 import com.pojo.activity.FriendApplyEntry;
+import com.pojo.backstage.PictureType;
 import com.pojo.fcommunity.*;
 import com.pojo.forum.FVoteDTO;
 import com.pojo.forum.FVoteEntry;
-import com.pojo.instantmessage.ApplyTypeEn;
 import com.pojo.user.NewVersionUserRoleEntry;
 import com.pojo.user.UserEntry;
 import com.sys.constants.Constant;
@@ -101,6 +102,8 @@ public class CommunityService {
         CommunityEntry entry = new CommunityEntry(communityId, seqId, groupId, emChatId, name, logo, desc, qrUrl, open, userId);
         communityDao.save(entry);
         pushToUser(communityId, userId, 1);
+        //图片检测
+        PictureRunNable.send(communityId.toString(), userId.toString(), PictureType.communityLogo.getType(), 1, logo);
         return communityId;
     }
 
@@ -483,7 +486,7 @@ public class CommunityService {
      * @param logo 图标
      */
     @Async
-    public void updateCommunity(ObjectId cid, String name, String desc, String logo, int open) {
+    public void updateCommunity(ObjectId userId,ObjectId cid, String name, String desc, String logo, int open) {
         communityDao.updateCommunityOpenStatus(cid, open);
         if (StringUtils.isNotBlank(name)) {
             communityDao.updateCommunityName(cid, name);
@@ -493,6 +496,8 @@ public class CommunityService {
         }
         if (StringUtils.isNotBlank(logo)) {
             communityDao.updateCommunityLogo(cid, logo);
+            //图片检测
+            PictureRunNable.send(cid.toString(), userId.toString(), PictureType.communityLogo.getType(), 1, logo);
         }
     }
 
@@ -517,8 +522,26 @@ public class CommunityService {
         List<ObjectId> oid = new ArrayList<ObjectId>();
         oid.add(new ObjectId(message.getCommunityId()));
         redDotService.addOtherEntryList(oid, uid, message.getType(), 3);
+        ObjectId obid = communityDetailDao.save(entry);
 
-        return communityDetailDao.save(entry);
+        if(message.getType()==2){
+            //图片检测
+            List<Attachement> alist = message.getImages();
+            if(alist != null && alist.size()>0){
+                for(Attachement entry5 : alist){
+                    PictureRunNable.send(obid.toString(), uid.toString(), PictureType.activeImage.getType(), 1, entry5.getUrl());
+                }
+            }
+        }else if(message.getType()==6){
+            //图片检测
+            List<Attachement> alist = message.getImages();
+            if(alist != null && alist.size()>0){
+                for(Attachement entry5 : alist){
+                    PictureRunNable.send(obid.toString(), uid.toString(), PictureType.studyImage.getType(), 1, entry5.getUrl());
+                }
+            }
+        }
+        return obid;
     }
 
     private long ConvertStrToLong(String voteDeadTime) throws Exception {

@@ -109,10 +109,11 @@ public class BackStageService {
     public void addBackTimeEntry(ObjectId userId,int time){
         ControlSetBackEntry entry = controlSetBackDao.getEntry();
         if(null == entry){
-            ControlSetBackEntry entry1 = new ControlSetBackEntry();
+            ControlSetBackEntry entry1 =new ControlSetBackEntry();
             entry1.setType(1);
             entry1.setBackTime(time);
             entry1.setAppTime(24 * 60);
+            entry1.setIsRemove(0);
             controlSetBackDao.addEntry(entry1);
         }else{
             entry.setBackTime(time);
@@ -127,6 +128,7 @@ public class BackStageService {
             entry1.setType(1);
             entry1.setAppTime(time);
             entry1.setBackTime(24*60);
+            entry1.setIsRemove(0);
             controlSetBackDao.addEntry(entry1);
         }else{
             entry.setAppTime(time);

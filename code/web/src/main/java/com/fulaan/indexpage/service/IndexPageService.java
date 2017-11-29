@@ -20,6 +20,7 @@ import com.pojo.user.UserDetailInfoDTO;
 import com.pojo.user.UserEntry;
 import com.sys.constants.Constant;
 import com.sys.utils.AvatarUtils;
+import com.sys.utils.TimeChangeUtils;
 import org.bson.types.ObjectId;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -150,7 +151,7 @@ public class IndexPageService {
                 ob1.put("tag", CommunityType.appNotice.getDes());
                 ob1.put("groupName",dto8.getGroupName());
                 ob1.put("id",dto8.getId());
-                ob1.put("userName",dto8.getUserName());
+                ob1.put("userName",org.apache.commons.lang.StringUtils.isNotEmpty(userEntry.getNickName())?userEntry.getNickName():userEntry.getUserName());
                 ob1.put("subject",dto8.getSubject());
                 ob1.put("avatar",dto8.getAvatar());
                 ob1.put("title",dto8.getTitle());
@@ -161,6 +162,24 @@ public class IndexPageService {
                 ob1.put("videoList",dto8.getVideoList());
                 ob1.put("voiceList",dto8.getVoiceList());
                 ob1.put("attachements",dto8.getAttachements());
+                ob1.put("isRead",0);
+                if(dto8.getReadList().contains(userId.toString())){
+                    ob1.put("isRead",1);
+                }
+                //设置已阅和未阅的人数
+                List<ObjectId> reads=entry.getReaList();
+                List<ObjectId> members=memberDao.getAllMemberIds(entry.getGroupId());
+                members.remove(userId);
+                ob1.put("totalReadCount", members.size());
+                members.removeAll(reads);
+                ob1.put("readCount", reads.size());
+                ob1.put("unReadCount",members.size());
+                ob1.put("timeExpression",TimeChangeUtils.getChangeTime(entry.getSubmitTime()));
+                if(dto8.getUserId().equals(userId.toString())){
+                    ob1.put("isOwner",true);
+                }else{
+                    ob1.put("isOwner",false);
+                }
                 list.add(ob1);
 
             }

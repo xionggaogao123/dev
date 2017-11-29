@@ -14,10 +14,13 @@ import com.fulaan.newVersionBind.service.NewVersionBindService;
 import com.fulaan.operation.dto.AppNoticeDTO;
 import com.fulaan.operation.dto.AppOperationDTO;
 import com.fulaan.operation.dto.GroupOfCommunityDTO;
+import com.fulaan.picturetext.runnable.PictureRunNable;
+import com.fulaan.pojo.Attachement;
 import com.fulaan.pojo.User;
 import com.fulaan.user.service.UserService;
 import com.fulaan.utils.JPushUtils;
 import com.pojo.appnotice.AppNoticeEntry;
+import com.pojo.backstage.PictureType;
 import com.pojo.fcommunity.MemberEntry;
 import com.pojo.fcommunity.NewVersionCommunityBindEntry;
 import com.pojo.indexPage.IndexPageEntry;
@@ -99,6 +102,15 @@ public class AppNoticeService {
                     userEntry.getUserName());
             appNoticeDTO.setUserId(userId.toString());
             ObjectId oid = appNoticeDao.saveAppNoticeEntry(appNoticeDTO.buildEntry());
+
+
+            //图片检测
+            List<Attachement> alist = appNoticeDTO.getImageList();
+            if(alist != null && alist.size()>0){
+                for(Attachement entry5 : alist){
+                    PictureRunNable.send(oid.toString(), userId.toString(), PictureType.answerImage.getType(), 1, entry5.getUrl());
+                }
+            }
 
             //添加临时记录表
             if(dto.getWatchPermission()!=2){

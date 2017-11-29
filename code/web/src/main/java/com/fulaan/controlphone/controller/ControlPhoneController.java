@@ -715,7 +715,7 @@ public class ControlPhoneController extends BaseController {
     @ApiResponses( value = {@ApiResponse(code = 200, message = "Successful — 请求已完成",response = String.class),
             @ApiResponse(code = 400, message = "请求中有语法问题，或不能满足请求"),
             @ApiResponse(code = 500, message = "服务器不能完成请求")})
-    @RequestMapping("/addSimpleControlPhone")
+    @RequestMapping("/addSimpleControlPhone33")
     @ResponseBody
     public String addSimpleControlPhone(@ApiParam(name = "phone", required = true, value = "电话") @RequestParam("phone") String phone,
                                         @ApiParam(name = "name", required = true, value = "姓名") @RequestParam("name") String name){
@@ -747,7 +747,7 @@ public class ControlPhoneController extends BaseController {
     @ApiResponses( value = {@ApiResponse(code = 200, message = "Successful — 请求已完成",response = String.class),
             @ApiResponse(code = 400, message = "请求中有语法问题，或不能满足请求"),
             @ApiResponse(code = 500, message = "服务器不能完成请求")})
-    @RequestMapping("/addSimpleCommunityAppList")
+    @RequestMapping("/addSimpleCommunityAppList33")
     @ResponseBody
     public String addSimpleCommunityAppList(@ApiParam(name = "code", required = true, value = "包名") @RequestParam("code") String code){
         RespObj respObj=new RespObj(Constant.FAILD_CODE);
@@ -776,7 +776,7 @@ public class ControlPhoneController extends BaseController {
     @ApiResponses( value = {@ApiResponse(code = 200, message = "Successful — 请求已完成",response = String.class),
             @ApiResponse(code = 400, message = "请求中有语法问题，或不能满足请求"),
             @ApiResponse(code = 500, message = "服务器不能完成请求")})
-    @RequestMapping("/getSimpleAppList")
+    @RequestMapping("/getSimpleAppList33")
     @ResponseBody
     public String getSimpleAppList(){
         RespObj respObj=new RespObj(Constant.FAILD_CODE);
@@ -800,7 +800,7 @@ public class ControlPhoneController extends BaseController {
     @ApiResponses( value = {@ApiResponse(code = 200, message = "Successful — 请求已完成",response = String.class),
             @ApiResponse(code = 400, message = "请求中有语法问题，或不能满足请求"),
             @ApiResponse(code = 500, message = "服务器不能完成请求")})
-    @RequestMapping("/getSimplePhoneList")
+    @RequestMapping("/getSimplePhoneList33")
     @ResponseBody
     public String getSimplePhoneList(){
         RespObj respObj=new RespObj(Constant.FAILD_CODE);
@@ -824,7 +824,7 @@ public class ControlPhoneController extends BaseController {
     @ApiResponses( value = {@ApiResponse(code = 200, message = "Successful — 请求已完成",response = String.class),
             @ApiResponse(code = 400, message = "请求中有语法问题，或不能满足请求"),
             @ApiResponse(code = 500, message = "服务器不能完成请求")})
-    @RequestMapping("/addSimpleMapEntry")
+    @RequestMapping("/addSimpleMapEntry33")
     @ResponseBody
     public String addSimpleMapEntry(@ApiParam(name = "longitude", required = true, value = "经度") @RequestParam("longitude") String longitude,
                                     @ApiParam(name = "latitude", required = true, value = "纬度") @RequestParam("latitude") String latitude){

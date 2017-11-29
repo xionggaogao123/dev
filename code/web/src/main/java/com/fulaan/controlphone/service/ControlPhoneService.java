@@ -434,22 +434,22 @@ public class ControlPhoneService {
             int i = 0;
             long dtm = 0l;
             long atm = 0l;
-            List<ObjectId> oid = new ArrayList<ObjectId>();
+            List<String> oid = new ArrayList<String>();
             for(ControlAppResultEntry entry : entries){
                 if(i >2){
                     dtm = dtm + entry.getUseTime();
                     atm = atm + entry.getUseTime();
                 }else{
-                    oid.add(entry.getAppid());
+                    oid.add(entry.getPackageName());
                     dtos.add(new ControlAppResultDTO(entry));
                     atm = atm + entry.getUseTime();
                 }
                 i++;
             }
-            List<AppDetailEntry> entryList = appDetailDao.getEntriesByIds(oid);
+            List<AppDetailEntry> entryList = appDetailDao.getEntriesByPackName(oid);
             for(AppDetailEntry entry3 : entryList){
                 for(ControlAppResultDTO dto : dtos){
-                    if(entry3.getID().toString().equals(dto.getAppId())){
+                    if(entry3.getAppPackageName().equals(dto.getPackageName())){
                         dto.setAppName(entry3.getAppName());
                         dto.setLogo(entry3.getLogo());
                     }
@@ -1100,6 +1100,43 @@ public class ControlPhoneService {
 
         }
     }
+    //获得今天的放学时间
+    public long getBackHomeTime(long time){
+        //获得当前时间
+        long current=System.currentTimeMillis();
+        //获得时间批次
+        long zero=current/(1000*3600*24)*(1000*3600*24)- TimeZone.getDefault().getRawOffset();//今天零点零分零秒的毫秒数
+
+        SimpleDateFormat sdf3 = new SimpleDateFormat("yyyy-MM-dd");
+        String dateNowStr4 = sdf3.format(zero);
+        //通用设置
+        ControlSchoolTimeEntry entry2 = controlSchoolTimeDao.getOtherEntry(2,dateNowStr4);
+        long el = 0l;
+        if(entry2 == null){
+            Calendar cal = Calendar.getInstance();
+            int w = cal.get(Calendar.DAY_OF_WEEK) - 1;
+            ControlSchoolTimeEntry entry = controlSchoolTimeDao.getEntry(w);
+            String etm = entry.getEndTime();
+
+            if(etm != null && etm != ""){
+                el = DateTimeUtils.getStrToLongTime(dateNowStr4+" "+etm, "yyyy-MM-dd HH:mm:ss");
+            }
+
+        }else{
+            String etm = entry2.getEndTime();
+            if(etm != null && etm != ""){
+                el = DateTimeUtils.getStrToLongTime(dateNowStr4+" "+etm, "yyyy-MM-dd HH:mm:ss");
+            }
+        }
+        if(el ==zero ){
+            el = time;
+        }else if (time > el){
+
+        }else if (el > time){
+            el = time;
+        }
+        return el;
+    }
     public void setControlTime(ObjectId userId,ObjectId communityId,int time){
         //获得当前时间
         long current=System.currentTimeMillis();
@@ -1110,6 +1147,7 @@ public class ControlPhoneService {
         String dateNowStr3 = sdf2.format(zero);
         SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
         String dateNowStr = sdf.format(current);
+       // long ent = getBackHomeTime();
         String dateNowStr2 = sdf.format(current+tentTime);
         ControlNowTimeDTO dto = new ControlNowTimeDTO();
         dto.setCommunityId(communityId.toString());

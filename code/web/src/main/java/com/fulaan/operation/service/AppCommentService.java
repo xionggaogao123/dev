@@ -670,7 +670,6 @@ public static void main(String[] args){
             if(page==1){
                 //保存的作业
                 entries1 = appCommentDao.selectWillDateList(userId);
-
             }
             List<AppCommentEntry> entries = new ArrayList<AppCommentEntry>();
             List<AppCommentEntry> entries3 = appCommentDao.selectDateListPage(userId, page, pageSize);
@@ -1098,6 +1097,12 @@ public static void main(String[] args){
         long current=System.currentTimeMillis();
         en.setDateTime(current);
         String id = appOperationDao.addEntry(en);
+        if(dto.getType()==1){
+            //图片检测
+            PictureRunNable.send(id, dto.getUserId(), PictureType.commentImage.getType(), 1, dto.getFileUrl());
+
+        }
+
         AppCommentEntry entry = appCommentDao.getEntry(en.getContactId());
         List<AppOperationEntry> entries = appOperationDao.getEntryListByUserIdAndId(new ObjectId(dto.getUserId()), new ObjectId(dto.getContactId()), 3);
         //修改提交数
@@ -1120,6 +1125,11 @@ public static void main(String[] args){
         long current=System.currentTimeMillis();
         en.setDateTime(current);
         String id = appOperationDao.addEntry(en);
+        if(dto.getType()==1){
+            //图片检测
+            PictureRunNable.send(id, dto.getUserId(), PictureType.commentImage.getType(), 1, dto.getFileUrl());
+
+        }
         AppCommentEntry entry = appCommentDao.getEntry(en.getContactId());
         //修改讨论数
         if(en.getRole()==1){//家长讨论
@@ -1142,6 +1152,11 @@ public static void main(String[] args){
         long current=System.currentTimeMillis();
         en.setDateTime(current);
         String id = appOperationDao.addEntry(en);
+        if(dto.getType()==1){
+            //图片检测
+            PictureRunNable.send(id, dto.getUserId(), PictureType.commentImage.getType(), 1, dto.getFileUrl());
+
+        }
         AppCommentEntry entry = appCommentDao.getEntry(en.getContactId());
         //修改讨论数
        /* if (en.getRole() == 1) {//家长
@@ -1304,7 +1319,13 @@ public static void main(String[] args){
             appRecordResultDao.addEntry(obj);
 
             AppCommentEntry entry1 = appCommentDao.getEntry(id);
-            entry1.setWriteNumber(entry1.getWriteNumber()+1);
+            List<String> objectIdList3 = newVersionBindService.getStudentIdListByCommunityId(entry1.getRecipientId());
+            int allcount = objectIdList3.size();
+            entry1.setAllLoadNumber(objectIdList3.size());
+            List<String> alist = appRecordResultDao.getEntryListByParentId2(id);
+            objectIdList3.removeAll(alist);
+            int weicount = objectIdList3.size();
+            entry1.setWriteNumber(allcount-weicount);
             appCommentDao.updEntry(entry1);
         }
         return "签到成功";

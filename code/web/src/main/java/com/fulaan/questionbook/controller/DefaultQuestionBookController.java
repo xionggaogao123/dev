@@ -208,7 +208,7 @@ public class DefaultQuestionBookController extends BaseController {
         RespObj respObj=new RespObj(Constant.FAILD_CODE);
         try {
             respObj.setCode(Constant.SUCCESS_CODE);
-            questionBookService.addAnswerEntry(dto);
+            questionBookService.addAnswerEntry(getUserId(),dto);
             respObj.setMessage("添加成功");
         } catch (Exception e) {
             e.printStackTrace();
@@ -248,7 +248,7 @@ public class DefaultQuestionBookController extends BaseController {
         RespObj respObj=new RespObj(Constant.FAILD_CODE);
         try {
             respObj.setCode(Constant.SUCCESS_CODE);
-            questionBookService.updateAnswerEntry(dto);
+            questionBookService.updateAnswerEntry(getUserId(),dto);
             respObj.setMessage("修改解析/答案/回答成功");
         } catch (Exception e) {
             e.printStackTrace();

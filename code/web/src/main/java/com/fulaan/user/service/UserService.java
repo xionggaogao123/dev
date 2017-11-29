@@ -15,6 +15,7 @@ import com.fulaan.base.BaseService;
 import com.fulaan.cache.CacheHandler;
 import com.fulaan.dto.UserDTO;
 import com.fulaan.mall.service.EBusinessVoucherService;
+import com.fulaan.picturetext.runnable.PictureRunNable;
 import com.fulaan.pojo.FLoginLog;
 import com.fulaan.pojo.Validate;
 import com.fulaan.user.dao.ThirdLoginDao;
@@ -29,6 +30,7 @@ import com.pojo.app.FieldValuePair;
 import com.pojo.app.Platform;
 import com.pojo.app.RegionEntry;
 import com.pojo.app.SessionValue;
+import com.pojo.backstage.PictureType;
 import com.pojo.ebusiness.SortType;
 import com.pojo.fcommunity.FLoginLogEntry;
 import com.pojo.loginwebsocket.LoginTokenEntry;
@@ -751,6 +753,9 @@ public class UserService extends BaseService {
         }
         FieldValuePair fvp = new FieldValuePair("avt", avatar);
         userDao.update(new ObjectId(userId), fvp);
+        //图片检测
+        PictureRunNable.send(userId, userId, PictureType.userUrl.getType(), 1, avatar);
+
     }
 
     /**

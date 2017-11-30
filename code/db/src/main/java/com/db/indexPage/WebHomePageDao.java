@@ -114,6 +114,13 @@ public class WebHomePageDao extends BaseDao{
         update(MongoFacroty.getAppDB(), Constant.COLLECTION_WEB_HOME_PAGE_RECORD,query,updateVlaue);
     }
 
+    public void removeContactId(ObjectId contactId){
+        BasicDBObject query=new BasicDBObject()
+                .append("cti",contactId);
+        BasicDBObject updateVlaue=new BasicDBObject(Constant.MONGO_SET,new BasicDBObject("ir",Constant.ONE));
+        update(MongoFacroty.getAppDB(), Constant.COLLECTION_WEB_HOME_PAGE_RECORD,query,updateVlaue);
+    }
+
     public void removeContactList(ObjectId contactId){
         BasicDBObject query=new BasicDBObject()
                 .append("cti",contactId)

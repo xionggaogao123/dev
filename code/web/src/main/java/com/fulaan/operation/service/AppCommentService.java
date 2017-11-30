@@ -1466,6 +1466,8 @@ public static void main(String[] args){
         AppCommentEntry e = appCommentDao.getEntry(id);
         if(e!= null && e.getAdminId() != null && e.getAdminId().equals(userId)){
             appCommentDao.delAppCommentEntry(id);
+            //删除
+            webHomePageDao.removeContactId(id);
         }
     }
     /**

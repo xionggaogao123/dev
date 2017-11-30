@@ -46,6 +46,8 @@ public class WebHomePageDTO {
 
     private double aPercent;//a率
 
+    private int status;
+
     public WebHomePageDTO(){
 
     }
@@ -57,6 +59,7 @@ public class WebHomePageDTO {
         this.examTime=DateTimeUtils.convert(entry.getExamTime(),DateTimeUtils.DATE_YYYY_MM_DD);
         this.signedCount=entry.getSignedCount();
         this.totalCount=entry.getSignCount();
+        this.recordScoreType=entry.getRecordScoreType();
     }
 
     public WebHomePageDTO(AppNoticeEntry appNoticeEntry){
@@ -90,6 +93,14 @@ public class WebHomePageDTO {
             attachementList.add(new Attachement(attachmentEntry));
         }
 
+    }
+
+    public int getStatus() {
+        return status;
+    }
+
+    public void setStatus(int status) {
+        this.status = status;
     }
 
     public double getAvgScore() {

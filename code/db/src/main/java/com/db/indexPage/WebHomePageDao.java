@@ -131,6 +131,15 @@ public class WebHomePageDao extends BaseDao{
         update(MongoFacroty.getAppDB(), Constant.COLLECTION_WEB_HOME_PAGE_RECORD,query,updateValue);
     }
 
+    public void updateReportCardStatus(ObjectId contactId, int type,int status){
+        BasicDBObject query=new BasicDBObject()
+                .append("rc",contactId)
+                .append("ty",type);
+        BasicDBObject updateValue=new BasicDBObject(Constant.MONGO_SET,new BasicDBObject( "st",status));
+        update(MongoFacroty.getAppDB(), Constant.COLLECTION_WEB_HOME_PAGE_RECORD,query,updateValue);
+    }
+
+
     public BasicDBObject getMyReceivedQueryCondition(List<ObjectId> communityIds,
                                                      List<ObjectId> receiveIds,
                                                      int type,

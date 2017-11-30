@@ -187,16 +187,24 @@ public class WebHomePageService {
         List<ObjectId> noticeIds = new ArrayList<ObjectId>();
         List<ObjectId> reportCardIds = new ArrayList<ObjectId>();
         List<ObjectId> reportCardSendIds = new ArrayList<ObjectId>();
+        Map<ObjectId,Integer> workStatus=new HashMap<ObjectId, Integer>();
+        Map<ObjectId,Integer> noticeStatus=new HashMap<ObjectId, Integer>();
+        Map<ObjectId,Integer> reportCardStatus=new HashMap<ObjectId, Integer>();
+        Map<ObjectId,Integer> reportCardSendStatus=new HashMap<ObjectId, Integer>();
         for (WebHomePageEntry webHomePageEntry : entries) {
             if (webHomePageEntry.getType() == Constant.ONE) {
                 workIds.add(webHomePageEntry.getContactId());
+                workStatus.put(webHomePageEntry.getContactId(),webHomePageEntry.getStatus());
             } else if (webHomePageEntry.getType() == Constant.TWO||
                     webHomePageEntry.getType() == Constant.FOUR) {
                 noticeIds.add(webHomePageEntry.getContactId());
+                noticeStatus.put(webHomePageEntry.getContactId(),webHomePageEntry.getStatus());
             } else if (webHomePageEntry.getType() == Constant.THREE) {
                 reportCardIds.add(webHomePageEntry.getContactId());
+                reportCardStatus.put(webHomePageEntry.getContactId(),webHomePageEntry.getStatus());
             } else if (webHomePageEntry.getType() == Constant.FIVE) {
                 reportCardSendIds.add(webHomePageEntry.getContactId());
+                reportCardSendStatus.put(webHomePageEntry.getContactId(),webHomePageEntry.getStatus());
             }
         }
 
@@ -292,8 +300,14 @@ public class WebHomePageService {
             Map<ObjectId, ExamTypeEntry> examTypeEntryMap = examTypeDao.getExamTypeEntryMap(new ArrayList<ObjectId>(examTypeIds));
             for (GroupExamUserRecordEntry userRecordEntry : userRecordEntries) {
                 GroupExamDetailEntry detailEntry = groupExamDetailEntryMap.get(userRecordEntry.getGroupExamDetailId());
+                int status=Constant.ZERO;
+                if(null!=reportCardStatus.get(userRecordEntry.getID())){
+                    status=reportCardStatus.get(userRecordEntry.getID());
+                }
                 if (null != detailEntry) {
-                    setWehHomeData(detailEntry,communityEntryMap,userEntryMap,subjectClassEntryMap,examTypeEntryMap,webHomePageDTOs);
+                    setWebHomeData(detailEntry,communityEntryMap,userEntryMap,subjectClassEntryMap,
+                            examTypeEntryMap,webHomePageDTOs,status
+                            );
                 }
             }
         }
@@ -313,17 +327,25 @@ public class WebHomePageService {
             Map<ObjectId, ExamTypeEntry> examTypeEntryMap = examTypeDao.getExamTypeEntryMap(new ArrayList<ObjectId>(examTypeIds));
             for (Map.Entry<ObjectId, GroupExamDetailEntry> item:groupExamDetailEntryMap.entrySet()) {
                 GroupExamDetailEntry detailEntry = item.getValue();
-                setWehHomeData(detailEntry,communityEntryMap,userEntryMap,subjectClassEntryMap,examTypeEntryMap,webHomePageDTOs);
+                int status=Constant.ZERO;
+                if(null!=reportCardSendStatus.get(item.getKey())){
+                    status=reportCardSendStatus.get(item.getKey());
+                }
+                setWebHomeData(detailEntry,communityEntryMap,
+                        userEntryMap,subjectClassEntryMap,
+                        examTypeEntryMap,webHomePageDTOs,status);
             }
         }
     }
 
-    public void setWehHomeData(GroupExamDetailEntry detailEntry,Map<ObjectId, CommunityEntry> communityEntryMap,
+    public void setWebHomeData(GroupExamDetailEntry detailEntry,Map<ObjectId, CommunityEntry> communityEntryMap,
                                Map<ObjectId, UserEntry> userEntryMap,Map<ObjectId, SubjectClassEntry> subjectClassEntryMap,
                                Map<ObjectId, ExamTypeEntry> examTypeEntryMap,
-                               List<WebHomePageDTO> webHomePageDTOs
+                               List<WebHomePageDTO> webHomePageDTOs,
+                               int status
                                ){
         WebHomePageDTO webHomePageDTO = new WebHomePageDTO(detailEntry);
+        webHomePageDTO.setStatus(status);
         webHomePageDTO.setType(Constant.TWO);
         webHomePageDTO.setTimeExpression(TimeChangeUtils.getChangeTime(detailEntry.getSubmitTime()));
         CommunityEntry communityEntry = communityEntryMap.get(detailEntry.getCommunityId());

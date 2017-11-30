@@ -174,6 +174,7 @@ public class ReportCardService {
         groupExamDetailDao.updateGroupExamDetailEntry(groupExamDetailId, Constant.TWO);
         groupExamUserRecordDao.updateGroupExamDetailStatus(groupExamDetailId, Constant.TWO);
         webHomePageDao.updateContactStatus(groupExamDetailId, Constant.FIVE, Constant.TWO);
+        webHomePageDao.updateReportCardStatus(groupExamDetailId,Constant.THREE, Constant.TWO);
     }
 
     public GroupExamVersionDTO getExamGroupVersion(ObjectId groupExamDetailId) throws Exception {

@@ -18,6 +18,14 @@ public class RedDotDTO {
     public RedDotDTO(){
 
     }
+    public RedDotDTO(String e){
+        this.id = "";
+        this.userId = "";
+        this.dateTime = "";
+        this.newNumber = 0;
+        this.type = 0;
+
+    }
     public RedDotDTO(RedDotEntry e){
         if(e!=null){
             this.id = e.getID()==null?"":e.getID().toString();

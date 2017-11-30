@@ -5,6 +5,7 @@ import com.db.fcommunity.MemberDao;
 import com.db.fcommunity.NewVersionCommunityBindDao;
 import com.db.instantmessage.RedDotDao;
 import com.fulaan.instantmessage.dto.RedDotDTO;
+import com.fulaan.instantmessage.dto.RedResultDTO;
 import com.fulaan.newVersionBind.service.NewVersionBindService;
 import com.mongodb.DBObject;
 import com.pojo.fcommunity.MemberEntry;
@@ -84,27 +85,77 @@ public class RedDotService {
         List<RedDotEntry> entries = redDotDao.getAllEntry(userId);
         //作业
         RedDotEntry entry = redDotDao.getOtherEntryByUserId(userId, zero, ApplyTypeEn.operation.getType());
+        RedResultDTO dtos = new RedResultDTO();
         map.put("operation",new RedDotDTO(entry));
+        dtos.setOperation(new RedDotDTO(entry));
         for(RedDotEntry entry1 : entries){
             if(entry1.getType()==ApplyTypeEn.notice.getType()){
-                map.put("operation",new RedDotDTO(entry1));
+                map.put("notice",new RedDotDTO(entry1));
+                dtos.setNotice(new RedDotDTO(entry));
             }else if(entry1.getType()==ApplyTypeEn.hot.getType()){
                 map.put("hot",new RedDotDTO(entry1));
+                dtos.setHot(new RedDotDTO(entry));
             }else if(entry1.getType()==ApplyTypeEn.text.getType()){
                 map.put("text",new RedDotDTO(entry1));
+                dtos.setText(new RedDotDTO(entry));
             }else if(entry1.getType()==ApplyTypeEn.repordcard.getType()){
                 map.put("repordcard",new RedDotDTO(entry1));
+                dtos.setRepordcard(new RedDotDTO(entry));
             }else if(entry1.getType()==ApplyTypeEn.study.getType()){
                 map.put("study",new RedDotDTO(entry1));
+                dtos.setStudy(new RedDotDTO(entry));
             }else if(entry1.getType()==ApplyTypeEn.piao.getType()){
                 map.put("piao",new RedDotDTO(entry1));
+                dtos.setPiao(new RedDotDTO(entry));
             }else if(entry1.getType()==ApplyTypeEn.happy.getType()){
                 map.put("happy",new RedDotDTO(entry1));
+                dtos.setHappy(new RedDotDTO(entry));
             }else if(entry1.getType()==ApplyTypeEn.active.getType()){
                 map.put("active",new RedDotDTO(entry1));
+                dtos.setActive(new RedDotDTO(entry));
             }
         }
         return map;
+    }
+
+    /**
+     * 首页加载所有的红点记录
+     * @param userId
+     * @return
+     */
+    public RedResultDTO selectAllResultDTO(ObjectId userId){
+        Map<String,Object> map = new HashMap<String, Object>();
+        //获得当前时间
+        long current=System.currentTimeMillis();
+        //获得时间批次
+        long zero=current/(1000*3600*24)*(1000*3600*24)- TimeZone.getDefault().getRawOffset();//今天零点零分零秒的毫秒数
+        List<RedDotEntry> entries = redDotDao.getAllEntry(userId);
+        //作业
+        RedDotEntry entry = redDotDao.getOtherEntryByUserId(userId, zero, ApplyTypeEn.operation.getType());
+        RedResultDTO dtos = new RedResultDTO();
+        if(entry != null){
+            dtos.setOperation(new RedDotDTO(entry));
+        }
+        for(RedDotEntry entry1 : entries){
+            if(entry1.getType()==ApplyTypeEn.notice.getType()){
+                dtos.setNotice(new RedDotDTO(entry1));
+            }else if(entry1.getType()==ApplyTypeEn.hot.getType()){
+                dtos.setHot(new RedDotDTO(entry1));
+            }else if(entry1.getType()==ApplyTypeEn.text.getType()){
+                dtos.setText(new RedDotDTO(entry1));
+            }else if(entry1.getType()==ApplyTypeEn.repordcard.getType()){
+                dtos.setRepordcard(new RedDotDTO(entry1));
+            }else if(entry1.getType()==ApplyTypeEn.study.getType()){
+                dtos.setStudy(new RedDotDTO(entry1));
+            }else if(entry1.getType()==ApplyTypeEn.piao.getType()){
+                dtos.setPiao(new RedDotDTO(entry1));
+            }else if(entry1.getType()==ApplyTypeEn.happy.getType()){
+                dtos.setHappy(new RedDotDTO(entry1));
+            }else if(entry1.getType()==ApplyTypeEn.active.getType()){
+                dtos.setActive(new RedDotDTO(entry1));
+            }
+        }
+        return dtos;
     }
     /**
      * 首页加载所有的红点记录
@@ -206,14 +257,15 @@ public class RedDotService {
             }
             bid.add(obid);
             //所有家长
+           // List<ObjectId> li = getMyRoleList4(obid,userId);
             List<ObjectId> list = communityDao.getListGroupIds(bid);
-            List<ObjectId> li = memberDao.getMembersByList(list);
-            if(lei==4){
+           // List<ObjectId> li = memberDao.getMembersByList(list);
+          /*  if(lei==4){
                 Set<ObjectId> se = new HashSet<ObjectId>();
                 se.addAll(li);
                 uids.addAll(se);
-            }
-            if(lei==1 || lei == 3){
+            }*/
+            if(lei==1 || lei == 3 || lei==4){
                 List<ObjectId> li2 = memberDao.getMembersByList2(list,userId);
                 Set<ObjectId> se = new HashSet<ObjectId>();
                 se.addAll(li2);
@@ -357,7 +409,21 @@ public class RedDotService {
         }
         return clist;
     }
-
+    //返回不是我的用户idString
+    public List<ObjectId> getMyRoleList4(ObjectId id,ObjectId userId){
+        //获得groupId
+        ObjectId obj =   communityDao.getGroupIdByCommunityId(id);
+        List<MemberEntry> olist = memberDao.getMembers(obj, 1, 1000);
+        List<ObjectId> clist = new ArrayList<ObjectId>();
+        if(olist.size()>0){
+            for(MemberEntry en : olist){
+                if(!en.getUserId().toString().equals(userId.toString())){
+                    clist.add(en.getUserId());
+                }
+            }
+        }
+        return clist;
+    }
 
     public void cleanResult(ObjectId userId,int type,long dataTime){
         if(ApplyTypeEn.getProTypeEname(type).equals("other")) {//作业类型

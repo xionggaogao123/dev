@@ -15,7 +15,7 @@ import java.util.Date;
  function              功能               fun
  contactId              联系id            cid
  type                1 图片 2 文字        typ
- isCheck               是否通过           isc
+ isCheck               是否通过           isc   0 未审核   1 通过   2 删除
  isRemove              是否删除           isr
  content               内容               con
  */

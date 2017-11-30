@@ -378,6 +378,7 @@ public class AppNoticeService {
             List<ObjectId> readList=appNoticeEntry.getReaList();
             if(!readList.contains(userId)) {
                 appNoticeDao.pushReadList(userId, id);
+                redDotService.cleanResult(userId,ApplyTypeEn.notice.getType(),0l);
             }
         }else{
             throw new Exception("传入的id参数有误");

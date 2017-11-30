@@ -23,6 +23,10 @@ public class UnlawfulPictureTextDTO {
     private int type;
     private int isCheck;
     private String content;
+    private String userName;
+    private String avatar;
+    private String functionName;
+
     public UnlawfulPictureTextDTO(){
 
     }
@@ -92,6 +96,29 @@ public class UnlawfulPictureTextDTO {
 
     }
 
+    public String getFunctionName() {
+        return functionName;
+    }
+
+    public void setFunctionName(String functionName) {
+        this.functionName = functionName;
+    }
+
+    public String getAvatar() {
+        return avatar;
+    }
+
+    public void setAvatar(String avatar) {
+        this.avatar = avatar;
+    }
+
+    public String getUserName() {
+        return userName;
+    }
+
+    public void setUserName(String userName) {
+        this.userName = userName;
+    }
 
     public String getId() {
         return id;

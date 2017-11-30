@@ -754,17 +754,17 @@ public class ReportCardService {
             detailDTO.setSingleScoreId(singleId.toString());
             detailDTO.setStatus(examUserRecordEntry.getStatus());
             detailDTO.setChildUserId(examUserRecordEntry.getUserId().toString());
-            NewVersionCommunityBindEntry bindEntry = newVersionCommunityBindDao.getEntry(examUserRecordEntry.getCommunityId(), examUserRecordEntry.getUserId());
+           // NewVersionCommunityBindEntry bindEntry = newVersionCommunityBindDao.getEntry(examUserRecordEntry.getCommunityId(), examUserRecordEntry.getUserId());
             UserEntry userEntry = userService.findById(examUserRecordEntry.getUserId());
-            if (bindEntry != null && bindEntry.getThirdName() != null && !bindEntry.getThirdName().equals("")) {
-                detailDTO.setChildUserName(bindEntry.getThirdName());
-            } else {
-                if (null != userEntry) {
-                    detailDTO.setChildUserName(StringUtils.isNotBlank(userEntry.getNickName()) ?
-                            userEntry.getNickName() : userEntry.getUserName()
-                    );
-                }
+           // if (bindEntry != null && bindEntry.getThirdName() != null && !bindEntry.getThirdName().equals("")) {
+            //    detailDTO.setChildUserName(bindEntry.getThirdName());
+            //} else {
+            if (null != userEntry) {
+                detailDTO.setChildUserName(StringUtils.isNotBlank(userEntry.getNickName()) ?
+                                userEntry.getNickName() : userEntry.getUserName()
+                );
             }
+           // }
             if (detailDTO.getRecordScoreType() == Constant.ONE) {
                 detailDTO.setScore(examUserRecordEntry.getScore());
                 detailDTO.setSingleRank(examUserRecordEntry.getRank());

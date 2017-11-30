@@ -65,6 +65,7 @@ public class WebHomePageDao extends BaseDao{
         if(communityId!=null){
             query.append("cid",communityId);
         }
+        query.append("ir", Constant.ZERO);
         return query;
     }
 
@@ -103,6 +104,31 @@ public class WebHomePageDao extends BaseDao{
         }else{
             return null;
         }
+    }
+
+    public void removeReportCard(ObjectId groupExamDetailId){
+        BasicDBObject query=new BasicDBObject()
+                .append("rc",groupExamDetailId)
+                .append("ty",Constant.THREE);
+        BasicDBObject updateVlaue=new BasicDBObject(Constant.MONGO_SET,new BasicDBObject("ir",Constant.ONE));
+        update(MongoFacroty.getAppDB(), Constant.COLLECTION_WEB_HOME_PAGE_RECORD,query,updateVlaue);
+    }
+
+    public void removeContactList(ObjectId contactId){
+        BasicDBObject query=new BasicDBObject()
+                .append("cti",contactId)
+                .append("ty",Constant.FIVE);
+        BasicDBObject updateVlaue=new BasicDBObject(Constant.MONGO_SET,new BasicDBObject("ir",Constant.ONE));
+        update(MongoFacroty.getAppDB(), Constant.COLLECTION_WEB_HOME_PAGE_RECORD,query,updateVlaue);
+    }
+
+
+    public void updateContactStatus(ObjectId contactId, int type,int status){
+        BasicDBObject query=new BasicDBObject()
+                .append("cti",contactId)
+                .append("ty",type);
+        BasicDBObject updateValue=new BasicDBObject(Constant.MONGO_SET,new BasicDBObject( "st",status));
+        update(MongoFacroty.getAppDB(), Constant.COLLECTION_WEB_HOME_PAGE_RECORD,query,updateValue);
     }
 
     public BasicDBObject getMyReceivedQueryCondition(List<ObjectId> communityIds,

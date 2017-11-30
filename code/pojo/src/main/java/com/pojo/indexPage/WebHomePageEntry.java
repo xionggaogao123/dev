@@ -29,18 +29,28 @@ public class WebHomePageEntry extends BaseDBObject{
                             ObjectId contactId,
                             ObjectId subjectId,
                             ObjectId receiveId,
+                            ObjectId reportCardId,
                             int status){
         BasicDBObject basicDBObject=new BasicDBObject()
                 .append("ty",type)
                 .append("uid",userId)
                 .append("cid",communityId)
                 .append("cti",contactId)
+                .append("rc",reportCardId)
                 .append("sid",subjectId)
                 .append("rid",receiveId)
                 .append("ti",System.currentTimeMillis())
                 .append("st",status)
                 .append("ir", Constant.ZERO);
         setBaseEntry(basicDBObject);
+    }
+
+    public void setReportCardId(ObjectId reportCardId){
+        setSimpleValue("rc",reportCardId);
+    }
+
+    public ObjectId getReportCardId(){
+        return getSimpleObjecIDValue("rc");
     }
 
     public void setTime(long time){

@@ -163,7 +163,7 @@ public class AppCommentService {
                     new ObjectId(dto3.getId()),
                     new ObjectId(oid),
                     new ObjectId(dto.getSubjectId()),
-                    null, status);
+                    null, null,status);
             webHomePageDao.saveWebHomeEntry(pageEntry);
 
             objectIdList.add(new ObjectId(dto3.getId()));

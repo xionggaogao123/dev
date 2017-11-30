@@ -129,7 +129,7 @@ public class AppCommentService {
             en.setID(null);
             en.setRecipientId(new ObjectId(dto3.getId()));
             en.setRecipientName(dto3.getName());
-            List<String> objectIdList2 = this.getMyRoleList2(new ObjectId(dto3.getId()));
+            List<String> objectIdList2 = this.getMyRoleList4(new ObjectId(dto3.getId()), new ObjectId(dto.getAdminId()));
             en.setAllWriterNumber(objectIdList2.size());
             List<String> objectIdList3 = newVersionBindService.getStudentIdListByCommunityId(new ObjectId(dto3.getId()));
             en.setAllLoadNumber(objectIdList3.size());
@@ -1105,11 +1105,20 @@ public static void main(String[] args){
 
         AppCommentEntry entry = appCommentDao.getEntry(en.getContactId());
         List<AppOperationEntry> entries = appOperationDao.getEntryListByUserIdAndId(new ObjectId(dto.getUserId()), new ObjectId(dto.getContactId()), 3);
+        List<AppOperationEntry> entries2 =appOperationDao.getEntryListByParentId2(new ObjectId(dto.getContactId()), 3);
+        Set<String> stringList = new HashSet<String>();
+        for(AppOperationEntry entry1 : entries2){
+            stringList.add(entry1.getUserId().toString());
+        }
         //修改提交数
         if(entries.size()>0){
 
         }else{
-            entry.setLoadNumber(entry.getLoadNumber() + 1);
+            List<String> objectIdList3 = newVersionBindService.getStudentIdListByCommunityId(entry.getRecipientId());
+            int count = objectIdList3.size();
+            entry.setAllLoadNumber(count);
+            objectIdList3.removeAll(stringList);
+            entry.setLoadNumber(count-objectIdList3.size());
             appCommentDao.updEntry(entry);
         }
         return id;
@@ -1319,9 +1328,10 @@ public static void main(String[] args){
             appRecordResultDao.addEntry(obj);
 
             AppCommentEntry entry1 = appCommentDao.getEntry(id);
-            List<String> objectIdList3 = newVersionBindService.getStudentIdListByCommunityId(entry1.getRecipientId());
+            //List<String> objectIdList3 = newVersionBindService.getStudentIdListByCommunityId(entry1.getRecipientId());
+            List<String> objectIdList3 = this.getMyRoleList4(entry1.getRecipientId(), entry1.getAdminId());
             int allcount = objectIdList3.size();
-            entry1.setAllLoadNumber(objectIdList3.size());
+            entry1.setAllWriterNumber(objectIdList3.size());
             List<String> alist = appRecordResultDao.getEntryListByParentId2(id);
             objectIdList3.removeAll(alist);
             int weicount = objectIdList3.size();
@@ -1374,6 +1384,21 @@ public static void main(String[] args){
         if(olist.size()>0){
             for(MemberEntry en : olist){
                 if(en.getRole()==0){
+                    clist.add(en.getUserId().toString());
+                }
+            }
+        }
+        return clist;
+    }
+    //返回不是我的用户idString
+    public List<String> getMyRoleList4(ObjectId id,ObjectId userId){
+        //获得groupId
+        ObjectId obj =   communityDao.getGroupIdByCommunityId(id);
+        List<MemberEntry> olist = memberDao.getMembers(obj, 1, 1000);
+        List<String> clist = new ArrayList<String>();
+        if(olist.size()>0){
+            for(MemberEntry en : olist){
+                if(!en.getUserId().toString().equals(userId.toString())){
                     clist.add(en.getUserId().toString());
                 }
             }

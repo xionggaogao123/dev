@@ -62,11 +62,11 @@ public class ControlMapDao extends BaseDao {
         return entries;
     }
 
-    public List<ControlMapEntry> getSimpleMapListEntry(ObjectId parentId,ObjectId sonId,long dateTime) {
+    public List<ControlMapEntry> getSimpleMapListEntry(ObjectId parentId,ObjectId sonId,long dateTime,long endTime) {
         BasicDBObject query = new BasicDBObject()
                 .append("pid", parentId)
                 .append("uid", sonId)
-                .append("dtm",new BasicDBObject(Constant.MONGO_GT,dateTime))
+                .append("dtm",new BasicDBObject(Constant.MONGO_GTE,dateTime).append(Constant.MONGO_LTE,endTime))
                 .append("isr", 0); // 未删除
         List<ControlMapEntry> entries = new ArrayList<ControlMapEntry>();
         List<DBObject> dbList =

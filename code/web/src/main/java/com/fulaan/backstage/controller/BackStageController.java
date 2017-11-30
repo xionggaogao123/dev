@@ -2,6 +2,7 @@ package com.fulaan.backstage.controller;
 
 import com.alibaba.fastjson.JSON;
 import com.fulaan.annotation.ObjectIdType;
+import com.fulaan.appmarket.dto.AppDetailDTO;
 import com.fulaan.appmarket.service.AppMarketService;
 import com.fulaan.backstage.dto.JxmAppVersionDTO;
 import com.fulaan.backstage.dto.UserRoleOfPathDTO;
@@ -392,6 +393,39 @@ public class BackStageController extends BaseController {
 
 
     /**
+     * 获得所有黑名单应用
+     * @return
+     */
+    @ApiOperation(value = "获得所有黑名单应用", httpMethod = "POST", produces = "application/json")
+    @ApiResponses( value = {@ApiResponse(code = 200, message = "Successful — 请求已完成",response = String.class),
+            @ApiResponse(code = 400, message = "请求中有语法问题，或不能满足请求"),
+            @ApiResponse(code = 500, message = "服务器不能完成请求")})
+    @RequestMapping("/getBlackAppList")
+    @ResponseBody
+    public String getBlackAppList(){
+        RespObj respObj = new RespObj(Constant.FAILD_CODE);
+        try{
+            List<AppDetailDTO> dtos =  backStageService.getBlackAppList();
+            respObj.setCode(Constant.SUCCESS_CODE);
+            respObj.setMessage(dtos);
+        }catch (Exception e){
+            e.printStackTrace();
+            respObj.setCode(Constant.SUCCESS_CODE);
+            respObj.setMessage("获得所有黑名单应用失败");
+        }
+        return JSON.toJSONString(respObj);
+    }
+
+
+    @RequestMapping("/updateApkByType")
+    @ResponseBody
+    public RespObj updateApkByType(String id, int type){
+        RespObj respObj=new RespObj(Constant.SUCCESS_CODE);
+        appMarketService.updateApkByType(id,type);
+        return respObj;
+    }
+
+    /**
      * 获得所有的复兰应用的版本号信息
      * @return
      */
@@ -415,13 +449,5 @@ public class BackStageController extends BaseController {
         return JSON.toJSONString(respObj);
     }
 
-
-    @RequestMapping("/updateApkByType")
-    @ResponseBody
-    public RespObj updateApkByType(String id, int type){
-        RespObj respObj=new RespObj(Constant.SUCCESS_CODE);
-        appMarketService.updateApkByType(id,type);
-        return respObj;
-    }
 
 }

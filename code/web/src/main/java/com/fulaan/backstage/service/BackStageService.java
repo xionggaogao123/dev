@@ -1,5 +1,7 @@
 package com.fulaan.backstage.service;
 
+import cn.jiguang.commom.utils.StringUtils;
+import com.db.appmarket.AppDetailDao;
 import com.db.backstage.JxmAppVersionDao;
 import com.db.backstage.TeacherApproveDao;
 import com.db.backstage.UnlawfulPictureTextDao;
@@ -16,6 +18,7 @@ import com.db.operation.AppOperationDao;
 import com.db.questionbook.QuestionAdditionDao;
 import com.db.questionbook.QuestionBookDao;
 import com.db.user.UserDao;
+import com.fulaan.appmarket.dto.AppDetailDTO;
 import com.fulaan.backstage.dto.JxmAppVersionDTO;
 import com.fulaan.backstage.dto.TeacherApproveDTO;
 import com.fulaan.backstage.dto.UnlawfulPictureTextDTO;
@@ -23,6 +26,7 @@ import com.fulaan.backstage.dto.UserRoleOfPathDTO;
 import com.fulaan.controlphone.dto.ControlPhoneDTO;
 import com.fulaan.controlphone.dto.ControlSchoolTimeDTO;
 import com.fulaan.user.service.UserService;
+import com.pojo.appmarket.AppDetailEntry;
 import com.pojo.appnotice.AppNoticeEntry;
 import com.pojo.backstage.*;
 import com.pojo.controlphone.ControlPhoneEntry;
@@ -35,6 +39,7 @@ import com.pojo.operation.AppCommentEntry;
 import com.pojo.operation.AppOperationEntry;
 import com.pojo.questionbook.QuestionAdditionEntry;
 import com.pojo.questionbook.QuestionBookEntry;
+import com.pojo.user.UserDetailInfoDTO;
 import com.pojo.user.UserEntry;
 import com.sys.constants.Constant;
 import com.sys.utils.AvatarUtils;
@@ -84,6 +89,8 @@ public class BackStageService {
     private JxmAppVersionDao jxmAppVersionDao = new JxmAppVersionDao();
 
     private UserRoleOfPathDao userRoleOfPathDao = new UserRoleOfPathDao();
+
+    private AppDetailDao appDetailDao = new AppDetailDao();
 
     private static String imageUrl = "http://7xiclj.com1.z0.glb.clouddn.com/5a1bdcfd27fddd15c8649dea.png";
 
@@ -242,7 +249,15 @@ public class BackStageService {
 
     }
 */
+    public List<AppDetailDTO> getBlackAppList(){
+        List<AppDetailDTO> detailDTOs = new ArrayList<AppDetailDTO>();
+        List<AppDetailEntry> detailEntries =  appDetailDao.getSimpleAppEntry();
+        for(AppDetailEntry detailEntry : detailEntries){
+            detailDTOs.add(new AppDetailDTO(detailEntry));
+        }
+        return detailDTOs;
 
+    }
 
     //添加图片显示认证
     public void addYellowPicture(ObjectId userId,String imageUrl,int ename,ObjectId contactId){
@@ -262,8 +277,26 @@ public class BackStageService {
         List<UnlawfulPictureTextEntry> entries = unlawfulPictureTextDao.selectContentList(isCheck,id,page,pageSize);
         int count = unlawfulPictureTextDao.getNumber(isCheck,id);
         List<UnlawfulPictureTextDTO> dtos = new ArrayList<UnlawfulPictureTextDTO>();
+        List<String> uids = new ArrayList<String>();
         for(UnlawfulPictureTextEntry entry : entries){
             dtos.add(new UnlawfulPictureTextDTO(entry));
+            uids.add(entry.getUserId().toString());
+        }
+        List<UserDetailInfoDTO> udtos = userService.findUserInfoByUserIds(uids);
+        Map<String,UserDetailInfoDTO> map2 = new HashMap<String, UserDetailInfoDTO>();
+        if(udtos != null && udtos.size()>0){
+            for(UserDetailInfoDTO dto4 : udtos){
+                map2.put(dto4.getId(),dto4);
+            }
+        }
+        for(UnlawfulPictureTextDTO dto5 : dtos){
+            UserDetailInfoDTO dto9 = map2.get(dto5.getUserId());
+            if(dto9 != null){
+                String name = StringUtils.isNotEmpty(dto9.getNickName())?dto9.getNickName():dto9.getUserName();
+                dto5.setUserName(name);
+                dto5.setAvatar(dto9.getImgUrl());
+            }
+            dto5.setFunctionName(PictureType.getDes(dto5.getFunction()));
         }
         map.put("list",dtos);
         map.put("count",count);

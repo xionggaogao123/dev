@@ -604,7 +604,8 @@ public class ControlPhoneService {
         if(dateTime != null && dateTime != ""){
             sl = DateTimeUtils.getStrToLongTime(dateTime, "yyyy-MM-dd");
         }
-        List<ControlMapEntry> entries = controlMapDao.getSimpleMapListEntry(parentId,sonId,sl);
+        long endTime = sl+24*60*60*1000;
+        List<ControlMapEntry> entries = controlMapDao.getSimpleMapListEntry(parentId,sonId,sl,endTime);
         if(entries.size()>0){
             for(ControlMapEntry entry : entries){
                 dtos.add(new ControlMapDTO(entry));

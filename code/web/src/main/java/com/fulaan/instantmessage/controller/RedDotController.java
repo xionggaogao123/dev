@@ -3,6 +3,7 @@ package com.fulaan.instantmessage.controller;
 import cn.jiguang.commom.utils.StringUtils;
 import com.alibaba.fastjson.JSON;
 import com.fulaan.base.BaseController;
+import com.fulaan.instantmessage.dto.RedResultDTO;
 import com.fulaan.instantmessage.service.RedDotService;
 import com.sys.constants.Constant;
 import com.sys.utils.DateTimeUtils;
@@ -41,7 +42,7 @@ public class RedDotController extends BaseController {
         RespObj respObj=new RespObj(Constant.FAILD_CODE);
         try {
             respObj.setCode(Constant.SUCCESS_CODE);
-            Map<String,Object> result = redDotService.selectResult(getUserId());
+            RedResultDTO result = redDotService.selectAllResultDTO(getUserId());
             respObj.setMessage(result);
         } catch (Exception e) {
             e.printStackTrace();

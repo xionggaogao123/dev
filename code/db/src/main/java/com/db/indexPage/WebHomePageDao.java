@@ -46,6 +46,18 @@ public class WebHomePageDao extends BaseDao{
         return count(MongoFacroty.getAppDB(), Constant.COLLECTION_WEB_HOME_PAGE_RECORD,query);
     }
 
+    public WebHomePageEntry getWebHomePageEntry(ObjectId groupExamDetailId){
+        BasicDBObject query=new BasicDBObject()
+                .append("cti",groupExamDetailId)
+                .append("ty",Constant.FIVE);
+        DBObject dbObject=findOne(MongoFacroty.getAppDB(), Constant.COLLECTION_WEB_HOME_PAGE_RECORD,query,Constant.FIELDS);
+        if(null!=dbObject){
+            return new WebHomePageEntry(dbObject);
+        }else{
+            return null;
+        }
+    }
+
     public BasicDBObject getMyReceivedQueryCondition(List<ObjectId> communityIds,
                                                      List<ObjectId> receiveIds,
                                                      int type,
@@ -158,6 +170,13 @@ public class WebHomePageDao extends BaseDao{
             }else {
                 query.append("ty", type);
             }
+        }else{
+            List<Integer> types=new ArrayList<Integer>();
+            types.add(Constant.ONE);
+            types.add(Constant.TWO);
+            types.add(Constant.FOUR);
+            types.add(Constant.FIVE);
+            query.append("ty", new BasicDBObject(Constant.MONGO_IN,types));
         }
         if(subjectId!=null){
             query.append("sid",subjectId);

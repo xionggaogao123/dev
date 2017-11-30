@@ -518,6 +518,12 @@ public class ReportCardService {
                         Constant.ZERO
                 ));
             }
+            WebHomePageEntry homePageEntry=new WebHomePageEntry(Constant.FIVE, userId,
+                    StringUtils.isNotEmpty(dto.getCommunityId())?new ObjectId(dto.getCommunityId()):null,
+                    groupExamDetailId, StringUtils.isNotEmpty(dto.getSubjectId())?new ObjectId(dto.getSubjectId()):null,
+                    null, Constant.ZERO
+            );
+            webHomePageDao.saveWebHomeEntry(homePageEntry);
             for(GroupExamUserRecordEntry userRecordEntry:userRecordEntries){
                 ObjectId recordId=groupExamUserRecordDao.saveGroupExamUserRecord(userRecordEntry);
                 WebHomePageEntry pageEntry=new WebHomePageEntry(Constant.THREE, userId,
@@ -539,6 +545,18 @@ public class ReportCardService {
                 entry.setSignCount(oldEntry.getSignCount());
                 entry.setSignedCount(oldEntry.getSignedCount());
                 groupExamDetailDao.saveGroupExamDetailEntry(entry);
+
+                //查询该考试信息
+                WebHomePageEntry homePageEntry=new WebHomePageEntry(Constant.FIVE, userId,
+                        StringUtils.isNotEmpty(dto.getCommunityId())?new ObjectId(dto.getCommunityId()):null,
+                        new ObjectId(id), StringUtils.isNotEmpty(dto.getSubjectId())?new ObjectId(dto.getSubjectId()):null,
+                        null, Constant.ZERO
+                );
+                WebHomePageEntry pageEntry=webHomePageDao.getWebHomePageEntry(new ObjectId(id));
+                if(null!=pageEntry){
+                    homePageEntry.setID(pageEntry.getID());
+                }
+                webHomePageDao.saveWebHomeEntry(homePageEntry);
             }
             return id;
         }

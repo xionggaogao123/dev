@@ -21,6 +21,53 @@ public class WebHomePageDao extends BaseDao{
         save(MongoFacroty.getAppDB(), Constant.COLLECTION_WEB_HOME_PAGE_RECORD,entry.getBaseEntry());
     }
 
+    public List<WebHomePageEntry> getGatherHomePageEntries(ObjectId communityId,List<ObjectId> receiveIds,
+                                                           int type, ObjectId subjectId, ObjectId userId,int page,
+                                                           int pageSize){
+        List<WebHomePageEntry> entries =new ArrayList<WebHomePageEntry>();
+        BasicDBObject query=getGatherCondition(communityId, receiveIds, type, subjectId, userId);
+        List<DBObject> dbObjectList=find(MongoFacroty.getAppDB(), Constant.COLLECTION_WEB_HOME_PAGE_RECORD,
+                query,Constant.FIELDS,Constant.MONGO_SORTBY_DESC,(page-1)*pageSize,pageSize);
+        if(null!=dbObjectList&&!dbObjectList.isEmpty()){
+            for(DBObject dbObject:dbObjectList){
+                entries.add(new WebHomePageEntry(dbObject));
+            }
+        }
+        return entries;
+    }
+
+
+    public int countGatherHomePageEntries(ObjectId communityId,List<ObjectId> receiveIds,
+                                          int type, ObjectId subjectId, ObjectId userId){
+        BasicDBObject query=getGatherCondition(communityId, receiveIds, type, subjectId, userId);
+        return count(MongoFacroty.getAppDB(), Constant.COLLECTION_WEB_HOME_PAGE_RECORD,query);
+    }
+
+    public BasicDBObject getGatherCondition(ObjectId communityId,
+                                            List<ObjectId> receiveIds,
+                                            int type,
+                                            ObjectId subjectId,
+                                            ObjectId userId){
+        BasicDBObject query=new BasicDBObject();
+        BasicDBList values = new BasicDBList();
+        BasicDBObject query1=new BasicDBObject("ty",Constant.FIVE)
+                    .append("uid",userId);
+        values.add(query1);
+        BasicDBObject query2=new BasicDBObject("ty",Constant.THREE)
+                .append("uid",new BasicDBObject(Constant.MONGO_NE,userId));
+        query2.append("rid",new BasicDBObject(Constant.MONGO_IN,receiveIds));
+        values.add(query2);
+        query.put(Constant.MONGO_OR, values);
+
+        if(subjectId!=null){
+            query.append("sid",subjectId);
+        }
+        if(communityId!=null){
+            query.append("cid",communityId);
+        }
+        return query;
+    }
+
 
     /**
      *

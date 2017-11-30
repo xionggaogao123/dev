@@ -42,6 +42,10 @@ public class WebHomePageDTO {
 
     private boolean isSign;
 
+    private double avgScore;//平均分
+
+    private double aPercent;//a率
+
     public WebHomePageDTO(){
 
     }
@@ -88,6 +92,21 @@ public class WebHomePageDTO {
 
     }
 
+    public double getAvgScore() {
+        return avgScore;
+    }
+
+    public void setAvgScore(double avgScore) {
+        this.avgScore = avgScore;
+    }
+
+    public double getaPercent() {
+        return aPercent;
+    }
+
+    public void setaPercent(double aPercent) {
+        this.aPercent = aPercent;
+    }
 
     public String getId() {
         return id;

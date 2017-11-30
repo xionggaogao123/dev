@@ -4,6 +4,7 @@ import com.db.base.BaseDao;
 import com.db.factory.MongoFacroty;
 import com.mongodb.*;
 import com.pojo.fcommunity.CommunityEntry;
+import com.pojo.indexPage.WebHomePageEntry;
 import com.pojo.utils.MongoUtils;
 import com.sys.constants.Constant;
 import org.apache.commons.lang.StringUtils;
@@ -222,8 +223,6 @@ public class CommunityDao extends BaseDao {
         }
         return entries;
     }
-
-
 
 
     public Boolean isCommunityNameUnique(String communityName) {

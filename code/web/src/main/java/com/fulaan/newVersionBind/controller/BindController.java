@@ -26,7 +26,7 @@ import java.util.List;
  */
 @Api(value = "app家长孩子绑定逻辑")
 @Controller
-@RequestMapping("/bind")
+@RequestMapping("/web/bind")
 public class BindController extends BaseController {
 
 

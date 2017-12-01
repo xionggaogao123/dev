@@ -28,6 +28,10 @@ public class WebHomePageDTO {
     private String examTime;
     private String examTypeName;
     private int recordScoreType;
+    private String childUserId;
+    private String childUserName;
+    private String contactId;
+    private boolean isOwner;
 
     private int commentCount;
     private int signedCount;
@@ -93,6 +97,38 @@ public class WebHomePageDTO {
             attachementList.add(new Attachement(attachmentEntry));
         }
 
+    }
+
+    public boolean isOwner() {
+        return isOwner;
+    }
+
+    public void setOwner(boolean owner) {
+        isOwner = owner;
+    }
+
+    public String getContactId() {
+        return contactId;
+    }
+
+    public void setContactId(String contactId) {
+        this.contactId = contactId;
+    }
+
+    public String getChildUserId() {
+        return childUserId;
+    }
+
+    public void setChildUserId(String childUserId) {
+        this.childUserId = childUserId;
+    }
+
+    public String getChildUserName() {
+        return childUserName;
+    }
+
+    public void setChildUserName(String childUserName) {
+        this.childUserName = childUserName;
     }
 
     public int getStatus() {

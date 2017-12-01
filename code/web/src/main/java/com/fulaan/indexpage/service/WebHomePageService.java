@@ -287,8 +287,10 @@ public class WebHomePageService {
             Set<ObjectId> subjectIds = new HashSet<ObjectId>();
             Set<ObjectId> examTypeIds = new HashSet<ObjectId>();
             Set<ObjectId> groupExamIds = new HashSet<ObjectId>();
+            Set<ObjectId> childUserIds=new HashSet<ObjectId>();
             for (GroupExamUserRecordEntry groupExamUserRecordEntry : userRecordEntries) {
                 groupExamIds.add(groupExamUserRecordEntry.getGroupExamDetailId());
+                childUserIds.add(groupExamUserRecordEntry.getUserId());
             }
             Map<ObjectId, GroupExamDetailEntry> groupExamDetailEntryMap = groupExamDetailDao
                     .getGroupExamDetailMap(new ArrayList<ObjectId>(groupExamIds));
@@ -296,6 +298,7 @@ public class WebHomePageService {
             Map<ObjectId, CommunityEntry> communityEntryMap = communityDao
                     .findMapInfo(new ArrayList<ObjectId>(communityIds));
             Map<ObjectId, UserEntry> userEntryMap = userDao.getUserEntryMap(userIds, Constant.FIELDS);
+            Map<ObjectId, UserEntry> childUserEntryMap = userDao.getUserEntryMap(childUserIds, Constant.FIELDS);
             Map<ObjectId, SubjectClassEntry> subjectClassEntryMap = subjectClassDao.getSubjectClassEntryMap(new ArrayList<ObjectId>(subjectIds));
             Map<ObjectId, ExamTypeEntry> examTypeEntryMap = examTypeDao.getExamTypeEntryMap(new ArrayList<ObjectId>(examTypeIds));
             for (GroupExamUserRecordEntry userRecordEntry : userRecordEntries) {
@@ -304,9 +307,16 @@ public class WebHomePageService {
                 if(null!=reportCardStatus.get(userRecordEntry.getID())){
                     status=reportCardStatus.get(userRecordEntry.getID());
                 }
+                boolean owner=false;
                 if (null != detailEntry) {
-                    setWebHomeData(detailEntry,communityEntryMap,userEntryMap,subjectClassEntryMap,
-                            examTypeEntryMap,webHomePageDTOs,status
+                    ObjectId childUserId=userRecordEntry.getUserId();
+                    String childUserName=Constant.EMPTY;
+                    UserEntry userEntry=childUserEntryMap.get(childUserId)
+                    if(null!=userEntry){
+                        childUserName= org.apache.commons.lang3.StringUtils.isNotEmpty(userEntry.getNickName())?userEntry.getNickName():userEntry.getUserName();
+                    }
+                    setWebHomeData(userRecordEntry.getID(),detailEntry,communityEntryMap,userEntryMap,subjectClassEntryMap,
+                            examTypeEntryMap,webHomePageDTOs,status,owner,childUserId.toString(),childUserName
                             );
                 }
             }
@@ -331,22 +341,29 @@ public class WebHomePageService {
                 if(null!=reportCardSendStatus.get(item.getKey())){
                     status=reportCardSendStatus.get(item.getKey());
                 }
-                setWebHomeData(detailEntry,communityEntryMap,
+                setWebHomeData(detailEntry.getID(),detailEntry,communityEntryMap,
                         userEntryMap,subjectClassEntryMap,
-                        examTypeEntryMap,webHomePageDTOs,status);
+                        examTypeEntryMap,webHomePageDTOs,status,true,Constant.EMPTY,Constant.EMPTY);
             }
         }
     }
 
-    public void setWebHomeData(GroupExamDetailEntry detailEntry,Map<ObjectId, CommunityEntry> communityEntryMap,
+    public void setWebHomeData(ObjectId id,GroupExamDetailEntry detailEntry,Map<ObjectId, CommunityEntry> communityEntryMap,
                                Map<ObjectId, UserEntry> userEntryMap,Map<ObjectId, SubjectClassEntry> subjectClassEntryMap,
                                Map<ObjectId, ExamTypeEntry> examTypeEntryMap,
                                List<WebHomePageDTO> webHomePageDTOs,
-                               int status
+                               int status,
+                               boolean isOwner,
+                               String childUserId,
+                               String childUserName
                                ){
         WebHomePageDTO webHomePageDTO = new WebHomePageDTO(detailEntry);
         webHomePageDTO.setStatus(status);
         webHomePageDTO.setType(Constant.TWO);
+        webHomePageDTO.setOwner(isOwner);
+        webHomePageDTO.setContactId(id.toString());
+        webHomePageDTO.setChildUserId(childUserId);
+        webHomePageDTO.setChildUserName(childUserName);
         webHomePageDTO.setTimeExpression(TimeChangeUtils.getChangeTime(detailEntry.getSubmitTime()));
         CommunityEntry communityEntry = communityEntryMap.get(detailEntry.getCommunityId());
         if (null != communityEntry) {

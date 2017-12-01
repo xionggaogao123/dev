@@ -922,6 +922,8 @@ public class Constant {
     public static final String COLLECTION_CONTROL_BACK_TIME= "controlbacktime";
     //管控时间选项默认配置
     public static final String COLLECTION_CONTROL_SET_TIME= "controlsettime";
+    //系统默认推送应用列表
+    public static final String COLLECTION_CONTROL_APP_SYSTEM= "controlappsystem";
 
     /*********************************后台管理*******************************************/
     //图片鉴黄和垃圾文本

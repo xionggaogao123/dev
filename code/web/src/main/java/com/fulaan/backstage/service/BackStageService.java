@@ -6,10 +6,7 @@ import com.db.backstage.JxmAppVersionDao;
 import com.db.backstage.TeacherApproveDao;
 import com.db.backstage.UnlawfulPictureTextDao;
 import com.db.backstage.UserRoleOfPathDao;
-import com.db.controlphone.ControlPhoneDao;
-import com.db.controlphone.ControlSchoolTimeDao;
-import com.db.controlphone.ControlSetBackDao;
-import com.db.controlphone.ControlSetTimeDao;
+import com.db.controlphone.*;
 import com.db.fcommunity.CommunityDao;
 import com.db.fcommunity.CommunityDetailDao;
 import com.db.operation.AppCommentDao;
@@ -23,16 +20,14 @@ import com.fulaan.backstage.dto.JxmAppVersionDTO;
 import com.fulaan.backstage.dto.TeacherApproveDTO;
 import com.fulaan.backstage.dto.UnlawfulPictureTextDTO;
 import com.fulaan.backstage.dto.UserRoleOfPathDTO;
+import com.fulaan.controlphone.dto.ControlAppSystemDTO;
 import com.fulaan.controlphone.dto.ControlPhoneDTO;
 import com.fulaan.controlphone.dto.ControlSchoolTimeDTO;
 import com.fulaan.user.service.UserService;
 import com.pojo.appmarket.AppDetailEntry;
 import com.pojo.appnotice.AppNoticeEntry;
 import com.pojo.backstage.*;
-import com.pojo.controlphone.ControlPhoneEntry;
-import com.pojo.controlphone.ControlSchoolTimeEntry;
-import com.pojo.controlphone.ControlSetBackEntry;
-import com.pojo.controlphone.ControlSetTimeEntry;
+import com.pojo.controlphone.*;
 import com.pojo.fcommunity.AttachmentEntry;
 import com.pojo.fcommunity.CommunityDetailEntry;
 import com.pojo.operation.AppCommentEntry;
@@ -91,6 +86,8 @@ public class BackStageService {
     private UserRoleOfPathDao userRoleOfPathDao = new UserRoleOfPathDao();
 
     private AppDetailDao appDetailDao = new AppDetailDao();
+
+    private ControlAppSystemDao controlAppSystemDao = new ControlAppSystemDao();
 
     private static String imageUrl = "http://7xiclj.com1.z0.glb.clouddn.com/5a1bdcfd27fddd15c8649dea.png";
 
@@ -252,7 +249,7 @@ public class BackStageService {
    /* public static void main(String[] args){
 
     }
-*/
+*/  //获取黑名单列表
     public List<AppDetailDTO> getBlackAppList(){
         List<AppDetailDTO> detailDTOs = new ArrayList<AppDetailDTO>();
         List<AppDetailEntry> detailEntries =  appDetailDao.getSimpleAppEntry();
@@ -260,6 +257,28 @@ public class BackStageService {
             detailDTOs.add(new AppDetailDTO(detailEntry));
         }
         return detailDTOs;
+
+    }
+    //添加为系统推送
+    public void addSystemAppEntry(ObjectId appId){
+        AppDetailEntry entry = appDetailDao.findEntryById(appId);
+        if(entry != null){
+            ControlAppSystemEntry entry1 = controlAppSystemDao.getEntry();
+            if(entry1 == null){
+                ControlAppSystemDTO dto = new ControlAppSystemDTO();
+                List<String> stringList = new ArrayList<String>();
+                stringList.add(appId.toString());
+                controlAppSystemDao.addEntry(dto.buildAddEntry());
+            }else{
+                List<ObjectId> ob = entry1.getAppIdList();
+                if(!ob.contains(appId)){
+                    ob.add(appId);
+                    entry1.setAppIdList(ob);
+                    controlAppSystemDao.updEntry(entry1);
+                }
+            }
+        }
+
 
     }
 

@@ -311,7 +311,7 @@ public class WebHomePageService {
                 if (null != detailEntry) {
                     ObjectId childUserId=userRecordEntry.getUserId();
                     String childUserName=Constant.EMPTY;
-                    UserEntry userEntry=childUserEntryMap.get(childUserId)
+                    UserEntry userEntry=childUserEntryMap.get(childUserId);
                     if(null!=userEntry){
                         childUserName= org.apache.commons.lang3.StringUtils.isNotEmpty(userEntry.getNickName())?userEntry.getNickName():userEntry.getUserName();
                     }

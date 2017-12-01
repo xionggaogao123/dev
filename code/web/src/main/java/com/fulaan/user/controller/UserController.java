@@ -1581,7 +1581,7 @@ public class UserController extends BaseController {
         }
         System.out.println(userInfo);
 
-        if (bindQQ(redirectAttributes, userInfo)) return "redirect:/web/account/webThirdSuccess";
+        if (bindQQ(redirectAttributes, userInfo)) return "redirect:/";
 
         final UserEntry e = getThirdInfo(userInfo, ThirdType.QQ);
 
@@ -1594,7 +1594,7 @@ public class UserController extends BaseController {
         if (StringUtils.isNotBlank(redirectUrl) && getPlatform() != Platform.PC) {
             return redirectUrl;
         }
-        return "redirect:/web/account/webThirdSuccess";
+        return "redirect:/";
     }
 
     private boolean bindQQ(RedirectAttributes redirectAttributes, UserInfo userInfo) {
@@ -1706,7 +1706,7 @@ public class UserController extends BaseController {
             return "redirect:/";
         }
 
-        if (bindWeChat(redirectAttributes, userInfo)) return "redirect:/web/account/webThirdSuccess";
+        if (bindWeChat(redirectAttributes, userInfo)) return "redirect:/";
 
         final UserEntry e = getThirdInfo(userInfo, ThirdType.WECHAT);
         new Thread(new Runnable() {
@@ -1721,7 +1721,7 @@ public class UserController extends BaseController {
         if (redirectUrl != null && getPlatform() != Platform.PC) {
             return redirectUrl;
         }
-        return "redirect:/web/account/webThirdSuccess";
+        return "redirect:/";
     }
 
     private boolean bindWeChat(RedirectAttributes redirectAttributes, UserInfo userInfo) {

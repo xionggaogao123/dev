@@ -4,6 +4,7 @@ import com.db.fcommunity.CommunityDao;
 import com.db.fcommunity.MemberDao;
 import com.db.fcommunity.NewVersionCommunityBindDao;
 import com.db.instantmessage.RedDotDao;
+import com.db.reportCard.GroupExamUserRecordDao;
 import com.fulaan.instantmessage.dto.RedDotDTO;
 import com.fulaan.instantmessage.dto.RedResultDTO;
 import com.fulaan.newVersionBind.service.NewVersionBindService;
@@ -33,6 +34,8 @@ public class RedDotService {
     private NewVersionBindService newVersionBindService;
 
     private NewVersionCommunityBindDao newVersionCommunityBindDao = new NewVersionCommunityBindDao();
+
+    private GroupExamUserRecordDao groupExamUserRecordDao = new GroupExamUserRecordDao();
 
     /**
      * 批量增加红点记录
@@ -203,13 +206,15 @@ public class RedDotService {
      * 添加红点成绩单(third)
      *
      */
-    public void addThirdList(ObjectId communityId,ObjectId userId,int type){
-        List<ObjectId> sids = newVersionCommunityBindDao.getStudentListByCommunityId(communityId);
-        List<ObjectId> pids = newVersionCommunityBindDao.getParentIdListByCommunityId(communityId);
+    public void addThirdList(ObjectId id,ObjectId communityId,ObjectId userId,int type){
+        List<ObjectId> sids = groupExamUserRecordDao.getStudentReceivedEntries(id);
+        List<ObjectId> pids = newVersionCommunityBindDao.getAllStudentBindEntries(communityId,sids);
+        Set<ObjectId> set = new HashSet<ObjectId>();
+        set.addAll(sids);
+        set.addAll(pids);
+        set.remove(userId);
         List<ObjectId> uids = new ArrayList<ObjectId>();
-        uids.addAll(sids);
-        uids.addAll(pids);
-        uids.remove(userId);
+        uids.addAll(set);
         List<RedDotDTO> redDotDTOs = new ArrayList<RedDotDTO>();
         if(ApplyTypeEn.getProTypeEname(type).equals("third")){//通知类型
             List<ObjectId> unid =  redDotDao.getRedDotEntryByList(uids, type);

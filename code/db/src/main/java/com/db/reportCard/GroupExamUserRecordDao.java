@@ -138,6 +138,21 @@ public class GroupExamUserRecordDao extends BaseDao{
         return entries;
     }
 
+    public List<ObjectId> getStudentReceivedEntries(
+            ObjectId id){
+        List<ObjectId> entries=new ArrayList<ObjectId>();
+        BasicDBObject query=new BasicDBObject();
+        query.append("eid",id);
+        List<DBObject> dbObjects=find(MongoFacroty.getAppDB(), Constant.COLLECTION_REPORT_CARD_EXAM_USER_RECORD,
+                query,Constant.FIELDS,Constant.MONGO_SORTBY_DESC);
+        if(null!=dbObjects&&!dbObjects.isEmpty()){
+            for(DBObject dbObject:dbObjects){
+                entries.add(new GroupExamUserRecordEntry(dbObject).getUserId());
+            }
+        }
+        return entries;
+    }
+
     public BasicDBObject getParentReceivedEntriesCondition(ObjectId subjectId,
                                                             ObjectId examTypeId,int status,
                                                             ObjectId mainUserId,

@@ -127,7 +127,7 @@ public class MQTTSendMsg {
          * 其中GroupID在MQ控制台里申请
          * DeviceID由应用方设置，可能是设备编号等，需要唯一，否则服务端拒绝重复的ClientID连接
          */
-        final String clientId ="GID_jxm@@@ClientID_00001212";
+        final String clientId ="GID_jxm@@@ClientID_00001212333";
         String sign;
         MemoryPersistence persistence = new MemoryPersistence();
         try {

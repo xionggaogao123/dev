@@ -175,6 +175,9 @@ public class ReportCardService {
         groupExamUserRecordDao.updateGroupExamDetailStatus(groupExamDetailId, Constant.TWO);
         webHomePageDao.updateContactStatus(groupExamDetailId, Constant.FIVE, Constant.TWO);
         webHomePageDao.updateReportCardStatus(groupExamDetailId,Constant.THREE, Constant.TWO);
+        GroupExamDetailEntry entry = groupExamDetailDao.getEntryById(groupExamDetailId);
+        //添加红点
+        redDotService.addThirdList(entry.getID(),entry.getCommunityId(), entry.getUserId(), ApplyTypeEn.repordcard.getType());
     }
 
     public GroupExamVersionDTO getExamGroupVersion(ObjectId groupExamDetailId) throws Exception {
@@ -487,8 +490,7 @@ public class ReportCardService {
      * @throws Exception
      */
     public String saveGroupExamDetail(GroupExamDetailDTO dto, ObjectId userId) throws Exception {
-        //添加红点
-        redDotService.addThirdList(new ObjectId(dto.getCommunityId()), userId, ApplyTypeEn.repordcard.getType());
+
 
         String id = dto.getId();
         dto.setUserId(userId.toString());
@@ -641,6 +643,11 @@ public class ReportCardService {
             webHomePageDao.updateContactStatus(new ObjectId(groupExamDetailId), Constant.FIVE, status);
             //更新状态
             groupExamUserRecordDao.updateGroupExamDetailStatus(new ObjectId(groupExamDetailId), status);
+
+            //添加红点
+            if(status==2){
+                redDotService.addThirdList(detailEntry.getID(),detailEntry.getCommunityId(), detailEntry.getUserId(), ApplyTypeEn.repordcard.getType());
+            }
             if (detailEntry.getRecordScoreType() == Constant.ONE) {
                 double qualifyScore = detailEntry.getQualifyScore();
                 double excellentScore = detailEntry.getExcellentScore();

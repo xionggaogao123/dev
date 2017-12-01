@@ -124,7 +124,7 @@ public class AppCommentService {
             }
         }
         JPushUtils jPushUtils=new JPushUtils();
-
+        List<ObjectId> objectIdList =new ArrayList<ObjectId>();
         for(CommunityDTO dto3 : sendList){
             en.setID(null);
             en.setRecipientId(new ObjectId(dto3.getId()));
@@ -142,8 +142,6 @@ public class AppCommentService {
                 }
             }
 
-
-            List<ObjectId> objectIdList =new ArrayList<ObjectId>();
 
             //添加临时记录表//暂时不显示
           /*  if(dto.getStatus()==0){
@@ -167,6 +165,9 @@ public class AppCommentService {
             webHomePageDao.saveWebHomeEntry(pageEntry);
 
             objectIdList.add(new ObjectId(dto3.getId()));
+
+        }
+        if(dto.getStatus()==0){
             redDotService.addEntryList(objectIdList,new ObjectId(dto.getAdminId()), ApplyTypeEn.operation.getType(),4);
         }
         try {
@@ -1434,6 +1435,11 @@ public static void main(String[] args){
         long zero=current/(1000*3600*24)*(1000*3600*24)- TimeZone.getDefault().getRawOffset();//今天零点零分零秒的毫秒数
         entry.setDateTime(zero);
         appCommentDao.updEntry(entry);
+        if(dto.getStatus()==0){
+            List<ObjectId> objectIdList = new ArrayList<ObjectId>();
+            objectIdList.add(new ObjectId(str[0]));
+            redDotService.addEntryList(objectIdList,new ObjectId(dto.getAdminId()), ApplyTypeEn.operation.getType(),4);
+        }
         JPushUtils jPushUtils=new JPushUtils();
         try {
             ObjectId groupId = communityDao.getGroupId(new ObjectId(str[0]));

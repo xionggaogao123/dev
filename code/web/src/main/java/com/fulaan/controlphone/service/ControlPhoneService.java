@@ -566,7 +566,7 @@ public class ControlPhoneService {
         }
         map.put("time",timecu/60000);
         //使用时间
-        int useTime  = controlAppResultDao.getAllTime(sonId);
+        int useTime  = controlAppResultDao.getAllTime(sonId,zero);
         map.put("useTime",useTime/60000);
         //剩余时间
         map.put("reTime",timecu/60000-useTime/60000);

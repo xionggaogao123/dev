@@ -66,10 +66,11 @@ public class ControlAppResultDao extends BaseDao {
     }
 
     //学生的实时使用时间
-    public int getAllTime(ObjectId userId) {
+    public int getAllTime(ObjectId userId,long dateTime) {
         BasicDBObject query =new BasicDBObject();
         query.append("isr", Constant.ZERO);
         query.append("isn", Constant.ZERO);
+        query.append("dtm", dateTime);
         query.append("uid",userId);
         List<DBObject> dboList=find(MongoFacroty.getAppDB(), Constant.COLLECTION_CONTROL_APP_RESULT, query, Constant.FIELDS);
         int retList = 0;

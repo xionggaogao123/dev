@@ -569,7 +569,11 @@ public class ControlPhoneService {
         int useTime  = controlAppResultDao.getAllTime(sonId,zero);
         map.put("useTime",useTime/60000);
         //剩余时间
-        map.put("reTime",timecu/60000-useTime/60000);
+        if(timecu/60000-useTime/60000 <0){
+            map.put("reTime",0);
+        }else{
+            map.put("reTime",timecu/60000-useTime/60000);
+        }
         UserDetailInfoDTO dto = userService.getUserInfoById(sonId.toString());
         if(dto!= null){
             String name = dto.getNickName()!=null?dto.getNickName():dto.getName();

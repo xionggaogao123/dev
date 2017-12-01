@@ -6,7 +6,9 @@ import com.mongodb.BasicDBObject;
 import com.mongodb.DBObject;
 import com.pojo.controlphone.ControlSchoolTimeEntry;
 import com.sys.constants.Constant;
+import org.bson.types.ObjectId;
 
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -20,10 +22,10 @@ public class ControlSchoolTimeDao extends BaseDao {
     }
 
     //删除作业
-    public void delAppCommentEntry(int type){
-        BasicDBObject query = new BasicDBObject("typ",type);
+    public void delAppCommentEntry(ObjectId id){
+        BasicDBObject query = new BasicDBObject(Constant.ID,id);
         BasicDBObject updateValue=new BasicDBObject(Constant.MONGO_SET,new BasicDBObject("isr",Constant.ONE));
-        update(MongoFacroty.getAppDB(), Constant.COLLECTION_APP_COMMENT, query,updateValue);
+        update(MongoFacroty.getAppDB(), Constant.COLLECTION_CONTROL_SCHOOL_TIME, query,updateValue);
     }
 
     //单查询
@@ -78,6 +80,21 @@ public class ControlSchoolTimeDao extends BaseDao {
             entryList = new ControlSchoolTimeEntry((BasicDBObject)obj);
         }
         return entryList;
+    }
+
+    public List<ControlSchoolTimeEntry> getAllEntryList() {
+        BasicDBObject query =new BasicDBObject();
+        query.append("isr", Constant.ZERO);
+        List<DBObject> dboList=find(MongoFacroty.getAppDB(), Constant.COLLECTION_CONTROL_SCHOOL_TIME, query, Constant.FIELDS);
+        List<ControlSchoolTimeEntry> retList =new ArrayList<ControlSchoolTimeEntry>();
+        if(null!=dboList && !dboList.isEmpty())
+        {
+            for(DBObject dbo:dboList)
+            {
+                retList.add(new ControlSchoolTimeEntry((BasicDBObject)dbo));
+            }
+        }
+        return retList;
     }
 
 }

@@ -23,6 +23,7 @@ import com.fulaan.backstage.dto.UserRoleOfPathDTO;
 import com.fulaan.controlphone.dto.ControlAppSystemDTO;
 import com.fulaan.controlphone.dto.ControlPhoneDTO;
 import com.fulaan.controlphone.dto.ControlSchoolTimeDTO;
+import com.fulaan.controlphone.dto.ControlSetBackDTO;
 import com.fulaan.user.service.UserService;
 import com.pojo.appmarket.AppDetailEntry;
 import com.pojo.appnotice.AppNoticeEntry;
@@ -140,6 +141,27 @@ public class BackStageService {
         }
 
     }
+
+    public  List<ControlSetBackDTO> selectSetAppBackEntryList(ObjectId userId){
+        List<ControlSetBackDTO> dtos = new ArrayList<ControlSetBackDTO>();
+        ControlSetBackEntry setBackEntry = controlSetBackDao.getEntry();
+        if(setBackEntry != null){
+            dtos.add(new ControlSetBackDTO(setBackEntry));
+        }
+        return dtos;
+    }
+
+
+    public List<ControlSchoolTimeDTO> selectSchoolTime(){
+        List<ControlSchoolTimeDTO> dtos = new ArrayList<ControlSchoolTimeDTO>();
+        List<ControlSchoolTimeEntry> entries =  controlSchoolTimeDao.getAllEntryList();
+        if(entries.size()>0){
+            for(ControlSchoolTimeEntry entry : entries){
+                dtos.add(new ControlSchoolTimeDTO(entry));
+            }
+        }
+        return dtos;
+    }
     public void addSetTimeListEntry(ObjectId userId,int time){
         long time2 = time * 60 * 1000;
         long hours2 = (time2 % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60);
@@ -172,6 +194,20 @@ public class BackStageService {
 
     }
 
+    public void delPhoneEntry(ObjectId id){
+        controlPhoneDao.delEntry(id);
+    }
+
+    public List<ControlPhoneDTO> selectPhoneEntryList(){
+        List<ControlPhoneDTO> dtos = new ArrayList<ControlPhoneDTO>();
+        List<ControlPhoneEntry> entries = controlPhoneDao.getEntryListByType();
+        if(entries.size()>0){
+            for(ControlPhoneEntry entry : entries){
+                dtos.add(new ControlPhoneDTO(entry));
+            }
+        }
+        return dtos;
+    }
     public void addSchoolTime(String startTime,String endTime,int week){
         ControlSchoolTimeEntry entry = controlSchoolTimeDao.getEntry(week);
         if(null==entry){
@@ -188,8 +224,8 @@ public class BackStageService {
         }
     }
 
-    public void delSchoolTime(int type){
-        controlSchoolTimeDao.delAppCommentEntry(type);
+    public void delSchoolTime(ObjectId id){
+        controlSchoolTimeDao.delAppCommentEntry(id);
     }
     public void addOtherSchoolTime(String startTime,String endTime,String dateTime){
         ControlSchoolTimeEntry entry = controlSchoolTimeDao.getOtherEntry(dateTime);
@@ -258,6 +294,29 @@ public class BackStageService {
         }
         return detailDTOs;
 
+    }
+
+    //添加黑名单
+    public void addBlackAppEntry(ObjectId userId,String name,String packageName){
+        AppDetailEntry entry = appDetailDao.getEntryByApkPackageName(packageName);
+        if(null==entry){
+            AppDetailDTO dto = new AppDetailDTO();
+            dto.setAppName(name);
+            dto.setAppPackageName(packageName);
+            dto.setLogo("/static/images/sm_apk.png");
+            dto.setIsControl(1);
+            dto.setWhiteOrBlack(1);
+            dto.setType(0);
+            appDetailDao.saveAppDetailEntry(dto.buildEntry(userId));
+        }else{
+            entry.setWhiteOrBlack(1);
+            entry.setIsControl(1);
+            appDetailDao.updEntry(entry);
+        }
+    }
+    //移除黑名单
+    public void delBlackAppEntry(ObjectId userId,ObjectId id){
+        appDetailDao.updateEntry(id);
     }
     //添加为系统推送
     public void addSystemAppEntry(ObjectId appId){

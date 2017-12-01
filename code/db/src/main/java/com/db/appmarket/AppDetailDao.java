@@ -21,7 +21,17 @@ public class AppDetailDao extends BaseDao {
     public void saveAppDetailEntry(AppDetailEntry detailEntry){
         save(MongoFacroty.getAppDB(), Constant.COLLECTION_APP_MARKET_DETAIL,detailEntry.getBaseEntry());
     }
+    public void updEntry(AppDetailEntry e) {
+        BasicDBObject query=new BasicDBObject(Constant.ID,e.getID());
+        BasicDBObject updateValue=new BasicDBObject(Constant.MONGO_SET,e.getBaseEntry());
+        update(MongoFacroty.getAppDB(), Constant.COLLECTION_APP_MARKET_DETAIL, query,updateValue);
+    }
 
+    public void updateEntry(ObjectId id){
+        BasicDBObject query = new BasicDBObject(Constant.ID,id);
+        BasicDBObject updateValue=new BasicDBObject(Constant.MONGO_SET,new BasicDBObject("wob",Constant.TWO));
+        update(MongoFacroty.getAppDB(), Constant.COLLECTION_APP_MARKET_DETAIL, query,updateValue);
+    }
     public void removeById(ObjectId id){
         BasicDBObject query=new BasicDBObject(Constant.ID,id);
         remove(MongoFacroty.getAppDB(), Constant.COLLECTION_APP_MARKET_DETAIL,query);

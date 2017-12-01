@@ -8,6 +8,9 @@ import com.fulaan.backstage.dto.JxmAppVersionDTO;
 import com.fulaan.backstage.dto.UserRoleOfPathDTO;
 import com.fulaan.backstage.service.BackStageService;
 import com.fulaan.base.BaseController;
+import com.fulaan.controlphone.dto.ControlPhoneDTO;
+import com.fulaan.controlphone.dto.ControlSchoolTimeDTO;
+import com.fulaan.controlphone.dto.ControlSetBackDTO;
 import com.sys.constants.Constant;
 import com.sys.utils.RespObj;
 import io.swagger.annotations.*;
@@ -88,6 +91,30 @@ public class BackStageController extends BaseController {
     }
 
     /**
+     * 后台查询回调频率
+     *
+     */
+    @ApiOperation(value = "后台查询回调频率", httpMethod = "POST", produces = "application/json")
+    @ApiResponses( value = {@ApiResponse(code = 200, message = "Successful — 请求已完成",response = String.class),
+            @ApiResponse(code = 400, message = "请求中有语法问题，或不能满足请求"),
+            @ApiResponse(code = 500, message = "服务器不能完成请求")})
+    @RequestMapping("/selectSetAppBackEntryList")
+    @ResponseBody
+    public String selectSetAppBackEntryList(){
+        RespObj respObj=new RespObj(Constant.FAILD_CODE);
+        try {
+            respObj.setCode(Constant.SUCCESS_CODE);
+            List<ControlSetBackDTO> dtos = backStageService.selectSetAppBackEntryList(getUserId());
+            respObj.setMessage(dtos);
+        } catch (Exception e) {
+            e.printStackTrace();
+            respObj.setCode(Constant.FAILD_CODE);
+            respObj.setErrorMessage("后台查询回调频率失败!");
+        }
+        return JSON.toJSONString(respObj);
+    }
+
+    /**
      * 后台设置常用电话
      *
      */
@@ -112,6 +139,53 @@ public class BackStageController extends BaseController {
         return JSON.toJSONString(respObj);
     }
 
+    /**
+     * 后台删除常用电话
+     *
+     */
+    @ApiOperation(value = "后台删除常用电话", httpMethod = "POST", produces = "application/json")
+    @ApiResponses( value = {@ApiResponse(code = 200, message = "Successful — 请求已完成",response = String.class),
+            @ApiResponse(code = 400, message = "请求中有语法问题，或不能满足请求"),
+            @ApiResponse(code = 500, message = "服务器不能完成请求")})
+    @RequestMapping("/delPhoneEntry")
+    @ResponseBody
+    public String delPhoneEntry(@ApiParam(name = "id", required = true, value = "记录id") @RequestParam("id") String id){
+        RespObj respObj=new RespObj(Constant.FAILD_CODE);
+        try {
+            respObj.setCode(Constant.SUCCESS_CODE);
+            backStageService.delPhoneEntry(new ObjectId(id));
+            respObj.setMessage("删除成功");
+        } catch (Exception e) {
+            e.printStackTrace();
+            respObj.setCode(Constant.FAILD_CODE);
+            respObj.setErrorMessage("后台删除常用电话失败!");
+        }
+        return JSON.toJSONString(respObj);
+    }
+
+    /**
+     * 后台查询常用电话列表
+     *
+     */
+    @ApiOperation(value = "后台查询常用电话列表", httpMethod = "POST", produces = "application/json")
+    @ApiResponses( value = {@ApiResponse(code = 200, message = "Successful — 请求已完成",response = String.class),
+            @ApiResponse(code = 400, message = "请求中有语法问题，或不能满足请求"),
+            @ApiResponse(code = 500, message = "服务器不能完成请求")})
+    @RequestMapping("/selectPhoneEntryList")
+    @ResponseBody
+    public String selectPhoneEntryList(){
+        RespObj respObj=new RespObj(Constant.FAILD_CODE);
+        try {
+            respObj.setCode(Constant.SUCCESS_CODE);
+            List<ControlPhoneDTO> dtos = backStageService.selectPhoneEntryList();
+            respObj.setMessage(dtos);
+        } catch (Exception e) {
+            e.printStackTrace();
+            respObj.setCode(Constant.FAILD_CODE);
+            respObj.setErrorMessage("后台查询常用电话列表失败!");
+        }
+        return JSON.toJSONString(respObj);
+    }
     /**
      * 后台设置默认管控时间选择表
      *
@@ -140,7 +214,7 @@ public class BackStageController extends BaseController {
      * 设置默认常规管控时间
      * @return
      */
-    @ApiOperation(value = "后台设置默认管控时间选择表", httpMethod = "POST", produces = "application/json")
+    @ApiOperation(value = "设置默认常规管控时间", httpMethod = "POST", produces = "application/json")
     @ApiResponses( value = {@ApiResponse(code = 200, message = "Successful — 请求已完成",response = String.class),
             @ApiResponse(code = 400, message = "请求中有语法问题，或不能满足请求"),
             @ApiResponse(code = 500, message = "服务器不能完成请求")})
@@ -171,10 +245,10 @@ public class BackStageController extends BaseController {
             @ApiResponse(code = 500, message = "服务器不能完成请求")})
     @RequestMapping("/delSchoolTime")
     @ResponseBody
-    public String delSchoolTime(@ApiParam(name = "type", required = true, value = "开始时间") @RequestParam("tyoe") int type){
+    public String delSchoolTime(@ApiParam(name = "id", required = true, value = "记录id") @RequestParam("id") String id){
         RespObj respObj = new RespObj(Constant.FAILD_CODE);
         try{
-            backStageService.delSchoolTime(type);
+            backStageService.delSchoolTime(new ObjectId(id));
             respObj.setCode(Constant.SUCCESS_CODE);
             respObj.setMessage("删除常规管控时间成功");
         }catch (Exception e){
@@ -188,7 +262,7 @@ public class BackStageController extends BaseController {
      * 设置默认特殊管控时间
      * @return
      */
-    @ApiOperation(value = "后台设置默认管控时间选择表", httpMethod = "POST", produces = "application/json")
+    @ApiOperation(value = "设置默认特殊管控时间", httpMethod = "POST", produces = "application/json")
     @ApiResponses( value = {@ApiResponse(code = 200, message = "Successful — 请求已完成",response = String.class),
             @ApiResponse(code = 400, message = "请求中有语法问题，或不能满足请求"),
             @ApiResponse(code = 500, message = "服务器不能完成请求")})
@@ -202,6 +276,30 @@ public class BackStageController extends BaseController {
             backStageService.addOtherSchoolTime(startTime,endTime,dateTime);
             respObj.setCode(Constant.SUCCESS_CODE);
             respObj.setMessage("设置成功");
+        }catch (Exception e){
+            e.printStackTrace();
+            respObj.setCode(Constant.SUCCESS_CODE);
+            respObj.setMessage("设置失败");
+        }
+        return JSON.toJSONString(respObj);
+    }
+
+    /**
+     *  查询默认上课时间表
+     * @return
+     */
+    @ApiOperation(value = "查询默认上课时间表", httpMethod = "POST", produces = "application/json")
+    @ApiResponses( value = {@ApiResponse(code = 200, message = "Successful — 请求已完成",response = String.class),
+            @ApiResponse(code = 400, message = "请求中有语法问题，或不能满足请求"),
+            @ApiResponse(code = 500, message = "服务器不能完成请求")})
+    @RequestMapping("/selectSchoolTime")
+    @ResponseBody
+    public String selectSchoolTime(){
+        RespObj respObj = new RespObj(Constant.FAILD_CODE);
+        try{
+            List<ControlSchoolTimeDTO> dtos = backStageService.selectSchoolTime();
+            respObj.setCode(Constant.SUCCESS_CODE);
+            respObj.setMessage(dtos);
         }catch (Exception e){
             e.printStackTrace();
             respObj.setCode(Constant.SUCCESS_CODE);
@@ -459,9 +557,9 @@ public class BackStageController extends BaseController {
                                    @ApiParam(name = "packageName", required = true, value = "应用包名") @RequestParam(value = "packageName") String packageName){
         RespObj respObj = new RespObj(Constant.FAILD_CODE);
         try{
-            List<AppDetailDTO> dtos =  backStageService.getBlackAppList();
+            backStageService.addBlackAppEntry(getUserId(), name, packageName);
             respObj.setCode(Constant.SUCCESS_CODE);
-            respObj.setMessage(dtos);
+            respObj.setMessage("添加黑名单成功！");
         }catch (Exception e){
             e.printStackTrace();
             respObj.setCode(Constant.SUCCESS_CODE);
@@ -469,7 +567,29 @@ public class BackStageController extends BaseController {
         }
         return JSON.toJSONString(respObj);
     }
-
+    /**
+     * 移除黑名单（包名匹配）
+     * @return
+     */
+    @ApiOperation(value = " 移除黑名单（包名匹配）", httpMethod = "POST", produces = "application/json")
+    @ApiResponses( value = {@ApiResponse(code = 200, message = "Successful — 请求已完成",response = String.class),
+            @ApiResponse(code = 400, message = "请求中有语法问题，或不能满足请求"),
+            @ApiResponse(code = 500, message = "服务器不能完成请求")})
+    @RequestMapping("/delBlackAppEntry")
+    @ResponseBody
+    public String delBlackAppEntry(@ApiParam(name = "id", required = true, value = "应用id") @RequestParam(value = "id") String id){
+        RespObj respObj = new RespObj(Constant.FAILD_CODE);
+        try{
+            backStageService.delBlackAppEntry(getUserId(), new ObjectId(id));
+            respObj.setCode(Constant.SUCCESS_CODE);
+            respObj.setMessage("移除成功！");
+        }catch (Exception e){
+            e.printStackTrace();
+            respObj.setCode(Constant.SUCCESS_CODE);
+            respObj.setMessage(" 移除黑名单（包名匹配）失败");
+        }
+        return JSON.toJSONString(respObj);
+    }
     /**
      * 添加为系统推送应用
      * @return

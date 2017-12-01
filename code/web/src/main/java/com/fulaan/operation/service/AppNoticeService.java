@@ -112,6 +112,10 @@ public class AppNoticeService {
                 }
             }
 
+            //1:家长2:学生3:家长，学生
+            redDotService.addEntryList(objectIdList,userId, ApplyTypeEn.notice.getType(),dto.getWatchPermission());
+            redDotService.addOtherEntryList(objectIdList,userId, ApplyTypeEn.daynotice.getType(),dto.getWatchPermission());
+
             //添加临时记录表
             if(dto.getWatchPermission()!=2){
                 IndexPageDTO dto1 = new IndexPageDTO();
@@ -170,9 +174,7 @@ public class AppNoticeService {
         }catch (Exception e){
             throw new Exception("推送失败");
         }
-        //1:家长2:学生3:家长，学生
-        redDotService.addEntryList(objectIdList,userId, ApplyTypeEn.notice.getType(),dto.getWatchPermission());
-        redDotService.addOtherEntryList(objectIdList,userId, ApplyTypeEn.daynotice.getType(),dto.getWatchPermission());
+
 
     }
 

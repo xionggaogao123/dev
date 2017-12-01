@@ -186,9 +186,13 @@ public class BackStageService {
             controlSchoolTimeDao.addEntry(dto.buildAddEntry());
         }else{
             entry.setStartTime(startTime);
-            entry.setStartTime(endTime);
+            entry.setEndTime(endTime);
             controlSchoolTimeDao.updEntry(entry);
         }
+    }
+
+    public void delSchoolTime(int type){
+        controlSchoolTimeDao.delAppCommentEntry(type);
     }
     public void addOtherSchoolTime(String startTime,String endTime,String dateTime){
         ControlSchoolTimeEntry entry = controlSchoolTimeDao.getOtherEntry(dateTime);
@@ -201,7 +205,7 @@ public class BackStageService {
             controlSchoolTimeDao.addEntry(dto.buildAddEntry());
         }else{
             entry.setStartTime(startTime);
-            entry.setStartTime(endTime);
+            entry.setEndTime(endTime);
             controlSchoolTimeDao.updEntry(entry);
         }
     }

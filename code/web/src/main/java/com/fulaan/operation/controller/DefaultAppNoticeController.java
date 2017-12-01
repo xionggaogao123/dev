@@ -10,6 +10,7 @@ import com.fulaan.pojo.User;
 import com.sys.constants.Constant;
 import com.sys.utils.RespObj;
 import io.swagger.annotations.*;
+import org.apache.log4j.Logger;
 import org.bson.types.ObjectId;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -28,6 +29,8 @@ public class DefaultAppNoticeController extends BaseController {
 
     @Autowired
     private AppNoticeService appNoticeService;
+
+    private static final Logger logger =Logger.getLogger(DefaultAppNoticeController.class);
 
     @RequestMapping("/getReadNoticeUserList")
     @ResponseBody
@@ -76,6 +79,7 @@ public class DefaultAppNoticeController extends BaseController {
             respObj.setMessage("保存通知信息成功！");
             respObj.setCode(Constant.SUCCESS_CODE);
         }catch (Exception e){
+            logger.error("error",e);
             if("推送失败".equals(e.getMessage())) {
                 respObj.setCode(Constant.SUCCESS_CODE);
                 respObj.setMessage(e.getMessage());

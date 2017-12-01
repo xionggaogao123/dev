@@ -19,6 +19,13 @@ public class ControlSchoolTimeDao extends BaseDao {
         return entry.getID().toString() ;
     }
 
+    //删除作业
+    public void delAppCommentEntry(int type){
+        BasicDBObject query = new BasicDBObject("typ",type);
+        BasicDBObject updateValue=new BasicDBObject(Constant.MONGO_SET,new BasicDBObject("isr",Constant.ONE));
+        update(MongoFacroty.getAppDB(), Constant.COLLECTION_APP_COMMENT, query,updateValue);
+    }
+
     //单查询
     public ControlSchoolTimeEntry getEntry(int week) {
         BasicDBObject query =new BasicDBObject();

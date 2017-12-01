@@ -162,6 +162,29 @@ public class BackStageController extends BaseController {
         return JSON.toJSONString(respObj);
     }
     /**
+     * 删除常规管控时间
+     * @return
+     */
+    @ApiOperation(value = "删除常规管控时间", httpMethod = "POST", produces = "application/json")
+    @ApiResponses( value = {@ApiResponse(code = 200, message = "Successful — 请求已完成",response = String.class),
+            @ApiResponse(code = 400, message = "请求中有语法问题，或不能满足请求"),
+            @ApiResponse(code = 500, message = "服务器不能完成请求")})
+    @RequestMapping("/delSchoolTime")
+    @ResponseBody
+    public String delSchoolTime(@ApiParam(name = "type", required = true, value = "开始时间") @RequestParam("tyoe") int type){
+        RespObj respObj = new RespObj(Constant.FAILD_CODE);
+        try{
+            backStageService.delSchoolTime(type);
+            respObj.setCode(Constant.SUCCESS_CODE);
+            respObj.setMessage("删除常规管控时间成功");
+        }catch (Exception e){
+            e.printStackTrace();
+            respObj.setCode(Constant.SUCCESS_CODE);
+            respObj.setErrorMessage("删除常规管控时间失败");
+        }
+        return JSON.toJSONString(respObj);
+    }
+    /**
      * 设置默认特殊管控时间
      * @return
      */
@@ -261,7 +284,10 @@ public class BackStageController extends BaseController {
         }
         return JSON.toJSONString(respObj);
     }
-
+    @ApiOperation(value = "设置顺序", httpMethod = "POST", produces = "application/json")
+    @ApiResponses( value = {@ApiResponse(code = 200, message = "Successful — 请求已完成",response = String.class),
+            @ApiResponse(code = 400, message = "请求中有语法问题，或不能满足请求"),
+            @ApiResponse(code = 500, message = "服务器不能完成请求")})
     @RequestMapping("/setOrder/{apkId}/{order}")
     @ResponseBody
     public RespObj setOrder(@PathVariable @ObjectIdType ObjectId apkId,
@@ -272,7 +298,10 @@ public class BackStageController extends BaseController {
         return respObj;
     }
 
-
+    @ApiOperation(value = "删除apk", httpMethod = "POST", produces = "application/json")
+    @ApiResponses( value = {@ApiResponse(code = 200, message = "Successful — 请求已完成",response = String.class),
+            @ApiResponse(code = 400, message = "请求中有语法问题，或不能满足请求"),
+            @ApiResponse(code = 500, message = "服务器不能完成请求")})
     @RequestMapping("/deleteApk/{apkId}")
     @ResponseBody
     public RespObj deleteApk(@PathVariable @ObjectIdType ObjectId apkId){
@@ -416,7 +445,34 @@ public class BackStageController extends BaseController {
         return JSON.toJSONString(respObj);
     }
 
+    /**
+     * 添加黑名单（包名匹配）
+     * @return
+     */
+    @ApiOperation(value = "添加黑名单（包名匹配）", httpMethod = "POST", produces = "application/json")
+    @ApiResponses( value = {@ApiResponse(code = 200, message = "Successful — 请求已完成",response = String.class),
+            @ApiResponse(code = 400, message = "请求中有语法问题，或不能满足请求"),
+            @ApiResponse(code = 500, message = "服务器不能完成请求")})
+    @RequestMapping("/addBlackAppEntry")
+    @ResponseBody
+    public String addBlackAppEntry(){
+        RespObj respObj = new RespObj(Constant.FAILD_CODE);
+        try{
+            List<AppDetailDTO> dtos =  backStageService.getBlackAppList();
+            respObj.setCode(Constant.SUCCESS_CODE);
+            respObj.setMessage(dtos);
+        }catch (Exception e){
+            e.printStackTrace();
+            respObj.setCode(Constant.SUCCESS_CODE);
+            respObj.setMessage("添加黑名单（包名匹配）失败");
+        }
+        return JSON.toJSONString(respObj);
+    }
 
+    @ApiOperation(value = "改变类型）", httpMethod = "POST", produces = "application/json")
+    @ApiResponses( value = {@ApiResponse(code = 200, message = "Successful — 请求已完成",response = String.class),
+            @ApiResponse(code = 400, message = "请求中有语法问题，或不能满足请求"),
+            @ApiResponse(code = 500, message = "服务器不能完成请求")})
     @RequestMapping("/updateApkByType")
     @ResponseBody
     public RespObj updateApkByType(String id, int type){

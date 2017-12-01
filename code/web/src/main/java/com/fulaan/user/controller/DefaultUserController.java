@@ -268,10 +268,11 @@ public class DefaultUserController extends BaseController {
         RespObj respObj=new RespObj(Constant.FAILD_CODE);
         try{
             userService.loginToken(tokenId,getUserId());
-            respObj.setMessage(Constant.SUCCESS_CODE);
+            respObj.setCode(Constant.SUCCESS_CODE);
+            respObj.setMessage("扫描成功！");
         }catch (Exception e){
             e.printStackTrace();
-            respObj.setMessage(e.getMessage());
+            respObj.setErrorMessage(e.getMessage());
         }
         return respObj;
     }
@@ -1863,6 +1864,7 @@ public class DefaultUserController extends BaseController {
         }
         return RespObj.FAILD("失败");
     }
+
 
     /**
      * 跳转到k6kt

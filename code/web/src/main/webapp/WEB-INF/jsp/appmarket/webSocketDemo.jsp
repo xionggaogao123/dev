@@ -35,7 +35,7 @@ Welcome<br/><input id="text" type="text"/>
         var userId = null;
         //判断当前浏览器是否支持WebSocket
         if ('WebSocket' in window) {
-            websocket = new WebSocket('ws://' + window.location.host + '/ws?tokenId=${tokenId}');
+            websocket = new WebSocket('ws://' + window.location.host + '/web/ws?tokenId=${tokenId}');
         }
         else {
             alert('当前浏览器 Not support websocket')

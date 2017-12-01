@@ -19,7 +19,7 @@
 
     <bean id="websocket" class="com.fulaan.websocket.WebsocketHandler" />
     <websocket:handlers>
-        <websocket:mapping path="/ws.do" handler="websocket" />
+        <websocket:mapping path="/web/ws.do" handler="websocket" />
         <websocket:handshake-interceptors>
             <bean class="com.fulaan.websocket.MyHandShake" />
         </websocket:handshake-interceptors>

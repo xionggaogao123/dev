@@ -8,6 +8,7 @@ import com.fulaan.appmarket.dto.AppDetailCommentDTO;
 import com.fulaan.appmarket.dto.AppDetailDTO;
 import com.fulaan.appmarket.service.AppMarketService;
 import com.fulaan.base.BaseController;
+import com.fulaan.util.QRUtils;
 import com.pojo.loginwebsocket.LoginTokenEntry;
 import com.sys.constants.Constant;
 import com.sys.utils.RespObj;
@@ -24,6 +25,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import javax.servlet.http.HttpServletRequest;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -56,6 +58,34 @@ public class AppMarketController extends BaseController{
     }
 
 
+    @RequestMapping("/getWebSocketToken")
+    @ResponseBody
+    @SessionNeedless
+    public RespObj getWebSocketToken(){
+        RespObj respObj=new RespObj(Constant.FAILD_CODE);
+        Map<String,String> retMap=new HashMap<String,String>();
+        retMap.put("login","1");
+        if(null==getUserId()) {
+            retMap.put("login","0");
+            LoginTokenEntry loginTokenEntry = loginTokenDao.getEntry();
+            if (null != loginTokenEntry) {
+                loginTokenEntry.setStatus(true);
+                loginTokenDao.saveEntry(loginTokenEntry);
+                retMap.put("tokenId",loginTokenEntry.getTokenId().toString());
+                String qrUrl= QRUtils.getBindLoginQrUrl(loginTokenEntry.getTokenId());
+                retMap.put("qrUrl",qrUrl);
+            } else {
+                ObjectId tokenId = new ObjectId();
+                retMap.put("tokenId",tokenId.toString());
+                LoginTokenEntry tokenEntry = new LoginTokenEntry(tokenId);
+                loginTokenDao.saveEntry(tokenEntry);
+                String qrUrl= QRUtils.getBindLoginQrUrl(tokenId);
+                retMap.put("qrUrl",qrUrl);
+            }
+        }
+        respObj.setMessage(retMap);
+        return respObj;
+    }
 
     @ApiOperation(value = "网页端跳转到管理应用界面", httpMethod = "POST", produces = "application/json")
     @RequestMapping("/websocket")

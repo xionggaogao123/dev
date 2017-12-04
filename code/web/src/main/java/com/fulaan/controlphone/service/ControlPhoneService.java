@@ -726,9 +726,11 @@ public class ControlPhoneService {
             ControlAppSystemEntry controlAppSystemEntry = controlAppSystemDao.getEntry();
             ControlAppUserDTO dto = new ControlAppUserDTO();
             List<String> olist = new ArrayList<String>();
-            List<ObjectId> ids = controlAppSystemEntry.getAppIdList();
-            for(ObjectId obid : ids){
-                olist.add(obid.toString());
+            if(controlAppSystemEntry != null){
+                List<ObjectId> ids = controlAppSystemEntry.getAppIdList();
+                for(ObjectId obid : ids){
+                    olist.add(obid.toString());
+                }
             }
             dto.setAppIdList(olist);
             dto.setUserId(sonId.toString());
@@ -912,9 +914,11 @@ public class ControlPhoneService {
             ControlAppSystemEntry controlAppSystemEntry = controlAppSystemDao.getEntry();
             ControlAppUserDTO dto = new ControlAppUserDTO();
             List<String> olist = new ArrayList<String>();
-            List<ObjectId> ids = controlAppSystemEntry.getAppIdList();
-            for(ObjectId obid : ids){
-                olist.add(obid.toString());
+            if(controlAppSystemEntry != null){
+                List<ObjectId> ids = controlAppSystemEntry.getAppIdList();
+                for(ObjectId obid : ids){
+                    olist.add(obid.toString());
+                }
             }
             dto.setAppIdList(olist);
             dto.setUserId(sonId.toString());
@@ -976,9 +980,11 @@ public class ControlPhoneService {
             ControlAppSystemEntry controlAppSystemEntry = controlAppSystemDao.getEntry();
             ControlAppUserDTO dto = new ControlAppUserDTO();
             List<String> olist = new ArrayList<String>();
-            List<ObjectId> ids = controlAppSystemEntry.getAppIdList();
-            for(ObjectId obid : ids){
-                olist.add(obid.toString());
+            if(controlAppSystemEntry != null){
+                List<ObjectId> ids = controlAppSystemEntry.getAppIdList();
+                for(ObjectId obid : ids){
+                    olist.add(obid.toString());
+                }
             }
             dto.setAppIdList(olist);
             dto.setUserId(sonId.toString());

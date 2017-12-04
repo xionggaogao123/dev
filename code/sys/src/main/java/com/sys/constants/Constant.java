@@ -936,5 +936,9 @@ public class Constant {
     public static final String COLLECTION_USER_LOG_RESULT="jxm_user_log_result";
     //角色对应的路径管理
     public static final String COLLECTION_USER_ROLE_OF_PATH="jxm_user_role_of_path";
+    //后台日志管理
+    public static final String COLLECTION_LOG_MESSAGE = "logmessage";
+    //系统推送消息
+    public static final String COLLECTION_SYSTEM_MESSAGE = "systemmessage";
 
 }

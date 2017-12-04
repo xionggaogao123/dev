@@ -62,6 +62,8 @@ public class ControlPhoneService {
 
     private ControlSetBackDao controlSetBackDao = new ControlSetBackDao();
 
+    private ControlAppSystemDao controlAppSystemDao = new ControlAppSystemDao();
+
     @Autowired
     private NewVersionBindService newVersionBindService;
     @Autowired
@@ -687,6 +689,7 @@ public class ControlPhoneService {
             }
             map.put("dto",new ControlSchoolTimeDTO(entry2));
         }
+        map.put("freeTime",-1);
         return map;
     }
     //学生登录获取所有信息
@@ -713,12 +716,27 @@ public class ControlPhoneService {
             }
         }
         //家长推荐
-        if(controlTimeEntry != null){
-            ObjectId parentId = controlTimeEntry.getParentId();
-            ControlAppUserEntry controlAppUserEntry = controlAppUserDao.getEntry(parentId,sonId);
-            if(controlAppUserEntry!= null){
-                objectIdList.addAll(controlAppUserEntry.getAppIdList());
+        ObjectId parentId = newEntry.getMainUserId();
+        ControlAppUserEntry controlAppUserEntry = controlAppUserDao.getEntry(parentId,sonId);
+        if(controlAppUserEntry!= null){
+            //存在取系统应用
+            objectIdList.addAll(controlAppUserEntry.getAppIdList());
+        }else{
+            //不存在加入系统推荐
+            ControlAppSystemEntry controlAppSystemEntry = controlAppSystemDao.getEntry();
+            ControlAppUserDTO dto = new ControlAppUserDTO();
+            List<String> olist = new ArrayList<String>();
+            List<ObjectId> ids = controlAppSystemEntry.getAppIdList();
+            for(ObjectId obid : ids){
+                olist.add(obid.toString());
             }
+            dto.setAppIdList(olist);
+            dto.setUserId(sonId.toString());
+            dto.setParentId(parentId.toString());
+            ControlAppUserEntry entry1 = dto.buildAddEntry();
+            //添加系统设置
+            controlAppUserDao.addEntry(entry1);
+            objectIdList.addAll(controlAppSystemEntry.getAppIdList());
         }
         Set<ObjectId> set= new HashSet<ObjectId>();
         set.addAll(objectIdList);
@@ -833,7 +851,13 @@ public class ControlPhoneService {
             }
             if(current>sl && current < el){
                 map.put("isControl",false);
+                map.put("freeTime",el-current);
+            }else{
+                map.put("freeTime",-1);
             }
+
+        }else{
+            map.put("freeTime",-1);
         }
         return map;
     }
@@ -881,9 +905,25 @@ public class ControlPhoneService {
         List<AppDetailDTO> dtos = new ArrayList<AppDetailDTO>();
         List<ObjectId> oblist = new ArrayList<ObjectId>();
         if(entry2 != null ){
+            //存在加入用户记录
             oblist.addAll(entry2.getAppIdList());
+        }else{
+            //不存在加入系统推荐
+            ControlAppSystemEntry controlAppSystemEntry = controlAppSystemDao.getEntry();
+            ControlAppUserDTO dto = new ControlAppUserDTO();
+            List<String> olist = new ArrayList<String>();
+            List<ObjectId> ids = controlAppSystemEntry.getAppIdList();
+            for(ObjectId obid : ids){
+                olist.add(obid.toString());
+            }
+            dto.setAppIdList(olist);
+            dto.setUserId(sonId.toString());
+            dto.setParentId(parentId.toString());
+            ControlAppUserEntry entry1 = dto.buildAddEntry();
+            //添加系统设置
+            controlAppUserDao.addEntry(entry1);
+            oblist.addAll(controlAppSystemEntry.getAppIdList());
         }
-
         //获取所有可推送的第三方应用
         List<AppDetailEntry> entries = appDetailDao.getThirdEntries();
 
@@ -925,10 +965,28 @@ public class ControlPhoneService {
     public List<AppDetailDTO> seacherParentAppList(ObjectId parentId,ObjectId sonId,String keyword){
         //家长推荐app
         ControlAppUserEntry entry2 = controlAppUserDao.getEntry(parentId,sonId);
+
         List<AppDetailDTO> dtos = new ArrayList<AppDetailDTO>();
         List<ObjectId> oblist = new ArrayList<ObjectId>();
         if(entry2 != null ){
+            //存在加入用户记录
             oblist.addAll(entry2.getAppIdList());
+        }else{
+            //不存在加入系统推荐
+            ControlAppSystemEntry controlAppSystemEntry = controlAppSystemDao.getEntry();
+            ControlAppUserDTO dto = new ControlAppUserDTO();
+            List<String> olist = new ArrayList<String>();
+            List<ObjectId> ids = controlAppSystemEntry.getAppIdList();
+            for(ObjectId obid : ids){
+                olist.add(obid.toString());
+            }
+            dto.setAppIdList(olist);
+            dto.setUserId(sonId.toString());
+            dto.setParentId(parentId.toString());
+            ControlAppUserEntry entry1 = dto.buildAddEntry();
+            //添加系统设置
+            controlAppUserDao.addEntry(entry1);
+            oblist.addAll(controlAppSystemEntry.getAppIdList());
         }
 
         //获取所有可推送的第三方应用

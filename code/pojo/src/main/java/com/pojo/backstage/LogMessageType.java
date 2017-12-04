@@ -1,30 +1,28 @@
-package com.pojo.newVersionGrade;
+package com.pojo.backstage;
 
 /**
- * Created by wang_xinxin on 2016/3/21.
+ * Created by James on 2016/3/21.
  */
-public enum CommunityType {
-    appComment(1,"作业", "zuoye"),
-    appNotice(2,"通知","tongzhi"),
-    appOtherNotice(3,"通知另类", "tongzhiOther"),
-    system(4,"系统", "system"),
-    newSystem(5,"newSystem", "newSystem"),
-    challenge(15,"五年级", "primary"),
-    myShow(6,"六年级", "primary"),
-    woShiLaoShi(7,"初一", "junior"),
-    spiritualGurus(8,"初二", "junior"),
-    florilegium(9, "初三", "junior"),
-    onlineList(10, "高一", "senior"),
-    binFen(11, "高二", "senior"),
-    gongYi(12, "高三", "senior"),
-    gangwei(13,"已毕业", "senior");
+public enum LogMessageType {
+    main(1,"首页", "main"),
+    table(2,"应用市场","table"),
+    fulan(3,"复兰应用管理", "fulan"),
+    black(4,"应用黑名单管理", "black"),
+    schoolTime(5,"管控默认上课时间", "schoolTime"),
+    systemPhone(6,"常用电话设置", "systemPhone"),
+    backTime(7,"默认回调频率", "backTime"),
+    teaValidate(8,"老师认证", "teaValidate"),
+    content(9,"内容管理","content"),
+    userRole(10,"角色管理","userRole"),
+    manageUserRole(11,"用户角色管理","manageUserRole");
+
     private int type;
     private String des;
     private String eName;
 
 
 
-    private CommunityType(int type, String des, String eName) {
+    private LogMessageType(int type, String des, String eName) {
         this.type = type;
         this.des = des;
         this.eName = eName;
@@ -58,9 +56,9 @@ public enum CommunityType {
     }
 
 
-    public static CommunityType getProType(int type)
+    public static LogMessageType getProType(int type)
     {
-        for(CommunityType lt : CommunityType.values())
+        for(LogMessageType lt : LogMessageType.values())
         {
             if(lt.getType()==type)
             {
@@ -73,7 +71,7 @@ public enum CommunityType {
 
     public static String getProTypeEname(int type)
     {
-        for(CommunityType lt : CommunityType.values())
+        for(LogMessageType lt : LogMessageType.values())
         {
             if(lt.getType()==type)
             {
@@ -85,7 +83,7 @@ public enum CommunityType {
     }
     public static String getDes(int type)
     {
-        for(CommunityType lt : CommunityType.values())
+        for(LogMessageType lt : LogMessageType.values())
         {
             if(lt.getType()==type)
             {

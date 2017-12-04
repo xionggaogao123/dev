@@ -347,7 +347,7 @@ public class ReportCardService {
                     GroupExamDetailDTO detailDTO = new GroupExamDetailDTO(detailEntry);
                     UserEntry userEntry = userEntryMap.get(recordEntry.getUserId());
                     if (null != userEntry) {
-                        detailDTO.setChildUserName(userEntry.getUserName());
+                        detailDTO.setChildUserName(StringUtils.isNotBlank(userEntry.getNickName())?userEntry.getNickName():userEntry.getUserName());
                     }
                     detailDTO.setChildUserId(recordEntry.getUserId().toString());
                     CommunityEntry communityEntry = communityEntryMap.get(recordEntry.getCommunityId());

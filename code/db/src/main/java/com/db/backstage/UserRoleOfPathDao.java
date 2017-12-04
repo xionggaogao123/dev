@@ -15,10 +15,10 @@ import java.util.List;
  */
 public class UserRoleOfPathDao extends BaseDao{
 
-    public void saveUserRoleOfPath(UserRoleOfPathEntry entry){
+    public String saveUserRoleOfPath(UserRoleOfPathEntry entry){
         save(MongoFacroty.getAppDB(), Constant.COLLECTION_USER_ROLE_OF_PATH,entry.getBaseEntry());
+        return entry.getID().toString();
     }
-
     public List<UserRoleOfPathEntry> getRoleEntries(){
         List<UserRoleOfPathEntry> entries=new ArrayList<UserRoleOfPathEntry>();
         List<DBObject> dbObjectList=find(MongoFacroty.getAppDB(), Constant.COLLECTION_USER_ROLE_OF_PATH,new BasicDBObject(),

@@ -1,18 +1,23 @@
 package com.fulaan.indexpage.service;
 
 import cn.jiguang.commom.utils.StringUtils;
+import com.db.backstage.SystemMessageDao;
 import com.db.fcommunity.CommunityDao;
 import com.db.fcommunity.MemberDao;
 import com.db.indexPage.IndexPageDao;
 import com.db.operation.AppCommentDao;
 import com.db.operation.AppNoticeDao;
+import com.fulaan.backstage.dto.SystemMessageDTO;
 import com.fulaan.community.dto.CommunityDTO;
+import com.fulaan.dto.VideoDTO;
 import com.fulaan.indexpage.dto.IndexPageDTO;
 import com.fulaan.operation.dto.AppCommentDTO;
 import com.fulaan.operation.dto.AppNoticeDTO;
+import com.fulaan.pojo.Attachement;
 import com.fulaan.service.CommunityService;
 import com.fulaan.user.service.UserService;
 import com.pojo.appnotice.AppNoticeEntry;
+import com.pojo.backstage.SystemMessageEntry;
 import com.pojo.indexPage.IndexPageEntry;
 import com.pojo.newVersionGrade.CommunityType;
 import com.pojo.operation.AppCommentEntry;
@@ -49,6 +54,8 @@ public class IndexPageService {
 
     private CommunityDao communityDao =new CommunityDao();
 
+    private SystemMessageDao systemMessageDao = new SystemMessageDao();
+
 
     public Map<String,Object> getIndexList(ObjectId userId,int page,int pageSize){
         List<Map<String,Object>> list = new ArrayList<Map<String, Object>>();
@@ -63,6 +70,7 @@ public class IndexPageService {
                 dlist.add(new ObjectId(dto.getId()));
             }
         }
+        dlist.add(userId);
         List<IndexPageEntry> entrys = indexPageDao.getPageList(dlist,userId, page, pageSize);
         int count = indexPageDao.countPageList(dlist,userId);
         //作业
@@ -70,6 +78,8 @@ public class IndexPageService {
         Map<String,Object> appMap =new HashMap<String, Object>();
         //通知
         List<ObjectId> noList = new ArrayList<ObjectId>();
+        List<ObjectId> syList = new ArrayList<ObjectId>();
+        List<String> stringList = new ArrayList<String>();
         if(entrys.size()>0){
             for(IndexPageEntry entry : entrys){
                 if(entry.getType()==1){
@@ -80,7 +90,10 @@ public class IndexPageService {
                     noList.add(entry.getContactId());
                 }else if(entry.getType()==3 && entry.getUserId() != null && entry.getUserId().equals(userId)){
                     noList.add(entry.getContactId());
+                }else if(entry.getType()==4){
+                    syList.add(entry.getContactId());
                 }
+                stringList.add(entry.getContactId().toString());
             }
         }
         //作业
@@ -185,9 +198,85 @@ public class IndexPageService {
             }
 
         }
+
+        if(syList.size()>0){
+            List<SystemMessageEntry> systemMessageEntries = systemMessageDao.selectContentList(syList);
+            for(SystemMessageEntry entry:systemMessageEntries){
+                SystemMessageDTO dto8 = new SystemMessageDTO();
+                if(entry.getType()==1){
+                    Map<String,Object> ob1 = new HashMap<String, Object>();
+                    ob1.put("tag", CommunityType.system.getDes());
+                    ob1.put("groupName","");
+                    ob1.put("id",dto8.getId());
+                    ob1.put("userName","家校美小助手");
+                    ob1.put("subject","");
+                    ob1.put("avatar","");
+                    ob1.put("title","家校美使用向导");
+                    ob1.put("time",dto8.getCreateTime());
+                    ob1.put("content","家校美，一款富有魔力的产品！");
+                    List<Attachement> imageList=new ArrayList<Attachement>();
+                    Attachement a = new Attachement();
+                    a.setUrl("");
+                    imageList.add(a);
+                    ob1.put("imageList",imageList);
+                    ob1.put("commentCount",0);
+                    ob1.put("videoList",new ArrayList<VideoDTO>());
+                    ob1.put("voiceList",new ArrayList<Attachement>());
+                    ob1.put("attachements",new ArrayList<Attachement>());
+                    ob1.put("isRead",0);
+                    ob1.put("totalReadCount", 0);
+                    ob1.put("readCount", 0);
+                    ob1.put("unReadCount",0);
+                    ob1.put("timeExpression","");
+                    ob1.put("isOwner",true);
+                }else{
+                    Map<String,Object> ob1 = new HashMap<String, Object>();
+                    ob1.put("tag", CommunityType.system.getDes());
+                    ob1.put("groupName",dto8.getSourceName());
+                    ob1.put("id",dto8.getId());
+                    ob1.put("userName","家校美小助手");
+                    ob1.put("subject","");
+                    ob1.put("avatar","");
+                    ob1.put("title","恭喜您创建了一个新社区");
+                    ob1.put("time",dto8.getCreateTime());
+                    ob1.put("content","恭喜您于"+dto8.getCreateTime().substring(0,11)+"日成功创建了<"
+                            + dto8.getSourceName()+">社群，您是该班级社群的‘社长’，拥有一切特权。此外您后期最多可以" +
+                            "可以指定设置2位成员为‘副社长’，他们也能拥有各项发帖权利。");
+                    List<Attachement> imageList=new ArrayList<Attachement>();
+                    Attachement a = new Attachement();
+                    a.setUrl("");
+                    imageList.add(a);
+                    ob1.put("imageList",imageList);
+                    ob1.put("commentCount",0);
+                    ob1.put("videoList",new ArrayList<VideoDTO>());
+                    ob1.put("voiceList",new ArrayList<Attachement>());
+                    ob1.put("attachements",new ArrayList<Attachement>());
+                    ob1.put("isRead",0);
+                    ob1.put("totalReadCount", 0);
+                    ob1.put("readCount", 0);
+                    ob1.put("unReadCount",0);
+                    ob1.put("timeExpression","");
+                    ob1.put("isOwner",true);
+                }
+
+
+
+            }
+        }
         Map<String,Object> map = new HashMap<String, Object>();
+        List<Map<String,Object>> list2 = new ArrayList<Map<String, Object>>();
+        if(list.size()>0){
+            for(String str : stringList){
+                for(Map<String,Object> map4 : list){
+                    String string = (String)map4.get("id");
+                    if(str.equals(string)){
+                        list2.add(map4);
+                    }
+                }
+            }
+        }
         map.put("count",count);
-        map.put("list",list);
+        map.put("list",list2);
         return map;
     }
     public void delEntry(ObjectId id){

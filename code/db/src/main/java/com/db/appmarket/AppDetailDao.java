@@ -21,6 +21,11 @@ public class AppDetailDao extends BaseDao {
     public void saveAppDetailEntry(AppDetailEntry detailEntry){
         save(MongoFacroty.getAppDB(), Constant.COLLECTION_APP_MARKET_DETAIL,detailEntry.getBaseEntry());
     }
+
+    public String saveEntry(AppDetailEntry detailEntry){
+        save(MongoFacroty.getAppDB(), Constant.COLLECTION_APP_MARKET_DETAIL,detailEntry.getBaseEntry());
+        return detailEntry.getID().toString() ;
+    }
     public void updEntry(AppDetailEntry e) {
         BasicDBObject query=new BasicDBObject(Constant.ID,e.getID());
         BasicDBObject updateValue=new BasicDBObject(Constant.MONGO_SET,e.getBaseEntry());

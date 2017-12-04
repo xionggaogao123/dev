@@ -130,7 +130,7 @@ public class BackStageController extends BaseController {
         RespObj respObj=new RespObj(Constant.FAILD_CODE);
         try {
             respObj.setCode(Constant.SUCCESS_CODE);
-            backStageService.addPhoneEntry(name, phone);
+            backStageService.addPhoneEntry(getUserId(),name, phone);
             respObj.setMessage("设置成功");
         } catch (Exception e) {
             e.printStackTrace();
@@ -154,7 +154,7 @@ public class BackStageController extends BaseController {
         RespObj respObj=new RespObj(Constant.FAILD_CODE);
         try {
             respObj.setCode(Constant.SUCCESS_CODE);
-            backStageService.delPhoneEntry(new ObjectId(id));
+            backStageService.delPhoneEntry(getUserId(),new ObjectId(id));
             respObj.setMessage("删除成功");
         } catch (Exception e) {
             e.printStackTrace();
@@ -226,7 +226,7 @@ public class BackStageController extends BaseController {
                                 @ApiParam(name = "week", required = true, value = "星期") @RequestParam("week") int week){
         RespObj respObj = new RespObj(Constant.FAILD_CODE);
         try{
-            backStageService.addSchoolTime(startTime, endTime, week);
+            backStageService.addSchoolTime(getUserId(),startTime, endTime, week);
             respObj.setCode(Constant.SUCCESS_CODE);
             respObj.setMessage("设置成功");
         }catch (Exception e){
@@ -249,7 +249,7 @@ public class BackStageController extends BaseController {
     public String delSchoolTime(@ApiParam(name = "id", required = true, value = "记录id") @RequestParam("id") String id){
         RespObj respObj = new RespObj(Constant.FAILD_CODE);
         try{
-            backStageService.delSchoolTime(new ObjectId(id));
+            backStageService.delSchoolTime(getUserId(),new ObjectId(id));
             respObj.setCode(Constant.SUCCESS_CODE);
             respObj.setMessage("删除常规管控时间成功");
         }catch (Exception e){
@@ -274,7 +274,7 @@ public class BackStageController extends BaseController {
                                 @ApiParam(name = "dateTime", required = true, value = "日期") @RequestParam("dateTime") String dateTime){
         RespObj respObj = new RespObj(Constant.FAILD_CODE);
         try{
-            backStageService.addOtherSchoolTime(startTime,endTime,dateTime);
+            backStageService.addOtherSchoolTime(getUserId(),startTime,endTime,dateTime);
             respObj.setCode(Constant.SUCCESS_CODE);
             respObj.setMessage("设置成功");
         }catch (Exception e){
@@ -349,7 +349,7 @@ public class BackStageController extends BaseController {
     public String passContentEntry(@ApiParam(name = "id", required = true, value = "数据id") @RequestParam(value = "id",defaultValue = "") String id){
         RespObj respObj = new RespObj(Constant.FAILD_CODE);
         try{
-            backStageService.passContentEntry(new ObjectId(id));
+            backStageService.passContentEntry(getUserId(),new ObjectId(id));
             respObj.setCode(Constant.SUCCESS_CODE);
             respObj.setMessage("通过成功");
         }catch (Exception e){
@@ -373,7 +373,7 @@ public class BackStageController extends BaseController {
     public String deleteContentEntry(@ApiParam(name = "id", required = true, value = "数据id") @RequestParam(value = "id",defaultValue = "") String id){
         RespObj respObj = new RespObj(Constant.FAILD_CODE);
         try{
-            backStageService.deleteContentEntry(new ObjectId(id));
+            backStageService.deleteContentEntry(getUserId(),new ObjectId(id));
             respObj.setCode(Constant.SUCCESS_CODE);
             respObj.setMessage("删除成功");
         }catch (Exception e){
@@ -482,7 +482,7 @@ public class BackStageController extends BaseController {
                                     @ApiParam(name = "id", required = true, value = "查询用户id") @RequestParam(value = "id",defaultValue = "") String id){
         RespObj respObj = new RespObj(Constant.FAILD_CODE);
         try{
-            backStageService.addTeacherList(new ObjectId(id), type);
+            backStageService.addTeacherList(getUserId(),new ObjectId(id), type);
             respObj.setCode(Constant.SUCCESS_CODE);
             respObj.setMessage("修改成功");
         }catch (Exception e){
@@ -569,7 +569,7 @@ public class BackStageController extends BaseController {
 
         RespObj respObj=new RespObj(Constant.FAILD_CODE);
         if(role!=Constant.TWO) {
-            backStageService.saveUserRoleOfPath(pathStr, role);
+            backStageService.saveUserRoleOfPath(getUserId(),pathStr, role);
             respObj.setMessage("保存角色操作权限成功!");
         }else{
             respObj.setMessage("超级管理员不用设置路径权限");
@@ -683,6 +683,31 @@ public class BackStageController extends BaseController {
         RespObj respObj=new RespObj(Constant.SUCCESS_CODE);
         appMarketService.updateApkByType(id,type);
         return respObj;
+    }
+
+
+    /**
+     * 获取日志数据列表
+     * @return
+     */
+    @ApiOperation(value = "获取日志数据列表", httpMethod = "POST", produces = "application/json")
+    @ApiResponses( value = {@ApiResponse(code = 200, message = "Successful — 请求已完成",response = String.class),
+            @ApiResponse(code = 400, message = "请求中有语法问题，或不能满足请求"),
+            @ApiResponse(code = 500, message = "服务器不能完成请求")})
+    @RequestMapping("/getLogMessage")
+    @ResponseBody
+    public String getLogMessage(){
+        RespObj respObj = new RespObj(Constant.FAILD_CODE);
+        try{
+            List<JxmAppVersionDTO> dtos =  backStageService.getAllAppVersion();
+            respObj.setCode(Constant.SUCCESS_CODE);
+            respObj.setMessage(dtos);
+        }catch (Exception e){
+            e.printStackTrace();
+            respObj.setCode(Constant.SUCCESS_CODE);
+            respObj.setMessage("获取日志数据列表失败");
+        }
+        return JSON.toJSONString(respObj);
     }
 
     /**

@@ -18,6 +18,7 @@ import com.fulaan.controlphone.dto.ControlAppSystemDTO;
 import com.fulaan.controlphone.dto.ControlPhoneDTO;
 import com.fulaan.controlphone.dto.ControlSchoolTimeDTO;
 import com.fulaan.controlphone.dto.ControlSetBackDTO;
+import com.fulaan.indexpage.dto.IndexPageDTO;
 import com.fulaan.user.service.UserService;
 import com.pojo.appmarket.AppDetailEntry;
 import com.pojo.appnotice.AppNoticeEntry;
@@ -25,6 +26,8 @@ import com.pojo.backstage.*;
 import com.pojo.controlphone.*;
 import com.pojo.fcommunity.AttachmentEntry;
 import com.pojo.fcommunity.CommunityDetailEntry;
+import com.pojo.indexPage.IndexPageEntry;
+import com.pojo.newVersionGrade.CommunityType;
 import com.pojo.operation.AppCommentEntry;
 import com.pojo.operation.AppOperationEntry;
 import com.pojo.questionbook.QuestionAdditionEntry;
@@ -86,6 +89,10 @@ public class BackStageService {
 
     private ControlAppSystemDao controlAppSystemDao = new ControlAppSystemDao();
 
+    private LogMessageDao logMessageDao = new LogMessageDao();
+
+    private SystemMessageDao systemMessageDao = new SystemMessageDao();
+
     private static String imageUrl = "http://7xiclj.com1.z0.glb.clouddn.com/5a1bdcfd27fddd15c8649dea.png";
 
 
@@ -109,32 +116,38 @@ public class BackStageService {
 
     public void addBackTimeEntry(ObjectId userId,int time){
         ControlSetBackEntry entry = controlSetBackDao.getEntry();
+        String id = "";
         if(null == entry){
             ControlSetBackEntry entry1 =new ControlSetBackEntry();
             entry1.setType(1);
             entry1.setBackTime(time);
             entry1.setAppTime(24 * 60);
             entry1.setIsRemove(0);
-            controlSetBackDao.addEntry(entry1);
+            id = controlSetBackDao.addEntry(entry1);
         }else{
             entry.setBackTime(time);
             controlSetBackDao.updEntry(entry);
+            id= entry.getID().toString();
         }
+        this.addLogMessage(id,"修改默认学生地图回调时间为"+time+"分钟",LogMessageType.backTime.getDes(),userId.toString());
 
     }
     public void addAppBackTimeEntry(ObjectId userId,int time){
         ControlSetBackEntry entry = controlSetBackDao.getEntry();
+        String id = "";
         if(null == entry){
             ControlSetBackEntry entry1 = new ControlSetBackEntry();
             entry1.setType(1);
             entry1.setAppTime(time);
             entry1.setBackTime(24*60);
             entry1.setIsRemove(0);
-            controlSetBackDao.addEntry(entry1);
+            id = controlSetBackDao.addEntry(entry1);
         }else{
             entry.setAppTime(time);
             controlSetBackDao.updEntry(entry);
+            id= entry.getID().toString();
         }
+        this.addLogMessage(id,"修改默认学生应用回调时间"+time+"分钟",LogMessageType.backTime.getDes(),userId.toString());
 
     }
 
@@ -173,25 +186,30 @@ public class BackStageService {
         controlSetTimeEntry.setName(timeStr);
         controlSetTimeEntry.setTime(time);
         controlSetTimeDao.addEntry(controlSetTimeEntry);
-
     }
-    public void addPhoneEntry(String name, String phone){
+    public void addPhoneEntry(ObjectId userId,String name, String phone){
         ControlPhoneEntry entry = controlPhoneDao.getEntry(phone);
+        String id = "";
         if(null == entry){
             ControlPhoneDTO dto = new ControlPhoneDTO();
             dto.setName(name);
             dto.setPhone(phone);
             dto.setType(1);
-            controlPhoneDao.addEntry(dto.buildAddEntry());
+            id = controlPhoneDao.addEntry(dto.buildAddEntry());
         }else{
             entry.setName(name);
             controlPhoneDao.updEntry(entry);
+            id = entry.getID().toString();
         }
-
+        this.addLogMessage(id,"添加系统常用电话："+phone,LogMessageType.systemPhone.getDes(),userId.toString());
     }
 
-    public void delPhoneEntry(ObjectId id){
-        controlPhoneDao.delEntry(id);
+    public void delPhoneEntry(ObjectId userId,ObjectId id){
+        ControlPhoneEntry entry = controlPhoneDao.getEntryById(id);
+        if(null != entry){
+            controlPhoneDao.delEntry(id);
+            this.addLogMessage(id.toString(),"删除系统常用电话："+entry.getPhone(),LogMessageType.systemPhone.getDes(),userId.toString());
+        }
     }
 
     public List<ControlPhoneDTO> selectPhoneEntryList(){
@@ -204,39 +222,51 @@ public class BackStageService {
         }
         return dtos;
     }
-    public void addSchoolTime(String startTime,String endTime,int week){
+    public void addSchoolTime(ObjectId userId,String startTime,String endTime,int week){
         ControlSchoolTimeEntry entry = controlSchoolTimeDao.getEntry(week);
+        String id = "";
         if(null==entry){
             ControlSchoolTimeDTO dto = new ControlSchoolTimeDTO();
             dto.setStartTime(startTime);
             dto.setEndTime(endTime);
             dto.setWeek(week);
             dto.setType(1);
-            controlSchoolTimeDao.addEntry(dto.buildAddEntry());
+            id = controlSchoolTimeDao.addEntry(dto.buildAddEntry());
         }else{
             entry.setStartTime(startTime);
             entry.setEndTime(endTime);
             controlSchoolTimeDao.updEntry(entry);
+            id = entry.getID().toString();
         }
+        this.addLogMessage(id.toString(),"添加常用管控默认上课时间："+startTime+"-"+endTime,LogMessageType.schoolTime.getDes(),userId.toString());
     }
 
-    public void delSchoolTime(ObjectId id){
-        controlSchoolTimeDao.delAppCommentEntry(id);
+    public void delSchoolTime(ObjectId userId,ObjectId id){
+        ControlSchoolTimeEntry entry = controlSchoolTimeDao.getEntryById(id);
+        if(null != entry){
+            controlSchoolTimeDao.delAppCommentEntry(id);
+            this.addLogMessage(id.toString(),"删除管控默认上课时间："+ entry.getStartTime()+"-"+entry.getEndTime(),LogMessageType.schoolTime.getDes(),userId.toString());
+        }
+
     }
-    public void addOtherSchoolTime(String startTime,String endTime,String dateTime){
+    public void addOtherSchoolTime(ObjectId userId,String startTime,String endTime,String dateTime){
         ControlSchoolTimeEntry entry = controlSchoolTimeDao.getOtherEntry(dateTime);
+        String id = "";
         if(null==entry){
             ControlSchoolTimeDTO dto = new ControlSchoolTimeDTO();
             dto.setStartTime(startTime);
             dto.setEndTime(endTime);
             dto.setDataTime(dateTime);
             dto.setType(2);
-            controlSchoolTimeDao.addEntry(dto.buildAddEntry());
+            id = controlSchoolTimeDao.addEntry(dto.buildAddEntry());
         }else{
             entry.setStartTime(startTime);
             entry.setEndTime(endTime);
             controlSchoolTimeDao.updEntry(entry);
+            id = entry.getID().toString();
         }
+
+        this.addLogMessage(id.toString(),"添加特殊管控默认上课时间："+ startTime+"-"+endTime,LogMessageType.schoolTime.getDes(),userId.toString());
     }
     //教师认证
     public Map<String,Object> selectTeacherList(ObjectId userId,int type,String searchId,int page,int pageSize){
@@ -264,8 +294,16 @@ public class BackStageService {
         map.put("count",count);
         return map;
     }
-    public void addTeacherList(ObjectId id,int type){
-        teacherApproveDao.updateEntry(id,type);
+    public void addTeacherList(ObjectId userId,ObjectId id,int type){
+        //2验证通过，3 不通过
+        if(type==2){
+            teacherApproveDao.updateEntry(id,type);
+            this.addLogMessage(id.toString(),"通过老师验证",LogMessageType.teaValidate.getDes(),userId.toString());
+        }else if (type==3){
+            teacherApproveDao.updateEntry(id,type);
+            this.addLogMessage(id.toString(),"不通过老师验证",LogMessageType.teaValidate.getDes(),userId.toString());
+        }
+
     }
 
 
@@ -295,6 +333,7 @@ public class BackStageService {
     //添加黑名单
     public void addBlackAppEntry(ObjectId userId,String name,String packageName){
         AppDetailEntry entry = appDetailDao.getEntryByApkPackageName(packageName);
+        String id = "";
         if(null==entry){
             AppDetailDTO dto = new AppDetailDTO();
             dto.setAppName(name);
@@ -303,16 +342,23 @@ public class BackStageService {
             dto.setIsControl(1);
             dto.setWhiteOrBlack(1);
             dto.setType(0);
-            appDetailDao.saveAppDetailEntry(dto.buildEntry(userId));
+            id = appDetailDao.saveEntry(dto.buildEntry(userId));
         }else{
             entry.setWhiteOrBlack(1);
             entry.setIsControl(1);
             appDetailDao.updEntry(entry);
+            id= entry.getID().toString();
         }
+        this.addLogMessage(id.toString(),"添加应用黑名单："+name+"，包名："+packageName,LogMessageType.black.getDes(),userId.toString());
     }
     //移除黑名单
     public void delBlackAppEntry(ObjectId userId,ObjectId id){
-        appDetailDao.updateEntry(id);
+        AppDetailEntry entry = appDetailDao.findEntryById(id);
+        if(null != entry){
+            appDetailDao.updateEntry(id);
+            this.addLogMessage(id.toString(),"移除应用黑名单："+entry.getAppName()+"，包名："+entry.getAppPackageName(),LogMessageType.black.getDes(),userId.toString());
+        }
+
     }
     //添加为系统推送
     public void addSystemAppEntry(ObjectId appId){
@@ -381,13 +427,17 @@ public class BackStageService {
         return map;
     }
     //通过
-    public void passContentEntry(ObjectId id){
-        unlawfulPictureTextDao.passContentEntry(id);
+    public void passContentEntry(ObjectId userId,ObjectId id){
+        UnlawfulPictureTextEntry entry = unlawfulPictureTextDao.getEntryById(id);
+        if(entry != null){
+            unlawfulPictureTextDao.passContentEntry(id);
+            this.addLogMessage(id.toString(),"通过了图片",LogMessageType.content.getDes(),userId.toString());
+        }
     }
 
 
     //删除
-    public void deleteContentEntry(ObjectId id){
+    public void deleteContentEntry(ObjectId userId,ObjectId id){
         unlawfulPictureTextDao.deleteContentEntry(id);
         UnlawfulPictureTextEntry entry = unlawfulPictureTextDao.getEntryById(id);
         if(entry != null) {
@@ -491,6 +541,7 @@ public class BackStageService {
                 entry1.setAnswerList(nList);
                 questionAdditionDao.updateEntry(entry1);
             }
+            this.addLogMessage(id.toString(),"删除图片",LogMessageType.content.getDes(),userId.toString());
         }
 
     }
@@ -547,7 +598,7 @@ public class BackStageService {
     }
 
 
-    public void saveUserRoleOfPath(String pathStr,
+    public void saveUserRoleOfPath(ObjectId userId,String pathStr,
                                    int role){
         UserRoleOfPathEntry entry=userRoleOfPathDao.getEntryByRole(role);
         String[] paths=pathStr.split(",");
@@ -559,7 +610,44 @@ public class BackStageService {
         if(null!=entry){
             pathEntry.setID(entry.getID());
         }
-        userRoleOfPathDao.saveUserRoleOfPath(pathEntry);
+        String id = userRoleOfPathDao.saveUserRoleOfPath(pathEntry);
+        this.addLogMessage(id.toString(),"添加权限管理："+pathStr,LogMessageType.userRole.getDes(),userId.toString());
+    }
+
+    //非敏感日志操作
+    public void addLogMessage(String contactId,String content,String function,String userId){
+        LogMessageDTO dto = new LogMessageDTO();
+        dto.setType(1);
+        dto.setContactId(contactId);
+        dto.setContent(content);
+        dto.setFunction(function);
+        dto.setUserId(userId);
+        logMessageDao.addEntry(dto.buildAddEntry());
+    }
+    //添加系统推送2
+    public String addSystemMessage(String sourceId,String fileUrl,String name,String content,String title,String userId){
+        SystemMessageDTO dto = new SystemMessageDTO();
+        dto.setContent(content);
+        dto.setType(2);
+        dto.setTitle(title);
+        dto.setSourceName(name);
+        dto.setSourceId(sourceId);
+        dto.setSourceType(1);//社区id
+        dto.setFileUrl(fileUrl);
+        dto.setName("");
+        dto.setAvatar("");
+        String id = systemMessageDao.addEntry(dto.buildAddEntry());
+        return id;
+    }
+    public void addIndexPageEntry(String sourceId,String fileUrl,String name,String content,String title,String userId){
+        IndexPageDTO dto1 = new IndexPageDTO();
+        dto1.setType(CommunityType.appNotice.getType());
+        dto1.setUserId(userId.toString());
+        dto1.setCommunityId(userId.toString());
+       // objectIdList.add(new ObjectId(communityDTO.getCommunityId()));
+       // dto1.setContactId(oid.toString());
+        IndexPageEntry entry = dto1.buildAddEntry();
+       // indexPageDao.addEntry(entry);
     }
 
 

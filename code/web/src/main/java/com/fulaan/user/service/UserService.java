@@ -2,19 +2,23 @@ package com.fulaan.user.service;
 
 
 import com.db.app.RegionDao;
+import com.db.backstage.SystemMessageDao;
 import com.db.backstage.UserLogResultDao;
 import com.db.fcommunity.LoginLogDao;
 import com.db.forum.FLevelDao;
 import com.db.forum.FPostDao;
+import com.db.indexPage.IndexPageDao;
 import com.db.loginwebsocket.LoginTokenDao;
 import com.db.school.ClassDao;
 import com.db.school.InterestClassDao;
 import com.db.school.SchoolDao;
 import com.db.user.NewVersionUserRoleDao;
 import com.db.user.UserDao;
+import com.fulaan.backstage.dto.SystemMessageDTO;
 import com.fulaan.base.BaseService;
 import com.fulaan.cache.CacheHandler;
 import com.fulaan.dto.UserDTO;
+import com.fulaan.indexpage.dto.IndexPageDTO;
 import com.fulaan.mall.service.EBusinessVoucherService;
 import com.fulaan.picturetext.runnable.PictureRunNable;
 import com.fulaan.pojo.FLoginLog;
@@ -35,7 +39,9 @@ import com.pojo.backstage.PictureType;
 import com.pojo.backstage.UserLogResultEntry;
 import com.pojo.ebusiness.SortType;
 import com.pojo.fcommunity.FLoginLogEntry;
+import com.pojo.indexPage.IndexPageEntry;
 import com.pojo.loginwebsocket.LoginTokenEntry;
+import com.pojo.newVersionGrade.CommunityType;
 import com.pojo.school.ClassEntry;
 import com.pojo.school.ClassInfoDTO;
 import com.pojo.school.InterestClassEntry;
@@ -87,10 +93,14 @@ public class UserService extends BaseService {
 
     private NewVersionUserRoleDao newVersionUserRoleDao = new NewVersionUserRoleDao();
 
-    private UserLogResultDao userLogResultDao = new UserLogResultDao();
-
     @Autowired
     private EBusinessVoucherService voucherService;
+
+    private SystemMessageDao systemMessageDao = new SystemMessageDao();
+
+    private IndexPageDao indexPageDao = new IndexPageDao();
+
+    private UserLogResultDao userLogResultDao = new UserLogResultDao();
 
 
     /**
@@ -628,7 +638,32 @@ public class UserService extends BaseService {
      * 添加用户
      */
     public ObjectId addUser(UserEntry e) {
-        return userDao.addUserEntry(e);
+        ObjectId uid = userDao.addUserEntry(e);
+
+        //添加系统信息
+        SystemMessageDTO dto = new SystemMessageDTO();
+        dto.setType(1);
+        dto.setAvatar("");
+        dto.setName("");
+        dto.setFileUrl("");
+        dto.setSourceId("");
+        dto.setContent("");
+        dto.setFileType(1);
+        dto.setSourceName("");
+        dto.setSourceType(0);
+        dto.setTitle("");
+        String id = systemMessageDao.addEntry(dto.buildAddEntry());
+
+        //添加首页记录
+        IndexPageDTO dto1 = new IndexPageDTO();
+        dto1.setType(CommunityType.system.getType());
+        dto1.setUserId(uid.toString());
+        dto1.setCommunityId(uid.toString());
+        dto1.setContactId(id.toString());
+        IndexPageEntry entry = dto1.buildAddEntry();
+        indexPageDao.addEntry(entry);
+
+        return uid;
     }
 
     /**

@@ -1,9 +1,12 @@
 package com.fulaan.service;
 
+import com.db.backstage.SystemMessageDao;
 import com.db.fcommunity.*;
+import com.db.indexPage.IndexPageDao;
 import com.db.reportCard.GroupExamUserRecordDao;
 import com.db.user.NewVersionUserRoleDao;
 import com.db.user.UserDao;
+import com.fulaan.backstage.dto.SystemMessageDTO;
 import com.fulaan.cache.RedisUtils;
 import com.fulaan.community.dto.CommunityDTO;
 import com.fulaan.community.dto.CommunityDetailDTO;
@@ -17,6 +20,7 @@ import com.fulaan.forum.service.FInformationService;
 import com.fulaan.forum.service.FVoteService;
 import com.fulaan.friendscircle.service.FriendApplyService;
 import com.fulaan.friendscircle.service.FriendService;
+import com.fulaan.indexpage.dto.IndexPageDTO;
 import com.fulaan.instantmessage.service.RedDotService;
 import com.fulaan.picturetext.runnable.PictureRunNable;
 import com.fulaan.pojo.*;
@@ -27,6 +31,8 @@ import com.pojo.backstage.PictureType;
 import com.pojo.fcommunity.*;
 import com.pojo.forum.FVoteDTO;
 import com.pojo.forum.FVoteEntry;
+import com.pojo.indexPage.IndexPageEntry;
+import com.pojo.newVersionGrade.CommunityType;
 import com.pojo.user.NewVersionUserRoleEntry;
 import com.pojo.user.UserEntry;
 import com.sys.constants.Constant;
@@ -80,6 +86,10 @@ public class CommunityService {
 
     private GroupExamUserRecordDao groupExamUserRecordDao=new GroupExamUserRecordDao();
 
+    private SystemMessageDao systemMessageDao = new SystemMessageDao();
+
+    private IndexPageDao indexPageDao = new IndexPageDao();
+
     /**
      * 创建社区
      * <p>
@@ -104,6 +114,28 @@ public class CommunityService {
         pushToUser(communityId, userId, 1);
         //图片检测
         PictureRunNable.send(communityId.toString(), userId.toString(), PictureType.communityLogo.getType(), 1, logo);
+        //添加系统信息
+        SystemMessageDTO dto = new SystemMessageDTO();
+        dto.setType(2);
+        dto.setAvatar("");
+        dto.setName("");
+        dto.setFileUrl("");
+        dto.setSourceId(communityId.toString());
+        dto.setContent("");
+        dto.setFileType(1);
+        dto.setSourceName(entry.getCommunityName());
+        dto.setSourceType(1);
+        dto.setTitle("");
+        String id = systemMessageDao.addEntry(dto.buildAddEntry());
+
+        //添加首页记录
+        IndexPageDTO dto1 = new IndexPageDTO();
+        dto1.setType(CommunityType.system.getType());
+        dto1.setUserId(userId.toString());
+        dto1.setCommunityId(userId.toString());
+        dto1.setContactId(id.toString());
+        IndexPageEntry entry2 = dto1.buildAddEntry();
+        indexPageDao.addEntry(entry2);
         return communityId;
     }
 

@@ -276,7 +276,8 @@ public class MQTTSendMsg {
                      * 如果发送P2P消息，二级Topic必须是“p2p”，三级Topic是目标的ClientID
                      * 此处设置的三级Topic需要是接收方的ClientID
                      */
-                    String p2pTopic =topic+"/p2p/GID_jxm@@@ClientID_lsq000";
+                    String p2pTopic =topic+"/p2p/GID_jxm@@@ClientID_5a17d92b0a9d324986663c8f";
+                    //String p2pTopic =topic;
                     sampleClient.publish(p2pTopic,message);
                 } catch (Exception e) {
                     e.printStackTrace();

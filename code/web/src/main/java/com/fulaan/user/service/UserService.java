@@ -2,6 +2,7 @@ package com.fulaan.user.service;
 
 
 import com.db.app.RegionDao;
+import com.db.backstage.UserLogResultDao;
 import com.db.fcommunity.LoginLogDao;
 import com.db.forum.FLevelDao;
 import com.db.forum.FPostDao;
@@ -31,6 +32,7 @@ import com.pojo.app.Platform;
 import com.pojo.app.RegionEntry;
 import com.pojo.app.SessionValue;
 import com.pojo.backstage.PictureType;
+import com.pojo.backstage.UserLogResultEntry;
 import com.pojo.ebusiness.SortType;
 import com.pojo.fcommunity.FLoginLogEntry;
 import com.pojo.loginwebsocket.LoginTokenEntry;
@@ -84,6 +86,8 @@ public class UserService extends BaseService {
     private LoginTokenDao loginTokenDao = new LoginTokenDao();
 
     private NewVersionUserRoleDao newVersionUserRoleDao = new NewVersionUserRoleDao();
+
+    private UserLogResultDao userLogResultDao = new UserLogResultDao();
 
     @Autowired
     private EBusinessVoucherService voucherService;
@@ -256,6 +260,28 @@ public class UserService extends BaseService {
                 CacheHandler.deleteKey(CacheHandler.CACHE_SESSION_KEY, cacheUserKey);
             }
             CacheHandler.setCacheStudentUserKey(e.getID().toString(), Constant.SECONDS_IN_HALF_YEAR);
+        }else if(type==5){
+            if (null != newVersionUserRoleDao.getEntry(e.getID())
+                    && (newVersionUserRoleDao.getEntry(e.getID()).getNewRole() == Constant.ONE||
+                    newVersionUserRoleDao.getEntry(e.getID()).getNewRole() == Constant.TWO)) {
+                if(pf.isMobile()) {
+                    validate.setMessage("该学生不能登录这个app!");
+                }else{
+                    validate.setMessage("你没有权限登录网页端");
+                }
+                return validate;
+            }else{
+                UserLogResultEntry entry=userLogResultDao.getEntryByUserId(e.getID());
+                if(null==entry){
+                    validate.setMessage("你没有权限登录admin端");
+                    return validate;
+                }else{
+                    if(entry.getRole()==Constant.ZERO){
+                        validate.setMessage("你没有权限登录admin端");
+                        return validate;
+                    }
+                }
+            }
         }
         validate.setOk(true);
         validate.setData(e);

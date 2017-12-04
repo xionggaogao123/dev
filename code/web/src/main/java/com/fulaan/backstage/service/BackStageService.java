@@ -495,6 +495,15 @@ public class BackStageService {
 
     }
 
+    public UserRoleOfPathDTO getPathByRole(int role)throws Exception{
+        UserRoleOfPathEntry pathEntry=userRoleOfPathDao.getEntryByRole(role);
+        if(pathEntry!=null){
+            return new UserRoleOfPathDTO(pathEntry);
+        }else {
+            throw new Exception("查找不到role对应的权限列表");
+        }
+    }
+
     public List<UserRoleOfPathDTO> getUserRoleOfPathDTO(){
         List<UserRoleOfPathDTO> pathDTOs=new ArrayList<UserRoleOfPathDTO>();
         List<UserRoleOfPathEntry> entries=userRoleOfPathDao.getRoleEntries();
@@ -502,6 +511,18 @@ public class BackStageService {
             pathDTOs.add(new UserRoleOfPathDTO(pathEntry));
         }
         return pathDTOs;
+    }
+
+
+    public void saveUserRole(String userId,int role){
+        UserLogResultEntry resultEntry=userLogResultDao.getEntryByUserId(new ObjectId(userId));
+        if(null!=resultEntry){
+            resultEntry.setRole(role);
+            userLogResultDao.saveUserLogEntry(resultEntry);
+        }else{
+            UserLogResultEntry entry=new UserLogResultEntry(new ObjectId(userId),role);
+            userLogResultDao.saveUserLogEntry(entry);
+        }
     }
 
 

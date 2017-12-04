@@ -273,6 +273,19 @@ public class GroupExamUserRecordDao extends BaseDao{
         update(MongoFacroty.getAppDB(), Constant.COLLECTION_REPORT_CARD_EXAM_USER_RECORD,query,updateValue);
     }
 
+    public GroupExamUserRecordEntry getExamUserRecordEntry(ObjectId groupExamDetailId,
+                                                       ObjectId userId){
+        BasicDBObject query=new BasicDBObject()
+                .append("eid",groupExamDetailId)
+                .append("uid",userId);
+        DBObject dbObject=findOne(MongoFacroty.getAppDB(), Constant.COLLECTION_REPORT_CARD_EXAM_USER_RECORD,query,Constant.FIELDS);
+        if(null!=dbObject){
+            return new GroupExamUserRecordEntry(dbObject);
+        }else{
+            return null;
+        }
+    }
+
     public GroupExamUserRecordEntry getUserRecordEntry(ObjectId groupExamDetailId,
                                              ObjectId userId){
         BasicDBObject query=new BasicDBObject()

@@ -144,7 +144,10 @@ public class ReportCardService {
         if (null == recordEntry) {
             groupExamUserRecordDao.pushSign(groupExamDetailId, userId);
             groupExamDetailDao.updateSignedCount(groupExamDetailId);
-            webHomePageDao.updateContactStatus(recordEntry.getID(), Constant.THREE, Constant.THREE);
+            GroupExamUserRecordEntry userRecordEntry=groupExamUserRecordDao.getExamUserRecordEntry(groupExamDetailId,userId);
+            if(null!=userRecordEntry) {
+                webHomePageDao.updateContactStatus(userRecordEntry.getID(), Constant.THREE, Constant.THREE);
+            }
         }
     }
 

@@ -507,6 +507,27 @@ public class BackStageController extends BaseController {
     }
 
 
+
+    @ApiOperation(value = "根据角色获取操作权限列表", httpMethod = "POST", produces = "application/json")
+    @ApiResponses( value = {@ApiResponse(code = 200, message = "Successful — 请求已完成",response = String.class),
+            @ApiResponse(code = 400, message = "请求中有语法问题，或不能满足请求"),
+            @ApiResponse(code = 500, message = "服务器不能完成请求")})
+    @RequestMapping("/getPathByRole")
+    @ResponseBody
+    public RespObj getPathByRole(int role){
+        RespObj respObj=new RespObj(Constant.FAILD_CODE);
+        try{
+            UserRoleOfPathDTO dto=backStageService.getPathByRole(role);
+            respObj.setCode(Constant.SUCCESS_CODE);
+            respObj.setMessage(dto);
+        }catch (Exception e){
+            respObj.setMessage(e.getMessage());
+        }
+        return respObj;
+    }
+
+
+
     @ApiOperation(value = "获取所有的用户角色列表", httpMethod = "POST", produces = "application/json")
     @ApiResponses( value = {@ApiResponse(code = 200, message = "Successful — 请求已完成",response = String.class),
             @ApiResponse(code = 400, message = "请求中有语法问题，或不能满足请求"),
@@ -520,7 +541,21 @@ public class BackStageController extends BaseController {
         return respObj;
     }
 
-    
+
+    @ApiOperation(value = "保存用户角色", httpMethod = "GET", produces = "application/json")
+    @ApiResponses( value = {@ApiResponse(code = 200, message = "Successful — 请求已完成",response = String.class),
+            @ApiResponse(code = 400, message = "请求中有语法问题，或不能满足请求"),
+            @ApiResponse(code = 500, message = "服务器不能完成请求")})
+    @RequestMapping("/saveUserRole")
+    @ResponseBody
+    public RespObj saveUserRole(String userId,
+                                int role){
+        RespObj respObj=new RespObj(Constant.SUCCESS_CODE);
+        backStageService.saveUserRole(userId,role);
+        respObj.setMessage("保存成功");
+        return respObj;
+    }
+
 
 
 
@@ -531,8 +566,14 @@ public class BackStageController extends BaseController {
     @RequestMapping("/saveUserRoleOfPath")
     @ResponseBody
     public RespObj saveUserRoleOfPath(String pathStr,int role){
-        RespObj respObj=new RespObj(Constant.SUCCESS_CODE,"保存角色操作权限成功!");
-        backStageService.saveUserRoleOfPath(pathStr,role);
+
+        RespObj respObj=new RespObj(Constant.FAILD_CODE);
+        if(role!=Constant.TWO) {
+            backStageService.saveUserRoleOfPath(pathStr, role);
+            respObj.setMessage("保存角色操作权限成功!");
+        }else{
+            respObj.setMessage("超级管理员不用设置路径权限");
+        }
         return respObj;
     }
 

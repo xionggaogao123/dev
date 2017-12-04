@@ -1,5 +1,6 @@
 package com.fulaan.user.controller;
 
+import com.db.backstage.UserLogResultDao;
 import com.db.user.NewVersionUserRoleDao;
 import com.easemob.server.EaseMobAPI;
 import com.fulaan.account.service.AccountService;
@@ -29,6 +30,7 @@ import com.pojo.app.IdValuePairDTO;
 import com.pojo.app.Platform;
 import com.pojo.app.RegionEntry;
 import com.pojo.app.SessionValue;
+import com.pojo.backstage.UserLogResultEntry;
 import com.pojo.educationbureau.EducationBureauEntry;
 import com.pojo.fcommunity.RemarkEntry;
 import com.pojo.forum.FLogDTO;
@@ -128,6 +130,8 @@ public class WebUserController extends BaseController {
     private CommunityService communityService;
 
     private NewVersionUserRoleDao newVersionUserRoleDao= new NewVersionUserRoleDao();
+
+    private UserLogResultDao userLogResultDao = new UserLogResultDao();
 
     private Auth qqAuth = AuthFactory.getAuth(AuthType.QQ);
     private Auth wechatAuth = AuthFactory.getAuth(AuthType.WECHAT);
@@ -2027,6 +2031,11 @@ public class WebUserController extends BaseController {
         model.put("stars", stars);
         model.put("userId", sessionValue.getId());
         model.put("packageCode",userEntry.getGenerateUserCode());
+        UserLogResultEntry entry=userLogResultDao.getEntryByUserId(new ObjectId(sessionValue.getId()));
+        model.put("userRole",Constant.ZERO);
+        if(null!=entry){
+            model.put("userRole",entry.getRole());
+        }
         model.put("login", true);
         model.put("k6kt", sessionValue.getK6kt());
         model.put("avatar", sessionValue.getMinAvatar());

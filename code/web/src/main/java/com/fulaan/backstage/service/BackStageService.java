@@ -2,10 +2,7 @@ package com.fulaan.backstage.service;
 
 import cn.jiguang.commom.utils.StringUtils;
 import com.db.appmarket.AppDetailDao;
-import com.db.backstage.JxmAppVersionDao;
-import com.db.backstage.TeacherApproveDao;
-import com.db.backstage.UnlawfulPictureTextDao;
-import com.db.backstage.UserRoleOfPathDao;
+import com.db.backstage.*;
 import com.db.controlphone.*;
 import com.db.fcommunity.CommunityDao;
 import com.db.fcommunity.CommunityDetailDao;
@@ -16,10 +13,7 @@ import com.db.questionbook.QuestionAdditionDao;
 import com.db.questionbook.QuestionBookDao;
 import com.db.user.UserDao;
 import com.fulaan.appmarket.dto.AppDetailDTO;
-import com.fulaan.backstage.dto.JxmAppVersionDTO;
-import com.fulaan.backstage.dto.TeacherApproveDTO;
-import com.fulaan.backstage.dto.UnlawfulPictureTextDTO;
-import com.fulaan.backstage.dto.UserRoleOfPathDTO;
+import com.fulaan.backstage.dto.*;
 import com.fulaan.controlphone.dto.ControlAppSystemDTO;
 import com.fulaan.controlphone.dto.ControlPhoneDTO;
 import com.fulaan.controlphone.dto.ControlSchoolTimeDTO;
@@ -85,6 +79,8 @@ public class BackStageService {
     private JxmAppVersionDao jxmAppVersionDao = new JxmAppVersionDao();
 
     private UserRoleOfPathDao userRoleOfPathDao = new UserRoleOfPathDao();
+
+    private UserLogResultDao userLogResultDao = new UserLogResultDao();
 
     private AppDetailDao appDetailDao = new AppDetailDao();
 
@@ -506,6 +502,27 @@ public class BackStageService {
             pathDTOs.add(new UserRoleOfPathDTO(pathEntry));
         }
         return pathDTOs;
+    }
+
+
+    public List<UserLogResultDTO> getAllUserRoles(){
+        List<UserLogResultDTO> resultDTOs = new ArrayList<UserLogResultDTO>();
+        List<UserLogResultEntry> entries = userLogResultDao.getEntries();
+        List<ObjectId> userIds=new ArrayList<ObjectId>();
+        for(UserLogResultEntry entry:entries){
+            userIds.add(entry.getUserId());
+        }
+        Map<ObjectId,UserEntry> userEntryMap=userService.getUserEntryMap(userIds,Constant.FIELDS);
+        for(UserLogResultEntry entry:entries){
+            UserLogResultDTO resultDTO=new UserLogResultDTO(entry);
+            UserEntry userEntry=userEntryMap.get(entry.getUserId());
+            if(null!=userEntry){
+                resultDTO.setUserName(org.apache.commons.lang3.StringUtils.isNotEmpty(userEntry.getNickName())?
+                        userEntry.getNickName():userEntry.getUserName());
+            }
+            resultDTOs.add(resultDTO);
+        }
+        return resultDTOs;
     }
 
 

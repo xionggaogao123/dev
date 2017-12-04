@@ -5,6 +5,7 @@ import com.fulaan.annotation.ObjectIdType;
 import com.fulaan.appmarket.dto.AppDetailDTO;
 import com.fulaan.appmarket.service.AppMarketService;
 import com.fulaan.backstage.dto.JxmAppVersionDTO;
+import com.fulaan.backstage.dto.UserLogResultDTO;
 import com.fulaan.backstage.dto.UserRoleOfPathDTO;
 import com.fulaan.backstage.service.BackStageService;
 import com.fulaan.base.BaseController;
@@ -504,6 +505,23 @@ public class BackStageController extends BaseController {
         respObj.setMessage(pathDTOs);
         return respObj;
     }
+
+
+    @ApiOperation(value = "获取所有的用户角色列表", httpMethod = "POST", produces = "application/json")
+    @ApiResponses( value = {@ApiResponse(code = 200, message = "Successful — 请求已完成",response = String.class),
+            @ApiResponse(code = 400, message = "请求中有语法问题，或不能满足请求"),
+            @ApiResponse(code = 500, message = "服务器不能完成请求")})
+    @RequestMapping("/getAllUserRoles")
+    @ResponseBody
+    public RespObj getAllUserRoles(){
+        RespObj respObj=new RespObj(Constant.SUCCESS_CODE);
+        List<UserLogResultDTO> resultDTOs=backStageService.getAllUserRoles();
+        respObj.setMessage(resultDTOs);
+        return respObj;
+    }
+
+    
+
 
 
     @ApiOperation(value = "保存角色对应的操作权限信息", httpMethod = "POST", produces = "application/json")

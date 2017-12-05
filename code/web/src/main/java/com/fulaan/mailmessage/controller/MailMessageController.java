@@ -19,7 +19,7 @@ import java.util.Map;
  */
 @Api(value="邮件")
 @Controller
-@RequestMapping("/mailMessage")
+@RequestMapping("/jxmapi/mailMessage")
 public class MailMessageController extends BaseController {
     @Autowired
     private MailMessageService mailMessageService;

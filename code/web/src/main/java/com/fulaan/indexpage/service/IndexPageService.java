@@ -162,6 +162,7 @@ public class IndexPageService {
                 }
                 Map<String,Object> ob1 = new HashMap<String, Object>();
                 ob1.put("tag", CommunityType.appNotice.getDes());
+                ob1.put("cardType",1);
                 ob1.put("groupName",dto8.getGroupName());
                 ob1.put("id",dto8.getId());
                 ob1.put("userName",org.apache.commons.lang.StringUtils.isNotEmpty(userEntry.getNickName())?userEntry.getNickName():userEntry.getUserName());
@@ -202,23 +203,24 @@ public class IndexPageService {
         if(syList.size()>0){
             List<SystemMessageEntry> systemMessageEntries = systemMessageDao.selectContentList(syList);
             for(SystemMessageEntry entry:systemMessageEntries){
-                SystemMessageDTO dto8 = new SystemMessageDTO();
+                SystemMessageDTO dto8 = new SystemMessageDTO(entry);
                 if(entry.getType()==1){
                     Map<String,Object> ob1 = new HashMap<String, Object>();
                     ob1.put("tag", CommunityType.system.getDes());
+                    ob1.put("cardType",2);
                     ob1.put("groupName","");
                     ob1.put("id",dto8.getId());
                     ob1.put("userName","家校美小助手");
                     ob1.put("subject","");
-                    ob1.put("avatar","");
+                    ob1.put("avatar","http://7xiclj.com1.z0.glb.clouddn.com/5a26565027fddd1db08722f1.png");
                     ob1.put("title","家校美使用向导");
                     ob1.put("time",dto8.getCreateTime());
                     ob1.put("content","家校美，一款富有魔力的产品！");
-                    List<Attachement> imageList=new ArrayList<Attachement>();
+                  /*  List<Attachement> imageList=new ArrayList<Attachement>();
                     Attachement a = new Attachement();
                     a.setUrl("");
-                    imageList.add(a);
-                    ob1.put("imageList",imageList);
+                    imageList.add(a);*/
+                    ob1.put("imageList",new ArrayList<Attachement>());
                     ob1.put("commentCount",0);
                     ob1.put("videoList",new ArrayList<VideoDTO>());
                     ob1.put("voiceList",new ArrayList<Attachement>());
@@ -229,24 +231,26 @@ public class IndexPageService {
                     ob1.put("unReadCount",0);
                     ob1.put("timeExpression","");
                     ob1.put("isOwner",true);
+                    list.add(ob1);
                 }else{
                     Map<String,Object> ob1 = new HashMap<String, Object>();
                     ob1.put("tag", CommunityType.system.getDes());
+                    ob1.put("cardType",3);
                     ob1.put("groupName",dto8.getSourceName());
                     ob1.put("id",dto8.getId());
                     ob1.put("userName","家校美小助手");
                     ob1.put("subject","");
-                    ob1.put("avatar","");
+                    ob1.put("avatar","http://7xiclj.com1.z0.glb.clouddn.com/5a26565027fddd1db08722f1.png");
                     ob1.put("title","恭喜您创建了一个新社区");
                     ob1.put("time",dto8.getCreateTime());
-                    ob1.put("content","恭喜您于"+dto8.getCreateTime().substring(0,11)+"日成功创建了<"
-                            + dto8.getSourceName()+">社群，您是该班级社群的‘社长’，拥有一切特权。此外您后期最多可以" +
-                            "可以指定设置2位成员为‘副社长’，他们也能拥有各项发帖权利。");
-                    List<Attachement> imageList=new ArrayList<Attachement>();
+                    ob1.put("content","恭喜您于"+dto8.getCreateTime().substring(0,11)+"日成功创建了“"
+                            + dto8.getSourceName()+"”社群，您是该班级社群的“社长”，拥有一切特权。/n 此外您后期最多可以" +
+                            "可以指定设置2位成员为“副社长”，他们也能拥有各项发帖权利。");
+                  /*  List<Attachement> imageList=new ArrayList<Attachement>();
                     Attachement a = new Attachement();
                     a.setUrl("");
-                    imageList.add(a);
-                    ob1.put("imageList",imageList);
+                    imageList.add(a);*/
+                    ob1.put("imageList",new ArrayList<Attachement>());
                     ob1.put("commentCount",0);
                     ob1.put("videoList",new ArrayList<VideoDTO>());
                     ob1.put("voiceList",new ArrayList<Attachement>());
@@ -257,10 +261,8 @@ public class IndexPageService {
                     ob1.put("unReadCount",0);
                     ob1.put("timeExpression","");
                     ob1.put("isOwner",true);
+                    list.add(ob1);
                 }
-
-
-
             }
         }
         Map<String,Object> map = new HashMap<String, Object>();

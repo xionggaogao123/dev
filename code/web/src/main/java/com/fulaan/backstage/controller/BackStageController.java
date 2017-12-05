@@ -662,13 +662,61 @@ public class BackStageController extends BaseController {
     public String addSystemAppEntry(@ApiParam(name = "id", required = true, value = "appId") @RequestParam(value = "id",defaultValue = "0") String id){
         RespObj respObj = new RespObj(Constant.FAILD_CODE);
         try{
-            backStageService.addSystemAppEntry(new ObjectId(id));
+            backStageService.addSystemAppEntry(getUserId(),new ObjectId(id));
             respObj.setCode(Constant.SUCCESS_CODE);
             respObj.setMessage("添加成功");
         }catch (Exception e){
             e.printStackTrace();
             respObj.setCode(Constant.SUCCESS_CODE);
             respObj.setMessage("添加为系统推送应用失败");
+        }
+        return JSON.toJSONString(respObj);
+    }
+
+    /**
+     * 消除系统推送应用
+     * @return
+     */
+    @ApiOperation(value = "消除系统推送应用", httpMethod = "POST", produces = "application/json")
+    @ApiResponses( value = {@ApiResponse(code = 200, message = "Successful — 请求已完成",response = String.class),
+            @ApiResponse(code = 400, message = "请求中有语法问题，或不能满足请求"),
+            @ApiResponse(code = 500, message = "服务器不能完成请求")})
+    @RequestMapping("/delSystemAppEntry")
+    @ResponseBody
+    public String delSystemAppEntry(@ApiParam(name = "id", required = true, value = "appId") @RequestParam(value = "id",defaultValue = "0") String id){
+        RespObj respObj = new RespObj(Constant.FAILD_CODE);
+        try{
+            backStageService.delSystemAppEntry(getUserId(),new ObjectId(id));
+            respObj.setCode(Constant.SUCCESS_CODE);
+            respObj.setMessage("添加成功");
+        }catch (Exception e){
+            e.printStackTrace();
+            respObj.setCode(Constant.SUCCESS_CODE);
+            respObj.setMessage("消除系统推送应用失败");
+        }
+        return JSON.toJSONString(respObj);
+    }
+
+    /**
+     * 查询所有系统推送应用
+     * @return
+     */
+    @ApiOperation(value = "查询所有系统推送应用", httpMethod = "POST", produces = "application/json")
+    @ApiResponses( value = {@ApiResponse(code = 200, message = "Successful — 请求已完成",response = String.class),
+            @ApiResponse(code = 400, message = "请求中有语法问题，或不能满足请求"),
+            @ApiResponse(code = 500, message = "服务器不能完成请求")})
+    @RequestMapping("/selectSystemAppEntry")
+    @ResponseBody
+    public String selectSystemAppEntry(){
+        RespObj respObj = new RespObj(Constant.FAILD_CODE);
+        try{
+            List<AppDetailDTO> dtos = backStageService.selectSystemAppEntry();
+            respObj.setCode(Constant.SUCCESS_CODE);
+            respObj.setMessage(dtos);
+        }catch (Exception e){
+            e.printStackTrace();
+            respObj.setCode(Constant.SUCCESS_CODE);
+            respObj.setMessage("查询所有系统推送应用失败");
         }
         return JSON.toJSONString(respObj);
     }

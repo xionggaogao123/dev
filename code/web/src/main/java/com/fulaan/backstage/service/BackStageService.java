@@ -276,6 +276,7 @@ public class BackStageService {
     //教师认证
     public Map<String,Object> selectTeacherList(ObjectId userId,int type,String searchId,int page,int pageSize){
         Map<String,Object> map = new HashMap<String, Object>();
+        //memberDao.get
         List<TeacherApproveEntry> entries = teacherApproveDao.selectContentList(searchId, type, page, pageSize);
         int count = teacherApproveDao.getNumber(searchId, type);
         List<TeacherApproveDTO> dtos = new ArrayList<TeacherApproveDTO>();
@@ -388,7 +389,7 @@ public class BackStageService {
 
     }
     //添加为系统推送
-    public void addSystemAppEntry(ObjectId appId){
+    public void addSystemAppEntry(ObjectId userId,ObjectId appId){
         AppDetailEntry entry = appDetailDao.findEntryById(appId);
         if(entry != null){
             ControlAppSystemEntry entry1 = controlAppSystemDao.getEntry();
@@ -396,18 +397,57 @@ public class BackStageService {
                 ControlAppSystemDTO dto = new ControlAppSystemDTO();
                 List<String> stringList = new ArrayList<String>();
                 stringList.add(appId.toString());
-                controlAppSystemDao.addEntry(dto.buildAddEntry());
+                String id = controlAppSystemDao.addEntry(dto.buildAddEntry());
+                this.addLogMessage(id.toString(),"添加系统推送应用："+entry.getAppName()+"，包名："+entry.getAppPackageName(),LogMessageType.fulan.getDes(),userId.toString());
             }else{
                 List<ObjectId> ob = entry1.getAppIdList();
                 if(!ob.contains(appId)){
                     ob.add(appId);
                     entry1.setAppIdList(ob);
                     controlAppSystemDao.updEntry(entry1);
+                    this.addLogMessage(entry1.getID().toString(),"添加系统推送应用："+entry.getAppName()+"，包名："+entry.getAppPackageName(),LogMessageType.fulan.getDes(),userId.toString());
                 }
             }
         }
 
 
+    }
+    //删除系统推送
+    public void delSystemAppEntry(ObjectId userId,ObjectId appId){
+        AppDetailEntry entry = appDetailDao.findEntryById(appId);
+        if(entry != null){
+            ControlAppSystemEntry entry1 = controlAppSystemDao.getEntry();
+            if(entry1 == null){
+
+            }else{
+                List<ObjectId> ob = entry1.getAppIdList();
+                if(!ob.contains(appId)){
+                    ob.remove(appId);
+                    entry1.setAppIdList(ob);
+                    controlAppSystemDao.updEntry(entry1);
+                    this.addLogMessage(entry1.getID().toString(),"移除系统推送应用："+entry.getAppName()+"，包名："+entry.getAppPackageName(),LogMessageType.fulan.getDes(),userId.toString());
+                }
+            }
+        }
+
+
+    }
+    //查询系统推送
+    public List<AppDetailDTO> selectSystemAppEntry(){
+        List<AppDetailEntry> appDetailEntries = new ArrayList<AppDetailEntry>();
+        ControlAppSystemEntry entry1 = controlAppSystemDao.getEntry();
+        if(null != entry1){
+            List<ObjectId> oids = entry1.getAppIdList();
+            if(oids!= null && oids.size()>0){
+                List<AppDetailEntry> appDetailEntries2 = appDetailDao.getEntriesByIds(oids);
+                appDetailEntries.addAll(appDetailEntries2);
+            }
+        }
+        List<AppDetailDTO> dtos = new ArrayList<AppDetailDTO>();
+        for(AppDetailEntry detailEntry : appDetailEntries){
+            dtos.add(new AppDetailDTO(detailEntry));
+        }
+        return dtos;
     }
 
     //添加图片显示认证

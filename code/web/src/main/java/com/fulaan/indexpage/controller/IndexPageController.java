@@ -24,7 +24,7 @@ public class IndexPageController extends BaseController {
     @Autowired
     private IndexPageService indexPageService;
 
-    @ApiOperation(value = "修改课程名", httpMethod = "POST", produces = "application/json")
+    @ApiOperation(value = "首页加载", httpMethod = "POST", produces = "application/json")
     @ApiResponses( value = {@ApiResponse(code = 200, message = "Successful — 请求已完成",response = String.class)})
     @RequestMapping("/getIndexList")
     @ResponseBody
@@ -38,7 +38,7 @@ public class IndexPageController extends BaseController {
         } catch (Exception e) {
             e.printStackTrace();
             respObj.setCode(Constant.FAILD_CODE);
-            respObj.setErrorMessage("修改课程名失败");
+            respObj.setErrorMessage("首页加载失败");
         }
         return JSON.toJSONString(respObj);
     }

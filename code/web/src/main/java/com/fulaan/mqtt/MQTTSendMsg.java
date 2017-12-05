@@ -69,7 +69,7 @@ public class MQTTSendMsg {
             sampleClient.connect(connOpts);
             for (int i = 0; i < 1; i++) {
                 try {
-                    String scontent = new Date().getTime()+"&" + code;
+                    String scontent = new Date().getTime()+"##" + code;
                     //此处消息体只需要传入byte数组即可，对于其他类型的消息，请自行完成二进制数据的转换
                     final MqttMessage message = new MqttMessage(scontent.getBytes());
                     /*QoS级别	  cleanSession=true	                  cleanSession=false
@@ -165,7 +165,7 @@ public class MQTTSendMsg {
             sampleClient.connect(connOpts);
             for (int i = 0; i < 1; i++) {
                 try {
-                    String scontent = new Date().getTime()+"&" + code;
+                    String scontent = new Date().getTime()+"##" + code;
                     //此处消息体只需要传入byte数组即可，对于其他类型的消息，请自行完成二进制数据的转换
                     final MqttMessage message = new MqttMessage(scontent.getBytes());
                     /*QoS级别	  cleanSession=true	                  cleanSession=false

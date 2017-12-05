@@ -1,6 +1,7 @@
 package com.fulaan.controlphone.service;
 
 import com.db.appmarket.AppDetailDao;
+import com.db.backstage.TeacherApproveDao;
 import com.db.controlphone.*;
 import com.db.fcommunity.CommunityDao;
 import com.db.fcommunity.GroupDao;
@@ -14,6 +15,7 @@ import com.fulaan.newVersionBind.service.NewVersionBindService;
 import com.fulaan.user.service.UserService;
 import com.mongodb.DBObject;
 import com.pojo.appmarket.AppDetailEntry;
+import com.pojo.backstage.TeacherApproveEntry;
 import com.pojo.controlphone.*;
 import com.pojo.fcommunity.CommunityEntry;
 import com.pojo.user.NewVersionBindRelationEntry;
@@ -63,6 +65,8 @@ public class ControlPhoneService {
     private ControlSetBackDao controlSetBackDao = new ControlSetBackDao();
 
     private ControlAppSystemDao controlAppSystemDao = new ControlAppSystemDao();
+
+    private TeacherApproveDao teacherApproveDao = new TeacherApproveDao();
 
     @Autowired
     private NewVersionBindService newVersionBindService;
@@ -926,7 +930,9 @@ public class ControlPhoneService {
             ControlAppUserEntry entry1 = dto.buildAddEntry();
             //添加系统设置
             controlAppUserDao.addEntry(entry1);
-            oblist.addAll(controlAppSystemEntry.getAppIdList());
+            if(controlAppSystemEntry != null){
+                oblist.addAll(controlAppSystemEntry.getAppIdList());
+            }
         }
         //获取所有可推送的第三方应用
         List<AppDetailEntry> entries = appDetailDao.getThirdEntries();
@@ -1058,6 +1064,12 @@ public class ControlPhoneService {
             map.put("list",dtos);
         }
         //是否认证
+        TeacherApproveEntry entry = teacherApproveDao.getEntry(teacherId);
+       /* if(entry != null && entry.getType()==2){
+            map.put("isRen",true);
+        }else{
+            map.put("isRen",false);
+        }*/
         map.put("isRen",true);
         return map;
     }
@@ -1137,7 +1149,6 @@ public class ControlPhoneService {
                 map.put("isControl",3);
             }else{
                 map.put("time",0);
-                map.put("isControl",1);
             }
             map.put("third",new ControlNowTimeDTO(entry3));
         }else{
@@ -1236,6 +1247,15 @@ public class ControlPhoneService {
         }
     }
 
+    public void loadStudentMap(ObjectId userId,ObjectId sonId){
+        //向学生端推送消息
+        try {
+            MQTTSendMsg.sendMessage(MQTTType.phone.getEname(), sonId.toString());
+        }catch (Exception e){
+
+        }
+
+    }
 
     /**
      * 批量增加应用记录

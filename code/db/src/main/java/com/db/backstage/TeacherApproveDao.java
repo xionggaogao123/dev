@@ -20,9 +20,19 @@ public class TeacherApproveDao extends BaseDao {
         save(MongoFacroty.getAppDB(), Constant.COLLECTION_TEACHER_APPROVE, entry.getBaseEntry());
         return entry.getID().toString() ;
     }
+    public TeacherApproveEntry getEntry(ObjectId userId) {
+        BasicDBObject query =new BasicDBObject();
+        query.append("isr", Constant.ZERO) .append("uid", userId);
+        DBObject dbo =findOne(MongoFacroty.getAppDB(), Constant.COLLECTION_TEACHER_APPROVE, query, Constant.FIELDS);
+        if(null!=dbo)
+        {
+            return new TeacherApproveEntry((BasicDBObject)dbo);
+        }
+        return null;
+    }
     //删除作业
     public void updateEntry(ObjectId id,int type){
-        BasicDBObject query = new BasicDBObject(Constant.ID,id);
+        BasicDBObject query = new BasicDBObject("uid",id);
         BasicDBObject updateValue=new BasicDBObject(Constant.MONGO_SET,new BasicDBObject("typ",type));
         update(MongoFacroty.getAppDB(), Constant.COLLECTION_TEACHER_APPROVE, query,updateValue);
     }

@@ -12,6 +12,8 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
+import java.util.Map;
+
 /**
  * Created by James on 2017/12/4.
  */
@@ -38,6 +40,32 @@ public class MailMessageController extends BaseController {
             mailMessageService.sendMailMessage(getUserId(), message);
             respObj.setCode(Constant.SUCCESS_CODE);
             respObj.setMessage("发送成功！");
+        }catch (Exception e){
+            e.printStackTrace();
+            respObj.setCode(Constant.SUCCESS_CODE);
+            respObj.setMessage("联系我们失败");
+        }
+        return JSON.toJSONString(respObj);
+    }
+
+
+    /**
+     *
+     * @return
+     */
+    @ApiOperation(value = "查询自己的留言反馈", httpMethod = "POST", produces = "application/json")
+    @ApiResponses( value = {@ApiResponse(code = 200, message = "Successful — 请求已完成",response = String.class),
+            @ApiResponse(code = 400, message = "请求中有语法问题，或不能满足请求"),
+            @ApiResponse(code = 500, message = "服务器不能完成请求")})
+    @RequestMapping("/getOwnerOperation")
+    @ResponseBody
+    public String getOwnerOperation(@ApiParam(name = "page", required = true, value = "page") @RequestParam(value = "page") int page,
+                                    @ApiParam(name = "pageSize", required = true, value = "pageSize") @RequestParam(value = "pageSize") int pageSize){
+        RespObj respObj = new RespObj(Constant.FAILD_CODE);
+        try{
+            Map<String,Object> result =  mailMessageService.getOwnerOperation(getUserId(), page, pageSize);
+            respObj.setCode(Constant.SUCCESS_CODE);
+            respObj.setMessage(result);
         }catch (Exception e){
             e.printStackTrace();
             respObj.setCode(Constant.SUCCESS_CODE);

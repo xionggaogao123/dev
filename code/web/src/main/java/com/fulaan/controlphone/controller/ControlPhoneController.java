@@ -443,6 +443,28 @@ public class ControlPhoneController extends BaseController {
         }
         return JSON.toJSONString(respObj);
     }
+    /**
+     * 家长触发学生端上传定位信息
+     */
+    @ApiOperation(value = "家长触发学生端上传定位信息", httpMethod = "POST", produces = "application/json")
+    @ApiResponses( value = {@ApiResponse(code = 200, message = "Successful — 请求已完成",response = String.class),
+            @ApiResponse(code = 400, message = "请求中有语法问题，或不能满足请求"),
+            @ApiResponse(code = 500, message = "服务器不能完成请求")})
+    @RequestMapping("/loadStudentMap")
+    @ResponseBody
+    public String loadStudentMap(@ApiParam(name = "sonId", required = true, value = "孩子id") @RequestParam("sonId") String sonId){
+        RespObj respObj=new RespObj(Constant.FAILD_CODE);
+        try {
+            respObj.setCode(Constant.SUCCESS_CODE);
+            controlPhoneService.loadStudentMap(getUserId(), new ObjectId(sonId));
+            respObj.setMessage("上传中");
+        } catch (Exception e) {
+            e.printStackTrace();
+            respObj.setCode(Constant.FAILD_CODE);
+            respObj.setErrorMessage("家长触发学生端上传定位信息失败!");
+        }
+        return JSON.toJSONString(respObj);
+    }
 
     /**
      * 获取孩子地图信息（家长首页）

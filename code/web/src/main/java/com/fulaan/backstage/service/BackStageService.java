@@ -6,6 +6,7 @@ import com.db.backstage.*;
 import com.db.controlphone.*;
 import com.db.fcommunity.CommunityDao;
 import com.db.fcommunity.CommunityDetailDao;
+import com.db.fcommunity.MemberDao;
 import com.db.operation.AppCommentDao;
 import com.db.operation.AppNoticeDao;
 import com.db.operation.AppOperationDao;
@@ -92,6 +93,10 @@ public class BackStageService {
     private LogMessageDao logMessageDao = new LogMessageDao();
 
     private SystemMessageDao systemMessageDao = new SystemMessageDao();
+
+    private MemberDao memberDao = new MemberDao();
+
+
 
     private static String imageUrl = "http://7xiclj.com1.z0.glb.clouddn.com/5a1bdcfd27fddd15c8649dea.png";
 
@@ -295,15 +300,37 @@ public class BackStageService {
         return map;
     }
     public void addTeacherList(ObjectId userId,ObjectId id,int type){
+        TeacherApproveEntry entry = teacherApproveDao.getEntry(id);
         //2验证通过，3 不通过
-        if(type==2){
-            teacherApproveDao.updateEntry(id,type);
-            this.addLogMessage(id.toString(),"通过老师验证",LogMessageType.teaValidate.getDes(),userId.toString());
-        }else if (type==3){
-            teacherApproveDao.updateEntry(id,type);
-            this.addLogMessage(id.toString(),"不通过老师验证",LogMessageType.teaValidate.getDes(),userId.toString());
+        if(entry != null){
+            if(type==2){
+                teacherApproveDao.updateEntry(id,type);
+                this.addLogMessage(entry.getID().toString(),"通过老师验证",LogMessageType.teaValidate.getDes(),userId.toString());
+            }else if (type==3){
+                teacherApproveDao.updateEntry(id,type);
+                this.addLogMessage(entry.getID().toString(),"不通过老师验证",LogMessageType.teaValidate.getDes(),userId.toString());
+            }
+        }else{
+            if(type==2){
+                TeacherApproveDTO dto = new TeacherApproveDTO();
+                UserEntry userEntry = userService.findById(id);
+                dto.setName(userEntry.getUserName());
+                dto.setUserId(id.toString());
+                dto.setApproveId(userId.toString());
+                dto.setType(type);
+                String oid = teacherApproveDao.addEntry(dto.buildAddEntry());
+                this.addLogMessage(oid.toString(),"通过老师验证",LogMessageType.teaValidate.getDes(),userId.toString());
+            }else if (type==3){
+                TeacherApproveDTO dto = new TeacherApproveDTO();
+                UserEntry userEntry = userService.findById(id);
+                dto.setName(userEntry.getUserName());
+                dto.setUserId(id.toString());
+                dto.setApproveId(userId.toString());
+                dto.setType(type);
+                String oid = teacherApproveDao.addEntry(dto.buildAddEntry());
+                this.addLogMessage(oid.toString(),"不通过老师验证",LogMessageType.teaValidate.getDes(),userId.toString());
+            }
         }
-
     }
 
 

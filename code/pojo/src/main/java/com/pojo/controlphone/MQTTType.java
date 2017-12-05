@@ -6,7 +6,8 @@ package com.pojo.controlphone;
 public enum MQTTType {
     phone(100,"家长设置电话推送", "100"),
     app(200,"推送app消息","200"),
-    mi(300,"防沉迷设置推送", "300");
+    mi(300,"防沉迷设置推送", "300"),
+    map(400,"地图上传", "400");
     private int type;
     private String des;
     private String eName;

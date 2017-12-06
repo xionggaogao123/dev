@@ -33,7 +33,8 @@ public class NewVersionBindRelationEntry extends BaseDBObject {
                                        String provinceName,
                                        String regionName,
                                        String regionAreaName,
-                                       String schoolName
+                                       String schoolName,
+                                       String personalSignature
                                        ){
         BasicDBObject basicDBObject=new BasicDBObject()
                 .append("muid",mainUserId)
@@ -43,8 +44,17 @@ public class NewVersionBindRelationEntry extends BaseDBObject {
                 .append("rd",regionName)
                 .append("ra",regionAreaName)
                 .append("sn",schoolName)
+                .append("pst",personalSignature)
                 .append("ir",Constant.ZERO);
         setBaseEntry(basicDBObject);
+    }
+
+    public void setPersonalSignature(String personalSignature){
+        setSimpleValue("pst",personalSignature);
+    }
+
+    public String getPersonalSignature(){
+        return getSimpleStringValue("pst");
     }
 
     public void setRegionAreaName(String regionAreaName){

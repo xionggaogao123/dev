@@ -27,6 +27,7 @@ public class NewVersionBindRelationDTO {
 
     private String studentNumber;
     private String thirdName;
+    private String personalSignature;
 
     private String loadTime;
 
@@ -39,6 +40,7 @@ public class NewVersionBindRelationDTO {
         this.regionAreaName=entry.getRegionAreaName();
         this.relation=entry.getRelation();
         this.schoolName=entry.getSchoolName();
+        this.personalSignature=entry.getPersonalSignature();
     }
 
     public NewVersionBindRelationDTO(
@@ -72,6 +74,14 @@ public class NewVersionBindRelationDTO {
 
     public NewVersionBindRelationDTO(){
 
+    }
+
+    public String getPersonalSignature() {
+        return personalSignature;
+    }
+
+    public void setPersonalSignature(String personalSignature) {
+        this.personalSignature = personalSignature;
     }
 
     public String getLoadTime() {

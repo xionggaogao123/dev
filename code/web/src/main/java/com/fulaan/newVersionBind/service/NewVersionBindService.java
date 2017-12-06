@@ -52,6 +52,30 @@ public class NewVersionBindService {
     private WrongQuestionService wrongQuestionService;
 
 
+    public void saveBindUserDetail(ObjectId bindId,
+                                   int sex,
+                                   String birthDate,
+                                   String avatar,
+                                   String nickName,
+                                   String personalSignature
+                                   )throws Exception{
+        NewVersionBindRelationEntry entry = newVersionBindRelationDao.getEntry(bindId);
+        if (null != entry) {
+            ObjectId userId = entry.getUserId();
+            long time=-1L;
+            if(StringUtils.isNotEmpty(birthDate)) {
+                SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd");
+                time = format.parse(birthDate).getTime();
+            }
+            userService.updateUserBirthDateAndSex(userId, sex, time, avatar, nickName);
+            if(StringUtils.isNotEmpty(personalSignature)) {
+                newVersionBindRelationDao.updatePersonalSignature(entry.getID(),personalSignature);
+            }
+        }
+    }
+
+
+
     public void supplementNewVersionInfo(
             ObjectId bindId,
             int sex,String birthDate,
@@ -186,6 +210,7 @@ public class NewVersionBindService {
                         =new NewVersionBindRelationEntry(mainUserId,
                         userId,
                         relation,
+                        Constant.EMPTY,
                         Constant.EMPTY,
                         Constant.EMPTY,
                         Constant.EMPTY,

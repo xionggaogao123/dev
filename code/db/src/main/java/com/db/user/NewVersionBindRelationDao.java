@@ -21,6 +21,12 @@ public class NewVersionBindRelationDao extends BaseDao{
         return entry.getID();
     }
 
+    public void updatePersonalSignature(ObjectId bindId,String personalSignature){
+        BasicDBObject query=new BasicDBObject(Constant.ID,bindId);
+        BasicDBObject updateValue=new BasicDBObject(Constant.MONGO_SET,new BasicDBObject("pst",personalSignature));
+        update(MongoFacroty.getAppDB(), Constant.COLLECTION_NEW_VERSION_BIND_RELATION,query,updateValue);
+    }
+
     public void supplementNewVersionInfo(ObjectId bindId,
                                       String provinceName,
                                       String regionName,

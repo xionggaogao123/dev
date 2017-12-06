@@ -80,6 +80,29 @@ public class DefaultBindController extends BaseController {
         return respObj;
     }
 
+    @ApiOperation(value = "完善绑定的信息", httpMethod = "POST", produces = "application/json")
+    @ApiResponses( value = {@ApiResponse(code = 200, message = "Successful — 请求已完成",response = RespObj.class)})
+    @RequestMapping("/saveBindUserDetail")
+    @ResponseBody
+    public RespObj saveBindUserDetail(
+            @ApiParam(name = "bindId", required = true, value = "绑定Id") @ObjectIdType ObjectId bindId,
+            @RequestParam(required = false,defaultValue = "-1") int sex,
+            @RequestParam(required = false,defaultValue = "")String birthDate,
+            @RequestParam(required = false,defaultValue = "")String personalSignature,
+            @RequestParam(required = false,defaultValue = "")String avatar,
+            @RequestParam(required = false,defaultValue = "")String nickName
+    ){
+        RespObj respObj = new RespObj(Constant.FAILD_CODE);
+        try{
+            newVersionBindService.saveBindUserDetail(bindId, sex, birthDate, avatar,
+                    nickName, personalSignature);
+            respObj.setCode(Constant.SUCCESS_CODE);
+            respObj.setMessage("完善信息成功！");
+        }catch (Exception e){
+            respObj.setMessage(e.getMessage());
+        }
+        return respObj;
+    }
 
     /**
      * 填写信息绑定接口

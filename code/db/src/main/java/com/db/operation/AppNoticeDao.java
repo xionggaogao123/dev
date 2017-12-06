@@ -89,6 +89,28 @@ public class AppNoticeDao extends BaseDao{
     }
 
 
+    public List<AppNoticeEntry> getMySendAppNoticeEntries(ObjectId communityId,
+                                                          ObjectId subjectId,
+                                                          ObjectId userId,int page,int pageSize){
+        List<AppNoticeEntry> entries=new ArrayList<AppNoticeEntry>();
+        BasicDBObject query=new BasicDBObject()
+                .append("uid",userId)
+                .append("ir",Constant.ZERO);
+        if(null!=communityId){
+            query.append("cmId",communityId);
+        }
+        if(null!=subjectId){
+            query.append("sid",subjectId);
+        }
+        List<DBObject> dbObjectList=find(MongoFacroty.getAppDB(), Constant.COLLECTION_NEW_VERSION_APP_NOTICE,query,
+                Constant.FIELDS,Constant.MONGO_SORTBY_DESC,(page-1)*pageSize,pageSize);
+        if(null!=dbObjectList&&!dbObjectList.isEmpty()){
+            for(DBObject dbObject:dbObjectList){
+                entries.add(new AppNoticeEntry(dbObject));
+            }
+        }
+        return entries;
+    }
 
     /**
      * 查询我已发送的通知
@@ -117,10 +139,31 @@ public class AppNoticeDao extends BaseDao{
         return count(MongoFacroty.getAppDB(), Constant.COLLECTION_NEW_VERSION_APP_NOTICE,query);
     }
 
+    public int countMySendAppNoticeEntries(
+               ObjectId communityId,
+               ObjectId subjectId,
+               ObjectId userId){
+        BasicDBObject query=new BasicDBObject()
+                .append("uid",userId)
+                .append("ir",Constant.ZERO);
+        if(null!=communityId){
+            query.append("cmId",communityId);
+        }
+        if(null!=subjectId){
+            query.append("sid",subjectId);
+        }
+        return count(MongoFacroty.getAppDB(), Constant.COLLECTION_NEW_VERSION_APP_NOTICE,query);
+    }
+
 
     public int countMyReceivedAppNoticeEntries(List<ObjectId> groupIds, ObjectId userId){
         return count(MongoFacroty.getAppDB(), Constant.COLLECTION_NEW_VERSION_APP_NOTICE,
                 getMyReceivedAppNoticeQueryCondition(groupIds, userId));
+    }
+
+    public int countMyReceivedAppNoticeEntries(ObjectId communityId,ObjectId subjectId,List<ObjectId> groupIds, ObjectId userId){
+        return count(MongoFacroty.getAppDB(), Constant.COLLECTION_NEW_VERSION_APP_NOTICE,
+                getMyReceivedAppNoticeQueryCondition(communityId,subjectId,groupIds, userId));
     }
 
 
@@ -134,6 +177,45 @@ public class AppNoticeDao extends BaseDao{
                 .append("wp",new BasicDBObject(Constant.MONGO_IN,watchPermissions))
                 .append("ir",Constant.ZERO);
         return query;
+    }
+
+    public BasicDBObject getMyReceivedAppNoticeQueryCondition(
+            ObjectId communityId,
+            ObjectId subjectId,
+            List<ObjectId> groupIds, ObjectId userId){
+        List<Integer> watchPermissions=new ArrayList<Integer>();
+        watchPermissions.add(Constant.ONE);
+        watchPermissions.add(Constant.THREE);
+        BasicDBObject query=new BasicDBObject()
+                .append("uid",new BasicDBObject(Constant.MONGO_NE,userId))
+                .append("wp",new BasicDBObject(Constant.MONGO_IN,watchPermissions))
+                .append("ir",Constant.ZERO);
+        if(null==communityId){
+            query.append("gi",new BasicDBObject(Constant.MONGO_IN,groupIds));
+        }else{
+            query.append("cmId",communityId);
+        }
+        if(null!=subjectId){
+            query.append("sid",subjectId);
+        }
+        return query;
+    }
+
+    public List<AppNoticeEntry> getMyReceivedAppNoticeEntries(
+            ObjectId communityId,
+            ObjectId subjectId,
+            List<ObjectId> groupIds,int page,int pageSize,
+            ObjectId userId){
+        List<AppNoticeEntry> entries=new ArrayList<AppNoticeEntry>();
+        List<DBObject> dbObjectList=find(MongoFacroty.getAppDB(), Constant.COLLECTION_NEW_VERSION_APP_NOTICE,
+                getMyReceivedAppNoticeQueryCondition(communityId,subjectId,groupIds, userId),
+                Constant.FIELDS,Constant.MONGO_SORTBY_DESC,(page-1)*pageSize,pageSize);
+        if(null!=dbObjectList&&!dbObjectList.isEmpty()){
+            for(DBObject dbObject:dbObjectList){
+                entries.add(new AppNoticeEntry(dbObject));
+            }
+        }
+        return entries;
     }
 
     /**

@@ -49,6 +49,19 @@ public class AppNoticeDTO {
     private boolean isOwner;
 
 
+    public AppNoticeDTO(WebAppNoticeDTO dto){
+        this.subject=dto.getSubject();
+        this.subjectId=dto.getSubjectId();
+        this.title=dto.getTitle();
+        this.content=dto.getContent();
+        this.imageList=dto.getImageList();
+        this.voiceList=dto.getVoiceList();
+        this.videoList=dto.getVideoList();
+        this.attachements=dto.getAttachements();
+        this.watchPermission=dto.getWatchPermission();
+        this.groupOfCommunityDTOs=dto.getGroupOfCommunityDTOs();
+    }
+
     public AppNoticeDTO(
                         String subjectId,
                         String subject,

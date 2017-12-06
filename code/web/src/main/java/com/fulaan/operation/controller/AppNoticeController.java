@@ -2,19 +2,36 @@ package com.fulaan.operation.controller;
 
 import com.alibaba.fastjson.JSON;
 import com.fulaan.annotation.ObjectIdType;
+import com.fulaan.annotation.SessionNeedless;
 import com.fulaan.base.BaseController;
 import com.fulaan.operation.dto.AppNoticeDTO;
 import com.fulaan.operation.dto.AppOperationDTO;
+import com.fulaan.operation.dto.WebAppNoticeDTO;
 import com.fulaan.operation.service.AppNoticeService;
 import com.fulaan.pojo.User;
+import com.fulaan.screenshot.Encoder;
+import com.fulaan.screenshot.EncoderException;
+import com.fulaan.utils.QiniuFileUtils;
+import com.fulaan.video.service.VideoService;
+import com.pojo.video.VideoEntry;
+import com.pojo.video.VideoSourceType;
 import com.sys.constants.Constant;
+import com.sys.exceptions.FileUploadException;
+import com.sys.exceptions.IllegalParamException;
+import com.sys.utils.FileUtil;
 import com.sys.utils.RespObj;
 import io.swagger.annotations.*;
+import org.apache.commons.io.FilenameUtils;
 import org.bson.types.ObjectId;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
+import org.springframework.web.multipart.MultipartRequest;
 
+import java.io.*;
+import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -23,11 +40,14 @@ import java.util.Map;
  */
 @Api(value = "通知相关接口")
 @Controller
-@RequestMapping("/appNotice")
+@RequestMapping("/web/appNotice")
 public class AppNoticeController extends BaseController {
 
     @Autowired
     private AppNoticeService appNoticeService;
+
+    @Autowired
+    private VideoService videoService;
 
     @RequestMapping("/getReadNoticeUserList")
     @ResponseBody
@@ -63,13 +83,35 @@ public class AppNoticeController extends BaseController {
         return respObj;
     }
 
+    @RequestMapping(value="/saveWebAppNoticeEntry", method = RequestMethod.POST, consumes = "application/json")
+    @ResponseBody
+    @ApiOperation(value = "保存通知信息", httpMethod = "POST", produces = "application/json")
+    @ApiResponses( value = {@ApiResponse(code = 200, message = "Successful — 请求已完成",response = RespObj.class),
+            @ApiResponse(code = 500, message = "服务器不能完成请求")})
+    public RespObj saveWebAppNoticeEntry(@RequestBody WebAppNoticeDTO dto){
+        RespObj respObj=new RespObj(Constant.FAILD_CODE);
+        try{
+            appNoticeService.saveAppNoticeEntry(new AppNoticeDTO(dto),getUserId());
+            respObj.setMessage("保存通知信息成功！");
+            respObj.setCode(Constant.SUCCESS_CODE);
+        }catch (Exception e){
+            if("推送失败".equals(e.getMessage())) {
+                respObj.setCode(Constant.SUCCESS_CODE);
+                respObj.setMessage("推送失败");
+            }else{
+                respObj.setErrorMessage(e.getMessage());
+            }
+        }
+        return respObj;
+    }
+
 
     @RequestMapping(value="/saveAppNoticeEntry", method = RequestMethod.POST, consumes = "application/json")
     @ResponseBody
     @ApiOperation(value = "保存通知信息", httpMethod = "POST", produces = "application/json")
     @ApiResponses( value = {@ApiResponse(code = 200, message = "Successful — 请求已完成",response = RespObj.class),
             @ApiResponse(code = 500, message = "服务器不能完成请求")})
-    public RespObj getReadNoticeUserList(@RequestBody AppNoticeDTO dto){
+    public RespObj saveAppNoticeEntry(@RequestBody AppNoticeDTO dto){
         RespObj respObj=new RespObj(Constant.FAILD_CODE);
         try{
             appNoticeService.saveAppNoticeEntry(dto,getUserId());
@@ -93,12 +135,14 @@ public class AppNoticeController extends BaseController {
     @ApiResponses( value = {@ApiResponse(code = 200, message = "Successful — 请求已完成",response = RespObj.class),
             @ApiResponse(code = 500, message = "服务器不能完成请求")})
     public RespObj getMySendAppNoticeDtos(
+            @RequestParam(required = false, defaultValue = "")String communityId,
+            @RequestParam(required = false, defaultValue = "")String subjectId,
             @RequestParam(required = false, defaultValue = "1")int page,
             @RequestParam(required = false, defaultValue = "10")int pageSize
             ){
         RespObj respObj=new RespObj(Constant.FAILD_CODE);
         try{
-            Map<String,Object>  retMap=appNoticeService.getMySendAppNoticeDtos(getUserId(),page,pageSize);
+            Map<String,Object>  retMap=appNoticeService.getMySendAppNoticeDtos(communityId,subjectId,getUserId(),page,pageSize);
             respObj.setMessage(retMap);
             respObj.setCode(Constant.SUCCESS_CODE);
         }catch (Exception e){
@@ -114,12 +158,14 @@ public class AppNoticeController extends BaseController {
     @ApiResponses( value = {@ApiResponse(code = 200, message = "Successful — 请求已完成",response = RespObj.class),
             @ApiResponse(code = 500, message = "服务器不能完成请求")})
     public RespObj getMyReceivedAppNoticeDtosForParent(
+            @RequestParam(required = false, defaultValue = "")String communityId,
+            @RequestParam(required = false, defaultValue = "")String subjectId,
             @RequestParam(required = false, defaultValue = "1")int page,
             @RequestParam(required = false, defaultValue = "10")int pageSize
     ){
         RespObj respObj=new RespObj(Constant.FAILD_CODE);
         try{
-            Map<String,Object> retMap=appNoticeService.getMyReceivedAppNoticeDtos(getUserId(),page,pageSize);
+            Map<String,Object> retMap=appNoticeService.getMyReceivedAppNoticeDtos(communityId,subjectId,getUserId(),page,pageSize);
             respObj.setMessage(retMap);
             respObj.setCode(Constant.SUCCESS_CODE);
         }catch (Exception e){
@@ -272,6 +318,105 @@ public class AppNoticeController extends BaseController {
             respObj.setErrorMessage(e.getMessage());
         }
         return respObj;
+    }
+
+
+
+    @ApiOperation(value = "上传视频", httpMethod = "POST", produces = "application/json")
+    @ApiResponses( value = {@ApiResponse(code = 200, message = "Successful — 请求已完成",response = MultipartFile.class)})
+    @RequestMapping("/video/uploadVideo")
+    @ResponseBody
+    @SessionNeedless
+    public Map<String, Object> uploadVideo(@RequestParam("Filedata") MultipartFile Filedata) throws IllegalParamException, IllegalStateException, IOException, EncoderException {
+
+        Map map = new HashMap();
+        String fileName = FilenameUtils.getName(Filedata.getOriginalFilename());
+
+        String videoFilekey = new ObjectId().toString();
+
+        File savedFile = File.createTempFile(videoFilekey, FilenameUtils.getExtension(fileName));
+        OutputStream stream = new FileOutputStream(savedFile);
+        stream.write(Filedata.getBytes());
+        stream.flush();
+        stream.close();
+
+        String coverImage = new ObjectId().toString();
+        Encoder encoder = new Encoder();
+        File screenShotFile = File.createTempFile("coverImage", ".jpg");
+
+        //是否生成了图片
+        boolean isCreateImage = false;
+        try {
+            encoder.getImage(savedFile, screenShotFile, 1, 480, 270);
+            isCreateImage = true;
+        } catch (Exception ex) {
+        }
+
+        //开始上传
+
+        //上传图片
+        String imgUrl = null;
+        if (isCreateImage && screenShotFile.exists()) {
+            QiniuFileUtils.uploadFile(coverImage, new FileInputStream(screenShotFile), QiniuFileUtils.TYPE_IMAGE);
+
+            imgUrl = QiniuFileUtils.getPath(QiniuFileUtils.TYPE_IMAGE, coverImage);
+        }
+
+        VideoEntry ve = new VideoEntry(fileName, Filedata.getSize(), VideoSourceType.USER_VIDEO.getType(), videoFilekey);
+        ve.setVideoSourceType(VideoSourceType.VOTE_VIDEO.getType());
+        ve.setID(new ObjectId());
+        QiniuFileUtils.uploadVideoFile(ve.getID(), videoFilekey, Filedata.getInputStream(), QiniuFileUtils.TYPE_USER_VIDEO);
+        String url = QiniuFileUtils.getPath(QiniuFileUtils.TYPE_USER_VIDEO, videoFilekey);
+
+        if (isCreateImage && screenShotFile.exists()) {
+            ve.setImgUrl(imgUrl);
+        }
+
+        ObjectId videoId = videoService.addVideoEntry(ve);
+
+        //删除临时文件
+        try {
+            savedFile.delete();
+            screenShotFile.delete();
+        } catch (Exception ex) {
+            ex.printStackTrace();
+        }
+
+        map.put("flg", true);
+        map.put("vimage", QiniuFileUtils.getPath(QiniuFileUtils.TYPE_IMAGE, coverImage));
+        map.put("vid", videoId.toString());
+        map.put("vurl", QiniuFileUtils.getPath(QiniuFileUtils.TYPE_USER_VIDEO, ve.getBucketkey()));
+        return map;
+    }
+
+    @ApiOperation(value = "上传图片", httpMethod = "POST", produces = "application/json")
+    @ApiResponses( value = {@ApiResponse(code = 200, message = "Successful — 请求已完成",response = Map.class)})
+    @RequestMapping(value = "/uploadImage", produces = "text/html; charset=utf-8")
+    @ResponseBody
+    public RespObj addBlogPic(MultipartRequest request) {
+        RespObj  respObj=new RespObj(Constant.FAILD_CODE);
+        try {
+            Map<String, MultipartFile> fileMap = request.getFileMap();
+            for (MultipartFile file : fileMap.values()) {
+                String examName = getFileName(file);
+                RespObj uploadFileRespObj = QiniuFileUtils.uploadFile(examName, file.getInputStream(), QiniuFileUtils.TYPE_IMAGE);
+                if (uploadFileRespObj.getCode() != Constant.SUCCESS_CODE) {
+                    throw new FileUploadException();
+                }
+                respObj.setMessage(QiniuFileUtils.getPath(QiniuFileUtils.TYPE_IMAGE, examName));
+            }
+            respObj.setCode(Constant.SUCCESS_CODE);
+        } catch (Exception e) {
+            e.printStackTrace();
+            respObj.setMessage("上传失败");
+        }
+        return respObj;
+    }
+
+    //得到文件名
+    private String getFileName(MultipartFile file) {
+        String orgname = file.getOriginalFilename();
+        return new ObjectId().toString() + Constant.POINT + orgname.substring(orgname.lastIndexOf(".") + 1);
     }
 
 }

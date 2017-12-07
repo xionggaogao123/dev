@@ -1,6 +1,7 @@
 package com.fulaan.backstage.service;
 
 import cn.jiguang.commom.utils.StringUtils;
+import com.db.activity.FriendDao;
 import com.db.appmarket.AppDetailDao;
 import com.db.backstage.*;
 import com.db.controlphone.*;
@@ -21,12 +22,14 @@ import com.fulaan.controlphone.dto.ControlSchoolTimeDTO;
 import com.fulaan.controlphone.dto.ControlSetBackDTO;
 import com.fulaan.indexpage.dto.IndexPageDTO;
 import com.fulaan.user.service.UserService;
+import com.pojo.activity.FriendEntry;
 import com.pojo.appmarket.AppDetailEntry;
 import com.pojo.appnotice.AppNoticeEntry;
 import com.pojo.backstage.*;
 import com.pojo.controlphone.*;
 import com.pojo.fcommunity.AttachmentEntry;
 import com.pojo.fcommunity.CommunityDetailEntry;
+import com.pojo.fcommunity.CommunityEntry;
 import com.pojo.indexPage.IndexPageEntry;
 import com.pojo.newVersionGrade.CommunityType;
 import com.pojo.operation.AppCommentEntry;
@@ -95,6 +98,8 @@ public class BackStageService {
     private SystemMessageDao systemMessageDao = new SystemMessageDao();
 
     private MemberDao memberDao = new MemberDao();
+
+    private FriendDao friendDao = new FriendDao();
 
 
 
@@ -717,6 +722,57 @@ public class BackStageService {
        // indexPageDao.addEntry(entry);
     }
 
+
+    public void setAutoCommunityFriends(){
+        int pageSize=200;
+        int page=1;
+        boolean flag=true;
+        while(flag){
+            List<CommunityEntry> communityEntries=communityDao.getCommunities(page,pageSize);
+            if(communityEntries.size()>0){
+                for(CommunityEntry communityEntry:communityEntries){
+                    ObjectId groupId=communityEntry.getGroupId();
+                    boolean  cFlag=true;
+                    if(!("复兰社区").equals(communityEntry.getCommunityName())){
+                        while (cFlag){
+                            int cPage=1;
+                            List<ObjectId> members=memberDao.getPageMembers(groupId,cPage,pageSize);
+                            if(members.size()>0){
+                                List<ObjectId> uIds=new ArrayList<ObjectId>();
+                                uIds.addAll(members);
+                                for(ObjectId userId:members){
+                                    if(friendDao.recordIsExist(userId)){
+                                        FriendEntry friendEntry=friendDao.get(userId);
+                                        if(null!=friendEntry) {
+                                            List<ObjectId> friendIds = friendEntry.getFriendIds();
+                                            Set<ObjectId> set=new HashSet<ObjectId>();
+                                            set.addAll(friendIds);
+                                            set.addAll(uIds);
+                                            set.remove(userId);
+                                            friendEntry.setFriendIds(new ArrayList<ObjectId>(set));
+                                            friendDao.saveEntry(friendEntry);
+                                        }
+                                    }else{
+                                        List<ObjectId> friendIds=new ArrayList<ObjectId>();
+                                        friendIds.addAll(uIds);
+                                        friendIds.remove(userId);
+                                        friendDao.addFriendEntry(userId, friendIds);
+                                    }
+                                }
+                            }else{
+                                cFlag=false;
+                            }
+                            cPage++;
+                        }
+                    }
+                }
+            }else{
+                flag=false;
+            }
+            page++;
+        }
+
+    }
 
 
 }

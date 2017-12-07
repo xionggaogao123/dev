@@ -783,4 +783,15 @@ public class BackStageController extends BaseController {
     }
 
 
+
+    @RequestMapping("/setAutoCommunityFriends")
+    @ResponseBody
+    public RespObj setAutoCommunityFriends(){
+        RespObj respObj=new RespObj(Constant.SUCCESS_CODE);
+        backStageService.setAutoCommunityFriends();
+        respObj.setMessage("老的数据设置为自动好友");
+        return respObj;
+    }
+
+
 }

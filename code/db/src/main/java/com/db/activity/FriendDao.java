@@ -34,6 +34,10 @@ public class FriendDao extends BaseDao {
         return Constant.ZERO;
     }
 
+    public void saveEntry(FriendEntry friendEntry){
+        save(MongoFacroty.getAppDB(), getCollection(),friendEntry.getBaseEntry());
+    }
+
     /**
      * 获取普通好友
      *

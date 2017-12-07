@@ -105,6 +105,18 @@ public class CommunityDao extends BaseDao {
         return communitys;
     }
 
+
+    public List<CommunityEntry> getCommunities(int page,int pageSize){
+        List<DBObject> dbObjects = find(MongoFacroty.getAppDB(),
+                Constant.COLLECTION_FORUM_COMMUNITY,
+                new BasicDBObject(),Constant.FIELDS,Constant.MONGO_SORTBY_DESC,(page-1)*pageSize,pageSize);
+        List<CommunityEntry> communitys = new ArrayList<CommunityEntry>();
+        for (DBObject dbo : dbObjects) {
+            communitys.add(new CommunityEntry(dbo));
+        }
+        return communitys;
+    }
+
     /**
      * 获取 - 公开群
      *

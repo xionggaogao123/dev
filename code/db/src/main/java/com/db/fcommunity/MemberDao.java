@@ -43,6 +43,16 @@ public class MemberDao extends BaseDao {
         return memberEntries;
     }
 
+    public List<ObjectId> getPageMembers(ObjectId groupId,int page,int pageSize){
+        BasicDBObject query=new BasicDBObject("grid",groupId).append("r", Constant.ZERO);
+        List<ObjectId> memberEntries = new ArrayList<ObjectId>();
+        List<DBObject> dbObjects = find(MongoFacroty.getAppDB(), Constant.COLLECTION_FORUM_COMMUNITY_MEMBER,
+                query, Constant.FIELDS, Constant.MONGO_SORTBY_DESC,(page-1)*pageSize,pageSize);
+        for (DBObject dbo : dbObjects) {
+            memberEntries.add(new MemberEntry(dbo).getUserId());
+        }
+        return memberEntries;
+    }
 
     public List<ObjectId> getMembersByList(List<ObjectId> groupId) {
         BasicDBObject query = new BasicDBObject("grid", new BasicDBObject(Constant.MONGO_IN,groupId)).append("r", Constant.ZERO);

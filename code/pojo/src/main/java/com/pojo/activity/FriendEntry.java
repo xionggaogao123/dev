@@ -3,6 +3,7 @@ package com.pojo.activity;
 import com.mongodb.BasicDBList;
 import com.mongodb.BasicDBObject;
 import com.pojo.base.BaseDBObject;
+import com.pojo.utils.MongoUtils;
 import com.sys.constants.Constant;
 import org.bson.types.ObjectId;
 
@@ -39,6 +40,10 @@ public class FriendEntry extends BaseDBObject {
 
     public ObjectId getUserId() {
         return getSimpleObjecIDValue("uid");
+    }
+
+    public void setFriendIds(List<ObjectId> friendIds){
+        setSimpleValue("fid", MongoUtils.convert(friendIds));
     }
 
     public List<ObjectId> getFriendIds() {

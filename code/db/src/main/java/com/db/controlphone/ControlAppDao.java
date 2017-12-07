@@ -22,9 +22,9 @@ public class ControlAppDao extends BaseDao {
         return entry.getID().toString() ;
     }
     //单查询
-    public ControlAppEntry getEntry(ObjectId communityId) {
+    public ControlAppEntry getEntry(ObjectId userId,ObjectId communityId) {
         BasicDBObject query =new BasicDBObject();
-        query.append("isr", Constant.ZERO) .append("cid", communityId);
+        query.append("isr", Constant.ZERO) .append("cid", communityId) .append("uid", userId);
         DBObject dbo =findOne(MongoFacroty.getAppDB(), Constant.COLLECTION_CONTROL_APP, query, Constant.FIELDS);
         if(null!=dbo)
         {

@@ -56,6 +56,21 @@ public class TeacherApproveDao extends BaseDao {
         }
         return retList;
     }
+
+    public List<ObjectId> selectContentObjectList() {
+        BasicDBObject query =new BasicDBObject();
+        query.append("isr", Constant.ZERO);
+        List<DBObject> dboList=find(MongoFacroty.getAppDB(), Constant.COLLECTION_TEACHER_APPROVE, query, Constant.FIELDS,new BasicDBObject("ctm",Constant.DESC));
+        List<ObjectId> retList =new ArrayList<ObjectId>();
+        if(null!=dboList && !dboList.isEmpty())
+        {
+            for(DBObject dbo:dboList)
+            {
+                retList.add(new TeacherApproveEntry((BasicDBObject)dbo).getUserId());
+            }
+        }
+        return retList;
+    }
     /**
      * 符合搜索条件的对象个数
      * @return

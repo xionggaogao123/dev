@@ -25,6 +25,7 @@ public class ControlAppResultDTO {
     private int type;
     private long userTime;
     private String dateTime;
+    private long addiction;
 
     public ControlAppResultDTO(){
 
@@ -39,6 +40,7 @@ public class ControlAppResultDTO {
             this.userTime = e.getUseTime();
             this.packageName = e.getPackageName();
             this.type = e.getType();
+            this.addiction = e.getAddiction();
             if(e.getDateTime()!=0l){
                 this.dateTime = DateTimeUtils.getLongToStrTimeTwo(e.getDateTime());
             }else{
@@ -75,7 +77,8 @@ public class ControlAppResultDTO {
                         this.packageName,
                         this.type,
                         this.userTime,
-                        dTm
+                        dTm,
+                        this.addiction
                 );
         return openEntry;
 
@@ -111,10 +114,19 @@ public class ControlAppResultDTO {
                         this.packageName,
                         this.type,
                         this.userTime,
-                        dTm
+                        dTm,
+                        this.addiction
                 );
         return openEntry;
 
+    }
+
+    public long getAddiction() {
+        return addiction;
+    }
+
+    public void setAddiction(long addiction) {
+        this.addiction = addiction;
     }
 
     public String getPackageName() {

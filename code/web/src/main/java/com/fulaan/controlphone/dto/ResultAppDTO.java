@@ -9,6 +9,7 @@ import java.util.List;
 public class ResultAppDTO {
 
     private List<ControlAppResultDTO> appList = new ArrayList<ControlAppResultDTO>();
+    private long addiction;
 
 
     public List<ControlAppResultDTO> getAppList() {
@@ -17,5 +18,13 @@ public class ResultAppDTO {
 
     public void setAppList(List<ControlAppResultDTO> appList) {
         this.appList = appList;
+    }
+
+    public long getAddiction() {
+        return addiction;
+    }
+
+    public void setAddiction(long addiction) {
+        this.addiction = addiction;
     }
 }

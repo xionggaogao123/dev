@@ -1160,7 +1160,7 @@ public class ControlPhoneService {
         return map;
     }
     public List<ObjectId> getMyRoleList(ObjectId userId){
-        List<ObjectId> olsit = memberDao.getGroupIdsList(userId);
+        List<ObjectId> olsit = memberDao.getManagerGroupIdsByUserId(userId);
         List<ObjectId> clist = new ArrayList<ObjectId>();
         List<ObjectId> mlist =   groupDao.getGroupIdsList(olsit);
         return mlist;

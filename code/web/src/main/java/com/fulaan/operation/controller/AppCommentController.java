@@ -4,6 +4,7 @@ import com.alibaba.fastjson.JSON;
 import com.fulaan.base.BaseController;
 import com.fulaan.operation.dto.AppCommentDTO;
 import com.fulaan.operation.dto.AppOperationDTO;
+import com.fulaan.operation.dto.WebAppCommentDTO;
 import com.fulaan.operation.service.AppCommentService;
 import com.fulaan.wrongquestion.dto.SubjectClassDTO;
 import com.sys.constants.Constant;
@@ -21,6 +22,7 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+import java.util.TimeZone;
 
 /**
  * Created by James on 2017/8/25.
@@ -34,7 +36,6 @@ public class AppCommentController extends BaseController {
     private AppCommentService appCommentService;
     /**
      * 添加作业
-     * @param dto
      * @return
      */
     @ApiOperation(value = "添加作业", httpMethod = "POST", produces = "application/json")
@@ -45,8 +46,9 @@ public class AppCommentController extends BaseController {
             @ApiResponse(code = 500, message = "服务器不能完成请求")})
     @RequestMapping("/addCommentEntry")
     @ResponseBody
-    public String addCommentEntry(@ApiParam @RequestBody AppCommentDTO dto){
+    public String addCommentEntry(@ApiParam @RequestBody WebAppCommentDTO wdto){
         //
+        AppCommentDTO dto = wdto.getAppCommentDTO(wdto);
         dto.setAdminId(getUserId().toString());
         RespObj respObj=new RespObj(Constant.FAILD_CODE);
         try {
@@ -133,7 +135,7 @@ public class AppCommentController extends BaseController {
         RespObj respObj=new RespObj(Constant.FAILD_CODE);
         try {
             respObj.setCode(Constant.SUCCESS_CODE);
-            Map<String,Object> dtos = appCommentService.selectRecordList(new ObjectId(id));
+            Map<String,Object> dtos = appCommentService.selectRecordList(getUserId(),new ObjectId(id));
             respObj.setMessage(dtos);
         } catch (Exception e) {
             e.printStackTrace();
@@ -316,6 +318,38 @@ public class AppCommentController extends BaseController {
             e.printStackTrace();
             respObj.setCode(Constant.FAILD_CODE);
             respObj.setErrorMessage("分页查找失败!");
+        }
+        return JSON.toJSONString(respObj);
+    }
+
+    /**
+     * web分页查找
+     * @return
+     */
+    @ApiOperation(value = "web分页查找/web分页查找", httpMethod = "POST", produces = "application/json")
+    @ApiResponses( value = {@ApiResponse(code = 200, message = "Successful — 请求已完成",response = String.class),
+            @ApiResponse(code = 400, message = "请求中有语法问题，或不能满足请求"),
+            @ApiResponse(code = 500, message = "服务器不能完成请求")})
+    @RequestMapping("/selectWebDatePageList")
+    @ResponseBody
+    public String selectWebDatePageList(@ApiParam(name = "page", required = true, value = "page") @RequestParam("page") int page,
+                                     @ApiParam(name = "pageSize", required = true, value = "pageSize") @RequestParam("pageSize") int pageSize,
+                                     @ApiParam(name = "type", required = true, value = "type") @RequestParam(value = "type",defaultValue = "1") int type,
+                                     @ApiParam(name = "communityId", required = true, value = "社区id") @RequestParam(value = "communityId",defaultValue = "") String communityId,
+                                     @ApiParam(name = "subjectId", required = true, value = "学科id") @RequestParam(value = "subjectId",defaultValue = "") String subjectId){
+
+        RespObj respObj=new RespObj(Constant.FAILD_CODE);
+        try {
+            respObj.setCode(Constant.SUCCESS_CODE);
+            long current=System.currentTimeMillis();
+            //获得时间批次
+            long dateTime=current/(1000*3600*24)*(1000*3600*24)- TimeZone.getDefault().getRawOffset();//今天零点零分零秒的毫秒数
+            Map<String,Object> dtos = appCommentService.selectWebDatePageList(dateTime, getUserId(), page, pageSize, type, communityId, subjectId);
+            respObj.setMessage(dtos);
+        } catch (Exception e) {
+            e.printStackTrace();
+            respObj.setCode(Constant.FAILD_CODE);
+            respObj.setErrorMessage("web分页查找失败!");
         }
         return JSON.toJSONString(respObj);
     }

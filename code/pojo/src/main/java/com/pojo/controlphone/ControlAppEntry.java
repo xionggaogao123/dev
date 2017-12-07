@@ -16,6 +16,7 @@ import java.util.List;
  Id
  communityId           	    社区id                   cid
  communityName              社区名称                 cnm
+ userId                     用户id                   uid
  appIdList           		appId集合                alt
  */
 public class ControlAppEntry extends BaseDBObject {
@@ -31,11 +32,13 @@ public class ControlAppEntry extends BaseDBObject {
     public ControlAppEntry(
             ObjectId communityId,
             String communityName,
+            ObjectId userId,
             List<ObjectId> appIdList
     ){
         BasicDBObject dbObject=new BasicDBObject()
                 .append("cid", communityId)
                 .append("cnm",communityName)
+                .append("uid",userId)
                 .append("alt", appIdList)
                 .append("isr", 0);
         setBaseEntry(dbObject);
@@ -46,13 +49,15 @@ public class ControlAppEntry extends BaseDBObject {
             ObjectId id,
             ObjectId communityId,
             String communityName,
+            ObjectId userId,
             List<ObjectId> appIdList
     ){
         BasicDBObject dbObject=new BasicDBObject()
                 .append(Constant.ID,id)
                 .append("cid", communityId)
                 .append("cnm",communityName)
-                .append("alt",appIdList)
+                .append("uid",userId)
+                .append("alt", appIdList)
                 .append("isr", 0);
         setBaseEntry(dbObject);
     }
@@ -64,6 +69,12 @@ public class ControlAppEntry extends BaseDBObject {
         setSimpleValue("cid",communityId);
     }
 
+    public ObjectId getUserId(){
+        return getSimpleObjecIDValue("uid");
+    }
+    public void setUserId(ObjectId userId){
+        setSimpleValue("uid",userId);
+    }
     public String getCommunityName(){
         return getSimpleStringValue("cnm");
     }

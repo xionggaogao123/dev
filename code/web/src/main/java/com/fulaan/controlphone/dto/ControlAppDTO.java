@@ -13,6 +13,7 @@ public class ControlAppDTO {
     private String id;
     private String communityId;
     private String communityName;
+    private String userId;
     private List<String> appIdList = new ArrayList<String>();
     public ControlAppDTO(){
 
@@ -22,6 +23,7 @@ public class ControlAppDTO {
             this.id = e.getID()==null?"":e.getID().toString();
             this.communityId = e.getCommunityId() == null ? "" : e.getCommunityId().toString();
             this.communityName = e.getCommunityName();
+            this.userId = e.getUserId() == null ? "" : e.getUserId().toString();
             List<ObjectId> uIdList = e.getAppIdList();
             for(ObjectId uId : uIdList){
                 appIdList.add(uId.toString());
@@ -37,6 +39,10 @@ public class ControlAppDTO {
         if(this.getCommunityId()!=null&&!"".equals(this.getCommunityId())){
             cId=new ObjectId(this.getCommunityId());
         }
+        ObjectId aId=null;
+        if(this.getUserId()!=null&&!"".equals(this.getUserId())){
+            aId=new ObjectId(this.getUserId());
+        }
         List<ObjectId> uIdList = new ArrayList<ObjectId>();
         for(String uId : this.appIdList){
             uIdList.add(new ObjectId(uId));
@@ -45,6 +51,7 @@ public class ControlAppDTO {
                 new ControlAppEntry(
                         cId,
                         this.communityName,
+                        aId,
                         uIdList
                 );
         return openEntry;
@@ -59,6 +66,10 @@ public class ControlAppDTO {
         if(this.getCommunityId()!=null&&!"".equals(this.getCommunityId())){
             cId=new ObjectId(this.getCommunityId());
         }
+        ObjectId aId=null;
+        if(this.getUserId()!=null&&!"".equals(this.getUserId())){
+            aId=new ObjectId(this.getUserId());
+        }
         List<ObjectId> uIdList = new ArrayList<ObjectId>();
         for(String uId : this.appIdList){
             uIdList.add(new ObjectId(uId));
@@ -68,10 +79,20 @@ public class ControlAppDTO {
                         Id,
                         cId,
                         this.communityName,
+                        aId,
                         uIdList
                 );
         return openEntry;
 
+    }
+
+
+    public String getUserId() {
+        return userId;
+    }
+
+    public void setUserId(String userId) {
+        this.userId = userId;
     }
 
     public String getId() {

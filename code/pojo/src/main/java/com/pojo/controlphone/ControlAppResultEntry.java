@@ -16,7 +16,8 @@ import org.bson.types.ObjectId;
  type          0 系统   1 复兰  2第三方  typ
  useTime       使用时间（int）           utm
  dateTime      使用日期（long）          dtm
- isNew          是否最新                  isn
+ isNew          是否最新                 isn
+ addiction      沉迷时间  (int)               ati
  */
 public class ControlAppResultEntry extends BaseDBObject {
     public ControlAppResultEntry(){
@@ -35,7 +36,8 @@ public class ControlAppResultEntry extends BaseDBObject {
             String packageName,
             int type,
             long useTime,
-            long dateTime
+            long dateTime,
+            long addiction
     ){
         BasicDBObject dbObject=new BasicDBObject()
                 .append("pid", parentId)
@@ -46,6 +48,7 @@ public class ControlAppResultEntry extends BaseDBObject {
                 .append("typ", type)
                 .append("utm", useTime)
                 .append("dtm", dateTime)
+                .append("ati",addiction)
                 .append("isr", 0)
                 .append("isn",0);
         setBaseEntry(dbObject);
@@ -61,7 +64,8 @@ public class ControlAppResultEntry extends BaseDBObject {
             String packageName,
             int type,
             long useTime,
-            long dateTime
+            long dateTime,
+            long addiction
     ){
         BasicDBObject dbObject=new BasicDBObject()
                 .append(Constant.ID,id)
@@ -73,6 +77,7 @@ public class ControlAppResultEntry extends BaseDBObject {
                 .append("typ", type)
                 .append("utm", useTime)
                 .append("dtm", dateTime)
+                .append("ati",addiction)
                 .append("isr", 0)
                 .append("isn", 0);
         setBaseEntry(dbObject);
@@ -114,6 +119,13 @@ public class ControlAppResultEntry extends BaseDBObject {
     }
     public void setUseTime(long useTime){
         setSimpleValue("utm",useTime);
+    }
+
+    public long getAddiction(){
+        return getSimpleLongValueDef("ati",0l);
+    }
+    public void setAddiction(long addiction){
+        setSimpleValue("ati",addiction);
     }
     public long getDateTime(){
         return getSimpleLongValue("dtm");

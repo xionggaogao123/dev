@@ -120,7 +120,7 @@ public class ControlPhoneDao extends BaseDao {
                 find(MongoFacroty.getAppDB(),
                         Constant.COLLECTION_CONTROL_PHONE,
                         query, Constant.FIELDS,
-                        Constant.MONGO_SORTBY_DESC);
+                        Constant.MONGO_SORTBY_ASC);
         List<ControlPhoneEntry> entryList = new ArrayList<ControlPhoneEntry>();
         if (dbList != null && !dbList.isEmpty()) {
             for (DBObject obj : dbList) {

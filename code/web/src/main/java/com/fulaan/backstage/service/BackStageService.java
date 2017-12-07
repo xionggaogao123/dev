@@ -27,6 +27,7 @@ import com.pojo.backstage.*;
 import com.pojo.controlphone.*;
 import com.pojo.fcommunity.AttachmentEntry;
 import com.pojo.fcommunity.CommunityDetailEntry;
+import com.pojo.fcommunity.MemberEntry;
 import com.pojo.indexPage.IndexPageEntry;
 import com.pojo.newVersionGrade.CommunityType;
 import com.pojo.operation.AppCommentEntry;
@@ -273,9 +274,18 @@ public class BackStageService {
 
         this.addLogMessage(id.toString(),"添加特殊管控默认上课时间："+ startTime+"-"+endTime,LogMessageType.schoolTime.getDes(),userId.toString());
     }
-    //教师认证
+    //教师认证1未验证，2 验证通过 3 验证不通过
     public Map<String,Object> selectTeacherList(ObjectId userId,int type,String searchId,int page,int pageSize){
         Map<String,Object> map = new HashMap<String, Object>();
+        List<ObjectId> oids = teacherApproveDao.selectContentObjectList();
+        List<MemberEntry> entries2 = memberDao.getMembersFromTeacher(oids, page, pageSize);
+        if(type==1){
+
+        }else if(type==2){
+
+        }else if(type==3){
+
+        }
         //memberDao.get
         List<TeacherApproveEntry> entries = teacherApproveDao.selectContentList(searchId, type, page, pageSize);
         int count = teacherApproveDao.getNumber(searchId, type);

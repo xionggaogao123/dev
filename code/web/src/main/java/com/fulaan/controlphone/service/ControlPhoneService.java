@@ -223,14 +223,15 @@ public class ControlPhoneService {
         return dtos;
     }
     //添加 修改 老师应用
-    public void addTeaCommunityAppList(ObjectId communityId,ObjectId appId,int type){
-        ControlAppEntry entry = controlAppDao.getEntry(communityId);
+    public void addTeaCommunityAppList(ObjectId userId,ObjectId communityId,ObjectId appId,int type){
+        ControlAppEntry entry = controlAppDao.getEntry(userId,communityId);
         if(null == entry){
             ControlAppDTO dto = new ControlAppDTO();
             List<String> olist = new ArrayList<String>();
             olist.add(appId.toString());
             dto.setAppIdList(olist);
             dto.setCommunityId(communityId.toString());
+            dto.setUserId(userId.toString());
             ControlAppEntry entry1 = dto.buildAddEntry();
             controlAppDao.addEntry(entry1);
         }else{
@@ -257,8 +258,8 @@ public class ControlPhoneService {
     }
 
     //添加/修改推送应用（老师端）
-    public void addCommunityAppList(ObjectId communityId,List<String> appIds){
-        ControlAppEntry entry = controlAppDao.getEntry(communityId);
+    public void addCommunityAppList(ObjectId userId,ObjectId communityId,List<String> appIds){
+        ControlAppEntry entry = controlAppDao.getEntry(userId,communityId);
 
         List<ObjectId> objectIdList = new ArrayList<ObjectId>();
         if(appIds!=null){
@@ -272,6 +273,7 @@ public class ControlPhoneService {
             entry1.setCommunityName(entry2.getCommunityName());
             entry1.setAppIdList(objectIdList);
             entry1.setCommunityId(communityId);
+            entry1.setUserId(userId);
             controlAppDao.addEntry(entry1);
         }else{
             entry.setAppIdList(objectIdList);
@@ -408,7 +410,7 @@ public class ControlPhoneService {
         //变更最新数据
         List<ObjectId> oids = controlAppResultDao.getIsNewObjectId(userId,zero);
         if(dtos != null && dtos.size()>0){
-            this.addRedDotEntryBatch(dtos,userId,newEntry.getMainUserId(),zero);
+            this.addRedDotEntryBatch(dtos,userId,newEntry.getMainUserId(),zero,dto.getAddiction());
         }
         if(oids.size()>0){
             controlAppResultDao.updEntry(oids);
@@ -572,7 +574,7 @@ public class ControlPhoneService {
         }
         map.put("time",timecu/60000);
         //使用时间
-        int useTime  = controlAppResultDao.getAllTime(sonId,zero);
+        long useTime  = controlAppResultDao.getUserAllTime(sonId, zero);
         map.put("useTime",useTime/60000);
         //剩余时间
         if(timecu/60000-useTime/60000 <0){
@@ -811,7 +813,7 @@ public class ControlPhoneService {
             if(current>sl && current < el){
                 map.put("isControl",true);
             }else{
-                map.put("isControl",false);
+                map.put("isControl",true);
             }
             map.put("dto",new ControlSchoolTimeDTO(entry2));
         }else{
@@ -833,11 +835,11 @@ public class ControlPhoneService {
                 if(current>sl && current < el){
                     map.put("isControl",true);
                 }else{
-                    map.put("isControl",false);
+                    map.put("isControl",true);
                 }
                 map.put("dto",new ControlSchoolTimeDTO(entry));
             }else{
-                map.put("isControl",false);
+                map.put("isControl",true);
                 map.put("dto",new ControlSchoolTimeDTO());
             }
         }
@@ -869,12 +871,12 @@ public class ControlPhoneService {
     }
 
     //老师查询可推送应用
-    public List<AppDetailDTO> getShouldAppList(ObjectId communityId,String keyword){
+    public List<AppDetailDTO> getShouldAppList(ObjectId userId,ObjectId communityId,String keyword){
         List<AppDetailDTO> dtos = new ArrayList<AppDetailDTO>();
         //获取所有可推送的第三方应用
         List<AppDetailEntry> entries = appDetailDao.getThirdEntries();
         //查询该社区推送的记录
-       ControlAppEntry entry = controlAppDao.getEntry(communityId);
+       ControlAppEntry entry = controlAppDao.getEntry(userId,communityId);
         if(null == entry){
             for(AppDetailEntry entry1 : entries){
                 AppDetailDTO dto = new AppDetailDTO(entry1);
@@ -1261,7 +1263,7 @@ public class ControlPhoneService {
      * 批量增加应用记录
      * @param list
      */
-    public void addRedDotEntryBatch(List<ControlAppResultDTO> list,ObjectId userId,ObjectId parentId,long zero) {
+    public void addRedDotEntryBatch(List<ControlAppResultDTO> list,ObjectId userId,ObjectId parentId,long zero,long addiction) {
         List<DBObject> dbList = new ArrayList<DBObject>();
         for (int i = 0; list != null && i < list.size(); i++) {
             ControlAppResultDTO si = list.get(i);
@@ -1269,6 +1271,7 @@ public class ControlPhoneService {
             obj.setUserId(userId);
             obj.setParentId(parentId);
             obj.setDateTime(zero);
+            obj.setAddiction(addiction);
             dbList.add(obj.getBaseEntry());
         }
         //导入新纪录

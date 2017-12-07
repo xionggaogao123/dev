@@ -203,7 +203,7 @@ public class ControlPhoneController extends BaseController {
         RespObj respObj=new RespObj(Constant.FAILD_CODE);
         try {
             respObj.setCode(Constant.SUCCESS_CODE);
-            List<AppDetailDTO> dtos = controlPhoneService.getShouldAppList(new ObjectId(communityId),keyword);
+            List<AppDetailDTO> dtos = controlPhoneService.getShouldAppList(getUserId(),new ObjectId(communityId),keyword);
             respObj.setMessage(dtos);
         } catch (Exception e) {
             e.printStackTrace();
@@ -274,7 +274,7 @@ public class ControlPhoneController extends BaseController {
         RespObj respObj=new RespObj(Constant.FAILD_CODE);
         try {
             respObj.setCode(Constant.SUCCESS_CODE);
-            controlPhoneService.addTeaCommunityAppList(new ObjectId(communityId), new ObjectId(appId),type);
+            controlPhoneService.addTeaCommunityAppList(getUserId(),new ObjectId(communityId), new ObjectId(appId),type);
             if(type==1){
                 respObj.setMessage("卸载成功");
             }else{

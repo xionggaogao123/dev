@@ -84,6 +84,26 @@ public class ControlAppResultDao extends BaseDao {
         return retList;
     }
 
+    public long getUserAllTime(ObjectId userId,long dateTime) {
+        BasicDBObject query =new BasicDBObject();
+        query.append("isr", Constant.ZERO);
+        query.append("isn", Constant.ZERO);
+        query.append("dtm", dateTime);
+        query.append("uid",userId);
+        List<DBObject> dboList=find(MongoFacroty.getAppDB(), Constant.COLLECTION_CONTROL_APP_RESULT, query, Constant.FIELDS);
+        long retList = 0l;
+        if(null!=dboList && !dboList.isEmpty())
+        {
+          /*  for(DBObject dbo:dboList)
+            {
+                retList = (new ControlAppResultEntry((BasicDBObject)dbo).getAddiction());
+            }*/
+            DBObject dbo = dboList.get(0);
+            retList = new ControlAppResultEntry((BasicDBObject)dbo).getAddiction();
+        }
+        return retList;
+    }
+
     /**
      * 修改
      */

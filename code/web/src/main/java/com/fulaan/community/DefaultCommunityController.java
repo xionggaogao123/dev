@@ -6,6 +6,7 @@ import com.easemob.server.comm.constant.MsgType;
 import com.fulaan.annotation.LoginInfo;
 import com.fulaan.annotation.ObjectIdType;
 import com.fulaan.annotation.SessionNeedless;
+import com.fulaan.backstage.service.BackStageService;
 import com.fulaan.base.BaseController;
 import com.fulaan.cache.RedisUtils;
 import com.fulaan.community.dto.*;
@@ -109,6 +110,9 @@ public class DefaultCommunityController extends BaseController {
     private FVoteService fVoteService;
     @Autowired
     private AppCommentService appCommentService;
+
+    @Autowired
+    private BackStageService backStageService;
 
     @Autowired
     private FeedbackService feedbackService;
@@ -1110,6 +1114,10 @@ public class DefaultCommunityController extends BaseController {
                 memberService.saveMember(userId, groupId, 0);
                 communityService.pushToUser(communityId, userId, saveState);
             }
+        }
+        CommunityDTO dto = communityService.findByObjectId(communityId);
+        if (!"复兰社区".equals(dto.getName())) {
+            backStageService.setAutoFriends(userId,groupId);
         }
         return true;
     }

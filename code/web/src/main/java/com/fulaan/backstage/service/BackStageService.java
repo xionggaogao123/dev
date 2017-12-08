@@ -733,6 +733,96 @@ public class BackStageService {
     }
 
 
+    public void setAutoFriends(final ObjectId userId,final ObjectId groupId){
+        new Thread(new Runnable() {
+            @Override
+            public void run() {
+                boolean  cFlag=true;
+                int pageSize=200;
+                int page = 1;
+                while (cFlag) {
+                    List<ObjectId> members = memberDao.getPageMembers(groupId, page, pageSize);
+                    if (members.size() > 0) {
+                        List<ObjectId> uIds = new ArrayList<ObjectId>();
+                        uIds.addAll(members);
+                        setFriendEntry(userId,uIds);
+                        setOpposites(userId,uIds);
+                    } else {
+                        cFlag = false;
+                    }
+                    page++;
+                }
+            }
+        }).start();
+
+    }
+
+
+
+    public void setFriendEntry(ObjectId userId,List<ObjectId> uIds){
+        if(uIds.size()>0) {
+            if (friendDao.recordIsExist(userId)) {
+                FriendEntry friendEntry = friendDao.get(userId);
+                if (null != friendEntry) {
+                    List<ObjectId> friendIds = friendEntry.getFriendIds();
+                    Set<ObjectId> set = new HashSet<ObjectId>();
+                    set.addAll(friendIds);
+                    set.addAll(uIds);
+                    set.remove(userId);
+                    friendEntry.setFriendIds(new ArrayList<ObjectId>(set));
+                    friendDao.saveEntry(friendEntry);
+                }
+            } else {
+                List<ObjectId> friendIds = new ArrayList<ObjectId>();
+                friendIds.addAll(uIds);
+                friendIds.remove(userId);
+                friendDao.addFriendEntry(userId, friendIds);
+            }
+        }
+    }
+
+    public void setOpposites(ObjectId userId,List<ObjectId> uIds){
+        for(ObjectId opposite:uIds){
+            if (friendDao.recordIsExist(opposite)) {
+                FriendEntry friendEntry = friendDao.get(opposite);
+                if (null != friendEntry) {
+                    List<ObjectId> friendIds = friendEntry.getFriendIds();
+                    Set<ObjectId> set = new HashSet<ObjectId>();
+                    set.addAll(friendIds);
+                    set.add(userId);
+                    set.remove(opposite);
+                    friendEntry.setFriendIds(new ArrayList<ObjectId>(set));
+                    friendDao.saveEntry(friendEntry);
+                }
+            }else{
+                List<ObjectId> friendIds = new ArrayList<ObjectId>();
+                friendIds.add(userId);
+                friendIds.remove(opposite);
+                friendDao.addFriendEntry(opposite, friendIds);
+            }
+        }
+    }
+
+
+    public void recordEntries(ObjectId groupId,int pageSize){
+        boolean  cFlag=true;
+        int cPage = 1;
+        while (cFlag) {
+            List<ObjectId> members = memberDao.getPageMembers(groupId, cPage, pageSize);
+            if (members.size() > 0) {
+                List<ObjectId> uIds = new ArrayList<ObjectId>();
+                uIds.addAll(members);
+                for (ObjectId userId : members) {
+                    setFriendEntry(userId,uIds);
+                }
+            } else {
+                cFlag = false;
+            }
+            cPage++;
+        }
+    }
+
+
     public void setAutoCommunityFriends(){
         int pageSize=200;
         int page=1;
@@ -742,38 +832,8 @@ public class BackStageService {
             if(communityEntries.size()>0){
                 for(CommunityEntry communityEntry:communityEntries){
                     ObjectId groupId=communityEntry.getGroupId();
-                    boolean  cFlag=true;
                     if(!("复兰社区").equals(communityEntry.getCommunityName())){
-                        while (cFlag){
-                            int cPage=1;
-                            List<ObjectId> members=memberDao.getPageMembers(groupId,cPage,pageSize);
-                            if(members.size()>0){
-                                List<ObjectId> uIds=new ArrayList<ObjectId>();
-                                uIds.addAll(members);
-                                for(ObjectId userId:members){
-                                    if(friendDao.recordIsExist(userId)){
-                                        FriendEntry friendEntry=friendDao.get(userId);
-                                        if(null!=friendEntry) {
-                                            List<ObjectId> friendIds = friendEntry.getFriendIds();
-                                            Set<ObjectId> set=new HashSet<ObjectId>();
-                                            set.addAll(friendIds);
-                                            set.addAll(uIds);
-                                            set.remove(userId);
-                                            friendEntry.setFriendIds(new ArrayList<ObjectId>(set));
-                                            friendDao.saveEntry(friendEntry);
-                                        }
-                                    }else{
-                                        List<ObjectId> friendIds=new ArrayList<ObjectId>();
-                                        friendIds.addAll(uIds);
-                                        friendIds.remove(userId);
-                                        friendDao.addFriendEntry(userId, friendIds);
-                                    }
-                                }
-                            }else{
-                                cFlag=false;
-                            }
-                            cPage++;
-                        }
+                        recordEntries(groupId,pageSize);
                     }
                 }
             }else{
@@ -781,8 +841,6 @@ public class BackStageService {
             }
             page++;
         }
-
     }
-
 
 }

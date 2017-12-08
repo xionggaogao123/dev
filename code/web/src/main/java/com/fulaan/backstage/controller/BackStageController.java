@@ -5,6 +5,7 @@ import com.fulaan.annotation.ObjectIdType;
 import com.fulaan.appmarket.dto.AppDetailDTO;
 import com.fulaan.appmarket.service.AppMarketService;
 import com.fulaan.backstage.dto.JxmAppVersionDTO;
+import com.fulaan.backstage.dto.LogMessageDTO;
 import com.fulaan.backstage.dto.UserLogResultDTO;
 import com.fulaan.backstage.dto.UserRoleOfPathDTO;
 import com.fulaan.backstage.service.BackStageService;
@@ -456,7 +457,7 @@ public class BackStageController extends BaseController {
             for (List<MultipartFile> multipartFiles : fileMap.values()) {
                 for(MultipartFile file:multipartFiles) {
                     System.out.println("----" + file.getOriginalFilename());
-                    appMarketService.importApkFile2(file,file.getInputStream(),file.getOriginalFilename());
+                    appMarketService.importApkFile2(file, file.getInputStream(), file.getOriginalFilename());
                 }
             }
             respObj.setCode(Constant.SUCCESS_CODE);
@@ -770,10 +771,11 @@ public class BackStageController extends BaseController {
             @ApiResponse(code = 500, message = "服务器不能完成请求")})
     @RequestMapping("/getLogMessage")
     @ResponseBody
-    public String getLogMessage(){
+    public String getLogMessage(@ApiParam(name = "page", required = true, value = "page") @RequestParam(value = "page",defaultValue = "1") int page,
+                                @ApiParam(name = "pageSize", required = true, value = "pageSize") @RequestParam(value = "pageSize",defaultValue = "20") int pageSize){
         RespObj respObj = new RespObj(Constant.FAILD_CODE);
         try{
-            List<JxmAppVersionDTO> dtos =  backStageService.getAllAppVersion();
+            List<LogMessageDTO> dtos =  backStageService.getLogMessage(page,pageSize);
             respObj.setCode(Constant.SUCCESS_CODE);
             respObj.setMessage(dtos);
         }catch (Exception e){

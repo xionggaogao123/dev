@@ -3,18 +3,21 @@ package com.fulaan.appmarket.service;
 import com.db.appmarket.AppDetailCommentDao;
 import com.db.appmarket.AppDetailDao;
 import com.db.appmarket.AppDetailStarStatisticDao;
+import com.db.backstage.JxmAppVersionDao;
 import com.fulaan.apkForParse.apkResolverParse.entity.ApkInfo;
 import com.fulaan.apkForParse.apkResolverParse.utils.ApkUtil;
 import com.fulaan.apkForParse.apkResolverParse.utils.IconUtil;
 import com.fulaan.appmarket.dto.AppDetailCommentDTO;
 import com.fulaan.appmarket.dto.AppDetailDTO;
 import com.fulaan.appmarket.dto.AppDetailStarStatisticDTO;
+import com.fulaan.backstage.dto.JxmAppVersionDTO;
 import com.fulaan.user.service.UserService;
 import com.fulaan.utils.GetApkSize;
 import com.fulaan.utils.QiniuFileUtils;
 import com.pojo.appmarket.AppDetailCommentEntry;
 import com.pojo.appmarket.AppDetailEntry;
 import com.pojo.appmarket.AppDetailStarStatisticEntry;
+import com.pojo.backstage.JxmAppVersionEntry;
 import com.pojo.fcommunity.AttachmentEntry;
 import com.pojo.user.UserEntry;
 import com.sys.constants.Constant;
@@ -44,6 +47,8 @@ public class AppMarketService {
     private AppDetailCommentDao appDetailCommentDao = new AppDetailCommentDao();
 
     private AppDetailStarStatisticDao appDetailStarStatisticDao = new AppDetailStarStatisticDao();
+
+    private JxmAppVersionDao jxmAppVersionDao = new JxmAppVersionDao();
 
     @Autowired
     private UserService userService;
@@ -193,6 +198,12 @@ public class AppMarketService {
         AppDetailEntry appDetailEntry=appDetailDao.findEntryById(apkId);
         if(null!=appDetailEntry){
             appDetailDao.removeById(apkId);
+        }
+        if(appDetailEntry.getType()==1){
+            JxmAppVersionEntry entry1 = jxmAppVersionDao.getEntry(appDetailEntry.getAppPackageName());
+            if(entry1 !=null){
+                jxmAppVersionDao.removeById(entry1.getID());
+            }
         }
     }
 
@@ -391,6 +402,18 @@ public class AppMarketService {
                     path,
                     fileKey);
             appDetailDao.saveAppDetailEntry(newEntry);
+        }
+        JxmAppVersionEntry entry1 = jxmAppVersionDao.getEntry(packageName);
+        if(entry1!= null){
+            entry1.setFileUrl(imageFileUrl);
+            entry1.setVersion(apkInfo.getVersionName());
+            jxmAppVersionDao.updEntry(entry1);
+        } else{
+            JxmAppVersionDTO dto = new JxmAppVersionDTO();
+            dto.setFileUrl(imageFileUrl);
+            dto.setName(packageName);
+            dto.setVersion(apkInfo.getVersionName());
+            jxmAppVersionDao.addEntry(dto.buildAddEntry());
         }
         destFile.delete();
         imageFile.delete();

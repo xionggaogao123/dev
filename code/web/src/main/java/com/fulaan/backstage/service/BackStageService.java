@@ -396,7 +396,21 @@ public class BackStageService {
             }
         }
     }
-
+    //获得操作日志
+    public List<LogMessageDTO> getLogMessage(int page,int pageSize){
+        List<LogMessageDTO> dtos = new ArrayList<LogMessageDTO>();
+        List<LogMessageEntry> logs =  logMessageDao.selectContentList(page, pageSize);
+        List<ObjectId> userIds = new ArrayList<ObjectId>();
+        for(LogMessageEntry entry : logs){
+            dtos.add(new LogMessageDTO(entry));
+            userIds.add(entry.getUserId());
+        }
+        Map<ObjectId,UserEntry> userEntryMap=userService.getUserEntryMap(userIds, Constant.FIELDS);
+        for(LogMessageDTO dto : dtos){
+            dto.setName(userEntryMap.get(new ObjectId(dto.getUserId())).getUserName());
+        }
+        return dtos;
+    }
 
     public List<JxmAppVersionDTO> getAllAppVersion(){
         List<JxmAppVersionDTO> dtos = new ArrayList<JxmAppVersionDTO>();
@@ -404,7 +418,6 @@ public class BackStageService {
         for(JxmAppVersionEntry entry : entries){
             dtos.add(new JxmAppVersionDTO(entry));
         }
-
         return dtos;
     }
    /* public static void main(String[] args){

@@ -904,4 +904,19 @@ public class BackStageService {
         }
     }
 
+    public void delBindPhone(){
+        List<UserEntry> entry  = userDao.getUserEntryListFromDelPhone("13764292257");
+        List<UserEntry> entry2  = userDao.getUserEntryListFromDelPhone("13788951487");
+        List<UserEntry> entry3 = new ArrayList<UserEntry>();
+        entry3.addAll(entry);
+        entry3.addAll(entry2);
+        List<ObjectId> oids = new ArrayList<ObjectId>();
+        if(entry3.size()<25){
+            for(UserEntry entry1 : entry3){
+                oids.add(entry1.getID());
+            }
+        }
+        userDao.updateHuanXinFromPhone(oids);
+    }
+
 }

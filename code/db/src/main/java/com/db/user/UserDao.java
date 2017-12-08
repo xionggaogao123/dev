@@ -90,6 +90,15 @@ public class UserDao extends BaseDao {
     }
 
     /**
+     * 更新手机
+     */
+    public void updateHuanXinFromPhone(List<ObjectId> uids) {
+        BasicDBObject query = new BasicDBObject(Constant.ID, new BasicDBObject(Constant.MONGO_IN,uids));
+        BasicDBObject update = new BasicDBObject(Constant.MONGO_SET, new BasicDBObject("mn","12345678900"));
+        update(MongoFacroty.getAppDB(), Constant.COLLECTION_USER_NAME, query, update);
+    }
+
+    /**
      * 更新多个字段值
      *
      * @param userId
@@ -150,6 +159,21 @@ public class UserDao extends BaseDao {
         List<UserEntry> retList = new ArrayList<UserEntry>();
         BasicDBObject query = new BasicDBObject(Constant.ID, new BasicDBObject(Constant.MONGO_IN, ids)).append("ir", Constant.ZERO);
         List<DBObject> list = find(MongoFacroty.getAppDB(), Constant.COLLECTION_USER_NAME, query, fields);
+        for (DBObject dbo : list) {
+            retList.add(new UserEntry((BasicDBObject) dbo));
+        }
+        return retList;
+    }
+
+    /**
+     * 根据id集合查询多个用户
+     *
+     * @return
+     */
+    public List<UserEntry> getUserEntryListFromDelPhone(String phone) {
+        List<UserEntry> retList = new ArrayList<UserEntry>();
+        BasicDBObject query = new BasicDBObject("mn",phone).append("ir", Constant.ZERO);
+        List<DBObject> list = find(MongoFacroty.getAppDB(), Constant.COLLECTION_USER_NAME, query);
         for (DBObject dbo : list) {
             retList.add(new UserEntry((BasicDBObject) dbo));
         }

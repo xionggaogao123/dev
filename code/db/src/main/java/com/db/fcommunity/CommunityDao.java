@@ -4,7 +4,6 @@ import com.db.base.BaseDao;
 import com.db.factory.MongoFacroty;
 import com.mongodb.*;
 import com.pojo.fcommunity.CommunityEntry;
-import com.pojo.indexPage.WebHomePageEntry;
 import com.pojo.utils.MongoUtils;
 import com.sys.constants.Constant;
 import org.apache.commons.lang.StringUtils;
@@ -234,6 +233,23 @@ public class CommunityDao extends BaseDao {
             }
         }
         return entries;
+    }
+
+    /**
+     * 通过群组Ids列表查询社区列表
+     * @param groupIds
+     * @return
+     */
+    public Map<ObjectId,String> getMapCommunityEntriesByGroupIds(List<ObjectId> groupIds){
+        Map<ObjectId,String> map = new HashMap<ObjectId, String>();
+        BasicDBObject query = new BasicDBObject().append("grid", new BasicDBObject(Constant.MONGO_IN,groupIds));
+        List<DBObject> dbObjectList=find(MongoFacroty.getAppDB(), Constant.COLLECTION_FORUM_COMMUNITY, query,Constant.FIELDS);
+        if(null!=dbObjectList&&!dbObjectList.isEmpty()){
+            for(DBObject dbObject:dbObjectList){
+                map.put(new CommunityEntry(dbObject).getGroupId(),new CommunityEntry(dbObject).getCommunityName());
+            }
+        }
+        return map;
     }
 
 

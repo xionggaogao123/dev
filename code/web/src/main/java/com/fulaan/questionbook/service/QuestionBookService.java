@@ -230,6 +230,44 @@ public class QuestionBookService {
         }
         return dtos;
     }
+    public List<QuestionBookDTO> getReviewListCount(ObjectId userId){
+        //获得当前时间
+        long current=System.currentTimeMillis();
+        //获得时间批次
+        long zero = current/(1000*3600*24)*(1000*3600*24)- TimeZone.getDefault().getRawOffset();//今天零点零分零秒的毫秒数
+        List<QuestionBookEntry> entries = questionBookDao.getReviewList(userId,zero+1);
+        List<QuestionBookDTO> dtos = new ArrayList<QuestionBookDTO>();
+        List<ObjectId> olist = new ArrayList<ObjectId>();
+        if(entries.size()>0){
+            for(QuestionBookEntry entry : entries){
+                olist.add(entry.getID());
+                dtos.add(new QuestionBookDTO(entry));
+            }
+        }
+        //todo
+        List<QuestionAdditionEntry> entries1 = questionAdditionDao.getListByParentIdList(olist);
+        for(QuestionBookDTO dto : dtos){
+            for(QuestionAdditionEntry entry : entries1){
+                if(dto.getId() != null && dto.getId().equals(entry.getParentId().toString())){
+                    //1 答案 2解析 3 解答
+                    if(entry.getAnswerType()== 2){
+                        List<QuestionAdditionDTO> jxList = dto.getJxList();
+                        jxList.add(new QuestionAdditionDTO(entry));
+                        dto.setJxList(jxList);
+                    }else if(entry.getAnswerType()==1){
+                        List<QuestionAdditionDTO> daList = dto.getDaList();
+                        daList.add(new QuestionAdditionDTO(entry));
+                        dto.setDaList(daList);
+                    }else{
+                        List<QuestionAdditionDTO> wdList = dto.getWdList();
+                        wdList.add(new QuestionAdditionDTO(entry));
+                        dto.setWdList(wdList);
+                    }
+                }
+            }
+        }
+        return dtos;
+    }
     /**
      * 今日复习展示
      */

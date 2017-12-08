@@ -7,6 +7,7 @@ import com.db.backstage.*;
 import com.db.controlphone.*;
 import com.db.fcommunity.CommunityDao;
 import com.db.fcommunity.CommunityDetailDao;
+import com.db.fcommunity.GroupDao;
 import com.db.fcommunity.MemberDao;
 import com.db.operation.AppCommentDao;
 import com.db.operation.AppNoticeDao;
@@ -101,6 +102,8 @@ public class BackStageService {
     private MemberDao memberDao = new MemberDao();
 
     private FriendDao friendDao = new FriendDao();
+
+    private GroupDao groupDao = new GroupDao();
 
 
 
@@ -284,12 +287,14 @@ public class BackStageService {
         Map<String,Object> map = new HashMap<String, Object>();
         List<TeacherApproveEntry> entries = new ArrayList<TeacherApproveEntry>();
         List<ObjectId> oids = teacherApproveDao.selectContentObjectList();
-        List<MemberEntry> entries2 = memberDao.getMembersFromTeacher(oids, page, pageSize);
+        oids.add(userId);
+        List<MemberEntry> entries2 = memberDao.getMembersFromTeacher(oids,searchId,page, pageSize);
         int count = 0;
-        if(type==1){
+        List<ObjectId> objectIdList =new ArrayList<ObjectId>();
+        if(type==0 || type==1){
             for(MemberEntry memberEntry : entries2){
-
-                //entries.add();
+                TeacherApproveEntry teaentry= new TeacherApproveEntry(memberEntry.getUserId(),memberEntry.getUserName(),memberEntry.getGroupId(),0l,1);
+                entries.add(teaentry);
             }
             count = memberDao.getMembersFromTeacherCount(oids);
         }else if(type==2){
@@ -301,26 +306,61 @@ public class BackStageService {
             entries = teacherApproveDao.selectContentList(searchId, type, page, pageSize);
             count = teacherApproveDao.getNumber(searchId, type);
         }
-
         List<TeacherApproveDTO> dtos = new ArrayList<TeacherApproveDTO>();
         if(entries.size()>0){
             Set<ObjectId> userIds=new HashSet<ObjectId>();
             for(TeacherApproveEntry entry:entries){
                 userIds.add(entry.getUserId());
+                objectIdList.add(entry.getApproveId());
             }
+            Map<ObjectId,String> entries4 = communityDao.getMapCommunityEntriesByGroupIds(objectIdList);
             Map<ObjectId,UserEntry> userEntryMap=userService.getUserEntryMap(userIds, Constant.FIELDS);
+            List<ObjectId> ids2 = new ArrayList<ObjectId>();
+            ids2.addAll(userIds);
+            Map<ObjectId,String> map5 = getOwnerCommunityList(ids2);
             for(TeacherApproveEntry entry : entries){
                 TeacherApproveDTO dto=new TeacherApproveDTO(entry);
                 UserEntry userEntry=userEntryMap.get(entry.getUserId());
                 if(null!=userEntry){
                     dto.setAvatar(AvatarUtils.getAvatar(userEntry.getAvatar(),userEntry.getRole(),userEntry.getSex()));
                 }
-                dtos.add(dto);
+                if(entries4.get(entry.getApproveId())!=null){
+                    dto.setCommunityName(entries4.get(entry.getApproveId()));
+                    dtos.add(dto);
+                }else if(map5.get(entry.getUserId())!= null){
+                    dto.setCommunityName(map5.get(entry.getUserId()));
+                    dtos.add(dto);
+                }else{
+
+                }
+                //dto.setCommunityName();
             }
         }
 
         map.put("list",dtos);
         map.put("count",count);
+        return map;
+    }
+    public Map<ObjectId,String> getOwnerCommunityList(List<ObjectId> uids){
+        Map<ObjectId,String> map = new HashMap<ObjectId, String>();
+        List<MemberEntry> entries2 = memberDao.getMembersFromTeacher2(uids);
+        List<ObjectId> objectIds = new ArrayList<ObjectId>();
+        for(MemberEntry entry : entries2){
+            objectIds.add(entry.getGroupId());
+        }
+        Map<ObjectId,String> entries4 = communityDao.getMapCommunityEntriesByGroupIds(objectIds);
+        for(MemberEntry entry : entries2){
+            String str = map.get(entry.getUserId());
+            if(str==null){
+                map.put(entry.getUserId(),entries4.get(entry.getGroupId()));
+            }else{
+                String str2 = entries4.get(entry.getGroupId());
+                if(str2 !=null){
+                    map.put(entry.getUserId(),str + "，" + str2);
+                }
+            }
+
+        }
         return map;
     }
     public void addTeacherList(ObjectId userId,ObjectId id,int type){

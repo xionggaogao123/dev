@@ -205,7 +205,11 @@ public class AppMarketController extends BaseController{
         return respObj;
     }
 
-
+    /**\
+     * 查询第三方应用
+     * @param regular
+     * @return
+     */
     @ApiOperation(value = "根据查询条件查询应用", httpMethod = "POST", produces = "application/json")
     @ApiResponses(value = {@ApiResponse(code = 200, message = "Successful — 请求已完成",response = RespObj.class),
             @ApiResponse(code = 500, message = "服务器不能完成请求")})
@@ -217,6 +221,31 @@ public class AppMarketController extends BaseController{
         RespObj respObj=new RespObj(Constant.FAILD_CODE);
         try{
             List<AppDetailDTO> appDetailDTOs=appMarketService.getAppByCondition(regular);
+            respObj.setMessage(appDetailDTOs);
+            respObj.setCode(Constant.SUCCESS_CODE);
+        }catch (Exception e){
+            e.printStackTrace();
+            respObj.setErrorMessage(e.getMessage());
+        }
+        return respObj;
+    }
+
+    /**
+     * 查询复兰应用
+     * @param regular
+     * @return
+     */
+    @ApiOperation(value = "根据查询条件查询应用", httpMethod = "POST", produces = "application/json")
+    @ApiResponses(value = {@ApiResponse(code = 200, message = "Successful — 请求已完成",response = RespObj.class),
+            @ApiResponse(code = 500, message = "服务器不能完成请求")})
+    @RequestMapping("/searchFulanAppByCondition")
+    @ResponseBody
+    public RespObj searchFulanAppByCondition(
+            @RequestParam(required = false,defaultValue = "")String regular
+    ){
+        RespObj respObj=new RespObj(Constant.FAILD_CODE);
+        try{
+            List<AppDetailDTO> appDetailDTOs=appMarketService.searchFulanAppByCondition(regular);
             respObj.setMessage(appDetailDTOs);
             respObj.setCode(Constant.SUCCESS_CODE);
         }catch (Exception e){

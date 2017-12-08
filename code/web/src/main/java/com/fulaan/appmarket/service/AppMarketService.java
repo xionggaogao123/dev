@@ -72,6 +72,14 @@ public class AppMarketService {
         return detailDTOs;
     }
 
+    public List<AppDetailDTO> searchFulanAppByCondition(String regular) {
+        List<AppDetailDTO> detailDTOs = new ArrayList<AppDetailDTO>();
+        List<AppDetailEntry> appDetailEntries = appDetailDao.searchFulanAppByCondition(regular);
+        for (AppDetailEntry entry : appDetailEntries) {
+            detailDTOs.add(new AppDetailDTO(entry));
+        }
+        return detailDTOs;
+    }
     public List<AppDetailDTO> getAllAppDetails() {
         List<AppDetailDTO> detailDTOs = new ArrayList<AppDetailDTO>();
         List<AppDetailEntry> appDetailEntries = appDetailDao.getEntries();
@@ -280,6 +288,101 @@ public class AppMarketService {
                     Integer.valueOf(apkInfo.getVersionCode()),
                     Constant.ONE,
                     Constant.ONE,
+                    sizeStr,
+                    new ArrayList<AttachmentEntry>(),
+                    apkInfo.getVersionName(),
+                    Constant.EMPTY,
+                    apkInfo.getApplicationLable(),
+                    path,
+                    fileKey);
+            appDetailDao.saveAppDetailEntry(newEntry);
+        }
+        destFile.delete();
+        imageFile.delete();
+    }
+
+
+    public void importApkFile2(MultipartFile file, InputStream inputStream, String fileName) throws Exception {
+        ObjectId id = new ObjectId();
+        final String anOSName = System.getProperty("os.name");
+        String bathPath = Resources.getProperty("upload.file");
+        if (anOSName.toLowerCase().startsWith("windows")) {
+            bathPath= Resources.getProperty("uploads.file");
+        }
+        File dir = new File(bathPath);
+        if (!dir.exists()) {
+            dir.mkdirs();
+        }
+        File destFile = new File(bathPath, fileName);
+        if (!destFile.exists()) {
+            destFile.createNewFile();
+        }
+        file.transferTo(destFile);
+        String fileKey = id.toString() + Constant.POINT + FilenameUtils.getExtension(fileName);
+        String extName = FilenameUtils.getExtension(fileName);
+        String path = "";
+        if (extName.equalsIgnoreCase("amr")) {
+            String saveFileKey = new ObjectId().toString() + ".mp3";
+            com.sys.utils.QiniuFileUtils.convertAmrToMp3(fileKey, saveFileKey, inputStream);
+            path = QiniuFileUtils.getPath(QiniuFileUtils.TYPE_DOCUMENT, saveFileKey);
+        } else {
+            QiniuFileUtils.uploadFile(fileKey, inputStream, QiniuFileUtils.TYPE_DOCUMENT);
+            path = QiniuFileUtils.getPath(QiniuFileUtils.TYPE_DOCUMENT, fileKey);
+        }
+        Map<String, Object> apkSize = GetApkSize.getFilePath(destFile);
+        long size = 0L;
+        if (null != apkSize.get("size")) {
+            size = Long.valueOf(String.valueOf(apkSize.get("size")));
+            System.out.println(size);
+        }
+        String sizeStr = "";
+        if (null != apkSize.get("apkSize")) {
+            sizeStr = String.valueOf(apkSize.get("apkSize"));
+            System.out.println(sizeStr);
+        }
+        ApkUtil apkUtil = new ApkUtil();
+        ApkInfo apkInfo = apkUtil.getApkInfo(destFile.getPath());
+        String imageFileName = new ObjectId().toString() + Constant.POINT + "png";
+        String imageFilePath = bathPath +"/"+ imageFileName;
+        if(anOSName.toLowerCase().startsWith("windows")) {
+            imageFilePath = bathPath + "\\" + imageFileName;
+        }
+        File imageFile = new File(imageFilePath);
+        IconUtil.extractFileFromApk(destFile.getPath(), apkInfo.getApplicationIcon(), imageFilePath);
+        QiniuFileUtils.uploadFile(imageFileName, new FileInputStream(new File(imageFilePath)), QiniuFileUtils.TYPE_IMAGE);
+        String imageFileUrl = QiniuFileUtils.getPath(QiniuFileUtils.TYPE_IMAGE, imageFileName);
+
+        String packageName = apkInfo.getPackageName();
+        AppDetailEntry entry = appDetailDao.getEntryByApkPackageName(packageName);
+        if (null != entry) {
+
+            AppDetailEntry
+                    updateEntry = new AppDetailEntry(entry.getID(),
+                    packageName,
+                    imageFileUrl,
+                    entry.getType(),
+                    size,
+                    Integer.valueOf(apkInfo.getVersionCode()),
+                    entry.getIsControl(),
+                    entry.getWhiteOrBlack(),
+                    sizeStr,
+                    new ArrayList<AttachmentEntry>(),
+                    apkInfo.getVersionName(),
+                    Constant.EMPTY,
+                    apkInfo.getApplicationLable(),
+                    path,
+                    fileKey);
+            appDetailDao.saveAppDetailEntry(updateEntry);
+        } else {
+            AppDetailEntry
+                    newEntry = new AppDetailEntry(
+                    packageName,
+                    imageFileUrl,
+                    Constant.ONE,
+                    size,
+                    Integer.valueOf(apkInfo.getVersionCode()),
+                    Constant.ONE,
+                    Constant.TWO,
                     sizeStr,
                     new ArrayList<AttachmentEntry>(),
                     apkInfo.getVersionName(),

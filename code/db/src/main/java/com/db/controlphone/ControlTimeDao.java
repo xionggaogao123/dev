@@ -8,6 +8,8 @@ import com.pojo.controlphone.ControlTimeEntry;
 import com.sys.constants.Constant;
 import org.bson.types.ObjectId;
 
+import java.util.List;
+
 /**
  * Created by James on 2017/11/7.
  */
@@ -45,6 +47,19 @@ public class ControlTimeDao extends BaseDao {
     public void updEntry(ControlTimeEntry e) {
         BasicDBObject query=new BasicDBObject(Constant.ID,e.getID());
         BasicDBObject updateValue=new BasicDBObject(Constant.MONGO_SET,e.getBaseEntry());
+        update(MongoFacroty.getAppDB(), Constant.COLLECTION_CONTROL_TIME, query,updateValue);
+    }
+
+    //修改最新指令时间戳
+    public void delEntry(ObjectId userId,long time){
+        BasicDBObject query = new BasicDBObject("uid",userId);
+        BasicDBObject updateValue=new BasicDBObject(Constant.MONGO_SET,new BasicDBObject("btm",time));
+        update(MongoFacroty.getAppDB(), Constant.COLLECTION_CONTROL_TIME, query,updateValue);
+    }
+    //批量修改最新指令时间戳
+    public void delAllEntry(List<ObjectId> userIds,long time){
+        BasicDBObject query = new BasicDBObject("uid",new BasicDBObject(Constant.MONGO_IN,userIds));
+        BasicDBObject updateValue=new BasicDBObject(Constant.MONGO_SET,new BasicDBObject("btm",time));
         update(MongoFacroty.getAppDB(), Constant.COLLECTION_CONTROL_TIME, query,updateValue);
     }
 }

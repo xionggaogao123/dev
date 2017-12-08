@@ -1252,7 +1252,7 @@ public class ControlPhoneService {
     public void loadStudentMap(ObjectId userId,ObjectId sonId){
         //向学生端推送消息
         try {
-            MQTTSendMsg.sendMessage(MQTTType.phone.getEname(), sonId.toString());
+            MQTTSendMsg.sendMessage(MQTTType.map.getEname(), sonId.toString());
         }catch (Exception e){
 
         }

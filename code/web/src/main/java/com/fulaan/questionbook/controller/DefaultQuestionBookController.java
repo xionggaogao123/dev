@@ -278,4 +278,25 @@ public class DefaultQuestionBookController extends BaseController {
         return JSON.toJSONString(respObj);
     }
 
+    /**
+     * 增加自定义标签
+     */
+    @ApiOperation(value = "增加自定义标签", httpMethod = "POST", produces = "application/json")
+    @ApiResponses( value = {@ApiResponse(code = 200, message = "Successful — 请求已完成",response = String.class)})
+    @RequestMapping("/addQuestionTags")
+    @ResponseBody
+    public String addQuestionTags(@ApiParam(name="name",required = true,value="自定义标签") @RequestParam(value = "name",required = true) String name){
+        RespObj respObj=new RespObj(Constant.FAILD_CODE);
+        try{
+            respObj.setCode(Constant.SUCCESS_CODE);
+            questionBookService.addQuestionTags(name,getUserId());
+            respObj.setMessage("增加自定义标签成功");
+        }catch (Exception e){
+            e.printStackTrace();
+            respObj.setCode(Constant.FAILD_CODE);
+            respObj.setErrorMessage("增加自定义标签失败!");
+        }
+        return JSON.toJSONString(respObj);
+    }
+
 }

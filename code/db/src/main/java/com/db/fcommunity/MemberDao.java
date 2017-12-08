@@ -150,6 +150,21 @@ public class MemberDao extends BaseDao {
     }
 
     /**
+     * 查询群聊人数
+     *
+     * @return
+     */
+    public int getMembersFromTeacherCount(List<ObjectId> userIds) {
+        BasicDBObject query = new BasicDBObject("r", Constant.ZERO);
+        List<Integer> integers = new ArrayList<Integer>();
+        integers.add(1);
+        integers.add(2);
+        query.append("rl", new BasicDBObject(Constant.MONGO_IN, integers));
+        query.append("uid",new BasicDBObject(Constant.MONGO_NOTIN,userIds));
+        return count(MongoFacroty.getAppDB(), Constant.COLLECTION_FORUM_COMMUNITY_MEMBER, query);
+    }
+
+    /**
      * 更新免打扰
      *
      * @param userId

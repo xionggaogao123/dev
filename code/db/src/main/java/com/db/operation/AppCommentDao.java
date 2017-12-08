@@ -219,6 +219,10 @@ public class AppCommentDao extends BaseDao {
         BasicDBObject query =new BasicDBObject();
         query.append("isr", Constant.ZERO);
         query.append("aid", userId);
+        List<Integer> ilist = new ArrayList<Integer>();
+        ilist.add(1);
+        ilist.add(0);
+        query.append("sta", new BasicDBObject(Constant.MONGO_IN, ilist));
         int count =
                 count(MongoFacroty.getAppDB(),
                         Constant.COLLECTION_APP_COMMENT,
@@ -226,9 +230,12 @@ public class AppCommentDao extends BaseDao {
         return count;
     }
     public int getWebNumber(ObjectId userId,String communityId,String subjectId) {
+        List<Integer> ilist = new ArrayList<Integer>();
+        ilist.add(1);
+        ilist.add(0);
         BasicDBObject query =new BasicDBObject();
         query.append("isr", Constant.ZERO);
-        query.append("aid", userId);
+        query.append("aid", userId).append("sta", new BasicDBObject(Constant.MONGO_IN, ilist));
         if(communityId != null && !communityId.equals("")){
             query.append("rid",new ObjectId(communityId));
         }

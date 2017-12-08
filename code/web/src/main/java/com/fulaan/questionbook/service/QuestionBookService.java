@@ -2,9 +2,11 @@ package com.fulaan.questionbook.service;
 
 import com.db.questionbook.QuestionAdditionDao;
 import com.db.questionbook.QuestionBookDao;
+import com.db.questionbook.QuestionTagsDao;
 import com.fulaan.picturetext.runnable.PictureRunNable;
 import com.fulaan.questionbook.dto.QuestionAdditionDTO;
 import com.fulaan.questionbook.dto.QuestionBookDTO;
+import com.fulaan.questionbook.dto.QuestionTagsDTO;
 import com.pojo.backstage.PictureType;
 import com.pojo.questionbook.QuestionAdditionEntry;
 import com.pojo.questionbook.QuestionBookEntry;
@@ -23,7 +25,7 @@ public class QuestionBookService {
 
     private QuestionBookDao questionBookDao = new QuestionBookDao();
 
-
+    private QuestionTagsDao questionTagsDao =new QuestionTagsDao();
     /**
      * 添加错题
      * @param dto
@@ -265,5 +267,12 @@ public class QuestionBookService {
         //获得时间批次
         long zero = current/(1000*3600*24)*(1000*3600*24)- TimeZone.getDefault().getRawOffset();//今天零点零分零秒的毫秒数
         questionBookDao.changeUnQuestionBook(questionId,zero,current);
+    }
+
+    public void addQuestionTags(String name,ObjectId userId){
+        QuestionTagsDTO dto = new QuestionTagsDTO();
+        dto.setUserId(userId.toString());
+        dto.setName(name);
+        questionTagsDao.addEntry(dto.buildAddEntry());
     }
 }

@@ -83,10 +83,11 @@ public class ControlPhoneService {
         if(entry != null){
             id = controlPhoneDao.addEntry(entry);
         }
-
+        long current = System.currentTimeMillis();
         //向学生端推送消息
         try {
-            MQTTSendMsg.sendMessage(MQTTType.phone.getEname(), dto.getUserId().toString());
+            MQTTSendMsg.sendMessage(MQTTType.phone.getEname(), dto.getUserId().toString(),current);
+            controlTimeDao.delEntry(new ObjectId(dto.getUserId()),current);
         }catch (Exception e){
 
         }
@@ -111,10 +112,11 @@ public class ControlPhoneService {
         if(entry != null){
             id = controlPhoneDao.addEntry(entry);
         }
-
+        long current = System.currentTimeMillis();
         //向学生端推送消息
         try {
-            MQTTSendMsg.sendMessage(MQTTType.app.getEname(), dto.getUserId().toString());
+            MQTTSendMsg.sendMessage(MQTTType.app.getEname(), dto.getUserId().toString(),current);
+            controlTimeDao.delEntry(new ObjectId(dto.getUserId()),current);
         }catch (Exception e){
 
         }
@@ -176,9 +178,11 @@ public class ControlPhoneService {
         ControlPhoneEntry entry = controlPhoneDao.getEntry2(id);
         if(null != entry){
             controlPhoneDao.delEntry(id);
+            long current = System.currentTimeMillis();
             //向学生端推送消息
             try {
-                MQTTSendMsg.sendMessage(MQTTType.app.getEname(), entry.getUserId().toString());
+                MQTTSendMsg.sendMessage(MQTTType.app.getEname(), entry.getUserId().toString(),current);
+                controlTimeDao.delEntry(entry.getUserId(),current);
             }catch (Exception e){
 
             }
@@ -248,10 +252,16 @@ public class ControlPhoneService {
             }
 
         }
+        long current = System.currentTimeMillis();
         List<String> objectIdList = newVersionBindService.getStudentIdListByCommunityId(communityId);
         //向学生端推送消息
         try {
-            MQTTSendMsg.sendMessageList(MQTTType.phone.getEname(),objectIdList);
+            MQTTSendMsg.sendMessageList(MQTTType.phone.getEname(),objectIdList,current);
+            List<ObjectId> oids = new ArrayList<ObjectId>();
+            for(String str : objectIdList){
+                oids.add(new ObjectId(str));
+            }
+            controlTimeDao.delAllEntry(oids, current);
         }catch (Exception e){
 
         }
@@ -307,9 +317,11 @@ public class ControlPhoneService {
             }
 
         }
+        long current = System.currentTimeMillis();
         //向学生端推送消息
         try {
-            MQTTSendMsg.sendMessage(MQTTType.app.getEname(), sonId.toString());
+            MQTTSendMsg.sendMessage(MQTTType.app.getEname(), sonId.toString(),current);
+            controlTimeDao.delEntry(sonId, current);
         }catch (Exception e){
 
         }
@@ -394,14 +406,16 @@ public class ControlPhoneService {
         }
         //推送孩子禁用时间
         //向学生端推送消息
+        long current = System.currentTimeMillis();
         try {
-            MQTTSendMsg.sendMessage(MQTTType.mi.getEname(), userId.toString());
+            MQTTSendMsg.sendMessage(MQTTType.mi.getEname(), userId.toString(),current);
+            controlTimeDao.delEntry(userId, current);
         }catch (Exception e){
 
         }
     }
     //接受应用使用1情况记录表
-    public void acceptAppResultList(ResultAppDTO dto,ObjectId userId){
+    public long acceptAppResultList(ResultAppDTO dto,ObjectId userId){
         List<ControlAppResultDTO> dtos = dto.getAppList();
         NewVersionBindRelationEntry newEntry = newVersionBindRelationDao.getBindEntry(userId);
         long current = System.currentTimeMillis();
@@ -415,6 +429,8 @@ public class ControlPhoneService {
         if(oids.size()>0){
             controlAppResultDao.updEntry(oids);
         }
+
+        return controlTimeDao.getEntryByUserId(userId).getBackTime();
     }
 
     public Map<String,Object> seacherAppResultList(ObjectId parentId,ObjectId sonId,long time){
@@ -1160,7 +1176,7 @@ public class ControlPhoneService {
         return map;
     }
     public List<ObjectId> getMyRoleList(ObjectId userId){
-        List<ObjectId> olsit = memberDao.getGroupIdsList(userId);
+        List<ObjectId> olsit = memberDao.getManagerGroupIdsByUserId(userId);
         List<ObjectId> clist = new ArrayList<ObjectId>();
         List<ObjectId> mlist =   groupDao.getGroupIdsList(olsit);
         return mlist;
@@ -1177,7 +1193,12 @@ public class ControlPhoneService {
         List<String> objectIdList = newVersionBindService.getStudentIdListByCommunityId(communityId);
         //向学生端推送消息
         try {
-            MQTTSendMsg.sendMessageList(MQTTType.phone.getEname(),objectIdList);
+            MQTTSendMsg.sendMessageList(MQTTType.phone.getEname(),objectIdList,current);
+            List<ObjectId> oids = new ArrayList<ObjectId>();
+            for(String str : objectIdList){
+                oids.add(new ObjectId(str));
+            }
+            controlTimeDao.delAllEntry(oids, current);
         }catch (Exception e){
 
         }
@@ -1243,7 +1264,12 @@ public class ControlPhoneService {
         List<String> objectIdList = newVersionBindService.getStudentIdListByCommunityId(communityId);
         //向学生端推送消息
         try {
-            MQTTSendMsg.sendMessageList(MQTTType.phone.getEname(),objectIdList);
+            MQTTSendMsg.sendMessageList(MQTTType.phone.getEname(),objectIdList,current);
+            List<ObjectId> oids = new ArrayList<ObjectId>();
+            for(String str : objectIdList){
+                oids.add(new ObjectId(str));
+            }
+            controlTimeDao.delAllEntry(oids, current);
         }catch (Exception e){
 
         }
@@ -1251,8 +1277,10 @@ public class ControlPhoneService {
 
     public void loadStudentMap(ObjectId userId,ObjectId sonId){
         //向学生端推送消息
+        long current=System.currentTimeMillis();
         try {
-            MQTTSendMsg.sendMessage(MQTTType.phone.getEname(), sonId.toString());
+            MQTTSendMsg.sendMessage(MQTTType.map.getEname(), sonId.toString(),current);
+            controlTimeDao.delEntry(sonId, current);
         }catch (Exception e){
 
         }

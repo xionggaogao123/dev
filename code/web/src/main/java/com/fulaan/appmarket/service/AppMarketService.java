@@ -279,7 +279,7 @@ public class AppMarketService {
                     size,
                     Integer.valueOf(apkInfo.getVersionCode()),
                     Constant.ONE,
-                    Constant.TWO,
+                    Constant.ONE,
                     sizeStr,
                     new ArrayList<AttachmentEntry>(),
                     apkInfo.getVersionName(),

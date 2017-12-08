@@ -381,8 +381,8 @@ public class ControlPhoneController extends BaseController {
         RespObj respObj=new RespObj(Constant.FAILD_CODE);
         try {
             respObj.setCode(Constant.SUCCESS_CODE);
-            controlPhoneService.acceptAppResultList(dto,getUserId());
-            respObj.setMessage("定时接受孩子的应用使用情况成功");
+            long time = controlPhoneService.acceptAppResultList(dto,getUserId());
+            respObj.setMessage(time);
         } catch (Exception e) {
             e.printStackTrace();
             respObj.setCode(Constant.FAILD_CODE);

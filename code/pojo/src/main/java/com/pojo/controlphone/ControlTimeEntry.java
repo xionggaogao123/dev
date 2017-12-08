@@ -12,6 +12,7 @@ import org.bson.types.ObjectId;
  userId             用户id                uid
  parentId            父id                 pid
  time              控制时间              tim
+ backTime           上一次mqtt时间       btm
  */
 public class ControlTimeEntry extends BaseDBObject {
     public ControlTimeEntry(){
@@ -25,12 +26,14 @@ public class ControlTimeEntry extends BaseDBObject {
     public ControlTimeEntry(
             ObjectId parentId,
             ObjectId userId,
-            long time
+            long time,
+            long backTime
     ){
         BasicDBObject dbObject=new BasicDBObject()
                 .append("pid", parentId)
                 .append("uid", userId)
                 .append("tim", time)
+                .append("btm",backTime)
                 .append("isr", 0);
         setBaseEntry(dbObject);
     }
@@ -40,13 +43,15 @@ public class ControlTimeEntry extends BaseDBObject {
             ObjectId id,
             ObjectId parentId,
             ObjectId userId,
-            long time
+            long time,
+            long backTime
     ){
         BasicDBObject dbObject=new BasicDBObject()
                 .append(Constant.ID,id)
                 .append("pid", parentId)
                 .append("uid",userId)
                 .append("tim", time)
+                .append("btm",backTime)
                 .append("isr", 0);
         setBaseEntry(dbObject);
     }
@@ -69,6 +74,12 @@ public class ControlTimeEntry extends BaseDBObject {
     }
     public void setTime(long time){
         setSimpleValue("tim",time);
+    }
+    public long getBackTime(){
+        return getSimpleLongValueDef("btm",0l);
+    }
+    public void setBackTime(long backTime){
+        setSimpleValue("btm",backTime);
     }
 
     public int getIsRemove(){

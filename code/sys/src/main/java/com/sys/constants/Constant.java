@@ -897,6 +897,8 @@ public class Constant {
     public static final String COLLECTION_QUESTION_BOOK = "questionbook";
     //解析表
     public static final String COLLECTION_QUESTION_ADDITION = "questionnewaddition";
+    //自定义表签
+    public static final String COLLECTION_QUESTION_TAGS = "questiontags";
 
     /**--------------------------管控--------------------------**/
 

@@ -12,7 +12,7 @@ public class MQTTMain {
         String[] str = {};
         try{
             //MQTTSendMsg.main(str);
-            MQTTSendMsg.sendMessage(code,"55934c26f6f28b7261c1bae1");
+            MQTTSendMsg.sendMessage(code,"55934c26f6f28b7261c1bae1",0l);
         }catch (Exception e){
 
         }

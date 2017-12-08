@@ -282,18 +282,26 @@ public class BackStageService {
     //教师认证1未验证，2 验证通过 3 验证不通过
     public Map<String,Object> selectTeacherList(ObjectId userId,int type,String searchId,int page,int pageSize){
         Map<String,Object> map = new HashMap<String, Object>();
+        List<TeacherApproveEntry> entries = new ArrayList<TeacherApproveEntry>();
         List<ObjectId> oids = teacherApproveDao.selectContentObjectList();
         List<MemberEntry> entries2 = memberDao.getMembersFromTeacher(oids, page, pageSize);
+        int count = 0;
         if(type==1){
+            for(MemberEntry memberEntry : entries2){
 
+                //entries.add();
+            }
+            count = memberDao.getMembersFromTeacherCount(oids);
         }else if(type==2){
-
+            //memberDao.get
+            entries = teacherApproveDao.selectContentList(searchId, type, page, pageSize);
+            count = teacherApproveDao.getNumber(searchId, type);
         }else if(type==3){
-
+            //memberDao.get
+            entries = teacherApproveDao.selectContentList(searchId, type, page, pageSize);
+            count = teacherApproveDao.getNumber(searchId, type);
         }
-        //memberDao.get
-        List<TeacherApproveEntry> entries = teacherApproveDao.selectContentList(searchId, type, page, pageSize);
-        int count = teacherApproveDao.getNumber(searchId, type);
+
         List<TeacherApproveDTO> dtos = new ArrayList<TeacherApproveDTO>();
         if(entries.size()>0){
             Set<ObjectId> userIds=new HashSet<ObjectId>();
@@ -436,7 +444,7 @@ public class BackStageService {
 
             }else{
                 List<ObjectId> ob = entry1.getAppIdList();
-                if(!ob.contains(appId)){
+                if(ob.contains(appId)){
                     ob.remove(appId);
                     entry1.setAppIdList(ob);
                     controlAppSystemDao.updEntry(entry1);

@@ -46,6 +46,7 @@ import com.pojo.wrongquestion.SubjectClassEntry;
 import com.sys.constants.Constant;
 import com.sys.utils.AvatarUtils;
 import com.sys.utils.DateTimeUtils;
+import com.sys.utils.TimeChangeUtils;
 import org.bson.types.ObjectId;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -368,12 +369,12 @@ public static void main(String[] args){
     /**
      * 查询当前作业签到名单
      */
-    public Map<String,Object> selectRecordList(ObjectId id){
+    public Map<String,Object> selectRecordList(ObjectId userId,ObjectId id){
         Map<String,Object> map = new HashMap<String, Object>();
         //获得作业
         AppCommentEntry aen = appCommentDao.getEntry(id);
         //获得需要签到的id
-        List<String> objectIdList = this.getMyRoleList2(aen.getRecipientId());
+        List<String> objectIdList = this.getMyRoleList2(userId,aen.getRecipientId());
         List<ObjectId> oblist = new ArrayList<ObjectId>();
         //获得当前时间
         long current=System.currentTimeMillis();
@@ -754,6 +755,107 @@ public static void main(String[] args){
         }
         Map<String,Object> map4 = this.isSign(userId, dateTime,dto4s);
         map3.put("isload",map4);
+        map3.put("list",dtos);
+        map3.put("count",count);
+
+        //清除红点
+        redDotService.cleanResult(userId,ApplyTypeEn.operation.getType(),dateTime);
+        return map3;
+    }
+
+
+    /**
+     * 按日查找用户发放作业情况
+     */
+    public Map<String,Object> selectWebDatePageList(long dateTime,ObjectId userId,int page,int pageSize,int type,String communityId,String subjectId){
+        List<AppCommentDTO> dtos = new ArrayList<AppCommentDTO>();
+        //获得当前时间
+        long current=System.currentTimeMillis();
+        //获得时间批次
+        long zero=current/(1000*3600*24)*(1000*3600*24)- TimeZone.getDefault().getRawOffset();//今天零点零分零秒的毫秒数
+        Map<String,Object> map3 = new HashMap<String, Object>();
+        List<String> uids = new ArrayList<String>();
+        List<ObjectId> dto4s = new ArrayList<ObjectId>();
+        int count = 0;
+        List<ObjectId> objectIdList = new ArrayList<ObjectId>();
+        if(type==1){
+            //发送的作业
+            List<AppCommentEntry> entries1 = new ArrayList<AppCommentEntry>();
+            if(page==1){
+                //保存的作业
+                entries1 = appCommentDao.selectWebWillDateList(userId, communityId, subjectId);
+            }
+            List<AppCommentEntry> entries = new ArrayList<AppCommentEntry>();
+            List<AppCommentEntry> entries3 = appCommentDao.selectWebDateListPage(userId, communityId, subjectId, page, pageSize);
+            count = appCommentDao.getWebNumber(userId, communityId, subjectId);
+            entries.addAll(entries1);
+            entries.addAll(entries3);
+            if(entries.size()>0){
+                for(AppCommentEntry en : entries){
+                    if(en.getDateTime() <= zero && en.getStatus()==1){
+                        en.setStatus(0);
+                    }
+                    AppCommentDTO dto = new AppCommentDTO(en);
+                    dto.setCreateTime(TimeChangeUtils.getChangeTime(en.getCreateTime()));
+                    dto.setType(1);
+                    uids.add(dto.getAdminId());
+                    dtos.add(dto);
+                }
+            }
+        }else{
+            List<ObjectId>  dlist = new ArrayList<ObjectId>();
+            if(communityId != null && !communityId.equals("")){
+                dlist.add(new ObjectId(communityId));
+            }else{
+                List<CommunityDTO> communityDTOList =communityService.getCommunitys(userId, 1, 100);
+                if(communityDTOList.size() >0){
+                    for(CommunityDTO dto : communityDTOList){
+                        dlist.add(new ObjectId(dto.getId()));
+                    }
+                }
+            }
+
+            List<AppCommentEntry> entries2 = appCommentDao.selectWebPageDateList(dlist, subjectId, userId, page, pageSize);
+            count = appCommentDao.getWebPageNumber(dlist, subjectId, userId);
+            List<ObjectId> idList = new ArrayList<ObjectId>();
+            if(entries2.size()>0){
+                for(AppCommentEntry en : entries2){
+                    AppCommentDTO dto3 = new AppCommentDTO(en);
+                    if(dto3.getAdminId() != null && dto3.getAdminId().equals(userId.toString())){
+
+                    }else{
+                        idList.add(en.getID());
+                        dto3.setCreateTime(TimeChangeUtils.getChangeTime(en.getCreateTime()));
+                        dto3.setType(2);
+                        uids.add(dto3.getAdminId());
+                        dtos.add(dto3);
+                        dto4s.add(en.getID());
+                    }
+                }
+            }
+            objectIdList = appRecordResultDao.getEntryByParentList(idList,userId);
+        }
+        List<UserDetailInfoDTO> udtos = userService.findUserInfoByUserIds(uids);
+        Map<String,UserDetailInfoDTO> map = new HashMap<String, UserDetailInfoDTO>();
+        if(udtos != null && udtos.size()>0){
+            for(UserDetailInfoDTO dto4 : udtos){
+                map.put(dto4.getId(),dto4);
+            }
+        }
+        for(AppCommentDTO dto5 : dtos){
+            UserDetailInfoDTO dto9 = map.get(dto5.getAdminId());
+            if(dto9 != null){
+                String name = StringUtils.isNotEmpty(dto9.getNickName())?dto9.getNickName():dto9.getUserName();
+                dto5.setAdminName(name);
+                dto5.setAdminUrl(dto9.getImgUrl());
+            }
+            dto5.setIsLoad(1);
+            if(objectIdList.size()>0){
+                if(objectIdList.contains(new ObjectId(dto5.getId()))){
+                    dto5.setIsLoad(2);
+                }
+            }
+        }
         map3.put("list",dtos);
         map3.put("count",count);
 
@@ -1377,14 +1479,14 @@ public static void main(String[] args){
      *根据社区id返回社区中不具有管理员权限的人
      *
      */
-    public List<String> getMyRoleList2(ObjectId id){
+    public List<String> getMyRoleList2(ObjectId userId,ObjectId id){
         //获得groupId
         ObjectId obj =   communityDao.getGroupIdByCommunityId(id);
         List<MemberEntry> olist = memberDao.getMembers(obj, 1, 1000);
         List<String> clist = new ArrayList<String>();
         if(olist.size()>0){
             for(MemberEntry en : olist){
-                if(en.getRole()==0){
+                if(!en.getUserId().equals(userId)){
                     clist.add(en.getUserId().toString());
                 }
             }

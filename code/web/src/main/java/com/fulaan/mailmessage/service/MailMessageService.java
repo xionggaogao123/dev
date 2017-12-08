@@ -26,7 +26,7 @@ public class MailMessageService {
     @Autowired
     private UserService userService;
 
-    private static final String mailName = "james.zhang@fulaan.com";
+    private static final String mailName = "info@jiaxiaomei.com";
 
     private static final Logger logger =Logger.getLogger(MailMessageService.class);
 

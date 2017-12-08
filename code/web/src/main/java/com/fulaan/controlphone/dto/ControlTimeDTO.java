@@ -11,6 +11,7 @@ public class ControlTimeDTO {
     private String userId;
     private String parentId;
     private long time;
+    private long backTime;
 
     public ControlTimeDTO(){
 
@@ -21,6 +22,7 @@ public class ControlTimeDTO {
             this.parentId = e.getParentId() == null ? "" : e.getParentId().toString();
             this.userId = e.getUserId() == null ? "" : e.getUserId().toString();
             this.time = e.getTime();
+            this.backTime = e.getBackTime();
         }else{
             new ControlTimeDTO();
         }
@@ -39,7 +41,8 @@ public class ControlTimeDTO {
                 new ControlTimeEntry(
                         pId,
                         uId,
-                        this.time
+                        this.time,
+                        this.backTime
                 );
         return openEntry;
 
@@ -62,14 +65,21 @@ public class ControlTimeDTO {
                         Id,
                         pId,
                         uId,
-                        this.time
+                        this.time,
+                        this.backTime
                 );
         return openEntry;
 
     }
 
 
+    public long getBackTime() {
+        return backTime;
+    }
 
+    public void setBackTime(long backTime) {
+        this.backTime = backTime;
+    }
 
     public String getId() {
         return id;

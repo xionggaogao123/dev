@@ -9,7 +9,7 @@ import java.util.Date;
 import java.util.List;
 
 public class MQTTSendMsg {
-    public static void sendMessage(final String code,final String clientBiao) throws IOException {
+    public static void sendMessage(final String code,final String clientBiao,final long current) throws IOException {
         /**
          * 设置当前用户私有的MQTT的接入点。例如此处示意使用XXX，实际使用请替换用户自己的接入点。接入点的获取方法是，在控制台申请MQTT实例，每个实例都会分配一个接入点域名。
          */
@@ -69,7 +69,7 @@ public class MQTTSendMsg {
             sampleClient.connect(connOpts);
             for (int i = 0; i < 1; i++) {
                 try {
-                    String scontent = new Date().getTime()+"##" + code;
+                    String scontent = current+"##" + code;
                     //此处消息体只需要传入byte数组即可，对于其他类型的消息，请自行完成二进制数据的转换
                     final MqttMessage message = new MqttMessage(scontent.getBytes());
                     /*QoS级别	  cleanSession=true	                  cleanSession=false
@@ -105,7 +105,7 @@ public class MQTTSendMsg {
 
     }
 
-    public static void sendMessageList(final String code,final List<String> clientBiaos) throws IOException {
+    public static void sendMessageList(final String code,final List<String> clientBiaos,final long current) throws IOException {
         /**
          * 设置当前用户私有的MQTT的接入点。例如此处示意使用XXX，实际使用请替换用户自己的接入点。接入点的获取方法是，在控制台申请MQTT实例，每个实例都会分配一个接入点域名。
          */
@@ -165,7 +165,7 @@ public class MQTTSendMsg {
             sampleClient.connect(connOpts);
             for (int i = 0; i < 1; i++) {
                 try {
-                    String scontent = new Date().getTime()+"##" + code;
+                    String scontent = current+"##" + code;
                     //此处消息体只需要传入byte数组即可，对于其他类型的消息，请自行完成二进制数据的转换
                     final MqttMessage message = new MqttMessage(scontent.getBytes());
                     /*QoS级别	  cleanSession=true	                  cleanSession=false

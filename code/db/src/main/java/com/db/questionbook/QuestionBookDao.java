@@ -133,6 +133,23 @@ public class QuestionBookDao extends BaseDao{
         }
         return entryList;
     }
+    /**
+     * 符合搜索条件的对象个数
+     * @return
+     */
+    public int getReviewListCount(ObjectId userId,long time) {
+        BasicDBObject query = new BasicDBObject()
+                .append("uid", userId)
+                .append("ptm", new BasicDBObject(Constant.MONGO_LT, time))
+                .append("typ",1)
+                .append("isr", 0); // 未删除
+        int count =
+                count(MongoFacroty.getAppDB(),
+                        Constant.COLLECTION_QUESTION_BOOK,
+                        query);
+        return count;
+    }
+
 
     //修改复习题
     public void updateQuestionBook(ObjectId id,long time,int level){

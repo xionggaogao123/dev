@@ -1,5 +1,6 @@
 package com.fulaan.controlphone.service;
 
+import cn.jiguang.commom.utils.StringUtils;
 import com.db.appmarket.AppDetailDao;
 import com.db.backstage.TeacherApproveDao;
 import com.db.controlphone.*;
@@ -1083,12 +1084,12 @@ public class ControlPhoneService {
         }
         //是否认证
         TeacherApproveEntry entry = teacherApproveDao.getEntry(teacherId);
-       /* if(entry != null && entry.getType()==2){
+        if(entry != null && entry.getType()==2){
             map.put("isRen",true);
         }else{
             map.put("isRen",false);
-        }*/
-        map.put("isRen",true);
+        }
+        //map.put("isRen",true);
         return map;
     }
 
@@ -1306,5 +1307,256 @@ public class ControlPhoneService {
         if(dbList.size()>0) {
             controlAppResultDao.addBatch(dbList);
         }
+    }
+
+
+    public List<AppDetailDTO> getThirdAppList(){
+        List<AppDetailDTO> detailDTOs = new ArrayList<AppDetailDTO>();
+        List<AppDetailEntry> appDetailEntries = appDetailDao.getAppByCondition("");
+        for (AppDetailEntry entry : appDetailEntries) {
+            detailDTOs.add(new AppDetailDTO(entry));
+        }
+        return detailDTOs;
+    }
+
+    public Map<String,Object> getUserSendAppList(ObjectId userId){
+        Map<String,Object> map = new HashMap<String, Object>();
+        //
+        //查询所有该用户的绑定关系
+        List<ObjectId> childIds = newVersionBindRelationDao.getIdsByMainUserId(userId);
+        if(childIds.size()>0){
+            map.put("isParent",true);
+        }else{
+            map.put("isParent",false);
+        }
+        childIds.add(userId);
+        List<UserDetailInfoDTO> infos = userService.findUserInfoByIds(childIds);
+        Map<String,UserDetailInfoDTO> map2 = new HashMap<String, UserDetailInfoDTO>();
+        if(infos != null && infos.size()>0){
+            for(UserDetailInfoDTO dto4 : infos){
+                map2.put(dto4.getId(),dto4);
+            }
+        }
+
+        //查询具有管理员权限的社区
+        List<ObjectId> oids = getMyRoleList(userId);
+        if(oids.size()>0){
+            map.put("isTeacher",true);
+        }else{
+            map.put("isTeacher",false);
+        }
+        oids.add(userId);
+        List<CommunityEntry> communityEntries = communityDao.findByObjectIds(oids);
+        Map<String,CommunityEntry> map3 = new HashMap<String, CommunityEntry>();
+        if(communityEntries != null && communityEntries.size()>0){
+            for(CommunityEntry dto4 : communityEntries){
+                map3.put(dto4.getID().toString(),dto4);
+            }
+        }
+
+        List<ControlAppUserEntry> entryList1 = controlAppUserDao.getUserSendAppList(userId,childIds);
+        List<ControlAppEntry> entryList2 = controlAppDao.getEntryListByUserId(userId,oids);
+        List<ResultAppListDTO> dtos1 = new ArrayList<ResultAppListDTO>();
+        List<ResultAppListDTO> dtos2 = new ArrayList<ResultAppListDTO>();
+        if(entryList1.size()>0){
+            for(ControlAppUserEntry entry : entryList1){
+                UserDetailInfoDTO infoDTO = map2.get(entry.getUserId().toString());
+                ResultAppListDTO dto = new ResultAppListDTO();
+                String name = StringUtils.isNotEmpty(infoDTO.getNickName())?infoDTO.getNickName():infoDTO.getUserName();
+                dto.setName(name);
+                dto.setUrl(infoDTO.getImgUrl());
+                if(entry.getAppIdList() != null){
+                    dto.setCount(entry.getAppIdList().size());
+                }else{
+                    dto.setCount(0);
+                }
+                dto.setContactId(entry.getUserId().toString());
+                dto.setType(1);//孩子
+                childIds.remove(entry.getUserId());
+                dtos1.add(dto);
+            }
+        }
+        if(entryList2.size()>0){
+            for(ControlAppEntry entry : entryList2){
+                CommunityEntry entry2 = map3.get(entry.getCommunityId().toString());
+                ResultAppListDTO dto = new ResultAppListDTO();
+                dto.setName(entry2.getCommunityName());
+                dto.setUrl(entry2.getCommunityLogo());
+                if(entry.getAppIdList() != null){
+                    dto.setCount(entry.getAppIdList().size());
+                }else{
+                    dto.setCount(0);
+                }
+                dto.setContactId(entry.getCommunityId().toString());
+                dto.setType(2);//社区
+                oids.remove(entry.getCommunityId());
+                dtos2.add(dto);
+            }
+        }
+        for(ObjectId id : childIds){
+            UserDetailInfoDTO infoDTO = map2.get(id.toString());
+            ResultAppListDTO dto = new ResultAppListDTO();
+            String name = StringUtils.isNotEmpty(infoDTO.getNickName())?infoDTO.getNickName():infoDTO.getUserName();
+            dto.setName(name);
+            dto.setUrl(infoDTO.getImgUrl());
+            dto.setCount(0);
+            dto.setContactId(id.toString());
+            dto.setType(1);//孩子
+            dtos1.add(dto);
+        }
+
+        for(ObjectId id : oids){
+            CommunityEntry entry2 = map3.get(id.toString());
+            ResultAppListDTO dto = new ResultAppListDTO();
+            dto.setName(entry2.getCommunityName());
+            dto.setUrl(entry2.getCommunityLogo());
+            dto.setCount(0);
+            dto.setContactId(id.toString());
+            dto.setType(2);//社区
+            dtos2.add(dto);
+        }
+        map.put("childList",dtos1);
+        map.put("communityList",dtos2);
+        return map;
+    }
+
+    public List<AppDetailDTO> getOneAppList(ObjectId parentId,ObjectId contactId,int type){
+        List<AppDetailDTO> dtos = new ArrayList<AppDetailDTO>();
+        List<AppDetailEntry> entries = new ArrayList<AppDetailEntry>();
+        if(type==1){//孩子
+            ControlAppUserEntry entry = controlAppUserDao.getEntry(parentId, contactId);
+            if(entry!=null && entry.getAppIdList()!=null && entry.getAppIdList().size() >0){
+                entries = appDetailDao.getEntriesByIds(entry.getAppIdList());
+            }
+        }else{
+            ControlAppEntry entry = controlAppDao.getEntry(parentId, contactId);
+            if(entry!=null && entry.getAppIdList()!=null && entry.getAppIdList().size() >0){
+                entries = appDetailDao.getEntriesByIds(entry.getAppIdList());
+            }
+
+        }
+        for(AppDetailEntry entry2 : entries){
+            dtos.add(new AppDetailDTO(entry2));
+        }
+        return dtos;
+    }
+
+    public void addAppToChildOrCommunity(ObjectId parentId,ObjectId contactId,int type,ObjectId appId,int isCheckId){
+        if(type==1){//孩子
+            this.addParentAppList(parentId,contactId,appId,isCheckId);
+        }else if(type==2){//社区
+            this.addTeaCommunityAppList(parentId,contactId,appId,isCheckId);
+        }
+    }
+
+
+    public Map<String,Object> selectOneAppFromOwen(ObjectId userId,ObjectId appId){
+        Map<String,Object> map = new HashMap<String, Object>();
+        //查询所有该用户的绑定关系
+        List<ObjectId> childIds = newVersionBindRelationDao.getIdsByMainUserId(userId);
+        if(childIds.size()>0){
+            map.put("isParent",true);
+        }else{
+            map.put("isParent",false);
+        }
+        childIds.add(userId);
+        List<UserDetailInfoDTO> infos = userService.findUserInfoByIds(childIds);
+        Map<String,UserDetailInfoDTO> map2 = new HashMap<String, UserDetailInfoDTO>();
+        if(infos != null && infos.size()>0){
+            for(UserDetailInfoDTO dto4 : infos){
+                map2.put(dto4.getId(),dto4);
+            }
+        }
+
+        //查询具有管理员权限的社区
+        List<ObjectId> oids = getMyRoleList(userId);
+        if(oids.size()>0){
+            map.put("isTeacher",true);
+        }else{
+            map.put("isTeacher",false);
+        }
+        oids.add(userId);
+        List<CommunityEntry> communityEntries = communityDao.findByObjectIds(oids);
+        Map<String,CommunityEntry> map3 = new HashMap<String, CommunityEntry>();
+        if(communityEntries != null && communityEntries.size()>0){
+            for(CommunityEntry dto4 : communityEntries){
+                map3.put(dto4.getID().toString(),dto4);
+            }
+        }
+
+        TeacherApproveEntry teacherApproveEntry = teacherApproveDao.getEntry(userId);
+        if(teacherApproveEntry != null && teacherApproveEntry.getType()==2){
+            map.put("isRen",true);
+        }else{
+            map.put("isRen",false);
+        }
+
+        AppDetailEntry appDetailEntry = appDetailDao.findEntryById(appId);
+        map.put("app",new AppDetailDTO(appDetailEntry));
+        List<ControlAppUserEntry> entryList1 = controlAppUserDao.getUserSendAppList(userId,childIds);
+        List<ControlAppEntry> entryList2 = controlAppDao.getEntryListByUserId(userId,oids);
+        List<ResultUserAppList> dtos1 = new ArrayList<ResultUserAppList>();
+        List<ResultUserAppList> dtos2 = new ArrayList<ResultUserAppList>();
+        if(entryList1.size()>0){
+            for(ControlAppUserEntry entry : entryList1){
+                UserDetailInfoDTO infoDTO = map2.get(entry.getUserId().toString());
+                ResultUserAppList dto = new ResultUserAppList();
+                String name = StringUtils.isNotEmpty(infoDTO.getNickName())?infoDTO.getNickName():infoDTO.getUserName();
+                dto.setName(name);
+                dto.setUrl(infoDTO.getImgUrl());
+                dto.setContactId(entry.getUserId().toString());
+                dto.setType(1);//孩子
+                dto.setAppId(appId.toString());
+                if(entry.getAppIdList() != null && entry.getAppIdList().contains(appId)){
+                    dto.setIsCheck(1);
+                }else{
+                    dto.setIsCheck(2);
+                }
+                childIds.remove(entry.getUserId());
+                dtos1.add(dto);
+            }
+        }
+        if(entryList2.size()>0){
+            for(ControlAppEntry entry : entryList2){
+                CommunityEntry entry2 = map3.get(entry.getCommunityId().toString());
+                ResultUserAppList dto = new ResultUserAppList();
+                dto.setName(entry2.getCommunityName());
+                dto.setUrl(entry2.getCommunityLogo());
+                dto.setContactId(entry.getCommunityId().toString());
+                dto.setType(2);//社区
+                if(entry.getAppIdList() != null && entry.getAppIdList().contains(appId)){
+                    dto.setIsCheck(1);
+                }else{
+                    dto.setIsCheck(2);
+                }
+                oids.remove(entry.getCommunityId());
+                dtos2.add(dto);
+            }
+        }
+        for(ObjectId id : childIds){
+            UserDetailInfoDTO infoDTO = map2.get(id.toString());
+            ResultUserAppList dto = new ResultUserAppList();
+            String name = StringUtils.isNotEmpty(infoDTO.getNickName())?infoDTO.getNickName():infoDTO.getUserName();
+            dto.setName(name);
+            dto.setUrl(infoDTO.getImgUrl());
+            dto.setIsCheck(2);
+            dto.setContactId(id.toString());
+            dto.setType(1);//孩子
+            dtos1.add(dto);
+        }
+
+        for(ObjectId id : oids){
+            CommunityEntry entry2 = map3.get(id.toString());
+            ResultUserAppList dto = new ResultUserAppList();
+            dto.setName(entry2.getCommunityName());
+            dto.setUrl(entry2.getCommunityLogo());
+            dto.setIsCheck(2);
+            dto.setContactId(id.toString());
+            dto.setType(2);//社区
+            dtos2.add(dto);
+        }
+        map.put("childList",dtos1);
+        map.put("communityList",dtos2);
+        return  map;
     }
 }

@@ -188,8 +188,8 @@ public class DefaultQuestionBookController extends BaseController {
         RespObj respObj=new RespObj(Constant.FAILD_CODE);
         try {
             respObj.setCode(Constant.SUCCESS_CODE);
-            List<QuestionBookDTO> dtos = questionBookService.getReviewList(getUserId());
-            respObj.setMessage(dtos);
+            int count = questionBookService.getReviewListCount(getUserId());
+            respObj.setMessage(count);
         } catch (Exception e) {
             e.printStackTrace();
             respObj.setCode(Constant.FAILD_CODE);

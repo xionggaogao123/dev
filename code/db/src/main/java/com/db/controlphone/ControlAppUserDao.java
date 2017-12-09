@@ -8,6 +8,9 @@ import com.pojo.controlphone.ControlAppUserEntry;
 import com.sys.constants.Constant;
 import org.bson.types.ObjectId;
 
+import java.util.ArrayList;
+import java.util.List;
+
 /**
  * Created by James on 2017/11/17.
  */
@@ -34,6 +37,26 @@ public class ControlAppUserDao extends BaseDao {
             return new ControlAppUserEntry((BasicDBObject)dbo);
         }
         return null;
+    }
+
+    //单查询
+    public List<ControlAppUserEntry> getUserSendAppList(ObjectId parentId,List<ObjectId> ids) {
+        BasicDBObject query = new BasicDBObject()
+                .append("pid",parentId)
+                .append("uid",new BasicDBObject(Constant.MONGO_IN,ids))
+                .append("isr", 0); // 未删除
+        List<DBObject> dbList =
+                find(MongoFacroty.getAppDB(),
+                        Constant.COLLECTION_CONTROL_PARENT_APP,
+                        query, Constant.FIELDS,
+                        Constant.MONGO_SORTBY_DESC);
+        List<ControlAppUserEntry> entryList = new ArrayList<ControlAppUserEntry>();
+        if (dbList != null && !dbList.isEmpty()) {
+            for (DBObject obj : dbList) {
+                entryList.add(new ControlAppUserEntry((BasicDBObject) obj));
+            }
+        }
+        return entryList;
     }
 
 }

@@ -569,6 +569,7 @@ public class ReportCardService {
                 WebHomePageEntry pageEntry = webHomePageDao.getWebHomePageEntry(new ObjectId(id));
                 if (null != pageEntry) {
                     homePageEntry.setID(pageEntry.getID());
+                    homePageEntry.setStatus(oldEntry.getStatus());
                 }
                 webHomePageDao.saveWebHomeEntry(homePageEntry);
             }

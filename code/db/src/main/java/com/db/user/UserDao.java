@@ -1064,10 +1064,15 @@ public class UserDao extends BaseDao {
         if(StringUtils.isNotBlank(nickName)) {
             updateValue.append("nnm", nickName);
         }
-        BasicDBObject update = new BasicDBObject()
-                .append(Constant.MONGO_SET, updateValue);
-        WriteResult writeResult = update(MongoFacroty.getAppDB(), Constant.COLLECTION_USER_NAME, query, update);
-        return writeResult.getN();
+        if(updateValue.size()>0) {
+            BasicDBObject update = new BasicDBObject()
+                    .append(Constant.MONGO_SET, updateValue);
+            WriteResult writeResult = update(MongoFacroty.getAppDB(), Constant.COLLECTION_USER_NAME, query, update);
+            return writeResult.getN();
+        }else{
+            return 1;
+        }
+
     }
     public int updateUserSex(ObjectId uid, int sex) {
         BasicDBObject query = new BasicDBObject()

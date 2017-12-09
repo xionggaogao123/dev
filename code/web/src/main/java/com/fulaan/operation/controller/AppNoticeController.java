@@ -327,8 +327,9 @@ public class AppNoticeController extends BaseController {
     @RequestMapping("/video/uploadVideo")
     @ResponseBody
     @SessionNeedless
-    public Map<String, Object> uploadVideo(@RequestParam("Filedata") MultipartFile Filedata) throws IllegalParamException, IllegalStateException, IOException, EncoderException {
+    public RespObj uploadVideo(@RequestParam("Filedata") MultipartFile Filedata) throws IllegalParamException, IllegalStateException, IOException, EncoderException {
 
+        RespObj respObj=new RespObj(Constant.FAILD_CODE);
         Map map = new HashMap();
         String fileName = FilenameUtils.getName(Filedata.getOriginalFilename());
 
@@ -350,6 +351,8 @@ public class AppNoticeController extends BaseController {
             encoder.getImage(savedFile, screenShotFile, 1, 480, 270);
             isCreateImage = true;
         } catch (Exception ex) {
+            respObj.setMessage(ex.getMessage());
+            return respObj;
         }
 
         //开始上传
@@ -380,13 +383,17 @@ public class AppNoticeController extends BaseController {
             screenShotFile.delete();
         } catch (Exception ex) {
             ex.printStackTrace();
+            respObj.setMessage(ex.getMessage());
+            return respObj;
         }
 
         map.put("flg", true);
         map.put("vimage", QiniuFileUtils.getPath(QiniuFileUtils.TYPE_IMAGE, coverImage));
         map.put("vid", videoId.toString());
         map.put("vurl", QiniuFileUtils.getPath(QiniuFileUtils.TYPE_USER_VIDEO, ve.getBucketkey()));
-        return map;
+        respObj.setCode(Constant.SUCCESS_CODE);
+        respObj.setMessage(map);
+        return respObj;
     }
 
     @ApiOperation(value = "上传图片", httpMethod = "POST", produces = "application/json")

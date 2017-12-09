@@ -359,6 +359,7 @@ public class WebHomePageService {
                                ){
         WebHomePageDTO webHomePageDTO = new WebHomePageDTO(detailEntry);
         webHomePageDTO.setStatus(status);
+        webHomePageDTO.setId(detailEntry.getID().toString());
         webHomePageDTO.setType(Constant.TWO);
         webHomePageDTO.setOwner(isOwner);
         webHomePageDTO.setContactId(id.toString());

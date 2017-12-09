@@ -197,6 +197,8 @@ public class QuestionBookService {
         long current=System.currentTimeMillis();
         //获得时间批次
         long zero = current/(1000*3600*24)*(1000*3600*24)- TimeZone.getDefault().getRawOffset();//今天零点零分零秒的毫秒数
+        //明日复习
+        //List<QuestionBookEntry> entries = questionBookDao.getReviewList(userId,zero);
         List<QuestionBookEntry> entries = questionBookDao.getReviewList(userId,zero+1);
         List<QuestionBookDTO> dtos = new ArrayList<QuestionBookDTO>();
         List<ObjectId> olist = new ArrayList<ObjectId>();
@@ -229,6 +231,18 @@ public class QuestionBookService {
             }
         }
         return dtos;
+    }
+
+    //获取今日闯关数量
+    public int getReviewListCount(ObjectId userId){
+        //获得当前时间
+        long current=System.currentTimeMillis();
+        //获得时间批次
+        long zero = current/(1000*3600*24)*(1000*3600*24)- TimeZone.getDefault().getRawOffset();//今天零点零分零秒的毫秒数
+        //明日复习
+        //List<QuestionBookEntry> entries = questionBookDao.getReviewList(userId,zero);
+        int count = questionBookDao.getReviewListCount(userId, zero+1);
+        return count;
     }
     /**
      * 今日复习展示

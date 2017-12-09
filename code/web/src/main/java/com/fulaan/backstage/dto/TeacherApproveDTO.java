@@ -20,6 +20,7 @@ public class TeacherApproveDTO {
     private String avatar;
     private int type;
     private String url;
+    private String communityName;
     private List<String> communityList = new ArrayList<String>();
 
     public TeacherApproveDTO(){
@@ -101,6 +102,14 @@ public class TeacherApproveDTO {
                 );
         return openEntry;
 
+    }
+
+    public String getCommunityName() {
+        return communityName;
+    }
+
+    public void setCommunityName(String communityName) {
+        this.communityName = communityName;
     }
 
     public String getAvatar() {

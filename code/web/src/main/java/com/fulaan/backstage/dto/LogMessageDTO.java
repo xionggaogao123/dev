@@ -20,6 +20,7 @@ public class LogMessageDTO {
     private String createTime;
     private String function;
     private String content;
+    private String name;
     private int type;
 
     public LogMessageDTO(){
@@ -88,6 +89,14 @@ public class LogMessageDTO {
                 );
         return openEntry;
 
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public void setName(String name) {
+        this.name = name;
     }
 
     public int getType() {

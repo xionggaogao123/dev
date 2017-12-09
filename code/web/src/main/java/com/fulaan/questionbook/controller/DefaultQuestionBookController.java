@@ -176,6 +176,27 @@ public class DefaultQuestionBookController extends BaseController {
         }
         return JSON.toJSONString(respObj);
     }
+
+    /**
+     * 获取今日闯关任务数量
+     */
+    @ApiOperation(value = "获取今日闯关任务数量", httpMethod = "POST", produces = "application/json")
+    @ApiResponses( value = {@ApiResponse(code = 200, message = "Successful — 请求已完成",response = String.class)})
+    @RequestMapping("/getReviewListCount")
+    @ResponseBody
+    public String getTodayCount(){
+        RespObj respObj=new RespObj(Constant.FAILD_CODE);
+        try {
+            respObj.setCode(Constant.SUCCESS_CODE);
+            int count = questionBookService.getReviewListCount(getUserId());
+            respObj.setMessage(count);
+        } catch (Exception e) {
+            e.printStackTrace();
+            respObj.setCode(Constant.FAILD_CODE);
+            respObj.setErrorMessage("获取今日闯关任务数量失败!");
+        }
+        return JSON.toJSONString(respObj);
+    }
     /**
      *  查询单个错题
      */

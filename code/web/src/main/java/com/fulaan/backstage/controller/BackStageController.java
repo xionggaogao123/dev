@@ -5,6 +5,7 @@ import com.fulaan.annotation.ObjectIdType;
 import com.fulaan.appmarket.dto.AppDetailDTO;
 import com.fulaan.appmarket.service.AppMarketService;
 import com.fulaan.backstage.dto.JxmAppVersionDTO;
+import com.fulaan.backstage.dto.LogMessageDTO;
 import com.fulaan.backstage.dto.UserLogResultDTO;
 import com.fulaan.backstage.dto.UserRoleOfPathDTO;
 import com.fulaan.backstage.service.BackStageService;
@@ -441,6 +442,32 @@ public class BackStageController extends BaseController {
         }
         return respObj;
     }
+
+    @ApiOperation(value = "导入复兰apk", httpMethod = "POST", produces = "application/json")
+    @ApiResponses( value = {@ApiResponse(code = 200, message = "Successful — 请求已完成",response = String.class),
+            @ApiResponse(code = 400, message = "请求中有语法问题，或不能满足请求"),
+            @ApiResponse(code = 500, message = "服务器不能完成请求")})
+    @RequestMapping("/importFulanControl")
+    @ResponseBody
+    public RespObj importFulanControl(HttpServletRequest servletRequest)throws Exception{
+        RespObj respObj=new RespObj(Constant.FAILD_CODE);
+        MultipartRequest request=(MultipartRequest)servletRequest;
+        try {
+            MultiValueMap<String, MultipartFile> fileMap = request.getMultiFileMap();
+            for (List<MultipartFile> multipartFiles : fileMap.values()) {
+                for(MultipartFile file:multipartFiles) {
+                    System.out.println("----" + file.getOriginalFilename());
+                    appMarketService.importApkFile2(file, file.getInputStream(), file.getOriginalFilename());
+                }
+            }
+            respObj.setCode(Constant.SUCCESS_CODE);
+            respObj.setMessage("导入模板成功");
+        }catch (Exception e){
+            e.printStackTrace();
+            respObj.setMessage(e.getMessage());
+        }
+        return respObj;
+    }
     /**
      * 查询申请验证老师的列表
      * @return
@@ -744,10 +771,11 @@ public class BackStageController extends BaseController {
             @ApiResponse(code = 500, message = "服务器不能完成请求")})
     @RequestMapping("/getLogMessage")
     @ResponseBody
-    public String getLogMessage(){
+    public String getLogMessage(@ApiParam(name = "page", required = true, value = "page") @RequestParam(value = "page",defaultValue = "1") int page,
+                                @ApiParam(name = "pageSize", required = true, value = "pageSize") @RequestParam(value = "pageSize",defaultValue = "20") int pageSize){
         RespObj respObj = new RespObj(Constant.FAILD_CODE);
         try{
-            List<JxmAppVersionDTO> dtos =  backStageService.getAllAppVersion();
+            List<LogMessageDTO> dtos =  backStageService.getLogMessage(page,pageSize);
             respObj.setCode(Constant.SUCCESS_CODE);
             respObj.setMessage(dtos);
         }catch (Exception e){
@@ -783,7 +811,10 @@ public class BackStageController extends BaseController {
     }
 
 
-
+    @ApiOperation(value = "老的数据设置为自动好友", httpMethod = "POST", produces = "application/json")
+    @ApiResponses( value = {@ApiResponse(code = 200, message = "Successful — 请求已完成",response = String.class),
+            @ApiResponse(code = 400, message = "请求中有语法问题，或不能满足请求"),
+            @ApiResponse(code = 500, message = "服务器不能完成请求")})
     @RequestMapping("/setAutoCommunityFriends")
     @ResponseBody
     public RespObj setAutoCommunityFriends(){
@@ -791,6 +822,31 @@ public class BackStageController extends BaseController {
         backStageService.setAutoCommunityFriends();
         respObj.setMessage("老的数据设置为自动好友");
         return respObj;
+    }
+
+
+    /**
+     * 删除用户绑定的电话号码
+     * @return
+     */
+    @ApiOperation(value = "删除用户绑定的电话号码", httpMethod = "POST", produces = "application/json")
+    @ApiResponses( value = {@ApiResponse(code = 200, message = "Successful — 请求已完成",response = String.class),
+            @ApiResponse(code = 400, message = "请求中有语法问题，或不能满足请求"),
+            @ApiResponse(code = 500, message = "服务器不能完成请求")})
+    @RequestMapping("/delBindPhone")
+    @ResponseBody
+    public String delBindPhone(){
+        RespObj respObj = new RespObj(Constant.FAILD_CODE);
+        try{
+            backStageService.delBindPhone();
+            respObj.setCode(Constant.SUCCESS_CODE);
+            respObj.setMessage("删除电话号码");
+        }catch (Exception e){
+            e.printStackTrace();
+            respObj.setCode(Constant.SUCCESS_CODE);
+            respObj.setMessage("删除电话号码失败");
+        }
+        return JSON.toJSONString(respObj);
     }
 
 

@@ -64,4 +64,24 @@ public class ControlAppDao extends BaseDao {
         }
         return entryList;
     }
+
+    //查找社区推荐应用列表
+    public List<ControlAppEntry> getEntryListByUserId(ObjectId userId,List<ObjectId> ids) {
+        BasicDBObject query = new BasicDBObject()
+                .append("uid",userId)
+                .append("cid",new BasicDBObject(Constant.MONGO_IN,ids))
+                .append("isr", 0); // 未删除
+        List<DBObject> dbList =
+                find(MongoFacroty.getAppDB(),
+                        Constant.COLLECTION_CONTROL_APP,
+                        query, Constant.FIELDS,
+                        Constant.MONGO_SORTBY_DESC);
+        List<ControlAppEntry> entryList = new ArrayList<ControlAppEntry>();
+        if (dbList != null && !dbList.isEmpty()) {
+            for (DBObject obj : dbList) {
+                entryList.add(new ControlAppEntry((BasicDBObject) obj));
+            }
+        }
+        return entryList;
+    }
 }

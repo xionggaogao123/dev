@@ -6,6 +6,7 @@ import com.mongodb.BasicDBObject;
 import com.mongodb.DBObject;
 import com.pojo.backstage.JxmAppVersionEntry;
 import com.sys.constants.Constant;
+import org.bson.types.ObjectId;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -19,6 +20,12 @@ public class JxmAppVersionDao extends BaseDao {
     public String addEntry(JxmAppVersionEntry entry) {
         save(MongoFacroty.getAppDB(), Constant.COLLECTION_JXM_APP_VERSION, entry.getBaseEntry());
         return entry.getID().toString() ;
+    }
+
+    public void updEntry(JxmAppVersionEntry e) {
+        BasicDBObject query=new BasicDBObject(Constant.ID,e.getID());
+        BasicDBObject updateValue=new BasicDBObject(Constant.MONGO_SET,e.getBaseEntry());
+        update(MongoFacroty.getAppDB(), Constant.COLLECTION_JXM_APP_VERSION, query,updateValue);
     }
     //用户的所有课程列表
     public List<JxmAppVersionEntry> getIsNewObjectId() {
@@ -35,4 +42,22 @@ public class JxmAppVersionDao extends BaseDao {
         }
         return retList;
     }
+
+    public JxmAppVersionEntry getEntry(String packageName) {
+        BasicDBObject query = new BasicDBObject("nam",packageName);
+        query.append("isr",Constant.ZERO);
+        DBObject obj =
+                findOne(MongoFacroty.getAppDB(), Constant.COLLECTION_JXM_APP_VERSION, query, Constant.FIELDS);
+        if (obj != null) {
+            return new JxmAppVersionEntry((BasicDBObject) obj);
+        }
+        return null;
+    }
+
+    public void removeById(ObjectId id){
+        BasicDBObject query=new BasicDBObject(Constant.ID,id);
+        remove(MongoFacroty.getAppDB(), Constant.COLLECTION_JXM_APP_VERSION,query);
+    }
+
+
 }

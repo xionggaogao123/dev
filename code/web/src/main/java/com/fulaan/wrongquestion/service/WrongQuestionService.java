@@ -4,12 +4,15 @@ package com.fulaan.wrongquestion.service;
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
 import com.db.newVersionGrade.NewVersionGradeDao;
+import com.db.questionbook.QuestionTagsDao;
 import com.db.wrongquestion.*;
+import com.fulaan.questionbook.dto.QuestionTagsDTO;
 import com.fulaan.utils.pojo.KeyValue;
 import com.fulaan.wrongquestion.dto.*;
 import com.fulaan.wrongquestion.dto.ErrorBookDTO.AnswerExplainDTO;
 import com.fulaan.wrongquestion.dto.ErrorBookDTO.ErrorBookAttachDTO;
 import com.pojo.newVersionGrade.NewVersionGradeEntry;
+import com.pojo.questionbook.QuestionTagsEntry;
 import com.pojo.reportCard.ExamTypeEntry;
 import com.pojo.wrongquestion.*;
 import com.pojo.wrongquestion.ErrorBookEntry.AnswerExplain;
@@ -41,6 +44,8 @@ public class WrongQuestionService {
     private QuestionTypeDao questionTypeDao = new QuestionTypeDao();
 
     private TestTypeDao testTypeDao = new TestTypeDao();
+
+    private QuestionTagsDao questionTagsDao = new QuestionTagsDao();
 
     /**
      * 获取当前学期
@@ -248,7 +253,7 @@ public class WrongQuestionService {
         return map;
     }
 
-    public Map<String,Object> getQuestionAndTest(ObjectId subjectId,String sename){
+    public Map<String,Object> getQuestionAndTest(ObjectId userId,ObjectId subjectId,String sename){
         Map<String,Object> map = new HashMap<String, Object>();
         //加载问题类型
         List<QuestionTypeDTO> dtoList1 = new ArrayList<QuestionTypeDTO>();
@@ -260,12 +265,12 @@ public class WrongQuestionService {
         }
         map.put("questionTypeList",dtoList1);
 
-        //加载测试类型
-        List<TestTypeDTO> dtoList2 = new ArrayList<TestTypeDTO>();
-        List<TestTypeEntry> entries2 = testTypeDao.getList(sename);
+        //加载自定义标签
+        List<QuestionTagsDTO> dtoList2 = new ArrayList<QuestionTagsDTO>();
+        List<QuestionTagsEntry> entries2 = questionTagsDao.getReviewList(userId);
         if(entries2.size()>0){
-            for(TestTypeEntry entry3 : entries2){
-                dtoList2.add(new TestTypeDTO(entry3));
+            for(QuestionTagsEntry entry3 : entries2){
+                dtoList2.add(new QuestionTagsDTO(entry3));
             }
         }
         map.put("TestTypeList",dtoList2);

@@ -3,6 +3,7 @@ package com.fulaan.wrongquestion.controller;
 import com.alibaba.fastjson.JSON;
 import com.fulaan.annotation.SessionNeedless;
 import com.fulaan.base.BaseController;
+import com.fulaan.questionbook.dto.QuestionTagsDTO;
 import com.fulaan.wrongquestion.dto.*;
 import com.fulaan.wrongquestion.service.WrongQuestionService;
 import com.pojo.app.FileUploadDTO;
@@ -157,7 +158,7 @@ public class WrongQuestionController extends BaseController {
                 dto.setName("不限");
                 dtoList1.add(dto);*/
                 map.put("questionTypeList",dtoList1);
-                List<TestTypeDTO> dtoList2 = new ArrayList<TestTypeDTO>();
+                List<QuestionTagsDTO> dtoList2 = new ArrayList<QuestionTagsDTO>();
                /* TestTypeDTO dto1 = new TestTypeDTO();
                 dto1.setName("不限");
                 dtoList2.add(dto1);*/
@@ -165,7 +166,7 @@ public class WrongQuestionController extends BaseController {
                 respObj.setCode(Constant.SUCCESS_CODE);
                 respObj.setMessage(map);
             }else{
-                Map<String,Object> result = wrongQuestionService.getQuestionAndTest(new ObjectId(subjectId),ename);
+                Map<String,Object> result = wrongQuestionService.getQuestionAndTest(getUserId(),new ObjectId(subjectId),ename);
                 respObj.setCode(Constant.SUCCESS_CODE);
                 respObj.setMessage(result);
             }
@@ -173,7 +174,7 @@ public class WrongQuestionController extends BaseController {
         } catch (Exception e) {
             e.printStackTrace();
             respObj.setCode(Constant.FAILD_CODE);
-            respObj.setMessage("年级、科目加载失败!");
+            respObj.setMessage("问题,测试加载失败!");
         }
         return JSON.toJSONString(respObj);
     }

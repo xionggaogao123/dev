@@ -80,7 +80,24 @@ public class AppDetailDao extends BaseDao {
     public List<AppDetailEntry> getAppByCondition(String regular){
         List<AppDetailEntry> entries=new ArrayList<AppDetailEntry>();
         BasicDBObject query=new BasicDBObject()
-                .append("ir",Constant.ZERO);
+                .append("ir",Constant.ZERO).append("ty",Constant.TWO);
+        if(StringUtils.isNotBlank(regular)){
+            Pattern pattern = Pattern.compile("^.*" + regular + ".*$", Pattern.CASE_INSENSITIVE);
+            query.append("an",new BasicDBObject(Constant.MONGO_REGEX, pattern));
+        }
+        List<DBObject> dbObjectList=find(MongoFacroty.getAppDB(),Constant.COLLECTION_APP_MARKET_DETAIL,
+                query,Constant.FIELDS);
+        if(null!=dbObjectList&&!dbObjectList.isEmpty()){
+            for(DBObject dbObject:dbObjectList){
+                entries.add(new AppDetailEntry(dbObject));
+            }
+        }
+        return entries;
+    }
+    public List<AppDetailEntry> searchFulanAppByCondition(String regular){
+        List<AppDetailEntry> entries=new ArrayList<AppDetailEntry>();
+        BasicDBObject query=new BasicDBObject()
+                .append("ir",Constant.ZERO).append("ty",Constant.ONE);
         if(StringUtils.isNotBlank(regular)){
             Pattern pattern = Pattern.compile("^.*" + regular + ".*$", Pattern.CASE_INSENSITIVE);
             query.append("an",new BasicDBObject(Constant.MONGO_REGEX, pattern));

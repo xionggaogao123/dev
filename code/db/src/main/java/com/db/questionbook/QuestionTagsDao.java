@@ -39,9 +39,9 @@ public class QuestionTagsDao extends BaseDao {
         update(MongoFacroty.getAppDB(), Constant.COLLECTION_QUESTION_TAGS, query,updateValue);
     }
 
-    public List<QuestionTagsEntry> getReviewList(List<ObjectId> ids) {
+    public List<QuestionTagsEntry> getReviewList(ObjectId userId) {
         BasicDBObject query = new BasicDBObject()
-                .append(Constant.ID, new BasicDBObject(Constant.MONGO_IN, ids))
+                .append("uid",userId)
                 .append("isr", 0); // 未删除
         List<DBObject> dbList =
                 find(MongoFacroty.getAppDB(),

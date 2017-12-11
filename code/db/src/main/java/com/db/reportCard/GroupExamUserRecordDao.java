@@ -25,7 +25,7 @@ public class GroupExamUserRecordDao extends BaseDao{
     public List<GroupExamUserRecordEntry> getMappingDatas(int page,int pageSize){
         List<GroupExamUserRecordEntry> entries=new ArrayList<GroupExamUserRecordEntry>();
         List<DBObject> dbObjectList=find(MongoFacroty.getAppDB(), Constant.COLLECTION_REPORT_CARD_GROUP_EXAM_DETAIL,new BasicDBObject(),
-                Constant.MONGO_SORTBY_DESC,Constant.FIELDS,(page-1)*pageSize,pageSize);
+                Constant.FIELDS,Constant.MONGO_SORTBY_DESC,(page-1)*pageSize,pageSize);
         if(null!=dbObjectList&&!dbObjectList.isEmpty()){
             for(DBObject dbObject:dbObjectList){
                 entries.add(new GroupExamUserRecordEntry(dbObject));

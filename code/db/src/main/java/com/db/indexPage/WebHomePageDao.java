@@ -8,7 +8,6 @@ import com.mongodb.DBObject;
 import com.pojo.indexPage.WebHomePageEntry;
 import com.sys.constants.Constant;
 import org.bson.types.ObjectId;
-
 import java.util.ArrayList;
 import java.util.List;
 
@@ -39,9 +38,10 @@ public class WebHomePageDao extends BaseDao{
                                                         ObjectId examTypeId,ObjectId subjectId,
                                                         int status,ObjectId userId,int page,int pageSize){
         List<WebHomePageEntry> entries =new ArrayList<WebHomePageEntry>();
+        BasicDBObject order=new BasicDBObject("cti",-1);
         BasicDBObject query=getGatherReportCardCondition(receiveIds, examTypeId, subjectId, status, userId);
         List<DBObject> dbObjectList=find(MongoFacroty.getAppDB(), Constant.COLLECTION_WEB_HOME_PAGE_RECORD,
-                query,Constant.FIELDS,Constant.MONGO_SORTBY_DESC,(page-1)*pageSize,pageSize);
+                query,Constant.FIELDS,order,(page-1)*pageSize,pageSize);
         if(null!=dbObjectList&&!dbObjectList.isEmpty()){
             for(DBObject dbObject:dbObjectList){
                 entries.add(new WebHomePageEntry(dbObject));
@@ -95,9 +95,10 @@ public class WebHomePageDao extends BaseDao{
                                                            int type, ObjectId subjectId, ObjectId userId,int page,
                                                            int pageSize){
         List<WebHomePageEntry> entries =new ArrayList<WebHomePageEntry>();
+        BasicDBObject order=new BasicDBObject("cti",-1);
         BasicDBObject query=getGatherCondition(communityId, receiveIds, type, subjectId, userId);
         List<DBObject> dbObjectList=find(MongoFacroty.getAppDB(), Constant.COLLECTION_WEB_HOME_PAGE_RECORD,
-                query,Constant.FIELDS,Constant.MONGO_SORTBY_DESC,(page-1)*pageSize,pageSize);
+                query,Constant.FIELDS,order,(page-1)*pageSize,pageSize);
         if(null!=dbObjectList&&!dbObjectList.isEmpty()){
             for(DBObject dbObject:dbObjectList){
                 entries.add(new WebHomePageEntry(dbObject));

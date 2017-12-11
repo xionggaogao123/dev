@@ -170,7 +170,7 @@ public class WebsocketHandler extends TextWebSocketHandler {
             loginTokenDao.saveEntry(entry);
             session.sendMessage(new TextMessage("T20,"+userId));
         }else{
-            throw new Exception("链接已断开，请刷新网页");
+            throw new Exception("链接已断开，请等待一会儿或刷新网页");
         }
     }
 

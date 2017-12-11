@@ -1421,14 +1421,21 @@ public class UserService extends BaseService {
         if(null!=entry){
             if(entry.getStatus()&&
                     null!=entry.getUserId()){
-                throw new Exception("该二维码已经失效");
+                //发起长连接广播
+                String message="该二维码已经失效";
+                WebsocketHandler websocketHandler=new WebsocketHandler();
+                websocketHandler.broadcastInvalid(tokenId.toString(),message);
+                throw new Exception(message);
             }else{
                 //发起长连接广播
                 WebsocketHandler websocketHandler=new WebsocketHandler();
                 websocketHandler.broadcastClient(entry,tokenId.toString(),userId.toString());
             }
         }else {
-            throw new Exception("该二维码已经失效");
+            String message="该二维码已经失效";
+            WebsocketHandler websocketHandler=new WebsocketHandler();
+            websocketHandler.broadcastInvalid(tokenId.toString(),message);
+            throw new Exception(message);
         }
     }
 }

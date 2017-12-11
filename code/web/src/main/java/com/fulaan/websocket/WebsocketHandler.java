@@ -155,7 +155,12 @@ public class WebsocketHandler extends TextWebSocketHandler {
         return false;
     }
 
-
+    public void broadcastInvalid(String tokenId,String message)throws Exception{
+        WebSocketSession session=websocketSessionsConcurrentHashMap.get(tokenId);
+        if(null!=session){
+            session.sendMessage(new TextMessage(message));
+        }
+    }
     public void broadcastClient(LoginTokenEntry entry,
                                 String tokenId, String userId)throws Exception{
         WebSocketSession session=websocketSessionsConcurrentHashMap.get(tokenId);
@@ -165,7 +170,7 @@ public class WebsocketHandler extends TextWebSocketHandler {
             loginTokenDao.saveEntry(entry);
             session.sendMessage(new TextMessage("T20,"+userId));
         }else{
-            throw new Exception("该二维码已过期了");
+            throw new Exception("链接已断开，请刷新网页");
         }
     }
 

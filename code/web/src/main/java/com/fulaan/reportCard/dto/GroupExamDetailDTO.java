@@ -56,6 +56,7 @@ public class GroupExamDetailDTO {
     private double qualifyPercent;//合格率
     private double unQualifyPercent;//不合格率
     private int status;//状态 0保存 1删除 2发送（未签字）3已签字
+    private boolean isOwner;
 
     public GroupExamDetailDTO(){
 
@@ -105,6 +106,14 @@ public class GroupExamDetailDTO {
         this.signedCount=entry.getSignedCount();
         this.status=entry.getStatus();
         this.examStrTime= DateTimeUtils.convert(entry.getExamTime(),DateTimeUtils.DATE_YYYY_MM_DD);
+    }
+
+    public boolean isOwner() {
+        return isOwner;
+    }
+
+    public void setOwner(boolean owner) {
+        isOwner = owner;
     }
 
     public double getGroupMinScore() {

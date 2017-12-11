@@ -14,6 +14,8 @@ import com.db.user.UserDao;
 import com.db.wrongquestion.ExamTypeDao;
 import com.db.wrongquestion.SubjectClassDao;
 import com.fulaan.indexpage.dto.WebHomePageDTO;
+import com.fulaan.reportCard.dto.GroupExamDetailDTO;
+import com.fulaan.reportCard.dto.GroupExamUserRecordDTO;
 import com.pojo.appnotice.AppNoticeEntry;
 import com.pojo.fcommunity.CommunityEntry;
 import com.pojo.fcommunity.NewVersionCommunityBindEntry;
@@ -95,6 +97,96 @@ public class WebHomePageService {
         retMap.put("startTime", startTime);
         retMap.put("endTime", endTime);
         return retMap;
+    }
+
+
+    /**
+     * type：webHomePageEntry中的type
+     */
+    public void dataMapping(){
+        int pageSize=200;
+        List<Integer> types=new ArrayList<Integer>();
+        types.add(Constant.FIVE);
+        types.add(Constant.THREE);
+        for(int type:types) {
+            int page = 1;
+            boolean flag = true;
+            //在处理数据之前先删除老数据
+            webHomePageDao.removeOldDataByType(type);
+            if (type == Constant.FIVE) {
+                while (flag) {
+                    List<GroupExamDetailEntry> entries = groupExamDetailDao.getMappingDatas(page, pageSize);
+                    if (entries.size() > 0) {
+                        for (GroupExamDetailEntry entry : entries) {
+                            WebHomePageEntry homePageEntry = new WebHomePageEntry(Constant.FIVE,
+                                    entry.getUserId(),
+                                    entry.getCommunityId(),
+                                    entry.getID(), entry.getSubjectId(),
+                                    null, null, entry.getExamType(), Constant.ZERO
+                            );
+                            if (entry.getStatus() == Constant.ONE) {
+                                homePageEntry.setRemove(Constant.ONE);
+                            } else {
+                                homePageEntry.setStatus(entry.getStatus());
+                            }
+                            webHomePageDao.saveWebHomeEntry(homePageEntry);
+                        }
+                    } else {
+                        flag = false;
+                    }
+                    page++;
+                }
+            } else if (type == Constant.THREE) {
+                while (flag) {
+                    List<GroupExamUserRecordEntry> entries = groupExamUserRecordDao.getMappingDatas(page, pageSize);
+                    if(entries.size()>0){
+                        for(GroupExamUserRecordEntry userRecordEntry:entries){
+                            WebHomePageEntry homePageEntry = new WebHomePageEntry(Constant.THREE,
+                                    userRecordEntry.getMainUserId(),
+                                    userRecordEntry.getCommunityId(),
+                                    userRecordEntry.getID(), userRecordEntry.getSubjectId(),
+                                    userRecordEntry.getUserId(), userRecordEntry.getGroupExamDetailId(),
+                                    userRecordEntry.getExamType(),Constant.ZERO
+                            );
+                            if (userRecordEntry.getStatus() == Constant.ONE) {
+                                homePageEntry.setRemove(Constant.ONE);
+                            } else {
+                                homePageEntry.setStatus(userRecordEntry.getStatus());
+                            }
+                            webHomePageDao.saveWebHomeEntry(homePageEntry);
+                        }
+                    }else{
+                        flag=false;
+                    }
+                    page++;
+                }
+            }
+        }
+
+    }
+
+    public Map<String,Object> gatherReportCardList(String sId,String examType,
+                                                   int status,
+                                                   ObjectId userId,int page,int pageSize){
+        Map<String,Object> result=new HashMap<String,Object>();
+        ObjectId subjectId = ObjectId.isValid(sId) ? new ObjectId(sId) : null;
+        ObjectId examTypeId= ObjectId.isValid(examType) ? new ObjectId(examType) : null;
+        List<ObjectId> receiveIds = new ArrayList<ObjectId>();
+        List<NewVersionCommunityBindEntry> bindEntries = newVersionCommunityBindDao.getEntriesByMainUserId(userId);
+        for (NewVersionCommunityBindEntry bindEntry : bindEntries) {
+            receiveIds.add(bindEntry.getUserId());
+        }
+        List<WebHomePageEntry> entries = webHomePageDao.gatherReportCardList(receiveIds,
+                examTypeId, subjectId, status,userId, page, pageSize);
+        int count=webHomePageDao.countGatherReports(receiveIds,
+                examTypeId, subjectId, status,userId);
+        List<GroupExamDetailDTO> detailDTOs=new ArrayList<GroupExamDetailDTO>();
+        getGatherReportCardList(detailDTOs, entries);
+        result.put("list", detailDTOs);
+        result.put("count", count);
+        result.put("page", page);
+        result.put("pageSize", pageSize);
+        return result;
     }
 
 
@@ -180,6 +272,130 @@ public class WebHomePageService {
         result.put("page", page);
         result.put("pageSize", pageSize);
         return result;
+    }
+
+    public void getGatherReportCardList(List<GroupExamDetailDTO> detailDTOs,List<WebHomePageEntry> entries){
+        List<ObjectId> reportCardIds = new ArrayList<ObjectId>();
+        List<ObjectId> reportCardSendIds = new ArrayList<ObjectId>();
+        for (WebHomePageEntry webHomePageEntry : entries) {
+            if (webHomePageEntry.getType() == Constant.THREE) {
+                reportCardIds.add(webHomePageEntry.getContactId());
+            } else if (webHomePageEntry.getType() == Constant.FIVE) {
+                reportCardSendIds.add(webHomePageEntry.getContactId());
+            }
+        }
+
+        if (reportCardIds.size() > 0) {
+            List<GroupExamUserRecordEntry> userRecordEntries = groupExamUserRecordDao.getGroupExamUserRecordsByIds(reportCardIds);
+            Set<ObjectId> communityIds = new HashSet<ObjectId>();
+            Set<ObjectId> userIds = new HashSet<ObjectId>();
+            Set<ObjectId> subjectIds = new HashSet<ObjectId>();
+            Set<ObjectId> examTypeIds = new HashSet<ObjectId>();
+            Set<ObjectId> groupExamIds = new HashSet<ObjectId>();
+            Set<ObjectId> childUserIds=new HashSet<ObjectId>();
+            for (GroupExamUserRecordEntry groupExamUserRecordEntry : userRecordEntries) {
+                groupExamIds.add(groupExamUserRecordEntry.getGroupExamDetailId());
+                childUserIds.add(groupExamUserRecordEntry.getUserId());
+            }
+            Map<ObjectId, GroupExamDetailEntry> groupExamDetailEntryMap = groupExamDetailDao
+                    .getGroupExamDetailMap(new ArrayList<ObjectId>(groupExamIds));
+            initAllAvailableIds(communityIds,userIds,subjectIds,examTypeIds,groupExamDetailEntryMap);
+            Map<ObjectId, CommunityEntry> communityEntryMap = communityDao
+                    .findMapInfo(new ArrayList<ObjectId>(communityIds));
+            Map<ObjectId, UserEntry> mainUserEntryMap = userDao.getUserEntryMap(userIds, Constant.FIELDS);
+            Map<ObjectId, UserEntry> childUserEntryMap = userDao.getUserEntryMap(childUserIds, Constant.FIELDS);
+            Map<ObjectId, SubjectClassEntry> subjectClassEntryMap = subjectClassDao.getSubjectClassEntryMap(new ArrayList<ObjectId>(subjectIds));
+            Map<ObjectId, ExamTypeEntry> examTypeEntryMap = examTypeDao.getExamTypeEntryMap(new ArrayList<ObjectId>(examTypeIds));
+            for (GroupExamUserRecordEntry userRecordEntry : userRecordEntries) {
+                GroupExamDetailEntry detailEntry = groupExamDetailEntryMap.get(userRecordEntry.getGroupExamDetailId());
+                if (null != detailEntry) {
+                    GroupExamDetailDTO detailDTO = new GroupExamDetailDTO(detailEntry);
+                    detailDTO.setOwner(true);
+                    UserEntry userEntry = childUserEntryMap.get(userRecordEntry.getUserId());
+                    if (null != userEntry) {
+                        detailDTO.setChildUserName(
+                                org.apache.commons.lang3.StringUtils.isNotBlank(userEntry.getNickName())?userEntry.getNickName():userEntry.getUserName());
+                    }
+                    detailDTO.setChildUserId(userRecordEntry.getUserId().toString());
+                    CommunityEntry communityEntry = communityEntryMap.get(userRecordEntry.getCommunityId());
+                    if (null != communityEntry) {
+                        detailDTO.setGroupName(communityEntry.getCommunityName());
+                    }
+                    SubjectClassEntry subjectClassEntry = subjectClassEntryMap.get(userRecordEntry.getSubjectId());
+                    if (null != subjectClassEntry) {
+                        detailDTO.setSubjectName(subjectClassEntry.getName());
+                    }
+                    if (null != userRecordEntry.getExamType()) {
+                        ExamTypeEntry examTypeEntry = examTypeEntryMap.get(userRecordEntry.getExamType());
+                        if (null != examTypeEntry) {
+                            detailDTO.setExamTypeName(examTypeEntry.getExamTypeName());
+                        }
+                    }
+                    detailDTO.setScore(userRecordEntry.getScore());
+                    detailDTO.setScoreLevel(userRecordEntry.getScoreLevel());
+                    UserEntry mainUserEntry = mainUserEntryMap.get(detailEntry.getUserId());
+                    if (null != mainUserEntry) {
+                        detailDTO.setUserName(mainUserEntry.getUserName());
+                    }
+                    detailDTO.setStatus(userRecordEntry.getStatus());
+                    detailDTO.setSingleScoreId(userRecordEntry.getID().toString());
+                    detailDTOs.add(detailDTO);
+                }
+            }
+        }
+
+        if(reportCardSendIds.size()>0){
+            Set<ObjectId> userIds = new HashSet<ObjectId>();
+            Set<ObjectId> communityIds = new HashSet<ObjectId>();
+            Set<ObjectId> subjectIds = new HashSet<ObjectId>();
+            Set<ObjectId> examTypeIds = new HashSet<ObjectId>();
+            Map<ObjectId, GroupExamDetailEntry> groupExamDetailEntryMap = groupExamDetailDao
+                    .getGroupExamDetailMap(reportCardSendIds);
+            initAllAvailableIds(communityIds,userIds,subjectIds,examTypeIds,groupExamDetailEntryMap);
+            Map<ObjectId, CommunityEntry> communityEntryMap = communityDao
+                    .findMapInfo(new ArrayList<ObjectId>(communityIds));
+            Map<ObjectId, UserEntry> userEntryMap = userDao.getUserEntryMap(userIds, Constant.FIELDS);
+            Map<ObjectId, SubjectClassEntry> subjectClassEntryMap = subjectClassDao.getSubjectClassEntryMap(new ArrayList<ObjectId>(subjectIds));
+            Map<ObjectId, ExamTypeEntry> examTypeEntryMap = examTypeDao.getExamTypeEntryMap(new ArrayList<ObjectId>(examTypeIds));
+            for (Map.Entry<ObjectId, GroupExamDetailEntry> item:groupExamDetailEntryMap.entrySet()) {
+                GroupExamDetailEntry detailEntry = item.getValue();
+                GroupExamDetailDTO detailDTO = new GroupExamDetailDTO(detailEntry);
+                detailDTO.setOwner(false);
+                detailDTO.setUnSignCount(detailDTO.getSignCount() - detailDTO.getSignedCount());
+                UserEntry mainUserEntry = userEntryMap.get(detailEntry.getUserId());
+                if (null != mainUserEntry) {
+                    detailDTO.setUserName(mainUserEntry.getUserName());
+                }
+                CommunityEntry communityEntry = communityEntryMap.get(detailEntry.getCommunityId());
+                if (null != communityEntry) {
+                    detailDTO.setGroupName(communityEntry.getCommunityName());
+                }
+                if (null != detailEntry.getExamType()) {
+                    ExamTypeEntry examTypeEntry = examTypeEntryMap.get(detailEntry.getExamType());
+                    if (null != examTypeEntry) {
+                        detailDTO.setExamTypeName(examTypeEntry.getExamTypeName());
+                    }
+                }
+                SubjectClassEntry subjectClassEntry = subjectClassEntryMap.get(detailEntry.getSubjectId());
+                if (null != subjectClassEntry) {
+                    detailDTO.setSubjectName(subjectClassEntry.getName());
+                }
+                if (detailEntry.getRecordScoreType() == Constant.ONE) {
+                    RecordScoreEvaluateEntry evaluateEntry = recordScoreEvaluateDao.getEntryById(detailEntry.getID());
+                    if (null != evaluateEntry) {
+                        detailDTO.setAvgScore(evaluateEntry.getAvgScore());
+                    }
+                } else {
+                    RecordLevelEvaluateEntry levelEvaluateEntry = recordLevelEvaluateDao.getRecordLevelEvaluateEntry(detailEntry.getID());
+                    if (null != levelEvaluateEntry) {
+                        detailDTO.setaPercent(levelEvaluateEntry.getApercent());
+                    }
+                }
+                detailDTOs.add(detailDTO);
+            }
+        }
+
+
     }
 
     public void getDtosByEntries(List<WebHomePageDTO> webHomePageDTOs, List<WebHomePageEntry> entries) {

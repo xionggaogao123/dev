@@ -136,4 +136,23 @@ public class WebHomePageController extends BaseController{
 
 
 
+    /**
+     * 数据映射（把现有的数据映射成新的数据）
+     * @return
+     */
+    @RequestMapping("/dataMapping")
+    @ResponseBody
+    public RespObj  dataMapping(){
+        RespObj respObj=new RespObj(Constant.FAILD_CODE);
+        try {
+            webHomePageService.dataMapping();
+            respObj.setCode(Constant.SUCCESS_CODE);
+            respObj.setMessage("数据映射成功!");
+        }catch (Exception e){
+            respObj.setMessage(e.getMessage());
+        }
+        return respObj;
+    }
+
+
 }

@@ -21,6 +21,76 @@ public class WebHomePageDao extends BaseDao{
         save(MongoFacroty.getAppDB(), Constant.COLLECTION_WEB_HOME_PAGE_RECORD,entry.getBaseEntry());
     }
 
+
+    public void removeOldDataByType(int type){
+        BasicDBObject query=new BasicDBObject("ty",type);
+        remove(MongoFacroty.getAppDB(), Constant.COLLECTION_WEB_HOME_PAGE_RECORD,query);
+    }
+
+    public int countGatherReports(List<ObjectId> receiveIds,
+                                  ObjectId examTypeId,ObjectId subjectId,
+                                  int status,ObjectId userId){
+        BasicDBObject query=getGatherReportCardCondition(receiveIds, examTypeId, subjectId, status, userId);
+        return count(MongoFacroty.getAppDB(), Constant.COLLECTION_WEB_HOME_PAGE_RECORD,
+                query);
+    }
+
+    public List<WebHomePageEntry> gatherReportCardList(List<ObjectId> receiveIds,
+                                                        ObjectId examTypeId,ObjectId subjectId,
+                                                        int status,ObjectId userId,int page,int pageSize){
+        List<WebHomePageEntry> entries =new ArrayList<WebHomePageEntry>();
+        BasicDBObject query=getGatherReportCardCondition(receiveIds, examTypeId, subjectId, status, userId);
+        List<DBObject> dbObjectList=find(MongoFacroty.getAppDB(), Constant.COLLECTION_WEB_HOME_PAGE_RECORD,
+                query,Constant.FIELDS,Constant.MONGO_SORTBY_DESC,(page-1)*pageSize,pageSize);
+        if(null!=dbObjectList&&!dbObjectList.isEmpty()){
+            for(DBObject dbObject:dbObjectList){
+                entries.add(new WebHomePageEntry(dbObject));
+            }
+        }
+        return entries;
+    }
+
+
+    public BasicDBObject getGatherReportCardCondition(List<ObjectId> receiveIds,
+                                                      ObjectId examTypeId,ObjectId subjectId,
+                                                      int status,ObjectId userId){
+        BasicDBObject query=new BasicDBObject();
+        if(status==Constant.ZERO){
+            query.append("ty",Constant.FIVE).append("uid",userId);
+        }else if(status==Constant.TWO||status==Constant.NEGATIVE_ONE) {
+            BasicDBList values = new BasicDBList();
+            BasicDBObject query1=new BasicDBObject("ty",Constant.FIVE)
+                    .append("uid",userId);
+            values.add(query1);
+            BasicDBObject query2=new BasicDBObject("ty",Constant.THREE)
+                    .append("uid",new BasicDBObject(Constant.MONGO_NE,userId));
+            query2.append("rid",new BasicDBObject(Constant.MONGO_IN,receiveIds));
+            if(status==Constant.NEGATIVE_ONE){
+                List<Integer> statuses= new ArrayList<Integer>();
+                statuses.add(Constant.TWO);
+                statuses.add(Constant.THREE);
+                query2.append("st",new BasicDBObject(Constant.MONGO_IN,statuses));
+            }
+            values.add(query2);
+            query.put(Constant.MONGO_OR, values);
+        }else if(status==Constant.THREE){
+            query.append("ty",Constant.THREE).append("uid",new BasicDBObject(Constant.MONGO_NE,userId))
+                    .append("rid",new BasicDBObject(Constant.MONGO_IN,receiveIds));
+        }
+
+        if(subjectId!=null){
+            query.append("sid",subjectId);
+        }
+        if(examTypeId!=null){
+            query.append("et",examTypeId);
+        }
+        if(status!=-1){
+            query.append("st",status);
+        }
+        query.append("ir", Constant.ZERO);
+        return query;
+    }
+
     public List<WebHomePageEntry> getGatherHomePageEntries(ObjectId communityId,List<ObjectId> receiveIds,
                                                            int type, ObjectId subjectId, ObjectId userId,int page,
                                                            int pageSize){

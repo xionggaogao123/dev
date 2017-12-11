@@ -535,7 +535,7 @@ public class ReportCardService {
             WebHomePageEntry homePageEntry = new WebHomePageEntry(Constant.FIVE, userId,
                     StringUtils.isNotEmpty(dto.getCommunityId()) ? new ObjectId(dto.getCommunityId()) : null,
                     groupExamDetailId, StringUtils.isNotEmpty(dto.getSubjectId()) ? new ObjectId(dto.getSubjectId()) : null,
-                    null, null, Constant.ZERO
+                    null, null, StringUtils.isNotEmpty(dto.getExamType()) ? new ObjectId(dto.getExamType()) : null,Constant.ZERO
             );
             webHomePageDao.saveWebHomeEntry(homePageEntry);
             for (GroupExamUserRecordEntry userRecordEntry : userRecordEntries) {
@@ -543,7 +543,7 @@ public class ReportCardService {
                 WebHomePageEntry pageEntry = new WebHomePageEntry(Constant.THREE, userId,
                         userRecordEntry.getCommunityId(),
                         recordId, userRecordEntry.getSubjectId(),
-                        userRecordEntry.getUserId(), groupExamDetailId, Constant.ZERO
+                        userRecordEntry.getUserId(), groupExamDetailId, userRecordEntry.getExamType(),Constant.ZERO
                 );
                 webHomePageDao.saveWebHomeEntry(pageEntry);
             }
@@ -564,7 +564,7 @@ public class ReportCardService {
                 WebHomePageEntry homePageEntry = new WebHomePageEntry(Constant.FIVE, userId,
                         StringUtils.isNotEmpty(dto.getCommunityId()) ? new ObjectId(dto.getCommunityId()) : null,
                         new ObjectId(id), StringUtils.isNotEmpty(dto.getSubjectId()) ? new ObjectId(dto.getSubjectId()) : null,
-                        null, null, Constant.ZERO
+                        null, null, StringUtils.isNotEmpty(dto.getExamType()) ? new ObjectId(dto.getExamType()) : null,Constant.ZERO
                 );
                 WebHomePageEntry pageEntry = webHomePageDao.getWebHomePageEntry(new ObjectId(id));
                 if (null != pageEntry) {

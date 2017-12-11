@@ -2,6 +2,7 @@ package com.fulaan.reportCard.controller;
 
 import com.fulaan.annotation.ObjectIdType;
 import com.fulaan.base.BaseController;
+import com.fulaan.indexpage.service.WebHomePageService;
 import com.fulaan.reportCard.dto.*;
 import com.fulaan.reportCard.service.ReportCardService;
 import com.fulaan.wrongquestion.dto.ExamTypeDTO;
@@ -34,6 +35,10 @@ public class DefaultReportCardController extends BaseController{
 
     @Autowired
     private ReportCardService reportCardService;
+
+    @Autowired
+    private WebHomePageService webHomePageService;
+
 
 
     @ApiOperation(value = "保存考试信息", httpMethod = "POST", produces = "application/json")
@@ -349,6 +354,34 @@ public class DefaultReportCardController extends BaseController{
             List<ExamTypeDTO> examTypeDTOs=reportCardService.getExamTypeDTOs();
             respObj.setCode(Constant.SUCCESS_CODE);
             respObj.setMessage(examTypeDTOs);
+        }catch (Exception e){
+            e.printStackTrace();
+            respObj.setErrorMessage(e.getMessage());
+        }
+        return respObj;
+    }
+
+
+    @ApiOperation(value = "集合成绩单的列表", httpMethod = "POST", produces = "application/json")
+    @ApiResponses( value = {@ApiResponse(code = 200, message = "保存考试信息已完成",response = String.class),
+            @ApiResponse(code = 400, message = "请求中有语法问题，或不能满足请求"),
+            @ApiResponse(code = 500, message = "服务器不能完成请求")})
+    @RequestMapping("/gatherReportCardList")
+    @ResponseBody
+    public RespObj gatherReportCardList(
+            @RequestParam(required = false, defaultValue = "")String subjectId,
+            @RequestParam(required = false, defaultValue = "")String examType,
+            @RequestParam(required = false, defaultValue = "-1")int status,
+            @RequestParam(required = false, defaultValue = "1")int page,
+            @RequestParam(required = false, defaultValue = "10")int pageSize
+    ){
+        RespObj respObj=new RespObj(Constant.FAILD_CODE);
+        try{
+            Map<String,Object> retMap= webHomePageService.gatherReportCardList(
+                    subjectId,examType,status,getUserId(),page,pageSize
+            );
+            respObj.setMessage(retMap);
+            respObj.setCode(Constant.SUCCESS_CODE);
         }catch (Exception e){
             e.printStackTrace();
             respObj.setErrorMessage(e.getMessage());

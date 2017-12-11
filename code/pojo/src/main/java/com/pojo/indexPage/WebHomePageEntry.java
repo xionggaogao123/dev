@@ -30,6 +30,7 @@ public class WebHomePageEntry extends BaseDBObject{
                             ObjectId subjectId,
                             ObjectId receiveId,
                             ObjectId reportCardId,
+                            ObjectId examTypeId,
                             int status){
         BasicDBObject basicDBObject=new BasicDBObject()
                 .append("ty",type)
@@ -37,12 +38,25 @@ public class WebHomePageEntry extends BaseDBObject{
                 .append("cid",communityId)
                 .append("cti",contactId)
                 .append("rc",reportCardId)
+                .append("et",examTypeId)
                 .append("sid",subjectId)
                 .append("rid",receiveId)
                 .append("ti",System.currentTimeMillis())
                 .append("st",status)
                 .append("ir", Constant.ZERO);
         setBaseEntry(basicDBObject);
+    }
+
+    public void setRemove(int remove){
+        setSimpleValue("ir",remove);
+    }
+
+    public void setExamTypeId(ObjectId examTypeId){
+        setSimpleValue("et",examTypeId);
+    }
+
+    public ObjectId getExamTypeId(){
+        return getSimpleObjecIDValue("et");
     }
 
     public void setReportCardId(ObjectId reportCardId){

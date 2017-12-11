@@ -129,7 +129,7 @@ public class AppNoticeService {
                         StringUtils.isNotEmpty(communityDTO.getCommunityId())?
                                 new ObjectId(communityDTO.getCommunityId()):null, oid, StringUtils.isNotEmpty(dto.getSubjectId())?
                         new ObjectId(dto.getSubjectId()):null,
-                        null,null,Constant.ZERO
+                        null,null,null,Constant.ZERO
                 );
                 webHomePageDao.saveWebHomeEntry(pageEntry);
             }else{
@@ -146,7 +146,7 @@ public class AppNoticeService {
                         StringUtils.isNotEmpty(communityDTO.getCommunityId())?
                                 new ObjectId(communityDTO.getCommunityId()):null, oid, StringUtils.isNotEmpty(dto.getSubjectId())?
                         new ObjectId(dto.getSubjectId()):null,
-                        null,null,Constant.ZERO
+                        null,null,null,Constant.ZERO
                 );
                 webHomePageDao.saveWebHomeEntry(pageEntry);
             }

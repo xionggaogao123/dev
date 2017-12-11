@@ -10,13 +10,14 @@ import com.db.reportCard.GroupExamDetailDao;
 import com.db.reportCard.GroupExamUserRecordDao;
 import com.db.reportCard.RecordLevelEvaluateDao;
 import com.db.reportCard.RecordScoreEvaluateDao;
+import com.db.user.GenerateUserCodeDao;
 import com.db.user.UserDao;
 import com.db.wrongquestion.ExamTypeDao;
 import com.db.wrongquestion.SubjectClassDao;
 import com.fulaan.indexpage.dto.WebHomePageDTO;
 import com.fulaan.reportCard.dto.GroupExamDetailDTO;
-import com.fulaan.reportCard.dto.GroupExamUserRecordDTO;
 import com.pojo.appnotice.AppNoticeEntry;
+import com.pojo.appnotice.GenerateUserCodeEntry;
 import com.pojo.fcommunity.CommunityEntry;
 import com.pojo.fcommunity.NewVersionCommunityBindEntry;
 import com.pojo.indexPage.WebHomePageEntry;
@@ -66,6 +67,8 @@ public class WebHomePageService {
 
     private NewVersionCommunityBindDao newVersionCommunityBindDao = new NewVersionCommunityBindDao();
 
+    private GenerateUserCodeDao generateUserCodeDao = new GenerateUserCodeDao();
+
 
     public Map<String, Long> setTime(int mode, String sTime, String eTime) throws Exception {
         Map<String, Long> retMap = new HashMap<String, Long>();
@@ -97,6 +100,23 @@ public class WebHomePageService {
         retMap.put("startTime", startTime);
         retMap.put("endTime", endTime);
         return retMap;
+    }
+
+
+    public void generateUserCode(){
+        long start=generateUserCodeDao.findEntryByLast();
+        int count=1;
+        while (count<=100000){
+            long seqId=start+count;
+            GenerateUserCodeEntry codeEntry=new GenerateUserCodeEntry(seqId);
+            generateUserCodeDao.saveEntry(codeEntry);
+            count++;
+        }
+    }
+
+
+    public String getSeqId(){
+        return String.valueOf(generateUserCodeDao.getCodeEntry().getSeqId());
     }
 
 

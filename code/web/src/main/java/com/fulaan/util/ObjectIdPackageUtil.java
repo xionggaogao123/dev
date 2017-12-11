@@ -1,5 +1,10 @@
 package com.fulaan.util;
 
+import com.db.indexPage.WebHomePageDao;
+import com.db.user.GenerateUserCodeDao;
+import com.pojo.appnotice.GenerateUserCodeEntry;
+import com.sys.constants.Constant;
+import org.apache.commons.lang.StringUtils;
 import org.bson.types.ObjectId;
 
 import java.util.Date;
@@ -17,10 +22,29 @@ public class ObjectIdPackageUtil {
     }
 
     public static String getPackage(ObjectId id){
-        long time=System.currentTimeMillis();
-        long idTime=id.getTime();
-        long total=idTime+time;
-        return String.valueOf(total/1000L);
+//        long time=System.currentTimeMillis();
+//        long idTime=id.getTime();
+//        long total=idTime+time;
+//        return String.valueOf(total/1000L);
+        GenerateUserCodeDao generateUserCodeDao=new GenerateUserCodeDao();
+        String seqId;
+        GenerateUserCodeEntry entry=generateUserCodeDao.getCodeEntry();
+        if(null!=entry) {
+            seqId=String.valueOf(entry.getSeqId());
+        }else{
+            GenerateUserCodeEntry lastEntry=generateUserCodeDao.findLastEntry();
+            long sId=500500L;
+            if(null!=lastEntry) {
+                sId = lastEntry.getSeqId() + 1L;
+                seqId = String.valueOf(sId);
+            }else{
+                seqId = String.valueOf(sId);
+            }
+            GenerateUserCodeEntry codeEntry = new GenerateUserCodeEntry(sId);
+            codeEntry.setRemove(Constant.ONE);
+            generateUserCodeDao.saveEntry(codeEntry);
+        }
+        return seqId;
     }
 
     public static ObjectId removePackage(String id){

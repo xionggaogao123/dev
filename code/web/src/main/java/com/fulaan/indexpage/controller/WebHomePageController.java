@@ -154,5 +154,14 @@ public class WebHomePageController extends BaseController{
         return respObj;
     }
 
+    @RequestMapping("/generateUserCode")
+    @ResponseBody
+    public RespObj generateUserCode(){
+        RespObj respObj=new RespObj(Constant.SUCCESS_CODE,"生成序列号成功");
+        webHomePageService.generateUserCode();
+        return respObj;
+    }
+
+
 
 }

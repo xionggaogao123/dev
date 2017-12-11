@@ -53,7 +53,10 @@ public class MemberDao extends BaseDao {
         }
         return memberEntries;
     }
-
+    public static void main(String[] args){
+        int i = 1;
+        System.out.print(i);
+    }
     public List<MemberEntry> getMembersFromTeacher(List<ObjectId> userIds,String searchId,int page, int pageSize) {
         BasicDBObject query = new BasicDBObject("r", Constant.ZERO);
         List<Integer> integers = new ArrayList<Integer>();
@@ -61,9 +64,13 @@ public class MemberDao extends BaseDao {
         integers.add(2);
         if(searchId != null && !searchId.equals("")){
             query.append("uid",new ObjectId(searchId));
+            if(userIds.contains(new ObjectId(searchId))){
+                return new ArrayList<MemberEntry>();
+            }
+        }else{
+            query.append("uid",new BasicDBObject(Constant.MONGO_NOTIN,userIds));
         }
         query.append("rl", new BasicDBObject(Constant.MONGO_IN, integers));
-        query.append("uid",new BasicDBObject(Constant.MONGO_NOTIN,userIds));
         BasicDBObject orderBy = new BasicDBObject("rl", Constant.DESC).append(Constant.ID, Constant.DESC);
         List<MemberEntry> memberEntries = new ArrayList<MemberEntry>();
         List<DBObject> dbObjects = find(MongoFacroty.getAppDB(), Constant.COLLECTION_FORUM_COMMUNITY_MEMBER, query, Constant.FIELDS, orderBy, (page - Constant.ONE) * pageSize, pageSize);

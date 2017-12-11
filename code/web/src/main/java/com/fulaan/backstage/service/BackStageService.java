@@ -111,20 +111,22 @@ public class BackStageService {
 
 
     public static void main(String[] args){
-        JxmAppVersionDao controlSetBackDao = new JxmAppVersionDao();
+        int i = 1;
+        System.out.print(i);
+        /*JxmAppVersionDao controlSetBackDao = new JxmAppVersionDao();*/
        /* ControlSetBackDao controlSetBackDao = new ControlSetBackDao();
         ControlSetBackEntry entry1 = new ControlSetBackEntry();
         entry1.setType(1);
         entry1.setBackTime(15);
         entry1.setAppTime(15);
         controlSetBackDao.addEntry(entry1);*/
-        JxmAppVersionDTO dto = new JxmAppVersionDTO();
+      /*  JxmAppVersionDTO dto = new JxmAppVersionDTO();
         dto.setFileUrl("http://7xiclj.com1.z0.glb.clouddn.com/5a16432794b5ea7a4cbde78e.apk");
         dto.setName("cn.lt.appstore");
-        dto.setVersion("4.3.0");
+        dto.setVersion("4.3.0");*/
         //dto.setName("2011-11-23 17:04:00");
         //TeacherApproveDao teacherApproveDao1 = new TeacherApproveDao();
-        controlSetBackDao.addEntry(dto.buildAddEntry());
+     /*   controlSetBackDao.addEntry(dto.buildAddEntry());*/
     }
 
 
@@ -291,12 +293,14 @@ public class BackStageService {
         List<MemberEntry> entries2 = memberDao.getMembersFromTeacher(oids,searchId,page, pageSize);
         int count = 0;
         List<ObjectId> objectIdList =new ArrayList<ObjectId>();
+        int level = 1;
         if(type==0 || type==1){
             for(MemberEntry memberEntry : entries2){
                 TeacherApproveEntry teaentry= new TeacherApproveEntry(memberEntry.getUserId(),memberEntry.getUserName(),memberEntry.getGroupId(),0l,1);
                 entries.add(teaentry);
             }
             count = memberDao.getMembersFromTeacherCount(oids);
+            level =2;
         }else if(type==2){
             //memberDao.get
             entries = teacherApproveDao.selectContentList(searchId, type, page, pageSize);
@@ -327,7 +331,7 @@ public class BackStageService {
                 if(entries4.get(entry.getApproveId())!=null){
                     dto.setCommunityName(entries4.get(entry.getApproveId()));
                     dtos.add(dto);
-                }else if(map5.get(entry.getUserId())!= null){
+                }else if(map5.get(entry.getUserId())!= null && level==1){
                     dto.setCommunityName(map5.get(entry.getUserId()));
                     dtos.add(dto);
                 }else{

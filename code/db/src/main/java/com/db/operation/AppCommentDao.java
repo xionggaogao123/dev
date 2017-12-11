@@ -316,6 +316,29 @@ public class AppCommentDao extends BaseDao {
         return entryList;
     }
 
+    //家长日作业列表查询//收到的
+    public List<AppCommentEntry> selectAllPageDateList(List<ObjectId> userIds,int page,int pageSize) {
+        List<Integer> ilist = new ArrayList<Integer>();
+        ilist.add(1);
+        ilist.add(0);
+        BasicDBObject query = new BasicDBObject()
+                .append("rid",new BasicDBObject(Constant.MONGO_IN,userIds))
+                .append("sta", new BasicDBObject(Constant.MONGO_IN,ilist))
+                .append("isr", 0); // 未删除
+        List<DBObject> dbList =
+                find(MongoFacroty.getAppDB(),
+                        Constant.COLLECTION_APP_COMMENT,
+                        query, Constant.FIELDS,
+                        Constant.MONGO_SORTBY_DESC,(page - 1) * pageSize, pageSize);
+        List<AppCommentEntry> entryList = new ArrayList<AppCommentEntry>();
+        if (dbList != null && !dbList.isEmpty()) {
+            for (DBObject obj : dbList) {
+                entryList.add(new AppCommentEntry((BasicDBObject) obj));
+            }
+        }
+        return entryList;
+    }
+
     public List<AppCommentEntry> selectWebPageDateList(List<ObjectId> userIds,String subjectId,ObjectId adminId,int page,int pageSize) {
         List<Integer> ilist = new ArrayList<Integer>();
         ilist.add(1);

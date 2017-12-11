@@ -430,7 +430,9 @@ public class ControlPhoneService {
         if(oids.size()>0){
             controlAppResultDao.updEntry(oids);
         }
-
+    if(controlTimeDao.getEntryByUserId(userId) !=null){
+        return 0l;
+    }
         return controlTimeDao.getEntryByUserId(userId).getBackTime();
     }
 
@@ -538,7 +540,11 @@ public class ControlPhoneService {
             controlMapDao.addEntry(entry.buildAddEntry());
         }*/
         int i = 1;
-        System.out.println(i);
+        String str = getNewLogo("http://www.fulaan.com/static/images/community/upload.png");
+        String str2 = "http://www.fulaan.com/static/images/community/upload.png";
+        String str3 = str2.replace("http://www.fulaan.com/","http://appapi.jiaxiaomei.com/");
+
+        System.out.println(str);
     }
     //获得地图位置
     public Map<String,Object> getMapNow(ObjectId parentId,ObjectId sonId) {
@@ -1353,7 +1359,15 @@ public class ControlPhoneService {
                 map3.put(dto4.getID().toString(),dto4);
             }
         }
+        childIds.remove(userId);
+        oids.remove(userId);
 
+        TeacherApproveEntry teacherApproveEntry = teacherApproveDao.getEntry(userId);
+        if(teacherApproveEntry != null && teacherApproveEntry.getType()==2){
+            map.put("isRen",true);
+        }else{
+            map.put("isRen",false);
+        }
         List<ControlAppUserEntry> entryList1 = controlAppUserDao.getUserSendAppList(userId,childIds);
         List<ControlAppEntry> entryList2 = controlAppDao.getEntryListByUserId(userId,oids);
         List<ResultAppListDTO> dtos1 = new ArrayList<ResultAppListDTO>();
@@ -1381,7 +1395,7 @@ public class ControlPhoneService {
                 CommunityEntry entry2 = map3.get(entry.getCommunityId().toString());
                 ResultAppListDTO dto = new ResultAppListDTO();
                 dto.setName(entry2.getCommunityName());
-                dto.setUrl(entry2.getCommunityLogo());
+                dto.setUrl(getNewLogo(entry2.getCommunityLogo()));
                 if(entry.getAppIdList() != null){
                     dto.setCount(entry.getAppIdList().size());
                 }else{
@@ -1409,7 +1423,7 @@ public class ControlPhoneService {
             CommunityEntry entry2 = map3.get(id.toString());
             ResultAppListDTO dto = new ResultAppListDTO();
             dto.setName(entry2.getCommunityName());
-            dto.setUrl(entry2.getCommunityLogo());
+            dto.setUrl(getNewLogo(entry2.getCommunityLogo()));
             dto.setCount(0);
             dto.setContactId(id.toString());
             dto.setType(2);//社区
@@ -1483,7 +1497,8 @@ public class ControlPhoneService {
                 map3.put(dto4.getID().toString(),dto4);
             }
         }
-
+        childIds.remove(userId);
+        oids.remove(userId);
         TeacherApproveEntry teacherApproveEntry = teacherApproveDao.getEntry(userId);
         if(teacherApproveEntry != null && teacherApproveEntry.getType()==2){
             map.put("isRen",true);
@@ -1521,8 +1536,9 @@ public class ControlPhoneService {
                 CommunityEntry entry2 = map3.get(entry.getCommunityId().toString());
                 ResultUserAppList dto = new ResultUserAppList();
                 dto.setName(entry2.getCommunityName());
-                dto.setUrl(entry2.getCommunityLogo());
+                dto.setUrl(getNewLogo(entry2.getCommunityLogo()));
                 dto.setContactId(entry.getCommunityId().toString());
+                dto.setAppId(appId.toString());
                 dto.setType(2);//社区
                 if(entry.getAppIdList() != null && entry.getAppIdList().contains(appId)){
                     dto.setIsCheck(1);
@@ -1539,6 +1555,7 @@ public class ControlPhoneService {
             String name = StringUtils.isNotEmpty(infoDTO.getNickName())?infoDTO.getNickName():infoDTO.getUserName();
             dto.setName(name);
             dto.setUrl(infoDTO.getImgUrl());
+            dto.setAppId(appId.toString());
             dto.setIsCheck(2);
             dto.setContactId(id.toString());
             dto.setType(1);//孩子
@@ -1549,7 +1566,8 @@ public class ControlPhoneService {
             CommunityEntry entry2 = map3.get(id.toString());
             ResultUserAppList dto = new ResultUserAppList();
             dto.setName(entry2.getCommunityName());
-            dto.setUrl(entry2.getCommunityLogo());
+            dto.setUrl(getNewLogo(entry2.getCommunityLogo()));
+            dto.setAppId(appId.toString());
             dto.setIsCheck(2);
             dto.setContactId(id.toString());
             dto.setType(2);//社区
@@ -1559,4 +1577,18 @@ public class ControlPhoneService {
         map.put("communityList",dtos2);
         return  map;
     }
+
+/*http://www.fulaan.com/static/images/community/upload.png*/
+    //处理社区logo
+    public static String getNewLogo(String url){
+        String str = "";
+        if(url != null && url.contains("http://www.fulaan.com/")){
+            str = url.replace("http://www.fulaan.com/", "http://appapi.jiaxiaomei.com/");
+        }else{
+            str = url;
+        }
+        return str;
+    }
+
+
 }

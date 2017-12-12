@@ -1442,22 +1442,43 @@ public class DefaultFPostController extends BaseController {
     @ApiResponses( value = {@ApiResponse(code = 200, message = "Successful — 请求已完成",response = RespObj.class)})
     @RequestMapping(value = "/updateReplyBtnZan")
     @ResponseBody
-    public RespObj updateReplyBtnZan(String replyId, String userReply) {
+    public RespObj updateReplyBtnZan(
+            @RequestParam(required = false,defaultValue = "") String replyId,
+            @RequestParam(required = false,defaultValue = "") String userReply,
+            @RequestParam(required = false,defaultValue = "1")int type) {
         FReplyDTO fReplyDTO = fReplyService.detail(new ObjectId(replyId));
         List<String> rl = fReplyDTO.getUserReplyList();
-        if (rl.contains(userReply)) {
-            return RespObj.FAILD("已经点赞过了");
-        }
-        UserEntry userEntry = userService.findById(new ObjectId(userReply));
-        if (null != userEntry) {
-            //获取登录的人的Id，只有登录的人才能点赞成功
-            String userId = getUserId().toString();
-            if (userId.equals(userEntry.getID().toString())) {
-                fReplyService.updateBtnZan(new ObjectId(userReply), new ObjectId(replyId));
+        if(type==Constant.ONE) {
+            if (rl.contains(userReply)) {
+                return RespObj.FAILD("已经点赞过了");
             }
+            UserEntry userEntry = userService.findById(new ObjectId(userReply));
+            if (null != userEntry) {
+                //获取登录的人的Id，只有登录的人才能点赞成功
+                String userId = getUserId().toString();
+                if (userId.equals(userEntry.getID().toString())) {
+                    fReplyService.updateBtnZan(new ObjectId(userReply), new ObjectId(replyId));
+                }
+            }
+            return RespObj.SUCCESS(fReplyDTO.getPraiseCount() + 1);
+        }else{
+            if (!rl.contains(userReply)) {
+                return RespObj.FAILD("已经取消点赞了");
+            }
+            UserEntry userEntry = userService.findById(new ObjectId(userReply));
+            if (null != userEntry) {
+                //获取登录的人的Id，只有登录的人才能点赞成功
+                String userId = getUserId().toString();
+                if (userId.equals(userEntry.getID().toString())) {
+                    fReplyService.removeBtnZan(new ObjectId(userReply), new ObjectId(replyId));
+                }
+            }
+            return RespObj.SUCCESS(fReplyDTO.getPraiseCount() - 1);
         }
-        return RespObj.SUCCESS(fReplyDTO.getPraiseCount() + 1);
+
     }
+
+
 
     /**
      * 更新点赞

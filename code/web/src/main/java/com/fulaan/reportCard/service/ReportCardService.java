@@ -21,10 +21,10 @@ import com.pojo.user.UserEntry;
 import com.pojo.wrongquestion.SubjectClassEntry;
 import com.sys.constants.Constant;
 import org.apache.commons.lang3.StringUtils;
-import org.apache.poi.hssf.usermodel.HSSFCell;
-import org.apache.poi.hssf.usermodel.HSSFRow;
-import org.apache.poi.hssf.usermodel.HSSFSheet;
-import org.apache.poi.hssf.usermodel.HSSFWorkbook;
+import org.apache.poi.hssf.usermodel.*;
+import org.apache.poi.ss.usermodel.Cell;
+import org.apache.poi.ss.usermodel.DateUtil;
+import org.apache.poi.ss.util.NumberToTextConverter;
 import org.bson.types.ObjectId;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -33,6 +33,7 @@ import javax.servlet.http.HttpServletResponse;
 import java.io.InputStream;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
+import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.*;
 
@@ -872,8 +873,10 @@ public class ReportCardService {
             userDTO.setCommunityId(communityEntry.getID().toString());
             userDTO.setCommunityName(communityEntry.getCommunityName());
             userDTO.setUserCount(Constant.ZERO);
+            userDTO.setFileName(communityEntry.getCommunityName()+"学生名单");
             if (null != map.get(communityEntry.getID())) {
                 userDTO.setUserCount(map.get(communityEntry.getID()).getUserCount());
+                userDTO.setFileName(map.get(communityEntry.getID()).getFileName());
             }
             virtualCommunityUserDTOs.add(userDTO);
         }
@@ -881,10 +884,20 @@ public class ReportCardService {
     }
 
     public void removeVirtualUserList(ObjectId communityId) {
+        VirtualCommunityEntry virtualCommunityEntry=virtualCommunityDao.findntryByCommunityId(communityId);
+        if(null!=virtualCommunityEntry){
+            virtualCommunityEntry.setUserCount(Constant.ZERO);
+            virtualCommunityDao.saveVirtualCommunity(virtualCommunityEntry);
+        }
         virtualUserDao.removeOldData(communityId);
     }
 
-    public void removeItemId(ObjectId itemId) {
+    public void removeItemId(ObjectId itemId,ObjectId communityId) {
+        VirtualCommunityEntry virtualCommunityEntry=virtualCommunityDao.findntryByCommunityId(communityId);
+        if(null!=virtualCommunityEntry){
+            virtualCommunityEntry.setUserCount(virtualCommunityEntry.getUserCount()-1);
+            virtualCommunityDao.saveVirtualCommunity(virtualCommunityEntry);
+        }
         virtualUserDao.removeItemById(itemId);
     }
 
@@ -894,15 +907,15 @@ public class ReportCardService {
         virtualUserDao.editVirtualUserItem(itemId, userName, userNumber);
     }
 
-    public void importUserTemplate(InputStream inputStream, String communityId) throws Exception {
+    public void importUserTemplate(InputStream inputStream, String communityId,String fileName) throws Exception {
         HSSFWorkbook workbook = null;
         workbook = new HSSFWorkbook(inputStream);
         HSSFSheet sheet = workbook.getSheet(workbook.getSheetName(0));
         int rowNum = sheet.getLastRowNum();
         List<VirtualUserDTO> virtualUserDTOs = new ArrayList<VirtualUserDTO>();
         for (int j = 1; j <= rowNum; j++) {
-            String userName = sheet.getRow(j).getCell(0).getStringCellValue();
-            String userNumber = sheet.getRow(j).getCell(1).getStringCellValue();
+            String userName =  getCellValue(sheet.getRow(j).getCell(0));
+            String userNumber = getCellValue(sheet.getRow(j).getCell(1));
             if (StringUtils.isNotEmpty(userName)) {
                 VirtualUserDTO v = new VirtualUserDTO();
                 v.setCommunityId(communityId);
@@ -911,10 +924,10 @@ public class ReportCardService {
                 virtualUserDTOs.add(v);
             }
         }
-        dealData(virtualUserDTOs);
+        dealData(virtualUserDTOs,fileName);
     }
 
-    public void dealData(List<VirtualUserDTO> virtualUserDTOs) {
+    public void dealData(List<VirtualUserDTO> virtualUserDTOs,String fileName) {
         if (virtualUserDTOs.size() > 0) {
             ObjectId communityId = new ObjectId(virtualUserDTOs.get(0).getCommunityId());
             List<NewVersionCommunityBindEntry>
@@ -939,22 +952,31 @@ public class ReportCardService {
                 }
             }
             if (entries.size() > 0) {
+                VirtualCommunityEntry virtualCommunityEntry=virtualCommunityDao.findntryByCommunityId(communityId);
+                if(null!=virtualCommunityEntry){
+                    virtualCommunityEntry.setUserCount(entries.size());
+                    virtualCommunityEntry.setFileName(fileName);
+                    virtualCommunityDao.saveVirtualCommunity(virtualCommunityEntry);
+                }else{
+                    VirtualCommunityEntry entry=new VirtualCommunityEntry(communityId,entries.size(),fileName);
+                    virtualCommunityDao.saveVirtualCommunity(entry);
+                }
                 virtualUserDao.removeOldData(communityId);
                 virtualUserDao.saveEntries(entries);
             }
         }
     }
 
-    public void importUserControl(InputStream inputStream) throws Exception {
+    public void importUserControl(InputStream inputStream,String fileName) throws Exception {
         HSSFWorkbook workbook = null;
         workbook = new HSSFWorkbook(inputStream);
         HSSFSheet sheet = workbook.getSheet(workbook.getSheetName(0));
         int rowNum = sheet.getLastRowNum();
         List<VirtualUserDTO> virtualUserDTOs = new ArrayList<VirtualUserDTO>();
         for (int j = 1; j <= rowNum; j++) {
-            String communityId = sheet.getRow(j).getCell(0).getStringCellValue();
-            String userName = sheet.getRow(j).getCell(1).getStringCellValue();
-            String userNumber = sheet.getRow(j).getCell(2).getStringCellValue();
+            String communityId = getCellValue(sheet.getRow(j).getCell(0));
+            String userName =  getCellValue(sheet.getRow(j).getCell(1));
+            String userNumber =  getCellValue(sheet.getRow(j).getCell(2));
             if (StringUtils.isNotEmpty(communityId) &&
                     StringUtils.isNotEmpty(userName)) {
                 VirtualUserDTO v = new VirtualUserDTO();
@@ -964,7 +986,53 @@ public class ReportCardService {
                 virtualUserDTOs.add(v);
             }
         }
-        dealData(virtualUserDTOs);
+        dealData(virtualUserDTOs,fileName);
+    }
+
+    private String getCellValue(Cell cell) {
+        String cellvalue = "";
+        if (cell != null) {
+            // 判断当前Cell的Type
+            switch (cell.getCellType()) {
+                // 如果当前Cell的Type为NUMERIC
+                case HSSFCell.CELL_TYPE_NUMERIC: {
+                    short format = cell.getCellStyle().getDataFormat();
+                    if(format == 14 || format == 31 || format == 57 || format == 58){   //excel中的时间格式
+                        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
+                        double value = cell.getNumericCellValue();
+                        Date date = DateUtil.getJavaDate(value);
+                        cellvalue = sdf.format(date);
+                    }
+                    // 判断当前的cell是否为Date
+                    else if (HSSFDateUtil.isCellDateFormatted(cell)) {  //先注释日期类型的转换，在实际测试中发现HSSFDateUtil.isCellDateFormatted(cell)只识别2014/02/02这种格式。
+                        // 如果是Date类型则，取得该Cell的Date值           // 对2014-02-02格式识别不出是日期格式
+                        Date date = cell.getDateCellValue();
+                        DateFormat formater = new SimpleDateFormat("yyyy-MM-dd");
+                        cellvalue= formater.format(date);
+                    } else { // 如果是纯数字
+                        // 取得当前Cell的数值
+                        cellvalue = NumberToTextConverter.toText(cell.getNumericCellValue());
+
+                    }
+                    break;
+                }
+                // 如果当前Cell的Type为STRIN
+                case HSSFCell.CELL_TYPE_STRING:
+                    // 取得当前的Cell字符串
+                    cellvalue = cell.getStringCellValue().replaceAll("'", "''");
+                    break;
+                case  HSSFCell.CELL_TYPE_BLANK:
+                    cellvalue = null;
+                    break;
+                // 默认的Cell值
+                default:{
+                    cellvalue = " ";
+                }
+            }
+        } else {
+            cellvalue = "";
+        }
+        return cellvalue;
     }
 
     public void exportUserTemplate(HttpServletResponse response) {

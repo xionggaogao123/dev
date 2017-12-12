@@ -423,7 +423,8 @@ public class ThirdReportCardController extends BaseController{
             for (List<MultipartFile> multipartFiles : fileMap.values()) {
                 for(MultipartFile file:multipartFiles) {
                     System.out.println("----" + file.getOriginalFilename());
-                    reportCardService.importUserControl(file.getInputStream());
+                    String fileName=file.getOriginalFilename().substring(0,file.getOriginalFilename().lastIndexOf("."));
+                    reportCardService.importUserControl(file.getInputStream(),fileName);
                 }
             }
             respObj.setCode(Constant.SUCCESS_CODE);

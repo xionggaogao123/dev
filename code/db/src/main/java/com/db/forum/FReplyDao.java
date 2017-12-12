@@ -281,6 +281,16 @@ public class FReplyDao extends BaseDao {
         update(MongoFacroty.getAppDB(), getCollection(), query, updateValue);
     }
 
+
+    public void removeBtnZan(ObjectId userReplyId, ObjectId replyId){
+        BasicDBObject query = new BasicDBObject(Constant.ID, replyId);
+        BasicDBObject updateValue = new BasicDBObject();
+        Long updateTime = System.currentTimeMillis();
+        updateValue.append(Constant.MONGO_PULL, new BasicDBObject("url", userReplyId)).append(Constant.MONGO_INC, new BasicDBObject("prc", Constant.NEGATIVE_ONE))
+                .append(Constant.MONGO_SET, new BasicDBObject("upt", updateTime));
+        update(MongoFacroty.getAppDB(), getCollection(), query, updateValue);
+    }
+
     /**
      * 查询排行榜
      */

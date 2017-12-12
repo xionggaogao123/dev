@@ -15,11 +15,21 @@ public class VirtualCommunityEntry extends BaseDBObject{
     }
 
     public VirtualCommunityEntry(ObjectId communityId,
-                                 int userCount){
+                                 int userCount,
+                                 String fileName){
         BasicDBObject basicDBObject=new BasicDBObject()
                 .append("cid",communityId)
+                .append("fn",fileName)
                 .append("uc",userCount);
         setBaseEntry(basicDBObject);
+    }
+
+    public void setFileName(String fileName){
+        setSimpleValue("fn",fileName);
+    }
+
+    public String getFileName(){
+        return getSimpleStringValue("fn");
     }
 
     public void setUserCount(int userCount){

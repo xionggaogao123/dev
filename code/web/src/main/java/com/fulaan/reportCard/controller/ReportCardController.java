@@ -425,9 +425,9 @@ public class ReportCardController extends BaseController {
     @ApiResponses(value = {@ApiResponse(code = 200, message = "导入模板已完成", response = String.class),
             @ApiResponse(code = 400, message = "请求中有语法问题，或不能满足请求"),
             @ApiResponse(code = 500, message = "服务器不能完成请求")})
-    @RequestMapping("/searchUserList/{communityId}")
+    @RequestMapping("/searchUserList")
     @ResponseBody
-    public RespObj searchUserList(@PathVariable @ObjectIdType ObjectId communityId,
+    public RespObj searchUserList(@ObjectIdType ObjectId communityId,
                                   int page,int pageSize) {
         RespObj respObj = new RespObj(Constant.SUCCESS_CODE);
         Map<String,Object> result= reportCardService.searchUserList(communityId,page,pageSize);
@@ -465,7 +465,8 @@ public class ReportCardController extends BaseController {
             for (List<MultipartFile> multipartFiles : fileMap.values()) {
                 for (MultipartFile file : multipartFiles) {
                     System.out.println("----" + file.getOriginalFilename());
-                    reportCardService.importUserTemplate(file.getInputStream(), communityId);
+                    String fileName=file.getOriginalFilename().substring(0,file.getOriginalFilename().lastIndexOf("."));
+                    reportCardService.importUserTemplate(file.getInputStream(), communityId,fileName);
                 }
             }
             respObj.setCode(Constant.SUCCESS_CODE);
@@ -495,11 +496,12 @@ public class ReportCardController extends BaseController {
     @ApiResponses(value = {@ApiResponse(code = 200, message = "导入模板已完成", response = String.class),
             @ApiResponse(code = 400, message = "请求中有语法问题，或不能满足请求"),
             @ApiResponse(code = 500, message = "服务器不能完成请求")})
-    @RequestMapping("/removeItemId/{itemId}")
+    @RequestMapping("/removeItemId/{itemId}/{communityId}")
     @ResponseBody
-    public RespObj removeItemId(@PathVariable @ObjectIdType ObjectId itemId) {
+    public RespObj removeItemId(@PathVariable @ObjectIdType ObjectId itemId,
+                                @PathVariable @ObjectIdType ObjectId communityId) {
         RespObj respObj = new RespObj(Constant.SUCCESS_CODE);
-        reportCardService.removeItemId(itemId);
+        reportCardService.removeItemId(itemId,communityId);
         respObj.setMessage("删除名单成功!");
         return respObj;
     }
@@ -531,7 +533,8 @@ public class ReportCardController extends BaseController {
             for (List<MultipartFile> multipartFiles : fileMap.values()) {
                 for (MultipartFile file : multipartFiles) {
                     System.out.println("----" + file.getOriginalFilename());
-                    reportCardService.importUserControl(file.getInputStream());
+                    String fileName=file.getOriginalFilename().substring(0,file.getOriginalFilename().lastIndexOf("."));
+                    reportCardService.importUserControl(file.getInputStream(),fileName);
                 }
             }
             respObj.setCode(Constant.SUCCESS_CODE);

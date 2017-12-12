@@ -250,6 +250,10 @@ public class FReplyService {
         fReplyDao.updateBtnZan(userReplyId, replyId);
     }
 
+    public void removeBtnZan(ObjectId userReplyId, ObjectId replyId){
+        fReplyDao.removeBtnZan(userReplyId, replyId);
+    }
+
     /**
      * 获取自己的点赞数
      *

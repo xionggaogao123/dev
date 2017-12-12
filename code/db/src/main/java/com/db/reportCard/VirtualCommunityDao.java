@@ -21,6 +21,17 @@ public class VirtualCommunityDao extends BaseDao{
         save(MongoFacroty.getAppDB(), Constant.COLLECTION_REPORT_CARD_VIRTUAL_COMMUNITY,entry.getBaseEntry());
     }
 
+    public VirtualCommunityEntry findntryByCommunityId(ObjectId communityId){
+        BasicDBObject query=new BasicDBObject()
+                .append("cid",communityId);
+        DBObject dbObject=findOne(MongoFacroty.getAppDB(), Constant.COLLECTION_REPORT_CARD_VIRTUAL_COMMUNITY,query,Constant.FIELDS);
+        if(null!=dbObject){
+            return new VirtualCommunityEntry(dbObject);
+        }else {
+            return null;
+        }
+    }
+
 
     public Map<ObjectId,VirtualCommunityEntry> getVirtualMap(List<ObjectId> communityIds){
         Map<ObjectId,VirtualCommunityEntry>
@@ -32,7 +43,7 @@ public class VirtualCommunityDao extends BaseDao{
             for(DBObject dbObject:dbObjectList){
                 VirtualCommunityEntry
                         communityEntry=new VirtualCommunityEntry(dbObject);
-                map.put(communityEntry.getID(),communityEntry);
+                map.put(communityEntry.getCommunityId(),communityEntry);
             }
         }
         return map;

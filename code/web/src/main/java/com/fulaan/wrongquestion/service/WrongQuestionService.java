@@ -13,7 +13,6 @@ import com.fulaan.wrongquestion.dto.ErrorBookDTO.AnswerExplainDTO;
 import com.fulaan.wrongquestion.dto.ErrorBookDTO.ErrorBookAttachDTO;
 import com.pojo.newVersionGrade.NewVersionGradeEntry;
 import com.pojo.questionbook.QuestionTagsEntry;
-import com.pojo.reportCard.ExamTypeEntry;
 import com.pojo.wrongquestion.*;
 import com.pojo.wrongquestion.ErrorBookEntry.AnswerExplain;
 import com.pojo.wrongquestion.ErrorBookEntry.ErrorBookAttach;
@@ -119,14 +118,6 @@ public class WrongQuestionService {
      */
     public Map<String,Object> getGradeAndSubject(ObjectId userId){
         Map<String,Object> map = new HashMap<String, Object>();
-       /* List<SubjectClassEntry> enties = subjectClassDao.getList();
-        List<SubjectClassDTO> dtos = new ArrayList<SubjectClassDTO>();
-        if(enties.size()>0){
-            for(SubjectClassEntry en : enties){
-                dtos.add(new SubjectClassDTO(en));
-            }
-        }
-        map.put("subjectList",dtos);*/
         //获取当前学期
         KeyValue keyValue = this.getCurrTermType();
         NewVersionGradeEntry entry = newVersionGradeDao.getEntryByCondition(userId, keyValue.getValue());
@@ -148,20 +139,6 @@ public class WrongQuestionService {
         }else{
 
         }
-      /*  CreateGradeDTO dto5 = new CreateGradeDTO();
-        dto5.setGradeName("不限");
-        dto5.setType(0);
-        dto5.setEname("");
-        dto5.setId("");
-        SubjectClassDTO dto6 = new SubjectClassDTO();
-        dto6.setName("不限");
-        dto6.setId("");
-        dto6.setSubjectId("");
-        List<SubjectClassDTO> subjectClassDTOs = new ArrayList<SubjectClassDTO>();
-        subjectClassDTOs.add(dto6);
-        dto5.setSubjectClassDTOs(subjectClassDTOs);
-        mlist.add(dto5);*/
-        //List<CreateGradeEntry> clist = new ArrayList<CreateGradeEntry>();
         CreateGradeEntry en3 = createGradeDao.getEntryByType(entry.getGradeType());
         CreateGradeDTO dto3 = new CreateGradeDTO(en3);
         //clist.add(en3);
@@ -179,77 +156,25 @@ public class WrongQuestionService {
         }
         mlist.add(dto4);
         map.put("gradeList",mlist);
-        /*clist.add(en4);
-        if(clist.size()>0){
-            for(CreateGradeEntry enty : clist){
-                mlist.add(new CreateGradeDTO(enty));
-            }
-        }
-        map.put("gradeList",mlist);
-
-        //加载学科
-        List<String> stringList =new ArrayList<String>();
-        String sename = mlist.get(0).getEname();
-        if(mlist.size()>0){
-            for(CreateGradeDTO dto3 : mlist){
-                stringList.addAll(dto3.getSubjectList());
-            }
-            //stringList =  mlist.get(0).getSubjectList();
-        }
-        List<ObjectId> objectIdList = new ArrayList<ObjectId>();
-        for(String str : stringList){
-            objectIdList.add(new ObjectId(str));
-        }
-        List<SubjectClassEntry> entries = subjectClassDao.getListByList(objectIdList);
-        List<SubjectClassDTO> dtoList =   new ArrayList<SubjectClassDTO>();
-        if(entries.size()>0){
-            for(SubjectClassEntry entry1 : entries){
-                SubjectClassDTO dto4 = new SubjectClassDTO(entry1);
-                dtoList.add(dto4);
-            }
-        }
-        if(dtoList.size()>0){
-            for(CreateGradeDTO createGradeDTO : mlist){
-                for(SubjectClassDTO subjectClassDTO : dtoList){
-                    if(createGradeDTO.getSubjectList().contains(subjectClassDTO.getId())){
-                       *//* List<SubjectClassDTO> dtos = createGradeDTO.getSubjectClassDTOs();
-                        dtos.add(subjectClassDTO);
-                        createGradeDTO.setSubjectClassDTOs(dtos);*//*
-                        createGradeDTO.getSubjectClassDTOs().add(subjectClassDTO);
-                    }
-                }
-
-            }
-        }*/
-       // map.put("subjectList",dtoList);
-
-
         //加载问题类型
-      /*  List<QuestionTypeDTO> dtoList1 = new ArrayList<QuestionTypeDTO>();
-        if(dtoList.size()>0){
-            ObjectId subjectId = new ObjectId(dtoList.get(0).getId());
-            List<QuestionTypeEntry> entries1 = questionTypeDao.getList(subjectId,sename);
-            if(entries1.size()>0){
-                for(QuestionTypeEntry entry2 : entries1){
-                    dtoList1.add(new QuestionTypeDTO(entry2));
-                }
+        List<QuestionTypeDTO> dtoList1 = new ArrayList<QuestionTypeDTO>();
+        List<QuestionTypeEntry> entries1 = questionTypeDao.getTypeList();
+        if(entries1.size()>0){
+            for(QuestionTypeEntry entry2 : entries1){
+                dtoList1.add(new QuestionTypeDTO(entry2));
             }
-
         }
-        map.put("questionTypeList",dtoList1);*/
+        map.put("questionTypeList",dtoList1);
 
-        //加载测试类型
-       /* List<TestTypeDTO> dtoList2 = new ArrayList<TestTypeDTO>();
-        if(dtoList.size()>0){
-            List<TestTypeEntry> entries2 = testTypeDao.getList(sename);
-            if(entries2.size()>0){
-                for(TestTypeEntry entry3 : entries2){
-                    dtoList2.add(new TestTypeDTO(entry3));
-                }
+        //加载自定义标签
+        List<QuestionTagsDTO> dtoList2 = new ArrayList<QuestionTagsDTO>();
+        List<QuestionTagsEntry> entries3 = questionTagsDao.getReviewList(userId);
+        if(entries3.size()>0){
+            for(QuestionTagsEntry entry3 : entries3){
+                dtoList2.add(new QuestionTagsDTO(entry3));
             }
-
         }
-        map.put("TestTypeList",dtoList2);*/
+        map.put("TestTypeList",dtoList2);
         return map;
     }
 
@@ -257,7 +182,7 @@ public class WrongQuestionService {
         Map<String,Object> map = new HashMap<String, Object>();
         //加载问题类型
         List<QuestionTypeDTO> dtoList1 = new ArrayList<QuestionTypeDTO>();
-        List<QuestionTypeEntry> entries1 = questionTypeDao.getList(subjectId,sename);
+        List<QuestionTypeEntry> entries1 = questionTypeDao.getList(subjectId, sename);
         if(entries1.size()>0){
             for(QuestionTypeEntry entry2 : entries1){
                 dtoList1.add(new QuestionTypeDTO(entry2));
@@ -461,13 +386,17 @@ public class WrongQuestionService {
 
     }*/
     public static void main(String[] args){
-        ExamTypeDao examTypeDao = new ExamTypeDao();
+        /*选择题、填空题、解答题、判断题、证明题、阅读理解、完形填空、其他 */
+        QuestionTypeDao examTypeDao = new QuestionTypeDao();
         //单元测试、期中测试、期末测试、月考、同步练习、模拟测试、竞赛试题、高考真题、其他
-        String[] str = {"单元测试","期中测试","期末测试","月考","同步练习","周周练","模拟测试","竞赛试题","高考真题","其他"};
+        String[] str = {"选择题","填空题","解答题","判断题","证明题","阅读理解","完形填空","其他"};
         for(int a= 0;a <str.length;a++){
-            ExamTypeEntry entry = new ExamTypeEntry(str[a]);
+            QuestionTypeDTO entry = new QuestionTypeDTO();
+            entry.setName(str[a]);
+            entry.setSubjectId("");
+            entry.setSename("");
             //entry.setExamTypeName(str[a]);
-            examTypeDao.addExamTypeEntry(entry);
+            examTypeDao.addQuestionTypeEntry(entry.buildAddEntry());
         }
     }
 }

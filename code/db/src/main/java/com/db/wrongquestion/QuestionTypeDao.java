@@ -48,4 +48,25 @@ public class QuestionTypeDao extends BaseDao {
         return entryList;
 
     }
+
+    /**
+     * 根据类型查找
+     */
+    public List<QuestionTypeEntry> getTypeList(){
+        BasicDBObject query = new BasicDBObject()
+                .append("isr", 0); // 未删除
+        List<DBObject> dbList =
+                find(MongoFacroty.getAppDB(),
+                        Constant.COLLECTION_QUESTION_TYPE,
+                        query, Constant.FIELDS,
+                        Constant.MONGO_SORTBY_ASC);
+        List<QuestionTypeEntry> entryList = new ArrayList<QuestionTypeEntry>();
+        if (dbList != null && !dbList.isEmpty()) {
+            for (DBObject obj : dbList) {
+                entryList.add(new QuestionTypeEntry((BasicDBObject) obj));
+            }
+        }
+        return entryList;
+
+    }
 }

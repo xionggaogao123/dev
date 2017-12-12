@@ -4,12 +4,14 @@ import com.alibaba.fastjson.JSON;
 import com.fulaan.base.BaseController;
 import com.fulaan.questionbook.dto.QuestionAdditionDTO;
 import com.fulaan.questionbook.dto.QuestionBookDTO;
+import com.fulaan.questionbook.dto.QuestionWebTestDTO;
 import com.fulaan.questionbook.service.QuestionBookService;
 import com.sys.constants.Constant;
 import com.sys.utils.RespObj;
 import io.swagger.annotations.*;
 import org.apache.log4j.Logger;
 import org.bson.types.ObjectId;
+import org.json.JSONException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -17,6 +19,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
+import javax.servlet.http.HttpServletResponse;
 import java.util.List;
 import java.util.Map;
 
@@ -25,7 +28,7 @@ import java.util.Map;
  */
 @Api(value="错题本2.0")
 @Controller
-@RequestMapping("/questionBook")
+@RequestMapping("/web/questionBook")
 public class QuestionBookController extends BaseController {
     @Autowired
     private QuestionBookService questionBookService;
@@ -280,5 +283,101 @@ public class QuestionBookController extends BaseController {
         }
         return JSON.toJSONString(respObj);
     }
+
+
+    /*************************  web端的接口  ****************************/
+
+    /***
+     * 查询试卷列表
+     *
+     */
+    @ApiOperation(value = "查询试卷列表", httpMethod = "POST", produces = "application/json")
+    @ApiResponses( value = {@ApiResponse(code = 200, message = "Successful — 请求已完成",response = String.class)})
+    @RequestMapping("/selectTestListEntry")
+    @ResponseBody
+    public String selectTestListEntry(@ApiParam(name="page",required = true,value="page") @RequestParam(value = "page",required = true) int page,
+                                      @ApiParam(name="pageSize",required = true,value="pageSize") @RequestParam(value = "pageSize",required = true) int pageSize){
+        RespObj respObj=new RespObj(Constant.FAILD_CODE);
+        try{
+            respObj.setCode(Constant.SUCCESS_CODE);
+            Map<String,Object> map = questionBookService.selectTestListEntry(getUserId(), page, pageSize);
+            respObj.setMessage(map);
+        }catch (Exception e){
+            e.printStackTrace();
+            respObj.setCode(Constant.FAILD_CODE);
+            respObj.setErrorMessage("查询试卷列表失败!");
+        }
+        return JSON.toJSONString(respObj);
+    }
+
+    /***
+     * 添加试卷
+     *
+     */
+    @ApiOperation(value = "添加试卷", httpMethod = "POST", produces = "application/json")
+    @ApiResponses( value = {@ApiResponse(code = 200, message = "Successful — 请求已完成",response = String.class)})
+    @RequestMapping("/addTestEntry")
+    @ResponseBody
+    public String addTestEntry(@ApiParam(name="page",required = true,value="page") @RequestParam(value = "page",required = true) int page,
+                                      @ApiParam(name="ids",required = true,value="pageSize") @RequestParam(value = "ids",required = true) List<String> ids){
+        RespObj respObj=new RespObj(Constant.FAILD_CODE);
+        try{
+            respObj.setCode(Constant.SUCCESS_CODE);
+            questionBookService.addTestEntry(getUserId(),ids);
+            respObj.setMessage("添加试卷成功");
+        }catch (Exception e){
+            e.printStackTrace();
+            respObj.setCode(Constant.FAILD_CODE);
+            respObj.setErrorMessage("添加试卷失败!");
+        }
+        return JSON.toJSONString(respObj);
+    }
+
+    /***
+     * 编辑保存
+     *
+     */
+    @ApiOperation(value = "编辑保存", httpMethod = "POST", produces = "application/json")
+    @ApiResponses( value = {@ApiResponse(code = 200, message = "Successful — 请求已完成",response = String.class)})
+    @RequestMapping("/updTestEntry")
+    @ResponseBody
+    public String updTestEntry(@ApiParam(name="dto",required = true,value="试卷对象") QuestionWebTestDTO dto){
+        RespObj respObj=new RespObj(Constant.FAILD_CODE);
+        try{
+            respObj.setCode(Constant.SUCCESS_CODE);
+            questionBookService.updTestEntry(dto);
+            respObj.setMessage("编辑保存成功");
+        }catch (Exception e){
+            e.printStackTrace();
+            respObj.setCode(Constant.FAILD_CODE);
+            respObj.setErrorMessage("编辑保存失败!");
+        }
+        return JSON.toJSONString(respObj);
+    }
+    /**
+     * 导出
+     *
+     * @param questionnaireId
+     * @param page
+     * @param pageSize
+     * @return
+     */
+    @ApiOperation(value = "编辑保存", httpMethod = "POST", produces = "application/json")
+    @ApiResponses( value = {@ApiResponse(code = 200, message = "Successful — 请求已完成",response = String.class)})
+    @RequestMapping("/addword")
+    @ResponseBody
+    public void addWord(@ApiParam(name="questionnaireId",required = true,value="questionnaireId") @RequestParam(value = "questionnaireId",required = true) String questionnaireId,
+                        @RequestParam(value = "page", defaultValue = "1") int page,
+                        @RequestParam(value = "name", defaultValue = "*") String name,
+                        @RequestParam(value = "pageSize", defaultValue = "10") int pageSize,
+                        @RequestParam String tmids,HttpServletResponse response
+    ) {
+        try {
+            questionBookService.addword(questionnaireId.toString(), name, page, pageSize,tmids,response);
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+    }
+
 
 }

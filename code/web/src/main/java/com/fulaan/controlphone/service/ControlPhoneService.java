@@ -430,10 +430,11 @@ public class ControlPhoneService {
         if(oids.size()>0){
             controlAppResultDao.updEntry(oids);
         }
-    if(controlTimeDao.getEntryByUserId(userId) !=null){
-        return 0l;
-    }
-        return controlTimeDao.getEntryByUserId(userId).getBackTime();
+        ControlTimeEntry entr = controlTimeDao.getEntryByUserId(userId);
+        if(entr ==null){
+            return 0l;
+        }
+        return entr.getBackTime();
     }
 
     public Map<String,Object> seacherAppResultList(ObjectId parentId,ObjectId sonId,long time){
@@ -1380,7 +1381,8 @@ public class ControlPhoneService {
                 dto.setName(name);
                 dto.setUrl(infoDTO.getImgUrl());
                 if(entry.getAppIdList() != null){
-                    dto.setCount(entry.getAppIdList().size());
+                    List<AppDetailEntry> entries3 = appDetailDao.getEntriesByIds(entry.getAppIdList());
+                    dto.setCount(entries3.size());
                 }else{
                     dto.setCount(0);
                 }
@@ -1397,7 +1399,8 @@ public class ControlPhoneService {
                 dto.setName(entry2.getCommunityName());
                 dto.setUrl(getNewLogo(entry2.getCommunityLogo()));
                 if(entry.getAppIdList() != null){
-                    dto.setCount(entry.getAppIdList().size());
+                    List<AppDetailEntry> entries3 = appDetailDao.getEntriesByIds(entry.getAppIdList());
+                    dto.setCount(entries3.size());
                 }else{
                     dto.setCount(0);
                 }

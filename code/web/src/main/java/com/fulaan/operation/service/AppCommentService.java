@@ -1313,7 +1313,7 @@ public static void main(String[] args){
             stringList.add(entry1.getUserId().toString());
         }
         //修改提交数
-        if(entries.size()>0){
+        if(entries.size()>1){
 
         }else{
             List<String> objectIdList3 = newVersionBindService.getStudentIdListByCommunityId(entry.getRecipientId());
@@ -1635,6 +1635,10 @@ public static void main(String[] args){
         //获得时间批次
         long zero=current/(1000*3600*24)*(1000*3600*24)- TimeZone.getDefault().getRawOffset();//今天零点零分零秒的毫秒数
         entry.setDateTime(zero);
+        List<String> objectIdList2 = this.getMyRoleList4(new ObjectId(str[0]), new ObjectId(dto.getAdminId()));
+        entry.setAllWriterNumber(objectIdList2.size());
+        List<String> objectIdList3 = newVersionBindService.getStudentIdListByCommunityId(new ObjectId(str[0]));
+        entry.setAllLoadNumber(objectIdList3.size());
         appCommentDao.updEntry(entry);
         if(dto.getStatus()==0){
             List<ObjectId> objectIdList = new ArrayList<ObjectId>();

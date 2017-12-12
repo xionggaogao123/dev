@@ -3,16 +3,26 @@ package com.fulaan.questionbook.service;
 import com.db.questionbook.QuestionAdditionDao;
 import com.db.questionbook.QuestionBookDao;
 import com.db.questionbook.QuestionTagsDao;
+import com.db.questionbook.QuestionWebTestDao;
 import com.fulaan.picturetext.runnable.PictureRunNable;
-import com.fulaan.questionbook.dto.QuestionAdditionDTO;
-import com.fulaan.questionbook.dto.QuestionBookDTO;
-import com.fulaan.questionbook.dto.QuestionTagsDTO;
+import com.fulaan.questionbook.dto.*;
 import com.pojo.backstage.PictureType;
 import com.pojo.questionbook.QuestionAdditionEntry;
 import com.pojo.questionbook.QuestionBookEntry;
+import com.pojo.questionbook.QuestionWebTestEntry;
+import org.apache.poi.xwpf.usermodel.XWPFDocument;
+import org.apache.poi.xwpf.usermodel.XWPFParagraph;
+import org.apache.poi.xwpf.usermodel.XWPFRun;
 import org.bson.types.ObjectId;
+import org.json.JSONException;
 import org.springframework.stereotype.Service;
 
+import javax.servlet.http.HttpServletResponse;
+import java.io.ByteArrayOutputStream;
+import java.io.IOException;
+import java.io.OutputStream;
+import java.net.URLEncoder;
+import java.text.SimpleDateFormat;
 import java.util.*;
 
 /**
@@ -26,6 +36,8 @@ public class QuestionBookService {
     private QuestionBookDao questionBookDao = new QuestionBookDao();
 
     private QuestionTagsDao questionTagsDao =new QuestionTagsDao();
+
+    private QuestionWebTestDao questionWebTestDao = new QuestionWebTestDao();
     /**
      * 添加错题
      * @param dto
@@ -83,6 +95,21 @@ public class QuestionBookService {
         if(alist != null && alist.size()>0){
             for(String entry5 : alist){
                 PictureRunNable.send(oid.toString(), dto.getUserId(), PictureType.wrongImage.getType(), 1, entry5);
+            }
+        }
+        //保存答案
+        QuestionAdditionDTO dto1 = new QuestionAdditionDTO();
+        dto1.setContent(dto.getAnswerText());
+        dto1.setAnswerList(dto.getAnswerImg());
+        dto1.setParentId(oid.toString());
+        dto1.setAnswerType(1);//作业答案
+        QuestionAdditionEntry entry1 = dto1.buildAddEntry();
+        ObjectId qid = questionAdditionDao.addEntry(entry1);
+        //图片检测
+        List<String> alist2 = dto.getAnswerImg();
+        if(alist2 != null && alist2.size()>0){
+            for(String entry5 : alist2){
+                PictureRunNable.send(qid.toString(), dto.getUserId(), PictureType.answerImage.getType(), 1, entry5);
             }
         }
         return oid.toString();
@@ -288,5 +315,100 @@ public class QuestionBookService {
         dto.setUserId(userId.toString());
         dto.setName(name);
         questionTagsDao.addEntry(dto.buildAddEntry());
+    }
+
+    public static void main(String[] args){
+        QuestionTagsDao questionTagsDao = new QuestionTagsDao();
+        QuestionTagsDTO dto = new QuestionTagsDTO();
+        dto.setUserId("5a17d92b0a9d324986663c8f");
+        dto.setName("难点");
+        questionTagsDao.addEntry(dto.buildAddEntry());
+    }
+
+
+    //查询所有试卷
+    public Map<String,Object> selectTestListEntry(ObjectId userId,int page,int pageSize){
+        Map<String,Object> map = new HashMap<String, Object>();
+        List<QuestionWebTestDTO> dtos = new ArrayList<QuestionWebTestDTO>();
+        List<QuestionWebTestEntry> entries = questionWebTestDao.getQuestionList(userId, page, pageSize);
+        int count = questionWebTestDao.getReviewListCount(userId);
+        for(QuestionWebTestEntry entry : entries){
+            dtos.add(new QuestionWebTestDTO(entry));
+        }
+        map.put("list",dtos);
+        map.put("count",count);
+        return map;
+    }
+
+    //添加试卷
+    public void addTestEntry(ObjectId userId,List<String> ids){
+        QuestionWebTestDTO dto = new QuestionWebTestDTO();
+        dto.setUserId(userId.toString());
+        dto.setCount(ids.size());
+        Date date = new Date();
+        SimpleDateFormat sdf =   new SimpleDateFormat("yyyy-MM-dd");
+        String str = sdf.format(date);
+        int count = questionWebTestDao.getNameCount(str);
+        int number = count + 1;
+        dto.setTitle(str+number+"组卷");
+        List<QuestionWebSizeDTO> sizeDTOs = new ArrayList<QuestionWebSizeDTO>();
+        for(String id: ids){
+            QuestionWebSizeDTO dto1 = new QuestionWebSizeDTO();
+            dto1.setQuestionId(id);
+            dto1.setAnswerHeight(100);
+            dto1.setAnswerHeight(100);
+        }
+        dto.setSizeList(sizeDTOs);
+        //dto.setTitle();
+        questionWebTestDao.addEntry(dto.buildAddEntry());
+    }
+    //修改
+    public void updTestEntry(QuestionWebTestDTO dto){
+        questionWebTestDao.updEntry(dto.updateEntry());
+    }
+
+
+
+    public void addword(String questionaireId, String name, int page, int pageSize, String tmids, HttpServletResponse response) throws JSONException {
+        ByteArrayOutputStream os = new ByteArrayOutputStream();
+        XWPFDocument doc = new XWPFDocument();
+        XWPFParagraph p1 = doc.createParagraph();
+        XWPFRun r1 = p1.createRun();
+        String[] strings = {"dd","ds"};
+        int i = 1;
+        r1.setText("题目");
+        r1.addBreak();
+        r1.setText("答案");
+        r1.addBreak();
+        for (String s1 : strings) {
+            r1.setText(i + ":" + s1);
+            r1.addBreak();
+            i++;
+        }
+        try {
+            doc.write(os);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        byte[] content = os.toByteArray();
+        OutputStream outputStream = null;
+        try {
+            outputStream = response.getOutputStream();
+            response.setContentType("application/force-download");
+            response.addHeader("Content-Disposition", "attachment; filename=" + URLEncoder.encode("" + "答案.docx", "UTF-8"));
+            response.setContentLength(content.length);
+            outputStream.write(content);
+        } catch (Exception e) {
+            e.printStackTrace();
+        } finally {
+            if (outputStream != null) {
+                try {
+                    outputStream.close();
+                    outputStream = null;
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+            }
+        }
     }
 }

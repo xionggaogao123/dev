@@ -83,6 +83,30 @@ public class DefaultQuestionBookController extends BaseController {
         }
         return JSON.toJSONString(respObj);
     }
+
+    /**
+     *  添加新错题
+     * @param dto
+     * @return
+     */
+    @ApiOperation(value = "添加新错题", httpMethod = "POST", produces = "application/json")
+    @ApiResponses( value = {@ApiResponse(code = 200, message = "Successful — 请求已完成",response = String.class)})
+    @RequestMapping("/addNewBookEntry")
+    @ResponseBody
+    public String addNewBookEntry(@ApiParam(name="dto",required = true,value="作业对象") @RequestBody  QuestionBookDTO dto){
+        RespObj respObj=new RespObj(Constant.FAILD_CODE);
+        try {
+            respObj.setCode(Constant.SUCCESS_CODE);
+            dto.setUserId(getUserId().toString());
+            String str = questionBookService.addQuestionNewBookEntry(dto);
+            respObj.setMessage(str);
+        } catch (Exception e) {
+            e.printStackTrace();
+            respObj.setCode(Constant.FAILD_CODE);
+            respObj.setErrorMessage("添加错题失败!");
+        }
+        return JSON.toJSONString(respObj);
+    }
     /**
      *  修改错题展示时间（1.7.30）
      * @return

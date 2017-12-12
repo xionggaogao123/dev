@@ -32,6 +32,8 @@ public class QuestionBookDTO {
     private List<QuestionAdditionDTO> jxList = new ArrayList<QuestionAdditionDTO>();
     private List<QuestionAdditionDTO> daList = new ArrayList<QuestionAdditionDTO>();
     private List<QuestionAdditionDTO> wdList = new ArrayList<QuestionAdditionDTO>();
+    private String answerText;
+    private  List<String> answerImg;
 
     public QuestionBookDTO(){
 
@@ -299,5 +301,21 @@ public class QuestionBookDTO {
 
     public void setType(int type) {
         this.type = type;
+    }
+
+    public String getAnswerText() {
+        return answerText;
+    }
+
+    public void setAnswerText(String answerText) {
+        this.answerText = answerText;
+    }
+
+    public List<String> getAnswerImg() {
+        return answerImg;
+    }
+
+    public void setAnswerImg(List<String> answerImg) {
+        this.answerImg = answerImg;
     }
 }

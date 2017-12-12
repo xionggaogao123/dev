@@ -849,7 +849,7 @@ public class Constant {
     //临时年级表
     public static final String COLLECTION_CREATE_GRADE = "createGrade";
     //简易问题类型表
-    public static final String COLLECTION_QUESTION_TYPE = "questiontype";
+    public static final String COLLECTION_QUESTION_TYPE = "questionnewtype";
     //简易测试类型表
     public static final String COLLECTION_TEST_TYPE = "testtype";
     //简易考试类型表
@@ -901,6 +901,8 @@ public class Constant {
     public static final String COLLECTION_QUESTION_ADDITION = "questionnewaddition";
     //自定义表签
     public static final String COLLECTION_QUESTION_TAGS = "questiontags";
+    //自定义表签
+    public static final String COLLECTION_QUESTION_WEB_TEST = "questionwebtest";
 
     /**--------------------------管控--------------------------**/
 

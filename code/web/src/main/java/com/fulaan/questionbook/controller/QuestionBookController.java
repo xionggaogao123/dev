@@ -379,5 +379,33 @@ public class QuestionBookController extends BaseController {
         }
     }
 
+    /**
+     * 家长多条件组合查询列表
+     */
+    @ApiOperation(value = "多条件组合查询列表", httpMethod = "POST", produces = "application/json")
+    @ApiResponses( value = {@ApiResponse(code = 200, message = "Successful — 请求已完成",response = String.class)})
+    @RequestMapping("/getParentQuestionList")
+    @ResponseBody
+    public String getParentQuestionList(@ApiParam(name="userId",required = false,value="用户id") @RequestParam(value="userId") String userId,
+                                  @ApiParam(name="gradeId",required = false,value="年级id") @RequestParam(value="gradeId",defaultValue = "") String gradeId,
+                                  @ApiParam(name="subjectId",required = false,value="学科id") @RequestParam(value="subjectId",defaultValue = "") String subjectId,
+                                  @ApiParam(name="questionTypeId",required = false,value="错题类型id") @RequestParam(value="questionTypeId",defaultValue = "") String questionTypeId,
+                                  @ApiParam(name="testId",required = false,value="测试类型") @RequestParam(value="testId",defaultValue = "") String testId,
+                                  @ApiParam(name="type",required = true,value="是否学会") @RequestParam(value="type",defaultValue = "1") int type,
+                                  @ApiParam(name="page",required = true,value="page") @RequestParam(value="page",defaultValue = "1") int page,
+                                  @ApiParam(name="pageSize",required = true,value="pageSize") @RequestParam(value="pageSize",defaultValue = "5") int pageSize,
+                                  @ApiParam(name="keyword",required = false,value="关键字") @RequestParam(value="keyword",defaultValue = "") String keyword){
+        RespObj respObj=new RespObj(Constant.FAILD_CODE);
+        try {
+            respObj.setCode(Constant.SUCCESS_CODE);
+            Map<String,Object> dtos = questionBookService.getQuestionList(gradeId, subjectId, questionTypeId, testId, type, page, pageSize, keyword,new ObjectId(userId));
+            respObj.setMessage(dtos);
+        } catch (Exception e) {
+            e.printStackTrace();
+            respObj.setCode(Constant.FAILD_CODE);
+            respObj.setErrorMessage("多条件组合查询列表失败!");
+        }
+        return JSON.toJSONString(respObj);
+    }
 
 }

@@ -98,18 +98,20 @@ public class QuestionBookService {
             }
         }
         //保存答案
-        QuestionAdditionDTO dto1 = new QuestionAdditionDTO();
-        dto1.setContent(dto.getAnswerText());
-        dto1.setAnswerList(dto.getAnswerImg());
-        dto1.setParentId(oid.toString());
-        dto1.setAnswerType(1);//作业答案
-        QuestionAdditionEntry entry1 = dto1.buildAddEntry();
-        ObjectId qid = questionAdditionDao.addEntry(entry1);
-        //图片检测
-        List<String> alist2 = dto.getAnswerImg();
-        if(alist2 != null && alist2.size()>0){
-            for(String entry5 : alist2){
-                PictureRunNable.send(qid.toString(), dto.getUserId(), PictureType.answerImage.getType(), 1, entry5);
+       if(dto.getAnswerText()!=null && !dto.getAnswerText().equals("")){
+            QuestionAdditionDTO dto1 = new QuestionAdditionDTO();
+            dto1.setContent(dto.getAnswerText());
+            dto1.setAnswerList(dto.getAnswerImg());
+            dto1.setParentId(oid.toString());
+            dto1.setAnswerType(1);//作业答案
+            QuestionAdditionEntry entry1 = dto1.buildAddEntry();
+            ObjectId qid = questionAdditionDao.addEntry(entry1);
+            //图片检测
+            List<String> alist2 = dto.getAnswerImg();
+            if(alist2 != null && alist2.size()>0){
+                for(String entry5 : alist2){
+                    PictureRunNable.send(qid.toString(), dto.getUserId(), PictureType.answerImage.getType(), 1, entry5);
+                }
             }
         }
         return oid.toString();
@@ -316,14 +318,23 @@ public class QuestionBookService {
         dto.setName(name);
         questionTagsDao.addEntry(dto.buildAddEntry());
     }
-
     public static void main(String[] args){
-        QuestionTagsDao questionTagsDao = new QuestionTagsDao();
-        QuestionTagsDTO dto = new QuestionTagsDTO();
-        dto.setUserId("5a17d92b0a9d324986663c8f");
-        dto.setName("难点");
+        QuestionWebTestDao questionTagsDao = new QuestionWebTestDao();
+        QuestionWebTestDTO dto = new QuestionWebTestDTO();
+        dto.setUserId("5a0021f03d4df9241620d155");
+        dto.setTitle("难点组卷");
+        dto.setCount(4);
+        List<QuestionWebSizeDTO> dtos = new ArrayList<QuestionWebSizeDTO>();
+        QuestionWebSizeDTO mdt = new QuestionWebSizeDTO();
+        mdt.setAnswerHeight(50);
+        mdt.setQuestionHeight(90);
+        mdt.setQuestionId("5a30957827fddd0edca7829a");
+        dtos.add(mdt);
+        dto.setSizeList(dtos);
         questionTagsDao.addEntry(dto.buildAddEntry());
     }
+
+
 
 
     //查询所有试卷

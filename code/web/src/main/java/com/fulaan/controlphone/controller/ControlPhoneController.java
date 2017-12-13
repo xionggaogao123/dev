@@ -872,6 +872,7 @@ public class ControlPhoneController extends BaseController {
      * 获得所有的复兰应用的版本号信息
      * @return
      */
+    @SessionNeedless
     @ApiOperation(value = "获得所有的复兰应用的版本号信息", httpMethod = "POST", produces = "application/json")
     @ApiResponses( value = {@ApiResponse(code = 200, message = "Successful — 请求已完成",response = String.class),
             @ApiResponse(code = 400, message = "请求中有语法问题，或不能满足请求"),

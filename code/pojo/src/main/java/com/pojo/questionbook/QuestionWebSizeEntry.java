@@ -1,6 +1,7 @@
 package com.pojo.questionbook;
 
 import com.mongodb.BasicDBObject;
+import com.mongodb.DBObject;
 import com.pojo.base.BaseDBObject;
 import org.bson.types.ObjectId;
 
@@ -14,7 +15,9 @@ public class QuestionWebSizeEntry extends BaseDBObject {
     public QuestionWebSizeEntry(){
 
     }
-
+    public QuestionWebSizeEntry(DBObject dbObject) {
+        setBaseEntry((BasicDBObject) dbObject);
+    }
     public QuestionWebSizeEntry(BasicDBObject object){
         super(object);
     }

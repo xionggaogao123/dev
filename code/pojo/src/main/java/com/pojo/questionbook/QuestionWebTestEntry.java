@@ -40,7 +40,7 @@ public class QuestionWebTestEntry extends BaseDBObject {
         BasicDBObject dbObject=new BasicDBObject()
                 .append("tit", title)
                 .append("uid",userId)
-                .append("qlt", sizeList)
+                .append("qlt", MongoUtils.fetchDBObjectList(sizeList))
                 .append("cou",count)
                 .append("ctm", new Date().getTime())
                 .append("isr", 0);
@@ -59,7 +59,7 @@ public class QuestionWebTestEntry extends BaseDBObject {
                 .append(Constant.ID,id)
                 .append("tit", title)
                 .append("uid", userId)
-                .append("qlt", sizeList)
+                .append("qlt", MongoUtils.fetchDBObjectList(sizeList))
                 .append("cou",count)
                 .append("ctm", new Date().getTime())
                 .append("isr", 0);

@@ -1,12 +1,14 @@
 package com.fulaan.wrongquestion.controller;
 
 import com.alibaba.fastjson.JSON;
+import com.db.user.NewVersionBindRelationDao;
 import com.fulaan.annotation.SessionNeedless;
 import com.fulaan.base.BaseController;
 import com.fulaan.questionbook.dto.QuestionTagsDTO;
 import com.fulaan.wrongquestion.dto.*;
 import com.fulaan.wrongquestion.service.WrongQuestionService;
 import com.pojo.app.FileUploadDTO;
+import com.pojo.user.NewVersionBindRelationEntry;
 import com.pojo.utils.MongoUtils;
 import com.sys.constants.Constant;
 import com.sys.utils.QiniuFileUtils;
@@ -31,10 +33,12 @@ import java.util.Map;
  */
 @Api(value = "错题本")
 @Controller
-@RequestMapping("/wrongQuestion")
+@RequestMapping("/web/wrongQuestion")
 public class WrongQuestionController extends BaseController {
     @Autowired
     private WrongQuestionService wrongQuestionService;
+
+    private NewVersionBindRelationDao newVersionBindRelationDao = new NewVersionBindRelationDao();
 
     /**
      *  绑定年级
@@ -134,6 +138,36 @@ public class WrongQuestionController extends BaseController {
             e.printStackTrace();
             respObj.setCode(Constant.FAILD_CODE);
             respObj.setMessage("年级、科目加载失败!");
+        }
+        return JSON.toJSONString(respObj);
+    }
+
+    /**
+     * 家长年级,科目加载
+     * @return
+     */
+    @ApiOperation(value = "家长年级,科目加载", httpMethod = "GET", produces = "application/json")
+    @ApiResponses( value = {@ApiResponse(code = 200, message = "Successful — 请求已完成",response = String.class),
+            @ApiResponse(code = 400, message = "请求中有语法问题，或不能满足请求"),
+            @ApiResponse(code = 500, message = "服务器不能完成请求")})
+    @RequestMapping("/getGradeAndSubjectPar")
+    @ResponseBody
+    public String getGradeAndSubjectPar(){
+        RespObj respObj=new RespObj(Constant.FAILD_CODE);
+        try {
+            List<NewVersionBindRelationEntry> entries=newVersionBindRelationDao.getEntriesByMainUserId(getUserId());
+            if(entries.size()>0){
+                Map<String,Object> result = wrongQuestionService.getGradeAndSubject(entries.get(0).getUserId());
+                respObj.setCode(Constant.SUCCESS_CODE);
+                respObj.setMessage(result);
+            }else{
+                respObj.setCode(Constant.FAILD_CODE);
+                respObj.setMessage("没有找到用户!");
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+            respObj.setCode(Constant.FAILD_CODE);
+            respObj.setMessage("家长年级,科目加载失败!");
         }
         return JSON.toJSONString(respObj);
     }

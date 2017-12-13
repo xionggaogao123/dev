@@ -2,6 +2,7 @@ package com.fulaan.newVersionBind.controller;
 
 import com.fulaan.annotation.ObjectIdType;
 import com.fulaan.base.BaseController;
+import com.fulaan.newVersionBind.dto.BindChildrenDTO;
 import com.fulaan.newVersionBind.dto.NewVersionBindRelationDTO;
 import com.fulaan.newVersionBind.service.NewVersionBindService;
 import com.fulaan.operation.service.AppCommentService;
@@ -243,6 +244,7 @@ public class DefaultBindController extends BaseController {
     }
 
 
+
     @ApiOperation(value = "获取某个社区下绑定的孩子有哪些", httpMethod = "GET", produces = "application/json")
     @ApiResponses( value = {@ApiResponse(code = 200, message = "Successful — 请求已完成",response = RespObj.class)})
     @RequestMapping("/getCommunityBindList")
@@ -345,5 +347,37 @@ public class DefaultBindController extends BaseController {
         return respObj;
     }
 
+
+    /**---------解除绑定关系------------**/
+    @ApiOperation(value = "解除绑定关系", httpMethod = "POST", produces = "application/json")
+    @ApiResponses( value = {@ApiResponse(code = 200, message = "Successful — 请求已完成",response = RespObj.class)})
+    @RequestMapping("/relieveBindRelation")
+    @ResponseBody
+    public RespObj relieveBindRelation(@RequestBody BindChildrenDTO dto){
+        RespObj respObj = new RespObj(Constant.FAILD_CODE);
+        try {
+            newVersionBindService.relieveBindRelation(getUserId(), dto.getChildren());
+            respObj.setCode(Constant.SUCCESS_CODE);
+            respObj.setMessage("手机管控解除成功");
+        }catch (Exception e){
+            e.printStackTrace();
+            respObj.setErrorMessage(e.getMessage());
+        }
+        return respObj;
+    }
+
+
+    /**
+     * 填写孩子手机号
+     * @param dto
+     * @return
+     */
+    @RequestMapping("/makeOutRelation")
+    @ResponseBody
+    public RespObj makeOutRelation(@RequestBody BindChildrenDTO dto){
+        RespObj respObj = new RespObj(Constant.FAILD_CODE);
+
+        return respObj;
+    }
 
 }

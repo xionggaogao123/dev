@@ -166,7 +166,7 @@ public class ThirdReportCardController extends BaseController{
                             @ObjectIdType ObjectId userId){
         RespObj respObj=new RespObj(Constant.FAILD_CODE);
         try{
-            reportCardService.pushSign(groupExamDetailId,userId);
+            reportCardService.pushSign(groupExamDetailId,userId,getUserId());
             respObj.setCode(Constant.SUCCESS_CODE);
             respObj.setMessage("签字成功！");
         }catch (Exception e){

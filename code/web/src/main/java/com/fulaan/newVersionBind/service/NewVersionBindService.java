@@ -206,6 +206,7 @@ public class NewVersionBindService {
         if(null==entry){
             try {
                 userService.updateUserBirthDateAndSex(userId,-1,-1,avatar,nickName);
+                NewVersionBindRelationEntry bindRelationEntry=newVersionBindRelationDao.getEntryByUserId(userId);
                 NewVersionBindRelationEntry relationEntry
                         =new NewVersionBindRelationEntry(mainUserId,
                         userId,
@@ -215,6 +216,9 @@ public class NewVersionBindService {
                         Constant.EMPTY,
                         Constant.EMPTY,
                         Constant.EMPTY);
+                if(null!=bindRelationEntry){
+                    relationEntry.setID(bindRelationEntry.getID());
+                }
                 newVersionBindRelationDao.saveNewVersionBindEntry(relationEntry);
                 NewVersionUserRoleEntry userRoleEntry=newVersionUserRoleDao.getEntry(userId);
                 userRoleEntry.setNewRole(Constant.TWO);
@@ -298,6 +302,12 @@ public class NewVersionBindService {
         newVersionBindRelationDao.delNewVersionEntry(parentId,studentId);
         //删除对应的社区绑定关系
         newVersionCommunityBindDao.removeNewVersionCommunityBindRelation(parentId, studentId);
+    }
+
+    public void relieveBindRelation(ObjectId parentId,List<String> studentIds){
+        for(String studentId:studentIds){
+            delNewVersionEntry(parentId,new ObjectId(studentId));
+        }
     }
 
 

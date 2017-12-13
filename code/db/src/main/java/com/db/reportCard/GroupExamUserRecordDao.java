@@ -298,6 +298,23 @@ public class GroupExamUserRecordDao extends BaseDao{
         }
     }
 
+    /**
+     *
+     * @return
+     */
+    public List<GroupExamUserRecordEntry> getEntriesByStatus(int page,int pageSize){
+        List<GroupExamUserRecordEntry> entries = new ArrayList<GroupExamUserRecordEntry>();
+        BasicDBObject query = new BasicDBObject();
+        List<DBObject> dbObjectList=find(MongoFacroty.getAppDB(),Constant.COLLECTION_REPORT_CARD_EXAM_USER_RECORD,query,
+                Constant.FIELDS,Constant.MONGO_SORTBY_DESC,(page-1)*pageSize,pageSize);
+        if(null!=dbObjectList&&!dbObjectList.isEmpty()){
+            for(DBObject dbObject:dbObjectList){
+                entries.add(new GroupExamUserRecordEntry(dbObject));
+            }
+        }
+        return entries;
+    }
+
     public GroupExamUserRecordEntry getUserRecordEntry(ObjectId groupExamDetailId,
                                              ObjectId userId){
         BasicDBObject query=new BasicDBObject()

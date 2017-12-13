@@ -164,7 +164,7 @@ public class ReportCardController extends BaseController {
                             @ObjectIdType ObjectId userId) {
         RespObj respObj = new RespObj(Constant.FAILD_CODE);
         try {
-            reportCardService.pushSign(groupExamDetailId, userId);
+            reportCardService.pushSign(groupExamDetailId, userId,getUserId());
             respObj.setCode(Constant.SUCCESS_CODE);
             respObj.setMessage("签字成功！");
         } catch (Exception e) {
@@ -546,5 +546,16 @@ public class ReportCardController extends BaseController {
         return respObj;
     }
 
+    @ApiOperation(value = "生成签字名单", httpMethod = "GET", produces = "application/json")
+    @ApiResponses(value = {@ApiResponse(code = 200, message = "生成签字名单已完成", response = String.class),
+            @ApiResponse(code = 400, message = "请求中有语法问题，或不能满足请求"),
+            @ApiResponse(code = 500, message = "服务器不能完成请求")})
+    @RequestMapping("/generateReportCardSign")
+    @ResponseBody
+    public RespObj generateReportCardSign(){
+        RespObj respObj = new RespObj(Constant.SUCCESS_CODE,"生成签字名单成功");
+        reportCardService.generateReportCardSign();
+        return respObj;
+    }
 
 }

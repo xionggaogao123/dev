@@ -888,6 +888,8 @@ public class Constant {
 
     public static final String COLLECTION_REPORT_CARD_VIRTUAL_COMMUNITY="report_card_virtual_community";
 
+    public static final String COLLECTION_REPORT_CARD_SIGN="report_card_sign";
+
     public static final String COLLECTION_WEB_HOME_PAGE_RECORD="web_home_page_record";
 
     public static final String COLLECTION_JXM_GENERATE_USER_CODE="jxm_gene_user_code";

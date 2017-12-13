@@ -43,11 +43,26 @@ public class NewVersionBindRelationDao extends BaseDao{
         update(MongoFacroty.getAppDB(), Constant.COLLECTION_NEW_VERSION_BIND_RELATION,query,updateValue);
     }
 
-
+    /**
+     *
+     * @param userId
+     * @return
+     */
+    public NewVersionBindRelationEntry getEntryByUserId(ObjectId userId){
+        BasicDBObject query = new BasicDBObject()
+                .append("uid",userId);
+        DBObject dbObject=findOne(MongoFacroty.getAppDB(), Constant.COLLECTION_NEW_VERSION_BIND_RELATION,query,Constant.FIELDS);
+        if(null!=dbObject){
+            return new NewVersionBindRelationEntry(dbObject);
+        }else{
+            return null;
+        }
+    }
 
     public NewVersionBindRelationEntry getBindEntry(ObjectId userId){
         BasicDBObject query = new BasicDBObject()
-                .append("uid",userId);
+                .append("uid",userId)
+                .append("ir",Constant.ZERO);
         DBObject dbObject=findOne(MongoFacroty.getAppDB(), Constant.COLLECTION_NEW_VERSION_BIND_RELATION,query,Constant.FIELDS);
         if(null!=dbObject){
             return new NewVersionBindRelationEntry(dbObject);
@@ -74,7 +89,8 @@ public class NewVersionBindRelationDao extends BaseDao{
         List<NewVersionBindRelationEntry> entries
                 =new ArrayList<NewVersionBindRelationEntry>();
         BasicDBObject query = new BasicDBObject()
-                .append("muid",mainUserId);
+                .append("muid",mainUserId)
+                .append("ir",Constant.ZERO);
         List<DBObject> dbObjectList = find(MongoFacroty.getAppDB(), Constant.COLLECTION_NEW_VERSION_BIND_RELATION,
                 query,Constant.FIELDS);
         if(null!=dbObjectList&&!dbObjectList.isEmpty()){
@@ -91,7 +107,8 @@ public class NewVersionBindRelationDao extends BaseDao{
         List<ObjectId> entries
                 =new ArrayList<ObjectId>();
         BasicDBObject query = new BasicDBObject()
-                .append("muid",mainUserId);
+                .append("muid",mainUserId)
+                .append("ir",Constant.ZERO);
         List<DBObject> dbObjectList = find(MongoFacroty.getAppDB(), Constant.COLLECTION_NEW_VERSION_BIND_RELATION,
                 query,Constant.FIELDS);
         if(null!=dbObjectList&&!dbObjectList.isEmpty()){
@@ -109,7 +126,8 @@ public class NewVersionBindRelationDao extends BaseDao{
         List<NewVersionBindRelationEntry> entries
                 =new ArrayList<NewVersionBindRelationEntry>();
         BasicDBObject query = new BasicDBObject()
-                .append("uid",userId);
+                .append("uid",userId)
+                .append("ir",Constant.ZERO);
         List<DBObject> dbObjectList = find(MongoFacroty.getAppDB(), Constant.COLLECTION_NEW_VERSION_BIND_RELATION,
                 query,Constant.FIELDS);
         if(null!=dbObjectList&&!dbObjectList.isEmpty()){

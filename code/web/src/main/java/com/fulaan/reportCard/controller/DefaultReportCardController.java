@@ -3,6 +3,7 @@ package com.fulaan.reportCard.controller;
 import com.fulaan.annotation.ObjectIdType;
 import com.fulaan.base.BaseController;
 import com.fulaan.indexpage.service.WebHomePageService;
+import com.fulaan.pojo.User;
 import com.fulaan.reportCard.dto.*;
 import com.fulaan.reportCard.service.ReportCardService;
 import com.fulaan.wrongquestion.dto.ExamTypeDTO;
@@ -170,7 +171,7 @@ public class DefaultReportCardController extends BaseController{
                             @ObjectIdType ObjectId userId){
         RespObj respObj=new RespObj(Constant.FAILD_CODE);
         try{
-            reportCardService.pushSign(groupExamDetailId,userId);
+            reportCardService.pushSign(groupExamDetailId,userId,getUserId());
             respObj.setCode(Constant.SUCCESS_CODE);
             respObj.setMessage("签字成功！");
         }catch (Exception e){
@@ -389,6 +390,19 @@ public class DefaultReportCardController extends BaseController{
         return respObj;
     }
 
+
+    @ApiOperation(value = "获取成绩单的签字和未签字列表", httpMethod = "POST", produces = "application/json")
+    @ApiResponses( value = {@ApiResponse(code = 200, message = "保存考试信息已完成",response = String.class),
+            @ApiResponse(code = 400, message = "请求中有语法问题，或不能满足请求"),
+            @ApiResponse(code = 500, message = "服务器不能完成请求")})
+    @RequestMapping("/searchReportCardSignList")
+    @ResponseBody
+    public RespObj searchReportCardSignList(@ObjectIdType ObjectId groupExamDetailId){
+        RespObj respObj = new RespObj(Constant.SUCCESS_CODE);
+        Map<String,Object> result=reportCardService.searchReportCardSignList(groupExamDetailId);
+        respObj.setMessage(result);
+        return respObj;
+    }
 
 
 

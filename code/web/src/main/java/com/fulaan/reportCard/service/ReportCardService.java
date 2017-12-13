@@ -8,6 +8,7 @@ import com.db.reportCard.*;
 import com.db.wrongquestion.ExamTypeDao;
 import com.db.wrongquestion.SubjectClassDao;
 import com.fulaan.instantmessage.service.RedDotService;
+import com.fulaan.pojo.User;
 import com.fulaan.reportCard.dto.*;
 import com.fulaan.user.service.UserService;
 import com.fulaan.utils.HSSFUtils;
@@ -20,6 +21,8 @@ import com.pojo.reportCard.*;
 import com.pojo.user.UserEntry;
 import com.pojo.wrongquestion.SubjectClassEntry;
 import com.sys.constants.Constant;
+import com.sys.utils.AvatarUtils;
+import com.sys.utils.DateTimeUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.poi.hssf.usermodel.*;
 import org.apache.poi.ss.usermodel.Cell;
@@ -66,6 +69,8 @@ public class ReportCardService {
     private WebHomePageDao webHomePageDao = new WebHomePageDao();
 
     private MemberDao memberDao = new MemberDao();
+
+    private ReportCardSignDao reportCardSignDao = new ReportCardSignDao();
 
     private VirtualCommunityDao virtualCommunityDao = new VirtualCommunityDao();
 
@@ -139,7 +144,8 @@ public class ReportCardService {
      * @param userId
      */
     public void pushSign(ObjectId groupExamDetailId,
-                         ObjectId userId
+                         ObjectId userId,
+                         ObjectId mainUserId
     ) {
         GroupExamUserRecordEntry recordEntry = groupExamUserRecordDao.getUserRecordEntry(groupExamDetailId, userId);
         if (null == recordEntry) {
@@ -148,7 +154,9 @@ public class ReportCardService {
             GroupExamUserRecordEntry userRecordEntry=groupExamUserRecordDao.getExamUserRecordEntry(groupExamDetailId,userId);
             if(null!=userRecordEntry) {
                 webHomePageDao.updateContactStatus(userRecordEntry.getID(), Constant.THREE, Constant.THREE);
+                reportCardSignDao.updateTypeByRecordId(userRecordEntry.getID());
             }
+
         }
     }
 
@@ -171,6 +179,68 @@ public class ReportCardService {
             }
         }
 
+    }
+
+    public Map<String,Object> searchReportCardSignList(ObjectId groupExamDetailId){
+        Map<String,Object> result = new HashMap<String,Object>();
+        List<User> sign = new ArrayList<User>();
+        List<User> unSign = new ArrayList<User>();
+        List<ReportCardSignEntry> signEntries = reportCardSignDao.getEntries(groupExamDetailId);
+        Map<ObjectId,List<Integer>> userTypeMap = new HashMap<ObjectId, List<Integer>>();
+        Map<ObjectId,Long> signTime = new HashMap<ObjectId, Long>();
+        for(ReportCardSignEntry signEntry:signEntries){
+            signTime.put(signEntry.getParentId(),signEntry.getSignTime());
+            if(null!=userTypeMap.get(signEntry.getParentId())){
+                List<Integer> types=userTypeMap.get(signEntry.getParentId());
+                types.add(signEntry.getType());
+                userTypeMap.put(signEntry.getParentId(),types);
+            }else{
+                List<Integer> types=new ArrayList<Integer>();
+                types.add(signEntry.getType());
+                userTypeMap.put(signEntry.getParentId(),types);
+            }
+        }
+        Set<ObjectId> signIds = new HashSet<ObjectId>();
+        Set<ObjectId> unSignIds = new HashSet<ObjectId>();
+        for(Map.Entry<ObjectId,List<Integer>> item:userTypeMap.entrySet()){
+            ObjectId mainUserId = item.getKey();
+            List<Integer> types = item.getValue();
+            boolean flag=true;
+            for(int type:types){
+                if(type!=Constant.THREE){
+                    flag=false;
+                }
+            }
+            if(flag){
+                signIds.add(mainUserId);
+            }else {
+                unSignIds.add(mainUserId);
+            }
+        }
+        if(signIds.size()>0) {
+            setSignValues(signIds,signTime,sign);
+        }
+        if(unSignIds.size()>0){
+            setSignValues(unSignIds,signTime,unSign);
+        }
+        result.put("SignList",sign);
+        result.put("SignListNum",sign.size());
+        result.put("UnSignList",unSign);
+        result.put("UnSignListNum",unSign.size());
+        return result;
+    }
+
+    public void setSignValues(Set<ObjectId> userIds,Map<ObjectId,Long> signTime,
+                              List<User> users){
+        Map<ObjectId, UserEntry> signUserEntryMap = userService.getUserEntryMap(userIds, Constant.FIELDS);
+        for(Map.Entry<ObjectId, UserEntry> userItem:signUserEntryMap.entrySet()){
+            UserEntry userEntry=userItem.getValue();
+            User user=new User(userEntry.getUserName(),
+                    userEntry.getNickName(),userEntry.getID().toString(),
+                    AvatarUtils.getAvatar2(userEntry.getAvatar(),userEntry.getRole(),userEntry.getSex()),
+                    userEntry.getSex(), DateTimeUtils.getLongToStrTimeTwo(signTime.get(userItem.getKey())));
+            users.add(user);
+        }
     }
 
 
@@ -506,10 +576,12 @@ public class ReportCardService {
         if (StringUtils.isEmpty(id)) {
             String communityId = dto.getCommunityId();
             Set<ObjectId> userIds = new HashSet<ObjectId>();
+            Map<ObjectId,ObjectId> userMainIds=new HashMap<ObjectId, ObjectId>();
             List<NewVersionCommunityBindEntry> entries
                     = newVersionCommunityBindDao.getStudentIdListByCommunityId(new ObjectId(communityId));
             for (NewVersionCommunityBindEntry bindEntry : entries) {
                 userIds.add(bindEntry.getUserId());
+                userMainIds.put(bindEntry.getUserId(),bindEntry.getMainUserId());
             }
 //            List<VirtualUserEntry> virtualUserEntries=virtualUserDao.getAllVirtualUsers(new ObjectId(communityId));
 //            for (VirtualUserEntry virtualUserEntry : virtualUserEntries) {
@@ -547,6 +619,10 @@ public class ReportCardService {
                         userRecordEntry.getUserId(), groupExamDetailId, userRecordEntry.getExamType(),Constant.ZERO
                 );
                 webHomePageDao.saveWebHomeEntry(pageEntry);
+                ObjectId mainUserId=userMainIds.get(userRecordEntry.getUserId());
+                ReportCardSignEntry signEntry =new  ReportCardSignEntry(mainUserId,groupExamDetailId,
+                        recordId,Constant.ZERO,System.currentTimeMillis());
+                reportCardSignDao.saveEntry(signEntry);
             }
             groupExamDetailDao.updateSignCount(groupExamDetailId, userIds.size());
             GroupExamVersionEntry versionEntry = new GroupExamVersionEntry(groupExamDetailId, 1L);
@@ -1254,6 +1330,68 @@ public class ReportCardService {
         }
 
         return org.apache.commons.lang.StringUtils.isBlank(strCell) ? Constant.EMPTY : strCell;
+    }
+
+
+
+    public void generateReportCardSign(){
+        int page=1;
+        int pageSize=200;
+        boolean flag=true;
+        reportCardSignDao.removeOldData();
+        while(flag){
+            List<GroupExamUserRecordEntry> entries = groupExamUserRecordDao.getEntriesByStatus(page,pageSize);
+            if(entries.size()>0){
+                Map<ObjectId,ObjectId> groupCommunityMap=new HashMap<ObjectId, ObjectId>();
+                Map<ObjectId,List<GroupExamUserRecordEntry>> recordMap = new HashMap<ObjectId, List<GroupExamUserRecordEntry>>();
+                for(GroupExamUserRecordEntry recordEntry:entries){
+                     ObjectId groupExamDetailId=recordEntry.getGroupExamDetailId();
+                     groupCommunityMap.put(groupExamDetailId,recordEntry.getCommunityId());
+                     if(null!=recordMap.get(groupExamDetailId)){
+                         List<GroupExamUserRecordEntry> userRecordEntries =recordMap.get(groupExamDetailId);
+                         userRecordEntries.add(recordEntry);
+                         recordMap.put(groupExamDetailId,userRecordEntries);
+                     }else{
+                         List<GroupExamUserRecordEntry> userRecordEntries =new ArrayList<GroupExamUserRecordEntry>();
+                         userRecordEntries.add(recordEntry);
+                         recordMap.put(groupExamDetailId,userRecordEntries);
+                     }
+                }
+                for(Map.Entry<ObjectId,List<GroupExamUserRecordEntry>> item:recordMap.entrySet()){
+                    ObjectId groupExamDetailId=item.getKey();
+                    ObjectId communityId=groupCommunityMap.get(groupExamDetailId);
+                    List<GroupExamUserRecordEntry> userRecordEntries=item.getValue();
+                    List<NewVersionCommunityBindEntry> bindEntries=newVersionCommunityBindDao
+                            .getStudentIdListByCommunityId(communityId);
+                    Map<ObjectId,ObjectId> bindUserMap = new HashMap<ObjectId, ObjectId>();
+                    for(NewVersionCommunityBindEntry bindEntry:bindEntries){
+                        bindUserMap.put(bindEntry.getUserId(),bindEntry.getMainUserId());
+                    }
+                    for(GroupExamUserRecordEntry recordEntry:userRecordEntries){
+                        ObjectId userId=recordEntry.getUserId();
+                        if(null!=bindUserMap.get(userId)){
+                            ObjectId mainUserId=bindUserMap.get(userId);
+                            int type=Constant.ZERO;
+                            if(recordEntry.getStatus()==Constant.THREE){
+                                type=Constant.THREE;
+                            }
+                            ReportCardSignEntry signEntry = new ReportCardSignEntry(
+                                    mainUserId,
+                                    groupExamDetailId,
+                                    recordEntry.getID(),
+                                    type,
+                                    recordEntry.getID().getTime()
+                                    );
+                            reportCardSignDao.saveEntry(signEntry);
+                        }
+                    }
+                }
+
+            }else{
+                flag=false;
+            }
+            page++;
+        }
     }
 
 

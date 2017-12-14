@@ -276,7 +276,7 @@ public class AppMarketService {
                     updateEntry = new AppDetailEntry(entry.getID(),
                     packageName,
                     imageFileUrl,
-                    entry.getType(),
+                    Constant.TWO,
                     size,
                     Integer.valueOf(apkInfo.getVersionCode()),
                     entry.getIsControl(),
@@ -371,7 +371,7 @@ public class AppMarketService {
                     updateEntry = new AppDetailEntry(entry.getID(),
                     packageName,
                     imageFileUrl,
-                    entry.getType(),
+                    Constant.ONE,
                     size,
                     Integer.valueOf(apkInfo.getVersionCode()),
                     entry.getIsControl(),
@@ -405,12 +405,12 @@ public class AppMarketService {
         }
         JxmAppVersionEntry entry1 = jxmAppVersionDao.getEntry(packageName);
         if(entry1!= null){
-            entry1.setFileUrl(imageFileUrl);
+            entry1.setFileUrl(path);
             entry1.setVersion(apkInfo.getVersionName());
             jxmAppVersionDao.updEntry(entry1);
         } else{
             JxmAppVersionDTO dto = new JxmAppVersionDTO();
-            dto.setFileUrl(imageFileUrl);
+            dto.setFileUrl(path);
             dto.setName(packageName);
             dto.setVersion(apkInfo.getVersionName());
             jxmAppVersionDao.addEntry(dto.buildAddEntry());

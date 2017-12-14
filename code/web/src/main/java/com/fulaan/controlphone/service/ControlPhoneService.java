@@ -671,6 +671,13 @@ public class ControlPhoneService {
         Map<String,Object> map = new HashMap<String, Object>();
         //可用应用列表
         List<AppDetailDTO> detailDTOs = new ArrayList<AppDetailDTO>();
+        ControlAppSystemEntry controlAppSystemEntry = controlAppSystemDao.getEntry();
+        if(controlAppSystemEntry != null && controlAppSystemEntry.getAppIdList()!=null && controlAppSystemEntry.getAppIdList().size()>0){
+            List<AppDetailEntry> detailEntries3 =  appDetailDao.getEntriesByIds(controlAppSystemEntry.getAppIdList());
+            for(AppDetailEntry detailEntry : detailEntries3){
+                detailDTOs.add(new AppDetailDTO(detailEntry));
+            }
+        }
         List<AppDetailDTO> detailDTOs2 = new ArrayList<AppDetailDTO>();
         //map.put("acceptApp",detailDTOs);
         //禁用黑名单
@@ -749,7 +756,7 @@ public class ControlPhoneService {
         ObjectId parentId = newEntry.getMainUserId();
         ControlAppUserEntry controlAppUserEntry = controlAppUserDao.getEntry(parentId,sonId);
         if(controlAppUserEntry!= null){
-            //存在取系统应用
+            //存在取用户应用
             objectIdList.addAll(controlAppUserEntry.getAppIdList());
         }else{
             //不存在加入系统推荐

@@ -907,7 +907,7 @@ public class ControlPhoneController extends BaseController {
     public String getThirdAppList(){
         RespObj respObj = new RespObj(Constant.FAILD_CODE);
         try{
-            List<AppDetailDTO> dtos =  controlPhoneService.getThirdAppList();
+            List<AppDetailDTO> dtos =  controlPhoneService.getThirdAppList(getUserId());
             respObj.setCode(Constant.SUCCESS_CODE);
             respObj.setMessage(dtos);
         }catch (Exception e){

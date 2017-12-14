@@ -26,7 +26,6 @@ public class ControlAppUserDao extends BaseDao {
         BasicDBObject updateValue=new BasicDBObject(Constant.MONGO_SET,e.getBaseEntry());
         update(MongoFacroty.getAppDB(), Constant.COLLECTION_CONTROL_PARENT_APP, query,updateValue);
     }
-
     //单查询
     public ControlAppUserEntry getEntry(ObjectId parentId,ObjectId userId) {
         BasicDBObject query =new BasicDBObject();
@@ -50,6 +49,24 @@ public class ControlAppUserDao extends BaseDao {
                         Constant.COLLECTION_CONTROL_PARENT_APP,
                         query, Constant.FIELDS,
                         Constant.MONGO_SORTBY_DESC);
+        List<ControlAppUserEntry> entryList = new ArrayList<ControlAppUserEntry>();
+        if (dbList != null && !dbList.isEmpty()) {
+            for (DBObject obj : dbList) {
+                entryList.add(new ControlAppUserEntry((BasicDBObject) obj));
+            }
+        }
+        return entryList;
+    }
+
+    //单查询
+    public List<ControlAppUserEntry> getUserList(int page,int pageSize) {
+        BasicDBObject query = new BasicDBObject()
+                .append("isr", 0); // 未删除
+        List<DBObject> dbList =
+                find(MongoFacroty.getAppDB(),
+                        Constant.COLLECTION_CONTROL_PARENT_APP,
+                        query, Constant.FIELDS,
+                        Constant.MONGO_SORTBY_DESC,(page - 1) * pageSize, pageSize);
         List<ControlAppUserEntry> entryList = new ArrayList<ControlAppUserEntry>();
         if (dbList != null && !dbList.isEmpty()) {
             for (DBObject obj : dbList) {

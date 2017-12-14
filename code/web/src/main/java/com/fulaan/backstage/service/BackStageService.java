@@ -22,6 +22,7 @@ import com.fulaan.controlphone.dto.ControlPhoneDTO;
 import com.fulaan.controlphone.dto.ControlSchoolTimeDTO;
 import com.fulaan.controlphone.dto.ControlSetBackDTO;
 import com.fulaan.indexpage.dto.IndexPageDTO;
+import com.fulaan.picturetext.runnable.PictureRunNable;
 import com.fulaan.user.service.UserService;
 import com.pojo.activity.FriendEntry;
 import com.pojo.appmarket.AppDetailEntry;
@@ -489,8 +490,10 @@ public class BackStageService {
                 }
             }
         }
-
-
+        addAllUserAppList(appId);
+    }
+    public void addAllUserAppList(ObjectId appId){
+        PictureRunNable.addApp(appId);
     }
     //删除系统推送
     public void delSystemAppEntry(ObjectId userId,ObjectId appId){

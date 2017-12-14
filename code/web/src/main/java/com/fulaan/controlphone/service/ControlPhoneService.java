@@ -1324,13 +1324,42 @@ public class ControlPhoneService {
     }
 
 
-    public List<AppDetailDTO> getThirdAppList(){
+    public List<AppDetailDTO> getThirdAppList(ObjectId userId){
         List<AppDetailDTO> detailDTOs = new ArrayList<AppDetailDTO>();
         List<AppDetailEntry> appDetailEntries = appDetailDao.getAppByCondition("");
         for (AppDetailEntry entry : appDetailEntries) {
             detailDTOs.add(new AppDetailDTO(entry));
         }
+        getNewThirdAppList(userId);
         return detailDTOs;
+    }
+
+    public void getNewThirdAppList(ObjectId userId){
+        //查询所有该用户的绑定关系
+        List<ObjectId> childIds = newVersionBindRelationDao.getIdsByMainUserId(userId);
+        for(ObjectId sonId : childIds){
+            ControlAppUserEntry entry2 = controlAppUserDao.getEntry(userId,sonId);
+            if(entry2 != null ){
+
+            }else{
+                //不存在加入系统推荐
+                ControlAppSystemEntry controlAppSystemEntry = controlAppSystemDao.getEntry();
+                ControlAppUserDTO dto = new ControlAppUserDTO();
+                List<String> olist = new ArrayList<String>();
+                if(controlAppSystemEntry != null){
+                    List<ObjectId> ids = controlAppSystemEntry.getAppIdList();
+                    for(ObjectId obid : ids){
+                        olist.add(obid.toString());
+                    }
+                }
+                dto.setAppIdList(olist);
+                dto.setUserId(sonId.toString());
+                dto.setParentId(userId.toString());
+                ControlAppUserEntry entry1 = dto.buildAddEntry();
+                //添加系统设置
+                controlAppUserDao.addEntry(entry1);
+            }
+        }
     }
 
     public Map<String,Object> getUserSendAppList(ObjectId userId){

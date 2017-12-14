@@ -237,7 +237,7 @@ public class UserService extends BaseService {
         }else if(type==2){
             if (null != newVersionUserRoleDao.getEntry(e.getID())) {
                 if(newVersionUserRoleDao.getEntry(e.getID()).getNewRole() == Constant.ONE) {
-                    validate.setMessage("该学生还未激活");
+                    validate.setMessage("该学生还未激活,"+e.getID().toString());
                     return validate;
                 }else if(newVersionUserRoleDao.getEntry(e.getID()).getNewRole() != Constant.TWO){
                     validate.setMessage("家长或者老师不能登录学生端!");

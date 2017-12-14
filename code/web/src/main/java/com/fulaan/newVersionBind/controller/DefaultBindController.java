@@ -2,9 +2,7 @@ package com.fulaan.newVersionBind.controller;
 
 import com.fulaan.annotation.ObjectIdType;
 import com.fulaan.base.BaseController;
-import com.fulaan.newVersionBind.dto.BindChildrenDTO;
-import com.fulaan.newVersionBind.dto.NewVersionBindRelationDTO;
-import com.fulaan.newVersionBind.dto.UserLoginStatus;
+import com.fulaan.newVersionBind.dto.*;
 import com.fulaan.newVersionBind.service.NewVersionBindService;
 import com.fulaan.operation.service.AppCommentService;
 import com.fulaan.wrongquestion.dto.SubjectClassDTO;
@@ -153,7 +151,6 @@ public class DefaultBindController extends BaseController {
         }
         return respObj;
     }
-
 
 
     @RequestMapping("/searchLoginChildren")
@@ -385,15 +382,85 @@ public class DefaultBindController extends BaseController {
 
     /**
      * 填写孩子手机号
-     * @param dto
      * @return
      */
     @RequestMapping("/makeOutRelation")
     @ResponseBody
-    public RespObj makeOutRelation(@RequestBody BindChildrenDTO dto){
+    public RespObj makeOutRelation(String userKey){
         RespObj respObj = new RespObj(Constant.FAILD_CODE);
-
+        try {
+            newVersionBindService.makeOutRelation(getUserId(), userKey);
+            respObj.setCode(Constant.SUCCESS_CODE);
+            respObj.setMessage("填写孩子手机号成功");
+        }catch (Exception e){
+            respObj.setErrorMessage(e.getMessage());
+        }
         return respObj;
     }
 
+
+    /**
+     * 移交关联关系
+     * @param relationDTO
+     * @return
+     */
+    @RequestMapping("/transferBindRelation")
+    @ResponseBody
+    public RespObj transferBindRelation(@RequestBody TransferUserRelationDTO relationDTO){
+        RespObj respObj = new RespObj(Constant.FAILD_CODE);
+        try {
+            newVersionBindService.transferBindRelation(getUserId(),relationDTO);
+            respObj.setCode(Constant.SUCCESS_CODE);
+            respObj.setMessage("填写孩子手机号成功");
+        }catch (Exception e){
+            respObj.setErrorMessage(e.getMessage());
+        }
+        return respObj;
+    }
+
+    @ApiOperation(value = "完善绑定的信息", httpMethod = "POST", produces = "application/json")
+    @ApiResponses( value = {@ApiResponse(code = 200, message = "Successful — 请求已完成",response = RespObj.class)})
+    @RequestMapping("/completeBindInfo")
+    @ResponseBody
+    public RespObj completeBindInfo(
+            @ApiParam(name = "bindId", required = true, value = "绑定Id") @ObjectIdType ObjectId bindId,
+            @RequestParam(required = false,defaultValue = "") String provinceName,
+            @RequestParam(required = false,defaultValue = "") String regionName,
+            @RequestParam(required = false,defaultValue = "") String regionAreaName,
+            @RequestParam(required = false,defaultValue = "") String schoolName,
+            @RequestParam(required = false,defaultValue = "") String nickName,
+            @RequestParam(required = false,defaultValue = "-1") int relation,
+            @RequestParam(required = false,defaultValue = "-1") int gradeType
+    ){
+        RespObj respObj = new RespObj(Constant.FAILD_CODE);
+        try{
+            newVersionBindService.completeBindInfo(bindId, provinceName, regionName, regionAreaName, schoolName, gradeType,
+                    nickName, relation);
+            respObj.setCode(Constant.SUCCESS_CODE);
+            respObj.setMessage("完善信息成功！");
+        }catch (Exception e){
+            respObj.setMessage(e.getMessage());
+        }
+        return respObj;
+    }
+
+
+    @RequestMapping("/getMakeOutList")
+    @ResponseBody
+    public RespObj getMakeOutList(){
+        RespObj respObj = new RespObj(Constant.SUCCESS_CODE);
+        List<MakeOutUserRealationDTO> dtos=newVersionBindService.getMakeOutList(getUserId());
+        respObj.setMessage(dtos);
+        return respObj;
+    }
+
+
+    @RequestMapping("/removeMakeOutItem")
+    @ResponseBody
+    public RespObj removeMakeOutItem(@ObjectIdType ObjectId id){
+        RespObj respObj = new RespObj(Constant.SUCCESS_CODE);
+        newVersionBindService.removeByItemId(id);
+        respObj.setMessage("删除手机号成功");
+        return respObj;
+    }
 }

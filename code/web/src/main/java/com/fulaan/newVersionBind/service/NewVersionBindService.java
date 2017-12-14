@@ -1,26 +1,29 @@
 package com.fulaan.newVersionBind.service;
 
+import com.db.fcommunity.CommunityDao;
+import com.db.fcommunity.MemberDao;
 import com.db.fcommunity.NewVersionCommunityBindDao;
 import com.db.newVersionGrade.NewVersionGradeDao;
 import com.db.newVersionGrade.NewVersionSubjectDao;
+import com.db.user.MakeOutUserRelationDao;
 import com.db.user.NewVersionBindRelationDao;
 import com.db.user.NewVersionUserRoleDao;
 import com.db.user.TeacherSubjectBindDao;
 import com.fulaan.cache.CacheHandler;
-import com.fulaan.newVersionBind.dto.NewVersionBindRelationDTO;
-import com.fulaan.newVersionBind.dto.NewVersionSubjectDTO;
-import com.fulaan.newVersionBind.dto.UserLoginStatus;
+import com.fulaan.newVersionBind.dto.*;
 import com.fulaan.user.service.UserService;
 import com.fulaan.utils.pojo.KeyValue;
 import com.fulaan.wrongquestion.dto.NewVersionGradeDTO;
 import com.fulaan.wrongquestion.service.WrongQuestionService;
 import com.pojo.app.SessionValue;
+import com.pojo.fcommunity.MemberEntry;
 import com.pojo.fcommunity.NewVersionCommunityBindEntry;
 import com.pojo.newVersionGrade.NewVersionGradeEntry;
 import com.pojo.user.*;
 import com.sys.constants.Constant;
 import com.sys.utils.AvatarUtils;
 import com.sys.utils.DateTimeUtils;
+import org.apache.commons.collections.map.HashedMap;
 import org.apache.commons.lang3.StringUtils;
 import org.bson.types.ObjectId;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -47,6 +50,12 @@ public class NewVersionBindService {
     private TeacherSubjectBindDao teacherSubjectBindDao= new TeacherSubjectBindDao();
 
     private NewVersionSubjectDao newVersionSubjectDao= new NewVersionSubjectDao();
+
+    private MakeOutUserRelationDao makeOutUserRelationDao = new MakeOutUserRelationDao();
+
+    private CommunityDao communityDao = new CommunityDao();
+
+    private MemberDao memberDao = new MemberDao();
 
     @Autowired
     private UserService userService;
@@ -78,6 +87,36 @@ public class NewVersionBindService {
     }
 
 
+    public void completeBindInfo(ObjectId bindId,
+                                 String provinceName,
+                                 String regionName,
+                                 String regionAreaName,
+                                 String schoolName,
+                                 int gradeType,
+                                 String nickName,
+                                 int relation){
+        try {
+            NewVersionBindRelationEntry entry = newVersionBindRelationDao.getEntry(bindId);
+            if (null != entry) {
+                ObjectId userId = entry.getUserId();
+                userService.updateUserBirthDateAndSex(userId, -1,-1L, "", nickName);
+                //绑定年级
+                if(gradeType != Constant.NEGATIVE_ONE) {
+                    KeyValue keyValue = wrongQuestionService.getCurrTermType();
+                    NewVersionGradeEntry gradeEntry = newVersionGradeDao.getEntryByCondition(userId, keyValue.getValue());
+                    if (null == gradeEntry) {
+                        NewVersionGradeDTO dto = new NewVersionGradeDTO(userId.toString(), keyValue.getValue(), gradeType);
+                        wrongQuestionService.addGradeFromUser(dto);
+                    } else {
+                        newVersionGradeDao.updateNewVersionGrade(userId, keyValue.getValue(), gradeType);
+                    }
+                }
+                newVersionBindRelationDao.supplementNewVersionInfo(bindId, provinceName, regionName, regionAreaName, schoolName,relation);
+            }
+        }catch (Exception e){
+            throw new RuntimeException("保存完善信息失败");
+        }
+    }
 
     public void supplementNewVersionInfo(
             ObjectId bindId,
@@ -247,7 +286,21 @@ public class NewVersionBindService {
         if(null==entry){
             try {
                 userService.updateUserBirthDateAndSex(userId,-1,-1,avatar,nickName);
-                NewVersionBindRelationEntry bindRelationEntry=newVersionBindRelationDao.getEntryByUserId(userId);
+//                NewVersionBindRelationEntry bindRelationEntry=newVersionBindRelationDao.getEntryByUserId(userId);
+//                NewVersionBindRelationEntry relationEntry
+//                        =new NewVersionBindRelationEntry(mainUserId,
+//                        userId,
+//                        relation,
+//                        Constant.EMPTY,
+//                        Constant.EMPTY,
+//                        Constant.EMPTY,
+//                        Constant.EMPTY,
+//                        Constant.EMPTY);
+//                if(null!=bindRelationEntry){
+//                    relationEntry.setID(bindRelationEntry.getID());
+//                }
+//                newVersionBindRelationDao.saveNewVersionBindEntry(relationEntry);
+                NewVersionBindRelationEntry oldEntry=newVersionBindRelationDao.getEntryByUserId(userId);
                 NewVersionBindRelationEntry relationEntry
                         =new NewVersionBindRelationEntry(mainUserId,
                         userId,
@@ -257,10 +310,23 @@ public class NewVersionBindService {
                         Constant.EMPTY,
                         Constant.EMPTY,
                         Constant.EMPTY);
-                if(null!=bindRelationEntry){
-                    relationEntry.setID(bindRelationEntry.getID());
+                if(null!=oldEntry) {
+                    NewVersionBindRelationEntry bindRelationEntry = newVersionBindRelationDao.getBindRelationEntry(mainUserId, userId);
+                    if (null != bindRelationEntry) {
+                        bindRelationEntry.setRemove(Constant.ZERO);
+                        newVersionBindRelationDao.saveNewVersionBindEntry(bindRelationEntry);
+                    } else {
+                        relationEntry.setRelation(oldEntry.getRelation());
+                        relationEntry.setProvinceName(oldEntry.getProvinceName());
+                        relationEntry.setRegionName(oldEntry.getRegionName());
+                        relationEntry.setRegionAreaName(oldEntry.getRegionAreaName());
+                        relationEntry.setSchoolName(oldEntry.getSchoolName());
+                        relationEntry.setPersonalSignature(oldEntry.getPersonalSignature());
+                        newVersionBindRelationDao.saveNewVersionBindEntry(relationEntry);
+                    }
+                }else{
+                    newVersionBindRelationDao.saveNewVersionBindEntry(relationEntry);
                 }
-                newVersionBindRelationDao.saveNewVersionBindEntry(relationEntry);
                 NewVersionUserRoleEntry userRoleEntry=newVersionUserRoleDao.getEntry(userId);
                 userRoleEntry.setNewRole(Constant.TWO);
                 newVersionUserRoleDao.saveEntry(userRoleEntry);
@@ -343,13 +409,73 @@ public class NewVersionBindService {
         newVersionBindRelationDao.delNewVersionEntry(parentId,studentId);
         //删除对应的社区绑定关系
         newVersionCommunityBindDao.removeNewVersionCommunityBindRelation(parentId, studentId);
+        //孩子设置为初始状态
+        newVersionUserRoleDao.updateNewRole(studentId);
     }
 
+
+    /**
+     * 建立关联关系
+     * @param parentId
+     * @param studentId
+     */
+    public void establishBindRelation(ObjectId parentId,ObjectId studentId){
+        NewVersionBindRelationEntry oldEntry=newVersionBindRelationDao.getEntryByUserId(studentId);
+        if(null!=oldEntry) {
+            NewVersionBindRelationEntry bindRelationEntry = newVersionBindRelationDao.getBindRelationEntry(parentId, studentId);
+            if (null != bindRelationEntry) {
+                bindRelationEntry.setRemove(Constant.ZERO);
+                newVersionBindRelationDao.saveNewVersionBindEntry(bindRelationEntry);
+            } else {
+                NewVersionBindRelationEntry newEntry=new NewVersionBindRelationEntry(
+                        parentId,
+                        studentId,
+                        oldEntry.getRelation(),
+                        oldEntry.getProvinceName(),
+                        oldEntry.getRegionName(),
+                        oldEntry.getRegionAreaName(),
+                        oldEntry.getSchoolName(),
+                        oldEntry.getPersonalSignature()
+                );
+                newVersionBindRelationDao.saveNewVersionBindEntry(newEntry);
+            }
+            NewVersionUserRoleEntry userRoleEntry = newVersionUserRoleDao.getEntry(studentId);
+            userRoleEntry.setNewRole(Constant.TWO);
+            newVersionUserRoleDao.saveEntry(userRoleEntry);
+        }
+    }
+
+    /**
+     * 在该社群移交权限
+     * @param parentId
+     * @param studentId
+     * @param communityId
+     */
+    public void transferCommunityBind(ObjectId parentId,ObjectId studentId,ObjectId communityId){
+        NewVersionCommunityBindEntry bindEntry = newVersionCommunityBindDao.getEntry(communityId, parentId, studentId);
+        if (null != bindEntry) {
+            if (bindEntry.getRemoveStatus() == Constant.ONE) {
+                newVersionCommunityBindDao.updateEntryStatus(bindEntry.getID());
+            }
+        } else {
+            NewVersionCommunityBindEntry entry = new NewVersionCommunityBindEntry(communityId, parentId, studentId);
+            newVersionCommunityBindDao.saveEntry(entry);
+        }
+    }
+
+    /**
+     * 在这个社区移交权限
+     * @param parentId
+     * @param studentIds
+     */
     public void relieveBindRelation(ObjectId parentId,List<String> studentIds){
         for(String studentId:studentIds){
             delNewVersionEntry(parentId,new ObjectId(studentId));
         }
     }
+
+
+
 
 
     public List<ObjectId> getCommunityIdsByUserId(ObjectId userId){
@@ -374,6 +500,91 @@ public class NewVersionBindService {
         }
         return studentIds;
     }
+
+
+    public void makeOutRelation(ObjectId parentId,String userkey)throws Exception{
+        MakeOutUserRelationEntry relationEntry=makeOutUserRelationDao.getRelationEntry(parentId, userkey);
+        if(null!=relationEntry){
+            throw new Exception("该手机号已存在");
+        }else{
+            MakeOutUserRelationEntry entry=new MakeOutUserRelationEntry(parentId, userkey);
+            makeOutUserRelationDao.saveEntry(entry);
+        }
+    }
+
+
+    public List<MakeOutUserRealationDTO> getMakeOutList(ObjectId userId){
+        List<MakeOutUserRealationDTO> realationDTOs = new ArrayList<MakeOutUserRealationDTO>();
+        List<MakeOutUserRelationEntry> entries = makeOutUserRelationDao.getEntries(userId);
+        for(MakeOutUserRelationEntry relationEntry:entries){
+            realationDTOs.add(new MakeOutUserRealationDTO(relationEntry));
+        }
+        return realationDTOs;
+    }
+
+
+    public void removeByItemId(ObjectId makeOutId){
+        makeOutUserRelationDao.removeItemById(makeOutId);
+    }
+
+
+    public Map<String,Object> transferBindRelation(ObjectId parentId,TransferUserRelationDTO relationDTO){
+        Map<String,Object> result=new HashMap<String,Object>();
+        String communityId=relationDTO.getCommunityId();
+        List<String> userIds=relationDTO.getUserIds();
+        int failed=0;
+        int success=0;
+        if(userIds.size()>0){
+            Map<ObjectId,NewVersionCommunityBindEntry> bindEntryMap=newVersionCommunityBindDao
+                    .getCommunityBindMap(new ObjectId(communityId), parentId);
+            ObjectId groupId=communityDao.getGroupId(new ObjectId(communityId));
+            if(null!=groupId) {
+                List<MemberEntry> memberEntries = memberDao.getAllMembers(groupId);
+                List<ObjectId> mainUserIds = new ArrayList<ObjectId>();
+                for(MemberEntry memberEntry:memberEntries){
+                    mainUserIds.add(memberEntry.getUserId());
+                }
+                Set<ObjectId> children=new HashSet<ObjectId>();
+                for(String userId:userIds){
+                    children.add(new ObjectId(userId));
+                }
+                Map<ObjectId,UserEntry> userEntryMap=userService.getUserEntryMap(children,Constant.FIELDS);
+                Map<String,ObjectId> userKeyMap = new HashMap<String, ObjectId>();
+                for(Map.Entry<ObjectId,UserEntry> item:userEntryMap.entrySet()){
+                    UserEntry userEntry=item.getValue();
+                    userKeyMap.put(userEntry.getUserName(),userEntry.getID());
+                }
+                Map<String,ObjectId> mainUserKeyMap=new HashMap<String, ObjectId>();
+                List<MakeOutUserRelationEntry> relationEntries=makeOutUserRelationDao.getRelationEntriesByParentIds(mainUserIds);
+                for(MakeOutUserRelationEntry relationEntry:relationEntries){
+                    mainUserKeyMap.put(relationEntry.getUserKey(),relationEntry.getParentId());
+                }
+
+                for(Map.Entry<String,ObjectId> item:userKeyMap.entrySet()){
+                    String userKey=item.getKey();
+                    if(null!=mainUserKeyMap.get(userKey)){
+                        ObjectId userId=item.getValue();
+                        ObjectId mainUserId=mainUserKeyMap.get(userKey);
+                        //解除绑定关系
+                        delNewVersionEntry(parentId,userId);
+                        //建立绑定关系
+                        establishBindRelation(mainUserId,userId);
+                        //判断该孩子是否在这个群中，若在的话移交该群的关联关系
+                        if(null!=bindEntryMap.get(userId)){
+                            transferCommunityBind(mainUserId,userId,new ObjectId(communityId));
+                        }
+                        success++;
+                    }else{
+                        failed++;
+                    }
+                }
+            }
+        }
+        result.put("success",success);
+        result.put("failed",failed);
+        return result;
+    }
+
 
 
 }

@@ -665,6 +665,8 @@ public class Constant {
 
     public static final String COLLECTION_NEW_VERSION_APP_VOTE="newversion_app_vote";
 
+    public static final String COLLECTION_MAKE_OUT_USER_RELATION="make_out_user_relation";
+
     //应用市场
     public static final String COLLECTION_APP_MARKET_DETAIL="app_market_detail";
 

@@ -17,6 +17,13 @@ public class NewVersionUserRoleDao extends BaseDao{
         save(MongoFacroty.getAppDB(), Constant.COLLECTION_NEW_VERSION_USER_ROLE,entry.getBaseEntry());
     }
 
+
+    public void updateNewRole(ObjectId userId){
+        BasicDBObject query=new BasicDBObject("uid",userId);
+        BasicDBObject updateValue= new BasicDBObject(Constant.MONGO_SET,new BasicDBObject("nr",Constant.ONE));
+        update(MongoFacroty.getAppDB(), Constant.COLLECTION_NEW_VERSION_USER_ROLE,query,updateValue);
+    }
+
     public NewVersionUserRoleEntry getEntry(ObjectId userId){
         BasicDBObject query=new BasicDBObject("uid",userId);
         DBObject dbObject=findOne(MongoFacroty.getAppDB(), Constant.COLLECTION_NEW_VERSION_USER_ROLE,query,

@@ -49,6 +49,10 @@ public class NewVersionBindRelationEntry extends BaseDBObject {
         setBaseEntry(basicDBObject);
     }
 
+    public void setRemove(int remove){
+        setSimpleValue("ir",remove);
+    }
+
     public void setPersonalSignature(String personalSignature){
         setSimpleValue("pst",personalSignature);
     }

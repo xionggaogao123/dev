@@ -6,6 +6,7 @@ import com.mongodb.BasicDBObject;
 import com.mongodb.DBObject;
 import com.pojo.user.NewVersionBindRelationEntry;
 import com.sys.constants.Constant;
+import org.apache.commons.lang.StringUtils;
 import org.bson.types.ObjectId;
 
 import java.util.ArrayList;
@@ -34,15 +35,40 @@ public class NewVersionBindRelationDao extends BaseDao{
                                       String schoolName,
                                       int relation){
         BasicDBObject query=new BasicDBObject(Constant.ID,bindId);
-        BasicDBObject updateValue= new BasicDBObject(Constant.MONGO_SET,new BasicDBObject()
-                .append("pn",provinceName)
-                .append("rd",regionName)
-                .append("ra",regionAreaName)
-                .append("rl", relation)
-                .append("sn",schoolName));
-        update(MongoFacroty.getAppDB(), Constant.COLLECTION_NEW_VERSION_BIND_RELATION,query,updateValue);
+        BasicDBObject updates = new BasicDBObject();
+        if(StringUtils.isNotEmpty(provinceName)){
+            updates.append("pn",provinceName);
+        }
+        if(StringUtils.isNotEmpty(regionName)){
+            updates.append("rd",regionName);
+        }
+        if(StringUtils.isNotEmpty(regionAreaName)){
+            updates.append("ra",regionAreaName);
+        }
+        if(relation!=-1){
+            updates .append("rl", relation);
+        }
+        if(StringUtils.isNotEmpty(schoolName)){
+            updates.append("sn",schoolName);
+        }
+        if(updates.size()>0) {
+            BasicDBObject updateValue = new BasicDBObject(Constant.MONGO_SET, updates);
+            update(MongoFacroty.getAppDB(), Constant.COLLECTION_NEW_VERSION_BIND_RELATION, query, updateValue);
+        }
     }
 
+
+    public NewVersionBindRelationEntry getBindRelationEntry(ObjectId mainUserId,ObjectId userId){
+        BasicDBObject query = new BasicDBObject()
+                .append("muid",mainUserId)
+                .append("uid",userId);
+        DBObject dbObject=findOne(MongoFacroty.getAppDB(), Constant.COLLECTION_NEW_VERSION_BIND_RELATION,query,Constant.FIELDS);
+        if(null!=dbObject){
+            return new NewVersionBindRelationEntry(dbObject);
+        }else{
+            return null;
+        }
+    }
     /**
      *
      * @param userId

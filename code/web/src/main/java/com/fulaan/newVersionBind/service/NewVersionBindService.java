@@ -6,12 +6,15 @@ import com.db.newVersionGrade.NewVersionSubjectDao;
 import com.db.user.NewVersionBindRelationDao;
 import com.db.user.NewVersionUserRoleDao;
 import com.db.user.TeacherSubjectBindDao;
+import com.fulaan.cache.CacheHandler;
 import com.fulaan.newVersionBind.dto.NewVersionBindRelationDTO;
 import com.fulaan.newVersionBind.dto.NewVersionSubjectDTO;
+import com.fulaan.newVersionBind.dto.UserLoginStatus;
 import com.fulaan.user.service.UserService;
 import com.fulaan.utils.pojo.KeyValue;
 import com.fulaan.wrongquestion.dto.NewVersionGradeDTO;
 import com.fulaan.wrongquestion.service.WrongQuestionService;
+import com.pojo.app.SessionValue;
 import com.pojo.fcommunity.NewVersionCommunityBindEntry;
 import com.pojo.newVersionGrade.NewVersionGradeEntry;
 import com.pojo.user.*;
@@ -151,6 +154,36 @@ public class NewVersionBindService {
     }
 
 
+    public List<UserLoginStatus> searchLoginChildren(ObjectId mainUserId){
+        List<UserLoginStatus> list = new ArrayList<UserLoginStatus>();
+        List<NewVersionBindRelationEntry> entries=newVersionBindRelationDao.getEntriesByMainUserId(mainUserId);
+        List<ObjectId> userIds= new ArrayList<ObjectId>();
+        for(NewVersionBindRelationEntry entry:entries){
+            userIds.add(entry.getUserId());
+        }
+        Map<ObjectId,UserEntry> userEntryMap=userService.getUserEntryMap(userIds,Constant.FIELDS);
+        for(NewVersionBindRelationEntry entry:entries){
+            UserEntry userEntry=userEntryMap.get(entry.getUserId());
+            if(null!=userEntry){
+                UserLoginStatus userLoginStatus=new UserLoginStatus();
+                userLoginStatus.setAvatar(AvatarUtils.getAvatar2(userEntry.getAvatar(),userEntry.getRole(),userEntry.getSex()));
+                userLoginStatus.setUserName(userEntry.getUserName());
+                userLoginStatus.setNickName(userEntry.getNickName());
+                userLoginStatus.setLogin(false);
+                String cacheUserKey= CacheHandler.getUserKey(userEntry.getID().toString());
+                if(StringUtils.isNotEmpty(cacheUserKey)){
+                    SessionValue sv = CacheHandler.getSessionValue(cacheUserKey);
+                    if (null != sv && !sv.isEmpty()) {
+                        userLoginStatus.setLogin(true);
+                    }
+                }
+                list.add(userLoginStatus);
+            }
+        }
+        return list;
+    }
+
+
     public List<NewVersionBindRelationDTO> getNewVersionBindDtos (ObjectId mainUserId,ObjectId communityId){
         List<NewVersionBindRelationDTO> dtos = new ArrayList<NewVersionBindRelationDTO>();
         List<NewVersionBindRelationEntry> entries=newVersionBindRelationDao.getEntriesByMainUserId(mainUserId);
@@ -188,6 +221,14 @@ public class NewVersionBindService {
             NewVersionGradeEntry gradeEntry=newVersionGradeEntryMap.get(entry.getUserId());
             if(null!=gradeEntry){
                 dto.setGradeType(gradeEntry.getGradeType());
+            }
+            dto.setLogin(false);
+            String cacheUserKey= CacheHandler.getUserKey(userEntry.getID().toString());
+            if(StringUtils.isNotEmpty(cacheUserKey)){
+                SessionValue sv = CacheHandler.getSessionValue(cacheUserKey);
+                if (null != sv && !sv.isEmpty()) {
+                    dto.setLogin(true);
+                }
             }
             dtos.add(dto);
         }

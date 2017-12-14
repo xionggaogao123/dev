@@ -640,7 +640,6 @@ public class UserController extends BaseController {
             userService.updateLogout(new ObjectId(sv.getId()), getIP());
             String yearMonth = DateTimeUtils.convert(System.currentTimeMillis(), DateTimeUtils.DATE_YYYY_MM);
             CacheHandler.deleteKey(CacheHandler.CACHE_USER_CALENDAR, sv.getId(), yearMonth);
-
             logger.info("try loginout;the ui=" + sv.getId());
             logger.info("delete session value for user:" + sv.getId());
 
@@ -652,6 +651,7 @@ public class UserController extends BaseController {
                             cookie.getValue());
                 }
             }
+            CacheHandler.deleteCacheStudentUserKey(sv.getId());
         }
         return RespObj.SUCCESS;
     }

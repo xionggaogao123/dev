@@ -122,6 +122,12 @@ public final class CacheHandler {
     }
 
 
+    public static void deleteCacheStudentUserKey(String userId){
+        String key = MessageFormat.format(CACHE_STUDENT_USER_KEY, userId);
+         RedisUtils.deleteKey(key);
+    }
+
+
     /**
      * 得到userKey
      *

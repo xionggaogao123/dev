@@ -23,6 +23,7 @@ import com.fulaan.mall.service.EBusinessVoucherService;
 import com.fulaan.picturetext.runnable.PictureRunNable;
 import com.fulaan.pojo.FLoginLog;
 import com.fulaan.pojo.Validate;
+import com.fulaan.school.SchoolService;
 import com.fulaan.user.dao.ThirdLoginDao;
 import com.fulaan.user.model.ThirdLoginEntry;
 import com.fulaan.user.model.ThirdType;
@@ -40,6 +41,7 @@ import com.pojo.backstage.UserLogResultEntry;
 import com.pojo.ebusiness.SortType;
 import com.pojo.fcommunity.FLoginLogEntry;
 import com.pojo.indexPage.IndexPageEntry;
+import com.pojo.log.LogType;
 import com.pojo.loginwebsocket.LoginTokenEntry;
 import com.pojo.newVersionGrade.CommunityType;
 import com.pojo.school.ClassEntry;
@@ -95,6 +97,9 @@ public class UserService extends BaseService {
 
     @Autowired
     private EBusinessVoucherService voucherService;
+
+    @Autowired
+    private SchoolService schoolService;
 
     private SystemMessageDao systemMessageDao = new SystemMessageDao();
 
@@ -296,6 +301,30 @@ public class UserService extends BaseService {
         validate.setOk(true);
         validate.setData(e);
         return validate;
+    }
+
+    /**
+     *
+     * @param userId
+     * @throws Exception
+     */
+    public void letChildLogin(ObjectId userId)throws Exception{
+        String cacheUserKey= CacheHandler.getUserKey(userId.toString());
+        if(StringUtils.isNotEmpty(cacheUserKey)){
+            SessionValue sv = CacheHandler.getSessionValue(cacheUserKey);
+            if (null != sv && !sv.isEmpty()) {
+                CacheHandler.deleteKey(CacheHandler.CACHE_USER_KEY_IP, cacheUserKey);
+                CacheHandler.deleteKey(CacheHandler.CACHE_USER_KEY, userId.toString());
+                CacheHandler.deleteKey(CacheHandler.CACHE_SESSION_KEY, cacheUserKey);
+                CacheHandler.deleteCacheStudentUserKey(userId.toString());
+                String yearMonth = DateTimeUtils.convert(System.currentTimeMillis(), DateTimeUtils.DATE_YYYY_MM);
+                CacheHandler.deleteKey(CacheHandler.CACHE_USER_CALENDAR, userId.toString(), yearMonth);
+            }else{
+                throw new Exception("已退出登录");
+            }
+        }else{
+            throw new Exception("已退出登录");
+        }
     }
 
     public String filter(String content) {

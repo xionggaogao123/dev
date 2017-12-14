@@ -31,6 +31,8 @@ public class NewVersionBindRelationDTO {
 
     private String loadTime;
 
+    private boolean isLogin;
+
     public NewVersionBindRelationDTO(NewVersionBindRelationEntry  entry){
         this.bindId=entry.getID().toString();
         this.mainUserId=entry.getMainUserId().toString();
@@ -74,6 +76,15 @@ public class NewVersionBindRelationDTO {
 
     public NewVersionBindRelationDTO(){
 
+    }
+
+
+    public boolean isLogin() {
+        return isLogin;
+    }
+
+    public void setLogin(boolean login) {
+        isLogin = login;
     }
 
     public String getPersonalSignature() {

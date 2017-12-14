@@ -4,6 +4,7 @@ import com.fulaan.annotation.ObjectIdType;
 import com.fulaan.base.BaseController;
 import com.fulaan.newVersionBind.dto.BindChildrenDTO;
 import com.fulaan.newVersionBind.dto.NewVersionBindRelationDTO;
+import com.fulaan.newVersionBind.dto.UserLoginStatus;
 import com.fulaan.newVersionBind.service.NewVersionBindService;
 import com.fulaan.operation.service.AppCommentService;
 import com.fulaan.wrongquestion.dto.SubjectClassDTO;
@@ -153,6 +154,21 @@ public class DefaultBindController extends BaseController {
         return respObj;
     }
 
+
+
+    @RequestMapping("/searchLoginChildren")
+    @ResponseBody
+    public RespObj searchLoginChildren(){
+        RespObj respObj = new RespObj(Constant.FAILD_CODE);
+        try{
+            List<UserLoginStatus> dtoList=newVersionBindService.searchLoginChildren(getUserId());
+            respObj.setCode(Constant.SUCCESS_CODE);
+            respObj.setMessage(dtoList);
+        }catch (Exception e){
+            respObj.setErrorMessage(e.getMessage());
+        }
+        return respObj;
+    }
 
     /**
      *

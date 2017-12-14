@@ -652,6 +652,7 @@ public class DefaultUserController extends BaseController {
                             cookie.getValue());
                 }
             }
+            CacheHandler.deleteCacheStudentUserKey(sv.getId());
         }
         return RespObj.SUCCESS;
     }
@@ -1962,6 +1963,21 @@ public class DefaultUserController extends BaseController {
             userDatas.add(user);
         }
         return RespObj.SUCCESS(userDatas);
+    }
+
+
+
+    @RequestMapping("/letChildLogin")
+    @ResponseBody
+    public RespObj letChildLogin(@ObjectIdType ObjectId userId){
+        RespObj respObj = new RespObj(Constant.FAILD_CODE);
+        try{
+            userService.letChildLogin(userId);
+            respObj.setCode(Constant.SUCCESS_CODE);
+        }catch (Exception e){
+            respObj.setErrorMessage(e.getMessage());
+        }
+        return respObj;
     }
 
 }

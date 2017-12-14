@@ -662,6 +662,7 @@ public class WebUserController extends BaseController {
                             cookie.getValue());
                 }
             }
+            CacheHandler.deleteCacheStudentUserKey(sv.getId());
         }
         return RespObj.SUCCESS;
     }

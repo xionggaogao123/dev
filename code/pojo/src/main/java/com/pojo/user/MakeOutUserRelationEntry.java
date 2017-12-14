@@ -21,26 +21,19 @@ public class MakeOutUserRelationEntry extends BaseDBObject{
     }
 
     public MakeOutUserRelationEntry(ObjectId parentId,
-                                    List<String> userKeys){
+                                    String userKey){
         BasicDBObject basicDBObject  =new BasicDBObject()
                 .append("pid",parentId)
-                .append("uks", MongoUtils.convert(userKeys));
+                .append("uk", userKey);
         setBaseEntry(basicDBObject);
     }
 
-    public void setUserKeys(List<String> userKeys){
-        setSimpleValue("uks",MongoUtils.convert(userKeys));
+    public void setUserKey(String userKey){
+        setSimpleValue("uk",userKey);
     }
 
-    public List<String> getUserKeys(){
-        List<String> userKeys=new ArrayList<String>();
-        BasicDBList list=(BasicDBList)getSimpleObjectValue("uks");
-        if(null!=list&&!list.isEmpty()){
-            for(Object o:list){
-                userKeys.add((String)o);
-            }
-        }
-        return userKeys;
+    public String getUserKey(){
+        return getSimpleStringValue("uk");
     }
 
     public void setParentId(ObjectId parentId){

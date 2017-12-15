@@ -1626,6 +1626,9 @@ public class ControlPhoneService {
         }else{
             str = url;
         }
+        if(url != null && url.contains("/static/images/community/upload.png")){
+            str = str.replace("upload.png", "head_group.png");
+        }
         return str;
     }
 

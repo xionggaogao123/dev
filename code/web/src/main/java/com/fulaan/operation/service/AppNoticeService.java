@@ -229,7 +229,8 @@ public class AppNoticeService {
         Map<ObjectId,UserEntry> userEntryMap=userService.getUserEntryMap(userIds,Constant.FIELDS);
         for(Map.Entry<ObjectId,UserEntry> userEntryEntry:userEntryMap.entrySet()){
             UserEntry userEntry=userEntryEntry.getValue();
-            User user=new User(userEntry.getUserName(),
+            String name = StringUtils.isNotEmpty(userEntry.getNickName())?userEntry.getNickName():userEntry.getUserName();
+            User user=new User(name,
                     userEntry.getNickName(),
                     userEntry.getID().toString(),
                     AvatarUtils.getAvatar(userEntry.getAvatar(),userEntry.getRole(),userEntry.getSex()),

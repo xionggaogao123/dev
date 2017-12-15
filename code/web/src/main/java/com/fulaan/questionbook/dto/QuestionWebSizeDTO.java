@@ -14,6 +14,7 @@ public class QuestionWebSizeDTO {
     private String questionId;
     private int questionHeight;
     private int answerHeight;
+    private QuestionBookDTO questionBookDTO = new QuestionBookDTO();
     public QuestionWebSizeDTO(){
 
     }
@@ -45,5 +46,13 @@ public class QuestionWebSizeDTO {
 
     public void setAnswerHeight(int answerHeight) {
         this.answerHeight = answerHeight;
+    }
+
+    public QuestionBookDTO getQuestionBookDTO() {
+        return questionBookDTO;
+    }
+
+    public void setQuestionBookDTO(QuestionBookDTO questionBookDTO) {
+        this.questionBookDTO = questionBookDTO;
     }
 }

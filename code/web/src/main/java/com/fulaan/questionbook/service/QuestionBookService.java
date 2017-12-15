@@ -355,7 +355,7 @@ public class QuestionBookService {
     }
 
     //添加试卷
-    public void addTestEntry(ObjectId userId,List<String> ids){
+    public String addTestEntry(ObjectId userId,List<String> ids){
         QuestionWebTestDTO dto = new QuestionWebTestDTO();
         dto.setUserId(userId.toString());
         dto.setCount(ids.size());
@@ -364,21 +364,47 @@ public class QuestionBookService {
         String str = sdf.format(date);
         int count = questionWebTestDao.getNameCount(str);
         int number = count + 1;
-        dto.setTitle(str+number+"组卷");
+        dto.setTitle(str+"组卷"+number);
         List<QuestionWebSizeDTO> sizeDTOs = new ArrayList<QuestionWebSizeDTO>();
         for(String id: ids){
             QuestionWebSizeDTO dto1 = new QuestionWebSizeDTO();
             dto1.setQuestionId(id);
             dto1.setAnswerHeight(100);
             dto1.setAnswerHeight(100);
+            sizeDTOs.add(dto1);
         }
         dto.setSizeList(sizeDTOs);
         //dto.setTitle();
-        questionWebTestDao.addEntry(dto.buildAddEntry());
+        ObjectId oid = questionWebTestDao.addEntry(dto.buildAddEntry());
+        return oid.toString();
     }
     //修改
     public void updTestEntry(QuestionWebTestDTO dto){
         questionWebTestDao.updEntry(dto.updateEntry());
+    }
+    public void delTestEntry(ObjectId id){
+        questionWebTestDao.delEntry(id);
+    }
+
+    public Map<String,Object> selectTestEntry(ObjectId id){
+        Map<String,Object> map = new HashMap<String, Object>();
+        QuestionWebTestEntry entry = questionWebTestDao.getEntryById(id);
+        List<QuestionWebSizeDTO>  dtos = new ArrayList<QuestionWebSizeDTO>();
+        if(null != entry){
+            map.put("dto",new QuestionWebTestDTO(entry));
+            List<QuestionWebSizeEntry> list =  entry.getSizeList();
+            for(QuestionWebSizeEntry entry1 : list){
+                QuestionBookEntry entry2 = questionBookDao.getEntryById(entry1.getQuestionId());
+                QuestionWebSizeDTO dto =  new QuestionWebSizeDTO(entry1);
+                dto.setQuestionBookDTO(new QuestionBookDTO(entry2));
+                dtos.add(dto);
+            }
+        }else{
+            map.put("dto",new QuestionWebTestDTO());
+
+        }
+        map.put("list",dtos);
+        return map;
     }
 
 

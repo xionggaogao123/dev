@@ -321,13 +321,12 @@ public class QuestionBookController extends BaseController {
     @ApiResponses( value = {@ApiResponse(code = 200, message = "Successful — 请求已完成",response = String.class)})
     @RequestMapping("/addTestEntry")
     @ResponseBody
-    public String addTestEntry(@ApiParam(name="page",required = true,value="page") @RequestParam(value = "page",required = true) int page,
-                                      @ApiParam(name="ids",required = true,value="pageSize") @RequestParam(value = "ids",required = true) List<String> ids){
+    public String addTestEntry(@ApiParam(name="ids",required = true,value="pageSize") @RequestParam(value = "ids",required = true) List<String> ids){
         RespObj respObj=new RespObj(Constant.FAILD_CODE);
         try{
             respObj.setCode(Constant.SUCCESS_CODE);
-            questionBookService.addTestEntry(getUserId(),ids);
-            respObj.setMessage("添加试卷成功");
+            String str = questionBookService.addTestEntry(getUserId(),ids);
+            respObj.setMessage(str);
         }catch (Exception e){
             e.printStackTrace();
             respObj.setCode(Constant.FAILD_CODE);
@@ -336,6 +335,49 @@ public class QuestionBookController extends BaseController {
         return JSON.toJSONString(respObj);
     }
 
+    /***
+     * 查询单一试卷
+     *
+     */
+    @ApiOperation(value = "查询单一试卷", httpMethod = "POST", produces = "application/json")
+    @ApiResponses( value = {@ApiResponse(code = 200, message = "Successful — 请求已完成",response = String.class)})
+    @RequestMapping("/selectTestEntry")
+    @ResponseBody
+    public String selectTestEntry(@ApiParam(name="id",required = true,value="id") @RequestParam(value = "id",required = true) String id){
+        RespObj respObj=new RespObj(Constant.FAILD_CODE);
+        try{
+            respObj.setCode(Constant.SUCCESS_CODE);
+            Map<String,Object> map = questionBookService.selectTestEntry(new ObjectId(id));
+            respObj.setMessage(map);
+        }catch (Exception e){
+            e.printStackTrace();
+            respObj.setCode(Constant.FAILD_CODE);
+            respObj.setErrorMessage("查询单一试卷失败!");
+        }
+        return JSON.toJSONString(respObj);
+    }
+
+    /***
+     * 删除单一试卷
+     *
+     */
+    @ApiOperation(value = "删除单一试卷", httpMethod = "POST", produces = "application/json")
+    @ApiResponses( value = {@ApiResponse(code = 200, message = "Successful — 请求已完成",response = String.class)})
+    @RequestMapping("/delTestEntry")
+    @ResponseBody
+    public String delTestEntry(@ApiParam(name="id",required = true,value="id") @RequestParam(value = "id",required = true) String id){
+        RespObj respObj=new RespObj(Constant.FAILD_CODE);
+        try{
+            respObj.setCode(Constant.SUCCESS_CODE);
+            questionBookService.delTestEntry(new ObjectId(id));
+            respObj.setMessage("删除成功！");
+        }catch (Exception e){
+            e.printStackTrace();
+            respObj.setCode(Constant.FAILD_CODE);
+            respObj.setErrorMessage("删除单一试卷失败!");
+        }
+        return JSON.toJSONString(respObj);
+    }
     /***
      * 编辑保存
      *

@@ -471,7 +471,7 @@ public class CommunityService {
                 communityDTO.setMemberCount(memberService.getMemberCount(entry.getGroupId()));
                 UserEntry userEntry=userDao.findByUserId(entry.getOwerID());
                 if(null!=userEntry){
-                    communityDTO.setOwerName(StringUtils.isNotEmpty(userEntry.getUserName())?userEntry.getUserName():userEntry.getNickName());
+                    communityDTO.setOwerName(StringUtils.isNotEmpty(userEntry.getNickName())?userEntry.getNickName():userEntry.getUserName());
                 }
                 list.add(communityDTO);
             }

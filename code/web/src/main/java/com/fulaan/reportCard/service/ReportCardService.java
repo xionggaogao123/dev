@@ -439,7 +439,7 @@ public class ReportCardService {
                     detailDTO.setScoreLevel(recordEntry.getScoreLevel());
                     UserEntry mainUserEntry = mainUserEntryMap.get(detailEntry.getUserId());
                     if (null != mainUserEntry) {
-                        detailDTO.setUserName(mainUserEntry.getUserName());
+                        detailDTO.setUserName(StringUtils.isNotEmpty(mainUserEntry.getNickName())?mainUserEntry.getNickName():mainUserEntry.getUserName());
                     }
                     detailDTO.setStatus(recordEntry.getStatus());
                     detailDTO.setSingleScoreId(recordEntry.getID().toString());

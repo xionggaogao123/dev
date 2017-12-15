@@ -45,17 +45,21 @@ public class AppNoticeDao extends BaseDao{
     }
 
     public int countMyAppNotices(ObjectId communityId,
+                                 ObjectId subjectId,
+                                 List<ObjectId> groupIds,
                                  ObjectId userId){
-        BasicDBObject query=getMyAppNoticesCondition(communityId,userId);
+        BasicDBObject query=getMyAppNoticesCondition(communityId,subjectId,groupIds,userId);
         return count(MongoFacroty.getAppDB(), Constant.COLLECTION_NEW_VERSION_APP_NOTICE,query);
     }
 
     public List<AppNoticeEntry> getMyAppNotices(ObjectId communityId,
+                                                ObjectId subjectId,
+                                                List<ObjectId> groupIds,
                                                 ObjectId userId,
                                                 int page,
                                                 int pageSize){
         List<AppNoticeEntry> entries=new ArrayList<AppNoticeEntry>();
-        BasicDBObject query=getMyAppNoticesCondition(communityId,userId);
+        BasicDBObject query=getMyAppNoticesCondition(communityId,subjectId,groupIds,userId);
         List<DBObject> dbObjectList=find(MongoFacroty.getAppDB(), Constant.COLLECTION_NEW_VERSION_APP_NOTICE,query,
                 Constant.FIELDS,Constant.MONGO_SORTBY_DESC,(page-1)*pageSize,pageSize);
         if(null!=dbObjectList&&!dbObjectList.isEmpty()){
@@ -68,11 +72,16 @@ public class AppNoticeDao extends BaseDao{
 
 
     public BasicDBObject getMyAppNoticesCondition(ObjectId communityId,
+                                                  ObjectId subjectId,
+                                                  List<ObjectId> groupIds,
                                                   ObjectId userId){
         BasicDBObject query=new BasicDBObject()
                 .append("ir",Constant.ZERO);
         if(null!=communityId){
             query.append("cmId",communityId);
+        }
+        if(null!=subjectId){
+            query.append("sid",subjectId);
         }
         BasicDBList values = new BasicDBList();
         BasicDBObject query1=new BasicDBObject("uid",userId);
@@ -83,6 +92,9 @@ public class AppNoticeDao extends BaseDao{
         BasicDBObject query2=new BasicDBObject()
                 .append("uid",new BasicDBObject(Constant.MONGO_NE,userId))
                 .append("wp",new BasicDBObject(Constant.MONGO_IN,watchPermissions));
+        if(null==communityId){
+            query2.append("gi",new BasicDBObject(Constant.MONGO_IN,groupIds));
+        }
         values.add(query2);
         query.put(Constant.MONGO_OR,values);
         return query;

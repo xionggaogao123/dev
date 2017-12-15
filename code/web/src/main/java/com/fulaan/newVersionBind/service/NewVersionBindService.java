@@ -314,10 +314,11 @@ public class NewVersionBindService {
                 if(null!=oldEntry) {
                     NewVersionBindRelationEntry bindRelationEntry = newVersionBindRelationDao.getBindRelationEntry(mainUserId, userId);
                     if (null != bindRelationEntry) {
+                        bindRelationEntry.setRelation(relation);
                         bindRelationEntry.setRemove(Constant.ZERO);
                         newVersionBindRelationDao.saveNewVersionBindEntry(bindRelationEntry);
                     } else {
-                        relationEntry.setRelation(oldEntry.getRelation());
+                        relationEntry.setRelation(relation);
                         relationEntry.setProvinceName(oldEntry.getProvinceName());
                         relationEntry.setRegionName(oldEntry.getRegionName());
                         relationEntry.setRegionAreaName(oldEntry.getRegionAreaName());
@@ -584,6 +585,9 @@ public class NewVersionBindService {
                         delNewVersionEntry(parentId,userId);
                         //建立绑定关系
                         establishBindRelation(mainUserId,userId);
+
+                        //删除记录列表
+                        makeOutUserRelationDao.removeByCondition(mainUserId,userKey);
                         //判断该孩子是否在这个群中，若在的话移交该群的关联关系
                         if(null!=bindEntryMap.get(userId)){
                             transferCommunityBind(mainUserId,userId,new ObjectId(communityId));

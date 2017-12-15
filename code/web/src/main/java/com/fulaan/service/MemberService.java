@@ -1,9 +1,6 @@
 package com.fulaan.service;
 
-import com.db.fcommunity.CommunityDao;
-import com.db.fcommunity.MemberDao;
-import com.db.fcommunity.NewVersionCommunityBindDao;
-import com.db.fcommunity.RemarkDao;
+import com.db.fcommunity.*;
 import com.db.user.NewVersionUserRoleDao;
 import com.db.user.UserDao;
 import com.fulaan.community.dto.CommunityDTO;
@@ -35,6 +32,8 @@ public class MemberService {
     private MemberDao memberDao = new MemberDao();
     private UserDao userDao = new UserDao();
     private RemarkDao remarkDao = new RemarkDao();
+
+    private GroupDao groupDao = new GroupDao();
 
     private NewVersionUserRoleDao newVersionUserRoleDao = new NewVersionUserRoleDao();
 
@@ -381,22 +380,29 @@ public class MemberService {
         boolean flag=false;
         NewVersionUserRoleEntry roleEntry=newVersionUserRoleDao.getEntry(userId);
         if(null!=roleEntry){
-            if(roleEntry.getNewRole()==Constant.ONE){
+            if(roleEntry.getNewRole()==Constant.TWO||
+                    roleEntry.getNewRole()==Constant.ONE){
                 flag=true;
             }
         }
         return flag;
     }
 
+    public List<ObjectId> getMyRoleList(ObjectId userId){
+        List<ObjectId> olsit = memberDao.getManagerGroupIdsByUserId(userId);
+        List<ObjectId> mlist = groupDao.getGroupIdsList(olsit);
+        return mlist;
+    }
+
     public int judgePersonPermission(ObjectId userId){
         int status=0;
         if(memberDao.judgeIsParent(userId)){
             status=2;
-            if(memberDao.judgeManagePermissionOfUser(userId)){
+            if(getMyRoleList(userId).size()>0){
                 status=3;
             }
         }else{
-            if(memberDao.judgeManagePermissionOfUser(userId)){
+            if(getMyRoleList(userId).size()>0){
                 status=1;
             }
         }

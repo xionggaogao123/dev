@@ -240,11 +240,13 @@ public class AppNoticeService {
     }
 
 
-    public Map<String,Object> getMyAppNotices(String cId,ObjectId userId,int page,int pageSize){
+    public Map<String,Object> getMyAppNotices(String cId,String sId,ObjectId userId,int page,int pageSize){
         Map<String,Object> result=new HashMap<String,Object>();
         ObjectId communityId=StringUtils.isNotEmpty(cId)?new ObjectId(cId):null;
-        List<AppNoticeEntry> entries=appNoticeDao.getMyAppNotices(communityId,userId,page,pageSize);
-        int count=appNoticeDao.countMyAppNotices(communityId,userId);
+        ObjectId subjectId=StringUtils.isNotEmpty(sId)?new ObjectId(sId):null;
+        List<ObjectId> groupIds=memberDao.getGroupIdsByUserId(userId);
+        List<AppNoticeEntry> entries=appNoticeDao.getMyAppNotices(communityId,subjectId,groupIds,userId,page,pageSize);
+        int count=appNoticeDao.countMyAppNotices(communityId,subjectId,groupIds,userId);
         List<AppNoticeDTO> appNoticeDTOs=getAppNoticeDtos(entries,userId);
         result.put("list",appNoticeDTOs);
         result.put("count",count);

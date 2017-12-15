@@ -20,6 +20,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import java.util.List;
+import java.util.Map;
 
 /**
  * Created by scott on 2017/9/5.
@@ -414,9 +415,9 @@ public class DefaultBindController extends BaseController {
     public RespObj transferBindRelation(@RequestBody TransferUserRelationDTO relationDTO){
         RespObj respObj = new RespObj(Constant.FAILD_CODE);
         try {
-            newVersionBindService.transferBindRelation(getUserId(),relationDTO);
+            Map<String,Object> result=newVersionBindService.transferBindRelation(getUserId(),relationDTO);
             respObj.setCode(Constant.SUCCESS_CODE);
-            respObj.setMessage("填写孩子手机号成功");
+            respObj.setMessage(result);
         }catch (Exception e){
             respObj.setErrorMessage(e.getMessage());
         }

@@ -31,6 +31,12 @@ public class MakeOutUserRelationDao extends BaseDao{
         remove(MongoFacroty.getAppDB(), Constant.COLLECTION_MAKE_OUT_USER_RELATION,query);
     }
 
+    public void removeByCondition(ObjectId parentId,String userKey){
+        BasicDBObject query = new BasicDBObject("pid",parentId)
+                .append("uk", userKey);
+        remove(MongoFacroty.getAppDB(), Constant.COLLECTION_MAKE_OUT_USER_RELATION,query);
+    }
+
     public MakeOutUserRelationEntry getRelationEntry(ObjectId parentId,String userKey){
         BasicDBObject query = new BasicDBObject("pid",parentId)
                 .append("uk", userKey);

@@ -544,6 +544,8 @@ public class Constant {
     //走班-考勤
     public static final String COLLECTION_ZOUBAN_ATTENDANCE = "zb_attendance";
 
+    public static final String COLLECTION_TRANSFER_COMMUNITY_RECORD="transfer_community_record";
+
 
     //------------------------------------------------------------------论坛
 

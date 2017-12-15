@@ -14,10 +14,10 @@ import java.util.List;
 public class TransferCommunityRecordDao extends BaseDao{
 
     public void saveEntries(List<TransferCommunityRecordEntry> entries){
-        save(MongoFacroty.getAppDB(), Constant.COLLECTION_ZOUBAN_NOTICE, MongoUtils.fetchDBObjectList(entries));
+        save(MongoFacroty.getAppDB(), Constant.COLLECTION_TRANSFER_COMMUNITY_RECORD, MongoUtils.fetchDBObjectList(entries));
     }
 
     public void saveEntry(TransferCommunityRecordEntry entry){
-        save(MongoFacroty.getAppDB(), Constant.COLLECTION_ZOUBAN_NOTICE, entry.getBaseEntry());
+        save(MongoFacroty.getAppDB(), Constant.COLLECTION_TRANSFER_COMMUNITY_RECORD, entry.getBaseEntry());
     }
 }

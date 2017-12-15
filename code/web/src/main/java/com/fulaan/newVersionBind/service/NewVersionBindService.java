@@ -10,12 +10,14 @@ import com.db.user.NewVersionBindRelationDao;
 import com.db.user.NewVersionUserRoleDao;
 import com.db.user.TeacherSubjectBindDao;
 import com.fulaan.cache.CacheHandler;
+import com.fulaan.mqtt.MQTTSendMsg;
 import com.fulaan.newVersionBind.dto.*;
 import com.fulaan.user.service.UserService;
 import com.fulaan.utils.pojo.KeyValue;
 import com.fulaan.wrongquestion.dto.NewVersionGradeDTO;
 import com.fulaan.wrongquestion.service.WrongQuestionService;
 import com.pojo.app.SessionValue;
+import com.pojo.controlphone.MQTTType;
 import com.pojo.fcommunity.MemberEntry;
 import com.pojo.fcommunity.NewVersionCommunityBindEntry;
 import com.pojo.newVersionGrade.NewVersionGradeEntry;
@@ -23,7 +25,6 @@ import com.pojo.user.*;
 import com.sys.constants.Constant;
 import com.sys.utils.AvatarUtils;
 import com.sys.utils.DateTimeUtils;
-import org.apache.commons.collections.map.HashedMap;
 import org.apache.commons.lang3.StringUtils;
 import org.bson.types.ObjectId;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -411,6 +412,13 @@ public class NewVersionBindService {
         newVersionCommunityBindDao.removeNewVersionCommunityBindRelation(parentId, studentId);
         //孩子设置为初始状态
         newVersionUserRoleDao.updateNewRole(studentId);
+        long current = System.currentTimeMillis();
+        //向学生端推送消息
+        try {
+            MQTTSendMsg.sendMessage(MQTTType.phone.getEname(), studentId.toString(), current);
+        }catch (Exception e){
+
+        }
     }
 
 
@@ -442,6 +450,13 @@ public class NewVersionBindService {
             NewVersionUserRoleEntry userRoleEntry = newVersionUserRoleDao.getEntry(studentId);
             userRoleEntry.setNewRole(Constant.TWO);
             newVersionUserRoleDao.saveEntry(userRoleEntry);
+            long current = System.currentTimeMillis();
+            //向学生端推送消息
+            try {
+                MQTTSendMsg.sendMessage(MQTTType.phone.getEname(), studentId.toString(), current);
+            }catch (Exception e){
+
+            }
         }
     }
 

@@ -99,6 +99,15 @@ public class UserDao extends BaseDao {
     }
 
     /**
+     * 更新用户名
+     */
+    public void updateHuanXinFromName(ObjectId uids,String name) {
+        BasicDBObject query = new BasicDBObject(Constant.ID, uids);
+        BasicDBObject update = new BasicDBObject(Constant.MONGO_SET, new BasicDBObject("nm",name));
+        update(MongoFacroty.getAppDB(), Constant.COLLECTION_USER_NAME, query, update);
+    }
+
+    /**
      * 更新多个字段值
      *
      * @param userId
@@ -252,7 +261,7 @@ public class UserDao extends BaseDao {
      * @return
      */
     public List<UserEntry> searchUsers(String userName, int page, Integer pagesize) {
-        BasicDBObject query = new BasicDBObject("nnm", userName).append("ir", Constant.ZERO);
+        BasicDBObject query = new BasicDBObject("nm", userName).append("ir", Constant.ZERO);
         List<DBObject> dbObjectList = find(MongoFacroty.getAppDB(), Constant.COLLECTION_USER_NAME, query, Constant.FIELDS, Constant.MONGO_SORTBY_DESC, (page - 1) * pagesize, pagesize);
         List<UserEntry> userEntryList = new ArrayList<UserEntry>();
         for (DBObject dbObject : dbObjectList) {

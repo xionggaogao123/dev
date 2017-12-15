@@ -911,7 +911,7 @@ public class BackStageService {
         }
     }
 
-    public void delBindPhone(){
+    public void delBindPhone(String name){
         List<UserEntry> entry  = userDao.getUserEntryListFromDelPhone("13764292257");
         List<UserEntry> entry2  = userDao.getUserEntryListFromDelPhone("13788951487");
         List<UserEntry> entry3 = new ArrayList<UserEntry>();
@@ -922,8 +922,17 @@ public class BackStageService {
             for(UserEntry entry1 : entry3){
                 oids.add(entry1.getID());
             }
+            if(oids.size()>0){
+                userDao.updateHuanXinFromPhone(oids);
+            }
         }
-        userDao.updateHuanXinFromPhone(oids);
+        List<UserEntry> entry6  = userDao.searchUsers("13764292257", 1, 1);
+        List<UserEntry> entry7  = userDao.searchUsers(name, 1, 10);
+        if(entry6.size()==1 && entry7.size() ==0){
+            for(UserEntry entry1 : entry6){
+                userDao.updateHuanXinFromName(entry1.getID(),name);
+            }
+        }
     }
 
 }

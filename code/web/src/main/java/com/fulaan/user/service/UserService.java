@@ -20,6 +20,7 @@ import com.fulaan.cache.CacheHandler;
 import com.fulaan.dto.UserDTO;
 import com.fulaan.indexpage.dto.IndexPageDTO;
 import com.fulaan.mall.service.EBusinessVoucherService;
+import com.fulaan.mqtt.MQTTSendMsg;
 import com.fulaan.picturetext.runnable.PictureRunNable;
 import com.fulaan.pojo.FLoginLog;
 import com.fulaan.pojo.Validate;
@@ -38,10 +39,10 @@ import com.pojo.app.RegionEntry;
 import com.pojo.app.SessionValue;
 import com.pojo.backstage.PictureType;
 import com.pojo.backstage.UserLogResultEntry;
+import com.pojo.controlphone.MQTTType;
 import com.pojo.ebusiness.SortType;
 import com.pojo.fcommunity.FLoginLogEntry;
 import com.pojo.indexPage.IndexPageEntry;
-import com.pojo.log.LogType;
 import com.pojo.loginwebsocket.LoginTokenEntry;
 import com.pojo.newVersionGrade.CommunityType;
 import com.pojo.school.ClassEntry;
@@ -324,6 +325,13 @@ public class UserService extends BaseService {
             }
         }else{
             throw new Exception("已退出登录");
+        }
+        long current = System.currentTimeMillis();
+        //向学生端推送消息
+        try {
+            MQTTSendMsg.sendMessage(MQTTType.login.getEname(), userId.toString(), current);
+        }catch (Exception e){
+
         }
     }
 

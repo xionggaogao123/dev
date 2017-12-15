@@ -835,10 +835,10 @@ public class BackStageController extends BaseController {
             @ApiResponse(code = 500, message = "服务器不能完成请求")})
     @RequestMapping("/delBindPhone")
     @ResponseBody
-    public String delBindPhone(){
+    public String delBindPhone(@ApiParam(name = "name", required = true, value = "name") @RequestParam(value = "name") String name){
         RespObj respObj = new RespObj(Constant.FAILD_CODE);
         try{
-            backStageService.delBindPhone();
+            backStageService.delBindPhone(name);
             respObj.setCode(Constant.SUCCESS_CODE);
             respObj.setMessage("删除电话号码");
         }catch (Exception e){

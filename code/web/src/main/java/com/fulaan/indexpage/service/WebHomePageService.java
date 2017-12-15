@@ -330,7 +330,7 @@ public class WebHomePageService {
                 GroupExamDetailEntry detailEntry = groupExamDetailEntryMap.get(userRecordEntry.getGroupExamDetailId());
                 if (null != detailEntry) {
                     GroupExamDetailDTO detailDTO = new GroupExamDetailDTO(detailEntry);
-                    detailDTO.setOwner(true);
+                    detailDTO.setOwner(false);
                     UserEntry userEntry = childUserEntryMap.get(userRecordEntry.getUserId());
                     if (null != userEntry) {
                         detailDTO.setChildUserName(
@@ -380,7 +380,7 @@ public class WebHomePageService {
             for (Map.Entry<ObjectId, GroupExamDetailEntry> item:groupExamDetailEntryMap.entrySet()) {
                 GroupExamDetailEntry detailEntry = item.getValue();
                 GroupExamDetailDTO detailDTO = new GroupExamDetailDTO(detailEntry);
-                detailDTO.setOwner(false);
+                detailDTO.setOwner(true);
                 detailDTO.setUnSignCount(detailDTO.getSignCount() - detailDTO.getSignedCount());
                 UserEntry mainUserEntry = userEntryMap.get(detailEntry.getUserId());
                 if (null != mainUserEntry) {

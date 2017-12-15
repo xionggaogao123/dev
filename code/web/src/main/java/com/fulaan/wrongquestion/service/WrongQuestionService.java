@@ -178,6 +178,45 @@ public class WrongQuestionService {
         return map;
     }
 
+    /**
+     * 家长加载
+     */
+    public Map<String,Object> getGradeAndSubjectForPar(ObjectId userId){
+        Map<String,Object> map = new HashMap<String, Object>();
+        List<CreateGradeEntry> entryList = createGradeDao.getList();
+        List<CreateGradeDTO> gradeDTOs = new ArrayList<CreateGradeDTO>();
+        for(CreateGradeEntry createGradeEntry : entryList){
+            gradeDTOs.add(new CreateGradeDTO(createGradeEntry));
+        }
+        map.put("gradeList",gradeDTOs);
+        List<SubjectClassEntry> entries2 = subjectClassDao.getList();
+        List<SubjectClassDTO> dtoList = new ArrayList<SubjectClassDTO>();
+        for(SubjectClassEntry entry2 : entries2){
+            dtoList.add(new SubjectClassDTO(entry2));
+        }
+        map.put("subjectList",dtoList);
+        //加载问题类型
+        List<QuestionTypeDTO> dtoList1 = new ArrayList<QuestionTypeDTO>();
+        List<QuestionTypeEntry> entries1 = questionTypeDao.getTypeList();
+        if(entries1.size()>0){
+            for(QuestionTypeEntry entry2 : entries1){
+                dtoList1.add(new QuestionTypeDTO(entry2));
+            }
+        }
+        map.put("questionTypeList",dtoList1);
+
+        //加载自定义标签
+        List<QuestionTagsDTO> dtoList2 = new ArrayList<QuestionTagsDTO>();
+        List<QuestionTagsEntry> entries3 = questionTagsDao.getReviewList(userId);
+        if(entries3.size()>0){
+            for(QuestionTagsEntry entry3 : entries3){
+                dtoList2.add(new QuestionTagsDTO(entry3));
+            }
+        }
+        map.put("TestTypeList",dtoList2);
+        return map;
+    }
+
     public Map<String,Object> getQuestionAndTest(ObjectId userId,ObjectId subjectId,String sename){
         Map<String,Object> map = new HashMap<String, Object>();
         //加载问题类型

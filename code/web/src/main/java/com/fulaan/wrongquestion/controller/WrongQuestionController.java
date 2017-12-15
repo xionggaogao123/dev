@@ -157,7 +157,7 @@ public class WrongQuestionController extends BaseController {
         try {
             List<NewVersionBindRelationEntry> entries=newVersionBindRelationDao.getEntriesByMainUserId(getUserId());
             if(entries.size()>0){
-                Map<String,Object> result = wrongQuestionService.getGradeAndSubject(entries.get(0).getUserId());
+                Map<String,Object> result = wrongQuestionService.getGradeAndSubjectForPar(entries.get(0).getUserId());
                 respObj.setCode(Constant.SUCCESS_CODE);
                 respObj.setMessage(result);
             }else{

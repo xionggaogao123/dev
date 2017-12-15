@@ -1,11 +1,13 @@
 package com.fulaan.questionbook.controller;
 
 import com.alibaba.fastjson.JSON;
+import com.db.user.NewVersionBindRelationDao;
 import com.fulaan.base.BaseController;
 import com.fulaan.questionbook.dto.QuestionAdditionDTO;
 import com.fulaan.questionbook.dto.QuestionBookDTO;
 import com.fulaan.questionbook.dto.QuestionWebTestDTO;
 import com.fulaan.questionbook.service.QuestionBookService;
+import com.pojo.user.NewVersionBindRelationEntry;
 import com.sys.constants.Constant;
 import com.sys.utils.RespObj;
 import io.swagger.annotations.*;
@@ -33,6 +35,8 @@ public class QuestionBookController extends BaseController {
     private QuestionBookService questionBookService;
 
     private static final Logger logger =Logger.getLogger(QuestionBookController.class);
+
+    private NewVersionBindRelationDao newVersionBindRelationDao = new NewVersionBindRelationDao();
     /**
      *  添加错题
      * @param dto
@@ -392,6 +396,12 @@ public class QuestionBookController extends BaseController {
         RespObj respObj=new RespObj(Constant.FAILD_CODE);
         try {
             respObj.setCode(Constant.SUCCESS_CODE);
+            if(userId == null || userId.equals("")){
+                List<NewVersionBindRelationEntry> entries=newVersionBindRelationDao.getEntriesByMainUserId(getUserId());
+                if(entries.size()>0){
+                    userId = entries.get(0).getUserId().toString();
+                }
+            }
             Map<String,Object> dtos = questionBookService.getQuestionList(gradeId, subjectId, questionTypeId, testId, type, page, pageSize, keyword,new ObjectId(userId));
             respObj.setMessage(dtos);
         } catch (Exception e) {

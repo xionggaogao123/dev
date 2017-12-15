@@ -674,6 +674,9 @@ public class Constant {
 
     public static final String COLLECTION_APP_MARKET_DETAIL_COMMENT="app_market_detail_comment";
 
+    public static final String COLLECTION_USER_ACTIVE_RECORD="user_active_record";
+
+
     public static final String COLLECTION_MALL_MARKET_URL = "http://a.app.qq.com/o/simple.jsp?pkgname=com.fulan.mall";
 
     //新加的token-user表

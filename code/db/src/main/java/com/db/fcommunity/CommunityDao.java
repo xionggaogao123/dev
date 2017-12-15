@@ -210,6 +210,13 @@ public class CommunityDao extends BaseDao {
         return dbo == null ? null : (ObjectId) dbo.get("grid");
     }
 
+
+    public void transferOwner(ObjectId communityId,ObjectId ownerId){
+        BasicDBObject query = new BasicDBObject().append(Constant.ID, communityId);
+        BasicDBObject updateValue = new BasicDBObject(Constant.MONGO_SET,new BasicDBObject("cmow", ownerId));
+        update(MongoFacroty.getAppDB(), Constant.COLLECTION_FORUM_COMMUNITY, query,updateValue);
+    }
+
     public ObjectId getCommunityIdByGroupId(ObjectId groupId){
         BasicDBObject query = new BasicDBObject().append("grid", groupId);
         BasicDBObject field = new BasicDBObject().append(Constant.ID, 1);

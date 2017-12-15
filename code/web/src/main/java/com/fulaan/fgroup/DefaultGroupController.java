@@ -360,6 +360,7 @@ public class DefaultGroupController extends BaseController {
                 if (groupDTO.isBindCommunity()) {
                     communityService.setPartIncontentStatus(new ObjectId(groupDTO.getCommunityId()), userId, 1);
                     communityService.pullFromUser(new ObjectId(groupDTO.getCommunityId()), userId);
+                    communityService.transferOwner(new ObjectId(groupDTO.getCommunityId()),new ObjectId(memberDTO.getUserId()));
                 }
             }
             if (memberDTOs.size() == 1) {//只有一个人

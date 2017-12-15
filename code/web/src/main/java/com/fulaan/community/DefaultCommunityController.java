@@ -3494,4 +3494,15 @@ public class DefaultCommunityController extends BaseController {
         return respObj;
     }
 
+    @ApiOperation(value = "老数据处理脚本", httpMethod = "GET", produces = "application/json")
+    @ApiResponses(value = {@ApiResponse(code = 200, message = "查询该用户是否有权限发送通知成功",response = Map.class),
+            @ApiResponse(code = 500, message = "查询该用户是否有权限发送通知失败")})
+    @RequestMapping("/ownerData")
+    @ResponseBody
+    public RespObj ownerData(){
+        RespObj respObj = new RespObj(Constant.SUCCESS_CODE,"转让数据设置成功");
+        communityService.transferOwnerList();
+        return respObj;
+    }
+
 }

@@ -195,7 +195,7 @@ public class EBusinessUserController extends BaseController {
         CacheHandler.cache(cacheKey, num + "," + mobile, Constant.SESSION_FIVE_MINUTE);//5分钟
         CacheHandler.cache(mobileNumber, String.valueOf(System.currentTimeMillis()), Constant.SESSION_ONE_MINUTE);//一分钟
 
-        String msg = "亲爱的客户您好，您的验证码为" + num + "，有效期为5分钟。复兰商城客服绝不会索取此验证码，请勿将验证码告诉他人。";
+        String msg = "亲爱的客户您好，您的验证码为" + num + "，有效期为5分钟。";
         try {
             String resp = batchSend(url, account, pswd, mobile, msg, needstatus, product, extno);
             String responseCode = resp.split("\\n")[0].split(",")[1];

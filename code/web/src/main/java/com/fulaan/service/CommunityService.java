@@ -27,6 +27,7 @@ import com.fulaan.pojo.*;
 import com.fulaan.user.service.UserService;
 import com.fulaan.util.DateUtils;
 import com.pojo.activity.FriendApplyEntry;
+import com.pojo.appnotice.TransferCommunityRecordEntry;
 import com.pojo.backstage.PictureType;
 import com.pojo.fcommunity.*;
 import com.pojo.forum.FVoteDTO;
@@ -84,6 +85,8 @@ public class CommunityService {
     private MemberDao memberDao = new MemberDao();
     private NewVersionUserRoleDao newVersionUserRoleDao=new NewVersionUserRoleDao();
 
+    private TransferCommunityRecordDao transferCommunityRecordDao = new TransferCommunityRecordDao();
+
     private GroupExamUserRecordDao groupExamUserRecordDao=new GroupExamUserRecordDao();
 
     private SystemMessageDao systemMessageDao = new SystemMessageDao();
@@ -137,6 +140,45 @@ public class CommunityService {
         IndexPageEntry entry2 = dto1.buildAddEntry();
         indexPageDao.addEntry(entry2);
         return communityId;
+    }
+
+
+    public void transferOwner(ObjectId communityId,ObjectId ownerId){
+        communityDao.transferOwner(communityId, ownerId);
+    }
+
+    public void transferOwnerList(){
+        int page=1;
+        int pageSize=200;
+        boolean flag=true;
+        while (flag){
+            List<CommunityEntry> communityEntries=communityDao.getCommunities(page,pageSize);
+            if(communityEntries.size()>0){
+                List<ObjectId> groupIds = new ArrayList<ObjectId>();
+                for(CommunityEntry communityEntry:communityEntries){
+                    groupIds.add(communityEntry.getGroupId());
+                }
+                Map<ObjectId,GroupEntry> groupEntryMap=groupService.getGroupEntries(groupIds);
+                for(CommunityEntry entry:communityEntries){
+                    ObjectId groupId=entry.getGroupId();
+                    ObjectId ownerId=entry.getOwerID();
+                    if(null!=groupEntryMap.get(groupId)){
+                        ObjectId groupOwnerId=groupEntryMap.get(groupId).getOwerId();
+                        if(null!=groupOwnerId&&
+                                null!=ownerId&&!ownerId.equals(groupOwnerId)){
+                            transferOwner(entry.getID(),groupOwnerId);
+                            TransferCommunityRecordEntry
+                                    recordEntry =new TransferCommunityRecordEntry(entry.getID(),
+                                    ownerId,groupOwnerId);
+                            transferCommunityRecordDao.saveEntry(recordEntry);
+                        }
+                    }
+                }
+            }else{
+                flag=false;
+            }
+            page++;
+        }
     }
 
     /**
@@ -2220,6 +2262,7 @@ public class CommunityService {
     public void removeNewCommunityDetailById(ObjectId id,ObjectId userId) throws Exception {
         //如果是通知或者火热分享发送系统通知
         CommunityDetailEntry entry=communityDetailDao.findByObjectId(id);
+
         if(entry.getCommunityType()==CommunityDetailType.ANNOUNCEMENT.getType()||
                 entry.getCommunityType()==CommunityDetailType.SHARE.getType()){
             String title="";

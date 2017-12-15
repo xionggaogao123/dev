@@ -1,13 +1,16 @@
 package com.fulaan.interceptor;
 
 
+import com.db.user.UserActiveRecordDao;
 import com.fulaan.annotation.SessionNeedless;
 import com.fulaan.cache.CacheHandler;
 import com.pojo.app.SessionValue;
+import com.pojo.user.UserActiveRecordEntry;
 import com.sys.constants.Constant;
 import com.sys.exceptions.UnLoginException;
 import org.apache.commons.lang.StringUtils;
 import org.apache.log4j.Logger;
+import org.bson.types.ObjectId;
 import org.springframework.web.method.HandlerMethod;
 import org.springframework.web.servlet.handler.HandlerInterceptorAdapter;
 import org.springframework.web.socket.server.support.WebSocketHttpRequestHandler;
@@ -24,6 +27,8 @@ public class SessionValueInterceptor extends HandlerInterceptorAdapter {
     private static final Logger logger = Logger.getLogger(SessionValueInterceptor.class);
 
     private static final String sso_homepage = "/user/homepage.do?type=sso";
+
+    private static UserActiveRecordDao userActiveRecordDao = new UserActiveRecordDao();
 
     @Override
     public boolean preHandle(HttpServletRequest request, HttpServletResponse response,
@@ -42,6 +47,17 @@ public class SessionValueInterceptor extends HandlerInterceptorAdapter {
                     SessionValue sv = CacheHandler.getSessionValue(ui);
                     if (null != sv && !sv.isEmpty()) {
                         request.setAttribute(SESSION_VALUE, sv);
+                        String userId=sv.getId();
+                        if(StringUtils.isNotEmpty(userId)){
+                            UserActiveRecordEntry
+                                    recordEntry=userActiveRecordDao.getEntryByUserId(new ObjectId(userId));
+                            if(null!=recordEntry){
+                                userActiveRecordDao.updateActiveTime(new ObjectId(userId),System.currentTimeMillis());
+                            }else{
+                                UserActiveRecordEntry entry=new UserActiveRecordEntry(new ObjectId(userId),System.currentTimeMillis());
+                                userActiveRecordDao.saveEntry(entry);
+                            }
+                        }
                     }
                 }
                 return true;
@@ -50,6 +66,17 @@ public class SessionValueInterceptor extends HandlerInterceptorAdapter {
                     SessionValue sv = CacheHandler.getSessionValue(ui);
                     if (null != sv && !sv.isEmpty()) {
                         request.setAttribute(SESSION_VALUE, sv);
+                        String userId=sv.getId();
+                        if(StringUtils.isNotEmpty(userId)) {
+                            UserActiveRecordEntry
+                                    recordEntry = userActiveRecordDao.getEntryByUserId(new ObjectId(userId));
+                            if (null != recordEntry) {
+                                userActiveRecordDao.updateActiveTime(new ObjectId(userId), System.currentTimeMillis());
+                            } else {
+                                UserActiveRecordEntry entry = new UserActiveRecordEntry(new ObjectId(userId), System.currentTimeMillis());
+                                userActiveRecordDao.saveEntry(entry);
+                            }
+                        }
                         return true;
                     }
                 }

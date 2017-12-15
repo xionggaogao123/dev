@@ -4,6 +4,7 @@ import com.db.fcommunity.CommunityDao;
 import com.db.fcommunity.MemberDao;
 import com.db.fcommunity.NewVersionCommunityBindDao;
 import com.db.fcommunity.RemarkDao;
+import com.db.user.NewVersionUserRoleDao;
 import com.db.user.UserDao;
 import com.fulaan.community.dto.CommunityDTO;
 import com.fulaan.dto.MemberDTO;
@@ -11,7 +12,9 @@ import com.fulaan.pojo.PageModel;
 import com.pojo.fcommunity.CommunityEntry;
 import com.pojo.fcommunity.MemberEntry;
 import com.pojo.fcommunity.RemarkEntry;
+import com.pojo.user.NewVersionUserRoleEntry;
 import com.pojo.user.UserEntry;
+import com.sys.constants.Constant;
 import org.apache.commons.lang.StringUtils;
 import org.bson.types.ObjectId;
 import org.springframework.scheduling.annotation.Async;
@@ -32,6 +35,8 @@ public class MemberService {
     private MemberDao memberDao = new MemberDao();
     private UserDao userDao = new UserDao();
     private RemarkDao remarkDao = new RemarkDao();
+
+    private NewVersionUserRoleDao newVersionUserRoleDao = new NewVersionUserRoleDao();
 
     private CommunityDao communityDao = new CommunityDao();
 
@@ -372,6 +377,17 @@ public class MemberService {
         return memberDao.judgeManagePermissionOfUser(userId);
     }
 
+    public boolean judgeIsStudent(ObjectId userId){
+        boolean flag=false;
+        NewVersionUserRoleEntry roleEntry=newVersionUserRoleDao.getEntry(userId);
+        if(null!=roleEntry){
+            if(roleEntry.getNewRole()==Constant.ONE){
+                flag=true;
+            }
+        }
+        return flag;
+    }
+
     public int judgePersonPermission(ObjectId userId){
         int status=0;
         if(memberDao.judgeIsParent(userId)){
@@ -382,6 +398,11 @@ public class MemberService {
         }else{
             if(memberDao.judgeManagePermissionOfUser(userId)){
                 status=1;
+            }
+        }
+        if(status==Constant.ZERO){
+            if(judgeIsStudent(userId)){
+                status=4;
             }
         }
         return status;

@@ -152,7 +152,8 @@ public class DefaultBindController extends BaseController {
         return respObj;
     }
 
-
+    @ApiOperation(value = "查找登录状态的绑定孩子列表", httpMethod = "POST", produces = "application/json")
+    @ApiResponses( value = {@ApiResponse(code = 200, message = "Successful — 请求已完成",response = RespObj.class)})
     @RequestMapping("/searchLoginChildren")
     @ResponseBody
     public RespObj searchLoginChildren(){
@@ -384,6 +385,8 @@ public class DefaultBindController extends BaseController {
      * 填写孩子手机号
      * @return
      */
+    @ApiOperation(value = "填写孩子手机号", httpMethod = "POST", produces = "application/json")
+    @ApiResponses( value = {@ApiResponse(code = 200, message = "Successful — 请求已完成",response = RespObj.class)})
     @RequestMapping("/makeOutRelation")
     @ResponseBody
     public RespObj makeOutRelation(String userKey){
@@ -404,6 +407,8 @@ public class DefaultBindController extends BaseController {
      * @param relationDTO
      * @return
      */
+    @ApiOperation(value = "移交绑定关系", httpMethod = "POST", produces = "application/json")
+    @ApiResponses( value = {@ApiResponse(code = 200, message = "Successful — 请求已完成",response = RespObj.class)})
     @RequestMapping("/transferBindRelation")
     @ResponseBody
     public RespObj transferBindRelation(@RequestBody TransferUserRelationDTO relationDTO){
@@ -444,7 +449,8 @@ public class DefaultBindController extends BaseController {
         return respObj;
     }
 
-
+    @ApiOperation(value = "获取填写的孩子手机号列表", httpMethod = "POST", produces = "application/json")
+    @ApiResponses( value = {@ApiResponse(code = 200, message = "Successful — 请求已完成",response = RespObj.class)})
     @RequestMapping("/getMakeOutList")
     @ResponseBody
     public RespObj getMakeOutList(){
@@ -454,7 +460,8 @@ public class DefaultBindController extends BaseController {
         return respObj;
     }
 
-
+    @ApiOperation(value = "删除手机号item", httpMethod = "POST", produces = "application/json")
+    @ApiResponses( value = {@ApiResponse(code = 200, message = "Successful — 请求已完成",response = RespObj.class)})
     @RequestMapping("/removeMakeOutItem")
     @ResponseBody
     public RespObj removeMakeOutItem(@ObjectIdType ObjectId id){

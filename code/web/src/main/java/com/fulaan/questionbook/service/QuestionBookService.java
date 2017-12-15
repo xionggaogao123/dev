@@ -9,18 +9,21 @@ import com.fulaan.questionbook.dto.*;
 import com.pojo.backstage.PictureType;
 import com.pojo.questionbook.QuestionAdditionEntry;
 import com.pojo.questionbook.QuestionBookEntry;
+import com.pojo.questionbook.QuestionWebSizeEntry;
 import com.pojo.questionbook.QuestionWebTestEntry;
-import org.apache.poi.xwpf.usermodel.XWPFDocument;
+import com.sys.constants.Constant;
+import com.sys.props.Resources;
+import org.apache.poi.util.IOUtils;
+import org.apache.poi.xwpf.usermodel.Document;
 import org.apache.poi.xwpf.usermodel.XWPFParagraph;
 import org.apache.poi.xwpf.usermodel.XWPFRun;
 import org.bson.types.ObjectId;
-import org.json.JSONException;
 import org.springframework.stereotype.Service;
 
 import javax.servlet.http.HttpServletResponse;
-import java.io.ByteArrayOutputStream;
-import java.io.IOException;
-import java.io.OutputStream;
+import java.io.*;
+import java.net.HttpURLConnection;
+import java.net.URL;
 import java.net.URLEncoder;
 import java.text.SimpleDateFormat;
 import java.util.*;
@@ -380,25 +383,60 @@ public class QuestionBookService {
 
 
 
-    public void addword(String questionaireId, String name, int page, int pageSize, String tmids, HttpServletResponse response) throws JSONException {
+    public void addword(String questionaireId ,HttpServletResponse response) throws Exception {
         ByteArrayOutputStream os = new ByteArrayOutputStream();
-        XWPFDocument doc = new XWPFDocument();
-        XWPFParagraph p1 = doc.createParagraph();
-        XWPFRun r1 = p1.createRun();
-        String[] strings = {"dd","ds"};
+        QuestionWebTestEntry entry =  questionWebTestDao.getEntryById(new ObjectId(questionaireId));
+        List<QuestionWebSizeEntry> questionWebSizeEntries = entry.getSizeList();
+        CustomXWPFDocument doc = new CustomXWPFDocument();
         int i = 1;
-        r1.setText("题目");
-        r1.addBreak();
-        r1.setText("答案");
-        r1.addBreak();
-        for (String s1 : strings) {
-            r1.setText(i + ":" + s1);
-            r1.addBreak();
+        final String anOSName = System.getProperty("os.name");
+        String bathPath = Resources.getProperty("upload.file");
+        if (anOSName.toLowerCase().startsWith("windows")) {
+            bathPath= Resources.getProperty("uploads.file");
+        }
+        for (QuestionWebSizeEntry s1 : questionWebSizeEntries) {
+            XWPFParagraph p1 = doc.createParagraph();
+            XWPFRun r1 = p1.createRun();
+            QuestionBookEntry entry1 = questionBookDao.getEntryById(s1.getQuestionId());
+            r1.setText("("+i+")"+entry1.getDescription());
+            int k = s1.getQuestionHeight();
+            for(int j = 0;j<k;j++){
+                r1.addBreak();
+            }
+            try{
+                List<String> stringList = entry1.getImageList();
+                if(stringList != null && stringList.size()>0){
+                    for(String str : stringList){
+                        String imageFileName = new ObjectId().toString() + Constant.POINT + "png";
+                        String imageFilePath = bathPath +"/"+ imageFileName;
+                        if(anOSName.toLowerCase().startsWith("windows")) {
+                            imageFilePath = bathPath + "\\" + imageFileName;
+                        }
+                        InputStream pic = downLoadFromUrl2(str, imageFileName, imageFilePath);
+                        //File imageFile = new File(imageFilePath);
+                       // InputStream pic = new FileInputStream(imageFile);
+                        byte [] picbytes = IOUtils.toByteArray(pic);
+                        String str5 = doc.addPictureData(picbytes, Document.PICTURE_TYPE_JPEG);
+                        doc.createPicture(str5,doc.getNextPicNameNumber(Document.PICTURE_TYPE_JPEG), 100, 100);
+                       // imageFile.delete();
+                        pic.close();
+                    }
+                }
+            }catch (Exception e){
+                e.printStackTrace();
+            }
+            XWPFParagraph p2 = doc.createParagraph();
+            XWPFRun r2 = p2.createRun();
+            int l = s1.getAnswerHeight();
+            for(int j = 0;j<l;j++){
+                r2.addBreak();
+            }
+
             i++;
         }
         try {
             doc.write(os);
-        } catch (IOException e) {
+        } catch (Exception e) {
             e.printStackTrace();
         }
         byte[] content = os.toByteArray();
@@ -406,7 +444,7 @@ public class QuestionBookService {
         try {
             outputStream = response.getOutputStream();
             response.setContentType("application/force-download");
-            response.addHeader("Content-Disposition", "attachment; filename=" + URLEncoder.encode("" + "答案.docx", "UTF-8"));
+            response.addHeader("Content-Disposition", "attachment; filename=" + URLEncoder.encode(entry.getTitle() + ".docx", "UTF-8"));
             response.setContentLength(content.length);
             outputStream.write(content);
         } catch (Exception e) {
@@ -422,4 +460,152 @@ public class QuestionBookService {
             }
         }
     }
+
+    public void addNewword(String questionaireId ,HttpServletResponse response) throws Exception {
+        ByteArrayOutputStream os = new ByteArrayOutputStream();
+        QuestionWebTestEntry entry =  questionWebTestDao.getEntryById(new ObjectId(questionaireId));
+        List<QuestionWebSizeEntry> questionWebSizeEntries = entry.getSizeList();
+        CustomXWPFDocument doc = new CustomXWPFDocument();
+        XWPFParagraph p1 = doc.createParagraph();
+        XWPFRun r1 = p1.createRun();
+        int i = 1;
+        final String anOSName = System.getProperty("os.name");
+        String bathPath = Resources.getProperty("upload.file");
+        if (anOSName.toLowerCase().startsWith("windows")) {
+            bathPath= Resources.getProperty("uploads.file");
+        }
+        for (QuestionWebSizeEntry s1 : questionWebSizeEntries) {
+            QuestionBookEntry entry1 = questionBookDao.getEntryById(s1.getQuestionId());
+            r1.setText("("+i+")"+entry1.getDescription());
+            int k = s1.getQuestionHeight();
+            for(int j = 0;j<k;j++){
+                r1.addBreak();
+            }
+            try{
+                List<String> stringList = entry1.getImageList();
+                if(stringList != null && stringList.size()>0){
+                    for(String str : stringList){
+                        String imageFileName = new ObjectId().toString() + Constant.POINT + "png";
+                        String imageFilePath = bathPath +"/"+ imageFileName;
+                        if(anOSName.toLowerCase().startsWith("windows")) {
+                            imageFilePath = bathPath + "\\" + imageFileName;
+                        }
+                        InputStream pic = downLoadFromUrl2(str, imageFileName, imageFilePath);
+                        //File imageFile = new File(imageFilePath);
+                        // InputStream pic = new FileInputStream(imageFile);
+                        byte [] picbytes = IOUtils.toByteArray(pic);
+                        String str5 = doc.addPictureData(picbytes, Document.PICTURE_TYPE_JPEG);
+                        doc.createPicture(str5,doc.getNextPicNameNumber(Document.PICTURE_TYPE_JPEG), 100, 100);
+                        // imageFile.delete();
+                        pic.close();
+                    }
+                }
+            }catch (Exception e){
+                e.printStackTrace();
+            }
+            int l = s1.getAnswerHeight();
+            for(int j = 0;j<l;j++){
+                r1.addBreak();
+            }
+
+            i++;
+        }
+        try {
+            doc.write(os);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        byte[] content = os.toByteArray();
+        OutputStream outputStream = null;
+        try {
+            outputStream = response.getOutputStream();
+            response.setContentType("application/force-download");
+            response.addHeader("Content-Disposition", "attachment; filename=" + URLEncoder.encode(entry.getTitle() + ".docx", "UTF-8"));
+            response.setContentLength(content.length);
+            outputStream.write(content);
+        } catch (Exception e) {
+            e.printStackTrace();
+        } finally {
+            if (outputStream != null) {
+                try {
+                    outputStream.close();
+                    outputStream = null;
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+            }
+        }
+    }
+    public static void  downLoadFromUrl(String urlStr,String fileName,String savePath) throws IOException{
+        URL url = new URL(urlStr);
+        HttpURLConnection conn = (HttpURLConnection)url.openConnection();
+        //设置超时间为3秒
+        conn.setConnectTimeout(3*1000);
+        //防止屏蔽程序抓取而返回403错误
+        conn.setRequestProperty("User-Agent", "Mozilla/4.0 (compatible; MSIE 5.0; Windows NT; DigExt)");
+
+        //得到输入流
+        InputStream inputStream = conn.getInputStream();
+        //获取自己数组
+        byte[] getData = readInputStream(inputStream);
+
+        //文件保存位置
+        File saveDir = new File(savePath);
+        if(!saveDir.exists()){
+            saveDir.mkdir();
+        }
+        File file = new File(saveDir+File.separator+fileName);
+        FileOutputStream fos = new FileOutputStream(file);
+        fos.write(getData);
+        if(fos!=null){
+            fos.close();
+        }
+        if(inputStream!=null){
+            inputStream.close();
+        }
+
+
+        System.out.println("info:"+url+" download success");
+
+    }
+
+    public static InputStream  downLoadFromUrl2(String urlStr,String fileName,String savePath) throws IOException{
+        URL url = new URL(urlStr);
+        HttpURLConnection conn = (HttpURLConnection)url.openConnection();
+        //设置超时间为3秒
+        conn.setConnectTimeout(3*1000);
+        //防止屏蔽程序抓取而返回403错误
+        conn.setRequestProperty("User-Agent", "Mozilla/4.0 (compatible; MSIE 5.0; Windows NT; DigExt)");
+
+        //得到输入流
+        InputStream inputStream = conn.getInputStream();
+        return inputStream;
+    }
+
+
+    /**
+     * 从输入流中获取字节数组
+     * @param inputStream
+     * @return
+     * @throws IOException
+     */
+    public static  byte[] readInputStream(InputStream inputStream) throws IOException {
+        byte[] buffer = new byte[1024];
+        int len = 0;
+        ByteArrayOutputStream bos = new ByteArrayOutputStream();
+        while((len = inputStream.read(buffer)) != -1) {
+            bos.write(buffer, 0, len);
+        }
+        bos.close();
+        return bos.toByteArray();
+    }
+
+   /* public static void main(String[] args) {
+        try{
+            downLoadFromUrl("http://101.95.48.97:8005/res/upload/interface/apptutorials/manualstypeico/6f83ce8f-0da5-49b3-bac8-fd5fc67d2725.png",
+                    "百度.jpg","d:/resource/images/diaodiao/country/");
+        }catch (Exception e) {
+            // TODO: handle exception
+        }
+    }*/
 }

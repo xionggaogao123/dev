@@ -715,7 +715,7 @@ public class BackStageController extends BaseController {
         try{
             backStageService.delSystemAppEntry(getUserId(),new ObjectId(id));
             respObj.setCode(Constant.SUCCESS_CODE);
-            respObj.setMessage("添加成功");
+            respObj.setMessage("取消成功");
         }catch (Exception e){
             e.printStackTrace();
             respObj.setCode(Constant.SUCCESS_CODE);

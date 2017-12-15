@@ -1675,10 +1675,14 @@ public static void main(String[] args){
      */
     public void delAppcommentEntry(ObjectId id,ObjectId userId){
         AppCommentEntry e = appCommentDao.getEntry(id);
-        if(e!= null && e.getAdminId() != null && e.getAdminId().equals(userId)){
-            appCommentDao.delAppCommentEntry(id);
-            //删除
-            webHomePageDao.removeContactId(id);
+        //获得当前时间
+        long current=System.currentTimeMillis();
+        if(e.getCreateTime() >current-24*60*60*1000){
+            if(e!= null && e.getAdminId() != null && e.getAdminId().equals(userId)){
+                appCommentDao.delAppCommentEntry(id);
+                //删除
+                webHomePageDao.removeContactId(id);
+            }
         }
     }
     /**

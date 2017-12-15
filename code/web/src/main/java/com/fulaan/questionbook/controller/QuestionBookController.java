@@ -11,7 +11,6 @@ import com.sys.utils.RespObj;
 import io.swagger.annotations.*;
 import org.apache.log4j.Logger;
 import org.bson.types.ObjectId;
-import org.json.JSONException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -358,8 +357,6 @@ public class QuestionBookController extends BaseController {
      * 导出
      *
      * @param questionnaireId
-     * @param page
-     * @param pageSize
      * @return
      */
     @ApiOperation(value = "编辑保存", httpMethod = "POST", produces = "application/json")
@@ -367,14 +364,11 @@ public class QuestionBookController extends BaseController {
     @RequestMapping("/addword")
     @ResponseBody
     public void addWord(@ApiParam(name="questionnaireId",required = true,value="questionnaireId") @RequestParam(value = "questionnaireId",required = true) String questionnaireId,
-                        @RequestParam(value = "page", defaultValue = "1") int page,
-                        @RequestParam(value = "name", defaultValue = "*") String name,
-                        @RequestParam(value = "pageSize", defaultValue = "10") int pageSize,
-                        @RequestParam String tmids,HttpServletResponse response
+                        HttpServletResponse response
     ) {
         try {
-            questionBookService.addword(questionnaireId.toString(), name, page, pageSize,tmids,response);
-        } catch (JSONException e) {
+            questionBookService.addword(questionnaireId.toString(),response);
+        } catch (Exception e) {
             e.printStackTrace();
         }
     }

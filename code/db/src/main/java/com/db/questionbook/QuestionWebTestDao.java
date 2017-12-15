@@ -23,6 +23,17 @@ public class QuestionWebTestDao extends BaseDao {
         return entry.getID();
     }
 
+    //查询
+    public QuestionWebTestEntry getEntryById(ObjectId id) {
+        BasicDBObject query = new BasicDBObject(Constant.ID,id);
+        query.append("isr",Constant.ZERO);
+        DBObject obj =
+                findOne(MongoFacroty.getAppDB(), Constant.COLLECTION_QUESTION_WEB_TEST, query, Constant.FIELDS);
+        if (obj != null) {
+            return new QuestionWebTestEntry((BasicDBObject) obj);
+        }
+        return null;
+    }
     public void updEntry(QuestionWebTestEntry e) {
         BasicDBObject query=new BasicDBObject(Constant.ID,e.getID());
         BasicDBObject updateValue=new BasicDBObject(Constant.MONGO_SET,e.getBaseEntry());

@@ -1495,11 +1495,16 @@ public class CommunityService {
             CommunityDetailDTO dto=new CommunityDetailDTO(entry);
             if (null != userId) {
                 dto.setReadFlag(0);
+                dto.setIsZan(Constant.ZERO);
                 if (entry.getUnReadList().size() > 0 && entry.getUnReadList().contains(userId)) {
                     dto.setReadFlag(1);
                 }
+                if(entry.getZanList().size()>0&& entry.getZanList().contains(userId)){
+                    dto.setIsZan(Constant.ONE);
+                }
             } else{
                 dto.setReadFlag(1);
+                dto.setIsZan(Constant.ONE);
             }
             if(null!=communityEntryMap.get(new ObjectId(entry.getCommunityId()))){
                 dto.setCommunityName(communityEntryMap.get(new ObjectId(entry.getCommunityId())).getCommunityName());

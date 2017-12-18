@@ -3,11 +3,14 @@ package com.fulaan.timedtask;
 import com.db.businessactivity.FieryActivityDao;
 import com.db.ebusiness.EVoucherDao;
 import com.db.microblog.MicroBlogDao;
+import com.db.user.UserActiveRecordDao;
 import com.fulaan.logreport.service.BuildLogReportService;
+import com.fulaan.user.service.UserService;
 import com.fulaan.util.crawl.CrawlData;
 import com.pojo.app.RegionEntry;
 import com.pojo.emailmanage.EmailManageEntry;
 import com.pojo.forum.FLogEntry;
+import com.pojo.user.UserActiveRecordEntry;
 import com.sys.constants.Constant;
 import com.sys.mails.MailUtils;
 import com.sys.props.Resources;
@@ -226,6 +229,35 @@ public class TaskJob {
             cLogger.error(e.getMessage());
         }
 
+    }
+
+
+    public void letUserUnLogin(){
+        UserActiveRecordDao userActiveRecordDao = new UserActiveRecordDao();
+        UserService userService = new UserService();
+        long currentTime = System.currentTimeMillis();
+        long startTime = currentTime -6L*30L*24L*60L*60L*1000L;
+        long endTime = currentTime-30L*24L*60L*60L*1000L;
+        int page=1;
+        int pageSize=200;
+        boolean flag=true;
+        System.out.println("开始把人踢下来");
+        while(flag) {
+            List<UserActiveRecordEntry> entries = userActiveRecordDao.getActiveRecordEntries(startTime, endTime,page,pageSize);
+            if(entries.size()>0){
+                for(UserActiveRecordEntry entry:entries){
+                    try {
+                        userService.letChildLogin(entry.getUserId());
+                        System.out.println("踢人成功");
+                    }catch (Exception e){
+                        System.out.println("该人未在登录状态");
+                    }
+                }
+            }else{
+                flag=false;
+            }
+            page++;
+        }
     }
 
     /**

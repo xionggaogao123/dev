@@ -253,6 +253,8 @@ public class AppNoticeService {
         result.put("count",count);
         result.put("page",page);
         result.put("pageSize",pageSize);
+
+        redDotService.cleanResult(userId,ApplyTypeEn.notice.getType(),0l);
         return result;
     }
 

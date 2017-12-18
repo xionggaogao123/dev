@@ -15,12 +15,14 @@ import com.db.user.UserDao;
 import com.db.wrongquestion.ExamTypeDao;
 import com.db.wrongquestion.SubjectClassDao;
 import com.fulaan.indexpage.dto.WebHomePageDTO;
+import com.fulaan.instantmessage.service.RedDotService;
 import com.fulaan.reportCard.dto.GroupExamDetailDTO;
 import com.pojo.appnotice.AppNoticeEntry;
 import com.pojo.appnotice.GenerateUserCodeEntry;
 import com.pojo.fcommunity.CommunityEntry;
 import com.pojo.fcommunity.NewVersionCommunityBindEntry;
 import com.pojo.indexPage.WebHomePageEntry;
+import com.pojo.instantmessage.ApplyTypeEn;
 import com.pojo.operation.AppCommentEntry;
 import com.pojo.reportCard.*;
 import com.pojo.user.UserEntry;
@@ -69,6 +71,8 @@ public class WebHomePageService {
 
     private GenerateUserCodeDao generateUserCodeDao = new GenerateUserCodeDao();
 
+
+    private RedDotService redDotService  = new RedDotService();
 
     public Map<String, Long> setTime(int mode, String sTime, String eTime) throws Exception {
         Map<String, Long> retMap = new HashMap<String, Long>();
@@ -206,6 +210,9 @@ public class WebHomePageService {
         result.put("count", count);
         result.put("page", page);
         result.put("pageSize", pageSize);
+
+        //清除红点
+        redDotService.cleanThirdResult(userId, ApplyTypeEn.repordcard.getType());
         return result;
     }
 
@@ -232,6 +239,8 @@ public class WebHomePageService {
         result.put("count", count);
         result.put("page", page);
         result.put("pageSize", pageSize);
+        //清除红点
+        redDotService.cleanThirdResult(userId, ApplyTypeEn.repordcard.getType());
         return result;
     }
 

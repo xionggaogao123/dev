@@ -22,7 +22,9 @@ import com.fulaan.service.MemberService;
 import com.fulaan.user.model.ThirdLoginEntry;
 import com.fulaan.user.model.ThirdType;
 import com.fulaan.user.service.UserService;
+import com.fulaan.util.DownloadUtil;
 import com.fulaan.util.ObjectIdPackageUtil;
+import com.fulaan.util.imageInit;
 import com.fulaan.utils.CollectionUtil;
 import com.google.gson.Gson;
 import com.mongodb.BasicDBObject;
@@ -72,10 +74,7 @@ import javax.annotation.Resource;
 import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import java.io.File;
-import java.io.IOException;
-import java.io.PrintWriter;
-import java.io.UnsupportedEncodingException;
+import java.io.*;
 import java.net.URLDecoder;
 import java.net.URLEncoder;
 import java.text.Collator;
@@ -1978,6 +1977,44 @@ public class DefaultUserController extends BaseController {
             respObj.setErrorMessage(e.getMessage());
         }
         return respObj;
+    }
+
+
+    @RequestMapping("/generateWaterImage")
+    @ResponseBody
+    public RespObj generateWaterImage(String url){
+        RespObj respObj = new RespObj(Constant.FAILD_CODE);
+        try{
+            String qiuNiuPath=testGenerateImage(url);
+            respObj.setCode(Constant.SUCCESS_CODE);
+            respObj.setMessage(qiuNiuPath);
+        }catch (Exception e){
+            respObj.setMessage(e.getMessage());
+        }
+        return respObj;
+    }
+
+
+    public String testGenerateImage(String url)throws Exception{
+        String fileName = new ObjectId() + ".jpg";
+        String parentPath = getRequest().getServletContext().getRealPath("/static") + "/images/upload";
+//           String path= Resources.getProperty("upload.file");
+        DownloadUtil.downLoadFromUrl(url, fileName, parentPath);
+        String filePath = parentPath + "/" + fileName;
+        String logoImg = getRequest().getServletContext().getRealPath("/static") + "/images/upload/ic_v32.png";
+        String waterImage = imageInit.mergeWaterMark(filePath, logoImg,2,2);
+        File file1 = new File(filePath);
+        File file = new File(waterImage);
+        try {
+            String extensionName = waterImage.substring(waterImage.indexOf(".") + 1, waterImage.length());
+            String fileKey = new ObjectId().toString() + Constant.POINT + extensionName;
+            QiniuFileUtils.uploadFile(fileKey, new FileInputStream(file), QiniuFileUtils.TYPE_IMAGE);
+            String qiuNiuPath = QiniuFileUtils.getPath(QiniuFileUtils.TYPE_IMAGE, fileKey);
+            return qiuNiuPath;
+        }finally {
+            file.delete();
+            file1.delete();
+        }
     }
 
 }

@@ -49,7 +49,8 @@ public class imageInit {
             else if (y > heightDiff) {
                 y = heightDiff;
             }
-            graphics2d.drawImage(watermark, width-watermarkWidth-20, height-watermarkHeight-20, watermarkWidth,watermarkHeight, null);
+//            graphics2d.drawImage(watermark, width-watermarkWidth-20, height-watermarkHeight-20, watermarkWidth,watermarkHeight, null);
+            graphics2d.drawImage(watermark, width-watermarkWidth, height-watermarkHeight, watermarkWidth,watermarkHeight, null);
             graphics2d.dispose();
             String fileType = originalImagePath.substring(originalImagePath.lastIndexOf(".") + 1);
             ByteArrayOutputStream baops = new ByteArrayOutputStream();
@@ -59,6 +60,45 @@ public class imageInit {
             e.printStackTrace();
         }
         return null;
+    }
+
+    public static String mergeWaterMark(String imagePath,String logoPath,int x,int y) {
+        if (null == imagePath || -1 != imagePath.indexOf("-merge-") || null == logoPath) {
+            return "ERROR";
+        }
+        String watermarkPath = imagePath.substring(0,imagePath.lastIndexOf('/')+1);
+        // 添加随机4位的数字目的是为了避免切换其他logo合成水印后，页面图片依然显示第一次logo水印合成图片（缓存的原因）
+        String watermarkImagePath = imagePath.substring(0,imagePath.lastIndexOf("."))+"-merge-"+ new Random().nextInt(9999) +".jpg";
+        FileOutputStream fos = null;
+        BufferedOutputStream bos = null;
+        try {
+            File imgDir = new File(watermarkPath);
+            if(!imgDir.exists()){
+                imgDir.mkdirs();
+            }
+            File fileImg = new File(watermarkImagePath);
+            if(!fileImg.exists()){
+                fileImg.createNewFile();
+            }
+            fos = new FileOutputStream(fileImg);
+            bos = new BufferedOutputStream(fos);
+            bos.write(imageWatermarkProcess(imagePath, logoPath, 1.0F,x,y));
+        } catch (Exception e) {
+            e.printStackTrace();
+            return "ERROR";
+        } finally {
+            try {
+                if(null != bos){
+                    bos.close();
+                }
+                if(null != fos){
+                    fos.close();
+                }
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        }
+        return watermarkImagePath;
     }
 
     public static String mergeWaterMark(String imagePath,String logoPath) {

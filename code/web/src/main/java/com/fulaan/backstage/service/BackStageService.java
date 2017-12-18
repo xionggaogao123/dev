@@ -380,12 +380,12 @@ public class BackStageService {
         }
         return map;
     }
-    public void addTeacherList(ObjectId userId,ObjectId id,int type){
+    public void addTeacherList2(ObjectId userId,ObjectId id,int type){
         TeacherApproveEntry entry = teacherApproveDao.getEntry(id);
         //2验证通过，3 不通过
         if(entry != null){
             if(type==2){
-                teacherApproveDao.updateEntry(id,type);
+                teacherApproveDao.updateEntry(id, type);
                 this.addLogMessage(entry.getID().toString(),"通过老师验证",LogMessageType.teaValidate.getDes(),userId.toString());
             }else if (type==3){
                 teacherApproveDao.updateEntry(id,type);
@@ -413,17 +413,24 @@ public class BackStageService {
             }
         }
     }
-    public void addTeacherList2(HttpServletRequest request,ObjectId userId,ObjectId id,int type){
+    public void addTeacherList(ObjectId userId,ObjectId id,int type){
         TeacherApproveEntry entry = teacherApproveDao.getEntry(id);
-        UserEntry entry1 =  userDao.findByUserId(userId);
+        UserEntry entry1 =  userDao.findByUserId(id);
         //2验证通过，3 不通过
         if(entry != null){
             if(type==2){
                 try{
-                    String oldUrl = AvatarUtils.getAvatar(entry1.getAvatar(),entry1.getRole(),entry1.getSex());
-                    String newUrl = this.testGenerateImage(request,oldUrl);
-                    userDao.updateAvater(userId,newUrl);
-                    teacherApproveDao.updateEntry4(id,type,oldUrl,newUrl);
+                    String oldUrl = "";
+                    String newUrl = "";
+                    if(entry.getOldAvatar() !=null && entry.getOldAvatar()!=""){
+                        oldUrl = entry.getOldAvatar();
+                        newUrl = entry.getNewAvatar();
+                    }else{
+                        oldUrl = AvatarUtils.getAvatar(entry1.getAvatar(),entry1.getRole(),entry1.getSex());
+                        newUrl = oldUrl+"-headv1";
+                    }
+                    userDao.updateAvater(id,newUrl);
+                    teacherApproveDao.updateEntry4(id, type, oldUrl, newUrl);
                 }catch (Exception e){
 
                 }
@@ -432,8 +439,8 @@ public class BackStageService {
                 try{
                     String oldUrl = entry.getOldAvatar();
                     String newUrl = entry.getNewAvatar();
-                    userDao.updateAvater(userId,oldUrl);
-                    teacherApproveDao.updateEntry4(id,type,oldUrl,newUrl);
+                    userDao.updateAvater(id,oldUrl);
+                    teacherApproveDao.updateEntry4(id, type, oldUrl, newUrl);
                 }catch (Exception e){
 
                 }
@@ -449,11 +456,11 @@ public class BackStageService {
                     dto.setApproveId(userId.toString());
                     dto.setType(type);
                     String oldUrl = AvatarUtils.getAvatar(entry1.getAvatar(),entry1.getRole(),entry1.getSex());
-                    String newUrl = this.testGenerateImage(request, oldUrl);
+                    String newUrl = oldUrl+"-headv1";
                     dto.setOldAvatar(oldUrl);
                     dto.setNewAvatar(newUrl);
                     //加大v
-                    userDao.updateAvater(userId,newUrl);
+                    userDao.updateAvater(id,newUrl);
                     String oid = teacherApproveDao.addEntry(dto.buildAddEntry());
                     this.addLogMessage(oid.toString(),"通过老师验证",LogMessageType.teaValidate.getDes(),userId.toString());
                 }catch (Exception e){
@@ -468,7 +475,7 @@ public class BackStageService {
                     dto.setApproveId(userId.toString());
                     dto.setType(type);
                     String oldUrl = AvatarUtils.getAvatar(entry1.getAvatar(),entry1.getRole(),entry1.getSex());
-                    String newUrl = this.testGenerateImage(request, oldUrl);
+                    String newUrl = oldUrl+"-headv1";
                     dto.setOldAvatar(oldUrl);
                     dto.setNewAvatar(newUrl);
                     //不管

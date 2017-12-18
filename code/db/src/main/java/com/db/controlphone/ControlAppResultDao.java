@@ -2,6 +2,7 @@ package com.db.controlphone;
 
 import com.db.base.BaseDao;
 import com.db.factory.MongoFacroty;
+import com.mongodb.BasicDBList;
 import com.mongodb.BasicDBObject;
 import com.mongodb.DBObject;
 import com.pojo.controlphone.ControlAppResultEntry;
@@ -29,12 +30,15 @@ public class ControlAppResultDao extends BaseDao {
         return entry.getID().toString() ;
     }
     //用户的所有课程列表
-    public List<ObjectId> getIsNewObjectId(ObjectId userId,long dateTime) {
+    public List<ObjectId> getIsNewObjectId(ObjectId userId,long startTime,long endTime) {
         BasicDBObject query =new BasicDBObject();
         query.append("isr", Constant.ZERO);
         query.append("isn", Constant.ZERO);
-        query.append("dtm", dateTime);
-        query.append("uid",userId);
+        BasicDBList dblist =new BasicDBList();
+        dblist.add(new BasicDBObject("dtm", new BasicDBObject(Constant.MONGO_GTE, startTime)));
+        dblist.add(new BasicDBObject("dtm", new BasicDBObject(Constant.MONGO_LT, endTime)));
+        query.append(Constant.MONGO_AND,dblist);
+        query.append("uid", userId);
         List<DBObject> dboList=find(MongoFacroty.getAppDB(), Constant.COLLECTION_CONTROL_APP_RESULT, query, Constant.FIELDS);
         List<ObjectId> retList =new ArrayList<ObjectId>();
         if(null!=dboList && !dboList.isEmpty())
@@ -47,11 +51,14 @@ public class ControlAppResultDao extends BaseDao {
         return retList;
     }
 
-    public List<ControlAppResultEntry> getIsNewEntryList(ObjectId userId,long dateTime) {
+    public List<ControlAppResultEntry> getIsNewEntryList(ObjectId userId,long startTime,long endTime) {
         BasicDBObject query =new BasicDBObject();
         query.append("isr", Constant.ZERO);
         query.append("isn", Constant.ZERO);
-        query.append("dtm", dateTime);
+        BasicDBList dblist =new BasicDBList();
+        dblist.add(new BasicDBObject("dtm", new BasicDBObject(Constant.MONGO_GTE, startTime)));
+        dblist.add(new BasicDBObject("dtm", new BasicDBObject(Constant.MONGO_LT, endTime)));
+        query.append(Constant.MONGO_AND,dblist);
         query.append("uid",userId);
         List<DBObject> dboList=find(MongoFacroty.getAppDB(), Constant.COLLECTION_CONTROL_APP_RESULT, query, Constant.FIELDS,new BasicDBObject("utm",Constant.DESC));
         List<ControlAppResultEntry> retList =new ArrayList<ControlAppResultEntry>();
@@ -84,11 +91,14 @@ public class ControlAppResultDao extends BaseDao {
         return retList;
     }
 
-    public long getUserAllTime(ObjectId userId,long dateTime) {
+    public long getUserAllTime(ObjectId userId,long startTime,long endTime) {
         BasicDBObject query =new BasicDBObject();
         query.append("isr", Constant.ZERO);
         query.append("isn", Constant.ZERO);
-        query.append("dtm", dateTime);
+        BasicDBList dblist =new BasicDBList();
+        dblist.add(new BasicDBObject("dtm", new BasicDBObject(Constant.MONGO_GTE, startTime)));
+        dblist.add(new BasicDBObject("dtm", new BasicDBObject(Constant.MONGO_LT, endTime)));
+        query.append(Constant.MONGO_AND,dblist);
         query.append("uid",userId);
         List<DBObject> dboList=find(MongoFacroty.getAppDB(), Constant.COLLECTION_CONTROL_APP_RESULT, query, Constant.FIELDS);
         long retList = 0l;

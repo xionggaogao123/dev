@@ -12,6 +12,8 @@ import java.util.Date;
  * 教师认证
  * id
  * name             姓名                                    nam
+ * oldAvatar        用户原头像                              ota
+ * newAvatar        用户新头像                              nta
  * userId                                                   uid
  * applyTime        申请时间                                atm
  * type             1 申请   2 通过   3拒绝                 typ
@@ -33,6 +35,8 @@ public class TeacherApproveEntry extends BaseDBObject {
     public TeacherApproveEntry(
             ObjectId userId,
             String name,
+            String oldAvatar,
+            String newAvatar,
             ObjectId approveId,
             long loadTime,
             int type
@@ -40,6 +44,8 @@ public class TeacherApproveEntry extends BaseDBObject {
         BasicDBObject dbObject=new BasicDBObject()
                 .append("uid", userId)
                 .append("nam", name)
+                .append("ota",oldAvatar)
+                .append("nta",newAvatar)
                 .append("typ", type)
                 .append("aid", approveId)
                 .append("atm", new Date().getTime())
@@ -53,6 +59,8 @@ public class TeacherApproveEntry extends BaseDBObject {
             ObjectId id,
             ObjectId userId,
             String name,
+            String oldAvatar,
+            String newAvatar,
             ObjectId approveId,
             long loadTime,
             int type
@@ -61,6 +69,8 @@ public class TeacherApproveEntry extends BaseDBObject {
                 .append(Constant.ID,id)
                 .append("uid", userId)
                 .append("nam", name)
+                .append("ota", oldAvatar)
+                .append("nta",newAvatar)
                 .append("typ", type)
                 .append("aid", approveId)
                 .append("atm", new Date().getTime())
@@ -91,6 +101,21 @@ public class TeacherApproveEntry extends BaseDBObject {
         setSimpleValue("nam",name);
     }
 
+    public String getOldAvatar(){
+        return getSimpleStringValue("ota");
+    }
+
+    public void setOldAvatar(String oldAvatar){
+        setSimpleValue("ota",oldAvatar);
+    }
+
+    public String getNewAvatar(){
+        return getSimpleStringValue("nta");
+    }
+
+    public void setNewAvatar(String newAvatar){
+        setSimpleValue("nta",newAvatar);
+    }
 
     public int getType(){
         return getSimpleIntegerValue("typ");

@@ -416,7 +416,7 @@ public class NewVersionBindService {
         long current = System.currentTimeMillis();
         //向学生端推送消息
         try {
-            MQTTSendMsg.sendMessage(MQTTType.phone.getEname(), studentId.toString(), current);
+            MQTTSendMsg.sendMessage(MQTTType.login.getEname(), studentId.toString(), current);
         }catch (Exception e){
 
         }

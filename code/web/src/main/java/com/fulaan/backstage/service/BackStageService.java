@@ -24,6 +24,8 @@ import com.fulaan.controlphone.dto.ControlSetBackDTO;
 import com.fulaan.indexpage.dto.IndexPageDTO;
 import com.fulaan.picturetext.runnable.PictureRunNable;
 import com.fulaan.user.service.UserService;
+import com.fulaan.util.DownloadUtil;
+import com.fulaan.util.imageInit;
 import com.pojo.activity.FriendEntry;
 import com.pojo.appmarket.AppDetailEntry;
 import com.pojo.appnotice.AppNoticeEntry;
@@ -43,10 +45,14 @@ import com.pojo.user.UserDetailInfoDTO;
 import com.pojo.user.UserEntry;
 import com.sys.constants.Constant;
 import com.sys.utils.AvatarUtils;
+import com.sys.utils.QiniuFileUtils;
 import org.bson.types.ObjectId;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import javax.servlet.http.HttpServletRequest;
+import java.io.File;
+import java.io.FileInputStream;
 import java.util.*;
 
 /**
@@ -286,7 +292,12 @@ public class BackStageService {
         this.addLogMessage(id.toString(),"添加特殊管控默认上课时间："+ startTime+"-"+endTime,LogMessageType.schoolTime.getDes(),userId.toString());
     }
     //教师认证1未验证，2 验证通过 3 验证不通过
-    public Map<String,Object> selectTeacherList(ObjectId userId,int type,String searchId,int page,int pageSize){
+    public Map<String,Object> selectTeacherList(ObjectId userId,int type,String groupId,int page,int pageSize){
+        String searchId = "";
+        if(groupId != null && !groupId.equals("")){
+            UserEntry userEntry = userDao.getJiaUserEntry(groupId);
+            searchId = userEntry.getID().toString();
+        }
         Map<String,Object> map = new HashMap<String, Object>();
         List<TeacherApproveEntry> entries = new ArrayList<TeacherApproveEntry>();
         List<ObjectId> oids = teacherApproveDao.selectContentObjectList();
@@ -297,7 +308,7 @@ public class BackStageService {
         int level = 1;
         if(type==0 || type==1){
             for(MemberEntry memberEntry : entries2){
-                TeacherApproveEntry teaentry= new TeacherApproveEntry(memberEntry.getUserId(),memberEntry.getUserName(),memberEntry.getGroupId(),0l,1);
+                TeacherApproveEntry teaentry= new TeacherApproveEntry(memberEntry.getUserId(),memberEntry.getUserName(),memberEntry.getAvator(),"",memberEntry.getGroupId(),0l,1);
                 entries.add(teaentry);
             }
             count = memberDao.getMembersFromTeacherCount(oids);
@@ -328,6 +339,7 @@ public class BackStageService {
                 UserEntry userEntry=userEntryMap.get(entry.getUserId());
                 if(null!=userEntry){
                     dto.setAvatar(AvatarUtils.getAvatar(userEntry.getAvatar(),userEntry.getRole(),userEntry.getSex()));
+                    dto.setUid(userEntry.getGenerateUserCode());
                 }
                 if(entries4.get(entry.getApproveId())!=null){
                     dto.setCommunityName(entries4.get(entry.getApproveId()));
@@ -401,6 +413,106 @@ public class BackStageService {
             }
         }
     }
+    public void addTeacherList2(HttpServletRequest request,ObjectId userId,ObjectId id,int type){
+        TeacherApproveEntry entry = teacherApproveDao.getEntry(id);
+        UserEntry entry1 =  userDao.findByUserId(userId);
+        //2验证通过，3 不通过
+        if(entry != null){
+            if(type==2){
+                try{
+                    String oldUrl = AvatarUtils.getAvatar(entry1.getAvatar(),entry1.getRole(),entry1.getSex());
+                    String newUrl = this.testGenerateImage(request,oldUrl);
+                    userDao.updateAvater(userId,newUrl);
+                    teacherApproveDao.updateEntry4(id,type,oldUrl,newUrl);
+                }catch (Exception e){
+
+                }
+                this.addLogMessage(entry.getID().toString(), "通过老师验证", LogMessageType.teaValidate.getDes(), userId.toString());
+            }else if (type==3){
+                try{
+                    String oldUrl = entry.getOldAvatar();
+                    String newUrl = entry.getNewAvatar();
+                    userDao.updateAvater(userId,oldUrl);
+                    teacherApproveDao.updateEntry4(id,type,oldUrl,newUrl);
+                }catch (Exception e){
+
+                }
+                this.addLogMessage(entry.getID().toString(),"不通过老师验证",LogMessageType.teaValidate.getDes(),userId.toString());
+            }
+        }else{
+            if(type==2){
+                try {
+                    TeacherApproveDTO dto = new TeacherApproveDTO();
+                    UserEntry userEntry = userService.findById(id);
+                    dto.setName(userEntry.getUserName());
+                    dto.setUserId(id.toString());
+                    dto.setApproveId(userId.toString());
+                    dto.setType(type);
+                    String oldUrl = AvatarUtils.getAvatar(entry1.getAvatar(),entry1.getRole(),entry1.getSex());
+                    String newUrl = this.testGenerateImage(request, oldUrl);
+                    dto.setOldAvatar(oldUrl);
+                    dto.setNewAvatar(newUrl);
+                    //加大v
+                    userDao.updateAvater(userId,newUrl);
+                    String oid = teacherApproveDao.addEntry(dto.buildAddEntry());
+                    this.addLogMessage(oid.toString(),"通过老师验证",LogMessageType.teaValidate.getDes(),userId.toString());
+                }catch (Exception e){
+
+                }
+            }else if (type==3){
+                try{
+                    TeacherApproveDTO dto = new TeacherApproveDTO();
+                    UserEntry userEntry = userService.findById(id);
+                    dto.setName(userEntry.getUserName());
+                    dto.setUserId(id.toString());
+                    dto.setApproveId(userId.toString());
+                    dto.setType(type);
+                    String oldUrl = AvatarUtils.getAvatar(entry1.getAvatar(),entry1.getRole(),entry1.getSex());
+                    String newUrl = this.testGenerateImage(request, oldUrl);
+                    dto.setOldAvatar(oldUrl);
+                    dto.setNewAvatar(newUrl);
+                    //不管
+                    String oid = teacherApproveDao.addEntry(dto.buildAddEntry());
+                    this.addLogMessage(oid.toString(),"不通过老师验证",LogMessageType.teaValidate.getDes(),userId.toString());
+                }catch (Exception e){
+
+                }
+
+            }
+        }
+    }
+    //通过验证
+    public void addUserVIP(ObjectId uid){
+
+    }
+
+    //取消验证
+    public void delUserVIP(ObjectId uid){
+
+    }
+
+    public String testGenerateImage(HttpServletRequest request,String url)throws Exception{
+        String fileName = new ObjectId() + ".jpg";
+        String parentPath = request.getServletContext().getRealPath("/static") + "/images/upload";
+//           String path= Resources.getProperty("upload.file");
+        DownloadUtil.downLoadFromUrl(url, fileName, parentPath);
+        String filePath = parentPath + "/" + fileName;
+        String logoImg = request.getServletContext().getRealPath("/static") + "/images/upload/ic_v3.png";
+        String waterImage = imageInit.mergeWaterMark(filePath, logoImg,2,2);
+        File file1 = new File(filePath);
+        File file = new File(waterImage);
+        try {
+            String extensionName = waterImage.substring(waterImage.indexOf(".") + 1, waterImage.length());
+            String fileKey = new ObjectId().toString() + Constant.POINT + extensionName;
+            QiniuFileUtils.uploadFile(fileKey, new FileInputStream(file), QiniuFileUtils.TYPE_IMAGE);
+            String qiuNiuPath = QiniuFileUtils.getPath(QiniuFileUtils.TYPE_IMAGE, fileKey);
+            return qiuNiuPath;
+        }finally {
+            file.delete();
+            file1.delete();
+        }
+    }
+
     //获得操作日志
     public List<LogMessageDTO> getLogMessage(int page,int pageSize){
         List<LogMessageDTO> dtos = new ArrayList<LogMessageDTO>();

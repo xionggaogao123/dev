@@ -88,7 +88,7 @@ public class AvatarUtils {
             }else if(role ==2 && sex== 0){
                 return "http://7xiclj.com1.z0.glb.clouddn.com/head-0.9670962144527113.jpg";
             }else{
-                return "http://7xiclj.com1.z0.glb.clouddn.com/head-0.3171187819843335.jpg";
+                return "http://7xiclj.com1.z0.glb.clouddn.com/5a3722270a9d3251e386c4a0.png";
             }
         }
 

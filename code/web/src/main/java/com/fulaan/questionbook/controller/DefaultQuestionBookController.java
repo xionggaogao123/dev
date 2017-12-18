@@ -344,4 +344,25 @@ public class DefaultQuestionBookController extends BaseController {
         return JSON.toJSONString(respObj);
     }
 
+
+    /**
+     * 删除自定义标签
+     */
+    @ApiOperation(value = "删除自定义标签", httpMethod = "POST", produces = "application/json")
+    @ApiResponses( value = {@ApiResponse(code = 200, message = "Successful — 请求已完成",response = String.class)})
+    @RequestMapping("/delQuestionTags")
+    @ResponseBody
+    public String delQuestionTags(@ApiParam(name="id",required = true,value="自定义标签") @RequestParam(value = "id",required = true) String id){
+        RespObj respObj=new RespObj(Constant.FAILD_CODE);
+        try{
+            respObj.setCode(Constant.SUCCESS_CODE);
+            questionBookService.delQuestionTags(getUserId(), new ObjectId(id));
+            respObj.setMessage("删除自定义标签成功");
+        }catch (Exception e){
+            e.printStackTrace();
+            respObj.setCode(Constant.FAILD_CODE);
+            respObj.setErrorMessage("删除自定义标签失败!");
+        }
+        return JSON.toJSONString(respObj);
+    }
 }

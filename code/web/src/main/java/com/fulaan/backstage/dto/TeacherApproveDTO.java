@@ -14,6 +14,8 @@ public class TeacherApproveDTO {
     private String id;
     private String userId;
     private String name;
+    private String oldAvatar;
+    private String newAvatar;
     private String approveId;
     private String loadTime;
     private String applyTime;
@@ -22,6 +24,7 @@ public class TeacherApproveDTO {
     private String url;
     private String communityName;
     private List<String> communityList = new ArrayList<String>();
+    private String uid;
 
     public TeacherApproveDTO(){
 
@@ -31,6 +34,8 @@ public class TeacherApproveDTO {
             this.id = e.getID()==null?"":e.getID().toString();
             this.userId = e.getUserId() == null ? "" : e.getUserId().toString();
             this.name = e.getName();
+            this.oldAvatar = e.getOldAvatar();
+            this.newAvatar = e.getNewAvatar();
             this.approveId = e.getApproveId() == null ? "" : e.getApproveId().toString();
             if(e.getApplyTime()!=0l){
                 this.applyTime = DateTimeUtils.getLongToStrTimeTwo(e.getApplyTime());
@@ -67,6 +72,8 @@ public class TeacherApproveDTO {
                 new TeacherApproveEntry(
                         uId,
                         this.name,
+                        this.oldAvatar,
+                        this.newAvatar,
                         aId,
                         lTm,
                         this.type
@@ -96,12 +103,38 @@ public class TeacherApproveDTO {
                         Id,
                         uId,
                         this.name,
+                        this.oldAvatar,
+                        this.newAvatar,
                         aId,
                         lTm,
                         this.type
                 );
         return openEntry;
 
+    }
+
+    public String getUid() {
+        return uid;
+    }
+
+    public void setUid(String uid) {
+        this.uid = uid;
+    }
+
+    public String getOldAvatar() {
+        return oldAvatar;
+    }
+
+    public void setOldAvatar(String oldAvatar) {
+        this.oldAvatar = oldAvatar;
+    }
+
+    public String getNewAvatar() {
+        return newAvatar;
+    }
+
+    public void setNewAvatar(String newAvatar) {
+        this.newAvatar = newAvatar;
     }
 
     public String getCommunityName() {

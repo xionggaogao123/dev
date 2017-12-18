@@ -26,7 +26,6 @@ public class ControlMapDao extends BaseDao {
         BasicDBObject query = new BasicDBObject()
                 .append("pid",parentId)
                 .append("uid", sonId)
-                .append("dtm",new BasicDBObject(Constant.MONGO_GT,zero))
                 .append("isr", 0); // 未删除
         List<DBObject> dbList =
                 find(MongoFacroty.getAppDB(),

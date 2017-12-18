@@ -31,11 +31,19 @@ public class TeacherApproveDao extends BaseDao {
         return null;
     }
     //删除作业
+    public void updateEntry4(ObjectId id,int type,String oldAvatar,String newAvatar){
+        BasicDBObject query = new BasicDBObject("uid",id);
+        BasicDBObject updateValue=new BasicDBObject(Constant.MONGO_SET,new BasicDBObject("typ",type).append("ota",oldAvatar).append("nta",newAvatar));
+        update(MongoFacroty.getAppDB(), Constant.COLLECTION_TEACHER_APPROVE, query,updateValue);
+    }
+
+    //删除作业
     public void updateEntry(ObjectId id,int type){
         BasicDBObject query = new BasicDBObject("uid",id);
         BasicDBObject updateValue=new BasicDBObject(Constant.MONGO_SET,new BasicDBObject("typ",type));
         update(MongoFacroty.getAppDB(), Constant.COLLECTION_TEACHER_APPROVE, query,updateValue);
     }
+
     public List<TeacherApproveEntry> selectContentList(String seacherId,int type,int page,int pageSize) {
         BasicDBObject query =new BasicDBObject();
         query.append("isr", Constant.ZERO);

@@ -56,4 +56,11 @@ public class QuestionTagsDao extends BaseDao {
         }
         return entryList;
     }
+
+    //删除
+    public void delEntry(ObjectId id){
+        BasicDBObject query = new BasicDBObject(Constant.ID,id);
+        BasicDBObject updateValue=new BasicDBObject(Constant.MONGO_SET,new BasicDBObject("isr",Constant.ONE));
+        update(MongoFacroty.getAppDB(), Constant.COLLECTION_QUESTION_TAGS, query,updateValue);
+    }
 }

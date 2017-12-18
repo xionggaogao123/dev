@@ -7,10 +7,7 @@ import com.db.questionbook.QuestionWebTestDao;
 import com.fulaan.picturetext.runnable.PictureRunNable;
 import com.fulaan.questionbook.dto.*;
 import com.pojo.backstage.PictureType;
-import com.pojo.questionbook.QuestionAdditionEntry;
-import com.pojo.questionbook.QuestionBookEntry;
-import com.pojo.questionbook.QuestionWebSizeEntry;
-import com.pojo.questionbook.QuestionWebTestEntry;
+import com.pojo.questionbook.*;
 import com.sys.constants.Constant;
 import com.sys.props.Resources;
 import org.apache.poi.util.IOUtils;
@@ -320,6 +317,13 @@ public class QuestionBookService {
         dto.setUserId(userId.toString());
         dto.setName(name);
         questionTagsDao.addEntry(dto.buildAddEntry());
+    }
+
+    public void delQuestionTags(ObjectId userId,ObjectId id){
+        QuestionTagsEntry entry = questionTagsDao.getEntryById(id);
+        if(entry!= null  && entry.getUserId().equals(userId)){
+            questionTagsDao.delEntry(id);
+        }
     }
     public static void main(String[] args){
         QuestionWebTestDao questionTagsDao = new QuestionWebTestDao();

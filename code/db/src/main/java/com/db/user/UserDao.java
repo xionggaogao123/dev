@@ -137,6 +137,13 @@ public class UserDao extends BaseDao {
         return dbo == null ? null : new UserEntry(dbo);
     }
 
+    public UserEntry getJiaUserEntry(String jiaUserId) {
+        BasicDBObject query = new BasicDBObject("gugc", jiaUserId);
+        DBObject dbo = findOne(MongoFacroty.getAppDB(), Constant.COLLECTION_USER_NAME, query);
+        return dbo == null ? null : new UserEntry(dbo);
+    }
+
+
 
     public UserEntry getGenerateCodeEntry(String generateCode){
         BasicDBObject query = new BasicDBObject("gugc", generateCode);

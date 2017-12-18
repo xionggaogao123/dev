@@ -420,12 +420,23 @@ public class ControlPhoneService {
         List<ControlAppResultDTO> dtos = dto.getAppList();
         NewVersionBindRelationEntry newEntry = newVersionBindRelationDao.getBindEntry(userId);
         long current = System.currentTimeMillis();
-        //获得时间批次
+        //获得时间批次(时间批次)
         long zero = current / (1000 * 3600 * 24) * (1000 * 3600 * 24) - TimeZone.getDefault().getRawOffset();//今天零点零分零秒的毫秒数
+        //分割点
+        long jiedian = current / (1000 * 3600 * 24) * (1000 * 3600 * 24) - TimeZone.getDefault().getRawOffset()+8*60*60*1000;//今天零点零分零秒的毫秒数
+        long startTime = 0l;
+        long endTime = 0l;
+        if(current>=jiedian){
+            startTime = jiedian;
+            endTime = jiedian+ 24*60*60*1000;
+        }else{
+            startTime = jiedian - 24*60*60*1000;
+            endTime = jiedian;
+        }
         //变更最新数据
-        List<ObjectId> oids = controlAppResultDao.getIsNewObjectId(userId,zero);
+        List<ObjectId> oids = controlAppResultDao.getIsNewObjectId(userId,startTime,endTime);
         if(dtos != null && dtos.size()>0){
-            this.addRedDotEntryBatch(dtos,userId,newEntry.getMainUserId(),zero,dto.getAddiction());
+            this.addRedDotEntryBatch(dtos,userId,newEntry.getMainUserId(),current,dto.getAddiction());
         }
         if(oids.size()>0){
             controlAppResultDao.updEntry(oids);
@@ -456,7 +467,9 @@ public class ControlPhoneService {
             timeStr = timeStr + minutes2+"分钟";
         }
         map.put("time",timeStr);
-        List<ControlAppResultEntry> entries = controlAppResultDao.getIsNewEntryList(sonId,time);
+        long startTime = time + +8*60*60*1000;
+        long endTime = time + +8*60*60*1000 + 24*60*60*1000;
+        List<ControlAppResultEntry> entries = controlAppResultDao.getIsNewEntryList(sonId,startTime,endTime);
         List<ControlAppResultDTO> dtos = new ArrayList<ControlAppResultDTO>();
         if(entries.size()>0){
             int i = 0;
@@ -555,6 +568,17 @@ public class ControlPhoneService {
         long current = System.currentTimeMillis();
         //获得时间批次
         long zero = current / (1000 * 3600 * 24) * (1000 * 3600 * 24) - TimeZone.getDefault().getRawOffset();//今天零点零分零秒的毫秒数
+        //分割点
+        long jiedian = current / (1000 * 3600 * 24) * (1000 * 3600 * 24) - TimeZone.getDefault().getRawOffset()+8*60*60*1000;//今天零点零分零秒的毫秒数
+        long startTime = 0l;
+        long endTime = 0l;
+        if(current>=jiedian){
+            startTime = jiedian;
+            endTime = jiedian+ 24*60*60*1000;
+        }else{
+            startTime = jiedian - 24*60*60*1000;
+            endTime = jiedian;
+        }
         ControlMapEntry entry = controlMapDao.getEntryByParentId(parentId, sonId, zero);
         if (entry != null) {
             map.put("dto",new ControlMapDTO(entry));
@@ -598,7 +622,7 @@ public class ControlPhoneService {
         }
         map.put("time",timecu/60000);
         //使用时间
-        long useTime  = controlAppResultDao.getUserAllTime(sonId, zero);
+        long useTime  = controlAppResultDao.getUserAllTime(sonId, startTime,endTime);
         map.put("useTime",useTime/60000);
         //剩余时间
         if(timecu/60000-useTime/60000 <0){

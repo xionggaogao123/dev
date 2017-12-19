@@ -186,11 +186,14 @@ public class AppNoticeService {
         if(null!=appNoticeEntry) {
             if(null!=appNoticeEntry.getUserId()&&null!=userId
                     &&appNoticeEntry.getUserId().toString().equals(userId.toString())){
-                appNoticeDao.removeAppNoticeEntry(noticeId);
-                //删除首页记录
-                indexPageDao.delEntry(noticeId);
-                //删除首页
-                webHomePageDao.removeContactId(noticeId);
+                long current=System.currentTimeMillis();
+                if(appNoticeEntry.getSubmitTime() >current-24*60*60*1000) {
+                    appNoticeDao.removeAppNoticeEntry(noticeId);
+                    //删除首页记录
+                    indexPageDao.delEntry(noticeId);
+                    //删除首页
+                    webHomePageDao.removeContactId(noticeId);
+                }
             }else {
                 throw new Exception("你没有权限删除该通知!");
             }

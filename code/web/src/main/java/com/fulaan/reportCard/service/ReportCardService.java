@@ -170,10 +170,13 @@ public class ReportCardService {
         if (null != entry) {
             if (null != entry.getUserId() && null != userId &&
                     entry.getUserId().toString().equals(userId.toString())) {
-                groupExamDetailDao.removeGroupExamDetailEntry(id);
-                groupExamUserRecordDao.updateGroupExamDetailStatus(id, Constant.ONE);
-                webHomePageDao.removeContactList(id);
-                webHomePageDao.removeReportCard(id);
+                long current=System.currentTimeMillis();
+                if(entry.getSubmitTime() >current-24*60*60*1000) {
+                    groupExamDetailDao.removeGroupExamDetailEntry(id);
+                    groupExamUserRecordDao.updateGroupExamDetailStatus(id, Constant.ONE);
+                    webHomePageDao.removeContactList(id);
+                    webHomePageDao.removeReportCard(id);
+                }
             } else {
                 throw new Exception("你没有权限删除成绩单！");
             }

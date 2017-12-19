@@ -45,4 +45,14 @@ public class LoginTokenDao extends BaseDao{
             return null;
         }
     }
+    public LoginTokenEntry getEntry(ObjectId tokenId,ObjectId userId){
+        BasicDBObject query=new BasicDBObject()
+                .append("ti",tokenId).append("uid",userId);
+        DBObject dbObject=findOne(MongoFacroty.getAppDB(), Constant.COLLECTION_TOKEN_USER_LOGIN,query,Constant.FIELDS);
+        if(null!=dbObject){
+            return new LoginTokenEntry(dbObject);
+        }else{
+            return null;
+        }
+    }
 }

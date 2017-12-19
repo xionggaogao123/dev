@@ -139,7 +139,13 @@ public class WrongQuestionService {
         }else{
 
         }
-        CreateGradeEntry en3 = createGradeDao.getEntryByType(entry.getGradeType());
+        int type = 1;
+        if(entry.getGradeType()==0){
+            type =1;
+        }else{
+            type =entry.getGradeType();
+        }
+        CreateGradeEntry en3 = createGradeDao.getEntryByType(type);
         CreateGradeDTO dto3 = new CreateGradeDTO(en3);
         //clist.add(en3);
         //加载学科
@@ -148,7 +154,7 @@ public class WrongQuestionService {
             dto3.getSubjectClassDTOs().add(new SubjectClassDTO(entry1));
         }
         mlist.add(dto3);
-        CreateGradeEntry en4 = createGradeDao.getEntryByType(entry.getGradeType()+1);
+        CreateGradeEntry en4 = createGradeDao.getEntryByType(type+1);
         CreateGradeDTO dto4 = new CreateGradeDTO(en4);
         List<SubjectClassEntry> entries2 = subjectClassDao.getListByList(en3.getSubjectList());
         for(SubjectClassEntry entry2 : entries2){

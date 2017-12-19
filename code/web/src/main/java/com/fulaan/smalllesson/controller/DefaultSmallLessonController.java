@@ -1,11 +1,16 @@
 package com.fulaan.smalllesson.controller;
 
 import com.alibaba.fastjson.JSON;
+import com.db.loginwebsocket.LoginTokenDao;
 import com.fulaan.annotation.SessionNeedless;
 import com.fulaan.base.BaseController;
+import com.fulaan.mqtt.MQTTSendMsg;
 import com.fulaan.smalllesson.dto.LessonAnswerDTO;
 import com.fulaan.smalllesson.dto.SmallLessonDTO;
 import com.fulaan.smalllesson.service.SmallLessonService;
+import com.fulaan.user.service.UserService;
+import com.fulaan.util.QRUtils;
+import com.pojo.loginwebsocket.LoginTokenEntry;
 import com.sys.constants.Constant;
 import com.sys.utils.RespObj;
 import io.swagger.annotations.*;
@@ -14,6 +19,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -27,6 +33,10 @@ public class DefaultSmallLessonController extends BaseController {
     @Autowired
     private SmallLessonService smallLessonService;
 
+
+    private LoginTokenDao loginTokenDao = new LoginTokenDao();
+    @Autowired
+    private UserService userService;
     /**
      * 扫描二维码进入课程
      */
@@ -503,4 +513,64 @@ public class DefaultSmallLessonController extends BaseController {
         }
         return JSON.toJSONString(respObj);
     }
+
+    /**
+     * 获取二维码接口
+     *
+     */
+    @SessionNeedless
+    @ApiOperation(value = "修改性别", httpMethod = "POST", produces = "application/json")
+    @ApiResponses( value = {@ApiResponse(code = 200, message = "Successful — 请求已完成",response = String.class)})
+    @RequestMapping("/getLessonCode")
+    @ResponseBody
+    public String getLessonCode(){
+        Map<String,Object> map = new HashMap<String, Object>();
+        RespObj respObj=new RespObj(Constant.FAILD_CODE);
+        try {
+            respObj.setCode(Constant.SUCCESS_CODE);
+            ObjectId oid = new ObjectId();
+            String str = QRUtils.getLessonCode(oid);
+            LoginTokenEntry tokenEntry = new LoginTokenEntry(oid);
+            loginTokenDao.saveEntry(tokenEntry);
+            map.put("tokenId", oid.toString());
+            map.put("qrUrl",str);
+            respObj.setMessage(map);
+        } catch (Exception e) {
+            e.printStackTrace();
+            respObj.setCode(Constant.FAILD_CODE);
+            respObj.setErrorMessage("修改性别失败");
+        }
+        return JSON.toJSONString(respObj);
+    }
+
+    /**
+     * 二维码扫描后访问
+     *
+     */
+    @ApiOperation(value = "二维码扫描后访问", httpMethod = "POST", produces = "application/json")
+    @ApiResponses( value = {@ApiResponse(code = 200, message = "Successful — 请求已完成",response = String.class)})
+    @RequestMapping("/saoLessonCode/{teacherId}")
+    @ResponseBody
+    public String saoLessonCode(@ApiParam(name = "teacherId", required = true, value = "老师id") @PathVariable(value = "teacherId") String teacherId){
+
+        RespObj respObj=new RespObj(Constant.FAILD_CODE);
+        try {
+            LoginTokenEntry loginTokenEntry = loginTokenDao.getEntry(new ObjectId(teacherId));
+            if(null == loginTokenEntry){
+                respObj.setMessage("二维码已过期！");
+            }else{
+                loginTokenEntry.setUserId(getUserId());
+                loginTokenDao.saveEntry(loginTokenEntry);
+                MQTTSendMsg.sendMessage(getUserId().toString(),teacherId,00);
+            }
+            respObj.setCode(Constant.SUCCESS_CODE);
+            respObj.setMessage("二维码扫描后访问成功！");
+        } catch (Exception e) {
+            e.printStackTrace();
+            respObj.setCode(Constant.FAILD_CODE);
+            respObj.setErrorMessage("二维码扫描后访问失败");
+        }
+        return JSON.toJSONString(respObj);
+    }
+
 }

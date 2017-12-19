@@ -17,7 +17,7 @@ public class QRUtils {
      private static final String prev_url="http://appapi.jiaxiaomei.com";
   //   private static final String prev_url="http://192.168.1.218";
    // private static final String prev_url="http://121.40.229.225:8080";
-  // private static final String prev_url="http://192.168.1.35:8087";
+     private static final String prev_url2="http://192.168.1.35:8087";
 
 
     public static String getBindLoginQrUrl(ObjectId tokenId){
@@ -108,6 +108,16 @@ public class QRUtils {
 
     public static String getSmallLessonUserCodeQrUrl(ObjectId lessonId) {
         String qrCode = prev_url+"/jxmapi/smallLesson/addStuEntry/" + lessonId.toString();
+        try {
+            return getQrUrl(qrCode);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return null;
+    }
+
+    public static String getLessonCode(ObjectId lessonId) {
+        String qrCode = prev_url2+"/jxmapi/smallLesson/saoLessonCode/" + lessonId.toString();
         try {
             return getQrUrl(qrCode);
         } catch (Exception e) {

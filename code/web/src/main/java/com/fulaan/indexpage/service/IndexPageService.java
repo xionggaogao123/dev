@@ -241,11 +241,18 @@ public class IndexPageService {
                     ob1.put("userName","家校美小助手");
                     ob1.put("subject","");
                     ob1.put("avatar","http://7xiclj.com1.z0.glb.clouddn.com/5a26565027fddd1db08722f1.png");
-                    ob1.put("title","恭喜您创建了一个新社区");
+                    ob1.put("title","恭喜您创建了一个新社群");
                     ob1.put("time",dto8.getCreateTime());
-                    ob1.put("content","恭喜您于"+dto8.getCreateTime().substring(0,11)+"日成功创建了“"
-                            + dto8.getSourceName()+"”社群，您是该班级社群的“社长”，拥有一切特权。\n 此外您后期最多可以" +
-                            "可以指定设置2位成员为“副社长”，他们也能拥有各项发帖权利。");
+                    if(dto8.getContent()!=null && !dto8.getContent().equals("")){
+                        ob1.put("content","恭喜您于"+dto8.getCreateTime().substring(0,11)+"日成功创建了“"
+                                + dto8.getSourceName()+"”社群，您的社群id:"+dto8.getContent()+"，您是该班级社群的“社长”，拥有一切特权。\n 此外您后期最多可以" +
+                                "可以指定设置2位成员为“副社长”，他们也能拥有各项发帖权利。");
+                    }else{
+                        ob1.put("content","恭喜您于"+dto8.getCreateTime().substring(0,11)+"日成功创建了“"
+                                + dto8.getSourceName()+"”社群，您是该班级社群的“社长”，拥有一切特权。\n 此外您后期最多可以" +
+                                "可以指定设置2位成员为“副社长”，他们也能拥有各项发帖权利。");
+                    }
+
                   /*  List<Attachement> imageList=new ArrayList<Attachement>();
                     Attachement a = new Attachement();
                     a.setUrl("");

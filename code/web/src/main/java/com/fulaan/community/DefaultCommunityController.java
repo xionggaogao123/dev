@@ -640,16 +640,34 @@ public class DefaultCommunityController extends BaseController {
         ObjectId uid = getUserId();
         RespObj respObj =  null;
         try{
-            ObjectId detailId=communityService.saveMessage(uid, message);
-            int type=message.getType();
-            String msg = "";
-            if(type==1||type==5) {
-                if (type == 1) {
-                    msg = "发布了一条通知";
-                } else {
-                    msg = "发布了一条作业";
+            String[] communityIds=message.getCommunityId().split(",");
+            for(String communityId:communityIds) {
+                CommunityMessage messageItem=new CommunityMessage(communityId,
+                        message.getTitle(),
+                        message.getContent(),
+                        message.getType(),
+                        message.getShareUrl(),
+                        message.getShareImage(),
+                        message.getShareTitle(),
+                        message.getSharePrice(),
+                        message.getAttachements(),
+                        message.getVedios(),
+                        message.getImages(),
+                        message.getVoteContent(),
+                        message.getVoteMaxCount(),
+                        message.getVoteDeadTime(),
+                        message.getVoteType());
+                ObjectId detailId = communityService.saveMessage(uid, messageItem);
+                int type = messageItem.getType();
+                String msg = "";
+                if (type == 1 || type == 5) {
+                    if (type == 1) {
+                        msg = "发布了一条通知";
+                    } else {
+                        msg = "发布了一条作业";
+                    }
+                    latestGroupDynamicService.saveLatestInfo(new ObjectId(messageItem.getCommunityId()), detailId, msg, uid, type);
                 }
-                latestGroupDynamicService.saveLatestInfo(new ObjectId(message.getCommunityId()),detailId,msg,uid,type);
             }
 
 //                Map<String, String> sendMessage = new HashMap<String, String>();
@@ -3467,7 +3485,7 @@ public class DefaultCommunityController extends BaseController {
     public RespObj judgeManagePermissionOfUser(){
         RespObj respObj=new RespObj(Constant.FAILD_CODE);
         try{
-           boolean status=memberService.judgeManagePermissionOfUser(getUserId());
+            boolean status=memberService.judgeManagePermissionOfUser(getUserId());
             respObj.setMessage(status);
             respObj.setCode(Constant.SUCCESS_CODE);
         }catch (Exception e){

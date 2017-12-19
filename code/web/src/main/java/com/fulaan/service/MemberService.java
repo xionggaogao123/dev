@@ -373,7 +373,7 @@ public class MemberService {
     }
 
     public boolean judgeManagePermissionOfUser(ObjectId userId){
-        return memberDao.judgeManagePermissionOfUser(userId);
+        return getMyRoleList(userId).size()>0;
     }
 
     public boolean judgeIsStudent(ObjectId userId){

@@ -27,6 +27,43 @@ public class CommunityMessage {
     private String voteDeadTime;
     private int voteType;
 
+
+    public CommunityMessage(String communityId,
+                            String title,
+                            String content,
+                            int type,
+                            String shareUrl,
+                            String shareImage,
+                            String shareTitle,
+                            String sharePrice,
+                            List<Attachement> attachements,
+                            List<Attachement> vedios,
+                            List<Attachement> images,
+                            String voteContent,
+                            int voteMaxCount,
+                            String voteDeadTime,
+                            int voteType){
+        this.communityId=communityId;
+        this.title=title;
+        this.content=content;
+        this.type=type;
+        this.shareUrl=shareUrl;
+        this.shareImage=shareImage;
+        this.shareTitle=shareTitle;
+        this.sharePrice=sharePrice;
+        this.attachements=attachements;
+        this.vedios=vedios;
+        this.images=images;
+        this.voteContent=voteContent;
+        this.voteMaxCount=voteMaxCount;
+        this.voteDeadTime=voteDeadTime;
+        this.voteType=voteType;
+    }
+
+    public CommunityMessage(){
+
+    }
+
     //视频
     private List<VideoDTO> videoDTOs = new ArrayList<VideoDTO>();
 

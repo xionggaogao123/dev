@@ -124,7 +124,7 @@ public class CommunityService {
         dto.setName("");
         dto.setFileUrl("");
         dto.setSourceId(communityId.toString());
-        dto.setContent(entry.getSearchId());
+        dto.setContent(seqId);
         dto.setFileType(1);
         dto.setSourceName(entry.getCommunityName());
         dto.setSourceType(1);

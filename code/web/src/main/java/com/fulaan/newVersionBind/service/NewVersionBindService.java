@@ -402,6 +402,13 @@ public class NewVersionBindService {
                     NewVersionCommunityBindEntry entry = new NewVersionCommunityBindEntry(communityId, mainUserId, new ObjectId(uId));
                     newVersionCommunityBindDao.saveEntry(entry);
                 }
+                long current = System.currentTimeMillis();
+                //向学生端推送消息
+                try {
+                    MQTTSendMsg.sendMessage(MQTTType.phone.getEname(), uId,current);
+                }catch (Exception e){
+
+                }
             }
         }
     }
@@ -476,6 +483,13 @@ public class NewVersionBindService {
         } else {
             NewVersionCommunityBindEntry entry = new NewVersionCommunityBindEntry(communityId, parentId, studentId);
             newVersionCommunityBindDao.saveEntry(entry);
+        }
+        long current = System.currentTimeMillis();
+        //向学生端推送消息
+        try {
+            MQTTSendMsg.sendMessage(MQTTType.phone.getEname(), studentId.toString(),current);
+        }catch (Exception e){
+
         }
     }
 

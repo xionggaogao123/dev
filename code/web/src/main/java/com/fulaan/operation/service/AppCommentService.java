@@ -1775,7 +1775,7 @@ public static void main(String[] args){
      *删除作业
      *
      */
-    public void delAppcommentEntry(ObjectId id,ObjectId userId){
+    public void delAppcommentEntry(ObjectId id,ObjectId userId) throws Exception{
         AppCommentEntry e = appCommentDao.getEntry(id);
         //获得当前时间
         long current=System.currentTimeMillis();
@@ -1785,6 +1785,8 @@ public static void main(String[] args){
                 //删除
                 webHomePageDao.removeContactId(id);
             }
+        }else{
+            throw new Exception("已过有效时间");
         }
     }
     /**

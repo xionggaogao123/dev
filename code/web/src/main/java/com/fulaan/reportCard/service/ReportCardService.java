@@ -176,6 +176,8 @@ public class ReportCardService {
                     groupExamUserRecordDao.updateGroupExamDetailStatus(id, Constant.ONE);
                     webHomePageDao.removeContactList(id);
                     webHomePageDao.removeReportCard(id);
+                }else{
+                    throw new Exception("已过有效时间!");
                 }
             } else {
                 throw new Exception("你没有权限删除成绩单！");

@@ -591,7 +591,7 @@ public class DefaultAppCommentController extends BaseController {
         } catch (Exception e) {
             e.printStackTrace();
             respObj.setCode(Constant.FAILD_CODE);
-            respObj.setErrorMessage("删除失败!");
+            respObj.setErrorMessage("已过有效时间!");
 
         }
 

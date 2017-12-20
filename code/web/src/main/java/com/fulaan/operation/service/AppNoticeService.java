@@ -193,6 +193,8 @@ public class AppNoticeService {
                     indexPageDao.delEntry(noticeId);
                     //删除首页
                     webHomePageDao.removeContactId(noticeId);
+                }else{
+                    throw new Exception("已过有效时间!");
                 }
             }else {
                 throw new Exception("你没有权限删除该通知!");

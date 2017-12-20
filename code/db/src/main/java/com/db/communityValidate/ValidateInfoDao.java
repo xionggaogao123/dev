@@ -38,8 +38,8 @@ public class ValidateInfoDao extends BaseDao {
         BasicDBObject query=new BasicDBObject()
                 .append("rw",reviewId)
                 .append("ir",0);
-
-        List<DBObject> list=find(MongoFacroty.getAppDB(), Constant.COLLECTION_FORUM_COMMUNITY_VALIDATE_INFO,query,Constant.FIELDS,Constant.MONGO_SORTBY_DESC,(page-1)*pageSize,pageSize);
+        BasicDBObject sort=new BasicDBObject("st",1).append("_id",-1);
+        List<DBObject> list=find(MongoFacroty.getAppDB(), Constant.COLLECTION_FORUM_COMMUNITY_VALIDATE_INFO,query,Constant.FIELDS,sort,(page-1)*pageSize,pageSize);
         if(null!=list&&!list.isEmpty()){
             for(DBObject dbObject:list){
                 entries.add(new ValidateInfoEntry((BasicDBObject)dbObject));

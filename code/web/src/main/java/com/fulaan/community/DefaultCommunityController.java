@@ -915,7 +915,7 @@ public class DefaultCommunityController extends BaseController {
         ObjectId userId=getUserId();
         ObjectId groupId = groupService.getGroupIdByChatId(emChatId);
         GroupDTO groupDTO = groupService.findById(groupId,getUserId());
-        ValidateInfoEntry entry = validateInfoService.getNewsInfo(new ObjectId(groupDTO.getCommunityId()));
+        ValidateInfoEntry entry = validateInfoService.getNewsInfo(new ObjectId(groupDTO.getCommunityId()),getUserId());
         if (null == entry) {
             return RespObj.FAILD("没有审核消息");
         } else {

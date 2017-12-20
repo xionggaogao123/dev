@@ -4,6 +4,7 @@ import com.db.fcommunity.*;
 import com.db.user.NewVersionUserRoleDao;
 import com.db.user.UserDao;
 import com.fulaan.community.dto.CommunityDTO;
+import com.fulaan.communityValidate.service.ValidateInfoService;
 import com.fulaan.dto.MemberDTO;
 import com.fulaan.pojo.PageModel;
 import com.pojo.fcommunity.CommunityEntry;
@@ -14,6 +15,7 @@ import com.pojo.user.UserEntry;
 import com.sys.constants.Constant;
 import org.apache.commons.lang.StringUtils;
 import org.bson.types.ObjectId;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
 
@@ -41,6 +43,9 @@ public class MemberService {
 
     private NewVersionCommunityBindDao newVersionCommunityBindDao = new NewVersionCommunityBindDao();
 
+
+    @Autowired
+    private ValidateInfoService validateInfoService;
     /**
      * 添加组成员
      *
@@ -79,7 +84,29 @@ public class MemberService {
      */
     public void setDeputyHead(ObjectId groupId, List<ObjectId> userIds) {
         memberDao.cleanDeputyHead(groupId);
+        //先删除权限
+        cleanAuthority(groupId);
         memberDao.setDeputyHead(groupId, userIds);
+        setAuthority(groupId,userIds);
+    }
+
+    public void setAuthority(ObjectId groupId,List<ObjectId> userIds){
+        ObjectId communityId=communityDao.getCommunityIdByGroupId(groupId);
+        if(null!=communityId) {
+            for(ObjectId userId:userIds){
+                validateInfoService.updateAuthority(userId, communityId, 0);
+            }
+        }
+    }
+
+    public void cleanAuthority(ObjectId groupId){
+        ObjectId communityId=communityDao.getCommunityIdByGroupId(groupId);
+        if(null!=communityId) {
+            List<MemberEntry> memberEntries = memberDao.getMembers(groupId);
+            for (MemberEntry memberEntry : memberEntries) {
+                validateInfoService.updateAuthority(memberEntry.getUserId(), communityId, 1);
+            }
+        }
     }
 
     /**

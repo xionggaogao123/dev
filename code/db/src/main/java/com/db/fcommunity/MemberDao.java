@@ -508,6 +508,19 @@ public class MemberDao extends BaseDao {
         update(MongoFacroty.getAppDB(), Constant.COLLECTION_FORUM_COMMUNITY_MEMBER, query, update);
     }
 
+
+    public List<MemberEntry> getMembers(ObjectId groupId){
+        List<MemberEntry>  memberEntries =new ArrayList<MemberEntry>();
+        BasicDBObject query = new BasicDBObject("grid", groupId).append("rl", 1).append("r", Constant.ZERO);
+        List<DBObject> dbObjectList = find(MongoFacroty.getAppDB(), Constant.COLLECTION_FORUM_COMMUNITY_MEMBER,query,Constant.FIELDS);
+        if(null!=dbObjectList&&!dbObjectList.isEmpty()){
+            for(DBObject dbObject:dbObjectList){
+                memberEntries.add(new MemberEntry(dbObject));
+            }
+        }
+        return memberEntries;
+    }
+
     /**
      * 更新在群组中的头像
      *

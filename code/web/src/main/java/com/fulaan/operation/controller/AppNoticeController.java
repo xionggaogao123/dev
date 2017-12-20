@@ -27,8 +27,11 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
+import org.springframework.web.multipart.MultipartHttpServletRequest;
 import org.springframework.web.multipart.MultipartRequest;
+import org.springframework.web.multipart.commons.CommonsMultipartResolver;
 
+import javax.servlet.http.HttpServletRequest;
 import java.io.*;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -446,6 +449,62 @@ public class AppNoticeController extends BaseController {
     private String getFileName(MultipartFile file) {
         String orgname = file.getOriginalFilename();
         return new ObjectId().toString() + Constant.POINT + orgname.substring(orgname.lastIndexOf(".") + 1);
+    }
+
+
+    @ApiOperation(value = "一般性文档上传", httpMethod = "POST", produces = "application/json")
+    @ApiResponses( value = {@ApiResponse(code = 200, message = "Successful — 请求已完成",response = RespObj.class)})
+    @RequestMapping("/doc/upload")
+    @ResponseBody
+    @SessionNeedless
+    public RespObj uploadDocFile(HttpServletRequest request) {
+        RespObj respObj = new RespObj(Constant.FAILD_CODE);
+        CommonsMultipartResolver multipartResolver = new CommonsMultipartResolver(request.getSession().getServletContext());
+        Map<String,Object> result = new HashMap<String,Object>();
+        if (multipartResolver.isMultipart(request)) { //
+            MultipartHttpServletRequest multiRequest = (MultipartHttpServletRequest) request;
+            Map<String, MultipartFile> fileMap = multiRequest.getFileMap();
+            for (MultipartFile file : fileMap.values()) {
+                try {
+                    String dirPath = request.getServletContext().getRealPath("/upload");
+                    File fileDir = new File(dirPath);
+                    if (!fileDir.exists()) {
+                        fileDir.mkdir();
+                    }
+
+                    File destFile = new File(fileDir, file.getOriginalFilename());
+                    if (!destFile.exists()) {
+                        destFile.createNewFile();
+                    }
+                    file.transferTo(destFile);
+
+                    ObjectId id = new ObjectId();
+
+                    String fileKey = id.toString() + Constant.POINT + FilenameUtils.getExtension(file.getOriginalFilename());
+
+
+                    InputStream inputStream = new FileInputStream(destFile);
+                    String extName = FilenameUtils.getExtension(file.getOriginalFilename());
+                    String path = "";
+                    if (extName.equalsIgnoreCase("amr")) {
+                        String saveFileKey = new ObjectId().toString() + ".mp3";
+                        com.sys.utils.QiniuFileUtils.convertAmrToMp3(fileKey, saveFileKey, inputStream);
+                        path = QiniuFileUtils.getPath(QiniuFileUtils.TYPE_DOCUMENT, saveFileKey);
+                    } else {
+                        QiniuFileUtils.uploadFile(fileKey, inputStream, QiniuFileUtils.TYPE_DOCUMENT);
+                        path = QiniuFileUtils.getPath(QiniuFileUtils.TYPE_DOCUMENT, fileKey);
+                    }
+
+                    result.put("fileName", file.getOriginalFilename());
+                    result.put("path", path);
+                    respObj.setCode(Constant.SUCCESS_CODE);
+                    respObj.setMessage(result);
+                } catch (Exception ex) {
+                    respObj.setMessage(ex.getMessage());
+                }
+            }
+        }
+        return respObj;
     }
 
 }

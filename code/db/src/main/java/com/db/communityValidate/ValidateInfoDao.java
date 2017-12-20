@@ -89,8 +89,8 @@ public class ValidateInfoDao extends BaseDao {
      * @param communityId
      * @return
      */
-    public ValidateInfoEntry getNewsInfo(ObjectId communityId){
-        BasicDBObject query=new BasicDBObject("cmId",communityId).append("st",0).append("ty",1);
+    public ValidateInfoEntry getNewsInfo(ObjectId communityId,ObjectId userId){
+        BasicDBObject query=new BasicDBObject("cmId",communityId).append("rw",userId).append("st",0).append("ty",1);
         DBObject dbObject=findOne(MongoFacroty.getAppDB(), Constant.COLLECTION_FORUM_COMMUNITY_VALIDATE_INFO,query);
         if(null!=dbObject){
             return new ValidateInfoEntry((BasicDBObject) dbObject);

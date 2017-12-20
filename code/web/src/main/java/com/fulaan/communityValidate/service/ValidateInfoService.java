@@ -184,8 +184,8 @@ public class ValidateInfoService {
         validateInfoDao.saveOrUpdate(entry);
     }
 
-    public ValidateInfoEntry getNewsInfo(ObjectId communityId){
-        return validateInfoDao.getNewsInfo(communityId);
+    public ValidateInfoEntry getNewsInfo(ObjectId communityId,ObjectId userId){
+        return validateInfoDao.getNewsInfo(communityId,userId);
     }
 
 }

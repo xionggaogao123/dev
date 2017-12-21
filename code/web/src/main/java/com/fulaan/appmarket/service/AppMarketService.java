@@ -418,4 +418,12 @@ public class AppMarketService {
         destFile.delete();
         imageFile.delete();
     }
+
+    public void addDescription(ObjectId id,String content){
+        AppDetailEntry entry = appDetailDao.findEntryById(id);
+        if(entry != null){
+            entry.setDescription(content);
+            appDetailDao.saveAppDetailEntry(entry);
+        }
+    }
 }

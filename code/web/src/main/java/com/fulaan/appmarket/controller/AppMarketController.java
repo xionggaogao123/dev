@@ -1,5 +1,6 @@
 package com.fulaan.appmarket.controller;
 
+import com.alibaba.fastjson.JSON;
 import com.db.loginwebsocket.LoginTokenDao;
 import com.fulaan.annotation.LoginInfo;
 import com.fulaan.annotation.ObjectIdType;
@@ -12,10 +13,7 @@ import com.fulaan.util.QRUtils;
 import com.pojo.loginwebsocket.LoginTokenEntry;
 import com.sys.constants.Constant;
 import com.sys.utils.RespObj;
-import io.swagger.annotations.Api;
-import io.swagger.annotations.ApiOperation;
-import io.swagger.annotations.ApiResponse;
-import io.swagger.annotations.ApiResponses;
+import io.swagger.annotations.*;
 import org.bson.types.ObjectId;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -255,6 +253,30 @@ public class AppMarketController extends BaseController{
         return respObj;
     }
 
+    /**
+     * 添加应用说明
+     * @return
+     */
+    @ApiOperation(value="添加应用说明",httpMethod = "POST",produces = "application/json")
+    @ApiResponse(code=200,message = "success", response = String.class)
+    @RequestMapping("/addDescription")
+    @ResponseBody
+    public String addDescription(@ApiParam(name = "id", required = true, value = "id") @RequestParam("id") String id,
+                                     @ApiParam(name = "content", required = true, value = "说明") @RequestParam("content") String content){
+        RespObj respObj=new RespObj(Constant.FAILD_CODE);
+        try {
+            respObj.setCode(Constant.SUCCESS_CODE);
+            appMarketService.addDescription(new ObjectId(id),content);
+            respObj.setMessage("添加说明成功");
+        } catch (Exception e) {
+            e.printStackTrace();
+            respObj.setCode(Constant.FAILD_CODE);
+            respObj.setErrorMessage("添加说明失败!");
+
+        }
+        return JSON.toJSONString(respObj);
+
+    }
 
 
 

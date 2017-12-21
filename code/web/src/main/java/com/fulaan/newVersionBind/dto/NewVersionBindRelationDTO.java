@@ -1,6 +1,10 @@
 package com.fulaan.newVersionBind.dto;
 
+import com.fulaan.operation.dto.GroupOfCommunityDTO;
 import com.pojo.user.NewVersionBindRelationEntry;
+
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * Created by scott on 2017/9/8.
@@ -32,6 +36,10 @@ public class NewVersionBindRelationDTO {
     private String loadTime;
 
     private boolean isLogin;
+
+    private String bindCommunityStr;
+
+    private List<GroupOfCommunityDTO> bindCommunities = new ArrayList<GroupOfCommunityDTO>();
 
     public NewVersionBindRelationDTO(NewVersionBindRelationEntry  entry){
         this.bindId=entry.getID().toString();
@@ -78,6 +86,21 @@ public class NewVersionBindRelationDTO {
 
     }
 
+    public List<GroupOfCommunityDTO> getBindCommunities() {
+        return bindCommunities;
+    }
+
+    public void setBindCommunities(List<GroupOfCommunityDTO> bindCommunities) {
+        this.bindCommunities = bindCommunities;
+    }
+
+    public String getBindCommunityStr() {
+        return bindCommunityStr;
+    }
+
+    public void setBindCommunityStr(String bindCommunityStr) {
+        this.bindCommunityStr = bindCommunityStr;
+    }
 
     public boolean isLogin() {
         return isLogin;

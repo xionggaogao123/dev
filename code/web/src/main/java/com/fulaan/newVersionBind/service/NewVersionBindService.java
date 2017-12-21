@@ -12,12 +12,14 @@ import com.db.user.TeacherSubjectBindDao;
 import com.fulaan.cache.CacheHandler;
 import com.fulaan.mqtt.MQTTSendMsg;
 import com.fulaan.newVersionBind.dto.*;
+import com.fulaan.operation.dto.GroupOfCommunityDTO;
 import com.fulaan.user.service.UserService;
 import com.fulaan.utils.pojo.KeyValue;
 import com.fulaan.wrongquestion.dto.NewVersionGradeDTO;
 import com.fulaan.wrongquestion.service.WrongQuestionService;
 import com.pojo.app.SessionValue;
 import com.pojo.controlphone.MQTTType;
+import com.pojo.fcommunity.CommunityEntry;
 import com.pojo.fcommunity.MemberEntry;
 import com.pojo.fcommunity.NewVersionCommunityBindEntry;
 import com.pojo.newVersionGrade.NewVersionGradeEntry;
@@ -238,10 +240,40 @@ public class NewVersionBindService {
         KeyValue keyValue = wrongQuestionService.getCurrTermType();
         Map<ObjectId,UserEntry> userEntryMap=userService.getUserEntryMap(userIds,Constant.FIELDS);
         Map<ObjectId,NewVersionGradeEntry> newVersionGradeEntryMap=newVersionGradeDao.getNewVersionGradeMap(userIds,keyValue.getValue());
+        Map<ObjectId,Set<ObjectId>> userBindCommunityMap=newVersionCommunityBindDao.getUserEntryMapByUserId(userIds);
+        Set<ObjectId> communityIds=new HashSet<ObjectId>();
+        for(Map.Entry<ObjectId,Set<ObjectId>> userBind:userBindCommunityMap.entrySet()){
+            Set<ObjectId> cIds=userBind.getValue();
+            communityIds.addAll(cIds);
+        }
+        Map<ObjectId, CommunityEntry> communityEntryMap=communityDao.findMapInfo(new ArrayList<ObjectId>(communityIds));
         for(NewVersionBindRelationEntry entry:entries){
             NewVersionBindRelationDTO dto=new NewVersionBindRelationDTO(entry);
             dto.setIsBindCommunity(0);
-            UserEntry userEntry=userEntryMap.get(entry.getUserId());
+            ObjectId userId=entry.getUserId();
+            UserEntry userEntry=userEntryMap.get(userId);
+
+            if(null!=userBindCommunityMap.get(userId)){
+                Set<ObjectId> set = userBindCommunityMap.get(userId);
+                String str=Constant.EMPTY;
+                List<GroupOfCommunityDTO> communityDTOs = new ArrayList<GroupOfCommunityDTO>();
+                for(ObjectId cItem:set){
+                    if(null!=communityEntryMap.get(cItem)){
+                        CommunityEntry communityEntry=communityEntryMap.get(cItem);
+                        if(Constant.EMPTY.equals(str)){
+                            str=communityEntry.getCommunityName();
+                        }else{
+                            str=str+","+communityEntry.getCommunityName();
+                        }
+                        GroupOfCommunityDTO dto1 = new GroupOfCommunityDTO(communityEntry.getGroupId().toString(),
+                                communityEntry.getID().toString(),communityEntry.getCommunityName());
+                        communityDTOs.add(dto1);
+                    }
+                }
+                dto.setBindCommunityStr(str);
+                dto.setBindCommunities(communityDTOs);
+            }
+
             if(null!=userEntry){
                 dto.setMobileNumber(userEntry.getMobileNumber());
                 dto.setSex(userEntry.getSex());
@@ -250,11 +282,13 @@ public class NewVersionBindService {
                 SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd");
                 String birthDate=format.format(userEntry.getBirthDate());
                 dto.setBirthDate(birthDate);
-                NewVersionCommunityBindEntry bindEntry=map.get(userEntry.getID());
-                if(null!=bindEntry){
-                    dto.setIsBindCommunity(1);
-                    dto.setStudentNumber(bindEntry.getNumber());
-                    dto.setThirdName(bindEntry.getThirdName());
+                if(null!=communityId){
+                    NewVersionCommunityBindEntry bindEntry=map.get(userEntry.getID());
+                    if(null!=bindEntry){
+                        dto.setIsBindCommunity(1);
+                        dto.setStudentNumber(bindEntry.getNumber());
+                        dto.setThirdName(bindEntry.getThirdName());
+                    }
                 }
             }
             dto.setGradeType(0);
@@ -385,6 +419,51 @@ public class NewVersionBindService {
         entry.setUserId(bid);
         newVersionBindRelationDao.saveNewVersionBindEntry(entry);
         return "";
+    }
+
+
+    public void relieveCommunityBindRelation(ObjectId userId,String communityIds)throws Exception{
+        if(StringUtils.isEmpty(communityIds)){
+            throw new Exception("未选定绑定的社区");
+        }
+        String[] cIds = communityIds.split(",");
+        for(String cId:cIds){
+            newVersionCommunityBindDao.updateCommunityBindStatus(new ObjectId(cId),userId);
+        }
+    }
+
+
+    public void bindCommunity(String userIds,String communityIds,ObjectId mainUserId)throws Exception{
+        if(StringUtils.isEmpty(userIds)){
+            throw new Exception("未选定绑定的孩子");
+        }
+        if(StringUtils.isEmpty(communityIds)){
+            throw new Exception("未选定绑定的社区");
+        }
+        String[] uIds = userIds.split(",");
+        String[] cIds = communityIds.split(",");
+        for (String uId : uIds) {
+            ObjectId userId= new ObjectId(uId);
+            for(String cId:cIds){
+                ObjectId communityId = new ObjectId(cId);
+                NewVersionCommunityBindEntry bindEntry = newVersionCommunityBindDao.getEntry(communityId, mainUserId, userId);
+                if (null != bindEntry) {
+                    if (bindEntry.getRemoveStatus() == Constant.ONE) {
+                        newVersionCommunityBindDao.updateEntryStatus(bindEntry.getID());
+                    }
+                } else {
+                    NewVersionCommunityBindEntry entry = new NewVersionCommunityBindEntry(communityId, mainUserId, userId);
+                    newVersionCommunityBindDao.saveEntry(entry);
+                }
+                long current = System.currentTimeMillis();
+                //向学生端推送消息
+                try {
+                    MQTTSendMsg.sendMessage(MQTTType.phone.getEname(), uId,current);
+                }catch (Exception e){
+
+                }
+            }
+        }
     }
 
     public void addCommunityBindEntry(String userIds,ObjectId communityId,ObjectId mainUserId){

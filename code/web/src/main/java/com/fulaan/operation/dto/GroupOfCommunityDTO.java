@@ -13,6 +13,13 @@ public class GroupOfCommunityDTO {
 
     }
 
+    public GroupOfCommunityDTO(String groupId,String communityId,String groupName){
+        this.groupId=groupId;
+        this.communityId=communityId;
+        this.groupName=groupName;
+    }
+
+
     public String getGroupId() {
         return groupId;
     }

@@ -121,6 +121,7 @@ public class DefaultUserController extends BaseController {
     @Autowired
     private CommunityService communityService;
 
+
     private NewVersionUserRoleDao newVersionUserRoleDao= new NewVersionUserRoleDao();
 
     private Auth qqAuth = AuthFactory.getAuth(AuthType.QQ);
@@ -2016,5 +2017,112 @@ public class DefaultUserController extends BaseController {
             file1.delete();
         }
     }
+
+
+
+    @ApiOperation(value = "重设密码", httpMethod = "POST", produces = "application/json")
+    @ApiResponses( value = {@ApiResponse(code = 200, message = "Successful — 请求已完成",response = RespObj.class)})
+    @SessionNeedless
+    @ResponseBody
+    @RequestMapping("/resetVersionPwd")
+    public RespObj resetVersionPwd(String userId, String pwd, String pwdAgain, HttpServletRequest request) {
+        RespObj obj = new RespObj(Constant.FAILD_CODE);
+
+        if (StringUtils.isBlank(pwd) || StringUtils.isBlank(pwdAgain) || !pwd.equals(pwdAgain)) {
+            obj.setMessage("密码不能为空或者输入密码不一致");
+            return obj;
+        }
+
+        UserEntry e = userService.findById(new ObjectId(userId));
+        if (null == e) {
+            obj.setMessage("找不到用户");
+            return obj;
+        }
+
+        try {
+            userService.update(e.getID(), "pw", MD5Utils.getMD5(pwdAgain));
+        } catch (IllegalParamException e1) {
+            logger.error("", e1);
+        } catch (Exception e1) {
+            logger.error("", e1);
+        }
+
+        return RespObj.SUCCESS;
+    }
+
+
+    /**
+     * 验证信息
+     * @param mobile
+     * @param valiCode
+     * @param cacheKeyId
+     * @param clientType
+     * @param req
+     * @return
+     * @throws IllegalParamException
+     */
+    @ApiOperation(value = "用户更新基本信息", httpMethod = "POST", produces = "application/json")
+    @ApiResponses( value = {@ApiResponse(code = 200, message = "Successful — 请求已完成",response = RespObj.class)})
+    @RequestMapping("/userUpdateBasic")
+    @ResponseBody
+    public RespObj userUpdateBasic(String mobile, String valiCode, String cacheKeyId, @RequestParam(required = false, defaultValue = "0") Integer clientType, HttpServletRequest req) throws IllegalParamException {
+        RespObj ret = new RespObj(Constant.FAILD_CODE);
+        if (StringUtils.isBlank(mobile) || StringUtils.isBlank(valiCode)) {
+            ret.setMessage("请正确输入手机和验证码");
+            return ret;
+        }
+
+        UserEntry ue = userService.findById(getUserId());
+
+        if (!ValidationUtils.isMobile(mobile)) {
+            ret.setMessage("手机非法");
+            return ret;
+        }
+
+        Validate validate=accountService.bindMobile(ue.getID(),mobile);
+        if(!validate.isOk()){
+            ret.setMessage(validate.getMessage());
+            return ret;
+        }
+
+        String cacheKey = CacheHandler.getKeyString(CacheHandler.CACHE_SHORTMESSAGE, cacheKeyId);
+        String value = CacheHandler.getStringValue(cacheKey);
+        if (StringUtils.isBlank(value)) {
+            ret.setMessage("验证码失效，请重新获取");
+            return ret;
+        }
+        String[] cache = value.split(",");
+        if (!cache[1].equals(mobile)) {
+            ret.setMessage("验证失败：手机号码不匹配");
+            return ret;
+        }
+
+        if (!cache[0].equals(valiCode)) {
+            ret.setMessage("验证失败：验证码不匹配");
+            return ret;
+        }
+
+        String jsessionIdNow = getCookieValue("JSESSIONID");
+
+        if (clientType == 0) {
+            cacheKey = CacheHandler.getKeyString(CacheHandler.SESSIONID_EMALL, jsessionIdNow);
+            String emailCache = CacheHandler.getStringValue(cacheKey);
+
+            if (StringUtils.isBlank(emailCache)) {
+                ret.setMessage("邮箱验证错误");
+                return ret;
+            }
+            UserEntry emailUser = userService.findByEmail(emailCache);
+            if (null != emailUser && !emailUser.getUserName().equalsIgnoreCase(ue.getUserName())) {
+                ret.setMessage("邮箱已经被登记使用");
+                return ret;
+            }
+            userService.update(ue.getID(), "e", emailCache.toLowerCase());
+        }
+        userService.update(ue.getID(), "mn", mobile.toLowerCase());
+        CacheHandler.cache(jsessionIdNow, "1", Constant.SECONDS_IN_HOUR);
+        return RespObj.SUCCESS;
+    }
+
 
 }

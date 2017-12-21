@@ -471,4 +471,41 @@ public class DefaultBindController extends BaseController {
         respObj.setMessage("删除手机号成功");
         return respObj;
     }
+
+
+    @ApiOperation(value = "改版绑定孩子", httpMethod = "POST", produces = "application/json")
+    @ApiResponses( value = {@ApiResponse(code = 200, message = "Successful — 请求已完成",response = RespObj.class)})
+    @RequestMapping("/bindCommunity")
+    @ResponseBody
+    public RespObj bindCommunity(String userIds,String communityIds){
+        RespObj respObj = new RespObj(Constant.FAILD_CODE);
+        try{
+            newVersionBindService.bindCommunity(userIds,communityIds,getUserId());
+            respObj.setCode(Constant.SUCCESS_CODE);
+            respObj.setMessage("绑定成功");
+        }catch (Exception e){
+            respObj.setErrorMessage(e.getMessage());
+        }
+        return respObj;
+    }
+
+
+    @ApiOperation(value = "解除孩子的绑定关系", httpMethod = "GET", produces = "application/json")
+    @ApiResponses( value = {@ApiResponse(code = 200, message = "Successful — 请求已完成",response = RespObj.class)})
+    @RequestMapping("relieveCommunityBindRelation")
+    @ResponseBody
+    public RespObj relieveCommunityBindRelation(@ObjectIdType ObjectId userId,String communityIds){
+        RespObj respObj = new RespObj(Constant.FAILD_CODE);
+        try {
+            newVersionBindService.relieveCommunityBindRelation(userId, communityIds);
+            respObj.setCode(Constant.SUCCESS_CODE);
+            respObj.setMessage("解除孩子的绑定关系成功！");
+        }catch (Exception e){
+            respObj.setErrorMessage(e.getMessage());
+        }
+        return respObj;
+    }
+
+
+
 }

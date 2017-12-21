@@ -9,10 +9,7 @@ import com.pojo.utils.MongoUtils;
 import com.sys.constants.Constant;
 import org.bson.types.ObjectId;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 /**
  * Created by scott on 2017/9/13.
@@ -144,6 +141,31 @@ public class NewVersionCommunityBindDao extends BaseDao{
         return map;
     }
 
+    public Map<ObjectId,Set<ObjectId>>  getUserEntryMapByUserId(List<ObjectId> userIds){
+        Map<ObjectId,Set<ObjectId>> result = new HashMap<ObjectId, Set<ObjectId>>();
+        BasicDBObject query = new BasicDBObject()
+                .append("uid",new BasicDBObject(Constant.MONGO_IN,userIds))
+                .append("ir", Constant.ZERO);
+        List<DBObject> dbObjectList=find(MongoFacroty.getAppDB(), Constant.COLLECTION_NEW_VERSION_COMMUNITY_BIND,query,Constant.FIELDS);
+        if(null!=dbObjectList&&!dbObjectList.isEmpty()){
+            for(DBObject dbObject:dbObjectList){
+                NewVersionCommunityBindEntry entry=new NewVersionCommunityBindEntry(dbObject);
+                ObjectId userId=entry.getUserId();
+                ObjectId communityId=entry.getCommunityId();
+                if(null!=result.get(userId)){
+                    Set<ObjectId> communityIds = result.get(userId);
+                    communityIds.add(communityId);
+                    result.put(userId,communityIds);
+                }else{
+                    Set<ObjectId> communityIds = new HashSet<ObjectId>();
+                    communityIds.add(communityId);
+                    result.put(userId,communityIds);
+                }
+            }
+        }
+        return result;
+    }
+
 
     public Map<ObjectId,NewVersionCommunityBindEntry> getUserEntryMapByCondition(
          ObjectId communityId,List<ObjectId> userIds
@@ -216,6 +238,18 @@ public class NewVersionCommunityBindDao extends BaseDao{
         }else{
             return null;
         }
+    }
+
+
+    public void updateCommunityBindStatus(ObjectId communityId,
+                                          ObjectId userId){
+        BasicDBObject query=new BasicDBObject()
+                .append("cid",communityId)
+                .append("ir", Constant.ZERO)
+                .append("uid", userId);
+        BasicDBObject updateValue = new BasicDBObject(Constant.MONGO_SET,new BasicDBObject("ir",Constant.ONE));
+        update(MongoFacroty.getAppDB(), Constant.COLLECTION_NEW_VERSION_COMMUNITY_BIND,
+                query,updateValue);
     }
 
     public NewVersionCommunityBindEntry getEntry(ObjectId communityId,

@@ -2079,10 +2079,13 @@ public class DefaultUserController extends BaseController {
             return ret;
         }
 
-        Validate validate=accountService.bindMobile(ue.getID(),mobile);
-        if(!validate.isOk()){
-            ret.setMessage(validate.getMessage());
-            return ret;
+        if(StringUtils.isEmpty(ue.getMobileNumber())) {
+            Validate validate = accountService.bindMobile(ue.getID(), mobile);
+            if (!validate.isOk()) {
+                ret.setMessage(validate.getMessage());
+                return ret;
+            }
+            userService.update(ue.getID(), "mn", mobile.toLowerCase());
         }
 
         String cacheKey = CacheHandler.getKeyString(CacheHandler.CACHE_SHORTMESSAGE, cacheKeyId);
@@ -2119,8 +2122,6 @@ public class DefaultUserController extends BaseController {
             }
             userService.update(ue.getID(), "e", emailCache.toLowerCase());
         }
-        userService.update(ue.getID(), "mn", mobile.toLowerCase());
-        CacheHandler.cache(jsessionIdNow, "1", Constant.SECONDS_IN_HOUR);
         return RespObj.SUCCESS;
     }
 

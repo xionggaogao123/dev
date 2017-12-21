@@ -2122,7 +2122,7 @@ public class DefaultUserController extends BaseController {
             }
             userService.update(ue.getID(), "e", emailCache.toLowerCase());
         }
-        return RespObj.SUCCESS;
+        return new RespObj(Constant.SUCCESS_CODE,"用户验证成功");
     }
 
 

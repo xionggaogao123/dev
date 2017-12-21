@@ -64,6 +64,28 @@ public class AppOperationDao extends BaseDao {
         return entryList;
     }
 
+    //老师评论列表查询
+    public List<AppOperationEntry> getEntryListByParentIdByStu(ObjectId contactId,List<ObjectId> userIds,int role,int page,int pageSize) {
+        BasicDBObject query = new BasicDBObject()
+                .append("cid",contactId)
+                .append("rol",role)
+                .append("uid",new BasicDBObject(Constant.MONGO_IN,userIds))
+                .append("lev", 1)//一级
+                .append("isr", 0); // 未删除
+        List<DBObject> dbList =
+                find(MongoFacroty.getAppDB(),
+                        Constant.COLLECTION_APP_OPERATION,
+                        query, Constant.FIELDS,
+                        Constant.MONGO_SORTBY_DESC, (page - 1) * pageSize, pageSize);
+        List<AppOperationEntry> entryList = new ArrayList<AppOperationEntry>();
+        if (dbList != null && !dbList.isEmpty()) {
+            for (DBObject obj : dbList) {
+                entryList.add(new AppOperationEntry((BasicDBObject) obj));
+            }
+        }
+        return entryList;
+    }
+
     public List<AppOperationEntry> getEntryListByParentId2(ObjectId contactId,int role) {
         BasicDBObject query = new BasicDBObject()
                 .append("cid",contactId)
@@ -123,6 +145,21 @@ public class AppOperationDao extends BaseDao {
     public int countStudentLoadTimes(ObjectId contactId, int role) {
         BasicDBObject query = new BasicDBObject()
                 .append("cid",contactId)
+                .append("rol", role)
+                .append("lev", 1)
+                .append("isr",Constant.ZERO); // 未删除
+        int count =
+                count(MongoFacroty.getAppDB(),
+                        Constant.COLLECTION_APP_OPERATION,
+                        query);
+        return count;
+    }
+
+    //查询所有已提交的数量
+    public int countStudentLoadTimesFor(ObjectId contactId,List<ObjectId> userIds, int role) {
+        BasicDBObject query = new BasicDBObject()
+                .append("cid",contactId)
+                .append("uid",new BasicDBObject(Constant.MONGO_IN,userIds))
                 .append("rol", role)
                 .append("lev", 1)
                 .append("isr",Constant.ZERO); // 未删除

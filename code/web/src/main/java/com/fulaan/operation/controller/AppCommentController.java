@@ -628,7 +628,31 @@ public class AppCommentController extends BaseController {
         } catch (Exception e) {
             e.printStackTrace();
             respObj.setCode(Constant.FAILD_CODE);
-            respObj.setErrorMessage("删除失败!");
+            respObj.setErrorMessage("已过24小时，不可删除!");
+
+        }
+
+
+        return JSON.toJSONString(respObj);
+    }
+
+    /**
+     * 发布作业
+     */
+    @ApiOperation(value="发布作业",httpMethod = "POST",produces = "application/json")
+    @ApiResponse(code=200,message = "success", response = String.class)
+    @RequestMapping("/upadateStatus")
+    @ResponseBody
+    public String upadateStatus(@ApiParam(name = "id", required = true, value = "作业id") @RequestParam("id") String id){
+        RespObj respObj=new RespObj(Constant.FAILD_CODE);
+        try {
+            respObj.setCode(Constant.SUCCESS_CODE);
+            appCommentService.upadateStatus(new ObjectId(id),getUserId());
+            respObj.setMessage("发布作业成功！");
+        } catch (Exception e) {
+            e.printStackTrace();
+            respObj.setCode(Constant.FAILD_CODE);
+            respObj.setErrorMessage("发布作业失败!");
 
         }
 

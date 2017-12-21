@@ -98,6 +98,25 @@ public class AppRecordResultDao extends BaseDao {
         }
         return entryList;
     }
+    public List<AppRecordResultEntry> getEntryListByParentIdAnd(ObjectId parentId,List<ObjectId> oids) {
+        BasicDBObject query = new BasicDBObject()
+                .append("pid",parentId)
+                .append("uid",new BasicDBObject(Constant.MONGO_IN,oids))
+                .append("isl", 2)
+                .append("isr", 0); // 未删除
+        List<DBObject> dbList =
+                find(MongoFacroty.getAppDB(),
+                        Constant.COLLECTION_APP_RECORD_RESULT,
+                        query, Constant.FIELDS,
+                        Constant.MONGO_SORTBY_DESC);
+        List<AppRecordResultEntry> entryList = new ArrayList<AppRecordResultEntry>();
+        if (dbList != null && !dbList.isEmpty()) {
+            for (DBObject obj : dbList) {
+                entryList.add(new AppRecordResultEntry((BasicDBObject) obj));
+            }
+        }
+        return entryList;
+    }
     public List<String> getEntryListByParentId2(ObjectId parentId) {
         BasicDBObject query = new BasicDBObject()
                 .append("pid",parentId)

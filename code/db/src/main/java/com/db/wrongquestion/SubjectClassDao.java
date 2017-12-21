@@ -49,7 +49,7 @@ public class SubjectClassDao extends BaseDao {
                 find(MongoFacroty.getAppDB(),
                         Constant.COLLECTION_SUBJECT_CLASS,
                         query, Constant.FIELDS,
-                        Constant.MONGO_SORTBY_ASC);
+                        new BasicDBObject("lev",Constant.ASC));
         List<SubjectClassEntry> entryList = new ArrayList<SubjectClassEntry>();
         if (dbList != null && !dbList.isEmpty()) {
             for (DBObject obj : dbList) {
@@ -67,7 +67,7 @@ public class SubjectClassDao extends BaseDao {
                 find(MongoFacroty.getAppDB(),
                         Constant.COLLECTION_SUBJECT_CLASS,
                         query, Constant.FIELDS,
-                        Constant.MONGO_SORTBY_ASC);
+                        new BasicDBObject("lev",Constant.ASC));
         if (dbList != null && !dbList.isEmpty()) {
             for (DBObject obj : dbList) {
                 SubjectClassEntry entry=new SubjectClassEntry((BasicDBObject) obj);
@@ -83,7 +83,7 @@ public class SubjectClassDao extends BaseDao {
                 find(MongoFacroty.getAppDB(),
                         Constant.COLLECTION_SUBJECT_CLASS,
                         query, Constant.FIELDS,
-                        Constant.MONGO_SORTBY_ASC);
+                        new BasicDBObject("lev",Constant.ASC));
         List<SubjectClassEntry> entryList = new ArrayList<SubjectClassEntry>();
         if (dbList != null && !dbList.isEmpty()) {
             for (DBObject obj : dbList) {

@@ -624,7 +624,6 @@ public class DefaultEBusinessGoodsController extends BaseController {
             obj.put("message", "找不到用户");
             return obj;
         }
-
         String cookieValue = getCookieValue(Constant.COOKIE_VALIDATE_CODE);
 
         String key = CacheHandler.getKeyString(CacheHandler.CACHE_VALIDATE_CODE, cookieValue);

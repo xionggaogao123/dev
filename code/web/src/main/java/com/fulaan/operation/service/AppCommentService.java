@@ -253,14 +253,19 @@ public class AppCommentService {
      */
     public Map<String,Object> selectStudentLoad(ObjectId userId,ObjectId id,int page,int pageSize){
         Map<String,Object> map = new HashMap<String, Object>();
-        //查询已提交
-        List<AppOperationEntry> entries =appOperationDao.getEntryListByParentId(id,3,page,pageSize);
-        int num = appOperationDao.countStudentLoadTimes(id, 3);
-        //获得该作业的所有发放学生
         //获得作业
         AppCommentEntry aen = appCommentDao.getEntry(id);
         //所有学生
         List<String> objectIdList = newVersionBindService.getStudentIdListByCommunityId(aen.getRecipientId());
+        List<ObjectId> oidsa = new ArrayList<ObjectId>();
+        for(String str : objectIdList){
+            oidsa.add(new ObjectId(str));
+        }
+        //查询已提交
+        List<AppOperationEntry> entries =appOperationDao.getEntryListByParentIdByStu(id,oidsa, 3, page, pageSize);
+        int num = appOperationDao.countStudentLoadTimesFor(id, oidsa, 3);
+        //获得该作业的所有发放学生
+        aen.setAllLoadNumber(objectIdList.size());
         List<AppOperationDTO> dtos = new ArrayList<AppOperationDTO>();
         List<String> uids = new ArrayList<String>();
         uids.add(aen.getAdminId().toString());
@@ -349,6 +354,8 @@ public class AppCommentService {
         map.put("unLoadList",ulsit);
         //未提交人数
         map.put("unLoadNumber",ulsit.size());
+        aen.setLoadNumber(objectIdList.size() - ulsit.size());
+        appCommentDao.updEntry(aen);
         AppCommentDTO dtoa = new AppCommentDTO(aen);
         UserDetailInfoDTO dto12 = map3.get(dtoa.getAdminId());
         String name = StringUtils.isNotEmpty(dto12.getNickName())?dto12.getNickName():dto12.getUserName();
@@ -389,7 +396,11 @@ public static void main(String[] args){
         //已签到名单
        // List<AppRecordDTO> dtos = new ArrayList<AppRecordDTO>();
         List<ObjectId> objectIdList1 = new ArrayList<ObjectId>();
-        List<AppRecordResultEntry> entries1 = appRecordResultDao.getEntryListByParentId(id);
+        List<ObjectId> sdf =  new ArrayList<ObjectId>();
+        for(String str : objectIdList){
+            sdf.add(new ObjectId(str));
+        }
+        List<AppRecordResultEntry> entries1 = appRecordResultDao.getEntryListByParentIdAnd(id, sdf);
         List<AppRecordResultDTO> dtoList = new ArrayList<AppRecordResultDTO>();
         if(entries1.size()>0){
             for(AppRecordResultEntry en1 : entries1){
@@ -418,6 +429,9 @@ public static void main(String[] args){
         }
         map.put("UnSignList",unSign);
         map.put("UnSignListNum",unSign.size());
+        aen.setAllWriterNumber(objectIdList.size());
+        aen.setWriteNumber(sign.size());
+        appCommentDao.updEntry(aen);
         return map;
     }
 
@@ -1866,6 +1880,31 @@ public static void main(String[] args){
             }
         }
         return dtos;
+    }
+
+    /**
+     * 根据课程id 查询用户的课程列表
+     *
+     */
+    public void upadateStatus(ObjectId id,ObjectId userId){
+        AppCommentEntry entry = appCommentDao.getEntry(id);
+        if(entry != null && entry.getAdminId().equals(userId)){
+            entry.setStatus(0);
+            //获得当前时间
+            long current=System.currentTimeMillis();
+            //获得时间批次
+            long zero=current/(1000*3600*24)*(1000*3600*24)- TimeZone.getDefault().getRawOffset();//今天零点零分零秒的毫秒数
+            entry.setDateTime(zero);
+            entry.setCreateTime(current);
+            List<String> objectIdList2 = this.getMyRoleList4(entry.getRecipientId(), userId);
+            entry.setAllWriterNumber(objectIdList2.size());
+            List<String> objectIdList3 = newVersionBindService.getStudentIdListByCommunityId(entry.getRecipientId());
+            entry.setAllLoadNumber(objectIdList3.size());
+            appCommentDao.updEntry(entry);
+            List<ObjectId> objectIdList = new ArrayList<ObjectId>();
+            objectIdList.add(entry.getRecipientId());
+            redDotService.addEntryList(objectIdList,userId, ApplyTypeEn.operation.getType(),4);
+        }
     }
 
     /**

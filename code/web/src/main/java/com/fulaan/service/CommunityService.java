@@ -1100,7 +1100,7 @@ public class CommunityService {
             if (userEntry != null) {
                 communityDetailDTO.setImageUrl(AvatarUtils.getAvatar(userEntry.getAvatar(), userEntry.getRole(),userEntry.getSex()));
             }
-
+            communityDetailDTO.setCommunityName(communityEntry.getCommunityName());
             ObjectId groupId = groupIds.get(new ObjectId(entry.getCommunityId()));
             MemberEntry entry1 = memberMap.get(groupId + "$" + entry.getCommunityUserId());
 

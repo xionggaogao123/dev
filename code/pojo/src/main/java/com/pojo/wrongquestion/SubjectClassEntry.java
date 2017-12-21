@@ -32,6 +32,7 @@ public class SubjectClassEntry extends BaseDBObject {
                 .append("sid", subjectId)
                 .append("nam", name)
                 .append("img",imageUrl)
+                .append("lev",0)
                 .append("isr", 0);
         setBaseEntry(dbObject);
     }
@@ -48,6 +49,7 @@ public class SubjectClassEntry extends BaseDBObject {
                 .append("sid", subjectId)
                 .append("nam", name)
                 .append("img",imageUrl)
+                .append("lev", 0)
                 .append("isr", 0);
         setBaseEntry(dbObject);
     }
@@ -82,5 +84,13 @@ public class SubjectClassEntry extends BaseDBObject {
 
     public void setIsRemove(int isRemove){
         setSimpleValue("isr",isRemove);
+    }
+
+    public int getLevel(){
+        return getSimpleIntegerValue("lev");
+    }
+
+    public void setLevel(int level){
+        setSimpleValue("lev",level);
     }
 }

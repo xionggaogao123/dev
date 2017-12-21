@@ -56,7 +56,6 @@ public class DefaultReportCardController extends BaseController{
             respObj.setCode(Constant.SUCCESS_CODE);
             respObj.setMessage(result);
         }catch (Exception e){
-            e.printStackTrace();
             respObj.setErrorMessage(e.getMessage());
         }
         return respObj;
@@ -89,7 +88,6 @@ public class DefaultReportCardController extends BaseController{
             respObj.setMessage(retMap);
             respObj.setCode(Constant.SUCCESS_CODE);
         }catch (Exception e){
-            e.printStackTrace();
             respObj.setErrorMessage(e.getMessage());
         }
         return respObj;
@@ -124,7 +122,6 @@ public class DefaultReportCardController extends BaseController{
             respObj.setMessage(retMap);
             respObj.setCode(Constant.SUCCESS_CODE);
         }catch (Exception e){
-            e.printStackTrace();
             respObj.setErrorMessage(e.getMessage());
         }
         return respObj;
@@ -154,7 +151,6 @@ public class DefaultReportCardController extends BaseController{
             respObj.setMessage(retMap);
             respObj.setCode(Constant.SUCCESS_CODE);
         }catch (Exception e){
-            e.printStackTrace();
             respObj.setErrorMessage(e.getMessage());
         }
         return respObj;
@@ -175,7 +171,6 @@ public class DefaultReportCardController extends BaseController{
             respObj.setCode(Constant.SUCCESS_CODE);
             respObj.setMessage("签字成功！");
         }catch (Exception e){
-            e.printStackTrace();
             respObj.setErrorMessage(e.getMessage());
         }
         return respObj;
@@ -194,7 +189,6 @@ public class DefaultReportCardController extends BaseController{
             respObj.setCode(Constant.SUCCESS_CODE);
             respObj.setMessage("删除成绩单成功！");
         }catch (Exception e){
-            e.printStackTrace();
             respObj.setErrorMessage(e.getMessage());
         }
         return respObj;
@@ -213,7 +207,6 @@ public class DefaultReportCardController extends BaseController{
             respObj.setCode(Constant.SUCCESS_CODE);
             respObj.setMessage("发送成功！");
         }catch (Exception e){
-            e.printStackTrace();
             respObj.setErrorMessage(e.getMessage());
         }
         return respObj;
@@ -236,7 +229,6 @@ public class DefaultReportCardController extends BaseController{
             respObj.setMessage(examScoreDTOs);
             respObj.setCode(Constant.SUCCESS_CODE);
         }catch (Exception e){
-            e.printStackTrace();
             respObj.setErrorMessage(e.getMessage());
         }
         return respObj;
@@ -255,7 +247,6 @@ public class DefaultReportCardController extends BaseController{
             respObj.setCode(Constant.SUCCESS_CODE);
             respObj.setMessage(groupExamVersionDTO);
         }catch (Exception e){
-            e.printStackTrace();
             respObj.setErrorMessage(e.getMessage());
         }
         return respObj;
@@ -287,7 +278,6 @@ public class DefaultReportCardController extends BaseController{
                 respObj.setErrorMessage("不是最新的版本");
             }
         }catch (Exception e){
-            e.printStackTrace();
             respObj.setErrorMessage(e.getMessage());
         }
         return respObj;
@@ -312,7 +302,6 @@ public class DefaultReportCardController extends BaseController{
             respObj.setCode(Constant.SUCCESS_CODE);
             respObj.setMessage(detailDTO);
         }catch (Exception e){
-            e.printStackTrace();
             respObj.setErrorMessage(e.getMessage());
         }
         return respObj;
@@ -337,7 +326,6 @@ public class DefaultReportCardController extends BaseController{
             respObj.setCode(Constant.SUCCESS_CODE);
             respObj.setMessage(detailDTO);
         }catch (Exception e){
-            e.printStackTrace();
             respObj.setErrorMessage(e.getMessage());
         }
         return respObj;
@@ -356,7 +344,6 @@ public class DefaultReportCardController extends BaseController{
             respObj.setCode(Constant.SUCCESS_CODE);
             respObj.setMessage(examTypeDTOs);
         }catch (Exception e){
-            e.printStackTrace();
             respObj.setErrorMessage(e.getMessage());
         }
         return respObj;
@@ -384,7 +371,6 @@ public class DefaultReportCardController extends BaseController{
             respObj.setMessage(retMap);
             respObj.setCode(Constant.SUCCESS_CODE);
         }catch (Exception e){
-            e.printStackTrace();
             respObj.setErrorMessage(e.getMessage());
         }
         return respObj;

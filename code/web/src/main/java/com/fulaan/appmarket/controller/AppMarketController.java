@@ -266,7 +266,7 @@ public class AppMarketController extends BaseController{
         RespObj respObj=new RespObj(Constant.FAILD_CODE);
         try {
             respObj.setCode(Constant.SUCCESS_CODE);
-            appMarketService.addDescription(new ObjectId(id),content);
+            appMarketService.addDescription(new ObjectId(id),content,getUserId());
             respObj.setMessage("添加说明成功");
         } catch (Exception e) {
             e.printStackTrace();

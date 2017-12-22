@@ -407,7 +407,7 @@ public class BackStageController extends BaseController {
     public RespObj deleteApk(@PathVariable @ObjectIdType ObjectId apkId){
         RespObj respObj=new RespObj(Constant.FAILD_CODE);
         try{
-            appMarketService.deleteApk(apkId);
+            appMarketService.deleteApk(apkId,getUserId());
             respObj.setCode(Constant.SUCCESS_CODE);
             respObj.setMessage("删除apk文件成功");
         }catch (Exception e){
@@ -431,7 +431,7 @@ public class BackStageController extends BaseController {
             for (List<MultipartFile> multipartFiles : fileMap.values()) {
                 for(MultipartFile file:multipartFiles) {
                     System.out.println("----" + file.getOriginalFilename());
-                    appMarketService.importApkFile(file,file.getInputStream(),file.getOriginalFilename());
+                    appMarketService.importApkFile(file,file.getInputStream(),file.getOriginalFilename(),getUserId());
                 }
             }
             respObj.setCode(Constant.SUCCESS_CODE);
@@ -457,7 +457,7 @@ public class BackStageController extends BaseController {
             for (List<MultipartFile> multipartFiles : fileMap.values()) {
                 for(MultipartFile file:multipartFiles) {
                     System.out.println("----" + file.getOriginalFilename());
-                    appMarketService.importApkFile2(file, file.getInputStream(), file.getOriginalFilename());
+                    appMarketService.importApkFile2(file, file.getInputStream(), file.getOriginalFilename(),getUserId());
                 }
             }
             respObj.setCode(Constant.SUCCESS_CODE);

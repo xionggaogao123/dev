@@ -265,7 +265,8 @@ public class AppCommentService {
         List<AppOperationEntry> entries =appOperationDao.getEntryListByParentIdByStu(id,oidsa, 3, page, pageSize);
         int num = appOperationDao.countStudentLoadTimesFor(id, oidsa, 3);
         //获得该作业的所有发放学生
-        aen.setAllLoadNumber(objectIdList.size());
+        int num2 = objectIdList.size();
+        aen.setAllLoadNumber(num2);
         List<AppOperationDTO> dtos = new ArrayList<AppOperationDTO>();
         List<String> uids = new ArrayList<String>();
         uids.add(aen.getAdminId().toString());
@@ -354,7 +355,7 @@ public class AppCommentService {
         map.put("unLoadList",ulsit);
         //未提交人数
         map.put("unLoadNumber",ulsit.size());
-        aen.setLoadNumber(objectIdList.size() - ulsit.size());
+        aen.setLoadNumber(num2 - ulsit.size());
         appCommentDao.updEntry(aen);
         AppCommentDTO dtoa = new AppCommentDTO(aen);
         UserDetailInfoDTO dto12 = map3.get(dtoa.getAdminId());

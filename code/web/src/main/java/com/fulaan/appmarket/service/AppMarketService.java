@@ -11,6 +11,7 @@ import com.fulaan.appmarket.dto.AppDetailCommentDTO;
 import com.fulaan.appmarket.dto.AppDetailDTO;
 import com.fulaan.appmarket.dto.AppDetailStarStatisticDTO;
 import com.fulaan.backstage.dto.JxmAppVersionDTO;
+import com.fulaan.backstage.service.BackStageService;
 import com.fulaan.user.service.UserService;
 import com.fulaan.utils.GetApkSize;
 import com.fulaan.utils.QiniuFileUtils;
@@ -18,6 +19,7 @@ import com.pojo.appmarket.AppDetailCommentEntry;
 import com.pojo.appmarket.AppDetailEntry;
 import com.pojo.appmarket.AppDetailStarStatisticEntry;
 import com.pojo.backstage.JxmAppVersionEntry;
+import com.pojo.backstage.LogMessageType;
 import com.pojo.fcommunity.AttachmentEntry;
 import com.pojo.user.UserEntry;
 import com.sys.constants.Constant;
@@ -50,6 +52,7 @@ public class AppMarketService {
 
     private JxmAppVersionDao jxmAppVersionDao = new JxmAppVersionDao();
 
+    private BackStageService backStageService = new BackStageService();
     @Autowired
     private UserService userService;
 
@@ -194,10 +197,11 @@ public class AppMarketService {
         }
     }
 
-    public void deleteApk(ObjectId apkId)throws Exception{
+    public void deleteApk(ObjectId apkId,ObjectId userId)throws Exception{
         AppDetailEntry appDetailEntry=appDetailDao.findEntryById(apkId);
         if(null!=appDetailEntry){
             appDetailDao.removeById(apkId);
+            backStageService.addLogMessage(apkId.toString(), "删除应用："+appDetailEntry.getAppName(), LogMessageType.table.getDes(), userId.toString());
         }
         if(appDetailEntry.getType()==1){
             JxmAppVersionEntry entry1 = jxmAppVersionDao.getEntry(appDetailEntry.getAppPackageName());
@@ -205,6 +209,7 @@ public class AppMarketService {
                 jxmAppVersionDao.removeById(entry1.getID());
             }
         }
+
     }
 
     public void setOrder(ObjectId apkId,int order){
@@ -218,7 +223,7 @@ public class AppMarketService {
         }
     }
 
-    public void importApkFile(MultipartFile file, InputStream inputStream, String fileName) throws Exception {
+    public void importApkFile(MultipartFile file, InputStream inputStream, String fileName,ObjectId userId) throws Exception {
         ObjectId id = new ObjectId();
         final String anOSName = System.getProperty("os.name");
         String bathPath = Resources.getProperty("upload.file");
@@ -308,12 +313,13 @@ public class AppMarketService {
                     fileKey);
             appDetailDao.saveAppDetailEntry(newEntry);
         }
+        backStageService.addLogMessage(userId.toString(), "添加了新的第三方应用："+packageName, LogMessageType.table.getDes(), userId.toString());
         destFile.delete();
         imageFile.delete();
     }
 
 
-    public void importApkFile2(MultipartFile file, InputStream inputStream, String fileName) throws Exception {
+    public void importApkFile2(MultipartFile file, InputStream inputStream, String fileName,ObjectId userId) throws Exception {
         ObjectId id = new ObjectId();
         final String anOSName = System.getProperty("os.name");
         String bathPath = Resources.getProperty("upload.file");
@@ -415,15 +421,17 @@ public class AppMarketService {
             dto.setVersion(apkInfo.getVersionName());
             jxmAppVersionDao.addEntry(dto.buildAddEntry());
         }
+        backStageService.addLogMessage(userId.toString(), "添加了新的复兰应用："+packageName, LogMessageType.table.getDes(), userId.toString());
         destFile.delete();
         imageFile.delete();
     }
 
-    public void addDescription(ObjectId id,String content){
+    public void addDescription(ObjectId id,String content,ObjectId userId){
         AppDetailEntry entry = appDetailDao.findEntryById(id);
         if(entry != null){
             entry.setDescription(content);
             appDetailDao.saveAppDetailEntry(entry);
+            backStageService.addLogMessage(entry.getID().toString(), "修改了描述："+entry.getAppName(), LogMessageType.table.getDes(), userId.toString());
         }
     }
 }

@@ -546,6 +546,8 @@ public class Constant {
 
     public static final String COLLECTION_TRANSFER_COMMUNITY_RECORD="transfer_community_record";
 
+    public static final String COLLECTION_JXM_GROUP_CHAT_RECORD="jxm_group_chat_record";
+
 
     //------------------------------------------------------------------论坛
 

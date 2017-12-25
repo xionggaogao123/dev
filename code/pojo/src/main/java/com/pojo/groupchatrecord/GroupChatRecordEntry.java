@@ -4,6 +4,7 @@ import com.mongodb.BasicDBObject;
 import com.mongodb.DBObject;
 import com.pojo.base.BaseDBObject;
 import com.sys.constants.Constant;
+import com.sys.utils.DateTimeUtils;
 import org.bson.types.ObjectId;
 
 /**
@@ -38,9 +39,18 @@ public class GroupChatRecordEntry extends BaseDBObject{
                 .append("cn",content)
                 .append("furl",fileUrl)
                 .append("sti",System.currentTimeMillis())
+                .append("sd", DateTimeUtils.convert(System.currentTimeMillis(),DateTimeUtils.DATE_YYYY_MM_DD))
                 .append("iurl",imageUrl)
                 .append("ir", Constant.ZERO);
         setBaseEntry(basicDBObject);
+    }
+
+    public void setSubmitDay(String submitDay){
+        setSimpleValue("sd",submitDay);
+    }
+
+    public String getSubmitDay(){
+        return getSimpleStringValue("sd");
     }
 
     public void setImageUrl(String imageUrl){

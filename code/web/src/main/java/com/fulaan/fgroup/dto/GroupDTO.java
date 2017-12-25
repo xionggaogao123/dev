@@ -4,6 +4,7 @@ package com.fulaan.fgroup.dto;
 import com.fulaan.dto.MemberDTO;
 import com.pojo.fcommunity.GroupEntry;
 
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -27,8 +28,8 @@ public class GroupDTO {
     private String searchId;
     private int isM;
 
-    private List<MemberDTO> members;
-    private List<MemberDTO> managers;
+    private List<MemberDTO> members = new ArrayList<MemberDTO>();
+    private List<MemberDTO> managers = new ArrayList<MemberDTO>();
 
     private MemberDTO mine;
 

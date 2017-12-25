@@ -2,14 +2,20 @@ package com.fulaan.fgroup.service;
 
 import com.db.fcommunity.GroupDao;
 import com.db.fcommunity.MemberDao;
+import com.db.groupchatrecord.GroupChatRecordDao;
+import com.fulaan.fgroup.dto.GroupChatRecordDTO;
 import com.fulaan.fgroup.dto.GroupDTO;
 import com.fulaan.dto.MemberDTO;
 import com.fulaan.service.MemberService;
+import com.fulaan.user.service.UserService;
 import com.fulaan.util.ImageUtils;
 import com.fulaan.util.QRUtils;
 import com.mongodb.BasicDBObject;
 import com.mongodb.DBObject;
 import com.pojo.fcommunity.GroupEntry;
+import com.pojo.fcommunity.MemberEntry;
+import com.pojo.groupchatrecord.GroupChatRecordEntry;
+import com.pojo.user.UserEntry;
 import com.sys.constants.Constant;
 import com.sys.exceptions.IllegalParamException;
 import com.sys.utils.QiniuFileUtils;
@@ -37,8 +43,13 @@ public class GroupService {
     @Autowired
     private MemberService memberService;
 
+    @Autowired
+    private UserService userService;
+
     private GroupDao groupDao = new GroupDao();
     private MemberDao memberDao = new MemberDao();
+
+    private GroupChatRecordDao groupChatRecordDao = new GroupChatRecordDao();
 
     public ObjectId createGroupWithCommunity(ObjectId communityId, ObjectId owerId, String emChatId, String name,
                                              String desc, String qrUrl) throws Exception {
@@ -158,6 +169,17 @@ public class GroupService {
         return QiniuFileUtils.getPath(QiniuFileUtils.TYPE_IMAGE, fileKey.toString() + ".jpg");
     }
 
+    public List<GroupDTO> getChildrenGroups(ObjectId userId){
+        List<GroupDTO> groupDTOs = new ArrayList<GroupDTO>();
+        List<ObjectId> groupIds =memberDao.getGroupIdsByUserId(userId);
+        List<GroupEntry> groupEntries =groupDao.findByIdList(groupIds);
+        for(GroupEntry groupEntry:groupEntries){
+            groupDTOs.add(new GroupDTO(groupEntry,new ArrayList<MemberDTO>(),new ArrayList<MemberDTO>()));
+        }
+        return groupDTOs;
+    }
+
+
     private String generateGroupName(ObjectId groupId) {
         List<MemberDTO> members = memberService.getMembers(groupId, 3,null);
         String name = "";
@@ -209,5 +231,38 @@ public class GroupService {
     public void deleteGroup(ObjectId groupId) {
         groupDao.delete(groupId);
     }
+
+
+    public void saveGroupChatRecord(GroupChatRecordDTO dto){
+         groupChatRecordDao.saveGroupRecordEntry(dto.buildEntry());
+    }
+
+
+    public List<GroupChatRecordDTO> getGroupChatRecords(ObjectId groupId,
+                                                        ObjectId userId,
+                                                        int page,
+                                                        int pageSize,
+                                                        String time){
+        List<GroupChatRecordDTO> dtos = new ArrayList<GroupChatRecordDTO>();
+        MemberEntry memberEntry =memberDao.getUser(groupId,userId);
+        UserEntry userEntry = userService.findById(userId);
+
+        String userName;
+        if(null!=memberEntry){
+            userName=memberEntry.getNickName();
+        }else{
+            userName=StringUtils.isNotEmpty(userEntry.getNickName())?userEntry.getNickName():userEntry.getUserName();
+        }
+
+        List<GroupChatRecordEntry> recordEntries = groupChatRecordDao.getChatRecords(userId,groupId,time,page,pageSize);
+        for(GroupChatRecordEntry entry:recordEntries){
+            GroupChatRecordDTO dto = new GroupChatRecordDTO(entry);
+            dto.setUserName(userName);
+        }
+
+        return dtos;
+    }
+
+
 
 }

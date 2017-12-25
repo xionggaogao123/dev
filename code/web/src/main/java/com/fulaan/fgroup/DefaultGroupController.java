@@ -22,6 +22,7 @@ import com.pojo.fcommunity.MemberEntry;
 import com.pojo.user.UserDetailInfoDTO;
 import com.pojo.user.UserEntry;
 import com.pojo.utils.MongoUtils;
+import com.sys.constants.Constant;
 import com.sys.exceptions.IllegalParamException;
 import com.sys.utils.AvatarUtils;
 import com.sys.utils.RespObj;
@@ -720,6 +721,23 @@ public class DefaultGroupController extends BaseController {
         int msgCount = EaseMobAPI.getOfflineMsgCount(userId.toString());
         map.put("offlineCount", msgCount);
         return RespObj.SUCCESS(map);
+    }
+
+
+    /**
+     * 获取孩子的群组列表
+     * @param userId
+     * @return
+     */
+    @ApiOperation(value = "获取孩子的群组列表", httpMethod = "GET", produces = "application/json")
+    @ApiResponses( value = {@ApiResponse(code = 200, message = "Successful — 请求已完成",response = RespObj.class)})
+    @RequestMapping("/getChildrenGroups")
+    @ResponseBody
+    public RespObj getChildrenGroups(@ObjectIdType ObjectId userId){
+        RespObj respObj = new RespObj(Constant.SUCCESS_CODE);
+        List<GroupDTO> groupDTOs = groupService.getChildrenGroups(userId);
+        respObj.setMessage(groupDTOs);
+        return respObj;
     }
 
 

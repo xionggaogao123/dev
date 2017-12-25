@@ -5,10 +5,7 @@ import com.db.activity.FriendDao;
 import com.db.appmarket.AppDetailDao;
 import com.db.backstage.*;
 import com.db.controlphone.*;
-import com.db.fcommunity.CommunityDao;
-import com.db.fcommunity.CommunityDetailDao;
-import com.db.fcommunity.GroupDao;
-import com.db.fcommunity.MemberDao;
+import com.db.fcommunity.*;
 import com.db.operation.AppCommentDao;
 import com.db.operation.AppNoticeDao;
 import com.db.operation.AppOperationDao;
@@ -111,6 +108,8 @@ public class BackStageService {
     private FriendDao friendDao = new FriendDao();
 
     private GroupDao groupDao = new GroupDao();
+
+    private NewVersionCommunityBindDao  newVersionCommunityBindDao = new NewVersionCommunityBindDao();
 
 
 
@@ -917,6 +916,21 @@ public class BackStageService {
        // dto1.setContactId(oid.toString());
         IndexPageEntry entry = dto1.buildAddEntry();
        // indexPageDao.addEntry(entry);
+    }
+
+    public void setChildAutoFriends(final ObjectId userId,final ObjectId communityId){
+        new Thread(new Runnable() {
+            @Override
+            public void run() {
+                List<ObjectId> userIds = newVersionCommunityBindDao.getStudentListByCommunityId(communityId);
+                if (userIds.size() > 0) {
+                    List<ObjectId> uIds = new ArrayList<ObjectId>();
+                    uIds.addAll(userIds);
+                    setFriendEntry(userId, uIds);
+                    setOpposites(userId, uIds);
+                }
+            }
+        }).start();
     }
 
 

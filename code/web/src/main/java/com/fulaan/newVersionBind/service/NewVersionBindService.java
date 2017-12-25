@@ -9,6 +9,7 @@ import com.db.user.MakeOutUserRelationDao;
 import com.db.user.NewVersionBindRelationDao;
 import com.db.user.NewVersionUserRoleDao;
 import com.db.user.TeacherSubjectBindDao;
+import com.fulaan.backstage.service.BackStageService;
 import com.fulaan.cache.CacheHandler;
 import com.fulaan.mqtt.MQTTSendMsg;
 import com.fulaan.newVersionBind.dto.*;
@@ -41,6 +42,9 @@ import java.util.*;
 @Service
 public class NewVersionBindService {
 
+
+    @Autowired
+    private BackStageService backStageService;
 
     private NewVersionBindRelationDao newVersionBindRelationDao=new NewVersionBindRelationDao();
 
@@ -481,6 +485,10 @@ public class NewVersionBindService {
                     NewVersionCommunityBindEntry entry = new NewVersionCommunityBindEntry(communityId, mainUserId, new ObjectId(uId));
                     newVersionCommunityBindDao.saveEntry(entry);
                 }
+
+                //设置孩子与该班级的其他孩子自动成为好友
+                backStageService.setChildAutoFriends(new ObjectId(uId),communityId);
+
                 long current = System.currentTimeMillis();
                 //向学生端推送消息
                 try {

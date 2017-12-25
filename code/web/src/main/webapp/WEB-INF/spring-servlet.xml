@@ -157,5 +157,5 @@
     <task:executor id="taskExecutor" pool-size="100" queue-capacity="500"/>
     <task:scheduler id="taskScheduler" pool-size="100"/>
 
-
+    <import resource="spring-mybatis.xml" />
 </beans>

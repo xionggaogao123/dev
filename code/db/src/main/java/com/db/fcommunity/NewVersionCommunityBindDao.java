@@ -241,6 +241,21 @@ public class NewVersionCommunityBindDao extends BaseDao{
     }
 
 
+    public NewVersionCommunityBindEntry getVirtualBindEntry(ObjectId communityId,
+                                                            String thirdName){
+        BasicDBObject query = new BasicDBObject("cid",communityId)
+                .append("tn",thirdName)
+                .append("ir",Constant.ZERO);
+        DBObject dbObject=findOne(MongoFacroty.getAppDB(), Constant.COLLECTION_NEW_VERSION_COMMUNITY_BIND,
+                query,Constant.FIELDS);
+        if(null!=dbObject){
+            return new NewVersionCommunityBindEntry(dbObject);
+        }else{
+            return null;
+        }
+    }
+
+
     public void updateCommunityBindStatus(ObjectId communityId,
                                           ObjectId userId){
         BasicDBObject query=new BasicDBObject()

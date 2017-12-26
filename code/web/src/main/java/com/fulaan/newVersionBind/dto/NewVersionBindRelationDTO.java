@@ -39,6 +39,8 @@ public class NewVersionBindRelationDTO {
 
     private String bindCommunityStr;
 
+    private int chatCount;
+
     private List<GroupOfCommunityDTO> bindCommunities = new ArrayList<GroupOfCommunityDTO>();
 
     public NewVersionBindRelationDTO(NewVersionBindRelationEntry  entry){
@@ -84,6 +86,14 @@ public class NewVersionBindRelationDTO {
 
     public NewVersionBindRelationDTO(){
 
+    }
+
+    public int getChatCount() {
+        return chatCount;
+    }
+
+    public void setChatCount(int chatCount) {
+        this.chatCount = chatCount;
     }
 
     public List<GroupOfCommunityDTO> getBindCommunities() {

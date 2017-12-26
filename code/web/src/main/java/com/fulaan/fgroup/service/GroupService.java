@@ -3,22 +3,27 @@ package com.fulaan.fgroup.service;
 import com.db.fcommunity.GroupDao;
 import com.db.fcommunity.MemberDao;
 import com.db.groupchatrecord.GroupChatRecordDao;
+import com.db.groupchatrecord.RecordChatPersonalDao;
+import com.db.groupchatrecord.RecordTotalChatDao;
 import com.fulaan.fgroup.dto.GroupChatRecordDTO;
 import com.fulaan.fgroup.dto.GroupDTO;
 import com.fulaan.dto.MemberDTO;
+import com.fulaan.fgroup.dto.RecordChatRelationDTO;
 import com.fulaan.service.MemberService;
 import com.fulaan.user.service.UserService;
 import com.fulaan.util.ImageUtils;
 import com.fulaan.util.QRUtils;
-import com.mongodb.BasicDBObject;
-import com.mongodb.DBObject;
 import com.pojo.fcommunity.GroupEntry;
 import com.pojo.fcommunity.MemberEntry;
 import com.pojo.groupchatrecord.GroupChatRecordEntry;
+import com.pojo.groupchatrecord.RecordChatPersonalEntry;
+import com.pojo.groupchatrecord.RecordTotalChatEntry;
 import com.pojo.user.UserEntry;
 import com.sys.constants.Constant;
 import com.sys.exceptions.IllegalParamException;
+import com.sys.utils.AvatarUtils;
 import com.sys.utils.QiniuFileUtils;
+import com.sys.utils.TimeChangeUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.bson.types.ObjectId;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -30,9 +35,7 @@ import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 /**
  * Created by jerry on 2016/11/1.
@@ -49,7 +52,11 @@ public class GroupService {
     private GroupDao groupDao = new GroupDao();
     private MemberDao memberDao = new MemberDao();
 
+    private RecordChatPersonalDao recordChatPersonalDao = new RecordChatPersonalDao();
+
     private GroupChatRecordDao groupChatRecordDao = new GroupChatRecordDao();
+
+    private RecordTotalChatDao recordTotalChatDao = new RecordTotalChatDao();
 
     public ObjectId createGroupWithCommunity(ObjectId communityId, ObjectId owerId, String emChatId, String name,
                                              String desc, String qrUrl) throws Exception {
@@ -172,6 +179,7 @@ public class GroupService {
     public List<GroupDTO> getChildrenGroups(ObjectId userId){
         List<GroupDTO> groupDTOs = new ArrayList<GroupDTO>();
         List<ObjectId> groupIds =memberDao.getGroupIdsByUserId(userId);
+
         List<GroupEntry> groupEntries =groupDao.findByIdList(groupIds);
         for(GroupEntry groupEntry:groupEntries){
             groupDTOs.add(new GroupDTO(groupEntry,new ArrayList<MemberDTO>(),new ArrayList<MemberDTO>()));
@@ -233,20 +241,151 @@ public class GroupService {
     }
 
 
+    public Map<String,Object> getChildrenRelation(ObjectId userId,
+                                                    int page,
+                                                    int pageSize){
+        Map<String,Object> result = new HashMap<String, Object>();
+        Set<ObjectId> groupIds = new HashSet<ObjectId>();
+        Set<ObjectId> userIds = new HashSet<ObjectId>();
+        List<RecordChatRelationDTO> dtos = new ArrayList<RecordChatRelationDTO>();
+        List<RecordChatPersonalEntry> entries = recordChatPersonalDao.getChatEntries(userId,page,pageSize);
+        for(RecordChatPersonalEntry entry:entries){
+            if(entry.getChatType()==Constant.ONE){
+                groupIds.add(entry.getReceiveId());
+            }else{
+                userIds.add(entry.getReceiveId());
+            }
+        }
+        Map<ObjectId,GroupEntry> groupEntryMap = groupDao.getGroupEntries(new ArrayList<ObjectId>(groupIds));
+        Map<ObjectId,UserEntry> userEntryMap =userService.getUserEntryMap(userIds,Constant.FIELDS);
+        for(RecordChatPersonalEntry entry:entries){
+            RecordChatRelationDTO
+                    dto =new RecordChatRelationDTO();
+            if(entry.getChatType()==Constant.ONE){
+                dto.setGroupId(entry.getReceiveId().toString());
+                GroupEntry groupEntry = groupEntryMap.get(entry.getReceiveId());
+                if(null!=groupEntry){
+                    dto.setGroupName(groupEntry.getName());
+                    dto.setImageUrl(groupEntry.getLogo());
+                }
+            }else{
+                dto.setUserId(entry.getReceiveId().toString());
+                UserEntry userEntry= userEntryMap.get(entry.getReceiveId());
+                if(null!=userEntry){
+                    dto.setUserName(userEntry.getUserName());
+                    dto.setImageUrl(AvatarUtils.getAvatar2(userEntry.getAvatar(),userEntry.getRole(),userEntry.getSex()));
+                }
+            }
+            dto.setTimeExpression(TimeChangeUtils.getChangeTime(entry.getUpdateTime()));
+            dtos.add(dto);
+        }
+        int count=recordChatPersonalDao.countChatEntries(userId);
+        result.put("list",dtos);
+        result.put("count",count);
+        result.put("page",page);
+        result.put("pageSize",pageSize);
+        return result;
+    }
+
     public void saveGroupChatRecord(GroupChatRecordDTO dto){
          groupChatRecordDao.saveGroupRecordEntry(dto.buildEntry());
+         if(dto.getChatType()== Constant.TWO
+                 &&StringUtils.isNotEmpty(dto.getReceiveId())){
+             RecordChatPersonalEntry one=recordChatPersonalDao.getChatEntry(new ObjectId(dto.getUserId()),
+                     new ObjectId(dto.getReceiveId()));
+             if(null==one){
+                 recordChatPersonalDao.saveRecordEntry(new RecordChatPersonalEntry(
+                         new ObjectId(dto.getUserId()),new ObjectId(dto.getReceiveId()),
+                         Constant.TWO
+                 ));
+                 RecordTotalChatEntry chatEntry = recordTotalChatDao.getEntryByUserId(new ObjectId(dto.getUserId()));
+                 if(null!=chatEntry){
+                     recordTotalChatDao.updateEntry(new ObjectId(dto.getUserId()));
+                 }else{
+                     recordTotalChatDao.saveEntry(new RecordTotalChatEntry(new ObjectId(dto.getUserId())));
+                 }
+             }else{
+                 one.setUpdateTime(System.currentTimeMillis());
+                 recordChatPersonalDao.saveRecordEntry(one);
+             }
+             RecordChatPersonalEntry two=recordChatPersonalDao.getChatEntry(new ObjectId(dto.getReceiveId()),
+                     new ObjectId(dto.getUserId()));
+             if(null==two){
+                 recordChatPersonalDao.saveRecordEntry(new RecordChatPersonalEntry(
+                         new ObjectId(dto.getReceiveId()),new ObjectId(dto.getUserId()),
+                         Constant.TWO
+                 ));
+                 RecordTotalChatEntry chatEntry = recordTotalChatDao.getEntryByUserId(new ObjectId(dto.getReceiveId()));
+                 if(null!=chatEntry){
+                     recordTotalChatDao.updateEntry(new ObjectId(dto.getReceiveId()));
+                 }else{
+                     recordTotalChatDao.saveEntry(new RecordTotalChatEntry(new ObjectId(dto.getReceiveId())));
+                 }
+             }else{
+                 two.setUpdateTime(System.currentTimeMillis());
+                 recordChatPersonalDao.saveRecordEntry(two);
+             }
+
+
+         }else if(dto.getChatType()==Constant.ONE&&
+                 StringUtils.isNotEmpty(dto.getGroupId())){
+             RecordChatPersonalEntry three=recordChatPersonalDao.getChatEntry(new ObjectId(dto.getUserId()),
+                     new ObjectId(dto.getGroupId()));
+             if(null==three) {
+                 recordChatPersonalDao.saveRecordEntry(new RecordChatPersonalEntry(
+                         new ObjectId(dto.getUserId()), new ObjectId(dto.getGroupId()),
+                         Constant.ONE
+                 ));
+                 RecordTotalChatEntry chatEntry = recordTotalChatDao.getEntryByUserId(new ObjectId(dto.getUserId()));
+                 if(null!=chatEntry){
+                     recordTotalChatDao.updateEntry(new ObjectId(dto.getUserId()));
+                 }else{
+                     recordTotalChatDao.saveEntry(new RecordTotalChatEntry(new ObjectId(dto.getUserId())));
+                 }
+             }else{
+                 three.setUpdateTime(System.currentTimeMillis());
+                 recordChatPersonalDao.saveRecordEntry(three);
+             }
+         }
     }
 
 
-    public List<GroupChatRecordDTO> getGroupChatRecords(ObjectId groupId,
+    public Map<String,Object> getPersonalChatRecords(ObjectId userId,
+                                                     ObjectId receiveId,
+                                                     int page,
+                                                     int pageSize){
+        Map<String,Object> result = new HashMap<String,Object>();
+        List<GroupChatRecordDTO> dtos = new ArrayList<GroupChatRecordDTO>();
+        UserEntry userEntry = userService.findById(userId);
+        UserEntry receiveEntry = userService.findById(receiveId);
+
+        List<GroupChatRecordEntry> recordEntries = groupChatRecordDao.getPersonalChatRecords(userId,receiveId,page,pageSize);
+        for(GroupChatRecordEntry entry:recordEntries){
+            GroupChatRecordDTO dto = new GroupChatRecordDTO(entry);
+            if(entry.getUserId().equals(userEntry.getID())){
+                dto.setUserName(StringUtils.isNotEmpty(userEntry.getNickName())?userEntry.getNickName():userEntry.getUserName());
+            }else{
+                dto.setUserName(StringUtils.isNotEmpty(receiveEntry.getNickName())?receiveEntry.getNickName():receiveEntry.getUserName());
+            }
+            dtos.add(dto);
+        }
+        int count=groupChatRecordDao.countPersonalChatRecords(userId,receiveId);
+        result.put("list",dtos);
+        result.put("count",count);
+        result.put("page",page);
+        result.put("pageSize",pageSize);
+        return result;
+    }
+
+
+    public Map<String,Object> getGroupChatRecords(ObjectId groupId,
                                                         ObjectId userId,
                                                         int page,
-                                                        int pageSize,
-                                                        String time){
+                                                        int pageSize){
+        Map<String,Object> result= new HashMap<String,Object>();
         List<GroupChatRecordDTO> dtos = new ArrayList<GroupChatRecordDTO>();
         MemberEntry memberEntry =memberDao.getUser(groupId,userId);
         UserEntry userEntry = userService.findById(userId);
-
         String userName;
         if(null!=memberEntry){
             userName=memberEntry.getNickName();
@@ -254,13 +393,18 @@ public class GroupService {
             userName=StringUtils.isNotEmpty(userEntry.getNickName())?userEntry.getNickName():userEntry.getUserName();
         }
 
-        List<GroupChatRecordEntry> recordEntries = groupChatRecordDao.getChatRecords(userId,groupId,time,page,pageSize);
+        List<GroupChatRecordEntry> recordEntries = groupChatRecordDao.getGroupChatRecords(userId,groupId,page,pageSize);
         for(GroupChatRecordEntry entry:recordEntries){
             GroupChatRecordDTO dto = new GroupChatRecordDTO(entry);
             dto.setUserName(userName);
+            dtos.add(dto);
         }
-
-        return dtos;
+        int count=groupChatRecordDao.countGroupChatRecords(userId,groupId);
+        result.put("list",dtos);
+        result.put("count",count);
+        result.put("page",page);
+        result.put("pageSize",pageSize);
+        return result;
     }
 
 

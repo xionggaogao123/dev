@@ -2,6 +2,7 @@ package com.fulaan.fgroup.dto;
 
 import cn.jiguang.commom.utils.StringUtils;
 import com.pojo.groupchatrecord.GroupChatRecordEntry;
+import com.sys.constants.Constant;
 import com.sys.utils.DateTimeUtils;
 import org.bson.types.ObjectId;
 
@@ -21,6 +22,9 @@ public class GroupChatRecordDTO {
     private String timeStr;
     private String submitDay;
 
+    private String receiveId;
+    private int chatType;
+
     public GroupChatRecordDTO(){
 
     }
@@ -28,19 +32,38 @@ public class GroupChatRecordDTO {
     public GroupChatRecordEntry buildEntry(){
         ObjectId gId = StringUtils.isNotEmpty(groupId)?new ObjectId(groupId):null;
         ObjectId uId = StringUtils.isNotEmpty(userId)?new ObjectId(userId):null;
-        return new GroupChatRecordEntry(gId,uId,type,content,fileUrl,imageUrl);
+        ObjectId rId = StringUtils.isNotEmpty(receiveId)?new ObjectId(receiveId):null;
+        return new GroupChatRecordEntry(gId,uId,rId,type,chatType,content,fileUrl,imageUrl);
     }
 
     public GroupChatRecordDTO(GroupChatRecordEntry entry){
         this.id=entry.getID().toString();
-        this.groupId=entry.getGroupId().toString();
+        this.groupId=null!=entry.getGroupId()?entry.getGroupId().toString(): Constant.EMPTY;
         this.userId=entry.getUserId().toString();
+        this.receiveId=null!=entry.getReceiveId()?entry.getReceiveId().toString():Constant.EMPTY;
+        this.chatType=entry.getChatType();
         this.type=entry.getType();
         this.content=entry.getContent();
         this.fileUrl=entry.getFileUrl();
         this.imageUrl=entry.getImageUrl();
         this.submitDay=entry.getSubmitDay();
         this.timeStr= DateTimeUtils.convert(entry.getSubmitTime(),DateTimeUtils.DATE_HH_MM_SS);
+    }
+
+    public String getReceiveId() {
+        return receiveId;
+    }
+
+    public void setReceiveId(String receiveId) {
+        this.receiveId = receiveId;
+    }
+
+    public int getChatType() {
+        return chatType;
+    }
+
+    public void setChatType(int chatType) {
+        this.chatType = chatType;
     }
 
     public String getSubmitDay() {

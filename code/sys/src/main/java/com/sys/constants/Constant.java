@@ -548,6 +548,10 @@ public class Constant {
 
     public static final String COLLECTION_JXM_GROUP_CHAT_RECORD="jxm_group_chat_record";
 
+    public static final String COLLECTION_JXM_RECORD_CHAT_PERSONAL="jxm_record_chat_user";
+
+    public static final String COLLECTION_JXM_RECORD_TOTAL_CHAT="jxm_record_total_chat";
+
 
     //------------------------------------------------------------------论坛
 

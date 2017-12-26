@@ -3,6 +3,7 @@ package com.fulaan.newVersionBind.service;
 import com.db.fcommunity.CommunityDao;
 import com.db.fcommunity.MemberDao;
 import com.db.fcommunity.NewVersionCommunityBindDao;
+import com.db.groupchatrecord.RecordTotalChatDao;
 import com.db.newVersionGrade.NewVersionGradeDao;
 import com.db.newVersionGrade.NewVersionSubjectDao;
 import com.db.user.MakeOutUserRelationDao;
@@ -23,6 +24,7 @@ import com.pojo.controlphone.MQTTType;
 import com.pojo.fcommunity.CommunityEntry;
 import com.pojo.fcommunity.MemberEntry;
 import com.pojo.fcommunity.NewVersionCommunityBindEntry;
+import com.pojo.groupchatrecord.RecordTotalChatEntry;
 import com.pojo.newVersionGrade.NewVersionGradeEntry;
 import com.pojo.user.*;
 import com.sys.constants.Constant;
@@ -63,6 +65,8 @@ public class NewVersionBindService {
     private CommunityDao communityDao = new CommunityDao();
 
     private MemberDao memberDao = new MemberDao();
+
+    private RecordTotalChatDao recordTotalChatDao = new RecordTotalChatDao();
 
     @Autowired
     private UserService userService;
@@ -243,6 +247,7 @@ public class NewVersionBindService {
         }
         KeyValue keyValue = wrongQuestionService.getCurrTermType();
         Map<ObjectId,UserEntry> userEntryMap=userService.getUserEntryMap(userIds,Constant.FIELDS);
+        Map<ObjectId,RecordTotalChatEntry> recordTotalChatEntryMap =recordTotalChatDao.getChatMapByIds(userIds);
         Map<ObjectId,NewVersionGradeEntry> newVersionGradeEntryMap=newVersionGradeDao.getNewVersionGradeMap(userIds,keyValue.getValue());
         Map<ObjectId,Set<ObjectId>> userBindCommunityMap=newVersionCommunityBindDao.getUserEntryMapByUserId(userIds);
         Set<ObjectId> communityIds=new HashSet<ObjectId>();
@@ -307,6 +312,11 @@ public class NewVersionBindService {
                 if (null != sv && !sv.isEmpty()) {
                     dto.setLogin(true);
                 }
+            }
+            dto.setChatCount(Constant.ZERO);
+            RecordTotalChatEntry recordTotalChatEntry =recordTotalChatEntryMap.get(userId);
+            if(null!=recordTotalChatEntry){
+                dto.setChatCount(recordTotalChatEntry.getChatCount());
             }
             dtos.add(dto);
         }

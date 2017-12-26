@@ -6,10 +6,7 @@ import com.db.fcommunity.NewVersionCommunityBindDao;
 import com.db.indexPage.WebHomePageDao;
 import com.db.operation.AppCommentDao;
 import com.db.operation.AppNoticeDao;
-import com.db.reportCard.GroupExamDetailDao;
-import com.db.reportCard.GroupExamUserRecordDao;
-import com.db.reportCard.RecordLevelEvaluateDao;
-import com.db.reportCard.RecordScoreEvaluateDao;
+import com.db.reportCard.*;
 import com.db.user.GenerateUserCodeDao;
 import com.db.user.UserDao;
 import com.db.wrongquestion.ExamTypeDao;
@@ -71,6 +68,7 @@ public class WebHomePageService {
 
     private GenerateUserCodeDao generateUserCodeDao = new GenerateUserCodeDao();
 
+    private VirtualUserDao virtualUserDao = new VirtualUserDao();
 
     private RedDotService redDotService  = new RedDotService();
 
@@ -333,6 +331,7 @@ public class WebHomePageService {
                     .findMapInfo(new ArrayList<ObjectId>(communityIds));
             Map<ObjectId, UserEntry> mainUserEntryMap = userDao.getUserEntryMap(userIds, Constant.FIELDS);
             Map<ObjectId, UserEntry> childUserEntryMap = userDao.getUserEntryMap(childUserIds, Constant.FIELDS);
+            Map<ObjectId, VirtualUserEntry> virtualUserEntryMap = virtualUserDao.getVirtualUserMap(new ArrayList<ObjectId>(childUserIds));
             Map<ObjectId, SubjectClassEntry> subjectClassEntryMap = subjectClassDao.getSubjectClassEntryMap(new ArrayList<ObjectId>(subjectIds));
             Map<ObjectId, ExamTypeEntry> examTypeEntryMap = examTypeDao.getExamTypeEntryMap(new ArrayList<ObjectId>(examTypeIds));
             for (GroupExamUserRecordEntry userRecordEntry : userRecordEntries) {
@@ -341,9 +340,12 @@ public class WebHomePageService {
                     GroupExamDetailDTO detailDTO = new GroupExamDetailDTO(detailEntry);
                     detailDTO.setOwner(true);
                     UserEntry userEntry = childUserEntryMap.get(userRecordEntry.getUserId());
+                    VirtualUserEntry virtualUserEntry = virtualUserEntryMap.get(userRecordEntry.getUserId());
                     if (null != userEntry) {
                         detailDTO.setChildUserName(
                                 org.apache.commons.lang3.StringUtils.isNotBlank(userEntry.getNickName())?userEntry.getNickName():userEntry.getUserName());
+                    }else if(null !=virtualUserEntry){
+                        detailDTO.setChildUserName(virtualUserEntry.getUserName());
                     }
                     detailDTO.setChildUserId(userRecordEntry.getUserId().toString());
                     CommunityEntry communityEntry = communityEntryMap.get(userRecordEntry.getCommunityId());

@@ -10,7 +10,9 @@ import com.sys.constants.Constant;
 import org.bson.types.ObjectId;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 /**
  * Created by scott on 2017/11/16.
@@ -35,6 +37,17 @@ public class VirtualUserDao extends BaseDao{
         update(MongoFacroty.getAppDB(), Constant.COLLECTION_REPORT_CARD_VIRTUAL_USER,query,updateValue);
     }
 
+
+    public VirtualUserEntry findById(ObjectId itemId){
+        BasicDBObject query=new BasicDBObject(Constant.ID,itemId);
+        DBObject dbObject =findOne(MongoFacroty.getAppDB(), Constant.COLLECTION_REPORT_CARD_VIRTUAL_USER,query,Constant.FIELDS);
+        if(null!=dbObject){
+            return new VirtualUserEntry(dbObject);
+        }else{
+            return null;
+        }
+    }
+
     public void removeItemById(ObjectId itemId){
         BasicDBObject query=new BasicDBObject(Constant.ID,itemId);
         BasicDBObject updateValue=new BasicDBObject(Constant.MONGO_SET,new BasicDBObject("ir",Constant.ONE));
@@ -47,6 +60,32 @@ public class VirtualUserDao extends BaseDao{
                 .append("ir",Constant.ZERO);
         BasicDBObject updateValue=new BasicDBObject(Constant.MONGO_SET,new BasicDBObject("ir",Constant.ONE));
         update(MongoFacroty.getAppDB(), Constant.COLLECTION_REPORT_CARD_VIRTUAL_USER,query,updateValue);
+    }
+
+    public VirtualUserEntry getVirtualUserByUserId(ObjectId userId){
+        BasicDBObject query=new BasicDBObject()
+                .append("uid",userId);
+        DBObject dbObject = findOne(MongoFacroty.getAppDB(), Constant.COLLECTION_REPORT_CARD_VIRTUAL_USER,query,Constant.FIELDS);
+        if(null!=dbObject){
+            return new VirtualUserEntry(dbObject);
+        }else{
+            return null;
+        }
+    }
+
+    public Map<ObjectId,VirtualUserEntry> getVirtualUserMap(List<ObjectId> userIds){
+        Map<ObjectId,VirtualUserEntry> virtualUserEntryMap = new HashMap<ObjectId, VirtualUserEntry>();
+        BasicDBObject query=new BasicDBObject()
+                .append("uid",new BasicDBObject(Constant.MONGO_IN,userIds));
+        List<DBObject> dbObjectList=find(MongoFacroty.getAppDB(), Constant.COLLECTION_REPORT_CARD_VIRTUAL_USER,
+                query,Constant.FIELDS);
+        if(null!=dbObjectList&&!dbObjectList.isEmpty()){
+            for(DBObject dbObject:dbObjectList){
+                VirtualUserEntry entry=new VirtualUserEntry(dbObject);
+                virtualUserEntryMap.put(entry.getUserId(),entry);
+            }
+        }
+        return virtualUserEntryMap;
     }
 
     public List<VirtualUserEntry> getAllVirtualUsers(ObjectId communityId){

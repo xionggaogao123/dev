@@ -194,15 +194,17 @@ public class ReportCardService {
         Map<ObjectId,List<Integer>> userTypeMap = new HashMap<ObjectId, List<Integer>>();
         Map<ObjectId,Long> signTime = new HashMap<ObjectId, Long>();
         for(ReportCardSignEntry signEntry:signEntries){
-            signTime.put(signEntry.getParentId(),signEntry.getSignTime());
-            if(null!=userTypeMap.get(signEntry.getParentId())){
-                List<Integer> types=userTypeMap.get(signEntry.getParentId());
-                types.add(signEntry.getType());
-                userTypeMap.put(signEntry.getParentId(),types);
-            }else{
-                List<Integer> types=new ArrayList<Integer>();
-                types.add(signEntry.getType());
-                userTypeMap.put(signEntry.getParentId(),types);
+            if(null!=signEntry.getParentId()) {
+                signTime.put(signEntry.getParentId(), signEntry.getSignTime());
+                if (null != userTypeMap.get(signEntry.getParentId())) {
+                    List<Integer> types = userTypeMap.get(signEntry.getParentId());
+                    types.add(signEntry.getType());
+                    userTypeMap.put(signEntry.getParentId(), types);
+                } else {
+                    List<Integer> types = new ArrayList<Integer>();
+                    types.add(signEntry.getType());
+                    userTypeMap.put(signEntry.getParentId(), types);
+                }
             }
         }
         Set<ObjectId> signIds = new HashSet<ObjectId>();
@@ -400,6 +402,7 @@ public class ReportCardService {
                 }
             }
             Map<ObjectId, UserEntry> userEntryMap = userService.getUserEntryMap(uIds, Constant.FIELDS);
+            Map<ObjectId, VirtualUserEntry> virtualUserEntryMap = virtualUserDao.getVirtualUserMap(new ArrayList<ObjectId>(uIds));
             Map<ObjectId, GroupExamDetailEntry> examDetailEntryMap = groupExamDetailDao.getGroupExamDetailMap(new ArrayList<ObjectId>(groupExamIds));
             Map<ObjectId, CommunityEntry> communityEntryMap = communityDao.findMapInfo(new ArrayList<ObjectId>(communityIds));
             Map<ObjectId, SubjectClassEntry> subjectClassEntryMap = subjectClassDao.getSubjectClassEntryMap(new ArrayList<ObjectId>(subjectIds));
@@ -422,8 +425,11 @@ public class ReportCardService {
                 if (null != detailEntry) {
                     GroupExamDetailDTO detailDTO = new GroupExamDetailDTO(detailEntry);
                     UserEntry userEntry = userEntryMap.get(recordEntry.getUserId());
+                    VirtualUserEntry virtualUserEntry = virtualUserEntryMap.get(recordEntry.getUserId());
                     if (null != userEntry) {
                         detailDTO.setChildUserName(StringUtils.isNotBlank(userEntry.getNickName())?userEntry.getNickName():userEntry.getUserName());
+                    }else if(null!=virtualUserEntry){
+                        detailDTO.setChildUserName(StringUtils.isNotBlank(virtualUserEntry.getUserName())?virtualUserEntry.getUserName():Constant.EMPTY);
                     }
                     detailDTO.setChildUserId(recordEntry.getUserId().toString());
                     CommunityEntry communityEntry = communityEntryMap.get(recordEntry.getCommunityId());
@@ -570,7 +576,6 @@ public class ReportCardService {
      */
     public String saveGroupExamDetail(GroupExamDetailDTO dto, ObjectId userId) throws Exception {
 
-
         String id = dto.getId();
         dto.setUserId(userId.toString());
         dto.setSignedCount(Constant.ZERO);
@@ -585,13 +590,13 @@ public class ReportCardService {
             List<NewVersionCommunityBindEntry> entries
                     = newVersionCommunityBindDao.getStudentIdListByCommunityId(new ObjectId(communityId));
             for (NewVersionCommunityBindEntry bindEntry : entries) {
-                userIds.add(bindEntry.getUserId());
+//                userIds.add(bindEntry.getUserId());
                 userMainIds.put(bindEntry.getUserId(),bindEntry.getMainUserId());
             }
-//            List<VirtualUserEntry> virtualUserEntries=virtualUserDao.getAllVirtualUsers(new ObjectId(communityId));
-//            for (VirtualUserEntry virtualUserEntry : virtualUserEntries) {
-//                userIds.add(virtualUserEntry.getUserId());
-//            }
+            List<VirtualUserEntry> virtualUserEntries=virtualUserDao.getAllVirtualUsers(new ObjectId(communityId));
+            for (VirtualUserEntry virtualUserEntry : virtualUserEntries) {
+                userIds.add(virtualUserEntry.getUserId());
+            }
 
             ObjectId groupExamDetailId = groupExamDetailDao.saveGroupExamDetailEntry(dto.buildEntry());
             List<GroupExamUserRecordEntry> userRecordEntries = new ArrayList<GroupExamUserRecordEntry>();
@@ -850,6 +855,7 @@ public class ReportCardService {
             detailDTO.setChildUserId(examUserRecordEntry.getUserId().toString());
            // NewVersionCommunityBindEntry bindEntry = newVersionCommunityBindDao.getEntry(examUserRecordEntry.getCommunityId(), examUserRecordEntry.getUserId());
             UserEntry userEntry = userService.findById(examUserRecordEntry.getUserId());
+            VirtualUserEntry virtualUserEntry = virtualUserDao.getVirtualUserByUserId(examUserRecordEntry.getUserId());
            // if (bindEntry != null && bindEntry.getThirdName() != null && !bindEntry.getThirdName().equals("")) {
             //    detailDTO.setChildUserName(bindEntry.getThirdName());
             //} else {
@@ -857,6 +863,8 @@ public class ReportCardService {
                 detailDTO.setChildUserName(StringUtils.isNotBlank(userEntry.getNickName()) ?
                                 userEntry.getNickName() : userEntry.getUserName()
                 );
+            }else if(null!=virtualUserEntry){
+                detailDTO.setChildUserName(virtualUserEntry.getUserName());
             }
            // }
             if (detailDTO.getRecordScoreType() == Constant.ONE) {
@@ -985,10 +993,21 @@ public class ReportCardService {
     public void editVirtualUserItem(ObjectId itemId,
                                     String userName,
                                     String userNumber) {
-        virtualUserDao.editVirtualUserItem(itemId, userName, userNumber);
+//        virtualUserDao.editVirtualUserItem(itemId, userName, userNumber);
+        VirtualUserEntry entry = virtualUserDao.findById(itemId);
+        if(null!=entry){
+            entry.setUserName(userName);
+            entry.setUserNumber(userNumber);
+            NewVersionCommunityBindEntry bindEntry = newVersionCommunityBindDao
+                    .getVirtualBindEntry(entry.getCommunityId(),entry.getUserName());
+            if(null!=bindEntry){
+                entry.setUserId(bindEntry.getUserId());
+            }
+            virtualUserDao.saveVirualEntry(entry);
+        }
     }
 
-    public void importUserTemplate(InputStream inputStream, String communityId,String fileName) throws Exception {
+    public int importUserTemplate(InputStream inputStream, String communityId,String fileName) throws Exception {
         HSSFWorkbook workbook = null;
         workbook = new HSSFWorkbook(inputStream);
         HSSFSheet sheet = workbook.getSheet(workbook.getSheetName(0));
@@ -1005,10 +1024,34 @@ public class ReportCardService {
                 virtualUserDTOs.add(v);
             }
         }
-        dealData(virtualUserDTOs,fileName);
+        return dealData(virtualUserDTOs,fileName);
     }
 
-    public void dealData(List<VirtualUserDTO> virtualUserDTOs,String fileName) {
+    public List<VirtualUserDTO> matchInputCount(String communityId){
+        Map<String, ObjectId> userBindMap = new HashMap<String, ObjectId>();
+        List<VirtualUserDTO> dtos = new ArrayList<VirtualUserDTO>();
+        List<NewVersionCommunityBindEntry>
+                bindEntries = newVersionCommunityBindDao.getStudentIdListByCommunityId(new ObjectId(communityId));
+        for (NewVersionCommunityBindEntry bindEntry : bindEntries) {
+            if (StringUtils.isNotEmpty(bindEntry.getThirdName())) {
+                userBindMap.put(bindEntry.getThirdName(), bindEntry.getUserId());
+            }
+        }
+        List<VirtualUserEntry> virtualUserEntries=virtualUserDao.getAllVirtualUsers(new ObjectId(communityId));
+        for (VirtualUserEntry virtualUserEntry : virtualUserEntries) {
+            String userName = virtualUserEntry.getUserName();
+            if(null!=userBindMap.get(userName)){
+                virtualUserEntry.setUserId(userBindMap.get(userName));
+                virtualUserDao.saveVirualEntry(virtualUserEntry);
+            }else{
+                dtos.add(new VirtualUserDTO(virtualUserEntry));
+            }
+        }
+        return dtos;
+    }
+
+    public int dealData(List<VirtualUserDTO> virtualUserDTOs,String fileName) {
+        int count=0;
         if (virtualUserDTOs.size() > 0) {
             ObjectId communityId = new ObjectId(virtualUserDTOs.get(0).getCommunityId());
             List<NewVersionCommunityBindEntry>
@@ -1027,6 +1070,7 @@ public class ReportCardService {
                             userIds.get(userName), virtualUserDTO.getUserName());
                     entries.add(userEntry);
                 } else {
+                    count++;
                     VirtualUserEntry userEntry = new VirtualUserEntry(communityId, virtualUserDTO.getUserNumber(),
                             new ObjectId(), virtualUserDTO.getUserName());
                     entries.add(userEntry);
@@ -1046,6 +1090,7 @@ public class ReportCardService {
                 virtualUserDao.saveEntries(entries);
             }
         }
+        return count;
     }
 
     public void importUserControl(InputStream inputStream,String fileName) throws Exception {

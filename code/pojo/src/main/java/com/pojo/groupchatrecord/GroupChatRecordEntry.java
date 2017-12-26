@@ -11,12 +11,14 @@ import org.bson.types.ObjectId;
  * Created by scott on 2017/12/25.
  * {
  *     groupId:群组Id
- *     userId:用户Id
+ *     userId:用户Id（发话人）
+ *     receivedId:接收人Id(接话人)
  *     submitTime:提交时间
  *     type:提交类型 1:文本 2:图片 3:视频 4:附件
  *     content:文本内容
  *     fileUrl:文件路径
  *     imageUrl:图片路径
+ *     chatType:聊天类型 1:群聊天 2:单人聊
  *
  * }
  */
@@ -28,12 +30,16 @@ public class GroupChatRecordEntry extends BaseDBObject{
 
     public GroupChatRecordEntry(ObjectId groupId,
                                 ObjectId userId,
+                                ObjectId receiveId,
                                 int type,
+                                int chatType,
                                 String content,
                                 String fileUrl,
                                 String imageUrl){
         BasicDBObject basicDBObject = new BasicDBObject()
                 .append("gid",groupId)
+                .append("rid",receiveId)
+                .append("ct",chatType)
                 .append("uid",userId)
                 .append("ty",type)
                 .append("cn",content)
@@ -43,6 +49,22 @@ public class GroupChatRecordEntry extends BaseDBObject{
                 .append("iurl",imageUrl)
                 .append("ir", Constant.ZERO);
         setBaseEntry(basicDBObject);
+    }
+
+    public void setChatType(int chatType){
+        setSimpleValue("ct",chatType);
+    }
+
+    public int getChatType(){
+        return getSimpleIntegerValue("ct");
+    }
+
+    public void setReceiveId(ObjectId receiveId){
+        setSimpleValue("rid",receiveId);
+    }
+
+    public ObjectId getReceiveId(){
+        return getSimpleObjecIDValue("rid");
     }
 
     public void setSubmitDay(String submitDay){

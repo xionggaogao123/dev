@@ -7,6 +7,7 @@ import com.sys.constants.Constant;
 import com.sys.utils.RespObj;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
@@ -25,7 +26,7 @@ public class AppVoteController extends BaseController{
 
     @RequestMapping("/saveAppVote")
     @ResponseBody
-    public RespObj saveAppVote(AppVoteDTO appVoteDTO){
+    public RespObj saveAppVote(@RequestBody AppVoteDTO appVoteDTO){
         RespObj respObj=new RespObj(Constant.FAILD_CODE);
         try{
             appVoteService.saveAppVote(appVoteDTO);

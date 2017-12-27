@@ -46,6 +46,9 @@ public class AppVoteDTO {
     private String deadTime;
     private String avatar;
 
+    private boolean isOwner;
+    private String submitTime;
+
 
     public AppVoteDTO() {
 
@@ -138,6 +141,22 @@ public class AppVoteDTO {
         this.commentCount = appVoteEntry.getCommentCount();
         this.deadTime = DateTimeUtils.convert(appVoteEntry.getVoteDeadTime(), DateTimeUtils.DATE_YYYY_MM_DD_HH_MM_SS_H);
         this.voteCount = appVoteEntry.getVoteCount();
+    }
+
+    public String getSubmitTime() {
+        return submitTime;
+    }
+
+    public void setSubmitTime(String submitTime) {
+        this.submitTime = submitTime;
+    }
+
+    public boolean isOwner() {
+        return isOwner;
+    }
+
+    public void setOwner(boolean owner) {
+        isOwner = owner;
     }
 
     public int getVoteDeadFlag() {

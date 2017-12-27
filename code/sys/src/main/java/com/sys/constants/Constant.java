@@ -552,6 +552,8 @@ public class Constant {
 
     public static final String COLLECTION_JXM_RECORD_TOTAL_CHAT="jxm_record_total_chat";
 
+    public static final String COLLECTION_JXM_APP_ACTIVITY="jxm_app_activity";
+
 
     //------------------------------------------------------------------论坛
 

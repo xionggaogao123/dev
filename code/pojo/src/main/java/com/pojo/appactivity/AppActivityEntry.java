@@ -1,10 +1,11 @@
-package com.pojo.appvote;
+package com.pojo.appactivity;
 
 import com.mongodb.BasicDBList;
 import com.mongodb.BasicDBObject;
 import com.mongodb.DBObject;
 import com.pojo.base.BaseDBObject;
 import com.pojo.fcommunity.AttachmentEntry;
+import com.pojo.fcommunity.VideoEntry;
 import com.pojo.utils.MongoUtils;
 import com.sys.constants.Constant;
 import org.bson.types.ObjectId;
@@ -13,33 +14,25 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
- * Created by scott on 2017/11/6.
- * * vmc:voteMaxCount选项个数
- * vdt:voteDeadTime投票截止时间
- * vt:voteType投票类型
+ * Created by scott on 2017/12/27.
  */
-public class AppVoteEntry extends BaseDBObject{
+public class AppActivityEntry extends BaseDBObject{
 
-
-    public AppVoteEntry(DBObject dbObject){
+    public AppActivityEntry(DBObject dbObject){
         setBaseEntry((BasicDBObject)dbObject);
     }
 
-    public AppVoteEntry(ObjectId subjectId,
-                        ObjectId userId,
-                        String subjectName,
-                        String title,
-                        String content,
-                        ObjectId groupId,
-                        ObjectId communityId,
-                        String groupName,
-                        List<AttachmentEntry> imageList,
-                        List<String> voteContent,
-                        int voteMaxCount,
-                        long voteDeadTime,
-                        int voteType,
-                        int visiblePermission
-                        ){
+    public AppActivityEntry(ObjectId subjectId,
+                            ObjectId userId,
+                            String subjectName,
+                            String title,
+                            String content,
+                            ObjectId groupId,
+                            ObjectId communityId,
+                            String groupName,
+                            List<AttachmentEntry> imageList,
+                            List<VideoEntry> videoEntries,
+                            int visiblePermission){
         BasicDBObject basicDBObject=new BasicDBObject()
                 .append("sud",subjectId)
                 .append("uid",userId)
@@ -50,14 +43,11 @@ public class AppVoteEntry extends BaseDBObject{
                 .append("gn",groupName)
                 .append("cid",communityId)
                 .append("il", MongoUtils.fetchDBObjectList(imageList))
-                .append("vt",MongoUtils.convert(voteContent))
-                .append("vmc",voteMaxCount)
-                .append("vdt",voteDeadTime)
-                .append("vt",voteType)
+                .append("vl", MongoUtils.fetchDBObjectList(videoEntries))
                 .append("vp",visiblePermission)
                 .append("sti",System.currentTimeMillis())
-                .append("cc",Constant.ZERO)
-                .append("vc",Constant.ZERO)
+                .append("ptc",Constant.ZERO)
+                .append("ptl",MongoUtils.convert(new ArrayList<ObjectId>()))
                 .append("ir", Constant.ZERO);
         setBaseEntry(basicDBObject);
     }
@@ -70,6 +60,42 @@ public class AppVoteEntry extends BaseDBObject{
         return getSimpleLongValue("sti");
     }
 
+    public void setPartInList(List<ObjectId> partInList){
+        setSimpleValue("ptl",MongoUtils.convert(partInList));
+    }
+
+    public List<ObjectId> getPartInList(){
+        BasicDBList list = getDbList("ptl");
+        List<ObjectId> partInList = new ArrayList<ObjectId>();
+        for (Object dbo : list) {
+            partInList.add((ObjectId)dbo);
+        }
+        return partInList;
+    }
+
+    public void setPartInCount(int partInCount){
+        setSimpleValue("ptc",partInCount);
+    }
+
+    public int getPartInCount(){
+        return getSimpleIntegerValue("ptc");
+    }
+
+    public void setVideoEntries(List<VideoEntry> videoEntries){
+        setSimpleValue("vl",MongoUtils.fetchDBObjectList(videoEntries));
+    }
+
+    public List<VideoEntry> getVideoEntries() {
+        BasicDBList list = getDbList("vl");
+        List<VideoEntry> videoEntries = new ArrayList<VideoEntry>();
+        for (Object dbo : list) {
+            BasicDBObject dbObject = (BasicDBObject) dbo;
+            videoEntries.add(new VideoEntry(dbObject));
+        }
+        return videoEntries;
+    }
+
+
     public void setGroupName(String groupName){
         setSimpleValue("gn",groupName);
     }
@@ -78,62 +104,12 @@ public class AppVoteEntry extends BaseDBObject{
         return getSimpleStringValue("gn");
     }
 
-    public void setVoteCount(int voteCount){
-        setSimpleValue("vc",voteCount);
-    }
-
-    public int getVoteCount(){
-        return getSimpleIntegerValue("vc");
-    }
-
-    public void setCommentCount(int commentCount){
-        setSimpleValue("cc",commentCount);
-    }
-
-    public int getCommentCount(){
-        return getSimpleIntegerValue("cc");
-    }
-
     public void setVisiblePermission(int visiblePermission){
         setSimpleValue("vp",visiblePermission);
     }
 
     public int getVisiblePermission(){
         return getSimpleIntegerValue("vp");
-    }
-
-    public void setVoteType(int voteType){
-        setSimpleValue("vt",voteType);
-    }
-
-    public int getVoteType(){
-        return getSimpleIntegerValue("vt");
-    }
-
-    public long getVoteDeadTime(){
-        return getSimpleLongValue("vdt");
-    }
-
-    public void setVoteMaxCount(int voteMaxCount){
-        setSimpleValue("vmc",voteMaxCount);
-    }
-
-    public int getVoteMaxCount(){
-        return getSimpleIntegerValue("vmc");
-    }
-
-    public void setVoteContent(List<String> voteContent){
-        setSimpleValue("vt",MongoUtils.convert(voteContent));
-    }
-
-
-    public List<String> getVoteContent(){
-        BasicDBList list = getDbList("vt");
-        List<String> voteList=new ArrayList<String>();
-        for (Object dbo : list) {
-            voteList.add((String)dbo);
-        }
-        return voteList;
     }
 
     public void setImageList(List<AttachmentEntry> imageList){
@@ -205,4 +181,5 @@ public class AppVoteEntry extends BaseDBObject{
     public ObjectId getSubjectId(){
         return getSimpleObjecIDValue("sui");
     }
+
 }

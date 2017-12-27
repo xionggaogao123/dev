@@ -2,6 +2,7 @@ package com.db.appvote;
 
 import com.db.base.BaseDao;
 import com.db.factory.MongoFacroty;
+import com.mongodb.BasicDBList;
 import com.mongodb.BasicDBObject;
 import com.mongodb.DBObject;
 import com.pojo.appvote.AppVoteEntry;
@@ -94,6 +95,40 @@ public class AppVoteDao extends BaseDao{
                 .append("uid",userId)
                 .append("ir", Constant.ZERO);
         return count(MongoFacroty.getAppDB(),Constant.COLLECTION_NEW_VERSION_APP_VOTE,query);
+    }
+
+
+    public BasicDBObject getGatherCondition(List<ObjectId> groupIds,
+                                            ObjectId userId){
+        List<Integer> visiblePermission=new ArrayList<Integer>();
+        visiblePermission.add(Constant.ONE);
+        visiblePermission.add(Constant.THREE);
+        BasicDBObject query = new BasicDBObject();
+        BasicDBList values = new BasicDBList();
+        values.add(new BasicDBObject("uid",userId));
+        values.add(new BasicDBObject("uid",new BasicDBObject(Constant.MONGO_NE,userId))
+                .append("vp",new BasicDBObject(Constant.MONGO_IN,visiblePermission))
+                .append("gid",new BasicDBObject(Constant.MONGO_IN,groupIds)));
+        query.append(Constant.MONGO_OR,values);
+        return query;
+    }
+
+    public int countGatherAppVotes(ObjectId userId,List<ObjectId> groupIds){
+        BasicDBObject query=getGatherCondition(groupIds,userId);
+        return count(MongoFacroty.getAppDB(),Constant.COLLECTION_NEW_VERSION_APP_VOTE,query);
+    }
+
+    public List<AppVoteEntry> getGatherAppVoteEntries(ObjectId userId,List<ObjectId> groupIds,int page,int pageSize){
+        List<AppVoteEntry> entries=new ArrayList<AppVoteEntry>();
+        BasicDBObject query=getGatherCondition(groupIds,userId);
+        List<DBObject> dbObjectList=find(MongoFacroty.getAppDB(),Constant.COLLECTION_NEW_VERSION_APP_VOTE,query,
+                Constant.FIELDS,Constant.MONGO_SORTBY_DESC,(page-1)*pageSize,pageSize);
+        if(null!=dbObjectList&&!dbObjectList.isEmpty()){
+            for(DBObject dbObject:dbObjectList){
+                entries.add(new AppVoteEntry(dbObject));
+            }
+        }
+        return entries;
     }
 
 

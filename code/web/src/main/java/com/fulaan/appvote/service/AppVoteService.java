@@ -20,6 +20,7 @@ import com.sys.constants.Constant;
 import com.sys.utils.AvatarUtils;
 import com.sys.utils.DateTimeUtils;
 import com.sys.utils.StringUtil;
+import com.sys.utils.TimeChangeUtils;
 import org.apache.commons.collections.map.HashedMap;
 import org.apache.commons.lang3.StringUtils;
 import org.bson.types.ObjectId;
@@ -78,8 +79,22 @@ public class AppVoteService {
         appVoteDao.saveEntries(entries);
     }
 
+    public Map<String,Object> gatherAppVotes(ObjectId userId, int page, int pageSize){
+        Map<String, Object> retMap = new HashMap<String, Object>();
+        List<ObjectId> groupIds=memberDao.getGroupIdsByUserId(userId);
+        List<AppVoteDTO> appVoteDTOs = new ArrayList<AppVoteDTO>();
+        List<AppVoteEntry> appVoteEntries = appVoteDao.getGatherAppVoteEntries(userId, groupIds,page, pageSize);
+        getVoteDtos(appVoteDTOs, appVoteEntries,userId);
+        int count = appVoteDao.countGatherAppVotes(userId,groupIds);
+        retMap.put("list", appVoteDTOs);
+        retMap.put("page", page);
+        retMap.put("pageSize", pageSize);
+        retMap.put("count", count);
+        return retMap;
+    }
 
-   public Map<String,Object> getMySendAppVote(ObjectId userId, int page, int pageSize){
+
+    public Map<String,Object> getMySendAppVote(ObjectId userId, int page, int pageSize){
        Map<String, Object> retMap = new HashMap<String, Object>();
        List<AppVoteDTO> appVoteDTOs = new ArrayList<AppVoteDTO>();
        List<AppVoteEntry> appVoteEntries = appVoteDao.getMySendAppVoteEntries(userId, page, pageSize);
@@ -90,7 +105,7 @@ public class AppVoteService {
        retMap.put("pageSize", pageSize);
        retMap.put("count", count);
        return retMap;
-   }
+    }
 
 
     public Map<String, Object> getMyReceivedAppVote(ObjectId userId, int page, int pageSize) {
@@ -196,6 +211,11 @@ public class AppVoteService {
                 voteResult.setVoteUsers(voteUsers);
             }
             dto.setVoteResultList(voteResults);
+            dto.setOwner(false);
+            if(entry.getUserId().equals(userId)){
+                dto.setOwner(true);
+            }
+            dto.setSubmitTime(TimeChangeUtils.getChangeTime(entry.getSubmitTime()));
             dtos.add(dto);
         }
     }

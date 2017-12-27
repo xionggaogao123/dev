@@ -74,10 +74,11 @@ public class GroupChatRecordController extends BaseController{
     @RequestMapping("/getPersonalChatRecords")
     @ResponseBody
     public RespObj getPersonalChatRecords(@ObjectIdType ObjectId receiveId,
+                                          @ObjectIdType ObjectId userId,
                                           int page,
                                           int pageSize){
         RespObj respObj = new RespObj(Constant.SUCCESS_CODE);
-        Map<String,Object> result = groupService.getPersonalChatRecords(getUserId(),receiveId,page,pageSize);
+        Map<String,Object> result = groupService.getPersonalChatRecords(userId,receiveId,page,pageSize);
         respObj.setMessage(result);
         return respObj;
     }

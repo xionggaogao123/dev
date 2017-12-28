@@ -25,6 +25,7 @@ import org.springframework.web.bind.annotation.ResponseBody;
 
 import java.util.List;
 import java.util.Map;
+import java.util.TimeZone;
 
 /**
  * Created by James on 2017/11/3.
@@ -408,6 +409,16 @@ public class ControlPhoneController extends BaseController {
             long dTm = 0l;
             if(dateTime != null && dateTime != ""){
                 dTm = DateTimeUtils.getStrToLongTime(dateTime, "yyyy-MM-dd");
+            }
+            long current = System.currentTimeMillis();
+            long zero = current / (1000 * 3600 * 24) * (1000 * 3600 * 24) - TimeZone.getDefault().getRawOffset();//今天零点零分零秒的毫秒数
+            long jiedian = current / (1000 * 3600 * 24) * (1000 * 3600 * 24) - TimeZone.getDefault().getRawOffset()+8*60*60*1000;//今天八点的时间
+            if(zero==dTm){
+                if(current>=jiedian){
+
+                }else{
+                    dTm = dTm - 24*60*60*1000;
+                }
             }
             Map<String,Object> map = controlPhoneService.seacherAppResultList(getUserId(),new ObjectId(sonId),dTm);
             respObj.setMessage(map);

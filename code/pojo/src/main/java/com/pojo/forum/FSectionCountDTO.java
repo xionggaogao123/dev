@@ -92,6 +92,14 @@ public class FSectionCountDTO implements Comparable<FSectionCountDTO>{
         this.memoName = memoName;
     }
 
+    public String getFSectionId() {
+        return fSectionId;
+    }
+
+    public void setFSectionId(String fSectionId) {
+        this.fSectionId = fSectionId;
+    }
+
     public String getfSectionId() {
         return fSectionId;
     }

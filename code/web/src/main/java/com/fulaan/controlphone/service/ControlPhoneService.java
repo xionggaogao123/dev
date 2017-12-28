@@ -452,10 +452,9 @@ public class ControlPhoneService {
         Map<String,Object> map = new HashMap<String, Object>();
         //防沉迷时间
         ControlTimeEntry controlTimeEntry = controlTimeDao.getEntry(sonId, parentId);
-        long timecu = 0l;
+        long timecu = 30*60*1000;
         if(controlTimeEntry != null){
             timecu = controlTimeEntry.getTime();
-
         }
         long hours2 = (timecu % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60);
         long minutes2 = (timecu % (1000 * 60 * 60)) / (1000 * 60);
@@ -467,8 +466,8 @@ public class ControlPhoneService {
             timeStr = timeStr + minutes2+"分钟";
         }
         map.put("time",timeStr);
-        long startTime = time + +8*60*60*1000;
-        long endTime = time + +8*60*60*1000 + 24*60*60*1000;
+        long startTime = time +8*60*60*1000;
+        long endTime = time +8*60*60*1000 + 24*60*60*1000;
         List<ControlAppResultEntry> entries = controlAppResultDao.getIsNewEntryList(sonId,startTime,endTime);
         List<ControlAppResultDTO> dtos = new ArrayList<ControlAppResultDTO>();
         if(entries.size()>0){
@@ -615,7 +614,7 @@ public class ControlPhoneService {
         map.put("appCount",size);
         //防沉迷时间
         ControlTimeEntry controlTimeEntry = controlTimeDao.getEntry(sonId, parentId);
-        long timecu = 0l;
+        long timecu = 30*60*1000;
         if(controlTimeEntry != null){
             timecu = controlTimeEntry.getTime();
 
@@ -721,7 +720,7 @@ public class ControlPhoneService {
         }
         map.put("phone",dtos);
         //可用时间
-        long timecu = 0l;
+        long timecu = 30*60*1000;
         map.put("time",timecu/60000);
         map.put("backTime",24*60);
         map.put("appTime",24*60);
@@ -834,7 +833,7 @@ public class ControlPhoneService {
         }
         map.put("phone",dtos);
         //管控时间
-        long timecu = 0l;
+        long timecu = 30*60*1000;
         if(controlTimeEntry != null){
             timecu = controlTimeEntry.getTime();
         }

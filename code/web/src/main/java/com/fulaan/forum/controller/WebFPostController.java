@@ -1,5 +1,6 @@
 package com.fulaan.forum.controller;
 
+import com.alibaba.fastjson.JSON;
 import com.fulaan.annotation.LoginInfo;
 import com.fulaan.annotation.ObjectIdType;
 import com.fulaan.annotation.SessionNeedless;
@@ -156,6 +157,38 @@ public class WebFPostController extends BaseController {
         model.put("sections", sectionDTOs);
         return "/forum/postIndex";
     }
+
+    /**
+     * web板块发帖首页
+     * @return
+     */
+    @ApiOperation(value = "web板块发帖首页", httpMethod = "POST", produces = "application/json")
+    @ApiResponses( value = {@ApiResponse(code = 200, message = "Successful — 请求已完成",response = String.class)})
+    @SessionNeedless
+    @RequestMapping("/webpostIndex")
+    @LoginInfo
+    public String webpostIndex(@ApiParam(name = "id", required = true, value = "板块id") @RequestParam("id") String id){
+
+        RespObj respObj=new RespObj(Constant.FAILD_CODE);
+        try {
+            respObj.setCode(Constant.SUCCESS_CODE);
+            Map<String,Object> map =new HashMap<String, Object>();
+            map.put("id",id);
+            if (StringUtils.isNotBlank(id)) {
+                FSectionDTO fSectionDTO = fSectionService.findFSectionById(new ObjectId(id));
+                map.put("pSectionName", fSectionDTO.getName());
+            }
+            List<FSectionCountDTO> sectionDTOs = fSectionService.getFSectionList(2);
+            map.put("sections", sectionDTOs);
+            respObj.setMessage(map);
+        } catch (Exception e) {
+            e.printStackTrace();
+            respObj.setCode(Constant.FAILD_CODE);
+            respObj.setErrorMessage("web板块发帖首页失败!");
+        }
+        return JSON.toJSONString(respObj);
+    }
+
     @ApiOperation(value = "competitionIndex", httpMethod = "POST", produces = "application/json")
     @ApiResponses( value = {@ApiResponse(code = 200, message = "Successful — 请求已完成",response = String.class)})
     @SessionNeedless
@@ -393,6 +426,105 @@ public class WebFPostController extends BaseController {
         }
         return "/forum/postDetail";
     }
+
+    /**
+     * web查询详情
+     * @return
+     */
+    @ApiOperation(value = "web查询详情", httpMethod = "POST", produces = "application/json")
+    @ApiResponses( value = {@ApiResponse(code = 200, message = "Successful — 请求已完成",response = String.class),
+            @ApiResponse(code = 400, message = "请求中有语法问题，或不能满足请求"),
+            @ApiResponse(code = 500, message = "服务器不能完成请求")})
+    @RequestMapping("/webPostDetail")
+    @ResponseBody
+    public String webPostDetail(@ApiParam(name = "pSectionId", required = true, value = "pSectionId") @RequestParam("pSectionId") String pSectionId,
+                                     @ApiParam(name = "postId", required = true, value = "postId") @RequestParam("postId") String postId,
+                                     @ApiParam(name = "page", required = true, value = "page") @RequestParam(value = "page",required = false) String page,
+                                     @ApiParam(name = "personId", required = true, value = "personId") @RequestParam(value = "personId",required = false) String personId,
+                                     @ApiParam(name = "timeText", required = true, value = "timeText") @RequestParam(value = "timeText",required = false) String timeText,
+                                     @ApiParam(name = "floor", required = true, value = "floor") @RequestParam(value = "floor",required = false) String floor,
+                                     @ApiParam(name = "sortType", required = true, value = "sortType") @RequestParam(value = "sortType",required = false) String sortType){
+
+        RespObj respObj=new RespObj(Constant.FAILD_CODE);
+        try {
+            respObj.setCode(Constant.SUCCESS_CODE);
+            SessionValue sv = getSessionValue();
+            Map<String,Object> map = new HashMap<String, Object>();
+            map.put("pSectionId", pSectionId);
+            map.put("postId", postId);
+            map.put("page", page);
+            map.put("personId",personId);
+            map.put("timeText",timeText);
+            map.put("sortType",sortType);
+            map.put("userId",getUserId().toString());
+            if (StringUtils.isNotBlank(postId)) {
+                FPostDTO fPostDTO = fPostService.detail(new ObjectId(postId));
+                map.put("postTitle", fPostDTO.getPostTitle());
+                map.put("InSet", fPostDTO.getInSet());
+                map.put("cate",fPostDTO.getCate());
+                if (null != sv && !sv.isEmpty()) {
+                    int type = fPostDTO.getType();
+                    if (type == 3) {
+                        //该奖赏贴总共奖赏次数
+                        int rewardCount = fPostDTO.getRewardCount();
+                        int rewardMax = fPostDTO.getRewardMax();
+                        int rewardScore = fPostDTO.getRewardScore();
+                        map.put("rewardScore", rewardScore);
+                        //查询该奖赏贴一共回了多少贴
+                        if (0 < rewardCount) {
+                            //查询该人奖赏次数
+                            int userReward = fReplyService.getFRepliesCount("", postId, sv.getId(), "", -1);
+                            //判断是否大于每人最多奖赏次数
+                            if (userReward < rewardMax) {
+                                //设置是否奖赏
+                                map.put("reward", 1);
+                            }
+                        }
+                        //奖赏次数已结束
+                    } else if (type == 2) {
+                        int offerCompleted = fPostDTO.getOfferedCompleted();
+                        //悬赏帖未解决时
+                        if (offerCompleted == 0) {
+                            long deadTime = new ObjectId(fPostDTO.getFpostId()).getTime() + 5 * 60 * 1000L;
+                            long nowTime = System.currentTimeMillis();
+                            if (deadTime > nowTime) {
+                                map.put("dead", 1);
+                            }
+                        } else if (offerCompleted == 1) {
+                            map.put("sol", 1);
+                        }
+                    }
+                }
+            }
+
+            if (StringUtils.isNotBlank(floor)) {
+                int floors = Integer.parseInt(floor);
+                map.put("floor", (floors + 1) * 333 + 171);
+            }
+            FLogDTO fLogDTO = new FLogDTO();
+            fLogDTO.setActionName("postDetail");
+            if (null != sv && !sv.isEmpty()) {
+                fLogDTO.setPersonId(sv.getId());
+            }
+            if (StringUtils.isNotBlank(postId)) {
+                fLogDTO.setKeyId(postId);
+            }
+            fLogDTO.setPath("/forum/postDetail.do");
+            fLogDTO.setTime(System.currentTimeMillis());
+            fLogService.addFLog(fLogDTO);
+            if (getSessionValue() != null) {
+                map.put("formScore", userService.findById(new ObjectId(getUserId().toString())).getForumScore());
+            }
+            //Map<String,Object> dtos = appCommentService.selectDatePageList(dateTime, getUserId(), page, pageSize,type);
+            respObj.setMessage(map);
+        } catch (Exception e) {
+            e.printStackTrace();
+            respObj.setCode(Constant.FAILD_CODE);
+            respObj.setErrorMessage("web查询详情失败!");
+        }
+        return JSON.toJSONString(respObj);
+    }
+
     @ApiOperation(value = "newPost", httpMethod = "POST", produces = "application/json")
     @ApiResponses( value = {@ApiResponse(code = 200, message = "Successful — 请求已完成",response = String.class)})
     @RequestMapping("/newPost")
@@ -1089,11 +1221,11 @@ public class WebFPostController extends BaseController {
         model.put("zan", zanCount);
         String appImageList = Item.getAppImageList();
         String appVideoList = Item.getAppVideoList();
-        String comment = Item.getComment();
+        String comment = getNewStr(Item.getComment());
         String appComment = Item.getAppComment();
 
         SessionValue sv = getSessionValue();
-        String version = Item.getVersion();
+        String version = getNewStr(Item.getVersion());
         String versionVideo = Item.getVersionVideo();
         model.put("cate",Item.getCate());
         int type = Item.getType();
@@ -1123,7 +1255,7 @@ public class WebFPostController extends BaseController {
                 }
             }
         }
-        model.put("version", Item.getVersion());
+        model.put("version", getNewStr(Item.getVersion()));
         //对version进行改造
         if (StringUtils.isNotBlank(version)) {
             if (null != sv && !sv.isEmpty()) {
@@ -1216,6 +1348,7 @@ public class WebFPostController extends BaseController {
             }
         }
         //标志位
+
         model.put("comment", comment);
         if (StringUtils.isNotBlank(comment)) {
             model.put("plainText", ParseUserLog.getNoHTMLString(comment, 300));
@@ -1228,7 +1361,7 @@ public class WebFPostController extends BaseController {
             if (null != comment && !"".equals(comment)) {
                 String strL = comment.replaceAll("/upload/ueditor", "http://www.fulaan.com/upload/ueditor");
                 String strLL = strL.replaceAll("http://www.fulaan.comhttp://www.fulaan.com/", "http://www.fulaan.com/");
-                model.put("content", strLL);
+                model.put("content", getNewStr(strLL));
                 //手机端分享的内容
                 List<String> images = fPostService.dealWithImage(comment);
                 List<String> imageList = new ArrayList<String>();
@@ -1247,7 +1380,7 @@ public class WebFPostController extends BaseController {
             } else {
                 //app端上传的app端显示
                 if (null != appComment && !"".equals(appComment)) {
-                    model.put("content", appComment);
+                    model.put("content", getNewStr(appComment));
                 }
                 //app端上传的web端显示
                 model.put("plainText", Item.getPlainText());
@@ -1258,7 +1391,7 @@ public class WebFPostController extends BaseController {
             //web端处理app端上传的数据
             if (null != comment && !"".equals(comment)) {
                 //web端上传的数据
-                model.put("content", Item.getComment());
+                model.put("content", getNewStr(Item.getComment()));
             } else {
                 //app端上传的数据
                 model.put("plainText", Item.getPlainText());
@@ -1320,6 +1453,15 @@ public class WebFPostController extends BaseController {
         return responseList;
     }
 
+    private String getNewStr(String comment){
+        String str = "";
+        if (StringUtils.isNotBlank(comment)) {
+            str = comment.replace("www.fulaan.com", "appapi.jiaxiaomei.com");
+        }else{
+            str = comment;
+        }
+        return str;
+    }
     /**
      * 获取楼中楼中列表
      *

@@ -164,7 +164,7 @@ public class FSectionService {
     public FSectionCountDTO constructDto(FSectionEntry entry){
         FSectionCountDTO fSectionCountDTO = new FSectionCountDTO();
         fSectionCountDTO.setMemo(entry.getMemo());
-        fSectionCountDTO.setfSectionId(entry.getID().toString());
+        fSectionCountDTO.setFSectionId(entry.getID().toString());
         fSectionCountDTO.setMemoName(entry.getMemoName());
         fSectionCountDTO.setName(entry.getName());
         fSectionCountDTO.setSectionName(entry.getSectionName());

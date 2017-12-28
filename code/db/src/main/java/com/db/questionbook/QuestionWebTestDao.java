@@ -29,6 +29,13 @@ public class QuestionWebTestDao extends BaseDao {
         BasicDBObject updateValue=new BasicDBObject(Constant.MONGO_SET,new BasicDBObject("isr",Constant.ONE));
         update(MongoFacroty.getAppDB(), Constant.COLLECTION_QUESTION_WEB_TEST, query,updateValue);
     }
+
+    //删除错题
+    public void updTestNameById(ObjectId id,String name){
+        BasicDBObject query = new BasicDBObject(Constant.ID,id);
+        BasicDBObject updateValue=new BasicDBObject(Constant.MONGO_SET,new BasicDBObject("tit",name));
+        update(MongoFacroty.getAppDB(), Constant.COLLECTION_QUESTION_WEB_TEST, query,updateValue);
+    }
     //查询
     public QuestionWebTestEntry getEntryById(ObjectId id) {
         BasicDBObject query = new BasicDBObject(Constant.ID,id);

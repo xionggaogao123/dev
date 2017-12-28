@@ -399,6 +399,29 @@ public class QuestionBookController extends BaseController {
         }
         return JSON.toJSONString(respObj);
     }
+
+    /***
+     * 编辑名称
+     *
+     */
+    @ApiOperation(value = "编辑名称", httpMethod = "POST", produces = "application/json")
+    @ApiResponses( value = {@ApiResponse(code = 200, message = "Successful — 请求已完成",response = String.class)})
+    @RequestMapping("/updTestNameById")
+    @ResponseBody
+    public String updTestNameById(@ApiParam(name="id",required = true,value="id") @RequestParam(value = "id",required = true) String id,
+                                  @ApiParam(name="name",required = true,value="name") @RequestParam(value = "name",required = true) String name){
+        RespObj respObj=new RespObj(Constant.FAILD_CODE);
+        try{
+            respObj.setCode(Constant.SUCCESS_CODE);
+            questionBookService.updTestNameById(new ObjectId(id),name);
+            respObj.setMessage("编辑名称成功");
+        }catch (Exception e){
+            e.printStackTrace();
+            respObj.setCode(Constant.FAILD_CODE);
+            respObj.setErrorMessage("编辑保存失败!");
+        }
+        return JSON.toJSONString(respObj);
+    }
     /**
      * 导出
      *

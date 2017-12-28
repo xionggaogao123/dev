@@ -386,6 +386,14 @@ public class QuestionBookService {
     public void updTestEntry(QuestionWebTestDTO dto){
         questionWebTestDao.updEntry(dto.updateEntry());
     }
+    //修改名称
+    public void updTestNameById(ObjectId id,String name){
+        QuestionWebTestEntry entry = questionWebTestDao.getEntryById(id);
+        if(entry!=null){
+            questionWebTestDao.updTestNameById(id,name);
+        }
+    }
+
     public void delTestEntry(ObjectId id){
         questionWebTestDao.delEntry(id);
     }

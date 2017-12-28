@@ -466,6 +466,11 @@ public class DefaultUserController extends BaseController {
             String nickName = StringUtils.isNotBlank(userEntry.getNickName()) ? userEntry.getNickName() : userEntry.getUserName();
             EaseMobAPI.createUser(userEntry.getID().toString(), nickName);
             userService.updateHuanXinTag(userEntry.getID());
+        }else{
+            if (EaseMobAPI.getUser(userEntry.getID().toString())) {
+                String nickName = StringUtils.isNotBlank(userEntry.getNickName()) ? userEntry.getNickName() : userEntry.getUserName();
+                EaseMobAPI.createUser(userEntry.getID().toString(), nickName);
+            }
         }
 
         //找玩伴
@@ -2123,6 +2128,16 @@ public class DefaultUserController extends BaseController {
             userService.update(ue.getID(), "e", emailCache.toLowerCase());
         }
         return new RespObj(Constant.SUCCESS_CODE,"用户验证成功");
+    }
+
+
+
+    @RequestMapping("/handlerHuanxin")
+    @ResponseBody
+    public RespObj handlerHuanxin(){
+        RespObj respObj = new RespObj(Constant.SUCCESS_CODE);
+        userService.handlerHuanxin();
+        return respObj;
     }
 
 

@@ -466,6 +466,11 @@ public class UserController extends BaseController {
             String nickName = StringUtils.isNotBlank(userEntry.getNickName()) ? userEntry.getNickName() : userEntry.getUserName();
             EaseMobAPI.createUser(userEntry.getID().toString(), nickName);
             userService.updateHuanXinTag(userEntry.getID());
+        }else{
+            if (EaseMobAPI.getUser(userEntry.getID().toString())) {
+                String nickName = StringUtils.isNotBlank(userEntry.getNickName()) ? userEntry.getNickName() : userEntry.getUserName();
+                EaseMobAPI.createUser(userEntry.getID().toString(), nickName);
+            }
         }
 
         //找玩伴

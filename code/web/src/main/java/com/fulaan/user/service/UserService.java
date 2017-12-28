@@ -14,6 +14,7 @@ import com.db.school.InterestClassDao;
 import com.db.school.SchoolDao;
 import com.db.user.NewVersionUserRoleDao;
 import com.db.user.UserDao;
+import com.easemob.server.EaseMobAPI;
 import com.fulaan.backstage.dto.SystemMessageDTO;
 import com.fulaan.base.BaseService;
 import com.fulaan.cache.CacheHandler;
@@ -1473,6 +1474,28 @@ public class UserService extends BaseService {
             WebsocketHandler websocketHandler=new WebsocketHandler();
             websocketHandler.broadcastInvalid(tokenId.toString(),message);
             throw new Exception(message);
+        }
+    }
+
+    /**
+     * 环信账号处理
+     */
+    public void handlerHuanxin(){
+        int page=1;
+        int pageSize=200;
+        boolean flag=true;
+        while(flag){
+            List<UserEntry> entries = userDao.getUserEntries(page,pageSize);
+            if(entries.size()>0){
+                for(UserEntry userEntry:entries) {
+                    if (EaseMobAPI.getUser(userEntry.getID().toString())) {
+                        System.out.println("用户名:"+userEntry.getUserName()+",用户Id:"+userEntry.getID().toString());
+                    }
+                }
+            }else{
+                flag=false;
+            }
+            page++;
         }
     }
 }

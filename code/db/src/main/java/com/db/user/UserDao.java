@@ -1150,4 +1150,21 @@ public class UserDao extends BaseDao {
         WriteResult writeResult = update(MongoFacroty.getAppDB(), Constant.COLLECTION_USER_NAME, query, update);
         return writeResult.getN();
     }
+
+
+    /**
+     * 环信账户问题处理
+     */
+    public List<UserEntry> getUserEntries(int page,int pageSize){
+        List<UserEntry> userEntryList = new ArrayList<UserEntry>();
+        BasicDBObject query = new BasicDBObject("ieasd",1);
+        List<DBObject> dbObjectList = find(MongoFacroty.getAppDB(), Constant.COLLECTION_USER_NAME, query,Constant.FIELDS,
+                Constant.MONGO_SORTBY_DESC,(page-1)*pageSize,pageSize);
+        if(null!=dbObjectList&&!dbObjectList.isEmpty()){
+            for(DBObject dbObject:dbObjectList){
+                userEntryList.add(new UserEntry(dbObject));
+            }
+        }
+        return userEntryList;
+    }
 }

@@ -34,6 +34,21 @@ public class EaseMobAPI {
         user.createNewIMUserSingle(userBody);
     }
 
+
+    /**
+     * 获取该用户是否已注册环信
+     * @param userId
+     * @return
+     */
+    public static boolean getUser(String userId){
+        boolean isUnRegister=false;
+        ResponseWrapper responseWrapper = (ResponseWrapper)user.getIMUsersByUserName(userId);
+        if(responseWrapper.getResponseStatus()==404){
+            isUnRegister=true;
+        }
+        return isUnRegister;
+    }
+
     /**
      * 创建用户 - 有昵称
      *

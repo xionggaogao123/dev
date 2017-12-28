@@ -16,6 +16,7 @@ import com.pojo.fcommunity.NewVersionCommunityBindEntry;
 import com.pojo.forum.FVoteDTO;
 import com.pojo.forum.FVoteEntry;
 import com.pojo.user.UserEntry;
+import com.pojo.utils.MongoUtils;
 import com.sys.constants.Constant;
 import com.sys.utils.AvatarUtils;
 import com.sys.utils.DateTimeUtils;
@@ -177,7 +178,7 @@ public class AppVoteService {
                 }
                 totalUserIds.addAll(selectUserIds);
                 voteResult.setHasVoted(hasVoted);
-                voteResult.setUserIds(selectUserIds);
+                voteResult.setUserIds(MongoUtils.convertToStringList(selectUserIds));
                 double pItem = (double) count / (double) totalCount;
                 voteResult.setVoteItemStr(entry.getVoteContent().get(i));
                 voteResult.setVoteItemCount(count);
@@ -199,7 +200,8 @@ public class AppVoteService {
             dto.setVoteUsers(users);
             for(VoteResult voteResult:voteResults){
                 List<User> voteUsers=new ArrayList<User>();
-                Set<ObjectId> ItemUserIds=voteResult.getUserIds();
+                Set<ObjectId> ItemUserIds=new HashSet<ObjectId>();
+                ItemUserIds.addAll(MongoUtils.convertToObjectIdList(voteResult.getUserIds()));
                 for(ObjectId id:ItemUserIds){
                     UserEntry user=idUserEntryMap.get(id);
                     if(null!=user){

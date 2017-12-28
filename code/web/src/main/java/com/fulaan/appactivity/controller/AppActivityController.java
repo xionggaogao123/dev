@@ -29,7 +29,7 @@ public class AppActivityController extends BaseController {
     @Autowired
     private AppActivityService appActivityService;
 
-    @ApiOperation(value = "保存投票记录", httpMethod = "GET", produces = "application/json")
+    @ApiOperation(value = "保存活动记录", httpMethod = "GET", produces = "application/json")
     @ApiResponses(value = {@ApiResponse(code = 200, message = "Successful — 请求已完成", response = RespObj.class)})
     @RequestMapping("/saveAppActivity")
     @ResponseBody
@@ -45,7 +45,7 @@ public class AppActivityController extends BaseController {
         return respObj;
     }
 
-    @ApiOperation(value = "获取集合投票列表", httpMethod = "GET", produces = "application/json")
+    @ApiOperation(value = "获取集合活动列表", httpMethod = "GET", produces = "application/json")
     @ApiResponses( value = {@ApiResponse(code = 200, message = "Successful — 请求已完成",response = RespObj.class)})
     @RequestMapping("/gatherAppActivities")
     @ResponseBody
@@ -63,7 +63,24 @@ public class AppActivityController extends BaseController {
     }
 
 
-    @ApiOperation(value = "获取学生收到的投票", httpMethod = "GET", produces = "application/json")
+    @ApiOperation(value = "获取活动参与以及未参与人员列表", httpMethod = "GET", produces = "application/json")
+    @ApiResponses( value = {@ApiResponse(code = 200, message = "Successful — 请求已完成",response = RespObj.class)})
+    @RequestMapping("/getPartInActivityUserList")
+    @ResponseBody
+    public RespObj getPartInActivityUserList(@ObjectIdType ObjectId activityId){
+        RespObj respObj=new RespObj(Constant.FAILD_CODE);
+        try{
+            Map<String,Object> retMap=appActivityService.getPartInActivityUserList(activityId);
+            respObj.setCode(Constant.SUCCESS_CODE);
+            respObj.setMessage(retMap);
+        }catch (Exception e){
+            respObj.setErrorMessage(e.getMessage());
+        }
+        return respObj;
+    }
+
+
+    @ApiOperation(value = "获取学生收到的活动", httpMethod = "GET", produces = "application/json")
     @ApiResponses( value = {@ApiResponse(code = 200, message = "Successful — 请求已完成",response = RespObj.class)})
     @RequestMapping("/getStudentReceivedAppActivities")
     @ResponseBody

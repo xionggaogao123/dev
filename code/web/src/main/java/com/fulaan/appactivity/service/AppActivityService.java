@@ -1,13 +1,17 @@
 package com.fulaan.appactivity.service;
 
 import com.db.appactivity.AppActivityDao;
+import com.db.appactivity.AppActivityUserDao;
 import com.db.fcommunity.CommunityDao;
 import com.db.fcommunity.MemberDao;
 import com.db.fcommunity.NewVersionCommunityBindDao;
 import com.fulaan.appactivity.dto.AppActivityDTO;
 import com.fulaan.operation.dto.GroupOfCommunityDTO;
+import com.fulaan.pojo.User;
 import com.fulaan.user.service.UserService;
 import com.pojo.appactivity.AppActivityEntry;
+import com.pojo.appactivity.AppActivityUserEntry;
+import com.pojo.fcommunity.MemberEntry;
 import com.pojo.fcommunity.NewVersionCommunityBindEntry;
 import com.pojo.user.UserEntry;
 import com.sys.constants.Constant;
@@ -37,6 +41,8 @@ public class AppActivityService {
     private AppActivityDao appActivityDao = new AppActivityDao();
 
     private CommunityDao communityDao = new CommunityDao();
+
+    private AppActivityUserDao appActivityUserDao = new AppActivityUserDao();
 
 
     public void saveEntry(AppActivityDTO appActivityDTO){
@@ -77,9 +83,9 @@ public class AppActivityService {
                 appActivityDTO.setUserName(StringUtils.isNotEmpty(userEntry.getNickName()) ? userEntry.getNickName() : userEntry.getUserName());
                 appActivityDTO.setAvatar(AvatarUtils.getAvatar(userEntry.getAvatar(), userEntry.getRole(), userEntry.getSex()));
             }
-            List<ObjectId> partInList=entry.getPartInList();
             appActivityDTO.setPartIn(false);
-            if(partInList.contains(userId)){
+            AppActivityUserEntry entry1 =appActivityUserDao.getEntry(entry.getID(),userId);
+            if(null!=entry1){
                 appActivityDTO.setPartIn(true);
             }
             appActivityDTO.setOwner(false);
@@ -98,6 +104,74 @@ public class AppActivityService {
         }
     }
 
+    /**
+     * 查询该活动的报名列表
+     * @param activityId
+     * @return
+     */
+    public Map<String,Object> getPartInActivityUserList(ObjectId activityId){
+        Map<String,Object> result = new HashMap<String,Object>();
+        List<User> sign = new ArrayList<User>();
+        List<User> unSign = new ArrayList<User>();
+        AppActivityEntry appActivityEntry =appActivityDao.getEntryById(activityId);
+        Set<ObjectId> userIds = new HashSet<ObjectId>();
+        if(appActivityEntry.getVisiblePermission()==Constant.ONE){
+            List<MemberEntry> memberEntries = memberDao.getAllMembers(appActivityEntry.getGroupId());
+            for(MemberEntry memberEntry:memberEntries){
+                userIds.add(memberEntry.getUserId());
+            }
+        }else{
+            List<NewVersionCommunityBindEntry> entries =newVersionCommunityBindDao.getStudentIdListByCommunityId(
+                    appActivityEntry.getCommunityId()
+            );
+            for(NewVersionCommunityBindEntry communityBindEntry:entries){
+                userIds.add(communityBindEntry.getUserId());
+            }
+        }
+        List<AppActivityUserEntry> entries =appActivityUserDao.getEntries(activityId);
+        Set<ObjectId> unSignUserIds = new HashSet<ObjectId>();
+        Set<ObjectId> signUserIds = new HashSet<ObjectId>();
+        Map<ObjectId,String> signRecord = new HashMap<ObjectId, String>();
+        for(AppActivityUserEntry entry:entries){
+            signUserIds.add(entry.getUserId());
+            signRecord.put(entry.getUserId(), TimeChangeUtils.getChangeTime(entry.getSubmitTime()));
+        }
+        unSignUserIds.addAll(userIds);
+        unSignUserIds.removeAll(signUserIds);
+        Set<ObjectId> allUserIds = new HashSet<ObjectId>();
+        allUserIds.addAll(unSignUserIds);
+        allUserIds.addAll(signUserIds);
+        Map<ObjectId,UserEntry> userEntryMap = userService.getUserEntryMap(allUserIds,Constant.FIELDS);
+        for(ObjectId uId:signUserIds){
+            String time=signRecord.get(uId);
+            UserEntry userEntry=userEntryMap.get(uId);
+            if(StringUtils.isNotEmpty(time)&&null!=userEntry){
+                User user = new User(userEntry.getUserName(),
+                       userEntry.getNickName(),
+                        userEntry.getID().toString(),
+                        AvatarUtils.getAvatar2(userEntry.getAvatar(),userEntry.getRole(),userEntry.getSex()),
+                userEntry.getSex(),time);
+                sign.add(user);
+            }
+        }
+        for(ObjectId uId:unSignUserIds){
+            UserEntry userEntry=userEntryMap.get(uId);
+            if(null!=userEntry){
+                User user = new User(userEntry.getUserName(),
+                        userEntry.getNickName(),
+                        userEntry.getID().toString(),
+                        AvatarUtils.getAvatar2(userEntry.getAvatar(),userEntry.getRole(),userEntry.getSex()),
+                        userEntry.getSex(),Constant.EMPTY);
+                unSign.add(user);
+            }
+        }
+        result.put("SignList",sign);
+        result.put("SignListNum",sign.size());
+        result.put("UnSignList",unSign);
+        result.put("UnSignListNum",unSign.size());
+        return result;
+    }
+
 
     public Map<String,Object> getGatherAppActivities(ObjectId userId,int page,int pageSize){
         Map<String, Object> retMap = new HashMap<String, Object>();
@@ -114,19 +188,20 @@ public class AppActivityService {
     }
 
     public void partInActivity(ObjectId activityId,int type,ObjectId userId)throws Exception{
-        AppActivityEntry appActivityEntry = appActivityDao.getEntryById(activityId);
-        List<ObjectId> partInList = appActivityEntry.getPartInList();
+        AppActivityUserEntry entry =appActivityUserDao.getEntry(activityId,userId);
         if(type==Constant.ONE){
-            if(partInList.contains(userId)){
+            if(null!=entry){
                 throw  new Exception("已经报名了");
-            }else{
-                appActivityDao.partInActivity(activityId,userId);
+            }else {
+                appActivityUserDao.saveEntry(new AppActivityUserEntry(activityId,userId));
+                appActivityDao.partInActivity(activityId);
             }
         }else{
-            if(partInList.contains(userId)){
-                appActivityDao.popActivity(activityId,userId);
-            }else{
+            if(null==entry){
                 throw  new Exception("已经取消报名了");
+            }else{
+                appActivityUserDao.removeEntry(activityId, userId);
+                appActivityDao.popActivity(activityId);
             }
         }
     }

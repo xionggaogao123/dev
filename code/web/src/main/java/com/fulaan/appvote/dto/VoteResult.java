@@ -17,7 +17,7 @@ public class VoteResult {
     private String voteItemPercent;
     private int hasVoted;
 
-    private Set<ObjectId> userIds=new HashSet<ObjectId>();
+    private List<String> userIds=new ArrayList<String>();
     private List<User> voteUsers=new ArrayList<User>();
 
     public VoteResult(){
@@ -56,11 +56,11 @@ public class VoteResult {
         this.hasVoted = hasVoted;
     }
 
-    public Set<ObjectId> getUserIds() {
+    public List<String> getUserIds() {
         return userIds;
     }
 
-    public void setUserIds(Set<ObjectId> userIds) {
+    public void setUserIds(List<String> userIds) {
         this.userIds = userIds;
     }
 

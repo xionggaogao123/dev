@@ -47,7 +47,6 @@ public class AppActivityEntry extends BaseDBObject{
                 .append("vp",visiblePermission)
                 .append("sti",System.currentTimeMillis())
                 .append("ptc",Constant.ZERO)
-                .append("ptl",MongoUtils.convert(new ArrayList<ObjectId>()))
                 .append("ir", Constant.ZERO);
         setBaseEntry(basicDBObject);
     }
@@ -58,19 +57,6 @@ public class AppActivityEntry extends BaseDBObject{
 
     public long getSubmitTime(){
         return getSimpleLongValue("sti");
-    }
-
-    public void setPartInList(List<ObjectId> partInList){
-        setSimpleValue("ptl",MongoUtils.convert(partInList));
-    }
-
-    public List<ObjectId> getPartInList(){
-        BasicDBList list = getDbList("ptl");
-        List<ObjectId> partInList = new ArrayList<ObjectId>();
-        for (Object dbo : list) {
-            partInList.add((ObjectId)dbo);
-        }
-        return partInList;
     }
 
     public void setPartInCount(int partInCount){

@@ -225,10 +225,10 @@ public class ReportCardService {
             }
         }
         if(signIds.size()>0) {
-            setSignValues(signIds,signTime,sign);
+            setSignValues(signIds,signTime,sign,Constant.ONE);
         }
         if(unSignIds.size()>0){
-            setSignValues(unSignIds,signTime,unSign);
+            setSignValues(unSignIds,signTime,unSign,Constant.TWO);
         }
         result.put("SignList",sign);
         result.put("SignListNum",sign.size());
@@ -238,14 +238,18 @@ public class ReportCardService {
     }
 
     public void setSignValues(Set<ObjectId> userIds,Map<ObjectId,Long> signTime,
-                              List<User> users){
+                              List<User> users,int type){
         Map<ObjectId, UserEntry> signUserEntryMap = userService.getUserEntryMap(userIds, Constant.FIELDS);
         for(Map.Entry<ObjectId, UserEntry> userItem:signUserEntryMap.entrySet()){
             UserEntry userEntry=userItem.getValue();
+            String time=Constant.EMPTY;
+            if(type==Constant.ONE){
+                time=DateTimeUtils.getLongToStrTimeTwo(signTime.get(userItem.getKey()));
+            }
             User user=new User(userEntry.getUserName(),
                     userEntry.getNickName(),userEntry.getID().toString(),
                     AvatarUtils.getAvatar2(userEntry.getAvatar(),userEntry.getRole(),userEntry.getSex()),
-                    userEntry.getSex(), DateTimeUtils.getLongToStrTimeTwo(signTime.get(userItem.getKey())));
+                    userEntry.getSex(), time);
             users.add(user);
         }
     }

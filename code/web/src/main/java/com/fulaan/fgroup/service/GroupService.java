@@ -58,6 +58,129 @@ public class GroupService {
 
     private RecordTotalChatDao recordTotalChatDao = new RecordTotalChatDao();
 
+
+    public static void main(String[] args){
+//        private String id;(传空字符串)
+//        private String groupId;//群组Id（可选）
+//        private String userId;//用户Id(传空字符串)
+//        private String userName;//用户名(传空字符串)
+//        private int type;//提交类型 1:文本 2:图片 3:视频 4:附件
+//        private String content;//文本内容（可选）
+//        private String fileUrl;//文件路径（可选）
+//        private String imageUrl;//图片路径（可选）
+//        private String timeStr;//上传时间，格式 HH:MM:SS(传空字符串)
+//        private String submitDay;//上传时间，格式 yyyy-MM-dd(传空字符串)
+//        private String receiveId;//接收人Id(可选)
+//        private int chatType;//聊天类型 1:群聊天 2:单人聊
+        String[] str=new String[]{"scott is very smart",
+        "scott is very smarter than james",
+        "james is a pig",
+        "富豪哥好man","xu xia is a woman"};
+        for(int i=0;i<=20;i++) {
+            GroupChatRecordDTO dto = new GroupChatRecordDTO();
+            dto.setId(Constant.EMPTY);
+            dto.setGroupId(Constant.EMPTY);
+            dto.setUserName(Constant.EMPTY);
+            dto.setType(Constant.ONE);
+            int remain=i%5;
+            String content=str[remain];
+            dto.setContent(content);
+            dto.setFileUrl(Constant.EMPTY);
+            dto.setImageUrl(Constant.EMPTY);
+            dto.setTimeStr(Constant.EMPTY);
+            dto.setSubmitDay(Constant.EMPTY);
+            dto.setChatType(Constant.TWO);
+            if(i<=10) {
+                if(i%2==0){
+                    dto.setReceiveId("5a17dc7d0a9d324986663cb7");
+                    dto.setUserId("5a17dc8e0a9d324986663cb9");
+                }else{
+                    dto.setUserId("5a17dc7d0a9d324986663cb7");
+                    dto.setReceiveId("5a17dc8e0a9d324986663cb9");
+                }
+            }else if(i<=14){
+                dto.setUserId("5a17dc7d0a9d324986663cb7");
+                dto.setReceiveId("5a17dc8e0a9d324986663cb9");
+            }else{
+                if(i%2==1){
+                    dto.setReceiveId("5a17dc7d0a9d324986663cb7");
+                    dto.setUserId("5a17dc8e0a9d324986663cb9");
+                }else{
+                    dto.setUserId("5a17dc7d0a9d324986663cb7");
+                    dto.setReceiveId("5a17dc8e0a9d324986663cb9");
+                }
+            }
+            saveTest(dto);
+        }
+    }
+
+    public static void saveTest(GroupChatRecordDTO dto){
+        RecordChatPersonalDao recordChatPersonalDao = new RecordChatPersonalDao();
+
+        GroupChatRecordDao groupChatRecordDao = new GroupChatRecordDao();
+
+        RecordTotalChatDao recordTotalChatDao = new RecordTotalChatDao();
+        groupChatRecordDao.saveGroupRecordEntry(dto.buildEntry());
+        if(dto.getChatType()== Constant.TWO
+                &&StringUtils.isNotEmpty(dto.getReceiveId())){
+            RecordChatPersonalEntry one=recordChatPersonalDao.getChatEntry(new ObjectId(dto.getUserId()),
+                    new ObjectId(dto.getReceiveId()));
+            if(null==one){
+                recordChatPersonalDao.saveRecordEntry(new RecordChatPersonalEntry(
+                        new ObjectId(dto.getUserId()),new ObjectId(dto.getReceiveId()),
+                        Constant.TWO
+                ));
+                RecordTotalChatEntry chatEntry = recordTotalChatDao.getEntryByUserId(new ObjectId(dto.getUserId()));
+                if(null!=chatEntry){
+                    recordTotalChatDao.updateEntry(new ObjectId(dto.getUserId()));
+                }else{
+                    recordTotalChatDao.saveEntry(new RecordTotalChatEntry(new ObjectId(dto.getUserId())));
+                }
+            }else{
+                one.setUpdateTime(System.currentTimeMillis());
+                recordChatPersonalDao.saveRecordEntry(one);
+            }
+            RecordChatPersonalEntry two=recordChatPersonalDao.getChatEntry(new ObjectId(dto.getReceiveId()),
+                    new ObjectId(dto.getUserId()));
+            if(null==two){
+                recordChatPersonalDao.saveRecordEntry(new RecordChatPersonalEntry(
+                        new ObjectId(dto.getReceiveId()),new ObjectId(dto.getUserId()),
+                        Constant.TWO
+                ));
+                RecordTotalChatEntry chatEntry = recordTotalChatDao.getEntryByUserId(new ObjectId(dto.getReceiveId()));
+                if(null!=chatEntry){
+                    recordTotalChatDao.updateEntry(new ObjectId(dto.getReceiveId()));
+                }else{
+                    recordTotalChatDao.saveEntry(new RecordTotalChatEntry(new ObjectId(dto.getReceiveId())));
+                }
+            }else{
+                two.setUpdateTime(System.currentTimeMillis());
+                recordChatPersonalDao.saveRecordEntry(two);
+            }
+
+
+        }else if(dto.getChatType()==Constant.ONE&&
+                StringUtils.isNotEmpty(dto.getGroupId())){
+            RecordChatPersonalEntry three=recordChatPersonalDao.getChatEntry(new ObjectId(dto.getUserId()),
+                    new ObjectId(dto.getGroupId()));
+            if(null==three) {
+                recordChatPersonalDao.saveRecordEntry(new RecordChatPersonalEntry(
+                        new ObjectId(dto.getUserId()), new ObjectId(dto.getGroupId()),
+                        Constant.ONE
+                ));
+                RecordTotalChatEntry chatEntry = recordTotalChatDao.getEntryByUserId(new ObjectId(dto.getUserId()));
+                if(null!=chatEntry){
+                    recordTotalChatDao.updateEntry(new ObjectId(dto.getUserId()));
+                }else{
+                    recordTotalChatDao.saveEntry(new RecordTotalChatEntry(new ObjectId(dto.getUserId())));
+                }
+            }else{
+                three.setUpdateTime(System.currentTimeMillis());
+                recordChatPersonalDao.saveRecordEntry(three);
+            }
+        }
+    }
+
     public ObjectId createGroupWithCommunity(ObjectId communityId, ObjectId owerId, String emChatId, String name,
                                              String desc, String qrUrl) throws Exception {
         ObjectId groupId = new ObjectId();
@@ -362,10 +485,14 @@ public class GroupService {
         List<GroupChatRecordEntry> recordEntries = groupChatRecordDao.getPersonalChatRecords(userId,receiveId,page,pageSize);
         for(GroupChatRecordEntry entry:recordEntries){
             GroupChatRecordDTO dto = new GroupChatRecordDTO(entry);
+            dto.setOwner(false);
             if(entry.getUserId().equals(userEntry.getID())){
+                dto.setOwner(true);
                 dto.setUserName(StringUtils.isNotEmpty(userEntry.getNickName())?userEntry.getNickName():userEntry.getUserName());
+                dto.setAvatar(AvatarUtils.getAvatar2(userEntry.getAvatar(),userEntry.getRole(),userEntry.getSex()));
             }else{
                 dto.setUserName(StringUtils.isNotEmpty(receiveEntry.getNickName())?receiveEntry.getNickName():receiveEntry.getUserName());
+                dto.setAvatar(AvatarUtils.getAvatar2(receiveEntry.getAvatar(),receiveEntry.getRole(),receiveEntry.getSex()));
             }
             dtos.add(dto);
         }
@@ -397,6 +524,7 @@ public class GroupService {
         for(GroupChatRecordEntry entry:recordEntries){
             GroupChatRecordDTO dto = new GroupChatRecordDTO(entry);
             dto.setUserName(userName);
+            dto.setOwner(true);
             dtos.add(dto);
         }
         int count=groupChatRecordDao.countGroupChatRecords(userId,groupId);

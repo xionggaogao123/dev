@@ -554,6 +554,8 @@ public class Constant {
 
     public static final String COLLECTION_JXM_APP_ACTIVITY="jxm_app_activity";
 
+    public static final String COLLECTION_JXM_APP_ACTIVITY_USER="jxm_app_activity_user";
+
 
     //------------------------------------------------------------------论坛
 

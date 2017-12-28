@@ -28,11 +28,9 @@ public class AppActivityDao extends BaseDao {
     }
 
 
-    public void partInActivity(ObjectId activityId,
-                               ObjectId userId){
+    public void partInActivity(ObjectId activityId){
         BasicDBObject query = new BasicDBObject(Constant.ID,activityId);
-        BasicDBObject updateValue= new BasicDBObject(Constant.MONGO_PUSH,new BasicDBObject("ptl",userId))
-                .append(Constant.MONGO_INC,new BasicDBObject("ptc",Constant.ONE));
+        BasicDBObject updateValue= new BasicDBObject(Constant.MONGO_INC,new BasicDBObject("ptc",Constant.ONE));
         update(MongoFacroty.getAppDB(), Constant.COLLECTION_JXM_APP_ACTIVITY,query,updateValue);
     }
 
@@ -48,11 +46,9 @@ public class AppActivityDao extends BaseDao {
     }
 
 
-    public void popActivity(ObjectId activityId,
-                            ObjectId userId){
+    public void popActivity(ObjectId activityId){
         BasicDBObject query = new BasicDBObject(Constant.ID,activityId);
-        BasicDBObject updateValue= new BasicDBObject(Constant.MONGO_PULL,new BasicDBObject("ptl",userId))
-                .append(Constant.MONGO_INC,new BasicDBObject("ptc",Constant.NEGATIVE_ONE));
+        BasicDBObject updateValue= new BasicDBObject(Constant.MONGO_INC,new BasicDBObject("ptc",Constant.NEGATIVE_ONE));
         update(MongoFacroty.getAppDB(), Constant.COLLECTION_JXM_APP_ACTIVITY,query,updateValue);
     }
 

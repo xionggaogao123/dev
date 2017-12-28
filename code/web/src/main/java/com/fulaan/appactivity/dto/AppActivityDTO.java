@@ -29,7 +29,6 @@ public class AppActivityDTO {
     private String groupName;
     private List<Attachement> imageList = new ArrayList<Attachement>();
     private List<VideoDTO> videoDTOs = new ArrayList<VideoDTO>();
-    private List<String> partInList = new ArrayList<String>();
     private List<GroupOfCommunityDTO> groupOfCommunityDTOs = new ArrayList<GroupOfCommunityDTO>();
     private int partInCount;
     private int visiblePermission;
@@ -131,9 +130,7 @@ public class AppActivityDTO {
         for(VideoEntry videoEntry:videoEntries){
             videoDTOs.add(new VideoDTO(videoEntry));
         }
-        List<ObjectId> partInUsers = entry.getPartInList();
-        partInList= MongoUtils.convertToStringList(partInUsers);
-        this.partInCount =entry.getPartInCount();
+        this.partInCount=entry.getPartInCount();
         this.visiblePermission = entry.getVisiblePermission();
     }
 
@@ -279,14 +276,6 @@ public class AppActivityDTO {
 
     public void setVideoDTOs(List<VideoDTO> videoDTOs) {
         this.videoDTOs = videoDTOs;
-    }
-
-    public List<String> getPartInList() {
-        return partInList;
-    }
-
-    public void setPartInList(List<String> partInList) {
-        this.partInList = partInList;
     }
 
     public int getPartInCount() {

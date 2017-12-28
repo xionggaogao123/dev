@@ -24,6 +24,8 @@ public class GroupChatRecordDTO {
 
     private String receiveId;
     private int chatType;
+    private boolean isOwner;
+    private String avatar;
 
     public GroupChatRecordDTO(){
 
@@ -48,6 +50,22 @@ public class GroupChatRecordDTO {
         this.imageUrl=entry.getImageUrl();
         this.submitDay=entry.getSubmitDay();
         this.timeStr= DateTimeUtils.convert(entry.getSubmitTime(),DateTimeUtils.DATE_HH_MM_SS);
+    }
+
+    public String getAvatar() {
+        return avatar;
+    }
+
+    public void setAvatar(String avatar) {
+        this.avatar = avatar;
+    }
+
+    public boolean isOwner() {
+        return isOwner;
+    }
+
+    public void setOwner(boolean owner) {
+        isOwner = owner;
     }
 
     public String getReceiveId() {

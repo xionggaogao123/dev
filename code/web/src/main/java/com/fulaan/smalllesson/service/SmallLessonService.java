@@ -5,6 +5,7 @@ import com.db.smalllesson.LessonUserResultDao;
 import com.db.smalllesson.SmallLessonCodeDao;
 import com.db.smalllesson.SmallLessonDao;
 import com.db.user.UserDao;
+import com.fulaan.smalllesson.api.LessonAPI;
 import com.fulaan.smalllesson.dto.LessonAnswerDTO;
 import com.fulaan.smalllesson.dto.LessonUserResultDTO;
 import com.fulaan.smalllesson.dto.SmallLessonDTO;
@@ -399,6 +400,22 @@ public class SmallLessonService {
     //修改姓名
     public void updateUserSex(ObjectId userId,int sex){
         userDao.updateUserSex(userId, sex);
+    }
+
+    public void checkUnLesson(){
+        SmallLessonDao smallLessonDao = new SmallLessonDao();
+        long current=System.currentTimeMillis();
+        long time = current-10*60*1000;
+        List<SmallLessonEntry> entries= smallLessonDao.getEntryList(time);
+        List<String> stringList = new ArrayList<String>();
+        if(entries.size()>0){
+           for(SmallLessonEntry entry : entries){
+               stringList.add(entry.getID().toString());
+           }
+        }
+        if(stringList.size()>0){
+            LessonAPI.addCustomVote(stringList);
+        }
     }
 
 }

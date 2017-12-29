@@ -65,6 +65,23 @@ public class SmallLessonDao extends BaseDao {
         }
         return null;
     }
+
+    public List<SmallLessonEntry> getEntryList(long time) {
+        BasicDBObject query = new BasicDBObject();
+        query.append("isr",Constant.ZERO);
+        query.append("typ",0);
+        query.append("ctm",new BasicDBObject(Constant.MONGO_LT, time));
+        List<DBObject> dboList=find(MongoFacroty.getAppDB(), Constant.COLLECTION_SMALL_LESSON, query, Constant.FIELDS,new BasicDBObject("dtm",Constant.DESC));
+        List<SmallLessonEntry> retList =new ArrayList<SmallLessonEntry>();
+        if(null!=dboList && !dboList.isEmpty())
+        {
+            for(DBObject dbo:dboList)
+            {
+                retList.add(new SmallLessonEntry((BasicDBObject)dbo));
+            }
+        }
+        return retList;
+    }
     public SmallLessonEntry getActiveEntry(ObjectId id) {
         BasicDBObject query = new BasicDBObject(Constant.ID,id);
         query.append("isr",Constant.ZERO);

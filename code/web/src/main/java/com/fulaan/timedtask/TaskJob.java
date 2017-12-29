@@ -5,6 +5,7 @@ import com.db.ebusiness.EVoucherDao;
 import com.db.microblog.MicroBlogDao;
 import com.db.user.UserActiveRecordDao;
 import com.fulaan.logreport.service.BuildLogReportService;
+import com.fulaan.smalllesson.service.SmallLessonService;
 import com.fulaan.user.service.UserService;
 import com.fulaan.util.crawl.CrawlData;
 import com.pojo.app.RegionEntry;
@@ -258,6 +259,11 @@ public class TaskJob {
             }
             page++;
         }
+    }
+    //
+    public void checkUnLesson(){
+        SmallLessonService smallLessonService = new SmallLessonService();
+        smallLessonService.checkUnLesson();
     }
 
     /**

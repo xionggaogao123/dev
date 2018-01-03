@@ -28,12 +28,9 @@ public class AppVoteDao extends BaseDao{
 
 
     public BasicDBObject getStudentReceivedCondition(List<ObjectId> groupIds){
-        List<Integer> visiblePermission=new ArrayList<Integer>();
-        visiblePermission.add(Constant.TWO);
-        visiblePermission.add(Constant.THREE);
         BasicDBObject query=new BasicDBObject()
                 .append("gid",new BasicDBObject(Constant.MONGO_IN,groupIds))
-                .append("vp",new BasicDBObject(Constant.MONGO_IN,visiblePermission))
+                .append("vp",Constant.TWO)
                 .append("ir", Constant.ZERO);
         return query;
     }
@@ -58,13 +55,10 @@ public class AppVoteDao extends BaseDao{
 
     public BasicDBObject getReceivedCondition(List<ObjectId> groupIds,
                                               ObjectId userId){
-        List<Integer> visiblePermission=new ArrayList<Integer>();
-        visiblePermission.add(Constant.ONE);
-        visiblePermission.add(Constant.THREE);
         BasicDBObject query=new BasicDBObject()
                 .append("uid",new BasicDBObject(Constant.MONGO_NE,userId))
                 .append("gid",new BasicDBObject(Constant.MONGO_IN,groupIds))
-                .append("vp",new BasicDBObject(Constant.MONGO_IN,visiblePermission))
+                .append("vp",Constant.ONE)
                 .append("ir", Constant.ZERO);
         return query;
     }
@@ -100,14 +94,11 @@ public class AppVoteDao extends BaseDao{
 
     public BasicDBObject getGatherCondition(List<ObjectId> groupIds,
                                             ObjectId userId){
-        List<Integer> visiblePermission=new ArrayList<Integer>();
-        visiblePermission.add(Constant.ONE);
-        visiblePermission.add(Constant.THREE);
         BasicDBObject query = new BasicDBObject();
         BasicDBList values = new BasicDBList();
         values.add(new BasicDBObject("uid",userId));
         values.add(new BasicDBObject("uid",new BasicDBObject(Constant.MONGO_NE,userId))
-                .append("vp",new BasicDBObject(Constant.MONGO_IN,visiblePermission))
+                .append("vp",Constant.ONE)
                 .append("gid",new BasicDBObject(Constant.MONGO_IN,groupIds)));
         query.append(Constant.MONGO_OR,values);
         return query;

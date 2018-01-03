@@ -34,6 +34,7 @@ public class AppVoteController extends BaseController{
     public RespObj saveAppVote(@RequestBody AppVoteDTO appVoteDTO){
         RespObj respObj=new RespObj(Constant.FAILD_CODE);
         try{
+            appVoteDTO.setUserId(getUserId().toString());
             appVoteService.saveAppVote(appVoteDTO);
             respObj.setCode(Constant.SUCCESS_CODE);
             respObj.setMessage("保存成功");

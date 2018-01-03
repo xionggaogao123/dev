@@ -316,11 +316,15 @@ public class ReportCardService {
             }
             if (flag) {
                 UserEntry userEntry = userEntryMap.get(recordEntry.getUserId());
+                VirtualUserEntry virtualUserEntry = virtualUserDao.getVirtualUserByUserId(recordEntry.getUserId());
                 if (null != userEntry) {
                     userRecordDTO.setUserName(
                             StringUtils.isNotBlank(userEntry.getNickName()) ? userEntry.getNickName() : userEntry.getUserName());
-
+                }else if(null != virtualUserEntry){
+                    userRecordDTO.setUserNumber(virtualUserEntry.getUserNumber());
+                    userRecordDTO.setUserName(virtualUserEntry.getUserName());
                 }
+
                 flag = false;
             }
             recordExamScoreDTOs.add(userRecordDTO);
@@ -328,9 +332,13 @@ public class ReportCardService {
         Collections.sort(recordExamScoreDTOs, new Comparator<GroupExamUserRecordDTO>() {
             @Override
             public int compare(GroupExamUserRecordDTO o1, GroupExamUserRecordDTO o2) {
-                int result = getCompareResult(o1.getUserNumber(), o2.getUserNumber());
-                if (result == 0) {
-                    result = getCompareResult(o1.getUserName(), o2.getUserName());
+                int result=0;
+                if(StringUtils.isNotEmpty(o1.getUserNumber())&&
+                        StringUtils.isNotEmpty(o1.getUserName())) {
+                    result = getCompareResult(o1.getUserNumber(), o2.getUserNumber());
+                    if (result == 0) {
+                        result = getCompareResult(o1.getUserName(), o2.getUserName());
+                    }
                 }
                 return result;
             }
@@ -594,13 +602,14 @@ public class ReportCardService {
             List<NewVersionCommunityBindEntry> entries
                     = newVersionCommunityBindDao.getStudentIdListByCommunityId(new ObjectId(communityId));
             for (NewVersionCommunityBindEntry bindEntry : entries) {
-                userIds.add(bindEntry.getUserId());
+//                userIds.add(bindEntry.getUserId());
                 userMainIds.put(bindEntry.getUserId(),bindEntry.getMainUserId());
             }
-//            List<VirtualUserEntry> virtualUserEntries=virtualUserDao.getAllVirtualUsers(new ObjectId(communityId));
-//            for (VirtualUserEntry virtualUserEntry : virtualUserEntries) {
-//                userIds.add(virtualUserEntry.getUserId());
-//            }
+            List<VirtualUserEntry> virtualUserEntries=virtualUserDao.getAllVirtualUsers(new ObjectId(communityId));
+            for (VirtualUserEntry virtualUserEntry : virtualUserEntries) {
+                userIds.add(virtualUserEntry.getUserId());
+            }
+
 
             ObjectId groupExamDetailId = groupExamDetailDao.saveGroupExamDetailEntry(dto.buildEntry());
             List<GroupExamUserRecordEntry> userRecordEntries = new ArrayList<GroupExamUserRecordEntry>();

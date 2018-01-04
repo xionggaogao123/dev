@@ -568,6 +568,65 @@ public class WebFPostController extends BaseController {
         ObjectId userId = getUserId();
         return "/forum/newPost";
     }
+    /**
+     * 跳转添加页面
+     * @return
+     */
+    @ApiOperation(value = "跳转添加页面", httpMethod = "POST", produces = "application/json")
+    @ApiResponses( value = {@ApiResponse(code = 200, message = "Successful — 请求已完成",response = String.class),
+            @ApiResponse(code = 400, message = "请求中有语法问题，或不能满足请求"),
+            @ApiResponse(code = 500, message = "服务器不能完成请求")})
+    @RequestMapping("/webNewPost")
+    @ResponseBody
+    public String webNewPost(HttpServletResponse response,@ApiParam(name = "id", required = true, value = "pSectionId") @RequestParam("id") String id,
+                                   @ApiParam(name = "postId", required = true, value = "postId") @RequestParam(value = "postId",required = false) String postId){
+        Map<String,Object> model = new HashMap<String, Object>();
+        RespObj respObj=new RespObj(Constant.FAILD_CODE);
+        try {
+            SessionValue sv = getSessionValue();
+            if (userService.isUnSpeak(sv.getId())) {
+                try {
+                    response.sendRedirect("/forum/forumSilenced.do");
+                    return null;
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+            }
+            respObj.setCode(Constant.SUCCESS_CODE);
+            model.put("pSectionId",id);
+            if (StringUtils.isNotBlank(postId)) {
+                FPostDTO fPostDTO = fPostService.detail(new ObjectId(postId));
+                model.put("comment", HtmlUtils.htmlEscapeDecimal(fPostDTO.getBackUpComment()));
+                model.put("pSectionId", fPostDTO.getPostSectionId());
+                model.put("classify", fPostDTO.getClassify());
+                model.put("postTitle", fPostDTO.getPostTitle());
+                model.put("postId", fPostDTO.getFpostId());
+            }
+            //获取总积分
+            UserEntry userEntry = userService.findById(new ObjectId(sv.getId()));
+            long forumScore = userEntry.getForumScore();
+            model.put("forumScore", forumScore);
+            FLogDTO fLogDTO = new FLogDTO();
+            fLogDTO.setActionName("newPost");
+            if (!sv.isEmpty()) {
+                fLogDTO.setPersonId(sv.getId());
+            }
+            if (StringUtils.isNotBlank(id)) {
+                fLogDTO.setKeyId(id);
+            }
+            fLogDTO.setPath("/forum/newPost.do");
+            fLogDTO.setTime(System.currentTimeMillis());
+            fLogService.addFLog(fLogDTO);
+            respObj.setMessage(model);
+        } catch (Exception e) {
+            e.printStackTrace();
+            respObj.setCode(Constant.FAILD_CODE);
+            respObj.setErrorMessage("跳转添加页面失败!");
+        }
+        return JSON.toJSONString(respObj);
+    }
+
+
     @ApiOperation(value = "task", httpMethod = "POST", produces = "application/json")
     @ApiResponses( value = {@ApiResponse(code = 200, message = "Successful — 请求已完成",response = String.class)})
     @RequestMapping("/task")

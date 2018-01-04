@@ -474,7 +474,7 @@ public class ReportCardController extends BaseController {
             if(userCount==0) {
                 respObj.setMessage("导入模板成功");
             }else{
-                respObj.setMessage("导入成功,还有"+userCount+"未匹配");
+                respObj.setMessage("导入成功,还有"+userCount+"人未匹配");
             }
         } catch (Exception e) {
             e.printStackTrace();
@@ -492,13 +492,16 @@ public class ReportCardController extends BaseController {
     @RequestMapping("/matchInputCount")
     @ResponseBody
     public RespObj matchInputCount(String communityId){
-        RespObj respObj = new RespObj(Constant.SUCCESS_CODE);
-        List<VirtualUserDTO> dtos = reportCardService.matchInputCount(communityId);
-        respObj.setMessage(dtos);
+        RespObj respObj = new RespObj(Constant.FAILD_CODE);
+        try {
+            List<VirtualUserDTO> dtos = reportCardService.matchInputCount(communityId);
+            respObj.setCode(Constant.SUCCESS_CODE);
+            respObj.setMessage(dtos);
+        }catch (Exception e){
+            respObj.setMessage(e.getMessage());
+        }
         return respObj;
     }
-
-
 
     @ApiOperation(value = "删除班级学生列表", httpMethod = "GET", produces = "application/json")
     @ApiResponses(value = {@ApiResponse(code = 200, message = "导入模板已完成", response = String.class),

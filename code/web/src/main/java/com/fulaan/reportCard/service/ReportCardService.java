@@ -316,16 +316,16 @@ public class ReportCardService {
             }
             if (flag) {
                 UserEntry userEntry = userEntryMap.get(recordEntry.getUserId());
-                VirtualUserEntry virtualUserEntry = virtualUserDao.getVirtualUserByUserId(recordEntry.getUserId());
-                if (null != userEntry) {
+                if(null != userEntry){
                     userRecordDTO.setUserName(
                             StringUtils.isNotBlank(userEntry.getNickName()) ? userEntry.getNickName() : userEntry.getUserName());
-                }else if(null != virtualUserEntry){
-                    userRecordDTO.setUserNumber(virtualUserEntry.getUserNumber());
-                    userRecordDTO.setUserName(virtualUserEntry.getUserName());
                 }
-
                 flag = false;
+            }
+            VirtualUserEntry virtualUserEntry = virtualUserDao.getVirtualUserByUserId(recordEntry.getUserId());
+            if(null != virtualUserEntry){
+                userRecordDTO.setUserNumber(virtualUserEntry.getUserNumber());
+                userRecordDTO.setUserName(virtualUserEntry.getUserName());
             }
             recordExamScoreDTOs.add(userRecordDTO);
         }
@@ -602,13 +602,13 @@ public class ReportCardService {
             List<NewVersionCommunityBindEntry> entries
                     = newVersionCommunityBindDao.getStudentIdListByCommunityId(new ObjectId(communityId));
             for (NewVersionCommunityBindEntry bindEntry : entries) {
-//                userIds.add(bindEntry.getUserId());
+                userIds.add(bindEntry.getUserId());
                 userMainIds.put(bindEntry.getUserId(),bindEntry.getMainUserId());
             }
-            List<VirtualUserEntry> virtualUserEntries=virtualUserDao.getAllVirtualUsers(new ObjectId(communityId));
-            for (VirtualUserEntry virtualUserEntry : virtualUserEntries) {
-                userIds.add(virtualUserEntry.getUserId());
-            }
+//            List<VirtualUserEntry> virtualUserEntries=virtualUserDao.getAllVirtualUsers(new ObjectId(communityId));
+//            for (VirtualUserEntry virtualUserEntry : virtualUserEntries) {
+//                userIds.add(virtualUserEntry.getUserId());
+//            }
 
 
             ObjectId groupExamDetailId = groupExamDetailDao.saveGroupExamDetailEntry(dto.buildEntry());
@@ -1040,7 +1040,20 @@ public class ReportCardService {
         return dealData(virtualUserDTOs,fileName);
     }
 
-    public List<VirtualUserDTO> matchInputCount(String communityId){
+    public int judgeIsExistMatch(ObjectId communityId){
+        int flag=1;
+        VirtualCommunityEntry communityEntry =virtualCommunityDao.findntryByCommunityId(communityId);
+        if(null==communityEntry){
+            flag=0;
+        }else{
+            if(communityEntry.getUserCount()==Constant.ZERO){
+                flag=0;
+            }
+        }
+        return flag;
+    }
+
+    public List<VirtualUserDTO> matchInputCount(String communityId)throws Exception{
         Map<String, ObjectId> userBindMap = new HashMap<String, ObjectId>();
         List<VirtualUserDTO> dtos = new ArrayList<VirtualUserDTO>();
         List<NewVersionCommunityBindEntry>
@@ -1059,6 +1072,9 @@ public class ReportCardService {
             }else{
                 dtos.add(new VirtualUserDTO(virtualUserEntry));
             }
+        }
+        if(virtualUserEntries.size()==Constant.ZERO){
+            throw new Exception("请先导入学生名单再进行匹配");
         }
         return dtos;
     }

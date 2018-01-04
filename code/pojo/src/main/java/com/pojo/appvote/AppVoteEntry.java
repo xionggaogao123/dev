@@ -53,7 +53,7 @@ public class AppVoteEntry extends BaseDBObject{
                 .append("vt",MongoUtils.convert(voteContent))
                 .append("vmc",voteMaxCount)
                 .append("vdt",voteDeadTime)
-                .append("vt",voteType)
+                .append("vty",voteType)
                 .append("vp",visiblePermission)
                 .append("sti",System.currentTimeMillis())
                 .append("cc",Constant.ZERO)
@@ -103,11 +103,11 @@ public class AppVoteEntry extends BaseDBObject{
     }
 
     public void setVoteType(int voteType){
-        setSimpleValue("vt",voteType);
+        setSimpleValue("vty",voteType);
     }
 
     public int getVoteType(){
-        return getSimpleIntegerValue("vt");
+        return getSimpleIntegerValue("vty");
     }
 
     public long getVoteDeadTime(){
@@ -199,10 +199,10 @@ public class AppVoteEntry extends BaseDBObject{
     }
 
     public void setSubjectId(ObjectId subjectId){
-        setSimpleValue("sui",subjectId);
+        setSimpleValue("sud",subjectId);
     }
 
     public ObjectId getSubjectId(){
-        return getSimpleObjecIDValue("sui");
+        return getSimpleObjecIDValue("sud");
     }
 }

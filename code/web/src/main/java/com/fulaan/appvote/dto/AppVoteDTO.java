@@ -126,6 +126,7 @@ public class AppVoteDTO {
         this.content = appVoteEntry.getContent();
         this.subjectId = appVoteEntry.getSubjectId().toString();
         this.subjectName = appVoteEntry.getSubjectName();
+        this.groupName = appVoteEntry.getGroupName();
         this.title = appVoteEntry.getTitle();
         this.userId = appVoteEntry.getUserId().toString();
         this.groupId = appVoteEntry.getGroupId().toString();
@@ -142,6 +143,8 @@ public class AppVoteDTO {
         this.deadTime = DateTimeUtils.convert(appVoteEntry.getVoteDeadTime(), DateTimeUtils.DATE_YYYY_MM_DD_HH_MM_SS_H);
         this.voteCount = appVoteEntry.getVoteCount();
     }
+
+
 
     public String getSubmitTime() {
         return submitTime;

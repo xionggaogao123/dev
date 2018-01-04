@@ -178,6 +178,10 @@ public class AppNoticeDTO {
         for(AttachmentEntry voice:voiceEntries){
             voiceList.add(new Attachement(voice));
         }
+        List<AttachmentEntry> attachmentEntries=entry.getAttachmentEntries();
+        for(AttachmentEntry attachmentEntry:attachmentEntries){
+            attachements.add(new Attachement(attachmentEntry));
+        }
         this.commentCount=entry.getCommentCount();
         this.time= DateTimeUtils.convert(entry.getSubmitTime(),DateTimeUtils.DATE_YYYY_MM_DD_HH_MM_SS_H);
     }

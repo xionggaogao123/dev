@@ -391,5 +391,24 @@ public class DefaultReportCardController extends BaseController{
     }
 
 
+    @ApiOperation(value = "app端判断是否需要上传学生并分配", httpMethod = "GET", produces = "application/json")
+    @ApiResponses(value = {@ApiResponse(code = 200, message = "导入模板已完成", response = String.class),
+            @ApiResponse(code = 400, message = "请求中有语法问题，或不能满足请求"),
+            @ApiResponse(code = 500, message = "服务器不能完成请求")})
+    @RequestMapping("/judgeIsExistMatch")
+    @ResponseBody
+    public RespObj judgeIsExistMatch(@ObjectIdType ObjectId communityId){
+        RespObj respObj = new RespObj(Constant.FAILD_CODE);
+        try{
+            int flag=reportCardService.judgeIsExistMatch(communityId);
+            respObj.setCode(Constant.SUCCESS_CODE);
+            respObj.setMessage(flag);
+        }catch (Exception e){
+            respObj.setErrorMessage(e.getMessage());
+        }
+        return respObj;
+    }
+
+
 
 }

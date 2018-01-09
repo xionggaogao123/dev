@@ -1,13 +1,19 @@
 package com.fulaan.questionbook.service;
 
-import com.db.questionbook.QuestionAdditionDao;
-import com.db.questionbook.QuestionBookDao;
-import com.db.questionbook.QuestionTagsDao;
-import com.db.questionbook.QuestionWebTestDao;
+import cn.jiguang.commom.utils.StringUtils;
+import com.db.fcommunity.CommunityDao;
+import com.db.fcommunity.GroupDao;
+import com.db.fcommunity.MemberDao;
+import com.db.fcommunity.NewVersionCommunityBindDao;
+import com.db.questionbook.*;
+import com.db.user.NewVersionBindRelationDao;
 import com.fulaan.picturetext.runnable.PictureRunNable;
 import com.fulaan.questionbook.dto.*;
+import com.fulaan.user.service.UserService;
 import com.pojo.backstage.PictureType;
+import com.pojo.fcommunity.CommunityEntry;
 import com.pojo.questionbook.*;
+import com.pojo.user.UserDetailInfoDTO;
 import com.sys.constants.Constant;
 import com.sys.props.Resources;
 import org.apache.poi.util.IOUtils;
@@ -15,6 +21,7 @@ import org.apache.poi.xwpf.usermodel.Document;
 import org.apache.poi.xwpf.usermodel.XWPFParagraph;
 import org.apache.poi.xwpf.usermodel.XWPFRun;
 import org.bson.types.ObjectId;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import javax.servlet.http.HttpServletResponse;
@@ -38,6 +45,20 @@ public class QuestionBookService {
     private QuestionTagsDao questionTagsDao =new QuestionTagsDao();
 
     private QuestionWebTestDao questionWebTestDao = new QuestionWebTestDao();
+
+    private QuestionReadDao questionReadDao = new QuestionReadDao();
+
+    private MemberDao memberDao = new MemberDao();
+
+    private GroupDao groupDao = new GroupDao();
+
+    private NewVersionBindRelationDao newVersionBindRelationDao = new NewVersionBindRelationDao();
+
+    private NewVersionCommunityBindDao newVersionCommunityBindDao = new NewVersionCommunityBindDao();
+
+    private CommunityDao communityDao = new CommunityDao();
+    @Autowired
+    private UserService userService;
     /**
      * 添加错题
      * @param dto
@@ -646,4 +667,131 @@ public class QuestionBookService {
             // TODO: handle exception
         }
     }*/
+
+    /************************* 家校美（大人端）*****************************/
+    public Map<String,Object> getIndexList(ObjectId userId){
+       Map<String,Object> map = new HashMap<String, Object>();
+        List<TypeResultDTO> dtos = new ArrayList<TypeResultDTO>();
+        //查询所有该用户的绑定关系
+        List<ObjectId> childIds = newVersionBindRelationDao.getIdsByMainUserId(userId);
+        //查询具有管理员权限的社区
+        List<ObjectId> oids = getMyRoleList(userId);
+        if(oids.size()>0){
+            List<CommunityEntry> communityEntries = communityDao.findByObjectIds(oids);
+            for(CommunityEntry entry : communityEntries){
+                TypeResultDTO dto = new TypeResultDTO();
+                dto.setId(entry.getID().toString());
+                dto.setName(entry.getCommunityName());
+                dto.setType(2);
+                dtos.add(dto);
+            }
+        }
+
+        if(childIds.size()>0){
+            List<UserDetailInfoDTO> infos = userService.findUserInfoByIds(childIds);
+            for(UserDetailInfoDTO entry : infos){
+                TypeResultDTO dto = new TypeResultDTO();
+                dto.setId(entry.getId());
+                dto.setName(entry.getName());
+                dto.setType(1);
+                dtos.add(dto);
+            }
+        }
+        map.put("topList",dtos);
+        List<QuestionReadDTO> dtoList = new ArrayList<QuestionReadDTO>();
+        if(oids.size() >0){
+            map.put("isShow",1);
+            List<ObjectId> objectIdList = newVersionCommunityBindDao.getStudentListByCommunityId(oids.get(0));
+            List<QuestionReadEntry> entries = questionReadDao.getReviewList(objectIdList,userId,2);
+            List<String> sids = new ArrayList<String>();
+            if(entries.size()>0){
+                for(QuestionReadEntry entry : entries){
+                    sids.add(entry.getUserId().toString());
+                }
+            }
+            List<UserDetailInfoDTO> udtos2 = userService.findUserInfoByUserIds(sids);
+            Map<String,UserDetailInfoDTO> map3 = new HashMap<String, UserDetailInfoDTO>();
+            if(udtos2 != null && udtos2.size()>0) {
+                for (UserDetailInfoDTO dto4 : udtos2) {
+                    map3.put(dto4.getId(), dto4);
+                }
+            }
+            if(entries.size()>0){
+                for(QuestionReadEntry entry : entries){
+                    UserDetailInfoDTO dto9 = map3.get(entry.getUserId().toString());
+                    QuestionReadDTO questionReadDTO = new QuestionReadDTO(entry);
+                    String name = StringUtils.isNotEmpty(dto9.getNickName())?dto9.getNickName():dto9.getUserName();
+                    questionReadDTO.setUserName(name);
+                    questionReadDTO.setImageUrl(dto9.getImgUrl());
+                    //学号 Todo 学号
+                    dtoList.add(questionReadDTO);
+                }
+            }
+        }else if(childIds.size() >0 ){
+            map.put("isShow",2);
+            List<QuestionReadEntry> entries = questionReadDao.getReviewList(childIds,userId,1);
+            List<String> sids = new ArrayList<String>();
+            if(entries.size()>0){
+                for(QuestionReadEntry entry : entries){
+                    sids.add(entry.getUserId().toString());
+                }
+            }
+            if(entries.size()>0){
+                for(QuestionReadEntry entry : entries){
+                    dtoList.add(new QuestionReadDTO(entry));
+                }
+            }
+        }else{
+            map.put("isShow",3);
+        }
+        map.put("list",dtoList);
+        return map;
+    }
+
+    public List<QuestionReadDTO> getQuestionReadDTO(List<ObjectId> userIds,ObjectId parentId,int type){
+        List<QuestionReadDTO> dtoList = new ArrayList<QuestionReadDTO>();
+        List<QuestionReadEntry> entries = questionReadDao.getReviewList(userIds,parentId,type);
+        Map<ObjectId,QuestionReadEntry> map4 = new HashMap<ObjectId, QuestionReadEntry>();
+        List<ObjectId> childs = new ArrayList<ObjectId>();
+        if(entries.size()>0){
+            for(QuestionReadEntry entry : entries){
+                childs.add(entry.getID());
+                map4.put(entry.getID(),entry);
+            }
+        }
+        List<String> sids = new ArrayList<String>();
+        if(userIds.size()>0){
+            for(ObjectId id : userIds){
+                sids.add(id.toString());
+            }
+        }
+        List<UserDetailInfoDTO> udtos2 = userService.findUserInfoByUserIds(sids);
+        Map<String,UserDetailInfoDTO> map3 = new HashMap<String, UserDetailInfoDTO>();
+        if(udtos2 != null && udtos2.size()>0) {
+            for (UserDetailInfoDTO dto4 : udtos2) {
+                map3.put(dto4.getId(), dto4);
+            }
+        }
+        for(ObjectId oid : userIds){
+            if(childs.contains(oid)){
+                //map4.get();
+
+            }else{
+
+            }
+
+        }
+
+
+
+
+        return dtoList;
+    }
+
+
+    public List<ObjectId> getMyRoleList(ObjectId userId){
+        List<ObjectId> olsit = memberDao.getManagerGroupIdsByUserId(userId);
+        List<ObjectId> mlist =   groupDao.getGroupIdsList(olsit);
+        return mlist;
+    }
 }

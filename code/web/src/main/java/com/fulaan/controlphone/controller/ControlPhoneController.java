@@ -999,7 +999,12 @@ public class ControlPhoneController extends BaseController {
         try{
             controlPhoneService.addAppToChildOrCommunity(getUserId(), new ObjectId(contactId), type, new ObjectId(appId),isCheck);
             respObj.setCode(Constant.SUCCESS_CODE);
-            respObj.setMessage("推送应用成功");
+            if(isCheck==1){
+                respObj.setMessage("卸载应用成功");
+            }else{
+                respObj.setMessage("推送应用成功");
+            }
+
         }catch (Exception e){
             e.printStackTrace();
             respObj.setCode(Constant.SUCCESS_CODE);

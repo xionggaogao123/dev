@@ -141,6 +141,12 @@ public class SmallLessonDao extends BaseDao {
         update(MongoFacroty.getAppDB(), Constant.COLLECTION_SMALL_LESSON, query,updateValue);
     }
 
+
+    public void delSmallLessonEntryList(List<ObjectId> ids){
+        BasicDBObject query = new BasicDBObject(Constant.ID,new BasicDBObject(Constant.MONGO_IN,ids));
+        BasicDBObject updateValue=new BasicDBObject(Constant.MONGO_SET,new BasicDBObject("typ",Constant.ONE));
+        update(MongoFacroty.getAppDB(), Constant.COLLECTION_SMALL_LESSON, query,updateValue);
+    }
     public void getTimeLoading(ObjectId id,long time){
         BasicDBObject query = new BasicDBObject(Constant.ID,id);
         BasicDBObject updateValue=new BasicDBObject(Constant.MONGO_SET,new BasicDBObject("ctm",time));

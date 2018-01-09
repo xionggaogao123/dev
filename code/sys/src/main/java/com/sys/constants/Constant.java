@@ -935,7 +935,8 @@ public class Constant {
     public static final String COLLECTION_QUESTION_TAGS = "questiontags";
     //自定义表签
     public static final String COLLECTION_QUESTION_WEB_TEST = "questionwebtest";
-
+    //已阅记录查看表
+    public static final String COLLECTION_READ_BOOK = "questionreadbook";
     /**--------------------------管控--------------------------**/
 
     //管控手机号

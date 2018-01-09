@@ -6,6 +6,7 @@ import com.fulaan.annotation.SessionNeedless;
 import com.fulaan.base.BaseController;
 import com.fulaan.mqtt.MQTTSendMsg;
 import com.fulaan.smalllesson.dto.LessonAnswerDTO;
+import com.fulaan.smalllesson.dto.ResultTypeDTO;
 import com.fulaan.smalllesson.dto.SmallLessonDTO;
 import com.fulaan.smalllesson.service.SmallLessonService;
 import com.fulaan.user.service.UserService;
@@ -287,6 +288,33 @@ public class DefaultSmallLessonController extends BaseController {
             e.printStackTrace();
             respObj.setCode(Constant.FAILD_CODE);
             respObj.setErrorMessage("添加活跃用户idlist失败!");
+        }
+        return JSON.toJSONString(respObj);
+    }
+
+    /**
+     * 添加活跃用户idlist(新)
+     */
+    @SessionNeedless
+    @ApiOperation(value = "添加活跃用户idlist(新)", httpMethod = "POST", produces = "application/json")
+    @ApiResponses( value = {@ApiResponse(code = 200, message = "Successful — 请求已完成",response = String.class),
+            @ApiResponse(code = 400, message = "请求中有语法问题，或不能满足请求"),
+            @ApiResponse(code = 500, message = "服务器不能完成请求")})
+    @RequestMapping("/addNewUserResult")
+    @ResponseBody
+    public String addNewUserResult(@ApiParam(name = "answerList", required = true, value = "活跃用户列表") @RequestBody ResultTypeDTO userList){
+
+        RespObj respObj=new RespObj(Constant.FAILD_CODE);
+        try {
+            respObj.setCode(Constant.SUCCESS_CODE);
+            List<String> userIds = userList.getUserIds();
+            String lessonId = userList.getLessonId();
+            smallLessonService.addUserResult(userIds,new ObjectId(lessonId));
+            respObj.setMessage("添加活跃用户idlist(新)成功!");
+        } catch (Exception e) {
+            e.printStackTrace();
+            respObj.setCode(Constant.FAILD_CODE);
+            respObj.setErrorMessage("添加活跃用户idlist(新)失败!");
         }
         return JSON.toJSONString(respObj);
     }

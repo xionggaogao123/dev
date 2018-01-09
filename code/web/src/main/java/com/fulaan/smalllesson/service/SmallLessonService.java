@@ -408,11 +408,14 @@ public class SmallLessonService {
         long time = current-10*60*1000;
         List<SmallLessonEntry> entries= smallLessonDao.getEntryList(time);
         List<String> stringList = new ArrayList<String>();
+        List<ObjectId> objectIdList =  new ArrayList<ObjectId>();
         if(entries.size()>0){
            for(SmallLessonEntry entry : entries){
                stringList.add(entry.getID().toString());
+               objectIdList.add(entry.getID());
            }
         }
+        smallLessonDao.delSmallLessonEntryList(objectIdList);
         if(stringList.size()>0){
             LessonAPI.addCustomVote(stringList);
         }

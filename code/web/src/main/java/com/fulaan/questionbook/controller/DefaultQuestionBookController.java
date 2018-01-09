@@ -8,6 +8,7 @@ import com.fulaan.questionbook.service.QuestionBookService;
 import com.sys.constants.Constant;
 import com.sys.utils.RespObj;
 import io.swagger.annotations.*;
+import org.apache.log4j.Logger;
 import org.bson.types.ObjectId;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -28,7 +29,8 @@ import java.util.Map;
 public class DefaultQuestionBookController extends BaseController {
     @Autowired
     private QuestionBookService questionBookService;
-
+// private static final Logger logger =Logger.getLogger(DefaultWrongQuestionController.class);
+    private static final Logger logger = Logger.getLogger(DefaultQuestionBookController.class);
     /**
      *  添加错题
      * @param dto
@@ -362,6 +364,24 @@ public class DefaultQuestionBookController extends BaseController {
             e.printStackTrace();
             respObj.setCode(Constant.FAILD_CODE);
             respObj.setErrorMessage("删除自定义标签失败!");
+        }
+        return JSON.toJSONString(respObj);
+    }
+
+    /***************************** 家校美（大人端）******************************/
+    @ApiOperation(value="大人首页数据获取",httpMethod = "get",produces = "application/json")
+    @ApiResponses(value = {@ApiResponse(code=200,message="Successful--请求已完成",response=String.class)})
+    @RequestMapping("/getIndexList")
+    @ResponseBody
+    public String getIndexList(){
+        RespObj respObj = new RespObj(Constant.SUCCESS_CODE);
+        try{
+
+        }catch (Exception e) {
+            e.printStackTrace();
+            logger.error("error",e);
+            respObj.setCode(Constant.FAILD_CODE);
+            respObj.setErrorMessage("大人首页数据获取失败!");
         }
         return JSON.toJSONString(respObj);
     }

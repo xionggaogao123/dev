@@ -418,6 +418,12 @@
             <version>${spring.version}</version>
         </dependency>
 
+        <dependency>
+            <groupId>com.pentahohub.nexus</groupId>
+            <artifactId>alipay-sdk-java</artifactId>
+            <version>20171201160035</version>
+        </dependency>
+
     </dependencies>
     <repositories>
         <repository>

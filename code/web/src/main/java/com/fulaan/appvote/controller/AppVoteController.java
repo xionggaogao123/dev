@@ -1,5 +1,6 @@
 package com.fulaan.appvote.controller;
 
+import com.fulaan.annotation.ObjectIdType;
 import com.fulaan.appvote.dto.AppVoteDTO;
 import com.fulaan.appvote.service.AppVoteService;
 import com.fulaan.base.BaseController;
@@ -8,6 +9,7 @@ import com.sys.utils.RespObj;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiResponse;
 import io.swagger.annotations.ApiResponses;
+import org.bson.types.ObjectId;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -61,6 +63,18 @@ public class AppVoteController extends BaseController{
         }
         return respObj;
     }
+
+    @ApiOperation(value = "删除并撤回投票信息", httpMethod = "GET", produces = "application/json")
+    @ApiResponses( value = {@ApiResponse(code = 200, message = "Successful — 请求已完成",response = RespObj.class)})
+    @RequestMapping("/removeAppVote")
+    @ResponseBody
+    public RespObj removeAppVote(@ObjectIdType ObjectId appVoteId){
+        RespObj respObj = new RespObj(Constant.SUCCESS_CODE);
+        appVoteService.removeAppVote(appVoteId);
+        respObj.setMessage("删除并撤回投票信息成功!");
+        return respObj;
+    }
+
 
 
 

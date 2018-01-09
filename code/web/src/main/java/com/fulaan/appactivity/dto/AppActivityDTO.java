@@ -145,11 +145,15 @@ public class AppActivityDTO {
     public boolean isPartIn() {
         return isPartIn;
     }
-
+    public boolean getIsPartIn() {
+        return isPartIn;
+    }
     public void setPartIn(boolean partIn) {
         isPartIn = partIn;
     }
-
+    public void setIsPartIn(boolean isPartIn) {
+        this.isPartIn = isPartIn;
+    }
     public String getAvatar() {
         return avatar;
     }
@@ -185,11 +189,15 @@ public class AppActivityDTO {
     public boolean isOwner() {
         return isOwner;
     }
-
+    public boolean getIsOwner() {
+        return isOwner;
+    }
     public void setOwner(boolean owner) {
         isOwner = owner;
     }
-
+    public void setIsOwner(boolean isOwner) {
+        this.isOwner = isOwner;
+    }
     public String getId() {
         return id;
     }

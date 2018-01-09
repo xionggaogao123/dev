@@ -590,8 +590,12 @@ public class MemberDao extends BaseDao {
     }
 
 
+
     public boolean  judgeIsParent(ObjectId userId){
-            BasicDBObject query = new BasicDBObject().append("uid", userId).append("rl", Constant.ZERO).append("r", Constant.ZERO);
+            BasicDBObject query = new BasicDBObject().append("uid", userId)
+                    .append("rl", Constant.ZERO)
+                    .append("cmid",new BasicDBObject(Constant.MONGO_EXIST,true))
+                    .append("r", Constant.ZERO);
         return count(MongoFacroty.getAppDB(), Constant.COLLECTION_FORUM_COMMUNITY_MEMBER, query)>0;
     }
 
@@ -603,5 +607,26 @@ public class MemberDao extends BaseDao {
         BasicDBObject query = new BasicDBObject().append("uid", userId).append("rl", new BasicDBObject(Constant.MONGO_IN,roles)).append("r", Constant.ZERO);
         return count(MongoFacroty.getAppDB(), Constant.COLLECTION_FORUM_COMMUNITY_MEMBER, query)>0;
     }
+
+
+    public List<MemberEntry> getMemberEntries(int page,int pageSize){
+        List<MemberEntry> entries = new ArrayList<MemberEntry>();
+        List<DBObject> dbObjectList = find(MongoFacroty.getAppDB(), Constant.COLLECTION_FORUM_COMMUNITY_MEMBER,new BasicDBObject(),
+                Constant.FIELDS,Constant.MONGO_SORTBY_DESC,(page-1)*pageSize,pageSize);
+        if(null!=dbObjectList&&!dbObjectList.isEmpty()){
+            for(DBObject dbObject:dbObjectList){
+                entries.add(new MemberEntry(dbObject));
+            }
+        }
+        return entries;
+    }
+
+
+    public void updateCommunityId(ObjectId id,ObjectId communityId){
+        BasicDBObject query = new BasicDBObject(Constant.ID,id);
+        BasicDBObject updateValue = new BasicDBObject(Constant.MONGO_SET,new BasicDBObject("cmid",communityId));
+        update(MongoFacroty.getAppDB(), Constant.COLLECTION_FORUM_COMMUNITY_MEMBER,query,updateValue);
+    }
+
 
 }

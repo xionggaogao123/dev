@@ -57,7 +57,13 @@ public class MemberService {
         UserEntry user = userDao.findByUserId(userId);
         String nickName = StringUtils.isNotBlank(user.getNickName()) ? user.getNickName() : user.getUserName();
         String userName = user.getUserName();
-        MemberEntry entry = new MemberEntry(userId, groupId, nickName, user.getAvatar(), role, userName);
+        ObjectId communityId = communityDao.getCommunityIdByGroupId(groupId);
+        MemberEntry entry;
+        if(null==communityId) {
+             entry = new MemberEntry(userId, groupId, nickName, user.getAvatar(), role, userName);
+        }else{
+             entry = new MemberEntry(userId, groupId, communityId, nickName, user.getAvatar(), role, userName);
+        }
         memberDao.save(entry);
     }
 
@@ -72,8 +78,37 @@ public class MemberService {
         UserEntry user = userDao.findByUserId(userId);
         String nickName = StringUtils.isNotBlank(user.getNickName()) ? user.getNickName() : user.getUserName();
         String userName = user.getUserName();
-        MemberEntry entry = new MemberEntry(userId, groupId, nickName, user.getAvatar(), 0, userName);
+        ObjectId communityId = communityDao.getCommunityIdByGroupId(groupId);
+        MemberEntry entry;
+        if(null==communityId) {
+            entry = new MemberEntry(userId, groupId, nickName, user.getAvatar(), 0, userName);
+        }else{
+            entry = new MemberEntry(userId, groupId, communityId,nickName, user.getAvatar(), 0, userName);
+        }
         memberDao.save(entry);
+    }
+
+
+    public void handlerOldData(){
+        int page=1;
+        int pageSize=200;
+        boolean flag=true;
+        while (flag){
+            List<MemberEntry> memberEntries = memberDao.getMemberEntries(page,pageSize);
+            if(memberEntries.size()>0){
+                for(MemberEntry memberEntry:memberEntries){
+                    ObjectId id=memberEntry.getID();
+                    ObjectId groupId=memberEntry.getGroupId();
+                    ObjectId communityId = communityDao.getCommunityIdByGroupId(groupId);
+                    if(null!=communityId){
+                        memberDao.updateCommunityId(id,communityId);
+                    }
+                }
+            }else{
+                flag=false;
+            }
+            page++;
+        }
     }
 
     /**
@@ -424,9 +459,9 @@ public class MemberService {
     public int judgePersonPermission(ObjectId userId){
         int status=0;
         if(memberDao.judgeIsParent(userId)){
-            status=2;
-            if(getMyRoleList(userId).size()>0){
-                status=3;
+            status = 2;
+            if (getMyRoleList(userId).size() > 0) {
+                status = 3;
             }
         }else{
             if(getMyRoleList(userId).size()>0){

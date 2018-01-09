@@ -3140,6 +3140,20 @@ public class WebCommunityController extends BaseController {
     }
 
 
+
+    @RequestMapping("/handlerOldData")
+    @ResponseBody
+    @ApiOperation(value = "处理旧数据成功", httpMethod = "GET", produces = "application/json")
+    @ApiResponses(value = {@ApiResponse(code = 200, message = "获取我的个人信息成功",response = Map.class),
+            @ApiResponse(code = 500, message = "获取我的个人信息失败")})
+    public RespObj handlerOldData(){
+        RespObj respObj = new RespObj(Constant.SUCCESS_CODE);
+        memberService.handlerOldData();
+        respObj.setMessage("处理旧数据成功");
+        return respObj;
+    }
+
+
     @RequestMapping("/getMyInfo")
     @ResponseBody
     @ApiOperation(value = "获取我的个人信息", httpMethod = "GET", produces = "application/json")

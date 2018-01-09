@@ -34,6 +34,20 @@ public class MemberEntry extends BaseDBObject {
    * @param avator
    * @param role
    */
+  public MemberEntry(ObjectId userId,ObjectId groupId,ObjectId communityId,String nickName, String avator,int role,String userName) {
+    BasicDBObject basicDBObject = new BasicDBObject()
+            .append("uid", userId)
+            .append("grid",groupId)
+            .append("cmid",communityId)
+            .append("rl", role)
+            .append("st", 0)
+            .append("nk", nickName)
+            .append("nm",userName)
+            .append("av",avator)
+            .append("r",0);
+    setBaseEntry(basicDBObject);
+  }
+
   public MemberEntry(ObjectId userId,ObjectId groupId,String nickName, String avator,int role,String userName) {
     BasicDBObject basicDBObject = new BasicDBObject()
             .append("uid", userId)
@@ -45,6 +59,10 @@ public class MemberEntry extends BaseDBObject {
             .append("av",avator)
             .append("r",0);
     setBaseEntry(basicDBObject);
+  }
+
+  public void setCommunityId(ObjectId communityId){
+    setSimpleValue("cmid",communityId);
   }
 
   public ObjectId getUserId() {

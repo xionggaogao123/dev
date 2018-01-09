@@ -95,6 +95,11 @@ public class AppVoteService {
     }
 
 
+    public void removeAppVote(ObjectId appVoteId){
+        appVoteDao.removeAppVote(appVoteId);
+    }
+
+
     public Map<String,Object> getMySendAppVote(ObjectId userId, int page, int pageSize){
        Map<String, Object> retMap = new HashMap<String, Object>();
        List<AppVoteDTO> appVoteDTOs = new ArrayList<AppVoteDTO>();

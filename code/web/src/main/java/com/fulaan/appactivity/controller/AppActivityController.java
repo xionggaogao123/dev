@@ -36,6 +36,7 @@ public class AppActivityController extends BaseController {
     public RespObj saveAppActivity(@RequestBody AppActivityDTO appActivityDTO) {
         RespObj respObj = new RespObj(Constant.FAILD_CODE);
         try {
+            appActivityDTO.setUserId(getUserId().toString());
             appActivityService.saveEntry(appActivityDTO);
             respObj.setCode(Constant.SUCCESS_CODE);
             respObj.setMessage("保存成功");

@@ -234,6 +234,7 @@ public class Constant {
     public static final String MONGO_PULLALL = "$pullAll";
     public static final String MONGO_PUSHALL = "$pushAll";
     public static final String MONGO_SIZE = "$size";
+    public static final String MONGO_EXIST = "$exists";
 
 
     public static final BasicDBObject MONGO_SORTBY_ASC = new BasicDBObject("_id", 1);
@@ -544,17 +545,29 @@ public class Constant {
     //走班-考勤
     public static final String COLLECTION_ZOUBAN_ATTENDANCE = "zb_attendance";
 
+    //记录-群组社区和群组表转换的记录（旧数据处理）
     public static final String COLLECTION_TRANSFER_COMMUNITY_RECORD="transfer_community_record";
 
+    //聊天记录
     public static final String COLLECTION_JXM_GROUP_CHAT_RECORD="jxm_group_chat_record";
 
+    //记录聊天的群组或者私人列表
     public static final String COLLECTION_JXM_RECORD_CHAT_PERSONAL="jxm_record_chat_user";
 
+    //记录每个人的聊天列表的数目
     public static final String COLLECTION_JXM_RECORD_TOTAL_CHAT="jxm_record_total_chat";
 
+    //活动报名
     public static final String COLLECTION_JXM_APP_ACTIVITY="jxm_app_activity";
 
+    //活动报名报名人员列表
     public static final String COLLECTION_JXM_APP_ACTIVITY_USER="jxm_app_activity_user";
+
+    //老师端录入的要转移的学生列表
+    public static final String COLLECTION_JXM_RECORD_USER_UNBIND="jxm_record_user_unbind";
+
+    //家长端要接收的学生列表
+    public static final String COLLECTION_JXM_RECORD_PARENT_IMPORT="jxm_record_parent_import";
 
 
     //------------------------------------------------------------------论坛

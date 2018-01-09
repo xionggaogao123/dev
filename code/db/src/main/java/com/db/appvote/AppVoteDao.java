@@ -101,12 +101,20 @@ public class AppVoteDao extends BaseDao{
                 .append("vp",Constant.ONE)
                 .append("gid",new BasicDBObject(Constant.MONGO_IN,groupIds)));
         query.append(Constant.MONGO_OR,values);
+        query.append("ir", Constant.ZERO);
         return query;
     }
 
     public int countGatherAppVotes(ObjectId userId,List<ObjectId> groupIds){
         BasicDBObject query=getGatherCondition(groupIds,userId);
         return count(MongoFacroty.getAppDB(),Constant.COLLECTION_NEW_VERSION_APP_VOTE,query);
+    }
+
+    public void removeAppVote(ObjectId appVoteId){
+        BasicDBObject query = new BasicDBObject()
+                .append(Constant.ID,appVoteId);
+        BasicDBObject updateValue = new BasicDBObject(Constant.MONGO_SET,new BasicDBObject("ir",Constant.ONE));
+        update(MongoFacroty.getAppDB(),Constant.COLLECTION_NEW_VERSION_APP_VOTE,query,updateValue);
     }
 
     public List<AppVoteEntry> getGatherAppVoteEntries(ObjectId userId,List<ObjectId> groupIds,int page,int pageSize){

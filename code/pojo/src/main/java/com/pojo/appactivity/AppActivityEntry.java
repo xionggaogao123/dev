@@ -161,11 +161,11 @@ public class AppActivityEntry extends BaseDBObject{
     }
 
     public void setSubjectId(ObjectId subjectId){
-        setSimpleValue("sui",subjectId);
+        setSimpleValue("sud",subjectId);
     }
 
     public ObjectId getSubjectId(){
-        return getSimpleObjecIDValue("sui");
+        return getSimpleObjecIDValue("sud");
     }
 
 }

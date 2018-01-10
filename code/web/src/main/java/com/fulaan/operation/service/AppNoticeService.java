@@ -15,6 +15,7 @@ import com.fulaan.operation.dto.AppNoticeDTO;
 import com.fulaan.operation.dto.AppOperationDTO;
 import com.fulaan.operation.dto.GroupOfCommunityDTO;
 import com.fulaan.picturetext.runnable.PictureRunNable;
+import com.fulaan.picturetext.service.CheckTextAndPicture;
 import com.fulaan.pojo.Attachement;
 import com.fulaan.pojo.User;
 import com.fulaan.user.service.UserService;
@@ -85,6 +86,15 @@ public class AppNoticeService {
         UserEntry userEntry=userService.findById(userId);
         JPushUtils jPushUtils=new JPushUtils();
         List<ObjectId> objectIdList = new ArrayList<ObjectId>();
+
+        //文本检测
+        Map<String,Object> flag = CheckTextAndPicture.checkText(dto.getContent() + "-----------" + dto.getTitle());
+        String f = (String)flag.get("bl");
+        if(f.equals("1")){
+            //return (String)flag.get("text");
+            return;
+        }
+
         for(GroupOfCommunityDTO communityDTO:dto.getGroupOfCommunityDTOs()){
             AppNoticeDTO appNoticeDTO=new AppNoticeDTO(
                     dto.getSubjectId(),

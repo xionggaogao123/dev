@@ -421,9 +421,11 @@ public class ControlPhoneService {
         NewVersionBindRelationEntry newEntry = newVersionBindRelationDao.getBindEntry(userId);
         long current = System.currentTimeMillis();
         //获得时间批次(时间批次)
-        long zero = current / (1000 * 3600 * 24) * (1000 * 3600 * 24) - TimeZone.getDefault().getRawOffset();//今天零点零分零秒的毫秒数
+        String str = DateTimeUtils.getLongToStrTimeTwo(current).substring(0,10);
+        long zero = DateTimeUtils.getStrToLongTime(str, "yyyy-MM-dd");
+        //long zero = current / (1000 * 3600 * 24) * (1000 * 3600 * 24) - TimeZone.getDefault().getRawOffset();//今天零点零分零秒的毫秒数
         //分割点
-        long jiedian = current / (1000 * 3600 * 24) * (1000 * 3600 * 24) - TimeZone.getDefault().getRawOffset()+8*60*60*1000;//今天零点零分零秒的毫秒数
+        long jiedian = zero+8*60*60*1000;//今天零点零分零秒的毫秒数
         long startTime = 0l;
         long endTime = 0l;
         if(current>=jiedian){
@@ -531,6 +533,26 @@ public class ControlPhoneService {
         controlMapDao.addEntry(entry);
     }
     public static void main(String[] args){
+        String dateTime = "2018-01-09";
+        long dTm = 0l;
+        if(dateTime != null && dateTime != ""){
+            dTm = DateTimeUtils.getStrToLongTime(dateTime, "yyyy-MM-dd");
+        }
+        long current = 1515456000000l;
+        String str = DateTimeUtils.getLongToStrTimeTwo(current).substring(0, 11);
+        long strNum = DateTimeUtils.getStrToLongTime(str, "yyyy-MM-dd");
+        //long current2  = 1546041600000l;
+        Calendar calendar = Calendar.getInstance();
+        calendar.setTime(new Date(current));
+        int hour = calendar.get(Calendar.HOUR_OF_DAY);
+        // long zero = current / (1000 * 3600 * 24) * (1000 * 3600 * 24) - TimeZone.getDefault().getRawOffset();//今天零点零分零秒的毫秒数
+        //long jiedian = current / (1000 * 3600 * 24) * (1000 * 3600 * 24) - TimeZone.getDefault().getRawOffset()+8*60*60*1000;//今天八点的时间
+        if(dTm==strNum){
+            if(hour<8){
+                dTm = dTm - 24*60*60*1000;
+            }
+        }
+        System.out.println(dTm);
        /* ControlSetBackDTO entry = new ControlSetBackDTO();
         ControlSetBackDao controlMapDao =new ControlSetBackDao();//59e71f222675642a181100fc
         long current = System.currentTimeMillis();
@@ -552,12 +574,12 @@ public class ControlPhoneService {
             entry.setBackTime(1);
             controlMapDao.addEntry(entry.buildAddEntry());
         }*/
-        int i = 1;
+       /* int i = 1;
         String str = getNewLogo("http://www.fulaan.com/static/images/community/upload.png");
         String str2 = "http://www.fulaan.com/static/images/community/upload.png";
         String str3 = str2.replace("http://www.fulaan.com/","http://appapi.jiaxiaomei.com/");
 
-        System.out.println(str);
+        System.out.println(str);*/
     }
     //获得地图位置
     public Map<String,Object> getMapNow(ObjectId parentId,ObjectId sonId) {
@@ -566,9 +588,11 @@ public class ControlPhoneService {
         //获得当前时间
         long current = System.currentTimeMillis();
         //获得时间批次
-        long zero = current / (1000 * 3600 * 24) * (1000 * 3600 * 24) - TimeZone.getDefault().getRawOffset();//今天零点零分零秒的毫秒数
+        //long zero = current / (1000 * 3600 * 24) * (1000 * 3600 * 24) - TimeZone.getDefault().getRawOffset();//今天零点零分零秒的毫秒数
+        String str = DateTimeUtils.getLongToStrTimeTwo(current).substring(0,10);
+        long zero = DateTimeUtils.getStrToLongTime(str, "yyyy-MM-dd");
         //分割点
-        long jiedian = current / (1000 * 3600 * 24) * (1000 * 3600 * 24) - TimeZone.getDefault().getRawOffset()+8*60*60*1000;//今天零点零分零秒的毫秒数
+        long jiedian = zero+8*60*60*1000;//今天零点零分零秒的毫秒数
         long startTime = 0l;
         long endTime = 0l;
         if(current>=jiedian){
@@ -727,7 +751,9 @@ public class ControlPhoneService {
         //获得当前时间
         long current=System.currentTimeMillis();
         //获得时间批次
-        long zero=current/(1000*3600*24)*(1000*3600*24)- TimeZone.getDefault().getRawOffset();//今天零点零分零秒的毫秒数
+        //long zero=current/(1000*3600*24)*(1000*3600*24)- TimeZone.getDefault().getRawOffset();//今天零点零分零秒的毫秒数
+        String str = DateTimeUtils.getLongToStrTimeTwo(current).substring(0,10);
+        long zero = DateTimeUtils.getStrToLongTime(str, "yyyy-MM-dd");
         SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
         String dateNowStr = sdf.format(zero);
         ControlSchoolTimeEntry entry2 = controlSchoolTimeDao.getEntry(1);
@@ -849,7 +875,9 @@ public class ControlPhoneService {
         //获得当前时间
         long current=System.currentTimeMillis();
         //获得时间批次
-        long zero=current/(1000*3600*24)*(1000*3600*24)- TimeZone.getDefault().getRawOffset();//今天零点零分零秒的毫秒数
+        //long zero=current/(1000*3600*24)*(1000*3600*24)- TimeZone.getDefault().getRawOffset();//今天零点零分零秒的毫秒数
+        String str = DateTimeUtils.getLongToStrTimeTwo(current).substring(0,10);
+        long zero = DateTimeUtils.getStrToLongTime(str, "yyyy-MM-dd");
         SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
         String dateNowStr = sdf.format(zero);
         ControlSchoolTimeEntry entry2 = controlSchoolTimeDao.getOtherEntry(2,dateNowStr);
@@ -1135,7 +1163,9 @@ public class ControlPhoneService {
         //获得当前时间
         long current=System.currentTimeMillis();
         //获得时间批次
-        long zero=current/(1000*3600*24)*(1000*3600*24)- TimeZone.getDefault().getRawOffset();//今天零点零分零秒的毫秒数
+        //long zero=current/(1000*3600*24)*(1000*3600*24)- TimeZone.getDefault().getRawOffset();//今天零点零分零秒的毫秒
+        String str = DateTimeUtils.getLongToStrTimeTwo(current).substring(0,10);
+        long zero = DateTimeUtils.getStrToLongTime(str, "yyyy-MM-dd");
         SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
         String dateNowStr = sdf.format(zero);
         //通用设置
@@ -1224,7 +1254,9 @@ public class ControlPhoneService {
         //获得当前时间
         long current=System.currentTimeMillis();
         //获得时间批次
-        long zero=current/(1000*3600*24)*(1000*3600*24)- TimeZone.getDefault().getRawOffset();//今天零点零分零秒的毫秒数
+        //long zero=current/(1000*3600*24)*(1000*3600*24)- TimeZone.getDefault().getRawOffset();//今天零点零分零秒的毫秒数
+        String str2 = DateTimeUtils.getLongToStrTimeTwo(current).substring(0,10);
+        long zero = DateTimeUtils.getStrToLongTime(str2, "yyyy-MM-dd");
         SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
         String dateNowStr = sdf.format(zero);
         controlNowTimeDao.deleteControlTime(communityId,dateNowStr);
@@ -1246,8 +1278,9 @@ public class ControlPhoneService {
         //获得当前时间
         long current=System.currentTimeMillis();
         //获得时间批次
-        long zero=current/(1000*3600*24)*(1000*3600*24)- TimeZone.getDefault().getRawOffset();//今天零点零分零秒的毫秒数
-
+        //long zero=current/(1000*3600*24)*(1000*3600*24)- TimeZone.getDefault().getRawOffset();//今天零点零分零秒的毫秒数
+        String str = DateTimeUtils.getLongToStrTimeTwo(current).substring(0,10);
+        long zero = DateTimeUtils.getStrToLongTime(str, "yyyy-MM-dd");
         SimpleDateFormat sdf3 = new SimpleDateFormat("yyyy-MM-dd");
         String dateNowStr4 = sdf3.format(zero);
         //通用设置
@@ -1282,7 +1315,9 @@ public class ControlPhoneService {
         //获得当前时间
         long current=System.currentTimeMillis();
         //获得时间批次
-        long zero=current/(1000*3600*24)*(1000*3600*24)- TimeZone.getDefault().getRawOffset();//今天零点零分零秒的毫秒数
+        //long zero=current/(1000*3600*24)*(1000*3600*24)- TimeZone.getDefault().getRawOffset();//今天零点零分零秒的毫秒数
+        String str2 = DateTimeUtils.getLongToStrTimeTwo(current).substring(0,10);
+        long zero = DateTimeUtils.getStrToLongTime(str2, "yyyy-MM-dd");
         long tentTime = time*60*1000;
         SimpleDateFormat sdf2 = new SimpleDateFormat("yyyy-MM-dd");
         String dateNowStr3 = sdf2.format(zero);

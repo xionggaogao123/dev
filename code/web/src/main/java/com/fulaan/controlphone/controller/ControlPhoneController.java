@@ -23,9 +23,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
-import java.util.List;
-import java.util.Map;
-import java.util.TimeZone;
+import java.util.*;
 
 /**
  * Created by James on 2017/11/3.
@@ -411,12 +409,13 @@ public class ControlPhoneController extends BaseController {
                 dTm = DateTimeUtils.getStrToLongTime(dateTime, "yyyy-MM-dd");
             }
             long current = System.currentTimeMillis();
-            long zero = current / (1000 * 3600 * 24) * (1000 * 3600 * 24) - TimeZone.getDefault().getRawOffset();//今天零点零分零秒的毫秒数
-            long jiedian = current / (1000 * 3600 * 24) * (1000 * 3600 * 24) - TimeZone.getDefault().getRawOffset()+8*60*60*1000;//今天八点的时间
-            if(zero==dTm){
-                if(current>=jiedian){
-
-                }else{
+            String str = DateTimeUtils.getLongToStrTimeTwo(current).substring(0,11);
+            long strNum = DateTimeUtils.getStrToLongTime(str, "yyyy-MM-dd");
+            Calendar calendar = Calendar.getInstance();
+            calendar.setTime(new Date(current));
+            int hour = calendar.get(Calendar.HOUR_OF_DAY);
+            if(dTm==strNum){
+                if(hour<8){
                     dTm = dTm - 24*60*60*1000;
                 }
             }

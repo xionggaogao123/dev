@@ -429,6 +429,7 @@ public class BackStageService {
                         newUrl = oldUrl+"-headv1";
                     }
                     userDao.updateAvater(id,newUrl);
+                    memberDao.updateAllAvatar(id, newUrl);
                     teacherApproveDao.updateEntry4(id, type, oldUrl, newUrl);
                 }catch (Exception e){
 
@@ -439,6 +440,7 @@ public class BackStageService {
                     String oldUrl = entry.getOldAvatar();
                     String newUrl = entry.getNewAvatar();
                     userDao.updateAvater(id,oldUrl);
+                    memberDao.updateAllAvatar(id, oldUrl);
                     teacherApproveDao.updateEntry4(id, type, oldUrl, newUrl);
                 }catch (Exception e){
 
@@ -460,6 +462,7 @@ public class BackStageService {
                     dto.setNewAvatar(newUrl);
                     //加大v
                     userDao.updateAvater(id,newUrl);
+                    memberDao.updateAllAvatar(id, newUrl);
                     String oid = teacherApproveDao.addEntry(dto.buildAddEntry());
                     this.addLogMessage(oid.toString(),"通过老师验证",LogMessageType.teaValidate.getDes(),userId.toString());
                 }catch (Exception e){

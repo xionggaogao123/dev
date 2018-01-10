@@ -12,13 +12,15 @@ public class QuestionReadDTO {
             int type,
             int unReadNum*/
     private String id;
-    private String userId;
-    private String parentId;
-    private int type;
-    private int unReadNum;
-    private String userName;
-    private String studyNum;
-    private String ImageUrl;
+    private String userId;//用户id
+    private String parentId;//老师id或家长id
+    private int type;//用户类型（1 孩子  2 学生）
+    private int unReadNum;//新增题数
+    private int allNum;//总数
+    private String userName;//用户名
+    private String studyNum;//学号
+    private String ImageUrl;//头像
+    private QuestionBookDTO dto; //新增的题目
 
     public QuestionReadDTO(){
 
@@ -142,5 +144,21 @@ public class QuestionReadDTO {
 
     public void setUnReadNum(int unReadNum) {
         this.unReadNum = unReadNum;
+    }
+
+    public int getAllNum() {
+        return allNum;
+    }
+
+    public void setAllNum(int allNum) {
+        this.allNum = allNum;
+    }
+
+    public QuestionBookDTO getDto() {
+        return dto;
+    }
+
+    public void setDto(QuestionBookDTO dto) {
+        this.dto = dto;
     }
 }

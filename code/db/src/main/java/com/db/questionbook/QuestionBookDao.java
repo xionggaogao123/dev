@@ -85,7 +85,56 @@ public class QuestionBookDao extends BaseDao{
         }
         return entryList;
     }
+    //多条件组合查询列表
+    public List<QuestionBookEntry> getAllQuestionList(String gradeId,List<ObjectId> subjectIds,String questionTypeId,String testId,int type,int page,int pageSize,String keyword,ObjectId userId) {
+        BasicDBObject query = new BasicDBObject()
+                .append("typ", type)
+                .append("uid",userId)
+                .append("isr", 0); // 未删除
+        if(gradeId != null && !gradeId.equals("")){
+            query.append("gid",new ObjectId(gradeId));
+        }
+        query.append("sid",new BasicDBObject(Constant.MONGO_IN,subjectIds));
+        if(questionTypeId != null && !questionTypeId.equals("")){
+            query.append("qid",new ObjectId(questionTypeId));
+        }
+        if(testId != null && !testId.equals("")){
+            query.append("tid",new ObjectId(testId));
+        }
+        if(keyword != null && !keyword.equals("")){
+            query.append("dec", MongoUtils.buildRegex(keyword));
+        }
+        List<DBObject> dbList =
+                find(MongoFacroty.getAppDB(),
+                        Constant.COLLECTION_QUESTION_BOOK,
+                        query, Constant.FIELDS,
+                        Constant.MONGO_SORTBY_DESC,(page - 1) * pageSize, pageSize);
+        List<QuestionBookEntry> entryList = new ArrayList<QuestionBookEntry>();
+        if (dbList != null && !dbList.isEmpty()) {
+            for (DBObject obj : dbList) {
+                entryList.add(new QuestionBookEntry((BasicDBObject) obj));
+            }
+        }
+        return entryList;
+    }
 
+    public List<QuestionBookEntry> getAllQuestionList(ObjectId userId) {
+        BasicDBObject query = new BasicDBObject()
+                .append("uid",userId)
+                .append("isr", 0); // 未删除
+        List<DBObject> dbList =
+                find(MongoFacroty.getAppDB(),
+                        Constant.COLLECTION_QUESTION_BOOK,
+                        query, Constant.FIELDS,
+                        Constant.MONGO_SORTBY_DESC);
+        List<QuestionBookEntry> entryList = new ArrayList<QuestionBookEntry>();
+        if (dbList != null && !dbList.isEmpty()) {
+            for (DBObject obj : dbList) {
+                entryList.add(new QuestionBookEntry((BasicDBObject) obj));
+            }
+        }
+        return entryList;
+    }
     //查询所有已提交的数量
     public int getQuestionListCount(String gradeId,String subjectId,String questionTypeId,String testId,int type,String keyword,ObjectId userId) {
         BasicDBObject query = new BasicDBObject()
@@ -107,6 +156,18 @@ public class QuestionBookDao extends BaseDao{
         if(keyword != null && !keyword.equals("")){
             query.append("dec", MongoUtils.buildRegex(keyword));
         }
+        int count =
+                count(MongoFacroty.getAppDB(),
+                        Constant.COLLECTION_QUESTION_BOOK,
+                        query);
+        return count;
+    }
+
+    //查询所有数量
+    public int getAllQuestionListCount(ObjectId userId) {
+        BasicDBObject query = new BasicDBObject()
+                .append("uid", userId)
+                .append("isr", 0); // 未删除
         int count =
                 count(MongoFacroty.getAppDB(),
                         Constant.COLLECTION_QUESTION_BOOK,

@@ -1,5 +1,6 @@
 package com.fulaan.personalcenter;
 
+import com.db.backstage.TeacherApproveDao;
 import com.fulaan.base.BaseController;
 import com.fulaan.cache.CacheHandler;
 import com.fulaan.experience.service.ExperienceService;
@@ -8,6 +9,7 @@ import com.fulaan.service.MemberService;
 import com.fulaan.user.service.UserService;
 import com.fulaan.utils.QiniuFileUtils;
 import com.pojo.app.SessionValue;
+import com.pojo.backstage.TeacherApproveEntry;
 import com.pojo.forum.FScoreDTO;
 import com.pojo.user.ExpLogType;
 import com.pojo.user.UserEntry;
@@ -56,6 +58,8 @@ public class DefaultPersonalCenterController extends BaseController {
 
     @Autowired
     private MemberService memberService;
+
+    private TeacherApproveDao teacherApproveDao = new TeacherApproveDao();
 
     @ApiOperation(value = "letterPage", httpMethod = "POST", produces = "application/json")
     @ApiResponses( value = {@ApiResponse(code = 200, message = "Successful — 请求已完成",response = String.class)})
@@ -221,6 +225,14 @@ public class DefaultPersonalCenterController extends BaseController {
     public Map<String, Object> updateAvatar(String imgpath1) throws Exception {
 
         SessionValue sv = getSessionValue();
+        TeacherApproveEntry entry = teacherApproveDao.getEntry(new ObjectId(sv.getId()));
+        if(entry != null){
+            if(entry.getType()==2){
+                String oldUrl = imgpath1;
+                imgpath1 = imgpath1+"-headv1";
+                teacherApproveDao.updateEntry4(new ObjectId(sv.getId()), entry.getType(), oldUrl, imgpath1);
+            }
+        }
 
         userService.updateAvatar(sv.getId(), imgpath1);
 

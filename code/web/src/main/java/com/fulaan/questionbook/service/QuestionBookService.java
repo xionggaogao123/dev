@@ -5,14 +5,19 @@ import com.db.fcommunity.CommunityDao;
 import com.db.fcommunity.GroupDao;
 import com.db.fcommunity.MemberDao;
 import com.db.fcommunity.NewVersionCommunityBindDao;
+import com.db.newVersionGrade.NewVersionSubjectDao;
 import com.db.questionbook.*;
+import com.db.reportCard.VirtualUserDao;
 import com.db.user.NewVersionBindRelationDao;
 import com.fulaan.picturetext.runnable.PictureRunNable;
+import com.fulaan.picturetext.service.CheckTextAndPicture;
 import com.fulaan.questionbook.dto.*;
 import com.fulaan.user.service.UserService;
 import com.pojo.backstage.PictureType;
 import com.pojo.fcommunity.CommunityEntry;
+import com.pojo.newVersionGrade.NewVersionSubjectEntry;
 import com.pojo.questionbook.*;
+import com.pojo.reportCard.VirtualUserEntry;
 import com.pojo.user.UserDetailInfoDTO;
 import com.sys.constants.Constant;
 import com.sys.props.Resources;
@@ -57,6 +62,10 @@ public class QuestionBookService {
     private NewVersionCommunityBindDao newVersionCommunityBindDao = new NewVersionCommunityBindDao();
 
     private CommunityDao communityDao = new CommunityDao();
+
+    private VirtualUserDao virtualUserDao = new VirtualUserDao();
+
+    private NewVersionSubjectDao newVersionSubjectDao = new NewVersionSubjectDao();
     @Autowired
     private UserService userService;
     /**
@@ -98,7 +107,7 @@ public class QuestionBookService {
         questionAdditionDao.addEntry(entry2);
         return "添加成功";
     }
-    public String addQuestionNewBookEntry(QuestionBookDTO dto){
+    public String addQuestionNewBookEntry(QuestionBookDTO dto) throws Exception{
         //保存作业
         QuestionBookEntry entry = dto.buildAddEntry();
         //获得当前时间
@@ -117,6 +126,13 @@ public class QuestionBookService {
             for(String entry5 : alist){
                 PictureRunNable.send(oid.toString(), dto.getUserId(), PictureType.wrongImage.getType(), 1, entry5);
             }
+        }
+        //文本检测
+        Map<String,Object> flag = CheckTextAndPicture.checkText(dto.getDescription());
+        String f = (String)flag.get("bl");
+        if(f.equals("1")){
+            return (String)flag.get("text");
+            //return;
         }
         //保存答案
        if(dto.getAnswerText()!=null && !dto.getAnswerText().equals("")){
@@ -147,7 +163,7 @@ public class QuestionBookService {
     /**
      * 修改错题
      */
-    public void updateEntry(QuestionBookDTO dto){
+    public void updateEntry(QuestionBookDTO dto) throws Exception{
         //图片检测
         List<String> alist = dto.getImageList();
         if(alist != null && alist.size()>0){
@@ -155,18 +171,32 @@ public class QuestionBookService {
                 PictureRunNable.send(dto.getId(), dto.getUserId(), PictureType.wrongImage.getType(), 1, entry5);
             }
         }
+        //文本检测
+        Map<String,Object> flag = CheckTextAndPicture.checkText(dto.getDescription());
+        String f = (String)flag.get("bl");
+        if(f.equals("1")){
+            //return (String)flag.get("text");
+            return;
+        }
         questionBookDao.updateEntry(dto.buildAddEntry());
     }
     /**
      * 修改解析
      */
-    public void updateAnswerEntry(ObjectId userId,QuestionAdditionDTO dto){
+    public void updateAnswerEntry(ObjectId userId,QuestionAdditionDTO dto) throws Exception{
         //图片检测
         List<String> alist = dto.getAnswerList();
         if(alist != null && alist.size()>0){
             for(String entry5 : alist){
                 PictureRunNable.send(dto.getId(), userId.toString(), PictureType.answerImage.getType(), 1, entry5);
             }
+        }
+        //文本检测
+        Map<String,Object> flag = CheckTextAndPicture.checkText(dto.getContent());
+        String f = (String)flag.get("bl");
+        if(f.equals("1")){
+            //return (String)flag.get("text");
+            return;
         }
         questionAdditionDao.updateEntry(dto.buildAddEntry());
     }
@@ -223,11 +253,55 @@ public class QuestionBookService {
         map.put("count",count);
         return map;
     }
-    public void addAnswerEntry(ObjectId userId,QuestionAdditionDTO dto){
+
+    /**
+     * 多条件组合查询列表
+     */
+    public  Map<String,Object> getAllQuestionList(String gradeId,String subjectId,String questionTypeId,String testId,int type,int page,int pageSize,String keyword,ObjectId userId,ObjectId parentId){
+        List<QuestionBookEntry> entries = new ArrayList<QuestionBookEntry>();
+        if(type==2){//是老师
+            NewVersionSubjectEntry newVersionSubjectEntry = newVersionSubjectDao.getEntryByUserId(parentId);
+            if(subjectId == null || subjectId.equals("")){
+                if(newVersionSubjectEntry!=null && newVersionSubjectEntry.getSubjectList().size()>0){
+                    entries = questionBookDao.getQuestionList(gradeId, subjectId, questionTypeId, testId, 1, page, pageSize, keyword,userId);
+                }else{
+
+                   entries = questionBookDao.getAllQuestionList(gradeId, newVersionSubjectEntry.getSubjectList(), questionTypeId, testId, 1, page, pageSize, keyword,userId);
+
+                }
+               // entries.addAll(questionBookDao.getQuestionList(gradeId, subjectId, questionTypeId, testId, 1, page, pageSize, keyword,userId));
+            }else{
+                entries = questionBookDao.getQuestionList(gradeId, subjectId, questionTypeId, testId, 1, page, pageSize, keyword,userId);
+            }
+
+        }else{//是家长
+            entries = questionBookDao.getQuestionList(gradeId, subjectId, questionTypeId, testId, 1, page, pageSize, keyword,userId);
+        }
+        //entries = questionBookDao.getQuestionList(gradeId, subjectId, questionTypeId, testId, 1, page, pageSize, keyword,userId);
+        List<QuestionBookDTO> dtos = new ArrayList<QuestionBookDTO>();
+        int count = questionBookDao.getQuestionListCount(gradeId, subjectId, questionTypeId, testId, type,keyword,userId);
+        Map<String,Object> map = new HashMap<String, Object>();
+        if(entries.size()>0){
+            for(QuestionBookEntry entry : entries){
+                dtos.add(new QuestionBookDTO(entry));
+            }
+        }
+        map.put("list",dtos);
+        map.put("count",count);
+        return map;
+    }
+    public void addAnswerEntry(ObjectId userId,QuestionAdditionDTO dto)throws Exception{
         QuestionAdditionEntry entry = dto.buildAddEntry();
         QuestionAdditionEntry additionEntry = questionAdditionDao.getEntry(entry.getParentId(),entry.getAnswerType(),entry.getLevel());
         if(null != additionEntry){
             questionAdditionDao.delEntry(additionEntry.getID());
+        }
+        //文本检测
+        Map<String,Object> flag = CheckTextAndPicture.checkText(dto.getContent());
+        String f = (String)flag.get("bl");
+        if(f.equals("1")){
+            //return (String)flag.get("text");
+            return;
         }
         ObjectId oid = questionAdditionDao.addEntry(entry);
 
@@ -238,6 +312,7 @@ public class QuestionBookService {
                 PictureRunNable.send(oid.toString(), userId.toString(), PictureType.answerImage.getType(), 1, entry5);
             }
         }
+
     }
     /**
      * 今日复习
@@ -333,10 +408,17 @@ public class QuestionBookService {
         questionBookDao.changeUnQuestionBook(questionId,zero,current);
     }
 
-    public void addQuestionTags(String name,ObjectId userId){
+    public void addQuestionTags(String name,ObjectId userId) throws Exception{
         QuestionTagsDTO dto = new QuestionTagsDTO();
         dto.setUserId(userId.toString());
         dto.setName(name);
+        //文本检测
+        Map<String,Object> flag = CheckTextAndPicture.checkText(name);
+        String f = (String)flag.get("bl");
+        if(f.equals("1")){
+            //return (String)flag.get("text");
+            return;
+        }
         questionTagsDao.addEntry(dto.buildAddEntry());
     }
 
@@ -688,75 +770,94 @@ public class QuestionBookService {
         }
 
         if(childIds.size()>0){
-            List<UserDetailInfoDTO> infos = userService.findUserInfoByIds(childIds);
+            /*List<UserDetailInfoDTO> infos = userService.findUserInfoByIds(childIds);
             for(UserDetailInfoDTO entry : infos){
                 TypeResultDTO dto = new TypeResultDTO();
                 dto.setId(entry.getId());
                 dto.setName(entry.getName());
                 dto.setType(1);
-                dtos.add(dto);
-            }
+            }*/
+            TypeResultDTO dto = new TypeResultDTO();
+            dto.setId("");
+            dto.setName("我的小孩");
+            dto.setType(1);
+            dtos.add(dto);
         }
         map.put("topList",dtos);
         List<QuestionReadDTO> dtoList = new ArrayList<QuestionReadDTO>();
         if(oids.size() >0){
             map.put("isShow",1);
-            List<ObjectId> objectIdList = newVersionCommunityBindDao.getStudentListByCommunityId(oids.get(0));
-            List<QuestionReadEntry> entries = questionReadDao.getReviewList(objectIdList,userId,2);
-            List<String> sids = new ArrayList<String>();
-            if(entries.size()>0){
-                for(QuestionReadEntry entry : entries){
-                    sids.add(entry.getUserId().toString());
-                }
-            }
-            List<UserDetailInfoDTO> udtos2 = userService.findUserInfoByUserIds(sids);
-            Map<String,UserDetailInfoDTO> map3 = new HashMap<String, UserDetailInfoDTO>();
-            if(udtos2 != null && udtos2.size()>0) {
-                for (UserDetailInfoDTO dto4 : udtos2) {
-                    map3.put(dto4.getId(), dto4);
-                }
-            }
-            if(entries.size()>0){
-                for(QuestionReadEntry entry : entries){
-                    UserDetailInfoDTO dto9 = map3.get(entry.getUserId().toString());
-                    QuestionReadDTO questionReadDTO = new QuestionReadDTO(entry);
-                    String name = StringUtils.isNotEmpty(dto9.getNickName())?dto9.getNickName():dto9.getUserName();
-                    questionReadDTO.setUserName(name);
-                    questionReadDTO.setImageUrl(dto9.getImgUrl());
-                    //学号 Todo 学号
-                    dtoList.add(questionReadDTO);
-                }
-            }
+            //List<ObjectId> objectIdList = newVersionCommunityBindDao.getStudentListByCommunityId(oids.get(0));
+            dtoList = this.getQuestionReadDTO(oids.get(0), userId);
         }else if(childIds.size() >0 ){
             map.put("isShow",2);
-            List<QuestionReadEntry> entries = questionReadDao.getReviewList(childIds,userId,1);
-            List<String> sids = new ArrayList<String>();
-            if(entries.size()>0){
-                for(QuestionReadEntry entry : entries){
-                    sids.add(entry.getUserId().toString());
-                }
-            }
-            if(entries.size()>0){
-                for(QuestionReadEntry entry : entries){
-                    dtoList.add(new QuestionReadDTO(entry));
-                }
-            }
+            dtoList = this.getQuestionReadSonDTO(childIds,userId);
         }else{
             map.put("isShow",3);
         }
         map.put("list",dtoList);
         return map;
     }
-
-    public List<QuestionReadDTO> getQuestionReadDTO(List<ObjectId> userIds,ObjectId parentId,int type){
+    //群组
+    public List<QuestionReadDTO> getQuestionReadDTO(ObjectId communityId,ObjectId parentId){
         List<QuestionReadDTO> dtoList = new ArrayList<QuestionReadDTO>();
-        List<QuestionReadEntry> entries = questionReadDao.getReviewList(userIds,parentId,type);
+        List<VirtualUserEntry> virtualUserEntries = virtualUserDao.getAllVirtualUsers(communityId);
+        List<ObjectId> userIds = new ArrayList<ObjectId>();
+        Map<ObjectId,VirtualUserEntry> map3 = new HashMap<ObjectId, VirtualUserEntry>();
+        if(virtualUserEntries.size()>0){
+            for(VirtualUserEntry virtualUserEntry : virtualUserEntries){
+                userIds.add(virtualUserEntry.getUserId());
+                map3.put(virtualUserEntry.getUserId(),virtualUserEntry);
+            }
+        }
+        List<QuestionReadEntry> entries = questionReadDao.getReviewList(userIds,parentId,2);
         Map<ObjectId,QuestionReadEntry> map4 = new HashMap<ObjectId, QuestionReadEntry>();
         List<ObjectId> childs = new ArrayList<ObjectId>();
         if(entries.size()>0){
             for(QuestionReadEntry entry : entries){
-                childs.add(entry.getID());
-                map4.put(entry.getID(),entry);
+                childs.add(entry.getUserId());
+                map4.put(entry.getUserId(),entry);
+            }
+        }
+
+        for(ObjectId oid : userIds){
+            if(childs.contains(oid)){
+                QuestionReadEntry questionReadEntry = map4.get(oid);
+                VirtualUserEntry dto9 = map3.get(oid.toString());
+                if(questionReadEntry!=null && dto9 != null){
+                    QuestionReadDTO questionReadDTO = new QuestionReadDTO(questionReadEntry);
+                    questionReadDTO.setUserName(dto9.getUserName());
+                    questionReadDTO.setImageUrl("");
+                    questionReadDTO.setStudyNum(dto9.getUserNumber());
+                    dtoList.add(questionReadDTO);
+                }
+            }else{
+                VirtualUserEntry dto9 = map3.get(oid.toString());
+                QuestionReadEntry questionReadEntry = new QuestionReadEntry();
+                if(dto9 != null){
+                    QuestionReadDTO questionReadDTO = new QuestionReadDTO(questionReadEntry);
+                    questionReadDTO.setUserName(dto9.getUserName());
+                    questionReadDTO.setImageUrl("");
+                    questionReadDTO.setStudyNum(dto9.getUserNumber());
+                    dtoList.add(questionReadDTO);
+                }
+
+            }
+
+        }
+        return dtoList;
+    }
+
+    //孩子
+    public List<QuestionReadDTO> getQuestionReadSonDTO(List<ObjectId> userIds,ObjectId parentId){
+        List<QuestionReadDTO> dtoList = new ArrayList<QuestionReadDTO>();
+        List<QuestionReadEntry> entries = questionReadDao.getReviewList(userIds,parentId,1);
+        Map<ObjectId,QuestionReadEntry> map4 = new HashMap<ObjectId, QuestionReadEntry>();
+        List<ObjectId> childs = new ArrayList<ObjectId>();
+        if(entries.size()>0){
+            for(QuestionReadEntry entry : entries){
+                childs.add(entry.getUserId());
+                map4.put(entry.getUserId(),entry);
             }
         }
         List<String> sids = new ArrayList<String>();
@@ -774,12 +875,35 @@ public class QuestionBookService {
         }
         for(ObjectId oid : userIds){
             if(childs.contains(oid)){
-                //map4.get();
-
+                QuestionReadEntry questionReadEntry = map4.get(oid);
+                UserDetailInfoDTO dto9 = map3.get(oid.toString());
+                if(questionReadEntry!=null && dto9 != null){
+                    QuestionReadDTO questionReadDTO = new QuestionReadDTO(questionReadEntry);
+                    String name = StringUtils.isNotEmpty(dto9.getNickName())?dto9.getNickName():dto9.getUserName();
+                    questionReadDTO.setUserName(name);
+                    questionReadDTO.setImageUrl(dto9.getImgUrl());
+                    List<QuestionBookEntry> entries1 = questionBookDao.getAllQuestionList(oid);
+                    questionReadDTO.setAllNum(entries1.size());
+                    questionReadDTO.setDto(new QuestionBookDTO(entries1.get(0)));
+                    dtoList.add(questionReadDTO);
+                }
             }else{
+                UserDetailInfoDTO dto9 = map3.get(oid.toString());
+                if(dto9 != null){
+                    QuestionReadEntry readEntry = new QuestionReadEntry();
+                    QuestionReadDTO questionReadDTO = new QuestionReadDTO(readEntry);
+                    String name = StringUtils.isNotEmpty(dto9.getNickName())?dto9.getNickName():dto9.getUserName();
+                    questionReadDTO.setUserName(name);
+                    questionReadDTO.setImageUrl(dto9.getImgUrl());
+                    questionReadDTO.setType(1);
+                    questionReadDTO.setAllNum(0);
+                    questionReadDTO.setUnReadNum(0);
+                    QuestionBookEntry bookEntry = new QuestionBookEntry();
+                    questionReadDTO.setDto(new QuestionBookDTO(bookEntry));
+                    dtoList.add(questionReadDTO);
+                }
 
             }
-
         }
 
 
@@ -787,7 +911,6 @@ public class QuestionBookService {
 
         return dtoList;
     }
-
 
     public List<ObjectId> getMyRoleList(ObjectId userId){
         List<ObjectId> olsit = memberDao.getManagerGroupIdsByUserId(userId);

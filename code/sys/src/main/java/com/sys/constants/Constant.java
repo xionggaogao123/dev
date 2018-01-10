@@ -569,6 +569,9 @@ public class Constant {
     //家长端要接收的学生列表
     public static final String COLLECTION_JXM_RECORD_PARENT_IMPORT="jxm_record_parent_import";
 
+    //发起群收款条目
+    public static final String COLLECTION_JXM_GROUP_COLLECT_MONEY="jxm_group_collect_money";
+
 
     //------------------------------------------------------------------论坛
 

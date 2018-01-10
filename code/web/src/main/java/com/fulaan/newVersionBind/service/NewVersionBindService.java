@@ -507,6 +507,9 @@ public class NewVersionBindService {
 
                 }
             }
+
+            //加进来的互相加为好友
+            backStageService.setChildAutoFriends(uIds);
         }
     }
 

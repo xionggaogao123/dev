@@ -918,6 +918,30 @@ public class BackStageService {
        // indexPageDao.addEntry(entry);
     }
 
+    public void setChildAutoFriends(final String[] uIds){
+        new Thread(new Runnable() {
+            @Override
+            public void run() {
+                List<ObjectId> allIds = new ArrayList<ObjectId>();
+                for(String userId:uIds){
+                    allIds.add(new ObjectId(userId));
+                }
+                if (allIds.size() > 0) {
+                    for (ObjectId itemId : allIds) {
+                        set(itemId, allIds);
+                    }
+                }
+            }
+        }).start();
+    }
+
+    public void set(ObjectId itemId,List<ObjectId> allIds){
+        List<ObjectId> uIds = new ArrayList<ObjectId>();
+        uIds.addAll(allIds);
+        setFriendEntry(itemId, uIds);
+        setOpposites(itemId, uIds);
+    }
+
     public void setChildAutoFriends(final ObjectId userId,final ObjectId communityId){
         new Thread(new Runnable() {
             @Override

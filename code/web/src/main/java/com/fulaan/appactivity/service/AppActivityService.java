@@ -187,6 +187,11 @@ public class AppActivityService {
         return retMap;
     }
 
+
+    public void removeActivity(ObjectId activityId){
+        appActivityDao.removeActivity(activityId);
+    }
+
     public void partInActivity(ObjectId activityId,int type,ObjectId userId)throws Exception{
         AppActivityUserEntry entry =appActivityUserDao.getEntry(activityId,userId);
         if(type==Constant.ONE){

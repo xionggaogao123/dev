@@ -119,4 +119,22 @@ public class AppActivityController extends BaseController {
     }
 
 
+
+    @ApiOperation(value = "删除活动", httpMethod = "GET", produces = "application/json")
+    @ApiResponses( value = {@ApiResponse(code = 200, message = "Successful — 请求已完成",response = RespObj.class)})
+    @RequestMapping("/removeActivity")
+    @ResponseBody
+    public RespObj removeActivity(@ObjectIdType ObjectId activityId){
+        RespObj respObj = new RespObj(Constant.FAILD_CODE);
+        try{
+            appActivityService.removeActivity(activityId);
+            respObj.setCode(Constant.SUCCESS_CODE);
+            respObj.setMessage("删除活动成功");
+        }catch (Exception e){
+            respObj.setErrorMessage(e.getMessage());
+        }
+        return respObj;
+    }
+
+
 }

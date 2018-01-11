@@ -52,6 +52,11 @@ public class AppActivityDao extends BaseDao {
         update(MongoFacroty.getAppDB(), Constant.COLLECTION_JXM_APP_ACTIVITY,query,updateValue);
     }
 
+    public void removeActivity(ObjectId activityId){
+        BasicDBObject query = new BasicDBObject(Constant.ID,activityId);
+        BasicDBObject updateValue = new BasicDBObject(Constant.MONGO_SET,new BasicDBObject("ir",Constant.ONE));
+        update(MongoFacroty.getAppDB(), Constant.COLLECTION_JXM_APP_ACTIVITY,query,updateValue);
+    }
 
     public BasicDBObject getGatherQueryCondition(ObjectId userId,
                                                  List<ObjectId> groupIds){
@@ -62,6 +67,7 @@ public class AppActivityDao extends BaseDao {
                 .append("gid",new BasicDBObject(Constant.MONGO_IN,groupIds))
                 .append("vp",Constant.ONE));
         query.append(Constant.MONGO_OR,values);
+        query.append("ir", Constant.ZERO);
         return query;
     }
 

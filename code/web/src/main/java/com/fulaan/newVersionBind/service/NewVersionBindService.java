@@ -6,10 +6,7 @@ import com.db.fcommunity.NewVersionCommunityBindDao;
 import com.db.groupchatrecord.RecordTotalChatDao;
 import com.db.newVersionGrade.NewVersionGradeDao;
 import com.db.newVersionGrade.NewVersionSubjectDao;
-import com.db.user.MakeOutUserRelationDao;
-import com.db.user.NewVersionBindRelationDao;
-import com.db.user.NewVersionUserRoleDao;
-import com.db.user.TeacherSubjectBindDao;
+import com.db.user.*;
 import com.fulaan.backstage.service.BackStageService;
 import com.fulaan.cache.CacheHandler;
 import com.fulaan.mqtt.MQTTSendMsg;
@@ -68,6 +65,10 @@ public class NewVersionBindService {
 
     private RecordTotalChatDao recordTotalChatDao = new RecordTotalChatDao();
 
+    private RecordUserUnbindDao recordUserUnbindDao = new RecordUserUnbindDao();
+
+    private RecordParentImportDao recordParentImportDao = new RecordParentImportDao();
+
     @Autowired
     private UserService userService;
 
@@ -94,6 +95,86 @@ public class NewVersionBindService {
             if(StringUtils.isNotEmpty(personalSignature)) {
                 newVersionBindRelationDao.updatePersonalSignature(entry.getID(),personalSignature);
             }
+        }
+    }
+
+
+    public void makeOutParentReceiveChildren(String userKey,String nickName,ObjectId parentId)
+    throws Exception{
+        RecordParentImportEntry entry = recordParentImportDao.getEntry(parentId, userKey);
+        if(null!=entry){
+            throw new Exception("该手机号已经填写过了");
+        }else{
+            RecordParentImportEntry saveEntry = new RecordParentImportEntry(parentId, userKey, nickName);
+            recordParentImportDao.saveRecordParentImport(saveEntry);
+        }
+    }
+
+
+    public List<RecordParentImportDTO> searchReceiveChildren(ObjectId parentId){
+        List<RecordParentImportDTO> dtos = new ArrayList<RecordParentImportDTO>();
+        List<RecordParentImportEntry> entries = recordParentImportDao.getEntries(parentId);
+        for(RecordParentImportEntry entry:entries){
+            dtos.add(new RecordParentImportDTO(entry));
+        }
+        return dtos;
+    }
+
+
+    public void receiveChildren(ObjectId receiveKeyId,ObjectId mainUserId)throws Exception{
+        RecordParentImportEntry importEntry = recordParentImportDao.getEntry(receiveKeyId);
+        boolean flag=false;
+        if(null!=importEntry){
+            String userKey = importEntry.getUserKey();
+            String nickName = importEntry.getNickName();
+            RecordUserUnbindEntry unbindEntry = recordUserUnbindDao.getEntry(userKey);
+            if(null!=unbindEntry){
+                ObjectId userId = unbindEntry.getUserId();
+                UserEntry userEntry = userService.findById(userId);
+                if(null!=userEntry) {
+                    if(userEntry.getNickName().equals(nickName)) {
+                        ObjectId oldParentId= unbindEntry.getMainUserId();
+                        List<ObjectId> communityIds = newVersionCommunityBindDao.getEntries(oldParentId,userId);
+                        //解除绑定关系
+                        delNewVersionEntry(oldParentId, userId);
+                        //建立绑定关系
+                        establishBindRelation(mainUserId, userId);
+                        //建立社区绑定关系
+                        for(ObjectId communityId:communityIds){
+                            saveAndSendBindCommunity(communityId,mainUserId,userId);
+                        }
+
+                        //删除记录
+                        recordUserUnbindDao.removeEntry(oldParentId,userId,userKey);
+                        recordParentImportDao.removeEntry(mainUserId,userKey,nickName);
+                    }
+                }
+            }
+        }
+        if(!flag){
+            throw new Exception("接受失败");
+        }
+    }
+
+
+    public void selectUnbindChild(String userStr,ObjectId mainUserId){
+        String[] userIds =  userStr.split(",");
+        List<RecordUserUnbindEntry> entries = new ArrayList<RecordUserUnbindEntry>();
+        Set<ObjectId> set = new HashSet<ObjectId>();
+        for(String userId:userIds){
+            set.add(new ObjectId(userId));
+        }
+        Map<ObjectId,UserEntry> userEntryMap = userService.getUserEntryMap(set,Constant.FIELDS);
+        for(ObjectId userId:set){
+            UserEntry userEntry = userEntryMap.get(userId);
+            if(null!=userEntry){
+                RecordUserUnbindEntry entry = new RecordUserUnbindEntry(mainUserId,userId,userEntry.getUserName());
+                entries.add(entry);
+            }
+        }
+        if(entries.size()>0){
+            recordUserUnbindDao.removeOldData(mainUserId);
+            recordUserUnbindDao.saveEntries(entries);
         }
     }
 
@@ -256,6 +337,10 @@ public class NewVersionBindService {
             communityIds.addAll(cIds);
         }
         Map<ObjectId, CommunityEntry> communityEntryMap=communityDao.findMapInfo(new ArrayList<ObjectId>(communityIds));
+        List<ObjectId> userUnBindIds = new ArrayList<ObjectId>();
+        if(userIds.size()>0){
+            userUnBindIds=recordUserUnbindDao.getAlreadyTransferUserIds(mainUserId,userIds);
+        }
         for(NewVersionBindRelationEntry entry:entries){
             NewVersionBindRelationDTO dto=new NewVersionBindRelationDTO(entry);
             dto.setIsBindCommunity(0);
@@ -317,6 +402,42 @@ public class NewVersionBindService {
             RecordTotalChatEntry recordTotalChatEntry =recordTotalChatEntryMap.get(userId);
             if(null!=recordTotalChatEntry){
                 dto.setChatCount(recordTotalChatEntry.getChatCount());
+            }
+            dto.setSelectTransfer(0);
+            if(userUnBindIds.contains(userId)){
+                dto.setSelectTransfer(1);
+            }
+            dtos.add(dto);
+        }
+        return dtos;
+    }
+
+
+    public void removeUnbindChild(ObjectId id){
+        recordUserUnbindDao.removeUnBindId(id);
+    }
+
+
+    public void removeParentImport(ObjectId id){
+        recordParentImportDao.removeById(id);
+    }
+
+
+    public List<RecordUserUnbindDTO> searchUnbindChildren(ObjectId mainUserId){
+        List<RecordUserUnbindDTO> dtos = new ArrayList<RecordUserUnbindDTO>();
+        List<RecordUserUnbindEntry> entries = recordUserUnbindDao.getEntriesByMainUserId(mainUserId);
+        Set<ObjectId> userIds = new HashSet<ObjectId>();
+        for(RecordUserUnbindEntry entry:entries){
+            userIds.add(entry.getUserId());
+        }
+        Map<ObjectId,UserEntry> userEntryMap = userService.getUserEntryMap(userIds,Constant.FIELDS);
+        for(RecordUserUnbindEntry entry:entries){
+            RecordUserUnbindDTO dto = new RecordUserUnbindDTO(entry);
+            UserEntry userEntry = userEntryMap.get(entry.getUserId());
+            if(null!=userEntry){
+                dto.setNickName(userEntry.getNickName());
+                dto.setAvatar(AvatarUtils.getAvatar2(userEntry.getAvatar(),
+                        userEntry.getRole(),userEntry.getSex()));
             }
             dtos.add(dto);
         }
@@ -447,6 +568,26 @@ public class NewVersionBindService {
     }
 
 
+    public void saveAndSendBindCommunity(ObjectId communityId,ObjectId mainUserId,ObjectId userId){
+        NewVersionCommunityBindEntry bindEntry = newVersionCommunityBindDao.getEntry(communityId, mainUserId, userId);
+        if (null != bindEntry) {
+            if (bindEntry.getRemoveStatus() == Constant.ONE) {
+                newVersionCommunityBindDao.updateEntryStatus(bindEntry.getID());
+            }
+        } else {
+            NewVersionCommunityBindEntry entry = new NewVersionCommunityBindEntry(communityId, mainUserId, userId);
+            newVersionCommunityBindDao.saveEntry(entry);
+        }
+        long current = System.currentTimeMillis();
+        //向学生端推送消息
+        try {
+            MQTTSendMsg.sendMessage(MQTTType.phone.getEname(), userId.toString(),current);
+        }catch (Exception e){
+
+        }
+    }
+
+
     public void bindCommunity(String userIds,String communityIds,ObjectId mainUserId)throws Exception{
         if(StringUtils.isEmpty(userIds)){
             throw new Exception("未选定绑定的孩子");
@@ -460,25 +601,12 @@ public class NewVersionBindService {
             ObjectId userId= new ObjectId(uId);
             for(String cId:cIds){
                 ObjectId communityId = new ObjectId(cId);
-                NewVersionCommunityBindEntry bindEntry = newVersionCommunityBindDao.getEntry(communityId, mainUserId, userId);
-                if (null != bindEntry) {
-                    if (bindEntry.getRemoveStatus() == Constant.ONE) {
-                        newVersionCommunityBindDao.updateEntryStatus(bindEntry.getID());
-                    }
-                } else {
-                    NewVersionCommunityBindEntry entry = new NewVersionCommunityBindEntry(communityId, mainUserId, userId);
-                    newVersionCommunityBindDao.saveEntry(entry);
-                }
-                long current = System.currentTimeMillis();
-                //向学生端推送消息
-                try {
-                    MQTTSendMsg.sendMessage(MQTTType.phone.getEname(), uId,current);
-                }catch (Exception e){
-
-                }
+                saveAndSendBindCommunity(communityId,mainUserId,userId);
             }
         }
     }
+
+
 
     public void addCommunityBindEntry(String userIds,ObjectId communityId,ObjectId mainUserId){
         //先删除绑定关系

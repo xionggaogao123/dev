@@ -424,6 +424,145 @@ public class DefaultBindController extends BaseController {
         return respObj;
     }
 
+
+    /**
+     * 再次改版老师选定哪些孩子移交
+     * @param userIds
+     * @return
+     */
+    @ApiOperation(value = "选定孩子", httpMethod = "POST", produces = "application/json")
+    @ApiResponses( value = {@ApiResponse(code = 200, message = "Successful — 请求已完成",response = RespObj.class)})
+    @RequestMapping("/selectUnbindChild")
+    @ResponseBody
+    public RespObj selectUnbindChild(String userIds){
+        RespObj respObj = new RespObj(Constant.SUCCESS_CODE);
+        newVersionBindService.selectUnbindChild(userIds,getUserId());
+        respObj.setMessage("选定孩子成功");
+        return respObj;
+    }
+
+
+    /**
+     * 查询老师选定孩子的列表
+     * @return
+     */
+    @ApiOperation(value = "查询老师选定孩子的列表", httpMethod = "POST", produces = "application/json")
+    @ApiResponses( value = {@ApiResponse(code = 200, message = "Successful — 请求已完成",response = RespObj.class)})
+    @RequestMapping("/searchUnbindChildren")
+    @ResponseBody
+    public RespObj searchUnbindChildren(){
+        RespObj respObj = new RespObj(Constant.SUCCESS_CODE);
+        List<RecordUserUnbindDTO> dtos = newVersionBindService.searchUnbindChildren(getUserId());
+        respObj.setMessage(dtos);
+        return respObj;
+    }
+
+    /**
+     * 删除选定孩子
+     * @param unBindId
+     * @return
+     */
+    @ApiOperation(value = "删除选定孩子", httpMethod = "POST", produces = "application/json")
+    @ApiResponses( value = {@ApiResponse(code = 200, message = "Successful — 请求已完成",response = RespObj.class)})
+    @RequestMapping("/removeUnbindChild")
+    @ResponseBody
+    public RespObj removeUnbindChild(@ObjectIdType ObjectId unBindId){
+        RespObj respObj = new RespObj(Constant.SUCCESS_CODE);
+        newVersionBindService.removeUnbindChild(unBindId);
+        respObj.setMessage("删除选定孩子成功");
+        return respObj;
+    }
+
+    /**
+     * 删除选定孩子
+     * @param importId
+     * @return
+     */
+    @ApiOperation(value = "删除家长接收的孩子", httpMethod = "POST", produces = "application/json")
+    @ApiResponses( value = {@ApiResponse(code = 200, message = "Successful — 请求已完成",response = RespObj.class)})
+    @RequestMapping("/removeParentImport")
+    @ResponseBody
+    public RespObj removeParentImport(@ObjectIdType ObjectId importId){
+        RespObj respObj = new RespObj(Constant.SUCCESS_CODE);
+        newVersionBindService.removeParentImport(importId);
+        respObj.setMessage("删除家长接收的孩子成功");
+        return respObj;
+    }
+
+
+    /**
+     * 家长填写要接收的孩子
+     * @param userKey
+     * @param nickName
+     * @return
+     */
+    @ApiOperation(value = "家长填写要接收的孩子", httpMethod = "POST", produces = "application/json")
+    @ApiResponses( value = {@ApiResponse(code = 200, message = "Successful — 请求已完成",response = RespObj.class)})
+    @RequestMapping("/makeOutParentReceiveChildren")
+    @ResponseBody
+    public RespObj makeOutParentReceiveChildren(String userKey,String nickName){
+        RespObj respObj = new RespObj(Constant.FAILD_CODE);
+        try {
+            newVersionBindService.makeOutParentReceiveChildren(userKey, nickName,getUserId());
+            respObj.setCode(Constant.SUCCESS_CODE);
+            respObj.setMessage("家长填写要接收的孩子成功");
+        }catch (Exception e){
+            respObj.setErrorMessage(e.getMessage());
+        }
+        return respObj;
+    }
+
+
+    /**
+     * 家长查询要接收的孩子列表
+     * @return
+     */
+    @ApiOperation(value = "家长查询要接收的孩子列表", httpMethod = "POST", produces = "application/json")
+    @ApiResponses( value = {@ApiResponse(code = 200, message = "Successful — 请求已完成",response = RespObj.class)})
+    @RequestMapping("/searchReceiveChildren")
+    @ResponseBody
+    public RespObj searchReceiveChildren(){
+        RespObj respObj = new RespObj(Constant.SUCCESS_CODE);
+        List<RecordParentImportDTO> dtos = newVersionBindService.searchReceiveChildren(getUserId());
+        respObj.setMessage(dtos);
+        return respObj;
+    }
+
+
+    /**
+     *
+     * @param receiveKeyId
+     * @return
+     */
+    @ApiOperation(value = "家长接收孩子", httpMethod = "POST", produces = "application/json")
+    @ApiResponses( value = {@ApiResponse(code = 200, message = "Successful — 请求已完成",response = RespObj.class)})
+    @RequestMapping("/receiveChildren")
+    @ResponseBody
+    public RespObj receiveChildren(@ObjectIdType ObjectId receiveKeyId){
+        RespObj respObj = new RespObj(Constant.FAILD_CODE);
+        try{
+            newVersionBindService.receiveChildren(receiveKeyId,getUserId());
+            respObj.setCode(Constant.SUCCESS_CODE);
+            respObj.setMessage("家长接收孩子成功");
+        }catch (Exception e){
+            respObj.setErrorMessage(e.getMessage());
+        }
+        return respObj;
+    }
+
+
+    /**
+     *
+     * @param bindId
+     * @param provinceName
+     * @param regionName
+     * @param regionAreaName
+     * @param schoolName
+     * @param nickName
+     * @param relation
+     * @param gradeType
+     * @return
+     */
     @ApiOperation(value = "完善绑定的信息", httpMethod = "POST", produces = "application/json")
     @ApiResponses( value = {@ApiResponse(code = 200, message = "Successful — 请求已完成",response = RespObj.class)})
     @RequestMapping("/completeBindInfo")

@@ -49,6 +49,8 @@ public class AppVoteDTO {
     private boolean isOwner;
     private String submitTime;
 
+    private int manageDelete;
+
 
     public AppVoteDTO() {
 
@@ -144,7 +146,13 @@ public class AppVoteDTO {
         this.voteCount = appVoteEntry.getVoteCount();
     }
 
+    public int getManageDelete() {
+        return manageDelete;
+    }
 
+    public void setManageDelete(int manageDelete) {
+        this.manageDelete = manageDelete;
+    }
 
     public String getSubmitTime() {
         return submitTime;

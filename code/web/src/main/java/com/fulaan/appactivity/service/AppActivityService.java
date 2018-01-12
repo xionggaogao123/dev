@@ -68,12 +68,19 @@ public class AppActivityService {
 
     public void getDtosByEntries(List<AppActivityDTO> appActivityDTOs,List<AppActivityEntry> entries, ObjectId userId){
         Set<ObjectId> userIds = new HashSet<ObjectId>();
+        Set<ObjectId> groupIds = new HashSet<ObjectId>();
         for (AppActivityEntry appActivityEntry : entries) {
             userIds.add(appActivityEntry.getUserId());
+            groupIds.add(appActivityEntry.getGroupId());
         }
         Map<ObjectId, UserEntry> userEntryMap = new HashMap<ObjectId, UserEntry>();
         if (userIds.size() > 0) {
             userEntryMap = userService.getUserEntryMap(userIds, Constant.FIELDS);
+        }
+
+        Map<ObjectId,List<ObjectId>> groupMap = new HashMap<ObjectId, List<ObjectId>>();
+        if(groupIds.size()>0){
+            groupMap = memberDao.getMemberGroupManage(new ArrayList<ObjectId>(groupIds));
         }
 
         for (AppActivityEntry entry : entries) {
@@ -89,8 +96,17 @@ public class AppActivityService {
                 appActivityDTO.setPartIn(true);
             }
             appActivityDTO.setOwner(false);
+            appActivityDTO.setManageDelete(Constant.ZERO);
             if(entry.getUserId().equals(userId)){
                 appActivityDTO.setOwner(true);
+                appActivityDTO.setManageDelete(Constant.ONE);
+            }else{
+                if(null!=groupMap.get(entry.getGroupId())){
+                    List<ObjectId> groupUserIds =  groupMap.get(entry.getGroupId());
+                    if(groupUserIds.contains(userId)){
+                        appActivityDTO.setManageDelete(Constant.ONE);
+                    }
+                }
             }
             appActivityDTO.setSubmitTime(TimeChangeUtils.getChangeTime(entry.getSubmitTime()));
             int totalCount=0;

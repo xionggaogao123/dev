@@ -131,12 +131,18 @@ public class AppVoteService {
 
     public void getVoteDtos(List<AppVoteDTO> dtos, List<AppVoteEntry> appVoteEntries,ObjectId userId) {
         Set<ObjectId> userIds = new HashSet<ObjectId>();
+        Set<ObjectId> groupIds = new HashSet<ObjectId>();
         for (AppVoteEntry appVoteEntry : appVoteEntries) {
             userIds.add(appVoteEntry.getUserId());
+            groupIds.add(appVoteEntry.getGroupId());
         }
         Map<ObjectId, UserEntry> userEntryMap = new HashMap<ObjectId, UserEntry>();
         if (userIds.size() > 0) {
             userEntryMap = userService.getUserEntryMap(userIds, Constant.FIELDS);
+        }
+        Map<ObjectId,List<ObjectId>> groupMap = new HashMap<ObjectId, List<ObjectId>>();
+        if(groupIds.size()>0){
+            groupMap = memberDao.getMemberGroupManage(new ArrayList<ObjectId>(groupIds));
         }
         for (AppVoteEntry entry : appVoteEntries) {
             AppVoteDTO dto = new AppVoteDTO(entry);
@@ -219,8 +225,17 @@ public class AppVoteService {
             }
             dto.setVoteResultList(voteResults);
             dto.setOwner(false);
+            dto.setManageDelete(Constant.ZERO);
             if(entry.getUserId().equals(userId)){
                 dto.setOwner(true);
+                dto.setManageDelete(Constant.ONE);
+            }else{
+                if(null!=groupMap.get(entry.getGroupId())){
+                    List<ObjectId> groupUserIds =  groupMap.get(entry.getGroupId());
+                    if(groupUserIds.contains(userId)){
+                        dto.setManageDelete(Constant.ONE);
+                    }
+                }
             }
             dto.setSubmitTime(TimeChangeUtils.getChangeTime(entry.getSubmitTime()));
             dtos.add(dto);

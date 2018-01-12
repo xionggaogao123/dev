@@ -40,6 +40,8 @@ public class AppActivityDTO {
     private boolean isPartIn;
     private int totalCount;
 
+    private int manageDelete;
+
     public AppActivityDTO(){
 
     }
@@ -132,6 +134,14 @@ public class AppActivityDTO {
         }
         this.partInCount=entry.getPartInCount();
         this.visiblePermission = entry.getVisiblePermission();
+    }
+
+    public int getManageDelete() {
+        return manageDelete;
+    }
+
+    public void setManageDelete(int manageDelete) {
+        this.manageDelete = manageDelete;
     }
 
     public int getTotalCount() {

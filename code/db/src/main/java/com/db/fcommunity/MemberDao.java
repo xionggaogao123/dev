@@ -497,6 +497,39 @@ public class MemberDao extends BaseDao {
         return dbo == null ? null : new MemberEntry(dbo);
     }
 
+
+    /**
+     * 获取群组管理员
+     * @param groupIds
+     * @return
+     */
+    public Map<ObjectId,List<ObjectId>> getMemberGroupManage(List<ObjectId> groupIds){
+        Map<ObjectId,List<ObjectId>> retMap = new HashMap<ObjectId, List<ObjectId>>();
+        List<Integer> integers = new ArrayList<Integer>();
+        integers.add(Constant.TWO);
+        integers.add(Constant.ONE);
+        BasicDBObject query = new BasicDBObject("grid", new BasicDBObject(Constant.MONGO_IN,groupIds)).append("rl", new BasicDBObject(Constant.MONGO_IN,integers)).append("r", Constant.ZERO);
+        List<DBObject> dbObjectList = find(MongoFacroty.getAppDB(),
+                Constant.COLLECTION_FORUM_COMMUNITY_MEMBER, query, Constant.FIELDS);
+        if(null!=dbObjectList&&!dbObjectList.isEmpty()){
+            for(DBObject dbObject:dbObjectList){
+                MemberEntry entry = new MemberEntry(dbObject);
+                ObjectId groupId = entry.getGroupId();
+                ObjectId userId = entry.getUserId();
+                if(null!=retMap.get(groupId)){
+                    List<ObjectId> list = retMap.get(groupId);
+                    list.add(userId);
+                    retMap.put(groupId,list);
+                }else{
+                    List<ObjectId> list = new ArrayList<ObjectId>();
+                    list.add(userId);
+                    retMap.put(groupId,list);
+                }
+            }
+        }
+        return retMap;
+    }
+
     /**
      * 清除所有的副社长
      *

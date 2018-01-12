@@ -3249,6 +3249,7 @@ public class CommunityController extends BaseController {
                                             @ApiParam(name="top",required = true,value = "置顶值")int top){
         RespObj respObj=new RespObj(Constant.SUCCESS_CODE);
         communityService.updateCommunityDetailTop(detailId,top,getUserId());
+        respObj.setMessage("更新成功!");
         return respObj;
     }
     /**

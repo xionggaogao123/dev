@@ -21,6 +21,24 @@ public class QuestionReadDao extends BaseDao {
         save(MongoFacroty.getAppDB(), Constant.COLLECTION_READ_BOOK, entry.getBaseEntry());
         return entry.getID();
     }
+    //查询
+    public QuestionReadEntry getEntryById(ObjectId id) {
+        BasicDBObject query = new BasicDBObject(Constant.ID,id);
+        query.append("isr",Constant.ZERO);
+        DBObject obj =
+                findOne(MongoFacroty.getAppDB(), Constant.COLLECTION_READ_BOOK, query, Constant.FIELDS);
+        if (obj != null) {
+            return new QuestionReadEntry((BasicDBObject) obj);
+        }
+        return null;
+    }
+    //批量修改 otner类型
+    public void updateEntry1(ObjectId userId){
+        BasicDBObject query = new BasicDBObject("uid",userId);
+        query .append("isr", 0); // 未删除
+        BasicDBObject updateValue = new BasicDBObject() .append(Constant.MONGO_INC, new BasicDBObject("unr", 1));
+        update(MongoFacroty.getAppDB(), Constant.COLLECTION_READ_BOOK, query, updateValue);
+    }
     //修改记录数
     public void delEntry(ObjectId id){
         BasicDBObject query = new BasicDBObject(Constant.ID,id);
@@ -47,5 +65,14 @@ public class QuestionReadDao extends BaseDao {
             }
         }
         return entryList;
+    }
+    //消除红点
+    public void removeItemById(ObjectId parentId,ObjectId userId){
+        BasicDBObject query=new BasicDBObject();
+        query.append("pid",parentId);
+        query.append("uid",userId);
+        query.append("isr",0);
+        BasicDBObject updateValue=new BasicDBObject(Constant.MONGO_SET,new BasicDBObject("unr",Constant.ZERO));
+        update(MongoFacroty.getAppDB(), Constant.COLLECTION_READ_BOOK,query,updateValue);
     }
 }

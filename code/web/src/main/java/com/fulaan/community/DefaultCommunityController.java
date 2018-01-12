@@ -652,6 +652,7 @@ public class DefaultCommunityController extends BaseController {
                         message.getSharePrice(),
                         message.getAttachements(),
                         message.getVedios(),
+                        message.getVideoDTOs(),
                         message.getImages(),
                         message.getVoteContent(),
                         message.getVoteMaxCount(),

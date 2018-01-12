@@ -386,7 +386,7 @@ public class QuestionBookController extends BaseController {
     @ApiResponses( value = {@ApiResponse(code = 200, message = "Successful — 请求已完成",response = String.class)})
     @RequestMapping("/updTestEntry")
     @ResponseBody
-    public String updTestEntry(@ApiParam(name="dto",required = true,value="试卷对象") QuestionWebTestDTO dto){
+    public String updTestEntry(@ApiParam(name="dto",required = true,value="试卷对象")@RequestBody QuestionWebTestDTO dto){
         RespObj respObj=new RespObj(Constant.FAILD_CODE);
         try{
             respObj.setCode(Constant.SUCCESS_CODE);

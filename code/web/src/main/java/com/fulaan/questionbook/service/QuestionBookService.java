@@ -105,6 +105,8 @@ public class QuestionBookService {
         dto2.setAnswerType(2);//作业解析
         QuestionAdditionEntry entry2 = dto2.buildAddEntry();
         questionAdditionDao.addEntry(entry2);
+        //增加记录
+        questionReadDao.updateEntry1(new ObjectId(dto.getUserId()));
         return "添加成功";
     }
     public String addQuestionNewBookEntry(QuestionBookDTO dto) throws Exception{
@@ -151,8 +153,15 @@ public class QuestionBookService {
                 }
             }
         }
+        //增加记录
+        questionReadDao.updateEntry1(new ObjectId(dto.getUserId()));
+       // questionReadDao.getEntryById();
+
         return oid.toString();
     }
+
+    //增加记录
+
 
     /**
      * 删除已学会的错题
@@ -286,6 +295,9 @@ public class QuestionBookService {
                 dtos.add(new QuestionBookDTO(entry));
             }
         }
+        //消除记录
+        questionReadDao.removeItemById(parentId,userId);
+
         map.put("list",dtos);
         map.put("count",count);
         return map;
@@ -798,6 +810,21 @@ public class QuestionBookService {
         map.put("list",dtoList);
         return map;
     }
+
+    public Map<String,Object> getIndexPageList(ObjectId userId,ObjectId contactId,int type){
+        Map<String,Object> map = new HashMap<String, Object>();
+        List<QuestionReadDTO> dtoList = new ArrayList<QuestionReadDTO>();
+        List<ObjectId> childIds  = new ArrayList<ObjectId>();
+        if(type==1){
+            childIds.add(contactId);
+            dtoList = this.getQuestionReadSonDTO(childIds,userId);
+        }else if(type==2){
+            dtoList = this.getQuestionReadDTO(contactId, userId);
+        }else{
+        }
+        map.put("list",dtoList);
+        return map;
+    }
     //群组
     public List<QuestionReadDTO> getQuestionReadDTO(ObjectId communityId,ObjectId parentId){
         List<QuestionReadDTO> dtoList = new ArrayList<QuestionReadDTO>();
@@ -819,11 +846,13 @@ public class QuestionBookService {
                 map4.put(entry.getUserId(),entry);
             }
         }
-
+       // List<ObjectId> objectIdList = new ArrayList<ObjectId>();
+       // objectIdList.addAll(userIds);
+        //objectIdList.removeAll(childs);
         for(ObjectId oid : userIds){
             if(childs.contains(oid)){
                 QuestionReadEntry questionReadEntry = map4.get(oid);
-                VirtualUserEntry dto9 = map3.get(oid.toString());
+                VirtualUserEntry dto9 = map3.get(oid);
                 if(questionReadEntry!=null && dto9 != null){
                     QuestionReadDTO questionReadDTO = new QuestionReadDTO(questionReadEntry);
                     questionReadDTO.setUserName(dto9.getUserName());
@@ -832,9 +861,17 @@ public class QuestionBookService {
                     dtoList.add(questionReadDTO);
                 }
             }else{
-                VirtualUserEntry dto9 = map3.get(oid.toString());
+                VirtualUserEntry dto9 = map3.get(oid);
                 QuestionReadEntry questionReadEntry = new QuestionReadEntry();
                 if(dto9 != null){
+                    int count = questionBookDao.getAllQuestionListCount(oid);
+                    questionReadEntry.setID(null);
+                    questionReadEntry.setType(2);
+                    questionReadEntry.setUnReadNum(count);
+                    questionReadEntry.setUserId(oid);
+                    questionReadEntry.setParentId(parentId);
+                    questionReadEntry.setIsRemove(0);
+                    questionReadDao.addEntry(questionReadEntry);
                     QuestionReadDTO questionReadDTO = new QuestionReadDTO(questionReadEntry);
                     questionReadDTO.setUserName(dto9.getUserName());
                     questionReadDTO.setImageUrl("");
@@ -890,14 +927,22 @@ public class QuestionBookService {
             }else{
                 UserDetailInfoDTO dto9 = map3.get(oid.toString());
                 if(dto9 != null){
+                    int count = questionBookDao.getAllQuestionListCount(oid);
                     QuestionReadEntry readEntry = new QuestionReadEntry();
+                    readEntry.setID(null);
+                    readEntry.setType(1);
+                    readEntry.setUnReadNum(count);
+                    readEntry.setUserId(oid);
+                    readEntry.setParentId(parentId);
+                    readEntry.setIsRemove(0);
+                    questionReadDao.addEntry(readEntry);
                     QuestionReadDTO questionReadDTO = new QuestionReadDTO(readEntry);
                     String name = StringUtils.isNotEmpty(dto9.getNickName())?dto9.getNickName():dto9.getUserName();
                     questionReadDTO.setUserName(name);
                     questionReadDTO.setImageUrl(dto9.getImgUrl());
                     questionReadDTO.setType(1);
-                    questionReadDTO.setAllNum(0);
-                    questionReadDTO.setUnReadNum(0);
+                    questionReadDTO.setAllNum(count);
+                    questionReadDTO.setUnReadNum(count);
                     QuestionBookEntry bookEntry = new QuestionBookEntry();
                     questionReadDTO.setDto(new QuestionBookDTO(bookEntry));
                     dtoList.add(questionReadDTO);

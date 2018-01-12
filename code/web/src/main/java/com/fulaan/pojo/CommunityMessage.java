@@ -38,6 +38,7 @@ public class CommunityMessage {
                             String sharePrice,
                             List<Attachement> attachements,
                             List<Attachement> vedios,
+                            List<VideoDTO> videoDTOs,
                             List<Attachement> images,
                             String voteContent,
                             int voteMaxCount,
@@ -53,6 +54,7 @@ public class CommunityMessage {
         this.sharePrice=sharePrice;
         this.attachements=attachements;
         this.vedios=vedios;
+        this.videoDTOs = videoDTOs;
         this.images=images;
         this.voteContent=voteContent;
         this.voteMaxCount=voteMaxCount;

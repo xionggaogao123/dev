@@ -31,8 +31,7 @@ public class ControlMapDao extends BaseDao {
                 find(MongoFacroty.getAppDB(),
                         Constant.COLLECTION_CONTROL_MAP,
                         query, Constant.FIELDS,
-                        Constant.MONGO_SORTBY_DESC);
-
+                        Constant.MONGO_SORTBY_DESC,0, 5);
         if (dbList != null && !dbList.isEmpty()) {
             return new ControlMapEntry((BasicDBObject) dbList.get(0));
         }

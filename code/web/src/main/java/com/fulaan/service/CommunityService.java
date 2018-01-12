@@ -479,6 +479,7 @@ public class CommunityService {
         Map<ObjectId,GroupEntry> entryMap=groupService.getGroupEntries(groupIds);
         for (CommunityDTO dto:list){
             String groupId=dto.getGroupId();
+            dto.setLogo(getNewLogo(dto.getLogo()));
             dto.setHeadImage(dto.getLogo());
             if(StringUtils.isNotBlank(groupId)){
                 GroupEntry entry=entryMap.get(new ObjectId(groupId));
@@ -489,7 +490,18 @@ public class CommunityService {
         }
         return list;
     }
-
+    public static String getNewLogo(String url){
+        String str = "";
+        if(url != null && url.contains("http://www.fulaan.com/")){
+            str = url.replace("http://www.fulaan.com/", "http://appapi.jiaxiaomei.com/");
+        }else{
+            str = url;
+        }
+        if(url != null && url.contains("/static/images/community/upload.png")){
+            str = str.replace("upload.png", "head_group.png");
+        }
+        return str;
+    }
     public int countMycommunitys(ObjectId userId) {
         return mineCommunityDao.count(userId);
     }
@@ -1257,6 +1269,7 @@ public class CommunityService {
         for (CommunityDetailEntry entry : entries) {
             userIds.add(entry.getCommunityUserId());
         }
+        userIds.add(userId);
         List<ObjectId> objectIds = new ArrayList<ObjectId>(userIds);
         Map<ObjectId, UserEntry> map = userService.getUserEntryMap(objectIds, Constant.FIELDS);
         //获取群昵称
@@ -1283,7 +1296,14 @@ public class CommunityService {
 
             ObjectId groupId = groupIds.get(new ObjectId(entry.getCommunityId()));
             MemberEntry entry1 = memberMap.get(groupId + "$" + entry.getCommunityUserId());
-
+            MemberEntry entry5 = memberMap.get(groupId + "$" + userId);
+            if(entry5.getRole() > entry1.getRole()){
+                communityDetailDTO.setOperation(1);//权限压制，可删除
+            }else if(entry.getCommunityUserId().equals(userId)){
+                communityDetailDTO.setOperation(1);//发布人相同，可删除
+            }else{
+                communityDetailDTO.setOperation(0);//不可删除
+            }
             setCommunityDetailInfo(communityDetailDTO, userEntry, entry1);
             //设置备注名
             if(null!=remarkEntryMap){
@@ -2285,7 +2305,19 @@ public class CommunityService {
             fInformationService.sendSystemMessage(entry.getCommunityUserId(),"你的"+msg+"\""+title+"\"已被管理员删除");
         }
         CommunityDetailEntry en = communityDetailDao.findByObjectId(id);
+        ObjectId gids = communityDao.getGroupIdByCommunityId(new ObjectId(entry.getCommunityId()));
+        List<ObjectId> groupIdList = new ArrayList<ObjectId>();
+        groupIdList.add(gids);
+        List<ObjectId> objectIds = new ArrayList<ObjectId>();
+        objectIds.add(userId);
+        objectIds.add(entry.getCommunityUserId());
+        Map<String, MemberEntry> memberMap = memberDao.getGroupNick(groupIdList, objectIds);
+        //memberDao.get
+        MemberEntry entry1 = memberMap.get(gids + "$" + entry.getCommunityUserId());
+        MemberEntry entry5 = memberMap.get(gids + "$" + userId);
         if(en != null && en.getCommunityUserId()!= null && en.getCommunityUserId().equals(userId)){
+            communityDetailDao.removeCommunityDetail(id);
+        }else if(entry5.getRole()>entry1.getRole()){
             communityDetailDao.removeCommunityDetail(id);
         }else{
             throw new Exception("没有权限！");

@@ -41,7 +41,8 @@ public final class ConfigManager {
         } else {
             this.originalPath = this.rootPath + uri;
         }*/
-        this.originalPath = "src/main/resources/config.json";
+        //this.originalPath = "src/main/resources/config.json";
+        this.originalPath = rootPath+"WEB-INF/config/config.json";
 
         this.initEnv();
 
@@ -188,9 +189,18 @@ public final class ConfigManager {
 
         try {
 
-            //InputStreamReader reader = new InputStreamReader(new FileInputStream(path), "UTF-8");
+            InputStreamReader reader = new InputStreamReader(new FileInputStream(path), "UTF-8");
             //getClass().getResource("/com.phl.amodel/a.properties").openStream();
-            InputStreamReader reader = new InputStreamReader(getClass().getResource("/config.json").openStream());
+           // InputStream s = ServletActionContext.getServletContext().getResourceAsStream("/WEB-INF/config/config.json");
+            //InputStreamReader reader = new InputStreamReader(getClass().getResource("config.json").openStream(), "UTF-8");
+            //InputStreamReader reader = new InputStreamReader(s, "UTF-8");
+           // String t=Thread.currentThread().getContextClassLoader().getResource("").getPath();
+            //String r = t.replaceFirst("/classes", "");
+            //java.net.URL configUrl= this.getClass().getResource(r+"config/config.json");
+            //ClassLoader classLoader = this.getClass().getClassLoader();
+            //URL resource = classLoader.getResource(r+"test-classes/json.json");
+            //HttpURLConnection conn = (HttpURLConnection)configUrl.openConnection();
+            //InputStreamReader reader = new InputStreamReader(conn.getInputStream(), "UTF-8");
             BufferedReader bfReader = new BufferedReader(reader);
 
             String tmpContent = null;

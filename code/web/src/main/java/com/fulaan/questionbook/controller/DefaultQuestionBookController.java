@@ -369,7 +369,7 @@ public class DefaultQuestionBookController extends BaseController {
     }
 
     /***************************** 家校美（大人端）******************************/
-    @ApiOperation(value="大人首页数据获取",httpMethod = "get",produces = "application/json")
+    @ApiOperation(value="大人首页数据获取",httpMethod = "GET",produces = "application/json")
     @ApiResponses(value = {@ApiResponse(code=200,message="Successful--请求已完成",response=String.class)})
     @RequestMapping("/getIndexList")
     @ResponseBody
@@ -388,22 +388,22 @@ public class DefaultQuestionBookController extends BaseController {
         return JSON.toJSONString(respObj);
     }
 
-    @ApiOperation(value="大人首页数据获取",httpMethod = "get",produces = "application/json")
+    @ApiOperation(value="大人首页列表数据获取",httpMethod = "GET",produces = "application/json")
     @ApiResponses(value = {@ApiResponse(code=200,message="Successful--请求已完成",response=String.class)})
     @RequestMapping("/getIndexPageList")
     @ResponseBody
-    public String getIndexPageList(@ApiParam(name="id",required = true,value="用户或社区id") @RequestParam(value = "id",required = true) String id,
+    public String getIndexPageList(@ApiParam(name="id",required = true,value="用户或社区id") @RequestParam(value = "id",defaultValue = "") String id,
                                    @ApiParam(name="type",required = true,value="类型（1 家，2 社区）") @RequestParam(value = "type",required = true) int type){
         RespObj respObj = new RespObj(Constant.SUCCESS_CODE);
         try{
             respObj.setCode(Constant.SUCCESS_CODE);
-            Map<String,Object> map = questionBookService.getIndexPageList(getUserId(),new ObjectId(id),type);
+            Map<String,Object> map = questionBookService.getIndexPageList(getUserId(),id,type);
             respObj.setMessage(map);
         }catch (Exception e) {
             e.printStackTrace();
             logger.error("error",e);
             respObj.setCode(Constant.FAILD_CODE);
-            respObj.setErrorMessage("大人首页数据获取失败!");
+            respObj.setErrorMessage("大人首页列表数据获取失败!");
         }
         return JSON.toJSONString(respObj);
     }

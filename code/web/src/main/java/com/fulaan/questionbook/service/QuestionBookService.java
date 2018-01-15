@@ -811,15 +811,20 @@ public class QuestionBookService {
         return map;
     }
 
-    public Map<String,Object> getIndexPageList(ObjectId userId,ObjectId contactId,int type){
+    public Map<String,Object> getIndexPageList(ObjectId userId,String contactId,int type){
         Map<String,Object> map = new HashMap<String, Object>();
         List<QuestionReadDTO> dtoList = new ArrayList<QuestionReadDTO>();
         List<ObjectId> childIds  = new ArrayList<ObjectId>();
         if(type==1){
-            childIds.add(contactId);
-            dtoList = this.getQuestionReadSonDTO(childIds,userId);
+            //childIds.add(contactId);
+            //查询所有该用户的绑定关系
+            List<ObjectId> childIds2 = newVersionBindRelationDao.getIdsByMainUserId(userId);
+            childIds.addAll(childIds2);
+            if(childIds.size()>0){
+                dtoList = this.getQuestionReadSonDTO(childIds,userId);
+            }
         }else if(type==2){
-            dtoList = this.getQuestionReadDTO(contactId, userId);
+            dtoList = this.getQuestionReadDTO(new ObjectId(contactId), userId);
         }else{
         }
         map.put("list",dtoList);
@@ -858,6 +863,7 @@ public class QuestionBookService {
                     questionReadDTO.setUserName(dto9.getUserName());
                     questionReadDTO.setImageUrl("");
                     questionReadDTO.setStudyNum(dto9.getUserNumber());
+                    //questionReadDTO.setDto(null);
                     dtoList.add(questionReadDTO);
                 }
             }else{
@@ -875,6 +881,7 @@ public class QuestionBookService {
                     QuestionReadDTO questionReadDTO = new QuestionReadDTO(questionReadEntry);
                     questionReadDTO.setUserName(dto9.getUserName());
                     questionReadDTO.setImageUrl("");
+                   // questionReadDTO.setDto(null);
                     questionReadDTO.setStudyNum(dto9.getUserNumber());
                     dtoList.add(questionReadDTO);
                 }
@@ -921,7 +928,8 @@ public class QuestionBookService {
                     questionReadDTO.setImageUrl(dto9.getImgUrl());
                     List<QuestionBookEntry> entries1 = questionBookDao.getAllQuestionList(oid);
                     questionReadDTO.setAllNum(entries1.size());
-                    questionReadDTO.setDto(new QuestionBookDTO(entries1.get(0)));
+                    //questionReadDTO.setDto(new QuestionBookDTO(entries1.get(0)));
+                    questionReadDTO.setStudyNum("");
                     dtoList.add(questionReadDTO);
                 }
             }else{
@@ -943,8 +951,15 @@ public class QuestionBookService {
                     questionReadDTO.setType(1);
                     questionReadDTO.setAllNum(count);
                     questionReadDTO.setUnReadNum(count);
-                    QuestionBookEntry bookEntry = new QuestionBookEntry();
-                    questionReadDTO.setDto(new QuestionBookDTO(bookEntry));
+                    questionReadDTO.setStudyNum("");
+                    //QuestionBookEntry bookEntry = new QuestionBookEntry();
+                    //List<QuestionBookEntry> entries1 = questionBookDao.getAllQuestionList(oid);
+                   /* if(entries.size()>0){
+                         questionReadDTO.setDto(new QuestionBookDTO(entries1.get(0)));
+                    }else{
+                         questionReadDTO.setDto(null);
+                    }*/
+
                     dtoList.add(questionReadDTO);
                 }
 

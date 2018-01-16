@@ -347,6 +347,21 @@ public class WrongQuestionService {
         map.put("TestTypeList",dtoList2);
         return map;
     }
+
+    /**
+     * 查询自定义标签
+     */
+    public List<QuestionTagsDTO> getTestTypeListByUserId(ObjectId userId){
+        List<QuestionTagsDTO> dtoList2 = new ArrayList<QuestionTagsDTO>();
+        List<QuestionTagsEntry> entries2 = questionTagsDao.getReviewList(userId);
+        if(entries2.size()>0){
+            for(QuestionTagsEntry entry3 : entries2){
+                dtoList2.add(new QuestionTagsDTO(entry3));
+            }
+        }
+
+        return dtoList2;
+    }
     /**
      * 添加错题
      * @param errorDto

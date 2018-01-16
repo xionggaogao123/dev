@@ -196,6 +196,30 @@ public class WrongQuestionController extends BaseController {
         }
         return JSON.toJSONString(respObj);
     }
+
+    /**
+     * 家长年级,科目加载
+     * @return
+     */
+    @ApiOperation(value = "家长年级,科目加载", httpMethod = "GET", produces = "application/json")
+    @ApiResponses( value = {@ApiResponse(code = 200, message = "Successful — 请求已完成",response = String.class),
+            @ApiResponse(code = 400, message = "请求中有语法问题，或不能满足请求"),
+            @ApiResponse(code = 500, message = "服务器不能完成请求")})
+    @RequestMapping("/getTestTypeListByUserId")
+    @ResponseBody
+    public String getTestTypeListByUserId(@ApiParam(name = "sonId", required = true, value = "孩子id") @RequestParam(value="sonId") String sonId){
+        RespObj respObj=new RespObj(Constant.FAILD_CODE);
+        try {
+            List<QuestionTagsDTO> result = wrongQuestionService.getTestTypeListByUserId(new ObjectId(sonId));
+            respObj.setCode(Constant.SUCCESS_CODE);
+            respObj.setMessage(result);
+        } catch (Exception e) {
+            e.printStackTrace();
+            respObj.setCode(Constant.FAILD_CODE);
+            respObj.setMessage("家长年级,科目加载失败!");
+        }
+        return JSON.toJSONString(respObj);
+    }
     /**
      * 问题,测试加载
      * @return

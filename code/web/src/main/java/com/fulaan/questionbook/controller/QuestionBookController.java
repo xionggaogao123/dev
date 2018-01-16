@@ -57,6 +57,7 @@ public class QuestionBookController extends BaseController {
                                        @ApiParam(name="analysisList",required = true,value="解析图片") @RequestParam(value="analysisList",defaultValue = "") List<String> analysisList){
         RespObj respObj=new RespObj(Constant.FAILD_CODE);
         try {
+
             respObj.setCode(Constant.SUCCESS_CODE);
             dto.setUserId(getUserId().toString());
             String str = questionBookService.addQuestionBookEntry(dto,answerContent,answerList,analysisContent,analysisList);

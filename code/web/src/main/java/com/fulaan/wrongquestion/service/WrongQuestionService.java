@@ -210,8 +210,10 @@ public class WrongQuestionService {
 
         }
         List<ObjectId> oids = new ArrayList<ObjectId>();
+        List<SubjectClassDTO> classDTOs = new ArrayList<SubjectClassDTO>();
         for(SubjectClassEntry classEntry : subjectClassEntries){
             oids.add(classEntry.getID());
+            classDTOs.add(new SubjectClassDTO(classEntry));
         }
         //获取当前学期
         KeyValue keyValue = this.getCurrTermType();
@@ -261,6 +263,7 @@ public class WrongQuestionService {
         }
         mlist.add(dto4);
         map.put("gradeList",mlist);
+        map.put("subjectList",classDTOs);
         //加载问题类型
         List<QuestionTypeDTO> dtoList1 = new ArrayList<QuestionTypeDTO>();
         List<QuestionTypeEntry> entries1 = questionTypeDao.getTypeList();

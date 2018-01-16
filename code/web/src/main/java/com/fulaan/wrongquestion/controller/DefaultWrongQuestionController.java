@@ -140,6 +140,30 @@ public class DefaultWrongQuestionController extends BaseController {
         return JSON.toJSONString(respObj);
     }
     /**
+     * 大人端年级,科目加载
+     * @return
+     */
+    @ApiOperation(value = "大人端年级,科目加载", httpMethod = "GET", produces = "application/json")
+    @ApiResponses( value = {@ApiResponse(code = 200, message = "Successful — 请求已完成",response = String.class),
+            @ApiResponse(code = 400, message = "请求中有语法问题，或不能满足请求"),
+            @ApiResponse(code = 500, message = "服务器不能完成请求")})
+    @RequestMapping("/getGradeAndSubjectForParent")
+    @ResponseBody
+    public String getGradeAndSubjectForParent(@ApiParam(name = "studentId", required = true, value = "学生id") @RequestParam(value="studentId") String studentId,
+                                              @ApiParam(name = "type", required = true, value = "类型") @RequestParam(value="type") int type){
+        RespObj respObj=new RespObj(Constant.FAILD_CODE);
+        try {
+            Map<String,Object> result = wrongQuestionService.getGradeAndSubjectForParent(getUserId(), new ObjectId(studentId),type);
+            respObj.setCode(Constant.SUCCESS_CODE);
+            respObj.setMessage(result);
+        } catch (Exception e) {
+            e.printStackTrace();
+            respObj.setCode(Constant.FAILD_CODE);
+            respObj.setMessage("大人端年级,科目加载失败!");
+        }
+        return JSON.toJSONString(respObj);
+    }
+    /**
      * 问题,测试加载
      * @return
      */

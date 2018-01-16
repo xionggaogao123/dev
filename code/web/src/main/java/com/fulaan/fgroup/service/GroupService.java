@@ -384,6 +384,7 @@ public class GroupService {
         for(RecordChatPersonalEntry entry:entries){
             RecordChatRelationDTO
                     dto =new RecordChatRelationDTO();
+            dto.setChatType(entry.getChatType());
             if(entry.getChatType()==Constant.ONE){
                 dto.setGroupId(entry.getReceiveId().toString());
                 GroupEntry groupEntry = groupEntryMap.get(entry.getReceiveId());

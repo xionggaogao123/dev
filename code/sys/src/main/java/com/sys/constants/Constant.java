@@ -572,6 +572,9 @@ public class Constant {
     //发起群收款条目
     public static final String COLLECTION_JXM_GROUP_COLLECT_MONEY="jxm_group_collect_money";
 
+    //发起群收款用户发起的钱款
+    public static final String COLLECTION_JXM_GROUP_USER_EXPENSE="jxm_group_user_expense";
+
 
     //------------------------------------------------------------------论坛
 

@@ -47,18 +47,38 @@ public class RecordUserUnbindDao extends BaseDao{
     }
 
 
-    public void removeOldData(ObjectId mainUserId){
+    public void removeOldData(ObjectId mainUserId,ObjectId communityId){
         BasicDBObject query = new BasicDBObject()
+                .append("cmId",communityId)
                 .append("muid",mainUserId);
         remove(MongoFacroty.getAppDB(), Constant.COLLECTION_JXM_RECORD_USER_UNBIND,query);
     }
 
 
-    public void removeEntry(ObjectId mainUserId,
+    public List<ObjectId> getUserIdsByCondition(ObjectId communityId,
+                                                ObjectId mainUserId){
+        List<ObjectId> userIds = new ArrayList<ObjectId>();
+        BasicDBObject query = new BasicDBObject()
+                .append("muid",mainUserId)
+                .append("cmId",communityId);
+        List<DBObject> dbObjectList = find(MongoFacroty.getAppDB(), Constant.COLLECTION_JXM_RECORD_USER_UNBIND,query,Constant.FIELDS);
+        if(null!=dbObjectList&&!dbObjectList.isEmpty()){
+            for(DBObject dbObject:dbObjectList){
+                RecordUserUnbindEntry unbindEntry = new RecordUserUnbindEntry(dbObject);
+                userIds.add(unbindEntry.getUserId());
+            }
+        }
+        return userIds;
+    }
+
+
+    public void removeEntry(ObjectId communityId,
+                            ObjectId mainUserId,
                             ObjectId userId,
                             String userKey){
         BasicDBObject query = new BasicDBObject()
                 .append("muid",mainUserId)
+                .append("cmId",communityId)
                 .append("uid",userId)
                 .append("uk",userKey);
         remove(MongoFacroty.getAppDB(), Constant.COLLECTION_JXM_RECORD_USER_UNBIND,query);

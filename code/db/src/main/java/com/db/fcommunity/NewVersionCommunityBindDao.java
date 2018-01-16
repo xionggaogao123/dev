@@ -108,6 +108,8 @@ public class NewVersionCommunityBindDao extends BaseDao{
         }
         return entries;
     }
+
+
     public List<ObjectId> getStudentListByCommunityId(ObjectId communityId){
         List<ObjectId> entries=new ArrayList<ObjectId>();
         BasicDBObject query=new BasicDBObject()
@@ -121,6 +123,8 @@ public class NewVersionCommunityBindDao extends BaseDao{
         }
         return entries;
     }
+
+
     public List<ObjectId> getParentIdListByCommunityId(ObjectId communityId){
         List<ObjectId> entries=new ArrayList<ObjectId>();
         BasicDBObject query=new BasicDBObject()
@@ -135,12 +139,35 @@ public class NewVersionCommunityBindDao extends BaseDao{
         return entries;
     }
 
+
+    public List<NewVersionCommunityBindEntry>  getBindEntries(ObjectId communityId, ObjectId mainUserId){
+        List<NewVersionCommunityBindEntry> entries = new ArrayList<NewVersionCommunityBindEntry>();
+        BasicDBObject query=new BasicDBObject()
+                .append("ir", Constant.ZERO)
+                .append("muid",mainUserId);
+        if(null!=communityId){
+            query.append("cid",communityId);
+        }
+
+        List<DBObject> dbObjectList=find(MongoFacroty.getAppDB(), Constant.COLLECTION_NEW_VERSION_COMMUNITY_BIND,query,Constant.FIELDS);
+        if(null!=dbObjectList&&!dbObjectList.isEmpty()){
+            for(DBObject dbObject:dbObjectList){
+                NewVersionCommunityBindEntry entry=new NewVersionCommunityBindEntry(dbObject);
+                entries.add(entry);
+            }
+        }
+        return entries;
+    }
+
+
     public Map<ObjectId,NewVersionCommunityBindEntry> getCommunityBindMap(ObjectId communityId, ObjectId mainUserId){
         Map<ObjectId,NewVersionCommunityBindEntry> map=new HashMap<ObjectId, NewVersionCommunityBindEntry>();
         BasicDBObject query=new BasicDBObject()
-                .append("cid",communityId)
                 .append("ir", Constant.ZERO)
                 .append("muid",mainUserId);
+        if(null!=communityId){
+            query.append("cid",communityId);
+        }
         List<DBObject> dbObjectList=find(MongoFacroty.getAppDB(), Constant.COLLECTION_NEW_VERSION_COMMUNITY_BIND,query,Constant.FIELDS);
         if(null!=dbObjectList&&!dbObjectList.isEmpty()){
             for(DBObject dbObject:dbObjectList){
@@ -275,6 +302,23 @@ public class NewVersionCommunityBindDao extends BaseDao{
         BasicDBObject updateValue = new BasicDBObject(Constant.MONGO_SET,new BasicDBObject("ir",Constant.ONE));
         update(MongoFacroty.getAppDB(), Constant.COLLECTION_NEW_VERSION_COMMUNITY_BIND,
                 query,updateValue);
+    }
+
+
+    public NewVersionCommunityBindEntry getEntry(String thirdName,
+                                                 ObjectId communityId,
+                                                 ObjectId mainUserId){
+        BasicDBObject query=new BasicDBObject()
+                .append("cid",communityId)
+                .append("muid", mainUserId)
+                .append("tn",thirdName);
+        DBObject dbObject=findOne(MongoFacroty.getAppDB(), Constant.COLLECTION_NEW_VERSION_COMMUNITY_BIND,
+                query,Constant.FIELDS);
+        if(null!=dbObject){
+            return new NewVersionCommunityBindEntry(dbObject);
+        }else{
+            return null;
+        }
     }
 
     public NewVersionCommunityBindEntry getEntry(ObjectId communityId,

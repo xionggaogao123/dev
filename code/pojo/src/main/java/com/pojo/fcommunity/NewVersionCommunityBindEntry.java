@@ -15,6 +15,22 @@ public class NewVersionCommunityBindEntry extends BaseDBObject{
         setBaseEntry((BasicDBObject)dbObject);
     }
 
+
+    public NewVersionCommunityBindEntry(ObjectId communityId,
+                                        ObjectId mainUserId,
+                                        ObjectId userId,
+                                        String thirdName,
+                                        String number){
+        BasicDBObject basicDBObject = new BasicDBObject()
+                .append("cid",communityId)
+                .append("muid",mainUserId)
+                .append("uid",userId)
+                .append("tn",thirdName)
+                .append("nm",number)
+                .append("ir", Constant.ZERO);
+        setBaseEntry(basicDBObject);
+    }
+
     public NewVersionCommunityBindEntry(ObjectId communityId,
                                         ObjectId mainUserId,
                                         ObjectId userId){

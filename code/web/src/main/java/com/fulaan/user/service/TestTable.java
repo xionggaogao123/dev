@@ -1,37 +1,42 @@
 package com.fulaan.user.service;
 
+import com.fulaan.reportCard.dto.VirtualUserDTO;
+
+import javax.imageio.ImageIO;
 import java.awt.Color;
 import java.awt.Font;
 import java.awt.Graphics;
 import java.awt.image.BufferedImage;
-import java.io.BufferedOutputStream;
 import java.io.File;
-import java.io.FileOutputStream;
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
 
-import com.sun.image.codec.jpeg.JPEGCodec;
-import com.sun.image.codec.jpeg.JPEGImageEncoder;
+//import com.sun.image.codec.jpeg.JPEGCodec;
+//import com.sun.image.codec.jpeg.JPEGImageEncoder;
 /**
  * Created by scott on 2018/1/5.
  */
 public class TestTable {
-    BufferedImage image;
-    void createImage(String fileLocation) {
+
+    void createImage(String fileLocation, BufferedImage image) {
         try {
-            FileOutputStream fos = new FileOutputStream(fileLocation);
-            BufferedOutputStream bos = new BufferedOutputStream(fos);
-            JPEGImageEncoder encoder = JPEGCodec.createJPEGEncoder(bos);
-            encoder.encode(image);
-            bos.close();
+//            FileOutputStream fos = new FileOutputStream(fileLocation);
+//            BufferedOutputStream bos = new BufferedOutputStream(fos);
+//            JPEGImageEncoder encoder = JPEGCodec.createJPEGEncoder(bos);
+//            encoder.encode(image);
+
+            String formatName = fileLocation.substring(fileLocation.lastIndexOf(".") + 1);
+            ImageIO.write(image, formatName , new File(fileLocation));
+//            bos.close();
         } catch (Exception e) {
             e.printStackTrace();
         }
     }
 
-    public void graphicsGeneration(String fileName) throws Exception{
+    public void graphicsGeneration(String fileName, int totalrow, int totalcol, String title,
+                                   List<VirtualUserDTO> userDTOs) throws Exception{
         //实际数据行数+标题+备注
-        int totalrow = 6;
-        int totalcol = 5;
         int imageWidth = 1024;
         int imageHeight = totalrow*40+20;
         int rowheight = 40;
@@ -39,7 +44,7 @@ public class TestTable {
         int startWidth = 10;
         int colwidth = (int)((imageWidth-20)/totalcol);
 
-        image = new BufferedImage(imageWidth, imageHeight,BufferedImage.TYPE_INT_RGB);
+         BufferedImage image = new BufferedImage(imageWidth, imageHeight,BufferedImage.TYPE_INT_RGB);
         Graphics graphics = image.getGraphics();
 
         graphics.setColor(Color.WHITE);
@@ -70,14 +75,13 @@ public class TestTable {
         graphics.setFont(font);
 
         //写标题
-        String title = "标题写在这里";
         graphics.drawString(title, imageWidth/3+startWidth, startHeight+rowheight-10);
 
         font = new Font("华文楷体",Font.BOLD,18);
         graphics.setFont(font);
 
         //写入表头
-        String[] headCells = {"编号","名称","年龄","性别","体重"};
+        String[] headCells = {"姓名","学号"};
         for(int m=0;m<headCells.length;m++){
             graphics.drawString(headCells[m].toString(), startWidth+colwidth*m+5, startHeight+rowheight*2-10);
         }
@@ -85,26 +89,32 @@ public class TestTable {
         //设置字体
         font = new Font("华文楷体",Font.PLAIN,16);
         graphics.setFont(font);
-        String[][] cellsValue = {{"101","xiaozhang","13","M","55"},
-                {"102","xiaowang","14","F","53"},
-                {"103","xiaoli","15","M","58"}};
+//        String[][] cellsValue = {{"101","xiaozhang"},
+//                {"102","xiaowang"},
+//                {"103","xiaoli"}};
         //写入内容
-        for(int n=0;n<cellsValue.length;n++){
-            String[] arr = cellsValue[n];
-            for(int l=0;l<arr.length;l++){
-                graphics.drawString(cellsValue[n][l].toString(), startWidth+colwidth*l+5, startHeight+rowheight*(n+3)-10);
-            }
+        int n=0;
+        for(VirtualUserDTO stuEntry:userDTOs){
+            graphics.drawString(stuEntry.getUserName(), startWidth+colwidth*0+5, startHeight+rowheight*(n+3)-10);
+            graphics.drawString(stuEntry.getUserNumber(), startWidth+colwidth*1+5, startHeight+rowheight*(n+3)-10);
+            n++;
         }
+//        for(int n=0;n<cellsValue.length;n++){
+//            String[] arr = cellsValue[n];
+//            for(int l=0;l<arr.length;l++){
+//                graphics.drawString(cellsValue[n][l].toString(), startWidth+colwidth*l+5, startHeight+rowheight*(n+3)-10);
+//            }
+//        }
 
         font = new Font("华文楷体",Font.BOLD,18);
         graphics.setFont(font);
         graphics.setColor(Color.RED);
 
         //写备注
-        String remark = "备注：备注写在这里。";
+        String remark = "备注：未匹配成功的名单";
         graphics.drawString(remark, startWidth, imageHeight-30);
 
-        createImage(fileName);
+        createImage(fileName,image);
     }
 
     public static boolean createDir(String destDirName) {
@@ -164,12 +174,12 @@ public class TestTable {
     public static void main(String[] args) {
         TestTable cg = new TestTable();
         try {
-            String dirName = "D:/work/temp/temp0/temp1";
+            String dirName = "D:/work/scott/temp1";
             cg.createDir(dirName);
             //创建文件
             String fileName = dirName + "/temp2/1.jpg";
             cg.createFile(fileName);
-            cg.graphicsGeneration(fileName);
+            cg.graphicsGeneration(fileName,6,2,"标题",new ArrayList<VirtualUserDTO>());
         } catch (Exception e) {
             e.printStackTrace();
         }

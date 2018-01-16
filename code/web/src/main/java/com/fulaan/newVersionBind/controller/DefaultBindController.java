@@ -153,6 +153,29 @@ public class DefaultBindController extends BaseController {
         return respObj;
     }
 
+
+    /**
+     *
+     * @param communityId
+     * @return
+     */
+    @ApiOperation(value = "获取某个家长的绑定的某个社区下的孩子列表", httpMethod = "GET", produces = "application/json")
+    @ApiResponses( value = {@ApiResponse(code = 200, message = "Successful — 请求已完成",response = RespObj.class)})
+    @RequestMapping("/getCommunityBindEntries")
+    @ResponseBody
+    public RespObj getCommunityBindEntries(@ObjectIdType ObjectId communityId){
+        RespObj respObj = new RespObj(Constant.FAILD_CODE);
+        try{
+            List<NewVersionCommunityBindDTO> dtoList=newVersionBindService.getCommunityBindEntries(getUserId(),communityId);
+            respObj.setCode(Constant.SUCCESS_CODE);
+            respObj.setMessage(dtoList);
+        }catch (Exception e){
+            respObj.setErrorMessage(e.getMessage());
+        }
+        return respObj;
+    }
+
+
     @ApiOperation(value = "查找登录状态的绑定孩子列表", httpMethod = "POST", produces = "application/json")
     @ApiResponses( value = {@ApiResponse(code = 200, message = "Successful — 请求已完成",response = RespObj.class)})
     @RequestMapping("/searchLoginChildren")
@@ -235,6 +258,29 @@ public class DefaultBindController extends BaseController {
         return respObj;
     }
 
+
+    /**
+     * 添加虚拟学生
+     * @param thirdName
+     * @param number
+     * @param communityId
+     * @return
+     */
+    @ApiOperation(value = "绑定社区下的虚拟学生", httpMethod = "POST", produces = "application/json")
+    @ApiResponses( value = {@ApiResponse(code = 200, message = "Successful — 请求已完成",response = RespObj.class)})
+    @RequestMapping("/addBindVirtualCommunity")
+    @ResponseBody
+    public RespObj addBindVirtualCommunity(String thirdName,String number, @ObjectIdType ObjectId communityId){
+        RespObj respObj = new RespObj(Constant.FAILD_CODE);
+        try{
+            newVersionBindService.addBindVirtualCommunity(thirdName,number,communityId,getUserId());
+            respObj.setCode(Constant.SUCCESS_CODE);
+            respObj.setMessage("绑定社区下的虚拟学生成功!");
+        }catch (Exception e){
+            respObj.setErrorMessage(e.getMessage());
+        }
+        return respObj;
+    }
     /**
      *
      * @param parentId
@@ -434,9 +480,9 @@ public class DefaultBindController extends BaseController {
     @ApiResponses( value = {@ApiResponse(code = 200, message = "Successful — 请求已完成",response = RespObj.class)})
     @RequestMapping("/selectUnbindChild")
     @ResponseBody
-    public RespObj selectUnbindChild(String userIds){
+    public RespObj selectUnbindChild(String userIds,@ObjectIdType ObjectId communityId){
         RespObj respObj = new RespObj(Constant.SUCCESS_CODE);
-        newVersionBindService.selectUnbindChild(userIds,getUserId());
+        newVersionBindService.selectUnbindChild(userIds,getUserId(),communityId);
         respObj.setMessage("选定孩子成功");
         return respObj;
     }

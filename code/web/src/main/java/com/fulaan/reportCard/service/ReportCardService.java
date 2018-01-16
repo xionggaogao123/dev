@@ -4,12 +4,17 @@ import com.db.fcommunity.CommunityDao;
 import com.db.fcommunity.MemberDao;
 import com.db.fcommunity.NewVersionCommunityBindDao;
 import com.db.indexPage.WebHomePageDao;
+import com.db.operation.AppNoticeDao;
 import com.db.reportCard.*;
 import com.db.wrongquestion.ExamTypeDao;
 import com.db.wrongquestion.SubjectClassDao;
+import com.fulaan.dto.VideoDTO;
 import com.fulaan.instantmessage.service.RedDotService;
+import com.fulaan.operation.dto.AppNoticeDTO;
+import com.fulaan.pojo.Attachement;
 import com.fulaan.pojo.User;
 import com.fulaan.reportCard.dto.*;
+import com.fulaan.user.service.TestTable;
 import com.fulaan.user.service.UserService;
 import com.fulaan.utils.HSSFUtils;
 import com.fulaan.wrongquestion.dto.ExamTypeDTO;
@@ -23,6 +28,7 @@ import com.pojo.wrongquestion.SubjectClassEntry;
 import com.sys.constants.Constant;
 import com.sys.utils.AvatarUtils;
 import com.sys.utils.DateTimeUtils;
+import com.sys.utils.QiniuFileUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.poi.hssf.usermodel.*;
 import org.apache.poi.ss.usermodel.Cell;
@@ -32,7 +38,10 @@ import org.bson.types.ObjectId;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import javax.imageio.ImageIO;
 import javax.servlet.http.HttpServletResponse;
+import java.io.File;
+import java.io.FileInputStream;
 import java.io.InputStream;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
@@ -67,6 +76,8 @@ public class ReportCardService {
     private SubjectClassDao subjectClassDao = new SubjectClassDao();
 
     private WebHomePageDao webHomePageDao = new WebHomePageDao();
+
+    private AppNoticeDao appNoticeDao = new AppNoticeDao();
 
     private MemberDao memberDao = new MemberDao();
 
@@ -1051,6 +1062,45 @@ public class ReportCardService {
             }
         }
         return flag;
+    }
+
+    public void sendUnMatchNotice(String communityId,ObjectId userId)throws Exception{
+        List<VirtualUserDTO> userDTOs = matchInputCount(communityId);
+        if(userDTOs.size()>0){
+            CommunityEntry communityEntry = communityDao.findByObjectId(new ObjectId(communityId));
+            UserEntry userEntry = userService.findById(userId);
+            TestTable cg = new TestTable();
+            ObjectId fileKey = new ObjectId();
+            File outFile = File.createTempFile(fileKey.toString(), ".jpg");
+            System.out.println(outFile.getAbsolutePath());
+            System.out.println(outFile.getPath());
+            cg.graphicsGeneration(outFile.getAbsolutePath(),userDTOs.size()+3,2,communityEntry.getCommunityName()+"未匹配学生名单",userDTOs);
+            QiniuFileUtils.uploadFile(fileKey.toString() + ".jpg", new FileInputStream(outFile), QiniuFileUtils.TYPE_IMAGE);
+            outFile.delete();
+            String imagePath =  QiniuFileUtils.getPath(QiniuFileUtils.TYPE_IMAGE, fileKey.toString() + ".jpg");
+            List<Attachement> imageList = new ArrayList<Attachement>();
+            Attachement item =new Attachement();
+            item.setFlnm(imagePath);
+            item.setUrl(imagePath);
+            item.setUploadUserId(userId.toString());
+            imageList.add(item);
+            AppNoticeDTO appNoticeDTO=new AppNoticeDTO(
+                    "59dc8a68bf2e791a140769b4",
+                    "其他",
+                    communityEntry.getCommunityName()+"未匹配学生名单",
+                    "未匹配名单通知列表",
+                    communityEntry.getGroupId().toString(),
+                    communityEntry.getID().toString(),
+                    Constant.THREE,
+                    new ArrayList<VideoDTO>(),
+                    imageList,
+                    new ArrayList<Attachement>(),
+                    new ArrayList<Attachement>(),
+                    communityEntry.getCommunityName(),
+                    userEntry.getUserName());
+            appNoticeDTO.setUserId(userId.toString());
+            appNoticeDao.saveAppNoticeEntry(appNoticeDTO.buildEntry());
+        }
     }
 
     public List<VirtualUserDTO> matchInputCount(String communityId)throws Exception{

@@ -471,13 +471,33 @@ public class ReportCardController extends BaseController {
                 }
             }
             respObj.setCode(Constant.SUCCESS_CODE);
-            if(userCount==0) {
-                respObj.setMessage("导入模板成功");
-            }else{
-                respObj.setMessage("导入成功,还有"+userCount+"人未匹配");
-            }
+            respObj.setMessage(userCount);
         } catch (Exception e) {
             e.printStackTrace();
+            respObj.setErrorMessage(e.getMessage());
+        }
+        return respObj;
+    }
+
+
+    /**
+     * 立即发送通知
+     * @param communityId
+     * @return
+     */
+    @ApiOperation(value = "立即发送通知", httpMethod = "GET", produces = "application/json")
+    @ApiResponses(value = {@ApiResponse(code = 200, message = "导入模板已完成", response = String.class),
+            @ApiResponse(code = 400, message = "请求中有语法问题，或不能满足请求"),
+            @ApiResponse(code = 500, message = "服务器不能完成请求")})
+    @RequestMapping("/sendUnMatchNotice")
+    @ResponseBody
+    public RespObj sendUnMatchNotice(String communityId){
+        RespObj respObj = new RespObj(Constant.FAILD_CODE);
+        try {
+            reportCardService.sendUnMatchNotice(communityId,getUserId());
+            respObj.setCode(Constant.SUCCESS_CODE);
+            respObj.setMessage("发送通知成功");
+        }catch (Exception e){
             respObj.setErrorMessage(e.getMessage());
         }
         return respObj;

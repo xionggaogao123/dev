@@ -20,15 +20,25 @@ public class RecordUserUnbindEntry extends BaseDBObject{
         setBaseEntry((BasicDBObject)dbObject);
     }
 
-    public RecordUserUnbindEntry(ObjectId mainUserId,
+    public RecordUserUnbindEntry(ObjectId communityId,
+                                 ObjectId mainUserId,
                                  ObjectId userId,
                                  String userKey){
         BasicDBObject basicDBObject = new BasicDBObject()
+                .append("cmId",communityId)
                 .append("muid",mainUserId)
                 .append("uid",userId)
                 .append("uk",userKey)
                 .append("ir", Constant.ZERO);
         setBaseEntry(basicDBObject);
+    }
+
+    public void setCommunityId(ObjectId communityId){
+        setSimpleValue("cmId",communityId);
+    }
+
+    public ObjectId getCommunityId(){
+        return getSimpleObjecIDValue("cmId");
     }
 
     public void setUserKey(String userKey){

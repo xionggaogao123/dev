@@ -249,7 +249,7 @@ public class DefaultPersonalCenterController extends BaseController {
             result.put("score", avatarScore.getExp());
         }
         result.put("result", "ok");
-
+        result.put("imageUrl", imgpath1);
         return result;
     }
 

@@ -989,4 +989,9 @@ public class Constant {
     //系统推送消息
     public static final String COLLECTION_SYSTEM_MESSAGE = "systemmessage";
 
+    /*************************************运营管理*****************************************/
+    //运营表
+    public static final String COLLECTION_BUSINESS_MANAGE= "businessManage";
+    //常用应用表
+    public static final String COLLECTION_MODULE_NUMBER= "moduleNumber";
 }

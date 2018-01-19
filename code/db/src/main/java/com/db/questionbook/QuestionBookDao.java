@@ -121,6 +121,7 @@ public class QuestionBookDao extends BaseDao{
     public List<QuestionBookEntry> getAllQuestionList(ObjectId userId) {
         BasicDBObject query = new BasicDBObject()
                 .append("uid",userId)
+                .append("typ",1)
                 .append("isr", 0); // 未删除
         List<DBObject> dbList =
                 find(MongoFacroty.getAppDB(),
@@ -167,6 +168,7 @@ public class QuestionBookDao extends BaseDao{
     public int getAllQuestionListCount(ObjectId userId) {
         BasicDBObject query = new BasicDBObject()
                 .append("uid", userId)
+                .append("typ",1)
                 .append("isr", 0); // 未删除
         int count =
                 count(MongoFacroty.getAppDB(),

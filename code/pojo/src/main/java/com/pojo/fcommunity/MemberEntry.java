@@ -65,6 +65,10 @@ public class MemberEntry extends BaseDBObject {
     setSimpleValue("cmid",communityId);
   }
 
+  public ObjectId getCommunityId(){
+       return getSimpleObjecIDValue("cmid");
+    }
+
   public ObjectId getUserId() {
     return getSimpleObjecIDValue("uid");
   }

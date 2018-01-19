@@ -7,6 +7,7 @@ import com.fulaan.annotation.ObjectIdType;
 import com.fulaan.annotation.SessionNeedless;
 import com.fulaan.annotation.UserRoles;
 import com.fulaan.base.BaseController;
+import com.fulaan.business.service.BusinessManageService;
 import com.fulaan.cache.CacheHandler;
 import com.fulaan.forum.service.FLogService;
 import com.fulaan.forum.service.FScoreService;
@@ -121,6 +122,8 @@ public class UserController extends BaseController {
     private AccountService accountService;
     @Autowired
     private CommunityService communityService;
+    @Autowired
+    private BusinessManageService businessManageService;
 
     private NewVersionUserRoleDao newVersionUserRoleDao= new NewVersionUserRoleDao();
 
@@ -339,6 +342,7 @@ public class UserController extends BaseController {
         UserEntry e = (UserEntry) validate.getData();
         SessionValue value = getSessionValue(e);
         userService.setCookieValue(e, value, getIP(), response, request);
+        businessManageService.getLoginInfo(e.getID(),getPlatform().getType());
         syncHandleInitLogin(e, getIP(), getPlatform());
         return RespObj.SUCCESS(value);
     }
@@ -647,7 +651,7 @@ public class UserController extends BaseController {
             CacheHandler.deleteKey(CacheHandler.CACHE_USER_CALENDAR, sv.getId(), yearMonth);
             logger.info("try loginout;the ui=" + sv.getId());
             logger.info("delete session value for user:" + sv.getId());
-
+            businessManageService.addDuringTime(getUserId(),sv.getUserName());
             Cookie cookies[] = request.getCookies();
             for (Cookie cookie : cookies) {
                 cookie.setMaxAge(0);

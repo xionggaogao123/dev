@@ -11,43 +11,48 @@ import org.bson.types.ObjectId;
  * id
  * userId           用户id              uid
  * moduleType       使用模块            mty
+ * moduleName       模块名              mnm
  * number           使用次数            num
  *
  */
-public class moduleNumberEntry extends BaseDBObject {
-    public moduleNumberEntry(){
+public class ModuleNumberEntry extends BaseDBObject {
+    public ModuleNumberEntry(){
 
     }
 
-    public moduleNumberEntry(BasicDBObject object){
+    public ModuleNumberEntry(BasicDBObject object){
         super(object);
     }
 
     //添加构造
-    public moduleNumberEntry(
+    public ModuleNumberEntry(
             ObjectId userId,
             int moduleType,
+            String moduleName,
             int number
     ){
         BasicDBObject dbObject=new BasicDBObject()
                 .append("uid", userId)
                 .append("mty", moduleType)
+                .append("mnm",moduleName)
                 .append("num",number)
                 .append("isr", 0);
         setBaseEntry(dbObject);
     }
 
     //修改构造
-    public moduleNumberEntry(
+    public ModuleNumberEntry(
             ObjectId id,
             ObjectId userId,
             int moduleType,
+            String moduleName,
             int number
     ){
         BasicDBObject dbObject=new BasicDBObject()
                 .append(Constant.ID,id)
                 .append("uid", userId)
                 .append("mty", moduleType)
+                .append("mnm",moduleName)
                 .append("num",number)
                 .append("isr", 0);
         setBaseEntry(dbObject);
@@ -67,6 +72,14 @@ public class moduleNumberEntry extends BaseDBObject {
     public void setModuleType(int moduleType){
         setSimpleValue("mty",moduleType);
     }
+
+    public String getModuleName(){
+        return getSimpleStringValue("mnm");
+    }
+    public void setModuleName(String moduleName){
+        setSimpleValue("mnm",moduleName);
+    }
+
     public int getNumber(){
         return getSimpleIntegerValue("num");
     }

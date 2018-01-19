@@ -4,6 +4,7 @@ import com.db.businessactivity.FieryActivityDao;
 import com.db.ebusiness.EVoucherDao;
 import com.db.microblog.MicroBlogDao;
 import com.db.user.UserActiveRecordDao;
+import com.fulaan.business.service.BusinessManageService;
 import com.fulaan.logreport.service.BuildLogReportService;
 import com.fulaan.smalllesson.service.SmallLessonService;
 import com.fulaan.user.service.UserService;
@@ -260,10 +261,15 @@ public class TaskJob {
             page++;
         }
     }
-    //
+    //小课堂定期清除掉线课程
     public void checkUnLesson(){
         SmallLessonService smallLessonService = new SmallLessonService();
         smallLessonService.checkUnLesson();
+    }
+    //更新运营记录
+    public void checkBusinessManage(){
+        BusinessManageService businessManageService = new BusinessManageService();
+        businessManageService.checkBusinessManage();
     }
 
     /**

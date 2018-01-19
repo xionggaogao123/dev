@@ -1,6 +1,7 @@
 package com.fulaan.operation.service;
 
 import cn.jpush.api.push.model.audience.Audience;
+import com.db.business.ModuleNumberDao;
 import com.db.fcommunity.CommunityDao;
 import com.db.fcommunity.MemberDao;
 import com.db.fcommunity.NewVersionCommunityBindDao;
@@ -60,6 +61,7 @@ public class AppNoticeService {
 
     private WebHomePageDao webHomePageDao = new WebHomePageDao();
 
+    ModuleNumberDao moduleNumberDao = new ModuleNumberDao();
     @Autowired
     private UserService userService;
     @Autowired
@@ -268,7 +270,7 @@ public class AppNoticeService {
         result.put("count",count);
         result.put("page",page);
         result.put("pageSize",pageSize);
-
+        moduleNumberDao.addEntry(userId,ApplyTypeEn.notice.getType());
         redDotService.cleanResult(userId,ApplyTypeEn.notice.getType(),0l);
         return result;
     }

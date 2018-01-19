@@ -32,4 +32,16 @@ public class ThirdLoginEntry extends BaseDBObject {
     public ObjectId getUid() {
         return getSimpleObjecIDValue("uid");
     }
+
+    public int getType(){
+        return getSimpleIntegerValue("type");
+    }
+
+    public String getOid(){
+        return getSimpleStringValue("oid");
+    }
+
+    public String getUnionid(){
+        return getSimpleStringValue("unionid");
+    }
 }

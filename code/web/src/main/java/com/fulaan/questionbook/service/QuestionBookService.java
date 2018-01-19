@@ -288,7 +288,7 @@ public class QuestionBookService {
         }
         //entries = questionBookDao.getQuestionList(gradeId, subjectId, questionTypeId, testId, 1, page, pageSize, keyword,userId);
         List<QuestionBookDTO> dtos = new ArrayList<QuestionBookDTO>();
-        int count = questionBookDao.getQuestionListCount(gradeId, subjectId, questionTypeId, testId, type,keyword,userId);
+        int count = questionBookDao.getQuestionListCount(gradeId, subjectId, questionTypeId, testId, 1,keyword,userId);
         Map<String,Object> map = new HashMap<String, Object>();
         if(entries.size()>0){
             for(QuestionBookEntry entry : entries){
@@ -403,7 +403,7 @@ public class QuestionBookService {
                 //改为30天后显示
                 long time = zero + 30*24*60*60*1000;
                 questionBookDao.updateQuestionBook(questionId,time,3);
-            }else{
+            }else if(level==3){
                 //改为已学会
                 questionBookDao.changeQuestionBook(questionId,current);
             }

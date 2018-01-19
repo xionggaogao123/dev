@@ -575,6 +575,9 @@ public class Constant {
     //发起群收款用户发起的钱款
     public static final String COLLECTION_JXM_GROUP_USER_EXPENSE="jxm_group_user_expense";
 
+    //保存用户加密的支付宝账号信息
+    public static final String COLLECTION_JXM_APLIPAY_USER="jxm_aplipay_user";
+
 
     //------------------------------------------------------------------论坛
 

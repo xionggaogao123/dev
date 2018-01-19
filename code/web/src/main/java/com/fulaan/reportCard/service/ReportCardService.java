@@ -3,12 +3,14 @@ package com.fulaan.reportCard.service;
 import com.db.fcommunity.CommunityDao;
 import com.db.fcommunity.MemberDao;
 import com.db.fcommunity.NewVersionCommunityBindDao;
+import com.db.indexPage.IndexPageDao;
 import com.db.indexPage.WebHomePageDao;
 import com.db.operation.AppNoticeDao;
 import com.db.reportCard.*;
 import com.db.wrongquestion.ExamTypeDao;
 import com.db.wrongquestion.SubjectClassDao;
 import com.fulaan.dto.VideoDTO;
+import com.fulaan.indexpage.dto.IndexPageDTO;
 import com.fulaan.instantmessage.service.RedDotService;
 import com.fulaan.operation.dto.AppNoticeDTO;
 import com.fulaan.pojo.Attachement;
@@ -20,8 +22,10 @@ import com.fulaan.utils.HSSFUtils;
 import com.fulaan.wrongquestion.dto.ExamTypeDTO;
 import com.pojo.fcommunity.CommunityEntry;
 import com.pojo.fcommunity.NewVersionCommunityBindEntry;
+import com.pojo.indexPage.IndexPageEntry;
 import com.pojo.indexPage.WebHomePageEntry;
 import com.pojo.instantmessage.ApplyTypeEn;
+import com.pojo.newVersionGrade.CommunityType;
 import com.pojo.reportCard.*;
 import com.pojo.user.UserEntry;
 import com.pojo.wrongquestion.SubjectClassEntry;
@@ -84,6 +88,8 @@ public class ReportCardService {
     private ReportCardSignDao reportCardSignDao = new ReportCardSignDao();
 
     private VirtualCommunityDao virtualCommunityDao = new VirtualCommunityDao();
+
+    private IndexPageDao indexPageDao = new IndexPageDao();
 
 
     public static void main(String[] args) throws Exception {
@@ -1099,7 +1105,19 @@ public class ReportCardService {
                     communityEntry.getCommunityName(),
                     userEntry.getUserName());
             appNoticeDTO.setUserId(userId.toString());
-            appNoticeDao.saveAppNoticeEntry(appNoticeDTO.buildEntry());
+            ObjectId appNoticeId=appNoticeDao.saveAppNoticeEntry(appNoticeDTO.buildEntry());
+            List<ObjectId> objectIdList = new ArrayList<ObjectId>();
+            IndexPageDTO dto1 = new IndexPageDTO();
+            dto1.setType(CommunityType.appNotice.getType());
+            dto1.setUserId(userId.toString());
+            dto1.setCommunityId(communityEntry.getID().toString());
+            dto1.setContactId(appNoticeId.toString());
+            IndexPageEntry entry = dto1.buildAddEntry();
+            indexPageDao.addEntry(entry);
+            objectIdList.add(new ObjectId(communityEntry.getID().toString()));
+            //1:家长2:学生3:家长，学生
+            redDotService.addEntryList(objectIdList,userId, ApplyTypeEn.notice.getType(),Constant.THREE);
+            redDotService.addOtherEntryList(objectIdList,userId, ApplyTypeEn.daynotice.getType(),Constant.THREE);
         }
     }
 

@@ -66,12 +66,45 @@ public class GroupChatRecordDao extends BaseDao{
     }
 
 
-    public List<GroupChatRecordEntry> getGroupChatRecords(ObjectId userId,ObjectId groupId,
-                                                     int page,int pageSize){
-        List<GroupChatRecordEntry>  entries = new ArrayList<GroupChatRecordEntry>();
+    public long getEndTime(ObjectId userId,ObjectId groupId,long time){
         BasicDBObject query = new BasicDBObject()
                 .append("uid",userId)
                 .append("gid",groupId)
+                .append("ct",Constant.ONE)
+                .append("ir",Constant.ZERO);
+        List<DBObject> dbObjectList = find(MongoFacroty.getAppDB(),Constant.COLLECTION_JXM_GROUP_CHAT_RECORD,
+                query,Constant.FIELDS,Constant.MONGO_SORTBY_DESC,0,1);
+        if(null!=dbObjectList&&!dbObjectList.isEmpty()){
+            GroupChatRecordEntry entry = new GroupChatRecordEntry(dbObjectList.get(0));
+            time=entry.getSubmitTime();
+        }
+        return time;
+    }
+
+
+    public long getStartTime(ObjectId userId,ObjectId groupId,long time){
+        BasicDBObject query = new BasicDBObject()
+                .append("uid",userId)
+                .append("gid",groupId)
+                .append("ct",Constant.ONE)
+                .append("ir",Constant.ZERO);
+        List<DBObject> dbObjectList = find(MongoFacroty.getAppDB(),Constant.COLLECTION_JXM_GROUP_CHAT_RECORD,
+                query,Constant.FIELDS,Constant.MONGO_SORTBY_ASC,0,1);
+        if(null!=dbObjectList&&!dbObjectList.isEmpty()){
+            GroupChatRecordEntry entry = new GroupChatRecordEntry(dbObjectList.get(0));
+            time=entry.getSubmitTime();
+        }
+        return time;
+    }
+
+
+    public List<GroupChatRecordEntry> getGroupChatRecords(ObjectId groupId,
+                                                     int page,int pageSize,long startTime,
+                                                          long endTime){
+        List<GroupChatRecordEntry>  entries = new ArrayList<GroupChatRecordEntry>();
+        BasicDBObject query = new BasicDBObject()
+                .append("gid",groupId)
+                .append("sti",new BasicDBObject(Constant.MONGO_LTE,endTime).append(Constant.MONGO_GTE,startTime))
                 .append("ct",Constant.ONE)
                 .append("ir",Constant.ZERO);
         List<DBObject> dbObjectList = find(MongoFacroty.getAppDB(),Constant.COLLECTION_JXM_GROUP_CHAT_RECORD,

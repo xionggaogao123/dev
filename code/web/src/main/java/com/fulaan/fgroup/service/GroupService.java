@@ -390,7 +390,7 @@ public class GroupService {
                 GroupEntry groupEntry = groupEntryMap.get(entry.getReceiveId());
                 if(null!=groupEntry){
                     dto.setGroupName(groupEntry.getName());
-                    dto.setImageUrl(groupEntry.getLogo());
+                    dto.setImageUrl(groupEntry.getHeadImage());
                 }
             }else{
                 dto.setUserId(entry.getReceiveId().toString());
@@ -411,7 +411,11 @@ public class GroupService {
         return result;
     }
 
-    public void saveGroupChatRecord(GroupChatRecordDTO dto){
+    public void saveGroupChatRecord(GroupChatRecordDTO dto)throws Exception{
+         if(dto.getChatType()==Constant.ONE&&StringUtils.isNotEmpty(dto.getEmchatId())){
+             GroupEntry groupEntry = groupDao.findByEmchatId(dto.getEmchatId());
+             dto.setGroupId(groupEntry.getID().toString());
+         }
          groupChatRecordDao.saveGroupRecordEntry(dto.buildEntry());
          if(dto.getChatType()== Constant.TWO
                  &&StringUtils.isNotEmpty(dto.getReceiveId())){
@@ -512,20 +516,41 @@ public class GroupService {
                                                         int pageSize){
         Map<String,Object> result= new HashMap<String,Object>();
         List<GroupChatRecordDTO> dtos = new ArrayList<GroupChatRecordDTO>();
-        MemberEntry memberEntry =memberDao.getUser(groupId,userId);
-        UserEntry userEntry = userService.findById(userId);
-        String userName;
-        if(null!=memberEntry){
-            userName=memberEntry.getNickName();
-        }else{
-            userName=StringUtils.isNotEmpty(userEntry.getNickName())?userEntry.getNickName():userEntry.getUserName();
-        }
+//        MemberEntry memberEntry =memberDao.getUser(groupId,userId);
+//        UserEntry userEntry = userService.findById(userId);
+//        String userName;
+//        if(null!=memberEntry){
+//            userName=memberEntry.getNickName();
+//        }else{
+//            userName=StringUtils.isNotEmpty(userEntry.getNickName())?userEntry.getNickName():userEntry.getUserName();
+//        }
 
-        List<GroupChatRecordEntry> recordEntries = groupChatRecordDao.getGroupChatRecords(userId,groupId,page,pageSize);
+        long time =System.currentTimeMillis();
+
+        long startTime = groupChatRecordDao.getStartTime(userId,groupId,time);
+
+        long endTime = groupChatRecordDao.getEndTime(userId,groupId,time);
+
+        List<GroupChatRecordEntry> recordEntries = groupChatRecordDao.getGroupChatRecords(groupId,page,pageSize,startTime,endTime);
+
+        Set<ObjectId> userIds = new HashSet<ObjectId>();
+
+        for(GroupChatRecordEntry entry:recordEntries){
+            userIds.add(entry.getUserId());
+        }
+        Map<ObjectId,UserEntry> userEntryMap = userService.getUserEntryMap(userIds,Constant.FIELDS);
         for(GroupChatRecordEntry entry:recordEntries){
             GroupChatRecordDTO dto = new GroupChatRecordDTO(entry);
-            dto.setUserName(userName);
-            dto.setOwner(true);
+//            dto.setUserName(userName);
+            UserEntry userEntry = userEntryMap.get(entry.getUserId());
+            if(null!=userEntry){
+                dto.setUserName(StringUtils.isNotEmpty(userEntry.getNickName())?userEntry.getNickName():userEntry.getUserName());
+                dto.setAvatar(AvatarUtils.getAvatar2(userEntry.getAvatar(),userEntry.getRole(),userEntry.getSex()));
+            }
+            dto.setOwner(false);
+            if(entry.getUserId().toString().equals(userId.toString())) {
+                dto.setOwner(true);
+            }
             dtos.add(dto);
         }
         int count=groupChatRecordDao.countGroupChatRecords(userId,groupId);

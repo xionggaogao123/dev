@@ -34,10 +34,15 @@ public class GroupChatRecordController extends BaseController{
     @RequestMapping("/saveEntry")
     @ResponseBody
     public RespObj saveEntry(@RequestBody GroupChatRecordDTO dto){
-        RespObj respObj =new RespObj(Constant.SUCCESS_CODE);
-        dto.setUserId(getUserId().toString());
-        groupService.saveGroupChatRecord(dto);
-        respObj.setMessage("保存信息成功");
+        RespObj respObj =new RespObj(Constant.FAILD_CODE);
+        try {
+            dto.setUserId(getUserId().toString());
+            groupService.saveGroupChatRecord(dto);
+            respObj.setCode(Constant.SUCCESS_CODE);
+            respObj.setMessage("保存信息成功");
+        }catch (Exception e){
+            e.printStackTrace();
+        }
         return respObj;
     }
 

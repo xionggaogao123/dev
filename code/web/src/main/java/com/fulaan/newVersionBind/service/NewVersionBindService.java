@@ -150,6 +150,7 @@ public class NewVersionBindService {
                             //删除记录
                             recordUserUnbindDao.removeEntry(communityId,oldParentId, userId, userKey);
                             recordParentImportDao.removeEntry(mainUserId, userKey, nickName);
+                            flag=true;
                         }
                     }
                 }else{

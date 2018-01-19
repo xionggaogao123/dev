@@ -26,15 +26,16 @@ public class GroupChatRecordDTO {
     private int chatType;
     private boolean isOwner;
     private String avatar;
+    private String emchatId;
 
     public GroupChatRecordDTO(){
 
     }
 
     public GroupChatRecordEntry buildEntry(){
-        ObjectId gId = StringUtils.isNotEmpty(groupId)?new ObjectId(groupId):null;
-        ObjectId uId = StringUtils.isNotEmpty(userId)?new ObjectId(userId):null;
-        ObjectId rId = StringUtils.isNotEmpty(receiveId)?new ObjectId(receiveId):null;
+        ObjectId gId = StringUtils.isNotEmpty(groupId)&&ObjectId.isValid(groupId)?new ObjectId(groupId):null;
+        ObjectId uId = StringUtils.isNotEmpty(userId)&&ObjectId.isValid(userId)?new ObjectId(userId):null;
+        ObjectId rId = StringUtils.isNotEmpty(receiveId)&&ObjectId.isValid(receiveId)?new ObjectId(receiveId):null;
         return new GroupChatRecordEntry(gId,uId,rId,type,chatType,content,fileUrl,imageUrl);
     }
 
@@ -50,6 +51,14 @@ public class GroupChatRecordDTO {
         this.imageUrl=entry.getImageUrl();
         this.submitDay=entry.getSubmitDay();
         this.timeStr= DateTimeUtils.convert(entry.getSubmitTime(),DateTimeUtils.DATE_HH_MM_SS);
+    }
+
+    public String getEmchatId() {
+        return emchatId;
+    }
+
+    public void setEmchatId(String emchatId) {
+        this.emchatId = emchatId;
     }
 
     public String getAvatar() {

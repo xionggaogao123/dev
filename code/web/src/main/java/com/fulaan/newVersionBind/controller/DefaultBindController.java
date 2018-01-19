@@ -305,6 +305,28 @@ public class DefaultBindController extends BaseController {
     }
 
 
+    /**
+     * 包含虚拟学生
+     * @param communityId
+     * @return
+     */
+    @ApiOperation(value = "获取某个社区下绑定的孩子有哪些", httpMethod = "GET", produces = "application/json")
+    @ApiResponses( value = {@ApiResponse(code = 200, message = "Successful — 请求已完成",response = RespObj.class)})
+    @RequestMapping("/getCommunityBindStudentList")
+    @ResponseBody
+    public RespObj getCommunityBindStudentList(@ObjectIdType ObjectId communityId){
+        RespObj respObj = new RespObj(Constant.FAILD_CODE);
+        try{
+            List<NewVersionBindRelationDTO> dtoList=newVersionBindService.getCommunityBindStudentList(getUserId(),communityId);
+            respObj.setCode(Constant.SUCCESS_CODE);
+            respObj.setMessage(dtoList);
+        }catch (Exception e){
+            respObj.setErrorMessage(e.getMessage());
+        }
+        return respObj;
+    }
+
+
 
     @ApiOperation(value = "获取某个社区下绑定的孩子有哪些", httpMethod = "GET", produces = "application/json")
     @ApiResponses( value = {@ApiResponse(code = 200, message = "Successful — 请求已完成",response = RespObj.class)})

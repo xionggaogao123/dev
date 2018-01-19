@@ -31,6 +31,7 @@ public class AppVoteDTO {
     private List<VoteResult> voteResultList=new ArrayList<VoteResult>();
     private List<User> voteUsers=new ArrayList<User>();
     private List<String> voteContent = new ArrayList<String>();
+    private List<VoteOption> voteAndroidList = new ArrayList<VoteOption>();
     private int voteMaxCount;
     private long voteDeadTime;
     private String deadFormatTime;
@@ -144,6 +145,14 @@ public class AppVoteDTO {
         this.commentCount = appVoteEntry.getCommentCount();
         this.deadTime = DateTimeUtils.convert(appVoteEntry.getVoteDeadTime(), DateTimeUtils.DATE_YYYY_MM_DD_HH_MM_SS_H);
         this.voteCount = appVoteEntry.getVoteCount();
+    }
+
+    public List<VoteOption> getVoteAndroidList() {
+        return voteAndroidList;
+    }
+
+    public void setVoteAndroidList(List<VoteOption> voteAndroidList) {
+        this.voteAndroidList = voteAndroidList;
     }
 
     public int getManageDelete() {

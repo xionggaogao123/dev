@@ -17,6 +17,7 @@ import com.pojo.user.UserEntry;
 import com.sys.constants.Constant;
 import com.sys.utils.AvatarUtils;
 import com.sys.utils.TimeChangeUtils;
+import io.swagger.models.auth.In;
 import org.apache.commons.lang3.StringUtils;
 import org.bson.types.ObjectId;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -78,7 +79,7 @@ public class AppActivityService {
             userEntryMap = userService.getUserEntryMap(userIds, Constant.FIELDS);
         }
 
-        Map<ObjectId,List<ObjectId>> groupMap = new HashMap<ObjectId, List<ObjectId>>();
+        Map<ObjectId,Map<ObjectId,Integer>> groupMap = new HashMap<ObjectId,Map<ObjectId,Integer>>();
         if(groupIds.size()>0){
             groupMap = memberDao.getMemberGroupManage(new ArrayList<ObjectId>(groupIds));
         }
@@ -102,9 +103,17 @@ public class AppActivityService {
                 appActivityDTO.setManageDelete(Constant.ONE);
             }else{
                 if(null!=groupMap.get(entry.getGroupId())){
-                    List<ObjectId> groupUserIds =  groupMap.get(entry.getGroupId());
-                    if(groupUserIds.contains(userId)){
-                        appActivityDTO.setManageDelete(Constant.ONE);
+                    Map<ObjectId,Integer> groupUserIds =  groupMap.get(entry.getGroupId());
+                    if(null!=groupUserIds.get(userId)){
+                        int role = groupUserIds.get(userId);
+                        if(null!=groupUserIds.get(entry.getUserId())){
+                            int userRole = groupUserIds.get(entry.getUserId());
+                            if(role>userRole){
+                                appActivityDTO.setManageDelete(Constant.ONE);
+                            }
+                        }else{
+                            appActivityDTO.setManageDelete(Constant.ONE);
+                        }
                     }
                 }
             }

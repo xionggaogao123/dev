@@ -5,6 +5,7 @@ import com.db.fcommunity.CommunityDao;
 import com.db.fcommunity.MemberDao;
 import com.db.fcommunity.NewVersionCommunityBindDao;
 import com.fulaan.appvote.dto.AppVoteDTO;
+import com.fulaan.appvote.dto.VoteOption;
 import com.fulaan.appvote.dto.VoteResult;
 import com.fulaan.community.dto.CommunityDetailDTO;
 import com.fulaan.forum.service.FVoteService;
@@ -140,7 +141,7 @@ public class AppVoteService {
         if (userIds.size() > 0) {
             userEntryMap = userService.getUserEntryMap(userIds, Constant.FIELDS);
         }
-        Map<ObjectId,List<ObjectId>> groupMap = new HashMap<ObjectId, List<ObjectId>>();
+        Map<ObjectId,Map<ObjectId,Integer>> groupMap = new HashMap<ObjectId,Map<ObjectId,Integer>>();
         if(groupIds.size()>0){
             groupMap = memberDao.getMemberGroupManage(new ArrayList<ObjectId>(groupIds));
         }
@@ -170,6 +171,13 @@ public class AppVoteService {
             dto.setVoteCount(totalCount);
             Set<ObjectId> totalUserIds=new HashSet<ObjectId>();
             Map<ObjectId,Long> timeRecord=new HashMap<ObjectId, Long>();
+            List<VoteOption> voteOptions = new ArrayList<VoteOption>();
+            for (int i = 0; i < entry.getVoteContent().size(); i++) {
+                int number=i+1;
+                VoteOption voteOption =new VoteOption(number,entry.getVoteContent().get(i));
+                voteOptions.add(voteOption);
+            }
+            dto.setVoteAndroidList(voteOptions);
             for (int i = 0; i < entry.getVoteContent().size(); i++) {
                 Set<ObjectId> selectUserIds=new HashSet<ObjectId>();
                 VoteResult voteResult = new VoteResult();
@@ -231,9 +239,17 @@ public class AppVoteService {
                 dto.setManageDelete(Constant.ONE);
             }else{
                 if(null!=groupMap.get(entry.getGroupId())){
-                    List<ObjectId> groupUserIds =  groupMap.get(entry.getGroupId());
-                    if(groupUserIds.contains(userId)){
-                        dto.setManageDelete(Constant.ONE);
+                    Map<ObjectId,Integer> groupUserIds =  groupMap.get(entry.getGroupId());
+                    if(null!=groupUserIds.get(userId)){
+                        int role = groupUserIds.get(userId);
+                        if(null!=groupUserIds.get(entry.getUserId())){
+                            int userRole = groupUserIds.get(entry.getUserId());
+                            if(role>userRole){
+                                dto.setManageDelete(Constant.ONE);
+                            }
+                        }else{
+                            dto.setManageDelete(Constant.ONE);
+                        }
                     }
                 }
             }

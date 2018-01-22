@@ -1,5 +1,6 @@
 package com.fulaan.newVersionBind.service;
 
+import com.db.business.BusinessManageDao;
 import com.db.fcommunity.CommunityDao;
 import com.db.fcommunity.MemberDao;
 import com.db.fcommunity.NewVersionCommunityBindDao;
@@ -68,6 +69,8 @@ public class NewVersionBindService {
     private RecordUserUnbindDao recordUserUnbindDao = new RecordUserUnbindDao();
 
     private RecordParentImportDao recordParentImportDao = new RecordParentImportDao();
+
+    private BusinessManageDao businessManageDao = new BusinessManageDao();
 
     @Autowired
     private UserService userService;
@@ -590,6 +593,12 @@ public class NewVersionBindService {
         dto.setUserId(userId.toString());
         newVersionSubjectDao.removeOldSubjectData(userId);
         newVersionSubjectDao.saveNewVersionSubjectEntry(dto.buildAddEntry());
+        //修改运营学科
+        List<ObjectId> uIdList = new ArrayList<ObjectId>();
+        for(String str : suIds){
+            uIdList.add(new ObjectId(str));
+        }
+        businessManageDao.updateEntry(uIdList,userId);
     }
 
     public void updateNumber(ObjectId communityId,

@@ -3,12 +3,14 @@ package com.fulaan.business.service;
 import com.db.business.BusinessManageDao;
 import com.db.fcommunity.LoginLogDao;
 import com.db.user.UserDao;
+import com.db.wrongquestion.SubjectClassDao;
 import com.fulaan.business.dto.BusinessManageDTO;
 import com.fulaan.picturetext.runnable.PictureRunNable;
 import com.fulaan.user.service.UserService;
 import com.pojo.business.BusinessManageEntry;
 import com.pojo.fcommunity.FLoginLogEntry;
 import com.pojo.user.UserEntry;
+import com.pojo.wrongquestion.SubjectClassEntry;
 import com.sys.constants.Constant;
 import com.sys.utils.AvatarUtils;
 import org.bson.types.ObjectId;
@@ -27,6 +29,8 @@ public class BusinessManageService {
     private UserDao userDao = new UserDao();
 
     private UserService userService = new UserService();
+
+    private SubjectClassDao subjectClassDao  = new SubjectClassDao();
 
     //登陆生成
     public void getLoginInfo(ObjectId userId,int type ){
@@ -99,9 +103,25 @@ public class BusinessManageService {
         List<BusinessManageEntry> entries =  businessManageDao.getPageList(str,page, pageSize);
         List<BusinessManageDTO> list = new ArrayList<BusinessManageDTO>();
         List<ObjectId> userIds = new ArrayList<ObjectId>();
+        List<SubjectClassEntry> entries1 =  subjectClassDao.getList();
+        Map<ObjectId,SubjectClassEntry> map1 = new HashMap<ObjectId, SubjectClassEntry>();
+        for(SubjectClassEntry entry : entries1){
+            map1.put(entry.getID(),entry);
+        }
         if(entries.size()>0){
             for(BusinessManageEntry entry:entries){
-                list.add(new BusinessManageDTO(entry));
+                BusinessManageDTO dto = new BusinessManageDTO(entry);
+                List<String> sstr = new ArrayList<String>();
+                if(entry.getSubjectIdList()!=null){
+                    for(ObjectId oid : entry.getSubjectIdList()){
+                        SubjectClassEntry subjectClassEntry =  map1.get(oid);
+                        if(subjectClassEntry!=null){
+                            sstr.add(subjectClassEntry.getName()+" ");
+                        }
+                    }
+                }
+                dto.setSubjectIdList(sstr);
+                list.add(dto);
                 userIds.add(entry.getUserId());
             }
         }

@@ -40,6 +40,7 @@ import com.sys.constants.Constant;
 import com.sys.utils.AvatarUtils;
 import com.sys.utils.DateTimeUtils;
 import org.apache.commons.lang3.StringUtils;
+import org.apache.log4j.Logger;
 import org.bson.types.ObjectId;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.scheduling.annotation.Async;
@@ -92,7 +93,7 @@ public class CommunityService {
     private SystemMessageDao systemMessageDao = new SystemMessageDao();
 
     private IndexPageDao indexPageDao = new IndexPageDao();
-
+    private static final Logger logger = Logger.getLogger(CommunityService.class);
     /**
      * 创建社区
      * <p>
@@ -1297,12 +1298,17 @@ public class CommunityService {
             ObjectId groupId = groupIds.get(new ObjectId(entry.getCommunityId()));
             MemberEntry entry1 = memberMap.get(groupId + "$" + entry.getCommunityUserId());
             MemberEntry entry5 = memberMap.get(groupId + "$" + userId);
-            if(entry5.getRole() > entry1.getRole()){
-                communityDetailDTO.setOperation(1);//权限压制，可删除
-            }else if(entry.getCommunityUserId().equals(userId)){
-                communityDetailDTO.setOperation(1);//发布人相同，可删除
+            if(entry1!=null && entry5!=null){
+                if(entry5.getRole() > entry1.getRole()){
+                    communityDetailDTO.setOperation(1);//权限压制，可删除
+                }else if(entry.getCommunityUserId().equals(userId)){
+                    communityDetailDTO.setOperation(1);//发布人相同，可删除
+                }else{
+                    communityDetailDTO.setOperation(0);//不可删除
+                }
             }else{
                 communityDetailDTO.setOperation(0);//不可删除
+                logger.error(entry.getID());
             }
             setCommunityDetailInfo(communityDetailDTO, userEntry, entry1);
             //设置备注名

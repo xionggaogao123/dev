@@ -33,7 +33,7 @@ public class ThirdLoginDao extends BaseDao {
     //单查询
     public ThirdLoginEntry getEntry(ObjectId userId) {
         BasicDBObject query =new BasicDBObject();
-        query.append("isr", Constant.ZERO) .append("uid", userId);
+        query.append("uid", userId);
         DBObject dbo =findOne(MongoFacroty.getAppDB(), Constant.COLLECTION_THIRD_LOGIN_NAME, query, Constant.FIELDS);
         if(null!=dbo)
         {

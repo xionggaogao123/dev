@@ -189,6 +189,9 @@ public class PictureRunNable{
             logger.error("error",e);
         }
     }
+    public static void main(String[] args){
+        addBusinessManageEntry(new ObjectId("5a1cf1793d4df901bd9fa983"),1);
+    }
     public static void addBusinessManageEntry(final ObjectId userId,final int type) {
         new Thread(){
             public void run() {
@@ -206,7 +209,14 @@ public class PictureRunNable{
                     ThirdLoginEntry thirdLoginEntry = thirdLoginDao.getEntry(userId);
 
                     if(businessManageEntry!=null){
-
+                        if(thirdLoginEntry!=null){
+                            businessManageEntry.setType(thirdLoginEntry.getType());
+                            businessManageEntry.setOpenId(thirdLoginEntry.getOid()+"&"+thirdLoginEntry.getUnionid());
+                        }else{
+                            businessManageEntry.setType(3);
+                            businessManageEntry.setOpenId("");
+                        }
+                        businessManageDao.updEntry(businessManageEntry);
                     }else{
                         BusinessManageDTO dto = new BusinessManageDTO();
                         dto.setUserId(entry.getID().toString());
@@ -267,6 +277,7 @@ public class PictureRunNable{
                                 stringList.add(objectId.toString());
                             }
                         }
+                        dto.setSubjectIdList(stringList);
                         dto.setPhoneType(type);
                         Map<String,String> phoneMap = getPhone(entry.getMobileNumber());
                         dto.setRegionType(phoneMap.get("province"));
@@ -291,7 +302,6 @@ public class PictureRunNable{
                 MemberDao memberDao = new MemberDao();
                 CommunityDao communityDao =  new CommunityDao();
                 ModuleNumberDao moduleNumberDao = new ModuleNumberDao();
-                NewVersionSubjectDao newVersionSubjectDao = new NewVersionSubjectDao();
                 NewVersionUserRoleDao newVersionUserRoleDao = new NewVersionUserRoleDao();
                 LoginLogDao loginLogDao = new LoginLogDao();
                 System.out.println("新的线程在执行...");
@@ -307,7 +317,6 @@ public class PictureRunNable{
                             if(businessManageEntry!=null){
                                 ObjectId userId = businessManageEntry.getUserId();
                                 UserEntry entry = userDao.findByUserId(userId);
-                                ThirdLoginDao thirdLoginDao = new ThirdLoginDao();
                                 //社区相关
                                 BusinessManageDTO dto = new BusinessManageDTO(businessManageEntry);
                                 List<String> oids = memberDao.getMyCommunityIdsByUserId(userId);
@@ -351,20 +360,12 @@ public class PictureRunNable{
                                         dto.setRole(2);
                                     }
                                 }
-                                //课程相关
-                                List<String> stringList =  new ArrayList<String>();
-                                NewVersionSubjectEntry newVersionSubjectEntry = newVersionSubjectDao.getEntryByUserId(userId);
-                                if(null != newVersionSubjectEntry && newVersionSubjectEntry.getSubjectList()!=null){
-                                    for(ObjectId objectId : newVersionSubjectEntry.getSubjectList()){
-                                        stringList.add(objectId.toString());
-                                    }
-                                }
                                 //模块相关
                                 List<ModuleNumberEntry> moduleNumberEntries =  moduleNumberDao.getPageList(userId);
                                 List<String> stringList1 = new ArrayList<String>();
                                 if(moduleNumberEntries.size()>0){
                                     for(ModuleNumberEntry moduleNumberEntry : moduleNumberEntries){
-                                        stringList1.add(moduleNumberEntry.getModuleName());
+                                        stringList1.add(moduleNumberEntry.getModuleName()+" "+moduleNumberEntry.getNumber()+" ");
                                     }
                                 }
                                 dto.setFunctionList(stringList1);
@@ -482,12 +483,7 @@ public class PictureRunNable{
         }.start();
     }
 
-    public static void main(String[] args){
-       /* String url = "https://tcc.taobao.com/cc/json/mobile_tel_segment.htm?tel=15715565033";
-        String result = callUrlByGet(url,"GBK");
-        System.out.println(result);*/
-        getPhone("15715565033");
-    }
+
     public static Map<String,String> getPhone(String phoneName){
         Map<String,String> map = new HashMap<String, String>();
         String url = "https://tcc.taobao.com/cc/json/mobile_tel_segment.htm?tel="+phoneName;

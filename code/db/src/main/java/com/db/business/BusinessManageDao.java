@@ -26,6 +26,12 @@ public class BusinessManageDao extends BaseDao {
         BasicDBObject updateValue=new BasicDBObject(Constant.MONGO_SET,e.getBaseEntry());
         update(MongoFacroty.getAppDB(), Constant.COLLECTION_BUSINESS_MANAGE, query,updateValue);
     }
+    //修改解析内容和图片
+    public void updateEntry(List<ObjectId> subjectIdList,ObjectId userId){
+        BasicDBObject query=new BasicDBObject("uid",userId);
+        BasicDBObject updateValue=new BasicDBObject(Constant.MONGO_SET,new BasicDBObject("sut",subjectIdList));
+        update(MongoFacroty.getAppDB(), Constant.COLLECTION_BUSINESS_MANAGE, query, updateValue);
+    }
 
     //单查询
     public BusinessManageEntry getEntry(ObjectId userId) {
@@ -80,4 +86,5 @@ public class BusinessManageDao extends BaseDao {
                         query);
         return count;
     }
+
 }

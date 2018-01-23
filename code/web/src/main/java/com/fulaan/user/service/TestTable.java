@@ -71,13 +71,13 @@ public class TestTable {
         graphics.drawLine(imageWidth-5, startHeight+rowheight,imageWidth-5, imageHeight-50);
 
         //设置字体
-        Font font = new Font("华文楷体",Font.BOLD,20);
+        Font font = new Font("宋体",Font.BOLD,20);
         graphics.setFont(font);
 
         //写标题
         graphics.drawString(title, imageWidth/3+startWidth, startHeight+rowheight-10);
 
-        font = new Font("华文楷体",Font.BOLD,18);
+        font = new Font("宋体",Font.BOLD,18);
         graphics.setFont(font);
 
         //写入表头
@@ -87,7 +87,7 @@ public class TestTable {
         }
 
         //设置字体
-        font = new Font("华文楷体",Font.PLAIN,16);
+        font = new Font("宋体",Font.PLAIN,16);
         graphics.setFont(font);
 //        String[][] cellsValue = {{"101","xiaozhang"},
 //                {"102","xiaowang"},
@@ -106,7 +106,7 @@ public class TestTable {
 //            }
 //        }
 
-        font = new Font("华文楷体",Font.BOLD,18);
+        font = new Font("宋体",Font.BOLD,18);
         graphics.setFont(font);
         graphics.setColor(Color.RED);
 

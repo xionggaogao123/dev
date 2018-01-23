@@ -47,6 +47,37 @@ public class AppVoteController extends BaseController{
     }
 
 
+    /**
+     * 投票数据迁移
+     * @return
+     */
+    @ApiOperation(value = "投票数据迁移", httpMethod = "GET", produces = "application/json")
+    @ApiResponses( value = {@ApiResponse(code = 200, message = "Successful — 请求已完成",response = RespObj.class)})
+    @RequestMapping("/transferVote")
+    @ResponseBody
+    public RespObj transferVote(){
+        RespObj respObj=new RespObj(Constant.SUCCESS_CODE);
+        appVoteService.transferVote();
+        respObj.setMessage("投票数据迁移成功");
+        return respObj;
+    }
+
+    /**
+     * 活动数据迁移
+     * @return
+     */
+    @ApiOperation(value = "活动数据迁移", httpMethod = "GET", produces = "application/json")
+    @ApiResponses( value = {@ApiResponse(code = 200, message = "Successful — 请求已完成",response = RespObj.class)})
+    @RequestMapping("/transferActivity")
+    @ResponseBody
+    public RespObj transferActivity(){
+        RespObj respObj=new RespObj(Constant.SUCCESS_CODE);
+        appVoteService.transferActivity();
+        respObj.setMessage("活动数据迁移成功");
+        return respObj;
+    }
+
+
     @ApiOperation(value = "获取集合投票列表", httpMethod = "GET", produces = "application/json")
     @ApiResponses( value = {@ApiResponse(code = 200, message = "Successful — 请求已完成",response = RespObj.class)})
     @RequestMapping("/gatherAppVotes")
@@ -74,9 +105,6 @@ public class AppVoteController extends BaseController{
         respObj.setMessage("删除并撤回投票信息成功!");
         return respObj;
     }
-
-
-
 
 
     @ApiOperation(value = "获取我发送的投票", httpMethod = "GET", produces = "application/json")

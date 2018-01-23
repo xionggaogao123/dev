@@ -58,14 +58,23 @@ public class AppActivityDao extends BaseDao {
         update(MongoFacroty.getAppDB(), Constant.COLLECTION_JXM_APP_ACTIVITY,query,updateValue);
     }
 
+
+    public void removeById(ObjectId activityId){
+        BasicDBObject query = new BasicDBObject(Constant.ID,activityId);
+        remove(MongoFacroty.getAppDB(), Constant.COLLECTION_JXM_APP_ACTIVITY,query);
+    }
+
     public BasicDBObject getGatherQueryCondition(ObjectId userId,
                                                  List<ObjectId> groupIds){
+        List<Integer> visiblePermission = new ArrayList<Integer>();
+        visiblePermission.add(Constant.ONE);
+        visiblePermission.add(Constant.THREE);
         BasicDBObject query = new BasicDBObject();
         BasicDBList values = new BasicDBList();
         values.add(new BasicDBObject("uid",userId));
         values.add(new BasicDBObject("uid",new BasicDBObject(Constant.MONGO_NE,userId))
                 .append("gid",new BasicDBObject(Constant.MONGO_IN,groupIds))
-                .append("vp",Constant.ONE));
+                .append("vp",new BasicDBObject(Constant.MONGO_IN,visiblePermission)));
         query.append(Constant.MONGO_OR,values);
         query.append("ir", Constant.ZERO);
         return query;
@@ -78,9 +87,12 @@ public class AppActivityDao extends BaseDao {
     }
 
     public BasicDBObject getStudentReceivedCondition(List<ObjectId> groupIds){
+        List<Integer> visiblePermission = new ArrayList<Integer>();
+        visiblePermission.add(Constant.TWO);
+        visiblePermission.add(Constant.THREE);
         BasicDBObject query=new BasicDBObject()
                 .append("gid",new BasicDBObject(Constant.MONGO_IN,groupIds))
-                .append("vp",Constant.TWO)
+                .append("vp",new BasicDBObject(Constant.MONGO_IN,visiblePermission))
                 .append("ir", Constant.ZERO);
         return query;
     }

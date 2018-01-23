@@ -27,6 +27,7 @@ import com.fulaan.pojo.CommunityMessage;
 import com.fulaan.pojo.PageModel;
 import com.fulaan.pojo.ProductModel;
 import com.fulaan.pojo.Validate;
+import com.fulaan.reportCard.service.ReportCardService;
 import com.fulaan.service.*;
 import com.fulaan.user.service.UserService;
 import com.fulaan.util.DateUtils;
@@ -39,6 +40,7 @@ import com.pojo.app.Platform;
 import com.pojo.fcommunity.*;
 import com.pojo.forum.FVoteDTO;
 import com.pojo.forum.FVoteEntry;
+import com.pojo.reportCard.VirtualCommunityEntry;
 import com.pojo.user.UserDetailInfoDTO;
 import com.pojo.user.UserEntry;
 import com.pojo.user.UserTag;
@@ -110,6 +112,9 @@ public class DefaultCommunityController extends BaseController {
     private FVoteService fVoteService;
     @Autowired
     private AppCommentService appCommentService;
+
+    @Autowired
+    private ReportCardService reportCardService;
 
     @Autowired
     private BackStageService backStageService;
@@ -3523,6 +3528,59 @@ public class DefaultCommunityController extends BaseController {
         RespObj respObj = new RespObj(Constant.SUCCESS_CODE,"转让数据设置成功");
         communityService.transferOwnerList();
         return respObj;
+    }
+
+    /**
+     *
+     * @param page
+     * @param pageSize
+     * @param platform
+     * @return
+     */
+    @RequestMapping("/myAvailableCommunities")
+    @ResponseBody
+    @SessionNeedless
+    @ApiOperation(value = "获得我具有管理员权限的社区列表", httpMethod = "GET", produces = "application/json")
+    @ApiResponses(value = {@ApiResponse(code = 200, message = "获得我具有管理员权限的社区列表成功",response = RespObj.class),
+            @ApiResponse(code = 500, message = "获得我具有管理员权限的社区列表失败")})
+    public RespObj myAvailableCommunities(@ApiParam(name="page",required = false,value = "页码")@RequestParam(defaultValue = "1", required = false) int page,
+                                    @ApiParam(name="pageSize",required = false,value = "页数")@RequestParam(defaultValue = "100", required = false) int pageSize,
+                                    @ApiParam(name="platform",required = false,value = "平台参数，标明是pc端，还是移动端")@RequestParam(defaultValue = "app", required = false) String platform) {
+        ObjectId userId = getUserId();
+        List<CommunityDTO> communityDTOList = new ArrayList<CommunityDTO>();
+        CommunityDTO fulanDto = communityService.getCommunityByName("复兰社区");
+        if (null == userId && null != fulanDto) {
+            communityDTOList.add(fulanDto);
+            return RespObj.SUCCESS(communityDTOList);
+        } else {
+            if (null != fulanDto) {
+                //加入复兰社区
+                joinFulaanCommunity(getUserId(), new ObjectId(fulanDto.getId()));
+            }
+            List<ObjectId> mlist = appCommentService.getMyRoleList(userId);
+            List<String> molist = new ArrayList<String>();
+            for(ObjectId oid: mlist){
+                molist.add(oid.toString());
+            }
+            communityDTOList = communityService.getCommunitys(userId, page, pageSize);
+            List<CommunityDTO> communityDTOList2 = new ArrayList<CommunityDTO>();
+            List<ObjectId> communtyIds = new ArrayList<ObjectId>();
+            for(CommunityDTO dto3 : communityDTOList){
+                communtyIds.add(new ObjectId(dto3.getId()));
+            }
+            Map<ObjectId, VirtualCommunityEntry> virtualCommunityEntryMap = reportCardService.getVirtualCommunityMap(communtyIds);
+            if(communityDTOList.size()>0){
+                for(CommunityDTO dto3 : communityDTOList){
+                    if(molist.contains(dto3.getId()) && ! dto3.getName().equals("复兰社区")){
+                        VirtualCommunityEntry entry = virtualCommunityEntryMap.get(new ObjectId(dto3.getId()));
+                        if(null!=entry&&entry.getUserCount()>Constant.ZERO){
+                            communityDTOList2.add(dto3);
+                        }
+                    }
+                }
+            }
+            return RespObj.SUCCESS(communityDTOList2);
+        }
     }
 
 }

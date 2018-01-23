@@ -329,4 +329,19 @@ public class CommunityDetailDao extends BaseDao {
         return detailEntries;
     }
 
+    public List<CommunityDetailEntry> getDetailEntries(int type,int page,int pageSize) {
+        List<CommunityDetailEntry> detailEntries = new ArrayList<CommunityDetailEntry>();
+        BasicDBObject query = new BasicDBObject()
+                .append("cmty", type)
+                .append("r", 0);
+        List<DBObject> dbObjects = find(MongoFacroty.getAppDB(),
+                Constant.COLLECTION_FORUM_COMMUNITY_DETAIL, query,
+                Constant.FIELDS, Constant.MONGO_SORTBY_ASC, (page-1)*pageSize,pageSize);
+        for (DBObject dbo : dbObjects) {
+            detailEntries.add(new CommunityDetailEntry(dbo));
+        }
+        return detailEntries;
+    }
+
+
 }

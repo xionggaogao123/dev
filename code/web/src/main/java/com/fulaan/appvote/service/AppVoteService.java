@@ -1,18 +1,27 @@
 package com.fulaan.appvote.service;
 
+import com.db.appactivity.AppActivityDao;
+import com.db.appactivity.AppActivityUserDao;
 import com.db.appvote.AppVoteDao;
+import com.db.appvote.TransferVoteAndActivityDao;
 import com.db.fcommunity.CommunityDao;
+import com.db.fcommunity.CommunityDetailDao;
 import com.db.fcommunity.MemberDao;
 import com.db.fcommunity.NewVersionCommunityBindDao;
+import com.db.forum.FVoteDao;
 import com.fulaan.appvote.dto.AppVoteDTO;
 import com.fulaan.appvote.dto.VoteOption;
 import com.fulaan.appvote.dto.VoteResult;
-import com.fulaan.community.dto.CommunityDetailDTO;
 import com.fulaan.forum.service.FVoteService;
 import com.fulaan.operation.dto.GroupOfCommunityDTO;
 import com.fulaan.pojo.User;
 import com.fulaan.user.service.UserService;
+import com.pojo.appactivity.AppActivityEntry;
+import com.pojo.appactivity.AppActivityUserEntry;
 import com.pojo.appvote.AppVoteEntry;
+import com.pojo.appvote.TransferVoteAndActivityEntry;
+import com.pojo.fcommunity.CommunityDetailEntry;
+import com.pojo.fcommunity.CommunityEntry;
 import com.pojo.fcommunity.NewVersionCommunityBindEntry;
 import com.pojo.forum.FVoteDTO;
 import com.pojo.forum.FVoteEntry;
@@ -21,9 +30,7 @@ import com.pojo.utils.MongoUtils;
 import com.sys.constants.Constant;
 import com.sys.utils.AvatarUtils;
 import com.sys.utils.DateTimeUtils;
-import com.sys.utils.StringUtil;
 import com.sys.utils.TimeChangeUtils;
-import org.apache.commons.collections.map.HashedMap;
 import org.apache.commons.lang3.StringUtils;
 import org.bson.types.ObjectId;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -46,7 +53,17 @@ public class AppVoteService {
 
     private CommunityDao communityDao = new CommunityDao();
 
+    private CommunityDetailDao communityDetailDao = new CommunityDetailDao();
+
+    private FVoteDao fVoteDao = new FVoteDao();
+
     private MemberDao memberDao=new MemberDao();
+
+    private TransferVoteAndActivityDao transferVoteAndActivityDao = new TransferVoteAndActivityDao();
+
+    private AppActivityUserDao appActivityUserDao = new AppActivityUserDao();
+
+    private AppActivityDao appActivityDao = new AppActivityDao();
 
     @Autowired
     private FVoteService fVoteService;
@@ -284,5 +301,122 @@ public class AppVoteService {
         retMap.put("pageSize", pageSize);
         retMap.put("count", count);
         return retMap;
+    }
+
+
+    public void transferActivity(){
+        int page=1;
+        int pageSize=200;
+        boolean flag=true;
+        while (flag){
+            List<CommunityDetailEntry> communityDetailEntries =
+                    communityDetailDao.getDetailEntries(Constant.TWO,page,pageSize);
+            if(communityDetailEntries.size()>0){
+                for(CommunityDetailEntry communityDetailEntry:communityDetailEntries){
+                    ObjectId activityId= communityDetailEntry.getID();
+                    List<ObjectId> partInList = communityDetailEntry.getPartInList();
+                    List<AppActivityUserEntry> entries = new ArrayList<AppActivityUserEntry>();
+                    CommunityEntry communityEntry = communityDao.findByObjectId(new ObjectId(communityDetailEntry.getCommunityId()));
+                    AppActivityEntry appActivityEntry = new AppActivityEntry(
+                            new ObjectId("59dc8a68bf2e791a140769b4"),
+                            communityDetailEntry.getCommunityUserId(),
+                            "其他",
+                            communityDetailEntry.getCommunityTitle(),
+                            communityDetailEntry.getCommunityContent(),
+                            communityEntry.getGroupId(),
+                            new ObjectId(communityDetailEntry.getCommunityId()),
+                            communityEntry.getCommunityName(),
+                            communityDetailEntry.getImageList(),
+                            communityDetailEntry.getVideoList(),
+                            Constant.THREE
+                    );
+                    ObjectId newItemId= new ObjectId();
+                    appActivityEntry.setID(newItemId);
+                    for(ObjectId partInId:partInList){
+                        AppActivityUserEntry userEntry = new AppActivityUserEntry(newItemId,partInId);
+                        entries.add(userEntry);
+                    }
+                    TransferVoteAndActivityEntry entry= transferVoteAndActivityDao.getEntryByTransferId(activityId);
+                    if(null!=entry){
+                        ObjectId generateId = entry.getNewItemId();
+                        appActivityDao.removeById(generateId);
+                        appActivityUserDao.removeActivityData(generateId);
+                        transferVoteAndActivityDao.removeEntry(activityId);
+                    }
+                    appActivityDao.saveEntry(appActivityEntry);
+                    if(entries.size()>0){
+                        appActivityUserDao.saveEntries(entries);
+                    }
+                    transferVoteAndActivityDao.saveEntry(new TransferVoteAndActivityEntry(activityId,newItemId,Constant.TWO));
+                }
+            }else{
+                flag=false;
+            }
+            page++;
+        }
+    }
+
+
+    public void transferVote(){
+        int page=1;
+        int pageSize=200;
+        boolean flag =true;
+        while(flag){
+            List<CommunityDetailEntry> communityDetailEntries = communityDetailDao.getDetailEntries(Constant.SEVEN,page,pageSize);
+            if(communityDetailEntries.size()>0){
+                for(CommunityDetailEntry communityDetailEntry:communityDetailEntries){
+                    ObjectId voteId= communityDetailEntry.getID();
+                    String voteContent = communityDetailEntry.getVoteContent();
+                    List<String> voteOptions = new ArrayList<String>();
+                    if(StringUtils.isNotEmpty(voteContent)) {
+                        if (voteContent.contains("/n/r")) {
+                            String[] str = voteContent.split("/n/r");
+                            for (String item : str) {
+                                voteOptions.add(item);
+                            }
+                        } else {
+                            voteOptions.add(voteContent);
+                        }
+                    }
+                    List<FVoteEntry> fVoteEntries = fVoteDao.getFVoteList(voteId);
+                    List<FVoteEntry> voteEntries = new ArrayList<FVoteEntry>();
+                    CommunityEntry communityEntry = communityDao.findByObjectId(new ObjectId(communityDetailEntry.getCommunityId()));
+                    AppVoteEntry appVoteEntry = new AppVoteEntry(new ObjectId("59dc8a68bf2e791a140769b4"),
+                            communityDetailEntry.getCommunityUserId(),
+                            "其他",
+                            communityDetailEntry.getCommunityTitle(),
+                            communityDetailEntry.getCommunityContent(),
+                            communityEntry.getGroupId(),
+                            new ObjectId(communityDetailEntry.getCommunityId()),
+                            communityEntry.getCommunityName(),
+                            communityDetailEntry.getImageList(),
+                            voteOptions,
+                            communityDetailEntry.getVoteMaxCount(),
+                            communityDetailEntry.getVoteDeadTime(),
+                            communityDetailEntry.getVoteType(),
+                            Constant.THREE);
+                    ObjectId newItemId= new ObjectId();
+                    appVoteEntry.setID(newItemId);
+                    for(FVoteEntry fVoteEntry:fVoteEntries){
+                        voteEntries.add(new FVoteEntry(newItemId,fVoteEntry.getUserId(),fVoteEntry.getNumber()));
+                    }
+                    TransferVoteAndActivityEntry entry= transferVoteAndActivityDao.getEntryByTransferId(voteId);
+                    if(null!=entry){
+                        ObjectId generateId = entry.getNewItemId();
+                        fVoteDao.removeOldData(generateId);
+                        appVoteDao.removeById(generateId);
+                        transferVoteAndActivityDao.removeEntry(voteId);
+                    }
+                    appVoteDao.saveAppVote(appVoteEntry);
+                    if(voteEntries.size()>0) {
+                        fVoteDao.addFVoteList(voteEntries);
+                    }
+                    transferVoteAndActivityDao.saveEntry(new TransferVoteAndActivityEntry(voteId,newItemId,Constant.SEVEN));
+                }
+            }else{
+                flag=false;
+            }
+            page++;
+        }
     }
 }

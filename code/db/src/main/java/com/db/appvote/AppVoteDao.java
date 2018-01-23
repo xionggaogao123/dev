@@ -22,15 +22,25 @@ public class AppVoteDao extends BaseDao{
         save(MongoFacroty.getAppDB(), Constant.COLLECTION_NEW_VERSION_APP_VOTE,appVoteEntry.getBaseEntry());
     }
 
+
+    public void removeById(ObjectId id){
+        BasicDBObject query = new BasicDBObject(Constant.ID,id);
+        remove(MongoFacroty.getAppDB(), Constant.COLLECTION_NEW_VERSION_APP_VOTE,query);
+    }
+
+
     public void saveEntries(List<AppVoteEntry> entries){
         save(MongoFacroty.getAppDB(),Constant.COLLECTION_NEW_VERSION_APP_VOTE, MongoUtils.fetchDBObjectList(entries));
     }
 
 
     public BasicDBObject getStudentReceivedCondition(List<ObjectId> groupIds){
+        List<Integer> visiblePermission = new ArrayList<Integer>();
+        visiblePermission.add(Constant.TWO);
+        visiblePermission.add(Constant.THREE);
         BasicDBObject query=new BasicDBObject()
                 .append("gid",new BasicDBObject(Constant.MONGO_IN,groupIds))
-                .append("vp",Constant.TWO)
+                .append("vp",new BasicDBObject(Constant.MONGO_IN,visiblePermission))
                 .append("ir", Constant.ZERO);
         return query;
     }
@@ -55,10 +65,13 @@ public class AppVoteDao extends BaseDao{
 
     public BasicDBObject getReceivedCondition(List<ObjectId> groupIds,
                                               ObjectId userId){
+        List<Integer> visiblePermission = new ArrayList<Integer>();
+        visiblePermission.add(Constant.ONE);
+        visiblePermission.add(Constant.THREE);
         BasicDBObject query=new BasicDBObject()
                 .append("uid",new BasicDBObject(Constant.MONGO_NE,userId))
                 .append("gid",new BasicDBObject(Constant.MONGO_IN,groupIds))
-                .append("vp",Constant.ONE)
+                .append("vp",new BasicDBObject(Constant.MONGO_IN,visiblePermission))
                 .append("ir", Constant.ZERO);
         return query;
     }
@@ -94,11 +107,14 @@ public class AppVoteDao extends BaseDao{
 
     public BasicDBObject getGatherCondition(List<ObjectId> groupIds,
                                             ObjectId userId){
+        List<Integer> visiblePermission = new ArrayList<Integer>();
+        visiblePermission.add(Constant.ONE);
+        visiblePermission.add(Constant.THREE);
         BasicDBObject query = new BasicDBObject();
         BasicDBList values = new BasicDBList();
         values.add(new BasicDBObject("uid",userId));
         values.add(new BasicDBObject("uid",new BasicDBObject(Constant.MONGO_NE,userId))
-                .append("vp",Constant.ONE)
+                .append("vp",new BasicDBObject(Constant.MONGO_IN,visiblePermission))
                 .append("gid",new BasicDBObject(Constant.MONGO_IN,groupIds)));
         query.append(Constant.MONGO_OR,values);
         query.append("ir", Constant.ZERO);

@@ -5,6 +5,7 @@ import com.db.factory.MongoFacroty;
 import com.mongodb.BasicDBObject;
 import com.mongodb.DBObject;
 import com.pojo.appactivity.AppActivityUserEntry;
+import com.pojo.utils.MongoUtils;
 import com.sys.constants.Constant;
 import org.bson.types.ObjectId;
 
@@ -18,6 +19,16 @@ public class AppActivityUserDao extends BaseDao{
 
     public void saveEntry(AppActivityUserEntry entry){
         save(MongoFacroty.getAppDB(), Constant.COLLECTION_JXM_APP_ACTIVITY_USER,entry.getBaseEntry());
+    }
+
+    public void saveEntries(List<AppActivityUserEntry> entries){
+        save(MongoFacroty.getAppDB(), Constant.COLLECTION_JXM_APP_ACTIVITY_USER, MongoUtils.fetchDBObjectList(entries));
+    }
+
+    public void removeActivityData(ObjectId activityId){
+        BasicDBObject query =new BasicDBObject()
+                .append("ai",activityId);
+        remove(MongoFacroty.getAppDB(), Constant.COLLECTION_JXM_APP_ACTIVITY_USER,query);
     }
 
     public void removeEntry(ObjectId activityId,

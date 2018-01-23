@@ -619,13 +619,13 @@ public class ReportCardService {
             List<NewVersionCommunityBindEntry> entries
                     = newVersionCommunityBindDao.getStudentIdListByCommunityId(new ObjectId(communityId));
             for (NewVersionCommunityBindEntry bindEntry : entries) {
-                userIds.add(bindEntry.getUserId());
+//                userIds.add(bindEntry.getUserId());
                 userMainIds.put(bindEntry.getUserId(),bindEntry.getMainUserId());
             }
-//            List<VirtualUserEntry> virtualUserEntries=virtualUserDao.getAllVirtualUsers(new ObjectId(communityId));
-//            for (VirtualUserEntry virtualUserEntry : virtualUserEntries) {
-//                userIds.add(virtualUserEntry.getUserId());
-//            }
+            List<VirtualUserEntry> virtualUserEntries=virtualUserDao.getAllVirtualUsers(new ObjectId(communityId));
+            for (VirtualUserEntry virtualUserEntry : virtualUserEntries) {
+                userIds.add(virtualUserEntry.getUserId());
+            }
 
 
             ObjectId groupExamDetailId = groupExamDetailDao.saveGroupExamDetailEntry(dto.buildEntry());
@@ -975,6 +975,10 @@ public class ReportCardService {
         result.put("count", count);
         result.put("list", virtualUserDTOs);
         return result;
+    }
+
+    public Map<ObjectId, VirtualCommunityEntry> getVirtualCommunityMap(List<ObjectId> communityIds){
+        return  virtualCommunityDao.getVirtualMap(communityIds);
     }
 
     public List<VirtualCommunityUserDTO> getRoleCommunities(ObjectId userId) {

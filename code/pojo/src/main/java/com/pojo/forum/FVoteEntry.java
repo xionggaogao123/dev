@@ -22,6 +22,14 @@ public class FVoteEntry extends BaseDBObject {
         super(baseEntry);
     }
 
+    public FVoteEntry(ObjectId voteId,ObjectId userId,int number){
+        BasicDBObject basicDBObject = new BasicDBObject()
+                .append("vid",voteId)
+                .append("uid",userId)
+                .append("nb",number);
+        setBaseEntry(basicDBObject);
+    }
+
     public ObjectId getVoteId(){
         return getSimpleObjecIDValue("vid");
     }

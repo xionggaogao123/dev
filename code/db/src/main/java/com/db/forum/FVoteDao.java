@@ -98,6 +98,13 @@ public class FVoteDao extends BaseDao {
         return count(MongoFacroty.getAppDB(), Constant.COLLECTION_FORUM_VOTE, query);
     }
 
+
+    public void removeOldData(ObjectId voteId){
+        BasicDBObject query = new BasicDBObject();
+        query.append("vid", voteId);
+        remove(MongoFacroty.getAppDB(), Constant.COLLECTION_FORUM_VOTE, query);
+    }
+
     /**
      * 获取投票人数
      */

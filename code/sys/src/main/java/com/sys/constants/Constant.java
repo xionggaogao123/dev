@@ -548,6 +548,9 @@ public class Constant {
     //记录-群组社区和群组表转换的记录（旧数据处理）
     public static final String COLLECTION_TRANSFER_COMMUNITY_RECORD="transfer_community_record";
 
+    //活动报名和投票新旧数据转换的记录表
+    public static final String COLLECTION_JXM_TRANSFER_VOTE_AND_ACTIVITY="jxm_transfer_vote_and_activity";
+
     //聊天记录
     public static final String COLLECTION_JXM_GROUP_CHAT_RECORD="jxm_group_chat_record";
 

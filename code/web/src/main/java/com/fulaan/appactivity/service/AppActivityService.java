@@ -145,7 +145,18 @@ public class AppActivityService {
             for(MemberEntry memberEntry:memberEntries){
                 userIds.add(memberEntry.getUserId());
             }
+        }else if(appActivityEntry.getVisiblePermission()==Constant.TWO){
+            List<NewVersionCommunityBindEntry> entries =newVersionCommunityBindDao.getStudentIdListByCommunityId(
+                    appActivityEntry.getCommunityId()
+            );
+            for(NewVersionCommunityBindEntry communityBindEntry:entries){
+                userIds.add(communityBindEntry.getUserId());
+            }
         }else{
+            List<MemberEntry> memberEntries = memberDao.getAllMembers(appActivityEntry.getGroupId());
+            for(MemberEntry memberEntry:memberEntries){
+                userIds.add(memberEntry.getUserId());
+            }
             List<NewVersionCommunityBindEntry> entries =newVersionCommunityBindDao.getStudentIdListByCommunityId(
                     appActivityEntry.getCommunityId()
             );
@@ -174,7 +185,7 @@ public class AppActivityService {
                 User user = new User(userEntry.getUserName(),
                        userEntry.getNickName(),
                         userEntry.getID().toString(),
-                        AvatarUtils.getAvatar2(userEntry.getAvatar(),userEntry.getRole(),userEntry.getSex()),
+                        AvatarUtils.getAvatar(userEntry.getAvatar(),userEntry.getRole(),userEntry.getSex()),
                 userEntry.getSex(),time);
                 sign.add(user);
             }
@@ -185,7 +196,7 @@ public class AppActivityService {
                 User user = new User(userEntry.getUserName(),
                         userEntry.getNickName(),
                         userEntry.getID().toString(),
-                        AvatarUtils.getAvatar2(userEntry.getAvatar(),userEntry.getRole(),userEntry.getSex()),
+                        AvatarUtils.getAvatar(userEntry.getAvatar(),userEntry.getRole(),userEntry.getSex()),
                         userEntry.getSex(),Constant.EMPTY);
                 unSign.add(user);
             }

@@ -93,6 +93,7 @@ public class BusinessManageService {
     //获得列表
     public Map<String,Object> getList(String jiaId,int page,int pageSize){
         String str = "";
+
         if(jiaId != null && !jiaId.equals("")){
             UserEntry userEntry = userDao.getJiaUserEntry(jiaId);
             if(userEntry !=null){

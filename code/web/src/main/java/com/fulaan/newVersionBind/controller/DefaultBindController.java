@@ -4,6 +4,7 @@ import com.fulaan.annotation.ObjectIdType;
 import com.fulaan.base.BaseController;
 import com.fulaan.newVersionBind.dto.*;
 import com.fulaan.newVersionBind.service.NewVersionBindService;
+import com.fulaan.operation.dto.GroupOfCommunityDTO;
 import com.fulaan.operation.service.AppCommentService;
 import com.fulaan.wrongquestion.dto.SubjectClassDTO;
 import com.pojo.user.TeacherSubjectBindDTO;
@@ -714,5 +715,19 @@ public class DefaultBindController extends BaseController {
     }
 
 
+    /**
+     * 查询孩子所在的所有社区
+     * @return
+     */
+    @ApiOperation(value = "查询孩子所在的所有社区", httpMethod = "GET", produces = "application/json")
+    @ApiResponses( value = {@ApiResponse(code = 200, message = "Successful — 请求已完成",response = RespObj.class)})
+    @RequestMapping("getUserBelongCommunities")
+    @ResponseBody
+    public RespObj getUserBelongCommunities(){
+        RespObj respObj = new RespObj(Constant.SUCCESS_CODE);
+        List<GroupOfCommunityDTO> dtos = newVersionBindService.getUserBelongCommunities(getUserId());
+        respObj.setMessage(dtos);
+        return respObj;
+    }
 
 }

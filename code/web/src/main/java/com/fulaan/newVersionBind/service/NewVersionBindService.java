@@ -282,6 +282,8 @@ public class NewVersionBindService {
         if(null!=gradeEntry){
             dto.setGradeType(gradeEntry.getGradeType());
         }
+        int userBelongCount= newVersionCommunityBindDao.countAllStudentBindEntries(userId);
+        dto.setUserBelongCommunitiesCount(userBelongCount);
        return dto;
     }
 
@@ -924,6 +926,24 @@ public class NewVersionBindService {
         result.put("success",success);
         result.put("failed",failed);
         return result;
+    }
+
+
+    public List<GroupOfCommunityDTO> getUserBelongCommunities(ObjectId userId){
+        List<GroupOfCommunityDTO> dtos =new ArrayList<GroupOfCommunityDTO>();
+        List<NewVersionCommunityBindEntry> entries=newVersionCommunityBindDao.getAllStudentBindEntries(userId);
+        Set<ObjectId> communityIds = new HashSet<ObjectId>();
+        for(NewVersionCommunityBindEntry bindEntry:entries){
+            communityIds.add(bindEntry.getCommunityId());
+        }
+        Map<ObjectId,CommunityEntry> communityEntryMap = communityDao.findMapInfo(new ArrayList<ObjectId>(communityIds));
+        for(Map.Entry<ObjectId,CommunityEntry> item:communityEntryMap.entrySet()){
+            CommunityEntry communityEntry=item.getValue();
+            GroupOfCommunityDTO dto =new GroupOfCommunityDTO(communityEntry.getGroupId().toString(),communityEntry.getID().toString(),
+                    communityEntry.getCommunityName());
+          dtos.add(dto);
+        }
+        return dtos;
     }
 
 

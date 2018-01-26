@@ -7,6 +7,7 @@ import com.db.controlphone.*;
 import com.db.fcommunity.CommunityDao;
 import com.db.fcommunity.GroupDao;
 import com.db.fcommunity.MemberDao;
+import com.db.groupchatrecord.RecordChatPersonalDao;
 import com.db.user.NewVersionBindRelationDao;
 import com.fulaan.appmarket.dto.AppDetailDTO;
 import com.fulaan.community.dto.CommunityDTO;
@@ -68,6 +69,8 @@ public class ControlPhoneService {
     private ControlAppSystemDao controlAppSystemDao = new ControlAppSystemDao();
 
     private TeacherApproveDao teacherApproveDao = new TeacherApproveDao();
+
+    private RecordChatPersonalDao recordChatPersonalDao =  new RecordChatPersonalDao();
 
     @Autowired
     private NewVersionBindService newVersionBindService;
@@ -660,6 +663,8 @@ public class ControlPhoneService {
         }else{
             map.put("userName","");
         }
+        int count2=recordChatPersonalDao.countChatEntries(sonId);
+        map.put("chatCount",count2);
         return map;
     }
 
@@ -1156,6 +1161,147 @@ public class ControlPhoneService {
         }
         //map.put("isRen",true);
         return map;
+    }
+
+    public Map<String,Object> getNewSimpleMessageForTea(ObjectId teacherId){
+        Map<String,Object> map = new HashMap<String, Object>();
+        List<ObjectId> oids = getMyRoleList(teacherId);
+        List<CommunityDTO> dtos = new ArrayList<CommunityDTO>();
+        List<ObjectId> objectIdList = new ArrayList<ObjectId>();
+        if(oids.size()>0){
+            List<CommunityEntry> communityEntries = communityDao.findByObjectIds(oids);
+            for(CommunityEntry com : communityEntries){
+                dtos.add(new CommunityDTO(com));
+                objectIdList.add(com.getID());
+            }
+            map.put("list",dtos);
+            map.put("isTeacher",true);
+        }else{
+            map.put("isTeacher",false);
+            map.put("list",dtos);
+        }
+        //是否认证
+        TeacherApproveEntry entry = teacherApproveDao.getEntry(teacherId);
+        if(entry != null && entry.getType()==2){
+            map.put("isRen",true);
+        }else{
+            map.put("isRen",false);
+        }
+        if(objectIdList.size()>0){
+            map.put("controlList",getFourAllMessageForTea(objectIdList));
+        }else{
+            map.put("controlList",new ArrayList<ControlMiduleDTO>());
+        }
+        //map.put("isRen",true);
+        return map;
+    }
+    public List<ControlMiduleDTO> getFourAllMessageForTea(List<ObjectId> communityIds){
+        List<ControlMiduleDTO> controlMiduleDTOs = new ArrayList<ControlMiduleDTO>();
+        Map<String,Object> map = new HashMap<String, Object>();
+        //获得当前时间
+        long current=System.currentTimeMillis();
+        //获得时间批次
+        String str = DateTimeUtils.getLongToStrTimeTwo(current).substring(0,10);
+        long zero = DateTimeUtils.getStrToLongTime(str, "yyyy-MM-dd");
+        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
+        String dateNowStr = sdf.format(zero);
+        //通用设置
+        ControlSchoolTimeEntry entry2 = controlSchoolTimeDao.getOtherEntry(2,dateNowStr);
+        long time = 0l;
+        int isControl = 0;
+      //  ControlSchoolTimeDTO dto = null;
+        ControlSchoolTimeEntry controlSchoolTimeEntry = null;
+        if(entry2 != null){
+            String stm = entry2.getStartTime();
+            long sl = 0l;
+            if(stm != null && stm != ""){
+                sl = DateTimeUtils.getStrToLongTime(dateNowStr+" "+stm, "yyyy-MM-dd HH:mm:ss");
+            }
+            String etm = entry2.getEndTime();
+            long el = 0l;
+            if(etm != null && etm != ""){
+                el = DateTimeUtils.getStrToLongTime(dateNowStr+" "+etm, "yyyy-MM-dd HH:mm:ss");
+            }
+            if(current>sl && current < el){
+                isControl=1;
+            }else{
+                isControl=2;
+            }
+            controlSchoolTimeEntry = entry2;
+            //dto = new ControlSchoolTimeDTO(entry2);
+        }else{
+            //通用管控时间
+            Calendar cal = Calendar.getInstance();
+            int w = cal.get(Calendar.DAY_OF_WEEK) - 1;
+            ControlSchoolTimeEntry entry = controlSchoolTimeDao.getEntry(w);
+            if(entry != null){
+                String stm = entry.getStartTime();
+                long sl = 0l;
+                if(stm != null && stm != ""){
+                    sl = DateTimeUtils.getStrToLongTime(dateNowStr+" "+stm, "yyyy-MM-dd HH:mm:ss");
+                }
+                String etm = entry.getEndTime();
+                long el = 0l;
+                if(etm != null && etm != ""){
+                    el = DateTimeUtils.getStrToLongTime(dateNowStr+" "+etm, "yyyy-MM-dd HH:mm:ss");
+                }
+                if(current>sl && current < el){
+                    time=el-current;
+                    isControl=1;
+                }else{
+                    time = 0l;
+                    isControl=2;
+                }
+                controlSchoolTimeEntry = entry;
+               // dto = new ControlSchoolTimeDTO(entry);
+            }else{
+                time = 0l;
+                isControl=2;
+                //dto = new ControlSchoolTimeDTO();
+                controlSchoolTimeEntry = new ControlSchoolTimeEntry();
+            }
+        }
+        //特殊设置
+        List<ControlNowTimeEntry> controlNowTimeEntries = controlNowTimeDao.getOtherEntryList(dateNowStr, communityIds);
+        Map<ObjectId,ControlNowTimeEntry>  map3 = new HashMap<ObjectId, ControlNowTimeEntry>();
+
+        for(ControlNowTimeEntry entry3: controlNowTimeEntries){
+            map3.put(entry3.getCommunityId(),entry3);
+        }
+        for(ObjectId oid: communityIds){
+            ControlNowTimeEntry entry3 =  map3.get(oid);
+            ControlMiduleDTO controlMiduleDTO = new ControlMiduleDTO();
+            controlSchoolTimeEntry.setCommunityId(oid);
+            controlMiduleDTO.setDto(new ControlSchoolTimeDTO(controlSchoolTimeEntry));
+            //ControlSchoolTimeDTO controlSchoolTimeDTO =  new ControlSchoolTimeDTO();
+            controlMiduleDTO.setTime(time);
+            controlMiduleDTO.setIsControl(isControl);
+            if(entry3 != null){
+                String stm = entry3.getStartTime();
+                long sl = 0l;
+                if(stm != null && stm != ""){
+                    sl = DateTimeUtils.getStrToLongTime(dateNowStr+" "+stm, "yyyy-MM-dd HH:mm:ss");
+                }
+                String etm = entry3.getEndTime();
+                long el = 0l;
+                if(etm != null && etm != ""){
+                    el = DateTimeUtils.getStrToLongTime(dateNowStr+" "+etm, "yyyy-MM-dd HH:mm:ss");
+                }
+                if(current>sl && current < el){
+                    controlMiduleDTO.setTime(el-current);
+                    controlMiduleDTO.setIsControl(3);
+                }else{
+                    controlMiduleDTO.setTime(0);
+                }
+                controlMiduleDTO.setThird(new ControlNowTimeDTO(entry3));
+            }else{
+                ControlNowTimeEntry controlNowTimeEntry = new ControlNowTimeEntry();
+                controlMiduleDTO.setThird(new ControlNowTimeDTO(controlNowTimeEntry));
+            }
+            controlMiduleDTOs.add(controlMiduleDTO);
+        }
+
+        return controlMiduleDTOs;
     }
 
     public Map<String,Object> getAllMessageForTea(ObjectId teacherId,ObjectId communityId){

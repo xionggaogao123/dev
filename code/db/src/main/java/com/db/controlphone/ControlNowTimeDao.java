@@ -8,6 +8,7 @@ import com.pojo.controlphone.ControlNowTimeEntry;
 import com.sys.constants.Constant;
 import org.bson.types.ObjectId;
 
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -60,6 +61,23 @@ public static void main(String[] args){
         if (dbList != null && !dbList.isEmpty()) {
             DBObject obj = dbList.get(0);
             entryList = new ControlNowTimeEntry((BasicDBObject)obj);
+        }
+        return entryList;
+    }
+
+    public List<ControlNowTimeEntry> getOtherEntryList(String dateTime,List<ObjectId> userIds) {
+        BasicDBObject query = new BasicDBObject();
+        query.append("isr", Constant.ZERO).append("cid",new BasicDBObject(Constant.MONGO_IN,userIds)).append("dtm", dateTime);
+        List<DBObject> dbList =
+                find(MongoFacroty.getAppDB(),
+                        Constant.COLLECTION_CONTROL_NOW_TIME,
+                        query, Constant.FIELDS,
+                        Constant.MONGO_SORTBY_DESC);
+        List<ControlNowTimeEntry> entryList = new ArrayList<ControlNowTimeEntry>();
+        if (dbList != null && !dbList.isEmpty()) {
+            for (DBObject obj : dbList) {
+                entryList.add(new ControlNowTimeEntry((BasicDBObject) obj));
+            }
         }
         return entryList;
     }

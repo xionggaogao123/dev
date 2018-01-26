@@ -639,6 +639,29 @@ public class ControlPhoneController extends BaseController {
     }
 
     /**
+     * 老师首页加载基础信息
+     */
+    @ApiOperation(value = "老师首页加载", httpMethod = "POST", produces = "application/json")
+    @ApiResponses( value = {@ApiResponse(code = 200, message = "Successful — 请求已完成",response = String.class),
+            @ApiResponse(code = 400, message = "请求中有语法问题，或不能满足请求"),
+            @ApiResponse(code = 500, message = "服务器不能完成请求")})
+    @RequestMapping("/getNewSimpleMessageForTea")
+    @ResponseBody
+    public String getNewSimpleMessageForTea(){
+        RespObj respObj=new RespObj(Constant.FAILD_CODE);
+        try {
+            respObj.setCode(Constant.SUCCESS_CODE);
+            Map<String,Object> dtos= controlPhoneService.getNewSimpleMessageForTea(getUserId());
+            respObj.setMessage(dtos);
+        } catch (Exception e) {
+            e.printStackTrace();
+            respObj.setCode(Constant.FAILD_CODE);
+            respObj.setErrorMessage("老师首页加载失败!");
+        }
+        return JSON.toJSONString(respObj);
+    }
+
+    /**
      * 老师首页加载
      */
     @ApiOperation(value = "老师首页加载", httpMethod = "POST", produces = "application/json")

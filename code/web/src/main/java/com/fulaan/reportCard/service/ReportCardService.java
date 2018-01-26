@@ -43,6 +43,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import javax.imageio.ImageIO;
+import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.File;
 import java.io.FileInputStream;
@@ -1033,7 +1034,7 @@ public class ReportCardService {
             entry.setUserName(userName);
             entry.setUserNumber(userNumber);
             NewVersionCommunityBindEntry bindEntry = newVersionCommunityBindDao
-                    .getVirtualBindEntry(entry.getCommunityId(),entry.getUserName());
+                    .getVirtualBindEntry(entry.getCommunityId(),entry.getUserName(),entry.getUserNumber());
             if(null!=bindEntry){
                 entry.setUserId(bindEntry.getUserId());
             }
@@ -1131,16 +1132,26 @@ public class ReportCardService {
         List<NewVersionCommunityBindEntry>
                 bindEntries = newVersionCommunityBindDao.getStudentIdListByCommunityId(new ObjectId(communityId));
         for (NewVersionCommunityBindEntry bindEntry : bindEntries) {
-            if (StringUtils.isNotEmpty(bindEntry.getThirdName())) {
-                userBindMap.put(bindEntry.getThirdName(), bindEntry.getUserId());
+            if (StringUtils.isNotEmpty(bindEntry.getThirdName())
+                    &&StringUtils.isNotEmpty(bindEntry.getNumber())) {
+                String key = bindEntry.getThirdName()
+                        +"&"+bindEntry.getNumber();
+                userBindMap.put(key, bindEntry.getUserId());
             }
         }
         List<VirtualUserEntry> virtualUserEntries=virtualUserDao.getAllVirtualUsers(new ObjectId(communityId));
         for (VirtualUserEntry virtualUserEntry : virtualUserEntries) {
             String userName = virtualUserEntry.getUserName();
-            if(null!=userBindMap.get(userName)){
-                virtualUserEntry.setUserId(userBindMap.get(userName));
-                virtualUserDao.saveVirualEntry(virtualUserEntry);
+            String userNumber = virtualUserEntry.getUserNumber();
+            if(StringUtils.isNotEmpty(userName)&&
+                    StringUtils.isNotEmpty(userNumber)) {
+                String key = userName+"&"+userNumber;
+                if(null!=userBindMap.get(key)){
+                    virtualUserEntry.setUserId(userBindMap.get(key));
+                    virtualUserDao.saveVirualEntry(virtualUserEntry);
+                }else{
+                    dtos.add(new VirtualUserDTO(virtualUserEntry));
+                }
             }else{
                 dtos.add(new VirtualUserDTO(virtualUserEntry));
             }
@@ -1159,18 +1170,30 @@ public class ReportCardService {
                     bindEntries = newVersionCommunityBindDao.getStudentIdListByCommunityId(communityId);
             Map<String, ObjectId> userIds = new HashMap<String, ObjectId>();
             for (NewVersionCommunityBindEntry bindEntry : bindEntries) {
-                if (StringUtils.isNotEmpty(bindEntry.getThirdName())) {
-                    userIds.put(bindEntry.getThirdName(), bindEntry.getUserId());
+                if (StringUtils.isNotEmpty(bindEntry.getThirdName())&&
+                        StringUtils.isNotEmpty(bindEntry.getNumber())) {
+                    String key= bindEntry.getThirdName()+"&"+bindEntry.getNumber();
+                    userIds.put(key, bindEntry.getUserId());
                 }
             }
             List<VirtualUserEntry> entries = new ArrayList<VirtualUserEntry>();
             for (VirtualUserDTO virtualUserDTO : virtualUserDTOs) {
                 String userName = virtualUserDTO.getUserName();
-                if (null != userIds.get(userName)) {
-                    VirtualUserEntry userEntry = new VirtualUserEntry(communityId, virtualUserDTO.getUserNumber(),
-                            userIds.get(userName), virtualUserDTO.getUserName());
-                    entries.add(userEntry);
-                } else {
+                String userNumber = virtualUserDTO.getUserNumber();
+                if(StringUtils.isNotEmpty(userName)&&
+                        StringUtils.isNotEmpty(userNumber)){
+                    String key=userName+"&"+userNumber;
+                    if (null != userIds.get(key)) {
+                        VirtualUserEntry userEntry = new VirtualUserEntry(communityId, virtualUserDTO.getUserNumber(),
+                                userIds.get(key), virtualUserDTO.getUserName());
+                        entries.add(userEntry);
+                    } else {
+                        count++;
+                        VirtualUserEntry userEntry = new VirtualUserEntry(communityId, virtualUserDTO.getUserNumber(),
+                                new ObjectId(), virtualUserDTO.getUserName());
+                        entries.add(userEntry);
+                    }
+                }else{
                     count++;
                     VirtualUserEntry userEntry = new VirtualUserEntry(communityId, virtualUserDTO.getUserNumber(),
                             new ObjectId(), virtualUserDTO.getUserName());
@@ -1262,7 +1285,7 @@ public class ReportCardService {
         return cellvalue;
     }
 
-    public void exportUserTemplate(HttpServletResponse response) {
+    public void exportUserTemplate(HttpServletRequest request,HttpServletResponse response) {
         String sheetName = "学生录入模板";
         HSSFWorkbook wb = new HSSFWorkbook();
         HSSFSheet sheet = wb.createSheet(sheetName);
@@ -1275,10 +1298,11 @@ public class ReportCardService {
         cell.setCellValue("用户学号");
 
         String fileName = sheetName + ".xls";
-        HSSFUtils.exportExcel(response, wb, fileName);
+        String userAgent = request.getHeader("USER-AGENT");
+        HSSFUtils.exportExcel(userAgent,response, wb, fileName);
     }
 
-    public void exportUserControl(ObjectId communityId, HttpServletResponse response) {
+    public void exportUserControl(HttpServletRequest request,ObjectId communityId, HttpServletResponse response) {
         List<VirtualUserEntry> virtualUserEntries = virtualUserDao.getAllVirtualUsers(communityId);
         String sheetName = "学生录入模板";
         HSSFWorkbook wb = new HSSFWorkbook();
@@ -1313,11 +1337,12 @@ public class ReportCardService {
             rowLine++;
         }
         String fileName = sheetName + ".xls";
-        HSSFUtils.exportExcel(response, wb, fileName);
+        String userAgent = request.getHeader("USER-AGENT");
+        HSSFUtils.exportExcel(userAgent,response, wb, fileName);
     }
 
 
-    public void exportTemplate(ObjectId examGroupDetailId, HttpServletResponse response) {
+    public void exportTemplate(HttpServletRequest request,ObjectId examGroupDetailId, HttpServletResponse response) {
         List<GroupExamUserRecordDTO> recordDTOs = searchRecordStudentScores(examGroupDetailId, -1, -1, 1);
         GroupExamDetailEntry detailEntry = groupExamDetailDao.getGroupExamDetailEntry(examGroupDetailId);
         if (null != detailEntry) {
@@ -1382,12 +1407,13 @@ public class ReportCardService {
             }
 
             String fileName = sheetName + ".xls";
-            HSSFUtils.exportExcel(response, wb, fileName);
+            String userAgent = request.getHeader("USER-AGENT");
+            HSSFUtils.exportExcel(userAgent,response, wb, fileName);
         }
     }
 
 
-    public void importTemplate(InputStream inputStream) throws Exception {
+    public void importTemplate(String groupExamId,InputStream inputStream) throws Exception {
         HSSFWorkbook workbook = null;
         workbook = new HSSFWorkbook(inputStream);
         HSSFSheet sheet = workbook.getSheet(workbook.getSheetName(0));
@@ -1407,6 +1433,12 @@ public class ReportCardService {
             item.setScoreLevel(scoreLevel);
             item.setRank(Constant.ZERO);
             examScoreDTOs.add(item);
+        }
+        if(examScoreDTOs.size()>0){
+            String examGroupId = examScoreDTOs.get(0).getGroupExamDetailId();
+            if(!groupExamId.equals(examGroupId)){
+                throw  new Exception("上传的不是这次考试的成绩!");
+            }
         }
         if (examScoreDTOs.size() > 0) {
             saveRecordExamScore(examScoreDTOs, Constant.ZERO);

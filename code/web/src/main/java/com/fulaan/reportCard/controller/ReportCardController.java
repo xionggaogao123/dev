@@ -338,6 +338,10 @@ public class ReportCardController extends BaseController {
         return respObj;
     }
 
+    /**
+     *
+     * @return
+     */
     @ApiOperation(value = "获取所有的考试类型", httpMethod = "GET", produces = "application/json")
     @ApiResponses(value = {@ApiResponse(code = 200, message = "保存或编辑成绩列表已完成", response = String.class),
             @ApiResponse(code = 400, message = "请求中有语法问题，或不能满足请求"),
@@ -358,33 +362,47 @@ public class ReportCardController extends BaseController {
     }
 
 
+    /**
+     *
+     * @param examGroupDetailId
+     * @param response
+     */
     @ApiOperation(value = "导出模板", httpMethod = "GET", produces = "application/json")
     @RequestMapping("/exportTemplate/{examGroupDetailId}")
     @ResponseBody
     public void exportTemplate(@PathVariable @ObjectIdType ObjectId examGroupDetailId,
-                               HttpServletResponse response) {
+                               HttpServletResponse response,
+                               HttpServletRequest request) {
         try {
-            reportCardService.exportTemplate(examGroupDetailId, response);
+            reportCardService.exportTemplate(request,examGroupDetailId, response);
         } catch (Exception e) {
             e.printStackTrace();
         }
     }
 
 
+    /**
+     *
+     * @param request
+     * @return
+     * @throws Exception
+     */
     @ApiOperation(value = "导入模板", httpMethod = "GET", produces = "application/json")
     @ApiResponses(value = {@ApiResponse(code = 200, message = "导入模板已完成", response = String.class),
             @ApiResponse(code = 400, message = "请求中有语法问题，或不能满足请求"),
             @ApiResponse(code = 500, message = "服务器不能完成请求")})
     @RequestMapping("/importTemplate")
     @ResponseBody
-    public RespObj importTemplate(MultipartRequest request) throws Exception {
+    public RespObj importTemplate(HttpServletRequest request) throws Exception {
         RespObj respObj = new RespObj(Constant.FAILD_CODE);
+        String groupExamId = request.getParameter("groupExamId");
+        MultipartRequest multipartRequest = (MultipartRequest) request;
         try {
-            MultiValueMap<String, MultipartFile> fileMap = request.getMultiFileMap();
+            MultiValueMap<String, MultipartFile> fileMap = multipartRequest.getMultiFileMap();
             for (List<MultipartFile> multipartFiles : fileMap.values()) {
                 for (MultipartFile file : multipartFiles) {
                     System.out.println("----" + file.getOriginalFilename());
-                    reportCardService.importTemplate(file.getInputStream());
+                    reportCardService.importTemplate(groupExamId,file.getInputStream());
                 }
             }
             respObj.setCode(Constant.SUCCESS_CODE);
@@ -396,17 +414,28 @@ public class ReportCardController extends BaseController {
         return respObj;
     }
 
+    /**
+     *
+     * @param response
+     */
     @ApiOperation(value = "学生管理下载模板", httpMethod = "GET", produces = "application/json")
     @RequestMapping("/exportUserTemplate")
     @ResponseBody
-    public void exportUserTemplate(HttpServletResponse response) {
+    public void exportUserTemplate(HttpServletRequest request,HttpServletResponse response) {
         try {
-            reportCardService.exportUserTemplate(response);
+            reportCardService.exportUserTemplate(request,response);
         } catch (Exception e) {
             e.printStackTrace();
         }
     }
 
+    /**
+     *
+     * @param itemId
+     * @param userNumber
+     * @param userName
+     * @return
+     */
     @ApiOperation(value = "编辑学生信息", httpMethod = "GET", produces = "application/json")
     @ApiResponses(value = {@ApiResponse(code = 200, message = "导入模板已完成", response = String.class),
             @ApiResponse(code = 400, message = "请求中有语法问题，或不能满足请求"),
@@ -421,6 +450,14 @@ public class ReportCardController extends BaseController {
         respObj.setMessage("删除人员成功");
         return respObj;
     }
+
+    /**
+     *
+     * @param communityId
+     * @param page
+     * @param pageSize
+     * @return
+     */
     @ApiOperation(value = "查询班级学生列表", httpMethod = "GET", produces = "application/json")
     @ApiResponses(value = {@ApiResponse(code = 200, message = "导入模板已完成", response = String.class),
             @ApiResponse(code = 400, message = "请求中有语法问题，或不能满足请求"),
@@ -450,6 +487,12 @@ public class ReportCardController extends BaseController {
     }
 
 
+    /**
+     *
+     * @param request
+     * @return
+     * @throws Exception
+     */
     @ApiOperation(value = "班级导入学生名单", httpMethod = "GET", produces = "application/json")
     @ApiResponses(value = {@ApiResponse(code = 200, message = "导入模板已完成", response = String.class),
             @ApiResponse(code = 400, message = "请求中有语法问题，或不能满足请求"),
@@ -504,7 +547,11 @@ public class ReportCardController extends BaseController {
     }
 
 
-
+    /**
+     *
+     * @param communityId
+     * @return
+     */
     @ApiOperation(value = "匹配学生列表", httpMethod = "GET", produces = "application/json")
     @ApiResponses(value = {@ApiResponse(code = 200, message = "导入模板已完成", response = String.class),
             @ApiResponse(code = 400, message = "请求中有语法问题，或不能满足请求"),
@@ -523,6 +570,11 @@ public class ReportCardController extends BaseController {
         return respObj;
     }
 
+    /**
+     *
+     * @param communityId
+     * @return
+     */
     @ApiOperation(value = "删除班级学生列表", httpMethod = "GET", produces = "application/json")
     @ApiResponses(value = {@ApiResponse(code = 200, message = "导入模板已完成", response = String.class),
             @ApiResponse(code = 400, message = "请求中有语法问题，或不能满足请求"),
@@ -537,6 +589,12 @@ public class ReportCardController extends BaseController {
     }
 
 
+    /**
+     *
+     * @param itemId
+     * @param communityId
+     * @return
+     */
     @ApiOperation(value = "删除学生信息", httpMethod = "GET", produces = "application/json")
     @ApiResponses(value = {@ApiResponse(code = 200, message = "导入模板已完成", response = String.class),
             @ApiResponse(code = 400, message = "请求中有语法问题，或不能满足请求"),
@@ -552,19 +610,31 @@ public class ReportCardController extends BaseController {
     }
 
 
+    /**
+     *
+     * @param communityId
+     * @param response
+     */
     @ApiOperation(value = "导出模板", httpMethod = "GET", produces = "application/json")
     @RequestMapping("/exportUserControl")
     @ResponseBody
     public void exportUserControl(@PathVariable @ObjectIdType ObjectId communityId,
-                                  HttpServletResponse response) {
+                                  HttpServletResponse response,
+                                  HttpServletRequest request) {
         try {
-            reportCardService.exportUserControl(communityId, response);
+            reportCardService.exportUserControl(request,communityId, response);
         } catch (Exception e) {
             e.printStackTrace();
         }
     }
 
 
+    /**
+     *
+     * @param request
+     * @return
+     * @throws Exception
+     */
     @ApiOperation(value = "导入模板", httpMethod = "GET", produces = "application/json")
     @ApiResponses(value = {@ApiResponse(code = 200, message = "导入模板已完成", response = String.class),
             @ApiResponse(code = 400, message = "请求中有语法问题，或不能满足请求"),
@@ -591,6 +661,10 @@ public class ReportCardController extends BaseController {
         return respObj;
     }
 
+    /**
+     *
+     * @return
+     */
     @ApiOperation(value = "生成签字名单", httpMethod = "GET", produces = "application/json")
     @ApiResponses(value = {@ApiResponse(code = 200, message = "生成签字名单已完成", response = String.class),
             @ApiResponse(code = 400, message = "请求中有语法问题，或不能满足请求"),

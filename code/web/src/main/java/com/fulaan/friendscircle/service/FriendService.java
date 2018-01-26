@@ -5,6 +5,7 @@ import com.db.activity.FriendApplyDao;
 import com.db.activity.FriendDao;
 import com.db.fcommunity.RemarkDao;
 import com.db.school.ClassDao;
+import com.db.user.NewVersionUserRoleDao;
 import com.db.user.UserDao;
 import com.fulaan.pojo.User;
 import com.mongodb.BasicDBObject;
@@ -46,6 +47,7 @@ public class FriendService {
     private ClassDao classDao = new ClassDao();
     private ActivityDao activityDao = new ActivityDao();
     private RemarkDao remarkDao = new RemarkDao();
+    private NewVersionUserRoleDao newVersionUserRoleDao = new NewVersionUserRoleDao();
 
     /*
     * 删除好友关系
@@ -436,6 +438,7 @@ public class FriendService {
     private List<User> get(List<ObjectId> uids,ObjectId userId) {
         List<User> users = new ArrayList<User>();
         Map<ObjectId,RemarkEntry> map=remarkDao.find(userId,uids);
+        Map<ObjectId,Integer> userRoleMap = newVersionUserRoleDao.getUserRoleMap(uids);
         for (ObjectId oid : uids) {
             UserEntry userEntry = userDao.findByUserId(oid);
             if (userEntry != null) {
@@ -451,6 +454,11 @@ public class FriendService {
                 }
                 user.setSex(userEntry.getSex());
                 user.setUserId(userEntry.getID().toString());
+                user.setRole(Constant.ZERO);
+                if(null!=userRoleMap.get(oid)&&
+                        (userRoleMap.get(oid)==Constant.ONE||userRoleMap.get(oid)==Constant.TWO)){
+                    user.setRole(Constant.ONE);
+                }
                 users.add(user);
             }
         }

@@ -1,5 +1,6 @@
 package com.fulaan.utils;
 
+import org.apache.commons.lang.StringUtils;
 import org.apache.poi.hssf.usermodel.*;
 import org.apache.poi.ss.usermodel.RichTextString;
 
@@ -26,13 +27,21 @@ public class HSSFUtils {
      * @param workbook
      * @param fileName
      */
-    public static void exportExcel(HttpServletResponse response, HSSFWorkbook workbook, String fileName) {
+    public static void exportExcel(String userAgent,HttpServletResponse response, HSSFWorkbook workbook, String fileName) {
         OutputStream outputStream = null;
         try {
+
             outputStream = response.getOutputStream();
             response.setContentType("application/force-download");
             String filename = fileName.endsWith(".xls") ? fileName : fileName + ".xls";
-            response.addHeader("Content-Disposition", "attachment; filename=" + URLEncoder.encode(filename, "UTF-8"));
+            if(StringUtils.contains(userAgent, "MSIE")){//IE浏览器
+                filename = URLEncoder.encode(filename,"UTF8");
+            }else if(StringUtils.contains(userAgent, "Mozilla")){//google,火狐浏览器
+                filename = new String(filename.getBytes(), "ISO8859-1");
+            }else{
+                filename = URLEncoder.encode(filename,"UTF8");//其他浏览器
+            }
+            response.addHeader("Content-Disposition", "attachment; filename=" + filename);
             workbook.write(outputStream);
         } catch (Exception e) {
             e.printStackTrace();

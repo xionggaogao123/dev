@@ -19,6 +19,7 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.multipart.MultipartRequest;
 
+import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -363,9 +364,10 @@ public class ThirdReportCardController extends BaseController{
     @RequestMapping("/exportTemplate/{examGroupDetailId}")
     @ResponseBody
     public void exportTemplate(@PathVariable @ObjectIdType ObjectId examGroupDetailId,
-                               HttpServletResponse response){
+                               HttpServletResponse response,
+                               HttpServletRequest request){
         try {
-            reportCardService.exportTemplate(examGroupDetailId,response);
+            reportCardService.exportTemplate(request,examGroupDetailId,response);
         }catch (Exception e){
             e.printStackTrace();
         }
@@ -378,14 +380,16 @@ public class ThirdReportCardController extends BaseController{
             @ApiResponse(code = 500, message = "服务器不能完成请求")})
     @RequestMapping("/importTemplate")
     @ResponseBody
-    public RespObj importTemplate(MultipartRequest request)throws Exception{
+    public RespObj importTemplate(HttpServletRequest request)throws Exception{
         RespObj respObj=new RespObj(Constant.FAILD_CODE);
+        String groupExamId = request.getParameter("groupExamId");
+        MultipartRequest multipartRequest = (MultipartRequest) request;
         try {
-            MultiValueMap<String, MultipartFile> fileMap = request.getMultiFileMap();
+            MultiValueMap<String, MultipartFile> fileMap = multipartRequest.getMultiFileMap();
             for (List<MultipartFile> multipartFiles : fileMap.values()) {
                 for(MultipartFile file:multipartFiles) {
                     System.out.println("----" + file.getOriginalFilename());
-                    reportCardService.importTemplate(file.getInputStream());
+                    reportCardService.importTemplate(groupExamId,file.getInputStream());
                 }
             }
             respObj.setCode(Constant.SUCCESS_CODE);
@@ -401,9 +405,10 @@ public class ThirdReportCardController extends BaseController{
     @RequestMapping("/exportUserControl/{communityId}")
     @ResponseBody
     public void exportUserControl(@PathVariable @ObjectIdType ObjectId communityId,
-                               HttpServletResponse response){
+                                  HttpServletResponse response,
+                                  HttpServletRequest request){
         try {
-            reportCardService.exportUserControl(communityId,response);
+            reportCardService.exportUserControl(request,communityId,response);
         }catch (Exception e){
             e.printStackTrace();
         }

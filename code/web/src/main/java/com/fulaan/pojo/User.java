@@ -12,6 +12,7 @@ public class User {
     private String avator;
     private int sex;
     private String time;
+    private int role; //0:家长,1:学生
 
     public User(){}
 
@@ -22,6 +23,14 @@ public class User {
         this.avator=avator;
         this.sex=sex;
         this.time=time;
+    }
+
+    public int getRole() {
+        return role;
+    }
+
+    public void setRole(int role) {
+        this.role = role;
     }
 
     public String getId() {

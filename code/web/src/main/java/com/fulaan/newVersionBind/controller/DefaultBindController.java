@@ -82,6 +82,17 @@ public class DefaultBindController extends BaseController {
         return respObj;
     }
 
+
+    /**
+     *
+     * @param bindId
+     * @param sex
+     * @param birthDate
+     * @param personalSignature
+     * @param avatar
+     * @param nickName
+     * @return
+     */
     @ApiOperation(value = "完善绑定的信息", httpMethod = "POST", produces = "application/json")
     @ApiResponses( value = {@ApiResponse(code = 200, message = "Successful — 请求已完成",response = RespObj.class)})
     @RequestMapping("/saveBindUserDetail")
@@ -282,6 +293,7 @@ public class DefaultBindController extends BaseController {
         }
         return respObj;
     }
+
     /**
      *
      * @param parentId
@@ -328,7 +340,11 @@ public class DefaultBindController extends BaseController {
     }
 
 
-
+    /**
+     *
+     * @param communityId
+     * @return
+     */
     @ApiOperation(value = "获取某个社区下绑定的孩子有哪些", httpMethod = "GET", produces = "application/json")
     @ApiResponses( value = {@ApiResponse(code = 200, message = "Successful — 请求已完成",response = RespObj.class)})
     @RequestMapping("/getCommunityBindList")
@@ -345,6 +361,13 @@ public class DefaultBindController extends BaseController {
         return respObj;
     }
 
+
+
+    /**
+     *
+     * @param bindDTO
+     * @return
+     */
     @ApiOperation(value = "绑定该老师学科信息", httpMethod = "GET", produces = "application/json")
     @ApiResponses( value = {@ApiResponse(code = 200, message = "Successful — 请求已完成",response = RespObj.class)})
     @RequestMapping("/bindTeacherSubject")
@@ -361,6 +384,15 @@ public class DefaultBindController extends BaseController {
         return respObj;
     }
 
+
+
+    /**
+     *
+     * @param communityId
+     * @param userId
+     * @param studentNumber
+     * @return
+     */
     @ApiOperation(value = "编辑学生学号信息", httpMethod = "GET", produces = "application/json")
     @ApiResponses( value = {@ApiResponse(code = 200, message = "Successful — 请求已完成",response = RespObj.class)})
     @RequestMapping("/editStudentNumber")
@@ -379,6 +411,14 @@ public class DefaultBindController extends BaseController {
         return respObj;
     }
 
+
+    /**
+     *
+     * @param communityId
+     * @param userId
+     * @param thirdName
+     * @return
+     */
     @ApiOperation(value = "编辑学生姓名信息", httpMethod = "GET", produces = "application/json")
     @ApiResponses( value = {@ApiResponse(code = 200, message = "Successful — 请求已完成",response = RespObj.class)})
     @RequestMapping("/editStudentThirdName")
@@ -398,6 +438,11 @@ public class DefaultBindController extends BaseController {
     }
 
 
+    /**
+     *
+     * @param subjectIds
+     * @return
+     */
     @ApiOperation(value = "保存老师与学科的绑定", httpMethod = "GET", produces = "application/json")
     @ApiResponses( value = {@ApiResponse(code = 200, message = "Successful — 请求已完成",response = RespObj.class)})
     @RequestMapping("/saveNewVersionSubject")
@@ -415,6 +460,10 @@ public class DefaultBindController extends BaseController {
     }
 
 
+    /**
+     *
+     * @return
+     */
     @ApiOperation(value = "获取老师的绑定的所有的学科列表", httpMethod = "GET", produces = "application/json")
     @ApiResponses( value = {@ApiResponse(code = 200, message = "Successful — 请求已完成",response = RespObj.class)})
     @RequestMapping("/getTeacherBindSubjectList")
@@ -433,6 +482,11 @@ public class DefaultBindController extends BaseController {
 
 
     /**---------解除绑定关系------------**/
+    /**
+     *
+     * @param dto
+     * @return
+     */
     @ApiOperation(value = "解除绑定关系", httpMethod = "POST", produces = "application/json")
     @ApiResponses( value = {@ApiResponse(code = 200, message = "Successful — 请求已完成",response = RespObj.class)})
     @RequestMapping("/relieveBindRelation")
@@ -658,6 +712,11 @@ public class DefaultBindController extends BaseController {
         return respObj;
     }
 
+
+    /**
+     * \
+     * @return
+     */
     @ApiOperation(value = "获取填写的孩子手机号列表", httpMethod = "POST", produces = "application/json")
     @ApiResponses( value = {@ApiResponse(code = 200, message = "Successful — 请求已完成",response = RespObj.class)})
     @RequestMapping("/getMakeOutList")
@@ -669,6 +728,12 @@ public class DefaultBindController extends BaseController {
         return respObj;
     }
 
+
+    /**
+     *
+     * @param id
+     * @return
+     */
     @ApiOperation(value = "删除手机号item", httpMethod = "POST", produces = "application/json")
     @ApiResponses( value = {@ApiResponse(code = 200, message = "Successful — 请求已完成",response = RespObj.class)})
     @RequestMapping("/removeMakeOutItem")
@@ -681,6 +746,12 @@ public class DefaultBindController extends BaseController {
     }
 
 
+    /**
+     *
+     * @param userIds
+     * @param communityIds
+     * @return
+     */
     @ApiOperation(value = "改版绑定孩子", httpMethod = "POST", produces = "application/json")
     @ApiResponses( value = {@ApiResponse(code = 200, message = "Successful — 请求已完成",response = RespObj.class)})
     @RequestMapping("/bindCommunity")
@@ -698,6 +769,12 @@ public class DefaultBindController extends BaseController {
     }
 
 
+    /**
+     *
+     * @param userId
+     * @param communityIds
+     * @return
+     */
     @ApiOperation(value = "解除孩子的绑定关系", httpMethod = "GET", produces = "application/json")
     @ApiResponses( value = {@ApiResponse(code = 200, message = "Successful — 请求已完成",response = RespObj.class)})
     @RequestMapping("relieveCommunityBindRelation")

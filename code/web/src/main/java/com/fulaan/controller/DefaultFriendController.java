@@ -34,6 +34,7 @@ public class DefaultFriendController extends BaseController {
     private FriendApplyService friendApplyService;
     @Autowired
     private UserService userService;
+
     @ApiOperation(value = "getFriends", httpMethod = "GET", produces = "application/json")
     @ApiResponses( value = {@ApiResponse(code = 200, message = "Successful — 请求已完成",response = RespObj.class)})
     @RequestMapping("/getFriends")
@@ -42,6 +43,18 @@ public class DefaultFriendController extends BaseController {
         ObjectId uid = getUserId();
         return RespObj.SUCCESS(friendService.getFrinds(uid));
     }
+
+
+
+    @ApiOperation(value = "getChangeFriends", httpMethod = "GET", produces = "application/json")
+    @ApiResponses( value = {@ApiResponse(code = 200, message = "Successful — 请求已完成",response = RespObj.class)})
+    @RequestMapping("/getChangeFriends")
+    @ResponseBody
+    public RespObj getChangeFriends() {
+        ObjectId uid = getUserId();
+        return RespObj.SUCCESS(friendService.getFrinds(uid));
+    }
+
     @ApiOperation(value = "getPartners", httpMethod = "GET", produces = "application/json")
     @ApiResponses( value = {@ApiResponse(code = 200, message = "Successful — 请求已完成",response = RespObj.class)})
     @RequestMapping("/getParters")

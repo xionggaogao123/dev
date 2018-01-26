@@ -157,6 +157,12 @@ public class DefaultReportCardController extends BaseController{
     }
 
 
+    /**
+     *
+     * @param groupExamDetailId
+     * @param userId
+     * @return
+     */
     @ApiOperation(value = "家长签字功能", httpMethod = "GET", produces = "application/json")
     @ApiResponses( value = {@ApiResponse(code = 200, message = "保存考试信息已完成",response = String.class),
             @ApiResponse(code = 400, message = "请求中有语法问题，或不能满足请求"),
@@ -176,6 +182,11 @@ public class DefaultReportCardController extends BaseController{
         return respObj;
     }
 
+    /**
+     *
+     * @param groupExamDetailId
+     * @return
+     */
     @ApiOperation(value = "删除成绩单", httpMethod = "GET", produces = "application/json")
     @ApiResponses( value = {@ApiResponse(code = 200, message = "删除成绩单已完成",response = String.class),
             @ApiResponse(code = 400, message = "请求中有语法问题，或不能满足请求"),
@@ -194,6 +205,11 @@ public class DefaultReportCardController extends BaseController{
         return respObj;
     }
 
+    /**
+     *
+     * @param groupExamDetailId
+     * @return
+     */
     @ApiOperation(value = "发送成绩单", httpMethod = "GET", produces = "application/json")
     @ApiResponses( value = {@ApiResponse(code = 200, message = "删除成绩单已完成",response = String.class),
             @ApiResponse(code = 400, message = "请求中有语法问题，或不能满足请求"),
@@ -331,6 +347,10 @@ public class DefaultReportCardController extends BaseController{
         return respObj;
     }
 
+    /**
+     *
+     * @return
+     */
     @ApiOperation(value = "获取所有的考试类型", httpMethod = "GET", produces = "application/json")
     @ApiResponses( value = {@ApiResponse(code = 200, message = "保存或编辑成绩列表已完成",response = String.class),
             @ApiResponse(code = 400, message = "请求中有语法问题，或不能满足请求"),
@@ -350,6 +370,15 @@ public class DefaultReportCardController extends BaseController{
     }
 
 
+    /**
+     *
+     * @param subjectId
+     * @param examType
+     * @param status
+     * @param page
+     * @param pageSize
+     * @return
+     */
     @ApiOperation(value = "集合成绩单的列表", httpMethod = "POST", produces = "application/json")
     @ApiResponses( value = {@ApiResponse(code = 200, message = "保存考试信息已完成",response = String.class),
             @ApiResponse(code = 400, message = "请求中有语法问题，或不能满足请求"),

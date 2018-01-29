@@ -72,7 +72,7 @@ public static void main(String[] args){
                 find(MongoFacroty.getAppDB(),
                         Constant.COLLECTION_CONTROL_NOW_TIME,
                         query, Constant.FIELDS,
-                        Constant.MONGO_SORTBY_DESC);
+                        Constant.MONGO_SORTBY_ASC);
         List<ControlNowTimeEntry> entryList = new ArrayList<ControlNowTimeEntry>();
         if (dbList != null && !dbList.isEmpty()) {
             for (DBObject obj : dbList) {

@@ -5,7 +5,6 @@ import com.fulaan.annotation.ObjectIdType;
 import com.fulaan.appmarket.dto.AppDetailDTO;
 import com.fulaan.appmarket.service.AppMarketService;
 import com.fulaan.backstage.dto.JxmAppVersionDTO;
-import com.fulaan.backstage.dto.LogMessageDTO;
 import com.fulaan.backstage.dto.UserLogResultDTO;
 import com.fulaan.backstage.dto.UserRoleOfPathDTO;
 import com.fulaan.backstage.service.BackStageService;
@@ -775,7 +774,7 @@ public class BackStageController extends BaseController {
                                 @ApiParam(name = "pageSize", required = true, value = "pageSize") @RequestParam(value = "pageSize",defaultValue = "20") int pageSize){
         RespObj respObj = new RespObj(Constant.FAILD_CODE);
         try{
-            List<LogMessageDTO> dtos =  backStageService.getLogMessage(page,pageSize);
+            Map<String,Object> dtos =  backStageService.getLogMessage(page,pageSize);
             respObj.setCode(Constant.SUCCESS_CODE);
             respObj.setMessage(dtos);
         }catch (Exception e){

@@ -523,9 +523,11 @@ public class BackStageService {
     }
 
     //获得操作日志
-    public List<LogMessageDTO> getLogMessage(int page,int pageSize){
+    public Map<String,Object> getLogMessage(int page,int pageSize){
+        Map<String,Object> map = new HashMap<String, Object>();
         List<LogMessageDTO> dtos = new ArrayList<LogMessageDTO>();
         List<LogMessageEntry> logs =  logMessageDao.selectContentList(page, pageSize);
+        int count = logMessageDao.getNumber();
         List<ObjectId> userIds = new ArrayList<ObjectId>();
         for(LogMessageEntry entry : logs){
             dtos.add(new LogMessageDTO(entry));
@@ -535,7 +537,9 @@ public class BackStageService {
         for(LogMessageDTO dto : dtos){
             dto.setName(userEntryMap.get(new ObjectId(dto.getUserId())).getUserName());
         }
-        return dtos;
+        map.put("list", dtos);
+        map.put("count",count);
+        return map;
     }
 
     public List<JxmAppVersionDTO> getAllAppVersion(){

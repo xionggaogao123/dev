@@ -277,6 +277,31 @@ public class AppMarketController extends BaseController{
         return JSON.toJSONString(respObj);
 
     }
+    /**
+     * 添加应用名称
+     * @return
+     */
+    @ApiOperation(value="添加应用名称",httpMethod = "POST",produces = "application/json")
+    @ApiResponse(code=200,message = "success", response = String.class)
+    @RequestMapping("/addAppName")
+    @ResponseBody
+    public String addAppName(@ApiParam(name = "id", required = true, value = "id") @RequestParam("id") String id,
+                                 @ApiParam(name = "name", required = true, value = "说明") @RequestParam("name") String name){
+        RespObj respObj=new RespObj(Constant.FAILD_CODE);
+        try {
+            respObj.setCode(Constant.SUCCESS_CODE);
+            appMarketService.addAppName(new ObjectId(id),name,getUserId());
+            respObj.setMessage("添加应用名称成功");
+        } catch (Exception e) {
+            e.printStackTrace();
+            respObj.setCode(Constant.FAILD_CODE);
+            respObj.setErrorMessage("添加应用名称失败!");
+
+        }
+        return JSON.toJSONString(respObj);
+
+    }
+
 
 
 

@@ -434,4 +434,13 @@ public class AppMarketService {
             backStageService.addLogMessage(entry.getID().toString(), "修改了描述："+entry.getAppName(), LogMessageType.table.getDes(), userId.toString());
         }
     }
+
+    public void addAppName(ObjectId id,String name,ObjectId userId){
+        AppDetailEntry entry = appDetailDao.findEntryById(id);
+        if(entry != null){
+            entry.setAppName(name);
+            appDetailDao.saveAppDetailEntry(entry);
+            backStageService.addLogMessage(entry.getID().toString(), "修改了应用名："+entry.getAppName(), LogMessageType.table.getDes(), userId.toString());
+        }
+    }
 }

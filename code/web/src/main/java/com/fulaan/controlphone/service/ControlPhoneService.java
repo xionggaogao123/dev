@@ -1171,7 +1171,9 @@ public class ControlPhoneService {
         if(oids.size()>0){
             List<CommunityEntry> communityEntries = communityDao.findByObjectIds(oids);
             for(CommunityEntry com : communityEntries){
-                dtos.add(new CommunityDTO(com));
+                CommunityDTO communityDTO = new CommunityDTO(com);
+                communityDTO.setLogo(this.getNewLogo(communityDTO.getLogo()));
+                dtos.add(communityDTO);
                 objectIdList.add(com.getID());
             }
             map.put("list",dtos);

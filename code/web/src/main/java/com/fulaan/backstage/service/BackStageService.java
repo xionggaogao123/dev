@@ -921,7 +921,7 @@ public class BackStageService {
        // indexPageDao.addEntry(entry);
     }
 
-    public void setChildAutoFriends(final String[] uIds){
+    public void setChildAutoFriends(final String[] uIds,final ObjectId communityId){
         new Thread(new Runnable() {
             @Override
             public void run() {
@@ -929,9 +929,13 @@ public class BackStageService {
                 for(String userId:uIds){
                     allIds.add(new ObjectId(userId));
                 }
+                List<ObjectId> userIds = newVersionCommunityBindDao.getStudentListByCommunityId(communityId);
+                Set<ObjectId> userSet = new HashSet<ObjectId>();
+                userSet.addAll(userIds);
+                userSet.addAll(allIds);
                 if (allIds.size() > 0) {
                     for (ObjectId itemId : allIds) {
-                        set(itemId, allIds);
+                        set(itemId,new ArrayList<ObjectId>(userSet));
                     }
                 }
             }
@@ -985,6 +989,22 @@ public class BackStageService {
 
     }
 
+
+    public void setSingleFriend(ObjectId userId,ObjectId friendId){
+        if (friendDao.recordIsExist(userId)) {
+            FriendEntry friendEntry = friendDao.get(userId);
+            if (null != friendEntry&&!friendDao.isFriend(userId,friendId)) {
+                friendDao.addOneFriend(userId, friendId);
+            }
+        } else {
+            List<ObjectId> friendIds = new ArrayList<ObjectId>();
+            friendIds.add(friendId);
+            friendIds.remove(userId);
+            if(friendIds.size()>0) {
+                friendDao.addFriendEntry(userId, friendIds);
+            }
+        }
+    }
 
 
     public void setFriendEntry(ObjectId userId,List<ObjectId> uIds){

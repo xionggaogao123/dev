@@ -46,6 +46,7 @@ import com.pojo.user.UserDetailInfoDTO;
 import com.pojo.user.UserEntry;
 import com.pojo.user.UserRole;
 import com.pojo.utils.LoginLog;
+import com.sun.org.apache.regexp.internal.RE;
 import com.sys.constants.Constant;
 import com.sys.exceptions.IllegalParamException;
 import com.sys.exceptions.UnLoginException;
@@ -2141,6 +2142,26 @@ public class DefaultUserController extends BaseController {
     public RespObj handlerHuanxin(){
         RespObj respObj = new RespObj(Constant.SUCCESS_CODE);
         userService.handlerHuanxin();
+        return respObj;
+    }
+
+
+    /**
+     * 获取个人二维码还有个人code
+     * @param personId
+     * @return
+     */
+    @RequestMapping("/getUserInfoByPersonId")
+    @ResponseBody
+    public RespObj getUserInfoByPersonId(@ObjectIdType ObjectId personId){
+        RespObj respObj = new RespObj(Constant.FAILD_CODE);
+        try {
+            Map<String, Object> retMap = userService.getUserInfoByPersonId(personId);
+            respObj.setMessage(retMap);
+            respObj.setCode(Constant.SUCCESS_CODE);
+        }catch (Exception e){
+            respObj.setErrorMessage(e.getMessage());
+        }
         return respObj;
     }
 

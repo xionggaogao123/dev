@@ -807,4 +807,21 @@ public class DefaultBindController extends BaseController {
         return respObj;
     }
 
+
+    /**
+     * 设置老数据家长和学生自动成为好友
+     * @return
+     */
+    @ApiOperation(value = "设置老数据家长和学生自动成为好友", httpMethod = "GET", produces = "application/json")
+    @ApiResponses( value = {@ApiResponse(code = 200, message = "Successful — 请求已完成",response = RespObj.class)})
+    @RequestMapping("setParentAndChildrenAutoFriend")
+    @ResponseBody
+    public RespObj setParentAndChildrenAutoFriend(){
+        RespObj respObj = new RespObj(Constant.SUCCESS_CODE);
+        newVersionBindService.setParentAndChildrenAutoFriend();
+        respObj.setMessage("设置老数据家长和学生自动成为好友成功");
+        return respObj;
+    }
+
+
 }

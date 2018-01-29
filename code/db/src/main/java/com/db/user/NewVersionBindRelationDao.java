@@ -173,4 +173,20 @@ public class NewVersionBindRelationDao extends BaseDao{
                         new BasicDBObject("ir", 1));
         update(MongoFacroty.getAppDB(), Constant.COLLECTION_NEW_VERSION_BIND_RELATION, query, updateValue);
     }
+
+
+    public List<NewVersionBindRelationEntry> getEntries(int page,int pageSize){
+        List<NewVersionBindRelationEntry> entries
+                =new ArrayList<NewVersionBindRelationEntry>();
+        BasicDBObject query = new BasicDBObject()
+                .append("ir",Constant.ZERO);
+        List<DBObject> dbObjectList = find(MongoFacroty.getAppDB(), Constant.COLLECTION_NEW_VERSION_BIND_RELATION,
+                query,Constant.FIELDS,Constant.MONGO_SORTBY_ASC,(page-1)*pageSize,pageSize);
+        if(null!=dbObjectList&&!dbObjectList.isEmpty()){
+            for(DBObject dbObject:dbObjectList){
+                entries.add(new NewVersionBindRelationEntry(dbObject));
+            }
+        }
+        return entries;
+    }
 }

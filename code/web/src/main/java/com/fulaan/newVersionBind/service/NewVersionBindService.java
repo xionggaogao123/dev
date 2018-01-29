@@ -564,6 +564,10 @@ public class NewVersionBindService {
                 NewVersionUserRoleEntry userRoleEntry=newVersionUserRoleDao.getEntry(userId);
                 userRoleEntry.setNewRole(Constant.TWO);
                 newVersionUserRoleDao.saveEntry(userRoleEntry);
+
+                //绑定的家长和学生自动成为好友
+//                backStageService.setSingleFriend(mainUserId,userId);
+//                backStageService.setSingleFriend(userId,mainUserId);
                 //发送环信消息
 //                List<String> tags = new ArrayList<String>();
 //                tags.add(userId.toString());
@@ -707,7 +711,7 @@ public class NewVersionBindService {
                 }
 
                 //设置孩子与该班级的其他孩子自动成为好友
-                backStageService.setChildAutoFriends(new ObjectId(uId),communityId);
+//                backStageService.setChildAutoFriends(new ObjectId(uId),communityId);
 
                 long current = System.currentTimeMillis();
                 //向学生端推送消息
@@ -719,7 +723,7 @@ public class NewVersionBindService {
             }
 
             //加进来的互相加为好友
-            backStageService.setChildAutoFriends(uIds);
+            backStageService.setChildAutoFriends(uIds,communityId);
         }
     }
 
@@ -944,6 +948,27 @@ public class NewVersionBindService {
           dtos.add(dto);
         }
         return dtos;
+    }
+
+
+    public void setParentAndChildrenAutoFriend(){
+        int page=1;
+        int pageSize=200;
+        boolean isContinue=true;
+        while (isContinue){
+            List<NewVersionBindRelationEntry> entries = newVersionBindRelationDao.getEntries(page,pageSize);
+            if(entries.size()>0){
+                for(NewVersionBindRelationEntry entry:entries){
+                    ObjectId mainUserId = entry.getMainUserId();
+                    ObjectId userId = entry.getUserId();
+                    backStageService.setSingleFriend(mainUserId,userId);
+                    backStageService.setSingleFriend(userId,mainUserId);
+                }
+            }else{
+                isContinue=false;
+            }
+            page++;
+        }
     }
 
 

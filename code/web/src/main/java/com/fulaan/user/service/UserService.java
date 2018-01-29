@@ -29,6 +29,8 @@ import com.fulaan.school.SchoolService;
 import com.fulaan.user.dao.ThirdLoginDao;
 import com.fulaan.user.model.ThirdLoginEntry;
 import com.fulaan.user.model.ThirdType;
+import com.fulaan.util.ObjectIdPackageUtil;
+import com.fulaan.util.QRUtils;
 import com.fulaan.util.check.FastCheck;
 import com.fulaan.utils.KeyWordFilterUtil;
 import com.fulaan.websocket.WebsocketHandler;
@@ -1497,5 +1499,32 @@ public class UserService extends BaseService {
             }
             page++;
         }
+    }
+
+
+    public Map<String,Object> getUserInfoByPersonId(ObjectId userId)throws Exception{
+        Map<String,Object> retMap =new HashMap<String,Object>();
+        UserEntry userEntry = userDao.getUserEntry(userId,Constant.FIELDS);
+        if(null!=userEntry){
+            if(StringUtils.isNotEmpty(userEntry.getQRCode())){
+                retMap.put("qrCode",userEntry.getQRCode());
+            }else{
+                String qrCode = QRUtils.getPersonQrUrl(userId);
+                userEntry.setQRCode(qrCode);
+                userDao.addUserEntry(userEntry);
+                retMap.put("qrCode",qrCode);
+            }
+            if(StringUtils.isNotEmpty(userEntry.getGenerateUserCode())){
+                retMap.put("packageCode",userEntry.getGenerateUserCode());
+            }else {
+                String userCode= ObjectIdPackageUtil.getPackage(userEntry.getID());
+                userEntry.setGenerateUserCode(userCode);
+                userDao.addUserEntry(userEntry);
+                retMap.put("packageCode", userCode);
+            }
+        }else{
+            throw new Exception("传入的参数有误");
+        }
+        return retMap;
     }
 }

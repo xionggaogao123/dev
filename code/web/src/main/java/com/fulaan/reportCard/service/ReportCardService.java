@@ -42,7 +42,6 @@ import org.bson.types.ObjectId;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import javax.imageio.ImageIO;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.File;
@@ -352,7 +351,8 @@ public class ReportCardService {
             public int compare(GroupExamUserRecordDTO o1, GroupExamUserRecordDTO o2) {
                 int result=0;
                 if(StringUtils.isNotEmpty(o1.getUserNumber())&&
-                        StringUtils.isNotEmpty(o1.getUserName())) {
+                        StringUtils.isNotEmpty(o1.getUserName()) && StringUtils.isNotEmpty(o2.getUserNumber())&&
+                        StringUtils.isNotEmpty(o2.getUserName())) {
                     result = getCompareResult(o1.getUserNumber(), o2.getUserNumber());
                     if (result == 0) {
                         result = getCompareResult(o1.getUserName(), o2.getUserName());

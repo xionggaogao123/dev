@@ -425,8 +425,18 @@ public class WebHomePageService {
                 detailDTOs.add(detailDTO);
             }
         }
-
-
+        Collections.sort(detailDTOs, new Comparator<GroupExamDetailDTO>() {
+            @Override
+            public int compare(GroupExamDetailDTO o1, GroupExamDetailDTO o2) {
+                int result=0;
+                if(o1.getSubmitTime()>o2.getSubmitTime()){
+                    result=1;
+                }else if(o1.getSubmitTime()<o2.getSubmitTime()){
+                    result=-1;
+                }
+                return result;
+            }
+        });
     }
 
     public void getDtosByEntries(List<WebHomePageDTO> webHomePageDTOs, List<WebHomePageEntry> entries) {

@@ -397,7 +397,7 @@ public class GroupService {
                 UserEntry userEntry= userEntryMap.get(entry.getReceiveId());
                 if(null!=userEntry){
                     dto.setUserName(userEntry.getUserName());
-                    dto.setImageUrl(AvatarUtils.getAvatar2(userEntry.getAvatar(),userEntry.getRole(),userEntry.getSex()));
+                    dto.setImageUrl(AvatarUtils.getAvatar(userEntry.getAvatar(),userEntry.getRole(),userEntry.getSex()));
                 }
             }
             dto.setTimeExpression(TimeChangeUtils.getChangeTime(entry.getUpdateTime()));

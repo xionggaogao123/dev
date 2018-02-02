@@ -375,8 +375,10 @@ public class NewVersionBindService {
             if(null!=userEntry){
                 dto.setNickName(StringUtils.isNotEmpty(userEntry.getNickName())?userEntry.getNickName():userEntry.getUserName());
                 dto.setAvatar(AvatarUtils.getAvatar2(userEntry.getAvatar(),userEntry.getRole(),userEntry.getSex()));
+                dto.setVirtualUser(Constant.ONE);
             }else{
                 dto.setAvatar(AvatarUtils.getAvatar2(Constant.EMPTY,1,1));
+                dto.setVirtualUser(Constant.ZERO);
             }
             dtos.add(dto);
         }
@@ -566,8 +568,8 @@ public class NewVersionBindService {
                 newVersionUserRoleDao.saveEntry(userRoleEntry);
 
                 //绑定的家长和学生自动成为好友
-//                backStageService.setSingleFriend(mainUserId,userId);
-//                backStageService.setSingleFriend(userId,mainUserId);
+                backStageService.setSingleFriend(mainUserId,userId);
+                backStageService.setSingleFriend(userId,mainUserId);
                 //发送环信消息
 //                List<String> tags = new ArrayList<String>();
 //                tags.add(userId.toString());
@@ -619,6 +621,14 @@ public class NewVersionBindService {
                                 ObjectId userId,
                                 String thirdName){
         newVersionCommunityBindDao.updateThirdName(communityId,mainUserId,userId, thirdName);
+    }
+
+    public void updateStudentNumberAndThirdName(ObjectId communityId,
+                                                ObjectId mainUserId,
+                                                ObjectId userId,
+                                                String studentNumber,
+                                                String thirdName){
+        newVersionCommunityBindDao.updateStudentNumberAndThirdName(communityId,mainUserId,userId, studentNumber,thirdName);
     }
 
     public String saveNewVersionEntry(ObjectId bid,ObjectId userId){

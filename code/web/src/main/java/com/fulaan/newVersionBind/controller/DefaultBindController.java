@@ -412,6 +412,24 @@ public class DefaultBindController extends BaseController {
     }
 
 
+    @ApiOperation(value = "编辑学生学号信息", httpMethod = "GET", produces = "application/json")
+    @ApiResponses( value = {@ApiResponse(code = 200, message = "Successful — 请求已完成",response = RespObj.class)})
+    @RequestMapping("/editStudentNumberAndThirdName")
+    @ResponseBody
+    public RespObj editStudentNumberAndThirdName(@ObjectIdType ObjectId communityId,
+                                     @ObjectIdType ObjectId userId,
+                                     String thirdName,
+                                     String studentNumber){
+        RespObj respObj = new RespObj(Constant.FAILD_CODE);
+        try{
+            newVersionBindService.updateStudentNumberAndThirdName(communityId, getUserId(), userId, studentNumber,thirdName);
+            respObj.setCode(Constant.SUCCESS_CODE);
+            respObj.setMessage("编辑学生学号和姓名信息成功！");
+        }catch (Exception e){
+            respObj.setErrorMessage(e.getMessage());
+        }
+        return respObj;
+    }
     /**
      *
      * @param communityId

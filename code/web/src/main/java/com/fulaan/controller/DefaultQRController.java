@@ -188,8 +188,12 @@ public class DefaultQRController extends BaseController {
          * 4:被扫描二维码的是老用户
          *
          * **/
+        map.put("parentName","");
         if(null!=entry) {
             map.put("isBind","0");
+            ObjectId parentId = entry.getMainUserId();
+            UserEntry parentEntry = userService.findById(parentId);
+            map.put("parentName",StringUtils.isNotBlank(parentEntry.getNickName()) ? parentEntry.getNickName() : parentEntry.getUserName());
         }else{
             NewVersionUserRoleEntry household=newVersionUserRoleDao.getEntry(getUserId());
             NewVersionUserRoleEntry userRoleEntry=newVersionUserRoleDao.getEntry(id);

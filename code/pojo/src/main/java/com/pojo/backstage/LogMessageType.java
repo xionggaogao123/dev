@@ -14,7 +14,8 @@ public enum LogMessageType {
     teaValidate(8,"老师认证", "teaValidate"),
     content(9,"内容管理","content"),
     userRole(10,"角色管理","userRole"),
-    manageUserRole(11,"用户角色管理","manageUserRole");
+    manageUserRole(11,"用户角色管理","manageUserRole"),
+    school(12,"学校管理","school");
 
     private int type;
     private String des;

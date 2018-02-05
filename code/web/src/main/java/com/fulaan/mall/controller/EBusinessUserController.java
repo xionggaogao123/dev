@@ -324,7 +324,7 @@ public class EBusinessUserController extends BaseController {
      * @param name
      * @return
      */
-    @ApiOperation(value = "检查用户是否存在", httpMethod = "POST", produces = "application/json")
+    @ApiOperation(value = "检查用户是否存在", httpMethod = "GET", produces = "application/json")
     @ApiResponses( value = {@ApiResponse(code = 200, message = "Successful — 请求已完成",response = Map.class)})
     @SessionNeedless
     @RequestMapping(method = RequestMethod.GET)

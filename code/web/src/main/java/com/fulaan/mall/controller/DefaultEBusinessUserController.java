@@ -193,18 +193,20 @@ public class DefaultEBusinessUserController extends BaseController {
         model.put("cacheKeyId", cacheKeyId);
         String cacheKey = CacheHandler.getKeyString(CacheHandler.CACHE_SHORTMESSAGE, cacheKeyId);
         CacheHandler.cache(cacheKey, num + "," + mobile, Constant.SESSION_FIVE_MINUTE);//5分钟
-        CacheHandler.cache(mobileNumber, String.valueOf(System.currentTimeMillis()), Constant.SESSION_ONE_MINUTE);//一分钟
+
 
         String msg = "亲爱的客户您好，您的验证码为" + num + "，有效期为5分钟。";
         try {
             String resp = batchSend(url, account, pswd, mobile, msg, needstatus, product, extno);
             String responseCode = resp.split("\\n")[0].split(",")[1];
             if (responseCode.equals("0")) {
+                CacheHandler.cache(mobileNumber, String.valueOf(System.currentTimeMillis()), Constant.SESSION_ONE_MINUTE);//一分钟
                 model.put("code", 200);
                 model.put("message", resp);
             }
-
         } catch (Exception e) {
+            EBusinessUserController.error("error",e);
+            EBusinessUserController.error(url+"---"+account+"---"+pswd+"---"+mobile+"---"+msg+"---"+needstatus+"---"+product+"---"+extno);
             e.printStackTrace();
         }
         return model;

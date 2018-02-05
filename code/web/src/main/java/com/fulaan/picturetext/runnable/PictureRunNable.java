@@ -19,6 +19,7 @@ import com.pojo.business.BusinessManageEntry;
 import com.pojo.business.ModuleNumberEntry;
 import com.pojo.controlphone.ControlAppUserEntry;
 import com.pojo.fcommunity.CommunityEntry;
+import com.pojo.fcommunity.FLoginLogEntry;
 import com.pojo.newVersionGrade.NewVersionSubjectEntry;
 import com.pojo.user.NewVersionUserRoleEntry;
 import com.pojo.user.UserEntry;
@@ -215,6 +216,13 @@ public class PictureRunNable{
                         }else{
                             businessManageEntry.setType(3);
                             businessManageEntry.setOpenId("");
+                        }
+                        if(businessManageEntry.getAddressIp()==null){
+                            LoginLogDao loginLogDao = new LoginLogDao();
+                            FLoginLogEntry fLoginLogEntry = loginLogDao.getEntry(entry.getUserName());
+                            if(fLoginLogEntry!=null){
+                                businessManageEntry.setAddressIp(fLoginLogEntry.getLoginIp());
+                            }
                         }
                         businessManageDao.updEntry(businessManageEntry);
                     }else{

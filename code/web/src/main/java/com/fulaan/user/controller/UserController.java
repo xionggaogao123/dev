@@ -1600,6 +1600,7 @@ public class UserController extends BaseController {
         logger.info("回调路径是"+redirectUrl);
         SessionValue value = getSessionValue(e);
         userService.setCookieValue(e, value, getIP(), response, request);
+        businessManageService.getLoginInfo(e.getID(),getPlatform().getType());
         if (StringUtils.isNotBlank(redirectUrl) && getPlatform() != Platform.PC) {
             return redirectUrl;
         }
@@ -1727,6 +1728,7 @@ public class UserController extends BaseController {
 
         String redirectUrl = userService.getRedirectUrl(request);
         userService.setCookieValue(e, getSessionValue(e), getIP(), response, request);
+        businessManageService.getLoginInfo(e.getID(),getPlatform().getType());
         if (redirectUrl != null && getPlatform() != Platform.PC) {
             return redirectUrl;
         }
@@ -1774,6 +1776,7 @@ public class UserController extends BaseController {
             map.put("isExist", "No");
             return RespObj.SUCCESS(map);
         }
+        businessManageService.getLoginInfo(userEntry.getID(),getPlatform().getType());
         final UserEntry e = userEntry;
         new Thread(new Runnable() {
             @Override

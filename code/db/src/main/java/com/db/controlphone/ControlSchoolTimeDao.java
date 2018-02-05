@@ -53,7 +53,7 @@ public class ControlSchoolTimeDao extends BaseDao {
     }
     public ControlSchoolTimeEntry getOtherEntry(String dateTime) {
         BasicDBObject query =new BasicDBObject();
-        query.append("isr", Constant.ZERO) .append("dtn", dateTime);
+        query.append("isr", Constant.ZERO) .append("dtm", dateTime);
         DBObject dbo =findOne(MongoFacroty.getAppDB(), Constant.COLLECTION_CONTROL_SCHOOL_TIME, query, Constant.FIELDS);
         if(null!=dbo)
         {

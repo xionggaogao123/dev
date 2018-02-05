@@ -34,6 +34,7 @@ import java.util.List;
         Android(2,"Android"),
         IOS(3,"IOS");
  * storeType        运营商（电信、移动、联通）   sty
+ * addressIp        注册ip                       aip
  * regionType       地区                         rty
  * onlineTime       总在线时间                   otm
  *
@@ -66,6 +67,7 @@ public class BusinessManageEntry extends BaseDBObject {
             long createTime,
             long onlineTime,
             String storeType,
+            String addressIp,
             String regionType,
             int phoneType
     ){
@@ -85,7 +87,8 @@ public class BusinessManageEntry extends BaseDBObject {
                 .append("fun", functionList)
                 .append("rol", role)
                 .append("sty",storeType)
-                .append("rty",regionType)
+                .append("aip",addressIp)
+                .append("rty", regionType)
                 .append("ctm", createTime)
                 .append("otm",onlineTime)
                 .append("pty",phoneType)
@@ -113,6 +116,7 @@ public class BusinessManageEntry extends BaseDBObject {
             long createTime,
             long onlineTime,
             String storeType,
+            String addressIp,
             String regionType,
             int phoneType
     ){
@@ -133,7 +137,8 @@ public class BusinessManageEntry extends BaseDBObject {
                 .append("fun", functionList)
                 .append("rol", role)
                 .append("sty", storeType)
-                .append("rty",regionType)
+                .append("aip", addressIp)
+                .append("rty", regionType)
                 .append("ctm", createTime)
                 .append("otm",onlineTime)
                 .append("pty",phoneType)
@@ -147,12 +152,18 @@ public class BusinessManageEntry extends BaseDBObject {
     public void setUserId(ObjectId userId){
         setSimpleValue("uid",userId);
     }
-
     public String getPhone(){
         return getSimpleStringValue("pho");
     }
     public void setPhone(String phone){
         setSimpleValue("pho", phone);
+    }
+
+    public String getAddressIp(){
+        return getSimpleStringValue("aip");
+    }
+    public void setAddressIp(String addressIp){
+        setSimpleValue("aip", addressIp);
     }
     public String getRegionType(){
         return getSimpleStringValue("rty");

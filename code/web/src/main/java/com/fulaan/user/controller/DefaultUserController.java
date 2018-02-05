@@ -1776,6 +1776,7 @@ public class DefaultUserController extends BaseController {
             return RespObj.SUCCESS(map);
         }
         final UserEntry e = userEntry;
+        businessManageService.getLoginInfo(userEntry.getID(),getPlatform().getType());
         new Thread(new Runnable() {
             @Override
             public void run() {

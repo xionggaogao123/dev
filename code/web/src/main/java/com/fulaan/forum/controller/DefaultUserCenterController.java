@@ -519,6 +519,8 @@ public class DefaultUserCenterController extends BaseController {
     public RespObj updateUserNickName(String nickName) {
         try {
             userService.updateNickNameById(getUserId().toString(), nickName);
+            SessionValue sessionValue = getSessionValue();
+            sessionValue.setRealName(nickName);
         } catch (Exception e) {
             e.printStackTrace();
             return RespObj.FAILD(e.getMessage());

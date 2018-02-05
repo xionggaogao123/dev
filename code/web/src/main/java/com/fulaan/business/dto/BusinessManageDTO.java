@@ -46,6 +46,7 @@ public class BusinessManageDTO {
     private String createTime;
     private long onlineTime;
     private String storeType;
+    private String addressIp;
     private String regionType;
     private int phoneType;
 
@@ -100,6 +101,7 @@ public class BusinessManageDTO {
             this.storeType = e.getStoreType();
             this.regionType =e.getRegionType();
             this.phoneType = e.getPhoneType();
+            this.addressIp = e.getAddressIp();
         } else {
             new BusinessManageDTO();
         }
@@ -161,6 +163,7 @@ public class BusinessManageDTO {
                         cTm,
                         this.onlineTime,
                         this.storeType,
+                        this.addressIp,
                         this.regionType,
                         this.phoneType
                 );
@@ -212,11 +215,20 @@ public class BusinessManageDTO {
                         cTm,
                         this.onlineTime,
                         this.storeType,
+                        this.addressIp,
                         this.regionType,
                         this.phoneType
                 );
         return openEntry;
 
+    }
+
+    public String getAddressIp() {
+        return addressIp;
+    }
+
+    public void setAddressIp(String addressIp) {
+        this.addressIp = addressIp;
     }
 
     public String getAvatar() {

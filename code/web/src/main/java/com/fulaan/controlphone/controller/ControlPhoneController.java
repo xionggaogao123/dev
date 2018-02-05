@@ -592,6 +592,29 @@ public class ControlPhoneController extends BaseController {
         return JSON.toJSONString(respObj);
     }
 
+
+    /**
+     * 新孩子登录获取所有信息
+     */
+    @ApiOperation(value = "新孩子登录获取所有信息", httpMethod = "POST", produces = "application/json")
+    @ApiResponses( value = {@ApiResponse(code = 200, message = "Successful — 请求已完成",response = String.class),
+            @ApiResponse(code = 400, message = "请求中有语法问题，或不能满足请求"),
+            @ApiResponse(code = 500, message = "服务器不能完成请求")})
+    @RequestMapping("/getNewAllMessageForSon")
+    @ResponseBody
+    public String getNewAllMessageForSon(){
+        RespObj respObj=new RespObj(Constant.FAILD_CODE);
+        try {
+            respObj.setCode(Constant.SUCCESS_CODE);
+            Map<String,Object> dtos= controlPhoneService.getNewAllMessageForSon(getUserId());
+            respObj.setMessage(dtos);
+        } catch (Exception e) {
+            e.printStackTrace();
+            respObj.setCode(Constant.FAILD_CODE);
+            respObj.setErrorMessage("新孩子登录获取所有信息失败!");
+        }
+        return JSON.toJSONString(respObj);
+    }
     /**
      * 孩子未登录获取默认信息
      */
@@ -612,6 +635,29 @@ public class ControlPhoneController extends BaseController {
             e.printStackTrace();
             respObj.setCode(Constant.FAILD_CODE);
             respObj.setErrorMessage("孩子登录获取所有信息失败!");
+        }
+        return JSON.toJSONString(respObj);
+    }
+    /**
+     * 孩子新未登录获取默认信息
+     */
+    @SessionNeedless
+    @ApiOperation(value = "孩子新未登录获取默认信息", httpMethod = "POST", produces = "application/json")
+    @ApiResponses( value = {@ApiResponse(code = 200, message = "Successful — 请求已完成",response = String.class),
+            @ApiResponse(code = 400, message = "请求中有语法问题，或不能满足请求"),
+            @ApiResponse(code = 500, message = "服务器不能完成请求")})
+    @RequestMapping("/getNewSimpleMessageForSon")
+    @ResponseBody
+    public String getNewSimpleMessageForSon(){
+        RespObj respObj=new RespObj(Constant.FAILD_CODE);
+        try {
+            respObj.setCode(Constant.SUCCESS_CODE);
+            Map<String,Object> dtos= controlPhoneService.getNewSimpleMessageForSon();
+            respObj.setMessage(dtos);
+        } catch (Exception e) {
+            e.printStackTrace();
+            respObj.setCode(Constant.FAILD_CODE);
+            respObj.setErrorMessage("孩子新未登录获取默认信息失败!");
         }
         return JSON.toJSONString(respObj);
     }

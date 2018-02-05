@@ -890,6 +890,10 @@ public class Constant {
     public static final String COLLECTION_SUBJECT_CLASS = "subjectClass";
     //临时年级表
     public static final String COLLECTION_CREATE_GRADE = "createGrade";
+    //学校表
+    public static final String COLLECTION_HOME_SCHOOL = "homeschool";
+    //社区学校中间表
+    public static final String COLLECTION_COMMUNITY_SCHOOL = "communityschool";
     //简易问题类型表
     public static final String COLLECTION_QUESTION_TYPE = "questionnewtype";
     //简易测试类型表

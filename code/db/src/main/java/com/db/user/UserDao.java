@@ -1178,4 +1178,18 @@ public class UserDao extends BaseDao {
         }
         return userEntryList;
     }
+
+
+    public List<ObjectId> filterAvailableObjectIds(List<ObjectId> userIds){
+        List<ObjectId> uuIds = new ArrayList<ObjectId>();
+        BasicDBObject query = new BasicDBObject(Constant.ID,new BasicDBObject(Constant.MONGO_IN,userIds));
+        List<DBObject> dbObjectList = find(MongoFacroty.getAppDB(), Constant.COLLECTION_USER_NAME, query,Constant.FIELDS);
+        if(null!=dbObjectList&&!dbObjectList.isEmpty()){
+            for(DBObject dbObject:dbObjectList){
+                UserEntry userEntry=new UserEntry(dbObject);
+                uuIds.add(userEntry.getID());
+            }
+        }
+        return uuIds;
+    }
 }

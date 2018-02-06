@@ -1527,4 +1527,9 @@ public class UserService extends BaseService {
         }
         return retMap;
     }
+
+
+    public List<ObjectId> filterAvailableObjectIds(List<ObjectId> userIds){
+        return userDao.filterAvailableObjectIds(userIds);
+    }
 }

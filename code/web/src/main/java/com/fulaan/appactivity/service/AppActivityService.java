@@ -121,8 +121,25 @@ public class AppActivityService {
             int totalCount=0;
             if(entry.getVisiblePermission()==Constant.ONE){
                 totalCount=memberDao.getMemberCount(entry.getGroupId());
+            }else if(entry.getVisiblePermission()==Constant.TWO){
+//                totalCount=newVersionCommunityBindDao.countStudentIdListByCommunityId(entry.getCommunityId());
+                List<NewVersionCommunityBindEntry> bindEntries=newVersionCommunityBindDao.getStudentIdListByCommunityId(entry.getCommunityId());
+                List<ObjectId> uIds = new ArrayList<ObjectId>();
+                for(NewVersionCommunityBindEntry bindEntry:bindEntries){
+                    uIds.add(bindEntry.getUserId());
+                }
+                List<ObjectId> filterUserIds = userService.filterAvailableObjectIds(uIds);
+                totalCount=filterUserIds.size();
             }else{
-                totalCount=newVersionCommunityBindDao.countStudentIdListByCommunityId(entry.getCommunityId());
+                int memberCount=memberDao.getMemberCount(entry.getGroupId());
+                List<NewVersionCommunityBindEntry> bindEntries=newVersionCommunityBindDao.getStudentIdListByCommunityId(entry.getCommunityId());
+                List<ObjectId> uIds = new ArrayList<ObjectId>();
+                for(NewVersionCommunityBindEntry bindEntry:bindEntries){
+                    uIds.add(bindEntry.getUserId());
+                }
+                List<ObjectId> filterUserIds = userService.filterAvailableObjectIds(uIds);
+                int studentCount=filterUserIds.size();
+                totalCount=memberCount+studentCount;
             }
             appActivityDTO.setTotalCount(totalCount);
             appActivityDTOs.add(appActivityDTO);

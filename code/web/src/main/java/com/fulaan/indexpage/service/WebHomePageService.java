@@ -366,7 +366,7 @@ public class WebHomePageService {
                     detailDTO.setScoreLevel(userRecordEntry.getScoreLevel());
                     UserEntry mainUserEntry = mainUserEntryMap.get(detailEntry.getUserId());
                     if (null != mainUserEntry) {
-                        detailDTO.setUserName(mainUserEntry.getUserName());
+                        detailDTO.setUserName(org.apache.commons.lang3.StringUtils.isNotBlank(mainUserEntry.getNickName())?mainUserEntry.getNickName():mainUserEntry.getUserName());
                     }
                     detailDTO.setStatus(userRecordEntry.getStatus());
                     detailDTO.setSingleScoreId(userRecordEntry.getID().toString());

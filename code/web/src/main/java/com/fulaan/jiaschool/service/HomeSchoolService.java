@@ -49,13 +49,14 @@ public class HomeSchoolService {
     }
 
 
+
     public String addNewSchoolEntry(HomeSchoolDTO dto){
         if(dto.getId() != null &&!dto.getId().equals("")){
-            int count = homeSchoolDao.getSortCount();
-            dto.setSort(count+1);
             ObjectId oid = homeSchoolDao.addEntry(dto.updateEntry());
             return oid.toString();
         }else{
+            int count = homeSchoolDao.getSortCount();
+            dto.setSort(count+1000);
             ObjectId oid = homeSchoolDao.addEntry(dto.buildAddEntry());
             return oid.toString();
         }
@@ -72,7 +73,20 @@ public class HomeSchoolService {
 
     public CommunityDTO selectNewCommunityEntry(String searchId){
         CommunityEntry communityEntry = communityDao.findBySearchId(searchId);
-        return new CommunityDTO(communityEntry);
+        if(communityEntry!=null) {
+            CommunityDTO communityDTO = new CommunityDTO(communityEntry);
+            SchoolCommunityEntry schoolCommunityEntry = schoolCommunityDao.getEntryById(communityEntry.getID());
+            if (schoolCommunityEntry != null) {//已绑定
+                HomeSchoolEntry homeSchoolEntry = homeSchoolDao.getEntryById(schoolCommunityEntry.getSchoolId());
+                communityDTO.setMemberCount(1);
+                communityDTO.setOwerName(homeSchoolEntry.getName());
+            }else{//未绑定
+                communityDTO.setMemberCount(2);
+                communityDTO.setOwerName("");
+            }
+            return communityDTO;
+        }
+        return null;
     }
 
     public void addSchoolSort(String communityId,String schoolId){

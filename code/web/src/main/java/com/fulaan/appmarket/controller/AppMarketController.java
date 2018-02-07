@@ -254,6 +254,32 @@ public class AppMarketController extends BaseController{
     }
 
     /**
+     * 查询校本资源
+     * @param regular
+     * @return
+     */
+    @ApiOperation(value = "查询校本资源应用", httpMethod = "POST", produces = "application/json")
+    @ApiResponses(value = {@ApiResponse(code = 200, message = "Successful — 请求已完成",response = RespObj.class),
+            @ApiResponse(code = 500, message = "服务器不能完成请求")})
+    @RequestMapping("/searchSchoolAppByCondition")
+    @ResponseBody
+    public RespObj searchSchoolAppByCondition(
+            @RequestParam(required = false,defaultValue = "")String regular,
+            @RequestParam(required = false,defaultValue = "")String schoolId
+    ){
+        RespObj respObj=new RespObj(Constant.FAILD_CODE);
+        try{
+            List<AppDetailDTO> appDetailDTOs=appMarketService.searchSchoolAppByCondition(regular,schoolId);
+            respObj.setMessage(appDetailDTOs);
+            respObj.setCode(Constant.SUCCESS_CODE);
+        }catch (Exception e){
+            e.printStackTrace();
+            respObj.setErrorMessage(e.getMessage());
+        }
+        return respObj;
+    }
+
+    /**
      * 添加应用说明
      * @return
      */

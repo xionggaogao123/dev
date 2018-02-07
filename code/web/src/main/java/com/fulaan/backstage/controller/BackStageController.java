@@ -467,6 +467,33 @@ public class BackStageController extends BaseController {
         }
         return respObj;
     }
+
+    @ApiOperation(value = "导入学校apk", httpMethod = "POST", produces = "application/json")
+    @ApiResponses( value = {@ApiResponse(code = 200, message = "Successful — 请求已完成",response = String.class),
+            @ApiResponse(code = 400, message = "请求中有语法问题，或不能满足请求"),
+            @ApiResponse(code = 500, message = "服务器不能完成请求")})
+    @RequestMapping("/importSchoolControl")
+    @ResponseBody
+    public RespObj importSchoolControl(HttpServletRequest servletRequest)throws Exception{
+        RespObj respObj=new RespObj(Constant.FAILD_CODE);
+        MultipartRequest request=(MultipartRequest)servletRequest;
+        try {
+            String osid = "";
+            MultiValueMap<String, MultipartFile> fileMap = request.getMultiFileMap();
+            for (List<MultipartFile> multipartFiles : fileMap.values()) {
+                for(MultipartFile file:multipartFiles) {
+                    System.out.println("----" + file.getOriginalFilename());
+                    osid = appMarketService.importApkFile3(file, file.getInputStream(), file.getOriginalFilename(),getUserId());
+                }
+            }
+            respObj.setCode(Constant.SUCCESS_CODE);
+            respObj.setMessage(osid);
+        }catch (Exception e){
+            e.printStackTrace();
+            respObj.setMessage(e.getMessage());
+        }
+        return respObj;
+    }
     /**
      * 查询申请验证老师的列表
      * @return
@@ -577,7 +604,7 @@ public class BackStageController extends BaseController {
     public RespObj saveUserRole(String userId,
                                 int role){
         RespObj respObj=new RespObj(Constant.SUCCESS_CODE);
-        backStageService.saveUserRole(userId,role);
+        backStageService.saveUserRole(getUserId(),userId,role);
         respObj.setMessage("保存成功");
         return respObj;
     }
@@ -695,6 +722,29 @@ public class BackStageController extends BaseController {
             e.printStackTrace();
             respObj.setCode(Constant.SUCCESS_CODE);
             respObj.setMessage("添加为系统推送应用失败");
+        }
+        return JSON.toJSONString(respObj);
+    }
+
+    /**
+     *  添加学校推送
+     * @return
+     */
+    @ApiOperation(value = "添加学校推送", httpMethod = "POST", produces = "application/json")
+    @ApiResponses( value = {@ApiResponse(code = 200, message = "Successful — 请求已完成",response = String.class)})
+    @RequestMapping("/addSchoolApp")
+    @ResponseBody
+    public String addSchoolApp(@ApiParam(name = "appId", required = true, value = "appId") @RequestParam(value = "appId") String appId,
+                               @ApiParam(name = "schoolId", required = true, value = "schoolId") @RequestParam(value = "schoolId") String schoolId){
+        RespObj respObj=new RespObj(Constant.FAILD_CODE);
+        try {
+            respObj.setCode(Constant.SUCCESS_CODE);
+            backStageService.addSchoolAppEntry(getUserId(),new ObjectId(appId),new ObjectId(schoolId));
+            respObj.setMessage("添加学校推送成功");
+        } catch (Exception e) {
+            e.printStackTrace();
+            respObj.setCode(Constant.FAILD_CODE);
+            respObj.setErrorMessage("添加学校推送失败!");
         }
         return JSON.toJSONString(respObj);
     }

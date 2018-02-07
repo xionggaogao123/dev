@@ -7,6 +7,7 @@ public enum LogMessageType {
     main(1,"首页", "main"),
     table(2,"应用市场","table"),
     fulan(3,"推送系统应用", "fulan"),
+    schoolApp(3,"推送校本资源", "schoolApp"),
     black(4,"应用黑名单管理", "black"),
     schoolTime(5,"管控默认上课时间", "schoolTime"),
     systemPhone(6,"常用电话设置", "systemPhone"),

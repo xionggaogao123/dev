@@ -120,10 +120,135 @@ public class WrongQuestionService {
         SubjectClassEntry entry = dto.buildAddEntry();
         return subjectClassDao.addSubjectEntry(entry).toString();
     }
+
+    public void getAllGrade(){
+        List<CreateGradeEntry> en3 = createGradeDao.getList();
+        List<SubjectClassEntry> entries = subjectClassDao.getList();
+        List<CreateGradeDTO> mlist = new ArrayList<CreateGradeDTO>();
+        for(CreateGradeEntry createGradeEntry : en3){
+            CreateGradeDTO createGradeDTO = new CreateGradeDTO(createGradeEntry);
+            List<SubjectClassDTO> subjectClassDTOs = new ArrayList<SubjectClassDTO>();
+            for(SubjectClassEntry subjectClassEntry : entries){
+                if(createGradeEntry.getSubjectList()!=null && createGradeEntry.getSubjectList().contains(subjectClassEntry.getID())){
+                    subjectClassDTOs.add(new SubjectClassDTO(subjectClassEntry));
+                }
+            }
+            createGradeDTO.setSubjectClassDTOs(subjectClassDTOs);
+            mlist.add(createGradeDTO);
+        }
+
+    }
+
     /**
-     * 初次加载
+     * 新初次加载
      */
     public Map<String,Object> getGradeAndSubject(ObjectId userId){
+        Map<String,Object> map = new HashMap<String, Object>();
+        List<CreateGradeEntry> en3 = createGradeDao.getList();
+        List<SubjectClassEntry> entries = subjectClassDao.getList();
+        List<CreateGradeDTO> mlist = new ArrayList<CreateGradeDTO>();
+        for(CreateGradeEntry createGradeEntry : en3){
+            CreateGradeDTO createGradeDTO = new CreateGradeDTO(createGradeEntry);
+            List<SubjectClassDTO> subjectClassDTOs = new ArrayList<SubjectClassDTO>();
+            for(SubjectClassEntry subjectClassEntry : entries){
+                if(createGradeEntry.getSubjectList()!=null && createGradeEntry.getSubjectList().contains(subjectClassEntry.getID())){
+                    subjectClassDTOs.add(new SubjectClassDTO(subjectClassEntry));
+                }
+            }
+            createGradeDTO.setSubjectClassDTOs(subjectClassDTOs);
+            mlist.add(createGradeDTO);
+        }
+        map.put("gradeList",mlist);
+        //加载问题类型
+        List<QuestionTypeDTO> dtoList1 = new ArrayList<QuestionTypeDTO>();
+        List<QuestionTypeEntry> entries1 = questionTypeDao.getTypeList();
+        if(entries1.size()>0){
+            for(QuestionTypeEntry entry2 : entries1){
+                dtoList1.add(new QuestionTypeDTO(entry2));
+            }
+        }
+        map.put("questionTypeList",dtoList1);
+
+        //加载自定义标签
+        List<QuestionTagsDTO> dtoList2 = new ArrayList<QuestionTagsDTO>();
+        List<QuestionTagsEntry> entries3 = questionTagsDao.getReviewList(userId);
+        if(entries3.size()>0){
+            for(QuestionTagsEntry entry3 : entries3){
+                dtoList2.add(new QuestionTagsDTO(entry3));
+            }
+        }
+        map.put("TestTypeList",dtoList2);
+        return map;
+    }
+
+    /**
+     * 新大人端初次加载
+     */
+    public Map<String,Object> getGradeAndSubjectForParent(ObjectId parentId,ObjectId userId,int type2){
+        Map<String,Object> map = new HashMap<String, Object>();
+        //绑定学科
+        NewVersionSubjectEntry newVersionSubjectEntry = newVersionSubjectDao.getEntryByUserId(parentId);
+        List<SubjectClassEntry> subjectClassEntries = null;
+        if(newVersionSubjectEntry==null || newVersionSubjectEntry.getSubjectList().size()==0){
+            subjectClassEntries = subjectClassDao.getList();
+        }else{
+            if(type2==1){
+                subjectClassEntries = subjectClassDao.getList();
+            }else{
+                List<ObjectId> olist = newVersionSubjectEntry.getSubjectList();
+                subjectClassEntries = subjectClassDao.getListByList(olist);
+            }
+
+        }
+        List<ObjectId> oids = new ArrayList<ObjectId>();
+        List<SubjectClassDTO> classDTOs = new ArrayList<SubjectClassDTO>();
+        for(SubjectClassEntry classEntry : subjectClassEntries){
+            oids.add(classEntry.getID());
+            classDTOs.add(new SubjectClassDTO(classEntry));
+        }
+        //所有年级
+        List<CreateGradeEntry> en3 = createGradeDao.getList();
+        List<SubjectClassEntry> entries = subjectClassDao.getList();
+        List<CreateGradeDTO> mlist = new ArrayList<CreateGradeDTO>();
+        for(CreateGradeEntry createGradeEntry : en3){
+            CreateGradeDTO createGradeDTO = new CreateGradeDTO(createGradeEntry);
+            List<SubjectClassDTO> subjectClassDTOs = new ArrayList<SubjectClassDTO>();
+            for(SubjectClassEntry subjectClassEntry : entries){
+                if(createGradeEntry.getSubjectList()!=null && createGradeEntry.getSubjectList().contains(subjectClassEntry.getID())){
+                    subjectClassDTOs.add(new SubjectClassDTO(subjectClassEntry));
+                }
+            }
+            createGradeDTO.setSubjectClassDTOs(subjectClassDTOs);
+            mlist.add(createGradeDTO);
+        }
+        map.put("gradeList",mlist);
+        map.put("subjectList",classDTOs);
+        //加载问题类型
+        List<QuestionTypeDTO> dtoList1 = new ArrayList<QuestionTypeDTO>();
+        List<QuestionTypeEntry> entries1 = questionTypeDao.getTypeList();
+        if(entries1.size()>0){
+            for(QuestionTypeEntry entry2 : entries1){
+                dtoList1.add(new QuestionTypeDTO(entry2));
+            }
+        }
+        map.put("questionTypeList",dtoList1);
+
+        //加载自定义标签
+        List<QuestionTagsDTO> dtoList2 = new ArrayList<QuestionTagsDTO>();
+        List<QuestionTagsEntry> entries3 = questionTagsDao.getReviewList(userId);
+        if(entries3.size()>0){
+            for(QuestionTagsEntry entry3 : entries3){
+                dtoList2.add(new QuestionTagsDTO(entry3));
+            }
+        }
+        map.put("TestTypeList",dtoList2);
+        return map;
+    }
+
+    /**
+     * 旧初次加载
+     */
+    public Map<String,Object> getOldGradeAndSubject(ObjectId userId){
         Map<String,Object> map = new HashMap<String, Object>();
         //获取当前学期
         KeyValue keyValue = this.getCurrTermType();
@@ -192,9 +317,9 @@ public class WrongQuestionService {
     }
 
     /**
-     * 大人端初次加载
+     * 旧大人端初次加载
      */
-    public Map<String,Object> getGradeAndSubjectForParent(ObjectId parentId,ObjectId userId,int type2){
+    public Map<String,Object> getOldGradeAndSubjectForParent(ObjectId parentId,ObjectId userId,int type2){
         Map<String,Object> map = new HashMap<String, Object>();
         NewVersionSubjectEntry newVersionSubjectEntry = newVersionSubjectDao.getEntryByUserId(parentId);
         List<SubjectClassEntry> subjectClassEntries = null;

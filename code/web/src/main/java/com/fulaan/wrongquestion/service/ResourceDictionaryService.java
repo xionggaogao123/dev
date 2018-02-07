@@ -8,6 +8,7 @@ import com.mongodb.DBObject;
 import com.pojo.resources.ResourceDictionaryEntry;
 import com.pojo.utils.MongoUtils;
 import com.pojo.wrongquestion.NameConvertResNameEntry;
+import com.sys.utils.DateTimeUtils;
 import org.bson.types.ObjectId;
 import org.springframework.stereotype.Service;
 
@@ -30,6 +31,7 @@ public class ResourceDictionaryService {
 	{
 		return resourceDictionaryDao.addResourceDictionaryEntry(e);
 	}
+
 	/**
 	 * 详情
 	 * @param id
@@ -210,12 +212,17 @@ public class ResourceDictionaryService {
 	}
 
 	public static void main(String[] args) {
-		NameConvertResNameDao dao = new NameConvertResNameDao();
-		String name = "数学";
-		List<String> names = new ArrayList<String>();
-		names.add("chemical");
-		names.add("音乐");
-		NameConvertResNameEntry entry = new NameConvertResNameEntry(name, names);
-		dao.addNameConvertResNameEntry(entry);
+
+		long startTime = DateTimeUtils.getStrToLongTime("2017-12-05 00:00:00");
+		long endTime = DateTimeUtils.getStrToLongTime("2018-02-07 00:00:00");
+		String str = "";
+		int count = 0;
+		while(startTime < endTime){
+			String str2 = DateTimeUtils.getLongToStrTimeTwo(startTime).substring(0,11);
+			str = str + "'"+str2+"',";
+			startTime = startTime +24*60*60*1000;
+			count ++;
+		}
+		System.out.print(str + count);
 	}
 }

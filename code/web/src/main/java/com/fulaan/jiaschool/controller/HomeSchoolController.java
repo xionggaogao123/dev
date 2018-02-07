@@ -54,6 +54,8 @@ public class HomeSchoolController extends BaseController {
         return JSON.toJSONString(respObj);
     }
 
+
+
     /**
      *  添加新的学校
      * @param dto
@@ -114,7 +116,9 @@ public class HomeSchoolController extends BaseController {
             respObj.setCode(Constant.SUCCESS_CODE);
             CommunityDTO communityDTO = homeSchoolService.selectNewCommunityEntry(id);
             List<CommunityDTO> communityDTOs = new ArrayList<CommunityDTO>();
-            communityDTOs.add(communityDTO);
+            if(communityDTO != null){
+                communityDTOs.add(communityDTO);
+            }
             Map<String,Object> map = new HashMap<String, Object>();
             map.put("list",communityDTOs);
             respObj.setMessage(map);
@@ -171,4 +175,6 @@ public class HomeSchoolController extends BaseController {
         }
         return JSON.toJSONString(respObj);
     }
+
+
 }

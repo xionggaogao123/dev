@@ -996,6 +996,9 @@ public class Constant {
     //系统推送消息
     public static final String COLLECTION_SYSTEM_MESSAGE = "systemmessage";
 
+    //校本资源表
+    public static final String COLLECTION_SCHOOL_APP = "schoolApp";
+
     /*************************************运营管理*****************************************/
     //运营表
     public static final String COLLECTION_BUSINESS_MANAGE= "businessManage";

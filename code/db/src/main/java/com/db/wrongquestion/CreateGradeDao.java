@@ -38,7 +38,7 @@ public class CreateGradeDao extends BaseDao {
                 find(MongoFacroty.getAppDB(),
                         Constant.COLLECTION_CREATE_GRADE,
                         query, Constant.FIELDS,
-                        Constant.MONGO_SORTBY_DESC);
+                        Constant.MONGO_SORTBY_ASC);
         List<CreateGradeEntry> entryList = new ArrayList<CreateGradeEntry>();
         if (dbList != null && !dbList.isEmpty()) {
             for (DBObject obj : dbList) {

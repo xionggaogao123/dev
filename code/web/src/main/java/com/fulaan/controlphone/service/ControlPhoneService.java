@@ -893,6 +893,8 @@ public class ControlPhoneService {
             if(ctm.getType()==1){
                 phoneTimeDTO.setCurrentTime(ctm.getWeek()+"");
             }else if(ctm.getType()==2){
+                phoneTimeDTO.setCurrentTime(ctm.getDataTime().substring(5,10));
+            }else if(ctm.getType()==3){
                 phoneTimeDTO.setCurrentTime(ctm.getDataTime());
             }
 
@@ -1257,6 +1259,8 @@ public class ControlPhoneService {
             if(ctm.getType()==1){
                 phoneTimeDTO.setCurrentTime(ctm.getWeek()+"");
             }else if(ctm.getType()==2){
+                phoneTimeDTO.setCurrentTime(ctm.getDataTime().substring(5,10));
+            }else if(ctm.getType()==3){
                 phoneTimeDTO.setCurrentTime(ctm.getDataTime());
             }
 

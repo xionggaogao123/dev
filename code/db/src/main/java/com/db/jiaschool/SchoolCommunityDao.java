@@ -8,6 +8,9 @@ import com.pojo.jiaschool.SchoolCommunityEntry;
 import com.sys.constants.Constant;
 import org.bson.types.ObjectId;
 
+import java.util.ArrayList;
+import java.util.List;
+
 /**
  * Created by James on 2018/2/2.
  */
@@ -17,6 +20,24 @@ public class SchoolCommunityDao extends BaseDao {
     public ObjectId addEntry(SchoolCommunityEntry entry){
         save(MongoFacroty.getAppDB(), Constant.COLLECTION_COMMUNITY_SCHOOL, entry.getBaseEntry());
         return entry.getID();
+    }
+
+    public List<SchoolCommunityEntry> getReviewList(List<ObjectId> objectIds) {
+        BasicDBObject query = new BasicDBObject()
+                .append("isr", 0); // 未删除
+        query.append("sid",new BasicDBObject(Constant.MONGO_IN,objectIds));
+        List<DBObject> dbList =
+                find(MongoFacroty.getAppDB(),
+                        Constant.COLLECTION_HOME_SCHOOL,
+                        query, Constant.FIELDS,
+                        Constant.MONGO_SORTBY_DESC);
+        List<SchoolCommunityEntry> entryList = new ArrayList<SchoolCommunityEntry>();
+        if (dbList != null && !dbList.isEmpty()) {
+            for (DBObject obj : dbList) {
+                entryList.add(new SchoolCommunityEntry((BasicDBObject) obj));
+            }
+        }
+        return entryList;
     }
 
     //查询

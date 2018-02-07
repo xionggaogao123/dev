@@ -34,6 +34,18 @@ public class HomeSchoolDao extends BaseDao {
         return null;
     }
 
+    //查询
+    public HomeSchoolEntry getEntryBySchoolId(ObjectId schoolId) {
+        BasicDBObject query = new BasicDBObject(Constant.ID,schoolId);
+        query.append("isr",Constant.ZERO);
+        DBObject obj =
+                findOne(MongoFacroty.getAppDB(), Constant.COLLECTION_HOME_SCHOOL, query, Constant.FIELDS);
+        if (obj != null) {
+            return new HomeSchoolEntry((BasicDBObject) obj);
+        }
+        return null;
+    }
+
     public void delEntryById(ObjectId id){
         BasicDBObject query = new BasicDBObject(Constant.ID,id);
         BasicDBObject updateValue=new BasicDBObject(Constant.MONGO_SET,new BasicDBObject("isr",Constant.ONE));

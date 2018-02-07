@@ -6,6 +6,7 @@ import com.db.appmarket.AppDetailDao;
 import com.db.backstage.*;
 import com.db.controlphone.*;
 import com.db.fcommunity.*;
+import com.db.jiaschool.SchoolAppDao;
 import com.db.operation.AppCommentDao;
 import com.db.operation.AppNoticeDao;
 import com.db.operation.AppOperationDao;
@@ -19,6 +20,7 @@ import com.fulaan.controlphone.dto.ControlPhoneDTO;
 import com.fulaan.controlphone.dto.ControlSchoolTimeDTO;
 import com.fulaan.controlphone.dto.ControlSetBackDTO;
 import com.fulaan.indexpage.dto.IndexPageDTO;
+import com.fulaan.jiaschool.dto.SchoolAppDTO;
 import com.fulaan.picturetext.runnable.PictureRunNable;
 import com.fulaan.user.service.UserService;
 import com.fulaan.util.DownloadUtil;
@@ -33,6 +35,7 @@ import com.pojo.fcommunity.CommunityDetailEntry;
 import com.pojo.fcommunity.CommunityEntry;
 import com.pojo.fcommunity.MemberEntry;
 import com.pojo.indexPage.IndexPageEntry;
+import com.pojo.jiaschool.SchoolAppEntry;
 import com.pojo.newVersionGrade.CommunityType;
 import com.pojo.operation.AppCommentEntry;
 import com.pojo.operation.AppOperationEntry;
@@ -110,6 +113,8 @@ public class BackStageService {
     private GroupDao groupDao = new GroupDao();
 
     private NewVersionCommunityBindDao  newVersionCommunityBindDao = new NewVersionCommunityBindDao();
+
+    private SchoolAppDao schoolAppDao = new SchoolAppDao();
 
 
 
@@ -385,10 +390,10 @@ public class BackStageService {
         if(entry != null){
             if(type==2){
                 teacherApproveDao.updateEntry(id, type);
-                this.addLogMessage(entry.getID().toString(),"通过老师验证",LogMessageType.teaValidate.getDes(),userId.toString());
+                this.addLogMessage(entry.getID().toString(),"通过老师验证："+entry.getName(),LogMessageType.teaValidate.getDes(),userId.toString());
             }else if (type==3){
                 teacherApproveDao.updateEntry(id,type);
-                this.addLogMessage(entry.getID().toString(),"不通过老师验证",LogMessageType.teaValidate.getDes(),userId.toString());
+                this.addLogMessage(entry.getID().toString(),"不通过老师验证："+entry.getName(),LogMessageType.teaValidate.getDes(),userId.toString());
             }
         }else{
             if(type==2){
@@ -399,7 +404,7 @@ public class BackStageService {
                 dto.setApproveId(userId.toString());
                 dto.setType(type);
                 String oid = teacherApproveDao.addEntry(dto.buildAddEntry());
-                this.addLogMessage(oid.toString(),"通过老师验证",LogMessageType.teaValidate.getDes(),userId.toString());
+                this.addLogMessage(oid.toString(),"通过老师验证："+userEntry.getUserName(),LogMessageType.teaValidate.getDes(),userId.toString());
             }else if (type==3){
                 TeacherApproveDTO dto = new TeacherApproveDTO();
                 UserEntry userEntry = userService.findById(id);
@@ -408,7 +413,7 @@ public class BackStageService {
                 dto.setApproveId(userId.toString());
                 dto.setType(type);
                 String oid = teacherApproveDao.addEntry(dto.buildAddEntry());
-                this.addLogMessage(oid.toString(),"不通过老师验证",LogMessageType.teaValidate.getDes(),userId.toString());
+                this.addLogMessage(oid.toString(),"不通过老师验证："+userEntry.getUserName(),LogMessageType.teaValidate.getDes(),userId.toString());
             }
         }
     }
@@ -434,7 +439,7 @@ public class BackStageService {
                 }catch (Exception e){
 
                 }
-                this.addLogMessage(entry.getID().toString(), "通过老师验证", LogMessageType.teaValidate.getDes(), userId.toString());
+                this.addLogMessage(entry.getID().toString(), "通过老师验证："+entry1.getUserName(), LogMessageType.teaValidate.getDes(), userId.toString());
             }else if (type==3){
                 try{
                     String oldUrl = entry.getOldAvatar();
@@ -445,7 +450,7 @@ public class BackStageService {
                 }catch (Exception e){
 
                 }
-                this.addLogMessage(entry.getID().toString(),"不通过老师验证",LogMessageType.teaValidate.getDes(),userId.toString());
+                this.addLogMessage(entry.getID().toString(),"不通过老师验证："+entry1.getUserName(),LogMessageType.teaValidate.getDes(),userId.toString());
             }
         }else{
             if(type==2){
@@ -464,7 +469,7 @@ public class BackStageService {
                     userDao.updateAvater(id,newUrl);
                     memberDao.updateAllAvatar(id, newUrl);
                     String oid = teacherApproveDao.addEntry(dto.buildAddEntry());
-                    this.addLogMessage(oid.toString(),"通过老师验证",LogMessageType.teaValidate.getDes(),userId.toString());
+                    this.addLogMessage(oid.toString(),"通过老师验证："+entry1.getUserName(),LogMessageType.teaValidate.getDes(),userId.toString());
                 }catch (Exception e){
 
                 }
@@ -482,7 +487,7 @@ public class BackStageService {
                     dto.setNewAvatar(newUrl);
                     //不管
                     String oid = teacherApproveDao.addEntry(dto.buildAddEntry());
-                    this.addLogMessage(oid.toString(),"不通过老师验证",LogMessageType.teaValidate.getDes(),userId.toString());
+                    this.addLogMessage(oid.toString(),"不通过老师验证："+entry1.getUserName(),LogMessageType.teaValidate.getDes(),userId.toString());
                 }catch (Exception e){
 
                 }
@@ -593,6 +598,28 @@ public class BackStageService {
             this.addLogMessage(id.toString(),"移除应用黑名单："+entry.getAppName()+"，包名："+entry.getAppPackageName(),LogMessageType.black.getDes(),userId.toString());
         }
 
+    }
+    //添加为学校推送
+    public void addSchoolAppEntry(ObjectId userId,ObjectId appId,ObjectId schoolId){
+        AppDetailEntry entry = appDetailDao.findEntryById(appId);
+        if(entry != null){
+            SchoolAppEntry entry1 = schoolAppDao.getEntryById(schoolId);
+            if(entry1 == null){
+                SchoolAppDTO dto = new SchoolAppDTO();
+                List<String> stringList = new ArrayList<String>();
+                stringList.add(appId.toString());
+                String id = schoolAppDao.addEntry(dto.buildAddEntry()).toString();
+                this.addLogMessage(id.toString(),"添加学校推送应用："+entry.getAppName()+"，包名："+entry.getAppPackageName(),LogMessageType.schoolApp.getDes(),userId.toString());
+            }else{
+                List<ObjectId> ob = entry1.getAppIdList();
+                if(!ob.contains(appId)){
+                    ob.add(appId);
+                    entry1.setAppIdList(ob);
+                    schoolAppDao.updEntry(entry1);
+                    this.addLogMessage(entry1.getID().toString(),"添加学校推送应用："+entry.getAppName()+"，包名："+entry.getAppPackageName(),LogMessageType.schoolApp.getDes(),userId.toString());
+                }
+            }
+        }
     }
     //添加为系统推送
     public void addSystemAppEntry(ObjectId userId,ObjectId appId){
@@ -840,14 +867,17 @@ public class BackStageService {
     }
 
 
-    public void saveUserRole(String userId,int role){
+    public void saveUserRole(ObjectId uid,String userId,int role){
         UserLogResultEntry resultEntry=userLogResultDao.getEntryByUserId(new ObjectId(userId));
+        UserEntry userEntry = userDao.findByUserId(new ObjectId(userId));
         if(null!=resultEntry){
             resultEntry.setRole(role);
+            this.addLogMessage(resultEntry.getID().toString(),"修改了"+userEntry.getUserName()+"的权限为"+role,LogMessageType.manageUserRole.getDes(),uid.toString());
             userLogResultDao.saveUserLogEntry(resultEntry);
         }else{
             UserLogResultEntry entry=new UserLogResultEntry(new ObjectId(userId),role);
             userLogResultDao.saveUserLogEntry(entry);
+            this.addLogMessage(entry.getID().toString(),"新增了管理员用户"+userEntry.getUserName()+"权限为"+role,LogMessageType.manageUserRole.getDes(),uid.toString());
         }
     }
 

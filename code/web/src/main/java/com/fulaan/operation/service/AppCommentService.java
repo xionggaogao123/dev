@@ -27,6 +27,7 @@ import com.fulaan.pojo.Attachement;
 import com.fulaan.pojo.User;
 import com.fulaan.service.CommunityService;
 import com.fulaan.user.service.UserService;
+import com.fulaan.util.NewStringUtil;
 import com.fulaan.utils.JPushUtils;
 import com.fulaan.wrongquestion.dto.SubjectClassDTO;
 import com.mongodb.DBObject;
@@ -47,16 +48,10 @@ import com.sys.constants.Constant;
 import com.sys.utils.AvatarUtils;
 import com.sys.utils.DateTimeUtils;
 import com.sys.utils.TimeChangeUtils;
-import org.apache.struts2.ServletActionContext;
 import org.bson.types.ObjectId;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import org.springframework.util.ResourceUtils;
 
-import javax.xml.parsers.ParserConfigurationException;
-import java.io.File;
-import java.io.InputStream;
-import java.net.URL;
 import java.util.*;
 
 /**
@@ -376,25 +371,10 @@ public class AppCommentService {
         map.put("desc",dtoa);
         return map;
     }
-    public static void main(String[] args) throws ParserConfigurationException, Exception {
-        try{
-            AppCommentService te = new AppCommentService();
-            ClassLoader classLoader = te.getClass().getClassLoader();
-            String t=Thread.currentThread().getContextClassLoader().getResource("").getPath();
-            String r = t.replaceFirst("/classes", "");
-            java.net.URL configUrl= te.getClass().getResource(File.separator+ "config.json");
-            URL resource = classLoader.getResource(r+"test-classes/config.json");
-            File jsonFile = ResourceUtils.getFile("classpath:config/config.json");
-            InputStream s = ServletActionContext.getServletContext().getResourceAsStream("/WEB-INF/config/config.json");
-
-            String path = resource.getPath();
-            System.out.println(path);
-
-            //  InputStream resourceAsStream = classLoader.getResourceAsStream("test.xml");
-        }catch (Exception e){
-
-        }
-
+    public static void main(String[] args){
+        String str = "drgsdfdgdfsg'/t'";
+        String newStr = NewStringUtil.toGoodJsonStr(str);
+        System.out.print(newStr);
     }
     /**
      * 查询当前作业签到名单

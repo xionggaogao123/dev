@@ -4,6 +4,7 @@ import com.db.appmarket.AppDetailCommentDao;
 import com.db.appmarket.AppDetailDao;
 import com.db.appmarket.AppDetailStarStatisticDao;
 import com.db.backstage.JxmAppVersionDao;
+import com.db.jiaschool.SchoolAppDao;
 import com.fulaan.apkForParse.apkResolverParse.entity.ApkInfo;
 import com.fulaan.apkForParse.apkResolverParse.utils.ApkUtil;
 import com.fulaan.apkForParse.apkResolverParse.utils.IconUtil;
@@ -21,6 +22,7 @@ import com.pojo.appmarket.AppDetailStarStatisticEntry;
 import com.pojo.backstage.JxmAppVersionEntry;
 import com.pojo.backstage.LogMessageType;
 import com.pojo.fcommunity.AttachmentEntry;
+import com.pojo.jiaschool.SchoolAppEntry;
 import com.pojo.user.UserEntry;
 import com.sys.constants.Constant;
 import com.sys.props.Resources;
@@ -45,6 +47,8 @@ import java.util.*;
 public class AppMarketService {
 
     private AppDetailDao appDetailDao = new AppDetailDao();
+
+    private SchoolAppDao schoolAppDao = new SchoolAppDao();
 
     private AppDetailCommentDao appDetailCommentDao = new AppDetailCommentDao();
 
@@ -83,6 +87,24 @@ public class AppMarketService {
     public List<AppDetailDTO> searchFulanAppByCondition(String regular) {
         List<AppDetailDTO> detailDTOs = new ArrayList<AppDetailDTO>();
         List<AppDetailEntry> appDetailEntries = appDetailDao.searchFulanAppByCondition(regular);
+        for (AppDetailEntry entry : appDetailEntries) {
+            detailDTOs.add(new AppDetailDTO(entry));
+        }
+        return detailDTOs;
+    }
+
+    public List<AppDetailDTO> searchSchoolAppByCondition(String regular,String schoolId) {
+        List<AppDetailDTO> detailDTOs = new ArrayList<AppDetailDTO>();
+        List<AppDetailEntry> appDetailEntries = new ArrayList<AppDetailEntry>();
+        if(schoolId != null && !schoolId.equals("")){
+            SchoolAppEntry schoolAppEntry = schoolAppDao.getEntryById(new ObjectId(schoolId));
+            if(schoolAppEntry!=null && schoolAppEntry.getAppIdList()!= null){
+                appDetailEntries = appDetailDao.searchSchoolAppByIds(schoolAppEntry.getAppIdList());
+            }
+        }else{
+            appDetailEntries = appDetailDao.searchSchoolAppByCondition(regular);
+        }
+
         for (AppDetailEntry entry : appDetailEntries) {
             detailDTOs.add(new AppDetailDTO(entry));
         }
@@ -424,6 +446,108 @@ public class AppMarketService {
         backStageService.addLogMessage(userId.toString(), "添加了新的复兰应用："+packageName, LogMessageType.table.getDes(), userId.toString());
         destFile.delete();
         imageFile.delete();
+    }
+
+    //学校（校本资源推送）
+    public String importApkFile3(MultipartFile file, InputStream inputStream, String fileName,ObjectId userId) throws Exception {
+        ObjectId id = new ObjectId();
+        final String anOSName = System.getProperty("os.name");
+        String bathPath = Resources.getProperty("upload.file");
+        if (anOSName.toLowerCase().startsWith("windows")) {
+            bathPath= Resources.getProperty("uploads.file");
+        }
+        File dir = new File(bathPath);
+        if (!dir.exists()) {
+            dir.mkdirs();
+        }
+        File destFile = new File(bathPath, fileName);
+        if (!destFile.exists()) {
+            destFile.createNewFile();
+        }
+        file.transferTo(destFile);
+        String fileKey = id.toString() + Constant.POINT + FilenameUtils.getExtension(fileName);
+        String extName = FilenameUtils.getExtension(fileName);
+        String path = "";
+        if (extName.equalsIgnoreCase("amr")) {
+            String saveFileKey = new ObjectId().toString() + ".mp3";
+            com.sys.utils.QiniuFileUtils.convertAmrToMp3(fileKey, saveFileKey, inputStream);
+            path = QiniuFileUtils.getPath(QiniuFileUtils.TYPE_DOCUMENT, saveFileKey);
+        } else {
+            QiniuFileUtils.uploadFile(fileKey, inputStream, QiniuFileUtils.TYPE_DOCUMENT);
+            path = QiniuFileUtils.getPath(QiniuFileUtils.TYPE_DOCUMENT, fileKey);
+        }
+        Map<String, Object> apkSize = GetApkSize.getFilePath(destFile);
+        long size = 0L;
+        if (null != apkSize.get("size")) {
+            size = Long.valueOf(String.valueOf(apkSize.get("size")));
+            System.out.println(size);
+        }
+        String sizeStr = "";
+        if (null != apkSize.get("apkSize")) {
+            sizeStr = String.valueOf(apkSize.get("apkSize"));
+            System.out.println(sizeStr);
+        }
+        ApkUtil apkUtil = new ApkUtil();
+        ApkInfo apkInfo = apkUtil.getApkInfo(destFile.getPath());
+        String imageFileName = new ObjectId().toString() + Constant.POINT + "png";
+        String imageFilePath = bathPath +"/"+ imageFileName;
+        if(anOSName.toLowerCase().startsWith("windows")) {
+            imageFilePath = bathPath + "\\" + imageFileName;
+        }
+        File imageFile = new File(imageFilePath);
+        IconUtil.extractFileFromApk(destFile.getPath(), apkInfo.getApplicationIcon(), imageFilePath);
+        QiniuFileUtils.uploadFile(imageFileName, new FileInputStream(new File(imageFilePath)), QiniuFileUtils.TYPE_IMAGE);
+        String imageFileUrl = QiniuFileUtils.getPath(QiniuFileUtils.TYPE_IMAGE, imageFileName);
+
+        String packageName = apkInfo.getPackageName();
+        AppDetailEntry entry = appDetailDao.getEntryByApkPackageName(packageName);
+        String osid = "";
+        if (null != entry) {
+            if(entry.getType()==3){
+                AppDetailEntry
+                        updateEntry = new AppDetailEntry(entry.getID(),
+                        packageName,
+                        imageFileUrl,
+                        Constant.THREE,
+                        size,
+                        Integer.valueOf(apkInfo.getVersionCode()),
+                        entry.getIsControl(),
+                        entry.getWhiteOrBlack(),
+                        sizeStr,
+                        new ArrayList<AttachmentEntry>(),
+                        apkInfo.getVersionName(),
+                        Constant.EMPTY,
+                        apkInfo.getApplicationLable(),
+                        path,
+                        fileKey);
+                appDetailDao.saveAppDetailEntry(updateEntry);
+                osid = entry.getID().toString();
+
+            }
+        } else {
+            AppDetailEntry
+                    newEntry = new AppDetailEntry(
+                    packageName,
+                    imageFileUrl,
+                    Constant.THREE,
+                    size,
+                    Integer.valueOf(apkInfo.getVersionCode()),
+                    Constant.ONE,
+                    Constant.TWO,
+                    sizeStr,
+                    new ArrayList<AttachmentEntry>(),
+                    apkInfo.getVersionName(),
+                    Constant.EMPTY,
+                    apkInfo.getApplicationLable(),
+                    path,
+                    fileKey);
+            appDetailDao.saveAppDetailEntry(newEntry);
+            osid = newEntry.getID().toString();
+        }
+        backStageService.addLogMessage(userId.toString(), "添加了新的校本资源："+packageName, LogMessageType.table.getDes(), userId.toString());
+        destFile.delete();
+        imageFile.delete();
+        return osid;
     }
 
     public void addDescription(ObjectId id,String content,ObjectId userId){

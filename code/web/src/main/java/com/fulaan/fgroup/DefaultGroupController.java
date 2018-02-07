@@ -12,12 +12,14 @@ import com.fulaan.fgroup.dto.GroupDTO;
 import com.fulaan.fgroup.service.EmService;
 import com.fulaan.fgroup.service.GroupService;
 import com.fulaan.friendscircle.service.FriendService;
+import com.fulaan.newVersionBind.service.NewVersionBindService;
 import com.fulaan.pojo.*;
 import com.fulaan.service.CommunityService;
 import com.fulaan.service.GroupNoticeService;
 import com.fulaan.service.MemberService;
 import com.fulaan.user.service.UserService;
 import com.pojo.fcommunity.CommunityDetailType;
+import com.pojo.fcommunity.GroupEntry;
 import com.pojo.fcommunity.MemberEntry;
 import com.pojo.user.UserDetailInfoDTO;
 import com.pojo.user.UserEntry;
@@ -63,6 +65,8 @@ public class DefaultGroupController extends BaseController {
     private GroupNoticeService groupNoticeService;
     @Autowired
     private CommunityService communityService;
+    @Autowired
+    private NewVersionBindService newVersionBindService;
     @Autowired
     private EmService emService;
 
@@ -216,30 +220,48 @@ public class DefaultGroupController extends BaseController {
     @ResponseBody
     public RespObj inviteMember(String emChatId,
                                 String userIds) throws IOException, IllegalParamException {
-        ObjectId groupId = groupService.getGroupIdByChatId(emChatId);
-        GroupDTO groupDTO = groupService.findById(groupId,getUserId());
-        List<ObjectId> userList = MongoUtils.convertObjectIds(userIds);
-        for (ObjectId personId : userList) {
-            if (!memberService.isGroupMember(groupId, personId)) {
-                if (emService.addUserToEmGroup(emChatId, personId)) {
-                    if (memberService.isBeforeMember(groupId, personId)) {
-                        memberService.updateMember(groupId, personId, 0);
-                    } else {
-                        memberService.saveMember(personId, groupId);
-                    }
-                    if (groupDTO.isBindCommunity()) {
-                        communityService.setPartIncontentStatus(new ObjectId(groupDTO.getCommunityId()), personId, 0);
-                        communityService.pushToUser(new ObjectId(groupDTO.getCommunityId()), personId, 1);
+        RespObj respObj = new RespObj(Constant.FAILD_CODE);
+        try {
+//            ObjectId groupId = groupService.getGroupIdByChatId(emChatId);
+            GroupEntry groupEntry = groupService.getGroupEntryByEmchatId(emChatId);
+            if(null==groupEntry){
+                throw new Exception("传入的环信Id有误");
+            }
+            ObjectId groupId=groupEntry.getID();
+            GroupDTO groupDTO = groupService.findById(groupId, getUserId());
+            List<ObjectId> userList = MongoUtils.convertObjectIds(userIds);
+            if(null!=groupEntry.getCommunityId()){
+                //判断是社群时，不能把学生拉进去社群
+                if(newVersionBindService.judgeUserStudent(userList)){
+                    throw new Exception("不能把学生拉进社群");
+                }
+            }
+            for (ObjectId personId : userList) {
+                if (!memberService.isGroupMember(groupId, personId)) {
+                    if (emService.addUserToEmGroup(emChatId, personId)) {
+                        if (memberService.isBeforeMember(groupId, personId)) {
+                            memberService.updateMember(groupId, personId, 0);
+                        } else {
+                            memberService.saveMember(personId, groupId);
+                        }
+                        if (groupDTO.isBindCommunity()) {
+                            communityService.setPartIncontentStatus(new ObjectId(groupDTO.getCommunityId()), personId, 0);
+                            communityService.pushToUser(new ObjectId(groupDTO.getCommunityId()), personId, 1);
+                        }
                     }
                 }
             }
+            //更新群聊头像
+            groupService.asyncUpdateHeadImage(groupId);
+            if (groupDTO.getIsM() == 0) {
+                groupService.asyncUpdateGroupNameByMember(new ObjectId(groupDTO.getId()));
+            }
+            respObj.setCode(Constant.SUCCESS_CODE);
+            respObj.setMessage("操作成功");
+        }catch (Exception e){
+             respObj.setErrorMessage(e.getMessage());
         }
-        //更新群聊头像
-        groupService.asyncUpdateHeadImage(groupId);
-        if (groupDTO.getIsM() == 0) {
-            groupService.asyncUpdateGroupNameByMember(new ObjectId(groupDTO.getId()));
-        }
-        return RespObj.SUCCESS("操作成功");
+        return respObj;
     }
 
     /**

@@ -213,6 +213,11 @@ public class GroupService {
         return groupDao.getGroupIdByEmchatId(chatId);
     }
 
+
+    public GroupEntry getGroupEntryByEmchatId(String chatId){
+        return groupDao.getGroupEntryByEmchatId(chatId);
+    }
+
     /**
      * findObjectId
      *

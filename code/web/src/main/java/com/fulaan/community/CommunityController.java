@@ -128,6 +128,10 @@ public class CommunityController extends BaseController {
                                    @ApiParam(name = "logo", required = false, value = "社区logo") @RequestParam(required = false, defaultValue = "") StringBuffer logo,
                                    @ApiParam(name = "open", required = false, value = "社区是否公开标志位,0是不公开，1是公开") @RequestParam(required = false, defaultValue = "0") int open,
                                    @ApiParam(name = "userIds", required = false, value = "加入群组人员列表") @RequestParam(required = false, defaultValue = "") String userIds) throws Exception {
+        List<ObjectId> userList = MongoUtils.convertObjectIds(userIds);
+        if(newVersionBindService.judgeUserStudent(userList)){
+            return RespObj.FAILDWithErrorMsg("不能把学生拉进社群");
+        }
         Validate validate = detectCondition(name, desc, logo);
         if (!validate.isOk()) {
             return RespObj.FAILDWithErrorMsg(validate.getMessage());
@@ -152,7 +156,6 @@ public class CommunityController extends BaseController {
         communitySystemInfoService.saveOrupdateEntry(getUserId(), getUserId(), "社长", 5, commId);
         if (StringUtils.isNotBlank(userIds)) {
             GroupDTO groupDTO = groupService.findById(new ObjectId(communityDTO.getGroupId()),uid);
-            List<ObjectId> userList = MongoUtils.convertObjectIds(userIds);
             for (ObjectId userId : userList) {
                 if (emService.addUserToEmGroup(groupDTO.getEmChatId(), userId)) {
                     memberService.saveMember(userId, new ObjectId(groupDTO.getId()), 0);

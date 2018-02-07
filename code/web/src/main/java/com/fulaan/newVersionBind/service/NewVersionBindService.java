@@ -983,4 +983,19 @@ public class NewVersionBindService {
 
 
 
+    public boolean judgeUserStudent(List<ObjectId> userIds){
+        boolean flag= false;
+        Map<ObjectId,Integer> userRole = newVersionUserRoleDao.getUserRoleMap(userIds);
+        for(Map.Entry<ObjectId,Integer> roleItem:userRole.entrySet()){
+            int role = roleItem.getValue();
+            if(role==Constant.ONE||role==Constant.TWO){
+                flag=true;
+                break;
+            }
+        }
+        return flag;
+    }
+
+
+
 }

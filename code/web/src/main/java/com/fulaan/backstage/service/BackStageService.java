@@ -955,6 +955,29 @@ public class BackStageService {
        // indexPageDao.addEntry(entry);
     }
 
+    public void setAutoChildFriends(final String[] uIds,final List<ObjectId> communityIds){
+        new Thread(new Runnable() {
+            @Override
+            public void run() {
+                List<ObjectId> allIds = new ArrayList<ObjectId>();
+                for(String userId:uIds){
+                    allIds.add(new ObjectId(userId));
+                }
+                for(ObjectId communityId:communityIds) {
+                    List<ObjectId> userIds = newVersionCommunityBindDao.getStudentListByCommunityId(communityId);
+                    Set<ObjectId> userSet = new HashSet<ObjectId>();
+                    userSet.addAll(userIds);
+                    userSet.addAll(allIds);
+                    if (allIds.size() > 0) {
+                        for (ObjectId itemId : allIds) {
+                            set(itemId, new ArrayList<ObjectId>(userSet));
+                        }
+                    }
+                }
+            }
+        }).start();
+    }
+
     public void setChildAutoFriends(final String[] uIds,final ObjectId communityId){
         new Thread(new Runnable() {
             @Override

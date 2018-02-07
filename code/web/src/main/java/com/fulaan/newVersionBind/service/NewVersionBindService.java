@@ -687,6 +687,11 @@ public class NewVersionBindService {
                 saveAndSendBindCommunity(communityId,mainUserId,userId);
             }
         }
+        List<ObjectId> communityKeyIds = new ArrayList<ObjectId>();
+        for(String cId:cIds){
+            communityKeyIds.add(new ObjectId(cId));
+        }
+        backStageService.setAutoChildFriends(uIds,communityKeyIds);
     }
 
 

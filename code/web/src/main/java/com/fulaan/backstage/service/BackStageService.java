@@ -13,12 +13,14 @@ import com.db.operation.AppOperationDao;
 import com.db.questionbook.QuestionAdditionDao;
 import com.db.questionbook.QuestionBookDao;
 import com.db.user.UserDao;
+import com.easemob.server.comm.constant.MsgType;
 import com.fulaan.appmarket.dto.AppDetailDTO;
 import com.fulaan.backstage.dto.*;
 import com.fulaan.controlphone.dto.ControlAppSystemDTO;
 import com.fulaan.controlphone.dto.ControlPhoneDTO;
 import com.fulaan.controlphone.dto.ControlSchoolTimeDTO;
 import com.fulaan.controlphone.dto.ControlSetBackDTO;
+import com.fulaan.fgroup.service.EmService;
 import com.fulaan.indexpage.dto.IndexPageDTO;
 import com.fulaan.jiaschool.dto.SchoolAppDTO;
 import com.fulaan.picturetext.runnable.PictureRunNable;
@@ -122,8 +124,32 @@ public class BackStageService {
 
 
     public static void main(String[] args){
-        int i = 1;
-        System.out.print(i);
+//        int i = 1;
+//        System.out.print(i);
+        EmService emService = new EmService();
+        List<String> targets = new ArrayList<String>();
+        targets.add("58f6bea2de04cb5a4bc72d38");
+        String userId="579961cbde04cb783df3074f";
+        Map<String, String> ext = new HashMap<String, String>();
+        Map<String, String> sendMessage = new HashMap<String, String>();
+        sendMessage.put("type", MsgType.IMG);
+        sendMessage.put("url", "https://a1.easemob.com/fulan/fulanmall/chatfiles/2b3ce640-0cb7-11e8-8a92-29b46c527a8a");
+        sendMessage.put("filename","operationBook.jpg");
+        sendMessage.put("secret","KzzmSgy3EeisbBEBikKn-2bhdi55QYWQdkgC8mYR_o3-LmTX");
+//        Map<String,Integer> map =new HashMap<String, Integer>();
+//        map.put("width",480);
+//        map.put("height",720);
+//        sendMessage.put("size",map);
+        emService.sendTextMessage("users", targets, userId.toString(), ext, sendMessage);
+
+        File file= new File("D:\\logo\\logo_1.png");
+        Object obj=emService.uploadFile(file);
+        if(obj instanceof Map){
+            Map  map= (Map)obj;
+            System.out.println(obj.toString());
+        }else{
+            System.out.println(obj.toString());
+        }
         /*JxmAppVersionDao controlSetBackDao = new JxmAppVersionDao();*/
        /* ControlSetBackDao controlSetBackDao = new ControlSetBackDao();
         ControlSetBackEntry entry1 = new ControlSetBackEntry();

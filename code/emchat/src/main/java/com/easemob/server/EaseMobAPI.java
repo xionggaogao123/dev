@@ -1,6 +1,7 @@
 package com.easemob.server;
 
 import com.easemob.server.api.ChatGroupAPI;
+import com.easemob.server.api.FileAPI;
 import com.easemob.server.api.IMUserAPI;
 import com.easemob.server.api.SendMessageAPI;
 import com.easemob.server.comm.ClientContext;
@@ -24,6 +25,7 @@ public class EaseMobAPI {
     private static IMUserAPI user = (IMUserAPI) factory.newInstance(EasemobRestAPIFactory.USER_CLASS);
     private static ChatGroupAPI chatgroup = (ChatGroupAPI) factory.newInstance(EasemobRestAPIFactory.CHATGROUP_CLASS);
     private static SendMessageAPI sendMessageAPI =(SendMessageAPI) factory.newInstance(EasemobRestAPIFactory.SEND_MESSAGE_CLASS);
+    private static FileAPI fileAPI = (FileAPI)factory.newInstance(EasemobRestAPIFactory.FILE_CLASS);
     /**
      * 创建用户 - 无昵称
      *
@@ -32,6 +34,11 @@ public class EaseMobAPI {
     public static void createUser(String userId) {
         BodyWrapper userBody = new IMUserBody(userId, "123456", userId);
         user.createNewIMUserSingle(userBody);
+    }
+
+
+    public static Object uploadFile(Object file){
+        return fileAPI.uploadFile(file);
     }
 
 

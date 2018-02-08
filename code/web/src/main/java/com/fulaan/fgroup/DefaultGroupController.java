@@ -4,6 +4,7 @@ import com.easemob.server.EaseMobAPI;
 import com.easemob.server.comm.constant.MsgType;
 import com.fulaan.annotation.ObjectIdType;
 import com.fulaan.annotation.SessionNeedless;
+import com.fulaan.backstage.service.BackStageService;
 import com.fulaan.base.BaseController;
 import com.fulaan.community.dto.CommunityDTO;
 import com.fulaan.community.dto.CommunityDetailDTO;
@@ -63,6 +64,8 @@ public class DefaultGroupController extends BaseController {
     private UserService userService;
     @Autowired
     private GroupNoticeService groupNoticeService;
+    @Autowired
+    private BackStageService backStageService;
     @Autowired
     private CommunityService communityService;
     @Autowired
@@ -251,11 +254,23 @@ public class DefaultGroupController extends BaseController {
                     }
                 }
             }
+
+            //自动加为好友(社群拉人自动加为好友)
+            if(groupDTO.isBindCommunity()) {
+                List<String> keysList=MongoUtils.convertToStringList(userList);
+                if(keysList.size()>0) {
+                    List<ObjectId> communityIds = new ArrayList<ObjectId>();
+                    communityIds.add(groupEntry.getCommunityId());
+                    String[] keys = keysList.toArray(new String[keysList.size()]);
+                    backStageService.setAutoChildFriends(keys,communityIds);
+                }
+            }
             //更新群聊头像
             groupService.asyncUpdateHeadImage(groupId);
             if (groupDTO.getIsM() == 0) {
                 groupService.asyncUpdateGroupNameByMember(new ObjectId(groupDTO.getId()));
             }
+
             respObj.setCode(Constant.SUCCESS_CODE);
             respObj.setMessage("操作成功");
         }catch (Exception e){
@@ -762,5 +777,33 @@ public class DefaultGroupController extends BaseController {
         return respObj;
     }
 
+
+    @ApiOperation(value = "获取孩子的群组列表", httpMethod = "GET", produces = "application/json")
+    @ApiResponses( value = {@ApiResponse(code = 200, message = "Successful — 请求已完成",response = RespObj.class)})
+    @RequestMapping("/getAdrress")
+    @ResponseBody
+    public RespObj getAdrress(){
+        RespObj respObj = new RespObj(Constant.SUCCESS_CODE);
+        Object obj = groupService.getAddress();
+        respObj.setMessage(obj);
+        return respObj;
+    }
+
+
+    @ApiOperation(value = "获取孩子的群组列表", httpMethod = "GET", produces = "application/json")
+    @ApiResponses( value = {@ApiResponse(code = 200, message = "Successful — 请求已完成",response = RespObj.class)})
+    @RequestMapping("/sendTestMessage")
+    @ResponseBody
+    public RespObj sendTestMessage(){
+        RespObj respObj=new RespObj(Constant.FAILD_CODE);
+        try {
+            boolean k=groupService.sendTestMessage();
+            respObj.setCode(Constant.SUCCESS_CODE);
+            respObj.setMessage(k);
+        }catch (Exception e){
+            respObj.setErrorMessage(e.getMessage());
+        }
+        return respObj;
+    }
 
 }

@@ -5,6 +5,7 @@ import com.db.fcommunity.MemberDao;
 import com.db.groupchatrecord.GroupChatRecordDao;
 import com.db.groupchatrecord.RecordChatPersonalDao;
 import com.db.groupchatrecord.RecordTotalChatDao;
+import com.easemob.server.comm.constant.MsgType;
 import com.fulaan.fgroup.dto.GroupChatRecordDTO;
 import com.fulaan.fgroup.dto.GroupDTO;
 import com.fulaan.dto.MemberDTO;
@@ -48,6 +49,9 @@ public class GroupService {
 
     @Autowired
     private UserService userService;
+
+    @Autowired
+    private EmService emService;
 
     private GroupDao groupDao = new GroupDao();
     private MemberDao memberDao = new MemberDao();
@@ -564,6 +568,29 @@ public class GroupService {
         result.put("page",page);
         result.put("pageSize",pageSize);
         return result;
+    }
+
+
+    public Object getAddress(){
+//        File file = new File();
+        File file= new File("D:\\logo\\logo_1.png");
+        Object obj=emService.uploadFile(file);
+        return obj;
+    }
+
+    public boolean sendTestMessage(){
+        List<String> targets = new ArrayList<String>();
+        targets.add("58f6bea2de04cb5a4bc72d38");
+        String userId="579961cbde04cb783df3074f";
+        Map<String, String> ext = new HashMap<String, String>();
+        Map<String, String> sendMessage = new HashMap<String, String>();
+//        sendMessage.put("type", MsgType.IMG);
+//        sendMessage.put("url", "https://a1.easemob.com/fulan/fulanmall/chatfiles/2b3ce640-0cb7-11e8-8a92-29b46c527a8a");
+//        sendMessage.put("filename","operationBook.jpg");
+//        sendMessage.put("secret","KzzmSgy3EeisbBEBikKn-2bhdi55QYWQdkgC8mYR_o3-LmTX");
+        sendMessage.put("type", MsgType.TEXT);
+        sendMessage.put("msg", "张庆最帅");
+        return emService.sendTextMessage("users", targets, userId, ext, sendMessage);
     }
 
 

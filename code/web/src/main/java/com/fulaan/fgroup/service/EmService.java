@@ -68,4 +68,9 @@ public class EmService {
         ResponseWrapper responseWrapper = EaseMobAPI.sendTextMessage(targetType, targets, from, ext, msg);
         return responseWrapper.getResponseStatus() == 200;
     }
+
+
+    public Object uploadFile(Object file){
+        return EaseMobAPI.uploadFile(file);
+    }
 }

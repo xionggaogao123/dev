@@ -471,6 +471,10 @@ public class EBusinessUserController extends BaseController {
             model.put("userId",userId.toString());
             model.put("message", "注册成功");
             model.put("code", 200);
+            //发送消息
+//            String userCode="";
+//            UserEntry entry = userService.getUserEntryByUserCode(userCode);
+
             // 登录
             login(userName, passWord, response, request);
         } else {

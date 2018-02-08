@@ -650,6 +650,12 @@ public class UserService extends BaseService {
         return userDao.getUserEntry(id, Constant.FIELDS);
     }
 
+
+    public UserEntry getUserEntryByUserCode(String userCode){
+        return userDao.getJiaUserEntry(userCode);
+    }
+
+
     public UserEntry findByGenerateCode(String generateCode) {
         return userDao.getGenerateCodeEntry(generateCode);
     }

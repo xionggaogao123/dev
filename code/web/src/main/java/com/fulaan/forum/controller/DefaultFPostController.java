@@ -12,6 +12,7 @@ import com.fulaan.screenshot.Encoder;
 import com.fulaan.screenshot.EncoderException;
 import com.fulaan.service.ConcernService;
 import com.fulaan.user.service.UserService;
+import com.fulaan.util.ObjectIdPackageUtil;
 import com.fulaan.utils.QiniuFileUtils;
 import com.fulaan.video.service.VideoService;
 import com.pojo.app.FileUploadDTO;
@@ -3172,7 +3173,14 @@ public class DefaultFPostController extends BaseController {
         long stars = fLevelService.getStars(userEntry.getForumExperience());
         model.put("stars", stars);
         model.put("userId", sessionValue.getId());
-        model.put("packageCode",userEntry.getGenerateUserCode());
+        if(StringUtils.isNotEmpty(userEntry.getGenerateUserCode())) {
+            model.put("packageCode", userEntry.getGenerateUserCode());
+        }else{
+            String userCode=ObjectIdPackageUtil.getPackage(userEntry.getID());
+            userEntry.setGenerateUserCode(userCode);
+            userService.addUser(userEntry);
+            model.put("packageCode", userCode);
+        }
         model.put("login", true);
         model.put("k6kt", sessionValue.getK6kt());
         model.put("avatar", sessionValue.getMinAvatar());

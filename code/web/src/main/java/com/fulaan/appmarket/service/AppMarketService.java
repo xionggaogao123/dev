@@ -4,6 +4,7 @@ import com.db.appmarket.AppDetailCommentDao;
 import com.db.appmarket.AppDetailDao;
 import com.db.appmarket.AppDetailStarStatisticDao;
 import com.db.backstage.JxmAppVersionDao;
+import com.db.jiaschool.HomeSchoolDao;
 import com.db.jiaschool.SchoolAppDao;
 import com.fulaan.apkForParse.apkResolverParse.entity.ApkInfo;
 import com.fulaan.apkForParse.apkResolverParse.utils.ApkUtil;
@@ -22,6 +23,7 @@ import com.pojo.appmarket.AppDetailStarStatisticEntry;
 import com.pojo.backstage.JxmAppVersionEntry;
 import com.pojo.backstage.LogMessageType;
 import com.pojo.fcommunity.AttachmentEntry;
+import com.pojo.jiaschool.HomeSchoolEntry;
 import com.pojo.jiaschool.SchoolAppEntry;
 import com.pojo.user.UserEntry;
 import com.sys.constants.Constant;
@@ -57,6 +59,8 @@ public class AppMarketService {
     private JxmAppVersionDao jxmAppVersionDao = new JxmAppVersionDao();
 
     private BackStageService backStageService = new BackStageService();
+
+    private HomeSchoolDao homeSchoolDao = new HomeSchoolDao();
     @Autowired
     private UserService userService;
 
@@ -96,16 +100,22 @@ public class AppMarketService {
     public List<AppDetailDTO> searchSchoolAppByCondition(String regular,String schoolId) {
         List<AppDetailDTO> detailDTOs = new ArrayList<AppDetailDTO>();
         List<AppDetailEntry> appDetailEntries = new ArrayList<AppDetailEntry>();
+        String schoolName = "";
         if(schoolId != null && !schoolId.equals("")){
             SchoolAppEntry schoolAppEntry = schoolAppDao.getEntryById(new ObjectId(schoolId));
             if(schoolAppEntry!=null && schoolAppEntry.getAppIdList()!= null){
                 appDetailEntries = appDetailDao.searchSchoolAppByIds(schoolAppEntry.getAppIdList());
+                HomeSchoolEntry homeSchoolEntry = homeSchoolDao.getEntryById(new ObjectId(schoolId));
+                if(homeSchoolEntry!=null){
+                    schoolName=homeSchoolEntry.getName();
+                }
             }
         }else{
             appDetailEntries = appDetailDao.searchSchoolAppByCondition(regular);
         }
 
         for (AppDetailEntry entry : appDetailEntries) {
+            entry.setDescription(schoolName);
             detailDTOs.add(new AppDetailDTO(entry));
         }
         return detailDTOs;

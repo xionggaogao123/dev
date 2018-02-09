@@ -133,7 +133,16 @@ public class AppCommentService {
             en.setRecipientName(dto3.getName());
             List<String> objectIdList2 = this.getMyRoleList4(new ObjectId(dto3.getId()), new ObjectId(dto.getAdminId()));
             en.setAllWriterNumber(objectIdList2.size());
-            List<String> objectIdList3 = newVersionBindService.getStudentIdListByCommunityId(new ObjectId(dto3.getId()));
+            List<String> objectIdList4 = newVersionBindService.getStudentIdListByCommunityId(new ObjectId(dto3.getId()));
+            List<ObjectId> objectIdList5 = new ArrayList<ObjectId>();
+            for(String str : objectIdList4){
+                objectIdList5.add(new ObjectId(str));
+            }
+            List<UserEntry> userEntries = userService.getUserByList(objectIdList5);
+            List<String> objectIdList3 = new ArrayList<String>();
+            for(UserEntry userEntry3: userEntries){
+                objectIdList3.add(userEntry3.getID().toString());
+            }
             en.setAllLoadNumber(objectIdList3.size());
             String oid = appCommentDao.addEntry(en);
             //图片检测
@@ -257,7 +266,16 @@ public class AppCommentService {
         //获得作业
         AppCommentEntry aen = appCommentDao.getEntry(id);
         //所有学生
-        List<String> objectIdList = newVersionBindService.getStudentIdListByCommunityId(aen.getRecipientId());
+        List<String> objectIdList2 = newVersionBindService.getStudentIdListByCommunityId(aen.getRecipientId());
+        List<ObjectId> objectIdList1 = new ArrayList<ObjectId>();
+        for(String str : objectIdList2){
+            objectIdList1.add(new ObjectId(str));
+        }
+        List<UserEntry> userEntries = userService.getUserByList(objectIdList1);
+        List<String> objectIdList = new ArrayList<String>();
+        for(UserEntry userEntry3: userEntries){
+            objectIdList.add(userEntry3.getID().toString());
+        }
         List<ObjectId> oidsa = new ArrayList<ObjectId>();
         for(String str : objectIdList){
             oidsa.add(new ObjectId(str));
@@ -1435,7 +1453,16 @@ public class AppCommentService {
         if(entries.size()>1){
 
         }else{
-            List<String> objectIdList3 = newVersionBindService.getStudentIdListByCommunityId(entry.getRecipientId());
+            List<String> objectIdList4 = newVersionBindService.getStudentIdListByCommunityId(entry.getRecipientId());
+            List<ObjectId> objectIdList5 = new ArrayList<ObjectId>();
+            for(String str : objectIdList4){
+                objectIdList5.add(new ObjectId(str));
+            }
+            List<UserEntry> userEntries = userService.getUserByList(objectIdList5);
+            List<String> objectIdList3 = new ArrayList<String>();
+            for(UserEntry userEntry3: userEntries){
+                objectIdList3.add(userEntry3.getID().toString());
+            }
             int count = objectIdList3.size();
             entry.setAllLoadNumber(count);
             objectIdList3.removeAll(stringList);

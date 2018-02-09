@@ -5,6 +5,7 @@ import com.fulaan.annotation.LoginInfo;
 import com.fulaan.annotation.SessionNeedless;
 import com.fulaan.annotation.UserRoles;
 import com.fulaan.base.BaseController;
+import com.fulaan.cache.CacheHandler;
 import com.fulaan.forum.service.*;
 import com.fulaan.friendscircle.service.FriendApplyService;
 import com.fulaan.friendscircle.service.FriendService;
@@ -516,11 +517,14 @@ public class DefaultUserCenterController extends BaseController {
     @ApiResponses( value = {@ApiResponse(code = 200, message = "Successful — 请求已完成",response = RespObj.class)})
     @RequestMapping(value = "/updateUserNickName")
     @ResponseBody
-    public RespObj updateUserNickName(String nickName) {
+    public RespObj updateUserNickName(String nickName,Map<String, Object> model) {
         try {
             userService.updateNickNameById(getUserId().toString(), nickName);
-            SessionValue sessionValue = getSessionValue();
-            sessionValue.setRealName(nickName);
+            SessionValue sv = getSessionValue();
+            sv.setRealName(nickName);
+            String userKey = CacheHandler.getUserKey(sv.getId());
+            CacheHandler.cacheSessionValue(userKey,
+                    sv, Constant.SECONDS_IN_DAY);
         } catch (Exception e) {
             e.printStackTrace();
             return RespObj.FAILD(e.getMessage());

@@ -640,7 +640,10 @@ public class ControlPhoneService {
             if(entryList2 !=null && entryList2.getAppIdList() != null){
                 set.addAll(entryList2.getAppIdList());
             }
-            size = set.size();
+            List<ObjectId> objectIds = new ArrayList<ObjectId>();
+            objectIds.addAll(set);
+            List<AppDetailEntry> detailEntries3 =  appDetailDao.getEntriesByIds(objectIds);
+            size = detailEntries3.size();
         }else{
             ControlAppUserEntry entryList2 = controlAppUserDao.getEntry(parentId,sonId);
             Set<ObjectId> set = new HashSet<ObjectId>();

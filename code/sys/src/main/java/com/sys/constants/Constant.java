@@ -997,7 +997,7 @@ public class Constant {
     public static final String COLLECTION_SYSTEM_MESSAGE = "systemmessage";
 
     //校本资源表
-    public static final String COLLECTION_SCHOOL_APP = "schoolApp";
+    public static final String COLLECTION_SCHOOL_BOOK_APP = "schoolBookApp";
 
     /*************************************运营管理*****************************************/
     //运营表

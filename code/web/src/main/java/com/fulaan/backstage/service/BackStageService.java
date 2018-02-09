@@ -321,6 +321,25 @@ public class BackStageService {
 
         this.addLogMessage(id.toString(),"添加特殊管控默认上课时间："+ startTime+"-"+endTime,LogMessageType.schoolTime.getDes(),userId.toString());
     }
+    public void addDuringSchoolTime(ObjectId userId,String startTime,String endTime,String dateTime){
+        ControlSchoolTimeEntry entry = controlSchoolTimeDao.getOtherEntry(dateTime);
+        String id = "";
+        if(null==entry){
+            ControlSchoolTimeDTO dto = new ControlSchoolTimeDTO();
+            dto.setStartTime(startTime);
+            dto.setEndTime(endTime);
+            dto.setDataTime(dateTime);
+            dto.setType(3);
+            id = controlSchoolTimeDao.addEntry(dto.buildAddEntry());
+        }else{
+            entry.setStartTime(startTime);
+            entry.setEndTime(endTime);
+            controlSchoolTimeDao.updEntry(entry);
+            id = entry.getID().toString();
+        }
+
+        this.addLogMessage(id.toString(),"添加特殊管控默认上课时间："+ startTime+"-"+endTime,LogMessageType.schoolTime.getDes(),userId.toString());
+    }
     //教师认证1未验证，2 验证通过 3 验证不通过
     public Map<String,Object> selectTeacherList(ObjectId userId,int type,String groupId,int page,int pageSize){
         String searchId = "";
@@ -634,6 +653,8 @@ public class BackStageService {
                 SchoolAppDTO dto = new SchoolAppDTO();
                 List<String> stringList = new ArrayList<String>();
                 stringList.add(appId.toString());
+                dto.setAppIdList(stringList);
+                dto.setSchoolId(schoolId.toString());
                 String id = schoolAppDao.addEntry(dto.buildAddEntry()).toString();
                 this.addLogMessage(id.toString(),"添加学校推送应用："+entry.getAppName()+"，包名："+entry.getAppPackageName(),LogMessageType.schoolApp.getDes(),userId.toString());
             }else{
@@ -656,6 +677,7 @@ public class BackStageService {
                 ControlAppSystemDTO dto = new ControlAppSystemDTO();
                 List<String> stringList = new ArrayList<String>();
                 stringList.add(appId.toString());
+                dto.setAppIdList(stringList);
                 String id = controlAppSystemDao.addEntry(dto.buildAddEntry());
                 this.addLogMessage(id.toString(),"添加系统推送应用："+entry.getAppName()+"，包名："+entry.getAppPackageName(),LogMessageType.fulan.getDes(),userId.toString());
             }else{

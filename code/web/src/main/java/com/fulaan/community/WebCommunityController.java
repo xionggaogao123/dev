@@ -205,7 +205,7 @@ public class WebCommunityController extends BaseController {
 //            validate.setMessage("该社区名称已使用过！");
 //            return validate;
 //        }
-        if(StringUtils.isNotEmpty(name)&&name.equals("复兰社区")){
+        if(StringUtils.isNotEmpty(name)&&name.equals("复兰社区") && name.equals("复兰大学")){
             validate.setMessage("该社区名称已使用过！");
             return validate;
         }

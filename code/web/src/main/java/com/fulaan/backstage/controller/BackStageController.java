@@ -286,6 +286,32 @@ public class BackStageController extends BaseController {
     }
 
     /**
+     * 设置默认时间段管控时间
+     * @return
+     */
+    @ApiOperation(value = "设置默认时间段管控时间", httpMethod = "POST", produces = "application/json")
+    @ApiResponses( value = {@ApiResponse(code = 200, message = "Successful — 请求已完成",response = String.class),
+            @ApiResponse(code = 400, message = "请求中有语法问题，或不能满足请求"),
+            @ApiResponse(code = 500, message = "服务器不能完成请求")})
+    @RequestMapping("/addDuringSchoolTime")
+    @ResponseBody
+    public String addDuringSchoolTime(@ApiParam(name = "startTime", required = true, value = "开始时间") @RequestParam("startTime") String startTime,
+                                     @ApiParam(name = "endTime", required = true, value = "结束时间") @RequestParam("endTime") String endTime,
+                                     @ApiParam(name = "dateTime", required = true, value = "日期") @RequestParam("dateTime") String dateTime){
+        RespObj respObj = new RespObj(Constant.FAILD_CODE);
+        try{
+            backStageService.addDuringSchoolTime(getUserId(),startTime,endTime,dateTime);
+            respObj.setCode(Constant.SUCCESS_CODE);
+            respObj.setMessage("设置成功");
+        }catch (Exception e){
+            e.printStackTrace();
+            respObj.setCode(Constant.SUCCESS_CODE);
+            respObj.setMessage("设置失败");
+        }
+        return JSON.toJSONString(respObj);
+    }
+
+    /**
      *  查询默认上课时间表
      * @return
      */

@@ -485,6 +485,9 @@ public class GroupController extends BaseController {
         if (!memberService.isManager(groupId, userId)) {
             return RespObj.FAILD("对不起，您没有此权限");
         }
+        if (groupName.equals("复兰大学")) {
+            return RespObj.FAILD("对不起，此群聊名已被使用");
+        }
         GroupDTO groupDTO = groupService.findById(groupId,userId);
         if (groupDTO.isBindCommunity()) {
             communityService.updateCommunityName(new ObjectId(groupDTO.getCommunityId()), groupName);
@@ -524,6 +527,11 @@ public class GroupController extends BaseController {
         ext.put("groupName",groupName);
         ext.put("updateGroupName","YES");
         ext.put("nickName",nickName);
+        if(groupService.findByObjectId(groupId)){
+            ext.put("groupStyle","community");//社群
+        }else{
+            ext.put("groupStyle","discussgroup");//讨论组
+        }
         emService.sendTextMessage("chatgroups", targets, userId.toString(), ext, sendMessage);
     }
 

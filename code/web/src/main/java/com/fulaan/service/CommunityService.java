@@ -1741,6 +1741,7 @@ public class CommunityService {
             int count = memberService.getMemberCount(new ObjectId(dto.getGroupId()));
             if (null != head) {
                 dto.setMemberCount(count);
+                dto.setLogo(getNewLogo(dto.getLogo()));
                 dto.setHead(head);
                 returnData.add(dto);
             }

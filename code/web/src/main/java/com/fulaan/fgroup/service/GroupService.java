@@ -6,16 +6,15 @@ import com.db.groupchatrecord.GroupChatRecordDao;
 import com.db.groupchatrecord.RecordChatPersonalDao;
 import com.db.groupchatrecord.RecordTotalChatDao;
 import com.easemob.server.comm.constant.MsgType;
+import com.fulaan.dto.MemberDTO;
 import com.fulaan.fgroup.dto.GroupChatRecordDTO;
 import com.fulaan.fgroup.dto.GroupDTO;
-import com.fulaan.dto.MemberDTO;
 import com.fulaan.fgroup.dto.RecordChatRelationDTO;
 import com.fulaan.service.MemberService;
 import com.fulaan.user.service.UserService;
 import com.fulaan.util.ImageUtils;
 import com.fulaan.util.QRUtils;
 import com.pojo.fcommunity.GroupEntry;
-import com.pojo.fcommunity.MemberEntry;
 import com.pojo.groupchatrecord.GroupChatRecordEntry;
 import com.pojo.groupchatrecord.RecordChatPersonalEntry;
 import com.pojo.groupchatrecord.RecordTotalChatEntry;
@@ -233,6 +232,15 @@ public class GroupService {
         List<MemberDTO> managers = memberService.getManagers(groupId);
         List<MemberDTO> members = memberService.getMembers(groupId, 20,userId);
         return new GroupDTO(groupEntry, members, managers);
+    }
+
+    public boolean findByObjectId(ObjectId groupId) {
+        GroupEntry groupEntry = groupDao.findByObjectId(groupId);
+        if(groupEntry.getCommunityId()==null){
+            return false;
+        }else{
+            return true;
+        }
     }
 
     public GroupDTO findByEmChatId(String emChatId,ObjectId userId) {

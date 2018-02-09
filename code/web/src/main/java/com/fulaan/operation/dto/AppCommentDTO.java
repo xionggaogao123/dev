@@ -2,6 +2,7 @@ package com.fulaan.operation.dto;
 
 import com.fulaan.dto.VideoDTO;
 import com.fulaan.pojo.Attachement;
+import com.fulaan.util.NewStringUtil;
 import com.pojo.fcommunity.AttachmentEntry;
 import com.pojo.fcommunity.VideoEntry;
 import com.pojo.operation.AppCommentEntry;
@@ -68,7 +69,7 @@ public class AppCommentDTO {
         if(e!=null){
             this.id = e.getID()==null?"":e.getID().toString();
             this.description = e.getDescription();
-            this.title = e.getTitle();
+            this.title = NewStringUtil.toGoodJsonStr(e.getTitle());
             if(e.getLoadTime()!=0l){
                 this.loadTime = DateTimeUtils.getLongToStrTimeTwo(e.getLoadTime());
             }else{

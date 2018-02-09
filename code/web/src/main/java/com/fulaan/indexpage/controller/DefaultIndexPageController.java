@@ -2,10 +2,14 @@ package com.fulaan.indexpage.controller;
 
 import com.alibaba.fastjson.JSON;
 import com.fulaan.base.BaseController;
+import com.fulaan.community.dto.CommunityDTO;
 import com.fulaan.indexpage.service.IndexPageService;
+import com.fulaan.service.CommunityService;
+import com.fulaan.service.MemberService;
 import com.sys.constants.Constant;
 import com.sys.utils.RespObj;
 import io.swagger.annotations.*;
+import org.bson.types.ObjectId;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -24,6 +28,14 @@ public class DefaultIndexPageController extends BaseController {
     @Autowired
     private IndexPageService indexPageService;
 
+
+    @Autowired
+    private CommunityService communityService;
+
+    @Autowired
+    private MemberService memberService;
+
+
     @ApiOperation(value = "首页list", httpMethod = "POST", produces = "application/json")
     @ApiResponses( value = {@ApiResponse(code = 200, message = "Successful — 请求已完成",response = String.class)})
     @RequestMapping("/getIndexList")
@@ -33,6 +45,16 @@ public class DefaultIndexPageController extends BaseController {
         RespObj respObj=new RespObj(Constant.FAILD_CODE);
         try {
             respObj.setCode(Constant.SUCCESS_CODE);
+            ObjectId userId = getUserId();
+            CommunityDTO fulanDto = communityService.getCommunityByName("复兰大学");
+            if (null == userId && null != fulanDto) {
+
+            } else {
+                if (null != fulanDto) {
+                    //加入复兰大学
+                    joinFulaanCommunity(getUserId(), new ObjectId(fulanDto.getId()));
+                }
+            }
             Map<String,Object> mlist =  indexPageService.getIndexList(getUserId(), page, pageSize);
             respObj.setMessage(mlist);
         } catch (Exception e) {
@@ -41,6 +63,31 @@ public class DefaultIndexPageController extends BaseController {
             respObj.setErrorMessage("修改课程名失败");
         }
         return JSON.toJSONString(respObj);
+    }
+
+    /**
+     * 加入社区但是不加入环信群组---这里只有复兰社区调用
+     * 加入复兰社区--- 复兰社区很特殊，特殊对待
+     *
+     * @param userId
+     * @param communityId
+     * @return
+     */
+    private void joinFulaanCommunity(ObjectId userId, ObjectId communityId) {
+
+        ObjectId groupId = communityService.getGroupId(communityId);
+        //type=1时，处理的是复兰社区
+        if (memberService.isGroupMember(groupId, userId)) {
+            return;
+        }
+        //判断该用户是否曾经加入过该社区
+        if (memberService.isBeforeMember(groupId, userId)) {
+
+        } else {
+            //新人
+            communityService.pushToUser(communityId, userId, 3);
+            memberService.saveMember(userId, groupId, 0);
+        }
     }
 
     @ApiOperation(value = "添加首页list", httpMethod = "POST", produces = "application/json")

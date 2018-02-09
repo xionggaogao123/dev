@@ -49,7 +49,6 @@ public class UserDao extends BaseDao {
             e.setAvatar("head-default-head.jpg");
         }
 
-
         if (e.getRole() == UserRole.HEADMASTER.getRole()) {
             e.setRole(UserRole.HEADMASTER.getRole() | UserRole.TEACHER.getRole());
         }

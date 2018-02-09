@@ -205,7 +205,11 @@ public class WebCommunityController extends BaseController {
 //            validate.setMessage("该社区名称已使用过！");
 //            return validate;
 //        }
-        if(StringUtils.isNotEmpty(name)&&name.equals("复兰社区") && name.equals("复兰大学")){
+        if(StringUtils.isNotEmpty(name)&&name.equals("复兰社区")){
+            validate.setMessage("该社区名称已使用过！");
+            return validate;
+        }
+        if(StringUtils.isNotEmpty(name)&&name.equals("复兰大学")){
             validate.setMessage("该社区名称已使用过！");
             return validate;
         }
@@ -372,9 +376,11 @@ public class WebCommunityController extends BaseController {
             }
             communityDTOList = communityService.getCommunitys(userId, page, pageSize);
             List<CommunityDTO> communityDTOList2 = new ArrayList<CommunityDTO>();
+           // UserEntry userEntry = userService.findById(userId);
             if(communityDTOList.size()>0){
                 for(CommunityDTO dto3 : communityDTOList){
-                    if(!dto3.getName().equals("复兰社区")){
+                    //5a7bb6e13d4df96672b6a2bf
+                    if(!dto3.getName().equals("复兰社区") && !dto3.getName().equals("复兰大学") && !userId.toString().equals("5a7bb6e13d4df96672b6a2bf")){
                         communityDTOList2.add(dto3);
                     }
                 }
@@ -1048,6 +1054,7 @@ public class WebCommunityController extends BaseController {
                 ext.put("nickName", nickName);
                 ext.put("userId", userId.toString());
                 ext.put("joinPrivate", "YES");
+                ext.put("groupStyle","community");
                 List<MemberDTO> memberDTOs = memberService.getManagers(groupId);
                 List<String> targets = new ArrayList<String>();
                 for (MemberDTO memberDTO : memberDTOs) {

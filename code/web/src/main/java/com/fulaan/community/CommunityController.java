@@ -11,7 +11,8 @@ import com.fulaan.cache.RedisUtils;
 import com.fulaan.community.dto.*;
 import com.fulaan.communityValidate.dto.ValidateInfoDTO;
 import com.fulaan.communityValidate.service.ValidateInfoService;
-import com.fulaan.dto.*;
+import com.fulaan.dto.ConcernDTO;
+import com.fulaan.dto.MemberDTO;
 import com.fulaan.fgroup.dto.GroupDTO;
 import com.fulaan.fgroup.service.EmService;
 import com.fulaan.fgroup.service.GroupService;
@@ -37,7 +38,9 @@ import com.pojo.app.Platform;
 import com.pojo.fcommunity.*;
 import com.pojo.forum.FVoteDTO;
 import com.pojo.forum.FVoteEntry;
-import com.pojo.user.*;
+import com.pojo.user.UserDetailInfoDTO;
+import com.pojo.user.UserEntry;
+import com.pojo.user.UserTag;
 import com.pojo.utils.MongoUtils;
 import com.sys.constants.Constant;
 import com.sys.exceptions.IllegalParamException;
@@ -205,7 +208,11 @@ public class CommunityController extends BaseController {
 //            validate.setMessage("该社区名称已使用过！");
 //            return validate;
 //        }
-        if(StringUtils.isNotEmpty(name)&&name.equals("复兰社区") && name.equals("复兰大学")){
+        if(StringUtils.isNotEmpty(name)&&name.equals("复兰社区")){
+            validate.setMessage("该社区名称已使用过！");
+            return validate;
+        }
+        if(StringUtils.isNotEmpty(name)&&name.equals("复兰大学")){
             validate.setMessage("该社区名称已使用过！");
             return validate;
         }
@@ -374,7 +381,7 @@ public class CommunityController extends BaseController {
             List<CommunityDTO> communityDTOList2 = new ArrayList<CommunityDTO>();
             if(communityDTOList.size()>0){
                 for(CommunityDTO dto3 : communityDTOList){
-                    if(!dto3.getName().equals("复兰社区")){
+                    if(!dto3.getName().equals("复兰社区") && !dto3.getName().equals("复兰大学") && !userId.toString().equals("5a7bb6e13d4df96672b6a2bf")){
                         communityDTOList2.add(dto3);
                     }
                 }
@@ -1053,6 +1060,7 @@ public class CommunityController extends BaseController {
                 ext.put("nickName", nickName);
                 ext.put("userId", userId.toString());
                 ext.put("joinPrivate", "YES");
+                ext.put("groupStyle","community");
                 List<MemberDTO> memberDTOs = memberService.getManagers(groupId);
                 List<String> targets = new ArrayList<String>();
                 for (MemberDTO memberDTO : memberDTOs) {

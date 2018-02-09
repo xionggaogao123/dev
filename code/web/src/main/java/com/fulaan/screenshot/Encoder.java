@@ -922,8 +922,8 @@ public class Encoder {
         ffmpeg.addArgument(String.valueOf((int) ss));
         ffmpeg.addArgument("-t");
         ffmpeg.addArgument("0.001");
-        ffmpeg.addArgument("-s");
-        ffmpeg.addArgument(w + "*" + h);
+       // ffmpeg.addArgument("-s");
+       // ffmpeg.addArgument(w + "*" + h);
         ffmpeg.addArgument(desc.getAbsolutePath());
         try {
             ffmpeg.execute();

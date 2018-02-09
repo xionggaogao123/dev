@@ -381,8 +381,13 @@ public class CommunityController extends BaseController {
             List<CommunityDTO> communityDTOList2 = new ArrayList<CommunityDTO>();
             if(communityDTOList.size()>0){
                 for(CommunityDTO dto3 : communityDTOList){
-                    if(!dto3.getName().equals("复兰社区") && !dto3.getName().equals("复兰大学") && !userId.toString().equals("5a7bb6e13d4df96672b6a2bf")){
+                    //5a7bb6e13d4df96672b6a2bf
+                    if(!dto3.getName().equals("复兰社区") && !dto3.getName().equals("复兰大学")){
                         communityDTOList2.add(dto3);
+                    }else{
+                        if(!dto3.getName().equals("复兰社区") && userId.toString().equals("5a7bb6e13d4df96672b6a2bf")){
+                            communityDTOList2.add(dto3);
+                        }
                     }
                 }
             }

@@ -15,10 +15,12 @@ import com.db.school.SchoolDao;
 import com.db.user.NewVersionUserRoleDao;
 import com.db.user.UserDao;
 import com.easemob.server.EaseMobAPI;
+import com.easemob.server.comm.constant.MsgType;
 import com.fulaan.backstage.dto.SystemMessageDTO;
 import com.fulaan.base.BaseService;
 import com.fulaan.cache.CacheHandler;
 import com.fulaan.dto.UserDTO;
+import com.fulaan.fgroup.service.EmService;
 import com.fulaan.indexpage.dto.IndexPageDTO;
 import com.fulaan.mall.service.EBusinessVoucherService;
 import com.fulaan.mqtt.MQTTSendMsg;
@@ -110,6 +112,8 @@ public class UserService extends BaseService {
     private IndexPageDao indexPageDao = new IndexPageDao();
 
     private UserLogResultDao userLogResultDao = new UserLogResultDao();
+
+    private EmService emService = new EmService();
 
 
     /**
@@ -684,34 +688,56 @@ public class UserService extends BaseService {
      * 添加用户
      */
     public ObjectId addUser(UserEntry e) {
+        ObjectId oid = e.getID();
         ObjectId uid = userDao.addUserEntry(e);
+        try{
+           // if(oid==null || oid.toString().equals("")){
+                //添加系统信息
+                SystemMessageDTO dto = new SystemMessageDTO();
+                dto.setType(1);
+                dto.setAvatar("");
+                dto.setName("");
+                dto.setFileUrl("");
+                dto.setSourceId("");
+                dto.setContent("");
+                dto.setFileType(1);
+                dto.setSourceName("");
+                dto.setSourceType(0);
+                dto.setTitle("");
+                String id = systemMessageDao.addEntry(dto.buildAddEntry());
 
-        //添加系统信息
-        SystemMessageDTO dto = new SystemMessageDTO();
-        dto.setType(1);
-        dto.setAvatar("");
-        dto.setName("");
-        dto.setFileUrl("");
-        dto.setSourceId("");
-        dto.setContent("");
-        dto.setFileType(1);
-        dto.setSourceName("");
-        dto.setSourceType(0);
-        dto.setTitle("");
-        String id = systemMessageDao.addEntry(dto.buildAddEntry());
+                //添加首页记录
+                IndexPageDTO dto1 = new IndexPageDTO();
+                dto1.setType(CommunityType.system.getType());
+                dto1.setUserId(uid.toString());
+                dto1.setCommunityId(uid.toString());
+                dto1.setContactId(id.toString());
+                IndexPageEntry entry = dto1.buildAddEntry();
+                indexPageDao.addEntry(entry);
+                //sendTestMessage(uid.toString());
 
-        //添加首页记录
-        IndexPageDTO dto1 = new IndexPageDTO();
-        dto1.setType(CommunityType.system.getType());
-        dto1.setUserId(uid.toString());
-        dto1.setCommunityId(uid.toString());
-        dto1.setContactId(id.toString());
-        IndexPageEntry entry = dto1.buildAddEntry();
-        indexPageDao.addEntry(entry);
+           // }
+        }catch (Exception ex){
+        }
+
 
         return uid;
     }
 
+    public boolean sendTestMessage(String uid){
+        List<String> targets = new ArrayList<String>();
+        targets.add(uid);
+        String userId="5a7bb6e13d4df96672b6a2bf";
+        Map<String, String> ext = new HashMap<String, String>();
+        Map<String, String> sendMessage = new HashMap<String, String>();
+        sendMessage.put("type", MsgType.IMG);
+        sendMessage.put("url", "https://a1.easemob.com/fulan/fulanmall/chatfiles/2b3ce640-0cb7-11e8-8a92-29b46c527a8a");
+        sendMessage.put("filename","operationBook.jpg");
+        sendMessage.put("secret","KzzmSgy3EeisbBEBikKn-2bhdi55QYWQdkgC8mYR_o3-LmTX");
+        //sendMessage.put("type", MsgType.TEXT);
+        //sendMessage.put("msg", "张庆最帅");
+        return emService.sendTextMessage("users", targets, userId, ext, sendMessage);
+    }
     /**
      * 保存第三方登录的数据
      *

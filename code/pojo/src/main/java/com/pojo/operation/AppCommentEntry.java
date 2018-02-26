@@ -40,6 +40,7 @@ import java.util.List;
  dateTime         发布日期时间          dtm
  month            月份                  mon
  year             年份                  yea
+ showType         是否展示              sht    是否展示  0 展示  1 不展示
  */
 public class AppCommentEntry extends BaseDBObject {
     public AppCommentEntry(){
@@ -70,6 +71,7 @@ public class AppCommentEntry extends BaseDBObject {
             String recipientName,
             ObjectId recipientId,
             int month,
+            int showType,
             long dateTime
     ){
         BasicDBObject dbObject=new BasicDBObject()
@@ -94,6 +96,7 @@ public class AppCommentEntry extends BaseDBObject {
                 .append("rid",recipientId)
                 .append("dtm", dateTime)
                 .append("mon",month)
+                .append("sht",showType)
                 .append("ctm", new Date().getTime())
                 .append("isr", 0);
         setBaseEntry(dbObject);
@@ -122,6 +125,7 @@ public class AppCommentEntry extends BaseDBObject {
             String recipientName,
             ObjectId recipientId,
             int month,
+            int showType,
             long dateTime
     ){
         BasicDBObject dbObject=new BasicDBObject()
@@ -147,6 +151,7 @@ public class AppCommentEntry extends BaseDBObject {
                 .append("rid",recipientId)
                 .append("dtm", dateTime)
                 .append("mon",month)
+                .append("sht",showType)
                 .append("ctm", new Date().getTime())
                 .append("isr", 0);
         setBaseEntry(dbObject);
@@ -344,6 +349,14 @@ public class AppCommentEntry extends BaseDBObject {
 
     public void setMonth(int month){
         setSimpleValue("mon",month);
+    }
+
+    public int getShowType(){
+        return getSimpleIntegerValueDef("sht", 0);
+    }
+
+    public void setShowType(int showType){
+        setSimpleValue("sht",showType);
     }
 
 }

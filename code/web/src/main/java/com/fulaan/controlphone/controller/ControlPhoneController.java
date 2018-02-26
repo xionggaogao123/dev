@@ -15,6 +15,7 @@ import com.sys.constants.Constant;
 import com.sys.utils.DateTimeUtils;
 import com.sys.utils.RespObj;
 import io.swagger.annotations.*;
+import org.apache.log4j.Logger;
 import org.bson.types.ObjectId;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -23,7 +24,10 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
-import java.util.*;
+import java.util.Calendar;
+import java.util.Date;
+import java.util.List;
+import java.util.Map;
 
 /**
  * Created by James on 2017/11/3.
@@ -37,6 +41,8 @@ public class ControlPhoneController extends BaseController {
     private ControlPhoneService controlPhoneService;
     @Autowired
     private BackStageService backStageService;
+
+    private static final Logger logger =Logger.getLogger(ControlPhoneController.class);
     //管控电话
     /**
      * 添加管控手机号
@@ -702,6 +708,7 @@ public class ControlPhoneController extends BaseController {
         } catch (Exception e) {
             e.printStackTrace();
             respObj.setCode(Constant.FAILD_CODE);
+            logger.error("error",e);
             respObj.setErrorMessage("老师首页加载失败!");
         }
         return JSON.toJSONString(respObj);

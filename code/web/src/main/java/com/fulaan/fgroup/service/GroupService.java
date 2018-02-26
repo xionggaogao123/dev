@@ -592,12 +592,12 @@ public class GroupService {
         String userId="579961cbde04cb783df3074f";
         Map<String, String> ext = new HashMap<String, String>();
         Map<String, String> sendMessage = new HashMap<String, String>();
-//        sendMessage.put("type", MsgType.IMG);
-//        sendMessage.put("url", "https://a1.easemob.com/fulan/fulanmall/chatfiles/2b3ce640-0cb7-11e8-8a92-29b46c527a8a");
-//        sendMessage.put("filename","operationBook.jpg");
-//        sendMessage.put("secret","KzzmSgy3EeisbBEBikKn-2bhdi55QYWQdkgC8mYR_o3-LmTX");
-        sendMessage.put("type", MsgType.TEXT);
-        sendMessage.put("msg", "张庆最帅");
+        sendMessage.put("type", MsgType.IMG);
+        sendMessage.put("url", "https://a1.easemob.com/fulan/fulanmall/chatfiles/2b3ce640-0cb7-11e8-8a92-29b46c527a8a");
+        sendMessage.put("filename","operationBook.jpg");
+        sendMessage.put("secret","KzzmSgy3EeisbBEBikKn-2bhdi55QYWQdkgC8mYR_o3-LmTX");
+        //sendMessage.put("type", MsgType.TEXT);
+        //sendMessage.put("msg", "张庆最帅");
         return emService.sendTextMessage("users", targets, userId, ext, sendMessage);
     }
 

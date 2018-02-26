@@ -865,6 +865,9 @@ public class ControlPhoneService {
             //管控时间
             Calendar cal = Calendar.getInstance();
             int w = cal.get(Calendar.DAY_OF_WEEK) - 1;
+            if(w==0){
+                w= 7;
+            }
             ControlSchoolTimeEntry entry = controlSchoolTimeDao.getEntry(w);
             if(entry != null){
                 String stm = entry.getStartTime();
@@ -1034,6 +1037,9 @@ public class ControlPhoneService {
             //管控时间
             Calendar cal = Calendar.getInstance();
             int w = cal.get(Calendar.DAY_OF_WEEK) - 1;
+            if(w==0){
+                w= 7;
+            }
             ControlSchoolTimeEntry entry = controlSchoolTimeDao.getEntry(w);
             if(entry != null){
                 String stm = entry.getStartTime();
@@ -1208,6 +1214,9 @@ public class ControlPhoneService {
             //管控时间
             Calendar cal = Calendar.getInstance();
             int w = cal.get(Calendar.DAY_OF_WEEK) - 1;
+            if(w==0){
+                w= 7;
+            }
             ControlSchoolTimeEntry entry = controlSchoolTimeDao.getEntry(w);
             if(entry != null){
                 String stm = entry.getStartTime();
@@ -1556,6 +1565,9 @@ public class ControlPhoneService {
             //通用管控时间
             Calendar cal = Calendar.getInstance();
             int w = cal.get(Calendar.DAY_OF_WEEK) - 1;
+            if(w==0){
+                w= 7;
+            }
             ControlSchoolTimeEntry entry = controlSchoolTimeDao.getEntry(w);
             if(entry != null){
                 String stm = entry.getStartTime();
@@ -1660,6 +1672,9 @@ public class ControlPhoneService {
             //通用管控时间
             Calendar cal = Calendar.getInstance();
             int w = cal.get(Calendar.DAY_OF_WEEK) - 1;
+            if(w==0){
+                w= 7;
+            }
             ControlSchoolTimeEntry entry = controlSchoolTimeDao.getEntry(w);
             if(entry != null){
                 String stm = entry.getStartTime();
@@ -1758,6 +1773,9 @@ public class ControlPhoneService {
         if(entry2 == null){
             Calendar cal = Calendar.getInstance();
             int w = cal.get(Calendar.DAY_OF_WEEK) - 1;
+            if(w==0){
+                w= 7;
+            }
             ControlSchoolTimeEntry entry = controlSchoolTimeDao.getEntry(w);
             String etm = entry.getEndTime();
 

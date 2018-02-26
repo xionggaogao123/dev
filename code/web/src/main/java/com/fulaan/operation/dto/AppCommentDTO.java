@@ -61,6 +61,7 @@ public class AppCommentDTO {
     private String sendUser;//孩子名称
     private String comList;
     private int isLoad;
+    private int showType; //是否展示  0 展示  1不展示
 
     public AppCommentDTO(){
 
@@ -123,6 +124,7 @@ public class AppCommentDTO {
                 this.createTime = "";
             }
             this.month = e.getMonth();
+            this.showType = e.getShowType();
         }else{
             new AppCommentDTO();
         }
@@ -204,6 +206,7 @@ public class AppCommentDTO {
                         this.recipientName,
                         rId,
                         this.month,
+                        this.showType,
                         dTm);
         return openEntry;
 
@@ -286,9 +289,18 @@ public class AppCommentDTO {
                         this.recipientName,
                         rId,
                         this.month,
+                        this.showType,
                         dTm);
         return openEntry;
 
+    }
+
+    public int getShowType() {
+        return showType;
+    }
+
+    public void setShowType(int showType) {
+        this.showType = showType;
     }
 
     public int getIsLoad() {

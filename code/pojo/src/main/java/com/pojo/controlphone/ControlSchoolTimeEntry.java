@@ -8,7 +8,7 @@ import org.bson.types.ObjectId;
 /**
  * Created by James on 2017/11/16.
  * id             id
- * type           类型                   1 常规   2 特殊              typ
+ * type           类型                   1 常规   2 特殊   3 时间段   typ
  * week           星期                    （1-7）                     wek
  * dataTime       日期                     特殊日期                    dtm
  * startTime      开始时间                                             stm

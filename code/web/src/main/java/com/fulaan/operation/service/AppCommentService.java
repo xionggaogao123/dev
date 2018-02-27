@@ -33,6 +33,7 @@ import com.fulaan.wrongquestion.dto.SubjectClassDTO;
 import com.mongodb.DBObject;
 import com.pojo.backstage.PictureType;
 import com.pojo.fcommunity.MemberEntry;
+import com.pojo.fcommunity.NewVersionCommunityBindEntry;
 import com.pojo.indexPage.WebHomePageEntry;
 import com.pojo.instantmessage.ApplyTypeEn;
 import com.pojo.newVersionGrade.NewVersionSubjectEntry;
@@ -144,6 +145,9 @@ public class AppCommentService {
                 objectIdList3.add(userEntry3.getID().toString());
             }
             en.setAllLoadNumber(objectIdList3.size());
+            //发送通知
+            PictureRunNable.addTongzhi(dto3.getId(),dto.getAdminId(),1);
+
             String oid = appCommentDao.addEntry(en);
             //图片检测
             List<Attachement> alist = dto.getImageList();
@@ -1935,6 +1939,117 @@ public class AppCommentService {
             objectIdList.add(entry.getRecipientId());
             redDotService.addEntryList(objectIdList,userId, ApplyTypeEn.operation.getType(),4);
         }
+    }
+
+
+    /**
+     * 查询用户在当前社区中绑定的孩子提交作业情况列表
+     */
+    public List<Map<String,Object>> getMyCommunityChildList(ObjectId userId,ObjectId communityId,ObjectId contactId){
+        List<Map<String,Object>> mapList = new ArrayList<Map<String, Object>>();
+        List<NewVersionCommunityBindEntry> entries = newVersionBindService.getCommunityAndMainUserId(communityId, userId);
+        if(entries.size()>0){
+            List<ObjectId> oids = new ArrayList<ObjectId>();
+            List<String> stringList = new ArrayList<String>();
+            for(NewVersionCommunityBindEntry entry :entries){
+                oids.add(entry.getUserId());
+                stringList.add(entry.getUserId().toString());
+            }
+            List<ObjectId> objectIdLists = appOperationDao.getEntryMap(oids,contactId, 3);
+            List<UserDetailInfoDTO> udtos = userService.findUserInfoByUserIds(stringList);
+            Map<String,UserDetailInfoDTO> map = new HashMap<String, UserDetailInfoDTO>();
+            if(udtos != null && udtos.size()>0){
+                for(UserDetailInfoDTO dto4 : udtos){
+                    map.put(dto4.getId(),dto4);
+                }
+            }
+            for(String str : stringList){
+                Map<String,Object> stringObjectMap = new HashMap<String, Object>();
+                UserDetailInfoDTO dto9 = map.get(str);
+                if(dto9 != null){
+                    String name = StringUtils.isNotEmpty(dto9.getNickName())?dto9.getNickName():dto9.getUserName();
+                    stringObjectMap.put("userId",str);
+                    stringObjectMap.put("userName",name);
+                    if(objectIdLists.contains(new ObjectId(str))){
+                        stringObjectMap.put("isLoad",1);
+                    }else{
+                        stringObjectMap.put("isLoad",0);
+                    }
+                }
+                mapList.add(stringObjectMap);
+            }
+
+        }
+        return mapList;
+    }
+
+    /**
+     * 查询改作业下的某个孩子的提交列表
+     */
+    public Map<String,Object> getChildAppcommentList(ObjectId id,ObjectId sonId,int page,int pageSize){
+        Map<String,Object> map = new HashMap<String, Object>();
+        AppCommentEntry aen = appCommentDao.getEntry(id);
+        int num = 0;
+        List<AppOperationDTO> dtos = new ArrayList<AppOperationDTO>();
+        if(aen.getShowType()==1){
+            //所有学生
+            List<String> objectIdList2 = newVersionBindService.getStudentIdListByCommunityId(aen.getRecipientId());
+            List<ObjectId> objectIdList1 = new ArrayList<ObjectId>();
+            for(String str : objectIdList2){
+                objectIdList1.add(new ObjectId(str));
+            }
+            List<UserEntry> userEntries = userService.getUserByList(objectIdList1);
+            List<String> objectIdList = new ArrayList<String>();
+            List<ObjectId> oidsa = new ArrayList<ObjectId>();
+            for(UserEntry userEntry3: userEntries){
+                objectIdList.add(userEntry3.getID().toString());
+                oidsa.add(userEntry3.getID());
+            }
+            //查询已提交
+            List<AppOperationEntry> entries =appOperationDao.getEntryListByParentIdByStu(id,oidsa, 3, page, pageSize);
+            num = appOperationDao.countStudentLoadTimesFor(id, oidsa, 3);
+            List<UserDetailInfoDTO> udtos2 = userService.findUserInfoByUserIds(objectIdList);
+            Map<String,UserDetailInfoDTO> map3 = new HashMap<String, UserDetailInfoDTO>();
+            if(udtos2 != null && udtos2.size()>0){
+                for(UserDetailInfoDTO dto4 : udtos2){
+                    map3.put(dto4.getId(),dto4);
+                }
+            }
+            if(entries != null && entries.size()>0){
+                for(AppOperationEntry en : entries){
+                    AppOperationDTO dto = new AppOperationDTO(en);
+                    UserDetailInfoDTO dto9 = map3.get(en.getUserId());
+                    if(dto9 != null){
+                        String name = StringUtils.isNotEmpty(dto9.getNickName())?dto9.getNickName():dto9.getUserName();
+                        dto.setUserName(name);
+                        dto.setUserUrl(dto9.getImgUrl());
+                    }
+                    dtos.add(dto);
+                }
+            }
+
+        }else{
+            List<ObjectId> oidst = new ArrayList<ObjectId>();
+            oidst.add(sonId);
+            //查询已提交
+            List<AppOperationEntry> entries =appOperationDao.getEntryListByParentIdByStu(id,oidst, 3, page, pageSize);
+            num = appOperationDao.countStudentLoadTimesFor(id, oidst, 3);
+            UserDetailInfoDTO userInfo = userService.getUserInfoById(sonId.toString());
+            if(entries != null && entries.size()>0){
+                for(AppOperationEntry en : entries){
+                    AppOperationDTO dto = new AppOperationDTO(en);
+                    if(userInfo != null){
+                        String name = StringUtils.isNotEmpty(userInfo.getNickName())?userInfo.getNickName():userInfo.getUserName();
+                        dto.setUserName(name);
+                        dto.setUserUrl(userInfo.getImgUrl());
+                    }
+                    dtos.add(dto);
+                }
+            }
+        }
+        map.put("list",dtos);
+        map.put("count",num);
+        return map;
     }
 
     /**

@@ -18,7 +18,7 @@ import org.bson.types.ObjectId;
  dateTime           发表时间               dtm
  Description          描述                 des
  Type               1图片2视屏3录音	      typ
- role                 1 家长讨论  2学生讨论  3学生提交  rol  5 联系我们
+ role                 1 家长讨论  2 学生讨论  3 学生提交  rol  5 联系我们
  cover                封面图片           cov
  second               秒数               sec
  fileUrl              文件地址           ful

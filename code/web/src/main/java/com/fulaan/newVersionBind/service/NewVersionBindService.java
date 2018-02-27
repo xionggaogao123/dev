@@ -947,6 +947,10 @@ public class NewVersionBindService {
         return result;
     }
 
+    public List<NewVersionCommunityBindEntry> getCommunityAndMainUserId(ObjectId communityId,ObjectId mainUserId){
+        List<NewVersionCommunityBindEntry> entries = newVersionCommunityBindDao.getBindEntries(communityId,mainUserId);
+        return entries;
+    }
 
     public List<GroupOfCommunityDTO> getUserBelongCommunities(ObjectId userId){
         List<GroupOfCommunityDTO> dtos =new ArrayList<GroupOfCommunityDTO>();

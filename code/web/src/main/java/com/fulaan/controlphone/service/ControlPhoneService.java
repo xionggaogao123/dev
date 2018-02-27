@@ -538,7 +538,7 @@ public class ControlPhoneService {
     public static void main(String[] args){
         String dateTime = "2018-01-09";
         long dTm = 0l;
-        if(dateTime != null && dateTime != ""){
+        if(dateTime != null && !dateTime.equals("")){
             dTm = DateTimeUtils.getStrToLongTime(dateTime, "yyyy-MM-dd");
         }
         long current = 1515456000000l;
@@ -685,11 +685,11 @@ public class ControlPhoneService {
     public List<ControlMapDTO> getMapListEntry(ObjectId parentId,ObjectId sonId,String startTime,String endTime){
         List<ControlMapDTO> dtos = new ArrayList<ControlMapDTO>();
         long sl = 0l;
-        if(startTime != null && startTime != ""){
+        if(startTime != null && !startTime.equals("")){
             sl = DateTimeUtils.getStrToLongTime(startTime);
         }
         long el = 0l;
-        if(endTime != null && endTime != ""){
+        if(endTime != null && !endTime.equals("")){
             el = DateTimeUtils.getStrToLongTime(endTime);
         }
         List<ControlMapEntry> entries = controlMapDao.getMapListEntry(parentId,sonId,sl,el);
@@ -703,7 +703,7 @@ public class ControlPhoneService {
     public List<ControlMapDTO> getSimpleMapListEntry(ObjectId parentId,ObjectId sonId,String dateTime){
         List<ControlMapDTO> dtos = new ArrayList<ControlMapDTO>();
         long sl = 0l;
-        if(dateTime != null && dateTime != ""){
+        if(dateTime != null && !dateTime.equals("")){
             sl = DateTimeUtils.getStrToLongTime(dateTime, "yyyy-MM-dd");
         }
         long endTime = sl+24*60*60*1000;
@@ -779,12 +779,12 @@ public class ControlPhoneService {
         if(entry2 != null){
             String stm = entry2.getStartTime();
             long sl = 0l;
-            if(stm != null && stm != ""){
+            if(stm != null && !stm.equals("")){
                 sl = DateTimeUtils.getStrToLongTime(dateNowStr+" "+stm, "yyyy-MM-dd HH:mm:ss");
             }
             String etm = entry2.getEndTime();
             long el = 0l;
-            if(etm != null && etm != ""){
+            if(etm != null && !etm.equals("")){
                 el = DateTimeUtils.getStrToLongTime(dateNowStr+" "+etm, "yyyy-MM-dd HH:mm:ss");
             }
             if(current>sl && current < el){
@@ -847,12 +847,12 @@ public class ControlPhoneService {
         if(entry2 != null){
             String stm = entry2.getStartTime();
             long sl = 0l;
-            if(stm != null && stm != ""){
+            if(stm != null && !stm.equals("")){
                 sl = DateTimeUtils.getStrToLongTime(dateNowStr+" "+stm, "yyyy-MM-dd HH:mm:ss");
             }
             String etm = entry2.getEndTime();
             long el = 0l;
-            if(etm != null && etm != ""){
+            if(etm != null && !etm.equals("")){
                 el = DateTimeUtils.getStrToLongTime(dateNowStr+" "+etm, "yyyy-MM-dd HH:mm:ss");
             }
             if(current>sl && current < el){
@@ -872,12 +872,12 @@ public class ControlPhoneService {
             if(entry != null){
                 String stm = entry.getStartTime();
                 long sl = 0l;
-                if(stm != null && stm != ""){
+                if(stm != null && !stm.equals("")){
                     sl = DateTimeUtils.getStrToLongTime(dateNowStr+" "+stm, "yyyy-MM-dd HH:mm:ss");
                 }
                 String etm = entry.getEndTime();
                 long el = 0l;
-                if(etm != null && etm != ""){
+                if(etm != null && !etm.equals("")){
                     el = DateTimeUtils.getStrToLongTime(dateNowStr+" "+etm, "yyyy-MM-dd HH:mm:ss");
                 }
                 if(current>sl && current < el){
@@ -1019,12 +1019,12 @@ public class ControlPhoneService {
         if(entry2 != null){
             String stm = entry2.getStartTime();
             long sl = 0l;
-            if(stm != null && stm != ""){
+            if(stm != null && !stm.equals("")){
                 sl = DateTimeUtils.getStrToLongTime(dateNowStr+" "+stm, "yyyy-MM-dd HH:mm:ss");
             }
             String etm = entry2.getEndTime();
             long el = 0l;
-            if(etm != null && etm != ""){
+            if(etm != null && !etm.equals("")){
                 el = DateTimeUtils.getStrToLongTime(dateNowStr+" "+etm, "yyyy-MM-dd HH:mm:ss");
             }
             if(current>sl && current < el){
@@ -1044,12 +1044,12 @@ public class ControlPhoneService {
             if(entry != null){
                 String stm = entry.getStartTime();
                 long sl = 0l;
-                if(stm != null && stm != ""){
+                if(stm != null && !stm.equals("")){
                     sl = DateTimeUtils.getStrToLongTime(dateNowStr+" "+stm, "yyyy-MM-dd HH:mm:ss");
                 }
                 String etm = entry.getEndTime();
                 long el = 0l;
-                if(etm != null && etm != ""){
+                if(etm != null && !etm.equals("")){
                     el = DateTimeUtils.getStrToLongTime(dateNowStr+" "+etm, "yyyy-MM-dd HH:mm:ss");
                 }
                 if(current>sl && current < el){
@@ -1069,12 +1069,12 @@ public class ControlPhoneService {
         if(entry3 != null){
             String stm = entry3.getStartTime();
             long sl = 0l;
-            if(stm != null && stm != ""){
+            if(stm != null && !stm.equals("")){
                 sl = DateTimeUtils.getStrToLongTime(dateNowStr+" "+stm, "yyyy-MM-dd HH:mm:ss");
             }
             String etm = entry3.getEndTime();
             long el = 0l;
-            if(etm != null && etm != ""){
+            if(etm != null && !etm.equals("")){
                 el = DateTimeUtils.getStrToLongTime(dateNowStr+" "+etm, "yyyy-MM-dd HH:mm:ss");
             }
             if(current>sl && current < el){
@@ -1196,12 +1196,12 @@ public class ControlPhoneService {
         if(entry2 != null){
             String stm = entry2.getStartTime();
             long sl = 0l;
-            if(stm != null && stm != ""){
+            if(stm != null && !stm.equals("")){
                 sl = DateTimeUtils.getStrToLongTime(dateNowStr+" "+stm, "yyyy-MM-dd HH:mm:ss");
             }
             String etm = entry2.getEndTime();
             long el = 0l;
-            if(etm != null && etm != ""){
+            if(etm != null && !etm.equals("")){
                 el = DateTimeUtils.getStrToLongTime(dateNowStr+" "+etm, "yyyy-MM-dd HH:mm:ss");
             }
             if(current>sl && current < el){
@@ -1221,12 +1221,12 @@ public class ControlPhoneService {
             if(entry != null){
                 String stm = entry.getStartTime();
                 long sl = 0l;
-                if(stm != null && stm != ""){
+                if(stm != null && !stm.equals("")){
                     sl = DateTimeUtils.getStrToLongTime(dateNowStr+" "+stm, "yyyy-MM-dd HH:mm:ss");
                 }
                 String etm = entry.getEndTime();
                 long el = 0l;
-                if(etm != null && etm != ""){
+                if(etm != null && !etm.equals("")){
                     el = DateTimeUtils.getStrToLongTime(dateNowStr+" "+etm, "yyyy-MM-dd HH:mm:ss");
                 }
                 if(current>sl && current < el){
@@ -1246,12 +1246,12 @@ public class ControlPhoneService {
         if(entry3 != null){
             String stm = entry3.getStartTime();
             long sl = 0l;
-            if(stm != null && stm != ""){
+            if(stm != null && !stm.equals("")){
                 sl = DateTimeUtils.getStrToLongTime(dateNowStr+" "+stm, "yyyy-MM-dd HH:mm:ss");
             }
             String etm = entry3.getEndTime();
             long el = 0l;
-            if(etm != null && etm != ""){
+            if(etm != null && !etm.equals("")){
                 el = DateTimeUtils.getStrToLongTime(dateNowStr+" "+etm, "yyyy-MM-dd HH:mm:ss");
             }
             if(current>sl && current < el){
@@ -1314,7 +1314,7 @@ public class ControlPhoneService {
             }
         }
         List<AppDetailDTO> dtos4 = new ArrayList<AppDetailDTO>();
-        if(dtos.size()>0 && keyword != ""){
+        if(dtos.size()>0 && !keyword.equals("")){
             for(AppDetailDTO appDetailDTO : dtos){
                 if(appDetailDTO.getAppName().contains(keyword)){
                     dtos4.add(appDetailDTO);
@@ -1441,10 +1441,10 @@ public class ControlPhoneService {
         if(entries.size()>0){
             for(AppDetailEntry detailEntry : entries){
                 AppDetailDTO dto = new AppDetailDTO(detailEntry);
-                if(oblist != null && oblist.contains(detailEntry.getID())){
+                if(oblist.contains(detailEntry.getID())){
                     dto.setIsCheck(1);
                     dtos1.add(dto);
-                }else if(capplist != null && capplist.contains(detailEntry.getID())){
+                }else if(capplist.contains(detailEntry.getID())){
                     dto.setIsCheck(2);
                     dtos2.add(dto);
                 }else{
@@ -1538,7 +1538,14 @@ public class ControlPhoneService {
         SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
         String dateNowStr = sdf.format(zero);
         //通用设置
-        ControlSchoolTimeEntry entry2 = controlSchoolTimeDao.getOtherEntry(2,dateNowStr);
+        //时间段设置
+        ControlSchoolTimeEntry schoolTimeDTO = this.getDateTime();
+        ControlSchoolTimeEntry entry2 = null;
+        if(schoolTimeDTO !=null){
+            entry2 = schoolTimeDTO;
+        }else{
+            entry2 = controlSchoolTimeDao.getOtherEntry(2,dateNowStr);
+        }
         long time = 0l;
         int isControl = 0;
       //  ControlSchoolTimeDTO dto = null;
@@ -1546,12 +1553,12 @@ public class ControlPhoneService {
         if(entry2 != null){
             String stm = entry2.getStartTime();
             long sl = 0l;
-            if(stm != null && stm != ""){
+            if(stm != null && !stm.equals("")){
                 sl = DateTimeUtils.getStrToLongTime(dateNowStr+" "+stm, "yyyy-MM-dd HH:mm:ss");
             }
             String etm = entry2.getEndTime();
             long el = 0l;
-            if(etm != null && etm != ""){
+            if(etm != null && !etm.equals("")){
                 el = DateTimeUtils.getStrToLongTime(dateNowStr+" "+etm, "yyyy-MM-dd HH:mm:ss");
             }
             if(current>sl && current < el){
@@ -1572,12 +1579,12 @@ public class ControlPhoneService {
             if(entry != null){
                 String stm = entry.getStartTime();
                 long sl = 0l;
-                if(stm != null && stm != ""){
+                if(stm != null && !stm.equals("")){
                     sl = DateTimeUtils.getStrToLongTime(dateNowStr+" "+stm, "yyyy-MM-dd HH:mm:ss");
                 }
                 String etm = entry.getEndTime();
                 long el = 0l;
-                if(etm != null && etm != ""){
+                if(etm != null && !etm.equals("")){
                     el = DateTimeUtils.getStrToLongTime(dateNowStr+" "+etm, "yyyy-MM-dd HH:mm:ss");
                 }
                 if(current>sl && current < el){
@@ -1614,12 +1621,12 @@ public class ControlPhoneService {
             if(entry3 != null){
                 String stm = entry3.getStartTime();
                 long sl = 0l;
-                if(stm != null && stm != ""){
+                if(stm != null && !stm.equals("")){
                     sl = DateTimeUtils.getStrToLongTime(dateNowStr+" "+stm, "yyyy-MM-dd HH:mm:ss");
                 }
                 String etm = entry3.getEndTime();
                 long el = 0l;
-                if(etm != null && etm != ""){
+                if(etm != null && !etm.equals("")){
                     el = DateTimeUtils.getStrToLongTime(dateNowStr+" "+etm, "yyyy-MM-dd HH:mm:ss");
                 }
                 if(current>sl && current < el){
@@ -1636,9 +1643,56 @@ public class ControlPhoneService {
             controlMiduleDTOs.add(controlMiduleDTO);
         }
 
+
+
         return controlMiduleDTOs;
     }
 
+    /**
+     * 计算时间段
+     * @return
+     */
+    public ControlSchoolTimeEntry getDateTime(){
+        ControlSchoolTimeDTO controlSchoolTimeDTO =new ControlSchoolTimeDTO();
+        List<ControlSchoolTimeEntry> entryList = controlSchoolTimeDao.getAllDuringList();
+        if(entryList.size()>0){
+            boolean flag = false;
+            for(ControlSchoolTimeEntry controlSchoolTimeEntry:entryList){
+                String[] arg = controlSchoolTimeEntry.getDataTime().split("=");
+                if(arg.length==2){
+                    String startStr = arg[0];
+                    String endStr = arg[1];
+                    long sl = 0l;
+                    String stm = controlSchoolTimeEntry.getStartTime();
+                    if(startStr != null && !startStr.equals("")){
+                        sl = DateTimeUtils.getStrToLongTime(startStr+" "+"00:00:00", "yyyy-MM-dd HH:mm:ss");
+                    }
+                    long el = 0l;
+                    String etm = controlSchoolTimeEntry.getEndTime();
+                    if(endStr != null && !endStr.equals("")){
+                        el = DateTimeUtils.getStrToLongTime(endStr+" "+"00:00:00", "yyyy-MM-dd HH:mm:ss");
+                    }
+                    long current = System.currentTimeMillis();
+                    if(current>sl && current < el){
+                        controlSchoolTimeDTO.setStartTime(stm);
+                        controlSchoolTimeDTO.setEndTime(etm);
+                        controlSchoolTimeDTO.setType(3);
+                        controlSchoolTimeDTO.setDataTime(DateTimeUtils.getLongToStrTimeTwo(current).substring(0,11));
+                        //controlSchoolTimeDTO.set
+                        flag = true;
+                        break;
+                    }
+                }
+            }
+            if(flag){
+                return controlSchoolTimeDTO.buildAddEntry();
+            }else{
+                return null;
+            }
+        }else{
+            return null;
+        }
+    }
     public Map<String,Object> getAllMessageForTea(ObjectId teacherId,ObjectId communityId){
         Map<String,Object> map = new HashMap<String, Object>();
         //获得当前时间
@@ -1650,16 +1704,24 @@ public class ControlPhoneService {
         SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
         String dateNowStr = sdf.format(zero);
         //通用设置
-        ControlSchoolTimeEntry entry2 = controlSchoolTimeDao.getOtherEntry(2,dateNowStr);
+        //ControlSchoolTimeEntry entry2 = controlSchoolTimeDao.getOtherEntry(2,dateNowStr);
+        //时间段设置
+        ControlSchoolTimeEntry schoolTimeDTO = this.getDateTime();
+        ControlSchoolTimeEntry entry2 = null;
+        if(schoolTimeDTO !=null){
+            entry2 = schoolTimeDTO;
+        }else{
+            entry2 = controlSchoolTimeDao.getOtherEntry(2,dateNowStr);
+        }
         if(entry2 != null){
             String stm = entry2.getStartTime();
             long sl = 0l;
-            if(stm != null && stm != ""){
+            if(stm != null && !stm.equals("")){
                 sl = DateTimeUtils.getStrToLongTime(dateNowStr+" "+stm, "yyyy-MM-dd HH:mm:ss");
             }
             String etm = entry2.getEndTime();
             long el = 0l;
-            if(etm != null && etm != ""){
+            if(etm != null && !etm.equals("")){
                 el = DateTimeUtils.getStrToLongTime(dateNowStr+" "+etm, "yyyy-MM-dd HH:mm:ss");
             }
             if(current>sl && current < el){
@@ -1679,12 +1741,12 @@ public class ControlPhoneService {
             if(entry != null){
                 String stm = entry.getStartTime();
                 long sl = 0l;
-                if(stm != null && stm != ""){
+                if(stm != null && !stm.equals("")){
                     sl = DateTimeUtils.getStrToLongTime(dateNowStr+" "+stm, "yyyy-MM-dd HH:mm:ss");
                 }
                 String etm = entry.getEndTime();
                 long el = 0l;
-                if(etm != null && etm != ""){
+                if(etm != null && !etm.equals("")){
                     el = DateTimeUtils.getStrToLongTime(dateNowStr+" "+etm, "yyyy-MM-dd HH:mm:ss");
                 }
                 if(current>sl && current < el){
@@ -1706,12 +1768,12 @@ public class ControlPhoneService {
         if(entry3 != null){
             String stm = entry3.getStartTime();
             long sl = 0l;
-            if(stm != null && stm != ""){
+            if(stm != null && !stm.equals("")){
                 sl = DateTimeUtils.getStrToLongTime(dateNowStr+" "+stm, "yyyy-MM-dd HH:mm:ss");
             }
             String etm = entry3.getEndTime();
             long el = 0l;
-            if(etm != null && etm != ""){
+            if(etm != null && !etm.equals("")){
                 el = DateTimeUtils.getStrToLongTime(dateNowStr+" "+etm, "yyyy-MM-dd HH:mm:ss");
             }
             if(current>sl && current < el){
@@ -1779,13 +1841,13 @@ public class ControlPhoneService {
             ControlSchoolTimeEntry entry = controlSchoolTimeDao.getEntry(w);
             String etm = entry.getEndTime();
 
-            if(etm != null && etm != ""){
+            if(etm != null && !etm.equals("")){
                 el = DateTimeUtils.getStrToLongTime(dateNowStr4+" "+etm, "yyyy-MM-dd HH:mm:ss");
             }
 
         }else{
             String etm = entry2.getEndTime();
-            if(etm != null && etm != ""){
+            if(etm != null && !etm.equals("")){
                 el = DateTimeUtils.getStrToLongTime(dateNowStr4+" "+etm, "yyyy-MM-dd HH:mm:ss");
             }
         }

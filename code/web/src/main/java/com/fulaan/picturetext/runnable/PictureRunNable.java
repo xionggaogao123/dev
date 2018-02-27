@@ -1,5 +1,6 @@
 package com.fulaan.picturetext.runnable;
 
+import cn.jiguang.commom.utils.StringUtils;
 import com.db.backstage.UnlawfulPictureTextDao;
 import com.db.business.BusinessManageDao;
 import com.db.business.ModuleNumberDao;
@@ -10,8 +11,10 @@ import com.db.fcommunity.MemberDao;
 import com.db.newVersionGrade.NewVersionSubjectDao;
 import com.db.user.NewVersionUserRoleDao;
 import com.db.user.UserDao;
+import com.easemob.server.comm.constant.MsgType;
 import com.fulaan.backstage.dto.UnlawfulPictureTextDTO;
 import com.fulaan.business.dto.BusinessManageDTO;
+import com.fulaan.fgroup.service.EmService;
 import com.fulaan.picturetext.service.CheckTextAndPicture;
 import com.fulaan.user.dao.ThirdLoginDao;
 import com.fulaan.user.model.ThirdLoginEntry;
@@ -45,7 +48,48 @@ public class PictureRunNable{
     private static final org.apache.log4j.Logger logger = org.apache.log4j.Logger.getLogger(PictureRunNable.class);
 
 
+    public static void addTongzhi(final String communityId,final String userId,final int type) {
+        new Thread(){
+            public void run() {
 
+                System.out.println("新的线程在执行...");
+                EmService emService = new EmService();
+                CommunityDao communityDao = new CommunityDao();
+                UserDao userDao = new UserDao();
+                try{
+                    List<String> targets = new ArrayList<String>();
+                    CommunityEntry communityEntry = communityDao.findByObjectId(new ObjectId(communityId));
+                    UserEntry userEntry = userDao.findByUserId(new ObjectId(userId));
+                    //接受群组
+                    targets.add(communityEntry.getEmChatId());
+                    //targets.add("5a4c874e3d4df91f36167b5c");
+                    Map<String, String> ext = new HashMap<String, String>();
+                    Map<String, String> sendMessage = new HashMap<String, String>();
+                    //sendMessage.put("type", MsgType.IMG);
+                    //sendMessage.put("url", "https://a1.easemob.com/fulan/fulanmall/chatfiles/2b3ce640-0cb7-11e8-8a92-29b46c527a8a");
+                    //sendMessage.put("filename","operationBook.jpg");
+                    //sendMessage.put("secret","KzzmSgy3EeisbBEBikKn-2bhdi55QYWQdkgC8mYR_o3-LmTX");
+                    sendMessage.put("type", MsgType.TEXT);
+                    String name = StringUtils.isNotEmpty(userEntry.getNickName())?userEntry.getNickName():userEntry.getUserName();
+                    if(type==1){
+                        sendMessage.put("msg", "作业提醒：\n社长 "+name+" 发布了一条新作业 \n请各位家长及时查看！");
+                    }else if(type==2){
+                        sendMessage.put("msg", "通知提醒：\n社长 "+name+" 发布了一条新通知 \n请各位家长及时查看！");
+                    }else if(type==3){
+                        sendMessage.put("msg", "火热分享提醒：\n社长 "+name+" 发布了一条新火热分享 \n请各位家长及时查看！");
+                    }else if(type==4){
+                        sendMessage.put("msg", "参考资料提醒：\n社长 "+name+" 发布了一条新参考资料 \n请各位家长及时查看！");
+                    }else if(type==5){
+                        sendMessage.put("msg", "活动报名提醒：\n社长 "+name+" 发布了一条新活动报名 \n请各位家长及时查看！");
+                    }
+                    //sendMessage.put("msg", "作业通知：\n社长 张老师 发布了一条新作业 \n请各位家长及时查看！");
+                    emService.sendTextMessage("chatrooms", targets, userId, ext, sendMessage);
+                }catch(Exception e){
+                    logger.error("error",e);
+                }
+            }
+        }.start();
+    }
 
     public static void send(final String contactId,final String userId,final int function,final int type,final String content) {
         new Thread(){

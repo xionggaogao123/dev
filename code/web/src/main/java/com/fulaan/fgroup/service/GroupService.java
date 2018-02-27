@@ -588,17 +588,18 @@ public class GroupService {
 
     public boolean sendTestMessage(){
         List<String> targets = new ArrayList<String>();
-        targets.add("58f6bea2de04cb5a4bc72d38");
-        String userId="579961cbde04cb783df3074f";
+        targets.add("37294088192001");
+        //targets.add("5a4c874e3d4df91f36167b5c");
+        String userId="5a00253d3d4df9241620d173";
         Map<String, String> ext = new HashMap<String, String>();
         Map<String, String> sendMessage = new HashMap<String, String>();
-        sendMessage.put("type", MsgType.IMG);
-        sendMessage.put("url", "https://a1.easemob.com/fulan/fulanmall/chatfiles/2b3ce640-0cb7-11e8-8a92-29b46c527a8a");
-        sendMessage.put("filename","operationBook.jpg");
-        sendMessage.put("secret","KzzmSgy3EeisbBEBikKn-2bhdi55QYWQdkgC8mYR_o3-LmTX");
-        //sendMessage.put("type", MsgType.TEXT);
-        //sendMessage.put("msg", "张庆最帅");
-        return emService.sendTextMessage("users", targets, userId, ext, sendMessage);
+        //sendMessage.put("type", MsgType.IMG);
+        //sendMessage.put("url", "https://a1.easemob.com/fulan/fulanmall/chatfiles/2b3ce640-0cb7-11e8-8a92-29b46c527a8a");
+        //sendMessage.put("filename","operationBook.jpg");
+        //sendMessage.put("secret","KzzmSgy3EeisbBEBikKn-2bhdi55QYWQdkgC8mYR_o3-LmTX");
+        sendMessage.put("type", MsgType.TEXT);
+        sendMessage.put("msg", "作业通知：\n 社长 张老师 发布了一条新作业 \n 请各位家长及时查看！");
+        return emService.sendTextMessage("chatrooms", targets, userId, ext, sendMessage);
     }
 
 

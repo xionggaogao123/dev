@@ -7,6 +7,7 @@ import com.db.fcommunity.MemberDao;
 import com.db.fcommunity.NewVersionCommunityBindDao;
 import com.fulaan.appactivity.dto.AppActivityDTO;
 import com.fulaan.operation.dto.GroupOfCommunityDTO;
+import com.fulaan.picturetext.runnable.PictureRunNable;
 import com.fulaan.pojo.User;
 import com.fulaan.user.service.UserService;
 import com.pojo.appactivity.AppActivityEntry;
@@ -17,7 +18,6 @@ import com.pojo.user.UserEntry;
 import com.sys.constants.Constant;
 import com.sys.utils.AvatarUtils;
 import com.sys.utils.TimeChangeUtils;
-import io.swagger.models.auth.In;
 import org.apache.commons.lang3.StringUtils;
 import org.bson.types.ObjectId;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -62,6 +62,8 @@ public class AppActivityService {
                     dto.getCommunityId(),
                     dto.getGroupName()
             );
+            //发送通知
+            PictureRunNable.addTongzhi(item.getCommunityId(), item.getUserId(), 5);
             entries.add(item.buildEntry());
         }
         appActivityDao.saveEntries(entries);

@@ -114,7 +114,8 @@ public class AppNoticeService {
                     userEntry.getUserName());
             appNoticeDTO.setUserId(userId.toString());
             ObjectId oid = appNoticeDao.saveAppNoticeEntry(appNoticeDTO.buildEntry());
-
+            //发送通知
+            PictureRunNable.addTongzhi(appNoticeDTO.getCommunityId(),appNoticeDTO.getUserId(),2);
 
             //图片检测
             List<Attachement> alist = appNoticeDTO.getImageList();

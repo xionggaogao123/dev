@@ -610,7 +610,13 @@ public class CommunityService {
         oid.add(new ObjectId(message.getCommunityId()));
         redDotService.addOtherEntryList(oid, uid, message.getType(), 3);
         ObjectId obid = communityDetailDao.save(entry);
-
+        if(message.getType()==3){
+            //发送通知
+            PictureRunNable.addTongzhi(message.getCommunityId(),uid.toString(),3);
+        }else if(message.getType()==4){
+            //发送通知
+            PictureRunNable.addTongzhi(message.getCommunityId(),uid.toString(),4);
+        }
         if(message.getType()==2){
             //图片检测
             List<Attachement> alist = message.getImages();

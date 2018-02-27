@@ -125,6 +125,34 @@ public class AppOperationDao extends BaseDao {
         }
         return entryList;
     }
+
+    /**
+     * 查询当前作业某些孩子的提交情况
+     * @param contactId
+     * @param role
+     * @return
+     */
+    public List<ObjectId> getEntryMap(List<ObjectId> userIds,ObjectId contactId,int role) {
+        BasicDBObject query = new BasicDBObject()
+                .append("cid",contactId)
+                .append("rol",role)
+                .append("uid",new BasicDBObject(Constant.MONGO_IN,userIds))
+                .append("lev", 1)//一级
+                .append("isr", 0); // 未删除
+        List<DBObject> dbList =
+                find(MongoFacroty.getAppDB(),
+                        Constant.COLLECTION_APP_OPERATION,
+                        query, Constant.FIELDS,
+                        Constant.MONGO_SORTBY_DESC);
+        List<ObjectId> entryList = new ArrayList<ObjectId>();
+        if (dbList != null && !dbList.isEmpty()) {
+            for (DBObject obj : dbList) {
+                AppOperationEntry appOperationEntry = new AppOperationEntry((BasicDBObject) obj);
+                entryList.add(appOperationEntry.getUserId());
+            }
+        }
+        return entryList;
+    }
     /**
      * 符合搜索条件的对象个数
      * @return

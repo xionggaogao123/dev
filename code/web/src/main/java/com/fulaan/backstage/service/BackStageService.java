@@ -350,7 +350,7 @@ public class BackStageService {
         Map<String,Object> map = new HashMap<String, Object>();
         List<TeacherApproveEntry> entries = new ArrayList<TeacherApproveEntry>();
         List<ObjectId> oids = teacherApproveDao.selectContentObjectList();
-        oids.add(userId);
+        //oids.add(userId);
         List<MemberEntry> entries2 = memberDao.getMembersFromTeacher(oids,searchId,page, pageSize);
         int count = 0;
         List<ObjectId> objectIdList =new ArrayList<ObjectId>();
@@ -360,7 +360,11 @@ public class BackStageService {
                 TeacherApproveEntry teaentry= new TeacherApproveEntry(memberEntry.getUserId(),memberEntry.getUserName(),memberEntry.getAvator(),"",memberEntry.getGroupId(),0l,1);
                 entries.add(teaentry);
             }
-            count = memberDao.getMembersFromTeacherCount(oids);
+            if(groupId !=null && !groupId.equals("")){
+                count = entries2.size();
+            }else{
+                count = memberDao.getMembersFromTeacherCount(oids);
+            }
             level =2;
         }else if(type==2){
             //memberDao.get

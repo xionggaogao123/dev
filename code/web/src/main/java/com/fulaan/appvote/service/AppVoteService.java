@@ -14,6 +14,7 @@ import com.fulaan.appvote.dto.VoteOption;
 import com.fulaan.appvote.dto.VoteResult;
 import com.fulaan.forum.service.FVoteService;
 import com.fulaan.operation.dto.GroupOfCommunityDTO;
+import com.fulaan.picturetext.runnable.PictureRunNable;
 import com.fulaan.pojo.User;
 import com.fulaan.user.service.UserService;
 import com.pojo.appactivity.AppActivityEntry;
@@ -94,8 +95,11 @@ public class AppVoteService {
                     dto.getGroupName()
             );
             entries.add(item.buildEntry());
+            //发送通知
+            PictureRunNable.addTongzhi(item.getCommunityId(), item.getUserId(), 5);
         }
         appVoteDao.saveEntries(entries);
+
     }
 
     public Map<String,Object> gatherAppVotes(ObjectId userId, int page, int pageSize){

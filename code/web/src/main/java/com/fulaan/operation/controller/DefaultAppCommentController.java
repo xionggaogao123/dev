@@ -10,6 +10,7 @@ import com.sys.constants.Constant;
 import com.sys.utils.DateTimeUtils;
 import com.sys.utils.RespObj;
 import io.swagger.annotations.*;
+import org.apache.log4j.Logger;
 import org.bson.types.ObjectId;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -32,6 +33,8 @@ public class DefaultAppCommentController extends BaseController {
 
     @Autowired
     private AppCommentService appCommentService;
+
+    private static final Logger logger =Logger.getLogger(DefaultAppCommentController.class);
     /**
      * 添加作业
      * @param dto
@@ -699,8 +702,75 @@ public class DefaultAppCommentController extends BaseController {
 
     }
 
+    @ApiOperation(value="查询该社区绑定的孩子列表",httpMethod = "POST",produces = "application/json")
+    @ApiResponse(code=200,message = "success", response = String.class)
+    @RequestMapping("/getMyCommunityChildList")
+    @ResponseBody
+    public RespObj getMyCommunityChildList(@ApiParam(name="communityId",value="社区id") @RequestParam(value="communityId") String communityId,
+                                           @ApiParam(name="contactId",value="联系id") @RequestParam(value="contactId") String contactId){
+        RespObj respObj = new RespObj(Constant.FAILD_CODE);
+        try{
+            respObj.setCode(Constant.SUCCESS_CODE);
+            List<Map<String,Object>> result = appCommentService.getMyCommunityChildList(getUserId(), new ObjectId(communityId),new ObjectId(contactId));
+            respObj.setMessage(result);
+        }catch (Exception e){
+            logger.error("error",e);
+            e.printStackTrace();
+            respObj.setCode(Constant.FAILD_CODE);
+            respObj.setMessage("查询该社区绑定的孩子列表失败!");
+        }
+        return respObj;
+    }
 
 
+    @ApiOperation(value="查询当前孩子的当前作业的提交情况",httpMethod = "POST",produces = "application/json")
+    @ApiResponse(code=200,message = "success", response = String.class)
+    @RequestMapping("/getChildAppcommentList")
+    @ResponseBody
+    public RespObj getChildAppcommentList(@ApiParam(name="studentId",value="孩子id") @RequestParam(value="studentId") String studentId,
+                                           @ApiParam(name="contactId",value="联系id") @RequestParam(value="contactId") String contactId,
+                                           @ApiParam(name="page",value="page") @RequestParam(value="page") int page,
+                                           @ApiParam(name="pageSize",value="pageSize") @RequestParam(value="pageSize") int pageSize){
+        RespObj respObj = new RespObj(Constant.FAILD_CODE);
+        try{
+            respObj.setCode(Constant.SUCCESS_CODE);
+            Map<String,Object> result = appCommentService.getChildAppcommentList(new ObjectId(contactId), new ObjectId(studentId), page,pageSize);
+            respObj.setMessage(result);
+        }catch (Exception e){
+            logger.error("error",e);
+            e.printStackTrace();
+            respObj.setCode(Constant.FAILD_CODE);
+            respObj.setMessage("查询当前孩子的当前作业的提交情况失败!");
+        }
+        return respObj;
+    }
+
+
+    /**
+     * 家长添加学生作业
+     * @param dto
+     * @return
+     */
+    @ApiOperation(value = "家长添加学生作业", httpMethod = "POST", produces = "application/json")
+    @ApiResponse(code = 200, message = "success", response = String.class)
+    @RequestMapping("/addOperationEntryByParent")
+    @ResponseBody
+    public String addOperationEntryByParent(@ApiParam(value = "contactId为作业id，role为3学生提交,parentId不为空表示由父母代为提交") @RequestBody AppOperationDTO dto){
+        RespObj respObj=new RespObj(Constant.FAILD_CODE);
+        try {
+            respObj.setCode(Constant.SUCCESS_CODE);
+            dto.setParentId(getUserId().toString());
+            dto.setLevel(1);
+            String result = appCommentService.addOperationEntryFromStrudent(dto);
+            respObj.setMessage(result);
+        } catch (Exception e) {
+            e.printStackTrace();
+            respObj.setCode(Constant.FAILD_CODE);
+            respObj.setErrorMessage("家长添加学生作业失败!");
+
+        }
+        return JSON.toJSONString(respObj);
+    }
 
     //community/myCommunitys/page/pageSize/?platform=app
 }

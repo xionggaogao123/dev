@@ -8,6 +8,8 @@ import com.db.fcommunity.CommunityDao;
 import com.db.fcommunity.GroupDao;
 import com.db.fcommunity.MemberDao;
 import com.db.groupchatrecord.RecordChatPersonalDao;
+import com.db.jiaschool.SchoolAppDao;
+import com.db.jiaschool.SchoolCommunityDao;
 import com.db.user.NewVersionBindRelationDao;
 import com.fulaan.appmarket.dto.AppDetailDTO;
 import com.fulaan.community.dto.CommunityDTO;
@@ -20,6 +22,8 @@ import com.pojo.appmarket.AppDetailEntry;
 import com.pojo.backstage.TeacherApproveEntry;
 import com.pojo.controlphone.*;
 import com.pojo.fcommunity.CommunityEntry;
+import com.pojo.jiaschool.SchoolAppEntry;
+import com.pojo.jiaschool.SchoolCommunityEntry;
 import com.pojo.user.NewVersionBindRelationEntry;
 import com.pojo.user.UserDetailInfoDTO;
 import com.sys.utils.DateTimeUtils;
@@ -71,6 +75,10 @@ public class ControlPhoneService {
     private TeacherApproveDao teacherApproveDao = new TeacherApproveDao();
 
     private RecordChatPersonalDao recordChatPersonalDao =  new RecordChatPersonalDao();
+
+    private SchoolCommunityDao schoolCommunityDao = new SchoolCommunityDao();
+
+    private SchoolAppDao schoolAppDao = new SchoolAppDao();
 
     @Autowired
     private NewVersionBindService newVersionBindService;
@@ -1789,6 +1797,11 @@ public class ControlPhoneService {
         }
         return map;
     }
+
+    /**
+     * 获得用户的所有具有管理员权限的社区id
+     *
+     */
     public List<ObjectId> getMyRoleList(ObjectId userId){
         List<ObjectId> olsit = memberDao.getManagerGroupIdsByUserId(userId);
         List<ObjectId> clist = new ArrayList<ObjectId>();
@@ -1930,16 +1943,49 @@ public class ControlPhoneService {
         }
     }
 
-
+    /**
+     * 发现首页加载
+     * @param userId
+     * @return
+     */
     public List<AppDetailDTO> getThirdAppList(ObjectId userId){
         List<AppDetailDTO> detailDTOs = new ArrayList<AppDetailDTO>();
         List<AppDetailEntry> appDetailEntries = appDetailDao.getAppByCondition("");
+        appDetailEntries.addAll(getSchoolAppList(userId));
         for (AppDetailEntry entry : appDetailEntries) {
             detailDTOs.add(new AppDetailDTO(entry));
         }
         getNewThirdAppList(userId);
         return detailDTOs;
     }
+
+    /**
+     * 发现页面（校本资源显示）
+     */
+    public List<AppDetailEntry> getSchoolAppList(ObjectId userId){
+        List<ObjectId> oids = getMyRoleList(userId);
+        List<SchoolCommunityEntry> schoolCommunityEntries = schoolCommunityDao.getReviewList2(oids);
+        List<ObjectId> oisd = new ArrayList<ObjectId>();
+        for(SchoolCommunityEntry schoolCommunityEntry:schoolCommunityEntries){
+            oisd.add(schoolCommunityEntry.getSchoolId());
+        }
+        List<AppDetailEntry> appDetailEntries = new ArrayList<AppDetailEntry>();
+        if(oisd.size()>0){
+            List<SchoolAppEntry> schoolAppEntries = schoolAppDao.getList(oisd);
+            List<ObjectId> appIds = new ArrayList<ObjectId>();
+            for(SchoolAppEntry schoolAppEntry: schoolAppEntries){
+                if(schoolAppEntry.getAppIdList()!=null && schoolAppEntry.getAppIdList().size()>0){
+                    appIds.addAll(schoolAppEntry.getAppIdList());
+                }
+            }
+            appDetailEntries = appDetailDao.getEntriesByIds(appIds);
+        }
+        return appDetailEntries;
+    }
+
+
+
+
 
     public void getNewThirdAppList(ObjectId userId){
         //查询所有该用户的绑定关系

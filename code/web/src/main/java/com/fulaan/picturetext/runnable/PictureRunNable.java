@@ -80,7 +80,7 @@ public class PictureRunNable{
                     }else if(type==4){
                         sendMessage.put("msg", "参考资料提醒：\n社长 "+name+" 发布了一条新参考资料 \n请各位家长及时查看！");
                     }else if(type==5){
-                        sendMessage.put("msg", "活动报名提醒：\n社长 "+name+" 发布了一条新活动报名 \n请各位家长及时查看！");
+                        sendMessage.put("msg", "投票报名提醒：\n社长 "+name+" 发布了一条新投票报名 \n请各位家长及时查看！");
                     }
                     //sendMessage.put("msg", "作业通知：\n社长 张老师 发布了一条新作业 \n请各位家长及时查看！");
                     emService.sendTextMessage("chatrooms", targets, userId, ext, sendMessage);

@@ -28,7 +28,25 @@ public class SchoolCommunityDao extends BaseDao {
         query.append("sid",new BasicDBObject(Constant.MONGO_IN,objectIds));
         List<DBObject> dbList =
                 find(MongoFacroty.getAppDB(),
-                        Constant.COLLECTION_HOME_SCHOOL,
+                        Constant.COLLECTION_COMMUNITY_SCHOOL,
+                        query, Constant.FIELDS,
+                        Constant.MONGO_SORTBY_DESC);
+        List<SchoolCommunityEntry> entryList = new ArrayList<SchoolCommunityEntry>();
+        if (dbList != null && !dbList.isEmpty()) {
+            for (DBObject obj : dbList) {
+                entryList.add(new SchoolCommunityEntry((BasicDBObject) obj));
+            }
+        }
+        return entryList;
+    }
+
+    public List<SchoolCommunityEntry> getReviewList2(List<ObjectId> objectIds) {
+        BasicDBObject query = new BasicDBObject()
+                .append("isr", 0); // 未删除
+        query.append("cid",new BasicDBObject(Constant.MONGO_IN,objectIds));
+        List<DBObject> dbList =
+                find(MongoFacroty.getAppDB(),
+                        Constant.COLLECTION_COMMUNITY_SCHOOL,
                         query, Constant.FIELDS,
                         Constant.MONGO_SORTBY_DESC);
         List<SchoolCommunityEntry> entryList = new ArrayList<SchoolCommunityEntry>();

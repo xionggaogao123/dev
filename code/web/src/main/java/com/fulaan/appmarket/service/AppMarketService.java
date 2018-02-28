@@ -115,7 +115,7 @@ public class AppMarketService {
         }
 
         for (AppDetailEntry entry : appDetailEntries) {
-            entry.setDescription(schoolName);
+            entry.setUrl(schoolName);
             detailDTOs.add(new AppDetailDTO(entry));
         }
         return detailDTOs;

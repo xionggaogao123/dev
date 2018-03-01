@@ -6,6 +6,7 @@ import com.db.fcommunity.CommunityDao;
 import com.db.fcommunity.MemberDao;
 import com.db.fcommunity.NewVersionCommunityBindDao;
 import com.fulaan.appactivity.dto.AppActivityDTO;
+import com.fulaan.instantmessage.service.RedDotService;
 import com.fulaan.operation.dto.GroupOfCommunityDTO;
 import com.fulaan.picturetext.runnable.PictureRunNable;
 import com.fulaan.pojo.User;
@@ -14,6 +15,7 @@ import com.pojo.appactivity.AppActivityEntry;
 import com.pojo.appactivity.AppActivityUserEntry;
 import com.pojo.fcommunity.MemberEntry;
 import com.pojo.fcommunity.NewVersionCommunityBindEntry;
+import com.pojo.instantmessage.ApplyTypeEn;
 import com.pojo.user.UserEntry;
 import com.sys.constants.Constant;
 import com.sys.utils.AvatarUtils;
@@ -45,10 +47,14 @@ public class AppActivityService {
 
     private AppActivityUserDao appActivityUserDao = new AppActivityUserDao();
 
+    private RedDotService redDotService = new RedDotService();
+
 
     public void saveEntry(AppActivityDTO appActivityDTO){
         List<AppActivityEntry> entries = new ArrayList<AppActivityEntry>();
+        List<ObjectId> oids = new ArrayList<ObjectId>();
         for (GroupOfCommunityDTO dto : appActivityDTO.getGroupOfCommunityDTOs()) {
+            oids.add(new ObjectId(dto.getCommunityId()));
             AppActivityDTO item = new AppActivityDTO(
                     appActivityDTO.getSubjectId(),
                     appActivityDTO.getUserId(),
@@ -62,9 +68,18 @@ public class AppActivityService {
                     dto.getCommunityId(),
                     dto.getGroupName()
             );
-            //发送通知
-            PictureRunNable.addTongzhi(item.getCommunityId(), item.getUserId(), 5);
+            if(appActivityDTO.getVisiblePermission()==1){//发送给家长
+                //发送通知
+                PictureRunNable.addTongzhi(item.getCommunityId(), item.getUserId(), 5);
+            }
             entries.add(item.buildEntry());
+        }
+        if(appActivityDTO.getVisiblePermission()==1){//红点
+            //添加红点
+            redDotService.addOtherEntryList(oids,new ObjectId(appActivityDTO.getUserId()), ApplyTypeEn.piao.getType(),1);
+        }else{
+            //添加红点
+            redDotService.addOtherEntryList(oids, new ObjectId(appActivityDTO.getUserId()), ApplyTypeEn.piao.getType(),2);
         }
         appActivityDao.saveEntries(entries);
     }

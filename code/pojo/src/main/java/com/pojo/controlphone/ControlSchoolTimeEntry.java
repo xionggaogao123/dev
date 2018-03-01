@@ -14,7 +14,7 @@ import org.bson.types.ObjectId;
  * startTime      开始时间                                             stm
  * endTime        结束时间                                              etm
  * communityId    社区id                                                cid
- *
+ * isr             0      通用             1      删除            2    学校
  */
 public class ControlSchoolTimeEntry extends BaseDBObject {
     public ControlSchoolTimeEntry(){

@@ -22,6 +22,11 @@ public class SchoolCommunityDao extends BaseDao {
         return entry.getID();
     }
 
+    /**
+     * 由学校list查询社群list
+     * @param objectIds
+     * @return
+     */
     public List<SchoolCommunityEntry> getReviewList(List<ObjectId> objectIds) {
         BasicDBObject query = new BasicDBObject()
                 .append("isr", 0); // 未删除
@@ -40,6 +45,11 @@ public class SchoolCommunityDao extends BaseDao {
         return entryList;
     }
 
+    /**
+     * 由社群list查询学校list
+     * @param objectIds
+     * @return
+     */
     public List<SchoolCommunityEntry> getReviewList2(List<ObjectId> objectIds) {
         BasicDBObject query = new BasicDBObject()
                 .append("isr", 0); // 未删除

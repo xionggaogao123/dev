@@ -109,6 +109,38 @@ public class ControlSchoolTimeDao extends BaseDao {
         return retList;
     }
 
+    public List<ControlSchoolTimeEntry> getAllSchoolEntryList(List<ObjectId> schoolIds) {
+        BasicDBObject query =new BasicDBObject();
+        query.append("isr", Constant.TWO);//学校类型
+        query.append("pid",new BasicDBObject(Constant.MONGO_IN,schoolIds));
+        List<DBObject> dboList=find(MongoFacroty.getAppDB(), Constant.COLLECTION_CONTROL_SCHOOL_TIME, query, Constant.FIELDS);
+        List<ControlSchoolTimeEntry> retList =new ArrayList<ControlSchoolTimeEntry>();
+        if(null!=dboList && !dboList.isEmpty())
+        {
+            for(DBObject dbo:dboList)
+            {
+                retList.add(new ControlSchoolTimeEntry((BasicDBObject)dbo));
+            }
+        }
+        return retList;
+    }
+
+    public List<ControlSchoolTimeEntry> getOneSchoolEntryList(ObjectId schoolId) {
+        BasicDBObject query =new BasicDBObject();
+        query.append("isr", Constant.TWO);//学校类型
+        query.append("pid",schoolId);
+        List<DBObject> dboList=find(MongoFacroty.getAppDB(), Constant.COLLECTION_CONTROL_SCHOOL_TIME, query, Constant.FIELDS);
+        List<ControlSchoolTimeEntry> retList =new ArrayList<ControlSchoolTimeEntry>();
+        if(null!=dboList && !dboList.isEmpty())
+        {
+            for(DBObject dbo:dboList)
+            {
+                retList.add(new ControlSchoolTimeEntry((BasicDBObject)dbo));
+            }
+        }
+        return retList;
+    }
+
     public List<ControlSchoolTimeEntry> getAllDuringList() {
         BasicDBObject query =new BasicDBObject();
         query.append("isr", Constant.ZERO).append("typ", Constant.THREE);

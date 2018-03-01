@@ -13,6 +13,7 @@ import com.fulaan.appvote.dto.AppVoteDTO;
 import com.fulaan.appvote.dto.VoteOption;
 import com.fulaan.appvote.dto.VoteResult;
 import com.fulaan.forum.service.FVoteService;
+import com.fulaan.instantmessage.service.RedDotService;
 import com.fulaan.operation.dto.GroupOfCommunityDTO;
 import com.fulaan.picturetext.runnable.PictureRunNable;
 import com.fulaan.pojo.User;
@@ -26,6 +27,7 @@ import com.pojo.fcommunity.CommunityEntry;
 import com.pojo.fcommunity.NewVersionCommunityBindEntry;
 import com.pojo.forum.FVoteDTO;
 import com.pojo.forum.FVoteEntry;
+import com.pojo.instantmessage.ApplyTypeEn;
 import com.pojo.user.UserEntry;
 import com.pojo.utils.MongoUtils;
 import com.sys.constants.Constant;
@@ -66,6 +68,8 @@ public class AppVoteService {
 
     private AppActivityDao appActivityDao = new AppActivityDao();
 
+    private RedDotService redDotService = new RedDotService();
+
     @Autowired
     private FVoteService fVoteService;
 
@@ -77,6 +81,7 @@ public class AppVoteService {
         SimpleDateFormat format = new SimpleDateFormat(DateTimeUtils.DATE_YYYY_MM_DD_HH_MM_SS_H);
         Date date = format.parse(appVoteDTO.getDeadFormatTime());
         List<AppVoteEntry> entries = new ArrayList<AppVoteEntry>();
+        List<ObjectId> oids = new ArrayList<ObjectId>();
         for (GroupOfCommunityDTO dto : appVoteDTO.getGroupExamDetailDTOs()) {
             AppVoteDTO item = new AppVoteDTO(
                     appVoteDTO.getSubjectId(),
@@ -94,9 +99,19 @@ public class AppVoteService {
                     dto.getCommunityId(),
                     dto.getGroupName()
             );
+            oids.add(new ObjectId(dto.getCommunityId()));
             entries.add(item.buildEntry());
-            //发送通知
-            PictureRunNable.addTongzhi(item.getCommunityId(), item.getUserId(), 5);
+            if(appVoteDTO.getVisiblePermission()==1){//家长
+                //发送通知
+                PictureRunNable.addTongzhi(item.getCommunityId(), item.getUserId(), 5);
+            }
+        }
+        if(appVoteDTO.getVisiblePermission()==1){//红点
+            //添加红点
+            redDotService.addOtherEntryList(oids, new ObjectId(appVoteDTO.getUserId()), ApplyTypeEn.piao.getType(), 1);
+        }else{
+            //添加红点
+            redDotService.addOtherEntryList(oids,new ObjectId(appVoteDTO.getUserId()), ApplyTypeEn.piao.getType(),2);
         }
         appVoteDao.saveEntries(entries);
 

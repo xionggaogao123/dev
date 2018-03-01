@@ -262,7 +262,8 @@ public class DefaultGroupController extends BaseController {
                     List<ObjectId> communityIds = new ArrayList<ObjectId>();
                     communityIds.add(groupEntry.getCommunityId());
                     String[] keys = keysList.toArray(new String[keysList.size()]);
-                    backStageService.setAutoChildFriends(keys,communityIds);
+                    backStageService.recordEntries2(groupEntry.getID(),keys,30);
+                    //backStageService.setAutoChildFriends(keys,communityIds);
                 }
             }
             //更新群聊头像

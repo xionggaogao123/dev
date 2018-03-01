@@ -23,6 +23,7 @@ import com.pojo.business.ModuleNumberEntry;
 import com.pojo.controlphone.ControlAppUserEntry;
 import com.pojo.fcommunity.CommunityEntry;
 import com.pojo.fcommunity.FLoginLogEntry;
+import com.pojo.fcommunity.MemberEntry;
 import com.pojo.newVersionGrade.NewVersionSubjectEntry;
 import com.pojo.user.NewVersionUserRoleEntry;
 import com.pojo.user.UserEntry;
@@ -55,6 +56,7 @@ public class PictureRunNable{
                 System.out.println("新的线程在执行...");
                 EmService emService = new EmService();
                 CommunityDao communityDao = new CommunityDao();
+                MemberDao memberDao =  new MemberDao();
                 UserDao userDao = new UserDao();
                 try{
                     List<String> targets = new ArrayList<String>();
@@ -71,17 +73,29 @@ public class PictureRunNable{
                     //sendMessage.put("secret","KzzmSgy3EeisbBEBikKn-2bhdi55QYWQdkgC8mYR_o3-LmTX");
                     sendMessage.put("type", MsgType.TEXT);
                     String name = StringUtils.isNotEmpty(userEntry.getNickName())?userEntry.getNickName():userEntry.getUserName();
-                    if(type==1){
-                        sendMessage.put("msg", "作业提醒：\n社长 "+name+" 发布了一条新作业 \n请各位家长及时查看！");
-                    }else if(type==2){
-                        sendMessage.put("msg", "通知提醒：\n社长 "+name+" 发布了一条新通知 \n请各位家长及时查看！");
-                    }else if(type==3){
-                        sendMessage.put("msg", "火热分享提醒：\n社长 "+name+" 发布了一条新火热分享 \n请各位家长及时查看！");
-                    }else if(type==4){
-                        sendMessage.put("msg", "参考资料提醒：\n社长 "+name+" 发布了一条新参考资料 \n请各位家长及时查看！");
-                    }else if(type==5){
-                        sendMessage.put("msg", "投票报名提醒：\n社长 "+name+" 发布了一条新投票报名 \n请各位家长及时查看！");
+                    MemberEntry memberEntry = memberDao.getUser(communityEntry.getGroupId(), new ObjectId(userId));
+                    String str = "社员";
+                    if(memberEntry!=null){
+                        if(memberEntry.getRole()==0){
+                            str = "社员";
+                        }else if(memberEntry.getRole()==1){
+                            str = "副社长";
+                        }else if(memberEntry.getRole()==2){
+                            str = "社长";
+                        }
                     }
+                    if(type==1){
+                        sendMessage.put("msg", "作业提醒：\n"+str+" "+name+" 发布了一条新作业 \n请各位家长及时查看！");
+                    }else if(type==2){
+                        sendMessage.put("msg", "通知提醒：\n"+str+" "+name+" 发布了一条新通知 \n请各位家长及时查看！");
+                    }else if(type==3){
+                        sendMessage.put("msg", "火热分享提醒：\n"+str+" "+name+" 发布了一条新火热分享 \n请各位家长及时查看！");
+                    }else if(type==4){
+                        sendMessage.put("msg", "参考资料提醒：\n"+str+" "+name+" 发布了一条新参考资料 \n请各位家长及时查看！");
+                    }else if(type==5){
+                        sendMessage.put("msg", "投票报名提醒：\n"+str+" "+name+" 发布了一条新投票报名 \n请各位家长及时查看！");
+                    }
+                    ext.put("groupStyle","community");
                     //sendMessage.put("msg", "作业通知：\n社长 张老师 发布了一条新作业 \n请各位家长及时查看！");
                     emService.sendTextMessage("chatrooms", targets, userId, ext, sendMessage);
                 }catch(Exception e){

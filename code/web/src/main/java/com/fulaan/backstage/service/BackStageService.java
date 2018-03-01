@@ -1179,6 +1179,30 @@ public class BackStageService {
         }
     }
 
+    public void recordEntries2(final ObjectId groupId,final String[] objectIds,final int pageSize){
+        new Thread(new Runnable() {
+            @Override
+            public void run() {
+                boolean  cFlag=true;
+                int cPage = 1;
+                while (cFlag) {
+                    List<ObjectId> members = memberDao.getPageMembers(groupId, cPage, pageSize);
+                    if (members.size() > 0) {
+                        List<ObjectId> uIds = new ArrayList<ObjectId>();
+                        uIds.addAll(members);
+                        for (String userId : objectIds) {
+                            setFriendEntry(new ObjectId(userId),uIds);
+                        }
+                    } else {
+                        cFlag = false;
+                    }
+                    cPage++;
+                }
+            }
+        }).start();
+
+    }
+
 
     public void setAutoCommunityFriends(){
         int pageSize=200;

@@ -6,6 +6,7 @@ import com.db.appmarket.AppDetailDao;
 import com.db.backstage.*;
 import com.db.controlphone.*;
 import com.db.fcommunity.*;
+import com.db.jiaschool.HomeSchoolDao;
 import com.db.jiaschool.SchoolAppDao;
 import com.db.operation.AppCommentDao;
 import com.db.operation.AppNoticeDao;
@@ -37,6 +38,7 @@ import com.pojo.fcommunity.CommunityDetailEntry;
 import com.pojo.fcommunity.CommunityEntry;
 import com.pojo.fcommunity.MemberEntry;
 import com.pojo.indexPage.IndexPageEntry;
+import com.pojo.jiaschool.HomeSchoolEntry;
 import com.pojo.jiaschool.SchoolAppEntry;
 import com.pojo.newVersionGrade.CommunityType;
 import com.pojo.operation.AppCommentEntry;
@@ -117,6 +119,8 @@ public class BackStageService {
     private NewVersionCommunityBindDao  newVersionCommunityBindDao = new NewVersionCommunityBindDao();
 
     private SchoolAppDao schoolAppDao = new SchoolAppDao();
+
+    private HomeSchoolDao homeSchoolDao = new HomeSchoolDao();
 
 
 
@@ -224,6 +228,16 @@ public class BackStageService {
         }
         return dtos;
     }
+    public List<ControlSchoolTimeDTO> selectCommunityTime(ObjectId schoolId){
+        List<ControlSchoolTimeDTO> dtos = new ArrayList<ControlSchoolTimeDTO>();
+        List<ControlSchoolTimeEntry> entries =  controlSchoolTimeDao.getOneSchoolEntryList(schoolId);
+        if(entries.size()>0){
+            for(ControlSchoolTimeEntry entry : entries){
+                dtos.add(new ControlSchoolTimeDTO(entry));
+            }
+        }
+        return dtos;
+    }
     public void addSetTimeListEntry(ObjectId userId,int time){
         long time2 = time * 60 * 1000;
         long hours2 = (time2 % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60);
@@ -294,11 +308,50 @@ public class BackStageService {
         this.addLogMessage(id.toString(),"添加常用管控默认上课时间："+startTime+"-"+endTime,LogMessageType.schoolTime.getDes(),userId.toString());
     }
 
+    public void addCommunityTime(ObjectId userId,String startTime,String endTime,ObjectId schoolId,int week){
+        HomeSchoolEntry homeSchoolEntry = homeSchoolDao.getEntryById(schoolId);
+        if(homeSchoolEntry!=null){
+            ControlSchoolTimeEntry entry = controlSchoolTimeDao.getcommunityEntry(week,schoolId);
+            String id = "";
+            if(null==entry){
+                ControlSchoolTimeDTO dto = new ControlSchoolTimeDTO();
+                dto.setStartTime(startTime);
+                dto.setParentId(schoolId.toString());
+                dto.setEndTime(endTime);
+                dto.setWeek(week);
+                dto.setType(1);
+                ControlSchoolTimeEntry entry1 = dto.buildAddEntry();
+                entry1.setIsRemove(Constant.TWO);
+                id = controlSchoolTimeDao.addEntry(entry1);
+            }else{
+                entry.setStartTime(startTime);
+                entry.setEndTime(endTime);
+                controlSchoolTimeDao.updEntry(entry);
+                id = entry.getID().toString();
+            }
+
+            this.addLogMessage(id.toString(),"添加学校: "+homeSchoolEntry.getName()+" 管控默认上课时间："+startTime+"-"+endTime,LogMessageType.communitTime.getDes(),userId.toString());
+        }
+    }
+
     public void delSchoolTime(ObjectId userId,ObjectId id){
         ControlSchoolTimeEntry entry = controlSchoolTimeDao.getEntryById(id);
         if(null != entry){
             controlSchoolTimeDao.delAppCommentEntry(id);
             this.addLogMessage(id.toString(),"删除管控默认上课时间："+ entry.getStartTime()+"-"+entry.getEndTime(),LogMessageType.schoolTime.getDes(),userId.toString());
+        }
+
+    }
+
+    public void delCommunityTime(ObjectId userId,ObjectId id){
+        ControlSchoolTimeEntry entry = controlSchoolTimeDao.getCommunityEntryById(id);
+        if(null != entry){
+            HomeSchoolEntry homeSchoolEntry = homeSchoolDao.getEntryById(entry.getParentId());
+            if(homeSchoolEntry!=null){
+                controlSchoolTimeDao.delAppCommentEntry(id);
+                this.addLogMessage(id.toString(),"删除学校："+homeSchoolEntry.getName()+" 管控默认上课时间："+ entry.getStartTime()+"-"+entry.getEndTime(),LogMessageType.communitTime.getDes(),userId.toString());
+            }
+
         }
 
     }
@@ -321,6 +374,33 @@ public class BackStageService {
 
         this.addLogMessage(id.toString(),"添加特殊管控默认上课时间："+ startTime+"-"+endTime,LogMessageType.schoolTime.getDes(),userId.toString());
     }
+
+    public void addOtherCommunityTime(ObjectId userId,String startTime,String endTime,ObjectId schoolId,String dateTime){
+        HomeSchoolEntry homeSchoolEntry = homeSchoolDao.getEntryById(schoolId);
+        if(homeSchoolEntry!=null){
+            ControlSchoolTimeEntry entry = controlSchoolTimeDao.getOtherCommunityEntry(dateTime, schoolId);
+            String id = "";
+            if(null==entry){
+                ControlSchoolTimeDTO dto = new ControlSchoolTimeDTO();
+                dto.setStartTime(startTime);
+                dto.setEndTime(endTime);
+                dto.setParentId(schoolId.toString());
+                dto.setDataTime(dateTime);
+                dto.setType(2);
+                ControlSchoolTimeEntry controlSchoolTimeEntry = dto.buildAddEntry();
+                controlSchoolTimeEntry.setIsRemove(Constant.TWO);
+                id = controlSchoolTimeDao.addEntry(controlSchoolTimeEntry);
+            }else{
+                entry.setStartTime(startTime);
+                entry.setEndTime(endTime);
+                controlSchoolTimeDao.updEntry(entry);
+                id = entry.getID().toString();
+            }
+
+            this.addLogMessage(id.toString(),"添加学校："+homeSchoolEntry.getName()+" 特殊管控上课时间："+ startTime+"-"+endTime,LogMessageType.communitTime.getDes(),userId.toString());
+        }
+
+    }
     public void addDuringSchoolTime(ObjectId userId,String startTime,String endTime,String dateTime){
         ControlSchoolTimeEntry entry = controlSchoolTimeDao.getOtherEntry(dateTime);
         String id = "";
@@ -339,6 +419,33 @@ public class BackStageService {
         }
 
         this.addLogMessage(id.toString(),"添加特殊管控默认上课时间："+ startTime+"-"+endTime,LogMessageType.schoolTime.getDes(),userId.toString());
+    }
+
+    public void addDuringCommunityTime(ObjectId userId,String startTime,String endTime,ObjectId schoolId,String dateTime){
+        HomeSchoolEntry homeSchoolEntry = homeSchoolDao.getEntryById(schoolId);
+        if(homeSchoolEntry!=null){
+            ControlSchoolTimeEntry entry = controlSchoolTimeDao.getOtherCommunityEntry(dateTime, schoolId);
+            String id = "";
+            if(null==entry){
+                ControlSchoolTimeDTO dto = new ControlSchoolTimeDTO();
+                dto.setStartTime(startTime);
+                dto.setEndTime(endTime);
+                dto.setDataTime(dateTime);
+                dto.setParentId(schoolId.toString());
+                dto.setType(3);
+                ControlSchoolTimeEntry controlSchoolTimeEntry = dto.buildAddEntry();
+                controlSchoolTimeEntry.setIsRemove(Constant.TWO);
+                id = controlSchoolTimeDao.addEntry(controlSchoolTimeEntry);
+            }else{
+                entry.setStartTime(startTime);
+                entry.setEndTime(endTime);
+                controlSchoolTimeDao.updEntry(entry);
+                id = entry.getID().toString();
+            }
+
+            this.addLogMessage(id.toString(),"添加学校："+homeSchoolEntry.getName()+" 特殊管控学校上课时间："+ startTime+"-"+endTime,LogMessageType.communitTime.getDes(),userId.toString());
+        }
+
     }
     //教师认证1未验证，2 验证通过 3 验证不通过
     public Map<String,Object> selectTeacherList(ObjectId userId,int type,String groupId,int page,int pageSize){

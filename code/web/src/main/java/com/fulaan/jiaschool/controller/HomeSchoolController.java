@@ -55,6 +55,26 @@ public class HomeSchoolController extends BaseController {
     }
 
 
+    /**
+     * 简易查询学校列表
+     */
+    @ApiOperation(value = "简易查询学校列表", httpMethod = "POST", produces = "application/json")
+    @ApiResponses( value = {@ApiResponse(code = 200, message = "Successful — 请求已完成",response = String.class)})
+        @RequestMapping("/getSimpleSchoolList")
+    @ResponseBody
+    public String getSimpleSchoolList(){
+        RespObj respObj=new RespObj(Constant.FAILD_CODE);
+        try {
+            respObj.setCode(Constant.SUCCESS_CODE);
+            List<HomeSchoolDTO> dtos = homeSchoolService.getSimpleSchoolList(getUserId());
+            respObj.setMessage(dtos);
+        } catch (Exception e) {
+            e.printStackTrace();
+            respObj.setCode(Constant.FAILD_CODE);
+            respObj.setErrorMessage("简易查询学校列表失败!");
+        }
+        return JSON.toJSONString(respObj);
+    }
 
     /**
      *  添加新的学校

@@ -1975,8 +1975,8 @@ public class AppCommentService {
                     }else{
                         stringObjectMap.put("isLoad",0);
                     }
+                    mapList.add(stringObjectMap);
                 }
-                mapList.add(stringObjectMap);
             }
 
         }

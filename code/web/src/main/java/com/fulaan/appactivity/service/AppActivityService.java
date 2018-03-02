@@ -76,7 +76,7 @@ public class AppActivityService {
         }
         if(appActivityDTO.getVisiblePermission()==1){//红点
             //添加红点
-            redDotService.addOtherEntryList(oids,new ObjectId(appActivityDTO.getUserId()), ApplyTypeEn.piao.getType(),1);
+            redDotService.addOtherEntryList(oids, new ObjectId(appActivityDTO.getUserId()), ApplyTypeEn.piao.getType(), 1);
         }else{
             //添加红点
             redDotService.addOtherEntryList(oids, new ObjectId(appActivityDTO.getUserId()), ApplyTypeEn.piao.getType(),2);
@@ -250,6 +250,8 @@ public class AppActivityService {
         List<AppActivityEntry> appActivityEntries = appActivityDao.getGatherActivities(userId,groupIds,page, pageSize);
         getDtosByEntries(appActivityDTOs, appActivityEntries,userId);
         int count = appActivityDao.countGatherActivities(userId,groupIds);
+        //清除红点
+        redDotService.cleanOtherResult(userId, ApplyTypeEn.piao.getType());
         retMap.put("list", appActivityDTOs);
         retMap.put("page", page);
         retMap.put("pageSize", pageSize);

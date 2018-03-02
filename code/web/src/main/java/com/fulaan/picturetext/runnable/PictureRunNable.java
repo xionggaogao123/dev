@@ -28,6 +28,7 @@ import com.pojo.newVersionGrade.NewVersionSubjectEntry;
 import com.pojo.user.NewVersionUserRoleEntry;
 import com.pojo.user.UserEntry;
 import com.sys.constants.Constant;
+import com.sys.utils.AvatarUtils;
 import net.sf.json.JSONObject;
 import org.bson.types.ObjectId;
 
@@ -74,6 +75,9 @@ public class PictureRunNable{
                     sendMessage.put("type", MsgType.TEXT);
                     String name = StringUtils.isNotEmpty(userEntry.getNickName())?userEntry.getNickName():userEntry.getUserName();
                     MemberEntry memberEntry = memberDao.getUser(communityEntry.getGroupId(), new ObjectId(userId));
+                    if(memberEntry.getNickName()!=null){
+                        name = memberEntry.getNickName();
+                    }
                     String str = "社员";
                     if(memberEntry!=null){
                         if(memberEntry.getRole()==0){
@@ -96,6 +100,9 @@ public class PictureRunNable{
                         sendMessage.put("msg", "投票报名提醒：\n"+str+" "+name+" 发布了一条新投票报名 \n请各位家长及时查看！");
                     }
                     ext.put("groupStyle","community");
+                    ext.put("avatar", AvatarUtils.getAvatar(userEntry.getAvatar(), userEntry.getRole(), userEntry.getSex()));
+                    ext.put("nickName", name);
+                    ext.put("userId", userId.toString());
                     //sendMessage.put("msg", "作业通知：\n社长 张老师 发布了一条新作业 \n请各位家长及时查看！");
                     emService.sendTextMessage("chatrooms", targets, userId, ext, sendMessage);
                 }catch(Exception e){

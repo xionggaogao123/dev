@@ -40,6 +40,18 @@ public class ControlSchoolTimeDao extends BaseDao {
         return null;
     }
 
+    //学校单查询
+    public ControlSchoolTimeEntry getcommunityEntry(int week,ObjectId schoolId) {
+        BasicDBObject query =new BasicDBObject();
+        query.append("isr", Constant.TWO) .append("wek", week).append("pid",schoolId);
+        DBObject dbo =findOne(MongoFacroty.getAppDB(), Constant.COLLECTION_CONTROL_SCHOOL_TIME, query, Constant.FIELDS);
+        if(null!=dbo)
+        {
+            return new ControlSchoolTimeEntry((BasicDBObject)dbo);
+        }
+        return null;
+    }
+
     //单查询
     public ControlSchoolTimeEntry getEntryById(ObjectId id) {
         BasicDBObject query =new BasicDBObject();
@@ -51,9 +63,32 @@ public class ControlSchoolTimeDao extends BaseDao {
         }
         return null;
     }
+
+    //学校单查询
+    public ControlSchoolTimeEntry getCommunityEntryById(ObjectId id) {
+        BasicDBObject query =new BasicDBObject();
+        query.append("isr", Constant.TWO) .append(Constant.ID, id);
+        DBObject dbo =findOne(MongoFacroty.getAppDB(), Constant.COLLECTION_CONTROL_SCHOOL_TIME, query, Constant.FIELDS);
+        if(null!=dbo)
+        {
+            return new ControlSchoolTimeEntry((BasicDBObject)dbo);
+        }
+        return null;
+    }
     public ControlSchoolTimeEntry getOtherEntry(String dateTime) {
         BasicDBObject query =new BasicDBObject();
         query.append("isr", Constant.ZERO) .append("dtm", dateTime);
+        DBObject dbo =findOne(MongoFacroty.getAppDB(), Constant.COLLECTION_CONTROL_SCHOOL_TIME, query, Constant.FIELDS);
+        if(null!=dbo)
+        {
+            return new ControlSchoolTimeEntry((BasicDBObject)dbo);
+        }
+        return null;
+    }
+
+    public ControlSchoolTimeEntry getOtherCommunityEntry(String dateTime,ObjectId schoolId) {
+        BasicDBObject query =new BasicDBObject();
+        query.append("isr", Constant.TWO) .append("dtm", dateTime).append("pid",schoolId);
         DBObject dbo =findOne(MongoFacroty.getAppDB(), Constant.COLLECTION_CONTROL_SCHOOL_TIME, query, Constant.FIELDS);
         if(null!=dbo)
         {

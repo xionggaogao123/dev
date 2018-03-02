@@ -48,6 +48,17 @@ public class HomeSchoolService {
         return map;
     }
 
+    public List<HomeSchoolDTO> getSimpleSchoolList(ObjectId userId){
+        List<HomeSchoolDTO> homeSchoolDTOs = new ArrayList<HomeSchoolDTO>();
+        List<HomeSchoolEntry> entries = homeSchoolDao.getSchoolList();
+        for(HomeSchoolEntry homeSchoolEntry : entries){
+            if(homeSchoolEntry.getName()!=null && !homeSchoolEntry.getName().equals("复兰大学")){
+                homeSchoolDTOs.add(new HomeSchoolDTO(homeSchoolEntry));
+            }
+        }
+        return homeSchoolDTOs;
+    }
+
 
 
     public String addNewSchoolEntry(HomeSchoolDTO dto){

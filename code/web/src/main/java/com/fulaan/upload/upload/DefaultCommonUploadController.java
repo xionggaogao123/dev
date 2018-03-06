@@ -94,22 +94,20 @@ public class DefaultCommonUploadController extends BaseController {
 
             imgUrl = QiniuFileUtils.getPath(QiniuFileUtils.TYPE_IMAGE, coverImage);
         }
-
         VideoEntry ve = new VideoEntry(fileName, file.getSize(), VideoSourceType.USER_VIDEO.getType(), videoFilekey);
         ve.setVideoSourceType(VideoSourceType.VOTE_VIDEO.getType());
         ve.setID(new ObjectId());
         QiniuFileUtils.uploadVideoFile(ve.getID(), videoFilekey, file.getInputStream(), QiniuFileUtils.TYPE_USER_VIDEO);
         String url = QiniuFileUtils.getPath(QiniuFileUtils.TYPE_USER_VIDEO, videoFilekey);
-
+        //尝试
+        imgUrl = url+"?vframe/jpg/offset/1";
         if (isCreateImage && screenShotFile.exists()) {
             ve.setImgUrl(imgUrl);
         }
 
         ObjectId videoId = videoService.addVideoEntry(ve);
 
-
         Map<String, Object> retMap = new HashMap<String, Object>();
-
         VideoDTO videoDTO = new VideoDTO(ve);
         videoDTO.setId(videoId.toString());
         videoDTO.setImageUrl(ve.getImgUrl());

@@ -700,7 +700,12 @@ public class NewVersionBindService {
                                         ObjectId communityId,ObjectId mainUserId)throws Exception{
         NewVersionCommunityBindEntry entry = newVersionCommunityBindDao.getEntry(thirdName, communityId, mainUserId);
         if(null!=entry){
-            throw new Exception("该昵称已用过!");
+            if(entry.getRemoveStatus()==1){
+                entry.setNumber(number);
+                newVersionCommunityBindDao.updateEntryStatus(entry.getID());
+            }else{
+                throw new Exception("该昵称已用过!");
+            }
         }else{
             NewVersionCommunityBindEntry bindEntry = new NewVersionCommunityBindEntry(communityId, mainUserId, new ObjectId(), thirdName, number);
             newVersionCommunityBindDao.saveEntry(bindEntry);

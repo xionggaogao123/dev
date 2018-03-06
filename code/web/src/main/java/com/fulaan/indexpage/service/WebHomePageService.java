@@ -429,10 +429,10 @@ public class WebHomePageService {
             @Override
             public int compare(GroupExamDetailDTO o1, GroupExamDetailDTO o2) {
                 int result=0;
-                if(o1.getSubmitTime()>o2.getSubmitTime()){
-                    result=1;
-                }else if(o1.getSubmitTime()<o2.getSubmitTime()){
+                if(o1.getExamTime()>o2.getExamTime()){
                     result=-1;
+                }else if(o1.getExamTime()<o2.getExamTime()) {
+                    result=1;
                 }
                 return result;
             }

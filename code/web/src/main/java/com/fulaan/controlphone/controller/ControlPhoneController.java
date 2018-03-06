@@ -691,7 +691,7 @@ public class ControlPhoneController extends BaseController {
     }
 
     /**
-     * 老师首页加载基础信息
+     * 最新老师首页加载基础信息
      */
     @ApiOperation(value = "老师首页加载", httpMethod = "POST", produces = "application/json")
     @ApiResponses( value = {@ApiResponse(code = 200, message = "Successful — 请求已完成",response = String.class),
@@ -727,7 +727,8 @@ public class ControlPhoneController extends BaseController {
         RespObj respObj=new RespObj(Constant.FAILD_CODE);
         try {
             respObj.setCode(Constant.SUCCESS_CODE);
-            Map<String,Object> dtos= controlPhoneService.getAllMessageForTea(getUserId(),new ObjectId(communityId));
+            //Map<String,Object> dtos= controlPhoneService.getAllMessageForTea(getUserId(),new ObjectId(communityId));旧
+            Map<String,Object> dtos= controlPhoneService.getSchoolOneMessageForTea(getUserId(), new ObjectId(communityId));
             respObj.setMessage(dtos);
         } catch (Exception e) {
             e.printStackTrace();

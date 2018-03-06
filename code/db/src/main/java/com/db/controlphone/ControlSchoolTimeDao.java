@@ -129,6 +129,24 @@ public class ControlSchoolTimeDao extends BaseDao {
         return entryList;
     }
 
+    /**
+     * 查询默认周常配置
+     * @return
+     */
+    public List<ControlSchoolTimeEntry> getSchoolMoEntryList() {
+        BasicDBObject query =new BasicDBObject();
+        query.append("isr", Constant.ZERO).append("typ",Constant.ONE);
+        List<DBObject> dboList=find(MongoFacroty.getAppDB(), Constant.COLLECTION_CONTROL_SCHOOL_TIME, query, Constant.FIELDS);
+        List<ControlSchoolTimeEntry> retList =new ArrayList<ControlSchoolTimeEntry>();
+        if(null!=dboList && !dboList.isEmpty())
+        {
+            for(DBObject dbo:dboList)
+            {
+                retList.add(new ControlSchoolTimeEntry((BasicDBObject)dbo));
+            }
+        }
+        return retList;
+    }
     public List<ControlSchoolTimeEntry> getAllEntryList() {
         BasicDBObject query =new BasicDBObject();
         query.append("isr", Constant.ZERO);

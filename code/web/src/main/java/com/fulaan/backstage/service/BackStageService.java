@@ -308,6 +308,42 @@ public class BackStageService {
         this.addLogMessage(id.toString(),"添加常用管控默认上课时间："+startTime+"-"+endTime,LogMessageType.schoolTime.getDes(),userId.toString());
     }
 
+    /**
+     *
+     */
+    public void addWeekShe(ObjectId schoolId){
+        List<ControlSchoolTimeEntry> controlSchoolTimeEntries1 = controlSchoolTimeDao.getOneSchoolEntryList(schoolId);
+        if(controlSchoolTimeEntries1.size()==0){
+            List<ControlSchoolTimeEntry> controlSchoolTimeEntries = controlSchoolTimeDao.getSchoolMoEntryList();
+            HomeSchoolEntry homeSchoolEntry = homeSchoolDao.getEntryById(schoolId);
+            if(homeSchoolEntry!=null){
+                for(ControlSchoolTimeEntry controlSchoolTimeEntry : controlSchoolTimeEntries){
+                    controlSchoolTimeEntry.setID(null);
+                    controlSchoolTimeEntry.setParentId(schoolId);
+                    controlSchoolTimeEntry.setIsRemove(Constant.TWO);
+                    controlSchoolTimeDao.addEntry(controlSchoolTimeEntry);
+                }
+            }
+        }
+    }
+    public void addWeekShe2(ObjectId schoolId,int week){
+        List<ControlSchoolTimeEntry> controlSchoolTimeEntries1 = controlSchoolTimeDao.getOneSchoolEntryList(schoolId);
+        if(controlSchoolTimeEntries1.size()==0){
+            List<ControlSchoolTimeEntry> controlSchoolTimeEntries = controlSchoolTimeDao.getSchoolMoEntryList();
+            HomeSchoolEntry homeSchoolEntry = homeSchoolDao.getEntryById(schoolId);
+            if(homeSchoolEntry!=null){
+                for(ControlSchoolTimeEntry controlSchoolTimeEntry : controlSchoolTimeEntries){
+                    if(controlSchoolTimeEntry.getWeek()!=week){
+                        controlSchoolTimeEntry.setID(null);
+                        controlSchoolTimeEntry.setParentId(schoolId);
+                        controlSchoolTimeEntry.setIsRemove(Constant.TWO);
+                        controlSchoolTimeDao.addEntry(controlSchoolTimeEntry);
+                    }
+                }
+            }
+        }
+    }
+
     public void addCommunityTime(ObjectId userId,String startTime,String endTime,ObjectId schoolId,int week){
         HomeSchoolEntry homeSchoolEntry = homeSchoolDao.getEntryById(schoolId);
         if(homeSchoolEntry!=null){
@@ -322,6 +358,7 @@ public class BackStageService {
                 dto.setType(1);
                 ControlSchoolTimeEntry entry1 = dto.buildAddEntry();
                 entry1.setIsRemove(Constant.TWO);
+                this.addWeekShe2(schoolId, week);
                 id = controlSchoolTimeDao.addEntry(entry1);
             }else{
                 entry.setStartTime(startTime);
@@ -389,6 +426,7 @@ public class BackStageService {
                 dto.setType(2);
                 ControlSchoolTimeEntry controlSchoolTimeEntry = dto.buildAddEntry();
                 controlSchoolTimeEntry.setIsRemove(Constant.TWO);
+                this.addWeekShe(schoolId);
                 id = controlSchoolTimeDao.addEntry(controlSchoolTimeEntry);
             }else{
                 entry.setStartTime(startTime);
@@ -435,6 +473,7 @@ public class BackStageService {
                 dto.setType(3);
                 ControlSchoolTimeEntry controlSchoolTimeEntry = dto.buildAddEntry();
                 controlSchoolTimeEntry.setIsRemove(Constant.TWO);
+                this.addWeekShe(schoolId);
                 id = controlSchoolTimeDao.addEntry(controlSchoolTimeEntry);
             }else{
                 entry.setStartTime(startTime);

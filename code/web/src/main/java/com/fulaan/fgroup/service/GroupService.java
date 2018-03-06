@@ -511,10 +511,10 @@ public class GroupService {
             if(entry.getUserId().equals(userEntry.getID())){
                 dto.setOwner(true);
                 dto.setUserName(StringUtils.isNotEmpty(userEntry.getNickName())?userEntry.getNickName():userEntry.getUserName());
-                dto.setAvatar(AvatarUtils.getAvatar2(userEntry.getAvatar(),userEntry.getRole(),userEntry.getSex()));
+                dto.setAvatar(AvatarUtils.getAvatar(userEntry.getAvatar(), userEntry.getRole(), userEntry.getSex()));
             }else{
                 dto.setUserName(StringUtils.isNotEmpty(receiveEntry.getNickName())?receiveEntry.getNickName():receiveEntry.getUserName());
-                dto.setAvatar(AvatarUtils.getAvatar2(receiveEntry.getAvatar(),receiveEntry.getRole(),receiveEntry.getSex()));
+                dto.setAvatar(AvatarUtils.getAvatar(receiveEntry.getAvatar(),receiveEntry.getRole(),receiveEntry.getSex()));
             }
             dtos.add(dto);
         }

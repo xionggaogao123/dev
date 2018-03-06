@@ -1988,8 +1988,8 @@ public class ControlPhoneService {
                 controlMiduleDTO.setTime(0);
                 controlMiduleDTO.setIsControl(2);
             }
-
-            if(entry3 != null){
+            //溢出时间处理  controlMiduleDTO
+            if(entry3 != null && current < el){
                 String stm2 = entry3.getStartTime();
                 long sl2 = 0l;
                 if(stm2 != null && !stm2.equals("")){
@@ -2212,7 +2212,7 @@ public class ControlPhoneService {
         }else{
             controlSchoolTimeEntryList = controlSchoolTimeDao.getAllEntryList();
         }
-
+        long endTime2 = 0l;
         if(controlSchoolTimeEntryList.size()>0){
             ControlSchoolTimeEntry nowControlSchoolTimeEntry1 = null;
             ControlSchoolTimeEntry nowControlSchoolTimeEntry2 = null;
@@ -2263,6 +2263,7 @@ public class ControlPhoneService {
                 if(etm != null && !etm.equals("")){
                     el = DateTimeUtils.getStrToLongTime(dateNowStr+" "+etm, "yyyy-MM-dd HH:mm:ss");
                 }
+                endTime2 = el;
                 if(current>sl && current < el){
                     map.put("isControl",1);
                 }else{
@@ -2273,7 +2274,7 @@ public class ControlPhoneService {
         }
         //特殊设置
         ControlNowTimeEntry entry3 = controlNowTimeDao.getOtherEntry(dateNowStr,communityId);
-        if(entry3 != null){
+        if(entry3 != null && current < endTime2){
             String stm = entry3.getStartTime();
             long sl = 0l;
             if(stm != null && !stm.equals("")){

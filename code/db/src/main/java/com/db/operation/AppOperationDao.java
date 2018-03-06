@@ -257,6 +257,27 @@ public class AppOperationDao extends BaseDao {
         }
         return entryList;
     }
+    //查询某个用户是否多次提交
+    public List<AppOperationEntry> getAppOperationListById(ObjectId contactId,ObjectId userId) {
+        BasicDBObject query = new BasicDBObject()
+                .append("cid",contactId)
+                .append("uid",userId)
+                .append("lev",Constant.ONE)//一级
+                .append("rol",Constant.THREE)//作业类型
+                .append("isr", 0); // 未删除
+        List<DBObject> dbList =
+                find(MongoFacroty.getAppDB(),
+                        Constant.COLLECTION_APP_OPERATION,
+                        query, Constant.FIELDS,
+                        Constant.MONGO_SORTBY_DESC);
+        List<AppOperationEntry> entryList = new ArrayList<AppOperationEntry>();
+        if (dbList != null && !dbList.isEmpty()) {
+            for (DBObject obj : dbList) {
+                entryList.add(new AppOperationEntry((BasicDBObject) obj));
+            }
+        }
+        return entryList;
+    }
 
     /**
      * 查询作业所有回复的数量

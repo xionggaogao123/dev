@@ -1842,18 +1842,60 @@ public class AppCommentService {
      *
      */
     public void delAppOperationEntry(ObjectId id,ObjectId pingId,int role){
-        //删除评论
-        appOperationDao.delAppOperationEntry(pingId);
-        //修改作业的评论数量
-        AppCommentEntry entry = appCommentDao.getEntry(id);
-        if(role==1){
-            entry.setTalkNumber(entry.getTalkNumber()-1);
-        }else if(role==2){
-            entry.setQuestionNumber(entry.getQuestionNumber() - 1);
-        }else{
-            entry.setLoadNumber(entry.getLoadNumber() - 1);
+        AppOperationEntry appOperationEntry = appOperationDao.getEntry(pingId);
+        if(appOperationEntry!=null){
+            //删除评论
+            appOperationDao.delAppOperationEntry(pingId);
+            //修改作业的评论数量
+            AppCommentEntry entry = appCommentDao.getEntry(id);
+            if(role==1){
+                entry.setTalkNumber(entry.getTalkNumber()-1);
+            }else if(role==2){
+                entry.setQuestionNumber(entry.getQuestionNumber() - 1);
+            }else{
+                //查询该用户是否还有提交记录
+                List<AppOperationEntry> appOperationEntries = appOperationDao.getAppOperationListById(id, appOperationEntry.getUserId());
+                if(appOperationEntries.size()==0){
+                    //修改作业的评论数量
+                    if(entry!=null){
+                        entry.setLoadNumber(entry.getLoadNumber() - 1);
+                        appCommentDao.updEntry(entry);
+                    }
+                }
+
+            }
         }
-        appCommentDao.updEntry(entry);
+
+    }
+
+    /**
+     *删除评论
+     *
+     */
+    public void delStudentAppEntry(ObjectId id,ObjectId pingId,ObjectId userId,ObjectId parentId){
+        AppOperationEntry appOperationEntry = appOperationDao.getEntry(pingId);
+        if(appOperationEntry!=null){
+            if(parentId.equals(appOperationEntry.getParentId())){
+                //删除评论
+                appOperationDao.delAppOperationEntry(pingId);
+
+                //查询该用户是否还有提交记录
+                List<AppOperationEntry> appOperationEntries = appOperationDao.getAppOperationListById(id, userId);
+                if(appOperationEntries.size()==0){
+                    //修改作业的评论数量
+                    AppCommentEntry entry = appCommentDao.getEntry(id);
+                    if(entry!=null){
+                        entry.setLoadNumber(entry.getLoadNumber() - 1);
+                        appCommentDao.updEntry(entry);
+                    }
+                }
+
+            }
+
+
+
+        }
+
     }
 
     /**
@@ -1969,6 +2011,7 @@ public class AppCommentService {
                 if(dto9 != null){
                     String name = StringUtils.isNotEmpty(dto9.getNickName())?dto9.getNickName():dto9.getUserName();
                     stringObjectMap.put("userId",str);
+                    stringObjectMap.put("imgUrl",dto9.getImgUrl());
                     stringObjectMap.put("userName",name);
                     if(objectIdLists.contains(new ObjectId(str))){
                         stringObjectMap.put("isLoad",1);
@@ -1986,7 +2029,7 @@ public class AppCommentService {
     /**
      * 查询改作业下的某个孩子的提交列表
      */
-    public Map<String,Object> getChildAppcommentList(ObjectId id,ObjectId sonId,int page,int pageSize){
+    public Map<String,Object> getChildAppcommentList(ObjectId id,String sonId,ObjectId userId,int page,int pageSize){
         Map<String,Object> map = new HashMap<String, Object>();
         AppCommentEntry aen = appCommentDao.getEntry(id);
         int num = 0;
@@ -2024,26 +2067,34 @@ public class AppCommentService {
                         dto.setUserName(name);
                         dto.setUserUrl(dto9.getImgUrl());
                     }
+                    if(userId.equals(en.getParentId())){
+                        dto.setRole(4);//可删除
+                    }
                     dtos.add(dto);
                 }
             }
 
         }else{
             List<ObjectId> oidst = new ArrayList<ObjectId>();
-            oidst.add(sonId);
-            //查询已提交
-            List<AppOperationEntry> entries =appOperationDao.getEntryListByParentIdByStu(id,oidst, 3, page, pageSize);
-            num = appOperationDao.countStudentLoadTimesFor(id, oidst, 3);
-            UserDetailInfoDTO userInfo = userService.getUserInfoById(sonId.toString());
-            if(entries != null && entries.size()>0){
-                for(AppOperationEntry en : entries){
-                    AppOperationDTO dto = new AppOperationDTO(en);
-                    if(userInfo != null){
-                        String name = StringUtils.isNotEmpty(userInfo.getNickName())?userInfo.getNickName():userInfo.getUserName();
-                        dto.setUserName(name);
-                        dto.setUserUrl(userInfo.getImgUrl());
+            if(sonId!=null && !sonId.equals("")){
+                oidst.add(new ObjectId(sonId));
+                //查询已提交
+                List<AppOperationEntry> entries =appOperationDao.getEntryListByParentIdByStu(id,oidst, 3, page, pageSize);
+                num = appOperationDao.countStudentLoadTimesFor(id, oidst, 3);
+                UserDetailInfoDTO userInfo = userService.getUserInfoById(sonId.toString());
+                if(entries != null && entries.size()>0){
+                    for(AppOperationEntry en : entries){
+                        AppOperationDTO dto = new AppOperationDTO(en);
+                        if(userInfo != null){
+                            String name = StringUtils.isNotEmpty(userInfo.getNickName())?userInfo.getNickName():userInfo.getUserName();
+                            dto.setUserName(name);
+                            dto.setUserUrl(userInfo.getImgUrl());
+                        }
+                        if(userId.equals(en.getParentId())){
+                            dto.setRole(4);//可删除
+                        }
+                        dtos.add(dto);
                     }
-                    dtos.add(dto);
                 }
             }
         }

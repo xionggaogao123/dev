@@ -491,6 +491,7 @@ public class DefaultAppCommentController extends BaseController {
         try {
             respObj.setCode(Constant.SUCCESS_CODE);
             dto.setUserId(getUserId().toString());
+            dto.setParentId(getUserId().toString());//自我提交
             dto.setLevel(1);
             String result = appCommentService.addOperationEntryFromStrudent(dto);
             respObj.setMessage(result);
@@ -727,14 +728,14 @@ public class DefaultAppCommentController extends BaseController {
     @ApiResponse(code=200,message = "success", response = String.class)
     @RequestMapping("/getChildAppcommentList")
     @ResponseBody
-    public RespObj getChildAppcommentList(@ApiParam(name="studentId",value="孩子id") @RequestParam(value="studentId") String studentId,
+    public RespObj getChildAppcommentList(@ApiParam(name="studentId",value="孩子id") @RequestParam(value="studentId",defaultValue = "") String studentId,
                                            @ApiParam(name="contactId",value="联系id") @RequestParam(value="contactId") String contactId,
                                            @ApiParam(name="page",value="page") @RequestParam(value="page") int page,
                                            @ApiParam(name="pageSize",value="pageSize") @RequestParam(value="pageSize") int pageSize){
         RespObj respObj = new RespObj(Constant.FAILD_CODE);
         try{
             respObj.setCode(Constant.SUCCESS_CODE);
-            Map<String,Object> result = appCommentService.getChildAppcommentList(new ObjectId(contactId), new ObjectId(studentId), page,pageSize);
+            Map<String,Object> result = appCommentService.getChildAppcommentList(new ObjectId(contactId), studentId,getUserId(), page,pageSize);
             respObj.setMessage(result);
         }catch (Exception e){
             logger.error("error",e);
@@ -772,5 +773,29 @@ public class DefaultAppCommentController extends BaseController {
         return JSON.toJSONString(respObj);
     }
 
+
+    /**
+     * 删除学生作业
+     */
+    @ApiOperation(value="删除学生作业",httpMethod = "POST",produces = "application/json")
+    @ApiResponse(code=200,message = "success", response = String.class)
+    @RequestMapping("/delStudentAppEntry")
+    @ResponseBody
+    public String delStudentAppEntry(@ApiParam(name = "contactId", required = true, value = "作业id") @RequestParam("contactId") String contactId,
+                                       @ApiParam(name = "pingId", required = true, value = "评论id") @RequestParam("pingId") String pingId,
+                                       @ApiParam(name = "userId", required = true, value = "用户id") @RequestParam("userId") String userId){
+        RespObj respObj=new RespObj(Constant.FAILD_CODE);
+        try {
+            respObj.setCode(Constant.SUCCESS_CODE);
+            appCommentService.delStudentAppEntry(new ObjectId(contactId), new ObjectId(pingId),new ObjectId(userId),getUserId());
+            respObj.setMessage("删除学生作业成功！");
+        } catch (Exception e) {
+            e.printStackTrace();
+            respObj.setCode(Constant.FAILD_CODE);
+            respObj.setErrorMessage("删除学生作业失败!");
+
+        }
+        return JSON.toJSONString(respObj);
+    }
     //community/myCommunitys/page/pageSize/?platform=app
 }

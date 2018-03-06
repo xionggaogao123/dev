@@ -1449,8 +1449,21 @@ public class ControlPhoneService {
      * @return
      */
     public List<ControlSchoolTimeEntry> getStudentSchoolList(List<ObjectId> obList){
-        List<ControlSchoolTimeEntry> entryList = controlSchoolTimeDao.getAllSchoolEntryList(obList);
         List<ControlSchoolTimeEntry> newEntryList = new ArrayList<ControlSchoolTimeEntry>();
+        List<SchoolCommunityEntry> schoolCommunityEntries = schoolCommunityDao.getReviewList2(obList);
+        if(schoolCommunityEntries.size()==0){
+            return newEntryList;
+        }
+
+        List<ObjectId> objectIdList = new ArrayList<ObjectId>();
+        for(SchoolCommunityEntry schoolCommunityEntry :schoolCommunityEntries){
+            if(schoolCommunityEntry.getSchoolId()!=null){
+                objectIdList.add(schoolCommunityEntry.getSchoolId());
+            }
+        }
+
+        List<ControlSchoolTimeEntry> entryList = controlSchoolTimeDao.getAllSchoolEntryList(objectIdList);
+
         if(entryList.size()>0){
             Set<ObjectId> set = new HashSet<ObjectId>();
             for(ControlSchoolTimeEntry controlSchoolTimeEntry:entryList){
@@ -1558,7 +1571,7 @@ public class ControlPhoneService {
         //常规和特殊
         for(ControlSchoolTimeEntry controlSchoolTimeEntry : entryList){
             if(controlSchoolTimeEntry.getType()==1 || controlSchoolTimeEntry.getType()==2){
-                String key = controlSchoolTimeEntry.getType()+"-"+controlSchoolTimeEntry.getDataTime();
+                String key = controlSchoolTimeEntry.getWeek()+"-"+controlSchoolTimeEntry.getDataTime();
                 ControlSchoolTimeEntry controlSchoolTimeEntry1 = map.get(key);
                 if(controlSchoolTimeEntry1==null){
 

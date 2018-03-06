@@ -612,7 +612,7 @@ public class ControlPhoneController extends BaseController {
         RespObj respObj=new RespObj(Constant.FAILD_CODE);
         try {
             respObj.setCode(Constant.SUCCESS_CODE);
-            Map<String,Object> dtos= controlPhoneService.getNewAllMessageForSon(getUserId());
+            Map<String,Object> dtos= controlPhoneService.getNewAllSchoolMessageForSon(getUserId());
             respObj.setMessage(dtos);
         } catch (Exception e) {
             e.printStackTrace();

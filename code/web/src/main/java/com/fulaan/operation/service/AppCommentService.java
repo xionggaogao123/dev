@@ -1374,10 +1374,13 @@ public class AppCommentService {
     }
 
     //加载二级评论（分页）
-    public List<AppOperationDTO> getSecondList(ObjectId parentId){
+    public List<AppOperationDTO> getSecondList(ObjectId parentId,ObjectId userId){
         AppOperationEntry entry2 = appOperationDao.getEntry(parentId);
         if(entry2==null){
             return null;
+        }
+        if(entry2.getParentId()!=null && entry2.getParentId().equals(userId)){
+            entry2.setRole(4);
         }
         //List<AppOperationDTO> dtoList = new ArrayList<AppOperationDTO>();
         List<AppOperationEntry> entries = appOperationDao.getSecondListByParentId(parentId);
@@ -2105,7 +2108,7 @@ public class AppCommentService {
                     List<AppOperationDTO> dtoList = new ArrayList<AppOperationDTO>();
                     for(AppOperationDTO dto1: dtos2){
                         if(dto1.getLevel()==2 && dto.getId().equals(dto1.getParentId())){
-                            UserDetailInfoDTO dto10 = map3.get(en.getUserId());
+                            UserDetailInfoDTO dto10 = map3.get(dto1.getUserId());
                             if(dto10 != null){
                                 String name2 = StringUtils.isNotEmpty(dto10.getNickName())?dto10.getNickName():dto10.getUserName();
                                 dto1.setUserName(name2);

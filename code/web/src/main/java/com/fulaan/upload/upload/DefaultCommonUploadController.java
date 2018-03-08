@@ -197,6 +197,9 @@ public class DefaultCommonUploadController extends BaseController {
 
                     InputStream inputStream = new FileInputStream(destFile);
                     String extName = FilenameUtils.getExtension(file.getOriginalFilename());
+                    if(extName==null || extName.equals("")){
+                        extName =file.getName().substring(file.getName().lastIndexOf(".") + 1);
+                    }
                     String path = "";
                     if (extName.equalsIgnoreCase("amr")) {
                         String saveFileKey = new ObjectId().toString() + ".mp3";

@@ -601,7 +601,7 @@ public class AppCommentController extends BaseController {
         RespObj respObj=new RespObj(Constant.FAILD_CODE);
         try {
             respObj.setCode(Constant.SUCCESS_CODE);
-            List<AppOperationDTO> result = appCommentService.getSecondList(new ObjectId(parentId));
+            List<AppOperationDTO> result = appCommentService.getSecondList(new ObjectId(parentId),getUserId());
             respObj.setMessage(result);
         } catch (Exception e) {
             e.printStackTrace();

@@ -1684,6 +1684,9 @@ public class DefaultFPostController extends BaseController {
     //得到文件名
     private String getFileName(MultipartFile file) {
         String orgname = file.getOriginalFilename();
+        if(orgname==null || orgname.equals("")){
+            orgname =file.getName();
+        }
         return new ObjectId().toString() + Constant.POINT + orgname.substring(orgname.lastIndexOf(".") + 1);
     }
 

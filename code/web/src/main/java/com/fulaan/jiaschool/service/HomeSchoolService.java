@@ -78,6 +78,7 @@ public class HomeSchoolService {
        HomeSchoolEntry entry =  homeSchoolDao.getEntryById(id);
         if(entry!=null){
             homeSchoolDao.delEntry(id);
+            schoolCommunityDao.delEntryBySchoolId(id);
             this.addLogMessage(id.toString(),"删除了学校"+entry.getName(), LogMessageType.school.getDes(),userId.toString());
         }
     }
@@ -125,6 +126,42 @@ public class HomeSchoolService {
         dto.setFunction(function);
         dto.setUserId(userId);
         logMessageDao.addEntry(dto.buildAddEntry());
+    }
+
+    public Map<String,Object> getCommunityListBySchoolId(ObjectId schoolId,int page,int pageSize){
+        Map<String,Object> map= new HashMap<String, Object>();
+        List<ObjectId> objectIdList = new ArrayList<ObjectId>();
+        objectIdList.add(schoolId);
+        List<SchoolCommunityEntry> schoolCommunityEntries  = schoolCommunityDao.getReviewList(objectIdList);
+        List<ObjectId> communityList = new ArrayList<ObjectId>();
+        for(SchoolCommunityEntry entry :schoolCommunityEntries){
+            communityList.add(entry.getCommunityId());
+        }
+        List<CommunityEntry> communityEntries = communityDao.findPageByObjectIds(communityList, page, pageSize);
+        int count = communityDao.getNumber(communityList);
+        List<CommunityDTO> communityDTOs = new ArrayList<CommunityDTO>();
+        for(CommunityEntry communityEntry : communityEntries){
+            CommunityDTO communityDTO =new CommunityDTO(communityEntry);
+            communityDTO.setLogo(getNewLogo(communityDTO.getLogo()));
+            communityDTOs.add(communityDTO);
+        }
+        map.put("count",count);
+        map.put("list",communityDTOs);
+        return map;
+    }
+
+    //处理社区logo
+    public static String getNewLogo(String url){
+        String str = "";
+        if(url != null && url.contains("http://www.fulaan.com/")){
+            str = url.replace("http://www.fulaan.com/", "http://appapi.jiaxiaomei.com/");
+        }else{
+            str = url;
+        }
+        if(url != null && url.contains("/static/images/community/upload.png")){
+            str = str.replace("upload.png", "head_group.png");
+        }
+        return str;
     }
 
 }

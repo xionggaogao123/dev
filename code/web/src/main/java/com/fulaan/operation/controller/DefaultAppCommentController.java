@@ -765,6 +765,7 @@ public class DefaultAppCommentController extends BaseController {
             String result = appCommentService.addOperationEntryFromStrudent(dto);
             respObj.setMessage(result);
         } catch (Exception e) {
+            logger.error("error",e);
             e.printStackTrace();
             respObj.setCode(Constant.FAILD_CODE);
             respObj.setErrorMessage("家长添加学生作业失败!");
@@ -787,8 +788,8 @@ public class DefaultAppCommentController extends BaseController {
         RespObj respObj=new RespObj(Constant.FAILD_CODE);
         try {
             respObj.setCode(Constant.SUCCESS_CODE);
-            appCommentService.delStudentAppEntry(new ObjectId(contactId), new ObjectId(pingId),new ObjectId(userId),getUserId());
-            respObj.setMessage("删除学生作业成功！");
+            Map<String,Object> map = appCommentService.delStudentAppEntry(new ObjectId(contactId), new ObjectId(pingId),new ObjectId(userId),getUserId());
+            respObj.setMessage(map);
         } catch (Exception e) {
             e.printStackTrace();
             respObj.setCode(Constant.FAILD_CODE);

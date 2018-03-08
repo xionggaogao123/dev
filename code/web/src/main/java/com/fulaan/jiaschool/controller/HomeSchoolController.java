@@ -195,6 +195,30 @@ public class HomeSchoolController extends BaseController {
         }
         return JSON.toJSONString(respObj);
     }
+    /**
+     *  查询学校下的社群列表
+     * @return
+     */
+    @ApiOperation(value = "查询学校下的社群列表", httpMethod = "POST", produces = "application/json")
+    @ApiResponses( value = {@ApiResponse(code = 200, message = "Successful — 请求已完成",response = String.class)})
+    @RequestMapping("/getCommunityListBySchoolId")
+    @ResponseBody
+    public String getCommunityListBySchoolId(@ApiParam(name="schoolId",required = true,value="schoolId") String schoolId,
+                                             @ApiParam(name="page",required = true,value="page") @RequestParam(value="page",defaultValue = "1") int page,
+                                             @ApiParam(name="pageSize",required = true,value="pageSize") @RequestParam(value="pageSize",defaultValue = "5") int pageSize
+                                             ){
+        RespObj respObj=new RespObj(Constant.FAILD_CODE);
+        try {
+            respObj.setCode(Constant.SUCCESS_CODE);
+            Map<String,Object> map = homeSchoolService.getCommunityListBySchoolId(new ObjectId(schoolId),page,pageSize);
+            respObj.setMessage(map);
+        } catch (Exception e) {
+            e.printStackTrace();
+            respObj.setCode(Constant.FAILD_CODE);
+            respObj.setErrorMessage("查询学校下的社群列表失败!");
+        }
+        return JSON.toJSONString(respObj);
+    }
 
 
 }

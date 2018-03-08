@@ -51,6 +51,25 @@ public class CommunityDao extends BaseDao {
         }
         return communitys;
     }
+    public List<CommunityEntry> findPageByObjectIds(List<ObjectId> ids,int page,int pageSize) {
+        BasicDBObject query = new BasicDBObject(Constant.ID, new BasicDBObject(Constant.MONGO_IN,ids));
+        List<DBObject> dbObjects = find(MongoFacroty.getAppDB(), Constant.COLLECTION_FORUM_COMMUNITY, query, Constant.FIELDS,
+                Constant.MONGO_SORTBY_DESC,(page-1)*pageSize,pageSize);
+        List<CommunityEntry> communitys = new ArrayList<CommunityEntry>();
+        for (DBObject dbo : dbObjects) {
+            communitys.add(new CommunityEntry(dbo));
+        }
+        return communitys;
+    }
+
+    public int getNumber(List<ObjectId> ids) {
+        BasicDBObject query = new BasicDBObject(Constant.ID, new BasicDBObject(Constant.MONGO_IN,ids));
+        int count =
+                count(MongoFacroty.getAppDB(),
+                        Constant.COLLECTION_FORUM_COMMUNITY,
+                        query);
+        return count;
+    }
 
     /**
      * 返回社区Entry

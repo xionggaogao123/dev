@@ -91,6 +91,25 @@ public class HomeSchoolDao extends BaseDao {
         }
         return entryList;
     }
+
+    public List<ObjectId> getSchoolObjectList(List<ObjectId> objectIds) {
+        BasicDBObject query = new BasicDBObject()
+                .append("isr", 0); // 未删除
+        query.append(Constant.ID,new BasicDBObject(Constant.MONGO_IN,objectIds));
+        List<DBObject> dbList =
+                find(MongoFacroty.getAppDB(),
+                        Constant.COLLECTION_HOME_SCHOOL,
+                        query, Constant.FIELDS,
+                        Constant.MONGO_SORTBY_DESC);
+        List<ObjectId> entryList = new ArrayList<ObjectId>();
+        if (dbList != null && !dbList.isEmpty()) {
+            for (DBObject obj : dbList) {
+                HomeSchoolEntry homeSchoolEntry =new HomeSchoolEntry((BasicDBObject) obj);
+                entryList.add(homeSchoolEntry.getID());
+            }
+        }
+        return entryList;
+    }
     //查询所有已提交的数量
     public int getSortCount() {
         BasicDBObject query = new BasicDBObject();

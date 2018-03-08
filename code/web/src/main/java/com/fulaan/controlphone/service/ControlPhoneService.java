@@ -8,6 +8,7 @@ import com.db.fcommunity.CommunityDao;
 import com.db.fcommunity.GroupDao;
 import com.db.fcommunity.MemberDao;
 import com.db.groupchatrecord.RecordChatPersonalDao;
+import com.db.jiaschool.HomeSchoolDao;
 import com.db.jiaschool.SchoolAppDao;
 import com.db.jiaschool.SchoolCommunityDao;
 import com.db.user.NewVersionBindRelationDao;
@@ -79,6 +80,8 @@ public class ControlPhoneService {
     private SchoolCommunityDao schoolCommunityDao = new SchoolCommunityDao();
 
     private SchoolAppDao schoolAppDao = new SchoolAppDao();
+
+    private HomeSchoolDao homeSchoolDao = new HomeSchoolDao();
 
     @Autowired
     private NewVersionBindService newVersionBindService;
@@ -1393,7 +1396,6 @@ public class ControlPhoneService {
         SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
         String dateNowStr = sdf.format(zero);
         map.put("isControl",true);
-        map.put("dto",new ControlSchoolTimeDTO());
         //特殊设置
         ControlNowTimeEntry entry3 = controlNowTimeDao.getOtherEntryByCommunityIds(dateNowStr, obList);
         if(entry3 != null){
@@ -1424,6 +1426,7 @@ public class ControlPhoneService {
         }else{
             entryList = controlSchoolTimeDao.getAllEntryList();
         }
+        map.put("dto",this.getNowControlDto(entryList));
         for(ControlSchoolTimeEntry ctm : entryList){
             PhoneTimeDTO phoneTimeDTO = new PhoneTimeDTO();
             if(ctm.getType()==1){
@@ -1442,6 +1445,60 @@ public class ControlPhoneService {
         }
         map.put("controlList",phoneTimeDTOs);
         return map;
+    }
+
+    public ControlSchoolTimeDTO getNowControlDto(List<ControlSchoolTimeEntry> controlSchoolTimeEntries){
+        //List<ControlSchoolTimeEntry> controlSchoolTimeEntries = controlSchoolTimeDao.getAllSchoolEntryList(communityIds);
+        Map<ObjectId,ControlSchoolTimeEntry> map1 = new HashMap<ObjectId, ControlSchoolTimeEntry>();//时间段配置
+        Map<ObjectId,ControlSchoolTimeEntry> map2 = new HashMap<ObjectId, ControlSchoolTimeEntry>();//特殊配置
+        Map<ObjectId,ControlSchoolTimeEntry> map3 = new HashMap<ObjectId, ControlSchoolTimeEntry>();//周常配置
+        //通用管控时间
+        Calendar cal = Calendar.getInstance();
+        int w = cal.get(Calendar.DAY_OF_WEEK) - 1;
+        if(w==0){
+            w= 7;
+        }
+        //获得当前时间
+        long current=System.currentTimeMillis();
+        //获得时间批次
+        String str = DateTimeUtils.getLongToStrTimeTwo(current).substring(0,10);
+        ObjectId oid = new ObjectId();
+        for(ControlSchoolTimeEntry controlSchoolTimeEntry : controlSchoolTimeEntries){
+            if(controlSchoolTimeEntry.getType()==3){//时间段
+                String[] arg = controlSchoolTimeEntry.getDataTime().split("=");
+                if(arg.length==2){
+                    String startStr = arg[0];
+                    String endStr = arg[1];
+                    long sl = 0l;
+                    if(startStr != null && !startStr.equals("")){
+                        sl = DateTimeUtils.getStrToLongTime(startStr+" "+"00:00:00", "yyyy-MM-dd HH:mm:ss");
+                    }
+                    long el = 0l;
+                    if(endStr != null && !endStr.equals("")){
+                        el = DateTimeUtils.getStrToLongTime(endStr+" "+"23:59:59", "yyyy-MM-dd HH:mm:ss");
+                    }
+                    if(current>sl && current < el){
+                        map1.put(oid,controlSchoolTimeEntry);
+                    }
+                }
+            }else if(controlSchoolTimeEntry.getType()==2 && controlSchoolTimeEntry.getDataTime() != null && controlSchoolTimeEntry.getDataTime().equals(str)){
+                map2.put(oid,controlSchoolTimeEntry);//特殊
+            }else if(controlSchoolTimeEntry.getType()==1 && controlSchoolTimeEntry.getWeek()==w){
+                map3.put(oid,controlSchoolTimeEntry);//周常
+            }
+        }
+        //获取应该执行的设置
+        ControlSchoolTimeEntry controlSchoolTimeEntry = new ControlSchoolTimeEntry();
+        if(oid !=null && map1.get(oid)!=null){
+            controlSchoolTimeEntry = map1.get(oid);
+        }else if(oid !=null && map2.get(oid)!=null){
+            controlSchoolTimeEntry = map2.get(oid);
+        }else if(oid !=null && map3.get(oid)!=null){
+            controlSchoolTimeEntry = map3.get(oid);
+        }else{
+            controlSchoolTimeEntry = controlSchoolTimeDao.getEntry(1);
+        }
+        return new ControlSchoolTimeDTO(controlSchoolTimeEntry);
     }
 
     /**
@@ -2568,7 +2625,8 @@ public class ControlPhoneService {
         }
         List<AppDetailEntry> appDetailEntries = new ArrayList<AppDetailEntry>();
         if(oisd.size()>0){
-            List<SchoolAppEntry> schoolAppEntries = schoolAppDao.getList(oisd);
+            List<ObjectId> objectIdList = homeSchoolDao.getSchoolObjectList(oisd);
+            List<SchoolAppEntry> schoolAppEntries = schoolAppDao.getList(objectIdList);
             List<ObjectId> appIds = new ArrayList<ObjectId>();
             for(SchoolAppEntry schoolAppEntry: schoolAppEntries){
                 if(schoolAppEntry.getAppIdList()!=null && schoolAppEntry.getAppIdList().size()>0){

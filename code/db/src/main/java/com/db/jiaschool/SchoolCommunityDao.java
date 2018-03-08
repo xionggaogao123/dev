@@ -86,4 +86,11 @@ public class SchoolCommunityDao extends BaseDao {
         BasicDBObject updateValue=new BasicDBObject(Constant.MONGO_SET,new BasicDBObject("isr",Constant.ONE));
         update(MongoFacroty.getAppDB(), Constant.COLLECTION_COMMUNITY_SCHOOL, query,updateValue);
     }
+
+    //删除学校绑定关系
+    public void delEntryBySchoolId(ObjectId schoolId){
+        BasicDBObject query = new BasicDBObject("sid",schoolId);
+        BasicDBObject updateValue=new BasicDBObject(Constant.MONGO_SET,new BasicDBObject("isr",Constant.ONE));
+        update(MongoFacroty.getAppDB(), Constant.COLLECTION_COMMUNITY_SCHOOL, query,updateValue);
+    }
 }

@@ -28,6 +28,7 @@ import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.multipart.MultipartHttpServletRequest;
 import org.springframework.web.multipart.commons.CommonsMultipartResolver;
 
+import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.*;
@@ -100,7 +101,7 @@ public class DefaultCommonUploadController extends BaseController {
         QiniuFileUtils.uploadVideoFile(ve.getID(), videoFilekey, file.getInputStream(), QiniuFileUtils.TYPE_USER_VIDEO);
         String url = QiniuFileUtils.getPath(QiniuFileUtils.TYPE_USER_VIDEO, videoFilekey);
         //尝试
-        imgUrl = url+"?vframe/jpg/offset/1";
+        //imgUrl = url+"?vframe/jpg/offset/1";
         if (isCreateImage && screenShotFile.exists()) {
             ve.setImgUrl(imgUrl);
         }
@@ -166,7 +167,7 @@ public class DefaultCommonUploadController extends BaseController {
     @RequestMapping("/doc/upload")
     @ResponseBody
     @SessionNeedless
-    public RespObj uploadDocFile(HttpServletRequest request) {
+    public RespObj uploadDocFile(HttpServletRequest request,HttpServletResponse response) {
         logger.info("=========upload");
         List<FileUploadDTO> fileInfos = new ArrayList<FileUploadDTO>();
         CommonsMultipartResolver multipartResolver = new CommonsMultipartResolver(request.getSession().getServletContext());
@@ -214,6 +215,25 @@ public class DefaultCommonUploadController extends BaseController {
             }
         }
         RespObj obj = new RespObj(Constant.SUCCESS_CODE, fileInfos);
+        if(getUserId()!=null){
+            String cacheUserKey = "";
+            Cookie[] allCookies = request.getCookies();
+            if(allCookies != null){
+                for(int i=0;i<allCookies.length;i++){
+                    Cookie temp = allCookies[i];
+                    if(temp.getName()!=null&& temp.getName().equals(Constant.COOKIE_USER_KEY)){
+                        cacheUserKey = temp.getValue();
+                    }
+                }
+            }
+            Cookie userKeycookie = new Cookie(Constant.COOKIE_USER_KEY, cacheUserKey);
+//        userKeycookie.setMaxAge(Constant.SECONDS_IN_DAY);
+            userKeycookie.setMaxAge(Constant.SECONDS_IN_HALF_YEAR);
+            userKeycookie.setPath(Constant.BASE_PATH);
+            response.addCookie(userKeycookie);
+        }
+        //response.addHeader("Set-Cookie",null);
+
         return obj;
     }
 

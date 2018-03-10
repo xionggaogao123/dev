@@ -702,6 +702,7 @@ public class NewVersionBindService {
         if(null!=entry){
             if(entry.getRemoveStatus()==1){
                 entry.setNumber(number);
+                newVersionCommunityBindDao.saveEntry(entry);
                 newVersionCommunityBindDao.updateEntryStatus(entry.getID());
             }else{
                 throw new Exception("该昵称已用过!");

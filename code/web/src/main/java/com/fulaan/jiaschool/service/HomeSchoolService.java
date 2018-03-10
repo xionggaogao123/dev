@@ -90,8 +90,13 @@ public class HomeSchoolService {
             SchoolCommunityEntry schoolCommunityEntry = schoolCommunityDao.getEntryById(communityEntry.getID());
             if (schoolCommunityEntry != null) {//已绑定
                 HomeSchoolEntry homeSchoolEntry = homeSchoolDao.getEntryById(schoolCommunityEntry.getSchoolId());
-                communityDTO.setMemberCount(1);
-                communityDTO.setOwerName(homeSchoolEntry.getName());
+                if(homeSchoolEntry==null){
+                    communityDTO.setMemberCount(2);
+                    communityDTO.setOwerName("");
+                }else{
+                    communityDTO.setMemberCount(1);
+                    communityDTO.setOwerName(homeSchoolEntry.getName());
+                }
             }else{//未绑定
                 communityDTO.setMemberCount(2);
                 communityDTO.setOwerName("");

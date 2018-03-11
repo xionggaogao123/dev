@@ -7,12 +7,14 @@ import com.db.fcommunity.NewVersionCommunityBindDao;
 import com.db.groupchatrecord.RecordTotalChatDao;
 import com.db.newVersionGrade.NewVersionGradeDao;
 import com.db.newVersionGrade.NewVersionSubjectDao;
+import com.db.reportCard.VirtualUserDao;
 import com.db.user.*;
 import com.fulaan.backstage.service.BackStageService;
 import com.fulaan.cache.CacheHandler;
 import com.fulaan.mqtt.MQTTSendMsg;
 import com.fulaan.newVersionBind.dto.*;
 import com.fulaan.operation.dto.GroupOfCommunityDTO;
+import com.fulaan.reportCard.dto.VirtualUserDTO;
 import com.fulaan.user.service.UserService;
 import com.fulaan.utils.pojo.KeyValue;
 import com.fulaan.wrongquestion.dto.NewVersionGradeDTO;
@@ -24,6 +26,7 @@ import com.pojo.fcommunity.MemberEntry;
 import com.pojo.fcommunity.NewVersionCommunityBindEntry;
 import com.pojo.groupchatrecord.RecordTotalChatEntry;
 import com.pojo.newVersionGrade.NewVersionGradeEntry;
+import com.pojo.reportCard.VirtualUserEntry;
 import com.pojo.user.*;
 import com.sys.constants.Constant;
 import com.sys.utils.AvatarUtils;
@@ -72,6 +75,7 @@ public class NewVersionBindService {
 
     private BusinessManageDao businessManageDao = new BusinessManageDao();
 
+    private VirtualUserDao virtualUserDao = new VirtualUserDao();
     @Autowired
     private UserService userService;
 
@@ -702,14 +706,56 @@ public class NewVersionBindService {
         if(null!=entry){
             if(entry.getRemoveStatus()==1){
                 entry.setNumber(number);
+                VirtualUserEntry virtualUserEntry = virtualUserDao.findByNames(communityId,thirdName,number);
+                if(virtualUserEntry!=null && !virtualUserEntry.getUserId().equals(entry.getUserId())){
+                    entry.setUserId(virtualUserEntry.getUserId());
+                }
                 newVersionCommunityBindDao.saveEntry(entry);
                 newVersionCommunityBindDao.updateEntryStatus(entry.getID());
             }else{
                 throw new Exception("该昵称已用过!");
             }
         }else{
-            NewVersionCommunityBindEntry bindEntry = new NewVersionCommunityBindEntry(communityId, mainUserId, new ObjectId(), thirdName, number);
-            newVersionCommunityBindDao.saveEntry(bindEntry);
+            VirtualUserEntry virtualUserEntry = virtualUserDao.findByNames(communityId,thirdName,number);
+            if(virtualUserEntry!=null){
+                NewVersionCommunityBindEntry bindEntry = new NewVersionCommunityBindEntry(communityId, mainUserId, virtualUserEntry.getUserId(), thirdName, number);
+                newVersionCommunityBindDao.saveEntry(bindEntry);
+            }else{
+                NewVersionCommunityBindEntry bindEntry = new NewVersionCommunityBindEntry(communityId, mainUserId, new ObjectId(), thirdName, number);
+                newVersionCommunityBindDao.saveEntry(bindEntry);
+            }
+
+        }
+    }
+    public void pipeiStudent(String communityId){
+        Map<String, ObjectId> userBindMap = new HashMap<String, ObjectId>();
+        List<VirtualUserDTO> dtos = new ArrayList<VirtualUserDTO>();
+        List<NewVersionCommunityBindEntry>
+                bindEntries = newVersionCommunityBindDao.getStudentIdListByCommunityId(new ObjectId(communityId));
+        for (NewVersionCommunityBindEntry bindEntry : bindEntries) {
+            if (StringUtils.isNotEmpty(bindEntry.getThirdName())
+                    &&StringUtils.isNotEmpty(bindEntry.getNumber())) {
+                String key = bindEntry.getThirdName()
+                        +"&"+bindEntry.getNumber();
+                userBindMap.put(key, bindEntry.getUserId());
+            }
+        }
+        List<VirtualUserEntry> virtualUserEntries=virtualUserDao.getAllVirtualUsers(new ObjectId(communityId));
+        for (VirtualUserEntry virtualUserEntry : virtualUserEntries) {
+            String userName = virtualUserEntry.getUserName();
+            String userNumber = virtualUserEntry.getUserNumber();
+            if(StringUtils.isNotEmpty(userName)&&
+                    StringUtils.isNotEmpty(userNumber)) {
+                String key = userName+"&"+userNumber;
+                if(null!=userBindMap.get(key)){
+                    virtualUserEntry.setUserId(userBindMap.get(key));
+                    virtualUserDao.saveVirualEntry(virtualUserEntry);
+                }else{
+                    dtos.add(new VirtualUserDTO(virtualUserEntry));
+                }
+            }else{
+                dtos.add(new VirtualUserDTO(virtualUserEntry));
+            }
         }
     }
 

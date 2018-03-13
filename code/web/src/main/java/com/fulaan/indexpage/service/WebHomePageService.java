@@ -429,9 +429,9 @@ public class WebHomePageService {
             @Override
             public int compare(GroupExamDetailDTO o1, GroupExamDetailDTO o2) {
                 int result=0;
-                if(o1.getExamTime()>o2.getExamTime()){
+                if(o1.getSubmitTime()>o2.getSubmitTime()){
                     result=-1;
-                }else if(o1.getExamTime()<o2.getExamTime()) {
+                }else if(o1.getSubmitTime()<o2.getSubmitTime()) {
                     result=1;
                 }
                 return result;
@@ -603,6 +603,18 @@ public class WebHomePageService {
                         examTypeEntryMap,webHomePageDTOs,status,true,Constant.EMPTY,Constant.EMPTY);
             }
         }
+        Collections.sort(webHomePageDTOs, new Comparator<WebHomePageDTO>() {
+            @Override
+            public int compare(WebHomePageDTO o1, WebHomePageDTO o2) {
+                int result=0;
+                if(o1.getSubmitTime()>o2.getSubmitTime()){
+                    result=-1;
+                }else if(o1.getSubmitTime()<o2.getSubmitTime()) {
+                    result=1;
+                }
+                return result;
+            }
+        });
     }
 
     public void setWebHomeData(ObjectId id,GroupExamDetailEntry detailEntry,Map<ObjectId, CommunityEntry> communityEntryMap,
@@ -656,6 +668,7 @@ public class WebHomePageService {
             }
         }
         webHomePageDTOs.add(webHomePageDTO);
+
     }
 
 

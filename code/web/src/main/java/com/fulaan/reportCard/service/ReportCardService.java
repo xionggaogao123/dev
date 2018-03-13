@@ -13,6 +13,7 @@ import com.fulaan.dto.VideoDTO;
 import com.fulaan.indexpage.dto.IndexPageDTO;
 import com.fulaan.instantmessage.service.RedDotService;
 import com.fulaan.operation.dto.AppNoticeDTO;
+import com.fulaan.picturetext.runnable.PictureRunNable;
 import com.fulaan.pojo.Attachement;
 import com.fulaan.pojo.User;
 import com.fulaan.reportCard.dto.*;
@@ -280,6 +281,7 @@ public class ReportCardService {
         GroupExamDetailEntry entry = groupExamDetailDao.getEntryById(groupExamDetailId);
         //添加红点
         redDotService.addThirdList(entry.getID(),entry.getCommunityId(), entry.getUserId(), ApplyTypeEn.repordcard.getType());
+        PictureRunNable.addTongzhi(entry.getCommunityId().toString(), entry.getUserId().toString(), 6);
     }
 
     public GroupExamVersionDTO getExamGroupVersion(ObjectId groupExamDetailId) throws Exception {
@@ -769,6 +771,8 @@ public class ReportCardService {
             //添加红点
             if(status==2){
                 redDotService.addThirdList(detailEntry.getID(),detailEntry.getCommunityId(), detailEntry.getUserId(), ApplyTypeEn.repordcard.getType());
+                PictureRunNable.addTongzhi(detailEntry.getCommunityId().toString(), detailEntry.getUserId().toString(), 6);
+
             }
             if (detailEntry.getRecordScoreType() == Constant.ONE) {
                 double qualifyScore = detailEntry.getQualifyScore();

@@ -5,7 +5,6 @@ import com.pojo.appnotice.AppNoticeEntry;
 import com.pojo.fcommunity.AttachmentEntry;
 import com.pojo.operation.AppCommentEntry;
 import com.pojo.reportCard.GroupExamDetailEntry;
-import com.pojo.reportCard.GroupExamUserRecordEntry;
 import com.sys.utils.DateTimeUtils;
 
 import java.util.ArrayList;
@@ -52,6 +51,8 @@ public class WebHomePageDTO {
 
     private int status;
 
+    private long submitTime;
+
     public WebHomePageDTO(){
 
     }
@@ -64,6 +65,7 @@ public class WebHomePageDTO {
         this.signedCount=entry.getSignedCount();
         this.totalCount=entry.getSignCount();
         this.recordScoreType=entry.getRecordScoreType();
+        this.submitTime = entry.getSubmitTime();
     }
 
     public WebHomePageDTO(AppNoticeEntry appNoticeEntry){
@@ -97,6 +99,14 @@ public class WebHomePageDTO {
             attachementList.add(new Attachement(attachmentEntry));
         }
 
+    }
+
+    public long getSubmitTime() {
+        return submitTime;
+    }
+
+    public void setSubmitTime(long submitTime) {
+        this.submitTime = submitTime;
     }
 
     public boolean isOwner() {

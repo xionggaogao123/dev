@@ -2868,6 +2868,7 @@ public class ControlPhoneService {
         List<ControlAppEntry> entryList2 = controlAppDao.getEntryListByUserId(userId,oids);
         List<ResultUserAppList> dtos1 = new ArrayList<ResultUserAppList>();
         List<ResultUserAppList> dtos2 = new ArrayList<ResultUserAppList>();
+        List<ObjectId>  ol = new ArrayList<ObjectId>();
         if(entryList1.size()>0){
             for(ControlAppUserEntry entry : entryList1){
                 UserDetailInfoDTO infoDTO = map2.get(entry.getUserId().toString());
@@ -2884,7 +2885,12 @@ public class ControlPhoneService {
                     dto.setIsCheck(2);
                 }
                 childIds.remove(entry.getUserId());
-                dtos1.add(dto);
+                //过滤重复记录
+                if(!ol.contains(entry.getUserId())){
+                    dtos1.add(dto);
+                    ol.add(entry.getUserId());
+                }
+
             }
         }
         if(entryList2.size()>0){

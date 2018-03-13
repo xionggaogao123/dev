@@ -98,6 +98,8 @@ public class PictureRunNable{
                         sendMessage.put("msg", "参考资料提醒：\n"+str+" "+name+" 发布了一条新参考资料 \n请各位家长及时查看！");
                     }else if(type==5){
                         sendMessage.put("msg", "投票报名提醒：\n"+str+" "+name+" 发布了一条新投票报名 \n请各位家长及时查看！");
+                    }else if(type==6){
+                        sendMessage.put("msg", "成绩单提醒：\n"+str+" "+name+" 发布了一条新成绩单 \n请各位家长及时查看！");
                     }
                     ext.put("groupStyle","community");
                     ext.put("avatar", AvatarUtils.getAvatar(userEntry.getAvatar(), userEntry.getRole(), userEntry.getSex()));

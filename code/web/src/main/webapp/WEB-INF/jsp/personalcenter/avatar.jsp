@@ -31,6 +31,12 @@
             margin: 0;
             border: 0;
         }
+        embed{
+        	position:fixed;
+        	top:50%;
+        	left:50%;
+        	transform:translate(-50%,-50%);
+        }
     </style>
     <script type="text/javascript">
         function updateavatar() {
@@ -45,7 +51,12 @@
                         alert("Í·ÏñÐÞ¸ÄÊ§°Ü");
                         return;
                     }
-                    window.opener.location.reload();
+                    try{
+                    	window.opener.location.reload();
+                    }catch(e){
+                    	
+                    }
+                    
 
                     window.close();
                 }

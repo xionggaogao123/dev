@@ -2050,15 +2050,15 @@ public class ControlPhoneService {
                 String stm2 = entry3.getStartTime();
                 long sl2 = 0l;
                 if(stm2 != null && !stm2.equals("")){
-                    sl2 = DateTimeUtils.getStrToLongTime(str+" "+stm, "yyyy-MM-dd HH:mm:ss");
+                    sl2 = DateTimeUtils.getStrToLongTime(str+" "+stm2, "yyyy-MM-dd HH:mm:ss");
                 }
                 String etm2 = entry3.getEndTime();
                 long el2 = 0l;
                 if(etm2 != null && !etm2.equals("")){
-                    el2 = DateTimeUtils.getStrToLongTime(str+" "+etm, "yyyy-MM-dd HH:mm:ss");
+                    el2 = DateTimeUtils.getStrToLongTime(str+" "+etm2, "yyyy-MM-dd HH:mm:ss");
                 }
                 if(current>sl2 && current < el2){
-                    controlMiduleDTO.setTime(el-current);
+                    controlMiduleDTO.setTime(el2-current);
                     controlMiduleDTO.setIsControl(3);
                 }else{
                     controlMiduleDTO.setTime(0);
@@ -2462,6 +2462,14 @@ public class ControlPhoneService {
         List<ObjectId> mlist =   groupDao.getGroupIdsList(olsit);
         return mlist;
     }
+    public List<ObjectId> getMySimpleList(ObjectId userId){
+        List<String> olsit = memberDao.getMyCommunityIdsByUserId(userId);
+        List<ObjectId> clist = new ArrayList<ObjectId>();
+        for(String str : olsit){
+            clist.add(new ObjectId(str));
+        }
+        return clist;
+    }
     //老师修改管控状态
     public void deleteControlTime(ObjectId userId,ObjectId communityId){
         //获得当前时间
@@ -2617,7 +2625,8 @@ public class ControlPhoneService {
      * 发现页面（校本资源显示）
      */
     public List<AppDetailEntry> getSchoolAppList(ObjectId userId){
-        List<ObjectId> oids = getMyRoleList(userId);
+        //List<ObjectId> oids = getMyRoleList(userId);
+        List<ObjectId> oids = getMySimpleList(userId);
         List<SchoolCommunityEntry> schoolCommunityEntries = schoolCommunityDao.getReviewList2(oids);
         List<ObjectId> oisd = new ArrayList<ObjectId>();
         for(SchoolCommunityEntry schoolCommunityEntry:schoolCommunityEntries){

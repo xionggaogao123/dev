@@ -32,7 +32,7 @@ public class MailMessageService {
 
     private AppOperationDao appOperationDao = new AppOperationDao();
 
-    public void sendMailMessage(ObjectId userId,String message){
+    public void sendMailMessage(ObjectId userId, final String message){
         UserEntry entry = userService.findById(userId);
         this.addOwnerOperation(userId, message);
        /* MailUtils mailUtils = new MailUtils();
@@ -42,13 +42,19 @@ public class MailMessageService {
         }catch (Exception e){
             logger.error("error",e);
         }*/
-        String title = "来自"+entry.getUserName()+"的一封建议信";
-        SendEmailUtil mailUtils = new SendEmailUtil(mailName,title,message,"");
-        try{
-            mailUtils.send();
-        }catch (Exception e){
-            logger.error("error",e);
-        }
+        final String userNmas = entry.getUserName();
+        new Thread() {
+            public void run() {
+                String title = "来自"+userNmas+"的一封建议信";
+                SendEmailUtil mailUtils = new SendEmailUtil(mailName,title,message,"");
+                try{
+                    mailUtils.send();
+                }catch (Exception e){
+                    logger.error("error",e);
+                }
+            }
+        }.start();
+
 
     }
 
@@ -113,5 +119,10 @@ public class MailMessageService {
         map2.put("list",dtos);
         map2.put("count",count);
         return map2;
+    }
+
+    public void delOperation(ObjectId id){
+        //删除评论
+        appOperationDao.delAppOperationEntry(id);
     }
 }

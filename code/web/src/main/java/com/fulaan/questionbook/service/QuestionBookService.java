@@ -19,6 +19,7 @@ import com.pojo.newVersionGrade.NewVersionSubjectEntry;
 import com.pojo.questionbook.*;
 import com.pojo.reportCard.VirtualUserEntry;
 import com.pojo.user.UserDetailInfoDTO;
+import com.pojo.user.UserEntry;
 import com.sys.constants.Constant;
 import com.sys.props.Resources;
 import org.apache.poi.util.IOUtils;
@@ -834,14 +835,20 @@ public class QuestionBookService {
     public List<QuestionReadDTO> getQuestionReadDTO(ObjectId communityId,ObjectId parentId){
         List<QuestionReadDTO> dtoList = new ArrayList<QuestionReadDTO>();
         List<VirtualUserEntry> virtualUserEntries = virtualUserDao.getAllVirtualUsers(communityId);
-        List<ObjectId> userIds = new ArrayList<ObjectId>();
+        List<ObjectId> objectIdList1 = new ArrayList<ObjectId>();
         Map<ObjectId,VirtualUserEntry> map3 = new HashMap<ObjectId, VirtualUserEntry>();
         if(virtualUserEntries.size()>0){
             for(VirtualUserEntry virtualUserEntry : virtualUserEntries){
-                userIds.add(virtualUserEntry.getUserId());
+                objectIdList1.add(virtualUserEntry.getUserId());
                 map3.put(virtualUserEntry.getUserId(),virtualUserEntry);
             }
         }
+        List<UserEntry> userEntries = userService.getUserByList(objectIdList1);
+        List<ObjectId> userIds = new ArrayList<ObjectId>();
+        for(UserEntry userEntry3: userEntries){
+            userIds.add(userEntry3.getID());
+        }
+
         List<QuestionReadEntry> entries = questionReadDao.getReviewList(userIds,parentId,2);
         Map<ObjectId,QuestionReadEntry> map4 = new HashMap<ObjectId, QuestionReadEntry>();
         List<ObjectId> childs = new ArrayList<ObjectId>();

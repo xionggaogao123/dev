@@ -48,6 +48,19 @@ public class VirtualUserDao extends BaseDao{
         }
     }
 
+    public VirtualUserEntry findByNames(ObjectId communityId,String userName,String number){
+        BasicDBObject query=new BasicDBObject();
+        query.append("cid",communityId);
+        query.append("unm",userName);
+        query.append("un",number);
+        DBObject dbObject =findOne(MongoFacroty.getAppDB(), Constant.COLLECTION_REPORT_CARD_VIRTUAL_USER,query,Constant.FIELDS);
+        if(null!=dbObject){
+            return new VirtualUserEntry(dbObject);
+        }else{
+            return null;
+        }
+    }
+
     public void removeItemById(ObjectId itemId){
         BasicDBObject query=new BasicDBObject(Constant.ID,itemId);
         BasicDBObject updateValue=new BasicDBObject(Constant.MONGO_SET,new BasicDBObject("ir",Constant.ONE));

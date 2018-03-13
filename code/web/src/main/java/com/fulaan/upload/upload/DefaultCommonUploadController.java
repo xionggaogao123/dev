@@ -181,22 +181,26 @@ public class DefaultCommonUploadController extends BaseController {
                     if (!fileDir.exists()) {
                         fileDir.mkdir();
                     }
-
-                    File destFile = new File(fileDir, file.getOriginalFilename());
+                    String string = "";
+                    if(file.getOriginalFilename()==null ||file.getOriginalFilename().equals("")){
+                        string = file.getName().substring(file.getName().lastIndexOf("/") + 1);
+                    }else{
+                        string = file.getOriginalFilename();
+                    }
+                    File destFile = new File(fileDir, string);
                     if (!destFile.exists()) {
                         destFile.createNewFile();
                     }
                     file.transferTo(destFile);
 
                     ObjectId id = new ObjectId();
-
-                    String fileKey = id.toString() + Constant.POINT + FilenameUtils.getExtension(file.getOriginalFilename());
+                    String fileKey = id.toString() + Constant.POINT + FilenameUtils.getExtension(string);
 
                     logger.info("User:[" + getUserId() + "] try upload file:" + fileKey);
 
 
                     InputStream inputStream = new FileInputStream(destFile);
-                    String extName = FilenameUtils.getExtension(file.getOriginalFilename());
+                    String extName = FilenameUtils.getExtension(string);
                     if(extName==null || extName.equals("")){
                         extName =file.getName().substring(file.getName().lastIndexOf(".") + 1);
                     }
@@ -210,7 +214,7 @@ public class DefaultCommonUploadController extends BaseController {
                         path = QiniuFileUtils.getPath(QiniuFileUtils.TYPE_DOCUMENT, fileKey);
                     }
 
-                    FileUploadDTO dto = new FileUploadDTO(id.toString(), fileKey, file.getOriginalFilename(), path);
+                    FileUploadDTO dto = new FileUploadDTO(id.toString(), fileKey, string, path);
                     fileInfos.add(dto);
                 } catch (Exception ex) {
                     logger.error("", ex);

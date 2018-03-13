@@ -2,6 +2,7 @@ package com.fulaan.jiaschool.service;
 
 import com.db.backstage.LogMessageDao;
 import com.db.fcommunity.CommunityDao;
+import com.db.fcommunity.MemberDao;
 import com.db.jiaschool.HomeSchoolDao;
 import com.db.jiaschool.SchoolCommunityDao;
 import com.fulaan.backstage.dto.LogMessageDTO;
@@ -10,6 +11,7 @@ import com.fulaan.jiaschool.dto.HomeSchoolDTO;
 import com.fulaan.jiaschool.dto.SchoolCommunityDTO;
 import com.pojo.backstage.LogMessageType;
 import com.pojo.fcommunity.CommunityEntry;
+import com.pojo.fcommunity.MemberEntry;
 import com.pojo.jiaschool.HomeSchoolEntry;
 import com.pojo.jiaschool.SchoolCommunityEntry;
 import org.bson.types.ObjectId;
@@ -33,6 +35,8 @@ public class HomeSchoolService {
     private CommunityDao communityDao = new CommunityDao();
 
     private SchoolCommunityDao schoolCommunityDao= new SchoolCommunityDao();
+
+    private MemberDao memberDao = new MemberDao();
 
 
     public Map<String,Object> getSchoolList(int schoolType,int page,int pageSize,String keyword){
@@ -85,7 +89,8 @@ public class HomeSchoolService {
 
     public CommunityDTO selectNewCommunityEntry(String searchId){
         CommunityEntry communityEntry = communityDao.findBySearchId(searchId);
-        if(communityEntry!=null) {
+        MemberEntry memberEntry = memberDao.getHead(communityEntry.getGroupId());
+        if(communityEntry!=null && memberEntry!=null) {
             CommunityDTO communityDTO = new CommunityDTO(communityEntry);
             SchoolCommunityEntry schoolCommunityEntry = schoolCommunityDao.getEntryById(communityEntry.getID());
             if (schoolCommunityEntry != null) {//已绑定
@@ -113,12 +118,15 @@ public class HomeSchoolService {
             dto.setCommunityId(communityId);
             dto.setSchoolId(schoolId);
             schoolCommunityDao.addEntry(dto.buildAddEntry());
+        }else{
+            schoolCommunityEntry.setSchoolId(new ObjectId(schoolId));
+            schoolCommunityDao.addEntry(schoolCommunityEntry);
         }
     }
 
     public void delSchoolSort(ObjectId communityId){
         SchoolCommunityEntry schoolCommunityEntry = schoolCommunityDao.getEntryById(communityId);
-        if(schoolCommunityEntry!=null){
+        if(schoolCommunityEntry!=null) {
             schoolCommunityDao.delEntry(communityId);
         }
     }

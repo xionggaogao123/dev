@@ -1518,8 +1518,9 @@ public class ControlPhoneService {
                 objectIdList.add(schoolCommunityEntry.getSchoolId());
             }
         }
-
-        List<ControlSchoolTimeEntry> entryList = controlSchoolTimeDao.getAllSchoolEntryList(objectIdList);
+        //查询未删除的
+        List<ObjectId> objectIdList1 =  homeSchoolDao.getSchoolObjectList(objectIdList);
+        List<ControlSchoolTimeEntry> entryList = controlSchoolTimeDao.getAllSchoolEntryList(objectIdList1);
 
         if(entryList.size()>0){
             Set<ObjectId> set = new HashSet<ObjectId>();

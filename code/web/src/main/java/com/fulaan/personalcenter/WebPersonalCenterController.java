@@ -8,12 +8,14 @@ import com.fulaan.newVersionBind.service.NewVersionBindService;
 import com.fulaan.operation.service.AppCommentService;
 import com.fulaan.service.MemberService;
 import com.fulaan.user.service.UserService;
+import com.fulaan.utils.FileUtils;
 import com.fulaan.utils.QiniuFileUtils;
 import com.fulaan.wrongquestion.dto.SubjectClassDTO;
 import com.pojo.app.SessionValue;
 import com.pojo.forum.FScoreDTO;
 import com.pojo.user.ExpLogType;
 import com.pojo.user.UserEntry;
+import com.sun.xml.internal.ws.resources.HttpserverMessages;
 import com.sys.constants.Constant;
 import com.sys.exceptions.IllegalParamException;
 import com.sys.utils.AvatarUtils;
@@ -225,6 +227,22 @@ public class WebPersonalCenterController extends BaseController {
         QiniuFileUtils.uploadFile(input, Filedata.getInputStream(), QiniuFileUtils.TYPE_IMAGE);
         return QiniuFileUtils.getPath(QiniuFileUtils.TYPE_IMAGE, input);
     }
+    
+    
+    /**
+     * 保存base64图片
+     */
+    @ApiOperation(value = "保存base64图片", httpMethod = "POST", produces = "application/json")
+    @ApiResponses( value = {@ApiResponse(code = 200, message = "Successful — 请求已完成",response = MultipartFile.class)})
+    @RequestMapping("/saveBase64Img")
+    @ResponseBody
+    public String saveBase64Img(String input, String base64string) throws Exception {
+        base64string = base64string.substring(23);
+        QiniuFileUtils.uploadFile(input, FileUtils.BaseToInputStream(base64string), QiniuFileUtils.TYPE_IMAGE);
+        return QiniuFileUtils.getPath(QiniuFileUtils.TYPE_IMAGE, input);
+    }
+    
+   
 
     /**
      * 更新用户头像

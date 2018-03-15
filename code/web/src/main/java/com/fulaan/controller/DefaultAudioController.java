@@ -71,13 +71,22 @@ public class DefaultAudioController {
     public RespObj uploadAudio2(HttpServletRequest request) throws Exception {
         String path = "";
         String name=request.getParameter("name");
-        String type=request.getParameter("type");
+       String type=request.getParameter("type");
        // servletRequest
         MultipartRequest file=(MultipartRequest)request;
         try {
             MultiValueMap<String, MultipartFile> fileMap = file.getMultiFileMap();
             for (List<MultipartFile> multipartFiles : fileMap.values()) {
                 for(MultipartFile file4:multipartFiles) {
+                    if(type!=null && type.contains("/")){
+                        String type2 = "";
+                        if(file4.getOriginalFilename()==null ||file4.getOriginalFilename().equals("")){
+                            type2 = file4.getName().substring(file4.getName().lastIndexOf("/") + 1);
+                        }else{
+                            type2 = file4.getOriginalFilename();
+                        }
+                        type = type2.substring(type2.lastIndexOf(".") + 1);
+                    }
                     String fileName = String.valueOf(System.currentTimeMillis()) + "." + type;
                     QiniuFileUtils.uploadFile(fileName, file4.getInputStream(), QiniuFileUtils.TYPE_SOUND);
                     path = QiniuFileUtils.getPath(QiniuFileUtils.TYPE_SOUND, fileName);

@@ -1,6 +1,7 @@
 package com.fulaan.picturetext.runnable;
 
 import cn.jiguang.commom.utils.StringUtils;
+import com.cloopen.rest.sdk.utils.encoder.BASE64Decoder;
 import com.db.backstage.UnlawfulPictureTextDao;
 import com.db.business.BusinessManageDao;
 import com.db.business.ModuleNumberDao;
@@ -33,7 +34,9 @@ import net.sf.json.JSONObject;
 import org.bson.types.ObjectId;
 
 import java.io.BufferedReader;
+import java.io.FileOutputStream;
 import java.io.InputStreamReader;
+import java.io.OutputStream;
 import java.net.URL;
 import java.net.URLConnection;
 import java.util.ArrayList;
@@ -257,8 +260,33 @@ public class PictureRunNable{
             logger.error("error",e);
         }
     }
+    public static boolean generateImage(String imgStr, String path) {
+        if (imgStr == null)
+        return false;
+        BASE64Decoder decoder = new BASE64Decoder();
+        try {
+        // 解密
+         byte[] b = decoder.decodeBuffer(imgStr);
+         // 处理数据
+        for (int i = 0; i < b.length; ++i) {
+             if (b[i] < 0) {
+                   b[i] += 256;
+                  }
+         }
+         OutputStream out = new FileOutputStream(path);
+         out.write(b);
+          out.flush();
+         out.close();
+         return true;
+          } catch (Exception e) {
+        return false;
+        }
+    }
     public static void main(String[] args){
-        addBusinessManageEntry(new ObjectId("5a1cf1793d4df901bd9fa983"),1);
+        PictureRunNable pictureRunNable = new PictureRunNable();
+        String str = "";
+        String path = "E:/1122.jpg";
+        pictureRunNable.generateImage(str,path);
     }
     public static void addBusinessManageEntry(final ObjectId userId,final int type) {
         new Thread(){

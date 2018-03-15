@@ -217,15 +217,16 @@ public class WebPersonalCenterController extends BaseController {
     }
 
     /**
-     * 编辑用户头像
+     * 页面图片插件验证
      */
-    @ApiOperation(value = "编辑用户头像", httpMethod = "POST", produces = "application/json")
+    @ApiOperation(value = "页面图片插件验证", httpMethod = "POST", produces = "application/json")
     @ApiResponses( value = {@ApiResponse(code = 200, message = "Successful — 请求已完成",response = MultipartFile.class)})
     @RequestMapping("/avatarupload")
     @ResponseBody
-    public String avatarUpload(String input, MultipartFile Filedata) throws Exception {
-        QiniuFileUtils.uploadFile(input, Filedata.getInputStream(), QiniuFileUtils.TYPE_IMAGE);
-        return QiniuFileUtils.getPath(QiniuFileUtils.TYPE_IMAGE, input);
+    public RespObj avatarUpload(String input, MultipartFile Filedata) throws Exception {
+        /*QiniuFileUtils.uploadFile(input, Filedata.getInputStream(), QiniuFileUtils.TYPE_IMAGE);
+        return QiniuFileUtils.getPath(QiniuFileUtils.TYPE_IMAGE, input);*/
+        return RespObj.SUCCESS; 
     }
     
     

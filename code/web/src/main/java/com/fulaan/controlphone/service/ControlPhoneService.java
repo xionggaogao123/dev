@@ -632,7 +632,7 @@ public class ControlPhoneService {
             map.put("dto",controlMapDTO);
         }
         //亲情电话个数
-        int count = controlPhoneDao.getNumber(sonId);
+        int count = controlPhoneDao.getParentNumber(parentId, sonId);
         map.put("phoneCount",count);
         //已推送应用数量
         //获得绑定的社区id
@@ -1364,7 +1364,7 @@ public class ControlPhoneService {
         map.put("blackApp",detailDTOs2);
         //可用电话记录
         List<ControlPhoneDTO> dtos = new ArrayList<ControlPhoneDTO>();
-        List<ControlPhoneEntry> entries = controlPhoneDao.getEntryListByparentIdAndUserId2(sonId);
+        List<ControlPhoneEntry> entries = controlPhoneDao.getEntryListByparentIdAndUserId3(parentId,sonId);
         List<ControlPhoneEntry> entries6 = controlPhoneDao.getEntryListByType();
         entries.addAll(entries6);
         if(entries.size()>0){

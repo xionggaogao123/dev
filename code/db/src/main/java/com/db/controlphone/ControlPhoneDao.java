@@ -105,6 +105,25 @@ public class ControlPhoneDao extends BaseDao {
         }
         return entryList;
     }
+
+    public List<ControlPhoneEntry> getEntryListByparentIdAndUserId3(ObjectId parentId,ObjectId userId) {
+        BasicDBObject query = new BasicDBObject()
+                .append("uid",userId)
+                .append("pid",parentId)
+                .append("isr", 0); // 未删除
+        List<DBObject> dbList =
+                find(MongoFacroty.getAppDB(),
+                        Constant.COLLECTION_CONTROL_PHONE,
+                        query, Constant.FIELDS,
+                        Constant.MONGO_SORTBY_DESC);
+        List<ControlPhoneEntry> entryList = new ArrayList<ControlPhoneEntry>();
+        if (dbList != null && !dbList.isEmpty()) {
+            for (DBObject obj : dbList) {
+                entryList.add(new ControlPhoneEntry((BasicDBObject) obj));
+            }
+        }
+        return entryList;
+    }
     //修改
     public void updEntry(ControlPhoneEntry e) {
         BasicDBObject query=new BasicDBObject(Constant.ID,e.getID());
@@ -173,6 +192,22 @@ public class ControlPhoneDao extends BaseDao {
         BasicDBObject query =new BasicDBObject();
         query.append("isr", Constant.ZERO);
         query.append("uid",userId);
+        int count =
+                count(MongoFacroty.getAppDB(),
+                        Constant.COLLECTION_CONTROL_PHONE,
+                        query);
+        return count;
+    }
+
+    /**
+     * 符合搜索条件的对象个数
+     * @return
+     */
+    public int getParentNumber(ObjectId parentId,ObjectId userId) {
+        BasicDBObject query =new BasicDBObject();
+        query.append("isr", Constant.ZERO);
+        query.append("uid",userId);
+        query.append("pid",parentId);
         int count =
                 count(MongoFacroty.getAppDB(),
                         Constant.COLLECTION_CONTROL_PHONE,

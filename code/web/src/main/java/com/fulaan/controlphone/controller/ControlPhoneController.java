@@ -1113,4 +1113,28 @@ public class ControlPhoneController extends BaseController {
         return JSON.toJSONString(respObj);
     }
 
+    /**
+     *
+     * 给groupEntry中老数据加上逻辑删除字段
+     */
+    @ApiOperation(value = "修改无逻辑删除字段的对象", httpMethod = "POST", produces = "application/json")
+    @ApiResponses( value = {@ApiResponse(code = 200, message = "Successful — 请求已完成",response = String.class),
+            @ApiResponse(code = 400, message = "请求中有语法问题，或不能满足请求"),
+            @ApiResponse(code = 500, message = "服务器不能完成请求")})
+    @RequestMapping("/addRemoveToGroupEntry")
+    @ResponseBody
+    public RespObj addRemoveToGroupEntry(){
+        RespObj respObj = new RespObj(Constant.FAILD_CODE);
+        try{
+            controlPhoneService.addRemoveToGroupEntry();
+            respObj.setCode(Constant.SUCCESS_CODE);
+            respObj.setMessage("修改无逻辑删除字段的对象成功");
+        }catch (Exception e){
+            e.printStackTrace();
+            respObj.setCode(Constant.SUCCESS_CODE);
+            respObj.setMessage("修改无逻辑删除字段的对象失败");
+        }
+        return respObj;
+    }
+
 }

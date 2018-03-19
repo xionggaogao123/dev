@@ -2464,12 +2464,10 @@ public class ControlPhoneService {
         return mlist;
     }
     public List<ObjectId> getMySimpleList(ObjectId userId){
-        List<String> olsit = memberDao.getMyCommunityIdsByUserId(userId);
-        List<ObjectId> clist = new ArrayList<ObjectId>();
-        for(String str : olsit){
-            clist.add(new ObjectId(str));
-        }
-        return clist;
+        List<ObjectId> olsit = memberDao.getGroupIdsByUserId(userId);
+       // List<ObjectId> clist = new ArrayList<ObjectId>();
+        List<ObjectId> mlist =   groupDao.getGroupIdsList(olsit);
+        return mlist;
     }
     //老师修改管控状态
     public void deleteControlTime(ObjectId userId,ObjectId communityId){
@@ -2619,6 +2617,7 @@ public class ControlPhoneService {
             detailDTOs.add(new AppDetailDTO(entry));
         }
         getNewThirdAppList(userId);
+
         return detailDTOs;
     }
 
@@ -2643,7 +2642,8 @@ public class ControlPhoneService {
                     appIds.addAll(schoolAppEntry.getAppIdList());
                 }
             }
-            appDetailEntries = appDetailDao.getEntriesByIds(appIds);
+           // appDetailEntries = appDetailDao.searchSchoolAppByIds(schoolAppEntry.getAppIdList());
+            appDetailEntries = appDetailDao.searchSchoolAppByIds(appIds);
         }
         return appDetailEntries;
     }
@@ -2956,5 +2956,10 @@ public class ControlPhoneService {
         return str;
     }
 
+
+    //处理
+    public void addRemoveToGroupEntry(){
+        memberDao.getNoRemoveMembers();
+    }
 
 }

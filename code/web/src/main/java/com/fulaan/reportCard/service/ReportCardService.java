@@ -642,8 +642,8 @@ public class ReportCardService {
                         StringUtils.isNotEmpty(dto.getExamType()) ? new ObjectId(dto.getExamType()) : null,
                         StringUtils.isNotEmpty(dto.getSubjectId()) ? new ObjectId(dto.getSubjectId()) : null,
                         StringUtils.isNotEmpty(dto.getCommunityId()) ? new ObjectId(dto.getCommunityId()) : null,
-                        -1D,
-                        -1,
+                        -2D,
+                        -2,
                         0,
                         Constant.ZERO
                 ));
@@ -796,7 +796,7 @@ public class ReportCardService {
                 }
                 for (GroupExamUserRecordDTO dto : examScoreDTOs) {
                     double score = dto.getScore();
-                    if (score != -1) {
+                    if (score != -1 && score!= -2) {
                         totalCount++;
                         totalScore += score;
                         if (score >= qualifyScore) {
@@ -830,7 +830,7 @@ public class ReportCardService {
                 int dCount = 0;
                 for (GroupExamUserRecordDTO dto : examScoreDTOs) {
                     int scoreLevel = dto.getScoreLevel();
-                    if (scoreLevel != -1) {
+                    if (scoreLevel != -1 && scoreLevel != -2) {
                         totalCount++;
                         if (scoreLevel >= RecordLevelEnum.AP.getLevelScore()) {
                             aCount++;
@@ -913,10 +913,12 @@ public class ReportCardService {
     }
 
     public GroupExamDetailDTO getTeacherGroupExamDetail(ObjectId groupExamDetailId) {
+        
         GroupExamDetailDTO detailDTO = new GroupExamDetailDTO();
         GroupExamDetailEntry detailEntry = groupExamDetailDao.getGroupExamDetailEntry(groupExamDetailId);
         if (null != detailEntry) {
             detailDTO = new GroupExamDetailDTO(detailEntry);
+            detailDTO.setSignCount(this.calcuteSignCount(groupExamDetailId));
             SubjectClassEntry subjectClassEntry = subjectClassDao.getEntry(detailEntry.getSubjectId());
             if (null != subjectClassEntry) {
                 detailDTO.setSubjectName(subjectClassEntry.getName());
@@ -955,6 +957,42 @@ public class ReportCardService {
         }
         return detailDTO;
     }
+    
+    /**
+     * 
+     *〈简述〉
+     *〈详细描述〉计算参考人数
+     * @author Administrator
+     * @param groupExamDetailId
+     * @return
+     */
+    public int calcuteSignCount(ObjectId groupExamDetailId) {
+        int i = 0;
+      
+        List<GroupExamUserRecordDTO> groupExamUserRecordDTOList = this.searchRecordStudentScores(groupExamDetailId, -1, -1, 1);
+        for (GroupExamUserRecordDTO dto : groupExamUserRecordDTOList) {
+            
+            if (((!("-1").equals(doubleTrans1(dto.getScore()))) && (!("-2").equals(doubleTrans1(dto.getScore())))) || (dto.getScoreLevel() != -1 && dto.getScoreLevel() != -2)) {
+                i++;
+            }
+        }
+        return i;
+    }
+    
+    /**
+     * 
+     *〈简述〉
+     *〈详细描述〉double类型如果小数点后为零显示整数否则保留
+     * @author Administrator
+     * @param num
+     * @return
+     */
+    public static String doubleTrans1(double num){
+        if(num % 1.0 == 0){
+                return String.valueOf((long)num);
+        }
+        return String.valueOf(num);
+}
 
 
     public List<ExamTypeDTO> getExamTypeDTOs() {

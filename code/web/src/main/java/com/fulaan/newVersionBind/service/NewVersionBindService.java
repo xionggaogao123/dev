@@ -388,7 +388,35 @@ public class NewVersionBindService {
         }
         return dtos;
     }
-
+    public List<NewVersionBindRelationDTO> getAllCommunityBindStudentList(ObjectId mainUserId){
+        List<NewVersionBindRelationDTO> dtos = new ArrayList<NewVersionBindRelationDTO>();
+        List<NewVersionCommunityBindEntry> entries = newVersionCommunityBindDao.getBindEntries(null,mainUserId);
+        List<ObjectId> userIds= new ArrayList<ObjectId>();
+        for(NewVersionCommunityBindEntry entry:entries){
+            userIds.add(entry.getUserId());
+        }
+        Map<ObjectId,UserEntry> userEntryMap=userService.getUserEntryMap(userIds,Constant.FIELDS);
+        for(NewVersionCommunityBindEntry entry:entries){
+            NewVersionBindRelationDTO dto =new NewVersionBindRelationDTO();
+            dto.setThirdName(entry.getThirdName());
+            dto.setMainUserId(entry.getMainUserId().toString());
+            dto.setUserId(entry.getUserId().toString());
+            dto.setStudentNumber(entry.getNumber());
+            dto.setNickName(entry.getThirdName());
+            dto.setIsBindCommunity(Constant.ONE);
+            UserEntry userEntry = userEntryMap.get(entry.getUserId());
+            if(null!=userEntry){
+                dto.setNickName(StringUtils.isNotEmpty(userEntry.getNickName())?userEntry.getNickName():userEntry.getUserName());
+                dto.setAvatar(AvatarUtils.getAvatar2(userEntry.getAvatar(),userEntry.getRole(),userEntry.getSex()));
+                dto.setVirtualUser(Constant.ONE);
+            }else{
+                dto.setAvatar(AvatarUtils.getAvatar2(Constant.EMPTY,1,1));
+                dto.setVirtualUser(Constant.ZERO);
+            }
+            dtos.add(dto);
+        }
+        return dtos;
+    }
 
     public List<NewVersionBindRelationDTO> getNewVersionBindDtos (ObjectId mainUserId,ObjectId communityId){
         List<NewVersionBindRelationDTO> dtos = new ArrayList<NewVersionBindRelationDTO>();

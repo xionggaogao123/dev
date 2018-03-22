@@ -348,6 +348,67 @@ public class ReportCardService {
             }
             recordExamScoreDTOs.add(userRecordDTO);
         }
+        GroupExamDetailEntry detailEntry = groupExamDetailDao.getGroupExamDetailEntry(groupExamDetailId);
+        List<GroupExamUserRecordDTO> list = new ArrayList<GroupExamUserRecordDTO>();
+        if (detailEntry.getRecordScoreType() == 1) {
+          //分数排序
+            Collections.sort(recordExamScoreDTOs, new Comparator<GroupExamUserRecordDTO>() {
+                @Override
+                public int compare(GroupExamUserRecordDTO o1, GroupExamUserRecordDTO o2) {
+                    int result=0;
+                    if (o1.getScore() < o2.getScore()) {
+                        result = 1;
+                    } else {
+                        result = -1;
+                    }
+                    return result;
+                }
+            });
+            
+            for (int i = 0; i < recordExamScoreDTOs.size(); i++) {
+                if (i == 0) {
+                    recordExamScoreDTOs.get(i).setRank(i+1);
+                } else {
+                    if (recordExamScoreDTOs.get(i).getScore() == recordExamScoreDTOs.get(i-1).getScore()) {
+                        recordExamScoreDTOs.get(i).setRank(recordExamScoreDTOs.get(i-1).getRank());
+                    } else {
+                        recordExamScoreDTOs.get(i).setRank(recordExamScoreDTOs.get(i-1).getRank()+1);
+                    }
+                }
+                list.add(recordExamScoreDTOs.get(i));
+            }
+        } else {
+          //等第排序
+            Collections.sort(recordExamScoreDTOs, new Comparator<GroupExamUserRecordDTO>() {
+                @Override
+                public int compare(GroupExamUserRecordDTO o1, GroupExamUserRecordDTO o2) {
+                    int result=0;
+                    if (o1.getScoreLevel() < o2.getScoreLevel()) {
+                        result = 1;
+                    } else {
+                        result = -1;
+                    }
+                    return result;
+                }
+            });
+            
+            for (int i = 0; i < recordExamScoreDTOs.size(); i++) {
+                if (i == 0) {
+                    recordExamScoreDTOs.get(i).setRank(i+1);
+                } else {
+                    if (recordExamScoreDTOs.get(i).getScoreLevel() == recordExamScoreDTOs.get(i-1).getScoreLevel()) {
+                        recordExamScoreDTOs.get(i).setRank(recordExamScoreDTOs.get(i-1).getRank());
+                    } else {
+                        recordExamScoreDTOs.get(i).setRank(recordExamScoreDTOs.get(i-1).getRank()+1);
+                    }
+                }
+                list.add(recordExamScoreDTOs.get(i));
+            }
+        }
+        
+        recordExamScoreDTOs.clear();
+        recordExamScoreDTOs.addAll(list);
+        
         Collections.sort(recordExamScoreDTOs, new Comparator<GroupExamUserRecordDTO>() {
             @Override
             public int compare(GroupExamUserRecordDTO o1, GroupExamUserRecordDTO o2) {
@@ -363,8 +424,11 @@ public class ReportCardService {
                 return result;
             }
         });
+        
+        
         return recordExamScoreDTOs;
     }
+    
 
 
     public int getCompareResult(String itemOne, String itemTwo) {

@@ -392,18 +392,31 @@ public class NewVersionBindService {
         List<NewVersionBindRelationDTO> dtos = new ArrayList<NewVersionBindRelationDTO>();
         List<NewVersionCommunityBindEntry> entries = newVersionCommunityBindDao.getBindEntries(null,mainUserId);
         List<ObjectId> userIds= new ArrayList<ObjectId>();
+        List<ObjectId> communityIds = new ArrayList<ObjectId>();
         for(NewVersionCommunityBindEntry entry:entries){
             userIds.add(entry.getUserId());
+            communityIds.add(entry.getCommunityId());
         }
         Map<ObjectId,UserEntry> userEntryMap=userService.getUserEntryMap(userIds,Constant.FIELDS);
+        Map<ObjectId,CommunityEntry> communityEntryMap=communityDao.findMapInfo(communityIds);
         for(NewVersionCommunityBindEntry entry:entries){
             NewVersionBindRelationDTO dto =new NewVersionBindRelationDTO();
+            dto.setBindId(entry.getID().toString());
             dto.setThirdName(entry.getThirdName());
             dto.setMainUserId(entry.getMainUserId().toString());
             dto.setUserId(entry.getUserId().toString());
             dto.setStudentNumber(entry.getNumber());
             dto.setNickName(entry.getThirdName());
             dto.setIsBindCommunity(Constant.ONE);
+            CommunityEntry communityEntry = communityEntryMap.get(entry.getCommunityId());
+            if(communityEntry !=null){
+                dto.setBindCommunityStr(communityEntry.getCommunityName());
+                dto.setCommunityId(entry.getCommunityId().toString());
+            }else{
+                dto.setBindCommunityStr("");
+                dto.setCommunityId("");
+            }
+
             UserEntry userEntry = userEntryMap.get(entry.getUserId());
             if(null!=userEntry){
                 dto.setNickName(StringUtils.isNotEmpty(userEntry.getNickName())?userEntry.getNickName():userEntry.getUserName());
@@ -755,6 +768,36 @@ public class NewVersionBindService {
 
         }
     }
+
+    public void updateBindVirtualCommunity(String thirdName,String number,
+                                        ObjectId bindId,ObjectId mainUserId)throws Exception{
+
+        NewVersionCommunityBindEntry entry = newVersionCommunityBindDao.getEntry(bindId);
+        if(null!=entry && entry.getRemoveStatus()==0){//过滤空数据和已删除数据
+            NewVersionCommunityBindEntry entry2 = newVersionCommunityBindDao.getEntry(thirdName, entry.getCommunityId(), mainUserId);
+            if(entry2==null){//没有同名的
+                entry.setNumber(number);
+                entry.setThirdName(thirdName);
+                VirtualUserEntry virtualUserEntry = virtualUserDao.findByNames(entry.getCommunityId(),thirdName,number);
+                if(virtualUserEntry!=null && !virtualUserEntry.getUserId().equals(entry.getUserId())){
+                    entry.setUserId(virtualUserEntry.getUserId());
+                }
+                newVersionCommunityBindDao.saveEntry(entry);
+            }else{//有同名的
+                if(entry.getID().equals(entry2.getID())){//就是本身
+                    entry.setNumber(number);
+                    VirtualUserEntry virtualUserEntry = virtualUserDao.findByNames(entry.getCommunityId(),thirdName,number);
+                    if(virtualUserEntry!=null && !virtualUserEntry.getUserId().equals(entry.getUserId())){
+                        entry.setUserId(virtualUserEntry.getUserId());
+                    }
+                    newVersionCommunityBindDao.saveEntry(entry);
+                }else{//非本身
+                    throw new Exception("该昵称已用过!");
+                }
+            }
+        }
+    }
+
     public void pipeiStudent(String communityId){
         Map<String, ObjectId> userBindMap = new HashMap<String, ObjectId>();
         List<VirtualUserDTO> dtos = new ArrayList<VirtualUserDTO>();

@@ -394,7 +394,12 @@ public class AppCommentService {
         map.put("desc",dtoa);
 
         List<NewVersionBindRelationDTO> entries4 = newVersionBindService.getCommunityBindStudentList(userId,aen.getRecipientId());
-        if(entries4.size()>0){
+        List<String> str3 = new ArrayList<String>();
+        for(NewVersionBindRelationDTO dto3 : entries4){
+            str3.add(dto3.getUserId());
+        }
+        List<UserDetailInfoDTO> unList2 = userService.findUserInfoByUserIds(str3);
+        if(unList2.size()>0){
             map.put("hasChild",1);
         }else{
             map.put("hasChild",0);

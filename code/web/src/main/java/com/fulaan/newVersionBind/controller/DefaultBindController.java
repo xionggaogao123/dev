@@ -295,6 +295,29 @@ public class DefaultBindController extends BaseController {
     }
 
     /**
+     * 修改虚拟学生
+     * @param thirdName
+     * @param number
+     * @param bindId
+     * @return
+     */
+    @ApiOperation(value = "绑定社区下的虚拟学生", httpMethod = "POST", produces = "application/json")
+    @ApiResponses( value = {@ApiResponse(code = 200, message = "Successful — 请求已完成",response = RespObj.class)})
+    @RequestMapping("/updateBindVirtualCommunity")
+    @ResponseBody
+    public RespObj updateBindVirtualCommunity(String thirdName,String number, @ObjectIdType ObjectId bindId){
+        RespObj respObj = new RespObj(Constant.FAILD_CODE);
+        try{
+            newVersionBindService.updateBindVirtualCommunity(thirdName,number,bindId,getUserId());
+            respObj.setCode(Constant.SUCCESS_CODE);
+            respObj.setMessage("绑定社区下的虚拟学生成功!");
+        }catch (Exception e){
+            respObj.setErrorMessage(e.getMessage());
+        }
+        return respObj;
+    }
+
+    /**
      * 多选添加虚拟学生
      * @param thirdName
      * @param number
@@ -305,7 +328,7 @@ public class DefaultBindController extends BaseController {
     @ApiResponses( value = {@ApiResponse(code = 200, message = "Successful — 请求已完成",response = RespObj.class)})
     @RequestMapping("/addMoreBindVirtualCommunity")
     @ResponseBody
-    public RespObj addMoreBindVirtualCommunity(String thirdName,String number, String communityIds){
+    public RespObj addMoreBindVirtualCommunity(@RequestParam(value="thirdName") String thirdName,@RequestParam(value="number") String number, @RequestParam(value="communityIds") String communityIds){
         RespObj respObj = new RespObj(Constant.FAILD_CODE);
         try{
             if(communityIds!=null){

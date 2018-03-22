@@ -47,6 +47,8 @@ public class NewVersionBindRelationDTO {
 
     private int virtualUser;
 
+    private String communityId;
+
     private List<GroupOfCommunityDTO> bindCommunities = new ArrayList<GroupOfCommunityDTO>();
 
     public NewVersionBindRelationDTO(NewVersionBindRelationEntry  entry){
@@ -108,6 +110,14 @@ public class NewVersionBindRelationDTO {
 
     public void setUserBelongCommunitiesCount(int userBelongCommunitiesCount) {
         this.userBelongCommunitiesCount = userBelongCommunitiesCount;
+    }
+
+    public String getCommunityId() {
+        return communityId;
+    }
+
+    public void setCommunityId(String communityId) {
+        this.communityId = communityId;
     }
 
     public int getSelectTransfer() {

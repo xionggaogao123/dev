@@ -562,7 +562,7 @@ public class GroupService {
             UserEntry userEntry = userEntryMap.get(entry.getUserId());
             if(null!=userEntry){
                 dto.setUserName(StringUtils.isNotEmpty(userEntry.getNickName())?userEntry.getNickName():userEntry.getUserName());
-                dto.setAvatar(AvatarUtils.getAvatar2(userEntry.getAvatar(),userEntry.getRole(),userEntry.getSex()));
+                dto.setAvatar(AvatarUtils.getAvatar(userEntry.getAvatar(),userEntry.getRole(),userEntry.getSex()));
             }
             dto.setOwner(false);
             if(entry.getUserId().toString().equals(userId.toString())) {

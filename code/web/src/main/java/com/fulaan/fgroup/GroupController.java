@@ -595,8 +595,8 @@ public class GroupController extends BaseController {
             return RespObj.SUCCESS("操作成功！");
         }
         List<ObjectId> memberIds = MongoUtils.convertObjectIds(userIds);
-        if (memberIds.size() > 2) {
-            return RespObj.FAILD("只能设置两个副社长");
+        if (memberIds.size() > 10) {
+            return RespObj.FAILD("只能设置十个副社长");
         }
         MemberDTO head = memberService.getHead(groupId);
         if (memberIds.contains(new ObjectId(head.getUserId()))) {

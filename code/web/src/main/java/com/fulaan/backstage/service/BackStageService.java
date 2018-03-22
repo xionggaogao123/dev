@@ -488,6 +488,12 @@ public class BackStageService {
     }
     //教师认证1未验证，2 验证通过 3 验证不通过
     public Map<String,Object> selectTeacherList(ObjectId userId,int type,String groupId,int page,int pageSize){
+        if(type==1 && groupId != null && !groupId.equals("")){
+            return getSimpleUserInFo(groupId);
+        }
+        if(type==0 && groupId != null && !groupId.equals("")){
+            return getSimpleUserInFo(groupId);
+        }
         String searchId = "";
         if(groupId != null && !groupId.equals("")){
             UserEntry userEntry = userDao.getJiaUserEntry(groupId);
@@ -557,6 +563,43 @@ public class BackStageService {
         map.put("count",count);
         return map;
     }
+    public Map<String,Object> getSimpleUserInFo(String groupId){
+        Map<String,Object> map = new HashMap<String, Object>();
+        List<TeacherApproveDTO> dtos = new ArrayList<TeacherApproveDTO>();
+        UserEntry userEntry = userDao.getJiaUserEntry(groupId);
+        if(userEntry!=null){
+            TeacherApproveEntry teacherApproveEntry = teacherApproveDao.getEntry(userEntry.getID());
+            if(teacherApproveEntry!=null){
+                TeacherApproveDTO teacherApproveDTO = new TeacherApproveDTO(teacherApproveEntry);
+                teacherApproveDTO.setAvatar(AvatarUtils.getAvatar(userEntry.getAvatar(),userEntry.getRole(),userEntry.getSex()));
+                teacherApproveDTO.setUid(userEntry.getGenerateUserCode());
+                String name = StringUtils.isNotEmpty(userEntry.getNickName())?userEntry.getNickName() : userEntry.getUserName();
+                teacherApproveDTO.setName(name);
+                teacherApproveDTO.setUserId(userEntry.getID().toString());
+                teacherApproveDTO.setType(teacherApproveEntry.getType());
+                dtos.add(teacherApproveDTO);
+                map.put("list",dtos);
+                map.put("count",1);
+            }else{
+                TeacherApproveDTO teacherApproveDTO = new TeacherApproveDTO();
+                teacherApproveDTO.setAvatar(AvatarUtils.getAvatar(userEntry.getAvatar(),userEntry.getRole(),userEntry.getSex()));
+                teacherApproveDTO.setUid(userEntry.getGenerateUserCode());
+                String name = StringUtils.isNotEmpty(userEntry.getNickName())?userEntry.getNickName() : userEntry.getUserName();
+                teacherApproveDTO.setName(name);
+                teacherApproveDTO.setUserId(userEntry.getID().toString());
+                teacherApproveDTO.setType(1);
+                dtos.add(teacherApproveDTO);
+                map.put("list",dtos);
+                map.put("count",1);
+            }
+
+        }else{
+            map.put("list",dtos);
+            map.put("count",0);
+        }
+        return map;
+    }
+
     public Map<ObjectId,String> getOwnerCommunityList(List<ObjectId> uids){
         Map<ObjectId,String> map = new HashMap<ObjectId, String>();
         List<MemberEntry> entries2 = memberDao.getMembersFromTeacher2(uids);

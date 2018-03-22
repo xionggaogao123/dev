@@ -141,7 +141,7 @@ public class AppCommentService {
                 objectIdList5.add(new ObjectId(str));
             }
             List<UserEntry> userEntries = userService.getUserByList(objectIdList5);
-            List<String> objectIdList3 = new ArrayList<String>();
+            Set<String> objectIdList3 = new HashSet<String>();
             for(UserEntry userEntry3: userEntries){
                 objectIdList3.add(userEntry3.getID().toString());
             }

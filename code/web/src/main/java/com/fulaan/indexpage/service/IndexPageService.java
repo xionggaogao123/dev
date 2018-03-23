@@ -202,9 +202,11 @@ public class IndexPageService {
 
         if(syList.size()>0){
             List<SystemMessageEntry> systemMessageEntries = systemMessageDao.selectContentList(syList);
+            int i = 1;
             for(SystemMessageEntry entry:systemMessageEntries){
                 SystemMessageDTO dto8 = new SystemMessageDTO(entry);
-                if(entry.getType()==1){
+                if(entry.getType()==1 && i==1){
+                    i++;
                     Map<String,Object> ob1 = new HashMap<String, Object>();
                     ob1.put("tag", CommunityType.system.getDes());
                     ob1.put("cardType",2);
@@ -232,7 +234,7 @@ public class IndexPageService {
                     ob1.put("timeExpression","");
                     ob1.put("isOwner",true);
                     list.add(ob1);
-                }else{
+                }else if(entry.getType()==2){
                     Map<String,Object> ob1 = new HashMap<String, Object>();
                     ob1.put("tag", CommunityType.system.getDes());
                     ob1.put("cardType",3);
@@ -269,6 +271,8 @@ public class IndexPageService {
                     ob1.put("timeExpression","");
                     ob1.put("isOwner",true);
                     list.add(ob1);
+                }else{
+
                 }
             }
         }

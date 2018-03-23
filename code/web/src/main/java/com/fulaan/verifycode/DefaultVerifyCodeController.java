@@ -74,7 +74,7 @@ public class DefaultVerifyCodeController extends BaseController {
     @SessionNeedless
     @RequestMapping("/verifyCode")
     @ResponseBody
-    public void service(HttpServletRequest request)
+    public void service(HttpServletRequest request,HttpServletResponse response)
             throws ServletException, java.io.IOException {
 //        String referer = request.getHeader("referer");
 //        if(referer==null){
@@ -141,6 +141,25 @@ public class DefaultVerifyCodeController extends BaseController {
         VCKeycookie.setMaxAge(Constant.SESSION_FIVE_MINUTE);
         VCKeycookie.setPath(Constant.BASE_PATH);
         resp.addCookie(VCKeycookie);
+        //重新处理
+        if(getUserId()!=null){
+            String cacheUserKey = "";
+            Cookie[] allCookies = request.getCookies();
+            if(allCookies != null){
+                for(int i=0;i<allCookies.length;i++){
+                    Cookie temp = allCookies[i];
+                    if(temp.getName()!=null&& temp.getName().equals(Constant.COOKIE_USER_KEY)){
+                        cacheUserKey = temp.getValue();
+                    }
+                }
+            }
+            Cookie userKeycookie = new Cookie(Constant.COOKIE_USER_KEY, cacheUserKey);
+//        userKeycookie.setMaxAge(Constant.SECONDS_IN_DAY);
+            userKeycookie.setMaxAge(Constant.SECONDS_IN_HALF_YEAR);
+            userKeycookie.setPath(Constant.BASE_PATH);
+            response.addCookie(userKeycookie);
+        }
+
         // 禁止图像缓存。
         resp.setHeader("Pragma", "no-cache");
         resp.setHeader("Cache-Control", "no-cache");

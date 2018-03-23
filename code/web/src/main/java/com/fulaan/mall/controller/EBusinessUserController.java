@@ -633,7 +633,7 @@ public class EBusinessUserController extends BaseController {
             map.put("message", "注册失败：邮箱格式不正确");
             return false;
         }
-        Pattern phonePattern = Pattern.compile("^1[3|4|5|7|8][0-9]\\d{8}$");
+        Pattern phonePattern = Pattern.compile("^1[3|4|5|6|7|8|9][0-9]\\d{8}$");
         if (!"".equals(phoneNumber) && !phonePattern.matcher(phoneNumber).matches()) {
             map.put("message", "注册失败：手机号不正确");
             return false;

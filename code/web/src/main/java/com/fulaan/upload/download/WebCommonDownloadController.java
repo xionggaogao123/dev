@@ -1,5 +1,6 @@
 package com.fulaan.upload.download;
 
+import com.fulaan.annotation.SessionNeedless;
 import com.fulaan.base.BaseController;
 import com.sys.exceptions.IllegalParamException;
 import io.swagger.annotations.Api;
@@ -39,6 +40,7 @@ public class WebCommonDownloadController extends BaseController {
     @ApiOperation(value = "下载远程文件并保存到本地", httpMethod = "POST", produces = "application/json")
     @RequestMapping("/downloadFile")
     @ResponseBody
+    @SessionNeedless
     public void downloadFile(String remoteFilePath, String fileName, HttpServletResponse response) throws IOException, IllegalParamException {
         if (StringUtils.isBlank(fileName)) {
             fileName = remoteFilePath.substring(remoteFilePath.lastIndexOf("/") + 1);

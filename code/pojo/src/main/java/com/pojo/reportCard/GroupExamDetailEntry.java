@@ -24,6 +24,7 @@ import java.util.List;
  *     maxScore:满分
  *     qualifyScore:合格分
  *     excellentScore:优秀分
+ *     showType:展示类型 0：个人1：全部学生
  *     status:状态 0保存（待发送） 1表示已删除 2已发送
  * }
  */
@@ -45,7 +46,8 @@ public class GroupExamDetailEntry extends BaseDBObject{
                                 int excellentScore,
                                 long examTime,
                                 int signCount,
-                                int signedCount
+                                int signedCount,
+                                int showType
                                 ){
         BasicDBObject basicDBObject=new BasicDBObject()
                 .append("ms",maxScore)
@@ -62,7 +64,8 @@ public class GroupExamDetailEntry extends BaseDBObject{
                 .append("sid",subjectId)
                 .append("sc",signCount)
                 .append("sec",signedCount)
-                .append("st",Constant.ZERO);
+                .append("st",Constant.ZERO)
+                .append("sw",showType );
         setBaseEntry(basicDBObject);
     }
 
@@ -120,6 +123,14 @@ public class GroupExamDetailEntry extends BaseDBObject{
 
     public int getQualifyScore(){
         return getSimpleIntegerValue("qs");
+    }
+
+    public void setShowType(int showType){
+        setSimpleValue("sw",showType);
+    }
+
+    public int getShowType(){
+        return getSimpleIntegerValueDef("sw", Constant.ZERO);
     }
 
     public void setMaxScore(int maxScore){

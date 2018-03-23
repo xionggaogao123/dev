@@ -1,5 +1,6 @@
 package com.fulaan.reportCard.service;
 
+import com.db.factory.MongoFacroty;
 import com.db.fcommunity.CommunityDao;
 import com.db.fcommunity.MemberDao;
 import com.db.fcommunity.NewVersionCommunityBindDao;
@@ -21,6 +22,7 @@ import com.fulaan.user.service.TestTable;
 import com.fulaan.user.service.UserService;
 import com.fulaan.utils.HSSFUtils;
 import com.fulaan.wrongquestion.dto.ExamTypeDTO;
+import com.mongodb.BasicDBObject;
 import com.pojo.fcommunity.CommunityEntry;
 import com.pojo.fcommunity.NewVersionCommunityBindEntry;
 import com.pojo.indexPage.IndexPageEntry;
@@ -430,6 +432,155 @@ public class ReportCardService {
     }
     
 
+    /**
+     * 
+     *〈简述〉获取成绩和排行
+     *〈详细描述〉
+     * @author Administrator
+     * @param groupExamDetailId 成绩单详情id
+     * @return
+     */
+    public List<GroupExamUserRecordDTO> getGroupExamUserRecord(ObjectId groupExamDetailId, ObjectId userId) {
+        GroupExamDetailEntry oldEntry = groupExamDetailDao.getGroupExamDetailEntry(groupExamDetailId);
+        List<GroupExamUserRecordDTO> recordExamScoreDTOs = new ArrayList<GroupExamUserRecordDTO>();
+       
+        final List<GroupExamUserRecordEntry> recordEntries = groupExamUserRecordDao.getExamUserRecordEntries(groupExamDetailId,-1, -1, -1, 1);
+        Set<ObjectId> userIds = new HashSet<ObjectId>();
+        for (GroupExamUserRecordEntry recordEntry : recordEntries) {
+            userIds.add(recordEntry.getUserId());
+        }
+        Map<ObjectId, UserEntry> userEntryMap = new HashMap<ObjectId, UserEntry>();
+        Map<ObjectId, NewVersionCommunityBindEntry> bindUserMap = new HashMap<ObjectId, NewVersionCommunityBindEntry>();
+        if (userIds.size() > 0) {
+            userEntryMap = userService.getUserEntryMap(userIds, Constant.FIELDS);
+            bindUserMap = newVersionCommunityBindDao.getUserEntryMapByCondition(
+                    recordEntries.get(0).getCommunityId(), new ArrayList<ObjectId>(userIds));
+        }
+        boolean flag = false;
+        for (GroupExamUserRecordEntry recordEntry : recordEntries) {
+            GroupExamUserRecordDTO userRecordDTO = new GroupExamUserRecordDTO(recordEntry);
+            NewVersionCommunityBindEntry
+                    entry = bindUserMap.get(recordEntry.getUserId());
+            if (null == entry) {
+                flag = true;
+            } else {
+                userRecordDTO.setUserNumber(entry.getNumber());
+                if (StringUtils.isNotBlank(entry.getThirdName())) {
+                    userRecordDTO.setUserName(entry.getThirdName());
+                } else {
+                    flag = true;
+                }
+            }
+            if (flag) {
+                UserEntry userEntry = userEntryMap.get(recordEntry.getUserId());
+                if(null != userEntry){
+                    userRecordDTO.setUserName(
+                            StringUtils.isNotBlank(userEntry.getNickName()) ? userEntry.getNickName() : userEntry.getUserName());
+                }
+                flag = false;
+            }
+            VirtualUserEntry virtualUserEntry = virtualUserDao.getVirtualUserByUserId(recordEntry.getUserId());
+            if(null != virtualUserEntry){
+                userRecordDTO.setUserNumber(virtualUserEntry.getUserNumber());
+                userRecordDTO.setUserName(virtualUserEntry.getUserName());
+            }
+            recordExamScoreDTOs.add(userRecordDTO);
+        }
+        GroupExamDetailEntry detailEntry = groupExamDetailDao.getGroupExamDetailEntry(groupExamDetailId);
+        List<GroupExamUserRecordDTO> list = new ArrayList<GroupExamUserRecordDTO>();
+        if (detailEntry.getRecordScoreType() == 1) {
+          //分数排序
+            Collections.sort(recordExamScoreDTOs, new Comparator<GroupExamUserRecordDTO>() {
+                @Override
+                public int compare(GroupExamUserRecordDTO o1, GroupExamUserRecordDTO o2) {
+                    int result=0;
+                    if (o1.getScore() < o2.getScore()) {
+                        result = 1;
+                    } else {
+                        result = -1;
+                    }
+                    return result;
+                }
+            });
+            
+            for (int i = 0; i < recordExamScoreDTOs.size(); i++) {
+                if (i == 0) {
+                    recordExamScoreDTOs.get(i).setRank(i+1);
+                } else {
+                    if (recordExamScoreDTOs.get(i).getScore() == recordExamScoreDTOs.get(i-1).getScore()) {
+                        recordExamScoreDTOs.get(i).setRank(recordExamScoreDTOs.get(i-1).getRank());
+                    } else {
+                        recordExamScoreDTOs.get(i).setRank(recordExamScoreDTOs.get(i-1).getRank()+1);
+                    }
+                }
+                list.add(recordExamScoreDTOs.get(i));
+            }
+        } else {
+          //等第排序
+            Collections.sort(recordExamScoreDTOs, new Comparator<GroupExamUserRecordDTO>() {
+                @Override
+                public int compare(GroupExamUserRecordDTO o1, GroupExamUserRecordDTO o2) {
+                    int result=0;
+                    if (o1.getScoreLevel() < o2.getScoreLevel()) {
+                        result = 1;
+                    } else {
+                        result = -1;
+                    }
+                    return result;
+                }
+            });
+            
+            for (int i = 0; i < recordExamScoreDTOs.size(); i++) {
+                if (i == 0) {
+                    recordExamScoreDTOs.get(i).setRank(i+1);
+                } else {
+                    if (recordExamScoreDTOs.get(i).getScoreLevel() == recordExamScoreDTOs.get(i-1).getScoreLevel()) {
+                        recordExamScoreDTOs.get(i).setRank(recordExamScoreDTOs.get(i-1).getRank());
+                    } else {
+                        recordExamScoreDTOs.get(i).setRank(recordExamScoreDTOs.get(i-1).getRank()+1);
+                    }
+                }
+                list.add(recordExamScoreDTOs.get(i));
+            }
+        }
+        
+        recordExamScoreDTOs.clear();
+        recordExamScoreDTOs.addAll(list);
+        
+        Collections.sort(recordExamScoreDTOs, new Comparator<GroupExamUserRecordDTO>() {
+            @Override
+            public int compare(GroupExamUserRecordDTO o1, GroupExamUserRecordDTO o2) {
+                int result=0;
+                if(StringUtils.isNotEmpty(o1.getUserNumber())&&
+                        StringUtils.isNotEmpty(o1.getUserName()) && StringUtils.isNotEmpty(o2.getUserNumber())&&
+                        StringUtils.isNotEmpty(o2.getUserName())) {
+                    result = getCompareResult(o1.getUserNumber(), o2.getUserNumber());
+                    if (result == 0) {
+                        result = getCompareResult(o1.getUserName(), o2.getUserName());
+                    }
+                }
+                return result;
+            }
+        });
+
+        
+      //个人
+        if (oldEntry.getShowType() == 0) {
+            List<GroupExamUserRecordDTO> listt = new ArrayList<GroupExamUserRecordDTO>();
+            Map<ObjectId,NewVersionCommunityBindEntry> map = newVersionCommunityBindDao.getCommunityBindMap(oldEntry.getCommunityId(), userId);
+            for (ObjectId id : map.keySet()) {
+                for (GroupExamUserRecordDTO g : recordExamScoreDTOs) {
+                    if (id.equals(new ObjectId(g.getUserId()))) {
+                        listt.add(g);
+                    }
+                }
+            }
+            recordExamScoreDTOs.clear();
+            recordExamScoreDTOs.addAll(listt);
+        } 
+        
+        return recordExamScoreDTOs;
+    }
 
     public int getCompareResult(String itemOne, String itemTwo) {
         int result = 0;
@@ -1684,4 +1835,7 @@ public class ReportCardService {
     }
 
 
+    public void updateShowType(ObjectId groupExamDetailId,int showType) {
+        groupExamDetailDao.updateShowType(groupExamDetailId, showType);
+    }
 }

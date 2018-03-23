@@ -54,6 +54,13 @@ public class GroupExamDetailDao extends BaseDao{
         update(MongoFacroty.getAppDB(), Constant.COLLECTION_REPORT_CARD_GROUP_EXAM_DETAIL,
                 query,updateValue);
     }
+    
+    public void updateShowType(ObjectId groupExamDetailId,int showType) {
+        BasicDBObject query=new BasicDBObject(Constant.ID,groupExamDetailId);
+        BasicDBObject updateValue=new BasicDBObject(Constant.MONGO_SET,new BasicDBObject("sw",showType));
+        update(MongoFacroty.getAppDB(), Constant.COLLECTION_REPORT_CARD_GROUP_EXAM_DETAIL,
+                query,updateValue);
+    }
 
     public int countMySendGroupExamDetailEntries(
             ObjectId subjectId,ObjectId examTypeId,int status,

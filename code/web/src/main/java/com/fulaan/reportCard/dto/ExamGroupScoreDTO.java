@@ -15,6 +15,8 @@ public class ExamGroupScoreDTO {
     private String groupExamDetailId;
 
     private long version;
+    
+    private int showType;
 
     public ExamGroupScoreDTO(){
 
@@ -51,4 +53,14 @@ public class ExamGroupScoreDTO {
     public void setStatus(int status) {
         this.status = status;
     }
+
+    public int getShowType() {
+        return showType;
+    }
+
+    public void setShowType(int showType) {
+        this.showType = showType;
+    }
+    
+    
 }

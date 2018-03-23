@@ -16,6 +16,7 @@ public class ExamGroupDTO {
     private int qualifyScore;
     private int excellentScore;
     private String examStrTime;
+    private int showType;
 
     public ExamGroupDTO(){
 
@@ -34,6 +35,7 @@ public class ExamGroupDTO {
         detailDTO.setQualifyScore(this.qualifyScore);
         detailDTO.setExcellentScore(this.excellentScore);
         detailDTO.setExamStrTime(this.examStrTime);
+        detailDTO.setShowType(this.showType);
         return detailDTO;
     }
 
@@ -51,6 +53,16 @@ public class ExamGroupDTO {
 
     public void setGroupId(String groupId) {
         this.groupId = groupId;
+    }
+
+    
+    
+    public int getShowType() {
+        return showType;
+    }
+
+    public void setShowType(int showType) {
+        this.showType = showType;
     }
 
     public String getCommunityId() {

@@ -57,6 +57,7 @@ public class GroupExamDetailDTO {
     private double unQualifyPercent;//不合格率
     private int status;//状态 0保存 1删除 2发送（未签字）3已签字
     private boolean isOwner;
+    private int showType;
 
     public GroupExamDetailDTO(){
 
@@ -85,7 +86,7 @@ public class GroupExamDetailDTO {
         }
         return new GroupExamDetailEntry(gId,
                 cId, examTypeId, recordScoreType, uid, examName,
-                sId, maxScore, qualifyScore, excellentScore, examTime,signCount,signedCount);
+                sId, maxScore, qualifyScore, excellentScore, examTime,signCount,signedCount,showType);
     }
 
     public GroupExamDetailDTO(GroupExamDetailEntry entry){
@@ -106,6 +107,7 @@ public class GroupExamDetailDTO {
         this.signedCount=entry.getSignedCount();
         this.status=entry.getStatus();
         this.examStrTime= DateTimeUtils.convert(entry.getExamTime(),DateTimeUtils.DATE_YYYY_MM_DD);
+        this.showType = entry.getShowType();
     }
 
     public boolean isOwner() {
@@ -222,6 +224,16 @@ public class GroupExamDetailDTO {
 
     public int getUnSignCount() {
         return unSignCount;
+    }
+
+    
+    
+    public int getShowType() {
+        return showType;
+    }
+
+    public void setShowType(int showType) {
+        this.showType = showType;
     }
 
     public void setUnSignCount(int unSignCount) {

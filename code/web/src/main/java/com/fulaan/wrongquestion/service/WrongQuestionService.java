@@ -317,7 +317,7 @@ public class WrongQuestionService {
     }
 
     /**
-     * 旧大人端初次加载
+     * 旧大人端初次加载，不能删，或许哪天就得换上
      */
     public Map<String,Object> getOldGradeAndSubjectForParent(ObjectId parentId,ObjectId userId,int type2){
         Map<String,Object> map = new HashMap<String, Object>();

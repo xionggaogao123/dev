@@ -1804,7 +1804,16 @@ public class AppCommentService {
         List<String> objectIdList2 = this.getMyRoleList4(new ObjectId(str[0]), new ObjectId(dto.getAdminId()));
         entry.setAllWriterNumber(objectIdList2.size());
         List<String> objectIdList3 = newVersionBindService.getStudentIdListByCommunityId(new ObjectId(str[0]));
-        entry.setAllLoadNumber(objectIdList3.size());
+        List<ObjectId> objectIdList5 = new ArrayList<ObjectId>();
+        for(String str3 : objectIdList3){
+            objectIdList5.add(new ObjectId(str3));
+        }
+        List<UserEntry> userEntries = userService.getUserByList(objectIdList5);
+        Set<String> objectIdList6 = new HashSet<String>();
+        for(UserEntry userEntry3: userEntries){
+            objectIdList6.add(userEntry3.getID().toString());
+        }
+        entry.setAllLoadNumber(objectIdList6.size());
         appCommentDao.updEntry(entry);
         if(dto.getStatus()==0){
             List<ObjectId> objectIdList = new ArrayList<ObjectId>();

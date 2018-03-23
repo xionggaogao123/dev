@@ -698,30 +698,36 @@ public class DefaultEBusinessGoodsController extends BaseController {
     @RequestMapping("/findUser/resetPwd")
     public RespObj reSetPwd(String username, String pwd, String pwdAgain, String vCode, HttpServletRequest request) {
         RespObj obj = new RespObj(Constant.FAILD_CODE);
-        UserEntry e = userService.findByUserName(username.toLowerCase());
-        if (null == e) {
-            obj.setMessage("找不到用户");
-            return obj;
+        try{
+            UserEntry e = userService.findByUserName(username.toLowerCase());
+            if (null == e) {
+                obj.setErrorMessage("找不到用户");
+                return obj;
+            }
+            String cookieValue = getCookieValue(Constant.COOKIE_VALIDATE_CODE);
+
+            String key = CacheHandler.getKeyString(CacheHandler.CACHE_VALIDATE_CODE, cookieValue);
+
+            String rightCode = CacheHandler.getStringValue(key);
+
+            if (StringUtils.isNotBlank(vCode) && !rightCode.equalsIgnoreCase(vCode)) {
+                obj.setErrorMessage("验证码错误");
+                return obj;
+            }
+
+            try {
+                userService.update(e.getID(), "pw", MD5Utils.getMD5(pwdAgain));
+            } catch (IllegalParamException e1) {
+                EBusinessLog.error("", e1);
+            } catch (Exception e1) {
+                EBusinessLog.error("", e1);
+            }
+            obj.setMessage("修改成功");
+            obj.setCode(Constant.SUCCESS_CODE);
+        }catch (Exception e){
+            obj.setErrorMessage("修改失败");
+            obj.setCode(Constant.FAILD_CODE);
         }
-        String cookieValue = getCookieValue(Constant.COOKIE_VALIDATE_CODE);
-
-        String key = CacheHandler.getKeyString(CacheHandler.CACHE_VALIDATE_CODE, cookieValue);
-
-        String rightCode = CacheHandler.getStringValue(key);
-
-        if (StringUtils.isNotBlank(vCode) && !rightCode.equalsIgnoreCase(vCode)) {
-            obj.setMessage("验证码错误");
-            return obj;
-        }
-
-        try {
-            userService.update(e.getID(), "pw", MD5Utils.getMD5(pwdAgain));
-        } catch (IllegalParamException e1) {
-            EBusinessLog.error("", e1);
-        } catch (Exception e1) {
-            EBusinessLog.error("", e1);
-        }
-
-        return RespObj.SUCCESS;
+        return obj;
     }
 }

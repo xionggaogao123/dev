@@ -527,11 +527,13 @@ public class DefaultEBusinessGoodsController extends BaseController {
 
         if (null == ue) {
             model.put("errorMessage", "用户名错误");
+            model.put("message", "用户名错误");
             return model;
         }
 
         if (!ValidationUtils.isMobile(phoneNumber)) {
             model.put("errorMessage", "手机格式不对，非法手机");
+            model.put("message", "手机格式不对，非法手机");
             return model;
         }
 
@@ -539,17 +541,20 @@ public class DefaultEBusinessGoodsController extends BaseController {
 
         if (null != mobileEntry && !mobileEntry.getUserName().toLowerCase().equals(ue.getUserName())) {
             model.put("errorMessage", "此手机已经被占用");
+            model.put("message", "此手机已经被占用");
             return model;
         }
         String cacheKey = CacheHandler.getKeyString(CacheHandler.CACHE_SHORTMESSAGE, cacheKeyId);
         String value = CacheHandler.getStringValue(cacheKey);
         if (StringUtils.isBlank(value)) {
             model.put("errorMessage", "验证码失效或者为空，请重新获取");
+            model.put("message", "验证码失效或者为空，请重新获取");
             return model;
         }
         String[] cache = value.split(",");
         if (!cache[1].equals(phoneNumber)) {
             model.put("errorMessage", "验证失败：手机号码与验证码不匹配");
+            model.put("message", "验证失败：手机号码与验证码不匹配");
             return model;
         }
 
@@ -558,6 +563,7 @@ public class DefaultEBusinessGoodsController extends BaseController {
             model.put("code", 200);
         } else {
             model.put("errorMessage", "身份验证失败");
+            model.put("message", "身份验证失败");
         }
         return model;
     }

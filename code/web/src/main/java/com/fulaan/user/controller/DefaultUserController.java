@@ -341,6 +341,7 @@ public class DefaultUserController extends BaseController {
             Validate validate = userService.validateAccount(name, pwd,type,getPlatform());
             if (!validate.isOk()) {
                 respObj.setCode(Constant.FAILD_CODE);
+                respObj.setMessage(validate.getMessage());
                 respObj.setErrorMessage(validate.getMessage());
                 return respObj;
             }
@@ -353,6 +354,7 @@ public class DefaultUserController extends BaseController {
             respObj.setMessage(value);
         }catch (Exception e){
             respObj.setCode(Constant.FAILD_CODE);
+            respObj.setMessage("用户名或密码错误");
             respObj.setErrorMessage("用户名或密码错误");
         }
 

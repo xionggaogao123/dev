@@ -335,17 +335,28 @@ public class DefaultUserController extends BaseController {
                          @RequestParam(value="type",defaultValue = "1") int type,
                          HttpServletResponse response, HttpServletRequest request) {
         //判断用户登录平台，只对PC登录用户进行密码输入错误3次，需要验证码
-        logger.info("try login;the name=" + name + ";pwd=" + pwd);
-        Validate validate = userService.validateAccount(name, pwd,type,getPlatform());
-        if (!validate.isOk()) {
-            return RespObj.FAILD(validate.getMessage());
+        RespObj respObj = new RespObj(Constant.FAILD_CODE);
+        try{
+            logger.info("try login;the name=" + name + ";pwd=" + pwd);
+            Validate validate = userService.validateAccount(name, pwd,type,getPlatform());
+            if (!validate.isOk()) {
+                respObj.setCode(Constant.FAILD_CODE);
+                respObj.setErrorMessage(validate.getMessage());
+                return respObj;
+            }
+            UserEntry e = (UserEntry) validate.getData();
+            SessionValue value = getSessionValue(e);
+            userService.setCookieValue(e, value, getIP(), response, request);
+            businessManageService.getLoginInfo(e.getID(),getPlatform().getType());
+            syncHandleInitLogin(e, getIP(), getPlatform());
+            respObj.setCode(Constant.SUCCESS_CODE);
+            respObj.setMessage(value);
+        }catch (Exception e){
+            respObj.setCode(Constant.FAILD_CODE);
+            respObj.setErrorMessage("用户名或密码错误");
         }
-        UserEntry e = (UserEntry) validate.getData();
-        SessionValue value = getSessionValue(e);
-        userService.setCookieValue(e, value, getIP(), response, request);
-        businessManageService.getLoginInfo(e.getID(),getPlatform().getType());
-        syncHandleInitLogin(e, getIP(), getPlatform());
-        return RespObj.SUCCESS(value);
+
+        return respObj;
     }
 
     protected Platform getPlatform() {

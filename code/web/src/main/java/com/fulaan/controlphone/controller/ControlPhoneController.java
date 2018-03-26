@@ -974,8 +974,8 @@ public class ControlPhoneController extends BaseController {
             respObj.setMessage(dtos);
         }catch (Exception e){
             e.printStackTrace();
-            respObj.setCode(Constant.SUCCESS_CODE);
-            respObj.setMessage("获得所有的复兰应用的版本号信息失败");
+            respObj.setCode(Constant.FAILD_CODE);
+            respObj.setErrorMessage("获得所有的复兰应用的版本号信息失败");
         }
         return JSON.toJSONString(respObj);
     }
@@ -999,8 +999,8 @@ public class ControlPhoneController extends BaseController {
             respObj.setMessage(dtos);
         }catch (Exception e){
             e.printStackTrace();
-            respObj.setCode(Constant.SUCCESS_CODE);
-            respObj.setMessage("获得所有的第三方应用失败");
+            respObj.setCode(Constant.FAILD_CODE);
+            respObj.setErrorMessage("获得所有的第三方应用失败");
         }
         return JSON.toJSONString(respObj);
     }
@@ -1025,8 +1025,8 @@ public class ControlPhoneController extends BaseController {
             respObj.setMessage(dtos);
         }catch (Exception e){
             e.printStackTrace();
-            respObj.setCode(Constant.SUCCESS_CODE);
-            respObj.setMessage("获得操作者的所有推送记录失败");
+            respObj.setCode(Constant.FAILD_CODE);
+            respObj.setErrorMessage("获得操作者的所有推送记录失败");
         }
         return JSON.toJSONString(respObj);
     }
@@ -1051,8 +1051,8 @@ public class ControlPhoneController extends BaseController {
             respObj.setMessage(dtos);
         }catch (Exception e){
             e.printStackTrace();
-            respObj.setCode(Constant.SUCCESS_CODE);
-            respObj.setMessage("查询某个社区或孩子的推送列表失败");
+            respObj.setCode(Constant.FAILD_CODE);
+            respObj.setErrorMessage("查询某个社区或孩子的推送列表失败");
         }
         return JSON.toJSONString(respObj);
     }
@@ -1083,8 +1083,8 @@ public class ControlPhoneController extends BaseController {
 
         }catch (Exception e){
             e.printStackTrace();
-            respObj.setCode(Constant.SUCCESS_CODE);
-            respObj.setMessage("推送应用失败");
+            respObj.setCode(Constant.FAILD_CODE);
+            respObj.setErrorMessage("推送应用失败");
         }
         return JSON.toJSONString(respObj);
     }
@@ -1107,8 +1107,8 @@ public class ControlPhoneController extends BaseController {
             respObj.setMessage(map);
         }catch (Exception e){
             e.printStackTrace();
-            respObj.setCode(Constant.SUCCESS_CODE);
-            respObj.setMessage("查询某个应用的总体情况失败");
+            respObj.setCode(Constant.FAILD_CODE);
+            respObj.setErrorMessage("查询某个应用的总体情况失败");
         }
         return JSON.toJSONString(respObj);
     }
@@ -1131,12 +1131,49 @@ public class ControlPhoneController extends BaseController {
             respObj.setMessage("修改无逻辑删除字段的对象成功");
         }catch (Exception e){
             e.printStackTrace();
+            respObj.setCode(Constant.FAILD_CODE);
+            respObj.setErrorMessage("修改无逻辑删除字段的对象失败");
+        }
+        return respObj;
+    }
+
+    @ApiOperation(value = "获取班级内的最新版本信息", httpMethod = "POST", produces = "application/json")
+    @ApiResponses( value = {@ApiResponse(code = 200, message = "Successful — 请求已完成",response = String.class),
+            @ApiResponse(code = 400, message = "请求中有语法问题，或不能满足请求"),
+            @ApiResponse(code = 500, message = "服务器不能完成请求")})
+    @RequestMapping("/getCommunityVersionList")
+    @ResponseBody
+    public RespObj getCommunityVersionList(@RequestParam(value="communityId") String communityId){
+        RespObj respObj = new RespObj(Constant.FAILD_CODE);
+        try{
+            Map<String,Object> map = controlPhoneService.getCommunityVersionList(new ObjectId(communityId));
             respObj.setCode(Constant.SUCCESS_CODE);
-            respObj.setMessage("修改无逻辑删除字段的对象失败");
+            respObj.setMessage(map);
+        }catch (Exception e){
+            e.printStackTrace();
+            respObj.setCode(Constant.FAILD_CODE);
+            respObj.setErrorMessage("获取班级内的最新版本信息失败");
         }
         return respObj;
     }
 
 
+    @ApiOperation(value = "更新学生最新版本信息", httpMethod = "POST", produces = "application/json")
+    @ApiResponses( value = {@ApiResponse(code = 200, message = "Successful — 请求已完成",response = String.class),
+            @ApiResponse(code = 400, message = "请求中有语法问题，或不能满足请求"),
+            @ApiResponse(code = 500, message = "服务器不能完成请求")})
+    @RequestMapping("/addCommunityPersion")
+    @ResponseBody
+    public RespObj addCommunityPersion(@RequestParam(value="version") String version){
+        RespObj respObj = new RespObj(Constant.FAILD_CODE);
+        try{
+            controlPhoneService.addCommunityPersion(getUserId(),version);
+        }catch (Exception e){
+            e.printStackTrace();
+            respObj.setCode(Constant.FAILD_CODE);
+            respObj.setErrorMessage("更新学生最新版本信息失败");
+        }
+        return respObj;
+    }
 
 }

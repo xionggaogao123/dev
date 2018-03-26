@@ -83,6 +83,8 @@ public class ControlPhoneService {
 
     private HomeSchoolDao homeSchoolDao = new HomeSchoolDao();
 
+    private ControlVersionDao controlVersionDao = new ControlVersionDao();
+
     @Autowired
     private NewVersionBindService newVersionBindService;
     @Autowired
@@ -2960,6 +2962,63 @@ public class ControlPhoneService {
     //处理
     public void addRemoveToGroupEntry(){
         memberDao.getNoRemoveMembers();
+    }
+
+
+    //获取班级管控版本
+    public Map<String,Object> getCommunityVersionList(ObjectId communityId){
+        Map<String,Object> map = new HashMap<String, Object>();
+        List<ControlVersionDTO> dtos = new ArrayList<ControlVersionDTO>();
+        List<ControlVersionEntry> entries = controlVersionDao.getCommunityVersionList(communityId);
+        ControlVersionEntry entry = null;
+        for(ControlVersionEntry controlVersionEntry : entries){
+            if(entry ==null  && controlVersionEntry.getType()==2){
+                entry = controlVersionEntry;
+            }
+            if(entry!=null && entry.getDateTime()<controlVersionEntry.getDateTime()){
+                entry = controlVersionEntry;
+            }
+        }
+        for(ControlVersionEntry controlVersionEntry2:entries){
+            if(controlVersionEntry2.getType()==1){
+                ControlVersionDTO dto = new ControlVersionDTO(controlVersionEntry2);
+                if(controlVersionEntry2.getVersion().equals(entry.getVersion())){
+                    dto.setLevel(3);//匹配
+                }else{
+                    dto.setLevel(2);//不匹配
+                }
+                dtos.add(dto);
+            }
+
+        }
+        dtos.add(new ControlVersionDTO(entry));
+        map.put("list",dtos);
+        return map;
+    }
+
+    public void addCommunityPersion(ObjectId userId,String version){
+        ControlVersionEntry entry = controlVersionDao.getEntry(userId, 1);
+        if(entry!=null){
+            entry.setVersion(version);
+            controlVersionDao.addEntry(entry);
+        }else{
+           ControlVersionEntry controlVersionEntry = new ControlVersionEntry(null,userId,version,1);
+            controlVersionDao.addEntry(controlVersionEntry);
+        }
+    }
+
+    public void addControlVersion(ObjectId communityId,ObjectId userId,String version,int type){
+        ControlVersionEntry entry = controlVersionDao.getEntry(communityId,userId, type);
+        if(entry!=null){
+            entry.setVersion(version);
+            controlVersionDao.addEntry(entry);
+        }else{
+            ControlVersionEntry controlVersionEntry = new ControlVersionEntry(communityId,userId,version,type);
+            controlVersionDao.addEntry(controlVersionEntry);
+        }
+
+
+
     }
 
 }

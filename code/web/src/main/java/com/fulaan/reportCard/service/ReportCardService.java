@@ -565,7 +565,7 @@ public class ReportCardService {
 
         
       //个人
-        if (oldEntry.getShowType() == 0) {
+        if (oldEntry.getShowType() == 0 && !oldEntry.getUserId().equals(userId)) {
             List<GroupExamUserRecordDTO> listt = new ArrayList<GroupExamUserRecordDTO>();
             Map<ObjectId,NewVersionCommunityBindEntry> map = newVersionCommunityBindDao.getCommunityBindMap(oldEntry.getCommunityId(), userId);
             for (ObjectId id : map.keySet()) {

@@ -1093,7 +1093,7 @@ public class DefaultCommunityController extends BaseController {
                 ext.put("nickName", nickName);
                 ext.put("userId", userId.toString());
                 ext.put("joinPrivate", "YES");
-                ext.put("groupStyle","community");
+                ext.put("groupStyle","");
                 List<MemberDTO> memberDTOs = memberService.getManagers(groupId);
                 List<String> targets = new ArrayList<String>();
                 for (MemberDTO memberDTO : memberDTOs) {

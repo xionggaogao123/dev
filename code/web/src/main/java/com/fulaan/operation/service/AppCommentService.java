@@ -1497,6 +1497,9 @@ public class AppCommentService {
      * @return
      */
     public String addOperationEntry(AppOperationDTO dto){
+        if(dto.getRole()==3){
+            return this.addOperationEntryFromStrudent(dto);
+        }
         AppOperationEntry en = dto.buildAddEntry();
         //获得当前时间
         long current=System.currentTimeMillis();
@@ -1505,7 +1508,6 @@ public class AppCommentService {
         if(dto.getType()==1){
             //图片检测
             PictureRunNable.send(id, dto.getUserId(), PictureType.commentImage.getType(), 1, dto.getFileUrl());
-
         }
         AppCommentEntry entry = appCommentDao.getEntry(en.getContactId());
         //修改讨论数
@@ -1513,8 +1515,6 @@ public class AppCommentService {
             entry.setTalkNumber(entry.getTalkNumber()+1);
         }else if(en.getRole()==2){//学生讨论
             entry.setQuestionNumber(entry.getQuestionNumber()+1);
-        }else if(en.getRole()==3){//
-            entry.setLoadNumber(entry.getLoadNumber() + 1);
         }
         appCommentDao.updEntry(entry);
         return id;

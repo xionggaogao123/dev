@@ -13,12 +13,14 @@ import com.db.jiaschool.SchoolAppDao;
 import com.db.jiaschool.SchoolCommunityDao;
 import com.db.user.NewVersionBindRelationDao;
 import com.fulaan.appmarket.dto.AppDetailDTO;
+import com.fulaan.cache.CacheHandler;
 import com.fulaan.community.dto.CommunityDTO;
 import com.fulaan.controlphone.dto.*;
 import com.fulaan.mqtt.MQTTSendMsg;
 import com.fulaan.newVersionBind.service.NewVersionBindService;
 import com.fulaan.user.service.UserService;
 import com.mongodb.DBObject;
+import com.pojo.app.SessionValue;
 import com.pojo.appmarket.AppDetailEntry;
 import com.pojo.backstage.TeacherApproveEntry;
 import com.pojo.controlphone.*;
@@ -104,6 +106,10 @@ public class ControlPhoneService {
         //向学生端推送消息
         try {
             MQTTSendMsg.sendMessage(MQTTType.phone.getEname(), dto.getUserId().toString(),current);
+            SimpleDateFormat formatter = new SimpleDateFormat("yyyyMMddHHmmss");
+            String dateString = formatter.format(new Date(current));
+            String scontent = dateString + MQTTType.phone.getEname();
+            this.addControlVersion(entry.getUserId(),entry.getParentId(),scontent,2);
             controlTimeDao.delEntry(new ObjectId(dto.getUserId()),current);
         }catch (Exception e){
 
@@ -133,6 +139,10 @@ public class ControlPhoneService {
         //向学生端推送消息
         try {
             MQTTSendMsg.sendMessage(MQTTType.app.getEname(), dto.getUserId().toString(),current);
+            SimpleDateFormat formatter = new SimpleDateFormat("yyyyMMddHHmmss");
+            String dateString = formatter.format(new Date(current));
+            String scontent = dateString + MQTTType.phone.getEname();
+            this.addControlVersion(entry.getUserId(),entry.getParentId(),scontent,2);
             controlTimeDao.delEntry(new ObjectId(dto.getUserId()),current);
         }catch (Exception e){
 
@@ -199,6 +209,10 @@ public class ControlPhoneService {
             //向学生端推送消息
             try {
                 MQTTSendMsg.sendMessage(MQTTType.app.getEname(), entry.getUserId().toString(),current);
+                SimpleDateFormat formatter = new SimpleDateFormat("yyyyMMddHHmmss");
+                String dateString = formatter.format(new Date(current));
+                String scontent = dateString + MQTTType.phone.getEname();
+                this.addControlVersion(entry.getUserId(),entry.getParentId(),scontent,2);
                 controlTimeDao.delEntry(entry.getUserId(),current);
             }catch (Exception e){
 
@@ -274,6 +288,10 @@ public class ControlPhoneService {
         //向学生端推送消息
         try {
             MQTTSendMsg.sendMessageList(MQTTType.phone.getEname(),objectIdList,current);
+            SimpleDateFormat formatter = new SimpleDateFormat("yyyyMMddHHmmss");
+            String dateString = formatter.format(new Date(current));
+            String scontent = dateString + MQTTType.phone.getEname();
+            this.addControlVersion(userId,communityId,scontent,2);
             List<ObjectId> oids = new ArrayList<ObjectId>();
             for(String str : objectIdList){
                 oids.add(new ObjectId(str));
@@ -692,6 +710,9 @@ public class ControlPhoneService {
         }
         int count2=recordChatPersonalDao.countChatEntries(sonId);
         map.put("chatCount",count2);
+        //当前版本
+        ControlVersionDTO controlVersionDTO = getSimpleUserVersion(parentId, sonId);
+        map.put("version",controlVersionDTO.getVersion());
         return map;
     }
 
@@ -1446,6 +1467,10 @@ public class ControlPhoneService {
             phoneTimeDTOs.add(phoneTimeDTO);
         }
         map.put("controlList",phoneTimeDTOs);
+
+        //个人版本
+       // ControlVersionDTO controlVersionDTO = getStudentVersion(sonId);
+        //map.put("version",controlVersionDTO.getVersion());
         return map;
     }
 
@@ -2486,6 +2511,7 @@ public class ControlPhoneService {
         //向学生端推送消息
         try {
             MQTTSendMsg.sendMessageList(MQTTType.phone.getEname(),objectIdList,current);
+
             List<ObjectId> oids = new ArrayList<ObjectId>();
             for(String str : objectIdList){
                 oids.add(new ObjectId(str));
@@ -2955,6 +2981,10 @@ public class ControlPhoneService {
         if(url != null && url.contains("/static/images/community/upload.png")){
             str = str.replace("upload.png", "head_group.png");
         }
+        //http://7xiclj.com1.z0.glb.clouddn.com/585b344ade04cb0539a32724.JPG
+        if(url != null && url.contains("http://7xiclj.com1.z0.glb.clouddn.com")){
+            str = url + "-head";
+        }
         return str;
     }
 
@@ -2996,6 +3026,7 @@ public class ControlPhoneService {
         return map;
     }
 
+    //添加孩子社区管控版本
     public void addCommunityPersion(ObjectId userId,String version){
         ControlVersionEntry entry = controlVersionDao.getEntry(userId, 1);
         if(entry!=null){
@@ -3007,6 +3038,7 @@ public class ControlPhoneService {
         }
     }
 
+    //添加社区发出版本（老师和家长通用）
     public void addControlVersion(ObjectId communityId,ObjectId userId,String version,int type){
         ControlVersionEntry entry = controlVersionDao.getEntry(communityId,userId, type);
         if(entry!=null){
@@ -3016,9 +3048,51 @@ public class ControlPhoneService {
             ControlVersionEntry controlVersionEntry = new ControlVersionEntry(communityId,userId,version,type);
             controlVersionDao.addEntry(controlVersionEntry);
         }
+    }
 
+    //查询学生最新的收到版本
+    public ControlVersionDTO getStudentVersion(ObjectId userId){
+        ControlVersionEntry entry = controlVersionDao.getEntry(userId, 1);
+        if(entry!=null){
+            return new ControlVersionDTO(entry);
+        }else{
+            ControlVersionDTO dto = new ControlVersionDTO();
+            dto.setVersion("暂无数据");
+            return dto;
+        }
 
+    }
 
+    //查询社区最新的发出指令版本
+    public ControlVersionDTO getSimpleCommunityVersion(ObjectId communityId,int type){
+        ControlVersionEntry entry = controlVersionDao.getEntryByCommunityId(communityId, type);
+        return new ControlVersionDTO(entry);
+    }
+
+    //查询家长对孩子最新的发出指令版本
+    public ControlVersionDTO getSimpleUserVersion(ObjectId userId,ObjectId sonId){
+        ControlVersionEntry entry = controlVersionDao.getEntryForParent(userId, sonId, 2);
+        if(entry!=null){
+            boolean flag = false;
+            String cacheUserKey= CacheHandler.getUserKey(sonId.toString());
+            if(org.apache.commons.lang3.StringUtils.isNotEmpty(cacheUserKey)){
+                SessionValue sv = CacheHandler.getSessionValue(cacheUserKey);
+                if (null != sv && !sv.isEmpty()) {
+                    flag = true;
+                }
+            }
+            if(flag){
+                return new ControlVersionDTO(entry);
+            }else{
+                ControlVersionDTO dto = new ControlVersionDTO();
+                dto.setVersion("已退出");
+                return dto;
+            }
+
+        }
+        ControlVersionDTO dto = new ControlVersionDTO();
+        dto.setVersion("暂无数据");
+        return dto;
     }
 
 }

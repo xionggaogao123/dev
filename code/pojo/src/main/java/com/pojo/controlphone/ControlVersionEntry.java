@@ -9,7 +9,7 @@ import java.util.Date;
 /**
  * Created by James on 2018/3/22.
  * id
- * communityId   社区id           cid
+ * communityId   社区id           cid(  针对家长 孩子id  针对老师 社区id  针对孩子 null)
  * userId        用户id           uid
  * version       管控版本号       vsn
  * dateTime      时间             dtm   dtm

@@ -199,14 +199,14 @@ public class IndexPageService {
             }
 
         }
-
+        Map<String,Object> ob5 = new HashMap<String, Object>();
+        boolean flag = false;
         if(syList.size()>0){
             List<SystemMessageEntry> systemMessageEntries = systemMessageDao.selectContentList(syList);
-            int i = 1;
             for(SystemMessageEntry entry:systemMessageEntries){
                 SystemMessageDTO dto8 = new SystemMessageDTO(entry);
-                if(entry.getType()==1 && i==1){
-                    i++;
+                if(entry.getType()==1){
+                    flag = true;
                     Map<String,Object> ob1 = new HashMap<String, Object>();
                     ob1.put("tag", CommunityType.system.getDes());
                     ob1.put("cardType",2);
@@ -233,7 +233,8 @@ public class IndexPageService {
                     ob1.put("unReadCount",0);
                     ob1.put("timeExpression","");
                     ob1.put("isOwner",true);
-                    list.add(ob1);
+                    ob5 = ob1;
+                    //list.add(ob1);
                 }else if(entry.getType()==2){
                     Map<String,Object> ob1 = new HashMap<String, Object>();
                     ob1.put("tag", CommunityType.system.getDes());
@@ -275,6 +276,9 @@ public class IndexPageService {
 
                 }
             }
+        }
+        if(flag){
+            list.add(ob5);
         }
         Map<String,Object> map = new HashMap<String, Object>();
         List<Map<String,Object>> list2 = new ArrayList<Map<String, Object>>();

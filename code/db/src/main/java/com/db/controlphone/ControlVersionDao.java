@@ -45,6 +45,18 @@ public class ControlVersionDao extends BaseDao {
         return null;
     }
 
+    //家长单查询
+    public ControlVersionEntry getEntryForParent(ObjectId userId,ObjectId sonId,int type) {
+        BasicDBObject query =new BasicDBObject();
+        query.append("isr", Constant.ZERO).append("uid", userId).append("cid",sonId).append("typ",type);
+        DBObject dbo =findOne(MongoFacroty.getAppDB(), Constant.COLLECTION_CONTROL_VERSION, query, Constant.FIELDS);
+        if(null!=dbo)
+        {
+            return new ControlVersionEntry((BasicDBObject)dbo);
+        }
+        return null;
+    }
+
     //社群单查询
     public ControlVersionEntry getEntry(ObjectId communityId,ObjectId userId,int type) {
         BasicDBObject query =new BasicDBObject();
@@ -52,6 +64,18 @@ public class ControlVersionDao extends BaseDao {
         if(communityId!=null){
             query.append("cid",communityId);
         }
+        DBObject dbo =findOne(MongoFacroty.getAppDB(), Constant.COLLECTION_CONTROL_VERSION, query, Constant.FIELDS);
+        if(null!=dbo)
+        {
+            return new ControlVersionEntry((BasicDBObject)dbo);
+        }
+        return null;
+    }
+
+    //社群单查询
+    public ControlVersionEntry getEntryByCommunityId(ObjectId communityId,int type) {
+        BasicDBObject query =new BasicDBObject();
+        query.append("isr", Constant.ZERO).append("cid", communityId).append("typ",type);
         DBObject dbo =findOne(MongoFacroty.getAppDB(), Constant.COLLECTION_CONTROL_VERSION, query, Constant.FIELDS);
         if(null!=dbo)
         {

@@ -671,6 +671,7 @@ public class ReportCardService {
                 GroupExamDetailEntry detailEntry = examDetailEntryMap.get(groupExamDetailId);
                 if (null != detailEntry) {
                     GroupExamDetailDTO detailDTO = new GroupExamDetailDTO(detailEntry);
+                    detailDTO.setShowType(detailEntry.getShowType());
                     UserEntry userEntry = userEntryMap.get(recordEntry.getUserId());
                     VirtualUserEntry virtualUserEntry = virtualUserEntryMap.get(recordEntry.getUserId());
                     if (null != userEntry) {
@@ -783,6 +784,7 @@ public class ReportCardService {
         Map<ObjectId, SubjectClassEntry> subjectClassEntryMap = subjectClassDao.getSubjectClassEntryMap(new ArrayList<ObjectId>(subjectIds));
         for (GroupExamDetailEntry examDetailEntry : entries) {
             GroupExamDetailDTO detailDTO = new GroupExamDetailDTO(examDetailEntry);
+            detailDTO.setShowType(examDetailEntry.getShowType());
             detailDTO.setUnSignCount(detailDTO.getSignCount() - detailDTO.getSignedCount());
             CommunityEntry communityEntry = communityEntryMap.get(examDetailEntry.getCommunityId());
             if (null != communityEntry) {

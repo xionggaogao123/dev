@@ -339,6 +339,8 @@ public class WebHomePageService {
                 if (null != detailEntry) {
                     GroupExamDetailDTO detailDTO = new GroupExamDetailDTO(detailEntry);
                     detailDTO.setOwner(true);
+                    //展示类型 个人还是全班
+                    detailDTO.setShowType(detailEntry.getShowType());
                     UserEntry userEntry = childUserEntryMap.get(userRecordEntry.getUserId());
                     VirtualUserEntry virtualUserEntry = virtualUserEntryMap.get(userRecordEntry.getUserId());
                     if (null != userEntry) {

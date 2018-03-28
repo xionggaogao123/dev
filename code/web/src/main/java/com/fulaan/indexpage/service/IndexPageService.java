@@ -249,7 +249,7 @@ public class IndexPageService {
                     if(dto8.getContent()!=null && !dto8.getContent().equals("")){
                         ob1.put("content","恭喜您于"+dto8.getCreateTime().substring(0,11)+"日成功创建了“"
                                 + dto8.getSourceName()+"”社群，您的社群id是:"+dto8.getContent()+"，您是该班级社群的“社长”，拥有一切特权。\n 此外您后期最多可以" +
-                                "可以指定设置2位成员为“副社长”，他们也能拥有各项发帖权利。");
+                                "可以指定设置10位成员为“副社长”，他们也能拥有各项发帖权利。");
                     }else{
                         ob1.put("content","恭喜您于"+dto8.getCreateTime().substring(0,11)+"日成功创建了“"
                                 + dto8.getSourceName()+"”社群，您是该班级社群的“社长”，拥有一切特权。\n 此外您后期最多可以" +

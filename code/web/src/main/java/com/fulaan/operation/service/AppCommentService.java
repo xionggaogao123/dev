@@ -1498,6 +1498,7 @@ public class AppCommentService {
      */
     public String addOperationEntry(AppOperationDTO dto){
         if(dto.getRole()==3){
+            dto.setParentId(dto.getUserId());//自我提交
             return this.addOperationEntryFromStrudent(dto);
         }
         AppOperationEntry en = dto.buildAddEntry();

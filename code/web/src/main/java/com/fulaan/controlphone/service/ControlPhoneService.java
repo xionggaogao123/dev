@@ -3001,6 +3001,7 @@ public class ControlPhoneService {
         List<ControlVersionDTO> dtos = new ArrayList<ControlVersionDTO>();
         List<ControlVersionEntry> entries = controlVersionDao.getCommunityVersionList(communityId);
         ControlVersionEntry entry = null;
+        Map<String,ControlVersionEntry> cmap = new HashMap<String, ControlVersionEntry>();
         for(ControlVersionEntry controlVersionEntry : entries){
             if(entry ==null  && controlVersionEntry.getType()==2){
                 entry = controlVersionEntry;
@@ -3008,20 +3009,63 @@ public class ControlPhoneService {
             if(entry!=null && entry.getDateTime()<controlVersionEntry.getDateTime()){
                 entry = controlVersionEntry;
             }
+            if(controlVersionEntry.getType()==1){
+                cmap.put(controlVersionEntry.getUserId().toString(),controlVersionEntry);
+            }
         }
-        for(ControlVersionEntry controlVersionEntry2:entries){
-            if(controlVersionEntry2.getType()==1){
+        List<String> objectIdList4 = newVersionBindService.getStudentIdListByCommunityId(communityId);
+        List<UserDetailInfoDTO> unList = userService.findUserInfoByUserIds(objectIdList4);
+        for(UserDetailInfoDTO ddto:unList){
+            ControlVersionEntry controlVersionEntry2 = cmap.get(ddto.getId());
+            if(controlVersionEntry2 !=null){
                 ControlVersionDTO dto = new ControlVersionDTO(controlVersionEntry2);
+                boolean flag = false;
+                String cacheUserKey= CacheHandler.getUserKey(controlVersionEntry2.getUserId().toString());
+                if(org.apache.commons.lang3.StringUtils.isNotEmpty(cacheUserKey)){
+                    SessionValue sv = CacheHandler.getSessionValue(cacheUserKey);
+                    if (null != sv && !sv.isEmpty()) {
+                        flag = true;
+                    }
+                }
+                if(flag){
+
+                }else{
+                    dto.setVersion("已退出");
+                }
                 if(controlVersionEntry2.getVersion().equals(entry.getVersion())){
                     dto.setLevel(3);//匹配
                 }else{
                     dto.setLevel(2);//不匹配
                 }
+                dto.setUserName(ddto.getUserName());
+                dtos.add(dto);
+            }else{
+                ControlVersionDTO dto = new ControlVersionDTO();
+                dto.setUserName(ddto.getUserName());
+                dto.setVersion("暂无数据");
+                dto.setLevel(2);
+                dto.setCommunityId(communityId.toString());
+                dto.setDateTime(0l);
+                dto.setId("");
+                dto.setType(1);
+                dto.setUserId(ddto.getId());
                 dtos.add(dto);
             }
-
         }
-        dtos.add(new ControlVersionDTO(entry));
+        if(entry!=null){
+            map.put("dto",new ControlVersionDTO(entry));
+        }else{
+            ControlVersionDTO dto = new ControlVersionDTO();
+            dto.setUserName("");
+            dto.setVersion("暂无数据");
+            dto.setLevel(1);
+            dto.setCommunityId(communityId.toString());
+            dto.setDateTime(0l);
+            dto.setId("");
+            dto.setType(2);
+            dto.setUserId("");
+            map.put("dto",dto);
+        }
         map.put("list",dtos);
         return map;
     }

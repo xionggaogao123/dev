@@ -99,11 +99,46 @@ public class GroupExamUserRecordDao extends BaseDao{
                 query);
     }
 
+    public int countNewStudentReceivedEntries(
+            ObjectId subjectId,ObjectId examTypeId,int status,
+            List<ObjectId> userIds
+    ){
+        BasicDBObject query=getNewStudentReceivedEntriesQueryCondition(subjectId, examTypeId, status, userIds);
+        return count(MongoFacroty.getAppDB(), Constant.COLLECTION_REPORT_CARD_EXAM_USER_RECORD,
+                query);
+    }
+
 
     public BasicDBObject getStudentReceivedEntriesQueryCondition(ObjectId subjectId,ObjectId examTypeId,int status,
                                                                    ObjectId userId){
         BasicDBObject query=new BasicDBObject()
                 .append("uid",userId);
+        if(null!=subjectId){
+            query.append("sid",subjectId);
+        }
+
+        if(null!=examTypeId){
+            query.append("etp",examTypeId);
+        }
+        List<Integer> statuses=new ArrayList<Integer>();
+        if(status!=-1){
+            statuses.add(status);
+//            if(status==Constant.TWO){
+//                statuses.add(Constant.ZERO);
+//            }
+        }else{
+//            statuses.add(Constant.ZERO);
+            statuses.add(Constant.TWO);
+            statuses.add(Constant.THREE);
+        }
+        query.append("st",new BasicDBObject(Constant.MONGO_IN,statuses));
+        return query;
+    }
+
+    public BasicDBObject getNewStudentReceivedEntriesQueryCondition(ObjectId subjectId,ObjectId examTypeId,int status,
+                                                                 List<ObjectId> userIds){
+        BasicDBObject query=new BasicDBObject()
+                .append("uid",new BasicDBObject(Constant.MONGO_IN,userIds));
         if(null!=subjectId){
             query.append("sid",subjectId);
         }
@@ -140,6 +175,30 @@ public class GroupExamUserRecordDao extends BaseDao{
 
         List<GroupExamUserRecordEntry> entries=new ArrayList<GroupExamUserRecordEntry>();
         BasicDBObject query=getStudentReceivedEntriesQueryCondition(subjectId, examTypeId, status, userId);
+        List<DBObject> dbObjects=find(MongoFacroty.getAppDB(), Constant.COLLECTION_REPORT_CARD_EXAM_USER_RECORD,
+                query,Constant.FIELDS,Constant.MONGO_SORTBY_DESC,(page-1)*pageSize,pageSize);
+        if(null!=dbObjects&&!dbObjects.isEmpty()){
+            for(DBObject dbObject:dbObjects){
+                entries.add(new GroupExamUserRecordEntry(dbObject));
+            }
+        }
+        return entries;
+    }
+
+    /**
+     * 新学生接收到的成绩单列表
+     * @param userIds
+     * @param page
+     * @param pageSize
+     * @return
+     */
+    public List<GroupExamUserRecordEntry> getStudentIdListReceivedEntries(
+            ObjectId subjectId,ObjectId examTypeId,int status,
+            List<ObjectId> userIds,
+            int page,int pageSize){
+
+        List<GroupExamUserRecordEntry> entries=new ArrayList<GroupExamUserRecordEntry>();
+        BasicDBObject query=getNewStudentReceivedEntriesQueryCondition(subjectId, examTypeId, status, userIds);
         List<DBObject> dbObjects=find(MongoFacroty.getAppDB(), Constant.COLLECTION_REPORT_CARD_EXAM_USER_RECORD,
                 query,Constant.FIELDS,Constant.MONGO_SORTBY_DESC,(page-1)*pageSize,pageSize);
         if(null!=dbObjects&&!dbObjects.isEmpty()){

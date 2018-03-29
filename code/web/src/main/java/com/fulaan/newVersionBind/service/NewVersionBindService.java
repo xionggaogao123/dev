@@ -7,6 +7,7 @@ import com.db.fcommunity.NewVersionCommunityBindDao;
 import com.db.groupchatrecord.RecordTotalChatDao;
 import com.db.newVersionGrade.NewVersionGradeDao;
 import com.db.newVersionGrade.NewVersionSubjectDao;
+import com.db.reportCard.VirtualAndUserDao;
 import com.db.reportCard.VirtualUserDao;
 import com.db.user.*;
 import com.fulaan.backstage.service.BackStageService;
@@ -26,6 +27,7 @@ import com.pojo.fcommunity.MemberEntry;
 import com.pojo.fcommunity.NewVersionCommunityBindEntry;
 import com.pojo.groupchatrecord.RecordTotalChatEntry;
 import com.pojo.newVersionGrade.NewVersionGradeEntry;
+import com.pojo.reportCard.VirtualAndUserEntry;
 import com.pojo.reportCard.VirtualUserEntry;
 import com.pojo.user.*;
 import com.sys.constants.Constant;
@@ -76,6 +78,9 @@ public class NewVersionBindService {
     private BusinessManageDao businessManageDao = new BusinessManageDao();
 
     private VirtualUserDao virtualUserDao = new VirtualUserDao();
+
+    private VirtualAndUserDao virtualAndUserDao = new VirtualAndUserDao();
+
     @Autowired
     private UserService userService;
 
@@ -673,7 +678,26 @@ public class NewVersionBindService {
                                                 ObjectId userId,
                                                 String studentNumber,
                                                 String thirdName){
+
+         VirtualUserEntry virtualUserEntry = virtualUserDao.findByNames(communityId,thirdName,studentNumber);
+        if(virtualUserEntry!=null){ //已存在虚拟用户,进行关联绑定操作
+            VirtualAndUserEntry virtualAndUserEntry = virtualAndUserDao.getEntry(virtualUserEntry.getUserId(), communityId);
+            if(virtualAndUserEntry!=null && virtualAndUserEntry.getUserId().equals(userId)){//存在且已被该用户绑定
+                //不做操作
+            }else{//未绑定
+                //删除老记录
+                virtualAndUserDao.delEntry(userId,communityId);
+
+                //添加新纪录
+                VirtualAndUserEntry virtualAndUserEntry2 = new VirtualAndUserEntry(communityId,virtualUserEntry.getUserId(),userId);
+                virtualAndUserDao.addEntry(virtualAndUserEntry2);
+            }
+        }else{
+            //删除老记录
+            virtualAndUserDao.delEntry(userId,communityId);
+        }
         newVersionCommunityBindDao.updateStudentNumberAndThirdName(communityId,mainUserId,userId, studentNumber,thirdName);
+
     }
 
     public String saveNewVersionEntry(ObjectId bid,ObjectId userId){

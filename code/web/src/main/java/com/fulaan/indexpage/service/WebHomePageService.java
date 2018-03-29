@@ -68,9 +68,12 @@ public class WebHomePageService {
 
     private GenerateUserCodeDao generateUserCodeDao = new GenerateUserCodeDao();
 
+    private VirtualAndUserDao virtualAndUserDao = new VirtualAndUserDao();
+
     private VirtualUserDao virtualUserDao = new VirtualUserDao();
 
     private RedDotService redDotService  = new RedDotService();
+
 
     public Map<String, Long> setTime(int mode, String sTime, String eTime) throws Exception {
         Map<String, Long> retMap = new HashMap<String, Long>();
@@ -187,17 +190,28 @@ public class WebHomePageService {
 
     }
 
+    //由绑定孩子列表获得虚拟孩子列表
+    public List<ObjectId> getMyChildList(List<ObjectId> objectIds){
+        List<ObjectId> objectIdList = new ArrayList<ObjectId>();
+        Set<ObjectId> set = new HashSet<ObjectId>();
+        List<ObjectId> objectIdList1 = virtualAndUserDao.getEntryListByCommunityId(objectIds);
+        set.addAll(objectIdList1);
+        set.addAll(objectIds);
+        objectIdList.addAll(set);
+        return objectIdList;
+    }
     public Map<String,Object> gatherReportCardList(String sId,String examType,
                                                    int status,
                                                    ObjectId userId,int page,int pageSize){
         Map<String,Object> result=new HashMap<String,Object>();
         ObjectId subjectId = ObjectId.isValid(sId) ? new ObjectId(sId) : null;
         ObjectId examTypeId= ObjectId.isValid(examType) ? new ObjectId(examType) : null;
-        List<ObjectId> receiveIds = new ArrayList<ObjectId>();
+        List<ObjectId> receiveIds2 = new ArrayList<ObjectId>();
         List<NewVersionCommunityBindEntry> bindEntries = newVersionCommunityBindDao.getEntriesByMainUserId(userId);
         for (NewVersionCommunityBindEntry bindEntry : bindEntries) {
-            receiveIds.add(bindEntry.getUserId());
+            receiveIds2.add(bindEntry.getUserId());
         }
+        List<ObjectId> receiveIds = this.getMyChildList(receiveIds2);
         List<WebHomePageEntry> entries = webHomePageDao.gatherReportCardList(receiveIds,
                 examTypeId, subjectId, status,userId, page, pageSize);
         int count=webHomePageDao.countGatherReports(receiveIds,
@@ -218,13 +232,14 @@ public class WebHomePageService {
     public Map<String, Object> getGatherEntries(ObjectId userId, int type, String subjectId, String communityId, int page, int pageSize) {
         Map<String, Object> result = new HashMap<String, Object>();
         List<WebHomePageDTO> webHomePageDTOs = new ArrayList<WebHomePageDTO>();
-        List<ObjectId> receiveIds = new ArrayList<ObjectId>();
+        List<ObjectId> receiveIds2 = new ArrayList<ObjectId>();
         if (type == Constant.NEGATIVE_ONE || type == Constant.THREE) {
             List<NewVersionCommunityBindEntry> bindEntries = newVersionCommunityBindDao.getEntriesByMainUserId(userId);
             for (NewVersionCommunityBindEntry bindEntry : bindEntries) {
-                receiveIds.add(bindEntry.getUserId());
+                receiveIds2.add(bindEntry.getUserId());
             }
         }
+        List<ObjectId> receiveIds = this.getMyChildList(receiveIds2);
         ObjectId sId = ObjectId.isValid(subjectId) ? new ObjectId(subjectId) : null;
         ObjectId cId = ObjectId.isValid(communityId) ? new ObjectId(communityId) : null;
         List<WebHomePageEntry> entries = webHomePageDao.getGatherHomePageEntries(cId, receiveIds,

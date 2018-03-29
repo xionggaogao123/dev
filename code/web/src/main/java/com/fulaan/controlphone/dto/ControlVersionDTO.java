@@ -21,6 +21,8 @@ public class ControlVersionDTO {
 
     private int level;
 
+    private String userName;
+
     public ControlVersionDTO(){
 
     }
@@ -54,6 +56,14 @@ public class ControlVersionDTO {
                 );
         return openEntry;
 
+    }
+
+    public String getUserName() {
+        return userName;
+    }
+
+    public void setUserName(String userName) {
+        this.userName = userName;
     }
 
     public String getId() {

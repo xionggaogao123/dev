@@ -953,6 +953,8 @@ public class Constant {
     public static final String COLLECTION_QUESTION_WEB_TEST = "questionwebtest";
     //已阅记录查看表
     public static final String COLLECTION_READ_BOOK = "questionreadbook";
+    //虚拟用户与孩子关联
+    public static final String COLLECTION_VIRTUAL_CONNECT = "virtualconnect";
     /**--------------------------管控--------------------------**/
 
     //管控手机号

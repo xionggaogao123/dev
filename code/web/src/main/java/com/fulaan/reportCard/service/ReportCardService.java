@@ -1,6 +1,5 @@
 package com.fulaan.reportCard.service;
 
-import com.db.factory.MongoFacroty;
 import com.db.fcommunity.CommunityDao;
 import com.db.fcommunity.MemberDao;
 import com.db.fcommunity.NewVersionCommunityBindDao;
@@ -22,7 +21,6 @@ import com.fulaan.user.service.TestTable;
 import com.fulaan.user.service.UserService;
 import com.fulaan.utils.HSSFUtils;
 import com.fulaan.wrongquestion.dto.ExamTypeDTO;
-import com.mongodb.BasicDBObject;
 import com.pojo.fcommunity.CommunityEntry;
 import com.pojo.fcommunity.NewVersionCommunityBindEntry;
 import com.pojo.indexPage.IndexPageEntry;
@@ -75,6 +73,8 @@ public class ReportCardService {
     private VirtualUserDao virtualUserDao = new VirtualUserDao();
 
     private ExamTypeDao examTypeDao = new ExamTypeDao();
+
+    private VirtualAndUserDao virtualAndUserDao = new VirtualAndUserDao();
 
     private GroupExamUserRecordDao groupExamUserRecordDao = new GroupExamUserRecordDao();
 
@@ -607,9 +607,22 @@ public class ReportCardService {
     ) {
         ObjectId suId = StringUtils.isNotBlank(subjectId) ? new ObjectId(subjectId) : null;
         ObjectId examTypeId = StringUtils.isNotBlank(examType) ? new ObjectId(examType) : null;
-        return groupExamUserRecordDao.countStudentReceivedEntries(suId, examTypeId, status, userId);
+        //return groupExamUserRecordDao.countStudentReceivedEntries(suId, examTypeId, status, userId);
+        List<ObjectId> oids = new ArrayList<ObjectId>();
+        oids.add(userId);
+        List<ObjectId> users = this.getMyChildList(oids);
+        return groupExamUserRecordDao.countNewStudentReceivedEntries(suId, examTypeId, status, users);
     }
-
+    //由绑定孩子列表获得虚拟孩子列表
+    public List<ObjectId> getMyChildList(List<ObjectId> objectIds){
+        List<ObjectId> objectIdList = new ArrayList<ObjectId>();
+        Set<ObjectId> set = new HashSet<ObjectId>();
+        List<ObjectId> objectIdList1 = virtualAndUserDao.getEntryListByCommunityId(objectIds);
+        set.addAll(objectIdList1);
+        set.addAll(objectIds);
+        objectIdList.addAll(set);
+        return objectIdList;
+    }
     /**
      * 获取我接受的成绩单列表(学生)
      *
@@ -624,8 +637,14 @@ public class ReportCardService {
     ) {
         ObjectId suId = StringUtils.isNotBlank(subjectId) ? new ObjectId(subjectId) : null;
         ObjectId examTypeId = StringUtils.isNotBlank(examType) ? new ObjectId(examType) : null;
-        List<GroupExamUserRecordEntry> recordEntries = groupExamUserRecordDao.getStudentReceivedEntries(
+        /*List<GroupExamUserRecordEntry> recordEntries = groupExamUserRecordDao.getStudentReceivedEntries(
                 suId, examTypeId, status, userId, page, pageSize
+        );*/
+        List<ObjectId> oids = new ArrayList<ObjectId>();
+        oids.add(userId);
+        List<ObjectId> users = this.getMyChildList(oids);
+        List<GroupExamUserRecordEntry> recordEntries = groupExamUserRecordDao.getStudentIdListReceivedEntries(
+                suId, examTypeId, status, users, page, pageSize
         );
         return getGroupExamDetailDtos(recordEntries);
     }

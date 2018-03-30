@@ -429,8 +429,8 @@ public class GroupService {
     }
 
     public void saveGroupChatRecord(GroupChatRecordDTO dto)throws Exception{
-         if(dto.getChatType()==Constant.ONE&&StringUtils.isNotEmpty(dto.getEmchatId())){
-             GroupEntry groupEntry = groupDao.findByEmchatId(dto.getEmchatId());
+         if(dto.getChatType()==Constant.ONE&&StringUtils.isNotEmpty(dto.getGroupId())){
+             GroupEntry groupEntry = groupDao.findByEmchatId(dto.getGroupId());
              dto.setGroupId(groupEntry.getID().toString());
          }
          groupChatRecordDao.saveGroupRecordEntry(dto.buildEntry());

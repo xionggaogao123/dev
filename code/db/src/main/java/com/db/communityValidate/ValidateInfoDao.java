@@ -30,6 +30,7 @@ public class ValidateInfoDao extends BaseDao {
         BasicDBObject query=new BasicDBObject()
                 .append("rw",reviewId)
                 .append("ir",0);
+        query.append("uid",new BasicDBObject(Constant.MONGO_NE,null));
         return count(MongoFacroty.getAppDB(), Constant.COLLECTION_FORUM_COMMUNITY_VALIDATE_INFO,query);
     }
 
@@ -38,6 +39,7 @@ public class ValidateInfoDao extends BaseDao {
         BasicDBObject query=new BasicDBObject()
                 .append("rw",reviewId)
                 .append("ir",0);
+        query.append("uid",new BasicDBObject(Constant.MONGO_NE,null));
         BasicDBObject sort=new BasicDBObject("st",1).append("_id",-1);
         List<DBObject> list=find(MongoFacroty.getAppDB(), Constant.COLLECTION_FORUM_COMMUNITY_VALIDATE_INFO,query,Constant.FIELDS,sort,(page-1)*pageSize,pageSize);
         if(null!=list&&!list.isEmpty()){

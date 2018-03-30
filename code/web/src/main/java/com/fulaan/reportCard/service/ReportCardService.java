@@ -298,6 +298,7 @@ public class ReportCardService {
 
     public List<GroupExamUserRecordDTO> searchRecordStudentScores(ObjectId groupExamDetailId, int score, int scoreLevel, int type) {
         List<GroupExamUserRecordDTO> recordExamScoreDTOs = new ArrayList<GroupExamUserRecordDTO>();
+        GroupExamDetailEntry detailEntry = groupExamDetailDao.getGroupExamDetailEntry(groupExamDetailId);
         int maxScoreLevel = 100;
         if (scoreLevel >= RecordLevelEnum.AP.getLevelScore()) {
             maxScoreLevel = 100;
@@ -348,11 +349,23 @@ public class ReportCardService {
                 userRecordDTO.setUserNumber(virtualUserEntry.getUserNumber());
                 userRecordDTO.setUserName(virtualUserEntry.getUserName());
             }
-            recordExamScoreDTOs.add(userRecordDTO);
+            if (detailEntry.getRecordScoreType() == Constant.ONE && score != -1) {
+                if (recordEntry.getScore() != -1 && recordEntry.getScore() != -2) {
+                    recordExamScoreDTOs.add(userRecordDTO);
+                }
+            } else if (detailEntry.getRecordScoreType() != Constant.ONE && scoreLevel != -1) {
+                if (recordEntry.getScoreLevel() != -1 && recordEntry.getScoreLevel() != -2) {
+                    recordExamScoreDTOs.add(userRecordDTO);
+                }
+            } else {
+                recordExamScoreDTOs.add(userRecordDTO);
+            }
+            
         }
-        GroupExamDetailEntry detailEntry = groupExamDetailDao.getGroupExamDetailEntry(groupExamDetailId);
-        List<GroupExamUserRecordDTO> list = new ArrayList<GroupExamUserRecordDTO>();
-        if (detailEntry.getRecordScoreType() == 1) {
+        
+        //List<GroupExamUserRecordDTO> list = new ArrayList<GroupExamUserRecordDTO>();
+        //注掉部分为同分排名一样
+        /*if (detailEntry.getRecordScoreType() == 1) {
           //分数排序
             Collections.sort(recordExamScoreDTOs, new Comparator<GroupExamUserRecordDTO>() {
                 @Override
@@ -406,10 +419,60 @@ public class ReportCardService {
                 }
                 list.add(recordExamScoreDTOs.get(i));
             }
+        }*/
+        
+        
+        if (detailEntry.getRecordScoreType() == Constant.ONE) {
+            Collections.sort(recordExamScoreDTOs, new Comparator<GroupExamUserRecordDTO>() {
+                @Override
+                public int compare(GroupExamUserRecordDTO o1, GroupExamUserRecordDTO o2) {
+                    if (o1.getScore() > o2.getScore()) {
+                        return -1;
+                    } else if (o1.getScore() == o2.getScore()) {
+                        return 0;
+                    } else {
+                        return 1;
+                    }
+                }
+            });
+        } else {
+            Collections.sort(recordExamScoreDTOs, new Comparator<GroupExamUserRecordDTO>() {
+                @Override
+                public int compare(GroupExamUserRecordDTO o1, GroupExamUserRecordDTO o2) {
+                    if (o1.getScoreLevel() > o2.getScoreLevel()) {
+                        return -1;
+                    } else if (o1.getScoreLevel() == o2.getScoreLevel()) {
+                        return 0;
+                    } else {
+                        return 1;
+                    }
+                }
+            });
+        }
+        int rank = 1;
+        //如果未填写或者缺考排名给-1
+        for (GroupExamUserRecordDTO dto : recordExamScoreDTOs) {
+            if (detailEntry.getRecordScoreType() == Constant.ONE) {
+                if (dto.getScore() != -1 && dto.getScore() != -2) {
+                    dto.setRank(rank);
+                    rank++;
+                } else {
+                    dto.setRank(-1);
+                }
+            } else {
+                if (dto.getScoreLevel() != -1 && dto.getScoreLevel() != -2) {
+                    dto.setRank(rank);
+                    rank++;
+                } else {
+                    dto.setRank(-1);
+                }
+            }
+            
+            
         }
         
-        recordExamScoreDTOs.clear();
-        recordExamScoreDTOs.addAll(list);
+        /*recordExamScoreDTOs.clear();
+        recordExamScoreDTOs.addAll(list);*/
         
         Collections.sort(recordExamScoreDTOs, new Comparator<GroupExamUserRecordDTO>() {
             @Override
@@ -487,8 +550,9 @@ public class ReportCardService {
             recordExamScoreDTOs.add(userRecordDTO);
         }
         GroupExamDetailEntry detailEntry = groupExamDetailDao.getGroupExamDetailEntry(groupExamDetailId);
-        List<GroupExamUserRecordDTO> list = new ArrayList<GroupExamUserRecordDTO>();
-        if (detailEntry.getRecordScoreType() == 1) {
+        //List<GroupExamUserRecordDTO> list = new ArrayList<GroupExamUserRecordDTO>();
+        //注释掉部分为同分排名一样
+        /*if (detailEntry.getRecordScoreType() == 1) {
           //分数排序
             Collections.sort(recordExamScoreDTOs, new Comparator<GroupExamUserRecordDTO>() {
                 @Override
@@ -542,10 +606,60 @@ public class ReportCardService {
                 }
                 list.add(recordExamScoreDTOs.get(i));
             }
+        }*/
+        
+        
+        if (detailEntry.getRecordScoreType() == Constant.ONE) {
+            Collections.sort(recordExamScoreDTOs, new Comparator<GroupExamUserRecordDTO>() {
+                @Override
+                public int compare(GroupExamUserRecordDTO o1, GroupExamUserRecordDTO o2) {
+                    if (o1.getScore() > o2.getScore()) {
+                        return -1;
+                    } else if (o1.getScore() == o2.getScore()) {
+                        return 0;
+                    } else {
+                        return 1;
+                    }
+                }
+            });
+        } else {
+            Collections.sort(recordExamScoreDTOs, new Comparator<GroupExamUserRecordDTO>() {
+                @Override
+                public int compare(GroupExamUserRecordDTO o1, GroupExamUserRecordDTO o2) {
+                    if (o1.getScoreLevel() > o2.getScoreLevel()) {
+                        return -1;
+                    } else if (o1.getScoreLevel() == o2.getScoreLevel()) {
+                        return 0;
+                    } else {
+                        return 1;
+                    }
+                }
+            });
+        }
+        int rank = 1;
+        //如果未填写或者缺考排名给-1
+        for (GroupExamUserRecordDTO dto : recordExamScoreDTOs) {
+            if (detailEntry.getRecordScoreType() == Constant.ONE) {
+                if (dto.getScore() != -1 && dto.getScore() != -2) {
+                    dto.setRank(rank);
+                    rank++;
+                } else {
+                    dto.setRank(-1);
+                }
+            } else {
+                if (dto.getScoreLevel() != -1 && dto.getScoreLevel() != -2) {
+                    dto.setRank(rank);
+                    rank++;
+                } else {
+                    dto.setRank(-1);
+                }
+            }
+            
+            
         }
         
-        recordExamScoreDTOs.clear();
-        recordExamScoreDTOs.addAll(list);
+        /*recordExamScoreDTOs.clear();
+        recordExamScoreDTOs.addAll(list);*/
         
         Collections.sort(recordExamScoreDTOs, new Comparator<GroupExamUserRecordDTO>() {
             @Override
@@ -1027,7 +1141,7 @@ public class ReportCardService {
                     maxScore = examScoreDTOs.get(0).getScore();
                 }
                 double minScore = 0;
-                if (examScoreDTOs.get(examScoreDTOs.size() - 1).getScore() != -1D) {
+                if (examScoreDTOs.get(examScoreDTOs.size() - 1).getScore() != -1D && examScoreDTOs.get(examScoreDTOs.size() - 1).getScore() != -2D) {
                     minScore = examScoreDTOs.get(examScoreDTOs.size() - 1).getScore();
                 }
                 for (GroupExamUserRecordDTO dto : examScoreDTOs) {
@@ -1190,6 +1304,28 @@ public class ReportCardService {
                     detailDTO.setdPercent(levelEvaluateEntry.getDpercent());
                 }
             }
+            //参考人数
+            int examCount = 0;
+            //未填写人数
+            int unCompleteCount = 0;
+            final List<GroupExamUserRecordEntry> recordEntries = groupExamUserRecordDao.getExamUserRecordEntries(groupExamDetailId,-1, -1, -1, 1);
+            for(GroupExamUserRecordEntry g : recordEntries) {
+                if (detailEntry.getRecordScoreType() == Constant.ONE) {
+                    if (g.getScore() != -1 ) {
+                        examCount++;
+                    } else if (g.getScore() == -2) {
+                        unCompleteCount++;
+                    }
+                } else {
+                    if (g.getScoreLevel() != -1) {
+                        examCount++;
+                    } else {
+                        unCompleteCount++;
+                    }
+                }
+            }
+            detailDTO.setExamCount(examCount);
+            detailDTO.setUnCompleteCount(unCompleteCount);
         }
         return detailDTO;
     }

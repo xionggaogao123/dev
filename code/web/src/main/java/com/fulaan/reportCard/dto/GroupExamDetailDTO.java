@@ -45,6 +45,11 @@ public class GroupExamDetailDTO {
     private double bPercent;//b率
     private double cPercent;//c率
     private double dPercent;//d率
+    
+    //参考人数
+    private int examCount;
+    //未填写人数
+    private int unCompleteCount;
 
     private int signCount;//签到总数
     private int signedCount;//已签到人数
@@ -439,4 +444,22 @@ public class GroupExamDetailDTO {
     public void setChildUserId(String childUserId) {
         this.childUserId = childUserId;
     }
+
+    public int getExamCount() {
+        return examCount;
+    }
+
+    public void setExamCount(int examCount) {
+        this.examCount = examCount;
+    }
+
+    public int getUnCompleteCount() {
+        return unCompleteCount;
+    }
+
+    public void setUnCompleteCount(int unCompleteCount) {
+        this.unCompleteCount = unCompleteCount;
+    }
+    
+    
 }

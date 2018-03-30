@@ -25,11 +25,11 @@ public class ReportCardSignDao extends BaseDao{
         save(MongoFacroty.getAppDB(), Constant.COLLECTION_REPORT_CARD_SIGN, MongoUtils.fetchDBObjectList(entries));
     }
 
-    public void updateTypeByRecordId(ObjectId userRecordId){
+    public void updateTypeByRecordId(ObjectId userRecordId,ObjectId mainUserId){
         BasicDBObject query =new BasicDBObject()
                 .append("uri",userRecordId);
         BasicDBObject updateValue = new BasicDBObject(Constant.MONGO_SET,new BasicDBObject("ty",Constant.THREE)
-                .append("sti",System.currentTimeMillis()));
+                .append("sti",System.currentTimeMillis()).append("pid",mainUserId));
         update(MongoFacroty.getAppDB(), Constant.COLLECTION_REPORT_CARD_SIGN,query,updateValue);
     }
 

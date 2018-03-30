@@ -228,9 +228,18 @@ public class DefaultPersonalCenterController extends BaseController {
         TeacherApproveEntry entry = teacherApproveDao.getEntry(new ObjectId(sv.getId()));
         if(entry != null){
             if(entry.getType()==2){
-                String oldUrl = imgpath1;
-                imgpath1 = imgpath1+"-headv1";
-                teacherApproveDao.updateEntry4(new ObjectId(sv.getId()), entry.getType(), oldUrl, imgpath1);
+                if(!imgpath1.contains("-headv1")){
+                    String oldUrl = imgpath1;
+                    imgpath1 = imgpath1+"-headv1";
+                    teacherApproveDao.updateEntry4(new ObjectId(sv.getId()), entry.getType(), oldUrl, imgpath1);
+                }else{
+                    String imagpage2 = imgpath1.replaceAll("-headv1","");
+                    String oldUrl = imagpage2;
+                    imagpage2 = imagpage2+"-headv1";
+                    teacherApproveDao.updateEntry4(new ObjectId(sv.getId()), entry.getType(), oldUrl, imagpage2);
+                    imgpath1 = imagpage2;
+                }
+
             }
         }
 

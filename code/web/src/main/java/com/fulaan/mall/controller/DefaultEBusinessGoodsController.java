@@ -526,8 +526,8 @@ public class DefaultEBusinessGoodsController extends BaseController {
         UserEntry ue = userService.findByUserName(userName);
 
         if (null == ue) {
-            model.put("errorMessage", "用户名错误");
-            model.put("message", "用户名错误");
+            model.put("errorMessage", "用户名错误或非手机号注册");
+            model.put("message", "用户名错误或非手机号注册");
             return model;
         }
 

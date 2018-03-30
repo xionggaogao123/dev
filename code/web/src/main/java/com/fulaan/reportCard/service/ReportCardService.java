@@ -22,6 +22,7 @@ import com.fulaan.user.service.UserService;
 import com.fulaan.utils.HSSFUtils;
 import com.fulaan.wrongquestion.dto.ExamTypeDTO;
 import com.pojo.fcommunity.CommunityEntry;
+import com.pojo.fcommunity.MemberEntry;
 import com.pojo.fcommunity.NewVersionCommunityBindEntry;
 import com.pojo.indexPage.IndexPageEntry;
 import com.pojo.indexPage.WebHomePageEntry;
@@ -169,12 +170,17 @@ public class ReportCardService {
     ) {
         GroupExamUserRecordEntry recordEntry = groupExamUserRecordDao.getUserRecordEntry(groupExamDetailId, userId);
         if (null == recordEntry) {
+            GroupExamDetailEntry groupExamDetailEntry = groupExamDetailDao.getEntryById(groupExamDetailId);
             groupExamUserRecordDao.pushSign(groupExamDetailId, userId);
+            //groupExamDetailEntry.setSignCount(this.getMyRoleList4(groupExamDetailEntry.getCommunityId(),groupExamDetailEntry.getUserId()));
+            //增加签字数
             groupExamDetailDao.updateSignedCount(groupExamDetailId);
+            //修改总数
+            groupExamDetailDao.updateSignCount(groupExamDetailId,this.getMyRoleList4(groupExamDetailEntry.getCommunityId(),groupExamDetailEntry.getUserId()));
             GroupExamUserRecordEntry userRecordEntry=groupExamUserRecordDao.getExamUserRecordEntry(groupExamDetailId,userId);
             if(null!=userRecordEntry) {
                 webHomePageDao.updateContactStatus(userRecordEntry.getID(), Constant.THREE, Constant.THREE);
-                reportCardSignDao.updateTypeByRecordId(userRecordEntry.getID());
+                reportCardSignDao.updateTypeByRecordId(userRecordEntry.getID(),mainUserId);
             }
 
         }
@@ -241,9 +247,13 @@ public class ReportCardService {
             if(flag){
                 signIds.add(mainUserId);
             }else {
-                unSignIds.add(mainUserId);
+                //unSignIds.add(mainUserId);
             }
         }
+        GroupExamDetailEntry groupExamDetailEntry = groupExamDetailDao.getEntryById(groupExamDetailId);
+        List<ObjectId> objectIdList =  this.getMyRoleList5(groupExamDetailEntry.getCommunityId(),groupExamDetailEntry.getUserId());
+        objectIdList.removeAll(signIds);
+        unSignIds.addAll(objectIdList);
         if(signIds.size()>0) {
             setSignValues(signIds,signTime,sign,Constant.ONE);
         }
@@ -961,7 +971,7 @@ public class ReportCardService {
         String id = dto.getId();
         dto.setUserId(userId.toString());
         dto.setSignedCount(Constant.ZERO);
-        dto.setSignCount(Constant.ZERO);
+        dto.setSignCount(this.getMyRoleList4(new ObjectId(dto.getCommunityId()),new ObjectId(dto.getUserId())));
         SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
         long examTime = dateFormat.parse(dto.getExamStrTime()).getTime();
         dto.setExamTime(examTime);
@@ -1017,7 +1027,7 @@ public class ReportCardService {
                         recordId,Constant.ZERO,System.currentTimeMillis());
                 reportCardSignDao.saveEntry(signEntry);
             }
-            groupExamDetailDao.updateSignCount(groupExamDetailId, userIds.size());
+            //groupExamDetailDao.updateSignCount(groupExamDetailId, userIds.size());
             GroupExamVersionEntry versionEntry = new GroupExamVersionEntry(groupExamDetailId, 1L);
             groupExamVersionDao.saveGroupExamVersionEntry(versionEntry);
             return groupExamDetailId.toString();
@@ -1026,7 +1036,7 @@ public class ReportCardService {
             if (null != oldEntry) {
                 GroupExamDetailEntry entry = dto.buildEntry();
                 entry.setID(new ObjectId(id));
-                entry.setSignCount(oldEntry.getSignCount());
+                //entry.setSignCount(this.getMyRoleList4(entry.getCommunityId(),entry.getUserId()));
                 entry.setSignedCount(oldEntry.getSignedCount());
                 groupExamDetailDao.saveGroupExamDetailEntry(entry);
 
@@ -1115,8 +1125,8 @@ public class ReportCardService {
             //一是分值分析 二是等第分析
             groupExamDetailDao.updateGroupExamDetailEntry(new ObjectId(groupExamDetailId), status);
             webHomePageDao.updateContactStatus(new ObjectId(groupExamDetailId), Constant.FIVE, status);
-            //更新状态
-            groupExamUserRecordDao.updateGroupExamDetailStatus(new ObjectId(groupExamDetailId), status);
+            //更新状态(编辑不该变状态)
+            //groupExamUserRecordDao.updateGroupExamDetailStatus(new ObjectId(groupExamDetailId), status);
 
             //添加红点
             if(status==2){
@@ -1268,7 +1278,8 @@ public class ReportCardService {
         GroupExamDetailEntry detailEntry = groupExamDetailDao.getGroupExamDetailEntry(groupExamDetailId);
         if (null != detailEntry) {
             detailDTO = new GroupExamDetailDTO(detailEntry);
-            detailDTO.setSignCount(this.calcuteSignCount(groupExamDetailId));
+            //detailDTO.setSignCount(this.calcuteSignCount(groupExamDetailId));
+            detailDTO.setSignCount(this.getMyRoleList4(detailEntry.getCommunityId(), detailEntry.getUserId()));
             SubjectClassEntry subjectClassEntry = subjectClassDao.getEntry(detailEntry.getSubjectId());
             if (null != subjectClassEntry) {
                 detailDTO.setSubjectName(subjectClassEntry.getName());
@@ -1304,6 +1315,7 @@ public class ReportCardService {
                     detailDTO.setdPercent(levelEvaluateEntry.getDpercent());
                 }
             }
+            groupExamDetailDao.updateSignCount(groupExamDetailId, this.getMyRoleList4(detailEntry.getCommunityId(),detailEntry.getUserId()));
             //参考人数
             int examCount = 0;
             //未填写人数
@@ -1327,6 +1339,7 @@ public class ReportCardService {
             detailDTO.setExamCount(examCount);
             detailDTO.setUnCompleteCount(unCompleteCount);
         }
+
         return detailDTO;
     }
     
@@ -1350,7 +1363,39 @@ public class ReportCardService {
         }
         return i;
     }
-    
+
+    /**
+     * 返回社群中不是我的用户idString
+     */
+    public int getMyRoleList4(ObjectId id,ObjectId userId){
+        //获得groupId
+        ObjectId obj =   communityDao.getGroupIdByCommunityId(id);
+        List<MemberEntry> olist = memberDao.getMembers(obj, 1, 1000);
+        List<String> clist = new ArrayList<String>();
+        if(olist.size()>0){
+            for(MemberEntry en : olist){
+                if(!en.getUserId().toString().equals(userId.toString())){
+                    clist.add(en.getUserId().toString());
+                }
+            }
+        }
+        return clist.size();
+    }
+
+    public  List<ObjectId> getMyRoleList5(ObjectId id,ObjectId userId){
+        //获得groupId
+        ObjectId obj =   communityDao.getGroupIdByCommunityId(id);
+        List<MemberEntry> olist = memberDao.getMembers(obj, 1, 1000);
+        List<ObjectId> clist = new ArrayList<ObjectId>();
+        if(olist.size()>0){
+            for(MemberEntry en : olist){
+                if(!en.getUserId().toString().equals(userId.toString())){
+                    clist.add(en.getUserId());
+                }
+            }
+        }
+        return clist;
+    }
     /**
      * 
      *〈简述〉

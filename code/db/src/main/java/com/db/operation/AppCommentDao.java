@@ -423,7 +423,25 @@ public class AppCommentDao extends BaseDao {
         ilist.add(0);
         BasicDBObject query = new BasicDBObject()
                 .append("rid",new BasicDBObject(Constant.MONGO_IN,userIds))
-                .append("aid",new BasicDBObject(Constant.MONGO_NE,adminId))
+                .append("aid", new BasicDBObject(Constant.MONGO_NE, adminId))
+                .append("sta", new BasicDBObject(Constant.MONGO_IN,ilist))
+                .append("isr", 0); // 未删除
+        int count =
+                count(MongoFacroty.getAppDB(),
+                        Constant.COLLECTION_APP_COMMENT,
+                        query);
+        return count;
+    }
+    /**
+     * 符合搜索条件的对象个数
+     * @return
+     */
+    public int getNewPageNumber(List<ObjectId> userIds) {
+        List<Integer> ilist = new ArrayList<Integer>();
+        ilist.add(1);
+        ilist.add(0);
+        BasicDBObject query = new BasicDBObject()
+                .append("rid",new BasicDBObject(Constant.MONGO_IN,userIds))
                 .append("sta", new BasicDBObject(Constant.MONGO_IN,ilist))
                 .append("isr", 0); // 未删除
         int count =

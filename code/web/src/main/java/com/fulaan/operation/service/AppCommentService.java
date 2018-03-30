@@ -846,7 +846,8 @@ public class AppCommentService {
                 }
             }
             List<AppCommentEntry> entries3 = appCommentDao.selectAllPageDateList(dlist, page, pageSize);
-            count = appCommentDao.getPageNumber(dlist, userId);
+            count = appCommentDao.getNewPageNumber(dlist);
+            count = count + entries1.size();
             List<ObjectId> idList = new ArrayList<ObjectId>();
             entries.addAll(entries1);
             entries.addAll(entries3);

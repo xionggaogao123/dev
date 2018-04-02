@@ -19,6 +19,7 @@ import com.fulaan.pojo.User;
 import com.fulaan.reportCard.dto.*;
 import com.fulaan.user.service.TestTable;
 import com.fulaan.user.service.UserService;
+import com.fulaan.utils.CollectionUtil;
 import com.fulaan.utils.HSSFUtils;
 import com.fulaan.wrongquestion.dto.ExamTypeDTO;
 import com.pojo.fcommunity.CommunityEntry;
@@ -35,6 +36,8 @@ import com.sys.constants.Constant;
 import com.sys.utils.AvatarUtils;
 import com.sys.utils.DateTimeUtils;
 import com.sys.utils.QiniuFileUtils;
+
+import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.poi.hssf.usermodel.*;
 import org.apache.poi.ss.usermodel.Cell;
@@ -958,6 +961,23 @@ public class ReportCardService {
         }
         return groupExamDetailDTOs;
     }
+    
+    /**
+     * 
+     *〈简述〉是否有虚拟学生
+     *〈详细描述〉
+     * @author Administrator
+     * @param groupExamDetailId 成绩单id
+     * @return
+     */
+    public boolean isHaveRecordEntries(String communityId) {
+        boolean flag = true;
+        List<VirtualUserEntry> virtualUserEntries=virtualUserDao.getAllVirtualUsers(new ObjectId(communityId));
+        if (CollectionUtils.isEmpty(virtualUserEntries)) {
+            flag = false;
+        }
+        return flag;
+    }
 
     /**
      * 保存新建的考试
@@ -1065,6 +1085,8 @@ public class ReportCardService {
     public void increaseVersion(ObjectId groupExamDetailId) {
         groupExamVersionDao.increaseVersion(groupExamDetailId);
     }
+    
+    
 
     /**
      * 保存成绩列表

@@ -1326,13 +1326,15 @@ public class ReportCardService {
                 if (detailEntry.getRecordScoreType() == Constant.ONE) {
                     if (g.getScore() != -1 ) {
                         examCount++;
-                    } else if (g.getScore() == -2) {
+                    } 
+                    if (g.getScore() == -2) {
                         unCompleteCount++;
                     }
                 } else {
                     if (g.getScoreLevel() != -1) {
                         examCount++;
-                    } else {
+                    } 
+                    if (g.getScoreLevel() == -2) {
                         unCompleteCount++;
                     }
                 }

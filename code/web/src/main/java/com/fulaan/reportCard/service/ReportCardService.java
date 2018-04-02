@@ -1124,8 +1124,9 @@ public class ReportCardService {
             //数据分析:分为两种
             //一是分值分析 二是等第分析
             groupExamDetailDao.updateGroupExamDetailEntry(new ObjectId(groupExamDetailId), status);
+            //更新状态(改为保存改变状态)
+
             webHomePageDao.updateContactStatus(new ObjectId(groupExamDetailId), Constant.FIVE, status);
-            //更新状态(编辑不该变状态)
             //groupExamUserRecordDao.updateGroupExamDetailStatus(new ObjectId(groupExamDetailId), status);
 
             //添加红点

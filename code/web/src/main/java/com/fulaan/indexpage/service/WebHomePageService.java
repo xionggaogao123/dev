@@ -385,7 +385,11 @@ public class WebHomePageService {
                     if (null != mainUserEntry) {
                         detailDTO.setUserName(org.apache.commons.lang3.StringUtils.isNotBlank(mainUserEntry.getNickName())?mainUserEntry.getNickName():mainUserEntry.getUserName());
                     }
-                    detailDTO.setStatus(userRecordEntry.getStatus());
+                    if(userRecordEntry.getStatus()!=3){//没有签到都是未签到
+                        detailDTO.setStatus(2);
+                    }else{
+                        detailDTO.setStatus(userRecordEntry.getStatus());
+                    }
                     detailDTO.setSingleScoreId(userRecordEntry.getID().toString());
                     detailDTOs.add(detailDTO);
                 }

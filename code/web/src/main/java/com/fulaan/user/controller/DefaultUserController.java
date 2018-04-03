@@ -1995,7 +1995,7 @@ public class DefaultUserController extends BaseController {
     public RespObj letChildLogin(@ObjectIdType ObjectId userId){
         RespObj respObj = new RespObj(Constant.FAILD_CODE);
         try{
-            userService.letChildLogin(userId);
+            userService.letChildLogin(userId,getUserId());
             respObj.setCode(Constant.SUCCESS_CODE);
         }catch (Exception e){
             respObj.setErrorMessage(e.getMessage());

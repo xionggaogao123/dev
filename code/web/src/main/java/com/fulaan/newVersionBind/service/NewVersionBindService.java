@@ -1,6 +1,7 @@
 package com.fulaan.newVersionBind.service;
 
 import com.db.business.BusinessManageDao;
+import com.db.controlphone.ControlVersionDao;
 import com.db.fcommunity.CommunityDao;
 import com.db.fcommunity.MemberDao;
 import com.db.fcommunity.NewVersionCommunityBindDao;
@@ -21,6 +22,7 @@ import com.fulaan.utils.pojo.KeyValue;
 import com.fulaan.wrongquestion.dto.NewVersionGradeDTO;
 import com.fulaan.wrongquestion.service.WrongQuestionService;
 import com.pojo.app.SessionValue;
+import com.pojo.controlphone.ControlVersionEntry;
 import com.pojo.controlphone.MQTTType;
 import com.pojo.fcommunity.CommunityEntry;
 import com.pojo.fcommunity.MemberEntry;
@@ -80,6 +82,8 @@ public class NewVersionBindService {
     private VirtualUserDao virtualUserDao = new VirtualUserDao();
 
     private VirtualAndUserDao virtualAndUserDao = new VirtualAndUserDao();
+
+    private ControlVersionDao controlVersionDao = new ControlVersionDao();
 
     @Autowired
     private UserService userService;
@@ -733,7 +737,11 @@ public class NewVersionBindService {
         long current = System.currentTimeMillis();
         //向学生端推送消息
         try {
-            MQTTSendMsg.sendMessage(MQTTType.phone.getEname(), userId.toString(),current);
+            MQTTSendMsg.sendMessage(MQTTType.community.getEname(), userId.toString(),current);
+            SimpleDateFormat formatter = new SimpleDateFormat("yyyyMMddHHmmss");
+            String dateString = formatter.format(new Date(current));
+            String scontent = dateString + MQTTType.community.getEname();
+            this.addControlVersion(userId,mainUserId,scontent,2);
         }catch (Exception e){
 
         }
@@ -878,7 +886,11 @@ public class NewVersionBindService {
                 long current = System.currentTimeMillis();
                 //向学生端推送消息
                 try {
-                    MQTTSendMsg.sendMessage(MQTTType.phone.getEname(), uId,current);
+                    MQTTSendMsg.sendMessage(MQTTType.community.getEname(), uId,current);
+                    SimpleDateFormat formatter = new SimpleDateFormat("yyyyMMddHHmmss");
+                    String dateString = formatter.format(new Date(current));
+                    String scontent = dateString + MQTTType.community.getEname();
+                    this.addControlVersion(new ObjectId(uId),mainUserId,scontent,2);
                 }catch (Exception e){
 
                 }
@@ -890,6 +902,17 @@ public class NewVersionBindService {
     }
 
 
+    //添加社区发出版本（老师和家长通用）
+    public void addControlVersion(ObjectId communityId,ObjectId userId,String version,int type){
+        ControlVersionEntry entry = controlVersionDao.getEntry(communityId,userId, type);
+        if(entry!=null){
+            entry.setVersion(version);
+            controlVersionDao.addEntry(entry);
+        }else{
+            ControlVersionEntry controlVersionEntry = new ControlVersionEntry(communityId,userId,version,type);
+            controlVersionDao.addEntry(controlVersionEntry);
+        }
+    }
     public void delNewVersionEntry(ObjectId parentId,ObjectId studentId){
         newVersionBindRelationDao.delNewVersionEntry(parentId,studentId);
         //删除对应的社区绑定关系
@@ -900,6 +923,10 @@ public class NewVersionBindService {
         //向学生端推送消息
         try {
             MQTTSendMsg.sendMessage(MQTTType.login.getEname(), studentId.toString(), current);
+            SimpleDateFormat formatter = new SimpleDateFormat("yyyyMMddHHmmss");
+            String dateString = formatter.format(new Date(current));
+            String scontent = dateString + MQTTType.login.getEname();
+            this.addControlVersion(studentId,parentId,scontent,2);
         }catch (Exception e){
 
         }
@@ -937,7 +964,11 @@ public class NewVersionBindService {
             long current = System.currentTimeMillis();
             //向学生端推送消息
             try {
-                MQTTSendMsg.sendMessage(MQTTType.phone.getEname(), studentId.toString(), current);
+                MQTTSendMsg.sendMessage(MQTTType.community.getEname(), studentId.toString(), current);
+                SimpleDateFormat formatter = new SimpleDateFormat("yyyyMMddHHmmss");
+                String dateString = formatter.format(new Date(current));
+                String scontent = dateString + MQTTType.community.getEname();
+                this.addControlVersion(studentId,parentId,scontent,2);
             }catch (Exception e){
 
             }
@@ -963,7 +994,11 @@ public class NewVersionBindService {
         long current = System.currentTimeMillis();
         //向学生端推送消息
         try {
-            MQTTSendMsg.sendMessage(MQTTType.phone.getEname(), studentId.toString(),current);
+            MQTTSendMsg.sendMessage(MQTTType.community.getEname(), studentId.toString(),current);
+            SimpleDateFormat formatter = new SimpleDateFormat("yyyyMMddHHmmss");
+            String dateString = formatter.format(new Date(current));
+            String scontent = dateString + MQTTType.community.getEname();
+            this.addControlVersion(studentId,parentId,scontent,2);
         }catch (Exception e){
 
         }

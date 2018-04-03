@@ -8,7 +8,8 @@ public enum MQTTType {
     app(200,"推送app消息","200"),
     mi(300,"防沉迷设置推送", "300"),
     map(400,"地图上传", "400"),
-    login(500,"登陆退出", "500");
+    login(500,"登陆退出", "500"),
+    community(600,"社群相关", "600");
     private int type;
     private String des;
     private String eName;

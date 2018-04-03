@@ -281,7 +281,7 @@ public class ReportCardService {
             }
             User user=new User(userEntry.getUserName(),
                     userEntry.getNickName(),userEntry.getID().toString(),
-                    AvatarUtils.getAvatar2(userEntry.getAvatar(),userEntry.getRole(),userEntry.getSex()),
+                    AvatarUtils.getAvatar(userEntry.getAvatar(),userEntry.getRole(),userEntry.getSex()),
                     userEntry.getSex(), time);
             users.add(user);
         }

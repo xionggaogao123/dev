@@ -72,6 +72,28 @@ public class ControlAppResultDao extends BaseDao {
         return retList;
     }
 
+    public List<ControlAppResultEntry> getBlackIsNewEntryList(List<String> oids,ObjectId userId,long startTime,long endTime) {
+        BasicDBObject query =new BasicDBObject();
+        query.append("isr", Constant.ZERO);
+        query.append("isn", Constant.ZERO);
+        BasicDBList dblist =new BasicDBList();
+        dblist.add(new BasicDBObject("dtm", new BasicDBObject(Constant.MONGO_GTE, startTime)));
+        dblist.add(new BasicDBObject("dtm", new BasicDBObject(Constant.MONGO_LT, endTime)));
+        query.append(Constant.MONGO_AND, dblist);
+        query.append("uid",userId);
+        query.append("pnm",new BasicDBObject(Constant.MONGO_IN,oids));
+        List<DBObject> dboList=find(MongoFacroty.getAppDB(), Constant.COLLECTION_CONTROL_APP_RESULT, query, Constant.FIELDS,new BasicDBObject("utm",Constant.DESC));
+        List<ControlAppResultEntry> retList =new ArrayList<ControlAppResultEntry>();
+        if(null!=dboList && !dboList.isEmpty())
+        {
+            for(DBObject dbo:dboList)
+            {
+                retList.add(new ControlAppResultEntry((BasicDBObject)dbo));
+            }
+        }
+        return retList;
+    }
+
     //学生的实时使用时间
     public int getAllTime(ObjectId userId,long dateTime) {
         BasicDBObject query =new BasicDBObject();
@@ -121,5 +143,12 @@ public class ControlAppResultDao extends BaseDao {
         BasicDBObject query = new BasicDBObject(Constant.ID,new BasicDBObject(Constant.MONGO_IN,ids));
         BasicDBObject updateValue=new BasicDBObject(Constant.MONGO_SET,new BasicDBObject("isn",Constant.ONE));
         update(MongoFacroty.getAppDB(), Constant.COLLECTION_CONTROL_APP_RESULT, query,updateValue);
+    }
+    /**
+     * 删除
+     */
+    public void delEntry(List<ObjectId> ids) {
+        BasicDBObject query = new BasicDBObject(Constant.ID,new BasicDBObject(Constant.MONGO_IN,ids));
+        remove(MongoFacroty.getAppDB(), Constant.COLLECTION_CONTROL_APP_RESULT, query);
     }
 }

@@ -1170,12 +1170,18 @@ public class ReportCardService {
                 //不及格人数
                 int unQualifyCount = 0;
                 double maxScore = 0;
-                if (examScoreDTOs.get(0).getScore() != -1D) {
+                if (examScoreDTOs.get(0).getScore() != -1D && examScoreDTOs.get(0).getScore() != -2D) {
                     maxScore = examScoreDTOs.get(0).getScore();
                 }
                 double minScore = 0;
-                if (examScoreDTOs.get(examScoreDTOs.size() - 1).getScore() != -1D && examScoreDTOs.get(examScoreDTOs.size() - 1).getScore() != -2D) {
+                /*if (examScoreDTOs.get(examScoreDTOs.size() - 1).getScore() != -1D && examScoreDTOs.get(examScoreDTOs.size() - 1).getScore() != -2D) {
                     minScore = examScoreDTOs.get(examScoreDTOs.size() - 1).getScore();
+                }*/
+                for (int i = 0; i<examScoreDTOs.size(); i++) {
+                    if (examScoreDTOs.get(examScoreDTOs.size() - 1 - i).getScore() != -1D && examScoreDTOs.get(examScoreDTOs.size() - 1 - i).getScore() != -2D) {
+                        minScore = examScoreDTOs.get(examScoreDTOs.size() - 1 - i).getScore();
+                        break;
+                    }
                 }
                 for (GroupExamUserRecordDTO dto : examScoreDTOs) {
                     double score = dto.getScore();

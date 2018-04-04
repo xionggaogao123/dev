@@ -1059,7 +1059,7 @@ public class ReportCardService {
                 //entry.setSignCount(this.getMyRoleList4(entry.getCommunityId(),entry.getUserId()));
                 entry.setSignedCount(oldEntry.getSignedCount());
                 groupExamDetailDao.saveGroupExamDetailEntry(entry);
-
+                groupExamUserRecordDao.updateGroupExamDetailGESC(new ObjectId(id),StringUtils.isNotEmpty(dto.getGroupId()) ? new ObjectId(dto.getGroupId()) : null , StringUtils.isNotEmpty(dto.getExamType()) ? new ObjectId(dto.getExamType()) : null, StringUtils.isNotEmpty(dto.getSubjectId()) ? new ObjectId(dto.getSubjectId()) : null, StringUtils.isNotEmpty(dto.getCommunityId()) ? new ObjectId(dto.getCommunityId()) : null);
                 //查询该考试信息
                 WebHomePageEntry homePageEntry = new WebHomePageEntry(Constant.FIVE, userId,
                         StringUtils.isNotEmpty(dto.getCommunityId()) ? new ObjectId(dto.getCommunityId()) : null,

@@ -1,5 +1,10 @@
 package com.db.reportCard;
 
+import java.util.ArrayList;
+import java.util.List;
+
+import org.bson.types.ObjectId;
+
 import com.db.base.BaseDao;
 import com.db.factory.MongoFacroty;
 import com.mongodb.BasicDBObject;
@@ -7,10 +12,6 @@ import com.mongodb.DBObject;
 import com.pojo.reportCard.GroupExamUserRecordEntry;
 import com.pojo.utils.MongoUtils;
 import com.sys.constants.Constant;
-import org.bson.types.ObjectId;
-
-import java.util.ArrayList;
-import java.util.List;
 
 /**
  * Created by scott on 2017/9/30.
@@ -314,6 +315,13 @@ public class GroupExamUserRecordDao extends BaseDao{
         BasicDBObject query=new BasicDBObject()
                 .append("eid",groupExamDetailId);
         BasicDBObject updateValue=new BasicDBObject(Constant.MONGO_SET,new BasicDBObject("st",status));
+        update(MongoFacroty.getAppDB(), Constant.COLLECTION_REPORT_CARD_EXAM_USER_RECORD,query,updateValue);
+    }
+    
+    public void updateGroupExamDetailGESC(ObjectId groupExamDetailId, ObjectId groupId,ObjectId examType,ObjectId subjectId,ObjectId communityId) {
+        BasicDBObject query=new BasicDBObject()
+            .append("eid",groupExamDetailId);
+        BasicDBObject updateValue=new BasicDBObject(Constant.MONGO_SET,new BasicDBObject("gid",groupId).append("etp", examType).append("sid", subjectId).append("cmId", communityId));
         update(MongoFacroty.getAppDB(), Constant.COLLECTION_REPORT_CARD_EXAM_USER_RECORD,query,updateValue);
     }
 

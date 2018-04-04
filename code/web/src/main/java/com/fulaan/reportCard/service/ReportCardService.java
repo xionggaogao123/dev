@@ -312,6 +312,9 @@ public class ReportCardService {
     public List<GroupExamUserRecordDTO> searchRecordStudentScores(ObjectId groupExamDetailId, int score, int scoreLevel, int type) {
         List<GroupExamUserRecordDTO> recordExamScoreDTOs = new ArrayList<GroupExamUserRecordDTO>();
         GroupExamDetailEntry detailEntry = groupExamDetailDao.getGroupExamDetailEntry(groupExamDetailId);
+        if(detailEntry==null) {
+            return recordExamScoreDTOs;
+        }
         int maxScoreLevel = 100;
         if (scoreLevel >= RecordLevelEnum.AP.getLevelScore()) {
             maxScoreLevel = 100;

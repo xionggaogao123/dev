@@ -436,6 +436,45 @@ public class ControlPhoneController extends BaseController {
     }
 
 
+    /**
+     * 定时获取孩子黑名单应用使用情况（家长）
+     */
+    @ApiOperation(value = "定时获取孩子黑名单应用使用情况（家长）", httpMethod = "POST", produces = "application/json")
+    @ApiResponses( value = {@ApiResponse(code = 200, message = "Successful — 请求已完成",response = String.class),
+            @ApiResponse(code = 400, message = "请求中有语法问题，或不能满足请求"),
+            @ApiResponse(code = 500, message = "服务器不能完成请求")})
+    @RequestMapping("/seacherBlackAppResultList")
+    @ResponseBody
+    public String seacherBlackAppResultList(@ApiParam(name = "sonId", required = true, value = "应用使用情况list") @RequestParam("sonId") String sonId,
+                                       @ApiParam(name = "dateTime", required = true, value = "dateTime") @RequestParam("dateTime") String dateTime){
+        RespObj respObj=new RespObj(Constant.FAILD_CODE);
+        try {
+            respObj.setCode(Constant.SUCCESS_CODE);
+            long dTm = 0l;
+            if(dateTime != null && dateTime != ""){
+                dTm = DateTimeUtils.getStrToLongTime(dateTime, "yyyy-MM-dd");
+            }
+            long current = System.currentTimeMillis();
+            String str = DateTimeUtils.getLongToStrTimeTwo(current).substring(0,11);
+            long strNum = DateTimeUtils.getStrToLongTime(str, "yyyy-MM-dd");
+            Calendar calendar = Calendar.getInstance();
+            calendar.setTime(new Date(current));
+            int hour = calendar.get(Calendar.HOUR_OF_DAY);
+            if(dTm==strNum){
+                if(hour<8){
+                    dTm = dTm - 24*60*60*1000;
+                }
+            }
+            Map<String,Object> map = controlPhoneService.seacherAppResultList2(getUserId(), new ObjectId(sonId), dTm);
+            respObj.setMessage(map);
+        } catch (Exception e) {
+            e.printStackTrace();
+            respObj.setCode(Constant.FAILD_CODE);
+            respObj.setErrorMessage("定时获取孩子的应用使用情况（家长）失败!");
+        }
+        return JSON.toJSONString(respObj);
+    }
+
     //管控地图
     /**
      * 定时接受孩子的位置信息

@@ -4,6 +4,7 @@ package com.fulaan.user.service;
 import com.db.app.RegionDao;
 import com.db.backstage.SystemMessageDao;
 import com.db.backstage.UserLogResultDao;
+import com.db.controlphone.ControlVersionDao;
 import com.db.fcommunity.LoginLogDao;
 import com.db.forum.FLevelDao;
 import com.db.forum.FPostDao;
@@ -44,6 +45,7 @@ import com.pojo.app.RegionEntry;
 import com.pojo.app.SessionValue;
 import com.pojo.backstage.PictureType;
 import com.pojo.backstage.UserLogResultEntry;
+import com.pojo.controlphone.ControlVersionEntry;
 import com.pojo.controlphone.MQTTType;
 import com.pojo.ebusiness.SortType;
 import com.pojo.fcommunity.FLoginLogEntry;
@@ -75,6 +77,7 @@ import javax.servlet.http.HttpServletResponse;
 import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;
 import java.text.Collator;
+import java.text.SimpleDateFormat;
 import java.util.*;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -100,6 +103,8 @@ public class UserService extends BaseService {
     private LoginTokenDao loginTokenDao = new LoginTokenDao();
 
     private NewVersionUserRoleDao newVersionUserRoleDao = new NewVersionUserRoleDao();
+
+    private ControlVersionDao controlVersionDao = new ControlVersionDao();
 
     @Autowired
     private EBusinessVoucherService voucherService;
@@ -316,7 +321,7 @@ public class UserService extends BaseService {
      * @param userId
      * @throws Exception
      */
-    public void letChildLogin(ObjectId userId)throws Exception{
+    public void letChildLogin(ObjectId userId,ObjectId parentId)throws Exception{
         String cacheUserKey= CacheHandler.getUserKey(userId.toString());
         if(StringUtils.isNotEmpty(cacheUserKey)){
             SessionValue sv = CacheHandler.getSessionValue(cacheUserKey);
@@ -337,11 +342,28 @@ public class UserService extends BaseService {
         //向学生端推送消息
         try {
             MQTTSendMsg.sendMessage(MQTTType.login.getEname(), userId.toString(), current);
+            SimpleDateFormat formatter = new SimpleDateFormat("yyyyMMddHHmmss");
+            String dateString = formatter.format(new Date(current));
+            String scontent = dateString + MQTTType.login.getEname();
+            if(parentId!=null){
+                this.addControlVersion(userId,parentId,scontent,2);
+            }
         }catch (Exception e){
 
         }
     }
 
+    //添加社区发出版本（老师和家长通用）
+    public void addControlVersion(ObjectId communityId,ObjectId userId,String version,int type){
+        ControlVersionEntry entry = controlVersionDao.getEntry(communityId,userId, type);
+        if(entry!=null){
+            entry.setVersion(version);
+            controlVersionDao.addEntry(entry);
+        }else{
+            ControlVersionEntry controlVersionEntry = new ControlVersionEntry(communityId,userId,version,type);
+            controlVersionDao.addEntry(controlVersionEntry);
+        }
+    }
     public String filter(String content) {
         return StringUtils.replaceEach(content, KeyWordFilterUtil.split_list.toArray(new String[]{}),
                 KeyWordFilterUtil.replace_list.toArray(new String[]{}));

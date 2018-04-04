@@ -141,7 +141,7 @@ public class ControlPhoneService {
             MQTTSendMsg.sendMessage(MQTTType.app.getEname(), dto.getUserId().toString(),current);
             SimpleDateFormat formatter = new SimpleDateFormat("yyyyMMddHHmmss");
             String dateString = formatter.format(new Date(current));
-            String scontent = dateString + MQTTType.phone.getEname();
+            String scontent = dateString + MQTTType.app.getEname();
             this.addControlVersion(entry.getUserId(),entry.getParentId(),scontent,2);
             controlTimeDao.delEntry(new ObjectId(dto.getUserId()),current);
         }catch (Exception e){
@@ -211,7 +211,7 @@ public class ControlPhoneService {
                 MQTTSendMsg.sendMessage(MQTTType.app.getEname(), entry.getUserId().toString(),current);
                 SimpleDateFormat formatter = new SimpleDateFormat("yyyyMMddHHmmss");
                 String dateString = formatter.format(new Date(current));
-                String scontent = dateString + MQTTType.phone.getEname();
+                String scontent = dateString + MQTTType.app.getEname();
                 this.addControlVersion(entry.getUserId(),entry.getParentId(),scontent,2);
                 controlTimeDao.delEntry(entry.getUserId(),current);
             }catch (Exception e){
@@ -291,7 +291,7 @@ public class ControlPhoneService {
             SimpleDateFormat formatter = new SimpleDateFormat("yyyyMMddHHmmss");
             String dateString = formatter.format(new Date(current));
             String scontent = dateString + MQTTType.phone.getEname();
-            this.addControlVersion(userId,communityId,scontent,2);
+            this.addControlVersion(communityId,userId,scontent,2);
             List<ObjectId> oids = new ArrayList<ObjectId>();
             for(String str : objectIdList){
                 oids.add(new ObjectId(str));
@@ -356,6 +356,10 @@ public class ControlPhoneService {
         //向学生端推送消息
         try {
             MQTTSendMsg.sendMessage(MQTTType.app.getEname(), sonId.toString(),current);
+            SimpleDateFormat formatter = new SimpleDateFormat("yyyyMMddHHmmss");
+            String dateString = formatter.format(new Date(current));
+            String scontent = dateString + MQTTType.app.getEname();
+            this.addControlVersion(sonId,parentId,scontent,2);
             controlTimeDao.delEntry(sonId, current);
         }catch (Exception e){
 
@@ -444,6 +448,10 @@ public class ControlPhoneService {
         long current = System.currentTimeMillis();
         try {
             MQTTSendMsg.sendMessage(MQTTType.mi.getEname(), userId.toString(),current);
+            SimpleDateFormat formatter = new SimpleDateFormat("yyyyMMddHHmmss");
+            String dateString = formatter.format(new Date(current));
+            String scontent = dateString + MQTTType.mi.getEname();
+            this.addControlVersion(userId,parentId,scontent,2);
             controlTimeDao.delEntry(userId, current);
         }catch (Exception e){
 
@@ -2511,7 +2519,10 @@ public class ControlPhoneService {
         //向学生端推送消息
         try {
             MQTTSendMsg.sendMessageList(MQTTType.phone.getEname(),objectIdList,current);
-
+            SimpleDateFormat formatter = new SimpleDateFormat("yyyyMMddHHmmss");
+            String dateString = formatter.format(new Date(current));
+            String scontent = dateString + MQTTType.phone.getEname();
+            this.addControlVersion(communityId,userId,scontent,2);
             List<ObjectId> oids = new ArrayList<ObjectId>();
             for(String str : objectIdList){
                 oids.add(new ObjectId(str));
@@ -2589,6 +2600,10 @@ public class ControlPhoneService {
         //向学生端推送消息
         try {
             MQTTSendMsg.sendMessageList(MQTTType.phone.getEname(),objectIdList,current);
+            SimpleDateFormat formatter = new SimpleDateFormat("yyyyMMddHHmmss");
+            String dateString = formatter.format(new Date(current));
+            String scontent = dateString + MQTTType.phone.getEname();
+            this.addControlVersion(communityId,userId,scontent,2);
             List<ObjectId> oids = new ArrayList<ObjectId>();
             for(String str : objectIdList){
                 oids.add(new ObjectId(str));
@@ -2604,6 +2619,10 @@ public class ControlPhoneService {
         long current=System.currentTimeMillis();
         try {
             MQTTSendMsg.sendMessage(MQTTType.map.getEname(), sonId.toString(),current);
+            SimpleDateFormat formatter = new SimpleDateFormat("yyyyMMddHHmmss");
+            String dateString = formatter.format(new Date(current));
+            String scontent = dateString + MQTTType.map.getEname();
+            this.addControlVersion(sonId,userId,scontent,2);
             controlTimeDao.delEntry(sonId, current);
         }catch (Exception e){
 

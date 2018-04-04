@@ -249,7 +249,7 @@ public class TaskJob {
             if(entries.size()>0){
                 for(UserActiveRecordEntry entry:entries){
                     try {
-                        userService.letChildLogin(entry.getUserId());
+                        userService.letChildLogin(entry.getUserId(),null);
                         System.out.println("踢人成功");
                     }catch (Exception e){
                         System.out.println("该人未在登录状态");

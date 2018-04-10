@@ -7,7 +7,8 @@ package com.fulaan.user.model;
 public enum ThirdType {
 
     WECHAT(1, "wechat"),
-    QQ(2, "qq");
+    QQ(2, "qq"),
+    COUNTRY(3,"country");
 
     ThirdType(int code, String type) {
         this.code = code;
@@ -23,6 +24,8 @@ public enum ThirdType {
                 return WECHAT;
             case 2:
                 return QQ;
+            case 3:
+                return COUNTRY;
         }
         return QQ;
     }

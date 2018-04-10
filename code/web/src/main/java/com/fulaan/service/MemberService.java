@@ -88,7 +88,6 @@ public class MemberService {
         memberDao.save(entry);
     }
 
-
     public void handlerOldData(){
         int page=1;
         int pageSize=200;
@@ -408,6 +407,38 @@ public class MemberService {
                 }
             }
             memberDTOs.add(memberDTO);
+        }
+        return memberDTOs;
+    }
+
+    /**
+     * 获取除了社长全部成员
+     *
+     * @param groupId
+     * @return
+     */
+    public List<MemberDTO> getMoreGroupMembers(ObjectId groupId,ObjectId userId) {
+        List<MemberEntry> entries = memberDao.getAllMembers(groupId);
+        List<MemberDTO> memberDTOs = new ArrayList<MemberDTO>();
+        List<ObjectId> userIds=new ArrayList<ObjectId>();
+        for (MemberEntry entry : entries) {
+            userIds.add(entry.getUserId());
+        }
+        Map<ObjectId,RemarkEntry> remarkEntryMap=new HashMap<ObjectId, RemarkEntry>();
+        if(null!=userId) {
+            remarkEntryMap=remarkDao.find(userId, userIds);
+        }
+        for (MemberEntry entry : entries) {
+            MemberDTO memberDTO=new MemberDTO(entry);
+            if(null!=remarkEntryMap){
+                RemarkEntry remarkEntry=remarkEntryMap.get(entry.getUserId());
+                if(null!=remarkEntry){
+                    memberDTO.setNickName(remarkEntry.getRemark());
+                }
+            }
+            if(!memberDTO.getUserId().equals(userId.toString())){
+                memberDTOs.add(memberDTO);
+            }
         }
         return memberDTOs;
     }

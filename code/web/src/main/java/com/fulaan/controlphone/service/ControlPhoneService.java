@@ -637,7 +637,7 @@ public class ControlPhoneService {
             dtos.add(entry2);
             long hours = (atm % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60);
             long minutes = (atm % (1000 * 60 * 60)) / (1000 * 60);
-            map.put("list",dtos);
+            //map.put("list",dtos);
             String timeStr2 = "";
             if(hours != 0 ){
                 timeStr2 = timeStr2 + hours+"小时";

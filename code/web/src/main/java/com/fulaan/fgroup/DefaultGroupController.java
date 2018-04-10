@@ -211,6 +211,31 @@ public class DefaultGroupController extends BaseController {
     }
 
     /**
+     * 获取除了群主的全部成员
+     *
+     * @param emChatId
+     * @return
+     */
+    @ApiOperation(value = "获取除了群主的全部成员", httpMethod = "GET", produces = "application/json")
+    @ApiResponses( value = {@ApiResponse(code = 200, message = "Successful — 请求已完成",response = RespObj.class)})
+    @RequestMapping("/notMainMembers")
+    @ResponseBody
+    public RespObj notMainMembers(@RequestParam(value="emChatId") String emChatId) {
+        RespObj respObj = new RespObj(Constant.FAILD_CODE);
+        try{
+            ObjectId groupId = groupService.getGroupIdByChatId(emChatId);
+            List<MemberDTO> object = memberService.getMoreGroupMembers(groupId, getUserId());
+            respObj.setCode(Constant.SUCCESS_CODE);
+            respObj.setMessage(object);
+        }catch (Exception e){
+            respObj.setCode(Constant.FAILD_CODE);
+            respObj.setMessage("获取除了群主的全部成员失败");
+            e.printStackTrace();
+        }
+        return respObj;
+    }
+
+    /**
      * 群主邀请人进群
      *
      * @param emChatId 环信id
@@ -425,6 +450,97 @@ public class DefaultGroupController extends BaseController {
             groupService.asyncUpdateGroupNameByMember(new ObjectId(groupDTO.getId()));
         }
         return RespObj.SUCCESS("退出成功");
+    }
+    /**
+     * 转让群聊
+     *
+     * @param emChatId
+     * @return
+     */
+    @ApiOperation(value = "转让群聊", httpMethod = "GET", produces = "application/json")
+    @ApiResponses( value = {@ApiResponse(code = 200, message = "Successful — 请求已完成",response = RespObj.class)})
+    @RequestMapping("/transferGroup")
+    @ResponseBody
+    public RespObj transferGroup(@RequestParam(value="emChatId") String emChatId,
+                                 @RequestParam(value="userId") String userId) {
+        RespObj respObj = new RespObj(Constant.FAILD_CODE);
+        try{
+            ObjectId groupId = groupService.getGroupIdByChatId(emChatId);
+            GroupDTO groupDTO = groupService.findById(groupId,getUserId());
+            ObjectId mainUserId = getUserId();
+            if (memberService.isHead(groupId, mainUserId)) {
+                MemberDTO memberDTO = memberService.getUser(groupId,new ObjectId(userId));
+                //转让
+                if (memberDTO != null) {
+                    //环信转让群主
+                    EaseMobAPI.transferChatGroupOwner(emChatId, memberDTO.getUserId());
+                    //成员设置群主
+                    memberService.setHead(groupId, new ObjectId(memberDTO.getUserId()));
+                    //群组设置群主
+                    groupService.transferOwerId(groupId, new ObjectId(memberDTO.getUserId()));
+
+                    //设为普通
+                    memberService.unsetDeputyHead(groupId, mainUserId);
+
+                    if (groupDTO.isBindCommunity()) {
+                        communityService.transferOwner(new ObjectId(groupDTO.getCommunityId()),new ObjectId(memberDTO.getUserId()));
+                    }
+                }
+            }
+            respObj.setCode(Constant.SUCCESS_CODE);
+            respObj.setMessage("转让群聊成功");
+        }catch (Exception e){
+            respObj.setMessage("转让群聊失败");
+            respObj.setCode(Constant.FAILD_CODE);
+            e.printStackTrace();
+        }
+        return respObj;
+
+
+
+    }
+
+    /**
+     * 解散群聊
+     *
+     * @param emChatId
+     * @return
+     */
+    @ApiOperation(value = "解散群聊", httpMethod = "GET", produces = "application/json")
+    @ApiResponses( value = {@ApiResponse(code = 200, message = "Successful — 请求已完成",response = RespObj.class)})
+    @RequestMapping("/deleteGroup")
+    @ResponseBody
+    public RespObj deleteGroup(@RequestParam(value="emChatId") String emChatId) {
+        RespObj respObj = new RespObj(Constant.FAILD_CODE);
+        try{
+            ObjectId groupId = groupService.getGroupIdByChatId(emChatId);
+            GroupDTO groupDTO = groupService.findById(groupId,getUserId());
+            ObjectId userId = getUserId();
+            if (memberService.isHead(groupId, userId)) {
+                //环信删除
+                EaseMobAPI.deleteChatGroup(emChatId);
+                //成员删除
+                memberService.deleteMember(groupId, userId);
+                //群组删除
+                groupService.deleteGroup(groupId);
+                if (groupDTO.isBindCommunity()) {
+                    //社群删除
+                    communityService.setPartIncontentStatus(new ObjectId(groupDTO.getCommunityId()), userId, 1);
+                    //成绩单删除
+                    communityService.pullFromUser(new ObjectId(groupDTO.getCommunityId()), userId);
+                }
+            }
+            respObj.setCode(Constant.SUCCESS_CODE);
+            respObj.setMessage("解散群聊成功");
+        }catch (Exception e){
+            respObj.setMessage("解散群聊失败");
+            respObj.setCode(Constant.FAILD_CODE);
+            e.printStackTrace();
+        }
+        return respObj;
+
+
+
     }
 
     /**

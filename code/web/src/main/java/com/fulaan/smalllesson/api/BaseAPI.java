@@ -12,6 +12,8 @@ public class BaseAPI {
     public static final String SMALL_URL = "http://121.41.46.29";
     public static final RestTemplate restTemplate = new RestTemplate();
 
+    public static final String SERVICE_URL = "http://gateway.system.eduyun.cn:40015";
+
     /**
      * get方法
      * @param resoureUrl
@@ -31,6 +33,28 @@ public class BaseAPI {
     public static String postForObject(String resoureUrl, Object obj) {
         resoureUrl = BO_URL + resoureUrl;
         String resultStr = restTemplate.postForObject(resoureUrl, obj, String.class);
+        return resultStr;
+    }
+
+    /**
+     * 平台post方法
+     * @param resoureUrl
+     * @return
+     */
+    public static String postForToken(String resoureUrl, Object obj) {
+        resoureUrl = SERVICE_URL + resoureUrl;
+        String resultStr = restTemplate.postForObject(resoureUrl, obj, String.class);
+        return resultStr;
+    }
+
+    /**
+     * 平台get方法
+     * @param resoureUrl
+     * @return
+     */
+    public static String getForToken(String resoureUrl) {
+        resoureUrl = SERVICE_URL + resoureUrl;
+        String resultStr = restTemplate.getForObject(resoureUrl, String.class);
         return resultStr;
     }
 

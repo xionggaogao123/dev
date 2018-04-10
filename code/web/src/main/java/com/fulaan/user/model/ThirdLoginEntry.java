@@ -9,7 +9,7 @@ import org.bson.types.ObjectId;
  * <p>
  * 第三方登录Entry类
  * collectionName:thirdLogin
- * type: 第三方登录类型 1.微信  2.QQ
+ * type: 第三方登录类型 1.微信  2.QQ  3.央教馆
  * oid: open Id,第三方的唯一标示
  * uid: 用户的id
  */

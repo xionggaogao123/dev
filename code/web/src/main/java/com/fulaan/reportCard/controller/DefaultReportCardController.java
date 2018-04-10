@@ -220,10 +220,10 @@ public class DefaultReportCardController extends BaseController{
             @ApiResponse(code = 500, message = "服务器不能完成请求")})
     @RequestMapping("/sendGroupExam")
     @ResponseBody
-    public RespObj sendGroupExam(@ObjectIdType ObjectId groupExamDetailId){
+    public RespObj sendGroupExam(@ObjectIdType ObjectId groupExamDetailId, String showType){
         RespObj respObj=new RespObj(Constant.FAILD_CODE);
         try{
-            reportCardService.sendGroupExam(groupExamDetailId);
+            reportCardService.sendGroupExam(groupExamDetailId, showType);
             //保存展示类型 个人或者全班
             //reportCardService.updateShowType(groupExamDetailId, showType);
             respObj.setCode(Constant.SUCCESS_CODE);

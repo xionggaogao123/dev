@@ -62,8 +62,8 @@ public class WebHomePageDao extends BaseDao{
             BasicDBObject query1=new BasicDBObject("ty",Constant.FIVE)
                     .append("uid",userId);
             values.add(query1);
-            BasicDBObject query2=new BasicDBObject("ty",Constant.THREE)
-                    .append("uid",new BasicDBObject(Constant.MONGO_NE,userId));
+            BasicDBObject query2=new BasicDBObject("ty",Constant.THREE);
+                    //.append("uid",new BasicDBObject(Constant.MONGO_NE,userId));
             query2.append("rid",new BasicDBObject(Constant.MONGO_IN,receiveIds));
             if(status==Constant.NEGATIVE_ONE){
                 List<Integer> statuses= new ArrayList<Integer>();

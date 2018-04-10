@@ -199,10 +199,10 @@ public class ReportCardController extends BaseController {
             @ApiResponse(code = 500, message = "服务器不能完成请求")})
     @RequestMapping("/sendGroupExam")
     @ResponseBody
-    public RespObj sendGroupExam(@ObjectIdType ObjectId groupExamDetailId) {
+    public RespObj sendGroupExam(@ObjectIdType ObjectId groupExamDetailId, String showType) {
         RespObj respObj = new RespObj(Constant.FAILD_CODE);
         try {
-            reportCardService.sendGroupExam(groupExamDetailId);
+            reportCardService.sendGroupExam(groupExamDetailId,showType);
             respObj.setCode(Constant.SUCCESS_CODE);
             respObj.setMessage("发送成功！");
         } catch (Exception e) {

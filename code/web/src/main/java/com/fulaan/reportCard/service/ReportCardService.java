@@ -288,8 +288,11 @@ public class ReportCardService {
     }
 
 
-    public void sendGroupExam(ObjectId groupExamDetailId) {
+    public void sendGroupExam(ObjectId groupExamDetailId, String showType) {
         groupExamDetailDao.updateGroupExamDetailEntry(groupExamDetailId, Constant.TWO);
+        if (showType != null) {
+            groupExamDetailDao.updateGroupExamDetailEntryShowType(groupExamDetailId, Integer.valueOf(showType));
+        }
         groupExamUserRecordDao.updateGroupExamDetailStatus(groupExamDetailId, Constant.TWO);
         webHomePageDao.updateContactStatus(groupExamDetailId, Constant.FIVE, Constant.TWO);
         webHomePageDao.updateReportCardStatus(groupExamDetailId,Constant.THREE, Constant.TWO);

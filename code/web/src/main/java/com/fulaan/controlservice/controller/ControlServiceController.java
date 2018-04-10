@@ -7,6 +7,7 @@ import com.fulaan.controlservice.service.ControlTokenService;
 import com.fulaan.log.service.LogService;
 import com.fulaan.school.SchoolService;
 import com.fulaan.user.service.UserService;
+import com.fulaan.util.ObjectIdPackageUtil;
 import com.pojo.app.SessionValue;
 import com.pojo.log.LogType;
 import com.pojo.user.UserEntry;
@@ -17,6 +18,7 @@ import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiResponse;
 import io.swagger.annotations.ApiResponses;
+import org.apache.commons.lang.StringUtils;
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -154,7 +156,18 @@ public class ControlServiceController extends BaseController {
         value.setAvatar(e.getAvatar());
         value.setK6kt(e.getK6KT());
         value.setUserRole(e.getRole());
-        value.setPackageCode(e.getGenerateUserCode());
+        //检查是否生成GenerateUserCode
+        if (StringUtils.isBlank(e.getGenerateUserCode())) {
+            UserEntry userEntry = userService.findById(e.getID());
+            //若code为空，则生成code
+            String packageCode = ObjectIdPackageUtil.getPackage(userEntry.getID());
+            userEntry.setGenerateUserCode(packageCode);
+            userService.addUser(userEntry);
+            //result.put("packageCode", packageCode);
+            value.setPackageCode(packageCode);
+        } else {
+            value.setPackageCode(e.getGenerateUserCode());
+        }
         try {
             //获取客户端信息
             LoginLog loginLog = new LoginLog();

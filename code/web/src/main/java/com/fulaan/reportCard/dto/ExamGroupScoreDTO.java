@@ -18,7 +18,7 @@ public class ExamGroupScoreDTO {
     
     private int showType;
     
-    //是否点发送按钮
+    //是否点发送按钮 0：实时保存 1：发送
     private int isSend;
 
     public ExamGroupScoreDTO(){

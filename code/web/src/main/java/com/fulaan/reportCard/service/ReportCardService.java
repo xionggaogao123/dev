@@ -1070,7 +1070,7 @@ public class ReportCardService {
                 WebHomePageEntry homePageEntry = new WebHomePageEntry(Constant.FIVE, userId,
                         StringUtils.isNotEmpty(dto.getCommunityId()) ? new ObjectId(dto.getCommunityId()) : null,
                         new ObjectId(id), StringUtils.isNotEmpty(dto.getSubjectId()) ? new ObjectId(dto.getSubjectId()) : null,
-                        null, null, StringUtils.isNotEmpty(dto.getExamType()) ? new ObjectId(dto.getExamType()) : null,Constant.ZERO
+                        null, null, StringUtils.isNotEmpty(dto.getExamType()) ? new ObjectId(dto.getExamType()) : null,Constant.TWO
                 );
                 WebHomePageEntry pageEntry = webHomePageDao.getWebHomePageEntry(new ObjectId(id));
                 if (null != pageEntry) {
@@ -1099,7 +1099,7 @@ public class ReportCardService {
      *
      * @param examScoreDTOs
      */
-    public void saveRecordExamScore(List<GroupExamUserRecordDTO> examScoreDTOs, int status) {
+    public void saveRecordExamScore(List<GroupExamUserRecordDTO> examScoreDTOs, int status, int isSend) {
         if (examScoreDTOs.size() > 0) {
             String groupExamDetailId = examScoreDTOs.get(0).getGroupExamDetailId();
             for (GroupExamUserRecordDTO dto : examScoreDTOs) {
@@ -1158,7 +1158,8 @@ public class ReportCardService {
             //groupExamUserRecordDao.updateGroupExamDetailStatus(new ObjectId(groupExamDetailId), status);
 
             //添加红点
-            if(status==2){
+            //发送状态下
+            if(status==2 && isSend==1){
                 redDotService.addThirdList(detailEntry.getID(),detailEntry.getCommunityId(), detailEntry.getUserId(), ApplyTypeEn.repordcard.getType());
                 PictureRunNable.addTongzhi(detailEntry.getCommunityId().toString(), detailEntry.getUserId().toString(), 6);
 
@@ -1937,7 +1938,7 @@ public class ReportCardService {
             }
         }
         if (examScoreDTOs.size() > 0) {
-            saveRecordExamScore(examScoreDTOs, Constant.ZERO);
+            saveRecordExamScore(examScoreDTOs, Constant.ZERO,0);
             increaseVersion(new ObjectId(examScoreDTOs.get(0).getGroupExamDetailId()));
         }
     }

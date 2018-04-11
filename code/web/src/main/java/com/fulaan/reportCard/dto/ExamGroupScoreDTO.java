@@ -17,6 +17,9 @@ public class ExamGroupScoreDTO {
     private long version;
     
     private int showType;
+    
+    //是否点发送按钮
+    private int isSend;
 
     public ExamGroupScoreDTO(){
 
@@ -60,6 +63,14 @@ public class ExamGroupScoreDTO {
 
     public void setShowType(int showType) {
         this.showType = showType;
+    }
+
+    public int getIsSend() {
+        return isSend;
+    }
+
+    public void setIsSend(int isSend) {
+        this.isSend = isSend;
     }
     
     

@@ -291,7 +291,7 @@ public class DefaultReportCardController extends BaseController{
                 for (ExamGroupUserScoreDTO userScoreDTO : examGroupScoreDTO.getExamGroupUserScoreDTOs()) {
                     examScoreDTOs.add(userScoreDTO.buildDTO());
                 }
-                reportCardService.saveRecordExamScore(examScoreDTOs, examGroupScoreDTO.getStatus());
+                reportCardService.saveRecordExamScore(examScoreDTOs, examGroupScoreDTO.getStatus(), examGroupScoreDTO.getIsSend());
                 reportCardService.updateVersion(new ObjectId(examGroupScoreDTO.getGroupExamDetailId()),
                         examGroupScoreDTO.getVersion());
                 reportCardService.updateShowType(new ObjectId(examGroupScoreDTO.getGroupExamDetailId()), examGroupScoreDTO.getShowType());

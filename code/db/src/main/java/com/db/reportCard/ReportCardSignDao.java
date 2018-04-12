@@ -33,6 +33,19 @@ public class ReportCardSignDao extends BaseDao{
         update(MongoFacroty.getAppDB(), Constant.COLLECTION_REPORT_CARD_SIGN,query,updateValue);
     }
 
+    public ReportCardSignEntry getUserRecordEntry(ObjectId groupExamDetailId,
+                                                       ObjectId mainUserId){
+        BasicDBObject query=new BasicDBObject()
+                .append("gei",groupExamDetailId)
+                .append("ty",Constant.THREE)
+                .append("pid",mainUserId);
+        DBObject dbObject=findOne(MongoFacroty.getAppDB(), Constant.COLLECTION_REPORT_CARD_SIGN,query,Constant.FIELDS);
+        if(null!=dbObject){
+            return new ReportCardSignEntry(dbObject);
+        }else{
+            return null;
+        }
+    }
 
     public void removeOldData(){
         remove(MongoFacroty.getAppDB(), Constant.COLLECTION_REPORT_CARD_SIGN,new BasicDBObject());

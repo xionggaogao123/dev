@@ -221,6 +221,20 @@ public class MemberDao extends BaseDao {
     }
 
     /**
+     * 批量删除讨论组成员
+     *
+     * @param groupId
+     * @param userIds
+     */
+    public void deleteMemberList(ObjectId groupId, List<ObjectId> userIds) {
+        BasicDBObject query = new BasicDBObject("grid", groupId).append("uid", new BasicDBObject(Constant.MONGO_IN,userIds));
+        BasicDBObject updateValue = new BasicDBObject("r", 1).append("rl", 0);
+        BasicDBObject update = new BasicDBObject()
+                .append(Constant.MONGO_SET, updateValue);
+        update(MongoFacroty.getAppDB(), Constant.COLLECTION_FORUM_COMMUNITY_MEMBER, query, update);
+    }
+
+    /**
      * 设置副社长
      *
      * @param membersId
@@ -611,6 +625,25 @@ public class MemberDao extends BaseDao {
             MemberEntry memberEntry = new MemberEntry(dbo);
             if(memberEntry.getCommunityId()!=null ){
                 memberEntries.add(memberEntry.getCommunityId().toString());
+            }
+        }
+        return memberEntries;
+    }
+
+
+    /**
+     * 查询所有昵称
+     *
+     */
+    public Map<ObjectId,String> getNickNameByUserIds(List<ObjectId> userIds,ObjectId groupId) {
+        BasicDBObject query = new BasicDBObject().append("uid",new BasicDBObject(Constant.MONGO_IN,userIds)).append("r", 0).append("grid",groupId);
+        BasicDBObject orderBy = new BasicDBObject().append("rl", -1).append(Constant.ID, -1);
+        Map<ObjectId,String> memberEntries = new HashMap<ObjectId, String>();
+        List<DBObject> dbObjects = find(MongoFacroty.getAppDB(), Constant.COLLECTION_FORUM_COMMUNITY_MEMBER, query, Constant.FIELDS, orderBy);
+        for (DBObject dbo : dbObjects) {
+            MemberEntry memberEntry = new MemberEntry(dbo);
+            if(memberEntry.getNickName()!=null ){
+                memberEntries.put(memberEntry.getUserId(), memberEntry.getNickName());
             }
         }
         return memberEntries;

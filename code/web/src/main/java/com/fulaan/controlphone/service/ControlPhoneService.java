@@ -626,7 +626,81 @@ public class ControlPhoneService {
                     }
                 }
             }
-            ControlAppResultDTO entry2 = new ControlAppResultDTO();
+            /*ControlAppResultDTO entry2 = new ControlAppResultDTO();
+            entry2.setAppName("其他");
+            entry2.setUserTime(dtm);
+            entry2.setDateTime("");
+            entry2.setAppId("");
+            entry2.setLogo("");
+            entry2.setParentId("");
+            entry2.setUserId("");*/
+            //dtos.add(entry2);
+            long hours = (atm % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60);
+            long minutes = (atm % (1000 * 60 * 60)) / (1000 * 60);
+            map.put("list",dtos);
+            String timeStr2 = "";
+            if(hours != 0 ){
+                timeStr2 = timeStr2 + hours+"小时";
+            }
+            if(minutes != 0){
+                timeStr2 = timeStr2 + minutes+"分钟";
+            }
+            map.put("allTime",timeStr2);
+        }else{
+            map.put("list",dtos);
+            map.put("allTime","暂未使用");
+        }
+        return map;
+    }
+
+    public Map<String,Object> seacherAppResultList3(ObjectId parentId,ObjectId sonId,long time){
+        Map<String,Object> map = new HashMap<String, Object>();
+        //防沉迷时间
+        ControlTimeEntry controlTimeEntry = controlTimeDao.getEntry(sonId, parentId);
+        long timecu = 30*60*1000;
+        if(controlTimeEntry != null){
+            timecu = controlTimeEntry.getTime();
+        }
+        long hours2 = (timecu % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60);
+        long minutes2 = (timecu % (1000 * 60 * 60)) / (1000 * 60);
+        String timeStr = "";
+        if(hours2 != 0 ){
+            timeStr = timeStr + hours2+"小时";
+        }
+        if(minutes2 != 0){
+            timeStr = timeStr + minutes2+"分钟";
+        }
+        map.put("time",timeStr);
+        long startTime = time +8*60*60*1000;
+        long endTime = time +8*60*60*1000 + 24*60*60*1000;
+        List<ControlAppResultEntry> entries = controlAppResultDao.getIsNewEntryList(sonId,startTime,endTime);
+        List<ControlAppResultDTO> dtos = new ArrayList<ControlAppResultDTO>();
+        if(entries.size()>0){
+            int i = 0;
+            long dtm = 0l;
+            long atm = 0l;
+            List<String> oid = new ArrayList<String>();
+            for(ControlAppResultEntry entry : entries){
+                if(i >2){
+                    dtm = dtm + entry.getUseTime();
+                    atm = atm + entry.getUseTime();
+                }else{
+                    oid.add(entry.getPackageName());
+                    dtos.add(new ControlAppResultDTO(entry));
+                    atm = atm + entry.getUseTime();
+                }
+                i++;
+            }
+            List<AppDetailEntry> entryList = appDetailDao.getEntriesByPackName(oid);
+            for(AppDetailEntry entry3 : entryList){
+                for(ControlAppResultDTO dto : dtos){
+                    if(entry3.getAppPackageName().equals(dto.getPackageName())){
+                        dto.setAppName(entry3.getAppName());
+                        dto.setLogo(entry3.getLogo());
+                    }
+                }
+            }
+           /* ControlAppResultDTO entry2 = new ControlAppResultDTO();
             entry2.setAppName("其他");
             entry2.setUserTime(dtm);
             entry2.setDateTime("");
@@ -634,10 +708,10 @@ public class ControlPhoneService {
             entry2.setLogo("");
             entry2.setParentId("");
             entry2.setUserId("");
-            dtos.add(entry2);
+            dtos.add(entry2);*/
             long hours = (atm % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60);
             long minutes = (atm % (1000 * 60 * 60)) / (1000 * 60);
-            //map.put("list",dtos);
+            map.put("list",dtos);
             String timeStr2 = "";
             if(hours != 0 ){
                 timeStr2 = timeStr2 + hours+"小时";
@@ -3115,11 +3189,27 @@ public class ControlPhoneService {
             if(entry!=null && entry.getDateTime()<controlVersionEntry.getDateTime()){
                 entry = controlVersionEntry;
             }
-            if(controlVersionEntry.getType()==1){
+           /* if(controlVersionEntry.getType()==1){
                 cmap.put(controlVersionEntry.getUserId().toString(),controlVersionEntry);
-            }
+            }*/
         }
         List<String> objectIdList4 = newVersionBindService.getStudentIdListByCommunityId(communityId);
+        List<ObjectId> objectIdList5 = new ArrayList<ObjectId>();
+        for(String string : objectIdList4){
+            objectIdList5.add(new ObjectId(string));
+        }
+        long current = System.currentTimeMillis()-7*24*60*60*1000;
+        List<ControlVersionEntry> entries3 = controlVersionDao.getAllStudentVersionList(objectIdList5,current);
+        for(ControlVersionEntry controlVersionEntry3 : entries3){
+            ControlVersionEntry controlVersionEntry4 = cmap.get(controlVersionEntry3.getUserId());
+            if(controlVersionEntry4!=null){
+                if(controlVersionEntry4.getDateTime()<controlVersionEntry3.getDateTime()){
+                    cmap.put(controlVersionEntry3.getUserId().toString(),controlVersionEntry3);
+                }
+            }else{
+                cmap.put(controlVersionEntry3.getUserId().toString(),controlVersionEntry3);
+            }
+        }
         List<UserDetailInfoDTO> unList = userService.findUserInfoByUserIds(objectIdList4);
         for(UserDetailInfoDTO ddto:unList){
             ControlVersionEntry controlVersionEntry2 = cmap.get(ddto.getId());
@@ -3138,12 +3228,13 @@ public class ControlPhoneService {
                 }else{
                     dto.setVersion("已退出");
                 }
-                if(controlVersionEntry2.getVersion().equals(entry.getVersion())){
+                if(entry != null && controlVersionEntry2.getVersion().equals(entry.getVersion())){
                     dto.setLevel(3);//匹配
                 }else{
                     dto.setLevel(2);//不匹配
                 }
                 dto.setUserName(ddto.getUserName());
+                dto.setDateTime(0l);
                 dtos.add(dto);
             }else{
                 ControlVersionDTO dto = new ControlVersionDTO();

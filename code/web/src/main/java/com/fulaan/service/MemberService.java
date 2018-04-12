@@ -218,6 +218,21 @@ public class MemberService {
     }
 
     /**
+     * 批量删除社区成员
+     *
+     * @param groupId
+     * @param userIds
+     */
+    public void deleteMemberList(ObjectId groupId, List<ObjectId> userIds) {
+        memberDao.deleteMemberList(groupId, userIds);
+        //剔除掉绑定关系
+        ObjectId communityId=communityDao.getCommunityIdByGroupId(groupId);
+        if(null!=communityId){
+            newVersionCommunityBindDao.removeNewVersionCommunityList(communityId,userIds);
+        }
+    }
+
+    /**
      * 判断是否是组成员
      *
      * @param userId
@@ -380,7 +395,17 @@ public class MemberService {
     public int getMemberCount(ObjectId groupId) {
         return memberDao.getMemberCount(groupId);
     }
-
+    /**
+     *
+     */
+    public List<ObjectId> getAllGroupMemberIds(ObjectId groupId) {
+        List<ObjectId> objectIdList = new ArrayList<ObjectId>();
+        List<MemberEntry> entries = memberDao.getAllMembers(groupId);
+        for (MemberEntry entry : entries) {
+            objectIdList.add(entry.getUserId());
+        }
+        return objectIdList;
+    }
     /**
      * 获取全部成员
      *

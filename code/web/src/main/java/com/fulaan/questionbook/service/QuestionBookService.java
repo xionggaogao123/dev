@@ -7,6 +7,7 @@ import com.db.fcommunity.MemberDao;
 import com.db.fcommunity.NewVersionCommunityBindDao;
 import com.db.newVersionGrade.NewVersionSubjectDao;
 import com.db.questionbook.*;
+import com.db.reportCard.VirtualAndUserDao;
 import com.db.reportCard.VirtualUserDao;
 import com.db.user.NewVersionBindRelationDao;
 import com.fulaan.picturetext.runnable.PictureRunNable;
@@ -17,6 +18,7 @@ import com.pojo.backstage.PictureType;
 import com.pojo.fcommunity.CommunityEntry;
 import com.pojo.newVersionGrade.NewVersionSubjectEntry;
 import com.pojo.questionbook.*;
+import com.pojo.reportCard.VirtualAndUserEntry;
 import com.pojo.reportCard.VirtualUserEntry;
 import com.pojo.user.UserDetailInfoDTO;
 import com.pojo.user.UserEntry;
@@ -69,6 +71,8 @@ public class QuestionBookService {
     private NewVersionSubjectDao newVersionSubjectDao = new NewVersionSubjectDao();
     @Autowired
     private UserService userService;
+
+    private VirtualAndUserDao virtualAndUserDao = new VirtualAndUserDao();
     /**
      * 添加错题
      * @param dto
@@ -831,6 +835,11 @@ public class QuestionBookService {
         map.put("list",dtoList);
         return map;
     }
+    //由虚拟孩子列表列表获得绑定孩子列表
+    public List<VirtualAndUserEntry> getMyChildList(List<ObjectId> objectIds){
+        List<VirtualAndUserEntry> objectIdList1 = virtualAndUserDao.getUserIdList(objectIds);
+        return objectIdList1;
+    }
     //群组
     public List<QuestionReadDTO> getQuestionReadDTO(ObjectId communityId,ObjectId parentId){
         List<QuestionReadDTO> dtoList = new ArrayList<QuestionReadDTO>();
@@ -842,6 +851,14 @@ public class QuestionBookService {
                 objectIdList1.add(virtualUserEntry.getUserId());
                 map3.put(virtualUserEntry.getUserId(),virtualUserEntry);
             }
+        }
+        List<VirtualAndUserEntry> receiveIds = this.getMyChildList(objectIdList1);
+        for(VirtualAndUserEntry virtualAndUserEntry:receiveIds){
+            VirtualUserEntry virtualUserEntry = map3.get(virtualAndUserEntry.getVirtualId());
+            if(virtualUserEntry!=null){
+                map3.put(virtualAndUserEntry.getUserId(),virtualUserEntry);
+            }
+            objectIdList1.add(virtualAndUserEntry.getUserId());
         }
         List<UserEntry> userEntries = userService.getUserByList(objectIdList1);
         List<ObjectId> userIds = new ArrayList<ObjectId>();

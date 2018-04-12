@@ -452,9 +452,10 @@ public class AppCommentService {
         for(AppRecordResultDTO dto1 : dtoList){
             map1.put(dto1.getUserId(),dto1);
         }
+        ObjectId groupId = communityDao.getGroupId(aen.getRecipientId());
         List<User> sign=new ArrayList<User>();
         if(objectIdList1.size()>0){
-            saveUser(sign,objectIdList1);
+            saveUser(sign,objectIdList1,groupId);
         }
         for(User user : sign){
             user.setTime(map1.get(user.getUserId()).getCreateTime());
@@ -463,7 +464,7 @@ public class AppCommentService {
         map.put("SignListNum",sign.size());
         List<User> unSign=new ArrayList<User>();
         if(oblist.size()>0){
-            saveUser(unSign,oblist);
+            saveUser(unSign,oblist,groupId);
         }
         map.put("UnSignList",unSign);
         map.put("UnSignListNum",unSign.size());
@@ -473,19 +474,25 @@ public class AppCommentService {
         return map;
     }
 
-    public void saveUser(List<User> users,List<ObjectId> userIds){
+    public void saveUser(List<User> users,List<ObjectId> userIds,ObjectId groupId){
         Map<ObjectId,UserEntry> userEntryMap=userService.getUserEntryMap(userIds, Constant.FIELDS);
+        Map<ObjectId,String>  smap = memberDao.getNickNameByUserIds(userIds,groupId);
         for(Map.Entry<ObjectId,UserEntry> userEntryEntry:userEntryMap.entrySet()){
             UserEntry userEntry=userEntryEntry.getValue();
-            User user=new User(userEntry.getUserName(),
-                    userEntry.getNickName(),
+            String name = StringUtils.isNotEmpty(userEntry.getNickName())?userEntry.getNickName():userEntry.getUserName();
+            String name2 = smap.get(userEntry.getID());
+            if(name2!=null){
+                name = name2;
+            }
+            User user=new User(name,
+                    name,
                     userEntry.getID().toString(),
                     AvatarUtils.getAvatar(userEntry.getAvatar(), userEntry.getRole(), userEntry.getSex()),
                     userEntry.getSex(),
                     "");
-            String name = StringUtils.isNotEmpty(user.getNickName())?user.getNickName():user.getUserName();
-            user.setNickName(name);
-            user.setUserName(name);
+
+            //user.setNickName(name);
+            //user.setUserName(name);
             users.add(user);
         }
     }

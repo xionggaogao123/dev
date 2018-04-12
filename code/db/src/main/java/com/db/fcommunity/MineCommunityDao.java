@@ -70,6 +70,11 @@ public class MineCommunityDao extends BaseDao {
         remove(MongoFacroty.getAppDB(), Constant.COLLECTION_FORUM_MINE_COMMUNITY, query);
     }
 
+    public void deleteList(ObjectId communityId, List<ObjectId> userIds) {
+        BasicDBObject query = new BasicDBObject().append("uid", new BasicDBObject(Constant.MONGO_IN,userIds)).append("cmid", communityId);
+        remove(MongoFacroty.getAppDB(), Constant.COLLECTION_FORUM_MINE_COMMUNITY, query);
+    }
+
     public void updateInitSort(ObjectId userId){
         List<Integer> integers=new ArrayList<Integer>();
         integers.add(0);

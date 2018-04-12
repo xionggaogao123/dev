@@ -465,7 +465,7 @@ public class ControlPhoneController extends BaseController {
                     dTm = dTm - 24*60*60*1000;
                 }
             }
-            Map<String,Object> map = controlPhoneService.seacherAppResultList2(getUserId(), new ObjectId(sonId), dTm);
+            Map<String,Object> map = controlPhoneService.seacherAppResultList3(getUserId(), new ObjectId(sonId), dTm);
             respObj.setMessage(map);
         } catch (Exception e) {
             e.printStackTrace();

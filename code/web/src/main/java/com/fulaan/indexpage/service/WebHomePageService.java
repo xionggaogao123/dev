@@ -388,7 +388,7 @@ public class WebHomePageService {
                     if(userRecordEntry.getStatus()!=3){//没有签到都是未签到
                         detailDTO.setStatus(2);
                     }else{
-                        detailDTO.setStatus(userRecordEntry.getStatus());
+                        detailDTO.setStatus(detailEntry.getStatus());
                     }
                     detailDTO.setSingleScoreId(userRecordEntry.getID().toString());
                     detailDTOs.add(detailDTO);

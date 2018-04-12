@@ -143,21 +143,21 @@ public class CheckTextAndPicture extends BaseSample {
         } catch (ServerException e) {
             e.printStackTrace();
             map.put("bl", "1");
-            map.put("text","超时错误");
+            map.put("text","含敏感词汇");
             return map;
         } catch (ClientException e) {
             e.printStackTrace();
             map.put("bl", "1");
-            map.put("text", "超时错误");
+            map.put("text", "含敏感词汇");
             return map;
         } catch (Exception e){
             e.printStackTrace();
             map.put("bl", "1");
-            map.put("text", "超时错误");
+            map.put("text", "含敏感词汇");
             return map;
         }
         map.put("bl", "2");
-        map.put("text","超时错误");
+        map.put("text","含敏感词汇");
         return map;
     }
 

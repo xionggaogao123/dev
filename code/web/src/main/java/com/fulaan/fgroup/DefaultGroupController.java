@@ -501,6 +501,34 @@ public class DefaultGroupController extends BaseController {
     }
 
     /**
+     * 判断该社群是否存在
+     */
+    @ApiOperation(value = "判断该社群是否存在", httpMethod = "GET", produces = "application/json")
+    @ApiResponses( value = {@ApiResponse(code = 200, message = "Successful — 请求已完成",response = RespObj.class)})
+    @RequestMapping("/booleanGroup")
+    @ResponseBody
+    public RespObj booleanGroup(@RequestParam(value="emChatId") String emChatId) {
+        RespObj respObj = new RespObj(Constant.FAILD_CODE);
+        try{
+            ObjectId groupId = groupService.getMoreGroupIdByEmchatId(emChatId);
+            if(groupId!=null){
+                respObj.setMessage(true);
+            }else{
+                respObj.setMessage(false);
+            }
+            respObj.setCode(Constant.SUCCESS_CODE);
+        }catch (Exception e){
+            respObj.setMessage("判断该社群是否存在失败");
+            respObj.setCode(Constant.FAILD_CODE);
+            e.printStackTrace();
+        }
+        return respObj;
+
+
+
+    }
+
+    /**
      * 解散群聊
      *
      * @param emChatId
@@ -517,18 +545,30 @@ public class DefaultGroupController extends BaseController {
             GroupDTO groupDTO = groupService.findById(groupId,getUserId());
             ObjectId userId = getUserId();
             if (memberService.isHead(groupId, userId)) {
+
+               // List<String> str = new ArrayList<String>();
+                //   EaseMobAPI.removeBatchUsersFromChatGroup(emChatId, str);
+                // communityService.deleteReplyDetailText();
+                List<ObjectId> userIds = memberService.getAllGroupMemberIds(groupId);
+                List<ObjectId> userIds2 = new ArrayList<ObjectId>();
+                userIds2.addAll(userIds);
+                userIds.remove(userId);
+                if (emService.removeUserListFromEmGroup(emChatId, userIds)) {
+                    if (groupDTO.isBindCommunity()) {
+                        //社群删除
+                        communityService.setPartIncontentStatusList(new ObjectId(groupDTO.getCommunityId()), userIds2, 1);
+                        //成绩单删除
+                        communityService.pullFromUserList(new ObjectId(groupDTO.getCommunityId()), userIds2);
+                    }
+                }
                 //环信删除
                 EaseMobAPI.deleteChatGroup(emChatId);
                 //成员删除
-                memberService.deleteMember(groupId, userId);
+                memberService.deleteMemberList(groupId, userIds2);
                 //群组删除
                 groupService.deleteGroup(groupId);
-                if (groupDTO.isBindCommunity()) {
-                    //社群删除
-                    communityService.setPartIncontentStatus(new ObjectId(groupDTO.getCommunityId()), userId, 1);
-                    //成绩单删除
-                    communityService.pullFromUser(new ObjectId(groupDTO.getCommunityId()), userId);
-                }
+
+
             }
             respObj.setCode(Constant.SUCCESS_CODE);
             respObj.setMessage("解散群聊成功");

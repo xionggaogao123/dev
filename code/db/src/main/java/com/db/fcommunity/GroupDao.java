@@ -71,6 +71,12 @@ public class GroupDao extends BaseDao {
         return dbo == null ? null : (ObjectId) dbo.get(Constant.ID);
     }
 
+    public ObjectId getMoreGroupIdByEmchatId(String emChatId) {
+        BasicDBObject query = new BasicDBObject("grcd", emChatId).append("r",Constant.ZERO);
+        BasicDBObject field = new BasicDBObject(Constant.ID, 1);
+        DBObject dbo = findOne(MongoFacroty.getAppDB(), Constant.COLLECTION_FORUM_COMMUNITY_GROUP, query, field);
+        return dbo == null ? null : (ObjectId) dbo.get(Constant.ID);
+    }
 
     public GroupEntry getGroupEntryByEmchatId(String emChatId) {
         BasicDBObject query = new BasicDBObject("grcd", emChatId);

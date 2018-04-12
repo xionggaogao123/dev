@@ -231,10 +231,10 @@ public class AppNoticeService {
         List<User> read=new ArrayList<User>();
         List<User> unRead=new ArrayList<User>();
         if(reads.size()>0){
-            saveUser(read,reads);
+            saveUser(read,reads,entry.getGroupId());
         }
         if(members.size()>0){
-            saveUser(unRead,members);
+            saveUser(unRead,members,entry.getGroupId());
         }
         userMap.put("read",read);
         userMap.put("unRead",unRead);
@@ -243,13 +243,18 @@ public class AppNoticeService {
 
 
 
-    public void saveUser(List<User> users,List<ObjectId> userIds){
+    public void saveUser(List<User> users,List<ObjectId> userIds,ObjectId groupId){
         Map<ObjectId,UserEntry> userEntryMap=userService.getUserEntryMap(userIds,Constant.FIELDS);
+        Map<ObjectId,String>  smap = memberDao.getNickNameByUserIds(userIds,groupId);
         for(Map.Entry<ObjectId,UserEntry> userEntryEntry:userEntryMap.entrySet()){
             UserEntry userEntry=userEntryEntry.getValue();
             String name = StringUtils.isNotEmpty(userEntry.getNickName())?userEntry.getNickName():userEntry.getUserName();
+            String name2 = smap.get(userEntry.getID());
+            if(name2!=null){
+                name = name2;
+            }
             User user=new User(name,
-                    userEntry.getNickName(),
+                    name,
                     userEntry.getID().toString(),
                     AvatarUtils.getAvatar(userEntry.getAvatar(),userEntry.getRole(),userEntry.getSex()),
                     userEntry.getSex(),

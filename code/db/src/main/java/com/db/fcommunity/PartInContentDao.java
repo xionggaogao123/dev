@@ -138,4 +138,21 @@ public class PartInContentDao extends BaseDao {
         BasicDBObject update = new BasicDBObject(Constant.MONGO_SET, updateValue);
         update(MongoFacroty.getAppDB(), Constant.COLLECTION_FORUM_PARTINCONTENT, query, update);
     }
+
+    /**
+     * 解散社区时对他所参与的该社区的内容置为废弃，即r=1加入时r=0
+     *
+     * @param communityId
+     * @param userIds
+     * @param remove
+     */
+    public void setPartIncontentStatusList(ObjectId communityId, List<ObjectId> userIds, int remove) {
+        BasicDBObject query = new BasicDBObject()
+                .append("cmid", communityId)
+                .append("uid", new BasicDBObject(Constant.MONGO_IN,userIds));
+        BasicDBObject updateValue = new BasicDBObject()
+                .append("r", remove);
+        BasicDBObject update = new BasicDBObject(Constant.MONGO_SET, updateValue);
+        update(MongoFacroty.getAppDB(), Constant.COLLECTION_FORUM_PARTINCONTENT, query, update);
+    }
 }

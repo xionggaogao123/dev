@@ -6,6 +6,7 @@ import com.fasterxml.jackson.databind.node.ObjectNode;
 import org.bson.types.ObjectId;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
@@ -51,6 +52,22 @@ public class EmService {
      */
     public boolean removeUserFromEmGroup(String emChatId, ObjectId userId) {
         ResponseWrapper responseWrapper = EaseMobAPI.removeSingleUserFromChatGroup(emChatId, userId.toString());
+        return responseWrapper.getResponseStatus() == 200||responseWrapper.getResponseStatus() == 403;
+    }
+
+    /**
+     * 批量把用户从环信群组移除
+     *
+     * @param emChatId
+     * @param userIds
+     * @return
+     */
+    public boolean removeUserListFromEmGroup(String emChatId, List<ObjectId> userIds) {
+        List<String> stringList = new ArrayList<String>();
+        for(ObjectId oid : userIds){
+            stringList.add(oid.toString());
+        }
+        ResponseWrapper responseWrapper = EaseMobAPI.removeBatchUsersFromChatGroup(emChatId, stringList);
         return responseWrapper.getResponseStatus() == 200||responseWrapper.getResponseStatus() == 403;
     }
 

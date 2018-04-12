@@ -395,6 +395,12 @@ public class CommunityService {
         //删除中
         groupExamUserRecordDao.updateGroupExamDetailUserRecord(communityId,uid,Constant.ONE);
     }
+    //解散群组删除所有
+    public void pullFromUserList(ObjectId communityId, List<ObjectId> uids) {
+        mineCommunityDao.deleteList(communityId, uids);
+        //删除中
+        groupExamUserRecordDao.updateGroupExamDetailUserRecordList(communityId, uids, Constant.ONE);
+    }
 
     public String getSeq() {
         return String.valueOf(seqDao.getRandom().getSeq());
@@ -2217,6 +2223,11 @@ public class CommunityService {
 
     public void setPartIncontentStatus(ObjectId communityId, ObjectId userId, int remove) {
         partInContentDao.setPartIncontentStatus(communityId, userId, remove);
+    }
+
+    //解散删除全部
+    public void setPartIncontentStatusList(ObjectId communityId, List<ObjectId> userIds, int remove) {
+        partInContentDao.setPartIncontentStatusList(communityId, userIds, remove);
     }
 
     /**

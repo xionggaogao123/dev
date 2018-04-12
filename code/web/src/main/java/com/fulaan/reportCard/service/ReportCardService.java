@@ -175,9 +175,11 @@ public class ReportCardService {
         if (null == recordEntry) {
             GroupExamDetailEntry groupExamDetailEntry = groupExamDetailDao.getEntryById(groupExamDetailId);
             groupExamUserRecordDao.pushSign(groupExamDetailId, userId);
-            //groupExamDetailEntry.setSignCount(this.getMyRoleList4(groupExamDetailEntry.getCommunityId(),groupExamDetailEntry.getUserId()));
             //增加签字数
-            groupExamDetailDao.updateSignedCount(groupExamDetailId);
+            if(reportCardSignDao.getUserRecordEntry(groupExamDetailId, mainUserId)==null){
+                groupExamDetailDao.updateSignedCount(groupExamDetailId);
+            }
+            //groupExamDetailEntry.setSignCount(this.getMyRoleList4(groupExamDetailEntry.getCommunityId(),groupExamDetailEntry.getUserId()));
             //修改总数
             groupExamDetailDao.updateSignCount(groupExamDetailId,this.getMyRoleList4(groupExamDetailEntry.getCommunityId(),groupExamDetailEntry.getUserId()));
             GroupExamUserRecordEntry userRecordEntry=groupExamUserRecordDao.getExamUserRecordEntry(groupExamDetailId,userId);
@@ -258,10 +260,10 @@ public class ReportCardService {
         objectIdList.removeAll(signIds);
         unSignIds.addAll(objectIdList);
         if(signIds.size()>0) {
-            setSignValues(signIds,signTime,sign,Constant.ONE);
+            setSignValues(signIds,signTime,sign,Constant.ONE,groupExamDetailEntry.getGroupId());
         }
         if(unSignIds.size()>0){
-            setSignValues(unSignIds,signTime,unSign,Constant.TWO);
+            setSignValues(unSignIds,signTime,unSign,Constant.TWO,groupExamDetailEntry.getGroupId());
         }
         result.put("SignList",sign);
         result.put("SignListNum",sign.size());
@@ -271,16 +273,24 @@ public class ReportCardService {
     }
 
     public void setSignValues(Set<ObjectId> userIds,Map<ObjectId,Long> signTime,
-                              List<User> users,int type){
+                              List<User> users,int type,ObjectId groupId){
         Map<ObjectId, UserEntry> signUserEntryMap = userService.getUserEntryMap(userIds, Constant.FIELDS);
+        List<ObjectId> objectIdList = new ArrayList<ObjectId>();
+        objectIdList.addAll(userIds);
+        Map<ObjectId,String>  smap = memberDao.getNickNameByUserIds(objectIdList,groupId);
         for(Map.Entry<ObjectId, UserEntry> userItem:signUserEntryMap.entrySet()){
             UserEntry userEntry=userItem.getValue();
             String time=Constant.EMPTY;
             if(type==Constant.ONE){
                 time=DateTimeUtils.getLongToStrTimeTwo(signTime.get(userItem.getKey()));
             }
-            User user=new User(userEntry.getUserName(),
-                    userEntry.getNickName(),userEntry.getID().toString(),
+            String name = StringUtils.isNotEmpty(userEntry.getNickName())?userEntry.getNickName():userEntry.getUserName();
+            String name2 = smap.get(userEntry.getID());
+            if(name2!=null){
+                name = name2;
+            }
+            User user=new User(name,
+                    name,userEntry.getID().toString(),
                     AvatarUtils.getAvatar(userEntry.getAvatar(),userEntry.getRole(),userEntry.getSex()),
                     userEntry.getSex(), time);
             users.add(user);
@@ -1412,9 +1422,9 @@ public class ReportCardService {
         List<String> clist = new ArrayList<String>();
         if(olist.size()>0){
             for(MemberEntry en : olist){
-                if(!en.getUserId().toString().equals(userId.toString())){
-                    clist.add(en.getUserId().toString());
-                }
+
+                clist.add(en.getUserId().toString());
+
             }
         }
         return clist.size();
@@ -1427,9 +1437,9 @@ public class ReportCardService {
         List<ObjectId> clist = new ArrayList<ObjectId>();
         if(olist.size()>0){
             for(MemberEntry en : olist){
-                if(!en.getUserId().toString().equals(userId.toString())){
+
                     clist.add(en.getUserId());
-                }
+
             }
         }
         return clist;

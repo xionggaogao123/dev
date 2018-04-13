@@ -861,6 +861,25 @@ public class BackStageService {
             }
         }
     }
+
+    //添加为解除推送
+    public void deleteSchoolAppEntry(ObjectId userId,ObjectId appId,ObjectId schoolId){
+        AppDetailEntry entry = appDetailDao.findEntryById(appId);
+        if(entry != null){
+            SchoolAppEntry entry1 = schoolAppDao.getEntryById(schoolId);
+            if(entry1 == null){
+
+            }else{
+                List<ObjectId> ob = entry1.getAppIdList();
+                if(ob.contains(appId)){
+                    ob.remove(appId);
+                    entry1.setAppIdList(ob);
+                    schoolAppDao.updEntry(entry1);
+                    this.addLogMessage(entry1.getID().toString(),"解除学校推送应用："+entry.getAppName()+"，包名："+entry.getAppPackageName(),LogMessageType.schoolApp.getDes(),userId.toString());
+                }
+            }
+        }
+    }
     //添加为系统推送
     public void addSystemAppEntry(ObjectId userId,ObjectId appId){
         AppDetailEntry entry = appDetailDao.findEntryById(appId);

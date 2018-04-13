@@ -483,7 +483,9 @@ public class ControlPhoneService {
             this.addRedDotEntryBatch(dtos,userId,newEntry.getMainUserId(),current,dto.getAddiction());
         }
         if(oids.size()>0){
-            controlAppResultDao.updEntry(oids);
+            //controlAppResultDao.updEntry(oids);
+            //删除
+            controlAppResultDao.delEntry(oids);
         }
         ControlTimeEntry entr = controlTimeDao.getEntryByUserId(userId);
         if(entr ==null){
@@ -3334,6 +3336,10 @@ public class ControlPhoneService {
         ControlVersionDTO dto = new ControlVersionDTO();
         dto.setVersion("暂无数据");
         return dto;
+    }
+
+    public void deleteAppResultPersion(){
+        controlAppResultDao.delEntryList();
     }
 
 }

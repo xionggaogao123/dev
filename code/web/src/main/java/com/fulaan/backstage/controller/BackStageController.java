@@ -905,6 +905,29 @@ public class BackStageController extends BaseController {
     }
 
     /**
+     *  解除学校推送
+     * @return
+     */
+    @ApiOperation(value = "解除学校推送", httpMethod = "POST", produces = "application/json")
+    @ApiResponses( value = {@ApiResponse(code = 200, message = "Successful — 请求已完成",response = String.class)})
+    @RequestMapping("/deleteSchoolApp")
+    @ResponseBody
+    public String deleteSchoolApp(@ApiParam(name = "appId", required = true, value = "appId") @RequestParam(value = "appId") String appId,
+                               @ApiParam(name = "schoolId", required = true, value = "schoolId") @RequestParam(value = "schoolId") String schoolId){
+        RespObj respObj=new RespObj(Constant.FAILD_CODE);
+        try {
+            respObj.setCode(Constant.SUCCESS_CODE);
+            backStageService.deleteSchoolAppEntry(getUserId(),new ObjectId(appId),new ObjectId(schoolId));
+            respObj.setMessage("解除学校推送成功");
+        } catch (Exception e) {
+            e.printStackTrace();
+            respObj.setCode(Constant.FAILD_CODE);
+            respObj.setErrorMessage("解除学校推送失败!");
+        }
+        return JSON.toJSONString(respObj);
+    }
+
+    /**
      * 消除系统推送应用
      * @return
      */

@@ -151,4 +151,12 @@ public class ControlAppResultDao extends BaseDao {
         BasicDBObject query = new BasicDBObject(Constant.ID,new BasicDBObject(Constant.MONGO_IN,ids));
         remove(MongoFacroty.getAppDB(), Constant.COLLECTION_CONTROL_APP_RESULT, query);
     }
+
+    /**
+     * 删除
+     */
+    public void delEntryList() {
+        BasicDBObject query = new BasicDBObject("isn",Constant.ONE);
+        remove(MongoFacroty.getAppDB(), Constant.COLLECTION_CONTROL_APP_RESULT, query);
+    }
 }

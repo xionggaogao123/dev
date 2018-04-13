@@ -429,15 +429,25 @@ public class NewVersionBindService {
             UserEntry userEntry = userEntryMap.get(entry.getUserId());
             if(null!=userEntry){
                 dto.setNickName(StringUtils.isNotEmpty(userEntry.getNickName())?userEntry.getNickName():userEntry.getUserName());
-                dto.setAvatar(AvatarUtils.getAvatar2(userEntry.getAvatar(),userEntry.getRole(),userEntry.getSex()));
+                dto.setAvatar(AvatarUtils.getAvatar(userEntry.getAvatar(),userEntry.getRole(),userEntry.getSex()));
                 dto.setVirtualUser(Constant.ONE);
             }else{
-                dto.setAvatar(AvatarUtils.getAvatar2(Constant.EMPTY,1,1));
+                dto.setAvatar(AvatarUtils.getAvatar(Constant.EMPTY,1,1));
                 dto.setVirtualUser(Constant.ZERO);
             }
             dtos.add(dto);
         }
-        return dtos;
+        List<NewVersionBindRelationDTO> dtos2 = new ArrayList<NewVersionBindRelationDTO>();;
+        List<NewVersionBindRelationDTO> dtos3 = new ArrayList<NewVersionBindRelationDTO>();
+        for(NewVersionBindRelationDTO ddt:dtos){
+            if(ddt.getVirtualUser()==1){
+                dtos2.add(ddt);
+            }else{
+                dtos3.add(ddt);
+            }
+        }
+        dtos2.addAll(dtos3);
+        return dtos2;
     }
 
     public List<NewVersionBindRelationDTO> getNewVersionBindDtos (ObjectId mainUserId,ObjectId communityId){

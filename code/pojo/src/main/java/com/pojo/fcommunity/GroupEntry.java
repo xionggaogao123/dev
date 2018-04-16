@@ -118,6 +118,10 @@ public class GroupEntry extends BaseDBObject {
     return "";
   }
 
+    public int getRemove() {
+        return getSimpleIntegerValue("r");
+    }
+
   public String getQrUrl() {
     if(getBaseEntry().containsKey("grqr")){
       return getSimpleStringValue("grqr");

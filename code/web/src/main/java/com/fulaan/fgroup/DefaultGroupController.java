@@ -510,11 +510,21 @@ public class DefaultGroupController extends BaseController {
     public RespObj booleanGroup(@RequestParam(value="emChatId") String emChatId) {
         RespObj respObj = new RespObj(Constant.FAILD_CODE);
         try{
-            ObjectId groupId = groupService.getMoreGroupIdByEmchatId(emChatId);
-            if(groupId!=null){
+            //ObjectId groupId = groupService.getMoreGroupIdByEmchatId(emChatId);
+           /* if(groupId!=null){
                 respObj.setMessage(true);
-            }else{
+            } else {
                 respObj.setMessage(false);
+            }*/
+            GroupEntry groupEntry  = groupService.getMoreGroupIdByEmchatId2(emChatId);
+            if(groupEntry==null){//单聊
+                respObj.setMessage(true);
+            } else {
+                if(groupEntry.getRemove()==0){//群聊存在
+                    respObj.setMessage(true);
+                }else{//不存在
+                    respObj.setMessage(false);
+                }
             }
             respObj.setCode(Constant.SUCCESS_CODE);
         }catch (Exception e){
@@ -553,7 +563,14 @@ public class DefaultGroupController extends BaseController {
                 List<ObjectId> userIds2 = new ArrayList<ObjectId>();
                 userIds2.addAll(userIds);
                 userIds.remove(userId);
-                if (emService.removeUserListFromEmGroup(emChatId, userIds)) {
+                if (userIds.size() >0 && emService.removeUserListFromEmGroup(emChatId, userIds)) {
+                    if (groupDTO.isBindCommunity()) {
+                        //社群删除
+                        communityService.setPartIncontentStatusList(new ObjectId(groupDTO.getCommunityId()), userIds2, 1);
+                        //成绩单删除
+                        communityService.pullFromUserList(new ObjectId(groupDTO.getCommunityId()), userIds2);
+                    }
+                }else{
                     if (groupDTO.isBindCommunity()) {
                         //社群删除
                         communityService.setPartIncontentStatusList(new ObjectId(groupDTO.getCommunityId()), userIds2, 1);

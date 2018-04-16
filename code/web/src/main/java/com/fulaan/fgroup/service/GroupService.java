@@ -226,6 +226,16 @@ public class GroupService {
         return groupDao.getMoreGroupIdByEmchatId(chatId);
     }
 
+    /**
+     * 获取未删除的讨论组成员列表
+     *
+     * @param chatId
+     * @return
+     */
+    public GroupEntry getMoreGroupIdByEmchatId2(String chatId) {
+        return groupDao.getGroupEntryByEmchatId(chatId);
+    }
+
     public GroupEntry getGroupEntryByEmchatId(String chatId){
         return groupDao.getGroupEntryByEmchatId(chatId);
     }

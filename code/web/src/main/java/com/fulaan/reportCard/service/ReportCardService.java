@@ -1166,7 +1166,7 @@ public class ReportCardService {
             //更新状态(改为保存改变状态)
 
             webHomePageDao.updateContactStatus(new ObjectId(groupExamDetailId), Constant.FIVE, status);
-            //groupExamUserRecordDao.updateGroupExamDetailStatus(new ObjectId(groupExamDetailId), status);
+            groupExamUserRecordDao.updateGroupExamDetailStatus(new ObjectId(groupExamDetailId), status);
 
             //添加红点
             //发送状态下

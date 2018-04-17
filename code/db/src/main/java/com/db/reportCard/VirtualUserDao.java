@@ -78,6 +78,18 @@ public class VirtualUserDao extends BaseDao{
 
     public VirtualUserEntry getVirtualUserByUserId(ObjectId userId){
         BasicDBObject query=new BasicDBObject()
+                .append("uid",userId);
+        DBObject dbObject = findOne(MongoFacroty.getAppDB(), Constant.COLLECTION_REPORT_CARD_VIRTUAL_USER,query,Constant.FIELDS);
+        if(null!=dbObject){
+            return new VirtualUserEntry(dbObject);
+        }else{
+            return null;
+        }
+    }
+    
+    //获取实时名单
+    public VirtualUserEntry getIrVirtualUserByUserId(ObjectId userId){
+        BasicDBObject query=new BasicDBObject()
                 .append("uid",userId).append("ir",Constant.ZERO);
         DBObject dbObject = findOne(MongoFacroty.getAppDB(), Constant.COLLECTION_REPORT_CARD_VIRTUAL_USER,query,Constant.FIELDS);
         if(null!=dbObject){

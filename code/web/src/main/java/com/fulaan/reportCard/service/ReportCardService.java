@@ -373,7 +373,12 @@ public class ReportCardService {
                 }
                 flag = false;
             }
-            VirtualUserEntry virtualUserEntry = virtualUserDao.getVirtualUserByUserId(recordEntry.getUserId());
+            VirtualUserEntry virtualUserEntry = virtualUserDao.getIrVirtualUserByUserId(recordEntry.getUserId());
+            //如果查不到实时的查过版本的
+            if (virtualUserEntry == null) {
+                virtualUserEntry = virtualUserDao.getVirtualUserByUserId(recordEntry.getUserId());
+            }
+            
             if(null != virtualUserEntry){
                 userRecordDTO.setUserNumber(virtualUserEntry.getUserNumber());
                 userRecordDTO.setUserName(virtualUserEntry.getUserName());

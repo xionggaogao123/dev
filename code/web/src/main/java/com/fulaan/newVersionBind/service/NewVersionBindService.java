@@ -796,7 +796,7 @@ public class NewVersionBindService {
                 newVersionCommunityBindDao.saveEntry(entry);
                 newVersionCommunityBindDao.updateEntryStatus(entry.getID());
             }else{
-                throw new Exception("该昵称已用过!");
+                throw new Exception("该班级姓名已用过!");
             }
         }else{
             VirtualUserEntry virtualUserEntry = virtualUserDao.findByNames(communityId,thirdName,number);

@@ -1010,4 +1010,8 @@ public class Constant {
     public static final String COLLECTION_MODULE_NUMBER= "moduleNumber";
     //系统版本
     public static final String COLLECTION_JIA_VERSION = "jiaversions";
+    //用户积分表
+    public static final String COLLECTION_INTEGRAL_SUFFER= "integralsuffer";
+    //积分记录表
+    public static final String COLLECTION_INTEGRAL_RECORD= "integralrecord";
 }

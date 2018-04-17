@@ -53,6 +53,7 @@ public class VirtualUserDao extends BaseDao{
         query.append("cid",communityId);
         query.append("unm",userName);
         query.append("un",number);
+        query.append("ir",0);
         DBObject dbObject =findOne(MongoFacroty.getAppDB(), Constant.COLLECTION_REPORT_CARD_VIRTUAL_USER,query,Constant.FIELDS);
         if(null!=dbObject){
             return new VirtualUserEntry(dbObject);

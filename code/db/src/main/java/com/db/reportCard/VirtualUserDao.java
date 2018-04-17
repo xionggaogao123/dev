@@ -78,7 +78,7 @@ public class VirtualUserDao extends BaseDao{
 
     public VirtualUserEntry getVirtualUserByUserId(ObjectId userId){
         BasicDBObject query=new BasicDBObject()
-                .append("uid",userId);
+                .append("uid",userId).append("ir",Constant.ZERO);
         DBObject dbObject = findOne(MongoFacroty.getAppDB(), Constant.COLLECTION_REPORT_CARD_VIRTUAL_USER,query,Constant.FIELDS);
         if(null!=dbObject){
             return new VirtualUserEntry(dbObject);

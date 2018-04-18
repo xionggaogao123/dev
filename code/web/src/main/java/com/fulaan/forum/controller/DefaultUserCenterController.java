@@ -9,6 +9,7 @@ import com.fulaan.cache.CacheHandler;
 import com.fulaan.forum.service.*;
 import com.fulaan.friendscircle.service.FriendApplyService;
 import com.fulaan.friendscircle.service.FriendService;
+import com.fulaan.integral.service.IntegralSufferService;
 import com.fulaan.screenshot.Encoder;
 import com.fulaan.screenshot.EncoderException;
 import com.fulaan.user.service.UserService;
@@ -17,6 +18,7 @@ import com.fulaan.video.service.VideoService;
 import com.pojo.activity.FriendApply;
 import com.pojo.app.SessionValue;
 import com.pojo.forum.*;
+import com.pojo.integral.IntegralType;
 import com.pojo.user.UserDetailInfoDTO;
 import com.pojo.user.UserEntry;
 import com.pojo.user.UserForumDTO;
@@ -87,6 +89,8 @@ public class DefaultUserCenterController extends BaseController {
     private FReplyService fReplyService;
     @Autowired
     private FScoreService fScoreService;
+
+    private IntegralSufferService integralSufferService = new IntegralSufferService();
 
     private void loginInfo(Map<String, Object> model) {
         SessionValue sessionValue = getSessionValue();
@@ -657,8 +661,9 @@ public class DefaultUserCenterController extends BaseController {
                     fVoteDTO.setVoteId(voteId);
                     fVoteService.addFVote(fVoteDTO);
                 }
-                respObj = RespObj.SUCCESS;
-                respObj.setMessage("成功");
+                respObj = new RespObj(Constant.SUCCESS_CODE);
+                int score = integralSufferService.addIntegral(getUserId(), IntegralType.vote,4,1);
+                respObj.setMessage(score);
                 return  respObj;
             }
         } catch (Exception e) {

@@ -56,7 +56,7 @@ public class DefaultAppCommentController extends BaseController {
             String result = appCommentService.addCommentEntry(dto,dto.getComList());
             respObj.setCode(Constant.SUCCESS_CODE);
             respObj.setMessage(result);
-            if(!result.equals("成功导入")){
+            if(result.contains("含")) {
                 respObj.setCode(Constant.FAILD_CODE);
                 respObj.setErrorMessage(result);
             }
@@ -206,6 +206,30 @@ public class DefaultAppCommentController extends BaseController {
     @RequestMapping("/goSign")
     @ResponseBody
     public String goSign(@ApiParam(name = "qid", required = true, value = "签到id") @RequestParam("qid") String qid){
+        RespObj respObj=new RespObj(Constant.FAILD_CODE);
+        try {
+            respObj.setCode(Constant.SUCCESS_CODE);
+            appCommentService.goSign(new ObjectId(qid),getUserId());
+            respObj.setMessage("签到成功");
+        } catch (Exception e) {
+            e.printStackTrace();
+            respObj.setCode(Constant.FAILD_CODE);
+            respObj.setErrorMessage("签到失败!");
+        }
+        return JSON.toJSONString(respObj);
+    }
+
+    /**
+     * 签到
+     * @return
+     */
+    @ApiOperation(value = "签到", httpMethod = "POST", produces = "application/json")
+    @ApiResponses( value = {@ApiResponse(code = 200, message = "Successful — 请求已完成",response = String.class),
+            @ApiResponse(code = 400, message = "请求中有语法问题，或不能满足请求"),
+            @ApiResponse(code = 500, message = "服务器不能完成请求")})
+    @RequestMapping("/goNewSign")
+    @ResponseBody
+    public String goNewSign(@ApiParam(name = "qid", required = true, value = "签到id") @RequestParam("qid") String qid){
         RespObj respObj=new RespObj(Constant.FAILD_CODE);
         try {
             respObj.setCode(Constant.SUCCESS_CODE);

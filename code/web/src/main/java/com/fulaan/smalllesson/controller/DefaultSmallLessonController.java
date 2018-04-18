@@ -4,6 +4,7 @@ import com.alibaba.fastjson.JSON;
 import com.db.loginwebsocket.LoginTokenDao;
 import com.fulaan.annotation.SessionNeedless;
 import com.fulaan.base.BaseController;
+import com.fulaan.integral.service.IntegralSufferService;
 import com.fulaan.mqtt.MQTTSendMsg;
 import com.fulaan.smalllesson.dto.LessonAnswerDTO;
 import com.fulaan.smalllesson.dto.ResultTypeDTO;
@@ -11,6 +12,7 @@ import com.fulaan.smalllesson.dto.SmallLessonDTO;
 import com.fulaan.smalllesson.service.SmallLessonService;
 import com.fulaan.user.service.UserService;
 import com.fulaan.util.QRUtils;
+import com.pojo.integral.IntegralType;
 import com.pojo.loginwebsocket.LoginTokenEntry;
 import com.sys.constants.Constant;
 import com.sys.utils.RespObj;
@@ -38,6 +40,9 @@ public class DefaultSmallLessonController extends BaseController {
     private LoginTokenDao loginTokenDao = new LoginTokenDao();
     @Autowired
     private UserService userService;
+
+    @Autowired
+    private IntegralSufferService integralSufferService;
     /**
      * 扫描二维码进入课程
      */
@@ -584,15 +589,19 @@ public class DefaultSmallLessonController extends BaseController {
         RespObj respObj=new RespObj(Constant.FAILD_CODE);
         try {
             LoginTokenEntry loginTokenEntry = loginTokenDao.getEntry(new ObjectId(teacherId));
+            respObj.setCode(Constant.SUCCESS_CODE);
+            respObj.setMessage("0");
             if(null == loginTokenEntry){
-                respObj.setMessage("二维码已过期！");
+                respObj.setCode(Constant.FAILD_CODE);
+                respObj.setErrorMessage("二维码已过期！");
             }else{
                 loginTokenEntry.setUserId(getUserId());
                 loginTokenDao.saveEntry(loginTokenEntry);
                 MQTTSendMsg.sendMessage(getUserId().toString(),teacherId,00);
+                int score = integralSufferService.addIntegral(getUserId(), IntegralType.lesson,3,1);
+                respObj.setCode(Constant.SUCCESS_CODE);
+                respObj.setMessage(score);
             }
-            respObj.setCode(Constant.SUCCESS_CODE);
-            respObj.setMessage("二维码扫描后访问成功！");
         } catch (Exception e) {
             e.printStackTrace();
             respObj.setCode(Constant.FAILD_CODE);

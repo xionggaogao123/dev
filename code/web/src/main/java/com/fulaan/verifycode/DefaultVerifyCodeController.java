@@ -38,9 +38,10 @@ public class DefaultVerifyCodeController extends BaseController {
     // 字体高度
     private int fontHeight;
     private int codeY;
-    char[] codeSequence = {'A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J',
+    char[] codeSequence2 = {'A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J',
             'K', 'L', 'M', 'N', 'O', 'P', 'Q', 'R', 'S', 'T', 'U', 'V', 'W',
             'X', 'Y', 'Z', '0', '1', '2', '3', '4', '5', '6', '7', '8', '9'};
+    char[] codeSequence = { '0', '1', '2', '3', '4', '5', '6', '7', '8', '9'};
 
     /**
      * 初始化验证图片属性

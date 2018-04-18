@@ -726,10 +726,10 @@ public class DefaultCommunityController extends BaseController {
             respObj.setMessage("0");
             if(message.getType()==3){//火热分享
                 int score = integralSufferService.addIntegral(getUserId(), IntegralType.hot,4,1);
-                respObj.setMessage(score);
+                respObj.setMessage(score+"");
             }else if(message.getType()==4){//参考资料
                 int score = integralSufferService.addIntegral(getUserId(), IntegralType.book,4,1);
-                respObj.setMessage(score);
+                respObj.setMessage(score+"");
             }
             return respObj;
         }catch (Exception e){
@@ -2366,7 +2366,9 @@ public class DefaultCommunityController extends BaseController {
                                @ApiParam(name="videoList",required = false,value = "视频")@RequestParam(required = false, defaultValue = "") String vedios) {
         ObjectId uid = getUserId();
         communityService.saveCommunityShare(communityId, communityDetailId, uid, content, images, vedios, type);
-        return RespObj.SUCCESS("操作成功");
+        int score = integralSufferService.addIntegral(getUserId(), IntegralType.hot,4,1);
+        //respObj.setMessage(score+"");
+        return RespObj.SUCCESS(score+"");
     }
 
     /**

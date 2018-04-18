@@ -3170,7 +3170,7 @@ public class DefaultCommunityController extends BaseController {
     }
 
     public RespObj getQRBindCode(UserEntry userEntry,ObjectId userId){
-        if (StringUtils.isBlank(userEntry.getQRCode())) {
+        if (StringUtils.isBlank(userEntry.getQRBindCode())) {
             String qrCode = QRUtils.getPersonBindQrUrl(userId);
             userEntry.setQRBindCode(qrCode);
             userService.addUser(userEntry);

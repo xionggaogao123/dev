@@ -184,4 +184,11 @@ public class IntegralSufferService {
         List<ObjectId> mlist =   groupDao.getGroupIdsList(olsit);
         return mlist;
     }
+
+    /**
+     * 查询某个用户的积分经验值
+     */
+    public IntegralSufferEntry getEntry(ObjectId userId){
+        return integralSufferDao.getEntry(userId);
+    }
 }

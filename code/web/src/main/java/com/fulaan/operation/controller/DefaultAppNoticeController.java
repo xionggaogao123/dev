@@ -75,9 +75,13 @@ public class DefaultAppNoticeController extends BaseController {
     public RespObj getReadNoticeUserList(@RequestBody AppNoticeDTO dto){
         RespObj respObj=new RespObj(Constant.FAILD_CODE);
         try{
-            appNoticeService.saveAppNoticeEntry(dto,getUserId());
-            respObj.setMessage("保存通知信息成功！");
+            String score = appNoticeService.saveAppNoticeEntry(dto,getUserId());
+            respObj.setMessage(score);
             respObj.setCode(Constant.SUCCESS_CODE);
+            if(score.contains("含")){
+                respObj.setMessage(score);
+                respObj.setCode(Constant.FAILD_CODE);
+            }
         }catch (Exception e){
             logger.error("error",e);
             if("推送失败".equals(e.getMessage())) {
@@ -144,8 +148,8 @@ public class DefaultAppNoticeController extends BaseController {
     ){
         RespObj respObj=new RespObj(Constant.FAILD_CODE);
         try{
-            appNoticeService.pushRead(id,getUserId());
-            respObj.setMessage("阅读成功!");
+            String message = appNoticeService.pushRead(id,getUserId());
+            respObj.setMessage(message);
             respObj.setCode(Constant.SUCCESS_CODE);
         }catch (Exception e){
             respObj.setErrorMessage(e.getMessage());

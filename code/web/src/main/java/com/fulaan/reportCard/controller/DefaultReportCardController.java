@@ -3,10 +3,11 @@ package com.fulaan.reportCard.controller;
 import com.fulaan.annotation.ObjectIdType;
 import com.fulaan.base.BaseController;
 import com.fulaan.indexpage.service.WebHomePageService;
-import com.fulaan.pojo.User;
+import com.fulaan.integral.service.IntegralSufferService;
 import com.fulaan.reportCard.dto.*;
 import com.fulaan.reportCard.service.ReportCardService;
 import com.fulaan.wrongquestion.dto.ExamTypeDTO;
+import com.pojo.integral.IntegralType;
 import com.sys.constants.Constant;
 import com.sys.utils.RespObj;
 import io.swagger.annotations.Api;
@@ -39,6 +40,8 @@ public class DefaultReportCardController extends BaseController{
 
     @Autowired
     private WebHomePageService webHomePageService;
+
+    private IntegralSufferService integralSufferService = new IntegralSufferService();
 
 
 
@@ -179,7 +182,9 @@ public class DefaultReportCardController extends BaseController{
         try{
             reportCardService.pushSign(groupExamDetailId,userId,getUserId());
             respObj.setCode(Constant.SUCCESS_CODE);
-            respObj.setMessage("签字成功！");
+            respObj.setMessage("0");
+            int score = integralSufferService.addIntegral(getUserId(), IntegralType.repordcard,3,2);
+            respObj.setMessage(score + "");
         }catch (Exception e){
             respObj.setErrorMessage(e.getMessage());
         }
@@ -227,7 +232,9 @@ public class DefaultReportCardController extends BaseController{
             //保存展示类型 个人或者全班
             //reportCardService.updateShowType(groupExamDetailId, showType);
             respObj.setCode(Constant.SUCCESS_CODE);
-            respObj.setMessage("发送成功！");
+            respObj.setMessage("0");
+            int score = integralSufferService.addIntegral(getUserId(), IntegralType.repordcard,1,1);
+            respObj.setMessage(""+score);
         }catch (Exception e){
             respObj.setErrorMessage(e.getMessage());
         }
@@ -296,7 +303,11 @@ public class DefaultReportCardController extends BaseController{
                         examGroupScoreDTO.getVersion());
                 reportCardService.updateShowType(new ObjectId(examGroupScoreDTO.getGroupExamDetailId()), examGroupScoreDTO.getShowType());
                 respObj.setCode(Constant.SUCCESS_CODE);
-                respObj.setMessage("保存或编辑成绩成功!");
+                respObj.setMessage("0");
+                if(examGroupScoreDTO.getIsSend()==0 && examGroupScoreDTO.getStatus()==2){
+                    int score = integralSufferService.addIntegral(getUserId(), IntegralType.repordcard,1,1);
+                    respObj.setMessage(""+score);
+                }
             }else{
                 respObj.setErrorMessage("不是最新的版本");
             }

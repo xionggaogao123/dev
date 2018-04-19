@@ -13,6 +13,8 @@ public class IntegralSufferDTO {
     private String userId;
     private int score;
     private int suffer;
+    private int oldSuffer;
+    private int  oldScore;
 
 
     public String getId() {
@@ -45,5 +47,21 @@ public class IntegralSufferDTO {
 
     public void setSuffer(int suffer) {
         this.suffer = suffer;
+    }
+
+    public int getOldSuffer() {
+        return oldSuffer;
+    }
+
+    public void setOldSuffer(int oldSuffer) {
+        this.oldSuffer = oldSuffer;
+    }
+
+    public int getOldScore() {
+        return oldScore;
+    }
+
+    public void setOldScore(int oldScore) {
+        this.oldScore = oldScore;
     }
 }

@@ -13,7 +13,8 @@ import org.bson.types.ObjectId;
  * score           sco                积分
  * suffer          suf                经验值
  * sign            sig                签到数
- *
+ * oldSuffer       ols                昨日积分
+ * olsScore        olo                昨日经验值
  */
 public class IntegralSufferEntry extends BaseDBObject {
     public IntegralSufferEntry(){
@@ -28,14 +29,18 @@ public class IntegralSufferEntry extends BaseDBObject {
             ObjectId userId,
             int score,
             int suffer,
-            int sign
+            int sign,
+            int oldSuffer,
+            int oldScore
     ){
         BasicDBObject dbObject=new BasicDBObject()
                 .append("uid",userId)
                 .append("sco", score)
                 .append("suf",suffer)
                 .append("sig", sign)
-                .append("isr",Constant.ZERO);
+                .append("ols",oldSuffer)
+                .append("olo",oldScore)
+                .append("isr", Constant.ZERO);
         setBaseEntry(dbObject);
     }
 
@@ -45,15 +50,19 @@ public class IntegralSufferEntry extends BaseDBObject {
             ObjectId userId,
             int score,
             int suffer,
-            int sign
+            int sign,
+            int oldSuffer,
+            int oldScore
     ){
         BasicDBObject dbObject=new BasicDBObject()
                 .append(Constant.ID, id)
-                .append("uid",userId)
+                .append("uid", userId)
                 .append("sco", score)
                 .append("suf",suffer)
                 .append("sig", sign)
-                .append("isr",Constant.ZERO);
+                .append("ols", oldSuffer)
+                .append("olo",oldScore)
+                .append("isr", Constant.ZERO);
         setBaseEntry(dbObject);
     }
 
@@ -87,6 +96,22 @@ public class IntegralSufferEntry extends BaseDBObject {
 
     public void setSign(int sign){
         setSimpleValue("sig",sign);
+    }
+
+    public int getOldScore(){
+        return getSimpleIntegerValue("olo");
+    }
+
+    public void setOldScore(int oldScore){
+        setSimpleValue("olo",oldScore);
+    }
+
+    public int getOldSuffer(){
+        return getSimpleIntegerValue("ols");
+    }
+
+    public void setOldSuffer(int oldSuffer){
+        setSimpleValue("ols",oldSuffer);
     }
 
     public int getIsRemove(){

@@ -17,6 +17,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
+import java.util.HashMap;
 import java.util.Map;
 
 /**
@@ -37,9 +38,9 @@ public class AppActivityController extends BaseController {
         RespObj respObj = new RespObj(Constant.FAILD_CODE);
         try {
             appActivityDTO.setUserId(getUserId().toString());
-            appActivityService.saveEntry(appActivityDTO);
+            String score = appActivityService.saveEntry(appActivityDTO);
             respObj.setCode(Constant.SUCCESS_CODE);
-            respObj.setMessage("保存成功");
+            respObj.setMessage(score);
         } catch (Exception e) {
             respObj.setErrorMessage(e.getMessage());
         }
@@ -112,6 +113,29 @@ public class AppActivityController extends BaseController {
             }else{
                 respObj.setMessage("取消报名成功");
             }
+        }catch (Exception e){
+            respObj.setErrorMessage(e.getMessage());
+        }
+        return respObj;
+    }
+
+    @ApiOperation(value = "新报名/取消报名", httpMethod = "GET", produces = "application/json")
+    @ApiResponses( value = {@ApiResponse(code = 200, message = "Successful — 请求已完成",response = RespObj.class)})
+    @RequestMapping("/newPartInActivity")
+    @ResponseBody
+    public RespObj newPartInActivity(@ObjectIdType ObjectId activityId,int type){
+        RespObj respObj = new RespObj(Constant.FAILD_CODE);
+        try{
+            String score = appActivityService.partInActivity(activityId,type,getUserId());
+            Map<String,Object> map = new HashMap<String, Object>();
+            if(type==Constant.ONE){
+                map.put("msg", "报名成功");
+            }else{
+                map.put("msg","取消报名成功");
+            }
+            respObj.setCode(Constant.SUCCESS_CODE);
+            map.put("score",score);
+            respObj.setMessage(map);
         }catch (Exception e){
             respObj.setErrorMessage(e.getMessage());
         }

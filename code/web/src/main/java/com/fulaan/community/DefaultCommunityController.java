@@ -20,6 +20,7 @@ import com.fulaan.fgroup.service.GroupService;
 import com.fulaan.forum.service.FVoteService;
 import com.fulaan.friendscircle.service.FriendApplyService;
 import com.fulaan.friendscircle.service.FriendService;
+import com.fulaan.integral.service.IntegralSufferService;
 import com.fulaan.newVersionBind.service.NewVersionBindService;
 import com.fulaan.operation.service.AppCommentService;
 import com.fulaan.playmate.service.MateService;
@@ -40,6 +41,7 @@ import com.pojo.app.Platform;
 import com.pojo.fcommunity.*;
 import com.pojo.forum.FVoteDTO;
 import com.pojo.forum.FVoteEntry;
+import com.pojo.integral.IntegralType;
 import com.pojo.reportCard.VirtualCommunityEntry;
 import com.pojo.user.UserDetailInfoDTO;
 import com.pojo.user.UserEntry;
@@ -127,6 +129,8 @@ public class DefaultCommunityController extends BaseController {
 
     @Autowired
     private LatestGroupDynamicService latestGroupDynamicService;
+
+    private IntegralSufferService integralSufferService = new IntegralSufferService();
 
     public static final String suffix = "/static/images/community/upload.png";
 
@@ -655,7 +659,7 @@ public class DefaultCommunityController extends BaseController {
             @ApiResponse(code = 500, message = "新建通知或者作业消息失败")})
     public RespObj newMessage(@ApiParam @RequestBody CommunityMessage message) {
         ObjectId uid = getUserId();
-        RespObj respObj =  null;
+        RespObj respObj =  new RespObj(Constant.FAILD_CODE);
         try{
             String[] communityIds=message.getCommunityId().split(",");
             for(String communityId:communityIds) {
@@ -718,11 +722,18 @@ public class DefaultCommunityController extends BaseController {
 //                ext.put("communityId",message.getCommunityId());
 //                emService.sendTextMessage("chatgroups", targets, uid.toString(), ext, sendMessage);
 //            }
-            respObj = RespObj.SUCCESS;
-            respObj.setMessage("成功创建");
+            respObj.setCode(Constant.SUCCESS_CODE);
+            respObj.setMessage("0");
+            if(message.getType()==3){//火热分享
+                int score = integralSufferService.addIntegral(getUserId(), IntegralType.hot,4,1);
+                respObj.setMessage(score+"");
+            }else if(message.getType()==4){//参考资料
+                int score = integralSufferService.addIntegral(getUserId(), IntegralType.book,4,1);
+                respObj.setMessage(score+"");
+            }
             return respObj;
         }catch (Exception e){
-            respObj = RespObj.FAILD;
+            respObj.setCode(Constant.FAILD_CODE);
             respObj.setMessage("投票截止时间格式不规范");
             return respObj;
         }
@@ -2355,7 +2366,9 @@ public class DefaultCommunityController extends BaseController {
                                @ApiParam(name="videoList",required = false,value = "视频")@RequestParam(required = false, defaultValue = "") String vedios) {
         ObjectId uid = getUserId();
         communityService.saveCommunityShare(communityId, communityDetailId, uid, content, images, vedios, type);
-        return RespObj.SUCCESS("操作成功");
+        int score = integralSufferService.addIntegral(getUserId(), IntegralType.hot,4,1);
+        //respObj.setMessage(score+"");
+        return RespObj.SUCCESS(score+"");
     }
 
     /**
@@ -3159,7 +3172,7 @@ public class DefaultCommunityController extends BaseController {
     }
 
     public RespObj getQRBindCode(UserEntry userEntry,ObjectId userId){
-        if (StringUtils.isBlank(userEntry.getQRCode())) {
+        if (StringUtils.isBlank(userEntry.getQRBindCode())) {
             String qrCode = QRUtils.getPersonBindQrUrl(userId);
             userEntry.setQRBindCode(qrCode);
             userService.addUser(userEntry);

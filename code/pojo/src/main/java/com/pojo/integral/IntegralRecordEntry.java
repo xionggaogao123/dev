@@ -114,7 +114,7 @@ public class IntegralRecordEntry extends BaseDBObject {
     }
 
     public int getSort(){
-        return getSimpleIntegerValue("sot");
+        return getSimpleIntegerValue("sor");
     }
 
     public void setIsRemove(int isRemove){

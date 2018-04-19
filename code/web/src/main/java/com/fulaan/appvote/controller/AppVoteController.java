@@ -37,9 +37,9 @@ public class AppVoteController extends BaseController{
         RespObj respObj=new RespObj(Constant.FAILD_CODE);
         try{
             appVoteDTO.setUserId(getUserId().toString());
-            appVoteService.saveAppVote(appVoteDTO);
+            String score = appVoteService.saveAppVote(appVoteDTO);
             respObj.setCode(Constant.SUCCESS_CODE);
-            respObj.setMessage("保存成功");
+            respObj.setMessage(score);
         }catch (Exception e){
             respObj.setErrorMessage(e.getMessage());
         }

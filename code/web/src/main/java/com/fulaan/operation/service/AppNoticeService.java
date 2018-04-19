@@ -11,6 +11,7 @@ import com.db.operation.AppNoticeDao;
 import com.db.operation.AppOperationDao;
 import com.fulaan.indexpage.dto.IndexPageDTO;
 import com.fulaan.instantmessage.service.RedDotService;
+import com.fulaan.integral.service.IntegralSufferService;
 import com.fulaan.newVersionBind.service.NewVersionBindService;
 import com.fulaan.operation.dto.AppNoticeDTO;
 import com.fulaan.operation.dto.AppOperationDTO;
@@ -28,6 +29,7 @@ import com.pojo.fcommunity.NewVersionCommunityBindEntry;
 import com.pojo.indexPage.IndexPageEntry;
 import com.pojo.indexPage.WebHomePageEntry;
 import com.pojo.instantmessage.ApplyTypeEn;
+import com.pojo.integral.IntegralType;
 import com.pojo.newVersionGrade.CommunityType;
 import com.pojo.operation.AppOperationEntry;
 import com.pojo.user.UserEntry;
@@ -70,6 +72,8 @@ public class AppNoticeService {
     @Autowired
     private NewVersionBindService newVersionBindService;
 
+    private IntegralSufferService integralSufferService = new IntegralSufferService();
+
 
     public static void main(String[] args){
         List<String> thistags =new ArrayList<String>();
@@ -84,7 +88,7 @@ public class AppNoticeService {
      * 保存信息
      * @param dto
      */
-    public void saveAppNoticeEntry(AppNoticeDTO dto,ObjectId userId)throws Exception{
+    public String saveAppNoticeEntry(AppNoticeDTO dto,ObjectId userId)throws Exception{
         UserEntry userEntry=userService.findById(userId);
         JPushUtils jPushUtils=new JPushUtils();
         List<ObjectId> objectIdList = new ArrayList<ObjectId>();
@@ -94,7 +98,7 @@ public class AppNoticeService {
         String f = (String)flag.get("bl");
         if(f.equals("1")){
             //return (String)flag.get("text");
-            return;
+            return (String)flag.get("text");
         }
 
         for(GroupOfCommunityDTO communityDTO:dto.getGroupOfCommunityDTOs()){
@@ -189,8 +193,8 @@ public class AppNoticeService {
             throw new Exception("推送失败");
 
         }
-
-
+        int  score = integralSufferService.addIntegral(userId, IntegralType.notice,1,1);
+        return score+"";
     }
 
 
@@ -445,7 +449,7 @@ public class AppNoticeService {
         return retMap;
     }
 
-    public void pushRead(ObjectId id,ObjectId userId)throws Exception{
+    public String pushRead(ObjectId id,ObjectId userId)throws Exception{
         AppNoticeEntry appNoticeEntry=appNoticeDao.getAppNoticeEntry(id);
         if(null!=appNoticeEntry){
             List<ObjectId> readList=appNoticeEntry.getReaList();
@@ -453,9 +457,12 @@ public class AppNoticeService {
                 appNoticeDao.pushReadList(userId, id);
                 redDotService.cleanResult(userId,ApplyTypeEn.notice.getType(),0l);
             }
+
         }else{
             throw new Exception("传入的id参数有误");
         }
+        int score = integralSufferService.addIntegral(userId, IntegralType.notice,3,2);
+        return score+"";
     }
 
 

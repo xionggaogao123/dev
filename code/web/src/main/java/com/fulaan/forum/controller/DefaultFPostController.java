@@ -8,6 +8,7 @@ import com.fulaan.base.BaseController;
 import com.fulaan.cache.CacheHandler;
 import com.fulaan.forum.service.*;
 import com.fulaan.friendscircle.service.FriendService;
+import com.fulaan.integral.service.IntegralSufferService;
 import com.fulaan.screenshot.Encoder;
 import com.fulaan.screenshot.EncoderException;
 import com.fulaan.service.ConcernService;
@@ -20,6 +21,7 @@ import com.pojo.app.Platform;
 import com.pojo.app.SessionValue;
 import com.pojo.fcommunity.ConcernEntry;
 import com.pojo.forum.*;
+import com.pojo.integral.IntegralSufferEntry;
 import com.pojo.user.UserEntry;
 import com.pojo.user.UserInfoDTO;
 import com.pojo.user.UserRole;
@@ -98,6 +100,8 @@ public class DefaultFPostController extends BaseController {
     private ConcernService concernService;
     @Autowired
     private ParticipantsInfoService participantsInfoService;
+
+    private IntegralSufferService integralSufferService = new IntegralSufferService();
 
     /**
      * 搜索界面
@@ -3167,12 +3171,18 @@ public class DefaultFPostController extends BaseController {
         }
 
         UserEntry userEntry = userService.findById(new ObjectId(sessionValue.getId()));
-        model.put("forumScore", userEntry.getForumScore());
+        IntegralSufferEntry integralSufferEntry = integralSufferService.getEntry(new ObjectId(sessionValue.getId()));
+        if(integralSufferEntry!=null){
+            model.put("forumScore", integralSufferEntry.getScore());
+            model.put("forumExperience", integralSufferEntry.getSuffer());
+        }else{
+            model.put("forumScore", 0);
+            model.put("forumExperience", 0);
+        }
+
         if(StringUtils.isNotBlank(userEntry.getQRCode())){
             model.put("qrCode",userEntry.getQRCode());
         }
-
-        model.put("forumExperience", userEntry.getForumExperience());
         long stars = fLevelService.getStars(userEntry.getForumExperience());
         model.put("stars", stars);
         model.put("userId", sessionValue.getId());

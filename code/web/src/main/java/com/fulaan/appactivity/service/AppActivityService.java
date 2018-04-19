@@ -7,6 +7,7 @@ import com.db.fcommunity.MemberDao;
 import com.db.fcommunity.NewVersionCommunityBindDao;
 import com.fulaan.appactivity.dto.AppActivityDTO;
 import com.fulaan.instantmessage.service.RedDotService;
+import com.fulaan.integral.service.IntegralSufferService;
 import com.fulaan.operation.dto.GroupOfCommunityDTO;
 import com.fulaan.picturetext.runnable.PictureRunNable;
 import com.fulaan.pojo.User;
@@ -16,6 +17,7 @@ import com.pojo.appactivity.AppActivityUserEntry;
 import com.pojo.fcommunity.MemberEntry;
 import com.pojo.fcommunity.NewVersionCommunityBindEntry;
 import com.pojo.instantmessage.ApplyTypeEn;
+import com.pojo.integral.IntegralType;
 import com.pojo.user.UserEntry;
 import com.sys.constants.Constant;
 import com.sys.utils.AvatarUtils;
@@ -49,8 +51,10 @@ public class AppActivityService {
 
     private RedDotService redDotService = new RedDotService();
 
+    private IntegralSufferService integralSufferService = new IntegralSufferService();
 
-    public void saveEntry(AppActivityDTO appActivityDTO){
+
+    public String saveEntry(AppActivityDTO appActivityDTO){
         List<AppActivityEntry> entries = new ArrayList<AppActivityEntry>();
         List<ObjectId> oids = new ArrayList<ObjectId>();
         for (GroupOfCommunityDTO dto : appActivityDTO.getGroupOfCommunityDTOs()) {
@@ -82,6 +86,8 @@ public class AppActivityService {
             redDotService.addOtherEntryList(oids, new ObjectId(appActivityDTO.getUserId()), ApplyTypeEn.piao.getType(),2);
         }
         appActivityDao.saveEntries(entries);
+        int score = integralSufferService.addIntegral(new ObjectId(appActivityDTO.getUserId()), IntegralType.vote,4,1);
+        return score+"";
     }
 
     public void getDtosByEntries(List<AppActivityDTO> appActivityDTOs,List<AppActivityEntry> entries, ObjectId userId){
@@ -264,7 +270,7 @@ public class AppActivityService {
         appActivityDao.removeActivity(activityId);
     }
 
-    public void partInActivity(ObjectId activityId,int type,ObjectId userId)throws Exception{
+    public String partInActivity(ObjectId activityId,int type,ObjectId userId)throws Exception{
         AppActivityUserEntry entry =appActivityUserDao.getEntry(activityId,userId);
         if(type==Constant.ONE){
             if(null!=entry){
@@ -273,6 +279,8 @@ public class AppActivityService {
                 appActivityUserDao.saveEntry(new AppActivityUserEntry(activityId,userId));
                 appActivityDao.partInActivity(activityId);
             }
+            int score = integralSufferService.addIntegral(userId, IntegralType.vote,4,1);
+            return score+"";
         }else{
             if(null==entry){
                 throw  new Exception("已经取消报名了");
@@ -280,6 +288,7 @@ public class AppActivityService {
                 appActivityUserDao.removeEntry(activityId, userId);
                 appActivityDao.popActivity(activityId);
             }
+            return "0";
         }
     }
 

@@ -14,6 +14,7 @@ import com.fulaan.appvote.dto.VoteOption;
 import com.fulaan.appvote.dto.VoteResult;
 import com.fulaan.forum.service.FVoteService;
 import com.fulaan.instantmessage.service.RedDotService;
+import com.fulaan.integral.service.IntegralSufferService;
 import com.fulaan.operation.dto.GroupOfCommunityDTO;
 import com.fulaan.picturetext.runnable.PictureRunNable;
 import com.fulaan.pojo.User;
@@ -28,6 +29,7 @@ import com.pojo.fcommunity.NewVersionCommunityBindEntry;
 import com.pojo.forum.FVoteDTO;
 import com.pojo.forum.FVoteEntry;
 import com.pojo.instantmessage.ApplyTypeEn;
+import com.pojo.integral.IntegralType;
 import com.pojo.user.UserEntry;
 import com.pojo.utils.MongoUtils;
 import com.sys.constants.Constant;
@@ -77,7 +79,10 @@ public class AppVoteService {
     private UserService userService;
 
 
-    public void saveAppVote(AppVoteDTO appVoteDTO) throws ParseException {
+    private IntegralSufferService integralSufferService = new IntegralSufferService();
+
+
+    public String saveAppVote(AppVoteDTO appVoteDTO) throws ParseException {
         SimpleDateFormat format = new SimpleDateFormat(DateTimeUtils.DATE_YYYY_MM_DD_HH_MM_SS_H);
         Date date = format.parse(appVoteDTO.getDeadFormatTime());
         List<AppVoteEntry> entries = new ArrayList<AppVoteEntry>();
@@ -114,7 +119,8 @@ public class AppVoteService {
             redDotService.addOtherEntryList(oids,new ObjectId(appVoteDTO.getUserId()), ApplyTypeEn.piao.getType(),2);
         }
         appVoteDao.saveEntries(entries);
-
+        int score = integralSufferService.addIntegral(new ObjectId(appVoteDTO.getUserId()), IntegralType.vote,4,1);
+        return score+"";
     }
 
     public Map<String,Object> gatherAppVotes(ObjectId userId, int page, int pageSize){

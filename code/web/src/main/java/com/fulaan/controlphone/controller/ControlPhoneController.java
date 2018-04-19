@@ -11,6 +11,8 @@ import com.fulaan.controlphone.dto.ControlPhoneDTO;
 import com.fulaan.controlphone.dto.ControlSchoolTimeDTO;
 import com.fulaan.controlphone.dto.ResultAppDTO;
 import com.fulaan.controlphone.service.ControlPhoneService;
+import com.fulaan.integral.service.IntegralSufferService;
+import com.pojo.integral.IntegralType;
 import com.sys.constants.Constant;
 import com.sys.utils.DateTimeUtils;
 import com.sys.utils.RespObj;
@@ -24,10 +26,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
-import java.util.Calendar;
-import java.util.Date;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 /**
  * Created by James on 2017/11/3.
@@ -43,6 +42,8 @@ public class ControlPhoneController extends BaseController {
     private BackStageService backStageService;
 
     private static final Logger logger =Logger.getLogger(ControlPhoneController.class);
+
+    private IntegralSufferService integralSufferService = new IntegralSufferService();
     //管控电话
     /**
      * 添加管控手机号
@@ -1121,6 +1122,41 @@ public class ControlPhoneController extends BaseController {
             }
 
         }catch (Exception e){
+            e.printStackTrace();
+            respObj.setCode(Constant.FAILD_CODE);
+            respObj.setErrorMessage("推送应用失败");
+        }
+        return JSON.toJSONString(respObj);
+    }
+
+    /**
+     * 推送应用
+     * @return
+     */
+    @ApiOperation(value = "推送应用", httpMethod = "POST", produces = "application/json")
+    @ApiResponses( value = {@ApiResponse(code = 200, message = "Successful — 请求已完成",response = String.class),
+            @ApiResponse(code = 400, message = "请求中有语法问题，或不能满足请求"),
+            @ApiResponse(code = 500, message = "服务器不能完成请求")})
+    @RequestMapping("/addNewAppToChildOrCommunity")
+    @ResponseBody
+    public String addNewAppToChildOrCommunity(@ApiParam(name = "contactId", required = true, value = "关联id") @RequestParam("contactId") String contactId,
+                                           @ApiParam(name = "type", required = true, value = "类型") @RequestParam("type") int type,
+                                           @ApiParam(name = "appId", required = true, value = "应用id") @RequestParam("appId") String appId,
+                                           @ApiParam(name = "isCheck", required = true, value = "1 卸载 2 推送") @RequestParam("isCheck") int isCheck){
+        RespObj respObj = new RespObj(Constant.FAILD_CODE);
+        try{
+            controlPhoneService.addAppToChildOrCommunity(getUserId(), new ObjectId(contactId), type, new ObjectId(appId),isCheck);
+            respObj.setCode(Constant.SUCCESS_CODE);
+            Map<String,Object> map = new HashMap<String, Object>();
+            if(isCheck==1){
+                map.put("msg", "卸载应用成功");
+            }else{
+                map.put("msg","推送应用成功");
+            }
+            int score = integralSufferService.addIntegral(getUserId(), IntegralType.find,4,1);
+            map.put("score",score);
+            respObj.setMessage(map);
+        } catch (Exception e){
             e.printStackTrace();
             respObj.setCode(Constant.FAILD_CODE);
             respObj.setErrorMessage("推送应用失败");

@@ -16,6 +16,7 @@ import com.db.user.NewVersionBindRelationDao;
 import com.db.wrongquestion.SubjectClassDao;
 import com.fulaan.community.dto.CommunityDTO;
 import com.fulaan.instantmessage.service.RedDotService;
+import com.fulaan.integral.service.IntegralSufferService;
 import com.fulaan.newVersionBind.dto.NewVersionBindRelationDTO;
 import com.fulaan.newVersionBind.service.NewVersionBindService;
 import com.fulaan.operation.dto.AppCommentDTO;
@@ -37,6 +38,7 @@ import com.pojo.fcommunity.MemberEntry;
 import com.pojo.fcommunity.NewVersionCommunityBindEntry;
 import com.pojo.indexPage.WebHomePageEntry;
 import com.pojo.instantmessage.ApplyTypeEn;
+import com.pojo.integral.IntegralType;
 import com.pojo.newVersionGrade.NewVersionSubjectEntry;
 import com.pojo.operation.AppCommentEntry;
 import com.pojo.operation.AppOperationEntry;
@@ -82,6 +84,8 @@ public class AppCommentService {
     private NewVersionBindService newVersionBindService;
     @Autowired
     private RedDotService redDotService;
+
+    private IntegralSufferService integralSufferService = new IntegralSufferService();
 
 
 
@@ -209,7 +213,11 @@ public class AppCommentService {
         }catch (Exception e){
             throw new Exception("推送失败");
         }
-        return "成功导入";
+        int score = 0;
+        if(dto.getStatus() == 0){
+            score = integralSufferService.addIntegral(new ObjectId(dto.getAdminId()), IntegralType.operation,1,1);
+        }
+        return new Integer(score).toString();
     }
 
     /**
@@ -1715,7 +1723,8 @@ public class AppCommentService {
             entry1.setWriteNumber(allcount-weicount);
             appCommentDao.updEntry(entry1);
         }
-        return "签到成功";
+        int score = integralSufferService.addIntegral(userId, IntegralType.operation,3,2);
+        return score+"";
     }
     /**
      * 批量增加红点记录

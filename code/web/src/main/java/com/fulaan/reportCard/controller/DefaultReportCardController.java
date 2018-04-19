@@ -80,6 +80,7 @@ public class DefaultReportCardController extends BaseController{
         try{
             GroupExamDetailEntry  g = reportCardService.isHaveGroupExam(examGroupDetailId);
             respObj.setMessage(g);
+            respObj.setCode(Constant.SUCCESS_CODE);
         }catch (Exception e){
             respObj.setErrorMessage(e.getMessage());
         }

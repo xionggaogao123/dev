@@ -415,6 +415,24 @@ public class MemberDao extends BaseDao {
         return findOne(MongoFacroty.getAppDB(), Constant.COLLECTION_FORUM_COMMUNITY_MEMBER, query) != null;
     }
 
+    /**
+     * 获得群主
+     *
+     * @return
+     */
+    public MemberEntry getHeader(ObjectId community) {
+        BasicDBObject query = new BasicDBObject().append("cmid", community)
+                .append("rl", 2)
+                .append("r", 0);
+        DBObject dbo = findOne(MongoFacroty.getAppDB(), Constant.COLLECTION_FORUM_COMMUNITY_MEMBER, query);
+        if(dbo != null){
+            MemberEntry memberEntry = new MemberEntry(dbo);
+            return memberEntry;
+        }
+
+        return null;
+    }
+
 
     /**
      * 获取可退出列表

@@ -1238,6 +1238,23 @@ public class BackStageService {
         }).start();
     }
 
+    /**
+     * 社长和孩子成为好友
+     * @param uIds
+     * @param communityId
+     */
+    public void setChildCommunityFriends(final String[] uIds,final ObjectId communityId){
+        MemberEntry memberEntry = memberDao.getHeader(communityId);
+        if(memberEntry!=null){
+            List<ObjectId> objectIdList = new ArrayList<ObjectId>();
+            for(String str : uIds){
+                objectIdList.add(new ObjectId(str));
+            }
+            setFriendEntry(memberEntry.getUserId(),objectIdList);
+        }
+    }
+
+
     public void setChildAutoFriends(final String[] uIds,final ObjectId communityId){
         new Thread(new Runnable() {
             @Override

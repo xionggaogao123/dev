@@ -82,7 +82,11 @@ public class IntegralSufferService {
         IntegralRecordEntry integralRecordEntry =  new IntegralRecordEntry(userId,0,integralType.getDes(),zero,current,sort);
         if(role==1){//教师
             if(sort==0){//第一次  加  50 分
-                integralRecordEntry.setScore(IntegralType.all.getSname());
+                if(integralType.getType()!=8){//小课堂
+                    integralRecordEntry.setScore(IntegralType.all.getSname());
+                }else{
+                    integralRecordEntry.setScore(80);
+                }
             }else if(sort==IntegralType.getBigType()){//最后一次 多加  50分
                 integralRecordEntry.setScore(integralType.getSname()+IntegralType.con.getSname());
             }else{//其中

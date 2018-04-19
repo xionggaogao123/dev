@@ -968,7 +968,7 @@ public class ControlPhoneService {
         }
         map.put("phone",dtos);
         //可用时间
-        long timecu = 30*60*1000;
+        long timecu = 3*60*1000;
         map.put("time",timecu/60000);
         map.put("backTime",24*60);
         map.put("appTime",24*60);
@@ -1035,7 +1035,7 @@ public class ControlPhoneService {
         }
         map.put("phone",dtos);
         //可用时间
-        long timecu = 30*60*1000;
+        long timecu = 3*60*1000;//未登录3分钟使用时间
         map.put("time",timecu/60000);
         map.put("backTime",24*60);
         map.put("appTime",24*60);

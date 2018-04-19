@@ -52,6 +52,7 @@ import com.sys.constants.Constant;
 import com.sys.utils.AvatarUtils;
 import com.sys.utils.DateTimeUtils;
 import com.sys.utils.TimeChangeUtils;
+import org.apache.log4j.Logger;
 import org.bson.types.ObjectId;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -87,7 +88,7 @@ public class AppCommentService {
 
     private IntegralSufferService integralSufferService = new IntegralSufferService();
 
-
+    private static final Logger logger =Logger.getLogger(AppCommentService.class);
 
 
 
@@ -190,6 +191,10 @@ public class AppCommentService {
         if(dto.getStatus()==0){
             redDotService.addEntryList(objectIdList,new ObjectId(dto.getAdminId()), ApplyTypeEn.operation.getType(),4);
         }
+        int score = 0;
+        if(dto.getStatus() == 0){
+            score = integralSufferService.addIntegral(new ObjectId(dto.getAdminId()), IntegralType.operation,1,1);
+        }
         try {
             for (CommunityDTO dto3 : sendList) {
                 ObjectId groupId = communityDao.getGroupId(new ObjectId(dto3.getId()));
@@ -211,11 +216,8 @@ public class AppCommentService {
                 }
             }
         }catch (Exception e){
-            throw new Exception("推送失败");
-        }
-        int score = 0;
-        if(dto.getStatus() == 0){
-            score = integralSufferService.addIntegral(new ObjectId(dto.getAdminId()), IntegralType.operation,1,1);
+            logger.error("error",e);
+            throw new Exception("特殊"+score);
         }
         return new Integer(score).toString();
     }
@@ -1274,6 +1276,9 @@ public class AppCommentService {
                 uids.add(dto.getUserId());
                 if(dto.getBackId() != null && dto.getBackId() != ""){
                     uids.add(dto.getBackId());
+                }
+                if(dto.getUserId().equals(userId.toString())){
+                    dto.setRole(4);
                 }
                 dtos.add(dto);
             }

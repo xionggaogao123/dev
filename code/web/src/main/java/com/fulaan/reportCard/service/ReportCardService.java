@@ -159,6 +159,20 @@ public class ReportCardService {
          groupExamVersionDao.saveGroupExamVersionEntry(versionEntry);
          **/
     }
+    
+    /**
+     * 
+     *〈简述〉根据成绩单id判断是否存在成绩单
+     *〈详细描述〉
+     * @author Administrator
+     * @param examGroupDetailId
+     * @return
+     */
+    public GroupExamDetailEntry isHaveGroupExam (ObjectId examGroupDetailId) {
+        GroupExamDetailEntry  g = null;
+        g = groupExamDetailDao.getGroupExamDetailEntry(examGroupDetailId);
+        return g;
+    }
 
 
     /**

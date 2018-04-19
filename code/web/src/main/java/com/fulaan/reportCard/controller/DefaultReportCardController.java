@@ -8,6 +8,7 @@ import com.fulaan.reportCard.dto.*;
 import com.fulaan.reportCard.service.ReportCardService;
 import com.fulaan.wrongquestion.dto.ExamTypeDTO;
 import com.pojo.integral.IntegralType;
+import com.pojo.reportCard.GroupExamDetailEntry;
 import com.sys.constants.Constant;
 import com.sys.utils.RespObj;
 import io.swagger.annotations.Api;
@@ -55,13 +56,30 @@ public class DefaultReportCardController extends BaseController{
         RespObj respObj=new RespObj(Constant.FAILD_CODE);
         try{
             GroupExamDetailDTO groupExamDetailDTO=examGroupDTO.buildDTO();
-            String result = "";
+            String result = new ObjectId().toString();
             //先判断是否绑定了学生
             if(reportCardService.isHaveRecordEntries(groupExamDetailDTO.getCommunityId())) {
                 result = reportCardService.saveGroupExamDetail(groupExamDetailDTO,getUserId());
             }                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                              
             respObj.setCode(Constant.SUCCESS_CODE);
             respObj.setMessage(result);
+        }catch (Exception e){
+            respObj.setErrorMessage(e.getMessage());
+        }
+        return respObj;
+    }
+    
+    @ApiOperation(value = "判断有没有成绩单", httpMethod = "POST", produces = "application/json")
+    @ApiResponses( value = {@ApiResponse(code = 200, message = "保存考试信息已完成",response = String.class),
+            @ApiResponse(code = 400, message = "请求中有语法问题，或不能满足请求"),
+            @ApiResponse(code = 500, message = "服务器不能完成请求")})
+    @RequestMapping("/isHaveGroupExam")
+    @ResponseBody
+    public RespObj isHaveGroupExam(@ObjectIdType ObjectId examGroupDetailId){
+        RespObj respObj=new RespObj(Constant.FAILD_CODE);
+        try{
+            GroupExamDetailEntry  g = reportCardService.isHaveGroupExam(examGroupDetailId);
+            respObj.setMessage(g);
         }catch (Exception e){
             respObj.setErrorMessage(e.getMessage());
         }

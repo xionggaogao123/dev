@@ -460,6 +460,8 @@ public class GroupExamDetailDTO {
     public void setUnCompleteCount(int unCompleteCount) {
         this.unCompleteCount = unCompleteCount;
     }
+
+
     
     
 }

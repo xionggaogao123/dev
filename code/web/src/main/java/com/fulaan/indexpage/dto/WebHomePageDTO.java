@@ -16,6 +16,7 @@ import java.util.List;
 public class WebHomePageDTO {
 
     private String id;
+    private String groupExamDetailId;
     private int type;
     private String title;
     private String content;
@@ -316,4 +317,18 @@ public class WebHomePageDTO {
     public void setSign(boolean sign) {
         isSign = sign;
     }
+
+
+
+    public String getGroupExamDetailId() {
+        return groupExamDetailId;
+    }
+
+
+
+    public void setGroupExamDetailId(String groupExamDetailId) {
+        this.groupExamDetailId = groupExamDetailId;
+    }
+    
+    
 }

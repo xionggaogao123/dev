@@ -1,9 +1,17 @@
 package com.fulaan.indexpage.controller;
 
+import com.fulaan.annotation.ObjectIdType;
 import com.fulaan.base.BaseController;
 import com.fulaan.indexpage.service.WebHomePageService;
+import com.fulaan.reportCard.service.ReportCardService;
 import com.sys.constants.Constant;
 import com.sys.utils.RespObj;
+
+import io.swagger.annotations.ApiOperation;
+import io.swagger.annotations.ApiResponse;
+import io.swagger.annotations.ApiResponses;
+
+import org.bson.types.ObjectId;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -21,6 +29,9 @@ public class WebHomePageController extends BaseController{
 
     @Autowired
     private WebHomePageService webHomePageService;
+    
+    @Autowired
+    private ReportCardService reportCardService;
 
     /**
      *
@@ -133,6 +144,42 @@ public class WebHomePageController extends BaseController{
         }
         return respObj;
     }
+    
+    @ApiOperation(value = "获取成绩单的签字和未签字列表", httpMethod = "POST", produces = "application/json")
+    @ApiResponses( value = {@ApiResponse(code = 200, message = "保存考试信息已完成",response = String.class),
+            @ApiResponse(code = 400, message = "请求中有语法问题，或不能满足请求"),
+            @ApiResponse(code = 500, message = "服务器不能完成请求")})
+    @RequestMapping("/searchReportCardSignList")
+    @ResponseBody
+    public RespObj searchReportCardSignList(@ObjectIdType ObjectId groupExamDetailId){
+        RespObj respObj = new RespObj(Constant.SUCCESS_CODE);
+        Map<String,Object> result=reportCardService.searchReportCardSignList(groupExamDetailId);
+        respObj.setMessage(result);
+        return respObj;
+    }
+    
+    /**
+    *
+    * @param groupExamDetailId
+    * @return
+    */
+   @ApiOperation(value = "删除成绩单", httpMethod = "GET", produces = "application/json")
+   @ApiResponses( value = {@ApiResponse(code = 200, message = "删除成绩单已完成",response = String.class),
+           @ApiResponse(code = 400, message = "请求中有语法问题，或不能满足请求"),
+           @ApiResponse(code = 500, message = "服务器不能完成请求")})
+   @RequestMapping("/removeGroupExam")
+   @ResponseBody
+   public RespObj removeGroupExam(@ObjectIdType ObjectId groupExamDetailId){
+       RespObj respObj=new RespObj(Constant.FAILD_CODE);
+       try{
+           reportCardService.removeGroupExamDetailEntry(groupExamDetailId,getUserId());
+           respObj.setCode(Constant.SUCCESS_CODE);
+           respObj.setMessage("删除成绩单成功！");
+       }catch (Exception e){
+           respObj.setErrorMessage(e.getMessage());
+       }
+       return respObj;
+   }
 
 
 

@@ -124,15 +124,22 @@ public class WebHomePageDao extends BaseDao{
         List<Integer> status=new ArrayList<Integer>();
         status.add(Constant.TWO);
         status.add(Constant.THREE);
-        BasicDBObject query1=new BasicDBObject("ty",Constant.FIVE)
-                    .append("uid",userId);
-        values.add(query1);
-        BasicDBObject query2=new BasicDBObject("ty",Constant.THREE)
-                .append("st",new BasicDBObject(Constant.MONGO_IN,status))
-                .append("uid",new BasicDBObject(Constant.MONGO_NE,userId));
-        query2.append("rid",new BasicDBObject(Constant.MONGO_IN,receiveIds));
-        values.add(query2);
-        query.put(Constant.MONGO_OR, values);
+        if (type == 2) {
+            query.append("ty",Constant.FIVE).append("uid",userId);
+        } else if(type == 3) {
+            query.append("ty",Constant.THREE).append("st",new BasicDBObject(Constant.MONGO_IN,status)).append("rid",new BasicDBObject(Constant.MONGO_IN,receiveIds));
+        } else {
+            BasicDBObject query1=new BasicDBObject("ty",Constant.FIVE)
+                .append("uid",userId);
+            values.add(query1);
+            BasicDBObject query2=new BasicDBObject("ty",Constant.THREE)
+                    .append("st",new BasicDBObject(Constant.MONGO_IN,status));
+                    /*.append("uid",new BasicDBObject(Constant.MONGO_NE,userId));*/
+            query2.append("rid",new BasicDBObject(Constant.MONGO_IN,receiveIds));
+            values.add(query2);
+            query.put(Constant.MONGO_OR, values);
+        }
+        
 
         if(subjectId!=null){
             query.append("sid",subjectId);

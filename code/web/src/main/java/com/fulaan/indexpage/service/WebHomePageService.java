@@ -590,8 +590,12 @@ public class WebHomePageService {
                     ObjectId childUserId=userRecordEntry.getUserId();
                     String childUserName=Constant.EMPTY;
                     UserEntry userEntry=childUserEntryMap.get(childUserId);
+                    Map<ObjectId, VirtualUserEntry> virtualUserEntryMap = virtualUserDao.getVirtualUserMap(new ArrayList<ObjectId>(childUserIds));
+                    VirtualUserEntry virtualUserEntry = virtualUserEntryMap.get(userRecordEntry.getUserId());
                     if(null!=userEntry){
                         childUserName= org.apache.commons.lang3.StringUtils.isNotEmpty(userEntry.getNickName())?userEntry.getNickName():userEntry.getUserName();
+                    }else if(null !=virtualUserEntry){
+                        childUserName=virtualUserEntry.getUserName();
                     }
                     setWebHomeData(userRecordEntry.getID(),detailEntry,communityEntryMap,userEntryMap,subjectClassEntryMap,
                             examTypeEntryMap,webHomePageDTOs,status,owner,childUserId.toString(),childUserName
@@ -648,6 +652,7 @@ public class WebHomePageService {
                                String childUserName
                                ){
         WebHomePageDTO webHomePageDTO = new WebHomePageDTO(detailEntry);
+        webHomePageDTO.setGroupExamDetailId(id.toString());
         webHomePageDTO.setStatus(status);
         webHomePageDTO.setId(detailEntry.getID().toString());
         webHomePageDTO.setType(Constant.TWO);

@@ -55,7 +55,7 @@ public class DefaultReportCardController extends BaseController{
         RespObj respObj=new RespObj(Constant.FAILD_CODE);
         try{
             GroupExamDetailDTO groupExamDetailDTO=examGroupDTO.buildDTO();
-            String result = new ObjectId().toString();
+            String result = "";
             //先判断是否绑定了学生
             if(reportCardService.isHaveRecordEntries(groupExamDetailDTO.getCommunityId())) {
                 result = reportCardService.saveGroupExamDetail(groupExamDetailDTO,getUserId());

@@ -274,6 +274,39 @@ public class ReportCardController extends BaseController {
                 reportCardService.saveRecordExamScore(examScoreDTOs, examGroupScoreDTO.getStatus(), examGroupScoreDTO.getIsSend());
                 reportCardService.updateVersion(new ObjectId(examGroupScoreDTO.getGroupExamDetailId()),
                         examGroupScoreDTO.getVersion());
+                reportCardService.updateShowType(new ObjectId(examGroupScoreDTO.getGroupExamDetailId()), examGroupScoreDTO.getShowType());
+                respObj.setCode(Constant.SUCCESS_CODE);
+                respObj.setMessage("保存或编辑成绩成功!");
+            } else {
+                respObj.setErrorMessage("不是最新的版本");
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+            respObj.setErrorMessage(e.getMessage());
+        }
+        return respObj;
+    }
+    
+    @ApiOperation(value = "保存或编辑成绩列表新dto", httpMethod = "GET", produces = "application/json")
+    @ApiResponses(value = {@ApiResponse(code = 200, message = "保存或编辑成绩列表已完成", response = String.class),
+            @ApiResponse(code = 400, message = "请求中有语法问题，或不能满足请求"),
+            @ApiResponse(code = 500, message = "服务器不能完成请求")})
+    @RequestMapping("/saveRecordExamScoreNew")
+    @ResponseBody
+    public RespObj saveRecordExamScoreNew(@RequestBody GroupExamScoreDTO examGroupScoreDTO) {
+        RespObj respObj = new RespObj(Constant.FAILD_CODE);
+        try {
+            GroupExamVersionDTO groupExamVersionDTO = reportCardService.getExamGroupVersion(
+                    new ObjectId(examGroupScoreDTO.getGroupExamDetailId()));
+            if (groupExamVersionDTO.getVersion() != examGroupScoreDTO.getVersion()) {
+                List<GroupExamUserRecordDTO> examScoreDTOs = examGroupScoreDTO.getExamGroupUserScoreDTOs();
+                /*for (ExamGroupUserScoreDTO userScoreDTO : examGroupScoreDTO.getExamGroupUserScoreDTOs()) {
+                    examScoreDTOs.add(userScoreDTO.buildDTO());
+                }*/
+                reportCardService.saveRecordExamScore(examScoreDTOs, examGroupScoreDTO.getStatus(), examGroupScoreDTO.getIsSend());
+                reportCardService.updateVersion(new ObjectId(examGroupScoreDTO.getGroupExamDetailId()),
+                        examGroupScoreDTO.getVersion());
+                reportCardService.updateShowType(new ObjectId(examGroupScoreDTO.getGroupExamDetailId()), examGroupScoreDTO.getShowType());
                 respObj.setCode(Constant.SUCCESS_CODE);
                 respObj.setMessage("保存或编辑成绩成功!");
             } else {

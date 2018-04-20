@@ -663,7 +663,7 @@ public class DefaultUserCenterController extends BaseController {
                 }
                 respObj = new RespObj(Constant.SUCCESS_CODE);
                 int score = integralSufferService.addIntegral(getUserId(), IntegralType.vote,4,1);
-                respObj.setMessage(score);
+                respObj.setMessage(score+"");
                 return  respObj;
             }
         } catch (Exception e) {

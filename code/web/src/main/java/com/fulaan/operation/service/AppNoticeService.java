@@ -171,6 +171,7 @@ public class AppNoticeService {
         //1:家长2:学生3:家长，学生
         redDotService.addEntryList(objectIdList,userId, ApplyTypeEn.notice.getType(),dto.getWatchPermission());
         redDotService.addOtherEntryList(objectIdList,userId, ApplyTypeEn.daynotice.getType(),dto.getWatchPermission());
+        int  score = integralSufferService.addIntegral(userId, IntegralType.notice,1,1);
         try {
             for (GroupOfCommunityDTO communityDTO : dto.getGroupOfCommunityDTOs()) {
                 if (StringUtils.isNotBlank(communityDTO.getGroupId())) {
@@ -190,10 +191,8 @@ public class AppNoticeService {
                 }
             }
         }catch (Exception e){
-            throw new Exception("推送失败");
-
+            throw new Exception("特殊"+score);
         }
-        int  score = integralSufferService.addIntegral(userId, IntegralType.notice,1,1);
         return score+"";
     }
 

@@ -87,7 +87,9 @@ public enum IntegralType {
         List<String> str = new ArrayList<String>();
         for(IntegralType lt : IntegralType.values())
         {
-            str.add(lt.getDes());
+            if(lt.getType()>0){
+                str.add(lt.getDes());
+            }
         }
         return str;
     }

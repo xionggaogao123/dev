@@ -14,9 +14,12 @@ import com.aliyuncs.http.FormatType;
 import com.aliyuncs.http.HttpResponse;
 import com.aliyuncs.profile.DefaultProfile;
 import com.aliyuncs.profile.IClientProfile;
+import com.db.backstage.TeacherApproveDao;
 import com.db.backstage.UnlawfulPictureTextDao;
 import com.fulaan.backstage.dto.UnlawfulPictureTextDTO;
 import com.fulaan.picturetext.BaseSample;
+import com.pojo.backstage.TeacherApproveEntry;
+import org.bson.types.ObjectId;
 
 import java.util.*;
 
@@ -25,13 +28,33 @@ import java.util.*;
  */
 public class CheckTextAndPicture extends BaseSample {
 
+    public static void main(String[] args){
+        CheckTextAndPicture c = new CheckTextAndPicture();
+        String content = "各班主任注意：1.今天上午各班还要统计下周六返校的学生名单2.学生返校后在本班级上自习3.周日早上所有学生 （包括周日早上返校学生）7点30分从学校统一出发，不得迟到。4.周日返校的学生要尽量早点，不然道路不通5.本次活动重在参与";
+        //String content = "习大大";
+        try{
+            c.checkText(content,new ObjectId());
+        }catch(Exception e){
+
+        }
+
+    }
+
     /**
      * 同步检测文本垃圾
      * @param content
      * @throws Exception
      */
-    public static Map<String,Object> checkText(String content) throws Exception {
+    public static Map<String,Object> checkText(String content,ObjectId userId) throws Exception {
         Map<String,Object> map =new HashMap<String, Object>();
+        TeacherApproveDao  teacherApproveDao = new TeacherApproveDao();
+        TeacherApproveEntry entry = teacherApproveDao.getEntry(userId);
+        if(entry !=null && entry.getType()==2){
+            map.put("bl", "2");
+            map.put("text","正常");
+            return map;
+        }
+
         //请替换成你自己的accessKeyId、accessKeySecret
         IClientProfile profile = DefaultProfile.getProfile(regionId, accessKeyId, accessKeySecret);
         DefaultProfile.addEndpoint(getEndPointName(), regionId, "Green", getDomain());
@@ -58,6 +81,9 @@ public class CheckTextAndPicture extends BaseSample {
         tasks.add(task1);
 
         JSONObject data = new JSONObject();
+        //String[] arg = {"antispam","keyword"};
+        //data.put("scenes", Arrays.asList("antispam"));
+       // data.put("scenes", arg);
         data.put("scenes", Arrays.asList("keyword"));
         data.put("tasks", tasks);
 
@@ -80,11 +106,11 @@ public class CheckTextAndPicture extends BaseSample {
                         if(200 == ((JSONObject)taskResult).getInteger("code")){
                             JSONArray sceneResults = ((JSONObject)taskResult).getJSONArray("results");
                             for (Object sceneResult : sceneResults) {
-                                String scene = ((JSONObject)sceneResult).getString("scene");
-                                String suggestion = ((JSONObject)sceneResult).getString("suggestion");
+                                //String scene = ((JSONObject)sceneResult).getString("scene");
+                                //String suggestion = ((JSONObject)sceneResult).getString("suggestion");
                                 String label = ((JSONObject)sceneResult).getString("label");
-                                JSONObject sceneResults2 = ((JSONObject)sceneResult).getJSONObject("extras");
-
+                               // JSONObject sceneResults2 = ((JSONObject)sceneResult).getJSONObject("extras");
+                               // System.out.print(sceneResults);
                                 //根据scene和suggetion做相关的处理
                                 //do something
                               /*  System.out.println("args = [" + scene + "]");
@@ -94,39 +120,70 @@ public class CheckTextAndPicture extends BaseSample {
                                     map.put("text","正常");
                                     return map;
                                 }else if(label.equals("spam")){
-                                    String keyword = sceneResults2.getString("hitContext");
+                                  /*  String keyword = sceneResults2.getString("hitContext");
                                     map.put("bl", "1");
-                                    map.put("text",keyword+"含违规信息");
+                                    map.put("text",keyword+"含违规信息");*/
+                                    JSONArray details = ((JSONObject)sceneResult).getJSONArray("details");
+                                    Object ob = details.get(0);
+                                    JSONArray contexts = ((JSONObject)ob).getJSONArray("contexts");
+                                    Object ob2 = contexts.get(0);
+                                    String keyword = ((JSONObject)ob2).getString("context");
+                                    map.put("bl", "1");
+                                    map.put("text",keyword+"--含违规信息");
                                     return map;
                                 }else if(label.equals("ad")){
-                                    String keyword = sceneResults2.getString("hitContext");
+                                    JSONArray details = ((JSONObject)sceneResult).getJSONArray("details");
+                                    Object ob = details.get(0);
+                                    JSONArray contexts = ((JSONObject)ob).getJSONArray("contexts");
+                                    Object ob2 = contexts.get(0);
+                                    String keyword = ((JSONObject)ob2).getString("context");
                                     map.put("bl", "1");
-                                    map.put("text",keyword+"含广告信息");
+                                    map.put("text",keyword+"--含广告信息");
                                     return map;
                                 }else if(label.equals("politics")){
-                                    String keyword = sceneResults2.getString("hitContext");
+                                    JSONArray details = ((JSONObject)sceneResult).getJSONArray("details");
+                                    Object ob = details.get(0);
+                                    JSONArray contexts = ((JSONObject)ob).getJSONArray("contexts");
+                                    Object ob2 = contexts.get(0);
+                                    String keyword = ((JSONObject)ob2).getString("context");
                                     map.put("bl", "1");
-                                    map.put("text",keyword+"含渉政信息");
+                                    map.put("text",keyword+"--含渉政信息");
                                     return map;
                                 }else if(label.equals("terrorism")){
-                                    String keyword = sceneResults2.getString("hitContext");
+                                    JSONArray details = ((JSONObject)sceneResult).getJSONArray("details");
+                                    Object ob = details.get(0);
+                                    JSONArray contexts = ((JSONObject)ob).getJSONArray("contexts");
+                                    Object ob2 = contexts.get(0);
+                                    String keyword = ((JSONObject)ob2).getString("context");
                                     map.put("bl", "1");
-                                    map.put("text",keyword+"含暴恐信息");
+                                    map.put("text",keyword+"--含暴恐信息");
                                     return map;
                                 }else if(label.equals("porn")){
-                                    String keyword = sceneResults2.getString("hitContext");
+                                    JSONArray details = ((JSONObject)sceneResult).getJSONArray("details");
+                                    Object ob = details.get(0);
+                                    JSONArray contexts = ((JSONObject)ob).getJSONArray("contexts");
+                                    Object ob2 = contexts.get(0);
+                                    String keyword = ((JSONObject)ob2).getString("context");
                                     map.put("bl", "1");
-                                    map.put("text",keyword+"含色情信息");
+                                    map.put("text",keyword+"--含色情信息");
                                     return map;
                                 }else if(label.equals("contraband")){
-                                    String keyword = sceneResults2.getString("hitContext");
+                                    JSONArray details = ((JSONObject)sceneResult).getJSONArray("details");
+                                    Object ob = details.get(0);
+                                    JSONArray contexts = ((JSONObject)ob).getJSONArray("contexts");
+                                    Object ob2 = contexts.get(0);
+                                    String keyword = ((JSONObject)ob2).getString("context");
                                     map.put("bl", "1");
-                                    map.put("text",keyword+"含违禁信息");
+                                    map.put("text",keyword+"--含违禁信息");
                                     return map;
                                 }else{
-                                    String keyword = sceneResults2.getString("hitContext");
+                                    JSONArray details = ((JSONObject)sceneResult).getJSONArray("details");
+                                    Object ob = details.get(0);
+                                    JSONArray contexts = ((JSONObject)ob).getJSONArray("contexts");
+                                    Object ob2 = contexts.get(0);
+                                    String keyword = ((JSONObject)ob2).getString("context");
                                     map.put("bl", "1");
-                                    map.put("text",keyword+"含其他信息");
+                                    map.put("text",keyword+"--含其他信息");
                                     return map;
                                 }
                             }
@@ -142,17 +199,17 @@ public class CheckTextAndPicture extends BaseSample {
             }
         } catch (ServerException e) {
             e.printStackTrace();
-            map.put("bl", "1");
+            map.put("bl", "2");
             map.put("text","含敏感词汇");
             return map;
         } catch (ClientException e) {
             e.printStackTrace();
-            map.put("bl", "1");
+            map.put("bl", "2");
             map.put("text", "含敏感词汇");
             return map;
         } catch (Exception e){
             e.printStackTrace();
-            map.put("bl", "1");
+            map.put("bl", "2");
             map.put("text", "含敏感词汇");
             return map;
         }

@@ -91,14 +91,14 @@ public class AppCommentService {
     private static final Logger logger =Logger.getLogger(AppCommentService.class);
 
 
-
     /**
      * 发布作业
      * @return
      */
     public String addCommentEntry(AppCommentDTO dto,String comList)throws Exception{
+
         //文本检测
-        Map<String,Object> flag = CheckTextAndPicture.checkText(dto.getDescription() + "-----------" + dto.getTitle());
+        Map<String,Object> flag = CheckTextAndPicture.checkText(dto.getDescription() + "-----------" + dto.getTitle(),new ObjectId(dto.getAdminId()));
         String f = (String)flag.get("bl");
         if(f.equals("1")){
             return (String)flag.get("text");

@@ -1244,16 +1244,49 @@ public class BackStageService {
      * @param communityId
      */
     public void setChildCommunityFriends(final String[] uIds,final ObjectId communityId){
-        MemberEntry memberEntry = memberDao.getHeader(communityId);
+        //获得groupId
+        ObjectId obj =   communityDao.getGroupIdByCommunityId(communityId);
+        MemberEntry memberEntry = memberDao.getHeader(obj);
         if(memberEntry!=null){
             List<ObjectId> objectIdList = new ArrayList<ObjectId>();
             for(String str : uIds){
                 objectIdList.add(new ObjectId(str));
             }
-            setFriendEntry(memberEntry.getUserId(),objectIdList);
+            objectIdList.add(memberEntry.getUserId());
+            for(ObjectId oid : objectIdList){
+                setFriendEntry(oid,objectIdList);
+            }
         }
     }
 
+    /**
+     * 批量社长和孩子成为好友
+     * @param uIds
+     * @param communityIds
+     */
+    public void setMoreChildCommunityFriends(final String[] uIds,final List<ObjectId> communityIds){
+        //获得groupId
+        List<ObjectId> obj =   communityDao.getGroupIdsByCommunityIds(communityIds);
+        final List<ObjectId> memberEntryList = memberDao.getMoreHeader(obj);
+        final List<ObjectId> objectIdList = new ArrayList<ObjectId>();
+        for(String str : uIds){
+            objectIdList.add(new ObjectId(str));
+        }
+        //objectIdList.addAll(memberEntryList);
+        new Thread(new Runnable() {
+            @Override
+            public void run() {
+                for(ObjectId ob:memberEntryList){
+                    List<ObjectId> oids = new ArrayList<ObjectId>();
+                    oids.addAll(objectIdList);
+                    oids.add(ob);
+                    for(ObjectId oid : oids){
+                        setFriendEntry(oid,oids);
+                    }
+                }
+            }
+        }).start();
+    }
 
     public void setChildAutoFriends(final String[] uIds,final ObjectId communityId){
         new Thread(new Runnable() {

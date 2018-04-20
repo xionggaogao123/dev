@@ -94,7 +94,7 @@ public class AppNoticeService {
         List<ObjectId> objectIdList = new ArrayList<ObjectId>();
 
         //文本检测
-        Map<String,Object> flag = CheckTextAndPicture.checkText(dto.getContent() + "-----------" + dto.getTitle());
+        Map<String,Object> flag = CheckTextAndPicture.checkText(dto.getContent() + "-----------" + dto.getTitle(),userId);
         String f = (String)flag.get("bl");
         if(f.equals("1")){
             //return (String)flag.get("text");

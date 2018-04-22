@@ -322,5 +322,79 @@ public class BindController extends BaseController {
         return respObj;
     }
 
+    /**
+     * 多选添加虚拟学生
+     * @param thirdName
+     * @param number
+     * @param communityIds
+     * @return
+     */
+    @ApiOperation(value = "多选绑定社区下的虚拟学生", httpMethod = "POST", produces = "application/json")
+    @ApiResponses( value = {@ApiResponse(code = 200, message = "Successful — 请求已完成",response = RespObj.class)})
+    @RequestMapping("/addMoreBindVirtualCommunity")
+    @ResponseBody
+    public RespObj addMoreBindVirtualCommunity(@RequestParam(value="thirdName") String thirdName,@RequestParam(value="number") String number, @RequestParam(value="communityIds") String communityIds){
+        RespObj respObj = new RespObj(Constant.FAILD_CODE);
+        try{
+            if(communityIds!=null){
+                String[] strings =communityIds.split(",");
+                for(String str:strings){
+                    newVersionBindService.addBindVirtualCommunity(thirdName,number,new ObjectId(str),getUserId());
+                }
+            }
+            respObj.setCode(Constant.SUCCESS_CODE);
+            respObj.setMessage("绑定社区下的虚拟学生成功!");
+        }catch (Exception e){
+            respObj.setErrorMessage(e.getMessage());
+        }
+        return respObj;
+    }
+    
+    /**
+     * 多选绑定
+     */
+    @ApiOperation(value = "多选绑定编辑学生学号信息", httpMethod = "GET", produces = "application/json")
+    @ApiResponses( value = {@ApiResponse(code = 200, message = "Successful — 请求已完成",response = RespObj.class)})
+    @RequestMapping("/editMoreStudentNumberAndThirdName")
+    @ResponseBody
+    public RespObj editMoreStudentNumberAndThirdName(String communityIds,
+                                                 @ObjectIdType ObjectId userId,
+                                                 String thirdName,
+                                                 String studentNumber){
+        RespObj respObj = new RespObj(Constant.FAILD_CODE);
+        try{
+            if(communityIds !=null){
+                String[] strings = communityIds.split(",");
+                for(String str: strings){
+                    newVersionBindService.updateStudentNumberAndThirdName(new ObjectId(str), getUserId(), userId, studentNumber,thirdName);
+                }
+            }
+            respObj.setCode(Constant.SUCCESS_CODE);
+            respObj.setMessage("编辑学生学号和姓名信息成功！");
+        }catch (Exception e){
+            respObj.setErrorMessage(e.getMessage());
+        }
+        return respObj;
+    }
+    
+    /**
+     * 查询全部包含虚拟学生
+     * @return
+     */
+    @ApiOperation(value = "获取某个社区下绑定的孩子有哪些", httpMethod = "GET", produces = "application/json")
+    @ApiResponses( value = {@ApiResponse(code = 200, message = "Successful — 请求已完成",response = RespObj.class)})
+    @RequestMapping("/getAllCommunityBindStudentList")
+    @ResponseBody
+    public RespObj getAllCommunityBindStudentList(){
+        RespObj respObj = new RespObj(Constant.FAILD_CODE);
+        try{
+            List<NewVersionBindRelationDTO> dtoList=newVersionBindService.getAllCommunityBindStudentList(getUserId());
+            respObj.setCode(Constant.SUCCESS_CODE);
+            respObj.setMessage(dtoList);
+        }catch (Exception e){
+            respObj.setErrorMessage(e.getMessage());
+        }
+        return respObj;
+    }
 
 }

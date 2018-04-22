@@ -281,6 +281,36 @@ public class DefaultReportCardController extends BaseController{
         }
         return respObj;
     }
+    
+    @ApiOperation(value = "查询录入成绩的学生名单", httpMethod = "GET", produces = "application/json")
+    @ApiResponses( value = {@ApiResponse(code = 200, message = "保存或编辑成绩列表已完成",response = String.class),
+            @ApiResponse(code = 400, message = "请求中有语法问题，或不能满足请求"),
+            @ApiResponse(code = 500, message = "服务器不能完成请求")})
+    @RequestMapping("/searchRecordStudentScoresStr")
+    @ResponseBody
+    public RespObj searchRecordStudentScoresStr(@ObjectIdType ObjectId examGroupDetailId,
+                                             @RequestParam(required = false,defaultValue = "-1")int score,
+                                             @RequestParam(required = false,defaultValue = "-1")int scoreLevel,
+                                             @RequestParam(required = false,defaultValue = "1")int type){
+        RespObj respObj=new RespObj(Constant.FAILD_CODE);
+        try{
+            List<GroupExamUserRecordDTO> examScoreDTOs=reportCardService.searchRecordStudentScores(examGroupDetailId,score,scoreLevel,type);
+            respObj.setMessage(this.trans(examScoreDTOs));
+            respObj.setCode(Constant.SUCCESS_CODE);
+        }catch (Exception e){
+            respObj.setErrorMessage(e.getMessage());
+        }
+        return respObj;
+    }
+    
+    public List<GroupExamUserRecordStrDTO> trans(List<GroupExamUserRecordDTO> list) {
+        List<GroupExamUserRecordStrDTO> l = new ArrayList<GroupExamUserRecordStrDTO>();
+        for (GroupExamUserRecordDTO g : list) {
+            GroupExamUserRecordStrDTO gs = new GroupExamUserRecordStrDTO(g);
+            l.add(gs);
+        }
+        return l;
+    }
 
     @ApiOperation(value = "获取该考试的版本号", httpMethod = "GET", produces = "application/json")
     @ApiResponses( value = {@ApiResponse(code = 200, message = "保存或编辑成绩列表已完成",response = String.class),

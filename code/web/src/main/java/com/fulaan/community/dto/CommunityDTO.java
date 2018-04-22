@@ -36,6 +36,8 @@ public class CommunityDTO {
     private MemberDTO mine;
 
     private String errorMsg;
+    
+    private boolean isActive=false;
 
     /**
      * 置顶与否
@@ -232,4 +234,14 @@ public class CommunityDTO {
     public void setTop(int top) {
         this.top = top;
     }
+
+    public boolean isActive() {
+        return isActive;
+    }
+
+    public void setActive(boolean isActive) {
+        this.isActive = isActive;
+    }
+    
+    
 }

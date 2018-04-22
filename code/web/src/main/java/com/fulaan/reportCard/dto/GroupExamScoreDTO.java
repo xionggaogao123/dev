@@ -8,7 +8,7 @@ import java.util.List;
  */
 public class GroupExamScoreDTO {
 
-    private List<GroupExamUserRecordDTO> examGroupUserScoreDTOs=new ArrayList<GroupExamUserRecordDTO>();
+    private List<GroupExamUserRecordStrDTO> examGroupUserScoreDTOs=new ArrayList<GroupExamUserRecordStrDTO>();
 
     private int status;
 
@@ -41,11 +41,13 @@ public class GroupExamScoreDTO {
         this.version = version;
     }
 
-    public List<GroupExamUserRecordDTO> getExamGroupUserScoreDTOs() {
+    
+
+    public List<GroupExamUserRecordStrDTO> getExamGroupUserScoreDTOs() {
         return examGroupUserScoreDTOs;
     }
 
-    public void setExamGroupUserScoreDTOs(List<GroupExamUserRecordDTO> examGroupUserScoreDTOs) {
+    public void setExamGroupUserScoreDTOs(List<GroupExamUserRecordStrDTO> examGroupUserScoreDTOs) {
         this.examGroupUserScoreDTOs = examGroupUserScoreDTOs;
     }
 

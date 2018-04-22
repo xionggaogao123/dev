@@ -1,19 +1,17 @@
 package com.fulaan.reportCard.dto;
 
-import org.apache.commons.lang3.StringUtils;
-
 import com.pojo.reportCard.GroupExamUserRecordEntry;
 import com.sys.constants.Constant;
 
 /**
  * Created by scott on 2017/9/30.
  */
-public class GroupExamUserRecordDTO {
+public class GroupExamUserRecordStrDTO {
 
     private String id;
     private String groupExamDetailId;
     private String userId;
-    private double score;
+    private String score;
     private int scoreLevel;
     private String userName;
     private String userNumber;
@@ -25,20 +23,20 @@ public class GroupExamUserRecordDTO {
     private String subjectId;
 
 
-    public GroupExamUserRecordDTO(){
+    public GroupExamUserRecordStrDTO(){
 
     }
     
-    public GroupExamUserRecordDTO(GroupExamUserRecordStrDTO g){
+    public GroupExamUserRecordStrDTO(GroupExamUserRecordDTO g){
         this.id = g.getId();
         this.groupExamDetailId = g.getGroupExamDetailId();
         this.userId = g.getUserId();
-        if ("缺(免)考".equals(g.getScore())) {
-            this.score = -1;
-        } else if ("未填写".equals(g.getScore())||StringUtils.isBlank(g.getScore())) {
-            this.score = -2;
+        if (g.getScore() == -1) {
+            this.score = "缺(免)考";
+        } else if (g.getScore() == -2) {
+            this.score = "未填写";
         } else {
-            this.score = Double.valueOf(g.getScore());
+            this.score = String.valueOf(g.getScore());
         }
         
         this.scoreLevel= g.getScoreLevel();
@@ -50,28 +48,9 @@ public class GroupExamUserRecordDTO {
         this.rank = g.getRank();
         this.examType = g.getExamType();
         this.subjectId = g.getSubjectId();
-        
-    }
+    } 
 
-    public GroupExamUserRecordDTO(GroupExamUserRecordEntry examUserRecordEntry){
-        this.id=examUserRecordEntry.getID().toString();
-        this.groupExamDetailId=null!=examUserRecordEntry.getGroupExamDetailId()?
-                examUserRecordEntry.getGroupExamDetailId().toString(): Constant.EMPTY;
-        this.userId=null!=examUserRecordEntry.getUserId()?
-                examUserRecordEntry.getUserId().toString():Constant.EMPTY;
-        this.score=examUserRecordEntry.getScore();
-        this.scoreLevel=examUserRecordEntry.getScoreLevel();
-        this.communityId=null!=examUserRecordEntry.getCommunityId()?
-                examUserRecordEntry.getCommunityId().toString():Constant.EMPTY;
-        this.groupId=null!=examUserRecordEntry.getGroupId()?
-                examUserRecordEntry.getGroupId().toString():Constant.EMPTY;
-        this.mainUserId=null!=examUserRecordEntry.getMainUserId()?
-                examUserRecordEntry.getMainUserId().toString():Constant.EMPTY;
-        this.examType=null!=examUserRecordEntry.getExamType()?
-                examUserRecordEntry.getExamType().toString():Constant.EMPTY;
-        this.subjectId=null!=examUserRecordEntry.getSubjectId()?
-                examUserRecordEntry.getSubjectId().toString():Constant.EMPTY;
-    }
+    
 
     public String getSubjectId() {
         return subjectId;
@@ -161,11 +140,11 @@ public class GroupExamUserRecordDTO {
         this.userId = userId;
     }
 
-    public double getScore() {
+    public String getScore() {
         return score;
     }
 
-    public void setScore(double score) {
+    public void setScore(String score) {
         this.score = score;
     }
 

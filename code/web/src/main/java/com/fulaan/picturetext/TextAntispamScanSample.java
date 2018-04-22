@@ -39,7 +39,7 @@ public class TextAntispamScanSample extends BaseSample {
         List<Map<String, Object>> tasks = new ArrayList<Map<String, Object>>();
         Map<String, Object> task1 = new LinkedHashMap<String, Object>();
         task1.put("dataId", UUID.randomUUID().toString());
-        task1.put("content", "本校小额贷款，安全、快捷、方便、无抵押，随机随贷，当天放款，上门服务。联系q 946932");
+        task1.put("content", "习大大");
 
         tasks.add(task1);
 

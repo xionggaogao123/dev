@@ -661,6 +661,29 @@ public class ControlPhoneController extends BaseController {
         }
         return JSON.toJSONString(respObj);
     }
+
+    /**
+     * 分段管控孩子登录获取所有信息
+     */
+    @ApiOperation(value = "分段管控孩子登录获取所有信息", httpMethod = "POST", produces = "application/json")
+    @ApiResponses( value = {@ApiResponse(code = 200, message = "Successful — 请求已完成",response = String.class),
+            @ApiResponse(code = 400, message = "请求中有语法问题，或不能满足请求"),
+            @ApiResponse(code = 500, message = "服务器不能完成请求")})
+    @RequestMapping("/getCurrentAllMessageForSon")
+    @ResponseBody
+    public String getCurrentAllMessageForSon(){
+        RespObj respObj=new RespObj(Constant.FAILD_CODE);
+        try {
+            respObj.setCode(Constant.SUCCESS_CODE);
+            Map<String,Object> dtos= controlPhoneService.getCurrentAllSchoolMessageForSon(getUserId());
+            respObj.setMessage(dtos);
+        } catch (Exception e) {
+            e.printStackTrace();
+            respObj.setCode(Constant.FAILD_CODE);
+            respObj.setErrorMessage("新孩子登录获取所有信息失败!");
+        }
+        return JSON.toJSONString(respObj);
+    }
     /**
      * 孩子未登录获取默认信息
      */
@@ -699,6 +722,30 @@ public class ControlPhoneController extends BaseController {
         try {
             respObj.setCode(Constant.SUCCESS_CODE);
             Map<String,Object> dtos= controlPhoneService.getNewSimpleMessageForSon();
+            respObj.setMessage(dtos);
+        } catch (Exception e) {
+            e.printStackTrace();
+            respObj.setCode(Constant.FAILD_CODE);
+            respObj.setErrorMessage("孩子新未登录获取默认信息失败!");
+        }
+        return JSON.toJSONString(respObj);
+    }
+
+    /**
+     * 孩子分段未登录获取默认信息
+     */
+    @SessionNeedless
+    @ApiOperation(value = "孩子分段未登录获取默认信息", httpMethod = "POST", produces = "application/json")
+    @ApiResponses( value = {@ApiResponse(code = 200, message = "Successful — 请求已完成",response = String.class),
+            @ApiResponse(code = 400, message = "请求中有语法问题，或不能满足请求"),
+            @ApiResponse(code = 500, message = "服务器不能完成请求")})
+    @RequestMapping("/getCurrentSimpleMessageForSon")
+    @ResponseBody
+    public String getCurrentSimpleMessageForSon(){
+        RespObj respObj=new RespObj(Constant.FAILD_CODE);
+        try {
+            respObj.setCode(Constant.SUCCESS_CODE);
+            Map<String,Object> dtos= controlPhoneService.getCurrentSimpleMessageForSon();
             respObj.setMessage(dtos);
         } catch (Exception e) {
             e.printStackTrace();
@@ -755,6 +802,30 @@ public class ControlPhoneController extends BaseController {
     }
 
     /**
+     * 最新老师首页加载基础信息(分段管控)
+     */
+    @ApiOperation(value = "最新老师首页加载基础信息(分段管控)", httpMethod = "POST", produces = "application/json")
+    @ApiResponses( value = {@ApiResponse(code = 200, message = "Successful — 请求已完成",response = String.class),
+            @ApiResponse(code = 400, message = "请求中有语法问题，或不能满足请求"),
+            @ApiResponse(code = 500, message = "服务器不能完成请求")})
+    @RequestMapping("/getCurrentSimpleMessageForTea")
+    @ResponseBody
+    public String getCurrentSimpleMessageForTea(){
+        RespObj respObj=new RespObj(Constant.FAILD_CODE);
+        try {
+            respObj.setCode(Constant.SUCCESS_CODE);
+            Map<String,Object> dtos= controlPhoneService.getCurrentSimpleMessageForTea(getUserId());
+            respObj.setMessage(dtos);
+        } catch (Exception e) {
+            e.printStackTrace();
+            respObj.setCode(Constant.FAILD_CODE);
+            logger.error("error",e);
+            respObj.setErrorMessage("老师首页加载失败!");
+        }
+        return JSON.toJSONString(respObj);
+    }
+
+    /**
      * 老师首页加载
      */
     @ApiOperation(value = "老师首页加载", httpMethod = "POST", produces = "application/json")
@@ -778,6 +849,30 @@ public class ControlPhoneController extends BaseController {
         return JSON.toJSONString(respObj);
     }
 
+
+    /**
+     * 老师首页加载(分段管控)
+     */
+    @ApiOperation(value = "老师首页加载(分段管控)", httpMethod = "POST", produces = "application/json")
+    @ApiResponses( value = {@ApiResponse(code = 200, message = "Successful — 请求已完成",response = String.class),
+            @ApiResponse(code = 400, message = "请求中有语法问题，或不能满足请求"),
+            @ApiResponse(code = 500, message = "服务器不能完成请求")})
+    @RequestMapping("/getCurentAllMessageForTea")
+    @ResponseBody
+    public String getCurentAllMessageForTea(@ApiParam(name = "communityId", required = true, value = "社区id") @RequestParam("communityId") String communityId){
+        RespObj respObj=new RespObj(Constant.FAILD_CODE);
+        try {
+            respObj.setCode(Constant.SUCCESS_CODE);
+            //Map<String,Object> dtos= controlPhoneService.getAllMessageForTea(getUserId(),new ObjectId(communityId));旧
+            Map<String,Object> dtos= controlPhoneService.getNewSchoolOneMessageForTea(getUserId(), new ObjectId(communityId));
+            respObj.setMessage(dtos);
+        } catch (Exception e) {
+            e.printStackTrace();
+            respObj.setCode(Constant.FAILD_CODE);
+            respObj.setErrorMessage("老师首页加载失败!");
+        }
+        return JSON.toJSONString(respObj);
+    }
     /**
      * 老师切换到管控
      * @return

@@ -83,6 +83,19 @@ public class AppDetailDTO {
         this.updateTime= DateTimeUtils.convert(detailEntry.getUpdateTime(),DateTimeUtils.DATE_YYYY_MM_DD);
     }
 
+    public AppDetailDTO(AppDetailEntry detailEntry,int i){
+        this.id=detailEntry.getID().toString();
+        this.appPackageName=detailEntry.getAppPackageName();
+
+        this.type=detailEntry.getType();
+        this.isControl = detailEntry.getIsControl();
+        this.whiteOrBlack = detailEntry.getWhiteOrBlack();
+
+        this.url=detailEntry.getUrl();
+        this.appName=detailEntry.getAppName();
+
+    }
+
     public String getFileKey() {
         return fileKey;
     }

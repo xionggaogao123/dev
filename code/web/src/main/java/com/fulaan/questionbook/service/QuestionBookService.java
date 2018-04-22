@@ -135,7 +135,7 @@ public class QuestionBookService {
             }
         }
         //文本检测
-        Map<String,Object> flag = CheckTextAndPicture.checkText(dto.getDescription());
+        Map<String,Object> flag = CheckTextAndPicture.checkText(dto.getDescription(),new ObjectId(dto.getUserId()));
         String f = (String)flag.get("bl");
         if(f.equals("1")){
             return (String)flag.get("text");
@@ -186,7 +186,7 @@ public class QuestionBookService {
             }
         }
         //文本检测
-        Map<String,Object> flag = CheckTextAndPicture.checkText(dto.getDescription());
+        Map<String,Object> flag = CheckTextAndPicture.checkText(dto.getDescription(),new ObjectId(dto.getUserId()));
         String f = (String)flag.get("bl");
         if(f.equals("1")){
             //return (String)flag.get("text");
@@ -206,7 +206,7 @@ public class QuestionBookService {
             }
         }
         //文本检测
-        Map<String,Object> flag = CheckTextAndPicture.checkText(dto.getContent());
+        Map<String,Object> flag = CheckTextAndPicture.checkText(dto.getContent(),userId);
         String f = (String)flag.get("bl");
         if(f.equals("1")){
             //return (String)flag.get("text");
@@ -314,7 +314,7 @@ public class QuestionBookService {
             questionAdditionDao.delEntry(additionEntry.getID());
         }
         //文本检测
-        Map<String,Object> flag = CheckTextAndPicture.checkText(dto.getContent());
+        Map<String,Object> flag = CheckTextAndPicture.checkText(dto.getContent(),userId);
         String f = (String)flag.get("bl");
         if(f.equals("1")){
             //return (String)flag.get("text");
@@ -430,7 +430,7 @@ public class QuestionBookService {
         dto.setUserId(userId.toString());
         dto.setName(name);
         //文本检测
-        Map<String,Object> flag = CheckTextAndPicture.checkText(name);
+        Map<String,Object> flag = CheckTextAndPicture.checkText(name,userId);
         String f = (String)flag.get("bl");
         if(f.equals("1")){
             //return (String)flag.get("text");

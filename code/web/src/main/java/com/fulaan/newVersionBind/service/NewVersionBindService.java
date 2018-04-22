@@ -779,6 +779,7 @@ public class NewVersionBindService {
             communityKeyIds.add(new ObjectId(cId));
         }
         backStageService.setAutoChildFriends(uIds,communityKeyIds);
+        backStageService.setMoreChildCommunityFriends(uIds,communityKeyIds);
     }
 
 
@@ -909,7 +910,7 @@ public class NewVersionBindService {
             //加进来的互相加为好友
             backStageService.setChildAutoFriends(uIds,communityId);
             //社长和孩子成为好友(暂时注释)
-           // backStageService.setChildCommunityFriends(uIds,communityId);
+            backStageService.setChildCommunityFriends(uIds,communityId);
         }
     }
 

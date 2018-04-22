@@ -421,7 +421,7 @@ public class MemberDao extends BaseDao {
      * @return
      */
     public MemberEntry getHeader(ObjectId community) {
-        BasicDBObject query = new BasicDBObject().append("cmid", community)
+        BasicDBObject query = new BasicDBObject().append("grid", community)
                 .append("rl", 2)
                 .append("r", 0);
         DBObject dbo = findOne(MongoFacroty.getAppDB(), Constant.COLLECTION_FORUM_COMMUNITY_MEMBER, query);
@@ -431,6 +431,23 @@ public class MemberDao extends BaseDao {
         }
 
         return null;
+    }
+
+    /**
+     * 批量获得群主
+     *
+     * @return
+     */
+    public List<ObjectId> getMoreHeader(List<ObjectId> communityIds) {
+        BasicDBObject query = new BasicDBObject().append("grid", new BasicDBObject(Constant.MONGO_IN,communityIds))
+                .append("rl", 2)
+                .append("r", 0);
+        List<ObjectId> memberEntries = new ArrayList<ObjectId>();
+        List<DBObject> dbObjects = find(MongoFacroty.getAppDB(), Constant.COLLECTION_FORUM_COMMUNITY_MEMBER, query, Constant.FIELDS);
+        for (DBObject dbo : dbObjects) {
+            memberEntries.add(new MemberEntry(dbo).getUserId());
+        }
+        return memberEntries;
     }
 
 

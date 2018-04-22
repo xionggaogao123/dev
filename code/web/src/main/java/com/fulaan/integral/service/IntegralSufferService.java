@@ -87,7 +87,7 @@ public class IntegralSufferService {
                 }else{
                     integralRecordEntry.setScore(80);
                 }
-            }else if(sort==IntegralType.getBigType()){//最后一次 多加  50分
+            }else if(stringList.size()==1){//最后一次 多加  50分
                 integralRecordEntry.setScore(integralType.getSname()+IntegralType.con.getSname());
             }else{//其中
                 integralRecordEntry.setScore(integralType.getSname());
@@ -112,8 +112,8 @@ public class IntegralSufferService {
         }else{//家长
             if(sort==0){//第一次  加  50 分
                 integralRecordEntry.setScore(IntegralType.all.getEname());
-                integralRecordEntry.setSort(Constant.ZERO);
-            }else if(sort==IntegralType.getBigType()){//最后一次 多加  50分
+               // integralRecordEntry.setSort(Constant.ZERO);
+            }else if(stringList.size()==2){//最后一次 多加  50分(无小课堂)
                 integralRecordEntry.setSort(integralType.getEname() + IntegralType.con.getEname());
             }else{//其中
                 integralRecordEntry.setScore(integralType.getEname());
@@ -134,6 +134,11 @@ public class IntegralSufferService {
             }
         }
         return score;
+    }
+
+    public static void main(String[] args){
+        int score = IntegralType.getSnameAllType();
+        System.out.print(score);
     }
 
     /**

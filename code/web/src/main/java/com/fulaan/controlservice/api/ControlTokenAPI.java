@@ -36,6 +36,17 @@ public class ControlTokenAPI extends BaseAPI {
         return str;
     }
 
+    //获得应用信息列表
+    public static String getAppList(String accessToken,String usessionId) {
+        Map<String,Object> map = new HashMap<String, Object>();
+        map.put("pageNo",1);
+        map.put("pageSize",20);
+        //map.put("usessionId",usessionId);
+       /// map.put("eduType","");
+        String str = postForToken("/appInfo/getAppList?accessToken=" + accessToken, map);
+        return str;
+    }
+
 
     //获得ticket
     public static String getTicket(String accessToken,String usessionId) {

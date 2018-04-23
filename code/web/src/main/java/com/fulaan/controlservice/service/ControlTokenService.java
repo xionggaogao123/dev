@@ -43,7 +43,18 @@ public class ControlTokenService {
         return "";
     }
     public static void main(String[] args){
-        System.out.print("1");
+        String str= ControlTokenAPI.getAccessToken("0");
+        try{
+            JSONObject dataJson = new JSONObject(str);
+            String rows = dataJson.getString("retCode");
+            if(rows.equals("000000")){
+                JSONObject rows2 =dataJson.getJSONObject("data");
+                String str2 = ControlTokenAPI.getAppList(rows2.getString("accessToken"),"");
+            }
+        }catch (Exception e){
+            e.printStackTrace();
+        }
+
     }
 
     public String getUsessionId(String sysCode){

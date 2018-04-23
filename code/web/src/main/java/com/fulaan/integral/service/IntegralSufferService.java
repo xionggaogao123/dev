@@ -114,7 +114,7 @@ public class IntegralSufferService {
                 integralRecordEntry.setScore(IntegralType.all.getEname());
                // integralRecordEntry.setSort(Constant.ZERO);
             }else if(stringList.size()==2){//最后一次 多加  50分(无小课堂)
-                integralRecordEntry.setSort(integralType.getEname() + IntegralType.con.getEname());
+                integralRecordEntry.setScore(integralType.getEname() + IntegralType.con.getEname());
             }else{//其中
                 integralRecordEntry.setScore(integralType.getEname());
             }

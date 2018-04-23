@@ -79,9 +79,9 @@ public class DefaultWapController extends BaseController {
         SessionValue value = new SessionValue();
         value.put("redirectUrl", redirectUrl);
         ObjectId cacheKey = new ObjectId();
-        CacheHandler.cacheSessionValue(cacheKey.toString(), value, Constant.SECONDS_IN_DAY);
+        CacheHandler.cacheSessionValue(cacheKey.toString(), value, Constant.SECONDS_IN_HALF_YEAR);
         Cookie appShareCookie = new Cookie(Constant.APP_SHARE, cacheKey.toString());
-        appShareCookie.setMaxAge(Constant.SECONDS_IN_DAY);
+        appShareCookie.setMaxAge(Constant.SECONDS_IN_HALF_YEAR);
         appShareCookie.setPath(Constant.BASE_PATH);
         response.addCookie(appShareCookie);
         return "wap/post";

@@ -250,7 +250,7 @@ public class DefaultPersonalCenterController extends BaseController {
 
         String userKey = CacheHandler.getUserKey(sv.getId());
         CacheHandler.cacheSessionValue(userKey,
-                sv, Constant.SECONDS_IN_DAY);
+                sv, Constant.SECONDS_IN_HALF_YEAR);
         Map<String, Object> result = new HashMap<String, Object>();
         ExpLogType avatarScore = ExpLogType.AVATAR;
         if (experienceService.updateNoRepeat(getUserId().toString(), avatarScore)) {

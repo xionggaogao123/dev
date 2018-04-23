@@ -528,7 +528,7 @@ public class DefaultUserCenterController extends BaseController {
             sv.setRealName(nickName);
             String userKey = CacheHandler.getUserKey(sv.getId());
             CacheHandler.cacheSessionValue(userKey,
-                    sv, Constant.SECONDS_IN_DAY);
+                    sv, Constant.SECONDS_IN_HALF_YEAR);
         } catch (Exception e) {
             e.printStackTrace();
             return RespObj.FAILD(e.getMessage());

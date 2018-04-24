@@ -42,6 +42,7 @@ import org.apache.commons.lang3.StringUtils;
 import org.apache.poi.hssf.usermodel.*;
 import org.apache.poi.ss.usermodel.Cell;
 import org.apache.poi.ss.usermodel.DateUtil;
+import org.apache.poi.ss.util.CellRangeAddress;
 import org.apache.poi.ss.util.NumberToTextConverter;
 import org.bson.types.ObjectId;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -1881,9 +1882,12 @@ public class ReportCardService {
             String sheetName = detailEntry.getExamName() + "录入模板";
             HSSFWorkbook wb = new HSSFWorkbook();
             HSSFSheet sheet = wb.createSheet(sheetName);
-            HSSFRow row = sheet.createRow(0);
+            sheet.addMergedRegion(new CellRangeAddress(0, 0, 0, 5));
+            HSSFRow rowZero = sheet.createRow(0);
+            HSSFCell cellZero = rowZero.createCell(0);
+            cellZero.setCellValue("缺（免）考：如考生成绩不计入总分，则选择“缺”；缺考信息默认不发送");
 
-
+            HSSFRow row = sheet.createRow(1);
             HSSFCell cell = row.createCell(0);
             cell.setCellValue("关键字Id");
 
@@ -1902,7 +1906,7 @@ public class ReportCardService {
             cell = row.createCell(5);
             cell.setCellValue("考试分值");
 
-            int rowLine = 1;
+            int rowLine = 2;
 
             HSSFRow rowItem;
             HSSFCell cellItem;
@@ -1951,7 +1955,7 @@ public class ReportCardService {
         HSSFSheet sheet = workbook.getSheet(workbook.getSheetName(0));
         int rowNum = sheet.getLastRowNum();
         List<GroupExamUserRecordDTO> examScoreDTOs = new ArrayList<GroupExamUserRecordDTO>();
-        for (int j = 1; j <= rowNum; j++) {
+        for (int j = 2; j <= rowNum; j++) {
             GroupExamUserRecordDTO item = new GroupExamUserRecordDTO();
             String id = sheet.getRow(j).getCell(0).getStringCellValue();
             String groupExamDetailId = sheet.getRow(j).getCell(1).getStringCellValue();
@@ -1983,7 +1987,14 @@ public class ReportCardService {
         if (cell != null) {
             String vvv = getStringCellValue(cell);
             if (StringUtils.isNotBlank(vvv)) {
-                cellValue = getValueByPrint(vvv);
+                if ("缺".equals(vvv.trim())) {
+                    
+                } else {
+                    cellValue = getValueByPrint(vvv);
+                }
+                
+            } else {
+                cellValue = -2;
             }
         }
         return cellValue;

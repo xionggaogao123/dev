@@ -63,6 +63,7 @@ public class GroupExamDetailDTO {
     private int status;//状态 0保存 1删除 2发送（未签字）3已签字
     private boolean isOwner;
     private int showType;
+    private int lrType;
 
     public GroupExamDetailDTO(){
 
@@ -91,7 +92,7 @@ public class GroupExamDetailDTO {
         }
         return new GroupExamDetailEntry(gId,
                 cId, examTypeId, recordScoreType, uid, examName,
-                sId, maxScore, qualifyScore, excellentScore, examTime,signCount,signedCount,showType);
+                sId, maxScore, qualifyScore, excellentScore, examTime,signCount,signedCount,showType,lrType);
     }
 
     public GroupExamDetailDTO(GroupExamDetailEntry entry){
@@ -113,6 +114,7 @@ public class GroupExamDetailDTO {
         this.status=entry.getStatus();
         this.examStrTime= DateTimeUtils.convert(entry.getExamTime(),DateTimeUtils.DATE_YYYY_MM_DD);
         this.showType = entry.getShowType();
+        this.lrType = entry.getLrType();
     }
 
     public boolean isOwner() {
@@ -459,6 +461,14 @@ public class GroupExamDetailDTO {
 
     public void setUnCompleteCount(int unCompleteCount) {
         this.unCompleteCount = unCompleteCount;
+    }
+
+    public int getLrType() {
+        return lrType;
+    }
+
+    public void setLrType(int lrType) {
+        this.lrType = lrType;
     }
 
 

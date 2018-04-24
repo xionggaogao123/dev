@@ -47,7 +47,8 @@ public class GroupExamDetailEntry extends BaseDBObject{
                                 long examTime,
                                 int signCount,
                                 int signedCount,
-                                int showType
+                                int showType,
+                                int lrType
                                 ){
         BasicDBObject basicDBObject=new BasicDBObject()
                 .append("ms",maxScore)
@@ -65,7 +66,8 @@ public class GroupExamDetailEntry extends BaseDBObject{
                 .append("sc",signCount)
                 .append("sec",signedCount)
                 .append("st",Constant.ZERO)
-                .append("sw",showType );
+                .append("sw",showType )
+                .append("lrType", lrType);
         setBaseEntry(basicDBObject);
     }
 
@@ -131,6 +133,14 @@ public class GroupExamDetailEntry extends BaseDBObject{
 
     public int getShowType(){
         return getSimpleIntegerValueDef("sw", Constant.ZERO);
+    }
+    
+    public void setLrType(int lrType){
+        setSimpleValue("lrType",lrType);
+    }
+
+    public int getLrType(){
+        return getSimpleIntegerValueDef("lrType", Constant.TWO);
     }
 
     public void setMaxScore(int maxScore){

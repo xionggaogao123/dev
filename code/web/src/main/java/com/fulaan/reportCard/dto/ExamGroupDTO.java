@@ -10,6 +10,7 @@ public class ExamGroupDTO {
     private String communityId;
     private String examType;
     private int recordScoreType;
+    private int lrType;
     private String examName;
     private String subjectId;
     private int maxScore;
@@ -17,6 +18,7 @@ public class ExamGroupDTO {
     private int excellentScore;
     private String examStrTime;
     private int showType;
+     
 
     public ExamGroupDTO(){
 
@@ -36,6 +38,7 @@ public class ExamGroupDTO {
         detailDTO.setExcellentScore(this.excellentScore);
         detailDTO.setExamStrTime(this.examStrTime);
         detailDTO.setShowType(this.showType);
+        detailDTO.setLrType(lrType);
         return detailDTO;
     }
 
@@ -136,4 +139,14 @@ public class ExamGroupDTO {
     public void setExamStrTime(String examStrTime) {
         this.examStrTime = examStrTime;
     }
+
+    public int getLrType() {
+        return lrType;
+    }
+
+    public void setLrType(int lrType) {
+        this.lrType = lrType;
+    }
+    
+    
 }

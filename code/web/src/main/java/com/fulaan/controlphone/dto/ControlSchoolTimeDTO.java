@@ -17,6 +17,8 @@ public class ControlSchoolTimeDTO {
     private int week;
     private String communityId;
 
+    private String manyClassTime;
+
     public ControlSchoolTimeDTO(){
 
     }
@@ -31,6 +33,23 @@ public class ControlSchoolTimeDTO {
             this.startTime = e.getStartTime();
             this.endTime = e.getEndTime();
             this.week = e.getWeek();
+        }else{
+            new ControlSchoolTimeDTO();
+        }
+    }
+
+    public ControlSchoolTimeDTO(ControlSchoolTimeEntry e,String manyClassTime){
+        if(e!=null){
+            this.id = e.getID()==null?"":e.getID().toString();
+            this.parentId = e.getParentId() == null ? "" : e.getParentId().toString();
+            this.userId = e.getUserId() == null ? "" : e.getUserId().toString();
+            this.communityId = e.getCommunityId() == null ? "" : e.getCommunityId().toString();
+            this.type = e.getType();
+            this.dataTime = e.getDataTime();
+            this.startTime = e.getStartTime();
+            this.endTime = e.getEndTime();
+            this.week = e.getWeek();
+            this.manyClassTime = manyClassTime;
         }else{
             new ControlSchoolTimeDTO();
         }
@@ -96,6 +115,13 @@ public class ControlSchoolTimeDTO {
 
     }
 
+    public String getManyClassTime() {
+        return manyClassTime;
+    }
+
+    public void setManyClassTime(String manyClassTime) {
+        this.manyClassTime = manyClassTime;
+    }
 
     public String getId() {
         return id;

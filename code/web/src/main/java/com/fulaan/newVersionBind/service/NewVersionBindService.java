@@ -914,6 +914,60 @@ public class NewVersionBindService {
         }
     }
 
+    public Map<String,Object> saoCommunityBindEntry(ObjectId userId,ObjectId communityId) throws Exception{
+        //查询该用户的关联家长
+        NewVersionBindRelationEntry newVersionBindRelationEntry = newVersionBindRelationDao.getBindEntry(userId);
+        Map<String,Object> map = new HashMap<String, Object>();
+        if(newVersionBindRelationEntry==null){
+           /* map.put("emChatId","");
+            map.put("userIds","");
+            return map;*/
+            throw  new Exception("该学生未绑定家长");
+        }
+        ObjectId mainUserId = newVersionBindRelationEntry.getMainUserId();
+        map.put("userIds",mainUserId.toString());
+        CommunityEntry communityEntry = communityDao.findByObjectId(communityId);
+        map.put("emChatId",communityEntry.getEmChatId());
+        //先删除绑定关系
+        newVersionCommunityBindDao.removeSaoNewVersionCommunity(communityId, mainUserId, userId);
+        String userIds = userId.toString();
+        if(StringUtils.isNotBlank(userIds)) {
+            String[] uIds = userIds.split(",");
+            for (String uId : uIds) {
+                NewVersionCommunityBindEntry bindEntry = newVersionCommunityBindDao.getEntry(communityId, mainUserId, new ObjectId(uId));
+                if (null != bindEntry) {
+                    if (bindEntry.getRemoveStatus() == Constant.ONE) {
+                        newVersionCommunityBindDao.updateEntryStatus(bindEntry.getID());
+                    }
+                } else {
+                    NewVersionCommunityBindEntry entry = new NewVersionCommunityBindEntry(communityId, mainUserId, new ObjectId(uId));
+                    newVersionCommunityBindDao.saveEntry(entry);
+                }
+
+                //设置孩子与该班级的其他孩子自动成为好友
+//                backStageService.setChildAutoFriends(new ObjectId(uId),communityId);
+
+                long current = System.currentTimeMillis();
+                //向学生端推送消息
+                /*try {
+                    MQTTSendMsg.sendMessage(MQTTType.community.getEname(), uId,current);
+                    SimpleDateFormat formatter = new SimpleDateFormat("yyyyMMddHHmmss");
+                    String dateString = formatter.format(new Date(current));
+                    String scontent = dateString + MQTTType.community.getEname();
+                    this.addControlVersion(new ObjectId(uId),mainUserId,scontent,2);
+                }catch (Exception e){
+
+                }*/
+            }
+
+            //加进来的互相加为好友
+            backStageService.setChildAutoFriends(uIds,communityId);
+            //社长和孩子成为好友(暂时注释)
+            backStageService.setChildCommunityFriends(uIds,communityId);
+        }
+        return map;
+    }
+
 
     //添加社区发出版本（老师和家长通用）
     public void addControlVersion(ObjectId communityId,ObjectId userId,String version,int type){

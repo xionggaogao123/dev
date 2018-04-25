@@ -1163,58 +1163,11 @@ public class ControlPhoneService {
         long zero = DateTimeUtils.getStrToLongTime(str, "yyyy-MM-dd");
         SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
         String dateNowStr = sdf.format(zero);
-        // ControlSchoolTimeEntry entry2 = controlSchoolTimeDao.getEntry(1);
-        ControlSchoolTimeEntry entry2 = controlSchoolTimeDao.getOtherEntry(2, dateNowStr);
-        if(entry2 != null){
-            String stm = entry2.getStartTime();
-            long sl = 0l;
-            if(stm != null && !stm.equals("")){
-                sl = DateTimeUtils.getStrToLongTime(dateNowStr+" "+stm, "yyyy-MM-dd HH:mm:ss");
-            }
-            String etm = entry2.getEndTime();
-            long el = 0l;
-            if(etm != null && !etm.equals("")){
-                el = DateTimeUtils.getStrToLongTime(dateNowStr+" "+etm, "yyyy-MM-dd HH:mm:ss");
-            }
-            if(current>sl && current < el){
-                map.put("isControl",true);
-            }else{
-                map.put("isControl",true);
-            }
-            map.put("dto",new ControlSchoolTimeDTO(entry2));
-        }else{
-            //管控时间
-            Calendar cal = Calendar.getInstance();
-            int w = cal.get(Calendar.DAY_OF_WEEK) - 1;
-            if(w==0){
-                w= 7;
-            }
-            ControlSchoolTimeEntry entry = controlSchoolTimeDao.getEntry(w);
-            if(entry != null){
-                String stm = entry.getStartTime();
-                long sl = 0l;
-                if(stm != null && !stm.equals("")){
-                    sl = DateTimeUtils.getStrToLongTime(dateNowStr+" "+stm, "yyyy-MM-dd HH:mm:ss");
-                }
-                String etm = entry.getEndTime();
-                long el = 0l;
-                if(etm != null && !etm.equals("")){
-                    el = DateTimeUtils.getStrToLongTime(dateNowStr+" "+etm, "yyyy-MM-dd HH:mm:ss");
-                }
-                if(current>sl && current < el){
-                    map.put("isControl",true);
-                }else{
-                    map.put("isControl",true);
-                }
-                map.put("dto",new ControlSchoolTimeDTO(entry));
-            }else{
-                map.put("isControl",true);
-                map.put("dto",new ControlSchoolTimeDTO());
-            }
-        }
         map.put("freeTime",-1);
         List<PhoneTimeDTO> phoneTimeDTOs = new ArrayList<PhoneTimeDTO>();
         List<ControlSchoolTimeEntry> entryList = controlSchoolTimeDao.getAllEntryList();
+        map.put("dto",this.getCurrentNowControlDto(entryList));
+        map.put("isControl",true);
         Map<String,PhoneTimeDTO> phoneMap = new HashMap<String, PhoneTimeDTO>();
         for(ControlSchoolTimeEntry ctm : entryList){
             PhoneTimeDTO phoneTimeDTO = new PhoneTimeDTO();
@@ -1227,7 +1180,7 @@ public class ControlPhoneService {
                 phoneTimeDTO.setCurrentTime(ctm.getWeek()+"");
                 PhoneTimeDTO phoneTimeDTO1 = phoneMap.get(ctm.getWeek()+"");
                 if(phoneTimeDTO1!=null){
-                    phoneTimeDTO1.setClassTime(phoneTimeDTO1.getClassTime()+"**"+currentTime);
+                    phoneTimeDTO1.setClassTime(phoneTimeDTO1.getClassTime()+"###"+currentTime);
                     phoneMap.put(ctm.getWeek()+"",phoneTimeDTO1);
                 }else{
                     phoneTimeDTO.setClassTime(currentTime);
@@ -1238,7 +1191,7 @@ public class ControlPhoneService {
                 phoneTimeDTO.setCurrentTime(ctm.getDataTime().substring(5,10));
                 PhoneTimeDTO phoneTimeDTO1 = phoneMap.get(ctm.getDataTime());
                 if(phoneTimeDTO1!=null){
-                    phoneTimeDTO1.setClassTime(phoneTimeDTO1.getClassTime()+"**"+currentTime);
+                    phoneTimeDTO1.setClassTime(phoneTimeDTO1.getClassTime()+"###"+currentTime);
                     phoneMap.put(ctm.getDataTime()+"",phoneTimeDTO1);
                 }else{
                     phoneTimeDTO.setClassTime(currentTime);
@@ -1248,7 +1201,7 @@ public class ControlPhoneService {
                 phoneTimeDTO.setCurrentTime(ctm.getDataTime());
                 PhoneTimeDTO phoneTimeDTO1 = phoneMap.get(ctm.getDataTime());
                 if(phoneTimeDTO1!=null){
-                    phoneTimeDTO1.setClassTime(phoneTimeDTO1.getClassTime()+"**"+currentTime);
+                    phoneTimeDTO1.setClassTime(phoneTimeDTO1.getClassTime()+"###"+currentTime);
                     phoneMap.put(ctm.getDataTime()+"",phoneTimeDTO1);
                 }else{
                     phoneTimeDTO.setClassTime(currentTime);
@@ -1807,7 +1760,7 @@ public class ControlPhoneService {
                 phoneTimeDTO.setCurrentTime(ctm.getWeek()+"");
                 PhoneTimeDTO phoneTimeDTO1 = phoneMap.get(ctm.getWeek()+"");
                 if(phoneTimeDTO1!=null){
-                    phoneTimeDTO1.setClassTime(phoneTimeDTO1.getClassTime()+"**"+currentTime);
+                    phoneTimeDTO1.setClassTime(phoneTimeDTO1.getClassTime()+"###"+currentTime);
                     phoneMap.put(ctm.getWeek()+"",phoneTimeDTO1);
                 }else{
                     phoneTimeDTO.setClassTime(currentTime);
@@ -1818,7 +1771,7 @@ public class ControlPhoneService {
                 phoneTimeDTO.setCurrentTime(ctm.getDataTime().substring(5,10));
                 PhoneTimeDTO phoneTimeDTO1 = phoneMap.get(ctm.getDataTime());
                 if(phoneTimeDTO1!=null){
-                    phoneTimeDTO1.setClassTime(phoneTimeDTO1.getClassTime()+"**"+currentTime);
+                    phoneTimeDTO1.setClassTime(phoneTimeDTO1.getClassTime()+"###"+currentTime);
                     phoneMap.put(ctm.getDataTime()+"",phoneTimeDTO1);
                 }else{
                     phoneTimeDTO.setClassTime(currentTime);
@@ -1828,7 +1781,7 @@ public class ControlPhoneService {
                 phoneTimeDTO.setCurrentTime(ctm.getDataTime());
                 PhoneTimeDTO phoneTimeDTO1 = phoneMap.get(ctm.getDataTime());
                 if(phoneTimeDTO1!=null){
-                    phoneTimeDTO1.setClassTime(phoneTimeDTO1.getClassTime()+"**"+currentTime);
+                    phoneTimeDTO1.setClassTime(phoneTimeDTO1.getClassTime()+"###"+currentTime);
                     phoneMap.put(ctm.getDataTime()+"",phoneTimeDTO1);
                 }else{
                     phoneTimeDTO.setClassTime(currentTime);
@@ -2011,6 +1964,12 @@ public class ControlPhoneService {
         }
         //获得当前时间
         long current=System.currentTimeMillis();
+        Calendar calendar = Calendar.getInstance();
+        calendar.setTime(new Date(current));
+        int hour = calendar.get(Calendar.HOUR_OF_DAY);
+        if(hour<8){
+            current = current - 24*60*60*1000;
+        }
         //获得时间批次
         String str = DateTimeUtils.getLongToStrTimeTwo(current).substring(0,10);
         ObjectId oid = new ObjectId();
@@ -2029,41 +1988,37 @@ public class ControlPhoneService {
                         el = DateTimeUtils.getStrToLongTime(endStr+" "+"23:59:59", "yyyy-MM-dd HH:mm:ss");
                     }
                     if(current>sl && current < el){
+                        ControlSchoolTimeEntry entry2 = map1.get(oid);
+                        String ctm = controlSchoolTimeEntry.getStartTime()+"-"+controlSchoolTimeEntry.getEndTime();
+                        if(entry2!=null){
+                            if(entry2.getDataTime().equals(controlSchoolTimeEntry.getDataTime())){
+                                controlSchoolTimeEntry.setManyClassTime(entry2.getManyClassTime()+"###"+ctm);
+                            }
+                        }else{
+                            controlSchoolTimeEntry.setManyClassTime(ctm);
+                        }
                         map1.put(oid,controlSchoolTimeEntry);
                     }
                 }
             }else if(controlSchoolTimeEntry.getType()==2 && controlSchoolTimeEntry.getDataTime() != null && controlSchoolTimeEntry.getDataTime().equals(str)){
-                long sl = 0l;
-                String date = controlSchoolTimeEntry.getDataTime();
-                String startStr= controlSchoolTimeEntry.getStartTime();
-                String endStr = controlSchoolTimeEntry.getEndTime();
-                if(startStr != null && !startStr.equals("")){
-                    sl = DateTimeUtils.getStrToLongTime(date+startStr, "yyyy-MM-dd HH:mm:ss");
+                ControlSchoolTimeEntry entry2 = map2.get(oid);
+                String ctm = controlSchoolTimeEntry.getStartTime()+"-"+controlSchoolTimeEntry.getEndTime();
+                if(entry2!=null){
+                    controlSchoolTimeEntry.setManyClassTime(entry2.getManyClassTime()+"###"+ctm);
+                }else{
+                    controlSchoolTimeEntry.setManyClassTime(ctm);
                 }
-                long el = 0l;
-                if(endStr != null && !endStr.equals("")){
-                    el = DateTimeUtils.getStrToLongTime(date+endStr, "yyyy-MM-dd HH:mm:ss");
-                }
-                if(current>sl && current < el){
-                    map2.put(oid,controlSchoolTimeEntry);//特殊
-                }
-               // map2.put(oid,controlSchoolTimeEntry);//特殊
+                map2.put(oid,controlSchoolTimeEntry);//特殊
+
             }else if(controlSchoolTimeEntry.getType()==1 && controlSchoolTimeEntry.getWeek()==w){
-                long sl = 0l;
-                String date = DateTimeUtils.getLongToStrTimeTwo(current).substring(0,10);
-                String startStr= controlSchoolTimeEntry.getStartTime();
-                String endStr = controlSchoolTimeEntry.getEndTime();
-                if(startStr != null && !startStr.equals("")){
-                    sl = DateTimeUtils.getStrToLongTime(date+startStr, "yyyy-MM-dd HH:mm:ss");
+                ControlSchoolTimeEntry entry2 = map3.get(oid);
+                String ctm = controlSchoolTimeEntry.getStartTime()+"-"+controlSchoolTimeEntry.getEndTime();
+                if(entry2!=null){
+                    controlSchoolTimeEntry.setManyClassTime(entry2.getManyClassTime()+"###"+ctm);
+                }else{
+                    controlSchoolTimeEntry.setManyClassTime(ctm);
                 }
-                long el = 0l;
-                if(endStr != null && !endStr.equals("")){
-                    el = DateTimeUtils.getStrToLongTime(date+endStr, "yyyy-MM-dd HH:mm:ss");
-                }
-                if(current>sl && current < el){
-                    map3.put(oid,controlSchoolTimeEntry);//周常
-                }
-                //map3.put(oid,controlSchoolTimeEntry);//周常
+                map3.put(oid,controlSchoolTimeEntry);//周常
             }
         }
         //获取应该执行的设置
@@ -2077,7 +2032,7 @@ public class ControlPhoneService {
         }else{
             controlSchoolTimeEntry = controlSchoolTimeDao.getEntry(1);
         }
-        return new ControlSchoolTimeDTO(controlSchoolTimeEntry);
+        return new ControlSchoolTimeDTO(controlSchoolTimeEntry,controlSchoolTimeEntry.getManyClassTime());
     }
 
     public ControlSchoolTimeDTO getNowControlDto(List<ControlSchoolTimeEntry> controlSchoolTimeEntries){

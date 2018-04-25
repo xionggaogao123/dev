@@ -941,6 +941,11 @@ public class Constant {
     public static final String COLLECTION_JXM_GENERATE_USER_CODE="jxm_gene_user_code";
     /**------------------------成绩单----------------------**/
 
+    /**------------------------新参考资料----------------------**/
+    //新参考资料
+    public static final String COLLECTION_REFERENCE_DATA="referencedata";
+
+    /**------------------------错题本----------------------**/
     //首页记录表
     public static final String COLLECTION_INDEX_PAGE="indexpage";
     //错题本2.0

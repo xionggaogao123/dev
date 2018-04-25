@@ -261,7 +261,7 @@ public class DefaultBindController extends BaseController {
                                          @ApiParam(name = "communityId", required = true, value = "communityId") @ObjectIdType ObjectId communityId){
         RespObj respObj = new RespObj(Constant.FAILD_CODE);
         try{
-            newVersionBindService.addCommunityBindEntry(userIds,communityId,getUserId());
+            newVersionBindService.addCommunityBindEntry(userIds, communityId, getUserId());
             respObj.setCode(Constant.SUCCESS_CODE);
             respObj.setMessage("保存信息成功!");
         }catch (Exception e){
@@ -270,6 +270,28 @@ public class DefaultBindController extends BaseController {
         return respObj;
     }
 
+
+    /**
+     * 学生端支持扫码入群
+     * @param communityId
+     * @return
+     */
+    @ApiOperation(value = "学生端支持扫码入群", httpMethod = "POST", produces = "application/json")
+    @ApiResponses( value = {@ApiResponse(code = 200, message = "Successful — 请求已完成",response = RespObj.class)})
+    @RequestMapping("/saoCommunityBindEntry")
+    @ResponseBody
+    public RespObj saoCommunityBindEntry(@ApiParam(name = "communityId", required = true, value = "communityId") @ObjectIdType ObjectId communityId){
+        RespObj respObj = new RespObj(Constant.FAILD_CODE);
+        try{
+            Map<String,Object> map = newVersionBindService.saoCommunityBindEntry(getUserId(), communityId);
+            respObj.setCode(Constant.SUCCESS_CODE);
+            respObj.setMessage(map);
+        }catch (Exception e){
+            respObj.setCode(Constant.FAILD_CODE);
+            respObj.setErrorMessage(e.getMessage());
+        }
+        return respObj;
+    }
 
     /**
      * 添加虚拟学生

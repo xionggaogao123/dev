@@ -43,11 +43,17 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
+import javax.crypto.Cipher;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.ByteArrayOutputStream;
+import java.io.File;
+import java.io.FileInputStream;
 import java.io.InputStream;
 import java.net.URLDecoder;
+import java.security.KeyFactory;
+import java.security.PrivateKey;
+import java.security.spec.PKCS8EncodedKeySpec;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.*;
@@ -203,6 +209,114 @@ public class DefaultEBusinessUserController extends BaseController {
                 CacheHandler.cache(mobileNumber, String.valueOf(System.currentTimeMillis()), Constant.SESSION_ONE_MINUTE);//一分钟
                 model.put("code", 200);
                 model.put("message", resp);
+            }else{
+                EBusinessUserController.error(mobile+"-"+verifyCode+"-"+responseCode);
+            }
+        } catch (Exception e) {
+            EBusinessUserController.error("error",e);
+            EBusinessUserController.error(url+"---"+account+"---"+pswd+"---"+mobile+"---"+msg+"---"+needstatus+"---"+product+"---"+extno);
+            e.printStackTrace();
+        }
+        return model;
+    }
+
+    /**
+     * 加密
+     */
+    public static String decryptByPrivateKey(byte[] encrypted,HttpServletRequest request) throws Exception {
+        String rootPath = request.getRealPath("/");
+        // 得到私钥对象
+       // File file = new File("D:\\jiak6\\code\\web\\src\\main\\webapp\\WEB-INF\\jsp\\account/key.pem");
+        // 得到私钥对象
+        File file = new File(rootPath+"/WEB-INF/jsp/account/key.pem");
+
+        FileInputStream fis = new FileInputStream(file);
+
+        int length = fis.available();
+
+        byte [] buffer = new byte[length];
+        fis.read(buffer);
+
+        fis.close();
+        PKCS8EncodedKeySpec keySpec = new PKCS8EncodedKeySpec(buffer);
+        KeyFactory kf = KeyFactory.getInstance("RSA");
+        PrivateKey keyPrivate = kf.generatePrivate(keySpec);
+        // 解密数据
+        Cipher cp = Cipher.getInstance("RSA/ECB/PKCS1Padding");
+        cp.init(Cipher.DECRYPT_MODE, keyPrivate);
+        byte[] arr = cp.doFinal(encrypted);
+        String s = new String(arr);
+        return s;
+    }
+
+    /**
+     * 获取验证码
+     *
+     * @param phone 手机号
+     * @return
+     */
+    @ApiOperation(value = "获取验证码", httpMethod = "POST", produces = "application/json")
+    @ApiResponses( value = {@ApiResponse(code = 200, message = "Successful — 请求已完成",response = Map.class)})
+    @SessionNeedless
+    @RequestMapping(value = "/newMessages", method = RequestMethod.GET)
+    @ResponseBody
+    public Map<String, Object> newMessages(byte[] phone, HttpServletRequest request, HttpServletResponse response) {
+        Map<String, Object> model = new HashMap<String, Object>();
+        model.put("code", 500);
+        //byte[] bs = mobile.getBytes();
+        String mobile = "";
+        try{
+                mobile = decryptByPrivateKey(phone,request);
+        }catch (Exception e){
+                e.printStackTrace();
+        }
+        //加入防盗链结束
+//        String referer = request.getHeader("referer");
+//        if(referer==null){
+//            model.put("message", "非法攻击!");
+//            return model;
+//        }
+//
+//        if(!referer.contains("fulaan.com")){
+//            model.put("message", "非法攻击!");
+//            return model;
+//        }
+
+        if (!ValidationUtils.isMobile(mobile)) {
+            model.put("message", "非法手机");
+            return model;
+        }
+        String mobileNumber = CacheHandler.getKeyString(CacheHandler.CACHE_MOBILE, mobile);
+        String mobileNumberTime = CacheHandler.getStringValue(mobileNumber);
+        if (StringUtils.isNotBlank(mobileNumberTime)) {
+            model.put("message", "获取验证码太频繁");
+            return model;
+        }
+
+        /*if (!checkVerifyCode(verifyCode)) {
+            model.put("message", "图片验证码错误或已失效");
+            return model;
+        }*/
+
+        model.put("message", "获取验证码失败");
+        Random random = new Random();
+        int num = random.nextInt(899999) + 100000;
+        String cacheKeyId = new ObjectId().toString();
+        model.put("cacheKeyId", cacheKeyId);
+        String cacheKey = CacheHandler.getKeyString(CacheHandler.CACHE_SHORTMESSAGE, cacheKeyId);
+        CacheHandler.cache(cacheKey, num + "," + mobile, Constant.SESSION_FIVE_MINUTE);//5分钟
+
+
+        String msg = "亲爱的客户您好，您的验证码为" + num + "，有效期为5分钟。";
+        try {
+            String resp = batchSend(url, account, pswd, mobile, msg, needstatus, product, extno);
+            String responseCode = resp.split("\\n")[0].split(",")[1];
+            if (responseCode.equals("0")) {
+                CacheHandler.cache(mobileNumber, String.valueOf(System.currentTimeMillis()), Constant.SESSION_ONE_MINUTE);//一分钟
+                model.put("code", 200);
+                model.put("message", resp);
+            }else{
+                EBusinessUserController.error(phone+"---"+responseCode);
             }
         } catch (Exception e) {
             EBusinessUserController.error("error",e);

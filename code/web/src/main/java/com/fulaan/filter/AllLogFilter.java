@@ -76,7 +76,9 @@ public class AllLogFilter implements Filter {
         } catch (Exception e) {
             e.printStackTrace();
             System.out.println("ip:" + cooks);
-            logger.error("error" ,e);
+            if(!ipconfig.contains("192..168.1")){
+                logger.error("error" ,e);
+            }
         }
 
         long after = System.currentTimeMillis();
@@ -90,7 +92,7 @@ public class AllLogFilter implements Filter {
         //context.log("Filter已经截获到用户的请求的地址: " + hrequest.getServletPath()+"    请求被定位到" + ((HttpServletRequest) request).getRequestURI()+ "所花的时间为: " + (after - before));
         //log4j
         //logger.warn("Filter已经截获到用户的请求的地址: " + hrequest.getServletPath() + "    请求被定位到" + ((HttpServletRequest) request).getRequestURI() + "所花的时间为: " + (after - before));
-        if(!hrequest.getServletPath().contains("entrance")){
+        if(!hrequest.getServletPath().contains("entrance") && !ipconfig.contains("192.168.1") && !ipconfig.contains("127.0.0.1")){
             logger.warn(" %a - " + ipconfig
                     + "   %c - " + cooks
                     + "   %p - " + hrequest.getServletPath()
@@ -98,7 +100,7 @@ public class AllLogFilter implements Filter {
                     + "   %t - " + (after - before)+"ms"
                     + "   %l - " + canList
                     + "timeOut:" + (after - before)
-                    + str);
+                    +"  " +str);
         }
 
         //"%a - " + ipconfig + "+++"

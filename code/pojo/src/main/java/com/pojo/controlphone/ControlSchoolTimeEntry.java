@@ -137,4 +137,13 @@ public class ControlSchoolTimeEntry extends BaseDBObject {
     }
 
 
+    public void setManyClassTime(String manyClassTime){
+        setSimpleValue("man",manyClassTime);
+    }
+
+    public String getManyClassTime(){
+        return getSimpleStringValue("man");
+    }
+
+
 }

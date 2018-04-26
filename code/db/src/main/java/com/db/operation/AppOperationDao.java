@@ -65,6 +65,27 @@ public class AppOperationDao extends BaseDao {
     }
 
     //老师评论列表查询
+    public List<AppOperationEntry> getEntryListByParentId2(ObjectId contactId,int role,ObjectId userId,int page,int pageSize) {
+        BasicDBObject query = new BasicDBObject()
+                .append("cid",contactId)
+                .append("rol",role)
+                .append("uid", userId)
+                .append("lev", 1)//一级
+                .append("isr", 0); // 未删除
+        List<DBObject> dbList =
+                find(MongoFacroty.getAppDB(),
+                        Constant.COLLECTION_APP_OPERATION,
+                        query, Constant.FIELDS,
+                        Constant.MONGO_SORTBY_DESC, (page - 1) * pageSize, pageSize);
+        List<AppOperationEntry> entryList = new ArrayList<AppOperationEntry>();
+        if (dbList != null && !dbList.isEmpty()) {
+            for (DBObject obj : dbList) {
+                entryList.add(new AppOperationEntry((BasicDBObject) obj));
+            }
+        }
+        return entryList;
+    }
+    //老师评论列表查询
     public List<AppOperationEntry> getEntryListByParentIdByStu(ObjectId contactId,List<ObjectId> userIds,int role,int page,int pageSize) {
         BasicDBObject query = new BasicDBObject()
                 .append("cid",contactId)

@@ -1,5 +1,6 @@
 package com.fulaan.fgroup;
 
+import com.db.user.NewVersionBindRelationDao;
 import com.easemob.server.EaseMobAPI;
 import com.easemob.server.comm.constant.MsgType;
 import com.fulaan.annotation.ObjectIdType;
@@ -22,6 +23,7 @@ import com.fulaan.user.service.UserService;
 import com.pojo.fcommunity.CommunityDetailType;
 import com.pojo.fcommunity.GroupEntry;
 import com.pojo.fcommunity.MemberEntry;
+import com.pojo.user.NewVersionBindRelationEntry;
 import com.pojo.user.UserDetailInfoDTO;
 import com.pojo.user.UserEntry;
 import com.pojo.utils.MongoUtils;
@@ -73,6 +75,7 @@ public class DefaultGroupController extends BaseController {
     @Autowired
     private EmService emService;
 
+    private NewVersionBindRelationDao newVersionBindRelationDao = new NewVersionBindRelationDao();
 
     /**
      * 创建群聊
@@ -305,6 +308,83 @@ public class DefaultGroupController extends BaseController {
         return respObj;
     }
 
+    /**
+     * 扫码入群
+     */
+    @ApiOperation(value = "群主邀请人进群", httpMethod = "POST", produces = "application/json")
+    @ApiResponses( value = {@ApiResponse(code = 200, message = "Successful — 请求已完成",response = RespObj.class)})
+    @RequestMapping("/saoInviteMember")
+    @ResponseBody
+    public RespObj saoInviteMember(String communityId) {
+        RespObj respObj = new RespObj(Constant.FAILD_CODE);
+
+        try {
+            CommunityDTO communityDTO = communityService.findByObjectId(new ObjectId(communityId));
+            String emChatId  = "";
+            if(communityId==null){
+                respObj.setMessage("该社群不存在");
+                return respObj;
+            }else{
+                emChatId = communityDTO.getEmChatId();
+            }
+
+            NewVersionBindRelationEntry newVersionBindRelationEntry = newVersionBindRelationDao.getBindEntry(getUserId());
+
+            String  userIds = "";
+//            ObjectId groupId = groupService.getGroupIdByChatId(emChatId);
+            GroupEntry groupEntry = groupService.getGroupEntryByEmchatId(emChatId);
+            if(null==groupEntry){
+                throw new Exception("传入的环信Id有误");
+            }
+            ObjectId groupId=groupEntry.getID();
+            GroupDTO groupDTO = groupService.findById(groupId, groupEntry.getOwerId());
+            List<ObjectId> userList = MongoUtils.convertObjectIds(userIds);
+            if(null!=groupEntry.getCommunityId()){
+                //判断是社群时，不能把学生拉进去社群
+                if(newVersionBindService.judgeUserStudent(userList)){
+                    throw new Exception("不能把学生拉进社群");
+                }
+            }
+            for (ObjectId personId : userList) {
+                if (!memberService.isGroupMember(groupId, personId)) {
+                    if (emService.addUserToEmGroup(emChatId, personId)) {
+                        if (memberService.isBeforeMember(groupId, personId)) {
+                            memberService.updateMember(groupId, personId, 0);
+                        } else {
+                            memberService.saveMember(personId, groupId);
+                        }
+                        if (groupDTO.isBindCommunity()) {
+                            communityService.setPartIncontentStatus(new ObjectId(groupDTO.getCommunityId()), personId, 0);
+                            communityService.pushToUser(new ObjectId(groupDTO.getCommunityId()), personId, 1);
+                        }
+                    }
+                }
+            }
+
+            //自动加为好友(社群拉人自动加为好友)
+            if(groupDTO.isBindCommunity()) {
+                List<String> keysList=MongoUtils.convertToStringList(userList);
+                if(keysList.size()>0) {
+                    List<ObjectId> communityIds = new ArrayList<ObjectId>();
+                    communityIds.add(groupEntry.getCommunityId());
+                    String[] keys = keysList.toArray(new String[keysList.size()]);
+                    backStageService.recordEntries2(groupEntry.getID(),keys,30);
+                    //backStageService.setAutoChildFriends(keys,communityIds);
+                }
+            }
+            //更新群聊头像
+            groupService.asyncUpdateHeadImage(groupId);
+            if (groupDTO.getIsM() == 0) {
+                groupService.asyncUpdateGroupNameByMember(new ObjectId(groupDTO.getId()));
+            }
+
+            respObj.setCode(Constant.SUCCESS_CODE);
+            respObj.setMessage("操作成功");
+        }catch (Exception e){
+            respObj.setErrorMessage(e.getMessage());
+        }
+        return respObj;
+    }
     /**
      * 加入群组
      *

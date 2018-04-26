@@ -1251,7 +1251,12 @@ public class AppCommentService {
        // AppCommentEntry entry = appCommentDao.getEntry(id);
         List<AppOperationEntry> entries = null;
         if(label==1){
-            entries= appOperationDao.getEntryListByParentId(id,role,page,pageSize);
+            if(entry2.getShowType()==1){
+                entries= appOperationDao.getEntryListByParentId(id,role,page,pageSize);
+            }else{
+                entries= appOperationDao.getEntryListByParentId2(id,role,userId,page,pageSize);
+            }
+
         }else{
             entries= appOperationDao.getEntryListByUserId(userId,role,id,page,pageSize);
         }
@@ -1277,7 +1282,7 @@ public class AppCommentService {
                 if(dto.getBackId() != null && dto.getBackId() != ""){
                     uids.add(dto.getBackId());
                 }
-                if(dto.getUserId().equals(userId.toString())){
+                if(dto.getUserId().equals(userId.toString()) && dto.getParentId().equals(userId.toString())){
                     dto.setRole(4);
                 }
                 dtos.add(dto);

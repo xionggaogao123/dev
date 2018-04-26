@@ -264,7 +264,15 @@ public class NewVersionCommunityBindDao extends BaseDao{
         }
         return entries;
     }
-
+    public void removeSaoNewVersionCommunity(ObjectId communityId,
+                                          ObjectId mainUserId,ObjectId userId){
+        BasicDBObject query=new BasicDBObject()
+                .append("cid",communityId)
+                .append("uid",userId)
+                .append("muid",mainUserId);
+        BasicDBObject updateValue = new BasicDBObject(Constant.MONGO_SET,new BasicDBObject("ir",Constant.ONE));
+        update(MongoFacroty.getAppDB(), Constant.COLLECTION_NEW_VERSION_COMMUNITY_BIND,query,updateValue);
+    }
 
     public void removeNewVersionCommunity(ObjectId communityId,
                                           ObjectId mainUserId){

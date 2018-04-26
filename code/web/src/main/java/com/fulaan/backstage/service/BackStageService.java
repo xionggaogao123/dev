@@ -406,7 +406,7 @@ public class BackStageService {
         if(homeSchoolEntry!=null){
             ControlSchoolTimeEntry entry = controlSchoolTimeDao.getcommunityEntry(week, schoolId);
             String id = "";
-            if(entry!=null){
+            if(entry==null){
                 ControlSchoolTimeDTO dto = new ControlSchoolTimeDTO();
                 dto.setStartTime(startTime);
                 dto.setParentId(schoolId.toString());

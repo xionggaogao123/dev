@@ -34,7 +34,7 @@ public class GroupExamUserRecordStrDTO {
         if (g.getScore() == -1) {
             this.score = "缺(免)考";
         } else if (g.getScore() == -2) {
-            this.score = "未填写";
+            this.score = "";
         } else {
             this.score = String.valueOf(g.getScore());
         }

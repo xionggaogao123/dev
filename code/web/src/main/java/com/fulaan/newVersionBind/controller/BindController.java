@@ -396,5 +396,27 @@ public class BindController extends BaseController {
         }
         return respObj;
     }
+    
+    /**
+    *
+    * @param userId
+    * @param communityIds
+    * @return
+    */
+   @ApiOperation(value = "解除孩子的绑定关系", httpMethod = "GET", produces = "application/json")
+   @ApiResponses( value = {@ApiResponse(code = 200, message = "Successful — 请求已完成",response = RespObj.class)})
+   @RequestMapping("relieveCommunityBindRelation")
+   @ResponseBody
+   public RespObj relieveCommunityBindRelation(@ObjectIdType ObjectId userId,String communityIds){
+       RespObj respObj = new RespObj(Constant.FAILD_CODE);
+       try {
+           newVersionBindService.relieveCommunityBindRelation(userId, communityIds);
+           respObj.setCode(Constant.SUCCESS_CODE);
+           respObj.setMessage("解除孩子的绑定关系成功！");
+       }catch (Exception e){
+           respObj.setErrorMessage(e.getMessage());
+       }
+       return respObj;
+   }
 
 }

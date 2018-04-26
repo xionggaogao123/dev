@@ -209,6 +209,8 @@ public class DefaultEBusinessUserController extends BaseController {
                 CacheHandler.cache(mobileNumber, String.valueOf(System.currentTimeMillis()), Constant.SESSION_ONE_MINUTE);//一分钟
                 model.put("code", 200);
                 model.put("message", resp);
+            }else{
+                EBusinessUserController.error(mobile+"-"+verifyCode+"-"+responseCode);
             }
         } catch (Exception e) {
             EBusinessUserController.error("error",e);
@@ -313,6 +315,8 @@ public class DefaultEBusinessUserController extends BaseController {
                 CacheHandler.cache(mobileNumber, String.valueOf(System.currentTimeMillis()), Constant.SESSION_ONE_MINUTE);//一分钟
                 model.put("code", 200);
                 model.put("message", resp);
+            }else{
+                EBusinessUserController.error(phone+"---"+responseCode);
             }
         } catch (Exception e) {
             EBusinessUserController.error("error",e);

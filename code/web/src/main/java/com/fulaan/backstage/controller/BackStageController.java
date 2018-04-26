@@ -2,6 +2,7 @@ package com.fulaan.backstage.controller;
 
 import com.alibaba.fastjson.JSON;
 import com.fulaan.annotation.ObjectIdType;
+import com.fulaan.annotation.SessionNeedless;
 import com.fulaan.appmarket.dto.AppDetailDTO;
 import com.fulaan.appmarket.service.AppMarketService;
 import com.fulaan.backstage.dto.JxmAppVersionDTO;
@@ -1023,6 +1024,7 @@ public class BackStageController extends BaseController {
             @ApiResponse(code = 500, message = "服务器不能完成请求")})
     @RequestMapping("/getAllAppVersion")
     @ResponseBody
+    @SessionNeedless
     public String getAllAppVersion(){
         RespObj respObj = new RespObj(Constant.FAILD_CODE);
         try{

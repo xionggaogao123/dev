@@ -192,6 +192,7 @@ public class ReferenceDataService {
             for(String str:strings){
                 referenceDataEntry.setCommunityId(new ObjectId(str));
                 referenceDataEntry.setUserId(userId);
+                referenceDataEntry.setID(null);
                 String oid = referenceDataDao.addEntry(referenceDataEntry);
                 //发送通知
                 PictureRunNable.addTongzhi(str,userId.toString(),4);
@@ -247,7 +248,7 @@ public class ReferenceDataService {
                     entry.setTitle(communityDetailEntry.getCommunityTitle());
                     entry.setSubjectId(objectId);
                     entry.setType(checkType(entry.getSuffix()));
-                    List<AttachmentEntry> attachmentList  = communityDetailEntry.getAttachmentList();
+                    List<AttachmentEntry> attachmentList  = getAttenment(communityDetailEntry);
                     BasicDBList attachmentDbList = new BasicDBList();
                     for(AttachmentEntry attachmentEntry:attachmentList){
                         attachmentDbList.add(attachmentEntry.getBaseEntry());
@@ -398,5 +399,42 @@ public class ReferenceDataService {
         }
 
         return attachement;
+    }
+
+
+    public  CommunityDetailEntry  getOldEntry(ReferenceDataEntry entry){
+        List<AttachmentEntry> attachmentEntries = new ArrayList<AttachmentEntry>();
+        List<VideoEntry> videoEntries = new ArrayList<VideoEntry>();
+        CommunityDetailEntry communityDetailEntry = new CommunityDetailEntry(entry.getCommunityId(),entry.getUserId(),entry.getTitle(),entry.getContent()
+                                            ,4,new ArrayList<ObjectId>(),entry.getAttachmentList(),attachmentEntries,attachmentEntries,"","","","","",0,-1,0,videoEntries);
+        return communityDetailEntry;
+    }
+
+    public  ReferenceDataEntry  getNewEntry(CommunityDetailEntry communityDetailEntry){
+        ReferenceDataEntry entry = new ReferenceDataEntry();
+        entry.setCommunityId(new ObjectId(communityDetailEntry.getCommunityId()));
+        entry.setUserId(communityDetailEntry.getCommunityUserId());
+        entry.setContent(communityDetailEntry.getCommunityContent());
+        entry.setSuffix(getType(communityDetailEntry));
+        entry.setCreateTime(communityDetailEntry.getCreateTime());
+        entry.setIsRemove(0);
+        entry.setSize("");
+        entry.setTitle(communityDetailEntry.getCommunityTitle());
+        List<SubjectClassEntry> subjectClassEntries = subjectClassDao.getList();
+        ObjectId objectId = null;
+        for(SubjectClassEntry subjectClassEntry : subjectClassEntries){
+            if(subjectClassEntry.getName().equals("其他")){
+                objectId = subjectClassEntry.getID();
+            }
+        }
+        entry.setSubjectId(objectId);
+        entry.setType(checkType(entry.getSuffix()));
+        List<AttachmentEntry> attachmentList  = getAttenment(communityDetailEntry);
+        BasicDBList attachmentDbList = new BasicDBList();
+        for(AttachmentEntry attachmentEntry:attachmentList){
+            attachmentDbList.add(attachmentEntry.getBaseEntry());
+        }
+        entry.setAttachmentList(attachmentDbList);
+        return entry;
     }
 }

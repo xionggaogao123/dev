@@ -1282,7 +1282,7 @@ public class AppCommentService {
                 if(dto.getBackId() != null && dto.getBackId() != ""){
                     uids.add(dto.getBackId());
                 }
-                if(dto.getUserId().equals(userId.toString()) && !dto.getParentId().equals(userId.toString())){
+                if(dto.getUserId().equals(userId.toString()) && dto.getParentId().equals(userId.toString())){
                     dto.setRole(4);
                 }
                 dtos.add(dto);

@@ -52,6 +52,21 @@ public class ControlSchoolTimeDao extends BaseDao {
         return null;
     }
 
+    public List<ControlSchoolTimeEntry> getCurrentSchoolMoEntryList(int week,ObjectId schoolId) {
+        BasicDBObject query =new BasicDBObject();
+        query.append("isr", Constant.TWO) .append("wek", week).append("pid",schoolId);
+        List<DBObject> dboList=find(MongoFacroty.getAppDB(), Constant.COLLECTION_CONTROL_SCHOOL_TIME, query, Constant.FIELDS);
+        List<ControlSchoolTimeEntry> retList =new ArrayList<ControlSchoolTimeEntry>();
+        if(null!=dboList && !dboList.isEmpty())
+        {
+            for(DBObject dbo:dboList)
+            {
+                retList.add(new ControlSchoolTimeEntry((BasicDBObject)dbo));
+            }
+        }
+        return retList;
+    }
+
     //单查询
     public ControlSchoolTimeEntry getEntryById(ObjectId id) {
         BasicDBObject query =new BasicDBObject();

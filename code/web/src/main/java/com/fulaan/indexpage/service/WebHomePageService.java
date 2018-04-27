@@ -358,12 +358,13 @@ public class WebHomePageService {
                     detailDTO.setShowType(detailEntry.getShowType());
                     UserEntry userEntry = childUserEntryMap.get(userRecordEntry.getUserId());
                     VirtualUserEntry virtualUserEntry = virtualUserEntryMap.get(userRecordEntry.getUserId());
-                    if (null != userEntry) {
+                    /*if (null != userEntry) {
                         detailDTO.setChildUserName(
                                 org.apache.commons.lang3.StringUtils.isNotBlank(userEntry.getNickName())?userEntry.getNickName():userEntry.getUserName());
                     }else if(null !=virtualUserEntry){
                         detailDTO.setChildUserName(virtualUserEntry.getUserName());
-                    }
+                    }*/
+                    detailDTO.setChildUserName(virtualUserEntry.getUserName());
                     detailDTO.setChildUserId(userRecordEntry.getUserId().toString());
                     CommunityEntry communityEntry = communityEntryMap.get(userRecordEntry.getCommunityId());
                     if (null != communityEntry) {

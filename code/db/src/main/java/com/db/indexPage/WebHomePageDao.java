@@ -187,6 +187,22 @@ public class WebHomePageDao extends BaseDao{
             return null;
         }
     }
+    
+    /**
+     * 
+     *〈简述〉更新
+     *〈详细描述〉
+     * @author Administrator
+     * @param groupExamDetailId
+     * @param subjectId
+     */
+    public void updateWebHomePageEntry(ObjectId groupExamDetailId,ObjectId subjectId){
+        BasicDBObject query=new BasicDBObject()
+                .append("rc",groupExamDetailId)
+                .append("ty",Constant.THREE);
+        BasicDBObject updateVlaue=new BasicDBObject(Constant.MONGO_SET,new BasicDBObject("sid",subjectId));
+        update(MongoFacroty.getAppDB(), Constant.COLLECTION_WEB_HOME_PAGE_RECORD,query,updateVlaue);
+    }
 
     public void removeReportCard(ObjectId groupExamDetailId){
         BasicDBObject query=new BasicDBObject()

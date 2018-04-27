@@ -1114,6 +1114,8 @@ public class ReportCardService {
                     homePageEntry.setStatus(oldEntry.getStatus());
                 }
                 webHomePageDao.saveWebHomeEntry(homePageEntry);
+                webHomePageDao.updateWebHomePageEntry(new ObjectId(id), new ObjectId(dto.getSubjectId()));
+                groupExamUserRecordDao.updateGroupExamUserRecord(new ObjectId(id), new ObjectId(dto.getSubjectId()));
             }
             return id;
         }

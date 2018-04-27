@@ -21,6 +21,21 @@ public class GroupExamUserRecordDao extends BaseDao{
         save(MongoFacroty.getAppDB(), Constant.COLLECTION_REPORT_CARD_EXAM_USER_RECORD,examUserRecordEntry.getBaseEntry());
         return examUserRecordEntry.getID();
     }
+    
+    /**
+     * 更新学科id
+     *〈简述〉
+     *〈详细描述〉
+     * @author Administrator
+     * @param groupExamDetailId
+     * @param subjectId
+     */
+    public void updateGroupExamUserRecord(ObjectId groupExamDetailId,ObjectId subjectId){
+        BasicDBObject query=new BasicDBObject()
+            .append("eid",groupExamDetailId);
+    BasicDBObject updateVlaue=new BasicDBObject(Constant.MONGO_SET,new BasicDBObject("sid",subjectId));
+    update(MongoFacroty.getAppDB(), Constant.COLLECTION_REPORT_CARD_EXAM_USER_RECORD,query,updateVlaue);
+    }
 
     public List<GroupExamUserRecordEntry> getMappingDatas(int page,int pageSize){
         List<GroupExamUserRecordEntry> entries=new ArrayList<GroupExamUserRecordEntry>();

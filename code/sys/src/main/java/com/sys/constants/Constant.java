@@ -1019,4 +1019,15 @@ public class Constant {
     public static final String COLLECTION_INTEGRAL_SUFFER= "integralsuffer";
     //积分记录表
     public static final String COLLECTION_INTEGRAL_RECORD= "integralrecord";
+
+    /*************************************精品课*****************************************/
+
+    //精品课程
+    public static final String COLLECTION_EXCELLENT_COURSES = "excellent_courses";
+    //精品课时
+    public static final String COLLECTION_HOUR_CLASS= "excellent_hour_class";
+    //用户订单
+    public static final String COLLECTION_CLASS_ORDER= "excellent_class_order";
+    //用户行为
+    public static final String COLLECTION_USER_BEHAVIOR= "excellent_user_behavior";
 }

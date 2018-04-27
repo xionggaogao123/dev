@@ -23,6 +23,12 @@ public class CommunityDetailDao extends BaseDao {
         return detailEntry.getID();
     }
 
+    public void delOldEntry(String id){
+        BasicDBObject query = new BasicDBObject("shul",id);
+        BasicDBObject updateValue=new BasicDBObject(Constant.MONGO_SET,new BasicDBObject("r",Constant.ONE));
+        update(MongoFacroty.getAppDB(), Constant.COLLECTION_FORUM_COMMUNITY_DETAIL, query,updateValue);
+    }
+
     /**
      * 获取某个社区内容(通过id)
      *

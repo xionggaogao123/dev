@@ -3,6 +3,7 @@ package com.fulaan.service;
 import com.db.backstage.SystemMessageDao;
 import com.db.fcommunity.*;
 import com.db.indexPage.IndexPageDao;
+import com.db.referenceData.ReferenceDataDao;
 import com.db.reportCard.GroupExamUserRecordDao;
 import com.db.user.NewVersionUserRoleDao;
 import com.db.user.UserDao;
@@ -24,6 +25,7 @@ import com.fulaan.indexpage.dto.IndexPageDTO;
 import com.fulaan.instantmessage.service.RedDotService;
 import com.fulaan.picturetext.runnable.PictureRunNable;
 import com.fulaan.pojo.*;
+import com.fulaan.referenceData.service.ReferenceDataService;
 import com.fulaan.user.service.UserService;
 import com.fulaan.util.DateUtils;
 import com.pojo.activity.FriendApplyEntry;
@@ -93,6 +95,10 @@ public class CommunityService {
     private SystemMessageDao systemMessageDao = new SystemMessageDao();
 
     private IndexPageDao indexPageDao = new IndexPageDao();
+
+    private ReferenceDataDao referenceDataDao = new ReferenceDataDao();
+
+    private ReferenceDataService referenceDataService = new ReferenceDataService();
     private static final Logger logger = Logger.getLogger(CommunityService.class);
     /**
      * 创建社区
@@ -621,6 +627,8 @@ public class CommunityService {
             PictureRunNable.addTongzhi(message.getCommunityId(),uid.toString(),3);
         }else if(message.getType()==4){
             //发送通知
+            //向上（新版本参考资料）
+            referenceDataService.addNewEntry(entry);
             PictureRunNable.addTongzhi(message.getCommunityId(),uid.toString(),4);
         }
         if(message.getType()==2){
@@ -2339,6 +2347,9 @@ public class CommunityService {
         //memberDao.get
         MemberEntry entry1 = memberMap.get(gids + "$" + entry.getCommunityUserId());
         MemberEntry entry5 = memberMap.get(gids + "$" + userId);
+        if(entry.getCommunityType()==4){
+            referenceDataDao.delNewEntry(entry.getID());
+        }
         if(en != null && en.getCommunityUserId()!= null && en.getCommunityUserId().equals(userId)){
             communityDetailDao.removeCommunityDetail(id);
         }else if(entry5.getRole()>entry1.getRole()){

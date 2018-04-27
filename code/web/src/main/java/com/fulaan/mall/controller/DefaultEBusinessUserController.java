@@ -262,6 +262,7 @@ public class DefaultEBusinessUserController extends BaseController {
     @ResponseBody
     public Map<String, Object> newMessages(byte[] phone, HttpServletRequest request, HttpServletResponse response) {
         Map<String, Object> model = new HashMap<String, Object>();
+        //System.out.print(phone.toString());zq
         model.put("code", 500);
         //byte[] bs = mobile.getBytes();
         String mobile = "";
@@ -269,6 +270,97 @@ public class DefaultEBusinessUserController extends BaseController {
                 mobile = decryptByPrivateKey(phone,request);
         }catch (Exception e){
                 e.printStackTrace();
+        }
+        //加入防盗链结束
+//        String referer = request.getHeader("referer");
+//        if(referer==null){
+//            model.put("message", "非法攻击!");
+//            return model;
+//        }
+//
+//        if(!referer.contains("fulaan.com")){
+//            model.put("message", "非法攻击!");
+//            return model;
+//        }
+
+        if (!ValidationUtils.isMobile(mobile)) {
+            model.put("message", "非法手机");
+            return model;
+        }
+        String mobileNumber = CacheHandler.getKeyString(CacheHandler.CACHE_MOBILE, mobile);
+        String mobileNumberTime = CacheHandler.getStringValue(mobileNumber);
+        if (StringUtils.isNotBlank(mobileNumberTime)) {
+            model.put("message", "获取验证码太频繁");
+            return model;
+        }
+
+        /*if (!checkVerifyCode(verifyCode)) {
+            model.put("message", "图片验证码错误或已失效");
+            return model;
+        }*/
+
+        model.put("message", "获取验证码失败");
+        Random random = new Random();
+        int num = random.nextInt(899999) + 100000;
+        String cacheKeyId = new ObjectId().toString();
+        model.put("cacheKeyId", cacheKeyId);
+        String cacheKey = CacheHandler.getKeyString(CacheHandler.CACHE_SHORTMESSAGE, cacheKeyId);
+        CacheHandler.cache(cacheKey, num + "," + mobile, Constant.SESSION_FIVE_MINUTE);//5分钟
+
+
+        String msg = "亲爱的客户您好，您的验证码为" + num + "，有效期为5分钟。";
+        try {
+            String resp = batchSend(url, account, pswd, mobile, msg, needstatus, product, extno);
+            String responseCode = resp.split("\\n")[0].split(",")[1];
+            if (responseCode.equals("0")) {
+                CacheHandler.cache(mobileNumber, String.valueOf(System.currentTimeMillis()), Constant.SESSION_ONE_MINUTE);//一分钟
+                model.put("code", 200);
+                model.put("message", resp);
+            }else{
+                EBusinessUserController.error(phone+"---"+responseCode);
+            }
+        } catch (Exception e) {
+            EBusinessUserController.error("error",e);
+            EBusinessUserController.error(url+"---"+account+"---"+pswd+"---"+mobile+"---"+msg+"---"+needstatus+"---"+product+"---"+extno);
+            e.printStackTrace();
+        }
+        return model;
+    }
+
+    /**
+     * 获取验证码
+     *
+     * @param phone 手机号
+     * @return
+     */
+    @ApiOperation(value = "获取验证码", httpMethod = "POST", produces = "application/json")
+    @ApiResponses( value = {@ApiResponse(code = 200, message = "Successful — 请求已完成",response = Map.class)})
+    @SessionNeedless
+    @RequestMapping(value = "/newIOSMessages", method = RequestMethod.GET)
+    @ResponseBody
+    public Map<String, Object> newIOSMessages(byte[] phone, HttpServletRequest request, HttpServletResponse response) {
+        Map<String, Object> model = new HashMap<String, Object>();
+        //System.out.print(phone.toString());zq
+        model.put("code", 500);
+        //byte[] bs = mobile.getBytes();
+        String mobile = "";
+        /*byte[]  phone2 = new byte[1024];
+        int j = 0;
+        for(int i = 0;i<phone.length;i++){
+            if(i==0){
+
+            }else if(i==phone.length-1){
+
+            }else{
+                phone2[j] = phone[i];
+                j++;
+            }
+        }
+        phone = phone2;*/
+        try{
+            mobile = decryptByPrivateKey(phone,request);
+        }catch (Exception e){
+             e.printStackTrace();
         }
         //加入防盗链结束
 //        String referer = request.getHeader("referer");

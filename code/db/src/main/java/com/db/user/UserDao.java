@@ -196,6 +196,17 @@ public class UserDao extends BaseDao {
     }
 
     /**
+     * 根据id集合查询多个用户
+     *
+     * @return
+     */
+    public UserEntry getUserEntryFromUserName(String name) {
+        BasicDBObject query = new BasicDBObject("nm",name).append("ir", Constant.ZERO);
+        DBObject dbo = findOne(MongoFacroty.getAppDB(), Constant.COLLECTION_USER_NAME, query, Constant.FIELDS);
+        return dbo == null ? null : new UserEntry(dbo);
+    }
+
+    /**
      * 根据id集合查询多个用户（分页）
      *
      * @param ids

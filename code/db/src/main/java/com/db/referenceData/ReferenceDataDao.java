@@ -88,4 +88,10 @@ public class ReferenceDataDao extends BaseDao {
         BasicDBObject updateValue=new BasicDBObject(Constant.MONGO_SET,new BasicDBObject("isr",Constant.ONE));
         update(MongoFacroty.getAppDB(), Constant.COLLECTION_REFERENCE_DATA, query,updateValue);
     }
+
+    public void delNewEntry(ObjectId id){
+        BasicDBObject query = new BasicDBObject("sid",id);
+        BasicDBObject updateValue=new BasicDBObject(Constant.MONGO_SET,new BasicDBObject("isr",Constant.ONE));
+        update(MongoFacroty.getAppDB(), Constant.COLLECTION_REFERENCE_DATA, query,updateValue);
+    }
 }

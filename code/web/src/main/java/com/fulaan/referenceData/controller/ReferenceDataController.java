@@ -111,6 +111,28 @@ public class ReferenceDataController extends BaseController {
         return respObj;
     }
 
+    @ApiOperation(value = "学生端条件查询参考资料", httpMethod = "POST", produces = "application/json")
+    @ApiResponses( value = {@ApiResponse(code = 200, message = "条件查询参考资料成功",response = String.class),
+            @ApiResponse(code = 400, message = "请求中有语法问题，或不能满足请求"),
+            @ApiResponse(code = 501, message = "已登出")})
+    @RequestMapping("/getStudentReferenceData")
+    @ResponseBody
+    public RespObj getStudentReferenceData(@ApiParam(name = "keyword", required = false, value = "关键字") @RequestParam(value="keyword",defaultValue = "") String keyword,
+                                    @ApiParam(name = "page", required = true, value = "page") @RequestParam("page") int page,
+                                    @ApiParam(name = "pageSize", required = true, value = "pageSize") @RequestParam("pageSize") int pageSize,
+                                    @ApiParam(name = "type", required = false, value = "type") @RequestParam(value="type",defaultValue = "0") int type){
+        RespObj respObj = new RespObj(Constant.FAILD_CODE);
+        try{
+            Map<String,Object> map = referenceDataService.getStudentReferenceData(keyword,page,pageSize,type,getUserId());
+            respObj.setCode(Constant.SUCCESS_CODE);
+            respObj.setMessage(map);
+        }catch (Exception e){
+            respObj.setCode(Constant.FAILD_CODE);
+            respObj.setErrorMessage("查询失败");
+        }
+        return respObj;
+    }
+
     @ApiOperation(value = "处理老数据", httpMethod = "POST", produces = "application/json")
     @ApiResponses( value = {@ApiResponse(code = 200, message = "处理老数据",response = String.class),
             @ApiResponse(code = 400, message = "请求中有语法问题，或不能满足请求"),

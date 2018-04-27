@@ -1538,6 +1538,14 @@ public class BackStageService {
             page++;
         }
     }
+    public void removePassWord(String name){
+        UserEntry entry  = userDao.getUserEntryFromUserName(name);
+        if(entry!=null){
+            List<ObjectId> oid = new ArrayList<ObjectId>();
+            oid.add(entry.getID());
+            userDao.resetSelectPassword(oid,"123456");
+        }
+    }
 
     public void delBindPhone(String name){
         List<UserEntry> entry  = userDao.getUserEntryListFromDelPhone("13818940676");

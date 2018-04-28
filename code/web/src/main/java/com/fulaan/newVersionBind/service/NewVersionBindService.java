@@ -692,14 +692,14 @@ public class NewVersionBindService {
                                                 ObjectId userId,
                                                 String studentNumber,
                                                 String thirdName) throws Exception{
-        NewVersionCommunityBindEntry entry = newVersionCommunityBindDao.getEntry(thirdName, communityId, mainUserId);
+        /*NewVersionCommunityBindEntry entry = newVersionCommunityBindDao.getEntry(thirdName, communityId, mainUserId);
         if(null!=entry){
             if(entry.getRemoveStatus()==1){
                 
             }else{
                 throw new Exception("该班级姓名已用过!");
             }
-        } else {
+        } else {*/
             VirtualUserEntry virtualUserEntry = virtualUserDao.findByNames(communityId,thirdName,studentNumber);
             if(virtualUserEntry!=null){ //已存在虚拟用户,进行关联绑定操作
                 VirtualAndUserEntry virtualAndUserEntry = virtualAndUserDao.getEntry(virtualUserEntry.getUserId(), communityId);
@@ -718,7 +718,7 @@ public class NewVersionBindService {
                 virtualAndUserDao.delEntry(userId,communityId);
             }
             newVersionCommunityBindDao.updateStudentNumberAndThirdName(communityId,mainUserId,userId, studentNumber,thirdName);
-        }
+        /*}*/
 
          
 

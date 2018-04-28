@@ -1887,7 +1887,7 @@ public class ReportCardService {
             sheet.addMergedRegion(new CellRangeAddress(0, 0, 0, 5));
             HSSFRow rowZero = sheet.createRow(0);
             HSSFCell cellZero = rowZero.createCell(0);
-            cellZero.setCellValue("缺（免）考：如考生成绩不计入总分，则选择“缺”；");
+            cellZero.setCellValue("缺（免）考：如考生成绩不计入总分，则填写“缺”；");
 
             HSSFRow row = sheet.createRow(1);
             HSSFCell cell = row.createCell(0);

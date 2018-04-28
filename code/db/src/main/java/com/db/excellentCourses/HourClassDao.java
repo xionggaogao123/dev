@@ -35,7 +35,7 @@ public class HourClassDao extends BaseDao {
     //查询课时
     public List<HourClassEntry> getEntryList(ObjectId parentId){
         List<HourClassEntry> entryList=new ArrayList<HourClassEntry>();
-        BasicDBObject query=new BasicDBObject().append("pid", parentId);
+        BasicDBObject query=new BasicDBObject().append("pid", parentId).append("isr", Constant.ZERO);
         List<DBObject> dbList=find(MongoFacroty.getAppDB(), Constant.COLLECTION_HOUR_CLASS, query,
                 Constant.FIELDS, new BasicDBObject("ord",Constant.ASC));
         if (dbList != null && !dbList.isEmpty()) {
@@ -50,7 +50,7 @@ public class HourClassDao extends BaseDao {
     //查询订单课时
     public List<HourClassEntry> getEntryList(List<ObjectId> ids){
         List<HourClassEntry> entryList=new ArrayList<HourClassEntry>();
-        BasicDBObject query=new BasicDBObject().append(Constant.ID, ids);
+        BasicDBObject query=new BasicDBObject().append(Constant.ID, ids).append("isr", Constant.ZERO);
         List<DBObject> dbList=find(MongoFacroty.getAppDB(), Constant.COLLECTION_HOUR_CLASS, query,
                 Constant.FIELDS, new BasicDBObject("ord", Constant.ASC));
         if (dbList != null && !dbList.isEmpty()) {

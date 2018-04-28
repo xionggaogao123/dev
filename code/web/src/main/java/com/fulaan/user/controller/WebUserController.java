@@ -11,6 +11,7 @@ import com.fulaan.base.BaseController;
 import com.fulaan.cache.CacheHandler;
 import com.fulaan.forum.service.*;
 import com.fulaan.friendscircle.service.FriendService;
+import com.fulaan.integral.service.IntegralSufferService;
 import com.fulaan.log.service.LogService;
 import com.fulaan.playmate.service.MateService;
 import com.fulaan.pojo.FLoginLog;
@@ -35,6 +36,7 @@ import com.pojo.educationbureau.EducationBureauEntry;
 import com.pojo.fcommunity.RemarkEntry;
 import com.pojo.forum.FLogDTO;
 import com.pojo.forum.FScoreDTO;
+import com.pojo.integral.IntegralSufferEntry;
 import com.pojo.log.LogType;
 import com.pojo.loginwebsocket.LoginTokenEntry;
 import com.pojo.school.ClassInfoDTO;
@@ -132,6 +134,8 @@ public class WebUserController extends BaseController {
     private NewVersionUserRoleDao newVersionUserRoleDao= new NewVersionUserRoleDao();
 
     private UserLogResultDao userLogResultDao = new UserLogResultDao();
+
+    private IntegralSufferService integralSufferService = new IntegralSufferService();
 
     private Auth qqAuth = AuthFactory.getAuth(AuthType.QQ);
     private Auth wechatAuth = AuthFactory.getAuth(AuthType.WECHAT);
@@ -2027,12 +2031,20 @@ public class WebUserController extends BaseController {
         }
 
         UserEntry userEntry = userService.findById(new ObjectId(sessionValue.getId()));
-        model.put("forumScore", userEntry.getForumScore());
+       // model.put("forumScore", userEntry.getForumScore());
         if(StringUtils.isNotBlank(userEntry.getQRCode())){
             model.put("qrCode",userEntry.getQRCode());
         }
 
-        model.put("forumExperience", userEntry.getForumExperience());
+        //model.put("forumExperience", userEntry.getForumExperience());
+        IntegralSufferEntry integralSufferEntry = integralSufferService.getEntry(new ObjectId(sessionValue.getId()));
+        if(integralSufferEntry!=null){
+            model.put("forumScore", integralSufferEntry.getScore());
+            model.put("forumExperience", integralSufferEntry.getSuffer());
+        }else{
+            model.put("forumScore", 0);
+            model.put("forumExperience", 0);
+        }
         long stars = fLevelService.getStars(userEntry.getForumExperience());
         model.put("stars", stars);
         model.put("userId", sessionValue.getId());

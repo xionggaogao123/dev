@@ -218,7 +218,7 @@ public class ReferenceDataService {
         List<ObjectId> objectIds = new ArrayList<ObjectId>();
         for(ReferenceDataEntry entry: entries){
             ReferenceDataDTO dataDTO = new ReferenceDataDTO(entry);
-            CommunityEntry communityDTO = map3.get(dataDTO.getCommunityId());
+            CommunityEntry communityDTO = map3.get(new ObjectId(dataDTO.getCommunityId()));
             if(communityDTO!=null){
                 dataDTO.setCommunityName(communityDTO.getCommunityName());
             }

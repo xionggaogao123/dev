@@ -16,6 +16,15 @@ import java.util.List;
  */
 public class ClassOrderDao extends BaseDao {
 
+    /**
+     * 批量保存
+     *
+     * @param list
+     */
+    public void addBatch(List<DBObject> list) {
+        save(MongoFacroty.getAppDB(), Constant.COLLECTION_CLASS_ORDER, list);
+    }
+
     //添加课程
     public String addEntry(ClassOrderEntry entry){
         save(MongoFacroty.getAppDB(), Constant.COLLECTION_CLASS_ORDER, entry.getBaseEntry());
@@ -27,7 +36,7 @@ public class ClassOrderDao extends BaseDao {
         List<Integer> list = new ArrayList<Integer>();
         list.add(1);
         list.add(0);
-        BasicDBObject query=new BasicDBObject("uid",userId).append("typ",new BasicDBObject(Constant.MONGO_IN,list));
+        BasicDBObject query=new BasicDBObject("uid",userId).append("typ",new BasicDBObject(Constant.MONGO_IN,list)).append("isr", Constant.ZERO);
         List<DBObject> dbList=find(MongoFacroty.getAppDB(), Constant.COLLECTION_CLASS_ORDER, query,
                 Constant.FIELDS, Constant.MONGO_SORTBY_DESC);
         if (dbList != null && !dbList.isEmpty()) {
@@ -45,7 +54,7 @@ public class ClassOrderDao extends BaseDao {
         list.add(1);
         list.add(0);
         BasicDBObject query=new BasicDBObject("pid",new BasicDBObject(Constant.MONGO_IN,parentIds)).append("typ",new BasicDBObject(Constant.MONGO_IN,list));
-        query.append("uid",userId);
+        query.append("uid",userId).append("isr", Constant.ZERO);
         List<DBObject> dbList=find(MongoFacroty.getAppDB(), Constant.COLLECTION_CLASS_ORDER, query,
                 Constant.FIELDS, Constant.MONGO_SORTBY_DESC);
         if (dbList != null && !dbList.isEmpty()) {
@@ -62,7 +71,7 @@ public class ClassOrderDao extends BaseDao {
         List<Integer> list = new ArrayList<Integer>();
         list.add(1);
         list.add(0);
-        BasicDBObject query=new BasicDBObject("uid",userId).append("cid",contactId).append("typ", new BasicDBObject(Constant.MONGO_IN, list));
+        BasicDBObject query=new BasicDBObject("uid",userId).append("cid",contactId).append("typ", new BasicDBObject(Constant.MONGO_IN, list)).append("isr",Constant.ZERO);
         List<DBObject> dbList=find(MongoFacroty.getAppDB(), Constant.COLLECTION_CLASS_ORDER, query,
                 Constant.FIELDS, Constant.MONGO_SORTBY_DESC);
         if (dbList != null && !dbList.isEmpty()) {

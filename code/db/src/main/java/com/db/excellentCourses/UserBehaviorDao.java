@@ -19,7 +19,7 @@ public class UserBehaviorDao extends BaseDao {
     }
 
     public UserBehaviorEntry getEntry(ObjectId userId){
-        BasicDBObject query=new BasicDBObject("uid",userId);
+        BasicDBObject query=new BasicDBObject("uid",userId).append("isr",Constant.ZERO);
         DBObject dbObject=findOne(MongoFacroty.getAppDB(), Constant.COLLECTION_USER_BEHAVIOR,query,Constant.FIELDS);
         if(null!=dbObject){
             return new UserBehaviorEntry((BasicDBObject) dbObject);

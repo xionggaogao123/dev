@@ -14,13 +14,11 @@ import com.pojo.excellentCourses.ExcellentCoursesEntry;
 import com.pojo.excellentCourses.HourClassEntry;
 import com.pojo.excellentCourses.UserBehaviorEntry;
 import com.sys.constants.Constant;
+import com.sys.utils.DateTimeUtils;
 import org.bson.types.ObjectId;
 import org.springframework.stereotype.Service;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 /**
  * Created by James on 2018-04-26.
@@ -74,11 +72,13 @@ public class ExcellentCoursesService {
                 dto1.setUserId(userId.toString());
                 ///todo        二期改为后台设定
                 dto1.setClassNewPrice(dto1.getClassOldPrice());
+                dto1.setWeek(getWeek(dto1.getDateTime()));
                 dto1.setParentId(dto.getParentId());
                 HourClassEntry classEntry =  dto1.buildAddEntry();
                 oldPrice = oldPrice+dto1.getClassOldPrice();
                 entryList.add(classEntry);
             }
+            hourClassDao.delEntry(new ObjectId(dto.getParentId()),userId);
             this.addEntryBatch(entryList);
             excellentCoursesEntry.setAllClassCount(entryList.size());
             excellentCoursesEntry.setOldPrice(oldPrice);
@@ -90,6 +90,18 @@ public class ExcellentCoursesService {
         }
 
         return "";
+    }
+
+    public int getWeek(String dateTime){
+        long startNum = DateTimeUtils.getStrToLongTime(dateTime, "yyyy-MM-dd");
+        Date date = new Date(startNum);
+        Calendar cal = Calendar.getInstance();
+        cal.setTime(date);
+        int w = cal.get(Calendar.DAY_OF_WEEK) - 1;
+        if(w==0){
+            w= 7;
+        }
+        return w;
     }
 
 

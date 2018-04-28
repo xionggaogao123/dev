@@ -72,7 +72,7 @@ public class HourClassDTO {
         }
         long dTm = 0l;
         if(this.getDateTime() != null && this.getDateTime() != ""){
-            dTm = DateTimeUtils.getStrToLongTime(this.getDateTime());
+            dTm = DateTimeUtils.getStrToLongTime(this.getDateTime(), "yyyy-MM-dd");
         }
         long sTm = 0l;
         if(this.getStartTime() != null && this.getStartTime() != ""){

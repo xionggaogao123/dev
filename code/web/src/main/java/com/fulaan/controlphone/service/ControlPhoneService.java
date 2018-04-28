@@ -4020,12 +4020,14 @@ public class ControlPhoneService {
                 }else{
                     dto.setLevel(2);//不匹配
                 }
-                dto.setUserName(ddto.getUserName());
+                String name = StringUtils.isNotEmpty(ddto.getNickName())?ddto.getNickName():ddto.getUserName();
+                dto.setUserName(name);
                 dto.setDateTime(0l);
                 dtos.add(dto);
             }else{
                 ControlVersionDTO dto = new ControlVersionDTO();
-                dto.setUserName(ddto.getUserName());
+                String name = StringUtils.isNotEmpty(ddto.getNickName())?ddto.getNickName():ddto.getUserName();
+                dto.setUserName(name);
                 dto.setVersion("暂无数据");
                 dto.setLevel(2);
                 dto.setCommunityId(communityId.toString());

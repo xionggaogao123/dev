@@ -31,6 +31,13 @@ public class HourClassDao extends BaseDao {
         return entry.getID().toString();
     }
 
+    //删除
+    public void delEntry(ObjectId parentId,ObjectId userId){
+        BasicDBObject query = new BasicDBObject("pid",parentId).append("uid",userId);
+        BasicDBObject updateValue=new BasicDBObject(Constant.MONGO_SET,new BasicDBObject("isr",Constant.ONE));
+        update(MongoFacroty.getAppDB(), Constant.COLLECTION_HOUR_CLASS, query,updateValue);
+    }
+
 
     //查询课时
     public List<HourClassEntry> getEntryList(ObjectId parentId){

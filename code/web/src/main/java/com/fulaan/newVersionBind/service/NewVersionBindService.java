@@ -691,26 +691,36 @@ public class NewVersionBindService {
                                                 ObjectId mainUserId,
                                                 ObjectId userId,
                                                 String studentNumber,
-                                                String thirdName){
+                                                String thirdName) throws Exception{
+        NewVersionCommunityBindEntry entry = newVersionCommunityBindDao.getEntry(thirdName, communityId, mainUserId);
+        if(null!=entry){
+            if(entry.getRemoveStatus()==1){
+                
+            }else{
+                throw new Exception("该班级姓名已用过!");
+            }
+        } else {
+            VirtualUserEntry virtualUserEntry = virtualUserDao.findByNames(communityId,thirdName,studentNumber);
+            if(virtualUserEntry!=null){ //已存在虚拟用户,进行关联绑定操作
+                VirtualAndUserEntry virtualAndUserEntry = virtualAndUserDao.getEntry(virtualUserEntry.getUserId(), communityId);
+                if(virtualAndUserEntry!=null && virtualAndUserEntry.getUserId().equals(userId)){//存在且已被该用户绑定
+                    //不做操作
+                }else{//未绑定
+                    //删除老记录
+                    virtualAndUserDao.delEntry(userId,communityId);
 
-         VirtualUserEntry virtualUserEntry = virtualUserDao.findByNames(communityId,thirdName,studentNumber);
-        if(virtualUserEntry!=null){ //已存在虚拟用户,进行关联绑定操作
-            VirtualAndUserEntry virtualAndUserEntry = virtualAndUserDao.getEntry(virtualUserEntry.getUserId(), communityId);
-            if(virtualAndUserEntry!=null && virtualAndUserEntry.getUserId().equals(userId)){//存在且已被该用户绑定
-                //不做操作
-            }else{//未绑定
+                    //添加新纪录
+                    VirtualAndUserEntry virtualAndUserEntry2 = new VirtualAndUserEntry(communityId,virtualUserEntry.getUserId(),userId);
+                    virtualAndUserDao.addEntry(virtualAndUserEntry2);
+                }
+            }else{
                 //删除老记录
                 virtualAndUserDao.delEntry(userId,communityId);
-
-                //添加新纪录
-                VirtualAndUserEntry virtualAndUserEntry2 = new VirtualAndUserEntry(communityId,virtualUserEntry.getUserId(),userId);
-                virtualAndUserDao.addEntry(virtualAndUserEntry2);
             }
-        }else{
-            //删除老记录
-            virtualAndUserDao.delEntry(userId,communityId);
+            newVersionCommunityBindDao.updateStudentNumberAndThirdName(communityId,mainUserId,userId, studentNumber,thirdName);
         }
-        newVersionCommunityBindDao.updateStudentNumberAndThirdName(communityId,mainUserId,userId, studentNumber,thirdName);
+
+         
 
     }
 

@@ -20,7 +20,7 @@ public class ExcellentCoursesDTO {
     private String title;
     private String target;
     private int allClassCount;
-    private List<String> communityIdList;
+    private List<String> communityIdList = new ArrayList<String>();
     private String startTime;
     private String endTime;
     private int oldPrice;

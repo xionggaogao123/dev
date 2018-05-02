@@ -1,9 +1,11 @@
 package com.fulaan.integral.service;
 
+import com.db.backstage.TeacherApproveDao;
 import com.db.fcommunity.GroupDao;
 import com.db.fcommunity.MemberDao;
 import com.db.integral.IntegralRecordDao;
 import com.db.integral.IntegralSufferDao;
+import com.pojo.backstage.TeacherApproveEntry;
 import com.pojo.integral.IntegralRecordEntry;
 import com.pojo.integral.IntegralSufferEntry;
 import com.pojo.integral.IntegralType;
@@ -23,7 +25,9 @@ public class IntegralSufferService {
 
     private IntegralRecordDao integralRecordDao =  new IntegralRecordDao();
 
-    private IntegralSufferDao integralSufferDao = new IntegralSufferDao();
+    private IntegralSufferDao integralSufferDao =new IntegralSufferDao();
+
+    private TeacherApproveDao teacherApproveDao = new TeacherApproveDao();
 
     private MemberDao memberDao = new MemberDao();
 
@@ -75,6 +79,13 @@ public class IntegralSufferService {
             }else{
                 role=2;
             }
+        }
+        //非大V,不操作
+        TeacherApproveEntry teacherApproveEntry = teacherApproveDao.getEntry(userId);
+        if(teacherApproveEntry!=null && teacherApproveEntry.getType()==2 ){
+
+        }else{
+            return 0;
         }
         if(log != 4 && role!=type){//不适用
             return score;

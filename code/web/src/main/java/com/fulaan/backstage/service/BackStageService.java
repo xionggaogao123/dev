@@ -237,6 +237,22 @@ public class BackStageService {
                 dtos.add(new ControlSchoolTimeDTO(entry));
             }
         }
+        return getOrder(dtos);
+    }
+
+    private List<ControlSchoolTimeDTO> getOrder( List<ControlSchoolTimeDTO> dtos){
+        Collections.sort(dtos, new Comparator<ControlSchoolTimeDTO>() {
+            @Override
+            public int compare(ControlSchoolTimeDTO o1, ControlSchoolTimeDTO o2) {
+                int result=0;
+                if(o1.getWeek()<o2.getWeek()){
+                    result=-1;
+                }else if(o1.getType()>o2.getWeek()) {
+                    result=1;
+                }
+                return result;
+            }
+        });
         return dtos;
     }
     public void addSetTimeListEntry(ObjectId userId,int time){
@@ -345,7 +361,7 @@ public class BackStageService {
         }
     }
 
-    public void addCommunityTime2(ObjectId userId,String startTime,String endTime,ObjectId schoolId,int week){
+    public int addMoreCommunityTime(ObjectId userId,String startTime,String endTime,ObjectId schoolId,int week){
         HomeSchoolEntry homeSchoolEntry = homeSchoolDao.getEntryById(schoolId);
         if(homeSchoolEntry!=null){
             List<ControlSchoolTimeEntry>  entryList = controlSchoolTimeDao.getCurrentSchoolMoEntryList(week, schoolId);
@@ -362,10 +378,6 @@ public class BackStageService {
                 this.addWeekShe2(schoolId, week);
                 id = controlSchoolTimeDao.addEntry(entry1);
             }else{
-               /* entry.setStartTime(startTime);
-                entry.setEndTime(endTime);
-                controlSchoolTimeDao.updEntry(entry);
-                id = entry.getID().toString();*/
                 //设置时间改为多段
                 //判断是否交叉
                 long sl2 = 0l;
@@ -379,11 +391,20 @@ public class BackStageService {
                     el = DateTimeUtils.getStrToLongTime("2018-02-10"+" "+controlSchoolTimeEntry.getEndTime(), "yyyy-MM-dd HH:mm:ss");
                     //交叉驳回
                     if(sl>sl2 && sl<el2){
-                        return;
+                        return 1;
                     }
                     if(el>sl2 && el< el2){
-                        return;
+                        return 1;
                     }
+
+                    if(sl ==sl2 && el ==el2){
+                        return 0;
+                    }
+
+                    if(sl ==el2 || el ==sl2 || sl == sl2 || el == el2){
+                        return 1;
+                    }
+
 
                 }
                 ControlSchoolTimeDTO dto = new ControlSchoolTimeDTO();
@@ -397,9 +418,9 @@ public class BackStageService {
                 this.addWeekShe2(schoolId, week);
                 id = controlSchoolTimeDao.addEntry(entry1);
             }
-
             this.addLogMessage(id.toString(),"添加学校: "+homeSchoolEntry.getName()+" 管控默认上课时间："+startTime+"-"+endTime,LogMessageType.communitTime.getDes(),userId.toString());
         }
+        return 0;
     }
     public void addCommunityTime(ObjectId userId,String startTime,String endTime,ObjectId schoolId,int week){
         HomeSchoolEntry homeSchoolEntry = homeSchoolDao.getEntryById(schoolId);
@@ -469,6 +490,67 @@ public class BackStageService {
         this.addLogMessage(id.toString(),"添加特殊管控默认上课时间："+ startTime+"-"+endTime,LogMessageType.schoolTime.getDes(),userId.toString());
     }
 
+    public int addMoreOtherCommunityTime(ObjectId userId,String startTime,String endTime,ObjectId schoolId,String dateTime){
+        HomeSchoolEntry homeSchoolEntry = homeSchoolDao.getEntryById(schoolId);
+        if(homeSchoolEntry!=null){
+            List<ControlSchoolTimeEntry> entryList = controlSchoolTimeDao.getCurrentOtherCommunityEntry(dateTime, schoolId);
+            String id = "";
+            if(entryList.size()==0){
+                ControlSchoolTimeDTO dto = new ControlSchoolTimeDTO();
+                dto.setStartTime(startTime);
+                dto.setEndTime(endTime);
+                dto.setParentId(schoolId.toString());
+                dto.setDataTime(dateTime);
+                dto.setType(2);
+                ControlSchoolTimeEntry controlSchoolTimeEntry = dto.buildAddEntry();
+                controlSchoolTimeEntry.setIsRemove(Constant.TWO);
+                this.addWeekShe(schoolId);
+                id = controlSchoolTimeDao.addEntry(controlSchoolTimeEntry);
+            }else{
+                long sl2 = 0l;
+                sl2 = DateTimeUtils.getStrToLongTime(dateTime+ " " + startTime, "yyyy-MM-dd HH:mm:ss");
+                long el2 = 0l;
+                el2 = DateTimeUtils.getStrToLongTime(dateTime+" "+endTime, "yyyy-MM-dd HH:mm:ss");
+                for(ControlSchoolTimeEntry controlSchoolTimeEntry:entryList){
+                    long sl = 0l;
+                    sl = DateTimeUtils.getStrToLongTime(controlSchoolTimeEntry.getDataTime()+ " " + controlSchoolTimeEntry.getStartTime(), "yyyy-MM-dd HH:mm:ss");
+                    long el = 0l;
+                    el = DateTimeUtils.getStrToLongTime(controlSchoolTimeEntry.getDataTime()+" "+controlSchoolTimeEntry.getEndTime(), "yyyy-MM-dd HH:mm:ss");
+                    //交叉驳回
+                    if(sl>sl2 && sl<el2){
+                        return 1;
+                    }
+                    if(el>sl2 && el< el2){
+                        return 1;
+                    }
+                    if(sl ==sl2 && el ==el2){
+                        return 0;
+                    }
+
+                    if(sl ==el2 || el ==sl2 || sl == sl2 || el == el2){
+                        return 1;
+                    }
+
+                }
+                ControlSchoolTimeDTO dto = new ControlSchoolTimeDTO();
+                dto.setStartTime(startTime);
+                dto.setParentId(schoolId.toString());
+                dto.setEndTime(endTime);
+                dto.setWeek(0);
+                dto.setType(2);//特殊
+                dto.setDataTime(dateTime);
+                ControlSchoolTimeEntry entry1 = dto.buildAddEntry();
+                entry1.setIsRemove(Constant.TWO);
+                this.addWeekShe(schoolId);
+                id = controlSchoolTimeDao.addEntry(entry1);
+            }
+
+            this.addLogMessage(id.toString(),"添加学校："+homeSchoolEntry.getName()+" 特殊管控上课时间："+ startTime+"-"+endTime,LogMessageType.communitTime.getDes(),userId.toString());
+        }
+        return 0;
+
+    }
+
     public void addOtherCommunityTime(ObjectId userId,String startTime,String endTime,ObjectId schoolId,String dateTime){
         HomeSchoolEntry homeSchoolEntry = homeSchoolDao.getEntryById(schoolId);
         if(homeSchoolEntry!=null){
@@ -514,6 +596,102 @@ public class BackStageService {
         }
 
         this.addLogMessage(id.toString(),"添加特殊管控默认上课时间："+ startTime+"-"+endTime,LogMessageType.schoolTime.getDes(),userId.toString());
+    }
+
+    public int addMoreDuringCommunityTime(ObjectId userId,String startTime,String endTime,ObjectId schoolId,String dateTime){
+        HomeSchoolEntry homeSchoolEntry = homeSchoolDao.getEntryById(schoolId);
+        if(homeSchoolEntry!=null){
+            List<ControlSchoolTimeEntry> entryList = controlSchoolTimeDao.getCurrentDuringCommunityEntry(schoolId);
+            String id = "";
+            if(entryList.size()==0){
+                ControlSchoolTimeDTO dto = new ControlSchoolTimeDTO();
+                dto.setStartTime(startTime);
+                dto.setEndTime(endTime);
+                dto.setDataTime(dateTime);
+                dto.setParentId(schoolId.toString());
+                dto.setType(3);
+                ControlSchoolTimeEntry controlSchoolTimeEntry = dto.buildAddEntry();
+                controlSchoolTimeEntry.setIsRemove(Constant.TWO);
+                this.addWeekShe(schoolId);
+                id = controlSchoolTimeDao.addEntry(controlSchoolTimeEntry);
+            }else{
+                String[] strings = dateTime.split("=");
+                //判断时间段是否交叉
+                long sl2 = DateTimeUtils.getStrToLongTime(strings[0], "yyyy-MM-dd");
+                long el2 = DateTimeUtils.getStrToLongTime(strings[1], "yyyy-MM-dd");
+                for(ControlSchoolTimeEntry controlSchoolTimeEntry:entryList){
+                    String[] strings1 = controlSchoolTimeEntry.getDataTime().split("=");
+                    long sl = 0l;
+                    sl = DateTimeUtils.getStrToLongTime(strings1[0], "yyyy-MM-dd");
+                    long el = 0l;
+                    el = DateTimeUtils.getStrToLongTime(strings1[1], "yyyy-MM-dd");
+                    //交叉驳回
+                    if(sl>sl2 && sl<el2){
+                        return 1;
+                    }
+                    if(el>sl2 && el< el2){
+                        return 1;
+                    }
+                    if(sl ==el2 || el ==sl2){
+                        return 1;
+                    }
+                }
+                List<ControlSchoolTimeEntry> entries = controlSchoolTimeDao.getOtherMore(dateTime,3,schoolId);
+                if(entries.size()==0){
+                    ControlSchoolTimeDTO dto = new ControlSchoolTimeDTO();
+                    dto.setStartTime(startTime);
+                    dto.setEndTime(endTime);
+                    dto.setDataTime(dateTime);
+                    dto.setParentId(schoolId.toString());
+                    dto.setType(3);
+                    ControlSchoolTimeEntry controlSchoolTimeEntry2 = dto.buildAddEntry();
+                    controlSchoolTimeEntry2.setIsRemove(Constant.TWO);
+                    this.addWeekShe(schoolId);
+                    id = controlSchoolTimeDao.addEntry(controlSchoolTimeEntry2);
+                }else{
+                    //判断时间段是否交叉
+                    long sl3 = DateTimeUtils.getStrToLongTime(strings[0] + " "+startTime, "yyyy-MM-dd HH:mm:ss");
+                    long el3 = DateTimeUtils.getStrToLongTime(strings[1] + " "+endTime, "yyyy-MM-dd HH:mm:ss");
+                    for(ControlSchoolTimeEntry controlSchoolTimeEntry:entryList){
+                        String[] strings1 = controlSchoolTimeEntry.getDataTime().split("=");
+                        long sl = 0l;
+                        sl = DateTimeUtils.getStrToLongTime(strings1[0] + " " +controlSchoolTimeEntry.getStartTime(), "yyyy-MM-dd HH:mm:ss");
+                        long el = 0l;
+                        el = DateTimeUtils.getStrToLongTime(strings1[1] + " "+controlSchoolTimeEntry.getEndTime(), "yyyy-MM-dd HH:mm:ss");
+                        //交叉驳回
+                        if(sl>sl3 && sl<el3){
+                            return 1;
+                        }
+                        if(el>sl3 && el< el3){
+                            return 1;
+                        }
+
+                        if(sl ==sl3 && el ==el3){
+                            return 0;
+                        }
+
+                        if(sl ==el3 || el ==sl3 || sl == sl3 || el == el3){
+                            return 1;
+                        }
+                    }
+
+                    ControlSchoolTimeDTO dto = new ControlSchoolTimeDTO();
+                    dto.setStartTime(startTime);
+                    dto.setEndTime(endTime);
+                    dto.setDataTime(dateTime);
+                    dto.setParentId(schoolId.toString());
+                    dto.setType(3);
+                    ControlSchoolTimeEntry controlSchoolTimeEntry2 = dto.buildAddEntry();
+                    controlSchoolTimeEntry2.setIsRemove(Constant.TWO);
+                    this.addWeekShe(schoolId);
+                    id = controlSchoolTimeDao.addEntry(controlSchoolTimeEntry2);
+                }
+            }
+
+            this.addLogMessage(id.toString(),"添加学校："+homeSchoolEntry.getName()+" 特殊管控学校上课时间："+ startTime+"-"+endTime,LogMessageType.communitTime.getDes(),userId.toString());
+        }
+        return 0;
+
     }
 
     public void addDuringCommunityTime(ObjectId userId,String startTime,String endTime,ObjectId schoolId,String dateTime){

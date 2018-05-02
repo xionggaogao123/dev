@@ -67,6 +67,8 @@ public class ExcellentCoursesService {
             List<HourClassEntry> entryList =new ArrayList<HourClassEntry>();
             List<HourClassDTO> dtoList = dto.getDtos();
             int oldPrice = 0;
+            long st = 0l;
+            long et = 0l;
             for(HourClassDTO dto1:dtoList){
                 dto1.setType(Constant.ZERO);
                 dto1.setUserId(userId.toString());
@@ -76,6 +78,22 @@ public class ExcellentCoursesService {
                 dto1.setParentId(dto.getParentId());
                 HourClassEntry classEntry =  dto1.buildAddEntry();
                 oldPrice = oldPrice+dto1.getClassOldPrice();
+                long st2 = classEntry.getStartTime();
+                long et2 = classEntry.getStartTime()+classEntry.getCurrentTime();
+                if(st==0l){
+                    st = st2;
+                }else{
+                    if(st2<st){
+                        st = st2;
+                    }
+                }
+                if(et==0l){
+                    et = et2;
+                }else{
+                    if(et <et2){
+                        et = et2;
+                    }
+                }
                 entryList.add(classEntry);
             }
             hourClassDao.delEntry(new ObjectId(dto.getParentId()),userId);
@@ -84,6 +102,8 @@ public class ExcellentCoursesService {
             excellentCoursesEntry.setOldPrice(oldPrice);
             //todo        二期改为后台设定
             excellentCoursesEntry.setNewPrice(oldPrice);
+            excellentCoursesEntry.setStartTime(st);
+            excellentCoursesEntry.setEndTime(et);
             excellentCoursesDao.addEntry(excellentCoursesEntry);
         }else{
             throw new Exception("课程不存在！");
@@ -174,14 +194,14 @@ public class ExcellentCoursesService {
         }
         map.put("list",dtos);
         map.put("count",dtos.size());
-        map.put("dto",getNowEntry(hourClassIds));
+        //map.put("dto",getNowEntry(hourClassIds));
         return map;
     }
 
     public HourClassDTO getNowEntry(List<ObjectId> hourClassIds){
         //用户订单查询
         List<HourClassEntry> hourClassEntries = hourClassDao.getEntryList(hourClassIds);
-        HourClassDTO hourClassDTO = null;
+        HourClassDTO hourClassDTO = new HourClassDTO();
         long current = System.currentTimeMillis();
         for(HourClassEntry hourClassEntry:hourClassEntries){
             long endTime = hourClassEntry.getStartTime() + hourClassEntry.getCurrentTime();

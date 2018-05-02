@@ -108,8 +108,7 @@ public class ExcellentCoursesController extends BaseController {
             @ApiResponse(code = 500, message = "服务器不能完成请求")})
     @RequestMapping("/myCollectList")
     @ResponseBody
-    public String myCollectList(@ApiParam(name = "id", required = true, value = "id") @RequestParam("id") String id,
-                               @ApiParam(name = "classIds", required = true, value = "classIds") @RequestParam("classIds") String classIds){
+    public String myCollectList(){
         RespObj respObj=new RespObj(Constant.FAILD_CODE);
         try {
             respObj.setCode(Constant.SUCCESS_CODE);

@@ -242,7 +242,7 @@ public class BackStageController extends BaseController {
      * 设置学校常规管控时间
      * @return
      */
-    @ApiOperation(value = "设置学校常规管控时间", httpMethod = "POST", produces = "application/json")
+   /* @ApiOperation(value = "设置学校常规管控时间", httpMethod = "POST", produces = "application/json")
     @ApiResponses( value = {@ApiResponse(code = 200, message = "Successful — 请求已完成",response = String.class),
             @ApiResponse(code = 400, message = "请求中有语法问题，或不能满足请求"),
             @ApiResponse(code = 500, message = "服务器不能完成请求")})
@@ -254,12 +254,39 @@ public class BackStageController extends BaseController {
                                 @ApiParam(name = "week", required = true, value = "星期") @RequestParam("week") int week){
         RespObj respObj = new RespObj(Constant.FAILD_CODE);
         try{
-            backStageService.addCommunityTime(getUserId(), startTime, endTime, new ObjectId(schoolId) ,week);
+            backStageService.addCommunityTime(getUserId(), startTime, endTime, new ObjectId(schoolId), week);
             respObj.setCode(Constant.SUCCESS_CODE);
             respObj.setMessage("设置学校常规管控时间成功");
         }catch (Exception e){
             e.printStackTrace();
             respObj.setCode(Constant.SUCCESS_CODE);
+            respObj.setErrorMessage("设置学校常规管控时间失败");
+        }
+        return JSON.toJSONString(respObj);
+    }*/
+    @ApiOperation(value = "设置学校常规管控时间", httpMethod = "POST", produces = "application/json")
+    @ApiResponses( value = {@ApiResponse(code = 200, message = "Successful — 请求已完成",response = String.class),
+            @ApiResponse(code = 400, message = "请求中有语法问题，或不能满足请求"),
+            @ApiResponse(code = 500, message = "服务器不能完成请求")})
+    @RequestMapping("/addCommunityTime")
+    @ResponseBody
+    public String addCommunityTime(@ApiParam(name = "startTime", required = true, value = "开始时间") @RequestParam("startTime") String startTime,
+                                   @ApiParam(name = "endTime", required = true, value = "结束时间") @RequestParam("endTime") String endTime,
+                                   @ApiParam(name = "schoolId", required = true, value = "学校id") @RequestParam("schoolId") String schoolId,
+                                   @ApiParam(name = "week", required = true, value = "星期") @RequestParam("week") int week){
+        RespObj respObj = new RespObj(Constant.FAILD_CODE);
+        try{
+            int result = backStageService.addMoreCommunityTime(getUserId(), startTime, endTime, new ObjectId(schoolId) ,week);
+            if(result==0){
+                respObj.setCode(Constant.SUCCESS_CODE);
+                respObj.setMessage("设置学校常规管控时间成功");
+            }else{
+                respObj.setCode(Constant.FAILD_CODE);
+                respObj.setMessage("时间冲突，请删除原时间设置或修改新时间");
+            }
+        }catch (Exception e){
+            e.printStackTrace();
+            respObj.setCode(Constant.FAILD_CODE);
             respObj.setErrorMessage("设置学校常规管控时间失败");
         }
         return JSON.toJSONString(respObj);
@@ -341,7 +368,7 @@ public class BackStageController extends BaseController {
      * 设置学校特殊管控时间
      * @return
      */
-    @ApiOperation(value = "设置学校特殊管控时间", httpMethod = "POST", produces = "application/json")
+   /* @ApiOperation(value = "设置学校特殊管控时间", httpMethod = "POST", produces = "application/json")
     @ApiResponses( value = {@ApiResponse(code = 200, message = "Successful — 请求已完成",response = String.class),
             @ApiResponse(code = 400, message = "请求中有语法问题，或不能满足请求"),
             @ApiResponse(code = 500, message = "服务器不能完成请求")})
@@ -362,8 +389,35 @@ public class BackStageController extends BaseController {
             respObj.setMessage("设置学校特殊管控时间失败");
         }
         return JSON.toJSONString(respObj);
-    }
+    }*/
 
+    @ApiOperation(value = "设置学校特殊管控时间", httpMethod = "POST", produces = "application/json")
+    @ApiResponses( value = {@ApiResponse(code = 200, message = "Successful — 请求已完成",response = String.class),
+            @ApiResponse(code = 400, message = "请求中有语法问题，或不能满足请求"),
+            @ApiResponse(code = 500, message = "服务器不能完成请求")})
+    @RequestMapping("/addOtherCommunityTime")
+    @ResponseBody
+    public String addOtherCommunityTime(@ApiParam(name = "startTime", required = true, value = "开始时间") @RequestParam("startTime") String startTime,
+                                        @ApiParam(name = "endTime", required = true, value = "结束时间") @RequestParam("endTime") String endTime,
+                                        @ApiParam(name = "schoolId", required = true, value = "学校id") @RequestParam("schoolId") String schoolId,
+                                        @ApiParam(name = "dateTime", required = true, value = "日期") @RequestParam("dateTime") String dateTime){
+        RespObj respObj = new RespObj(Constant.FAILD_CODE);
+        try{
+            int result = backStageService.addMoreOtherCommunityTime(getUserId(), startTime, endTime, new ObjectId(schoolId), dateTime);
+            if(result==0){
+                respObj.setCode(Constant.SUCCESS_CODE);
+                respObj.setMessage("设置学校常规管控时间成功");
+            }else{
+                respObj.setCode(Constant.FAILD_CODE);
+                respObj.setMessage("时间冲突，请删除原时间设置或修改新时间");
+            }
+        }catch (Exception e){
+            e.printStackTrace();
+            respObj.setCode(Constant.SUCCESS_CODE);
+            respObj.setMessage("设置学校特殊管控时间失败");
+        }
+        return JSON.toJSONString(respObj);
+    }
     /**
      * 设置默认时间段管控时间
      * @return
@@ -394,7 +448,7 @@ public class BackStageController extends BaseController {
      * 设置学校时间段管控时间
      * @return
      */
-    @ApiOperation(value = "设置学校时间段管控时间", httpMethod = "POST", produces = "application/json")
+   /* @ApiOperation(value = "设置学校时间段管控时间", httpMethod = "POST", produces = "application/json")
     @ApiResponses( value = {@ApiResponse(code = 200, message = "Successful — 请求已完成",response = String.class),
             @ApiResponse(code = 400, message = "请求中有语法问题，或不能满足请求"),
             @ApiResponse(code = 500, message = "服务器不能完成请求")})
@@ -415,8 +469,34 @@ public class BackStageController extends BaseController {
             respObj.setMessage("设置学校时间段管控时间失败");
         }
         return JSON.toJSONString(respObj);
+    }*/
+    @ApiOperation(value = "设置学校时间段管控时间", httpMethod = "POST", produces = "application/json")
+    @ApiResponses( value = {@ApiResponse(code = 200, message = "Successful — 请求已完成",response = String.class),
+            @ApiResponse(code = 400, message = "请求中有语法问题，或不能满足请求"),
+            @ApiResponse(code = 500, message = "服务器不能完成请求")})
+    @RequestMapping("/addDuringCommunityTime")
+    @ResponseBody
+    public String addDuringCommunityTime(@ApiParam(name = "startTime", required = true, value = "开始时间") @RequestParam("startTime") String startTime,
+                                         @ApiParam(name = "endTime", required = true, value = "结束时间") @RequestParam("endTime") String endTime,
+                                         @ApiParam(name = "schoolId", required = true, value = "学校id") @RequestParam("schoolId") String schoolId,
+                                         @ApiParam(name = "dateTime", required = true, value = "日期") @RequestParam("dateTime") String dateTime){
+        RespObj respObj = new RespObj(Constant.FAILD_CODE);
+        try{
+            int result = backStageService.addMoreDuringCommunityTime(getUserId(), startTime, endTime, new ObjectId(schoolId), dateTime);
+            if(result==0){
+                respObj.setCode(Constant.SUCCESS_CODE);
+                respObj.setMessage("设置学校常规管控时间成功");
+            }else{
+                respObj.setCode(Constant.FAILD_CODE);
+                respObj.setMessage("时间冲突，请删除原时间设置或修改新时间");
+            }
+        }catch (Exception e){
+            e.printStackTrace();
+            respObj.setCode(Constant.SUCCESS_CODE);
+            respObj.setMessage("设置学校时间段管控时间失败");
+        }
+        return JSON.toJSONString(respObj);
     }
-
     /**
      *  查询默认上课时间表
      * @return

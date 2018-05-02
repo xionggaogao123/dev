@@ -111,6 +111,51 @@ public class ControlSchoolTimeDao extends BaseDao {
         }
         return null;
     }
+
+    public List<ControlSchoolTimeEntry> getOtherMore(String dateTime,int type,ObjectId schoolId) {
+        BasicDBObject query =new BasicDBObject();
+        query.append("isr", Constant.TWO) .append("dtm", dateTime).append("pid",schoolId).append("typ",type);
+        List<DBObject> dboList=find(MongoFacroty.getAppDB(), Constant.COLLECTION_CONTROL_SCHOOL_TIME, query, Constant.FIELDS);
+        List<ControlSchoolTimeEntry> retList =new ArrayList<ControlSchoolTimeEntry>();
+        if(null!=dboList && !dboList.isEmpty())
+        {
+            for(DBObject dbo:dboList)
+            {
+                retList.add(new ControlSchoolTimeEntry((BasicDBObject)dbo));
+            }
+        }
+        return retList;
+    }
+
+    public List<ControlSchoolTimeEntry> getCurrentDuringCommunityEntry(ObjectId schoolId) {
+        BasicDBObject query =new BasicDBObject();
+        query.append("isr", Constant.TWO) .append("typ", Constant.THREE).append("pid",schoolId);
+        List<DBObject> dboList=find(MongoFacroty.getAppDB(), Constant.COLLECTION_CONTROL_SCHOOL_TIME, query, Constant.FIELDS);
+        List<ControlSchoolTimeEntry> retList =new ArrayList<ControlSchoolTimeEntry>();
+        if(null!=dboList && !dboList.isEmpty())
+        {
+            for(DBObject dbo:dboList)
+            {
+                retList.add(new ControlSchoolTimeEntry((BasicDBObject)dbo));
+            }
+        }
+        return retList;
+    }
+
+    public List<ControlSchoolTimeEntry> getCurrentOtherCommunityEntry(String dateTime,ObjectId schoolId) {
+        BasicDBObject query =new BasicDBObject();
+        query.append("isr", Constant.TWO) .append("dtm", dateTime).append("pid",schoolId);
+        List<DBObject> dboList=find(MongoFacroty.getAppDB(), Constant.COLLECTION_CONTROL_SCHOOL_TIME, query, Constant.FIELDS);
+        List<ControlSchoolTimeEntry> retList =new ArrayList<ControlSchoolTimeEntry>();
+        if(null!=dboList && !dboList.isEmpty())
+        {
+            for(DBObject dbo:dboList)
+            {
+                retList.add(new ControlSchoolTimeEntry((BasicDBObject)dbo));
+            }
+        }
+        return retList;
+    }
     //修改
     public void updEntry(ControlSchoolTimeEntry e) {
         BasicDBObject query=new BasicDBObject(Constant.ID,e.getID());

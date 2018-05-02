@@ -322,16 +322,18 @@ public class DefaultGroupController extends BaseController {
             CommunityDTO communityDTO = communityService.findByObjectId(new ObjectId(communityId));
             String emChatId  = "";
             if(communityId==null){
-                respObj.setMessage("该社群不存在");
+                respObj.setErrorMessage("该社群不存在");
                 return respObj;
             }else{
                 emChatId = communityDTO.getEmChatId();
             }
 
             NewVersionBindRelationEntry newVersionBindRelationEntry = newVersionBindRelationDao.getBindEntry(getUserId());
-
-            String  userIds = "";
-//            ObjectId groupId = groupService.getGroupIdByChatId(emChatId);
+            if(newVersionBindRelationEntry ==null || newVersionBindRelationEntry.getMainUserId()==null){
+                respObj.setErrorMessage("该学生未绑定用户");
+                return respObj;
+            }
+            String  userIds = newVersionBindRelationEntry.getMainUserId().toString();
             GroupEntry groupEntry = groupService.getGroupEntryByEmchatId(emChatId);
             if(null==groupEntry){
                 throw new Exception("传入的环信Id有误");
@@ -339,12 +341,6 @@ public class DefaultGroupController extends BaseController {
             ObjectId groupId=groupEntry.getID();
             GroupDTO groupDTO = groupService.findById(groupId, groupEntry.getOwerId());
             List<ObjectId> userList = MongoUtils.convertObjectIds(userIds);
-            if(null!=groupEntry.getCommunityId()){
-                //判断是社群时，不能把学生拉进去社群
-                if(newVersionBindService.judgeUserStudent(userList)){
-                    throw new Exception("不能把学生拉进社群");
-                }
-            }
             for (ObjectId personId : userList) {
                 if (!memberService.isGroupMember(groupId, personId)) {
                     if (emService.addUserToEmGroup(emChatId, personId)) {

@@ -55,7 +55,7 @@ public class ExcellentCoursesDao extends BaseDao {
     //首页订单查询
     public List<ExcellentCoursesEntry> getEntryList(List<ObjectId> objectIds){
         List<ExcellentCoursesEntry> entryList=new ArrayList<ExcellentCoursesEntry>();
-        BasicDBObject query=new BasicDBObject().append("cis",new BasicDBObject(Constant.MONGO_IN,objectIds)).append("isr",0);
+        BasicDBObject query=new BasicDBObject().append("clt",new BasicDBObject(Constant.MONGO_IN,objectIds)).append("isr",0);
         List<DBObject> dbList=find(MongoFacroty.getAppDB(), Constant.COLLECTION_EXCELLENT_COURSES, query,
                 Constant.FIELDS, Constant.MONGO_SORTBY_DESC);
         if (dbList != null && !dbList.isEmpty()) {

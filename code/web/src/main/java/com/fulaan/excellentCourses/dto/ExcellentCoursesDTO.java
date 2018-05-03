@@ -40,6 +40,7 @@ public class ExcellentCoursesDTO {
         if(e!=null){
             this.id = e.getID()==null?"":e.getID().toString();
             this.userId = e.getUserId()==null?"":e.getUserId().toString();
+            this.userName = e.getUserName();
             this.subjectId=e.getSubjectId()==null?"":e.getSubjectId().toString();
             this.subjectName = e.getSubjectName();
             this.cover = e.getCover();

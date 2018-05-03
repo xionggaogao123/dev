@@ -12,6 +12,8 @@ import com.fulaan.mall.service.EBusinessVoucherService;
 import com.fulaan.pojo.Validate;
 import com.fulaan.user.controller.UserController;
 import com.fulaan.user.service.UserService;
+import com.fulaan.util.RSAIOSUtil.Base64Utils;
+import com.fulaan.util.RSAIOSUtil.RSAUtils;
 import com.pojo.app.SessionValue;
 import com.pojo.ebusiness.EVoucherEntry;
 import com.pojo.forum.FInvitationEntry;
@@ -73,6 +75,15 @@ public class DefaultEBusinessUserController extends BaseController {
     private boolean needstatus = true;// 是否需要状态报告，需要true，不需要false
     private String product = null;// 产品ID
     private String extno = null;// 扩展码
+    private String privateKey = "MIICdgIBADANBgkqhkiG9w0BAQEFAASCAmAwggJcAgEAAoGBAKEl7uLk9nU2Up4TCaPybb" +
+            "OA2vAqdBnvytrNjEUl1oWSh5DD4EOrBoL2Jo1bJ9JoKvrDsS5PanqS+A3Uz5l1oEunPdI37TJ8ylT+oY8hlOS3d5+5Zur" +
+            "6GiryGzz+MHUYSFBXnYzTdhM7gQgl741B3jxbzzd9i1V2N6VVirCQ8CnfAgMBAAECgYBy7Q2wbWBDeal0KNmgPd30vbnmv" +
+            "DAu6y/92cfm7LRQcI8UNE21lLxBG/GksFT3HulAC95Jy8OBhV046APiStw01T55pNobWolaz8f7rBfzsfCNFWlaZU3eCmdQ" +
+            "hgrlLxNDY/I4hxpSvKwaSN3dQIqqlznwoxsSyWrNG8h5LmGkQQJBAN5KYXDziATIrRriaYVUd2r6VJmDXhqUAkRK2Ickem7m" +
+            "N0ylAdtqmTOsMuu+DhAH7Er+PpFqZ3gkyUL/98I+aH8CQQC5lexK1z7yhGPI+whLu6kBsOvxCi6lFKQ7kthjdqLKa1t1Ym/Zcy" +
+            "q501waqP+P6hcdNVZ3t6AITrCihLxJRo6hAkEAsoI+z+rxvw28XYuWu5iCMamHyKPDLUrQqzEDwzsbCvXbULRt0ls/XkyZs9CzE" +
+            "FKcgfi8HCC7qLK54REXUKi3VwJAKcbvH1XfDLbyw46HKo0/GWtbYbJ6F51S7zo6TgGp2clbGEylgxzi1FwZEsNSbHI069VS9rY2Z0" +
+            "hXiO46eIBSoQJAS9dUAGP6gWDcTLd+E6bRG6IX3MMYNFdVthd1Pnpn0B4qY+5ebw7t+/gblH0etXNM6mmcBaPhD1EzHGjkw6LGZQ==";
 
     //激活邮箱地址
     private static final String validateUrl = "http://fulaan.com/mall/users/emailValidate.do?";
@@ -326,6 +337,13 @@ public class DefaultEBusinessUserController extends BaseController {
         }
         return model;
     }
+    private String getAndiron(String phone)throws Exception{
+        String str = "";
+        byte[] phone2 = Base64Utils.decode(phone);
+        byte[] encodedData = RSAUtils.decryptByPrivateKey(phone2, privateKey);
+        return  new String(encodedData);
+
+    }
 
     /**
      * 获取验证码
@@ -338,7 +356,7 @@ public class DefaultEBusinessUserController extends BaseController {
     @SessionNeedless
     @RequestMapping(value = "/newIOSMessages", method = RequestMethod.GET)
     @ResponseBody
-    public Map<String, Object> newIOSMessages(byte[] phone, HttpServletRequest request, HttpServletResponse response) {
+    public Map<String, Object> newIOSMessages(String phone, HttpServletRequest request, HttpServletResponse response) {
         Map<String, Object> model = new HashMap<String, Object>();
         //System.out.print(phone.toString());zq
         model.put("code", 500);
@@ -358,7 +376,7 @@ public class DefaultEBusinessUserController extends BaseController {
         }
         phone = phone2;*/
         try{
-            mobile = decryptByPrivateKey(phone,request);
+            mobile = getAndiron(phone);
         }catch (Exception e){
              e.printStackTrace();
         }
@@ -374,7 +392,7 @@ public class DefaultEBusinessUserController extends BaseController {
 //            return model;
 //        }
 
-        if (!ValidationUtils.isMobile(mobile)) {
+         if (!ValidationUtils.isMobile(mobile)) {
             model.put("message", "非法手机");
             return model;
         }

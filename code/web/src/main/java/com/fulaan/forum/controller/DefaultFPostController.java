@@ -1,5 +1,6 @@
 package com.fulaan.forum.controller;
 
+import com.db.backstage.TeacherApproveDao;
 import com.fulaan.annotation.LoginInfo;
 import com.fulaan.annotation.ObjectIdType;
 import com.fulaan.annotation.SessionNeedless;
@@ -19,6 +20,7 @@ import com.fulaan.video.service.VideoService;
 import com.pojo.app.FileUploadDTO;
 import com.pojo.app.Platform;
 import com.pojo.app.SessionValue;
+import com.pojo.backstage.TeacherApproveEntry;
 import com.pojo.fcommunity.ConcernEntry;
 import com.pojo.forum.*;
 import com.pojo.integral.IntegralSufferEntry;
@@ -102,6 +104,9 @@ public class DefaultFPostController extends BaseController {
     private ParticipantsInfoService participantsInfoService;
 
     private IntegralSufferService integralSufferService = new IntegralSufferService();
+
+
+    private TeacherApproveDao teacherApproveDao = new TeacherApproveDao();
 
     /**
      * 搜索界面
@@ -3198,5 +3203,12 @@ public class DefaultFPostController extends BaseController {
         model.put("k6kt", sessionValue.getK6kt());
         model.put("avatar", sessionValue.getMinAvatar());
         model.put("mobileNumber",userEntry.getMobileNumber());
+        TeacherApproveEntry teacherApproveEntry = teacherApproveDao.getEntry(new ObjectId(sessionValue.getId()));
+        if(teacherApproveEntry!=null && teacherApproveEntry.getType()==2){
+            model.put("isRen",1);
+        }else{
+            model.put("isRen",0);
+        }
+
     }
 }

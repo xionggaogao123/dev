@@ -86,7 +86,7 @@ public class ExcellentCoursesDao extends BaseDao {
         List<ExcellentCoursesEntry> entryList=new ArrayList<ExcellentCoursesEntry>();
         BasicDBObject query=new BasicDBObject().append("isr",0);
         if(subjectId!=null && !subjectId.equals("")){
-            query.append("sid",subjectId);
+            query.append("sid", new ObjectId(subjectId));
         }
         BasicDBObject orderQuery=new BasicDBObject().append("npc",priceType).append("stn",persionType).append("stm",timeType);
         List<DBObject> dbList=find(MongoFacroty.getAppDB(), Constant.COLLECTION_EXCELLENT_COURSES, query,
@@ -107,7 +107,8 @@ public class ExcellentCoursesDao extends BaseDao {
     public int selectCount(String subjectId) {
         BasicDBObject query =new BasicDBObject();
         if(subjectId!=null && !subjectId.equals("")){
-            query.append("sid",subjectId);
+            query.append("sid",new ObjectId(subjectId
+            ));
         }
         int count =
                 count(MongoFacroty.getAppDB(),

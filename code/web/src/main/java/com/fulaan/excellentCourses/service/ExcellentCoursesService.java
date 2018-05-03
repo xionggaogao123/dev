@@ -277,8 +277,7 @@ public class ExcellentCoursesService {
         return map;
     }
 
-    public Map<String,Object> getCoursesDesc(ObjectId id,ObjectId userId){
-        Map<String,Object> map = new HashMap<String, Object>();
+    public ExcellentCoursesDTO getSimpleDesc(ObjectId id,ObjectId userId){
         //课程相关
         ExcellentCoursesEntry excellentCoursesEntry = excellentCoursesDao.getEntry(id);
         ExcellentCoursesDTO dto = new ExcellentCoursesDTO(excellentCoursesEntry);
@@ -312,7 +311,52 @@ public class ExcellentCoursesService {
             UserBehaviorEntry userBehaviorEntry1 = new UserBehaviorEntry(userId,objectIdList,objectIdList2);
             userBehaviorDao.addEntry(userBehaviorEntry1);
         }
-        map.put("dto",dto);
+        return dto;
+    }
+
+    public Map<String,Object> getCoursesDesc(ObjectId id,ObjectId userId){
+        Map<String,Object> map = new HashMap<String, Object>();
+        //课程相关
+        ExcellentCoursesEntry excellentCoursesEntry = excellentCoursesDao.getEntry(id);
+        //ExcellentCoursesDTO dto = new ExcellentCoursesDTO(excellentCoursesEntry);
+        //用户行为
+        //UserBehaviorEntry userBehaviorEntry = userBehaviorDao.getEntry(userId);
+        //此课程已购买项目
+        List<ObjectId> cids= classOrderDao.getEntryIdList(userId,id);
+        if(cids.size()==0){
+            //dto.setIsBuy(0);  //未购买
+            map.put("isBuy",0);
+        }else{
+            //dto.setIsBuy(1);  //已购买
+            map.put("isBuy",1);
+        }
+        //是否购买
+        /*if(cids.size()==0){
+            dto.setIsBuy(0);  //未购买
+        }else{
+            dto.setIsBuy(1);  //已购买
+        }*/
+        //是否收藏   （行为统计）
+        /*if(userBehaviorEntry!=null){
+            if(userBehaviorEntry.getCollectList().contains(id)){
+                dto.setIsCollect(1);
+            }else{
+                dto.setIsCollect(0);
+            }
+            List<ObjectId> objectIdList2 =userBehaviorEntry.getBrowseList();
+            if(!objectIdList2.contains(id)){
+                objectIdList2.add(id);
+                userBehaviorEntry.setBrowseList(objectIdList2);
+                userBehaviorDao.addEntry(userBehaviorEntry);
+            }
+        }else{
+            List<ObjectId> objectIdList = new ArrayList<ObjectId>();
+            List<ObjectId> objectIdList2 = new ArrayList<ObjectId>();
+            objectIdList2.add(id);
+            UserBehaviorEntry userBehaviorEntry1 = new UserBehaviorEntry(userId,objectIdList,objectIdList2);
+            userBehaviorDao.addEntry(userBehaviorEntry1);
+        }*/
+        //map.put("dto",dto);
         long current = System.currentTimeMillis();
         boolean flage = false;
         map.put("isEnd",0);

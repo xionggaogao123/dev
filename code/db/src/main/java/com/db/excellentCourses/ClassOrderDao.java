@@ -36,12 +36,29 @@ public class ClassOrderDao extends BaseDao {
         List<Integer> list = new ArrayList<Integer>();
         list.add(1);
         list.add(0);
-        BasicDBObject query=new BasicDBObject("uid",userId).append("typ",new BasicDBObject(Constant.MONGO_IN,list)).append("isr", Constant.ZERO);
+        BasicDBObject query=new BasicDBObject("uid",userId).append("isBuy",1).append("typ", new BasicDBObject(Constant.MONGO_IN, list)).append("isr", Constant.ZERO);
         List<DBObject> dbList=find(MongoFacroty.getAppDB(), Constant.COLLECTION_CLASS_ORDER, query,
                 Constant.FIELDS, Constant.MONGO_SORTBY_DESC);
         if (dbList != null && !dbList.isEmpty()) {
             for (DBObject obj : dbList) {
                 entryList.add(new ClassOrderEntry((BasicDBObject) obj));
+            }
+        }
+        return entryList;
+    }
+
+    //首页订单查询
+    public  List<ObjectId> getObjectIdEntry(ObjectId userId){
+        List<ObjectId> entryList=new ArrayList<ObjectId>();
+        List<Integer> list = new ArrayList<Integer>();
+        list.add(1);
+        list.add(0);
+        BasicDBObject query=new BasicDBObject("uid",userId).append("isBuy",1).append("typ",new BasicDBObject(Constant.MONGO_IN,list)).append("isr", Constant.ZERO);
+        List<DBObject> dbList=find(MongoFacroty.getAppDB(), Constant.COLLECTION_CLASS_ORDER, query,
+                Constant.FIELDS, Constant.MONGO_SORTBY_DESC);
+        if (dbList != null && !dbList.isEmpty()) {
+            for (DBObject obj : dbList) {
+                entryList.add(new ClassOrderEntry((BasicDBObject) obj).getParentId());
             }
         }
         return entryList;

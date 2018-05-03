@@ -978,6 +978,30 @@ public class NewVersionBindService {
         return map;
     }
 
+    public void saoMoreCommunityBindEntry(ObjectId userId,ObjectId communityId,ObjectId mainUserId) throws Exception {
+        //先删除绑定关系
+        newVersionCommunityBindDao.removeSaoNewVersionCommunity(communityId, mainUserId, userId);
+        String userIds = userId.toString();
+        if (StringUtils.isNotBlank(userIds)) {
+            String[] uIds = userIds.split(",");
+            for (String uId : uIds) {
+                NewVersionCommunityBindEntry bindEntry = newVersionCommunityBindDao.getEntry(communityId, mainUserId, new ObjectId(uId));
+                if (null != bindEntry) {
+                    if (bindEntry.getRemoveStatus() == Constant.ONE) {
+                        newVersionCommunityBindDao.updateEntryStatus(bindEntry.getID());
+                    }
+                } else {
+                    NewVersionCommunityBindEntry entry = new NewVersionCommunityBindEntry(communityId, mainUserId, new ObjectId(uId));
+                    newVersionCommunityBindDao.saveEntry(entry);
+                }
+            }
+            //加进来的互相加为好友
+            backStageService.setChildAutoFriends(uIds, communityId);
+            //社长和孩子成为好友(暂时注释)
+            backStageService.setChildCommunityFriends(uIds, communityId);
+        }
+    }
+
 
     //添加社区发出版本（老师和家长通用）
     public void addControlVersion(ObjectId communityId,ObjectId userId,String version,int type){

@@ -12,7 +12,7 @@ import org.bson.types.ObjectId;
  * Created by James on 2018-04-27.
  */
 public class UserBehaviorDao extends BaseDao {
-    //添加课程
+    //添加收藏
     public String addEntry(UserBehaviorEntry entry){
         save(MongoFacroty.getAppDB(), Constant.COLLECTION_USER_BEHAVIOR, entry.getBaseEntry());
         return entry.getID().toString();

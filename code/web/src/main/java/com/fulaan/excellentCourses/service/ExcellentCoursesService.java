@@ -198,18 +198,83 @@ public class ExcellentCoursesService {
         return map;
     }
 
-    public HourClassDTO getNowEntry(List<ObjectId> hourClassIds){
-        //用户订单查询
-        List<HourClassEntry> hourClassEntries = hourClassDao.getEntryList(hourClassIds);
-        HourClassDTO hourClassDTO = new HourClassDTO();
-        long current = System.currentTimeMillis();
-        for(HourClassEntry hourClassEntry:hourClassEntries){
-            long endTime = hourClassEntry.getStartTime() + hourClassEntry.getCurrentTime();
-            if(hourClassEntry.getStartTime()<=current+5*60*1000 && endTime >current ){
-                hourClassDTO = new HourClassDTO(hourClassEntry);
+    /**
+     * 添加收藏
+     * @param userId
+     * @param type
+     * @param id
+     */
+    public void addCollect(ObjectId userId,int type,ObjectId id){
+        UserBehaviorEntry userBehaviorEntry = userBehaviorDao.getEntry(userId);
+        if(userBehaviorEntry!=null){
+            if(type==0){//取消
+                List<ObjectId> objectIdList = userBehaviorEntry.getCollectList();
+                Set<ObjectId> objectIds  = new HashSet<ObjectId>();
+                objectIds.addAll(objectIdList);
+                objectIds.remove(id);//取消
+                List<ObjectId>  objectIdList2 = new ArrayList<ObjectId>();
+                objectIdList2.addAll(objectIds);
+                userBehaviorEntry.setCollectList(objectIdList2);
+                userBehaviorDao.addEntry(userBehaviorEntry);
+            }else if(type==1){
+                List<ObjectId> objectIdList = userBehaviorEntry.getCollectList();
+                Set<ObjectId> objectIds  = new HashSet<ObjectId>();
+                objectIds.addAll(objectIdList);
+                objectIds.add(id);//添加
+                List<ObjectId>  objectIdList2 = new ArrayList<ObjectId>();
+                objectIdList2.addAll(objectIds);
+                userBehaviorEntry.setCollectList(objectIdList2);
+                userBehaviorDao.addEntry(userBehaviorEntry);
+            }
+
+        }else{
+            if(type==0){
+
+            }else if(type ==1){
+                List<ObjectId>  objectIdList = new ArrayList<ObjectId>();
+                List<ObjectId>  objectIdList2 = new ArrayList<ObjectId>();
+                objectIdList2.add(id);
+                UserBehaviorEntry userBehaviorEntry1 = new UserBehaviorEntry(userId,objectIdList,objectIdList2);
+                userBehaviorDao.addEntry(userBehaviorEntry1);
             }
         }
-        return hourClassDTO;
+
+    }
+
+    public  Map<String,Object>  getSimpleCourses(ObjectId userId){
+        List<ObjectId> hourClassIds =  classOrderDao.getObjectIdEntry(userId);
+        Map<String,Object> dto = this.getNowEntry(hourClassIds);
+        return dto;
+    }
+
+    public Map<String,Object> getNowEntry(List<ObjectId> hourClassIds){
+        //用户订单查询
+        List<HourClassEntry> hourClassEntries = hourClassDao.getEntryList(hourClassIds);
+        Map<String,Object> map = new HashMap<String, Object>();
+        HourClassEntry entry = null;
+        long current = System.currentTimeMillis();
+        for(HourClassEntry hourClassEntry:hourClassEntries){
+            long startTime =  hourClassEntry.getStartTime();
+            long endTime = hourClassEntry.getStartTime() + hourClassEntry.getCurrentTime();
+            if(entry ==null){
+                if(endTime>current){
+                    entry = hourClassEntry;
+                }
+            }else{
+                if(endTime>current && startTime <entry.getStartTime()){
+                    entry = hourClassEntry;
+                }
+            }
+        }
+        if(entry.getStartTime()<current){
+            map.put("start",1);//正在上课
+            map.put("time",0);
+        }else{
+            map.put("start",0);//未上课
+            map.put("time",entry.getStartTime()-current);
+        }
+        map.put("dto",new HourClassDTO(entry));
+        return map;
     }
 
     public Map<String,Object> getCoursesDesc(ObjectId id,ObjectId userId){

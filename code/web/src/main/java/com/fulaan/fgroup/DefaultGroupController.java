@@ -327,7 +327,6 @@ public class DefaultGroupController extends BaseController {
             }else{
                 emChatId = communityDTO.getEmChatId();
             }
-
             NewVersionBindRelationEntry newVersionBindRelationEntry = newVersionBindRelationDao.getBindEntry(getUserId());
             if(newVersionBindRelationEntry ==null || newVersionBindRelationEntry.getMainUserId()==null){
                 respObj.setErrorMessage("该学生未绑定用户");
@@ -341,6 +340,8 @@ public class DefaultGroupController extends BaseController {
             ObjectId groupId=groupEntry.getID();
             GroupDTO groupDTO = groupService.findById(groupId, groupEntry.getOwerId());
             List<ObjectId> userList = MongoUtils.convertObjectIds(userIds);
+
+            //家长入群
             for (ObjectId personId : userList) {
                 if (!memberService.isGroupMember(groupId, personId)) {
                     if (emService.addUserToEmGroup(emChatId, personId)) {
@@ -356,7 +357,6 @@ public class DefaultGroupController extends BaseController {
                     }
                 }
             }
-
             //自动加为好友(社群拉人自动加为好友)
             if(groupDTO.isBindCommunity()) {
                 List<String> keysList=MongoUtils.convertToStringList(userList);
@@ -373,7 +373,8 @@ public class DefaultGroupController extends BaseController {
             if (groupDTO.getIsM() == 0) {
                 groupService.asyncUpdateGroupNameByMember(new ObjectId(groupDTO.getId()));
             }
-
+            //孩子入群
+            newVersionBindService.saoMoreCommunityBindEntry(getUserId(), new ObjectId(communityId), newVersionBindRelationEntry.getMainUserId());
             respObj.setCode(Constant.SUCCESS_CODE);
             respObj.setMessage("操作成功");
         }catch (Exception e){

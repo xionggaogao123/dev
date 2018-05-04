@@ -53,6 +53,30 @@ public class WebExcellentCoursesController extends BaseController {
         return JSON.toJSONString(respObj);
     }
 
+    /**
+     * 我的课程（分页）
+     */
+    @ApiOperation(value = "添加课程", httpMethod = "POST", produces = "application/json")
+    @ApiResponses( value = {@ApiResponse(code = 200, message = "Successful — 请求已完成",response = String.class),
+            @ApiResponse(code = 400, message = "请求中有语法问题，或不能满足请求"),
+            @ApiResponse(code = 500, message = "服务器不能完成请求")})
+    @RequestMapping("/getMyExcellentCourses")
+    @ResponseBody
+    public String getMyExcellentCourses(@ApiParam(name = "page", required = true, value = "page") @RequestParam("page") String page,
+                                        @ApiParam(name = "pageSize", required = true, value = "pageSize") @RequestParam("pageSize") String pageSize){
+        RespObj respObj=new RespObj(Constant.FAILD_CODE);
+        try {
+            respObj.setCode(Constant.SUCCESS_CODE);
+           // String result= excellentCoursesService.addEntry(dto,getUserId());
+           // respObj.setMessage(result);
+        } catch (Exception e) {
+            e.printStackTrace();
+            respObj.setCode(Constant.FAILD_CODE);
+            respObj.setErrorMessage("添加课程失败!");
+        }
+        return JSON.toJSONString(respObj);
+    }
+
 
     /**
      * 批量保存课时

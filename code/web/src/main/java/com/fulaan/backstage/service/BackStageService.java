@@ -1493,6 +1493,20 @@ public class BackStageService {
             }
         }
     }
+    /**
+     * 单个社长和单个孩子成为好友
+     * @param userId
+     * @param communityId
+     */
+    public void setSimpleCommunityFriends(final ObjectId userId,final ObjectId communityId){
+        //获得groupId
+        ObjectId obj =   communityDao.getGroupIdByCommunityId(communityId);
+        MemberEntry memberEntry = memberDao.getHeader(obj);
+        if(memberEntry!=null){
+            setSingleFriend(userId,memberEntry.getUserId());
+            setSingleFriend(memberEntry.getUserId(),userId);
+        }
+    }
 
     /**
      * 批量社长和孩子成为好友

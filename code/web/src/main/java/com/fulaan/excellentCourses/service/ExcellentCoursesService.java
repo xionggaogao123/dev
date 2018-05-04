@@ -401,7 +401,11 @@ public class ExcellentCoursesService {
         }else{
             map.put("isXian",0);
         }
-        map.put("now",nowHourClassDTO);
+        List<HourClassDTO> dtos = new ArrayList<HourClassDTO>();
+        if(nowHourClassDTO!=null){
+            dtos.add(nowHourClassDTO);
+        }
+        map.put("now",dtos);
         map.put("list",hourClassDTOs);
         return map;
     }
@@ -437,7 +441,7 @@ public class ExcellentCoursesService {
                 }
             }
             this.addClassEntryBatch(classOrderEntries1);
-            if(classOrderEntries1.size()==0){
+            if(classOrderEntries.size()==0){
                 excellentCoursesEntry.setStudentNumber(excellentCoursesEntry.getStudentNumber()+1);
                 excellentCoursesDao.addEntry(excellentCoursesEntry);
             }

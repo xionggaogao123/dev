@@ -503,6 +503,60 @@ public class CommunityService {
         }
         return list;
     }
+
+    /**
+     * 超简洁获取我的社团
+     *
+     * @param uid
+     */
+    public List<ObjectId> getCommunitys3(ObjectId uid, int page, int pageSize) {
+        List<MineCommunityEntry> allMineCommunitys = mineCommunityDao.findAll(uid, page, pageSize);
+        List<ObjectId> list = new ArrayList<ObjectId>();
+        List<ObjectId> communityIds = new ArrayList<ObjectId>();
+        for (MineCommunityEntry mineCommunityEntry : allMineCommunitys) {
+            communityIds.add(mineCommunityEntry.getCommunityId());
+        }
+        List<CommunityEntry> communityEntries = communityDao.findByNotObjectIds(communityIds);
+        for(CommunityEntry communityEntry:communityEntries){
+            list.add(communityEntry.getID());
+        }
+        return list;
+    }
+
+
+    /**
+     * 简洁获取我的社团
+     *
+     * @param uid
+     */
+    public List<CommunityDTO> getCommunitys2(ObjectId uid, int page, int pageSize) {
+        List<MineCommunityEntry> allMineCommunitys = mineCommunityDao.findAll(uid, page, pageSize);
+        List<CommunityDTO> list = new ArrayList<CommunityDTO>();
+        List<ObjectId> groupIds=new ArrayList<ObjectId>();
+        List<ObjectId> communityIds = new ArrayList<ObjectId>();
+        for (MineCommunityEntry mineCommunityEntry : allMineCommunitys) {
+            communityIds.add(mineCommunityEntry.getCommunityId());
+        }
+        List<CommunityEntry> communityEntries = communityDao.findByObjectIds(communityIds);
+        for(CommunityEntry communityEntry:communityEntries){
+            groupIds.add(communityEntry.getGroupId());
+            CommunityDTO communityDTO = new CommunityDTO(communityEntry);
+            list.add(communityDTO);
+        }
+        Map<ObjectId,GroupEntry> entryMap=groupService.getGroupEntries(groupIds);
+        for (CommunityDTO dto:list){
+            String groupId=dto.getGroupId();
+            dto.setLogo(getNewLogo(dto.getLogo()));
+            dto.setHeadImage(dto.getLogo());
+            if(StringUtils.isNotBlank(groupId)){
+                GroupEntry entry=entryMap.get(new ObjectId(groupId));
+                if(null!=entry&&StringUtils.isNotBlank(entry.getHeadImage())){
+                    dto.setHeadImage(entry.getHeadImage());
+                }
+            }
+        }
+        return list;
+    }
     public static String getNewLogo(String url){
         String str = "";
         if(url != null && url.contains("http://www.fulaan.com/")){
@@ -1251,7 +1305,7 @@ public class CommunityService {
         //清除红点
         redDotService.cleanOtherResult(userId, type.getType());
         PageModel<CommunityDetailDTO> pageModel = new PageModel<CommunityDetailDTO>();
-        List<CommunityDTO> communityDTOList =getCommunitys(userId, 1, 100);
+        List<CommunityDTO> communityDTOList =getCommunitys2(userId, 1, 100);
         List<ObjectId>  objectIdList = new ArrayList<ObjectId>();
         if(communityDTOList.size() >0){
             for(CommunityDTO dto : communityDTOList){

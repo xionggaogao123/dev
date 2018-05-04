@@ -447,7 +447,7 @@ public class DefaultCommunityController extends BaseController {
             for(ObjectId oid: mlist){
                 molist.add(oid.toString());
             }
-            communityDTOList = communityService.getCommunitys(userId, page, pageSize);
+            communityDTOList = communityService.getCommunitys2(userId, page, pageSize);
             List<CommunityDTO> communityDTOList2 = new ArrayList<CommunityDTO>();
             if(communityDTOList.size()>0){
                 for(CommunityDTO dto3 : communityDTOList){
@@ -3588,7 +3588,7 @@ public class DefaultCommunityController extends BaseController {
             for(ObjectId oid: mlist){
                 molist.add(oid.toString());
             }
-            communityDTOList = communityService.getCommunitys(userId, page, pageSize);
+            communityDTOList = communityService.getCommunitys2(userId, page, pageSize);
             List<CommunityDTO> communityDTOList2 = new ArrayList<CommunityDTO>();
             List<ObjectId> communtyIds = new ArrayList<ObjectId>();
             for(CommunityDTO dto3 : communityDTOList){

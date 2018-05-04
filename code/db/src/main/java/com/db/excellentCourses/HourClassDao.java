@@ -57,7 +57,7 @@ public class HourClassDao extends BaseDao {
     //查询订单课时
     public List<HourClassEntry> getEntryList(List<ObjectId> ids){
         List<HourClassEntry> entryList=new ArrayList<HourClassEntry>();
-        BasicDBObject query=new BasicDBObject().append(Constant.ID, ids).append("isr", Constant.ZERO);
+        BasicDBObject query=new BasicDBObject().append(Constant.ID, new BasicDBObject(Constant.MONGO_IN,ids)).append("isr", Constant.ZERO);
         List<DBObject> dbList=find(MongoFacroty.getAppDB(), Constant.COLLECTION_HOUR_CLASS, query,
                 Constant.FIELDS, new BasicDBObject("ord", Constant.ASC));
         if (dbList != null && !dbList.isEmpty()) {

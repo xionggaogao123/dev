@@ -120,7 +120,7 @@ public class AppCommentService {
 
         AppCommentEntry en = dto.buildAddEntry();
         en.setDateTime(zero);
-        List<CommunityDTO> communityDTOList = communityService.getCommunitys(new ObjectId(dto.getAdminId()), 1, 100);
+        List<CommunityDTO> communityDTOList = communityService.getCommunitys2(new ObjectId(dto.getAdminId()), 1, 100);
         List<CommunityDTO> sendList = new ArrayList<CommunityDTO>();
         String[]  strar = comList.split(",");
         if(comList != null && communityDTOList != null){
@@ -516,7 +516,7 @@ public class AppCommentService {
         ilist.add(month-1);
         ilist.add(month+1);
         //获得所有社区
-        List<CommunityDTO> communityDTOList =communityService.getCommunitys(userId, 1, 100);
+        List<CommunityDTO> communityDTOList =communityService.getCommunitys2(userId, 1, 100);
         List<ObjectId>  dlist = new ArrayList<ObjectId>();
         if(communityDTOList.size() >0){
             for(CommunityDTO dto : communityDTOList){
@@ -616,7 +616,7 @@ public class AppCommentService {
             }
         }*/
         //获得所有社区
-        List<CommunityDTO> communityDTOList =communityService.getCommunitys(userId, 1, 100);
+        List<CommunityDTO> communityDTOList =communityService.getCommunitys2(userId, 1, 100);
         List<ObjectId>  dlist = new ArrayList<ObjectId>();
         if(communityDTOList.size() >0){
             for(CommunityDTO dto : communityDTOList){
@@ -761,7 +761,7 @@ public class AppCommentService {
                 }
             }
         }else{
-            List<CommunityDTO> communityDTOList =communityService.getCommunitys(userId, 1, 100);
+            List<CommunityDTO> communityDTOList =communityService.getCommunitys2(userId, 1, 100);
             List<ObjectId>  dlist = new ArrayList<ObjectId>();
             if(communityDTOList.size() >0){
                 for(CommunityDTO dto : communityDTOList){
@@ -855,7 +855,7 @@ public class AppCommentService {
                 entries1 = appCommentDao.selectWillDateList(userId);
             }
             List<AppCommentEntry> entries = new ArrayList<AppCommentEntry>();
-            List<CommunityDTO> communityDTOList =communityService.getCommunitys(userId, 1, 100);
+            List<CommunityDTO> communityDTOList =communityService.getCommunitys2(userId, 1, 100);
             List<ObjectId>  dlist = new ArrayList<ObjectId>();
             if(communityDTOList.size() >0){
                 for(CommunityDTO dto : communityDTOList){
@@ -976,7 +976,7 @@ public class AppCommentService {
             if(communityId != null && !communityId.equals("")){
                 dlist.add(new ObjectId(communityId));
             }else{
-                List<CommunityDTO> communityDTOList =communityService.getCommunitys(userId, 1, 100);
+                List<CommunityDTO> communityDTOList =communityService.getCommunitys2(userId, 1, 100);
                 if(communityDTOList.size() >0){
                     for(CommunityDTO dto : communityDTOList){
                         dlist.add(new ObjectId(dto.getId()));
@@ -1058,7 +1058,7 @@ public class AppCommentService {
                 entries1 = appCommentDao.selectWillDateList(userId);
             }
             List<AppCommentEntry> entries = new ArrayList<AppCommentEntry>();
-            List<CommunityDTO> communityDTOList =communityService.getCommunitys(userId, 1, 100);
+            List<CommunityDTO> communityDTOList =communityService.getCommunitys2(userId, 1, 100);
             List<ObjectId>  dlist = new ArrayList<ObjectId>();
             if(communityDTOList.size() >0){
                 for(CommunityDTO dto : communityDTOList){
@@ -1654,7 +1654,7 @@ public class AppCommentService {
         appRecordDao.updateEntry2(id,current);
         AppRecordEntry entry = appRecordDao.getEntry(id);
         //所有社区
-        List<CommunityDTO> communityDTOList =communityService.getCommunitys(userId, 1, 100);
+        List<CommunityDTO> communityDTOList =communityService.getCommunitys2(userId, 1, 100);
         List<ObjectId>  dlist = new ArrayList<ObjectId>();
         if(communityDTOList.size() >0){
             for(CommunityDTO dto : communityDTOList){
@@ -1677,7 +1677,7 @@ public class AppCommentService {
     public String goSign3(ObjectId id,ObjectId userId){
         AppRecordEntry entry = appRecordDao.getEntry(id);
         //所有社区
-        List<CommunityDTO> communityDTOList =communityService.getCommunitys(userId, 1, 100);
+        List<CommunityDTO> communityDTOList =communityService.getCommunitys2(userId, 1, 100);
         List<ObjectId>  dlist = new ArrayList<ObjectId>();
         if(communityDTOList.size() >0){
             for(CommunityDTO dto : communityDTOList){
@@ -1814,7 +1814,7 @@ public class AppCommentService {
      *
      */
     public void updateEntry(AppCommentDTO dto)throws Exception{
-        List<CommunityDTO> communityDTOList = communityService.getCommunitys(new ObjectId(dto.getAdminId()), 1, 100);
+        List<CommunityDTO> communityDTOList = communityService.getCommunitys2(new ObjectId(dto.getAdminId()), 1, 100);
         AppCommentEntry entry = dto.updateEntry();
         String st = dto.getComList();
         String[] str = st.split(",");

@@ -270,7 +270,24 @@ public class DefaultBindController extends BaseController {
         return respObj;
     }
 
-
+    /**
+     * 处理老数据
+     */
+    @ApiOperation(value = "绑定社区下的某个家长与某些学生", httpMethod = "POST", produces = "application/json")
+    @ApiResponses( value = {@ApiResponse(code = 200, message = "Successful — 请求已完成",response = RespObj.class)})
+    @RequestMapping("/editCommunityBindEntry")
+    @ResponseBody
+    public RespObj editCommunityBindEntry(){
+        RespObj respObj = new RespObj(Constant.FAILD_CODE);
+        try{
+            newVersionBindService.editCommunityBindEntry();
+            respObj.setCode(Constant.SUCCESS_CODE);
+            respObj.setMessage("保存信息成功!");
+        }catch (Exception e){
+            respObj.setMessage(e.getMessage());
+        }
+        return respObj;
+    }
     /**
      * 学生端支持扫码入群
      * @param communityId

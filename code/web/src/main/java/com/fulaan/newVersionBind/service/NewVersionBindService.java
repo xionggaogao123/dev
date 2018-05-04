@@ -85,6 +85,8 @@ public class NewVersionBindService {
 
     private ControlVersionDao controlVersionDao = new ControlVersionDao();
 
+    private UserDao userDao = new UserDao();
+
     @Autowired
     private UserService userService;
 
@@ -921,6 +923,25 @@ public class NewVersionBindService {
             backStageService.setChildAutoFriends(uIds,communityId);
             //社长和孩子成为好友(暂时注释)
             backStageService.setChildCommunityFriends(uIds,communityId);
+        }
+    }
+    //处理老数据
+    public void  editCommunityBindEntry(){
+        boolean fale = true;
+        int page = 1;
+        int pageSize = 10;
+        while(fale){
+            List<NewVersionCommunityBindEntry> entries = newVersionCommunityBindDao.getPageList(page, pageSize);
+          if(entries.size()<10){
+                fale=false;
+           }
+            for(NewVersionCommunityBindEntry entry:entries){
+                UserEntry userEntry = userDao.findByUserId(entry.getUserId());
+                if(userEntry!=null){
+                    backStageService.setSimpleCommunityFriends(entry.getUserId(),entry.getCommunityId());
+                }
+            }
+            page++;
         }
     }
 

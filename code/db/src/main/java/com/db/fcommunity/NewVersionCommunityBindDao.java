@@ -264,6 +264,24 @@ public class NewVersionCommunityBindDao extends BaseDao{
         }
         return entries;
     }
+
+    /**
+     * 获取家长绑定的社区
+     * @return
+     */
+    public List<NewVersionCommunityBindEntry> getPageList(int page,int pageSize){
+        List<NewVersionCommunityBindEntry> entries=new ArrayList<NewVersionCommunityBindEntry>();
+        BasicDBObject query=new BasicDBObject()
+                .append("ir", Constant.ZERO);
+        List<DBObject> dbObjectList=find(MongoFacroty.getAppDB(), Constant.COLLECTION_NEW_VERSION_COMMUNITY_BIND,query,
+                Constant.FIELDS,Constant.MONGO_SORTBY_DESC,(page-1) * pageSize,pageSize);
+        if(null!=dbObjectList&&!dbObjectList.isEmpty()){
+            for(DBObject dbObject:dbObjectList){
+                entries.add(new NewVersionCommunityBindEntry(dbObject));
+            }
+        }
+        return entries;
+    }
     public void removeSaoNewVersionCommunity(ObjectId communityId,
                                           ObjectId mainUserId,ObjectId userId){
         BasicDBObject query=new BasicDBObject()

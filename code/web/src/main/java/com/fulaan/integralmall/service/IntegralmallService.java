@@ -35,14 +35,14 @@ import com.sys.constants.Constant;
 @Service
 public class IntegralmallService {
 
-    @Autowired
-    private GoodsDao goodsDao;
+
+    private GoodsDao goodsDao = new GoodsDao();
     
-    @Autowired
-    private OrderDao orderDao;
+
+    private OrderDao orderDao = new OrderDao();
     
-    @Autowired
-    private AddressDao addressDao;
+
+    private AddressDao addressDao = new AddressDao();
     
     @Autowired
     private IntegralSufferService integralSufferService;
@@ -50,8 +50,8 @@ public class IntegralmallService {
     @Autowired
     private EBusinessOrderService eBusinessOrderService;
     
-    @Autowired
-    private IntegralRecordDao integralRecordDao;
+
+    private IntegralRecordDao integralRecordDao = new IntegralRecordDao();
     
     /**
      * 

@@ -164,6 +164,26 @@ public class IntegralmallService {
     
     /**
      * 
+     *〈简述〉编辑地址
+     *〈详细描述〉
+     * @author Administrator
+     * @param goodId
+     * @param userId
+     * @return
+     * @throws Exception
+     */
+    public AddressDto editAddress(ObjectId userId) throws  Exception{
+        AddressDto addressDto = null;
+        AddressEntry entry = addressDao.getEntry(userId);
+        if (entry != null) {
+            addressDto = new AddressDto(entry);
+        }
+        return addressDto;
+        
+    }
+    
+    /**
+     * 
      *〈简述〉保存订单
      *〈详细描述〉
      * @author Administrator

@@ -140,6 +140,25 @@ public class DefaultIntegralmallController extends BaseController{
         return respObj;
     } 
     
+    @ApiOperation(value = "编辑收货地址", httpMethod = "GET", produces = "application/json")
+    @ApiResponses( value = {@ApiResponse(code = 200, message = "编辑收货地址",response = String.class),
+            @ApiResponse(code = 400, message = "请求中有语法问题，或不能满足请求"),
+            @ApiResponse(code = 500, message = "服务器不能完成请求")})
+    @RequestMapping("/editAddress")
+    @ResponseBody
+    public RespObj editAddress(){
+        
+        RespObj respObj=new RespObj(Constant.FAILD_CODE);
+        try {
+            AddressDto addressDto = integralmallService.editAddress(getUserId());
+            respObj.setCode(Constant.SUCCESS_CODE);
+            respObj.setMessage(addressDto);
+        } catch (Exception e) {
+            respObj.setErrorMessage(e.getMessage());
+        }
+        return respObj;
+    } 
+    
     @ApiOperation(value = "保存收货地址", httpMethod = "POST", produces = "application/json")
     @ApiResponses( value = {@ApiResponse(code = 200, message = "保存收货地址",response = String.class),
             @ApiResponse(code = 400, message = "请求中有语法问题，或不能满足请求"),

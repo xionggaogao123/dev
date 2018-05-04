@@ -144,7 +144,7 @@ public class DefaultIntegralmallController extends BaseController{
     @ApiResponses( value = {@ApiResponse(code = 200, message = "保存收货地址",response = String.class),
             @ApiResponse(code = 400, message = "请求中有语法问题，或不能满足请求"),
             @ApiResponse(code = 500, message = "服务器不能完成请求")})
-    @RequestMapping("/orderConfirm")
+    @RequestMapping("/saveAddress")
     @ResponseBody
     public RespObj saveAddress(AddressDto addressDto){
         

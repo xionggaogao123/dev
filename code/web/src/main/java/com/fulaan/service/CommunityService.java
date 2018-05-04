@@ -537,7 +537,7 @@ public class CommunityService {
         for (MineCommunityEntry mineCommunityEntry : allMineCommunitys) {
             communityIds.add(mineCommunityEntry.getCommunityId());
         }
-        List<CommunityEntry> communityEntries = communityDao.findByObjectIds(communityIds);
+        List<CommunityEntry> communityEntries = communityDao.findByNotObjectIds(communityIds);
         for(CommunityEntry communityEntry:communityEntries){
             groupIds.add(communityEntry.getGroupId());
             CommunityDTO communityDTO = new CommunityDTO(communityEntry);

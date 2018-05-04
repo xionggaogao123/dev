@@ -193,6 +193,23 @@ public class IntegralSufferService {
             integralSufferDao.addEntry(integralSufferEntry1);
         }
     }
+    
+    /**
+     * 扣除积分及经验值
+     */
+    public void divCostEntry(ObjectId userId,int bigScore){
+        IntegralSufferEntry integralSufferEntry = integralSufferDao.getEntry(userId);
+        if(integralSufferEntry!=null){
+            
+            integralSufferEntry.setScore(integralSufferEntry.getScore() - bigScore);
+            //integralSufferEntry.setSuffer(integralSufferEntry.getSuffer()-bigScore);
+            integralSufferDao.updEntry(integralSufferEntry);
+ 
+        }else{//记录不存在（多并发异常）
+            IntegralSufferEntry integralSufferEntry1 = new IntegralSufferEntry(userId,bigScore,bigScore,Constant.ONE,Constant.ZERO,Constant.ZERO);
+            integralSufferDao.addEntry(integralSufferEntry1);
+        }
+    }
 
     /**
      * 获得用户的所有具有管理员权限的社区id

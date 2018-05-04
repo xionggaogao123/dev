@@ -1,12 +1,17 @@
 package com.fulaan.mall.service;
 
 
+import com.alibaba.druid.support.json.JSONUtils;
+import com.alibaba.fastjson.JSON;
+import com.alibaba.fastjson.TypeReference;
 import com.db.ebusiness.EGoodsDao;
 import com.db.ebusiness.EOrderAddressDao;
 import com.db.ebusiness.EOrderDao;
 import com.db.ebusiness.EVoucherDao;
 import com.db.user.UserDao;
 import com.fulaan.experience.service.ExperienceService;
+import com.fulaan.integralmall.dto.wuliuDto;
+import com.fulaan.utils.JsonUtil;
 import com.mongodb.BasicDBObject;
 import com.pojo.app.FieldValuePair;
 import com.pojo.ebusiness.*;
@@ -21,7 +26,9 @@ import com.sys.constants.Constant;
 import com.sys.exceptions.IllegalParamException;
 import org.apache.commons.lang.math.RandomUtils;
 import org.apache.log4j.Logger;
+import org.apache.struts2.json.JSONUtil;
 import org.bson.types.ObjectId;
+import org.json.JSONObject;
 import org.springframework.stereotype.Service;
 
 import java.io.*;
@@ -469,6 +476,19 @@ public class EBusinessOrderService {
         return new KdGoldAPIDemo(exCompanyNo, expressNo).getOrderTracesByJson();
     }
 
+    public static void main(String[] args) {
+        String s = new EBusinessOrderService().getExpressList("YTO", "889122139860421853"); 
+        System.out.println(s);
+        try {
+            wuliuDto w = JSON.parseObject(s, new TypeReference<wuliuDto>() {});
+            System.out.println(JSON.parseObject(s, new TypeReference<wuliuDto>() {}).getLogisticCode()); 
+            /*JSONObject dataJson = new JSONObject(s);
+            System.out.println(dataJson.get("LogisticCode"));*/
+        } catch (Exception e) {
+            System.out.println(e.getMessage());
+        }
+        
+    }
 
     /**
      * 物流信息查询

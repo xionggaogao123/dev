@@ -1030,4 +1030,14 @@ public class Constant {
     public static final String COLLECTION_CLASS_ORDER= "excellent_class_order";
     //用户行为
     public static final String COLLECTION_USER_BEHAVIOR= "excellent_user_behavior";
+    
+    
+    /*************************************积分商城*****************************************/
+    
+    //商品
+    public static final String COLLECTION_INTEGRAL_GOODS = "integral_goods";
+    //地址
+    public static final String COLLECTION_INTEGRAL_ADDRESS = "integral_address";
+    //订单
+    public static final String COLLECTION_INTEGRAL_ORDER = "integral_order";
 }

@@ -119,7 +119,7 @@ public class ReferenceDataService {
         //清除红点
         redDotService.cleanOtherResult(userId, 4);
         Map<String,Object> map = new HashMap<String, Object>();
-        List<CommunityDTO> communityDTOList = communityService.getCommunitys(userId, 1, 100);
+        List<CommunityDTO> communityDTOList = communityService.getCommunitys2(userId, 1, 100);
         List<ObjectId>  objectIdList = new ArrayList<ObjectId>();
         Map<String,CommunityDTO> map3 = new HashMap<String, CommunityDTO>();
         if(communityDTOList.size() >0){
@@ -182,6 +182,11 @@ public class ReferenceDataService {
                 }
             }else{
                 dataDTO2.setOperation(0);//不可删除
+            }
+            if(entry5!=null && entry1==null){//发送人已出去
+                if(entry5.getRole()==1|| (entry5.getRole()==2)){
+                    dataDTO2.setOperation(1);//可删除
+                }
             }
         }
         map.put("list",dtos);

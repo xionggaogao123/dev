@@ -18,7 +18,7 @@ public class ControlVersionDao extends BaseDao {
 
     public List<ControlVersionEntry> getCommunityVersionList(ObjectId communityId){
         BasicDBObject query = new BasicDBObject();
-        query.append("cid",communityId).append("isr",Constant.ZERO);
+        query.append("cid",communityId).append("isr",Constant.ZERO).append("typ",2);
         List<DBObject> dbList =
                 find(MongoFacroty.getAppDB(),
                         Constant.COLLECTION_CONTROL_VERSION,

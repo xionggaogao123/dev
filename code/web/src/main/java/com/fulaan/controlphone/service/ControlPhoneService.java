@@ -4073,16 +4073,19 @@ public class ControlPhoneService {
         List<ControlVersionEntry> entries = controlVersionDao.getCommunityVersionList(communityId);
         ControlVersionEntry entry = null;
         Map<String,ControlVersionEntry> cmap = new HashMap<String, ControlVersionEntry>();
-        for(ControlVersionEntry controlVersionEntry : entries){
+       /* for(ControlVersionEntry controlVersionEntry : entries){
             if(entry ==null  && controlVersionEntry.getType()==2){
                 entry = controlVersionEntry;
             }
             if(entry!=null && entry.getDateTime()<controlVersionEntry.getDateTime()){
                 entry = controlVersionEntry;
             }
-           /* if(controlVersionEntry.getType()==1){
+           *//* if(controlVersionEntry.getType()==1){
                 cmap.put(controlVersionEntry.getUserId().toString(),controlVersionEntry);
-            }*/
+            }*//*
+        }*/
+        if(entries.size()>0){
+            entry = entries.get(0);
         }
         List<String> objectIdList4 = newVersionBindService.getStudentIdListByCommunityId(communityId);
         List<ObjectId> objectIdList5 = new ArrayList<ObjectId>();
@@ -4092,7 +4095,7 @@ public class ControlPhoneService {
         long current = System.currentTimeMillis()-7*24*60*60*1000;
         List<ControlVersionEntry> entries3 = controlVersionDao.getAllStudentVersionList(objectIdList5,current);
         for(ControlVersionEntry controlVersionEntry3 : entries3){
-            ControlVersionEntry controlVersionEntry4 = cmap.get(controlVersionEntry3.getUserId());
+            ControlVersionEntry controlVersionEntry4 = cmap.get(controlVersionEntry3.getUserId().toString());
             if(controlVersionEntry4!=null){
                 if(controlVersionEntry4.getDateTime()<controlVersionEntry3.getDateTime()){
                     cmap.put(controlVersionEntry3.getUserId().toString(),controlVersionEntry3);
@@ -4165,6 +4168,7 @@ public class ControlPhoneService {
         ControlVersionEntry entry = controlVersionDao.getEntry(userId, 1);
         if(entry!=null){
             entry.setVersion(version);
+            entry.setDateTime(new Date().getTime());
             controlVersionDao.addEntry(entry);
         }else{
            ControlVersionEntry controlVersionEntry = new ControlVersionEntry(null,userId,version,1);
@@ -4177,6 +4181,7 @@ public class ControlPhoneService {
         ControlVersionEntry entry = controlVersionDao.getEntry(communityId,userId, type);
         if(entry!=null){
             entry.setVersion(version);
+            entry.setDateTime(new Date().getTime());
             controlVersionDao.addEntry(entry);
         }else{
             ControlVersionEntry controlVersionEntry = new ControlVersionEntry(communityId,userId,version,type);

@@ -8,7 +8,6 @@ import com.db.indexPage.IndexPageDao;
 import com.db.operation.AppCommentDao;
 import com.db.operation.AppNoticeDao;
 import com.fulaan.backstage.dto.SystemMessageDTO;
-import com.fulaan.community.dto.CommunityDTO;
 import com.fulaan.dto.VideoDTO;
 import com.fulaan.indexpage.dto.IndexPageDTO;
 import com.fulaan.operation.dto.AppCommentDTO;
@@ -63,14 +62,14 @@ public class IndexPageService {
         //List<ObjectId> ids = memberDao.selectMyRoleList(userId);
        // List<ObjectId> obl = communityDao.selectCommunityByGroupIds(ids);
         //通知逻辑
-        List<CommunityDTO> communityDTOList =communityService.getCommunitys(userId, 1, 100);
-        List<ObjectId>  dlist = new ArrayList<ObjectId>();
+        List<ObjectId>  dlist =communityService.getCommunitys3(userId, 1, 100);
+      /*  List<ObjectId>  dlist = new ArrayList<ObjectId>();
         if(communityDTOList.size() >0){
             for(CommunityDTO dto : communityDTOList){
                 dlist.add(new ObjectId(dto.getId()));
             }
-        }
-        dlist.add(userId);
+        }*/
+       // dlist.add(userId);
         List<IndexPageEntry> entrys = indexPageDao.getPageList(dlist,userId, page, pageSize);
         int count = indexPageDao.countPageList(dlist,userId);
         //作业

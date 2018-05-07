@@ -18,7 +18,6 @@ import com.pojo.video.VideoSourceType;
 import com.sys.constants.Constant;
 import com.sys.exceptions.FileUploadException;
 import com.sys.exceptions.IllegalParamException;
-import com.sys.utils.FileUtil;
 import com.sys.utils.RespObj;
 import io.swagger.annotations.*;
 import org.apache.commons.io.FilenameUtils;
@@ -33,7 +32,6 @@ import org.springframework.web.multipart.commons.CommonsMultipartResolver;
 
 import javax.servlet.http.HttpServletRequest;
 import java.io.*;
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -98,9 +96,10 @@ public class AppNoticeController extends BaseController {
             respObj.setMessage("保存通知信息成功！");
             respObj.setCode(Constant.SUCCESS_CODE);
         }catch (Exception e){
-            if("推送失败".equals(e.getMessage())) {
+            // if("推送失败".equals(e.getMessage())) {
+            if(e.getMessage().contains("特殊")) {
                 respObj.setCode(Constant.SUCCESS_CODE);
-                respObj.setMessage("推送失败");
+                respObj.setMessage(e.getMessage().replace("特殊",""));
             }else{
                 respObj.setErrorMessage(e.getMessage());
             }

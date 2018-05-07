@@ -7,6 +7,7 @@ import java.util.Map;
 import org.bson.types.ObjectId;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
@@ -165,7 +166,7 @@ public class DefaultIntegralmallController extends BaseController{
             @ApiResponse(code = 500, message = "服务器不能完成请求")})
     @RequestMapping("/saveAddress")
     @ResponseBody
-    public RespObj saveAddress(AddressDto addressDto){
+    public RespObj saveAddress(@RequestBody AddressDto addressDto){
         
         RespObj respObj=new RespObj(Constant.FAILD_CODE);
         try {
@@ -214,6 +215,8 @@ public class DefaultIntegralmallController extends BaseController{
             respObj.setErrorMessage(e.getMessage());
         }
         return respObj;
-    } 
+    }
+    
+    
     
 }

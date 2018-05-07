@@ -26,6 +26,10 @@ public class AddressDto {
     //用户id
     private String userId;
     
+    public AddressDto() {
+
+    }
+    
     public AddressDto(AddressEntry entry) {
         this.id = entry.getID().toString();
         this.name = entry.getName();

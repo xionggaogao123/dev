@@ -76,6 +76,26 @@ public class IntegralmallService {
         return dto;
     }
     
+    /**
+     * 
+     *〈简述〉商品列表
+     *〈详细描述〉
+     * @author Administrator
+     * @param page
+     * @param pageSize
+     * @return
+     */
+    public List<GoodsDto> getGoodsList(int page,int pageSize) {
+        List<GoodsEntry> list= goodsDao.getGoodsList(page, pageSize);
+        List<GoodsDto> goodsList = new ArrayList<GoodsDto>();
+        for (GoodsEntry g : list) {
+            GoodsDto gd = new GoodsDto(g);
+            goodsList.add(gd);
+        }
+        
+        return goodsList;
+    }
+    
 
     /**
      * 
@@ -230,5 +250,35 @@ public class IntegralmallService {
         wuliuDto w = JSON.parseObject(s, new TypeReference<wuliuDto>() {});
         WuliuInfoDto wuliuInfoDto = new WuliuInfoDto(orderEntry, w, addressEntry);
         return wuliuInfoDto;
+    }
+    
+    /**
+     * 
+     *〈简述〉保存商品
+     *〈详细描述〉
+     * @author Administrator
+     * @param dto
+     */
+    public void saveGoods(GoodsDto dto) throws Exception{
+        if (dto.getId() == null) {
+            GoodsEntry entry = new GoodsEntry(dto.getAvatar(), dto.getLabel(), dto.getName(), dto.getCost(), dto.getTimes() == null ?0 :dto.getTimes(), dto.getDescription());
+            goodsDao.addEntry(entry);
+        } else {
+            goodsDao.updateGood(new ObjectId(dto.getId()), dto.getAvatar(), dto.getLabel(), dto.getName(), dto.getCost(), dto.getDescription());
+        }
+        
+    }
+    
+    
+    /**
+     * 
+     *〈简述〉删除商品
+     *〈详细描述〉
+     * @author Administrator
+     * @param dto
+     */
+    public void delGoods(ObjectId goodId) throws Exception{
+        goodsDao.updateIsr(goodId);
+        
     }
 }

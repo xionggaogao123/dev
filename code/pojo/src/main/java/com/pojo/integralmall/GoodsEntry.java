@@ -46,7 +46,7 @@ public class GoodsEntry extends BaseDBObject {
             .append("avat", avatar)
             .append("lab", label)
             .append("name", name)
-            .append("cost", Constant.ZERO)
+            .append("cost", cost)
             .append("times", times)
             .append("descrip", description)
             .append("isr", Constant.ZERO);

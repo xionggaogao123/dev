@@ -34,6 +34,10 @@ public class GoodsDto {
     //是否已经申述  0为申述 1已申述
     private int isState;
     
+    public GoodsDto() {
+       
+    }
+    
     
     public GoodsDto(GoodsEntry entry) {
         this.id = entry.getID().toString();

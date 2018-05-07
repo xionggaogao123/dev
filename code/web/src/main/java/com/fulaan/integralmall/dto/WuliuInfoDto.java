@@ -25,6 +25,10 @@ public class WuliuInfoDto {
     //物流信息
     private List<Traces> traces;
     
+    public WuliuInfoDto() {
+      
+    }
+    
     public WuliuInfoDto(OrderEntry orderEntry, wuliuDto w, AddressEntry addressEntry) {
         this.area = addressEntry.getArea()+addressEntry.getDetail();
         this.excompanyNo = orderEntry.getExcompanyNo();

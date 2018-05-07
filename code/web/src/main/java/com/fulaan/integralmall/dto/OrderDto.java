@@ -37,6 +37,10 @@ public class OrderDto {
     //您的积分
     private Integer score;
     
+    public OrderDto() {
+
+    }
+    
     public OrderDto(GoodsEntry goodsEntry, AddressEntry addressEntry,int score) {
         this.goodId = goodsEntry.getID().toString();
         this.goodsDto = new GoodsDto(goodsEntry);

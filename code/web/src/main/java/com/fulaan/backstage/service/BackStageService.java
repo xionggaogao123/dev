@@ -115,8 +115,6 @@ public class BackStageService {
 
     private FriendDao friendDao = new FriendDao();
 
-    private GroupDao groupDao = new GroupDao();
-
     private NewVersionCommunityBindDao  newVersionCommunityBindDao = new NewVersionCommunityBindDao();
 
     private SchoolAppDao schoolAppDao = new SchoolAppDao();

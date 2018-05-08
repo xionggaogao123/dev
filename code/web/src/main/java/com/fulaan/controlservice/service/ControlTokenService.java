@@ -11,6 +11,7 @@ import fulaan.social.model.Sex;
 import fulaan.social.model.UserInfo;
 import org.bson.types.ObjectId;
 import org.json.JSONObject;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.io.IOException;
@@ -23,7 +24,8 @@ import java.util.Map;
 @Service
 public class ControlTokenService {
 
-    private UserService userService = new UserService();
+    @Autowired
+    private UserService userService;
 
     private NewVersionUserRoleDao newVersionUserRoleDao = new NewVersionUserRoleDao();
 

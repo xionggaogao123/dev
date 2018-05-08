@@ -5,7 +5,6 @@ import com.fulaan.annotation.SessionNeedless;
 import com.fulaan.base.BaseController;
 import com.fulaan.controlservice.service.ControlTokenService;
 import com.fulaan.log.service.LogService;
-import com.fulaan.school.SchoolService;
 import com.fulaan.user.service.UserService;
 import com.fulaan.util.ObjectIdPackageUtil;
 import com.pojo.app.SessionValue;
@@ -49,8 +48,6 @@ public class ControlServiceController extends BaseController {
     private ControlTokenService controlTokenService;
     @Autowired
     private UserService userService;
-    @Autowired
-    private SchoolService schoolService;
 
     /**
      * 获取接口访问令牌

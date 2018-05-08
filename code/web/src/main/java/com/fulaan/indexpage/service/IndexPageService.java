@@ -2,7 +2,6 @@ package com.fulaan.indexpage.service;
 
 import cn.jiguang.commom.utils.StringUtils;
 import com.db.backstage.SystemMessageDao;
-import com.db.fcommunity.CommunityDao;
 import com.db.fcommunity.MemberDao;
 import com.db.indexPage.IndexPageDao;
 import com.db.operation.AppCommentDao;
@@ -50,8 +49,6 @@ public class IndexPageService {
     private IndexPageDao indexPageDao = new IndexPageDao();
 
     private MemberDao memberDao =new MemberDao();
-
-    private CommunityDao communityDao =new CommunityDao();
 
     private SystemMessageDao systemMessageDao = new SystemMessageDao();
 

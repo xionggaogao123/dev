@@ -10,7 +10,6 @@ import com.fulaan.smalllesson.dto.LessonAnswerDTO;
 import com.fulaan.smalllesson.dto.ResultTypeDTO;
 import com.fulaan.smalllesson.dto.SmallLessonDTO;
 import com.fulaan.smalllesson.service.SmallLessonService;
-import com.fulaan.user.service.UserService;
 import com.fulaan.util.QRUtils;
 import com.pojo.integral.IntegralType;
 import com.pojo.loginwebsocket.LoginTokenEntry;
@@ -38,8 +37,7 @@ public class DefaultSmallLessonController extends BaseController {
 
 
     private LoginTokenDao loginTokenDao = new LoginTokenDao();
-    @Autowired
-    private UserService userService;
+
 
     @Autowired
     private IntegralSufferService integralSufferService;

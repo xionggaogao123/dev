@@ -14,6 +14,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
+import java.util.List;
 import java.util.Map;
 
 /**
@@ -169,11 +170,32 @@ public class ExcellentCoursesController extends BaseController {
         } catch (Exception e) {
             e.printStackTrace();
             respObj.setCode(Constant.FAILD_CODE);
-            respObj.setErrorMessage("查询我的课程失败!");
+            respObj.setErrorMessage("查询课程中心失败!");
         }
         return JSON.toJSONString(respObj);
     }
-
+    /**
+     *  搜索课程中心
+     */
+    @ApiOperation(value = "搜索课程中心", httpMethod = "GET", produces = "application/json")
+    @ApiResponses( value = {@ApiResponse(code = 200, message = "Successful — 请求已完成",response = String.class),
+            @ApiResponse(code = 400, message = "请求中有语法问题，或不能满足请求"),
+            @ApiResponse(code = 500, message = "服务器不能完成请求")})
+    @RequestMapping("/myKeyClassList")
+    @ResponseBody
+    public String myKeyClassList(@ApiParam(name = "keyword", required = false, value = "keyword") @RequestParam(value="keyword",defaultValue = "") String keyword){
+        RespObj respObj=new RespObj(Constant.FAILD_CODE);
+        try {
+            respObj.setCode(Constant.SUCCESS_CODE);
+            List<ExcellentCoursesDTO> result = excellentCoursesService.myKeyClassList(keyword);
+            respObj.setMessage(result);
+        } catch (Exception e) {
+            e.printStackTrace();
+            respObj.setCode(Constant.FAILD_CODE);
+            respObj.setErrorMessage("搜索课程中心失败!");
+        }
+        return JSON.toJSONString(respObj);
+    }
 
 
     /**

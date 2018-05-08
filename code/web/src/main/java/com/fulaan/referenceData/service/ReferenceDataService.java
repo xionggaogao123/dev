@@ -133,6 +133,7 @@ public class ReferenceDataService {
         List<ReferenceDataEntry> entries = referenceDataDao.selectDateListPage(keyword, page, pageSize, type,objectIdList);
         int count = referenceDataDao.countDateListPage(keyword, type,objectIdList);
         List<ObjectId> userIds = new ArrayList<ObjectId>();
+        userIds.add(userId);
         List<ObjectId> subjectIds = new ArrayList<ObjectId>();
         for(ReferenceDataEntry entry: entries){
             userIds.add(entry.getUserId());

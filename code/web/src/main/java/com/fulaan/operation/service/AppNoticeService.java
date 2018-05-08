@@ -71,8 +71,8 @@ public class AppNoticeService {
 
     @Autowired
     private NewVersionBindService newVersionBindService;
-
-    private IntegralSufferService integralSufferService = new IntegralSufferService();
+    @Autowired
+    private IntegralSufferService integralSufferService;
 
 
     public static void main(String[] args){

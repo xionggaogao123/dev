@@ -43,7 +43,8 @@ public class ControlPhoneController extends BaseController {
 
     private static final Logger logger =Logger.getLogger(ControlPhoneController.class);
 
-    private IntegralSufferService integralSufferService = new IntegralSufferService();
+    @Autowired
+    private IntegralSufferService integralSufferService;
     //管控电话
     /**
      * 添加管控手机号

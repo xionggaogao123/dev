@@ -29,6 +29,7 @@ import com.sys.utils.AvatarUtils;
 import com.sys.utils.TimeChangeUtils;
 import org.apache.commons.lang.StringUtils;
 import org.bson.types.ObjectId;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.text.SimpleDateFormat;
@@ -71,8 +72,8 @@ public class WebHomePageService {
     private VirtualAndUserDao virtualAndUserDao = new VirtualAndUserDao();
 
     private VirtualUserDao virtualUserDao = new VirtualUserDao();
-
-    private RedDotService redDotService  = new RedDotService();
+    @Autowired
+    private RedDotService redDotService;
 
 
     public Map<String, Long> setTime(int mode, String sTime, String eTime) throws Exception {

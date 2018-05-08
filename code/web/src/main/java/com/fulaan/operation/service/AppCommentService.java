@@ -72,7 +72,6 @@ public class AppCommentService {
     private GroupDao groupDao = new GroupDao();
     private CommunityDao communityDao = new CommunityDao();
     private SubjectClassDao subjectClassDao = new SubjectClassDao();
-    private IndexPageDao indexPageDao = new IndexPageDao();
     private WebHomePageDao webHomePageDao = new WebHomePageDao();
     private NewVersionSubjectDao newVersionSubjectDao = new NewVersionSubjectDao();
     private NewVersionBindRelationDao newVersionBindRelationDao = new NewVersionBindRelationDao();
@@ -85,8 +84,8 @@ public class AppCommentService {
     private NewVersionBindService newVersionBindService;
     @Autowired
     private RedDotService redDotService;
-
-    private IntegralSufferService integralSufferService = new IntegralSufferService();
+    @Autowired
+    private IntegralSufferService integralSufferService;
 
     private static final Logger logger =Logger.getLogger(AppCommentService.class);
 

@@ -10,7 +10,6 @@ import com.pojo.user.TeacherSubjectBindDTO;
 import com.sys.constants.Constant;
 import com.sys.utils.RespObj;
 import io.swagger.annotations.*;
-import org.apache.log4j.Logger;
 import org.bson.types.ObjectId;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -30,7 +29,6 @@ import java.util.List;
 public class BindController extends BaseController {
 
 
-    private static final Logger logger = Logger.getLogger(BindController.class);
 
     @Autowired
     private NewVersionBindService newVersionBindService;

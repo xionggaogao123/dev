@@ -37,6 +37,7 @@ public class GoodsEntry extends BaseDBObject {
     }
     
     public GoodsEntry(String avatar,
+                      String pic,
                       String label,
                       String name,
                       int cost,
@@ -44,6 +45,7 @@ public class GoodsEntry extends BaseDBObject {
                       String description) {
         BasicDBObject dbObject=new BasicDBObject()
             .append("avat", avatar)
+            .append("pic", pic)
             .append("lab", label)
             .append("name", name)
             .append("cost", cost)
@@ -61,6 +63,14 @@ public class GoodsEntry extends BaseDBObject {
 
     public void setAvatar(String avatar){
         setSimpleValue("avat",avatar);
+    }
+    
+    public String getPic(){
+        return getSimpleStringValue("pic");
+    }
+
+    public void setPic(String pic){
+        setSimpleValue("pic",pic);
     }
     
     public String getLabel(){

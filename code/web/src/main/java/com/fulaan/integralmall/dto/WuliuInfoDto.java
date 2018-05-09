@@ -1,6 +1,8 @@
 package com.fulaan.integralmall.dto;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import com.pojo.integralmall.AddressEntry;
 import com.pojo.integralmall.OrderEntry;
@@ -25,13 +27,26 @@ public class WuliuInfoDto {
     //物流信息
     private List<Traces> traces;
     
+    private Map<String, String> map = new HashMap<String, String>() {
+        {
+            put("SF", "顺丰速运");
+            put("ZTO", "中通快递");
+            put("STO", "申通快递");
+            put("YTO", "圆通速递");
+            put("YD", "韵达速递");
+            put("EMS", "EMS");
+            put("HTKY", "百世快递");
+            put("HHTT", "天天快递");
+        }
+    };
+    
     public WuliuInfoDto() {
       
     }
     
     public WuliuInfoDto(OrderEntry orderEntry, wuliuDto w, AddressEntry addressEntry) {
         this.area = addressEntry.getArea()+addressEntry.getDetail();
-        this.excompanyNo = orderEntry.getExcompanyNo();
+        this.excompanyNo = this.map.get(orderEntry.getExcompanyNo());
         this.expressNo = orderEntry.getExpressNo();
         this.traces=w.getTraces();
     }

@@ -39,10 +39,10 @@ public class GoodsDao extends BaseDao {
         update(MongoFacroty.getAppDB(), Constant.COLLECTION_INTEGRAL_GOODS,query,updateValue);
     }
     
-    public void updateGood(ObjectId id, String avatar, String label, String name, int cost, String description) {
+    public void updateGood(ObjectId id, String avatar, String pic,String label, String name, int cost, String description) {
         DBObject query = new BasicDBObject(Constant.ID, id);
         BasicDBObject updateValue=new BasicDBObject()
-            .append(Constant.MONGO_SET,new BasicDBObject("avat",avatar).append("lab", label).append("name", name).append("cost", cost).append("descrip", description));
+            .append(Constant.MONGO_SET,new BasicDBObject("avat",avatar).append("pic",pic).append("lab", label).append("name", name).append("cost", cost).append("descrip", description));
         update(MongoFacroty.getAppDB(), Constant.COLLECTION_INTEGRAL_GOODS,query,updateValue);
     }
     
@@ -57,12 +57,22 @@ public class GoodsDao extends BaseDao {
     }
     
     public GoodsEntry getEntry(ObjectId id) {
-        BasicDBObject query = new BasicDBObject("_id", id);
+        BasicDBObject query = new BasicDBObject(Constant.ID, id);
         query.append("isr",Constant.ZERO);
         DBObject obj =
             findOne(MongoFacroty.getAppDB(), Constant.COLLECTION_INTEGRAL_GOODS, query, Constant.FIELDS);
         if (obj != null) {
-            new GoodsEntry((BasicDBObject) obj);
+            return new GoodsEntry((BasicDBObject) obj);
+        }
+        return null;
+    }
+    
+    public GoodsEntry getEntryById(ObjectId id) {
+        BasicDBObject query = new BasicDBObject(Constant.ID, id);
+        DBObject obj =
+            findOne(MongoFacroty.getAppDB(), Constant.COLLECTION_INTEGRAL_GOODS, query, Constant.FIELDS);
+        if (obj != null) {
+            return new GoodsEntry((BasicDBObject) obj);
         }
         return null;
     }
@@ -72,6 +82,19 @@ public class GoodsDao extends BaseDao {
         BasicDBObject query=new BasicDBObject().append("isr", 0);
         List<DBObject> dbObjectList=find(MongoFacroty.getAppDB(), Constant.COLLECTION_INTEGRAL_GOODS,
             query,Constant.FIELDS,Constant.MONGO_SORTBY_DESC,(page-1)*pageSize,pageSize);
+        if(null!=dbObjectList&&!dbObjectList.isEmpty()){
+            for(DBObject dbObject:dbObjectList){
+                entries.add(new GoodsEntry(dbObject));
+            }
+        }
+        return entries;
+    }
+    
+    public List<GoodsEntry> getGoodsListAll() {
+        List<GoodsEntry> entries = new ArrayList<GoodsEntry>();
+        BasicDBObject query=new BasicDBObject().append("isr", 0);
+        List<DBObject> dbObjectList=find(MongoFacroty.getAppDB(), Constant.COLLECTION_INTEGRAL_GOODS,
+            query,Constant.FIELDS,Constant.MONGO_SORTBY_DESC);
         if(null!=dbObjectList&&!dbObjectList.isEmpty()){
             for(DBObject dbObject:dbObjectList){
                 entries.add(new GoodsEntry(dbObject));

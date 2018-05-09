@@ -41,6 +41,18 @@ public class OrderDto {
 
     }
     
+    public OrderDto(GoodsEntry goodsEntry, AddressEntry addressEntry,OrderEntry orderEntry) {
+        this.id = orderEntry.getID().toString();
+        this.goodNum = orderEntry.getGoodNum();
+        this.excompanyNo = orderEntry.getExcompanyNo();
+        this.expressNo = orderEntry.getExpressNo();
+        this.isState = orderEntry.getIsState();
+        this.stateReason = orderEntry.getStateReason();
+        this.goodId = goodsEntry.getID().toString();
+        this.goodsDto = new GoodsDto(goodsEntry);
+        this.addressDto = new AddressDto(addressEntry);
+    }
+    
     public OrderDto(GoodsEntry goodsEntry, AddressEntry addressEntry,int score) {
         this.goodId = goodsEntry.getID().toString();
         this.goodsDto = new GoodsDto(goodsEntry);

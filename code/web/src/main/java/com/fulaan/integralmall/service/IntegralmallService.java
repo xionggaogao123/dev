@@ -4,7 +4,10 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
+import org.apache.commons.lang3.StringUtils;
 import org.bson.types.ObjectId;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -15,7 +18,6 @@ import com.db.integral.IntegralRecordDao;
 import com.db.integralmall.AddressDao;
 import com.db.integralmall.GoodsDao;
 import com.db.integralmall.OrderDao;
-import com.fulaan.annotation.ObjectIdType;
 import com.fulaan.integral.service.IntegralSufferService;
 import com.fulaan.integralmall.dto.AddressDto;
 import com.fulaan.integralmall.dto.GoodsDto;
@@ -24,7 +26,6 @@ import com.fulaan.integralmall.dto.OrderDto;
 import com.fulaan.integralmall.dto.WuliuInfoDto;
 import com.fulaan.integralmall.dto.wuliuDto;
 import com.fulaan.mall.service.EBusinessOrderService;
-import com.fulaan.util.DateUtils;
 import com.pojo.integral.IntegralRecordEntry;
 import com.pojo.integral.IntegralSufferEntry;
 import com.pojo.integralmall.AddressEntry;
@@ -78,6 +79,21 @@ public class IntegralmallService {
     
     /**
      * 
+     *〈简述〉获得所有商品数量
+     *〈详细描述〉
+     * @author Administrator
+     * @param page
+     * @param pageSize
+     * @param userId
+     * @return
+     */
+    public int getIntegralmallHomeNum() {
+        
+        return goodsDao.getGoodsListAll().size();
+    }
+    
+    /**
+     * 
      *〈简述〉商品列表
      *〈详细描述〉
      * @author Administrator
@@ -109,13 +125,42 @@ public class IntegralmallService {
      */
     public List<GoodsDto> getExchangeRecord(int page,int pageSize,ObjectId userId) {
         List<GoodsDto> goodL = new ArrayList<GoodsDto>();
-        List<OrderEntry> list = orderDao.getOrderList(page, pageSize, userId);
+        List<OrderEntry> list = orderDao.getOrderListByUserId(page, pageSize, userId);
         for (OrderEntry o : list) {
             GoodsEntry g = goodsDao.getEntry(o.getGid());
             GoodsDto go = new GoodsDto(g, o);
             goodL.add(go);
         }
         return goodL;
+    }
+    
+    
+    /**
+     * 
+     *〈简述〉订单列表
+     *〈详细描述〉
+     * @author Administrator
+     * @param page
+     * @param pageSize
+     * @param userId
+     * @return
+     */
+    public List<OrderDto> getOrderList(int page,int pageSize) {
+        List<OrderDto> orderL = new ArrayList<OrderDto>();
+        List<OrderEntry> list = orderDao.getOrderList(page, pageSize);
+        for (OrderEntry o : list) {
+            GoodsEntry g = goodsDao.getEntryById(o.getGid());
+            if (g == null) {
+                g = new GoodsEntry();
+            }
+            AddressEntry a = addressDao.getEntryById(o.getAid());
+            if (a == null) {
+                a = new AddressEntry();
+            }
+            OrderDto d = new OrderDto(g, a, o);
+            orderL.add(d);
+        }
+        return orderL;
     }
     
     /**
@@ -154,13 +199,13 @@ public class IntegralmallService {
     public OrderDto orderConfirm(ObjectId goodId, ObjectId userId) throws  Exception{
         IntegralSufferEntry integralSufferEntry = integralSufferService.getEntry(userId);
         GoodsEntry entry = goodsDao.getEntry(goodId);
-        goodsDao.updateGoodsTimes(goodId, entry.getTimes()+1);
+        
         AddressEntry addressEntry = addressDao.getEntry(userId);
         OrderDto orderDto;
         if (addressEntry != null) {
-            orderDto = new OrderDto(entry, addressEntry, integralSufferEntry.getScore());
+            orderDto = new OrderDto(entry, addressEntry, integralSufferEntry==null?0:integralSufferEntry.getScore());
         } else {
-            orderDto = new OrderDto(entry, integralSufferEntry.getScore());
+            orderDto = new OrderDto(entry, integralSufferEntry==null?0:integralSufferEntry.getScore());
         }
         
         return orderDto;
@@ -177,9 +222,16 @@ public class IntegralmallService {
      * @throws Exception
      */
     public void saveAddress(AddressDto addressDto, ObjectId userId) throws  Exception{
-        addressDao.updateAddressState(userId);
-        AddressEntry entry = new AddressEntry(addressDto.getName(), addressDto.getTelphone(), addressDto.getArea(), addressDto.getDetail(), userId);
-        addressDao.addEntry(entry);
+        Pattern p = Pattern.compile("^[1][3,4,5,7,8][0-9]{9}$"); // 验证手机号 
+        Matcher m = p.matcher(addressDto.getTelphone());
+        if (m.matches()) {
+            addressDao.updateAddressState(userId);
+            AddressEntry entry = new AddressEntry(addressDto.getName(), addressDto.getTelphone(), addressDto.getArea(), addressDto.getDetail(), userId);
+            addressDao.addEntry(entry);
+        } else {
+            throw new Exception("请输入正确的手机号码!");
+        }
+        
     }
     
     /**
@@ -215,6 +267,8 @@ public class IntegralmallService {
         if (integralSufferEntry.getScore() < costScore) {
             throw  new Exception("积分不够!");
         } else {
+            GoodsEntry gentry = goodsDao.getEntry(goodId);
+            goodsDao.updateGoodsTimes(goodId, gentry.getTimes()+1);
             //增加积分记录
             IntegralRecordEntry entry = new IntegralRecordEntry(userId, costScore, "divCost", new Date().getTime(), new Date().getTime(), 0);
             integralRecordDao.addEntry(entry);
@@ -260,11 +314,11 @@ public class IntegralmallService {
      * @param dto
      */
     public void saveGoods(GoodsDto dto) throws Exception{
-        if (dto.getId() == null) {
-            GoodsEntry entry = new GoodsEntry(dto.getAvatar(), dto.getLabel(), dto.getName(), dto.getCost(), dto.getTimes() == null ?0 :dto.getTimes(), dto.getDescription());
+        if (StringUtils.isBlank(dto.getId())) {
+            GoodsEntry entry = new GoodsEntry(dto.getAvatar(), dto.getPic(),dto.getLabel(), dto.getName(), dto.getCost(), dto.getTimes() == null ?0 :dto.getTimes(), dto.getDescription());
             goodsDao.addEntry(entry);
         } else {
-            goodsDao.updateGood(new ObjectId(dto.getId()), dto.getAvatar(), dto.getLabel(), dto.getName(), dto.getCost(), dto.getDescription());
+            goodsDao.updateGood(new ObjectId(dto.getId()), dto.getAvatar(),dto.getPic(), dto.getLabel(), dto.getName(), dto.getCost(), dto.getDescription());
         }
         
     }
@@ -279,6 +333,20 @@ public class IntegralmallService {
      */
     public void delGoods(ObjectId goodId) throws Exception{
         goodsDao.updateIsr(goodId);
+        
+    }
+    
+    /**
+     * 
+     *〈简述〉保存订单物流信息
+     *〈详细描述〉
+     * @author Administrator
+     * @param dto
+     */
+    public void saveOrder(OrderDto dto) throws Exception{
+        if (dto.getId() != null) {
+            orderDao.updateEx(new ObjectId(dto.getId()), dto.getExcompanyNo(), dto.getExpressNo());
+        } 
         
     }
 }

@@ -26,12 +26,25 @@ public class OrderDao extends BaseDao {
         DBObject obj =
             findOne(MongoFacroty.getAppDB(), Constant.COLLECTION_INTEGRAL_ORDER, query, Constant.FIELDS);
         if (obj != null) {
-            new OrderEntry((BasicDBObject) obj);
+           return new OrderEntry((BasicDBObject) obj);
         }
         return null;
     }
     
-    public List<OrderEntry> getOrderList(int page,int pageSize, ObjectId userId) {
+    public List<OrderEntry> getOrderListByUserId(int page,int pageSize, ObjectId userId) {
+        List<OrderEntry> entries = new ArrayList<OrderEntry>();
+        BasicDBObject query=new BasicDBObject("uid",userId);
+        List<DBObject> dbObjectList=find(MongoFacroty.getAppDB(), Constant.COLLECTION_INTEGRAL_ORDER,
+            query,Constant.FIELDS,Constant.MONGO_SORTBY_DESC,(page-1)*pageSize,pageSize);
+        if(null!=dbObjectList&&!dbObjectList.isEmpty()){
+            for(DBObject dbObject:dbObjectList){
+                entries.add(new OrderEntry(dbObject));
+            }
+        }
+        return entries;
+    }
+    
+    public List<OrderEntry> getOrderList(int page,int pageSize) {
         List<OrderEntry> entries = new ArrayList<OrderEntry>();
         BasicDBObject query=new BasicDBObject();
         List<DBObject> dbObjectList=find(MongoFacroty.getAppDB(), Constant.COLLECTION_INTEGRAL_ORDER,
@@ -50,7 +63,17 @@ public class OrderDao extends BaseDao {
     public void updateOrderState(ObjectId orderId, String stateReason) {
         DBObject query = new BasicDBObject(Constant.ID, orderId);
         BasicDBObject updateValue=new BasicDBObject()
-            .append(Constant.MONGO_SET,new BasicDBObject("sRea",stateReason)).append(Constant.MONGO_SET, new BasicDBObject("ist",Constant.ONE));
+            .append(Constant.MONGO_SET,new BasicDBObject("sRea",stateReason).append("ist",Constant.ONE));
+        update(MongoFacroty.getAppDB(), Constant.COLLECTION_INTEGRAL_ORDER,query,updateValue);
+    }
+    
+    /**
+     * 更新物流信息
+     */
+    public void updateEx(ObjectId orderId, String xcompanyNo, String expressNo) {
+        DBObject query = new BasicDBObject(Constant.ID, orderId);
+        BasicDBObject updateValue=new BasicDBObject()
+            .append(Constant.MONGO_SET,new BasicDBObject("ecNo",xcompanyNo).append("epNo",expressNo));
         update(MongoFacroty.getAppDB(), Constant.COLLECTION_INTEGRAL_ORDER,query,updateValue);
     }
 }

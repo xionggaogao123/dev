@@ -33,7 +33,7 @@ public class AddressDao extends BaseDao {
         DBObject obj =
             findOne(MongoFacroty.getAppDB(), Constant.COLLECTION_INTEGRAL_ADDRESS, query, Constant.FIELDS);
         if (obj != null) {
-            new AddressEntry((BasicDBObject) obj);
+            return new AddressEntry((BasicDBObject) obj);
         }
         return null;
     }

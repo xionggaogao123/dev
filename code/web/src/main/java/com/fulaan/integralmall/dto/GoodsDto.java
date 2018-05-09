@@ -15,8 +15,10 @@ public class GoodsDto {
     
     //商品id
     private String id;
-    //图片路径
+    //列表首页图
     private String avatar;
+    //商品详情图片，多张图片路径用 中文顿号 隔开的
+    private String pic;
     //标签，以顿号隔开
     private String label;
     //商品名称
@@ -42,6 +44,7 @@ public class GoodsDto {
     public GoodsDto(GoodsEntry entry) {
         this.id = entry.getID().toString();
         this.avatar = entry.getAvatar();
+        this.pic = entry.getPic();
         this.label = entry.getLabel();
         this.name = entry.getName();
         this.cost = entry.getCost();
@@ -52,6 +55,7 @@ public class GoodsDto {
     public GoodsDto(GoodsEntry entry, OrderEntry oentry) {
         this.id = entry.getID().toString();
         this.avatar = entry.getAvatar();
+        this.pic = entry.getPic();
         this.label = entry.getLabel();
         this.name = entry.getName();
         this.cost = entry.getCost();
@@ -69,6 +73,18 @@ public class GoodsDto {
     public void setId(String id) {
         this.id = id;
     }
+    
+    
+
+    public String getPic() {
+        return pic;
+    }
+
+
+    public void setPic(String pic) {
+        this.pic = pic;
+    }
+
 
     public String getAvatar() {
         return avatar;

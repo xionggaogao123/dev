@@ -53,13 +53,13 @@ public class ExcellentCoursesDTO {
                 this.createTime = "";
             }
             if(e.getStartTime()!=0l){
-                this.startTime = DateTimeUtils.getLongToStrTimeTwo(e.getStartTime());
+                this.startTime = DateTimeUtils.getLongToStrTimeTwo(e.getStartTime()).substring(0,11);
             }else{
                 this.startTime = "";
             }
 
             if(e.getEndTime()!=0l){
-                this.endTime = DateTimeUtils.getLongToStrTimeTwo(e.getEndTime());
+                this.endTime = DateTimeUtils.getLongToStrTimeTwo(e.getEndTime()).substring(0,11);
             }else{
                 this.endTime = "";
             }

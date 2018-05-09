@@ -89,8 +89,8 @@ public class DefaultUserCenterController extends BaseController {
     private FReplyService fReplyService;
     @Autowired
     private FScoreService fScoreService;
-
-    private IntegralSufferService integralSufferService = new IntegralSufferService();
+    @Autowired
+    private IntegralSufferService integralSufferService;
 
     private void loginInfo(Map<String, Object> model) {
         SessionValue sessionValue = getSessionValue();

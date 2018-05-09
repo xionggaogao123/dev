@@ -102,8 +102,8 @@ public class DefaultFPostController extends BaseController {
     private ConcernService concernService;
     @Autowired
     private ParticipantsInfoService participantsInfoService;
-
-    private IntegralSufferService integralSufferService = new IntegralSufferService();
+    @Autowired
+    private IntegralSufferService integralSufferService;
 
 
     private TeacherApproveDao teacherApproveDao = new TeacherApproveDao();

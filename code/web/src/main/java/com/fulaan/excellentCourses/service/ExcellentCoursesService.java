@@ -4,18 +4,24 @@ import com.db.excellentCourses.ClassOrderDao;
 import com.db.excellentCourses.ExcellentCoursesDao;
 import com.db.excellentCourses.HourClassDao;
 import com.db.excellentCourses.UserBehaviorDao;
+import com.db.user.UserDao;
 import com.fulaan.excellentCourses.dto.ExcellentCoursesDTO;
 import com.fulaan.excellentCourses.dto.HourClassDTO;
 import com.fulaan.excellentCourses.dto.HourResultDTO;
 import com.fulaan.newVersionBind.service.NewVersionBindService;
+import com.fulaan.pojo.User;
 import com.mongodb.DBObject;
 import com.pojo.excellentCourses.ClassOrderEntry;
 import com.pojo.excellentCourses.ExcellentCoursesEntry;
 import com.pojo.excellentCourses.HourClassEntry;
 import com.pojo.excellentCourses.UserBehaviorEntry;
+import com.pojo.user.UserEntry;
 import com.sys.constants.Constant;
+import com.sys.utils.AvatarUtils;
 import com.sys.utils.DateTimeUtils;
+import org.apache.commons.lang.StringUtils;
 import org.bson.types.ObjectId;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.*;
@@ -33,8 +39,10 @@ public class ExcellentCoursesService {
     private ClassOrderDao classOrderDao = new ClassOrderDao();
 
     private UserBehaviorDao userBehaviorDao = new UserBehaviorDao();
+    @Autowired
+    private NewVersionBindService newVersionBindService;
 
-    private NewVersionBindService newVersionBindService = new NewVersionBindService();
+    private UserDao userDao = new UserDao();
 
     /**
      * 老师开课
@@ -266,12 +274,19 @@ public class ExcellentCoursesService {
                 }
             }
         }
-        if(entry.getStartTime()<current){
+        if(entry != null && entry.getStartTime()<current){
+
             map.put("start",1);//正在上课
             map.put("time",0);
         }else{
-            map.put("start",0);//未上课
-            map.put("time",entry.getStartTime()-current);
+            if(entry==null){
+                map.put("start",0);//未上课
+                map.put("time",0);
+            }else{
+                map.put("start",0);//未上课
+                map.put("time",entry.getStartTime()-current);
+            }
+
         }
         map.put("dto",new HourClassDTO(entry));
         return map;
@@ -490,14 +505,6 @@ public class ExcellentCoursesService {
 
     /**
      * 课程中心
-     * @param userId
-     * @param subjectId
-     * @param priceType
-     * @param persionType
-     * @param timeType
-     * @param page
-     * @param pageSize
-     * @return
      */
     public Map<String,Object> myClassList(ObjectId userId,String subjectId,int priceType,int persionType,int timeType,int page,int pageSize){
         Map<String,Object> map = new HashMap<String, Object>();
@@ -512,4 +519,144 @@ public class ExcellentCoursesService {
         return map;
     }
 
+    /**
+     * 搜索课程中心
+     * @return
+     */
+    public List<ExcellentCoursesDTO> myKeyClassList(String keyword){
+        List<ExcellentCoursesDTO> dtos = new ArrayList<ExcellentCoursesDTO>();
+        if(keyword!=null && !keyword.equals("")){
+
+        }else{
+            return dtos;
+        }
+        List<ExcellentCoursesEntry> excellentCoursesEntries = excellentCoursesDao.getMyKeyClassList(keyword);
+        for(ExcellentCoursesEntry excellentCoursesEntry:excellentCoursesEntries) {
+            dtos.add(new ExcellentCoursesDTO(excellentCoursesEntry));
+        }
+        return dtos;
+    }
+
+    /**
+     * 老师 获得我的课程列表
+     * @return
+     */
+    public Map<String,Object> getMyExcellentCourses(ObjectId userId,int page,int pageSize){
+        Map<String,Object> map = new HashMap<String, Object>();
+        List<ExcellentCoursesEntry> excellentCoursesEntries = excellentCoursesDao.getMyExcellentCourses(userId, page, pageSize);
+        int count = excellentCoursesDao.selectMyCount(userId);
+        List<ExcellentCoursesDTO> dtos = new ArrayList<ExcellentCoursesDTO>();
+        for(ExcellentCoursesEntry excellentCoursesEntry:excellentCoursesEntries){
+            ExcellentCoursesDTO dto = new ExcellentCoursesDTO(excellentCoursesEntry);
+            dtos.add(dto);
+        }
+        map.put("list",dtos);
+        map.put("count",count);
+        return map;
+    }
+
+    public Map<String,Object> getMyDetails(ObjectId id){
+        Map<String,Object> map = new HashMap<String, Object>();
+        //课程相关
+        ExcellentCoursesEntry excellentCoursesEntry = excellentCoursesDao.getEntry(id);
+        ExcellentCoursesDTO dto = new ExcellentCoursesDTO(excellentCoursesEntry);
+        map.put("dto",dto);
+        //课时相关
+        List<HourClassEntry> hourClassEntries = hourClassDao.getEntryList(id);
+        List<HourClassDTO> hourClassDTOs = new ArrayList<HourClassDTO>();
+        long current = System.currentTimeMillis();
+        for(HourClassEntry entry : hourClassEntries){
+            long startTime = entry.getStartTime();
+            long endTime = entry.getStartTime() + entry.getCurrentTime();
+            HourClassDTO hourClassDTO = new HourClassDTO(entry);
+            if(current<startTime - 45*60*1000){//未开始
+                hourClassDTO.setStatus(0);
+            }else if(current >endTime){//已结束
+                hourClassDTO.setStatus(2);
+            }else{//正在进行
+                hourClassDTO.setStatus(1);
+            }
+            hourClassDTOs.add(hourClassDTO);
+        }
+        map.put("list",hourClassDTOs);
+        return map;
+    }
+
+    public List<User> getCoursesPersionNum(ObjectId id){
+        List<User> userList = new ArrayList<User>();
+        ExcellentCoursesEntry excellentCoursesEntry = excellentCoursesDao.getEntry(id);
+        if(excellentCoursesEntry==null){
+            return userList;
+        }
+        //用户订单查询
+        Set<ObjectId> userIds = classOrderDao.getUserIdEntry(id);
+        List<UserEntry> userEntries = userDao.getUserEntryList(userIds, Constant.FIELDS);
+        for(UserEntry userEntry : userEntries){
+            String name = StringUtils.isNotEmpty(userEntry.getNickName())?userEntry.getNickName():userEntry.getUserName();
+            User user=new User(name,
+                    name,
+                    userEntry.getID().toString(),
+                    AvatarUtils.getAvatar(userEntry.getAvatar(), userEntry.getRole(), userEntry.getSex()),
+                    userEntry.getSex(),
+                    "");
+            userList.add(user);
+        }
+        excellentCoursesEntry.setStudentNumber(userList.size());
+        excellentCoursesDao.addEntry(excellentCoursesEntry);
+        return userList;
+    }
+
+    /**
+     *
+     */
+    public String deleteCourses(ObjectId id,ObjectId userId){
+        //1. 判断是否可删除
+        //课程相关
+        ExcellentCoursesEntry excellentCoursesEntry = excellentCoursesDao.getEntry(id);
+        if(excellentCoursesEntry==null){
+            return "课程已被删除";
+        }
+
+        if(!excellentCoursesEntry.getUserId().equals(userId)){
+            return "您没有权限删除该课程";
+        }
+        //用户订单查询
+        Set<ObjectId> userIds = classOrderDao.getUserIdEntry(id);
+        if(userIds.size()>0){//无用户下单
+            return "有用户下单了，不可删除";
+        }
+        //2. 删除课程
+        excellentCoursesDao.delEntry(id);
+        //3. 删除课节
+        hourClassDao.delEntry(id,userId);
+        return "删除成功";
+    }
+
+    public Map<String,Object> booleanUpdateCourses(ObjectId id,ObjectId userId){
+        Map<String,Object> map = new HashMap<String, Object>();
+        //1. 判断是否可删除
+        //课程相关
+        ExcellentCoursesEntry excellentCoursesEntry = excellentCoursesDao.getEntry(id);
+        if(excellentCoursesEntry==null){
+            map.put("yin","该课程不存在");
+            map.put("bo",false);
+            return map;
+        }
+
+        if(!excellentCoursesEntry.getUserId().equals(userId)){
+            map.put("yin","您没有权限删除该课程");
+            map.put("bo",false);
+            return map;
+        }
+        //用户订单查询
+        Set<ObjectId> userIds = classOrderDao.getUserIdEntry(id);
+        if(userIds.size()>0){//有用户下单
+            map.put("yin","有用户下单了，不可删除");
+            map.put("bo",false);
+            return map;
+        }
+        map.put("yin","可编辑");
+        map.put("bo",true);
+        return map;
+    }
 }

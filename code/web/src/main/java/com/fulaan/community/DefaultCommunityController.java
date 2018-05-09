@@ -129,8 +129,8 @@ public class DefaultCommunityController extends BaseController {
 
     @Autowired
     private LatestGroupDynamicService latestGroupDynamicService;
-
-    private IntegralSufferService integralSufferService = new IntegralSufferService();
+    @Autowired
+    private IntegralSufferService integralSufferService;
 
     public static final String suffix = "/static/images/community/upload.png";
 

@@ -9,7 +9,9 @@ import com.sys.constants.Constant;
 import org.bson.types.ObjectId;
 
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 /**
  * Created by James on 2018-04-26.
@@ -72,6 +74,25 @@ public class ClassOrderDao extends BaseDao {
         list.add(0);
         BasicDBObject query=new BasicDBObject("pid",new BasicDBObject(Constant.MONGO_IN,parentIds)).append("typ",new BasicDBObject(Constant.MONGO_IN,list));
         query.append("uid",userId).append("isr", Constant.ZERO);
+        List<DBObject> dbList=find(MongoFacroty.getAppDB(), Constant.COLLECTION_CLASS_ORDER, query,
+                Constant.FIELDS, Constant.MONGO_SORTBY_DESC);
+        if (dbList != null && !dbList.isEmpty()) {
+            for (DBObject obj : dbList) {
+                entryList.add(new ClassOrderEntry((BasicDBObject) obj).getParentId());
+            }
+        }
+        return entryList;
+    }
+
+    //课程订单用户查询
+    public  Set<ObjectId> getUserIdEntry(ObjectId contactId){
+        Set<ObjectId> entryList=new HashSet<ObjectId>();
+        BasicDBObject query=new BasicDBObject();
+        List<Integer> list = new ArrayList<Integer>();
+        list.add(1);
+        list.add(0);
+        query.append("cid",contactId).append("isr", Constant.ZERO);
+        query.append("typ",new BasicDBObject(Constant.MONGO_IN,list));
         List<DBObject> dbList=find(MongoFacroty.getAppDB(), Constant.COLLECTION_CLASS_ORDER, query,
                 Constant.FIELDS, Constant.MONGO_SORTBY_DESC);
         if (dbList != null && !dbList.isEmpty()) {

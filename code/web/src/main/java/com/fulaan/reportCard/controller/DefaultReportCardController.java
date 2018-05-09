@@ -41,8 +41,8 @@ public class DefaultReportCardController extends BaseController{
 
     @Autowired
     private WebHomePageService webHomePageService;
-
-    private IntegralSufferService integralSufferService = new IntegralSufferService();
+    @Autowired
+    private IntegralSufferService integralSufferService;
 
 
 

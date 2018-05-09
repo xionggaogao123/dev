@@ -127,7 +127,7 @@ public class IntegralmallService {
         List<GoodsDto> goodL = new ArrayList<GoodsDto>();
         List<OrderEntry> list = orderDao.getOrderListByUserId(page, pageSize, userId);
         for (OrderEntry o : list) {
-            GoodsEntry g = goodsDao.getEntry(o.getGid());
+            GoodsEntry g = goodsDao.getEntryById(o.getGid());
             GoodsDto go = new GoodsDto(g, o);
             goodL.add(go);
         }
@@ -184,7 +184,7 @@ public class IntegralmallService {
      * @return
      */
     public GoodsDto getGoodById(ObjectId goodId) throws Exception{
-        GoodsEntry entry = goodsDao.getEntry(goodId);
+        GoodsEntry entry = goodsDao.getEntryById(goodId);
         GoodsDto goodsDto = new GoodsDto(entry);
         return goodsDto;
     }
@@ -198,7 +198,7 @@ public class IntegralmallService {
      */
     public OrderDto orderConfirm(ObjectId goodId, ObjectId userId) throws  Exception{
         IntegralSufferEntry integralSufferEntry = integralSufferService.getEntry(userId);
-        GoodsEntry entry = goodsDao.getEntry(goodId);
+        GoodsEntry entry = goodsDao.getEntryById(goodId);
         
         AddressEntry addressEntry = addressDao.getEntry(userId);
         OrderDto orderDto;
@@ -267,7 +267,7 @@ public class IntegralmallService {
         if (integralSufferEntry.getScore() < costScore) {
             throw  new Exception("积分不够!");
         } else {
-            GoodsEntry gentry = goodsDao.getEntry(goodId);
+            GoodsEntry gentry = goodsDao.getEntryById(goodId);
             goodsDao.updateGoodsTimes(goodId, gentry.getTimes()+1);
             //增加积分记录
             IntegralRecordEntry entry = new IntegralRecordEntry(userId, costScore, "divCost", new Date().getTime(), new Date().getTime(), 0);

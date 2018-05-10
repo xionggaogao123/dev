@@ -55,7 +55,7 @@ public class ClassOrderDao extends BaseDao {
         List<Integer> list = new ArrayList<Integer>();
         list.add(1);
         list.add(0);
-        BasicDBObject query=new BasicDBObject("uid",userId).append("isBuy",1).append("typ",new BasicDBObject(Constant.MONGO_IN,list)).append("isr", Constant.ZERO);
+        BasicDBObject query=new BasicDBObject("uid",userId).append("isb",1).append("typ",new BasicDBObject(Constant.MONGO_IN,list)).append("isr", Constant.ZERO);
         List<DBObject> dbList=find(MongoFacroty.getAppDB(), Constant.COLLECTION_CLASS_ORDER, query,
                 Constant.FIELDS, Constant.MONGO_SORTBY_DESC);
         if (dbList != null && !dbList.isEmpty()) {
@@ -97,10 +97,21 @@ public class ClassOrderDao extends BaseDao {
                 Constant.FIELDS, Constant.MONGO_SORTBY_DESC);
         if (dbList != null && !dbList.isEmpty()) {
             for (DBObject obj : dbList) {
-                entryList.add(new ClassOrderEntry((BasicDBObject) obj).getParentId());
+                entryList.add(new ClassOrderEntry((BasicDBObject) obj).getUserId());
             }
         }
         return entryList;
+    }
+    //用户订单查询
+    public ClassOrderEntry getEntry(ObjectId parentId,ObjectId contactId,ObjectId userId){
+        BasicDBObject query=new BasicDBObject().append("isr",Constant.ZERO).append("isb",Constant.ONE);
+        query.append("pid",parentId).append("cid",contactId).append("uid",userId);
+        DBObject dbObject=findOne(MongoFacroty.getAppDB(), Constant.COLLECTION_CLASS_ORDER,query,Constant.FIELDS);
+        if(null!=dbObject){
+            return new ClassOrderEntry((BasicDBObject) dbObject);
+        }else {
+            return null;
+        }
     }
 
     //首页订单查询

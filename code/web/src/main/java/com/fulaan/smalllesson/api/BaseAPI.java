@@ -13,6 +13,7 @@ public class BaseAPI {
     public static final RestTemplate restTemplate = new RestTemplate();
 
     public static final String SERVICE_URL = "http://gateway.system.eduyun.cn:40015";
+    public static final String CC_URL = "http://api.csslcloud.net/api";
 
     /**
      * get方法
@@ -54,6 +55,17 @@ public class BaseAPI {
      */
     public static String getForToken(String resoureUrl) {
         resoureUrl = SERVICE_URL + resoureUrl;
+        String resultStr = restTemplate.getForObject(resoureUrl, String.class);
+        return resultStr;
+    }
+
+    /**
+     * CC get方法
+     * @param resoureUrl
+     * @return
+     */
+    public static String getCCForToken(String resoureUrl) {
+        resoureUrl = CC_URL + resoureUrl;
         String resultStr = restTemplate.getForObject(resoureUrl, String.class);
         return resultStr;
     }

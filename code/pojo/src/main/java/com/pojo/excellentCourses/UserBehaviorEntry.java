@@ -16,6 +16,7 @@ import java.util.List;
  *
  * id                        id                 id
  * userId                    用户id             uid
+ * account                   账户余额吧         acc
  * collectList <ObjectId>    收藏列表           clt
  * browseList<ObjectId>      浏览列表           blt
  *
@@ -35,12 +36,14 @@ public class UserBehaviorEntry extends BaseDBObject {
     //添加构造
     public UserBehaviorEntry(
             ObjectId userId,
+            int account,
             List<ObjectId> collectList,
             List<ObjectId> browseList
 
     ){
         BasicDBObject dbObject=new BasicDBObject()
                 .append("uid", userId)
+                .append("acc",account)
                 .append("clt", collectList)
                 .append("blt", browseList)
                 .append("isr", 0);
@@ -51,12 +54,14 @@ public class UserBehaviorEntry extends BaseDBObject {
     public UserBehaviorEntry(
             ObjectId id,
             ObjectId userId,
+            int account,
             List<ObjectId> collectList,
             List<ObjectId> browseList
     ){
         BasicDBObject dbObject=new BasicDBObject()
                 .append(Constant.ID, id)
                 .append("uid", userId)
+                .append("acc",account)
                 .append("clt", collectList)
                 .append("blt", browseList)
                 .append("isr", 0);
@@ -97,7 +102,13 @@ public class UserBehaviorEntry extends BaseDBObject {
         }
         return browseList;
     }
+    public int getAccount(){
+        return getSimpleIntegerValue("acc");
+    }
 
+    public void setAccount(int account){
+        setSimpleValue("acc",account);
+    }
 
     public int getIsRemove(){
         return getSimpleIntegerValue("isr");

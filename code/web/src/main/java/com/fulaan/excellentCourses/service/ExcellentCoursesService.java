@@ -1,9 +1,7 @@
 package com.fulaan.excellentCourses.service;
 
-import com.db.excellentCourses.ClassOrderDao;
-import com.db.excellentCourses.ExcellentCoursesDao;
-import com.db.excellentCourses.HourClassDao;
-import com.db.excellentCourses.UserBehaviorDao;
+import com.db.backstage.TeacherApproveDao;
+import com.db.excellentCourses.*;
 import com.db.user.UserDao;
 import com.fulaan.excellentCourses.dto.ExcellentCoursesDTO;
 import com.fulaan.excellentCourses.dto.HourClassDTO;
@@ -11,10 +9,8 @@ import com.fulaan.excellentCourses.dto.HourResultDTO;
 import com.fulaan.newVersionBind.service.NewVersionBindService;
 import com.fulaan.pojo.User;
 import com.mongodb.DBObject;
-import com.pojo.excellentCourses.ClassOrderEntry;
-import com.pojo.excellentCourses.ExcellentCoursesEntry;
-import com.pojo.excellentCourses.HourClassEntry;
-import com.pojo.excellentCourses.UserBehaviorEntry;
+import com.pojo.backstage.TeacherApproveEntry;
+import com.pojo.excellentCourses.*;
 import com.pojo.user.UserEntry;
 import com.sys.constants.Constant;
 import com.sys.utils.AvatarUtils;
@@ -39,10 +35,18 @@ public class ExcellentCoursesService {
     private ClassOrderDao classOrderDao = new ClassOrderDao();
 
     private UserBehaviorDao userBehaviorDao = new UserBehaviorDao();
+    private RechargeResultDao rechargeResultDao = new RechargeResultDao();
     @Autowired
     private NewVersionBindService newVersionBindService;
+    @Autowired
+    private CoursesRoomService coursesRoomService;
 
     private UserDao userDao = new UserDao();
+
+    private CoursesRoomDao coursesRoomDao = new CoursesRoomDao();
+
+    private TeacherApproveDao teacherApproveDao = new TeacherApproveDao();
+
 
     /**
      * 老师开课
@@ -158,7 +162,20 @@ public class ExcellentCoursesService {
         ExcellentCoursesEntry excellentCoursesEntry = excellentCoursesDao.getEntry(id);
         if(excellentCoursesEntry!=null && excellentCoursesEntry.getUserId().equals(userId)){//存在且为本人创建
             //todo 暂为通过二期修改为审批 1
-            excellentCoursesDao.finishEntry(id,2);
+            TeacherApproveEntry teacherApproveEntry = teacherApproveDao.getEntry(userId);
+            if(teacherApproveEntry!=null && teacherApproveEntry.getType()==2){
+                excellentCoursesDao.finishEntry(id,2);
+                long start  = excellentCoursesEntry.getStartTime();
+                String startTime = "";
+                if(start!=0l){
+                    startTime = DateTimeUtils.getLongToStrTimeTwo(start);
+                }
+                //todo
+                coursesRoomService.createCourses(excellentCoursesEntry.getTitle(),excellentCoursesEntry.getTarget(),excellentCoursesEntry.getID(),startTime);
+            }else{
+                excellentCoursesDao.finishEntry(id,1);
+            }
+
         }
 
     }
@@ -242,7 +259,7 @@ public class ExcellentCoursesService {
                 List<ObjectId>  objectIdList = new ArrayList<ObjectId>();
                 List<ObjectId>  objectIdList2 = new ArrayList<ObjectId>();
                 objectIdList2.add(id);
-                UserBehaviorEntry userBehaviorEntry1 = new UserBehaviorEntry(userId,objectIdList,objectIdList2);
+                UserBehaviorEntry userBehaviorEntry1 = new UserBehaviorEntry(userId,0,objectIdList,objectIdList2);
                 userBehaviorDao.addEntry(userBehaviorEntry1);
             }
         }
@@ -262,7 +279,7 @@ public class ExcellentCoursesService {
         HourClassEntry entry = null;
         long current = System.currentTimeMillis();
         for(HourClassEntry hourClassEntry:hourClassEntries){
-            long startTime =  hourClassEntry.getStartTime();
+            long startTime =  hourClassEntry.getStartTime()-5*30*1000;
             long endTime = hourClassEntry.getStartTime() + hourClassEntry.getCurrentTime();
             if(entry ==null){
                 if(endTime>current){
@@ -284,7 +301,7 @@ public class ExcellentCoursesService {
                 map.put("time",0);
             }else{
                 map.put("start",0);//未上课
-                map.put("time",entry.getStartTime()-current);
+                map.put("time",entry.getStartTime());
             }
 
         }
@@ -323,7 +340,7 @@ public class ExcellentCoursesService {
             List<ObjectId> objectIdList = new ArrayList<ObjectId>();
             List<ObjectId> objectIdList2 = new ArrayList<ObjectId>();
             objectIdList2.add(id);
-            UserBehaviorEntry userBehaviorEntry1 = new UserBehaviorEntry(userId,objectIdList,objectIdList2);
+            UserBehaviorEntry userBehaviorEntry1 = new UserBehaviorEntry(userId,0,objectIdList,objectIdList2);
             userBehaviorDao.addEntry(userBehaviorEntry1);
         }
         return dto;
@@ -444,7 +461,8 @@ public class ExcellentCoursesService {
                 if(!classOrderEntries.contains(hourClassEntry.getID())){
                     ClassOrderEntry classOrderEntry = new ClassOrderEntry();
                     classOrderEntry.setIsBuy(1);
-                    classOrderEntry.setType(0);
+                    //下单
+                    classOrderEntry.setType(1);
                     classOrderEntry.setCreateTime(current);
                     classOrderEntry.setContactId(id);
                     classOrderEntry.setIsRemove(0);
@@ -546,8 +564,20 @@ public class ExcellentCoursesService {
         List<ExcellentCoursesEntry> excellentCoursesEntries = excellentCoursesDao.getMyExcellentCourses(userId, page, pageSize);
         int count = excellentCoursesDao.selectMyCount(userId);
         List<ExcellentCoursesDTO> dtos = new ArrayList<ExcellentCoursesDTO>();
+        long current = System.currentTimeMillis();
         for(ExcellentCoursesEntry excellentCoursesEntry:excellentCoursesEntries){
             ExcellentCoursesDTO dto = new ExcellentCoursesDTO(excellentCoursesEntry);
+            if(dto.getStatus()==2){
+                if(excellentCoursesEntry.getStartTime()> current){//未开始
+                    dto.setType(0);
+                }else if(excellentCoursesEntry.getEndTime()<current){//已结束
+                    dto.setType(2);
+                }else{
+                    dto.setType(1);
+                }
+            }else{//未开始
+                dto.setType(0);
+            }
             dtos.add(dto);
         }
         map.put("list",dtos);
@@ -658,5 +688,87 @@ public class ExcellentCoursesService {
         map.put("yin","可编辑");
         map.put("bo",true);
         return map;
+    }
+
+
+    public Map<String,Object> gotoClass(ObjectId id,ObjectId userId) throws Exception{
+        Map<String,Object> map = new HashMap<String, Object>();
+        //是否过期
+        HourClassEntry hourClassEntry = hourClassDao.getEntry(id);
+        if(hourClassEntry==null){
+            throw  new Exception("该课程不存在！");
+        }
+        ExcellentCoursesEntry excellentCoursesEntry = excellentCoursesDao.getEntry(hourClassEntry.getParentId());
+        if(excellentCoursesEntry==null){
+            throw  new Exception("该课程不存在！");
+        }
+        ClassOrderEntry classOrderEntry = classOrderDao.getEntry(id, hourClassEntry.getParentId(), userId);
+        if(classOrderEntry==null){
+            throw  new Exception("无该订单！");
+        }
+        long current = System.currentTimeMillis();
+        long start = hourClassEntry.getStartTime();
+        long end = start + hourClassEntry.getCurrentTime();
+        if(current>start  && current < end){//上课中
+            CoursesRoomEntry coursesRoomEntry = coursesRoomDao.getEntry(excellentCoursesEntry.getID());
+            UserEntry userEntry = userDao.findByUserId(userId);
+            if(userEntry==null){
+                throw  new Exception("非法用户！");
+            }
+            String name = StringUtils.isNotEmpty(userEntry.getNickName())?userEntry.getNickName():userEntry.getUserName();
+            map.put("uid",coursesRoomEntry.getUserId());
+            map.put("roomid",coursesRoomEntry.getRoomId());
+            map.put("userName",name);
+            map.put("password",coursesRoomEntry.getPlaypass());
+        }else{
+            throw  new Exception("上课时间未到，请稍后进入");
+        }
+        return map;
+    }
+
+    //老师自动登陆
+    public String teacherLogin(ObjectId userId,ObjectId id) throws Exception{
+        //是否过期
+        HourClassEntry hourClassEntry = hourClassDao.getEntry(id);
+        if(hourClassEntry==null){
+            throw  new Exception("该课程不存在！");
+        }
+        ExcellentCoursesEntry excellentCoursesEntry = excellentCoursesDao.getEntry(hourClassEntry.getParentId());
+        if(excellentCoursesEntry==null){
+            throw  new Exception("该课程不存在！");
+        }
+        long current = System.currentTimeMillis();
+        long start = hourClassEntry.getStartTime()-30*60*1000;
+        long end =  hourClassEntry.getStartTime() + hourClassEntry.getCurrentTime();
+        if(current>start  && current < end) {//上课中
+            CoursesRoomEntry coursesRoomEntry = coursesRoomDao.getEntry(excellentCoursesEntry.getID());
+            UserEntry userEntry = userDao.findByUserId(userId);
+            if(userEntry==null){
+                throw  new Exception("非法用户！");
+            }
+             /*https://view.csslcloud.net/api/view/lecturer?roomid=xxx&userid=xxx&publishname=xxx&publishpassword=xxx*/
+            return  "https://view.csslcloud.net/api/view/lecturer?roomid="
+                    +coursesRoomEntry.getRoomId()+"&userid="
+                    +coursesRoomEntry.getUserId()+"&publishname="
+                    +excellentCoursesEntry.getUserName()+"&publishpassword="
+                    +coursesRoomEntry.getPublisherpass();
+        }
+        return  "";
+    }
+
+    /************************************充值相关*****************************************/
+    public String freeChong(ObjectId userId,int number){
+        /*  ObjectId userId,
+            String description,
+            int way,
+            int type,
+            int money,
+            ObjectId sonId,
+            ObjectId contactId,
+            List<ObjectId> classList*/
+        RechargeResultEntry rechargeResultEntry = new RechargeResultEntry(
+               userId,"自定义充值  "+number+"¥",Constant.THREE,Constant.ONE,number,userId,null,new ArrayList<ObjectId>());
+        rechargeResultDao.saveEntry(rechargeResultEntry);
+        return "充值成功！";
     }
 }

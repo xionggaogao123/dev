@@ -50,7 +50,7 @@ public class IndexPageController extends BaseController {
             } else {
                 if (null != fulanDto) {
                     //加入复兰大学
-                    joinFulaanCommunity(getUserId(), new ObjectId(fulanDto.getId()));
+                    joinFulaanCommunity(getUserId(), new ObjectId(fulanDto.getGroupId()),new ObjectId(fulanDto.getId()));
                 }
             }
             Map<String,Object> mlist =  indexPageService.getIndexList(getUserId(), page, pageSize);
@@ -72,9 +72,8 @@ public class IndexPageController extends BaseController {
      * @param communityId
      * @return
      */
-    private void joinFulaanCommunity(ObjectId userId, ObjectId communityId) {
+    private void joinFulaanCommunity(ObjectId userId, ObjectId groupId,ObjectId communityId) {
 
-        ObjectId groupId = communityService.getGroupId(communityId);
         //type=1时，处理的是复兰社区
         if (memberService.isGroupMember(groupId, userId)) {
             return;

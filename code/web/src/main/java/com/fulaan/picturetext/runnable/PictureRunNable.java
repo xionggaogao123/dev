@@ -112,6 +112,11 @@ public class PictureRunNable{
                     emService.sendTextMessage("chatrooms", targets, userId, ext, sendMessage);
                 }catch(Exception e){
                     logger.error("error",e);
+                }finally {
+                    emService = null;
+                    communityDao = null;
+                    memberDao =  null;
+                    userDao = null;
                 }
             }
         }.start();
@@ -178,11 +183,11 @@ public class PictureRunNable{
         CommunityDao communityDao =  new CommunityDao();
         NewVersionSubjectDao newVersionSubjectDao = new NewVersionSubjectDao();
         NewVersionUserRoleDao newVersionUserRoleDao = new NewVersionUserRoleDao();
+        ThirdLoginDao thirdLoginDao = new ThirdLoginDao();
         System.out.println("新的线程在执行...");
         try{
             UserEntry entry = userDao.findByUserId(userId);
             BusinessManageEntry businessManageEntry = businessManageDao.getEntry(userId);
-            ThirdLoginDao thirdLoginDao = new ThirdLoginDao();
             ThirdLoginEntry thirdLoginEntry = thirdLoginDao.getEntry(userId);
 
             if(businessManageEntry!=null){
@@ -258,6 +263,14 @@ public class PictureRunNable{
             }
         }catch(Exception e){
             logger.error("error",e);
+        }finally {
+            businessManageDao = null;
+            userDao = null;
+            memberDao = null;
+            communityDao =  null;
+            newVersionSubjectDao = null;
+            newVersionUserRoleDao = null;
+            thirdLoginDao = null;
         }
     }
     public static boolean generateImage(String imgStr, String path) {
@@ -297,11 +310,11 @@ public class PictureRunNable{
                 CommunityDao communityDao =  new CommunityDao();
                 NewVersionSubjectDao newVersionSubjectDao = new NewVersionSubjectDao();
                 NewVersionUserRoleDao newVersionUserRoleDao = new NewVersionUserRoleDao();
+                ThirdLoginDao thirdLoginDao = new ThirdLoginDao();
                 System.out.println("新的线程在执行...");
                 try{
                     UserEntry entry = userDao.findByUserId(userId);
                     BusinessManageEntry businessManageEntry = businessManageDao.getEntry(userId);
-                    ThirdLoginDao thirdLoginDao = new ThirdLoginDao();
                     ThirdLoginEntry thirdLoginEntry = thirdLoginDao.getEntry(userId);
 
                     if(businessManageEntry!=null){
@@ -392,6 +405,14 @@ public class PictureRunNable{
                     }
                  }catch(Exception e){
                     logger.error("error",e);
+                }finally {
+                    businessManageDao = null;
+                    userDao = null;
+                    memberDao = null;
+                    communityDao =  null;
+                    newVersionSubjectDao = null;
+                    newVersionUserRoleDao = null;
+                    thirdLoginDao = null;
                 }
             }
         }.start();

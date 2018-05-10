@@ -1,9 +1,11 @@
 package com.fulaan.excellentCourses.controller;
 
 import com.alibaba.fastjson.JSON;
+import com.fulaan.annotation.SessionNeedless;
 import com.fulaan.base.BaseController;
 import com.fulaan.excellentCourses.dto.ExcellentCoursesDTO;
 import com.fulaan.excellentCourses.dto.HourResultDTO;
+import com.fulaan.excellentCourses.service.CoursesRoomService;
 import com.fulaan.excellentCourses.service.ExcellentCoursesService;
 import com.fulaan.pojo.User;
 import com.sys.constants.Constant;
@@ -29,6 +31,8 @@ import java.util.*;
 public class WebExcellentCoursesController extends BaseController {
     @Autowired
     private ExcellentCoursesService excellentCoursesService;
+    @Autowired
+    private CoursesRoomService coursesRoomService;
 
 
     /**
@@ -294,6 +298,61 @@ public class WebExcellentCoursesController extends BaseController {
             e.printStackTrace();
             respObj.setCode(Constant.FAILD_CODE);
             respObj.setErrorMessage("解析批量设置课时失败!");
+        }
+        return respObj;
+    }
+
+    /**
+     * 创建直播间回调(提供给cc直播进行接口验证)
+     */
+    @ApiOperation(value = "提供给cc直播进行接口验证", httpMethod = "POST", produces = "application/json")
+    @ApiResponses( value = {@ApiResponse(code = 200, message = "Successful — 请求已完成",response = String.class),
+            @ApiResponse(code = 400, message = "请求中有语法问题，或不能满足请求"),
+            @ApiResponse(code = 500, message = "服务器不能完成请求")})
+    @RequestMapping("/backCreate")
+    @ResponseBody
+    @SessionNeedless
+    public Map<String,Object> backCreate(){
+        Map<String,Object> map = new HashMap<String, Object>();
+        Map<String,String> room = new HashMap<String, String>();
+        room.put("id","");
+        room.put("publishUrl","");
+        try{
+
+
+        }catch (Exception e){
+            map.put("result","FAIL");
+            map.put("room",room);
+        }
+        return map;
+    }
+
+
+    /**
+     * 老师自动登陆
+     */
+    @ApiOperation(value = "提供给cc直播进行接口验证", httpMethod = "POST", produces = "application/json")
+    @ApiResponses( value = {@ApiResponse(code = 200, message = "Successful — 请求已完成",response = String.class),
+            @ApiResponse(code = 400, message = "请求中有语法问题，或不能满足请求"),
+            @ApiResponse(code = 500, message = "服务器不能完成请求")})
+    @RequestMapping("/teacherLogin")
+    @ResponseBody
+    public RespObj teacherLogin(@ApiParam(name = "id", required = true, value = "id") @RequestParam("id") String id){
+        RespObj respObj = new RespObj(Constant.FAILD_CODE);
+        try{
+            /*https://view.csslcloud.net/api/view/lecturer?roomid=xxx&userid=xxx&publishname=xxx&publishpassword=xxx*/
+            String result = excellentCoursesService.teacherLogin(getUserId(),new ObjectId(id));
+            if(result.equals("")){
+                respObj.setCode(Constant.FAILD_CODE);
+                respObj.setErrorMessage("时间已过了");
+            }else{
+                respObj.setCode(Constant.SUCCESS_CODE);
+                respObj.setMessage(result);
+            }
+        }catch (Exception e){
+            e.printStackTrace();
+            respObj.setCode(Constant.FAILD_CODE);
+            respObj.setErrorMessage(e.getMessage());
         }
         return respObj;
     }

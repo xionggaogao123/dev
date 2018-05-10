@@ -31,6 +31,16 @@ public class OrderDao extends BaseDao {
         return null;
     }
     
+    /**
+     * 删除
+     */
+    public void updateIsr(ObjectId goodId) {
+        DBObject query = new BasicDBObject(Constant.ID, goodId);
+        BasicDBObject updateValue=new BasicDBObject()
+            .append(Constant.MONGO_SET,new BasicDBObject("isr",1));
+        update(MongoFacroty.getAppDB(), Constant.COLLECTION_INTEGRAL_ORDER,query,updateValue);
+    }
+    
     public List<OrderEntry> getOrderListByUserId(int page,int pageSize, ObjectId userId) {
         List<OrderEntry> entries = new ArrayList<OrderEntry>();
         BasicDBObject query=new BasicDBObject("uid",userId);
@@ -60,6 +70,7 @@ public class OrderDao extends BaseDao {
     public List<OrderEntry> getOrderList(int page,int pageSize) {
         List<OrderEntry> entries = new ArrayList<OrderEntry>();
         BasicDBObject query=new BasicDBObject();
+        query.append("isr",Constant.ZERO);
         List<DBObject> dbObjectList=find(MongoFacroty.getAppDB(), Constant.COLLECTION_INTEGRAL_ORDER,
             query,Constant.FIELDS,Constant.MONGO_SORTBY_DESC,(page-1)*pageSize,pageSize);
         if(null!=dbObjectList&&!dbObjectList.isEmpty()){
@@ -73,6 +84,7 @@ public class OrderDao extends BaseDao {
     public List<OrderEntry> getOrderListAll() {
         List<OrderEntry> entries = new ArrayList<OrderEntry>();
         BasicDBObject query=new BasicDBObject();
+        query.append("isr",Constant.ZERO);
         List<DBObject> dbObjectList=find(MongoFacroty.getAppDB(), Constant.COLLECTION_INTEGRAL_ORDER,
             query,Constant.FIELDS,Constant.MONGO_SORTBY_DESC);
         if(null!=dbObjectList&&!dbObjectList.isEmpty()){

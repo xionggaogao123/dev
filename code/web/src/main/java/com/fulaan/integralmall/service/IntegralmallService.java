@@ -361,6 +361,18 @@ public class IntegralmallService {
     
     /**
      * 
+     *〈简述〉删除商dingdan
+     *〈详细描述〉
+     * @author Administrator
+     * @param dto
+     */
+    public void delOrder(ObjectId goodId) throws Exception{
+        orderDao.updateIsr(goodId);
+        
+    }
+    
+    /**
+     * 
      *〈简述〉保存订单物流信息
      *〈详细描述〉
      * @author Administrator

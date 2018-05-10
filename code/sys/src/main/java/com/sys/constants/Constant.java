@@ -1030,6 +1030,10 @@ public class Constant {
     public static final String COLLECTION_CLASS_ORDER= "excellent_class_order";
     //用户行为
     public static final String COLLECTION_USER_BEHAVIOR= "excellent_user_behavior";
+    //用户行为
+    public static final String COLLECTION_COURSES_ROOM= "excellent_courses_room";
+    //用户消费记录
+    public static final String COLLECTION_RECHARGE_RESULT= "excellent_recharge_result";
     
     
     /*************************************积分商城*****************************************/

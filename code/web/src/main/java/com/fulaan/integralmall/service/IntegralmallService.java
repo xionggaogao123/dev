@@ -134,6 +134,13 @@ public class IntegralmallService {
         return goodL;
     }
     
+    public int getExchangeRecordTotal(ObjectId userId) {
+
+        List<OrderEntry> list = orderDao.getOrderListByUserIdTotal(userId);
+      
+        return list.size();
+    }
+    
     
     /**
      * 

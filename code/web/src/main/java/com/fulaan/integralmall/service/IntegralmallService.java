@@ -165,6 +165,22 @@ public class IntegralmallService {
     
     /**
      * 
+     *〈简述〉订单列表
+     *〈详细描述〉
+     * @author Administrator
+     * @param page
+     * @param pageSize
+     * @param userId
+     * @return
+     */
+    public int getOrderListAll() {
+        List<OrderEntry> list = orderDao.getOrderListAll();
+        
+        return list.size();
+    }
+    
+    /**
+     * 
      *〈简述〉订单申述提交
      *〈详细描述〉
      * @author Administrator
@@ -268,7 +284,7 @@ public class IntegralmallService {
             throw  new Exception("积分不够!");
         } else {
             GoodsEntry gentry = goodsDao.getEntryById(goodId);
-            goodsDao.updateGoodsTimes(goodId, gentry.getTimes()+1);
+            goodsDao.updateGoodsTimes(goodId, gentry.getTimes()+goodNum);
             //增加积分记录
             IntegralRecordEntry entry = new IntegralRecordEntry(userId, costScore, "divCost", new Date().getTime(), new Date().getTime(), 0);
             integralRecordDao.addEntry(entry);

@@ -1,6 +1,8 @@
 package com.fulaan.integralmall.controller;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import org.bson.types.ObjectId;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -47,8 +49,11 @@ public class IntegralmallController extends BaseController{
         RespObj respObj=new RespObj(Constant.FAILD_CODE);
         try {
             List<GoodsDto> list = integralmallService.getGoodsList(page, pageSize);
+            Map<String,Object> retMap=new HashMap<String,Object>();
+            retMap.put("list", list);
+            retMap.put("count", integralmallService.getIntegralmallHomeNum());
             respObj.setCode(Constant.SUCCESS_CODE);
-            respObj.setMessage(list);
+            respObj.setMessage(retMap);
         } catch (Exception e) {
             respObj.setErrorMessage(e.getMessage());
         }
@@ -105,8 +110,11 @@ public class IntegralmallController extends BaseController{
         RespObj respObj=new RespObj(Constant.FAILD_CODE);
         try {
             List<OrderDto> list = integralmallService.getOrderList(page, pageSize);
+            Map<String,Object> retMap=new HashMap<String,Object>();
+            retMap.put("list", list);
+            retMap.put("count", integralmallService.getOrderListAll());
             respObj.setCode(Constant.SUCCESS_CODE);
-            respObj.setMessage(list);
+            respObj.setMessage(retMap);
         } catch (Exception e) {
             respObj.setErrorMessage(e.getMessage());
         }

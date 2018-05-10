@@ -57,6 +57,19 @@ public class OrderDao extends BaseDao {
         return entries;
     }
     
+    public List<OrderEntry> getOrderListAll() {
+        List<OrderEntry> entries = new ArrayList<OrderEntry>();
+        BasicDBObject query=new BasicDBObject();
+        List<DBObject> dbObjectList=find(MongoFacroty.getAppDB(), Constant.COLLECTION_INTEGRAL_ORDER,
+            query,Constant.FIELDS,Constant.MONGO_SORTBY_DESC);
+        if(null!=dbObjectList&&!dbObjectList.isEmpty()){
+            for(DBObject dbObject:dbObjectList){
+                entries.add(new OrderEntry(dbObject));
+            }
+        }
+        return entries;
+    }
+    
     /**
      * 更新申述内容、申述状态
      */

@@ -1186,10 +1186,11 @@ public class ReportCardService {
             for (GroupExamUserRecordDTO dto : examScoreDTOs) {
                 groupExamUserRecordDao.updateGroupExamUserRecordScore(new ObjectId(dto.getId()),
                         dto.getScore(), dto.getScoreLevel(), dto.getRank());
-                webHomePageDao.updateContactStatus(new ObjectId(dto.getId()), Constant.THREE, status);
+                //webHomePageDao.updateContactStatus(new ObjectId(dto.getId()), Constant.THREE, status);
                 
                 GroupExamUserRecordEntry e = groupExamUserRecordDao.getGroupExamUserRecordEntry(new ObjectId(dto.getId()));
                 if (e.getStatus() != 3) {
+                    webHomePageDao.updateContactStatus(new ObjectId(dto.getId()), Constant.THREE, status);
                     groupExamUserRecordDao.updateGroupExamDetailUserRecord(e.getCommunityId(), e.getUserId(), status);
                 }
             }
@@ -2130,6 +2131,10 @@ public class ReportCardService {
 
 
     public void updateShowType(ObjectId groupExamDetailId,int showType) {
-        groupExamDetailDao.updateShowType(groupExamDetailId, showType);
+        GroupExamDetailEntry e = groupExamDetailDao.getEntryById(groupExamDetailId);
+        if (e.getShowType()!=1) {
+            groupExamDetailDao.updateShowType(groupExamDetailId, showType);
+        }
+        
     }
 }

@@ -22,6 +22,8 @@ public class OrderDto {
     private String goodId;
     //商品数量
     private Integer goodNum;
+    //订单号
+    private String orderNo;
     //物流公司
     private String excompanyNo;
     //订单编号
@@ -43,6 +45,7 @@ public class OrderDto {
     
     public OrderDto(GoodsEntry goodsEntry, AddressEntry addressEntry,OrderEntry orderEntry) {
         this.id = orderEntry.getID().toString();
+        this.orderNo = orderEntry.getOrderNum();
         this.goodNum = orderEntry.getGoodNum();
         this.excompanyNo = orderEntry.getExcompanyNo();
         this.expressNo = orderEntry.getExpressNo();
@@ -64,6 +67,16 @@ public class OrderDto {
         this.goodId = goodsEntry.getID().toString();
         this.goodsDto = new GoodsDto(goodsEntry);
         this.score = score;
+    }
+    
+    
+
+    public String getOrderNo() {
+        return orderNo;
+    }
+
+    public void setOrderNo(String orderNo) {
+        this.orderNo = orderNo;
     }
 
     public String getId() {

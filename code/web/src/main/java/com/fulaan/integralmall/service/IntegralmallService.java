@@ -2,6 +2,7 @@ package com.fulaan.integralmall.service;
 
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
 import java.util.regex.Matcher;
@@ -66,7 +67,7 @@ public class IntegralmallService {
     public IntegralmallHomeDto getIntegralmallHome(int page,int pageSize,ObjectId userId) {
         IntegralSufferEntry integralSufferEntry = integralSufferService.getEntry(userId);
         IntegralmallHomeDto dto = new IntegralmallHomeDto();
-        List<GoodsEntry> list= goodsDao.getGoodsList(page, pageSize);
+        List<GoodsEntry> list= goodsDao.getGoodsList(null,page, pageSize);
         List<GoodsDto> goodsList = new ArrayList<GoodsDto>();
         for (GoodsEntry g : list) {
             GoodsDto gd = new GoodsDto(g);
@@ -87,9 +88,9 @@ public class IntegralmallService {
      * @param userId
      * @return
      */
-    public int getIntegralmallHomeNum() {
+    public int getIntegralmallHomeNum(String name) {
         
-        return goodsDao.getGoodsListAll().size();
+        return goodsDao.getGoodsListAll(name).size();
     }
     
     /**
@@ -101,8 +102,8 @@ public class IntegralmallService {
      * @param pageSize
      * @return
      */
-    public List<GoodsDto> getGoodsList(int page,int pageSize) {
-        List<GoodsEntry> list= goodsDao.getGoodsList(page, pageSize);
+    public List<GoodsDto> getGoodsList(String name,int page,int pageSize) {
+        List<GoodsEntry> list= goodsDao.getGoodsList(name,page, pageSize);
         List<GoodsDto> goodsList = new ArrayList<GoodsDto>();
         for (GoodsEntry g : list) {
             GoodsDto gd = new GoodsDto(g);
@@ -152,9 +153,9 @@ public class IntegralmallService {
      * @param userId
      * @return
      */
-    public List<OrderDto> getOrderList(int page,int pageSize) {
+    public List<OrderDto> getOrderList(String orderNum,int page,int pageSize) {
         List<OrderDto> orderL = new ArrayList<OrderDto>();
-        List<OrderEntry> list = orderDao.getOrderList(page, pageSize);
+        List<OrderEntry> list = orderDao.getOrderList(orderNum,page, pageSize);
         for (OrderEntry o : list) {
             GoodsEntry g = goodsDao.getEntryById(o.getGid());
             if (g == null) {
@@ -180,8 +181,8 @@ public class IntegralmallService {
      * @param userId
      * @return
      */
-    public int getOrderListAll() {
-        List<OrderEntry> list = orderDao.getOrderListAll();
+    public int getOrderListAll(String orderNum) {
+        List<OrderEntry> list = orderDao.getOrderListAll(orderNum);
         
         return list.size();
     }
@@ -298,8 +299,13 @@ public class IntegralmallService {
             //扣积分
             integralSufferService.divCostEntry(userId, costScore);
             //新建订单
+            Calendar c = Calendar.getInstance();
+            c.setTime(new Date());
+            String s = ""+c.get(Calendar.YEAR)+(c.get(Calendar.MONTH)+1)+c.get(Calendar.DAY_OF_MONTH)+c.get(Calendar.HOUR_OF_DAY)+c.get(Calendar.MINUTE)+c.get(Calendar.SECOND)+(int)Math.random()*900;
+            
             OrderEntry orderEntry = new OrderEntry();
             orderEntry.setAid(addressId);
+            orderEntry.setOrderNum(s);
             orderEntry.setGid(goodId);
             orderEntry.setGoodNum(goodNum);
             orderEntry.setUid(userId);

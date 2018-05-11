@@ -54,7 +54,7 @@ public class DefaultIntegralmallController extends BaseController{
             IntegralmallHomeDto dto = integralmallService.getIntegralmallHome(page, pageSize, getUserId());
             Map<String,Object> retMap=new HashMap<String,Object>();
             retMap.put("list",dto);
-            retMap.put("count", integralmallService.getIntegralmallHomeNum());
+            retMap.put("count", integralmallService.getIntegralmallHomeNum(null));
             retMap.put("page",page);
             retMap.put("pageSize",pageSize);
             respObj.setCode(Constant.SUCCESS_CODE);

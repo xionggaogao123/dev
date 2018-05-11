@@ -37,6 +37,8 @@ public class GoodsDto {
     private int isState;
     //兑换商品数量
     private int goodNum;
+    //订单号
+    private String orderNum;
     
     public GoodsDto() {
        
@@ -67,11 +69,22 @@ public class GoodsDto {
         this.orderTimeStr = oentry.getOrderTimeStr();
         this.isState = oentry.getIsState();
         this.goodNum = oentry.getGoodNum();
+        this.orderNum = oentry.getOrderNum();
     }
 
     
     
     
+    public String getOrderNum() {
+        return orderNum;
+    }
+
+
+    public void setOrderNum(String orderNum) {
+        this.orderNum = orderNum;
+    }
+
+
     public int getGoodNum() {
         return goodNum;
     }

@@ -1097,6 +1097,7 @@ public class ReportCardService {
             if (null != oldEntry) {
                 GroupExamDetailEntry entry = dto.buildEntry();
                 entry.setID(new ObjectId(id));
+                entry.setShowType(oldEntry.getShowType());
                 //entry.setSignCount(this.getMyRoleList4(entry.getCommunityId(),entry.getUserId()));
                 entry.setSignedCount(oldEntry.getSignedCount());
                 entry.setStatus(oldEntry.getStatus());

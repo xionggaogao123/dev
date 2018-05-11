@@ -3,6 +3,7 @@ package com.db.integralmall;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.apache.commons.lang.StringUtils;
 import org.bson.types.ObjectId;
 
 import com.db.base.BaseDao;
@@ -11,6 +12,7 @@ import com.mongodb.BasicDBObject;
 import com.mongodb.DBObject;
 import com.pojo.integralmall.GoodsEntry;
 import com.sys.constants.Constant;
+import com.sys.utils.StringUtil;
 
 public class GoodsDao extends BaseDao {
 
@@ -77,9 +79,13 @@ public class GoodsDao extends BaseDao {
         return null;
     }
     
-    public List<GoodsEntry> getGoodsList(int page,int pageSize) {
+    public List<GoodsEntry> getGoodsList(String name,int page,int pageSize) {
         List<GoodsEntry> entries = new ArrayList<GoodsEntry>();
+        
         BasicDBObject query=new BasicDBObject().append("isr", 0);
+        if (StringUtils.isNotBlank(name)) {
+            query.append("name", new BasicDBObject(Constant.MONGO_REGEX,name));
+        }
         List<DBObject> dbObjectList=find(MongoFacroty.getAppDB(), Constant.COLLECTION_INTEGRAL_GOODS,
             query,Constant.FIELDS,Constant.MONGO_SORTBY_DESC,(page-1)*pageSize,pageSize);
         if(null!=dbObjectList&&!dbObjectList.isEmpty()){
@@ -90,9 +96,12 @@ public class GoodsDao extends BaseDao {
         return entries;
     }
     
-    public List<GoodsEntry> getGoodsListAll() {
+    public List<GoodsEntry> getGoodsListAll(String name) {
         List<GoodsEntry> entries = new ArrayList<GoodsEntry>();
         BasicDBObject query=new BasicDBObject().append("isr", 0);
+        if (StringUtils.isNotBlank(name)) {
+            query.append("name", new BasicDBObject(Constant.MONGO_REGEX,name));
+        }
         List<DBObject> dbObjectList=find(MongoFacroty.getAppDB(), Constant.COLLECTION_INTEGRAL_GOODS,
             query,Constant.FIELDS,Constant.MONGO_SORTBY_DESC);
         if(null!=dbObjectList&&!dbObjectList.isEmpty()){

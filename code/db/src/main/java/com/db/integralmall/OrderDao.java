@@ -3,6 +3,7 @@ package com.db.integralmall;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.apache.commons.lang.StringUtils;
 import org.bson.types.ObjectId;
 
 import com.db.base.BaseDao;
@@ -44,6 +45,7 @@ public class OrderDao extends BaseDao {
     public List<OrderEntry> getOrderListByUserId(int page,int pageSize, ObjectId userId) {
         List<OrderEntry> entries = new ArrayList<OrderEntry>();
         BasicDBObject query=new BasicDBObject("uid",userId);
+        query.append("isr",Constant.ZERO);
         List<DBObject> dbObjectList=find(MongoFacroty.getAppDB(), Constant.COLLECTION_INTEGRAL_ORDER,
             query,Constant.FIELDS,Constant.MONGO_SORTBY_DESC,(page-1)*pageSize,pageSize);
         if(null!=dbObjectList&&!dbObjectList.isEmpty()){
@@ -57,6 +59,7 @@ public class OrderDao extends BaseDao {
     public List<OrderEntry> getOrderListByUserIdTotal(ObjectId userId) {
         List<OrderEntry> entries = new ArrayList<OrderEntry>();
         BasicDBObject query=new BasicDBObject("uid",userId);
+        query.append("isr",Constant.ZERO);
         List<DBObject> dbObjectList=find(MongoFacroty.getAppDB(), Constant.COLLECTION_INTEGRAL_ORDER,
             query,Constant.FIELDS,Constant.MONGO_SORTBY_DESC);
         if(null!=dbObjectList&&!dbObjectList.isEmpty()){
@@ -67,10 +70,13 @@ public class OrderDao extends BaseDao {
         return entries;
     }
     
-    public List<OrderEntry> getOrderList(int page,int pageSize) {
+    public List<OrderEntry> getOrderList(String orderNum, int page,int pageSize) {
         List<OrderEntry> entries = new ArrayList<OrderEntry>();
         BasicDBObject query=new BasicDBObject();
         query.append("isr",Constant.ZERO);
+        if (StringUtils.isNotBlank(orderNum)) {
+            query.append("oNum", new BasicDBObject(Constant.MONGO_REGEX,orderNum));
+        }
         List<DBObject> dbObjectList=find(MongoFacroty.getAppDB(), Constant.COLLECTION_INTEGRAL_ORDER,
             query,Constant.FIELDS,Constant.MONGO_SORTBY_DESC,(page-1)*pageSize,pageSize);
         if(null!=dbObjectList&&!dbObjectList.isEmpty()){
@@ -81,10 +87,13 @@ public class OrderDao extends BaseDao {
         return entries;
     }
     
-    public List<OrderEntry> getOrderListAll() {
+    public List<OrderEntry> getOrderListAll(String orderNum) {
         List<OrderEntry> entries = new ArrayList<OrderEntry>();
         BasicDBObject query=new BasicDBObject();
         query.append("isr",Constant.ZERO);
+        if (StringUtils.isNotBlank(orderNum)) {
+            query.append("oNum", new BasicDBObject(Constant.MONGO_REGEX,orderNum));
+        }
         List<DBObject> dbObjectList=find(MongoFacroty.getAppDB(), Constant.COLLECTION_INTEGRAL_ORDER,
             query,Constant.FIELDS,Constant.MONGO_SORTBY_DESC);
         if(null!=dbObjectList&&!dbObjectList.isEmpty()){

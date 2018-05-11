@@ -43,15 +43,16 @@ public class IntegralmallController extends BaseController{
             @ApiResponse(code = 500, message = "服务器不能完成请求")})
     @RequestMapping("/getIntegralmallHomePage")
     @ResponseBody
-    public RespObj getIntegralmallHomePage(@RequestParam(required = false, defaultValue = "1")int page,
+    public RespObj getIntegralmallHomePage(String name,
+                                           @RequestParam(required = false, defaultValue = "1")int page,
                                            @RequestParam(required = false, defaultValue = "10")int pageSize){
         
         RespObj respObj=new RespObj(Constant.FAILD_CODE);
         try {
-            List<GoodsDto> list = integralmallService.getGoodsList(page, pageSize);
+            List<GoodsDto> list = integralmallService.getGoodsList(name,page, pageSize);
             Map<String,Object> retMap=new HashMap<String,Object>();
             retMap.put("list", list);
-            retMap.put("count", integralmallService.getIntegralmallHomeNum());
+            retMap.put("count", integralmallService.getIntegralmallHomeNum(name));
             respObj.setCode(Constant.SUCCESS_CODE);
             respObj.setMessage(retMap);
         } catch (Exception e) {
@@ -123,15 +124,16 @@ public class IntegralmallController extends BaseController{
             @ApiResponse(code = 500, message = "服务器不能完成请求")})
     @RequestMapping("/orderList")
     @ResponseBody
-    public RespObj orderList(@RequestParam(required = false, defaultValue = "1")int page,
+    public RespObj orderList(String orderNum,
+                             @RequestParam(required = false, defaultValue = "1")int page,
                              @RequestParam(required = false, defaultValue = "10")int pageSize){
         
         RespObj respObj=new RespObj(Constant.FAILD_CODE);
         try {
-            List<OrderDto> list = integralmallService.getOrderList(page, pageSize);
+            List<OrderDto> list = integralmallService.getOrderList(orderNum,page, pageSize);
             Map<String,Object> retMap=new HashMap<String,Object>();
             retMap.put("list", list);
-            retMap.put("count", integralmallService.getOrderListAll());
+            retMap.put("count", integralmallService.getOrderListAll(orderNum));
             respObj.setCode(Constant.SUCCESS_CODE);
             respObj.setMessage(retMap);
         } catch (Exception e) {

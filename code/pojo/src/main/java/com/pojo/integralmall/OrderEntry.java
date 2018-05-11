@@ -38,6 +38,7 @@ public class OrderEntry extends BaseDBObject {
                       ObjectId goodId,
                       ObjectId addressId,
                       int goodNum,
+                      String orderNum,
                       String excompanyNo,
                       String expressNo,
                       int isState,
@@ -50,6 +51,7 @@ public class OrderEntry extends BaseDBObject {
             .append("gid", goodId)
             .append("aid", addressId)
             .append("gNum", goodNum)
+            .append("oNum", orderNum)
             .append("ecNo", excompanyNo)
             .append("epNo", expressNo)
             .append("ist", isState)
@@ -92,12 +94,22 @@ public class OrderEntry extends BaseDBObject {
         return getSimpleIntegerValue("gNum");
     }
     
+    
+    
     public void setIsState(int isState){
         setSimpleValue("ist",isState);
     }
 
     public int getIsState(){
         return getSimpleIntegerValueDef("ist",Constant.ZERO);
+    }
+    
+    public String getOrderNum(){
+        return getSimpleStringValue("oNum");
+    }
+
+    public void setOrderNum(String excompanyNo){
+        setSimpleValue("oNum",excompanyNo);
     }
     
     public String getExcompanyNo(){

@@ -76,7 +76,7 @@ public class AllLogFilter implements Filter {
         } catch (Exception e) {
             e.printStackTrace();
             System.out.println("ip:" + cooks);
-            if(!ipconfig.contains("192..168.1")){
+            if(!ipconfig.contains("192.168.1")){
                 logger.error("error" ,e);
             }
         }

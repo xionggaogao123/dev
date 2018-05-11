@@ -69,7 +69,7 @@ public class AppCommentDTO {
     public AppCommentDTO(AppCommentEntry e){
         if(e!=null){
             this.id = e.getID()==null?"":e.getID().toString();
-            this.description = e.getDescription();
+            this.description = NewStringUtil.toGoodJsonStr(e.getDescription());
             this.title = NewStringUtil.toGoodJsonStr(e.getTitle());
             if(e.getLoadTime()!=0l){
                 this.loadTime = DateTimeUtils.getLongToStrTimeTwo(e.getLoadTime());

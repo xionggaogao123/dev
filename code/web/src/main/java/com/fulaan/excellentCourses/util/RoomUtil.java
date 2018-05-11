@@ -1,7 +1,5 @@
 package com.fulaan.excellentCourses.util;
 
-import java.io.UnsupportedEncodingException;
-import java.net.URLEncoder;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import java.util.Date;
@@ -70,15 +68,16 @@ public class RoomUtil {
                     continue;
                 }
                 String key = entry.getKey().trim();
-                String value = URLEncoder.encode(entry.getValue().trim(),
-                        "utf-8");
+                /*String value = URLEncoder.encode(entry.getValue().trim(),
+                        "utf-8");*/
+                String value = entry.getValue().trim();
                 sb.append(String.format("%s=%s&", key, value));
             }
             return sb.substring(0, sb.length() - 1);
         } catch (StringIndexOutOfBoundsException e) {
             e.printStackTrace();
             return null;
-        } catch (UnsupportedEncodingException e) {
+        } catch (Exception e) {
             e.printStackTrace();
             return null;
         }

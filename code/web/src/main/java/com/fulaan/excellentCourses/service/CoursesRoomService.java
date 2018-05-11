@@ -8,6 +8,8 @@ import org.bson.types.ObjectId;
 import org.json.JSONObject;
 import org.springframework.stereotype.Service;
 
+import java.net.URLDecoder;
+import java.net.URLEncoder;
 import java.util.Map;
 import java.util.TreeMap;
 
@@ -60,13 +62,14 @@ public class CoursesRoomService {
         String id = "";
         try{
             //map.put("name", URLEncoder.encode(name, "UTF-8"));
-            map.put("name", name);
-            //map.put("desc",URLEncoder.encode(description, "UTF-8"));
-            map.put("desc",description);
-           // map.put("livestarttime", dateTime);
+            map.put("name", URLEncoder.encode(name, "utf-8"));
+            map.put("desc",URLEncoder.encode(description, "utf-8"));
+            //map.put("desc",description);
+            map.put("livestarttime", URLEncoder.encode(dateTime,"utf-8"));
             //long time = new Date().getTime();
             String sysCode = RoomUtil.createHashedQueryString(map,CC_API_KEY);
-            String str =  CoursesRoomAPI.createRoom(sysCode);
+            String str3 = URLDecoder.decode(sysCode, "utf-8");
+            String str =  CoursesRoomAPI.createRoom(str3);
             JSONObject dataJson = new JSONObject(str);
             String rows = dataJson.getString("result");
             if(rows.equals("OK")){

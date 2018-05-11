@@ -168,6 +168,7 @@ public class ReferenceDataService {
         for (Map.Entry<ObjectId, ObjectId> item : groupIds.entrySet()) {
             groupIdList.add(item.getValue());
         }
+        objectIds.add(userId);
         Map<String, MemberEntry> memberMap = memberDao.getGroupNick(groupIdList, objectIds);
         for(ReferenceDataDTO dataDTO2 :dtos){
             ObjectId groupId = groupIds.get(new ObjectId(dataDTO2.getCommunityId()));

@@ -27,4 +27,12 @@ public class UserBehaviorDao extends BaseDao {
             return null;
         }
     }
+
+    //删除作业
+    public void updateEntry(ObjectId id,int number){
+        BasicDBObject query = new BasicDBObject();
+        query.append(Constant.ID,id);
+        BasicDBObject updateValue=new BasicDBObject(Constant.MONGO_SET,new BasicDBObject("acc",number));
+        update(MongoFacroty.getAppDB(), Constant.COLLECTION_USER_BEHAVIOR, query,updateValue);
+    }
 }

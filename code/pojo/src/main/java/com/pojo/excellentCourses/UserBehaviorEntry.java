@@ -89,12 +89,12 @@ public class UserBehaviorEntry extends BaseDBObject {
     }
 
     public void setBrowseList(List<ObjectId> browseList){
-        setSimpleValue("clt", MongoUtils.convert(browseList));
+        setSimpleValue("blt", MongoUtils.convert(browseList));
     }
 
     public List<ObjectId> getBrowseList(){
         ArrayList<ObjectId> browseList = new ArrayList<ObjectId>();
-        BasicDBList dbList = (BasicDBList) getSimpleObjectValue("clt");
+        BasicDBList dbList = (BasicDBList) getSimpleObjectValue("blt");
         if(dbList != null && !dbList.isEmpty()){
             for (Object obj : dbList) {
                 browseList.add((ObjectId)obj);
@@ -103,7 +103,7 @@ public class UserBehaviorEntry extends BaseDBObject {
         return browseList;
     }
     public int getAccount(){
-        return getSimpleIntegerValue("acc");
+        return getSimpleIntegerValueDef("acc",0);
     }
 
     public void setAccount(int account){

@@ -13,12 +13,14 @@ import java.util.List;
 public class RechargeResultDTO{
     private String id;
     private String userId;
+    private String userName;
     private String createTime;
     private String description;
     private int way;
     private int type;
     private int money;
     private String sonId;
+    private String sonName;
     private String contactId;
     private List<String> classList = new ArrayList<String>();
 
@@ -129,5 +131,21 @@ public class RechargeResultDTO{
 
     public void setClassList(List<String> classList) {
         this.classList = classList;
+    }
+
+    public String getUserName() {
+        return userName;
+    }
+
+    public void setUserName(String userName) {
+        this.userName = userName;
+    }
+
+    public String getSonName() {
+        return sonName;
+    }
+
+    public void setSonName(String sonName) {
+        this.sonName = sonName;
     }
 }

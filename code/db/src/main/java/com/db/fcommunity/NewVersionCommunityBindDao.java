@@ -24,6 +24,19 @@ public class NewVersionCommunityBindDao extends BaseDao{
         save(MongoFacroty.getAppDB(), Constant.COLLECTION_NEW_VERSION_COMMUNITY_BIND, MongoUtils.fetchDBObjectList(entryList));
     }
 
+    public void updateStudentNumberAndThirdNameNono(ObjectId communityId,
+                                                ObjectId mainUserId,
+                                                ObjectId userId,
+                                                String thirdName){
+        BasicDBObject query=new BasicDBObject()
+                .append("cid",communityId)
+                .append("muid",mainUserId)
+                .append("uid",userId);
+        BasicDBObject updateValue=new BasicDBObject()
+                .append(Constant.MONGO_SET,new BasicDBObject("tn",thirdName));
+        update(MongoFacroty.getAppDB(), Constant.COLLECTION_NEW_VERSION_COMMUNITY_BIND,query,updateValue);
+    }
+    
     public void updateStudentNumberAndThirdName(ObjectId communityId,
                                                 ObjectId mainUserId,
                                                 ObjectId userId,
@@ -341,6 +354,18 @@ public class NewVersionCommunityBindDao extends BaseDao{
         BasicDBObject query = new BasicDBObject("cid",communityId)
                 .append("tn",thirdName)
                 .append("nm",userNumber)
+                .append("ir",Constant.ZERO);
+        DBObject dbObject=findOne(MongoFacroty.getAppDB(), Constant.COLLECTION_NEW_VERSION_COMMUNITY_BIND,
+                query,Constant.FIELDS);
+        if(null!=dbObject){
+            return new NewVersionCommunityBindEntry(dbObject);
+        }else{
+            return null;
+        }
+    }
+    
+    public NewVersionCommunityBindEntry getEntryById(ObjectId id){
+        BasicDBObject query = new BasicDBObject(Constant.ID,id)
                 .append("ir",Constant.ZERO);
         DBObject dbObject=findOne(MongoFacroty.getAppDB(), Constant.COLLECTION_NEW_VERSION_COMMUNITY_BIND,
                 query,Constant.FIELDS);

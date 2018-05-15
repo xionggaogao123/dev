@@ -692,6 +692,53 @@ public class NewVersionBindService {
     public void updateStudentNumberAndThirdName(ObjectId communityId,
                                                 ObjectId mainUserId,
                                                 ObjectId userId,
+                                                String thirdName,
+                                                ObjectId bindId) throws Exception{
+            NewVersionCommunityBindEntry entryOne = newVersionCommunityBindDao.getEntry(thirdName, communityId, mainUserId);
+            if ((entryOne != null&& entryOne.getID().equals(bindId))||entryOne == null) {
+                /*NewVersionCommunityBindEntry entry = newVersionCommunityBindDao.getEntryById(bindId);
+                if (entry != null) {
+                    VirtualUserEntry virtualUserEntryOne = virtualUserDao.findByNamesOnly(entry.getCommunityId(),entry.getThirdName());*/
+                    /*if (virtualUserEntryOne != null && virtualUserEntryOne.getUserId().equals(entry.getUserId())) {
+                        throw new Exception("该条学生信息已与学生名单中的记录匹配，不予修改！");
+                    } else {*/
+                        VirtualUserEntry virtualUserEntry = virtualUserDao.findByNamesOnly(communityId,thirdName);
+                        if(virtualUserEntry!=null){ //已存在虚拟用户,进行关联绑定操作
+                            VirtualAndUserEntry virtualAndUserEntry = virtualAndUserDao.getEntry(virtualUserEntry.getUserId(), communityId);
+                            if(virtualAndUserEntry!=null && virtualAndUserEntry.getUserId().equals(userId)){//存在且已被该用户绑定
+                                //不做操作
+                            }else{//未绑定
+                                //删除老记录
+                                virtualAndUserDao.delEntry(userId,communityId);
+
+                                //添加新纪录
+                                VirtualAndUserEntry virtualAndUserEntry2 = new VirtualAndUserEntry(communityId,virtualUserEntry.getUserId(),userId);
+                                virtualAndUserDao.addEntry(virtualAndUserEntry2);
+                            }
+                        }else{
+                            //删除老记录
+                            virtualAndUserDao.delEntry(userId,communityId);
+                        }
+                        
+                        newVersionCommunityBindDao.updateStudentNumberAndThirdNameNono(communityId,mainUserId,userId, thirdName);
+                   /* }*/
+                /*} else {
+                    throw new Exception("系统异常！");
+                }*/
+            } else {
+                throw new Exception("已存在该条学生信息！");
+            }
+            
+            
+    
+
+         
+
+    }
+    
+    public void updateStudentNumberAndThirdNameCopy(ObjectId communityId,
+                                                ObjectId mainUserId,
+                                                ObjectId userId,
                                                 String studentNumber,
                                                 String thirdName) throws Exception{
         
@@ -790,7 +837,35 @@ public class NewVersionBindService {
 
 
 
-    public void addBindVirtualCommunity(String thirdName,String number,
+    public void addBindVirtualCommunity(String thirdName,
+                                        ObjectId communityId,ObjectId mainUserId)throws Exception{
+        NewVersionCommunityBindEntry entry = newVersionCommunityBindDao.getEntry(thirdName, communityId, mainUserId);
+        if(null!=entry){
+            if(entry.getRemoveStatus()==1){
+                //entry.setNumber(number);
+                VirtualUserEntry virtualUserEntry = virtualUserDao.findByNamesOnly(communityId,thirdName);
+                if(virtualUserEntry!=null && !virtualUserEntry.getUserId().equals(entry.getUserId())){
+                    entry.setUserId(virtualUserEntry.getUserId());
+                }
+                newVersionCommunityBindDao.saveEntry(entry);
+                newVersionCommunityBindDao.updateEntryStatus(entry.getID());
+            }else{
+                throw new Exception("该班级姓名已用过!");
+            }
+        }else{
+            VirtualUserEntry virtualUserEntry = virtualUserDao.findByNamesOnly(communityId,thirdName);
+            if(virtualUserEntry!=null){
+                NewVersionCommunityBindEntry bindEntry = new NewVersionCommunityBindEntry(communityId, mainUserId, virtualUserEntry.getUserId(), thirdName, null);
+                newVersionCommunityBindDao.saveEntry(bindEntry);
+            }else{
+                NewVersionCommunityBindEntry bindEntry = new NewVersionCommunityBindEntry(communityId, mainUserId, new ObjectId(), thirdName, null);
+                newVersionCommunityBindDao.saveEntry(bindEntry);
+            }
+
+        }
+    }
+    
+    public void addBindVirtualCommunityCopy(String thirdName,String number,
                                         ObjectId communityId,ObjectId mainUserId)throws Exception{
         NewVersionCommunityBindEntry entry = newVersionCommunityBindDao.getEntry(thirdName, communityId, mainUserId);
         if(null!=entry){

@@ -331,13 +331,13 @@ public class BindController extends BaseController {
     @ApiResponses( value = {@ApiResponse(code = 200, message = "Successful — 请求已完成",response = RespObj.class)})
     @RequestMapping("/addMoreBindVirtualCommunity")
     @ResponseBody
-    public RespObj addMoreBindVirtualCommunity(@RequestParam(value="thirdName") String thirdName,@RequestParam(value="number") String number, @RequestParam(value="communityIds") String communityIds){
+    public RespObj addMoreBindVirtualCommunity(@RequestParam(value="thirdName") String thirdName,@RequestParam(value="communityIds") String communityIds){
         RespObj respObj = new RespObj(Constant.FAILD_CODE);
         try{
             if(communityIds!=null){
                 String[] strings =communityIds.split(",");
                 for(String str:strings){
-                    newVersionBindService.addBindVirtualCommunity(thirdName,number,new ObjectId(str),getUserId());
+                    newVersionBindService.addBindVirtualCommunity(thirdName.trim(),new ObjectId(str),getUserId());
                 }
             }
             respObj.setCode(Constant.SUCCESS_CODE);
@@ -358,13 +358,13 @@ public class BindController extends BaseController {
     public RespObj editMoreStudentNumberAndThirdName(String communityIds,
                                                  @ObjectIdType ObjectId userId,
                                                  String thirdName,
-                                                 String studentNumber){
+                                                 @ObjectIdType ObjectId bindId){
         RespObj respObj = new RespObj(Constant.FAILD_CODE);
         try{
             if(communityIds !=null){
                 String[] strings = communityIds.split(",");
                 for(String str: strings){
-                    newVersionBindService.updateStudentNumberAndThirdName(new ObjectId(str), getUserId(), userId, studentNumber,thirdName);
+                    newVersionBindService.updateStudentNumberAndThirdName(new ObjectId(str), getUserId(), userId, thirdName.trim(), bindId);
                 }
             }
             respObj.setCode(Constant.SUCCESS_CODE);

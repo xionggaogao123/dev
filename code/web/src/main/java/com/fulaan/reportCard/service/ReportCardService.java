@@ -1601,6 +1601,14 @@ public class ReportCardService {
                 virtualUserDTOs.add(v);
             }
         }
+        for (int i=0;i<virtualUserDTOs.size();i++) {
+            for (int j=i+1;j<virtualUserDTOs.size();j++) {
+                if (virtualUserDTOs.get(i).getUserName().equals(virtualUserDTOs.get(j).getUserName())) {
+                    throw new Exception("名单中有重复名字："+virtualUserDTOs.get(i).getUserName());
+                  
+                }
+            }
+        }
         return dealData(virtualUserDTOs,fileName);
     }
 
@@ -1712,9 +1720,9 @@ public class ReportCardService {
                     bindEntries = newVersionCommunityBindDao.getStudentIdListByCommunityId(communityId);
             Map<String, ObjectId> userIds = new HashMap<String, ObjectId>();
             for (NewVersionCommunityBindEntry bindEntry : bindEntries) {
-                if (StringUtils.isNotEmpty(bindEntry.getThirdName())&&
-                        StringUtils.isNotEmpty(bindEntry.getNumber())) {
-                    String key= bindEntry.getThirdName()+"&"+bindEntry.getNumber();
+                if (StringUtils.isNotEmpty(bindEntry.getThirdName())/*&&
+                        StringUtils.isNotEmpty(bindEntry.getNumber())*/) {
+                    String key= bindEntry.getThirdName()/*+"&"+bindEntry.getNumber()*/;
                     userIds.put(key, bindEntry.getUserId());
                 }
             }
@@ -1724,7 +1732,7 @@ public class ReportCardService {
                 String userNumber = virtualUserDTO.getUserNumber();
                 if(StringUtils.isNotEmpty(userName)&&
                         StringUtils.isNotEmpty(userNumber)){
-                    String key=userName+"&"+userNumber;
+                    String key=userName/*+"&"+userNumber*/;
                     if (null != userIds.get(key)) {
                         VirtualUserEntry userEntry = new VirtualUserEntry(communityId, virtualUserDTO.getUserNumber(),
                                 userIds.get(key), virtualUserDTO.getUserName());
@@ -1778,6 +1786,7 @@ public class ReportCardService {
                 virtualUserDTOs.add(v);
             }
         }
+        
         dealData(virtualUserDTOs,fileName);
     }
 

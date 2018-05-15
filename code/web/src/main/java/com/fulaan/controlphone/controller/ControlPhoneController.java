@@ -12,6 +12,7 @@ import com.fulaan.controlphone.dto.ControlSchoolTimeDTO;
 import com.fulaan.controlphone.dto.ResultAppDTO;
 import com.fulaan.controlphone.service.ControlPhoneService;
 import com.fulaan.integral.service.IntegralSufferService;
+import com.fulaan.operation.dto.GroupOfCommunityDTO;
 import com.pojo.integral.IntegralType;
 import com.sys.constants.Constant;
 import com.sys.utils.DateTimeUtils;
@@ -542,6 +543,52 @@ public class ControlPhoneController extends BaseController {
             e.printStackTrace();
             respObj.setCode(Constant.FAILD_CODE);
             respObj.setErrorMessage("定时接受孩子的位置信息失败!");
+        }
+        return JSON.toJSONString(respObj);
+    }
+
+    /**
+     * 获取孩子地图信息（改版家长首页）
+     */
+    @ApiOperation(value = "定时接受孩子的位置信息", httpMethod = "POST", produces = "application/json")
+    @ApiResponses( value = {@ApiResponse(code = 200, message = "Successful — 请求已完成",response = String.class),
+            @ApiResponse(code = 400, message = "请求中有语法问题，或不能满足请求"),
+            @ApiResponse(code = 500, message = "服务器不能完成请求")})
+    @RequestMapping("/getNewMapNow")
+    @ResponseBody
+    public String getNewMapNow(@ApiParam(name = "sonId", required = true, value = "孩子id") @RequestParam("sonId") String sonId){
+        RespObj respObj=new RespObj(Constant.FAILD_CODE);
+        try {
+            respObj.setCode(Constant.SUCCESS_CODE);
+            Map<String,Object> dto = controlPhoneService.getNewMapNow(getUserId(), new ObjectId(sonId));
+            respObj.setMessage(dto);
+        } catch (Exception e) {
+            e.printStackTrace();
+            respObj.setCode(Constant.FAILD_CODE);
+            respObj.setErrorMessage("定时接受孩子的位置信息失败!");
+        }
+        return JSON.toJSONString(respObj);
+    }
+
+    /**
+     * 获取孩子绑定社群列表
+     */
+    @ApiOperation(value = "获取孩子绑定社群列表", httpMethod = "POST", produces = "application/json")
+    @ApiResponses( value = {@ApiResponse(code = 200, message = "Successful — 请求已完成",response = String.class),
+            @ApiResponse(code = 400, message = "请求中有语法问题，或不能满足请求"),
+            @ApiResponse(code = 500, message = "服务器不能完成请求")})
+    @RequestMapping("/getSonCommunityList")
+    @ResponseBody
+    public String getSonCommunityList(@ApiParam(name = "sonId", required = true, value = "孩子id") @RequestParam("sonId") String sonId){
+        RespObj respObj=new RespObj(Constant.FAILD_CODE);
+        try {
+            respObj.setCode(Constant.SUCCESS_CODE);
+            List<GroupOfCommunityDTO> dto = controlPhoneService.getSonCommunityList(new ObjectId(sonId));
+            respObj.setMessage(dto);
+        } catch (Exception e) {
+            e.printStackTrace();
+            respObj.setCode(Constant.FAILD_CODE);
+            respObj.setErrorMessage("获取孩子绑定社群列表!");
         }
         return JSON.toJSONString(respObj);
     }

@@ -5,7 +5,6 @@ import com.mongodb.BasicDBObject;
 import com.mongodb.DBObject;
 import com.pojo.base.BaseDBObject;
 import com.pojo.fcommunity.AttachmentEntry;
-import com.pojo.fcommunity.ValidateInfoEntry;
 import com.pojo.fcommunity.VideoEntry;
 import com.pojo.utils.MongoUtils;
 import com.sys.constants.Constant;
@@ -114,7 +113,11 @@ public class AppNoticeEntry extends BaseDBObject{
 
 
     public String getGroupName(){
-        return getSimpleStringValue("gn");
+        String str = getSimpleStringValue("gn");
+        if(str !=null && str.equals("复兰大学")){
+            str = "复兰教育";
+        }
+        return str;
     }
 
     public void setGroupName(String groupName){

@@ -196,13 +196,11 @@ public class IndexPageService {
 
         }
         Map<String,Object> ob5 = new HashMap<String, Object>();
-        boolean flag = false;
         if(syList.size()>0){
             List<SystemMessageEntry> systemMessageEntries = systemMessageDao.selectContentList(syList);
             for(SystemMessageEntry entry:systemMessageEntries){
                 SystemMessageDTO dto8 = new SystemMessageDTO(entry);
                 if(entry.getType()==1){
-                    flag = true;
                     Map<String,Object> ob1 = new HashMap<String, Object>();
                     ob1.put("tag", CommunityType.system.getDes());
                     ob1.put("cardType",2);
@@ -273,7 +271,7 @@ public class IndexPageService {
                 }
             }
         }
-        if(flag){
+        if(ob5.size()!=0){
             list.add(ob5);
         }
         Map<String,Object> map = new HashMap<String, Object>();
@@ -305,6 +303,14 @@ public class IndexPageService {
         dto1.setContactId(contactId);
         IndexPageEntry entry = dto1.buildAddEntry();
         indexPageDao.addEntry(entry);
+    }
+
+    /**
+     * 添加系统消息
+     */
+    public void addSystemMessage(){
+
+
     }
 
 }

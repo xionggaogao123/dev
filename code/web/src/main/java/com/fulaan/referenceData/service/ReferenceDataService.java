@@ -148,7 +148,11 @@ public class ReferenceDataService {
             ReferenceDataDTO dataDTO = new ReferenceDataDTO(entry);
             CommunityDTO communityDTO = map3.get(dataDTO.getCommunityId());
             if(communityDTO!=null){
-                dataDTO.setCommunityName(communityDTO.getName());
+                String str = communityDTO.getName();
+                if(str!=null && str.equals("复兰大学")){
+                    str = "复兰教育";
+                }
+                dataDTO.setCommunityName(str);
             }
             SubjectClassEntry  subjectClassEntry = subjectClassEntryMap.get(entry.getSubjectId());
             if(subjectClassEntry!=null){

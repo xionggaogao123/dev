@@ -24,6 +24,7 @@ import com.fulaan.user.service.UserService;
 import com.fulaan.utils.JPushUtils;
 import com.pojo.appnotice.AppNoticeEntry;
 import com.pojo.backstage.PictureType;
+import com.pojo.fcommunity.CommunityEntry;
 import com.pojo.fcommunity.MemberEntry;
 import com.pojo.fcommunity.NewVersionCommunityBindEntry;
 import com.pojo.indexPage.IndexPageEntry;
@@ -359,6 +360,11 @@ public class AppNoticeService {
         List<ObjectId> communityIds=new ArrayList<ObjectId>();
         for(NewVersionCommunityBindEntry bindEntry:bindEntries){
             communityIds.add(bindEntry.getCommunityId());
+        }
+        //默认查询复兰大学
+        CommunityEntry communityEntry = communityDao.findByName("复兰大学");
+        if(communityEntry!=null){
+            communityIds.add(communityEntry.getID());
         }
         List<ObjectId> groupIds=communityDao.getGroupIdsByCommunityIds(communityIds);
         List<AppNoticeEntry> entries=appNoticeDao.getMyReceivedAppNoticeEntriesForStudent(groupIds,page,pageSize);

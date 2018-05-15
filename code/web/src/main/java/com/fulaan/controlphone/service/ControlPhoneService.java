@@ -18,6 +18,7 @@ import com.fulaan.community.dto.CommunityDTO;
 import com.fulaan.controlphone.dto.*;
 import com.fulaan.mqtt.MQTTSendMsg;
 import com.fulaan.newVersionBind.service.NewVersionBindService;
+import com.fulaan.operation.dto.GroupOfCommunityDTO;
 import com.fulaan.user.service.UserService;
 import com.mongodb.DBObject;
 import com.pojo.app.SessionValue;
@@ -91,7 +92,6 @@ public class ControlPhoneService {
     private NewVersionBindService newVersionBindService;
     @Autowired
     private UserService userService;
-
 
 
 
@@ -885,6 +885,121 @@ public class ControlPhoneService {
         ControlVersionDTO controlVersionDTO = getSimpleUserVersion(parentId, sonId);
         map.put("version",controlVersionDTO.getVersion());
         return map;
+    }
+
+    //获得地图位置
+    public Map<String,Object> getNewMapNow(ObjectId parentId,ObjectId sonId) {
+        //地图信息
+        Map<String,Object> map = new HashMap<String, Object>();
+        //获得当前时间
+        long current = System.currentTimeMillis();
+        //获得时间批次
+        //long zero = current / (1000 * 3600 * 24) * (1000 * 3600 * 24) - TimeZone.getDefault().getRawOffset();//今天零点零分零秒的毫秒数
+        String str = DateTimeUtils.getLongToStrTimeTwo(current).substring(0,10);
+        long zero = DateTimeUtils.getStrToLongTime(str, "yyyy-MM-dd");
+        //分割点
+        long jiedian = zero+8*60*60*1000;//今天零点零分零秒的毫秒数
+        long startTime = 0l;
+        long endTime = 0l;
+        if(current>=jiedian){
+            startTime = jiedian;
+            endTime = jiedian+ 24*60*60*1000;
+        }else{
+            startTime = jiedian - 24*60*60*1000;
+            endTime = jiedian;
+        }
+        ControlMapEntry entry = controlMapDao.getEntryByParentId(parentId, sonId, zero);
+        if (entry != null) {
+            map.put("dto",new ControlMapDTO(entry));
+        } else {
+            ControlMapDTO controlMapDTO =new ControlMapDTO();
+            controlMapDTO.setId("");
+            controlMapDTO.setUserId("");
+            controlMapDTO.setParentId("");
+            controlMapDTO.setLongitude("");
+            controlMapDTO.setLatitude("");
+            controlMapDTO.setAngle("");
+            controlMapDTO.setCreateTime("");
+            controlMapDTO.setDistance("");
+            map.put("dto",controlMapDTO);
+        }
+        //亲情电话个数
+        int count = controlPhoneDao.getParentNumber(parentId, sonId);
+        map.put("phoneCount",count);
+        //已推送应用数量
+        //获得绑定的社区id
+        List<ObjectId> obList = newVersionBindService.getCommunityIdsByUserId(sonId);
+        map.put("appCount",obList.size());
+        //获得各个社区的推送应用记录
+        int size = 0;
+        if(obList.size()>0){
+            List<ControlAppEntry> entries = controlAppDao.getEntryListByCommunityId(obList);
+            ControlAppUserEntry entryList2 = controlAppUserDao.getEntry(parentId,sonId);
+            Set<ObjectId> set = new HashSet<ObjectId>();
+            for(ControlAppEntry entry1:entries){
+                if(entry1 !=null && entry1.getAppIdList() != null) {
+                    set.addAll(entry1.getAppIdList());
+                }
+            }
+            if(entryList2 !=null && entryList2.getAppIdList() != null){
+                set.addAll(entryList2.getAppIdList());
+            }
+            List<ObjectId> objectIds = new ArrayList<ObjectId>();
+            objectIds.addAll(set);
+            List<AppDetailEntry> detailEntries3 =  appDetailDao.getEntriesByIds(objectIds);
+            size = detailEntries3.size();
+        }else{
+            ControlAppUserEntry entryList2 = controlAppUserDao.getEntry(parentId,sonId);
+            Set<ObjectId> set = new HashSet<ObjectId>();
+            if(entryList2 !=null && entryList2.getAppIdList() != null){
+                set.addAll(entryList2.getAppIdList());
+            }
+            size = set.size();
+        }
+       // map.put("appCount",size);
+        //防沉迷时间
+        ControlTimeEntry controlTimeEntry = controlTimeDao.getEntry(sonId, parentId);
+        long timecu = 30*60*1000;
+        if(controlTimeEntry != null){
+            timecu = controlTimeEntry.getTime();
+
+        }
+        map.put("time",timecu/60000);
+        //使用时间
+        long useTime  = controlAppResultDao.getUserAllTime(sonId, startTime,endTime);
+        map.put("useTime",useTime/60000);
+        //剩余时间
+        if(timecu/60000-useTime/60000 <0){
+            map.put("reTime",0);
+        }else{
+            map.put("reTime",timecu/60000-useTime/60000);
+        }
+        UserDetailInfoDTO dto = userService.getUserInfoById(sonId.toString());
+        if(dto!= null){
+            String name = dto.getNickName()!=null?dto.getNickName():dto.getName();
+            map.put("userName",name);
+        }else{
+            map.put("userName","");
+        }
+        int count2=recordChatPersonalDao.countChatEntries(sonId);
+        map.put("chatCount",count2);
+        //当前版本
+        ControlVersionDTO controlVersionDTO = getSimpleUserVersion(parentId, sonId);
+        map.put("version",controlVersionDTO.getVersion());
+        return map;
+    }
+
+    public List<GroupOfCommunityDTO> getSonCommunityList(ObjectId userId){
+        List<GroupOfCommunityDTO> dtos =new ArrayList<GroupOfCommunityDTO>();
+        List<ObjectId> communityIds = newVersionBindService.getCommunityIdsByUserId(userId);
+        Map<ObjectId,CommunityEntry> communityEntryMap = communityDao.findMapInfo(new ArrayList<ObjectId>(communityIds));
+        for(Map.Entry<ObjectId,CommunityEntry> item:communityEntryMap.entrySet()){
+            CommunityEntry communityEntry=item.getValue();
+            GroupOfCommunityDTO dto =new GroupOfCommunityDTO(communityEntry.getGroupId().toString(),communityEntry.getID().toString(),
+                    communityEntry.getCommunityName());
+            dtos.add(dto);
+        }
+        return dtos;
     }
 
     public List<ControlMapDTO> getMapListEntry(ObjectId parentId,ObjectId sonId,String startTime,String endTime){

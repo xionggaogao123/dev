@@ -1486,7 +1486,11 @@ public class CommunityService {
         }
        if(dtos.size()>0){
            for(CommunityDetailDTO dto3 : dtos){
-               dto3.setCommunityName(obmap.get(dto3.getCommunityId()));
+               String str = obmap.get(dto3.getCommunityId());
+               if(str !=null && str.equals("复兰大学")){
+                   str = "复兰教育";
+               }
+               dto3.setCommunityName(str);
            }
        }
         pageModel.setPage(page);

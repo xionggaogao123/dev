@@ -11,6 +11,8 @@ import com.pojo.user.TeacherSubjectBindDTO;
 import com.sys.constants.Constant;
 import com.sys.utils.RespObj;
 import io.swagger.annotations.*;
+
+import org.apache.commons.lang.StringUtils;
 import org.apache.log4j.Logger;
 import org.bson.types.ObjectId;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -361,19 +363,24 @@ public class DefaultBindController extends BaseController {
      * @param thirdName
      * @param number
      * @param communityIds
-     * @return
+     * @returnOe
      */
     @ApiOperation(value = "多选绑定社区下的虚拟学生", httpMethod = "POST", produces = "application/json")
     @ApiResponses( value = {@ApiResponse(code = 200, message = "Successful — 请求已完成",response = RespObj.class)})
     @RequestMapping("/addMoreBindVirtualCommunity")
     @ResponseBody
-    public RespObj addMoreBindVirtualCommunity(@RequestParam(value="thirdName") String thirdName, @RequestParam(value="communityIds") String communityIds){
+    public RespObj addMoreBindVirtualCommunity(@RequestParam(value="thirdName") String thirdName,@RequestParam(value="number") String number,  @RequestParam(value="communityIds") String communityIds){
         RespObj respObj = new RespObj(Constant.FAILD_CODE);
         try{
             if(communityIds!=null){
                 String[] strings =communityIds.split(",");
                 for(String str:strings){
-                    newVersionBindService.addBindVirtualCommunity(thirdName.trim(),new ObjectId(str),getUserId());
+                    if (StringUtils.isNotBlank(number)) {
+                        newVersionBindService.addBindVirtualCommunityCopy(thirdName.trim(), number, new ObjectId(str), getUserId());
+                    } else {
+                        newVersionBindService.addBindVirtualCommunity(thirdName.trim(),new ObjectId(str),getUserId());
+                    }
+                    
                 }
             }
             respObj.setCode(Constant.SUCCESS_CODE);
@@ -552,13 +559,18 @@ public class DefaultBindController extends BaseController {
                                                  @ObjectIdType ObjectId userId,
                                                  String thirdName,
                                                  String studentNumber,
-                                                 @ObjectIdType ObjectId bindId){
+                                                 String bindId){
         RespObj respObj = new RespObj(Constant.FAILD_CODE);
         try{
             if(communityIds !=null){
                 String[] strings = communityIds.split(",");
                 for(String str: strings){
-                    newVersionBindService.updateStudentNumberAndThirdName(new ObjectId(str), getUserId(), userId, thirdName,bindId);
+                    if (StringUtils.isNotBlank(studentNumber)) {
+                        newVersionBindService.updateStudentNumberAndThirdNameCopy(new ObjectId(str), getUserId(), userId, studentNumber, thirdName);
+                    } else {
+                        newVersionBindService.updateStudentNumberAndThirdName(new ObjectId(str), getUserId(), userId, thirdName,new ObjectId(bindId));
+                    }
+                    
                 }
             }
             respObj.setCode(Constant.SUCCESS_CODE);

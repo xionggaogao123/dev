@@ -37,6 +37,16 @@ public class NewVersionCommunityBindDao extends BaseDao{
         update(MongoFacroty.getAppDB(), Constant.COLLECTION_NEW_VERSION_COMMUNITY_BIND,query,updateValue);
     }
     
+    public void updateUserIdByBindId(ObjectId bindId,ObjectId userId){
+            BasicDBObject query=new BasicDBObject()
+                    .append(Constant.ID,bindId);
+            BasicDBObject updateValue=new BasicDBObject()
+                    .append(Constant.MONGO_SET,new BasicDBObject("uid",userId));
+            update(MongoFacroty.getAppDB(), Constant.COLLECTION_NEW_VERSION_COMMUNITY_BIND,query,updateValue);
+        }
+    
+    
+    
     public void updateStudentNumberAndThirdName(ObjectId communityId,
                                                 ObjectId mainUserId,
                                                 ObjectId userId,

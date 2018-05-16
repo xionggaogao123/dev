@@ -786,6 +786,27 @@ public class ControlPhoneService {
 
         System.out.println(str);*/
     }
+    public ControlMapDTO getStudentMap(ObjectId parentId,ObjectId sonId){
+        long current = System.currentTimeMillis();
+        //获得时间批次
+        String str = DateTimeUtils.getLongToStrTimeTwo(current).substring(0,10);
+        long zero = DateTimeUtils.getStrToLongTime(str, "yyyy-MM-dd");
+        ControlMapEntry entry = controlMapDao.getEntryByParentId(parentId, sonId, zero);
+        if (entry != null) {
+            return new ControlMapDTO(entry);
+        } else {
+            ControlMapDTO controlMapDTO =new ControlMapDTO();
+            controlMapDTO.setId("");
+            controlMapDTO.setUserId("");
+            controlMapDTO.setParentId("");
+            controlMapDTO.setLongitude("");
+            controlMapDTO.setLatitude("");
+            controlMapDTO.setAngle("");
+            controlMapDTO.setCreateTime("");
+            controlMapDTO.setDistance("");
+            return controlMapDTO;
+        }
+    }
     //获得地图位置
     public Map<String,Object> getMapNow(ObjectId parentId,ObjectId sonId) {
         //地图信息
@@ -908,10 +929,10 @@ public class ControlPhoneService {
             startTime = jiedian - 24*60*60*1000;
             endTime = jiedian;
         }
-        ControlMapEntry entry = controlMapDao.getEntryByParentId(parentId, sonId, zero);
-        if (entry != null) {
+       // ControlMapEntry entry = controlMapDao.getEntryByParentId(parentId, sonId, zero);
+       /* if (entry != null) {
             map.put("dto",new ControlMapDTO(entry));
-        } else {
+        } else {*/
             ControlMapDTO controlMapDTO =new ControlMapDTO();
             controlMapDTO.setId("");
             controlMapDTO.setUserId("");
@@ -922,7 +943,7 @@ public class ControlPhoneService {
             controlMapDTO.setCreateTime("");
             controlMapDTO.setDistance("");
             map.put("dto",controlMapDTO);
-        }
+        //}
         //亲情电话个数
         int count = controlPhoneDao.getParentNumber(parentId, sonId);
         map.put("phoneCount",count);

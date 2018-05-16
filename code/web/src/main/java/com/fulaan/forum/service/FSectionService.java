@@ -154,7 +154,15 @@ public class FSectionService {
             }else{
                 if(item.getRemove()==0){
                     FSectionCountDTO fSectionCountDTO =constructDto(item);
-                    retList.add(fSectionCountDTO);
+                    List<String> list = new ArrayList<String>();
+                    list.add("小小演奏家");
+                    list.add("STEM科学创客");
+                    list.add("读书学霸");
+                    list.add("运动超人");
+                    list.add("书画小咖");
+                    if(list.contains(fSectionCountDTO.getName())){
+                        retList.add(fSectionCountDTO);
+                    }
                 }
             }
         }

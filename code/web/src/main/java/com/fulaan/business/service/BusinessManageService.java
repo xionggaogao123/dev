@@ -1,6 +1,7 @@
 package com.fulaan.business.service;
 
 import com.db.business.BusinessManageDao;
+import com.db.business.BusinessRoleDao;
 import com.db.fcommunity.LoginLogDao;
 import com.db.user.UserDao;
 import com.db.wrongquestion.SubjectClassDao;
@@ -8,6 +9,7 @@ import com.fulaan.business.dto.BusinessManageDTO;
 import com.fulaan.picturetext.runnable.PictureRunNable;
 import com.fulaan.user.service.UserService;
 import com.pojo.business.BusinessManageEntry;
+import com.pojo.business.BusinessRoleEntry;
 import com.pojo.fcommunity.FLoginLogEntry;
 import com.pojo.user.UserEntry;
 import com.pojo.wrongquestion.SubjectClassEntry;
@@ -31,6 +33,8 @@ public class BusinessManageService {
     private UserService userService = new UserService();
 
     private SubjectClassDao subjectClassDao  = new SubjectClassDao();
+
+    private BusinessRoleDao businessRoleDao = new BusinessRoleDao();
 
     //登陆生成
     public void getLoginInfo(ObjectId userId,int type ){
@@ -142,6 +146,22 @@ public class BusinessManageService {
         return map;
     }
 
+
+
+    public BusinessRoleEntry getUserBusinessRoleEntry(ObjectId userId){
+         BusinessRoleEntry businessRoleEntry = businessRoleDao.getEntry(userId);
+         return businessRoleEntry;
+    }
+
+    public List<Map<String,Object>>  getRoleList(){
+        List<Map<String,Object>> mapList = new ArrayList<Map<String, Object>>();
+        List<BusinessRoleEntry> list =  businessRoleDao.getPageList();
+
+
+
+
+        return mapList;
+    }
 
 
 

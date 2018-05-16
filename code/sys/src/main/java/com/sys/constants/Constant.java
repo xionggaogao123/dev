@@ -1011,6 +1011,8 @@ public class Constant {
     /*************************************运营管理*****************************************/
     //运营表
     public static final String COLLECTION_BUSINESS_MANAGE= "businessManage";
+    //运营角色表
+    public static final String COLLECTION_BUSINESS_ROLE= "businessRole";
     //常用应用表
     public static final String COLLECTION_MODULE_NUMBER= "moduleNumber";
     //系统版本

@@ -582,10 +582,13 @@ public class DefaultCommunityController extends BaseController {
     @ApiOperation(value = "获取最新一条动态消息", httpMethod = "GET", produces = "application/json")
     @ApiResponses(value = {@ApiResponse(code = 200, message = "获取最新一条动态消息成功",response = RespObj.class),
             @ApiResponse(code = 500, message = "获取最新一条动态消息失败")})
-    public RespObj getLatestGroupInfo(@ApiParam(name="communityId",required = true,value = "社区Id")@ObjectIdType ObjectId communityId){
+    public RespObj getLatestGroupInfo(@ApiParam(name="communityId",required = true,value = "社区Id") @RequestParam(value="communityId" ,defaultValue = "")String communityId){
         RespObj respObj=new RespObj(Constant.FAILD_CODE);
+        if(communityId.equals("")){
+            return respObj;
+        }
         String userId=getUserId().toString();
-        LatestGroupDynamicEntry entry=latestGroupDynamicService.getLatestInfo(communityId);
+        LatestGroupDynamicEntry entry=latestGroupDynamicService.getLatestInfo(new ObjectId(communityId));
         if(null!=entry){
             respObj.setCode(Constant.SUCCESS_CODE);
             LatestGroupDynamicDTO dto=new LatestGroupDynamicDTO(entry);

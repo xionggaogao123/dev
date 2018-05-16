@@ -525,6 +525,28 @@ public class ControlPhoneController extends BaseController {
     }
 
     /**
+     * 获取学生当前地图定位数据
+     */
+    @ApiOperation(value = "获取地图定位数据", httpMethod = "POST", produces = "application/json")
+    @ApiResponses( value = {@ApiResponse(code = 200, message = "Successful — 请求已完成",response = String.class),
+            @ApiResponse(code = 400, message = "请求中有语法问题，或不能满足请求"),
+            @ApiResponse(code = 500, message = "服务器不能完成请求")})
+    @RequestMapping("/getStudentMap")
+    @ResponseBody
+    public String getStudentMap(@ApiParam(name = "sonId", required = true, value = "孩子id") @RequestParam("sonId") String sonId){
+        RespObj respObj=new RespObj(Constant.FAILD_CODE);
+        try {
+            respObj.setCode(Constant.SUCCESS_CODE);
+            ControlMapDTO controlMapDTO = controlPhoneService.getStudentMap(getUserId(), new ObjectId(sonId));
+            respObj.setMessage(controlMapDTO);
+        } catch (Exception e) {
+            e.printStackTrace();
+            respObj.setCode(Constant.FAILD_CODE);
+            respObj.setErrorMessage("获取学生当前地图定位数据失败!");
+        }
+        return JSON.toJSONString(respObj);
+    }
+    /**
      * 获取孩子地图信息（家长首页）
      */
     @ApiOperation(value = "定时接受孩子的位置信息", httpMethod = "POST", produces = "application/json")

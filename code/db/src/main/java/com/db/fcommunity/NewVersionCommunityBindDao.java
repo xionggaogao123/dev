@@ -406,7 +406,7 @@ public class NewVersionCommunityBindDao extends BaseDao{
                 .append("cid",communityId)
                 .append("muid", mainUserId)
                 .append("tn",thirdName)
-                .append("isr",0);
+                .append("ir",0);
         DBObject dbObject=findOne(MongoFacroty.getAppDB(), Constant.COLLECTION_NEW_VERSION_COMMUNITY_BIND,
                 query,Constant.FIELDS);
         if(null!=dbObject){

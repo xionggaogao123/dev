@@ -81,7 +81,12 @@ public class TestTable {
         graphics.setFont(font);
 
         //写入表头
-        String[] headCells = {"姓名","学号"};
+        /*String[] headCells = {"姓名","学号"};
+        for(int m=0;m<headCells.length;m++){
+            graphics.drawString(headCells[m].toString(), startWidth+colwidth*m+5, startHeight+rowheight*2-10);
+        }*/
+        
+        String[] headCells = {"姓名"};
         for(int m=0;m<headCells.length;m++){
             graphics.drawString(headCells[m].toString(), startWidth+colwidth*m+5, startHeight+rowheight*2-10);
         }
@@ -96,7 +101,7 @@ public class TestTable {
         int n=0;
         for(VirtualUserDTO stuEntry:userDTOs){
             graphics.drawString(stuEntry.getUserName(), startWidth+colwidth*0+5, startHeight+rowheight*(n+3)-10);
-            graphics.drawString(stuEntry.getUserNumber(), startWidth+colwidth*1+5, startHeight+rowheight*(n+3)-10);
+            //graphics.drawString(stuEntry.getUserNumber(), startWidth+colwidth*1+5, startHeight+rowheight*(n+3)-10);
             n++;
         }
 //        for(int n=0;n<cellsValue.length;n++){

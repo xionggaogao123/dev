@@ -1635,7 +1635,7 @@ public class ReportCardService {
             File outFile = File.createTempFile(fileKey.toString(), ".jpg");
             System.out.println(outFile.getAbsolutePath());
             System.out.println(outFile.getPath());
-            cg.graphicsGeneration(outFile.getAbsolutePath(),userDTOs.size()+3,2,communityEntry.getCommunityName()+"未匹配学生名单",userDTOs);
+            cg.graphicsGeneration(outFile.getAbsolutePath(),userDTOs.size()+3,1,communityEntry.getCommunityName()+"未匹配学生名单",userDTOs);
             QiniuFileUtils.uploadFile(fileKey.toString() + ".jpg", new FileInputStream(outFile), QiniuFileUtils.TYPE_IMAGE);
             outFile.delete();
             String imagePath =  QiniuFileUtils.getPath(QiniuFileUtils.TYPE_IMAGE, fileKey.toString() + ".jpg");
@@ -1915,13 +1915,13 @@ public class ReportCardService {
             cell = row.createCell(2);
             cell.setCellValue("用户姓名");
 
-            cell = row.createCell(3);
-            cell.setCellValue("用户学号");
+            /*cell = row.createCell(3);
+            cell.setCellValue("用户学号");*/
 
-            cell = row.createCell(4);
+            cell = row.createCell(3);
             cell.setCellValue("等第分值");
 
-            cell = row.createCell(5);
+            cell = row.createCell(4);
             cell.setCellValue("考试分值");
 
             int rowLine = 2;
@@ -1941,20 +1941,20 @@ public class ReportCardService {
                 cellItem = rowItem.createCell(2);
                 cellItem.setCellValue(recordDTO.getUserName());
 
-                cellItem = rowItem.createCell(3);
-                cellItem.setCellValue(recordDTO.getUserNumber());
+                /*cellItem = rowItem.createCell(3);
+                cellItem.setCellValue(recordDTO.getUserNumber());*/
 
                 if (detailEntry.getRecordScoreType() == Constant.ONE) {
-                    cellItem = rowItem.createCell(4);
+                    cellItem = rowItem.createCell(3);
                     cellItem.setCellValue(-1);
 
-                    cellItem = rowItem.createCell(5);
-                    cellItem.setCellValue("");
-                } else {
                     cellItem = rowItem.createCell(4);
                     cellItem.setCellValue("");
+                } else {
+                    cellItem = rowItem.createCell(3);
+                    cellItem.setCellValue("");
 
-                    cellItem = rowItem.createCell(5);
+                    cellItem = rowItem.createCell(4);
                     cellItem.setCellValue(-1);
                 }
                 rowLine++;
@@ -1979,10 +1979,10 @@ public class ReportCardService {
             String groupExamDetailId = sheet.getRow(j).getCell(1).getStringCellValue();
             item.setGroupExamDetailId(groupExamDetailId);
             item.setId(id);
-            HSSFCell cell = sheet.getRow(j).getCell(5);
+            HSSFCell cell = sheet.getRow(j).getCell(4);
             double score = getValue(cell);
             item.setScore(score);
-            HSSFCell hssfCell = sheet.getRow(j).getCell(4);
+            HSSFCell hssfCell = sheet.getRow(j).getCell(3);
             int scoreLevel = (new Double(getValue(hssfCell))).intValue();
             item.setScoreLevel(scoreLevel);
             item.setRank(Constant.ZERO);

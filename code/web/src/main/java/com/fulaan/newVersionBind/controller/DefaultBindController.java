@@ -384,7 +384,7 @@ public class DefaultBindController extends BaseController {
                 }
             }
             respObj.setCode(Constant.SUCCESS_CODE);
-            respObj.setMessage("绑定社区下的虚拟学生成功!");
+            respObj.setMessage("添加成功!");
         }catch (Exception e){
             respObj.setErrorMessage(e.getMessage());
         }
@@ -574,7 +574,7 @@ public class DefaultBindController extends BaseController {
                 }
             }
             respObj.setCode(Constant.SUCCESS_CODE);
-            respObj.setMessage("编辑学生学号和姓名信息成功！");
+            respObj.setMessage("编辑成功！");
         }catch (Exception e){
             respObj.setErrorMessage(e.getMessage());
         }
@@ -953,7 +953,7 @@ public class DefaultBindController extends BaseController {
         try {
             newVersionBindService.relieveCommunityBindRelation(userId, communityIds);
             respObj.setCode(Constant.SUCCESS_CODE);
-            respObj.setMessage("解除孩子的绑定关系成功！");
+            respObj.setMessage("删除成功！");
         }catch (Exception e){
             respObj.setErrorMessage(e.getMessage());
         }

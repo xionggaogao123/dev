@@ -698,28 +698,33 @@ public class NewVersionBindService {
             if ((entryOne != null&& entryOne.getID().equals(bindId))||entryOne == null) {
                 NewVersionCommunityBindEntry entry = newVersionCommunityBindDao.getEntryById(bindId);
                 if (entry != null) {
-                    VirtualUserEntry virtualUserEntryOne = virtualUserDao.findByNamesOnly(entry.getCommunityId(),entry.getThirdName());
-                    VirtualUserEntry virtualUserEntry = virtualUserDao.findByNamesOnly(communityId,thirdName);
-                /*    if (virtualUserEntryOne != null && virtualUserEntryOne.getUserId().equals(entry.getUserId())) {*/
                     newVersionCommunityBindDao.updateStudentNumberAndThirdNameNono(communityId,mainUserId,userId, thirdName);
-                    if(virtualUserEntry!=null){ 
-                        
-                        newVersionCommunityBindDao.updateUserIdByBindId(bindId, virtualUserEntry.getUserId());
-                    }else{
-                        newVersionCommunityBindDao.updateUserIdByBindId(bindId, new ObjectId());
-                        
-                    }
-                    /*} else {
-                        
-                        if(virtualUserEntry!=null){ 
-                            newVersionCommunityBindDao.updateUserIdByBindId(bindId, virtualUserEntry.getUserId());
-                        }else{
-                            
+                    VirtualUserEntry virtualUserEntryOne = virtualUserDao.findByNamesOnly(entry.getCommunityId(),entry.getThirdName());
+                    
+                    VirtualUserEntry virtualUserEntry = virtualUserDao.findByNamesOnly(communityId,thirdName);
+                    if(virtualUserEntry!=null){ //已存在虚拟用户,进行关联绑定操作
+                        VirtualAndUserEntry virtualAndUserEntry = virtualAndUserDao.getEntry(virtualUserEntry.getUserId(), communityId);
+                        if(virtualAndUserEntry!=null && virtualAndUserEntry.getUserId().equals(userId)){//存在且已被该用户绑定
+                            //不做操作
+                        }else{//未绑定
+                            //删除老记录
+                            virtualAndUserDao.delEntry(userId,communityId);
+                            if (virtualUserEntryOne != null && virtualUserEntryOne.getUserId().equals(entry.getUserId())) {
+                                newVersionCommunityBindDao.updateUserIdByBindId(bindId, virtualUserEntry.getUserId());
+                            } else {
+                              //添加新纪录
+                                VirtualAndUserEntry virtualAndUserEntry2 = new VirtualAndUserEntry(communityId,virtualUserEntry.getUserId(),userId);
+                                virtualAndUserDao.addEntry(virtualAndUserEntry2);
+                            }
                             
                         }
-                        
-                        
-                    }*/
+                    }else{
+                        //删除老记录
+                        virtualAndUserDao.delEntry(userId,communityId);
+                    }
+                    
+                    
+                    
                 } else {
                     throw new Exception("系统异常！");
                 }

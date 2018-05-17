@@ -129,6 +129,51 @@ public class ExcellentCoursesDao extends BaseDao {
         return entryList;
     }
 
+
+    public List<ExcellentCoursesEntry> getAllWebEntryList(String subjectId,String name,int page,int pageSize){
+        List<ExcellentCoursesEntry> entryList=new ArrayList<ExcellentCoursesEntry>();
+        BasicDBObject query=new BasicDBObject().append("isr",0);
+        if(subjectId!=null && !subjectId.equals("")){
+            query.append("sid", new ObjectId(subjectId));
+        }
+        if(name!=null && !name.equals("")){
+            BasicDBList values = new BasicDBList();
+            values.add(new BasicDBObject("tit",  MongoUtils.buildRegex(name)));
+            values.add(new BasicDBObject("unm",  MongoUtils.buildRegex(name)));
+            query.put(Constant.MONGO_OR, values);
+        }
+        List<DBObject> dbList=find(MongoFacroty.getAppDB(), Constant.COLLECTION_EXCELLENT_COURSES, query,
+                Constant.FIELDS, Constant.MONGO_SORTBY_DESC,(page-1)*pageSize,pageSize);
+        if (dbList != null && !dbList.isEmpty()) {
+            for (DBObject obj : dbList) {
+                entryList.add(new ExcellentCoursesEntry((BasicDBObject) obj));
+            }
+        }
+        return entryList;
+    }
+
+    /**
+     * 符合搜索条件的对象个数
+     * @return
+     */
+    public int selectAllWebEntryList(String subjectId,String name) {
+        BasicDBObject query=new BasicDBObject().append("isr",0);
+        if(subjectId!=null && !subjectId.equals("")){
+            query.append("sid", new ObjectId(subjectId));
+        }
+        if(name!=null && !name.equals("")){
+            BasicDBList values = new BasicDBList();
+            values.add(new BasicDBObject("tit",  MongoUtils.buildRegex(name)));
+            values.add(new BasicDBObject("unm",  MongoUtils.buildRegex(name)));
+            query.put(Constant.MONGO_OR, values);
+        }
+        int count =
+                count(MongoFacroty.getAppDB(),
+                        Constant.COLLECTION_EXCELLENT_COURSES,
+                        query);
+        return count;
+    }
+
     //我的课程
     public List<ExcellentCoursesEntry> getMyExcellentCourses(ObjectId userId,int page,int pageSize){
         List<ExcellentCoursesEntry> entryList=new ArrayList<ExcellentCoursesEntry>();

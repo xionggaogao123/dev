@@ -49,7 +49,7 @@ public class ClassOrderEntry extends BaseDBObject {
                 .append("cid", contactId)
                 .append("isb", isBuy)
                 .append("pri", price)
-                .append("fun", function)
+                .append("cnp", function)
                 .append("typ", type)
                 .append("ctm",new Date().getTime())
                 .append("isr", 0);
@@ -74,7 +74,7 @@ public class ClassOrderEntry extends BaseDBObject {
                 .append("cid", contactId)
                 .append("isb", isBuy)
                 .append("pri", price)
-                .append("fun", function)
+                .append("cnp", function)
                 .append("typ", type)
                 .append("ctm",new Date().getTime())
                 .append("isr", 0);
@@ -127,7 +127,7 @@ public class ClassOrderEntry extends BaseDBObject {
     }
 
     public int getFunction(){
-        return getSimpleIntegerValue("fun");
+        return getSimpleIntegerValue("cnp");
     }
 
     public void setFunction(int function){

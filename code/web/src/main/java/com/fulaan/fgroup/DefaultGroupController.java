@@ -136,6 +136,10 @@ public class DefaultGroupController extends BaseController {
             groupDTO.setName(communityDTO.getName());
         }
         MemberDTO mine = memberService.getUser(groupId, getUserId());
+        //权限判断 todo true  3 运营人员
+       /* if(mine.getRole()==0 && true ){
+            mine.setRole(3);
+        }*/
         groupDTO.setCount(memberService.getMemberCount(groupId));
         groupDTO.setMine(mine);
         if (groupDTO.isBindCommunity()) {

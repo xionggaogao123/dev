@@ -11,6 +11,7 @@ import com.fulaan.smalllesson.dto.ResultTypeDTO;
 import com.fulaan.smalllesson.dto.SmallLessonDTO;
 import com.fulaan.smalllesson.service.SmallLessonService;
 import com.fulaan.util.QRUtils;
+import com.pojo.app.Platform;
 import com.pojo.integral.IntegralType;
 import com.pojo.loginwebsocket.LoginTokenEntry;
 import com.sys.constants.Constant;
@@ -597,10 +598,10 @@ public class DefaultSmallLessonController extends BaseController {
                 count = integralSufferService.addIntegral(getUserId(), IntegralType.lesson,3,1);
             }
             respObj.setCode(Constant.SUCCESS_CODE);
-            if(count>0){
+            if(count>0 && getPlatform() != Platform.PC){
                 respObj.setMessage("二维码扫描成功！积分经验值+"+count);
             }else{
-                respObj.setMessage("二维码扫描后成功访问！");
+                respObj.setMessage("登陆成功！");
             }
 
         } catch (Exception e) {

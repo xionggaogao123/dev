@@ -467,7 +467,7 @@ public class SmallLessonController extends BaseController {
      *
      */
     @SessionNeedless
-    @ApiOperation(value = "修改性别", httpMethod = "POST", produces = "application/json")
+    @ApiOperation(value = "获取二维码接口", httpMethod = "POST", produces = "application/json")
     @ApiResponses( value = {@ApiResponse(code = 200, message = "Successful — 请求已完成",response = String.class)})
     @RequestMapping("/getLessonCode")
     @ResponseBody
@@ -487,6 +487,39 @@ public class SmallLessonController extends BaseController {
             e.printStackTrace();
             respObj.setCode(Constant.FAILD_CODE);
             respObj.setErrorMessage("修改性别失败");
+        }
+        return JSON.toJSONString(respObj);
+    }
+
+    /**
+     * 网页获取二维码接口
+     *
+     */
+    @SessionNeedless
+    @ApiOperation(value = "网页获取二维码接口", httpMethod = "POST", produces = "application/json")
+    @ApiResponses( value = {@ApiResponse(code = 200, message = "Successful — 请求已完成",response = String.class)})
+    @RequestMapping("/getWebLessonCode")
+    @ResponseBody
+    public String getWebLessonCode(){
+        Map<String,Object> map = new HashMap<String, Object>();
+        RespObj respObj=new RespObj(Constant.FAILD_CODE);
+        try {
+            respObj.setCode(Constant.SUCCESS_CODE);
+            ObjectId oid = new ObjectId();
+            String str = QRUtils.getLessonCode(oid);
+            LoginTokenEntry tokenEntry = new LoginTokenEntry(oid);
+            loginTokenDao.saveEntry(tokenEntry);
+            map.put("tokenId", oid.toString());
+            map.put("qrUrl",str);
+            map.put("login",1);
+            if(null==getUserId()) {
+                map.put("login",0);
+            }
+            respObj.setMessage(map);
+        } catch (Exception e) {
+            e.printStackTrace();
+            respObj.setCode(Constant.FAILD_CODE);
+            respObj.setErrorMessage("网页获取二维码接口失败");
         }
         return JSON.toJSONString(respObj);
     }
@@ -513,6 +546,41 @@ public class SmallLessonController extends BaseController {
             }
             respObj.setCode(Constant.SUCCESS_CODE);
             respObj.setMessage("二维码扫描后访问成功！");
+        } catch (Exception e) {
+            e.printStackTrace();
+            respObj.setCode(Constant.FAILD_CODE);
+            respObj.setErrorMessage("二维码扫描后访问失败");
+        }
+        return JSON.toJSONString(respObj);
+    }
+
+    /**
+     * 轮询登陆接口
+     *
+     */
+    @SessionNeedless
+    @ApiOperation(value = "轮询登陆接口", httpMethod = "POST", produces = "application/json")
+    @ApiResponses( value = {@ApiResponse(code = 200, message = "Successful — 请求已完成",response = String.class)})
+    @RequestMapping("/lunLogin/{teacherId}")
+    @ResponseBody
+    public String lunLogin(@ApiParam(name = "teacherId", required = true, value = "老师id") @PathVariable(value = "teacherId") String teacherId){
+
+        RespObj respObj=new RespObj(Constant.FAILD_CODE);
+        try {
+            LoginTokenEntry loginTokenEntry = loginTokenDao.getEntry(new ObjectId(teacherId));
+            Map<String,Object> map = new HashMap<String, Object>();
+            map.put("login",0);
+            map.put("userId","");
+            if(null == loginTokenEntry){
+                respObj.setErrorMessage("二维码已过期！");
+            }else{
+                if(loginTokenEntry.getUserId()!=null){
+                    map.put("login",1);
+                    map.put("userId",loginTokenEntry.getUserId().toString());
+                }
+            }
+            respObj.setCode(Constant.SUCCESS_CODE);
+            respObj.setMessage(map);
         } catch (Exception e) {
             e.printStackTrace();
             respObj.setCode(Constant.FAILD_CODE);

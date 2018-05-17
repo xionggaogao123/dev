@@ -288,6 +288,10 @@ public class WebExcellentCoursesController extends BaseController {
                 startNum = ssstime;
                 flage = true;
             }
+            if(numberList.size()==0){
+                respObj.setCode(Constant.FAILD_CODE);
+                respObj.setErrorMessage("无符合的开课日期！");
+            }
             //排序
             Collections.sort(numberList);
             for(Long lo  :numberList){

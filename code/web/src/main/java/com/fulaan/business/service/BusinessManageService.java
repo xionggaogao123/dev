@@ -2,19 +2,33 @@ package com.fulaan.business.service;
 
 import com.db.business.BusinessManageDao;
 import com.db.business.BusinessRoleDao;
+import com.db.excellentCourses.ClassOrderDao;
+import com.db.excellentCourses.ExcellentCoursesDao;
+import com.db.excellentCourses.HourClassDao;
+import com.db.fcommunity.CommunityDao;
 import com.db.fcommunity.LoginLogDao;
 import com.db.user.UserDao;
 import com.db.wrongquestion.SubjectClassDao;
 import com.fulaan.business.dto.BusinessManageDTO;
+import com.fulaan.excellentCourses.dto.ClassOrderDTO;
+import com.fulaan.excellentCourses.dto.ExcellentCoursesDTO;
+import com.fulaan.excellentCourses.dto.HourClassDTO;
 import com.fulaan.picturetext.runnable.PictureRunNable;
+import com.fulaan.pojo.User;
 import com.fulaan.user.service.UserService;
 import com.pojo.business.BusinessManageEntry;
 import com.pojo.business.BusinessRoleEntry;
+import com.pojo.excellentCourses.ClassOrderEntry;
+import com.pojo.excellentCourses.ExcellentCoursesEntry;
+import com.pojo.excellentCourses.HourClassEntry;
+import com.pojo.fcommunity.CommunityEntry;
 import com.pojo.fcommunity.FLoginLogEntry;
 import com.pojo.user.UserEntry;
 import com.pojo.wrongquestion.SubjectClassEntry;
 import com.sys.constants.Constant;
 import com.sys.utils.AvatarUtils;
+import com.sys.utils.DateTimeUtils;
+import org.apache.commons.lang.StringUtils;
 import org.bson.types.ObjectId;
 import org.springframework.stereotype.Service;
 
@@ -35,6 +49,14 @@ public class BusinessManageService {
     private SubjectClassDao subjectClassDao  = new SubjectClassDao();
 
     private BusinessRoleDao businessRoleDao = new BusinessRoleDao();
+
+    private ExcellentCoursesDao excellentCoursesDao = new ExcellentCoursesDao();
+
+    private ClassOrderDao classOrderDao = new ClassOrderDao();
+
+    private CommunityDao communtiyDao = new CommunityDao();
+
+    private HourClassDao hourClassDao = new HourClassDao();
 
     //登陆生成
     public void getLoginInfo(ObjectId userId,int type ){
@@ -163,6 +185,121 @@ public class BusinessManageService {
         return mapList;
     }
 
+
+    public List<User>  selectUser(String keyword){
+        List<User> userList =new ArrayList<User>();
+        List<UserEntry> userEntries = userDao.findEntryByName("nm", keyword);
+        List<UserEntry> userEntries2 = userDao.findEntryByName("nnm", keyword);
+        userEntries.addAll(userEntries2);
+        for(UserEntry userEntry: userEntries){
+            //String userName,String nickName,String userId,String avator,int sex,String time
+            User user = new User(userEntry.getUserName(),userEntry.getNickName(),userEntry.getID().toString(),userEntry.getAvatar(),userEntry.getSex(),"");
+            userList.add(user);
+        }
+        return userList;
+    }
+
+
+    //查询所有开的课程
+    public Map<String,Object> selectAllCourses(int page,int pageSize,String name,String subjectId){
+        Map<String,Object> map = new HashMap<String, Object>();
+        List<ExcellentCoursesEntry> excellentCoursesEntries = excellentCoursesDao.getAllWebEntryList(subjectId, name, page, pageSize);
+        int count = excellentCoursesDao.selectAllWebEntryList(subjectId,name);
+        List<ExcellentCoursesDTO> dtos = new ArrayList<ExcellentCoursesDTO>();
+        for(ExcellentCoursesEntry excellentCoursesEntry:excellentCoursesEntries){
+            ExcellentCoursesDTO dto = new ExcellentCoursesDTO(excellentCoursesEntry);
+            dtos.add(dto);
+        }
+        map.put("count",count);
+        map.put("list",dtos);
+        return map;
+    }
+
+    public Map<String,Object> selectCoursesDetails(ObjectId id){
+        Map<String,Object> map = new HashMap<String, Object>();
+        ExcellentCoursesEntry excellentCoursesEntry=excellentCoursesDao.getEntry(id);
+        if(excellentCoursesEntry==null){
+            return map;
+        }
+        ExcellentCoursesDTO dto2 = new ExcellentCoursesDTO(excellentCoursesEntry);
+        List<CommunityEntry> communityEntries = communtiyDao.findByObjectIds(excellentCoursesEntry.getCommunityIdList());
+        String stringList = "";
+        for(CommunityEntry communityEntry:communityEntries){
+            stringList = stringList +communityEntry.getCommunityName()+ "  ";
+        }
+        dto2.setCommunitName(stringList);
+        map.put("dto",dto2);
+        //课时相关
+        List<HourClassEntry> hourClassEntries = hourClassDao.getEntryList(id);
+        List<HourClassDTO> hourClassDTOs = new ArrayList<HourClassDTO>();
+        for(HourClassEntry hourClassEntry : hourClassEntries){
+            hourClassDTOs.add(new HourClassDTO(hourClassEntry));
+        }
+        map.put("hourList",hourClassDTOs);
+        //用户订单查询
+        List<ClassOrderDTO> classOrderDTOs = new ArrayList<ClassOrderDTO>();
+        List<ClassOrderEntry> classOrderEntries = classOrderDao.getCoursesUserList(id);
+        List<ObjectId> userIds = new ArrayList<ObjectId>();
+        for(ClassOrderEntry classOrderEntry:classOrderEntries){
+            userIds.add(classOrderEntry.getUserId());
+        }
+        List<UserEntry> userEntries = userDao.getUserEntryList(userIds, Constant.FIELDS);
+        List<Map<String,Object>> listMap = new ArrayList<Map<String, Object>>();
+        int order = 0;
+        for(UserEntry userEntry:userEntries){
+            Map<String,Object> userMap = new HashMap<String, Object>();
+            int score = 0;
+            int number = 0;
+            order++;
+            long createTime= 0l;
+            for(ClassOrderEntry classOrderEntry:classOrderEntries){
+                if(userEntry.getID().equals(classOrderEntry.getUserId())){
+                    score = score + classOrderEntry.getPrice();
+                    number++;
+                    createTime = classOrderEntry.getCreateTime();
+                }
+            }
+            String ctm = "";
+            if(createTime!=0l){
+                ctm = DateTimeUtils.getLongToStrTimeTwo(createTime);
+            }
+            userMap.put("order",order);
+            userMap.put("price",score);
+            userMap.put("number",number);
+            userMap.put("createTime",ctm);
+            String name = StringUtils.isNotEmpty(userEntry.getNickName())?userEntry.getNickName():userEntry.getUserName();
+            userMap.put("userName",name);
+            listMap.add(userMap);
+        }
+        /*for(ClassOrderEntry classOrderEntry : classOrderEntries){
+            ClassOrderDTO dto = new ClassOrderDTO(classOrderEntry);
+            UserEntry userEntry = mainUserEntryMap.get(classOrderEntry.getUserId());
+            String name = StringUtils.isNotEmpty(userEntry.getNickName())?userEntry.getNickName():userEntry.getUserName();
+            dto.setUserName(name);
+            classOrderDTOs.add(dto);
+        }*/
+        map.put("userList",listMap);
+
+        return map;
+    }
+
+    public String finish(ObjectId id,String word){
+        ExcellentCoursesEntry excellentCoursesEntry = excellentCoursesDao.getEntry(id);
+        if(excellentCoursesEntry==null){
+            return "课程不存在";
+        }
+        String[] str = word.split(",");
+
+
+
+
+
+
+
+
+
+        return "";
+    }
 
 
 }

@@ -31,6 +31,7 @@ public class ExcellentCoursesDTO {
     private int type;
     private int isBuy; //0  未购买  1 已购买部分     2  全部购买
     private int isCollect;  // 0 未收藏    1 已收藏
+    private String communitName;
 
     public ExcellentCoursesDTO(){
 
@@ -170,6 +171,13 @@ public class ExcellentCoursesDTO {
 
     }
 
+    public String getCommunitName() {
+        return communitName;
+    }
+
+    public void setCommunitName(String communitName) {
+        this.communitName = communitName;
+    }
 
     public String getSubjectId() {
         return subjectId;

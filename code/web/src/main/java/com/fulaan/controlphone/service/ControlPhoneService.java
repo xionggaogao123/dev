@@ -3962,23 +3962,27 @@ public class ControlPhoneService {
         List<ControlAppEntry> entryList2 = controlAppDao.getEntryListByUserId(userId,oids);
         List<ResultAppListDTO> dtos1 = new ArrayList<ResultAppListDTO>();
         List<ResultAppListDTO> dtos2 = new ArrayList<ResultAppListDTO>();
+        List<ObjectId> objectIds = new ArrayList<ObjectId>();
         if(entryList1.size()>0){
             for(ControlAppUserEntry entry : entryList1){
-                UserDetailInfoDTO infoDTO = map2.get(entry.getUserId().toString());
-                ResultAppListDTO dto = new ResultAppListDTO();
-                String name = StringUtils.isNotEmpty(infoDTO.getNickName())?infoDTO.getNickName():infoDTO.getUserName();
-                dto.setName(name);
-                dto.setUrl(infoDTO.getImgUrl());
-                if(entry.getAppIdList() != null){
-                    List<AppDetailEntry> entries3 = appDetailDao.getEntriesByIds(entry.getAppIdList());
-                    dto.setCount(entries3.size());
-                }else{
-                    dto.setCount(0);
+                if(!objectIds.contains(entry.getUserId())){
+                    objectIds.add(entry.getUserId());
+                    UserDetailInfoDTO infoDTO = map2.get(entry.getUserId().toString());
+                    ResultAppListDTO dto = new ResultAppListDTO();
+                    String name = StringUtils.isNotEmpty(infoDTO.getNickName())?infoDTO.getNickName():infoDTO.getUserName();
+                    dto.setName(name);
+                    dto.setUrl(infoDTO.getImgUrl());
+                    if(entry.getAppIdList() != null){
+                        List<AppDetailEntry> entries3 = appDetailDao.getEntriesByIds(entry.getAppIdList());
+                        dto.setCount(entries3.size());
+                    }else{
+                        dto.setCount(0);
+                    }
+                    dto.setContactId(entry.getUserId().toString());
+                    dto.setType(1);//孩子
+                    childIds.remove(entry.getUserId());
+                    dtos1.add(dto);
                 }
-                dto.setContactId(entry.getUserId().toString());
-                dto.setType(1);//孩子
-                childIds.remove(entry.getUserId());
-                dtos1.add(dto);
             }
         }
         if(entryList2.size()>0){

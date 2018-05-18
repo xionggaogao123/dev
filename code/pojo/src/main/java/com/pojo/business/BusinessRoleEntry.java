@@ -15,7 +15,7 @@ import java.util.List;
  * 运营用户权限表
  * id
  * userId             运营用户               uid
- * List<String>       用户权限（）           rlt
+ * List<String>       用户权限（）           rlt   0 普通
  * List<ObjectId>     生效社群               clt
  * type               权限类型               typ
  *

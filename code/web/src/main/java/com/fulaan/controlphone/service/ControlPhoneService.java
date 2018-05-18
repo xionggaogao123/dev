@@ -484,8 +484,8 @@ public class ControlPhoneService {
         }
         if(oids.size()>0){
             //controlAppResultDao.updEntry(oids);
-            //删除
-            controlAppResultDao.delEntry(oids);
+            //修改
+            controlAppResultDao.updEntry(oids);
         }
         ControlTimeEntry entr = controlTimeDao.getEntryByUserId(userId);
         if(entr ==null){
@@ -1420,8 +1420,10 @@ public class ControlPhoneService {
         if(null == newEntry){
             return this.getSimpleMessageForSon();
         }
-
-        ControlTimeEntry controlTimeEntry = controlTimeDao.getEntryByUserId(sonId);
+        //家长推荐
+        ObjectId parentId = newEntry.getMainUserId();
+        //ControlTimeEntry entry = controlTimeDao.getEntry(userId, parentId);
+        ControlTimeEntry controlTimeEntry = controlTimeDao.getEntry(sonId, parentId);
        /* if(controlTimeEntry != null){
             ObjectId parentId = controlTimeEntry.getParentId();
         }*/
@@ -1437,8 +1439,6 @@ public class ControlPhoneService {
                 objectIdList.addAll(controlAppEntry.getAppIdList());
             }
         }
-        //家长推荐
-        ObjectId parentId = newEntry.getMainUserId();
         ControlAppUserEntry controlAppUserEntry = controlAppUserDao.getEntry(parentId,sonId);
         if(controlAppUserEntry!= null){
             //存在取用户应用

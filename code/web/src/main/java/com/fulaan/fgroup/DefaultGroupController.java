@@ -1,5 +1,6 @@
 package com.fulaan.fgroup;
 
+import com.db.business.BusinessRoleDao;
 import com.db.user.NewVersionBindRelationDao;
 import com.easemob.server.EaseMobAPI;
 import com.easemob.server.comm.constant.MsgType;
@@ -20,6 +21,8 @@ import com.fulaan.service.CommunityService;
 import com.fulaan.service.GroupNoticeService;
 import com.fulaan.service.MemberService;
 import com.fulaan.user.service.UserService;
+import com.pojo.business.BusinessRoleEntry;
+import com.pojo.business.RoleType;
 import com.pojo.fcommunity.CommunityDetailType;
 import com.pojo.fcommunity.GroupEntry;
 import com.pojo.fcommunity.MemberEntry;
@@ -76,6 +79,8 @@ public class DefaultGroupController extends BaseController {
     private EmService emService;
 
     private NewVersionBindRelationDao newVersionBindRelationDao = new NewVersionBindRelationDao();
+
+    private BusinessRoleDao businessRoleDao = new BusinessRoleDao();
 
     /**
      * 创建群聊
@@ -136,10 +141,11 @@ public class DefaultGroupController extends BaseController {
             groupDTO.setName(communityDTO.getName());
         }
         MemberDTO mine = memberService.getUser(groupId, getUserId());
+        BusinessRoleEntry businessRoleEntry = businessRoleDao.getEntry(getUserId());
         //权限判断 todo true  3 运营人员
-       /* if(mine.getRole()==0 && true ){
+        if(businessRoleEntry !=null && businessRoleEntry.getRoleType().contains(RoleType.updateCommunityName.getEname())){
             mine.setRole(3);
-        }*/
+        }
         groupDTO.setCount(memberService.getMemberCount(groupId));
         groupDTO.setMine(mine);
         if (groupDTO.isBindCommunity()) {

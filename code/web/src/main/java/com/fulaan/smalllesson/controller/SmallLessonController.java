@@ -508,6 +508,7 @@ public class SmallLessonController extends BaseController {
             ObjectId oid = new ObjectId();
             String str = QRUtils.getLessonCode(oid);
             LoginTokenEntry tokenEntry = new LoginTokenEntry(oid);
+            tokenEntry.setStatus(false);
             loginTokenDao.saveEntry(tokenEntry);
             map.put("tokenId", oid.toString());
             map.put("qrUrl",str);

@@ -82,7 +82,7 @@ public class ExcellentCoursesDao extends BaseDao {
         return entryList;
     }
     //首页订单查询
-    public List<ExcellentCoursesEntry> getMyKeyClassList(String keyword){
+    public List<ExcellentCoursesEntry> getMyKeyClassList(String keyword,long current){
         List<ExcellentCoursesEntry> entryList=new ArrayList<ExcellentCoursesEntry>();
         BasicDBObject query=new BasicDBObject().append("isr",0).append("sta", 2);
         BasicDBList values = new BasicDBList();
@@ -91,6 +91,7 @@ public class ExcellentCoursesDao extends BaseDao {
             values.add(new BasicDBObject("unm",  MongoUtils.buildRegex(keyword)));
             query.put(Constant.MONGO_OR, values);
         }
+        query.append("etm",new BasicDBObject(Constant.MONGO_GT,current));
         List<DBObject> dbList=find(MongoFacroty.getAppDB(), Constant.COLLECTION_EXCELLENT_COURSES, query,
                 Constant.FIELDS, Constant.MONGO_SORTBY_DESC);
         if (dbList != null && !dbList.isEmpty()) {
@@ -103,7 +104,7 @@ public class ExcellentCoursesDao extends BaseDao {
 
 
     //课程中心
-    public List<ExcellentCoursesEntry> getAllEntryList(String subjectId,int priceType,int persionType,int timeType,int page,int pageSize){
+    public List<ExcellentCoursesEntry> getAllEntryList(String subjectId,int priceType,int persionType,int timeType,int page,int pageSize,long current){
         List<ExcellentCoursesEntry> entryList=new ArrayList<ExcellentCoursesEntry>();
         BasicDBObject query=new BasicDBObject().append("isr",0).append("sta",Constant.TWO);
         if(subjectId!=null && !subjectId.equals("")){
@@ -119,6 +120,7 @@ public class ExcellentCoursesDao extends BaseDao {
         if(timeType!=0){
             orderQuery.append("ctm",timeType);
         }
+        query.append("etm",new BasicDBObject(Constant.MONGO_GT,current));
         List<DBObject> dbList=find(MongoFacroty.getAppDB(), Constant.COLLECTION_EXCELLENT_COURSES, query,
                 Constant.FIELDS, orderQuery,(page-1)*pageSize,pageSize);
         if (dbList != null && !dbList.isEmpty()) {
@@ -136,6 +138,10 @@ public class ExcellentCoursesDao extends BaseDao {
         if(subjectId!=null && !subjectId.equals("")){
             query.append("sid", new ObjectId(subjectId));
         }
+        List<Integer> list = new ArrayList<Integer>();
+        list.add(1);
+        list.add(2);
+        query.append("sta",new BasicDBObject(Constant.MONGO_IN,list));
         if(name!=null && !name.equals("")){
             BasicDBList values = new BasicDBList();
             values.add(new BasicDBObject("tit",  MongoUtils.buildRegex(name)));
@@ -161,6 +167,10 @@ public class ExcellentCoursesDao extends BaseDao {
         if(subjectId!=null && !subjectId.equals("")){
             query.append("sid", new ObjectId(subjectId));
         }
+        List<Integer> list = new ArrayList<Integer>();
+        list.add(1);
+        list.add(2);
+        query.append("sta",new BasicDBObject(Constant.MONGO_IN,list));
         if(name!=null && !name.equals("")){
             BasicDBList values = new BasicDBList();
             values.add(new BasicDBObject("tit",  MongoUtils.buildRegex(name)));
@@ -207,12 +217,13 @@ public class ExcellentCoursesDao extends BaseDao {
      * 符合搜索条件的对象个数
      * @return
      */
-    public int selectCount(String subjectId) {
+    public int selectCount(String subjectId,long current) {
         BasicDBObject query =new BasicDBObject("isr",0).append("sta",2);
         if(subjectId!=null && !subjectId.equals("")){
             query.append("sid",new ObjectId(subjectId
             ));
         }
+        query.append("etm",new BasicDBObject(Constant.MONGO_GT,current));
         int count =
                 count(MongoFacroty.getAppDB(),
                         Constant.COLLECTION_EXCELLENT_COURSES,

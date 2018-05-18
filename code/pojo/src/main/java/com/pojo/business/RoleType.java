@@ -1,7 +1,5 @@
 package com.pojo.business;
 
-import com.pojo.backstage.PictureType;
-
 /**
  * Created by James on 2018-05-15.
  */
@@ -53,9 +51,9 @@ public enum RoleType {
     }
 
 
-    public static PictureType getProType(int type)
+    public static RoleType getProType(int type)
     {
-        for(PictureType lt : PictureType.values())
+        for(RoleType lt : RoleType.values())
         {
             if(lt.getType()==type)
             {
@@ -68,7 +66,7 @@ public enum RoleType {
 
     public static String getProTypeEname(int type)
     {
-        for(PictureType lt : PictureType.values())
+        for(RoleType lt : RoleType.values())
         {
             if(lt.getType()==type)
             {
@@ -78,11 +76,25 @@ public enum RoleType {
 
         return null;
     }
+
     public static String getDes(int type)
     {
-        for(PictureType lt : PictureType.values())
+        for(RoleType lt : RoleType.values())
         {
             if(lt.getType()==type)
+            {
+                return lt.getDes();
+            }
+        }
+
+        return null;
+    }
+
+    public static String getD(String eName)
+    {
+        for(RoleType lt : RoleType.values())
+        {
+            if(lt.getEname().equals(eName))
             {
                 return lt.getDes();
             }

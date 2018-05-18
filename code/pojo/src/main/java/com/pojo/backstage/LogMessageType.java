@@ -17,7 +17,9 @@ public enum LogMessageType {
     userRole(10,"角色管理","userRole"),
     manageUserRole(11,"用户角色管理","manageUserRole"),
     school(12,"学校管理","school"),
-    communitTime(13,"学校上课时间","communityTime");
+    communitTime(13,"学校上课时间","communityTime"),
+    courses(14,"直播课堂","courses"),
+    yunRole(15,"运营管理员","yunRole");
 
     private int type;
     private String des;

@@ -121,6 +121,95 @@ public class BusinessManageController extends BaseController {
     }
 
     /**
+     * 查询所有管理员用户
+     * @return
+     */
+    @ApiOperation(value = "查询所有管理员用户", httpMethod = "POST", produces = "application/json")
+    @ApiResponses( value = {@ApiResponse(code = 200, message = "Successful — 请求已完成",response = String.class)})
+    @RequestMapping("/selectRoleUser")
+    @ResponseBody
+    public String selectRoleUser(){
+        RespObj respObj=new RespObj(Constant.FAILD_CODE);
+        try {
+            List<Map<String,Object>> userList =  businessManageService.selectRoleUser();
+            respObj.setCode(Constant.SUCCESS_CODE);
+            respObj.setMessage(userList);
+        } catch (Exception e) {
+            e.printStackTrace();
+            respObj.setCode(Constant.FAILD_CODE);
+            respObj.setErrorMessage("查询所有管理员用户失败!");
+        }
+        return JSON.toJSONString(respObj);
+    }
+
+    /**
+     * 添加管理员用户
+     * @return
+     */
+    @ApiOperation(value = "添加管理员用户", httpMethod = "POST", produces = "application/json")
+    @ApiResponses( value = {@ApiResponse(code = 200, message = "Successful — 请求已完成",response = String.class)})
+    @RequestMapping("/addRoleUser")
+    @ResponseBody
+    public String addRoleUser(@ApiParam(name="id",required = false,value="id") @RequestParam(value="id") String id){
+        RespObj respObj=new RespObj(Constant.FAILD_CODE);
+        try {
+            businessManageService.addRoleUser(getUserId(),new ObjectId(id));
+            respObj.setCode(Constant.SUCCESS_CODE);
+            respObj.setMessage("添加成功");
+        } catch (Exception e) {
+            e.printStackTrace();
+            respObj.setCode(Constant.FAILD_CODE);
+            respObj.setErrorMessage("添加管理员用户失败!");
+        }
+        return JSON.toJSONString(respObj);
+    }
+
+    /**
+     * 权限列表
+     * @return
+     */
+    @ApiOperation(value = "权限列表", httpMethod = "POST", produces = "application/json")
+    @ApiResponses( value = {@ApiResponse(code = 200, message = "Successful — 请求已完成",response = String.class)})
+    @RequestMapping("/getRoleList")
+    @ResponseBody
+    public String getRoleList(@ApiParam(name="userId",required = false,value="userId") @RequestParam(value="userId") String userId){
+        RespObj respObj=new RespObj(Constant.FAILD_CODE);
+        try {
+           List<Map<String,Object>> list = businessManageService.getRoleList(new ObjectId(userId));
+            respObj.setCode(Constant.SUCCESS_CODE);
+            respObj.setMessage(list);
+        } catch (Exception e) {
+            e.printStackTrace();
+            respObj.setCode(Constant.FAILD_CODE);
+            respObj.setErrorMessage("权限列表失败!");
+        }
+        return JSON.toJSONString(respObj);
+    }
+
+    /**
+     * 修改权限
+     * @return
+     */
+    @ApiOperation(value = "修改权限", httpMethod = "POST", produces = "application/json")
+    @ApiResponses( value = {@ApiResponse(code = 200, message = "Successful — 请求已完成",response = String.class)})
+    @RequestMapping("/updateRole")
+    @ResponseBody
+    public String updateRole(@ApiParam(name="userId",required = false,value="userId") @RequestParam(value="userId") String userId,
+                             @ApiParam(name="number",required = false,value="number") @RequestParam(value="number") String number){
+        RespObj respObj=new RespObj(Constant.FAILD_CODE);
+        try {
+            businessManageService.updateRole(getUserId(), new ObjectId(userId), number);
+            respObj.setCode(Constant.SUCCESS_CODE);
+            respObj.setMessage("修改权限成功");
+        } catch (Exception e) {
+            e.printStackTrace();
+            respObj.setCode(Constant.FAILD_CODE);
+            respObj.setErrorMessage("修改权限失败!");
+        }
+        return JSON.toJSONString(respObj);
+    }
+
+    /**
      * 查询所有申请的课程
      * @return
      */
@@ -176,12 +265,17 @@ public class BusinessManageController extends BaseController {
     @RequestMapping("/finish")
     @ResponseBody
     public String finish(@ApiParam(name="id",required = false,value="id") @RequestParam(value="id",defaultValue = "") String id,
-                         @ApiParam(name="String",required = false,value="String") @RequestParam(value="String",defaultValue = "") String number){
+                         @ApiParam(name="number",required = false,value="number") @RequestParam(value="number",defaultValue = "") String number){
         RespObj respObj=new RespObj(Constant.FAILD_CODE);
         try {
-            //Map<String,Object> map =  businessManageService.selectAllCourses(page);
-            respObj.setCode(Constant.SUCCESS_CODE);
-            //respObj.setMessage(map);
+            String map =  businessManageService.finish(new ObjectId(id), number, getUserId());
+            if(map.equals("1")){
+                respObj.setCode(Constant.SUCCESS_CODE);
+                respObj.setMessage("审核通过");
+            }else{
+                respObj.setCode(Constant.FAILD_CODE);
+                respObj.setErrorMessage(map);
+            }
         } catch (Exception e) {
             e.printStackTrace();
             respObj.setCode(Constant.FAILD_CODE);

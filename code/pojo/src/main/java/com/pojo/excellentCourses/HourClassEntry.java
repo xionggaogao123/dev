@@ -22,7 +22,7 @@ import java.util.Date;
  * week            星期              wek
  * isRemove        是否删除          isr
  * order           顺序              ord
- * type            状态              typ     0 正常    1 翘课    2 延期   3 早退  4 取消
+ * type            状态              typ     0 未开始     1进行中   2已结束
  */
 public class HourClassEntry extends BaseDBObject {
 

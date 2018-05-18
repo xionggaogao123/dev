@@ -23,8 +23,8 @@ public class CoursesRoomService {
     private static final String CC_USERID = "A39B161DFE593520";
     //apikey
     private static final String CC_API_KEY = "s521Bt59I02irf0UKQjuwhpyCAyuYJNI";
-    //直播模板  默认模板二 视频直播+聊天互动+直播问答
-    private static final String CC_TEMPLATETYPE = "2";
+    //直播模板  模板四 视频直播+聊天互动+直播文档
+    private static final String CC_TEMPLATETYPE = "4";
     //验证方式  默认 0：接口验证，需要填写下面的checkurl；1：密码验证，需要填写下面的playpass；2：免密码验证
     private static final String CC_AUTHTYPE = "1";
     //验证地址

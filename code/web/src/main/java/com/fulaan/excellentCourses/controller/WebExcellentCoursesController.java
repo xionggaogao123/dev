@@ -193,7 +193,7 @@ public class WebExcellentCoursesController extends BaseController {
         } catch (Exception e) {
             e.printStackTrace();
             respObj.setCode(Constant.FAILD_CODE);
-            respObj.setErrorMessage("批量保存课时败!");
+            respObj.setErrorMessage(e.getMessage());
         }
         return JSON.toJSONString(respObj);
     }
@@ -242,7 +242,7 @@ public class WebExcellentCoursesController extends BaseController {
             long startNum = DateTimeUtils.getStrToLongTime(start, "yyyy-MM-dd");
             long endNum = DateTimeUtils.getStrToLongTime(end, "yyyy-MM-dd");
 
-            if(startNum>=endNum){
+            if(startNum>endNum){
                 respObj.setCode(Constant.FAILD_CODE);
                 respObj.setErrorMessage("结束时间应大于开始时间！");
             }
@@ -313,6 +313,56 @@ public class WebExcellentCoursesController extends BaseController {
     @ApiResponses( value = {@ApiResponse(code = 200, message = "Successful — 请求已完成",response = String.class),
             @ApiResponse(code = 400, message = "请求中有语法问题，或不能满足请求"),
             @ApiResponse(code = 500, message = "服务器不能完成请求")})
+    @RequestMapping("/openBackCreate")
+    @ResponseBody
+    @SessionNeedless
+    public Map<String,Object> openBackCreate(){
+        Map<String,Object> map = new HashMap<String, Object>();
+        Map<String,String> room = new HashMap<String, String>();
+        room.put("id","");
+        room.put("publishUrl","");
+        try{
+
+
+        }catch (Exception e){
+            map.put("result","FAIL");
+            map.put("room",room);
+        }
+        return map;
+    }
+
+    /**
+     * 老师开课回调
+     */
+    @ApiOperation(value = "提供给cc直播进行接口验证", httpMethod = "POST", produces = "application/json")
+    @ApiResponses( value = {@ApiResponse(code = 200, message = "Successful — 请求已完成",response = String.class),
+            @ApiResponse(code = 400, message = "请求中有语法问题，或不能满足请求"),
+            @ApiResponse(code = 500, message = "服务器不能完成请求")})
+    @RequestMapping("/endBackCreate")
+    @ResponseBody
+    @SessionNeedless
+    public Map<String,Object> endBackCreate(){
+        Map<String,Object> map = new HashMap<String, Object>();
+        Map<String,String> room = new HashMap<String, String>();
+        room.put("id","");
+        room.put("publishUrl","");
+        try{
+
+
+        }catch (Exception e){
+            map.put("result","FAIL");
+            map.put("room",room);
+        }
+        return map;
+    }
+
+    /**
+     * 老师结束课程回调
+     */
+    @ApiOperation(value = "提供给cc直播进行接口验证", httpMethod = "POST", produces = "application/json")
+    @ApiResponses( value = {@ApiResponse(code = 200, message = "Successful — 请求已完成",response = String.class),
+            @ApiResponse(code = 400, message = "请求中有语法问题，或不能满足请求"),
+            @ApiResponse(code = 500, message = "服务器不能完成请求")})
     @RequestMapping("/backCreate")
     @ResponseBody
     @SessionNeedless
@@ -330,7 +380,6 @@ public class WebExcellentCoursesController extends BaseController {
         }
         return map;
     }
-
 
     /**
      * 老师自动登陆
@@ -352,6 +401,34 @@ public class WebExcellentCoursesController extends BaseController {
             }else{
                 respObj.setCode(Constant.SUCCESS_CODE);
                 respObj.setMessage(result);
+            }
+        }catch (Exception e){
+            e.printStackTrace();
+            respObj.setCode(Constant.FAILD_CODE);
+            respObj.setErrorMessage(e.getMessage());
+        }
+        return respObj;
+    }
+
+    /**
+     * 重新开课
+     */
+    @ApiOperation(value = "重新开课", httpMethod = "POST", produces = "application/json")
+    @ApiResponses( value = {@ApiResponse(code = 200, message = "Successful — 请求已完成",response = String.class),
+            @ApiResponse(code = 400, message = "请求中有语法问题，或不能满足请求"),
+            @ApiResponse(code = 500, message = "服务器不能完成请求")})
+    @RequestMapping("/newOpen")
+    @ResponseBody
+    public RespObj newOpen(@ApiParam(name = "id", required = true, value = "id") @RequestParam("id") String id){
+        RespObj respObj = new RespObj(Constant.FAILD_CODE);
+        try{
+            String str = excellentCoursesService.newOpen(getUserId(), new ObjectId(id));
+            if(str.equals("")){
+                respObj.setCode(Constant.FAILD_CODE);
+                respObj.setErrorMessage("课程已被删除！");
+            }else{
+                respObj.setCode(Constant.SUCCESS_CODE);
+                respObj.setMessage(str);
             }
         }catch (Exception e){
             e.printStackTrace();

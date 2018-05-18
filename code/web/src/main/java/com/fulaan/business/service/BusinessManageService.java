@@ -9,15 +9,19 @@ import com.db.fcommunity.CommunityDao;
 import com.db.fcommunity.LoginLogDao;
 import com.db.user.UserDao;
 import com.db.wrongquestion.SubjectClassDao;
+import com.fulaan.backstage.service.BackStageService;
 import com.fulaan.business.dto.BusinessManageDTO;
 import com.fulaan.excellentCourses.dto.ClassOrderDTO;
 import com.fulaan.excellentCourses.dto.ExcellentCoursesDTO;
 import com.fulaan.excellentCourses.dto.HourClassDTO;
+import com.fulaan.excellentCourses.service.CoursesRoomService;
 import com.fulaan.picturetext.runnable.PictureRunNable;
 import com.fulaan.pojo.User;
 import com.fulaan.user.service.UserService;
+import com.pojo.backstage.LogMessageType;
 import com.pojo.business.BusinessManageEntry;
 import com.pojo.business.BusinessRoleEntry;
+import com.pojo.business.RoleType;
 import com.pojo.excellentCourses.ClassOrderEntry;
 import com.pojo.excellentCourses.ExcellentCoursesEntry;
 import com.pojo.excellentCourses.HourClassEntry;
@@ -30,6 +34,7 @@ import com.sys.utils.AvatarUtils;
 import com.sys.utils.DateTimeUtils;
 import org.apache.commons.lang.StringUtils;
 import org.bson.types.ObjectId;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.*;
@@ -57,6 +62,10 @@ public class BusinessManageService {
     private CommunityDao communtiyDao = new CommunityDao();
 
     private HourClassDao hourClassDao = new HourClassDao();
+    @Autowired
+    private CoursesRoomService coursesRoomService;
+    @Autowired
+    private BackStageService backStageService;
 
     //登陆生成
     public void getLoginInfo(ObjectId userId,int type ){
@@ -175,7 +184,7 @@ public class BusinessManageService {
          return businessRoleEntry;
     }
 
-    public List<Map<String,Object>>  getRoleList(){
+   /* public List<Map<String,Object>>  getRoleList(){
         List<Map<String,Object>> mapList = new ArrayList<Map<String, Object>>();
         List<BusinessRoleEntry> list =  businessRoleDao.getPageList();
 
@@ -183,7 +192,7 @@ public class BusinessManageService {
 
 
         return mapList;
-    }
+    }*/
 
 
     public List<User>  selectUser(String keyword){
@@ -193,7 +202,7 @@ public class BusinessManageService {
         userEntries.addAll(userEntries2);
         for(UserEntry userEntry: userEntries){
             //String userName,String nickName,String userId,String avator,int sex,String time
-            User user = new User(userEntry.getUserName(),userEntry.getNickName(),userEntry.getID().toString(),userEntry.getAvatar(),userEntry.getSex(),"");
+            User user = new User(userEntry.getUserName(),userEntry.getNickName(),userEntry.getID().toString(),AvatarUtils.getAvatar(userEntry.getAvatar(),userEntry.getRole(),userEntry.getSex()),userEntry.getSex(),"");
             userList.add(user);
         }
         return userList;
@@ -225,9 +234,15 @@ public class BusinessManageService {
         List<CommunityEntry> communityEntries = communtiyDao.findByObjectIds(excellentCoursesEntry.getCommunityIdList());
         String stringList = "";
         for(CommunityEntry communityEntry:communityEntries){
-            stringList = stringList +communityEntry.getCommunityName()+ "  ";
+            stringList = stringList +communityEntry.getCommunityName()+ "、";
         }
-        dto2.setCommunitName(stringList);
+        if(stringList.equals("")){
+            dto2.setCommunitName("无");
+        }else{
+            String name2 = stringList.substring(0, stringList.length()-1);
+            dto2.setCommunitName(name2);
+        }
+
         map.put("dto",dto2);
         //课时相关
         List<HourClassEntry> hourClassEntries = hourClassDao.getEntryList(id);
@@ -264,7 +279,7 @@ public class BusinessManageService {
                 ctm = DateTimeUtils.getLongToStrTimeTwo(createTime);
             }
             userMap.put("order",order);
-            userMap.put("price",score);
+            userMap.put("price","¥ "+score);
             userMap.put("number",number);
             userMap.put("createTime",ctm);
             String name = StringUtils.isNotEmpty(userEntry.getNickName())?userEntry.getNickName():userEntry.getUserName();
@@ -283,23 +298,134 @@ public class BusinessManageService {
         return map;
     }
 
-    public String finish(ObjectId id,String word){
+    //审核通过
+    public String finish(ObjectId id,String word,ObjectId userId){
         ExcellentCoursesEntry excellentCoursesEntry = excellentCoursesDao.getEntry(id);
         if(excellentCoursesEntry==null){
             return "课程不存在";
         }
+        if(word.equals("")){
+            return "无设置";
+        }
         String[] str = word.split(",");
+        Map<String,Integer> map = new HashMap<String, Integer>();
+        for(int i = 0;i<str.length;i++){
+            String tr = str[i];
+            String[] strings = tr.split("#");
+            map.put(strings[0],Integer.parseInt(strings[1]));
+        }
+        List<HourClassEntry> hourClassEntries = hourClassDao.getEntryList(id);
+        int all = 0;
+        for(HourClassEntry hourClassEntry : hourClassEntries){
+            Integer price = map.get(hourClassEntry.getID().toString());
+            if(price!=null){
+                hourClassDao.updatePriceEntry(hourClassEntry.getID(),price);
+                all = all + price;
+            }
+        }
+        //课程改为进行中
+        excellentCoursesEntry.setNewPrice(all);
+        excellentCoursesEntry.setStatus(2);
+        excellentCoursesDao.addEntry(excellentCoursesEntry);
 
 
 
-
-
-
-
-
-
-        return "";
+        //创建直播间
+        long start  = excellentCoursesEntry.getStartTime();
+        String startTime = "";
+        if(start!=0l){
+            startTime = DateTimeUtils.getLongToStrTimeTwo(start);
+        }
+        //todo
+        coursesRoomService.createCourses(excellentCoursesEntry.getTitle(),excellentCoursesEntry.getTarget(),excellentCoursesEntry.getID(),startTime);
+        backStageService.addLogMessage(id.toString(), "审核直播课堂：" + excellentCoursesEntry.getTitle(), LogMessageType.courses.getDes(), userId.toString());
+        return "1";
+    }
+    public String getNewString(List<String> userRole){
+        String str = "";
+        int index = 1;
+        for(String str2:userRole){
+            str = str + index+"."+RoleType.getD(str2) + "  ";
+            index++;
+        }
+        return str;
     }
 
+    public List<Map<String,Object>> selectRoleUser(){
+        List<Map<String,Object>> list = new ArrayList<Map<String, Object>>();
+        List<BusinessRoleEntry> roleEntries = businessRoleDao.getPageList();
+        List<ObjectId> userIds = new ArrayList<ObjectId>();
+        for(BusinessRoleEntry  entry : roleEntries){
+            userIds.add(entry.getUserId());
+        }
+        Map<ObjectId,UserEntry> userEntryMap=userService.getUserEntryMap(userIds, Constant.FIELDS);
+        for(BusinessRoleEntry businessRoleEntry:roleEntries){
+            Map<String,Object>  map = new HashMap<String, Object>();
+            UserEntry userEntry = userEntryMap.get(businessRoleEntry.getUserId());
+            if(userEntry!=null){
+                String name = StringUtils.isNotEmpty(userEntry.getNickName())?userEntry.getNickName():userEntry.getUserName();
+                map.put("userId",userEntry.getID().toString());
+                map.put("userName",name);
+                map.put("userRole",getNewString(businessRoleEntry.getRoleType()));
+                list.add(map);
+            }
+        }
+
+        return list;
+    }
+
+    //添加管理员用户
+    public void  addRoleUser(ObjectId userId,ObjectId roleId){
+        /*ObjectId userId,
+            int type,
+            List<ObjectId> communityIdList,
+            List<String> roleType*/
+        List<String>  stringList = new ArrayList<String>();
+        //加入基础权限
+        stringList.add(RoleType.updateCommunityName.getEname());
+        stringList.add(RoleType.commentAndZan.getEname());
+        BusinessRoleEntry businessRoleEntry=  new BusinessRoleEntry(roleId,0,new ArrayList<ObjectId>(),stringList);
+        String str = businessRoleDao.addEntry(businessRoleEntry);
+        backStageService.addLogMessage(str, "添加运营管理员：" + roleId.toString(), LogMessageType.yunRole.getDes(), userId.toString());
+    }
+
+    public List<Map<String,Object>> getRoleList(ObjectId userId){
+        List<Map<String,Object>>  mapList = new ArrayList<Map<String, Object>>();
+        BusinessRoleEntry businessRoleEntry =  businessRoleDao.getEntry(userId);
+        List<String> stringList = businessRoleEntry.getRoleType();
+        for(RoleType lt : RoleType.values())
+        {
+            Map<String,Object> map = new HashMap<String, Object>();
+            map.put("name",lt.getDes());
+            map.put("ename",lt.getEname());
+            if(stringList.contains(lt.getEname())){
+                map.put("status",1);
+            }else{
+                map.put("status",0);
+            }
+            mapList.add(map);
+        }
+        return mapList;
+
+    }
+
+    public void updateRole(ObjectId userId,ObjectId roleId,String number){
+        BusinessRoleEntry businessRoleEntry = businessRoleDao.getEntry(roleId);
+        if(businessRoleEntry==null){
+            return;
+        }
+        List<String> list = businessRoleEntry.getRoleType();
+        String[] str = number.split(",");
+        for(int i =1;i<str.length;i++){
+            if(list.contains(str[i])){
+
+            }else{
+                list.add(str[i]);
+            }
+        }
+        businessRoleEntry.setRoleType(list);
+        businessRoleDao.addEntry(businessRoleEntry);
+        backStageService.addLogMessage(businessRoleEntry.getID().toString(), "修改运营管理员权限：" + roleId.toString(), LogMessageType.yunRole.getDes(), userId.toString());
+    }
 
 }

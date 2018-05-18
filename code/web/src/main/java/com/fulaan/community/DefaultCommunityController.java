@@ -2,6 +2,7 @@ package com.fulaan.community;
 
 
 import com.alibaba.fastjson.JSON;
+import com.db.business.BusinessRoleDao;
 import com.easemob.server.comm.constant.MsgType;
 import com.fulaan.annotation.LoginInfo;
 import com.fulaan.annotation.ObjectIdType;
@@ -38,6 +39,8 @@ import com.fulaan.util.URLParseUtil;
 import com.pojo.activity.FriendApply;
 import com.pojo.app.FileUploadDTO;
 import com.pojo.app.Platform;
+import com.pojo.business.BusinessRoleEntry;
+import com.pojo.business.RoleType;
 import com.pojo.fcommunity.*;
 import com.pojo.forum.FVoteDTO;
 import com.pojo.forum.FVoteEntry;
@@ -132,6 +135,7 @@ public class DefaultCommunityController extends BaseController {
     @Autowired
     private IntegralSufferService integralSufferService;
 
+    private BusinessRoleDao businessRoleDao =  new BusinessRoleDao();
     public static final String suffix = "/static/images/community/upload.png";
 
     @ApiOperation(value = "创建新社区", httpMethod = "GET", produces = "application/json")
@@ -3354,6 +3358,13 @@ public class DefaultCommunityController extends BaseController {
         ObjectId userId=getUserId();
         CommunityDetailEntry entry=communityService.getEntryById(detailId);
         List<ObjectId> userIds=entry.getZanList();
+        BusinessRoleEntry businessRoleEntry = businessRoleDao.getEntry(userId);
+        if(businessRoleEntry!=null && businessRoleEntry.getRoleType().contains(RoleType.commentAndZan.getEname())){
+            communityService.updateCommunityDetailZan(detailId,userId,1);
+            respObj.setCode(Constant.SUCCESS_CODE);
+            respObj.setMessage("点赞成功");
+            return respObj;
+        }
         if(type==1){
             if(userIds.contains(userId)){
                 respObj.setMessage("已经点过赞了");

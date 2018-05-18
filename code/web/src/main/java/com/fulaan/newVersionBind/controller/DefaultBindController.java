@@ -275,7 +275,7 @@ public class DefaultBindController extends BaseController {
     /**
      * 处理老数据
      */
-    @ApiOperation(value = "绑定社区下的某个家长与某些学生", httpMethod = "POST", produces = "application/json")
+    @ApiOperation(value = "处理老数据", httpMethod = "POST", produces = "application/json")
     @ApiResponses( value = {@ApiResponse(code = 200, message = "Successful — 请求已完成",response = RespObj.class)})
     @RequestMapping("/editCommunityBindEntry")
     @ResponseBody

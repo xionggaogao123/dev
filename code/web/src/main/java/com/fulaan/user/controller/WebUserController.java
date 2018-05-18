@@ -1,7 +1,48 @@
 package com.fulaan.user.controller;
 
+import java.io.File;
+import java.io.IOException;
+import java.io.PrintWriter;
+import java.io.UnsupportedEncodingException;
+import java.net.URLDecoder;
+import java.net.URLEncoder;
+import java.text.Collator;
+import java.text.MessageFormat;
+import java.text.SimpleDateFormat;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
+import java.util.Date;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Locale;
+import java.util.Map;
+import java.util.Set;
+import java.util.UUID;
+
+import javax.annotation.Resource;
+import javax.servlet.http.Cookie;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+
+import org.apache.commons.io.FileUtils;
+import org.apache.commons.lang.StringUtils;
+import org.apache.http.client.ClientProtocolException;
+import org.apache.log4j.Logger;
+import org.bson.types.ObjectId;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
+
+import com.db.backstage.TeacherApproveDao;
 import com.db.backstage.UserLogResultDao;
 import com.db.user.NewVersionUserRoleDao;
+import com.db.user.UserDao;
 import com.easemob.server.EaseMobAPI;
 import com.fulaan.account.service.AccountService;
 import com.fulaan.annotation.ObjectIdType;
@@ -9,7 +50,11 @@ import com.fulaan.annotation.SessionNeedless;
 import com.fulaan.annotation.UserRoles;
 import com.fulaan.base.BaseController;
 import com.fulaan.cache.CacheHandler;
-import com.fulaan.forum.service.*;
+import com.fulaan.forum.service.FCollectionService;
+import com.fulaan.forum.service.FLevelService;
+import com.fulaan.forum.service.FLogService;
+import com.fulaan.forum.service.FMissionService;
+import com.fulaan.forum.service.FScoreService;
 import com.fulaan.friendscircle.service.FriendService;
 import com.fulaan.integral.service.IntegralSufferService;
 import com.fulaan.log.service.LogService;
@@ -31,6 +76,7 @@ import com.pojo.app.IdValuePairDTO;
 import com.pojo.app.Platform;
 import com.pojo.app.RegionEntry;
 import com.pojo.app.SessionValue;
+import com.pojo.backstage.TeacherApproveEntry;
 import com.pojo.backstage.UserLogResultEntry;
 import com.pojo.educationbureau.EducationBureauEntry;
 import com.pojo.fcommunity.RemarkEntry;
@@ -51,40 +97,22 @@ import com.sys.exceptions.IllegalParamException;
 import com.sys.exceptions.UnLoginException;
 import com.sys.mails.MailUtils;
 import com.sys.props.Resources;
-import com.sys.utils.*;
+import com.sys.utils.DateTimeUtils;
+import com.sys.utils.HttpClientUtils;
+import com.sys.utils.MD5Utils;
+import com.sys.utils.RespObj;
+import com.sys.utils.ValidationUtils;
+
 import fulaan.social.connect.Auth;
 import fulaan.social.exception.ConnectException;
 import fulaan.social.factory.AuthFactory;
 import fulaan.social.model.AuthType;
 import fulaan.social.model.UserInfo;
-import io.swagger.annotations.*;
-import org.apache.commons.io.FileUtils;
-import org.apache.commons.lang.StringUtils;
-import org.apache.http.client.ClientProtocolException;
-import org.apache.log4j.Logger;
-import org.bson.types.ObjectId;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.ResponseBody;
-import org.springframework.web.servlet.mvc.support.RedirectAttributes;
-
-import javax.annotation.Resource;
-import javax.servlet.http.Cookie;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-import java.io.File;
-import java.io.IOException;
-import java.io.PrintWriter;
-import java.io.UnsupportedEncodingException;
-import java.net.URLDecoder;
-import java.net.URLEncoder;
-import java.text.Collator;
-import java.text.MessageFormat;
-import java.text.SimpleDateFormat;
-import java.util.*;
+import io.swagger.annotations.Api;
+import io.swagger.annotations.ApiOperation;
+import io.swagger.annotations.ApiParam;
+import io.swagger.annotations.ApiResponse;
+import io.swagger.annotations.ApiResponses;
 
 
 /**
@@ -136,6 +164,10 @@ public class WebUserController extends BaseController {
     private UserLogResultDao userLogResultDao = new UserLogResultDao();
 
     private IntegralSufferService integralSufferService = new IntegralSufferService();
+    
+    private UserDao userDao = new UserDao();
+    
+    private TeacherApproveDao teacherApproveDao = new TeacherApproveDao();
 
     private Auth qqAuth = AuthFactory.getAuth(AuthType.QQ);
     private Auth wechatAuth = AuthFactory.getAuth(AuthType.WECHAT);
@@ -2023,6 +2055,13 @@ public class WebUserController extends BaseController {
             model.put("nickName", sessionValue.getUserName());
         } else {
             model.put("nickName", sessionValue.getRealName());
+        }
+        model.put("nickName", userDao.getUserEntry(new ObjectId(sessionValue.getId()), Constant.FIELDS).getNickName());
+        TeacherApproveEntry teacherApproveEntry = teacherApproveDao.getEntry(new ObjectId(sessionValue.getId()));
+        if(teacherApproveEntry!=null && teacherApproveEntry.getType()==2){
+            model.put("isRen",1);
+        }else{
+            model.put("isRen",0);
         }
         String temp = request.getParameter("pSectionId");
         if (null != temp && !"".equals(temp)) {

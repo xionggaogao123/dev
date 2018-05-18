@@ -729,7 +729,7 @@ public class NewVersionBindService {
                     throw new Exception("系统异常！");
                 }
             } else {
-                throw new Exception("已存在该条学生信息！");
+                throw new Exception("该孩子姓名已添加！");
             }
             
             
@@ -853,7 +853,7 @@ public class NewVersionBindService {
                 newVersionCommunityBindDao.saveEntry(entry);
                 newVersionCommunityBindDao.updateEntryStatus(entry.getID());
             }else{
-                throw new Exception("该班级姓名已用过!");
+                throw new Exception("该孩子姓名已添加!");
             }
         }else{
             VirtualUserEntry virtualUserEntry = virtualUserDao.findByNamesOnly(communityId,thirdName);
@@ -881,7 +881,7 @@ public class NewVersionBindService {
                 newVersionCommunityBindDao.saveEntry(entry);
                 newVersionCommunityBindDao.updateEntryStatus(entry.getID());
             }else{
-                throw new Exception("该班级姓名已用过!");
+                throw new Exception("该孩子姓名已添加!");
             }
         }else{
             VirtualUserEntry virtualUserEntry = virtualUserDao.findByNames(communityId,thirdName,number);

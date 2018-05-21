@@ -2,11 +2,14 @@ package com.fulaan.newVersionBind.controller;
 
 import com.fulaan.annotation.ObjectIdType;
 import com.fulaan.base.BaseController;
+import com.fulaan.cache.CacheHandler;
 import com.fulaan.newVersionBind.dto.*;
 import com.fulaan.newVersionBind.service.NewVersionBindService;
 import com.fulaan.operation.dto.GroupOfCommunityDTO;
 import com.fulaan.operation.service.AppCommentService;
+import com.fulaan.service.MemberService;
 import com.fulaan.wrongquestion.dto.SubjectClassDTO;
+import com.pojo.app.SessionValue;
 import com.pojo.user.TeacherSubjectBindDTO;
 import com.sys.constants.Constant;
 import com.sys.utils.RespObj;
@@ -41,6 +44,8 @@ public class DefaultBindController extends BaseController {
 
     @Autowired
     private AppCommentService appCommentService;
+    @Autowired
+    private MemberService memberService;
 
 
     /**
@@ -109,6 +114,13 @@ public class DefaultBindController extends BaseController {
     ){
         RespObj respObj = new RespObj(Constant.FAILD_CODE);
         try{
+            SessionValue sv = getSessionValue();
+            sv.setAvatar(avatar + "?v=1");
+            sv.setUserName(nickName);
+            String userKey = CacheHandler.getUserKey(sv.getId());
+            CacheHandler.cacheSessionValue(userKey,
+                    sv, Constant.SECONDS_IN_HALF_YEAR);
+            memberService.updateAllAvatar(new ObjectId(sv.getId()),avatar);
             newVersionBindService.saveBindUserDetail(bindId, sex, birthDate, avatar,
                     nickName, personalSignature);
             respObj.setCode(Constant.SUCCESS_CODE);

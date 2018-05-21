@@ -383,6 +383,29 @@ public class ControlPhoneController extends BaseController {
     @ApiResponses( value = {@ApiResponse(code = 200, message = "Successful — 请求已完成",response = String.class),
             @ApiResponse(code = 400, message = "请求中有语法问题，或不能满足请求"),
             @ApiResponse(code = 500, message = "服务器不能完成请求")})
+    @RequestMapping("/acceptOldAppResultList")
+    @ResponseBody
+    public String acceptOldAppResultList(@ApiParam(name = "dto", required = true, value = "应用使用情况list") @RequestBody ResultAppDTO dto){
+        RespObj respObj=new RespObj(Constant.FAILD_CODE);
+        try {
+            respObj.setCode(Constant.SUCCESS_CODE);
+            long time = controlPhoneService.acceptOldAppResultList(dto,getUserId());
+            respObj.setMessage(time);
+        } catch (Exception e) {
+            e.printStackTrace();
+            respObj.setCode(Constant.FAILD_CODE);
+            respObj.setErrorMessage("定时接受孩子的应用使用情况失败!");
+        }
+        return JSON.toJSONString(respObj);
+    }
+
+    /**
+     * （新）定时接受孩子的应用使用情况
+     */
+    @ApiOperation(value = "定时接受孩子的应用使用情况", httpMethod = "POST", produces = "application/json")
+    @ApiResponses( value = {@ApiResponse(code = 200, message = "Successful — 请求已完成",response = String.class),
+            @ApiResponse(code = 400, message = "请求中有语法问题，或不能满足请求"),
+            @ApiResponse(code = 500, message = "服务器不能完成请求")})
     @RequestMapping("/acceptAppResultList")
     @ResponseBody
     public String acceptAppResultList(@ApiParam(name = "dto", required = true, value = "应用使用情况list") @RequestBody ResultAppDTO dto){

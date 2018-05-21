@@ -988,6 +988,8 @@ public class Constant {
     public static final String COLLECTION_CONTROL_APP_SYSTEM= "controlappsystem";
     //系统默认推送应用列表
     public static final String COLLECTION_CONTROL_VERSION= "controlversion";
+    //管控学生数据缓存表
+    public static final String COLLECTION_CONTROL_STUDENT_RESULT= "controlstudentresult";
 
     /*********************************后台管理*******************************************/
     //图片鉴黄和垃圾文本

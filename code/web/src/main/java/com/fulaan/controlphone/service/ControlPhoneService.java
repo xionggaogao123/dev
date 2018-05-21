@@ -739,7 +739,7 @@ public class ControlPhoneService {
             map.put("allTime","暂未使用");
             return map;
         }
-        List<ControlAppResultEntry> entries = controlAppResultDao.getNewNewEntryList(sonId, parentId, entry6.getNewAppTime());
+        List<ControlAppResultEntry> entries = controlAppResultDao.getLinNewNewEntryList(sonId, parentId, entry6.getNewAppTime());
         if(entries.size()>0){
             int i = 0;
             long dtm = 0l;
@@ -3914,6 +3914,8 @@ public class ControlPhoneService {
         //导入新纪录
         if(dbList.size()>0) {
             controlAppResultDao.addBatch(dbList);
+            //导入缓存记录
+            controlAppResultDao.addLinBatch(dbList);
         }
     }
 

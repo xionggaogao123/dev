@@ -1125,6 +1125,21 @@ public class NewVersionBindService {
 
         }
     }
+    
+    public NewVersionBindRelationEntry getUserEntryByPhone(String phone) throws Exception{
+        UserEntry u = userDao.getEntryByPhone(phone);
+        if (u != null) {
+            NewVersionBindRelationEntry n = newVersionBindRelationDao.getBindEntry(u.getID());
+            if (n !=null) {
+                return n;
+            } else {
+                throw new Exception("绑定关系不存在！");
+            }
+        } else {
+            throw new Exception("该用户不存在！");
+        }
+        
+    }
 
 
     /**

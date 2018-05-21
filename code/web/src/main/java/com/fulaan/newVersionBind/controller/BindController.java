@@ -1,15 +1,6 @@
 package com.fulaan.newVersionBind.controller;
 
-import com.fulaan.annotation.ObjectIdType;
-import com.fulaan.base.BaseController;
-import com.fulaan.newVersionBind.dto.NewVersionBindRelationDTO;
-import com.fulaan.newVersionBind.service.NewVersionBindService;
-import com.fulaan.operation.service.AppCommentService;
-import com.fulaan.wrongquestion.dto.SubjectClassDTO;
-import com.pojo.user.TeacherSubjectBindDTO;
-import com.sys.constants.Constant;
-import com.sys.utils.RespObj;
-import io.swagger.annotations.*;
+import java.util.List;
 
 import org.apache.commons.lang.StringUtils;
 import org.bson.types.ObjectId;
@@ -20,7 +11,22 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
-import java.util.List;
+import com.fulaan.annotation.ObjectIdType;
+import com.fulaan.base.BaseController;
+import com.fulaan.newVersionBind.dto.NewVersionBindRelationDTO;
+import com.fulaan.newVersionBind.service.NewVersionBindService;
+import com.fulaan.operation.service.AppCommentService;
+import com.fulaan.wrongquestion.dto.SubjectClassDTO;
+import com.pojo.user.NewVersionBindRelationEntry;
+import com.pojo.user.TeacherSubjectBindDTO;
+import com.sys.constants.Constant;
+import com.sys.utils.RespObj;
+
+import io.swagger.annotations.Api;
+import io.swagger.annotations.ApiOperation;
+import io.swagger.annotations.ApiParam;
+import io.swagger.annotations.ApiResponse;
+import io.swagger.annotations.ApiResponses;
 
 /**
  * Created by scott on 2017/9/5.
@@ -218,6 +224,35 @@ public class BindController extends BaseController {
         }
         return respObj;
     }
+    
+    /**
+    *
+    * @param parentId
+    * @param studentId
+    * @return
+    */
+   @ApiOperation(value = "个人中心解除绑定", httpMethod = "POST", produces = "application/json")
+   @ApiResponses( value = {@ApiResponse(code = 200, message = "Successful — 请求已完成",response = String.class),
+           @ApiResponse(code = 500, message = "服务器不能完成请求")})
+   @RequestMapping("/delEntryByPhone")
+   @ResponseBody
+   public RespObj delNewVersionEntryByPhone(@ApiParam(name = "phone", required = true, value = "电话号码") @RequestParam("phone") String phone){
+       RespObj respObj = new RespObj(Constant.FAILD_CODE);
+       try{
+           NewVersionBindRelationEntry n = newVersionBindService.getUserEntryByPhone(phone);
+
+           newVersionBindService.delNewVersionEntry(n.getMainUserId(), n.getUserId());
+           respObj.setCode(Constant.SUCCESS_CODE);
+           respObj.setMessage("解除绑定成功!");
+  
+           
+       }catch (Exception e){
+           respObj.setMessage(e.getMessage());
+       }
+       return respObj;
+   }
+    
+    
 
 
     @ApiOperation(value = "获取某个社区下绑定的孩子有哪些", httpMethod = "GET", produces = "application/json")

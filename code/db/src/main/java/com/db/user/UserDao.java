@@ -149,6 +149,12 @@ public class UserDao extends BaseDao {
         DBObject dbo = findOne(MongoFacroty.getAppDB(), Constant.COLLECTION_USER_NAME, query, Constant.FIELDS);
         return dbo == null ? null : new UserEntry(dbo);
     }
+    
+    public UserEntry getEntryByPhone(String phone){
+        BasicDBObject query = new BasicDBObject("mn", phone);
+        DBObject dbo = findOne(MongoFacroty.getAppDB(), Constant.COLLECTION_USER_NAME, query, Constant.FIELDS);
+        return dbo == null ? null : new UserEntry(dbo);
+    }
 
 
     /**

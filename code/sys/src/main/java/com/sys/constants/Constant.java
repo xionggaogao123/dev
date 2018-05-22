@@ -974,6 +974,8 @@ public class Constant {
     public static final String COLLECTION_CONTROL_MAP = "controlmap";
     //管控应用使用记录表
     public static final String COLLECTION_CONTROL_APP_RESULT = "controlappresult";
+    //管控应用使用记录缓存表
+    public static final String COLLECTION_CONTROL_APP_RESULT_CURRENT = "controlappresult_current";
     //信息表
     public static final String COLLECTION_CONTROL_MESSAGE= "controlmessage";
     //管控时间设置表
@@ -988,6 +990,8 @@ public class Constant {
     public static final String COLLECTION_CONTROL_APP_SYSTEM= "controlappsystem";
     //系统默认推送应用列表
     public static final String COLLECTION_CONTROL_VERSION= "controlversion";
+    //管控学生数据缓存表
+    public static final String COLLECTION_CONTROL_STUDENT_RESULT= "controlstudentresult";
 
     /*********************************后台管理*******************************************/
     //图片鉴黄和垃圾文本

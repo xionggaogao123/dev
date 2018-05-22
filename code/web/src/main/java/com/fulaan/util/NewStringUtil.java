@@ -33,9 +33,9 @@ public class NewStringUtil {
                 case '\f':
                     res.append("\\f");
                     break;
-                case '\n':
+               /* case '\n':
                     res.append("\\n");
-                    break;
+                    break;*/
                 case '\r':
                     res.append("\\r");
                     break;

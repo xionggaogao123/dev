@@ -88,6 +88,8 @@ public class ControlPhoneService {
 
     private ControlVersionDao controlVersionDao = new ControlVersionDao();
 
+    private ControlStudentResultDao controlStudentResultDao = new ControlStudentResultDao();
+
     @Autowired
     private NewVersionBindService newVersionBindService;
     @Autowired
@@ -458,7 +460,7 @@ public class ControlPhoneService {
         }
     }
     //接受应用使用1情况记录表
-    public long acceptAppResultList(ResultAppDTO dto,ObjectId userId){
+    public long acceptOldAppResultList(ResultAppDTO dto,ObjectId userId){
         List<ControlAppResultDTO> dtos = dto.getAppList();
         NewVersionBindRelationEntry newEntry = newVersionBindRelationDao.getBindEntry(userId);
         long current = System.currentTimeMillis();
@@ -494,6 +496,48 @@ public class ControlPhoneService {
         return entr.getBackTime();
     }
 
+    //新接受应用使用1情况记录表
+    public long acceptAppResultList(ResultAppDTO dto,ObjectId userId){
+        List<ControlAppResultDTO> dtos = dto.getAppList();
+        NewVersionBindRelationEntry newEntry = newVersionBindRelationDao.getBindEntry(userId);
+        if(newEntry==null || newEntry.getMainUserId()==null){
+            return 0l;
+        }
+        ObjectId parentId = newEntry.getMainUserId();
+        long current = System.currentTimeMillis();
+        //获得时间批次(时间批次)
+        String str = DateTimeUtils.getLongToStrTimeTwo(current).substring(0,10);
+        long zero = DateTimeUtils.getStrToLongTime(str, "yyyy-MM-dd");
+        //分割点
+        long jiedian = zero+8*60*60*1000;//今天零点零分零秒的毫秒数
+        long datetime = 0l;
+        if(current>=jiedian){
+            //今日
+            datetime = zero;
+        }else{
+            //昨日
+            datetime = zero- 24*60*60*1000;
+        }
+        if(dtos != null && dtos.size()>0){
+            this.addRedDotEntryBatch(dtos,userId,parentId,current,dto.getAddiction());
+        }
+        //变更最新数据
+        ControlStudentResultEntry controlStudentResultEntry = controlStudentResultDao.getEntry(userId,parentId,datetime);
+        if(controlStudentResultEntry==null){
+            //添加
+            ControlStudentResultEntry entry3 = new ControlStudentResultEntry(parentId,userId,dto.getAddiction(),current,current,datetime);
+            controlStudentResultDao.addEntry(entry3);
+        }else{
+            //修改
+            controlStudentResultDao.updateEntry(controlStudentResultEntry.getID(),dto.getAddiction(), current, current);
+        }
+        ControlTimeEntry entr = controlTimeDao.getEntryByUserId(userId);
+        if(entr ==null){
+            return 0l;
+        }
+        return entr.getBackTime();
+    }
+
     public Map<String,Object> seacherAppResultList(ObjectId parentId,ObjectId sonId,long time){
         Map<String,Object> map = new HashMap<String, Object>();
         //防沉迷时间
@@ -512,10 +556,19 @@ public class ControlPhoneService {
             timeStr = timeStr + minutes2+"分钟";
         }
         map.put("time",timeStr);
-        long startTime = time +8*60*60*1000;
-        long endTime = time +8*60*60*1000 + 24*60*60*1000;
-        List<ControlAppResultEntry> entries = controlAppResultDao.getIsNewEntryList(sonId,startTime,endTime);
         List<ControlAppResultDTO> dtos = new ArrayList<ControlAppResultDTO>();
+        //修改   todo
+      /*  long startTime = time +8*60*60*1000;
+        long endTime = time +8*60*60*1000 + 24*60*60*1000;
+        List<ControlAppResultEntry> entries = controlAppResultDao.getIsNewEntryList(sonId,startTime,endTime);*/
+        //查询最新使用使用时间
+        ControlStudentResultEntry entry6 = controlStudentResultDao.getEntry(sonId, parentId, time);
+        if(entry6==null){
+            map.put("list",dtos);
+            map.put("allTime","暂未使用");
+            return map;
+        }
+        List<ControlAppResultEntry> entries = controlAppResultDao.getNewNewEntryList(sonId, parentId, entry6.getNewAppTime());
         if(entries.size()>0){
             int i = 0;
             long dtm = 0l;
@@ -673,10 +726,20 @@ public class ControlPhoneService {
             timeStr = timeStr + minutes2+"分钟";
         }
         map.put("time",timeStr);
-        long startTime = time +8*60*60*1000;
-        long endTime = time +8*60*60*1000 + 24*60*60*1000;
-        List<ControlAppResultEntry> entries = controlAppResultDao.getIsNewEntryList(sonId,startTime,endTime);
         List<ControlAppResultDTO> dtos = new ArrayList<ControlAppResultDTO>();
+        //修改 TODO
+        /*long startTime = time +8*60*60*1000;
+        long endTime = time +8*60*60*1000 + 24*60*60*1000;
+        List<ControlAppResultEntry> entries = controlAppResultDao.getIsNewEntryList(sonId,startTime,endTime);*/
+        //查询最新使用使用时间
+        //查询最新使用使用时间
+        ControlStudentResultEntry entry6 = controlStudentResultDao.getEntry(sonId, parentId, time);
+        if(entry6==null){
+            map.put("list",dtos);
+            map.put("allTime","暂未使用");
+            return map;
+        }
+        List<ControlAppResultEntry> entries = controlAppResultDao.getLinNewNewEntryList(sonId, parentId, entry6.getNewAppTime());
         if(entries.size()>0){
             int i = 0;
             long dtm = 0l;
@@ -920,7 +983,8 @@ public class ControlPhoneService {
         long zero = DateTimeUtils.getStrToLongTime(str, "yyyy-MM-dd");
         //分割点
         long jiedian = zero+8*60*60*1000;//今天零点零分零秒的毫秒数
-        long startTime = 0l;
+        //修改  todo
+      /*  long startTime = 0l;
         long endTime = 0l;
         if(current>=jiedian){
             startTime = jiedian;
@@ -928,11 +992,20 @@ public class ControlPhoneService {
         }else{
             startTime = jiedian - 24*60*60*1000;
             endTime = jiedian;
+        }*/
+        long datetime = 0l;
+        if(current>=jiedian){
+            //今日
+            datetime = zero;
+        }else{
+            //昨日
+            datetime = zero- 24*60*60*1000;
         }
        // ControlMapEntry entry = controlMapDao.getEntryByParentId(parentId, sonId, zero);
        /* if (entry != null) {
             map.put("dto",new ControlMapDTO(entry));
         } else {*/
+        //废弃数据
             ControlMapDTO controlMapDTO =new ControlMapDTO();
             controlMapDTO.setId("");
             controlMapDTO.setUserId("");
@@ -987,7 +1060,12 @@ public class ControlPhoneService {
         }
         map.put("time",timecu/60000);
         //使用时间
-        long useTime  = controlAppResultDao.getUserAllTime(sonId, startTime,endTime);
+       // long useTime  = controlAppResultDao.getUserAllTime(sonId, startTime,endTime);
+        ControlStudentResultEntry controlStudentResultEntry = controlStudentResultDao.getEntry(sonId,parentId,datetime);
+        long useTime = 0l;
+        if(controlStudentResultEntry!=null){
+            useTime = controlStudentResultEntry.getNewAppUser();
+        }
         map.put("useTime",useTime/60000);
         //剩余时间
         if(timecu/60000-useTime/60000 <0){
@@ -3836,6 +3914,8 @@ public class ControlPhoneService {
         //导入新纪录
         if(dbList.size()>0) {
             controlAppResultDao.addBatch(dbList);
+            //导入缓存记录
+            controlAppResultDao.addLinBatch(dbList);
         }
     }
 

@@ -24,6 +24,15 @@ public class ControlAppResultDao extends BaseDao {
     public void addBatch(List<DBObject> list) {
         save(MongoFacroty.getAppDB(), Constant.COLLECTION_CONTROL_APP_RESULT, list);
     }
+
+    /**
+     * 批量保存缓存表
+     *
+     * @param list
+     */
+    public void addLinBatch(List<DBObject> list) {
+        save(MongoFacroty.getAppDB(), Constant.COLLECTION_CONTROL_APP_RESULT_CURRENT, list);
+    }
     //添加
     public String addEntry(ControlAppResultEntry entry) {
         save(MongoFacroty.getAppDB(), Constant.COLLECTION_CONTROL_APP_RESULT, entry.getBaseEntry());
@@ -61,6 +70,42 @@ public class ControlAppResultDao extends BaseDao {
         query.append(Constant.MONGO_AND,dblist);
         query.append("uid",userId);
         List<DBObject> dboList=find(MongoFacroty.getAppDB(), Constant.COLLECTION_CONTROL_APP_RESULT, query, Constant.FIELDS,new BasicDBObject("utm",Constant.DESC));
+        List<ControlAppResultEntry> retList =new ArrayList<ControlAppResultEntry>();
+        if(null!=dboList && !dboList.isEmpty())
+        {
+            for(DBObject dbo:dboList)
+            {
+                retList.add(new ControlAppResultEntry((BasicDBObject)dbo));
+            }
+        }
+        return retList;
+    }
+
+    public List<ControlAppResultEntry> getNewNewEntryList(ObjectId userId,ObjectId parentId,long dateTime) {
+        BasicDBObject query =new BasicDBObject();
+        query.append("isr", Constant.ZERO);
+        query.append("uid",userId);
+        query.append("pid",parentId);
+        query.append("dtm",dateTime);
+        List<DBObject> dboList=find(MongoFacroty.getAppDB(), Constant.COLLECTION_CONTROL_APP_RESULT, query, Constant.FIELDS,new BasicDBObject("utm",Constant.DESC));
+        List<ControlAppResultEntry> retList =new ArrayList<ControlAppResultEntry>();
+        if(null!=dboList && !dboList.isEmpty())
+        {
+            for(DBObject dbo:dboList)
+            {
+                retList.add(new ControlAppResultEntry((BasicDBObject)dbo));
+            }
+        }
+        return retList;
+    }
+
+    public List<ControlAppResultEntry> getLinNewNewEntryList(ObjectId userId,ObjectId parentId,long dateTime) {
+        BasicDBObject query =new BasicDBObject();
+        query.append("isr", Constant.ZERO);
+        query.append("uid",userId);
+        query.append("pid",parentId);
+        query.append("dtm",dateTime);
+        List<DBObject> dboList=find(MongoFacroty.getAppDB(), Constant.COLLECTION_CONTROL_APP_RESULT_CURRENT, query, Constant.FIELDS,new BasicDBObject("utm",Constant.DESC));
         List<ControlAppResultEntry> retList =new ArrayList<ControlAppResultEntry>();
         if(null!=dboList && !dboList.isEmpty())
         {

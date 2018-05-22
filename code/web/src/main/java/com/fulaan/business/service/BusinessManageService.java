@@ -414,7 +414,7 @@ public class BusinessManageService {
         if(businessRoleEntry==null){
             return;
         }
-        List<String> list = businessRoleEntry.getRoleType();
+        List<String> list =new ArrayList<String>();
         String[] str = number.split(",");
         for(int i =1;i<str.length;i++){
             if(list.contains(str[i])){

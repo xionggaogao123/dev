@@ -416,7 +416,7 @@ public class BusinessManageService {
         }
         List<String> list =new ArrayList<String>();
         String[] str = number.split(",");
-        for(int i =1;i<str.length;i++){
+        for(int i =0;i<str.length;i++){
             if(list.contains(str[i])){
 
             }else{

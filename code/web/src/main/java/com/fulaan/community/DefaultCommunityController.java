@@ -1172,7 +1172,12 @@ public class DefaultCommunityController extends BaseController {
         }
         CommunityDTO dto = communityService.findByObjectId(communityId);
         if (!"复兰社区".equals(dto.getName())) {
-            backStageService.setAutoFriends(userId,groupId);
+            List<ObjectId> oids = businessRoleDao.getObjectIdList();
+            //非运营成员自动成为好友
+            if(!oids.contains(userId)){
+                backStageService.setAutoFriends(userId,groupId,oids);
+            }
+
         }
         return true;
     }

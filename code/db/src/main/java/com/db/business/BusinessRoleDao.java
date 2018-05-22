@@ -5,6 +5,7 @@ import com.db.factory.MongoFacroty;
 import com.mongodb.BasicDBObject;
 import com.mongodb.DBObject;
 import com.pojo.business.BusinessRoleEntry;
+import com.pojo.business.RoleType;
 import com.sys.constants.Constant;
 import org.bson.types.ObjectId;
 
@@ -55,6 +56,24 @@ public class BusinessRoleDao extends BaseDao {
             for(DBObject dbo:dboList)
             {
                 retList.add(new BusinessRoleEntry((BasicDBObject)dbo));
+            }
+        }
+        return retList;
+    }
+
+    public List<ObjectId> getObjectIdList() {
+        BasicDBObject query =new BasicDBObject();
+        query.append("isr", Constant.ZERO);
+        List<DBObject> dboList=find(MongoFacroty.getAppDB(), Constant.COLLECTION_BUSINESS_ROLE, query, Constant.FIELDS,new BasicDBObject("ctm",Constant.DESC));
+        List<ObjectId> retList =new ArrayList<ObjectId>();
+        if(null!=dboList && !dboList.isEmpty())
+        {
+            for(DBObject dbo:dboList)
+            {
+                BusinessRoleEntry entry = new BusinessRoleEntry((BasicDBObject)dbo);
+                if(entry.getRoleType() !=null && entry.getRoleType().contains(RoleType.noFriend.getEname())){
+                    retList.add(entry.getUserId());
+                }
             }
         }
         return retList;

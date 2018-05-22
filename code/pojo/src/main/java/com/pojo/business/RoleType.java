@@ -7,7 +7,8 @@ public enum RoleType {
 
     updateCommunityName(1,"修改群名称", "updateCommunityName"),
     commentAndZan(2,"刷赞和评论","commentAndZan"),
-    communityTalk(3,"简易社群会话","communityTalk");
+    communityTalk(3,"简易社群会话","communityTalk"),
+    noFriend(4,"自动不成为好友","noFriend");
 
 
 

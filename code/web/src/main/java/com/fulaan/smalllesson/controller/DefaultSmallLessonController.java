@@ -600,7 +600,7 @@ public class DefaultSmallLessonController extends BaseController {
             if(count>0 && loginTokenEntry.getStatus()){
                 respObj.setMessage("二维码扫描成功！积分经验值+"+count);
             }else{
-                respObj.setMessage("登陆成功！");
+                respObj.setMessage("登录成功！");
             }
 
         } catch (Exception e) {

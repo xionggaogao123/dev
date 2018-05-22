@@ -142,9 +142,11 @@ public class DefaultGroupController extends BaseController {
         }
         MemberDTO mine = memberService.getUser(groupId, getUserId());
         BusinessRoleEntry businessRoleEntry = businessRoleDao.getEntry(getUserId());
-        //权限判断 todo true  3 运营人员
+        //权限判断 todo  0 普通成员 1 副社长  2 群主  3 运营人员（为1 、2 时 不判断 3 ）
         if(businessRoleEntry !=null && businessRoleEntry.getRoleType().contains(RoleType.updateCommunityName.getEname())){
-            mine.setRole(3);
+            if(mine.getRole()==0){
+                mine.setRole(3);
+            }
         }
         groupDTO.setCount(memberService.getMemberCount(groupId));
         groupDTO.setMine(mine);
@@ -295,12 +297,16 @@ public class DefaultGroupController extends BaseController {
 
             //自动加为好友(社群拉人自动加为好友)
             if(groupDTO.isBindCommunity()) {
+                //去除所有运营成员
+                List<ObjectId> oids = businessRoleDao.getObjectIdList();
+                userList.removeAll(oids);
+
                 List<String> keysList=MongoUtils.convertToStringList(userList);
                 if(keysList.size()>0) {
                     List<ObjectId> communityIds = new ArrayList<ObjectId>();
                     communityIds.add(groupEntry.getCommunityId());
                     String[] keys = keysList.toArray(new String[keysList.size()]);
-                    backStageService.recordEntries2(groupEntry.getID(),keys,30);
+                    backStageService.recordEntries2(groupEntry.getID(),keys,30,oids);
                     //backStageService.setAutoChildFriends(keys,communityIds);
                 }
             }
@@ -321,7 +327,7 @@ public class DefaultGroupController extends BaseController {
     /**
      * 扫码入群
      */
-    @ApiOperation(value = "群主邀请人进群", httpMethod = "POST", produces = "application/json")
+    @ApiOperation(value = "扫码入群", httpMethod = "POST", produces = "application/json")
     @ApiResponses( value = {@ApiResponse(code = 200, message = "Successful — 请求已完成",response = RespObj.class)})
     @RequestMapping("/saoInviteMember")
     @ResponseBody
@@ -369,12 +375,16 @@ public class DefaultGroupController extends BaseController {
             }
             //自动加为好友(社群拉人自动加为好友)
             if(groupDTO.isBindCommunity()) {
+                //去除所有运营成员
+                List<ObjectId> oids = businessRoleDao.getObjectIdList();
+                userList.removeAll(oids);
+
                 List<String> keysList=MongoUtils.convertToStringList(userList);
                 if(keysList.size()>0) {
                     List<ObjectId> communityIds = new ArrayList<ObjectId>();
                     communityIds.add(groupEntry.getCommunityId());
                     String[] keys = keysList.toArray(new String[keysList.size()]);
-                    backStageService.recordEntries2(groupEntry.getID(),keys,30);
+                    backStageService.recordEntries2(groupEntry.getID(),keys,30,oids);
                     //backStageService.setAutoChildFriends(keys,communityIds);
                 }
             }
@@ -453,9 +463,9 @@ public class DefaultGroupController extends BaseController {
         ObjectId groupId = groupService.getGroupIdByChatId(emChatId);
         GroupDTO groupDTO = groupService.findById(groupId,getUserId());
         ObjectId userId = getUserId();
-        if (!memberService.isManager(groupId, userId)) {
+       /* if (!memberService.isManager(groupId, userId)) {
             return RespObj.FAILD("您没有这个权限");
-        }
+        }*/
         List<ObjectId> userList = MongoUtils.convertObjectIds(userIds);
         if (userList.contains(userId)) {
             userList.remove(userId);
@@ -759,7 +769,10 @@ public class DefaultGroupController extends BaseController {
         ObjectId userId = getUserId();
         ObjectId groupId = groupService.getGroupIdByChatId(emChatId);
         if (!memberService.isManager(groupId, userId)) {
-            return RespObj.FAILD("对不起，您没有此权限");
+            BusinessRoleEntry businessRoleEntry = businessRoleDao.getEntry(getUserId());
+            if(businessRoleEntry==null || !businessRoleEntry.getRoleType().contains(RoleType.updateCommunityName.getEname())){
+                return RespObj.FAILD("对不起，您没有此权限");
+            }
         }
         if (groupName.equals("复兰大学")) {
             return RespObj.FAILD("对不起，此群聊名已被使用");

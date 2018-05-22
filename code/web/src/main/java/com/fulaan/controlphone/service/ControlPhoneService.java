@@ -726,6 +726,7 @@ public class ControlPhoneService {
             timeStr = timeStr + minutes2+"分钟";
         }
         map.put("time",timeStr);
+        map.put("intTime",timecu);
         List<ControlAppResultDTO> dtos = new ArrayList<ControlAppResultDTO>();
         //修改 TODO
         /*long startTime = time +8*60*60*1000;

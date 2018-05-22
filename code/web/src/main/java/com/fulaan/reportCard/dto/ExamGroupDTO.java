@@ -18,6 +18,7 @@ public class ExamGroupDTO {
     private int excellentScore;
     private String examStrTime;
     private int showType;
+    private int pmType;
      
 
     public ExamGroupDTO(){
@@ -39,6 +40,7 @@ public class ExamGroupDTO {
         detailDTO.setExamStrTime(this.examStrTime);
         detailDTO.setShowType(this.showType);
         detailDTO.setLrType(lrType);
+        detailDTO.setPmType(pmType);
         return detailDTO;
     }
 
@@ -48,6 +50,18 @@ public class ExamGroupDTO {
 
     public void setId(String id) {
         this.id = id;
+    }
+
+    
+    
+    
+
+    public int getPmType() {
+        return pmType;
+    }
+
+    public void setPmType(int pmType) {
+        this.pmType = pmType;
     }
 
     public String getGroupId() {

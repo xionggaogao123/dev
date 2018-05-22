@@ -63,7 +63,10 @@ public class GroupExamDetailDTO {
     private int status;//状态 0保存 1删除 2发送（未签字）3已签字
     private boolean isOwner;
     private int showType;
+    //录入方式
     private int lrType;
+    //是否显示排名  0家长可见1家长不可见
+    private int pmType;
 
     public GroupExamDetailDTO(){
 
@@ -92,7 +95,7 @@ public class GroupExamDetailDTO {
         }
         return new GroupExamDetailEntry(gId,
                 cId, examTypeId, recordScoreType, uid, examName,
-                sId, maxScore, qualifyScore, excellentScore, examTime,signCount,signedCount,showType,lrType);
+                sId, maxScore, qualifyScore, excellentScore, examTime,signCount,signedCount,showType,lrType,pmType);
     }
 
     public GroupExamDetailDTO(GroupExamDetailEntry entry){
@@ -115,6 +118,17 @@ public class GroupExamDetailDTO {
         this.examStrTime= DateTimeUtils.convert(entry.getExamTime(),DateTimeUtils.DATE_YYYY_MM_DD);
         this.showType = entry.getShowType();
         this.lrType = entry.getLrType();
+        this.pmType = entry.getPmType();
+    }
+    
+    
+
+    public int getPmType() {
+        return pmType;
+    }
+
+    public void setPmType(int pmType) {
+        this.pmType = pmType;
     }
 
     public boolean isOwner() {

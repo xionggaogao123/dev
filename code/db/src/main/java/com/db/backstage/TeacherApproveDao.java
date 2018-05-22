@@ -65,6 +65,25 @@ public class TeacherApproveDao extends BaseDao {
         return retList;
     }
 
+    public List<ObjectId> selectMap(List<ObjectId> userIds) {
+        BasicDBObject query =new BasicDBObject();
+        query.append("isr", Constant.ZERO);
+        query.append("uid",new BasicDBObject(Constant.MONGO_IN,userIds));
+        List<DBObject> dboList=find(MongoFacroty.getAppDB(), Constant.COLLECTION_TEACHER_APPROVE, query, Constant.FIELDS,new BasicDBObject("ctm",Constant.DESC));
+        List<ObjectId> oids  = new ArrayList<ObjectId>();
+        if(null!=dboList && !dboList.isEmpty())
+        {
+            for(DBObject dbo:dboList)
+            {
+                TeacherApproveEntry teacherApproveEntry = new TeacherApproveEntry((BasicDBObject)dbo);
+                if(teacherApproveEntry.getType()==2){
+                    oids.add(teacherApproveEntry.getUserId());
+                }
+            }
+        }
+        return oids;
+    }
+
     public List<ObjectId> selectContentObjectList() {
         BasicDBObject query =new BasicDBObject();
         query.append("isr", Constant.ZERO);

@@ -1,5 +1,6 @@
 package com.fulaan.referenceData.service;
 
+import com.db.backstage.TeacherApproveDao;
 import com.db.fcommunity.CommunityDao;
 import com.db.fcommunity.CommunityDetailDao;
 import com.db.fcommunity.MemberDao;
@@ -63,6 +64,9 @@ public class ReferenceDataService {
     private MemberDao  memberDao = new MemberDao();
 
     private NewVersionBindRelationDao newVersionBindRelationDao = new NewVersionBindRelationDao();
+
+
+    private TeacherApproveDao teacherApproveDao = new TeacherApproveDao();
 
 
 
@@ -174,6 +178,8 @@ public class ReferenceDataService {
         }
         objectIds.add(userId);
         Map<String, MemberEntry> memberMap = memberDao.getGroupNick(groupIdList, objectIds);
+        //查询是否大V
+        List<ObjectId> objectIdList1 = teacherApproveDao.selectMap(objectIds);
         for(ReferenceDataDTO dataDTO2 :dtos){
             ObjectId groupId = groupIds.get(new ObjectId(dataDTO2.getCommunityId()));
             MemberEntry entry1 = memberMap.get(groupId + "$" + new ObjectId(dataDTO2.getUserId()));
@@ -185,6 +191,12 @@ public class ReferenceDataService {
                     dataDTO2.setOperation(1);//发布人相同，可删除
                 }else{
                     dataDTO2.setOperation(0);//不可删除
+                    if(entry1.getRole()==0){//同为普通成员
+                        if(objectIdList1.contains(userId) && !objectIdList1.contains(new ObjectId(dataDTO2.getUserId()))){
+                            dataDTO2.setOperation(1);//我是大V        你不是
+                        }
+                    }
+
                 }
             }else{
                 dataDTO2.setOperation(0);//不可删除

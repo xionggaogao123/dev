@@ -66,7 +66,7 @@ public class IndexPageService {
                 dlist.add(new ObjectId(dto.getId()));
             }
         }*/
-       // dlist.add(userId);
+        dlist.add(userId);
         List<IndexPageEntry> entrys = indexPageDao.getPageList(dlist,userId, page, pageSize);
         int count = indexPageDao.countPageList(dlist,userId);
         //作业

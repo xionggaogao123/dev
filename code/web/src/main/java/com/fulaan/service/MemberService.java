@@ -1,5 +1,6 @@
 package com.fulaan.service;
 
+import com.db.backstage.TeacherApproveDao;
 import com.db.fcommunity.*;
 import com.db.user.NewVersionUserRoleDao;
 import com.db.user.UserDao;
@@ -7,6 +8,7 @@ import com.fulaan.community.dto.CommunityDTO;
 import com.fulaan.communityValidate.service.ValidateInfoService;
 import com.fulaan.dto.MemberDTO;
 import com.fulaan.pojo.PageModel;
+import com.pojo.backstage.TeacherApproveEntry;
 import com.pojo.fcommunity.CommunityEntry;
 import com.pojo.fcommunity.MemberEntry;
 import com.pojo.fcommunity.RemarkEntry;
@@ -43,6 +45,7 @@ public class MemberService {
 
     private NewVersionCommunityBindDao newVersionCommunityBindDao = new NewVersionCommunityBindDao();
 
+    private TeacherApproveDao teacherApproveDao = new TeacherApproveDao();
 
     @Autowired
     private ValidateInfoService validateInfoService;
@@ -512,12 +515,20 @@ public class MemberService {
         return mlist;
     }
 
-    public int judgePersonPermission(ObjectId userId){
+    public int judgePersonPermission(ObjectId userId){//1:老师 2:家长 3:老师与家长
         int status=0;
         if(memberDao.judgeIsParent(userId)){
             status = 2;
             if (getMyRoleList(userId).size() > 0) {
                 status = 3;
+            }
+            if(status==Constant.TWO){
+                //无副社长权限
+                //认证大V 给与权限
+                TeacherApproveEntry teacherApproveEntry = teacherApproveDao.getEntry(userId);
+                if(teacherApproveEntry!=null && teacherApproveEntry.getType()==Constant.TWO){
+                    status = 3;
+                }
             }
         }else{
             if(getMyRoleList(userId).size()>0){

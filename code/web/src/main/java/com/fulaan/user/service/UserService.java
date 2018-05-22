@@ -713,7 +713,7 @@ public class UserService extends BaseService {
         ObjectId oid = e.getID();
         ObjectId uid = userDao.addUserEntry(e);
         try{
-           // if(oid==null || oid.toString().equals("")){
+           if(oid==null || oid.toString().equals("")){
                 //添加系统信息
                 SystemMessageDTO dto = new SystemMessageDTO();
                 dto.setType(1);
@@ -738,7 +738,7 @@ public class UserService extends BaseService {
                 indexPageDao.addEntry(entry);
                 //sendTestMessage(uid.toString());
 
-           // }
+           }
         }catch (Exception ex){
         }
 

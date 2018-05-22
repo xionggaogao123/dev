@@ -1,6 +1,7 @@
 package com.fulaan.service;
 
 import com.db.backstage.SystemMessageDao;
+import com.db.backstage.TeacherApproveDao;
 import com.db.fcommunity.*;
 import com.db.indexPage.IndexPageDao;
 import com.db.referenceData.ReferenceDataDao;
@@ -99,6 +100,8 @@ public class CommunityService {
     private ReferenceDataDao referenceDataDao = new ReferenceDataDao();
 
     private ReferenceDataService referenceDataService = new ReferenceDataService();
+
+    private TeacherApproveDao teacherApproveDao = new TeacherApproveDao();
     private static final Logger logger = Logger.getLogger(CommunityService.class);
     /**
      * 创建社区
@@ -1362,6 +1365,8 @@ public class CommunityService {
             remarkEntryMap=remarkDao.find(userId,objectIds);
         }
         List<ObjectId> oblist = new ArrayList<ObjectId>();
+        //查询是否大V
+        List<ObjectId> objectIdList1 = teacherApproveDao.selectMap(objectIds);
         for (CommunityDetailEntry entry : entries) {
             UserEntry userEntry = map.get(entry.getCommunityUserId());
             CommunityDetailDTO communityDetailDTO = new CommunityDetailDTO(entry);
@@ -1379,6 +1384,11 @@ public class CommunityService {
                     communityDetailDTO.setOperation(1);//发布人相同，可删除
                 }else{
                     communityDetailDTO.setOperation(0);//不可删除
+                    if(entry1.getRole()==0){//同为普通成员
+                        if(objectIdList1.contains(userId) && !objectIdList1.contains(entry.getCommunityUserId())){
+                            communityDetailDTO.setOperation(1);//我是大V        你不是
+                        }
+                    }
                 }
             }else{
                 communityDetailDTO.setOperation(0);//不可删除

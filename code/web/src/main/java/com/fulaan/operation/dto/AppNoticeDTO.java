@@ -6,11 +6,8 @@ import com.pojo.appnotice.AppNoticeEntry;
 import com.pojo.fcommunity.AttachmentEntry;
 import com.pojo.fcommunity.VideoEntry;
 import com.sys.utils.DateTimeUtils;
-import com.sys.utils.StringUtil;
-import org.apache.commons.lang3.StringUtils;
 import org.bson.types.ObjectId;
 
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -47,6 +44,8 @@ public class AppNoticeDTO {
     private int totalReadCount;
 
     private boolean isOwner;
+
+    private int cardType;
 
 
     public AppNoticeDTO(WebAppNoticeDTO dto){
@@ -200,6 +199,14 @@ public class AppNoticeDTO {
 
     public void setVoiceList(List<Attachement> voiceList) {
         this.voiceList = voiceList;
+    }
+
+    public int getCardType() {
+        return cardType;
+    }
+
+    public void setCardType(int cardType) {
+        this.cardType = cardType;
     }
 
     public List<GroupOfCommunityDTO> getGroupOfCommunityDTOs() {

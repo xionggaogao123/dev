@@ -75,6 +75,9 @@ public class AppNoticeService {
     @Autowired
     private IntegralSufferService integralSufferService;
 
+    //学生社群
+    private static final String STUDENTCOMMUNIY = "5abaf547bf2e791a5457a584";
+
 
     public static void main(String[] args){
         List<String> thistags =new ArrayList<String>();
@@ -379,6 +382,32 @@ public class AppNoticeService {
         return retMap;
     }
 
+    public Map<String,Object> getNewMyReceivedAppNoticeDtosForStudent(ObjectId userId,int page,int pageSize){
+        Map<String,Object> retMap=new HashMap<String,Object>();
+        List<NewVersionCommunityBindEntry> bindEntries=newVersionCommunityBindDao.getAllStudentBindEntries(userId);
+        List<ObjectId> communityIds=new ArrayList<ObjectId>();
+        for(NewVersionCommunityBindEntry bindEntry:bindEntries){
+            communityIds.add(bindEntry.getCommunityId());
+        }
+        //默认查询复兰大学
+        CommunityEntry communityEntry = communityDao.findByName("复兰大学");
+        if(communityEntry!=null){
+            communityIds.add(communityEntry.getID());
+            communityIds.add(new ObjectId(STUDENTCOMMUNIY));
+        }
+        List<ObjectId> groupIds=communityDao.getGroupIdsByCommunityIds(communityIds);
+        List<AppNoticeEntry> entries=appNoticeDao.getMyReceivedAppNoticeEntriesForStudent(groupIds,page,pageSize);
+        List<AppNoticeDTO> dtos=getNewAppNoticeDtos(entries, userId);
+        int count=appNoticeDao.countMyReceivedAppNoticeEntriesForStudent(groupIds);
+        retMap.put("list",dtos);
+        retMap.put("count",count);
+        retMap.put("page",page);
+        retMap.put("pageSize",pageSize);
+        //清除红点
+        redDotService.cleanResult(userId,ApplyTypeEn.notice.getType(),0l);
+        return retMap;
+    }
+
     public  List<AppNoticeDTO> getAppNoticeDtos( List<AppNoticeEntry> entries,ObjectId userId){
         List<AppNoticeDTO> dtos=new ArrayList<AppNoticeDTO>();
         List<ObjectId> userIds=new ArrayList<ObjectId>();
@@ -410,6 +439,67 @@ public class AppNoticeService {
                 dto.setOwner(true);
             }
             dto.setTimeExpression(TimeChangeUtils.getChangeTime(entry.getSubmitTime()));
+            dtos.add(dto);
+        }
+        return dtos;
+    }
+
+    public  List<AppNoticeDTO> getNewAppNoticeDtos( List<AppNoticeEntry> entries,ObjectId userId){
+        List<AppNoticeDTO> dtos=new ArrayList<AppNoticeDTO>();
+        List<ObjectId> userIds=new ArrayList<ObjectId>();
+        for(AppNoticeEntry entry:entries){
+            userIds.add(entry.getUserId());
+        }
+        Map<ObjectId,UserEntry> userEntryMap=userService.getUserEntryMap(userIds, Constant.FIELDS);
+        for(AppNoticeEntry entry:entries){
+            AppNoticeDTO dto=new AppNoticeDTO(entry);
+            if(dto.getCommunityId().equals(STUDENTCOMMUNIY)){
+                UserEntry userEntry=userEntryMap.get(entry.getUserId());
+                if(null!=userEntry){
+                    dto.setAvatar(AvatarUtils.getAvatar(userEntry.getAvatar(),userEntry.getRole(),userEntry.getSex()));
+                    //dto.setUserName(dto);
+                }
+                dto.setIsRead(0);
+                if(dto.getReadList().contains(userId.toString())){
+                    dto.setIsRead(1);
+                }
+                dto.setOwner(false);
+                if(entry.getUserId().equals(userId)){
+                    //设置已阅和未阅的人数
+                    List<ObjectId> reads=entry.getReaList();
+                    dto.setTotalReadCount(0);
+                    dto.setReadCount(reads.size());
+                    dto.setUnReadCount(0);
+                    dto.setOwner(true);
+                }
+                dto.setTimeExpression(TimeChangeUtils.getChangeTime(entry.getSubmitTime()));
+                dto.setCardType(2);//特殊
+            }else{
+                UserEntry userEntry=userEntryMap.get(entry.getUserId());
+                if(null!=userEntry){
+                    dto.setAvatar(AvatarUtils.getAvatar(userEntry.getAvatar(),userEntry.getRole(),userEntry.getSex()));
+                    dto.setUserName(StringUtils.isNotEmpty(userEntry.getNickName())?userEntry.getNickName():userEntry.getUserName());
+                }
+                dto.setIsRead(0);
+                if(dto.getReadList().contains(userId.toString())){
+                    dto.setIsRead(1);
+                }
+                dto.setOwner(false);
+                if(entry.getUserId().equals(userId)){
+                    //设置已阅和未阅的人数
+                    List<ObjectId> reads=entry.getReaList();
+                    List<ObjectId> members=memberDao.getAllMemberIds(entry.getGroupId());
+                    members.remove(userId);
+                    dto.setTotalReadCount(members.size());
+                    members.removeAll(reads);
+                    dto.setReadCount(reads.size());
+                    dto.setUnReadCount(members.size());
+                    dto.setOwner(true);
+                }
+                dto.setTimeExpression(TimeChangeUtils.getChangeTime(entry.getSubmitTime()));
+                dto.setCardType(1);//普通
+            }
+
             dtos.add(dto);
         }
         return dtos;

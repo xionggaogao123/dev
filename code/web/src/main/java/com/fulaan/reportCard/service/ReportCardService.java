@@ -1852,6 +1852,96 @@ public class ReportCardService {
         String userAgent = request.getHeader("USER-AGENT");
         HSSFUtils.exportExcel(userAgent,response, wb, fileName);
     }
+    
+    public void exportUserRecord(String examId,HttpServletRequest request,HttpServletResponse response) {
+        List<GroupExamUserRecordDTO> examScoreDTOs = this.searchRecordStudentScores(new ObjectId(examId), -1, -1, 1);
+        GroupExamDetailEntry g = groupExamDetailDao.getGroupExamDetailEntry(new ObjectId(examId));
+        String sheetName = "学生成绩列表";
+        HSSFWorkbook wb = new HSSFWorkbook();
+        HSSFSheet sheet = wb.createSheet(sheetName);
+        HSSFRow row = sheet.createRow(0);
+
+        HSSFCell cell = row.createCell(0);
+        cell.setCellValue("姓名");
+        cell = row.createCell(1);
+        if (g.getRecordScoreType() == 1) {
+            cell.setCellValue("分数");
+        } else {
+
+            cell.setCellValue("等第");
+        }
+        
+        
+        
+        cell = row.createCell(2);
+        cell.setCellValue("排名");
+        
+        for (int i = 0;i<examScoreDTOs.size();i++) {
+            HSSFRow roww = sheet.createRow(i+1);
+
+            HSSFCell celll = roww.createCell(0);
+            celll.setCellValue(examScoreDTOs.get(i).getUserName());
+
+            celll = roww.createCell(1);
+            if (g.getRecordScoreType() == 1) {
+                if (examScoreDTOs.get(i).getScore() == -1d) {
+                    celll.setCellValue("缺");
+                } else {
+                    celll.setCellValue(examScoreDTOs.get(i).getScore());
+                }
+                
+            } else {
+                if (examScoreDTOs.get(i).getScoreLevel() == -1) {
+                    celll.setCellValue("缺");
+                } else {
+                    if (examScoreDTOs.get(i).getScoreLevel() == 100) {
+                        celll.setCellValue("A+");
+                    } else if (examScoreDTOs.get(i).getScoreLevel() == 99) {
+                        celll.setCellValue("A");
+                    } else if (examScoreDTOs.get(i).getScoreLevel() == 98) {
+                        celll.setCellValue("A-");
+                    } else if (examScoreDTOs.get(i).getScoreLevel() == 97) {
+                        celll.setCellValue("B+");
+                    } else if (examScoreDTOs.get(i).getScoreLevel() == 96) {
+                        celll.setCellValue("B");
+                    } else if (examScoreDTOs.get(i).getScoreLevel() == 95) {
+                        celll.setCellValue("B-");
+                    } else if (examScoreDTOs.get(i).getScoreLevel() == 94) {
+                        celll.setCellValue("C+");
+                    } else if (examScoreDTOs.get(i).getScoreLevel() == 93) {
+                        celll.setCellValue("C");
+                    } else if (examScoreDTOs.get(i).getScoreLevel() == 92) {
+                        celll.setCellValue("C-");
+                    } else if (examScoreDTOs.get(i).getScoreLevel() == 91) {
+                        celll.setCellValue("D+");
+                    } else if (examScoreDTOs.get(i).getScoreLevel() == 90) {
+                        celll.setCellValue("D");
+                    } else if (examScoreDTOs.get(i).getScoreLevel() == 89) {
+                        celll.setCellValue("D-");
+                    } else {
+                        celll.setCellValue(examScoreDTOs.get(i).getScoreLevel());
+                    }
+                    
+                }
+                
+            }
+            
+            
+            celll = roww.createCell(2);
+            if (examScoreDTOs.get(i).getRank() == -1) {
+                celll.setCellValue("缺");
+            } else {
+                celll.setCellValue(examScoreDTOs.get(i).getRank());
+            }
+            
+        }
+
+        String fileName = sheetName + ".xls";
+        String userAgent = request.getHeader("USER-AGENT");
+        HSSFUtils.exportExcel(userAgent,response, wb, fileName);
+    }
+    
+    
 
     public void exportUserControl(HttpServletRequest request,ObjectId communityId, HttpServletResponse response) {
         List<VirtualUserEntry> virtualUserEntries = virtualUserDao.getAllVirtualUsers(communityId);

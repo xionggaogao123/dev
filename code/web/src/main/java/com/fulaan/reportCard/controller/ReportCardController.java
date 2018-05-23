@@ -278,6 +278,22 @@ public class ReportCardController extends BaseController {
         return respObj;
     }
     
+    @ApiOperation(value = "查询录入成绩的学生名单", httpMethod = "GET", produces = "application/json")
+    @ApiResponses( value = {@ApiResponse(code = 200, message = "保存或编辑成绩列表已完成",response = String.class),
+            @ApiResponse(code = 400, message = "请求中有语法问题，或不能满足请求"),
+            @ApiResponse(code = 500, message = "服务器不能完成请求")})
+    @RequestMapping("/exportUserRecord/{examId}")
+    @ResponseBody
+    public void exportUserRecord(@PathVariable(value="examId") String examId,HttpServletRequest request,HttpServletResponse response
+                                             ){
+        try {
+            reportCardService.exportUserRecord(examId,request,response);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+    }
+    
     /**
      * 
      *〈简述〉GroupExamUserRecordDTO转GroupExamUserRecordStrDTO

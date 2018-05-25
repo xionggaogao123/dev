@@ -1592,11 +1592,11 @@ public class ReportCardService {
         List<VirtualUserDTO> virtualUserDTOs = new ArrayList<VirtualUserDTO>();
         for (int j = 1; j <= rowNum; j++) {
             String userName =  getCellValue(sheet.getRow(j).getCell(0));
-            String userNumber = getCellValue(sheet.getRow(j).getCell(1));
+            //String userNumber = getCellValue(sheet.getRow(j).getCell(1));
             if (StringUtils.isNotEmpty(userName)) {
                 VirtualUserDTO v = new VirtualUserDTO();
                 v.setCommunityId(communityId);
-                v.setUserNumber(userNumber);
+                //v.setUserNumber(userNumber);
                 v.setUserName(userName);
                 virtualUserDTOs.add(v);
             }
@@ -1729,9 +1729,9 @@ public class ReportCardService {
             List<VirtualUserEntry> entries = new ArrayList<VirtualUserEntry>();
             for (VirtualUserDTO virtualUserDTO : virtualUserDTOs) {
                 String userName = virtualUserDTO.getUserName();
-                String userNumber = virtualUserDTO.getUserNumber();
+                //String userNumber = virtualUserDTO.getUserNumber();
                 if(StringUtils.isNotEmpty(userName)){
-                    String key=userName/*+"&"+userNumber*/;
+                    String key=userName;
                     if (null != userIds.get(key)) {
                         VirtualUserEntry userEntry = new VirtualUserEntry(communityId, virtualUserDTO.getUserNumber(),
                                 userIds.get(key), virtualUserDTO.getUserName());
@@ -1775,13 +1775,13 @@ public class ReportCardService {
         for (int j = 1; j <= rowNum; j++) {
             String communityId = getCellValue(sheet.getRow(j).getCell(0));
             String userName =  getCellValue(sheet.getRow(j).getCell(1));
-            String userNumber =  getCellValue(sheet.getRow(j).getCell(2));
+            //String userNumber =  getCellValue(sheet.getRow(j).getCell(2));
             if (StringUtils.isNotEmpty(communityId) &&
                     StringUtils.isNotEmpty(userName)) {
                 VirtualUserDTO v = new VirtualUserDTO();
                 v.setCommunityId(communityId);
                 v.setUserName(userName);
-                v.setUserNumber(userNumber);
+                //v.setUserNumber(userNumber);
                 virtualUserDTOs.add(v);
             }
         }
@@ -1844,8 +1844,8 @@ public class ReportCardService {
         HSSFCell cell = row.createCell(0);
         cell.setCellValue("用户名");
 
-        cell = row.createCell(1);
-        cell.setCellValue("用户学号");
+        /*cell = row.createCell(1);
+        cell.setCellValue("用户学号");*/
 
         String fileName = sheetName + ".xls";
         String userAgent = request.getHeader("USER-AGENT");

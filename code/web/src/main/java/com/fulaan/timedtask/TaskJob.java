@@ -1,6 +1,7 @@
 package com.fulaan.timedtask;
 
 import com.db.businessactivity.FieryActivityDao;
+import com.db.controlphone.ControlAppResultDao;
 import com.db.ebusiness.EVoucherDao;
 import com.db.microblog.MicroBlogDao;
 import com.db.user.UserActiveRecordDao;
@@ -265,6 +266,11 @@ public class TaskJob {
     public void checkUnLesson(){
         SmallLessonService smallLessonService = new SmallLessonService();
         smallLessonService.checkUnLesson();
+    }
+    //清除缓存表
+    public void dropAppResult(){
+        ControlAppResultDao controlAppResultDao = new ControlAppResultDao();
+        controlAppResultDao.drop();
     }
     //更新运营记录
     public void checkBusinessManage(){

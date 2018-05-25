@@ -2415,6 +2415,8 @@ public class CommunityService {
         //memberDao.get
         MemberEntry entry1 = memberMap.get(gids + "$" + entry.getCommunityUserId());
         MemberEntry entry5 = memberMap.get(gids + "$" + userId);
+        //查询是否大V
+        List<ObjectId> objectIdList1 = teacherApproveDao.selectMap(objectIds);
         if(entry.getCommunityType()==4){
             referenceDataDao.delNewEntry(entry.getID());
         }
@@ -2423,6 +2425,12 @@ public class CommunityService {
         }else if(entry5.getRole()>entry1.getRole()){
             communityDetailDao.removeCommunityDetail(id);
         }else{
+            if(entry1.getRole()==0){//同为普通成员
+                if(objectIdList1.contains(userId) && !objectIdList1.contains(entry.getCommunityUserId())){
+                    communityDetailDao.removeCommunityDetail(id);;//我是大V        你不是
+                    return;
+                }
+            }
             throw new Exception("没有权限！");
         }
     }

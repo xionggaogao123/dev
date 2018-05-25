@@ -31,9 +31,9 @@ public class RechargeResultDao extends BaseDao {
     }
 
     //课程中心
-    public List<RechargeResultEntry> getAllEntryList(List<ObjectId> objectIds ,int page,int pageSize){
+    public List<RechargeResultEntry> getAllEntryList(List<ObjectId> objectIds,ObjectId sonId ,int page,int pageSize){
         List<RechargeResultEntry> entryList=new ArrayList<RechargeResultEntry>();
-        BasicDBObject query=new BasicDBObject().append("isr",0);
+        BasicDBObject query=new BasicDBObject().append("isr",0).append("sid",sonId);
         query.append("uid",new BasicDBObject(Constant.MONGO_IN,objectIds));
         List<DBObject> dbList=find(MongoFacroty.getAppDB(), Constant.COLLECTION_RECHARGE_RESULT, query,
                 Constant.FIELDS, Constant.MONGO_SORTBY_DESC,(page-1)*pageSize,pageSize);
@@ -49,8 +49,8 @@ public class RechargeResultDao extends BaseDao {
      * 符合搜索条件的对象个数
      * @return
      */
-    public int selectMyCount(List<ObjectId> objectIds) {
-        BasicDBObject query=new BasicDBObject().append("isr",0);
+    public int selectMyCount(List<ObjectId> objectIds,ObjectId sonId) {
+        BasicDBObject query=new BasicDBObject().append("isr",0).append("sid",sonId);
         query.append("uid",new BasicDBObject(Constant.MONGO_IN,objectIds));
         int count =
                 count(MongoFacroty.getAppDB(),

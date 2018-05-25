@@ -1,12 +1,9 @@
 package com.fulaan.fgroup;
 
-import com.db.business.BusinessRoleDao;
-import com.db.user.NewVersionBindRelationDao;
 import com.easemob.server.EaseMobAPI;
 import com.easemob.server.comm.constant.MsgType;
 import com.fulaan.annotation.ObjectIdType;
 import com.fulaan.annotation.SessionNeedless;
-import com.fulaan.backstage.service.BackStageService;
 import com.fulaan.base.BaseController;
 import com.fulaan.community.dto.CommunityDTO;
 import com.fulaan.community.dto.CommunityDetailDTO;
@@ -21,12 +18,9 @@ import com.fulaan.service.CommunityService;
 import com.fulaan.service.GroupNoticeService;
 import com.fulaan.service.MemberService;
 import com.fulaan.user.service.UserService;
-import com.pojo.business.BusinessRoleEntry;
-import com.pojo.business.RoleType;
 import com.pojo.fcommunity.CommunityDetailType;
 import com.pojo.fcommunity.GroupEntry;
 import com.pojo.fcommunity.MemberEntry;
-import com.pojo.user.NewVersionBindRelationEntry;
 import com.pojo.user.UserDetailInfoDTO;
 import com.pojo.user.UserEntry;
 import com.pojo.utils.MongoUtils;
@@ -56,8 +50,8 @@ import java.util.*;
  */
 @Api(value="GroupController")
 @Controller
-@RequestMapping("/jxmapi/group")
-public class DefaultGroupController extends BaseController {
+@RequestMapping("/web/group")
+public class WebGroupController extends BaseController {
 
     @Autowired
     private MemberService memberService;
@@ -70,17 +64,12 @@ public class DefaultGroupController extends BaseController {
     @Autowired
     private GroupNoticeService groupNoticeService;
     @Autowired
-    private BackStageService backStageService;
+    private NewVersionBindService newVersionBindService;
     @Autowired
     private CommunityService communityService;
     @Autowired
-    private NewVersionBindService newVersionBindService;
-    @Autowired
     private EmService emService;
 
-    private NewVersionBindRelationDao newVersionBindRelationDao = new NewVersionBindRelationDao();
-
-    private BusinessRoleDao businessRoleDao = new BusinessRoleDao();
 
     /**
      * 创建群聊
@@ -118,6 +107,31 @@ public class DefaultGroupController extends BaseController {
     }
 
     /**
+     * 获取该用户的所有加入的所有聊天列表
+     */
+    @ApiOperation(value = "获取该用户的所有加入的所有聊天列表", httpMethod = "POST", produces = "application/json")
+    @ApiResponses( value = {@ApiResponse(code = 200, message = "Successful — 请求已完成",response = RespObj.class)})
+    @RequestMapping(value = "/getMyChatList")
+    @ResponseBody
+    public RespObj getMyChatList() throws Exception {
+        RespObj respObj = new RespObj(Constant.FAILD_CODE);
+        ObjectId oid = getUserId();
+        //获取用户所有的群聊
+        List<GroupDTO> groupDTOs = groupService.getChildrenGroups(oid);
+        for(GroupDTO groupDTO : groupDTOs){
+            if(groupDTO.isBindCommunity() && !groupDTO.getName().equals("复兰大学")){
+                CommunityDTO communityDTO = communityService.findByObjectId(new ObjectId(groupDTO.getCommunityId()));
+                if(communityDTO!=null){
+                    groupDTO.setName(communityDTO.getName());
+                }
+            }
+        }
+        respObj.setCode(Constant.SUCCESS_CODE);
+        respObj.setMessage(groupDTOs);
+        return respObj;
+    }
+
+    /**
      * 获取群聊详情
      *
      * @param id
@@ -141,13 +155,6 @@ public class DefaultGroupController extends BaseController {
             groupDTO.setName(communityDTO.getName());
         }
         MemberDTO mine = memberService.getUser(groupId, getUserId());
-        BusinessRoleEntry businessRoleEntry = businessRoleDao.getEntry(getUserId());
-        //权限判断 todo  0 普通成员 1 副社长  2 群主  3 运营人员（为1 、2 时 不判断 3 ）
-        if(businessRoleEntry !=null && businessRoleEntry.getRoleType().contains(RoleType.updateCommunityName.getEname())){
-            if(mine.getRole()==0){
-                mine.setRole(3);
-            }
-        }
         groupDTO.setCount(memberService.getMemberCount(groupId));
         groupDTO.setMine(mine);
         if (groupDTO.isBindCommunity()) {
@@ -226,37 +233,6 @@ public class DefaultGroupController extends BaseController {
     }
 
     /**
-     * 获取除了群主的全部成员
-     *
-     * @param emChatId
-     * @return
-     */
-    @ApiOperation(value = "获取除了群主的全部成员", httpMethod = "GET", produces = "application/json")
-    @ApiResponses( value = {@ApiResponse(code = 200, message = "Successful — 请求已完成",response = RespObj.class)})
-    @RequestMapping("/notMainMembers")
-    @ResponseBody
-    public RespObj notMainMembers(@RequestParam(value="emChatId") String emChatId) {
-        RespObj respObj = new RespObj(Constant.FAILD_CODE);
-        try{
-            ObjectId groupId = groupService.getGroupIdByChatId(emChatId);
-            List<MemberDTO> object = new ArrayList<MemberDTO>();
-            //不查复兰大学
-            if(emChatId.equals("40548260970498")){
-
-            }else{
-                object = memberService.getMoreGroupMembers(groupId, getUserId());
-            }
-            respObj.setCode(Constant.SUCCESS_CODE);
-            respObj.setMessage(object);
-        }catch (Exception e){
-            respObj.setCode(Constant.FAILD_CODE);
-            respObj.setMessage("获取除了群主的全部成员失败");
-            e.printStackTrace();
-        }
-        return respObj;
-    }
-
-    /**
      * 群主邀请人进群
      *
      * @param emChatId 环信id
@@ -300,107 +276,11 @@ public class DefaultGroupController extends BaseController {
                     }
                 }
             }
-
-            //自动加为好友(社群拉人自动加为好友)
-            if(groupDTO.isBindCommunity()) {
-                //去除所有运营成员
-                List<ObjectId> oids = businessRoleDao.getObjectIdList();
-                userList.removeAll(oids);
-
-                List<String> keysList=MongoUtils.convertToStringList(userList);
-                if(keysList.size()>0) {
-                    List<ObjectId> communityIds = new ArrayList<ObjectId>();
-                    communityIds.add(groupEntry.getCommunityId());
-                    String[] keys = keysList.toArray(new String[keysList.size()]);
-                    backStageService.recordEntries2(groupEntry.getID(),keys,30,oids);
-                    //backStageService.setAutoChildFriends(keys,communityIds);
-                }
-            }
             //更新群聊头像
             groupService.asyncUpdateHeadImage(groupId);
             if (groupDTO.getIsM() == 0) {
                 groupService.asyncUpdateGroupNameByMember(new ObjectId(groupDTO.getId()));
             }
-
-            respObj.setCode(Constant.SUCCESS_CODE);
-            respObj.setMessage("操作成功");
-        }catch (Exception e){
-             respObj.setErrorMessage(e.getMessage());
-        }
-        return respObj;
-    }
-
-    /**
-     * 扫码入群
-     */
-    @ApiOperation(value = "扫码入群", httpMethod = "POST", produces = "application/json")
-    @ApiResponses( value = {@ApiResponse(code = 200, message = "Successful — 请求已完成",response = RespObj.class)})
-    @RequestMapping("/saoInviteMember")
-    @ResponseBody
-    public RespObj saoInviteMember(String communityId) {
-        RespObj respObj = new RespObj(Constant.FAILD_CODE);
-
-        try {
-            CommunityDTO communityDTO = communityService.findByObjectId(new ObjectId(communityId));
-            String emChatId  = "";
-            if(communityId==null){
-                respObj.setErrorMessage("该社群不存在");
-                return respObj;
-            }else{
-                emChatId = communityDTO.getEmChatId();
-            }
-            NewVersionBindRelationEntry newVersionBindRelationEntry = newVersionBindRelationDao.getBindEntry(getUserId());
-            if(newVersionBindRelationEntry ==null || newVersionBindRelationEntry.getMainUserId()==null){
-                respObj.setErrorMessage("该学生未绑定用户");
-                return respObj;
-            }
-            String  userIds = newVersionBindRelationEntry.getMainUserId().toString();
-            GroupEntry groupEntry = groupService.getGroupEntryByEmchatId(emChatId);
-            if(null==groupEntry){
-                throw new Exception("传入的环信Id有误");
-            }
-            ObjectId groupId=groupEntry.getID();
-            GroupDTO groupDTO = groupService.findById(groupId, groupEntry.getOwerId());
-            List<ObjectId> userList = MongoUtils.convertObjectIds(userIds);
-
-            //家长入群
-            for (ObjectId personId : userList) {
-                if (!memberService.isGroupMember(groupId, personId)) {
-                    if (emService.addUserToEmGroup(emChatId, personId)) {
-                        if (memberService.isBeforeMember(groupId, personId)) {
-                            memberService.updateMember(groupId, personId, 0);
-                        } else {
-                            memberService.saveMember(personId, groupId);
-                        }
-                        if (groupDTO.isBindCommunity()) {
-                            communityService.setPartIncontentStatus(new ObjectId(groupDTO.getCommunityId()), personId, 0);
-                            communityService.pushToUser(new ObjectId(groupDTO.getCommunityId()), personId, 1);
-                        }
-                    }
-                }
-            }
-            //自动加为好友(社群拉人自动加为好友)
-            if(groupDTO.isBindCommunity()) {
-                //去除所有运营成员
-                List<ObjectId> oids = businessRoleDao.getObjectIdList();
-                userList.removeAll(oids);
-
-                List<String> keysList=MongoUtils.convertToStringList(userList);
-                if(keysList.size()>0) {
-                    List<ObjectId> communityIds = new ArrayList<ObjectId>();
-                    communityIds.add(groupEntry.getCommunityId());
-                    String[] keys = keysList.toArray(new String[keysList.size()]);
-                    backStageService.recordEntries2(groupEntry.getID(),keys,30,oids);
-                    //backStageService.setAutoChildFriends(keys,communityIds);
-                }
-            }
-            //更新群聊头像
-            groupService.asyncUpdateHeadImage(groupId);
-            if (groupDTO.getIsM() == 0) {
-                groupService.asyncUpdateGroupNameByMember(new ObjectId(groupDTO.getId()));
-            }
-            //孩子入群
-            newVersionBindService.saoMoreCommunityBindEntry(getUserId(), new ObjectId(communityId), newVersionBindRelationEntry.getMainUserId());
             respObj.setCode(Constant.SUCCESS_CODE);
             respObj.setMessage("操作成功");
         }catch (Exception e){
@@ -408,6 +288,7 @@ public class DefaultGroupController extends BaseController {
         }
         return respObj;
     }
+
     /**
      * 加入群组
      *
@@ -469,9 +350,9 @@ public class DefaultGroupController extends BaseController {
         ObjectId groupId = groupService.getGroupIdByChatId(emChatId);
         GroupDTO groupDTO = groupService.findById(groupId,getUserId());
         ObjectId userId = getUserId();
-       /* if (!memberService.isManager(groupId, userId)) {
+        if (!memberService.isManager(groupId, userId)) {
             return RespObj.FAILD("您没有这个权限");
-        }*/
+        }
         List<ObjectId> userList = MongoUtils.convertObjectIds(userIds);
         if (userList.contains(userId)) {
             userList.remove(userId);
@@ -554,154 +435,6 @@ public class DefaultGroupController extends BaseController {
         }
         return RespObj.SUCCESS("退出成功");
     }
-    /**
-     * 转让群聊
-     *
-     * @param emChatId
-     * @return
-     */
-    @ApiOperation(value = "转让群聊", httpMethod = "GET", produces = "application/json")
-    @ApiResponses( value = {@ApiResponse(code = 200, message = "Successful — 请求已完成",response = RespObj.class)})
-    @RequestMapping("/transferGroup")
-    @ResponseBody
-    public RespObj transferGroup(@RequestParam(value="emChatId") String emChatId,
-                                 @RequestParam(value="userId") String userId) {
-        RespObj respObj = new RespObj(Constant.FAILD_CODE);
-        try{
-            ObjectId groupId = groupService.getGroupIdByChatId(emChatId);
-            GroupDTO groupDTO = groupService.findById(groupId,getUserId());
-            ObjectId mainUserId = getUserId();
-            if (memberService.isHead(groupId, mainUserId)) {
-                MemberDTO memberDTO = memberService.getUser(groupId,new ObjectId(userId));
-                //转让
-                if (memberDTO != null) {
-                    //环信转让群主
-                    EaseMobAPI.transferChatGroupOwner(emChatId, memberDTO.getUserId());
-                    //成员设置群主
-                    memberService.setHead(groupId, new ObjectId(memberDTO.getUserId()));
-                    //群组设置群主
-                    groupService.transferOwerId(groupId, new ObjectId(memberDTO.getUserId()));
-
-                    //设为普通
-                    memberService.unsetDeputyHead(groupId, mainUserId);
-
-                    if (groupDTO.isBindCommunity()) {
-                        communityService.transferOwner(new ObjectId(groupDTO.getCommunityId()),new ObjectId(memberDTO.getUserId()));
-                    }
-                }
-            }
-            respObj.setCode(Constant.SUCCESS_CODE);
-            respObj.setMessage("转让群聊成功");
-        }catch (Exception e){
-            respObj.setMessage("转让群聊失败");
-            respObj.setCode(Constant.FAILD_CODE);
-            e.printStackTrace();
-        }
-        return respObj;
-
-
-
-    }
-
-    /**
-     * 判断该社群是否存在
-     */
-    @ApiOperation(value = "判断该社群是否存在", httpMethod = "GET", produces = "application/json")
-    @ApiResponses( value = {@ApiResponse(code = 200, message = "Successful — 请求已完成",response = RespObj.class)})
-    @RequestMapping("/booleanGroup")
-    @ResponseBody
-    public RespObj booleanGroup(@RequestParam(value="emChatId") String emChatId) {
-        RespObj respObj = new RespObj(Constant.FAILD_CODE);
-        try{
-            //ObjectId groupId = groupService.getMoreGroupIdByEmchatId(emChatId);
-           /* if(groupId!=null){
-                respObj.setMessage(true);
-            } else {
-                respObj.setMessage(false);
-            }*/
-            GroupEntry groupEntry  = groupService.getMoreGroupIdByEmchatId2(emChatId);
-            if(groupEntry==null){//单聊
-                respObj.setMessage(true);
-            } else {
-                if(groupEntry.getRemove()==0){//群聊存在
-                    respObj.setMessage(true);
-                }else{//不存在
-                    respObj.setMessage(false);
-                }
-            }
-            respObj.setCode(Constant.SUCCESS_CODE);
-        }catch (Exception e){
-            respObj.setMessage("判断该社群是否存在失败");
-            respObj.setCode(Constant.FAILD_CODE);
-            e.printStackTrace();
-        }
-        return respObj;
-
-
-
-    }
-
-    /**
-     * 解散群聊
-     *
-     * @param emChatId
-     * @return
-     */
-    @ApiOperation(value = "解散群聊", httpMethod = "GET", produces = "application/json")
-    @ApiResponses( value = {@ApiResponse(code = 200, message = "Successful — 请求已完成",response = RespObj.class)})
-    @RequestMapping("/deleteGroup")
-    @ResponseBody
-    public RespObj deleteGroup(@RequestParam(value="emChatId") String emChatId) {
-        RespObj respObj = new RespObj(Constant.FAILD_CODE);
-        try{
-            ObjectId groupId = groupService.getGroupIdByChatId(emChatId);
-            GroupDTO groupDTO = groupService.findById(groupId,getUserId());
-            ObjectId userId = getUserId();
-            if (memberService.isHead(groupId, userId)) {
-
-               // List<String> str = new ArrayList<String>();
-                //   EaseMobAPI.removeBatchUsersFromChatGroup(emChatId, str);
-                // communityService.deleteReplyDetailText();
-                List<ObjectId> userIds = memberService.getAllGroupMemberIds(groupId);
-                List<ObjectId> userIds2 = new ArrayList<ObjectId>();
-                userIds2.addAll(userIds);
-                userIds.remove(userId);
-                if (userIds.size() >0 && emService.removeUserListFromEmGroup(emChatId, userIds)) {
-                    if (groupDTO.isBindCommunity()) {
-                        //社群删除
-                        communityService.setPartIncontentStatusList(new ObjectId(groupDTO.getCommunityId()), userIds2, 1);
-                        //成绩单删除
-                        communityService.pullFromUserList(new ObjectId(groupDTO.getCommunityId()), userIds2);
-                    }
-                }else{
-                    if (groupDTO.isBindCommunity()) {
-                        //社群删除
-                        communityService.setPartIncontentStatusList(new ObjectId(groupDTO.getCommunityId()), userIds2, 1);
-                        //成绩单删除
-                        communityService.pullFromUserList(new ObjectId(groupDTO.getCommunityId()), userIds2);
-                    }
-                }
-                //环信删除
-                EaseMobAPI.deleteChatGroup(emChatId);
-                //成员删除
-                memberService.deleteMemberList(groupId, userIds2);
-                //群组删除
-                groupService.deleteGroup(groupId);
-
-
-            }
-            respObj.setCode(Constant.SUCCESS_CODE);
-            respObj.setMessage("解散群聊成功");
-        }catch (Exception e){
-            respObj.setMessage("解散群聊失败");
-            respObj.setCode(Constant.FAILD_CODE);
-            e.printStackTrace();
-        }
-        return respObj;
-
-
-
-    }
 
     /**
      * 获取不在群聊的好友列表
@@ -775,10 +508,7 @@ public class DefaultGroupController extends BaseController {
         ObjectId userId = getUserId();
         ObjectId groupId = groupService.getGroupIdByChatId(emChatId);
         if (!memberService.isManager(groupId, userId)) {
-            BusinessRoleEntry businessRoleEntry = businessRoleDao.getEntry(getUserId());
-            if(businessRoleEntry==null || !businessRoleEntry.getRoleType().contains(RoleType.updateCommunityName.getEname())){
-                return RespObj.FAILD("对不起，您没有此权限");
-            }
+            return RespObj.FAILD("对不起，您没有此权限");
         }
         if (groupName.equals("复兰大学")) {
             return RespObj.FAILD("对不起，此群聊名已被使用");
@@ -815,8 +545,7 @@ public class DefaultGroupController extends BaseController {
             }
         } else {
             nickName=StringUtils.isNotBlank(userEntry.getNickName()) ? userEntry.getNickName() : userEntry.getUserName();
-        }
-        String msg=nickName+"修改了群名";
+        }String msg=nickName+"修改了群名";
         sendMessage.put("msg", msg);
         Map<String, String> ext=new HashMap<String, String>();
         ext.put("userId",userId.toString());
@@ -828,7 +557,6 @@ public class DefaultGroupController extends BaseController {
         }else{
             ext.put("groupStyle","discussgroup");//讨论组
         }
-
         emService.sendTextMessage("chatgroups", targets, userId.toString(), ext, sendMessage);
     }
 
@@ -1050,50 +778,5 @@ public class DefaultGroupController extends BaseController {
         return RespObj.SUCCESS(map);
     }
 
-
-    /**
-     * 获取孩子的群组列表
-     * @param userId
-     * @return
-     */
-    @ApiOperation(value = "获取孩子的群组列表", httpMethod = "GET", produces = "application/json")
-    @ApiResponses( value = {@ApiResponse(code = 200, message = "Successful — 请求已完成",response = RespObj.class)})
-    @RequestMapping("/getChildrenGroups")
-    @ResponseBody
-    public RespObj getChildrenGroups(@ObjectIdType ObjectId userId){
-        RespObj respObj = new RespObj(Constant.SUCCESS_CODE);
-        List<GroupDTO> groupDTOs = groupService.getChildrenGroups(userId);
-        respObj.setMessage(groupDTOs);
-        return respObj;
-    }
-
-
-    @ApiOperation(value = "获取孩子的群组列表", httpMethod = "GET", produces = "application/json")
-    @ApiResponses( value = {@ApiResponse(code = 200, message = "Successful — 请求已完成",response = RespObj.class)})
-    @RequestMapping("/getAdrress")
-    @ResponseBody
-    public RespObj getAdrress(){
-        RespObj respObj = new RespObj(Constant.SUCCESS_CODE);
-        Object obj = groupService.getAddress();
-        respObj.setMessage(obj);
-        return respObj;
-    }
-
-
-    @ApiOperation(value = "获取孩子的群组列表", httpMethod = "GET", produces = "application/json")
-    @ApiResponses( value = {@ApiResponse(code = 200, message = "Successful — 请求已完成",response = RespObj.class)})
-    @RequestMapping("/sendTestMessage")
-    @ResponseBody
-    public RespObj sendTestMessage(){
-        RespObj respObj=new RespObj(Constant.FAILD_CODE);
-        try {
-            boolean k=groupService.sendTestMessage();
-            respObj.setCode(Constant.SUCCESS_CODE);
-            respObj.setMessage(k);
-        }catch (Exception e){
-            respObj.setErrorMessage(e.getMessage());
-        }
-        return respObj;
-    }
 
 }

@@ -297,6 +297,19 @@ public class BusinessManageService {
 
         return map;
     }
+    //删除
+    public void  deleteCourses(ObjectId id,ObjectId userId){
+        //课程相关
+        ExcellentCoursesEntry excellentCoursesEntry = excellentCoursesDao.getEntry(id);
+        if(excellentCoursesEntry==null){
+            return;
+        }
+        //2. 删除课程
+        excellentCoursesDao.delEntry(id);
+        //3. 删除课节
+        hourClassDao.delEntry(id,excellentCoursesEntry.getUserId());
+        backStageService.addLogMessage(id.toString(), "删除直播课堂：" + excellentCoursesEntry.getTitle(), LogMessageType.courses.getDes(), userId.toString());
+    }
 
     //审核通过
     public String finish(ObjectId id,String word,ObjectId userId){

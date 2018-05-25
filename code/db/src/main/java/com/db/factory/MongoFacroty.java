@@ -34,8 +34,8 @@ public class MongoFacroty {
 
     static {
         try {
-            MongoClientOptions options = MongoClientOptions.builder().connectionsPerHost(500).threadsAllowedToBlockForConnectionMultiplier(500).connectTimeout(1000 * 60 * 10).build();
-
+           // MongoClientOptions options = MongoClientOptions.builder().connectionsPerHost(500).threadsAllowedToBlockForConnectionMultiplier(500).connectTimeout(1000 * 60 * 10).build();
+            MongoClientOptions options = MongoClientOptions.builder().connectionsPerHost(500).threadsAllowedToBlockForConnectionMultiplier(500).connectTimeout(1000 * 10).socketTimeout(1000*5).build();
             List<ServerAddress> serverAddressList = new ArrayList<ServerAddress>();
             String[] mongodbhosts = Resources.getProperty("mongo3.db.host").split(",");
             for (String dbhost : mongodbhosts) {

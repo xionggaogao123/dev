@@ -56,6 +56,8 @@ public class ExcellentCoursesService {
 
     private CommunityDao communityDao = new CommunityDao();
 
+    private static final int  TEACHER_TIME = 10*60*1000;  //老师提前时间
+    private static final int  STUDENT_TIME = 5*60*1000;  //学生提前时间
     /**
      * 老师开课
      * @param dto
@@ -216,8 +218,9 @@ public class ExcellentCoursesService {
         List<ClassOrderEntry> classOrderEntries =  classOrderDao.getEntry(userId);
         //获得学生所在社群
         List<ObjectId> objectIdList = newVersionBindService.getCommunityIdsByUserId(userId);
+        long current = System.currentTimeMillis();
         //推荐名单
-        List<ExcellentCoursesEntry> coursesEntries = excellentCoursesDao.getEntryList(objectIdList);
+        List<ExcellentCoursesEntry> coursesEntries = excellentCoursesDao.getEntryList(objectIdList,current);
         //Map<ObjectId, CommunityEntry> map3 = communityDao.findMapInfo(objectIdList);
         List<ObjectId> objectIdList1 = new ArrayList<ObjectId>();
         List<ObjectId> hourClassIds = new ArrayList<ObjectId>();
@@ -228,7 +231,7 @@ public class ExcellentCoursesService {
             }
         }
         //objectIdList1
-        List<ExcellentCoursesEntry> coursesEntries2 = excellentCoursesDao.getEntryListById(objectIdList1);
+        List<ExcellentCoursesEntry> coursesEntries2 = excellentCoursesDao.getEntryListById(objectIdList1,current);
         List<ExcellentCoursesDTO> dtos = new ArrayList<ExcellentCoursesDTO>();
         List<ExcellentCoursesDTO> dtos2 = new ArrayList<ExcellentCoursesDTO>();
         for(ExcellentCoursesEntry excellentCoursesEntry:coursesEntries){//推荐
@@ -267,6 +270,73 @@ public class ExcellentCoursesService {
     }
 
     /**
+     * 学生首页加载
+     * @param userId
+     * @return
+     */
+    public Map<String,Object> getOldMyCoursesList(ObjectId userId){
+        Map<String,Object> map = new HashMap<String, Object>();
+        //List<ClassOrderEntry> classOrderEntries =  classOrderDao.getEntry(userId);
+        long current = System.currentTimeMillis();
+        //获得学生所在社群
+        List<ObjectId> objectIdList = newVersionBindService.getCommunityIdsByUserId(userId);
+        //推荐名单
+        List<ExcellentCoursesEntry> coursesEntries = excellentCoursesDao.getOldEntryList(objectIdList, current);
+        /*//Map<ObjectId, CommunityEntry> map3 = communityDao.findMapInfo(objectIdList);
+        List<ObjectId> objectIdList1 = new ArrayList<ObjectId>();
+        List<ObjectId> hourClassIds = new ArrayList<ObjectId>();
+        for(ClassOrderEntry classOrderEntry:classOrderEntries){
+            if(classOrderEntry.getIsBuy()==1){
+                objectIdList1.add(classOrderEntry.getContactId());
+                hourClassIds.add(classOrderEntry.getParentId());
+            }
+        }
+        //objectIdList1
+        List<ExcellentCoursesEntry> coursesEntries2 = excellentCoursesDao.getOldEntryList(objectIdList1, current);
+        List<ExcellentCoursesDTO> dtos = new ArrayList<ExcellentCoursesDTO>();
+        List<ExcellentCoursesDTO> dtos2 = new ArrayList<ExcellentCoursesDTO>();
+        for(ExcellentCoursesEntry excellentCoursesEntry:coursesEntries){//推荐
+            if(!objectIdList1.contains(excellentCoursesEntry.getID())){
+                ExcellentCoursesDTO dto = new ExcellentCoursesDTO(excellentCoursesEntry);
+                dto.setIsBuy(0);
+                dtos2.add(dto);
+            }
+        }
+        Map<String,ExcellentCoursesDTO> dtoMap = new HashMap<String, ExcellentCoursesDTO>();
+        for(ExcellentCoursesEntry excellentCoursesEntry:coursesEntries2){//已购买
+            ExcellentCoursesDTO dto = new ExcellentCoursesDTO(excellentCoursesEntry);
+            dto.setIsBuy(1);
+            // dtos.add(dto);
+            dtoMap.put(dto.getId(),dto);
+        }
+        //Set<ObjectId> objectIds = new HashSet<ObjectId>();
+        //objectIds.addAll(objectIdList1);
+        List<ObjectId>  oids = new ArrayList<ObjectId>();
+        for(ObjectId oid : objectIdList1){
+            if(oids.contains(oid)){
+
+            }else{
+                oids.add(oid);
+                ExcellentCoursesDTO dto1 = dtoMap.get(oid.toString());
+                if(dto1!=null){
+                    dtos.add(dto1);
+                }
+            }
+        }*/
+        List<ExcellentCoursesDTO> dtos2 = new ArrayList<ExcellentCoursesDTO>();
+        for(ExcellentCoursesEntry excellentCoursesEntry:coursesEntries){//推荐
+            ExcellentCoursesDTO dto = new ExcellentCoursesDTO(excellentCoursesEntry);
+            dto.setIsBuy(0);
+            dtos2.add(dto);
+        }
+        //dtos.addAll(dtos2);
+        map.put("list",dtos2);
+        map.put("count",dtos2.size());
+        //map.put("dto",getNowEntry(hourClassIds));
+        return map;
+    }
+
+    /**
      * 添加收藏
      * @param userId
      * @param type
@@ -277,21 +347,21 @@ public class ExcellentCoursesService {
         if(userBehaviorEntry!=null){
             if(type==0){//取消
                 List<ObjectId> objectIdList = userBehaviorEntry.getCollectList();
-                Set<ObjectId> objectIds  = new HashSet<ObjectId>();
-                objectIds.addAll(objectIdList);
-                objectIds.remove(id);//取消
-                List<ObjectId>  objectIdList2 = new ArrayList<ObjectId>();
-                objectIdList2.addAll(objectIds);
-                userBehaviorEntry.setCollectList(objectIdList2);
+                //Set<ObjectId> objectIds  = new HashSet<ObjectId>();
+                //objectIds.addAll(objectIdList);
+                objectIdList.remove(id);//取消
+                //List<ObjectId>  objectIdList2 = new ArrayList<ObjectId>();
+                //objectIdList2.addAll(objectIdList);
+                userBehaviorEntry.setCollectList(objectIdList);
                 userBehaviorDao.addEntry(userBehaviorEntry);
             }else if(type==1){
                 List<ObjectId> objectIdList = userBehaviorEntry.getCollectList();
-                Set<ObjectId> objectIds  = new HashSet<ObjectId>();
-                objectIds.addAll(objectIdList);
-                objectIds.add(id);//添加
-                List<ObjectId>  objectIdList2 = new ArrayList<ObjectId>();
-                objectIdList2.addAll(objectIds);
-                userBehaviorEntry.setCollectList(objectIdList2);
+               // Set<ObjectId> objectIds  = new HashSet<ObjectId>();
+                //objectIds.addAll(objectIdList);
+                objectIdList.add(id);//添加
+               // List<ObjectId>  objectIdList2 = new ArrayList<ObjectId>();
+                //objectIdList2.addAll(objectIdList);
+                userBehaviorEntry.setCollectList(objectIdList);
                 userBehaviorDao.addEntry(userBehaviorEntry);
             }
 
@@ -325,7 +395,7 @@ public class ExcellentCoursesService {
         long start = hourClassEntry.getStartTime() -5*60*1000;
         long end = start + hourClassEntry.getCurrentTime();*/
         for(HourClassEntry hourClassEntry:hourClassEntries){
-            long startTime =  hourClassEntry.getStartTime()-5*30*1000;
+            long startTime =  hourClassEntry.getStartTime()-STUDENT_TIME;
             long endTime = hourClassEntry.getStartTime() + hourClassEntry.getCurrentTime();
             if(entry ==null){
                 if(endTime>current){
@@ -338,7 +408,7 @@ public class ExcellentCoursesService {
             }
         }
 
-        if(entry != null && entry.getStartTime()-5*30*1000<current){
+        if(entry != null && entry.getStartTime()-STUDENT_TIME<current){
             map.put("start",1);//正在上课
             map.put("time",0);
         }else{
@@ -462,7 +532,7 @@ public class ExcellentCoursesService {
             }else{
                 if(cids.contains(hourClassEntry.getID())){
                     hourClassDTO.setStatus(2);//已购买
-                    if(hourClassEntry.getStartTime()<=current+5*60*1000 && endTime >current ){
+                    if(hourClassEntry.getStartTime()<=current+STUDENT_TIME && endTime >current ){
                         nowHourClassDTO = hourClassDTO;
                     }
                 }else{
@@ -481,7 +551,23 @@ public class ExcellentCoursesService {
         }
         List<HourClassDTO> dtos = new ArrayList<HourClassDTO>();
         if(nowHourClassDTO!=null){
-            dtos.add(nowHourClassDTO);
+            //HourClassEntry hourClassEntry = nowHourClassDTO.buildAddEntry();
+            HourClassDTO h = new HourClassDTO();
+            h.setParentId(nowHourClassDTO.getParentId());
+            h.setStatus(nowHourClassDTO.getStatus());
+            h.setCreateTime(nowHourClassDTO.getCreateTime());
+            h.setWeek(nowHourClassDTO.getWeek());
+            h.setClassOldPrice(nowHourClassDTO.getClassOldPrice());
+            h.setClassNewPrice(nowHourClassDTO.getClassNewPrice());
+            h.setContent(nowHourClassDTO.getContent());
+            h.setDateTime(nowHourClassDTO.getDateTime());
+            h.setStartTime(nowHourClassDTO.getStartTime());
+            h.setId(nowHourClassDTO.getId());
+            h.setCurrentTime(nowHourClassDTO.getCurrentTime());
+            h.setOrder(nowHourClassDTO.getOrder());
+            h.setUserId(nowHourClassDTO.getUserId());
+            h.setType(nowHourClassDTO.getType());
+            dtos.add(h);
         }
         map.put("now",dtos);
         map.put("list",hourClassDTOs);
@@ -597,14 +683,25 @@ public class ExcellentCoursesService {
         Map<String, Object> map = new HashMap<String, Object>();
         UserBehaviorEntry userBehaviorEntry = userBehaviorDao.getEntry(userId);
         List<ExcellentCoursesDTO> dtos = new ArrayList<ExcellentCoursesDTO>();
+        Map<ObjectId,ExcellentCoursesDTO> listMap = new HashMap<ObjectId, ExcellentCoursesDTO>();
         if (userBehaviorEntry != null) {
             List<ObjectId> objectIdList = userBehaviorEntry.getCollectList();
-            List<ExcellentCoursesEntry> excellentCoursesEntries = excellentCoursesDao.getEntryListById(objectIdList);
+            List<ExcellentCoursesEntry> excellentCoursesEntries = excellentCoursesDao.getOtherEntryListById(objectIdList);
             for (ExcellentCoursesEntry entry : excellentCoursesEntries) {
-                dtos.add(new ExcellentCoursesDTO(entry));
+                //dtos.add(new ExcellentCoursesDTO(entry));
+                listMap.put(entry.getID(),new ExcellentCoursesDTO(entry));
             }
-
+            int size = objectIdList.size();
+            List<String> ol = new ArrayList<String>();
+            for(int i = 0;i<size;i++){
+                ExcellentCoursesDTO excellentCoursesDTO = listMap.get(objectIdList.get(size-i-1));
+                if(excellentCoursesDTO!=null && !ol.contains(excellentCoursesDTO.getId())){
+                    ol.add(excellentCoursesDTO.getId());
+                    dtos.add(excellentCoursesDTO);
+                }
+            }
         }
+
         map.put("list", dtos);
         map.put("count", dtos.size());
         return map;
@@ -672,19 +769,21 @@ public class ExcellentCoursesService {
             dtos.add(dto);
         }
         Map<ObjectId, CommunityEntry> cmap = communityDao.findMapInfo(communityIds);
+        int in = 12;
         for(ExcellentCoursesDTO dto2: dtos){
             List<String> oids = dto2.getCommunityIdList();
             String name = "";
             for(String str: oids){
                 CommunityEntry c = cmap.get(new ObjectId(str));
                 if(c!=null){
-                    name = name + c.getCommunityName()+"、";
+                    name = name + c.getCommunityName()+"、\n";
                 }
             }
             if(name.equals("")){
                 dto2.setCommunitName("无");
             }else{
-                String name2 = name.substring(0, name.length()-1);
+                String name2 = name.substring(0, name.length()-2);
+
                 dto2.setCommunitName(name2);
             }
 
@@ -702,12 +801,12 @@ public class ExcellentCoursesService {
         List<CommunityEntry> communityEntries = communityDao.findByObjectIds(excellentCoursesEntry.getCommunityIdList());//
         String stringList = "";
         for(CommunityEntry communityEntry:communityEntries){
-            stringList = stringList +communityEntry.getCommunityName()+ "、";
+            stringList = stringList +communityEntry.getCommunityName()+ "、\n";
         }
         if(stringList.equals("")){
             dto.setCommunitName("无");
         }else{
-            String stringList2 = stringList.substring(0, stringList.length()-1);
+            String stringList2 = stringList.substring(0, stringList.length()-2);
             dto.setCommunitName(stringList2);
         }
 
@@ -730,7 +829,7 @@ public class ExcellentCoursesService {
             long endTime = entry.getStartTime() + entry.getCurrentTime();
             HourClassDTO hourClassDTO = new HourClassDTO(entry);
             if(excellentCoursesEntry.getStatus()==2){
-                if(current<startTime - 45*60*1000){//未开始
+                if(current<startTime - TEACHER_TIME){//未开始
                     hourClassDTO.setStatus(0);
                 }else if(current >endTime){//已结束
                     hourClassDTO.setStatus(2);
@@ -839,7 +938,7 @@ public class ExcellentCoursesService {
             throw  new Exception("无该订单！");
         }
         long current = System.currentTimeMillis();
-        long start = hourClassEntry.getStartTime() -5*60*1000;
+        long start = hourClassEntry.getStartTime() -STUDENT_TIME;
         long end = hourClassEntry.getStartTime() + hourClassEntry.getCurrentTime();
         if(current>start && current < end){//上课中
             CoursesRoomEntry coursesRoomEntry = coursesRoomDao.getEntry(excellentCoursesEntry.getID());
@@ -870,7 +969,7 @@ public class ExcellentCoursesService {
             throw  new Exception("该课程不存在！");
         }
         long current = System.currentTimeMillis();
-        long start = hourClassEntry.getStartTime()-30*60*1000;
+        long start = hourClassEntry.getStartTime()-TEACHER_TIME;
         long end =  hourClassEntry.getStartTime() + hourClassEntry.getCurrentTime();
         if(current>start  && current < end) {//上课中
             CoursesRoomEntry coursesRoomEntry = coursesRoomDao.getEntry(excellentCoursesEntry.getID());
@@ -933,8 +1032,8 @@ public class ExcellentCoursesService {
         List<ObjectId> ids = new ArrayList<ObjectId>();
         ids.add(userId);
         ids.add(newVersionBindRelationEntry.getMainUserId());
-        List<RechargeResultEntry> entries = rechargeResultDao.getAllEntryList(ids, page, pageSize);
-        int count = rechargeResultDao.selectMyCount(ids);
+        List<RechargeResultEntry> entries = rechargeResultDao.getAllEntryList(ids,userId, page, pageSize);
+        int count = rechargeResultDao.selectMyCount(ids,userId);
         //Map<ObjectId, UserEntry> mainUserEntryMap = userDao.getUserEntryMap(ids, Constant.FIELDS);
         for(RechargeResultEntry entry:entries){
             RechargeResultDTO dto = new RechargeResultDTO(entry);

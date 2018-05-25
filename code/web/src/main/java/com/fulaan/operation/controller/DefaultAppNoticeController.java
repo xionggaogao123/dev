@@ -261,6 +261,26 @@ public class DefaultAppNoticeController extends BaseController {
         return respObj;
     }
 
+    @RequestMapping("/getNewMyReceivedAppNoticeDtosForStudent")
+    @ResponseBody
+    @ApiOperation(value = "获取我接收到的通知(学生)", httpMethod = "GET", produces = "application/json")
+    @ApiResponses( value = {@ApiResponse(code = 200, message = "Successful — 请求已完成",response = RespObj.class),
+            @ApiResponse(code = 500, message = "服务器不能完成请求")})
+    public RespObj getNewMyReceivedAppNoticeDtosForStudent(
+            @RequestParam(required = false, defaultValue = "1")int page,
+            @RequestParam(required = false, defaultValue = "10")int pageSize
+    ){
+        RespObj respObj=new RespObj(Constant.FAILD_CODE);
+        try{
+            Map<String,Object> retMap=appNoticeService.getNewMyReceivedAppNoticeDtosForStudent(getUserId(),page,pageSize);
+            respObj.setMessage(retMap);
+            respObj.setCode(Constant.SUCCESS_CODE);
+        }catch (Exception e){
+            respObj.setErrorMessage(e.getMessage());
+        }
+        return respObj;
+    }
+
 
     @RequestMapping("/searchAppNotice")
     @ResponseBody

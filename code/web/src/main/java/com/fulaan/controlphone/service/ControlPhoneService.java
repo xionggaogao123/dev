@@ -883,7 +883,7 @@ public class ControlPhoneService {
         long zero = DateTimeUtils.getStrToLongTime(str, "yyyy-MM-dd");
         //分割点
         long jiedian = zero+8*60*60*1000;//今天零点零分零秒的毫秒数
-        long startTime = 0l;
+        /*long startTime = 0l;
         long endTime = 0l;
         if(current>=jiedian){
             startTime = jiedian;
@@ -891,6 +891,14 @@ public class ControlPhoneService {
         }else{
             startTime = jiedian - 24*60*60*1000;
             endTime = jiedian;
+        }*/
+        long datetime = 0l;
+        if(current>=jiedian){
+            //今日
+            datetime = zero;
+        }else{
+            //昨日
+            datetime = zero- 24*60*60*1000;
         }
         ControlMapEntry entry = controlMapDao.getEntryByParentId(parentId, sonId, zero);
         if (entry != null) {
@@ -949,7 +957,12 @@ public class ControlPhoneService {
         }
         map.put("time",timecu/60000);
         //使用时间
-        long useTime  = controlAppResultDao.getUserAllTime(sonId, startTime,endTime);
+        //long useTime  = controlAppResultDao.getUserAllTime(sonId, startTime,endTime);
+        ControlStudentResultEntry controlStudentResultEntry = controlStudentResultDao.getEntry(sonId,parentId,datetime);
+        long useTime = 0l;
+        if(controlStudentResultEntry!=null){
+            useTime = controlStudentResultEntry.getNewAppUser();
+        }
         map.put("useTime",useTime/60000);
         //剩余时间
         if(timecu/60000-useTime/60000 <0){
@@ -1366,7 +1379,7 @@ public class ControlPhoneService {
         }
         map.put("phone",dtos);
         //可用时间
-        long timecu = 3*60*1000;//未登录3分钟使用时间
+        long timecu = 0;//未登录0分钟使用时间
         map.put("time",timecu/60000);
         map.put("backTime",24*60);
         map.put("appTime",24*60);

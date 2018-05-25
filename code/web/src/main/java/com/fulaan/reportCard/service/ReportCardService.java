@@ -1730,8 +1730,7 @@ public class ReportCardService {
             for (VirtualUserDTO virtualUserDTO : virtualUserDTOs) {
                 String userName = virtualUserDTO.getUserName();
                 String userNumber = virtualUserDTO.getUserNumber();
-                if(StringUtils.isNotEmpty(userName)&&
-                        StringUtils.isNotEmpty(userNumber)){
+                if(StringUtils.isNotEmpty(userName)){
                     String key=userName/*+"&"+userNumber*/;
                     if (null != userIds.get(key)) {
                         VirtualUserEntry userEntry = new VirtualUserEntry(communityId, virtualUserDTO.getUserNumber(),

@@ -423,7 +423,7 @@ public class IndexPageService {
                         ob1.put("subject","家长");
                     }
 
-                    ob1.put("avatar",dto8.getAvatar());
+                    ob1.put("avatar","http://7xiclj.com1.z0.glb.clouddn.com/5a26565027fddd1db08722f1.png");
                     ob1.put("title",dto8.getTitle());
                     ob1.put("time",dto8.getTime());
                     ob1.put("content",dto8.getContent());

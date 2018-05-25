@@ -76,7 +76,9 @@ public class AppNoticeService {
     private IntegralSufferService integralSufferService;
 
     //学生社群
-    private static final String STUDENTCOMMUNIY = "5abaf547bf2e791a5457a584";
+    //private static final String STUDENTCOMMUNIY = "5abaf547bf2e791a5457a584";
+    //线上
+   private static final String STUDENTCOMMUNIY = "5b04d9eb3d4df9273f5c7747";
 
 
     public static void main(String[] args){
@@ -459,6 +461,7 @@ public class AppNoticeService {
                     dto.setAvatar(AvatarUtils.getAvatar(userEntry.getAvatar(),userEntry.getRole(),userEntry.getSex()));
                     //dto.setUserName(dto);
                 }
+                dto.setUserName(entry.getUserName());
                 dto.setIsRead(0);
                 if(dto.getReadList().contains(userId.toString())){
                     dto.setIsRead(1);
@@ -474,6 +477,7 @@ public class AppNoticeService {
                 }
                 dto.setTimeExpression(TimeChangeUtils.getChangeTime(entry.getSubmitTime()));
                 dto.setCardType(2);//特殊
+                dto.setSubject("学生");
             }else{
                 UserEntry userEntry=userEntryMap.get(entry.getUserId());
                 if(null!=userEntry){

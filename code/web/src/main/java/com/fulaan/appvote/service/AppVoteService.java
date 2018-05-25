@@ -4,6 +4,7 @@ import com.db.appactivity.AppActivityDao;
 import com.db.appactivity.AppActivityUserDao;
 import com.db.appvote.AppVoteDao;
 import com.db.appvote.TransferVoteAndActivityDao;
+import com.db.backstage.TeacherApproveDao;
 import com.db.fcommunity.CommunityDao;
 import com.db.fcommunity.CommunityDetailDao;
 import com.db.fcommunity.MemberDao;
@@ -71,6 +72,8 @@ public class AppVoteService {
     private AppActivityDao appActivityDao = new AppActivityDao();
 
     private RedDotService redDotService = new RedDotService();
+
+    private TeacherApproveDao teacherApproveDao = new TeacherApproveDao();
 
     @Autowired
     private FVoteService fVoteService;
@@ -259,6 +262,11 @@ public class AppVoteService {
                         userEntry1.getSex(), DateTimeUtils.convert(timeRecord.get(userEntry1.getID()),DateTimeUtils.DATE_YYYY_MM_DD)));
             }
             dto.setVoteUsers(users);
+            //查询是否大V
+            List<ObjectId> userOb = new ArrayList<ObjectId>();
+            userIds.add(userId);
+            userOb.addAll(userIds);
+            List<ObjectId> objectIdList1 = teacherApproveDao.selectMap(userOb);
             for(VoteResult voteResult:voteResults){
                 List<User> voteUsers=new ArrayList<User>();
                 Set<ObjectId> ItemUserIds=new HashSet<ObjectId>();
@@ -288,6 +296,12 @@ public class AppVoteService {
                             int userRole = groupUserIds.get(entry.getUserId());
                             if(role>userRole){
                                 dto.setManageDelete(Constant.ONE);
+                            }else{
+                                if(userRole==0){//同为普通成员
+                                    if(objectIdList1.contains(userId) && !objectIdList1.contains(entry.getUserId())){
+                                        dto.setManageDelete(Constant.ONE);//我是大V        你不是
+                                    }
+                                }
                             }
                         }else{
                             dto.setManageDelete(Constant.ONE);

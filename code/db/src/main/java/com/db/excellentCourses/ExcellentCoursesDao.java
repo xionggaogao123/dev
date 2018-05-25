@@ -55,9 +55,42 @@ public class ExcellentCoursesDao extends BaseDao {
     }
 
     //首页订单查询
-    public List<ExcellentCoursesEntry> getEntryList(List<ObjectId> objectIds){
+    public List<ExcellentCoursesEntry> getEntryList(List<ObjectId> objectIds,long time){
         List<ExcellentCoursesEntry> entryList=new ArrayList<ExcellentCoursesEntry>();
         BasicDBObject query=new BasicDBObject().append("clt",new BasicDBObject(Constant.MONGO_IN,objectIds)).append("isr",0).append("sta",2);
+        query.append("etm",new BasicDBObject(Constant.MONGO_GTE,time));
+        List<DBObject> dbList=find(MongoFacroty.getAppDB(), Constant.COLLECTION_EXCELLENT_COURSES, query,
+                Constant.FIELDS, Constant.MONGO_SORTBY_DESC);
+        if (dbList != null && !dbList.isEmpty()) {
+            for (DBObject obj : dbList) {
+                entryList.add(new ExcellentCoursesEntry((BasicDBObject) obj));
+            }
+        }
+        return entryList;
+    }
+
+    //首页过期订单查询
+    public List<ExcellentCoursesEntry> getOldEntryList(List<ObjectId> objectIds,long time){
+        List<ExcellentCoursesEntry> entryList=new ArrayList<ExcellentCoursesEntry>();
+        BasicDBObject query=new BasicDBObject().append("clt",new BasicDBObject(Constant.MONGO_IN,objectIds)).append("isr",0).append("sta",2);
+        query.append("etm",new BasicDBObject(Constant.MONGO_LT,time));
+        BasicDBObject orderquery = new BasicDBObject();
+        orderquery.append("ctm",-1);
+        List<DBObject> dbList=find(MongoFacroty.getAppDB(), Constant.COLLECTION_EXCELLENT_COURSES, query,
+                Constant.FIELDS,orderquery);
+        if (dbList != null && !dbList.isEmpty()) {
+            for (DBObject obj : dbList) {
+                entryList.add(new ExcellentCoursesEntry((BasicDBObject) obj));
+            }
+        }
+        return entryList;
+    }
+
+    //首页订单查询
+    public List<ExcellentCoursesEntry> getEntryListById(List<ObjectId> objectIds,long time){
+        List<ExcellentCoursesEntry> entryList=new ArrayList<ExcellentCoursesEntry>();
+        BasicDBObject query=new BasicDBObject().append(Constant.ID,new BasicDBObject(Constant.MONGO_IN,objectIds)).append("isr", 0).append("sta",2);
+        query.append("etm",new BasicDBObject(Constant.MONGO_GTE,time));
         List<DBObject> dbList=find(MongoFacroty.getAppDB(), Constant.COLLECTION_EXCELLENT_COURSES, query,
                 Constant.FIELDS, Constant.MONGO_SORTBY_DESC);
         if (dbList != null && !dbList.isEmpty()) {
@@ -69,7 +102,7 @@ public class ExcellentCoursesDao extends BaseDao {
     }
 
     //首页订单查询
-    public List<ExcellentCoursesEntry> getEntryListById(List<ObjectId> objectIds){
+    public List<ExcellentCoursesEntry> getOtherEntryListById(List<ObjectId> objectIds){
         List<ExcellentCoursesEntry> entryList=new ArrayList<ExcellentCoursesEntry>();
         BasicDBObject query=new BasicDBObject().append(Constant.ID,new BasicDBObject(Constant.MONGO_IN,objectIds)).append("isr", 0).append("sta",2);
         List<DBObject> dbList=find(MongoFacroty.getAppDB(), Constant.COLLECTION_EXCELLENT_COURSES, query,
@@ -81,6 +114,21 @@ public class ExcellentCoursesDao extends BaseDao {
         }
         return entryList;
     }
+    //首页订单查询
+    public List<ExcellentCoursesEntry> getOldEntryListById(List<ObjectId> objectIds,long time){
+        List<ExcellentCoursesEntry> entryList=new ArrayList<ExcellentCoursesEntry>();
+        BasicDBObject query=new BasicDBObject().append(Constant.ID,new BasicDBObject(Constant.MONGO_IN,objectIds)).append("isr", 0).append("sta",2);
+        query.append("etm",new BasicDBObject(Constant.MONGO_LT,time));
+        List<DBObject> dbList=find(MongoFacroty.getAppDB(), Constant.COLLECTION_EXCELLENT_COURSES, query,
+                Constant.FIELDS, Constant.MONGO_SORTBY_DESC);
+        if (dbList != null && !dbList.isEmpty()) {
+            for (DBObject obj : dbList) {
+                entryList.add(new ExcellentCoursesEntry((BasicDBObject) obj));
+            }
+        }
+        return entryList;
+    }
+
     //首页订单查询
     public List<ExcellentCoursesEntry> getMyKeyClassList(String keyword,long current){
         List<ExcellentCoursesEntry> entryList=new ArrayList<ExcellentCoursesEntry>();

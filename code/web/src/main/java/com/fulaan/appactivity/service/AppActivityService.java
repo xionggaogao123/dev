@@ -2,6 +2,7 @@ package com.fulaan.appactivity.service;
 
 import com.db.appactivity.AppActivityDao;
 import com.db.appactivity.AppActivityUserDao;
+import com.db.backstage.TeacherApproveDao;
 import com.db.fcommunity.CommunityDao;
 import com.db.fcommunity.MemberDao;
 import com.db.fcommunity.NewVersionCommunityBindDao;
@@ -53,6 +54,8 @@ public class AppActivityService {
 
     private IntegralSufferService integralSufferService = new IntegralSufferService();
 
+    private TeacherApproveDao teacherApproveDao = new TeacherApproveDao();
+
 
     public String saveEntry(AppActivityDTO appActivityDTO){
         List<AppActivityEntry> entries = new ArrayList<AppActivityEntry>();
@@ -101,12 +104,15 @@ public class AppActivityService {
         if (userIds.size() > 0) {
             userEntryMap = userService.getUserEntryMap(userIds, Constant.FIELDS);
         }
-
+        userIds.add(userId);
         Map<ObjectId,Map<ObjectId,Integer>> groupMap = new HashMap<ObjectId,Map<ObjectId,Integer>>();
         if(groupIds.size()>0){
             groupMap = memberDao.getMemberGroupManage(new ArrayList<ObjectId>(groupIds));
         }
-
+        //查询是否大V
+        List<ObjectId> userOb = new ArrayList<ObjectId>();
+        userOb.addAll(userIds);
+        List<ObjectId> objectIdList1 = teacherApproveDao.selectMap(userOb);
         for (AppActivityEntry entry : entries) {
             AppActivityDTO appActivityDTO = new AppActivityDTO(entry);
             UserEntry userEntry = userEntryMap.get(entry.getUserId());
@@ -133,6 +139,12 @@ public class AppActivityService {
                             int userRole = groupUserIds.get(entry.getUserId());
                             if(role>userRole){
                                 appActivityDTO.setManageDelete(Constant.ONE);
+                            }else{
+                                if(userRole==0){//同为普通成员
+                                    if(objectIdList1.contains(userId) && !objectIdList1.contains(entry.getUserId())){
+                                        appActivityDTO.setManageDelete(Constant.ONE);//我是大V        你不是
+                                    }
+                                }
                             }
                         }else{
                             appActivityDTO.setManageDelete(Constant.ONE);

@@ -975,7 +975,7 @@ public class Constant {
     //管控应用使用记录表
     public static final String COLLECTION_CONTROL_APP_RESULT = "controlappresult";
     //管控应用使用记录缓存表
-    public static final String COLLECTION_CONTROL_APP_RESULT_CURRENT = "controlappresult_current";
+    public static final String COLLECTION_CONTROL_APP_RESULT_CURRENT = "controlappresult_current2";
     //信息表
     public static final String COLLECTION_CONTROL_MESSAGE= "controlmessage";
     //管控时间设置表

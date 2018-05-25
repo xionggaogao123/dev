@@ -57,9 +57,18 @@ public class IndexPageService {
     private TeacherApproveDao teacherApproveDao = new TeacherApproveDao();
 
     //老师社群
+   // private static final String TEACHERCOMMUNIY = "5ae993953d4df93f01b11a36";
+    //线上
     private static final String TEACHERCOMMUNIY = "5ae993953d4df93f01b11a36";
     //家长社群
-    private static final String PARENTCOMMUNIY = "5acecca9bf2e792210a70583";
+   // private static final String PARENTCOMMUNIY = "5acecca9bf2e792210a70583";
+    //线上
+    private static final String PARENTCOMMUNIY = "5b04d9f53d4df9273f5c775a";
+    //学生社群
+  //  private static final String STUDENTCOMMUNIY = "5abaf547bf2e791a5457a584";
+    //线上
+    private static final String STUDENTCOMMUNIY = "5b04d9eb3d4df9273f5c7747";
+
 
 
 
@@ -398,8 +407,8 @@ public class IndexPageService {
                 UserEntry userEntry=userEntryMap.get(entry.getUserId());
                 if(null!=userEntry){
                     dto8.setAvatar(AvatarUtils.getAvatar(userEntry.getAvatar(), userEntry.getRole(), userEntry.getSex()));
-                    String name = StringUtils.isNotEmpty(userEntry.getNickName()) ? userEntry.getNickName() : userEntry.getUserName();
-                    dto8.setUserName(name);
+                    /*String name = StringUtils.isNotEmpty(userEntry.getNickName()) ? userEntry.getNickName() : userEntry.getUserName();
+                    dto8.setUserName(name);*/
                 }
                 Map<String,Object> ob1 = new HashMap<String, Object>();
                 if(dto8.getCommunityId().equals(TEACHERCOMMUNIY) || dto8.getCommunityId().equals(PARENTCOMMUNIY)){
@@ -407,8 +416,13 @@ public class IndexPageService {
                     ob1.put("cardType",4);
                     ob1.put("groupName",dto8.getGroupName());
                     ob1.put("id",dto8.getId());
-                    ob1.put("userName",dto8.getUserName());
-                    ob1.put("subject",dto8.getSubject());
+                    ob1.put("userName",entry.getUserName());
+                    if(dto8.getCommunityId().equals(TEACHERCOMMUNIY)){
+                        ob1.put("subject","老师");
+                    }else{
+                        ob1.put("subject","家长");
+                    }
+
                     ob1.put("avatar",dto8.getAvatar());
                     ob1.put("title",dto8.getTitle());
                     ob1.put("time",dto8.getTime());
@@ -567,6 +581,61 @@ public class IndexPageService {
         map.put("count",count);
         map.put("list",list2);
         return map;
+    }
+    public Map<String,Object> getRoleList(String userName,int page,int pageSize,ObjectId userId){
+        Map<String,Object> map = new HashMap<String, Object>();
+        List<ObjectId> oids = new ArrayList<ObjectId>();
+        //appNoticeDao
+        List<Map<String,Object>> list = new ArrayList<Map<String, Object>>();
+        oids.add(new ObjectId(TEACHERCOMMUNIY));
+        oids.add(new ObjectId(PARENTCOMMUNIY));
+        oids.add(new ObjectId(STUDENTCOMMUNIY));
+        List<AppNoticeEntry> entries = appNoticeDao.getRoleList(oids, page, pageSize, userName);
+        int count = appNoticeDao.countRoleList(oids,userName);
+        for(AppNoticeEntry entry : entries){
+            AppNoticeDTO dto8 = new AppNoticeDTO(entry);
+            Map<String,Object> ob1 = new HashMap<String, Object>();
+            ob1.put("tag", CommunityType.newSystem.getDes());
+            ob1.put("cardType",4);
+            ob1.put("groupName",dto8.getGroupName());
+            ob1.put("id",dto8.getId());
+            ob1.put("userName",entry.getUserName());
+            if(dto8.getCommunityId().equals(TEACHERCOMMUNIY)){
+                ob1.put("subject","老师");
+            }else{
+                ob1.put("subject","家长");
+            }
+
+            ob1.put("avatar",dto8.getAvatar());
+            ob1.put("title",dto8.getTitle());
+            ob1.put("time",dto8.getTime());
+            ob1.put("content",dto8.getContent());
+            ob1.put("imageList",dto8.getImageList());
+            ob1.put("commentCount",dto8.getCommentCount());
+            ob1.put("videoList",dto8.getVideoList());
+            ob1.put("voiceList",dto8.getVoiceList());
+            ob1.put("attachements",dto8.getAttachements());
+            ob1.put("isRead",0);
+            if(dto8.getReadList().contains(userId.toString())){
+                ob1.put("isRead",1);
+            }
+            //设置已阅和未阅的人数
+            List<ObjectId> reads=entry.getReaList();
+            ob1.put("totalReadCount", 0);
+            ob1.put("readCount", reads.size());
+            ob1.put("unReadCount",0);
+            ob1.put("timeExpression",TimeChangeUtils.getChangeTime(entry.getSubmitTime()));
+            if(dto8.getUserId().equals(userId.toString())){
+                ob1.put("isOwner",true);
+            }else{
+                ob1.put("isOwner",false);
+            }
+            list.add(ob1);
+        }
+        map.put("count",count);
+        map.put("list",list);
+        return map;
+
     }
     public void delEntry(ObjectId id){
         indexPageDao.delEntry(id);

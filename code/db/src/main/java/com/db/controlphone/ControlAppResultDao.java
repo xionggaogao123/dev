@@ -33,6 +33,17 @@ public class ControlAppResultDao extends BaseDao {
     public void addLinBatch(List<DBObject> list) {
         save(MongoFacroty.getAppDB(), Constant.COLLECTION_CONTROL_APP_RESULT_CURRENT, list);
     }
+
+    /**
+     * 定时删除缓存表
+     * @return
+     */
+    public void drop(){
+        dropCollection(MongoFacroty.getAppDB(), Constant.COLLECTION_CONTROL_APP_RESULT_CURRENT);
+    }
+
+
+
     //添加
     public String addEntry(ControlAppResultEntry entry) {
         save(MongoFacroty.getAppDB(), Constant.COLLECTION_CONTROL_APP_RESULT, entry.getBaseEntry());

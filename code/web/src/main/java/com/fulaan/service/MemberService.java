@@ -515,6 +515,11 @@ public class MemberService {
         return mlist;
     }
 
+    public List<ObjectId> getMyObjectList(ObjectId userId){
+        List<ObjectId> olsit = memberDao.getObjectIdGroupIdsByUserId(userId);
+        return olsit;
+    }
+
     public int judgePersonPermission(ObjectId userId){//1:老师 2:家长 3:老师与家长
         int status=0;
         if(memberDao.judgeIsParent(userId)){

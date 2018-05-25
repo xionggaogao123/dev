@@ -338,10 +338,11 @@ public class GroupService {
     public List<GroupDTO> getChildrenGroups(ObjectId userId){
         List<GroupDTO> groupDTOs = new ArrayList<GroupDTO>();
         List<ObjectId> groupIds =memberDao.getGroupIdsByUserId(userId);
-
         List<GroupEntry> groupEntries =groupDao.findByIdList(groupIds);
         for(GroupEntry groupEntry:groupEntries){
-            groupDTOs.add(new GroupDTO(groupEntry,new ArrayList<MemberDTO>(),new ArrayList<MemberDTO>()));
+            if(groupEntry.getOwerId()!=null){
+                groupDTOs.add(new GroupDTO(groupEntry,new ArrayList<MemberDTO>(),new ArrayList<MemberDTO>()));
+            }
         }
         return groupDTOs;
     }

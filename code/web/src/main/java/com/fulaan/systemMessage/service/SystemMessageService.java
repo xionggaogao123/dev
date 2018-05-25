@@ -20,14 +20,23 @@ import org.springframework.stereotype.Service;
 @Service
 public class SystemMessageService extends BaseService {
     //老师社群
+   /* private static final String TEACHERCOMMUNIY = "5ae993953d4df93f01b11a36";
+    private static final String TEACHERGROUP = "5ae993963d4df93f01b11a38";*/
+    //线上
     private static final String TEACHERCOMMUNIY = "5ae993953d4df93f01b11a36";
     private static final String TEACHERGROUP = "5ae993963d4df93f01b11a38";
     //家长社群
-    private static final String PARENTCOMMUNIY = "5acecca9bf2e792210a70583";
-    private static final String PARENTGROUP = "5aceccaabf2e792210a70585";
+   /* private static final String PARENTCOMMUNIY = "5acecca9bf2e792210a70583";
+    private static final String PARENTGROUP = "5aceccaabf2e792210a70585";*/
+    //线上
+    private static final String PARENTCOMMUNIY = "5b04d9f53d4df9273f5c775a";
+    private static final String PARENTGROUP = "5b04d9f53d4df9273f5c775c";
     //学生社群
-    private static final String STUDENTCOMMUNIY = "5abaf547bf2e791a5457a584";
-    private static final String STUDENTGROUP = "5abaf548bf2e791a5457a586";
+   /* private static final String STUDENTCOMMUNIY = "5abaf547bf2e791a5457a584";
+    private static final String STUDENTGROUP = "5abaf548bf2e791a5457a586";*/
+    //线上
+    private static final String STUDENTCOMMUNIY = "5b04d9eb3d4df9273f5c7747";
+    private static final String STUDENTGROUP = "5b04d9eb3d4df9273f5c7749";
 
     private AppNoticeDao appNoticeDao = new AppNoticeDao();
 

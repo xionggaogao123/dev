@@ -9,7 +9,6 @@ import com.pojo.appnotice.AppNoticeEntry;
 import com.pojo.utils.MongoUtils;
 import com.sys.constants.Constant;
 import org.apache.commons.lang.StringUtils;
-import org.apache.http.impl.nio.reactor.BaseIOReactor;
 import org.bson.types.ObjectId;
 
 import java.util.ArrayList;
@@ -247,6 +246,45 @@ public class AppNoticeDao extends BaseDao{
             }
         }
         return entries;
+    }
+
+    /**
+     * 获取我接收到的通知
+     * @param communityIds
+     * @return
+     */
+    public List<AppNoticeEntry> getRoleList(List<ObjectId> communityIds,int page,int pageSize,
+                                                              String userName){
+        BasicDBObject query=new BasicDBObject()
+                .append("cmId", new BasicDBObject(Constant.MONGO_NE, communityIds))
+                .append("wp", Constant.ONE)
+                .append("ir",Constant.ZERO);
+        if(userName!=null && !userName.equals("")){
+             query.append("un",userName);
+        }
+        List<AppNoticeEntry> entries=new ArrayList<AppNoticeEntry>();
+
+        List<DBObject> dbObjectList=find(MongoFacroty.getAppDB(), Constant.COLLECTION_NEW_VERSION_APP_NOTICE,
+                query,
+                Constant.FIELDS,Constant.MONGO_SORTBY_DESC,(page-1)*pageSize,pageSize);
+        if(null!=dbObjectList&&!dbObjectList.isEmpty()){
+            for(DBObject dbObject:dbObjectList){
+                entries.add(new AppNoticeEntry(dbObject));
+            }
+        }
+        return entries;
+    }
+
+    public int countRoleList(List<ObjectId> communityIds,String userName){
+        BasicDBObject query=new BasicDBObject()
+                .append("cmId", new BasicDBObject(Constant.MONGO_NE, communityIds))
+                .append("wp", Constant.ONE)
+                .append("ir",Constant.ZERO);
+        if(userName!=null && !userName.equals("")){
+            query.append("un",userName);
+        }
+        return count(MongoFacroty.getAppDB(), Constant.COLLECTION_NEW_VERSION_APP_NOTICE,
+                query);
     }
     /**
      * 根据idlist查询通知信息

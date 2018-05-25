@@ -94,6 +94,26 @@ public class DefaultIndexPageController extends BaseController {
         return JSON.toJSONString(respObj);
     }
 
+    @ApiOperation(value = "获取往期文章", httpMethod = "POST", produces = "application/json")
+    @ApiResponses( value = {@ApiResponse(code = 200, message = "Successful — 请求已完成",response = String.class)})
+    @RequestMapping("/getRoleList")
+    @ResponseBody
+    public String getRoleList(@ApiParam(name = "userName", required = true, value = "userName") @RequestParam("userName") String userName,
+                              @ApiParam(name = "page", required = true, value = "page") @RequestParam("page") int page,
+                              @ApiParam(name = "pageSize", required = true, value = "pageSize") @RequestParam("pageSize") int pageSize){
+        RespObj respObj=new RespObj(Constant.FAILD_CODE);
+        try {
+            respObj.setCode(Constant.SUCCESS_CODE);
+            Map<String,Object> map = indexPageService.getRoleList(userName, page, pageSize, getUserId());
+            respObj.setMessage(map);
+        } catch (Exception e) {
+            e.printStackTrace();
+            respObj.setCode(Constant.FAILD_CODE);
+            respObj.setErrorMessage("获取往期文章失败");
+        }
+        return JSON.toJSONString(respObj);
+    }
+
     /**
      * 加入社区但是不加入环信群组---这里只有复兰社区调用
      * 加入复兰社区--- 复兰社区很特殊，特殊对待

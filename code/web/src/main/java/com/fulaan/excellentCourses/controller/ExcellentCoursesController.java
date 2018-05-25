@@ -31,9 +31,9 @@ public class ExcellentCoursesController extends BaseController {
 
     /****************************** 学生端 ********************************/
     /**
-     * 我的课程
+     * 我的活跃课程
      */
-    @ApiOperation(value = "我的课程", httpMethod = "GET", produces = "application/json")
+    @ApiOperation(value = "我的活跃课程", httpMethod = "GET", produces = "application/json")
     @ApiResponses( value = {@ApiResponse(code = 200, message = "Successful — 请求已完成",response = String.class),
             @ApiResponse(code = 400, message = "请求中有语法问题，或不能满足请求"),
             @ApiResponse(code = 500, message = "服务器不能完成请求")})
@@ -44,6 +44,30 @@ public class ExcellentCoursesController extends BaseController {
         try {
             respObj.setCode(Constant.SUCCESS_CODE);
             Map<String,Object> map = excellentCoursesService.getMyCoursesList(getUserId());
+            respObj.setMessage(map);
+        } catch (Exception e) {
+            e.printStackTrace();
+            respObj.setCode(Constant.FAILD_CODE);
+            respObj.setErrorMessage("获取我的活跃课程失败!");
+        }
+        return JSON.toJSONString(respObj);
+    }
+
+
+    /**
+     * 我的过期课程
+     */
+    @ApiOperation(value = "我的过期课程", httpMethod = "GET", produces = "application/json")
+    @ApiResponses( value = {@ApiResponse(code = 200, message = "Successful — 请求已完成",response = String.class),
+            @ApiResponse(code = 400, message = "请求中有语法问题，或不能满足请求"),
+            @ApiResponse(code = 500, message = "服务器不能完成请求")})
+    @RequestMapping("/getMyOldCoursesList")
+    @ResponseBody
+    public String getMyOldCoursesList(){
+        RespObj respObj=new RespObj(Constant.FAILD_CODE);
+        try {
+            respObj.setCode(Constant.SUCCESS_CODE);
+            Map<String,Object> map = excellentCoursesService.getOldMyCoursesList(getUserId());
             respObj.setMessage(map);
         } catch (Exception e) {
             e.printStackTrace();

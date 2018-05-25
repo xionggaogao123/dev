@@ -740,6 +740,18 @@ public class MemberDao extends BaseDao {
     }
 
 
+    public List<ObjectId> getObjectIdGroupIdsByUserId(ObjectId userId) {
+        BasicDBObject query = new BasicDBObject().append("uid", userId).append("r", Constant.ZERO);
+        BasicDBObject orderBy = new BasicDBObject().append("rl", -1).append(Constant.ID, -1);
+        List<ObjectId> memberEntries = new ArrayList<ObjectId>();
+        List<DBObject> dbObjects = find(MongoFacroty.getAppDB(), Constant.COLLECTION_FORUM_COMMUNITY_MEMBER, query, Constant.FIELDS, orderBy);
+        for (DBObject dbo : dbObjects) {
+            MemberEntry memberEntry = new MemberEntry(dbo);
+            memberEntries.add(memberEntry.getGroupId());
+        }
+        return memberEntries;
+    }
+
 
     public boolean  judgeIsParent(ObjectId userId){
             BasicDBObject query = new BasicDBObject().append("uid", userId)

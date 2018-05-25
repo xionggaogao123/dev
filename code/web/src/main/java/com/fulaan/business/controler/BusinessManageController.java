@@ -284,4 +284,27 @@ public class BusinessManageController extends BaseController {
         return JSON.toJSONString(respObj);
     }
 
+    /**
+     * 强制删除
+     * @return
+     */
+    @ApiOperation(value = "强制删除", httpMethod = "POST", produces = "application/json")
+    @ApiResponses( value = {@ApiResponse(code = 200, message = "Successful — 请求已完成",response = String.class)})
+    @RequestMapping("/deleteCourses")
+    @ResponseBody
+    public String deleteCourses(@ApiParam(name="id",required = false,value="id") @RequestParam(value="id",defaultValue = "") String id){
+        RespObj respObj=new RespObj(Constant.FAILD_CODE);
+        try {
+            businessManageService.deleteCourses(new ObjectId(id),getUserId());
+            respObj.setCode(Constant.SUCCESS_CODE);
+            respObj.setMessage("删除成功");
+
+        } catch (Exception e) {
+            e.printStackTrace();
+            respObj.setCode(Constant.FAILD_CODE);
+            respObj.setErrorMessage("强制删除失败!");
+        }
+        return JSON.toJSONString(respObj);
+    }
+
 }

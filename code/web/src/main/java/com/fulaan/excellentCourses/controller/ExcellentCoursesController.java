@@ -195,7 +195,7 @@ public class ExcellentCoursesController extends BaseController {
 
 
     /**
-     *  课程中心
+     *  课程中心(家长、孩子统一)
      */
     @ApiOperation(value = "课程中心", httpMethod = "GET", produces = "application/json")
     @ApiResponses( value = {@ApiResponse(code = 200, message = "Successful — 请求已完成",response = String.class),

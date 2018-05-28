@@ -44,7 +44,8 @@ public class OrderEntry extends BaseDBObject {
                       int isState,
                       long orderTime,
                       String orderTimeStr,
-                      String stateReason
+                      String stateReason,
+                      int state
                       ) {
         BasicDBObject dbObject=new BasicDBObject()
             .append("uid", userId)
@@ -58,7 +59,8 @@ public class OrderEntry extends BaseDBObject {
             .append("sRea", stateReason)
             .append("ot", orderTime)
             .append("ots", orderTimeStr)
-            .append("isr", Constant.ZERO);
+            .append("isr", Constant.ZERO)
+            .append("st", state);
         setBaseEntry(dbObject);
     }
     
@@ -94,7 +96,13 @@ public class OrderEntry extends BaseDBObject {
         return getSimpleIntegerValue("gNum");
     }
     
-    
+    public void setState(int state){
+        setSimpleValue("st",state);
+    }
+
+    public int getState(){
+        return getSimpleIntegerValueDef("st",Constant.ZERO);
+    }
     
     public void setIsState(int isState){
         setSimpleValue("ist",isState);

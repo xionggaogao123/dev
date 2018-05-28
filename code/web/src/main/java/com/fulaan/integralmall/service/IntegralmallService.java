@@ -385,6 +385,18 @@ public class IntegralmallService {
     
     /**
      * 
+     *〈简述〉删除商dingdan
+     *〈详细描述〉
+     * @author Administrator
+     * @param dto
+     */
+    public void handleState(ObjectId goodId, int state) throws Exception{
+        orderDao.handleState(goodId, state);
+        
+    }
+    
+    /**
+     * 
      *〈简述〉保存订单物流信息
      *〈详细描述〉
      * @author Administrator

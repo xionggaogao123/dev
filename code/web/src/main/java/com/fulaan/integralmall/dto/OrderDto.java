@@ -34,6 +34,10 @@ public class OrderDto {
     private Integer isState;
     //申述内容
     private String stateReason;
+    //状态 0未受理 1已受理
+    private Integer state;
+    //
+    private String stateStr;
     //商品
     private GoodsDto goodsDto;
     //地址
@@ -59,6 +63,12 @@ public class OrderDto {
         this.goodsDto = new GoodsDto(goodsEntry);
         this.addressDto = new AddressDto(addressEntry);
         this.userDto = new UserDTO(userEntry);
+        this.state = orderEntry.getState();
+        if (orderEntry.getState() == 0) {
+            this.stateStr = "未受理";
+        } else {
+            this.stateStr = "已受理";
+        }
     }
     
     public OrderDto(GoodsEntry goodsEntry, AddressEntry addressEntry,int score) {
@@ -77,6 +87,22 @@ public class OrderDto {
     
     
     
+
+    public String getStateStr() {
+        return stateStr;
+    }
+
+    public void setStateStr(String stateStr) {
+        this.stateStr = stateStr;
+    }
+
+    public Integer getState() {
+        return state;
+    }
+
+    public void setState(Integer state) {
+        this.state = state;
+    }
 
     public UserDTO getUserDto() {
         return userDto;

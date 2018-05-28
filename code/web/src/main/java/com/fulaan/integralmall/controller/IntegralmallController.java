@@ -118,6 +118,26 @@ public class IntegralmallController extends BaseController{
         return respObj;
     }
     
+    
+    @ApiOperation(value = "更新订单状态", httpMethod = "POST", produces = "application/json")
+    @ApiResponses( value = {@ApiResponse(code = 200, message = "删除订单",response = String.class),
+            @ApiResponse(code = 400, message = "请求中有语法问题，或不能满足请求"),
+            @ApiResponse(code = 500, message = "服务器不能完成请求")})
+    @RequestMapping("/handleState")
+    @ResponseBody
+    public RespObj handleState(@ObjectIdType ObjectId orderId, int state){
+        
+        RespObj respObj=new RespObj(Constant.FAILD_CODE);
+        try {
+            integralmallService.handleState(orderId, state);
+            respObj.setCode(Constant.SUCCESS_CODE);
+            respObj.setMessage("成功！");
+        } catch (Exception e) {
+            respObj.setErrorMessage(e.getMessage());
+        }
+        return respObj;
+    }
+    
     @ApiOperation(value = "订单列表", httpMethod = "GET", produces = "application/json")
     @ApiResponses( value = {@ApiResponse(code = 200, message = "订单列表",response = String.class),
             @ApiResponse(code = 400, message = "请求中有语法问题，或不能满足请求"),

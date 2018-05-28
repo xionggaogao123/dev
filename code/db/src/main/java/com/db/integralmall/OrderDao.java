@@ -42,6 +42,16 @@ public class OrderDao extends BaseDao {
         update(MongoFacroty.getAppDB(), Constant.COLLECTION_INTEGRAL_ORDER,query,updateValue);
     }
     
+    /**
+     * 更新状态
+     */
+    public void handleState(ObjectId goodId, int state) {
+        DBObject query = new BasicDBObject(Constant.ID, goodId);
+        BasicDBObject updateValue=new BasicDBObject()
+            .append(Constant.MONGO_SET,new BasicDBObject("st",state));
+        update(MongoFacroty.getAppDB(), Constant.COLLECTION_INTEGRAL_ORDER,query,updateValue);
+    }
+    
     public List<OrderEntry> getOrderListByUserId(int page,int pageSize, ObjectId userId) {
         List<OrderEntry> entries = new ArrayList<OrderEntry>();
         BasicDBObject query=new BasicDBObject("uid",userId);

@@ -557,6 +557,7 @@ public class MemberDao extends BaseDao {
         List<Integer> integers = new ArrayList<Integer>();
         integers.add(Constant.TWO);
         integers.add(Constant.ONE);
+        integers.add(Constant.ZERO);
         BasicDBObject query = new BasicDBObject("grid", new BasicDBObject(Constant.MONGO_IN,groupIds)).append("rl",
                 new BasicDBObject(Constant.MONGO_IN,integers)).append("r", Constant.ZERO);
         List<DBObject> dbObjectList = find(MongoFacroty.getAppDB(),

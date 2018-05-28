@@ -1886,7 +1886,11 @@ public class ControlPhoneService {
         if(null == newEntry) {
             return this.getCurrentSimpleMessageForSon();
         }
-        ControlTimeEntry controlTimeEntry = controlTimeDao.getEntryByUserId(sonId);
+        //ControlTimeEntry controlTimeEntry = controlTimeDao.getEntryByUserId(sonId);
+        //家长推荐
+        ObjectId parentId = newEntry.getMainUserId();
+        //ControlTimeEntry entry = controlTimeDao.getEntry(userId, parentId);
+        ControlTimeEntry controlTimeEntry = controlTimeDao.getEntry(sonId, parentId);
         Map<String,Object> map = new HashMap<String, Object>();
         //可用应用列表
         List<ObjectId> obList = newVersionBindService.getCommunityIdsByUserId(sonId);
@@ -1900,7 +1904,7 @@ public class ControlPhoneService {
             }
         }
         //家长推荐
-        ObjectId parentId = newEntry.getMainUserId();
+       // ObjectId parentId = newEntry.getMainUserId();
         ControlAppUserEntry controlAppUserEntry = controlAppUserDao.getEntry(parentId,sonId);
         if(controlAppUserEntry!= null){
             //存在取用户应用
@@ -2082,7 +2086,11 @@ public class ControlPhoneService {
         if(null == newEntry) {
             return this.getNewSimpleMessageForSon();
         }
-        ControlTimeEntry controlTimeEntry = controlTimeDao.getEntryByUserId(sonId);
+        //ControlTimeEntry controlTimeEntry = controlTimeDao.getEntryByUserId(sonId);
+        //家长推荐
+        ObjectId parentId = newEntry.getMainUserId();
+        //ControlTimeEntry entry = controlTimeDao.getEntry(userId, parentId);
+        ControlTimeEntry controlTimeEntry = controlTimeDao.getEntry(sonId, parentId);
         Map<String,Object> map = new HashMap<String, Object>();
         //可用应用列表
         List<ObjectId> obList = newVersionBindService.getCommunityIdsByUserId(sonId);
@@ -2096,7 +2104,7 @@ public class ControlPhoneService {
             }
         }
         //家长推荐
-        ObjectId parentId = newEntry.getMainUserId();
+       // ObjectId parentId = newEntry.getMainUserId();
         ControlAppUserEntry controlAppUserEntry = controlAppUserDao.getEntry(parentId,sonId);
         if(controlAppUserEntry!= null){
             //存在取用户应用

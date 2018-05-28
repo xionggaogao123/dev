@@ -1,8 +1,10 @@
 package com.fulaan.integralmall.dto;
 
+import com.fulaan.dto.UserDTO;
 import com.pojo.integralmall.AddressEntry;
 import com.pojo.integralmall.GoodsEntry;
 import com.pojo.integralmall.OrderEntry;
+import com.pojo.user.UserEntry;
 /**
  * 
  * <简述>订单dto
@@ -36,6 +38,8 @@ public class OrderDto {
     private GoodsDto goodsDto;
     //地址
     private AddressDto addressDto;
+    //购买人
+    private UserDTO userDto;
     //您的积分
     private Integer score;
     
@@ -43,7 +47,7 @@ public class OrderDto {
 
     }
     
-    public OrderDto(GoodsEntry goodsEntry, AddressEntry addressEntry,OrderEntry orderEntry) {
+    public OrderDto(GoodsEntry goodsEntry, AddressEntry addressEntry,OrderEntry orderEntry, UserEntry userEntry) {
         this.id = orderEntry.getID().toString();
         this.orderNo = orderEntry.getOrderNum();
         this.goodNum = orderEntry.getGoodNum();
@@ -54,6 +58,7 @@ public class OrderDto {
         this.goodId = goodsEntry.getID().toString();
         this.goodsDto = new GoodsDto(goodsEntry);
         this.addressDto = new AddressDto(addressEntry);
+        this.userDto = new UserDTO(userEntry);
     }
     
     public OrderDto(GoodsEntry goodsEntry, AddressEntry addressEntry,int score) {
@@ -70,6 +75,16 @@ public class OrderDto {
     }
     
     
+    
+    
+
+    public UserDTO getUserDto() {
+        return userDto;
+    }
+
+    public void setUserDto(UserDTO userDto) {
+        this.userDto = userDto;
+    }
 
     public String getOrderNo() {
         return orderNo;

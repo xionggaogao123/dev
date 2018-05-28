@@ -19,6 +19,7 @@ import com.db.integral.IntegralRecordDao;
 import com.db.integralmall.AddressDao;
 import com.db.integralmall.GoodsDao;
 import com.db.integralmall.OrderDao;
+import com.db.user.UserDao;
 import com.fulaan.integral.service.IntegralSufferService;
 import com.fulaan.integralmall.dto.AddressDto;
 import com.fulaan.integralmall.dto.GoodsDto;
@@ -27,11 +28,13 @@ import com.fulaan.integralmall.dto.OrderDto;
 import com.fulaan.integralmall.dto.WuliuInfoDto;
 import com.fulaan.integralmall.dto.wuliuDto;
 import com.fulaan.mall.service.EBusinessOrderService;
+import com.mongodb.BasicDBObject;
 import com.pojo.integral.IntegralRecordEntry;
 import com.pojo.integral.IntegralSufferEntry;
 import com.pojo.integralmall.AddressEntry;
 import com.pojo.integralmall.GoodsEntry;
 import com.pojo.integralmall.OrderEntry;
+import com.pojo.user.UserEntry;
 import com.sys.constants.Constant;
 
 @Service
@@ -45,6 +48,8 @@ public class IntegralmallService {
     
 
     private AddressDao addressDao = new AddressDao();
+    
+    private UserDao userDao = new UserDao();
     
     @Autowired
     private IntegralSufferService integralSufferService;
@@ -158,6 +163,7 @@ public class IntegralmallService {
         List<OrderEntry> list = orderDao.getOrderList(orderNum,page, pageSize);
         for (OrderEntry o : list) {
             GoodsEntry g = goodsDao.getEntryById(o.getGid());
+            UserEntry u = userDao.getUserEntry(o.getUid(), new BasicDBObject());
             if (g == null) {
                 g = new GoodsEntry();
             }
@@ -165,7 +171,7 @@ public class IntegralmallService {
             if (a == null) {
                 a = new AddressEntry();
             }
-            OrderDto d = new OrderDto(g, a, o);
+            OrderDto d = new OrderDto(g, a, o, u);
             orderL.add(d);
         }
         return orderL;

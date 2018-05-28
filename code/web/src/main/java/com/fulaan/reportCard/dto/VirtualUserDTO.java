@@ -26,7 +26,7 @@ public class VirtualUserDTO {
 
     public VirtualUserDTO(VirtualUserEntry entry){
         this.communityId=entry.getCommunityId().toString();
-        this.userNumber=entry.getUserNumber().toString();
+        //this.userNumber=entry.getUserNumber().toString();
         this.userId=entry.getUserId().toString();
         this.userName=entry.getUserName();
         this.id=entry.getID().toString();

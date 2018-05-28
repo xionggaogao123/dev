@@ -1597,13 +1597,13 @@ public class ReportCardService {
                 VirtualUserDTO v = new VirtualUserDTO();
                 v.setCommunityId(communityId);
                 //v.setUserNumber(userNumber);
-                v.setUserName(userName);
+                v.setUserName(userName.trim().replace(" ", ""));
                 virtualUserDTOs.add(v);
             }
         }
         for (int i=0;i<virtualUserDTOs.size();i++) {
             for (int j=i+1;j<virtualUserDTOs.size();j++) {
-                if (virtualUserDTOs.get(i).getUserName().equals(virtualUserDTOs.get(j).getUserName())) {
+                if (virtualUserDTOs.get(i).getUserName().trim().replace(" ", "").equals(virtualUserDTOs.get(j).getUserName().trim().replace(" ", ""))) {
                     throw new Exception("名单中有重复名字："+virtualUserDTOs.get(i).getUserName());
                   
                 }

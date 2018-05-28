@@ -2111,6 +2111,10 @@ public class ReportCardService {
      * A+:100 A:99 A-:98 B+:97 B:96 B-:95 C+:94 C:93 C-:92 D+:91 D:90 D-:89
      */
     public double getValueByPrint(String levelScore) {
+        if (StringUtils.isNotBlank(levelScore)) {
+            levelScore = levelScore.trim();
+        }
+        
         double cellValue = -1;
         if (levelScore.equals("A+")) {
             cellValue = 100;

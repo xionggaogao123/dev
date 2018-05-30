@@ -1684,18 +1684,15 @@ public class ReportCardService {
         for (NewVersionCommunityBindEntry bindEntry : bindEntries) {
             if (StringUtils.isNotEmpty(bindEntry.getThirdName())
                     &&StringUtils.isNotEmpty(bindEntry.getNumber())) {
-                String key = bindEntry.getThirdName()
-                        +"&"+bindEntry.getNumber();
+                String key = bindEntry.getThirdName();
                 userBindMap.put(key, bindEntry.getUserId());
             }
         }
         List<VirtualUserEntry> virtualUserEntries=virtualUserDao.getAllVirtualUsers(new ObjectId(communityId));
         for (VirtualUserEntry virtualUserEntry : virtualUserEntries) {
             String userName = virtualUserEntry.getUserName();
-            String userNumber = virtualUserEntry.getUserNumber();
-            if(StringUtils.isNotEmpty(userName)&&
-                    StringUtils.isNotEmpty(userNumber)) {
-                String key = userName+"&"+userNumber;
+            if(StringUtils.isNotEmpty(userName)) {
+                String key = userName;
                 if(null!=userBindMap.get(key)){
                     virtualUserEntry.setUserId(userBindMap.get(key));
                     virtualUserDao.saveVirualEntry(virtualUserEntry);

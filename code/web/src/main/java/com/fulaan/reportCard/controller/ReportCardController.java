@@ -1,30 +1,47 @@
 package com.fulaan.reportCard.controller;
 
-import com.fulaan.annotation.ObjectIdType;
-import com.fulaan.base.BaseController;
-import com.fulaan.reportCard.dto.*;
-import com.fulaan.reportCard.service.ReportCardService;
-import com.fulaan.wrongquestion.dto.ExamTypeDTO;
-import com.sys.constants.Constant;
-import com.sys.utils.RespObj;
-import io.swagger.annotations.Api;
-import io.swagger.annotations.ApiOperation;
-import io.swagger.annotations.ApiResponse;
-import io.swagger.annotations.ApiResponses;
-import org.bson.types.ObjectId;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Controller;
-import org.springframework.util.MultiValueMap;
-import org.springframework.web.bind.annotation.*;
-import org.springframework.web.multipart.MultipartFile;
-import org.springframework.web.multipart.MultipartRequest;
-
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+
+import org.apache.log4j.Logger;
+import org.bson.types.ObjectId;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Controller;
+import org.springframework.util.MultiValueMap;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.multipart.MultipartFile;
+import org.springframework.web.multipart.MultipartRequest;
+
+import com.fulaan.annotation.ObjectIdType;
+import com.fulaan.base.BaseController;
+import com.fulaan.reportCard.dto.ExamGroupDTO;
+import com.fulaan.reportCard.dto.ExamGroupScoreDTO;
+import com.fulaan.reportCard.dto.ExamGroupUserScoreDTO;
+import com.fulaan.reportCard.dto.GroupExamDetailDTO;
+import com.fulaan.reportCard.dto.GroupExamScoreDTO;
+import com.fulaan.reportCard.dto.GroupExamUserRecordDTO;
+import com.fulaan.reportCard.dto.GroupExamUserRecordStrDTO;
+import com.fulaan.reportCard.dto.GroupExamVersionDTO;
+import com.fulaan.reportCard.dto.VirtualCommunityUserDTO;
+import com.fulaan.reportCard.dto.VirtualUserDTO;
+import com.fulaan.reportCard.service.ReportCardService;
+import com.fulaan.wrongquestion.dto.ExamTypeDTO;
+import com.sys.constants.Constant;
+import com.sys.utils.RespObj;
+
+import io.swagger.annotations.Api;
+import io.swagger.annotations.ApiOperation;
+import io.swagger.annotations.ApiResponse;
+import io.swagger.annotations.ApiResponses;
 
 /**
  * Created by scott on 2017/9/30.
@@ -36,6 +53,8 @@ public class ReportCardController extends BaseController {
 
     @Autowired
     private ReportCardService reportCardService;
+    
+    private static final Logger logger =Logger.getLogger(ReportCardController.class);
     
     @ApiOperation(value = "判断是否需要上传学生并分配", httpMethod = "GET", produces = "application/json")
     @ApiResponses(value = {@ApiResponse(code = 200, message = "导入模板已完成", response = String.class),
@@ -668,6 +687,7 @@ public class ReportCardController extends BaseController {
             respObj.setCode(Constant.SUCCESS_CODE);
             respObj.setMessage("发送通知成功");
         }catch (Exception e){
+            logger.error("error", e);
             respObj.setErrorMessage(e.getMessage());
         }
         return respObj;

@@ -1040,6 +1040,10 @@ public class Constant {
     public static final String COLLECTION_COURSES_ROOM= "excellent_courses_room";
     //用户消费记录
     public static final String COLLECTION_RECHARGE_RESULT= "excellent_recharge_result";
+    //用户退课记录
+    public static final String COLLECTION_CLASS_REFUND= "excellent_class_refund";
+    //用户账户记录
+    public static final String COLLECTION_USER_ACCOUNT= "excellent_user_account";
     
     
     /*************************************积分商城*****************************************/

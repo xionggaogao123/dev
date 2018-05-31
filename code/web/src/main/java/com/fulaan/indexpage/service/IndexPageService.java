@@ -59,13 +59,13 @@ public class IndexPageService {
     //老师社群
    // private static final String TEACHERCOMMUNIY = "5ae993953d4df93f01b11a36";
     //线上
-    private static final String TEACHERCOMMUNIY = "5ae993953d4df93f01b11a36";
+   private static final String TEACHERCOMMUNIY = "5ae993953d4df93f01b11a36";
     //家长社群
    // private static final String PARENTCOMMUNIY = "5acecca9bf2e792210a70583";
     //线上
-    private static final String PARENTCOMMUNIY = "5b04d9f53d4df9273f5c775a";
+   private static final String PARENTCOMMUNIY = "5b04d9f53d4df9273f5c775a";
     //学生社群
-  //  private static final String STUDENTCOMMUNIY = "5abaf547bf2e791a5457a584";
+   //private static final String STUDENTCOMMUNIY = "5abaf547bf2e791a5457a584";
     //线上
     private static final String STUDENTCOMMUNIY = "5b04d9eb3d4df9273f5c7747";
 
@@ -417,12 +417,12 @@ public class IndexPageService {
                     ob1.put("groupName",dto8.getGroupName());
                     ob1.put("id",dto8.getId());
                     ob1.put("userName",entry.getUserName());
-                    if(dto8.getCommunityId().equals(TEACHERCOMMUNIY)){
+                   /* if(dto8.getCommunityId().equals(TEACHERCOMMUNIY)){
                         ob1.put("subject","老师");
                     }else{
                         ob1.put("subject","家长");
-                    }
-
+                    }*/
+                    ob1.put("subject",dto8.getSubject());
                     ob1.put("avatar","http://7xiclj.com1.z0.glb.clouddn.com/5a26565027fddd1db08722f1.png");
                     ob1.put("title",dto8.getTitle());
                     ob1.put("time",dto8.getTime());
@@ -600,12 +600,7 @@ public class IndexPageService {
             ob1.put("groupName",dto8.getGroupName());
             ob1.put("id",dto8.getId());
             ob1.put("userName",entry.getUserName());
-            if(dto8.getCommunityId().equals(TEACHERCOMMUNIY)){
-                ob1.put("subject","老师");
-            }else{
-                ob1.put("subject","家长");
-            }
-
+            ob1.put("subject",dto8.getSubject());
             ob1.put("avatar",dto8.getAvatar());
             ob1.put("title",dto8.getTitle());
             ob1.put("time",dto8.getTime());

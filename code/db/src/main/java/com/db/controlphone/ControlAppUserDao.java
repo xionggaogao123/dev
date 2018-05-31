@@ -48,7 +48,7 @@ public class ControlAppUserDao extends BaseDao {
                 find(MongoFacroty.getAppDB(),
                         Constant.COLLECTION_CONTROL_PARENT_APP,
                         query, Constant.FIELDS,
-                        Constant.MONGO_SORTBY_DESC);
+                        Constant.MONGO_SORTBY_ASC);
         List<ControlAppUserEntry> entryList = new ArrayList<ControlAppUserEntry>();
         if (dbList != null && !dbList.isEmpty()) {
             for (DBObject obj : dbList) {

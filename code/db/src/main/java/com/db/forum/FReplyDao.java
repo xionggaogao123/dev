@@ -3,7 +3,6 @@ package com.db.forum;
 import com.db.base.BaseDao;
 import com.db.factory.MongoFacroty;
 import com.mongodb.BasicDBObject;
-import com.mongodb.DB;
 import com.mongodb.DBObject;
 import com.pojo.forum.FReplyEntry;
 import com.sys.constants.Constant;

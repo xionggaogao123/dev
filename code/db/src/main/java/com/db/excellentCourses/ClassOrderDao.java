@@ -8,10 +8,7 @@ import com.pojo.excellentCourses.ClassOrderEntry;
 import com.sys.constants.Constant;
 import org.bson.types.ObjectId;
 
-import java.util.ArrayList;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
+import java.util.*;
 
 /**
  * Created by James on 2018-04-26.
@@ -168,5 +165,30 @@ public class ClassOrderDao extends BaseDao {
 
 
 
+    }
+
+    //查询首页显示列表
+    public Map<ObjectId,ClassOrderEntry> getEntryList(ObjectId userId,ObjectId contactId){
+        Map<ObjectId,ClassOrderEntry> map = new HashMap<ObjectId, ClassOrderEntry>();
+        List<Integer> list = new ArrayList<Integer>();
+        list.add(1);
+        list.add(0);
+        BasicDBObject query=new BasicDBObject("uid",userId).append("cid",contactId).append("typ", new BasicDBObject(Constant.MONGO_IN, list)).append("isr", Constant.ZERO);
+        List<DBObject> dbList=find(MongoFacroty.getAppDB(), Constant.COLLECTION_CLASS_ORDER, query,
+                Constant.FIELDS, Constant.MONGO_SORTBY_DESC);
+        if (dbList != null && !dbList.isEmpty()) {
+            for (DBObject obj : dbList) {
+                ClassOrderEntry classOrderEntry = new ClassOrderEntry((BasicDBObject) obj);
+                map.put(classOrderEntry.getParentId(),classOrderEntry);
+            }
+        }
+        return map;
+    }
+
+    //批量退课
+    public void delEntry(ObjectId parentId,ObjectId userId){
+        BasicDBObject query = new BasicDBObject("pid",parentId).append("uid",userId);
+        BasicDBObject updateValue=new BasicDBObject(Constant.MONGO_SET,new BasicDBObject("isr",Constant.ONE));
+        update(MongoFacroty.getAppDB(), Constant.COLLECTION_HOUR_CLASS, query,updateValue);
     }
 }

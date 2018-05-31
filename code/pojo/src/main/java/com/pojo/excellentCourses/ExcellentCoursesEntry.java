@@ -30,7 +30,7 @@ import java.util.List;
  * oldPrice         期望总收益                opc
  * newPrice         系统总收益                npc
  * studentNumber    上课人数                  stn
- * status           审批状态                  sta      0  未发布    1 审批中    2 通过       3 拒绝    4 过期
+ * status           审批状态                  sta      0  未发布    1 审批中    2 通过      3 拒绝     4 结束
  * type             课程状态                  typ      0  正常     1 结束      2 未开始      3 进行中
  *
  */

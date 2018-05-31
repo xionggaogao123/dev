@@ -45,6 +45,19 @@ public class RechargeResultDao extends BaseDao {
         return entryList;
     }
 
+    //父母账户记录查询
+    public List<RechargeResultEntry> getMyAllEntryList(ObjectId behaviorId ,int page,int pageSize){
+        List<RechargeResultEntry> entryList=new ArrayList<RechargeResultEntry>();
+        BasicDBObject query=new BasicDBObject().append("isr",0).append("bid",behaviorId);
+        List<DBObject> dbList=find(MongoFacroty.getAppDB(), Constant.COLLECTION_RECHARGE_RESULT, query,
+                Constant.FIELDS, Constant.MONGO_SORTBY_DESC,(page-1)*pageSize,pageSize);
+        if (dbList != null && !dbList.isEmpty()) {
+            for (DBObject obj : dbList) {
+                entryList.add(new RechargeResultEntry((BasicDBObject) obj));
+            }
+        }
+        return entryList;
+    }
     /**
      * 符合搜索条件的对象个数
      * @return
@@ -52,6 +65,19 @@ public class RechargeResultDao extends BaseDao {
     public int selectMyCount(List<ObjectId> objectIds,ObjectId sonId) {
         BasicDBObject query=new BasicDBObject().append("isr",0).append("sid",sonId);
         query.append("uid",new BasicDBObject(Constant.MONGO_IN,objectIds));
+        int count =
+                count(MongoFacroty.getAppDB(),
+                        Constant.COLLECTION_RECHARGE_RESULT,
+                        query);
+        return count;
+    }
+
+    /**
+     * 符合搜索条件的对象个数
+     * @return
+     */
+    public int selectCount(ObjectId userId) {
+        BasicDBObject query=new BasicDBObject().append("isr",0).append("bid",userId);
         int count =
                 count(MongoFacroty.getAppDB(),
                         Constant.COLLECTION_RECHARGE_RESULT,

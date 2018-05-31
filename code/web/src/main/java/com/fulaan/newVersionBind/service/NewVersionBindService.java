@@ -275,6 +275,7 @@ public class NewVersionBindService {
         NewVersionBindRelationEntry entry=newVersionBindRelationDao.getBindEntry(userId);
         NewVersionBindRelationDTO dto=new NewVersionBindRelationDTO(entry);
         UserEntry userEntry=userService.findById(userId);
+        dto.setMobileNumber(userEntry.getMobileNumber());
         KeyValue keyValue = wrongQuestionService.getCurrTermType();
         List<ObjectId> userIds = new ArrayList<ObjectId>();
         userIds.add(userId);

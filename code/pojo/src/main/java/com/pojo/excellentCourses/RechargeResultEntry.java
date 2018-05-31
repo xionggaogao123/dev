@@ -16,6 +16,7 @@ import java.util.List;
  * Created by James on 2018-05-08.
  *
  * id                                                id
+ * behaviorId            账户id                      bid
  * userId                操作人                      uid
  * createTime            充值时间                    ctm
  * description           充值说明                    des
@@ -37,6 +38,7 @@ public class RechargeResultEntry extends BaseDBObject {
     }
 
     public RechargeResultEntry(
+            ObjectId behaviorId,
             ObjectId userId,
             String description,
             int way,
@@ -47,6 +49,7 @@ public class RechargeResultEntry extends BaseDBObject {
             List<ObjectId> classList
     ){
         BasicDBObject dbObject = new BasicDBObject()
+                .append("bid",behaviorId)
                 .append("uid",userId)
                 .append("des",description)
                 .append("way",way)
@@ -66,6 +69,13 @@ public class RechargeResultEntry extends BaseDBObject {
 
     public void setUserId(ObjectId userId){
         setSimpleValue("uid",userId);
+    }
+    public ObjectId getBehaviorId(){
+        return getSimpleObjecIDValue("bid");
+    }
+
+    public void setBehaviorId(ObjectId behaviorId){
+        setSimpleValue("bid",behaviorId);
     }
 
     public String getDescription(){

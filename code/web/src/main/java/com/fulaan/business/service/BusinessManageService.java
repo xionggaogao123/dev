@@ -200,10 +200,15 @@ public class BusinessManageService {
         List<UserEntry> userEntries = userDao.findEntryByName("nm", keyword);
         List<UserEntry> userEntries2 = userDao.findEntryByName("nnm", keyword);
         userEntries.addAll(userEntries2);
+        List<ObjectId> oisd = new ArrayList<ObjectId>();
         for(UserEntry userEntry: userEntries){
             //String userName,String nickName,String userId,String avator,int sex,String time
-            User user = new User(userEntry.getUserName(),userEntry.getNickName(),userEntry.getID().toString(),AvatarUtils.getAvatar(userEntry.getAvatar(),userEntry.getRole(),userEntry.getSex()),userEntry.getSex(),"");
-            userList.add(user);
+            if(!oisd.contains(userEntry.getID())){
+                User user = new User(userEntry.getUserName(),userEntry.getNickName(),userEntry.getID().toString(),AvatarUtils.getAvatar(userEntry.getAvatar(),userEntry.getRole(),userEntry.getSex()),userEntry.getSex(),"");
+                userList.add(user);
+                oisd.add(userEntry.getID());
+            }
+
         }
         return userList;
     }

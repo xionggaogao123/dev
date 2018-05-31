@@ -49,11 +49,24 @@ public class SystemMessageService extends BaseService {
         String coStr = dto.getComList();
         String[] strings = coStr.split(",");
         SubjectClassEntry subjectClassEntry = subjectClassDao.getList().get(0);
+        String s = "";
+        for(String str :strings){
+            if(str.equals(TEACHERCOMMUNIY)){
+                s = s + "老师"+"/";
+            }else if(str.equals(PARENTCOMMUNIY)){
+                s = s + "家长"+"/";
+            }else if(str.equals(STUDENTCOMMUNIY)){
+                s = s + "孩子"+"/";
+            }
+        }
+        if(!s.equals("")){
+            s = s.substring(0,s.length()-1);
+        }
         for(String str:strings){
             if(str.equals(TEACHERCOMMUNIY)){//发送老师
                 AppNoticeDTO appNoticeDTO=new AppNoticeDTO(
                         subjectClassEntry.getID().toString(),
-                        subjectClassEntry.getName(),
+                        s,
                         dto.getTitle(),
                         dto.getDescription(),
                         TEACHERGROUP,
@@ -78,7 +91,7 @@ public class SystemMessageService extends BaseService {
             }else if(str.equals(PARENTCOMMUNIY)){//发送家长
                 AppNoticeDTO appNoticeDTO=new AppNoticeDTO(
                         subjectClassEntry.getID().toString(),
-                        subjectClassEntry.getName(),
+                        s,
                         dto.getTitle(),
                         dto.getDescription(),
                         PARENTGROUP,
@@ -104,7 +117,7 @@ public class SystemMessageService extends BaseService {
             }else if(str.equals(STUDENTCOMMUNIY)){//发送学生
                 AppNoticeDTO appNoticeDTO=new AppNoticeDTO(
                         subjectClassEntry.getID().toString(),
-                        subjectClassEntry.getName(),
+                        s,
                         dto.getTitle(),
                         dto.getDescription(),
                         STUDENTGROUP,

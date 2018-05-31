@@ -1682,8 +1682,7 @@ public class ReportCardService {
         List<NewVersionCommunityBindEntry>
                 bindEntries = newVersionCommunityBindDao.getStudentIdListByCommunityId(new ObjectId(communityId));
         for (NewVersionCommunityBindEntry bindEntry : bindEntries) {
-            if (StringUtils.isNotEmpty(bindEntry.getThirdName())
-                    &&StringUtils.isNotEmpty(bindEntry.getNumber())) {
+            if (StringUtils.isNotEmpty(bindEntry.getThirdName())) {
                 String key = bindEntry.getThirdName();
                 userBindMap.put(key, bindEntry.getUserId());
             }

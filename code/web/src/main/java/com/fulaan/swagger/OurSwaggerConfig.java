@@ -42,6 +42,7 @@ public class OurSwaggerConfig extends WebMvcConfigurationSupport {
                         //.apis(RequestHandlerSelectors.any())  // 对所有api进行监控
                         //.paths(PathSelectors.any())   // 对所有路径进行监控
                 .build()
+                .enable(false)//设为false,关闭swagger   设为true,启动swagger
                 .securitySchemes(securitySchemes())
                 .securityContexts(securityContexts());
     }

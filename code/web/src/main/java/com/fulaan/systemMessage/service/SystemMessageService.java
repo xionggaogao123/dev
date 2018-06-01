@@ -1,18 +1,32 @@
 package com.fulaan.systemMessage.service;
 
+import com.db.backstage.TeacherApproveDao;
+import com.db.fcommunity.MemberDao;
 import com.db.indexPage.IndexPageDao;
 import com.db.operation.AppNoticeDao;
+import com.db.user.UserDao;
 import com.db.wrongquestion.SubjectClassDao;
+import com.easemob.server.comm.constant.MsgType;
 import com.fulaan.base.BaseService;
+import com.fulaan.fgroup.service.EmService;
 import com.fulaan.indexpage.dto.IndexPageDTO;
 import com.fulaan.operation.dto.AppCommentDTO;
 import com.fulaan.operation.dto.AppNoticeDTO;
+import com.fulaan.systemMessage.dto.SimpleUserDTO;
 import com.pojo.indexPage.IndexPageEntry;
 import com.pojo.newVersionGrade.CommunityType;
+import com.pojo.user.UserEntry;
 import com.pojo.wrongquestion.SubjectClassEntry;
 import com.sys.constants.Constant;
+import org.apache.commons.lang3.StringUtils;
 import org.bson.types.ObjectId;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 /**
  * Created by James on 2018-05-22.
@@ -43,6 +57,14 @@ public class SystemMessageService extends BaseService {
     private IndexPageDao indexPageDao = new IndexPageDao();
 
     private SubjectClassDao subjectClassDao = new SubjectClassDao();
+
+    private MemberDao memberDao = new MemberDao();
+
+    private TeacherApproveDao teacherApproveDao = new TeacherApproveDao();
+
+    private UserDao userDao = new UserDao();
+    @Autowired
+    private EmService emService;
 
     //保存系统消息
     public  void  addEntry(ObjectId userId,AppCommentDTO dto){
@@ -136,4 +158,53 @@ public class SystemMessageService extends BaseService {
     }
 
 
+
+    public List<SimpleUserDTO> getBigList(String communityIds,ObjectId userId){
+        List<SimpleUserDTO> dtos = new ArrayList<SimpleUserDTO>();
+        List<ObjectId> oids = new ArrayList<ObjectId>();
+        if(communityIds!=null && !communityIds.equals("")){
+             String[] strings = communityIds.split(",");
+             for(String s : strings){
+                 oids.add(new ObjectId(s));
+             }
+        }else{
+            return dtos;
+        }
+
+        if(oids.size()>0){
+            List<ObjectId> memberList = memberDao.getAllGroupIdsMembers(oids);
+            List<ObjectId> objectIdList = teacherApproveDao.selectMap(memberList);
+            if(objectIdList.size()>0){
+                List<UserEntry> userEntries = userDao.getUserEntryList(objectIdList, Constant.FIELDS);
+                for(UserEntry userEntry:userEntries){
+                    SimpleUserDTO dto = new SimpleUserDTO();
+                    dto.setId(userEntry.getID().toString());
+                    String userName = StringUtils.isNotBlank(userEntry.getNickName())?userEntry.getNickName():userEntry.getUserName();
+                    dto.setName(userName);
+                    dtos.add(dto);
+                }
+            }
+        }
+        return dtos;
+    }
+
+    public void sendText(String name,String avatar,ObjectId userId,String userIds,String message){
+        Map<String, String> ext = new HashMap<String, String>();
+        String[] strings = userIds.split(",");
+        List<String> targets = new ArrayList<String>();
+        for(String id : strings){
+
+            targets.add(id);
+        }
+        if(targets.size()>0){
+            Map<String, String> sendMessage = new HashMap<String, String>();
+            sendMessage.put("type", MsgType.TEXT);
+            sendMessage.put("msg", message);
+            ext.put("groupStyle","");
+            ext.put("avatar",avatar);
+            ext.put("userId",userId.toString());
+            ext.put("nickName",name);
+            emService.sendTextMessage("users", targets, userId.toString(), ext, sendMessage);
+        }
+    }
 }

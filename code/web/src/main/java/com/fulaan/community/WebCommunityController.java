@@ -402,6 +402,59 @@ public class WebCommunityController extends BaseController {
             }
         }
     }
+
+    /**
+     * 获得我的社区(优化版)
+     *
+     * @return
+     */
+    @RequestMapping("/getNewMyCommunitys")
+    @ResponseBody
+    @SessionNeedless
+    @ApiOperation(value = "获取我的社区列表", httpMethod = "GET", produces = "application/json")
+    @ApiResponses(value = {@ApiResponse(code = 200, message = "获取我的社区列表成功",response = RespObj.class),
+            @ApiResponse(code = 500, message = "获取我的社区列表失败")})
+    public RespObj getNewMyCommunitys(@ApiParam(name="page",required = false,value = "页码")@RequestParam(defaultValue = "1", required = false) int page,
+                                      @ApiParam(name="pageSize",required = false,value = "页数")@RequestParam(defaultValue = "100", required = false) int pageSize,
+                                      @ApiParam(name="platform",required = false,value = "平台参数，标明是pc端，还是移动端")@RequestParam(defaultValue = "app", required = false) String platform) {
+        ObjectId userId = getUserId();
+        List<CommunityDTO> communityDTOList = new ArrayList<CommunityDTO>();
+        CommunityDTO fulanDto = communityService.getCommunityByName("复兰社区");
+        if (null == userId && null != fulanDto) {
+            communityDTOList.add(fulanDto);
+            return RespObj.SUCCESS(communityDTOList);
+        } else {
+            if (null != fulanDto) {
+                //加入复兰社区
+                joinFulaanCommunity(getUserId(), new ObjectId(fulanDto.getId()));
+            }
+            communityDTOList = communityService.getCommunitys2(userId, page, pageSize);
+            List<CommunityDTO> communityDTOList2 = new ArrayList<CommunityDTO>();
+            if(communityDTOList.size()>0){
+                for(CommunityDTO dto3 : communityDTOList){
+                    //5a7bb6e13d4df96672b6a2bf
+                    if(!dto3.getName().equals("复兰社区") && !dto3.getName().equals("复兰大学")){
+                        communityDTOList2.add(dto3);
+                    }else{
+                        if(!dto3.getName().equals("复兰社区") && userId.toString().equals("5a7bb6e13d4df96672b6a2bf")){
+                            communityDTOList2.add(dto3);
+                        }
+                    }
+                }
+            }
+            if ("web".equals(platform)) {
+                int count = communityService.countMycommunitys(userId);
+                Map<String, Object> map = new HashMap<String, Object>();
+                map.put("list", communityDTOList2);
+                map.put("count", count);
+                map.put("pageSize", pageSize);
+                map.put("page", page);
+                return RespObj.SUCCESS(map);
+            } else {
+                return RespObj.SUCCESS(communityDTOList2);
+            }
+        }
+    }
     /**
      * 获得我具有管理员权限的社区
      *

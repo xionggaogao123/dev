@@ -5,7 +5,6 @@ import cn.jpush.api.push.model.audience.Audience;
 import com.db.fcommunity.CommunityDao;
 import com.db.fcommunity.GroupDao;
 import com.db.fcommunity.MemberDao;
-import com.db.indexPage.IndexPageDao;
 import com.db.indexPage.WebHomePageDao;
 import com.db.newVersionGrade.NewVersionSubjectDao;
 import com.db.operation.AppCommentDao;
@@ -151,7 +150,9 @@ public class AppCommentService {
             }
             en.setAllLoadNumber(objectIdList3.size());
             //发送通知
-            PictureRunNable.addTongzhi(dto3.getId(),dto.getAdminId(),1);
+            if(dto.getStatus()==0){
+                PictureRunNable.addTongzhi(dto3.getId(),dto.getAdminId(),1);
+            }
 
             String oid = appCommentDao.addEntry(en);
             //图片检测

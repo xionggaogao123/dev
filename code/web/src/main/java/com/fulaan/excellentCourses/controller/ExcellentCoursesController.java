@@ -217,6 +217,53 @@ public class ExcellentCoursesController extends BaseController {
         return JSON.toJSONString(respObj);
     }
     /**
+     * 首页简介（家长）
+     */
+    @ApiOperation(value = "简介（家长）", httpMethod = "GET", produces = "application/json")
+    @ApiResponses( value = {@ApiResponse(code = 200, message = "Successful — 请求已完成",response = String.class),
+            @ApiResponse(code = 400, message = "请求中有语法问题，或不能满足请求"),
+            @ApiResponse(code = 500, message = "服务器不能完成请求")})
+    @RequestMapping("/getOneSimpleDesc")
+    @ResponseBody
+    public String getOneSimpleDesc(@ApiParam(name = "id", required = true, value = "id") @RequestParam("id") String id){
+        RespObj respObj=new RespObj(Constant.FAILD_CODE);
+        try {
+            respObj.setCode(Constant.SUCCESS_CODE);
+            ExcellentCoursesDTO map = excellentCoursesService.getOneSimpleDesc(new ObjectId(id), getUserId());
+            respObj.setMessage(map);
+        } catch (Exception e) {
+            e.printStackTrace();
+            respObj.setCode(Constant.FAILD_CODE);
+            respObj.setErrorMessage("获取课程简介失败!");
+        }
+        return JSON.toJSONString(respObj);
+    }
+
+    /**
+     * 首页课节列表（家长）
+     * @param id
+     * @return
+     */
+    @ApiOperation(value = "课节列表（家长）", httpMethod = "GET", produces = "application/json")
+    @ApiResponses( value = {@ApiResponse(code = 200, message = "Successful — 请求已完成",response = String.class),
+            @ApiResponse(code = 400, message = "请求中有语法问题，或不能满足请求"),
+            @ApiResponse(code = 500, message = "服务器不能完成请求")})
+    @RequestMapping("/getOneCoursesDesc")
+    @ResponseBody
+    public String getOneCoursesDesc(@ApiParam(name = "id", required = true, value = "课程id") @RequestParam("id") String id){
+        RespObj respObj=new RespObj(Constant.FAILD_CODE);
+        try {
+            respObj.setCode(Constant.SUCCESS_CODE);
+            Map<String,Object> map = excellentCoursesService.getOneCoursesDesc(new ObjectId(id));
+            respObj.setMessage(map);
+        } catch (Exception e) {
+            e.printStackTrace();
+            respObj.setCode(Constant.FAILD_CODE);
+            respObj.setErrorMessage("获取课程简介失败!");
+        }
+        return JSON.toJSONString(respObj);
+    }
+    /**
      * 购买课（学生）
      */
     @ApiOperation(value = "购买课节（学生", httpMethod = "GET", produces = "application/json")

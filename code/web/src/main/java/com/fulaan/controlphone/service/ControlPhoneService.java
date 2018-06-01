@@ -535,7 +535,9 @@ public class ControlPhoneService {
         if(entr ==null){
             return 0l;
         }
-        return entr.getBackTime();
+        long tt = entr.getBackTime();
+        entr = null;
+        return tt;
     }
 
     public Map<String,Object> seacherAppResultList(ObjectId parentId,ObjectId sonId,long time){
@@ -3932,6 +3934,7 @@ public class ControlPhoneService {
             obj.setDateTime(zero);
             obj.setAddiction(addiction);
             dbList.add(obj.getBaseEntry());
+            obj = null;
         }
         //导入新纪录
         if(dbList.size()>0) {
@@ -3939,6 +3942,8 @@ public class ControlPhoneService {
             //导入缓存记录
             controlAppResultDao.addLinBatch(dbList);
         }
+        dbList = null;
+       // System.gc();
     }
 
     /**

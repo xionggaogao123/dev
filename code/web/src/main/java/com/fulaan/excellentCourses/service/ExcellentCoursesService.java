@@ -591,6 +591,36 @@ public class ExcellentCoursesService {
         return dto;
     }
 
+    public ExcellentCoursesDTO getOneSimpleDesc(ObjectId id,ObjectId userId){
+        //课程相关
+        ExcellentCoursesEntry excellentCoursesEntry = excellentCoursesDao.getEntry(id);
+        ExcellentCoursesDTO dto = new ExcellentCoursesDTO(excellentCoursesEntry);
+        //用户行为
+        UserBehaviorEntry userBehaviorEntry = userBehaviorDao.getEntry(userId);
+        //是否收藏   （行为统计）
+        if(userBehaviorEntry!=null){
+            if(userBehaviorEntry.getCollectList().contains(id)){
+                dto.setIsCollect(1);
+            }else{
+                dto.setIsCollect(0);
+            }
+            List<ObjectId> objectIdList2 =userBehaviorEntry.getBrowseList();
+            if(!objectIdList2.contains(id)){
+                objectIdList2.add(id);
+                userBehaviorEntry.setBrowseList(objectIdList2);
+                userBehaviorDao.addEntry(userBehaviorEntry);
+            }
+        }else{
+            List<ObjectId> objectIdList = new ArrayList<ObjectId>();
+            List<ObjectId> objectIdList2 = new ArrayList<ObjectId>();
+            objectIdList2.add(id);
+            UserBehaviorEntry userBehaviorEntry1 = new UserBehaviorEntry(userId,0,objectIdList,objectIdList2);
+            userBehaviorDao.addEntry(userBehaviorEntry1);
+        }
+
+        return dto;
+    }
+
     public Map<String,Object> getCoursesDesc(ObjectId id,ObjectId userId){
         Map<String,Object> map = new HashMap<String, Object>();
         //课程相关
@@ -698,6 +728,42 @@ public class ExcellentCoursesService {
             h.setType(nowHourClassDTO.getType());
             dtos.add(h);
         }
+        map.put("now",dtos);
+        map.put("list",hourClassDTOs);
+        return map;
+    }
+
+    public Map<String,Object> getOneCoursesDesc(ObjectId id){
+        Map<String,Object> map = new HashMap<String, Object>();
+        //课程相关
+        ExcellentCoursesEntry excellentCoursesEntry = excellentCoursesDao.getEntry(id);
+        map.put("isBuy",0);
+        long current = System.currentTimeMillis();
+        boolean flage = false;
+        map.put("isEnd",0);
+        if(excellentCoursesEntry.getEndTime()<=current){//上课时间已过
+            map.put("isEnd",1);
+            flage = true;
+        }
+        //课时相关
+        List<HourClassEntry> hourClassEntries = hourClassDao.getEntryList(id);
+        List<HourClassDTO> hourClassDTOs = new ArrayList<HourClassDTO>();
+        for(HourClassEntry hourClassEntry:hourClassEntries){
+            HourClassDTO hourClassDTO = new HourClassDTO(hourClassEntry);
+            long endTime = hourClassEntry.getStartTime() + hourClassEntry.getCurrentTime();
+            hourClassDTO.setStatus(1);//未开始
+            if(endTime<=current){//上课时间已结束
+                hourClassDTO.setStatus(0);//已结束
+            }else{
+
+            }
+            if(flage){//课程结束
+                hourClassDTO.setStatus(0);//已结束
+            }
+            hourClassDTOs.add(hourClassDTO);
+        }
+        map.put("isXian",0);
+        List<HourClassDTO> dtos = new ArrayList<HourClassDTO>();
         map.put("now",dtos);
         map.put("list",hourClassDTOs);
         return map;

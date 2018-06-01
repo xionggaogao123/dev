@@ -23,7 +23,7 @@ import java.util.Map;
  */
 @Api(value="运营管理")
 @Controller
-@RequestMapping("/jxmapi/business")
+@RequestMapping("/web/business")
 public class WebBusinessManageController extends BaseController {
     @Autowired
     private BusinessManageService businessManageService;

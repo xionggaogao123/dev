@@ -174,6 +174,7 @@ public class SystemMessageService extends BaseService {
         if(oids.size()>0){
             List<ObjectId> memberList = memberDao.getAllGroupIdsMembers(oids);
             List<ObjectId> objectIdList = teacherApproveDao.selectMap(memberList);
+            //objectIdList.remove(userId);
             if(objectIdList.size()>0){
                 List<UserEntry> userEntries = userDao.getUserEntryList(objectIdList, Constant.FIELDS);
                 for(UserEntry userEntry:userEntries){
@@ -181,7 +182,9 @@ public class SystemMessageService extends BaseService {
                     dto.setId(userEntry.getID().toString());
                     String userName = StringUtils.isNotBlank(userEntry.getNickName())?userEntry.getNickName():userEntry.getUserName();
                     dto.setName(userName);
-                    dtos.add(dto);
+                    if(!userId.equals(userEntry.getID())){
+                        dtos.add(dto);
+                    }
                 }
             }
         }
@@ -204,7 +207,8 @@ public class SystemMessageService extends BaseService {
             ext.put("avatar",avatar);
             ext.put("userId",userId.toString());
             ext.put("nickName",name);
-            emService.sendTextMessage("users", targets, userId.toString(), ext, sendMessage);
+            boolean falg = emService.sendTextMessage("users", targets, userId.toString(), ext, sendMessage);
+            System.out.println(falg);
         }
     }
 }

@@ -2,6 +2,7 @@ package com.fulaan.business.service;
 
 import com.db.business.BusinessManageDao;
 import com.db.business.BusinessRoleDao;
+import com.db.business.VersionOpenDao;
 import com.db.excellentCourses.ClassOrderDao;
 import com.db.excellentCourses.ExcellentCoursesDao;
 import com.db.excellentCourses.HourClassDao;
@@ -22,6 +23,7 @@ import com.pojo.backstage.LogMessageType;
 import com.pojo.business.BusinessManageEntry;
 import com.pojo.business.BusinessRoleEntry;
 import com.pojo.business.RoleType;
+import com.pojo.business.VersionOpenEntry;
 import com.pojo.excellentCourses.ClassOrderEntry;
 import com.pojo.excellentCourses.ExcellentCoursesEntry;
 import com.pojo.excellentCourses.HourClassEntry;
@@ -66,6 +68,8 @@ public class BusinessManageService {
     private CoursesRoomService coursesRoomService;
     @Autowired
     private BackStageService backStageService;
+
+    private VersionOpenDao versionOpenDao = new VersionOpenDao();
 
     //登陆生成
     public void getLoginInfo(ObjectId userId,int type ){
@@ -444,6 +448,31 @@ public class BusinessManageService {
         businessRoleEntry.setRoleType(list);
         businessRoleDao.addEntry(businessRoleEntry);
         backStageService.addLogMessage(businessRoleEntry.getID().toString(), "修改运营管理员权限：" + roleId.toString(), LogMessageType.yunRole.getDes(), userId.toString());
+    }
+
+    public int getVersion(String moduleName){
+        VersionOpenEntry versionOpenEntry = versionOpenDao.getEntry(moduleName);
+        if(versionOpenEntry!=null){
+            return versionOpenEntry.getModuleType();
+        }
+        return 0;
+    }
+
+    public void addVersion(String moduleName){
+        VersionOpenEntry versionOpenEntry = versionOpenDao.getEntry(moduleName);
+        if(versionOpenEntry==null){
+            VersionOpenEntry entry = new VersionOpenEntry(Constant.ZERO,moduleName);
+            versionOpenDao.addEntry(entry);
+        }
+    }
+
+
+    public void updateVersion(String moduleName,int type){
+        VersionOpenEntry versionOpenEntry = versionOpenDao.getEntry(moduleName);
+        if(versionOpenEntry!=null){
+            versionOpenEntry.setModuleType(type);
+            versionOpenDao.addEntry(versionOpenEntry);
+        }
     }
 
 }

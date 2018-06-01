@@ -1,6 +1,7 @@
 package com.fulaan.business.controler;
 
 import com.alibaba.fastjson.JSON;
+import com.fulaan.annotation.SessionNeedless;
 import com.fulaan.base.BaseController;
 import com.fulaan.business.service.BusinessManageService;
 import com.fulaan.pojo.User;
@@ -22,8 +23,8 @@ import java.util.Map;
  */
 @Api(value="运营管理")
 @Controller
-@RequestMapping("/web/business")
-public class BusinessManageController extends BaseController {
+@RequestMapping("/jxmapi/business")
+public class WebBusinessManageController extends BaseController {
     @Autowired
     private BusinessManageService businessManageService;
 
@@ -310,6 +311,7 @@ public class BusinessManageController extends BaseController {
     /**
      * 版本获取
      */
+    @SessionNeedless
     @ApiOperation(value = "版本获取", httpMethod = "POST", produces = "application/json")
     @ApiResponses( value = {@ApiResponse(code = 200, message = "Successful — 请求已完成",response = String.class)})
     @RequestMapping("/getVersion")

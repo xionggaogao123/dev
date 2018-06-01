@@ -1025,6 +1025,8 @@ public class Constant {
     public static final String COLLECTION_INTEGRAL_SUFFER= "integralsuffer";
     //积分记录表
     public static final String COLLECTION_INTEGRAL_RECORD= "integralrecord";
+    //版本控制开关
+    public static final String COLLECTION_VERSION_OPEN= "jxm_version_open";
 
     /*************************************精品课*****************************************/
 

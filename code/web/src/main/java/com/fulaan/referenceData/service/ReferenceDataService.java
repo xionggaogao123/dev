@@ -206,6 +206,14 @@ public class ReferenceDataService {
                     dataDTO2.setOperation(1);//可删除
                 }
             }
+            dataDTO2.setTransmit(0);
+            if(entry5!=null && entry5.getRole()!=0){//是管理人员
+                dataDTO2.setTransmit(1);
+            }
+
+            if(objectIdList1.contains(userId)){//是大V
+                dataDTO2.setTransmit(1);
+            }
         }
         map.put("list",dtos);
         map.put("count",count);

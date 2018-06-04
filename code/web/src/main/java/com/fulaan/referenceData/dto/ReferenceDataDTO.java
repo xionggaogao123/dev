@@ -33,6 +33,7 @@ public class ReferenceDataDTO {
     private List<String> communityIds = new ArrayList<String>();
 
     private int operation;  //0 不可删除   1 可删除
+    private int transmit;
 
     public ReferenceDataDTO(){
 
@@ -102,6 +103,14 @@ public class ReferenceDataDTO {
                         );
         return openEntry;
 
+    }
+
+    public int getTransmit() {
+        return transmit;
+    }
+
+    public void setTransmit(int transmit) {
+        this.transmit = transmit;
     }
 
     public long getLongTime() {

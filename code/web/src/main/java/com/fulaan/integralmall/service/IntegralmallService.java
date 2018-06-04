@@ -402,9 +402,9 @@ public class IntegralmallService {
      * @author Administrator
      * @param dto
      */
-    public void saveOrder(OrderDto dto) throws Exception{
-        if (dto.getId() != null) {
-            orderDao.updateEx(new ObjectId(dto.getId()), dto.getExcompanyNo(), dto.getExpressNo());
+    public void saveOrder(String id, String excompanyNo, String expressNo) throws Exception{
+        if (id != null) {
+            orderDao.updateEx(new ObjectId(id), excompanyNo, expressNo);
         } 
         
     }

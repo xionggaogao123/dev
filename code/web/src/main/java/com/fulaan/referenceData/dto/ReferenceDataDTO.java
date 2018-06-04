@@ -34,6 +34,9 @@ public class ReferenceDataDTO {
 
     private int operation;  //0 不可删除   1 可删除
     private int transmit;
+    
+    private String imageUrl;
+
 
     public ReferenceDataDTO(){
 
@@ -248,4 +251,13 @@ public class ReferenceDataDTO {
     public void setAttachements(List<Attachement> attachements) {
         this.attachements = attachements;
     }
+    public String getImageUrl() {
+        return imageUrl;
+    }
+    public void setImageUrl(String imageUrl) {
+        this.imageUrl = imageUrl;
+    }
+
+    
+    
 }

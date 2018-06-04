@@ -1580,13 +1580,14 @@ public class WebCommunityController extends BaseController {
             @ApiResponse(code = 500, message = "查询某个社区类别的列表失败")})
     public RespObj getOtherMessage(@ApiParam(name="page",required = false,value = "页码")@RequestParam(required = false, defaultValue = "1") int page,
                               @ApiParam(name="pageSize",required = false,value = "页数")@RequestParam(required = false, defaultValue = "4") int pageSize,
-                              @ApiParam(name="type",required = false,value = "社区类别")@RequestParam(required = false, defaultValue = "1") int type) {
+                              @ApiParam(name="type",required = false,value = "社区类别")@RequestParam(required = false, defaultValue = "1") int type,
+                              @ApiParam(name="receiveType",required = false,value = "谁发送的")@RequestParam(required = false, defaultValue = "1") int receiveType) {
         Platform pf = getPlatform();
         boolean isApp = false;
         if (pf == Platform.Android || pf == Platform.IOS) {
             isApp = true;
         }
-        return RespObj.SUCCESS(communityService.getOtherMessages(page, pageSize, CommunityDetailType.getType(type), getUserId(), isApp));
+        return RespObj.SUCCESS(communityService.getOtherMessages(page, pageSize, CommunityDetailType.getType(type), getUserId(), isApp, receiveType));
     }
     @RequestMapping("/getMessage")
     @ResponseBody
@@ -1597,13 +1598,14 @@ public class WebCommunityController extends BaseController {
     public RespObj getMessage(@ApiParam(name="communityId",required = true,value = "社区Id")@RequestParam @ObjectIdType ObjectId communityId,
                               @ApiParam(name="page",required = false,value = "页码")@RequestParam(required = false, defaultValue = "1") int page,
                               @ApiParam(name="pageSize",required = false,value = "页数")@RequestParam(required = false, defaultValue = "4") int pageSize,
-                              @ApiParam(name="type",required = false,value = "社区类别")@RequestParam(required = false, defaultValue = "1") int type) {
+                              @ApiParam(name="type",required = false,value = "社区类别")@RequestParam(required = false, defaultValue = "1") int type,
+                              @ApiParam(name="receiveType",required = false,value = "谁发送的")@RequestParam(required = false, defaultValue = "1") int receiveType) {
         Platform pf = getPlatform();
         boolean isApp = false;
         if (pf == Platform.Android || pf == Platform.IOS) {
             isApp = true;
         }
-        return RespObj.SUCCESS(communityService.getMessages(communityId, page, pageSize, CommunityDetailType.getType(type), getUserId(), isApp));
+        return RespObj.SUCCESS(communityService.getMessages(communityId, page, pageSize, CommunityDetailType.getType(type), getUserId(), isApp, receiveType));
     }
 
     @RequestMapping("/getAllTypeMessage")

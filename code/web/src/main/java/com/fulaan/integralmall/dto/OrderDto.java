@@ -47,6 +47,9 @@ public class OrderDto {
     //您的积分
     private Integer score;
     
+    private String orderTimeStr;
+    
+    
     public OrderDto() {
 
     }
@@ -64,6 +67,7 @@ public class OrderDto {
         this.addressDto = new AddressDto(addressEntry);
         this.userDto = new UserDTO(userEntry);
         this.state = orderEntry.getState();
+        this.orderTimeStr = orderEntry.getOrderTimeStr();
         if (orderEntry.getState() == 0) {
             this.stateStr = "未受理";
         } else {
@@ -208,6 +212,14 @@ public class OrderDto {
 
     public void setScore(Integer score) {
         this.score = score;
+    }
+
+    public String getOrderTimeStr() {
+        return orderTimeStr;
+    }
+
+    public void setOrderTimeStr(String orderTimeStr) {
+        this.orderTimeStr = orderTimeStr;
     }
     
     

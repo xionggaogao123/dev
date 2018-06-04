@@ -1,6 +1,5 @@
 package com.fulaan.referenceData.controller;
 
-import com.fulaan.annotation.ObjectIdType;
 import com.fulaan.base.BaseController;
 import com.fulaan.referenceData.dto.ReferenceDataDTO;
 import com.fulaan.referenceData.service.ReferenceDataService;
@@ -22,8 +21,8 @@ import java.util.Map;
  */
 @Api(value="新参考资料")
 @Controller
-@RequestMapping("/jxmapi/referencedate")
-public class ReferenceDataController extends BaseController {
+@RequestMapping("/web/referencedate")
+public class WebReferenceDataController extends BaseController {
     @Autowired
     private ReferenceDataService referenceDataService;
 
@@ -57,13 +56,15 @@ public class ReferenceDataController extends BaseController {
             @ApiResponse(code = 501, message = "已登出")})
     @RequestMapping("/getReferenceData")
     @ResponseBody
-    public RespObj getReferenceData(@ApiParam(name = "keyword", required = false, value = "关键字") @RequestParam("keyword") String keyword,
+    public RespObj getReferenceData(@ApiParam(name="communityId",required = false,value = "社区Id")@RequestParam(required = false, defaultValue = "") String communityId,
+                                    @ApiParam(name = "keyword", required = false, value = "关键字") @RequestParam("keyword") String keyword,
                                     @ApiParam(name = "page", required = true, value = "page") @RequestParam("page") int page,
                                     @ApiParam(name = "pageSize", required = true, value = "pageSize") @RequestParam("pageSize") int pageSize,
-                                    @ApiParam(name = "type", required = false, value = "type") @RequestParam("type") int type){
+                                    @ApiParam(name = "type", required = false, value = "type") @RequestParam("type") int type,
+                                    @ApiParam(name="receiveType",required = false,value = "谁发送的")@RequestParam(required = false, defaultValue = "1") int receiveType){
         RespObj respObj = new RespObj(Constant.FAILD_CODE);
         try{
-            Map<String,Object> map = referenceDataService.getReferenceData(keyword,page,pageSize,type,getUserId(),1,"");
+            Map<String,Object> map = referenceDataService.getReferenceData(keyword,page,pageSize,type,getUserId(),receiveType, communityId);
             respObj.setCode(Constant.SUCCESS_CODE);
             respObj.setMessage(map);
         }catch (Exception e){

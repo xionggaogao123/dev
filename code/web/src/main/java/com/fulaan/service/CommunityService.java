@@ -1146,10 +1146,10 @@ public class CommunityService {
      * @param pageSize
      * @return
      */
-    public PageModel<CommunityDetailDTO> getMessages(ObjectId communityId, int page, int pageSize, CommunityDetailType type, ObjectId userId, boolean isApp) {
+    public PageModel<CommunityDetailDTO> getMessages(ObjectId communityId, int page, int pageSize, CommunityDetailType type, ObjectId userId, boolean isApp, int receiveType) {
         PageModel<CommunityDetailDTO> pageModel = new PageModel<CommunityDetailDTO>();
-        List<CommunityDetailEntry> entries = communityDetailDao.getDetails(communityId, page, pageSize, Constant.DESC, type);
-        int counts = communityDetailDao.count(communityId, type);
+        List<CommunityDetailEntry> entries = communityDetailDao.getDetails(communityId, page, pageSize, Constant.DESC, type, receiveType, userId);
+        int counts = communityDetailDao.count(communityId, type, receiveType, userId);
 
         int totalPages = counts % pageSize == 0 ? counts / pageSize : (int) Math.ceil(counts / pageSize) + 1;
         page = page > totalPages ? totalPages : page;
@@ -1304,7 +1304,7 @@ public class CommunityService {
      * @param pageSize
      * @return
      */
-    public PageModel<CommunityDetailDTO> getOtherMessages(int page, int pageSize, CommunityDetailType type, ObjectId userId, boolean isApp) {
+    public PageModel<CommunityDetailDTO> getOtherMessages(int page, int pageSize, CommunityDetailType type, ObjectId userId, boolean isApp, int receiveType) {
         //清除红点
         redDotService.cleanOtherResult(userId, type.getType());
         PageModel<CommunityDetailDTO> pageModel = new PageModel<CommunityDetailDTO>();
@@ -1317,8 +1317,8 @@ public class CommunityService {
                 }
             }
         }
-        List<CommunityDetailEntry> entries = communityDetailDao.getDetails(objectIdList, page, pageSize, Constant.DESC, type.getType());
-        int counts = communityDetailDao.count(objectIdList, type.getType());
+        List<CommunityDetailEntry> entries = communityDetailDao.getDetails(objectIdList, page, pageSize, Constant.DESC, type.getType(),receiveType, userId);
+        int counts = communityDetailDao.count(objectIdList, type.getType(),receiveType, userId);
 
         int totalPages = counts % pageSize == 0 ? counts / pageSize : (int) Math.ceil(counts / pageSize) + 1;
         page = page > totalPages ? totalPages : page;

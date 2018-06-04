@@ -119,7 +119,7 @@ public class ReferenceDataService {
 
 
 
-    public Map<String,Object> getReferenceData(String keyword,int page,int pageSize,int type,ObjectId userId){
+    public Map<String,Object> getReferenceData(String keyword,int page,int pageSize,int type,ObjectId userId, int receiveType,String communityId){
         //清除红点
         redDotService.cleanOtherResult(userId, 4);
         Map<String,Object> map = new HashMap<String, Object>();
@@ -134,8 +134,8 @@ public class ReferenceDataService {
                 }
             }
         }
-        List<ReferenceDataEntry> entries = referenceDataDao.selectDateListPage(keyword, page, pageSize, type,objectIdList);
-        int count = referenceDataDao.countDateListPage(keyword, type,objectIdList);
+        List<ReferenceDataEntry> entries = referenceDataDao.selectDateListPage(keyword, page, pageSize, type,objectIdList,userId,receiveType, communityId);
+        int count = referenceDataDao.countDateListPage(keyword, type,objectIdList,userId,receiveType,communityId);
         List<ObjectId> userIds = new ArrayList<ObjectId>();
         userIds.add(userId);
         List<ObjectId> subjectIds = new ArrayList<ObjectId>();
@@ -165,6 +165,7 @@ public class ReferenceDataService {
             UserEntry userEntry = mainUserEntryMap.get(entry.getUserId());
             if(userEntry!=null){
                 dataDTO.setUserName(userEntry.getNickName());
+                dataDTO.setImageUrl(userEntry.getAvatar());
             }
             dataDTO.setLongTime(entry.getCreateTime());
             dtos.add(dataDTO);

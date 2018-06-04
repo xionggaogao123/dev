@@ -169,11 +169,11 @@ public class IntegralmallController extends BaseController{
             @ApiResponse(code = 500, message = "服务器不能完成请求")})
     @RequestMapping("/saveOrder")
     @ResponseBody
-    public RespObj saveOrder(@RequestBody OrderDto orderDto){
+    public RespObj saveOrder(String id, String excompanyNo, String expressNo){
         
         RespObj respObj=new RespObj(Constant.FAILD_CODE);
         try {
-            integralmallService.saveOrder(orderDto);
+            integralmallService.saveOrder(id, excompanyNo, expressNo);
             respObj.setCode(Constant.SUCCESS_CODE);
             respObj.setMessage("成功！");
         } catch (Exception e) {

@@ -21,6 +21,7 @@ public class UserDTO {
     private long login;
     private String phone;
     private String email;
+    private String gugc;
 
     public UserDTO(UserEntry entry) {
         if (entry == null) {
@@ -35,6 +36,7 @@ public class UserDTO {
         this.birthday = entry.getBirthDate();
         this.phone = entry.getMobileNumber();
         this.email = entry.getEmail();
+        this.gugc = entry.getGenerateUserCode();
     }
 
     public String getUserId() {
@@ -124,4 +126,14 @@ public class UserDTO {
     public void setEmail(String email) {
         this.email = email;
     }
+
+    public String getGugc() {
+        return gugc;
+    }
+
+    public void setGugc(String gugc) {
+        this.gugc = gugc;
+    }
+    
+    
 }

@@ -675,7 +675,7 @@ public class WebGroupController extends BaseController {
         if (groupDTO.isBindCommunity()) { //有社区
             ObjectId communityId = new ObjectId(groupDTO.getCommunityId());
             PageModel<CommunityDetailDTO> pageModel = communityService.getMessages(communityId, page,
-                    pageSize, CommunityDetailType.ANNOUNCEMENT, getUserId(), false);
+                    pageSize, CommunityDetailType.ANNOUNCEMENT, getUserId(), false, 1);
             return RespObj.SUCCESS(pageModel);
         }
         return RespObj.SUCCESS(groupNoticeService.getGroupAnnounceByMessage(groupId, page, pageSize));

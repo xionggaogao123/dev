@@ -1046,6 +1046,8 @@ public class Constant {
     public static final String COLLECTION_CLASS_REFUND= "excellent_class_refund";
     //用户账户记录
     public static final String COLLECTION_USER_ACCOUNT= "excellent_user_account";
+    //用户充值消费日志
+    public static final String COLLECTION_ACCOUNT_LOG= "excellent_account_log";
     
     
     /*************************************积分商城*****************************************/

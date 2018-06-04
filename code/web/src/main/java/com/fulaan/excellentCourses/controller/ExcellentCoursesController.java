@@ -424,7 +424,7 @@ public class ExcellentCoursesController extends BaseController {
             respObj.setCode(Constant.SUCCESS_CODE);
             excellentCoursesService.addCollect(getUserId(), type, new ObjectId(id));
             if(type==0){
-                respObj.setMessage("取消成功！");
+                respObj.setMessage("取消收藏成功！");
             }else{
                 respObj.setMessage("收藏成功！");
             }

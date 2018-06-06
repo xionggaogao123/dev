@@ -587,9 +587,17 @@ public class IndexPageService {
         List<ObjectId> oids = new ArrayList<ObjectId>();
         //appNoticeDao
         List<Map<String,Object>> list = new ArrayList<Map<String, Object>>();
-        oids.add(new ObjectId(TEACHERCOMMUNIY));
+        TeacherApproveEntry teacherApproveEntry = teacherApproveDao.getEntry(userId);
+        if(teacherApproveEntry!=null && teacherApproveEntry.getType()==2){//认证大V
+            // dlist.add(new ObjectId(TEACHERCOMMUNIY));
+            oids.add(new ObjectId(TEACHERCOMMUNIY));
+        }else{
+            // dlist.add(new ObjectId(PARENTCOMMUNIY));
+            oids.add(new ObjectId(PARENTCOMMUNIY));
+        }
+        /*oids.add(new ObjectId(TEACHERCOMMUNIY));
         oids.add(new ObjectId(PARENTCOMMUNIY));
-        oids.add(new ObjectId(STUDENTCOMMUNIY));
+        oids.add(new ObjectId(STUDENTCOMMUNIY));*/
         List<AppNoticeEntry> entries = appNoticeDao.getRoleList(oids, page, pageSize, userName);
         int count = appNoticeDao.countRoleList(oids,userName);
         for(AppNoticeEntry entry : entries){

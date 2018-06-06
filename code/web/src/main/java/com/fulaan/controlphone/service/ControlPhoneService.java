@@ -4485,4 +4485,31 @@ public class ControlPhoneService {
         controlAppResultDao.delEntryList();
     }
 
+
+    public List<ControlAppResultDTO> getNewAppResultList(ObjectId sonId){
+        List<ControlAppResultDTO> dtos = new ArrayList<ControlAppResultDTO>();
+        NewVersionBindRelationEntry newEntry = newVersionBindRelationDao.getBindEntry(sonId);
+        if(newEntry!=null){
+            ObjectId parentId = newEntry.getMainUserId();
+            long current = System.currentTimeMillis();
+            String str = DateTimeUtils.getLongToStrTimeTwo(current).substring(0,11);
+            long time = DateTimeUtils.getStrToLongTime(str, "yyyy-MM-dd");
+            Calendar calendar = Calendar.getInstance();
+            calendar.setTime(new Date(current));
+            int hour = calendar.get(Calendar.HOUR_OF_DAY);
+            if(hour<8){
+                time = time - 24*60*60*1000;
+            }
+            ControlStudentResultEntry entry6 = controlStudentResultDao.getEntry(sonId, parentId, time);
+            if(entry6!=null){
+                List<ControlAppResultEntry> entries = controlAppResultDao.getLinNewNewEntryList(sonId, parentId, entry6.getNewAppTime());
+                for(ControlAppResultEntry appResultEntry:entries) {
+                    ControlAppResultDTO dto = new ControlAppResultDTO(appResultEntry);
+                    dtos.add(dto);
+                }
+            }
+
+        }
+        return dtos;
+    }
 }

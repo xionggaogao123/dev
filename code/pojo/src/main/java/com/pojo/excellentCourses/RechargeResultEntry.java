@@ -12,7 +12,7 @@ import java.util.Date;
 import java.util.List;
 
 /**
- * 消费记录/充值记录
+ * 美豆 消费记录/充值记录
  * Created by James on 2018-05-08.
  *
  * id                                                id

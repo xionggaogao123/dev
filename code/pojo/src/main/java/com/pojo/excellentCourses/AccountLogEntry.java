@@ -14,7 +14,7 @@ import java.util.Date;
  * userId            uid          用户
  * description       des          描述
  * createTime        ctm          时间
- *
+ * contactId         cid          订单id
  */
 public class AccountLogEntry extends BaseDBObject{
     public AccountLogEntry(){

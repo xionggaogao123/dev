@@ -19,6 +19,7 @@ import java.util.List;
  * account                   账户余额吧         acc
  * collectList <ObjectId>    收藏列表           clt
  * browseList<ObjectId>      浏览列表           blt
+ * sonOpenList<ObjectId>     开发孩子权限       slt
  *
  */
 public class UserBehaviorEntry extends BaseDBObject {
@@ -38,14 +39,16 @@ public class UserBehaviorEntry extends BaseDBObject {
             ObjectId userId,
             int account,
             List<ObjectId> collectList,
-            List<ObjectId> browseList
+            List<ObjectId> browseList,
+            List<ObjectId> sonOpenList
 
     ){
         BasicDBObject dbObject=new BasicDBObject()
                 .append("uid", userId)
-                .append("acc",account)
+                .append("acc", account)
                 .append("clt", collectList)
                 .append("blt", browseList)
+                .append("slt", sonOpenList)
                 .append("isr", 0);
         setBaseEntry(dbObject);
     }
@@ -56,7 +59,8 @@ public class UserBehaviorEntry extends BaseDBObject {
             ObjectId userId,
             int account,
             List<ObjectId> collectList,
-            List<ObjectId> browseList
+            List<ObjectId> browseList,
+            List<ObjectId> sonOpenList
     ){
         BasicDBObject dbObject=new BasicDBObject()
                 .append(Constant.ID, id)
@@ -64,6 +68,7 @@ public class UserBehaviorEntry extends BaseDBObject {
                 .append("acc",account)
                 .append("clt", collectList)
                 .append("blt", browseList)
+                .append("slt", sonOpenList)
                 .append("isr", 0);
         setBaseEntry(dbObject);
     }
@@ -86,6 +91,21 @@ public class UserBehaviorEntry extends BaseDBObject {
             }
         }
         return collectList;
+    }
+
+    public void setSonOpenList(List<ObjectId> sonOpenList){
+        setSimpleValue("slt", MongoUtils.convert(sonOpenList));
+    }
+
+    public List<ObjectId> getSonOpenList(){
+        ArrayList<ObjectId> sonOpenList = new ArrayList<ObjectId>();
+        BasicDBList dbList = (BasicDBList) getSimpleObjectValue("slt");
+        if(dbList != null && !dbList.isEmpty()){
+            for (Object obj : dbList) {
+                sonOpenList.add((ObjectId)obj);
+            }
+        }
+        return sonOpenList;
     }
 
     public void setBrowseList(List<ObjectId> browseList){

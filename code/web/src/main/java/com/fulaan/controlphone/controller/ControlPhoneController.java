@@ -6,10 +6,7 @@ import com.fulaan.appmarket.dto.AppDetailDTO;
 import com.fulaan.backstage.dto.JxmAppVersionDTO;
 import com.fulaan.backstage.service.BackStageService;
 import com.fulaan.base.BaseController;
-import com.fulaan.controlphone.dto.ControlMapDTO;
-import com.fulaan.controlphone.dto.ControlPhoneDTO;
-import com.fulaan.controlphone.dto.ControlSchoolTimeDTO;
-import com.fulaan.controlphone.dto.ResultAppDTO;
+import com.fulaan.controlphone.dto.*;
 import com.fulaan.controlphone.service.ControlPhoneService;
 import com.fulaan.integral.service.IntegralSufferService;
 import com.fulaan.operation.dto.GroupOfCommunityDTO;
@@ -1455,6 +1452,26 @@ public class ControlPhoneController extends BaseController {
             e.printStackTrace();
             respObj.setCode(Constant.FAILD_CODE);
             respObj.setErrorMessage("删除冗余数据失败");
+        }
+        return respObj;
+    }
+
+    @ApiOperation(value = "最新的一条提交", httpMethod = "POST", produces = "application/json")
+    @ApiResponses( value = {@ApiResponse(code = 200, message = "Successful — 请求已完成",response = String.class),
+            @ApiResponse(code = 400, message = "请求中有语法问题，或不能满足请求"),
+            @ApiResponse(code = 500, message = "服务器不能完成请求")})
+    @RequestMapping("/getNewAppResultList")
+    @ResponseBody
+    public RespObj getNewAppResultList(){
+        RespObj respObj = new RespObj(Constant.FAILD_CODE);
+        try{
+            List<ControlAppResultDTO> dtos = controlPhoneService.getNewAppResultList(getUserId());
+            respObj.setCode(Constant.SUCCESS_CODE);
+            respObj.setMessage(dtos);
+        }catch (Exception e){
+            e.printStackTrace();
+            respObj.setCode(Constant.FAILD_CODE);
+            respObj.setErrorMessage("获取失败");
         }
         return respObj;
     }

@@ -681,4 +681,50 @@ public class ExcellentCoursesController extends BaseController {
         return JSON.toJSONString(respObj);
     }
 
+    /**
+     *  授权孩子界面
+     */
+    @ApiOperation(value = "授权孩子界面", httpMethod = "GET", produces = "application/json")
+    @ApiResponses( value = {@ApiResponse(code = 200, message = "Successful — 请求已完成",response = String.class),
+            @ApiResponse(code = 400, message = "请求中有语法问题，或不能满足请求"),
+            @ApiResponse(code = 500, message = "服务器不能完成请求")})
+    @RequestMapping("/getMyRoleToSon")
+    @ResponseBody
+    public RespObj getMyRoleToSon(){
+        RespObj respObj=new RespObj(Constant.FAILD_CODE);
+        try {
+            respObj.setCode(Constant.SUCCESS_CODE);
+            List<Map<String,Object>> mapList = excellentCoursesService.getMyRoleToSon(getUserId());
+            respObj.setMessage(mapList);
+        } catch (Exception e) {
+            e.printStackTrace();
+            respObj.setCode(Constant.FAILD_CODE);
+            respObj.setErrorMessage("查询失败！");
+        }
+        return respObj;
+    }
+
+    /**
+     *  修改授权
+     */
+    @ApiOperation(value = "修改授权", httpMethod = "GET", produces = "application/json")
+    @ApiResponses( value = {@ApiResponse(code = 200, message = "Successful — 请求已完成",response = String.class),
+            @ApiResponse(code = 400, message = "请求中有语法问题，或不能满足请求"),
+            @ApiResponse(code = 500, message = "服务器不能完成请求")})
+    @RequestMapping("/updateMyRoleToSon")
+    @ResponseBody
+    public RespObj updateMyRoleToSon(@ApiParam(value="孩子id,孩子id",required = true,name="sonIds")@RequestParam(value="sonIds",required = true)String sonIds){
+        RespObj respObj=new RespObj(Constant.FAILD_CODE);
+        try {
+            respObj.setCode(Constant.SUCCESS_CODE);
+            excellentCoursesService.updateMyRoleToSon(getUserId(),sonIds);
+            respObj.setMessage("修改成功！");
+        } catch (Exception e) {
+            e.printStackTrace();
+            respObj.setCode(Constant.FAILD_CODE);
+            respObj.setErrorMessage("授权失败！");
+        }
+        return respObj;
+    }
+
 }

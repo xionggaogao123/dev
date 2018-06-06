@@ -16,7 +16,7 @@ import java.util.Date;
  * userId            购买人              uid
  * isBuy             是否购买            isb  // 0 未购买      1已购买
  * price             购买价格            pri
- * function          付款方式            fun   //0 现金   1 支付宝   2 微信
+ * function          付款方式            fun   //0 美豆余额   1 支付宝   2 微信
  * type              状态                typ      0 未使用    1 使用中   2 已过期
  *
  */

@@ -420,6 +420,7 @@ public class ExcellentCoursesService {
         for(ExcellentCoursesEntry excellentCoursesEntry:coursesEntries){//推荐
             ExcellentCoursesDTO dto = new ExcellentCoursesDTO(excellentCoursesEntry);
             dto.setIsBuy(0);
+            dto.setType(1);
             dtos2.add(dto);
         }
 
@@ -464,7 +465,7 @@ public class ExcellentCoursesService {
                 List<ObjectId>  objectIdList = new ArrayList<ObjectId>();
                 List<ObjectId>  objectIdList2 = new ArrayList<ObjectId>();
                 objectIdList2.add(id);
-                UserBehaviorEntry userBehaviorEntry1 = new UserBehaviorEntry(userId,0,objectIdList,objectIdList2);
+                UserBehaviorEntry userBehaviorEntry1 = new UserBehaviorEntry(userId,0,objectIdList,objectIdList2,objectIdList);
                 userBehaviorDao.addEntry(userBehaviorEntry1);
             }
         }
@@ -548,7 +549,7 @@ public class ExcellentCoursesService {
             List<ObjectId> objectIdList = new ArrayList<ObjectId>();
             List<ObjectId> objectIdList2 = new ArrayList<ObjectId>();
             objectIdList2.add(id);
-            UserBehaviorEntry userBehaviorEntry1 = new UserBehaviorEntry(userId,0,objectIdList,objectIdList2);
+            UserBehaviorEntry userBehaviorEntry1 = new UserBehaviorEntry(userId,0,objectIdList,objectIdList2,objectIdList);
             userBehaviorDao.addEntry(userBehaviorEntry1);
         }
         return dto;
@@ -585,7 +586,7 @@ public class ExcellentCoursesService {
             List<ObjectId> objectIdList = new ArrayList<ObjectId>();
             List<ObjectId> objectIdList2 = new ArrayList<ObjectId>();
             objectIdList2.add(id);
-            UserBehaviorEntry userBehaviorEntry1 = new UserBehaviorEntry(userId,0,objectIdList,objectIdList2);
+            UserBehaviorEntry userBehaviorEntry1 = new UserBehaviorEntry(userId,0,objectIdList,objectIdList2,objectIdList);
             userBehaviorDao.addEntry(userBehaviorEntry1);
         }
         return dto;
@@ -614,7 +615,7 @@ public class ExcellentCoursesService {
             List<ObjectId> objectIdList = new ArrayList<ObjectId>();
             List<ObjectId> objectIdList2 = new ArrayList<ObjectId>();
             objectIdList2.add(id);
-            UserBehaviorEntry userBehaviorEntry1 = new UserBehaviorEntry(userId,0,objectIdList,objectIdList2);
+            UserBehaviorEntry userBehaviorEntry1 = new UserBehaviorEntry(userId,0,objectIdList,objectIdList2,objectIdList);
             userBehaviorDao.addEntry(userBehaviorEntry1);
         }
 
@@ -1289,7 +1290,7 @@ public class ExcellentCoursesService {
             }else{
                 List<ObjectId>  objectIdList = new ArrayList<ObjectId>();
                 List<ObjectId>  objectIdList2 = new ArrayList<ObjectId>();
-                UserBehaviorEntry userBehaviorEntry1 = new UserBehaviorEntry(userId,number,objectIdList,objectIdList2);
+                UserBehaviorEntry userBehaviorEntry1 = new UserBehaviorEntry(userId,number,objectIdList,objectIdList2,objectIdList);
                 userBehaviorDao.addEntry(userBehaviorEntry1);
             }
             return "充值成功！";
@@ -1507,5 +1508,53 @@ public class ExcellentCoursesService {
 
         return map;
 
+    }
+
+    /**
+     * 获得授权列表
+     */
+    public List<Map<String,Object>>  getMyRoleToSon(ObjectId userId){
+        List<Map<String,Object>> mapList = new ArrayList<Map<String, Object>>();
+        UserBehaviorEntry userBehaviorEntry = userBehaviorDao.getEntry(userId);
+        //查询所有该用户的绑定关系
+        List<ObjectId> childIds = newVersionBindRelationDao.getIdsByMainUserId(userId);
+        List<ObjectId> sonIds = new ArrayList<ObjectId>();
+        if(userBehaviorEntry!=null &&  userBehaviorEntry.getSonOpenList()!=null){
+            sonIds = userBehaviorEntry.getSonOpenList();
+        }
+        if(childIds.size()==0){
+            return mapList;
+        }
+        List<UserEntry> userEntries = userDao.getUserEntryList(childIds, Constant.FIELDS);
+        for(UserEntry userEntry:userEntries){
+            Map<String,Object> map = new HashMap<String, Object>();
+            String name = StringUtils.isBlank(userEntry.getNickName())?userEntry.getUserName():userEntry.getNickName();
+            map.put("userName",name);
+            map.put("userId",userEntry.getID());
+            if(sonIds.contains(userEntry.getID())){
+                map.put("isCheck",1);
+            }else{
+                map.put("isCheck",0);
+            }
+           mapList.add(map);
+        }
+        return mapList;
+    }
+
+    public void updateMyRoleToSon(ObjectId userId,String sonIds){
+        String[]  strings = sonIds.split(",");
+        List<ObjectId>  list = new ArrayList<ObjectId>();
+        for(String s : strings){
+            list.add(new ObjectId(s));
+        }
+        UserBehaviorEntry userBehaviorEntry = userBehaviorDao.getEntry(userId);
+        if(userBehaviorEntry!=null){
+            userBehaviorEntry.setSonOpenList(list);
+            userBehaviorDao.addEntry(userBehaviorEntry);
+        }else{
+            List<ObjectId> objectIdList = new ArrayList<ObjectId>();
+            UserBehaviorEntry userBehaviorEntry1 = new UserBehaviorEntry(userId,0,objectIdList,objectIdList,list);
+            userBehaviorDao.addEntry(userBehaviorEntry1);
+        }
     }
 }

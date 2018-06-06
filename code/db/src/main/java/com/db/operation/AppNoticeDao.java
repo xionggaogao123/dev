@@ -256,7 +256,7 @@ public class AppNoticeDao extends BaseDao{
     public List<AppNoticeEntry> getRoleList(List<ObjectId> communityIds,int page,int pageSize,
                                                               String userName){
         BasicDBObject query=new BasicDBObject()
-                .append("cmId", new BasicDBObject(Constant.MONGO_NE, communityIds))
+                .append("cmId", new BasicDBObject(Constant.MONGO_IN, communityIds))
                 .append("wp", Constant.ONE)
                 .append("ir",Constant.ZERO);
         if(userName!=null && !userName.equals("")){
@@ -277,7 +277,7 @@ public class AppNoticeDao extends BaseDao{
 
     public int countRoleList(List<ObjectId> communityIds,String userName){
         BasicDBObject query=new BasicDBObject()
-                .append("cmId", new BasicDBObject(Constant.MONGO_NE, communityIds))
+                .append("cmId", new BasicDBObject(Constant.MONGO_IN, communityIds))
                 .append("wp", Constant.ONE)
                 .append("ir",Constant.ZERO);
         if(userName!=null && !userName.equals("")){

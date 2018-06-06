@@ -26,7 +26,7 @@ import java.util.Map;
 public class ReferenceDataController extends BaseController {
     @Autowired
     private ReferenceDataService referenceDataService;
-
+    
     @ApiOperation(value = "添加参考资料", httpMethod = "POST", produces = "application/json")
     @ApiResponses( value = {@ApiResponse(code = 200, message = "添加参考资料成功",response = String.class),
             @ApiResponse(code = 400, message = "请求中有语法问题，或不能满足请求"),

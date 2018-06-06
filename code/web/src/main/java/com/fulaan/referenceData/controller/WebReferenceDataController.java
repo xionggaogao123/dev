@@ -25,6 +25,26 @@ import java.util.Map;
 public class WebReferenceDataController extends BaseController {
     @Autowired
     private ReferenceDataService referenceDataService;
+    
+    
+    @ApiOperation(value = "获得用户id", httpMethod = "POST", produces = "application/json")
+    @ApiResponses( value = {@ApiResponse(code = 200, message = "添加参考资料成功",response = String.class),
+            @ApiResponse(code = 400, message = "请求中有语法问题，或不能满足请求"),
+            @ApiResponse(code = 501, message = "已登出")})
+    @RequestMapping("/getUserIdd")
+    @ResponseBody
+    public RespObj getUserIdd(){
+        RespObj respObj = new RespObj(Constant.FAILD_CODE);
+        try{
+            
+            respObj.setCode(Constant.SUCCESS_CODE);
+            respObj.setMessage(getUserId().toString());
+        }catch (Exception e){
+            respObj.setCode(Constant.FAILD_CODE);
+            respObj.setErrorMessage("获取失败");
+        }
+        return respObj;
+    }
 
     @ApiOperation(value = "添加参考资料", httpMethod = "POST", produces = "application/json")
     @ApiResponses( value = {@ApiResponse(code = 200, message = "添加参考资料成功",response = String.class),

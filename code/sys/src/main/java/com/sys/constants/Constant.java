@@ -1038,19 +1038,22 @@ public class Constant {
     public static final String COLLECTION_CLASS_ORDER= "excellent_class_order";
     //用户行为
     public static final String COLLECTION_USER_BEHAVIOR= "excellent_user_behavior";
-    //用户行为
+    //CC直播间
     public static final String COLLECTION_COURSES_ROOM= "excellent_courses_room";
-    //用户消费记录
+    //用户美豆消费记录
     public static final String COLLECTION_RECHARGE_RESULT= "excellent_recharge_result";
     //用户退课记录
     public static final String COLLECTION_CLASS_REFUND= "excellent_class_refund";
-    //用户账户记录
+    //用户提现记录
+    public static final String COLLECTION_EXTRACT_CASH= "excellent_extract_cash";
+    //用户充值账户记录
     public static final String COLLECTION_USER_ACCOUNT= "excellent_user_account";
-    //用户充值消费美豆日志
+    //用户充值消费日志
     public static final String COLLECTION_ACCOUNT_LOG= "excellent_account_log";
-    //用户充值订单日志
+    //用户充值订单
     public static final String COLLECTION_ACCOUNT_ORDER= "excellent_account_order";
-    
+    //用户充值账户
+    public static final String COLLECTION_ACCOUNT_FRASH= "excellent_account_frash";
     /*************************************积分商城*****************************************/
     
     //商品

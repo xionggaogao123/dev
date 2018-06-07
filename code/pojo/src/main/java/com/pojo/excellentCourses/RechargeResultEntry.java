@@ -20,7 +20,7 @@ import java.util.List;
  * userId                操作人                      uid
  * createTime            充值时间                    ctm
  * description           充值说明                    des
- * way                   充值方式                    way       0消费    1 微信     2银行卡  3 特殊   4 支付宝
+ * way                   充值方式                    way       0消费    1 微信     2银行卡   3 特殊   4 支付宝
  * type                  记录类型                    typ       0  消费    1 充值     2 提现
  * money                 充值金额                    mon
  * sonId                 用途对象                    sid

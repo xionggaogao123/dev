@@ -11,6 +11,7 @@ import com.fulaan.excellentCourses.dto.HourResultDTO;
 import com.fulaan.excellentCourses.dto.RechargeResultDTO;
 import com.fulaan.newVersionBind.service.NewVersionBindService;
 import com.fulaan.pojo.User;
+import com.fulaan.wrongquestion.controller.DefaultWrongQuestionController;
 import com.mongodb.DBObject;
 import com.pojo.backstage.TeacherApproveEntry;
 import com.pojo.excellentCourses.*;
@@ -21,6 +22,7 @@ import com.sys.constants.Constant;
 import com.sys.utils.AvatarUtils;
 import com.sys.utils.DateTimeUtils;
 import org.apache.commons.lang.StringUtils;
+import org.apache.log4j.Logger;
 import org.bson.types.ObjectId;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -43,8 +45,6 @@ public class ExcellentCoursesService {
     private RechargeResultDao rechargeResultDao = new RechargeResultDao();
     @Autowired
     private NewVersionBindService newVersionBindService;
-    @Autowired
-    private CoursesRoomService coursesRoomService;
 
     private UserDao userDao = new UserDao();
 
@@ -56,13 +56,32 @@ public class ExcellentCoursesService {
 
     private CommunityDao communityDao = new CommunityDao();
 
-    private RefundDao refundDao = new RefundDao();
 
     private UserAccountDao userAccountDao = new UserAccountDao();
+
+    private AccountLogDao accountLogDao = new AccountLogDao();
+
+    private AccountFrashDao accountFrashDao = new AccountFrashDao();
+
+    private AccountOrderDao accountOrderDao = new AccountOrderDao();
+
+    private RefundDao refundDao = new RefundDao();
+
+    private static final Logger logger =Logger.getLogger(DefaultWrongQuestionController.class);
+
 
     private static final int  TEACHER_TIME = 10*60*1000;  //老师提前时间  ->  10分钟
     private static final int  STUDENT_TIME = 5*60*1000;  //学生提前时间  ->  5分钟
     private static final int  TUI_TIME = 12*60*60*1000;  //退款超时时间  ->  12小时
+
+
+    /**
+     * 充值消费日志
+     */
+    public void addLog(ObjectId userId,ObjectId contactId,String description){
+        AccountLogEntry accountLogEntry = new AccountLogEntry(userId,contactId,description);
+        accountLogDao.addEntry(accountLogEntry);
+    }
     /**
      * 老师开课
      * @param dto
@@ -626,45 +645,13 @@ public class ExcellentCoursesService {
         Map<String,Object> map = new HashMap<String, Object>();
         //课程相关
         ExcellentCoursesEntry excellentCoursesEntry = excellentCoursesDao.getEntry(id);
-        //ExcellentCoursesDTO dto = new ExcellentCoursesDTO(excellentCoursesEntry);
-        //用户行为
-        //UserBehaviorEntry userBehaviorEntry = userBehaviorDao.getEntry(userId);
         //此课程已购买项目
         List<ObjectId> cids= classOrderDao.getEntryIdList(userId,id);
         if(cids.size()==0){
-            //dto.setIsBuy(0);  //未购买
             map.put("isBuy",0);
         }else{
-            //dto.setIsBuy(1);  //已购买
             map.put("isBuy",1);
         }
-        //是否购买
-        /*if(cids.size()==0){
-            dto.setIsBuy(0);  //未购买
-        }else{
-            dto.setIsBuy(1);  //已购买
-        }*/
-        //是否收藏   （行为统计）
-        /*if(userBehaviorEntry!=null){
-            if(userBehaviorEntry.getCollectList().contains(id)){
-                dto.setIsCollect(1);
-            }else{
-                dto.setIsCollect(0);
-            }
-            List<ObjectId> objectIdList2 =userBehaviorEntry.getBrowseList();
-            if(!objectIdList2.contains(id)){
-                objectIdList2.add(id);
-                userBehaviorEntry.setBrowseList(objectIdList2);
-                userBehaviorDao.addEntry(userBehaviorEntry);
-            }
-        }else{
-            List<ObjectId> objectIdList = new ArrayList<ObjectId>();
-            List<ObjectId> objectIdList2 = new ArrayList<ObjectId>();
-            objectIdList2.add(id);
-            UserBehaviorEntry userBehaviorEntry1 = new UserBehaviorEntry(userId,objectIdList,objectIdList2);
-            userBehaviorDao.addEntry(userBehaviorEntry1);
-        }*/
-        //map.put("dto",dto);
         long current = System.currentTimeMillis();
         boolean flage = false;
         map.put("isEnd",0);
@@ -770,12 +757,33 @@ public class ExcellentCoursesService {
         return map;
     }
 
-    public String buyClassList(ObjectId id,ObjectId userId,String classIds) throws  Exception{
+    /**
+     *   important
+     * @param id
+     * @param userId
+     * @param classIds
+     * @return
+     * @throws Exception
+     */
+    public String buyClassList(ObjectId id,ObjectId userId,String classIds,String ip) throws  Exception{
+        //绑定关系
         NewVersionBindRelationEntry newVersionBindRelationEntry = newVersionBindRelationDao.getBindEntry(userId);
         if(newVersionBindRelationEntry==null){
             throw new Exception("未绑定的学生账户不能购买课程");
         }
         ObjectId parentId = newVersionBindRelationEntry.getMainUserId();
+        //用户父母美豆账户
+        UserBehaviorEntry userBehaviorEntry = userBehaviorDao.getEntry(parentId);
+        if(userBehaviorEntry==null || !userBehaviorEntry.getSonOpenList().contains(userId)){
+            throw new Exception("未授权的学生账户不能自主购买课程");
+        }
+
+        //用户父母充值账户
+        AccountFrashEntry accountFrashEntry = accountFrashDao.getEntry(parentId);
+        if(accountFrashEntry==null){
+            throw new Exception("余额不足！");
+        }
+
         //创建订单
         ExcellentCoursesEntry excellentCoursesEntry = excellentCoursesDao.getEntry(id);
         List<ObjectId> objectIdList = new ArrayList<ObjectId>();
@@ -792,7 +800,7 @@ public class ExcellentCoursesService {
         List<ObjectId> classOrderEntries = classOrderDao.getOwnEntry(objectIdList, userId);
         List<ClassOrderEntry> classOrderEntries1 = new ArrayList<ClassOrderEntry>();
         long current = System.currentTimeMillis();
-        int price = 0;
+        int price = 0;//此次消费金额
         String description = "购买课程："+excellentCoursesEntry.getTitle()+"的";
         List<ObjectId>  cIds = new ArrayList<ObjectId>();
         if(excellentCoursesEntry!=null && classEntries.size()>0){
@@ -810,6 +818,7 @@ public class ExcellentCoursesService {
                     classOrderEntry.setFunction(1);
                     classOrderEntry.setPrice(hourClassEntry.getClassNewPrice());
                     classOrderEntry.setUserId(userId);
+                    classOrderEntry.setOrderId("");
                     classOrderEntries1.add(classOrderEntry);
                     price = price + hourClassEntry.getClassNewPrice();
                     description  = description + "第"+hourClassEntry.getOrder()+"课时 ";
@@ -818,25 +827,51 @@ public class ExcellentCoursesService {
             }
             description = description + " 共花费"+price+"¥";
             //正式购买，扣除金额
-            UserBehaviorEntry userBehaviorEntry = userBehaviorDao.getEntry(parentId);
-            //自定义回滚
+            ObjectId contactId = new ObjectId();
+            addLog(userId,contactId,"学生开始创建订单！余额:"+accountFrashEntry.getAccount()+" 订单价值"+price);
+            logger.info(userId.toString()+"-"+contactId.toString()+"学生开始创建订单！余额:"+accountFrashEntry.getAccount()+" 订单价值:"+price);
             //try{
-            if(userBehaviorEntry!=null && userBehaviorEntry.getAccount()>= price){
-                //修改余额
-                userBehaviorDao.updateEntry(userBehaviorEntry.getID(), userBehaviorEntry.getAccount() - price);
-                //添加记录
-                RechargeResultEntry rechargeResultEntry = new RechargeResultEntry(parentId,userId,description,Constant.ZERO,Constant.ZERO,price,userId,excellentCoursesEntry.getID(),cIds);
-                rechargeResultDao.saveEntry(rechargeResultEntry);
-                //添加课节订单
-                this.addClassEntryBatch(classOrderEntries1);
+            if( userBehaviorEntry.getAccount()>= price){
+                //判断余额
+                if(accountFrashEntry.getAccount()< price){
+                    throw new Exception("余额不足！");
+                }
+                int newPr = userBehaviorEntry.getAccount() - price;
+                try{
+                    //修改美豆账户余额
+                    userBehaviorDao.updateEntry(userBehaviorEntry.getID(), newPr);
+                    addLog(userId,contactId,"修改美豆账户成功！余额:"+newPr);
+                    logger.info(userId.toString()+"-"+contactId.toString()+"修改美豆账户成功！余额:"+newPr);
+
+                    //添加美豆账户消费记录
+                    RechargeResultEntry rechargeResultEntry = new RechargeResultEntry(parentId,userId,description,Constant.ZERO,Constant.ZERO,price,userId,excellentCoursesEntry.getID(),cIds);
+                    rechargeResultDao.saveEntry(rechargeResultEntry);
+                    addLog(userId,contactId,"添加美豆账户消费记录成功！本次消费："+price);
+                    logger.info(userId.toString()+"-"+contactId.toString()+"添加美豆账户消费记录成功！本次消费："+price);
+
+                    //修改充值账户余额
+                    double newPrice = accountFrashEntry.getAccount()-price;
+                    accountFrashDao.updateEntry(accountFrashEntry.getID(),newPrice);
+                    addLog(userId,contactId,"修改充值账户消费记录成功！余额:"+newPrice);
+                    logger.info(userId.toString()+"-"+contactId.toString()+"修改美豆账户消费记录成功！余额:"+newPrice);
+
+                    //添加充值账户记录
+                    AccountOrderEntry accountOrderEntry = new AccountOrderEntry(contactId,parentId,"","","",price,"",Constant.ZERO,ip,0l,"");
+                    accountOrderDao.addEntry(accountOrderEntry);
+                    addLog(userId,contactId,"添加充值账户记录成功！余额:"+newPrice);
+                    logger.info(userId.toString()+"-"+contactId.toString()+"添加充值账户记录成功！余额:"+newPrice);
+
+                    //添加课节订单
+                    this.addClassEntryBatch(classOrderEntries1);
+                }catch (Exception e){
+                    throw new Exception("购买异常，请联系客服！");
+                }
+
             }else{
-                throw  new Exception("余额不足！");
+                throw new Exception("余额不足！");
             }
-            /*}catch (Exception e){
 
-            }finally {
 
-            }*/
             //修改课程人数
             Set<ObjectId> set = classOrderDao.getUserIdEntry(excellentCoursesEntry.getID());
             excellentCoursesEntry.setStudentNumber(set.size());
@@ -847,13 +882,28 @@ public class ExcellentCoursesService {
         }
     }
 
-    public String buyChildClassList(ObjectId id,ObjectId userId,String classIds,ObjectId sonId) throws  Exception{
+
+
+    public String buyChildClassList(ObjectId id,ObjectId userId,String classIds,ObjectId sonId,String ip) throws  Exception{
         //创建订单
         ExcellentCoursesEntry excellentCoursesEntry = excellentCoursesDao.getEntry(id);
         List<ObjectId> objectIdList = new ArrayList<ObjectId>();
         if(classIds==null|| classIds.equals("")){
             throw  new Exception("请至少购买一节课程");
         }
+
+        //美豆账户
+        UserBehaviorEntry userBehaviorEntry = userBehaviorDao.getEntry(userId);
+        if(userBehaviorEntry==null){
+            throw new Exception("余额不足！");
+        }
+
+        //充值账户
+        AccountFrashEntry accountFrashEntry = accountFrashDao.getEntry(userId);
+        if(accountFrashEntry==null){
+            throw new Exception("余额不足！");
+        }
+
         String[] strings = classIds.split(",");
         for(String str:strings){
             objectIdList.add(new ObjectId(str));
@@ -877,6 +927,7 @@ public class ExcellentCoursesService {
                     classOrderEntry.setType(1);
                     classOrderEntry.setCreateTime(current);
                     classOrderEntry.setContactId(id);
+                    classOrderEntry.setOrderId("");
                     classOrderEntry.setIsRemove(0);
                     classOrderEntry.setParentId(hourClassEntry.getID());
                     classOrderEntry.setFunction(1);
@@ -889,26 +940,58 @@ public class ExcellentCoursesService {
                 }
             }
             description = description + " 共花费"+price+"¥";
-            //正式购买，扣除用户金额
-            UserBehaviorEntry userBehaviorEntry = userBehaviorDao.getEntry(userId);
+            //正式购买，扣除金额
+            ObjectId contactId = new ObjectId();
+            addLog(userId,contactId,"用户开始创建订单！余额:"+accountFrashEntry.getAccount()+" 订单价值:"+price);
+            logger.info(userId.toString()+"-"+contactId.toString()+"用户开始创建订单！余额:"+accountFrashEntry.getAccount()+" 订单价值"+price);
             //自定义回滚
             //try{
             if(userBehaviorEntry!=null && userBehaviorEntry.getAccount()>= price){
-                //修改余额
+                //判断余额
+                if(accountFrashEntry.getAccount()< price){
+                    throw new Exception("余额不足！");
+                }
+                int newPr = userBehaviorEntry.getAccount() - price;
+                try{
+                    //修改美豆账户余额
+                    userBehaviorDao.updateEntry(userBehaviorEntry.getID(), newPr);
+                    addLog(userId,contactId,"修改美豆账户成功！余额:"+newPr);
+                    logger.info(userId.toString()+"-"+contactId.toString()+"修改美豆账户成功！余额:"+newPr);
+
+                    //添加美豆账户消费记录
+                    RechargeResultEntry rechargeResultEntry = new RechargeResultEntry(userId,userId,description,Constant.ZERO,Constant.ZERO,price,userId,excellentCoursesEntry.getID(),cIds);
+                    rechargeResultDao.saveEntry(rechargeResultEntry);
+                    addLog(userId,contactId,"添加美豆账户消费记录成功！本次消费："+price);
+                    logger.info(userId.toString()+"-"+contactId.toString()+"添加美豆账户消费记录成功！本次消费："+price);
+
+                    //修改充值账户余额
+                    double newPrice = accountFrashEntry.getAccount()-price;
+                    accountFrashDao.updateEntry(accountFrashEntry.getID(),newPrice);
+                    addLog(userId,contactId,"修改充值账户消费记录成功！余额:"+newPrice);
+                    logger.info(userId.toString()+"-"+contactId.toString()+"修改美豆账户消费记录成功！余额:"+newPrice);
+
+                    //添加充值账户记录
+                    AccountOrderEntry accountOrderEntry = new AccountOrderEntry(contactId,userId,"","","",price,"",Constant.ZERO,ip,0l,"");
+                    accountOrderDao.addEntry(accountOrderEntry);
+                    addLog(userId,contactId,"添加充值账户记录成功！余额:"+newPrice);
+                    logger.info(userId.toString()+"-"+contactId.toString()+"添加充值账户记录成功！余额:"+newPrice);
+
+                    //添加课节订单
+                    this.addClassEntryBatch(classOrderEntries1);
+                }catch (Exception e){
+                    throw new Exception("购买异常，请联系客服！");
+                }
+
+                /*//修改余额
                 userBehaviorDao.updateEntry(userBehaviorEntry.getID(), userBehaviorEntry.getAccount() - price);
                 //添加记录
                 RechargeResultEntry rechargeResultEntry = new RechargeResultEntry(userId,userId,description,Constant.ZERO,Constant.ZERO,price,sonId,excellentCoursesEntry.getID(),cIds);
                 rechargeResultDao.saveEntry(rechargeResultEntry);
                 //添加课节订单
-                this.addClassEntryBatch(classOrderEntries1);
+                this.addClassEntryBatch(classOrderEntries1);*/
             }else{
                 throw  new Exception("余额不足！");
             }
-            /*}catch (Exception e){
-
-            }finally {
-
-            }*/
             //修改课程人数
             Set<ObjectId> set = classOrderDao.getUserIdEntry(excellentCoursesEntry.getID());
             excellentCoursesEntry.setStudentNumber(set.size());
@@ -919,12 +1002,7 @@ public class ExcellentCoursesService {
         }
     }
 
-    public String zuString(){
 
-
-
-        return "";
-    }
 
     public int getAccount(ObjectId sonId){
         NewVersionBindRelationEntry newVersionBindRelationEntry = newVersionBindRelationDao.getBindEntry(sonId);
@@ -932,11 +1010,10 @@ public class ExcellentCoursesService {
             return 0;
         }
         UserBehaviorEntry userBehaviorEntry = userBehaviorDao.getEntry(newVersionBindRelationEntry.getMainUserId());
-        if(userBehaviorEntry==null){
-            return 0;
-        }else{
+        if(userBehaviorEntry!=null && userBehaviorEntry.getSonOpenList().contains(sonId)){
             return userBehaviorEntry.getAccount();
         }
+        return 0;
     }
 
     public int getMyAccount(ObjectId userId){
@@ -1364,8 +1441,7 @@ public class ExcellentCoursesService {
      * @return
      * @throws Exception
      */
-    public Map<String,Object> refund(ObjectId id,ObjectId userId,ObjectId sonId) throws Exception{
-        Map<String,Object> map = new HashMap<String, Object>();
+    public void refund(ObjectId id,ObjectId userId,ObjectId sonId) throws Exception{
         long current = System.currentTimeMillis();
         //1.查询该课程
         ExcellentCoursesEntry excellentCoursesEntry = excellentCoursesDao.getEntry(id);
@@ -1411,8 +1487,11 @@ public class ExcellentCoursesService {
                 oids.add(hourClassEntry.getID());
             }
         }
-        //todo
-        return map;
+        //订单置为退款中
+        classOrderDao.updateEntry(id, sonId);
+        //生成申请
+        RefundEntry refundEntry = new RefundEntry(userId,id,oids);
+        refundDao.addEntry(refundEntry);
     }
 
 
@@ -1493,22 +1572,14 @@ public class ExcellentCoursesService {
     }
 
 
-    public Map<String,Object> goMyMoney(ObjectId userId){
-       Map<String,Object> map = new HashMap<String, Object>();
-
-
-
-
-
-
-
-
-
-
-
-        return map;
-
+    public String getApppliAccount(ObjectId userId){
+        UserAccountEntry userAccountEntry = userAccountDao.getEntry(userId);
+        if(userAccountEntry!=null){
+            return userAccountEntry.getAccountName();
+        }
+        return "";
     }
+
 
     /**
      * 获得授权列表

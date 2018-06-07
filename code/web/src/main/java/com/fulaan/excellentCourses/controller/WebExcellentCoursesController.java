@@ -307,6 +307,35 @@ public class WebExcellentCoursesController extends BaseController {
     }
 
     /**
+     * 重新开课
+     */
+    @ApiOperation(value = "重新开课", httpMethod = "POST", produces = "application/json")
+    @ApiResponses( value = {@ApiResponse(code = 200, message = "Successful — 请求已完成",response = String.class),
+            @ApiResponse(code = 400, message = "请求中有语法问题，或不能满足请求"),
+            @ApiResponse(code = 500, message = "服务器不能完成请求")})
+    @RequestMapping("/newOpen")
+    @ResponseBody
+    public RespObj newOpen(@ApiParam(name = "id", required = true, value = "id") @RequestParam("id") String id){
+        RespObj respObj = new RespObj(Constant.FAILD_CODE);
+        try{
+            String str = excellentCoursesService.newOpen(getUserId(), new ObjectId(id));
+            if(str.equals("")){
+                respObj.setCode(Constant.FAILD_CODE);
+                respObj.setErrorMessage("课程已被删除！");
+            }else{
+                respObj.setCode(Constant.SUCCESS_CODE);
+                respObj.setMessage(str);
+            }
+        }catch (Exception e){
+            e.printStackTrace();
+            respObj.setCode(Constant.FAILD_CODE);
+            respObj.setErrorMessage(e.getMessage());
+        }
+        return respObj;
+    }
+
+    /****************************************  cc直播相关  *****************************************/
+    /**
      * 创建直播间回调(提供给cc直播进行接口验证)
      */
     @ApiOperation(value = "提供给cc直播进行接口验证", httpMethod = "POST", produces = "application/json")
@@ -410,31 +439,5 @@ public class WebExcellentCoursesController extends BaseController {
         return respObj;
     }
 
-    /**
-     * 重新开课
-     */
-    @ApiOperation(value = "重新开课", httpMethod = "POST", produces = "application/json")
-    @ApiResponses( value = {@ApiResponse(code = 200, message = "Successful — 请求已完成",response = String.class),
-            @ApiResponse(code = 400, message = "请求中有语法问题，或不能满足请求"),
-            @ApiResponse(code = 500, message = "服务器不能完成请求")})
-    @RequestMapping("/newOpen")
-    @ResponseBody
-    public RespObj newOpen(@ApiParam(name = "id", required = true, value = "id") @RequestParam("id") String id){
-        RespObj respObj = new RespObj(Constant.FAILD_CODE);
-        try{
-            String str = excellentCoursesService.newOpen(getUserId(), new ObjectId(id));
-            if(str.equals("")){
-                respObj.setCode(Constant.FAILD_CODE);
-                respObj.setErrorMessage("课程已被删除！");
-            }else{
-                respObj.setCode(Constant.SUCCESS_CODE);
-                respObj.setMessage(str);
-            }
-        }catch (Exception e){
-            e.printStackTrace();
-            respObj.setCode(Constant.FAILD_CODE);
-            respObj.setErrorMessage(e.getMessage());
-        }
-        return respObj;
-    }
+
 }

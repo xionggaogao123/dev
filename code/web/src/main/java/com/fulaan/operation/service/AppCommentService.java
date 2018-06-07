@@ -1847,6 +1847,7 @@ public class AppCommentService {
             List<ObjectId> objectIdList = new ArrayList<ObjectId>();
             objectIdList.add(new ObjectId(str[0]));
             redDotService.addEntryList(objectIdList,new ObjectId(dto.getAdminId()), ApplyTypeEn.operation.getType(),4);
+            PictureRunNable.addTongzhi(str[0],dto.getAdminId(),1);
         }
         JPushUtils jPushUtils=new JPushUtils();
         try {

@@ -28,8 +28,8 @@ public class UserAccountDao extends BaseDao {
 
 
     //查询
-    public UserAccountEntry getEntry(ObjectId id){
-        BasicDBObject query=new BasicDBObject(Constant.ID,id).append("isr",Constant.ZERO);
+    public UserAccountEntry getEntry(ObjectId userId){
+        BasicDBObject query=new BasicDBObject("uid",userId).append("isr",Constant.ZERO);
         DBObject dbObject=findOne(MongoFacroty.getAppDB(), Constant.COLLECTION_USER_BEHAVIOR,query,Constant.FIELDS);
         if(null!=dbObject){
             return new UserAccountEntry((BasicDBObject) dbObject);

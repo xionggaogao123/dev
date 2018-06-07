@@ -506,6 +506,58 @@ public class CommunityService {
         }
         return list;
     }
+    
+    
+    
+    public List<CommunityDTO> getCommunitys4(ObjectId uid, int page, int pageSize) {
+        List<MineCommunityEntry> allMineCommunitys = mineCommunityDao.findAll(uid, page, pageSize);
+        List<CommunityDTO> list = new ArrayList<CommunityDTO>();
+        List<ObjectId> groupIds=new ArrayList<ObjectId>();
+        List<ObjectId> communityIds = new ArrayList<ObjectId>();
+        for (MineCommunityEntry mineCommunityEntry : allMineCommunitys) {
+            communityIds.add(mineCommunityEntry.getCommunityId());
+        }
+        List<CommunityEntry> communityEntries = communityDao.findByNotObjectIds(communityIds);
+        for(CommunityEntry communityEntry:communityEntries){
+            groupIds.add(communityEntry.getGroupId());
+            CommunityDTO communityDTO = new CommunityDTO(communityEntry);
+            list.add(communityDTO);
+        }
+        
+        
+        
+        Map<ObjectId,GroupEntry> entryMap=groupService.getGroupEntries(groupIds);
+        for (CommunityDTO dto:list){
+            String groupId=dto.getGroupId();
+            dto.setLogo(getNewLogo(dto.getLogo()));
+            dto.setHeadImage(dto.getLogo());
+            if(StringUtils.isNotBlank(groupId)){
+                GroupEntry entry=entryMap.get(new ObjectId(groupId));
+                if(null!=entry&&StringUtils.isNotBlank(entry.getHeadImage())){
+                    dto.setHeadImage(entry.getHeadImage());
+                }
+            }
+        }
+        
+        List<ObjectId> objectIds = new ArrayList<ObjectId>();
+        objectIds.add(uid);
+        Map<String, MemberEntry> memberMap = memberDao.getGroupNick(groupIds, objectIds);
+      //查询是否大V
+        List<ObjectId> objectIdList1 = teacherApproveDao.selectMap(objectIds);
+        if (objectIdList1.contains(uid)) {
+            return list;
+        } else {
+            List<CommunityDTO> listt = new ArrayList<CommunityDTO>();
+            for (CommunityDTO dto : list) {
+                MemberEntry entry5 = memberMap.get(dto.getGroupId() + "$" + uid);
+                if (entry5!= null && entry5.getRole() !=0) {
+                    listt.add(dto);
+                }
+            }
+            return listt;
+        }
+        
+    }
 
     /**
      * 超简洁获取我的社团

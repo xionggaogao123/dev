@@ -13,11 +13,12 @@ import java.util.Date;
  * id                id                   id
  * contactId         关联课程            cid
  * parentId          关联课时            pid
+ * orderId           直接购买的标志      oid
  * userId            购买人              uid
  * isBuy             是否购买            isb  // 0 未购买      1已购买
  * price             购买价格            pri
  * function          付款方式            fun   //0 美豆余额   1 支付宝   2 微信
- * type              状态                typ      0 未使用    1 使用中   2 已过期
+ * type              状态                typ      0 未使用    1 使用中   2 已过期  3 退款中   4 已取消
  *
  */
 public class ClassOrderEntry extends BaseDBObject {
@@ -38,6 +39,7 @@ public class ClassOrderEntry extends BaseDBObject {
             ObjectId userId,
             ObjectId parentId,
             ObjectId contactId,
+            String orderId,
             int isBuy,
             int price,
             int function,
@@ -47,6 +49,7 @@ public class ClassOrderEntry extends BaseDBObject {
                 .append("uid", userId)
                 .append("pid", parentId)
                 .append("cid", contactId)
+                .append("oid",orderId)
                 .append("isb", isBuy)
                 .append("pri", price)
                 .append("cnp", function)
@@ -62,6 +65,7 @@ public class ClassOrderEntry extends BaseDBObject {
             ObjectId userId,
             ObjectId parentId,
             ObjectId contactId,
+            String orderId,
             int isBuy,
             int price,
             int function,
@@ -72,6 +76,7 @@ public class ClassOrderEntry extends BaseDBObject {
                 .append("uid", userId)
                 .append("pid", parentId)
                 .append("cid", contactId)
+                .append("oid",orderId)
                 .append("isb", isBuy)
                 .append("pri", price)
                 .append("cnp", function)
@@ -99,6 +104,13 @@ public class ClassOrderEntry extends BaseDBObject {
         setSimpleValue("cid",contactId);
     }
 
+
+    public String getOrderId(){
+        return  getSimpleStringValue("oid");
+    }
+    public void setOrderId(String orderId){
+        setSimpleValue("oid",orderId);
+    }
 
     public int getIsBuy(){
         return getSimpleIntegerValue("isb");

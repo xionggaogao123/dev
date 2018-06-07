@@ -17,7 +17,7 @@ import java.util.Date;
  * account           充值账户
  * createTime        发起订单时间                    ctm
  * orderId           充值订单编号                    oid
- * type              充值订单方式                    typ              1. 支付宝          2  微信
+ * type              充值订单方式                    typ            0 余额       1. 支付宝          2  微信
  * ip                充值ip                           ip
  * backTime          回调时间                         btm
  * tradeNo           第三方支付交易号                 tno

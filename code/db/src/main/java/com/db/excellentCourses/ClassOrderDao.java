@@ -46,6 +46,20 @@ public class ClassOrderDao extends BaseDao {
         return entryList;
     }
 
+    //orderId
+    public  List<ClassOrderEntry> getOrderEntry(String orderId){
+        List<ClassOrderEntry> entryList=new ArrayList<ClassOrderEntry>();
+        BasicDBObject query=new BasicDBObject("oid",orderId).append("isb", 0).append("isr", Constant.ZERO);
+        List<DBObject> dbList=find(MongoFacroty.getAppDB(), Constant.COLLECTION_CLASS_ORDER, query,
+                Constant.FIELDS, Constant.MONGO_SORTBY_DESC);
+        if (dbList != null && !dbList.isEmpty()) {
+            for (DBObject obj : dbList) {
+                entryList.add(new ClassOrderEntry((BasicDBObject) obj));
+            }
+        }
+        return entryList;
+    }
+
     //首页订单查询
     public  List<ObjectId> getObjectIdEntry(ObjectId userId){
         List<ObjectId> entryList=new ArrayList<ObjectId>();
@@ -185,10 +199,24 @@ public class ClassOrderDao extends BaseDao {
         return map;
     }
 
-    //批量退课
+    //批量删除
     public void delEntry(ObjectId parentId,ObjectId userId){
         BasicDBObject query = new BasicDBObject("pid",parentId).append("uid",userId);
         BasicDBObject updateValue=new BasicDBObject(Constant.MONGO_SET,new BasicDBObject("isr",Constant.ONE));
-        update(MongoFacroty.getAppDB(), Constant.COLLECTION_HOUR_CLASS, query,updateValue);
+        update(MongoFacroty.getAppDB(), Constant.COLLECTION_CLASS_ORDER, query,updateValue);
+    }
+
+    //批量退课
+    public void updateEntry(ObjectId contactId,ObjectId userId){
+        BasicDBObject query = new BasicDBObject("cid",contactId).append("uid",userId);
+        BasicDBObject updateValue=new BasicDBObject(Constant.MONGO_SET,new BasicDBObject("typ",Constant.THREE));
+        update(MongoFacroty.getAppDB(), Constant.COLLECTION_CLASS_ORDER, query,updateValue);
+    }
+
+    //批量修改已购买
+    public void updateEntryToBuy(List<ObjectId> objectIds){
+        BasicDBObject query = new BasicDBObject(Constant.ID,new BasicDBObject(Constant.MONGO_IN,objectIds));
+        BasicDBObject updateValue=new BasicDBObject(Constant.MONGO_SET,new BasicDBObject("isb",Constant.ONE));
+        update(MongoFacroty.getAppDB(), Constant.COLLECTION_CLASS_ORDER, query,updateValue);
     }
 }

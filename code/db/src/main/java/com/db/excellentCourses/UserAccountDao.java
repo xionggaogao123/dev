@@ -23,14 +23,14 @@ public class UserAccountDao extends BaseDao {
         BasicDBObject query = new BasicDBObject();
         query.append("uid",userId);
         BasicDBObject updateValue=new BasicDBObject(Constant.MONGO_SET,new BasicDBObject("isr",Constant.ONE));
-        update(MongoFacroty.getAppDB(), Constant.COLLECTION_USER_BEHAVIOR, query,updateValue);
+        update(MongoFacroty.getAppDB(), Constant.COLLECTION_USER_ACCOUNT, query,updateValue);
     }
 
 
     //查询
     public UserAccountEntry getEntry(ObjectId userId){
         BasicDBObject query=new BasicDBObject("uid",userId).append("isr",Constant.ZERO);
-        DBObject dbObject=findOne(MongoFacroty.getAppDB(), Constant.COLLECTION_USER_BEHAVIOR,query,Constant.FIELDS);
+        DBObject dbObject=findOne(MongoFacroty.getAppDB(), Constant.COLLECTION_USER_ACCOUNT,query,Constant.FIELDS);
         if(null!=dbObject){
             return new UserAccountEntry((BasicDBObject) dbObject);
         }else {

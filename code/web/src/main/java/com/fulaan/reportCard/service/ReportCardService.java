@@ -1,5 +1,6 @@
 package com.fulaan.reportCard.service;
 
+import com.db.business.ModuleTimeDao;
 import com.db.fcommunity.CommunityDao;
 import com.db.fcommunity.MemberDao;
 import com.db.fcommunity.NewVersionCommunityBindDao;
@@ -19,7 +20,6 @@ import com.fulaan.pojo.User;
 import com.fulaan.reportCard.dto.*;
 import com.fulaan.user.service.TestTable;
 import com.fulaan.user.service.UserService;
-import com.fulaan.utils.CollectionUtil;
 import com.fulaan.utils.HSSFUtils;
 import com.fulaan.wrongquestion.dto.ExamTypeDTO;
 import com.pojo.fcommunity.CommunityEntry;
@@ -36,7 +36,6 @@ import com.sys.constants.Constant;
 import com.sys.utils.AvatarUtils;
 import com.sys.utils.DateTimeUtils;
 import com.sys.utils.QiniuFileUtils;
-
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.poi.hssf.usermodel.*;
@@ -99,6 +98,7 @@ public class ReportCardService {
 
     private IndexPageDao indexPageDao = new IndexPageDao();
 
+    private ModuleTimeDao moduleTimeDao=  new ModuleTimeDao();
 
     public static void main(String[] args) throws Exception {
         ReportCardService reportCardService = new ReportCardService();
@@ -324,6 +324,8 @@ public class ReportCardService {
         GroupExamDetailEntry entry = groupExamDetailDao.getEntryById(groupExamDetailId);
         //添加红点
         redDotService.addThirdList(entry.getID(),entry.getCommunityId(), entry.getUserId(), ApplyTypeEn.repordcard.getType());
+        //成绩单发送记录
+        moduleTimeDao.addEntry(entry.getUserId(),ApplyTypeEn.repordcard.getType());
         PictureRunNable.addTongzhi(entry.getCommunityId().toString(), entry.getUserId().toString(), 6);
     }
 
@@ -1207,7 +1209,8 @@ public class ReportCardService {
             if(status==2 && isSend!=1){
                 redDotService.addThirdList(detailEntry.getID(),detailEntry.getCommunityId(), detailEntry.getUserId(), ApplyTypeEn.repordcard.getType());
                 PictureRunNable.addTongzhi(detailEntry.getCommunityId().toString(), detailEntry.getUserId().toString(), 6);
-
+                //成绩单发送记录
+                moduleTimeDao.addEntry(detailEntry.getUserId(),ApplyTypeEn.repordcard.getType());
             }
             if (detailEntry.getRecordScoreType() == Constant.ONE) {
                 double qualifyScore = detailEntry.getQualifyScore();

@@ -19,7 +19,7 @@ import java.util.List;
  * account                   账户余额吧         acc
  * collectList <ObjectId>    收藏列表           clt
  * browseList<ObjectId>      浏览列表           blt
- * sonOpenList<ObjectId>     开发孩子权限       slt
+ * sonOpenList<ObjectId>     关闭孩子权限       slt
  *
  */
 public class UserBehaviorEntry extends BaseDBObject {

@@ -1027,6 +1027,8 @@ public class Constant {
     public static final String COLLECTION_INTEGRAL_RECORD= "integralrecord";
     //版本控制开关
     public static final String COLLECTION_VERSION_OPEN= "jxm_version_open";
+    //操作统计
+    public static final String COLLECTION_MODULE_TIME= "jxm_module_time";
 
     /*************************************精品课*****************************************/
 

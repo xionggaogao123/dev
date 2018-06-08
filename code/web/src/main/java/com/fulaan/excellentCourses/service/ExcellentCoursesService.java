@@ -774,8 +774,11 @@ public class ExcellentCoursesService {
         ObjectId parentId = newVersionBindRelationEntry.getMainUserId();
         //用户父母美豆账户
         UserBehaviorEntry userBehaviorEntry = userBehaviorDao.getEntry(parentId);
-        if(userBehaviorEntry==null || !userBehaviorEntry.getSonOpenList().contains(userId)){
-            throw new Exception("未授权的学生账户不能自主购买课程");
+        if(userBehaviorEntry==null){
+            throw new Exception("余额不足！");
+        }
+        if(userBehaviorEntry!=null && userBehaviorEntry.getSonOpenList().contains(userId)){
+           throw new Exception("未授权的学生账户不能自主购买课程");
         }
 
         //用户父母充值账户
@@ -1010,7 +1013,12 @@ public class ExcellentCoursesService {
             return 0;
         }
         UserBehaviorEntry userBehaviorEntry = userBehaviorDao.getEntry(newVersionBindRelationEntry.getMainUserId());
-        if(userBehaviorEntry!=null && userBehaviorEntry.getSonOpenList().contains(sonId)){
+        //
+      /*  if(userBehaviorEntry!=null){
+            return userBehaviorEntry.getAccount();
+        }
+        return  0;*/
+        if(userBehaviorEntry!=null && !userBehaviorEntry.getSonOpenList().contains(sonId)){
             return userBehaviorEntry.getAccount();
         }
         return 0;
@@ -1357,10 +1365,12 @@ public class ExcellentCoursesService {
     public String freeChong(ObjectId userId,int number,String userName){
         UserEntry userEntry = userDao.getUserEntryByName(userName);
         if(userEntry!=null){
-            //添加记录
+            //添加美豆记录
             RechargeResultEntry rechargeResultEntry = new RechargeResultEntry(userId,
                     userId,"自定义充值  "+number+"¥",Constant.THREE,Constant.ONE,number,userEntry.getID(),null,new ArrayList<ObjectId>());
             rechargeResultDao.saveEntry(rechargeResultEntry);
+
+            //添加美豆金额
             UserBehaviorEntry userBehaviorEntry = userBehaviorDao.getEntry(userEntry.getID());
             if(userBehaviorEntry!=null){
                 userBehaviorDao.updateEntry(userBehaviorEntry.getID(),userBehaviorEntry.getAccount()+number);
@@ -1370,6 +1380,23 @@ public class ExcellentCoursesService {
                 UserBehaviorEntry userBehaviorEntry1 = new UserBehaviorEntry(userId,number,objectIdList,objectIdList2,objectIdList);
                 userBehaviorDao.addEntry(userBehaviorEntry1);
             }
+
+            //增加账户记录
+            AccountOrderEntry accountOrderEntry = new AccountOrderEntry(null,userId,"","","",number,"",Constant.ONE,"",0l,"");
+            accountOrderDao.addEntry(accountOrderEntry);
+
+
+            //增加账户金额
+            AccountFrashEntry accountFrashEntry = accountFrashDao.getEntry(userId);
+            if(accountFrashEntry!=null){
+                accountFrashEntry.setAccount(accountFrashEntry.getAccount()+number);
+                accountFrashDao.addEntry(accountFrashEntry);
+            }else{
+                AccountFrashEntry accountFrashEntry1 = new AccountFrashEntry(userId,number,Constant.ZERO,Constant.ZERO);
+                accountFrashDao.addEntry(accountFrashEntry1);
+            }
+
+
             return "充值成功！";
         }else{
             return "用户不存在，充值失败！";
@@ -1382,7 +1409,7 @@ public class ExcellentCoursesService {
         long current = System.currentTimeMillis();
         //1.查询该课程
         ExcellentCoursesEntry excellentCoursesEntry = excellentCoursesDao.getEntry(id);
-        if(excellentCoursesEntry!=null){
+        if(excellentCoursesEntry==null){
             throw new Exception("课程不存在");
         }
         // 课程状态判断
@@ -1445,7 +1472,7 @@ public class ExcellentCoursesService {
         long current = System.currentTimeMillis();
         //1.查询该课程
         ExcellentCoursesEntry excellentCoursesEntry = excellentCoursesDao.getEntry(id);
-        if(excellentCoursesEntry!=null){
+        if(excellentCoursesEntry==null){
             throw new Exception("课程不存在");
         }
         // 课程状态判断
@@ -1568,6 +1595,7 @@ public class ExcellentCoursesService {
         userAccountEntry.setUserId(userId);
         userAccountEntry.setRsaPrivateUserId("");
         userAccountEntry.setType(Constant.ONE);
+        userAccountEntry.setIsRemove(Constant.ZERO);
        userAccountDao.addEntry(userAccountEntry);
     }
 
@@ -1575,7 +1603,9 @@ public class ExcellentCoursesService {
     public String getApppliAccount(ObjectId userId){
         UserAccountEntry userAccountEntry = userAccountDao.getEntry(userId);
         if(userAccountEntry!=null){
-            return userAccountEntry.getAccountName();
+            if(userAccountEntry.getAccountName()!=null){
+                return userAccountEntry.getAccountName();
+            }
         }
         return "";
     }
@@ -1601,31 +1631,43 @@ public class ExcellentCoursesService {
             Map<String,Object> map = new HashMap<String, Object>();
             String name = StringUtils.isBlank(userEntry.getNickName())?userEntry.getUserName():userEntry.getNickName();
             map.put("userName",name);
-            map.put("userId",userEntry.getID());
+            map.put("userId",userEntry.getID().toString());
             if(sonIds.contains(userEntry.getID())){
-                map.put("isCheck",1);
-            }else{
                 map.put("isCheck",0);
+            }else{
+                map.put("isCheck",1);
             }
            mapList.add(map);
         }
         return mapList;
     }
 
-    public void updateMyRoleToSon(ObjectId userId,String sonIds){
-        String[]  strings = sonIds.split(",");
-        List<ObjectId>  list = new ArrayList<ObjectId>();
-        for(String s : strings){
-            list.add(new ObjectId(s));
-        }
+    public void updateMyRoleToSon(ObjectId userId,String sonId,int status){
         UserBehaviorEntry userBehaviorEntry = userBehaviorDao.getEntry(userId);
-        if(userBehaviorEntry!=null){
-            userBehaviorEntry.setSonOpenList(list);
-            userBehaviorDao.addEntry(userBehaviorEntry);
-        }else{
-            List<ObjectId> objectIdList = new ArrayList<ObjectId>();
-            UserBehaviorEntry userBehaviorEntry1 = new UserBehaviorEntry(userId,0,objectIdList,objectIdList,list);
-            userBehaviorDao.addEntry(userBehaviorEntry1);
+        if(sonId!=null&& !sonId.equals("")){
+            ObjectId id = new ObjectId(sonId);
+            if(userBehaviorEntry!=null){
+                List<ObjectId>  sonIds = userBehaviorEntry.getSonOpenList();
+                if(status==1){
+                    sonIds.remove(id);
+                    userBehaviorEntry.setSonOpenList(sonIds);
+                }else if(status==0){
+                   if(!sonIds.contains(id)){
+                       sonIds.add(id);
+                       userBehaviorEntry.setSonOpenList(sonIds);
+                   }
+                }
+                userBehaviorDao.addEntry(userBehaviorEntry);
+            }else{
+                if(status==0){
+                    List<ObjectId> objectIdList = new ArrayList<ObjectId>();
+                    List<ObjectId> list = new ArrayList<ObjectId>();
+                    list.add(id);
+                    UserBehaviorEntry userBehaviorEntry1 = new UserBehaviorEntry(userId,0,objectIdList,objectIdList,list);
+                    userBehaviorDao.addEntry(userBehaviorEntry1);
+                }
+            }
         }
+
     }
 }

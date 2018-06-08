@@ -2,6 +2,7 @@ package com.db.smalllesson;
 
 import com.db.base.BaseDao;
 import com.db.factory.MongoFacroty;
+import com.mongodb.BasicDBList;
 import com.mongodb.BasicDBObject;
 import com.mongodb.DBObject;
 import com.pojo.smalllesson.SmallLessonEntry;
@@ -36,6 +37,26 @@ public class SmallLessonDao extends BaseDao {
         BasicDBObject query =new BasicDBObject();
         query.append("isr", Constant.ZERO);
         query.append("uid",userId);
+        List<DBObject> dboList=find(MongoFacroty.getAppDB(), Constant.COLLECTION_SMALL_LESSON, query, Constant.FIELDS,new BasicDBObject("dtm",Constant.DESC));
+        List<SmallLessonEntry> retList =new ArrayList<SmallLessonEntry>();
+        if(null!=dboList && !dboList.isEmpty())
+        {
+            for(DBObject dbo:dboList)
+            {
+                retList.add(new SmallLessonEntry((BasicDBObject)dbo));
+            }
+        }
+        return retList;
+    }
+
+    public List<SmallLessonEntry> getTeacherLessonList(List<ObjectId> userIds,long startTime,long endTime) {
+        BasicDBObject query =new BasicDBObject();
+        query.append("isr", Constant.ZERO);
+        query.append("uid",new BasicDBObject(Constant.MONGO_IN,userIds));
+        BasicDBList dblist =new BasicDBList();
+        dblist.add(new BasicDBObject("ctm", new BasicDBObject(Constant.MONGO_GTE, startTime)));
+        dblist.add(new BasicDBObject("ctm", new BasicDBObject(Constant.MONGO_LT, endTime)));
+        query.append(Constant.MONGO_AND,dblist);
         List<DBObject> dboList=find(MongoFacroty.getAppDB(), Constant.COLLECTION_SMALL_LESSON, query, Constant.FIELDS,new BasicDBObject("dtm",Constant.DESC));
         List<SmallLessonEntry> retList =new ArrayList<SmallLessonEntry>();
         if(null!=dboList && !dboList.isEmpty())

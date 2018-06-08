@@ -589,7 +589,7 @@ public class AppAlipayService  {
         //检测通过，发出申请
         ExtractCashEntry extractCashEntry = new ExtractCashEntry(userId,price,userAccountEntry.getAccountName(), Constant.ZERO);
         //生成美豆消费记录
-        RechargeResultEntry rechargeResultEntry = new RechargeResultEntry(userBehaviorEntry.getID(),userId,"美豆提现",Constant.FOUR,Constant.TWO,price,null,null,new ArrayList<ObjectId>());
+        RechargeResultEntry rechargeResultEntry = new RechargeResultEntry(userBehaviorEntry.getUserId(),userId,"美豆提现",Constant.FOUR,Constant.TWO,price,null,null,new ArrayList<ObjectId>());
         //暂不执行现金消费记录,通过时执行 未通过美豆返回
 
         //账户消减

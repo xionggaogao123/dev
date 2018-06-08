@@ -1,5 +1,6 @@
 package com.fulaan.smalllesson.service;
 
+import com.db.business.ModuleTimeDao;
 import com.db.smalllesson.LessonAnswerDao;
 import com.db.smalllesson.LessonUserResultDao;
 import com.db.smalllesson.SmallLessonCodeDao;
@@ -11,6 +12,7 @@ import com.fulaan.smalllesson.dto.LessonUserResultDTO;
 import com.fulaan.smalllesson.dto.SmallLessonDTO;
 import com.fulaan.user.service.UserService;
 import com.mongodb.DBObject;
+import com.pojo.instantmessage.ApplyTypeEn;
 import com.pojo.smalllesson.LessonAnswerEntry;
 import com.pojo.smalllesson.LessonUserResultEntry;
 import com.pojo.smalllesson.SmallLessonCodeEntry;
@@ -38,6 +40,8 @@ public class SmallLessonService {
     private UserService userService;
 
     private SmallLessonCodeDao smallLessonCodeDao = new SmallLessonCodeDao();
+
+    private ModuleTimeDao moduleTimeDao = new ModuleTimeDao();
     //列表查询用户课程
     public Map<String,Object> getLessonList(ObjectId userId,int page,int pageSize){
         Map<String,Object> map = new HashMap<String, Object>();
@@ -193,6 +197,8 @@ public class SmallLessonService {
             entry.setID(lessonId);
             smallLessonDao.updEntry(entry);
             SmallLessonDTO dto3 = new SmallLessonDTO(entry);
+            //小课堂发送记录
+            moduleTimeDao.addEntry(new ObjectId(userId), ApplyTypeEn.smallLesson.getType());
             return dto3;
             //return null;
         }else{
@@ -219,6 +225,8 @@ public class SmallLessonService {
                 entry.setID(lessonId);
                 smallLessonDao.updEntry(entry);
                 SmallLessonDTO dto4 = new SmallLessonDTO(entry);
+                //小课堂发送记录
+                moduleTimeDao.addEntry(new ObjectId(userId), ApplyTypeEn.smallLesson.getType());
                 return dto4;
             }else{
                 return null;

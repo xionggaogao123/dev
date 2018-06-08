@@ -2,6 +2,7 @@ package com.fulaan.operation.service;
 
 import cn.jpush.api.push.model.audience.Audience;
 import com.db.business.ModuleNumberDao;
+import com.db.business.ModuleTimeDao;
 import com.db.fcommunity.CommunityDao;
 import com.db.fcommunity.MemberDao;
 import com.db.fcommunity.NewVersionCommunityBindDao;
@@ -65,6 +66,8 @@ public class AppNoticeService {
     private WebHomePageDao webHomePageDao = new WebHomePageDao();
 
     ModuleNumberDao moduleNumberDao = new ModuleNumberDao();
+
+    private ModuleTimeDao moduleTimeDao = new ModuleTimeDao();
     @Autowired
     private UserService userService;
     @Autowired
@@ -177,6 +180,8 @@ public class AppNoticeService {
         //1:家长2:学生3:家长，学生
         redDotService.addEntryList(objectIdList,userId, ApplyTypeEn.notice.getType(),dto.getWatchPermission());
         redDotService.addOtherEntryList(objectIdList,userId, ApplyTypeEn.daynotice.getType(),dto.getWatchPermission());
+        //通知发送记录
+        moduleTimeDao.addEntry(userId,ApplyTypeEn.notice.getType());
         int  score = integralSufferService.addIntegral(userId, IntegralType.notice,1,1);
         try {
             for (GroupOfCommunityDTO communityDTO : dto.getGroupOfCommunityDTOs()) {

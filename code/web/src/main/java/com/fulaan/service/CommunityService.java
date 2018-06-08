@@ -2,6 +2,7 @@ package com.fulaan.service;
 
 import com.db.backstage.SystemMessageDao;
 import com.db.backstage.TeacherApproveDao;
+import com.db.business.ModuleTimeDao;
 import com.db.fcommunity.*;
 import com.db.indexPage.IndexPageDao;
 import com.db.referenceData.ReferenceDataDao;
@@ -36,6 +37,7 @@ import com.pojo.fcommunity.*;
 import com.pojo.forum.FVoteDTO;
 import com.pojo.forum.FVoteEntry;
 import com.pojo.indexPage.IndexPageEntry;
+import com.pojo.instantmessage.ApplyTypeEn;
 import com.pojo.newVersionGrade.CommunityType;
 import com.pojo.user.NewVersionUserRoleEntry;
 import com.pojo.user.UserEntry;
@@ -102,6 +104,8 @@ public class CommunityService {
     private ReferenceDataService referenceDataService = new ReferenceDataService();
 
     private TeacherApproveDao teacherApproveDao = new TeacherApproveDao();
+
+    private ModuleTimeDao moduleTimeDao = new ModuleTimeDao();
     private static final Logger logger = Logger.getLogger(CommunityService.class);
     /**
      * 创建社区
@@ -734,6 +738,8 @@ public class CommunityService {
         if(message.getType()==3){
             //发送通知
             PictureRunNable.addTongzhi(message.getCommunityId(),uid.toString(),3);
+            //火热分享发送记录
+            moduleTimeDao.addEntry(uid, ApplyTypeEn.hot.getType());
         }else if(message.getType()==4){
             //发送通知
             //向上（新版本参考资料）

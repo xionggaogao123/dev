@@ -34,7 +34,7 @@ public class UserAccountEntry extends BaseDBObject {
                 .append("ana",accountName)
                 .append("typ",type)
                 .append("rpu", rsaPrivateUserId)
-                .append("ir", Constant.ZERO);
+                .append("isr", Constant.ZERO);
         setBaseEntry(basicDBObject);
     }
 
@@ -69,6 +69,14 @@ public class UserAccountEntry extends BaseDBObject {
 
     public ObjectId getUserId(){
         return getSimpleObjecIDValue("uid");
+    }
+
+    public int getIsRemove(){
+        return getSimpleIntegerValue("isr");
+    }
+
+    public void setIsRemove(int isRemove){
+        setSimpleValue("isr",isRemove);
     }
 
 }

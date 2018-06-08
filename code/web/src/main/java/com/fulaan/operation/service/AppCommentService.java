@@ -2,6 +2,7 @@ package com.fulaan.operation.service;
 
 import cn.jiguang.commom.utils.StringUtils;
 import cn.jpush.api.push.model.audience.Audience;
+import com.db.business.ModuleTimeDao;
 import com.db.fcommunity.CommunityDao;
 import com.db.fcommunity.GroupDao;
 import com.db.fcommunity.MemberDao;
@@ -75,6 +76,8 @@ public class AppCommentService {
     private NewVersionSubjectDao newVersionSubjectDao = new NewVersionSubjectDao();
     private NewVersionBindRelationDao newVersionBindRelationDao = new NewVersionBindRelationDao();
     private AppRecordResultDao appRecordResultDao = new AppRecordResultDao();
+
+    private ModuleTimeDao moduleTimeDao = new ModuleTimeDao();
     @Autowired
     private CommunityService communityService;
     @Autowired
@@ -190,6 +193,8 @@ public class AppCommentService {
         }
         if(dto.getStatus()==0){
             redDotService.addEntryList(objectIdList,new ObjectId(dto.getAdminId()), ApplyTypeEn.operation.getType(),4);
+            //作业发送记录
+            moduleTimeDao.addEntry(new ObjectId(dto.getAdminId()),ApplyTypeEn.operation.getType());
         }
         int score = 0;
         if(dto.getStatus() == 0){
@@ -1848,6 +1853,8 @@ public class AppCommentService {
             objectIdList.add(new ObjectId(str[0]));
             redDotService.addEntryList(objectIdList,new ObjectId(dto.getAdminId()), ApplyTypeEn.operation.getType(),4);
             PictureRunNable.addTongzhi(str[0],dto.getAdminId(),1);
+            //作业发送记录
+            moduleTimeDao.addEntry(new ObjectId(dto.getAdminId()),ApplyTypeEn.operation.getType());
         }
         JPushUtils jPushUtils=new JPushUtils();
         try {

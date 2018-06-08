@@ -743,11 +743,12 @@ public class ExcellentCoursesController extends BaseController {
             @ApiResponse(code = 500, message = "服务器不能完成请求")})
     @RequestMapping("/updateMyRoleToSon")
     @ResponseBody
-    public RespObj updateMyRoleToSon(@ApiParam(value="孩子id,孩子id",required = true,name="sonIds")@RequestParam(value="sonIds",required = true)String sonIds){
+    public RespObj updateMyRoleToSon(@ApiParam(value="孩子id",required = true,name="sonId")@RequestParam(value="sonId",required = true)String sonId,
+                                     @ApiParam(value="0取消授权 1 授权",required = true,name="sonId")@RequestParam(value="status",required = true)int status ){
         RespObj respObj=new RespObj(Constant.FAILD_CODE);
         try {
             respObj.setCode(Constant.SUCCESS_CODE);
-            excellentCoursesService.updateMyRoleToSon(getUserId(),sonIds);
+            excellentCoursesService.updateMyRoleToSon(getUserId(),sonId,status);
             respObj.setMessage("修改成功！");
         } catch (Exception e) {
             e.printStackTrace();

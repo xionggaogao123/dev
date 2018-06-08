@@ -531,6 +531,22 @@ public class MemberDao extends BaseDao {
         return memberEntries;
     }
 
+    /**
+     * 获取全部成员
+     *
+     * @return
+     */
+    public List<ObjectId> getAllCommunityIdsMembers(List<ObjectId> communityIds) {
+        BasicDBObject query = new BasicDBObject().append("cmid", new BasicDBObject(Constant.MONGO_IN,communityIds)).append("r", 0);
+        BasicDBObject orderBy = new BasicDBObject("rl", Constant.DESC).append(Constant.ID, Constant.DESC);
+        List<ObjectId> memberEntries = new ArrayList<ObjectId>();
+        List<DBObject> dbObjects = find(MongoFacroty.getAppDB(), Constant.COLLECTION_FORUM_COMMUNITY_MEMBER, query, Constant.FIELDS, orderBy);
+        for (DBObject dbo : dbObjects) {
+            memberEntries.add(new MemberEntry(dbo).getUserId());
+        }
+        return memberEntries;
+    }
+
 
     /**
      * 获取所有的成员Id

@@ -15,6 +15,8 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -220,5 +222,52 @@ public class HomeSchoolController extends BaseController {
         return JSON.toJSONString(respObj);
     }
 
+
+    /**
+     * 认证老师的数据统计
+     */
+    @ApiOperation(value = "上帝视角重置密码", httpMethod = "POST", produces = "application/json")
+    @ApiResponses( value = {@ApiResponse(code = 200, message = "Successful — 请求已完成",response = String.class),
+            @ApiResponse(code = 400, message = "请求中有语法问题，或不能满足请求"),
+            @ApiResponse(code = 500, message = "服务器不能完成请求")})
+    @RequestMapping("/getTeacherList")
+    @ResponseBody
+    public String getTeacherList(@ApiParam(name = "schoolId", required = true, value = "schoolId") @RequestParam(value = "schoolId") String schoolId,
+                                 @ApiParam(name = "communityId", required = true, value = "communityId") @RequestParam(value = "communityId") String communityId,
+                                 @ApiParam(name = "startTime", required = true, value = "startTime") @RequestParam(value = "startTime") long startTime,
+                                 @ApiParam(name = "endTime", required = true, value = "endTime") @RequestParam(value = "endTime") long endTime){
+        RespObj respObj = new RespObj(Constant.FAILD_CODE);
+        try{
+            List<Map<String,Object>> list = homeSchoolService.getTeacherList(startTime, endTime,communityId ,new ObjectId(schoolId));
+            respObj.setCode(Constant.SUCCESS_CODE);
+            respObj.setMessage(list);
+        }catch (Exception e){
+            e.printStackTrace();
+            respObj.setCode(Constant.SUCCESS_CODE);
+            respObj.setMessage("重置失败");
+        }
+        return JSON.toJSONString(respObj);
+    }
+
+    /**
+     * 导出大V数据
+     * @param response
+     */
+    @ApiOperation(value = "导出大V数据", httpMethod = "GET", produces = "application/json")
+    @RequestMapping("/exportTemplate")
+    @ResponseBody
+    public void exportTemplate(@ApiParam(name = "schoolId", required = true, value = "schoolId") @RequestParam(value = "schoolId") String schoolId,
+                               @ApiParam(name = "communityId", required = true, value = "communityId") @RequestParam(value = "communityId") String communityId,
+                               @ApiParam(name = "startTime", required = true, value = "startTime") @RequestParam(value = "startTime") long startTime,
+                               @ApiParam(name = "endTime", required = true, value = "endTime") @RequestParam(value = "endTime") long endTime,
+                               HttpServletResponse response,
+                               HttpServletRequest request) {
+        try {
+            List<Map<String,Object>> list = homeSchoolService.getTeacherList(startTime, endTime,communityId ,new ObjectId(schoolId));
+            homeSchoolService.exportTemplate(request,response,list,startTime,endTime,new ObjectId(schoolId));
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
 
 }

@@ -3,6 +3,7 @@ package com.fulaan.controlphone.service;
 import cn.jiguang.commom.utils.StringUtils;
 import com.db.appmarket.AppDetailDao;
 import com.db.backstage.TeacherApproveDao;
+import com.db.business.ModuleTimeDao;
 import com.db.controlphone.*;
 import com.db.fcommunity.CommunityDao;
 import com.db.fcommunity.GroupDao;
@@ -26,6 +27,7 @@ import com.pojo.appmarket.AppDetailEntry;
 import com.pojo.backstage.TeacherApproveEntry;
 import com.pojo.controlphone.*;
 import com.pojo.fcommunity.CommunityEntry;
+import com.pojo.instantmessage.ApplyTypeEn;
 import com.pojo.jiaschool.SchoolAppEntry;
 import com.pojo.jiaschool.SchoolCommunityEntry;
 import com.pojo.user.NewVersionBindRelationEntry;
@@ -89,6 +91,8 @@ public class ControlPhoneService {
     private ControlVersionDao controlVersionDao = new ControlVersionDao();
 
     private ControlStudentResultDao controlStudentResultDao = new ControlStudentResultDao();
+
+    private ModuleTimeDao moduleTimeDao =  new ModuleTimeDao();
 
     @Autowired
     private NewVersionBindService newVersionBindService;
@@ -271,6 +275,8 @@ public class ControlPhoneService {
             dto.setUserId(userId.toString());
             ControlAppEntry entry1 = dto.buildAddEntry();
             controlAppDao.addEntry(entry1);
+            //社区推送发送记录
+            moduleTimeDao.addEntry(userId, ApplyTypeEn.school.getType());
         }else{
             if(type==1){//卸载
                 List<ObjectId> appIds = entry.getAppIdList();
@@ -282,6 +288,8 @@ public class ControlPhoneService {
                 appIds.add(appId);
                 entry.setAppIdList(appIds);
                 controlAppDao.updEntry(entry);
+                //社区推送发送记录
+                moduleTimeDao.addEntry(userId, ApplyTypeEn.school.getType());
             }
 
         }
@@ -340,6 +348,8 @@ public class ControlPhoneService {
             dto.setParentId(parentId.toString());
             ControlAppUserEntry entry1 = dto.buildAddEntry();
             controlAppUserDao.addEntry(entry1);
+            //社区推送发送记录
+            moduleTimeDao.addEntry(parentId, ApplyTypeEn.school.getType());
         }else{
             if(type==1){//卸载
                 List<ObjectId> appIds = entry.getAppIdList();
@@ -351,6 +361,8 @@ public class ControlPhoneService {
                 appIds.add(appId);
                 entry.setAppIdList(appIds);
                 controlAppUserDao.updEntry(entry);
+                //社区推送发送记录
+                moduleTimeDao.addEntry(parentId, ApplyTypeEn.school.getType());
             }
 
         }

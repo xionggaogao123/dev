@@ -270,4 +270,78 @@ public class HomeSchoolController extends BaseController {
         }
     }
 
+    /**
+     *  查询学校下的所有用户角色列表
+     * @return
+     */
+    @ApiOperation(value = "查询学校下的所有用户角色列表", httpMethod = "POST", produces = "application/json")
+    @ApiResponses( value = {@ApiResponse(code = 200, message = "Successful — 请求已完成",response = String.class)})
+    @RequestMapping("/getPersonListBySchoolId")
+    @ResponseBody
+    public String getPersonListBySchoolId(@ApiParam(name="schoolId",required = true,value="schoolId") String schoolId,
+                                             @ApiParam(name="page",required = true,value="page") @RequestParam(value="page",defaultValue = "1") int page,
+                                             @ApiParam(name="pageSize",required = true,value="pageSize") @RequestParam(value="pageSize",defaultValue = "5") int pageSize
+    ){
+        RespObj respObj=new RespObj(Constant.FAILD_CODE);
+        try {
+            respObj.setCode(Constant.SUCCESS_CODE);
+            Map<String,Object> map = homeSchoolService.getPersonListBySchoolId(new ObjectId(schoolId), page, pageSize);
+            respObj.setMessage(map);
+        } catch (Exception e) {
+            e.printStackTrace();
+            respObj.setCode(Constant.FAILD_CODE);
+            respObj.setErrorMessage("查询学校下的所有用户角色列表失败!");
+        }
+        return JSON.toJSONString(respObj);
+    }
+
+    /**
+     *  添加学校管理员
+     * @return
+     */
+    @ApiOperation(value = "添加学校管理员", httpMethod = "POST", produces = "application/json")
+    @ApiResponses( value = {@ApiResponse(code = 200, message = "Successful — 请求已完成",response = String.class)})
+    @RequestMapping("/addPersonToSchool")
+    @ResponseBody
+    public String addPersonToSchool(@ApiParam(name="schoolId",required = true,value="schoolId") String schoolId,
+                                    @ApiParam(name="userId",required = true,value="userId") String userId,
+                                    @ApiParam(name="name",required = true,value="name") @RequestParam(value="name",defaultValue = "") String name,
+                                    @ApiParam(name="type",required = true,value="type") @RequestParam(value="type",defaultValue = "1") int type,
+                                    @ApiParam(name="role",required = true,value="role") @RequestParam(value="role",defaultValue = "1") int role
+    ){
+        RespObj respObj=new RespObj(Constant.FAILD_CODE);
+        try {
+            respObj.setCode(Constant.SUCCESS_CODE);
+            homeSchoolService.addPersonToSchool(getUserId(),new ObjectId(userId), new ObjectId(schoolId), name, type, role);
+            respObj.setMessage("添加成功");
+        } catch (Exception e) {
+            e.printStackTrace();
+            respObj.setCode(Constant.FAILD_CODE);
+            respObj.setErrorMessage("添加学校管理员失败!");
+        }
+        return JSON.toJSONString(respObj);
+    }
+
+    /**
+     *  删除学校管理员
+     * @return
+     */
+    @ApiOperation(value = "删除学校管理员", httpMethod = "POST", produces = "application/json")
+    @ApiResponses( value = {@ApiResponse(code = 200, message = "Successful — 请求已完成",response = String.class)})
+    @RequestMapping("/deletePersonToSchool")
+    @ResponseBody
+    public String deletePersonToSchool(@ApiParam(name="id",required = true,value="id") String id
+    ){
+        RespObj respObj=new RespObj(Constant.FAILD_CODE);
+        try {
+            respObj.setCode(Constant.SUCCESS_CODE);
+            homeSchoolService.deletePersonToSchool(getUserId(), new ObjectId(id));
+            respObj.setMessage("删除成功");
+        } catch (Exception e) {
+            e.printStackTrace();
+            respObj.setCode(Constant.FAILD_CODE);
+            respObj.setErrorMessage("删除学校管理员失败!");
+        }
+        return JSON.toJSONString(respObj);
+    }
 }

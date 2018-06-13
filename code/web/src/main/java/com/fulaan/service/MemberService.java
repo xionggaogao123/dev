@@ -246,6 +246,16 @@ public class MemberService {
     }
 
     /**
+     * 判断是否是组成员
+     *
+     * @param userId
+     * @return
+     */
+    public boolean isCommunityMember(ObjectId communityid, ObjectId userId) {
+        return memberDao.isCommunityMember(communityid, userId);
+    }
+
+    /**
      * 判断该用户存在数据
      *
      * @param groupId

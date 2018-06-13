@@ -109,7 +109,7 @@ public class AppAlipayController extends BaseController {
 
 
         EBusinessLog.info("支付宝回调;" + request.getParameterMap());
-
+        EBusinessLog.error("支付宝回调:"+request.getParameterMap());
         Map<String, String> params = new HashMap<String, String>();
         Map<String, String[]> requestParams = request.getParameterMap();
         StringBuffer str = new StringBuffer();
@@ -128,7 +128,7 @@ public class AppAlipayController extends BaseController {
         }
 
         EBusinessLog.info("OrderNotify;" + params);
-
+        EBusinessLog.error("支付宝回调:"+params);
         String trade_no = request.getParameter("trade_no");                //支付宝交易号
         String out_trade_no = request.getParameter("out_trade_no");            //获取订单号
         String total_fee_string = request.getParameter("total_amount");            //获取总金额
@@ -172,7 +172,7 @@ public class AppAlipayController extends BaseController {
 
 
         EBusinessLog.info("支付宝回调;" + request.getParameterMap());
-
+        EBusinessLog.error("支付宝回调:"+request.getParameterMap());
         Map<String, String> params = new HashMap<String, String>();
         Map<String, String[]> requestParams = request.getParameterMap();
         StringBuffer str = new StringBuffer();
@@ -191,7 +191,7 @@ public class AppAlipayController extends BaseController {
         }
 
         EBusinessLog.info("OrderNotify;" + params);
-
+        EBusinessLog.error("支付宝回调:"+params);
         String trade_no = request.getParameter("trade_no");                //支付宝交易号
         String out_trade_no = request.getParameter("out_trade_no");            //获取订单号
         String total_fee_string = request.getParameter("total_amount");            //获取总金额

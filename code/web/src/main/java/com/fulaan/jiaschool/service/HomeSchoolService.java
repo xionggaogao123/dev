@@ -7,6 +7,7 @@ import com.db.fcommunity.CommunityDao;
 import com.db.fcommunity.MemberDao;
 import com.db.jiaschool.HomeSchoolDao;
 import com.db.jiaschool.SchoolCommunityDao;
+import com.db.jiaschool.SchoolPersionDao;
 import com.db.smalllesson.SmallLessonDao;
 import com.db.user.UserDao;
 import com.fulaan.backstage.dto.LogMessageDTO;
@@ -21,6 +22,7 @@ import com.pojo.fcommunity.MemberEntry;
 import com.pojo.instantmessage.ApplyTypeEn;
 import com.pojo.jiaschool.HomeSchoolEntry;
 import com.pojo.jiaschool.SchoolCommunityEntry;
+import com.pojo.jiaschool.SchoolPersionEntry;
 import com.pojo.smalllesson.SmallLessonEntry;
 import com.pojo.user.UserEntry;
 import com.sys.constants.Constant;
@@ -65,6 +67,8 @@ public class HomeSchoolService {
     private SmallLessonDao smallLessonDao = new SmallLessonDao();
 
     private ModuleTimeDao moduleTimeDao = new ModuleTimeDao();
+
+    private SchoolPersionDao schoolPersionDao = new SchoolPersionDao();
 
 
     public Map<String,Object> getSchoolList(int schoolType,int page,int pageSize,String keyword){
@@ -425,5 +429,74 @@ public class HomeSchoolService {
             String userAgent = request.getHeader("USER-AGENT");
             HSSFUtils.exportExcel(userAgent, response, wb, fileName);
         }
+    }
+
+    public Map<String,Object> getPersonListBySchoolId(ObjectId schoolId,int page,int pageSize){
+        Map<String,Object> map = new HashMap<String, Object>();
+        HomeSchoolEntry homeSchoolEntry = homeSchoolDao.getEntryById(schoolId);
+        if(homeSchoolEntry==null){
+            return map;
+        }
+        List<SchoolPersionEntry> entries = schoolPersionDao.getAllMemberBySchoolId(schoolId, page, pageSize);
+        int count = schoolPersionDao.countAllMemberBySchoolId(schoolId);
+        List<Map<String,Object>> mapList = new ArrayList<Map<String, Object>>();
+        List<ObjectId> objectIdList2 = new ArrayList<ObjectId>();
+        Map<ObjectId,SchoolPersionEntry> smap = new HashMap<ObjectId, SchoolPersionEntry>();
+        for(SchoolPersionEntry schoolPersionEntry:entries){
+            objectIdList2.add(schoolPersionEntry.getUserId());
+            smap.put(schoolPersionEntry.getUserId(), schoolPersionEntry);
+        }
+        List<UserEntry> userEntries = userDao.getUserEntryList(objectIdList2, Constant.FIELDS);
+        for(UserEntry entry:userEntries){
+            Map<String,Object> map1 = new HashMap<String, Object>();
+            map1.put("userId",entry.getID());
+            map1.put("jiaId",entry.getGenerateUserCode());
+            map1.put("avatar", AvatarUtils.getAvatar(entry.getAvatar(), entry.getRole(), entry.getSex()));
+            SchoolPersionEntry schoolPersionEntry = smap.get(entry.getID());
+            if(schoolPersionEntry!=null){
+                map1.put("id",schoolPersionEntry.getID().toString());
+                map1.put("name",schoolPersionEntry.getName());
+                map1.put("type",schoolPersionEntry.getType());
+                map1.put("schoolName",homeSchoolEntry.getName());
+                map1.put("role",schoolPersionEntry.getRole());
+            }
+            mapList.add(map1);
+        }
+        map.put("list",mapList);
+        map.put("count",count);
+        return map;
+    }
+
+    public void addPersonToSchool(ObjectId uuid,ObjectId userId,ObjectId schoolId,String name,int type,int role){
+        HomeSchoolEntry homeSchoolEntry = homeSchoolDao.getEntryById(schoolId);
+        if(homeSchoolEntry==null){
+            return;
+        }
+        SchoolPersionEntry schoolPersionEntry2 = schoolPersionDao.getEntry(userId,schoolId);
+        if(schoolPersionEntry2==null){
+            SchoolPersionEntry schoolPersionEntry = new SchoolPersionEntry(userId,schoolId,name,type,role);
+            ObjectId id  = schoolPersionDao.addEntry(schoolPersionEntry);
+            this.addLogMessage(id.toString(),"添加了学校"+homeSchoolEntry.getName()+"管理用户："+name, LogMessageType.schoolRole.getDes(),uuid.toString());
+        }else{
+            schoolPersionEntry2.setType(type);
+            schoolPersionEntry2.setRole(role);
+            schoolPersionEntry2.setName(name);
+            schoolPersionDao.addEntry(schoolPersionEntry2);
+            this.addLogMessage(schoolPersionEntry2.getID().toString(),"修改了学校"+homeSchoolEntry.getName()+"管理用户："+name, LogMessageType.schoolRole.getDes(),uuid.toString());
+        }
+
+    }
+
+    public void deletePersonToSchool(ObjectId userId,ObjectId id){
+        SchoolPersionEntry schoolPersionEntry = schoolPersionDao.getEntryById(id);
+        if(schoolPersionEntry==null){
+            return;
+        }
+        HomeSchoolEntry homeSchoolEntry = homeSchoolDao.getEntryById(schoolPersionEntry.getSchoolId());
+        if(homeSchoolEntry==null){
+            return;
+        }
+        this.addLogMessage(id.toString(),"删除了学校"+homeSchoolEntry.getName()+"管理用户："+schoolPersionEntry.getName(), LogMessageType.schoolRole.getDes(),userId.toString());
+        schoolPersionDao.delEntry(id);
     }
 }

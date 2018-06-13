@@ -334,6 +334,108 @@ public class WebExcellentCoursesController extends BaseController {
         return respObj;
     }
 
+
+    /**
+     * 查询所有用户的提现申请
+     */
+    @ApiOperation(value = "查询所有用户的提现申请", httpMethod = "POST", produces = "application/json")
+    @ApiResponses( value = {@ApiResponse(code = 200, message = "Successful — 请求已完成",response = String.class),
+            @ApiResponse(code = 400, message = "请求中有语法问题，或不能满足请求"),
+            @ApiResponse(code = 500, message = "服务器不能完成请求")})
+    @RequestMapping("/selectAllUserMoney")
+    @ResponseBody
+    public RespObj selectAllUserMoney(@ApiParam(name = "type", required = true, value = "1 申请中  2 已通过  3 已拒绝") @RequestParam("type") int type,
+            @ApiParam(name = "jiaId", required = true, value = "家校美id") @RequestParam(value="jiaId",defaultValue = "") String jiaId,
+            @ApiParam(name = "page", required = false, value = "page") @RequestParam(value="page",defaultValue = "1") int page,
+            @ApiParam(name = "pageSize", required = false, value = "pageSize") @RequestParam(value="pageSize",defaultValue = "10") int pageSize){
+        RespObj respObj = new RespObj(Constant.FAILD_CODE);
+        try{
+            Map<String,Object> str = excellentCoursesService.selectAllUserMoney(jiaId, type,page,pageSize);
+            respObj.setCode(Constant.SUCCESS_CODE);
+            respObj.setMessage(str);
+        }catch (Exception e){
+            e.printStackTrace();
+            respObj.setCode(Constant.FAILD_CODE);
+            respObj.setErrorMessage(e.getMessage());
+        }
+        return respObj;
+    }
+
+    /**
+     * 通过提现
+     */
+    @ApiOperation(value = "通过提现", httpMethod = "POST", produces = "application/json")
+    @ApiResponses( value = {@ApiResponse(code = 200, message = "Successful — 请求已完成",response = String.class),
+            @ApiResponse(code = 400, message = "请求中有语法问题，或不能满足请求"),
+            @ApiResponse(code = 500, message = "服务器不能完成请求")})
+    @RequestMapping("/agreeUserMoney")
+    @ResponseBody
+    public RespObj agreeUserMoney(@ApiParam(name = "id", required = true, value = "记录id") @RequestParam(value="id",defaultValue = "") String id){
+        RespObj respObj = new RespObj(Constant.FAILD_CODE);
+        try{
+            excellentCoursesService.agreeUserMoney(new ObjectId(id),getUserId());
+            respObj.setCode(Constant.SUCCESS_CODE);
+            respObj.setMessage("通过提现成功！");
+        }catch (Exception e){
+            e.printStackTrace();
+            respObj.setCode(Constant.FAILD_CODE);
+            respObj.setErrorMessage(e.getMessage());
+        }
+        return respObj;
+    }
+
+
+    /**
+     * 拒绝提现
+     */
+    @ApiOperation(value = "拒绝提现", httpMethod = "POST", produces = "application/json")
+    @ApiResponses( value = {@ApiResponse(code = 200, message = "Successful — 请求已完成",response = String.class),
+            @ApiResponse(code = 400, message = "请求中有语法问题，或不能满足请求"),
+            @ApiResponse(code = 500, message = "服务器不能完成请求")})
+    @RequestMapping("/deleteUserMoney")
+    @ResponseBody
+    public RespObj deleteUserMoney(@ApiParam(name = "id", required = true, value = "记录id") @RequestParam(value="id",defaultValue = "") String id){
+        RespObj respObj = new RespObj(Constant.FAILD_CODE);
+        try{
+            excellentCoursesService.deleteUserMoney(new ObjectId(id), getUserId());
+            respObj.setCode(Constant.SUCCESS_CODE);
+            respObj.setMessage("拒绝提现成功！");
+        }catch (Exception e){
+            e.printStackTrace();
+            respObj.setCode(Constant.FAILD_CODE);
+            respObj.setErrorMessage(e.getMessage());
+        }
+        return respObj;
+    }
+
+
+    /**
+     * 查看账户记录
+     */
+    @ApiOperation(value = "查看账户记录", httpMethod = "POST", produces = "application/json")
+    @ApiResponses( value = {@ApiResponse(code = 200, message = "Successful — 请求已完成",response = String.class),
+            @ApiResponse(code = 400, message = "请求中有语法问题，或不能满足请求"),
+            @ApiResponse(code = 500, message = "服务器不能完成请求")})
+    @RequestMapping("/selectUserList")
+    @ResponseBody
+    public RespObj selectUserList(@ApiParam(name = "userId", required = true, value = "用户id") @RequestParam(value="userId",defaultValue = "") String userId,
+                                  @ApiParam(name = "contactId", required = true, value = "关联id") @RequestParam(value="contactId",defaultValue = "") String contactId,
+                                  @ApiParam(name = "page", required = false, value = "page") @RequestParam(value="page",defaultValue = "1") int page,
+    @ApiParam(name = "pageSize", required = false, value = "pageSize") @RequestParam(value="pageSize",defaultValue = "10") int pageSize){
+        RespObj respObj = new RespObj(Constant.FAILD_CODE);
+        try{
+            Map<String,Object> map = excellentCoursesService.selectUserList(new ObjectId(userId),contactId,page,pageSize);
+            respObj.setCode(Constant.SUCCESS_CODE);
+            respObj.setMessage(map);
+        }catch (Exception e){
+            e.printStackTrace();
+            respObj.setCode(Constant.FAILD_CODE);
+            respObj.setErrorMessage(e.getMessage());
+        }
+        return respObj;
+    }
+
+
     /****************************************  cc直播相关  *****************************************/
     /**
      * 创建直播间回调(提供给cc直播进行接口验证)

@@ -142,6 +142,18 @@ public class CommunityDetailDao extends BaseDao {
     }
 
 
+    public List<CommunityDetailEntry> getHotDetails(List<ObjectId> communityIds, int type,int voteType) {
+        List<CommunityDetailEntry> detailEntries = new ArrayList<CommunityDetailEntry>();
+        BasicDBObject query = new BasicDBObject().append("cmid", new BasicDBObject(Constant.MONGO_IN,communityIds))
+                .append("cmty", type).append("r", 0).append("vt",voteType);
+        BasicDBObject orderBy = new BasicDBObject().append("ti",-1);
+        List<DBObject> dbObjects = find(MongoFacroty.getAppDB(), Constant.COLLECTION_FORUM_COMMUNITY_DETAIL, query, Constant.FIELDS, orderBy);
+        for (DBObject dbo : dbObjects) {
+            detailEntries.add(new CommunityDetailEntry(dbo));
+        }
+        return detailEntries;
+    }
+
     public CommunityDetailEntry getLatestDetails(ObjectId communityId, int type) {
         List<CommunityDetailEntry> detailEntries = new ArrayList<CommunityDetailEntry>();
         BasicDBObject query = new BasicDBObject()

@@ -902,6 +902,8 @@ public class Constant {
     public static final String COLLECTION_EXAM_TYPE = "examtype";
     //红点显示
     public static final String COLLECTION_RED_DOT = "reddot";
+    //社区学校用户管理表
+    public static final String COLLECTION_SCHOOL_PERSON = "schoolperson";
 
     //复兰小课堂
     //小课程表

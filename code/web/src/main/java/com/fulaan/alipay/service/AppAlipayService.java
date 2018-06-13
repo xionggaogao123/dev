@@ -115,7 +115,7 @@ public class AppAlipayService  {
         EBusinessLog.info(userId.toString()+"-"+contactId.toString()+"生成了充值订单号："+orderId);
         //生成支付宝支付订单  String body,String subject,String outTradeNo,String timeoutExpress,String totalAmount
         String body = "家校美充值"+price+"美豆";
-        String order = createAppChongPay(body,PAY_SUBJECT,orderId,PAY_TIMEOUTEXPRESS,price+"");
+        String order = createAppChongPay(body,PAY_SUBJECT,orderId,PAY_TIMEOUTEXPRESS,price+"",PAY_NOTIFYURL);
         if(order.equals("")){
             addLog(userId,contactId,"支付宝未支付订单生成失败，订单终止");
             EBusinessLog.info(userId.toString()+"-"+contactId.toString()+"支付宝未支付订单生成失败，订单终止");
@@ -160,7 +160,7 @@ public class AppAlipayService  {
         EBusinessLog.info(userId.toString()+"-"+contactId.toString()+"生成了充值订单号："+orderId);
         //生成支付宝支付订单  String body,String subject,String outTradeNo,String timeoutExpress,String totalAmount
         String body = "购买课程";
-        String order = createAppChongPay(body,PAY_NOW_SUBJECT,orderId,PAY_TIMEOUTEXPRESS,price+"");
+        String order = createAppChongPay(body,PAY_NOW_SUBJECT,orderId,PAY_TIMEOUTEXPRESS,price+"",PAY_NOW_NOTIFYURL);
         if(order.equals("")){
             addLog(userId,contactId,"支付宝未支付订单生成失败，订单终止");
             EBusinessLog.info(userId.toString()+"-"+contactId.toString()+"支付宝未支付订单生成失败，订单终止");
@@ -223,7 +223,7 @@ public class AppAlipayService  {
             throw  new Exception("请至少购买一节课程");
         }
 
-        //美豆账户
+        /*//美豆账户
         UserBehaviorEntry userBehaviorEntry = userBehaviorDao.getEntry(userId);
         if(userBehaviorEntry==null){
             throw new Exception("余额不足！");
@@ -233,7 +233,7 @@ public class AppAlipayService  {
         AccountFrashEntry accountFrashEntry = accountFrashDao.getEntry(userId);
         if(accountFrashEntry==null){
             throw new Exception("余额不足！");
-        }
+        }*/
 
         String[] strings = classIds.split(",");
         for(String str:strings){
@@ -293,7 +293,7 @@ public class AppAlipayService  {
     /**
      * 生成直接支付订单
      */
-    public String createAppChongPay(String body,String subject,String outTradeNo,String timeoutExpress,String totalAmount){
+    public String createAppChongPay(String body,String subject,String outTradeNo,String timeoutExpress,String totalAmount,String url){
         //实例化客户端
         AlipayClient alipayClient = new DefaultAlipayClient("https://openapi.alipay.com/gateway.do", AlipayNewConfig.APP_ID, AlipayNewConfig.USER_PRIVATE_KEY, "json", AlipayNewConfig.CHARSET, AlipayNewConfig.RSA_PUBLIC, "RSA2");
         //实例化具体API对应的request类,类名称和接口名称对应,当前调用接口名称：alipay.trade.app.pay
@@ -320,7 +320,7 @@ public class AppAlipayService  {
         model.setProductCode("QUICK_MSECURITY_PAY");
 
         request.setBizModel(model);
-        request.setNotifyUrl(PAY_NOTIFYURL);
+        request.setNotifyUrl(url);
         try {
             //这里和普通的接口调用不同，使用的是sdkExecute
             AlipayTradeAppPayResponse response = alipayClient.sdkExecute(request);
@@ -587,7 +587,7 @@ public class AppAlipayService  {
             throw new Exception("未绑定支付宝账户!");
         }
         //检测通过，发出申请
-        ExtractCashEntry extractCashEntry = new ExtractCashEntry(userId,price,userAccountEntry.getAccountName(), Constant.ZERO);
+        ExtractCashEntry extractCashEntry = new ExtractCashEntry(userId,userEntry.getGenerateUserCode(),price,userAccountEntry.getAccountName(),userAccountEntry.getType() ,Constant.ONE);
         //生成美豆消费记录
         RechargeResultEntry rechargeResultEntry = new RechargeResultEntry(userBehaviorEntry.getUserId(),userId,"美豆提现",Constant.FOUR,Constant.TWO,price,null,null,new ArrayList<ObjectId>());
         //暂不执行现金消费记录,通过时执行 未通过美豆返回

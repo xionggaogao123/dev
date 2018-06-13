@@ -361,6 +361,48 @@ public class DefaultUserController extends BaseController {
         return respObj;
     }
 
+    /**
+     * 用户登录
+     *
+     * @param name
+     * @param pwd
+     * @return
+     */
+    @ApiOperation(value = "用户登录", httpMethod = "POST", produces = "application/json")
+    @ApiResponses( value = {@ApiResponse(code = 200, message = "Successful — 请求已完成",response = RespObj.class)})
+    @SessionNeedless
+    @RequestMapping("/newLogin")
+    @ResponseBody
+    public RespObj newLogin(String name, String pwd,
+                         @RequestParam(value="type",defaultValue = "1") int type,
+                         HttpServletResponse response, HttpServletRequest request) {
+        //判断用户登录平台，只对PC登录用户进行密码输入错误3次，需要验证码
+        RespObj respObj = new RespObj(Constant.FAILD_CODE);
+        try{
+            logger.info("try login;the name=" + name + ";pwd=" + pwd);
+            Validate validate = userService.newValidateAccount(name, pwd,type,getPlatform());
+            if (!validate.isOk()) {
+                respObj.setCode(Constant.FAILD_CODE);
+                respObj.setMessage(validate.getMessage());
+                respObj.setErrorMessage(validate.getMessage());
+                return respObj;
+            }
+            UserEntry e = (UserEntry) validate.getData();
+            SessionValue value = getSessionValue(e);
+            userService.setCookieValue(e, value, getIP(), response, request);
+            businessManageService.getLoginInfo(e.getID(),getPlatform().getType());
+            syncHandleInitLogin(e, getIP(), getPlatform());
+            respObj.setCode(Constant.SUCCESS_CODE);
+            respObj.setMessage(value);
+        }catch (Exception e){
+            respObj.setCode(Constant.FAILD_CODE);
+            respObj.setMessage("用户名或密码错误");
+            respObj.setErrorMessage("用户名或密码错误");
+        }
+
+        return respObj;
+    }
+
     protected Platform getPlatform() {
         HttpServletRequest request = getRequest();
         String client = request.getHeader("User-Agent");

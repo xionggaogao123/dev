@@ -12,8 +12,10 @@ import java.util.Date;
  * 提现申请表
  * id
  * userId                申请人                               uid
+ * jiaId                 家校美id                             jid
  * cash                  申请金额                             cas
  * account               提现账户                             acc
+ * accountType           账户类型                             aty  1支付宝  2 微信
  * createTime            申请时间                             rtm
  * type                  状态                                 typ   （1. 申请中 2 通过 3 拒绝  4 账户有误 5 金额有误  6 其他）
  * dateTime              处理时间                             dtm
@@ -26,21 +28,25 @@ public class ExtractCashEntry extends BaseDBObject {
 
     }
     public ExtractCashEntry(BasicDBObject dbObject){
-        setBaseEntry((BasicDBObject) dbObject);
+        setBaseEntry(dbObject);
     }
 
     public ExtractCashEntry(ObjectId userId,
+                            String jiaId,
                             double cash,
                             String account,
+                            int accountType,
                             int type){
         BasicDBObject basicDBObject = new BasicDBObject()
                 .append("uid",userId)
+                .append("jid", jiaId)
                 .append("acc",account)
+                .append("aty",accountType)
                 .append("typ",type)
                 .append("cas", cash)
                 .append("ctm",new Date().getTime())
                 .append("dtm",0l)
-                .append("ir", Constant.ZERO);
+                .append("isr", Constant.ZERO);
         setBaseEntry(basicDBObject);
     }
 
@@ -60,6 +66,14 @@ public class ExtractCashEntry extends BaseDBObject {
 
     public void setAccount(String account){
         setSimpleValue("acc", account);
+    }
+
+    public String getJiaId(){
+        return getSimpleStringValue("jid");
+    }
+
+    public void setJiaId(String jiaId){
+        setSimpleValue("jid", jiaId);
     }
 
     public long getCreateTime(){
@@ -99,6 +113,13 @@ public class ExtractCashEntry extends BaseDBObject {
 
     public void setIsRemove(int isRemove){
         setSimpleValue("isr",isRemove);
+    }
+    public int getAccountType(){
+        return getSimpleIntegerValueDef("aty",1);
+    }
+
+    public void setAccountType(int accountType){
+        setSimpleValue("aty",accountType);
     }
 
 }

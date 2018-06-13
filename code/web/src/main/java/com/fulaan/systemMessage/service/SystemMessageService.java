@@ -1,6 +1,7 @@
 package com.fulaan.systemMessage.service;
 
 import com.db.backstage.TeacherApproveDao;
+import com.db.fcommunity.CommunityDetailDao;
 import com.db.fcommunity.MemberDao;
 import com.db.indexPage.IndexPageDao;
 import com.db.operation.AppNoticeDao;
@@ -13,6 +14,9 @@ import com.fulaan.indexpage.dto.IndexPageDTO;
 import com.fulaan.operation.dto.AppCommentDTO;
 import com.fulaan.operation.dto.AppNoticeDTO;
 import com.fulaan.systemMessage.dto.SimpleUserDTO;
+import com.pojo.fcommunity.AttachmentEntry;
+import com.pojo.fcommunity.CommunityDetailEntry;
+import com.pojo.fcommunity.VideoEntry;
 import com.pojo.indexPage.IndexPageEntry;
 import com.pojo.newVersionGrade.CommunityType;
 import com.pojo.user.UserEntry;
@@ -23,10 +27,7 @@ import org.bson.types.ObjectId;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 /**
  * Created by James on 2018-05-22.
@@ -63,6 +64,8 @@ public class SystemMessageService extends BaseService {
     private TeacherApproveDao teacherApproveDao = new TeacherApproveDao();
 
     private UserDao userDao = new UserDao();
+
+    private CommunityDetailDao communityDetailDao = new CommunityDetailDao();
     @Autowired
     private EmService emService;
 
@@ -153,6 +156,58 @@ public class SystemMessageService extends BaseService {
                         dto.getSubjectId());
                 appNoticeDTO.setUserId(userId.toString());
                 appNoticeDao.saveAppNoticeEntry(appNoticeDTO.buildEntry());
+            }
+        }
+    }
+
+    //发送超级话题内容
+    public  void  addHotEntry(ObjectId userId,AppCommentDTO dto){
+        String coStr = dto.getComList();
+        String[] strings = coStr.split(",");
+        SubjectClassEntry subjectClassEntry = subjectClassDao.getList().get(0);
+        String s = "";
+        for(String str :strings){
+            if(str.equals(TEACHERCOMMUNIY)){
+                s = s + "老师"+"/";
+            }else if(str.equals(PARENTCOMMUNIY)){
+                s = s + "家长"+"/";
+            }else if(str.equals(STUDENTCOMMUNIY)){
+                s = s + "孩子"+"/";
+            }
+        }
+        if(!s.equals("")){
+            s = s.substring(0,s.length()-1);
+        }
+        List<AttachmentEntry> attachmentEntries = new ArrayList<AttachmentEntry>();
+        List<AttachmentEntry> vedios = new ArrayList<AttachmentEntry>();
+        List<AttachmentEntry> images = new ArrayList<AttachmentEntry>();
+        List<VideoEntry> videoEntries = new ArrayList<VideoEntry>();
+        for(String str:strings){
+            if(str.equals(TEACHERCOMMUNIY)){//发送老师
+                CommunityDetailEntry entry = new CommunityDetailEntry(new ObjectId(TEACHERCOMMUNIY),
+                        userId, dto.getTitle(), dto.getDescription(), Constant.THREE,
+                        new ArrayList<ObjectId>(), attachmentEntries, vedios, images,
+                        dto.getSubject(),  dto.getSubjectId(), str, null , null, 0,
+                        new Date().getTime(), 1, videoEntries
+                );
+               communityDetailDao.save(entry);
+            }else if(str.equals(PARENTCOMMUNIY)){//发送家长
+                CommunityDetailEntry entry = new CommunityDetailEntry(new ObjectId(PARENTCOMMUNIY),
+                        userId, dto.getTitle(), dto.getDescription(), Constant.THREE,
+                        new ArrayList<ObjectId>(), attachmentEntries, vedios, images,
+                        dto.getSubject(),  dto.getSubjectId(), str, null , null, 0,
+                        new Date().getTime(), 1, videoEntries
+                );
+                communityDetailDao.save(entry);
+
+            }else if(str.equals(STUDENTCOMMUNIY)){//发送学生
+                CommunityDetailEntry entry = new CommunityDetailEntry(new ObjectId(STUDENTCOMMUNIY),
+                        userId, dto.getTitle(), dto.getDescription(), Constant.THREE,
+                        new ArrayList<ObjectId>(), attachmentEntries, vedios, images,
+                        dto.getSubject(),  dto.getSubjectId(), str, null , null, 0,
+                        new Date().getTime(), 1, videoEntries
+                );
+                communityDetailDao.save(entry);
             }
         }
     }

@@ -326,6 +326,20 @@ public class MemberDao extends BaseDao {
     }
 
     /**
+     * 判断 - 是否是讨论组成员
+     *
+     * @param userId
+     * @return
+     */
+    public boolean isCommunityMember(ObjectId communityId, ObjectId userId) {
+        BasicDBObject query = new BasicDBObject()
+                .append("cmid", communityId)
+                .append("uid", userId)
+                .append("r", 0);
+        return findOne(MongoFacroty.getAppDB(), Constant.COLLECTION_FORUM_COMMUNITY_MEMBER, query) != null;
+    }
+
+    /**
      * 退出社区后再加入社区
      */
     public void updateMember(ObjectId groupId, ObjectId userId, int remove) {

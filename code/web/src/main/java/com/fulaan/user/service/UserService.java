@@ -17,12 +17,10 @@ import com.db.user.NewVersionUserRoleDao;
 import com.db.user.UserDao;
 import com.easemob.server.EaseMobAPI;
 import com.easemob.server.comm.constant.MsgType;
-import com.fulaan.backstage.dto.SystemMessageDTO;
 import com.fulaan.base.BaseService;
 import com.fulaan.cache.CacheHandler;
 import com.fulaan.dto.UserDTO;
 import com.fulaan.fgroup.service.EmService;
-import com.fulaan.indexpage.dto.IndexPageDTO;
 import com.fulaan.mall.service.EBusinessVoucherService;
 import com.fulaan.mqtt.MQTTSendMsg;
 import com.fulaan.picturetext.runnable.PictureRunNable;
@@ -49,9 +47,7 @@ import com.pojo.controlphone.ControlVersionEntry;
 import com.pojo.controlphone.MQTTType;
 import com.pojo.ebusiness.SortType;
 import com.pojo.fcommunity.FLoginLogEntry;
-import com.pojo.indexPage.IndexPageEntry;
 import com.pojo.loginwebsocket.LoginTokenEntry;
-import com.pojo.newVersionGrade.CommunityType;
 import com.pojo.school.ClassEntry;
 import com.pojo.school.ClassInfoDTO;
 import com.pojo.school.InterestClassEntry;
@@ -260,6 +256,146 @@ public class UserService extends BaseService {
                 validate.setMessage("老用户不能登录学生端!");
                 return validate;
             }
+            /*if(true){
+                validate.setMessage("系统自动更新中，请稍后。");
+                return validate;
+            }*/
+
+            if(StringUtils.isNotBlank(CacheHandler.getCacheStudentUserKey(e.getID().toString()))) {
+                String cacheUserKey=CacheHandler.getUserKey(e.getID().toString());
+                CacheHandler.deleteKey(CacheHandler.CACHE_USER_KEY_IP, cacheUserKey);
+                CacheHandler.deleteKey(CacheHandler.CACHE_USER_KEY, e.getID().toString());
+                CacheHandler.deleteKey(CacheHandler.CACHE_SESSION_KEY, cacheUserKey);
+            }
+            CacheHandler.setCacheStudentUserKey(e.getID().toString(),Constant.SECONDS_IN_HALF_YEAR);
+        }else if(type==3){
+            if (null != newVersionUserRoleDao.getEntry(e.getID())) {
+                if (newVersionUserRoleDao.getEntry(e.getID()).getNewRole() == Constant.ONE) {
+                    validate.setMessage("该学生还未激活");
+                    return validate;
+                }
+            }
+        }else if(type==4){
+            if (null != newVersionUserRoleDao.getEntry(e.getID())) {
+                if (newVersionUserRoleDao.getEntry(e.getID()).getNewRole() == Constant.ONE) {
+                    validate.setMessage("该学生还未激活");
+                    return validate;
+                }
+            }
+            if (StringUtils.isNotBlank(CacheHandler.getCacheStudentUserKey(e.getID().toString()))) {
+                String cacheUserKey = CacheHandler.getUserKey(e.getID().toString());
+                CacheHandler.deleteKey(CacheHandler.CACHE_USER_KEY_IP, cacheUserKey);
+                CacheHandler.deleteKey(CacheHandler.CACHE_USER_KEY, e.getID().toString());
+                CacheHandler.deleteKey(CacheHandler.CACHE_SESSION_KEY, cacheUserKey);
+            }
+            CacheHandler.setCacheStudentUserKey(e.getID().toString(), Constant.SECONDS_IN_HALF_YEAR);
+        }else if(type==5){
+            if (null != newVersionUserRoleDao.getEntry(e.getID())
+                    && (newVersionUserRoleDao.getEntry(e.getID()).getNewRole() == Constant.ONE||
+                    newVersionUserRoleDao.getEntry(e.getID()).getNewRole() == Constant.TWO)) {
+                if(pf.isMobile()) {
+                    validate.setMessage("该学生不能登录这个app!");
+                }else{
+                    validate.setMessage("你没有权限登录网页端");
+                }
+                return validate;
+            }else{
+                UserLogResultEntry entry=userLogResultDao.getEntryByUserId(e.getID());
+                if(null==entry){
+                    validate.setMessage("你没有权限登录admin端");
+                    return validate;
+                }else{
+                    if(entry.getRole()==Constant.ZERO){
+                        validate.setMessage("你没有权限登录admin端");
+                        return validate;
+                    }
+                }
+            }
+        }
+        validate.setOk(true);
+        validate.setData(e);
+        return validate;
+    }
+
+    /**
+     * 验证账户
+     *
+     * @param account
+     * @param pwd
+     * @return
+     */
+    public Validate newValidateAccount(String account, String pwd,int type,Platform pf) {
+        Validate validate = new Validate();
+        validate.setOk(false);
+        //数据库验证
+        UserEntry e = getUserByAccount(account);
+        if (null == e) {
+            validate.setMessage("用户名或密码错误!");
+            return validate;
+        } else if (e.getIsRemove() == 1) {
+            validate.setMessage("用户名或密码错误！");
+            return validate;
+        } else {
+            String emailValidateCode = e.getEmailValidateCode();
+            if (StringUtils.isNotBlank(emailValidateCode)) {
+                if (e.getEmailStatus() == 0) {
+                    validate.setMessage("邮箱未被激活！");
+                    return validate;
+                }
+            }
+        }
+        if (!ValidationUtils.isValidPassword(pwd)) {
+            validate.setMessage("密码非法");
+            return validate;
+        }
+        if (!e.getPassword().equalsIgnoreCase(MD5Utils.getMD5String(pwd)) && !e.getPassword().equalsIgnoreCase(pwd)) {
+            validate.setMessage("用户名或密码错误");
+            return validate;
+        }
+
+        if (Constant.ONE == e.getUserType()) //有效时间用户
+        {
+            long validBeginTime = e.getValidBeginTime();
+            long validTime = e.getValidTime();
+            if (0L == validBeginTime) //第一次登陆
+            {
+                try {
+                    update(e.getID(), "vabt", System.currentTimeMillis());
+                } catch (IllegalParamException e1) {
+
+                }
+            } else {
+                if (System.currentTimeMillis() > validBeginTime + validTime * 1000) {
+                    validate.setMessage("该用户已经失效");
+                    return validate;
+                }
+            }
+        }
+        if(type==1) {
+            if (null != newVersionUserRoleDao.getEntry(e.getID())
+                    && (newVersionUserRoleDao.getEntry(e.getID()).getNewRole() == Constant.ONE||
+                    newVersionUserRoleDao.getEntry(e.getID()).getNewRole() == Constant.TWO)) {
+                if(pf.isMobile()) {
+                    validate.setMessage("该学生不能登录这个app!");
+                }else{
+                    validate.setMessage("你没有权限登录网页端");
+                }
+                return validate;
+            }
+        }else if(type==2){
+            if (null != newVersionUserRoleDao.getEntry(e.getID())) {
+                if(newVersionUserRoleDao.getEntry(e.getID()).getNewRole() == Constant.ONE) {
+                    validate.setMessage("该学生还未激活,"+e.getID().toString());
+                    return validate;
+                }else if(newVersionUserRoleDao.getEntry(e.getID()).getNewRole() != Constant.TWO){
+                    validate.setMessage("家长或者老师不能登录学生端!");
+                    return validate;
+                }
+            }else{
+                validate.setMessage("老用户不能登录学生端!");
+                return validate;
+            }
+
             if(StringUtils.isNotBlank(CacheHandler.getCacheStudentUserKey(e.getID().toString()))) {
                 String cacheUserKey=CacheHandler.getUserKey(e.getID().toString());
                 CacheHandler.deleteKey(CacheHandler.CACHE_USER_KEY_IP, cacheUserKey);
@@ -713,7 +849,8 @@ public class UserService extends BaseService {
         ObjectId oid = e.getID();
         ObjectId uid = userDao.addUserEntry(e);
         try{
-           if(oid==null || oid.toString().equals("")){
+            //不显示新手引导
+           /*if(oid==null || oid.toString().equals("")){
                 //添加系统信息
                 SystemMessageDTO dto = new SystemMessageDTO();
                 dto.setType(1);
@@ -738,7 +875,7 @@ public class UserService extends BaseService {
                 indexPageDao.addEntry(entry);
                 //sendTestMessage(uid.toString());
 
-           }
+           }*/
         }catch (Exception ex){
         }
 

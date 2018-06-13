@@ -55,6 +55,49 @@ public class SystemMessageController extends BaseController {
     }
 
 
+    @ApiOperation(value = "发送超级话题", httpMethod = "POST", produces = "application/json")
+    @ApiResponses( value = {@ApiResponse(code = 200, message = "Successful — 请求已完成",response = String.class)})
+    @RequestMapping("/addHotEntry")
+    @ResponseBody
+    public String addHotEntry(@ApiParam @RequestBody WebAppCommentDTO wdto){
+        RespObj respObj=new RespObj(Constant.FAILD_CODE);
+        try {
+            respObj.setCode(Constant.SUCCESS_CODE);
+            AppCommentDTO dto = wdto.getAppCommentDTO(wdto);
+            ObjectId userId = new ObjectId("575e21be0cf2a633a9ff7b6b");
+            dto.setAdminId(userId.toString());
+            systemMessageService.addHotEntry(userId, dto);
+            respObj.setMessage("添加成功");
+        } catch (Exception e) {
+            e.printStackTrace();
+            respObj.setCode(Constant.FAILD_CODE);
+            respObj.setErrorMessage("发送特殊通知失败");
+        }
+        return JSON.toJSONString(respObj);
+    }
+
+    @ApiOperation(value = "设为精选留言", httpMethod = "POST", produces = "application/json")
+    @ApiResponses( value = {@ApiResponse(code = 200, message = "Successful — 请求已完成",response = String.class)})
+    @RequestMapping("/addHotList")
+    @ResponseBody
+    public String addHotList(@ApiParam @RequestBody WebAppCommentDTO wdto){
+        RespObj respObj=new RespObj(Constant.FAILD_CODE);
+        try {
+            respObj.setCode(Constant.SUCCESS_CODE);
+            AppCommentDTO dto = wdto.getAppCommentDTO(wdto);
+            ObjectId userId = new ObjectId("575e21be0cf2a633a9ff7b6b");
+            dto.setAdminId(userId.toString());
+            systemMessageService.addEntry(userId, dto);
+            respObj.setMessage("设为精选留言");
+        } catch (Exception e) {
+            e.printStackTrace();
+            respObj.setCode(Constant.FAILD_CODE);
+            respObj.setErrorMessage("设为精选留言失败");
+        }
+        return JSON.toJSONString(respObj);
+    }
+
+
     /**
      * 历史回顾
      * @return

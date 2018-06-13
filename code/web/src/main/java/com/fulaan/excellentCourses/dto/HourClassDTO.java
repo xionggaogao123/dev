@@ -44,7 +44,7 @@ public class HourClassDTO {
                 this.createTime = "";
             }
             if(e.getStartTime()!=0l){
-                this.startTime = DateTimeUtils.getLongToStrTimeTwo(e.getStartTime());
+                this.startTime = DateTimeUtils.getLongToStrTimeTwo(e.getStartTime()).substring(0,16);
             }else{
                 this.startTime = "";
             }

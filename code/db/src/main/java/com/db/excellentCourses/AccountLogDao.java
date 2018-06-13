@@ -23,17 +23,35 @@ public class AccountLogDao extends BaseDao {
         return entry.getID().toString();
     }
 
-    //首页订单查询
-    public List<AccountLogEntry> getEntryList(ObjectId userId){
-        List<AccountLogEntry> entryList=new ArrayList<AccountLogEntry>();
-        BasicDBObject query=new BasicDBObject("uid",userId).append("isr", Constant.ZERO);
-        List<DBObject> dbList=find(MongoFacroty.getAppDB(), Constant.COLLECTION_ACCOUNT_LOG, query,
-                Constant.FIELDS, Constant.MONGO_SORTBY_DESC);
+    public List<AccountLogEntry> getAllMemberBySchoolId(ObjectId userId,String contactId,int page,int pageSize) {
+        BasicDBObject query = new BasicDBObject()
+                .append("isr", 0); // 未删除
+        query.append("uid",userId);
+        if(contactId!=null && !contactId.equals("")){
+            query.append("cid",new ObjectId(contactId));
+        }
+        List<DBObject> dbList =
+                find(MongoFacroty.getAppDB(),
+                        Constant.COLLECTION_ACCOUNT_LOG,
+                        query, Constant.FIELDS,
+                        Constant.MONGO_SORTBY_DESC,(page - 1) * pageSize, pageSize);
+        List<AccountLogEntry> entryList = new ArrayList<AccountLogEntry>();
         if (dbList != null && !dbList.isEmpty()) {
             for (DBObject obj : dbList) {
                 entryList.add(new AccountLogEntry((BasicDBObject) obj));
             }
         }
         return entryList;
+    }
+
+    public int countAllMemberBySchoolId(ObjectId userId,String contactId){
+        BasicDBObject query = new BasicDBObject();
+        query.append("isr",0);
+        query.append("uid",userId);
+        if(contactId!=null && !contactId.equals("")){
+            query.append("cid",new ObjectId(contactId));
+        }
+        int count = count(MongoFacroty.getAppDB(),Constant.COLLECTION_ACCOUNT_LOG,query);
+        return count;
     }
 }

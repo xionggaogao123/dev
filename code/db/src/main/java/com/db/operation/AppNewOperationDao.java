@@ -67,7 +67,7 @@ public class AppNewOperationDao extends BaseDao {
     //老师评论列表查询
     public List<AppNewOperationEntry> getEntryListByParentId2(ObjectId contactId,ObjectId userId,int page,int pageSize) {
         BasicDBObject query = new BasicDBObject()
-                .append("cid",contactId)
+                .append("cid", contactId)
                 .append("uid", userId)
                 .append("lev", 1)//一级
                 .append("isr", 0); // 未删除
@@ -228,7 +228,7 @@ public class AppNewOperationDao extends BaseDao {
                 .append("isr", 0); // 未删除
         List<DBObject> dbList =
                 find(MongoFacroty.getAppDB(),
-                        Constant.COLLECTION_APP_OPERATION,
+                        Constant.COLLECTION_TOPIC_COMMENT,
                         query, Constant.FIELDS,
                         Constant.MONGO_SORTBY_DESC, (page - 1) * pageSize, pageSize);
         List<AppNewOperationEntry> entryList = new ArrayList<AppNewOperationEntry>();
@@ -247,7 +247,7 @@ public class AppNewOperationDao extends BaseDao {
                 .append("isr", 0); // 未删除
         List<DBObject> dbList =
                 find(MongoFacroty.getAppDB(),
-                        Constant.COLLECTION_APP_OPERATION,
+                        Constant.COLLECTION_TOPIC_COMMENT,
                         query, Constant.FIELDS,
                         Constant.MONGO_SORTBY_DESC);
         List<AppNewOperationEntry> entryList = new ArrayList<AppNewOperationEntry>();
@@ -266,7 +266,7 @@ public class AppNewOperationDao extends BaseDao {
                 .append("isr", 0); // 未删除
         List<DBObject> dbList =
                 find(MongoFacroty.getAppDB(),
-                        Constant.COLLECTION_APP_OPERATION,
+                        Constant.COLLECTION_TOPIC_COMMENT,
                         query, Constant.FIELDS,
                         Constant.MONGO_SORTBY_DESC);
         List<AppNewOperationEntry> entryList = new ArrayList<AppNewOperationEntry>();
@@ -287,7 +287,7 @@ public class AppNewOperationDao extends BaseDao {
                 .append("isr", 0); // 未删除
         List<DBObject> dbList =
                 find(MongoFacroty.getAppDB(),
-                        Constant.COLLECTION_APP_OPERATION,
+                        Constant.COLLECTION_TOPIC_COMMENT,
                         query, Constant.FIELDS,
                         Constant.MONGO_SORTBY_DESC);
         List<AppNewOperationEntry> entryList = new ArrayList<AppNewOperationEntry>();
@@ -311,7 +311,7 @@ public class AppNewOperationDao extends BaseDao {
                 .append("isr", 0); // 未删除
         int count =
                 count(MongoFacroty.getAppDB(),
-                        Constant.COLLECTION_APP_OPERATION,
+                        Constant.COLLECTION_TOPIC_COMMENT,
                         query);
         return count;
     }

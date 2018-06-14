@@ -106,9 +106,8 @@ public class AppAlipayController extends BaseController {
     @ApiOperation(value = "支付回调", httpMethod = "POST", produces = "application/json")
     @SessionNeedless
     @RequestMapping("/notify")
-    public void callBackNotify(HttpServletRequest request) throws Exception {
-
-
+    public String callBackNotify(HttpServletRequest request) throws Exception {
+        String code = "";
         EBusinessLog.info("支付宝回调;" + request.getParameterMap());
         EBusinessLog.error("支付宝回调:"+request.getParameterMap());
         Map<String, String> params = new HashMap<String, String>();
@@ -152,6 +151,7 @@ public class AppAlipayController extends BaseController {
                     int price = (int)Double.parseDouble(total_fee_string);
                     //修改订单状态
                     appAlipayService.payed(out_trade_no,trade_no,user_id,price,str.toString(),notify_time);
+                    code = "success";
                 }
             } else {
                 EBusinessLog.error("支付宝验证失败");
@@ -159,7 +159,7 @@ public class AppAlipayController extends BaseController {
         } catch (Exception ex) {
             EBusinessLog.error("支付宝报错", ex);
         }
-
+        return code;
     }
 
     public static boolean verify(Map<String, String> params){
@@ -183,9 +183,8 @@ public class AppAlipayController extends BaseController {
     @ApiOperation(value = "支付回调", httpMethod = "POST", produces = "application/json")
     @SessionNeedless
     @RequestMapping("/newNotify")
-    public void callBackNewNotify(HttpServletRequest request) throws Exception {
-
-
+    public String callBackNewNotify(HttpServletRequest request) throws Exception {
+        String code = "";
         EBusinessLog.info("支付宝回调;" + request.getParameterMap());
         EBusinessLog.error("支付宝回调:"+request.getParameterMap());
         Map<String, String> params = new HashMap<String, String>();
@@ -227,6 +226,7 @@ public class AppAlipayController extends BaseController {
                     int price = (int)Double.parseDouble(total_fee_string);
                     //修改订单状态
                     appAlipayService.nowPayed(out_trade_no,trade_no,user_id,price,str.toString(),notify_time);
+                    code = "success";
                 }
             } else {
                 EBusinessLog.info("支付宝验证失败");
@@ -234,7 +234,7 @@ public class AppAlipayController extends BaseController {
         } catch (Exception ex) {
             EBusinessLog.error("支付宝报错", ex);
         }
-
+        return code;
     }
 
     /**

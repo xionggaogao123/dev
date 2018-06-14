@@ -20,7 +20,7 @@ public class AccountOrderDao  extends BaseDao{
 
 
     public AccountOrderEntry getEntry(String orderId){
-        BasicDBObject query=new BasicDBObject("oid",orderId).append("isr",Constant.ZERO);
+        BasicDBObject query=new BasicDBObject("oid",orderId).append("sta",Constant.ZERO).append("isr", Constant.ZERO);
         DBObject dbObject=findOne(MongoFacroty.getAppDB(), Constant.COLLECTION_ACCOUNT_ORDER,query,Constant.FIELDS);
         if(null!=dbObject){
             return new AccountOrderEntry((BasicDBObject) dbObject);

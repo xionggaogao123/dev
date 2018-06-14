@@ -355,6 +355,7 @@ public class AppAlipayService  {
                 accountOrderEntry.setTradeN(zhiFuId);
                 accountOrderEntry.setOrderId(orderId);
                 accountOrderEntry.setPrice(price);
+                accountOrderEntry.setStatus(Constant.ONE);//改为已支付
                 accountOrderDao.addEntry(accountOrderEntry);
                 EBusinessLog.info(userId.toString()+"-"+contactId.toString()+"订单："+orderId+"已完成");
                 addLog(userId, contactId, "订单：" + orderId + "已完成");
@@ -378,7 +379,7 @@ public class AppAlipayService  {
             UserBehaviorEntry userBehaviorEntry = userBehaviorDao.getEntry(userId);
             if(accountFrashEntry!=null){
                 userBehaviorEntry.setAccount(userBehaviorEntry.getAccount()+price);
-                accountFrashDao.addEntry(accountFrashEntry);
+                userBehaviorDao.addEntry(userBehaviorEntry);
                 EBusinessLog.info(userId.toString()+"-"+contactId.toString()+"订单："+orderId+"美豆金额已增加");
                 addLog(userId, contactId, "订单：" + orderId+"美豆金额已增加");
             }else{
@@ -428,6 +429,7 @@ public class AppAlipayService  {
                 accountOrderEntry.setTradeN(zhiFuId);
                 accountOrderEntry.setOrderId(orderId);
                 accountOrderEntry.setPrice(price);
+                accountOrderEntry.setStatus(Constant.ONE);//改为已支付
                 accountOrderDao.addEntry(accountOrderEntry);
                 EBusinessLog.info(userId.toString()+"-"+contactId.toString()+"订单："+orderId+"已完成");
                 addLog(userId, contactId, "订单：" + orderId + "已完成");
@@ -451,7 +453,7 @@ public class AppAlipayService  {
             UserBehaviorEntry userBehaviorEntry = userBehaviorDao.getEntry(userId);
             if(accountFrashEntry!=null){
                 userBehaviorEntry.setAccount(userBehaviorEntry.getAccount()+price);
-                accountFrashDao.addEntry(accountFrashEntry);
+                userBehaviorDao.addEntry(userBehaviorEntry);
                 EBusinessLog.info(userId.toString()+"-"+contactId.toString()+"订单："+orderId+"美豆金额已增加");
                 addLog(userId, contactId, "订单：" + orderId+"美豆金额已增加");
             }else{

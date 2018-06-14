@@ -1,8 +1,9 @@
 package com.fulaan.alipay.controller;
 
 import com.alibaba.fastjson.JSON;
+import com.alipay.api.internal.util.AlipaySignature;
+import com.fulaan.alipay.config.AlipayNewConfig;
 import com.fulaan.alipay.service.AppAlipayService;
-import com.fulaan.alipay.util.AlipayNotify;
 import com.fulaan.annotation.SessionNeedless;
 import com.fulaan.base.BaseController;
 import com.sys.constants.Constant;
@@ -144,7 +145,7 @@ public class AppAlipayController extends BaseController {
         EBusinessLog.info("trade_status;" + trade_status);
 
 
-            if (AlipayNotify.verify(params)) {
+            if (verify(params)) {
                 EBusinessLog.error("支付宝回调验证通过");
                 if (trade_status.equals("TRADE_FINISHED") || trade_status.equals("TRADE_SUCCESS")) {
                     EBusinessLog.info("TRADE_SUCCESS");
@@ -158,6 +159,17 @@ public class AppAlipayController extends BaseController {
             EBusinessLog.error("支付宝报错", ex);
         }
 
+    }
+
+    public static boolean verify(Map<String, String> params){
+        boolean flag = false;
+        try {
+            flag = AlipaySignature.rsaCheckV1(params, AlipayNewConfig.RSA_PUBLIC, AlipayNewConfig.CHARSET, "RSA2");
+        }catch (Exception e){
+            EBusinessLog.error("支付宝报错", e);
+            EBusinessLog.error("支付宝验证失败");
+        }
+        return flag;
     }
 
     /**
@@ -207,7 +219,7 @@ public class AppAlipayController extends BaseController {
         EBusinessLog.info("trade_status;" + trade_status);
 
         try {
-            if (AlipayNotify.verify(params)) {
+            if (verify(params)) {
                 EBusinessLog.info("支付宝回调验证通过");
                 if (trade_status.equals("TRADE_FINISHED") || trade_status.equals("TRADE_SUCCESS")) {
                     EBusinessLog.info("TRADE_SUCCESS");

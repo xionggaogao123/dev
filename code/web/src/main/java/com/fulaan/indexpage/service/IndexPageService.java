@@ -61,17 +61,17 @@ public class IndexPageService {
 
     private CommunityDetailDao communityDetailDao = new CommunityDetailDao();
     //老师社群
-   // private static final String TEACHERCOMMUNIY = "5ae993953d4df93f01b11a36";
+    private static final String TEACHERCOMMUNIY = "5ae993953d4df93f01b11a36";
     //线上
-   private static final String TEACHERCOMMUNIY = "5ae993953d4df93f01b11a36";
+  // private static final String TEACHERCOMMUNIY = "5ae993953d4df93f01b11a36";
     //家长社群
-   // private static final String PARENTCOMMUNIY = "5acecca9bf2e792210a70583";
+    private static final String PARENTCOMMUNIY = "5acecca9bf2e792210a70583";
     //线上
-   private static final String PARENTCOMMUNIY = "5b04d9f53d4df9273f5c775a";
+   //private static final String PARENTCOMMUNIY = "5b04d9f53d4df9273f5c775a";
     //学生社群
-   //private static final String STUDENTCOMMUNIY = "5abaf547bf2e791a5457a584";
+   private static final String STUDENTCOMMUNIY = "5abaf547bf2e791a5457a584";
     //线上
-    private static final String STUDENTCOMMUNIY = "5b04d9eb3d4df9273f5c7747";
+   // private static final String STUDENTCOMMUNIY = "5b04d9eb3d4df9273f5c7747";
 
 
 
@@ -636,10 +636,15 @@ public class IndexPageService {
         List<SuperTopicDTO> superTopicDTOs = null;
         if(teacherApproveEntry!=null && teacherApproveEntry.getType()==2){//认证大V
             dlist.add(new ObjectId(TEACHERCOMMUNIY));
-            superTopicDTOs=getHotList(2);
+            if(page==1){
+                superTopicDTOs=getHotList(2);
+            }
+
         }else{
             dlist.add(new ObjectId(PARENTCOMMUNIY));
-            superTopicDTOs=getHotList(1);
+            if(page==1){
+                superTopicDTOs=getHotList(1);
+            }
         }
         List<IndexPageEntry> entrys = indexPageDao.getPageList(dlist,userId, page, pageSize);
         int count = indexPageDao.countPageList(dlist,userId);

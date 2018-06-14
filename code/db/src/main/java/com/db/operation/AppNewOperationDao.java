@@ -65,10 +65,9 @@ public class AppNewOperationDao extends BaseDao {
     }
 
     //老师评论列表查询
-    public List<AppNewOperationEntry> getEntryListByParentId2(ObjectId contactId,int role,ObjectId userId,int page,int pageSize) {
+    public List<AppNewOperationEntry> getEntryListByParentId2(ObjectId contactId,ObjectId userId,int page,int pageSize) {
         BasicDBObject query = new BasicDBObject()
                 .append("cid",contactId)
-                .append("rol",role)
                 .append("uid", userId)
                 .append("lev", 1)//一级
                 .append("isr", 0); // 未删除

@@ -30,6 +30,7 @@ public class SuperTopicDTO {
         if(e!=null){
             this.id = e.getID()==null?"":e.getID().toString();
             this.title = e.getCommunityTitle();
+            this.logo = e.getShareUrl();
             this.userName = e.getShareImage();
             this.readName = e.getShareTitle();
             this.url = e.getCommunityContent();

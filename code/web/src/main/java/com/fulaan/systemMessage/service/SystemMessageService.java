@@ -43,23 +43,23 @@ import java.util.*;
 @Service
 public class SystemMessageService extends BaseService {
     //老师社群
-   /* private static final String TEACHERCOMMUNIY = "5ae993953d4df93f01b11a36";
-    private static final String TEACHERGROUP = "5ae993963d4df93f01b11a38";*/
-    //线上
     private static final String TEACHERCOMMUNIY = "5ae993953d4df93f01b11a36";
     private static final String TEACHERGROUP = "5ae993963d4df93f01b11a38";
+    //线上
+    /*private static final String TEACHERCOMMUNIY = "5ae993953d4df93f01b11a36";
+    private static final String TEACHERGROUP = "5ae993963d4df93f01b11a38";*/
     //家长社群
-   /* private static final String PARENTCOMMUNIY = "5acecca9bf2e792210a70583";
-    private static final String PARENTGROUP = "5aceccaabf2e792210a70585";*/
+    private static final String PARENTCOMMUNIY = "5acecca9bf2e792210a70583";
+    private static final String PARENTGROUP = "5aceccaabf2e792210a70585";
     //线上
-    private static final String PARENTCOMMUNIY = "5b04d9f53d4df9273f5c775a";
-    private static final String PARENTGROUP = "5b04d9f53d4df9273f5c775c";
+  /*  private static final String PARENTCOMMUNIY = "5b04d9f53d4df9273f5c775a";
+    private static final String PARENTGROUP = "5b04d9f53d4df9273f5c775c";*/
     //学生社群
-   /* private static final String STUDENTCOMMUNIY = "5abaf547bf2e791a5457a584";
-    private static final String STUDENTGROUP = "5abaf548bf2e791a5457a586";*/
+    private static final String STUDENTCOMMUNIY = "5abaf547bf2e791a5457a584";
+    private static final String STUDENTGROUP = "5abaf548bf2e791a5457a586";
     //线上
-    private static final String STUDENTCOMMUNIY = "5b04d9eb3d4df9273f5c7747";
-    private static final String STUDENTGROUP = "5b04d9eb3d4df9273f5c7749";
+   /* private static final String STUDENTCOMMUNIY = "5b04d9eb3d4df9273f5c7747";
+    private static final String STUDENTGROUP = "5b04d9eb3d4df9273f5c7749";*/
 
     private AppNoticeDao appNoticeDao = new AppNoticeDao();
 
@@ -232,7 +232,11 @@ public class SystemMessageService extends BaseService {
         }
     }
 
-
+public static void main(String[] args){
+    SystemMessageService systemMessageService = new SystemMessageService();
+    AppCommentDTO appCommentDTO = new AppCommentDTO();
+    systemMessageService.addEntry( new ObjectId("575e21be0cf2a633a9ff7b6b"),appCommentDTO);
+}
 
     public List<SimpleUserDTO> getBigList(String communityIds,ObjectId userId){
         List<SimpleUserDTO> dtos = new ArrayList<SimpleUserDTO>();
@@ -324,6 +328,10 @@ public class SystemMessageService extends BaseService {
                 if(dto.getBackId() != null && dto.getBackId() != ""){
                     uids.add(dto.getBackId());
                 }
+                dto.setRole(2);
+               if(userId.equals(en.getUserId())){
+                   dto.setRole(1);
+               }
                 dtos.add(dto);
             }
         }
@@ -367,6 +375,89 @@ public class SystemMessageService extends BaseService {
         return map2;
     }
 
+    public Map<String,Object> getMyOperationList(ObjectId id,int role,ObjectId userId){
+        Map<String,Object> map2 = new HashMap<String, Object>();
+        CommunityDetailEntry entry2 = communityDetailDao.findByObjectId(id);
+        if(entry2==null){
+            return map2;
+        }
+        //添加一级评论
+        // AppCommentEntry entry = appCommentDao.getEntry(id);
+        List<AppNewOperationEntry>  entries= appOperationDao.getEntryListByParentId2(id,userId, 1, 20);
+        //添加二级评论
+        List<ObjectId> plist = new ArrayList<ObjectId>();
+        if(entries != null && entries.size()>0){
+            for(AppNewOperationEntry entry1 : entries){
+                plist.add(entry1.getID());
+            }
+        }
+        List<AppNewOperationEntry> entries2= appOperationDao.getSecondList(plist);
+        entries.addAll(entries2);
+        //取图和姓名
+        List<AppNewOperationDTO> dtos = new ArrayList<AppNewOperationDTO>();
+        List<String> uids = new ArrayList<String>();
+        if(entries != null && entries.size()>0){
+            for(AppNewOperationEntry en : entries){
+                AppNewOperationDTO dto = new AppNewOperationDTO(en);
+                dto.setZanCount(en.getZanCount());
+                dto.setIsZan(0);
+                if(en.getZanList().contains(userId)){
+                    dto.setIsZan(1);
+                }
+                uids.add(dto.getUserId());
+                if(dto.getBackId() != null && dto.getBackId() != ""){
+                    uids.add(dto.getBackId());
+                }
+                dto.setRole(1);
+                // if(userId.equals())
+                dtos.add(dto);
+            }
+        }
+        List<UserDetailInfoDTO> udtos = userService.findUserInfoByUserIds(uids);
+        Map<String,UserDetailInfoDTO> map = new HashMap<String, UserDetailInfoDTO>();
+        if(udtos != null && udtos.size()>0){
+            for(UserDetailInfoDTO dto4 : udtos){
+                map.put(dto4.getId(),dto4);
+            }
+        }
+        for(AppNewOperationDTO dto5 : dtos){
+            UserDetailInfoDTO dto9 = map.get(dto5.getUserId());
+            if(dto9 != null) {
+                String name = cn.jiguang.commom.utils.StringUtils.isNotEmpty(dto9.getNickName()) ? dto9.getNickName() : dto9.getUserName();
+                dto5.setUserName(name);
+                dto5.setUserUrl(dto9.getImgUrl());
+            }
+            if(dto5.getBackId() != null && dto5.getBackId() != "" && map.get(dto5.getBackId())!= null){
+                UserDetailInfoDTO dto10 = map.get(dto5.getBackId());
+                String name2 = cn.jiguang.commom.utils.StringUtils.isNotEmpty(dto10.getNickName()) ? dto10.getNickName() : dto10.getUserName();
+                dto5.setBackName(name2);
+            }
+        }
+        List<AppNewOperationDTO> olist = new ArrayList<AppNewOperationDTO>();
+        for(AppNewOperationDTO dto6 : dtos){
+            if(dto6.getLevel()==1){
+                List<AppNewOperationDTO> dtoList = new ArrayList<AppNewOperationDTO>();
+                for(AppNewOperationDTO dto7 : dtos){
+                    if(dto7.getLevel()==2 && dto6.getId().equals(dto7.getParentId())){
+                        dtoList.add(dto7);
+                    }
+                }
+                dto6.setAlist(dtoList);
+                olist.add(dto6);
+            }
+        }
+        //分页评论列表
+        map2.put("list",olist);
+        return map2;
+    }
+    /**
+     *删除评论
+     *
+     */
+    public void delAppOperationEntry(ObjectId pingId){
+        //删除评论
+        appOperationDao.delAppOperationEntry(pingId);
+    }
 
     /**
      * 发布一级评论

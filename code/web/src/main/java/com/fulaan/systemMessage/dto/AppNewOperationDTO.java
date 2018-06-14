@@ -142,6 +142,7 @@ public class AppNewOperationDTO {
 
     }
 
+
     public String getContactId() {
         return contactId;
     }

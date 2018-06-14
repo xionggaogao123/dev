@@ -1,8 +1,13 @@
 package com.fulaan.systemMessage.dto;
 
 import com.fulaan.excellentCourses.dto.HourClassDTO;
+import com.fulaan.pojo.Attachement;
+import com.pojo.fcommunity.AttachmentEntry;
 import com.pojo.fcommunity.CommunityDetailEntry;
 import com.sys.utils.DateTimeUtils;
+
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * Created by James on 2018-06-13.
@@ -13,6 +18,7 @@ public class SuperTopicDTO {
     private String title;
     private String userName;
     private String readName;
+    private List<Attachement> imageUrl = new ArrayList<Attachement>();
     private String url;
     private String createTime;
 
@@ -27,6 +33,9 @@ public class SuperTopicDTO {
             this.userName = e.getShareImage();
             this.readName = e.getShareTitle();
             this.url = e.getCommunityContent();
+            for (AttachmentEntry entry : e.getImageList()) {
+                this.imageUrl.add(new Attachement(entry));
+            }
             if(e.getCreateTime()!=0l){
                 this.createTime = DateTimeUtils.getLongToStrTimeTwo(e.getCreateTime());
             }else{
@@ -84,5 +93,21 @@ public class SuperTopicDTO {
 
     public void setUrl(String url) {
         this.url = url;
+    }
+
+    public String getCreateTime() {
+        return createTime;
+    }
+
+    public List<Attachement> getImageUrl() {
+        return imageUrl;
+    }
+
+    public void setImageUrl(List<Attachement> imageUrl) {
+        this.imageUrl = imageUrl;
+    }
+
+    public void setCreateTime(String createTime) {
+        this.createTime = createTime;
     }
 }

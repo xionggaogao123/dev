@@ -878,6 +878,8 @@ public class Constant {
     public static final String COLLECTION_APP_COMMENT = "appcomment";
     //作业
     public static final String COLLECTION_APP_OPERATION = "appoperation";
+    //评论通用表
+    public static final String COLLECTION_TOPIC_COMMENT = "jxm_topic_comment";
     //作业记录（天）
     public static final String COLLECTION_APP_RECORD = "apprecord";
     //作业记录（次）

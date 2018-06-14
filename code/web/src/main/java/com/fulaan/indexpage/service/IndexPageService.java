@@ -604,6 +604,27 @@ public class IndexPageService {
 
         return superTopicDTOs;
     }
+    public Map<String,Object> getHotTopicList(ObjectId userId,int page,int pageSize){
+        Map<String,Object> map = new HashMap<String, Object>();
+        List<SuperTopicDTO> superTopicDTOs = new ArrayList<SuperTopicDTO>();
+        List<ObjectId> objectIdList = new ArrayList<ObjectId>();
+        TeacherApproveEntry teacherApproveEntry = teacherApproveDao.getEntry(userId);
+        if(teacherApproveEntry!=null && teacherApproveEntry.getType()==2){//认证大V
+            objectIdList.add(new ObjectId(TEACHERCOMMUNIY));
+
+        }else{
+            objectIdList.add(new ObjectId(PARENTCOMMUNIY));
+        }
+        List<CommunityDetailEntry> entries =  communityDetailDao.getAllHotDetails(objectIdList, Constant.THREE,page,pageSize);
+        int count = communityDetailDao.countAllHotDetails(objectIdList, Constant.THREE);
+        for(CommunityDetailEntry communityDetailEntry:entries){
+            SuperTopicDTO superTopicDTO = new SuperTopicDTO(communityDetailEntry);
+            superTopicDTOs.add(superTopicDTO);
+        }
+        map.put("list",superTopicDTOs);
+        map.put("count",count);
+        return map;
+    }
 
     public Map<String,Object> getNewHotIndexList(ObjectId userId,int page,int pageSize){
 
@@ -857,6 +878,45 @@ public class IndexPageService {
                     ob1.put("timeExpression","");
                     ob1.put("isOwner",true);
                     list.add(ob1);
+                }else if(entry.getType()==3){
+                    Map<String,Object> ob1 = new HashMap<String, Object>();
+                    ob1.put("tag", CommunityType.system.getDes());
+                    ob1.put("cardType",3);
+                    ob1.put("groupName",dto8.getSourceName());
+                    ob1.put("id",dto8.getId());
+                    ob1.put("userName","家校美小助手");
+                    ob1.put("subject",dto8.getContent());
+                    ob1.put("avatar","http://7xiclj.com1.z0.glb.clouddn.com/5a26565027fddd1db08722f1.png");
+                    ob1.put("title","您的留言被选为精选留言了");
+                    ob1.put("time",dto8.getCreateTime());
+                    ob1.put("content",dto8.getFileType());
+                    /*if(dto8.getContent()!=null && !dto8.getContent().equals("")){
+                        ob1.put("content","恭喜您于"+dto8.getCreateTime().substring(0,11)+"日成功创建了“"
+                                + dto8.getSourceName()+"”社群，您的社群id是:"+dto8.getContent()+"，您是该班级社群的“社长”，拥有一切特权。\n 此外您后期最多" +
+                                "可以指定设置10位成员为“副社长”，他们也能拥有各项发帖权利。");
+                    }else{
+                        ob1.put("content","恭喜您于"+dto8.getCreateTime().substring(0,11)+"日成功创建了“"
+                                + dto8.getSourceName()+"”社群，您是该班级社群的“社长”，拥有一切特权。\n 此外您后期最多" +
+                                "可以指定设置10位成员为“副社长”，他们也能拥有各项发帖权利。");
+                    }*/
+
+                  /*  List<Attachement> imageList=new ArrayList<Attachement>();
+                    Attachement a = new Attachement();
+                    a.setUrl("");
+                    imageList.add(a);*/
+                    ob1.put("imageList",new ArrayList<Attachement>());
+                    ob1.put("commentCount",0);
+                    ob1.put("videoList",new ArrayList<VideoDTO>());
+                    ob1.put("voiceList",new ArrayList<Attachement>());
+                    ob1.put("attachements",new ArrayList<Attachement>());
+                    ob1.put("isRead",0);
+                    ob1.put("totalReadCount", 0);
+                    ob1.put("readCount", 0);
+                    ob1.put("unReadCount",0);
+                    ob1.put("timeExpression","");
+                    ob1.put("isOwner",true);
+                    list.add(ob1);
+
                 }else{
 
                 }

@@ -58,7 +58,7 @@ public class AppAlipayService  {
     //支付标题
     private static final  String PAY_SUBJECT = "充值美豆";
     //直接支付标题
-    private static final  String PAY_NOW_SUBJECT = "充值美豆";
+    private static final  String PAY_NOW_SUBJECT = "购买课程";
     //支付超时时间  ---最晚5分钟内付款
     private static final  String PAY_TIMEOUTEXPRESS= "5m";
 

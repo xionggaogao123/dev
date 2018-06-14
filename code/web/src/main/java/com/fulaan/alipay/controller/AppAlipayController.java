@@ -129,6 +129,8 @@ public class AppAlipayController extends BaseController {
 
         EBusinessLog.info("OrderNotify;" + params);
         EBusinessLog.error("支付宝回调:"+params);
+        try {
+
         String trade_no = request.getParameter("trade_no");                //支付宝交易号
         String out_trade_no = request.getParameter("out_trade_no");            //获取订单号
         String total_fee_string = request.getParameter("total_amount");            //获取总金额
@@ -141,16 +143,16 @@ public class AppAlipayController extends BaseController {
         EBusinessLog.info("total_fee_string;" + total_fee_string);
         EBusinessLog.info("trade_status;" + trade_status);
 
-        try {
+
             if (AlipayNotify.verify(params)) {
-                EBusinessLog.info("支付宝回调验证通过");
+                EBusinessLog.error("支付宝回调验证通过");
                 if (trade_status.equals("TRADE_FINISHED") || trade_status.equals("TRADE_SUCCESS")) {
                     EBusinessLog.info("TRADE_SUCCESS");
                     //修改订单状态
                     appAlipayService.payed(out_trade_no,trade_no,user_id,Integer.parseInt(total_fee_string),str.toString(),notify_time);
                 }
             } else {
-                EBusinessLog.info("支付宝验证失败");
+                EBusinessLog.error("支付宝验证失败");
             }
         } catch (Exception ex) {
             EBusinessLog.error("支付宝报错", ex);

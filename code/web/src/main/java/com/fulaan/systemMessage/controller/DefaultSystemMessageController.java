@@ -28,8 +28,8 @@ import java.util.Map;
  * Created by James on 2018-05-22.
  */
 @Controller
-@RequestMapping("/web/systemMessage")
-public class SystemMessageController extends BaseController {
+@RequestMapping("/jxmapi/systemMessage")
+public class DefaultSystemMessageController extends BaseController {
 
     @Autowired
     private SystemMessageService systemMessageService;
@@ -150,6 +150,35 @@ public class SystemMessageController extends BaseController {
         }
         return JSON.toJSONString(respObj);
     }
+
+    /**
+     * 添加一级评论
+     * @return
+     */
+    @ApiOperation(value = "添加评论", httpMethod = "POST", produces = "application/json")
+    @ApiResponse(code = 200, message = "success", response = String.class)
+    @RequestMapping("/updateZan")
+    @ResponseBody
+    public String updateZan( @RequestParam(value = "zan",defaultValue = "1") int zan,
+                                     @RequestParam("id") String id){
+        RespObj respObj=new RespObj(Constant.FAILD_CODE);
+        try {
+            respObj.setCode(Constant.SUCCESS_CODE);
+           systemMessageService.updateZan(new ObjectId(id),getUserId(),zan);
+            if(zan==0){
+                respObj.setMessage("点赞成功");
+            }else if(zan==1){
+                respObj.setMessage("取消成功");
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+            respObj.setCode(Constant.FAILD_CODE);
+            respObj.setErrorMessage("添加作业评论失败!");
+        }
+        return JSON.toJSONString(respObj);
+    }
+
+
 
 
     /**

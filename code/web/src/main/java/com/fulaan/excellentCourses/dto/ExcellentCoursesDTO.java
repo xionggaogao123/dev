@@ -32,6 +32,7 @@ public class ExcellentCoursesDTO {
     private int isBuy; //0  未购买  1 已购买部分     2  全部购买
     private int isCollect;  // 0 未收藏    1 已收藏
     private String communitName;
+    private String bigCover;
 
     public ExcellentCoursesDTO(){
 
@@ -43,6 +44,7 @@ public class ExcellentCoursesDTO {
             this.userId = e.getUserId()==null?"":e.getUserId().toString();
             this.userName = e.getUserName();
             this.subjectId=e.getSubjectId()==null?"":e.getSubjectId().toString();
+            this.bigCover="http://7xiclj.com1.z0.glb.clouddn.com/5b223ca20a9d325adeff58a4.png";
             this.subjectName = e.getSubjectName();
             this.cover = e.getCover();
             this.title = e.getTitle();
@@ -169,6 +171,14 @@ public class ExcellentCoursesDTO {
                 );
         return openEntry;
 
+    }
+
+    public String getBigCover() {
+        return bigCover;
+    }
+
+    public void setBigCover(String bigCover) {
+        this.bigCover = bigCover;
     }
 
     public String getCommunitName() {

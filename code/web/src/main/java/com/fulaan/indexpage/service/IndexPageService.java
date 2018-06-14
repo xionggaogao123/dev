@@ -61,17 +61,17 @@ public class IndexPageService {
 
     private CommunityDetailDao communityDetailDao = new CommunityDetailDao();
     //老师社群
-    private static final String TEACHERCOMMUNIY = "5ae993953d4df93f01b11a36";
+    //private static final String TEACHERCOMMUNIY = "5ae993953d4df93f01b11a36";
     //线上
-  // private static final String TEACHERCOMMUNIY = "5ae993953d4df93f01b11a36";
+   private static final String TEACHERCOMMUNIY = "5ae993953d4df93f01b11a36";
     //家长社群
-    private static final String PARENTCOMMUNIY = "5acecca9bf2e792210a70583";
+  //  private static final String PARENTCOMMUNIY = "5acecca9bf2e792210a70583";
     //线上
-   //private static final String PARENTCOMMUNIY = "5b04d9f53d4df9273f5c775a";
+   private static final String PARENTCOMMUNIY = "5b04d9f53d4df9273f5c775a";
     //学生社群
-   private static final String STUDENTCOMMUNIY = "5abaf547bf2e791a5457a584";
+ //  private static final String STUDENTCOMMUNIY = "5abaf547bf2e791a5457a584";
     //线上
-   // private static final String STUDENTCOMMUNIY = "5b04d9eb3d4df9273f5c7747";
+    private static final String STUDENTCOMMUNIY = "5b04d9eb3d4df9273f5c7747";
 
 
 
@@ -645,6 +645,7 @@ public class IndexPageService {
             if(page==1){
                 superTopicDTOs=getHotList(1);
             }
+
         }
         List<IndexPageEntry> entrys = indexPageDao.getPageList(dlist,userId, page, pageSize);
         int count = indexPageDao.countPageList(dlist,userId);
@@ -885,30 +886,16 @@ public class IndexPageService {
                     list.add(ob1);
                 }else if(entry.getType()==3){
                     Map<String,Object> ob1 = new HashMap<String, Object>();
-                    ob1.put("tag", CommunityType.system.getDes());
-                    ob1.put("cardType",3);
+                    ob1.put("tag", dto8.getSourceId());
+                    ob1.put("cardType",5);
                     ob1.put("groupName",dto8.getSourceName());
                     ob1.put("id",dto8.getId());
                     ob1.put("userName","家校美小助手");
-                    ob1.put("subject",dto8.getContent());
+                    ob1.put("subject",dto8.getTitle());
                     ob1.put("avatar","http://7xiclj.com1.z0.glb.clouddn.com/5a26565027fddd1db08722f1.png");
                     ob1.put("title","您的留言被选为精选留言了");
                     ob1.put("time",dto8.getCreateTime());
-                    ob1.put("content",dto8.getFileType());
-                    /*if(dto8.getContent()!=null && !dto8.getContent().equals("")){
-                        ob1.put("content","恭喜您于"+dto8.getCreateTime().substring(0,11)+"日成功创建了“"
-                                + dto8.getSourceName()+"”社群，您的社群id是:"+dto8.getContent()+"，您是该班级社群的“社长”，拥有一切特权。\n 此外您后期最多" +
-                                "可以指定设置10位成员为“副社长”，他们也能拥有各项发帖权利。");
-                    }else{
-                        ob1.put("content","恭喜您于"+dto8.getCreateTime().substring(0,11)+"日成功创建了“"
-                                + dto8.getSourceName()+"”社群，您是该班级社群的“社长”，拥有一切特权。\n 此外您后期最多" +
-                                "可以指定设置10位成员为“副社长”，他们也能拥有各项发帖权利。");
-                    }*/
-
-                  /*  List<Attachement> imageList=new ArrayList<Attachement>();
-                    Attachement a = new Attachement();
-                    a.setUrl("");
-                    imageList.add(a);*/
+                    ob1.put("content",dto8.getContent());
                     ob1.put("imageList",new ArrayList<Attachement>());
                     ob1.put("commentCount",0);
                     ob1.put("videoList",new ArrayList<VideoDTO>());
@@ -918,7 +905,7 @@ public class IndexPageService {
                     ob1.put("totalReadCount", 0);
                     ob1.put("readCount", 0);
                     ob1.put("unReadCount",0);
-                    ob1.put("timeExpression","");
+                    ob1.put("timeExpression",dto8.getAvatar());
                     ob1.put("isOwner",true);
                     list.add(ob1);
 

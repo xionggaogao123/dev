@@ -1,5 +1,6 @@
 package com.fulaan.systemMessage.service;
 
+import com.db.backstage.SystemMessageDao;
 import com.db.backstage.TeacherApproveDao;
 import com.db.fcommunity.CommunityDetailDao;
 import com.db.fcommunity.MemberDao;
@@ -12,6 +13,7 @@ import com.easemob.server.comm.constant.MsgType;
 import com.fulaan.base.BaseService;
 import com.fulaan.fgroup.service.EmService;
 import com.fulaan.indexpage.dto.IndexPageDTO;
+import com.fulaan.indexpage.dto.SystemMessageDTO;
 import com.fulaan.operation.dto.AppCommentDTO;
 import com.fulaan.operation.dto.AppNoticeDTO;
 import com.fulaan.picturetext.runnable.PictureRunNable;
@@ -43,23 +45,23 @@ import java.util.*;
 @Service
 public class SystemMessageService extends BaseService {
     //老师社群
-    private static final String TEACHERCOMMUNIY = "5ae993953d4df93f01b11a36";
-    private static final String TEACHERGROUP = "5ae993963d4df93f01b11a38";
-    //线上
     /*private static final String TEACHERCOMMUNIY = "5ae993953d4df93f01b11a36";
     private static final String TEACHERGROUP = "5ae993963d4df93f01b11a38";*/
+    //线上
+    private static final String TEACHERCOMMUNIY = "5ae993953d4df93f01b11a36";
+    private static final String TEACHERGROUP = "5ae993963d4df93f01b11a38";
     //家长社群
-    private static final String PARENTCOMMUNIY = "5acecca9bf2e792210a70583";
-    private static final String PARENTGROUP = "5aceccaabf2e792210a70585";
+ /*   private static final String PARENTCOMMUNIY = "5acecca9bf2e792210a70583";
+    private static final String PARENTGROUP = "5aceccaabf2e792210a70585";*/
     //线上
-  /*  private static final String PARENTCOMMUNIY = "5b04d9f53d4df9273f5c775a";
-    private static final String PARENTGROUP = "5b04d9f53d4df9273f5c775c";*/
+    private static final String PARENTCOMMUNIY = "5b04d9f53d4df9273f5c775a";
+    private static final String PARENTGROUP = "5b04d9f53d4df9273f5c775c";
     //学生社群
-    private static final String STUDENTCOMMUNIY = "5abaf547bf2e791a5457a584";
-    private static final String STUDENTGROUP = "5abaf548bf2e791a5457a586";
+   /* private static final String STUDENTCOMMUNIY = "5abaf547bf2e791a5457a584";
+    private static final String STUDENTGROUP = "5abaf548bf2e791a5457a586";*/
     //线上
-   /* private static final String STUDENTCOMMUNIY = "5b04d9eb3d4df9273f5c7747";
-    private static final String STUDENTGROUP = "5b04d9eb3d4df9273f5c7749";*/
+    private static final String STUDENTCOMMUNIY = "5b04d9eb3d4df9273f5c7747";
+    private static final String STUDENTGROUP = "5b04d9eb3d4df9273f5c7749";
 
     private AppNoticeDao appNoticeDao = new AppNoticeDao();
 
@@ -233,7 +235,8 @@ public class SystemMessageService extends BaseService {
     }
 
 public static void main(String[] args){
-    AppNewOperationDTO dto = new AppNewOperationDTO();
+    addHotList();
+   /* AppNewOperationDTO dto = new AppNewOperationDTO();
     AppNewOperationDao  appNewOperationDao = new AppNewOperationDao();
     dto.setUserId("575e21be0cf2a633a9ff7b6b");
     dto.setLevel(1);
@@ -253,7 +256,7 @@ public static void main(String[] args){
     //获得当前时间
     long current=System.currentTimeMillis();
     en.setDateTime(current);
-    String id = appNewOperationDao.addEntry(en);
+    String id = appNewOperationDao.addEntry(en);*/
 
 
 }
@@ -514,5 +517,55 @@ public static void main(String[] args){
 
             }
         }
+    }
+
+    /**
+     * 设为精选留言
+     */
+    public static void addHotList(){
+        SystemMessageDTO systemMessageDTO = new SystemMessageDTO();
+        /*   ob1.put("tag", CommunityType.system.getDes());
+                    ob1.put("cardType",3);
+                    ob1.put("groupName",dto8.getSourceName());
+                    ob1.put("id",dto8.getId());
+                    ob1.put("userName","家校美小助手");
+                    ob1.put("subject",dto8.getContent());
+                    ob1.put("avatar","http://7xiclj.com1.z0.glb.clouddn.com/5a26565027fddd1db08722f1.png");
+                    ob1.put("title","您的留言被选为精选留言了");
+                    ob1.put("time",dto8.getCreateTime());
+                    ob1.put("content",dto8.getFileType());
+                     *  avatar      ava         头像
+ *  name          nam         姓名
+ *  title         tit         标题
+ *  content       con         内容
+ *  fileUrl      url         附件路径
+ *  fileType     fty         附件类型   1 图片  2 语音  3 视屏 4 附件
+ *  type         typ           类型           1 新手引导      2系统通知
+ *  createTime   ctm          创建时间
+ *  sourceId       sid          来源
+ *  sourceType    sty          来源模块
+ *  sourceName    snm           社区名称*/
+        systemMessageDTO.setSourceName("复兰教育");
+        systemMessageDTO.setName("家校美小助手");
+        systemMessageDTO.setSourceId("5b21d5157bcd0183c9b726a6");
+        systemMessageDTO.setContent("https://v.xiumi.us/board/v5/3zkWa/88154663");
+        systemMessageDTO.setFileUrl("");
+        systemMessageDTO.setAvatar("测试");
+        systemMessageDTO.setFileType(0);
+        systemMessageDTO.setSourceType(0);
+        systemMessageDTO.setTitle("留言文章：测试");
+        systemMessageDTO.setType(3);
+        SystemMessageDao systemMessageDao = new SystemMessageDao();
+        String id = systemMessageDao.addEntry(systemMessageDTO.buildAddEntry());
+//添加首页记录
+        IndexPageDTO dto1 = new IndexPageDTO();
+        dto1.setType(CommunityType.system.getType());
+        dto1.setUserId("575e21be0cf2a633a9ff7b6b");
+        dto1.setCommunityId("575e21be0cf2a633a9ff7b6b");
+        dto1.setContactId(id.toString());
+        IndexPageEntry entry = dto1.buildAddEntry();
+        IndexPageDao indexPageDao = new IndexPageDao();
+        indexPageDao.addEntry(entry);
+
     }
 }

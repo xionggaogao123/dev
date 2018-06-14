@@ -1874,7 +1874,7 @@ public class ExcellentCoursesService {
         logger.info(userId.toString()+"-"+contactId.toString()+"修改美豆账户成功！余额:"+newPr);
 
         //添加美豆账户消费记录
-        RechargeResultEntry rechargeResultEntry = new RechargeResultEntry(userId,userId,"用户提现驳回",Constant.ZERO,Constant.ZERO,price,userId,null,new ArrayList<ObjectId>());
+        RechargeResultEntry rechargeResultEntry = new RechargeResultEntry(userId,userId,"用户提现驳回",Constant.ZERO,Constant.FOUR,price,userId,null,new ArrayList<ObjectId>());
         rechargeResultDao.saveEntry(rechargeResultEntry);
         addLog(userId,contactId,"提现拒绝：添加美豆账户消费记录成功！本次新增："+price);
         logger.info(userId.toString()+"-"+contactId.toString()+"添加美豆账户消费记录成功！本次新增："+price);

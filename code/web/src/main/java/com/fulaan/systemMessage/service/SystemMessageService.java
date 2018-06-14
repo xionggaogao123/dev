@@ -233,9 +233,29 @@ public class SystemMessageService extends BaseService {
     }
 
 public static void main(String[] args){
-    SystemMessageService systemMessageService = new SystemMessageService();
-    AppCommentDTO appCommentDTO = new AppCommentDTO();
-    systemMessageService.addEntry( new ObjectId("575e21be0cf2a633a9ff7b6b"),appCommentDTO);
+    AppNewOperationDTO dto = new AppNewOperationDTO();
+    AppNewOperationDao  appNewOperationDao = new AppNewOperationDao();
+    dto.setUserId("575e21be0cf2a633a9ff7b6b");
+    dto.setLevel(1);
+    dto.setRole(1);
+    dto.setType(0);
+    dto.setIsZan(0);
+    dto.setZanCount(0);
+    dto.setDescription("我是测试数据！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！");
+    dto.setBackId(null);
+    dto.setParentId(null);
+    dto.setBackName("");
+    dto.setContactId("5b20b47bbf2e791194af2f21");
+    dto.setCover("");
+    dto.setFileUrl("");
+    dto.setSecond(0);
+    AppNewOperationEntry en = dto.buildAddEntry();
+    //获得当前时间
+    long current=System.currentTimeMillis();
+    en.setDateTime(current);
+    String id = appNewOperationDao.addEntry(en);
+
+
 }
 
     public List<SimpleUserDTO> getBigList(String communityIds,ObjectId userId){
@@ -458,6 +478,7 @@ public static void main(String[] args){
         //删除评论
         appOperationDao.delAppOperationEntry(pingId);
     }
+
 
     /**
      * 发布一级评论

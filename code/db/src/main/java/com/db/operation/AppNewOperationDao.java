@@ -70,6 +70,26 @@ public class AppNewOperationDao extends BaseDao {
         return entryList;
     }
 
+    //超级话题 所有
+    public List<AppNewOperationEntry> getAllEntryListByParentId(List<ObjectId> contactIds,int page,int pageSize) {
+        BasicDBObject query = new BasicDBObject()
+                .append("cid", new BasicDBObject(Constant.MONGO_IN, contactIds))
+                .append("lev", 1)//一级
+                .append("isr", 0); // 未删除
+        List<DBObject> dbList =
+                find(MongoFacroty.getAppDB(),
+                        Constant.COLLECTION_TOPIC_COMMENT,
+                        query, Constant.FIELDS,
+                        new BasicDBObject("zc",-1), (page - 1) * pageSize, pageSize);
+        List<AppNewOperationEntry> entryList = new ArrayList<AppNewOperationEntry>();
+        if (dbList != null && !dbList.isEmpty()) {
+            for (DBObject obj : dbList) {
+                entryList.add(new AppNewOperationEntry((BasicDBObject) obj));
+            }
+        }
+        return entryList;
+    }
+
     //老师评论列表查询
     public List<AppNewOperationEntry> getEntryListByParentId2(ObjectId contactId,ObjectId userId,int page,int pageSize) {
         BasicDBObject query = new BasicDBObject()
@@ -195,6 +215,19 @@ public class AppNewOperationDao extends BaseDao {
                         query);
         return count;
     }
+
+    public int getAllEntryListByParentIdNum(List<ObjectId> contactIds) {
+        BasicDBObject query = new BasicDBObject()
+                .append("cid",new BasicDBObject(Constant.MONGO_IN,contactIds))
+                .append("lev", 1)
+                .append("isr", 0);
+        int count =
+                count(MongoFacroty.getAppDB(),
+                        Constant.COLLECTION_TOPIC_COMMENT,
+                        query);
+        return count;
+    }
+
     //查询所有已提交的数量
     public int countStudentLoadTimes(ObjectId contactId, int role) {
         BasicDBObject query = new BasicDBObject()

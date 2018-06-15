@@ -626,6 +626,28 @@ public class IndexPageService {
         return map;
     }
 
+    public Map<String,Object> getHotTopicList2(ObjectId userId,int page,int pageSize){
+        Map<String,Object> map = new HashMap<String, Object>();
+        List<SuperTopicDTO> superTopicDTOs = new ArrayList<SuperTopicDTO>();
+        List<ObjectId> objectIdList = new ArrayList<ObjectId>();
+        TeacherApproveEntry teacherApproveEntry = teacherApproveDao.getEntry(userId);
+        if(teacherApproveEntry!=null && teacherApproveEntry.getType()==2){//认证大V
+            objectIdList.add(new ObjectId(TEACHERCOMMUNIY));
+
+        }else{
+            objectIdList.add(new ObjectId(PARENTCOMMUNIY));
+        }
+        List<CommunityDetailEntry> entries =  communityDetailDao.getAllHotDetails2(objectIdList, Constant.THREE, page, pageSize);
+        int count = communityDetailDao.countAllHotDetails2(objectIdList, Constant.THREE);
+        for(CommunityDetailEntry communityDetailEntry:entries){
+            SuperTopicDTO superTopicDTO = new SuperTopicDTO(communityDetailEntry);
+            superTopicDTOs.add(superTopicDTO);
+        }
+        map.put("list",superTopicDTOs);
+        map.put("count",count);
+        return map;
+    }
+
     public Map<String,Object> getNewHotIndexList(ObjectId userId,int page,int pageSize){
 
         List<Map<String,Object>> list = new ArrayList<Map<String, Object>>();

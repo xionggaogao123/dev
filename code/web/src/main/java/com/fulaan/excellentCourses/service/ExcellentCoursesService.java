@@ -382,7 +382,7 @@ public class ExcellentCoursesService {
             }
         }
         //objectIdList1
-        List<ExcellentCoursesEntry> coursesEntries2 = excellentCoursesDao.getEntryListById(objectIdList1,current);
+        List<ExcellentCoursesEntry> coursesEntries2 = excellentCoursesDao.getEntryListById4(objectIdList1);
         //获得学生所在社群
         List<ObjectId> objectIdList = newVersionBindService.getCommunityIdsByUserId(userId);
         //推荐名单
@@ -471,7 +471,7 @@ public class ExcellentCoursesService {
             }
         }
         //objectIdList1
-        List<ExcellentCoursesEntry> coursesEntries2 = excellentCoursesDao.getEntryListById(objectIdList1,current);
+        List<ExcellentCoursesEntry> coursesEntries2 = excellentCoursesDao.getEntryListById4(objectIdList1);
         //获得学生所在社群
         List<ObjectId> objectIdList = newVersionBindService.getCommunityIdsByUserId(userId);
         //推荐名单

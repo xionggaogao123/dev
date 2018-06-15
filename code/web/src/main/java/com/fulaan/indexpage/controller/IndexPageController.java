@@ -118,7 +118,7 @@ public class IndexPageController extends BaseController {
         RespObj respObj=new RespObj(Constant.FAILD_CODE);
         try {
             respObj.setCode(Constant.SUCCESS_CODE);
-            Map<String,Object> map = indexPageService.getHotTopicList(getUserId(),page, pageSize);
+            Map<String,Object> map = indexPageService.getHotTopicList2(getUserId(),page, pageSize);
             respObj.setMessage(map);
         } catch (Exception e) {
             e.printStackTrace();

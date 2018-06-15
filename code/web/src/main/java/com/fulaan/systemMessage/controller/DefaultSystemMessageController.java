@@ -108,11 +108,11 @@ public class DefaultSystemMessageController extends BaseController {
             respObj.setCode(Constant.SUCCESS_CODE);
 
            systemMessageService.addHotPing(new ObjectId(id), role);
-            respObj.setMessage("设为精选留言");
+            respObj.setMessage("滚屏展示");
         } catch (Exception e) {
             e.printStackTrace();
             respObj.setCode(Constant.FAILD_CODE);
-            respObj.setErrorMessage("设为精选留言失败");
+            respObj.setErrorMessage("滚屏展示失败");
         }
         return JSON.toJSONString(respObj);
     }

@@ -42,11 +42,17 @@ public class AppNewOperationDao extends BaseDao {
         update(MongoFacroty.getAppDB(), Constant.COLLECTION_TOPIC_COMMENT, query,updateValue);
     }
 
+    public void updateHotlist(ObjectId id,int type){
+        BasicDBObject query = new BasicDBObject(Constant.ID,id);
+        BasicDBObject updateValue=new BasicDBObject(Constant.MONGO_SET,new BasicDBObject("rol",type));
+        update(MongoFacroty.getAppDB(), Constant.COLLECTION_TOPIC_COMMENT, query,updateValue);
+    }
 
-    //老师评论列表查询
-    public List<AppNewOperationEntry> getEntryListByParentId(ObjectId contactId,int role,int page,int pageSize) {
+
+    //超级话题
+    public List<AppNewOperationEntry> getEntryListByParentId(List<ObjectId> contactIds,int role,int page,int pageSize) {
         BasicDBObject query = new BasicDBObject()
-                .append("cid",contactId)
+                .append("cid",new BasicDBObject(Constant.MONGO_IN,contactIds))
                 .append("rol",role)
                 .append("lev", 1)//一级
                 .append("isr", 0); // 未删除
@@ -54,7 +60,7 @@ public class AppNewOperationDao extends BaseDao {
                 find(MongoFacroty.getAppDB(),
                         Constant.COLLECTION_TOPIC_COMMENT,
                         query, Constant.FIELDS,
-                        Constant.MONGO_SORTBY_DESC, (page - 1) * pageSize, pageSize);
+                        new BasicDBObject("zc",-1), (page - 1) * pageSize, pageSize);
         List<AppNewOperationEntry> entryList = new ArrayList<AppNewOperationEntry>();
         if (dbList != null && !dbList.isEmpty()) {
             for (DBObject obj : dbList) {
@@ -177,9 +183,9 @@ public class AppNewOperationDao extends BaseDao {
      * 符合搜索条件的对象个数
      * @return
      */
-    public int getEntryListByParentIdNum(ObjectId contactId,int role) {
+    public int getEntryListByParentIdNum(List<ObjectId> contactIds,int role) {
         BasicDBObject query = new BasicDBObject()
-                .append("cid",contactId)
+                .append("cid",new BasicDBObject(Constant.MONGO_IN,contactIds))
                 .append("rol", role)
                 .append("lev", 1)
                 .append("isr", 0);

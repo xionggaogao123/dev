@@ -504,7 +504,7 @@ public class AppAlipayService  {
             int newPrice = 0;
             List<HourClassEntry> classEntries = hourClassDao.getEntryList(excellentCoursesEntry.getID());
             for(HourClassEntry hourClassEntry:classEntries){
-                if(!objectIdList3.contains(hourClassEntry.getID())){
+                if(objectIdList3.contains(hourClassEntry.getID())){
                     description  = description + "第"+hourClassEntry.getOrder()+"课时 ";
                     cIds.add(hourClassEntry.getID());
                     newPrice +=hourClassEntry.getClassNewPrice();
@@ -542,6 +542,8 @@ public class AppAlipayService  {
                 }catch (Exception e){
 
                 }
+            }else{
+                addLog(userId,contactId,"余额不足，实际："+newPrice+",账户："+userBehaviorEntry.getAccount());
             }
             //修改课程人数
             Set<ObjectId> set = classOrderDao.getUserIdEntry(excellentCoursesEntry.getID());

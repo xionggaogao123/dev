@@ -21,6 +21,7 @@ public class SuperTopicDTO {
     private List<Attachement> imageUrl = new ArrayList<Attachement>();
     private String url;
     private String createTime;
+    private int voteType;
 
     public SuperTopicDTO(){
 
@@ -34,6 +35,7 @@ public class SuperTopicDTO {
             this.userName = e.getShareImage();
             this.readName = e.getShareTitle();
             this.url = e.getCommunityContent();
+            this.voteType = e.getVoteType();
             for (AttachmentEntry entry : e.getImageList()) {
                 this.imageUrl.add(new Attachement(entry));
             }
@@ -46,6 +48,14 @@ public class SuperTopicDTO {
             new HourClassDTO();
         }
 
+    }
+
+    public int getVoteType() {
+        return voteType;
+    }
+
+    public void setVoteType(int voteType) {
+        this.voteType = voteType;
     }
 
     public String getId() {

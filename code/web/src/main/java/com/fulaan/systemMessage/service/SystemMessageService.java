@@ -45,13 +45,13 @@ import java.util.*;
 @Service
 public class SystemMessageService extends BaseService {
     //老师社群
-    /*private static final String TEACHERCOMMUNIY = "5ae993953d4df93f01b11a36";
+   /* private static final String TEACHERCOMMUNIY = "5ae993953d4df93f01b11a36";
     private static final String TEACHERGROUP = "5ae993963d4df93f01b11a38";*/
     //线上
     private static final String TEACHERCOMMUNIY = "5ae993953d4df93f01b11a36";
     private static final String TEACHERGROUP = "5ae993963d4df93f01b11a38";
     //家长社群
- /*   private static final String PARENTCOMMUNIY = "5acecca9bf2e792210a70583";
+   /* private static final String PARENTCOMMUNIY = "5acecca9bf2e792210a70583";
     private static final String PARENTGROUP = "5aceccaabf2e792210a70585";*/
     //线上
     private static final String PARENTCOMMUNIY = "5b04d9f53d4df9273f5c775a";
@@ -209,57 +209,32 @@ public class SystemMessageService extends BaseService {
                 CommunityDetailEntry entry = new CommunityDetailEntry(new ObjectId(TEACHERCOMMUNIY),
                         userId, dto.getTitle(), dto.getDescription(), Constant.THREE,
                         new ArrayList<ObjectId>(), attachmentEntries, vedios, imageEntries,
-                        dto.getSubject(),  dto.getSubjectId(), str, null , null, 0,
+                        dto.getSubject(),  dto.getSubjectId(), s , null , null, 0,
                         new Date().getTime(), 1, videoEntries
-                );
+                );//默认滚屏
                communityDetailDao.save(entry);
             }else if(str.equals(PARENTCOMMUNIY)){//发送家长
                 CommunityDetailEntry entry = new CommunityDetailEntry(new ObjectId(PARENTCOMMUNIY),
                         userId, dto.getTitle(), dto.getDescription(), Constant.THREE,
                         new ArrayList<ObjectId>(), attachmentEntries, vedios, imageEntries,
-                        dto.getSubject(),  dto.getSubjectId(), str, null , null, 0,
+                        dto.getSubject(),  dto.getSubjectId(), s , null , null, 0,
                         new Date().getTime(), 1, videoEntries
-                );
+                );//默认滚屏
                 communityDetailDao.save(entry);
 
             }else if(str.equals(STUDENTCOMMUNIY)){//发送学生
-                CommunityDetailEntry entry = new CommunityDetailEntry(new ObjectId(STUDENTCOMMUNIY),
+               /* CommunityDetailEntry entry = new CommunityDetailEntry(new ObjectId(STUDENTCOMMUNIY),
                         userId, dto.getTitle(), dto.getDescription(), Constant.THREE,
                         new ArrayList<ObjectId>(), attachmentEntries, vedios, imageEntries,
-                        dto.getSubject(),  dto.getSubjectId(), str, null , null, 0,
+                        dto.getSubject(),  dto.getSubjectId(), s , null , null, 0,
                         new Date().getTime(), 1, videoEntries
                 );
-                communityDetailDao.save(entry);
+                communityDetailDao.save(entry);*/
             }
         }
     }
 
-public static void main(String[] args){
-    addHotList();
-   /* AppNewOperationDTO dto = new AppNewOperationDTO();
-    AppNewOperationDao  appNewOperationDao = new AppNewOperationDao();
-    dto.setUserId("575e21be0cf2a633a9ff7b6b");
-    dto.setLevel(1);
-    dto.setRole(1);
-    dto.setType(0);
-    dto.setIsZan(0);
-    dto.setZanCount(0);
-    dto.setDescription("我是测试数据！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！");
-    dto.setBackId(null);
-    dto.setParentId(null);
-    dto.setBackName("");
-    dto.setContactId("5b20b47bbf2e791194af2f21");
-    dto.setCover("");
-    dto.setFileUrl("");
-    dto.setSecond(0);
-    AppNewOperationEntry en = dto.buildAddEntry();
-    //获得当前时间
-    long current=System.currentTimeMillis();
-    en.setDateTime(current);
-    String id = appNewOperationDao.addEntry(en);*/
 
-
-}
 
     public List<SimpleUserDTO> getBigList(String communityIds,ObjectId userId){
         List<SimpleUserDTO> dtos = new ArrayList<SimpleUserDTO>();
@@ -324,9 +299,11 @@ public static void main(String[] args){
         if(entry2==null){
             return map2;
         }
+        //关联H5查询
+        List<ObjectId> ids = communityDetailDao.getURLListByUserId(entry2.getCommunityContent(),entry2.getCommunityTitle());
         //添加一级评论
         // AppCommentEntry entry = appCommentDao.getEntry(id);
-        List<AppNewOperationEntry>  entries= appOperationDao.getEntryListByParentId(id,role,page,pageSize);
+        List<AppNewOperationEntry>  entries= appOperationDao.getEntryListByParentId(ids,role,page,pageSize);
         //添加二级评论
         List<ObjectId> plist = new ArrayList<ObjectId>();
         if(entries != null && entries.size()>0){
@@ -391,7 +368,7 @@ public static void main(String[] args){
                 olist.add(dto6);
             }
         }
-        int count = appOperationDao.getEntryListByParentIdNum(id,role);
+        int count = appOperationDao.getEntryListByParentIdNum(ids,role);
         //分页评论列表
         map2.put("list",olist);
         map2.put("count",count);
@@ -522,50 +499,63 @@ public static void main(String[] args){
     /**
      * 设为精选留言
      */
-    public static void addHotList(){
+    public static void addHotList(CommunityDetailEntry communityDetailEntry,ObjectId userId){
         SystemMessageDTO systemMessageDTO = new SystemMessageDTO();
-        /*   ob1.put("tag", CommunityType.system.getDes());
-                    ob1.put("cardType",3);
-                    ob1.put("groupName",dto8.getSourceName());
-                    ob1.put("id",dto8.getId());
-                    ob1.put("userName","家校美小助手");
-                    ob1.put("subject",dto8.getContent());
-                    ob1.put("avatar","http://7xiclj.com1.z0.glb.clouddn.com/5a26565027fddd1db08722f1.png");
-                    ob1.put("title","您的留言被选为精选留言了");
-                    ob1.put("time",dto8.getCreateTime());
-                    ob1.put("content",dto8.getFileType());
-                     *  avatar      ava         头像
- *  name          nam         姓名
- *  title         tit         标题
- *  content       con         内容
- *  fileUrl      url         附件路径
- *  fileType     fty         附件类型   1 图片  2 语音  3 视屏 4 附件
- *  type         typ           类型           1 新手引导      2系统通知
- *  createTime   ctm          创建时间
- *  sourceId       sid          来源
- *  sourceType    sty          来源模块
- *  sourceName    snm           社区名称*/
         systemMessageDTO.setSourceName("复兰教育");
         systemMessageDTO.setName("家校美小助手");
-        systemMessageDTO.setSourceId("5b21d5157bcd0183c9b726a6");
-        systemMessageDTO.setContent("https://v.xiumi.us/board/v5/3zkWa/88154663");
+        systemMessageDTO.setSourceId(communityDetailEntry.getID().toString());
+        systemMessageDTO.setContent(communityDetailEntry.getCommunityContent());
         systemMessageDTO.setFileUrl("");
-        systemMessageDTO.setAvatar("测试");
+        systemMessageDTO.setAvatar("");
         systemMessageDTO.setFileType(0);
         systemMessageDTO.setSourceType(0);
-        systemMessageDTO.setTitle("留言文章：测试");
+        systemMessageDTO.setTitle(communityDetailEntry.getCommunityTitle());
         systemMessageDTO.setType(3);
         SystemMessageDao systemMessageDao = new SystemMessageDao();
         String id = systemMessageDao.addEntry(systemMessageDTO.buildAddEntry());
-//添加首页记录
         IndexPageDTO dto1 = new IndexPageDTO();
         dto1.setType(CommunityType.system.getType());
-        dto1.setUserId("575e21be0cf2a633a9ff7b6b");
-        dto1.setCommunityId("575e21be0cf2a633a9ff7b6b");
+        dto1.setUserId(userId.toString());
+        dto1.setCommunityId(userId.toString());
         dto1.setContactId(id.toString());
         IndexPageEntry entry = dto1.buildAddEntry();
         IndexPageDao indexPageDao = new IndexPageDao();
         indexPageDao.addEntry(entry);
+
+    }
+
+    /**
+     * 滚屏展示
+     * @param id
+     * @param role
+     */
+    public void addHotPing(ObjectId id,int role){
+
+        communityDetailDao.updateHotEntry(id,role);
+
+    }
+
+    /**
+     * 精选留言
+     * @param id
+     * @param role
+     */
+    public void addHotList(ObjectId id,int role){
+        AppNewOperationDao appOperationDao = new AppNewOperationDao();
+        AppNewOperationEntry appNewOperationEntry = appOperationDao.getEntry(id);
+        if(appNewOperationEntry!=null){
+            CommunityDetailEntry communityDetailEntry = communityDetailDao.findByObjectId(appNewOperationEntry.getContactId());
+            if(communityDetailEntry!=null){
+                addHotList(communityDetailEntry,appNewOperationEntry.getUserId());
+                appOperationDao.updateHotlist(id,role);
+            }
+        }
+
+    }
+
+    public static void main(String[] args){
+        SystemMessageService systemMessageService = new SystemMessageService();
+        systemMessageService.addHotList(new ObjectId("5b2387b8bf2e791b383f6dca"), 2);
 
     }
 }

@@ -82,14 +82,32 @@ public class DefaultSystemMessageController extends BaseController {
     @ApiResponses( value = {@ApiResponse(code = 200, message = "Successful — 请求已完成",response = String.class)})
     @RequestMapping("/addHotList")
     @ResponseBody
-    public String addHotList(@ApiParam @RequestBody WebAppCommentDTO wdto){
+    public String addHotList(@ApiParam(name = "id", required = true, value = "评论id") @RequestParam("id") String id,
+                             @ApiParam(name = "role", required = true, value = "role") @RequestParam("role") int role){
         RespObj respObj=new RespObj(Constant.FAILD_CODE);
         try {
             respObj.setCode(Constant.SUCCESS_CODE);
-            AppCommentDTO dto = wdto.getAppCommentDTO(wdto);
-            ObjectId userId = new ObjectId("575e21be0cf2a633a9ff7b6b");
-            dto.setAdminId(userId.toString());
-            systemMessageService.addEntry(userId, dto);
+            systemMessageService.addHotList(new ObjectId(id), role);
+            respObj.setMessage("设为精选留言成功");
+        } catch (Exception e) {
+            e.printStackTrace();
+            respObj.setCode(Constant.FAILD_CODE);
+            respObj.setErrorMessage("设为精选留言失败");
+        }
+        return JSON.toJSONString(respObj);
+    }
+
+    @ApiOperation(value = "滚屏展示", httpMethod = "POST", produces = "application/json")
+    @ApiResponses( value = {@ApiResponse(code = 200, message = "Successful — 请求已完成",response = String.class)})
+    @RequestMapping("/addHotPing")
+    @ResponseBody
+    public String addHotPing(@ApiParam(name = "id", required = true, value = "话题id") @RequestParam("id") String id,
+                             @ApiParam(name = "role", required = true, value = "role") @RequestParam("role") int role){
+        RespObj respObj=new RespObj(Constant.FAILD_CODE);
+        try {
+            respObj.setCode(Constant.SUCCESS_CODE);
+
+           systemMessageService.addHotPing(new ObjectId(id), role);
             respObj.setMessage("设为精选留言");
         } catch (Exception e) {
             e.printStackTrace();

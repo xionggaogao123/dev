@@ -61,17 +61,17 @@ public class IndexPageService {
 
     private CommunityDetailDao communityDetailDao = new CommunityDetailDao();
     //老师社群
-    //private static final String TEACHERCOMMUNIY = "5ae993953d4df93f01b11a36";
+  //  private static final String TEACHERCOMMUNIY = "5ae993953d4df93f01b11a36";
     //线上
-   private static final String TEACHERCOMMUNIY = "5ae993953d4df93f01b11a36";
+    private static final String TEACHERCOMMUNIY = "5ae993953d4df93f01b11a36";
     //家长社群
-  //  private static final String PARENTCOMMUNIY = "5acecca9bf2e792210a70583";
+    //private static final String PARENTCOMMUNIY = "5acecca9bf2e792210a70583";
     //线上
-   private static final String PARENTCOMMUNIY = "5b04d9f53d4df9273f5c775a";
+  private static final String PARENTCOMMUNIY = "5b04d9f53d4df9273f5c775a";
     //学生社群
- //  private static final String STUDENTCOMMUNIY = "5abaf547bf2e791a5457a584";
+  //private static final String STUDENTCOMMUNIY = "5abaf547bf2e791a5457a584";
     //线上
-    private static final String STUDENTCOMMUNIY = "5b04d9eb3d4df9273f5c7747";
+   private static final String STUDENTCOMMUNIY = "5b04d9eb3d4df9273f5c7747";
 
 
 
@@ -633,11 +633,11 @@ public class IndexPageService {
         List<ObjectId>  dlist =communityService.getCommunitys3(userId, 1, 100);
         dlist.add(userId);
         TeacherApproveEntry teacherApproveEntry = teacherApproveDao.getEntry(userId);
-        List<SuperTopicDTO> superTopicDTOs = null;
+        List<SuperTopicDTO> superTopicDTOs = new ArrayList<SuperTopicDTO>();
         if(teacherApproveEntry!=null && teacherApproveEntry.getType()==2){//认证大V
             dlist.add(new ObjectId(TEACHERCOMMUNIY));
             if(page==1){
-                superTopicDTOs=getHotList(2);
+               superTopicDTOs=getHotList(2);
             }
 
         }else{
@@ -886,10 +886,10 @@ public class IndexPageService {
                     list.add(ob1);
                 }else if(entry.getType()==3){
                     Map<String,Object> ob1 = new HashMap<String, Object>();
-                    ob1.put("tag", dto8.getSourceId());
+                    ob1.put("tag", dto8.getId());
                     ob1.put("cardType",5);
                     ob1.put("groupName",dto8.getSourceName());
-                    ob1.put("id",dto8.getId());
+                    ob1.put("id",dto8.getSourceId());
                     ob1.put("userName","家校美小助手");
                     ob1.put("subject",dto8.getTitle());
                     ob1.put("avatar","http://7xiclj.com1.z0.glb.clouddn.com/5a26565027fddd1db08722f1.png");
@@ -923,7 +923,11 @@ public class IndexPageService {
             for(String str : stringList){
                 for(Map<String,Object> map4 : list){
                     String string = (String)map4.get("id");
+                    String string2 = (String)map4.get("tag");
                     if(str.equals(string)){
+                        list2.add(map4);
+                    }
+                    if(str.equals(string2)){
                         list2.add(map4);
                     }
                 }

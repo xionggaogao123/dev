@@ -6,6 +6,7 @@ import com.mongodb.BasicDBObject;
 import com.mongodb.DBObject;
 import com.pojo.fcommunity.CommunityDetailEntry;
 import com.pojo.fcommunity.CommunityDetailType;
+import com.pojo.operation.AppCommentEntry;
 import com.sys.constants.Constant;
 import org.bson.types.ObjectId;
 
@@ -30,6 +31,16 @@ public class CommunityDetailDao extends BaseDao {
     }
 
     /**
+     * 超级话题（显示）
+     * @param id
+     */
+    public void updateHotEntry(ObjectId id,int type){
+        BasicDBObject query = new BasicDBObject(Constant.ID,id);
+        BasicDBObject updateValue=new BasicDBObject(Constant.MONGO_SET,new BasicDBObject("vt",type));
+        update(MongoFacroty.getAppDB(), Constant.COLLECTION_FORUM_COMMUNITY_DETAIL, query,updateValue);
+    }
+
+    /**
      * 获取某个社区内容(通过id)
      *
      * @param id
@@ -41,6 +52,30 @@ public class CommunityDetailDao extends BaseDao {
         DBObject dbo = findOne(MongoFacroty.getAppDB(), Constant.COLLECTION_FORUM_COMMUNITY_DETAIL, query);
         return dbo == null ? null : new CommunityDetailEntry(dbo);
     }
+
+    /**
+     * 关联H5查询
+     * @return
+     */
+    public List<ObjectId> getURLListByUserId(String url,String title) {
+        BasicDBObject query = new BasicDBObject()
+                .append("r", 0); // 未删除
+        query.append("cmct",url);
+        query.append("cmtl",title);
+        List<DBObject> dbList =
+                find(MongoFacroty.getAppDB(),
+                        Constant.COLLECTION_FORUM_COMMUNITY_DETAIL,
+                        query, Constant.FIELDS,
+                        Constant.MONGO_SORTBY_DESC);
+        List<ObjectId> entryList = new ArrayList<ObjectId>();
+        if (dbList != null && !dbList.isEmpty()) {
+            for (DBObject obj : dbList) {
+                entryList.add(new AppCommentEntry((BasicDBObject) obj).getID());
+            }
+        }
+        return entryList;
+    }
+
 
     public void updEntry(CommunityDetailEntry e) {
         BasicDBObject query=new BasicDBObject(Constant.ID,e.getID());
@@ -157,7 +192,7 @@ public class CommunityDetailDao extends BaseDao {
     public List<CommunityDetailEntry> getAllHotDetails(List<ObjectId> communityIds, int type,int page,int pageSize) {
         List<CommunityDetailEntry> detailEntries = new ArrayList<CommunityDetailEntry>();
         BasicDBObject query = new BasicDBObject().append("cmid", new BasicDBObject(Constant.MONGO_IN, communityIds))
-                .append("cmty", type).append("r", 0);
+                .append("cmty", type).append("r", 0).append("vt",1);
         BasicDBObject orderBy = new BasicDBObject().append("ti",-1);
         List<DBObject> dbObjects = find(MongoFacroty.getAppDB(), Constant.COLLECTION_FORUM_COMMUNITY_DETAIL, query, Constant.FIELDS, orderBy,(page - 1) * pageSize, pageSize);
         for (DBObject dbo : dbObjects) {

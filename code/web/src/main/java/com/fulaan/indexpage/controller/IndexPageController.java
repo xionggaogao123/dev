@@ -22,7 +22,7 @@ import java.util.Map;
  * Created by James on 2017/9/28.
  */
 @Controller
-@RequestMapping("/pageIndex")
+@RequestMapping("/web/pageIndex")
 @Api(value="大人端首页加载")
 public class IndexPageController extends BaseController {
     @Autowired
@@ -103,6 +103,27 @@ public class IndexPageController extends BaseController {
             e.printStackTrace();
             respObj.setCode(Constant.FAILD_CODE);
             respObj.setErrorMessage("修改课程名失败");
+        }
+        return JSON.toJSONString(respObj);
+    }
+
+
+
+    @ApiOperation(value = "获取往期热点话题", httpMethod = "POST", produces = "application/json")
+    @ApiResponses( value = {@ApiResponse(code = 200, message = "Successful — 请求已完成",response = String.class)})
+    @RequestMapping("/getHotTopicList")
+    @ResponseBody
+    public String getHotTopicList(@ApiParam(name = "page", required = true, value = "page") @RequestParam("page") int page,
+                                  @ApiParam(name = "pageSize", required = true, value = "pageSize") @RequestParam("pageSize") int pageSize){
+        RespObj respObj=new RespObj(Constant.FAILD_CODE);
+        try {
+            respObj.setCode(Constant.SUCCESS_CODE);
+            Map<String,Object> map = indexPageService.getHotTopicList(getUserId(),page, pageSize);
+            respObj.setMessage(map);
+        } catch (Exception e) {
+            e.printStackTrace();
+            respObj.setCode(Constant.FAILD_CODE);
+            respObj.setErrorMessage("获取往期热点话题失败");
         }
         return JSON.toJSONString(respObj);
     }

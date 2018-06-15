@@ -256,10 +256,10 @@ public class UserService extends BaseService {
                 validate.setMessage("老用户不能登录学生端!");
                 return validate;
             }
-            /*if(true){
+            if(true){
                 validate.setMessage("系统自动更新中，请稍后。");
                 return validate;
-            }*/
+            }
 
             if(StringUtils.isNotBlank(CacheHandler.getCacheStudentUserKey(e.getID().toString()))) {
                 String cacheUserKey=CacheHandler.getUserKey(e.getID().toString());

@@ -1,7 +1,6 @@
 package com.fulaan.operation.service;
 
 import cn.jiguang.commom.utils.StringUtils;
-import cn.jpush.api.push.model.audience.Audience;
 import com.db.business.ModuleTimeDao;
 import com.db.fcommunity.CommunityDao;
 import com.db.fcommunity.GroupDao;
@@ -30,7 +29,6 @@ import com.fulaan.pojo.User;
 import com.fulaan.service.CommunityService;
 import com.fulaan.user.service.UserService;
 import com.fulaan.util.NewStringUtil;
-import com.fulaan.utils.JPushUtils;
 import com.fulaan.wrongquestion.dto.SubjectClassDTO;
 import com.mongodb.DBObject;
 import com.pojo.backstage.PictureType;
@@ -133,7 +131,7 @@ public class AppCommentService {
                 }
             }
         }
-        JPushUtils jPushUtils=new JPushUtils();
+        //JPushUtils jPushUtils=new JPushUtils();
         List<ObjectId> objectIdList =new ArrayList<ObjectId>();
         for(CommunityDTO dto3 : sendList){
             en.setID(null);
@@ -200,7 +198,7 @@ public class AppCommentService {
         if(dto.getStatus() == 0){
             score = integralSufferService.addIntegral(new ObjectId(dto.getAdminId()), IntegralType.operation,1,1);
         }
-        try {
+        /*try {
             for (CommunityDTO dto3 : sendList) {
                 ObjectId groupId = communityDao.getGroupId(new ObjectId(dto3.getId()));
                 if (null != groupId && dto.getStatus() == 0) {
@@ -223,7 +221,7 @@ public class AppCommentService {
         }catch (Exception e){
             logger.error("error",e);
             throw new Exception("特殊"+score);
-        }
+        }*/
         return new Integer(score).toString();
     }
 
@@ -1818,7 +1816,7 @@ public class AppCommentService {
      *修改
      *
      */
-    public void updateEntry(AppCommentDTO dto)throws Exception{
+    public String updateEntry(AppCommentDTO dto)throws Exception{
         List<CommunityDTO> communityDTOList = communityService.getCommunitys2(new ObjectId(dto.getAdminId()), 1, 100);
         AppCommentEntry entry = dto.updateEntry();
         String st = dto.getComList();
@@ -1856,7 +1854,12 @@ public class AppCommentService {
             //作业发送记录
             moduleTimeDao.addEntry(new ObjectId(dto.getAdminId()),ApplyTypeEn.operation.getType());
         }
-        JPushUtils jPushUtils=new JPushUtils();
+        int score = 0;
+        if(dto.getStatus() == 0){
+            score = integralSufferService.addIntegral(new ObjectId(dto.getAdminId()), IntegralType.operation,1,1);
+        }
+        return score+"";
+        /*JPushUtils jPushUtils=new JPushUtils();
         try {
             ObjectId groupId = communityDao.getGroupId(new ObjectId(str[0]));
             if (null != groupId && dto.getStatus() == 0) {
@@ -1877,7 +1880,7 @@ public class AppCommentService {
             }
         }catch (Exception e){
             throw new Exception("推送失败");
-        }
+        }*/
     }
 
     /**

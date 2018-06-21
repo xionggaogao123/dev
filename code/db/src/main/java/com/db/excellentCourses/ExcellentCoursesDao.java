@@ -38,6 +38,13 @@ public class ExcellentCoursesDao extends BaseDao {
         update(MongoFacroty.getAppDB(), Constant.COLLECTION_EXCELLENT_COURSES, query,updateValue);
     }
 
+    //设为轮播课
+    public void setLunEntry(ObjectId id,int status){
+        BasicDBObject query = new BasicDBObject(Constant.ID,id);
+        BasicDBObject updateValue=new BasicDBObject(Constant.MONGO_SET,new BasicDBObject("top",status));
+        update(MongoFacroty.getAppDB(), Constant.COLLECTION_EXCELLENT_COURSES, query,updateValue);
+    }
+
     //删除
     public void finishEntry(ObjectId id,int type,long time){
         BasicDBObject query = new BasicDBObject(Constant.ID,id);
@@ -190,6 +197,27 @@ public class ExcellentCoursesDao extends BaseDao {
             }
         }
         return entryList;
+    }
+
+    //轮播列表
+    public List<ExcellentCoursesEntry> getLunList(int page,int pageSize){
+        List<ExcellentCoursesEntry> entryList=new ArrayList<ExcellentCoursesEntry>();
+        BasicDBObject query=new BasicDBObject().append("isr",0).append("sta",Constant.TWO).append("top",Constant.ONE);
+        List<DBObject> dbList=find(MongoFacroty.getAppDB(), Constant.COLLECTION_EXCELLENT_COURSES, query,
+                Constant.FIELDS, Constant.MONGO_SORTBY_DESC,(page-1)*pageSize,pageSize);
+        if (dbList != null && !dbList.isEmpty()) {
+            for (DBObject obj : dbList) {
+                entryList.add(new ExcellentCoursesEntry((BasicDBObject) obj));
+            }
+        }
+        return entryList;
+    }
+
+    public int countLunList(){
+        BasicDBObject query = new BasicDBObject();
+        query.append("isr",0).append("sta",Constant.TWO).append("top",Constant.ONE);
+        int count = count(MongoFacroty.getAppDB(),Constant.COLLECTION_EXCELLENT_COURSES, query);
+        return count;
     }
 
 

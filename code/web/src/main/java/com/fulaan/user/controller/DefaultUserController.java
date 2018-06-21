@@ -298,7 +298,7 @@ public class DefaultUserController extends BaseController {
         NewVersionUserRoleEntry userRoleEntry=newVersionUserRoleDao.getEntry(userId);
         if(userRoleEntry.getNewRole()==Constant.TWO){
             UserEntry userEntry=userService.findById(userId);
-            Validate validate = userService.validateAccount(userEntry.getUserName(),userEntry.getPassword(),2,getPlatform());
+            Validate validate = userService.newValidateAccount(userEntry.getUserName(),userEntry.getPassword(),2,getPlatform());
             if (!validate.isOk()) {
                 respObj.setMessage(validate.getMessage());
             }else {

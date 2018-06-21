@@ -19,7 +19,8 @@ import java.util.List;
  * subjectId        学科id                    sid
  * subjectName      学科名称                  snm
  * userName         自定义开课者姓名          unm
- * cover            封面                      img
+ * cover            列表封面                  img
+ * bigCover         详情封面                  bco
  * title            课程题目                  tit
  * target           课程目标                  tar
  * communityIdList  选择的社群list            cis  (List<ObjectId>)
@@ -31,7 +32,8 @@ import java.util.List;
  * newPrice         系统总收益                npc
  * studentNumber    上课人数                  stn
  * status           审批状态                  sta      0  未发布    1 审批中    2 通过      3 拒绝     4 结束
- * type             课程状态                  typ      0  正常     1 结束      2 未开始      3 进行中
+ * type             课程状态                  typ      0  直播课     1  录播课
+ * top              是否轮播                  top      0  否   1  是
  *
  */
 public class ExcellentCoursesEntry extends BaseDBObject {
@@ -52,6 +54,7 @@ public class ExcellentCoursesEntry extends BaseDBObject {
             String subjectName,
             String userName,
             String cover,
+            String bigCover,
             String title,
             String target,
             int allClassCount,
@@ -70,6 +73,7 @@ public class ExcellentCoursesEntry extends BaseDBObject {
                 .append("snm", subjectName)
                 .append("unm", userName)
                 .append("cov", cover)
+                .append("bco",bigCover)
                 .append("tit", title)
                 .append("tar", target)
                 .append("acc", allClassCount)
@@ -81,7 +85,8 @@ public class ExcellentCoursesEntry extends BaseDBObject {
                 .append("stn", studentNumber)
                 .append("sta", status)
                 .append("typ",type)
-                .append("ctm",new Date().getTime())
+                .append("top",Constant.ZERO)
+                .append("ctm", new Date().getTime())
                 .append("isr", 0);
         setBaseEntry(dbObject);
     }
@@ -94,6 +99,7 @@ public class ExcellentCoursesEntry extends BaseDBObject {
             String subjectName,
             String userName,
             String cover,
+            String bigCover,
             String title,
             String target,
             int allClassCount,
@@ -113,6 +119,7 @@ public class ExcellentCoursesEntry extends BaseDBObject {
                 .append("snm", subjectName)
                 .append("unm", userName)
                 .append("cov", cover)
+                .append("bco", bigCover)
                 .append("tit", title)
                 .append("tar", target)
                 .append("acc", allClassCount)
@@ -124,7 +131,8 @@ public class ExcellentCoursesEntry extends BaseDBObject {
                 .append("stn", studentNumber)
                 .append("sta", status)
                 .append("typ",type)
-                .append("ctm",new Date().getTime())
+                .append("top", Constant.ZERO)
+                .append("ctm", new Date().getTime())
                 .append("isr", 0);
         setBaseEntry(dbObject);
     }
@@ -158,6 +166,13 @@ public class ExcellentCoursesEntry extends BaseDBObject {
     }
     public void setCover(String cover){
         setSimpleValue("cov", cover);
+    }
+
+    public String getBigCouver(){
+        return getSimpleStringValue("bco");
+    }
+    public void setBigCover(String bigCover){
+        setSimpleValue("bco", bigCover);
     }
     public String getTitle(){
         return getSimpleStringValue("tit");
@@ -263,5 +278,13 @@ public class ExcellentCoursesEntry extends BaseDBObject {
         setSimpleValue("isr",isRemove);
     }
 
+
+    public int getTop(){
+        return  getSimpleIntegerValueDef("top",0);
+    }
+
+    public void setTop(int top){
+        setSimpleValue("top",top);
+    }
 
 }

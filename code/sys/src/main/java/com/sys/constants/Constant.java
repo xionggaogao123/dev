@@ -1033,7 +1033,8 @@ public class Constant {
     public static final String COLLECTION_VERSION_OPEN= "jxm_version_open";
     //操作统计
     public static final String COLLECTION_MODULE_TIME= "jxm_module_time";
-
+    //模块禁止表
+    public static final String COLLECTION_MODULE_BANNING= "jxm_module_banning";
     /*************************************精品课*****************************************/
 
     //精品课程

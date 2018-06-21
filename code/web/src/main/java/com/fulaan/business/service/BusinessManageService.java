@@ -1,5 +1,6 @@
 package com.fulaan.business.service;
 
+import com.db.business.BanningSpeakingDao;
 import com.db.business.BusinessManageDao;
 import com.db.business.BusinessRoleDao;
 import com.db.business.VersionOpenDao;
@@ -20,10 +21,7 @@ import com.fulaan.picturetext.runnable.PictureRunNable;
 import com.fulaan.pojo.User;
 import com.fulaan.user.service.UserService;
 import com.pojo.backstage.LogMessageType;
-import com.pojo.business.BusinessManageEntry;
-import com.pojo.business.BusinessRoleEntry;
-import com.pojo.business.RoleType;
-import com.pojo.business.VersionOpenEntry;
+import com.pojo.business.*;
 import com.pojo.excellentCourses.ClassOrderEntry;
 import com.pojo.excellentCourses.ExcellentCoursesEntry;
 import com.pojo.excellentCourses.HourClassEntry;
@@ -70,6 +68,8 @@ public class BusinessManageService {
     private BackStageService backStageService;
 
     private VersionOpenDao versionOpenDao = new VersionOpenDao();
+
+    private BanningSpeakingDao banningSpeakingDao = new BanningSpeakingDao();
 
     //登陆生成
     public void getLoginInfo(ObjectId userId,int type ){
@@ -473,6 +473,69 @@ public class BusinessManageService {
             versionOpenEntry.setModuleType(type);
             versionOpenDao.addEntry(versionOpenEntry);
         }
+    }
+
+    /**
+     * 获取禁言
+     * @param userId
+     * @param moduleType
+     * @return
+     */
+    public long getSpeak(ObjectId userId,int moduleType){
+        BanningSpeakingEntry banningSpeakingEntry = banningSpeakingDao.getEntry(userId, moduleType);
+        long current = System.currentTimeMillis();
+        if(banningSpeakingEntry==null){
+            return 0l;
+        }else{
+            if(banningSpeakingEntry.getEndTime()>current){
+                return banningSpeakingEntry.getEndTime()-current;
+            }
+        }
+        return 0l;
+    }
+
+    /**
+     * 禁言   兴趣小组 ----ApplyTypeEn.happy.getType()
+     * @param userId
+     * @param moduleType
+     * @return
+     */
+    public void banningSpeak(ObjectId userId,int moduleType,long time){
+        if(time!=0){//禁言
+            banningSpeakingDao.updateEntry(userId,moduleType);
+            long current = System.currentTimeMillis();
+            long endTime = current+time;
+            BanningSpeakingEntry banningSpeakingEntry = new BanningSpeakingEntry(userId,moduleType,Constant.ZERO,current,endTime);
+            banningSpeakingDao.addEntry(banningSpeakingEntry);
+        }else {//取消禁言
+            banningSpeakingDao.updateEntry(userId, moduleType);
+        }
+    }
+
+
+    /**
+     * 角色判断和禁言判断
+     */
+    public Map<String,Object> getPersonSpeak(ObjectId userId,int moduleType,ObjectId roleId){
+        Map<String,Object> map = new HashMap<String, Object>();
+        BusinessRoleEntry businessRoleEntry = businessRoleDao.getEntry(roleId);
+        int role = 0;
+        if(businessRoleEntry!=null && businessRoleEntry.getRoleType().contains(RoleType.jinyan.getEname())){
+           role = 1;
+        }
+        long time = 0l;
+        BanningSpeakingEntry banningSpeakingEntry = banningSpeakingDao.getEntry(userId, moduleType);
+        long current = System.currentTimeMillis();
+        if(banningSpeakingEntry==null){
+            time= 0l;
+        }else{
+            if(banningSpeakingEntry.getEndTime()>current){
+                time =  banningSpeakingEntry.getEndTime()-current;
+            }
+        }
+        map.put("role",role);
+        map.put("time",time);
+        return map;
     }
 
 }

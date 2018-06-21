@@ -5,7 +5,6 @@ import com.fulaan.annotation.SessionNeedless;
 import com.fulaan.base.BaseController;
 import com.fulaan.excellentCourses.dto.ExcellentCoursesDTO;
 import com.fulaan.excellentCourses.dto.HourResultDTO;
-import com.fulaan.excellentCourses.service.CoursesRoomService;
 import com.fulaan.excellentCourses.service.ExcellentCoursesService;
 import com.fulaan.pojo.User;
 import com.sys.constants.Constant;
@@ -31,8 +30,6 @@ import java.util.*;
 public class WebExcellentCoursesController extends BaseController {
     @Autowired
     private ExcellentCoursesService excellentCoursesService;
-    @Autowired
-    private CoursesRoomService coursesRoomService;
 
 
     /**
@@ -425,6 +422,54 @@ public class WebExcellentCoursesController extends BaseController {
         RespObj respObj = new RespObj(Constant.FAILD_CODE);
         try{
             Map<String,Object> map = excellentCoursesService.selectUserList(new ObjectId(userId),contactId,page,pageSize);
+            respObj.setCode(Constant.SUCCESS_CODE);
+            respObj.setMessage(map);
+        }catch (Exception e){
+            e.printStackTrace();
+            respObj.setCode(Constant.FAILD_CODE);
+            respObj.setErrorMessage(e.getMessage());
+        }
+        return respObj;
+    }
+
+    /**
+     * 设为轮播（取消轮播）
+     */
+    @ApiOperation(value = "设为轮播", httpMethod = "POST", produces = "application/json")
+    @ApiResponses( value = {@ApiResponse(code = 200, message = "Successful — 请求已完成",response = String.class),
+            @ApiResponse(code = 400, message = "请求中有语法问题，或不能满足请求"),
+            @ApiResponse(code = 500, message = "服务器不能完成请求")})
+    @RequestMapping("/setLun")
+    @ResponseBody
+    public RespObj setLun(@ApiParam(name = "id", required = true, value = "id") @RequestParam(value="id",defaultValue = "") String id,
+                          @ApiParam(name = "top", required = true, value = "top") @RequestParam(value="top",defaultValue = "") int top){
+        RespObj respObj = new RespObj(Constant.FAILD_CODE);
+        try{
+            excellentCoursesService.setLun(new ObjectId(id),getUserId(),top);
+            respObj.setCode(Constant.SUCCESS_CODE);
+            respObj.setMessage("设为轮播成功");
+        }catch (Exception e){
+            e.printStackTrace();
+            respObj.setCode(Constant.FAILD_CODE);
+            respObj.setErrorMessage(e.getMessage());
+        }
+        return respObj;
+    }
+
+    /**
+     * 查询轮播列表
+     */
+    @ApiOperation(value = "查询轮播列表", httpMethod = "POST", produces = "application/json")
+    @ApiResponses( value = {@ApiResponse(code = 200, message = "Successful — 请求已完成",response = String.class),
+            @ApiResponse(code = 400, message = "请求中有语法问题，或不能满足请求"),
+            @ApiResponse(code = 500, message = "服务器不能完成请求")})
+    @RequestMapping("/getLunList")
+    @ResponseBody
+    public RespObj getLunList(@ApiParam(name = "page", required = false, value = "page") @RequestParam(value="page",defaultValue = "1") int page,
+                          @ApiParam(name = "pageSize", required = false, value = "pageSize") @RequestParam(value="pageSize",defaultValue = "10") int pageSize){
+        RespObj respObj = new RespObj(Constant.FAILD_CODE);
+        try{
+            Map<String,Object> map = excellentCoursesService.getLunList(page, pageSize);
             respObj.setCode(Constant.SUCCESS_CODE);
             respObj.setMessage(map);
         }catch (Exception e){

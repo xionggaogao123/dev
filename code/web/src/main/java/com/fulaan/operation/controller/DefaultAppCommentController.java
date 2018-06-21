@@ -667,9 +667,9 @@ public class DefaultAppCommentController extends BaseController {
     public String updateEntry(@RequestBody AppCommentDTO dto){
         RespObj respObj=new RespObj(Constant.FAILD_CODE);
         try {
-            appCommentService.updateEntry(dto);
+            String score = appCommentService.updateEntry(dto);
             respObj.setCode(Constant.SUCCESS_CODE);
-            respObj.setMessage("修改成功");
+            respObj.setMessage(score);
         } catch (Exception e) {
             e.printStackTrace();
             if("推送失败".equals(e.getMessage())) {

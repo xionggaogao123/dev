@@ -362,6 +362,85 @@ public class ExcellentCoursesService {
         //map.put("dto",getNowEntry(hourClassIds));
         return map;
     }
+    /**
+     * 家长孩子们的购买课程
+     * @param userId
+     * @return
+     */
+    public Map<String,Object> getMyChildBuyCoursesList(ObjectId userId){
+        Map<String,Object> map = new HashMap<String, Object>();
+        List<ClassOrderEntry> classOrderEntries =  classOrderDao.getEntry(userId);
+        long current = System.currentTimeMillis();
+        List<ObjectId> objectIdList1 = new ArrayList<ObjectId>();
+        List<ObjectId> hourClassIds = new ArrayList<ObjectId>();
+        for(ClassOrderEntry classOrderEntry:classOrderEntries){
+            if(classOrderEntry.getIsBuy()==1){
+                objectIdList1.add(classOrderEntry.getContactId());
+                hourClassIds.add(classOrderEntry.getParentId());
+            }
+        }
+        Map<String,ExcellentCoursesDTO> dtoMap = new HashMap<String, ExcellentCoursesDTO>();
+        List<ExcellentCoursesEntry> coursesEntries2 = excellentCoursesDao.getEntryListById(objectIdList1,current);
+        List<ExcellentCoursesDTO> dtos = new ArrayList<ExcellentCoursesDTO>();
+        for(ExcellentCoursesEntry excellentCoursesEntry:coursesEntries2){//已购买
+            ExcellentCoursesDTO dto = new ExcellentCoursesDTO(excellentCoursesEntry);
+            dto.setIsBuy(1);
+            dtoMap.put(dto.getId(),dto);
+        }
+        //重新排序
+        List<ObjectId>  oids = new ArrayList<ObjectId>();
+        for(ObjectId oid : objectIdList1){
+            if(oids.contains(oid)){
+
+            }else{
+                oids.add(oid);
+                ExcellentCoursesDTO dto1 = dtoMap.get(oid.toString());
+                if(dto1!=null){
+                    dtos.add(dto1);
+                }
+            }
+        }
+        map.put("list",dtos);
+        map.put("count",dtos.size());
+        //map.put("dto",getNowEntry(hourClassIds));
+        return map;
+    }
+
+    /**
+     * 家长孩子们的推荐课程
+     * @param userId
+     * @return
+     */
+    public Map<String,Object> getMyChildCommunityCoursesList(ObjectId userId){
+        Map<String,Object> map = new HashMap<String, Object>();
+        List<ClassOrderEntry> classOrderEntries =  classOrderDao.getEntry(userId);
+        //获得学生所在社群
+        List<ObjectId> objectIdList = newVersionBindService.getCommunityIdsByUserId(userId);
+        long current = System.currentTimeMillis();
+        //推荐名单
+        List<ExcellentCoursesEntry> coursesEntries = excellentCoursesDao.getEntryList(objectIdList,current);
+
+        List<ObjectId> objectIdList1 = new ArrayList<ObjectId>();
+        List<ObjectId> hourClassIds = new ArrayList<ObjectId>();
+        for(ClassOrderEntry classOrderEntry:classOrderEntries){
+            if(classOrderEntry.getIsBuy()==1){
+                objectIdList1.add(classOrderEntry.getContactId());
+                hourClassIds.add(classOrderEntry.getParentId());
+            }
+        }
+
+        List<ExcellentCoursesDTO> dtos2 = new ArrayList<ExcellentCoursesDTO>();
+        for(ExcellentCoursesEntry excellentCoursesEntry:coursesEntries){//推荐
+            if(!objectIdList1.contains(excellentCoursesEntry.getID())){
+                ExcellentCoursesDTO dto = new ExcellentCoursesDTO(excellentCoursesEntry);
+                dto.setIsBuy(0);
+                dtos2.add(dto);
+            }
+        }
+        map.put("list",dtos2);
+        map.put("count",dtos2.size());
+        return map;
+    }
 
     /**
      * 学生首页加载
@@ -1887,6 +1966,7 @@ public class ExcellentCoursesService {
             throw new Exception("用户账户无可用余额!");
         }
         extractCashEntry.setType(Constant.TWO);
+        extractCashEntry.setDateTime(System.currentTimeMillis());
         extractCashDao.addEntry(extractCashEntry);
         //修改充值账户余额
         double newPrice = accountFrashEntry.getAccount()-price;
@@ -1919,6 +1999,7 @@ public class ExcellentCoursesService {
             throw new Exception("该用户并无美豆账户！");
         }
         extractCashEntry.setType(Constant.THREE);
+        extractCashEntry.setDateTime(System.currentTimeMillis());
         extractCashDao.addEntry(extractCashEntry);
         int newPr = userBehaviorEntry.getAccount() + price;
         //修改美豆账户余额
@@ -1972,4 +2053,25 @@ public class ExcellentCoursesService {
         dto.setUserId(userId);
         logMessageDao.addEntry(dto.buildAddEntry());
     }
+
+
+    public  void setLun(ObjectId id,ObjectId userId,int status){
+        excellentCoursesDao.setLunEntry(id,status);
+    }
+
+    public Map<String,Object> getLunList(int page,int pageSize){
+        Map<String,Object> map = new HashMap<String, Object>();
+        List<ExcellentCoursesEntry> entries = excellentCoursesDao.getLunList(page,pageSize);
+        int count = excellentCoursesDao.countLunList();
+        List<ExcellentCoursesDTO> dtos = new ArrayList<ExcellentCoursesDTO>();
+        for(ExcellentCoursesEntry entry:entries){
+            ExcellentCoursesDTO dto = new ExcellentCoursesDTO(entry);
+            dtos.add(dto);
+        }
+        map.put("list",dtos);
+        map.put("count",count);
+        return map;
+    }
+
+
 }

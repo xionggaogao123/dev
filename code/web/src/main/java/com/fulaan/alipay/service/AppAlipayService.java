@@ -101,7 +101,7 @@ public class AppAlipayService  {
         if(price<=0){
             addLog(userId,contactId,"充值金额有误，订单终止");
             EBusinessLog.info(userId.toString()+"-"+contactId.toString()+"充值金额有误，订单终止");
-            throw new Exception("充值金额有误！");
+            throw new Exception("充值金额不能为0！");
         }
         //充值价格判断
         if(price>MAX_PRICE){

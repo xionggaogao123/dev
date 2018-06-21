@@ -309,10 +309,10 @@ public class BusinessManageController extends BaseController {
     }
 
     /**
-     * 版本获取
+     * 修改显现
      */
     @SessionNeedless
-    @ApiOperation(value = "版本获取", httpMethod = "POST", produces = "application/json")
+    @ApiOperation(value = "修改显现", httpMethod = "POST", produces = "application/json")
     @ApiResponses( value = {@ApiResponse(code = 200, message = "Successful — 请求已完成",response = String.class)})
     @RequestMapping("/getVersion")
     @ResponseBody
@@ -373,4 +373,77 @@ public class BusinessManageController extends BaseController {
         }
         return respObj;
     }
+
+    /**
+     * 禁言
+     */
+    @ApiOperation(value = "禁言7天", httpMethod = "POST", produces = "application/json")
+    @ApiResponses( value = {@ApiResponse(code = 200, message = "Successful — 请求已完成",response = String.class)})
+    @RequestMapping("/banningSpeak")
+    @ResponseBody
+    public RespObj banningSpeak(@ApiParam(name="userId",required = false,value="userId") @RequestParam(value="userId",defaultValue = "") String userId,
+                                 @ApiParam(name="moduleType",required = false,value="moduleType") @RequestParam(value="moduleType",defaultValue = "") int moduleType,
+                                 @ApiParam(name="time",required = false,value="time") @RequestParam(value="time",defaultValue = "") long time){
+        RespObj respObj=new RespObj(Constant.FAILD_CODE);
+        try {
+            businessManageService.banningSpeak(new ObjectId(userId), moduleType, time);
+            respObj.setCode(Constant.SUCCESS_CODE);
+            if(time==0l){
+                respObj.setMessage("取消禁言成功！");
+            }else{
+                respObj.setMessage("禁言成功！");
+            }
+
+        } catch (Exception e) {
+            e.printStackTrace();
+            respObj.setCode(Constant.FAILD_CODE);
+            respObj.setErrorMessage("修改版本失败!");
+        }
+        return respObj;
+    }
+
+    /**
+     * 获取状态
+     */
+    @ApiOperation(value = "获取状态", httpMethod = "POST", produces = "application/json")
+    @ApiResponses( value = {@ApiResponse(code = 200, message = "Successful — 请求已完成",response = String.class)})
+    @RequestMapping("/getPersonSpeak")
+    @ResponseBody
+    public RespObj getPersonSpeak(
+                      @ApiParam(name="userId",required = false,value="userId") @RequestParam(value="userId",defaultValue = "") String userId,
+                    @ApiParam(name="moduleType",required = false,value="moduleType") @RequestParam(value="moduleType",defaultValue = "") int moduleType){
+        RespObj respObj=new RespObj(Constant.FAILD_CODE);
+        try {
+            Map<String,Object> map = businessManageService.getPersonSpeak(new ObjectId(userId), moduleType, getUserId());
+            respObj.setCode(Constant.SUCCESS_CODE);
+            respObj.setMessage(map);
+        } catch (Exception e) {
+            e.printStackTrace();
+            respObj.setCode(Constant.FAILD_CODE);
+            respObj.setErrorMessage("获取状态失败!");
+        }
+        return respObj;
+    }
+
+    /**
+     * 是否禁言
+     */
+    @ApiOperation(value = "是否禁言", httpMethod = "POST", produces = "application/json")
+    @ApiResponses( value = {@ApiResponse(code = 200, message = "Successful — 请求已完成",response = String.class)})
+    @RequestMapping("/getSpeak")
+    @ResponseBody
+    public RespObj getSpeak( @ApiParam(name="moduleType",required = false,value="moduleType") @RequestParam(value="moduleType",defaultValue = "") int moduleType){
+        RespObj respObj=new RespObj(Constant.FAILD_CODE);
+        try {
+            long time = businessManageService.getSpeak(getUserId(), moduleType);
+            respObj.setCode(Constant.SUCCESS_CODE);
+            respObj.setMessage(time);
+        } catch (Exception e) {
+            e.printStackTrace();
+            respObj.setCode(Constant.FAILD_CODE);
+            respObj.setErrorMessage("获取是否禁言失败!");
+        }
+        return respObj;
+    }
+
 }

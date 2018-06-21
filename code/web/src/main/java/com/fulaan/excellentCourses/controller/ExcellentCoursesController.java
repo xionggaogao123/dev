@@ -257,6 +257,31 @@ public class ExcellentCoursesController extends BaseController {
     /****************************** 家长端 start ********************************/
 
     /**
+     * 查询轮播列表
+     */
+    @ApiOperation(value = "查询轮播列表", httpMethod = "POST", produces = "application/json")
+    @ApiResponses( value = {@ApiResponse(code = 200, message = "Successful — 请求已完成",response = String.class),
+            @ApiResponse(code = 400, message = "请求中有语法问题，或不能满足请求"),
+            @ApiResponse(code = 500, message = "服务器不能完成请求")})
+    @RequestMapping("/getLunList")
+    @ResponseBody
+    public RespObj getLunList(@ApiParam(name = "page", required = false, value = "page") @RequestParam(value="page",defaultValue = "1") int page,
+                              @ApiParam(name = "pageSize", required = false, value = "pageSize") @RequestParam(value="pageSize",defaultValue = "10") int pageSize){
+        RespObj respObj = new RespObj(Constant.FAILD_CODE);
+        try{
+            Map<String,Object> map = excellentCoursesService.getLunList(page, pageSize);
+            respObj.setCode(Constant.SUCCESS_CODE);
+            respObj.setMessage(map);
+        }catch (Exception e){
+            e.printStackTrace();
+            respObj.setCode(Constant.FAILD_CODE);
+            respObj.setErrorMessage(e.getMessage());
+        }
+        return respObj;
+    }
+
+
+    /**
      * 家长孩子们的活跃课程
      */
     @ApiOperation(value = "家长孩子们的活跃课程", httpMethod = "GET", produces = "application/json")
@@ -275,6 +300,52 @@ public class ExcellentCoursesController extends BaseController {
             e.printStackTrace();
             respObj.setCode(Constant.FAILD_CODE);
             respObj.setErrorMessage("获取活跃课程失败!");
+        }
+        return JSON.toJSONString(respObj);
+    }
+
+    /**
+     * 家长孩子们的购买课程
+     */
+    @ApiOperation(value = "家长孩子们的购买课程", httpMethod = "GET", produces = "application/json")
+    @ApiResponses( value = {@ApiResponse(code = 200, message = "Successful — 请求已完成",response = String.class),
+            @ApiResponse(code = 400, message = "请求中有语法问题，或不能满足请求"),
+            @ApiResponse(code = 500, message = "服务器不能完成请求")})
+    @RequestMapping("/getMyChildBuyCoursesList")
+    @ResponseBody
+    public String getMyChildBuyCoursesList(@ApiParam(name= "孩子id",required = true,value="")@RequestParam("sonId") String sonId){
+        RespObj respObj=new RespObj(Constant.FAILD_CODE);
+        try {
+            respObj.setCode(Constant.SUCCESS_CODE);
+            Map<String,Object> map = excellentCoursesService.getMyChildBuyCoursesList(new ObjectId(sonId));
+            respObj.setMessage(map);
+        } catch (Exception e) {
+            e.printStackTrace();
+            respObj.setCode(Constant.FAILD_CODE);
+            respObj.setErrorMessage("家长孩子们的购买课程失败!");
+        }
+        return JSON.toJSONString(respObj);
+    }
+
+    /**
+     * 家长孩子们的推荐课程
+     */
+    @ApiOperation(value = "家长孩子们的推荐课程", httpMethod = "GET", produces = "application/json")
+    @ApiResponses( value = {@ApiResponse(code = 200, message = "Successful — 请求已完成",response = String.class),
+            @ApiResponse(code = 400, message = "请求中有语法问题，或不能满足请求"),
+            @ApiResponse(code = 500, message = "服务器不能完成请求")})
+    @RequestMapping("/getMyChildCommunityCoursesList")
+    @ResponseBody
+    public String getMyChildCommunityCoursesList(@ApiParam(name= "孩子id",required = true,value="")@RequestParam("sonId") String sonId){
+        RespObj respObj=new RespObj(Constant.FAILD_CODE);
+        try {
+            respObj.setCode(Constant.SUCCESS_CODE);
+            Map<String,Object> map = excellentCoursesService.getMyChildCommunityCoursesList(new ObjectId(sonId));
+            respObj.setMessage(map);
+        } catch (Exception e) {
+            e.printStackTrace();
+            respObj.setCode(Constant.FAILD_CODE);
+            respObj.setErrorMessage("家长孩子们的活跃课程失败!");
         }
         return JSON.toJSONString(respObj);
     }

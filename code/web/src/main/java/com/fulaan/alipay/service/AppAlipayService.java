@@ -612,5 +612,16 @@ public class AppAlipayService  {
             throw new Exception("系统繁忙，稍后再试");
         }
     }
+    
+    
+    public double getAccount(ObjectId userId) {
+        //查询用户充值账户
+        AccountFrashEntry accountFrashEntry = accountFrashDao.getEntry(userId);
+        if(accountFrashEntry != null) {
+            return accountFrashEntry.getAccount();
+        } else {
+            return 0d;
+        }
+    }
 
 }

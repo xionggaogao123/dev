@@ -16,7 +16,7 @@ import java.util.List;
  *
  * id                        id                 id
  * userId                    用户id             uid
- * account                   账户余额吧         acc
+ * account                   账户余额吧         acc 美豆
  * collectList <ObjectId>    收藏列表           clt
  * browseList<ObjectId>      浏览列表           blt
  * sonOpenList<ObjectId>     关闭孩子权限       slt

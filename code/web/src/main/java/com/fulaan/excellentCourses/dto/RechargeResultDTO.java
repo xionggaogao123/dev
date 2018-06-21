@@ -15,6 +15,7 @@ public class RechargeResultDTO{
     private String userId;
     private String userName;
     private String createTime;
+    private String createTimeYmd;
     private String description;
     private int way;
     private int type;
@@ -34,8 +35,10 @@ public class RechargeResultDTO{
             this.userId = e.getUserId()==null?"":e.getUserId().toString();
             if(e.getCreateTime()!=0l){
                 this.createTime = DateTimeUtils.getLongToStrTimeTwo(e.getCreateTime());
+                this.createTimeYmd = DateTimeUtils.getLongToStrTime(e.getCreateTime());
             }else{
                 this.createTime = "";
+                this.createTimeYmd = "";
             }
             this.description = e.getDescription();
             this.way = e.getWay();
@@ -148,4 +151,15 @@ public class RechargeResultDTO{
     public void setSonName(String sonName) {
         this.sonName = sonName;
     }
+
+    public String getCreateTimeYmd() {
+        return createTimeYmd;
+    }
+
+    public void setCreateTimeYmd(String createTimeYmd) {
+        this.createTimeYmd = createTimeYmd;
+    }
+    
+    
+    
 }

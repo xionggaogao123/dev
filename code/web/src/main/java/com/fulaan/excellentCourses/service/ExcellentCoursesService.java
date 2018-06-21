@@ -1707,6 +1707,8 @@ public class ExcellentCoursesService {
         }
         map.put("list",dtos);
         map.put("count",count);
+        map.put("page", page);
+        map.put("pageSize", pageSize);
         return map;
     }
 

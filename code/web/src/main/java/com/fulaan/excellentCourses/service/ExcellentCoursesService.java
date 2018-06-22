@@ -1507,8 +1507,12 @@ public class ExcellentCoursesService {
             map.put("password",coursesRoomEntry.getPlaypass());
             //去上课
             classOrderDao.updateToEntry(classOrderEntry.getID());
-            //发送通知
-            systemMessageService.sendClassNotice(userId,1,excellentCoursesEntry.getTitle(),name);
+            NewVersionBindRelationEntry newVersionBindRelationEntry = newVersionBindRelationDao.getBindEntry(userId);
+            if(newVersionBindRelationEntry!=null){
+                //发送通知
+                systemMessageService.sendClassNotice(newVersionBindRelationEntry.getMainUserId(),1,excellentCoursesEntry.getTitle(),name);
+            }
+
         }else{
             throw  new Exception("上课时间未到，请稍后进入");
         }

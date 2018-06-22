@@ -2,6 +2,7 @@ package com.fulaan.alipay.controller;
 
 import com.alibaba.fastjson.JSON;
 import com.alipay.api.internal.util.AlipaySignature;
+import com.db.excellentCourses.AccountOrderDao;
 import com.fulaan.alipay.config.AlipayConfig;
 import com.fulaan.alipay.config.AlipayNewConfig;
 import com.fulaan.alipay.service.AppAlipayService;
@@ -9,6 +10,7 @@ import com.fulaan.alipay.util.AlipayCore;
 import com.fulaan.alipay.util.AlipaySubmit;
 import com.fulaan.annotation.SessionNeedless;
 import com.fulaan.base.BaseController;
+import com.pojo.excellentCourses.AccountOrderEntry;
 import com.sys.constants.Constant;
 import com.sys.props.Resources;
 import com.sys.utils.RespObj;
@@ -39,6 +41,8 @@ public class WebAlipayController extends BaseController {
     private AppAlipayService appAlipayService;
 
     private static final Logger EBusinessLog = Logger.getLogger("AppAlipayController");
+    
+    private AccountOrderDao accountOrderDao = new AccountOrderDao();
     
     
     private static String payment_type = "1";
@@ -94,6 +98,7 @@ public class WebAlipayController extends BaseController {
                           HttpServletRequest request){
         RespObj respObj=new RespObj(Constant.FAILD_CODE);
         try{
+            ObjectId dd = new ObjectId();
             respObj.setCode(Constant.SUCCESS_CODE);
             Map<String, String> sParaTemp = new HashMap<String, String>();
             sParaTemp.put("service", "create_direct_pay_by_user");
@@ -103,7 +108,7 @@ public class WebAlipayController extends BaseController {
             sParaTemp.put("notify_url", notify_url);
             sParaTemp.put("return_url", return_url+"/"+String.valueOf(Double.valueOf(price))+"/1");
             sParaTemp.put("seller_email", seller_email);
-            sParaTemp.put("out_trade_no", new ObjectId().toString());
+            sParaTemp.put("out_trade_no", dd.toString());
             sParaTemp.put("subject", "账户充值");
             sParaTemp.put("total_fee", String.valueOf(Double.valueOf(price)));
             sParaTemp.put("body", "");
@@ -113,6 +118,10 @@ public class WebAlipayController extends BaseController {
             Map<String, String> sPara = AlipayCore.paraFilter(sParaTemp);
             String sign = AlipaySubmit.buildRequestMysign(sPara, "MD5");
             EBusinessLog.info("OrderCreateSign:" + sign);
+            
+          //生成未支付订单记录
+            AccountOrderEntry accountOrderEntry = new AccountOrderEntry(new ObjectId(),getUserId(),"",sign,"",price,dd.toString(),1,"空",0l,"");
+            accountOrderDao.addEntry(accountOrderEntry);
             // 建立请求
             String sHtmlText = AlipaySubmit.buildRequest(sParaTemp, "get", "确认");
             respObj.setMessage(sHtmlText);
@@ -197,6 +206,7 @@ public class WebAlipayController extends BaseController {
         String out_trade_no = request.getParameter("out_trade_no");            //获取订单号
         String total_fee_string = request.getParameter("total_fee");            //获取总金额
         String trade_status = request.getParameter("trade_status");   //订单状态
+        String notify_time = request.getParameter("notify_time");    //支付人支付宝
         /*String user_id = request.getParameter("buyer_logon_id");    //支付人支付宝
         String notify_time = request.getParameter("notify_time");    //支付人支付宝
 */        
@@ -225,7 +235,8 @@ public class WebAlipayController extends BaseController {
                     }else{
                         ipconfig =  request.getHeader("x-forwarded-for");
                     }
-                    Map<String,Object> map = appAlipayService.webAppPay(price, getUserId(), ipconfig);
+                  //修改订单状态
+                    appAlipayService.payed(out_trade_no,trade_no,"",price,str.toString(),notify_time);
                     code = "success";
                 }
             /*} else {

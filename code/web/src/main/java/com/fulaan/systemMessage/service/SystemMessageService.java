@@ -1,7 +1,11 @@
 package com.fulaan.systemMessage.service;
 
+import cn.jpush.api.push.model.audience.Audience;
 import com.db.backstage.SystemMessageDao;
 import com.db.backstage.TeacherApproveDao;
+import com.db.excellentCourses.ClassOrderDao;
+import com.db.excellentCourses.ExcellentCoursesDao;
+import com.db.excellentCourses.HourClassDao;
 import com.db.fcommunity.CommunityDetailDao;
 import com.db.fcommunity.MemberDao;
 import com.db.indexPage.IndexPageDao;
@@ -21,7 +25,11 @@ import com.fulaan.pojo.Attachement;
 import com.fulaan.systemMessage.dto.AppNewOperationDTO;
 import com.fulaan.systemMessage.dto.SimpleUserDTO;
 import com.fulaan.user.service.UserService;
+import com.fulaan.utils.JPushUtils;
 import com.pojo.backstage.PictureType;
+import com.pojo.excellentCourses.ClassOrderEntry;
+import com.pojo.excellentCourses.ExcellentCoursesEntry;
+import com.pojo.excellentCourses.HourClassEntry;
 import com.pojo.fcommunity.AttachmentEntry;
 import com.pojo.fcommunity.CommunityDetailEntry;
 import com.pojo.fcommunity.VideoEntry;
@@ -78,6 +86,8 @@ public class SystemMessageService extends BaseService {
     private CommunityDetailDao communityDetailDao = new CommunityDetailDao();
 
     private AppNewOperationDao appOperationDao = new AppNewOperationDao();
+
+    private SystemMessageDao systemMessageDao = new SystemMessageDao();
     @Autowired
     private EmService emService;
     @Autowired
@@ -656,5 +666,118 @@ public class SystemMessageService extends BaseService {
         SystemMessageService systemMessageService = new SystemMessageService();
         systemMessageService.addHotList(new ObjectId("5b2387b8bf2e791b383f6dca"), 2);
 
+    }
+    /**
+     * 发送上课提醒（同步消息提醒）
+     */
+    public void sendClassNotice(ObjectId userId,int type,String title,String name){
+        String description = "";
+        if(type==1){//进去
+            description  = "您的孩子"+name+"已经进入课堂:"+title;
+        }else{
+            description  = "请注意，您的孩子"+name+"尚未进入课堂:"+title;
+        }
+        //添加系统信息
+        SystemMessageDTO dto = new SystemMessageDTO();
+        dto.setType(4);
+        dto.setAvatar("");
+        dto.setName(name);
+        dto.setFileUrl("");
+        dto.setSourceId("");
+        dto.setContent(description);
+        dto.setFileType(1);
+        dto.setSourceName("");
+        dto.setSourceType(0);
+        dto.setTitle("");
+        String id = systemMessageDao.addEntry(dto.buildAddEntry());
+
+        //添加首页记录
+        IndexPageDTO dto1 = new IndexPageDTO();
+        dto1.setType(CommunityType.system.getType());
+        dto1.setUserId(userId.toString());
+        dto1.setCommunityId(userId.toString());
+        dto1.setContactId(id.toString());
+        IndexPageEntry entry = dto1.buildAddEntry();
+        indexPageDao.addEntry(entry);
+        //sendTestMessage(uid.toString());
+
+        JPushUtils jPushUtils=new JPushUtils();
+        Set<String> userIds = new HashSet<String>();
+        userIds.add(userId.toString());
+        Audience audience = Audience.alias(new ArrayList<String>(userIds));
+        jPushUtils.pushRestIosbusywork(audience,"直播课堂通知", new HashMap<String, String>());
+        jPushUtils.pushRestAndroidParentBusyWork(audience, description, "", "直播课堂通知", new HashMap<String, String>());
+
+    }
+
+    /**
+     * 发送上课提醒（同步消息提醒）
+     */
+    public static void sendStaticNotice(ObjectId userId,int type,String title,String name){
+        SystemMessageDao systemMessageDao = new SystemMessageDao();
+        String description = "";
+        if(type==1){//进去
+            description  = "您的孩子"+name+"已经进入课堂:"+title;
+        }else{
+            description  = "请注意，您的孩子"+name+"尚未进入课堂:"+title;
+        }
+        //添加系统信息
+        SystemMessageDTO dto = new SystemMessageDTO();
+        dto.setType(4);
+        dto.setAvatar("");
+        dto.setName(name);
+        dto.setFileUrl("");
+        dto.setSourceId("");
+        dto.setContent(description);
+        dto.setFileType(1);
+        dto.setSourceName("");
+        dto.setSourceType(0);
+        dto.setTitle("");
+        String id = systemMessageDao.addEntry(dto.buildAddEntry());
+        IndexPageDao indexPageDao = new IndexPageDao();
+        //添加首页记录
+        IndexPageDTO dto1 = new IndexPageDTO();
+        dto1.setType(CommunityType.system.getType());
+        dto1.setUserId(userId.toString());
+        dto1.setCommunityId(userId.toString());
+        dto1.setContactId(id.toString());
+        IndexPageEntry entry = dto1.buildAddEntry();
+        indexPageDao.addEntry(entry);
+        //sendTestMessage(uid.toString());
+
+        JPushUtils jPushUtils=new JPushUtils();
+        Set<String> userIds = new HashSet<String>();
+        userIds.add(userId.toString());
+        Audience audience = Audience.alias(new ArrayList<String>(userIds));
+        jPushUtils.pushRestIosbusywork(audience,"直播课堂通知", new HashMap<String, String>());
+        jPushUtils.pushRestAndroidParentBusyWork(audience, description, "", "直播课堂通知", new HashMap<String, String>());
+
+    }
+
+
+    public static void getNowClassList(){
+        //6分钟要上的课
+        HourClassDao hourClassDao = new HourClassDao();
+        ClassOrderDao classOrderDao = new ClassOrderDao();
+        UserDao userDao = new UserDao();
+        ExcellentCoursesDao excellentCoursesDao = new ExcellentCoursesDao();
+        long endTime = System.currentTimeMillis();
+        long startTime = endTime-6*60*1000;
+        List<HourClassEntry> hourClassEntries = hourClassDao.getIsNewObjectId(startTime, endTime);
+        if(hourClassEntries.size()>0){
+            for(HourClassEntry hourClassEntry:hourClassEntries){
+                List<ClassOrderEntry> classOrderEntries = classOrderDao.getAllUserList(hourClassEntry.getID());
+                if(classOrderEntries.size()>0){
+                    for(ClassOrderEntry classOrderEntry:classOrderEntries ){
+                        ExcellentCoursesEntry excellentCoursesEntry = excellentCoursesDao.getEntry(hourClassEntry.getParentId());
+                        UserEntry userEntry = userDao.findByUserId(classOrderEntry.getUserId());
+                        if(excellentCoursesEntry!=null && userEntry!=null){
+                            String name = org.apache.commons.lang.StringUtils.isNotEmpty(userEntry.getNickName())?userEntry.getNickName():userEntry.getUserName();
+                            sendStaticNotice(classOrderEntry.getUserId(),2,excellentCoursesEntry.getTitle(),name);
+                        }
+                    }
+                }
+            }
+        }
     }
 }

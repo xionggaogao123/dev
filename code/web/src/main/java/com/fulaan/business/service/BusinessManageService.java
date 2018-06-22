@@ -521,7 +521,9 @@ public class BusinessManageService {
         BusinessRoleEntry businessRoleEntry = businessRoleDao.getEntry(roleId);
         int role = 0;
         if(businessRoleEntry!=null && businessRoleEntry.getRoleType().contains(RoleType.jinyan.getEname())){
-           role = 1;
+            if(!userId.toString().equals(roleId.toString())){
+                role = 1;
+            }
         }
         long time = 0l;
         BanningSpeakingEntry banningSpeakingEntry = banningSpeakingDao.getEntry(userId, moduleType);

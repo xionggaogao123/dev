@@ -44,7 +44,11 @@ public class ExcellentCoursesDTO {
             this.userId = e.getUserId()==null?"":e.getUserId().toString();
             this.userName = e.getUserName();
             this.subjectId=e.getSubjectId()==null?"":e.getSubjectId().toString();
-            this.bigCover="http://7xiclj.com1.z0.glb.clouddn.com/5b223ca20a9d325adeff58a4.png";
+            if(e.getBigCouver()!=null){
+                this.bigCover=e.getBigCouver();
+            }else{
+                this.bigCover="http://7xiclj.com1.z0.glb.clouddn.com/5b2cd1613d4df93a938a0b54.jpg";
+            }
             this.subjectName = e.getSubjectName();
             this.cover = e.getCover();
             this.title = e.getTitle();

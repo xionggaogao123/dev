@@ -85,6 +85,28 @@ public class ExcellentCoursesService {
     private static final int  STUDENT_TIME = 5*60*1000;  //学生提前时间  ->  5分钟
     private static final int  TUI_TIME = 12*60*60*1000;  //退款超时时间  ->  12小时
 
+   public static final String[] arg1 = {"http://7xiclj.com1.z0.glb.clouddn.com/5b2cd0143d4df93a9389fa73.jpg",
+                                        "http://7xiclj.com1.z0.glb.clouddn.com/5b2cd0493d4df93a9389fde3.jpg",
+                                        "http://7xiclj.com1.z0.glb.clouddn.com/5b2cd04e3d4df93a9389fdfe.jpg",
+                                        "http://7xiclj.com1.z0.glb.clouddn.com/5b2cd0543d4df93a9389fe56.jpg",
+                                        "http://7xiclj.com1.z0.glb.clouddn.com/5b2cd0e53d4df93a938a05b6.jpg",
+                                        "http://7xiclj.com1.z0.glb.clouddn.com/5b2cd0ed3d4df93a938a05cb.jpg",
+                                        "http://7xiclj.com1.z0.glb.clouddn.com/5b2cd0f13d4df93a938a0609.jpg",
+                                        "http://7xiclj.com1.z0.glb.clouddn.com/5b2cd0f53d4df93a938a0639.jpg",
+                                        "http://7xiclj.com1.z0.glb.clouddn.com/5b2cd15d3d4df93a938a0b25.jpg",
+                                        "http://7xiclj.com1.z0.glb.clouddn.com/5b2cd1613d4df93a938a0b54.jpg"};//大图
+
+   public static final String[] arg2 = {"http://7xiclj.com1.z0.glb.clouddn.com/5b2cd0463d4df93a9389fddb.jpg",
+                                        "http://7xiclj.com1.z0.glb.clouddn.com/5b2cd04c3d4df93a9389fdfc.jpg",
+                                        "http://7xiclj.com1.z0.glb.clouddn.com/5b2cd0503d4df93a9389fe0b.jpg",
+                                        "http://7xiclj.com1.z0.glb.clouddn.com/5b2cd0563d4df93a9389fe7c.jpg",
+                                        "http://7xiclj.com1.z0.glb.clouddn.com/5b2cd0e73d4df93a938a05b7.jpg",
+                                        "http://7xiclj.com1.z0.glb.clouddn.com/5b2cd0ef3d4df93a938a05f1.jpg",
+                                        "http://7xiclj.com1.z0.glb.clouddn.com/5b2cd0f33d4df93a938a061c.jpg",
+                                        "http://7xiclj.com1.z0.glb.clouddn.com/5b2cd0f73d4df93a938a064e.jpg",
+                                        "http://7xiclj.com1.z0.glb.clouddn.com/5b2cd15f3d4df93a938a0b35.jpg",
+                                        "http://7xiclj.com1.z0.glb.clouddn.com/5b2cd1633d4df93a938a0b5f.jpg"};//小图
+
 
     /**
      * 充值消费日志
@@ -120,8 +142,10 @@ public class ExcellentCoursesService {
             str = excellentCoursesDao.addEntry(excellentCoursesEntry);
         }else{
             dto.setUserId(userId.toString());
-            dto.setCover("http://7xiclj.com1.z0.glb.clouddn.com/5ae4035bbf2e7927f09df7d8.png");
-            dto.setBigCover("");
+            Random random = new Random();
+            int i1 = random.nextInt(9)+1;
+            dto.setCover(arg2[i1]);
+            dto.setBigCover(arg1[i1]);
             //初次创建   状态为  未发布
             dto.setStatus(0);
             ExcellentCoursesEntry excellentCoursesEntry = dto.buildAddEntry();

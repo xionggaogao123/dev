@@ -1623,13 +1623,17 @@ public class ExcellentCoursesService {
      */
     public void refund(ObjectId id,ObjectId userId,ObjectId sonId) throws Exception{
         String str = id.toString()+"&"+sonId.toString();
+        long current = System.currentTimeMillis();
         String cacheKey = CacheHandler.getKeyString(CacheHandler.CACHE_SHORTMESSAGE, str);
         String cacheKeyTime = CacheHandler.getStringValue(cacheKey);
         if (StringUtils.isNotBlank(cacheKeyTime)) {
-            //model.put("message", "获取验证码太频繁");
-            throw new Exception("您今天已经退过该门课程，请明天再试");
+            String str4 = DateTimeUtils.getLongToStrTimeTwo(current).substring(0,11);
+            String str5 = DateTimeUtils.getLongToStrTimeTwo(Long.parseLong(cacheKeyTime)).substring(0,11);
+            if(str4.equals(str5)){
+                //model.put("message", "获取验证码太频繁");
+                throw new Exception("您今天已经退过该门课程，请明天再试");
+            }
         }
-        long current = System.currentTimeMillis();
         //1.查询该课程
         ExcellentCoursesEntry excellentCoursesEntry = excellentCoursesDao.getEntry(id);
         if(excellentCoursesEntry==null){

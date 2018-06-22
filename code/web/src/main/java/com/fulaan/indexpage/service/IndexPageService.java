@@ -524,7 +524,7 @@ public class IndexPageService {
                     ob1.put("unReadCount",0);
                     ob1.put("timeExpression","");
                     ob1.put("isOwner",true);
-                    ob5 = ob1;
+                    //ob5 = ob1;
                     //list.add(ob1);
                 }else if(entry.getType()==2){
                     Map<String,Object> ob1 = new HashMap<String, Object>();
@@ -867,7 +867,7 @@ public class IndexPageService {
                     ob1.put("unReadCount",0);
                     ob1.put("timeExpression","");
                     ob1.put("isOwner",true);
-                    ob5 = ob1;
+                    //ob5 = ob1;
                     //list.add(ob1);
                 }else if(entry.getType()==2){
                     Map<String,Object> ob1 = new HashMap<String, Object>();

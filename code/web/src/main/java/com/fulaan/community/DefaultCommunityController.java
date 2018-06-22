@@ -2395,10 +2395,12 @@ public class DefaultCommunityController extends BaseController {
                     dtos.add(communityService.getDto(userEntry));
                 }
             } else {
-                //新产生的Id查找
-                UserEntry userEntry1 = userService.findByGenerateCode(regular);
-                if (null != userEntry1) {
-                    dtos.add(communityService.getDto(userEntry1));
+                if(checkLong(regular)){
+                    //新产生的Id查找
+                    UserEntry userEntry1 = userService.findByGenerateCode(regular);
+                    if (null != userEntry1) {
+                        dtos.add(communityService.getDto(userEntry1));
+                    }
                 }
                 if (dtos.size() == 0) {
                     //用户名精确查找
@@ -2414,7 +2416,7 @@ public class DefaultCommunityController extends BaseController {
                             count = dtos.size();
                         } else {
                             //判断是否存储了Id,存储时间为5分钟
-                            String field1 = "nm";
+                          /*  String field1 = "nm";
                             String filed2 = "nnm";
                             ObjectId userId = getUserId();
                             String key = userId.toString() + "$" + regular;
@@ -2444,7 +2446,7 @@ public class DefaultCommunityController extends BaseController {
                             }
                             if (null != hashMap && hashMap.size() > 0) {
                                 RedisUtils.cacheMap(key, hashMap, Constant.SESSION_FIVE_MINUTE);
-                            }
+                            }*/
                         }
                     }
                 }
@@ -2456,6 +2458,14 @@ public class DefaultCommunityController extends BaseController {
         } catch (Exception e) {
             e.printStackTrace();
             return RespObj.FAILD("传递的参数不符合标准！");
+        }
+    }
+    public boolean checkLong(String str){
+        try{
+            long str3 = Long.parseLong(str);
+            return true;
+        }catch (Exception e){
+            return false;
         }
     }
     /**

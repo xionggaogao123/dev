@@ -533,9 +533,19 @@ public class BusinessManageService {
                 time =  banningSpeakingEntry.getEndTime()-current;
             }
         }
+
         map.put("role",role);
         map.put("time",time);
         return map;
+    }
+
+    public static String formatDuring(long mss) {
+        long days = mss / (1000 * 60 * 60 * 24);
+        long hours = (mss % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60);
+        long minutes = (mss % (1000 * 60 * 60)) / (1000 * 60);
+        long seconds = (mss % (1000 * 60)) / 1000;
+        return days + " 天 " + hours + "小时" + minutes + " 分钟 "
+                + seconds + " 秒 ";
     }
 
 }

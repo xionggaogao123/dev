@@ -386,7 +386,8 @@ public class BusinessManageController extends BaseController {
                                  @ApiParam(name="time",required = false,value="time") @RequestParam(value="time",defaultValue = "") long time){
         RespObj respObj=new RespObj(Constant.FAILD_CODE);
         try {
-            businessManageService.banningSpeak(new ObjectId(userId), moduleType, time);
+            long newTime = time*24*60*60*1000;
+            businessManageService.banningSpeak(new ObjectId(userId), moduleType, newTime);
             respObj.setCode(Constant.SUCCESS_CODE);
             if(time==0l){
                 respObj.setMessage("取消禁言成功！");

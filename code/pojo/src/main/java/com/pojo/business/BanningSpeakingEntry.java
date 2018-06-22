@@ -23,7 +23,7 @@ public class BanningSpeakingEntry extends BaseDBObject {
     }
 
     public BanningSpeakingEntry(BasicDBObject dbObject){
-
+        super(dbObject);
     }
 
     //添加构造

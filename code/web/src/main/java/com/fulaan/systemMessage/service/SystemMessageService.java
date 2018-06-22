@@ -673,9 +673,9 @@ public class SystemMessageService extends BaseService {
     public void sendClassNotice(ObjectId userId,int type,String title,String name){
         String description = "";
         if(type==1){//进去
-            description  = "您的孩子"+name+"已经进入课堂:"+title;
+            description  = "您的小孩"+name+"已经进入直播课堂,"+title+"正在上课!";
         }else{
-            description  = "请注意，您的孩子"+name+"尚未进入课堂:"+title;
+            description  = "直播课程:"+title+"已开始，您的孩子"+name+"还没进入课堂!";
         }
         //添加系统信息
         SystemMessageDTO dto = new SystemMessageDTO();

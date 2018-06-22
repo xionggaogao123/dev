@@ -121,6 +121,7 @@ public class ExcellentCoursesService {
         }else{
             dto.setUserId(userId.toString());
             dto.setCover("http://7xiclj.com1.z0.glb.clouddn.com/5ae4035bbf2e7927f09df7d8.png");
+            dto.setBigCover("");
             //初次创建   状态为  未发布
             dto.setStatus(0);
             ExcellentCoursesEntry excellentCoursesEntry = dto.buildAddEntry();

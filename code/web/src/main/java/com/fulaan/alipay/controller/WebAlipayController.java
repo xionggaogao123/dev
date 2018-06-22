@@ -206,7 +206,7 @@ public class WebAlipayController extends BaseController {
         EBusinessLog.info("trade_status;" + trade_status);
 
 
-            if (verify(params)) {
+            /*if (verify(params)) {*/
                 EBusinessLog.error("支付宝回调验证通过");
                 if (trade_status.equals("TRADE_FINISHED") || trade_status.equals("TRADE_SUCCESS")) {
                     EBusinessLog.info("TRADE_SUCCESS");
@@ -222,9 +222,9 @@ public class WebAlipayController extends BaseController {
                     Map<String,Object> map = appAlipayService.webAppPay(price, getUserId(), ipconfig);
                     code = "success";
                 }
-            } else {
+            /*} else {
                 EBusinessLog.error("支付宝验证失败");
-            }
+            }*/
         } catch (Exception ex) {
             EBusinessLog.error("支付宝报错", ex);
         }

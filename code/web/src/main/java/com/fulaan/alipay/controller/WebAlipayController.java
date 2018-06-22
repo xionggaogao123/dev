@@ -45,7 +45,7 @@ public class WebAlipayController extends BaseController {
 
     private String notify_url = "http://www.jiaxiaomei.com" + "/web/appalipay/notify.do";
 
-    private String return_url = "http://www.jiaxiaomei.com" + "/#/balanceNext";
+    private String return_url = "http://www.jiaxiaomei.com" + "/index.html#/balanceNext";
 
     private String seller_email = "zhifu@fulaan.com";
 

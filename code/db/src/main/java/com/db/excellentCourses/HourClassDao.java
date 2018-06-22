@@ -2,6 +2,7 @@ package com.db.excellentCourses;
 
 import com.db.base.BaseDao;
 import com.db.factory.MongoFacroty;
+import com.mongodb.BasicDBList;
 import com.mongodb.BasicDBObject;
 import com.mongodb.DBObject;
 import com.pojo.excellentCourses.HourClassEntry;
@@ -66,6 +67,26 @@ public class HourClassDao extends BaseDao {
             }
         }
         return entryList;
+    }
+
+    //用户的所有课程列表
+    public List<HourClassEntry> getIsNewObjectId(long startTime,long endTime) {
+        BasicDBObject query =new BasicDBObject();
+        query.append("isr", Constant.ZERO);
+        BasicDBList dblist =new BasicDBList();
+        dblist.add(new BasicDBObject("stm", new BasicDBObject(Constant.MONGO_GTE, startTime)));
+        dblist.add(new BasicDBObject("stm", new BasicDBObject(Constant.MONGO_LT, endTime)));
+        query.append(Constant.MONGO_AND,dblist);
+        List<DBObject> dboList=find(MongoFacroty.getAppDB(), Constant.COLLECTION_HOUR_CLASS, query, Constant.FIELDS);
+        List<HourClassEntry> retList =new ArrayList<HourClassEntry>();
+        if(null!=dboList && !dboList.isEmpty())
+        {
+            for(DBObject dbo:dboList)
+            {
+                retList.add(new HourClassEntry((BasicDBObject)dbo));
+            }
+        }
+        return retList;
     }
 
 

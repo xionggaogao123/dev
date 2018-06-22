@@ -14,6 +14,7 @@ import com.fulaan.excellentCourses.dto.HourResultDTO;
 import com.fulaan.excellentCourses.dto.RechargeResultDTO;
 import com.fulaan.newVersionBind.service.NewVersionBindService;
 import com.fulaan.pojo.User;
+import com.fulaan.systemMessage.service.SystemMessageService;
 import com.fulaan.wrongquestion.controller.DefaultWrongQuestionController;
 import com.mongodb.DBObject;
 import com.pojo.backstage.LogMessageType;
@@ -74,6 +75,8 @@ public class ExcellentCoursesService {
     private ExtractCashDao extractCashDao = new ExtractCashDao();
 
     private LogMessageDao logMessageDao = new LogMessageDao();
+    @Autowired
+    private SystemMessageService systemMessageService;
 
     private static final Logger logger =Logger.getLogger(DefaultWrongQuestionController.class);
 
@@ -1477,6 +1480,10 @@ public class ExcellentCoursesService {
             map.put("roomid",coursesRoomEntry.getRoomId());
             map.put("userName",name);
             map.put("password",coursesRoomEntry.getPlaypass());
+            //去上课
+            classOrderDao.updateToEntry(classOrderEntry.getID());
+            //发送通知
+            systemMessageService.sendClassNotice(userId,1,excellentCoursesEntry.getTitle(),name);
         }else{
             throw  new Exception("上课时间未到，请稍后进入");
         }

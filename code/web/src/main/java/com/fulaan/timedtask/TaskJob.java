@@ -8,6 +8,7 @@ import com.db.user.UserActiveRecordDao;
 import com.fulaan.business.service.BusinessManageService;
 import com.fulaan.logreport.service.BuildLogReportService;
 import com.fulaan.smalllesson.service.SmallLessonService;
+import com.fulaan.systemMessage.service.SystemMessageService;
 import com.fulaan.user.service.UserService;
 import com.fulaan.util.crawl.CrawlData;
 import com.pojo.app.RegionEntry;
@@ -266,6 +267,11 @@ public class TaskJob {
     public void checkUnLesson(){
         SmallLessonService smallLessonService = new SmallLessonService();
         smallLessonService.checkUnLesson();
+    }
+    //发送未上课信息
+    public void sendMessage(){
+        //SystemMessageService systemMessageService = new SystemMessageService();
+        SystemMessageService.getNowClassList();
     }
     //清除缓存表
     public void dropAppResult(){

@@ -26,7 +26,6 @@ import com.fulaan.utils.JPushUtils;
 import com.pojo.appnotice.AppNoticeEntry;
 import com.pojo.backstage.PictureType;
 import com.pojo.fcommunity.CommunityEntry;
-import com.pojo.fcommunity.MemberEntry;
 import com.pojo.fcommunity.NewVersionCommunityBindEntry;
 import com.pojo.indexPage.IndexPageEntry;
 import com.pojo.indexPage.WebHomePageEntry;
@@ -43,7 +42,10 @@ import org.bson.types.ObjectId;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 /**
  * Created by scott on 2017/9/22.
@@ -99,7 +101,7 @@ public class AppNoticeService {
      */
     public String saveAppNoticeEntry(AppNoticeDTO dto,ObjectId userId)throws Exception{
         UserEntry userEntry=userService.findById(userId);
-        JPushUtils jPushUtils=new JPushUtils();
+        //JPushUtils jPushUtils=new JPushUtils();
         List<ObjectId> objectIdList = new ArrayList<ObjectId>();
 
         //文本检测
@@ -183,7 +185,7 @@ public class AppNoticeService {
         //通知发送记录
         moduleTimeDao.addEntry(userId,ApplyTypeEn.notice.getType());
         int  score = integralSufferService.addIntegral(userId, IntegralType.notice,1,1);
-        try {
+       /* try {
             for (GroupOfCommunityDTO communityDTO : dto.getGroupOfCommunityDTOs()) {
                 if (StringUtils.isNotBlank(communityDTO.getGroupId())) {
                     List<MemberEntry> memberEntries = memberDao.getAllMembers(new ObjectId(communityDTO.getGroupId()));
@@ -203,7 +205,7 @@ public class AppNoticeService {
             }
         }catch (Exception e){
             throw new Exception("特殊"+score);
-        }
+        }*/
         return score+"";
     }
 

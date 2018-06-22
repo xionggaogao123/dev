@@ -43,9 +43,9 @@ public class WebAlipayController extends BaseController {
     
     private static String payment_type = "1";
 
-    private String notify_url = Resources.getProperty("fulaan.domain", Resources.getProperty("domain")) + "/web/appalipay/notify.do";
+    private String notify_url = "http://www.jiaxiaomei.com" + "/web/appalipay/notify.do";
 
-    private String return_url = Resources.getProperty("fulaan.domain", Resources.getProperty("domain")) + "/#/balanceNext";
+    private String return_url = "http://www.jiaxiaomei.com" + "/#/balanceNext";
 
     private String seller_email = "zhifu@fulaan.com";
 

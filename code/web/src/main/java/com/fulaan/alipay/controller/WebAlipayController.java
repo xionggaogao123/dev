@@ -195,10 +195,16 @@ public class WebAlipayController extends BaseController {
 
         String trade_no = request.getParameter("trade_no");                //支付宝交易号
         String out_trade_no = request.getParameter("out_trade_no");            //获取订单号
-        String total_fee_string = request.getParameter("total_amount");            //获取总金额
+        String total_fee_string = request.getParameter("total_fee");            //获取总金额
         String trade_status = request.getParameter("trade_status");   //订单状态
-        String user_id = request.getParameter("buyer_logon_id");    //支付人支付宝
+        /*String user_id = request.getParameter("buyer_logon_id");    //支付人支付宝
         String notify_time = request.getParameter("notify_time");    //支付人支付宝
+*/        
+        
+        /*String trade_no = request.getParameter("trade_no");                //支付宝交易号
+        String out_trade_no = request.getParameter("out_trade_no");            //获取订单号
+        String total_fee_string = request.getParameter("total_fee");            //获取总金额
+        String trade_status = request.getParameter("trade_status");*/
 
         EBusinessLog.info("trade_no;" + trade_no);
         EBusinessLog.info("out_trade_no;" + out_trade_no);

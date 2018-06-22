@@ -219,7 +219,7 @@ public class WebAlipayController extends BaseController {
                     }else{
                         ipconfig =  request.getHeader("x-forwarded-for");
                     }
-                    Map<String,Object> map = appAlipayService.appPay(price, getUserId(), ipconfig);
+                    Map<String,Object> map = appAlipayService.webAppPay(price, getUserId(), ipconfig);
                     code = "success";
                 }
             } else {

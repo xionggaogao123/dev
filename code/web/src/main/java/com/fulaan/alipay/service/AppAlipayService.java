@@ -132,6 +132,58 @@ public class AppAlipayService  {
         map.put("id", accountOrderEntry.getID());
         return map;
     }
+    
+    
+    /**
+     * 用户自定义充值（创建订单）(网页端)
+     */
+    public Map<String,Object> webAppPay(int price,ObjectId userId,String ip) throws Exception{
+        Map<String,Object> map = new HashMap<String, Object>();
+        //生成订单唯一标识
+        ObjectId contactId = new ObjectId();
+        addLog(userId,contactId,"开始创建订单！");
+        EBusinessLog.info(userId.toString()+"-"+contactId.toString()+"开始创建订单！");
+        //用户鉴权
+        UserEntry userEntry = userDao.findByUserId(userId);
+        if(userEntry==null){
+            addLog(userId,contactId,"用户信息不存在，订单终止");
+            EBusinessLog.info(userId.toString()+"-"+contactId.toString()+"用户信息不存在，订单终止");
+            throw new Exception("用户信息不存在，请确认！");
+        }
+        if(price<=0){
+            addLog(userId,contactId,"充值金额有误，订单终止");
+            EBusinessLog.info(userId.toString()+"-"+contactId.toString()+"充值金额有误，订单终止");
+            throw new Exception("充值金额不能为0！");
+        }
+        //充值价格判断
+        if(price>MAX_PRICE){
+            addLog(userId,contactId,"单笔充值金额过大为"+price+"元，订单终止");
+            EBusinessLog.info(userId.toString()+"-"+contactId.toString()+"单笔充值金额过大为"+price+"元，订单终止");
+            throw new Exception("一次充值的金额不能超过"+MAX_PRICE+"元！");
+        }
+        //生成订单号
+        String orderId = createOrderId(userEntry.getGenerateUserCode());
+        addLog(userId,contactId,"生成了充值订单号："+orderId);
+        EBusinessLog.info(userId.toString()+"-"+contactId.toString()+"生成了充值订单号："+orderId);
+        //生成支付宝支付订单  String body,String subject,String outTradeNo,String timeoutExpress,String totalAmount
+        String body = "家校美充值"+price+"美豆";
+        String order = createAppChongPay(body,PAY_SUBJECT,orderId,PAY_TIMEOUTEXPRESS,price+"",PAY_NOTIFYURL);
+        if(order.equals("")){
+            addLog(userId,contactId,"支付宝未支付订单生成失败，订单终止");
+            EBusinessLog.info(userId.toString()+"-"+contactId.toString()+"支付宝未支付订单生成失败，订单终止");
+            throw new Exception("订单创建失败！");
+        }
+        //生成未支付订单记录
+        AccountOrderEntry accountOrderEntry = new AccountOrderEntry(contactId,userId,"",order,"",price,orderId,PAY_TYPE,ip,0l,"");
+        addLog(userId,contactId,"生成了支付宝未支付订单："+order);
+        EBusinessLog.info(userId.toString()+"-"+contactId.toString()+"生成了支付宝未支付订单："+order);
+        accountOrderDao.addEntry(accountOrderEntry);
+        addLog(userId,contactId,"生成了JXM未支付订单："+accountOrderEntry.getID());
+        EBusinessLog.info(userId.toString()+"-"+contactId.toString()+"生成了JXM未支付订单："+accountOrderEntry.getID());
+        map.put("order", order);
+        map.put("id", accountOrderEntry.getID());
+        return map;
+    }
 
     /**
      * 用户购买课程（创建订单）

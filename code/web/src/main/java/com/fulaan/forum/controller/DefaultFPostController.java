@@ -1892,7 +1892,7 @@ public class DefaultFPostController extends BaseController {
         StringBuffer str = new StringBuffer();
         for (int i = 0; i < videoList.length; i++) {
             String[] items = videoList[i].split("@");
-            String item = "<p><video src=" + items[1] + " width=\"400\" height=\"360\" controls>\n" +
+            String item = "<p><video src=" + items[1] +" poster="+items[2]+" width=\"400\" height=\"360\" controls>\n" +
                     "        <source src=\"movie.mp4\" type=\"video/mp4\" />\n" +
                     "        <source src=\"movie.ogg\"  type=\"video/ogg\"/>\n" +
                     "</video></p><br/>";

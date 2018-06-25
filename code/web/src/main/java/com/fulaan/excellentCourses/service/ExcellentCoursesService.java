@@ -1508,7 +1508,7 @@ public class ExcellentCoursesService {
             //去上课
             classOrderDao.updateToEntry(classOrderEntry.getID());
             NewVersionBindRelationEntry newVersionBindRelationEntry = newVersionBindRelationDao.getBindEntry(userId);
-            if(newVersionBindRelationEntry!=null){
+            if(newVersionBindRelationEntry!=null && classOrderEntry.getType()==1){
                 //发送通知
                 systemMessageService.sendClassNotice(newVersionBindRelationEntry.getMainUserId(),1,excellentCoursesEntry.getTitle(),name);
             }

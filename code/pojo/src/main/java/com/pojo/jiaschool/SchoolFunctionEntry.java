@@ -29,7 +29,7 @@ public class SchoolFunctionEntry extends BaseDBObject{
             int open
     ){
         BasicDBObject dbObject=new BasicDBObject()
-                .append("tyo", type)
+                .append("typ", type)
                 .append("ope", open)
                 .append("sid", schoolId)
                 .append("isr", 0);

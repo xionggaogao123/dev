@@ -8,6 +8,7 @@ import com.pojo.jiaschool.SchoolFunctionEntry;
 import com.sys.constants.Constant;
 import org.bson.types.ObjectId;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -24,7 +25,7 @@ public class SchoolFunctionDao extends BaseDao {
 
     //修改
     public void updateEntry(ObjectId id,int open){
-        BasicDBObject query = new BasicDBObject(Constant.ID,id);
+        BasicDBObject query = new BasicDBObject("sid",id);
         BasicDBObject updateValue=new BasicDBObject(Constant.MONGO_SET,new BasicDBObject("ope",open));
         update(MongoFacroty.getAppDB(), Constant.COLLECTION_SCHOOL_FUNCTION, query,updateValue);
     }
@@ -33,7 +34,7 @@ public class SchoolFunctionDao extends BaseDao {
     public SchoolFunctionEntry getEntry(ObjectId id) {
         BasicDBObject query = new BasicDBObject();
         query.append("isr",Constant.ZERO);
-        query.append(Constant.ID,id);
+        query.append("sid",id);
         DBObject obj =
                 findOne(MongoFacroty.getAppDB(), Constant.COLLECTION_SCHOOL_FUNCTION, query, Constant.FIELDS);
         if (obj != null) {
@@ -61,5 +62,25 @@ public class SchoolFunctionDao extends BaseDao {
             }
         }
         return map;
+    }
+
+    //查询
+    public List<ObjectId> getAllSchoolIdList(int type,int open) {
+        BasicDBObject query = new BasicDBObject()
+                .append("isr", 0); // 未删除
+        query.append("typ",type).append("ope",open);
+        List<DBObject> dbList =
+                find(MongoFacroty.getAppDB(),
+                        Constant.COLLECTION_SCHOOL_FUNCTION,
+                        query, Constant.FIELDS,
+                        Constant.MONGO_SORTBY_DESC);
+       List<ObjectId> oids = new ArrayList<ObjectId>();
+        if (dbList != null && !dbList.isEmpty()) {
+            for (DBObject obj : dbList) {
+                SchoolFunctionEntry schoolFunctionEntry = new SchoolFunctionEntry((BasicDBObject) obj);
+                oids.add(schoolFunctionEntry.getSchoolId());
+            }
+        }
+        return oids;
     }
 }

@@ -297,6 +297,8 @@ public class AppActivityService {
 
     public void removeActivity(ObjectId activityId){
         appActivityDao.removeActivity(activityId);
+        //删除首页记录
+        indexPageDao.delEntry(activityId);
     }
 
     public String partInActivity(ObjectId activityId,int type,ObjectId userId)throws Exception{

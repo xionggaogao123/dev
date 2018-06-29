@@ -5,6 +5,7 @@ import com.db.backstage.TeacherApproveDao;
 import com.db.business.ModuleTimeDao;
 import com.db.fcommunity.CommunityDao;
 import com.db.fcommunity.MemberDao;
+import com.db.fcommunity.MineCommunityDao;
 import com.db.jiaschool.HomeSchoolDao;
 import com.db.jiaschool.SchoolCommunityDao;
 import com.db.jiaschool.SchoolFunctionDao;
@@ -20,6 +21,7 @@ import com.pojo.backstage.LogMessageType;
 import com.pojo.business.ModuleTimeEntry;
 import com.pojo.fcommunity.CommunityEntry;
 import com.pojo.fcommunity.MemberEntry;
+import com.pojo.fcommunity.MineCommunityEntry;
 import com.pojo.instantmessage.ApplyTypeEn;
 import com.pojo.jiaschool.HomeSchoolEntry;
 import com.pojo.jiaschool.SchoolCommunityEntry;
@@ -73,6 +75,8 @@ public class HomeSchoolService {
     private SchoolPersionDao schoolPersionDao = new SchoolPersionDao();
 
     private SchoolFunctionDao schoolFunctionDao = new SchoolFunctionDao();
+
+    private MineCommunityDao mineCommunityDao = new MineCommunityDao();
 
 
     public Map<String,Object> getSchoolList(int schoolType,int page,int pageSize,String keyword){
@@ -538,5 +542,27 @@ public class HomeSchoolService {
             SchoolFunctionEntry schoolFunctionEntry1 = new SchoolFunctionEntry(id,1,open);
             schoolFunctionDao.addEntry(schoolFunctionEntry1);
         }
+    }
+
+    public int getAllRole(ObjectId userId){
+        //获得已被允许的学校
+        List<ObjectId> schoolIds = schoolFunctionDao.getAllSchoolIdList(1, 1);
+        //已绑定的社群集合
+        List<ObjectId> communityIds2 =  schoolCommunityDao.getCommunityIdsList(schoolIds);
+        //通知逻辑
+        List<MineCommunityEntry> allMineCommunitys = mineCommunityDao.findAll(userId, 1, 100);
+        List<ObjectId> communityIds = new ArrayList<ObjectId>();
+        for (MineCommunityEntry mineCommunityEntry : allMineCommunitys) {
+            communityIds.add(mineCommunityEntry.getCommunityId());
+        }
+        List<CommunityEntry> communityEntries = communityDao.findByNotObjectIds(communityIds);
+        int flage = 0;
+        for(CommunityEntry communityEntry:communityEntries){
+          if(communityIds2.contains(communityEntry.getID())){
+              flage = 1;
+              break;
+          }
+        }
+        return flage;
     }
 }

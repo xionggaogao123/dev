@@ -162,6 +162,8 @@ public class AppVoteService {
 
     public void removeAppVote(ObjectId appVoteId){
         appVoteDao.removeAppVote(appVoteId);
+        //删除首页记录
+        indexPageDao.delEntry(appVoteId);
     }
 
 

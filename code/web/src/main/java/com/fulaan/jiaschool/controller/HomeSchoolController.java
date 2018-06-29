@@ -394,4 +394,25 @@ public class HomeSchoolController extends BaseController {
         }
         return JSON.toJSONString(respObj);
     }
+
+    /**
+     * 判断是否有开课页面
+     */
+    @ApiOperation(value = "判断是否有开课页面", httpMethod = "POST", produces = "application/json")
+    @ApiResponses( value = {@ApiResponse(code = 200, message = "Successful — 请求已完成",response = String.class)})
+    @RequestMapping("/getAllRole")
+    @ResponseBody
+    public RespObj getAllRole(){
+        RespObj respObj=new RespObj(Constant.FAILD_CODE);
+        try {
+            respObj.setCode(Constant.SUCCESS_CODE);
+            int falge = homeSchoolService.getAllRole(getUserId());
+            respObj.setMessage(falge);
+        } catch (Exception e) {
+            e.printStackTrace();
+            respObj.setCode(Constant.FAILD_CODE);
+            respObj.setErrorMessage("判断是否有开课页面!");
+        }
+        return respObj;
+    }
 }

@@ -1241,7 +1241,7 @@ public class IndexPageService {
                 ob1.put("videoList",new ArrayList<VideoDTO>());
                 ob1.put("voiceList",new ArrayList<Attachement>());
                 ob1.put("attachements",new ArrayList<Attachement>());
-                ob1.put("isRead",0);
+                ob1.put("isRead",appVoteDTO.getIsVoted());
                 ob1.put("totalReadCount", 0);
                 ob1.put("readCount", 0);
                 ob1.put("unReadCount",0);

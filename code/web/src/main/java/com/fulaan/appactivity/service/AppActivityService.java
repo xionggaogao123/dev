@@ -6,7 +6,9 @@ import com.db.backstage.TeacherApproveDao;
 import com.db.fcommunity.CommunityDao;
 import com.db.fcommunity.MemberDao;
 import com.db.fcommunity.NewVersionCommunityBindDao;
+import com.db.indexPage.IndexPageDao;
 import com.fulaan.appactivity.dto.AppActivityDTO;
+import com.fulaan.indexpage.dto.IndexPageDTO;
 import com.fulaan.instantmessage.service.RedDotService;
 import com.fulaan.integral.service.IntegralSufferService;
 import com.fulaan.operation.dto.GroupOfCommunityDTO;
@@ -17,8 +19,10 @@ import com.pojo.appactivity.AppActivityEntry;
 import com.pojo.appactivity.AppActivityUserEntry;
 import com.pojo.fcommunity.MemberEntry;
 import com.pojo.fcommunity.NewVersionCommunityBindEntry;
+import com.pojo.indexPage.IndexPageEntry;
 import com.pojo.instantmessage.ApplyTypeEn;
 import com.pojo.integral.IntegralType;
+import com.pojo.newVersionGrade.CommunityType;
 import com.pojo.user.UserEntry;
 import com.sys.constants.Constant;
 import com.sys.utils.AvatarUtils;
@@ -56,9 +60,11 @@ public class AppActivityService {
 
     private TeacherApproveDao teacherApproveDao = new TeacherApproveDao();
 
+    private IndexPageDao indexPageDao = new IndexPageDao();
+
 
     public String saveEntry(AppActivityDTO appActivityDTO){
-        List<AppActivityEntry> entries = new ArrayList<AppActivityEntry>();
+      //  List<AppActivityEntry> entries = new ArrayList<AppActivityEntry>();
         List<ObjectId> oids = new ArrayList<ObjectId>();
         for (GroupOfCommunityDTO dto : appActivityDTO.getGroupOfCommunityDTOs()) {
             oids.add(new ObjectId(dto.getCommunityId()));
@@ -75,11 +81,22 @@ public class AppActivityService {
                     dto.getCommunityId(),
                     dto.getGroupName()
             );
+            //entries.add(item.buildEntry());
+            AppActivityEntry appActivityEntry = item.buildEntry();
+            appActivityDao.saveEntry(appActivityEntry);
             if(appActivityDTO.getVisiblePermission()==1){//发送给家长
                 //发送通知
                 PictureRunNable.addTongzhi(item.getCommunityId(), item.getUserId(), 5);
+                //首页记录
+                IndexPageDTO dto1 = new IndexPageDTO();
+                dto1.setType(CommunityType.activity.getType());
+                dto1.setUserId(appActivityDTO.getUserId());
+                dto1.setCommunityId(dto.getCommunityId());
+                dto1.setContactId(appActivityEntry.getID().toString());
+                IndexPageEntry entry = dto1.buildAddEntry();
+                indexPageDao.addEntry(entry);
             }
-            entries.add(item.buildEntry());
+
         }
         if(appActivityDTO.getVisiblePermission()==1){//红点
             //添加红点
@@ -88,7 +105,7 @@ public class AppActivityService {
             //添加红点
             redDotService.addOtherEntryList(oids, new ObjectId(appActivityDTO.getUserId()), ApplyTypeEn.active.getType(),2);
         }
-        appActivityDao.saveEntries(entries);
+       // appActivityDao.saveEntries(entries);
         int score = integralSufferService.addIntegral(new ObjectId(appActivityDTO.getUserId()), IntegralType.vote,4,1);
         return score+"";
     }

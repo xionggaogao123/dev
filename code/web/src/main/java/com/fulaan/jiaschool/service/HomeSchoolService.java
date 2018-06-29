@@ -7,6 +7,7 @@ import com.db.fcommunity.CommunityDao;
 import com.db.fcommunity.MemberDao;
 import com.db.jiaschool.HomeSchoolDao;
 import com.db.jiaschool.SchoolCommunityDao;
+import com.db.jiaschool.SchoolFunctionDao;
 import com.db.jiaschool.SchoolPersionDao;
 import com.db.smalllesson.SmallLessonDao;
 import com.db.user.UserDao;
@@ -22,6 +23,7 @@ import com.pojo.fcommunity.MemberEntry;
 import com.pojo.instantmessage.ApplyTypeEn;
 import com.pojo.jiaschool.HomeSchoolEntry;
 import com.pojo.jiaschool.SchoolCommunityEntry;
+import com.pojo.jiaschool.SchoolFunctionEntry;
 import com.pojo.jiaschool.SchoolPersionEntry;
 import com.pojo.smalllesson.SmallLessonEntry;
 import com.pojo.user.UserEntry;
@@ -70,6 +72,8 @@ public class HomeSchoolService {
 
     private SchoolPersionDao schoolPersionDao = new SchoolPersionDao();
 
+    private SchoolFunctionDao schoolFunctionDao = new SchoolFunctionDao();
+
 
     public Map<String,Object> getSchoolList(int schoolType,int page,int pageSize,String keyword){
         Map<String,Object> map = new HashMap<String, Object>();
@@ -79,6 +83,31 @@ public class HomeSchoolService {
             dtos.add(new HomeSchoolDTO(entry));
         }
         int count = homeSchoolDao.getListCount(schoolType,page,pageSize,keyword);
+        map.put("list",dtos);
+        map.put("count",count);
+        return map;
+    }
+
+    public Map<String,Object> selectAllSchool(int page,int pageSize,String keyword){
+        Map<String,Object> map = new HashMap<String, Object>();
+        List<HomeSchoolEntry> entries = homeSchoolDao.getAllList(page, pageSize, keyword);
+        List<HomeSchoolDTO> dtos = new ArrayList<HomeSchoolDTO>();
+        List<ObjectId> objectIdList = new ArrayList<ObjectId>();
+        for(HomeSchoolEntry entry : entries){
+            objectIdList.add(entry.getID());
+        }
+        Map<ObjectId,Integer> omap = schoolFunctionDao.getOneRoleList(objectIdList,1);
+        for(HomeSchoolEntry entry : entries){
+            Integer open = omap.get(entry.getID());
+            HomeSchoolDTO dto = new HomeSchoolDTO(entry);
+            if(open!=null){
+                dto.setOpen(open);
+            }else{
+                dto.setOpen(0);
+            }
+            dtos.add(dto);
+        }
+        int count = homeSchoolDao.getAllListCount(page,pageSize,keyword);
         map.put("list",dtos);
         map.put("count",count);
         return map;
@@ -498,5 +527,16 @@ public class HomeSchoolService {
         }
         this.addLogMessage(id.toString(),"删除了学校"+homeSchoolEntry.getName()+"管理用户："+schoolPersionEntry.getName(), LogMessageType.schoolRole.getDes(),userId.toString());
         schoolPersionDao.delEntry(id);
+    }
+
+
+    public void updateSchoolOpen(ObjectId id,int open){
+        SchoolFunctionEntry schoolFunctionEntry = schoolFunctionDao.getEntry(id);
+        if(schoolFunctionEntry!=null){
+            schoolFunctionDao.updateEntry(id, open);
+        }else{
+            SchoolFunctionEntry schoolFunctionEntry1 = new SchoolFunctionEntry(id,1,open);
+            schoolFunctionDao.addEntry(schoolFunctionEntry1);
+        }
     }
 }

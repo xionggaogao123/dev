@@ -224,9 +224,13 @@ public class BusinessManageService {
         List<ExcellentCoursesEntry> excellentCoursesEntries = excellentCoursesDao.getAllWebEntryList(subjectId, name, page, pageSize);
         int count = excellentCoursesDao.selectAllWebEntryList(subjectId,name);
         List<ExcellentCoursesDTO> dtos = new ArrayList<ExcellentCoursesDTO>();
+        long current = System.currentTimeMillis();
         for(ExcellentCoursesEntry excellentCoursesEntry:excellentCoursesEntries){
             ExcellentCoursesDTO dto = new ExcellentCoursesDTO(excellentCoursesEntry);
             dtos.add(dto);
+            if(excellentCoursesEntry.getEndTime()<current){
+                dto.setType(2);
+            }
         }
         map.put("count",count);
         map.put("list",dtos);

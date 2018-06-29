@@ -10,10 +10,12 @@ import com.db.fcommunity.CommunityDetailDao;
 import com.db.fcommunity.MemberDao;
 import com.db.fcommunity.NewVersionCommunityBindDao;
 import com.db.forum.FVoteDao;
+import com.db.indexPage.IndexPageDao;
 import com.fulaan.appvote.dto.AppVoteDTO;
 import com.fulaan.appvote.dto.VoteOption;
 import com.fulaan.appvote.dto.VoteResult;
 import com.fulaan.forum.service.FVoteService;
+import com.fulaan.indexpage.dto.IndexPageDTO;
 import com.fulaan.instantmessage.service.RedDotService;
 import com.fulaan.integral.service.IntegralSufferService;
 import com.fulaan.operation.dto.GroupOfCommunityDTO;
@@ -29,8 +31,10 @@ import com.pojo.fcommunity.CommunityEntry;
 import com.pojo.fcommunity.NewVersionCommunityBindEntry;
 import com.pojo.forum.FVoteDTO;
 import com.pojo.forum.FVoteEntry;
+import com.pojo.indexPage.IndexPageEntry;
 import com.pojo.instantmessage.ApplyTypeEn;
 import com.pojo.integral.IntegralType;
+import com.pojo.newVersionGrade.CommunityType;
 import com.pojo.user.UserEntry;
 import com.pojo.utils.MongoUtils;
 import com.sys.constants.Constant;
@@ -84,11 +88,13 @@ public class AppVoteService {
 
     private IntegralSufferService integralSufferService = new IntegralSufferService();
 
+    private IndexPageDao indexPageDao = new IndexPageDao();
+
 
     public String saveAppVote(AppVoteDTO appVoteDTO) throws ParseException {
         SimpleDateFormat format = new SimpleDateFormat(DateTimeUtils.DATE_YYYY_MM_DD_HH_MM_SS_H);
         Date date = format.parse(appVoteDTO.getDeadFormatTime());
-        List<AppVoteEntry> entries = new ArrayList<AppVoteEntry>();
+       // List<AppVoteEntry> entries = new ArrayList<AppVoteEntry>();
         List<ObjectId> oids = new ArrayList<ObjectId>();
         for (GroupOfCommunityDTO dto : appVoteDTO.getGroupExamDetailDTOs()) {
             AppVoteDTO item = new AppVoteDTO(
@@ -108,10 +114,21 @@ public class AppVoteService {
                     dto.getGroupName()
             );
             oids.add(new ObjectId(dto.getCommunityId()));
-            entries.add(item.buildEntry());
+           // entries.add(item.buildEntry());
+            AppVoteEntry appVoteEntry = item.buildEntry();
+            appVoteDao.saveAppVote(appVoteEntry);
             if(appVoteDTO.getVisiblePermission()==1){//家长
                 //发送通知
                 PictureRunNable.addTongzhi(item.getCommunityId(), item.getUserId(), 5);
+
+                //首页记录
+                IndexPageDTO dto1 = new IndexPageDTO();
+                dto1.setType(CommunityType.piao.getType());
+                dto1.setUserId(appVoteDTO.getUserId());
+                dto1.setCommunityId(dto.getCommunityId());
+                dto1.setContactId(appVoteEntry.getID().toString());
+                IndexPageEntry entry = dto1.buildAddEntry();
+                indexPageDao.addEntry(entry);
             }
         }
         if(appVoteDTO.getVisiblePermission()==1){//红点
@@ -121,7 +138,7 @@ public class AppVoteService {
             //添加红点
             redDotService.addOtherEntryList(oids,new ObjectId(appVoteDTO.getUserId()), ApplyTypeEn.piao.getType(),2);
         }
-        appVoteDao.saveEntries(entries);
+        //appVoteDao.saveEntries(entries);
         int score = integralSufferService.addIntegral(new ObjectId(appVoteDTO.getUserId()), IntegralType.vote,4,1);
         return score+"";
     }

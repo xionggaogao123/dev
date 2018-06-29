@@ -137,6 +137,42 @@ public class DefaultIndexPageController extends BaseController {
         return JSON.toJSONString(respObj);
     }
 
+    @ApiOperation(value = "首页list", httpMethod = "POST", produces = "application/json")
+    @ApiResponses( value = {@ApiResponse(code = 200, message = "Successful — 请求已完成",response = String.class)})
+    @RequestMapping("/getFourHotIndexList")
+    @ResponseBody
+    public String getFourHotIndexList(@ApiParam(name = "page", required = true, value = "page") @RequestParam("page") int page,
+                                     @ApiParam(name = "pageSize", required = true, value = "pageSize") @RequestParam("pageSize") int pageSize){
+        RespObj respObj=new RespObj(Constant.FAILD_CODE);
+        try {
+            respObj.setCode(Constant.SUCCESS_CODE);
+            ObjectId userId = getUserId();
+            if(page==1){
+                if(memberService.isCommunityMember(new ObjectId("5a7be20b3d4df96672b6a59c"),userId)){
+
+                }else{
+                    CommunityDTO fulanDto = communityService.getCommunityByName("复兰大学");
+                    if (null == userId && null != fulanDto) {
+
+                    } else {
+                        if (null != fulanDto) {
+                            //加入复兰大学
+                            joinFulaanCommunity(getUserId(), new ObjectId(fulanDto.getId()));
+                        }
+                    }
+                }
+            }
+
+            Map<String,Object> mlist =  indexPageService.getFourHotIndexList(getUserId(), page, pageSize);
+            respObj.setMessage(mlist);
+        } catch (Exception e) {
+            e.printStackTrace();
+            respObj.setCode(Constant.FAILD_CODE);
+            respObj.setErrorMessage("修改课程名失败");
+        }
+        return JSON.toJSONString(respObj);
+    }
+
     @ApiOperation(value = "获取往期文章", httpMethod = "POST", produces = "application/json")
     @ApiResponses( value = {@ApiResponse(code = 200, message = "Successful — 请求已完成",response = String.class)})
     @RequestMapping("/getRoleList")

@@ -344,4 +344,54 @@ public class HomeSchoolController extends BaseController {
         }
         return JSON.toJSONString(respObj);
     }
+
+
+    /**
+     *  权限开启列表
+     * @return
+     */
+    @ApiOperation(value = "权限开启列表", httpMethod = "POST", produces = "application/json")
+    @ApiResponses( value = {@ApiResponse(code = 200, message = "Successful — 请求已完成",response = String.class)})
+    @RequestMapping("/selectAllSchool")
+    @ResponseBody
+    public String selectAllSchool(@ApiParam(name="page",required = true,value="page") @RequestParam(value="page",defaultValue = "1") int page,
+                                  @ApiParam(name="pageSize",required = true,value="pageSize") @RequestParam(value="pageSize",defaultValue = "5") int pageSize,
+                                  @ApiParam(name="keyword",required = false,value="关键字") @RequestParam(value="keyword",defaultValue = "") String keyword
+    ){
+        RespObj respObj=new RespObj(Constant.FAILD_CODE);
+        try {
+            respObj.setCode(Constant.SUCCESS_CODE);
+            Map<String,Object> map = homeSchoolService.selectAllSchool(page, pageSize, keyword);
+            respObj.setMessage(map);
+        } catch (Exception e) {
+            e.printStackTrace();
+            respObj.setCode(Constant.FAILD_CODE);
+            respObj.setErrorMessage("查询权限开启列表失败!");
+        }
+        return JSON.toJSONString(respObj);
+    }
+
+    /**
+     *  修改权限
+     * @return
+     */
+    @ApiOperation(value = "修改权限", httpMethod = "POST", produces = "application/json")
+    @ApiResponses( value = {@ApiResponse(code = 200, message = "Successful — 请求已完成",response = String.class)})
+    @RequestMapping("/updateSchoolOpen")
+    @ResponseBody
+    public String updateSchoolOpen(@ApiParam(name="open",required = true,value="open") @RequestParam(value="open",defaultValue = "0") int open,
+                                  @ApiParam(name="id",required = false,value="学校id") @RequestParam(value="id",defaultValue = "") String id
+    ){
+        RespObj respObj=new RespObj(Constant.FAILD_CODE);
+        try {
+            respObj.setCode(Constant.SUCCESS_CODE);
+            homeSchoolService.updateSchoolOpen(new ObjectId(id),open);
+            respObj.setMessage("修改成功");
+        } catch (Exception e) {
+            e.printStackTrace();
+            respObj.setCode(Constant.FAILD_CODE);
+            respObj.setErrorMessage("修改权限失败!");
+        }
+        return JSON.toJSONString(respObj);
+    }
 }

@@ -907,6 +907,9 @@ public class Constant {
     //社区学校用户管理表
     public static final String COLLECTION_SCHOOL_PERSON = "schoolperson";
 
+    //校级功能表
+    public static final String COLLECTION_SCHOOL_FUNCTION = "schoolfunction";
+
     //复兰小课堂
     //小课程表
     public static final String COLLECTION_SMALL_LESSON = "smalllesson";
@@ -997,6 +1000,9 @@ public class Constant {
     //管控学生数据缓存表
     public static final String COLLECTION_CONTROL_STUDENT_RESULT= "controlstudentresult";
 
+    //管控学生数据缓存表
+    public static final String COLLECTION_CONTROL_SIMPLE= "controlsimple";
+
     /*********************************后台管理*******************************************/
     //图片鉴黄和垃圾文本
     public static final String COLLECTION_PICTURE_TEXT= "picturetext";
@@ -1035,6 +1041,9 @@ public class Constant {
     public static final String COLLECTION_MODULE_TIME= "jxm_module_time";
     //模块禁止表
     public static final String COLLECTION_MODULE_BANNING= "jxm_module_banning";
+
+    //jpush发送表
+    public static final String COLLECTION_PUSH_MESSAGE= "jxm_push_message";
     /*************************************精品课*****************************************/
 
     //精品课程

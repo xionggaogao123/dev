@@ -30,9 +30,9 @@ public class ControlStudentResultDao extends BaseDao {
         return null;
     }
     //修改最新指令时间戳
-    public void updateEntry(ObjectId id,long newAppUser,long newAppTime,long time){
+    public void updateEntry(ObjectId id,long newAppUser,long newAppTime,int electric,long time){
         BasicDBObject query = new BasicDBObject(Constant.ID,id);
-        BasicDBObject updateValue=new BasicDBObject(Constant.MONGO_SET,new BasicDBObject("tim",time).append("nau",newAppUser).append("nat",newAppTime));
+        BasicDBObject updateValue=new BasicDBObject(Constant.MONGO_SET,new BasicDBObject("tim",time).append("nau",newAppUser).append("nat", newAppTime).append("ele",electric));
         update(MongoFacroty.getAppDB(), Constant.COLLECTION_CONTROL_STUDENT_RESULT, query,updateValue);
     }
 }

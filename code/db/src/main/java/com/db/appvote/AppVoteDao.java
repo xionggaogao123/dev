@@ -63,6 +63,21 @@ public class AppVoteDao extends BaseDao{
         return entries;
     }
 
+    public List<AppVoteEntry> getEntriesByIds(List<ObjectId> ids){
+        List<AppVoteEntry> entries=new ArrayList<AppVoteEntry>();
+        BasicDBObject query= new BasicDBObject();
+        query.append(Constant.ID,new BasicDBObject(Constant.MONGO_IN,ids));
+        query.append("ir",Constant.ZERO);
+        List<DBObject> dbObjectList=find(MongoFacroty.getAppDB(),Constant.COLLECTION_NEW_VERSION_APP_VOTE,query,
+                Constant.FIELDS,Constant.MONGO_SORTBY_DESC);
+        if(null!=dbObjectList&&!dbObjectList.isEmpty()){
+            for(DBObject dbObject:dbObjectList){
+                entries.add(new AppVoteEntry(dbObject));
+            }
+        }
+        return entries;
+    }
+
     public BasicDBObject getReceivedCondition(List<ObjectId> groupIds,
                                               ObjectId userId){
         List<Integer> visiblePermission = new ArrayList<Integer>();

@@ -151,6 +151,7 @@
         <task:scheduled ref="taskJob" method="mallDailyReport" cron="00 30 5 * * ?"/>
         <task:scheduled ref="taskJob" method="letUserUnLogin" cron="0 43 10 ? * *"/>
         <task:scheduled ref="taskJob" method="checkUnLesson" cron="0 0/8 * ? * *"/>
+        <task:scheduled ref="taskJob" method="sendMessage" cron="0 0/1 * ? * *"/>
         <task:scheduled ref="taskJob" method="dropAppResult" cron="0 0 8 ? * *"/>
         <task:scheduled ref="taskJob" method="checkBusinessManage" cron="0 0 4 ? * *"/>
     </task:scheduled-tasks>

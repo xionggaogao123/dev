@@ -113,6 +113,21 @@ public class AppActivityDao extends BaseDao {
         return entries;
     }
 
+    public List<AppActivityEntry> getEntriesById(List<ObjectId> ids){
+        List<AppActivityEntry> entries = new ArrayList<AppActivityEntry>();
+        BasicDBObject query = new BasicDBObject();
+        query.append("ir",Constant.ZERO);
+        query.append(Constant.ID,new BasicDBObject(Constant.MONGO_IN,ids));
+        List<DBObject> dbObjectList = find(MongoFacroty.getAppDB(), Constant.COLLECTION_JXM_APP_ACTIVITY,query,
+                Constant.FIELDS,Constant.MONGO_SORTBY_DESC);
+        if(null!=dbObjectList&&!dbObjectList.isEmpty()){
+            for(DBObject dbObject:dbObjectList){
+                entries.add(new AppActivityEntry(dbObject));
+            }
+        }
+        return entries;
+    }
+
     public int countStudentActivities(List<ObjectId> groupIds){
         BasicDBObject query = getStudentReceivedCondition(groupIds);
         return count(MongoFacroty.getAppDB(), Constant.COLLECTION_JXM_APP_ACTIVITY,query);

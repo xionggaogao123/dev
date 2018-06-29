@@ -26,6 +26,7 @@ import com.pojo.referenceData.ReferenceDataEntry;
 import com.pojo.user.UserEntry;
 import com.pojo.wrongquestion.SubjectClassEntry;
 import com.sys.constants.Constant;
+import com.sys.utils.AvatarUtils;
 import org.bson.types.ObjectId;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -165,7 +166,7 @@ public class ReferenceDataService {
             UserEntry userEntry = mainUserEntryMap.get(entry.getUserId());
             if(userEntry!=null){
                 dataDTO.setUserName(userEntry.getNickName());
-                dataDTO.setImageUrl(userEntry.getAvatar());
+                dataDTO.setImageUrl(AvatarUtils.getAvatar(userEntry.getAvatar(),userEntry.getRole(),userEntry.getSex()));
             }
             dataDTO.setLongTime(entry.getCreateTime());
             dtos.add(dataDTO);

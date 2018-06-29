@@ -496,7 +496,7 @@ public class UserService extends BaseService {
             entry.setVersion(version);
             controlVersionDao.addEntry(entry);
         }else{
-            ControlVersionEntry controlVersionEntry = new ControlVersionEntry(communityId,userId,version,type);
+            ControlVersionEntry controlVersionEntry = new ControlVersionEntry(communityId,userId,version,1,type);
             controlVersionDao.addEntry(controlVersionEntry);
         }
     }

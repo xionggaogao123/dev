@@ -537,11 +537,54 @@ public class ControlPhoneService {
         ControlStudentResultEntry controlStudentResultEntry = controlStudentResultDao.getEntry(userId,parentId,datetime);
         if(controlStudentResultEntry==null){
             //添加
-            ControlStudentResultEntry entry3 = new ControlStudentResultEntry(parentId,userId,dto.getAddiction(),current,current,datetime);
+            ControlStudentResultEntry entry3 = new ControlStudentResultEntry(parentId,userId,dto.getAddiction(),current,current,0,datetime);
             controlStudentResultDao.addEntry(entry3);
         }else{
             //修改
-            controlStudentResultDao.updateEntry(controlStudentResultEntry.getID(),dto.getAddiction(), current, current);
+            controlStudentResultDao.updateEntry(controlStudentResultEntry.getID(),dto.getAddiction(), current,0,current);
+        }
+        ControlTimeEntry entr = controlTimeDao.getEntryByUserId(userId);
+        if(entr ==null){
+            return 0l;
+        }
+        long tt = entr.getBackTime();
+        entr = null;
+        return tt;
+    }
+
+    public long acceptNewAppResultList(ResultNewAppDTO dto,ObjectId userId){//最新
+        List<ControlAppResultDTO> dtos = dto.getAppList();
+        NewVersionBindRelationEntry newEntry = newVersionBindRelationDao.getBindEntry(userId);
+        if(newEntry==null || newEntry.getMainUserId()==null){
+            return 0l;
+        }
+        ObjectId parentId = newEntry.getMainUserId();
+        long current = System.currentTimeMillis();
+        //获得时间批次(时间批次)
+        String str = DateTimeUtils.getLongToStrTimeTwo(current).substring(0,10);
+        long zero = DateTimeUtils.getStrToLongTime(str, "yyyy-MM-dd");
+        //分割点
+        long jiedian = zero+8*60*60*1000;//今天零点零分零秒的毫秒数
+        long datetime = 0l;
+        if(current>=jiedian){
+            //今日
+            datetime = zero;
+        }else{
+            //昨日
+            datetime = zero- 24*60*60*1000;
+        }
+        if(dtos != null && dtos.size()>0){
+            this.addRedDotEntryBatch(dtos,userId,parentId,current,dto.getAddiction());
+        }
+        //变更最新数据
+        ControlStudentResultEntry controlStudentResultEntry = controlStudentResultDao.getEntry(userId,parentId,datetime);
+        if(controlStudentResultEntry==null){
+            //添加
+            ControlStudentResultEntry entry3 = new ControlStudentResultEntry(parentId,userId,dto.getAddiction(),current,current,dto.getElectric(),datetime);
+            controlStudentResultDao.addEntry(entry3);
+        }else{
+            //修改
+            controlStudentResultDao.updateEntry(controlStudentResultEntry.getID(),dto.getAddiction(), current,dto.getElectric(),current);
         }
         ControlTimeEntry entr = controlTimeDao.getEntryByUserId(userId);
         if(entr ==null){
@@ -4077,11 +4120,14 @@ public class ControlPhoneService {
         }else{
             map.put("isRen",false);
         }
-        List<ControlAppUserEntry> entryList1 = controlAppUserDao.getUserSendAppList(userId,childIds);
-        List<ControlAppEntry> entryList2 = controlAppDao.getEntryListByUserId(userId,oids);
+        List<ControlAppUserEntry> entryList1 = controlAppUserDao.getUserSendAppList(userId, childIds);
+        List<ControlAppEntry> entryList2 = controlAppDao.getEntryListByUserId(userId, oids);
         List<ResultAppListDTO> dtos1 = new ArrayList<ResultAppListDTO>();
         List<ResultAppListDTO> dtos2 = new ArrayList<ResultAppListDTO>();
         List<ObjectId> objectIds = new ArrayList<ObjectId>();
+        List<ObjectId> delIds = new ArrayList<ObjectId>();
+        List<ObjectId> delIds2 = new ArrayList<ObjectId>();
+        List<ObjectId> objectIds2 = new ArrayList<ObjectId>();
         if(entryList1.size()>0){
             for(ControlAppUserEntry entry : entryList1){
                 if(!objectIds.contains(entry.getUserId())){
@@ -4101,25 +4147,38 @@ public class ControlPhoneService {
                     dto.setType(1);//孩子
                     childIds.remove(entry.getUserId());
                     dtos1.add(dto);
+                }else{//孩子id 已包含
+                    if(!delIds.contains(entry.getID())){//非已有对象
+                        controlAppUserDao.delEntry(entry.getID());
+                    }
                 }
+                delIds.add(entry.getID());
             }
         }
         if(entryList2.size()>0){
             for(ControlAppEntry entry : entryList2){
-                CommunityEntry entry2 = map3.get(entry.getCommunityId().toString());
-                ResultAppListDTO dto = new ResultAppListDTO();
-                dto.setName(entry2.getCommunityName());
-                dto.setUrl(getNewLogo(entry2.getCommunityLogo()));
-                if(entry.getAppIdList() != null){
-                    List<AppDetailEntry> entries3 = appDetailDao.getEntriesByIds(entry.getAppIdList());
-                    dto.setCount(entries3.size());
-                }else{
-                    dto.setCount(0);
+                if(!objectIds2.contains(entry.getCommunityId())) {
+                    objectIds2.add(entry.getCommunityId());
+                    CommunityEntry entry2 = map3.get(entry.getCommunityId().toString());
+                    ResultAppListDTO dto = new ResultAppListDTO();
+                    dto.setName(entry2.getCommunityName());
+                    dto.setUrl(getNewLogo(entry2.getCommunityLogo()));
+                    if (entry.getAppIdList() != null) {
+                        List<AppDetailEntry> entries3 = appDetailDao.getEntriesByIds(entry.getAppIdList());
+                        dto.setCount(entries3.size());
+                    } else {
+                        dto.setCount(0);
+                    }
+                    dto.setContactId(entry.getCommunityId().toString());
+                    dto.setType(2);//社区
+                    oids.remove(entry.getCommunityId());
+                    dtos2.add(dto);
+                }else{//社区id 已包含
+                    if(!delIds2.contains(entry.getID())){//非已有对象
+                        controlAppDao.delEntry(entry.getID());
+                    }
                 }
-                dto.setContactId(entry.getCommunityId().toString());
-                dto.setType(2);//社区
-                oids.remove(entry.getCommunityId());
-                dtos2.add(dto);
+                delIds2.add(entry.getID());
             }
         }
         for(ObjectId id : childIds){
@@ -4156,12 +4215,31 @@ public class ControlPhoneService {
             ControlAppUserEntry entry = controlAppUserDao.getEntry(parentId, contactId);
             if(entry!=null && entry.getAppIdList()!=null && entry.getAppIdList().size() >0){
                 entries = appDetailDao.getEntriesByIds(entry.getAppIdList());
+                /*if(entry.getAppIdList().size()!=entries.size()){
+                    List<ObjectId> oids = new ArrayList<ObjectId>();
+                    for(AppDetailEntry entry3 : entries){
+                        oids.add(entry3.getID());
+                    }
+                    entry.setAppIdList(oids);
+                    controlAppUserDao.addEntry(entry);
+                }*/
             }
         }else{
             ControlAppEntry entry = controlAppDao.getEntry(parentId, contactId);
             if(entry!=null && entry.getAppIdList()!=null && entry.getAppIdList().size() >0){
                 entries = appDetailDao.getEntriesByIds(entry.getAppIdList());
+                /*if(entry.getAppIdList().size()!=entries.size()){
+                    List<ObjectId> oids = new ArrayList<ObjectId>();
+                    for(AppDetailEntry entry3 : entries){
+                        oids.add(entry3.getID());
+                    }
+                    entry.setAppIdList(oids);
+                    controlAppDao.addEntry(entry);
+                }*/
             }
+
+
+
 
         }
         for(AppDetailEntry entry2 : entries){
@@ -4422,6 +4500,92 @@ public class ControlPhoneService {
         return map;
     }
 
+    //获取新班级管控版本
+    public Map<String,Object> getNewCommunityVersionList(ObjectId communityId){
+        Map<String,Object> map = new HashMap<String, Object>();
+        List<ControlVersionDTO> dtos = new ArrayList<ControlVersionDTO>();
+        List<ControlVersionEntry> entries = controlVersionDao.getCommunityVersionList(communityId);
+        ControlVersionEntry entry = null;
+        Map<String,ControlVersionEntry> cmap = new HashMap<String, ControlVersionEntry>();
+        if(entries.size()>0){
+            entry = entries.get(0);
+        }
+        List<String> objectIdList4 = newVersionBindService.getStudentIdListByCommunityId(communityId);
+        List<ObjectId> objectIdList5 = new ArrayList<ObjectId>();
+        for(String string : objectIdList4){
+            objectIdList5.add(new ObjectId(string));
+        }
+        long current = System.currentTimeMillis()-7*24*60*60*1000;
+        List<ControlVersionEntry> entries3 = controlVersionDao.getAllStudentVersionList(objectIdList5,current);
+        for(ControlVersionEntry controlVersionEntry3 : entries3){
+            ControlVersionEntry controlVersionEntry4 = cmap.get(controlVersionEntry3.getUserId().toString());
+            if(controlVersionEntry4!=null){
+                if(controlVersionEntry4.getDateTime()<controlVersionEntry3.getDateTime()){
+                    cmap.put(controlVersionEntry3.getUserId().toString(),controlVersionEntry3);
+                }
+            }else{
+                cmap.put(controlVersionEntry3.getUserId().toString(),controlVersionEntry3);
+            }
+        }
+        List<UserDetailInfoDTO> unList = userService.findUserInfoByUserIds(objectIdList4);
+        for(UserDetailInfoDTO ddto:unList){
+            ControlVersionEntry controlVersionEntry2 = cmap.get(ddto.getId());
+            if(controlVersionEntry2 !=null){
+                ControlVersionDTO dto = new ControlVersionDTO(controlVersionEntry2);
+                boolean flag = false;
+                String cacheUserKey= CacheHandler.getUserKey(controlVersionEntry2.getUserId().toString());
+                if(org.apache.commons.lang3.StringUtils.isNotEmpty(cacheUserKey)){
+                    SessionValue sv = CacheHandler.getSessionValue(cacheUserKey);
+                    if (null != sv && !sv.isEmpty()) {
+                        flag = true;
+                    }
+                }
+                if(flag){
+
+                }else{
+                    dto.setVersion("已退出");
+                }
+                if(entry != null && controlVersionEntry2.getVersion().equals(entry.getVersion())){
+                    dto.setLevel(3);//匹配
+                }else{
+                    dto.setLevel(2);//不匹配
+                }
+                String name = StringUtils.isNotEmpty(ddto.getNickName())?ddto.getNickName():ddto.getUserName();
+                dto.setUserName(name);
+                dto.setDateTime(0l);
+                dtos.add(dto);
+            }else{
+                ControlVersionDTO dto = new ControlVersionDTO();
+                String name = StringUtils.isNotEmpty(ddto.getNickName())?ddto.getNickName():ddto.getUserName();
+                dto.setUserName(name);
+                dto.setVersion("暂无数据");
+                dto.setLevel(2);
+                dto.setCommunityId(communityId.toString());
+                dto.setDateTime(0l);
+                dto.setId("");
+                dto.setType(1);
+                dto.setUserId(ddto.getId());
+                dtos.add(dto);
+            }
+        }
+        if(entry!=null){
+            map.put("dto",new ControlVersionDTO(entry));
+        }else{
+            ControlVersionDTO dto = new ControlVersionDTO();
+            dto.setUserName("");
+            dto.setVersion("暂无数据");
+            dto.setLevel(1);
+            dto.setCommunityId(communityId.toString());
+            dto.setDateTime(0l);
+            dto.setId("");
+            dto.setType(2);
+            dto.setUserId("");
+            map.put("dto",dto);
+        }
+        map.put("list",dtos);
+        return map;
+    }
+
     //添加孩子社区管控版本
     public void addCommunityPersion(ObjectId userId,String version){
         ControlVersionEntry entry = controlVersionDao.getEntry(userId, 1);
@@ -4430,7 +4594,7 @@ public class ControlPhoneService {
             entry.setDateTime(new Date().getTime());
             controlVersionDao.addEntry(entry);
         }else{
-           ControlVersionEntry controlVersionEntry = new ControlVersionEntry(null,userId,version,1);
+           ControlVersionEntry controlVersionEntry = new ControlVersionEntry(null,userId,version,1,1);
             controlVersionDao.addEntry(controlVersionEntry);
         }
     }
@@ -4443,7 +4607,7 @@ public class ControlPhoneService {
             entry.setDateTime(new Date().getTime());
             controlVersionDao.addEntry(entry);
         }else{
-            ControlVersionEntry controlVersionEntry = new ControlVersionEntry(communityId,userId,version,type);
+            ControlVersionEntry controlVersionEntry = new ControlVersionEntry(communityId,userId,version,1,type);
             controlVersionDao.addEntry(controlVersionEntry);
         }
     }

@@ -420,6 +420,29 @@ public class ControlPhoneController extends BaseController {
     }
 
     /**
+     * （新）定时接受孩子的应用使用情况
+     */
+    @ApiOperation(value = "定时接受孩子的应用使用情况", httpMethod = "POST", produces = "application/json")
+    @ApiResponses( value = {@ApiResponse(code = 200, message = "Successful — 请求已完成",response = String.class),
+            @ApiResponse(code = 400, message = "请求中有语法问题，或不能满足请求"),
+            @ApiResponse(code = 500, message = "服务器不能完成请求")})
+    @RequestMapping("/acceptNewAppResultList")
+    @ResponseBody
+    public String acceptNewAppResultList(@ApiParam(name = "dto", required = true, value = "应用使用情况list") @RequestBody ResultNewAppDTO dto){
+        RespObj respObj=new RespObj(Constant.FAILD_CODE);
+        try {
+            respObj.setCode(Constant.SUCCESS_CODE);
+            long time = controlPhoneService.acceptNewAppResultList(dto,getUserId());
+            respObj.setMessage(time);
+        } catch (Exception e) {
+            e.printStackTrace();
+            respObj.setCode(Constant.FAILD_CODE);
+            respObj.setErrorMessage("定时接受孩子的应用使用情况失败!");
+        }
+        return JSON.toJSONString(respObj);
+    }
+
+    /**
      * 定时获取孩子的应用使用情况（家长）
      */
     @ApiOperation(value = "定时获取孩子的应用使用情况（家长）", httpMethod = "POST", produces = "application/json")
@@ -1407,6 +1430,26 @@ public class ControlPhoneController extends BaseController {
         RespObj respObj = new RespObj(Constant.FAILD_CODE);
         try{
             Map<String,Object> map = controlPhoneService.getCommunityVersionList(new ObjectId(communityId));
+            respObj.setCode(Constant.SUCCESS_CODE);
+            respObj.setMessage(map);
+        }catch (Exception e){
+            e.printStackTrace();
+            respObj.setCode(Constant.FAILD_CODE);
+            respObj.setErrorMessage("获取班级内的最新版本信息失败");
+        }
+        return respObj;
+    }
+
+    @ApiOperation(value = "获取班级内的最新版本信息", httpMethod = "POST", produces = "application/json")
+    @ApiResponses( value = {@ApiResponse(code = 200, message = "Successful — 请求已完成",response = String.class),
+            @ApiResponse(code = 400, message = "请求中有语法问题，或不能满足请求"),
+            @ApiResponse(code = 500, message = "服务器不能完成请求")})
+    @RequestMapping("/getNewCommunityVersionList")
+    @ResponseBody
+    public RespObj getNewCommunityVersionList(@RequestParam(value="communityId") String communityId){
+        RespObj respObj = new RespObj(Constant.FAILD_CODE);
+        try{
+            Map<String,Object> map = controlPhoneService.getNewCommunityVersionList(new ObjectId(communityId));
             respObj.setCode(Constant.SUCCESS_CODE);
             respObj.setMessage(map);
         }catch (Exception e){

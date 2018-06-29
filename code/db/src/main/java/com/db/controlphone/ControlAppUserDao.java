@@ -20,6 +20,13 @@ public class ControlAppUserDao extends BaseDao {
         save(MongoFacroty.getAppDB(), Constant.COLLECTION_CONTROL_PARENT_APP, entry.getBaseEntry());
         return entry.getID().toString() ;
     }
+    //删除
+    public void delEntry(ObjectId id){
+        BasicDBObject query = new BasicDBObject(Constant.ID,id);
+        BasicDBObject updateValue=new BasicDBObject(Constant.MONGO_SET,new BasicDBObject("isr",Constant.ONE));
+        update(MongoFacroty.getAppDB(), Constant.COLLECTION_CONTROL_PARENT_APP, query,updateValue);
+    }
+
     //修改
     public void updEntry(ControlAppUserEntry e) {
         BasicDBObject query=new BasicDBObject(Constant.ID,e.getID());

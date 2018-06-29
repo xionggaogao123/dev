@@ -1,6 +1,10 @@
 package com.fulaan.mqtt;
 
+import com.alibaba.fastjson.JSON;
+import com.alibaba.fastjson.JSONObject;
+import com.db.controlphone.ControlVersionDao;
 import com.fulaan.mqtt.util.MacSignature;
+import org.bson.types.ObjectId;
 import org.eclipse.paho.client.mqttv3.*;
 import org.eclipse.paho.client.mqttv3.persist.MemoryPersistence;
 
@@ -87,6 +91,7 @@ public class MQTTRecvMsg {
     }
 
     public static void receMessage() throws IOException {
+        final ControlVersionDao controlVersionDao = new ControlVersionDao();
         /**
          * 设置当前用户私有的MQTT的接入点。例如此处示意使用XXX，实际使用请替换用户自己的接入点。接入点的获取方法是，在控制台申请MQTT实例，每个实例都会分配一个接入点域名。
          */
@@ -114,7 +119,7 @@ public class MQTTRecvMsg {
         try {
             final MqttClient sampleClient = new MqttClient(broker, clientId, persistence);
             final MqttConnectOptions connOpts = new MqttConnectOptions();
-            System.out.println("Connecting to broker: " + broker);
+           // System.out.println("Connecting to broker: " + broker);
             /**
              * 计算签名，将签名作为MQTT的password
              * 签名的计算方法，参考工具类MacSignature，第一个参数是ClientID的前半部分，即GroupID
@@ -136,7 +141,7 @@ public class MQTTRecvMsg {
             connOpts.setAutomaticReconnect(true);
             sampleClient.setCallback(new MqttCallbackExtended() {
                 public void connectComplete(boolean reconnect, String serverURI) {
-                    System.out.println("connect success");
+                  //  System.out.println("connect success");
                     //连接成功，需要上传客户端所有的订阅关系
                     try {
                         sampleClient.subscribe(topicFilters, qos);
@@ -145,14 +150,37 @@ public class MQTTRecvMsg {
                     }
                 }
                 public void connectionLost(Throwable throwable) {
-                    System.out.println("mqtt connection lost");
+                    //System.out.println("mqtt connection lost");
                 }
                 public void messageArrived(String topic, MqttMessage mqttMessage) throws Exception {
-                    System.out.println("messageArrived:" + topic + "------" + new String(mqttMessage.getPayload()));
-                    System.out.println("time:" + new Date().getTime());
+
+                    try{
+                        if(topic.equals("GID_jxm_MQTT")){
+                            JSONObject scrResponse = JSON.parseObject(new String(mqttMessage.getPayload(), "UTF-8"));
+                            String uid = scrResponse.getString("clientId").replace("GID_jxm@@@ClientID_", "");
+                            String eventType = scrResponse.getString("eventType");
+                            long time = Long.parseLong(scrResponse.getString("time"));
+                            if(ObjectId.isValid(uid)){
+                                int status = 0;
+                                if(eventType.equals("tcpclean")){//离线
+                                    status = 0;
+                                }else if(eventType.equals("connect")){//上线
+                                    status = 1;
+                                }else{
+                                    status = 0;
+                                }
+                                controlVersionDao.updateEntry(new ObjectId(uid),time,status);
+                              System.out.println(uid+"---"+eventType+"---"+time);
+                            }
+                        }
+                    }catch (Exception e){
+
+                    }
+                 //   System.out.println("messageArrived:" + topic + "------" + new String(mqttMessage.getPayload()));
+                 //   System.out.println("time:" + new Date().getTime());
                 }
                 public void deliveryComplete(IMqttDeliveryToken iMqttDeliveryToken) {
-                    System.out.println("deliveryComplete:" + iMqttDeliveryToken.getMessageId());
+                  //  System.out.println("deliveryComplete:" + iMqttDeliveryToken.getMessageId());
                 }
             });
             //客户端每次上线都必须上传自己所有涉及的订阅关系，否则可能会导致消息接收延迟

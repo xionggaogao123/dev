@@ -65,6 +65,13 @@ public class ControlAppDao extends BaseDao {
         return entryList;
     }
 
+    //删除
+    public void delEntry(ObjectId id){
+        BasicDBObject query = new BasicDBObject(Constant.ID,id);
+        BasicDBObject updateValue=new BasicDBObject(Constant.MONGO_SET,new BasicDBObject("isr",Constant.ONE));
+        update(MongoFacroty.getAppDB(), Constant.COLLECTION_CONTROL_APP, query,updateValue);
+    }
+
     //查找社区推荐应用列表
     public List<ControlAppEntry> getEntryListByUserId(ObjectId userId,List<ObjectId> ids) {
         BasicDBObject query = new BasicDBObject()

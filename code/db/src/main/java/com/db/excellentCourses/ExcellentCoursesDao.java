@@ -203,7 +203,21 @@ public class ExcellentCoursesDao extends BaseDao {
     public List<ExcellentCoursesEntry> getLunList(int page,int pageSize,long current){
         List<ExcellentCoursesEntry> entryList=new ArrayList<ExcellentCoursesEntry>();
         BasicDBObject query=new BasicDBObject().append("isr",0).append("sta",Constant.TWO).append("top",Constant.ONE);
-        query.append("etm",new BasicDBObject(Constant.MONGO_LT,current));//过期
+        query.append("etm",new BasicDBObject(Constant.MONGO_GT,current));//过期
+        List<DBObject> dbList=find(MongoFacroty.getAppDB(), Constant.COLLECTION_EXCELLENT_COURSES, query,
+                Constant.FIELDS, Constant.MONGO_SORTBY_DESC,(page-1)*pageSize,pageSize);
+        if (dbList != null && !dbList.isEmpty()) {
+            for (DBObject obj : dbList) {
+                entryList.add(new ExcellentCoursesEntry((BasicDBObject) obj));
+            }
+        }
+        return entryList;
+    }
+
+    //轮播列表
+    public List<ExcellentCoursesEntry> getOldLunList(int page,int pageSize){
+        List<ExcellentCoursesEntry> entryList=new ArrayList<ExcellentCoursesEntry>();
+        BasicDBObject query=new BasicDBObject().append("isr",0).append("sta",Constant.TWO).append("top",Constant.ONE);
         List<DBObject> dbList=find(MongoFacroty.getAppDB(), Constant.COLLECTION_EXCELLENT_COURSES, query,
                 Constant.FIELDS, Constant.MONGO_SORTBY_DESC,(page-1)*pageSize,pageSize);
         if (dbList != null && !dbList.isEmpty()) {
@@ -222,6 +236,12 @@ public class ExcellentCoursesDao extends BaseDao {
         return count;
     }
 
+    public int countOldLunList(){
+        BasicDBObject query = new BasicDBObject();
+        query.append("isr",0).append("sta",Constant.TWO).append("top",Constant.ONE);
+        int count = count(MongoFacroty.getAppDB(),Constant.COLLECTION_EXCELLENT_COURSES, query);
+        return count;
+    }
 
     public List<ExcellentCoursesEntry> getAllWebEntryList(String subjectId,String name,int page,int pageSize){
         List<ExcellentCoursesEntry> entryList=new ArrayList<ExcellentCoursesEntry>();

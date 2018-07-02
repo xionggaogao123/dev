@@ -2124,5 +2124,20 @@ public class ExcellentCoursesService {
         return map;
     }
 
+    public Map<String,Object> getOldLunList(int page,int pageSize){
+        Map<String,Object> map = new HashMap<String, Object>();
+        long current = System.currentTimeMillis();
+        List<ExcellentCoursesEntry> entries = excellentCoursesDao.getOldLunList(page,pageSize);
+        int count = excellentCoursesDao.countOldLunList();
+        List<ExcellentCoursesDTO> dtos = new ArrayList<ExcellentCoursesDTO>();
+        for(ExcellentCoursesEntry entry:entries){
+            ExcellentCoursesDTO dto = new ExcellentCoursesDTO(entry);
+            dtos.add(dto);
+        }
+        map.put("list",dtos);
+        map.put("count",count);
+        return map;
+    }
+
 
 }

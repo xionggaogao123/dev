@@ -764,11 +764,11 @@ public class SystemMessageService extends BaseService {
         //8分钟要上的课
         HourClassDao hourClassDao = new HourClassDao();
         ExcellentCoursesDao excellentCoursesDao = new ExcellentCoursesDao();
-        long endTime = System.currentTimeMillis();
-        String str = DateTimeUtils.getLongToStrTimeTwo(endTime).substring(0,11);
+        long startTime = System.currentTimeMillis();
+        String str = DateTimeUtils.getLongToStrTimeTwo(startTime).substring(0,11);
         long strNum = DateTimeUtils.getStrToLongTime(str, "yyyy-MM-dd");
         PushMessageDao pushMessageDao = new PushMessageDao();
-        long startTime = endTime-10*60*1000;
+        long endTime = startTime+10*60*1000;//未来10分钟要上的课
         List<HourClassEntry> hourClassEntries = hourClassDao.getIsNewObjectId(startTime, endTime);
         if(hourClassEntries.size()>0){
             for(HourClassEntry hourClassEntry:hourClassEntries){
@@ -811,10 +811,10 @@ public class SystemMessageService extends BaseService {
                             UserEntry userEntry = userDao.findByUserId(classOrderEntry.getUserId());
                             if(userEntry!=null){
                                 String name = org.apache.commons.lang.StringUtils.isNotEmpty(userEntry.getNickName())?userEntry.getNickName():userEntry.getUserName();
-                                sendStaticNotice(classOrderEntry.getUserId(),2,pushMessageEntry.getTitle(),name);
+                                //sendStaticNotice(classOrderEntry.getUserId(),2,pushMessageEntry.getTitle(),name);
                                 NewVersionBindRelationEntry newVersionBindRelationEntry = newVersionBindRelationDao.getBindEntry(classOrderEntry.getUserId());
                                 if(newVersionBindRelationEntry!=null){
-                                    sendClassNotice(newVersionBindRelationEntry.getMainUserId(),1,pushMessageEntry.getTitle(),name);
+                                    sendClassNotice(newVersionBindRelationEntry.getMainUserId(),0,pushMessageEntry.getTitle(),name);
                                 }
                             }
                         }

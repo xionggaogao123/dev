@@ -278,6 +278,7 @@ public class TaskJob {
     public void sendMessage(){
         SystemMessageService systemMessageService = new SystemMessageService();
         systemMessageService.sendMessage();
+        systemMessageService = null;
     }
     //清除缓存表
     public void dropAppResult(){

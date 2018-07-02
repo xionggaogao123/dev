@@ -469,7 +469,7 @@ public class WebExcellentCoursesController extends BaseController {
                           @ApiParam(name = "pageSize", required = false, value = "pageSize") @RequestParam(value="pageSize",defaultValue = "10") int pageSize){
         RespObj respObj = new RespObj(Constant.FAILD_CODE);
         try{
-            Map<String,Object> map = excellentCoursesService.getLunList(page, pageSize);
+            Map<String,Object> map = excellentCoursesService.getOldLunList(page, pageSize);
             respObj.setCode(Constant.SUCCESS_CODE);
             respObj.setMessage(map);
         }catch (Exception e){

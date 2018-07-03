@@ -21,6 +21,7 @@ public class SuperTopicDTO {
     private List<Attachement> imageUrl = new ArrayList<Attachement>();
     private String url;
     private String createTime;
+    private String timeStr;
     private int voteType;
 
     public SuperTopicDTO(){
@@ -36,6 +37,7 @@ public class SuperTopicDTO {
             this.readName = e.getShareTitle();
             this.url = e.getCommunityContent();
             this.voteType = e.getVoteType();
+            this.timeStr = getTimeStr(e.getCreateTime());
             for (AttachmentEntry entry : e.getImageList()) {
                 this.imageUrl.add(new Attachement(entry));
             }
@@ -48,6 +50,35 @@ public class SuperTopicDTO {
             new HourClassDTO();
         }
 
+    }
+
+    private String getTimeStr(long time) {
+        long nowTime = System.currentTimeMillis();
+        long compareTime = nowTime - time;
+        long month = 24 * 60 * 60 * 1000 * 30l;
+        long day = 24 * 60 * 60 * 1000l;
+        long hour = 60 * 60 * 1000l;
+        long minute = 60 * 1000l;
+        long sencond = 1000l;
+        if (compareTime > month) {
+            return DateTimeUtils.convert(time, DateTimeUtils.DATE_YYYY_MM_DD);
+        } else if (compareTime > day) {
+            return (int) compareTime / day + "天前";
+        } else if (compareTime > hour) {
+            return (int) compareTime / hour + "小时前";
+        } else if (compareTime > minute) {
+            return (int) compareTime / minute + "分前";
+        } else {
+            return (int) compareTime / sencond + "秒前";
+        }
+    }
+    
+    public String getTimeStr() {
+        return timeStr;
+    }
+
+    public void setTimeStr(String timeStr) {
+        this.timeStr = timeStr;
     }
 
     public int getVoteType() {

@@ -94,6 +94,10 @@ public class CommunityDetailDTO {
     private int zanCount;
     private int isZan;
     private List<String> zanList=new ArrayList<String>();
+    
+    //是否显示评论
+    //0（默认）不显示  1显示
+    private int isShowPl = 0;
 
     public CommunityDetailDTO() {
 
@@ -660,4 +664,14 @@ public class CommunityDetailDTO {
     public void setTop(int top) {
         this.top = top;
     }
+
+    public int getIsShowPl() {
+        return isShowPl;
+    }
+
+    public void setIsShowPl(int isShowPl) {
+        this.isShowPl = isShowPl;
+    }
+    
+    
 }

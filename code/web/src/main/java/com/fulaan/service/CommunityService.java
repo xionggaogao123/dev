@@ -1242,6 +1242,8 @@ public class CommunityService {
         if(null!=userId){
             remarkEntryMap=remarkDao.find(userId,objectIds);
         }
+      //查询是否大V
+        List<ObjectId> objectIdList1 = teacherApproveDao.selectMap(objectIds);
         for (CommunityDetailEntry entry : entries) {
             UserEntry userEntry = map.get(entry.getCommunityUserId());
             CommunityDetailDTO communityDetailDTO = new CommunityDetailDTO(entry);
@@ -1252,6 +1254,25 @@ public class CommunityService {
             ObjectId groupId = groupIds.get(new ObjectId(entry.getCommunityId()));
             MemberEntry entry1 = memberMap.get(groupId + "$" + entry.getCommunityUserId());
 
+            MemberEntry entry5 = memberMap.get(groupId + "$" + userId);
+            if(entry1!=null && entry5!=null){
+                if(entry5.getRole() > entry1.getRole()){
+                    communityDetailDTO.setOperation(1);//权限压制，可删除
+                }else if(entry.getCommunityUserId().equals(userId)){
+                    communityDetailDTO.setOperation(1);//发布人相同，可删除
+                }else{
+                    communityDetailDTO.setOperation(0);//不可删除
+                    if(entry1.getRole()==0){//同为普通成员
+                        if(objectIdList1.contains(userId) && !objectIdList1.contains(entry.getCommunityUserId())){
+                            communityDetailDTO.setOperation(1);//我是大V        你不是
+                        }
+                    }
+                }
+            }else{
+                communityDetailDTO.setOperation(0);//不可删除
+                logger.error(entry.getID());
+            }
+            
             setCommunityDetailInfo(communityDetailDTO, userEntry, entry1);
             //设置备注名
             if(null!=remarkEntryMap){
@@ -2249,7 +2270,12 @@ public class CommunityService {
         List<VideoEntry> dbAttacheMents = new ArrayList<VideoEntry>();
         if (StringUtils.isNotBlank(images)) {
             String[] imageList = images.split(",");
-            Collections.addAll(imagesList, imageList);
+            //Collections.addAll(imagesList, imageList);
+            for (String s : imageList) {
+                if (StringUtils.isNotBlank(s)) {
+                    imagesList.add(s);
+                }
+            }
         }
         if (StringUtils.isNotBlank(vedios)) {
             String[] attachMentList = vedios.split(",");

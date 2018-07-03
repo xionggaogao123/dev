@@ -806,17 +806,37 @@ public class WebCommunityController extends BaseController {
     public RespObj newMessage(@ApiParam @RequestBody CommunityMessage message) {
         ObjectId uid = getUserId();
         try{
-            ObjectId detailId=communityService.saveMessage(uid, message);
-            int type=message.getType();
-            String msg = "";
-            if(type==1||type==5) {
-                if (type == 1) {
-                    msg = "发布了一条通知";
-                } else {
-                    msg = "发布了一条作业";
-                }
-                latestGroupDynamicService.saveLatestInfo(new ObjectId(message.getCommunityId()),detailId,msg,uid,type);
+            String[] communityIds=message.getCommunityId().split(",");
+            for(String communityId:communityIds) {
+                        CommunityMessage messageItem=new CommunityMessage(communityId,
+                            message.getTitle(),
+                            message.getContent(),
+                            message.getType(),
+                            message.getShareUrl(),
+                            message.getShareImage(),
+                            message.getShareTitle(),
+                            message.getSharePrice(),
+                            message.getAttachements(),
+                            message.getVedios(),
+                            message.getVideoDTOs(),
+                            message.getImages(),
+                            message.getVoteContent(),
+                            message.getVoteMaxCount(),
+                            message.getVoteDeadTime(),
+                            message.getVoteType());
+                    ObjectId detailId = communityService.saveMessage(uid, messageItem);
+                    int type = messageItem.getType();
+                    String msg = "";
+                    if (type == 1 || type == 5) {
+                        if (type == 1) {
+                            msg = "发布了一条通知";
+                        } else {
+                            msg = "发布了一条作业";
+                        }
+                        latestGroupDynamicService.saveLatestInfo(new ObjectId(messageItem.getCommunityId()), detailId, msg, uid, type);
+                    }
             }
+           
 
 //                Map<String, String> sendMessage = new HashMap<String, String>();
 //                sendMessage.put("type", MsgType.TEXT);

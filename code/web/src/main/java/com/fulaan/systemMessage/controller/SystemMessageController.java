@@ -143,6 +143,31 @@ public class SystemMessageController extends BaseController {
         }
         return JSON.toJSONString(respObj);
     }
+    
+    /**
+     * 用户留言查询
+     * @return
+     */
+    @ApiOperation(value = "精选评论查询", httpMethod = "POST", produces = "application/json")
+    @ApiResponses( value = {@ApiResponse(code = 200, message = "Successful — 请求已完成",response = String.class),
+            @ApiResponse(code = 400, message = "请求中有语法问题，或不能满足请求"),
+            @ApiResponse(code = 500, message = "服务器不能完成请求")})
+    @RequestMapping("/getMyOperationList")
+    @ResponseBody
+    public String getMyOperationList(@ApiParam(name = "id", required = true, value = "作业id") @RequestParam("id") String id){
+        RespObj respObj=new RespObj(Constant.FAILD_CODE);
+        try {
+            respObj.setCode(Constant.SUCCESS_CODE);
+            int role = 2;//精选2
+            Map<String,Object> dtos = systemMessageService.getMyOperationList(new ObjectId(id), role, getUserId());
+            respObj.setMessage(dtos);
+        } catch (Exception e) {
+            e.printStackTrace();
+            respObj.setCode(Constant.FAILD_CODE);
+            respObj.setErrorMessage("根据作业id查找当前评论列表失败!");
+        }
+        return JSON.toJSONString(respObj);
+    }
 
     /**
      * 所有评论查询
@@ -304,5 +329,32 @@ public class SystemMessageController extends BaseController {
             respObj.setErrorMessage("发送消息失败");
         }
         return respObj;
+    }
+    
+    /**
+     * 点赞
+     * @return
+     */
+    @ApiOperation(value = "添加评论", httpMethod = "POST", produces = "application/json")
+    @ApiResponse(code = 200, message = "success", response = String.class)
+    @RequestMapping("/updateZan")
+    @ResponseBody
+    public String updateZan( @RequestParam(value = "zan",defaultValue = "1") int zan,
+                                     @RequestParam("id") String id){
+        RespObj respObj=new RespObj(Constant.FAILD_CODE);
+        try {
+            respObj.setCode(Constant.SUCCESS_CODE);
+           systemMessageService.updateZan(new ObjectId(id),getUserId(),zan);
+            if(zan==0){
+                respObj.setMessage("点赞成功");
+            }else if(zan==1){
+                respObj.setMessage("取消成功");
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+            respObj.setCode(Constant.FAILD_CODE);
+            respObj.setErrorMessage("添加作业评论失败!");
+        }
+        return JSON.toJSONString(respObj);
     }
 }

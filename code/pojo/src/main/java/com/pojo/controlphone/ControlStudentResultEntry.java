@@ -32,6 +32,7 @@ public class ControlStudentResultEntry  extends BaseDBObject {
             long newAppUser,
             long newAppTime,
             long time,
+            int electric,
             long dateTime
     ){
         BasicDBObject dbObject=new BasicDBObject()
@@ -40,6 +41,7 @@ public class ControlStudentResultEntry  extends BaseDBObject {
                 .append("nau", newAppUser)
                 .append("nat",newAppTime)
                 .append("tim",time)
+                .append("ele",electric)
                 .append("dtm",dateTime)
                 .append("isr", 0);
         setBaseEntry(dbObject);
@@ -53,6 +55,7 @@ public class ControlStudentResultEntry  extends BaseDBObject {
             long newAppUser,
             long newAppTime,
             long time,
+            int electric,
             long dateTime
     ){
         BasicDBObject dbObject=new BasicDBObject()
@@ -62,6 +65,7 @@ public class ControlStudentResultEntry  extends BaseDBObject {
                 .append("nau", newAppUser)
                 .append("nat",newAppTime)
                 .append("tim", time)
+                .append("ele",electric)
                 .append("dtm",dateTime)
                 .append("isr", 0);
         setBaseEntry(dbObject);
@@ -105,5 +109,13 @@ public class ControlStudentResultEntry  extends BaseDBObject {
 
     public void setIsRemove(int isRemove){
         setSimpleValue("isr",isRemove);
+    }
+
+    public int getElectric(){
+        return getSimpleIntegerValueDef("ele",100);
+    }
+
+    public void setElectric(int electric){
+        setSimpleValue("ele",electric);
     }
 }

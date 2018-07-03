@@ -174,11 +174,15 @@ public class AppVoteDTO {
     public boolean isOwner() {
         return isOwner;
     }
-
+    public boolean getIsOwner() {
+        return isOwner;
+    }
     public void setOwner(boolean owner) {
         isOwner = owner;
     }
-
+    public void setIsOwner(boolean isOwner) {
+        this.isOwner = isOwner;
+    }
     public int getVoteDeadFlag() {
         return voteDeadFlag;
     }

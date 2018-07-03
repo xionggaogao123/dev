@@ -86,6 +86,7 @@ public class ExcellentCoursesService {
     private static final int  TUI_TIME = 12*60*60*1000;  //退款超时时间  ->  12小时
 
    public static final String[] arg1 = {"http://7xiclj.com1.z0.glb.clouddn.com/5b2cd0143d4df93a9389fa73.jpg",
+                                        "http://7xiclj.com1.z0.glb.clouddn.com/5b2cd0143d4df93a9389fa73.jpg",
                                         "http://7xiclj.com1.z0.glb.clouddn.com/5b2cd0493d4df93a9389fde3.jpg",
                                         "http://7xiclj.com1.z0.glb.clouddn.com/5b2cd04e3d4df93a9389fdfe.jpg",
                                         "http://7xiclj.com1.z0.glb.clouddn.com/5b2cd0543d4df93a9389fe56.jpg",
@@ -97,6 +98,7 @@ public class ExcellentCoursesService {
                                         "http://7xiclj.com1.z0.glb.clouddn.com/5b2cd1613d4df93a938a0b54.jpg"};//大图
 
    public static final String[] arg2 = {"http://7xiclj.com1.z0.glb.clouddn.com/5b2cd0463d4df93a9389fddb.jpg",
+                                        "http://7xiclj.com1.z0.glb.clouddn.com/5b2cd0463d4df93a9389fddb.jpg",
                                         "http://7xiclj.com1.z0.glb.clouddn.com/5b2cd04c3d4df93a9389fdfc.jpg",
                                         "http://7xiclj.com1.z0.glb.clouddn.com/5b2cd0503d4df93a9389fe0b.jpg",
                                         "http://7xiclj.com1.z0.glb.clouddn.com/5b2cd0563d4df93a9389fe7c.jpg",
@@ -143,7 +145,7 @@ public class ExcellentCoursesService {
         }else{
             dto.setUserId(userId.toString());
             Random random = new Random();
-            int i1 = random.nextInt(9)+1;
+            int i1 = random.nextInt(10)+1;
             dto.setCover(arg2[i1]);
             dto.setBigCover(arg1[i1]);
             //初次创建   状态为  未发布
@@ -1506,13 +1508,19 @@ public class ExcellentCoursesService {
             map.put("userName",name);
             map.put("password",coursesRoomEntry.getPlaypass());
             //去上课
-            classOrderDao.updateToEntry(classOrderEntry.getID());
-            NewVersionBindRelationEntry newVersionBindRelationEntry = newVersionBindRelationDao.getBindEntry(userId);
-            if(newVersionBindRelationEntry!=null && classOrderEntry.getType()==1){
-                //发送通知
-                systemMessageService.sendClassNotice(newVersionBindRelationEntry.getMainUserId(),1,excellentCoursesEntry.getTitle(),name);
-            }
+            if( classOrderEntry.getType()==1){
+                classOrderDao.updateToEntry(classOrderEntry.getID());
+                NewVersionBindRelationEntry newVersionBindRelationEntry = newVersionBindRelationDao.getBindEntry(userId);
+                if(newVersionBindRelationEntry!=null){
+                    //发送通知
+                    try{
+                        systemMessageService.sendClassNotice(newVersionBindRelationEntry.getMainUserId(),1,excellentCoursesEntry.getTitle(),name);
+                    }catch (Exception e){
 
+                    }
+
+                }
+            }
         }else{
             throw  new Exception("上课时间未到，请稍后进入");
         }
@@ -2103,8 +2111,24 @@ public class ExcellentCoursesService {
 
     public Map<String,Object> getLunList(int page,int pageSize){
         Map<String,Object> map = new HashMap<String, Object>();
-        List<ExcellentCoursesEntry> entries = excellentCoursesDao.getLunList(page,pageSize);
-        int count = excellentCoursesDao.countLunList();
+        long current = System.currentTimeMillis();
+        List<ExcellentCoursesEntry> entries = excellentCoursesDao.getLunList(page,pageSize,current);
+        int count = excellentCoursesDao.countLunList(current);
+        List<ExcellentCoursesDTO> dtos = new ArrayList<ExcellentCoursesDTO>();
+        for(ExcellentCoursesEntry entry:entries){
+            ExcellentCoursesDTO dto = new ExcellentCoursesDTO(entry);
+            dtos.add(dto);
+        }
+        map.put("list",dtos);
+        map.put("count",count);
+        return map;
+    }
+
+    public Map<String,Object> getOldLunList(int page,int pageSize){
+        Map<String,Object> map = new HashMap<String, Object>();
+        long current = System.currentTimeMillis();
+        List<ExcellentCoursesEntry> entries = excellentCoursesDao.getOldLunList(page,pageSize);
+        int count = excellentCoursesDao.countOldLunList();
         List<ExcellentCoursesDTO> dtos = new ArrayList<ExcellentCoursesDTO>();
         for(ExcellentCoursesEntry entry:entries){
             ExcellentCoursesDTO dto = new ExcellentCoursesDTO(entry);

@@ -16,6 +16,14 @@ import java.util.List;
  */
 public class ControlVersionDao extends BaseDao {
 
+    //修改
+    public void updateEntry(ObjectId userId,long time,int status){
+        BasicDBObject query = new BasicDBObject("uid",userId);
+        //query.append("tim",new BasicDBObject(Constant.MONGO_LT,time));
+        BasicDBObject updateValue=new BasicDBObject(Constant.MONGO_SET,new BasicDBObject("tim",time).append("sta",status));
+        update(MongoFacroty.getAppDB(), Constant.COLLECTION_CONTROL_VERSION, query,updateValue);
+    }
+
     public List<ControlVersionEntry> getCommunityVersionList(ObjectId communityId){
         BasicDBObject query = new BasicDBObject();
         query.append("cid",communityId).append("isr",Constant.ZERO).append("typ",2);

@@ -75,6 +75,26 @@ public class HomeSchoolDao extends BaseDao {
         return entryList;
     }
 
+    public List<HomeSchoolEntry> getAllList(int page,int pageSize,String keyword) {
+        BasicDBObject query = new BasicDBObject()
+                .append("isr", 0); // 未删除
+        if(keyword != null && !keyword.equals("")){
+            query.append("nm", MongoUtils.buildRegex(keyword));
+        }
+        List<DBObject> dbList =
+                find(MongoFacroty.getAppDB(),
+                        Constant.COLLECTION_HOME_SCHOOL,
+                        query, Constant.FIELDS,
+                        Constant.MONGO_SORTBY_DESC,(page - 1) * pageSize, pageSize);
+        List<HomeSchoolEntry> entryList = new ArrayList<HomeSchoolEntry>();
+        if (dbList != null && !dbList.isEmpty()) {
+            for (DBObject obj : dbList) {
+                entryList.add(new HomeSchoolEntry((BasicDBObject) obj));
+            }
+        }
+        return entryList;
+    }
+
     public List<HomeSchoolEntry> getSchoolList() {
         BasicDBObject query = new BasicDBObject()
                 .append("isr", 0); // 未删除
@@ -126,6 +146,20 @@ public class HomeSchoolDao extends BaseDao {
         if(sortType !=0){
             query.append("sty",sortType);
         }
+        if(keyword != null && !keyword.equals("")){
+            query.append("nm", MongoUtils.buildRegex(keyword));
+        }
+        int count =
+                count(MongoFacroty.getAppDB(),
+                        Constant.COLLECTION_HOME_SCHOOL,
+                        query);
+        return count;
+    }
+
+
+    public int getAllListCount(int page,int pageSize,String keyword) {
+        BasicDBObject query = new BasicDBObject()
+                .append("isr", 0); // 未删除
         if(keyword != null && !keyword.equals("")){
             query.append("nm", MongoUtils.buildRegex(keyword));
         }

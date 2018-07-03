@@ -23,6 +23,9 @@ public class ControlVersionDTO {
 
     private String userName;
 
+    private int status;
+
+
     public ControlVersionDTO(){
 
     }
@@ -34,6 +37,7 @@ public class ControlVersionDTO {
             this.version = e.getVersion();
             this.dateTime = e.getDateTime();
             this.type =e.getType();
+            this.status= e.getStatus();
         }else{
             new ControlVersionDTO();
         }
@@ -52,6 +56,7 @@ public class ControlVersionDTO {
                         cId,
                         aId,
                         this.version,
+                        this.status,
                         this.type
                 );
         return openEntry;
@@ -120,5 +125,13 @@ public class ControlVersionDTO {
 
     public void setLevel(int level) {
         this.level = level;
+    }
+
+    public int getStatus() {
+        return status;
+    }
+
+    public void setStatus(int status) {
+        this.status = status;
     }
 }

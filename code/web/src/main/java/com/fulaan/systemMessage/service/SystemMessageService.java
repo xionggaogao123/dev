@@ -1,6 +1,7 @@
 package com.fulaan.systemMessage.service;
 
 import cn.jpush.api.push.model.audience.Audience;
+import com.db.backstage.PushMessageDao;
 import com.db.backstage.SystemMessageDao;
 import com.db.backstage.TeacherApproveDao;
 import com.db.excellentCourses.ClassOrderDao;
@@ -11,6 +12,7 @@ import com.db.fcommunity.MemberDao;
 import com.db.indexPage.IndexPageDao;
 import com.db.operation.AppNewOperationDao;
 import com.db.operation.AppNoticeDao;
+import com.db.user.NewVersionBindRelationDao;
 import com.db.user.UserDao;
 import com.db.wrongquestion.SubjectClassDao;
 import com.easemob.server.comm.constant.MsgType;
@@ -27,6 +29,7 @@ import com.fulaan.systemMessage.dto.SimpleUserDTO;
 import com.fulaan.user.service.UserService;
 import com.fulaan.utils.JPushUtils;
 import com.pojo.backstage.PictureType;
+import com.pojo.backstage.PushMessageEntry;
 import com.pojo.excellentCourses.ClassOrderEntry;
 import com.pojo.excellentCourses.ExcellentCoursesEntry;
 import com.pojo.excellentCourses.HourClassEntry;
@@ -36,10 +39,12 @@ import com.pojo.fcommunity.VideoEntry;
 import com.pojo.indexPage.IndexPageEntry;
 import com.pojo.newVersionGrade.CommunityType;
 import com.pojo.operation.AppNewOperationEntry;
+import com.pojo.user.NewVersionBindRelationEntry;
 import com.pojo.user.UserDetailInfoDTO;
 import com.pojo.user.UserEntry;
 import com.pojo.wrongquestion.SubjectClassEntry;
 import com.sys.constants.Constant;
+import com.sys.utils.DateTimeUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.bson.types.ObjectId;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -755,28 +760,67 @@ public class SystemMessageService extends BaseService {
     }
 
 
-    public static void getNowClassList(){
-        //6分钟要上的课
+    public  void getNowClassList(){
+        //8分钟要上的课
         HourClassDao hourClassDao = new HourClassDao();
-        ClassOrderDao classOrderDao = new ClassOrderDao();
-        UserDao userDao = new UserDao();
         ExcellentCoursesDao excellentCoursesDao = new ExcellentCoursesDao();
-        long endTime = System.currentTimeMillis();
-        long startTime = endTime-6*60*1000;
+        long startTime = System.currentTimeMillis();
+        String str = DateTimeUtils.getLongToStrTimeTwo(startTime).substring(0,11);
+        long strNum = DateTimeUtils.getStrToLongTime(str, "yyyy-MM-dd");
+        PushMessageDao pushMessageDao = new PushMessageDao();
+        long endTime = startTime+10*60*1000;//未来10分钟要上的课
         List<HourClassEntry> hourClassEntries = hourClassDao.getIsNewObjectId(startTime, endTime);
         if(hourClassEntries.size()>0){
             for(HourClassEntry hourClassEntry:hourClassEntries){
-                List<ClassOrderEntry> classOrderEntries = classOrderDao.getAllUserList(hourClassEntry.getID());
-                if(classOrderEntries.size()>0){
-                    for(ClassOrderEntry classOrderEntry:classOrderEntries ){
-                        ExcellentCoursesEntry excellentCoursesEntry = excellentCoursesDao.getEntry(hourClassEntry.getParentId());
-                        UserEntry userEntry = userDao.findByUserId(classOrderEntry.getUserId());
-                        if(excellentCoursesEntry!=null && userEntry!=null){
-                            String name = org.apache.commons.lang.StringUtils.isNotEmpty(userEntry.getNickName())?userEntry.getNickName():userEntry.getUserName();
-                            sendStaticNotice(classOrderEntry.getUserId(),2,excellentCoursesEntry.getTitle(),name);
+                ExcellentCoursesEntry excellentCoursesEntry = excellentCoursesDao.getEntry(hourClassEntry.getParentId());
+                if(pushMessageDao.isNotHave(hourClassEntry.getID())){
+                    PushMessageEntry pushMessageEntry = new PushMessageEntry(
+                        "复兰课堂",
+                        new ArrayList<ObjectId>(),
+                        hourClassEntry.getID(),
+                        "未上课提醒",
+                        excellentCoursesEntry.getTitle(),
+                        hourClassEntry.getStartTime(),
+                        strNum,
+                        1,
+                        0);
+                    pushMessageDao.addEntry(pushMessageEntry);
+                }
+            }
+        }
+    }
+
+
+    public void sendMessage(){
+        PushMessageDao pushMessageDao = new PushMessageDao();
+        long current = System.currentTimeMillis();
+        String str = DateTimeUtils.getLongToStrTimeTwo(current).substring(0,11);
+        long strNum = DateTimeUtils.getStrToLongTime(str, "yyyy-MM-dd");
+        List<PushMessageEntry> pushMessageEntries = pushMessageDao.selectList(strNum, 0, current);
+        if(pushMessageEntries.size()>0){
+            HourClassDao hourClassDao = new HourClassDao();
+            ClassOrderDao classOrderDao = new ClassOrderDao();
+            UserDao userDao = new UserDao();
+            NewVersionBindRelationDao newVersionBindRelationDao = new NewVersionBindRelationDao();
+            for(PushMessageEntry pushMessageEntry:pushMessageEntries){
+                if(pushMessageEntry.getType()==1){// 1 直播未进入提示
+                    HourClassEntry hourClassEntry =   hourClassDao.getEntry(pushMessageEntry.getContactId());
+                    List<ClassOrderEntry> classOrderEntries = classOrderDao.getAllUserList(hourClassEntry.getID());
+                    if(classOrderEntries.size()>0){
+                        for(ClassOrderEntry classOrderEntry:classOrderEntries ){
+                            UserEntry userEntry = userDao.findByUserId(classOrderEntry.getUserId());
+                            if(userEntry!=null){
+                                String name = org.apache.commons.lang.StringUtils.isNotEmpty(userEntry.getNickName())?userEntry.getNickName():userEntry.getUserName();
+                                //sendStaticNotice(classOrderEntry.getUserId(),2,pushMessageEntry.getTitle(),name);
+                                NewVersionBindRelationEntry newVersionBindRelationEntry = newVersionBindRelationDao.getBindEntry(classOrderEntry.getUserId());
+                                if(newVersionBindRelationEntry!=null){
+                                    sendClassNotice(newVersionBindRelationEntry.getMainUserId(),0,pushMessageEntry.getTitle(),name);
+                                }
+                            }
                         }
                     }
                 }
+                pushMessageDao.delEntry(pushMessageEntry.getID());
             }
         }
     }

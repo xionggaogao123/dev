@@ -22,6 +22,7 @@ public class HomeSchoolDTO {
     private String province;
     private String address;
     private String logo;
+    private int open;
 
     public HomeSchoolDTO(){
 
@@ -90,6 +91,14 @@ public class HomeSchoolDTO {
                 );
         return openEntry;
 
+    }
+
+    public int getOpen() {
+        return open;
+    }
+
+    public void setOpen(int open) {
+        this.open = open;
     }
 
     public String getId() {

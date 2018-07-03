@@ -33,6 +33,7 @@ public class ExcellentCoursesDTO {
     private int isCollect;  // 0 未收藏    1 已收藏
     private String communitName;
     private String bigCover;
+    private int courseType;
 
     public ExcellentCoursesDTO(){
 
@@ -43,6 +44,7 @@ public class ExcellentCoursesDTO {
             this.id = e.getID()==null?"":e.getID().toString();
             this.userId = e.getUserId()==null?"":e.getUserId().toString();
             this.userName = e.getUserName();
+            this.courseType = e.getCourseType();
             this.subjectId=e.getSubjectId()==null?"":e.getSubjectId().toString();
             if(e.getBigCouver()!=null){
                 this.bigCover=e.getBigCouver();
@@ -177,6 +179,14 @@ public class ExcellentCoursesDTO {
                 );
         return openEntry;
 
+    }
+
+    public int getCourseType() {
+        return courseType;
+    }
+
+    public void setCourseType(int courseType) {
+        this.courseType = courseType;
     }
 
     public String getBigCover() {

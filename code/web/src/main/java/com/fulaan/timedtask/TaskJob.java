@@ -43,6 +43,7 @@ public class TaskJob {
     private BuildLogReportService buildLogReportService;
 
 
+
     /**
      * 定时结束火热活动
      *
@@ -267,16 +268,23 @@ public class TaskJob {
     public void checkUnLesson(){
         SmallLessonService smallLessonService = new SmallLessonService();
         smallLessonService.checkUnLesson();
+        //smallLessonService.receMessage();
+        SystemMessageService systemMessageService = new SystemMessageService();
+        systemMessageService.getNowClassList();
+        systemMessageService = null;
+        smallLessonService = null;
     }
-    //发送未上课信息
+    //发送推送
     public void sendMessage(){
-        //SystemMessageService systemMessageService = new SystemMessageService();
-        SystemMessageService.getNowClassList();
+        SystemMessageService systemMessageService = new SystemMessageService();
+        systemMessageService.sendMessage();
+        systemMessageService = null;
     }
     //清除缓存表
     public void dropAppResult(){
         ControlAppResultDao controlAppResultDao = new ControlAppResultDao();
         controlAppResultDao.drop();
+        controlAppResultDao = null;
     }
     //更新运营记录
     public void checkBusinessManage(){

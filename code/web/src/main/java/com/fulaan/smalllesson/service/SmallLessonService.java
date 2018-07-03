@@ -1,17 +1,20 @@
 package com.fulaan.smalllesson.service;
 
 import com.db.business.ModuleTimeDao;
+import com.db.controlphone.ControlSimpleDao;
 import com.db.smalllesson.LessonAnswerDao;
 import com.db.smalllesson.LessonUserResultDao;
 import com.db.smalllesson.SmallLessonCodeDao;
 import com.db.smalllesson.SmallLessonDao;
 import com.db.user.UserDao;
+import com.fulaan.mqtt.MQTTRecvMsg;
 import com.fulaan.smalllesson.api.LessonAPI;
 import com.fulaan.smalllesson.dto.LessonAnswerDTO;
 import com.fulaan.smalllesson.dto.LessonUserResultDTO;
 import com.fulaan.smalllesson.dto.SmallLessonDTO;
 import com.fulaan.user.service.UserService;
 import com.mongodb.DBObject;
+import com.pojo.controlphone.ControlSimpleEntry;
 import com.pojo.instantmessage.ApplyTypeEn;
 import com.pojo.smalllesson.LessonAnswerEntry;
 import com.pojo.smalllesson.LessonUserResultEntry;
@@ -22,6 +25,7 @@ import org.bson.types.ObjectId;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.net.InetAddress;
 import java.util.*;
 
 /**
@@ -427,6 +431,63 @@ public class SmallLessonService {
         if(stringList.size()>0){
             LessonAPI.addCustomVote(stringList);
         }
+    }
+
+
+    public void receMessage(){
+        //接受mqtt消息类   type 1
+        ControlSimpleDao controlSimpleDao = new ControlSimpleDao();
+        ControlSimpleEntry controlSimpleEntry = controlSimpleDao.getEntryForParent(1);
+        String ip = "";
+        try{
+            InetAddress addr = InetAddress.getLocalHost();
+            ip=addr.getHostAddress().toString();
+        }catch (Exception e){
+            controlSimpleDao = null;
+            controlSimpleEntry =null;
+        }
+
+        if(controlSimpleEntry!=null){
+            long currentTime = System.currentTimeMillis();
+            long oldTime = controlSimpleEntry.getTime();
+            long newTime = oldTime+ 20*60*1000;//20分钟
+            String oldIp = controlSimpleEntry.getIp();
+            if(oldTime<currentTime){//最新时间
+                if(currentTime<newTime){//正常回调中
+                    if(ip.equals(oldIp)){//使用的服务器
+                        controlSimpleDao.updateEntry(controlSimpleEntry.getID(),currentTime,ip);//更新时间戳
+                    }
+                }else{//超时回调
+                    controlSimpleDao.updateEntry(controlSimpleEntry.getID(),currentTime,ip);//更新时间戳
+                    //重启服务
+                    new Thread() {
+                        public void run() {
+                            try{
+                                MQTTRecvMsg.receMessage();
+                            }catch (Exception e){
+
+                            }
+                        }
+                    }.start();
+                }
+            }else{//过期不采用
+
+            }
+        }else{
+            ControlSimpleEntry controlSimpleEntry1 = new ControlSimpleEntry(ip,1,1);
+            controlSimpleDao.addEntry(controlSimpleEntry1);
+            //第一次启动服务
+            new Thread() {
+                public void run() {
+                    try{
+                        MQTTRecvMsg.receMessage();
+                    }catch (Exception e){
+
+                    }
+                }
+            }.start();
+        }
+       // System.out.println("*******************************************************************************************");
     }
 
 }

@@ -18,6 +18,7 @@ import org.apache.log4j.Logger;
 import org.bson.types.ObjectId;
 import org.springframework.stereotype.Service;
 
+import java.math.BigDecimal;
 import java.util.*;
 
 /**
@@ -212,7 +213,7 @@ public class AppAlipayService  {
         EBusinessLog.info(userId.toString()+"-"+contactId.toString()+"生成了充值订单号："+orderId);
         //生成支付宝支付订单  String body,String subject,String outTradeNo,String timeoutExpress,String totalAmount
         String body = "购买课程";
-        String order = createAppChongPay(body,PAY_NOW_SUBJECT,orderId,PAY_TIMEOUTEXPRESS,price+"",PAY_NOW_NOTIFYURL);
+        String order = createAppChongPay(body,PAY_NOW_SUBJECT,orderId,PAY_TIMEOUTEXPRESS,getTwoDouble(price)+"",PAY_NOW_NOTIFYURL);
         if(order.equals("")){
             addLog(userId,contactId,"支付宝未支付订单生成失败，订单终止");
             EBusinessLog.info(userId.toString()+"-"+contactId.toString()+"支付宝未支付订单生成失败，订单终止");
@@ -324,6 +325,12 @@ public class AppAlipayService  {
         }else{
             throw  new Exception("订单信息不存在！");
         }
+    }
+
+    public double getTwoDouble(double d){
+        BigDecimal b = new BigDecimal(d);
+        d = b.setScale(2, BigDecimal.ROUND_HALF_UP).doubleValue();
+        return d;
     }
 
     /**

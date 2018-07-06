@@ -13,6 +13,7 @@ import java.util.Date;
  * userId        用户id           uid
  * version       管控版本号       vsn
  * status        在线状态         sta          0  离线      1  在线   //mqtt
+ * channelId     标记id           hid
  * time          消息时间         tim
  * dateTime      时间             dtm   dtm
  * type          类型             typ         1  收到         2  发出
@@ -38,7 +39,8 @@ public class ControlVersionEntry extends BaseDBObject {
                 .append("vsn",version)
                 .append("sta",status)
                 .append("typ",type)
-                .append("dtm",new Date().getTime())
+                .append("hid","")
+                .append("dtm", new Date().getTime())
                 .append("tim",new Date().getTime())
                 .append("isr", 0);
 
@@ -104,6 +106,13 @@ public class ControlVersionEntry extends BaseDBObject {
 
     public void setTime(long time){
         setSimpleValue("tim",time);
+    }
+
+    public String getChannelId(){
+        return  getSimpleStringValue("hid");
+    }
+    public void setChannelId(String channelId){
+        setSimpleValue("hid",channelId);
     }
 
 

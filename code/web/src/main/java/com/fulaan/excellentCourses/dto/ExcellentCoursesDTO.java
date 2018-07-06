@@ -23,8 +23,8 @@ public class ExcellentCoursesDTO {
     private List<String> communityIdList = new ArrayList<String>();
     private String startTime;
     private String endTime;
-    private int oldPrice;
-    private int newPrice;
+    private double oldPrice;
+    private double newPrice;
     private int studentNumbet;
     private String createTime;
     private int status;
@@ -34,6 +34,7 @@ public class ExcellentCoursesDTO {
     private String communitName;
     private String bigCover;
     private int courseType;
+    private int open;
 
     public ExcellentCoursesDTO(){
 
@@ -74,6 +75,7 @@ public class ExcellentCoursesDTO {
             }
             this.oldPrice = e.getOldPrice();
             this.newPrice = e.getNewPrice();
+            this.open = e.getOpen();
             this.studentNumbet = e.getStudentNumber();
             this.status = e.getStatus();
             this.type = e.getType();
@@ -126,7 +128,8 @@ public class ExcellentCoursesDTO {
                         this.newPrice,
                         this.studentNumbet,
                         this.status,
-                        this.type
+                        this.type,
+                        this.open
                 );
         return openEntry;
 
@@ -175,10 +178,27 @@ public class ExcellentCoursesDTO {
                         this.newPrice,
                         this.studentNumbet,
                         this.status,
-                        this.type
+                        this.type,
+                        this.open
                 );
         return openEntry;
 
+    }
+
+    public void setOldPrice(double oldPrice) {
+        this.oldPrice = oldPrice;
+    }
+
+    public void setNewPrice(double newPrice) {
+        this.newPrice = newPrice;
+    }
+
+    public int getOpen() {
+        return open;
+    }
+
+    public void setOpen(int open) {
+        this.open = open;
     }
 
     public int getCourseType() {
@@ -309,20 +329,12 @@ public class ExcellentCoursesDTO {
         this.createTime = createTime;
     }
 
-    public int getOldPrice() {
+    public double getOldPrice() {
         return oldPrice;
     }
 
-    public void setOldPrice(int oldPrice) {
-        this.oldPrice = oldPrice;
-    }
-
-    public int getNewPrice() {
+    public double getNewPrice() {
         return newPrice;
-    }
-
-    public void setNewPrice(int newPrice) {
-        this.newPrice = newPrice;
     }
 
     public int getStudentNumbet() {

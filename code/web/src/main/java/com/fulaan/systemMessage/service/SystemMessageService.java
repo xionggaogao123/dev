@@ -4,6 +4,7 @@ import cn.jpush.api.push.model.audience.Audience;
 import com.db.backstage.PushMessageDao;
 import com.db.backstage.SystemMessageDao;
 import com.db.backstage.TeacherApproveDao;
+import com.db.controlphone.ControlSimpleDao;
 import com.db.excellentCourses.ClassOrderDao;
 import com.db.excellentCourses.ExcellentCoursesDao;
 import com.db.excellentCourses.HourClassDao;
@@ -30,6 +31,7 @@ import com.fulaan.user.service.UserService;
 import com.fulaan.utils.JPushUtils;
 import com.pojo.backstage.PictureType;
 import com.pojo.backstage.PushMessageEntry;
+import com.pojo.controlphone.ControlSimpleEntry;
 import com.pojo.excellentCourses.ClassOrderEntry;
 import com.pojo.excellentCourses.ExcellentCoursesEntry;
 import com.pojo.excellentCourses.HourClassEntry;
@@ -44,12 +46,14 @@ import com.pojo.user.UserDetailInfoDTO;
 import com.pojo.user.UserEntry;
 import com.pojo.wrongquestion.SubjectClassEntry;
 import com.sys.constants.Constant;
+import com.sys.utils.AvatarUtils;
 import com.sys.utils.DateTimeUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.bson.types.ObjectId;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.net.InetAddress;
 import java.util.*;
 
 /**
@@ -274,6 +278,8 @@ public class SystemMessageService extends BaseService {
                     dto.setId(userEntry.getID().toString());
                     String userName = StringUtils.isNotBlank(userEntry.getNickName())?userEntry.getNickName():userEntry.getUserName();
                     dto.setName(userName);
+                    dto.setAvatar(AvatarUtils.getAvatar(userEntry.getAvatar(),userEntry.getRole(),userEntry.getSex()));
+                    dto.setJiaId(userEntry.getGenerateUserCode());
                     if(!userId.equals(userEntry.getID())){
                         dtos.add(dto);
                     }
@@ -792,6 +798,38 @@ public class SystemMessageService extends BaseService {
 
 
     public void sendMessage(){
+        //接受mqtt消息类   type 1
+        ControlSimpleDao controlSimpleDao = new ControlSimpleDao();
+        ControlSimpleEntry controlSimpleEntry = controlSimpleDao.getEntryForParent(2);
+        String ip = "";
+        try{
+            InetAddress addr = InetAddress.getLocalHost();
+            ip=addr.getHostAddress().toString();
+        }catch (Exception e){
+
+        }
+        if(controlSimpleEntry!=null){
+            long currentTime = System.currentTimeMillis();
+            long oldTime = controlSimpleEntry.getTime();
+            long newTime = oldTime+ 3*60*1000;//3分钟
+            String oldIp = controlSimpleEntry.getIp();
+            if(oldTime<currentTime){//最新时间
+                if(currentTime<newTime){//正常回调中
+                    if(ip.equals(oldIp)){//使用的服务器
+                        controlSimpleDao.updateEntry(controlSimpleEntry.getID(),currentTime,ip);//更新时间戳
+                    }else{
+                        return;
+                    }
+                }else{//超时回调
+                    controlSimpleDao.updateEntry(controlSimpleEntry.getID(),currentTime,ip);//更新时间戳
+                }
+            }else{//过期不采用
+                return;
+            }
+        }else{
+            ControlSimpleEntry controlSimpleEntry1 = new ControlSimpleEntry(ip,1,2);
+            controlSimpleDao.addEntry(controlSimpleEntry1);
+        }
         PushMessageDao pushMessageDao = new PushMessageDao();
         long current = System.currentTimeMillis();
         String str = DateTimeUtils.getLongToStrTimeTwo(current).substring(0,11);

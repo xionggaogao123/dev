@@ -41,7 +41,7 @@ public class ClassOrderEntry extends BaseDBObject {
             ObjectId contactId,
             String orderId,
             int isBuy,
-            int price,
+            double price,
             int function,
             int type
     ){
@@ -67,7 +67,7 @@ public class ClassOrderEntry extends BaseDBObject {
             ObjectId contactId,
             String orderId,
             int isBuy,
-            int price,
+            double price,
             int function,
             int type
     ){
@@ -130,11 +130,11 @@ public class ClassOrderEntry extends BaseDBObject {
     }
 
 
-    public int getPrice(){
-        return getSimpleIntegerValue("pri");
+    public double getPrice(){
+        return getSimpleDoubleValue("pri");
     }
 
-    public void setPrice(int price){
+    public void setPrice(double price){
         setSimpleValue("pri",price);
     }
 

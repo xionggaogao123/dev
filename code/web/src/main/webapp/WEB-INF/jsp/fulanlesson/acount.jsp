@@ -109,7 +109,7 @@
 					<tr>
 						<td>{{=obj2.parming}}</td>
 						<td>{{=obj2.userName}}</td>
-						<td>{{=obj2.answer}}</td>
+						<td class="sp">{{=obj2.answer}}</td>
 						<td>{{=obj2.time}}</td>
 					</tr>
 					{{ } }}

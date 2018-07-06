@@ -233,3 +233,7 @@ body{
     background-color: #E6E6E6;
     color: #779554;
 }
+.sp span{
+    display: inline-block;
+    width: 12px;
+}

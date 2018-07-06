@@ -16,10 +16,18 @@ import java.util.List;
  */
 public class ControlVersionDao extends BaseDao {
 
-    //修改
-    public void updateEntry(ObjectId userId,long time,int status){
-        BasicDBObject query = new BasicDBObject("uid",userId);
-        //query.append("tim",new BasicDBObject(Constant.MONGO_LT,time));
+    //上线修改
+    public void updateEntry(ObjectId userId,long time,int status,String channelId){
+        BasicDBObject query = new BasicDBObject("uid",userId).append("typ", Constant.ONE);
+        query.append("tim",new BasicDBObject(Constant.MONGO_LT,time));
+        BasicDBObject updateValue=new BasicDBObject(Constant.MONGO_SET,new BasicDBObject("tim",time).append("hid", channelId).append("sta",status));
+        update(MongoFacroty.getAppDB(), Constant.COLLECTION_CONTROL_VERSION, query,updateValue);
+    }
+    //下线修改
+    public void updateNewEntry(ObjectId userId,long time,int status,String channelId){
+        BasicDBObject query = new BasicDBObject("uid", userId).append("typ",Constant.ONE);
+        query.append("hid",channelId);
+        query.append("tim",new BasicDBObject(Constant.MONGO_LT,time));
         BasicDBObject updateValue=new BasicDBObject(Constant.MONGO_SET,new BasicDBObject("tim",time).append("sta",status));
         update(MongoFacroty.getAppDB(), Constant.COLLECTION_CONTROL_VERSION, query,updateValue);
     }

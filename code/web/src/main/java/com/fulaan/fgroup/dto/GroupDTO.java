@@ -27,6 +27,7 @@ public class GroupDTO {
     private int count;
     private String searchId;
     private int isM;
+    private List<String> userIds = new ArrayList<String>();
 
     private List<MemberDTO> members = new ArrayList<MemberDTO>();
     private List<MemberDTO> managers = new ArrayList<MemberDTO>();
@@ -48,6 +49,14 @@ public class GroupDTO {
         this.isM = groupEntry.getIsName();
         this.communityId = groupEntry.getCommunityId() == null ? "" : groupEntry.getCommunityId().toString();
         this.isBindCommunity = groupEntry.getCommunityId() != null;
+    }
+
+    public List<String> getUserIds() {
+        return userIds;
+    }
+
+    public void setUserIds(List<String> userIds) {
+        this.userIds = userIds;
     }
 
     public int getIsM() {

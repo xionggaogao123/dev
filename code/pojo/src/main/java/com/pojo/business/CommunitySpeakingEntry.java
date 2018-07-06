@@ -2,6 +2,7 @@ package com.pojo.business;
 
 import com.mongodb.BasicDBObject;
 import com.pojo.base.BaseDBObject;
+import com.sys.constants.Constant;
 import org.bson.types.ObjectId;
 
 /**
@@ -36,14 +37,71 @@ public class CommunitySpeakingEntry extends BaseDBObject {
     ){
         BasicDBObject dbObject  = new BasicDBObject()
                 .append("uid",userId)
-                .append("mid",memberId)
+                .append("mid", memberId)
                 .append("gid",groupId)
                 .append("cid",communityId)
                 .append("typ",type)
                 .append("stm",startTime)
-                .append("etm",endTime);
+                .append("etm",endTime)
+                .append("isr", Constant.ZERO);
         setBaseEntry(dbObject);
+    }
 
+
+    public ObjectId getUserId(){
+        return getSimpleObjecIDValue("uid");
+    }
+    public void setUserId(ObjectId userId){
+        setSimpleValue("uid",userId);
+    }
+    public ObjectId getMemberId(){
+        return getSimpleObjecIDValue("mid");
+    }
+    public void setMemberId(ObjectId memberId){
+        setSimpleValue("mid",memberId);
+    }
+    public ObjectId getGroupId(){
+        return getSimpleObjecIDValue("gid");
+    }
+    public void setGroupId(ObjectId groupId){
+        setSimpleValue("gid",groupId);
+    }
+    public ObjectId getCommunityId(){
+        return getSimpleObjecIDValue("cid");
+    }
+    public void setCommunityId(ObjectId communityId){
+        setSimpleValue("cid",communityId);
+    }
+
+    public long getStartTime(){
+        return getSimpleLongValue("stm");
+    }
+
+    public void setStartTime(long startTime){
+        setSimpleValue("stm",startTime);
+    }
+    public long getEndTime(){
+        return getSimpleLongValue("etm");
+    }
+
+    public void setEndTime(long endTime){
+        setSimpleValue("etm",endTime);
+    }
+
+    public int getType(){
+        return getSimpleIntegerValue("typ");
+    }
+
+    public void setType(int type){
+        setSimpleValue("typ",type);
+    }
+
+    public int getIsRemove(){
+        return getSimpleIntegerValue("isr");
+    }
+
+    public void setIsRemove(int isRemove){
+        setSimpleValue("isr",isRemove);
     }
 
 }

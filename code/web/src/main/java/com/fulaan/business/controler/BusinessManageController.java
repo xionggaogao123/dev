@@ -447,4 +447,52 @@ public class BusinessManageController extends BaseController {
         return respObj;
     }
 
+    /**
+     * 社区禁言状态
+     */
+    @ApiOperation(value = "社区禁言状态", httpMethod = "POST", produces = "application/json")
+    @ApiResponses( value = {@ApiResponse(code = 200, message = "Successful — 请求已完成",response = String.class)})
+    @RequestMapping("/getCommunitySpeak")
+    @ResponseBody
+    public RespObj getCommunitySpeak( @ApiParam(name="groupId",required = false,value="groupId") @RequestParam(value="groupId",defaultValue = "") String groupId,
+                                      @ApiParam(name="userId",required = false,value="userId") @RequestParam(value="userId",defaultValue = "") String userId){
+        RespObj respObj=new RespObj(Constant.FAILD_CODE);
+        try {
+            Map<String,Object> time = businessManageService.getCommunitySpeak(new ObjectId(userId), new ObjectId(groupId),getUserId());
+            respObj.setCode(Constant.SUCCESS_CODE);
+            respObj.setMessage(time);
+        } catch (Exception e) {
+            e.printStackTrace();
+            respObj.setCode(Constant.FAILD_CODE);
+            respObj.setErrorMessage("获取社区禁言状态失败!");
+        }
+        return respObj;
+    }
+
+    /**
+     * 社区禁言
+     */
+    @ApiOperation(value = "社区禁言", httpMethod = "POST", produces = "application/json")
+    @ApiResponses( value = {@ApiResponse(code = 200, message = "Successful — 请求已完成",response = String.class)})
+    @RequestMapping("/addCommunitySpeak")
+    @ResponseBody
+    public RespObj addCommunitySpeak( @ApiParam(name="groupId",required = false,value="groupId") @RequestParam(value="groupId",defaultValue = "") String groupId,
+                                      @ApiParam(name="userId",required = false,value="userId") @RequestParam(value="userId",defaultValue = "") String userId,
+                                      @ApiParam(name="time",required = false,value="time") @RequestParam(value="time",defaultValue = "") long time){
+        RespObj respObj=new RespObj(Constant.FAILD_CODE);
+        try {
+            businessManageService.banningCommunitySpeak(getUserId(), new ObjectId(userId),new ObjectId(groupId),time);
+            respObj.setCode(Constant.SUCCESS_CODE);
+            if(time==0l){
+                respObj.setMessage("取消禁言成功！");
+            }else{
+                respObj.setMessage("禁言成功！");
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+            respObj.setCode(Constant.FAILD_CODE);
+            respObj.setErrorMessage("获取社区禁言失败!");
+        }
+        return respObj;
+    }
 }

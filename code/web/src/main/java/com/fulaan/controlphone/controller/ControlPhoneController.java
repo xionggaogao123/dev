@@ -443,6 +443,29 @@ public class ControlPhoneController extends BaseController {
     }
 
     /**
+     * （新）定时接受孩子的应用使用情况
+     */
+    @ApiOperation(value = "定时接受孩子的应用使用情况", httpMethod = "POST", produces = "application/json")
+    @ApiResponses( value = {@ApiResponse(code = 200, message = "Successful — 请求已完成",response = String.class),
+            @ApiResponse(code = 400, message = "请求中有语法问题，或不能满足请求"),
+            @ApiResponse(code = 500, message = "服务器不能完成请求")})
+    @RequestMapping("/acceptFourAppResultList")
+    @ResponseBody
+    public String acceptFourAppResultList(@ApiParam(name = "dto", required = true, value = "应用使用情况list") @RequestBody ResultNewAppDTO dto){
+        RespObj respObj=new RespObj(Constant.FAILD_CODE);
+        try {
+            respObj.setCode(Constant.SUCCESS_CODE);
+            long time = controlPhoneService.acceptNewAppResultList(dto,getUserId());
+            respObj.setMessage(time);
+        } catch (Exception e) {
+            e.printStackTrace();
+            respObj.setCode(Constant.FAILD_CODE);
+            respObj.setErrorMessage("定时接受孩子的应用使用情况失败!");
+        }
+        return JSON.toJSONString(respObj);
+    }
+
+    /**
      * 定时获取孩子的应用使用情况（家长）
      */
     @ApiOperation(value = "定时获取孩子的应用使用情况（家长）", httpMethod = "POST", produces = "application/json")
@@ -512,6 +535,45 @@ public class ControlPhoneController extends BaseController {
                 }
             }
             Map<String,Object> map = controlPhoneService.seacherAppResultList3(getUserId(), new ObjectId(sonId), dTm);
+            respObj.setMessage(map);
+        } catch (Exception e) {
+            e.printStackTrace();
+            respObj.setCode(Constant.FAILD_CODE);
+            respObj.setErrorMessage("定时获取孩子的应用使用情况（家长）失败!");
+        }
+        return JSON.toJSONString(respObj);
+    }
+
+    /**
+     * 定时获取孩子黑名单应用使用情况（家长）
+     */
+    @ApiOperation(value = "定时获取孩子黑名单应用使用情况（家长）", httpMethod = "POST", produces = "application/json")
+    @ApiResponses( value = {@ApiResponse(code = 200, message = "Successful — 请求已完成",response = String.class),
+            @ApiResponse(code = 400, message = "请求中有语法问题，或不能满足请求"),
+            @ApiResponse(code = 500, message = "服务器不能完成请求")})
+    @RequestMapping("/seacherFourAppResultList")
+    @ResponseBody
+    public String seacherFourAppResultList(@ApiParam(name = "sonId", required = true, value = "应用使用情况list") @RequestParam("sonId") String sonId,
+                                            @ApiParam(name = "dateTime", required = true, value = "dateTime") @RequestParam("dateTime") String dateTime){
+        RespObj respObj=new RespObj(Constant.FAILD_CODE);
+        try {
+            respObj.setCode(Constant.SUCCESS_CODE);
+            long dTm = 0l;
+            if(dateTime != null && dateTime != ""){
+                dTm = DateTimeUtils.getStrToLongTime(dateTime, "yyyy-MM-dd");
+            }
+            long current = System.currentTimeMillis();
+            String str = DateTimeUtils.getLongToStrTimeTwo(current).substring(0,11);
+            long strNum = DateTimeUtils.getStrToLongTime(str, "yyyy-MM-dd");
+            Calendar calendar = Calendar.getInstance();
+            calendar.setTime(new Date(current));
+            int hour = calendar.get(Calendar.HOUR_OF_DAY);
+            if(dTm==strNum){
+                if(hour<8){
+                    dTm = dTm - 24*60*60*1000;
+                }
+            }
+            Map<String,Object> map = controlPhoneService.seacherAppResultListFour(getUserId(), new ObjectId(sonId), dTm);
             respObj.setMessage(map);
         } catch (Exception e) {
             e.printStackTrace();
@@ -626,6 +688,29 @@ public class ControlPhoneController extends BaseController {
         try {
             respObj.setCode(Constant.SUCCESS_CODE);
             Map<String,Object> dto = controlPhoneService.getNewMapNow(getUserId(), new ObjectId(sonId));
+            respObj.setMessage(dto);
+        } catch (Exception e) {
+            e.printStackTrace();
+            respObj.setCode(Constant.FAILD_CODE);
+            respObj.setErrorMessage("定时接受孩子的位置信息失败!");
+        }
+        return JSON.toJSONString(respObj);
+    }
+
+    /**
+     * 获取孩子地图信息（改版家长首页）
+     */
+    @ApiOperation(value = "定时接受孩子的位置信息", httpMethod = "POST", produces = "application/json")
+    @ApiResponses( value = {@ApiResponse(code = 200, message = "Successful — 请求已完成",response = String.class),
+            @ApiResponse(code = 400, message = "请求中有语法问题，或不能满足请求"),
+            @ApiResponse(code = 500, message = "服务器不能完成请求")})
+    @RequestMapping("/getFourMapNow")
+    @ResponseBody
+    public String getFourMapNow(@ApiParam(name = "sonId", required = true, value = "孩子id") @RequestParam("sonId") String sonId){
+        RespObj respObj=new RespObj(Constant.FAILD_CODE);
+        try {
+            respObj.setCode(Constant.SUCCESS_CODE);
+            Map<String,Object> dto = controlPhoneService.getFourMapNow(getUserId(), new ObjectId(sonId));
             respObj.setMessage(dto);
         } catch (Exception e) {
             e.printStackTrace();
@@ -1515,6 +1600,26 @@ public class ControlPhoneController extends BaseController {
             e.printStackTrace();
             respObj.setCode(Constant.FAILD_CODE);
             respObj.setErrorMessage("获取失败");
+        }
+        return respObj;
+    }
+
+    @ApiOperation(value = "获取本人的最新命令", httpMethod = "POST", produces = "application/json")
+    @ApiResponses( value = {@ApiResponse(code = 200, message = "Successful — 请求已完成",response = String.class),
+            @ApiResponse(code = 400, message = "请求中有语法问题，或不能满足请求"),
+            @ApiResponse(code = 500, message = "服务器不能完成请求")})
+    @RequestMapping("/getMyNewVersion")
+    @ResponseBody
+    public RespObj getMyNewVersion(){
+        RespObj respObj = new RespObj(Constant.FAILD_CODE);
+        try{
+            String dtos = controlPhoneService.getMyNewVersion(getUserId());
+            respObj.setCode(Constant.SUCCESS_CODE);
+            respObj.setMessage(dtos);
+        }catch (Exception e){
+            e.printStackTrace();
+            respObj.setCode(Constant.FAILD_CODE);
+            respObj.setErrorMessage("获取获取本人的最新命令失败");
         }
         return respObj;
     }

@@ -145,6 +145,17 @@ public class SmallLessonService {
                     String name = dto.getNickName()!=null?dto.getNickName():dto.getName();
                     dto2.setUserName(name);
                 }
+                StringBuffer sb = new StringBuffer();
+                String[] strings = dto2.getAnswer().split("    ");
+                sb.append("<span>");
+                for(int j =0;j<strings.length;j++){
+                    if(j==strings.length-1){
+                        sb.append(strings[i]).append("</span>");
+                    }else{
+                        sb.append(strings[i]).append("</span><span>");
+                    }
+                }
+                dto2.setAnswer(sb.toString());
                 dto2.setParming((page-1)*pageSize+i);
                 i++;
             }

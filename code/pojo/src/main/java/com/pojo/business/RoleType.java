@@ -10,7 +10,8 @@ public enum RoleType {
     communityTalk(3,"简易社群会话","communityTalk"),
     noFriend(4,"自动不成为好友","noFriend"),
     sendRole(5,"发送运营文章","sendRole"),
-    jinyan(6,"禁言用户","jinyan");
+    jinyan(6,"禁言用户","jinyan"),
+    communityjinyan(7,"社群禁言","communityjinyan");
 
 
 

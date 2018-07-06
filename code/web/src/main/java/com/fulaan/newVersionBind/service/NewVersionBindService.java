@@ -544,6 +544,36 @@ public class NewVersionBindService {
         return dtos;
     }
 
+    public List<Map<String,Object>> getMyNewVersionBindDtos (ObjectId mainUserId){
+        List<Map<String,Object>> dtos = new ArrayList<Map<String,Object>>();
+        List<NewVersionBindRelationEntry> entries=newVersionBindRelationDao.getEntriesByMainUserId(mainUserId);
+        List<ObjectId> userIds= new ArrayList<ObjectId>();
+        for(NewVersionBindRelationEntry entry:entries){
+            userIds.add(entry.getUserId());
+        }
+        userIds.add(mainUserId);
+        Map<ObjectId,UserEntry> userEntryMap=userService.getUserEntryMap(userIds,Constant.FIELDS);
+        for(NewVersionBindRelationEntry entry:entries){
+            UserEntry userEntry1 = userEntryMap.get(entry.getUserId());
+            Map<String,Object> map = new HashMap<String, Object>();
+            map.put("userId",userEntry1.getID().toString());
+            String name = StringUtils.isNotBlank(userEntry1.getNickName())?userEntry1.getNickName():userEntry1.getUserName();
+            map.put("nickName",name);
+            map.put("avatar",AvatarUtils.getAvatar(userEntry1.getAvatar(), userEntry1.getRole(), userEntry1.getSex()));
+            dtos.add(map);
+        }
+        UserEntry userEntry = userEntryMap.get(mainUserId);
+        if(userEntry!=null){
+            Map<String,Object> map = new HashMap<String, Object>();
+            map.put("userId",userEntry.getID().toString());
+            String name = StringUtils.isNotBlank(userEntry.getNickName())?userEntry.getNickName():userEntry.getUserName();
+            map.put("nickName",name);
+            map.put("avatar",AvatarUtils.getAvatar(userEntry.getAvatar(), userEntry.getRole(), userEntry.getSex()));
+            dtos.add(map);
+        }
+        return dtos;
+    }
+
 
     public void removeUnbindChild(ObjectId id){
         recordUserUnbindDao.removeUnBindId(id);

@@ -80,6 +80,52 @@ public class WebExcellentCoursesController extends BaseController {
     }
 
     /**
+     *  去上课
+     */
+    @ApiOperation(value = "去上课", httpMethod = "GET", produces = "application/json")
+    @ApiResponses( value = {@ApiResponse(code = 200, message = "Successful — 请求已完成",response = String.class),
+            @ApiResponse(code = 400, message = "请求中有语法问题，或不能满足请求"),
+            @ApiResponse(code = 500, message = "服务器不能完成请求")})
+    @RequestMapping("/gotoClass")
+    @ResponseBody
+    public String gotoClass(@ApiParam(name = "id", required = false, value = "id") @RequestParam(value="id",defaultValue = "") String id){
+        RespObj respObj=new RespObj(Constant.FAILD_CODE);
+        try {
+            respObj.setCode(Constant.SUCCESS_CODE);
+            Map<String,Object>  dto = excellentCoursesService.gotoClass(new ObjectId(id),getUserId());
+            respObj.setMessage(dto);
+        } catch (Exception e) {
+            e.printStackTrace();
+            respObj.setCode(Constant.FAILD_CODE);
+            respObj.setErrorMessage(e.getMessage());
+        }
+        return JSON.toJSONString(respObj);
+    }
+
+    /**
+     * 我所有报名的课程（分页）
+     */
+    @ApiOperation(value = "添加课程", httpMethod = "POST", produces = "application/json")
+    @ApiResponses( value = {@ApiResponse(code = 200, message = "Successful — 请求已完成",response = String.class),
+            @ApiResponse(code = 400, message = "请求中有语法问题，或不能满足请求"),
+            @ApiResponse(code = 500, message = "服务器不能完成请求")})
+    @RequestMapping("/getMyAllBuyExcellentCourses")
+    @ResponseBody
+    public String getMyAllBuyExcellentCourses(){
+        RespObj respObj=new RespObj(Constant.FAILD_CODE);
+        try {
+            respObj.setCode(Constant.SUCCESS_CODE);
+            List<ExcellentCoursesDTO> result = excellentCoursesService.getMyAllBuyExcellentCourses(getUserId());
+            respObj.setMessage(result);
+        } catch (Exception e) {
+            e.printStackTrace();
+            respObj.setCode(Constant.FAILD_CODE);
+            respObj.setErrorMessage("添加课程失败!");
+        }
+        return JSON.toJSONString(respObj);
+    }
+
+    /**
      * 课程详情
      */
     @ApiOperation(value = "课程详情", httpMethod = "POST", produces = "application/json")
@@ -93,6 +139,29 @@ public class WebExcellentCoursesController extends BaseController {
         try {
             respObj.setCode(Constant.SUCCESS_CODE);
             Map<String,Object> result = excellentCoursesService.getMyDetails(new ObjectId(id));
+            respObj.setMessage(result);
+        } catch (Exception e) {
+            e.printStackTrace();
+            respObj.setCode(Constant.FAILD_CODE);
+            respObj.setErrorMessage("获取课程详情失败!");
+        }
+        return JSON.toJSONString(respObj);
+    }
+
+    /**
+     * 课程详情
+     */
+    @ApiOperation(value = "课程详情", httpMethod = "POST", produces = "application/json")
+    @ApiResponses( value = {@ApiResponse(code = 200, message = "Successful — 请求已完成",response = String.class),
+            @ApiResponse(code = 400, message = "请求中有语法问题，或不能满足请求"),
+            @ApiResponse(code = 500, message = "服务器不能完成请求")})
+    @RequestMapping("/getMyOwnDetails")
+    @ResponseBody
+    public String getMyOwnDetails(@ApiParam(name = "id", required = true, value = "id") @RequestParam("id") String id){
+        RespObj respObj=new RespObj(Constant.FAILD_CODE);
+        try {
+            respObj.setCode(Constant.SUCCESS_CODE);
+            Map<String,Object> result = excellentCoursesService.getMyOwnDetails(new ObjectId(id),getUserId());
             respObj.setMessage(result);
         } catch (Exception e) {
             e.printStackTrace();
@@ -623,7 +692,7 @@ public class WebExcellentCoursesController extends BaseController {
         RespObj respObj=new RespObj(Constant.FAILD_CODE);
         try {
             respObj.setCode(Constant.SUCCESS_CODE);
-            int result = excellentCoursesService.getMyAccount(getUserId());
+            double result = excellentCoursesService.getMyAccount(getUserId());
             respObj.setMessage(result);
         } catch (Exception e) {
             e.printStackTrace();

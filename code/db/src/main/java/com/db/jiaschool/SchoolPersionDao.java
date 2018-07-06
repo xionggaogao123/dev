@@ -55,7 +55,7 @@ public class SchoolPersionDao extends BaseDao {
         update(MongoFacroty.getAppDB(), Constant.COLLECTION_SCHOOL_PERSON, query,updateValue);
     }
     //查询
-    public List<SchoolPersionEntry> getOneRoleList(ObjectId userId) {
+    public List<ObjectId> getOneRoleList(ObjectId userId) {
         BasicDBObject query = new BasicDBObject()
                 .append("isr", 0); // 未删除
         query.append("uid",userId);
@@ -64,10 +64,10 @@ public class SchoolPersionDao extends BaseDao {
                         Constant.COLLECTION_SCHOOL_PERSON,
                         query, Constant.FIELDS,
                         Constant.MONGO_SORTBY_DESC);
-        List<SchoolPersionEntry> entryList = new ArrayList<SchoolPersionEntry>();
+        List<ObjectId> entryList = new ArrayList<ObjectId>();
         if (dbList != null && !dbList.isEmpty()) {
             for (DBObject obj : dbList) {
-                entryList.add(new SchoolPersionEntry((BasicDBObject) obj));
+                entryList.add(new SchoolPersionEntry((BasicDBObject) obj).getSchoolId());
             }
         }
         return entryList;

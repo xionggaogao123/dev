@@ -4,6 +4,7 @@ import cn.jiguang.commom.utils.StringUtils;
 import com.db.appmarket.AppDetailDao;
 import com.db.backstage.TeacherApproveDao;
 import com.db.business.ModuleTimeDao;
+import com.db.business.VersionOpenDao;
 import com.db.controlphone.*;
 import com.db.fcommunity.CommunityDao;
 import com.db.fcommunity.GroupDao;
@@ -25,6 +26,7 @@ import com.mongodb.DBObject;
 import com.pojo.app.SessionValue;
 import com.pojo.appmarket.AppDetailEntry;
 import com.pojo.backstage.TeacherApproveEntry;
+import com.pojo.business.VersionOpenEntry;
 import com.pojo.controlphone.*;
 import com.pojo.fcommunity.CommunityEntry;
 import com.pojo.instantmessage.ApplyTypeEn;
@@ -93,6 +95,7 @@ public class ControlPhoneService {
     private ControlStudentResultDao controlStudentResultDao = new ControlStudentResultDao();
 
     private ModuleTimeDao moduleTimeDao =  new ModuleTimeDao();
+    private VersionOpenDao versionOpenDao = new VersionOpenDao();
 
     @Autowired
     private NewVersionBindService newVersionBindService;
@@ -850,6 +853,105 @@ public class ControlPhoneService {
         return map;
     }
 
+    public Map<String,Object> seacherAppResultListFour(ObjectId parentId,ObjectId sonId,long time){
+        Map<String,Object> map = new HashMap<String, Object>();
+        //防沉迷时间
+        ControlTimeEntry controlTimeEntry = controlTimeDao.getEntry(sonId, parentId);
+        long timecu = 30*60*1000;
+        if(controlTimeEntry != null){
+            timecu = controlTimeEntry.getTime();
+        }
+        if(timecu==1000 * 60 * 60 * 24){
+            map.put("time","24小时");
+        }else{
+            long hours2 = (timecu % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60);
+            long minutes2 = (timecu % (1000 * 60 * 60)) / (1000 * 60);
+            String timeStr = "";
+            if(hours2 != 0 ){
+                timeStr = timeStr + hours2+"小时";
+            }
+            if(minutes2 != 0){
+                timeStr = timeStr + minutes2+"分钟";
+            }
+            map.put("time",timeStr);
+        }
+        //map.put("intTime",timecu);
+        List<ControlAppResultDTO> dtos = new ArrayList<ControlAppResultDTO>();
+        //修改 TODO
+        /*long startTime = time +8*60*60*1000;
+        long endTime = time +8*60*60*1000 + 24*60*60*1000;
+        List<ControlAppResultEntry> entries = controlAppResultDao.getIsNewEntryList(sonId,startTime,endTime);*/
+        //接口打开
+        int status = getVersion("controlTime");
+        map.put("status",status);
+        //查询最新使用使用时间
+        ControlStudentResultEntry entry6 = controlStudentResultDao.getEntry(sonId, parentId, time);
+        if(entry6==null){
+            map.put("list",dtos);
+            map.put("allTime","暂未使用");
+            return map;
+        }
+        List<ControlAppResultEntry> entries = controlAppResultDao.getLinNewNewEntryList(sonId, parentId, entry6.getNewAppTime());
+        if(entries.size()>0){
+            int i = 0;
+            long dtm = 0l;
+            long atm = 0l;
+            List<String> oid = new ArrayList<String>();
+            for(ControlAppResultEntry entry : entries){
+                if(i >2){
+                    dtm = dtm + entry.getUseTime();
+                    atm = atm + entry.getUseTime();
+                }else{
+                    oid.add(entry.getPackageName());
+                    dtos.add(new ControlAppResultDTO(entry));
+                    atm = atm + entry.getUseTime();
+                }
+                i++;
+            }
+            List<AppDetailEntry> entryList = appDetailDao.getEntriesByPackName(oid);
+            for(AppDetailEntry entry3 : entryList){
+                for(ControlAppResultDTO dto : dtos){
+                    if(entry3.getAppPackageName().equals(dto.getPackageName())){
+                        dto.setAppName(entry3.getAppName());
+                        dto.setLogo(entry3.getLogo());
+                    }
+                }
+            }
+           /* ControlAppResultDTO entry2 = new ControlAppResultDTO();
+            entry2.setAppName("其他");
+            entry2.setUserTime(dtm);
+            entry2.setDateTime("");
+            entry2.setAppId("");
+            entry2.setLogo("");
+            entry2.setParentId("");
+            entry2.setUserId("");
+            dtos.add(entry2);*/
+            long hours = (atm % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60);
+            long minutes = (atm % (1000 * 60 * 60)) / (1000 * 60);
+            map.put("list",dtos);
+            String timeStr2 = "";
+            if(hours != 0 ){
+                timeStr2 = timeStr2 + hours+"小时";
+            }
+            if(minutes != 0){
+                timeStr2 = timeStr2 + minutes+"分钟";
+            }
+            map.put("allTime",timeStr2);
+        }else{
+            map.put("list",dtos);
+            map.put("allTime","暂未使用");
+        }
+        return map;
+    }
+
+    public int getVersion(String moduleName){
+        VersionOpenEntry versionOpenEntry = versionOpenDao.getEntry(moduleName);
+        if(versionOpenEntry!=null){
+            return versionOpenEntry.getModuleType();
+        }
+        return 0;
+    }
+
     //接受地图情况
     public void acceptMapResult(ControlMapDTO dto,ObjectId userId){
         NewVersionBindRelationEntry newEntry = newVersionBindRelationDao.getBindEntry(userId);
@@ -1157,6 +1259,159 @@ public class ControlPhoneService {
         ControlVersionDTO controlVersionDTO = getSimpleUserVersion(parentId, sonId);
         map.put("version",controlVersionDTO.getVersion());
         return map;
+    }
+
+    public Map<String,Object> getFourMapNow(ObjectId parentId,ObjectId sonId) {
+        //地图信息
+        Map<String,Object> map = new HashMap<String, Object>();
+        //获得当前时间
+        long current = System.currentTimeMillis();
+        //获得时间批次
+        //long zero = current / (1000 * 3600 * 24) * (1000 * 3600 * 24) - TimeZone.getDefault().getRawOffset();//今天零点零分零秒的毫秒数
+        String str = DateTimeUtils.getLongToStrTimeTwo(current).substring(0,10);
+        long zero = DateTimeUtils.getStrToLongTime(str, "yyyy-MM-dd");
+        //分割点
+        long jiedian = zero+8*60*60*1000;//今天零点零分零秒的毫秒数
+        //修改  todo
+      /*  long startTime = 0l;
+        long endTime = 0l;
+        if(current>=jiedian){
+            startTime = jiedian;
+            endTime = jiedian+ 24*60*60*1000;
+        }else{
+            startTime = jiedian - 24*60*60*1000;
+            endTime = jiedian;
+        }*/
+        long datetime = 0l;
+        if(current>=jiedian){
+            //今日
+            datetime = zero;
+        }else{
+            //昨日
+            datetime = zero- 24*60*60*1000;
+        }
+        // ControlMapEntry entry = controlMapDao.getEntryByParentId(parentId, sonId, zero);
+       /* if (entry != null) {
+            map.put("dto",new ControlMapDTO(entry));
+        } else {*/
+        //废弃数据
+        ControlMapDTO controlMapDTO =new ControlMapDTO();
+        controlMapDTO.setId("");
+        controlMapDTO.setUserId("");
+        controlMapDTO.setParentId("");
+        controlMapDTO.setLongitude("");
+        controlMapDTO.setLatitude("");
+        controlMapDTO.setAngle("");
+        controlMapDTO.setCreateTime("");
+        controlMapDTO.setDistance("");
+        map.put("dto",controlMapDTO);
+        //}
+        //亲情电话个数
+        int count = controlPhoneDao.getParentNumber(parentId, sonId);
+        map.put("phoneCount",count);
+        //已推送应用数量
+        //获得绑定的社区id
+        List<ObjectId> obList = newVersionBindService.getCommunityIdsByUserId(sonId);
+        map.put("appCount",obList.size());
+        //获得各个社区的推送应用记录
+        int size = 0;
+        if(obList.size()>0){
+            List<ControlAppEntry> entries = controlAppDao.getEntryListByCommunityId(obList);
+            ControlAppUserEntry entryList2 = controlAppUserDao.getEntry(parentId,sonId);
+            Set<ObjectId> set = new HashSet<ObjectId>();
+            for(ControlAppEntry entry1:entries){
+                if(entry1 !=null && entry1.getAppIdList() != null) {
+                    set.addAll(entry1.getAppIdList());
+                }
+            }
+            if(entryList2 !=null && entryList2.getAppIdList() != null){
+                set.addAll(entryList2.getAppIdList());
+            }
+            List<ObjectId> objectIds = new ArrayList<ObjectId>();
+            objectIds.addAll(set);
+            List<AppDetailEntry> detailEntries3 =  appDetailDao.getEntriesByIds(objectIds);
+            size = detailEntries3.size();
+        }else{
+            ControlAppUserEntry entryList2 = controlAppUserDao.getEntry(parentId,sonId);
+            Set<ObjectId> set = new HashSet<ObjectId>();
+            if(entryList2 !=null && entryList2.getAppIdList() != null){
+                set.addAll(entryList2.getAppIdList());
+            }
+            size = set.size();
+        }
+        // map.put("appCount",size);
+        //防沉迷时间
+        ControlTimeEntry controlTimeEntry = controlTimeDao.getEntry(sonId, parentId);
+        long timecu = 30*60*1000;
+        if(controlTimeEntry != null){
+            timecu = controlTimeEntry.getTime();
+
+        }
+        map.put("time",timecu/60000);
+        //使用时间
+        // long useTime  = controlAppResultDao.getUserAllTime(sonId, startTime,endTime);
+        ControlStudentResultEntry controlStudentResultEntry = controlStudentResultDao.getEntry(sonId,parentId,datetime);
+        long useTime = 0l;
+        if(controlStudentResultEntry!=null){
+            useTime = controlStudentResultEntry.getNewAppUser();
+        }
+        map.put("useTime",useTime/60000);
+        //剩余时间
+        if(timecu/60000-useTime/60000 <0){
+            map.put("reTime",0);
+        }else{
+            map.put("reTime",timecu/60000-useTime/60000);
+        }
+        UserDetailInfoDTO dto = userService.getUserInfoById(sonId.toString());
+        if(dto!= null){
+            String name = dto.getNickName()!=null?dto.getNickName():dto.getName();
+            map.put("userName",name);
+        }else{
+            map.put("userName","");
+        }
+        int count2=recordChatPersonalDao.countChatEntries(sonId);
+        map.put("chatCount",count2);
+        //当前版本
+        ControlVersionDTO controlVersionDTO = getSimpleUserVersion(parentId, sonId);
+        ControlVersionDTO controlVersionDTO2 = getStudentVersion(sonId);
+        String ver1 = controlVersionDTO.getVersion();
+        String ver2 = controlVersionDTO2.getVersion();
+        if(controlVersionDTO ==null || controlVersionDTO2==null){//记录不存在
+            map.put("status",4);//未在线
+        }else{
+            if(ver1==null || ver2==null){//版本号不存在
+                map.put("status",4);//未在线
+            }else{
+                if(ver1.equals("已退出")||ver2.equals("已退出") || ver1.equals("暂无数据")|| ver2.equals("暂无数据")){
+                    map.put("status",4);//未在线
+                }else{
+                    if(getVersionLong(ver2)>=getVersionLong(ver1)){//版本号已更新
+                        //判断mqtt状态
+                        if(controlVersionDTO2.getStatus()==0){//离线
+                            map.put("status",2);//版本号一致   离线
+                        }else{
+                            map.put("status",1);//版本号一致   在线
+                        }
+                    }else{
+                        //判断mqtt状态
+                        if(controlVersionDTO2.getStatus()==0){//离线
+                            map.put("status",4);//版本号不一致   离线
+                        }else{
+                            map.put("status",3);//版本号不一致   在线
+                        }
+                    }
+                }
+            }
+        }
+        map.put("version",controlVersionDTO.getVersion());
+        return map;
+    }
+
+    //版本号转换
+    public long getVersionLong(String version){
+        String vs = version.substring(0,14);
+        long lTm = DateTimeUtils.getStrToLongTime(vs, "yyyyMMddHHmmss");
+        return lTm;
     }
 
     public List<GroupOfCommunityDTO> getSonCommunityList(ObjectId userId){
@@ -2133,6 +2388,14 @@ public class ControlPhoneService {
         // ControlVersionDTO controlVersionDTO = getStudentVersion(sonId);
         //map.put("version",controlVersionDTO.getVersion());
         return map;
+    }
+
+    public String getMyNewVersion(ObjectId userId){
+        ControlVersionDTO controlVersionDTO = getStudentVersion(userId);
+        if(controlVersionDTO!=null){
+            return controlVersionDTO.getVersion();
+        }
+        return "";
     }
 
     /**
@@ -3987,7 +4250,7 @@ public class ControlPhoneService {
             obj.setUserId(userId);
             obj.setParentId(parentId);
             obj.setDateTime(zero);
-            obj.setAddiction(addiction);
+            //obj.setAddiction(addiction);
             dbList.add(obj.getBaseEntry());
             obj = null;
         }

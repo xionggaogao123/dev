@@ -43,7 +43,7 @@ public class RechargeResultEntry extends BaseDBObject {
             String description,
             int way,
             int type,
-            int money,
+            double money,
             ObjectId sonId,
             ObjectId contactId,
             List<ObjectId> classList
@@ -101,11 +101,11 @@ public class RechargeResultEntry extends BaseDBObject {
         setSimpleValue("typ",type);
     }
 
-    public int getMoney(){
-        return getSimpleIntegerValue("mon");
+    public double getMoney(){
+        return getSimpleDoubleValue("mon");
     }
 
-    public void setMoney(int money){
+    public void setMoney(double money){
         setSimpleValue("mon",money);
     }
 

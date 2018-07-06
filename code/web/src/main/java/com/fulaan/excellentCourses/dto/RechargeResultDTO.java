@@ -19,7 +19,7 @@ public class RechargeResultDTO{
     private String description;
     private int way;
     private int type;
-    private int money;
+    private double money;
     private String sonId;
     private String sonName;
     private String contactId;
@@ -104,11 +104,11 @@ public class RechargeResultDTO{
         this.type = type;
     }
 
-    public int getMoney() {
+    public double getMoney() {
         return money;
     }
 
-    public void setMoney(int money) {
+    public void setMoney(double money) {
         this.money = money;
     }
 

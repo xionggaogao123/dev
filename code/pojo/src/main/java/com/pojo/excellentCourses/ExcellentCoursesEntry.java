@@ -35,6 +35,7 @@ import java.util.List;
  * type             课程状态                  typ      0  正常      1 进行中    2 已结束
  * courseType       课程类型                  cty      0  直播课     1  录播课
  * top              是否轮播                  top      0  否   1  是
+ * open             是否公开                  ope      0  否   1  是
  *
  */
 public class ExcellentCoursesEntry extends BaseDBObject {
@@ -62,11 +63,12 @@ public class ExcellentCoursesEntry extends BaseDBObject {
             List<ObjectId> communityIdList,
             long startTime,
             long endTime,
-            int oldPrice,
-            int newPrice,
+            double oldPrice,
+            double newPrice,
             int studentNumber,
             int status,
-            int type
+            int type,
+            int open
     ){
         BasicDBObject dbObject=new BasicDBObject()
                 .append("uid", userId)
@@ -88,6 +90,7 @@ public class ExcellentCoursesEntry extends BaseDBObject {
                 .append("typ",type)
                 .append("top",Constant.ZERO)
                 .append("cty",Constant.ZERO)
+                .append("ope",open)
                 .append("ctm", new Date().getTime())
                 .append("isr", 0);
         setBaseEntry(dbObject);
@@ -108,11 +111,12 @@ public class ExcellentCoursesEntry extends BaseDBObject {
             List<ObjectId> communityIdList,
             long startTime,
             long endTime,
-            int oldPrice,
-            int newPrice,
+            double oldPrice,
+            double newPrice,
             int studentNumber,
             int status,
-            int type
+            int type,
+            int open
     ){
         BasicDBObject dbObject=new BasicDBObject()
                 .append(Constant.ID, id)
@@ -135,6 +139,7 @@ public class ExcellentCoursesEntry extends BaseDBObject {
                 .append("typ",type)
                 .append("top", Constant.ZERO)
                 .append("cty", Constant.ZERO)
+                .append("ope",open)
                 .append("ctm", new Date().getTime())
                 .append("isr", 0);
         setBaseEntry(dbObject);
@@ -243,19 +248,19 @@ public class ExcellentCoursesEntry extends BaseDBObject {
         setSimpleValue("cty",courseType);
     }
 
-    public int getOldPrice(){
-        return getSimpleIntegerValue("opc");
+    public double getOldPrice(){
+        return getSimpleDoubleValue("opc");
     }
 
-    public void setOldPrice(int oldPrice){
+    public void setOldPrice(double oldPrice){
         setSimpleValue("opc",oldPrice);
     }
 
-    public int getNewPrice(){
-        return getSimpleIntegerValue("npc");
+    public double getNewPrice(){
+        return getSimpleDoubleValue("npc");
     }
 
-    public void setNewPrice(int newPrice){
+    public void setNewPrice(double newPrice){
         setSimpleValue("npc",newPrice);
     }
     public int getStatus(){
@@ -294,6 +299,14 @@ public class ExcellentCoursesEntry extends BaseDBObject {
 
     public void setTop(int top){
         setSimpleValue("top",top);
+    }
+
+    public int getOpen(){
+        return getSimpleIntegerValueDef("ope",0);
+    }
+
+    public void setOpen(int open){
+        setSimpleValue("ope",open);
     }
 
 }

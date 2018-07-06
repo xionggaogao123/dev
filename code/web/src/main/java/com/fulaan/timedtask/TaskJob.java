@@ -267,10 +267,13 @@ public class TaskJob {
     //小课堂定期清除掉线课程
     public void checkUnLesson(){
         SmallLessonService smallLessonService = new SmallLessonService();
+        //小课堂定期清除掉线课程
         smallLessonService.checkUnLesson();
-        //smallLessonService.receMessage();
+        //启动监听上下线消息
+        smallLessonService.receMessage();
         SystemMessageService systemMessageService = new SystemMessageService();
-        systemMessageService.getNowClassList();
+        //课程提醒
+        //systemMessageService.getNowClassList();
         systemMessageService = null;
         smallLessonService = null;
     }

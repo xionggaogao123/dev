@@ -11,11 +11,11 @@ define(['doT', 'common','easing', 'jquery','pagination'], function (require, exp
     fulanIndex.init = function(){
         fulanIndex.getList(page);
         $("body").on("click",".sp-x",function(){
-            /*if(confirm("是否删除该课程？")){
+            if(confirm("是否删除该课程？")){
                 var id = $(this).attr("name");
                 fulanIndex.delEntry(id);
-            }*/
-            fulanIndex.dddd();
+            }
+            //fulanIndex.dddd();
         })
       /*  $("body").on("click",".sp-e",function(){
             var id = $(this).attr("name");

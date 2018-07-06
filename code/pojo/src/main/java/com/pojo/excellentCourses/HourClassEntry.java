@@ -44,8 +44,8 @@ public class HourClassEntry extends BaseDBObject {
             long startTime,
             long dateTime,
             int currentTime,
-            int classOldPrice,
-            int classNewPrice,
+            double classOldPrice,
+            double classNewPrice,
             int week,
             int order,
             int type
@@ -76,8 +76,8 @@ public class HourClassEntry extends BaseDBObject {
             long startTime,
             long dateTime,
             int currentTime,
-            int classOldPrice,
-            int classNewPrice,
+            double classOldPrice,
+            double classNewPrice,
             int week,
             int order,
             int type
@@ -150,19 +150,19 @@ public class HourClassEntry extends BaseDBObject {
     }
 
 
-    public int getClassOldPrice(){
-        return getSimpleIntegerValue("cop");
+    public double getClassOldPrice(){
+        return getSimpleDoubleValue("cop");
     }
 
-    public void setClassOldPrice(int classOldPrice){
+    public void setClassOldPrice(double classOldPrice){
         setSimpleValue("cop",classOldPrice);
     }
 
-    public int getClassNewPrice(){
-        return getSimpleIntegerValue("cnp");
+    public double getClassNewPrice(){
+        return getSimpleDoubleValue("cnp");
     }
 
-    public void setClassNewPrice(int classNewPrice){
+    public void setClassNewPrice(double classNewPrice){
         setSimpleValue("cnp",classNewPrice);
     }
     public int getWeek(){

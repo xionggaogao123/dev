@@ -1041,35 +1041,36 @@ public class Constant {
     public static final String COLLECTION_MODULE_TIME= "jxm_module_time";
     //模块禁止表
     public static final String COLLECTION_MODULE_BANNING= "jxm_module_banning";
-
+    //社群禁止表
+    public static final String COLLECTION_COMMUNITY_BANNING= "jxm_community_banning";
     //jpush发送表
     public static final String COLLECTION_PUSH_MESSAGE= "jxm_push_message";
     /*************************************精品课*****************************************/
 
     //精品课程
-    public static final String COLLECTION_EXCELLENT_COURSES = "excellent_courses";
+    public static final String COLLECTION_EXCELLENT_COURSES = "excellent_new_courses";
     //精品课时
-    public static final String COLLECTION_HOUR_CLASS= "excellent_hour_class";
+    public static final String COLLECTION_HOUR_CLASS= "excellent_new_hour_class";
     //用户订单
-    public static final String COLLECTION_CLASS_ORDER= "excellent_class_order";
+    public static final String COLLECTION_CLASS_ORDER= "excellent_new_class_order";
     //用户行为
-    public static final String COLLECTION_USER_BEHAVIOR= "excellent_user_behavior";
+    public static final String COLLECTION_USER_BEHAVIOR= "excellent_new_user_behavior";
     //CC直播间
-    public static final String COLLECTION_COURSES_ROOM= "excellent_courses_room";
+    public static final String COLLECTION_COURSES_ROOM= "excellent_new_courses_room";
     //用户美豆消费记录
-    public static final String COLLECTION_RECHARGE_RESULT= "excellent_recharge_result";
+    public static final String COLLECTION_RECHARGE_RESULT= "excellent_new_recharge_result";
     //用户退课记录
-    public static final String COLLECTION_CLASS_REFUND= "excellent_class_refund";
+    public static final String COLLECTION_CLASS_REFUND= "excellent_new_class_refund";
     //用户提现记录
-    public static final String COLLECTION_EXTRACT_CASH= "excellent_extract_cash";
+    public static final String COLLECTION_EXTRACT_CASH= "excellent_new_extract_cash";
     //用户充值账户记录
-    public static final String COLLECTION_USER_ACCOUNT= "excellent_user_account";
+    public static final String COLLECTION_USER_ACCOUNT= "excellent_new_user_account";
     //用户充值消费日志
-    public static final String COLLECTION_ACCOUNT_LOG= "excellent_account_log";
+    public static final String COLLECTION_ACCOUNT_LOG= "excellent_new_account_log";
     //用户充值订单
-    public static final String COLLECTION_ACCOUNT_ORDER= "excellent_account_order";
+    public static final String COLLECTION_ACCOUNT_ORDER= "excellent_new_account_order";
     //用户充值账户
-    public static final String COLLECTION_ACCOUNT_FRASH= "excellent_account_frash";
+    public static final String COLLECTION_ACCOUNT_FRASH= "excellent_new_account_frash";
     /*************************************积分商城*****************************************/
     
     //商品

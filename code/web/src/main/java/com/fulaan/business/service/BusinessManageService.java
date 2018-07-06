@@ -1,14 +1,16 @@
 package com.fulaan.business.service;
 
-import com.db.business.BanningSpeakingDao;
-import com.db.business.BusinessManageDao;
-import com.db.business.BusinessRoleDao;
-import com.db.business.VersionOpenDao;
+import com.db.backstage.PushMessageDao;
+import com.db.backstage.TeacherApproveDao;
+import com.db.business.*;
 import com.db.excellentCourses.ClassOrderDao;
 import com.db.excellentCourses.ExcellentCoursesDao;
 import com.db.excellentCourses.HourClassDao;
 import com.db.fcommunity.CommunityDao;
 import com.db.fcommunity.LoginLogDao;
+import com.db.fcommunity.MemberDao;
+import com.db.jiaschool.HomeSchoolDao;
+import com.db.jiaschool.SchoolPersionDao;
 import com.db.user.UserDao;
 import com.db.wrongquestion.SubjectClassDao;
 import com.fulaan.backstage.service.BackStageService;
@@ -17,16 +19,19 @@ import com.fulaan.excellentCourses.dto.ClassOrderDTO;
 import com.fulaan.excellentCourses.dto.ExcellentCoursesDTO;
 import com.fulaan.excellentCourses.dto.HourClassDTO;
 import com.fulaan.excellentCourses.service.CoursesRoomService;
+import com.fulaan.jiaschool.dto.HomeSchoolDTO;
 import com.fulaan.picturetext.runnable.PictureRunNable;
 import com.fulaan.pojo.User;
 import com.fulaan.user.service.UserService;
 import com.pojo.backstage.LogMessageType;
+import com.pojo.backstage.PushMessageEntry;
 import com.pojo.business.*;
 import com.pojo.excellentCourses.ClassOrderEntry;
 import com.pojo.excellentCourses.ExcellentCoursesEntry;
 import com.pojo.excellentCourses.HourClassEntry;
 import com.pojo.fcommunity.CommunityEntry;
 import com.pojo.fcommunity.FLoginLogEntry;
+import com.pojo.jiaschool.HomeSchoolEntry;
 import com.pojo.user.UserEntry;
 import com.pojo.wrongquestion.SubjectClassEntry;
 import com.sys.constants.Constant;
@@ -37,6 +42,7 @@ import org.bson.types.ObjectId;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.math.BigDecimal;
 import java.util.*;
 
 /**
@@ -70,6 +76,20 @@ public class BusinessManageService {
     private VersionOpenDao versionOpenDao = new VersionOpenDao();
 
     private BanningSpeakingDao banningSpeakingDao = new BanningSpeakingDao();
+
+    private CommunitySpeakingDao communitySpeakingDao = new CommunitySpeakingDao();
+
+    private CommunityDao communityDao = new CommunityDao();
+
+    private PushMessageDao pushMessageDao = new PushMessageDao();
+
+    private MemberDao memberDao = new MemberDao();
+
+    private TeacherApproveDao teacherApproveDao = new TeacherApproveDao();
+
+    private SchoolPersionDao schoolPersionDao = new SchoolPersionDao();
+
+    private HomeSchoolDao homeSchoolDao = new HomeSchoolDao();
 
     //登陆生成
     public void getLoginInfo(ObjectId userId,int type ){
@@ -276,7 +296,7 @@ public class BusinessManageService {
         int order = 0;
         for(UserEntry userEntry:userEntries){
             Map<String,Object> userMap = new HashMap<String, Object>();
-            int score = 0;
+            double score = 0.00;
             int number = 0;
             order++;
             long createTime= 0l;
@@ -334,20 +354,24 @@ public class BusinessManageService {
             return "无设置";
         }
         String[] str = word.split(",");
-        Map<String,Integer> map = new HashMap<String, Integer>();
+        Map<String,Double> map = new HashMap<String, Double>();
         for(int i = 0;i<str.length;i++){
             String tr = str[i];
             String[] strings = tr.split("#");
-            map.put(strings[0],Integer.parseInt(strings[1]));
+            map.put(strings[0],getTwoDouble(Double.parseDouble(strings[1])));
         }
         List<HourClassEntry> hourClassEntries = hourClassDao.getEntryList(id);
-        int all = 0;
+        double all = 0.00;
         for(HourClassEntry hourClassEntry : hourClassEntries){
-            Integer price = map.get(hourClassEntry.getID().toString());
+            Double price = map.get(hourClassEntry.getID().toString());
             if(price!=null){
                 hourClassDao.updatePriceEntry(hourClassEntry.getID(),price);
                 all = all + price;
             }
+            //课程提醒
+            String str2 = DateTimeUtils.getLongToStrTimeTwo(hourClassEntry.getStartTime()).substring(0,11);
+            long strNum = DateTimeUtils.getStrToLongTime(str2, "yyyy-MM-dd");
+            sendMessage(excellentCoursesEntry.getTitle(),hourClassEntry.getID(),hourClassEntry.getStartTime(),strNum);
         }
         //课程改为进行中
         excellentCoursesEntry.setNewPrice(all);
@@ -367,6 +391,33 @@ public class BusinessManageService {
         backStageService.addLogMessage(id.toString(), "审核直播课堂：" + excellentCoursesEntry.getTitle(), LogMessageType.courses.getDes(), userId.toString());
         return "1";
     }
+
+    /**
+     * 生成推送消息
+     * @return
+     */
+    public void sendMessage(String title,ObjectId id,long startTime,long dateTime){
+        if(pushMessageDao.isNotHave(id)){
+            PushMessageEntry pushMessageEntry = new PushMessageEntry(
+                    "复兰课堂",
+                    new ArrayList<ObjectId>(),
+                    id,
+                    "未上课提醒",
+                    title,
+                    startTime,
+                    dateTime,
+                    1,
+                    0);
+            pushMessageDao.addEntry(pushMessageEntry);
+        }
+    }
+
+    public double getTwoDouble(double d){
+        BigDecimal b = new BigDecimal(d);
+        d = b.setScale(2, BigDecimal.ROUND_HALF_UP).doubleValue();
+        return d;
+    }
+
     public String getNewString(List<String> userRole){
         String str = "";
         int index = 1;
@@ -498,6 +549,56 @@ public class BusinessManageService {
         return 0l;
     }
 
+   /* *//**
+     * 获取禁言
+     * @param userId
+     * @param groupId
+     * @return
+     */
+    public  Map<String,Object> getCommunitySpeak(ObjectId userId,ObjectId groupId,ObjectId id){
+        Map<String,Object> map = new HashMap<String, Object>();
+        List<ObjectId> objectIdList = new ArrayList<ObjectId>();
+        objectIdList.add(groupId);
+        Map<ObjectId,Map<ObjectId,Integer>> groupMap = memberDao.getMemberGroupManage(objectIdList);
+        Map<ObjectId,Integer> groupUserIds =  groupMap.get(groupId);
+        List<ObjectId> objectIds = new ArrayList<ObjectId>();
+        List<ObjectId> objectIdList1 = teacherApproveDao.selectMap(objectIds);
+        map.put("show",Constant.ZERO);
+        if(null!=groupUserIds.get(id)){
+            int role = groupUserIds.get(id);
+            if(null!=groupUserIds.get(userId)){
+                int userRole = groupUserIds.get(userId);
+                if(role>userRole){
+                    map.put("show",Constant.ONE);
+                }else{
+                    if(userRole==0){//同为普通成员
+                        if(objectIdList1.contains(id) && !objectIdList1.contains(userId)){
+                            map.put("show", Constant.ONE);//我是大V        你不是
+                        }
+                    }
+                }
+            }else{
+                map.put("show", Constant.ZERO);
+            }
+        }
+        if(!userId.equals(id)){
+            BusinessRoleEntry businessRoleEntry = businessRoleDao.getEntry(id);
+            if(businessRoleEntry !=null && businessRoleEntry.getRoleType().contains(RoleType.communityjinyan.getEname())){
+                map.put("show", Constant.ONE);
+            }
+        }
+        CommunitySpeakingEntry communitySpeakingEntry = communitySpeakingDao.getEntry(userId, groupId);
+        long current = System.currentTimeMillis();
+        if(communitySpeakingEntry==null){
+            map.put("time",0);
+        }else{
+            if(communitySpeakingEntry.getEndTime()>current){
+                map.put("time",communitySpeakingEntry.getEndTime()-current);
+            }
+        }
+        return map;
+    }
+
     /**
      * 禁言   兴趣小组 ----ApplyTypeEn.happy.getType()
      * @param userId
@@ -513,6 +614,26 @@ public class BusinessManageService {
             banningSpeakingDao.addEntry(banningSpeakingEntry);
         }else {//取消禁言
             banningSpeakingDao.updateEntry(userId, moduleType);
+        }
+    }
+
+
+    /**
+     * 禁言   社群 ----ApplyTypeEn.happy.getType()
+     * @param userId
+     * @param time
+     * @return
+     */
+    public void banningCommunitySpeak(ObjectId memberId,ObjectId userId,ObjectId groupId,long time){
+        if(time!=0){//禁言
+            communitySpeakingDao.updateEntry(userId,groupId);
+            long current = System.currentTimeMillis();
+            long endTime = current+time;
+            ObjectId communityId = communityDao.getCommunityIdByGroupId(groupId);
+            CommunitySpeakingEntry communitySpeakingEntry = new CommunitySpeakingEntry(userId,memberId,groupId,communityId,Constant.ZERO,current,endTime);
+            communitySpeakingDao.addEntry(communitySpeakingEntry);
+        }else {//取消禁言
+            communitySpeakingDao.updateEntry(userId, groupId);
         }
     }
 
@@ -552,6 +673,17 @@ public class BusinessManageService {
         long seconds = (mss % (1000 * 60)) / 1000;
         return days + " 天 " + hours + "小时" + minutes + " 分钟 "
                 + seconds + " 秒 ";
+    }
+
+
+    public List<HomeSchoolDTO> getMySchoolList(ObjectId userId){
+        List<HomeSchoolDTO> dtos = new ArrayList<HomeSchoolDTO>();
+        List<ObjectId> objectIdList = schoolPersionDao.getOneRoleList(userId);
+        List<HomeSchoolEntry> schoolEntries = homeSchoolDao.getSchoolList(objectIdList);
+        for(HomeSchoolEntry entry : schoolEntries){
+            dtos.add(new HomeSchoolDTO(entry));
+        }
+        return dtos;
     }
 
 }

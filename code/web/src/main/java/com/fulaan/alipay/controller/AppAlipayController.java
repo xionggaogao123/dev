@@ -148,7 +148,7 @@ public class AppAlipayController extends BaseController {
                 EBusinessLog.error("支付宝回调验证通过");
                 if (trade_status.equals("TRADE_FINISHED") || trade_status.equals("TRADE_SUCCESS")) {
                     EBusinessLog.info("TRADE_SUCCESS");
-                    int price = (int)Double.parseDouble(total_fee_string);
+                    double price = Double.parseDouble(total_fee_string);
                     //修改订单状态
                     appAlipayService.payed(out_trade_no,trade_no,user_id,price,str.toString(),notify_time);
                     code = "success";
@@ -223,7 +223,7 @@ public class AppAlipayController extends BaseController {
                 EBusinessLog.info("支付宝回调验证通过");
                 if (trade_status.equals("TRADE_FINISHED") || trade_status.equals("TRADE_SUCCESS")) {
                     EBusinessLog.info("TRADE_SUCCESS");
-                    int price = (int)Double.parseDouble(total_fee_string);
+                    double price = Double.parseDouble(total_fee_string);
                     //修改订单状态
                     appAlipayService.nowPayed(out_trade_no,trade_no,user_id,price,str.toString(),notify_time);
                     code = "success";

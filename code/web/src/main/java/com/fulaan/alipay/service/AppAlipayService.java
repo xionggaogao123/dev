@@ -188,7 +188,7 @@ public class AppAlipayService  {
     /**
      * 用户购买课程（创建订单）
      */
-    public String appNowPay(int price,ObjectId userId,String ip,List<ClassOrderEntry> entries) throws Exception{
+    public String appNowPay(double price,ObjectId userId,String ip,List<ClassOrderEntry> entries) throws Exception{
         //生成订单唯一标识
         ObjectId contactId = new ObjectId();
         addLog(userId,contactId,"开始创建订单！");
@@ -297,7 +297,7 @@ public class AppAlipayService  {
         List<ObjectId> classOrderEntries = classOrderDao.getOwnEntry(objectIdList, sonId);
         List<ClassOrderEntry> classOrderEntries1 = new ArrayList<ClassOrderEntry>();
         long current = System.currentTimeMillis();
-        int price = 0;
+        double price = 0;
         if(excellentCoursesEntry!=null && classEntries.size()>0){
             for(HourClassEntry hourClassEntry: classEntries){
                 if(!classOrderEntries.contains(hourClassEntry.getID())){
@@ -389,7 +389,7 @@ public class AppAlipayService  {
      *
      * @throws Exception
      */
-    public void payed(String orderId,String zhiFuId,String account, int price, String back,String backTime) throws Exception {
+    public void payed(String orderId,String zhiFuId,String account, double price, String back,String backTime) throws Exception {
         AccountOrderEntry accountOrderEntry =  accountOrderDao.getEntry(orderId);
         if(accountOrderEntry!=null){
             ObjectId userId = accountOrderEntry.getUserId();
@@ -461,7 +461,7 @@ public class AppAlipayService  {
      *
      * @throws Exception
      */
-    public void nowPayed(String orderId,String zhiFuId,String account, int price, String back,String backTime) throws Exception {
+    public void nowPayed(String orderId,String zhiFuId,String account, double price, String back,String backTime) throws Exception {
         AccountOrderEntry accountOrderEntry =  accountOrderDao.getEntry(orderId);
         if(accountOrderEntry!=null){
             ObjectId userId = accountOrderEntry.getUserId();
@@ -564,7 +564,7 @@ public class AppAlipayService  {
             }
 
             if(userBehaviorEntry.getAccount()>= newPrice){
-                int newPr = userBehaviorEntry.getAccount() - price;
+                double newPr = userBehaviorEntry.getAccount() - price;
                 try{
                     //修改美豆账户余额
                     userBehaviorDao.updateEntry(userBehaviorEntry.getID(), newPr);
@@ -650,7 +650,7 @@ public class AppAlipayService  {
 
         //账户消减
         UserBehaviorEntry userBehaviorEntry2 = userBehaviorDao.getEntry(userId);
-        int newPrice = userBehaviorEntry2.getAccount()-price;
+        double newPrice = userBehaviorEntry2.getAccount()-price;
         if(newPrice<0){
             throw new Exception("用户账户无可用余额!");
         }else{

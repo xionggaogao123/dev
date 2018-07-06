@@ -1,6 +1,7 @@
 package com.fulaan.fgroup;
 
 import com.db.business.BusinessRoleDao;
+import com.db.business.CommunitySpeakingDao;
 import com.db.user.NewVersionBindRelationDao;
 import com.easemob.server.EaseMobAPI;
 import com.easemob.server.comm.constant.MsgType;
@@ -22,6 +23,7 @@ import com.fulaan.service.GroupNoticeService;
 import com.fulaan.service.MemberService;
 import com.fulaan.user.service.UserService;
 import com.pojo.business.BusinessRoleEntry;
+import com.pojo.business.CommunitySpeakingEntry;
 import com.pojo.business.RoleType;
 import com.pojo.fcommunity.CommunityDetailType;
 import com.pojo.fcommunity.GroupEntry;
@@ -81,6 +83,8 @@ public class DefaultGroupController extends BaseController {
     private NewVersionBindRelationDao newVersionBindRelationDao = new NewVersionBindRelationDao();
 
     private BusinessRoleDao businessRoleDao = new BusinessRoleDao();
+
+    private CommunitySpeakingDao communitySpeakingDao = new CommunitySpeakingDao();
 
     /**
      * 创建群聊
@@ -148,6 +152,9 @@ public class DefaultGroupController extends BaseController {
                 mine.setRole(3);
             }
         }
+        //禁言列表
+        List<String> objectIdList = communitySpeakingDao.getPageList(groupId);
+        groupDTO.setUserIds(objectIdList);
         groupDTO.setCount(memberService.getMemberCount(groupId));
         groupDTO.setMine(mine);
         if (groupDTO.isBindCommunity()) {
@@ -160,6 +167,7 @@ public class DefaultGroupController extends BaseController {
         }
         return RespObj.SUCCESS(groupDTO);
     }
+
 
     /**
      * 根据emChatids获取群组信息
@@ -623,15 +631,67 @@ public class DefaultGroupController extends BaseController {
             if(groupEntry==null){//单聊
                 respObj.setMessage(true);
             } else {
-                if(groupEntry.getRemove()==0){//群聊存在
+                if (groupEntry.getRemove() == 0) {//群聊存在
                     respObj.setMessage(true);
-                }else{//不存在
+                } else {//不存在
                     respObj.setMessage(false);
                 }
             }
             respObj.setCode(Constant.SUCCESS_CODE);
         }catch (Exception e){
             respObj.setMessage("判断该社群是否存在失败");
+            respObj.setCode(Constant.FAILD_CODE);
+            e.printStackTrace();
+        }
+        return respObj;
+
+
+
+    }
+
+    /**
+     * 判断该社群是否存在//是否禁言
+     */
+    @ApiOperation(value = "判断该社群是否存在", httpMethod = "GET", produces = "application/json")
+    @ApiResponses( value = {@ApiResponse(code = 200, message = "Successful — 请求已完成",response = RespObj.class)})
+    @RequestMapping("/booleanNewGroup")
+    @ResponseBody
+    public RespObj booleanNewGroup(@RequestParam(value="emChatId") String emChatId) {
+        RespObj respObj = new RespObj(Constant.FAILD_CODE);
+        try{
+            //ObjectId groupId = groupService.getMoreGroupIdByEmchatId(emChatId);
+           /* if(groupId!=null){
+                respObj.setMessage(true);
+            } else {
+                respObj.setMessage(false);
+            }*/
+            Map<String,Object> map = new HashMap<String, Object>();
+            GroupEntry groupEntry  = groupService.getMoreGroupIdByEmchatId2(emChatId);
+            if(groupEntry==null){//单聊
+                map.put("isGroup", true);
+                map.put("time", 0);
+            } else {
+                if(groupEntry.getRemove()==0){//群聊存在
+                    map.put("isGroup",true);
+                }else{//不存在
+                    map.put("isGroup", false);
+                }
+                CommunitySpeakingEntry communitySpeakingEntry = communitySpeakingDao.getEntry(getUserId(), groupEntry.getID());
+                long current = System.currentTimeMillis();
+                if(communitySpeakingEntry==null){
+                    map.put("time", 0l);
+                }else{
+                    if(communitySpeakingEntry.getEndTime()>current){
+                        map.put("time", communitySpeakingEntry.getEndTime()-current);
+                    }else{
+                        map.put("time", 0l);
+                    }
+                }
+            }
+            respObj.setCode(Constant.SUCCESS_CODE);
+            respObj.setMessage(map);
+        }catch (Exception e){
+            respObj.setErrorMessage("判断该社群是否存在失败");
             respObj.setCode(Constant.FAILD_CODE);
             e.printStackTrace();
         }

@@ -4,6 +4,7 @@ import com.alibaba.fastjson.JSON;
 import com.fulaan.annotation.SessionNeedless;
 import com.fulaan.base.BaseController;
 import com.fulaan.business.service.BusinessManageService;
+import com.fulaan.jiaschool.dto.HomeSchoolDTO;
 import com.fulaan.pojo.User;
 import com.sys.constants.Constant;
 import com.sys.utils.RespObj;
@@ -177,6 +178,29 @@ public class WebBusinessManageController extends BaseController {
         RespObj respObj=new RespObj(Constant.FAILD_CODE);
         try {
            List<Map<String,Object>> list = businessManageService.getRoleList(new ObjectId(userId));
+            respObj.setCode(Constant.SUCCESS_CODE);
+            respObj.setMessage(list);
+        } catch (Exception e) {
+            e.printStackTrace();
+            respObj.setCode(Constant.FAILD_CODE);
+            respObj.setErrorMessage("权限列表失败!");
+        }
+        return JSON.toJSONString(respObj);
+    }
+
+    /**
+     * 获得用户所有的学校
+     * @return
+     */
+    @ApiOperation(value = "获得用户所有的学校", httpMethod = "POST", produces = "application/json")
+    @ApiResponses( value = {@ApiResponse(code = 200, message = "Successful — 请求已完成",response = String.class)})
+    @RequestMapping("/getMySchoolList")
+    @ResponseBody
+    public String getMySchoolList(){
+        RespObj respObj=new RespObj(Constant.FAILD_CODE);
+        try {
+            //todo
+            List<HomeSchoolDTO> list = businessManageService.getMySchoolList(getUserId());
             respObj.setCode(Constant.SUCCESS_CODE);
             respObj.setMessage(list);
         } catch (Exception e) {

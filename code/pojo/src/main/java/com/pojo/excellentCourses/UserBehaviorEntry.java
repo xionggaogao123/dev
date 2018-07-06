@@ -37,7 +37,7 @@ public class UserBehaviorEntry extends BaseDBObject {
     //添加构造
     public UserBehaviorEntry(
             ObjectId userId,
-            int account,
+            double account,
             List<ObjectId> collectList,
             List<ObjectId> browseList,
             List<ObjectId> sonOpenList
@@ -57,7 +57,7 @@ public class UserBehaviorEntry extends BaseDBObject {
     public UserBehaviorEntry(
             ObjectId id,
             ObjectId userId,
-            int account,
+            double account,
             List<ObjectId> collectList,
             List<ObjectId> browseList,
             List<ObjectId> sonOpenList
@@ -122,11 +122,11 @@ public class UserBehaviorEntry extends BaseDBObject {
         }
         return browseList;
     }
-    public int getAccount(){
+    public double getAccount(){
         return getSimpleIntegerValueDef("acc",0);
     }
 
-    public void setAccount(int account){
+    public void setAccount(double account){
         setSimpleValue("acc",account);
     }
 

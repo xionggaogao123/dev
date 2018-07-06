@@ -113,7 +113,7 @@ public class MQTTRecvMsg {
          * 其中GroupID在MQ控制台里申请
          * DeviceID由应用方设置，可能是设备编号等，需要唯一，否则服务端拒绝重复的ClientID连接
          */
-        final String clientId ="GID_jxm@@@ClientID_000122";
+        final String clientId ="GID_jxm@@@ClientID_000126";
         String sign;
         MemoryPersistence persistence = new MemoryPersistence();
         try {
@@ -159,6 +159,7 @@ public class MQTTRecvMsg {
                             JSONObject scrResponse = JSON.parseObject(new String(mqttMessage.getPayload(), "UTF-8"));
                             String uid = scrResponse.getString("clientId").replace("GID_jxm@@@ClientID_", "");
                             String eventType = scrResponse.getString("eventType");
+                            String channelId  = scrResponse.getString("channelId");
                             long time = Long.parseLong(scrResponse.getString("time"));
                             if(ObjectId.isValid(uid)){
                                 int status = 0;
@@ -169,14 +170,23 @@ public class MQTTRecvMsg {
                                 }else{
                                     status = 0;
                                 }
-                                controlVersionDao.updateEntry(new ObjectId(uid),time,status);
-                              System.out.println(uid+"---"+eventType+"---"+time);
+                              /*  if(uid.equals("5a17dafd0a9d324986663c9a")){
+                                    System.out.print("33");
+                                    System.out.println(uid+"---"+eventType+"---"+time);
+                                    System.out.println("messageArrived:" + topic + "------" + new String(mqttMessage.getPayload()));
+                                }*/
+                                if(status==1){
+                                    controlVersionDao.updateEntry(new ObjectId(uid),time,status,channelId);
+                                }else{
+                                    controlVersionDao.updateNewEntry(new ObjectId(uid), time, status, channelId);
+                                }
+
                             }
                         }
                     }catch (Exception e){
-
+                        e.printStackTrace();
                     }
-                 //   System.out.println("messageArrived:" + topic + "------" + new String(mqttMessage.getPayload()));
+                 System.out.println("messageArrived:" + topic + "------" + new String(mqttMessage.getPayload()));
                  //   System.out.println("time:" + new Date().getTime());
                 }
                 public void deliveryComplete(IMqttDeliveryToken iMqttDeliveryToken) {
@@ -192,4 +202,5 @@ public class MQTTRecvMsg {
             me.printStackTrace();
         }
     }
+
 }

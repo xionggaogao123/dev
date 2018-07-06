@@ -8,6 +8,9 @@ import com.pojo.business.BanningSpeakingEntry;
 import com.sys.constants.Constant;
 import org.bson.types.ObjectId;
 
+import java.util.ArrayList;
+import java.util.List;
+
 /**
  * Created by James on 2018-06-21.
  */
@@ -28,6 +31,26 @@ public class BanningSpeakingDao extends BaseDao {
             return new BanningSpeakingEntry((BasicDBObject)dbo);
         }
         return null;
+    }
+
+    public List<String> getPageList(ObjectId groupId) {
+        long current = System.currentTimeMillis();
+        BasicDBObject query =new BasicDBObject();
+        query.append("isr", Constant.ZERO);
+        query.append("gid",groupId);
+        List<DBObject> dboList=find(MongoFacroty.getAppDB(), Constant.COLLECTION_MODULE_BANNING, query);
+        List<String> retList =new ArrayList<String>();
+        if(null!=dboList && !dboList.isEmpty())
+        {
+            for(DBObject dbo:dboList)
+            {
+                BanningSpeakingEntry businessManageEntry = new BanningSpeakingEntry((BasicDBObject)dbo);
+                if(businessManageEntry.getEndTime()>current) {//未结束
+                    retList.add(businessManageEntry.getUserId().toString());
+                }
+            }
+        }
+        return retList;
     }
 
     //修改解析内容和图片

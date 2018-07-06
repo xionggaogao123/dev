@@ -15,8 +15,8 @@ public class HourClassDTO {
     private String startTime;
     private String dateTime;
     private int currentTime;
-    private int classOldPrice;
-    private int classNewPrice;
+    private double classOldPrice;
+    private double classNewPrice;
     private int week;
     private int order;
     private int type;
@@ -160,19 +160,19 @@ public class HourClassDTO {
         this.currentTime = currentTime;
     }
 
-    public int getClassOldPrice() {
+    public double getClassOldPrice() {
         return classOldPrice;
     }
 
-    public void setClassOldPrice(int classOldPrice) {
+    public void setClassOldPrice(double classOldPrice) {
         this.classOldPrice = classOldPrice;
     }
 
-    public int getClassNewPrice() {
+    public double getClassNewPrice() {
         return classNewPrice;
     }
 
-    public void setClassNewPrice(int classNewPrice) {
+    public void setClassNewPrice(double classNewPrice) {
         this.classNewPrice = classNewPrice;
     }
 

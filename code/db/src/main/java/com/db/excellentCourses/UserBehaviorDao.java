@@ -29,7 +29,7 @@ public class UserBehaviorDao extends BaseDao {
     }
 
     //删除作业
-    public void updateEntry(ObjectId id,int number){
+    public void updateEntry(ObjectId id,double number){
         BasicDBObject query = new BasicDBObject();
         query.append(Constant.ID,id);
         BasicDBObject updateValue=new BasicDBObject(Constant.MONGO_SET,new BasicDBObject("acc",number));

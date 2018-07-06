@@ -41,7 +41,7 @@ public class AccountOrderEntry extends BaseDBObject {
             String account,
             String order,
             String back,
-            int price,
+            double price,
             String orderId,
             int type,
             String ip,
@@ -82,11 +82,11 @@ public class AccountOrderEntry extends BaseDBObject {
         setSimpleValue("cid",contactId);
     }
 
-    public int getPrice(){
-        return getSimpleIntegerValue("pri");
+    public double getPrice(){
+        return getSimpleDoubleValue("pri");
     }
 
-    public void setPrice(int price){
+    public void setPrice(double price){
         setSimpleValue("pri", price);
     }
 

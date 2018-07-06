@@ -13,7 +13,7 @@ public class ClassOrderDTO {
     private String parentId;
     private String contactId;
     private int isBuy;
-    private int price;
+    private double price;
     private int function;
     private int type;
     private String createTime;
@@ -73,11 +73,11 @@ public class ClassOrderDTO {
         this.isBuy = isBuy;
     }
 
-    public int getPrice() {
+    public double getPrice() {
         return price;
     }
 
-    public void setPrice(int price) {
+    public void setPrice(double price) {
         this.price = price;
     }
 

@@ -3,7 +3,7 @@ package com.fulaan.excellentCourses.controller;
 import com.alibaba.fastjson.JSON;
 import com.fulaan.base.BaseController;
 import com.fulaan.excellentCourses.dto.ExcellentCoursesDTO;
-import com.fulaan.excellentCourses.service.ExcellentCoursesService;
+import com.fulaan.excellentCourses.service.OldExcellentCoursesService;
 import com.sys.constants.Constant;
 import com.sys.utils.RespObj;
 import io.swagger.annotations.*;
@@ -23,10 +23,10 @@ import java.util.Map;
  */
 @Api(value="app精品课")
 @Controller
-@RequestMapping("/jxmapi/excellentCourses")
-public class ExcellentCoursesController extends BaseController {
+@RequestMapping("/old/excellentCourses")
+public class OldExcellentCoursesController extends BaseController {
     @Autowired
-    private ExcellentCoursesService excellentCoursesService;
+    private OldExcellentCoursesService excellentCoursesService;
 
 
 
@@ -831,6 +831,4 @@ public class ExcellentCoursesController extends BaseController {
 
 
     /****************************** 家长端 end ********************************/
-
-
 }

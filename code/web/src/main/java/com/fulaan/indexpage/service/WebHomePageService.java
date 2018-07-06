@@ -320,13 +320,17 @@ public class WebHomePageService {
     public void getGatherReportCardList(List<GroupExamDetailDTO> detailDTOs,List<WebHomePageEntry> entries){
         List<ObjectId> reportCardIds = new ArrayList<ObjectId>();
         List<ObjectId> reportCardSendIds = new ArrayList<ObjectId>();
+        Map<ObjectId,Integer> reportCardStatus=new HashMap<ObjectId, Integer>();
         for (WebHomePageEntry webHomePageEntry : entries) {
             if (webHomePageEntry.getType() == Constant.THREE) {
                 reportCardIds.add(webHomePageEntry.getContactId());
+                reportCardStatus.put(webHomePageEntry.getContactId(),webHomePageEntry.getStatus());
             } else if (webHomePageEntry.getType() == Constant.FIVE) {
                 reportCardSendIds.add(webHomePageEntry.getContactId());
             }
         }
+        
+        
 
         if (reportCardIds.size() > 0) {
             List<GroupExamUserRecordEntry> userRecordEntries = groupExamUserRecordDao.getGroupExamUserRecordsByIds(reportCardIds);
@@ -387,11 +391,12 @@ public class WebHomePageService {
                     if (null != mainUserEntry) {
                         detailDTO.setUserName(org.apache.commons.lang3.StringUtils.isNotBlank(mainUserEntry.getNickName())?mainUserEntry.getNickName():mainUserEntry.getUserName());
                     }
-                    if(userRecordEntry.getStatus()!=3){//没有签到都是未签到
+                    /*if(userRecordEntry.getStatus()!=3){//没有签到都是未签到
                         detailDTO.setStatus(2);
                     }else{
                         detailDTO.setStatus(userRecordEntry.getStatus());
-                    }
+                    }*/
+                    detailDTO.setStatus(reportCardStatus.get(userRecordEntry.getID()));
                     detailDTO.setSingleScoreId(userRecordEntry.getID().toString());
                     detailDTOs.add(detailDTO);
                 }

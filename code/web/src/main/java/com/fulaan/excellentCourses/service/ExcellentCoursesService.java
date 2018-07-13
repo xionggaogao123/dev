@@ -1587,7 +1587,7 @@ public class ExcellentCoursesService {
         long current = System.currentTimeMillis();
         NewVersionUserRoleEntry newVersionUserRoleEntry = newVersionUserRoleDao.getEntry(userId);
         List<ObjectId> objectIdList = new ArrayList<ObjectId>();
-        if(newVersionUserRoleEntry.getNewRole()==3){//家长
+        if(newVersionUserRoleEntry.getNewRole()==3 || newVersionUserRoleEntry.getNewRole()==0){//家长
             //获得家长所在社群
             objectIdList = communityService.getCommunitys3(userId, 1, 100);
         }else{//学生

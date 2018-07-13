@@ -171,7 +171,7 @@ public class MQTTRecvMsg {
                                 }else{
                                     status = 0;
                                 }
-                              /*  if(uid.equals("5a17dafd0a9d324986663c9a")){
+                              /*  if(uid.equals("5a24f0400a9d3236ca3bb3bf")){
                                     System.out.print("33");
                                     System.out.println(uid+"---"+eventType+"---"+time);
                                     System.out.println("messageArrived:" + topic + "------" + new String(mqttMessage.getPayload()));

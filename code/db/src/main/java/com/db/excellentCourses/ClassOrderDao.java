@@ -36,7 +36,7 @@ public class ClassOrderDao extends BaseDao {
         list.add(0);
         BasicDBObject query=new BasicDBObject("uid",mainUserId).append("isb",1).append("typ", new BasicDBObject(Constant.MONGO_IN, list)).append("isr", Constant.ZERO);
         BasicDBObject updateValue=new BasicDBObject(Constant.MONGO_SET,new BasicDBObject("uid",userId));
-        update(MongoFacroty.getAppDB(), Constant.COLLECTION_EXCELLENT_COURSES, query,updateValue);
+        update(MongoFacroty.getAppDB(), Constant.COLLECTION_CLASS_ORDER, query,updateValue);
     }
     //首页订单查询
     public  List<ClassOrderEntry> getEntry(ObjectId userId){

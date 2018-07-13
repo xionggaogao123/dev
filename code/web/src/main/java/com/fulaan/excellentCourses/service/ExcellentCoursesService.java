@@ -195,7 +195,7 @@ public class ExcellentCoursesService {
                 long st2 = classEntry.getStartTime();
                 long et2 = classEntry.getStartTime()+classEntry.getCurrentTime();
                 if(st2< oldEnd+CURRENT_TIME){
-                    throw new Exception("第"+dto1.getOrder()+"课节与上一课节间隔太短，两节课间隔不少于"+CURRENT_TIME+"分钟！");
+                    throw new Exception("第"+dto1.getOrder()+"课节与上一课节间隔太短，两节课间隔不少于90分钟！");
                 }
                 oldEnd = st2;
                 if(st==0l){

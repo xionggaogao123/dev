@@ -316,6 +316,28 @@ public class UserService extends BaseService {
         validate.setData(e);
         return validate;
     }
+    /**
+     * 身份判断
+     */
+
+
+    public int validateUser(UserEntry e,Platform pf) {
+        NewVersionUserRoleEntry newVersionUserRoleEntry = newVersionUserRoleDao.getEntry(e.getID());
+        if (null != newVersionUserRoleEntry
+                && newVersionUserRoleEntry.getNewRole() == Constant.ONE||
+                newVersionUserRoleEntry.getNewRole() == Constant.TWO) {//学生
+            if(pf.isMobile()) {
+                return 0;//孩子手机
+            }else{
+                return 1;//孩子网页
+            }
+
+        }else{
+            return 2;//家长
+        }
+    }
+
+
 
     /**
      * 验证账户

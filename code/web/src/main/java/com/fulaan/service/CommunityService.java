@@ -739,7 +739,7 @@ public class CommunityService {
             //发送通知
             PictureRunNable.addTongzhi(message.getCommunityId(),uid.toString(),3);
             //火热分享发送记录
-            moduleTimeDao.addEntry(uid, ApplyTypeEn.hot.getType());
+            moduleTimeDao.addEntry(uid, ApplyTypeEn.hot.getType(),new ObjectId(message.getCommunityId()));
         }else if(message.getType()==4){
             //发送通知
             //向上（新版本参考资料）

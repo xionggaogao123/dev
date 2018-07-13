@@ -28,12 +28,14 @@ public class JxmAppVersionEntry extends BaseDBObject{
     public JxmAppVersionEntry(
             String name,
             String fileUrl,
-            String version
+            String version,
+            int versionCode
     ){
         BasicDBObject dbObject=new BasicDBObject()
                 .append("nam", name)
                 .append("url", fileUrl)
                 .append("ver",version)
+                .append("vco",versionCode)
                 .append("isr", 0);
         setBaseEntry(dbObject);
     }
@@ -43,13 +45,15 @@ public class JxmAppVersionEntry extends BaseDBObject{
             ObjectId id,
             String name,
             String fileUrl,
-            String version
+            String version,
+            int versionCode
     ){
         BasicDBObject dbObject=new BasicDBObject()
                 .append(Constant.ID,id)
                 .append("nam", name)
                 .append("url", fileUrl)
                 .append("ver",version)
+                .append("vco",versionCode)
                 .append("isr", 0);
         setBaseEntry(dbObject);
     }
@@ -79,7 +83,13 @@ public class JxmAppVersionEntry extends BaseDBObject{
     }
 
 
+    public int getVersionCode(){
+        return getSimpleIntegerValueDef("vco",0);
+    }
 
+    public void setVersionCode(int versionCode){
+        setSimpleValue("vco",versionCode);
+    }
 
     public int getIsRemove(){
         return getSimpleIntegerValue("isr");

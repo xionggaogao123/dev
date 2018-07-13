@@ -667,9 +667,10 @@ public class ControlPhoneController extends BaseController {
             Map<String,Object> dto = controlPhoneService.getMapNow(getUserId(), new ObjectId(sonId));
             respObj.setMessage(dto);
         } catch (Exception e) {
+            logger.error("error",e);
             e.printStackTrace();
             respObj.setCode(Constant.FAILD_CODE);
-            respObj.setErrorMessage("定时接受孩子的位置信息失败!");
+            respObj.setErrorMessage("获取孩子信息失败!");
         }
         return JSON.toJSONString(respObj);
     }
@@ -690,9 +691,10 @@ public class ControlPhoneController extends BaseController {
             Map<String,Object> dto = controlPhoneService.getNewMapNow(getUserId(), new ObjectId(sonId));
             respObj.setMessage(dto);
         } catch (Exception e) {
+            logger.error("error",e);
             e.printStackTrace();
             respObj.setCode(Constant.FAILD_CODE);
-            respObj.setErrorMessage("定时接受孩子的位置信息失败!");
+            respObj.setErrorMessage("获取孩子信息失败!");
         }
         return JSON.toJSONString(respObj);
     }
@@ -714,8 +716,9 @@ public class ControlPhoneController extends BaseController {
             respObj.setMessage(dto);
         } catch (Exception e) {
             e.printStackTrace();
+            logger.error("error",e);
             respObj.setCode(Constant.FAILD_CODE);
-            respObj.setErrorMessage("定时接受孩子的位置信息失败!");
+            respObj.setErrorMessage("获取孩子信息失败!");
         }
         return JSON.toJSONString(respObj);
     }
@@ -1300,6 +1303,57 @@ public class ControlPhoneController extends BaseController {
     @RequestMapping("/getAllAppVersion")
     @ResponseBody
     public String getAllAppVersion(){
+        RespObj respObj = new RespObj(Constant.FAILD_CODE);
+        try{
+            List<JxmAppVersionDTO> dtos =  backStageService.getAllAppVersion();
+            respObj.setCode(Constant.SUCCESS_CODE);
+            respObj.setMessage(dtos);
+        }catch (Exception e){
+            e.printStackTrace();
+            respObj.setCode(Constant.FAILD_CODE);
+            respObj.setErrorMessage("获得所有的复兰应用的版本号信息失败");
+        }
+        return JSON.toJSONString(respObj);
+    }
+
+
+    /**
+     * 处理老数据
+     * @return
+     */
+    @SessionNeedless
+    @ApiOperation(value = "处理老数据", httpMethod = "POST", produces = "application/json")
+    @ApiResponses( value = {@ApiResponse(code = 200, message = "Successful — 请求已完成",response = String.class),
+            @ApiResponse(code = 400, message = "请求中有语法问题，或不能满足请求"),
+            @ApiResponse(code = 500, message = "服务器不能完成请求")})
+    @RequestMapping("/updateAllAppVersion")
+    @ResponseBody
+    public String updateAllAppVersion(){
+        RespObj respObj = new RespObj(Constant.FAILD_CODE);
+        try{
+            backStageService.updateAllAppVersion();
+            respObj.setCode(Constant.SUCCESS_CODE);
+            respObj.setMessage("成功");
+        }catch (Exception e){
+            e.printStackTrace();
+            respObj.setCode(Constant.FAILD_CODE);
+            respObj.setErrorMessage("处理老数据失败");
+        }
+        return JSON.toJSONString(respObj);
+    }
+
+    /**
+     * 获得所有的复兰应用的版本号信息
+     * @return
+     */
+    @SessionNeedless
+    @ApiOperation(value = "获得所有的复兰应用的版本号信息", httpMethod = "POST", produces = "application/json")
+    @ApiResponses( value = {@ApiResponse(code = 200, message = "Successful — 请求已完成",response = String.class),
+            @ApiResponse(code = 400, message = "请求中有语法问题，或不能满足请求"),
+            @ApiResponse(code = 500, message = "服务器不能完成请求")})
+    @RequestMapping("/getNewAllAppVersion")
+    @ResponseBody
+    public String getNewAllAppVersion(){
         RespObj respObj = new RespObj(Constant.FAILD_CODE);
         try{
             List<JxmAppVersionDTO> dtos =  backStageService.getAllAppVersion();

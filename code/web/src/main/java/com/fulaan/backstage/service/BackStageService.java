@@ -5,7 +5,10 @@ import com.db.activity.FriendDao;
 import com.db.appmarket.AppDetailDao;
 import com.db.backstage.*;
 import com.db.controlphone.*;
-import com.db.fcommunity.*;
+import com.db.fcommunity.CommunityDao;
+import com.db.fcommunity.CommunityDetailDao;
+import com.db.fcommunity.MemberDao;
+import com.db.fcommunity.NewVersionCommunityBindDao;
 import com.db.jiaschool.HomeSchoolDao;
 import com.db.jiaschool.SchoolAppDao;
 import com.db.operation.AppCommentDao;
@@ -1026,10 +1029,29 @@ public class BackStageService {
         }
         return dtos;
     }
-   /* public static void main(String[] args){
 
+    public void updateAllAppVersion(){
+        List<JxmAppVersionEntry> entries = jxmAppVersionDao.getIsNewObjectId();
+        List<String> objectIdList = new ArrayList<String>();
+        for(JxmAppVersionEntry entry : entries){
+            objectIdList.add(entry.getName());
+        }
+        List<AppDetailEntry> appDetailEntries = appDetailDao.getEntriesByPackName(objectIdList);
+        Map<String,Integer> map = new HashMap<String, Integer>();
+        for(AppDetailEntry appDetailEntry:appDetailEntries){
+            map.put(appDetailEntry.getAppPackageName(),appDetailEntry.getVersionCode());
+        }
+        for(JxmAppVersionEntry entry : entries){
+            Integer i = map.get(entry.getName());
+            if(i!=null){
+                entry.setVersionCode(i);
+                jxmAppVersionDao.updEntry(entry);
+            }
+        }
     }
-*/  //获取黑名单列表
+
+
+    //获取黑名单列表
     public List<AppDetailDTO> getBlackAppList(){
         List<AppDetailDTO> detailDTOs = new ArrayList<AppDetailDTO>();
         List<AppDetailEntry> detailEntries =  appDetailDao.getSimpleAppEntry();

@@ -187,12 +187,13 @@ public class AppCommentService {
             webHomePageDao.saveWebHomeEntry(pageEntry);
 
             objectIdList.add(new ObjectId(dto3.getId()));
+            //作业发送记录
+            moduleTimeDao.addEntry(new ObjectId(dto.getAdminId()),ApplyTypeEn.operation.getType(),new ObjectId(dto3.getId()));
 
         }
         if(dto.getStatus()==0){
             redDotService.addEntryList(objectIdList,new ObjectId(dto.getAdminId()), ApplyTypeEn.operation.getType(),4);
-            //作业发送记录
-            moduleTimeDao.addEntry(new ObjectId(dto.getAdminId()),ApplyTypeEn.operation.getType());
+
         }
         int score = 0;
         if(dto.getStatus() == 0){
@@ -1852,7 +1853,7 @@ public class AppCommentService {
             redDotService.addEntryList(objectIdList,new ObjectId(dto.getAdminId()), ApplyTypeEn.operation.getType(),4);
             PictureRunNable.addTongzhi(str[0],dto.getAdminId(),1);
             //作业发送记录
-            moduleTimeDao.addEntry(new ObjectId(dto.getAdminId()),ApplyTypeEn.operation.getType());
+            moduleTimeDao.addEntry(new ObjectId(dto.getAdminId()),ApplyTypeEn.operation.getType(),entry.getRecipientId());
         }
         int score = 0;
         if(dto.getStatus() == 0){

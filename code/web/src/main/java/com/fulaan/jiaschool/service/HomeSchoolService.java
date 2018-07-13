@@ -18,6 +18,7 @@ import com.fulaan.jiaschool.dto.HomeSchoolDTO;
 import com.fulaan.jiaschool.dto.SchoolCommunityDTO;
 import com.fulaan.utils.HSSFUtils;
 import com.pojo.backstage.LogMessageType;
+import com.pojo.backstage.TeacherApproveEntry;
 import com.pojo.business.ModuleTimeEntry;
 import com.pojo.fcommunity.CommunityEntry;
 import com.pojo.fcommunity.MemberEntry;
@@ -269,7 +270,7 @@ public class HomeSchoolService {
         integers.add(ApplyTypeEn.repordcard.getType());
         integers.add(ApplyTypeEn.school.getType());
         integers.add(ApplyTypeEn.smallLesson.getType());
-        List<ModuleTimeEntry> moduleTimeEntries = moduleTimeDao.getEntryList(objectIdList2, time,otime, integers);
+        List<ModuleTimeEntry> moduleTimeEntries = moduleTimeDao.getEntryList(objectIdList2, communityList,time,otime, integers);
         //userDao.
         Map<String,Integer>  map = new HashMap<String, Integer>();
         for(ModuleTimeEntry entry : moduleTimeEntries){
@@ -545,6 +546,11 @@ public class HomeSchoolService {
     }
 
     public int getAllRole(ObjectId userId){
+        //是否是大V
+        TeacherApproveEntry teacherApproveEntry = teacherApproveDao.getEntry(userId);
+        if(teacherApproveEntry==null || teacherApproveEntry.getType()!=2){
+            return 0;
+        }
         //获得已被允许的学校
         List<ObjectId> schoolIds = schoolFunctionDao.getAllSchoolIdList(1, 1);
         //已绑定的社群集合

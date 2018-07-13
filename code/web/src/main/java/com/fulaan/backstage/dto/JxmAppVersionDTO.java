@@ -12,6 +12,7 @@ public class JxmAppVersionDTO {
     private String name;
     private String fileUrl;
     private String version;
+    private int versionCode;
     public JxmAppVersionDTO(){
 
     }
@@ -21,6 +22,7 @@ public class JxmAppVersionDTO {
             this.name = e.getName();
             this.fileUrl= e.getFileUrl();
             this.version = e.getVersion();
+            this.versionCode =e.getVersionCode();
         }else{
             new JxmAppVersionDTO();
         }
@@ -31,7 +33,8 @@ public class JxmAppVersionDTO {
                 new JxmAppVersionEntry(
                         this.name,
                         this.fileUrl,
-                        this.version
+                        this.version,
+                        this.versionCode
                 );
         return openEntry;
 
@@ -46,10 +49,19 @@ public class JxmAppVersionDTO {
                         Id,
                         this.name,
                         this.fileUrl,
-                        this.version
+                        this.version,
+                        this.versionCode
                 );
         return openEntry;
 
+    }
+
+    public int getVersionCode() {
+        return versionCode;
+    }
+
+    public void setVersionCode(int versionCode) {
+        this.versionCode = versionCode;
     }
 
     public String getId() {

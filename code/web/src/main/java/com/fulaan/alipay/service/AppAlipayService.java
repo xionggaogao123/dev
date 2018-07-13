@@ -315,7 +315,7 @@ public class AppAlipayService  {
                     classOrderEntry.setPrice(hourClassEntry.getClassNewPrice());
                     classOrderEntry.setUserId(sonId);//孩子的订单
                     classOrderEntries1.add(classOrderEntry);
-                    price = price + hourClassEntry.getClassNewPrice();
+                    price = sum(price,hourClassEntry.getClassNewPrice());
                 }
             }
             String order = this.appNowPay(price, userId, ip, classOrderEntries1);
@@ -325,6 +325,31 @@ public class AppAlipayService  {
         }else{
             throw  new Exception("订单信息不存在！");
         }
+    }
+
+    /**
+     * double 相加
+     * @param d1
+     * @param d2
+     * @return
+     */
+    public static double sum(double d1,double d2){
+        BigDecimal bd1 = new BigDecimal(Double.toString(d1));
+        BigDecimal bd2 = new BigDecimal(Double.toString(d2));
+        return bd1.add(bd2).doubleValue();
+    }
+
+
+    /**
+     * double 相减
+     * @param d1
+     * @param d2
+     * @return
+     */
+    public static double sub(double d1,double d2){
+        BigDecimal bd1 = new BigDecimal(Double.toString(d1));
+        BigDecimal bd2 = new BigDecimal(Double.toString(d2));
+        return bd1.subtract(bd2).doubleValue();
     }
 
     public double getTwoDouble(double d){
@@ -423,7 +448,7 @@ public class AppAlipayService  {
             //增加账户金额
             AccountFrashEntry accountFrashEntry = accountFrashDao.getEntry(userId);
             if(accountFrashEntry!=null){
-                accountFrashEntry.setAccount(accountFrashEntry.getAccount()+price);
+                accountFrashEntry.setAccount(sum(accountFrashEntry.getAccount(),price));
                 accountFrashDao.addEntry(accountFrashEntry);
                 EBusinessLog.info(userId.toString()+"-"+contactId.toString()+"订单："+orderId+"账户金额已增加");
                 addLog(userId, contactId, "订单：" + orderId+"账户金额已增加");
@@ -437,7 +462,7 @@ public class AppAlipayService  {
             //增加美豆余额
             UserBehaviorEntry userBehaviorEntry = userBehaviorDao.getEntry(userId);
             if(accountFrashEntry!=null){
-                userBehaviorEntry.setAccount(userBehaviorEntry.getAccount()+price);
+                userBehaviorEntry.setAccount(sum(userBehaviorEntry.getAccount(),price));
                 userBehaviorDao.addEntry(userBehaviorEntry);
                 EBusinessLog.info(userId.toString()+"-"+contactId.toString()+"订单："+orderId+"美豆金额已增加");
                 addLog(userId, contactId, "订单：" + orderId+"美豆金额已增加");
@@ -496,7 +521,7 @@ public class AppAlipayService  {
             //增加账户金额
             AccountFrashEntry accountFrashEntry = accountFrashDao.getEntry(userId);
             if(accountFrashEntry!=null){
-                accountFrashEntry.setAccount(accountFrashEntry.getAccount()+price);
+                accountFrashEntry.setAccount(sum(accountFrashEntry.getAccount(),price));
                 accountFrashDao.addEntry(accountFrashEntry);
                 EBusinessLog.info(userId.toString()+"-"+contactId.toString()+"订单："+orderId+"账户金额已增加");
                 addLog(userId, contactId, "订单：" + orderId+"账户金额已增加");
@@ -511,7 +536,7 @@ public class AppAlipayService  {
             //增加美豆余额
             UserBehaviorEntry userBehaviorEntry = userBehaviorDao.getEntry(userId);
             if(accountFrashEntry!=null){
-                userBehaviorEntry.setAccount(userBehaviorEntry.getAccount()+price);
+                userBehaviorEntry.setAccount(sum(userBehaviorEntry.getAccount(),price));
                 userBehaviorDao.addEntry(userBehaviorEntry);
                 EBusinessLog.info(userId.toString()+"-"+contactId.toString()+"订单："+orderId+"美豆金额已增加");
                 addLog(userId, contactId, "订单：" + orderId+"美豆金额已增加");
@@ -571,7 +596,7 @@ public class AppAlipayService  {
             }
 
             if(userBehaviorEntry.getAccount()>= newPrice){
-                double newPr = userBehaviorEntry.getAccount() - price;
+                double newPr = sub(userBehaviorEntry.getAccount(),price);
                 try{
                     //修改美豆账户余额
                     userBehaviorDao.updateEntry(userBehaviorEntry.getID(), newPr);
@@ -585,7 +610,7 @@ public class AppAlipayService  {
                     EBusinessLog.info(userId.toString()+"-"+contactId.toString()+"添加美豆账户消费记录成功！本次消费："+price);
 
                     //修改充值账户余额
-                    double newPrice2 = accountFrashEntry.getAccount()-price;
+                    double newPrice2 = sub(accountFrashEntry.getAccount(),price);
                     accountFrashDao.updateEntry(accountFrashEntry.getID(),newPrice2);
                     addLog(userId,contactId,"修改充值账户消费记录成功！余额:"+newPrice2);
                     EBusinessLog.info(userId.toString()+"-"+contactId.toString()+"修改美豆账户消费记录成功！余额:"+newPrice2);
@@ -657,7 +682,7 @@ public class AppAlipayService  {
 
         //账户消减
         UserBehaviorEntry userBehaviorEntry2 = userBehaviorDao.getEntry(userId);
-        double newPrice = userBehaviorEntry2.getAccount()-price;
+        double newPrice = sub(userBehaviorEntry2.getAccount(),price);
         if(newPrice<0){
             throw new Exception("用户账户无可用余额!");
         }else{

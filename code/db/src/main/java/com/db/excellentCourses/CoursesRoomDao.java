@@ -27,4 +27,14 @@ public class CoursesRoomDao extends BaseDao {
             return null;
         }
     }
+
+    public CoursesRoomEntry getRoomEntry(String roomId){
+        BasicDBObject query=new BasicDBObject("rid",roomId).append("isr",Constant.ZERO);
+        DBObject dbObject=findOne(MongoFacroty.getAppDB(), Constant.COLLECTION_COURSES_ROOM,query,Constant.FIELDS);
+        if(null!=dbObject){
+            return new CoursesRoomEntry((BasicDBObject) dbObject);
+        }else {
+            return null;
+        }
+    }
 }

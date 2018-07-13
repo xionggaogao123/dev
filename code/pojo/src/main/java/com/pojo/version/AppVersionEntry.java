@@ -39,11 +39,12 @@ public class AppVersionEntry extends BaseDBObject {
         setBaseEntry(dbo);
 	}
 
-	public AppVersionEntry(int client, String version,String des) {
+	public AppVersionEntry(int client, String version,String des,String nextVersion) {
 		super();
 		BasicDBObject dbo =new BasicDBObject()
 				.append("c", client)
 				.append("v", version)
+				.append("nv",nextVersion)
 				.append("des",des)
 				;
 		setBaseEntry(dbo);
@@ -62,7 +63,13 @@ public class AppVersionEntry extends BaseDBObject {
 	public void setClient(int client) {
 		setSimpleValue("c", client);
 	}
-	
+
+	public String getNextVersion() {
+		return getSimpleStringValue("nv");
+	}
+	public void setNextVersion(String nextVersion) {
+		setSimpleValue("nv", nextVersion);
+	}
 	
 
 	public String getDes() {

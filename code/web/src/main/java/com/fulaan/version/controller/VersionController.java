@@ -59,7 +59,7 @@ public class VersionController extends BaseController {
 		AppVersionEntry entry=service.getRecentlyVersion(c);
 		if(null!=entry)
 		{
-			return new AppVersionDTO(entry.getVersion(),entry.getDes());
+			return new AppVersionDTO(entry.getVersion(),entry.getDes(),entry.getNextVersion());
 		}
 		return null;
 	}
@@ -74,11 +74,12 @@ public class VersionController extends BaseController {
 	@RequestMapping(value="/addVersion",method={RequestMethod.POST,RequestMethod.GET})
 	@ResponseBody
 	public RespObj addVersion( @RequestParam(value =  "type") int type ,
-									 @RequestParam(value="client") String client,@RequestParam(value="dec") String dec)
+									 @RequestParam(value="client") String client,@RequestParam(value="dec") String dec,
+									 @RequestParam(value="nextVersion") String nextVersion)
 	{
 		RespObj respObj = new RespObj(Constant.FAILD_CODE);
 		try{
-			AppVersionDTO appVersionDTO = new AppVersionDTO(type,client,dec);
+			AppVersionDTO appVersionDTO = new AppVersionDTO(type,client,dec,nextVersion);
 			service.addAppVersion(appVersionDTO.buildEntry());
 			respObj.setCode(Constant.SUCCESS_CODE);
 			respObj.setMessage("添加成功！");

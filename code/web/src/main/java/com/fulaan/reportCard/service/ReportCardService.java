@@ -325,7 +325,7 @@ public class ReportCardService {
         //添加红点
         redDotService.addThirdList(entry.getID(),entry.getCommunityId(), entry.getUserId(), ApplyTypeEn.repordcard.getType());
         //成绩单发送记录
-        moduleTimeDao.addEntry(entry.getUserId(),ApplyTypeEn.repordcard.getType());
+        moduleTimeDao.addEntry(entry.getUserId(),ApplyTypeEn.repordcard.getType(),entry.getCommunityId());
         PictureRunNable.addTongzhi(entry.getCommunityId().toString(), entry.getUserId().toString(), 6);
     }
 
@@ -1210,7 +1210,7 @@ public class ReportCardService {
                 redDotService.addThirdList(detailEntry.getID(),detailEntry.getCommunityId(), detailEntry.getUserId(), ApplyTypeEn.repordcard.getType());
                 PictureRunNable.addTongzhi(detailEntry.getCommunityId().toString(), detailEntry.getUserId().toString(), 6);
                 //成绩单发送记录
-                moduleTimeDao.addEntry(detailEntry.getUserId(),ApplyTypeEn.repordcard.getType());
+                moduleTimeDao.addEntry(detailEntry.getUserId(),ApplyTypeEn.repordcard.getType(),detailEntry.getCommunityId());
             }
             if (detailEntry.getRecordScoreType() == Constant.ONE) {
                 double qualifyScore = detailEntry.getQualifyScore();

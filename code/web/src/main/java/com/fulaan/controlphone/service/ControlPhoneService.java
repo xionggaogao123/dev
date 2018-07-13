@@ -279,7 +279,7 @@ public class ControlPhoneService {
             ControlAppEntry entry1 = dto.buildAddEntry();
             controlAppDao.addEntry(entry1);
             //社区推送发送记录
-            moduleTimeDao.addEntry(userId, ApplyTypeEn.school.getType());
+            moduleTimeDao.addEntry(userId, ApplyTypeEn.school.getType(),communityId);
         }else{
             if(type==1){//卸载
                 List<ObjectId> appIds = entry.getAppIdList();
@@ -292,7 +292,7 @@ public class ControlPhoneService {
                 entry.setAppIdList(appIds);
                 controlAppDao.updEntry(entry);
                 //社区推送发送记录
-                moduleTimeDao.addEntry(userId, ApplyTypeEn.school.getType());
+                moduleTimeDao.addEntry(userId, ApplyTypeEn.school.getType(),communityId);
             }
 
         }
@@ -352,7 +352,7 @@ public class ControlPhoneService {
             ControlAppUserEntry entry1 = dto.buildAddEntry();
             controlAppUserDao.addEntry(entry1);
             //社区推送发送记录
-            moduleTimeDao.addEntry(parentId, ApplyTypeEn.school.getType());
+           // moduleTimeDao.addEntry(parentId, ApplyTypeEn.school.getType());
         }else{
             if(type==1){//卸载
                 List<ObjectId> appIds = entry.getAppIdList();
@@ -365,7 +365,7 @@ public class ControlPhoneService {
                 entry.setAppIdList(appIds);
                 controlAppUserDao.updEntry(entry);
                 //社区推送发送记录
-                moduleTimeDao.addEntry(parentId, ApplyTypeEn.school.getType());
+              //  moduleTimeDao.addEntry(parentId, ApplyTypeEn.school.getType());
             }
 
         }

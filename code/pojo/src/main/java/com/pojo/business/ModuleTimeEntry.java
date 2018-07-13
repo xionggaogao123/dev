@@ -23,12 +23,14 @@ public class ModuleTimeEntry extends BaseDBObject {
     //添加构造
     public ModuleTimeEntry(
             ObjectId userId,
-            int moduleType
+            int moduleType,
+            ObjectId communtiyId
     ){
         BasicDBObject dbObject=new BasicDBObject()
                 .append("uid", userId)
                 .append("mty", moduleType)
-                .append("ctm",System.currentTimeMillis())
+                .append("cid",communtiyId)
+                .append("ctm", System.currentTimeMillis())
                 .append("isr", 0);
         setBaseEntry(dbObject);
     }
@@ -64,5 +66,13 @@ public class ModuleTimeEntry extends BaseDBObject {
 
     public void setIsRemove(int isRemove){
         setSimpleValue("isr",isRemove);
+    }
+
+    public ObjectId getCommunityId(){
+        return  getSimpleObjecIDValue("cid");
+    }
+
+    public void setCommunityId(ObjectId communityId){
+        setSimpleValue("cid", communityId);
     }
 }

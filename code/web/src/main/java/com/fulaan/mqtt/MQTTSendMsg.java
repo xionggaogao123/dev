@@ -69,7 +69,7 @@ public class MQTTSendMsg {
             sampleClient.connect(connOpts);
             for (int i = 0; i < 1; i++) {
                 try {
-                    String scontent = current+"##" + code;
+                    String scontent = current + "##" + code;
                     //此处消息体只需要传入byte数组即可，对于其他类型的消息，请自行完成二进制数据的转换
                     final MqttMessage message = new MqttMessage(scontent.getBytes());
                     /*QoS级别	  cleanSession=true	                  cleanSession=false
@@ -88,8 +88,8 @@ public class MQTTSendMsg {
                      * 如果发送P2P消息，二级Topic必须是“p2p”，三级Topic是目标的ClientID
                      * 此处设置的三级Topic需要是接收方的ClientID
                      */
-                    String p2pTopic =topic+"/p2p/GID_jxm@@@ClientID_"+clientBiao;
-                    sampleClient.publish(p2pTopic,message);
+                    String p2pTopic = topic + "/p2p/GID_jxm@@@ClientID_" + clientBiao;
+                    sampleClient.publish(p2pTopic, message);
                 } catch (Exception e) {
                     System.out.print(e.getMessage());
                     e.printStackTrace();
@@ -98,6 +98,7 @@ public class MQTTSendMsg {
             }
             //关闭连接
             sampleClient.disconnect();
+            sampleClient.close();
         } catch (Exception me) {
             System.out.print(me.getMessage());
             me.printStackTrace();
@@ -196,6 +197,7 @@ public class MQTTSendMsg {
             }
             //关闭连接
             sampleClient.disconnect();
+            sampleClient.close();
         } catch (Exception me) {
             me.printStackTrace();
         }

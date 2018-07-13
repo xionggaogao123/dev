@@ -186,10 +186,9 @@ public class ExcellentCoursesDao extends BaseDao {
 
 
     //课程中心
-    public List<ExcellentCoursesEntry> getAllEntryList(String subjectId,int priceType,int persionType,int timeType,int page,int pageSize,long current){
+    public List<ExcellentCoursesEntry> getAllEntryList(String subjectId,int priceType,int persionType,int timeType,int page,int pageSize,long current,List<ObjectId> objectIdList){
         List<ExcellentCoursesEntry> entryList=new ArrayList<ExcellentCoursesEntry>();
         BasicDBObject query=new BasicDBObject().append("isr",0).append("sta",Constant.TWO);
-        query.append("ope", Constant.ONE);//公开课
         if(subjectId!=null && !subjectId.equals("")){
             query.append("sid", new ObjectId(subjectId));
         }
@@ -204,6 +203,11 @@ public class ExcellentCoursesDao extends BaseDao {
             orderQuery.append("ctm",timeType);
         }
         query.append("etm",new BasicDBObject(Constant.MONGO_GT,current));
+        //query.append("ope", Constant.ONE);//公开课
+        BasicDBList values = new BasicDBList();
+        values.add(new BasicDBObject("ope", Constant.ONE));
+        values.add(new BasicDBObject("clt",new BasicDBObject(Constant.MONGO_IN,objectIdList)));
+        query.put(Constant.MONGO_OR, values);
         List<DBObject> dbList=find(MongoFacroty.getAppDB(), Constant.COLLECTION_EXCELLENT_COURSES, query,
                 Constant.FIELDS, orderQuery,(page-1)*pageSize,pageSize);
         if (dbList != null && !dbList.isEmpty()) {
@@ -343,14 +347,17 @@ public class ExcellentCoursesDao extends BaseDao {
      * 符合搜索条件的对象个数
      * @return
      */
-    public int selectCount(String subjectId,long current) {
+    public int selectCount(String subjectId,long current,List<ObjectId> objectIdList) {
         BasicDBObject query =new BasicDBObject("isr",0).append("sta",2);
         if(subjectId!=null && !subjectId.equals("")){
             query.append("sid",new ObjectId(subjectId
             ));
         }
-        query.append("ope", Constant.ONE);//公开课
         query.append("etm",new BasicDBObject(Constant.MONGO_GT,current));
+        BasicDBList values = new BasicDBList();
+        values.add(new BasicDBObject("ope", Constant.ONE));
+        values.add(new BasicDBObject("clt",new BasicDBObject(Constant.MONGO_IN,objectIdList)));
+        query.put(Constant.MONGO_OR, values);
         int count =
                 count(MongoFacroty.getAppDB(),
                         Constant.COLLECTION_EXCELLENT_COURSES,

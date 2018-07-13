@@ -310,7 +310,15 @@ public class WebUserController extends BaseController {
         if(null!=entry) {
             if(entry.getUserId().toString().equals(userId.toString())) {
                 UserEntry userEntry = userService.findById(userId);
-                return login(userEntry.getUserName(), userEntry.getPassword(), 1, response, request);
+                int score = userService.validateUser(userEntry,getPlatform());
+                if(score==2){//家长
+                    return login(userEntry.getUserName(), userEntry.getPassword(), 1, response, request);
+                }else if(score==1){//孩子网页
+
+                }else{
+
+                }
+
             }else{
                 respObj.setMessage("该用户非法登录");
             }

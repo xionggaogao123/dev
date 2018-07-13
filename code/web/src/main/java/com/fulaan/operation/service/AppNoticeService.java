@@ -178,12 +178,13 @@ public class AppNoticeService {
                 );
                 webHomePageDao.saveWebHomeEntry(pageEntry);
             }
+            //通知发送记录
+            moduleTimeDao.addEntry(userId,ApplyTypeEn.notice.getType(),new ObjectId(communityDTO.getCommunityId()));
         }
         //1:家长2:学生3:家长，学生
         redDotService.addEntryList(objectIdList,userId, ApplyTypeEn.notice.getType(),dto.getWatchPermission());
         redDotService.addOtherEntryList(objectIdList,userId, ApplyTypeEn.daynotice.getType(),dto.getWatchPermission());
-        //通知发送记录
-        moduleTimeDao.addEntry(userId,ApplyTypeEn.notice.getType());
+
         int  score = integralSufferService.addIntegral(userId, IntegralType.notice,1,1);
        /* try {
             for (GroupOfCommunityDTO communityDTO : dto.getGroupOfCommunityDTOs()) {

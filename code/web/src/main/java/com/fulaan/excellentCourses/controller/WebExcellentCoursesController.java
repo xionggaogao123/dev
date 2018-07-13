@@ -3,8 +3,10 @@ package com.fulaan.excellentCourses.controller;
 import com.alibaba.fastjson.JSON;
 import com.fulaan.annotation.SessionNeedless;
 import com.fulaan.base.BaseController;
+import com.fulaan.excellentCourses.dto.CCLoginDTO;
 import com.fulaan.excellentCourses.dto.ExcellentCoursesDTO;
 import com.fulaan.excellentCourses.dto.HourResultDTO;
+import com.fulaan.excellentCourses.service.CoursesRoomService;
 import com.fulaan.excellentCourses.service.ExcellentCoursesService;
 import com.fulaan.pojo.User;
 import com.sys.constants.Constant;
@@ -14,11 +16,9 @@ import io.swagger.annotations.*;
 import org.bson.types.ObjectId;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.bind.annotation.*;
 
+import javax.servlet.http.HttpServletRequest;
 import java.util.*;
 
 /**
@@ -30,6 +30,8 @@ import java.util.*;
 public class WebExcellentCoursesController extends BaseController {
     @Autowired
     private ExcellentCoursesService excellentCoursesService;
+    @Autowired
+    private CoursesRoomService coursesRoomService;
 
 
     /**
@@ -550,29 +552,20 @@ public class WebExcellentCoursesController extends BaseController {
     }
 
 
-    /****************************************  cc直播相关  *****************************************/
+    /****************************************  cc直播相关  start  *****************************************/
     /**
      * 创建直播间回调(提供给cc直播进行接口验证)
+     *
      */
     @ApiOperation(value = "提供给cc直播进行接口验证", httpMethod = "POST", produces = "application/json")
     @ApiResponses( value = {@ApiResponse(code = 200, message = "Successful — 请求已完成",response = String.class),
             @ApiResponse(code = 400, message = "请求中有语法问题，或不能满足请求"),
             @ApiResponse(code = 500, message = "服务器不能完成请求")})
-    @RequestMapping("/openBackCreate")
+    @RequestMapping(value="/openBackCreate",method = RequestMethod.POST)
     @ResponseBody
     @SessionNeedless
-    public Map<String,Object> openBackCreate(){
-        Map<String,Object> map = new HashMap<String, Object>();
-        Map<String,String> room = new HashMap<String, String>();
-        room.put("id","");
-        room.put("publishUrl","");
-        try{
-
-
-        }catch (Exception e){
-            map.put("result","FAIL");
-            map.put("room",room);
-        }
+    public Map<String,Object> openBackCreate( @RequestBody CCLoginDTO dto){
+        Map<String,Object> map = coursesRoomService.openBackCreate(dto);
         return map;
     }
 
@@ -655,6 +648,9 @@ public class WebExcellentCoursesController extends BaseController {
         return respObj;
     }
 
+
+    /****************************************  cc直播相关  end  *****************************************/
+
     /**
      *  消费记录（家长）
      */
@@ -671,6 +667,38 @@ public class WebExcellentCoursesController extends BaseController {
             respObj.setCode(Constant.SUCCESS_CODE);
             Map<String,Object>  dto = excellentCoursesService.accountMyList(page, pageSize, getUserId());
             respObj.setMessage(dto);
+        } catch (Exception e) {
+            e.printStackTrace();
+            respObj.setCode(Constant.FAILD_CODE);
+            respObj.setErrorMessage(e.getMessage());
+        }
+        return JSON.toJSONString(respObj);
+    }
+
+    /**
+     * 后台直接购课
+     */
+    @ApiOperation(value = "购买课节（家长）", httpMethod = "GET", produces = "application/json")
+    @ApiResponses(value = {@ApiResponse(code = 200, message = "Successful — 请求已完成",response = String.class),
+            @ApiResponse(code = 400, message = "请求中有语法问题，或不能满足请求"),
+            @ApiResponse(code = 500, message = "服务器不能完成请求")})
+    @RequestMapping("/buyOwnClassList")
+    @ResponseBody
+    public String buyOwnClassList(@ApiParam(name = "id", required = true, value = "id") @RequestParam("id") String id,
+                                    @ApiParam(name = "sonId", required = true, value = "sonId") @RequestParam("sonId") String sonId,
+                                    @ApiParam(name = "classIds", required = true, value = "classIds") @RequestParam("classIds") String classIds,
+                                    HttpServletRequest request){
+        RespObj respObj=new RespObj(Constant.FAILD_CODE);
+        try {
+            respObj.setCode(Constant.SUCCESS_CODE);
+            String ipconfig = "";
+            if (request.getHeader("x-forwarded-for") == null) {
+                ipconfig =  request.getRemoteAddr();
+            }else{
+                ipconfig =  request.getHeader("x-forwarded-for");
+            }
+            String result = excellentCoursesService.buyOwnClassList(new ObjectId(id), getUserId(), classIds, new ObjectId(sonId), ipconfig);
+            respObj.setMessage(result);
         } catch (Exception e) {
             e.printStackTrace();
             respObj.setCode(Constant.FAILD_CODE);

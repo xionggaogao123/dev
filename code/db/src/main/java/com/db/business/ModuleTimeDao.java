@@ -17,16 +17,18 @@ import java.util.List;
  */
 public class ModuleTimeDao extends BaseDao {
 
-    public void addEntry(ObjectId userId,int type){
-        ModuleTimeEntry entry = new ModuleTimeEntry(userId,type);
+    public void addEntry(ObjectId userId,int type,ObjectId communityId){
+        ModuleTimeEntry entry = new ModuleTimeEntry(userId,type,communityId);
         save(MongoFacroty.getAppDB(), Constant.COLLECTION_MODULE_TIME, entry.getBaseEntry());
         entry = null;
     }
 
-    public List<ModuleTimeEntry> getEntryList(List<ObjectId> userIds,long startTime,long endTime,List<Integer> integers) {
+    public List<ModuleTimeEntry> getEntryList(List<ObjectId> userIds,List<ObjectId> communityIds,long startTime,long endTime,List<Integer> integers) {
+        communityIds.add(null);//兼容老数据
         BasicDBObject query = new BasicDBObject()
                 .append("mty",new BasicDBObject(Constant.MONGO_IN,integers))
-                .append("uid", new BasicDBObject(Constant.MONGO_IN,userIds))
+                .append("uid", new BasicDBObject(Constant.MONGO_IN, userIds))
+                .append("cid", new BasicDBObject(Constant.MONGO_IN,communityIds))
                 .append("isr", 0); // 未删除
         BasicDBList dblist =new BasicDBList();
         dblist.add(new BasicDBObject("ctm", new BasicDBObject(Constant.MONGO_GTE, startTime)));

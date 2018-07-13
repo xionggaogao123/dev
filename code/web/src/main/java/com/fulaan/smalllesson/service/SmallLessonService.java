@@ -150,9 +150,9 @@ public class SmallLessonService {
                 sb.append("<span>");
                 for(int j =0;j<strings.length;j++){
                     if(j==strings.length-1){
-                        sb.append(strings[i]).append("</span>");
+                        sb.append(strings[j]).append("</span>");
                     }else{
-                        sb.append(strings[i]).append("</span><span>");
+                        sb.append(strings[j]).append("</span><span>");
                     }
                 }
                 dto2.setAnswer(sb.toString());
@@ -213,7 +213,7 @@ public class SmallLessonService {
             smallLessonDao.updEntry(entry);
             SmallLessonDTO dto3 = new SmallLessonDTO(entry);
             //小课堂发送记录
-            moduleTimeDao.addEntry(new ObjectId(userId), ApplyTypeEn.smallLesson.getType());
+            moduleTimeDao.addEntry(new ObjectId(userId), ApplyTypeEn.smallLesson.getType(),null);
             return dto3;
             //return null;
         }else{
@@ -241,7 +241,7 @@ public class SmallLessonService {
                 smallLessonDao.updEntry(entry);
                 SmallLessonDTO dto4 = new SmallLessonDTO(entry);
                 //小课堂发送记录
-                moduleTimeDao.addEntry(new ObjectId(userId), ApplyTypeEn.smallLesson.getType());
+                moduleTimeDao.addEntry(new ObjectId(userId), ApplyTypeEn.smallLesson.getType(),null);
                 return dto4;
             }else{
                 return null;

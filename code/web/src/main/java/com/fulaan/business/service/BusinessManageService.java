@@ -221,19 +221,27 @@ public class BusinessManageService {
 
     public List<User>  selectUser(String keyword){
         List<User> userList =new ArrayList<User>();
+        //用户名查找
         List<UserEntry> userEntries = userDao.findEntryByName("nm", keyword);
+        //昵称查找
         List<UserEntry> userEntries2 = userDao.findEntryByName("nnm", keyword);
+        //家校美id查找
+        UserEntry entry= userDao.findByPersonalID(keyword);
         userEntries.addAll(userEntries2);
+        if(entry!=null){
+            userEntries.add(entry);
+        }
         List<ObjectId> oisd = new ArrayList<ObjectId>();
         for(UserEntry userEntry: userEntries){
             //String userName,String nickName,String userId,String avator,int sex,String time
             if(!oisd.contains(userEntry.getID())){
-                User user = new User(userEntry.getUserName(),userEntry.getNickName(),userEntry.getID().toString(),AvatarUtils.getAvatar(userEntry.getAvatar(),userEntry.getRole(),userEntry.getSex()),userEntry.getSex(),"");
+                User user = new User(userEntry.getUserName(),userEntry.getNickName(),userEntry.getID().toString(),AvatarUtils.getAvatar(userEntry.getAvatar(),userEntry.getRole(),userEntry.getSex()),userEntry.getSex(),userEntry.getGenerateUserCode());
                 userList.add(user);
                 oisd.add(userEntry.getID());
             }
 
         }
+        oisd =null;
         return userList;
     }
 
@@ -312,6 +320,7 @@ public class BusinessManageService {
                 ctm = DateTimeUtils.getLongToStrTimeTwo(createTime);
             }
             userMap.put("order",order);
+            userMap.put("avatar",AvatarUtils.getAvatar(userEntry.getAvatar(),userEntry.getRole(),userEntry.getSex()));
             userMap.put("price","¥ "+score);
             userMap.put("number",number);
             userMap.put("createTime",ctm);
@@ -589,6 +598,7 @@ public class BusinessManageService {
         }
         CommunitySpeakingEntry communitySpeakingEntry = communitySpeakingDao.getEntry(userId, groupId);
         long current = System.currentTimeMillis();
+        map.put("time",0);
         if(communitySpeakingEntry==null){
             map.put("time",0);
         }else{

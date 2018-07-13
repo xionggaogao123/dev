@@ -2,6 +2,7 @@ package com.fulaan.newVersionBind.service;
 
 import com.db.business.BusinessManageDao;
 import com.db.controlphone.ControlVersionDao;
+import com.db.excellentCourses.ClassOrderDao;
 import com.db.fcommunity.CommunityDao;
 import com.db.fcommunity.MemberDao;
 import com.db.fcommunity.NewVersionCommunityBindDao;
@@ -86,6 +87,7 @@ public class NewVersionBindService {
     private ControlVersionDao controlVersionDao = new ControlVersionDao();
 
     private UserDao userDao = new UserDao();
+    private ClassOrderDao classOrderDao = new ClassOrderDao();
 
     @Autowired
     private UserService userService;
@@ -1427,6 +1429,13 @@ public class NewVersionBindService {
         return flag;
     }
 
-
-
+    /**
+     * 移交课程(家长到孩子)
+     */
+    public void yijiao(ObjectId userId,ObjectId mainUserId){
+        List<NewVersionBindRelationEntry> entries = newVersionBindRelationDao.getEntriesByMainUserId(mainUserId);
+        if(entries.size()==0){
+            classOrderDao.updateBindEntry(userId,mainUserId);
+        }
+    }
 }

@@ -149,6 +149,8 @@ public class DefaultBindController extends BaseController {
             int relation){
         RespObj respObj = new RespObj(Constant.FAILD_CODE);
         try{
+            //移交课程
+            newVersionBindService.yijiao(userId,getUserId());
             newVersionBindService.saveNewVersionBindRelationEntry(getUserId(),userId, relation,
                     nickName,avatar);
             respObj.setCode(Constant.SUCCESS_CODE);

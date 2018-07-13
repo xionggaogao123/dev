@@ -588,7 +588,7 @@ public class ExcellentCoursesService {
      * @param userId
      * @return
      */
-    public Map<String,Object> getMyChildOldCoursesList(ObjectId userId){
+    public Map<String,Object> getMyChildOldCoursesList(ObjectId userId,ObjectId id){
         Map<String,Object> map = new HashMap<String, Object>();
         long current = System.currentTimeMillis();
         List<ClassOrderEntry> classOrderEntries =  classOrderDao.getEntry(userId);
@@ -603,7 +603,14 @@ public class ExcellentCoursesService {
         //objectIdList1
         List<ExcellentCoursesEntry> coursesEntries2 = excellentCoursesDao.getEntryListById4(objectIdList1);
         //获得学生所在社群
-        List<ObjectId> objectIdList = newVersionBindService.getCommunityIdsByUserId(userId);
+        List<ObjectId> objectIdList = new ArrayList<ObjectId>();
+        if(userId.equals(id)){//自己
+            //获得家长所在社群
+            objectIdList = communityService.getCommunitys3(id, 1, 100);
+        }else{//孩子
+            //获得学生所在社群
+           objectIdList = newVersionBindService.getCommunityIdsByUserId(userId);
+        }
         //推荐名单
         List<ExcellentCoursesEntry> coursesEntries = excellentCoursesDao.getOldEntryList(objectIdList, current);
         for(ExcellentCoursesEntry excellentCoursesEntry:coursesEntries2){
@@ -611,7 +618,6 @@ public class ExcellentCoursesService {
                 coursesEntries.add(excellentCoursesEntry);
             }
         }
-
         List<ObjectId> objectIdList2 = new ArrayList<ObjectId>();
         List<ExcellentCoursesDTO> dtos2 = new ArrayList<ExcellentCoursesDTO>();
         for(ExcellentCoursesEntry excellentCoursesEntry:coursesEntries){//推荐

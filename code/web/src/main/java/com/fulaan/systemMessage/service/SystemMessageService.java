@@ -843,20 +843,23 @@ public class SystemMessageService extends BaseService {
             for(PushMessageEntry pushMessageEntry:pushMessageEntries){
                 if(pushMessageEntry.getType()==1){// 1 直播未进入提示
                     HourClassEntry hourClassEntry =   hourClassDao.getEntry(pushMessageEntry.getContactId());
-                    List<ClassOrderEntry> classOrderEntries = classOrderDao.getAllUserList(hourClassEntry.getID());
-                    if(classOrderEntries.size()>0){
-                        for(ClassOrderEntry classOrderEntry:classOrderEntries ){
-                            UserEntry userEntry = userDao.findByUserId(classOrderEntry.getUserId());
-                            if(userEntry!=null){
-                                String name = org.apache.commons.lang.StringUtils.isNotEmpty(userEntry.getNickName())?userEntry.getNickName():userEntry.getUserName();
-                                //sendStaticNotice(classOrderEntry.getUserId(),2,pushMessageEntry.getTitle(),name);
-                                NewVersionBindRelationEntry newVersionBindRelationEntry = newVersionBindRelationDao.getBindEntry(classOrderEntry.getUserId());
-                                if(newVersionBindRelationEntry!=null){
-                                    sendClassNotice(newVersionBindRelationEntry.getMainUserId(),0,pushMessageEntry.getTitle(),name);
+                    if(hourClassEntry!=null){
+                        List<ClassOrderEntry> classOrderEntries = classOrderDao.getAllUserList(hourClassEntry.getID());
+                        if(classOrderEntries.size()>0){
+                            for(ClassOrderEntry classOrderEntry:classOrderEntries ){
+                                UserEntry userEntry = userDao.findByUserId(classOrderEntry.getUserId());
+                                if(userEntry!=null){
+                                    String name = org.apache.commons.lang.StringUtils.isNotEmpty(userEntry.getNickName())?userEntry.getNickName():userEntry.getUserName();
+                                    //sendStaticNotice(classOrderEntry.getUserId(),2,pushMessageEntry.getTitle(),name);
+                                    NewVersionBindRelationEntry newVersionBindRelationEntry = newVersionBindRelationDao.getBindEntry(classOrderEntry.getUserId());
+                                    if(newVersionBindRelationEntry!=null){
+                                        sendClassNotice(newVersionBindRelationEntry.getMainUserId(),0,pushMessageEntry.getTitle(),name);
+                                    }
                                 }
                             }
                         }
                     }
+
                 }
                 pushMessageDao.delEntry(pushMessageEntry.getID());
             }

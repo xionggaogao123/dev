@@ -461,7 +461,7 @@ public class AppAlipayService  {
 
             //增加美豆余额
             UserBehaviorEntry userBehaviorEntry = userBehaviorDao.getEntry(userId);
-            if(accountFrashEntry!=null){
+            if(userBehaviorEntry!=null){
                 userBehaviorEntry.setAccount(sum(userBehaviorEntry.getAccount(),price));
                 userBehaviorDao.addEntry(userBehaviorEntry);
                 EBusinessLog.info(userId.toString()+"-"+contactId.toString()+"订单："+orderId+"美豆金额已增加");
@@ -528,6 +528,7 @@ public class AppAlipayService  {
             }else{
                 AccountFrashEntry accountFrashEntry1 = new AccountFrashEntry(userId,price,Constant.ZERO,Constant.ZERO);
                 accountFrashDao.addEntry(accountFrashEntry1);
+                accountFrashEntry = accountFrashEntry1;
                 EBusinessLog.info(userId.toString()+"-"+contactId.toString()+"订单："+orderId+"账户金额已增加");
                 addLog(userId, contactId, "订单：" + orderId+"账户金额已增加");
             }
@@ -535,7 +536,7 @@ public class AppAlipayService  {
 
             //增加美豆余额
             UserBehaviorEntry userBehaviorEntry = userBehaviorDao.getEntry(userId);
-            if(accountFrashEntry!=null){
+            if(userBehaviorEntry!=null){
                 userBehaviorEntry.setAccount(sum(userBehaviorEntry.getAccount(),price));
                 userBehaviorDao.addEntry(userBehaviorEntry);
                 EBusinessLog.info(userId.toString()+"-"+contactId.toString()+"订单："+orderId+"美豆金额已增加");
@@ -613,7 +614,7 @@ public class AppAlipayService  {
                     double newPrice2 = sub(accountFrashEntry.getAccount(),price);
                     accountFrashDao.updateEntry(accountFrashEntry.getID(),newPrice2);
                     addLog(userId,contactId,"修改充值账户消费记录成功！余额:"+newPrice2);
-                    EBusinessLog.info(userId.toString()+"-"+contactId.toString()+"修改美豆账户消费记录成功！余额:"+newPrice2);
+                    EBusinessLog.info(userId.toString()+"-"+contactId.toString()+"修改充值账户消费记录成功！余额:"+newPrice2);
 
                     //添加充值账户记录
                     AccountOrderEntry accountOrderEntry2 = new AccountOrderEntry(contactId,userId,"","","",price,"",Constant.ZERO,"",0l,"");
@@ -624,10 +625,12 @@ public class AppAlipayService  {
                     //修改课节订单为已购买
                     classOrderDao.updateEntryToBuy(objectIdList4);
                 }catch (Exception e){
-
+                    addLog(userId,contactId,"订单输出有错误，请人工修改！");
+                    EBusinessLog.error("error",e);
                 }
             }else{
                 addLog(userId,contactId,"余额不足，实际："+newPrice+",账户："+userBehaviorEntry.getAccount());
+
             }
             //修改课程人数
             Set<ObjectId> set = classOrderDao.getUserIdEntry(excellentCoursesEntry.getID());

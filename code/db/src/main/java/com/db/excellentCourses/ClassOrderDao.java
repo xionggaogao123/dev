@@ -112,7 +112,7 @@ public class ClassOrderDao extends BaseDao {
         List<Integer> list = new ArrayList<Integer>();
         list.add(1);
         list.add(0);
-        query.append("cid",contactId).append("isr", Constant.ZERO);
+        query.append("cid",contactId).append("isr", Constant.ZERO).append("isb", Constant.ONE);
         query.append("typ",new BasicDBObject(Constant.MONGO_IN,list));
         List<DBObject> dbList=find(MongoFacroty.getAppDB(), Constant.COLLECTION_CLASS_ORDER, query,
                 Constant.FIELDS, Constant.MONGO_SORTBY_DESC);
@@ -131,7 +131,7 @@ public class ClassOrderDao extends BaseDao {
         List<Integer> list = new ArrayList<Integer>();
         list.add(1);
         list.add(0);
-        query.append("cid",contactId).append("isr", Constant.ZERO);
+        query.append("cid",contactId).append("isr", Constant.ZERO).append("isb", Constant.ONE);
         query.append("typ",new BasicDBObject(Constant.MONGO_IN,list));
         List<DBObject> dbList=find(MongoFacroty.getAppDB(), Constant.COLLECTION_CLASS_ORDER, query,
                 Constant.FIELDS, Constant.MONGO_SORTBY_DESC);

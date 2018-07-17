@@ -107,17 +107,18 @@ public class WebExcellentCoursesController extends BaseController {
     /**
      * 我所有报名的课程（分页）
      */
-    @ApiOperation(value = "添加课程", httpMethod = "POST", produces = "application/json")
+    @ApiOperation(value = "我所有报名的课程", httpMethod = "POST", produces = "application/json")
     @ApiResponses( value = {@ApiResponse(code = 200, message = "Successful — 请求已完成",response = String.class),
             @ApiResponse(code = 400, message = "请求中有语法问题，或不能满足请求"),
             @ApiResponse(code = 500, message = "服务器不能完成请求")})
     @RequestMapping("/getMyAllBuyExcellentCourses")
     @ResponseBody
-    public String getMyAllBuyExcellentCourses(){
+    public String getMyAllBuyExcellentCourses(@ApiParam(name = "page", required = false, value = "page") @RequestParam(value="page",defaultValue = "") int page,
+                                              @ApiParam(name = "pageSize", required = false, value = "pageSize") @RequestParam(value="pageSize",defaultValue = "") int pageSize){
         RespObj respObj=new RespObj(Constant.FAILD_CODE);
         try {
             respObj.setCode(Constant.SUCCESS_CODE);
-            List<ExcellentCoursesDTO> result = excellentCoursesService.getMyAllBuyExcellentCourses(getUserId());
+            Map<String,Object> result = excellentCoursesService.getMyAllBuyExcellentCourses(getUserId(),page,pageSize);
             respObj.setMessage(result);
         } catch (Exception e) {
             e.printStackTrace();

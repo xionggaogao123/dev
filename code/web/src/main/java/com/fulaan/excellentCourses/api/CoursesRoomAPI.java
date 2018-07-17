@@ -14,4 +14,11 @@ public class CoursesRoomAPI  extends BaseAPI{
         return str;
     }
 
+
+    //获取回放列表
+    public static String getRoomList(String sysCode) {
+        //long current = System.currentTimeMillis();
+        String str = getCCForToken("/v2/record/info"+"?"+sysCode);
+        return str;
+    }
 }

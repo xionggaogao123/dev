@@ -122,6 +122,25 @@ public class ExcellentCoursesDao extends BaseDao {
         return entryList;
     }
 
+    //首页订单查询
+    public List<ExcellentCoursesEntry> getMyBuyEntryListById(List<ObjectId> objectIds,int page,int pageSize){
+        List<ExcellentCoursesEntry> entryList=new ArrayList<ExcellentCoursesEntry>();
+        BasicDBObject query=new BasicDBObject().append(Constant.ID,new BasicDBObject(Constant.MONGO_IN,objectIds)).append("isr", 0).append("sta",2);
+        List<DBObject> dbList=find(MongoFacroty.getAppDB(), Constant.COLLECTION_EXCELLENT_COURSES, query,
+                Constant.FIELDS, Constant.MONGO_SORTBY_DESC,(page - 1) * pageSize, pageSize);
+        if (dbList != null && !dbList.isEmpty()) {
+            for (DBObject obj : dbList) {
+                entryList.add(new ExcellentCoursesEntry((BasicDBObject) obj));
+            }
+        }
+        return entryList;
+    }
+    public int countMyBuyEntryListById(List<ObjectId> objectIds){
+        BasicDBObject query=new BasicDBObject().append(Constant.ID,new BasicDBObject(Constant.MONGO_IN,objectIds)).append("isr", 0).append("sta",2);
+        int count = count(MongoFacroty.getAppDB(), Constant.COLLECTION_EXCELLENT_COURSES, query);
+        return count;
+    }
+
     public List<ExcellentCoursesEntry> getEntryListById4(List<ObjectId> objectIds){
         List<ExcellentCoursesEntry> entryList=new ArrayList<ExcellentCoursesEntry>();
         BasicDBObject query=new BasicDBObject().append(Constant.ID,new BasicDBObject(Constant.MONGO_IN,objectIds)).append("isr", 0).append("sta",2);

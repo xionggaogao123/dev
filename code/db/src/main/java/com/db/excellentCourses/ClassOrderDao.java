@@ -147,7 +147,7 @@ public class ClassOrderDao extends BaseDao {
     public  List<ClassOrderEntry> getCoursesUserList(List<ObjectId> userIds){
         List<ClassOrderEntry> entryList=new ArrayList<ClassOrderEntry>();
         BasicDBObject query=new BasicDBObject();
-        query.append("uid",new BasicDBObject(Constant.MONGO_IN,userIds)).append("isr", Constant.ZERO).append("typ",Constant.ONE);
+        query.append("uid",new BasicDBObject(Constant.MONGO_IN,userIds)).append("isr", Constant.ZERO).append("isb",Constant.ONE);
         List<DBObject> dbList=find(MongoFacroty.getAppDB(), Constant.COLLECTION_CLASS_ORDER, query,
                 Constant.FIELDS, Constant.MONGO_SORTBY_DESC);
         if (dbList != null && !dbList.isEmpty()) {

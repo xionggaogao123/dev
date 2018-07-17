@@ -4,21 +4,22 @@ import com.db.excellentCourses.CoursesRoomDao;
 import com.db.user.UserDao;
 import com.fulaan.excellentCourses.api.CoursesRoomAPI;
 import com.fulaan.excellentCourses.dto.CCLoginDTO;
+import com.fulaan.excellentCourses.dto.ReplayDTO;
 import com.fulaan.excellentCourses.util.RoomUtil;
 import com.pojo.excellentCourses.CoursesRoomEntry;
 import com.pojo.user.UserEntry;
 import com.sys.utils.AvatarUtils;
+import com.sys.utils.DateTimeUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.log4j.Logger;
 import org.bson.types.ObjectId;
+import org.json.JSONArray;
 import org.json.JSONObject;
 import org.springframework.stereotype.Service;
 
 import java.net.URLDecoder;
 import java.net.URLEncoder;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.TreeMap;
+import java.util.*;
 
 /**
  * 直播间相关
@@ -115,6 +116,141 @@ public class CoursesRoomService {
         }
 
     }
+/*
+参数	说明	备注
+roomid	直播间id
+userid	CC账户ID
+pagenum	每页显示的个数	可选，系统默认值为50
+pageindex	页码	可选，系统默认值为1
+starttime	查询起始时间,如需按时间范围查询可添加该参数和下面的endtime参数，该查询是按直播的开始时间作为查询条件的。	可选，如果填写该参数则endtime参数必填；精确到分钟，例："2015-01-01 12:30"
+endtime	查询截止时间	可选 ，如果填写该参数则starttime必填；精确到分钟，例："2015-01-02 12:30"
+liveid	直播id*/
+    /**
+     * 获取回放列表
+     */
+    public List<ReplayDTO> getBackList(ObjectId cid,String userName,String teacherName,long stm,long etm){
+        List<ReplayDTO> replayDTOList =  new ArrayList<ReplayDTO>();
+        CoursesRoomEntry coursesRoomEntry = coursesRoomDao.getEntry(cid);
+        if(coursesRoomEntry==null){
+            return replayDTOList;
+        }
+        String roomid = coursesRoomEntry.getRoomId();
+        Map<String,String> map = new TreeMap<String, String>();
+        map.put("userid",CC_USERID);
+        map.put("roomid",roomid);
+        try{
+            String sysCode = RoomUtil.createHashedQueryString(map,CC_API_KEY);
+            String str3 = URLDecoder.decode(sysCode, "utf-8");
+            String str =  CoursesRoomAPI.getRoomList(str3);
+            JSONObject dataJson = new JSONObject(str);
+            String rows = dataJson.getString("result");
+            if(rows.equals("OK")){
+                JSONArray jsonArray = dataJson.getJSONArray("records");
+                if(jsonArray!=null&&jsonArray.length()>0) {
+                    for (int j = 0; j < jsonArray.length(); j++) {
+                        JSONObject rows2 = jsonArray.getJSONObject(j);
+                        String id =  rows2.getString("id");
+                        String liveId =  rows2.getString("liveId");
+                        String stopTime =  rows2.getString("stopTime");
+                        String startTime =  rows2.getString("startTime");
+                        int recordStatus =  rows2.getInt("recordStatus");
+                        String recordVideoId =  rows2.getString("recordVideoId");
+                        String replayUrl =  rows2.getString("replayUrl");
+                        ReplayDTO dto = new ReplayDTO(id,liveId,roomid,recordVideoId,CC_USERID,userName,CC_PLAYPASS,startTime,stopTime,recordStatus,replayUrl,teacherName);
+                        //if(checkTime(stm,etm,startTime,stopTime)){
+                            replayDTOList.add(dto);
+                      //  }
+
+                    }
+                }
+            }else{
+            }
+        }catch(Exception e){
+
+        }
+        Collections.reverse(replayDTOList);//逆序排列
+        return replayDTOList;
+
+    }
+
+    /**
+     * 获取回放列表
+     */
+    public List<ReplayDTO> getAllBackList(ObjectId cid,String userName,String teacherName){
+        List<ReplayDTO> replayDTOList =  new ArrayList<ReplayDTO>();
+        CoursesRoomEntry coursesRoomEntry = coursesRoomDao.getEntry(cid);
+        if(coursesRoomEntry==null){
+            return replayDTOList;
+        }
+        String roomid = coursesRoomEntry.getRoomId();
+        Map<String,String> map = new TreeMap<String, String>();
+        map.put("userid",CC_USERID);
+        map.put("roomid",roomid);
+        try{
+            String sysCode = RoomUtil.createHashedQueryString(map,CC_API_KEY);
+            String str3 = URLDecoder.decode(sysCode, "utf-8");
+            String str =  CoursesRoomAPI.getRoomList(str3);
+            JSONObject dataJson = new JSONObject(str);
+            String rows = dataJson.getString("result");
+            if(rows.equals("OK")){
+                JSONArray jsonArray = dataJson.getJSONArray("records");
+                if(jsonArray!=null&&jsonArray.length()>0) {
+                    for (int j = 0; j < jsonArray.length(); j++) {
+                        JSONObject rows2 = jsonArray.getJSONObject(j);
+                        String id =  rows2.getString("id");
+                        String liveId =  rows2.getString("liveId");
+                        String stopTime =  rows2.getString("stopTime");
+                        String startTime =  rows2.getString("startTime");
+                        int recordStatus =  rows2.getInt("recordStatus");
+                        String recordVideoId =  rows2.getString("recordVideoId");
+                        String replayUrl =  rows2.getString("replayUrl");
+                        ReplayDTO dto = new ReplayDTO(id,liveId,roomid,recordVideoId,CC_USERID,userName,CC_PLAYPASS,startTime,stopTime,recordStatus,replayUrl);
+                        replayDTOList.add(dto);
+                    }
+                }
+            }else{
+            }
+        }catch(Exception e){
+
+        }
+        Collections.reverse(replayDTOList);//逆序排列
+        return replayDTOList;
+
+    }
+
+
+    public boolean checkTime(long stm,long etm,String ostm,String estm){
+        long stm2 = DateTimeUtils.getStrToLongTime(ostm, "yyyy-MM-dd HH:mm:ss");
+        long etm2 = DateTimeUtils.getStrToLongTime(estm, "yyyy-MM-dd HH:mm:ss");
+        if(stm2>stm && etm2<etm ){//1
+            return true;
+        }
+
+        if(etm2 > stm && etm2 < etm ){//2
+            return true;
+        }
+
+        if(stm2 < stm && etm2 > etm){//3
+            return true;
+        }
+
+        if(stm2 >stm && stm2 < etm){//4
+            return true;
+        }
+        return false;
+    }
+
+
+    public static void main(String[] args){
+        CoursesRoomService coursesRoomService = new CoursesRoomService();
+        long startTime = System.currentTimeMillis();
+        //coursesRoomService.getBackList("99DC40755A6346189C33DC5901307461","","");
+        long endTime = System.currentTimeMillis();
+        System.out.println("时间");
+        System.out.println(endTime - startTime);
+    }
+
+
 
     /**
      * 创建回调登陆直播间

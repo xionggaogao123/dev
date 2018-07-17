@@ -9,10 +9,7 @@ import com.db.user.NewVersionUserRoleDao;
 import com.db.user.UserDao;
 import com.fulaan.backstage.dto.LogMessageDTO;
 import com.fulaan.cache.CacheHandler;
-import com.fulaan.excellentCourses.dto.ExcellentCoursesDTO;
-import com.fulaan.excellentCourses.dto.HourClassDTO;
-import com.fulaan.excellentCourses.dto.HourResultDTO;
-import com.fulaan.excellentCourses.dto.RechargeResultDTO;
+import com.fulaan.excellentCourses.dto.*;
 import com.fulaan.newVersionBind.service.NewVersionBindService;
 import com.fulaan.pojo.User;
 import com.fulaan.service.CommunityService;
@@ -84,11 +81,13 @@ public class ExcellentCoursesService {
     private SystemMessageService systemMessageService;
     @Autowired
     private CommunityService communityService;
+    @Autowired
+    private CoursesRoomService coursesRoomService;
 
     private static final Logger logger =Logger.getLogger(DefaultWrongQuestionController.class);
 
 
-    private static final int  TEACHER_TIME = 10*60*1000;  //老师提前时间  ->  10分钟
+    private static final int  TEACHER_TIME = 20*60*1000;  //老师提前时间  ->  10分钟
     private static final int  STUDENT_TIME = 5*60*1000;  //学生提前时间  ->  5分钟
     private static final int  TUI_TIME = 12*60*60*1000;  //退款超时时间  ->  12小时
     private static final int  CURRENT_TIME = 90*60*1000; //课程持续时间
@@ -913,6 +912,98 @@ public class ExcellentCoursesService {
         return map;
     }
 
+    public Map<String,Object> getNewCoursesDesc(ObjectId id,ObjectId userId){
+        Map<String,Object> map = new HashMap<String, Object>();
+        //课程相关
+        ExcellentCoursesEntry excellentCoursesEntry = excellentCoursesDao.getEntry(id);
+        //此课程已购买项目
+        List<ObjectId> cids= classOrderDao.getEntryIdList(userId,id);
+        if(cids.size()==0){
+            map.put("isBuy",0);
+        }else{
+            map.put("isBuy",1);
+        }
+        long current = System.currentTimeMillis();
+        boolean flage = false;
+        map.put("isEnd",0);
+        if(excellentCoursesEntry.getEndTime()<=current){//上课时间已过
+            map.put("isEnd",1);
+            flage = true;
+        }
+        //课时相关
+        List<HourClassEntry> hourClassEntries = hourClassDao.getEntryList(id);
+        List<HourClassDTO> hourClassDTOs = new ArrayList<HourClassDTO>();
+
+        //
+        long allEndTime = 0l;
+        boolean falge2 = false;
+        HourClassDTO nowHourClassDTO  = null;
+        for(HourClassEntry hourClassEntry:hourClassEntries){
+            HourClassDTO hourClassDTO = new HourClassDTO(hourClassEntry);
+            long endTime = hourClassEntry.getStartTime() + hourClassEntry.getCurrentTime();
+            hourClassDTO.setStatus(1);//未购买
+            if(endTime> allEndTime){//获得最终结束时间
+                allEndTime = endTime;
+            }
+            if(endTime<=current){//上课时间已结束
+                if(cids.contains(hourClassEntry.getID())){
+                    hourClassDTO.setStatus(3);//已结束已购买
+                }else{
+                    hourClassDTO.setStatus(0);//已结束未购买
+                }
+
+            }else{//未结束
+                if(cids.contains(hourClassEntry.getID())){
+                    hourClassDTO.setStatus(2);//已购买
+                    if(hourClassEntry.getStartTime()<=current+STUDENT_TIME && endTime >current ){
+                        nowHourClassDTO = hourClassDTO;
+                    }
+                }else{
+                    falge2=true;//还可以购买
+                }
+            }
+
+            if(flage){//课程结束
+                if(cids.contains(hourClassEntry.getID())){
+                    hourClassDTO.setStatus(3);//已结束已购买
+                }else{
+                    hourClassDTO.setStatus(0);//已结束未购买
+                }
+
+            }
+            hourClassDTOs.add(hourClassDTO);
+        }
+        if(falge2){
+            map.put("isXian",1);
+        }else{
+            map.put("isXian",0);
+        }
+        List<HourClassDTO> dtos = new ArrayList<HourClassDTO>();
+        if(nowHourClassDTO!=null){
+            //HourClassEntry hourClassEntry = nowHourClassDTO.buildAddEntry();
+            HourClassDTO h = new HourClassDTO();
+            h.setParentId(nowHourClassDTO.getParentId());
+            h.setStatus(nowHourClassDTO.getStatus());
+            h.setCreateTime(nowHourClassDTO.getCreateTime());
+            h.setWeek(nowHourClassDTO.getWeek());
+            h.setClassOldPrice(nowHourClassDTO.getClassOldPrice());
+            h.setClassNewPrice(nowHourClassDTO.getClassNewPrice());
+            h.setContent(nowHourClassDTO.getContent());
+            h.setDateTime(nowHourClassDTO.getDateTime());
+            h.setStartTime(nowHourClassDTO.getStartTime());
+            h.setId(nowHourClassDTO.getId());
+            h.setCurrentTime(nowHourClassDTO.getCurrentTime());
+            h.setOrder(nowHourClassDTO.getOrder());
+            h.setUserId(nowHourClassDTO.getUserId());
+            h.setType(nowHourClassDTO.getType());
+            dtos.add(h);
+        }
+        map.put("now",dtos);
+        map.put("list",hourClassDTOs);
+        return map;
+    }
+
+
     public Map<String,Object> getOneCoursesDesc(ObjectId id){
         Map<String,Object> map = new HashMap<String, Object>();
         //课程相关
@@ -1678,7 +1769,8 @@ public class ExcellentCoursesService {
      * 家长 获得我所有的课程列表
      * @return
      */
-    public List<ExcellentCoursesDTO> getMyAllBuyExcellentCourses(ObjectId userId){
+    public Map<String,Object> getMyAllBuyExcellentCourses(ObjectId userId,int page,int pageSize){
+        Map<String,Object> map  = new HashMap<String, Object>();
         List<ObjectId> objectIdList = newVersionBindRelationDao.getIdsByMainUserId(userId);
         //加入自己表明自己购买的
         objectIdList.add(userId);
@@ -1692,7 +1784,8 @@ public class ExcellentCoursesService {
             }
         }
         long current = System.currentTimeMillis();
-        List<ExcellentCoursesEntry> excellentCoursesEntries = excellentCoursesDao.getMyEntryListById(objectIdList1);
+        List<ExcellentCoursesEntry> excellentCoursesEntries = excellentCoursesDao.getMyBuyEntryListById(objectIdList1, page, pageSize);
+        int count = excellentCoursesDao.countMyBuyEntryListById(objectIdList1);
         List<ExcellentCoursesDTO> dtos = new ArrayList<ExcellentCoursesDTO>();
         List<ObjectId> communityIds = new ArrayList<ObjectId>();
         for(ExcellentCoursesEntry excellentCoursesEntry:excellentCoursesEntries){
@@ -1728,7 +1821,9 @@ public class ExcellentCoursesService {
             }
 
         }
-        return dtos;
+        map.put("list",dtos);
+        map.put("count", count);
+        return map;
     }
 
     public Map<String,Object> getMyDetails(ObjectId id){
@@ -1819,10 +1914,15 @@ public class ExcellentCoursesService {
             long endTime = entry.getStartTime() + entry.getCurrentTime();
             HourClassDTO hourClassDTO = new HourClassDTO(entry);
             if(excellentCoursesEntry.getStatus()==2){
-                if(current<startTime - TEACHER_TIME){//未开始
+                if(current<startTime - STUDENT_TIME){//未开始
                     hourClassDTO.setStatus(0);
                 }else if(current >endTime){//已结束
-                    hourClassDTO.setStatus(2);
+                    if(cids.contains(new ObjectId(hourClassDTO.getId()))){
+                        hourClassDTO.setStatus(5);
+                    }else{
+                        hourClassDTO.setStatus(2);
+                    }
+
                 }else{//正在进行
                     if(cids.contains(new ObjectId(hourClassDTO.getId()))){
                         hourClassDTO.setStatus(1);
@@ -1833,7 +1933,9 @@ public class ExcellentCoursesService {
             }
             hourClassDTOs.add(hourClassDTO);
         }
-        map.put("list",hourClassDTOs);
+        map.put("list", hourClassDTOs);
+        List<ReplayDTO> dtos =  coursesRoomService.getAllBackList(excellentCoursesEntry.getID(), "123456", excellentCoursesEntry.getUserName());
+        map.put("backList",dtos);
         return map;
     }
 
@@ -2581,6 +2683,24 @@ public class ExcellentCoursesService {
         map.put("list",dtos);
         map.put("count",count);
         return map;
+    }
+
+
+    public List<ReplayDTO>  getBackList(ObjectId id,ObjectId userId){
+        List<ReplayDTO> dtos = new ArrayList<ReplayDTO>();
+        HourClassEntry hourClassEntry = hourClassDao.getEntry(id);
+        UserEntry userEntry = userDao.findByUserId(userId);
+        if(hourClassEntry!=null && userEntry!=null){//课节存在
+            ExcellentCoursesEntry excellentCoursesEntry = excellentCoursesDao.getEntry(hourClassEntry.getParentId());
+            //课程存在
+            ClassOrderEntry classOrderEntry = classOrderDao.getEntry(hourClassEntry.getID(),hourClassEntry.getParentId(),userId);
+            if(excellentCoursesEntry !=null && classOrderEntry!=null){//订单存在
+                String name = StringUtils.isNotBlank(userEntry.getNickName())?userEntry.getNickName():userEntry.getUserName();
+                long time = hourClassEntry.getStartTime()+hourClassEntry.getCurrentTime();
+                dtos = coursesRoomService.getBackList(excellentCoursesEntry.getID(),name,excellentCoursesEntry.getUserName(),hourClassEntry.getStartTime(),time);
+            }
+        }
+        return dtos;
     }
 
 

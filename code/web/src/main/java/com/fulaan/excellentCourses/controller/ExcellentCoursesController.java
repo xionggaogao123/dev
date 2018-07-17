@@ -3,6 +3,7 @@ package com.fulaan.excellentCourses.controller;
 import com.alibaba.fastjson.JSON;
 import com.fulaan.base.BaseController;
 import com.fulaan.excellentCourses.dto.ExcellentCoursesDTO;
+import com.fulaan.excellentCourses.dto.ReplayDTO;
 import com.fulaan.excellentCourses.service.ExcellentCoursesService;
 import com.sys.constants.Constant;
 import com.sys.utils.RespObj;
@@ -92,6 +93,29 @@ public class ExcellentCoursesController extends BaseController {
         try {
             respObj.setCode(Constant.SUCCESS_CODE);
             Map<String,Object> map = excellentCoursesService.getCoursesDesc(new ObjectId(id),getUserId());
+            respObj.setMessage(map);
+        } catch (Exception e) {
+            e.printStackTrace();
+            respObj.setCode(Constant.FAILD_CODE);
+            respObj.setErrorMessage("获取课程简介失败!");
+        }
+        return JSON.toJSONString(respObj);
+    }
+
+    /**
+     *  学生端回放课节列表
+     */
+    @ApiOperation(value = "课节列表", httpMethod = "GET", produces = "application/json")
+    @ApiResponses( value = {@ApiResponse(code = 200, message = "Successful — 请求已完成",response = String.class),
+            @ApiResponse(code = 400, message = "请求中有语法问题，或不能满足请求"),
+            @ApiResponse(code = 500, message = "服务器不能完成请求")})
+    @RequestMapping("/getNewCoursesDesc")
+    @ResponseBody
+    public String getNewCoursesDesc(@ApiParam(name = "id", required = true, value = "id") @RequestParam("id") String id){
+        RespObj respObj=new RespObj(Constant.FAILD_CODE);
+        try {
+            respObj.setCode(Constant.SUCCESS_CODE);
+            Map<String,Object> map = excellentCoursesService.getNewCoursesDesc(new ObjectId(id),getUserId());
             respObj.setMessage(map);
         } catch (Exception e) {
             e.printStackTrace();
@@ -399,6 +423,29 @@ public class ExcellentCoursesController extends BaseController {
         return JSON.toJSONString(respObj);
     }
 
+
+    /**
+     * 通用回放列表
+     */
+    @ApiOperation(value = "课节列表（家长）", httpMethod = "GET", produces = "application/json")
+    @ApiResponses( value = {@ApiResponse(code = 200, message = "Successful — 请求已完成",response = String.class),
+            @ApiResponse(code = 400, message = "请求中有语法问题，或不能满足请求"),
+            @ApiResponse(code = 500, message = "服务器不能完成请求")})
+    @RequestMapping("/getBackList")
+    @ResponseBody
+    public String getBackList(@ApiParam(name = "id", required = true, value = "课节id") @RequestParam("id") String id){
+        RespObj respObj=new RespObj(Constant.FAILD_CODE);
+        try {
+            respObj.setCode(Constant.SUCCESS_CODE);
+            List<ReplayDTO> map = excellentCoursesService.getBackList(new ObjectId(id), getUserId());
+            respObj.setMessage(map);
+        } catch (Exception e) {
+            e.printStackTrace();
+            respObj.setCode(Constant.FAILD_CODE);
+            respObj.setErrorMessage("获取回放列表失败!");
+        }
+        return JSON.toJSONString(respObj);
+    }
 
     /**
      * 简介（家长）

@@ -157,9 +157,9 @@ liveid	直播id*/
                         String recordVideoId =  rows2.getString("recordVideoId");
                         String replayUrl =  rows2.getString("replayUrl");
                         ReplayDTO dto = new ReplayDTO(id,liveId,roomid,recordVideoId,CC_USERID,userName,CC_PLAYPASS,startTime,stopTime,recordStatus,replayUrl,teacherName);
-                        //if(checkTime(stm,etm,startTime,stopTime)){
+                        if(checkTime(stm,etm,startTime,stopTime)){
                             replayDTOList.add(dto);
-                      //  }
+                        }
 
                     }
                 }

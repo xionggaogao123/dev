@@ -22,10 +22,12 @@ import com.fulaan.friendscircle.service.FriendService;
 import com.fulaan.newVersionBind.service.NewVersionBindService;
 import com.fulaan.operation.service.AppCommentService;
 import com.fulaan.playmate.service.MateService;
+import com.fulaan.pojo.Attachement;
 import com.fulaan.pojo.CommunityMessage;
 import com.fulaan.pojo.PageModel;
 import com.fulaan.pojo.ProductModel;
 import com.fulaan.pojo.Validate;
+import com.fulaan.reportCard.dto.ExamGroupDTO;
 import com.fulaan.service.*;
 import com.fulaan.user.service.UserService;
 import com.fulaan.util.DateUtils;
@@ -2494,9 +2496,10 @@ public class WebCommunityController extends BaseController {
                                @ApiParam(name="type",required = true,value = "社区类别")int type,
                                @ApiParam(name="content",required = false,value = "内容")@RequestParam(required = false, defaultValue = "") String content,
                                @ApiParam(name="images",required = false,value = "图片")@RequestParam(required = false, defaultValue = "") String images,
-                               @ApiParam(name="videoList",required = false,value = "视频")@RequestParam(required = false, defaultValue = "") String vedios) {
+                               @ApiParam(name="videoList",required = false,value = "视频")@RequestParam(required = false, defaultValue = "") String vedios,
+                               @ApiParam(name="attach",required = false,value = "附件")@RequestParam(required = false, defaultValue = "") String attach) {
         ObjectId uid = getUserId();
-        communityService.saveCommunityShare(communityId, communityDetailId, uid, content, images, vedios, type);
+        communityService.saveCommunityShare(communityId, communityDetailId, uid, content, images, vedios, type, attach);
         return RespObj.SUCCESS("操作成功");
     }
 

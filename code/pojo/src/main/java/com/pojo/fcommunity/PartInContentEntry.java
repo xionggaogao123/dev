@@ -1,5 +1,6 @@
 package com.pojo.fcommunity;
 
+
 import com.mongodb.BasicDBList;
 import com.mongodb.BasicDBObject;
 import com.mongodb.DBObject;
@@ -53,6 +54,11 @@ public class PartInContentEntry extends BaseDBObject {
     this(communityId,detailId,userId,information,imageList,new ArrayList<AttachmentEntry>(),
             videoEntries,Constant.EMPTY,Constant.EMPTY,Constant.EMPTY,Constant.EMPTY,Constant.EMPTY,type,new ArrayList<ObjectId>());
   }
+  
+  public PartInContentEntry(List<VideoEntry> videoEntries,ObjectId communityId,ObjectId detailId, ObjectId userId, String information, List<String> imageList,int type,List<AttachmentEntry> attachmentList) {
+      this(communityId,detailId,userId,information,imageList,attachmentList,
+              videoEntries,Constant.EMPTY,Constant.EMPTY,Constant.EMPTY,Constant.EMPTY,Constant.EMPTY,type,new ArrayList<ObjectId>());
+    }
 
   public PartInContentEntry(ObjectId communityId,ObjectId detailId, ObjectId userId,String information, List<String> imageList,
                             List<AttachmentEntry> attachmentList,List<VideoEntry> videoList,String shareUrl,String shareImage,

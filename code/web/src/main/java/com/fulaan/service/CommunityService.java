@@ -2264,7 +2264,7 @@ public class CommunityService {
      * @param images
      * @param vedios
      */
-    public void saveCommunityShare(ObjectId communityId, ObjectId communityDetailId, ObjectId uid, String content, String images, String vedios, int type) {
+    public void saveCommunityShare(ObjectId communityId, ObjectId communityDetailId, ObjectId uid, String content, String images, String vedios, int type ,String attachmentList) {
 
         List<String> imagesList = new ArrayList<String>();
         List<VideoEntry> dbAttacheMents = new ArrayList<VideoEntry>();
@@ -2292,7 +2292,19 @@ public class CommunityService {
 
             }
         }
-        PartInContentEntry partIn = new PartInContentEntry(dbAttacheMents, communityId, communityDetailId, uid, content, imagesList, type);
+        List<AttachmentEntry> list = new ArrayList<AttachmentEntry>();
+        if (StringUtils.isNotBlank(attachmentList)) {
+            String[] a = attachmentList.split(",");
+            for (String s : a) {
+                String[] names = s.split("@");
+                list.add(new AttachmentEntry(names[0], names[1], uid));
+            }
+        }
+        /*List<AttachmentEntry> list = new ArrayList<AttachmentEntry>();
+        for (Attachement a : attachmentList) {
+            list.add(new AttachmentEntry(a.getUrl(), a.getUrl(), uid));
+        }*/
+        PartInContentEntry partIn = new PartInContentEntry(dbAttacheMents, communityId, communityDetailId, uid, content, imagesList, type, list);
         partInContentDao.saveParInContent(partIn);
     }
 

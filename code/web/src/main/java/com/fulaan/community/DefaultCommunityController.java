@@ -2518,7 +2518,7 @@ public class DefaultCommunityController extends BaseController {
                                @ApiParam(name="images",required = false,value = "图片")@RequestParam(required = false, defaultValue = "") String images,
                                @ApiParam(name="videoList",required = false,value = "视频")@RequestParam(required = false, defaultValue = "") String vedios) {
         ObjectId uid = getUserId();
-        communityService.saveCommunityShare(communityId, communityDetailId, uid, content, images, vedios, type);
+        communityService.saveCommunityShare(communityId, communityDetailId, uid, content, images, vedios, type, "");
         int score = integralSufferService.addIntegral(getUserId(), IntegralType.hot,4,1);
         //respObj.setMessage(score+"");
         return RespObj.SUCCESS(score+"");

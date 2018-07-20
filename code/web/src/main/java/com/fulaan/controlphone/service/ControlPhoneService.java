@@ -1377,13 +1377,13 @@ public class ControlPhoneService {
         String ver1 = controlVersionDTO.getVersion();
         String ver2 = controlVersionDTO2.getVersion();
         if(controlVersionDTO ==null || controlVersionDTO2==null){//记录不存在
-            map.put("status",4);//未在线
+            map.put("status",5);//未在线
         }else{
             if(ver1==null || ver2==null){//版本号不存在
-                map.put("status",4);//未在线
+                map.put("status",5);//未在线
             }else{
                 if(ver1.equals("已退出")||ver2.equals("已退出") || ver1.equals("暂无数据")|| ver2.equals("暂无数据")){
-                    map.put("status",4);//未在线
+                    map.put("status",5);//未在线
                 }else{
                     if(getVersionLong(ver2)>=getVersionLong(ver1)){//版本号已更新
                         //判断mqtt状态

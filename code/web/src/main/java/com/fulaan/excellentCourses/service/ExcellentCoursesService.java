@@ -512,15 +512,40 @@ public class ExcellentCoursesService {
         }
         //objectIdList1
         List<ExcellentCoursesEntry> coursesEntries2 = excellentCoursesDao.getEntryListById4(objectIdList1);
+        Collections.sort(coursesEntries2, new Comparator<ExcellentCoursesEntry>() {
+            @Override
+            public int compare(ExcellentCoursesEntry o1, ExcellentCoursesEntry o2) {
+                if (o1.getEndTime() > o2.getEndTime()) {
+                    return 1;
+                } else if (o1.getEndTime() == o2.getEndTime()) {
+                    return 0;
+                } else {
+                    return -1;
+                }
+            }
+        });
         //获得学生所在社群
         List<ObjectId> objectIdList = newVersionBindService.getCommunityIdsByUserId(userId);
         //推荐名单
         List<ExcellentCoursesEntry> coursesEntries = excellentCoursesDao.getOldEntryList(objectIdList, current);
+        Collections.sort(coursesEntries, new Comparator<ExcellentCoursesEntry>() {
+            @Override
+            public int compare(ExcellentCoursesEntry o1, ExcellentCoursesEntry o2) {
+                if (o1.getEndTime() > o2.getEndTime()) {
+                    return 1;
+                } else if (o1.getEndTime() == o2.getEndTime()) {
+                    return 0;
+                } else {
+                    return -1;
+                }
+            }
+        });
         for(ExcellentCoursesEntry excellentCoursesEntry:coursesEntries2){
             if(excellentCoursesEntry.getEndTime()<current){
                 coursesEntries.add(excellentCoursesEntry);
             }
         }
+        Collections.reverse(coursesEntries);
         /*//Map<ObjectId, CommunityEntry> map3 = communityDao.findMapInfo(objectIdList);
         List<ObjectId> objectIdList1 = new ArrayList<ObjectId>();
         List<ObjectId> hourClassIds = new ArrayList<ObjectId>();
@@ -564,6 +589,7 @@ public class ExcellentCoursesService {
         }*/
         List<ObjectId> objectIdList2 = new ArrayList<ObjectId>();
         List<ExcellentCoursesDTO> dtos2 = new ArrayList<ExcellentCoursesDTO>();
+
         for(ExcellentCoursesEntry excellentCoursesEntry:coursesEntries){//推荐
             if(objectIdList2.contains(excellentCoursesEntry.getID())){
 
@@ -576,6 +602,8 @@ public class ExcellentCoursesService {
 
         }
         //dtos.addAll(dtos2);
+        //Collections.reverse(dtos2);
+
         map.put("list",dtos2);
         map.put("count",dtos2.size());
         //map.put("dto",getNowEntry(hourClassIds));
@@ -857,6 +885,8 @@ public class ExcellentCoursesService {
         //
         long allEndTime = 0l;
         boolean falge2 = false;
+        HourClassEntry startClass = null;
+        HourClassEntry endClass = null;
         HourClassDTO nowHourClassDTO  = null;
         for(HourClassEntry hourClassEntry:hourClassEntries){
             HourClassDTO hourClassDTO = new HourClassDTO(hourClassEntry);
@@ -867,12 +897,33 @@ public class ExcellentCoursesService {
             }
             if(endTime<=current){//上课时间已结束
                 hourClassDTO.setStatus(0);//已结束
+                //已结束的取一个最近的
+                if(cids.contains(hourClassEntry.getID())){//已购买
+                    if(startClass==null){
+                        startClass = hourClassEntry;
+                    }else{
+                        long etm = startClass.getStartTime() + startClass.getCurrentTime();
+                        if(endTime>etm){
+                            startClass = hourClassEntry;
+                        }
+                    }
+                }
             }else{
                 if(cids.contains(hourClassEntry.getID())){
                     hourClassDTO.setStatus(2);//已购买
                     if(hourClassEntry.getStartTime()<=current+STUDENT_TIME && endTime >current ){
                         nowHourClassDTO = hourClassDTO;
                     }
+                    //未结束的取一个最近的
+                    if(endClass==null){
+                        endClass = hourClassEntry;
+                    }else{
+                        long stm = endClass.getStartTime();
+                        if(hourClassEntry.getStartTime()<stm){
+                            endClass = hourClassEntry;
+                        }
+                    }
+
                 }else{
                     falge2=true;//还可以购买
                 }
@@ -906,6 +957,39 @@ public class ExcellentCoursesService {
             h.setUserId(nowHourClassDTO.getUserId());
             h.setType(nowHourClassDTO.getType());
             dtos.add(h);
+        }
+
+        //如果没有正在上的课，尝试开放已结束的课程（满足一下喜欢拖堂的老师，让他们上个够，让上课的小伙伴可以出来溜达溜达再回去）
+        if(dtos.size()==0){
+            //HourClassEntry startClass = null;
+            //HourClassEntry endClass = null;
+            if(startClass !=null){//前有结束的课
+                long etm = startClass.getStartTime() + startClass.getCurrentTime();
+                if(endClass==null){//后无
+                    //1小时显示
+                    if(etm< current + 60*60*1000 ){
+                        HourClassDTO hourClassDTO2 = new HourClassDTO(startClass);
+                        hourClassDTO2.setStatus(2);
+                        dtos.add(hourClassDTO2);
+                    }
+
+                }else{//后有
+                    if(endClass.getDateTime()==startClass.getDateTime()){//同一天
+                        if(current>endClass.getStartTime()+STUDENT_TIME){
+                            HourClassDTO hourClassDTO2 = new HourClassDTO(startClass);
+                            hourClassDTO2.setStatus(2);
+                            dtos.add(hourClassDTO2);
+                        }
+                    }else{//不同 一小时
+                        if(etm< current + 60*60*1000 ){
+                            HourClassDTO hourClassDTO2 = new HourClassDTO(startClass);
+                            hourClassDTO2.setStatus(2);
+                            dtos.add(hourClassDTO2);
+                        }
+                    }
+
+                }
+            }
         }
         map.put("now",dtos);
         map.put("list",hourClassDTOs);
@@ -937,6 +1021,8 @@ public class ExcellentCoursesService {
         //
         long allEndTime = 0l;
         boolean falge2 = false;
+        HourClassEntry startClass = null;
+        HourClassEntry endClass = null;
         HourClassDTO nowHourClassDTO  = null;
         for(HourClassEntry hourClassEntry:hourClassEntries){
             HourClassDTO hourClassDTO = new HourClassDTO(hourClassEntry);
@@ -951,12 +1037,31 @@ public class ExcellentCoursesService {
                 }else{
                     hourClassDTO.setStatus(0);//已结束未购买
                 }
-
+                //已结束的取一个最近的
+                if(cids.contains(hourClassEntry.getID())){//已购买
+                    if(startClass==null){
+                        startClass = hourClassEntry;
+                    }else{
+                        long etm = startClass.getStartTime() + startClass.getCurrentTime();
+                        if(endTime>etm){
+                            startClass = hourClassEntry;
+                        }
+                    }
+                }
             }else{//未结束
                 if(cids.contains(hourClassEntry.getID())){
                     hourClassDTO.setStatus(2);//已购买
                     if(hourClassEntry.getStartTime()<=current+STUDENT_TIME && endTime >current ){
                         nowHourClassDTO = hourClassDTO;
+                    }
+                    //未结束的取一个最近的
+                    if(endClass==null){
+                        endClass = hourClassEntry;
+                    }else{
+                        long stm = endClass.getStartTime();
+                        if(hourClassEntry.getStartTime()<stm){
+                            endClass = hourClassEntry;
+                        }
                     }
                 }else{
                     falge2=true;//还可以购买
@@ -998,6 +1103,40 @@ public class ExcellentCoursesService {
             h.setType(nowHourClassDTO.getType());
             dtos.add(h);
         }
+
+        //如果没有正在上的课，尝试开放已结束的课程（满足一下喜欢拖堂的老师，让他们上个够，让上课的小伙伴可以出来溜达溜达再回去）
+        if(dtos.size()==0){
+            //HourClassEntry startClass = null;
+            //HourClassEntry endClass = null;
+            if(startClass !=null){//前有结束的课
+                long etm = startClass.getStartTime() + startClass.getCurrentTime();
+                if(endClass==null){//后无
+                    //1小时显示
+                    if(etm> current - 60*60*1000 ){
+                        HourClassDTO hourClassDTO2 = new HourClassDTO(startClass);
+                        hourClassDTO2.setStatus(2);
+                        dtos.add(hourClassDTO2);
+                    }
+
+                }else{//后有
+                    if(endClass.getDateTime()==startClass.getDateTime()){//同一天
+                        if(current>endClass.getStartTime()+STUDENT_TIME){
+                            HourClassDTO hourClassDTO2 = new HourClassDTO(startClass);
+                            hourClassDTO2.setStatus(2);
+                            dtos.add(hourClassDTO2);
+                        }
+                    }else{//不同 一小时
+                        if(etm> current - 60*60*1000 ){
+                            HourClassDTO hourClassDTO2 = new HourClassDTO(startClass);
+                            hourClassDTO2.setStatus(2);
+                            dtos.add(hourClassDTO2);
+                        }
+                    }
+
+                }
+            }
+        }
+
         map.put("now",dtos);
         map.put("list",hourClassDTOs);
         return map;
@@ -1826,6 +1965,68 @@ public class ExcellentCoursesService {
         return map;
     }
 
+    /**
+     * 学生 获得我所有的课程列表
+     * @return
+     */
+    public Map<String,Object> getStudentBuyExcellentCourses(ObjectId userId,int page,int pageSize){
+        Map<String,Object> map  = new HashMap<String, Object>();
+        List<ObjectId> objectIdList = new ArrayList<ObjectId>();
+        NewVersionBindRelationEntry bindEntry = newVersionBindRelationDao.getBindEntry(userId);
+        //加入自己表明自己购买的
+        objectIdList.add(userId);
+        List<ClassOrderEntry> classOrderEntries =  classOrderDao.getCoursesUserList(objectIdList);
+        List<ObjectId> objectIdList1 = new ArrayList<ObjectId>();
+        List<ObjectId> hourClassIds = new ArrayList<ObjectId>();
+        for(ClassOrderEntry classOrderEntry:classOrderEntries){
+            if(classOrderEntry.getIsBuy()==1){
+                objectIdList1.add(classOrderEntry.getContactId());
+                hourClassIds.add(classOrderEntry.getParentId());
+            }
+        }
+        long current = System.currentTimeMillis();
+        List<ExcellentCoursesEntry> excellentCoursesEntries = excellentCoursesDao.getMyBuyEntryListById(objectIdList1, page, pageSize);
+        int count = excellentCoursesDao.countMyBuyEntryListById(objectIdList1);
+        List<ExcellentCoursesDTO> dtos = new ArrayList<ExcellentCoursesDTO>();
+        List<ObjectId> communityIds = new ArrayList<ObjectId>();
+        for(ExcellentCoursesEntry excellentCoursesEntry:excellentCoursesEntries){
+            communityIds.addAll(excellentCoursesEntry.getCommunityIdList());
+            ExcellentCoursesDTO dto = new ExcellentCoursesDTO(excellentCoursesEntry);
+            if(dto.getStatus()==2){
+                if(excellentCoursesEntry.getStartTime()> current){//未开始
+                    dto.setType(1);
+                }else if(excellentCoursesEntry.getEndTime()<current){//已结束
+                    dto.setType(2);
+                }else{
+                    dto.setType(1);
+                }
+            }
+            dtos.add(dto);
+        }
+        Map<ObjectId, CommunityEntry> cmap = communityDao.findMapInfo(communityIds);
+        for(ExcellentCoursesDTO dto2: dtos){
+            List<String> oids = dto2.getCommunityIdList();
+            String name = "";
+            for(String str: oids){
+                CommunityEntry c = cmap.get(new ObjectId(str));
+                if(c!=null){
+                    name = name + c.getCommunityName()+"、\n";
+                }
+            }
+            if(name.equals("")){
+                dto2.setCommunitName("无");
+            }else{
+                String name2 = name.substring(0, name.length()-2);
+
+                dto2.setCommunitName(name2);
+            }
+
+        }
+        map.put("list",dtos);
+        map.put("count", count);
+        return map;
+    }
+
     public Map<String,Object> getMyDetails(ObjectId id){
         Map<String,Object> map = new HashMap<String, Object>();
         //课程相关
@@ -2036,7 +2237,8 @@ public class ExcellentCoursesService {
         long current = System.currentTimeMillis();
         long start = hourClassEntry.getStartTime() -STUDENT_TIME;
         long end = hourClassEntry.getStartTime() + hourClassEntry.getCurrentTime();
-        if(current>start && current < end){//上课中
+        //if(current>start && current < end){//上课中
+        if(current>start){//上课中
             CoursesRoomEntry coursesRoomEntry = coursesRoomDao.getEntry(excellentCoursesEntry.getID());
             UserEntry userEntry = userDao.findByUserId(userId);
             if(userEntry==null){

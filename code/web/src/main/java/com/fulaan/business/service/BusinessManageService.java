@@ -19,6 +19,7 @@ import com.fulaan.excellentCourses.dto.ClassOrderDTO;
 import com.fulaan.excellentCourses.dto.ExcellentCoursesDTO;
 import com.fulaan.excellentCourses.dto.HourClassDTO;
 import com.fulaan.excellentCourses.service.CoursesRoomService;
+import com.fulaan.fgroup.service.EmService;
 import com.fulaan.jiaschool.dto.HomeSchoolDTO;
 import com.fulaan.picturetext.runnable.PictureRunNable;
 import com.fulaan.pojo.User;
@@ -90,6 +91,8 @@ public class BusinessManageService {
     private SchoolPersionDao schoolPersionDao = new SchoolPersionDao();
 
     private HomeSchoolDao homeSchoolDao = new HomeSchoolDao();
+    @Autowired
+    private EmService emService;
 
     //登陆生成
     public void getLoginInfo(ObjectId userId,int type ){
@@ -571,6 +574,8 @@ public class BusinessManageService {
         Map<ObjectId,Map<ObjectId,Integer>> groupMap = memberDao.getMemberGroupManage(objectIdList);
         Map<ObjectId,Integer> groupUserIds =  groupMap.get(groupId);
         List<ObjectId> objectIds = new ArrayList<ObjectId>();
+        objectIds.add(userId);
+        objectIds.add(id);
         List<ObjectId> objectIdList1 = teacherApproveDao.selectMap(objectIds);
         map.put("show",Constant.ZERO);
         if(null!=groupUserIds.get(id)){
@@ -627,6 +632,22 @@ public class BusinessManageService {
         }
     }
 
+    /**
+     * 环信发送透传消息
+     */
+    public void sendJinMessage(String emchatId,String userId,String type){
+        List<String> targets = new ArrayList<String>();
+        Map<String, String> ext = new HashMap<String, String>();
+        Map<String, String> sendMessage = new HashMap<String, String>();
+        //接受群组
+        targets.add(emchatId);
+        ext.put("userId", userId.toString());
+        sendMessage.put("type", "cmd");
+        sendMessage.put("action", type);
+        //sendMessage.put("msg", "作业通知：\n社长 张老师 发布了一条新作业 \n请各位家长及时查看！");
+        emService.sendTextMessage("chatrooms", targets, userId, ext, sendMessage);
+    }
+
 
     /**
      * 禁言   社群 ----ApplyTypeEn.happy.getType()
@@ -639,11 +660,24 @@ public class BusinessManageService {
             communitySpeakingDao.updateEntry(userId,groupId);
             long current = System.currentTimeMillis();
             long endTime = current+time;
-            ObjectId communityId = communityDao.getCommunityIdByGroupId(groupId);
-            CommunitySpeakingEntry communitySpeakingEntry = new CommunitySpeakingEntry(userId,memberId,groupId,communityId,Constant.ZERO,current,endTime);
-            communitySpeakingDao.addEntry(communitySpeakingEntry);
+            CommunityEntry communityEntry = communityDao.findCommunityByObjectId(groupId);
+            if(communityEntry!=null){
+                ObjectId communityId = communityEntry.getID();
+                String emChatId = communityEntry.getEmChatId();
+                CommunitySpeakingEntry communitySpeakingEntry = new CommunitySpeakingEntry(userId,memberId,groupId,communityId,Constant.ZERO,current,endTime);
+                communitySpeakingDao.addEntry(communitySpeakingEntry);
+                //发送消息
+                sendJinMessage(emChatId,userId.toString(),"BANDTALK_ON");
+            }
         }else {//取消禁言
-            communitySpeakingDao.updateEntry(userId, groupId);
+            CommunityEntry communityEntry = communityDao.findCommunityByObjectId(groupId);
+            if(communityEntry!=null){
+                String emChatId = communityEntry.getEmChatId();
+                communitySpeakingDao.updateEntry(userId, groupId);
+                //发送消息
+                sendJinMessage(emChatId,userId.toString(),"BANDTALK_OFF");
+            }
+
         }
     }
 

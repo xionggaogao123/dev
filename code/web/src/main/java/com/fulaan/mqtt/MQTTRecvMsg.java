@@ -187,7 +187,7 @@ public class MQTTRecvMsg {
                     }catch (Exception e){
                         e.printStackTrace();
                     }
-                 System.out.println("messageArrived:" + topic + "------" + new String(mqttMessage.getPayload()));
+                 //System.out.println("messageArrived:" + topic + "------" + new String(mqttMessage.getPayload()));
                  //   System.out.println("time:" + new Date().getTime());
                 }
                 public void deliveryComplete(IMqttDeliveryToken iMqttDeliveryToken) {

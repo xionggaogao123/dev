@@ -1182,4 +1182,30 @@ public class BackStageController extends BaseController {
         }
         return JSON.toJSONString(respObj);
     }
+
+    /**
+     * 后台设置用户社群角色
+     * @return
+     */
+    @ApiOperation(value = "后台设置用户社群角色", httpMethod = "POST", produces = "application/json")
+    @ApiResponses( value = {@ApiResponse(code = 200, message = "Successful — 请求已完成",response = String.class),
+            @ApiResponse(code = 400, message = "请求中有语法问题，或不能满足请求"),
+            @ApiResponse(code = 500, message = "服务器不能完成请求")})
+    @RequestMapping("/setCommunityRole")
+    @ResponseBody
+    public String setCommunityRole(@ApiParam(name = "communityNum", required = true, value = "communityNum") @RequestParam(value = "communityNum") String communityNum,
+                                   @ApiParam(name = "jiaId", required = true, value = "jiaId") @RequestParam(value = "jiaId") String jiaId,
+                                   @ApiParam(name = "role", required = true, value = "role") @RequestParam(value = "role") int role){
+        RespObj respObj = new RespObj(Constant.FAILD_CODE);
+        try{
+            String message = backStageService.setCommunityRole(communityNum, jiaId, role);
+            respObj.setCode(Constant.SUCCESS_CODE);
+            respObj.setMessage(message);
+        }catch (Exception e){
+            e.printStackTrace();
+            respObj.setCode(Constant.SUCCESS_CODE);
+            respObj.setMessage("设置失败");
+        }
+        return JSON.toJSONString(respObj);
+    }
 }

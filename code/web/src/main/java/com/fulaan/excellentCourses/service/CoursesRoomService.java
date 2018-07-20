@@ -166,9 +166,9 @@ liveid	直播id*/
             }else{
             }
         }catch(Exception e){
-
+            e.printStackTrace();
         }
-        Collections.reverse(replayDTOList);//逆序排列
+        Collections.reverse(replayDTOList);
         return replayDTOList;
 
     }
@@ -211,15 +211,52 @@ liveid	直播id*/
             }else{
             }
         }catch(Exception e){
-
+            e.printStackTrace();
         }
-        Collections.reverse(replayDTOList);//逆序排列
+        Collections.reverse(replayDTOList);
         return replayDTOList;
 
     }
 
+    /**
+     * 获取回放列表
+     */
+    public void getOneBack(){
+        List<ReplayDTO> replayDTOList =  new ArrayList<ReplayDTO>();
+
+        Map<String,String> map = new TreeMap<String, String>();
+        map.put("userid",CC_USERID);
+        map.put("recordid","3965C7840E3C5234");
+        try{
+            String sysCode = RoomUtil.createHashedQueryString(map,CC_API_KEY);
+            String str3 = URLDecoder.decode(sysCode, "utf-8");
+            String str =  CoursesRoomAPI.getOneBack(str3);
+            JSONObject dataJson = new JSONObject(str);
+            String rows = dataJson.getString("result");
+            if(rows.equals("OK")){
+                JSONObject rows2 = dataJson.getJSONObject("record");
+                String id =  rows2.getString("id");
+                String liveId =  rows2.getString("liveId");
+                String stopTime =  rows2.getString("stopTime");
+                String startTime =  rows2.getString("startTime");
+                int recordStatus =  rows2.getInt("recordStatus");
+                String recordVideoId =  rows2.getString("recordVideoId");
+                String replayUrl =  rows2.getString("replayUrl");
+            }else{
+            }
+        }catch(Exception e){
+            e.printStackTrace();
+        }
+    }
+
 
     public boolean checkTime(long stm,long etm,String ostm,String estm){
+        if(ostm==null || ostm.equals("")){
+            return false;
+        }
+        if(estm==null || estm.equals("")){
+            return false;
+        }
         long stm2 = DateTimeUtils.getStrToLongTime(ostm, "yyyy-MM-dd HH:mm:ss");
         long etm2 = DateTimeUtils.getStrToLongTime(estm, "yyyy-MM-dd HH:mm:ss");
         if(stm2>stm && etm2<etm ){//1
@@ -244,10 +281,7 @@ liveid	直播id*/
     public static void main(String[] args){
         CoursesRoomService coursesRoomService = new CoursesRoomService();
         long startTime = System.currentTimeMillis();
-        //coursesRoomService.getBackList("99DC40755A6346189C33DC5901307461","","");
-        long endTime = System.currentTimeMillis();
-        System.out.println("时间");
-        System.out.println(endTime - startTime);
+        coursesRoomService.getOneBack();
     }
 
 

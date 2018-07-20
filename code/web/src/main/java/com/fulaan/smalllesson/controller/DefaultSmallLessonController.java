@@ -611,4 +611,42 @@ public class DefaultSmallLessonController extends BaseController {
         return JSON.toJSONString(respObj);
     }
 
+    /**
+     * 二维码扫描后访问
+     *
+     */
+    @ApiOperation(value = "二维码扫描后访问", httpMethod = "POST", produces = "application/json")
+    @ApiResponses( value = {@ApiResponse(code = 200, message = "Successful — 请求已完成",response = String.class)})
+    @RequestMapping("/saoLessonStudentCode/{teacherId}")
+    @ResponseBody
+    public String saoLessonStudentCode(@ApiParam(name = "teacherId", required = true, value = "老师id") @PathVariable(value = "teacherId") String teacherId){
+
+        RespObj respObj=new RespObj(Constant.FAILD_CODE);
+        try {
+            LoginTokenEntry loginTokenEntry = loginTokenDao.getEntry(new ObjectId(teacherId));
+            int count = 0;
+            if(null == loginTokenEntry){
+                respObj.setErrorMessage("二维码已过期！");
+                return JSON.toJSONString(respObj);
+            }else{
+                loginTokenEntry.setUserId(getUserId());
+                loginTokenDao.saveEntry(loginTokenEntry);
+                //MQTTSendMsg.sendMessage(getUserId().toString(),teacherId,00);
+                //count = integralSufferService.addIntegral(getUserId(), IntegralType.lesson,3,1);
+            }
+            respObj.setCode(Constant.SUCCESS_CODE);
+            if(count>0 && loginTokenEntry.getStatus()){
+                respObj.setMessage("二维码扫描成功！积分经验值+"+count);
+            }else{
+                respObj.setMessage("登录成功！");
+            }
+
+        } catch (Exception e) {
+            e.printStackTrace();
+            respObj.setCode(Constant.FAILD_CODE);
+            respObj.setErrorMessage("二维码已过期");
+        }
+        return JSON.toJSONString(respObj);
+    }
+
 }

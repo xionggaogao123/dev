@@ -314,7 +314,9 @@ public class WebUserController extends BaseController {
                 if(score==2){//家长
                     return login(userEntry.getUserName(), userEntry.getPassword(), 1, response, request);
                 }else if(score==1){//孩子网页
-
+                    respObj.setCode("300");
+                    respObj.setMessage(userId.toString());
+                    return respObj;
                 }else{
 
                 }

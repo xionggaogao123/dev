@@ -21,4 +21,10 @@ public class CoursesRoomAPI  extends BaseAPI{
         String str = getCCForToken("/v2/record/info"+"?"+sysCode);
         return str;
     }
+
+    //获取单个回放
+    public static String getOneBack(String sysCode) {
+        String str = getCCForToken("/v2/record/search"+"?"+sysCode);
+        return str;
+    }
 }

@@ -77,6 +77,10 @@ public class MemberEntry extends BaseDBObject {
     return getSimpleIntegerValue("rl");
   }
 
+    public void setRole(int role) {
+        setSimpleValue("rl",role);
+    }
+
   public int getStatus() {
     return getSimpleIntegerValue("st");
   }

@@ -1766,6 +1766,34 @@ public class BackStageService {
         }
     }
 
+    public String  setCommunityRole(String communityNum,String jiaId,int role){
+        CommunityEntry communityEntry = communityDao.findBySearchId(communityNum);
+        if(communityEntry==null){
+            return "无该社群，请确认输入的社群id是否正确！";
+        }
+        UserEntry userEntry = userDao.getGenerateCodeEntry(jiaId);
+        if(userEntry==null){
+            return "无该用户，请确认输入的用户id是否正确！";
+        }
+        MemberEntry memberEntry = memberDao.getUser(communityEntry.getGroupId(),userEntry.getID());
+        if(memberEntry==null){
+            return "该用户不在该社群中";
+        }
+        if(role==1){
+            memberEntry.setRole(role);
+            memberDao.save(memberEntry);
+            return "设置副社长成功！";
+        }else if(role==2){
+            memberEntry.setRole(0);
+            memberDao.save(memberEntry);
+            return "设置普通成员成功！";
+        }else{
+            return "参数有误";
+        }
+
+    }
+
+
     public void delBindPhone(String name){
         List<UserEntry> entry  = userDao.getUserEntryListFromDelPhone("13818940676");
         ///List<UserEntry> entry2  = userDao.getUserEntryListFromDelPhone("13788951487");

@@ -94,7 +94,7 @@ public class ParseXMLUtils {
 
 			if(list!=null&&list.size()>0){
 				for (org.jdom.Element element : list) {
-					System.out.println("key是："+element.getName()+"，值是："+element.getText());
+					//System.out.println("key是："+element.getName()+"，值是："+element.getText());
 					resultMap.put(element.getName(), element.getText());
 					/*try{
 						methodName =  element.getName();

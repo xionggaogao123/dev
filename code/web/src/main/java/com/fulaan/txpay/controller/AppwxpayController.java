@@ -25,6 +25,7 @@ import com.fulaan.base.BaseController;
 import com.fulaan.txpay.Utils.DateUtil;
 import com.fulaan.txpay.Utils.PayCommonUtil;
 import com.fulaan.txpay.Utils.StringUtil;
+import com.fulaan.txpay.entity.UnifiedorderResult;
 import com.fulaan.txpay.service.WxpayService;
 import com.sys.constants.Constant;
 import com.sys.utils.RespObj;
@@ -100,7 +101,7 @@ public class AppwxpayController extends BaseController {
             }else{
                 ipconfig =  request.getHeader("x-forwarded-for");
             }
-            String result = wxpayService.buyAlipayChildClassList(new ObjectId(id), getUserId(), classIds, new ObjectId(sonId), ipconfig);
+            UnifiedorderResult result = wxpayService.buyAlipayChildClassList(new ObjectId(id), getUserId(), classIds, new ObjectId(sonId), ipconfig);
             respObj.setMessage(result);
         } catch (Exception e) {
             e.printStackTrace();

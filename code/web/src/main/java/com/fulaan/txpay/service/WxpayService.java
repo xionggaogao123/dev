@@ -28,6 +28,7 @@ import com.fulaan.txpay.Utils.ParseXMLUtils;
 import com.fulaan.txpay.Utils.RandCharsUtils;
 import com.fulaan.txpay.Utils.WXSignUtils;
 import com.fulaan.txpay.entity.Unifiedorder;
+import com.fulaan.txpay.entity.UnifiedorderResult;
 import com.mongodb.DBObject;
 import com.pojo.excellentCourses.AccountFrashEntry;
 import com.pojo.excellentCourses.AccountLogEntry;
@@ -85,10 +86,10 @@ public class WxpayService {
     private static final  String PAY_TIMEOUTEXPRESS= "5m";
     
   //appid微信
-    private static final String PAY_APPID = "appid";
+    private static final String PAY_APPID = "wx6f60f76361871720";
     
   //mch_id商户号
-    private static final String PAY_MCHID = "mchid";
+    private static final String PAY_MCHID = "1509679261";
 
     //充值回调
     private static final String PAY_NOTIFYURL = "appapi.jiaxiaomei.com/jxmapi/appwxpay/notify.do";
@@ -120,7 +121,7 @@ public class WxpayService {
         return System.currentTimeMillis()+id;
     }
     
-    public String createAppChongPay(String bodyy,String subject,String outTradeNo,String timeoutExpress,int totalAmount,String url,String ip) {
+    public UnifiedorderResult createAppChongPay(String bodyy,String subject,String outTradeNo,String timeoutExpress,int totalAmount,String url,String ip) {
         //应用id
         String appid = PAY_APPID;
         //商户号
@@ -195,10 +196,22 @@ public class WxpayService {
         
         Map<String, String> map = ParseXMLUtils.jdomParseXml(weixinPost);
         String prepayId = "";
+        UnifiedorderResult ufdr = new UnifiedorderResult();
         if (StringUtils.isNotEmpty(map.get("prepay_id"))) {
-            prepayId = map.get("prepay_id");
+            ufdr.setAppid(map.get("appid"));
+            ufdr.setMch_id(map.get("mch_id"));
+            ufdr.setPrepay_id(map.get("prepay_id"));
+            ufdr.setDevice_info(map.get("device_info"));
+            ufdr.setNonce_str(map.get("nonce_str"));
+            ufdr.setSign(map.get("sign"));
+            ufdr.setResult_code(map.get("result_code"));
+            ufdr.setErr_code(map.get("err_code"));
+            ufdr.setErr_code_des("err_code_des");
+            ufdr.setTrade_type(map.get("trade_type"));
+            ufdr.setReturn_code(map.get("return_code"));
+            ufdr.setReturn_msg(map.get("return_msg"));
         }
-        return prepayId;
+        return ufdr;
     }
     
     /**
@@ -234,14 +247,14 @@ public class WxpayService {
         EBusinessLog.info(userId.toString()+"-"+contactId.toString()+"生成了充值订单号："+orderId);
         //生成微信支付订单  String body,String subject,String outTradeNo,String timeoutExpress,String totalAmount
         String body = "家校美充值"+price+"美豆";
-        String order = createAppChongPay(body,PAY_SUBJECT,orderId,PAY_TIMEOUTEXPRESS,price,PAY_NOTIFYURL,ip);
+        UnifiedorderResult order = createAppChongPay(body,PAY_SUBJECT,orderId,PAY_TIMEOUTEXPRESS,price,PAY_NOTIFYURL,ip);
         if(order.equals("")){
             addLog(userId,contactId,"微信未支付订单生成失败，订单终止");
             EBusinessLog.info(userId.toString()+"-"+contactId.toString()+"微信未支付订单生成失败，订单终止");
             throw new Exception("订单创建失败！");
         }
         //生成未支付订单记录
-        AccountOrderEntry accountOrderEntry = new AccountOrderEntry(contactId,userId,"",order,"",price,orderId,PAY_TYPE,ip,0l,"");
+        AccountOrderEntry accountOrderEntry = new AccountOrderEntry(contactId,userId,"",order.getPrepay_id(),"",price,orderId,PAY_TYPE,ip,0l,"");
         addLog(userId,contactId,"生成了微信未支付订单："+order);
         EBusinessLog.info(userId.toString()+"-"+contactId.toString()+"生成了微信未支付订单："+order);
         accountOrderDao.addEntry(accountOrderEntry);
@@ -255,7 +268,7 @@ public class WxpayService {
     /**
      * 用户购买课程（创建订单）
      */
-    public String appNowPay(double price,ObjectId userId,String ip,List<ClassOrderEntry> entries) throws Exception{
+    public UnifiedorderResult appNowPay(double price,ObjectId userId,String ip,List<ClassOrderEntry> entries) throws Exception{
         //生成订单唯一标识
         ObjectId contactId = new ObjectId();
         addLog(userId,contactId,"开始创建订单！");
@@ -279,14 +292,14 @@ public class WxpayService {
         EBusinessLog.info(userId.toString()+"-"+contactId.toString()+"生成了充值订单号："+orderId);
         //生成微信支付订单  String body,String subject,String outTradeNo,String timeoutExpress,String totalAmount
         String body = "购买课程";
-        String order = createAppChongPay(body,PAY_NOW_SUBJECT,orderId,PAY_TIMEOUTEXPRESS,Integer.valueOf(price+""),PAY_NOW_NOTIFYURL,ip);
+        UnifiedorderResult order = createAppChongPay(body,PAY_NOW_SUBJECT,orderId,PAY_TIMEOUTEXPRESS,Integer.valueOf(price+""),PAY_NOW_NOTIFYURL,ip);
         if(order.equals("")){
             addLog(userId,contactId,"微信未支付订单生成失败，订单终止");
             EBusinessLog.info(userId.toString()+"-"+contactId.toString()+"微信未支付订单生成失败，订单终止");
             throw new Exception("订单创建失败！");
         }
         //生成未支付订单记录
-        AccountOrderEntry accountOrderEntry = new AccountOrderEntry(contactId,userId,"",order,"",price,orderId,PAY_TYPE,ip,0l,"");
+        AccountOrderEntry accountOrderEntry = new AccountOrderEntry(contactId,userId,"",order.getPrepay_id(),"",price,orderId,PAY_TYPE,ip,0l,"");
         addLog(userId,contactId,"生成了微信未支付订单："+order);
         EBusinessLog.info(userId.toString()+"-"+contactId.toString()+"生成了微信未支付订单："+order);
         accountOrderDao.addEntry(accountOrderEntry);
@@ -314,7 +327,7 @@ public class WxpayService {
         }
     }
     
-    public String buyAlipayChildClassList(ObjectId id,ObjectId userId,String classIds,ObjectId sonId,String ip) throws  Exception{
+    public UnifiedorderResult buyAlipayChildClassList(ObjectId id,ObjectId userId,String classIds,ObjectId sonId,String ip) throws  Exception{
         //创建订单
         ExcellentCoursesEntry excellentCoursesEntry = excellentCoursesDao.getEntry(id);
         List<ObjectId> objectIdList = new ArrayList<ObjectId>();
@@ -364,7 +377,7 @@ public class WxpayService {
                     price = price + hourClassEntry.getClassNewPrice();
                 }
             }
-            String order = this.appNowPay(price, userId, ip, classOrderEntries1);
+            UnifiedorderResult order = this.appNowPay(price, userId, ip, classOrderEntries1);
             //添加课节订单
             this.addClassEntryBatch(classOrderEntries1);
             return order;

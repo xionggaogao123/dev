@@ -87,7 +87,7 @@ public class ExcellentCoursesService {
     private static final Logger logger =Logger.getLogger(DefaultWrongQuestionController.class);
 
 
-    private static final int  TEACHER_TIME = 60*60*1000;  //老师提前时间  ->  60分钟
+    private static final int  TEACHER_TIME = 24*60*60*1000;  //老师提前时间  ->  60分钟
     private static final int  STUDENT_TIME = 5*60*1000;  //学生提前时间  ->  5分钟
     private static final int  TUI_TIME = 12*60*60*1000;  //退款超时时间  ->  12小时
     private static final int  CURRENT_TIME = 90*60*1000; //课程持续时间

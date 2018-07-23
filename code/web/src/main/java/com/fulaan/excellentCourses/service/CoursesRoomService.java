@@ -350,6 +350,7 @@ liveid	直播id*/
     public static void main(String[] args){
         CoursesRoomService coursesRoomService = new CoursesRoomService();
         long startTime = System.currentTimeMillis();
+
         coursesRoomService.getUserList();
     }
 

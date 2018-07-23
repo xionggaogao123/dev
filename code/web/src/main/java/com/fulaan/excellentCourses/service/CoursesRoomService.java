@@ -249,6 +249,75 @@ liveid	直播id*/
         }
     }
 
+    /**
+     * 获取某个课节的在线情况
+     */
+    public void getUserList(){
+        Map<String,String> map = new TreeMap<String, String>();
+        map.put("userid",CC_USERID);
+        map.put("roomid","C649821FE31E44509C33DC5901307461");
+
+        try{
+            map.put("starttime",URLEncoder.encode("2018-07-16 08:00", "utf-8"));
+
+            map.put("endtime",URLEncoder.encode("2018-07-23 08:00", "utf-8"));
+
+            String sysCode = RoomUtil.createHashedQueryString(map,CC_API_KEY);
+            String str3 = URLDecoder.decode(sysCode, "utf-8");
+            String str =  CoursesRoomAPI.getUserList(str3);
+            JSONObject dataJson = new JSONObject(str);
+            String rows = dataJson.getString("result");
+            if(rows.equals("OK")){
+                JSONArray rows2 = dataJson.getJSONArray("userActions");
+                for(int i = 0;i<rows2.length();i++){
+                    /*"userId": "0cda7ng03j9502ian",
+          "userName": "苍井满",
+          "userIp": "9.5.2.7",
+          "enterTime": "2016-11-28 20:30:30",
+          "leaveTime": "2016-11-28 20:33:61"*/
+
+                }
+            }else{
+            }
+        }catch(Exception e){
+            e.printStackTrace();
+        }
+    }
+
+    /**
+     * 获取直播间状态
+     */
+    public void getRoomStatus(){
+        Map<String,String> map = new TreeMap<String, String>();
+        map.put("userid",CC_USERID);
+        map.put("roomid","C649821FE31E44509C33DC5901307461");
+
+        try{
+            map.put("starttime",URLEncoder.encode("2018-07-16 08:00", "utf-8"));
+
+            map.put("endtime",URLEncoder.encode("2018-07-23 08:00", "utf-8"));
+
+            String sysCode = RoomUtil.createHashedQueryString(map,CC_API_KEY);
+            String str3 = URLDecoder.decode(sysCode, "utf-8");
+            String str =  CoursesRoomAPI.getUserList(str3);
+            JSONObject dataJson = new JSONObject(str);
+            String rows = dataJson.getString("result");
+            if(rows.equals("OK")){
+                JSONArray rows2 = dataJson.getJSONArray("userActions");
+                for(int i = 0;i<rows2.length();i++){
+                    /*"userId": "0cda7ng03j9502ian",
+          "userName": "苍井满",
+          "userIp": "9.5.2.7",
+          "enterTime": "2016-11-28 20:30:30",
+          "leaveTime": "2016-11-28 20:33:61"*/
+
+                }
+            }else{
+            }
+        }catch(Exception e){
+            e.printStackTrace();
+        }
+    }
 
     public boolean checkTime(long stm,long etm,String ostm,String estm){
         if(ostm==null || ostm.equals("")){
@@ -281,7 +350,7 @@ liveid	直播id*/
     public static void main(String[] args){
         CoursesRoomService coursesRoomService = new CoursesRoomService();
         long startTime = System.currentTimeMillis();
-        coursesRoomService.getOneBack();
+        coursesRoomService.getUserList();
     }
 
 

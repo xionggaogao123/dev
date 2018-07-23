@@ -27,4 +27,11 @@ public class CoursesRoomAPI  extends BaseAPI{
         String str = getCCForToken("/v2/record/search"+"?"+sysCode);
         return str;
     }
+
+
+    //获取单个回放  http://api.csslcloud.net/api/statis/useraction
+    public static String getUserList(String sysCode) {
+        String str = getCCForToken("/statis/useraction"+"?"+sysCode);
+        return str;
+    }
 }

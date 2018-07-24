@@ -2079,10 +2079,58 @@ public class CommunityService {
                 remarkEntryMap=findRemarkEntries(userId,objectIds);
             }
         }
-
+        
+        //删除权限
+        List<ObjectId> objectIdsR = new ArrayList<ObjectId>();
+        List<ObjectId> communityIdsR = new ArrayList<ObjectId>();
         for (PartInContentEntry entry : entrys) {
+            objectIdsR.add(entry.getUserId());
+            communityIdsR.add(entry.getCommunityId());
+        }
+        List<ObjectId> groupIdListR = new ArrayList<ObjectId>();
+        Map<ObjectId, ObjectId> groupIdsR = communityDao.getGroupIds(communityIdsR);
+        for (Map.Entry<ObjectId, ObjectId> item : groupIdsR.entrySet()) {
+            groupIdListR.add(item.getValue());
+        }
+        objectIdsR.add(userId);
+        Map<String, MemberEntry> memberMapR = memberDao.getGroupNick(groupIdListR, objectIdsR);
+      //查询是否大V
+        List<ObjectId> objectIdList1R = teacherApproveDao.selectMap(objectIdsR);
+     
+        
+        for (PartInContentEntry entry : entrys) {   
             UserEntry userEntry = userService.findById(entry.getUserId());
             PartInContentDTO dto = new PartInContentDTO(entry);
+            
+            
+            //删除权限
+            ObjectId groupIdR = groupIdsR.get(entry.getCommunityId());
+            MemberEntry entry11 = memberMapR.get(groupIdR + "$" + entry.getUserId());
+            MemberEntry entry5 = memberMapR.get(groupIdR + "$" + userId);
+            if(entry11!=null && entry5!=null){
+                if(entry5.getRole() > entry11.getRole()){
+                    dto.setOperation(1);//权限压制，可删除
+                }else if(dto.getUserId().equals(userId.toString())){
+                    dto.setOperation(1);//发布人相同，可删除
+                }else{
+                    dto.setOperation(0);//不可删除
+                    if(entry11.getRole()==0){//同为普通成员
+                        if(objectIdList1R.contains(userId) && !objectIdList1R.contains(new ObjectId(dto.getUserId()))){
+                            dto.setOperation(1);//我是大V        你不是
+                        }
+                    }
+
+                }
+            }else{
+                dto.setOperation(0);//不可删除
+            }
+            if(entry5!=null && entry11==null){//发送人已出去
+                if(entry5.getRole()==1|| (entry5.getRole()==2)){
+                    dto.setOperation(1);//可删除
+                }
+            }
+            
+            
             dto.setUserName(userEntry.getUserName());
             dto.setAvator(AvatarUtils.getAvatar(userEntry.getAvatar(), userEntry.getRole(),userEntry.getSex()));
 
@@ -2104,8 +2152,16 @@ public class CommunityService {
             dto.setManager(isManager);
             parts.add(dto);
         }
+        
+        
+        
         pageModel.setResult(parts);
         return pageModel;
+    }
+    
+    
+    public void delPartInContent (ObjectId id) {
+        partInContentDao.delPartInContent(id);
     }
 
     private void setPartIncontentZan(PartInContentDTO dto, ObjectId userId) {

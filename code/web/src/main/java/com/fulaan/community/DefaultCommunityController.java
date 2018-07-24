@@ -2332,6 +2332,30 @@ public class DefaultCommunityController extends BaseController {
         ObjectId userId = getUserId();
         return RespObj.SUCCESS(communityService.getPartInContent(userId, communityDetailId, page, pageSize));
     }
+    
+    /**
+     * 删除评论
+     */
+    @ApiOperation(value="删除评论",httpMethod = "POST",produces = "application/json")
+    @ApiResponse(code=200,message = "success", response = String.class)
+    @RequestMapping("/delPartInContent")
+    @ResponseBody
+    public String delPartInContent(@ApiParam(name = "id", required = true, value = "评论id") @RequestParam("id") String id){
+        RespObj respObj=new RespObj(Constant.FAILD_CODE);
+        try {
+            respObj.setCode(Constant.SUCCESS_CODE);
+            communityService.delPartInContent(new ObjectId(id));
+            respObj.setMessage("删除成功！");
+        } catch (Exception e) {
+            e.printStackTrace();
+            respObj.setCode(Constant.FAILD_CODE);
+            respObj.setErrorMessage("删除失败!");
+
+        }
+
+
+        return JSON.toJSONString(respObj);
+    }
 
 
     /**

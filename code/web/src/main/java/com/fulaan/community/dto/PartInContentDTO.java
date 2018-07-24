@@ -47,6 +47,8 @@ public class PartInContentDTO {
 
     //isManager(判断用户是不是社长或副社长)
     private boolean isManager;
+    
+    private int operation;
 
     public PartInContentDTO(PartInContentEntry partInContent) {
         this.partInContentId = partInContent.getID().toString();
@@ -258,4 +260,14 @@ public class PartInContentDTO {
     public void setManager(boolean manager) {
         isManager = manager;
     }
+
+    public int getOperation() {
+        return operation;
+    }
+
+    public void setOperation(int operation) {
+        this.operation = operation;
+    }
+    
+    
 }

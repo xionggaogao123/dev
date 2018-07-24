@@ -30,6 +30,7 @@ public class AppNewOperationDTO {
     private int  zanCount;
     private int isZan;
     private List<AppNewOperationDTO> alist = new ArrayList<AppNewOperationDTO>();
+    private int operation;
 
     public AppNewOperationDTO(){
 
@@ -294,4 +295,12 @@ public class AppNewOperationDTO {
     public void setIsZan(int isZan) {
         this.isZan = isZan;
     }
+    public int getOperation() {
+        return operation;
+    }
+    public void setOperation(int operation) {
+        this.operation = operation;
+    }
+    
+    
 }

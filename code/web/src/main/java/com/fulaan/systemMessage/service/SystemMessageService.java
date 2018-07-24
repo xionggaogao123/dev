@@ -342,6 +342,13 @@ public class SystemMessageService extends BaseService {
                 AppNewOperationDTO dto = new AppNewOperationDTO(en);
                 dto.setZanCount(en.getZanCount());
                 dto.setIsZan(0);
+                if (userId.toString().equals(en.getUserId().toString())) {
+                    //可以删除
+                    dto.setOperation(1);
+                } else {
+                    //不能删除
+                    dto.setOperation(0);
+                }
                 if(en.getZanList().contains(userId)){
                     dto.setIsZan(1);
                 }

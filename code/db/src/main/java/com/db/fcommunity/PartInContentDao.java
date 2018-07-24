@@ -155,4 +155,18 @@ public class PartInContentDao extends BaseDao {
         BasicDBObject update = new BasicDBObject(Constant.MONGO_SET, updateValue);
         update(MongoFacroty.getAppDB(), Constant.COLLECTION_FORUM_PARTINCONTENT, query, update);
     }
+    
+    /**
+     * 
+     *〈简述〉删除评论
+     *〈详细描述〉
+     * @author Administrator
+     * @param id
+     */
+    public void delPartInContent(ObjectId id) {
+        BasicDBObject query = new BasicDBObject()
+            .append(Constant.ID, id);
+        BasicDBObject updateValue=new BasicDBObject(Constant.MONGO_SET,new BasicDBObject("r",Constant.ONE));
+        update(MongoFacroty.getAppDB(), Constant.COLLECTION_FORUM_PARTINCONTENT, query,updateValue);
+    }
 }

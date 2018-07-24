@@ -92,9 +92,11 @@ public class WxpayService {
     private static final String PAY_MCHID = "1509679261";
 
     //充值回调
-    private static final String PAY_NOTIFYURL = "appapi.jiaxiaomei.com/jxmapi/appwxpay/notify.do";
+    //private static final String PAY_NOTIFYURL = "appapi.jiaxiaomei.com/jxmapi/appwxpay/notify.do";
+    private static final String PAY_NOTIFYURL = "http://118.242.18.202:90/jxmapi/appwxpay/notify.do";
     //购买课程回调
-    private static final String PAY_NOW_NOTIFYURL = "appapi.jiaxiaomei.com/jxmapi/appwxpay/newNotify.do";
+    //private static final String PAY_NOW_NOTIFYURL = "appapi.jiaxiaomei.com/jxmapi/appwxpay/newNotify.do";
+    private static final String PAY_NOW_NOTIFYURL = "http://118.242.18.202:90/jxmapi/appwxpay/newNotify.do";
 
 
     private static final Logger EBusinessLog = Logger.getLogger("WxpayService");
@@ -195,7 +197,7 @@ public class WxpayService {
   
         
         Map<String, String> map = ParseXMLUtils.jdomParseXml(weixinPost);
-        String prepayId = "";
+
         UnifiedorderResult ufdr = new UnifiedorderResult();
         if (StringUtils.isNotEmpty(map.get("prepay_id"))) {
             ufdr.setAppid(map.get("appid"));
@@ -248,7 +250,7 @@ public class WxpayService {
         //生成微信支付订单  String body,String subject,String outTradeNo,String timeoutExpress,String totalAmount
         String body = "家校美充值"+price+"美豆";
         UnifiedorderResult order = createAppChongPay(body,PAY_SUBJECT,orderId,PAY_TIMEOUTEXPRESS,price,PAY_NOTIFYURL,ip);
-        if(order.equals("")){
+        if(StringUtils.isEmpty(order.getPrepay_id())){
             addLog(userId,contactId,"微信未支付订单生成失败，订单终止");
             EBusinessLog.info(userId.toString()+"-"+contactId.toString()+"微信未支付订单生成失败，订单终止");
             throw new Exception("订单创建失败！");
@@ -293,7 +295,7 @@ public class WxpayService {
         //生成微信支付订单  String body,String subject,String outTradeNo,String timeoutExpress,String totalAmount
         String body = "购买课程";
         UnifiedorderResult order = createAppChongPay(body,PAY_NOW_SUBJECT,orderId,PAY_TIMEOUTEXPRESS,Integer.valueOf(price+""),PAY_NOW_NOTIFYURL,ip);
-        if(order.equals("")){
+        if(StringUtils.isEmpty(order.getPrepay_id())){
             addLog(userId,contactId,"微信未支付订单生成失败，订单终止");
             EBusinessLog.info(userId.toString()+"-"+contactId.toString()+"微信未支付订单生成失败，订单终止");
             throw new Exception("订单创建失败！");

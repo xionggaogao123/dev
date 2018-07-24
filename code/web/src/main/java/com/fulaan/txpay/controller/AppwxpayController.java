@@ -119,6 +119,7 @@ public class AppwxpayController extends BaseController {
      * @throws NumberFormatException
      * @throws Exception
      */
+    @SuppressWarnings("unchecked")
     @ApiOperation(value = "支付回调", httpMethod = "POST", produces = "application/json")
     @SessionNeedless
     @RequestMapping("/notify")
@@ -170,7 +171,7 @@ public class AppwxpayController extends BaseController {
                 EBusinessLog.info("TRADE_SUCCESS");
                 //double price = Double.parseDouble(total_fee_string);
                 //修改订单状态
-                wxpayService.payed(out_trade_no,tradeNo,openid,v,"",notify_time);
+                wxpayService.payed(out_trade_no,tradeNo,openid,v,"",ordertime);
  
             }
         
@@ -188,6 +189,7 @@ public class AppwxpayController extends BaseController {
      * @throws NumberFormatException
      * @throws Exception
      */
+    @SuppressWarnings("unchecked")
     @ApiOperation(value = "支付回调", httpMethod = "POST", produces = "application/json")
     @SessionNeedless
     @RequestMapping("/newNotify")
@@ -239,7 +241,7 @@ public class AppwxpayController extends BaseController {
                 EBusinessLog.info("TRADE_SUCCESS");
                 //double price = Double.parseDouble(total_fee_string);
                 //修改订单状态
-                wxpayService.nowPayed(out_trade_no,tradeNo,openid,v,"",notify_time);
+                wxpayService.nowPayed(out_trade_no,tradeNo,openid,v,"",ordertime);
  
             }
         

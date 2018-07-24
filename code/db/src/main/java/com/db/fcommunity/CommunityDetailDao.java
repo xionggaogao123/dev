@@ -450,6 +450,19 @@ if (receiveType == 1) {
         }
         update(MongoFacroty.getAppDB(), Constant.COLLECTION_FORUM_COMMUNITY_DETAIL, query, updateValue);
     }
+    
+    
+    /**
+     * 阅读
+     */
+    public void updateCommunityDetailYue(ObjectId id,ObjectId userId){
+        BasicDBObject query=new BasicDBObject(Constant.ID,id);
+        BasicDBObject updateValue=new BasicDBObject();
+        
+        updateValue=new BasicDBObject(Constant.MONGO_PUSH, new BasicDBObject("yl", userId)).append(Constant.MONGO_INC, new BasicDBObject("yc",Constant.ONE));
+        
+        update(MongoFacroty.getAppDB(), Constant.COLLECTION_FORUM_COMMUNITY_DETAIL, query, updateValue);
+    }
 
 
     /**

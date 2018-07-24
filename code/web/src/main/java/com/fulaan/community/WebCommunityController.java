@@ -3722,5 +3722,18 @@ public class WebCommunityController extends BaseController {
         retMap.put("users",users);
         return RespObj.SUCCESS(retMap);
     }
+    
+    @RequestMapping("/yueCount")
+    @ResponseBody
+    @ApiOperation(value = "火热分享增加阅读数", httpMethod = "POST", produces = "application/json")
+    @ApiResponses(value = {@ApiResponse(code = 200, message = "查询社区列表和用户信息成功",response = RespObj.class),
+            @ApiResponse(code = 500, message = "查询社区列表和用户信息失败")})
+    public RespObj yueCount(@ApiParam(name="id",required = true,value = "火热分享id")String id) {
+        RespObj respObj=new RespObj(Constant.SUCCESS_CODE);
+        communityService.yueCount(getUserId(), new ObjectId(id));
+        
+        return respObj;
+    }
+    
 
 }

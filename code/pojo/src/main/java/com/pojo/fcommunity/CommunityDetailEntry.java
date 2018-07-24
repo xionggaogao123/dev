@@ -155,6 +155,35 @@ public class CommunityDetailEntry extends BaseDBObject {
   public void setZanList(List<ObjectId> zanList){
     setSimpleValue("zl",MongoUtils.convert(zanList));
   }
+  
+  
+  public List<ObjectId> getYueList(){
+      List<ObjectId> yueList=new ArrayList<ObjectId>();
+      if (!getBaseEntry().containsField("yl")) {
+        return yueList;
+      } else {
+        BasicDBList basicDBList=(BasicDBList)getSimpleObjectValue("yl");
+        if(null!=basicDBList&&!basicDBList.isEmpty()){
+          for(Object o:basicDBList){
+            yueList.add((ObjectId)o);
+          }
+        }
+      }
+      return yueList;
+    }
+  
+  public void setYueList(List<ObjectId> yueList) {
+      setSimpleValue("yl",MongoUtils.convert(yueList));
+  }
+  
+  
+  public int getYueCount(){
+      return getSimpleIntegerValueDef("yc",Constant.ZERO);
+    }
+
+    public void setYueCount(int zanCount){
+      setSimpleValue("yc",zanCount);
+    }
 
   public int getZanCount(){
     return getSimpleIntegerValueDef("zc",Constant.ZERO);

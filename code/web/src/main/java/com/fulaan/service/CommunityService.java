@@ -242,6 +242,7 @@ public class CommunityService {
      * @return
      */
     public CommunityDetailDTO findDetailById(ObjectId communityDetailId, ObjectId loginUserId) {
+        this.yueCount(loginUserId, communityDetailId);
 
         CommunityDetailEntry communityDetailEntry = communityDetailDao.findByObjectId(communityDetailId);
         ObjectId userId = communityDetailEntry.getCommunityUserId();
@@ -2701,6 +2702,25 @@ public class CommunityService {
                     }
                     page++;
                 }
+            }
+        }
+    }
+    
+    /**
+     * 
+     *〈简述〉增加阅读数
+     *〈详细描述〉
+     * @author Administrator
+     * @param userId
+     * @param communityDetailEntryId
+     */
+    public void yueCount (ObjectId userId, ObjectId communityDetailEntryId) {
+        CommunityDetailEntry c = communityDetailDao.findByObjectId(communityDetailEntryId);
+        if (c != null) {
+            CommunityDetailDTO cdd = new CommunityDetailDTO(c);
+            List<String> yList = cdd.getYueList();
+            if (!yList.contains(userId.toString())) {
+                communityDetailDao.updateCommunityDetailYue(communityDetailEntryId, userId);
             }
         }
     }

@@ -98,6 +98,10 @@ public class CommunityDetailDTO {
     //是否显示评论
     //0（默认）不显示  1显示
     private int isShowPl = 0;
+    
+    //阅读数
+    private int yueNum;
+    private List<String> yueList=new ArrayList<String>();
 
     public CommunityDetailDTO() {
 
@@ -264,6 +268,13 @@ public class CommunityDetailDTO {
         if(!zans.isEmpty()){
             for(ObjectId userId:zans){
                 zanList.add(userId.toString());
+            }
+        }
+        this.yueNum = communityDetailEntry.getYueCount();
+        List<ObjectId> yues=communityDetailEntry.getYueList();
+        if(!yues.isEmpty()) {
+            for (ObjectId userId:yues) {
+                yueList.add(userId.toString());
             }
         }
     }
@@ -672,6 +683,23 @@ public class CommunityDetailDTO {
     public void setIsShowPl(int isShowPl) {
         this.isShowPl = isShowPl;
     }
+
+    public int getYueNum() {
+        return yueNum;
+    }
+
+    public void setYueNum(int yueNum) {
+        this.yueNum = yueNum;
+    }
+
+    public List<String> getYueList() {
+        return yueList;
+    }
+
+    public void setYueList(List<String> yueList) {
+        this.yueList = yueList;
+    }
+    
     
     
 }

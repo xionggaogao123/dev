@@ -219,6 +219,14 @@ public class CommunityDetailDTO {
                 zanList.add(userId.toString());
             }
         }
+        
+        this.yueNum = communityDetailEntry.getYueCount();
+        List<ObjectId> yues=communityDetailEntry.getYueList();
+        if(!yues.isEmpty()) {
+            for (ObjectId userId:yues) {
+                yueList.add(userId.toString());
+            }
+        }
     }
 
     public CommunityDetailDTO(CommunityDetailEntry communityDetailEntry) {

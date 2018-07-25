@@ -1,5 +1,6 @@
 package com.fulaan.txpay.service;
 
+import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -376,7 +377,7 @@ public class WxpayService {
                     classOrderEntry.setPrice(hourClassEntry.getClassNewPrice());
                     classOrderEntry.setUserId(sonId);//孩子的订单
                     classOrderEntries1.add(classOrderEntry);
-                    price = price + hourClassEntry.getClassNewPrice();
+                    price = sum(price, hourClassEntry.getClassNewPrice());
                 }
             }
             UnifiedorderResult order = this.appNowPay(price, userId, ip, classOrderEntries1);
@@ -386,6 +387,18 @@ public class WxpayService {
         }else{
             throw  new Exception("订单信息不存在！");
         }
+    }
+    
+    /**
+     * double 相加
+     * @param d1
+     * @param d2
+     * @return
+     */
+    public static double sum(double d1,double d2){
+        BigDecimal bd1 = new BigDecimal(Double.toString(d1));
+        BigDecimal bd2 = new BigDecimal(Double.toString(d2));
+        return bd1.add(bd2).doubleValue();
     }
     
     

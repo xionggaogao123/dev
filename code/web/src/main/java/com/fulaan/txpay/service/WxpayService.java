@@ -2,6 +2,7 @@ package com.fulaan.txpay.service;
 
 import java.math.BigDecimal;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -198,6 +199,19 @@ public class WxpayService {
   
         
         Map<String, String> map = ParseXMLUtils.jdomParseXml(weixinPost);
+        
+        /**
+         * 二次签名
+         */
+        Long s = new Date().getTime()/1000;
+        SortedMap<Object,Object> mapp = new TreeMap<Object,Object>();
+        mapp.put("appid", map.get("appid"));
+        mapp.put("partnerid", map.get("mch_id"));
+        mapp.put("prepayid", map.get("prepay_id"));
+        mapp.put("noncestr", map.get("nonce_str"));
+        mapp.put("timestamp", String.valueOf(s));
+        mapp.put("package", "Sign=WXPay");
+        String sign2 = WXSignUtils.createSign("UTF-8", mapp);
 
         UnifiedorderResult ufdr = new UnifiedorderResult();
         if (StringUtils.isNotEmpty(map.get("prepay_id"))) {
@@ -206,13 +220,14 @@ public class WxpayService {
             ufdr.setPrepay_id(map.get("prepay_id"));
             ufdr.setDevice_info(map.get("device_info"));
             ufdr.setNonce_str(map.get("nonce_str"));
-            ufdr.setSign(map.get("sign"));
+            ufdr.setSign(sign2);
             ufdr.setResult_code(map.get("result_code"));
             ufdr.setErr_code(map.get("err_code"));
             ufdr.setErr_code_des("err_code_des");
             ufdr.setTrade_type(map.get("trade_type"));
             ufdr.setReturn_code(map.get("return_code"));
             ufdr.setReturn_msg(map.get("return_msg"));
+            ufdr.setTimestamp(String.valueOf(s));
         }
         return ufdr;
     }

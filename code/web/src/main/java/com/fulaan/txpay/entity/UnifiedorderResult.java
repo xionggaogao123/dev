@@ -17,7 +17,7 @@ public class UnifiedorderResult {
     private String trade_type;//调用接口提交的交易类型，取值如下：JSAPI，NATIVE，APP
     private String prepay_id;//微信生成的预支付回话标识，用于后续接口调用中使用，该值有效期为2小时
     private String code_url;//trade_type为NATIVE是有返回，可将该参数值生成二维码展示出来进行扫码支付
-    
+    private String timestamp;
     private String return_code;//返回状态码SUCCESS/FAIL此字段是通信标识，非交易标识，交易是否成功需要查看result_code来判断
     private String return_msg;//返回信息
     public String getAppid() {
@@ -98,5 +98,12 @@ public class UnifiedorderResult {
     public void setReturn_msg(String return_msg) {
         this.return_msg = return_msg;
     }
+    public String getTimestamp() {
+        return timestamp;
+    }
+    public void setTimestamp(String timestamp) {
+        this.timestamp = timestamp;
+    }
 
+    
 }

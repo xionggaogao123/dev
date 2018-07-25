@@ -295,7 +295,7 @@ public class WxpayService {
         EBusinessLog.info(userId.toString()+"-"+contactId.toString()+"生成了充值订单号："+orderId);
         //生成微信支付订单  String body,String subject,String outTradeNo,String timeoutExpress,String totalAmount
         String body = "购买课程";
-        UnifiedorderResult order = createAppChongPay(body,PAY_NOW_SUBJECT,orderId,PAY_TIMEOUTEXPRESS,Integer.valueOf(price*100+""),PAY_NOW_NOTIFYURL,ip);
+        UnifiedorderResult order = createAppChongPay(body,PAY_NOW_SUBJECT,orderId,PAY_TIMEOUTEXPRESS,new BigDecimal(price*100).intValue(),PAY_NOW_NOTIFYURL,ip);
         if(StringUtils.isEmpty(order.getPrepay_id())){
             addLog(userId,contactId,"微信未支付订单生成失败，订单终止");
             EBusinessLog.info(userId.toString()+"-"+contactId.toString()+"微信未支付订单生成失败，订单终止");
@@ -313,6 +313,8 @@ public class WxpayService {
         }
         return order;
     }
+    
+    
     
     /**
      * 批量增加课时

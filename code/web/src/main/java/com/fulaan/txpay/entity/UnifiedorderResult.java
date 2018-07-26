@@ -20,6 +20,7 @@ public class UnifiedorderResult {
     private String timestamp;
     private String return_code;//返回状态码SUCCESS/FAIL此字段是通信标识，非交易标识，交易是否成功需要查看result_code来判断
     private String return_msg;//返回信息
+    private String out_trade_no;//本地订单id
     public String getAppid() {
         return appid;
     }
@@ -103,6 +104,12 @@ public class UnifiedorderResult {
     }
     public void setTimestamp(String timestamp) {
         this.timestamp = timestamp;
+    }
+    public String getOut_trade_no() {
+        return out_trade_no;
+    }
+    public void setOut_trade_no(String out_trade_no) {
+        this.out_trade_no = out_trade_no;
     }
 
     

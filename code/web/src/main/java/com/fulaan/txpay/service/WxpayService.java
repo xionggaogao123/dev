@@ -29,6 +29,7 @@ import com.fulaan.txpay.Utils.HttpXmlUtils;
 import com.fulaan.txpay.Utils.ParseXMLUtils;
 import com.fulaan.txpay.Utils.RandCharsUtils;
 import com.fulaan.txpay.Utils.WXSignUtils;
+import com.fulaan.txpay.entity.IsBuyDto;
 import com.fulaan.txpay.entity.Unifiedorder;
 import com.fulaan.txpay.entity.UnifiedorderResult;
 import com.mongodb.DBObject;
@@ -230,6 +231,7 @@ public class WxpayService {
             ufdr.setReturn_code(map.get("return_code"));
             ufdr.setReturn_msg(map.get("return_msg"));
             ufdr.setTimestamp(String.valueOf(s));
+            ufdr.setOut_trade_no(out_trade_no);
         }
         return ufdr;
     }
@@ -406,6 +408,45 @@ public class WxpayService {
         }else{
             throw  new Exception("订单信息不存在！");
         }
+    }
+    
+    public boolean isBuy(String orderId) {
+      //参数：开始生成签名
+        boolean flag = false;
+      //随机字符串
+        String nonce_str = RandCharsUtils.getRandomString(16);
+        SortedMap<Object,Object> parameters = new TreeMap<Object,Object>();
+        parameters.put("appid", PAY_APPID);
+        parameters.put("mch_id", PAY_MCHID);
+        parameters.put("out_trade_no", orderId);
+        parameters.put("nonce_str", nonce_str);
+        String sign = WXSignUtils.createSign("UTF-8", parameters);
+        
+        IsBuyDto isBuyDto = new IsBuyDto();
+        isBuyDto.setAppid(PAY_APPID);
+        isBuyDto.setMch_id(PAY_MCHID);
+        isBuyDto.setNonce_str(nonce_str);
+        isBuyDto.setOut_trade_no(orderId);
+        isBuyDto.setSign(sign);
+        
+      //构造xml参数
+        String xmlInfo = HttpXmlUtils.xmlInfo1(isBuyDto);
+        
+        String wxUrl = "https://api.mch.weixin.qq.com/pay/orderquery";
+        
+        String method = "POST";
+        
+        String weixinPost = HttpXmlUtils.httpsRequest(wxUrl, method, xmlInfo).toString();
+        
+        Map<String, String> map = ParseXMLUtils.jdomParseXml(weixinPost);
+        
+        if("SUCCESS".equals(map.get("result_code"))) {
+            String status = map.get("trade_state");
+            if ("SUCCESS".equals(status)) {
+                flag = true;
+            }
+        }
+        return flag;
     }
     
     /**

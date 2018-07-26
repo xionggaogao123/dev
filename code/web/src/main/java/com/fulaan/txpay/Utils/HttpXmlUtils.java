@@ -14,6 +14,7 @@ import java.util.TreeMap;
 
 import javax.net.ssl.HttpsURLConnection;
 
+import com.fulaan.txpay.entity.IsBuyDto;
 import com.fulaan.txpay.entity.Unifiedorder;
 
 /**
@@ -199,6 +200,64 @@ public class HttpXmlUtils {
 
 		return "";
 	}
+	
+	/**
+     * 构造xml参数
+     * @param xml
+     * @return
+     */
+    public static String xmlInfo1(IsBuyDto isBuyDto){
+        //构造xml参数的时候，至少又是个必传参数
+        /*
+         * <xml>
+               <appid>wx2421b1c4370ec43b</appid>
+               <attach>支付测试</attach>
+               <body>JSAPI支付测试</body>
+               <mch_id>10000100</mch_id>
+               <nonce_str>1add1a30ac87aa2db72f57a2375d8fec</nonce_str>
+               <notify_url>http://wxpay.weixin.qq.com/pub_v2/pay/notify.v2.php</notify_url>
+               <openid>oUpF8uMuAJO_M2pxb1Q9zNjWeS6o</openid>
+               <out_trade_no>1415659990</out_trade_no>
+               <spbill_create_ip>14.23.150.211</spbill_create_ip>
+               <total_fee>1</total_fee>
+               <trade_type>JSAPI</trade_type>
+               <sign>0CB01533B8C1EF103065174F50BCA001</sign>
+            </xml>
+         */
+
+        if(isBuyDto!=null){
+            StringBuffer bf = new StringBuffer();
+            bf.append("<xml>");
+
+            bf.append("<appid><![CDATA[");
+            bf.append(isBuyDto.getAppid());
+            bf.append("]]></appid>");
+
+            bf.append("<mch_id><![CDATA[");
+            bf.append(isBuyDto.getMch_id());
+            bf.append("]]></mch_id>");
+
+            bf.append("<nonce_str><![CDATA[");
+            bf.append(isBuyDto.getNonce_str());
+            bf.append("]]></nonce_str>");
+
+            bf.append("<sign><![CDATA[");
+            bf.append(isBuyDto.getSign());
+            bf.append("]]></sign>");
+
+           
+
+            bf.append("<out_trade_no ><![CDATA[");
+            bf.append(isBuyDto.getOut_trade_no());
+            bf.append("]]></out_trade_no >");
+
+
+            bf.append("</xml>");
+            return bf.toString();
+        }
+
+        return "";
+    }
 
 
 	

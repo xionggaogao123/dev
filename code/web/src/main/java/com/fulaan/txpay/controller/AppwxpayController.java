@@ -6,6 +6,8 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
+import java.util.SortedMap;
+import java.util.TreeMap;
 
 import javax.servlet.http.HttpServletRequest;
 
@@ -210,12 +212,13 @@ public class AppwxpayController extends BaseController {
         
         
         Map<String,String> return_data = new HashMap<String,String>();  
-        /*if (!PayCommonUtil.isTenpaySign(params)) {
+        SortedMap<String, String> smap = new TreeMap<String, String>(params);
+        if (!PayCommonUtil.isTenpaySign(smap)) {
             // 支付失败
             return_data.put("return_code", "FAIL");  
             return_data.put("return_msg", "return_code不正确");
             return StringUtil.GetMapToXML(return_data);
-        } else {*/
+        } else {
             System.out.println("===============付款成功==============");
             // ------------------------------
             // 处理业务开始
@@ -248,7 +251,7 @@ public class AppwxpayController extends BaseController {
             return_data.put("return_code", "SUCCESS");  
             return_data.put("return_msg", "OK");  
             return StringUtil.GetMapToXML(return_data);
-        /*}*/
+        }
     }
     
     

@@ -4,6 +4,7 @@ import com.db.backstage.LogMessageDao;
 import com.db.backstage.TeacherApproveDao;
 import com.db.business.ModuleTimeDao;
 import com.db.fcommunity.CommunityDao;
+import com.db.fcommunity.GroupDao;
 import com.db.fcommunity.MemberDao;
 import com.db.fcommunity.MineCommunityDao;
 import com.db.jiaschool.HomeSchoolDao;
@@ -78,6 +79,8 @@ public class HomeSchoolService {
     private SchoolFunctionDao schoolFunctionDao = new SchoolFunctionDao();
 
     private MineCommunityDao mineCommunityDao = new MineCommunityDao();
+
+    private GroupDao groupDao = new GroupDao();
 
 
     public Map<String,Object> getSchoolList(int schoolType,int page,int pageSize,String keyword){
@@ -259,8 +262,9 @@ public class HomeSchoolService {
                 communityList.add(entry.getCommunityId());
             }
         }
-
-        List<ObjectId> memberList = memberDao.getAllCommunityIdsMembers(communityList);
+        //查询groupId
+        List<ObjectId> groupIds = groupDao.getCommunitysIdsList(communityList);
+        List<ObjectId> memberList = memberDao.getAllCommunityIdsMembers(groupIds);
         //所有该学校大V
         List<ObjectId> objectIdList2 = teacherApproveDao.selectMap(memberList);
         List<Integer> integers = new ArrayList<Integer>();

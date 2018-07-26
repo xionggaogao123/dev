@@ -72,7 +72,7 @@ public class GroupDao extends BaseDao {
     }
 
     public ObjectId getMoreGroupIdByEmchatId(String emChatId) {
-        BasicDBObject query = new BasicDBObject("grcd", emChatId).append("r",Constant.ZERO);
+        BasicDBObject query = new BasicDBObject("grcd", emChatId).append("r", Constant.ZERO);
         BasicDBObject field = new BasicDBObject(Constant.ID, 1);
         DBObject dbo = findOne(MongoFacroty.getAppDB(), Constant.COLLECTION_FORUM_COMMUNITY_GROUP, query, field);
         return dbo == null ? null : (ObjectId) dbo.get(Constant.ID);
@@ -81,9 +81,9 @@ public class GroupDao extends BaseDao {
     public GroupEntry getGroupEntryByEmchatId(String emChatId) {
         BasicDBObject query = new BasicDBObject("grcd", emChatId);
         DBObject dbo = findOne(MongoFacroty.getAppDB(), Constant.COLLECTION_FORUM_COMMUNITY_GROUP, query, Constant.FIELDS);
-        if(null!=dbo){
+        if (null != dbo) {
             return new GroupEntry(dbo);
-        }else{
+        } else {
             return null;
         }
     }
@@ -101,14 +101,14 @@ public class GroupDao extends BaseDao {
     /**
      * 获取群组对应的组合头像
      */
-    public Map<ObjectId,GroupEntry> getGroupEntries(List<ObjectId> ids){
-        Map<ObjectId,GroupEntry> retMap=new HashMap<ObjectId, GroupEntry>();
-        BasicDBObject query=new BasicDBObject(Constant.ID,new BasicDBObject(Constant.MONGO_IN,ids));
-        List<DBObject> dbObjects=find(MongoFacroty.getAppDB(), Constant.COLLECTION_FORUM_COMMUNITY_GROUP, query, Constant.FIELDS);
-        if(null!=dbObjects&&!dbObjects.isEmpty()){
-            for(DBObject dbObject:dbObjects){
-                GroupEntry entry=new GroupEntry(dbObject);
-                retMap.put(entry.getID(),entry);
+    public Map<ObjectId, GroupEntry> getGroupEntries(List<ObjectId> ids) {
+        Map<ObjectId, GroupEntry> retMap = new HashMap<ObjectId, GroupEntry>();
+        BasicDBObject query = new BasicDBObject(Constant.ID, new BasicDBObject(Constant.MONGO_IN, ids));
+        List<DBObject> dbObjects = find(MongoFacroty.getAppDB(), Constant.COLLECTION_FORUM_COMMUNITY_GROUP, query, Constant.FIELDS);
+        if (null != dbObjects && !dbObjects.isEmpty()) {
+            for (DBObject dbObject : dbObjects) {
+                GroupEntry entry = new GroupEntry(dbObject);
+                retMap.put(entry.getID(), entry);
             }
         }
         return retMap;
@@ -198,17 +198,17 @@ public class GroupDao extends BaseDao {
         BasicDBObject update = new BasicDBObject(Constant.MONGO_SET, new BasicDBObject("ism", ism));
         update(MongoFacroty.getAppDB(), Constant.COLLECTION_FORUM_COMMUNITY_GROUP, query, update);
     }
+
     /**
      * 根据用户id，查询管理员权限的gruopId列表
-     *
      */
     public List<ObjectId> getGroupIdsList(List<ObjectId> groupId) {
-        BasicDBObject query = new BasicDBObject().append(Constant.ID, new BasicDBObject(Constant.MONGO_IN,groupId)).append("r", 0);
+        BasicDBObject query = new BasicDBObject().append(Constant.ID, new BasicDBObject(Constant.MONGO_IN, groupId)).append("r", 0);
         List<ObjectId> memberEntries = new ArrayList<ObjectId>();
         List<DBObject> dbObjects = find(MongoFacroty.getAppDB(), Constant.COLLECTION_FORUM_COMMUNITY_GROUP, query, Constant.FIELDS);
         for (DBObject dbo : dbObjects) {
             GroupEntry memberEntry = new GroupEntry(dbo);
-            if(memberEntry.getCommunityId() != null){
+            if (memberEntry.getCommunityId() != null) {
                 memberEntries.add(memberEntry.getCommunityId());
             }
         }
@@ -218,15 +218,17 @@ public class GroupDao extends BaseDao {
      * 根据社区id
      *
      */
-   /* public ObjectId getGroupIdByCommunityId(ObjectId cid) {
-        BasicDBObject query = new BasicDBObject();
-        query.append("isr",Constant.ZERO);
-        query.append("cmid",cid);
-        DBObject obj =
-                findOne(MongoFacroty.getAppDB(), Constant.COLLECTION_FORUM_COMMUNITY_GROUP, query, Constant.FIELDS);
-        if (obj != null) {
-            return new GroupEntry(obj).getID();
+    public List<ObjectId> getCommunitysIdsList(List<ObjectId> communityIds) {
+        BasicDBObject query = new BasicDBObject().append("cmid", new BasicDBObject(Constant.MONGO_IN, communityIds)).append("r", 0);
+        List<ObjectId> memberEntries = new ArrayList<ObjectId>();
+        List<DBObject> dbObjects = find(MongoFacroty.getAppDB(), Constant.COLLECTION_FORUM_COMMUNITY_GROUP, query, Constant.FIELDS);
+        for (DBObject dbo : dbObjects) {
+            GroupEntry memberEntry = new GroupEntry(dbo);
+            if (memberEntry.getCommunityId() != null) {
+                memberEntries.add(memberEntry.getID());
+            }
         }
-        return null;
-    }*/
+        return memberEntries;
+    }
+
 }

@@ -29,9 +29,15 @@ public class CoursesRoomAPI  extends BaseAPI{
     }
 
 
-    //获取单个回放  http://api.csslcloud.net/api/statis/useraction
+    //获取用户出入情况  http://api.csslcloud.net/api/statis/useraction
     public static String getUserList(String sysCode) {
         String str = getCCForToken("/statis/useraction"+"?"+sysCode);
+        return str;
+    }
+
+    //获取某个直播间的在线情况     http://api.csslcloud.net/api/rooms/publishing
+    public static  String getRoomStatus(String sysCode){
+        String str = getCCForToken("/rooms/publishing"+"?"+sysCode);
         return str;
     }
 }

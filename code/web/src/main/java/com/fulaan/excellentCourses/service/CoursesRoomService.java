@@ -17,6 +17,8 @@ import org.json.JSONArray;
 import org.json.JSONObject;
 import org.springframework.stereotype.Service;
 
+import java.io.FileOutputStream;
+import java.io.PrintStream;
 import java.net.URLDecoder;
 import java.net.URLEncoder;
 import java.util.*;
@@ -255,12 +257,12 @@ liveid	直播id*/
     public void getUserList(){
         Map<String,String> map = new TreeMap<String, String>();
         map.put("userid",CC_USERID);
-        map.put("roomid","C649821FE31E44509C33DC5901307461");
+        map.put("roomid","374F8F14EA3D09D19C33DC5901307461");
 
         try{
             map.put("starttime",URLEncoder.encode("2018-07-16 08:00", "utf-8"));
 
-            map.put("endtime",URLEncoder.encode("2018-07-23 08:00", "utf-8"));
+            map.put("endtime",URLEncoder.encode(" ", "utf-8"));
 
             String sysCode = RoomUtil.createHashedQueryString(map,CC_API_KEY);
             String str3 = URLDecoder.decode(sysCode, "utf-8");
@@ -269,7 +271,11 @@ liveid	直播id*/
             String rows = dataJson.getString("result");
             if(rows.equals("OK")){
                 JSONArray rows2 = dataJson.getJSONArray("userActions");
+                FileOutputStream bos = new FileOutputStream("D://output.txt");
+                System.setOut(new PrintStream(bos));
+                System.out.println(rows2.toString());
                 for(int i = 0;i<rows2.length();i++){
+
                     /*"userId": "0cda7ng03j9502ian",
           "userName": "苍井满",
           "userIp": "9.5.2.7",
@@ -287,11 +293,12 @@ liveid	直播id*/
     /**
      * 获取直播间状态
      */
-    public void getRoomStatus(){
+    public int getRoomStatus(String roomId){
         Map<String,String> map = new TreeMap<String, String>();
         map.put("userid",CC_USERID);
-        map.put("roomid","C649821FE31E44509C33DC5901307461");
-
+        map.put("roomids","C649821FE31E44509C33DC5901307461");
+        //map.put("roomids",roomId);
+        int status = 0;
         try{
             map.put("starttime",URLEncoder.encode("2018-07-16 08:00", "utf-8"));
 
@@ -299,17 +306,14 @@ liveid	直播id*/
 
             String sysCode = RoomUtil.createHashedQueryString(map,CC_API_KEY);
             String str3 = URLDecoder.decode(sysCode, "utf-8");
-            String str =  CoursesRoomAPI.getUserList(str3);
+            String str =  CoursesRoomAPI.getRoomStatus(str3);
             JSONObject dataJson = new JSONObject(str);
             String rows = dataJson.getString("result");
             if(rows.equals("OK")){
-                JSONArray rows2 = dataJson.getJSONArray("userActions");
+                JSONArray rows2 = dataJson.getJSONArray("rooms");
                 for(int i = 0;i<rows2.length();i++){
-                    /*"userId": "0cda7ng03j9502ian",
-          "userName": "苍井满",
-          "userIp": "9.5.2.7",
-          "enterTime": "2016-11-28 20:30:30",
-          "leaveTime": "2016-11-28 20:33:61"*/
+                    JSONObject rows3 = rows2.getJSONObject(i);
+                    status = rows3.getInt("liveStatus");
 
                 }
             }else{
@@ -317,6 +321,7 @@ liveid	直播id*/
         }catch(Exception e){
             e.printStackTrace();
         }
+        return status;
     }
 
     public boolean checkTime(long stm,long etm,String ostm,String estm){

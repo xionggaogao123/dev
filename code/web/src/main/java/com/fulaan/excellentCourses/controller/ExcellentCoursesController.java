@@ -250,6 +250,28 @@ public class ExcellentCoursesController extends BaseController {
         return JSON.toJSONString(respObj);
     }
 
+    /**
+     *  去上课
+     */
+    @ApiOperation(value = "去上课", httpMethod = "GET", produces = "application/json")
+    @ApiResponses( value = {@ApiResponse(code = 200, message = "Successful — 请求已完成",response = String.class),
+            @ApiResponse(code = 400, message = "请求中有语法问题，或不能满足请求"),
+            @ApiResponse(code = 500, message = "服务器不能完成请求")})
+    @RequestMapping("/gotoNewClass")
+    @ResponseBody
+    public String gotoNewClass(@ApiParam(name = "id", required = false, value = "id") @RequestParam(value="id",defaultValue = "") String id){
+        RespObj respObj=new RespObj(Constant.FAILD_CODE);
+        try {
+            respObj.setCode(Constant.SUCCESS_CODE);
+            Map<String,Object>  dto = excellentCoursesService.gotoNewClass(new ObjectId(id),getUserId());
+            respObj.setMessage(dto);
+        } catch (Exception e) {
+            e.printStackTrace();
+            respObj.setCode(Constant.FAILD_CODE);
+            respObj.setErrorMessage(e.getMessage());
+        }
+        return JSON.toJSONString(respObj);
+    }
 
 
     /**
@@ -903,5 +925,31 @@ public class ExcellentCoursesController extends BaseController {
 
     /****************************** 家长端 end ********************************/
 
+    /****************************** cc start ******************************/
 
+    /**
+     *  获取直播间状态
+     */
+    @ApiOperation(value = "获取直播间状态", httpMethod = "GET", produces = "application/json")
+    @ApiResponses( value = {@ApiResponse(code = 200, message = "Successful — 请求已完成",response = String.class),
+            @ApiResponse(code = 400, message = "请求中有语法问题，或不能满足请求"),
+            @ApiResponse(code = 500, message = "服务器不能完成请求")})
+    @RequestMapping("/getRoomStatus")
+    @ResponseBody
+    public RespObj getRoomStatus(@ApiParam(value="roomId",required = true,name="roomId")@RequestParam(value="roomId",required = true)String roomId){
+        RespObj respObj=new RespObj(Constant.FAILD_CODE);
+        try {
+            respObj.setCode(Constant.SUCCESS_CODE);
+            int status = excellentCoursesService.getRoomStatus(roomId);
+            respObj.setMessage(status);
+        } catch (Exception e) {
+            e.printStackTrace();
+            respObj.setCode(Constant.FAILD_CODE);
+            respObj.setErrorMessage("授权失败！");
+        }
+        return respObj;
+    }
+
+
+    /****************************** cc end ******************************/
 }

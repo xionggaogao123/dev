@@ -1,6 +1,7 @@
 package com.fulaan.forum.controller;
 
 import com.db.backstage.TeacherApproveDao;
+import com.db.business.BanningSpeakingDao;
 import com.fulaan.annotation.LoginInfo;
 import com.fulaan.annotation.ObjectIdType;
 import com.fulaan.annotation.SessionNeedless;
@@ -21,6 +22,7 @@ import com.pojo.app.FileUploadDTO;
 import com.pojo.app.Platform;
 import com.pojo.app.SessionValue;
 import com.pojo.backstage.TeacherApproveEntry;
+import com.pojo.business.BanningSpeakingEntry;
 import com.pojo.fcommunity.ConcernEntry;
 import com.pojo.forum.*;
 import com.pojo.integral.IntegralSufferEntry;
@@ -104,6 +106,8 @@ public class DefaultFPostController extends BaseController {
     private ParticipantsInfoService participantsInfoService;
     @Autowired
     private IntegralSufferService integralSufferService;
+
+    private BanningSpeakingDao banningSpeakingDao = new BanningSpeakingDao();
 
 
     private TeacherApproveDao teacherApproveDao = new TeacherApproveDao();
@@ -1977,6 +1981,20 @@ public class DefaultFPostController extends BaseController {
                                   String videoStr,
                                   String audioStr,
                                   String voiceFile,String participateId, HttpHeaders headers) {
+        //todo
+        BanningSpeakingEntry banningSpeakingEntry = banningSpeakingDao.getEntry(new ObjectId(postId), Constant.FIVE);
+        long current = System.currentTimeMillis();
+        long time2 = 0;
+        if(banningSpeakingEntry==null){
+            time2= 0l;
+        }else{
+            if(banningSpeakingEntry.getEndTime()>current){
+                time2 =  banningSpeakingEntry.getEndTime()-current;
+            }
+        }
+        if (time2>0) {
+            return RespObj.FAILD("您已被禁言!");
+        }
 
         RespObj respObj = new RespObj(Constant.FAILD_CODE);
         SessionValue sv = getSessionValue();
@@ -2522,7 +2540,17 @@ public class DefaultFPostController extends BaseController {
                              int optionCount,
                              HttpServletRequest request) {
 
-
+        //
+        BanningSpeakingEntry banningSpeakingEntry = banningSpeakingDao.getEntry(new ObjectId(postId), Constant.FIVE);
+        long current = System.currentTimeMillis();
+        long time = 0;
+        if(banningSpeakingEntry==null){
+            time= 0l;
+        }else{
+            if(banningSpeakingEntry.getEndTime()>current){
+                time =  banningSpeakingEntry.getEndTime()-current;
+            }
+        }
         if (userService.isSilenced(getUserId().toString())) {
             return RespObj.FAILD("您已被禁言!");
         }
@@ -2530,7 +2558,9 @@ public class DefaultFPostController extends BaseController {
         if (userService.isUnSpeak(getUserId().toString())) {
             return RespObj.FAILD("您已被禁言!");
         }
-
+        if (time>0) {
+            return RespObj.FAILD("您已被禁言!");
+        }
         String url = "http://" + request.getServerName() + ":" + request.getServerPort();
         String imageSrc = dealWith(comment, url);
         FPostDTO fPostDTO = new FPostDTO();

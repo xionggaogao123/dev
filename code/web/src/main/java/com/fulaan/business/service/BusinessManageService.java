@@ -91,6 +91,7 @@ public class BusinessManageService {
     private SchoolPersionDao schoolPersionDao = new SchoolPersionDao();
 
     private HomeSchoolDao homeSchoolDao = new HomeSchoolDao();
+    private UserAgreementDao userAgreementDao = new UserAgreementDao();
     @Autowired
     private EmService emService;
 
@@ -730,4 +731,28 @@ public class BusinessManageService {
         return dtos;
     }
 
+
+    //同意用户协议
+    public void agreeUserAgreement(ObjectId userId,int type){
+        UserAgreementEntry userAgreementEntry = userAgreementDao.getEntry(userId);
+        if(userAgreementEntry==null){
+            UserAgreementEntry userAgreementEntry1 = new UserAgreementEntry(userId,type,Constant.ONE);
+            userAgreementDao.addEntry(userAgreementEntry1);
+        }else{
+            if(userAgreementEntry.getAgree()!=1){
+                userAgreementEntry.setAgree(Constant.ONE);
+                userAgreementDao.addEntry(userAgreementEntry);
+            }
+        }
+    }
+
+    public boolean booleanUserAgreement(ObjectId userId) {
+        UserAgreementEntry userAgreementEntry = userAgreementDao.getEntry(userId);
+        if (userAgreementEntry != null) {
+            if (userAgreementEntry.getAgree() == 1) {
+                return true;
+            }
+        }
+        return false;
+    }
 }

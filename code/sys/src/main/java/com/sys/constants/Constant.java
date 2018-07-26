@@ -1045,6 +1045,8 @@ public class Constant {
     public static final String COLLECTION_COMMUNITY_BANNING= "jxm_community_banning";
     //jpush发送表
     public static final String COLLECTION_PUSH_MESSAGE= "jxm_push_message";
+    //用户协议表
+    public static final String COLLECTION_USER_AGREEMENT= "jxm_user_agreement";
     /*************************************精品课*****************************************/
 
     //精品课程

@@ -16,6 +16,8 @@ import org.jdom.Element;
 import org.jdom.JDOMException;
 import org.jdom.input.SAXBuilder;
 
+
+
 public class PayCommonUtil {
 
     private static String Key = "你们的Key";
@@ -84,57 +86,53 @@ public class PayCommonUtil {
      * @return
      */
     public static boolean isTenpaySign(Map<String, String> map) {
-        String characterEncoding="utf-8";
-       String charset = "utf-8";
-       String signFromAPIResponse = map.get("sign");
-       if (signFromAPIResponse == null || signFromAPIResponse.equals("")) {
-           System.out.println("API返回的数据签名数据不存在，有可能被第三方篡改!!!"); 
-           return false;
-       }
-       System.out.println("服务器回包里面的签名是:" + signFromAPIResponse);
-     //过滤空 设置 TreeMap
-       SortedMap<String,String> packageParams = new TreeMap();
-       
-       for (String parameter : map.keySet()) {
-           String parameterValue = map.get(parameter);
-           String v = "";
-           if (null != parameterValue) {
-               v = parameterValue.trim();
-           }
-           packageParams.put(parameter, v);
-       }
-       
-       StringBuffer sb = new StringBuffer();
-       Set es = packageParams.entrySet();
-       Iterator it = es.iterator();
-       
-       while(it.hasNext()) {
-           Map.Entry entry = (Map.Entry)it.next();
-           String k = (String)entry.getKey();
-           String v = (String)entry.getValue();
-           if(!"sign".equals(k) && null != v && !"".equals(v)) {
-               sb.append(k + "=" + v + "&");
-           }
-       }
-       sb.append("key=" + Key);
-       
-     //将API返回的数据根据用签名算法进行计算新的签名，用来跟API返回的签名进行比较
-     //算出签名
-       String resultSign = "";
-       String tobesign = sb.toString();
-       
-       if (null == charset || "".equals(charset)) {
-           resultSign = MD5Util.MD5Encode(tobesign, characterEncoding).toUpperCase();
-       }else{
-           try{
-               resultSign = MD5Util.MD5Encode(tobesign, characterEncoding).toUpperCase();
-           }catch (Exception e) {
-               resultSign = MD5Util.MD5Encode(tobesign, characterEncoding).toUpperCase();
-           }
-       }
-       
-       String tenpaySign = ((String)packageParams.get("sign")).toUpperCase();
-       return tenpaySign.equals(resultSign);
+        String result_code = (String) map.get("result_code");  
+        String out_trade_no  = (String) map.get("out_trade_no");  
+        String total_fee  = (String) map.get("total_fee");  
+        String sign  = (String) map.get("sign");  
+        Double amount = new Double(total_fee)/100;//获取订单金额  
+        String attach = (String) map.get("attach");  
+        String sn = out_trade_no.split("\\|")[0];//获取订单编号  
+
+        
+        String fee_type  = (String) map.get("fee_type");  
+        String bank_type  = (String) map.get("bank_type");  
+        String cash_fee  = (String) map.get("cash_fee");  
+        String is_subscribe  = (String) map.get("is_subscribe");  
+        String nonce_str  = (String) map.get("nonce_str");  
+        String openid  = (String) map.get("openid");  
+        String return_code  = (String) map.get("return_code");  
+        String sub_mch_id  = (String) map.get("sub_mch_id");  
+        String time_end  = (String) map.get("time_end");  
+        String trade_type  = (String) map.get("trade_type");  
+        String transaction_id  = (String) map.get("transaction_id");  
+        String appid = (String) map.get("appid");
+        String partner = (String) map.get("mch_id");
+
+                //需要对以下字段进行签名  
+        SortedMap<Object, Object> packageParams = new TreeMap<Object, Object>();  
+        packageParams.put("appid", appid);     
+        packageParams.put("bank_type", bank_type);    
+        packageParams.put("cash_fee", cash_fee);    
+        packageParams.put("fee_type", fee_type);      
+        packageParams.put("is_subscribe", is_subscribe);    
+        packageParams.put("mch_id", partner);    
+        packageParams.put("nonce_str", nonce_str);        
+        packageParams.put("openid", openid);   
+        packageParams.put("out_trade_no", out_trade_no);  
+        packageParams.put("result_code", result_code);    
+        packageParams.put("return_code", return_code);        
+        packageParams.put("sub_mch_id", sub_mch_id);   
+        packageParams.put("time_end", time_end);  
+        packageParams.put("total_fee", total_fee);    
+        packageParams.put("trade_type", trade_type);   
+        packageParams.put("transaction_id", transaction_id);  
+        String s = WXSignUtils.createSign("UTF-8", packageParams);
+        if (sign.equals(s)) {
+            return true;
+        } else {
+            return false;
+        }
     }
  
     

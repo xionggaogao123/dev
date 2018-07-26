@@ -95,10 +95,12 @@ public class WxpayService {
 
     //充值回调
     //private static final String PAY_NOTIFYURL = "appapi.jiaxiaomei.com/jxmapi/appwxpay/notify.do";
-    private static final String PAY_NOTIFYURL = "http://118.242.18.202:90/jxmapi/appwxpay/notify.do";
+    //private static final String PAY_NOTIFYURL = "http://118.242.18.202:90/jxmapi/appwxpay/notify.do";
+    private static final String PAY_NOTIFYURL = "http://s215l05201.51mypc.cn:24697/jxmapi/appwxpay/notify.do";
     //购买课程回调
     //private static final String PAY_NOW_NOTIFYURL = "appapi.jiaxiaomei.com/jxmapi/appwxpay/newNotify.do";
-    private static final String PAY_NOW_NOTIFYURL = "http://118.242.18.202:90/jxmapi/appwxpay/newNotify.do";
+    //private static final String PAY_NOW_NOTIFYURL = "http://118.242.18.202:90/jxmapi/appwxpay/newNotify.do";
+    private static final String PAY_NOW_NOTIFYURL = "http://s215l05201.51mypc.cn:24697/jxmapi/appwxpay/newNotify.do";
 
 
     private static final Logger EBusinessLog = Logger.getLogger("WxpayService");

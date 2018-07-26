@@ -140,12 +140,12 @@ public class AppwxpayController extends BaseController {
         
         
         Map<String,String> return_data = new HashMap<String,String>();  
-        if (!PayCommonUtil.isTenpaySign(params)) {
+       /* if (!PayCommonUtil.isTenpaySign(params)) {
             // 支付失败
             return_data.put("return_code", "FAIL");  
             return_data.put("return_msg", "return_code不正确");
             return StringUtil.GetMapToXML(return_data);
-        } else {
+        } else {*/
             System.out.println("===============付款成功==============");
             // ------------------------------
             // 处理业务开始
@@ -178,7 +178,7 @@ public class AppwxpayController extends BaseController {
             return_data.put("return_code", "SUCCESS");  
             return_data.put("return_msg", "OK");  
             return StringUtil.GetMapToXML(return_data);
-        }
+       /* }*/
 
     }
 
@@ -210,12 +210,12 @@ public class AppwxpayController extends BaseController {
         
         
         Map<String,String> return_data = new HashMap<String,String>();  
-        if (!PayCommonUtil.isTenpaySign(params)) {
+        /*if (!PayCommonUtil.isTenpaySign(params)) {
             // 支付失败
             return_data.put("return_code", "FAIL");  
             return_data.put("return_msg", "return_code不正确");
             return StringUtil.GetMapToXML(return_data);
-        } else {
+        } else {*/
             System.out.println("===============付款成功==============");
             // ------------------------------
             // 处理业务开始
@@ -227,8 +227,8 @@ public class AppwxpayController extends BaseController {
             
             String total_fee = params.get("total_fee");
             double v = Double.valueOf(total_fee) / 100;
-            String out_trade_no = String.valueOf(Long.parseLong(params.get("out_trade_no").split("O")[0]));
-            String notify_time = params.get("time_end");
+            String out_trade_no = (String) params.get("out_trade_no").split("O")[0];
+            //String notify_time = params.get("time_end");
            // Date accountTime = DateUtil.stringtoDate(params.get("time_end"), "yyyyMMddHHmmss");
             String ordertime = DateUtil.dateToString(new Date(), "yyyy-MM-dd HH:mm:ss");
             //String totalAmount = String.valueOf(v);
@@ -248,7 +248,7 @@ public class AppwxpayController extends BaseController {
             return_data.put("return_code", "SUCCESS");  
             return_data.put("return_msg", "OK");  
             return StringUtil.GetMapToXML(return_data);
-        }
+        /*}*/
     }
     
 }

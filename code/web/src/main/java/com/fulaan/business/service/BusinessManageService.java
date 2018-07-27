@@ -526,6 +526,23 @@ public class BusinessManageService {
         return 0;
     }
 
+    public  Map<String,Object> getNewVersion(String moduleName,ObjectId userId){
+        Map<String,Object>  map =  new HashMap<String, Object>();
+        VersionOpenEntry versionOpenEntry = versionOpenDao.getEntry(moduleName);
+        map.put("status",0);
+        if(versionOpenEntry!=null){
+            map.put("status",1);
+        }
+        map.put("agree",0);
+        UserAgreementEntry userAgreementEntry = userAgreementDao.getEntry(userId);
+        if (userAgreementEntry != null) {
+            if (userAgreementEntry.getAgree() == 1) {
+                map.put("agree",1);
+            }
+        }
+        return map;
+    }
+
     public void addVersion(String moduleName){
         VersionOpenEntry versionOpenEntry = versionOpenDao.getEntry(moduleName);
         if(versionOpenEntry==null){

@@ -331,6 +331,27 @@ public class BusinessManageController extends BaseController {
     }
 
     /**
+     * 新修改显现
+     */
+    @ApiOperation(value = "新修改显现", httpMethod = "POST", produces = "application/json")
+    @ApiResponses( value = {@ApiResponse(code = 200, message = "Successful — 请求已完成",response = String.class)})
+    @RequestMapping("/getNewVersion")
+    @ResponseBody
+    public RespObj getNewVersion(@ApiParam(name="moduleName",required = false,value="moduleName") @RequestParam(value="moduleName",defaultValue = "") String moduleName){
+        RespObj respObj=new RespObj(Constant.FAILD_CODE);
+        try {
+            Map<String,Object> type = businessManageService.getNewVersion(moduleName, getUserId());
+            respObj.setCode(Constant.SUCCESS_CODE);
+            respObj.setMessage(type);
+        } catch (Exception e) {
+            e.printStackTrace();
+            respObj.setCode(Constant.FAILD_CODE);
+            respObj.setErrorMessage("版本获取失败!");
+        }
+        return respObj;
+    }
+
+    /**
      * 添加版本
      */
     @ApiOperation(value = "添加版本", httpMethod = "POST", produces = "application/json")

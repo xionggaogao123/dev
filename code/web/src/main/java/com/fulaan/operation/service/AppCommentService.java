@@ -2326,7 +2326,7 @@ public class AppCommentService {
             }
 
         }
-        List<ParentChildConnectionEntry> entries1 = parentChildConnectionDao.getEntry(userId);
+        List<ParentChildConnectionEntry> entries1 = parentChildConnectionDao.getEntry(userId,communityId);
         if(entries1.size()>0){
             List<ObjectId> oids = new ArrayList<ObjectId>();
             for(ParentChildConnectionEntry pentry : entries1){

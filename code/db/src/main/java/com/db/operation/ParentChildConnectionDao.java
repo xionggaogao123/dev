@@ -49,9 +49,10 @@ public class ParentChildConnectionDao extends BaseDao {
         return null;
     }
 
-    public List<ParentChildConnectionEntry> getEntry(ObjectId parentId) {
+    public List<ParentChildConnectionEntry> getEntry(ObjectId parentId,ObjectId communityId) {
         BasicDBObject query = new BasicDBObject();
         query.append("pid",parentId);
+        query.append("cid",communityId);
         query.append("isr",Constant.ZERO);
         List<DBObject> dbList =
                 find(MongoFacroty.getAppDB(),

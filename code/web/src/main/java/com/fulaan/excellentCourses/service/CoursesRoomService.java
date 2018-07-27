@@ -52,7 +52,7 @@ public class CoursesRoomService {
     //提示语
     private static final String CC_PLAYERBACKGROUNDHINT = "直播时间还未开始，请耐心等待！";
     //  文档显示模式。1：适合窗口;2:适合宽度
-    private static final String CC_DOCUMENTDISPLAYMODE = "1";
+    private static final String CC_DOCUMENTDISPLAYMODE = "2";
     //重复登录   repeatedloginsetting
     private static final String CC_REPEATEDLOGINSETTING = "1";
 
@@ -81,6 +81,7 @@ public class CoursesRoomService {
         map.put("assistantpass",CC_ASSISTANTPASS);
         map.put("playpass",CC_PLAYPASS);
         map.put("checkurl",CC_CHECKURL);
+        map.put("documentdisplaymode",CC_DOCUMENTDISPLAYMODE);
         String id = "";
         try{
             map.put("playerbackgroundhint", URLEncoder.encode(CC_PLAYERBACKGROUNDHINT, "utf-8"));

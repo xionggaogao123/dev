@@ -1982,7 +1982,7 @@ public class DefaultFPostController extends BaseController {
                                   String audioStr,
                                   String voiceFile,String participateId, HttpHeaders headers) {
         //todo
-        BanningSpeakingEntry banningSpeakingEntry = banningSpeakingDao.getEntry(new ObjectId(postId), Constant.FIVE);
+        BanningSpeakingEntry banningSpeakingEntry = banningSpeakingDao.getEntry(getUserId(), Constant.FIVE);
         long current = System.currentTimeMillis();
         long time2 = 0;
         if(banningSpeakingEntry==null){
@@ -2541,7 +2541,7 @@ public class DefaultFPostController extends BaseController {
                              HttpServletRequest request) {
 
         //
-        BanningSpeakingEntry banningSpeakingEntry = banningSpeakingDao.getEntry(new ObjectId(postId), Constant.FIVE);
+        BanningSpeakingEntry banningSpeakingEntry = banningSpeakingDao.getEntry(getUserId(), Constant.FIVE);
         long current = System.currentTimeMillis();
         long time = 0;
         if(banningSpeakingEntry==null){

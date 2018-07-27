@@ -259,6 +259,7 @@ public class AppwxpayController extends BaseController {
     @ApiOperation(value = "确认是否支付成功", httpMethod = "POST", produces = "application/json")
     @SessionNeedless
     @RequestMapping("/isBuy")
+    @ResponseBody
     public String isBuy(@ApiParam(name = "id", required = true, value = "id") @RequestParam("id") String id) {
         RespObj respObj=new RespObj(Constant.FAILD_CODE);
         Boolean flag = wxpayService.isBuy(id);

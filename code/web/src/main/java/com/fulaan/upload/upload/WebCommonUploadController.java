@@ -1,21 +1,21 @@
 package com.fulaan.upload.upload;
 
-import com.cloopen.rest.sdk.utils.encoder.BASE64Decoder;
-import com.fulaan.annotation.SessionNeedless;
-import com.fulaan.base.BaseController;
-import com.fulaan.screenshot.Encoder;
-import com.fulaan.utils.QiniuFileUtils;
-import com.fulaan.video.service.VideoService;
-import com.pojo.app.FileUploadDTO;
-import com.pojo.video.VideoDTO;
-import com.pojo.video.VideoEntry;
-import com.pojo.video.VideoSourceType;
-import com.sys.constants.Constant;
-import com.sys.utils.RespObj;
-import io.swagger.annotations.Api;
-import io.swagger.annotations.ApiOperation;
-import io.swagger.annotations.ApiResponse;
-import io.swagger.annotations.ApiResponses;
+import java.io.ByteArrayInputStream;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.OutputStream;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.FilenameUtils;
 import org.apache.log4j.Logger;
@@ -28,13 +28,23 @@ import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.multipart.MultipartHttpServletRequest;
 import org.springframework.web.multipart.commons.CommonsMultipartResolver;
 
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-import java.io.*;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import com.cloopen.rest.sdk.utils.encoder.BASE64Decoder;
+import com.fulaan.annotation.SessionNeedless;
+import com.fulaan.base.BaseController;
+import com.fulaan.screenshot.Encoder;
+import com.fulaan.utils.QiniuFileUtils;
+import com.fulaan.video.service.VideoService;
+import com.pojo.app.FileUploadDTO;
+import com.pojo.video.VideoDTO;
+import com.pojo.video.VideoEntry;
+import com.pojo.video.VideoSourceType;
+import com.sys.constants.Constant;
+import com.sys.utils.RespObj;
+
+import io.swagger.annotations.Api;
+import io.swagger.annotations.ApiOperation;
+import io.swagger.annotations.ApiResponse;
+import io.swagger.annotations.ApiResponses;
 
 /**
  * 普通的文件，视频上传
@@ -46,6 +56,8 @@ import java.util.Map;
 public class WebCommonUploadController extends BaseController {
 
     private static final Logger logger = Logger.getLogger(WebCommonUploadController.class);
+    
+    public final static List<String> VideoList = new ArrayList<String>(Arrays.asList("avi","wmv","mpeg","mp4","mov","mkv","flv","f4v","m4v","rmvb","rm","3gp","dat","ts","mts","vob"));
 
 
     private VideoService videoService = new VideoService();
@@ -203,10 +215,13 @@ public class WebCommonUploadController extends BaseController {
                         String saveFileKey = new ObjectId().toString() + ".mp3";
                         com.sys.utils.QiniuFileUtils.convertAmrToMp3(fileKey, saveFileKey, inputStream);
                         path = QiniuFileUtils.getPath(QiniuFileUtils.TYPE_DOCUMENT, saveFileKey);
-                    } else {
+                    } /*else if(VideoList.contains(extName.toLowerCase())) {
+                        QiniuFileUtils.uploadVideoFileCkzl(fileKey, inputStream, QiniuFileUtils.TYPE_VIDEO);
+                        path = QiniuFileUtils.getPath(QiniuFileUtils.TYPE_VIDEO, fileKey);
+                    } */else {
                         QiniuFileUtils.uploadFile(fileKey, inputStream, QiniuFileUtils.TYPE_DOCUMENT);
                         path = QiniuFileUtils.getPath(QiniuFileUtils.TYPE_DOCUMENT, fileKey);
-                    }
+                    } 
 
                     FileUploadDTO dto = new FileUploadDTO(id.toString(), fileKey, file.getOriginalFilename(), path);
                     fileInfos.add(dto);

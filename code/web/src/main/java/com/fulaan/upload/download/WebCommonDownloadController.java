@@ -2,6 +2,7 @@ package com.fulaan.upload.download;
 
 import com.fulaan.annotation.SessionNeedless;
 import com.fulaan.base.BaseController;
+import com.fulaan.utils.QiniuFileUtils;
 import com.sys.exceptions.IllegalParamException;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
@@ -56,6 +57,26 @@ public class WebCommonDownloadController extends BaseController {
         response.setHeader("Content-disposition", "attachment; filename=" + new String(fileName.getBytes("gb2312"), "iso8859-1"));// 设置头部信息
 
         InputStream inputStream = conn.getInputStream();
+        OutputStream outs = response.getOutputStream();// 获取文件输出IO流
+
+        IOUtils.copy(inputStream, outs);
+        IOUtils.closeQuietly(inputStream);
+        IOUtils.closeQuietly(outs);
+    }
+    
+    /**
+     * 下载远程文件并保存到本地
+     *
+     * @param remoteFilePath 远程文件路径
+     */
+    @ApiOperation(value = "下载远程文件并保存到本地", httpMethod = "POST", produces = "application/json")
+    @RequestMapping("/downloadFileMu")
+    @ResponseBody
+    @SessionNeedless
+    public void downloadFileMu(String remoteFilePath, String fileName, HttpServletResponse response) throws IOException, IllegalParamException {
+        
+
+        InputStream inputStream = QiniuFileUtils.downFileByUrl(remoteFilePath);
         OutputStream outs = response.getOutputStream();// 获取文件输出IO流
 
         IOUtils.copy(inputStream, outs);

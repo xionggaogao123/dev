@@ -180,6 +180,73 @@ public class QiniuFileUtils {
         return obj;
 
     }
+    
+    
+    public static RespObj uploadVideoFileCkzl(String fileKey, InputStream stream, int type) throws IllegalParamException, IOException {
+        if (type != TYPE_VIDEO && type != TYPE_USER_VIDEO) {
+            throw new IllegalParamException(" please use QiniuFileUtils.uploadFile to upload normal file(not video)");
+        }
+
+//
+//        BucketInfo info =BUCKET_MAP.get(type);
+//        if(null==info)
+//            throw new IllegalParamException();
+        String persistentBuckeName = BUCKET_MAP.get(TYPE_VIDEO).bucket;
+        if (type == TYPE_USER_VIDEO) {
+            persistentBuckeName = Resources.getProperty("qiniu.store.bucket");
+        }
+
+        String m3u8_save_as = persistentBuckeName + ":m3u8/" + fileKey + ".m3u8";
+        m3u8_save_as = EncodeUtils.urlsafeEncode(m3u8_save_as);
+        String persistentOps = "avthumb/m3u8/preset/video_640k|saveas/" + m3u8_save_as;
+
+        final String finalPersistentOps = persistentOps;
+        final String finalBucketName = BUCKET_MAP.get(type).getBucket();
+        final String finalBucketSaveKey = fileKey;
+        final InputStream inputStream = stream;
+
+        Runnable handler = new Runnable() {
+            @Override
+            public void run() {
+               
+                try {
+
+
+              
+
+
+                    PutPolicy putPolicy = new PutPolicy(finalBucketName);
+                    putPolicy.persistentOps = finalPersistentOps;
+                    putPolicy.persistentPipeline = "video";
+                    putPolicy.persistentNotifyUrl = Resources.getProperty("domain") + "/video/persistentNotify.do";
+                    logger.info(putPolicy.persistentNotifyUrl);
+                    String token = putPolicy.token(MAC);
+                    PutRet ret = ResumeableIoApi.put(inputStream, token, finalBucketSaveKey, null);
+
+                  
+                    
+                    //
+                } catch (Exception e) {
+                    //上传失败
+
+                    logger.error("", e);
+              
+
+                    //failedVideos.offer(videosInfo);
+                    //失败重传 todo
+
+
+                }
+
+            }
+        };
+        Thread t = new Thread(handler);
+        t.start();
+
+        RespObj obj = new RespObj(Constant.SUCCESS_CODE);
+        return obj;
+
+    }
 
 
     /**

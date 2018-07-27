@@ -397,4 +397,46 @@ public class WebBusinessManageController extends BaseController {
         }
         return respObj;
     }
+
+    /**
+     * 是否同意
+     */
+    @ApiOperation(value = "是否同意", httpMethod = "POST", produces = "application/json")
+    @ApiResponses( value = {@ApiResponse(code = 200, message = "Successful — 请求已完成",response = String.class)})
+    @RequestMapping("/booleanUserAgreement")
+    @ResponseBody
+    public RespObj booleanUserAgreement(){
+        RespObj respObj=new RespObj(Constant.FAILD_CODE);
+        try {
+            boolean flag = businessManageService.booleanUserAgreement(getUserId());
+            respObj.setCode(Constant.SUCCESS_CODE);
+            respObj.setMessage(flag);
+        } catch (Exception e) {
+            e.printStackTrace();
+            respObj.setCode(Constant.FAILD_CODE);
+            respObj.setErrorMessage("获取是否同意失败!");
+        }
+        return respObj;
+    }
+
+    /**
+     * 同意用户协议
+     */
+    @ApiOperation(value = "同意用户协议", httpMethod = "POST", produces = "application/json")
+    @ApiResponses( value = {@ApiResponse(code = 200, message = "Successful — 请求已完成",response = String.class)})
+    @RequestMapping("/agreeUserAgreement")
+    @ResponseBody
+    public RespObj agreeUserAgreement(@ApiParam(name="type",required = false,value="type") @RequestParam(value="type",defaultValue = "") int type){
+        RespObj respObj=new RespObj(Constant.FAILD_CODE);
+        try {
+            businessManageService.agreeUserAgreement(getUserId(), type);
+            respObj.setCode(Constant.SUCCESS_CODE);
+            respObj.setMessage("同意成功！");
+        } catch (Exception e) {
+            e.printStackTrace();
+            respObj.setCode(Constant.FAILD_CODE);
+            respObj.setErrorMessage("同意失败!");
+        }
+        return respObj;
+    }
 }

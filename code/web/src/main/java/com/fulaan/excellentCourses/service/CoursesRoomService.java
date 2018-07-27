@@ -51,6 +51,10 @@ public class CoursesRoomService {
     private static final String CC_PLAYPASS = "123456";
     //提示语
     private static final String CC_PLAYERBACKGROUNDHINT = "直播时间还未开始，请耐心等待！";
+    //  文档显示模式。1：适合窗口;2:适合宽度
+    private static final String CC_DOCUMENTDISPLAYMODE = "1";
+    //重复登录   repeatedloginsetting
+    private static final String CC_REPEATEDLOGINSETTING = "1";
 
     private CoursesRoomDao coursesRoomDao = new CoursesRoomDao();
 
@@ -373,6 +377,8 @@ liveid	直播id*/
         map.put("assistantpass",CC_ASSISTANTPASS);
         map.put("playpass",CC_PLAYPASS);
         map.put("checkurl",CC_BACKCHECKURL);
+        map.put("documentdisplaymode",CC_DOCUMENTDISPLAYMODE);
+        map.put("repeatedloginsetting",CC_REPEATEDLOGINSETTING);
         String id = "";
         try{
             map.put("playerbackgroundhint", URLEncoder.encode(CC_PLAYERBACKGROUNDHINT, "utf-8"));

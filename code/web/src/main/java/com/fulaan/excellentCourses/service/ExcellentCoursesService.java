@@ -1179,7 +1179,12 @@ public class ExcellentCoursesService {
             }
             if(endTime<=current){//上课时间已结束
                 if(cids.contains(hourClassEntry.getID())){
-                    hourClassDTO.setStatus(3);//已结束已购买
+                    if(userId.equals(parentId)){
+                        hourClassDTO.setStatus(3);//已结束已购买
+                    }else{
+                        hourClassDTO.setStatus(0);//已结束未购买
+                    }
+
                 }else{
                     hourClassDTO.setStatus(0);//已结束未购买
                 }
@@ -1216,7 +1221,11 @@ public class ExcellentCoursesService {
 
             if(flage){//课程结束
                 if(cids.contains(hourClassEntry.getID())){
-                    hourClassDTO.setStatus(3);//已结束已购买
+                    if(userId.equals(parentId)){
+                        hourClassDTO.setStatus(3);//已结束已购买
+                    }else{
+                        hourClassDTO.setStatus(0);//已结束未购买
+                    }
                 }else{
                     hourClassDTO.setStatus(0);//已结束未购买
                 }

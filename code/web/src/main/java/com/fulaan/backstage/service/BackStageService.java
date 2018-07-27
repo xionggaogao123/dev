@@ -1826,7 +1826,8 @@ public class BackStageService {
     public List<UserDetailInfoDTO> selectUserRecord(String name){
         List<UserDetailInfoDTO> udtos = new ArrayList<UserDetailInfoDTO>();
         //家校美id查找
-        UserEntry entry= userDao.findByUserName(name);
+        UserEntry entry= userDao.findByPhone(name);
+
         if(entry!=null){
             List<NewVersionBindRelationEntry> entries = newVersionBindRelationDao.getEntriesByMainUserId(entry.getID());
             List<String> objectIdList = new ArrayList<String>();

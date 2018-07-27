@@ -2492,16 +2492,23 @@ public class AppCommentService {
         if(aen.getShowType()==1){
             //所有学生
             List<String> objectIdList2 = newVersionBindService.getStudentIdListByCommunityId(aen.getRecipientId());
+            //代提交用户
+            List<ParentChildConnectionEntry> objectIdList3 = parentChildConnectionDao.getEntryByList(aen.getRecipientId());
             List<ObjectId> objectIdList1 = new ArrayList<ObjectId>();
             for(String str : objectIdList2){
                 objectIdList1.add(new ObjectId(str));
             }
+
+
             List<UserEntry> userEntries = userService.getUserByList(objectIdList1);
             List<String> objectIdList = new ArrayList<String>();
             List<ObjectId> oidsa = new ArrayList<ObjectId>();
             for(UserEntry userEntry3: userEntries){
                 objectIdList.add(userEntry3.getID().toString());
                 oidsa.add(userEntry3.getID());
+            }
+            for(ParentChildConnectionEntry pe : objectIdList3){
+                oidsa.add(pe.getUserId());
             }
             //查询已提交
             List<AppOperationEntry> entries =appOperationDao.getEntryListByParentIdByStu(id,oidsa, 3, page, pageSize);
@@ -2532,8 +2539,7 @@ public class AppCommentService {
                     map3.put(dto4.getId(),dto4);
                 }
             }
-            //代提交用户
-            List<ParentChildConnectionEntry> objectIdList3 = parentChildConnectionDao.getEntryByList(aen.getRecipientId());
+
             for(ParentChildConnectionEntry entry:objectIdList3){
                 UserDetailInfoDTO ud = new UserDetailInfoDTO();
                 ud.setNickName(entry.getUserName());
@@ -2674,6 +2680,7 @@ public class AppCommentService {
                 return "不能添加同名的孩子";
             }
         }
+
 
         return "修改成功";
     }

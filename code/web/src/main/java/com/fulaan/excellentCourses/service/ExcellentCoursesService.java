@@ -1142,6 +1142,155 @@ public class ExcellentCoursesService {
         return map;
     }
 
+    public Map<String,Object> getNewParentCoursesDesc(ObjectId id,ObjectId userId,ObjectId parentId){
+        Map<String,Object> map = new HashMap<String, Object>();
+        //课程相关
+        ExcellentCoursesEntry excellentCoursesEntry = excellentCoursesDao.getEntry(id);
+        //此课程已购买项目
+        List<ObjectId> cids= classOrderDao.getEntryIdList(userId,id);
+        if(cids.size()==0){
+            map.put("isBuy",0);
+        }else{
+            map.put("isBuy",1);
+        }
+        long current = System.currentTimeMillis();
+        boolean flage = false;
+        map.put("isEnd",0);
+        if(excellentCoursesEntry.getEndTime()<=current){//上课时间已过
+            map.put("isEnd",1);
+            flage = true;
+        }
+        //课时相关
+        List<HourClassEntry> hourClassEntries = hourClassDao.getEntryList(id);
+        List<HourClassDTO> hourClassDTOs = new ArrayList<HourClassDTO>();
+
+        //
+        long allEndTime = 0l;
+        boolean falge2 = false;
+        HourClassEntry startClass = null;
+        HourClassEntry endClass = null;
+        HourClassDTO nowHourClassDTO  = null;
+        for(HourClassEntry hourClassEntry:hourClassEntries){
+            HourClassDTO hourClassDTO = new HourClassDTO(hourClassEntry);
+            long endTime = hourClassEntry.getStartTime() + hourClassEntry.getCurrentTime();
+            hourClassDTO.setStatus(1);//未购买
+            if(endTime> allEndTime){//获得最终结束时间
+                allEndTime = endTime;
+            }
+            if(endTime<=current){//上课时间已结束
+                if(cids.contains(hourClassEntry.getID())){
+                    hourClassDTO.setStatus(3);//已结束已购买
+                }else{
+                    hourClassDTO.setStatus(0);//已结束未购买
+                }
+                //已结束的取一个最近的
+                if(cids.contains(hourClassEntry.getID())){//已购买
+                    if(startClass==null){
+                        startClass = hourClassEntry;
+                    }else{
+                        long etm = startClass.getStartTime() + startClass.getCurrentTime();
+                        if(endTime>etm){
+                            startClass = hourClassEntry;
+                        }
+                    }
+                }
+            }else{//未结束
+                if(cids.contains(hourClassEntry.getID())){
+                    hourClassDTO.setStatus(2);//已购买
+                    if(hourClassEntry.getStartTime()<=current+STUDENT_TIME && endTime >current ){
+                        nowHourClassDTO = hourClassDTO;
+                    }
+                    //未结束的取一个最近的
+                    if(endClass==null){
+                        endClass = hourClassEntry;
+                    }else{
+                        long stm = endClass.getStartTime();
+                        if(hourClassEntry.getStartTime()<stm){
+                            endClass = hourClassEntry;
+                        }
+                    }
+                }else{
+                    falge2=true;//还可以购买
+                }
+            }
+
+            if(flage){//课程结束
+                if(cids.contains(hourClassEntry.getID())){
+                    hourClassDTO.setStatus(3);//已结束已购买
+                }else{
+                    hourClassDTO.setStatus(0);//已结束未购买
+                }
+
+            }
+            hourClassDTOs.add(hourClassDTO);
+        }
+        if(falge2){
+            map.put("isXian",1);
+        }else{
+            map.put("isXian",0);
+        }
+        List<HourClassDTO> dtos = new ArrayList<HourClassDTO>();
+        if(nowHourClassDTO!=null){
+            //HourClassEntry hourClassEntry = nowHourClassDTO.buildAddEntry();
+            HourClassDTO h = new HourClassDTO();
+            h.setParentId(nowHourClassDTO.getParentId());
+            h.setStatus(nowHourClassDTO.getStatus());
+            h.setCreateTime(nowHourClassDTO.getCreateTime());
+            h.setWeek(nowHourClassDTO.getWeek());
+            h.setClassOldPrice(nowHourClassDTO.getClassOldPrice());
+            h.setClassNewPrice(nowHourClassDTO.getClassNewPrice());
+            h.setContent(nowHourClassDTO.getContent());
+            h.setDateTime(nowHourClassDTO.getDateTime());
+            h.setStartTime(nowHourClassDTO.getStartTime());
+            h.setId(nowHourClassDTO.getId());
+            h.setCurrentTime(nowHourClassDTO.getCurrentTime());
+            h.setOrder(nowHourClassDTO.getOrder());
+            h.setUserId(nowHourClassDTO.getUserId());
+            h.setType(nowHourClassDTO.getType());
+            dtos.add(h);
+        }
+
+        //如果没有正在上的课，尝试开放已结束的课程（满足一下喜欢拖堂的老师，让他们上个够，让上课的小伙伴可以出来溜达溜达再回去）
+        if(dtos.size()==0){
+            //HourClassEntry startClass = null;
+            //HourClassEntry endClass = null;
+            if(startClass !=null){//前有结束的课
+                long etm = startClass.getStartTime() + startClass.getCurrentTime();
+                if(endClass==null){//后无
+                    //1小时显示
+                    if(etm> current - 60*60*1000 ){
+                        HourClassDTO hourClassDTO2 = new HourClassDTO(startClass);
+                        hourClassDTO2.setStatus(2);
+                        dtos.add(hourClassDTO2);
+                    }
+
+                }else{//后有
+                    if(endClass.getDateTime()==startClass.getDateTime()){//同一天
+                        if(current<endClass.getStartTime()-STUDENT_TIME){//延长显示
+                            HourClassDTO hourClassDTO2 = new HourClassDTO(startClass);
+                            hourClassDTO2.setStatus(2);
+                            dtos.add(hourClassDTO2);
+                        }
+                    }else{//不同 一小时
+                        if(etm> current - 60*60*1000 ){
+                            HourClassDTO hourClassDTO2 = new HourClassDTO(startClass);
+                            hourClassDTO2.setStatus(2);
+                            dtos.add(hourClassDTO2);
+                        }
+                    }
+
+                }
+            }
+        }
+
+        map.put("now",dtos);
+        if(!parentId.equals(userId)){
+            map.put("now",new ArrayList<HourClassDTO>());
+        }
+        map.put("list",hourClassDTOs);
+        return map;
+    }
+
 
     public Map<String,Object> getOneCoursesDesc(ObjectId id){
         Map<String,Object> map = new HashMap<String, Object>();

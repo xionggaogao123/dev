@@ -2,6 +2,7 @@ package com.fulaan.newVersionBind.service;
 
 import com.db.business.BusinessManageDao;
 import com.db.controlphone.ControlVersionDao;
+import com.db.excellentCourses.AccountLogDao;
 import com.db.excellentCourses.ClassOrderDao;
 import com.db.fcommunity.CommunityDao;
 import com.db.fcommunity.MemberDao;
@@ -25,6 +26,7 @@ import com.fulaan.wrongquestion.service.WrongQuestionService;
 import com.pojo.app.SessionValue;
 import com.pojo.controlphone.ControlVersionEntry;
 import com.pojo.controlphone.MQTTType;
+import com.pojo.excellentCourses.AccountLogEntry;
 import com.pojo.fcommunity.CommunityEntry;
 import com.pojo.fcommunity.MemberEntry;
 import com.pojo.fcommunity.NewVersionCommunityBindEntry;
@@ -88,6 +90,8 @@ public class NewVersionBindService {
 
     private UserDao userDao = new UserDao();
     private ClassOrderDao classOrderDao = new ClassOrderDao();
+
+    private AccountLogDao accountLogDao = new AccountLogDao();
 
     @Autowired
     private UserService userService;
@@ -1254,6 +1258,7 @@ public class NewVersionBindService {
     public void relieveBindRelation(ObjectId parentId,List<String> studentIds){
         for(String studentId:studentIds){
             delNewVersionEntry(parentId,new ObjectId(studentId));
+            yijiao2(new ObjectId(studentId),parentId);
         }
     }
 
@@ -1436,6 +1441,24 @@ public class NewVersionBindService {
         List<NewVersionBindRelationEntry> entries = newVersionBindRelationDao.getEntriesByMainUserId(mainUserId);
         if(entries.size()==0){
             classOrderDao.updateBindEntry(userId,mainUserId);
+            addLog(mainUserId,new ObjectId(),"家长："+userId.toString()+"课程已全部转移到孩子："+mainUserId.toString());
         }
+    }
+
+    /**
+     * 移交课程(孩子到家长)
+     */
+    public void yijiao2(ObjectId userId,ObjectId mainUserId){
+        classOrderDao.updateBindEntry(mainUserId,userId);
+        addLog(mainUserId,new ObjectId(),"孩子："+userId.toString()+"课程已全部转移到家长："+mainUserId.toString());
+    }
+
+
+    /**
+     * 充值消费日志
+     */
+    public void addLog(ObjectId userId,ObjectId contactId,String description){
+        AccountLogEntry accountLogEntry = new AccountLogEntry(userId,contactId,description);
+        accountLogDao.addEntry(accountLogEntry);
     }
 }

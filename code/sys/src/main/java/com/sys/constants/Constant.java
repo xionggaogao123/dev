@@ -884,6 +884,8 @@ public class Constant {
     public static final String COLLECTION_APP_RECORD = "apprecord";
     //作业记录（次）
     public static final String COLLECTION_APP_RECORD_RESULT = "apprecordresult";
+    //虚拟提交关系
+    public static final String COLLECTION_PARENT_CHILD_CONNECTION = "jxm_parent_child_connection";
     //错题本
     public static final String COLLECTION_BOOK_ERROR = "bookError";
     //名称转换

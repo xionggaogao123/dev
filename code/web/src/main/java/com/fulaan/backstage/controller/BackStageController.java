@@ -13,6 +13,7 @@ import com.fulaan.base.BaseController;
 import com.fulaan.controlphone.dto.ControlPhoneDTO;
 import com.fulaan.controlphone.dto.ControlSchoolTimeDTO;
 import com.fulaan.controlphone.dto.ControlSetBackDTO;
+import com.pojo.user.UserDetailInfoDTO;
 import com.sys.constants.Constant;
 import com.sys.utils.RespObj;
 import io.swagger.annotations.*;
@@ -1205,6 +1206,30 @@ public class BackStageController extends BaseController {
             e.printStackTrace();
             respObj.setCode(Constant.SUCCESS_CODE);
             respObj.setMessage("设置失败");
+        }
+        return JSON.toJSONString(respObj);
+    }
+
+    /**
+     *查询用户绑定关系
+     * @return
+     */
+    @ApiOperation(value = "查询用户绑定关系", httpMethod = "POST", produces = "application/json")
+    @ApiResponses( value = {@ApiResponse(code = 200, message = "Successful — 请求已完成",response = String.class),
+            @ApiResponse(code = 400, message = "请求中有语法问题，或不能满足请求"),
+            @ApiResponse(code = 500, message = "服务器不能完成请求")})
+    @RequestMapping("/selectUserRecord")
+    @ResponseBody
+    public String selectUserRecord(@ApiParam(name = "name", required = true, value = "name") @RequestParam(value = "name",defaultValue = "") String name){
+        RespObj respObj = new RespObj(Constant.FAILD_CODE);
+        try{
+            List<UserDetailInfoDTO> message = backStageService.selectUserRecord(name);
+            respObj.setCode(Constant.SUCCESS_CODE);
+            respObj.setMessage(message);
+        }catch (Exception e){
+            e.printStackTrace();
+            respObj.setCode(Constant.SUCCESS_CODE);
+            respObj.setMessage("查询用户绑定关系失败");
         }
         return JSON.toJSONString(respObj);
     }

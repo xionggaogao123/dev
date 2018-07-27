@@ -16,6 +16,7 @@ import com.db.operation.AppNoticeDao;
 import com.db.operation.AppOperationDao;
 import com.db.questionbook.QuestionAdditionDao;
 import com.db.questionbook.QuestionBookDao;
+import com.db.user.NewVersionBindRelationDao;
 import com.db.user.UserDao;
 import com.easemob.server.comm.constant.MsgType;
 import com.fulaan.appmarket.dto.AppDetailDTO;
@@ -48,6 +49,7 @@ import com.pojo.operation.AppCommentEntry;
 import com.pojo.operation.AppOperationEntry;
 import com.pojo.questionbook.QuestionAdditionEntry;
 import com.pojo.questionbook.QuestionBookEntry;
+import com.pojo.user.NewVersionBindRelationEntry;
 import com.pojo.user.UserDetailInfoDTO;
 import com.pojo.user.UserEntry;
 import com.sys.constants.Constant;
@@ -119,6 +121,8 @@ public class BackStageService {
     private FriendDao friendDao = new FriendDao();
 
     private NewVersionCommunityBindDao  newVersionCommunityBindDao = new NewVersionCommunityBindDao();
+
+    private NewVersionBindRelationDao newVersionBindRelationDao = new NewVersionBindRelationDao();
 
     private SchoolAppDao schoolAppDao = new SchoolAppDao();
 
@@ -1816,6 +1820,22 @@ public class BackStageService {
                 userDao.updateHuanXinFromName(entry1.getID(),name);
             }
         }
+    }
+
+    //role ===1     jia            role ===2 son
+    public List<UserDetailInfoDTO> selectUserRecord(String name){
+        List<UserDetailInfoDTO> udtos = new ArrayList<UserDetailInfoDTO>();
+        //家校美id查找
+        UserEntry entry= userDao.findByUserName(name);
+        if(entry!=null){
+            List<NewVersionBindRelationEntry> entries = newVersionBindRelationDao.getEntriesByMainUserId(entry.getID());
+            List<String> objectIdList = new ArrayList<String>();
+            for(NewVersionBindRelationEntry newVersionBindRelationEntry:entries){
+                objectIdList.add(newVersionBindRelationEntry.getUserId().toString());
+            }
+           udtos = userService.findUserInfoByUserIds(objectIdList);
+        }
+        return udtos;
     }
 
 }

@@ -533,13 +533,13 @@ public class BusinessManageService {
         if(versionOpenEntry!=null){
             map.put("status",1);
         }
-        map.put("agree",0);
-        UserAgreementEntry userAgreementEntry = userAgreementDao.getEntry(userId);
+        map.put("agree",1);
+      /*  UserAgreementEntry userAgreementEntry = userAgreementDao.getEntry(userId);
         if (userAgreementEntry != null) {
             if (userAgreementEntry.getAgree() == 1) {
                 map.put("agree",1);
             }
-        }
+        }*/
         return map;
     }
 
@@ -764,12 +764,12 @@ public class BusinessManageService {
     }
 
     public boolean booleanUserAgreement(ObjectId userId) {
-        UserAgreementEntry userAgreementEntry = userAgreementDao.getEntry(userId);
+     /*   UserAgreementEntry userAgreementEntry = userAgreementDao.getEntry(userId);
         if (userAgreementEntry != null) {
             if (userAgreementEntry.getAgree() == 1) {
                 return true;
             }
-        }
-        return false;
+        }*/
+        return true;
     }
 }

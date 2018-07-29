@@ -1,30 +1,7 @@
 package com.fulaan.txpay.service;
 
-import java.math.BigDecimal;
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
-import java.util.SortedMap;
-import java.util.TreeMap;
-
-import org.apache.commons.collections.CollectionUtils;
-import org.apache.log4j.Logger;
-import org.bson.types.ObjectId;
-import org.springframework.stereotype.Service;
-
-import com.db.excellentCourses.AccountFrashDao;
-import com.db.excellentCourses.AccountLogDao;
-import com.db.excellentCourses.AccountOrderDao;
-import com.db.excellentCourses.ClassOrderDao;
-import com.db.excellentCourses.ExcellentCoursesDao;
-import com.db.excellentCourses.ExtractCashDao;
-import com.db.excellentCourses.HourClassDao;
-import com.db.excellentCourses.RechargeResultDao;
-import com.db.excellentCourses.UserAccountDao;
-import com.db.excellentCourses.UserBehaviorDao;
+import cn.jiguang.commom.utils.StringUtils;
+import com.db.excellentCourses.*;
 import com.db.user.UserDao;
 import com.fulaan.txpay.Utils.HttpXmlUtils;
 import com.fulaan.txpay.Utils.ParseXMLUtils;
@@ -33,22 +10,18 @@ import com.fulaan.txpay.Utils.WXSignUtils;
 import com.fulaan.txpay.entity.IsBuyDto;
 import com.fulaan.txpay.entity.Unifiedorder;
 import com.fulaan.txpay.entity.UnifiedorderResult;
-import com.fulaan.utils.CollectionUtil;
 import com.mongodb.DBObject;
-import com.pojo.excellentCourses.AccountFrashEntry;
-import com.pojo.excellentCourses.AccountLogEntry;
-import com.pojo.excellentCourses.AccountOrderEntry;
-import com.pojo.excellentCourses.ClassOrderEntry;
-import com.pojo.excellentCourses.ExcellentCoursesEntry;
-import com.pojo.excellentCourses.HourClassEntry;
-import com.pojo.excellentCourses.RechargeResultEntry;
-import com.pojo.excellentCourses.UserBehaviorEntry;
+import com.pojo.excellentCourses.*;
 import com.pojo.user.UserEntry;
 import com.sys.constants.Constant;
 import com.sys.utils.DateTimeUtils;
-import com.sys.utils.StringUtil;
+import org.apache.commons.collections.CollectionUtils;
+import org.apache.log4j.Logger;
+import org.bson.types.ObjectId;
+import org.springframework.stereotype.Service;
 
-import cn.jiguang.commom.utils.StringUtils;
+import java.math.BigDecimal;
+import java.util.*;
 
 @Service
 public class WxpayService {
@@ -700,7 +673,7 @@ public class WxpayService {
     public String updateClassOrderByOrderId(String orderId) {
         String mess = "无存在且支付的订单！";
         if (StringUtils.isNotEmpty(orderId)) {
-            AccountOrderEntry aoe = accountOrderDao.getEntry(orderId.trim());
+            AccountOrderEntry aoe = accountOrderDao.getNotEntry(orderId.trim());
             
             //存在且支付
             if (aoe != null && aoe.getStatus() == Constant.ONE) {

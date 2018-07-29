@@ -28,4 +28,14 @@ public class AccountOrderDao  extends BaseDao{
             return null;
         }
     }
+
+    public AccountOrderEntry getNotEntry(String orderId){
+        BasicDBObject query=new BasicDBObject("oid",orderId).append("sta",Constant.ONE).append("isr", Constant.ZERO);
+        DBObject dbObject=findOne(MongoFacroty.getAppDB(), Constant.COLLECTION_ACCOUNT_ORDER,query,Constant.FIELDS);
+        if(null!=dbObject){
+            return new AccountOrderEntry((BasicDBObject) dbObject);
+        }else {
+            return null;
+        }
+    }
 }

@@ -263,7 +263,7 @@ public class ExcellentCoursesController extends BaseController {
         RespObj respObj=new RespObj(Constant.FAILD_CODE);
         try {
             respObj.setCode(Constant.SUCCESS_CODE);
-            Map<String,Object>  dto = excellentCoursesService.gotoNewClass(new ObjectId(id),getUserId());
+            Map<String,Object>  dto = excellentCoursesService.gotoNewClass(new ObjectId(id), getUserId());
             respObj.setMessage(dto);
         } catch (Exception e) {
             e.printStackTrace();
@@ -459,7 +459,7 @@ public class ExcellentCoursesController extends BaseController {
         RespObj respObj=new RespObj(Constant.FAILD_CODE);
         try {
             respObj.setCode(Constant.SUCCESS_CODE);
-            Map<String,Object> map = excellentCoursesService.getNewCoursesDesc(new ObjectId(id),new ObjectId(sonId));
+            Map<String,Object> map = excellentCoursesService.getNewParentCoursesDesc(new ObjectId(id),new ObjectId(sonId),getUserId());
             respObj.setMessage(map);
         } catch (Exception e) {
             e.printStackTrace();

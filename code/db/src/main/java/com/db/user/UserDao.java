@@ -1010,6 +1010,13 @@ public class UserDao extends BaseDao {
         return dbo == null ? null : new UserEntry((BasicDBObject) dbo);
     }
 
+    public UserEntry findByPhone(String phone) {
+        BasicDBObject query = new BasicDBObject()
+                .append("mn", phone.toLowerCase());
+        DBObject dbo = findOne(MongoFacroty.getAppDB(), Constant.COLLECTION_USER_NAME, query, Constant.FIELDS);
+        return dbo == null ? null : new UserEntry((BasicDBObject) dbo);
+    }
+
     public UserEntry findByEmail(String email) {
         FieldValuePair fieldValuePair = new FieldValuePair("e", email);
         return query(fieldValuePair);

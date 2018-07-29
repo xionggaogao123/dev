@@ -445,8 +445,10 @@ public class AppCommentService {
         for(String str : objectIdList){
             oidsa.add(new ObjectId(str));
         }
+        List<String> objectIdList3 = new ArrayList<String>();
         for(ParentChildConnectionEntry pentry : entries1){
             oidsa.add(pentry.getUserId());
+            objectIdList3.add(pentry.getUserId().toString());
         }
         //查询已提交
         List<AppOperationEntry> entries =appOperationDao.getEntryListByParentIdByStu(id,oidsa, 3, page, pageSize);
@@ -462,6 +464,7 @@ public class AppCommentService {
             for(AppOperationEntry en : entries){
                 AppOperationDTO dto = new AppOperationDTO(en);
                 objectIdList.remove(dto.getUserId());
+                objectIdList3.remove(dto.getUserId());
                 uids.add(dto.getUserId());
                 plist.add(en.getID());
                 dtos.add(dto);
@@ -541,7 +544,18 @@ public class AppCommentService {
             user.setUserId(userDetailInfoDTO.getId());
             ulsit.add(user);
         }
-
+        //objectIdList3
+        for(ParentChildConnectionEntry pentry : entries1){
+            if(objectIdList3.contains(pentry.getUserId().toString())){
+                User user = new User();
+                user.setAvator(pentry.getAvatar());
+                user.setSex(0);
+                user.setNickName(pentry.getUserName());
+                user.setUserName(pentry.getUserName());
+                user.setUserId(pentry.getUserId().toString());
+                ulsit.add(user);
+            }
+        }
         //已提交
         map.put("loadList",dtos);
         //已提交人数
@@ -564,21 +578,21 @@ public class AppCommentService {
         }
         map.put("desc",dtoa);
 
-        List<NewVersionBindRelationDTO> entries4 = newVersionBindService.getCommunityBindStudentList(userId,aen.getRecipientId());
+       /* List<NewVersionBindRelationDTO> entries4 = newVersionBindService.getCommunityBindStudentList(userId,aen.getRecipientId());
         List<String> str3 = new ArrayList<String>();
         for(NewVersionBindRelationDTO dto3 : entries4){
             str3.add(dto3.getUserId());
-        }
-        List<UserDetailInfoDTO> unList2 = userService.findUserInfoByUserIds(str3);
+        }*/
+      /*  List<UserDetailInfoDTO> unList2 = userService.findUserInfoByUserIds(str3);
         if(unList2.size()>0){
             map.put("hasChild",1);
         }else{
             map.put("hasChild",0);
-        }
-        List<ParentChildConnectionEntry> entries6 = parentChildConnectionDao.getOneEntry(userId, aen.getRecipientId());
-        if(entries6.size()>0){
-            map.put("hasChild",1);
-        }
+        }*/
+        //List<ParentChildConnectionEntry> entries6 = parentChildConnectionDao.getOneEntry(userId, aen.getRecipientId());
+        //if(entries6.size()>0){
+        map.put("hasChild",1);
+       // }
         return map;
     }
 
@@ -1416,6 +1430,7 @@ public class AppCommentService {
         //添加一级评论
        // AppCommentEntry entry = appCommentDao.getEntry(id);
         List<AppOperationEntry> entries = null;
+
         if(label==1){
             if(entry2.getShowType()==1){
                 entries= appOperationDao.getEntryListByParentId(id,role,page,pageSize);
@@ -1454,6 +1469,7 @@ public class AppCommentService {
                 dtos.add(dto);
             }
         }
+
         List<UserDetailInfoDTO> udtos = userService.findUserInfoByUserIds(uids);
         Map<String,UserDetailInfoDTO> map = new HashMap<String, UserDetailInfoDTO>();
         if(udtos != null && udtos.size()>0){
@@ -1461,6 +1477,15 @@ public class AppCommentService {
                 map.put(dto4.getId(),dto4);
             }
         }
+        // 代提交虚拟孩子
+        List<ParentChildConnectionEntry> entries1 = parentChildConnectionDao.getEntryByList(entry2.getRecipientId());
+        for(ParentChildConnectionEntry pentry : entries1){
+            UserDetailInfoDTO dt = new UserDetailInfoDTO();
+            dt.setNickName(pentry.getUserName());
+            dt.setImgUrl(pentry.getAvatar());
+            map.put(pentry.getUserId().toString(), dt);
+        }
+        //
         for(AppOperationDTO dto5 : dtos){
             UserDetailInfoDTO dto9 = map.get(dto5.getUserId());
             if(dto9 != null) {
@@ -1666,6 +1691,8 @@ public class AppCommentService {
 
         }else{
             List<String> objectIdList4 = newVersionBindService.getStudentIdListByCommunityId(entry.getRecipientId());
+            //代提交虚拟孩子
+            List<ParentChildConnectionEntry> entries1 = parentChildConnectionDao.getEntryByList(entry.getRecipientId());
             List<ObjectId> objectIdList5 = new ArrayList<ObjectId>();
             for(String str : objectIdList4){
                 objectIdList5.add(new ObjectId(str));
@@ -1675,7 +1702,10 @@ public class AppCommentService {
             for(UserEntry userEntry3: userEntries){
                 objectIdList3.add(userEntry3.getID().toString());
             }
-            int count = objectIdList3.size();
+            for(ParentChildConnectionEntry pe :entries1 ){
+                objectIdList3.add(pe.getUserId().toString());
+            }
+            int count = objectIdList3.size() ;
             entry.setAllLoadNumber(count);
             objectIdList3.removeAll(stringList);
             entry.setLoadNumber(count-objectIdList3.size());
@@ -2262,7 +2292,6 @@ public class AppCommentService {
     public List<Map<String,Object>> getNewMyCommunityChildList(ObjectId userId,ObjectId communityId,ObjectId contactId){
         List<Map<String,Object>> mapList = new ArrayList<Map<String, Object>>();
         List<NewVersionCommunityBindEntry> entries = newVersionBindService.getCommunityAndMainUserId(communityId, userId);
-        List<ObjectId> objectIdLists = new ArrayList<ObjectId>();
         if(entries.size()>0){
             List<ObjectId> oids = new ArrayList<ObjectId>();
             List<String> stringList = new ArrayList<String>();
@@ -2270,7 +2299,7 @@ public class AppCommentService {
                 oids.add(entry.getUserId());
                 stringList.add(entry.getUserId().toString());
             }
-            objectIdLists = appOperationDao.getEntryMap(oids,contactId, 3);
+            List<ObjectId> objectIdLists = appOperationDao.getEntryMap(oids,contactId, 3);
             List<UserDetailInfoDTO> udtos = userService.findUserInfoByUserIds(stringList);
             Map<String,UserDetailInfoDTO> map = new HashMap<String, UserDetailInfoDTO>();
             if(udtos != null && udtos.size()>0){
@@ -2297,8 +2326,13 @@ public class AppCommentService {
             }
 
         }
-        List<ParentChildConnectionEntry> entries1 = parentChildConnectionDao.getEntry(userId);
+        List<ParentChildConnectionEntry> entries1 = parentChildConnectionDao.getEntry(userId,communityId);
         if(entries1.size()>0){
+            List<ObjectId> oids = new ArrayList<ObjectId>();
+            for(ParentChildConnectionEntry pentry : entries1){
+                oids.add(pentry.getUserId());
+            }
+            List<ObjectId> objectIdLists = appOperationDao.getEntryMap(oids,contactId, 3);
             for(ParentChildConnectionEntry pentry : entries1){
                 Map<String,Object> stringObjectMap = new HashMap<String, Object>();
                 stringObjectMap.put("userId",pentry.getUserId().toString());
@@ -2492,16 +2526,23 @@ public class AppCommentService {
         if(aen.getShowType()==1){
             //所有学生
             List<String> objectIdList2 = newVersionBindService.getStudentIdListByCommunityId(aen.getRecipientId());
+            //代提交用户
+            List<ParentChildConnectionEntry> objectIdList3 = parentChildConnectionDao.getEntryByList(aen.getRecipientId());
             List<ObjectId> objectIdList1 = new ArrayList<ObjectId>();
             for(String str : objectIdList2){
                 objectIdList1.add(new ObjectId(str));
             }
+
+
             List<UserEntry> userEntries = userService.getUserByList(objectIdList1);
             List<String> objectIdList = new ArrayList<String>();
             List<ObjectId> oidsa = new ArrayList<ObjectId>();
             for(UserEntry userEntry3: userEntries){
                 objectIdList.add(userEntry3.getID().toString());
                 oidsa.add(userEntry3.getID());
+            }
+            for(ParentChildConnectionEntry pe : objectIdList3){
+                oidsa.add(pe.getUserId());
             }
             //查询已提交
             List<AppOperationEntry> entries =appOperationDao.getEntryListByParentIdByStu(id,oidsa, 3, page, pageSize);
@@ -2532,8 +2573,7 @@ public class AppCommentService {
                     map3.put(dto4.getId(),dto4);
                 }
             }
-            //代提交用户
-            List<ParentChildConnectionEntry> objectIdList3 = parentChildConnectionDao.getEntryByList(aen.getRecipientId());
+
             for(ParentChildConnectionEntry entry:objectIdList3){
                 UserDetailInfoDTO ud = new UserDetailInfoDTO();
                 ud.setNickName(entry.getUserName());
@@ -2674,6 +2714,7 @@ public class AppCommentService {
                 return "不能添加同名的孩子";
             }
         }
+
 
         return "修改成功";
     }

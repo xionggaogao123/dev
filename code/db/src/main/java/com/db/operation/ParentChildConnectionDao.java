@@ -25,20 +25,20 @@ public class ParentChildConnectionDao extends BaseDao {
     }
 
     public void updateEntry(ObjectId id,String name){
-        BasicDBObject query = new BasicDBObject(Constant.ID,id);
-        BasicDBObject updateValue=new BasicDBObject(Constant.MONGO_SET,new BasicDBObject("nam",name));
+        BasicDBObject query = new BasicDBObject("uid",id);
+        BasicDBObject updateValue=new BasicDBObject(Constant.MONGO_SET,new BasicDBObject("una",name));
         update(MongoFacroty.getAppDB(), Constant.COLLECTION_PARENT_CHILD_CONNECTION, query,updateValue);
     }
 
     public void delEntry(ObjectId id){
-        BasicDBObject query = new BasicDBObject(Constant.ID,id);
+        BasicDBObject query = new BasicDBObject("uid",id);
         BasicDBObject updateValue=new BasicDBObject(Constant.MONGO_SET,new BasicDBObject("isr",Constant.ONE));
         update(MongoFacroty.getAppDB(), Constant.COLLECTION_PARENT_CHILD_CONNECTION, query,updateValue);
     }
 
     public ParentChildConnectionEntry getEntryByById(ObjectId parentId,String name,ObjectId communityId) {
         BasicDBObject query = new BasicDBObject("pid",parentId);
-        query.append("nam",name);
+        query.append("una",name);
         query.append("cid",communityId);
         query.append("isr",Constant.ZERO);
         DBObject obj =
@@ -49,9 +49,10 @@ public class ParentChildConnectionDao extends BaseDao {
         return null;
     }
 
-    public List<ParentChildConnectionEntry> getEntry(ObjectId parentId) {
+    public List<ParentChildConnectionEntry> getEntry(ObjectId parentId,ObjectId communityId) {
         BasicDBObject query = new BasicDBObject();
         query.append("pid",parentId);
+        query.append("cid",communityId);
         query.append("isr",Constant.ZERO);
         List<DBObject> dbList =
                 find(MongoFacroty.getAppDB(),

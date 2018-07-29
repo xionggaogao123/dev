@@ -575,6 +575,7 @@ public class WxpayService {
             }else{
                 AccountFrashEntry accountFrashEntry1 = new AccountFrashEntry(userId,price,Constant.ZERO,Constant.ZERO);
                 accountFrashDao.addEntry(accountFrashEntry1);
+                accountFrashEntry = accountFrashEntry1;
                 EBusinessLog.info(userId.toString()+"-"+contactId.toString()+"订单："+orderId+"账户金额已增加");
                 addLog(userId, contactId, "订单：" + orderId+"账户金额已增加");
             }
@@ -582,7 +583,7 @@ public class WxpayService {
 
             //增加美豆余额
             UserBehaviorEntry userBehaviorEntry = userBehaviorDao.getEntry(userId);
-            if(accountFrashEntry!=null){
+            if(userBehaviorEntry!=null){
                 userBehaviorEntry.setAccount(userBehaviorEntry.getAccount()+price);
                 userBehaviorDao.addEntry(userBehaviorEntry);
                 EBusinessLog.info(userId.toString()+"-"+contactId.toString()+"订单："+orderId+"美豆金额已增加");

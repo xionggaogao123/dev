@@ -10,6 +10,7 @@ import java.util.Set;
 import java.util.SortedMap;
 import java.util.TreeMap;
 
+import org.apache.commons.collections.CollectionUtils;
 import org.apache.log4j.Logger;
 import org.bson.types.ObjectId;
 import org.springframework.stereotype.Service;
@@ -32,6 +33,7 @@ import com.fulaan.txpay.Utils.WXSignUtils;
 import com.fulaan.txpay.entity.IsBuyDto;
 import com.fulaan.txpay.entity.Unifiedorder;
 import com.fulaan.txpay.entity.UnifiedorderResult;
+import com.fulaan.utils.CollectionUtil;
 import com.mongodb.DBObject;
 import com.pojo.excellentCourses.AccountFrashEntry;
 import com.pojo.excellentCourses.AccountLogEntry;
@@ -685,5 +687,42 @@ public class WxpayService {
 
 
 
+    }
+    
+    
+    /**
+     * 
+     *〈简述〉
+     *〈详细描述〉微信购买课程批量更新
+     * @author Administrator
+     * @param orderId
+     */
+    public String updateClassOrderByOrderId(String orderId) {
+        String mess = "无存在且支付的订单！";
+        if (StringUtils.isNotEmpty(orderId)) {
+            AccountOrderEntry aoe = accountOrderDao.getEntry(orderId.trim());
+            
+            //存在且支付
+            if (aoe != null && aoe.getStatus() == Constant.ONE) {
+                
+              //调用自主订课
+                List<ClassOrderEntry> classOrderEntries = classOrderDao.getOrderEntry(orderId);
+                if (CollectionUtils.isNotEmpty(classOrderEntries)) {
+                    List<ObjectId> objectIdList4 = new ArrayList<ObjectId>();
+                    for(ClassOrderEntry classOrderEntry :classOrderEntries){
+                        objectIdList4.add(classOrderEntry.getID());
+                    }
+                  //修改课节订单为已购买
+                    classOrderDao.updateEntryToBuy(objectIdList4);
+                    mess = "成功！";
+                } else {
+                    mess = "该订单下无课程！！";
+                }
+              
+            }
+        }
+        
+      
+      return mess;
     }
 }

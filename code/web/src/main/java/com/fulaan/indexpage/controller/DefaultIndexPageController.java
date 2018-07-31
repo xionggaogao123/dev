@@ -209,6 +209,25 @@ public class DefaultIndexPageController extends BaseController {
         return JSON.toJSONString(respObj);
     }
 
+    @ApiOperation(value = "获取系统消息", httpMethod = "POST", produces = "application/json")
+    @ApiResponses( value = {@ApiResponse(code = 200, message = "Successful — 请求已完成",response = String.class)})
+    @RequestMapping("/getSystemList")
+    @ResponseBody
+    public String getSystemList(@ApiParam(name = "page", required = true, value = "page") @RequestParam("page") int page,
+                              @ApiParam(name = "pageSize", required = true, value = "pageSize") @RequestParam("pageSize") int pageSize){
+        RespObj respObj=new RespObj(Constant.FAILD_CODE);
+        try {
+            respObj.setCode(Constant.SUCCESS_CODE);
+            Map<String,Object> map = indexPageService.getSystemList(page, pageSize, getUserId());
+            respObj.setMessage(map);
+        } catch (Exception e) {
+            e.printStackTrace();
+            respObj.setCode(Constant.FAILD_CODE);
+            respObj.setErrorMessage("获取往期文章失败");
+        }
+        return JSON.toJSONString(respObj);
+    }
+
     @ApiOperation(value = "获取往期文章", httpMethod = "POST", produces = "application/json")
     @ApiResponses( value = {@ApiResponse(code = 200, message = "Successful — 请求已完成",response = String.class)})
     @RequestMapping("/getRoleList")

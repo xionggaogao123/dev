@@ -1449,7 +1449,7 @@ public class IndexPageService {
         List<Map<String,Object>> list = new ArrayList<Map<String, Object>>();
         //通知逻辑
         List<ObjectId>  dlist =communityService.getCommunitys3(userId, 1, 100);
-        dlist.add(userId);
+        //dlist.add(userId);
         TeacherApproveEntry teacherApproveEntry = teacherApproveDao.getEntry(userId);
         List<SuperTopicDTO> superTopicDTOs = new ArrayList<SuperTopicDTO>();
         if(teacherApproveEntry!=null && teacherApproveEntry.getType()==2){//认证大V
@@ -1714,6 +1714,10 @@ public class IndexPageService {
         }
 
         Map<String,Object> ob5 = new HashMap<String, Object>();
+        List<IndexPageEntry> entrys2 = indexPageDao.getPageList(dlist,userId, 1, 1);
+        if(entrys2.size()>0){
+            syList.add(entrys2.get(0).getContactId());
+        }
         if(syList.size()>0){
             List<SystemMessageEntry> systemMessageEntries = systemMessageDao.selectContentList(syList);
             for(SystemMessageEntry entry:systemMessageEntries){
@@ -1785,7 +1789,8 @@ public class IndexPageService {
                     ob1.put("timeExpression","");
                     ob1.put("isOwner",true);
                     ob1.put("allContent","");
-                    list.add(ob1);
+                    //list.add(ob1);
+                    ob5 = ob1;
                 }else if(entry.getType()==3){
                     Map<String,Object> ob1 = new HashMap<String, Object>();
                     ob1.put("tag", dto8.getId());
@@ -1810,8 +1815,8 @@ public class IndexPageService {
                     ob1.put("timeExpression",dto8.getAvatar());
                     ob1.put("isOwner",true);
                     ob1.put("allContent","");
-                    list.add(ob1);
-
+                    //list.add(ob1);
+                    ob5 = ob1;
                 }else if(entry.getType()==4){
                     Map<String,Object> ob1 = new HashMap<String, Object>();
                     ob1.put("tag", CommunityType.system.getDes());
@@ -1836,15 +1841,14 @@ public class IndexPageService {
                     ob1.put("timeExpression","");
                     ob1.put("isOwner",true);
                     ob1.put("allContent","");
-                    list.add(ob1);
+                   // list.add(ob1);
+                    ob5 = ob1;
                 }else{
 
                 }
             }
         }
-        if(ob5.size()!=0){
-            list.add(ob5);
-        }
+
         Map<String,Object> map = new HashMap<String, Object>();
         List<Map<String,Object>> list2 = new ArrayList<Map<String, Object>>();
         if(list.size()>0){
@@ -1863,6 +1867,11 @@ public class IndexPageService {
         }
         map.put("count",count);
         map.put("list",list2);
+        if(ob5.size()!=0){
+            map.put("systemMessage",ob5);
+        }else{
+            map.put("systemMessage",null);
+        }
         map.put("hotList",superTopicDTOs);
         return map;
     }
@@ -2173,6 +2182,156 @@ public class IndexPageService {
      */
     public void addSystemMessage(){
 
+
+    }
+
+
+    //获取系统消息
+    public Map<String,Object>  getSystemList(int page ,int pageSize,ObjectId userId){
+        List<Map<String,Object>> list = new ArrayList<Map<String, Object>>();
+        Map<String,Object> map = new HashMap<String, Object>();
+        List<ObjectId> dlist = new ArrayList<ObjectId>();
+        dlist.add(userId);
+        List<IndexPageEntry> entrys2 = indexPageDao.getPageList(dlist,userId, page,pageSize);
+        int count = indexPageDao.countPageList(dlist,userId);
+        List<ObjectId>  syList = new ArrayList<ObjectId>();
+        if(entrys2.size()>0){
+           for(IndexPageEntry indexPageEntry : entrys2){
+               syList.add(indexPageEntry.getContactId());
+           }
+        }
+        if(syList.size()>0){
+            List<SystemMessageEntry> systemMessageEntries = systemMessageDao.selectContentList(syList);
+            for(SystemMessageEntry entry:systemMessageEntries){
+                SystemMessageDTO dto8 = new SystemMessageDTO(entry);
+                if(entry.getType()==1){
+                    Map<String,Object> ob1 = new HashMap<String, Object>();
+                    ob1.put("tag", CommunityType.system.getDes());
+                    ob1.put("cardType",2);
+                    ob1.put("groupName","");
+                    ob1.put("id",dto8.getId());
+                    ob1.put("userName","家校美小助手");
+                    ob1.put("subject","");
+                    ob1.put("avatar","http://7xiclj.com1.z0.glb.clouddn.com/5a26565027fddd1db08722f1.png");
+                    ob1.put("title","家校美使用向导");
+                    ob1.put("time",dto8.getCreateTime());
+                    ob1.put("content","家校美，一款富有魔力的产品！");
+                  /*  List<Attachement> imageList=new ArrayList<Attachement>();
+                    Attachement a = new Attachement();
+                    a.setUrl("");
+                    imageList.add(a);*/
+                    ob1.put("imageList",new ArrayList<Attachement>());
+                    ob1.put("commentCount",0);
+                    ob1.put("videoList",new ArrayList<VideoDTO>());
+                    ob1.put("voiceList",new ArrayList<Attachement>());
+                    ob1.put("attachements",new ArrayList<Attachement>());
+                    ob1.put("isRead",0);
+                    ob1.put("totalReadCount", 0);
+                    ob1.put("readCount", 0);
+                    ob1.put("unReadCount",0);
+                    ob1.put("timeExpression","");
+                    ob1.put("isOwner",true);
+                    ob1.put("allContent","");
+                    //ob5 = ob1;
+                    //list.add(ob1);
+                }else if(entry.getType()==2){
+                    Map<String,Object> ob1 = new HashMap<String, Object>();
+                    ob1.put("tag", CommunityType.system.getDes());
+                    ob1.put("cardType",3);
+                    ob1.put("groupName",dto8.getSourceName());
+                    ob1.put("id",dto8.getId());
+                    ob1.put("userName","家校美小助手");
+                    ob1.put("subject","");
+                    ob1.put("avatar","http://7xiclj.com1.z0.glb.clouddn.com/5a26565027fddd1db08722f1.png");
+                    ob1.put("title","恭喜您创建了一个新社群");
+                    ob1.put("time",dto8.getCreateTime());
+                    if(dto8.getContent()!=null && !dto8.getContent().equals("")){
+                        ob1.put("content","恭喜您于"+dto8.getCreateTime().substring(0,11)+"日成功创建了“"
+                                + dto8.getSourceName()+"”社群，您的社群id是:"+dto8.getContent()+"，您是该班级社群的“社长”，拥有一切特权。\n 此外您后期最多" +
+                                "可以指定设置10位成员为“副社长”，他们也能拥有各项发帖权利。");
+                    }else{
+                        ob1.put("content","恭喜您于"+dto8.getCreateTime().substring(0,11)+"日成功创建了“"
+                                + dto8.getSourceName()+"”社群，您是该班级社群的“社长”，拥有一切特权。\n 此外您后期最多" +
+                                "可以指定设置10位成员为“副社长”，他们也能拥有各项发帖权利。");
+                    }
+
+                  /*  List<Attachement> imageList=new ArrayList<Attachement>();
+                    Attachement a = new Attachement();
+                    a.setUrl("");
+                    imageList.add(a);*/
+                    ob1.put("imageList",new ArrayList<Attachement>());
+                    ob1.put("commentCount",0);
+                    ob1.put("videoList",new ArrayList<VideoDTO>());
+                    ob1.put("voiceList",new ArrayList<Attachement>());
+                    ob1.put("attachements",new ArrayList<Attachement>());
+                    ob1.put("isRead",0);
+                    ob1.put("totalReadCount", 0);
+                    ob1.put("readCount", 0);
+                    ob1.put("unReadCount",0);
+                    ob1.put("timeExpression","");
+                    ob1.put("isOwner",true);
+                    ob1.put("allContent","");
+                    list.add(ob1);
+
+                }else if(entry.getType()==3){
+                    Map<String,Object> ob1 = new HashMap<String, Object>();
+                    ob1.put("tag", dto8.getId());
+                    ob1.put("cardType",5);
+                    ob1.put("groupName",dto8.getSourceName());
+                    ob1.put("id",dto8.getSourceId());
+                    ob1.put("userName","家校美小助手");
+                    ob1.put("subject",dto8.getTitle());
+                    ob1.put("avatar","http://7xiclj.com1.z0.glb.clouddn.com/5a26565027fddd1db08722f1.png");
+                    ob1.put("title","您的留言被选为精选留言了");
+                    ob1.put("time",dto8.getCreateTime());
+                    ob1.put("content",dto8.getContent());
+                    ob1.put("imageList",new ArrayList<Attachement>());
+                    ob1.put("commentCount",0);
+                    ob1.put("videoList",new ArrayList<VideoDTO>());
+                    ob1.put("voiceList",new ArrayList<Attachement>());
+                    ob1.put("attachements",new ArrayList<Attachement>());
+                    ob1.put("isRead",0);
+                    ob1.put("totalReadCount", 0);
+                    ob1.put("readCount", 0);
+                    ob1.put("unReadCount",0);
+                    ob1.put("timeExpression",dto8.getAvatar());
+                    ob1.put("isOwner",true);
+                    ob1.put("allContent","");
+                    list.add(ob1);
+
+                }else if(entry.getType()==4){
+                    Map<String,Object> ob1 = new HashMap<String, Object>();
+                    ob1.put("tag", CommunityType.system.getDes());
+                    ob1.put("cardType",3);
+                    ob1.put("groupName",dto8.getSourceName());
+                    ob1.put("id",dto8.getId());
+                    ob1.put("userName","家校美小助手");
+                    ob1.put("subject","");
+                    ob1.put("avatar","http://7xiclj.com1.z0.glb.clouddn.com/5a26565027fddd1db08722f1.png");
+                    ob1.put("title","直播课堂提醒");
+                    ob1.put("time",dto8.getCreateTime());
+                    ob1.put("content",dto8.getContent());
+                    ob1.put("imageList",new ArrayList<Attachement>());
+                    ob1.put("commentCount",0);
+                    ob1.put("videoList",new ArrayList<VideoDTO>());
+                    ob1.put("voiceList",new ArrayList<Attachement>());
+                    ob1.put("attachements",new ArrayList<Attachement>());
+                    ob1.put("isRead",0);
+                    ob1.put("totalReadCount", 0);
+                    ob1.put("readCount", 0);
+                    ob1.put("unReadCount",0);
+                    ob1.put("timeExpression","");
+                    ob1.put("isOwner",true);
+                    ob1.put("allContent","");
+                    list.add(ob1);
+                }else{
+
+                }
+            }
+        }
+        map.put("list",list);
+        map.put("count",count);
+        return map;
 
     }
 

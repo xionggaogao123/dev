@@ -991,6 +991,9 @@ public class ExcellentCoursesService {
                 }
             }
         }
+        if(dtos.size()>0){
+            map.put("isEnd",0);
+        }
         map.put("now",dtos);
         map.put("list",hourClassDTOs);
         return map;

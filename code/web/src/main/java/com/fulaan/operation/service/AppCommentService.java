@@ -1601,6 +1601,7 @@ public class AppCommentService {
         if(entry2==null){
             return null;
         }
+        AppCommentEntry appCommentEntry = appCommentDao.getEntry(entry2.getContactId());
         if(entry2.getParentId()!=null && entry2.getParentId().equals(userId)){
             entry2.setRole(4);
         }
@@ -1631,6 +1632,17 @@ public class AppCommentService {
                 map.put(dto4.getId(),dto4);
             }
         }
+        if(appCommentEntry!=null){
+            List<ParentChildConnectionEntry> objectIdList3 = parentChildConnectionDao.getEntryByList(appCommentEntry.getRecipientId());
+            for(ParentChildConnectionEntry entry:objectIdList3){
+                UserDetailInfoDTO ud = new UserDetailInfoDTO();
+                ud.setNickName(entry.getUserName());
+                ud.setImgUrl(entry.getAvatar());
+                map.put(entry.getUserId().toString(),ud);
+            }
+        }
+
+
         for(AppOperationDTO dto5 : dtos){
             UserDetailInfoDTO dto9 = map.get(dto5.getUserId());
             if(dto9 != null){

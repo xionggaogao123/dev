@@ -61,7 +61,7 @@ public class DefaultCommonQuestionController {
             @ApiResponse(code = 500, message = "服务器不能完成请求")})
     @RequestMapping("/getCommonQuestionByType")
     @ResponseBody
-    public RespObj getCommonQuestionByType(int type,
+    public RespObj getCommonQuestionByType(@RequestParam(required = false, defaultValue = "0")int type,
                                           String name,
                                           @RequestParam(required = false, defaultValue = "1")int page,
                                           @RequestParam(required = false, defaultValue = "10")int pageSize) {

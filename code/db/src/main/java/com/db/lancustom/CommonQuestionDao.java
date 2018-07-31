@@ -107,8 +107,10 @@ public class CommonQuestionDao extends BaseDao {
         List<CommonQuestionEntry> entries = new ArrayList<CommonQuestionEntry>();
         
         BasicDBObject query=new BasicDBObject().append("isr", 0);
+        if (type != 0) {
+            query.append("type", type);
+        }
         
-        query.append("type", type);
        
         if (StringUtils.isNotBlank(name)) {
             query.append("question", new BasicDBObject(Constant.MONGO_REGEX,name));

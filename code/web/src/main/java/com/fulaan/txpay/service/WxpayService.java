@@ -289,7 +289,7 @@ public class WxpayService {
         EBusinessLog.info(userId.toString()+"-"+contactId.toString()+"生成了充值订单号："+orderId);
         //生成微信支付订单  String body,String subject,String outTradeNo,String timeoutExpress,String totalAmount
         String body = "购买课程";
-        UnifiedorderResult order = createAppChongPay(body,PAY_NOW_SUBJECT,orderId,PAY_TIMEOUTEXPRESS,new BigDecimal(price*100).intValue(),PAY_NOW_NOTIFYURL,ip);
+        UnifiedorderResult order = createAppChongPay(body,PAY_NOW_SUBJECT,orderId,PAY_TIMEOUTEXPRESS,mul(price, 100),PAY_NOW_NOTIFYURL,ip);
         if(StringUtils.isEmpty(order.getPrepay_id())){
             addLog(userId,contactId,"微信未支付订单生成失败，订单终止");
             EBusinessLog.info(userId.toString()+"-"+contactId.toString()+"微信未支付订单生成失败，订单终止");
@@ -383,6 +383,17 @@ public class WxpayService {
         }else{
             throw  new Exception("订单信息不存在！");
         }
+    }
+    
+    public static void main(String[] args) {
+        double price = 0;
+        double p = 1.13d;
+        double pp = sum(price, p);
+        
+        System.out.println(pp);
+        System.out.println(new BigDecimal(pp*100));
+        System.out.println(mul(pp, 100));
+        System.out.println(new BigDecimal(pp*100).intValue());
     }
     
     public boolean isBuy(String orderId) {
@@ -713,6 +724,12 @@ public class WxpayService {
         BigDecimal bd1 = new BigDecimal(Double.toString(d1));
         BigDecimal bd2 = new BigDecimal(Double.toString(d2));
         return bd1.subtract(bd2).doubleValue();
+    }
+    
+    public static int mul(double d1,double d2){
+        BigDecimal bd1 = new BigDecimal(Double.toString(d1));
+        BigDecimal bd2 = new BigDecimal(Double.toString(d2));
+        return bd1.multiply(bd2).intValue();
     }
     
 }

@@ -199,7 +199,7 @@ public class DefaultIndexPageController extends BaseController {
                 }
             }
 
-            Map<String,Object> mlist =  indexPageService.getFourHotIndexList(getUserId(), page, pageSize);
+            Map<String,Object> mlist =  indexPageService.getFiveHotIndexList(getUserId(), page, pageSize);
             respObj.setMessage(mlist);
         } catch (Exception e) {
             e.printStackTrace();

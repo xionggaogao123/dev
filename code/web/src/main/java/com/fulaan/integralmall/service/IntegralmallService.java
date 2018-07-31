@@ -70,7 +70,11 @@ public class IntegralmallService {
      * @return
      */
     public IntegralmallHomeDto getIntegralmallHome(int page,int pageSize,ObjectId userId) {
-        IntegralSufferEntry integralSufferEntry = integralSufferService.getEntry(userId);
+        IntegralSufferEntry integralSufferEntry;
+        integralSufferEntry = integralSufferService.getEntry(userId);
+        if (integralSufferEntry == null) {
+            integralSufferEntry = new IntegralSufferEntry(userId, 0, 0, 0, 0, 0);
+        }
         IntegralmallHomeDto dto = new IntegralmallHomeDto();
         List<GoodsEntry> list= goodsDao.getGoodsList(null,page, pageSize);
         List<GoodsDto> goodsList = new ArrayList<GoodsDto>();

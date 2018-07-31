@@ -1083,4 +1083,10 @@ public class Constant {
     public static final String COLLECTION_INTEGRAL_ADDRESS = "integral_address";
     //订单
     public static final String COLLECTION_INTEGRAL_ORDER = "integral_order";
+    
+    /*************************************小兰客服*****************************************/
+  //常见问题
+    public static final String COLLECTION_COMMON_QUESTION = "common_question";
+    //退换货
+    public static final String COLLECTION_MOBILE_RETURN = "mobile_return";
 }

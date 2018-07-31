@@ -6,6 +6,7 @@ import java.util.Map;
 
 import com.pojo.integralmall.AddressEntry;
 import com.pojo.integralmall.OrderEntry;
+import com.pojo.lancustom.MobileReturnEntry;
 
 /**
  * 
@@ -48,6 +49,13 @@ public class WuliuInfoDto {
         this.area = addressEntry.getArea()+addressEntry.getDetail();
         this.excompanyNo = this.map.get(orderEntry.getExcompanyNo());
         this.expressNo = orderEntry.getExpressNo();
+        this.traces=w.getTraces();
+    }
+    
+    public WuliuInfoDto(MobileReturnEntry entry, wuliuDto w) {
+        this.area = entry.getAddress();
+        this.excompanyNo = this.map.get(entry.getExcompanyNo());
+        this.expressNo = entry.getExpressNo();
         this.traces=w.getTraces();
     }
 

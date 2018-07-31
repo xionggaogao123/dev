@@ -5,6 +5,7 @@ import com.db.activity.FriendDao;
 import com.db.appmarket.AppDetailDao;
 import com.db.backstage.*;
 import com.db.controlphone.*;
+import com.db.excellentCourses.HourClassDao;
 import com.db.fcommunity.CommunityDao;
 import com.db.fcommunity.CommunityDetailDao;
 import com.db.fcommunity.MemberDao;
@@ -127,6 +128,8 @@ public class BackStageService {
     private SchoolAppDao schoolAppDao = new SchoolAppDao();
 
     private HomeSchoolDao homeSchoolDao = new HomeSchoolDao();
+
+    private HourClassDao hourClassDao = new HourClassDao();
 
 
 
@@ -1837,6 +1840,15 @@ public class BackStageService {
            udtos = userService.findUserInfoByUserIds(objectIdList);
         }
         return udtos;
+    }
+
+
+    public void updateClass(ObjectId id,String time){
+        long sTm = 0l;
+        if(time != null && time != ""){
+            sTm = DateTimeUtils.getStrToLongTime(time);
+        }
+        hourClassDao.updateClassTime(id,sTm);
     }
 
 }

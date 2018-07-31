@@ -1023,7 +1023,7 @@ public class IndexPageService {
         List<Map<String,Object>> list = new ArrayList<Map<String, Object>>();
         //通知逻辑
         List<ObjectId>  dlist =communityService.getCommunitys3(userId, 1, 100);
-        //dlist.add(userId);
+        dlist.add(userId);
         TeacherApproveEntry teacherApproveEntry = teacherApproveDao.getEntry(userId);
         List<SuperTopicDTO> superTopicDTOs = new ArrayList<SuperTopicDTO>();
         if(teacherApproveEntry!=null && teacherApproveEntry.getType()==2){//认证大V

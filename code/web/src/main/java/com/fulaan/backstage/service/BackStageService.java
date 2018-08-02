@@ -131,6 +131,8 @@ public class BackStageService {
 
     private HourClassDao hourClassDao = new HourClassDao();
 
+    private PushMessageDao pushMessageDao = new PushMessageDao();
+
 
 
     private static String imageUrl = "http://7xiclj.com1.z0.glb.clouddn.com/5a1bdcfd27fddd15c8649dea.png";
@@ -1847,8 +1849,12 @@ public class BackStageService {
         long sTm = 0l;
         if(time != null && time != ""){
             sTm = DateTimeUtils.getStrToLongTime(time);
+            //修改推送消息
+            String str = DateTimeUtils.getLongToStrTimeTwo(sTm).substring(0,11);
+            long strNum = DateTimeUtils.getStrToLongTime(str, "yyyy-MM-dd");
+            hourClassDao.updateClassTime(id,sTm,strNum);
+            pushMessageDao.updateEntry(id,sTm,strNum);
         }
-        hourClassDao.updateClassTime(id,sTm);
     }
 
 }

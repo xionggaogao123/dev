@@ -42,7 +42,8 @@ public class CoursesRoomService {
     //验证地址
     private static final String CC_CHECKURL = "";
     //回调验证地址
-    private static final String CC_BACKCHECKURL = "http/www.jiaxiaomei.com/web/excellentCourses/openBackCreate.do";
+    //private static final String CC_BACKCHECKURL = "http/www.jiaxiaomei.com/web/excellentCourses/openBackCreate.do";
+    private static final String CC_BACKCHECKURL = "http://215q5w1385.iask.in:25460/web/excellentCourses/openBackCreate.do";
     //讲师端密码
     private static final String CC_PUBLISHERPASS = "123456";
     //助教端密码
@@ -377,18 +378,16 @@ liveid	直播id*/
         map.put("publisherpass",CC_PUBLISHERPASS);
         map.put("assistantpass",CC_ASSISTANTPASS);
         map.put("playpass",CC_PLAYPASS);
-        map.put("checkurl",CC_BACKCHECKURL);
         map.put("documentdisplaymode",CC_DOCUMENTDISPLAYMODE);
         map.put("repeatedloginsetting",CC_REPEATEDLOGINSETTING);
         String id = "";
         try{
+
+            map.put("checkurl",URLEncoder.encode(CC_BACKCHECKURL, "utf-8"));
             map.put("playerbackgroundhint", URLEncoder.encode(CC_PLAYERBACKGROUNDHINT, "utf-8"));
-            //map.put("name", URLEncoder.encode(name, "UTF-8"));
             map.put("name", URLEncoder.encode(name, "utf-8"));
             map.put("desc",URLEncoder.encode(description, "utf-8"));
-            //map.put("desc",description);
             map.put("livestarttime", URLEncoder.encode(dateTime,"utf-8"));
-            //long time = new Date().getTime();
             String sysCode = RoomUtil.createHashedQueryString(map,CC_API_KEY);
             String str3 = URLDecoder.decode(sysCode, "utf-8");
             String str =  CoursesRoomAPI.createRoom(str3);
@@ -435,6 +434,40 @@ liveid	直播id*/
     marquee	字符串	可选，跑马灯信息(长度不能超过2000个字符)
      */
     public Map<String,Object> openBackCreate(CCLoginDTO ccLoginDTO){
+        Map<String,Object> map = new HashMap<String, Object>();
+        String userId = ccLoginDTO.getUserid();
+        String roomId = ccLoginDTO.getRoomid();
+        String viewerName = ccLoginDTO.getViewername();
+        String viewerToken = ccLoginDTO.getViewertoken();
+        logger.error("登陆回调："+userId+"--"+roomId+"--"+viewerName+"--"+viewerToken);
+        map.put("result","no");
+        map.put("message","登陆失败");
+        Map<String,Object> userMap = new HashMap<String, Object>();
+        if(userId.equals(CC_USERID)){//验证cc用户通过
+            CoursesRoomEntry coursesRoomEntry = coursesRoomDao.getRoomEntry(roomId);
+            if(coursesRoomEntry!=null){//验证直播间存在
+                if(ObjectId.isValid(viewerName)){//验证码是否为用户id
+                    UserEntry userEntry = userDao.findByUserId(new ObjectId(viewerName));
+                    if(userEntry!=null){//验证用户成功
+                        map.put("result","ok");
+                        map.put("message","登陆成功");
+                        userMap.put("id",viewerName);
+                        String name = StringUtils.isNotBlank(userEntry.getNickName())?userEntry.getNickName():userEntry.getUserName();
+                        userMap.put("name",name);
+                        userMap.put("avatar", AvatarUtils.getAvatar(userEntry.getAvatar(),userEntry.getRole(),userEntry.getSex()));
+                        userMap.put("customua","");
+                        userMap.put("viewercustommark","");
+                        userMap.put("marquee","");
+                    }
+                }
+            }
+        }
+        map.put("user",userMap);
+        logger.error("登陆成功");
+        return map;
+    }
+    //会看id
+    public Map<String,Object> openLookBackCreate(CCLoginDTO ccLoginDTO){
         Map<String,Object> map = new HashMap<String, Object>();
         String userId = ccLoginDTO.getUserid();
         String roomId = ccLoginDTO.getRoomid();

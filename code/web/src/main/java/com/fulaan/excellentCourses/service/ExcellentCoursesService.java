@@ -2482,6 +2482,58 @@ public class ExcellentCoursesService {
         return map;
     }
 
+    public Map<String,Object> gotoThreeClass(ObjectId id,ObjectId userId) throws Exception{
+        Map<String,Object> map = new HashMap<String, Object>();
+        //是否过期
+        HourClassEntry hourClassEntry = hourClassDao.getEntry(id);
+        if(hourClassEntry==null){
+            throw  new Exception("该课程不存在！");
+        }
+        ExcellentCoursesEntry excellentCoursesEntry = excellentCoursesDao.getEntry(hourClassEntry.getParentId());
+        if(excellentCoursesEntry==null){
+            throw  new Exception("该课程不存在！");
+        }
+        ClassOrderEntry classOrderEntry = classOrderDao.getEntry(id, hourClassEntry.getParentId(), userId);
+        if(classOrderEntry==null){
+            throw  new Exception("无该订单！");
+        }
+        long current = System.currentTimeMillis();
+        long start = hourClassEntry.getStartTime() -STUDENT_TIME;
+        long end = hourClassEntry.getStartTime() + hourClassEntry.getCurrentTime();
+        //if(current>start && current < end){//上课中
+        if(current>start){//上课中
+            CoursesRoomEntry coursesRoomEntry = coursesRoomDao.getEntry(excellentCoursesEntry.getID());
+            UserEntry userEntry = userDao.findByUserId(userId);
+            if(userEntry==null){
+                throw  new Exception("非法用户！");
+            }
+            String name = StringUtils.isNotEmpty(userEntry.getNickName())?userEntry.getNickName():userEntry.getUserName();
+            map.put("uid",coursesRoomEntry.getUserId());
+            map.put("roomid",coursesRoomEntry.getRoomId());
+            map.put("userName",userId.toString());
+            map.put("password",coursesRoomEntry.getPlaypass());
+            //map.put("id",excellentCoursesEntry.getID().toString());
+            //map.put("bigCover",excellentCoursesEntry.getBigCouver());
+            //去上课
+            if( classOrderEntry.getType()==1){
+                classOrderDao.updateToEntry(classOrderEntry.getID());
+                NewVersionBindRelationEntry newVersionBindRelationEntry = newVersionBindRelationDao.getBindEntry(userId);
+                if(newVersionBindRelationEntry!=null){
+                    //发送通知
+                    try{
+                        systemMessageService.sendClassNotice(newVersionBindRelationEntry.getMainUserId(),1,excellentCoursesEntry.getTitle(),name);
+                    }catch (Exception e){
+
+                    }
+
+                }
+            }
+        }else{
+            throw  new Exception("上课时间未到，请稍后进入");
+        }
+        return map;
+    }
+
     //老师自动登陆
     public String teacherLogin(ObjectId userId,ObjectId id) throws Exception{
         //是否过期

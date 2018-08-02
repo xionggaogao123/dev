@@ -49,6 +49,26 @@ public class IndexPageDao extends BaseDao {
 
     }
 
+    public List<IndexPageEntry> getSystemPageList(List<ObjectId> olist,ObjectId userId,int page,int pageSize){
+        List<IndexPageEntry> entryList=new ArrayList<IndexPageEntry>();
+        BasicDBObject query=new BasicDBObject()
+                .append("cid",new BasicDBObject(Constant.MONGO_IN,olist))
+                        //.append("uid",new BasicDBObject(Constant.MONGO_NE,userId))
+                .append("isr", Constant.ZERO);
+        query.append("typ",Constant.FOUR);
+        List<DBObject> dbList=find(MongoFacroty.getAppDB(), Constant.COLLECTION_INDEX_PAGE,query,
+                Constant.FIELDS,Constant.MONGO_SORTBY_DESC,(page-1)*pageSize,pageSize);
+        if (dbList != null && !dbList.isEmpty()) {
+            for (DBObject obj : dbList) {
+                entryList.add(new IndexPageEntry((BasicDBObject) obj));
+            }
+        }
+        return entryList;
+
+
+
+    }
+
     public int countPageList(List<ObjectId> olist,ObjectId userId){
         BasicDBObject query=new BasicDBObject()
                 .append("cid",new BasicDBObject(Constant.MONGO_IN,olist))

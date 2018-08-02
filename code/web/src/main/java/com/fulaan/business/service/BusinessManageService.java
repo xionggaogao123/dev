@@ -405,6 +405,54 @@ public class BusinessManageService {
         return "1";
     }
 
+    //审核通过回调接口
+    public String newFinish(ObjectId id,String word,ObjectId userId){
+        ExcellentCoursesEntry excellentCoursesEntry = excellentCoursesDao.getEntry(id);
+        if(excellentCoursesEntry==null){
+            return "课程不存在";
+        }
+        if(word.equals("")){
+            return "无设置";
+        }
+        String[] str = word.split(",");
+        Map<String,Double> map = new HashMap<String, Double>();
+        for(int i = 0;i<str.length;i++){
+            String tr = str[i];
+            String[] strings = tr.split("#");
+            map.put(strings[0],getTwoDouble(Double.parseDouble(strings[1])));
+        }
+        List<HourClassEntry> hourClassEntries = hourClassDao.getEntryList(id);
+        double all = 0.00;
+        for(HourClassEntry hourClassEntry : hourClassEntries){
+            Double price = map.get(hourClassEntry.getID().toString());
+            if(price!=null){
+                hourClassDao.updatePriceEntry(hourClassEntry.getID(),price);
+                all = all + price;
+            }
+            //课程提醒
+            String str2 = DateTimeUtils.getLongToStrTimeTwo(hourClassEntry.getStartTime()).substring(0,11);
+            long strNum = DateTimeUtils.getStrToLongTime(str2, "yyyy-MM-dd");
+            sendMessage(excellentCoursesEntry.getTitle(),hourClassEntry.getID(),hourClassEntry.getStartTime(),strNum);
+        }
+        //课程改为进行中
+        excellentCoursesEntry.setNewPrice(all);
+        excellentCoursesEntry.setStatus(2);
+        excellentCoursesDao.addEntry(excellentCoursesEntry);
+
+
+
+        //创建直播间
+        long start  = excellentCoursesEntry.getStartTime();
+        String startTime = "";
+        if(start!=0l){
+            startTime = DateTimeUtils.getLongToStrTimeTwo(start);
+        }
+        //todo
+        coursesRoomService.createBackCourses(excellentCoursesEntry.getTitle(),excellentCoursesEntry.getTarget(),excellentCoursesEntry.getID(),startTime);
+        backStageService.addLogMessage(id.toString(), "审核直播课堂：" + excellentCoursesEntry.getTitle(), LogMessageType.courses.getDes(), userId.toString());
+        return "1";
+    }
+
     /**
      * 生成推送消息
      * @return

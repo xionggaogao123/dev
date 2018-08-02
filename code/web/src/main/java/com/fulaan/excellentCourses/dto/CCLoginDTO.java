@@ -22,6 +22,20 @@ public class CCLoginDTO {
     private String liveid;
     private String recordid;
 
+    public CCLoginDTO(){
+
+    }
+
+    public CCLoginDTO(String userid,String roomid,String viewername,String viewertoken,String viewercustomua,String liveid,String recordid){
+        this.userid =userid;
+        this.roomid =roomid;
+        this.viewername =viewername;
+        this.viewertoken =viewertoken;
+        this.viewercustomua =viewercustomua;
+        this.liveid =liveid;
+        this.recordid =recordid;
+    }
+
     public String getUserid() {
         return userid;
     }

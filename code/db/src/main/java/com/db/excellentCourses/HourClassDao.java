@@ -47,9 +47,9 @@ public class HourClassDao extends BaseDao {
     }
 
     //修改课程时间
-    public void updateClassTime(ObjectId id,long startTime){
+    public void updateClassTime(ObjectId id,long startTime,long date){
         BasicDBObject query = new BasicDBObject(Constant.ID,id);
-        BasicDBObject updateValue=new BasicDBObject(Constant.MONGO_SET,new BasicDBObject("stm",startTime));
+        BasicDBObject updateValue=new BasicDBObject(Constant.MONGO_SET,new BasicDBObject("stm",startTime).append("dtm",date));
         update(MongoFacroty.getAppDB(), Constant.COLLECTION_HOUR_CLASS, query,updateValue);
     }
     public HourClassEntry getEntry(ObjectId id){

@@ -27,6 +27,13 @@ public class PushMessageDao extends BaseDao {
         BasicDBObject updateValue=new BasicDBObject(Constant.MONGO_SET,new BasicDBObject("sta",Constant.ONE));
         update(MongoFacroty.getAppDB(), Constant.COLLECTION_PUSH_MESSAGE, query,updateValue);
     }
+
+    //修改提醒
+    public void updateEntry(ObjectId id,long time,long date){
+        BasicDBObject query = new BasicDBObject("cid",id);
+        BasicDBObject updateValue=new BasicDBObject(Constant.MONGO_SET,new BasicDBObject("sta",Constant.ZERO).append("stm",time).append("dtm",date));
+        update(MongoFacroty.getAppDB(), Constant.COLLECTION_PUSH_MESSAGE, query,updateValue);
+    }
     public boolean isNotHave(ObjectId contactId) {
         BasicDBObject query =new BasicDBObject();
         query.append("isr", Constant.ZERO) .append("cid", contactId);

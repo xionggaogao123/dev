@@ -1258,4 +1258,29 @@ public class BackStageController extends BaseController {
         }
         return JSON.toJSONString(respObj);
     }
+
+    /**
+     * 增加课程
+     * @return
+     */
+    @ApiOperation(value = "增加课程", httpMethod = "POST", produces = "application/json")
+    @ApiResponses( value = {@ApiResponse(code = 200, message = "Successful — 请求已完成",response = String.class),
+            @ApiResponse(code = 400, message = "请求中有语法问题，或不能满足请求"),
+            @ApiResponse(code = 500, message = "服务器不能完成请求")})
+    @RequestMapping("/addClassTime")
+    @ResponseBody
+    public String addClassTime(@ApiParam(name = "id", required = true, value = "id") @RequestParam(value = "id",defaultValue = "") String id,
+                                  @ApiParam(name = "time", required = true, value = "time") @RequestParam(value = "time",defaultValue = "") String time){
+        RespObj respObj = new RespObj(Constant.FAILD_CODE);
+        try{
+            backStageService.updateClass(new ObjectId(id),time);
+            respObj.setCode(Constant.SUCCESS_CODE);
+            respObj.setMessage("修改成功");
+        }catch (Exception e){
+            e.printStackTrace();
+            respObj.setCode(Constant.SUCCESS_CODE);
+            respObj.setMessage("查询用户绑定关系失败");
+        }
+        return JSON.toJSONString(respObj);
+    }
 }

@@ -1714,7 +1714,9 @@ public class IndexPageService {
         }
 
         Map<String,Object> ob5 = new HashMap<String, Object>();
-        List<IndexPageEntry> entrys2 = indexPageDao.getPageList(dlist,userId, 1, 1);
+        List<ObjectId> objectIdList = new ArrayList<ObjectId>();
+        objectIdList.add(userId);
+        List<IndexPageEntry> entrys2 = indexPageDao.getSystemPageList(objectIdList, userId, 1, 1);
         if(entrys2.size()>0){
             syList.add(entrys2.get(0).getContactId());
         }
@@ -1730,7 +1732,7 @@ public class IndexPageService {
                     ob1.put("id",dto8.getId());
                     ob1.put("userName","家校美小助手");
                     ob1.put("subject","");
-                    ob1.put("avatar","http://7xiclj.com1.z0.glb.clouddn.com/5a26565027fddd1db08722f1.png");
+                    ob1.put("avatar","http://7xiclj.com1.z0.glb.clouddn.com/5b6177aa8126103aac1a705b.png");
                     ob1.put("title","家校美使用向导");
                     ob1.put("time",dto8.getCreateTime());
                     ob1.put("content","家校美，一款富有魔力的产品！");
@@ -1760,17 +1762,15 @@ public class IndexPageService {
                     ob1.put("id",dto8.getId());
                     ob1.put("userName","家校美小助手");
                     ob1.put("subject","");
-                    ob1.put("avatar","http://7xiclj.com1.z0.glb.clouddn.com/5a26565027fddd1db08722f1.png");
-                    ob1.put("title","恭喜您创建了一个新社群");
+                    ob1.put("avatar","http://7xiclj.com1.z0.glb.clouddn.com/5b6177aa8126103aac1a705b.png");
+                    ob1.put("title","班级社群");
                     ob1.put("time",dto8.getCreateTime());
                     if(dto8.getContent()!=null && !dto8.getContent().equals("")){
                         ob1.put("content","恭喜您于"+dto8.getCreateTime().substring(0,11)+"日成功创建了“"
-                                + dto8.getSourceName()+"”社群，您的社群id是:"+dto8.getContent()+"，您是该班级社群的“社长”，拥有一切特权。\n 此外您后期最多" +
-                                "可以指定设置10位成员为“副社长”，他们也能拥有各项发帖权利。");
+                                + dto8.getSourceName()+"”社群");
                     }else{
                         ob1.put("content","恭喜您于"+dto8.getCreateTime().substring(0,11)+"日成功创建了“"
-                                + dto8.getSourceName()+"”社群，您是该班级社群的“社长”，拥有一切特权。\n 此外您后期最多" +
-                                "可以指定设置10位成员为“副社长”，他们也能拥有各项发帖权利。");
+                                + dto8.getSourceName()+"”社群");
                     }
 
                   /*  List<Attachement> imageList=new ArrayList<Attachement>();
@@ -1799,10 +1799,10 @@ public class IndexPageService {
                     ob1.put("id",dto8.getSourceId());
                     ob1.put("userName","家校美小助手");
                     ob1.put("subject",dto8.getTitle());
-                    ob1.put("avatar","http://7xiclj.com1.z0.glb.clouddn.com/5a26565027fddd1db08722f1.png");
-                    ob1.put("title","您的留言被选为精选留言了");
+                    ob1.put("avatar","http://7xiclj.com1.z0.glb.clouddn.com/5b6177aa8126103aac1a705b.png");
+                    ob1.put("title","火热分享");
                     ob1.put("time",dto8.getCreateTime());
-                    ob1.put("content",dto8.getContent());
+                    ob1.put("content","您的留言被选为精选留言了");
                     ob1.put("imageList",new ArrayList<Attachement>());
                     ob1.put("commentCount",0);
                     ob1.put("videoList",new ArrayList<VideoDTO>());
@@ -1825,8 +1825,8 @@ public class IndexPageService {
                     ob1.put("id",dto8.getId());
                     ob1.put("userName","家校美小助手");
                     ob1.put("subject","");
-                    ob1.put("avatar","http://7xiclj.com1.z0.glb.clouddn.com/5a26565027fddd1db08722f1.png");
-                    ob1.put("title","直播课堂提醒");
+                    ob1.put("avatar","http://7xiclj.com1.z0.glb.clouddn.com/5b6177aa8126103aac1a705b.png");
+                    ob1.put("title","直播课堂");
                     ob1.put("time",dto8.getCreateTime());
                     ob1.put("content",dto8.getContent());
                     ob1.put("imageList",new ArrayList<Attachement>());
@@ -1867,10 +1867,12 @@ public class IndexPageService {
         }
         map.put("count",count);
         map.put("list",list2);
+        List<Map<String,Object>> obmap = new ArrayList<Map<String, Object>>();
         if(ob5.size()!=0){
-            map.put("systemMessage",ob5);
+            obmap.add(ob5);
+            map.put("systemMessage",obmap);
         }else{
-            map.put("systemMessage",null);
+            map.put("systemMessage",obmap);
         }
         map.put("hotList",superTopicDTOs);
         return map;
@@ -2192,7 +2194,7 @@ public class IndexPageService {
         Map<String,Object> map = new HashMap<String, Object>();
         List<ObjectId> dlist = new ArrayList<ObjectId>();
         dlist.add(userId);
-        List<IndexPageEntry> entrys2 = indexPageDao.getPageList(dlist,userId, page,pageSize);
+        List<IndexPageEntry> entrys2 = indexPageDao.getSystemPageList(dlist, userId, page, pageSize);
         int count = indexPageDao.countPageList(dlist,userId);
         List<ObjectId>  syList = new ArrayList<ObjectId>();
         if(entrys2.size()>0){
@@ -2200,6 +2202,7 @@ public class IndexPageService {
                syList.add(indexPageEntry.getContactId());
            }
         }
+        Map<String,Object> sortMap = new HashMap<String, Object>();
         if(syList.size()>0){
             List<SystemMessageEntry> systemMessageEntries = systemMessageDao.selectContentList(syList);
             for(SystemMessageEntry entry:systemMessageEntries){
@@ -2242,8 +2245,8 @@ public class IndexPageService {
                     ob1.put("id",dto8.getId());
                     ob1.put("userName","家校美小助手");
                     ob1.put("subject","");
-                    ob1.put("avatar","http://7xiclj.com1.z0.glb.clouddn.com/5a26565027fddd1db08722f1.png");
-                    ob1.put("title","恭喜您创建了一个新社群");
+                    ob1.put("avatar","http://7xiclj.com1.z0.glb.clouddn.com/5b6178508126103aac1a705d.png");
+                    ob1.put("title","班级社群");
                     ob1.put("time",dto8.getCreateTime());
                     if(dto8.getContent()!=null && !dto8.getContent().equals("")){
                         ob1.put("content","恭喜您于"+dto8.getCreateTime().substring(0,11)+"日成功创建了“"
@@ -2272,7 +2275,6 @@ public class IndexPageService {
                     ob1.put("isOwner",true);
                     ob1.put("allContent","");
                     list.add(ob1);
-
                 }else if(entry.getType()==3){
                     Map<String,Object> ob1 = new HashMap<String, Object>();
                     ob1.put("tag", dto8.getId());
@@ -2281,10 +2283,10 @@ public class IndexPageService {
                     ob1.put("id",dto8.getSourceId());
                     ob1.put("userName","家校美小助手");
                     ob1.put("subject",dto8.getTitle());
-                    ob1.put("avatar","http://7xiclj.com1.z0.glb.clouddn.com/5a26565027fddd1db08722f1.png");
-                    ob1.put("title","您的留言被选为精选留言了");
+                    ob1.put("avatar","http://7xiclj.com1.z0.glb.clouddn.com/5b6178838126103aac1a705e.png");
+                    ob1.put("title","火热分享");
                     ob1.put("time",dto8.getCreateTime());
-                    ob1.put("content",dto8.getContent());
+                    ob1.put("content","恭喜！您的留言被选为精选留言了！");
                     ob1.put("imageList",new ArrayList<Attachement>());
                     ob1.put("commentCount",0);
                     ob1.put("videoList",new ArrayList<VideoDTO>());
@@ -2307,8 +2309,8 @@ public class IndexPageService {
                     ob1.put("id",dto8.getId());
                     ob1.put("userName","家校美小助手");
                     ob1.put("subject","");
-                    ob1.put("avatar","http://7xiclj.com1.z0.glb.clouddn.com/5a26565027fddd1db08722f1.png");
-                    ob1.put("title","直播课堂提醒");
+                    ob1.put("avatar","http://7xiclj.com1.z0.glb.clouddn.com/5b61781e8126103aac1a705c.png");
+                    ob1.put("title","直播课堂");
                     ob1.put("time",dto8.getCreateTime());
                     ob1.put("content",dto8.getContent());
                     ob1.put("imageList",new ArrayList<Attachement>());

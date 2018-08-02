@@ -639,10 +639,34 @@ public class WebExcellentCoursesController extends BaseController {
     @ApiResponses( value = {@ApiResponse(code = 200, message = "Successful — 请求已完成",response = String.class),
             @ApiResponse(code = 400, message = "请求中有语法问题，或不能满足请求"),
             @ApiResponse(code = 500, message = "服务器不能完成请求")})
-    @RequestMapping(value="/openBackCreate",method = RequestMethod.POST)
+    @RequestMapping(value="/openOldBackCreate",method = RequestMethod.POST)
     @ResponseBody
     @SessionNeedless
-    public Map<String,Object> openBackCreate( @RequestBody CCLoginDTO dto){
+    public Map<String,Object> openOldBackCreate( @RequestBody CCLoginDTO dto){
+        Map<String,Object> map = coursesRoomService.openBackCreate(dto);
+        return map;
+    }
+
+    /**
+     * 创建直播间回调(提供给cc直播进行接口验证)
+     *
+     */
+    @ApiOperation(value = "提供给cc直播进行接口验证", httpMethod = "POST", produces = "application/json")
+    @ApiResponses( value = {@ApiResponse(code = 200, message = "Successful — 请求已完成",response = String.class),
+            @ApiResponse(code = 400, message = "请求中有语法问题，或不能满足请求"),
+            @ApiResponse(code = 500, message = "服务器不能完成请求")})
+    @RequestMapping(value="/openBackCreate")
+    @ResponseBody
+    @SessionNeedless
+    public Map<String,Object> openBackCreate(String userid,String roomid,String viewername,String viewertoken,String viewercustomua,String liveid,String recordid){
+        /* private String userid;
+    private String roomid;
+    private String viewername;
+    private String viewertoken;
+    private String viewercustomua;
+    private String liveid;
+    private String recordid;*/
+        CCLoginDTO dto = new CCLoginDTO(userid,roomid,viewername,viewertoken,viewercustomua,liveid,recordid);
         Map<String,Object> map = coursesRoomService.openBackCreate(dto);
         return map;
     }

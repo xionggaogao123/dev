@@ -136,7 +136,7 @@ liveid	直播id*/
     /**
      * 获取回放列表
      */
-    public List<ReplayDTO> getBackList(ObjectId cid,String userName,String teacherName,long stm,long etm){
+    public List<ReplayDTO> getBackList(ObjectId cid,String userName,String teacherName,long stm,long etm,ObjectId userId){
         List<ReplayDTO> replayDTOList =  new ArrayList<ReplayDTO>();
         CoursesRoomEntry coursesRoomEntry = coursesRoomDao.getEntry(cid);
         if(coursesRoomEntry==null){
@@ -164,7 +164,11 @@ liveid	直播id*/
                         int recordStatus =  rows2.getInt("recordStatus");
                         String recordVideoId =  rows2.getString("recordVideoId");
                         String replayUrl =  rows2.getString("replayUrl");
-                        ReplayDTO dto = new ReplayDTO(id,liveId,roomid,recordVideoId,CC_USERID,userName,CC_PLAYPASS,startTime,stopTime,recordStatus,replayUrl,teacherName);
+                        String password = CC_PLAYPASS;
+                        if(coursesRoomEntry.getAuthtype()==0){//接口认证
+                            password = userId.toString();
+                        }
+                        ReplayDTO dto = new ReplayDTO(id,liveId,roomid,recordVideoId,CC_USERID,userName,password,startTime,stopTime,recordStatus,replayUrl,teacherName);
                         if(checkTime(stm,etm,startTime,stopTime)){
                             replayDTOList.add(dto);
                         }
@@ -446,20 +450,33 @@ liveid	直播id*/
         if(userId.equals(CC_USERID)){//验证cc用户通过
             CoursesRoomEntry coursesRoomEntry = coursesRoomDao.getRoomEntry(roomId);
             if(coursesRoomEntry!=null){//验证直播间存在
-                if(ObjectId.isValid(viewerName)){//验证码是否为用户id
-                    UserEntry userEntry = userDao.findByUserId(new ObjectId(viewerName));
-                    if(userEntry!=null){//验证用户成功
-                        map.put("result","ok");
-                        map.put("message","登陆成功");
-                        userMap.put("id",viewerName);
-                        String name = StringUtils.isNotBlank(userEntry.getNickName())?userEntry.getNickName():userEntry.getUserName();
-                        userMap.put("name",name);
-                        userMap.put("avatar", AvatarUtils.getAvatar(userEntry.getAvatar(),userEntry.getRole(),userEntry.getSex()));
-                        userMap.put("customua","");
-                        userMap.put("viewercustommark","");
-                        userMap.put("marquee","");
+                if(coursesRoomEntry.getAuthtype()==0){
+                    if(ObjectId.isValid(viewerToken)){//验证码是否为用户id
+                        UserEntry userEntry = userDao.findByUserId(new ObjectId(viewerToken));
+                        if(userEntry!=null){//验证用户成功
+                            map.put("result","ok");
+                            map.put("message","登陆成功");
+                            userMap.put("id",viewerToken);
+                            String name = StringUtils.isNotBlank(userEntry.getNickName())?userEntry.getNickName():userEntry.getUserName();
+                            userMap.put("name",name);
+                            userMap.put("avatar", AvatarUtils.getAvatar(userEntry.getAvatar(),userEntry.getRole(),userEntry.getSex()));
+                            userMap.put("customua","");
+                            userMap.put("viewercustommark","");
+                            userMap.put("marquee","");
+                        }
                     }
+                }else{
+                    map.put("result","ok");
+                    map.put("message","登陆成功");
+                    userMap.put("id",viewerToken);
+                    String name = "用户";
+                    userMap.put("name",name);
+                    userMap.put("avatar", "http://7xiclj.com1.z0.glb.clouddn.com/head-0.7453231568799419.jpg");
+                    userMap.put("customua","");
+                    userMap.put("viewercustommark","");
+                    userMap.put("marquee","");
                 }
+
             }
         }
         map.put("user",userMap);

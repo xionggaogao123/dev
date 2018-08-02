@@ -26,6 +26,7 @@ import com.fulaan.controlphone.dto.ControlAppSystemDTO;
 import com.fulaan.controlphone.dto.ControlPhoneDTO;
 import com.fulaan.controlphone.dto.ControlSchoolTimeDTO;
 import com.fulaan.controlphone.dto.ControlSetBackDTO;
+import com.fulaan.excellentCourses.dto.HourClassDTO;
 import com.fulaan.fgroup.service.EmService;
 import com.fulaan.indexpage.dto.IndexPageDTO;
 import com.fulaan.jiaschool.dto.SchoolAppDTO;
@@ -1844,7 +1845,7 @@ public class BackStageService {
         return udtos;
     }
 
-
+    //修改时间
     public void updateClass(ObjectId id,String time){
         long sTm = 0l;
         if(time != null && time != ""){
@@ -1855,6 +1856,11 @@ public class BackStageService {
             hourClassDao.updateClassTime(id,sTm,strNum);
             pushMessageDao.updateEntry(id,sTm,strNum);
         }
+    }
+
+    //新增课程
+    public void addClassTime(HourClassDTO dto){
+
     }
 
 }

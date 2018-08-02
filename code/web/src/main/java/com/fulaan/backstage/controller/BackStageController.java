@@ -13,6 +13,7 @@ import com.fulaan.base.BaseController;
 import com.fulaan.controlphone.dto.ControlPhoneDTO;
 import com.fulaan.controlphone.dto.ControlSchoolTimeDTO;
 import com.fulaan.controlphone.dto.ControlSetBackDTO;
+import com.fulaan.excellentCourses.dto.HourClassDTO;
 import com.pojo.user.UserDetailInfoDTO;
 import com.sys.constants.Constant;
 import com.sys.utils.RespObj;
@@ -21,10 +22,7 @@ import org.bson.types.ObjectId;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.util.MultiValueMap;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.multipart.MultipartRequest;
 
@@ -1258,6 +1256,30 @@ public class BackStageController extends BaseController {
         }
         return JSON.toJSONString(respObj);
     }
+    /**
+     * 课程排序
+     * @return
+     */
+    @ApiOperation(value = "课程排序", httpMethod = "POST", produces = "application/json")
+    @ApiResponses( value = {@ApiResponse(code = 200, message = "Successful — 请求已完成",response = String.class),
+            @ApiResponse(code = 400, message = "请求中有语法问题，或不能满足请求"),
+            @ApiResponse(code = 500, message = "服务器不能完成请求")})
+    @RequestMapping("/sortClassTime")
+    @ResponseBody
+    public String sortClassTime(@ApiParam(name = "id", required = true, value = "id") @RequestParam(value = "id",defaultValue = "") String id,
+                                  @ApiParam(name = "time", required = true, value = "time") @RequestParam(value = "time",defaultValue = "") String time){
+        RespObj respObj = new RespObj(Constant.FAILD_CODE);
+        try{
+            backStageService.updateClass(new ObjectId(id),time);
+            respObj.setCode(Constant.SUCCESS_CODE);
+            respObj.setMessage("修改成功");
+        }catch (Exception e){
+            e.printStackTrace();
+            respObj.setCode(Constant.SUCCESS_CODE);
+            respObj.setMessage("查询用户绑定关系失败");
+        }
+        return JSON.toJSONString(respObj);
+    }
 
     /**
      * 增加课程
@@ -1269,11 +1291,10 @@ public class BackStageController extends BaseController {
             @ApiResponse(code = 500, message = "服务器不能完成请求")})
     @RequestMapping("/addClassTime")
     @ResponseBody
-    public String addClassTime(@ApiParam(name = "id", required = true, value = "id") @RequestParam(value = "id",defaultValue = "") String id,
-                                  @ApiParam(name = "time", required = true, value = "time") @RequestParam(value = "time",defaultValue = "") String time){
+    public String addClassTime(@RequestBody HourClassDTO dto){
         RespObj respObj = new RespObj(Constant.FAILD_CODE);
         try{
-            backStageService.updateClass(new ObjectId(id),time);
+            //backStageService.updateClass(new ObjectId(id), time);
             respObj.setCode(Constant.SUCCESS_CODE);
             respObj.setMessage("修改成功");
         }catch (Exception e){

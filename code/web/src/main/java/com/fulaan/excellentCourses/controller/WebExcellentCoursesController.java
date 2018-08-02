@@ -659,13 +659,6 @@ public class WebExcellentCoursesController extends BaseController {
     @ResponseBody
     @SessionNeedless
     public Map<String,Object> openBackCreate(String userid,String roomid,String viewername,String viewertoken,String viewercustomua,String liveid,String recordid){
-        /* private String userid;
-    private String roomid;
-    private String viewername;
-    private String viewertoken;
-    private String viewercustomua;
-    private String liveid;
-    private String recordid;*/
         CCLoginDTO dto = new CCLoginDTO(userid,roomid,viewername,viewertoken,viewercustomua,liveid,recordid);
         Map<String,Object> map = coursesRoomService.openBackCreate(dto);
         return map;

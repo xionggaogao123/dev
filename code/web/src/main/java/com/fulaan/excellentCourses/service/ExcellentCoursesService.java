@@ -2409,7 +2409,12 @@ public class ExcellentCoursesService {
             map.put("uid",coursesRoomEntry.getUserId());
             map.put("roomid",coursesRoomEntry.getRoomId());
             map.put("userName",name);
-            map.put("password",coursesRoomEntry.getPlaypass());
+           // map.put("password",coursesRoomEntry.getPlaypass());
+            if(coursesRoomEntry.getAuthtype()==0){//接口认证
+                map.put("password",userId.toString());
+            }else{
+                map.put("password",coursesRoomEntry.getPlaypass());
+            }
             //去上课
             if( classOrderEntry.getType()==1){
                 classOrderDao.updateToEntry(classOrderEntry.getID());
@@ -2459,7 +2464,11 @@ public class ExcellentCoursesService {
             map.put("uid",coursesRoomEntry.getUserId());
             map.put("roomid",coursesRoomEntry.getRoomId());
             map.put("userName",name);
-            map.put("password",coursesRoomEntry.getPlaypass());
+            if(coursesRoomEntry.getAuthtype()==0){//接口认证
+                map.put("password",userId.toString());
+            }else{
+                map.put("password",coursesRoomEntry.getPlaypass());
+            }
             map.put("id",excellentCoursesEntry.getID().toString());
             map.put("bigCover",excellentCoursesEntry.getBigCouver());
             //去上课
@@ -2510,8 +2519,13 @@ public class ExcellentCoursesService {
             String name = StringUtils.isNotEmpty(userEntry.getNickName())?userEntry.getNickName():userEntry.getUserName();
             map.put("uid",coursesRoomEntry.getUserId());
             map.put("roomid",coursesRoomEntry.getRoomId());
-            map.put("userName",userId.toString());
-            map.put("password",coursesRoomEntry.getPlaypass());
+            map.put("userName",name);
+          //  map.put("password",coursesRoomEntry.getPlaypass());
+            if(coursesRoomEntry.getAuthtype()==0){//接口认证
+                map.put("password",userId.toString());
+            }else{
+                map.put("password",coursesRoomEntry.getPlaypass());
+            }
             //map.put("id",excellentCoursesEntry.getID().toString());
             //map.put("bigCover",excellentCoursesEntry.getBigCouver());
             //去上课
@@ -3164,7 +3178,7 @@ public class ExcellentCoursesService {
             if(excellentCoursesEntry !=null && classOrderEntry!=null){//订单存在
                 String name = StringUtils.isNotBlank(userEntry.getNickName())?userEntry.getNickName():userEntry.getUserName();
                 long time = hourClassEntry.getStartTime()+hourClassEntry.getCurrentTime();
-                dtos = coursesRoomService.getBackList(excellentCoursesEntry.getID(),name,excellentCoursesEntry.getUserName(),hourClassEntry.getStartTime(),time);
+                dtos = coursesRoomService.getBackList(excellentCoursesEntry.getID(),name,excellentCoursesEntry.getUserName(),hourClassEntry.getStartTime(),time,userId);
             }
         }
         return dtos;

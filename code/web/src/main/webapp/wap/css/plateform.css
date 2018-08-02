@@ -235,5 +235,8 @@ body{
 }
 .sp span{
     display: inline-block;
-    width: 12px;
+    /* width: 12px; */
+    margin: 0px 2px;
+    width: 2em;
+
 }

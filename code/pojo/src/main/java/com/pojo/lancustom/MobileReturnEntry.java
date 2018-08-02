@@ -38,7 +38,7 @@ public class MobileReturnEntry extends BaseDBObject {
                              String schoole,
                              String classRoom,
                              String contactNum,
-                             
+                             String orderTimeStr,
                              String address,
                              String excompanyNo,
                              String expressNo) {
@@ -57,6 +57,7 @@ public class MobileReturnEntry extends BaseDBObject {
             .append("status", Constant.ZERO)
             .append("excompanyNo", excompanyNo)
             .append("expressNo", expressNo)
+            .append("orderTimeStr", orderTimeStr)
             .append("sta", Constant.ZERO)
             .append("isr", Constant.ZERO);
         
@@ -166,5 +167,13 @@ public class MobileReturnEntry extends BaseDBObject {
     
     public void setExpressNo(String expressNo) {
         setSimpleValue("expressNo",expressNo);
+    }
+    
+    public String getOrderTimeStr() {
+        return getSimpleStringValue("orderTimeStr");
+    }
+    
+    public void setOrderTimeStr(String orderTimeStr) {
+        setSimpleValue("orderTimeStr",orderTimeStr);
     }
 }

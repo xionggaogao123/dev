@@ -99,7 +99,7 @@ public class IntegralmallService {
      */
     public int getIntegralmallHomeNum(String name) {
         
-        return goodsDao.getGoodsListAll(name).size();
+        return goodsDao.getGoodsListAll(name);
     }
     
     /**
@@ -146,9 +146,9 @@ public class IntegralmallService {
     
     public int getExchangeRecordTotal(ObjectId userId) {
 
-        List<OrderEntry> list = orderDao.getOrderListByUserIdTotal(userId);
+        return orderDao.getOrderListByUserIdTotal(userId);
       
-        return list.size();
+        
     }
     
     

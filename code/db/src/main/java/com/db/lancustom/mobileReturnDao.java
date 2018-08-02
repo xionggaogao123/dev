@@ -47,18 +47,14 @@ public class mobileReturnDao extends BaseDao {
         return entries;
     }
     
-    public List<MobileReturnEntry> getList(ObjectId userId) {
-        List<MobileReturnEntry> entries = new ArrayList<MobileReturnEntry>();
+    public int getList(ObjectId userId) {
+
         BasicDBObject query=new BasicDBObject("uid",userId);
         query.append("isr",Constant.ZERO);
-        List<DBObject> dbObjectList=find(MongoFacroty.getAppDB(), Constant.COLLECTION_MOBILE_RETURN,
-            query,Constant.FIELDS,Constant.MONGO_SORTBY_DESC);
-        if(null!=dbObjectList&&!dbObjectList.isEmpty()){
-            for(DBObject dbObject:dbObjectList){
-                entries.add(new MobileReturnEntry(dbObject));
-            }
-        }
-        return entries;
+        int i =count(MongoFacroty.getAppDB(), Constant.COLLECTION_MOBILE_RETURN,
+            query);
+        
+        return i;
     }
     
     public List<MobileReturnEntry> getListAll(int page,int pageSize) {
@@ -75,18 +71,14 @@ public class mobileReturnDao extends BaseDao {
         return entries;
     }
     
-    public List<MobileReturnEntry> getListAll() {
-        List<MobileReturnEntry> entries = new ArrayList<MobileReturnEntry>();
+    public int getListAll() {
+
         BasicDBObject query=new BasicDBObject();
         query.append("isr",Constant.ZERO);
-        List<DBObject> dbObjectList=find(MongoFacroty.getAppDB(), Constant.COLLECTION_MOBILE_RETURN,
-            query,Constant.FIELDS,Constant.MONGO_SORTBY_DESC);
-        if(null!=dbObjectList&&!dbObjectList.isEmpty()){
-            for(DBObject dbObject:dbObjectList){
-                entries.add(new MobileReturnEntry(dbObject));
-            }
-        }
-        return entries;
+        int i =count(MongoFacroty.getAppDB(), Constant.COLLECTION_MOBILE_RETURN,
+            query);
+       
+        return i;
     }
     
     /**

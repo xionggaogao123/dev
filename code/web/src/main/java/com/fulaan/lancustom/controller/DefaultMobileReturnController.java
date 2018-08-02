@@ -44,6 +44,7 @@ public class DefaultMobileReturnController extends BaseController{
         RespObj respObj=new RespObj(Constant.FAILD_CODE);
         try {
             mobileReturnService.saveMobileReturn(dto, getUserId());
+            respObj.setCode(Constant.SUCCESS_CODE);
             respObj.setMessage("成功！");
         } catch (Exception e) {
             // TODO: handle exception

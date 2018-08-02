@@ -96,19 +96,15 @@ public class GoodsDao extends BaseDao {
         return entries;
     }
     
-    public List<GoodsEntry> getGoodsListAll(String name) {
-        List<GoodsEntry> entries = new ArrayList<GoodsEntry>();
+    public int getGoodsListAll(String name) {
+
         BasicDBObject query=new BasicDBObject().append("isr", 0);
         if (StringUtils.isNotBlank(name)) {
             query.append("name", new BasicDBObject(Constant.MONGO_REGEX,name));
         }
-        List<DBObject> dbObjectList=find(MongoFacroty.getAppDB(), Constant.COLLECTION_INTEGRAL_GOODS,
-            query,Constant.FIELDS,Constant.MONGO_SORTBY_DESC);
-        if(null!=dbObjectList&&!dbObjectList.isEmpty()){
-            for(DBObject dbObject:dbObjectList){
-                entries.add(new GoodsEntry(dbObject));
-            }
-        }
-        return entries;
+        int i =count(MongoFacroty.getAppDB(), Constant.COLLECTION_INTEGRAL_GOODS,
+            query);
+       
+        return i;
     }
 }

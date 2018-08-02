@@ -1,6 +1,8 @@
 package com.fulaan.lancustom.service;
 
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 import org.bson.types.ObjectId;
@@ -25,6 +27,8 @@ public class MobileReturnService {
     private EBusinessOrderService eBusinessOrderService;
     
     public void saveMobileReturn(MobileReturnDto dto, ObjectId uid) throws Exception{
+        SimpleDateFormat sdf =  new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+        dto.setOrderTimeStr(sdf.format(new Date()));
         MobileReturnEntry entry = dto.buildAddEntry(uid);
         mobileReturnDao.addEntry(entry);
     }
@@ -42,7 +46,7 @@ public class MobileReturnService {
     public long getListCount(ObjectId uid) throws Exception{
         
         
-        return mobileReturnDao.getList(uid).size();
+        return mobileReturnDao.getList(uid);
     }
     
     public List<MobileReturnDto> getListAll(int page,int pageSize) throws Exception{
@@ -58,7 +62,7 @@ public class MobileReturnService {
     public long getListAllCount() throws Exception{
         
        
-        return mobileReturnDao.getListAll().size();
+        return mobileReturnDao.getListAll();
     }
     
     /**

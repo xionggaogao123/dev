@@ -66,18 +66,14 @@ public class OrderDao extends BaseDao {
         return entries;
     }
     
-    public List<OrderEntry> getOrderListByUserIdTotal(ObjectId userId) {
-        List<OrderEntry> entries = new ArrayList<OrderEntry>();
+    public int getOrderListByUserIdTotal(ObjectId userId) {
+     
         BasicDBObject query=new BasicDBObject("uid",userId);
         query.append("isr",Constant.ZERO);
-        List<DBObject> dbObjectList=find(MongoFacroty.getAppDB(), Constant.COLLECTION_INTEGRAL_ORDER,
-            query,Constant.FIELDS,Constant.MONGO_SORTBY_DESC);
-        if(null!=dbObjectList&&!dbObjectList.isEmpty()){
-            for(DBObject dbObject:dbObjectList){
-                entries.add(new OrderEntry(dbObject));
-            }
-        }
-        return entries;
+        int i =count(MongoFacroty.getAppDB(), Constant.COLLECTION_INTEGRAL_ORDER,
+            query);
+        
+        return i;
     }
     
     public List<OrderEntry> getOrderList(String orderNum, int page,int pageSize) {

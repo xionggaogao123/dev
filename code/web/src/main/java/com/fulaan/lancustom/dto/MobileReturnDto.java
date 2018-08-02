@@ -41,13 +41,19 @@ public class MobileReturnDto {
     //运单编号
     private String expressNo;
     
-  //状态 0未受理 1已受理
+  //状态 0未受理 1已受理2已发货
     private Integer state;
     //
     private String stateStr;
     
+    private String orderTimeStr;
+    
+    public MobileReturnDto() {
+        
+    }
+    
     public MobileReturnEntry buildAddEntry(ObjectId uid) {
-        return new MobileReturnEntry(uid, mobileVersion, serviceVersion, problem, aliPayNum, name, schoole, classRoom, contactNum, address, "","");
+        return new MobileReturnEntry(uid, mobileVersion, serviceVersion, problem, aliPayNum, name, schoole, classRoom, contactNum, orderTimeStr,address, "","");
     }
     public MobileReturnDto(MobileReturnEntry m) {
         if (m != null) {
@@ -64,6 +70,7 @@ public class MobileReturnDto {
             this.excompanyNo = m.getExcompanyNo();
             this.expressNo = m.getExpressNo();
             this.state = m.getSta();
+            this.orderTimeStr = m.getOrderTimeStr();
             if (m.getSta() == 0) {
                 this.stateStr = "未受理";
             } else if (m.getSta() == 1) {
@@ -160,6 +167,16 @@ public class MobileReturnDto {
     public void setId(String id) {
         this.id = id;
     }
+
+    public String getOrderTimeStr() {
+        return orderTimeStr;
+    }
+
+    public void setOrderTimeStr(String orderTimeStr) {
+        this.orderTimeStr = orderTimeStr;
+    }
+    
+    
     
     
 }

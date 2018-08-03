@@ -2296,7 +2296,7 @@ public class ExcellentCoursesService {
             hourClassDTOs.add(hourClassDTO);
         }
         map.put("list", hourClassDTOs);
-        List<ReplayDTO> dtos =  coursesRoomService.getAllBackList(excellentCoursesEntry.getID(), "123456", excellentCoursesEntry.getUserName());
+        List<ReplayDTO> dtos =  coursesRoomService.getAllBackList(excellentCoursesEntry.getID(), "123456", excellentCoursesEntry.getUserName(),userId);
         map.put("backList",dtos);
         return map;
     }
@@ -2574,7 +2574,12 @@ public class ExcellentCoursesService {
                     +coursesRoomEntry.getUserId()+"&publishname="
                     +excellentCoursesEntry.getUserName()+"&publishpassword="
                     +coursesRoomEntry.getPublisherpass();*/
-            return "cclive://"+coursesRoomEntry.getUserId()+"/"+coursesRoomEntry.getRoomId()+"/"+excellentCoursesEntry.getUserName()+"/"+coursesRoomEntry.getPublisherpass();
+            if(coursesRoomEntry.getAuthtype()==0){
+                return "cclive://"+coursesRoomEntry.getUserId()+"/"+coursesRoomEntry.getRoomId()+"/"+excellentCoursesEntry.getUserName()+"/"+userId.toString();
+            }else{
+                return "cclive://"+coursesRoomEntry.getUserId()+"/"+coursesRoomEntry.getRoomId()+"/"+excellentCoursesEntry.getUserName()+"/"+coursesRoomEntry.getPublisherpass();
+            }
+
         }
         return  "";
     }

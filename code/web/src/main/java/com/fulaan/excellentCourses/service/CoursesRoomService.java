@@ -188,7 +188,7 @@ liveid	直播id*/
     /**
      * 获取回放列表
      */
-    public List<ReplayDTO> getAllBackList(ObjectId cid,String userName,String teacherName){
+    public List<ReplayDTO> getAllBackList(ObjectId cid,String userName,String teacherName,ObjectId userId){
         List<ReplayDTO> replayDTOList =  new ArrayList<ReplayDTO>();
         CoursesRoomEntry coursesRoomEntry = coursesRoomDao.getEntry(cid);
         if(coursesRoomEntry==null){
@@ -216,7 +216,11 @@ liveid	直播id*/
                         int recordStatus =  rows2.getInt("recordStatus");
                         String recordVideoId =  rows2.getString("recordVideoId");
                         String replayUrl =  rows2.getString("replayUrl");
-                        ReplayDTO dto = new ReplayDTO(id,liveId,roomid,recordVideoId,CC_USERID,userName,CC_PLAYPASS,startTime,stopTime,recordStatus,replayUrl);
+                        String password = CC_PLAYPASS;
+                        if(coursesRoomEntry.getAuthtype()==0){//接口认证
+                            password = userId.toString();
+                        }
+                        ReplayDTO dto = new ReplayDTO(id,liveId,roomid,recordVideoId,CC_USERID,userName,password,startTime,stopTime,recordStatus,replayUrl);
                         replayDTOList.add(dto);
                     }
                 }

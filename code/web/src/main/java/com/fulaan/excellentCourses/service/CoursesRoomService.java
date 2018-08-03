@@ -42,9 +42,9 @@ public class CoursesRoomService {
     //验证地址
     private static final String CC_CHECKURL = "";
     //回调验证地址
-    //private static final String CC_BACKCHECKURL = "http/www.jiaxiaomei.com/web/excellentCourses/openBackCreate.do";
+    private static final String CC_BACKCHECKURL = "http://appapi.jiaxiaomei.com/web/excellentCourses/openBackCreate.do";
     //private static final String CC_BACKCHECKURL = "http://215q5w1385.iask.in:25460/web/excellentCourses/openBackCreate.do";
-    private static final String CC_BACKCHECKURL = "http://118.242.18.202:84/web/excellentCourses/openBackCreate.do";
+  // private static final String CC_BACKCHECKURL = "http://118.242.18.202:84/web/excellentCourses/openBackCreate.do";
     //讲师端密码
     private static final String CC_PUBLISHERPASS = "123456";
     //助教端密码
@@ -56,7 +56,7 @@ public class CoursesRoomService {
     //  文档显示模式。1：适合窗口;2:适合宽度
     private static final String CC_DOCUMENTDISPLAYMODE = "2";
     //重复登录   repeatedloginsetting
-    private static final String CC_REPEATEDLOGINSETTING = "1";
+    private static final String CC_REPEATEDLOGINSETTING = "0";
 
     private CoursesRoomDao coursesRoomDao = new CoursesRoomDao();
 

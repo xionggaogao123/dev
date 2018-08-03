@@ -468,11 +468,21 @@ liveid	直播id*/
                             userMap.put("viewercustommark","");
                             userMap.put("marquee","");
                         }
+                    }else{
+                        map.put("result","ok");
+                        map.put("message","登陆成功");
+                        userMap.put("id",new ObjectId().toString());
+                        String name = "用户";
+                        userMap.put("name",name);
+                        userMap.put("avatar", "http://7xiclj.com1.z0.glb.clouddn.com/head-0.7453231568799419.jpg");
+                        userMap.put("customua","");
+                        userMap.put("viewercustommark","");
+                        userMap.put("marquee","");
                     }
                 }else{
                     map.put("result","ok");
                     map.put("message","登陆成功");
-                    userMap.put("id",viewerToken);
+                    userMap.put("id",new ObjectId().toString());
                     String name = "用户";
                     userMap.put("name",name);
                     userMap.put("avatar", "http://7xiclj.com1.z0.glb.clouddn.com/head-0.7453231568799419.jpg");

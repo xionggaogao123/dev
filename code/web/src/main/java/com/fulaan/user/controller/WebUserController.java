@@ -289,6 +289,44 @@ public class WebUserController extends BaseController {
         return respObj;
     }
 
+    @ApiOperation(value = "后台注册账号", httpMethod = "POST", produces = "application/json")
+    @ApiResponses( value = {@ApiResponse(code = 200, message = "Successful — 请求已完成",response = RespObj.class)})
+    @SessionNeedless
+    @RequestMapping("/registerBackUser")
+    @ResponseBody
+    public RespObj registerBackUser(String userName, String phoneNumber,
+                                int newRole,
+                                String nickName,
+                                HttpServletRequest request){
+        RespObj respObj=new RespObj(Constant.FAILD_CODE);
+        try{
+            String userId=userService.registerBackAvailableUser(request, userName, phoneNumber, newRole, nickName);
+            respObj.setCode(Constant.SUCCESS_CODE);
+            respObj.setMessage(userId);
+        }catch (Exception e){
+            respObj.setMessage(e.getMessage());
+        }
+        return respObj;
+    }
+
+    /**
+     *
+     * @param examGroupDetailId
+     * @param response
+     */
+    @ApiOperation(value = "导出批量注册模板", httpMethod = "GET", produces = "application/json")
+    @RequestMapping("/exportTemplate/{examGroupDetailId}")
+    @ResponseBody
+    public void exportTemplate(@PathVariable @ObjectIdType ObjectId examGroupDetailId,
+                               HttpServletResponse response,
+                               HttpServletRequest request) {
+        try {
+            userService.exportTemplate(request,examGroupDetailId, response);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
 
     /**
      * token登录

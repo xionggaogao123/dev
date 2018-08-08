@@ -10,6 +10,7 @@ import com.db.forum.FLevelDao;
 import com.db.forum.FPostDao;
 import com.db.indexPage.IndexPageDao;
 import com.db.loginwebsocket.LoginTokenDao;
+import com.db.mobile.UserMobileDao;
 import com.db.school.ClassDao;
 import com.db.school.InterestClassDao;
 import com.db.school.SchoolDao;
@@ -33,6 +34,7 @@ import com.fulaan.user.model.ThirdType;
 import com.fulaan.util.ObjectIdPackageUtil;
 import com.fulaan.util.QRUtils;
 import com.fulaan.util.check.FastCheck;
+import com.fulaan.utils.HSSFUtils;
 import com.fulaan.utils.KeyWordFilterUtil;
 import com.fulaan.websocket.WebsocketHandler;
 import com.mongodb.BasicDBObject;
@@ -48,6 +50,7 @@ import com.pojo.controlphone.MQTTType;
 import com.pojo.ebusiness.SortType;
 import com.pojo.fcommunity.FLoginLogEntry;
 import com.pojo.loginwebsocket.LoginTokenEntry;
+import com.pojo.mobile.UserMobileEntry;
 import com.pojo.school.ClassEntry;
 import com.pojo.school.ClassInfoDTO;
 import com.pojo.school.InterestClassEntry;
@@ -62,6 +65,11 @@ import com.sys.utils.MD5Utils;
 import com.sys.utils.ValidationUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.log4j.Logger;
+import org.apache.poi.hssf.usermodel.HSSFCell;
+import org.apache.poi.hssf.usermodel.HSSFRow;
+import org.apache.poi.hssf.usermodel.HSSFSheet;
+import org.apache.poi.hssf.usermodel.HSSFWorkbook;
+import org.apache.poi.ss.util.CellRangeAddress;
 import org.bson.types.ObjectId;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.scheduling.annotation.Async;
@@ -116,6 +124,8 @@ public class UserService extends BaseService {
 
     private EmService emService = new EmService();
 
+    private UserMobileDao userMobileDao = new UserMobileDao();
+
 
     /**
      * 判断是否禁止访问
@@ -160,6 +170,47 @@ public class UserService extends BaseService {
         }else{
             throw new Exception("该用户名已用过");
         }
+    }
+
+    public String registerBackAvailableUser(HttpServletRequest request,String userName, String phoneNumber,int newRole,
+                                        String nickName)throws Exception{
+        UserEntry userEntry=userDao.findByUserName(userName);
+        if(null==userEntry){
+            UserMobileEntry userMobileEntry = userMobileDao.findByMobile(phoneNumber);
+            if(userMobileEntry==null){
+                UserEntry user=registerUserEntry(request,Constant.EMPTY,userName,"123456",phoneNumber,
+                        nickName);
+                ObjectId userId=userDao.addUserEntry(user);
+                if(newRole!=-1) {
+                    if(null==newVersionUserRoleDao.getEntry(userId)){
+                        newVersionUserRoleDao.saveEntry(new NewVersionUserRoleEntry(userId, newRole));
+                    }
+                }
+                UserMobileEntry entry = new UserMobileEntry(phoneNumber, userId);
+                userMobileDao.save(entry);
+                return userId.toString();
+            }else{
+                throw new Exception("该手机号已被使用过");
+            }
+
+        }else{
+            throw new Exception("该用户名已用过");
+        }
+    }
+    public void exportTemplate(HttpServletRequest request,ObjectId examGroupDetailId, HttpServletResponse response) {
+            String sheetName ="学生批量注册录入模板";
+            HSSFWorkbook wb = new HSSFWorkbook();
+            HSSFSheet sheet = wb.createSheet(sheetName);
+            sheet.addMergedRegion(new CellRangeAddress(0, 0, 0, 5));
+            HSSFRow rowZero = sheet.createRow(0);
+            HSSFCell cellZero = rowZero.createCell(0);
+            cellZero.setCellValue("重复的手机号无法注册成功");
+            HSSFRow row = sheet.createRow(1);
+            HSSFCell cell = row.createCell(0);
+            cell.setCellValue("手机号");
+            String fileName = sheetName + ".xls";
+            String userAgent = request.getHeader("USER-AGENT");
+            HSSFUtils.exportExcel(userAgent, response, wb, fileName);
     }
 
     private UserEntry registerUserEntry(HttpServletRequest request,String email, String userName, String passWord, String phoneNumber, String nickName) {

@@ -1051,6 +1051,8 @@ public class Constant {
     public static final String COLLECTION_PUSH_MESSAGE= "jxm_push_message";
     //用户协议表
     public static final String COLLECTION_USER_AGREEMENT= "jxm_user_agreement";
+
+    public static final String COLLECTION_VALIDATE_GROUP_INFO = "jxm_validate_group_info";
     /*************************************精品课*****************************************/
 
     //精品课程

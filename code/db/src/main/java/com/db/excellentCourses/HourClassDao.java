@@ -39,6 +39,13 @@ public class HourClassDao extends BaseDao {
         update(MongoFacroty.getAppDB(), Constant.COLLECTION_HOUR_CLASS, query,updateValue);
     }
 
+    //删除
+    public void sortEntry(ObjectId id,int order){
+        BasicDBObject query = new BasicDBObject(Constant.ID,id);
+        BasicDBObject updateValue=new BasicDBObject(Constant.MONGO_SET,new BasicDBObject("ord",order));
+        update(MongoFacroty.getAppDB(), Constant.COLLECTION_HOUR_CLASS, query,updateValue);
+    }
+
     //修改价格
     public void updatePriceEntry(ObjectId id,double price){
         BasicDBObject query = new BasicDBObject(Constant.ID,id);
@@ -68,6 +75,19 @@ public class HourClassDao extends BaseDao {
         BasicDBObject query=new BasicDBObject().append("pid", parentId).append("isr", Constant.ZERO);
         List<DBObject> dbList=find(MongoFacroty.getAppDB(), Constant.COLLECTION_HOUR_CLASS, query,
                 Constant.FIELDS, new BasicDBObject("ord",Constant.ASC));
+        if (dbList != null && !dbList.isEmpty()) {
+            for (DBObject obj : dbList) {
+                entryList.add(new HourClassEntry((BasicDBObject) obj));
+            }
+        }
+        return entryList;
+    }
+
+    public List<HourClassEntry> getEntryListByStartTime(ObjectId parentId){
+        List<HourClassEntry> entryList=new ArrayList<HourClassEntry>();
+        BasicDBObject query=new BasicDBObject().append("pid", parentId).append("isr", Constant.ZERO);
+        List<DBObject> dbList=find(MongoFacroty.getAppDB(), Constant.COLLECTION_HOUR_CLASS, query,
+                Constant.FIELDS, new BasicDBObject("stm",Constant.ASC));
         if (dbList != null && !dbList.isEmpty()) {
             for (DBObject obj : dbList) {
                 entryList.add(new HourClassEntry((BasicDBObject) obj));

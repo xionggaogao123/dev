@@ -22,7 +22,10 @@ import org.bson.types.ObjectId;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.util.MultiValueMap;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.multipart.MultipartRequest;
 
@@ -1266,11 +1269,10 @@ public class BackStageController extends BaseController {
             @ApiResponse(code = 500, message = "服务器不能完成请求")})
     @RequestMapping("/sortClassTime")
     @ResponseBody
-    public String sortClassTime(@ApiParam(name = "id", required = true, value = "id") @RequestParam(value = "id",defaultValue = "") String id,
-                                  @ApiParam(name = "time", required = true, value = "time") @RequestParam(value = "time",defaultValue = "") String time){
+    public String sortClassTime(@ApiParam(name = "id", required = true, value = "id") @RequestParam(value = "id",defaultValue = "") String id){
         RespObj respObj = new RespObj(Constant.FAILD_CODE);
         try{
-            backStageService.updateClass(new ObjectId(id),time);
+            backStageService.sortClassTime(new ObjectId(id));
             respObj.setCode(Constant.SUCCESS_CODE);
             respObj.setMessage("修改成功");
         }catch (Exception e){
@@ -1291,16 +1293,27 @@ public class BackStageController extends BaseController {
             @ApiResponse(code = 500, message = "服务器不能完成请求")})
     @RequestMapping("/addClassTime")
     @ResponseBody
-    public String addClassTime(@RequestBody HourClassDTO dto){
+    public String addClassTime(@ApiParam(name = "id", required = true, value = "id") @RequestParam(value = "id",defaultValue = "") String id,
+                               @ApiParam(name = "content", required = true, value = "content") @RequestParam(value = "content",defaultValue = "") String content,
+                               @ApiParam(name = "startTime", required = true, value = "startTime") @RequestParam(value = "startTime",defaultValue = "") String startTime,
+                               @ApiParam(name = "classNewPrice", required = true, value = "classNewPrice") @RequestParam(value = "classNewPrice",defaultValue = "") double classNewPrice,
+                               @ApiParam(name = "currentTime", required = true, value = "currentTime") @RequestParam(value = "currentTime",defaultValue = "") int currentTime,
+                               @ApiParam(name = "type", required = true, value = "type") @RequestParam(value = "type",defaultValue = "") int type){
         RespObj respObj = new RespObj(Constant.FAILD_CODE);
         try{
-            //backStageService.updateClass(new ObjectId(id), time);
+            HourClassDTO dto = new HourClassDTO();
+            dto.setParentId(id);
+            dto.setContent(content);
+            dto.setStartTime(startTime);
+            dto.setClassNewPrice(classNewPrice);
+            dto.setCurrentTime(currentTime);
+            backStageService.addClassTime(dto, type);
             respObj.setCode(Constant.SUCCESS_CODE);
-            respObj.setMessage("修改成功");
+            respObj.setMessage("添加课程成功");
         }catch (Exception e){
             e.printStackTrace();
             respObj.setCode(Constant.SUCCESS_CODE);
-            respObj.setMessage("查询用户绑定关系失败");
+            respObj.setMessage("添加课程失败");
         }
         return JSON.toJSONString(respObj);
     }

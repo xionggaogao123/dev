@@ -5,6 +5,7 @@ import com.db.activity.FriendDao;
 import com.db.appmarket.AppDetailDao;
 import com.db.backstage.*;
 import com.db.controlphone.*;
+import com.db.excellentCourses.ClassOrderDao;
 import com.db.excellentCourses.ExcellentCoursesDao;
 import com.db.excellentCourses.HourClassDao;
 import com.db.fcommunity.CommunityDao;
@@ -35,11 +36,13 @@ import com.fulaan.picturetext.runnable.PictureRunNable;
 import com.fulaan.user.service.UserService;
 import com.fulaan.util.DownloadUtil;
 import com.fulaan.util.imageInit;
+import com.mongodb.DBObject;
 import com.pojo.activity.FriendEntry;
 import com.pojo.appmarket.AppDetailEntry;
 import com.pojo.appnotice.AppNoticeEntry;
 import com.pojo.backstage.*;
 import com.pojo.controlphone.*;
+import com.pojo.excellentCourses.ClassOrderEntry;
 import com.pojo.excellentCourses.ExcellentCoursesEntry;
 import com.pojo.excellentCourses.HourClassEntry;
 import com.pojo.fcommunity.AttachmentEntry;
@@ -139,6 +142,8 @@ public class BackStageService {
     private PushMessageDao pushMessageDao = new PushMessageDao();
 
     private ExcellentCoursesDao excellentCoursesDao = new ExcellentCoursesDao();
+
+    private ClassOrderDao classOrderDao = new ClassOrderDao();
 
 
 
@@ -1865,39 +1870,101 @@ public class BackStageService {
     }
 
     //新增课程
-    public void addClassTime(HourClassDTO dto){
+    public void addClassTime(HourClassDTO dto,int type){
         String pid = dto.getParentId();
         ExcellentCoursesEntry excellentCoursesEntry = excellentCoursesDao.getEntry(new ObjectId(pid));
+        HourClassEntry classEntry= null;
         if(excellentCoursesEntry!=null){
-            /* ObjectId userId,
-            ObjectId parentId,
-            String content,
-            long startTime,
-            long dateTime,
-            int currentTime,
-            double classOldPrice,
-            double classNewPrice,
-            int week,
-            int order,
-            int type*/
             dto.setType(Constant.ZERO);
             dto.setUserId(excellentCoursesEntry.getUserId().toString());
-            dto.setWeek(getWeek(dto.getDateTime()));
-            dto.setClassOldPrice(getTwoDouble(dto.getClassOldPrice()));
-            HourClassEntry classEntry =  dto.buildAddEntry();
+            long startNum = DateTimeUtils.getStrToLongTime(dto.getStartTime(), "yyyy-MM-dd");
+            dto.setWeek(this.getWeek(startNum));
+            dto.setClassOldPrice(0);
+            classEntry =  dto.buildAddEntry();
+            classEntry.setDateTime(startNum);
             hourClassDao.addEntry(classEntry);
+            //添加课程
+            excellentCoursesEntry.setNewPrice(sum(excellentCoursesEntry.getNewPrice(),dto.getClassNewPrice()));
+            excellentCoursesEntry.setAllClassCount(excellentCoursesEntry.getAllClassCount() + 1);
+            excellentCoursesDao.addEntry(excellentCoursesEntry);
+            sendMessage(excellentCoursesEntry.getTitle(), classEntry.getID(), classEntry.getStartTime(), startNum);
         }
-        /*dto.setType(Constant.ZERO);
-        dto.setUserId(userId.toString());
-        dto.setWeek(getWeek(dto.getDateTime()));
-        dto.setParentId(dto.getParentId());
-        //转换
-        dto.setClassOldPrice(getTwoDouble(dto1.getClassOldPrice()));
-        HourClassEntry classEntry =  dto1.buildAddEntry();*/
+        if(type==1 && classEntry!=null){
+            //用户订单查询
+            Set<ObjectId> userIds = classOrderDao.getUserIdEntry(excellentCoursesEntry.getID());
+            List<UserEntry> userEntries = userDao.getUserEntryList(userIds, Constant.FIELDS);
+            List<ClassOrderEntry> classOrderEntries1 = new ArrayList<ClassOrderEntry>();
+            long current = System.currentTimeMillis();
+            for(UserEntry u : userEntries){
+                ClassOrderEntry classOrderEntry = new ClassOrderEntry();
+                //购买  1  未购买
+                classOrderEntry.setIsBuy(1);
+                //下单
+                classOrderEntry.setType(1);
+                classOrderEntry.setCreateTime(current);
+                classOrderEntry.setContactId(excellentCoursesEntry.getID());
+                classOrderEntry.setOrderId("系统添加课程附带添加");
+                classOrderEntry.setIsRemove(0);
+                classOrderEntry.setParentId(classEntry.getID());
+                classOrderEntry.setFunction(4);
+                classOrderEntry.setPrice(classEntry.getClassNewPrice());
+                classOrderEntry.setUserId(u.getID());//孩子的订单
+                classOrderEntries1.add(classOrderEntry);
+            }
+            //添加课节订单
+            if(classOrderEntries1.size()>0){
+                this.addClassEntryBatch(classOrderEntries1);
+            }
+
+        }
     }
 
-    public int getWeek(String dateTime){
-        long startNum = DateTimeUtils.getStrToLongTime(dateTime, "yyyy-MM-dd");
+    public void sortClassTime(ObjectId id){
+        List<HourClassEntry> hourClassEntries =  hourClassDao.getEntryListByStartTime(id);
+        int index = 0;
+        for(HourClassEntry hourClassEntry:hourClassEntries){
+            index++;
+            hourClassDao.sortEntry(hourClassEntry.getID(),index);
+        }
+    }
+
+    /**
+     * 批量增加课时
+     * @param list
+     */
+    public void addClassEntryBatch(List<ClassOrderEntry> list) {
+        List<DBObject> dbList = new ArrayList<DBObject>();
+        for (int i = 0; list != null && i < list.size(); i++) {
+            ClassOrderEntry si = list.get(i);
+            dbList.add(si.getBaseEntry());
+        }
+        //导入新纪录
+        if(dbList.size()>0) {
+            classOrderDao.addBatch(dbList);
+        }
+    }
+
+    /**
+     * 生成推送消息
+     * @return
+     */
+    public void sendMessage(String title,ObjectId id,long startTime,long dateTime){
+        if(pushMessageDao.isNotHave(id)){
+            PushMessageEntry pushMessageEntry = new PushMessageEntry(
+                    "复兰课堂",
+                    new ArrayList<ObjectId>(),
+                    id,
+                    "未上课提醒",
+                    title,
+                    startTime,
+                    dateTime,
+                    1,
+                    0);
+            pushMessageDao.addEntry(pushMessageEntry);
+        }
+    }
+
+    public int getWeek(long startNum){
         Date date = new Date(startNum);
         Calendar cal = Calendar.getInstance();
         cal.setTime(date);
@@ -1906,6 +1973,31 @@ public class BackStageService {
             w= 7;
         }
         return w;
+    }
+
+    /**
+     * double 相加
+     * @param d1
+     * @param d2
+     * @return
+     */
+    public static double sum(double d1,double d2){
+        BigDecimal bd1 = new BigDecimal(Double.toString(d1));
+        BigDecimal bd2 = new BigDecimal(Double.toString(d2));
+        return bd1.add(bd2).doubleValue();
+    }
+
+
+    /**
+     * double 相减
+     * @param d1
+     * @param d2
+     * @return
+     */
+    public static double sub(double d1,double d2){
+        BigDecimal bd1 = new BigDecimal(Double.toString(d1));
+        BigDecimal bd2 = new BigDecimal(Double.toString(d2));
+        return bd1.subtract(bd2).doubleValue();
     }
 
 

@@ -438,9 +438,9 @@ public class DefaultGroupController extends BaseController {
             }
             ObjectId userId = getUserId();
             UserEntry userEntry = userService.findById(userId);
-            Map<String, String> ext = new HashMap<String, String>();
+          //  Map<String, String> ext = new HashMap<String, String>();
             String nickName = StringUtils.isNotBlank(userEntry.getNickName()) ? userEntry.getNickName() : userEntry.getUserName();
-            ext.put("avatar", AvatarUtils.getAvatar(userEntry.getAvatar(), userEntry.getRole(), userEntry.getSex()));
+          /*  ext.put("avatar", AvatarUtils.getAvatar(userEntry.getAvatar(), userEntry.getRole(), userEntry.getSex()));
             ext.put("nickName", nickName);
             ext.put("userId", userId.toString());
             ext.put("joinPrivate", "YES");
@@ -456,17 +456,17 @@ public class DefaultGroupController extends BaseController {
 
             Map<String, String> sendMessage = new HashMap<String, String>();
             sendMessage.put("type", MsgType.TEXT);
-            sendMessage.put("msg", message);
+            sendMessage.put("msg", message);*/
             //申请加入私密社区
-            boolean flag = validateGroupInfoService.saveValidateInfos(userId, groupId,Constant.ZERO, "",userList);
+            boolean flag = validateGroupInfoService.saveValidateInfos(userId, groupId,Constant.ZERO, "来自"+dto.getName()+"的“"+nickName+"”邀请您加入群组“"+dto.getName()+"”",userList);
             if(flag){
-                if (emService.sendTextMessage("users", targets, userId.toString(), ext, sendMessage)) {
+               // if (emService.sendTextMessage("users", targets, userId.toString(), ext, sendMessage)) {
                     respObj.setCode(Constant.SUCCESS_CODE);
                     respObj.setMessage("等待用户同意加入");
-                } else {
-                    respObj.setCode(Constant.FAILD_CODE);
-                    respObj.setMessage("发送用户加群邀请失败!");
-                }
+             //   } else {
+               //     respObj.setCode(Constant.FAILD_CODE);
+                 //   respObj.setMessage("发送用户加群邀请失败!");
+              //  }
             }else{
                 respObj.setCode(Constant.FAILD_CODE);
                 respObj.setMessage("发送用户加群邀请失败!");
@@ -477,6 +477,27 @@ public class DefaultGroupController extends BaseController {
         }
         return respObj;
     }
+
+    /**
+     * 红点数量
+     */
+    @ApiOperation(value = "红点数量", httpMethod = "POST", produces = "application/json")
+    @ApiResponses( value = {@ApiResponse(code = 200, message = "Successful — 请求已完成",response = RespObj.class)})
+    @RequestMapping("/countValidateList")
+    @ResponseBody
+    public RespObj countValidateList(){
+        RespObj respObj = new RespObj(Constant.FAILD_CODE);
+        try{
+            String result = validateGroupInfoService.countValidate(getUserId());
+            respObj.setCode(Constant.SUCCESS_CODE);
+            respObj.setMessage(result);
+        }catch(Exception e){
+            respObj.setCode(Constant.FAILD_CODE);
+            respObj.setErrorMessage("查询失败！");
+        }
+        return respObj;
+    }
+
     /**
      * 验证列表
      */

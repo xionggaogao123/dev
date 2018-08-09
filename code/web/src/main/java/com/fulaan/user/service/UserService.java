@@ -33,6 +33,7 @@ import com.fulaan.user.model.ThirdLoginEntry;
 import com.fulaan.user.model.ThirdType;
 import com.fulaan.util.ObjectIdPackageUtil;
 import com.fulaan.util.QRUtils;
+import com.fulaan.util.Validator;
 import com.fulaan.util.check.FastCheck;
 import com.fulaan.utils.HSSFUtils;
 import com.fulaan.utils.KeyWordFilterUtil;
@@ -69,6 +70,7 @@ import org.apache.poi.hssf.usermodel.HSSFCell;
 import org.apache.poi.hssf.usermodel.HSSFRow;
 import org.apache.poi.hssf.usermodel.HSSFSheet;
 import org.apache.poi.hssf.usermodel.HSSFWorkbook;
+import org.apache.poi.ss.usermodel.Cell;
 import org.apache.poi.ss.util.CellRangeAddress;
 import org.bson.types.ObjectId;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -78,6 +80,7 @@ import org.springframework.stereotype.Service;
 import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import java.io.InputStream;
 import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;
 import java.text.Collator;
@@ -197,14 +200,41 @@ public class UserService extends BaseService {
             throw new Exception("该用户名已用过");
         }
     }
-    public void exportTemplate(HttpServletRequest request,ObjectId examGroupDetailId, HttpServletResponse response) {
+
+    public String registerNewBackAvailableUser(HttpServletRequest request,String userName, String phoneNumber,int newRole,
+                                            String nickName)throws Exception{
+        UserEntry userEntry=userDao.findByUserName(userName);
+        if(null==userEntry){
+            UserMobileEntry userMobileEntry = userMobileDao.findByMobile(phoneNumber);
+            if(userMobileEntry==null){
+                UserEntry user=registerUserEntry(request,Constant.EMPTY,userName,"123456",phoneNumber,
+                        nickName);
+                ObjectId userId=userDao.addUserEntry(user);
+                if(newRole!=-1) {
+                    if(null==newVersionUserRoleDao.getEntry(userId)){
+                        newVersionUserRoleDao.saveEntry(new NewVersionUserRoleEntry(userId, newRole));
+                    }
+                }
+                UserMobileEntry entry = new UserMobileEntry(phoneNumber, userId);
+                userMobileDao.save(entry);
+                return "  -----<span style='color:red;'>注册成功</span>";
+            }else{
+                return "  -----<span style='color:red;'>该手机号已被使用过</span>";
+            }
+
+        }else{
+            return "  -----<span style='color:red;'>该用户名已用过</span>";
+        }
+    }
+
+    public void exportTemplate(HttpServletRequest request, HttpServletResponse response) {
             String sheetName ="学生批量注册录入模板";
             HSSFWorkbook wb = new HSSFWorkbook();
             HSSFSheet sheet = wb.createSheet(sheetName);
             sheet.addMergedRegion(new CellRangeAddress(0, 0, 0, 5));
             HSSFRow rowZero = sheet.createRow(0);
             HSSFCell cellZero = rowZero.createCell(0);
-            cellZero.setCellValue("重复的手机号无法注册成功");
+            cellZero.setCellValue("注意：重复的手机号无法注册成功，包括已使用的用户名");
             HSSFRow row = sheet.createRow(1);
             HSSFCell cell = row.createCell(0);
             cell.setCellValue("手机号");
@@ -213,6 +243,76 @@ public class UserService extends BaseService {
             HSSFUtils.exportExcel(userAgent, response, wb, fileName);
     }
 
+    public String importTemplate(InputStream inputStream,HttpServletRequest request) throws Exception {
+        HSSFWorkbook workbook = null;
+        workbook = new HSSFWorkbook(inputStream);
+        HSSFSheet sheet = workbook.getSheet(workbook.getSheetName(0));
+        int rowNum = sheet.getLastRowNum();
+        StringBuffer sb = new StringBuffer();
+        //sb.append("注册情况：\n");
+        for (int j = 2; j <= rowNum; j++) {
+            if(sheet.getRow(j)!=null){
+                if(sheet.getRow(j).getCell(0)!=null){
+                    sheet.getRow(j).getCell(0).setCellType(Cell.CELL_TYPE_STRING);
+                }
+                String phoneNumber = sheet.getRow(j).getCell(0).getStringCellValue();
+                if(phoneNumber!=null && !phoneNumber.equals("")){
+                    sb.append("<p>第"+j+"列："+phoneNumber);
+                    if(Validator.isMobile(phoneNumber)){
+                        String strt = this.registerNewBackAvailableUser(request,phoneNumber,phoneNumber,Constant.ONE,phoneNumber);
+                        sb.append(strt);
+                    }else{
+                        sb.append("  -----<span style='color:red;'>手机号格式不正确</span>");
+                    }
+                    sb.append("</p>");
+                }
+            }else{
+                sb.append("<p>第"+j+"列：");
+                sb.append("</p>");
+            }
+        }
+        return sb.toString();
+    }
+
+    public double getValue(HSSFCell cell) {
+        double cellValue = -1;
+        if (cell != null) {
+            String vvv = getStringCellValue(cell);
+            if (StringUtils.isNotBlank(vvv)) {
+               /* if ("缺".equals(vvv.trim())) {
+
+                } else {
+                    cellValue = getValueByPrint(vvv);
+                }*/
+
+            } else {
+                cellValue = -2;
+            }
+        }
+        return cellValue;
+    }
+
+
+    private String getStringCellValue(HSSFCell cell) {
+        if (cell == null) return Constant.EMPTY;
+        String strCell;
+        switch (cell.getCellType()) {
+            case HSSFCell.CELL_TYPE_STRING:
+                strCell = cell.getStringCellValue();
+                break;
+            case HSSFCell.CELL_TYPE_NUMERIC:
+                strCell = String.valueOf(cell.getNumericCellValue());
+                break;
+            case HSSFCell.CELL_TYPE_BOOLEAN:
+                strCell = String.valueOf(cell.getBooleanCellValue());
+                break;
+            default:
+                strCell = Constant.EMPTY;
+                break;
+        }
+
+        return org.apache.commons.lang.StringUtils.isBlank(strCell) ? Constant.EMPTY : strCell;
+    }
     private UserEntry registerUserEntry(HttpServletRequest request,String email, String userName, String passWord, String phoneNumber, String nickName) {
         UserEntry userEntry = new UserEntry(userName, MD5Utils.getMD5String(passWord), phoneNumber, email, nickName);
         userEntry.setK6KT(0);

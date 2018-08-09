@@ -122,7 +122,7 @@ public class MobileReturnEntry extends BaseDBObject {
     }
     
     public String getSchoole() {
-        return getSimpleStringValue("Schoole");
+        return getSimpleStringValue("schoole");
     }
     
     public void setSchoole(String schoole) {

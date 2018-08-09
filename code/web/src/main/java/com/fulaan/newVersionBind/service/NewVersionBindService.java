@@ -1434,6 +1434,11 @@ public class NewVersionBindService {
         return flag;
     }
 
+    public Map<ObjectId,Integer> getUserStudenMap(List<ObjectId> userIds){
+        Map<ObjectId,Integer> userRole = newVersionUserRoleDao.getUserRoleMap(userIds);
+        return userRole;
+    }
+
     /**
      * 移交课程(家长到孩子)
      */

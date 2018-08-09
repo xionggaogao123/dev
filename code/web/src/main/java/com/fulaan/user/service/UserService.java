@@ -217,7 +217,7 @@ public class UserService extends BaseService {
                 }
                 UserMobileEntry entry = new UserMobileEntry(phoneNumber, userId);
                 userMobileDao.save(entry);
-                return "  -----<span style='color:red;'>注册成功</span>";
+                return "  -----<span style='color:green;'>注册成功</span>";
             }else{
                 return "  -----<span style='color:red;'>该手机号已被使用过</span>";
             }

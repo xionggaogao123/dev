@@ -91,7 +91,7 @@ public class CoursesRoomService {
             List<Map<String,String>> mapList = new ArrayList<Map<String, String>>();
             Map<String,String> alarms = new HashMap<String, String>();
             alarms.put("time","85");
-            alarms.put("desc", "敬爱的老师，还有5分钟下课，请您注意休息");
+            alarms.put("desc", "敬爱的老师,还有5分钟下课,请您注意休息");
             mapList.add(alarms);
             String str2 = JSONUtils.toJSONString(mapList);
             map.put("alarms", URLEncoder.encode(str2, "utf-8"));
@@ -406,7 +406,7 @@ liveid	直播id*/
             List<Map<String,String>> mapList = new ArrayList<Map<String, String>>();
             Map<String,String> alarms = new HashMap<String, String>();
             alarms.put("time","85");
-            alarms.put("desc", "敬爱的老师，还有5分钟下课，请您注意休息");
+            alarms.put("desc", "敬爱的老师,还有5分钟下课,请您注意休息");
             mapList.add(alarms);
             String str2 = JSONUtils.toJSONString(mapList);
             map.put("alarms", URLEncoder.encode(str2, "utf-8"));

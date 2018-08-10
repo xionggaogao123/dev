@@ -481,19 +481,25 @@ public class DefaultGroupController extends BaseController {
             sendMessage.put("type", MsgType.TEXT);
             sendMessage.put("msg", message);*/
             //申请加入私密社区
-            boolean flag = validateGroupInfoService.saveValidateInfos(userId, groupId,Constant.ZERO, "来自"+dto.getName()+"的“"+nickName+"”邀请您加入群组“"+dto.getName()+"”",userList2);
-            if(flag){
-               // if (emService.sendTextMessage("users", targets, userId.toString(), ext, sendMessage)) {
+            if(userList2.size()>0){
+                boolean flag = validateGroupInfoService.saveValidateInfos(userId, groupId,Constant.ZERO, "来自"+dto.getName()+"的“"+nickName+"”邀请您加入群组“"+dto.getName()+"”",userList2);
+                if(flag){
+                    // if (emService.sendTextMessage("users", targets, userId.toString(), ext, sendMessage)) {
                     respObj.setCode(Constant.SUCCESS_CODE);
                     respObj.setMessage("等待用户同意加入");
-             //   } else {
-               //     respObj.setCode(Constant.FAILD_CODE);
-                 //   respObj.setMessage("发送用户加群邀请失败!");
-              //  }
+                    //   } else {
+                    //     respObj.setCode(Constant.FAILD_CODE);
+                    //   respObj.setMessage("发送用户加群邀请失败!");
+                    //  }
+                }else{
+                    respObj.setCode(Constant.FAILD_CODE);
+                    respObj.setMessage("发送用户加群邀请失败!");
+                }
             }else{
-                respObj.setCode(Constant.FAILD_CODE);
-                respObj.setMessage("发送用户加群邀请失败!");
+                respObj.setCode(Constant.SUCCESS_CODE);
+                respObj.setMessage("操作成功");
             }
+
         } catch (Exception e) {
             respObj.setCode(Constant.FAILD_CODE);
             respObj.setErrorMessage(e.getMessage());

@@ -71,6 +71,17 @@ public class BaseAPI {
     }
 
     /**
+     * CC get方法
+     * @param resoureUrl
+     * @return
+     */
+    public static String getZhanCCForToken(String resoureUrl,String json) {
+        resoureUrl = CC_URL + resoureUrl;
+        String resultStr = restTemplate.getForObject(resoureUrl, String.class,json);
+        return resultStr;
+    }
+
+    /**
      * put方法
      * @param resoureUrl
      * @return

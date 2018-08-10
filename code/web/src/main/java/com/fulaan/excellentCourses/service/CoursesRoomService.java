@@ -1,5 +1,6 @@
 package com.fulaan.excellentCourses.service;
 
+import com.alibaba.druid.support.json.JSONUtils;
 import com.db.excellentCourses.CoursesRoomDao;
 import com.db.user.UserDao;
 import com.fulaan.excellentCourses.api.CoursesRoomAPI;
@@ -85,17 +86,27 @@ public class CoursesRoomService {
         map.put("checkurl",CC_CHECKURL);
         map.put("documentdisplaymode",CC_DOCUMENTDISPLAYMODE);
         String id = "";
+
         try{
+            List<Map<String,String>> mapList = new ArrayList<Map<String, String>>();
+            Map<String,String> alarms = new HashMap<String, String>();
+            alarms.put("time","85");
+            alarms.put("desc", "敬爱的老师，还有5分钟下课，请您注意休息");
+            mapList.add(alarms);
+            String str2 = JSONUtils.toJSONString(mapList);
+            map.put("alarms", URLEncoder.encode(str2, "utf-8"));
             map.put("playerbackgroundhint", URLEncoder.encode(CC_PLAYERBACKGROUNDHINT, "utf-8"));
-            //map.put("name", URLEncoder.encode(name, "UTF-8"));
             map.put("name", URLEncoder.encode(name, "utf-8"));
             map.put("desc",URLEncoder.encode(description, "utf-8"));
-            //map.put("desc",description);
             map.put("livestarttime", URLEncoder.encode(dateTime,"utf-8"));
-            //long time = new Date().getTime();
+            //处理
             String sysCode = RoomUtil.createHashedQueryString(map,CC_API_KEY);
             String str3 = URLDecoder.decode(sysCode, "utf-8");
-            String str =  CoursesRoomAPI.createRoom(str3);
+            String str4 =  str3.substring(0,str3.indexOf("&"));
+            String str6 = str4.substring(str3.indexOf("=")+1,str4.length());
+            String str5 =  str3.substring(str3.indexOf("&")+1,str3.length());
+           // String str =  CoursesRoomAPI.createRoom(str3);
+            String str =  CoursesRoomAPI.createNewRoom(str5, str6);
             JSONObject dataJson = new JSONObject(str);
             String rows = dataJson.getString("result");
             if(rows.equals("OK")){
@@ -121,6 +132,7 @@ public class CoursesRoomService {
             }
 
         }catch(Exception e){
+            e.printStackTrace();
 
         }
 
@@ -391,7 +403,13 @@ liveid	直播id*/
         map.put("repeatedloginsetting",CC_REPEATEDLOGINSETTING);
         String id = "";
         try{
-
+            List<Map<String,String>> mapList = new ArrayList<Map<String, String>>();
+            Map<String,String> alarms = new HashMap<String, String>();
+            alarms.put("time","85");
+            alarms.put("desc", "敬爱的老师，还有5分钟下课，请您注意休息");
+            mapList.add(alarms);
+            String str2 = JSONUtils.toJSONString(mapList);
+            map.put("alarms", URLEncoder.encode(str2, "utf-8"));
             map.put("checkurl",URLEncoder.encode(CC_BACKCHECKURL, "utf-8"));
             map.put("playerbackgroundhint", URLEncoder.encode(CC_PLAYERBACKGROUNDHINT, "utf-8"));
             map.put("name", URLEncoder.encode(name, "utf-8"));
@@ -399,7 +417,11 @@ liveid	直播id*/
             map.put("livestarttime", URLEncoder.encode(dateTime,"utf-8"));
             String sysCode = RoomUtil.createHashedQueryString(map,CC_API_KEY);
             String str3 = URLDecoder.decode(sysCode, "utf-8");
-            String str =  CoursesRoomAPI.createRoom(str3);
+            String str4 =  str3.substring(0,str3.indexOf("&"));
+            String str6 = str4.substring(str3.indexOf("=")+1,str4.length());
+            String str5 =  str3.substring(str3.indexOf("&")+1,str3.length());
+            // String str =  CoursesRoomAPI.createRoom(str3);
+            String str =  CoursesRoomAPI.createNewRoom(str5, str6);
             JSONObject dataJson = new JSONObject(str);
             String rows = dataJson.getString("result");
             if(rows.equals("OK")){

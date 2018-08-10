@@ -15,6 +15,13 @@ public class CoursesRoomAPI  extends BaseAPI{
     }
 
 
+    //创建直播间
+    public static String createNewRoom(String sysCode,String json) {
+        //long current = System.currentTimeMillis();
+        String str = getZhanCCForToken("/room/create" + "?" + sysCode + "&alarms={json}", json);
+        return str;
+    }
+
     //获取回放列表
     public static String getRoomList(String sysCode) {
         //long current = System.currentTimeMillis();

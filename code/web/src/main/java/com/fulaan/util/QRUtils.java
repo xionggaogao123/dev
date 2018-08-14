@@ -17,6 +17,7 @@ public class QRUtils {
 //    private static final String prev_url="http://www.fulaan.com";
      //private static final String prev_url="http://appapi.jiaxiaomei.com";
      private static final String prev_url= Resources.getProperty("sao.qr.back.url");
+
     //private static final String prev_url="http://192.168.1.104:8087";
    // private static final String prev_url="http://121.40.229.225:8080";
      //private static final String prev_url2="http://192.168.1.35:8087";

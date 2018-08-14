@@ -11,6 +11,7 @@ import com.fulaan.backstage.service.BackStageService;
 import com.fulaan.base.BaseController;
 import com.fulaan.community.dto.CommunityDTO;
 import com.fulaan.community.dto.CommunityDetailDTO;
+import com.fulaan.communityValidate.service.ValidateGroupInfoService;
 import com.fulaan.dto.MemberDTO;
 import com.fulaan.fgroup.dto.GroupDTO;
 import com.fulaan.fgroup.service.EmService;
@@ -36,10 +37,7 @@ import com.sys.constants.Constant;
 import com.sys.exceptions.IllegalParamException;
 import com.sys.utils.AvatarUtils;
 import com.sys.utils.RespObj;
-import io.swagger.annotations.Api;
-import io.swagger.annotations.ApiOperation;
-import io.swagger.annotations.ApiResponse;
-import io.swagger.annotations.ApiResponses;
+import io.swagger.annotations.*;
 import org.apache.commons.lang3.StringUtils;
 import org.bson.types.ObjectId;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -79,6 +77,8 @@ public class DefaultGroupController extends BaseController {
     private NewVersionBindService newVersionBindService;
     @Autowired
     private EmService emService;
+    @Autowired
+    private ValidateGroupInfoService validateGroupInfoService;
 
     private NewVersionBindRelationDao newVersionBindRelationDao = new NewVersionBindRelationDao();
 
@@ -334,6 +334,248 @@ public class DefaultGroupController extends BaseController {
             respObj.setMessage("操作成功");
         }catch (Exception e){
              respObj.setErrorMessage(e.getMessage());
+        }
+        return respObj;
+    }
+
+    /**
+     * 学生邀请人进群
+     *
+     * @param emChatId 环信id
+     * @param userIds
+     * @return
+     */
+    public RespObj inviteStudentMember(String emChatId,
+                                String userIds){
+        RespObj respObj = new RespObj(Constant.FAILD_CODE);
+        try {
+//            ObjectId groupId = groupService.getGroupIdByChatId(emChatId);
+            GroupEntry groupEntry = groupService.getGroupEntryByEmchatId(emChatId);
+            if(null==groupEntry){
+                throw new Exception("传入的环信Id有误");
+            }
+            ObjectId groupId=groupEntry.getID();
+            GroupDTO groupDTO = groupService.findById(groupId, getUserId());
+            List<ObjectId> userList = MongoUtils.convertObjectIds(userIds);
+            if(null!=groupEntry.getCommunityId()){
+                //判断是社群时，不能把学生拉进去社群
+                if(newVersionBindService.judgeUserStudent(userList)){
+                    throw new Exception("不能把学生拉进社群");
+                }
+            }
+            for (ObjectId personId : userList) {
+                if (!memberService.isGroupMember(groupId, personId)) {
+                    if (emService.addUserToEmGroup(emChatId, personId)) {
+                        if (memberService.isBeforeMember(groupId, personId)) {
+                            memberService.updateMember(groupId, personId, 0);
+                        } else {
+                            memberService.saveMember(personId, groupId);
+                        }
+                        if (groupDTO.isBindCommunity()) {
+                            communityService.setPartIncontentStatus(new ObjectId(groupDTO.getCommunityId()), personId, 0);
+                            communityService.pushToUser(new ObjectId(groupDTO.getCommunityId()), personId, 1);
+                        }
+                    }
+                }
+            }
+
+            //自动加为好友(社群拉人自动加为好友)
+            if(groupDTO.isBindCommunity()) {
+                //去除所有运营成员
+                List<ObjectId> oids = businessRoleDao.getObjectIdList();
+                userList.removeAll(oids);
+
+                List<String> keysList=MongoUtils.convertToStringList(userList);
+                if(keysList.size()>0) {
+                    List<ObjectId> communityIds = new ArrayList<ObjectId>();
+                    communityIds.add(groupEntry.getCommunityId());
+                    String[] keys = keysList.toArray(new String[keysList.size()]);
+                    backStageService.recordEntries2(groupEntry.getID(),keys,30,oids);
+                    //backStageService.setAutoChildFriends(keys,communityIds);
+                }
+            }
+            //更新群聊头像
+            groupService.asyncUpdateHeadImage(groupId);
+            if (groupDTO.getIsM() == 0) {
+                groupService.asyncUpdateGroupNameByMember(new ObjectId(groupDTO.getId()));
+            }
+
+            respObj.setCode(Constant.SUCCESS_CODE);
+            respObj.setMessage("加入成功");
+        }catch (Exception e){
+            respObj.setErrorMessage(e.getMessage());
+        }
+        return respObj;
+    }
+
+    /**
+     * 群组拉人申请
+     *
+     * @param emChatId
+     * @return
+     */
+    @RequestMapping("/joinGroup")
+    @ResponseBody
+    @ApiOperation(value = "加入社区", httpMethod = "GET", produces = "application/json")
+    @ApiResponses(value = {@ApiResponse(code = 200, message = "加入社区成功",response = RespObj.class),
+            @ApiResponse(code = 500, message = "加入社区失败")})
+    public RespObj joinGroup(@ApiParam(name="chatId",required = true,value = "群聊id")@ObjectIdType String emChatId,
+                                 @ApiParam(name="userIds",required = false,value = "被拉用户id集合")@RequestParam(defaultValue = "", required = false) String userIds) {
+        RespObj respObj = new RespObj(Constant.FAILD_CODE);
+        try {
+            GroupEntry groupEntry = groupService.getGroupEntryByEmchatId(emChatId);
+            if (null == groupEntry) {
+                throw new Exception("传入的环信Id有误");
+            }
+            ObjectId groupId = groupEntry.getID();
+            GroupDTO dto = groupService.findById(groupId, getUserId());
+            List<ObjectId> userList = MongoUtils.convertObjectIds(userIds);
+            if (null != groupEntry.getCommunityId()) {
+                //判断是社群时，不能把学生拉进去社群
+                if (newVersionBindService.judgeUserStudent(userList)) {
+                    throw new Exception("不能把学生拉进社群");
+                }
+            }
+            //判断学生和家长
+            Map<ObjectId,Integer> map = newVersionBindService.getUserStudenMap(userList);
+            //家长
+            StringBuffer sb = new StringBuffer();
+            List<ObjectId> userList2 = new ArrayList<ObjectId>();
+            for(ObjectId oid: userList){
+                Integer role = map.get(oid);
+                if(role==null){
+                    userList2.add(oid);
+                }else{
+                    if(role==Constant.ONE||role==Constant.TWO){
+                        userList2.add(oid);
+                    } else{
+                        sb.append(oid.toString());
+                        sb.append(",");
+                    }
+                }
+
+            }
+            //家长加群
+            this.inviteStudentMember(emChatId,sb.toString());
+
+            //孩子申请
+            ObjectId userId = getUserId();
+            UserEntry userEntry = userService.findById(userId);
+          //  Map<String, String> ext = new HashMap<String, String>();
+            String nickName = StringUtils.isNotBlank(userEntry.getNickName()) ? userEntry.getNickName() : userEntry.getUserName();
+          /*  ext.put("avatar", AvatarUtils.getAvatar(userEntry.getAvatar(), userEntry.getRole(), userEntry.getSex()));
+            ext.put("nickName", nickName);
+            ext.put("userId", userId.toString());
+            ext.put("joinPrivate", "YES");
+            ext.put("groupStyle", "community");
+           // List<MemberDTO> memberDTOs = memberService.getManagers(groupId);
+            List<String> targets = new ArrayList<String>();
+            for (ObjectId uid : userList2) {
+                targets.add(uid.toString());
+            }
+            String message;
+
+            message = "用户" + nickName + "邀请你加入" + dto.getName() + "聊天群";
+
+            Map<String, String> sendMessage = new HashMap<String, String>();
+            sendMessage.put("type", MsgType.TEXT);
+            sendMessage.put("msg", message);*/
+            //申请加入私密社区
+            if(userList2.size()>0){
+                boolean flag = validateGroupInfoService.saveValidateInfos(userId, groupId,Constant.ZERO, "来自"+dto.getName()+"的“"+nickName+"”邀请您加入群组“"+dto.getName()+"”",userList2);
+                if(flag){
+                    // if (emService.sendTextMessage("users", targets, userId.toString(), ext, sendMessage)) {
+                    respObj.setCode(Constant.SUCCESS_CODE);
+                    respObj.setMessage("等待用户同意加入");
+                    //   } else {
+                    //     respObj.setCode(Constant.FAILD_CODE);
+                    //   respObj.setMessage("发送用户加群邀请失败!");
+                    //  }
+                }else{
+                    respObj.setCode(Constant.FAILD_CODE);
+                    respObj.setMessage("发送用户加群邀请失败!");
+                }
+            }else{
+                respObj.setCode(Constant.SUCCESS_CODE);
+                respObj.setMessage("操作成功");
+            }
+
+        } catch (Exception e) {
+            respObj.setCode(Constant.FAILD_CODE);
+            respObj.setErrorMessage(e.getMessage());
+        }
+        return respObj;
+    }
+
+    /**
+     * 红点数量
+     */
+    @ApiOperation(value = "红点数量", httpMethod = "POST", produces = "application/json")
+    @ApiResponses( value = {@ApiResponse(code = 200, message = "Successful — 请求已完成",response = RespObj.class)})
+    @RequestMapping("/countValidateList")
+    @ResponseBody
+    public RespObj countValidateList(){
+        RespObj respObj = new RespObj(Constant.FAILD_CODE);
+        try{
+            String result = validateGroupInfoService.countValidate(getUserId());
+            respObj.setCode(Constant.SUCCESS_CODE);
+            respObj.setMessage(result);
+        }catch(Exception e){
+            respObj.setCode(Constant.FAILD_CODE);
+            respObj.setErrorMessage("查询失败！");
+        }
+        return respObj;
+    }
+
+    /**
+     * 验证列表
+     */
+    @ApiOperation(value = "验证列表", httpMethod = "POST", produces = "application/json")
+    @ApiResponses( value = {@ApiResponse(code = 200, message = "Successful — 请求已完成",response = RespObj.class)})
+    @RequestMapping("/getValidateList")
+    @ResponseBody
+    public RespObj getValidateList(@ApiParam(name="page",required = false,value="page") @RequestParam(value="page",defaultValue = "") int page,
+                                   @ApiParam(name="pageSize",required = false,value="pageSize") @RequestParam(value="pageSize",defaultValue = "") int pageSize){
+        RespObj respObj = new RespObj(Constant.FAILD_CODE);
+        try{
+            Map<String,Object> result = validateGroupInfoService.getValidateList(getUserId(),page,pageSize);
+            respObj.setCode(Constant.SUCCESS_CODE);
+            respObj.setMessage(result);
+        }catch(Exception e){
+            respObj.setCode(Constant.FAILD_CODE);
+            respObj.setErrorMessage("查询失败！");
+        }
+        return respObj;
+    }
+
+    /**
+     * 同意/拒绝
+     */
+    @ApiOperation(value = "同意/拒绝", httpMethod = "POST", produces = "application/json")
+    @ApiResponses( value = {@ApiResponse(code = 200, message = "Successful — 请求已完成",response = RespObj.class)})
+    @RequestMapping("/agreeOrRefuse")
+    @ResponseBody
+    public RespObj agreeOrRefuse(@ApiParam(name="id",required = false,value="id") @RequestParam(value="id",defaultValue = "") String id,
+                                 @ApiParam(name="type",required = false,value="type") @RequestParam(value="type",defaultValue = "") int type){//1 同意  拒绝
+        RespObj respObj = new RespObj(Constant.FAILD_CODE);
+        try{
+            String result = validateGroupInfoService.agreeOrRefuse(new ObjectId(id),type);
+            if(!result.equals("")){
+                if(type==1){
+                    String str  = getUserId().toString();
+                    return  inviteStudentMember(result,str);
+                }
+            }
+            respObj.setCode(Constant.SUCCESS_CODE);
+            if(type==1){
+                respObj.setMessage("已同意");
+            }else{
+                respObj.setMessage("已拒绝");
+            }
+
+        }catch(Exception e){
+            respObj.setCode(Constant.FAILD_CODE);
+            respObj.setErrorMessage("查询失败！");
         }
         return respObj;
     }

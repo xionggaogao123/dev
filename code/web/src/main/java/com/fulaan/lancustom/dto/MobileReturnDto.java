@@ -72,9 +72,9 @@ public class MobileReturnDto {
             this.state = m.getSta();
             this.orderTimeStr = m.getOrderTimeStr();
             if (m.getSta() == 0) {
-                this.stateStr = "未受理";
+                this.stateStr = "等待受理";
             } else if (m.getSta() == 1) {
-                this.stateStr = "已受理";
+                this.stateStr = "钱款已退";
             } else {
                 this.stateStr = "已发货";
             }

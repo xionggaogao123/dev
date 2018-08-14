@@ -948,6 +948,8 @@ public class Constant {
     public static final String COLLECTION_WEB_HOME_PAGE_RECORD="web_home_page_record";
 
     public static final String COLLECTION_JXM_GENERATE_USER_CODE="jxm_gene_user_code";
+    
+    public static final String COLLECTION_SCORE_REPRESENT = "score_represent";
     /**------------------------成绩单----------------------**/
 
     /**------------------------新参考资料----------------------**/
@@ -1049,6 +1051,8 @@ public class Constant {
     public static final String COLLECTION_PUSH_MESSAGE= "jxm_push_message";
     //用户协议表
     public static final String COLLECTION_USER_AGREEMENT= "jxm_user_agreement";
+
+    public static final String COLLECTION_VALIDATE_GROUP_INFO = "jxm_validate_group_info";
     /*************************************精品课*****************************************/
 
     //精品课程

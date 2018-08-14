@@ -323,9 +323,11 @@ public class BusinessManageService {
             if(createTime!=0l){
                 ctm = DateTimeUtils.getLongToStrTimeTwo(createTime);
             }
+            userMap.put("userId",userEntry.getID().toString());
             userMap.put("order",order);
             userMap.put("avatar",AvatarUtils.getAvatar(userEntry.getAvatar(),userEntry.getRole(),userEntry.getSex()));
             userMap.put("price","¥ "+score);
+            userMap.put("jiaId",userEntry.getGenerateUserCode());
             userMap.put("number",number);
             userMap.put("createTime",ctm);
             String name = StringUtils.isNotEmpty(userEntry.getNickName())?userEntry.getNickName():userEntry.getUserName();
@@ -355,6 +357,17 @@ public class BusinessManageService {
         //3. 删除课节
         hourClassDao.delEntry(id,excellentCoursesEntry.getUserId());
         backStageService.addLogMessage(id.toString(), "删除直播课堂：" + excellentCoursesEntry.getTitle(), LogMessageType.courses.getDes(), userId.toString());
+    }
+
+    public void  deleteCoursesOrder(ObjectId id,ObjectId userId,String jiaId,ObjectId uid){
+        //课程相关
+        ExcellentCoursesEntry excellentCoursesEntry = excellentCoursesDao.getEntry(id);
+        if(excellentCoursesEntry==null){
+            return;
+        }
+        //2. 删除订单，并添加说明
+        classOrderDao.delOrderEntry(id, userId);
+        backStageService.addLogMessage(id.toString(), "删除直播课堂订单：" + excellentCoursesEntry.getTitle() + ",ID:" + jiaId, LogMessageType.courses.getDes(), uid.toString());
     }
 
     //审核通过

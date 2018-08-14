@@ -27,6 +27,7 @@ import com.fulaan.user.model.ThirdLoginEntry;
 import com.fulaan.user.model.ThirdType;
 import com.fulaan.user.service.UserService;
 import com.fulaan.util.ObjectIdPackageUtil;
+import com.fulaan.util.Validator;
 import com.fulaan.utils.CollectionUtil;
 import com.google.gson.Gson;
 import com.mongodb.BasicDBObject;
@@ -71,10 +72,13 @@ import org.apache.log4j.Logger;
 import org.bson.types.ObjectId;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
+import org.springframework.util.MultiValueMap;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.multipart.MultipartFile;
+import org.springframework.web.multipart.MultipartRequest;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import javax.annotation.Resource;
@@ -289,6 +293,78 @@ public class WebUserController extends BaseController {
         return respObj;
     }
 
+    @ApiOperation(value = "后台注册账号", httpMethod = "POST", produces = "application/json")
+    @ApiResponses( value = {@ApiResponse(code = 200, message = "Successful — 请求已完成",response = RespObj.class)})
+    @SessionNeedless
+    @RequestMapping("/registerBackUser")
+    @ResponseBody
+    public RespObj registerBackUser(String userName, String phoneNumber,
+                                int newRole,
+                                String nickName,
+                                HttpServletRequest request){
+        RespObj respObj=new RespObj(Constant.FAILD_CODE);
+        try{
+            if(Validator.isMobile(phoneNumber)){
+                String userId=userService.registerBackAvailableUser(request, userName, phoneNumber, newRole, nickName);
+                respObj.setCode(Constant.SUCCESS_CODE);
+                respObj.setMessage(userId);
+            }else{
+                respObj.setCode(Constant.FAILD_CODE);
+                respObj.setMessage("手机号不符合格式");
+            }
+        }catch (Exception e){
+            respObj.setMessage(e.getMessage());
+        }
+        return respObj;
+    }
+
+    /**
+     *
+     */
+    @ApiOperation(value = "导出批量注册模板", httpMethod = "GET", produces = "application/json")
+    @RequestMapping("/exportTemplate")
+    @ResponseBody
+    public void exportTemplate(HttpServletResponse response,
+                               HttpServletRequest request) {
+        try {
+            userService.exportTemplate(request, response);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+    /**
+     *
+     * @param request
+     * @return
+     * @throws Exception
+     */
+    @ApiOperation(value = "导入模板", httpMethod = "GET", produces = "application/json")
+    @ApiResponses(value = {@ApiResponse(code = 200, message = "导入模板已完成", response = String.class),
+            @ApiResponse(code = 400, message = "请求中有语法问题，或不能满足请求"),
+            @ApiResponse(code = 500, message = "服务器不能完成请求")})
+    @RequestMapping("/importTemplate")
+    @ResponseBody
+    public RespObj importTemplate(HttpServletRequest request) throws Exception {
+        RespObj respObj = new RespObj(Constant.FAILD_CODE);
+        MultipartRequest multipartRequest = (MultipartRequest) request;
+        String result ="导入模板失败";
+        try {
+            MultiValueMap<String, MultipartFile> fileMap = multipartRequest.getMultiFileMap();
+            for (List<MultipartFile> multipartFiles : fileMap.values()) {
+                for (MultipartFile file : multipartFiles) {
+                    System.out.println("----" + file.getOriginalFilename());
+                    result = userService.importTemplate(file.getInputStream(),request);
+                }
+            }
+            respObj.setCode(Constant.SUCCESS_CODE);
+            respObj.setMessage(result);
+        } catch (Exception e) {
+            e.printStackTrace();
+            respObj.setErrorMessage(e.getMessage());
+        }
+        return respObj;
+    }
 
     /**
      * token登录

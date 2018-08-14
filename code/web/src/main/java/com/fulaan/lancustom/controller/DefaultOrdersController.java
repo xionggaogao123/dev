@@ -95,7 +95,7 @@ public class DefaultOrdersController extends BaseController {
             @ApiResponse(code = 500, message = "服务器不能完成请求")})
     @RequestMapping("/saveOrder")
     @ResponseBody
-    public RespObj saveOrder(@RequestBody MonetaryOrdersDto ordersDto/*Integer goodNum, @ObjectIdType ObjectId goodId, @ObjectIdType ObjectId addressId, Integer costScore*/) {
+    public String saveOrder(@RequestBody MonetaryOrdersDto ordersDto/*Integer goodNum, @ObjectIdType ObjectId goodId, @ObjectIdType ObjectId addressId, Integer costScore*/) {
 
         RespObj respObj = new RespObj(Constant.FAILD_CODE);
         try {
@@ -107,7 +107,7 @@ public class DefaultOrdersController extends BaseController {
         } catch (Exception e) {
             respObj.setErrorMessage(e.getMessage());
         }
-        return respObj;
+        return JSON.toJSONString(respObj);
     }
 
     /**

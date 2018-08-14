@@ -55,7 +55,7 @@ public class MonetaryOrdersDto {
 
     private UserDTO userDto = new UserDTO();
     public MonetaryOrdersDto(){
-
+        System.out.println("111");
     }
 
     public MonetaryOrdersDto(MonetaryGoodsEntry goodsEntry, MonetaryAddrEntry addrEntry) {

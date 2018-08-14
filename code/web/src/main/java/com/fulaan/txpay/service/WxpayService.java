@@ -86,7 +86,7 @@ public class WxpayService {
     private static final String PAY_NOW_NOTIFYURL = Resources.getProperty("tenxun.app.wx.buy.notify.url");
   //  private static final String PAY_NOW_NOTIFYURL = "appapi.jiaxiaomei.com/jxmapi/appwxpay/newNotify.do";
     //小兰购物回调
-    private static final String XIAOLAN_PAY_NOTIFYURL = "http://192.168.1.73:8084/jxmapi/orders/weChatNotify.do";
+    private static final String XIAOLAN_PAY_NOTIFYURL = Resources.getProperty("tenxun.app.wx.order.notify.url");
     //private static final String PAY_NOW_NOTIFYURL = "http://118.242.18.202:90/jxmapi/appwxpay/newNotify.do";
     //private static final String PAY_NOW_NOTIFYURL = "http://s215l05201.51mypc.cn:24697/jxmapi/appwxpay/newNotify.do";
 

@@ -15,6 +15,7 @@ import com.pojo.excellentCourses.*;
 import com.pojo.lancustom.MonetaryOrdersEntry;
 import com.pojo.user.UserEntry;
 import com.sys.constants.Constant;
+import com.sys.props.Resources;
 import com.sys.utils.DateTimeUtils;
 import org.apache.log4j.Logger;
 import org.bson.types.ObjectId;
@@ -72,9 +73,11 @@ public class AppAlipayService  {
     private static final  String PAY_TIMEOUTEXPRESS= "5m";
 
     //充值回调
-    private static final String PAY_NOTIFYURL = "appapi.jiaxiaomei.com/jxmapi/appalipay/notify.do";
+    //private static final String PAY_NOTIFYURL = "appapi.jiaxiaomei.com/jxmapi/appalipay/notify.do";
+    private static final String PAY_NOTIFYURL = Resources.getProperty("alipay.app.notify.url");
     //购买课程回调
-    private static final String PAY_NOW_NOTIFYURL = "appapi.jiaxiaomei.com/jxmapi/appalipay/newNotify.do";
+    //private static final String PAY_NOW_NOTIFYURL = "appapi.jiaxiaomei.com/jxmapi/appalipay/newNotify.do";
+    private static final String PAY_NOW_NOTIFYURL = Resources.getProperty("alipay.app.buy.notify.url");
 
     //小兰购物回调
     private static final String XIAOLAN_PAY_NOTIFYURL = "http://192.168.1.73:8084/jxmapi/orders/aliNotify.do";

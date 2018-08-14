@@ -117,7 +117,7 @@ public class AppVoteService {
            // entries.add(item.buildEntry());
             AppVoteEntry appVoteEntry = item.buildEntry();
             appVoteDao.saveAppVote(appVoteEntry);
-            if(appVoteDTO.getVisiblePermission()==1){//家长
+            if(appVoteDTO.getVisiblePermission()==1 || appVoteDTO.getVisiblePermission()==3){//家长
                 //发送通知
                 PictureRunNable.addTongzhi(item.getCommunityId(), item.getUserId(), 5);
 
@@ -131,7 +131,7 @@ public class AppVoteService {
                 indexPageDao.addEntry(entry);
             }
         }
-        if(appVoteDTO.getVisiblePermission()==1){//红点
+        if(appVoteDTO.getVisiblePermission()==1 || appVoteDTO.getVisiblePermission()==3 ){//红点
             //添加红点
             redDotService.addOtherEntryList(oids, new ObjectId(appVoteDTO.getUserId()), ApplyTypeEn.piao.getType(), 1);
         }else{

@@ -40,6 +40,7 @@ import java.util.List;
  dateTime         发布日期时间          dtm
  month            月份                  mon
  year             年份                  yea
+
  showType         是否展示              sht    是否展示  0 不展示  1 展示
  */
 public class AppCommentEntry extends BaseDBObject {

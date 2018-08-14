@@ -22,6 +22,11 @@ import org.bson.types.ObjectId;
  cover                封面图片           cov
  second               秒数               sec
  fileUrl              文件地址           ful
+ read                 是否已阅           red    未阅 0        已阅 1
+ readType             批改类型           rty      1 助教已阅     2 老师已阅
+ scrawlUrl            涂鸦文件地址       sul
+ status               批改阶段           sta        0 未批改    1 助教批改     2 老师批改
+
  */
 public class AppOperationEntry  extends BaseDBObject {
     public AppOperationEntry(){
@@ -192,5 +197,42 @@ public class AppOperationEntry  extends BaseDBObject {
 
     public void setIsRemove(int isRemove){
         setSimpleValue("isr",isRemove);
+    }
+
+    /* read                 是否已阅           red    未阅 0        已阅 1
+ readType             批改类型           rty    助教已阅      老师已阅
+ scrawlUrl            涂鸦文件地址       sul
+ status               批改阶段           sta        0 未批改    1 助教批改     2 老师批改
+*/
+    public int getRead(){
+        return getSimpleIntegerValueDef("red",0);
+    }
+
+    public void setRead(int read){
+        setSimpleValue("red",read);
+    }
+
+    public int getReadType(){
+        return  getSimpleIntegerValueDef("rty", 0);
+    }
+
+    public  void setReadType(int readType){
+        setSimpleValue("rty",readType);
+    }
+
+    public int getStatus(){
+        return  getSimpleIntegerValueDef("sta",0);
+    }
+
+    public  void setStatus(int status){
+        setSimpleValue("sta",status);
+    }
+
+    public String getScrawlUrl(){
+        return getSimpleStringValue("sul");
+    }
+
+    public void setScrawlUrl(String scrawlUrl){
+        setSimpleValue("sul",scrawlUrl);
     }
 }

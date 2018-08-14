@@ -16,13 +16,13 @@ import com.pojo.excellentCourses.*;
 import com.pojo.lancustom.MonetaryOrdersEntry;
 import com.pojo.user.UserEntry;
 import com.sys.constants.Constant;
+import com.sys.props.Resources;
 import com.sys.utils.DateTimeUtils;
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.log4j.Logger;
 import org.bson.types.ObjectId;
 import org.springframework.stereotype.Service;
 
-import javax.servlet.http.HttpServletRequest;
 import java.math.BigDecimal;
 import java.util.*;
 
@@ -77,11 +77,14 @@ public class WxpayService {
     private static final String PAY_MCHID = "1509679261";
 
     //充值回调
-    private static final String PAY_NOTIFYURL = "appapi.jiaxiaomei.com/jxmapi/appwxpay/notify.do";
+   // private static final String PAY_NOTIFYURL = "appapi.jiaxiaomei.com/jxmapi/appwxpay/notify.do";
+    private static final String PAY_NOTIFYURL = Resources.getProperty("cc.login.back.url");
     //private static final String PAY_NOTIFYURL = "http://118.242.18.202:90/jxmapi/appwxpay/notify.do";
     //private static final String PAY_NOTIFYURL = "http://s215l05201.51mypc.cn:24697/jxmapi/appwxpay/notify.do";
     //购买课程回调
-    private static final String PAY_NOW_NOTIFYURL = "appapi.jiaxiaomei.com/jxmapi/appwxpay/newNotify.do";
+    //private static final String PAY_NOW_NOTIFYURL = "appapi.jiaxiaomei.com/jxmapi/appwxpay/newNotify.do";
+    private static final String PAY_NOW_NOTIFYURL = Resources.getProperty("tenxun.app.wx.buy.notify.url");
+  //  private static final String PAY_NOW_NOTIFYURL = "appapi.jiaxiaomei.com/jxmapi/appwxpay/newNotify.do";
     //小兰购物回调
     private static final String XIAOLAN_PAY_NOTIFYURL = "http://192.168.1.73:8084/jxmapi/orders/weChatNotify.do";
     //private static final String PAY_NOW_NOTIFYURL = "http://118.242.18.202:90/jxmapi/appwxpay/newNotify.do";

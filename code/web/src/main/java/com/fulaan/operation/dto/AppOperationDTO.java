@@ -33,6 +33,12 @@ public class AppOperationDTO {
     private String userUrl;
     private String backName;
     private List<AppOperationDTO> alist = new ArrayList<AppOperationDTO>();
+    //学生作业
+    private int read;
+    private int readType;
+    private int status;
+    private String scrawlUrl;
+
 
     public AppOperationDTO(){
 
@@ -55,6 +61,14 @@ public class AppOperationDTO {
                 this.dateTime = DateTimeUtils.getLongToStrTimeTwo(e.getDateTime());
             }else{
                 this.dateTime = "";
+            }
+            this.read = e.getRead();
+            this.readType =e.getReadType();
+            this.status = e.getStatus();
+            if(e.getScrawlUrl()!=null){
+                this.scrawlUrl = e.getScrawlUrl();
+            }else{
+                this.scrawlUrl = "";
             }
         }else{
             new AppOperationDTO();
@@ -279,5 +293,37 @@ public class AppOperationDTO {
 
     public void setAlist(List<AppOperationDTO> alist) {
         this.alist = alist;
+    }
+
+    public int getRead() {
+        return read;
+    }
+
+    public void setRead(int read) {
+        this.read = read;
+    }
+
+    public int getReadType() {
+        return readType;
+    }
+
+    public void setReadType(int readType) {
+        this.readType = readType;
+    }
+
+    public int getStatus() {
+        return status;
+    }
+
+    public void setStatus(int status) {
+        this.status = status;
+    }
+
+    public String getScrawlUrl() {
+        return scrawlUrl;
+    }
+
+    public void setScrawlUrl(String scrawlUrl) {
+        this.scrawlUrl = scrawlUrl;
     }
 }

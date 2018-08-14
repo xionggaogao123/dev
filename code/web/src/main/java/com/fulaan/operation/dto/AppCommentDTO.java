@@ -63,6 +63,8 @@ public class AppCommentDTO {
     private int isLoad;
     private int showType; //是否展示  0 展示  1不展示
 
+    private String tutorId;
+
     public AppCommentDTO(){
 
     }
@@ -541,5 +543,13 @@ public class AppCommentDTO {
 
     public void setQuestionNumber(int questionNumber) {
         this.questionNumber = questionNumber;
+    }
+
+    public String getTutorId() {
+        return tutorId;
+    }
+
+    public void setTutorId(String tutorId) {
+        this.tutorId = tutorId;
     }
 }

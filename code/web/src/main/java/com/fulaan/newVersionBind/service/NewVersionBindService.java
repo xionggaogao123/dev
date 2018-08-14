@@ -1288,6 +1288,15 @@ public class NewVersionBindService {
         }
         return studentIds;
     }
+    //
+    public List<ObjectId> getObjectIdListByCommunityId(ObjectId communityId){
+        List<NewVersionCommunityBindEntry> entries=newVersionCommunityBindDao.getStudentIdListByCommunityId(communityId);
+        List<ObjectId> studentIds=new ArrayList<ObjectId>();
+        for(NewVersionCommunityBindEntry bindEntry:entries){
+            studentIds.add(bindEntry.getUserId());
+        }
+        return studentIds;
+    }
 
 
     public void makeOutRelation(ObjectId parentId,String userkey)throws Exception{

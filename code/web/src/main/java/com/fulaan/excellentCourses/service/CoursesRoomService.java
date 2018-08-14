@@ -9,6 +9,7 @@ import com.fulaan.excellentCourses.dto.ReplayDTO;
 import com.fulaan.excellentCourses.util.RoomUtil;
 import com.pojo.excellentCourses.CoursesRoomEntry;
 import com.pojo.user.UserEntry;
+import com.sys.props.Resources;
 import com.sys.utils.AvatarUtils;
 import com.sys.utils.DateTimeUtils;
 import org.apache.commons.lang3.StringUtils;
@@ -43,7 +44,8 @@ public class CoursesRoomService {
     //验证地址
     private static final String CC_CHECKURL = "";
     //回调验证地址
-    private static final String CC_BACKCHECKURL = "http://appapi.jiaxiaomei.com/web/excellentCourses/openBackCreate.do";
+   // private static final String CC_BACKCHECKURL = "http://appapi.jiaxiaomei.com/web/excellentCourses/openBackCreate.do";
+    private static final String CC_BACKCHECKURL = Resources.getProperty("cc.login.back.url");
     //private static final String CC_BACKCHECKURL = "http://215q5w1385.iask.in:25460/web/excellentCourses/openBackCreate.do";
     //private static final String CC_BACKCHECKURL = "http://118.242.18.202:84/web/excellentCourses/openBackCreate.do";
     //讲师端密码
@@ -373,6 +375,9 @@ liveid	直播id*/
         }
 
         if(stm2 >stm && stm2 < etm){//4
+            return true;
+        }
+        if(stm==stm2 || stm== etm2 || etm == stm2 || etm ==etm2){
             return true;
         }
         return false;

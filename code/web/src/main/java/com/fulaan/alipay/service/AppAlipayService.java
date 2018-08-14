@@ -7,10 +7,12 @@ import com.alipay.api.domain.AlipayTradeAppPayModel;
 import com.alipay.api.request.AlipayTradeAppPayRequest;
 import com.alipay.api.response.AlipayTradeAppPayResponse;
 import com.db.excellentCourses.*;
+import com.db.lancustom.MonetaryOrdersDao;
 import com.db.user.UserDao;
 import com.fulaan.alipay.config.AlipayNewConfig;
 import com.mongodb.DBObject;
 import com.pojo.excellentCourses.*;
+import com.pojo.lancustom.MonetaryOrdersEntry;
 import com.pojo.user.UserEntry;
 import com.sys.constants.Constant;
 import com.sys.utils.DateTimeUtils;
@@ -49,6 +51,8 @@ public class AppAlipayService  {
 
     private UserDao userDao = new UserDao();
 
+    private MonetaryOrdersDao ordersDao = new MonetaryOrdersDao();
+
     private static final  int MAX_PRICE = 10000;
     //支付宝  1
     private static final  int PAY_TYPE = 1;
@@ -60,6 +64,10 @@ public class AppAlipayService  {
     private static final  String PAY_SUBJECT = "充值美豆";
     //直接支付标题
     private static final  String PAY_NOW_SUBJECT = "购买课程";
+
+    //小兰支付标题
+    private static final  String XIAOLAN_PAY_SUBJECT = "小兰购物";
+
     //支付超时时间  ---最晚5分钟内付款
     private static final  String PAY_TIMEOUTEXPRESS= "5m";
 
@@ -67,6 +75,9 @@ public class AppAlipayService  {
     private static final String PAY_NOTIFYURL = "appapi.jiaxiaomei.com/jxmapi/appalipay/notify.do";
     //购买课程回调
     private static final String PAY_NOW_NOTIFYURL = "appapi.jiaxiaomei.com/jxmapi/appalipay/newNotify.do";
+
+    //小兰购物回调
+    private static final String XIAOLAN_PAY_NOTIFYURL = "http://192.168.1.73:8084/jxmapi/orders/aliNotify.do";
 
 
     private static final Logger EBusinessLog = Logger.getLogger("AppAlipayService");
@@ -711,4 +722,36 @@ public class AppAlipayService  {
         }
     }
 
+    public String aliPayBuyGoods(ObjectId orderId, ObjectId userId, String ipconfig) throws Exception {
+        //支付宝订单信息
+        String orderMsg = "";
+        //生成订单唯一标识
+        ObjectId contactId = new ObjectId();
+        addLog(userId, contactId, "开始创建订单！");
+        EBusinessLog.info(userId.toString() + "-" + contactId.toString() + "开始创建订单！");
+        //用户鉴权
+        UserEntry userEntry = userDao.findByUserId(userId);
+        if (userEntry == null) {
+            addLog(userId, contactId, "用户信息不存在，订单终止");
+            EBusinessLog.info(userId.toString() + "-" + contactId.toString() + "用户信息不存在，订单终止");
+            throw new Exception("用户信息不存在，请确认！");
+        }
+        //获取未支付的订单
+        MonetaryOrdersEntry ordersEntry = ordersDao.getEntryById(orderId);
+        //判断订单是否支付
+        if (ordersEntry.getStatus() == "1") {
+            addLog(userId, contactId, "订单已支付");
+            EBusinessLog.info(userId.toString() + "-" + contactId.toString() + "订单已支付");
+            throw new Exception("订单已支付，请确认！");
+        }
+        //开始生成支付宝未支付订单
+        String body = "小兰购物";
+        orderMsg = createAppChongPay(body,XIAOLAN_PAY_SUBJECT,orderId.toString(),PAY_TIMEOUTEXPRESS,getTwoDouble(ordersEntry.getMoney())+"",XIAOLAN_PAY_NOTIFYURL);
+        if("".equals(orderMsg)){
+            addLog(userId,contactId,"支付宝未支付订单生成失败，订单终止");
+            EBusinessLog.info(userId.toString()+"-"+contactId.toString()+"支付宝未支付订单生成失败，订单终止");
+            throw new Exception("订单创建失败！");
+        }
+        return orderMsg;
+    }
 }

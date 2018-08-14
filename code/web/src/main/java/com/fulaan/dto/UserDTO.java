@@ -22,6 +22,9 @@ public class UserDTO {
     private String phone;
     private String email;
     private String gugc;
+    public UserDTO(){
+
+    }
 
     public UserDTO(UserEntry entry) {
         if (entry == null) {

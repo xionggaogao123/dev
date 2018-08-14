@@ -1089,4 +1089,13 @@ public class Constant {
     public static final String COLLECTION_COMMON_QUESTION = "common_question";
     //退换货
     public static final String COLLECTION_MOBILE_RETURN = "mobile_return";
+
+    /*************************************小兰手机商城*****************************************/
+
+    //商品
+    public static final String COLLECTION_MONETARY_GOODS = "monetary_goods";
+    //地址
+    public static final String COLLECTION_MONETARY_ADDRESS = "monetary_address";
+    //订单
+    public static final String COLLECTION_MONETARY_ORDER = "monetary_order";
 }

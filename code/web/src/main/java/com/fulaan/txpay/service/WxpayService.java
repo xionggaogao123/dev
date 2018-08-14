@@ -2,6 +2,7 @@ package com.fulaan.txpay.service;
 
 import cn.jiguang.commom.utils.StringUtils;
 import com.db.excellentCourses.*;
+import com.db.lancustom.MonetaryOrdersDao;
 import com.db.user.UserDao;
 import com.fulaan.txpay.Utils.HttpXmlUtils;
 import com.fulaan.txpay.Utils.ParseXMLUtils;
@@ -12,6 +13,7 @@ import com.fulaan.txpay.entity.Unifiedorder;
 import com.fulaan.txpay.entity.UnifiedorderResult;
 import com.mongodb.DBObject;
 import com.pojo.excellentCourses.*;
+import com.pojo.lancustom.MonetaryOrdersEntry;
 import com.pojo.user.UserEntry;
 import com.sys.constants.Constant;
 import com.sys.utils.DateTimeUtils;
@@ -20,6 +22,7 @@ import org.apache.log4j.Logger;
 import org.bson.types.ObjectId;
 import org.springframework.stereotype.Service;
 
+import javax.servlet.http.HttpServletRequest;
 import java.math.BigDecimal;
 import java.util.*;
 
@@ -49,6 +52,8 @@ public class WxpayService {
 
     private UserDao userDao = new UserDao();
 
+    private MonetaryOrdersDao ordersDao = new MonetaryOrdersDao();
+
     private static final  int MAX_PRICE = 10000;
     //微信  1
     private static final  int PAY_TYPE = 1;
@@ -60,6 +65,8 @@ public class WxpayService {
     private static final  String PAY_SUBJECT = "充值美豆";
     //直接支付标题
     private static final  String PAY_NOW_SUBJECT = "购买课程";
+    //小兰支付标题
+    private static final  String XIAOLAN_PAY_SUBJECT = "小兰购物";
     //支付超时时间  ---最晚5分钟内付款
     private static final  String PAY_TIMEOUTEXPRESS= "5m";
     
@@ -75,6 +82,8 @@ public class WxpayService {
     //private static final String PAY_NOTIFYURL = "http://s215l05201.51mypc.cn:24697/jxmapi/appwxpay/notify.do";
     //购买课程回调
     private static final String PAY_NOW_NOTIFYURL = "appapi.jiaxiaomei.com/jxmapi/appwxpay/newNotify.do";
+    //小兰购物回调
+    private static final String XIAOLAN_PAY_NOTIFYURL = "http://192.168.1.73:8084/jxmapi/orders/weChatNotify.do";
     //private static final String PAY_NOW_NOTIFYURL = "http://118.242.18.202:90/jxmapi/appwxpay/newNotify.do";
     //private static final String PAY_NOW_NOTIFYURL = "http://s215l05201.51mypc.cn:24697/jxmapi/appwxpay/newNotify.do";
 
@@ -210,7 +219,7 @@ public class WxpayService {
         }
         return ufdr;
     }
-    
+
     /**
      * 用户自定义充值（创建订单）
      */
@@ -731,5 +740,39 @@ public class WxpayService {
         BigDecimal bd2 = new BigDecimal(Double.toString(d2));
         return bd1.multiply(bd2).intValue();
     }
-    
+
+    public Map<String, Object> weChatPayBuyGoods(ObjectId orderId, ObjectId userId, String ipconfig) throws Exception {
+        //生成订单唯一标识
+        ObjectId contactId = new ObjectId();
+        addLog(userId, contactId, "开始创建订单！");
+        EBusinessLog.info(userId.toString() + "-" + contactId.toString() + "开始创建订单！");
+        //用户鉴权
+        UserEntry userEntry = userDao.findByUserId(userId);
+        if (userEntry == null) {
+            addLog(userId, contactId, "用户信息不存在，订单终止");
+            EBusinessLog.info(userId.toString() + "-" + contactId.toString() + "用户信息不存在，订单终止");
+            throw new Exception("用户信息不存在，请确认！");
+        }
+        //获取未支付的订单
+        MonetaryOrdersEntry ordersEntry = ordersDao.getEntryById(orderId);
+        //判断订单是否支付
+
+        if (ordersEntry.getStatus() == "1") {
+            addLog(userId, contactId, "订单已支付");
+            EBusinessLog.info(userId.toString() + "-" + contactId.toString() + "订单已支付");
+            throw new Exception("订单已支付，请确认！");
+        }
+        //开始生成微信支付订单  String body,String subject,String outTradeNo,String timeoutExpress,String totalAmount
+        String body = "小兰购物";
+        UnifiedorderResult order = createAppChongPay(body, XIAOLAN_PAY_SUBJECT, orderId.toString(), PAY_TIMEOUTEXPRESS, mul(ordersEntry.getMoney(), 100), XIAOLAN_PAY_NOTIFYURL, ipconfig);
+        if (StringUtils.isEmpty(order.getPrepay_id())) {
+            addLog(userId, contactId, "微信未支付订单生成失败，订单终止");
+            EBusinessLog.info(userId.toString() + "-" + contactId.toString() + "微信未支付订单生成失败，订单终止");
+            throw new Exception("订单创建失败！");
+        }
+        Map<String, Object> map = new HashMap<String, Object>();
+        map.put("order", order);
+        return map;
+    }
+
 }

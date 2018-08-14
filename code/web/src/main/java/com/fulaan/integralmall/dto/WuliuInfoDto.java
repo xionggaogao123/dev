@@ -7,6 +7,8 @@ import java.util.Map;
 import com.pojo.integralmall.AddressEntry;
 import com.pojo.integralmall.OrderEntry;
 import com.pojo.lancustom.MobileReturnEntry;
+import com.pojo.lancustom.MonetaryAddrEntry;
+import com.pojo.lancustom.MonetaryOrdersEntry;
 
 /**
  * 
@@ -51,7 +53,21 @@ public class WuliuInfoDto {
         this.expressNo = orderEntry.getExpressNo();
         this.traces=w.getTraces();
     }
-    
+
+
+    /**
+     * 小兰商城使用
+     * @param orderEntry
+     * @param w
+     * @param addressEntry
+     */
+    public WuliuInfoDto(MonetaryOrdersEntry orderEntry, wuliuDto w, MonetaryAddrEntry addressEntry) {
+        this.area = addressEntry.getArea()+addressEntry.getDetail();
+        this.excompanyNo = this.map.get(orderEntry.getExcompanyNo());
+        this.expressNo = orderEntry.getExpressNo();
+        this.traces=w.getTraces();
+    }
+
     public WuliuInfoDto(MobileReturnEntry entry, wuliuDto w) {
         this.area = entry.getAddress();
         this.excompanyNo = this.map.get(entry.getExcompanyNo());

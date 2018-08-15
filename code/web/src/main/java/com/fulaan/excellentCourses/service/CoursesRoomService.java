@@ -92,7 +92,7 @@ public class CoursesRoomService {
         try{
             List<Map<String,String>> mapList = new ArrayList<Map<String, String>>();
             Map<String,String> alarms = new HashMap<String, String>();
-            alarms.put("time","85");
+            alarms.put("time","95");
             alarms.put("desc", "敬爱的老师,还有5分钟下课,请您注意休息");
             mapList.add(alarms);
             String str2 = JSONUtils.toJSONString(mapList);
@@ -410,7 +410,7 @@ liveid	直播id*/
         try{
             List<Map<String,String>> mapList = new ArrayList<Map<String, String>>();
             Map<String,String> alarms = new HashMap<String, String>();
-            alarms.put("time","85");
+            alarms.put("time","95");
             alarms.put("desc", "敬爱的老师,还有5分钟下课,请您注意休息");
             mapList.add(alarms);
             String str2 = JSONUtils.toJSONString(mapList);

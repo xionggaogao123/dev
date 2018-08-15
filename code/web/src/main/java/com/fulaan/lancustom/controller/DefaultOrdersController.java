@@ -250,7 +250,7 @@ public class DefaultOrdersController extends BaseController {
             String total_fee = params.get("total_fee");
             double v = Double.valueOf(total_fee) / 100;
             //获得返回的订单Id
-            String orderId = String.valueOf(Long.parseLong(params.get("out_trade_no").split("O")[0]));
+            String orderId = params.get("out_trade_no").split("O")[0];
             String payOrderTimeStr = params.get("time_end"); //交易时间
 
             String tradeNo = params.get("transaction_id");
@@ -259,7 +259,8 @@ public class DefaultOrdersController extends BaseController {
             if (resultCode.equals("SUCCESS")) {
                 //修改订单状态 订单号 交易号 交易时间 支付方式
                 String payMethod = "0";
-                service.updatePayOrder(orderId,tradeNo,payOrderTimeStr,payMethod);
+                String status = "1";
+                service.updatePayOrder(orderId, tradeNo, payOrderTimeStr, payMethod, status);
             }
             return_data.put("return_code", "SUCCESS");
             return_data.put("return_msg", "OK");
@@ -364,7 +365,8 @@ public class DefaultOrdersController extends BaseController {
                     double price = Double.parseDouble(total_fee_string);
                     //修改订单状态 订单号 交易号 交易时间 支付方式
                     String payMethod = "1";
-                    service.updatePayOrder(orderId,tradeNo,payOrderTimeStr,payMethod);
+                    String status = "1";
+                    service.updatePayOrder(orderId, tradeNo, payOrderTimeStr, payMethod, status);
                     code = "success";
                 }
             } else {

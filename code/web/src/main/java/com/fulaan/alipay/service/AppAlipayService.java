@@ -81,6 +81,7 @@ public class AppAlipayService  {
 
     //小兰购物回调
     private static final String XIAOLAN_PAY_NOTIFYURL = Resources.getProperty("alipay.app.order.notify.url");
+   /* private static final String XIAOLAN_PAY_NOTIFYURL = "http://2175u3v245.imwork.net:55131/jxmapi/orders/aliNotify.do";*/
 
 
     private static final Logger EBusinessLog = Logger.getLogger("AppAlipayService");

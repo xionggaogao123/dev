@@ -106,7 +106,8 @@ public class MonetaryOrdersService {
         List<MonetaryOrdersEntry> ordersEntries = ordersDao.getMonetaryOrderList(map);
         List<MonetaryOrdersDto> dtoList = new ArrayList<MonetaryOrdersDto>();
         for (MonetaryOrdersEntry ordersEntry : ordersEntries) {
-            MonetaryOrdersDto ordersDto = new MonetaryOrdersDto(ordersEntry);
+            MonetaryGoodsEntry goodsEntry = goodsDao.getEntryById(ordersEntry.getGid());
+            MonetaryOrdersDto ordersDto = new MonetaryOrdersDto(goodsEntry, ordersEntry);
             dtoList.add(ordersDto);
         }
         return dtoList;
@@ -127,12 +128,13 @@ public class MonetaryOrdersService {
         return wuliuInfoDto;
     }
 
-    public void updatePayOrder(String orderId, String tradeNo, String payOrderTimeStr, String payMethod) {
-        Map<String,Object> map = new HashMap<String, Object>();
-        map.put("orderId",orderId);
-        map.put("tradeNo",tradeNo);
-        map.put("payOrderTimeStr",payOrderTimeStr);
-        map.put("payMethod",payMethod);
+    public void updatePayOrder(String orderId, String tradeNo, String payOrderTimeStr, String payMethod, String status) {
+        Map<String, Object> map = new HashMap<String, Object>();
+        map.put("orderId", orderId);
+        map.put("tradeNo", tradeNo);
+        map.put("payOrderTimeStr", payOrderTimeStr);
+        map.put("payMethod", payMethod);
+        map.put("status", status);
         ordersDao.updateOrder(map);
     }
 

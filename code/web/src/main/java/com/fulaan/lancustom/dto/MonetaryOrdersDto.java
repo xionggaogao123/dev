@@ -47,7 +47,7 @@ public class MonetaryOrdersDto {
     private String isAcceptance;
     //受理描述
     private String acceptanceStr;
-    //物理删除
+    //逻辑删除
     private String isr;
 
     //其他类属性
@@ -122,6 +122,25 @@ public class MonetaryOrdersDto {
     }
 
     public MonetaryOrdersDto(MonetaryOrdersEntry ordersEntry) {
+        this.orderId = ordersEntry.getID().toString();
+        this.userId = ordersEntry.getUid().toString();
+        this.goodId = ordersEntry.getGid().toString();
+        this.addressId = ordersEntry.getAid().toString();
+        this.goodNum = ordersEntry.getGoodNum();
+        this.style = ordersEntry.getStyle();
+        this.money = ordersEntry.getMoney();
+        this.orderNo = ordersEntry.getOrderNo();
+        this.excompanyNo = ordersEntry.getExcompanyNo();
+        this.expressNo = ordersEntry.getExpressNo();
+        this.orderTimeStr = ordersEntry.getOrderTimeStr();
+        this.status = ordersEntry.getStatus();
+        this.payOrderTimeStr = ordersEntry.getPayOrderTimeStr();
+        this.payMethod = ordersEntry.getPayMethod();
+        this.tradeNo = ordersEntry.getTradeNo();
+    }
+
+    public MonetaryOrdersDto(MonetaryGoodsEntry goodsEntry, MonetaryOrdersEntry ordersEntry) {
+        this.monetaryGoodsDto = new MonetaryGoodsDto(goodsEntry);
         this.orderId = ordersEntry.getID().toString();
         this.userId = ordersEntry.getUid().toString();
         this.goodId = ordersEntry.getGid().toString();

@@ -4,6 +4,7 @@ import com.db.backstage.PushMessageDao;
 import com.db.backstage.TeacherApproveDao;
 import com.db.business.*;
 import com.db.excellentCourses.ClassOrderDao;
+import com.db.excellentCourses.CoursesRoomDao;
 import com.db.excellentCourses.ExcellentCoursesDao;
 import com.db.excellentCourses.HourClassDao;
 import com.db.fcommunity.CommunityDao;
@@ -92,6 +93,8 @@ public class BusinessManageService {
 
     private HomeSchoolDao homeSchoolDao = new HomeSchoolDao();
     private UserAgreementDao userAgreementDao = new UserAgreementDao();
+
+    private CoursesRoomDao coursesRoomDao = new CoursesRoomDao();
     @Autowired
     private EmService emService;
 
@@ -257,12 +260,19 @@ public class BusinessManageService {
         int count = excellentCoursesDao.selectAllWebEntryList(subjectId,name);
         List<ExcellentCoursesDTO> dtos = new ArrayList<ExcellentCoursesDTO>();
         long current = System.currentTimeMillis();
+        List<ObjectId>  oid = new ArrayList<ObjectId>();
         for(ExcellentCoursesEntry excellentCoursesEntry:excellentCoursesEntries){
             ExcellentCoursesDTO dto = new ExcellentCoursesDTO(excellentCoursesEntry);
+            oid.add(excellentCoursesEntry.getID());
             dtos.add(dto);
             if(excellentCoursesEntry.getEndTime()<current){
                 dto.setType(2);
             }
+        }
+        Map<ObjectId,String> map2 = coursesRoomDao.getPageList(oid);
+        for(ExcellentCoursesDTO dt : dtos){
+            String roomId = map2.get(new ObjectId(dt.getId()));
+            dt.setCommunitName(roomId);
         }
         map.put("count",count);
         map.put("list",dtos);

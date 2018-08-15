@@ -1317,4 +1317,29 @@ public class BackStageController extends BaseController {
         }
         return JSON.toJSONString(respObj);
     }
+
+    /**
+     *  查询用户信息
+     * @return
+     */
+    @ApiOperation(value = "查询用户信息", httpMethod = "POST", produces = "application/json")
+    @ApiResponses( value = {@ApiResponse(code = 200, message = "Successful — 请求已完成",response = String.class),
+            @ApiResponse(code = 400, message = "请求中有语法问题，或不能满足请求"),
+            @ApiResponse(code = 500, message = "服务器不能完成请求")})
+    @RequestMapping("/selectUserDetail")
+    @ResponseBody
+    public String selectUserDetail(@ApiParam(name = "name", required = true, value = "name") @RequestParam(value = "name",defaultValue = "") String name){
+        RespObj respObj = new RespObj(Constant.FAILD_CODE);
+        try{
+            List<Map<String,Object>> message = backStageService.selectUserDetail(name);
+            respObj.setCode(Constant.SUCCESS_CODE);
+            respObj.setMessage(message);
+        }catch (Exception e){
+            e.printStackTrace();
+            respObj.setCode(Constant.SUCCESS_CODE);
+            respObj.setMessage("查询用户绑定关系失败");
+        }
+        return JSON.toJSONString(respObj);
+    }
+
 }

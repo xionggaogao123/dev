@@ -20,6 +20,7 @@ import com.db.operation.AppOperationDao;
 import com.db.questionbook.QuestionAdditionDao;
 import com.db.questionbook.QuestionBookDao;
 import com.db.user.NewVersionBindRelationDao;
+import com.db.user.NewVersionUserRoleDao;
 import com.db.user.UserDao;
 import com.easemob.server.comm.constant.MsgType;
 import com.fulaan.appmarket.dto.AppDetailDTO;
@@ -58,6 +59,7 @@ import com.pojo.operation.AppOperationEntry;
 import com.pojo.questionbook.QuestionAdditionEntry;
 import com.pojo.questionbook.QuestionBookEntry;
 import com.pojo.user.NewVersionBindRelationEntry;
+import com.pojo.user.NewVersionUserRoleEntry;
 import com.pojo.user.UserDetailInfoDTO;
 import com.pojo.user.UserEntry;
 import com.sys.constants.Constant;
@@ -144,6 +146,8 @@ public class BackStageService {
     private ExcellentCoursesDao excellentCoursesDao = new ExcellentCoursesDao();
 
     private ClassOrderDao classOrderDao = new ClassOrderDao();
+
+    private NewVersionUserRoleDao newVersionUserRoleDao = new NewVersionUserRoleDao();
 
 
 
@@ -1845,6 +1849,7 @@ public class BackStageService {
         //家校美id查找
         UserEntry entry= userDao.findByPhone(name);
 
+
         if(entry!=null){
             List<NewVersionBindRelationEntry> entries = newVersionBindRelationDao.getEntriesByMainUserId(entry.getID());
             List<String> objectIdList = new ArrayList<String>();
@@ -1855,6 +1860,99 @@ public class BackStageService {
         }
         return udtos;
     }
+
+    //查询用户信息
+    public List<Map<String,Object>> selectUserDetail(String name){
+        List<Map<String,Object>> mapList = new ArrayList<Map<String,Object>>();
+        //家校美ID
+        UserEntry entry= userDao.findByUserName(name);
+        //手机号
+        UserEntry entry2= userDao.findByPhone(name);
+        //用户名
+        UserEntry entry3= userDao.getJiaUserEntry(name);
+        List<String>  stringList = new ArrayList<String>();
+        if(entry!=null){//家校美id
+            addUserDetail(mapList,entry);
+            stringList.add(entry.getID().toString());
+        }
+        if(entry2!=null){
+            if(!stringList.contains(entry2.getID().toString())){
+                addUserDetail(mapList,entry2);
+                stringList.add(entry2.getID().toString());
+            }
+
+        }
+        if(entry3!=null){
+            if(!stringList.contains(entry3.getID().toString())){
+                addUserDetail(mapList,entry3);
+            }
+        }
+        return mapList;
+    }
+    public void addUserDetail(List<Map<String,Object>> mapList,UserEntry entry){
+        NewVersionUserRoleEntry roleEntry = newVersionUserRoleDao.getEntry(entry.getID());
+        if(roleEntry==null){
+            return;
+        }
+        if(roleEntry.getNewRole()==1 || roleEntry.getNewRole()==2){//学生
+            NewVersionBindRelationEntry newVersionBindRelationEntry = newVersionBindRelationDao.getBindEntry(entry.getID());
+            Map<String,Object>  map = new HashMap<String, Object>();
+            String name2 = StringUtils.isNotEmpty(entry.getNickName())?entry.getNickName():entry.getUserName();
+            map.put("userName",name2);
+            map.put("userJiaId",entry.getGenerateUserCode());
+            map.put("userPhoneNumber",entry.getMobileNumber());
+            map.put("parentUserName", "无");
+            map.put("parentNickName","无");
+            map.put("parentJiaId", "无");
+            map.put("parentPhoneNumber", "无");
+            if(newVersionBindRelationEntry!=null){
+                UserEntry userEntry =  userDao.findByUserId(newVersionBindRelationEntry.getMainUserId());
+                if(userEntry!=null) {
+                    map.put("parentUserName", userEntry.getUserName());
+                    map.put("parentNickName", userEntry.getNickName());
+                    map.put("parentJiaId", userEntry.getGenerateUserCode());
+                    map.put("parentPhoneNumber", userEntry.getMobileNumber());
+                }
+            }
+            mapList.add(map);
+        }else{//家长
+            List<NewVersionBindRelationEntry> entries = newVersionBindRelationDao.getEntriesByMainUserId(entry.getID());
+            if(entries.size()>0){
+                for(NewVersionBindRelationEntry newVersionBindRelationEntry:entries){
+                    Map<String,Object>  map = new HashMap<String, Object>();
+                    map.put("userName","无");
+                    map.put("userJiaId","无");
+                    map.put("userPhoneNumber","无");
+                    map.put("parentUserName", entry.getUserName());
+                    map.put("parentNickName",entry.getNickName());
+                    map.put("parentJiaId", entry.getGenerateUserCode());
+                    map.put("parentPhoneNumber", entry.getMobileNumber());
+                    if(newVersionBindRelationEntry!=null){
+                        UserEntry userEntry =  userDao.findByUserId(newVersionBindRelationEntry.getMainUserId());
+                        if(userEntry!=null) {
+                            String name2 = StringUtils.isNotEmpty(userEntry.getNickName())?userEntry.getNickName():userEntry.getUserName();
+                            map.put("userName",name2);
+                            map.put("userJiaId",userEntry.getGenerateUserCode());
+                            map.put("userPhoneNumber",userEntry.getMobileNumber());
+                        }
+                    }
+                    mapList.add(map);
+                }
+            }else{
+                Map<String,Object>  map = new HashMap<String, Object>();
+                map.put("userName","无");
+                map.put("userJiaId","无");
+                map.put("userPhoneNumber","无");
+                map.put("parentUserName", entry.getUserName());
+                map.put("parentNickName",entry.getNickName());
+                map.put("parentJiaId", entry.getGenerateUserCode());
+                map.put("parentPhoneNumber", entry.getMobileNumber());
+                mapList.add(map);
+            }
+        }
+    }
+
+
 
     //修改时间
     public void updateClass(ObjectId id,String time){

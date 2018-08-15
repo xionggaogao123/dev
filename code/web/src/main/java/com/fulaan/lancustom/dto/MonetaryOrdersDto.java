@@ -47,13 +47,15 @@ public class MonetaryOrdersDto {
     private String isAcceptance;
     //受理描述
     private String acceptanceStr;
+    //物理删除
+    private String isr;
 
     //其他类属性
-    private MonetaryGoodsDto monetaryGoodsDto = new MonetaryGoodsDto();
+    private MonetaryGoodsDto monetaryGoodsDto;
 
-    private MonetaryAddrDto monetaryAddrDto = new MonetaryAddrDto();
+    private MonetaryAddrDto monetaryAddrDto;
 
-    private UserDTO userDto = new UserDTO();
+    private UserDTO userDto;
     public MonetaryOrdersDto(){
         System.out.println("111");
     }
@@ -92,22 +94,31 @@ public class MonetaryOrdersDto {
 
     public MonetaryOrdersDto(MonetaryAddrEntry addressEntry,MonetaryOrdersEntry orderEntry) {
         this.orderId = orderEntry.getID().toString();
-        this.orderNo = orderEntry.getOrderNo();
+        this.userId = orderEntry.getUid().toString();
+        this.goodId = orderEntry.getGid().toString();
+        this.addressId = orderEntry.getAid() == null ? "" : orderEntry.getAid().toString();
         this.goodNum = orderEntry.getGoodNum();
+        this.style = orderEntry.getStyle();
+        this.money = orderEntry.getMoney();
+        this.orderNo = orderEntry.getOrderNo();
         this.excompanyNo = orderEntry.getExcompanyNo();
         this.expressNo = orderEntry.getExpressNo();
-        this.isState = orderEntry.getIsState();
-        this.stateReason = orderEntry.getStateReason();
-
-        this.isAcceptance = orderEntry.getIsAcceptance();
         this.orderTimeStr = orderEntry.getOrderTimeStr();
+        this.status = orderEntry.getStatus();
+        this.payOrderTimeStr = orderEntry.getPayOrderTimeStr();
+        this.payMethod = orderEntry.getPayMethod();
+        this.tradeNo = orderEntry.getTradeNo();
         if ("0".equals(orderEntry.getIsAcceptance())) {
             this.acceptanceStr = "未受理";
         } else {
             this.acceptanceStr = "已受理";
         }
+        if (addressEntry == null){
+            this.monetaryAddrDto = new MonetaryAddrDto();
+        }else {
+            this.monetaryAddrDto = new MonetaryAddrDto(addressEntry);
+        }
 
-        this.monetaryAddrDto = new MonetaryAddrDto(addressEntry);
     }
 
     public MonetaryOrdersDto(MonetaryOrdersEntry ordersEntry) {
@@ -302,5 +313,13 @@ public class MonetaryOrdersDto {
 
     public void setUserDto(UserDTO userDto) {
         this.userDto = userDto;
+    }
+
+    public String getIsr() {
+        return isr;
+    }
+
+    public void setIsr(String isr) {
+        this.isr = isr;
     }
 }

@@ -149,12 +149,12 @@ public class DefaultOrdersController extends BaseController {
             @ApiResponse(code = 500, message = "服务器不能完成请求")})
     @RequestMapping("/getMonetaryPersonalOrderDetail")
     @ResponseBody
-    public RespObj getMonetaryPersonalOrderDetail(@ObjectIdType ObjectId orderId) {
+    public RespObj getMonetaryPersonalOrderDetail(@RequestParam String orderId) {
         RespObj obj = new RespObj(Constant.FAILD_CODE);
         try {
             Map<String, Object> pMap = new HashMap<String, Object>();
             pMap.put("userId",getUserId().toString());
-            pMap.put("orderId",orderId.toString());
+            pMap.put("orderId",orderId);
             MonetaryOrdersDto ordersDto = service.getMonetaryPersonalOrderDetail(pMap);
             obj.setMessage(ordersDto);
             obj.setCode(Constant.SUCCESS_CODE);
@@ -188,11 +188,11 @@ public class DefaultOrdersController extends BaseController {
      * 小兰客服微信支付
      * param orderId
      */
-    @ApiOperation(value = "微信支付", httpMethod = "POST", produces = "application/json")
+    @ApiOperation(value = "微信支付", httpMethod = "GET", produces = "application/json")
     @ApiResponses(value = {@ApiResponse(code = 200, message = "Successful — 请求已完成", response = String.class)})
     @RequestMapping("/weChatPayBuyGoods")
     @ResponseBody
-    public RespObj weChatPayBuyGoods(@RequestBody Map pMap,
+    public RespObj weChatPayBuyGoods(@RequestParam String orderId,
                                      HttpServletRequest request) {
         RespObj respObj = new RespObj(Constant.FAILD_CODE);
         try {
@@ -203,7 +203,7 @@ public class DefaultOrdersController extends BaseController {
             } else {
                 ipconfig = request.getHeader("x-forwarded-for");
             }
-            Map<String, Object> map = wxpayService.weChatPayBuyGoods(new ObjectId(pMap.get("orderId").toString()), getUserId(), ipconfig);
+            Map<String, Object> map = wxpayService.weChatPayBuyGoods(new ObjectId(orderId), getUserId(), ipconfig);
             respObj.setMessage(map);
         } catch (Exception e) {
             respObj.setCode(Constant.FAILD_CODE);
@@ -288,7 +288,7 @@ public class DefaultOrdersController extends BaseController {
             @ApiResponse(code = 500, message = "服务器不能完成请求")})
     @RequestMapping("/aliPayBuyGoods")
     @ResponseBody
-    public String buyAlipayChildClassList(@RequestBody Map pMap,
+    public String buyAlipayChildClassList(@RequestParam String orderId,
                                           HttpServletRequest request){
         RespObj respObj=new RespObj(Constant.FAILD_CODE);
         try {
@@ -299,7 +299,7 @@ public class DefaultOrdersController extends BaseController {
             }else{
                 ipconfig =  request.getHeader("x-forwarded-for");
             }
-            String result = appAlipayService.aliPayBuyGoods(new ObjectId(pMap.get("orderId").toString()), getUserId(), ipconfig);
+            String result = appAlipayService.aliPayBuyGoods(new ObjectId(orderId), getUserId(), ipconfig);
             respObj.setMessage(result);
         } catch (Exception e) {
             e.printStackTrace();

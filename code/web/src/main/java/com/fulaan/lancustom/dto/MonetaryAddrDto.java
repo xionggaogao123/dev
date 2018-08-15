@@ -24,6 +24,7 @@ public class MonetaryAddrDto {
     public MonetaryAddrDto() {
 
     }
+
     public MonetaryAddrDto(MonetaryAddrEntry entry) {
         this.id = entry.getID().toString();
         this.name = entry.getName();

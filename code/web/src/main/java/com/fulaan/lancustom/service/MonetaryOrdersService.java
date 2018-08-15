@@ -48,7 +48,7 @@ public class MonetaryOrdersService {
 
     /**
      * 保存订单
-     * @param map
+     * @param ordersDto
      */
     public String saveOrder(MonetaryOrdersDto ordersDto) {
         SimpleDateFormat f = new SimpleDateFormat("yyyy-MM-dd hh:mm:ss");
@@ -67,7 +67,23 @@ public class MonetaryOrdersService {
                     ordersDto.getGoodNum(), ordersDto.getStyle(), Double.parseDouble((goodsEntry.getMoney()*ordersDto.getGoodNum())+""), orderNoTemp, "", "", f.format(now), "0", "", "","","0","","0","");
             message = ordersDao.addEntry(ordersEntry);
         } else {
-//            ordersDao.updateOrder(map);
+            MonetaryGoodsEntry goodsEntry = goodsDao.getEntryById(new ObjectId(ordersDto.getGoodId()));
+            Map<String,Object> map = new HashMap<String, Object>();
+            map.put("orderId",ordersDto.getOrderId());
+            map.put("excompanyNo",ordersDto.getExcompanyNo());
+            map.put("expressNo",ordersDto.getExpressNo());
+            map.put("status",ordersDto.getStatus());
+            map.put("payOrderTimeStr",ordersDto.getPayOrderTimeStr());
+            map.put("payMethod",ordersDto.getPayMethod());
+            map.put("tradeNo",ordersDto.getTradeNo());
+            map.put("isState",ordersDto.getIsState());
+            map.put("stateReason",ordersDto.getStateReason());
+            map.put("isAcceptance",ordersDto.getIsAcceptance());
+            map.put("acceptanceStr",ordersDto.getAcceptanceStr());
+            map.put("goodNum",ordersDto.getGoodNum());
+            map.put("money",(goodsEntry.getMoney()*ordersDto.getGoodNum()));
+            map.put("isr",ordersDto.getIsr());
+            ordersDao.updateOrder(map);
         }
         return message;
     }

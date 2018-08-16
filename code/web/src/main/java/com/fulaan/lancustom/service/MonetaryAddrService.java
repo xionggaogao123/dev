@@ -32,11 +32,11 @@ public class MonetaryAddrService {
         Matcher m = p.matcher(monetaryAddrDto.getTelphone());
         if (m.matches()) {
             MonetaryAddrEntry entry = new MonetaryAddrEntry(monetaryAddrDto.getName(), monetaryAddrDto.getTelphone(), monetaryAddrDto.getArea(), monetaryAddrDto.getDetail(), userId);
-            if (StringUtils.isEmpty(monetaryAddrDto.getId())) {
-                dao.addEntry(entry);
-            } else {
-                dao.updateMonetaryAddr(new ObjectId(monetaryAddrDto.getId()), monetaryAddrDto.getArea(), monetaryAddrDto.getDetail(), monetaryAddrDto.getName(), monetaryAddrDto.getTelphone(), userId.toString());
-            }
+//            if (StringUtils.isNotEmpty(monetaryAddrDto.getId())) {//逻辑删除以前的地址
+//                dao.updateMonetaryAddr(new ObjectId(monetaryAddrDto.getId()), monetaryAddrDto.getArea(), monetaryAddrDto.getDetail(), monetaryAddrDto.getName(), monetaryAddrDto.getTelphone(), userId.toString());
+//            }
+            dao.updateMonetaryAddr(new ObjectId(monetaryAddrDto.getId()), monetaryAddrDto.getArea(), monetaryAddrDto.getDetail(), monetaryAddrDto.getName(), monetaryAddrDto.getTelphone(), userId.toString());
+            dao.addEntry(entry);
         } else {
             throw new Exception("请输入正确的手机号码!");
         }

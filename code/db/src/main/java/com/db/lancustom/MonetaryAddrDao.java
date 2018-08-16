@@ -27,7 +27,7 @@ public class MonetaryAddrDao extends BaseDao {
     }
 
     /**
-     * 更新地址
+     * 更新地址 逻辑删除 当前用户的地址
      * @param objectId
      * @param area
      * @param detail
@@ -36,10 +36,10 @@ public class MonetaryAddrDao extends BaseDao {
      * @param userId
      */
     public void updateMonetaryAddr(ObjectId objectId, String area, String detail, String name, String telphone, String userId) {
-        DBObject query = new BasicDBObject(Constant.ID, objectId);
+        DBObject query = new BasicDBObject("uid", new ObjectId(userId));
         BasicDBObject updateValue=new BasicDBObject()
-                .append(Constant.MONGO_SET,new BasicDBObject("area",area).append("detail",detail).append("telphone", telphone)
-                        .append("userId", userId).append("name", name));
+                .append(Constant.MONGO_SET,new BasicDBObject("isr",1)/*.append("detail",detail).append("telphone", telphone)
+                        .append("userId", userId).append("name", name)*/);
         update(MongoFacroty.getAppDB(), Constant.COLLECTION_MONETARY_ADDRESS,query,updateValue);
     }
 
@@ -66,7 +66,7 @@ public class MonetaryAddrDao extends BaseDao {
     }
 
     public MonetaryAddrEntry getEntryByUid(ObjectId userId) {
-        BasicDBObject query = new BasicDBObject("uid", userId);
+        BasicDBObject query = new BasicDBObject("uid", userId).append("isr", 0);
         DBObject obj =
                 findOne(MongoFacroty.getAppDB(), Constant.COLLECTION_MONETARY_ADDRESS, query, Constant.FIELDS);
         if (obj != null) {

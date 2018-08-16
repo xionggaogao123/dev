@@ -47,6 +47,8 @@ public class DefaultOrdersController extends BaseController {
 
     private static final Logger EBusinessLog = Logger.getLogger("AppAlipayService");
 
+    private static final Logger WXEBusinessLog = Logger.getLogger("WxpayService");
+
     @Autowired
     private MonetaryOrdersService service;
 
@@ -224,6 +226,7 @@ public class DefaultOrdersController extends BaseController {
     @SessionNeedless
     @RequestMapping("/weChatNotify")
     public String weChatNotify(HttpServletRequest request) throws Exception {
+        WXEBusinessLog.info("微信支付回调;" + request.getParameterMap());
         String msg = "";
         InputStream inStream = null;
         ByteArrayOutputStream outSteam = null;
@@ -241,6 +244,7 @@ public class DefaultOrdersController extends BaseController {
 
             Map<String,String> return_data = new HashMap<String,String>();
             System.out.println("===============付款成功==============");
+            WXEBusinessLog.info("微信支付回调;付款成功" );
             // ------------------------------
             // 处理业务开始
             // ------------------------------
@@ -248,15 +252,16 @@ public class DefaultOrdersController extends BaseController {
             // ------------------------------
 
             String total_fee = params.get("total_fee");
-            double v = Double.valueOf(total_fee) / 100;
+//            double v = Double.valueOf(total_fee) / 100;
             //获得返回的订单Id
             String orderId = params.get("out_trade_no").split("O")[0];
             String payOrderTimeStr = params.get("time_end"); //交易时间
 
             String tradeNo = params.get("transaction_id");
             String resultCode= params.get("result_code");
-            String openid = params.get("openid");
+//            String openid = params.get("openid");
             if (resultCode.equals("SUCCESS")) {
+                WXEBusinessLog.info("微信支付回调;修改订单状态" );
                 //修改订单状态 订单号 交易号 交易时间 支付方式
                 String payMethod = "0";
                 String status = "1";
@@ -266,6 +271,7 @@ public class DefaultOrdersController extends BaseController {
             return_data.put("return_msg", "OK");
             msg = StringUtil.GetMapToXML(return_data);
         } catch (Exception e) {
+            WXEBusinessLog.info("微信支付回调;发生异常" );
             e.printStackTrace();
             msg = "error!";
         }finally {

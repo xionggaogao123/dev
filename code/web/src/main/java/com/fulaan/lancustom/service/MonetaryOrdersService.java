@@ -51,7 +51,7 @@ public class MonetaryOrdersService {
      * @param ordersDto
      */
     public String saveOrder(MonetaryOrdersDto ordersDto) {
-        SimpleDateFormat f = new SimpleDateFormat("yyyy-MM-dd hh:mm:ss");
+        SimpleDateFormat f = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
         Date now = new Date();
         String message = "";
 

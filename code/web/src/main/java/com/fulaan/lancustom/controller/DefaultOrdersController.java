@@ -10,8 +10,6 @@ import com.fulaan.base.BaseController;
 import com.fulaan.integralmall.dto.WuliuInfoDto;
 import com.fulaan.lancustom.dto.MonetaryOrdersDto;
 import com.fulaan.lancustom.service.MonetaryOrdersService;
-import com.fulaan.mall.service.EBusinessOrderService;
-import com.fulaan.txpay.Utils.DateUtil;
 import com.fulaan.txpay.Utils.PayCommonUtil;
 import com.fulaan.txpay.Utils.StringUtil;
 import com.fulaan.txpay.service.WxpayService;
@@ -33,7 +31,10 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import javax.servlet.http.HttpServletRequest;
 import java.io.ByteArrayOutputStream;
 import java.io.InputStream;
-import java.util.*;
+import java.util.HashMap;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Map;
 
 /**
  * @Auther: taotao.chan
@@ -226,7 +227,7 @@ public class DefaultOrdersController extends BaseController {
     @SessionNeedless
     @RequestMapping("/weChatNotify")
     public String weChatNotify(HttpServletRequest request) throws Exception {
-        WXEBusinessLog.info("微信支付回调;" + request.getParameterMap());
+        EBusinessLog.info("微信支付回调;" + request.getParameterMap());
         String msg = "";
         InputStream inStream = null;
         ByteArrayOutputStream outSteam = null;
@@ -244,7 +245,7 @@ public class DefaultOrdersController extends BaseController {
 
             Map<String,String> return_data = new HashMap<String,String>();
             System.out.println("===============付款成功==============");
-            WXEBusinessLog.info("微信支付回调;付款成功" );
+            EBusinessLog.info("微信支付回调;付款成功" );
             // ------------------------------
             // 处理业务开始
             // ------------------------------
@@ -261,7 +262,7 @@ public class DefaultOrdersController extends BaseController {
             String resultCode= params.get("result_code");
 //            String openid = params.get("openid");
             if (resultCode.equals("SUCCESS")) {
-                WXEBusinessLog.info("微信支付回调;修改订单状态" );
+                EBusinessLog.info("微信支付回调;修改订单状态" );
                 //修改订单状态 订单号 交易号 交易时间 支付方式
                 String payMethod = "0";
                 String status = "1";
@@ -271,7 +272,7 @@ public class DefaultOrdersController extends BaseController {
             return_data.put("return_msg", "OK");
             msg = StringUtil.GetMapToXML(return_data);
         } catch (Exception e) {
-            WXEBusinessLog.info("微信支付回调;发生异常" );
+            EBusinessLog.info("微信支付回调;发生异常" );
             e.printStackTrace();
             msg = "error!";
         }finally {

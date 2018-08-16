@@ -23,6 +23,7 @@ import org.openxmlformats.schemas.drawingml.x2006.main.CTRegularTextRun;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.math.BigDecimal;
 import java.text.SimpleDateFormat;
 import java.util.*;
 
@@ -64,7 +65,7 @@ public class MonetaryOrdersService {
 //            //获取addressId 目前设计 一个用户只有一个
             MonetaryAddrEntry addrEntry = addrDao.getEntryByUid(new ObjectId(ordersDto.getUserId()));
             MonetaryOrdersEntry ordersEntry = new MonetaryOrdersEntry(new ObjectId(ordersDto.getUserId()), new ObjectId(ordersDto.getGoodId()), addrEntry==null?null:addrEntry.getID(),
-                    ordersDto.getGoodNum(), ordersDto.getStyle(), Double.parseDouble((goodsEntry.getMoney()*ordersDto.getGoodNum())+""), orderNoTemp, "", "", f.format(now), "0", "", "","","0","","0","");
+                    ordersDto.getGoodNum(), ordersDto.getStyle(), mul(goodsEntry.getMoney(),ordersDto.getGoodNum()+""), orderNoTemp, "", "", f.format(now), "0", "", "","","0","","0","");
             message = ordersDao.addEntry(ordersEntry);
         } else {
             MonetaryGoodsEntry goodsEntry = goodsDao.getEntryById(new ObjectId(ordersDto.getGoodId()));
@@ -86,6 +87,18 @@ public class MonetaryOrdersService {
             ordersDao.updateOrder(map);
         }
         return message;
+    }
+
+    /**
+     * Double 精度处理
+     * @param v1
+     * @param v2
+     * @return
+     */
+    public static Double mul(Double v1, String v2) {
+        BigDecimal b1 = new BigDecimal(v1.toString());
+        BigDecimal b2 = new BigDecimal(v2);
+        return new Double(b1.multiply(b2).doubleValue());
     }
 
     public MonetaryOrdersDto orderConfirm(ObjectId goodId, ObjectId userId) {

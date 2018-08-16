@@ -35,7 +35,7 @@ public class MonetaryAddrDao extends BaseDao {
      * @param telphone
      * @param userId
      */
-    public void updateMonetaryAddr(ObjectId objectId, String area, String detail, String name, String telphone, String userId) {
+    public void updateMonetaryAddr(/*ObjectId objectId, String area, String detail, String name, String telphone, */String userId) {
         DBObject query = new BasicDBObject("uid", new ObjectId(userId));
         BasicDBObject updateValue=new BasicDBObject()
                 .append(Constant.MONGO_SET,new BasicDBObject("isr",1)/*.append("detail",detail).append("telphone", telphone)

@@ -35,7 +35,7 @@ public class MonetaryAddrService {
 //            if (StringUtils.isNotEmpty(monetaryAddrDto.getId())) {//逻辑删除以前的地址
 //                dao.updateMonetaryAddr(new ObjectId(monetaryAddrDto.getId()), monetaryAddrDto.getArea(), monetaryAddrDto.getDetail(), monetaryAddrDto.getName(), monetaryAddrDto.getTelphone(), userId.toString());
 //            }
-            dao.updateMonetaryAddr(new ObjectId(monetaryAddrDto.getId()), monetaryAddrDto.getArea(), monetaryAddrDto.getDetail(), monetaryAddrDto.getName(), monetaryAddrDto.getTelphone(), userId.toString());
+            dao.updateMonetaryAddr(userId.toString());
             dao.addEntry(entry);
         } else {
             throw new Exception("请输入正确的手机号码!");

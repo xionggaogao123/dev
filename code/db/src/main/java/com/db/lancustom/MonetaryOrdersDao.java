@@ -121,7 +121,7 @@ public class MonetaryOrdersDao extends BaseDao {
     public List<MonetaryOrdersEntry> getOrderList(String orderNo, int page, int pageSize) {
         List<MonetaryOrdersEntry> entries = new ArrayList<MonetaryOrdersEntry>();
 
-        BasicDBObject query = new BasicDBObject().append("isr", 0);
+        BasicDBObject query = new BasicDBObject().append("isr", 0).append("status", "1");
         if (StringUtils.isNotBlank(orderNo)) {
             query.append("orderNo",orderNo) ;
         }

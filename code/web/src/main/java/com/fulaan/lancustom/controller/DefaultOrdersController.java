@@ -206,6 +206,8 @@ public class DefaultOrdersController extends BaseController {
             } else {
                 ipconfig = request.getHeader("x-forwarded-for");
             }
+            //支付前 更新用户最新有效的地址到order
+            service.updateUserEffectiveAddr(orderId, getUserId().toString());
             Map<String, Object> map = wxpayService.weChatPayBuyGoods(new ObjectId(orderId), getUserId(), ipconfig);
             respObj.setMessage(map);
         } catch (Exception e) {
@@ -307,6 +309,8 @@ public class DefaultOrdersController extends BaseController {
             }else{
                 ipconfig =  request.getHeader("x-forwarded-for");
             }
+            //支付前 更新用户最新有效的地址到order
+            service.updateUserEffectiveAddr(orderId, getUserId().toString());
             String result = appAlipayService.aliPayBuyGoods(new ObjectId(orderId), getUserId(), ipconfig);
             respObj.setMessage(result);
         } catch (Exception e) {

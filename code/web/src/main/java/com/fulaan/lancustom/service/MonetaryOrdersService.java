@@ -202,4 +202,14 @@ public class MonetaryOrdersService {
     public int getMonetaryPersonalOrderListCount(Map<String,Object> pMap) {
         return ordersDao.getMonetaryPersonalOrderListCount(pMap);
     }
+
+    public void updateUserEffectiveAddr(String orderId, String userId) {
+        List<MonetaryAddrEntry> list = addrDao.getUserAddrsList(new ObjectId(userId));
+        if (list.size() != 0){
+            Map<String, Object> map = new HashMap<String, Object>();
+            map.put("orderId", orderId);
+            map.put("addressId", list.get(0).getID());
+            ordersDao.updateOrder(map);
+        }
+    }
 }

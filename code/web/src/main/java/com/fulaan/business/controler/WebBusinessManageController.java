@@ -281,6 +281,31 @@ public class WebBusinessManageController extends BaseController {
         return JSON.toJSONString(respObj);
     }
 
+
+    /**
+     * 分页订单、加支付方式
+     * @return
+     */
+    @ApiOperation(value = "分页订单", httpMethod = "POST", produces = "application/json")
+    @ApiResponses( value = {@ApiResponse(code = 200, message = "Successful — 请求已完成",response = String.class)})
+    @RequestMapping("/selectCoursesOrderDetails")
+    @ResponseBody
+    public String selectCoursesOrderDetails(@ApiParam(name="id",required = false,value="id") @RequestParam(value="id",defaultValue = "") String id,
+                                            @ApiParam(name="page",required = false,value="page") @RequestParam(value="page",defaultValue = "") String page,
+                                            @ApiParam(name="pageSize",required = false,value="pageSize") @RequestParam(value="pageSize",defaultValue = "") String pageSize){
+        RespObj respObj=new RespObj(Constant.FAILD_CODE);
+        try {
+            Map<String,Object> map =  businessManageService.selectCoursesDetails(new ObjectId(id));
+            respObj.setCode(Constant.SUCCESS_CODE);
+            respObj.setMessage(map);
+        } catch (Exception e) {
+            e.printStackTrace();
+            respObj.setCode(Constant.FAILD_CODE);
+            respObj.setErrorMessage("超级详情失败!");
+        }
+        return JSON.toJSONString(respObj);
+    }
+
     /**
      * 审批通过
      * @return

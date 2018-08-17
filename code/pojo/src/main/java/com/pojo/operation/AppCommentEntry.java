@@ -41,7 +41,7 @@ import java.util.List;
  month            月份                  mon
  year             年份                  yea
 
- showType         是否展示              sht    是否展示  0 不展示  1 展示
+ showType         是否展示              sht    是否展示  2 不展示  1 展示
  */
 public class AppCommentEntry extends BaseDBObject {
     public AppCommentEntry(){

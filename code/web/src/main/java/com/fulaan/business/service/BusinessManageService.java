@@ -21,10 +21,12 @@ import com.fulaan.jiaschool.dto.HomeSchoolDTO;
 import com.fulaan.picturetext.runnable.PictureRunNable;
 import com.fulaan.pojo.User;
 import com.fulaan.user.service.UserService;
+import com.mongodb.DBObject;
 import com.pojo.backstage.LogMessageType;
 import com.pojo.backstage.PushMessageEntry;
 import com.pojo.business.*;
 import com.pojo.excellentCourses.ClassOrderEntry;
+import com.pojo.excellentCourses.CoursesRoomEntry;
 import com.pojo.excellentCourses.ExcellentCoursesEntry;
 import com.pojo.excellentCourses.HourClassEntry;
 import com.pojo.fcommunity.CommunityEntry;
@@ -391,6 +393,8 @@ public class BusinessManageService {
                     if(!classOrderEntry.getOrderId().equals("")){
                         obMap.put("orderId",classOrderEntry.getOrderId());
                         stringList.add(classOrderEntry.getOrderId());
+                    }else{
+                        obMap.put("orderId","后台添加");
                     }
                 }
             }
@@ -454,6 +458,70 @@ public class BusinessManageService {
         // 退课
         //订单置为退款中
         classOrderDao.updateEntry(objectIdList);
+    }
+
+    public String daoOrder(ObjectId id,String roomId){
+        CoursesRoomEntry coursesRoomEntry = coursesRoomDao.getRoomEntry(roomId);
+        if(coursesRoomEntry!=null){
+            ExcellentCoursesEntry excellentCoursesEntry = excellentCoursesDao.getEntry(coursesRoomEntry.getContactId());
+            if(excellentCoursesEntry!=null){
+                long current = System.currentTimeMillis();
+                //课节列表
+                List<HourClassEntry> hourClassEntries  = hourClassDao.getEntryList(id);
+                //已下订单用户
+                Set<ObjectId> userIds = classOrderDao.getUserIdEntry(id);
+                //将下订单用户
+                Set<ObjectId> userIds2 = classOrderDao.getUserIdEntry(excellentCoursesEntry.getID());
+                List<ClassOrderEntry> classOrderEntries1 = new ArrayList<ClassOrderEntry>();
+                int num = 0;
+                for(ObjectId oid:userIds2){
+                    if(!userIds.contains(oid)){
+                        for(HourClassEntry hourClassEntry: hourClassEntries){
+                            ClassOrderEntry classOrderEntry = new ClassOrderEntry();
+                            //购买  1  未购买
+                            classOrderEntry.setIsBuy(1);
+                            //下单
+                            classOrderEntry.setType(1);
+                            classOrderEntry.setCreateTime(current);
+                            classOrderEntry.setContactId(id);
+                            classOrderEntry.setOrderId("");
+                            classOrderEntry.setIsRemove(0);
+                            classOrderEntry.setParentId(hourClassEntry.getID());
+                            classOrderEntry.setFunction(3);
+                            classOrderEntry.setPrice(hourClassEntry.getClassNewPrice());
+                            classOrderEntry.setUserId(oid);//孩子的订单
+                            classOrderEntries1.add(classOrderEntry);
+                            //相加
+                        }
+                        num++;
+                    }
+                }
+                this.addClassEntryBatch(classOrderEntries1);
+                excellentCoursesEntry.setStudentNumber(excellentCoursesEntry.getStudentNumber()+num);
+                excellentCoursesDao.addEntry(excellentCoursesEntry);
+            }else{
+                return "课程不存在";
+            }
+        }else{
+            return "直播间id不存在";
+        }
+        return "添加成功";
+    }
+
+    /**
+     * 批量增加课时
+     * @param list
+     */
+    public void addClassEntryBatch(List<ClassOrderEntry> list) {
+        List<DBObject> dbList = new ArrayList<DBObject>();
+        for (int i = 0; list != null && i < list.size(); i++) {
+            ClassOrderEntry si = list.get(i);
+            dbList.add(si.getBaseEntry());
+        }
+        //导入新纪录
+        if(dbList.size()>0) {
+            classOrderDao.addBatch(dbList);
+        }
     }
 
     //删除

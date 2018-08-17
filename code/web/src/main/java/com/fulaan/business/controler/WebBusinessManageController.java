@@ -360,12 +360,12 @@ public class WebBusinessManageController extends BaseController {
     @RequestMapping("/daoOrder")
     @ResponseBody
     public String daoOrder(@ApiParam(name="id",required = false,value="id") @RequestParam(value="id",defaultValue = "") String id,
-                           @ApiParam(name="userId",required = false,value="userId") @RequestParam(value="userId",defaultValue = "") String userId){
+                           @ApiParam(name="roomId",required = false,value="roomId") @RequestParam(value="roomId",defaultValue = "") String roomId){
         RespObj respObj=new RespObj(Constant.FAILD_CODE);
         try {
-            businessManageService.tuiOrder(new ObjectId(id), new ObjectId(userId));
+            String str = businessManageService.daoOrder(new ObjectId(id), roomId);
             respObj.setCode(Constant.SUCCESS_CODE);
-            respObj.setMessage("退课成功");
+            respObj.setMessage(str);
         } catch (Exception e) {
             e.printStackTrace();
             respObj.setCode(Constant.FAILD_CODE);

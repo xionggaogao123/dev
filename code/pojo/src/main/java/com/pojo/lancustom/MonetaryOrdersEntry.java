@@ -6,6 +6,8 @@ import com.pojo.base.BaseDBObject;
 import com.sys.constants.Constant;
 import org.bson.types.ObjectId;
 
+import java.math.BigDecimal;
+
 /**
  * @Auther: taotao.chan
  * @Date: 2018/8/7 16:07
@@ -161,7 +163,9 @@ public class MonetaryOrdersEntry extends BaseDBObject {
     }
 
     public Double getMoney(){
-        return Double.parseDouble(getSimpleStringValue("money"));
+//        return Double.parseDouble(getSimpleStringValue("money"));
+        //数据库存的是两位 mongo find出来很多位小数 在此解决
+        return new BigDecimal(getSimpleStringValue("money")).setScale(2,BigDecimal.ROUND_HALF_UP).doubleValue();
     }
 
     public void setMoney(Double money){

@@ -7,6 +7,8 @@ import com.mongodb.DBObject;
 import com.pojo.excellentCourses.AccountOrderEntry;
 import com.sys.constants.Constant;
 
+import java.util.List;
+
 /**
  * Created by James on 2018-06-05.
  */
@@ -27,6 +29,25 @@ public class AccountOrderDao  extends BaseDao{
         }else {
             return null;
         }
+    }
+
+    public String getEntryListByOrderId(List<String> orderIds) {
+        BasicDBObject query = new BasicDBObject()
+                .append("oid", new BasicDBObject(Constant.MONGO_IN,orderIds))
+                .append("isr", 0); // 未删除
+        List<DBObject> dbList =
+                find(MongoFacroty.getAppDB(),
+                        Constant.COLLECTION_ACCOUNT_ORDER,
+                        query, Constant.FIELDS,
+                        Constant.MONGO_SORTBY_DESC);
+        StringBuffer sb = new StringBuffer();
+        if (dbList != null && !dbList.isEmpty()) {
+            for (DBObject obj : dbList) {
+                AccountOrderEntry accountOrderEntry = new AccountOrderEntry((BasicDBObject) obj);
+                sb.append(accountOrderEntry.getOrder());
+            }
+        }
+        return sb.toString();
     }
 
     public AccountOrderEntry getNotEntry(String orderId){

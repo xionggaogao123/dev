@@ -283,21 +283,89 @@ public class WebBusinessManageController extends BaseController {
 
 
     /**
-     * 分页订单、加支付方式
+     *  用户订单详情
      * @return
      */
-    @ApiOperation(value = "分页订单", httpMethod = "POST", produces = "application/json")
+    @ApiOperation(value = "用户订单详情", httpMethod = "POST", produces = "application/json")
     @ApiResponses( value = {@ApiResponse(code = 200, message = "Successful — 请求已完成",response = String.class)})
     @RequestMapping("/selectCoursesOrderDetails")
     @ResponseBody
     public String selectCoursesOrderDetails(@ApiParam(name="id",required = false,value="id") @RequestParam(value="id",defaultValue = "") String id,
-                                            @ApiParam(name="page",required = false,value="page") @RequestParam(value="page",defaultValue = "") String page,
-                                            @ApiParam(name="pageSize",required = false,value="pageSize") @RequestParam(value="pageSize",defaultValue = "") String pageSize){
+                                            @ApiParam(name="userId",required = false,value="userId") @RequestParam(value="userId",defaultValue = "") String userId){
         RespObj respObj=new RespObj(Constant.FAILD_CODE);
         try {
-            Map<String,Object> map =  businessManageService.selectCoursesDetails(new ObjectId(id));
+            Map<String,Object> map =  businessManageService.selectCoursesOrderDetails(new ObjectId(id), new ObjectId(userId));
             respObj.setCode(Constant.SUCCESS_CODE);
             respObj.setMessage(map);
+        } catch (Exception e) {
+            e.printStackTrace();
+            respObj.setCode(Constant.FAILD_CODE);
+            respObj.setErrorMessage("超级详情失败!");
+        }
+        return JSON.toJSONString(respObj);
+    }
+
+    /**
+     *  退课查询
+     * @return
+     */
+    @ApiOperation(value = "退课查询", httpMethod = "POST", produces = "application/json")
+    @ApiResponses( value = {@ApiResponse(code = 200, message = "Successful — 请求已完成",response = String.class)})
+    @RequestMapping("/selectCoursesTuiOrder")
+    @ResponseBody
+    public String selectCoursesTuiOrder(@ApiParam(name="id",required = false,value="id") @RequestParam(value="id",defaultValue = "") String id,
+                                            @ApiParam(name="userId",required = false,value="userId") @RequestParam(value="userId",defaultValue = "") String userId){
+        RespObj respObj=new RespObj(Constant.FAILD_CODE);
+        try {
+            Map<String,Object> map =  businessManageService.selectCoursesTuiOrder(new ObjectId(id), new ObjectId(userId));
+            respObj.setCode(Constant.SUCCESS_CODE);
+            respObj.setMessage(map);
+        } catch (Exception e) {
+            e.printStackTrace();
+            respObj.setCode(Constant.FAILD_CODE);
+            respObj.setErrorMessage("退课查询失败!");
+        }
+        return JSON.toJSONString(respObj);
+    }
+
+    /**
+     *  退课
+     * @return
+     */
+    @ApiOperation(value = "退课", httpMethod = "POST", produces = "application/json")
+    @ApiResponses( value = {@ApiResponse(code = 200, message = "Successful — 请求已完成",response = String.class)})
+    @RequestMapping("/tuiOrder")
+    @ResponseBody
+    public String tuiOrder(@ApiParam(name="id",required = false,value="id") @RequestParam(value="id",defaultValue = "") String id,
+                                        @ApiParam(name="userId",required = false,value="userId") @RequestParam(value="userId",defaultValue = "") String userId){
+        RespObj respObj=new RespObj(Constant.FAILD_CODE);
+        try {
+            businessManageService.tuiOrder(new ObjectId(id), new ObjectId(userId));
+            respObj.setCode(Constant.SUCCESS_CODE);
+            respObj.setMessage("退课成功");
+        } catch (Exception e) {
+            e.printStackTrace();
+            respObj.setCode(Constant.FAILD_CODE);
+            respObj.setErrorMessage("超级详情失败!");
+        }
+        return JSON.toJSONString(respObj);
+    }
+
+    /**
+     *  导入订单
+     * @return
+     */
+    @ApiOperation(value = "导入订单", httpMethod = "POST", produces = "application/json")
+    @ApiResponses( value = {@ApiResponse(code = 200, message = "Successful — 请求已完成",response = String.class)})
+    @RequestMapping("/daoOrder")
+    @ResponseBody
+    public String daoOrder(@ApiParam(name="id",required = false,value="id") @RequestParam(value="id",defaultValue = "") String id,
+                           @ApiParam(name="userId",required = false,value="userId") @RequestParam(value="userId",defaultValue = "") String userId){
+        RespObj respObj=new RespObj(Constant.FAILD_CODE);
+        try {
+            businessManageService.tuiOrder(new ObjectId(id), new ObjectId(userId));
+            respObj.setCode(Constant.SUCCESS_CODE);
+            respObj.setMessage("退课成功");
         } catch (Exception e) {
             e.printStackTrace();
             respObj.setCode(Constant.FAILD_CODE);

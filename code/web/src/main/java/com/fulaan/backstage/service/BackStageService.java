@@ -1928,7 +1928,7 @@ public class BackStageService {
                     map.put("parentJiaId", entry.getGenerateUserCode());
                     map.put("parentPhoneNumber", entry.getMobileNumber());
                     if(newVersionBindRelationEntry!=null){
-                        UserEntry userEntry =  userDao.findByUserId(newVersionBindRelationEntry.getMainUserId());
+                        UserEntry userEntry =  userDao.findByUserId(newVersionBindRelationEntry.getUserId());
                         if(userEntry!=null) {
                             String name2 = StringUtils.isNotEmpty(userEntry.getNickName())?userEntry.getNickName():userEntry.getUserName();
                             map.put("userName",name2);

@@ -382,7 +382,7 @@ public class WxpayService {
                     classOrderEntry.setContactId(id);
                     classOrderEntry.setIsRemove(0);
                     classOrderEntry.setParentId(hourClassEntry.getID());
-                    classOrderEntry.setFunction(1);
+                    classOrderEntry.setFunction(2);
                     classOrderEntry.setPrice(hourClassEntry.getClassNewPrice());
                     classOrderEntry.setUserId(sonId);//孩子的订单
                     classOrderEntries1.add(classOrderEntry);

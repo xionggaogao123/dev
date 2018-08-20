@@ -5,6 +5,7 @@ import com.fulaan.base.BaseController;
 import com.fulaan.operation.dto.AppCommentDTO;
 import com.fulaan.operation.dto.AppOperationDTO;
 import com.fulaan.operation.dto.WebAppCommentDTO;
+import com.fulaan.operation.dto.WebAppHomeWorkDTO;
 import com.fulaan.operation.service.AppCommentService;
 import com.fulaan.wrongquestion.dto.SubjectClassDTO;
 import com.sys.constants.Constant;
@@ -46,7 +47,7 @@ public class AppCommentController extends BaseController {
             @ApiResponse(code = 500, message = "服务器不能完成请求")})
     @RequestMapping("/addCommentEntry")
     @ResponseBody
-    public String addCommentEntry(@ApiParam @RequestBody WebAppCommentDTO wdto){
+    public String addCommentEntry(@ApiParam @RequestBody WebAppHomeWorkDTO wdto){
         //
         AppCommentDTO dto = wdto.getAppCommentDTO(wdto);
         dto.setAdminId(getUserId().toString());

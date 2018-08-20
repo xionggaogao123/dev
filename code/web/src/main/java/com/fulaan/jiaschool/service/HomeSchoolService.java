@@ -22,7 +22,6 @@ import com.pojo.backstage.LogMessageType;
 import com.pojo.backstage.TeacherApproveEntry;
 import com.pojo.business.ModuleTimeEntry;
 import com.pojo.fcommunity.CommunityEntry;
-import com.pojo.fcommunity.MemberEntry;
 import com.pojo.fcommunity.MineCommunityEntry;
 import com.pojo.instantmessage.ApplyTypeEn;
 import com.pojo.jiaschool.HomeSchoolEntry;
@@ -158,8 +157,8 @@ public class HomeSchoolService {
 
     public CommunityDTO selectNewCommunityEntry(String searchId){
         CommunityEntry communityEntry = communityDao.findBySearchId(searchId);
-        MemberEntry memberEntry = memberDao.getHead(communityEntry.getGroupId());
-        if(communityEntry!=null && memberEntry!=null) {
+        //MemberEntry memberEntry = memberDao.getHead(communityEntry.getGroupId());
+        if(communityEntry!=null) {
             CommunityDTO communityDTO = new CommunityDTO(communityEntry);
             SchoolCommunityEntry schoolCommunityEntry = schoolCommunityDao.getEntryById(communityEntry.getID());
             if (schoolCommunityEntry != null) {//已绑定

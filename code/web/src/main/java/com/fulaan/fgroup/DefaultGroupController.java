@@ -436,18 +436,41 @@ public class DefaultGroupController extends BaseController {
                     throw new Exception("不能把学生拉进社群");
                 }
             }
+            //判断学生和家长
+            Map<ObjectId,Integer> map = newVersionBindService.getUserStudenMap(userList);
+            //家长
+            StringBuffer sb = new StringBuffer();
+            List<ObjectId> userList2 = new ArrayList<ObjectId>();
+            for(ObjectId oid: userList){
+                Integer role = map.get(oid);
+                if(role==null){
+                    userList2.add(oid);
+                }else{
+                    if(role==Constant.ONE||role==Constant.TWO){
+                        userList2.add(oid);
+                    } else{
+                        sb.append(oid.toString());
+                        sb.append(",");
+                    }
+                }
+
+            }
+            //家长加群
+            this.inviteStudentMember(emChatId,sb.toString());
+
+            //孩子申请
             ObjectId userId = getUserId();
             UserEntry userEntry = userService.findById(userId);
-            Map<String, String> ext = new HashMap<String, String>();
+          //  Map<String, String> ext = new HashMap<String, String>();
             String nickName = StringUtils.isNotBlank(userEntry.getNickName()) ? userEntry.getNickName() : userEntry.getUserName();
-            ext.put("avatar", AvatarUtils.getAvatar(userEntry.getAvatar(), userEntry.getRole(), userEntry.getSex()));
+          /*  ext.put("avatar", AvatarUtils.getAvatar(userEntry.getAvatar(), userEntry.getRole(), userEntry.getSex()));
             ext.put("nickName", nickName);
             ext.put("userId", userId.toString());
             ext.put("joinPrivate", "YES");
             ext.put("groupStyle", "community");
            // List<MemberDTO> memberDTOs = memberService.getManagers(groupId);
             List<String> targets = new ArrayList<String>();
-            for (ObjectId uid : userList) {
+            for (ObjectId uid : userList2) {
                 targets.add(uid.toString());
             }
             String message;
@@ -456,27 +479,54 @@ public class DefaultGroupController extends BaseController {
 
             Map<String, String> sendMessage = new HashMap<String, String>();
             sendMessage.put("type", MsgType.TEXT);
-            sendMessage.put("msg", message);
+            sendMessage.put("msg", message);*/
             //申请加入私密社区
-            boolean flag = validateGroupInfoService.saveValidateInfos(userId, groupId,Constant.ZERO, "",userList);
-            if(flag){
-                if (emService.sendTextMessage("users", targets, userId.toString(), ext, sendMessage)) {
+            if(userList2.size()>0){
+                boolean flag = validateGroupInfoService.saveValidateInfos(userId, groupId,Constant.ZERO, "来自"+dto.getName()+"的“"+nickName+"”邀请您加入群组“"+dto.getName()+"”",userList2);
+                if(flag){
+                    // if (emService.sendTextMessage("users", targets, userId.toString(), ext, sendMessage)) {
                     respObj.setCode(Constant.SUCCESS_CODE);
                     respObj.setMessage("等待用户同意加入");
-                } else {
+                    //   } else {
+                    //     respObj.setCode(Constant.FAILD_CODE);
+                    //   respObj.setMessage("发送用户加群邀请失败!");
+                    //  }
+                }else{
                     respObj.setCode(Constant.FAILD_CODE);
                     respObj.setMessage("发送用户加群邀请失败!");
                 }
             }else{
-                respObj.setCode(Constant.FAILD_CODE);
-                respObj.setMessage("发送用户加群邀请失败!");
+                respObj.setCode(Constant.SUCCESS_CODE);
+                respObj.setMessage("操作成功");
             }
+
         } catch (Exception e) {
             respObj.setCode(Constant.FAILD_CODE);
             respObj.setErrorMessage(e.getMessage());
         }
         return respObj;
     }
+
+    /**
+     * 红点数量
+     */
+    @ApiOperation(value = "红点数量", httpMethod = "POST", produces = "application/json")
+    @ApiResponses( value = {@ApiResponse(code = 200, message = "Successful — 请求已完成",response = RespObj.class)})
+    @RequestMapping("/countValidateList")
+    @ResponseBody
+    public RespObj countValidateList(){
+        RespObj respObj = new RespObj(Constant.FAILD_CODE);
+        try{
+            String result = validateGroupInfoService.countValidate(getUserId());
+            respObj.setCode(Constant.SUCCESS_CODE);
+            respObj.setMessage(result);
+        }catch(Exception e){
+            respObj.setCode(Constant.FAILD_CODE);
+            respObj.setErrorMessage("查询失败！");
+        }
+        return respObj;
+    }
+
     /**
      * 验证列表
      */

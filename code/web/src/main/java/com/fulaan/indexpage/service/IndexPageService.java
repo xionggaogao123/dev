@@ -114,7 +114,7 @@ public class IndexPageService {
         //List<ObjectId> ids = memberDao.selectMyRoleList(userId);
        // List<ObjectId> obl = communityDao.selectCommunityByGroupIds(ids);
         //通知逻辑
-        List<ObjectId>  dlist =communityService.getCommunitys3(userId, 1, 100);
+        List<ObjectId>  dlist =communityService.getCommunitys3(userId, 1, 130);
       /*  List<ObjectId>  dlist = new ArrayList<ObjectId>();
         if(communityDTOList.size() >0){
             for(CommunityDTO dto : communityDTOList){
@@ -350,7 +350,7 @@ public class IndexPageService {
     public Map<String,Object> getNewIndexList(ObjectId userId,int page,int pageSize){
         List<Map<String,Object>> list = new ArrayList<Map<String, Object>>();
         //通知逻辑
-        List<ObjectId>  dlist =communityService.getCommunitys3(userId, 1, 100);
+        List<ObjectId>  dlist =communityService.getCommunitys3(userId, 1, 130);
         dlist.add(userId);
         TeacherApproveEntry teacherApproveEntry = teacherApproveDao.getEntry(userId);
         if(teacherApproveEntry!=null && teacherApproveEntry.getType()==2){//认证大V
@@ -684,7 +684,7 @@ public class IndexPageService {
 
         List<Map<String,Object>> list = new ArrayList<Map<String, Object>>();
         //通知逻辑
-        List<ObjectId>  dlist =communityService.getCommunitys3(userId, 1, 100);
+        List<ObjectId>  dlist =communityService.getCommunitys3(userId, 1, 130);
         dlist.add(userId);
         TeacherApproveEntry teacherApproveEntry = teacherApproveDao.getEntry(userId);
         List<SuperTopicDTO> superTopicDTOs = new ArrayList<SuperTopicDTO>();
@@ -1022,7 +1022,7 @@ public class IndexPageService {
 
         List<Map<String,Object>> list = new ArrayList<Map<String, Object>>();
         //通知逻辑
-        List<ObjectId>  dlist =communityService.getCommunitys3(userId, 1, 100);
+        List<ObjectId>  dlist =communityService.getCommunitys3(userId, 1, 130);
         dlist.add(userId);
         TeacherApproveEntry teacherApproveEntry = teacherApproveDao.getEntry(userId);
         List<SuperTopicDTO> superTopicDTOs = new ArrayList<SuperTopicDTO>();
@@ -1448,7 +1448,7 @@ public class IndexPageService {
 
         List<Map<String,Object>> list = new ArrayList<Map<String, Object>>();
         //通知逻辑
-        List<ObjectId>  dlist =communityService.getCommunitys3(userId, 1, 100);
+        List<ObjectId>  dlist =communityService.getCommunitys3(userId, 1, 130);
         //dlist.add(userId);
         TeacherApproveEntry teacherApproveEntry = teacherApproveDao.getEntry(userId);
         List<SuperTopicDTO> superTopicDTOs = new ArrayList<SuperTopicDTO>();

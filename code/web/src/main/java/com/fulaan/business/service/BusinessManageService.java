@@ -3,9 +3,7 @@ package com.fulaan.business.service;
 import com.db.backstage.PushMessageDao;
 import com.db.backstage.TeacherApproveDao;
 import com.db.business.*;
-import com.db.excellentCourses.ClassOrderDao;
-import com.db.excellentCourses.ExcellentCoursesDao;
-import com.db.excellentCourses.HourClassDao;
+import com.db.excellentCourses.*;
 import com.db.fcommunity.CommunityDao;
 import com.db.fcommunity.LoginLogDao;
 import com.db.fcommunity.MemberDao;
@@ -15,7 +13,6 @@ import com.db.user.UserDao;
 import com.db.wrongquestion.SubjectClassDao;
 import com.fulaan.backstage.service.BackStageService;
 import com.fulaan.business.dto.BusinessManageDTO;
-import com.fulaan.excellentCourses.dto.ClassOrderDTO;
 import com.fulaan.excellentCourses.dto.ExcellentCoursesDTO;
 import com.fulaan.excellentCourses.dto.HourClassDTO;
 import com.fulaan.excellentCourses.service.CoursesRoomService;
@@ -24,10 +21,12 @@ import com.fulaan.jiaschool.dto.HomeSchoolDTO;
 import com.fulaan.picturetext.runnable.PictureRunNable;
 import com.fulaan.pojo.User;
 import com.fulaan.user.service.UserService;
+import com.mongodb.DBObject;
 import com.pojo.backstage.LogMessageType;
 import com.pojo.backstage.PushMessageEntry;
 import com.pojo.business.*;
 import com.pojo.excellentCourses.ClassOrderEntry;
+import com.pojo.excellentCourses.CoursesRoomEntry;
 import com.pojo.excellentCourses.ExcellentCoursesEntry;
 import com.pojo.excellentCourses.HourClassEntry;
 import com.pojo.fcommunity.CommunityEntry;
@@ -92,6 +91,10 @@ public class BusinessManageService {
 
     private HomeSchoolDao homeSchoolDao = new HomeSchoolDao();
     private UserAgreementDao userAgreementDao = new UserAgreementDao();
+
+    private CoursesRoomDao coursesRoomDao = new CoursesRoomDao();
+
+    private AccountOrderDao accountOrderDao = new AccountOrderDao();
     @Autowired
     private EmService emService;
 
@@ -257,12 +260,19 @@ public class BusinessManageService {
         int count = excellentCoursesDao.selectAllWebEntryList(subjectId,name);
         List<ExcellentCoursesDTO> dtos = new ArrayList<ExcellentCoursesDTO>();
         long current = System.currentTimeMillis();
+        List<ObjectId>  oid = new ArrayList<ObjectId>();
         for(ExcellentCoursesEntry excellentCoursesEntry:excellentCoursesEntries){
             ExcellentCoursesDTO dto = new ExcellentCoursesDTO(excellentCoursesEntry);
+            oid.add(excellentCoursesEntry.getID());
             dtos.add(dto);
             if(excellentCoursesEntry.getEndTime()<current){
                 dto.setType(2);
             }
+        }
+        Map<ObjectId,String> map2 = coursesRoomDao.getPageList(oid);
+        for(ExcellentCoursesDTO dt : dtos){
+            String roomId = map2.get(new ObjectId(dt.getId()));
+            dt.setCommunitName(roomId);
         }
         map.put("count",count);
         map.put("list",dtos);
@@ -297,7 +307,6 @@ public class BusinessManageService {
         }
         map.put("hourList",hourClassDTOs);
         //用户订单查询
-        List<ClassOrderDTO> classOrderDTOs = new ArrayList<ClassOrderDTO>();
         List<ClassOrderEntry> classOrderEntries = classOrderDao.getCoursesUserList(id);
         List<ObjectId> userIds = new ArrayList<ObjectId>();
         for(ClassOrderEntry classOrderEntry:classOrderEntries){
@@ -306,6 +315,7 @@ public class BusinessManageService {
         List<UserEntry> userEntries = userDao.getUserEntryList(userIds, Constant.FIELDS);
         List<Map<String,Object>> listMap = new ArrayList<Map<String, Object>>();
         int order = 0;
+        String order2 = "";
         for(UserEntry userEntry:userEntries){
             Map<String,Object> userMap = new HashMap<String, Object>();
             double score = 0.00;
@@ -314,22 +324,26 @@ public class BusinessManageService {
             long createTime= 0l;
             for(ClassOrderEntry classOrderEntry:classOrderEntries){
                 if(userEntry.getID().equals(classOrderEntry.getUserId())){
-                    score = score + classOrderEntry.getPrice();
+                    score = sum(score,classOrderEntry.getPrice());
                     number++;
                     createTime = classOrderEntry.getCreateTime();
+                    order2 =classOrderEntry.getOrderId();
                 }
             }
             String ctm = "";
             if(createTime!=0l){
                 ctm = DateTimeUtils.getLongToStrTimeTwo(createTime);
             }
+            userMap.put("userId",userEntry.getID().toString());
             userMap.put("order",order);
             userMap.put("avatar",AvatarUtils.getAvatar(userEntry.getAvatar(),userEntry.getRole(),userEntry.getSex()));
             userMap.put("price","¥ "+score);
+            userMap.put("jiaId",userEntry.getGenerateUserCode());
             userMap.put("number",number);
             userMap.put("createTime",ctm);
             String name = StringUtils.isNotEmpty(userEntry.getNickName())?userEntry.getNickName():userEntry.getUserName();
             userMap.put("userName",name);
+            userMap.put("orderId",order2);
             listMap.add(userMap);
         }
         /*for(ClassOrderEntry classOrderEntry : classOrderEntries){
@@ -343,6 +357,173 @@ public class BusinessManageService {
 
         return map;
     }
+
+    public Map<String,Object> selectCoursesOrderDetails(ObjectId id,ObjectId userId){
+        Map<String,Object> map = new HashMap<String, Object>();
+        //用户订单查询
+        Map<ObjectId,ClassOrderEntry> entryMap = classOrderDao.getEntryList(userId, id);
+        List<HourClassEntry> hourClassEntries =  hourClassDao.getEntryList(id);
+        long current = System.currentTimeMillis();
+        List<String>  stringList = new ArrayList<String>();
+        List<Map<String,Object>> mapList  = new ArrayList<Map<String, Object>>();
+        for(HourClassEntry hourClassEntry:hourClassEntries){
+            ClassOrderEntry classOrderEntry =  entryMap.get(hourClassEntry.getID());
+            long endTime = hourClassEntry.getStartTime()+hourClassEntry.getCurrentTime();
+            HourClassDTO dto = new HourClassDTO(hourClassEntry);
+            Map<String,Object> obMap = new HashMap<String, Object>();
+            obMap.put("content",hourClassEntry.getContent());
+            obMap.put("startTime",dto.getStartTime());
+            obMap.put("classNewPrice",hourClassEntry.getClassNewPrice());
+            obMap.put("order",hourClassEntry.getOrder());
+
+            if(endTime<current){
+                obMap.put("status","已 过 期 ");//1 已过期
+                obMap.put("orderId","已 过 期 ");
+                if(classOrderEntry!=null){
+                    if(!classOrderEntry.getOrderId().equals("")){
+                        obMap.put("orderId",classOrderEntry.getOrderId());
+                        stringList.add(classOrderEntry.getOrderId());
+                    }
+                }
+            }else{
+                obMap.put("status","未 购 买 ");//0 未购买
+                obMap.put("orderId","未 购 买");
+                if(classOrderEntry!=null){
+                    obMap.put("status","可 退 课 ");//已购买
+                    if(!classOrderEntry.getOrderId().equals("")){
+                        obMap.put("orderId",classOrderEntry.getOrderId());
+                        stringList.add(classOrderEntry.getOrderId());
+                    }else{
+                        obMap.put("orderId","后台添加");
+                    }
+                }
+            }
+            mapList.add(obMap);
+        }
+        map.put("list",mapList);
+        String str = accountOrderDao.getEntryListByOrderId(stringList);
+        if(str.contains("alipay_sdk=")){
+            map.put("type","支 付 宝");
+        }else if(str.contains("wx")){
+            map.put("type","微    信");
+        }else{
+            map.put("type","后    台");
+        }
+        return map;
+    }
+    //退课查询
+    public Map<String,Object> selectCoursesTuiOrder(ObjectId id,ObjectId userId){
+        Map<String,Object> map = new HashMap<String, Object>();
+        //用户订单查询
+        Map<ObjectId,ClassOrderEntry> entryMap = classOrderDao.getEntryList(userId, id);
+        List<HourClassEntry> hourClassEntries =  hourClassDao.getEntryList(id);
+        long current = System.currentTimeMillis();
+        int  index = 0;
+        double price = 0;
+        for(HourClassEntry hourClassEntry:hourClassEntries){
+            ClassOrderEntry classOrderEntry =  entryMap.get(hourClassEntry.getID());
+            long endTime = hourClassEntry.getStartTime()+hourClassEntry.getCurrentTime();
+            if(endTime<current){
+
+            }else{
+                if(classOrderEntry!=null){
+                    index++;
+                    price = sum(price,classOrderEntry.getPrice());
+                }
+            }
+
+        }
+       // map.put("list",);
+        map.put("count",index);
+        map.put("price",price);
+        return map;
+    }
+    //退课
+    public void tuiOrder(ObjectId id,ObjectId userId){
+        Map<ObjectId,ClassOrderEntry> entryMap = classOrderDao.getEntryList(userId, id);
+        List<HourClassEntry> hourClassEntries =  hourClassDao.getEntryList(id);
+        long current = System.currentTimeMillis();
+        List<ObjectId>  objectIdList = new ArrayList<ObjectId>();
+        for(HourClassEntry hourClassEntry:hourClassEntries){
+            ClassOrderEntry classOrderEntry =  entryMap.get(hourClassEntry.getID());
+            long endTime = hourClassEntry.getStartTime()+hourClassEntry.getCurrentTime();
+            if(endTime<current){
+
+            }else{
+                if(classOrderEntry!=null){
+                    objectIdList.add(classOrderEntry.getID());
+                }
+            }
+        }
+        // 退课
+        //订单置为退款中
+        classOrderDao.updateEntry(objectIdList);
+    }
+
+    public String daoOrder(ObjectId id,String roomId){
+        CoursesRoomEntry coursesRoomEntry = coursesRoomDao.getRoomEntry(roomId);
+        if(coursesRoomEntry!=null){
+            ExcellentCoursesEntry excellentCoursesEntry = excellentCoursesDao.getEntry(coursesRoomEntry.getContactId());
+            if(excellentCoursesEntry!=null){
+                long current = System.currentTimeMillis();
+                //课节列表
+                List<HourClassEntry> hourClassEntries  = hourClassDao.getEntryList(id);
+                //已下订单用户
+                Set<ObjectId> userIds = classOrderDao.getUserIdEntry(id);
+                //将下订单用户
+                Set<ObjectId> userIds2 = classOrderDao.getUserIdEntry(excellentCoursesEntry.getID());
+                List<ClassOrderEntry> classOrderEntries1 = new ArrayList<ClassOrderEntry>();
+                int num = 0;
+                for(ObjectId oid:userIds2){
+                    if(!userIds.contains(oid)){
+                        for(HourClassEntry hourClassEntry: hourClassEntries){
+                            ClassOrderEntry classOrderEntry = new ClassOrderEntry();
+                            //购买  1  未购买
+                            classOrderEntry.setIsBuy(1);
+                            //下单
+                            classOrderEntry.setType(1);
+                            classOrderEntry.setCreateTime(current);
+                            classOrderEntry.setContactId(id);
+                            classOrderEntry.setOrderId("");
+                            classOrderEntry.setIsRemove(0);
+                            classOrderEntry.setParentId(hourClassEntry.getID());
+                            classOrderEntry.setFunction(3);
+                            classOrderEntry.setPrice(hourClassEntry.getClassNewPrice());
+                            classOrderEntry.setUserId(oid);//孩子的订单
+                            classOrderEntries1.add(classOrderEntry);
+                            //相加
+                        }
+                        num++;
+                    }
+                }
+                this.addClassEntryBatch(classOrderEntries1);
+                excellentCoursesEntry.setStudentNumber(excellentCoursesEntry.getStudentNumber()+num);
+                excellentCoursesDao.addEntry(excellentCoursesEntry);
+            }else{
+                return "课程不存在";
+            }
+        }else{
+            return "直播间id不存在";
+        }
+        return "添加成功";
+    }
+
+    /**
+     * 批量增加课时
+     * @param list
+     */
+    public void addClassEntryBatch(List<ClassOrderEntry> list) {
+        List<DBObject> dbList = new ArrayList<DBObject>();
+        for (int i = 0; list != null && i < list.size(); i++) {
+            ClassOrderEntry si = list.get(i);
+            dbList.add(si.getBaseEntry());
+        }
+        //导入新纪录
+        if(dbList.size()>0) {
+            classOrderDao.addBatch(dbList);
+        }
+    }
+
     //删除
     public void  deleteCourses(ObjectId id,ObjectId userId){
         //课程相关
@@ -355,6 +536,29 @@ public class BusinessManageService {
         //3. 删除课节
         hourClassDao.delEntry(id,excellentCoursesEntry.getUserId());
         backStageService.addLogMessage(id.toString(), "删除直播课堂：" + excellentCoursesEntry.getTitle(), LogMessageType.courses.getDes(), userId.toString());
+    }
+
+    public void  deleteCoursesOrder(ObjectId id,ObjectId userId,String jiaId,ObjectId uid){
+        //课程相关
+        ExcellentCoursesEntry excellentCoursesEntry = excellentCoursesDao.getEntry(id);
+        if(excellentCoursesEntry==null){
+            return;
+        }
+        //2. 删除订单，并添加说明
+        classOrderDao.delOrderEntry(id, userId);
+        backStageService.addLogMessage(id.toString(), "删除直播课堂订单：" + excellentCoursesEntry.getTitle() + ",ID:" + jiaId, LogMessageType.courses.getDes(), uid.toString());
+    }
+
+    /**
+     * double 相加
+     * @param d1
+     * @param d2
+     * @return
+     */
+    public static double sum(double d1,double d2){
+        BigDecimal bd1 = new BigDecimal(Double.toString(d1));
+        BigDecimal bd2 = new BigDecimal(Double.toString(d2));
+        return bd1.add(bd2).doubleValue();
     }
 
     //审核通过
@@ -379,7 +583,7 @@ public class BusinessManageService {
             Double price = map.get(hourClassEntry.getID().toString());
             if(price!=null){
                 hourClassDao.updatePriceEntry(hourClassEntry.getID(),price);
-                all = all + price;
+                all = sum(all,price);
             }
             //课程提醒
             String str2 = DateTimeUtils.getLongToStrTimeTwo(hourClassEntry.getStartTime()).substring(0,11);
@@ -427,7 +631,7 @@ public class BusinessManageService {
             Double price = map.get(hourClassEntry.getID().toString());
             if(price!=null){
                 hourClassDao.updatePriceEntry(hourClassEntry.getID(),price);
-                all = all + price;
+                all = sum(all,price);
             }
             //课程提醒
             String str2 = DateTimeUtils.getLongToStrTimeTwo(hourClassEntry.getStartTime()).substring(0,11);

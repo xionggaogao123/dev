@@ -43,6 +43,7 @@ public class ValidateGroupInfoService {
             ValidateGroupInfoDTO dto = new ValidateGroupInfoDTO(entry);
             validateGroupInfoDTOs.add(dto);
         }
+        validateGroupInfoDao.updStatusEntry(userId,Constant.ONE);
         map.put("list",validateGroupInfoDTOs);
         map.put("count",count);
         return map;
@@ -54,7 +55,9 @@ public class ValidateGroupInfoService {
             GroupEntry groupEntry =  groupDao.findByObjectId(validateGroupInfoEntry.getContactId());
             long current = System.currentTimeMillis();
             //修改申请状态
-            validateGroupInfoDao.updEntry(id,type,Constant.ONE,current);
+            validateGroupInfoDao.updEntry(id,type,current);
+            //修改所有申请
+            validateGroupInfoDao.updEntry(validateGroupInfoEntry.getContactId(),validateGroupInfoEntry.getReviewedId(),type,current);
             if(groupEntry!=null){
                 return groupEntry.getEmChatId();
             }
@@ -63,6 +66,11 @@ public class ValidateGroupInfoService {
 
     }
 
+
+    public String  countValidate(ObjectId userId){
+        int count = validateGroupInfoDao.count(userId);
+        return count+"";
+    }
 
     /**
      * 批量增加课时

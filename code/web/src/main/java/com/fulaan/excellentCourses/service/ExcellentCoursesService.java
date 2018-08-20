@@ -90,7 +90,7 @@ public class ExcellentCoursesService {
     private static final int  TEACHER_TIME = 24*60*60*1000;  //老师提前时间  ->  60分钟
     private static final int  STUDENT_TIME = 5*60*1000;  //学生提前时间  ->  5分钟
     private static final int  TUI_TIME = 12*60*60*1000;  //退款超时时间  ->  12小时
-    private static final int  CURRENT_TIME = 90*60*1000; //课程持续时间
+    private static final int  CURRENT_TIME = 100*60*1000; //课程持续时间
    public static final String[] arg1 = {"http://7xiclj.com1.z0.glb.clouddn.com/5b2cd0143d4df93a9389fa73.jpg",
                                         "http://7xiclj.com1.z0.glb.clouddn.com/5b2cd0143d4df93a9389fa73.jpg",
                                         "http://7xiclj.com1.z0.glb.clouddn.com/5b2cd0493d4df93a9389fde3.jpg",
@@ -194,7 +194,7 @@ public class ExcellentCoursesService {
                 long st2 = classEntry.getStartTime();
                 long et2 = classEntry.getStartTime()+classEntry.getCurrentTime();
                 if(st2< oldEnd+CURRENT_TIME){
-                    throw new Exception("第"+dto1.getOrder()+"课节与上一课节间隔太短，两节课间隔不少于90分钟！");
+                    throw new Exception("第"+dto1.getOrder()+"课节与上一课节间隔太短，两节课间隔不少于"+CURRENT_TIME/60000+"分钟！");
                 }
                 oldEnd = st2;
                 if(st==0l){
@@ -1410,7 +1410,7 @@ public class ExcellentCoursesService {
                     classOrderEntry.setContactId(id);
                     classOrderEntry.setIsRemove(0);
                     classOrderEntry.setParentId(hourClassEntry.getID());
-                    classOrderEntry.setFunction(1);
+                    classOrderEntry.setFunction(0);
                     classOrderEntry.setPrice(hourClassEntry.getClassNewPrice());
                     classOrderEntry.setUserId(userId);
                     classOrderEntry.setOrderId("");
@@ -1535,7 +1535,7 @@ public class ExcellentCoursesService {
                     classOrderEntry.setOrderId("");
                     classOrderEntry.setIsRemove(0);
                     classOrderEntry.setParentId(hourClassEntry.getID());
-                    classOrderEntry.setFunction(1);
+                    classOrderEntry.setFunction(0);
                     classOrderEntry.setPrice(hourClassEntry.getClassNewPrice());
                     classOrderEntry.setUserId(sonId);//孩子的订单
                     classOrderEntries1.add(classOrderEntry);
@@ -1699,7 +1699,7 @@ public class ExcellentCoursesService {
                     classOrderEntry.setOrderId("");
                     classOrderEntry.setIsRemove(0);
                     classOrderEntry.setParentId(hourClassEntry.getID());
-                    classOrderEntry.setFunction(1);
+                    classOrderEntry.setFunction(3);
                     classOrderEntry.setPrice(hourClassEntry.getClassNewPrice());
                     classOrderEntry.setUserId(sonId);//孩子的订单
                     classOrderEntries1.add(classOrderEntry);
@@ -1823,7 +1823,7 @@ public class ExcellentCoursesService {
                     classOrderEntry.setOrderId("");
                     classOrderEntry.setIsRemove(0);
                     classOrderEntry.setParentId(hourClassEntry.getID());
-                    classOrderEntry.setFunction(1);
+                    classOrderEntry.setFunction(0);
                     classOrderEntry.setPrice(hourClassEntry.getClassNewPrice());
                     classOrderEntry.setUserId(sonId);//孩子的订单
                     classOrderEntries1.add(classOrderEntry);

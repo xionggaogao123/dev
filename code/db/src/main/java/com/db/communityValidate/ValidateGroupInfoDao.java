@@ -63,11 +63,38 @@ public class ValidateGroupInfoDao extends BaseDao {
     }
 
     /**
+     * 未阅数量
+     * @return
+     */
+    public int count(ObjectId userId){
+        BasicDBObject query=new BasicDBObject().append("sta", Constant.ZERO).append("isr", 0).append("rw", userId);
+        int count = count(MongoFacroty.getAppDB(), Constant.COLLECTION_VALIDATE_GROUP_INFO, query);
+        return count;
+    }
+
+    /**
      * 修改
      */
-    public void updEntry(ObjectId id,int approvedStatus,int status,long backTime) {
+    public void updEntry(ObjectId id,int approvedStatus,long backTime) {
         BasicDBObject query=new BasicDBObject(Constant.ID,id);
-        BasicDBObject updateValue=new BasicDBObject(Constant.MONGO_SET,new BasicDBObject("isr",Constant.ONE).append("aps",approvedStatus).append("sta",status).append("btm",backTime));
+        BasicDBObject updateValue=new BasicDBObject(Constant.MONGO_SET,new BasicDBObject("aps", approvedStatus).append("btm", backTime));
+        update(MongoFacroty.getAppDB(), Constant.COLLECTION_VALIDATE_GROUP_INFO, query,updateValue);
+    }
+    /*
+      修改全部
+     */
+    public void updEntry(ObjectId contactId,ObjectId reviewedId,int approvedStatus,long backTime) {
+        BasicDBObject query=new BasicDBObject("cid",contactId).append("rw",reviewedId).append("isr",Constant.ZERO).append("aps",Constant.ZERO);
+        BasicDBObject updateValue=new BasicDBObject(Constant.MONGO_SET,new BasicDBObject("aps", approvedStatus).append("btm", backTime));
+        update(MongoFacroty.getAppDB(), Constant.COLLECTION_VALIDATE_GROUP_INFO, query,updateValue);
+    }
+
+    /**
+     * 修改已处理
+     */
+    public void updStatusEntry(ObjectId userId,int status) {
+        BasicDBObject query=new BasicDBObject("rw",userId).append("sta",Constant.ZERO).append("isr", 0);
+        BasicDBObject updateValue=new BasicDBObject(Constant.MONGO_SET,new BasicDBObject("sta",status));
         update(MongoFacroty.getAppDB(), Constant.COLLECTION_VALIDATE_GROUP_INFO, query,updateValue);
     }
 }

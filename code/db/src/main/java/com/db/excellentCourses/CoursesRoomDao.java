@@ -8,6 +8,10 @@ import com.pojo.excellentCourses.CoursesRoomEntry;
 import com.sys.constants.Constant;
 import org.bson.types.ObjectId;
 
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
 /**
  * Created by James on 2018-05-09.
  */
@@ -26,6 +30,25 @@ public class CoursesRoomDao extends BaseDao {
         }else {
             return null;
         }
+    }
+
+    public Map<ObjectId,String> getPageList(List<ObjectId> olist){
+        Map<ObjectId,String> map = new HashMap<ObjectId, String>();
+        BasicDBObject query=new BasicDBObject()
+                .append("cid",new BasicDBObject(Constant.MONGO_IN,olist))
+                .append("isr", Constant.ZERO);
+        List<DBObject> dbList=find(MongoFacroty.getAppDB(), Constant.COLLECTION_COURSES_ROOM,query,
+                Constant.FIELDS,Constant.MONGO_SORTBY_DESC);
+        if (dbList != null && !dbList.isEmpty()) {
+            for (DBObject obj : dbList) {
+                CoursesRoomEntry coursesRoomEntry = new CoursesRoomEntry((BasicDBObject) obj);
+                map.put(coursesRoomEntry.getContactId(),coursesRoomEntry.getRoomId());
+            }
+        }
+        return map;
+
+
+
     }
 
     public CoursesRoomEntry getRoomEntry(String roomId){

@@ -74,6 +74,44 @@ public class DefaultAppCommentController extends BaseController {
     }
 
     /**
+     * 添加作业
+     * @param dto
+     * @return
+     */
+    @ApiOperation(value = "添加作业", httpMethod = "POST", produces = "application/json")
+    @ApiResponses( value = {@ApiResponse(code = 200, message = "Successful — 请求已完成",response = String.class),
+            @ApiResponse(code = 400, message = "请求中有语法问题，或不能满足请求"),
+            @ApiResponse(code = 401, message = "未授权客户机访问数据"),
+            @ApiResponse(code = 404, message = "服务器找不到给定的资源；文档不存在"),
+            @ApiResponse(code = 500, message = "服务器不能完成请求")})
+    @RequestMapping("/addNewCommentEntry")
+    @ResponseBody
+    public String addNewCommentEntry(@ApiParam @RequestBody AppCommentDTO dto){
+        //
+        dto.setAdminId(getUserId().toString());
+        RespObj respObj=new RespObj(Constant.FAILD_CODE);
+        try {
+            String result = appCommentService.addNewCommentEntry(dto,dto.getComList());
+            respObj.setCode(Constant.SUCCESS_CODE);
+            respObj.setMessage(result);
+            if(result.contains("含")) {
+                respObj.setCode(Constant.FAILD_CODE);
+                respObj.setErrorMessage(result);
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+            //if("推送失败".equals(e.getMessage())) {
+            if(e.getMessage().contains("特殊")) {
+                respObj.setCode(Constant.SUCCESS_CODE);
+                respObj.setMessage(e.getMessage().replace("特殊",""));
+            }else{
+                respObj.setErrorMessage("添加作业失败!");
+            }
+        }
+        return JSON.toJSONString(respObj);
+    }
+
+    /**
      * 查找当前老师今天发布的作业
      * @return
      */
@@ -187,7 +225,7 @@ public class DefaultAppCommentController extends BaseController {
 
         RespObj respObj=new RespObj(Constant.FAILD_CODE);
         try {
-            respObj.setCode(Constant.SUCCESS_CODE);
+             respObj.setCode(Constant.SUCCESS_CODE);
             Map<String,Object> dtos = appCommentService.selectNewStudentLoad(getUserId(), new ObjectId(id), page, pageSize);
             respObj.setMessage(dtos);
         } catch (Exception e) {
@@ -197,6 +235,133 @@ public class DefaultAppCommentController extends BaseController {
         }
         return JSON.toJSONString(respObj);
     }
+
+    /**
+     * 查找当前作业提交的学生名单
+     * @return
+     */
+    @ApiOperation(value = "查找当前作业提交的学生名单", httpMethod = "POST", produces = "application/json")
+    @ApiResponses( value = {@ApiResponse(code = 200, message = "Successful — 请求已完成",response = String.class),
+            @ApiResponse(code = 400, message = "请求中有语法问题，或不能满足请求"),
+            @ApiResponse(code = 500, message = "服务器不能完成请求")})
+    @RequestMapping("/selectThreeStudentLoad")
+    @ResponseBody
+    public String selectThreeStudentLoad(@ApiParam(name = "id", required = true, value = "作业id") @RequestParam("id") String id){
+
+        RespObj respObj=new RespObj(Constant.FAILD_CODE);
+        try {
+            respObj.setCode(Constant.SUCCESS_CODE);
+            Map<String,Object> dtos = appCommentService.selectThreeStudentLoad(getUserId(), new ObjectId(id));
+            respObj.setMessage(dtos);
+        } catch (Exception e) {
+            e.printStackTrace();
+            respObj.setCode(Constant.FAILD_CODE);
+            respObj.setErrorMessage("查找当前作业提交的学生名单失败!");
+        }
+        return JSON.toJSONString(respObj);
+    }
+
+    /**
+     * 分页查询已阅
+     * @return
+     */
+    @ApiOperation(value = "分页查询已阅", httpMethod = "POST", produces = "application/json")
+    @ApiResponses( value = {@ApiResponse(code = 200, message = "Successful — 请求已完成",response = String.class),
+            @ApiResponse(code = 400, message = "请求中有语法问题，或不能满足请求"),
+            @ApiResponse(code = 500, message = "服务器不能完成请求")})
+    @RequestMapping("/selectReadStudentLoad")
+    @ResponseBody
+    public String selectReadStudentLoad(@ApiParam(name = "id", required = true, value = "作业id") @RequestParam("id") String id,
+                                         @ApiParam(name = "page", required = true, value = "page") @RequestParam("page") int page,
+                                         @ApiParam(name = "pageSize", required = true, value = "pageSize") @RequestParam("pageSize") int pageSize){
+        RespObj respObj=new RespObj(Constant.FAILD_CODE);
+        try {
+            respObj.setCode(Constant.SUCCESS_CODE);
+            Map<String,Object> dtos = appCommentService.selectReadStudentLoad(getUserId(), new ObjectId(id), page, pageSize);
+            respObj.setMessage(dtos);
+        } catch (Exception e) {
+            e.printStackTrace();
+            respObj.setCode(Constant.FAILD_CODE);
+            respObj.setErrorMessage("无更多加载！");
+        }
+        return JSON.toJSONString(respObj);
+    }
+
+    /**
+     * 分页查询未阅
+     * @return
+     */
+    @ApiOperation(value = "分页查询未阅", httpMethod = "POST", produces = "application/json")
+    @ApiResponses( value = {@ApiResponse(code = 200, message = "Successful — 请求已完成",response = String.class),
+            @ApiResponse(code = 400, message = "请求中有语法问题，或不能满足请求"),
+            @ApiResponse(code = 500, message = "服务器不能完成请求")})
+    @RequestMapping("/selectUnReadStudentLoad")
+    @ResponseBody
+    public String selectUnReadStudentLoad(@ApiParam(name = "id", required = true, value = "作业id") @RequestParam("id") String id,
+                                         @ApiParam(name = "page", required = true, value = "page") @RequestParam("page") int page,
+                                         @ApiParam(name = "pageSize", required = true, value = "pageSize") @RequestParam("pageSize") int pageSize){
+        RespObj respObj=new RespObj(Constant.FAILD_CODE);
+        try {
+            respObj.setCode(Constant.SUCCESS_CODE);
+            Map<String,Object> dtos = appCommentService.selectUnReadStudentLoad(getUserId(), new ObjectId(id),page,pageSize);
+            respObj.setMessage(dtos);
+        } catch (Exception e) {
+            e.printStackTrace();
+            respObj.setCode(Constant.FAILD_CODE);
+            respObj.setErrorMessage("无更多加载！");
+        }
+        return JSON.toJSONString(respObj);
+    }
+
+    /**
+     * 涂鸦修改
+     * @return
+     */
+    @ApiOperation(value = "涂鸦修改", httpMethod = "POST", produces = "application/json")
+    @ApiResponses( value = {@ApiResponse(code = 200, message = "Successful — 请求已完成",response = String.class),
+            @ApiResponse(code = 400, message = "请求中有语法问题，或不能满足请求"),
+            @ApiResponse(code = 500, message = "服务器不能完成请求")})
+    @RequestMapping("/updateScrawlUrl")
+    @ResponseBody
+    public String updateScrawlUrl(@ApiParam(name = "id", required = true, value = "学生作业id") @RequestParam("id") String id,
+                                  @ApiParam(name = "url", required = true, value = "涂鸦图片") @RequestParam("url") String url){
+        RespObj respObj=new RespObj(Constant.FAILD_CODE);
+        try {
+            respObj.setCode(Constant.SUCCESS_CODE);
+            String message = appCommentService.updateScrawlUrl(getUserId(), new ObjectId(id), url);
+            respObj.setMessage(message);
+        } catch (Exception e) {
+            e.printStackTrace();
+            respObj.setCode(Constant.FAILD_CODE);
+            respObj.setErrorMessage("涂鸦修改失败！");
+        }
+        return JSON.toJSONString(respObj);
+    }
+
+    /**
+     * 已阅
+     * @return
+     */
+    @ApiOperation(value = "已阅", httpMethod = "POST", produces = "application/json")
+    @ApiResponses( value = {@ApiResponse(code = 200, message = "Successful — 请求已完成",response = String.class),
+            @ApiResponse(code = 400, message = "请求中有语法问题，或不能满足请求"),
+            @ApiResponse(code = 500, message = "服务器不能完成请求")})
+    @RequestMapping("/readOperation")
+    @ResponseBody
+    public String readOperation(@ApiParam(name = "id", required = true, value = "学生作业id") @RequestParam("id") String id){
+        RespObj respObj=new RespObj(Constant.FAILD_CODE);
+        try {
+            respObj.setCode(Constant.SUCCESS_CODE);
+            String message = appCommentService.readOperation(getUserId(), new ObjectId(id));
+            respObj.setMessage(message);
+        } catch (Exception e) {
+            e.printStackTrace();
+            respObj.setCode(Constant.FAILD_CODE);
+            respObj.setErrorMessage("阅读成功！");
+        }
+        return JSON.toJSONString(respObj);
+    }
+
 
     /**
      * 是否签到

@@ -247,10 +247,23 @@ public class ClassOrderDao extends BaseDao {
         BasicDBObject updateValue=new BasicDBObject(Constant.MONGO_SET,new BasicDBObject("isr",Constant.ONE));
         update(MongoFacroty.getAppDB(), Constant.COLLECTION_CLASS_ORDER, query,updateValue);
     }
+    //批量删除个人订单
+    public void delOrderEntry(ObjectId contactId,ObjectId userId){
+        BasicDBObject query = new BasicDBObject("cid",contactId).append("uid",userId);
+        BasicDBObject updateValue=new BasicDBObject(Constant.MONGO_SET,new BasicDBObject("isr",Constant.ONE).append("typ",Constant.FIVE));
+        update(MongoFacroty.getAppDB(), Constant.COLLECTION_CLASS_ORDER, query,updateValue);
+    }
 
     //批量退课
     public void updateEntry(ObjectId contactId,ObjectId userId){
         BasicDBObject query = new BasicDBObject("cid",contactId).append("uid",userId);
+        BasicDBObject updateValue=new BasicDBObject(Constant.MONGO_SET,new BasicDBObject("typ",Constant.THREE));
+        update(MongoFacroty.getAppDB(), Constant.COLLECTION_CLASS_ORDER, query,updateValue);
+    }
+
+    //批量退课 ----退课了
+    public void updateEntry(List<ObjectId> classIds){
+        BasicDBObject query = new BasicDBObject(Constant.ID,new BasicDBObject(Constant.MONGO_IN,classIds));
         BasicDBObject updateValue=new BasicDBObject(Constant.MONGO_SET,new BasicDBObject("typ",Constant.THREE));
         update(MongoFacroty.getAppDB(), Constant.COLLECTION_CLASS_ORDER, query,updateValue);
     }

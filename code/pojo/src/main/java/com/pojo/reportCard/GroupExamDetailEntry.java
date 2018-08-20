@@ -26,6 +26,8 @@ import java.util.List;
  *     excellentScore:优秀分
  *     showType:展示类型 0：个人1：全部学生
  *     status:状态 0保存（待发送） 1表示已删除 2已发送
+ *     isNew:0：旧成绩单 1：新成绩单
+ *     fsShowType:分数展示类型    0.分数和等第1.分数和排名2.仅分数3.仅等第
  * }
  */
 public class GroupExamDetailEntry extends BaseDBObject{
@@ -69,7 +71,48 @@ public class GroupExamDetailEntry extends BaseDBObject{
                 .append("st",Constant.ZERO)
                 .append("sw",showType )
                 .append("lrType", lrType)
-                .append("pmType", pmType);
+                .append("pmType", pmType)
+                .append("isNew",Constant.ZERO);
+        setBaseEntry(basicDBObject);
+    }
+    
+    public GroupExamDetailEntry(ObjectId groupId,
+                                ObjectId communityId,
+                                ObjectId examType,
+                                int recordScoreType,
+                                ObjectId userId,
+                                String examName,
+                                String subjectIds,
+                                int maxScore,
+                                int qualifyScore,
+                                int excellentScore,
+                                long examTime,
+                                int signCount,
+                                int signedCount,
+                                int showType,
+                                int lrType,
+                                int pmType
+                                ){
+        BasicDBObject basicDBObject=new BasicDBObject()
+                .append("ms",maxScore)
+                .append("qs",qualifyScore)
+                .append("es",excellentScore)
+                .append("gid",groupId)
+                .append("uid",userId)
+                .append("etp",examType)
+                .append("rt",recordScoreType)
+                .append("en",examName)
+                .append("cmId",communityId)
+                .append("et",examTime)
+                .append("ti",System.currentTimeMillis())
+                .append("sids",subjectIds)
+                .append("sc",signCount)
+                .append("sec",signedCount)
+                .append("st",Constant.ZERO)
+                .append("sw",showType )
+                .append("lrType", lrType)
+                .append("pmType", pmType)
+                .append("isNew",Constant.ONE);
         setBaseEntry(basicDBObject);
     }
 
@@ -137,6 +180,14 @@ public class GroupExamDetailEntry extends BaseDBObject{
         return getSimpleIntegerValueDef("sw", Constant.ZERO);
     }
     
+    public void setFsShowType(int fsShowType){
+        setSimpleValue("fsw",fsShowType);
+    }
+
+    public int getFsShowType(){
+        return getSimpleIntegerValueDef("fsw", Constant.ZERO);
+    }
+    
     public void setPmType(int pmType){
         setSimpleValue("pmType",pmType);
     }
@@ -149,8 +200,18 @@ public class GroupExamDetailEntry extends BaseDBObject{
         setSimpleValue("lrType",lrType);
     }
 
+    
+
     public int getLrType(){
         return getSimpleIntegerValueDef("lrType", Constant.TWO);
+    }
+    
+    public int getIsNew(){
+        return getSimpleIntegerValueDef("isNew", Constant.ZERO);
+    }
+    
+    public void setIsNew(int isNew){
+        setSimpleValue("isNew",isNew);
     }
 
     public void setMaxScore(int maxScore){
@@ -167,6 +228,14 @@ public class GroupExamDetailEntry extends BaseDBObject{
 
     public String getExamName(){
         return getSimpleStringValue("en");
+    }
+    
+    public void setSubjectIds(String subjectIds){
+        setSimpleValue("sids",subjectIds);
+    }
+
+    public String getSubjectIds(){
+        return getSimpleStringValue("sids");
     }
 
     public void setRecordScoreType(int recordScoreType){

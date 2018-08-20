@@ -659,6 +659,7 @@ public class WebHomePageService {
                                String childUserName
                                ){
         WebHomePageDTO webHomePageDTO = new WebHomePageDTO(detailEntry);
+        webHomePageDTO.setIsNew(detailEntry.getIsNew());
         webHomePageDTO.setGroupExamDetailId(id.toString());
         webHomePageDTO.setStatus(status);
         webHomePageDTO.setId(detailEntry.getID().toString());
@@ -684,20 +685,39 @@ public class WebHomePageService {
                     StringUtils.isNotEmpty(userEntry.getNickName()) ? userEntry.getNickName() : userEntry.getUserName());
             webHomePageDTO.setAvatar(AvatarUtils.getAvatar(userEntry.getAvatar(), userEntry.getRole(), userEntry.getSex()));
         }
-        SubjectClassEntry subjectClassEntry = subjectClassEntryMap.get(detailEntry.getSubjectId());
-        if (null != subjectClassEntry) {
-            webHomePageDTO.setSubjectName(subjectClassEntry.getName());
+        if (detailEntry.getSubjectId() != null) {
+            SubjectClassEntry subjectClassEntry = subjectClassEntryMap.get(detailEntry.getSubjectId());
+            if (null != subjectClassEntry) {
+                webHomePageDTO.setSubjectName(subjectClassEntry.getName());
+            }
+        } else {
+            String str = detailEntry.getSubjectIds();
+            String[] sArry = str.split(",");
+            StringBuffer subjectName = new StringBuffer();
+            for (int i = 0;i < sArry.length;i++) {
+                SubjectClassEntry subjectClassEntry = subjectClassEntryMap.get(new ObjectId(sArry[i]));
+                if (null != subjectClassEntry) {
+                    subjectName.append(subjectClassEntry.getName());
+                    if (i < sArry.length-1) {
+                        subjectName.append(",");
+                    }
+                    
+                }
+                
+            }
+            webHomePageDTO.setSubjectName(subjectName.toString());
         }
+        
 
         if (detailEntry.getRecordScoreType() == Constant.ONE) {
             RecordScoreEvaluateEntry evaluateEntry = recordScoreEvaluateDao.getEntryById(detailEntry.getID());
             if (null != evaluateEntry) {
-                webHomePageDTO.setAvgScore(evaluateEntry.getAvgScore());
+                //webHomePageDTO.setAvgScore(evaluateEntry.getAvgScore());
             }
         } else {
             RecordLevelEvaluateEntry levelEvaluateEntry = recordLevelEvaluateDao.getRecordLevelEvaluateEntry(detailEntry.getID());
             if (null != levelEvaluateEntry) {
-                webHomePageDTO.setaPercent(levelEvaluateEntry.getApercent());
+                //webHomePageDTO.setaPercent(levelEvaluateEntry.getApercent());
             }
         }
         webHomePageDTOs.add(webHomePageDTO);
@@ -716,7 +736,16 @@ public class WebHomePageService {
                     detailEntry = item.getValue();
             communityIds.add(detailEntry.getCommunityId());
             userIds.add(detailEntry.getUserId());
-            subjectIds.add(detailEntry.getSubjectId());
+            if (detailEntry.getSubjectId() != null) {
+                subjectIds.add(detailEntry.getSubjectId());
+            } else {
+                String s = detailEntry.getSubjectIds();
+                String[] sArry = s.split(",");
+                for (String ss : sArry) {
+                    subjectIds.add(new ObjectId(ss));
+                }
+            }
+            
             if (null != detailEntry.getExamType()) {
                 examTypeIds.add(detailEntry.getExamType());
             }

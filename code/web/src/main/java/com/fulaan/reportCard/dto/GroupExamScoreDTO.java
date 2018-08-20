@@ -9,17 +9,21 @@ import java.util.List;
 public class GroupExamScoreDTO {
 
     private List<GroupExamUserRecordStrDTO> examGroupUserScoreDTOs=new ArrayList<GroupExamUserRecordStrDTO>();
+    
+    private List<GroupExamUserRecordStrListDTO> examGroupUserScoreListDTOs=new ArrayList<GroupExamUserRecordStrListDTO>();
 
     private int status;
 
     private String groupExamDetailId;
 
     private long version;
-    
+    //谁的成绩
     private int showType;
     
     //是否点发送按钮 1：实时保存（实时编辑分数） 0：发送(点发送按钮发送通知)
     private int isSend;
+    //成绩类型
+    private int fsShowType;
 
     public GroupExamScoreDTO(){
 
@@ -50,6 +54,16 @@ public class GroupExamScoreDTO {
     public void setExamGroupUserScoreDTOs(List<GroupExamUserRecordStrDTO> examGroupUserScoreDTOs) {
         this.examGroupUserScoreDTOs = examGroupUserScoreDTOs;
     }
+    
+    
+
+    public List<GroupExamUserRecordStrListDTO> getExamGroupUserScoreListDTOs() {
+        return examGroupUserScoreListDTOs;
+    }
+
+    public void setExamGroupUserScoreListDTOs(List<GroupExamUserRecordStrListDTO> examGroupUserScoreListDTOs) {
+        this.examGroupUserScoreListDTOs = examGroupUserScoreListDTOs;
+    }
 
     public int getStatus() {
         return status;
@@ -73,6 +87,14 @@ public class GroupExamScoreDTO {
 
     public void setIsSend(int isSend) {
         this.isSend = isSend;
+    }
+
+    public int getFsShowType() {
+        return fsShowType;
+    }
+
+    public void setFsShowType(int fsShowType) {
+        this.fsShowType = fsShowType;
     }
     
     

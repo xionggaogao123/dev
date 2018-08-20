@@ -48,6 +48,66 @@ public class GroupExamUserRecordEntry extends BaseDBObject{
                 .append("cmId",communityId);
         setBaseEntry(basicDBObject);
     }
+    
+    public GroupExamUserRecordEntry(ObjectId groupExamDetailId,
+                                    ObjectId mainUserId,
+                                    ObjectId userId,
+                                    ObjectId groupId,
+                                    ObjectId examType,
+                                    String subjectIds,
+                                    ObjectId communityId,
+                                    String score,
+                                    String scoreLevel,
+                                    int rank,
+                                    int status,
+                                    String rankStr){
+        BasicDBObject basicDBObject=new BasicDBObject()
+                .append("sids",subjectIds)
+                .append("etp",examType)
+                .append("eid",groupExamDetailId)
+                .append("uid",userId)
+                .append("muid",mainUserId)
+                .append("st",status)
+                .append("gid",groupId)
+                .append("scs",score)
+                .append("scls",scoreLevel)
+                .append("rk",rank)
+                .append("cmId",communityId)
+                .append("rks", rankStr);
+        setBaseEntry(basicDBObject);
+    }
+    
+    public void setScoreStr(String scoreStr){
+        setSimpleValue("scs",scoreStr);
+    }
+
+    public String getScoreStr(){
+        return getSimpleStringValue("scs");
+    }
+    
+    public void setScoreLevelStr(String scoreLevelStr){
+        setSimpleValue("scls",scoreLevelStr);
+    }
+
+    public String getScoreLevelStr(){
+        return getSimpleStringValue("scls");
+    }
+    
+    public void setSubjectIds(String subjectIds){
+        setSimpleValue("sids",subjectIds);
+    }
+
+    public String getSubjectIds(){
+        return getSimpleStringValue("sids");
+    }
+    
+    public void setRankStr(String rankStr){
+        setSimpleValue("rks",rankStr);
+    }
+
+    public String getRankStr(){
+        return getSimpleStringValue("rks");
+    }
 
     public ObjectId getSubjectId(){
         return getSimpleObjecIDValue("sid");

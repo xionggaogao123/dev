@@ -46,6 +46,38 @@ public class WebHomePageEntry extends BaseDBObject{
                 .append("ir", Constant.ZERO);
         setBaseEntry(basicDBObject);
     }
+    
+    public WebHomePageEntry(int type,
+                            ObjectId userId,
+                            ObjectId communityId,
+                            ObjectId contactId,
+                            String subjectIds,
+                            ObjectId receiveId,
+                            ObjectId reportCardId,
+                            ObjectId examTypeId,
+                            int status){
+        BasicDBObject basicDBObject=new BasicDBObject()
+                .append("ty",type)
+                .append("uid",userId)
+                .append("cid",communityId)
+                .append("cti",contactId)
+                .append("rc",reportCardId)
+                .append("et",examTypeId)
+                .append("sids",subjectIds)
+                .append("rid",receiveId)
+                .append("ti",System.currentTimeMillis())
+                .append("st",status)
+                .append("ir", Constant.ZERO);
+        setBaseEntry(basicDBObject);
+    }
+    
+    public void setSubjectIds(String subjectIds){
+        setSimpleValue("sids",subjectIds);
+    }
+
+    public String getSubjectIds(){
+        return getSimpleStringValue("sids");
+    }
 
     public void setRemove(int remove){
         setSimpleValue("ir",remove);

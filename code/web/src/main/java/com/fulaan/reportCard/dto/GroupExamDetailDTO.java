@@ -3,6 +3,9 @@ package com.fulaan.reportCard.dto;
 import com.pojo.reportCard.GroupExamDetailEntry;
 import com.sys.constants.Constant;
 import com.sys.utils.DateTimeUtils;
+
+import java.util.List;
+
 import org.apache.commons.lang3.StringUtils;
 import org.bson.types.ObjectId;
 
@@ -19,9 +22,13 @@ public class GroupExamDetailDTO {
     private String userId;//用户Id
     private String examName;//考试名称
     private String subjectId;//学科Id
+    private String subjectIds;//学科id，以逗号分开
     private int maxScore;//最高分
+    private List<String> maxScoreList;
     private int qualifyScore;//合格分
+    private List<String> qualifyScoreList;
     private int excellentScore;//优秀分
+    private List<String> excellentScoreList;
     private long examTime;//考试时间
     private long submitTime;//提交时间
     private String examStrTime;//考试时间格式yyyy-MM-dd
@@ -41,15 +48,29 @@ public class GroupExamDetailDTO {
     private double groupMaxScore;//群组最高分
     private double groupMinScore;//群组最低分
     private double excellentPercent;//优秀率
+    private List<String> excellentPercentList;
+    private List<String> qualifyPercentList;
+    private List<String> unQualifyPercentList;
+    private List<String> avgScoreList;
+    private List<String> groupMaxScoreList;
+    private List<String> groupMinScoreList;
     private double aPercent;//a率
     private double bPercent;//b率
     private double cPercent;//c率
     private double dPercent;//d率
+    private List<String> aPercentList;
+    private List<String> bPercentList;
+    private List<String> cPercentList;
+    private List<String> dPercentList;
     
     //参考人数
     private int examCount;
+    private List<Integer> examCountList;
     //未填写人数
     private int unCompleteCount;
+    private List<Integer> unCompleteCountList;
+    //总人数
+    private int allCount;
 
     private int signCount;//签到总数
     private int signedCount;//已签到人数
@@ -67,6 +88,8 @@ public class GroupExamDetailDTO {
     private int lrType;
     //是否显示排名  0家长可见1家长不可见
     private int pmType;
+    
+    private int fsShowType;
 
     public GroupExamDetailDTO(){
 
@@ -93,9 +116,17 @@ public class GroupExamDetailDTO {
         if(StringUtils.isNotBlank(examType)&&ObjectId.isValid(examType)){
             examTypeId=new ObjectId(examType);
         }
-        return new GroupExamDetailEntry(gId,
+        
+        if (sId != null) {
+            return new GroupExamDetailEntry(gId,
                 cId, examTypeId, recordScoreType, uid, examName,
                 sId, maxScore, qualifyScore, excellentScore, examTime,signCount,signedCount,showType,lrType,pmType);
+        } else {
+            return new GroupExamDetailEntry(gId,
+                cId, examTypeId, recordScoreType, uid, examName,
+                subjectIds, maxScore, qualifyScore, excellentScore, examTime,signCount,signedCount,showType,lrType,pmType);
+        }
+        
     }
 
     public GroupExamDetailDTO(GroupExamDetailEntry entry){
@@ -107,6 +138,7 @@ public class GroupExamDetailDTO {
         this.recordScoreType=entry.getRecordScoreType();
         this.userId=null!=entry.getUserId()?entry.getUserId().toString():Constant.EMPTY;
         this.subjectId=null!=entry.getSubjectId()?entry.getSubjectId().toString():Constant.EMPTY;
+        this.subjectIds=null!=entry.getSubjectIds()?entry.getSubjectIds().toString():Constant.EMPTY;
         this.maxScore=entry.getMaxScore();
         this.qualifyScore=entry.getQualifyScore();
         this.excellentScore=entry.getExcellentScore();
@@ -119,6 +151,7 @@ public class GroupExamDetailDTO {
         this.showType = entry.getShowType();
         this.lrType = entry.getLrType();
         this.pmType = entry.getPmType();
+        this.fsShowType = entry.getFsShowType();
     }
     
     
@@ -129,6 +162,16 @@ public class GroupExamDetailDTO {
 
     public void setPmType(int pmType) {
         this.pmType = pmType;
+    }
+    
+    
+
+    public String getSubjectIds() {
+        return subjectIds;
+    }
+
+    public void setSubjectIds(String subjectIds) {
+        this.subjectIds = subjectIds;
     }
 
     public boolean isOwner() {
@@ -485,7 +528,152 @@ public class GroupExamDetailDTO {
         this.lrType = lrType;
     }
 
+    public List<String> getExcellentPercentList() {
+        return excellentPercentList;
+    }
 
+    public void setExcellentPercentList(List<String> excellentPercentList) {
+        this.excellentPercentList = excellentPercentList;
+    }
+
+    public List<String> getQualifyPercentList() {
+        return qualifyPercentList;
+    }
+
+    public void setQualifyPercentList(List<String> qualifyPercentList) {
+        this.qualifyPercentList = qualifyPercentList;
+    }
+
+    public List<String> getUnQualifyPercentList() {
+        return unQualifyPercentList;
+    }
+
+    public void setUnQualifyPercentList(List<String> unQualifyPercentList) {
+        this.unQualifyPercentList = unQualifyPercentList;
+    }
+
+    public List<String> getAvgScoreList() {
+        return avgScoreList;
+    }
+
+    public void setAvgScoreList(List<String> avgScoreList) {
+        this.avgScoreList = avgScoreList;
+    }
+
+    public List<String> getGroupMaxScoreList() {
+        return groupMaxScoreList;
+    }
+
+    public void setGroupMaxScoreList(List<String> groupMaxScoreList) {
+        this.groupMaxScoreList = groupMaxScoreList;
+    }
+
+    public List<String> getGroupMinScoreList() {
+        return groupMinScoreList;
+    }
+
+    public void setGroupMinScoreList(List<String> groupMinScoreList) {
+        this.groupMinScoreList = groupMinScoreList;
+    }
+
+    public List<String> getaPercentList() {
+        return aPercentList;
+    }
+
+    public void setaPercentList(List<String> aPercentList) {
+        this.aPercentList = aPercentList;
+    }
+
+    public List<String> getbPercentList() {
+        return bPercentList;
+    }
+
+    public void setbPercentList(List<String> bPercentList) {
+        this.bPercentList = bPercentList;
+    }
+
+    public List<String> getcPercentList() {
+        return cPercentList;
+    }
+
+    public void setcPercentList(List<String> cPercentList) {
+        this.cPercentList = cPercentList;
+    }
+
+    public List<String> getdPercentList() {
+        return dPercentList;
+    }
+
+    public void setdPercentList(List<String> dPercentList) {
+        this.dPercentList = dPercentList;
+    }
+
+    public List<Integer> getExamCountList() {
+        return examCountList;
+    }
+
+    public void setExamCountList(List<Integer> examCountList) {
+        this.examCountList = examCountList;
+    }
+
+    public List<Integer> getUnCompleteCountList() {
+        return unCompleteCountList;
+    }
+
+    public void setUnCompleteCountList(List<Integer> unCompleteCountList) {
+        this.unCompleteCountList = unCompleteCountList;
+    }
+
+    
+
+    public List<String> getMaxScoreList() {
+        return maxScoreList;
+    }
+
+    public void setMaxScoreList(List<String> maxScoreList) {
+        this.maxScoreList = maxScoreList;
+    }
+
+    public List<String> getQualifyScoreList() {
+        return qualifyScoreList;
+    }
+
+    public void setQualifyScoreList(List<String> qualifyScoreList) {
+        this.qualifyScoreList = qualifyScoreList;
+    }
+
+    public List<String> getExcellentScoreList() {
+        return excellentScoreList;
+    }
+
+    public void setExcellentScoreList(List<String> excellentScoreList) {
+        this.excellentScoreList = excellentScoreList;
+    }
+
+    public int getAllCount() {
+        return allCount;
+    }
+
+    public void setAllCount(int allCount) {
+        this.allCount = allCount;
+    }
+
+    public int getFsShowType() {
+        return fsShowType;
+    }
+
+    public void setFsShowType(int fsShowType) {
+        this.fsShowType = fsShowType;
+    }
+
+   
+
+    
+    
+
+    
+
+    
     
     
 }

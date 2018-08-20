@@ -36,6 +36,13 @@ public class GroupExamUserRecordDao extends BaseDao{
     BasicDBObject updateVlaue=new BasicDBObject(Constant.MONGO_SET,new BasicDBObject("sid",subjectId));
     update(MongoFacroty.getAppDB(), Constant.COLLECTION_REPORT_CARD_EXAM_USER_RECORD,query,updateVlaue);
     }
+    
+    public void updateGroupExamUserRecord(ObjectId groupExamDetailId,String subjectIds){
+        BasicDBObject query=new BasicDBObject()
+            .append("eid",groupExamDetailId);
+    BasicDBObject updateVlaue=new BasicDBObject(Constant.MONGO_SET,new BasicDBObject("sids",subjectIds));
+    update(MongoFacroty.getAppDB(), Constant.COLLECTION_REPORT_CARD_EXAM_USER_RECORD,query,updateVlaue);
+    }
 
     public List<GroupExamUserRecordEntry> getMappingDatas(int page,int pageSize){
         List<GroupExamUserRecordEntry> entries=new ArrayList<GroupExamUserRecordEntry>();
@@ -93,6 +100,31 @@ public class GroupExamUserRecordDao extends BaseDao{
                 query.append("scl", new BasicDBObject(Constant.MONGO_LT, scoreLevel));
             }
         }
+        List<GroupExamUserRecordEntry> entries=new ArrayList<GroupExamUserRecordEntry>();
+        List<DBObject> dbObjects=find(MongoFacroty.getAppDB(), Constant.COLLECTION_REPORT_CARD_EXAM_USER_RECORD,
+                query,Constant.FIELDS);
+        if(null!=dbObjects&&!dbObjects.isEmpty()){
+            for(DBObject dbObject:dbObjects){
+                entries.add(new GroupExamUserRecordEntry(dbObject));
+            }
+        }
+        return entries;
+    }
+    
+    /**
+     * 查询查询录入成绩的学生名单
+     * @param groupExamDetailId
+     * @return
+     */
+    public List<GroupExamUserRecordEntry> getExamUserRecordEntries(ObjectId groupExamDetailId){
+        List<Integer> status=new ArrayList<Integer>();
+        status.add(Constant.ZERO);
+        status.add(Constant.TWO);
+        status.add(Constant.THREE);
+        BasicDBObject query=new BasicDBObject()
+                .append("eid",groupExamDetailId)
+                .append("st",new BasicDBObject(Constant.MONGO_IN,status));
+        
         List<GroupExamUserRecordEntry> entries=new ArrayList<GroupExamUserRecordEntry>();
         List<DBObject> dbObjects=find(MongoFacroty.getAppDB(), Constant.COLLECTION_REPORT_CARD_EXAM_USER_RECORD,
                 query,Constant.FIELDS);
@@ -365,6 +397,18 @@ public class GroupExamUserRecordDao extends BaseDao{
                 .append(Constant.ID,id);
         BasicDBObject updateValue=new BasicDBObject()
                 .append(Constant.MONGO_SET,new BasicDBObject("sc",score).append("scl",scoreLevel).append("rk",rank));
+        update(MongoFacroty.getAppDB(), Constant.COLLECTION_REPORT_CARD_EXAM_USER_RECORD,query,updateValue);
+    }
+    
+    public void updateGroupExamUserRecordScoreNew(ObjectId id,
+                                               String scoreStr,
+                                               String scoreLevelStr,
+                                               String rankStr
+                                               ){
+        BasicDBObject query=new BasicDBObject()
+                .append(Constant.ID,id);
+        BasicDBObject updateValue=new BasicDBObject()
+                .append(Constant.MONGO_SET,new BasicDBObject("scs",scoreStr).append("scls",scoreLevelStr).append("rks",rankStr));
         update(MongoFacroty.getAppDB(), Constant.COLLECTION_REPORT_CARD_EXAM_USER_RECORD,query,updateValue);
     }
 

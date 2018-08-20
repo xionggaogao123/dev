@@ -20,6 +20,9 @@ public class ExamGroupScoreDTO {
     
     //是否点发送按钮 1：实时保存（实时编辑分数） 0：发送(点发送按钮发送通知)
     private int isSend;
+    
+    //分数展示类型    0.分数和等第1.分数和排名2.仅分数3.仅等第
+    private int fsShowType;
 
     public ExamGroupScoreDTO(){
 
@@ -71,6 +74,14 @@ public class ExamGroupScoreDTO {
 
     public void setIsSend(int isSend) {
         this.isSend = isSend;
+    }
+
+    public int getFsShowType() {
+        return fsShowType;
+    }
+
+    public void setFsShowType(int fsShowType) {
+        this.fsShowType = fsShowType;
     }
     
     

@@ -15,12 +15,15 @@ public class GroupExamUserRecordDTO {
     private String userId;
     private double score;
     private int scoreLevel;
+    private String scoreStr;
+    private String scoreLevelStr;
     private String userName;
     private String userNumber;
     private String mainUserId;
     private String groupId;
     private String communityId;
     private int rank;
+    private String rankStr;
     private String examType;
     private String subjectId;
 
@@ -52,6 +55,41 @@ public class GroupExamUserRecordDTO {
         this.subjectId = g.getSubjectId();
         
     }
+    
+    public GroupExamUserRecordDTO(GroupExamUserRecordStrListDTO g){
+        this.id = g.getId();
+        this.groupExamDetailId = g.getGroupExamDetailId();
+        this.userId = g.getUserId();
+        StringBuffer b = new StringBuffer();
+        StringBuffer bb = new StringBuffer();
+        StringBuffer bbb = new StringBuffer();
+        for(String s : g.getScore()) {
+            
+            if (("缺(免)考").equals(s)) {
+                s = "-1";
+            } else if (StringUtils.isEmpty(s)) {
+                s = "-2";
+            }
+            b.append(s).append(",");
+        }
+        this.scoreStr = b.toString();
+        for(Integer t : g.getScoreLevel()) {
+            bb.append(String.valueOf(t)).append(",");
+        }
+        this.scoreLevelStr = bb.toString();
+        this.userName = g.getUserName();
+        this.userNumber = g.getUserNumber();
+        this.mainUserId = g.getMainUserId();
+        this.groupId = g.getGroupId();
+        this.communityId = g.getCommunityId();
+        this.rank = g.getRank();
+        this.examType = g.getExamType();
+        for (String s : g.getSubjectId()) {
+            bbb.append(s).append(",");
+        }
+        this.subjectId = bbb.toString();
+        
+    }
 
     public GroupExamUserRecordDTO(GroupExamUserRecordEntry examUserRecordEntry){
         this.id=examUserRecordEntry.getID().toString();
@@ -71,6 +109,28 @@ public class GroupExamUserRecordDTO {
                 examUserRecordEntry.getExamType().toString():Constant.EMPTY;
         this.subjectId=null!=examUserRecordEntry.getSubjectId()?
                 examUserRecordEntry.getSubjectId().toString():Constant.EMPTY;
+    }
+    
+    public GroupExamUserRecordDTO(GroupExamUserRecordEntry examUserRecordEntry,int i){
+        this.id=examUserRecordEntry.getID().toString();
+        this.groupExamDetailId=null!=examUserRecordEntry.getGroupExamDetailId()?
+                examUserRecordEntry.getGroupExamDetailId().toString(): Constant.EMPTY;
+        this.userId=null!=examUserRecordEntry.getUserId()?
+                examUserRecordEntry.getUserId().toString():Constant.EMPTY;
+        this.scoreStr=examUserRecordEntry.getScoreStr();
+        this.scoreLevelStr=examUserRecordEntry.getScoreLevelStr();
+        this.communityId=null!=examUserRecordEntry.getCommunityId()?
+                examUserRecordEntry.getCommunityId().toString():Constant.EMPTY;
+        this.groupId=null!=examUserRecordEntry.getGroupId()?
+                examUserRecordEntry.getGroupId().toString():Constant.EMPTY;
+        this.mainUserId=null!=examUserRecordEntry.getMainUserId()?
+                examUserRecordEntry.getMainUserId().toString():Constant.EMPTY;
+        this.examType=null!=examUserRecordEntry.getExamType()?
+                examUserRecordEntry.getExamType().toString():Constant.EMPTY;
+        this.subjectId=null!=examUserRecordEntry.getSubjectIds()?
+                examUserRecordEntry.getSubjectIds():Constant.EMPTY;
+        this.rankStr=null!=examUserRecordEntry.getRankStr()?
+            examUserRecordEntry.getRankStr():Constant.EMPTY;
     }
 
     public String getSubjectId() {
@@ -176,4 +236,30 @@ public class GroupExamUserRecordDTO {
     public void setScoreLevel(int scoreLevel) {
         this.scoreLevel = scoreLevel;
     }
+
+    public String getScoreStr() {
+        return scoreStr;
+    }
+
+    public void setScoreStr(String scoreStr) {
+        this.scoreStr = scoreStr;
+    }
+
+    public String getScoreLevelStr() {
+        return scoreLevelStr;
+    }
+
+    public void setScoreLevelStr(String scoreLevelStr) {
+        this.scoreLevelStr = scoreLevelStr;
+    }
+
+    public String getRankStr() {
+        return rankStr;
+    }
+
+    public void setRankStr(String rankStr) {
+        this.rankStr = rankStr;
+    }
+    
+    
 }

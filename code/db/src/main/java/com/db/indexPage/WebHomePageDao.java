@@ -203,6 +203,14 @@ public class WebHomePageDao extends BaseDao{
         BasicDBObject updateVlaue=new BasicDBObject(Constant.MONGO_SET,new BasicDBObject("sid",subjectId));
         update(MongoFacroty.getAppDB(), Constant.COLLECTION_WEB_HOME_PAGE_RECORD,query,updateVlaue);
     }
+    
+    public void updateWebHomePageEntry(ObjectId groupExamDetailId,String subjectIds){
+        BasicDBObject query=new BasicDBObject()
+                .append("rc",groupExamDetailId)
+                .append("ty",Constant.THREE);
+        BasicDBObject updateVlaue=new BasicDBObject(Constant.MONGO_SET,new BasicDBObject("sids",subjectIds));
+        update(MongoFacroty.getAppDB(), Constant.COLLECTION_WEB_HOME_PAGE_RECORD,query,updateVlaue);
+    }
 
     public void removeReportCard(ObjectId groupExamDetailId){
         BasicDBObject query=new BasicDBObject()

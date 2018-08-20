@@ -53,6 +53,8 @@ public class WebHomePageDTO {
     private int status;
 
     private long submitTime;
+    
+    private int isNew;
 
     public WebHomePageDTO(){
 
@@ -109,6 +111,8 @@ public class WebHomePageDTO {
     public void setSubmitTime(long submitTime) {
         this.submitTime = submitTime;
     }
+    
+
 
     public boolean isOwner() {
         return isOwner;
@@ -329,6 +333,20 @@ public class WebHomePageDTO {
     public void setGroupExamDetailId(String groupExamDetailId) {
         this.groupExamDetailId = groupExamDetailId;
     }
+
+
+
+    public int getIsNew() {
+        return isNew;
+    }
+
+
+
+    public void setIsNew(int isNew) {
+        this.isNew = isNew;
+    }
+    
+    
     
     
 }

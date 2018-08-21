@@ -74,6 +74,44 @@ public class DefaultAppCommentController extends BaseController {
     }
 
     /**
+     * 添加作业（含助教）
+     * @param dto
+     * @return
+     */
+    @ApiOperation(value = " 添加作业（含助教）", httpMethod = "POST", produces = "application/json")
+    @ApiResponses( value = {@ApiResponse(code = 200, message = "Successful — 请求已完成",response = String.class),
+            @ApiResponse(code = 400, message = "请求中有语法问题，或不能满足请求"),
+            @ApiResponse(code = 401, message = "未授权客户机访问数据"),
+            @ApiResponse(code = 404, message = "服务器找不到给定的资源；文档不存在"),
+            @ApiResponse(code = 500, message = "服务器不能完成请求")})
+    @RequestMapping("/addThreeCommentEntry")
+    @ResponseBody
+    public String addThreeCommentEntry(@ApiParam @RequestBody AppCommentDTO dto){
+        //
+        dto.setAdminId(getUserId().toString());
+        RespObj respObj=new RespObj(Constant.FAILD_CODE);
+        try {
+            String result = appCommentService.addThreeCommentEntry(dto,dto.getTutorList());
+            respObj.setCode(Constant.SUCCESS_CODE);
+            respObj.setMessage(result);
+            if(result.contains("含")) {
+                respObj.setCode(Constant.FAILD_CODE);
+                respObj.setErrorMessage(result);
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+            //if("推送失败".equals(e.getMessage())) {
+            if(e.getMessage().contains("特殊")) {
+                respObj.setCode(Constant.SUCCESS_CODE);
+                respObj.setMessage(e.getMessage().replace("特殊",""));
+            }else{
+                respObj.setErrorMessage("添加作业失败!");
+            }
+        }
+        return JSON.toJSONString(respObj);
+    }
+
+    /**
      * 添加作业
      * @param dto
      * @return

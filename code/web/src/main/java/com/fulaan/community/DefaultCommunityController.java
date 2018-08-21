@@ -1236,9 +1236,9 @@ public class DefaultCommunityController extends BaseController {
                 UserEntry userEntry = userService.findById(userId);
                 Map<String, String> ext = new HashMap<String, String>();
                 String nickName = StringUtils.isNotBlank(userEntry.getNickName()) ? userEntry.getNickName() : userEntry.getUserName();
-                ext.put("avatar", AvatarUtils.getAvatar(userEntry.getAvatar(), userEntry.getRole(),userEntry.getSex()));
-                ext.put("nickName", nickName);
-                ext.put("userId", userId.toString());
+                ext.put("avatar", "http://7xiclj.com1.z0.glb.clouddn.com/5b6177aa8126103aac1a705b.png");
+                ext.put("nickName", "入群申请");
+                ext.put("userId", "575e21be0cf2a633a9ff7b6b");
                 ext.put("joinPrivate", "YES");
                 ext.put("groupStyle","community");
                 List<MemberDTO> memberDTOs = memberService.getManagers(groupId);

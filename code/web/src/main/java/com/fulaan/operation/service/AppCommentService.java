@@ -29,6 +29,7 @@ import com.fulaan.util.NewStringUtil;
 import com.fulaan.wrongquestion.dto.SubjectClassDTO;
 import com.mongodb.DBObject;
 import com.pojo.backstage.PictureType;
+import com.pojo.fcommunity.CommunityEntry;
 import com.pojo.fcommunity.MemberEntry;
 import com.pojo.fcommunity.NewVersionCommunityBindEntry;
 import com.pojo.indexPage.WebHomePageEntry;
@@ -225,6 +226,108 @@ public class AppCommentService {
         return new Integer(score).toString();
     }
 
+
+    /**
+     * 发布作业（含助教）
+     * @return
+     */
+    public String addThreeCommentEntry(AppCommentDTO dto,String touList)throws Exception{
+        //文本检测
+        Map<String,Object> flag = CheckTextAndPicture.checkText(dto.getDescription() + "-----------" + dto.getTitle(),new ObjectId(dto.getAdminId()));
+        String f = (String)flag.get("bl");
+        if(f.equals("1")){
+            return (String)flag.get("text");
+        }
+        Calendar cal = Calendar.getInstance();
+        int month = cal.get(Calendar.MONTH)+ 1;
+        dto.setMonth(month);
+        long zero = 0l;
+        if(dto.getDateTime() ==null || dto.getDateTime().equals("")){
+            //获得当前时间
+            long current=System.currentTimeMillis();
+            //获得时间批次
+            zero = current/(1000*3600*24)*(1000*3600*24)- TimeZone.getDefault().getRawOffset();//今天零点零分零秒的毫秒数
+        }else{
+            zero = DateTimeUtils.getStrToLongTime(dto.getDateTime(), "yyyy-MM-dd HH:mm");
+        }
+        dto.setDateTime("");
+        AppCommentEntry en = dto.buildAddEntry();
+        en.setDateTime(zero);
+        String[]  strar = touList.split(",");
+        List<ObjectId>  oids = new ArrayList<ObjectId>();
+        Map<String,String> ma = new HashMap<String, String>();
+        for(String str : strar){
+            String[]  com = str.split("#");
+            if(com.length==2){
+                oids.add(new ObjectId(com[0]));
+                ma.put(com[0],com[1]);
+            }
+        }
+        List<CommunityEntry> communityEntries = communityDao.findByObjectIds(oids);
+        List<ObjectId> objectIdList =new ArrayList<ObjectId>();
+        for(CommunityEntry dto3 : communityEntries){
+            String tutorId = ma.get(dto3.getID().toString());
+            if(tutorId!=null && !tutorId.equals("")){
+                en.setTutorId(new ObjectId(tutorId));
+            }
+            en.setID(null);
+            en.setRecipientId(dto3.getID());
+            en.setRecipientName(dto3.getCommunityName());
+            List<String> objectIdList2 = this.getMyRoleList4(dto3.getID(), new ObjectId(dto.getAdminId()));
+            en.setAllWriterNumber(objectIdList2.size());
+            List<String> objectIdList4 = newVersionBindService.getStudentIdListByCommunityId(dto3.getID());
+            //代提交虚拟孩子
+            List<ParentChildConnectionEntry> entries1 = parentChildConnectionDao.getEntryByList(dto3.getID());
+
+            List<ObjectId> objectIdList5 = new ArrayList<ObjectId>();
+            for(String str : objectIdList4){
+                objectIdList5.add(new ObjectId(str));
+            }
+            List<UserEntry> userEntries = userService.getUserByList(objectIdList5);
+            Set<String> objectIdList3 = new HashSet<String>();
+            for(UserEntry userEntry3: userEntries){
+                objectIdList3.add(userEntry3.getID().toString());
+            }
+            //代提交虚拟孩子
+            en.setAllLoadNumber(objectIdList3.size()+entries1.size());
+            //发送通知
+            if(dto.getStatus()==0){
+                PictureRunNable.addTongzhi(dto3.getID().toString(),dto.getAdminId(),1);
+            }
+
+            String oid = appCommentDao.addEntry(en);
+            //图片检测
+            List<Attachement> alist = dto.getImageList();
+            if(alist != null && alist.size()>0){
+                for(Attachement entry5 : alist){
+                    PictureRunNable.send(oid,dto.getAdminId(), PictureType.operationImage.getType(),1,entry5.getUrl());
+                }
+            }
+          /*  int status=Constant.ZERO;
+            if(dto.getStatus()==0){
+                status=Constant.TWO;
+            }
+            WebHomePageEntry pageEntry=new WebHomePageEntry(Constant.ONE, new ObjectId(dto.getAdminId()),
+                    dto3.getID(),
+                    new ObjectId(oid),
+                    new ObjectId(dto.getSubjectId()),
+                    null, null,null,status);
+            webHomePageDao.saveWebHomeEntry(pageEntry);*/
+            objectIdList.add(dto3.getID());
+            //作业发送记录
+            moduleTimeDao.addEntry(new ObjectId(dto.getAdminId()),ApplyTypeEn.operation.getType(),dto3.getID());
+
+        }
+        if(dto.getStatus()==0){
+            redDotService.addEntryList(objectIdList,new ObjectId(dto.getAdminId()), ApplyTypeEn.operation.getType(),4);
+
+        }
+        int score = 0;
+        if(dto.getStatus() == 0){
+            score = integralSufferService.addIntegral(new ObjectId(dto.getAdminId()), IntegralType.operation,1,1);
+        }
+        return new Integer(score).toString();
+    }
 
     /**
      * 发布作业
@@ -900,6 +1003,8 @@ public class AppCommentService {
         dtoa.setAdminUrl(dto12.getImgUrl());
         if(dtoa.getAdminId() != null && dtoa.getAdminId().equals(userId.toString())){
             dtoa.setType(1);
+        }else if(dtoa.getTutorId()!=null && dtoa.getTutorId().equals(userId.toString())){
+            dtoa.setType(1);
         }else{
             dtoa.setType(2);
         }
@@ -1560,13 +1665,13 @@ public class AppCommentService {
                 entries1 = appCommentDao.selectWillDateList(userId);
             }
             List<AppCommentEntry> entries = new ArrayList<AppCommentEntry>();
-            List<CommunityDTO> communityDTOList =communityService.getCommunitys2(userId, 1, 100);
-            List<ObjectId>  dlist = new ArrayList<ObjectId>();
+            List<ObjectId> dlist =communityService.getCommunitys3(userId, 1, 100);
+           /* List<ObjectId>  dlist = new ArrayList<ObjectId>();
             if(communityDTOList.size() >0){
                 for(CommunityDTO dto : communityDTOList){
                     dlist.add(new ObjectId(dto.getId()));
                 }
-            }
+            }*/
             List<AppCommentEntry> entries3 = appCommentDao.selectAllPageDateList(dlist, page, pageSize);
             count = appCommentDao.getNewPageNumber(dlist);
             count = count + entries1.size();
@@ -1581,6 +1686,18 @@ public class AppCommentService {
                         dto3.setCreateTime(ctm);
                         dto3.setType(1);
                         uids.add(dto3.getAdminId());
+                        if(dto3.getTutorId()!=null && !dto3.getTutorId().equals("")){
+                            uids.add(dto3.getTutorId());
+                        }
+                        dtos.add(dto3);
+                    }else if(dto3.getTutorId()!=null && dto3.getTutorId().equals(userId.toString())){
+                        String ctm = dto3.getCreateTime();
+                        dto3.setCreateTime(ctm);
+                        dto3.setType(1);
+                        uids.add(dto3.getAdminId());
+                        if(dto3.getTutorId()!=null && !dto3.getTutorId().equals("")){
+                            uids.add(dto3.getTutorId());
+                        }
                         dtos.add(dto3);
                     }else{
                         idList.add(en.getID());
@@ -1588,6 +1705,9 @@ public class AppCommentService {
                         dto3.setCreateTime(ctm);
                         dto3.setType(2);
                         uids.add(dto3.getAdminId());
+                        if(dto3.getTutorId()!=null && !dto3.getTutorId().equals("")){
+                            uids.add(dto3.getTutorId());
+                        }
                         dtos.add(dto3);
                         dto4s.add(en.getID());
                     }
@@ -1614,6 +1734,11 @@ public class AppCommentService {
                 String name = StringUtils.isNotEmpty(dto9.getNickName())?dto9.getNickName():dto9.getUserName();
                 dto5.setAdminName(name);
                 dto5.setAdminUrl(dto9.getImgUrl());
+            }
+            UserDetailInfoDTO dto10 = map.get(dto5.getTutorId());
+            if(dto10 != null){
+                String name = StringUtils.isNotEmpty(dto10.getNickName())?dto10.getNickName():dto10.getUserName();
+                dto5.setTutorName(name);
             }
             dto5.setIsLoad(1);
             if(objectIdList.size()>0){

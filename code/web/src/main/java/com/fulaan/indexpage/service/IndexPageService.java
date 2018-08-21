@@ -1651,30 +1651,60 @@ public class IndexPageService {
             List<AppVoteEntry> appVoteEntries = appVoteDao.getEntriesByIds(voList);
             getVoteDtos(appVoteDTOs, appVoteEntries, userId);
             for(AppVoteDTO appVoteDTO:appVoteDTOs){
-                Map<String,Object> ob1 = new HashMap<String, Object>();
-                ob1.put("tag", CommunityType.piao.getDes());
-                ob1.put("cardType",6);
-                ob1.put("groupName","");
-                ob1.put("id",appVoteDTO.getId());
-                ob1.put("userName","");
-                ob1.put("subject","");
-                ob1.put("avatar","");
-                ob1.put("title","");
-                ob1.put("time","");
-                ob1.put("content","");
-                ob1.put("imageList",new ArrayList<Attachement>());
-                ob1.put("commentCount",0);
-                ob1.put("videoList",new ArrayList<VideoDTO>());
-                ob1.put("voiceList",new ArrayList<Attachement>());
-                ob1.put("attachements",new ArrayList<Attachement>());
-                ob1.put("isRead",appVoteDTO.getIsVoted());
-                ob1.put("totalReadCount", 0);
-                ob1.put("readCount", 0);
-                ob1.put("unReadCount",0);
-                ob1.put("timeExpression","");
-                ob1.put("isOwner",appVoteDTO.getIsOwner());
-                ob1.put("allContent", JSON.toJSONString(appVoteDTO));
-                list.add(ob1);
+                if(appVoteDTO.getVisiblePermission()==1 || appVoteDTO.getVisiblePermission()==3){
+                    Map<String,Object> ob1 = new HashMap<String, Object>();
+                    ob1.put("tag", CommunityType.piao.getDes());
+                    ob1.put("cardType",6);
+                    ob1.put("groupName","");
+                    ob1.put("id",appVoteDTO.getId());
+                    ob1.put("userName","");
+                    ob1.put("subject","");
+                    ob1.put("avatar","");
+                    ob1.put("title","");
+                    ob1.put("time","");
+                    ob1.put("content","");
+                    ob1.put("imageList",new ArrayList<Attachement>());
+                    ob1.put("commentCount",0);
+                    ob1.put("videoList",new ArrayList<VideoDTO>());
+                    ob1.put("voiceList",new ArrayList<Attachement>());
+                    ob1.put("attachements",new ArrayList<Attachement>());
+                    ob1.put("isRead",appVoteDTO.getIsVoted());
+                    ob1.put("totalReadCount", 0);
+                    ob1.put("readCount", 0);
+                    ob1.put("unReadCount",0);
+                    ob1.put("timeExpression","");
+                    ob1.put("isOwner",appVoteDTO.getIsOwner());
+                    ob1.put("allContent", JSON.toJSONString(appVoteDTO));
+                    list.add(ob1);
+                }else{
+                    if(appVoteDTO.getUserId().equals(userId.toString())){
+                        Map<String,Object> ob1 = new HashMap<String, Object>();
+                        ob1.put("tag", CommunityType.piao.getDes());
+                        ob1.put("cardType",6);
+                        ob1.put("groupName","");
+                        ob1.put("id",appVoteDTO.getId());
+                        ob1.put("userName","");
+                        ob1.put("subject","");
+                        ob1.put("avatar","");
+                        ob1.put("title","");
+                        ob1.put("time","");
+                        ob1.put("content","");
+                        ob1.put("imageList",new ArrayList<Attachement>());
+                        ob1.put("commentCount",0);
+                        ob1.put("videoList",new ArrayList<VideoDTO>());
+                        ob1.put("voiceList",new ArrayList<Attachement>());
+                        ob1.put("attachements",new ArrayList<Attachement>());
+                        ob1.put("isRead",appVoteDTO.getIsVoted());
+                        ob1.put("totalReadCount", 0);
+                        ob1.put("readCount", 0);
+                        ob1.put("unReadCount",0);
+                        ob1.put("timeExpression","");
+                        ob1.put("isOwner",appVoteDTO.getIsOwner());
+                        ob1.put("allContent", JSON.toJSONString(appVoteDTO));
+                        list.add(ob1);
+                    }
+                }
+
             }
         }
         if(acList.size()>0){

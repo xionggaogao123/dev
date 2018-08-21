@@ -59,11 +59,13 @@ public class AppCommentDTO {
     private String adminName;//发送人姓名
     private String adminUrl;//发送人图片
     private String sendUser;//孩子名称
-    private String comList;
+    private String comList;//社群组合
     private int isLoad;
     private int showType; //是否展示  0 展示  1不展示
 
-    private String tutorId;
+    private String tutorId;//修改助教id
+    private String tutorName;//助教姓名
+    private String tutorList;//助教和对应社群
 
     public AppCommentDTO(){
 
@@ -127,6 +129,7 @@ public class AppCommentDTO {
             }
             this.month = e.getMonth();
             this.showType = e.getShowType();
+            this.tutorId = e.getTutorId()==null?"":e.getTutorId().toString();
         }else{
             new AppCommentDTO();
         }
@@ -144,6 +147,11 @@ public class AppCommentDTO {
         ObjectId sId=null;
         if(this.getSubjectId()!=null&&!"".equals(this.getSubjectId())){
             sId=new ObjectId(this.getSubjectId());
+        }
+
+        ObjectId tId=null;
+        if(this.getTutorId()!=null&&!"".equals(this.getTutorId())){
+            tId=new ObjectId(this.getTutorId());
         }
         long lTm = 0l;
         if(this.getLoadTime() != null && this.getLoadTime() != ""){
@@ -209,7 +217,8 @@ public class AppCommentDTO {
                         rId,
                         this.month,
                         this.showType,
-                        dTm);
+                        dTm,
+                        tId);
         return openEntry;
 
     }
@@ -229,6 +238,11 @@ public class AppCommentDTO {
         ObjectId sId=null;
         if(this.getSubjectId()!=null&&!"".equals(this.getSubjectId())){
             sId=new ObjectId(this.getSubjectId());
+        }
+
+        ObjectId tId=null;
+        if(this.getTutorId()!=null&&!"".equals(this.getTutorId())){
+            tId=new ObjectId(this.getTutorId());
         }
         long lTm = 0l;
         if(this.getLoadTime() != null && this.getLoadTime() != ""){
@@ -292,7 +306,8 @@ public class AppCommentDTO {
                         rId,
                         this.month,
                         this.showType,
-                        dTm);
+                        dTm,
+                        tId);
         return openEntry;
 
     }
@@ -551,5 +566,21 @@ public class AppCommentDTO {
 
     public void setTutorId(String tutorId) {
         this.tutorId = tutorId;
+    }
+
+    public String getTutorList() {
+        return tutorList;
+    }
+
+    public void setTutorList(String tutorList) {
+        this.tutorList = tutorList;
+    }
+
+    public String getTutorName() {
+        return tutorName;
+    }
+
+    public void setTutorName(String tutorName) {
+        this.tutorName = tutorName;
     }
 }

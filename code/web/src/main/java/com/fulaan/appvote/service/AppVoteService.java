@@ -130,6 +130,16 @@ public class AppVoteService {
                 IndexPageEntry entry = dto1.buildAddEntry();
                 indexPageDao.addEntry(entry);
             }
+            if(appVoteDTO.getVisiblePermission()==2){//学生
+                //首页记录
+                IndexPageDTO dto1 = new IndexPageDTO();
+                dto1.setType(CommunityType.piao.getType());
+                dto1.setUserId(appVoteDTO.getUserId());
+                dto1.setCommunityId(dto.getCommunityId());
+                dto1.setContactId(appVoteEntry.getID().toString());
+                IndexPageEntry entry = dto1.buildAddEntry();
+                indexPageDao.addEntry(entry);
+            }
         }
         if(appVoteDTO.getVisiblePermission()==1 || appVoteDTO.getVisiblePermission()==3 ){//红点
             //添加红点

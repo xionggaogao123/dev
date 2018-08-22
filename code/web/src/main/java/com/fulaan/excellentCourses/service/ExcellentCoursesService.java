@@ -176,6 +176,7 @@ public class ExcellentCoursesService {
     public String addEntry(HourResultDTO dto,ObjectId userId)throws Exception{
         ExcellentCoursesEntry excellentCoursesEntry = excellentCoursesDao.getEntry(new ObjectId(dto.getParentId()));
         long oldEnd = 0l;
+        List<ObjectId> teacherList = new ArrayList<ObjectId>();
         if(excellentCoursesEntry !=null){
             List<HourClassEntry> entryList =new ArrayList<HourClassEntry>();
             List<HourClassDTO> dtoList = dto.getDtos();
@@ -193,8 +194,8 @@ public class ExcellentCoursesService {
                 oldPrice = sum(oldPrice,dto1.getClassOldPrice());
                 long st2 = classEntry.getStartTime();
                 long et2 = classEntry.getStartTime()+classEntry.getCurrentTime();
-                if(st2< oldEnd+CURRENT_TIME){
-                    throw new Exception("第"+dto1.getOrder()+"课节与上一课节间隔太短，两节课间隔不少于"+CURRENT_TIME/60000+"分钟！");
+                if(st2< oldEnd+classEntry.getCurrentTime()){
+                    throw new Exception("第"+dto1.getOrder()+"课节与上一课节间隔太短，两节课间隔不少于"+classEntry.getCurrentTime()/60000+"分钟！");
                 }
                 oldEnd = st2;
                 if(st==0l){
@@ -212,6 +213,8 @@ public class ExcellentCoursesService {
                     }
                 }
                 entryList.add(classEntry);
+                //修改
+                teacherList.add(classEntry.getOwnId());
             }
             hourClassDao.delEntry(new ObjectId(dto.getParentId()),userId);
             this.addEntryBatch(entryList);
@@ -219,6 +222,8 @@ public class ExcellentCoursesService {
             excellentCoursesEntry.setOldPrice(oldPrice);
             excellentCoursesEntry.setStartTime(st);
             excellentCoursesEntry.setEndTime(et);
+            //修改
+            excellentCoursesEntry.setTeacherIdList(teacherList);
             excellentCoursesDao.addEntry(excellentCoursesEntry);
         }else{
             throw new Exception("课程不存在！");

@@ -241,9 +241,9 @@ public class DefaultGroupController extends BaseController {
     @ApiResponses( value = {@ApiResponse(code = 200, message = "Successful — 请求已完成",response = RespObj.class)})
     @RequestMapping("/getNewMembers")
     @ResponseBody
-    public RespObj getNewMembers(String communityId) {
-        ObjectId groupId =  communityService.getGroupId(new ObjectId(communityId));
-        return RespObj.SUCCESS(memberService.getAllGroupMembers(groupId,getUserId()));
+    public RespObj getNewMembers(String groupId) {
+        ObjectId objectId =  communityService.getGroupId(new ObjectId(groupId));
+        return RespObj.SUCCESS(memberService.getNewAllGroupMembers(objectId, getUserId()));
     }
 
     /**

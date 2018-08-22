@@ -1689,6 +1689,7 @@ public class AppCommentService {
                         if(dto3.getTutorId()!=null && !dto3.getTutorId().equals("")){
                             uids.add(dto3.getTutorId());
                         }
+                        dto3.setIsTutorId(0);
                         dtos.add(dto3);
                     }else if(dto3.getTutorId()!=null && dto3.getTutorId().equals(userId.toString())){
                         String ctm = dto3.getCreateTime();
@@ -1698,6 +1699,7 @@ public class AppCommentService {
                         if(dto3.getTutorId()!=null && !dto3.getTutorId().equals("")){
                             uids.add(dto3.getTutorId());
                         }
+                        dto3.setIsTutorId(1);
                         dtos.add(dto3);
                     }else{
                         idList.add(en.getID());
@@ -1708,6 +1710,7 @@ public class AppCommentService {
                         if(dto3.getTutorId()!=null && !dto3.getTutorId().equals("")){
                             uids.add(dto3.getTutorId());
                         }
+                        dto3.setIsTutorId(0);
                         dtos.add(dto3);
                         dto4s.add(en.getID());
                     }

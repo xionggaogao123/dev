@@ -23,6 +23,9 @@ public class HourClassDTO {
     private String createTime;
     private int status;  // 0 已结束   1  未购买   2  已购买
 
+    private String ownId;
+    private String ownName;
+    private String subjectName;
 
     public HourClassDTO(){
 
@@ -55,6 +58,9 @@ public class HourClassDTO {
             }
             this.week = e.getWeek();
             this.type = e.getType();
+            this.ownId = e.getOwnId()==null?"":e.getOwnId().toString();
+            this.ownName =e.getOwnName();
+            this.subjectName = e.getSubjectName();
 
         }else{
             new HourClassDTO();
@@ -69,6 +75,11 @@ public class HourClassDTO {
         ObjectId pId=null;
         if(this.getParentId()!=null&&!"".equals(this.getParentId())){
             pId=new ObjectId(this.getParentId());
+        }
+
+        ObjectId oId=null;
+        if(this.getOwnId()!=null&&!"".equals(this.getOwnId())){
+            oId=new ObjectId(this.getOwnId());
         }
         long dTm = 0l;
         if(this.getDateTime() != null && this.getDateTime() != ""){
@@ -90,7 +101,10 @@ public class HourClassDTO {
                         this.classNewPrice,
                         this.week,
                         this.order,
-                        this.type
+                        this.type,
+                        oId,
+                        this.ownName,
+                        this.subjectName
                 );
         return openEntry;
 
@@ -206,5 +220,29 @@ public class HourClassDTO {
 
     public void setCreateTime(String createTime) {
         this.createTime = createTime;
+    }
+
+    public String getOwnId() {
+        return ownId;
+    }
+
+    public void setOwnId(String ownId) {
+        this.ownId = ownId;
+    }
+
+    public String getOwnName() {
+        return ownName;
+    }
+
+    public void setOwnName(String ownName) {
+        this.ownName = ownName;
+    }
+
+    public String getSubjectName() {
+        return subjectName;
+    }
+
+    public void setSubjectName(String subjectName) {
+        this.subjectName = subjectName;
     }
 }

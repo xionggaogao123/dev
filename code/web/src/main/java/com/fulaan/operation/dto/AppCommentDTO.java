@@ -62,6 +62,7 @@ public class AppCommentDTO {
     private String comList;//社群组合
     private int isLoad;
     private int showType; //是否展示  0 展示  1不展示
+    private int isTutorId; //是否是助教   不是   是
 
     private String tutorId;//修改助教id
     private String tutorName;//助教姓名
@@ -583,5 +584,13 @@ public class AppCommentDTO {
 
     public void setTutorName(String tutorName) {
         this.tutorName = tutorName;
+    }
+
+    public int getIsTutorId() {
+        return isTutorId;
+    }
+
+    public void setIsTutorId(int isTutorId) {
+        this.isTutorId = isTutorId;
     }
 }

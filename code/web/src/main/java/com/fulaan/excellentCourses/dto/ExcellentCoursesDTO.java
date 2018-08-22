@@ -35,6 +35,7 @@ public class ExcellentCoursesDTO {
     private String bigCover;
     private int courseType;
     private int open;
+    private List<String> teacherIdList = new ArrayList<String>();
 
     public ExcellentCoursesDTO(){
 
@@ -84,6 +85,11 @@ public class ExcellentCoursesDTO {
                 communityIdList.add(uId.toString());
             }
 
+            List<ObjectId> teacherId = e.getTeacherIdList();
+            for (ObjectId uId : teacherId) {
+                teacherIdList.add(uId.toString());
+            }
+
         }else{
             new ExcellentCoursesDTO();
         }
@@ -110,6 +116,11 @@ public class ExcellentCoursesDTO {
         for(String sId : this.communityIdList){
             cmIdList.add(new ObjectId(sId));
         }
+
+        List<ObjectId> tIdList = new ArrayList<ObjectId>();
+        for(String sId : this.teacherIdList){
+            tIdList.add(new ObjectId(sId));
+        }
         ExcellentCoursesEntry openEntry =
                 new ExcellentCoursesEntry(
                         uId,
@@ -129,7 +140,8 @@ public class ExcellentCoursesDTO {
                         this.studentNumbet,
                         this.status,
                         this.type,
-                        this.open
+                        this.open,
+                        tIdList
                 );
         return openEntry;
 
@@ -159,6 +171,10 @@ public class ExcellentCoursesDTO {
         for(String sId : this.communityIdList){
             cmIdList.add(new ObjectId(sId));
         }
+        List<ObjectId> tIdList = new ArrayList<ObjectId>();
+        for(String sId : this.teacherIdList){
+            tIdList.add(new ObjectId(sId));
+        }
         ExcellentCoursesEntry openEntry =
                 new ExcellentCoursesEntry(
                         Id,
@@ -179,7 +195,8 @@ public class ExcellentCoursesDTO {
                         this.studentNumbet,
                         this.status,
                         this.type,
-                        this.open
+                        this.open,
+                        tIdList
                 );
         return openEntry;
 
@@ -375,5 +392,13 @@ public class ExcellentCoursesDTO {
 
     public void setIsCollect(int isCollect) {
         this.isCollect = isCollect;
+    }
+
+    public List<String> getTeacherIdList() {
+        return teacherIdList;
+    }
+
+    public void setTeacherIdList(List<String> teacherIdList) {
+        this.teacherIdList = teacherIdList;
     }
 }

@@ -267,7 +267,7 @@ public class AppCommentService {
         List<ObjectId> objectIdList =new ArrayList<ObjectId>();
         for(CommunityEntry dto3 : communityEntries){
             String tutorId = ma.get(dto3.getID().toString());
-            if(tutorId!=null && !tutorId.equals("")){
+            if(tutorId!=null && ObjectId.isValid(tutorId)){
                 en.setTutorId(new ObjectId(tutorId));
             }
             en.setID(null);

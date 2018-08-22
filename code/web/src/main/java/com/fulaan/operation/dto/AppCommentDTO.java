@@ -130,6 +130,7 @@ public class AppCommentDTO {
             this.month = e.getMonth();
             this.showType = e.getShowType();
             this.tutorId = e.getTutorId()==null?"":e.getTutorId().toString();
+            this.tutorName="";
         }else{
             new AppCommentDTO();
         }

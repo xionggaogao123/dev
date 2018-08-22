@@ -452,7 +452,7 @@ public class AppMarketService {
             dto.setFileUrl(path);
             dto.setName(packageName);
             dto.setVersion(apkInfo.getVersionName());
-            entry1.setVersionCode(Integer.valueOf(apkInfo.getVersionCode()));
+            dto.setVersionCode(Integer.valueOf(apkInfo.getVersionCode()));
             jxmAppVersionDao.addEntry(dto.buildAddEntry());
         }
         backStageService.addLogMessage(userId.toString(), "添加了新的复兰应用："+packageName, LogMessageType.table.getDes(), userId.toString());

@@ -1532,6 +1532,8 @@ public class DefaultFPostController extends BaseController {
             }
             respObj.setMessage(fPostDTO.getPraiseCount() - 1);
         }
+        int zanCount = fPostService.getPostCountByPostId(post);
+        fPostService.updateZan(zanCount, new ObjectId(post));
         respObj.setCode(Constant.SUCCESS_CODE);
         return respObj;
     }

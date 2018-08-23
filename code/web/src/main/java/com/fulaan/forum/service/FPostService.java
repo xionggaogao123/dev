@@ -755,6 +755,15 @@ public class FPostService {
     /**
      * 更新点赞
      *
+     * @param postId
+     */
+    public void updateZan(int count,ObjectId postId) {
+        fPostDao.updateZan(count, postId);
+    }
+
+    /**
+     * 更新点赞
+     *
      * @param userReplyId
      * @param flag
      * @param postId

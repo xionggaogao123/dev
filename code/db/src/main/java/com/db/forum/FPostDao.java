@@ -267,6 +267,15 @@ public class FPostDao extends BaseDao {
     update(query, updateValue);
   }
 
+  /**
+   * 更新点赞
+   */
+  public void updateZan(int count, ObjectId postId) {
+    BasicDBObject query = new BasicDBObject(Constant.ID, postId);
+    BasicDBObject updateValue = new BasicDBObject().append(Constant.MONGO_SET,new BasicDBObject("prc", count));
+    update(query, updateValue);
+  }
+
 
   /**
    * 更新反对

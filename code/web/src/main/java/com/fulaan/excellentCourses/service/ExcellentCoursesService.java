@@ -1221,7 +1221,9 @@ public class ExcellentCoursesService {
                 }
             }
         }
-
+        if(dtos.size()>0){
+            map.put("isEnd",0);
+        }
         map.put("now",dtos);
         map.put("list",hourClassDTOs);
         return map;
@@ -1376,7 +1378,9 @@ public class ExcellentCoursesService {
                 }
             }
         }
-
+        if(dtos.size()>0){
+            map.put("isEnd",0);
+        }
         map.put("now",dtos);
         if(!parentId.equals(userId)){
             map.put("now",new ArrayList<HourClassDTO>());

@@ -87,7 +87,9 @@ public class ExcellentCoursesDTO {
 
             List<ObjectId> teacherId = e.getTeacherIdList();
             for (ObjectId uId : teacherId) {
-                teacherIdList.add(uId.toString());
+                if(uId!=null){
+                    teacherIdList.add(uId.toString());
+                }
             }
 
         }else{

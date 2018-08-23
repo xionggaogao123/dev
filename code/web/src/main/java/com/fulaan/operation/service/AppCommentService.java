@@ -997,6 +997,13 @@ public class AppCommentService {
         aen.setLoadNumber(loadNumber);
         appCommentDao.updEntry(aen);
         AppCommentDTO dtoa = new AppCommentDTO(aen);
+        if(aen.getTutorId()!=null&&!aen.getTutorId().toString().equals(aen.getAdminId().toString())){//助教不与发布人相同
+            if(aen.getTutorId().toString().equals(userId.toString())){
+                dtoa.setIsTutorId(1);
+            }
+        }else{
+
+        }
         UserDetailInfoDTO dto12 = map3.get(dtoa.getAdminId());
         String name = StringUtils.isNotEmpty(dto12.getNickName())?dto12.getNickName():dto12.getUserName();
         dtoa.setAdminName(name);

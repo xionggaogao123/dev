@@ -10,6 +10,8 @@ public class HourResultDTO {
     private List<HourClassDTO> dtos =new ArrayList<HourClassDTO>();
     private String parentId;
     private int count;
+    private int type;
+    private double price;
 
     public List<HourClassDTO> getDtos() {
         return dtos;
@@ -33,5 +35,21 @@ public class HourResultDTO {
 
     public void setParentId(String parentId) {
         this.parentId = parentId;
+    }
+
+    public int getType() {
+        return type;
+    }
+
+    public void setType(int type) {
+        this.type = type;
+    }
+
+    public double getPrice() {
+        return price;
+    }
+
+    public void setPrice(double price) {
+        this.price = price;
     }
 }

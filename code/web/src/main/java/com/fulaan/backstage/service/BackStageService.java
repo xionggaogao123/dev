@@ -4,6 +4,7 @@ import cn.jiguang.commom.utils.StringUtils;
 import com.db.activity.FriendDao;
 import com.db.appmarket.AppDetailDao;
 import com.db.backstage.*;
+import com.db.business.BusinessRoleDao;
 import com.db.controlphone.*;
 import com.db.excellentCourses.ClassOrderDao;
 import com.db.excellentCourses.ExcellentCoursesDao;
@@ -42,6 +43,8 @@ import com.pojo.activity.FriendEntry;
 import com.pojo.appmarket.AppDetailEntry;
 import com.pojo.appnotice.AppNoticeEntry;
 import com.pojo.backstage.*;
+import com.pojo.business.BusinessRoleEntry;
+import com.pojo.business.RoleType;
 import com.pojo.controlphone.*;
 import com.pojo.excellentCourses.ClassOrderEntry;
 import com.pojo.excellentCourses.ExcellentCoursesEntry;
@@ -148,6 +151,8 @@ public class BackStageService {
     private ClassOrderDao classOrderDao = new ClassOrderDao();
 
     private NewVersionUserRoleDao newVersionUserRoleDao = new NewVersionUserRoleDao();
+
+    private BusinessRoleDao businessRoleDao = new BusinessRoleDao();
 
 
 
@@ -2103,5 +2108,13 @@ public class BackStageService {
         BigDecimal b = new BigDecimal(d);
         d = b.setScale(2, BigDecimal.ROUND_HALF_UP).doubleValue();
         return d;
+    }
+
+    public int getRoleFromClass(ObjectId userId){
+        BusinessRoleEntry businessRoleEntry = businessRoleDao.getEntry(userId);
+        if(businessRoleEntry !=null && businessRoleEntry.getRoleType().contains(RoleType.excellentCoursersRole.getEname())){
+            return 1;
+        }
+        return 0;
     }
 }

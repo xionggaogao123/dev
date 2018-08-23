@@ -11,7 +11,8 @@ public enum RoleType {
     noFriend(4,"自动不成为好友","noFriend"),
     sendRole(5,"发送运营文章","sendRole"),
     jinyan(6,"禁言用户","jinyan"),
-    communityjinyan(7,"社群禁言","communityjinyan");
+    communityjinyan(7,"社群禁言","communityjinyan"),
+    excellentCoursersRole(8,"直播课开课权限","excellentCoursersRole");
 
 
 

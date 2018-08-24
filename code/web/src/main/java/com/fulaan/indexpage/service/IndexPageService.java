@@ -1448,7 +1448,7 @@ public class IndexPageService {
 
         List<Map<String,Object>> list = new ArrayList<Map<String, Object>>();
         //通知逻辑
-        List<ObjectId>  dlist =communityService.getCommunitys3(userId, 1, 130);
+        List<ObjectId>  dlist =communityService.getCommunitys3(userId, 1, 200);
         //dlist.add(userId);
         TeacherApproveEntry teacherApproveEntry = teacherApproveDao.getEntry(userId);
         List<SuperTopicDTO> superTopicDTOs = new ArrayList<SuperTopicDTO>();

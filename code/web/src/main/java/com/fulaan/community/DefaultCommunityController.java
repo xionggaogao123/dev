@@ -1259,7 +1259,7 @@ public class DefaultCommunityController extends BaseController {
                 //申请加入私密社区
                 boolean flag = validateInfoService.saveValidateInfos(userId, communityId, msg, type, memberDTOs);
                 if (flag) {
-                    if(emService.sendTextMessage("users", targets, userId.toString(), ext, sendMessage)){
+                    if(emService.sendTextMessage("users", targets, "575e21be0cf2a633a9ff7b6b", ext, sendMessage)){
                         return RespObj.FAILD("此群为私密社区群，请等待社长批准!");
                     }else{
                         return RespObj.FAILD("申请加入该私密社区失败!");

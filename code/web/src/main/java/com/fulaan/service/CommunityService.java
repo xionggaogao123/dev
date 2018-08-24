@@ -489,7 +489,7 @@ public class CommunityService {
                 groupIds.add(entry.getGroupId());
                 CommunityDTO communityDTO = new CommunityDTO(entry);
                 communityDTO.setTop(mineCommunityEntry.getTop());
-                communityDTO.setMemberCount(memberService.getMemberCount(entry.getGroupId()));
+                //communityDTO.setMemberCount(memberService.getMemberCount(entry.getGroupId()));
                 UserEntry userEntry=userDao.findByUserId(entry.getOwerID());
                 if(null!=userEntry){
                     communityDTO.setOwerName(StringUtils.isNotEmpty(userEntry.getNickName())?userEntry.getNickName():userEntry.getUserName());

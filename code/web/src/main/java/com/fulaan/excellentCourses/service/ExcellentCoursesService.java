@@ -2102,12 +2102,14 @@ public class ExcellentCoursesService {
     }
 
     /**
-     * 老师 获得我的课程列表
+     * 老师 获得我的课程列表（增加打包课的列表）
      * @return
      */
     public Map<String,Object> getMyExcellentCourses(ObjectId userId,int page,int pageSize){
         Map<String,Object> map = new HashMap<String, Object>();
         List<ExcellentCoursesEntry> excellentCoursesEntries = excellentCoursesDao.getMyExcellentCourses(userId, page, pageSize);
+        //打包课逻辑
+       // List<ExcellentCoursesEntry> excellentCoursesEntries = excellentCoursesDao.getMyAndNewExcellentCourses(userId, page, pageSize);
         int count = excellentCoursesDao.selectMyCount(userId);
         List<ExcellentCoursesDTO> dtos = new ArrayList<ExcellentCoursesDTO>();
         long current = System.currentTimeMillis();
@@ -2127,7 +2129,6 @@ public class ExcellentCoursesService {
             dtos.add(dto);
         }
         Map<ObjectId, CommunityEntry> cmap = communityDao.findMapInfo(communityIds);
-        int in = 12;
         for(ExcellentCoursesDTO dto2: dtos){
             List<String> oids = dto2.getCommunityIdList();
             String name = "";

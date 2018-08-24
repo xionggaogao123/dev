@@ -257,7 +257,7 @@ public class ExcellentCoursesService {
                 }else{
                     dto1.setClassOldPrice(getTwoDouble(dto1.getClassOldPrice()));
                 }
-                if(dto1.getOwnId().equals("无")){
+                if(dto1.getOwnId() !=null && dto1.getOwnId().equals("无")){
                     dto1.setOwnId(userId.toString());
                 }
                 HourClassEntry classEntry =  dto1.buildAddEntry();
@@ -284,7 +284,9 @@ public class ExcellentCoursesService {
                 }
                 entryList.add(classEntry);
                 //修改
-                teacherList.add(classEntry.getOwnId());
+                if(classEntry.getOwnId()!=null){
+                    teacherList.add(classEntry.getOwnId());
+                }
 
 
             }

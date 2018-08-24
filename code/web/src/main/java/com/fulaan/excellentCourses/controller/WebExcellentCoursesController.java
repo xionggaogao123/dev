@@ -328,7 +328,7 @@ public class WebExcellentCoursesController extends BaseController {
     @ApiResponses( value = {@ApiResponse(code = 200, message = "Successful — 请求已完成",response = String.class),
             @ApiResponse(code = 400, message = "请求中有语法问题，或不能满足请求"),
             @ApiResponse(code = 500, message = "服务器不能完成请求")})
-    @RequestMapping("/addNewHourClassEntry")
+    @RequestMapping("/addHourClassEntry")
     @ResponseBody
     public String addHourClassEntry(@RequestBody HourResultDTO dto){
         RespObj respObj=new RespObj(Constant.FAILD_CODE);
@@ -351,7 +351,7 @@ public class WebExcellentCoursesController extends BaseController {
     @ApiResponses( value = {@ApiResponse(code = 200, message = "Successful — 请求已完成",response = String.class),
             @ApiResponse(code = 400, message = "请求中有语法问题，或不能满足请求"),
             @ApiResponse(code = 500, message = "服务器不能完成请求")})
-    @RequestMapping("/addHourClassEntry")
+    @RequestMapping("/addNewHourClassEntry")
     @ResponseBody
     public String addNewHourClassEntry(@RequestBody HourResultDTO dto){
         RespObj respObj=new RespObj(Constant.FAILD_CODE);

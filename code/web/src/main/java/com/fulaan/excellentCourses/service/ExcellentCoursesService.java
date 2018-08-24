@@ -2107,9 +2107,9 @@ public class ExcellentCoursesService {
      */
     public Map<String,Object> getMyExcellentCourses(ObjectId userId,int page,int pageSize){
         Map<String,Object> map = new HashMap<String, Object>();
-        List<ExcellentCoursesEntry> excellentCoursesEntries = excellentCoursesDao.getMyExcellentCourses(userId, page, pageSize);
+        //List<ExcellentCoursesEntry> excellentCoursesEntries = excellentCoursesDao.getMyExcellentCourses(userId, page, pageSize);
         //打包课逻辑
-       // List<ExcellentCoursesEntry> excellentCoursesEntries = excellentCoursesDao.getMyAndNewExcellentCourses(userId, page, pageSize);
+        List<ExcellentCoursesEntry> excellentCoursesEntries = excellentCoursesDao.getMyAndNewExcellentCourses(userId, page, pageSize);
         int count = excellentCoursesDao.selectMyCount(userId);
         List<ExcellentCoursesDTO> dtos = new ArrayList<ExcellentCoursesDTO>();
         long current = System.currentTimeMillis();

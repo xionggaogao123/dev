@@ -708,7 +708,9 @@ public class BusinessManageService {
                 String name = StringUtils.isNotEmpty(userEntry.getNickName())?userEntry.getNickName():userEntry.getUserName();
                 map.put("userId",userEntry.getID().toString());
                 map.put("userName",name);
-                map.put("userRole",getNewString(businessRoleEntry.getRoleType()));
+                if(businessRoleEntry.getRoleType()!=null && businessRoleEntry.getRoleType().size()!=0){
+                    map.put("userRole",getNewString(businessRoleEntry.getRoleType()));
+                }
                 list.add(map);
             }
         }
@@ -724,11 +726,14 @@ public class BusinessManageService {
             List<String> roleType*/
         List<String>  stringList = new ArrayList<String>();
         //加入基础权限
-        stringList.add(RoleType.updateCommunityName.getEname());
-        stringList.add(RoleType.commentAndZan.getEname());
-        BusinessRoleEntry businessRoleEntry=  new BusinessRoleEntry(roleId,0,new ArrayList<ObjectId>(),stringList);
-        String str = businessRoleDao.addEntry(businessRoleEntry);
-        backStageService.addLogMessage(str, "添加运营管理员：" + roleId.toString(), LogMessageType.yunRole.getDes(), userId.toString());
+        BusinessRoleEntry businessRoleEntry2 = businessRoleDao.getEntry(userId);
+        if(businessRoleEntry2==null){
+            stringList.add(RoleType.updateCommunityName.getEname());
+            stringList.add(RoleType.commentAndZan.getEname());
+            BusinessRoleEntry businessRoleEntry=  new BusinessRoleEntry(roleId,0,new ArrayList<ObjectId>(),stringList);
+            String str = businessRoleDao.addEntry(businessRoleEntry);
+            backStageService.addLogMessage(str, "添加运营管理员：" + roleId.toString(), LogMessageType.yunRole.getDes(), userId.toString());
+        }
     }
 
     public List<Map<String,Object>> getRoleList(ObjectId userId){

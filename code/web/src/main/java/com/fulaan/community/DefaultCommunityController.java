@@ -1238,7 +1238,7 @@ public class DefaultCommunityController extends BaseController {
                 String nickName = StringUtils.isNotBlank(userEntry.getNickName()) ? userEntry.getNickName() : userEntry.getUserName();
                 ext.put("avatar", "http://7xiclj.com1.z0.glb.clouddn.com/5b6177aa8126103aac1a705b.png");
                 ext.put("nickName", "入群申请");
-                ext.put("userId", "575e21be0cf2a633a9ff7b6b");
+                ext.put("userId", "5a17dc400a9d324986663cb5");
                 ext.put("joinPrivate", "YES");
                 ext.put("groupStyle","community");
                 List<MemberDTO> memberDTOs = memberService.getManagers(groupId);
@@ -1259,7 +1259,7 @@ public class DefaultCommunityController extends BaseController {
                 //申请加入私密社区
                 boolean flag = validateInfoService.saveValidateInfos(userId, communityId, msg, type, memberDTOs);
                 if (flag) {
-                    if(emService.sendTextMessage("users", targets, "575e21be0cf2a633a9ff7b6b", ext, sendMessage)){
+                    if(emService.sendTextMessage("users", targets, "5a17dc400a9d324986663cb5", ext, sendMessage)){
                         return RespObj.FAILD("此群为私密社区群，请等待社长批准!");
                     }else{
                         return RespObj.FAILD("申请加入该私密社区失败!");

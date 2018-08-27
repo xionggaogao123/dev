@@ -347,6 +347,24 @@ public class ExcellentCoursesDao extends BaseDao {
         }
         return entryList;
     }
+
+    //我的课程 （包含打包课）
+    public List<ExcellentCoursesEntry> getMyAndNewExcellentCourses(ObjectId userId,int page,int pageSize){
+        List<ExcellentCoursesEntry> entryList=new ArrayList<ExcellentCoursesEntry>();
+        BasicDBObject query=new BasicDBObject().append("isr", 0);
+        BasicDBList values = new BasicDBList();
+        values.add(new BasicDBObject("uid",userId));
+        values.add(new BasicDBObject("tlt",userId));
+        query.append(Constant.MONGO_OR,values);
+        List<DBObject> dbList=find(MongoFacroty.getAppDB(), Constant.COLLECTION_EXCELLENT_COURSES, query,
+                Constant.FIELDS,Constant.MONGO_SORTBY_DESC,(page-1)*pageSize,pageSize);
+        if (dbList != null && !dbList.isEmpty()) {
+            for (DBObject obj : dbList) {
+                entryList.add(new ExcellentCoursesEntry((BasicDBObject) obj));
+            }
+        }
+        return entryList;
+    }
     /**
      * 我的课程符合搜索条件的对象个数
      * @return

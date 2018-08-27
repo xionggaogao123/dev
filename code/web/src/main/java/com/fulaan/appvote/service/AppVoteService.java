@@ -130,6 +130,7 @@ public class AppVoteService {
                 IndexPageEntry entry = dto1.buildAddEntry();
                 indexPageDao.addEntry(entry);
             }
+
         }
         if(appVoteDTO.getVisiblePermission()==1 || appVoteDTO.getVisiblePermission()==3 ){//红点
             //添加红点

@@ -23,6 +23,10 @@ import java.util.Date;
  * isRemove        是否删除          isr
  * order           顺序              ord
  * type            状态              typ     0 未开始     1进行中   2已结束
+ * 新增
+ * ownId          上课老师id         oid
+ * ownName        上课老师姓名       onm
+ * subjectName    老师绑定学科       snm
  */
 public class HourClassEntry extends BaseDBObject {
 
@@ -48,7 +52,10 @@ public class HourClassEntry extends BaseDBObject {
             double classNewPrice,
             int week,
             int order,
-            int type
+            int type,
+            ObjectId ownId,
+            String ownName,
+            String subjectName
     ){
         BasicDBObject dbObject=new BasicDBObject()
                 .append("uid", userId)
@@ -62,7 +69,10 @@ public class HourClassEntry extends BaseDBObject {
                 .append("wek", week)
                 .append("ord", order)
                 .append("typ", type)
-                .append("ctm",new Date().getTime())
+                .append("oid",ownId)
+                .append("onm",ownName)
+                .append("snm",subjectName)
+                .append("ctm", new Date().getTime())
                 .append("isr", 0);
         setBaseEntry(dbObject);
     }
@@ -80,7 +90,10 @@ public class HourClassEntry extends BaseDBObject {
             double classNewPrice,
             int week,
             int order,
-            int type
+            int type,
+            ObjectId ownId,
+            String ownName,
+            String subjectName
     ){
         BasicDBObject dbObject=new BasicDBObject()
                 .append(Constant.ID, id)
@@ -95,9 +108,31 @@ public class HourClassEntry extends BaseDBObject {
                 .append("wek", week)
                 .append("ord", order)
                 .append("typ", type)
-                .append("ctm",new Date().getTime())
+                .append("oid",ownId)
+                .append("onm", ownName)
+                .append("snm",subjectName)
+                .append("ctm", new Date().getTime())
                 .append("isr", 0);
         setBaseEntry(dbObject);
+    }
+    public ObjectId getOwnId(){
+        return getSimpleObjecIDValue("oid");
+    }
+    public void setOwnId(ObjectId ownId){
+        setSimpleValue("oid",ownId);
+    }
+    public String getOwnName(){
+        return getSimpleStringValue("onm");
+    }
+    public void setOwnName(String ownName){
+        setSimpleValue("onm",ownName);
+    }
+
+    public String getSubjectName(){
+        return getSimpleStringValue("snm");
+    }
+    public void setSubjectName(String subjectName){
+        setSimpleValue("snm",subjectName);
     }
     public ObjectId getUserId(){
         return getSimpleObjecIDValue("uid");

@@ -449,6 +449,33 @@ public class MemberService {
         return memberDTOs;
     }
 
+    public Object getNewAllGroupMembers(ObjectId groupId,ObjectId userId) {
+        List<MemberEntry> entries = memberDao.getAllMembers(groupId);
+        List<MemberDTO> memberDTOs = new ArrayList<MemberDTO>();
+        List<ObjectId> userIds=new ArrayList<ObjectId>();
+        for (MemberEntry entry : entries) {
+            userIds.add(entry.getUserId());
+        }
+        Map<ObjectId,RemarkEntry> remarkEntryMap=new HashMap<ObjectId, RemarkEntry>();
+        if(null!=userId) {
+            remarkEntryMap=remarkDao.find(userId, userIds);
+        }
+        for (MemberEntry entry : entries) {
+            MemberDTO memberDTO=new MemberDTO(entry);
+            if(null!=remarkEntryMap){
+                RemarkEntry remarkEntry=remarkEntryMap.get(entry.getUserId());
+                if(null!=remarkEntry){
+                    memberDTO.setNickName(remarkEntry.getRemark());
+                }
+            }
+            if(entry.getUserId().equals(userId)){
+                memberDTO.setIsOwner(1);
+            }
+            memberDTOs.add(memberDTO);
+        }
+        return memberDTOs;
+    }
+
     /**
      * 获取除了社长全部成员
      *

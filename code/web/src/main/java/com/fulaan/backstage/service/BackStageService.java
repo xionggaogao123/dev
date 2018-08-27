@@ -4,6 +4,7 @@ import cn.jiguang.commom.utils.StringUtils;
 import com.db.activity.FriendDao;
 import com.db.appmarket.AppDetailDao;
 import com.db.backstage.*;
+import com.db.business.BusinessRoleDao;
 import com.db.controlphone.*;
 import com.db.excellentCourses.ClassOrderDao;
 import com.db.excellentCourses.ExcellentCoursesDao;
@@ -42,6 +43,8 @@ import com.pojo.activity.FriendEntry;
 import com.pojo.appmarket.AppDetailEntry;
 import com.pojo.appnotice.AppNoticeEntry;
 import com.pojo.backstage.*;
+import com.pojo.business.BusinessRoleEntry;
+import com.pojo.business.RoleType;
 import com.pojo.controlphone.*;
 import com.pojo.excellentCourses.ClassOrderEntry;
 import com.pojo.excellentCourses.ExcellentCoursesEntry;
@@ -148,6 +151,8 @@ public class BackStageService {
     private ClassOrderDao classOrderDao = new ClassOrderDao();
 
     private NewVersionUserRoleDao newVersionUserRoleDao = new NewVersionUserRoleDao();
+
+    private BusinessRoleDao businessRoleDao = new BusinessRoleDao();
 
 
 
@@ -1867,7 +1872,7 @@ public class BackStageService {
         //家校美ID
         UserEntry entry= userDao.findByUserName(name);
         //手机号
-        UserEntry entry2= userDao.findByPhone(name);
+        List<UserEntry> entryList= userDao.getUserEntryListFromDelPhone(name);
         //用户名
         UserEntry entry3= userDao.getJiaUserEntry(name);
         List<String>  stringList = new ArrayList<String>();
@@ -1875,12 +1880,13 @@ public class BackStageService {
             addUserDetail(mapList,entry);
             stringList.add(entry.getID().toString());
         }
-        if(entry2!=null){
-            if(!stringList.contains(entry2.getID().toString())){
-                addUserDetail(mapList,entry2);
-                stringList.add(entry2.getID().toString());
+        if(entryList.size()>0){
+            for(UserEntry entry2:entryList){
+                if(!stringList.contains(entry2.getID().toString())){
+                    addUserDetail(mapList,entry2);
+                    stringList.add(entry2.getID().toString());
+                }
             }
-
         }
         if(entry3!=null){
             if(!stringList.contains(entry3.getID().toString())){
@@ -2019,11 +2025,30 @@ public class BackStageService {
 
     public void sortClassTime(ObjectId id){
         List<HourClassEntry> hourClassEntries =  hourClassDao.getEntryListByStartTime(id);
-        int index = 0;
-        for(HourClassEntry hourClassEntry:hourClassEntries){
-            index++;
-            hourClassDao.sortEntry(hourClassEntry.getID(),index);
+        ExcellentCoursesEntry excellentCoursesEntry = excellentCoursesDao.getEntry(id);
+        if(excellentCoursesEntry!=null){
+            int index = 0;
+            long startTime = excellentCoursesEntry.getStartTime();
+            long endTime = excellentCoursesEntry.getEndTime();
+            for(HourClassEntry hourClassEntry:hourClassEntries){
+                index++;
+                hourClassDao.sortEntry(hourClassEntry.getID(),index);
+                long stm = hourClassEntry.getStartTime();
+                long etm = hourClassEntry.getStartTime()+hourClassEntry.getCreateTime();
+                if(stm<startTime){
+                    startTime = stm;
+                }
+                if(etm>endTime){
+                    endTime = etm;
+                }
+            }
+            //修改起始时间
+            excellentCoursesEntry.setStartTime(startTime);
+            excellentCoursesEntry.setEndTime(endTime);
+            excellentCoursesDao.addEntry(excellentCoursesEntry);
         }
+
+
     }
 
     /**
@@ -2103,5 +2128,13 @@ public class BackStageService {
         BigDecimal b = new BigDecimal(d);
         d = b.setScale(2, BigDecimal.ROUND_HALF_UP).doubleValue();
         return d;
+    }
+
+    public int getRoleFromClass(ObjectId userId){
+        BusinessRoleEntry businessRoleEntry = businessRoleDao.getEntry(userId);
+        if(businessRoleEntry !=null && businessRoleEntry.getRoleType().contains(RoleType.excellentCoursersRole.getEname())){
+            return 1;
+        }
+        return 0;
     }
 }

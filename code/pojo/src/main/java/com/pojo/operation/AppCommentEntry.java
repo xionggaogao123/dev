@@ -40,7 +40,7 @@ import java.util.List;
  dateTime         发布日期时间          dtm
  month            月份                  mon
  year             年份                  yea
-
+ tutorId          助教id                tid
  showType         是否展示              sht    是否展示  2 不展示  1 展示
  */
 public class AppCommentEntry extends BaseDBObject {
@@ -73,7 +73,8 @@ public class AppCommentEntry extends BaseDBObject {
             ObjectId recipientId,
             int month,
             int showType,
-            long dateTime
+            long dateTime,
+            ObjectId tutorId
     ){
         BasicDBObject dbObject=new BasicDBObject()
                 .append("des",description)
@@ -98,6 +99,7 @@ public class AppCommentEntry extends BaseDBObject {
                 .append("dtm", dateTime)
                 .append("mon",month)
                 .append("sht",showType)
+                .append("tid",tutorId)
                 .append("ctm", new Date().getTime())
                 .append("isr", 0);
         setBaseEntry(dbObject);
@@ -127,7 +129,8 @@ public class AppCommentEntry extends BaseDBObject {
             ObjectId recipientId,
             int month,
             int showType,
-            long dateTime
+            long dateTime,
+            ObjectId tutorId
     ){
         BasicDBObject dbObject=new BasicDBObject()
                 .append(Constant.ID,id)
@@ -153,6 +156,7 @@ public class AppCommentEntry extends BaseDBObject {
                 .append("dtm", dateTime)
                 .append("mon",month)
                 .append("sht",showType)
+                .append("tid", tutorId)
                 .append("ctm", new Date().getTime())
                 .append("isr", 0);
         setBaseEntry(dbObject);
@@ -316,6 +320,14 @@ public class AppCommentEntry extends BaseDBObject {
 
     public void setRecipientName(String recipientName){
         setSimpleValue("rec",recipientName);
+    }
+
+    public ObjectId getTutorId(){
+        return getSimpleObjecIDValue("tid");
+    }
+
+    public void setTutorId(ObjectId tutorId){
+        setSimpleValue("tid",tutorId);
     }
 
     public long getDateTime(){

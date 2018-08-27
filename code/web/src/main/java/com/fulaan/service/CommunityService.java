@@ -1388,7 +1388,7 @@ public class CommunityService {
         //清除红点
         redDotService.cleanOtherResult(userId, type.getType());
         PageModel<CommunityDetailDTO> pageModel = new PageModel<CommunityDetailDTO>();
-        List<CommunityDTO> communityDTOList =getCommunitys2(userId, 1, 100);
+        List<CommunityDTO> communityDTOList =getCommunitys2(userId, 1, 200);
         List<ObjectId>  objectIdList = new ArrayList<ObjectId>();
         if(communityDTOList.size() >0){
             for(CommunityDTO dto : communityDTOList){

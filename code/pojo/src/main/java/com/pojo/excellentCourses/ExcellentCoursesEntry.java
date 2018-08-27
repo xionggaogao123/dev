@@ -33,7 +33,8 @@ import java.util.List;
  * studentNumber    上课人数                  stn
  * status           审批状态                  sta      0  未发布    1 审批中    2 通过      3 拒绝     4 结束
  * type             课程状态                  typ      0  正常      1 进行中    2 已结束
- * courseType       课程类型                  cty      0  直播课     1  录播课
+ * courseType       课程类型                  cty      0  直播课     1  打包课
+ * teacherList      上课老师集合              tlt  (List<ObjectId>)
  * top              是否轮播                  top      0  否   1  是
  * open             是否公开                  ope      0  否   1  是
  *
@@ -68,7 +69,8 @@ public class ExcellentCoursesEntry extends BaseDBObject {
             int studentNumber,
             int status,
             int type,
-            int open
+            int open,
+            List<ObjectId> teacherIdList
     ){
         BasicDBObject dbObject=new BasicDBObject()
                 .append("uid", userId)
@@ -91,6 +93,7 @@ public class ExcellentCoursesEntry extends BaseDBObject {
                 .append("top",Constant.ZERO)
                 .append("cty",Constant.ZERO)
                 .append("ope",open)
+                .append("tlt",teacherIdList)
                 .append("ctm", new Date().getTime())
                 .append("isr", 0);
         setBaseEntry(dbObject);
@@ -116,7 +119,8 @@ public class ExcellentCoursesEntry extends BaseDBObject {
             int studentNumber,
             int status,
             int type,
-            int open
+            int open,
+            List<ObjectId> teacherIdList
     ){
         BasicDBObject dbObject=new BasicDBObject()
                 .append(Constant.ID, id)
@@ -140,6 +144,7 @@ public class ExcellentCoursesEntry extends BaseDBObject {
                 .append("top", Constant.ZERO)
                 .append("cty", Constant.ZERO)
                 .append("ope",open)
+                .append("tlt", teacherIdList)
                 .append("ctm", new Date().getTime())
                 .append("isr", 0);
         setBaseEntry(dbObject);
@@ -231,7 +236,20 @@ public class ExcellentCoursesEntry extends BaseDBObject {
         }
         return communityIdList;
     }
+    public void setTeacherIdList(List<ObjectId> teacherIdList){
+        setSimpleValue("tlt", MongoUtils.convert(teacherIdList));
+    }
 
+    public List<ObjectId> getTeacherIdList(){
+        ArrayList<ObjectId> teacherIdList = new ArrayList<ObjectId>();
+        BasicDBList dbList = (BasicDBList) getSimpleObjectValue("tlt");
+        if(dbList != null && !dbList.isEmpty()){
+            for (Object obj : dbList) {
+                teacherIdList.add((ObjectId)obj);
+            }
+        }
+        return teacherIdList;
+    }
 
     public long getCreateTime(){
         return getSimpleLongValue("ctm");

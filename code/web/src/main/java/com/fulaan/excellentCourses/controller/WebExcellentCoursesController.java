@@ -334,7 +334,30 @@ public class WebExcellentCoursesController extends BaseController {
         RespObj respObj=new RespObj(Constant.FAILD_CODE);
         try {
             respObj.setCode(Constant.SUCCESS_CODE);
-            String result= excellentCoursesService.addEntry(dto,getUserId());
+            String result= excellentCoursesService.addEntry(dto, getUserId());
+            respObj.setMessage(result);
+        } catch (Exception e) {
+            e.printStackTrace();
+            respObj.setCode(Constant.FAILD_CODE);
+            respObj.setErrorMessage(e.getMessage());
+        }
+        return JSON.toJSONString(respObj);
+    }
+
+    /**
+     * 新批量保存课时
+     */
+    @ApiOperation(value = "新批量保存课时", httpMethod = "POST", produces = "application/json")
+    @ApiResponses( value = {@ApiResponse(code = 200, message = "Successful — 请求已完成",response = String.class),
+            @ApiResponse(code = 400, message = "请求中有语法问题，或不能满足请求"),
+            @ApiResponse(code = 500, message = "服务器不能完成请求")})
+    @RequestMapping("/addNewHourClassEntry")
+    @ResponseBody
+    public String addNewHourClassEntry(@RequestBody HourResultDTO dto){
+        RespObj respObj=new RespObj(Constant.FAILD_CODE);
+        try {
+            respObj.setCode(Constant.SUCCESS_CODE);
+            String result= excellentCoursesService.addNewEntry(dto, getUserId());
             respObj.setMessage(result);
         } catch (Exception e) {
             e.printStackTrace();

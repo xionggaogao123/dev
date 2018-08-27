@@ -2,6 +2,7 @@ package com.fulaan.forum.controller;
 
 import com.db.backstage.TeacherApproveDao;
 import com.db.business.BanningSpeakingDao;
+import com.db.user.NewVersionUserRoleDao;
 import com.fulaan.annotation.LoginInfo;
 import com.fulaan.annotation.ObjectIdType;
 import com.fulaan.annotation.SessionNeedless;
@@ -26,6 +27,7 @@ import com.pojo.business.BanningSpeakingEntry;
 import com.pojo.fcommunity.ConcernEntry;
 import com.pojo.forum.*;
 import com.pojo.integral.IntegralSufferEntry;
+import com.pojo.user.NewVersionUserRoleEntry;
 import com.pojo.user.UserEntry;
 import com.pojo.user.UserInfoDTO;
 import com.pojo.user.UserRole;
@@ -111,6 +113,8 @@ public class DefaultFPostController extends BaseController {
 
 
     private TeacherApproveDao teacherApproveDao = new TeacherApproveDao();
+
+    private NewVersionUserRoleDao newVersionUserRoleDao = new NewVersionUserRoleDao();
 
     /**
      * 搜索界面
@@ -1532,6 +1536,8 @@ public class DefaultFPostController extends BaseController {
             }
             respObj.setMessage(fPostDTO.getPraiseCount() - 1);
         }
+        int zanCount = fPostService.getPostCountByPostId(post);
+        fPostService.updateZan(zanCount, new ObjectId(post));
         respObj.setCode(Constant.SUCCESS_CODE);
         return respObj;
     }
@@ -2541,6 +2547,14 @@ public class DefaultFPostController extends BaseController {
                              HttpServletRequest request) {
 
         //
+        NewVersionUserRoleEntry newVersionUserRoleEntry = newVersionUserRoleDao.getEntry(getUserId());
+        if(newVersionUserRoleEntry==null || newVersionUserRoleEntry.getNewRole()==1 || newVersionUserRoleEntry.getNewRole()==2){
+            RespObj respObj = new RespObj(Constant.FAILD_CODE);
+            respObj.setCode("600");
+            respObj.setMessage("暂无发送权限！");
+            respObj.setErrorMessage("暂无发送权限！");
+            return respObj;
+        }
         BanningSpeakingEntry banningSpeakingEntry = banningSpeakingDao.getEntry(getUserId(), Constant.FIVE);
         long current = System.currentTimeMillis();
         long time = 0;

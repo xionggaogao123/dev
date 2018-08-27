@@ -193,8 +193,8 @@ public class ExcellentCoursesService {
                 oldPrice = sum(oldPrice,dto1.getClassOldPrice());
                 long st2 = classEntry.getStartTime();
                 long et2 = classEntry.getStartTime()+classEntry.getCurrentTime();
-                if(st2< oldEnd+CURRENT_TIME){
-                    throw new Exception("第"+dto1.getOrder()+"课节与上一课节间隔太短，两节课间隔不少于"+CURRENT_TIME/60000+"分钟！");
+                if(st2< oldEnd+classEntry.getCurrentTime()){
+                    throw new Exception("第"+dto1.getOrder()+"课节与上一课节间隔太短，两节课间隔不少于"+classEntry.getCurrentTime()/60000+"分钟！");
                 }
                 oldEnd = st2;
                 if(st==0l){
@@ -227,6 +227,90 @@ public class ExcellentCoursesService {
         return "";
     }
 
+
+    /**
+     * 老师批量增加课时
+     * @param dto
+     * @param userId
+     * @return
+     * @throws Exception
+     */
+    public String addNewEntry(HourResultDTO dto,ObjectId userId)throws Exception{
+        ExcellentCoursesEntry excellentCoursesEntry = excellentCoursesDao.getEntry(new ObjectId(dto.getParentId()));
+        long oldEnd = 0l;
+        Set<ObjectId> teacherList = new HashSet<ObjectId>();
+        if(excellentCoursesEntry !=null){
+            List<HourClassEntry> entryList =new ArrayList<HourClassEntry>();
+            List<HourClassDTO> dtoList = dto.getDtos();
+            double oldPrice = 0.00;
+            long st = 0l;
+            long et = 0l;
+            double price = getTwoDouble(dto.getPrice()/dtoList.size());
+            for(HourClassDTO dto1:dtoList){
+                dto1.setType(Constant.ZERO);
+                dto1.setUserId(userId.toString());
+                dto1.setWeek(getWeek(dto1.getDateTime()));
+                dto1.setParentId(dto.getParentId());
+                //转换
+                if(dto.getType()==1){//总价类型
+                    dto1.setClassOldPrice(price);
+                }else{
+                    dto1.setClassOldPrice(getTwoDouble(dto1.getClassOldPrice()));
+                }
+                if(dto1.getOwnId() !=null && dto1.getOwnId().equals("无")){
+                    dto1.setOwnId(userId.toString());
+                }
+                HourClassEntry classEntry =  dto1.buildAddEntry();
+                oldPrice = sum(oldPrice,dto1.getClassOldPrice());
+                long st2 = classEntry.getStartTime();
+                long et2 = classEntry.getStartTime()+classEntry.getCurrentTime();
+                if(st2< oldEnd+classEntry.getCurrentTime()){
+                    throw new Exception("第"+dto1.getOrder()+"课节与上一课节间隔太短，两节课间隔不少于"+classEntry.getCurrentTime()/60000+"分钟！");
+                }
+                oldEnd = st2;
+                if(st==0l){
+                    st = st2;
+                }else{
+                    if(st2<st){
+                        st = st2;
+                    }
+                }
+                if(et==0l){
+                    et = et2;
+                }else{
+                    if(et <et2){
+                        et = et2;
+                    }
+                }
+                entryList.add(classEntry);
+                //修改
+                if(classEntry.getOwnId()!=null){
+                    teacherList.add(classEntry.getOwnId());
+                }
+
+
+            }
+            hourClassDao.delEntry(new ObjectId(dto.getParentId()),userId);
+            this.addEntryBatch(entryList);
+            excellentCoursesEntry.setAllClassCount(entryList.size());
+            if(dto.getType()==1){
+                excellentCoursesEntry.setOldPrice(dto.getPrice());
+            }else{
+                excellentCoursesEntry.setOldPrice(oldPrice);
+            }
+            excellentCoursesEntry.setStartTime(st);
+            excellentCoursesEntry.setEndTime(et);
+            //修改
+            List<ObjectId> objectIdList = new ArrayList<ObjectId>();
+            objectIdList.addAll(teacherList);
+            excellentCoursesEntry.setTeacherIdList(objectIdList);
+            excellentCoursesDao.addEntry(excellentCoursesEntry);
+        }else{
+            throw new Exception("课程不存在！");
+        }
+
+        return "";
+    }
     public int getWeek(String dateTime){
         long startNum = DateTimeUtils.getStrToLongTime(dateTime, "yyyy-MM-dd");
         Date date = new Date(startNum);
@@ -1139,7 +1223,9 @@ public class ExcellentCoursesService {
                 }
             }
         }
-
+        if(dtos.size()>0){
+            map.put("isEnd",0);
+        }
         map.put("now",dtos);
         map.put("list",hourClassDTOs);
         return map;
@@ -1294,7 +1380,9 @@ public class ExcellentCoursesService {
                 }
             }
         }
-
+        if(dtos.size()>0){
+            map.put("isEnd",0);
+        }
         map.put("now",dtos);
         if(!parentId.equals(userId)){
             map.put("now",new ArrayList<HourClassDTO>());
@@ -2016,12 +2104,14 @@ public class ExcellentCoursesService {
     }
 
     /**
-     * 老师 获得我的课程列表
+     * 老师 获得我的课程列表（增加打包课的列表）
      * @return
      */
     public Map<String,Object> getMyExcellentCourses(ObjectId userId,int page,int pageSize){
         Map<String,Object> map = new HashMap<String, Object>();
-        List<ExcellentCoursesEntry> excellentCoursesEntries = excellentCoursesDao.getMyExcellentCourses(userId, page, pageSize);
+        //List<ExcellentCoursesEntry> excellentCoursesEntries = excellentCoursesDao.getMyExcellentCourses(userId, page, pageSize);
+        //打包课逻辑
+        List<ExcellentCoursesEntry> excellentCoursesEntries = excellentCoursesDao.getMyAndNewExcellentCourses(userId, page, pageSize);
         int count = excellentCoursesDao.selectMyCount(userId);
         List<ExcellentCoursesDTO> dtos = new ArrayList<ExcellentCoursesDTO>();
         long current = System.currentTimeMillis();
@@ -2041,7 +2131,6 @@ public class ExcellentCoursesService {
             dtos.add(dto);
         }
         Map<ObjectId, CommunityEntry> cmap = communityDao.findMapInfo(communityIds);
-        int in = 12;
         for(ExcellentCoursesDTO dto2: dtos){
             List<String> oids = dto2.getCommunityIdList();
             String name = "";

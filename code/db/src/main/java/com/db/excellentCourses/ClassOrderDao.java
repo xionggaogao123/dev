@@ -264,7 +264,7 @@ public class ClassOrderDao extends BaseDao {
     //批量退课 ----退课了
     public void updateEntry(List<ObjectId> classIds){
         BasicDBObject query = new BasicDBObject(Constant.ID,new BasicDBObject(Constant.MONGO_IN,classIds));
-        BasicDBObject updateValue=new BasicDBObject(Constant.MONGO_SET,new BasicDBObject("typ",Constant.THREE));
+        BasicDBObject updateValue=new BasicDBObject(Constant.MONGO_SET,new BasicDBObject("typ",Constant.THREE).append("isr",Constant.ZERO));
         update(MongoFacroty.getAppDB(), Constant.COLLECTION_CLASS_ORDER, query,updateValue);
     }
 

@@ -259,6 +259,7 @@ public class ExcellentCoursesService {
                 }
                 if(dto1.getOwnId() !=null && dto1.getOwnId().equals("无")){
                     dto1.setOwnId(userId.toString());
+                    dto1.setSubjectName(excellentCoursesEntry.getSubjectName());
                 }
                 HourClassEntry classEntry =  dto1.buildAddEntry();
                 oldPrice = sum(oldPrice,dto1.getClassOldPrice());
@@ -1015,6 +1016,10 @@ public class ExcellentCoursesService {
             if(flage){//课程结束
                 hourClassDTO.setStatus(0);//已结束
             }
+            if(hourClassDTO.getOwnName()==null){
+                hourClassDTO.setOwnName(excellentCoursesEntry.getUserName());
+                hourClassDTO.setSubjectName(excellentCoursesEntry.getSubjectName());
+            }
             hourClassDTOs.add(hourClassDTO);
         }
         if(falge2){
@@ -1320,6 +1325,10 @@ public class ExcellentCoursesService {
                 }
 
             }
+            if(hourClassDTO.getOwnName()==null){//旧版
+                hourClassDTO.setOwnName(excellentCoursesEntry.getUserName());
+                hourClassDTO.setSubjectName(excellentCoursesEntry.getSubjectName());
+            }
             hourClassDTOs.add(hourClassDTO);
         }
         if(falge2){
@@ -1418,6 +1427,10 @@ public class ExcellentCoursesService {
             }
             if(flage){//课程结束
                 hourClassDTO.setStatus(0);//已结束
+            }
+            if(hourClassDTO.getOwnName()==null){//旧版
+                hourClassDTO.setOwnName(excellentCoursesEntry.getUserName());
+                hourClassDTO.setSubjectName(excellentCoursesEntry.getSubjectName());
             }
             hourClassDTOs.add(hourClassDTO);
         }
@@ -2326,6 +2339,57 @@ public class ExcellentCoursesService {
         map.put("list",hourClassDTOs);
         return map;
     }
+
+    public Map<String,Object> getMyNewDetails(ObjectId id){
+        Map<String,Object> map = new HashMap<String, Object>();
+        //课程相关
+        ExcellentCoursesEntry excellentCoursesEntry = excellentCoursesDao.getEntry(id);
+        ExcellentCoursesDTO dto = new ExcellentCoursesDTO(excellentCoursesEntry);
+        List<CommunityEntry> communityEntries = communityDao.findByObjectIds(excellentCoursesEntry.getCommunityIdList());//
+        String stringList = "";
+        for(CommunityEntry communityEntry:communityEntries){
+            stringList = stringList +communityEntry.getCommunityName()+ "、\n";
+        }
+        if(stringList.equals("")){
+            dto.setCommunitName("无");
+        }else{
+            String stringList2 = stringList.substring(0, stringList.length()-2);
+            dto.setCommunitName(stringList2);
+        }
+
+        long current = System.currentTimeMillis();
+        if(dto.getStatus()==2){
+            if(excellentCoursesEntry.getStartTime()> current){//未开始
+                dto.setType(1);
+            }else if(excellentCoursesEntry.getEndTime()<current){//已结束
+                dto.setType(2);
+            }else{
+                dto.setType(1);
+            }
+        }
+        map.put("dto",dto);
+        //课时相关
+        List<HourClassEntry> hourClassEntries = hourClassDao.getEntryList(id);
+        List<HourClassDTO> hourClassDTOs = new ArrayList<HourClassDTO>();
+        for(HourClassEntry entry : hourClassEntries){
+            long startTime = entry.getStartTime();
+            long endTime = entry.getStartTime() + entry.getCurrentTime();
+            HourClassDTO hourClassDTO = new HourClassDTO(entry);
+            if(excellentCoursesEntry.getStatus()==2){
+                if(current<startTime - TEACHER_TIME){//未开始
+                    hourClassDTO.setStatus(0);
+                }else if(current >endTime){//已结束
+                    hourClassDTO.setStatus(2);
+                }else{//正在进行
+                    hourClassDTO.setStatus(1);
+                }
+            }
+            hourClassDTOs.add(hourClassDTO);
+        }
+        map.put("list",hourClassDTOs);
+        return map;
+    }
+
     public Map<String,Object> getMyOwnDetails(ObjectId id,ObjectId userId){
         Map<String,Object> map = new HashMap<String, Object>();
         //课程相关

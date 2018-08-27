@@ -141,6 +141,22 @@ public class VirtualUserDao extends BaseDao{
         }
         return entries;
     }
+    
+    public List<VirtualUserEntry> getAllVirtualUsersNew(ObjectId communityId,String userName){
+        List<VirtualUserEntry> entries=new ArrayList<VirtualUserEntry>();
+        BasicDBObject query=new BasicDBObject()
+                .append("ir",Constant.ZERO)
+                .append("cid",communityId)
+                .append("unm", userName);
+        List<DBObject> dbObjectList=find(MongoFacroty.getAppDB(), Constant.COLLECTION_REPORT_CARD_VIRTUAL_USER,
+                query,Constant.FIELDS);
+        if(null!=dbObjectList&&!dbObjectList.isEmpty()){
+            for(DBObject dbObject:dbObjectList){
+                entries.add(new VirtualUserEntry(dbObject));
+            }
+        }
+        return entries;
+    }
 
     public int countAllVirtualUsers(ObjectId communityId){
         BasicDBObject query=new BasicDBObject()

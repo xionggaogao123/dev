@@ -236,7 +236,10 @@ public class ReportCardNewController extends BaseController {
                 SubjectClassEntry sc = subjectClassDao.getEntry(new ObjectId(s));
                 gs.getSubjectName().add(sc.getName());
             }
-            gs.getSubjectName().add("总分");
+            if (subS.size()>1) {
+                gs.getSubjectName().add("总分");
+            }
+            
             for (String s : subS) {
                 SubjectClassEntry sc = subjectClassDao.getEntry(new ObjectId(s));
                 gs.getSubjectNameWithDd().add(sc.getName());
@@ -249,21 +252,25 @@ public class ReportCardNewController extends BaseController {
                 }
                 
             }
-            
-            gs.getSubjectNameWithDd().add("总分");
-            if (gede.getRecordScoreType() == 1) {
-                gs.getSubjectNameWithDd().add("排名");
-                gs.getSubjectNameWithDd().add("等第");
-            } else {
-                gs.getSubjectNameWithDd().add("排名");
-                gs.getSubjectNameWithDd().add("等第");
+            if (subS.size()>1) {
+                gs.getSubjectNameWithDd().add("总分");
             }
+            if (subS.size()>1) {
+                if (gede.getRecordScoreType() == 1) {
+                    gs.getSubjectNameWithDd().add("排名");
+                    gs.getSubjectNameWithDd().add("等第");
+                } else {
+                    gs.getSubjectNameWithDd().add("排名");
+                    gs.getSubjectNameWithDd().add("等第");
+                }
+            }
+            
             
             for (int j =0;j<scoreSL.size();j++) {
                 
                 if (gede.getRecordScoreType() == 1) {
                     gs.getScoreDd().add(scoreS.get(j));
-                    gs.getScoreDd().add(rankS.get(j).equals("-1")?"无":rankS.get(j));
+                    gs.getScoreDd().add(rankS.get(j).equals("-1")?"-":rankS.get(j));
                     gs.getScoreDd().add(compareScore(scoreS.get(j),new ScoreRepresentDto(srList.get(j))));
                     gs.getScoreRep().add(compareScore(scoreS.get(j),new ScoreRepresentDto(srList.get(j))));
                 } else {
@@ -344,9 +351,11 @@ public class ReportCardNewController extends BaseController {
     public String compareScore(String score, ScoreRepresentDto s) {
         int i = 1;
         if (StringUtils.isBlank(score)) {
-            score = "0";
+            //score = "0";
+            return "-";
         } else if ("缺(免)考".equals(score)) {
-            score = "无";
+            //score = "-1";
+            return "-";
         }
         if (new BigDecimal(score).compareTo(new BigDecimal(s.getScoreTwo()))>0) {
            

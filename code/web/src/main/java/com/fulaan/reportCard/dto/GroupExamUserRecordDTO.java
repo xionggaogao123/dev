@@ -129,8 +129,8 @@ public class GroupExamUserRecordDTO {
                 examUserRecordEntry.getExamType().toString():Constant.EMPTY;
         this.subjectId=null!=examUserRecordEntry.getSubjectIds()?
                 examUserRecordEntry.getSubjectIds():Constant.EMPTY;
-        this.rankStr=null!=examUserRecordEntry.getRankStr()?
-            examUserRecordEntry.getRankStr():Constant.EMPTY;
+        /*this.rankStr=null!=examUserRecordEntry.getRankStr()?
+            examUserRecordEntry.getRankStr():Constant.EMPTY;*/
     }
 
     public String getSubjectId() {

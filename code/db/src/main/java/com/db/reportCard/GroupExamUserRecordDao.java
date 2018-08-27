@@ -400,13 +400,15 @@ public class GroupExamUserRecordDao extends BaseDao{
         update(MongoFacroty.getAppDB(), Constant.COLLECTION_REPORT_CARD_EXAM_USER_RECORD,query,updateValue);
     }
     
-    public void updateGroupExamUserRecordScoreNew(ObjectId id,
+    public void updateGroupExamUserRecordScoreNew(ObjectId uid,
+                                                  ObjectId groupExamDetailId,
                                                String scoreStr,
                                                String scoreLevelStr,
                                                String rankStr
                                                ){
         BasicDBObject query=new BasicDBObject()
-                .append(Constant.ID,id);
+                .append("uid",uid);
+        query.append("eid", groupExamDetailId);
         BasicDBObject updateValue=new BasicDBObject()
                 .append(Constant.MONGO_SET,new BasicDBObject("scs",scoreStr).append("scls",scoreLevelStr).append("rks",rankStr));
         update(MongoFacroty.getAppDB(), Constant.COLLECTION_REPORT_CARD_EXAM_USER_RECORD,query,updateValue);

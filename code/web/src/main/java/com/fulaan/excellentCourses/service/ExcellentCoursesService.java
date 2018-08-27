@@ -296,8 +296,10 @@ public class ExcellentCoursesService {
             excellentCoursesEntry.setAllClassCount(entryList.size());
             if(dto.getType()==1){
                 excellentCoursesEntry.setOldPrice(dto.getPrice());
+                excellentCoursesEntry.setCourseType(1);
             }else{
                 excellentCoursesEntry.setOldPrice(oldPrice);
+                excellentCoursesEntry.setCourseType(0);
             }
             excellentCoursesEntry.setStartTime(st);
             excellentCoursesEntry.setEndTime(et);
@@ -2340,7 +2342,7 @@ public class ExcellentCoursesService {
         return map;
     }
 
-    public Map<String,Object> getMyNewDetails(ObjectId id){
+    public Map<String,Object> getMyNewDetails(ObjectId id,ObjectId userId){
         Map<String,Object> map = new HashMap<String, Object>();
         //课程相关
         ExcellentCoursesEntry excellentCoursesEntry = excellentCoursesDao.getEntry(id);
@@ -2367,7 +2369,12 @@ public class ExcellentCoursesService {
                 dto.setType(1);
             }
         }
-        map.put("dto",dto);
+
+        boolean fl = false;
+        if(excellentCoursesEntry.getUserId().toString().equals(userId.toString())){
+            fl=true;
+        }
+        String name = excellentCoursesEntry.getUserName();
         //课时相关
         List<HourClassEntry> hourClassEntries = hourClassDao.getEntryList(id);
         List<HourClassDTO> hourClassDTOs = new ArrayList<HourClassDTO>();
@@ -2381,12 +2388,27 @@ public class ExcellentCoursesService {
                 }else if(current >endTime){//已结束
                     hourClassDTO.setStatus(2);
                 }else{//正在进行
-                    hourClassDTO.setStatus(1);
+                    if(hourClassDTO.getOwnId()==null || hourClassDTO.getOwnId().equals(userId.toString())){//是上课人
+                        hourClassDTO.setStatus(1);
+                    }else{
+                        hourClassDTO.setStatus(0);
+                    }
+
                 }
             }
-            hourClassDTOs.add(hourClassDTO);
+            if(fl){//是开课人
+                hourClassDTOs.add(hourClassDTO);
+            }else{
+                if(hourClassDTO.getOwnId()!=null && hourClassDTO.getOwnId().equals(userId.toString())){
+                    name = hourClassDTO.getOwnName();
+                    hourClassDTOs.add(hourClassDTO);
+                }
+            }
+
         }
-        map.put("list",hourClassDTOs);
+        dto.setUserName(name);
+        map.put("dto",dto);
+        map.put("list", hourClassDTOs);
         return map;
     }
 
@@ -2729,6 +2751,42 @@ public class ExcellentCoursesService {
                     +coursesRoomEntry.getPublisherpass();*/
 
             return "cclive://"+coursesRoomEntry.getUserId()+"/"+coursesRoomEntry.getRoomId()+"/"+excellentCoursesEntry.getUserName()+"/"+coursesRoomEntry.getPublisherpass();
+        }
+        return  "";
+    }
+
+    //新老师自动登陆
+    public String teacherNewLogin(ObjectId userId,ObjectId id) throws Exception{
+        //是否过期
+        HourClassEntry hourClassEntry = hourClassDao.getEntry(id);
+        if(hourClassEntry==null){
+            throw  new Exception("该课程不存在！");
+        }
+        ExcellentCoursesEntry excellentCoursesEntry = excellentCoursesDao.getEntry(hourClassEntry.getParentId());
+        if(excellentCoursesEntry==null){
+            throw  new Exception("该课程不存在！");
+        }
+        long current = System.currentTimeMillis();
+        long start = hourClassEntry.getStartTime()-TEACHER_TIME;
+        long end =  hourClassEntry.getStartTime() + hourClassEntry.getCurrentTime();
+        String userName = excellentCoursesEntry.getUserName();
+        if(hourClassEntry.getOwnName()!=null){
+            userName = hourClassEntry.getOwnName();
+        }
+        if(current>start  && current < end) {//上课中
+            CoursesRoomEntry coursesRoomEntry = coursesRoomDao.getEntry(excellentCoursesEntry.getID());
+            UserEntry userEntry = userDao.findByUserId(userId);
+            if(userEntry==null){
+                throw  new Exception("非法用户！");
+            }
+             /*https://view.csslcloud.net/api/view/lecturer?roomid=xxx&userid=xxx&publishname=xxx&publishpassword=xxx*/
+         /*   return  "https://view.csslcloud.net/api/view/lecturer?roomid="
+                    +coursesRoomEntry.getRoomId()+"&userid="
+                    +coursesRoomEntry.getUserId()+"&publishname="
+                    +excellentCoursesEntry.getUserName()+"&publishpassword="
+                    +coursesRoomEntry.getPublisherpass();*/
+
+            return "cclive://"+coursesRoomEntry.getUserId()+"/"+coursesRoomEntry.getRoomId()+"/"+userName+"/"+coursesRoomEntry.getPublisherpass();
         }
         return  "";
     }

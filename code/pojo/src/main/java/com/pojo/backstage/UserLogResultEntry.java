@@ -30,6 +30,16 @@ public class UserLogResultEntry extends BaseDBObject {
         setBaseEntry(basicDBObject);
     }
 
+    //新增roleId字段
+    public UserLogResultEntry(ObjectId userId,
+                              ObjectId roleId){
+        BasicDBObject basicDBObject=new BasicDBObject()
+                .append("uid",userId)
+                .append("roleId",roleId)
+                .append("ir", Constant.ZERO);
+        setBaseEntry(basicDBObject);
+    }
+
     public void setRole(int role){
         setSimpleValue("rl",role);
     }
@@ -44,5 +54,13 @@ public class UserLogResultEntry extends BaseDBObject {
 
     public ObjectId getUserId(){
         return getSimpleObjecIDValue("uid");
+    }
+
+    public void setRoleId(ObjectId roleId){
+        setSimpleValue("roleId",roleId);
+    }
+
+    public ObjectId getRoleId(){
+        return getSimpleObjecIDValue("roleId");
     }
 }

@@ -1102,4 +1102,9 @@ public class Constant {
     public static final String COLLECTION_MONETARY_ADDRESS = "monetary_address";
     //订单
     public static final String COLLECTION_MONETARY_ORDER = "monetary_order";
+
+    /*************************************后台权限*****************************************/
+    public static final String COLLECTION_USER_ROLE_JURISDICTION = "jxm_user_role_jurisdiction";
+    public static final String COLLECTION_ROLE_JURISDICTION_SETTING = "jxm_role_jurisdiction_setting";
+    public static final String COLLECTION_JURISDICTION_TREE = "jxm_jurisdiction_tree";
 }

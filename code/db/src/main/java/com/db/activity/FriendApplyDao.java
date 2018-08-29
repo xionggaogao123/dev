@@ -161,4 +161,36 @@ public class FriendApplyDao extends BaseDao {
     BasicDBObject query = new BasicDBObject(Constant.ID,applyId);
     remove(MongoFacroty.getAppDB(),Constant.COLLECTION_FRIEND_APPLY_NAME,query);
   }
+  
+  /**
+   * 带分页功能（查看多少人申请好友）
+   *
+   * @param objectId
+   * @return
+   */
+  public List<FriendApplyEntry> newAllFriends(ObjectId objectId,int page,int pageSize) {
+    BasicDBObject basicDBObject = new BasicDBObject("rid", objectId);//此处将uid改为rid
+    BasicDBObject timeDESC = new BasicDBObject("ad", -1);
+    List<DBObject> dbObjects = find(MongoFacroty.getAppDB(), Constant.COLLECTION_FRIEND_APPLY_NAME, basicDBObject, Constant.FIELDS, timeDESC,(page - 1) * pageSize, pageSize);
+    List<FriendApplyEntry> friendApplyEntries = new ArrayList<FriendApplyEntry>();
+    for (DBObject dbObject : dbObjects) {
+      FriendApplyEntry friendApplyEntry = new FriendApplyEntry((BasicDBObject) dbObject);
+      friendApplyEntries.add(friendApplyEntry);
+    }
+    return friendApplyEntries;
+  }
+  
+  
+  public List<FriendApplyEntry> getFriNum(ObjectId sponsorId) {
+	    BasicDBObject basicDBObject = new BasicDBObject("rid", sponsorId).append("ac", 0);
+	    List<DBObject> dbObjects = find(MongoFacroty.getAppDB(), Constant.COLLECTION_FRIEND_APPLY_NAME, basicDBObject, Constant.FIELDS);
+
+	    List<FriendApplyEntry> friendApplyEntries = new ArrayList<FriendApplyEntry>();
+	    for (DBObject dbObject : dbObjects) {
+	      FriendApplyEntry friendApplyEntry = new FriendApplyEntry((BasicDBObject) dbObject);
+	      friendApplyEntries.add(friendApplyEntry);
+	    }
+	    return friendApplyEntries;
+	  }
+  
 }

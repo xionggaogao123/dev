@@ -1,21 +1,24 @@
 package com.fulaan.friendscircle.service;
 
-import com.db.activity.ActivityTrackDao;
-import com.db.activity.FriendApplyDao;
-import com.db.activity.FriendDao;
-import com.db.user.UserDao;
-import com.pojo.activity.FriendApply;
-import com.pojo.activity.FriendApplyEntry;
-import com.pojo.user.UserEntry;
-import com.sys.constants.Constant;
-import com.sys.utils.AvatarUtils;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
+
 import org.apache.commons.lang3.StringUtils;
 import org.bson.types.ObjectId;
 import org.springframework.stereotype.Service;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
+import com.db.activity.ActivityTrackDao;
+import com.db.activity.FriendApplyDao;
+import com.db.activity.FriendApplyStatusDao;
+import com.db.activity.FriendDao;
+import com.db.user.UserDao;
+import com.pojo.activity.FriendApply;
+import com.pojo.activity.FriendApplyEntry;
+import com.pojo.activity.FriendStatusEntry;
+import com.pojo.user.UserEntry;
+import com.sys.constants.Constant;
+import com.sys.utils.AvatarUtils;
 
 /**
  * Created by ChenHao on 14-10-20.
@@ -215,4 +218,48 @@ public class FriendApplyService {
     public Map<ObjectId, FriendApplyEntry> getFriendApplyMap(ObjectId sponsorId, List<ObjectId> respondentIds) {
         return friendApplyDao.getFriendApplyMap(sponsorId, respondentIds);
     }
+    
+    /**
+     * 带分页功能（查看多少人申请好友）
+     *
+     * @param userId
+     * @return
+     */
+    public List<FriendApply> newAllFriends(String userId, int page,int pageSize) {
+        List<FriendApplyEntry> friendApplyEntries = friendApplyDao.newAllFriends(new ObjectId(userId), page,pageSize);
+        return getFriendApplyList(friendApplyEntries);
+    }
+    
+    /**
+     * 待处理申请好友的个数 
+     * @param userId
+     * @return
+     */
+    public List<FriendApply> getFriNum(ObjectId userId) {
+        List<FriendApplyEntry> friendApplyEntries = friendApplyDao.getFriNum(userId);
+        return getFriendApplyList(friendApplyEntries);
+    }
+    
+    
+    private FriendApplyStatusDao friDao = new FriendApplyStatusDao();
+    
+    public String getfriendStatus(ObjectId userId) {
+    	FriendStatusEntry fEntry = new FriendStatusEntry();
+    	fEntry = friDao.getfriendStatus(userId);
+    	if(fEntry == null || fEntry.getID().toString().equals("")){
+    		FriendStatusEntry friEntry = new FriendStatusEntry();
+    		friEntry.setUserId(userId);
+    		friEntry.setStatus("0");//默认用户未点击好友tab键
+    		friDao.insertFriStatus(friEntry);
+    		return "0";
+    	}else{
+    		return fEntry.getStatus();
+    	}
+        
+    }
+    
+    public void updFriStatus(ObjectId userId,String status) {
+    	friDao.updFriStatus(userId,status);
+    }
+
 }

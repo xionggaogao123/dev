@@ -137,4 +137,13 @@ public class ValidateInfoDao extends BaseDao {
             return null;
         }
     }
+    
+    public int countVals(ObjectId reviewId){
+        BasicDBObject query=new BasicDBObject()
+                .append("rw",reviewId)
+                .append("ir",0)
+                .append("st",0);
+        query.append("uid",new BasicDBObject(Constant.MONGO_NE,null));
+        return count(MongoFacroty.getAppDB(), Constant.COLLECTION_FORUM_COMMUNITY_VALIDATE_INFO,query);
+    }
 }

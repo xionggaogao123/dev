@@ -188,4 +188,7 @@ public class ValidateInfoService {
         return validateInfoDao.getNewsInfo(communityId,userId);
     }
 
+    public int countVals(ObjectId reviewedId){
+        return validateInfoDao.countVals(reviewedId);
+    }
 }

@@ -2,12 +2,15 @@ package com.fulaan.controller;
 
 import com.fulaan.annotation.ObjectIdType;
 import com.fulaan.base.BaseController;
+import com.fulaan.communityValidate.service.ValidateInfoService;
 import com.fulaan.friendscircle.service.FriendApplyService;
 import com.fulaan.friendscircle.service.FriendService;
 import com.fulaan.user.service.UserService;
 import com.pojo.activity.FriendApply;
 import com.sys.utils.RespObj;
+
 import io.swagger.annotations.*;
+
 import org.bson.types.ObjectId;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -34,6 +37,8 @@ public class DefaultFriendController extends BaseController {
     private FriendApplyService friendApplyService;
     @Autowired
     private UserService userService;
+    
+    private ValidateInfoService validateInfoService = new ValidateInfoService();
 
     @ApiOperation(value = "getFriends", httpMethod = "GET", produces = "application/json")
     @ApiResponses( value = {@ApiResponse(code = 200, message = "Successful — 请求已完成",response = RespObj.class)})
@@ -118,6 +123,7 @@ public class DefaultFriendController extends BaseController {
         }
         if (null == friendApplyList || friendApplyList.isEmpty()) {
             friendApplyService.insertApply(content, uid.toString(), personId);
+            friendApplyService.updFriStatus(new ObjectId(personId),"0");
         }
         return RespObj.SUCCESS("操作成功");
     }
@@ -138,6 +144,7 @@ public class DefaultFriendController extends BaseController {
         model.put("list", friendApplyList);
         return model;
     }
+    
     @ApiOperation(value = "search", httpMethod = "POST", produces = "application/json")
     @ApiResponses( value = {@ApiResponse(code = 200, message = "Successful — 请求已完成",response = RespObj.class)})
     @RequestMapping("/search")
@@ -183,4 +190,79 @@ public class DefaultFriendController extends BaseController {
         map.put("isFriend", isFriend);
         return RespObj.SUCCESS(map);
     }
+    
+    /**
+     * 群组和好友待处理个数（添加好友或者申请加入群组用户未处理的个数）
+     *
+     * @return
+     */
+    @ApiOperation(value = "群组和好友待处理个数", httpMethod = "POST", produces = "application/json")
+    @ApiResponses( value = {@ApiResponse(code = 200, message = "Successful — 请求已完成",response = Map.class)})
+    @RequestMapping("/getGrFrNum")
+    @ResponseBody
+    public Map<String, Object> getGrFrNum() {
+    	Map<String, Object> model = new HashMap<String, Object>();
+    	try {
+    		 	ObjectId uid = getUserId();
+    	        //查找好友tap键点击状态
+    	        String status = friendApplyService.getfriendStatus(uid);
+    	        //查找好友待处理个数
+    	        List<FriendApply> friendApplyList = friendApplyService.getFriNum(uid);
+    	        //查找群组申请加入待处理的个数
+    	        int count = validateInfoService.countVals(uid);
+    	        model.put("friendNum", friendApplyList.size() + "");
+    	        model.put("groupNum", count + "");
+    	        model.put("status", status);
+    	        model.put("code", "200");
+		} catch (Exception e) {
+			model.put("code", "500");
+		}
+        return model;
+    }
+    
+    /**
+     * 更新好友点击tab键状态
+     *
+     * @return
+     */
+    @ApiOperation(value = "更新好友点击tab键状态", httpMethod = "POST", produces = "application/json")
+    @ApiResponses( value = {@ApiResponse(code = 200, message = "Successful — 请求已完成",response = Map.class)})
+    @RequestMapping("/updFriStatus")
+    @ResponseBody
+    public Map updFriStatus(@RequestParam(defaultValue = "0", required = false) String status) {
+        Map<String, Object> model = new HashMap<String, Object>();
+        ObjectId uid = getUserId();
+        try {
+        	friendApplyService.updFriStatus(uid,status);
+            model.put("code", "200");
+		} catch (Exception e) {
+			model.put("code", "500");
+		}
+        return model;
+    }
+    
+    /**
+     * 获取好友申请列表(包括待处理和同意`拒绝 的)
+     *
+     * @return
+     */
+    @ApiOperation(value = "获取好友申请列表", httpMethod = "POST", produces = "application/json")
+    @ApiResponses( value = {@ApiResponse(code = 200, message = "Successful — 请求已完成",response = Map.class)})
+    @RequestMapping("/newAllFriends")
+    @ResponseBody
+    public Map<String, Object> newAllFriends(@ApiParam(name="page",required = false,value = "页码")@RequestParam(defaultValue = "1", required = false) int page,
+            @ApiParam(name="pageSize",required = false,value = "页数")@RequestParam(defaultValue = "5", required = false) int pageSize) {
+        
+    	ObjectId uid = getUserId();
+        Map<String, Object> model = new HashMap<String, Object>();
+        try {
+        	  List<FriendApply> friendApplyList = friendApplyService.newAllFriends(uid.toString(),page,pageSize);
+              model.put("list", friendApplyList);
+              model.put("code", "200");
+		} catch (Exception e) {
+			 model.put("code", "500");
+		}
+        return model;
+    }
+   
 }

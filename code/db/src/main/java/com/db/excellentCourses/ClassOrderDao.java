@@ -203,6 +203,22 @@ public class ClassOrderDao extends BaseDao {
         return entryList;
     }
 
+    public  List<ClassOrderEntry> getAllEntryIdList(ObjectId userId,ObjectId contactId){
+        List<ClassOrderEntry> entryList=new ArrayList<ClassOrderEntry>();
+        List<Integer> list = new ArrayList<Integer>();
+        list.add(1);
+        list.add(0);
+        BasicDBObject query=new BasicDBObject("uid",userId).append("isb",Constant.ONE).append("cid", contactId).append("typ", new BasicDBObject(Constant.MONGO_IN, list)).append("isr",Constant.ZERO);
+        List<DBObject> dbList=find(MongoFacroty.getAppDB(), Constant.COLLECTION_CLASS_ORDER, query,
+                Constant.FIELDS, Constant.MONGO_SORTBY_DESC);
+        if (dbList != null && !dbList.isEmpty()) {
+            for (DBObject obj : dbList) {
+                entryList.add(new ClassOrderEntry((BasicDBObject) obj));
+            }
+        }
+        return entryList;
+    }
+
     //查询首页显示列表
     public List<ClassOrderEntry> getPageList(List<ObjectId> olist,ObjectId userId,int page,int pageSize){
         List<ClassOrderEntry> entryList=new ArrayList<ClassOrderEntry>();

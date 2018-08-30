@@ -29,6 +29,7 @@ public class WebBusinessManageController extends BaseController {
     @Autowired
     private BusinessManageService businessManageService;
 
+    /**********************用户管理****************************/
     /**
      *  查询所有
      */
@@ -100,6 +101,8 @@ public class WebBusinessManageController extends BaseController {
         return JSON.toJSONString(respObj);
     }
 
+    /**********************运营数据管理****************************/
+
     /**
      * 用户名和昵称查询
      * @return
@@ -155,9 +158,9 @@ public class WebBusinessManageController extends BaseController {
     public String addRoleUser(@ApiParam(name="id",required = false,value="id") @RequestParam(value="id") String id){
         RespObj respObj=new RespObj(Constant.FAILD_CODE);
         try {
-            businessManageService.addRoleUser(getUserId(),new ObjectId(id));
+            String result = businessManageService.addRoleUser(getUserId(),new ObjectId(id));
             respObj.setCode(Constant.SUCCESS_CODE);
-            respObj.setMessage("添加成功");
+            respObj.setMessage(result);
         } catch (Exception e) {
             e.printStackTrace();
             respObj.setCode(Constant.FAILD_CODE);
@@ -259,6 +262,31 @@ public class WebBusinessManageController extends BaseController {
         return JSON.toJSONString(respObj);
     }
 
+
+    /**
+     * 查询所有的订单课程
+     * @return
+     */
+    @ApiOperation(value = "查询所有的订单课程", httpMethod = "POST", produces = "application/json")
+    @ApiResponses( value = {@ApiResponse(code = 200, message = "Successful — 请求已完成",response = String.class)})
+    @RequestMapping("/selectAllOrderCourses")
+    @ResponseBody
+    public String selectAllOrderCourses(@ApiParam(name="page",required = false,value="page") @RequestParam(value="page",defaultValue = "1") int page,
+                                   @ApiParam(name="pageSize",required = false,value="pageSize") @RequestParam(value="pageSize",defaultValue = "10") int pageSize,
+                                   @ApiParam(name="name",required = false,value="name") @RequestParam(value="name",defaultValue = "") String name,
+                                   @ApiParam(name="subjectId",required = false,value="subjectId") @RequestParam(value="subjectId",defaultValue = "") String subjectId){
+        RespObj respObj=new RespObj(Constant.FAILD_CODE);
+        try {
+            Map<String,Object> map =  businessManageService.selectAllOrderCourses(page,pageSize,name,subjectId);
+            respObj.setCode(Constant.SUCCESS_CODE);
+            respObj.setMessage(map);
+        } catch (Exception e) {
+            e.printStackTrace();
+            respObj.setCode(Constant.FAILD_CODE);
+            respObj.setErrorMessage("查询所有的订单课程失败!");
+        }
+        return JSON.toJSONString(respObj);
+    }
     /**
      * 超级详情
      * @return
@@ -281,6 +309,52 @@ public class WebBusinessManageController extends BaseController {
         return JSON.toJSONString(respObj);
     }
 
+    /**
+     * 简洁详情
+     * @return
+     */
+    @ApiOperation(value = "简洁详情", httpMethod = "POST", produces = "application/json")
+    @ApiResponses( value = {@ApiResponse(code = 200, message = "Successful — 请求已完成",response = String.class)})
+    @RequestMapping("/selectCoursesSimpleDetails")
+    @ResponseBody
+    public String selectCoursesSimpleDetails(@ApiParam(name="id",required = false,value="id") @RequestParam(value="id",defaultValue = "") String id){
+        RespObj respObj=new RespObj(Constant.FAILD_CODE);
+        try {
+            Map<String,Object> map =  businessManageService.selectCoursesSimpleDetails(new ObjectId(id));
+            respObj.setCode(Constant.SUCCESS_CODE);
+            respObj.setMessage(map);
+        } catch (Exception e) {
+            e.printStackTrace();
+            respObj.setCode(Constant.FAILD_CODE);
+            respObj.setErrorMessage("超级详情失败!");
+        }
+        return JSON.toJSONString(respObj);
+    }
+
+
+    /**
+     * 分页获取用户订单
+     * @return
+     */
+    @ApiOperation(value = "分页获取用户订单", httpMethod = "POST", produces = "application/json")
+    @ApiResponses( value = {@ApiResponse(code = 200, message = "Successful — 请求已完成",response = String.class)})
+    @RequestMapping("/selectOrderPageList")
+    @ResponseBody
+    public String selectOrderPageList(@ApiParam(name="id",required = false,value="id") @RequestParam(value="id",defaultValue = "") String id,
+                                      @ApiParam(name="page",required = false,value="page") @RequestParam(value="page",defaultValue = "1") int page,
+                                      @ApiParam(name="pageSize",required = false,value="pageSize") @RequestParam(value="pageSize",defaultValue = "10") int pageSize){
+        RespObj respObj=new RespObj(Constant.FAILD_CODE);
+        try {
+            Map<String,Object> map =  businessManageService.selectOrderPageList(new ObjectId(id), page, pageSize);
+            respObj.setCode(Constant.SUCCESS_CODE);
+            respObj.setMessage(map);
+        } catch (Exception e) {
+            e.printStackTrace();
+            respObj.setCode(Constant.FAILD_CODE);
+            respObj.setErrorMessage("分页获取用户订单失败!");
+        }
+        return JSON.toJSONString(respObj);
+    }
 
     /**
      *  用户订单详情
@@ -306,6 +380,32 @@ public class WebBusinessManageController extends BaseController {
     }
 
     /**
+     *  删除订单管理
+     * @return
+     */
+    @ApiOperation(value = "删除订单管理", httpMethod = "POST", produces = "application/json")
+    @ApiResponses( value = {@ApiResponse(code = 200, message = "Successful — 请求已完成",response = String.class)})
+    @RequestMapping("/selectOrderDeleteList")
+    @ResponseBody
+    public String selectOrderDeleteList(@ApiParam(name="id",required = false,value="id") @RequestParam(value="id",defaultValue = "") String id,
+                                        @ApiParam(name="status",required = false,value="status") @RequestParam(value="status",defaultValue = "1") int status,//1 删除 2 退出
+                                        @ApiParam(name="page",required = false,value="page") @RequestParam(value="page",defaultValue = "1") int page,
+                                        @ApiParam(name="pageSize",required = false,value="pageSize") @RequestParam(value="pageSize",defaultValue = "10") int pageSize){
+        RespObj respObj=new RespObj(Constant.FAILD_CODE);
+        try {
+            Map<String,Object> map =  businessManageService.selectOrderDeleteList(new ObjectId(id),status, page,pageSize);
+            respObj.setCode(Constant.SUCCESS_CODE);
+            respObj.setMessage(map);
+        } catch (Exception e) {
+            e.printStackTrace();
+            respObj.setCode(Constant.FAILD_CODE);
+            respObj.setErrorMessage("查询删除订单管理失败!");
+        }
+        return JSON.toJSONString(respObj);
+    }
+
+
+    /**
      *  退课查询
      * @return
      */
@@ -314,10 +414,11 @@ public class WebBusinessManageController extends BaseController {
     @RequestMapping("/selectCoursesTuiOrder")
     @ResponseBody
     public String selectCoursesTuiOrder(@ApiParam(name="id",required = false,value="id") @RequestParam(value="id",defaultValue = "") String id,
-                                            @ApiParam(name="userId",required = false,value="userId") @RequestParam(value="userId",defaultValue = "") String userId){
+                                            @ApiParam(name="userId",required = false,value="userId") @RequestParam(value="userId",defaultValue = "") String userId,
+                                            @ApiParam(name="ids",required = false,value="ids") @RequestParam(value="ids",defaultValue = "") String ids){
         RespObj respObj=new RespObj(Constant.FAILD_CODE);
         try {
-            Map<String,Object> map =  businessManageService.selectCoursesTuiOrder(new ObjectId(id), new ObjectId(userId));
+            Map<String,Object> map =  businessManageService.selectCoursesTuiOrder(new ObjectId(id), new ObjectId(userId),ids);
             respObj.setCode(Constant.SUCCESS_CODE);
             respObj.setMessage(map);
         } catch (Exception e) {
@@ -337,10 +438,11 @@ public class WebBusinessManageController extends BaseController {
     @RequestMapping("/tuiOrder")
     @ResponseBody
     public String tuiOrder(@ApiParam(name="id",required = false,value="id") @RequestParam(value="id",defaultValue = "") String id,
-                                        @ApiParam(name="userId",required = false,value="userId") @RequestParam(value="userId",defaultValue = "") String userId){
+                                        @ApiParam(name="userId",required = false,value="userId") @RequestParam(value="userId",defaultValue = "") String userId,
+                                        @ApiParam(name="ids",required = false,value="ids") @RequestParam(value="ids",defaultValue = "") String ids){
         RespObj respObj=new RespObj(Constant.FAILD_CODE);
         try {
-            businessManageService.tuiOrder(new ObjectId(id), new ObjectId(userId));
+            businessManageService.tuiOrder(new ObjectId(id), new ObjectId(userId),ids,getUserId());
             respObj.setCode(Constant.SUCCESS_CODE);
             respObj.setMessage("退课成功");
         } catch (Exception e) {
@@ -466,7 +568,7 @@ public class WebBusinessManageController extends BaseController {
                                      @ApiParam(name="userId",required = false,value="userId") @RequestParam(value="userId",defaultValue = "") String userId,
                                      @ApiParam(name="jiaId",required = false,value="jiaId") @RequestParam(value="jiaId",defaultValue = "") String jiaId){
         RespObj respObj=new RespObj(Constant.FAILD_CODE);
-        try {
+        try {//double price,String orderId,int orderType,int orderType
             businessManageService.deleteCoursesOrder(new ObjectId(id), new ObjectId(userId),jiaId,getUserId());
             respObj.setCode(Constant.SUCCESS_CODE);
             respObj.setMessage("删除成功");

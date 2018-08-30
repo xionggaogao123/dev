@@ -286,12 +286,12 @@ liveid	直播id*/
     public void getUserList(){
         Map<String,String> map = new TreeMap<String, String>();
         map.put("userid",CC_USERID);
-        map.put("roomid","374F8F14EA3D09D19C33DC5901307461");
+        map.put("roomid","E288A331245C1F7C9C33DC5901307461");
 
         try{
-            map.put("starttime",URLEncoder.encode("2018-07-16 08:00", "utf-8"));
+            map.put("starttime",URLEncoder.encode("2018-08-20 08:00", "utf-8"));
 
-            map.put("endtime",URLEncoder.encode(" ", "utf-8"));
+            map.put("endtime",URLEncoder.encode("2018-08-25 08:00", "utf-8"));
 
             String sysCode = RoomUtil.createHashedQueryString(map,CC_API_KEY);
             String str3 = URLDecoder.decode(sysCode, "utf-8");

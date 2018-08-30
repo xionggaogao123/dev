@@ -379,6 +379,23 @@ public class ExcellentCoursesDao extends BaseDao {
         return count;
     }
 
+    /**
+     * 我的课程符合搜索条件的对象个数（打包课）
+     * @return
+     */
+    public int selectMyNewCount(ObjectId userId) {
+        BasicDBObject query=new BasicDBObject().append("isr", 0);
+        BasicDBList values = new BasicDBList();
+        values.add(new BasicDBObject("uid",userId));
+        values.add(new BasicDBObject("tlt",userId));
+        query.append(Constant.MONGO_OR,values);
+        int count =
+                count(MongoFacroty.getAppDB(),
+                        Constant.COLLECTION_EXCELLENT_COURSES,
+                        query);
+        return count;
+    }
+
 
     /**
      * 符合搜索条件的对象个数

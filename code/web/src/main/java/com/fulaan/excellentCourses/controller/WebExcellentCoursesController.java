@@ -876,6 +876,40 @@ public class WebExcellentCoursesController extends BaseController {
         }
         return JSON.toJSONString(respObj);
     }
+
+    /**
+     * 新后台直接购课
+     */
+    @ApiOperation(value = "购买课节（家长）", httpMethod = "GET", produces = "application/json")
+    @ApiResponses(value = {@ApiResponse(code = 200, message = "Successful — 请求已完成",response = String.class),
+            @ApiResponse(code = 400, message = "请求中有语法问题，或不能满足请求"),
+            @ApiResponse(code = 500, message = "服务器不能完成请求")})
+    @RequestMapping("/buyNewOwnClassList")
+    @ResponseBody
+    public String buyNewOwnClassList(@ApiParam(name = "id", required = true, value = "id") @RequestParam("id") String id,
+                                  @ApiParam(name = "sonId", required = true, value = "sonId") @RequestParam("sonId") String sonId,
+                                  @ApiParam(name = "classIds", required = true, value = "classIds") @RequestParam("classIds") String classIds,
+                                  @ApiParam(name = "role", required = true, value = "role") @RequestParam("role") int role,
+                                  @ApiParam(name = "money", required = true, value = "money") @RequestParam("money") int money,
+                                  HttpServletRequest request){
+        RespObj respObj=new RespObj(Constant.FAILD_CODE);
+        try {
+            respObj.setCode(Constant.SUCCESS_CODE);
+            String ipconfig = "";
+            if (request.getHeader("x-forwarded-for") == null) {
+                ipconfig =  request.getRemoteAddr();
+            }else{
+                ipconfig =  request.getHeader("x-forwarded-for");
+            }
+            String result = excellentCoursesService.buyNewOwnClassList(new ObjectId(id), getUserId(), classIds, new ObjectId(sonId), ipconfig,role,money);
+            respObj.setMessage(result);
+        } catch (Exception e) {
+            e.printStackTrace();
+            respObj.setCode(Constant.FAILD_CODE);
+            respObj.setErrorMessage(e.getMessage());
+        }
+        return JSON.toJSONString(respObj);
+    }
     
     /**
      * 简洁查询余额（家长）

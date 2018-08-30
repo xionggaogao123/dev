@@ -83,6 +83,21 @@ public class HourClassDao extends BaseDao {
         return entryList;
     }
 
+    //查询课时
+    public List<ObjectId> getObjectIdList(ObjectId parentId){
+        List<ObjectId> entryList=new ArrayList<ObjectId>();
+        BasicDBObject query=new BasicDBObject().append("pid", parentId).append("isr", Constant.ZERO);
+        List<DBObject> dbList=find(MongoFacroty.getAppDB(), Constant.COLLECTION_HOUR_CLASS, query,
+                Constant.FIELDS, new BasicDBObject("ord",Constant.ASC));
+        if (dbList != null && !dbList.isEmpty()) {
+            for (DBObject obj : dbList) {
+                HourClassEntry hourClassEntry = new HourClassEntry((BasicDBObject) obj);
+                entryList.add(hourClassEntry.getID());
+            }
+        }
+        return entryList;
+    }
+
     public List<HourClassEntry> getEntryListByStartTime(ObjectId parentId){
         List<HourClassEntry> entryList=new ArrayList<HourClassEntry>();
         BasicDBObject query=new BasicDBObject().append("pid", parentId).append("isr", Constant.ZERO);

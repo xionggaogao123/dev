@@ -1081,6 +1081,8 @@ public class Constant {
     public static final String COLLECTION_ACCOUNT_ORDER= "excellent_new_account_order";
     //用户充值账户
     public static final String COLLECTION_ACCOUNT_FRASH= "excellent_new_account_frash";
+    //后台订单管理
+    public static final String COLLECTION_BACK_ORDER= "excellent_back_order";
     /*************************************积分商城*****************************************/
     
     //商品

@@ -54,7 +54,7 @@ public class GroupExamUserRecordStrListDTO {
         String[] rankArry = g.getRankStr().split(",");
         for (String s : scoreArry) {
             if (s.equals("-1")) {
-                this.score.add("缺(免)考");
+                this.score.add("缺");
             } else if (s.equals("-2")) {
                 this.score.add("");
             } else {

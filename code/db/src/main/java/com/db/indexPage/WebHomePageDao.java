@@ -10,6 +10,7 @@ import com.sys.constants.Constant;
 import org.bson.types.ObjectId;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.regex.Pattern;
 
 /**
  * Created by scott on 2017/11/17.
@@ -119,15 +120,19 @@ public class WebHomePageDao extends BaseDao{
                                             int type,
                                             ObjectId subjectId,
                                             ObjectId userId){
-        BasicDBObject query=new BasicDBObject();
+        BasicDBObject queryAll=new BasicDBObject();
+        BasicDBObject queryOne=new BasicDBObject();
+        BasicDBObject queryTwo=new BasicDBObject();
         BasicDBList values = new BasicDBList();
+        BasicDBList valuess = new BasicDBList();
+        BasicDBList valuesss = new BasicDBList();
         List<Integer> status=new ArrayList<Integer>();
         status.add(Constant.TWO);
         status.add(Constant.THREE);
         if (type == 2) {
-            query.append("ty",Constant.FIVE).append("uid",userId);
+            queryOne.append("ty",Constant.FIVE).append("uid",userId);
         } else if(type == 3) {
-            query.append("ty",Constant.THREE).append("st",new BasicDBObject(Constant.MONGO_IN,status)).append("rid",new BasicDBObject(Constant.MONGO_IN,receiveIds));
+            queryOne.append("ty",Constant.THREE).append("st",new BasicDBObject(Constant.MONGO_IN,status)).append("rid",new BasicDBObject(Constant.MONGO_IN,receiveIds));
         } else {
             BasicDBObject query1=new BasicDBObject("ty",Constant.FIVE)
                 .append("uid",userId);
@@ -137,18 +142,30 @@ public class WebHomePageDao extends BaseDao{
                     /*.append("uid",new BasicDBObject(Constant.MONGO_NE,userId));*/
             query2.append("rid",new BasicDBObject(Constant.MONGO_IN,receiveIds));
             values.add(query2);
-            query.put(Constant.MONGO_OR, values);
+            queryOne.put(Constant.MONGO_OR, values);
         }
         
 
         if(subjectId!=null){
-            query.append("sid",subjectId);
+            BasicDBObject query1=new BasicDBObject("sid",subjectId);
+            Pattern pattern = Pattern.compile("^.*"+subjectId.toString()+".*$", Pattern.CASE_INSENSITIVE);
+            BasicDBObject query2=new BasicDBObject();
+            query2.put("sids", pattern);
+            valuess.add(query1);
+            valuess.add(query2);
+            queryTwo.put(Constant.MONGO_OR, valuess);
         }
+        /*if(subjectId!=null){
+            query.append("sid", subjectId);
+        }*/
+        valuesss.add(queryOne);
+        valuesss.add(queryTwo);
+        queryAll.put(Constant.MONGO_AND, valuesss);
         if(communityId!=null){
-            query.append("cid",communityId);
+            queryAll.append("cid",communityId);
         }
-        query.append("ir", Constant.ZERO);
-        return query;
+        queryAll.append("ir", Constant.ZERO);
+        return queryAll;
     }
 
 

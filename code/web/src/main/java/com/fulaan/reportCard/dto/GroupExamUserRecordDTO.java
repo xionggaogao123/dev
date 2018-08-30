@@ -65,7 +65,7 @@ public class GroupExamUserRecordDTO {
         StringBuffer bbb = new StringBuffer();
         for(String s : g.getScore()) {
             
-            if (("缺(免)考").equals(s)) {
+            if (("缺(免)考").equals(s) || ("缺").equals(s)) {
                 s = "-1";
             } else if (StringUtils.isEmpty(s)) {
                 s = "-2";

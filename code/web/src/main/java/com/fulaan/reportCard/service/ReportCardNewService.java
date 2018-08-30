@@ -1191,11 +1191,11 @@ public class ReportCardNewService {
                 String[] sa = dto.getSubjectIds().split(",");
                 for (int i = 0;i < sa.length; i++) {
                     SubjectClassEntry sc = subjectClassDao.getEntry(new ObjectId(sa[i]));
-                    scoreRepresentDao.saveScoreRepresent(new ScoreRepresentEntry(groupExamDetailId, new ObjectId(sa[i]), sc.getName(), "100", "100", "90", "89", "80", "79", "70", "69", "0",i, Constant.ONE));
+                    scoreRepresentDao.saveScoreRepresent(new ScoreRepresentEntry(groupExamDetailId, new ObjectId(sa[i]), sc.getName(), "100", "100", "90", "89", "80", "79", "60", "59", "0",i, Constant.ONE));
                 }
                 int i = sa.length;
                 if (sa.length>1) {
-                    scoreRepresentDao.saveScoreRepresent(new ScoreRepresentEntry(groupExamDetailId,  "总分", multiply(100, i), multiply(100, i), multiply(90, i), multiplyJy(90, i), multiply(80, i), multiplyJy(80, i), multiply(70, i), multiply(70, i), "0", 50,Constant.ONE));
+                    scoreRepresentDao.saveScoreRepresent(new ScoreRepresentEntry(groupExamDetailId,  "总分", multiply(100, i), multiply(100, i), multiply(90, i), multiplyJy(90, i), multiply(80, i), multiplyJy(80, i), multiply(60, i), multiplyJy(60, i), "0", 50,Constant.ONE));
                 }
                 
             }
@@ -1289,7 +1289,7 @@ public class ReportCardNewService {
                         if (l.size() != list.size()) {
                             scoreRepresentDao.updateScoreRepresentWithgidoM(new ObjectId(id));
                             int i = l.size();
-                            scoreRepresentDao.saveScoreRepresent(new ScoreRepresentEntry(new ObjectId(id),  "总分", multiply(100, i), multiply(100, i), multiply(90, i), multiplyJy(90, i), multiply(80, i), multiplyJy(80, i), multiply(70, i), multiply(70, i), "0", 50,Constant.ONE));
+                            scoreRepresentDao.saveScoreRepresent(new ScoreRepresentEntry(new ObjectId(id),  "总分", multiply(100, i), multiply(100, i), multiply(90, i), multiplyJy(90, i), multiply(80, i), multiplyJy(80, i), multiply(60, i), multiplyJy(60, i), "0", 50,Constant.ONE));
                         }
                     }
                 }
@@ -1399,6 +1399,7 @@ public class ReportCardNewService {
             //添加红点
             //发送状态下
             if(status==2 && isSend!=1){
+                groupExamDetailDao.updateGroupExamDetailEntrySubTime(new ObjectId(groupExamDetailId), System.currentTimeMillis());
                 redDotService.addThirdList(detailEntry.getID(),detailEntry.getCommunityId(), detailEntry.getUserId(), ApplyTypeEn.repordcard.getType());
                 PictureRunNable.addTongzhi(detailEntry.getCommunityId().toString(), detailEntry.getUserId().toString(), 6);
                 //成绩单发送记录
@@ -2652,7 +2653,7 @@ public class ReportCardNewService {
         }
     }
 
-    public double getValue(HSSFCell cell) {
+    public double getValue(HSSFCell cell) throws Exception{
         double cellValue = -1;
         if (cell != null) {
             String vvv = getStringCellValue(cell);
@@ -2673,7 +2674,7 @@ public class ReportCardNewService {
     /**
      * A+:100 A:99 A-:98 B+:97 B:96 B-:95 C+:94 C:93 C-:92 D+:91 D:90 D-:89
      */
-    public double getValueByPrint(String levelScore) {
+    public double getValueByPrint(String levelScore) throws Exception{
         if (StringUtils.isNotBlank(levelScore)) {
             levelScore = levelScore.trim();
         }
@@ -2711,7 +2712,7 @@ public class ReportCardNewService {
         return cellValue;
     }
 
-    private String getStringCellValue(HSSFCell cell) {
+    private String getStringCellValue(HSSFCell cell) throws Exception{
         if (cell == null) return Constant.EMPTY;
         String strCell;
         switch (cell.getCellType()) {

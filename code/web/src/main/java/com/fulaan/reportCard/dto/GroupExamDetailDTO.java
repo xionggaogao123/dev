@@ -88,7 +88,7 @@ public class GroupExamDetailDTO {
     private int lrType;
     //是否显示排名  0家长可见1家长不可见
     private int pmType;
-    
+    //成绩类型：4种
     private int fsShowType;
 
     public GroupExamDetailDTO(){

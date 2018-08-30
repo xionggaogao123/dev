@@ -141,6 +141,19 @@ public class GroupExamDetailDao extends BaseDao{
     }
     
     /**
+     * 更新状态
+     * @param id
+     * @param status
+     */
+    public void updateGroupExamDetailEntrySubTime(ObjectId id,long v){
+        BasicDBObject query=new BasicDBObject()
+                .append(Constant.ID,id);
+        BasicDBObject updateValue=new BasicDBObject()
+                .append(Constant.MONGO_SET,new BasicDBObject("ti",v));
+        update(MongoFacroty.getAppDB(), Constant.COLLECTION_REPORT_CARD_GROUP_EXAM_DETAIL,query,updateValue);
+    }
+    
+    /**
      * 更新展示类型
      * @param id
      * @param status

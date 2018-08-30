@@ -200,13 +200,14 @@ public class ReportCardNewController extends BaseController {
     @ResponseBody
     public RespObj searchRecordStudentScoresStr(String examGroupDetailId,
                                                 String userRecordId,
+                                                String teaType,
                                              @RequestParam(required = false,defaultValue = "-1")int score,
                                              @RequestParam(required = false,defaultValue = "-1")int scoreLevel,
                                              @RequestParam(required = false,defaultValue = "1")int type){
         RespObj respObj=new RespObj(Constant.FAILD_CODE);
         try{
             List<GroupExamUserRecordDTO> examScoreDTOs=reportCardService.searchRecordStudentScores(new ObjectId(examGroupDetailId));
-            respObj.setMessage(this.trans(examScoreDTOs, userRecordId));
+            respObj.setMessage(this.trans(examScoreDTOs, userRecordId,teaType));
             respObj.setCode(Constant.SUCCESS_CODE);
         }catch (Exception e){
             respObj.setErrorMessage(e.getMessage());
@@ -222,7 +223,7 @@ public class ReportCardNewController extends BaseController {
      * @param list
      * @return
      */
-    public List<GroupExamUserRecordStrListDTO> trans(List<GroupExamUserRecordDTO> list, String userRecordId) {
+    public List<GroupExamUserRecordStrListDTO> trans(List<GroupExamUserRecordDTO> list, String userRecordId, String teaType) {
         List<GroupExamUserRecordStrListDTO> l = new ArrayList<GroupExamUserRecordStrListDTO>();
         for (GroupExamUserRecordDTO g : list) {
             GroupExamUserRecordStrListDTO gs = new GroupExamUserRecordStrListDTO(g);
@@ -269,13 +270,35 @@ public class ReportCardNewController extends BaseController {
             for (int j =0;j<scoreSL.size();j++) {
                 
                 if (gede.getRecordScoreType() == 1) {
-                    gs.getScoreDd().add(scoreS.get(j));
-                    gs.getScoreDd().add(rankS.get(j).equals("-1")?"-":rankS.get(j));
-                    gs.getScoreDd().add(compareScore(scoreS.get(j),new ScoreRepresentDto(srList.get(j))));
+                    if ("1".equals(teaType)) {
+                        if (gede.getFsShowType() == 0) {
+                            gs.getScoreDd().add(scoreS.get(j));
+                            gs.getScoreDd().add("-");
+                            gs.getScoreDd().add(compareScore(scoreS.get(j),new ScoreRepresentDto(srList.get(j))));
+                        } else if (gede.getFsShowType() == 1) {
+                            gs.getScoreDd().add(scoreS.get(j));
+                            gs.getScoreDd().add(rankS.get(j).equals("-1")?"-":rankS.get(j));
+                            gs.getScoreDd().add("-");
+                        } else if (gede.getFsShowType() == 2) {
+                            gs.getScoreDd().add(scoreS.get(j));
+                            gs.getScoreDd().add("-");
+                            gs.getScoreDd().add("-");
+                        } else {
+                            gs.getScoreDd().add("-");
+                            gs.getScoreDd().add("-");
+                            gs.getScoreDd().add(compareScore(scoreS.get(j),new ScoreRepresentDto(srList.get(j))));
+                        }
+                    } else {
+                        gs.getScoreDd().add(scoreS.get(j));
+                        gs.getScoreDd().add(rankS.get(j).equals("-1")?"-":rankS.get(j));
+                        gs.getScoreDd().add(compareScore(scoreS.get(j),new ScoreRepresentDto(srList.get(j))));
+                    }
+                    
                     gs.getScoreRep().add(compareScore(scoreS.get(j),new ScoreRepresentDto(srList.get(j))));
                 } else {
                     gs.getScoreDd().add(compareScoreLevel(scoreSL.get(j)));
-                    gs.getScoreDd().add(rankS.get(j));
+                    //gs.getScoreDd().add(rankS.get(j));
+                    gs.getScoreDd().add("-");
                     gs.getScoreDd().add("-");
                     gs.getScoreRep().add("-");
                 }
@@ -353,7 +376,7 @@ public class ReportCardNewController extends BaseController {
         if (StringUtils.isBlank(score)) {
             //score = "0";
             return "-";
-        } else if ("缺(免)考".equals(score)) {
+        } else if ("缺".equals(score)) {
             //score = "-1";
             return "-";
         }

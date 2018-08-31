@@ -2587,6 +2587,144 @@ public class ReportCardNewService {
             HSSFUtils.exportExcel(userAgent,response, wb, fileName);
         }
     }
+    
+    
+    public void exportStuNew(HttpServletRequest request,ObjectId examGroupDetailId, HttpServletResponse response) {
+        List<GroupExamUserRecordDTO> recordDTOs = searchRecordStudentScores(examGroupDetailId);
+        GroupExamDetailEntry detailEntry = groupExamDetailDao.getGroupExamDetailEntry(examGroupDetailId);
+        if (null != detailEntry) {
+            String sheetName = detailEntry.getExamName() + "录入模板";
+            HSSFWorkbook wb = new HSSFWorkbook();
+            HSSFSheet sheet = wb.createSheet(sheetName);
+            sheet.addMergedRegion(new CellRangeAddress(0, 0, 0, 5));
+            HSSFRow rowZero = sheet.createRow(0);
+            HSSFCell cellZero = rowZero.createCell(0);
+            cellZero.setCellValue("缺（免）考：如考生成绩不计入总分，则填写“缺”；");
+
+            HSSFRow row = sheet.createRow(1);
+
+            HSSFCell cell = row.createCell(0);
+            cell.setCellValue("用户姓名");
+            for (GroupExamUserRecordDTO g : recordDTOs) {
+                String[] ss = g.getSubjectId().split(",");
+                for (int i =0;i<ss.length;i++) {
+                    SubjectClassEntry sc = subjectClassDao.getEntry(new ObjectId(ss[i]));
+                    cell = row.createCell(1+(i*2));
+                    cell.setCellValue(sc.getName()+"等第分值");
+
+                    cell = row.createCell(2+(i*2));
+                    cell.setCellValue(sc.getName()+"考试分值");
+                }
+                
+            }
+            String[] sss = recordDTOs.get(0).getSubjectId().split(",");
+            if (sss.length>1) {
+                cell = row.createCell(1+((sss.length)*2));
+                cell.setCellValue("总分等第分值");
+
+                cell = row.createCell(2+((sss.length)*2));
+                cell.setCellValue("总分考试分值");
+            }
+          
+            int rowLine = 2;
+
+            HSSFRow rowItem;
+            HSSFCell cellItem;
+            for (GroupExamUserRecordDTO recordDTO : recordDTOs) {
+                
+                rowItem = sheet.createRow(rowLine);
+                cellItem = rowItem.createCell(0);
+                cellItem.setCellValue(recordDTO.getUserName());
+                String[] scoreStrArry = recordDTO.getScoreStr().split(",");
+                String[] scoreLevelStrArry = recordDTO.getScoreLevelStr().split(",");
+                for (GroupExamUserRecordDTO g : recordDTOs) {
+                    String[] ss = g.getSubjectId().split(",");
+                    for (int i =0;i<ss.length;i++) {
+                        if (detailEntry.getRecordScoreType() == Constant.ONE) {
+                            cellItem = rowItem.createCell(1+(i*2));
+                            cellItem.setCellValue(-1);
+
+                            cellItem = rowItem.createCell(2+(i*2));
+                            cellItem.setCellValue(compareScore(scoreStrArry[i]));
+                        } else {
+                            cellItem = rowItem.createCell(1+(i*2));
+                            cellItem.setCellValue(compareScoreLevel(Integer.valueOf(scoreLevelStrArry[i])));
+
+                            cellItem = rowItem.createCell(2+(i*2));
+                            cellItem.setCellValue(-1);
+                        }
+                    }
+                    if (ss.length>1) {
+                        if (detailEntry.getRecordScoreType() == Constant.ONE) {
+                            cellItem = rowItem.createCell(1+((ss.length)*2));
+                            cellItem.setCellValue(-1);
+
+                            cellItem = rowItem.createCell(2+((ss.length)*2));
+                            cellItem.setCellValue(compareScore(scoreStrArry[scoreStrArry.length-1]));
+                        } else {
+                            cellItem = rowItem.createCell(1+((ss.length)*2));
+                            cellItem.setCellValue(compareScoreLevel(Integer.valueOf(scoreLevelStrArry[scoreLevelStrArry.length-1])));
+
+                            cellItem = rowItem.createCell(2+((ss.length)*2));
+                            cellItem.setCellValue(-1);
+                        }
+                        
+                    }
+                }
+                
+                rowLine++;
+            }
+
+            String fileName = sheetName + ".xls";
+            String userAgent = request.getHeader("USER-AGENT");
+            HSSFUtils.exportExcel(userAgent,response, wb, fileName);
+        }
+    }
+    
+    public String compareScoreLevel(Integer score) {
+        if (score == 100) {
+            return "A+";
+        } else if (score == 99) {
+            return "A";
+        } else if (score == 98) {
+            return "A-";
+        } else if (score == 97) {
+            return "B+";
+        } else if (score == 96) {
+            return "B";
+        } else if (score == 95) {
+            return "B-";
+        } else if (score == 94) {
+            return "C+";
+        } else if (score == 93) {
+            return "C";
+        } else if (score == 92) {
+            return "C-";
+        } else if (score == 91) {
+            return "D+";
+        } else if (score == 90) {
+            return "D";
+        } else if (score == 89) {
+            return "D-";
+        } else if (score == -1) {
+            return "缺";
+        } else  {
+            return "未填写";
+        } 
+    }
+    
+    public String compareScore(String score) {
+        if ("-2".equals(score)) {
+            return "";
+        } else if ("-1".equals(score)) {
+  
+            return "缺";
+        } else {
+            return score;
+        }
+        
+       
+    }
 
 
     public void importTemplate(String groupExamId,InputStream inputStream) throws Exception {

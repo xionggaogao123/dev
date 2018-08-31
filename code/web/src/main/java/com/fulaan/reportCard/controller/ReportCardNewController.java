@@ -487,6 +487,24 @@ public class ReportCardNewController extends BaseController {
    
    /**
    *
+   * @param examGroupDetailId
+   * @param response
+   */
+  @ApiOperation(value = "导出模板", httpMethod = "GET", produces = "application/json")
+  @RequestMapping("/exportStuNew/{examGroupDetailId}")
+  @ResponseBody
+  public void exportStuNew(@PathVariable @ObjectIdType ObjectId examGroupDetailId,
+                             HttpServletResponse response,
+                             HttpServletRequest request) {
+      try {
+          reportCardService.exportStuNew(request,examGroupDetailId, response);
+      } catch (Exception e) {
+          e.printStackTrace();
+      }
+  }
+   
+   /**
+   *
    * @param request
    * @return
    * @throws Exception

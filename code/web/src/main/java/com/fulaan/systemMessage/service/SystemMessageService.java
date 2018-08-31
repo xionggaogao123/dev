@@ -729,6 +729,50 @@ public class SystemMessageService extends BaseService {
     }
 
     /**
+     * 发送登陆提醒（同步消息提醒）
+     */
+    public void sendLoginNotice(ObjectId userId,int type,String title,String name){
+        String description = "";
+        if(type==1){//进去
+            description  = "您的小孩"+name+"已经进入直播课堂,"+title+"正在上课!";
+        }else{
+            description  = "直播课程:"+title+"已开始，您的孩子"+name+"还没进入课堂!";
+        }
+        //添加系统信息
+        SystemMessageDTO dto = new SystemMessageDTO();
+        dto.setType(4);
+        dto.setAvatar("");
+        dto.setName(name);
+        dto.setFileUrl("");
+        dto.setSourceId("");
+        dto.setContent(description);
+        dto.setFileType(1);
+        dto.setSourceName("");
+        dto.setSourceType(0);
+        dto.setTitle("");
+        String id = systemMessageDao.addEntry(dto.buildAddEntry());
+
+        //添加首页记录
+        IndexPageDTO dto1 = new IndexPageDTO();
+        dto1.setType(CommunityType.system.getType());
+        dto1.setUserId(userId.toString());
+        dto1.setCommunityId(userId.toString());
+        dto1.setContactId(id.toString());
+        IndexPageEntry entry = dto1.buildAddEntry();
+        indexPageDao.addEntry(entry);
+        //sendTestMessage(uid.toString());
+
+        JPushUtils jPushUtils=new JPushUtils();
+        Set<String> userIds = new HashSet<String>();
+        userIds.add(userId.toString());
+        Audience audience = Audience.alias(new ArrayList<String>(userIds));
+        jPushUtils.pushRestIosbusywork(audience,"直播课堂通知", new HashMap<String, String>());
+        jPushUtils.pushRestAndroidParentBusyWork(audience, description, "", "直播课堂通知", new HashMap<String, String>());
+
+    }
+
+
+    /**
      * 发送上课提醒（同步消息提醒）
      */
     public static void sendStaticNotice(ObjectId userId,int type,String title,String name){

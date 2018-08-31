@@ -27,6 +27,7 @@ public class MailMessageService {
     private UserService userService;
 
     private static final String mailName = "info@jiaxiaomei.com";
+    private static final String mailName2 = "ayumi.zhou@fulaan.com";
 
     private static final Logger logger =Logger.getLogger(MailMessageService.class);
 
@@ -47,8 +48,10 @@ public class MailMessageService {
             public void run() {
                 String title = "来自"+userNmas+"的一封建议信";
                 SendEmailUtil mailUtils = new SendEmailUtil(mailName,title,message,"");
+                //SendEmailUtil mailUtils2 = new SendEmailUtil(mailName2,title,message,"");
                 try{
                     mailUtils.send();
+                  //  mailUtils2.send();
                 }catch (Exception e){
                     logger.error("error",e);
                 }

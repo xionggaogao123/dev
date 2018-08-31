@@ -645,6 +645,8 @@ public class UserService extends BaseService {
                     validate.setMessage("家长或者老师不能登录学生端!");
                     return validate;
                 }
+                //发送登陆消息
+
             }else{
                 validate.setMessage("老用户不能登录学生端!");
                 return validate;

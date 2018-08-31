@@ -654,8 +654,8 @@ public class IndexPageService {
             superTopicDTO.setTimeStr("");
             superTopicDTO.setImageUrl(new ArrayList<Attachement>());
             superTopicDTO.setLogo("");
-            superTopicDTO.setTitle("");
-            superTopicDTO.setReadName("");
+            superTopicDTO.setTitle(appNoticeEntry.getTitle());
+            superTopicDTO.setReadName(appNoticeEntry.getSubject());
             superTopicDTO.setUrl("");
             superTopicDTO.setVoteType(1);
             superTopicDTOs.add(superTopicDTO);
@@ -1486,7 +1486,7 @@ public class IndexPageService {
                 superTopicDTOs=getHotList(2);
             }
             if(superTopicDTOs.size()==0){
-
+                superTopicDTOs=getEducationList(2);
             }
 
         }else{
@@ -1495,7 +1495,7 @@ public class IndexPageService {
                 superTopicDTOs=getHotList(1);
             }
             if(superTopicDTOs.size()==0){
-
+                superTopicDTOs=getEducationList(1);
             }
         }
         List<IndexPageEntry> entrys = indexPageDao.getPageList(dlist,userId, page, pageSize);

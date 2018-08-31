@@ -102,6 +102,8 @@ public class SystemMessageService extends BaseService {
     @Autowired
     private UserService userService;
 
+    private NewVersionBindRelationDao newVersionBindRelationDao = new NewVersionBindRelationDao();
+
     //保存系统消息
     public  void  addEntry(ObjectId userId,AppCommentDTO dto){
         String coStr = dto.getComList();
@@ -731,16 +733,17 @@ public class SystemMessageService extends BaseService {
     /**
      * 发送登陆提醒（同步消息提醒）
      */
-    public void sendLoginNotice(ObjectId userId,int type,String title,String name){
-        String description = "";
-        if(type==1){//进去
-            description  = "您的小孩"+name+"已经进入直播课堂,"+title+"正在上课!";
-        }else{
-            description  = "直播课程:"+title+"已开始，您的孩子"+name+"还没进入课堂!";
+    public void sendLoginNotice(ObjectId sonId,String name){
+        NewVersionBindRelationEntry newVersionBindRelationEntry = newVersionBindRelationDao.getBindEntry(sonId);
+        if(newVersionBindRelationEntry==null){
+            return;
         }
+        ObjectId userId = newVersionBindRelationEntry.getMainUserId();
+        String description = "";
+        description  = "您的小孩"+name+"已经登录了!";
         //添加系统信息
         SystemMessageDTO dto = new SystemMessageDTO();
-        dto.setType(4);
+        dto.setType(5);
         dto.setAvatar("");
         dto.setName(name);
         dto.setFileUrl("");
@@ -760,14 +763,6 @@ public class SystemMessageService extends BaseService {
         dto1.setContactId(id.toString());
         IndexPageEntry entry = dto1.buildAddEntry();
         indexPageDao.addEntry(entry);
-        //sendTestMessage(uid.toString());
-
-        JPushUtils jPushUtils=new JPushUtils();
-        Set<String> userIds = new HashSet<String>();
-        userIds.add(userId.toString());
-        Audience audience = Audience.alias(new ArrayList<String>(userIds));
-        jPushUtils.pushRestIosbusywork(audience,"直播课堂通知", new HashMap<String, String>());
-        jPushUtils.pushRestAndroidParentBusyWork(audience, description, "", "直播课堂通知", new HashMap<String, String>());
 
     }
 

@@ -29,6 +29,7 @@ import com.fulaan.picturetext.runnable.PictureRunNable;
 import com.fulaan.pojo.FLoginLog;
 import com.fulaan.pojo.Validate;
 import com.fulaan.school.SchoolService;
+import com.fulaan.systemMessage.service.SystemMessageService;
 import com.fulaan.user.dao.ThirdLoginDao;
 import com.fulaan.user.model.ThirdLoginEntry;
 import com.fulaan.user.model.ThirdType;
@@ -132,6 +133,8 @@ public class UserService extends BaseService {
     private UserMobileDao userMobileDao = new UserMobileDao();
 
     private TeacherApproveDao teacherApproveDao = new TeacherApproveDao();
+
+    private SystemMessageService systemMessageService = new SystemMessageService();
 
     /**
      * 判断是否禁止访问
@@ -646,7 +649,8 @@ public class UserService extends BaseService {
                     return validate;
                 }
                 //发送登陆消息
-
+                String name = StringUtils.isNotBlank(e.getNickName())?e.getNickName():e.getUserName();
+                systemMessageService.sendLoginNotice(e.getID(),name);
             }else{
                 validate.setMessage("老用户不能登录学生端!");
                 return validate;

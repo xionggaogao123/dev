@@ -23,6 +23,7 @@ import com.fulaan.jiaschool.dto.HomeSchoolDTO;
 import com.fulaan.picturetext.runnable.PictureRunNable;
 import com.fulaan.pojo.User;
 import com.fulaan.user.service.UserService;
+import com.fulaan.utils.HSSFUtils;
 import com.mongodb.DBObject;
 import com.pojo.backstage.LogMessageType;
 import com.pojo.backstage.PushMessageEntry;
@@ -38,10 +39,17 @@ import com.sys.constants.Constant;
 import com.sys.utils.AvatarUtils;
 import com.sys.utils.DateTimeUtils;
 import org.apache.commons.lang.StringUtils;
+import org.apache.poi.hssf.usermodel.HSSFCell;
+import org.apache.poi.hssf.usermodel.HSSFRow;
+import org.apache.poi.hssf.usermodel.HSSFSheet;
+import org.apache.poi.hssf.usermodel.HSSFWorkbook;
+import org.apache.poi.ss.util.CellRangeAddress;
 import org.bson.types.ObjectId;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 import java.math.BigDecimal;
 import java.util.*;
 
@@ -500,6 +508,296 @@ public class BusinessManageService {
         return map;
     }
 
+    /**
+     * 批量导出数据
+     * @param id
+     * @return
+     */
+    public void exportTemplate(HttpServletRequest request, HttpServletResponse response,ObjectId id) {
+        ExcellentCoursesEntry excellentCoursesEntry = excellentCoursesDao.getEntry(id);
+        if(excellentCoursesEntry==null){
+            return;
+        }
+        //用户订单查询
+        List<ClassOrderEntry> classOrderEntries = classOrderDao.getCoursesUserList(id);
+        Set<ObjectId> userIds = new HashSet<ObjectId>();
+        List<ObjectId> ids = new ArrayList<ObjectId>();
+        List<ClassOrderEntry> entries = new ArrayList<ClassOrderEntry>();
+        //自主分页
+        for(ClassOrderEntry classOrderEntry:classOrderEntries){
+            ids.add(classOrderEntry.getUserId());
+            userIds.add(classOrderEntry.getUserId());
+            entries.add(classOrderEntry);
+        }
+        int count = userIds.size();
+        List<UserEntry> userEntries = userDao.getUserEntryList(ids, Constant.FIELDS);
+        Map<ObjectId,Integer> roleMap = newVersionUserRoleDao.getUserRoleMap(ids);
+        String order2 = "";
+
+        String sheetName = "课程《"+excellentCoursesEntry.getTitle()+"》订单列表";
+        HSSFWorkbook wb = new HSSFWorkbook();
+        HSSFSheet sheet = wb.createSheet(sheetName);
+        sheet.addMergedRegion(new CellRangeAddress(0, 0, 0, 5));
+        HSSFRow rowZero = sheet.createRow(0);
+        HSSFCell cellZero = rowZero.createCell(0);
+        cellZero.setCellValue("共计"+count+"份订单");
+
+        HSSFRow row = sheet.createRow(1);
+
+        HSSFCell cell = row.createCell(0);
+        cell.setCellValue("序号");
+
+        cell = row.createCell(1);
+        cell.setCellValue("姓名");
+
+        cell = row.createCell(2);
+        cell.setCellValue("身份");
+
+        cell = row.createCell(3);
+        cell.setCellValue("家校美ID");
+
+        cell = row.createCell(4);
+        cell.setCellValue("课节");
+
+        cell = row.createCell(5);
+        cell.setCellValue("价格");
+
+        cell = row.createCell(6);
+        cell.setCellValue("订单号");
+
+        cell = row.createCell(7);
+        cell.setCellValue("订单来源");
+
+        cell = row.createCell(8);
+        cell.setCellValue("购买时间");
+
+
+        int rowLine = 2;
+
+        HSSFRow rowItem;
+        HSSFCell cellItem;
+        int index = 0;
+        for(UserEntry userEntry:userEntries){
+            index++;
+            rowItem = sheet.createRow(rowLine);
+
+            cellItem = rowItem.createCell(0);
+            cellItem.setCellValue(index+"");
+
+            double score = 0.00;
+            int number = 0;
+            long createTime= 0l;
+            int role = 0;
+            int function = 3;
+            int money = 1;
+            for(ClassOrderEntry classOrderEntry:entries){
+                if(userEntry.getID().equals(classOrderEntry.getUserId())){
+                    score = sum(score,classOrderEntry.getPrice());
+                    number++;
+                    if(number==1){
+                        createTime = classOrderEntry.getCreateTime();
+                        order2 =classOrderEntry.getOrderId();
+                        role = classOrderEntry.getRole();
+                        function = classOrderEntry.getFunction();
+                        money = classOrderEntry.getMoney();
+                    }
+                }
+            }
+            String ctm = "";
+            if(createTime!=0l){
+                ctm = DateTimeUtils.getLongToStrTimeTwo(createTime);
+            }
+            String name = StringUtils.isNotEmpty(userEntry.getNickName())?userEntry.getNickName():userEntry.getUserName();
+
+            cellItem = rowItem.createCell(1);
+            cellItem.setCellValue(name);
+
+            cellItem = rowItem.createCell(2);
+            if(role==0) {
+                Integer i = roleMap.get(userEntry.getID());
+                if(i!=null){
+                    role=i;
+                }else{
+                    role=0;
+                }
+            }
+            if(role==0 || role==7){
+                cellItem.setCellValue("家长");
+            }else if(role==3 || role==6){
+                cellItem.setCellValue("老师");
+            }else if(role==8){
+                cellItem.setCellValue("助教");
+            }else if(role==9){
+                cellItem.setCellValue("内务");
+            }else{
+                cellItem.setCellValue("学生");
+            }
+
+            cellItem = rowItem.createCell(3);
+            cellItem.setCellValue(userEntry.getGenerateUserCode());
+
+            cellItem = rowItem.createCell(4);
+            cellItem.setCellValue(number+"");
+
+            cellItem = rowItem.createCell(5);
+            cellItem.setCellValue("¥ "+score);
+
+            cellItem = rowItem.createCell(6);
+            if(order2.equals("")){
+                if(money==1){
+                    cellItem.setCellValue("后台付费");
+                }else{
+                    cellItem.setCellValue("后台免费");
+                }
+            }else{
+                cellItem.setCellValue(order2);
+            }
+
+            cellItem = rowItem.createCell(7);
+            if(function==1){
+                cellItem.setCellValue("支付宝");
+            }else if(function==2){
+                cellItem.setCellValue("微信");
+            }else{
+                cellItem.setCellValue("后台添加");
+            }
+
+            cellItem = rowItem.createCell(8);
+            cellItem.setCellValue(ctm);
+            rowLine++;
+        }
+        String fileName = sheetName + ".xls";
+        String userAgent = request.getHeader("USER-AGENT");
+        HSSFUtils.exportExcel(userAgent, response, wb, fileName);
+    }
+
+    /**
+     * 批量导出数据
+     * @param id
+     * @return
+     */
+    public void exportTemplate2(HttpServletRequest request, HttpServletResponse response,ObjectId id,int status) {
+        ExcellentCoursesEntry excellentCoursesEntry = excellentCoursesDao.getEntry(id);
+        int count =backOrderDao.countTuiOrderList(id,status);
+        List<BackOrderEntry> entries = backOrderDao.getTuiOrderList(id,status, 1, count);
+
+        List<ObjectId> objectIdList = new ArrayList<ObjectId>();
+        for(BackOrderEntry backOrderEntry : entries){
+            objectIdList.add(backOrderEntry.getUserId());
+        }
+
+        Map<ObjectId, UserEntry> mainUserEntryMap = userDao.getUserEntryMap(objectIdList, Constant.FIELDS);
+
+        String sheetName = "";
+        if(status==1){//删除
+            sheetName = "课程《"+excellentCoursesEntry.getTitle()+"》删除订单列表";
+        }else{
+            sheetName = "课程《"+excellentCoursesEntry.getTitle()+"》退课订单列表";
+        }
+
+        HSSFWorkbook wb = new HSSFWorkbook();
+        HSSFSheet sheet = wb.createSheet(sheetName);
+        sheet.addMergedRegion(new CellRangeAddress(0, 0, 0, 5));
+        HSSFRow rowZero = sheet.createRow(0);
+        HSSFCell cellZero = rowZero.createCell(0);
+        cellZero.setCellValue("共计"+count+"份订单");
+
+        HSSFRow row = sheet.createRow(1);
+
+        HSSFCell cell = row.createCell(0);
+        cell.setCellValue("序号");
+
+        cell = row.createCell(1);
+        cell.setCellValue("姓名");
+
+        cell = row.createCell(2);
+        cell.setCellValue("家校美ID");
+
+        cell = row.createCell(3);
+        if(status==1){
+            cell.setCellValue("课节数量");
+        }else{
+            cell.setCellValue("退课数量");
+        }
+
+        cell = row.createCell(4);
+        if(status==1){
+            cell.setCellValue("购买价格");
+        }else{
+            cell.setCellValue("退款金额");
+        }
+
+        cell = row.createCell(5);
+        cell.setCellValue("订单号");
+
+        cell = row.createCell(6);
+        cell.setCellValue("订单来源");
+
+        cell = row.createCell(7);
+        if(status==1){
+            cell.setCellValue("删除时间");
+        }else{
+            cell.setCellValue("退课时间");
+        }
+
+        int rowLine = 2;
+
+        HSSFRow rowItem;
+        HSSFCell cellItem;
+        int index = 0;
+
+        for(BackOrderEntry backOrderEntry:entries){
+            index++;
+            rowItem = sheet.createRow(rowLine);
+
+            cellItem = rowItem.createCell(0);
+            cellItem.setCellValue(index+"");
+
+            BackOrderDTO dto = new BackOrderDTO(backOrderEntry);
+            UserEntry userEntry = mainUserEntryMap.get(backOrderEntry.getUserId());
+            if(userEntry!=null){
+                String name = StringUtils.isNotBlank(userEntry.getNickName())?userEntry.getNickName():userEntry.getUserName();
+
+                cellItem = rowItem.createCell(1);
+                cellItem.setCellValue(name);
+
+                cellItem = rowItem.createCell(2);
+                cellItem.setCellValue(userEntry.getGenerateUserCode());
+
+            }else{
+                cellItem = rowItem.createCell(1);
+                cellItem.setCellValue("");
+
+                cellItem = rowItem.createCell(2);
+                cellItem.setCellValue("");
+            }
+            cellItem = rowItem.createCell(3);
+            cellItem.setCellValue(dto.getClassIdList().size()+"");
+
+            cellItem = rowItem.createCell(4);
+            cellItem.setCellValue(dto.getPrice()+"");
+
+            cellItem = rowItem.createCell(5);
+            cellItem.setCellValue(dto.getOrderId());
+
+            cellItem = rowItem.createCell(6);
+            if(dto.getOrderType()==1){
+                cellItem.setCellValue("支付宝");
+            }else if(dto.getOrderType()==2){
+                cellItem.setCellValue("微信");
+            }else{
+                cellItem.setCellValue("后台添加");
+            }
+
+            cellItem = rowItem.createCell(7);
+            cellItem.setCellValue(dto.getCreateTime());
+
+            rowLine++;
+        }
+        String fileName = sheetName + ".xls";
+        String userAgent = request.getHeader("USER-AGENT");
+        HSSFUtils.exportExcel(userAgent, response, wb, fileName);
+    }
 
     public Map<String,Object> selectCoursesOrderDetails(ObjectId id,ObjectId userId){
         Map<String,Object> map = new HashMap<String, Object>();

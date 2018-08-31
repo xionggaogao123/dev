@@ -16,6 +16,8 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 import java.util.List;
 import java.util.Map;
 
@@ -357,6 +359,23 @@ public class WebBusinessManageController extends BaseController {
     }
 
     /**
+     * 批量导出订单数据
+     */
+    @ApiOperation(value = "批量导出订单数据", httpMethod = "GET", produces = "application/json")
+    @RequestMapping("/exportTemplate")
+    @ResponseBody
+    public void exportTemplate(
+                         @ApiParam(name="id",required = false,value="id") @RequestParam(value="id") String id,
+                            HttpServletResponse response,
+                               HttpServletRequest request) {
+        try {
+            businessManageService.exportTemplate(request, response,new ObjectId(id));
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+    /**
      *  用户订单详情
      * @return
      */
@@ -402,6 +421,24 @@ public class WebBusinessManageController extends BaseController {
             respObj.setErrorMessage("查询删除订单管理失败!");
         }
         return JSON.toJSONString(respObj);
+    }
+
+    /**
+     * 批量导出删除订单数据
+     */
+    @ApiOperation(value = "批量导出删除订单数据", httpMethod = "GET", produces = "application/json")
+    @RequestMapping("/exportTemplate2")
+    @ResponseBody
+    public void exportTemplate2(
+            @ApiParam(name="id",required = false,value="id") @RequestParam(value="id") String id,
+            @ApiParam(name="status",required = false,value="status") @RequestParam(value="status") int status,
+            HttpServletResponse response,
+            HttpServletRequest request) {
+        try {
+            businessManageService.exportTemplate2(request, response, new ObjectId(id),status);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 
 

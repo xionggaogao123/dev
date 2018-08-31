@@ -1,15 +1,10 @@
 package com.pojo.backstage;
 
-import com.mongodb.BasicDBList;
 import com.mongodb.BasicDBObject;
 import com.mongodb.DBObject;
 import com.pojo.base.BaseDBObject;
-import com.pojo.utils.MongoUtils;
 import com.sys.constants.Constant;
 import org.bson.types.ObjectId;
-
-import java.util.ArrayList;
-import java.util.List;
 
 /**
  * Created by James on 2017/11/21.
@@ -45,7 +40,7 @@ public class UserLogResultEntry extends BaseDBObject {
     }
 
     public int getRole(){
-        return getSimpleIntegerValue("rl");
+        return getSimpleIntegerValueDef("rl",100);
     }
 
     public void setUserId(ObjectId userId){

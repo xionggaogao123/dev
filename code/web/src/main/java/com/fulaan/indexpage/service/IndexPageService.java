@@ -636,6 +636,34 @@ public class IndexPageService {
 
         return superTopicDTOs;
     }
+
+    public List<SuperTopicDTO> getEducationList(int role){
+        List<SuperTopicDTO> superTopicDTOs = new ArrayList<SuperTopicDTO>();
+        List<ObjectId> objectIdList = new ArrayList<ObjectId>();
+        if(role==2){//认证大V
+            objectIdList.add(new ObjectId(TEACHERCOMMUNIY));
+        }else{
+            objectIdList.add(new ObjectId(PARENTCOMMUNIY));
+        }
+        List<AppNoticeEntry> entries = appNoticeDao.getRoleList(objectIdList, 1, 1,"");
+        for(AppNoticeEntry appNoticeEntry:entries){
+            SuperTopicDTO superTopicDTO = new SuperTopicDTO();
+            superTopicDTO.setId("");
+            superTopicDTO.setUserName("");
+            superTopicDTO.setCreateTime("");
+            superTopicDTO.setTimeStr("");
+            superTopicDTO.setImageUrl(new ArrayList<Attachement>());
+            superTopicDTO.setLogo("");
+            superTopicDTO.setTitle("");
+            superTopicDTO.setReadName("");
+            superTopicDTO.setUrl("");
+            superTopicDTO.setVoteType(1);
+            superTopicDTOs.add(superTopicDTO);
+        }
+
+        return superTopicDTOs;
+    }
+
     public Map<String,Object> getHotTopicList(ObjectId userId,int page,int pageSize){
         Map<String,Object> map = new HashMap<String, Object>();
         List<SuperTopicDTO> superTopicDTOs = new ArrayList<SuperTopicDTO>();
@@ -1453,17 +1481,22 @@ public class IndexPageService {
         TeacherApproveEntry teacherApproveEntry = teacherApproveDao.getEntry(userId);
         List<SuperTopicDTO> superTopicDTOs = new ArrayList<SuperTopicDTO>();
         if(teacherApproveEntry!=null && teacherApproveEntry.getType()==2){//认证大V
-            dlist.add(new ObjectId(TEACHERCOMMUNIY));
+           // dlist.add(new ObjectId(TEACHERCOMMUNIY));
             if(page==1){
                 superTopicDTOs=getHotList(2);
             }
+            if(superTopicDTOs.size()==0){
+
+            }
 
         }else{
-            dlist.add(new ObjectId(PARENTCOMMUNIY));
+          //  dlist.add(new ObjectId(PARENTCOMMUNIY));
             if(page==1){
                 superTopicDTOs=getHotList(1);
             }
+            if(superTopicDTOs.size()==0){
 
+            }
         }
         List<IndexPageEntry> entrys = indexPageDao.getPageList(dlist,userId, page, pageSize);
         int count = indexPageDao.countPageList(dlist,userId);

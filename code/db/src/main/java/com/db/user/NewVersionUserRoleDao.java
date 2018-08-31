@@ -8,6 +8,7 @@ import com.pojo.user.NewVersionUserRoleEntry;
 import com.sys.constants.Constant;
 import org.bson.types.ObjectId;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -55,5 +56,34 @@ public class NewVersionUserRoleDao extends BaseDao{
     }
 
 
+    public List<NewVersionUserRoleEntry> getUserByRoleList(List<Integer> roleListInt) {
+        List<NewVersionUserRoleEntry> userRoleEntries = new ArrayList<NewVersionUserRoleEntry>();
+        BasicDBObject query=new BasicDBObject("nr",new BasicDBObject(Constant.MONGO_IN,roleListInt))
+                .append("ir",Constant.ZERO);
+        List<DBObject> dbObjectList = find(MongoFacroty.getAppDB(), Constant.COLLECTION_NEW_VERSION_USER_ROLE,query,Constant.FIELDS);
+        if(null!=dbObjectList&&!dbObjectList.isEmpty()){
+            for(DBObject dbObject:dbObjectList){
+                NewVersionUserRoleEntry entry=new NewVersionUserRoleEntry(dbObject);
+                userRoleEntries.add(entry);
+            }
+        }
+        return userRoleEntries;
+    }
 
+    public List<NewVersionUserRoleEntry> getUserByRolePageList(List<Integer> roleListInt, Map map) {
+        int page = map.get("page") == null?1:Integer.parseInt(map.get("page").toString());
+        int pageSize = map.get("pageSize") == null?10:Integer.parseInt(map.get("pageSize").toString());
+        List<NewVersionUserRoleEntry> userRoleEntries = new ArrayList<NewVersionUserRoleEntry>();
+        BasicDBObject query=new BasicDBObject("nr",new BasicDBObject(Constant.MONGO_IN,roleListInt))
+                .append("ir",Constant.ZERO);
+        List<DBObject> dbObjectList = find(MongoFacroty.getAppDB(), Constant.COLLECTION_NEW_VERSION_USER_ROLE,query,Constant.FIELDS
+                ,new BasicDBObject("_id", Constant.DESC), (page - 1) * pageSize, pageSize);
+        if(null!=dbObjectList&&!dbObjectList.isEmpty()){
+            for(DBObject dbObject:dbObjectList){
+                NewVersionUserRoleEntry entry=new NewVersionUserRoleEntry(dbObject);
+                userRoleEntries.add(entry);
+            }
+        }
+        return userRoleEntries;
+    }
 }

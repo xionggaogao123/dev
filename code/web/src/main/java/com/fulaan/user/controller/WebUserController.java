@@ -319,6 +319,40 @@ public class WebUserController extends BaseController {
     }
 
     /**
+     * 新运营管理中用户管理注册用户
+     * @param userName
+     * @param phoneNumber
+     * @param newRole
+     * @param nickName
+     * @param request
+     * @return
+     */
+    @ApiOperation(value = "后台注册账号", httpMethod = "POST", produces = "application/json")
+    @ApiResponses( value = {@ApiResponse(code = 200, message = "Successful — 请求已完成",response = RespObj.class)})
+    @SessionNeedless
+    @RequestMapping("/registerBackUserNew")
+    @ResponseBody
+    public RespObj registerBackUserNew(String userName, String phoneNumber,
+                                    int newRole,
+                                    String nickName,
+                                    HttpServletRequest request){
+        RespObj respObj=new RespObj(Constant.FAILD_CODE);
+        try{
+            if(Validator.isMobile(phoneNumber)){
+                String userId=userService.registerBackAvailableUserNew(request, userName, phoneNumber, newRole, nickName, getUserId().toString());
+                respObj.setCode(Constant.SUCCESS_CODE);
+                respObj.setMessage(userId);
+            }else{
+                respObj.setCode(Constant.FAILD_CODE);
+                respObj.setMessage("手机号不符合格式");
+            }
+        }catch (Exception e){
+            respObj.setMessage(e.getMessage());
+        }
+        return respObj;
+    }
+
+    /**
      *
      */
     @ApiOperation(value = "导出批量注册模板", httpMethod = "GET", produces = "application/json")
@@ -355,6 +389,34 @@ public class WebUserController extends BaseController {
                 for (MultipartFile file : multipartFiles) {
                     System.out.println("----" + file.getOriginalFilename());
                     result = userService.importTemplate(file.getInputStream(),request);
+                }
+            }
+            respObj.setCode(Constant.SUCCESS_CODE);
+            respObj.setMessage(result);
+        } catch (Exception e) {
+            e.printStackTrace();
+            respObj.setErrorMessage(e.getMessage());
+        }
+        return respObj;
+    }
+
+
+    @ApiOperation(value = "用户管理导入模板", httpMethod = "POST", produces = "application/json")
+    @ApiResponses(value = {@ApiResponse(code = 200, message = "导入模板已完成", response = String.class),
+            @ApiResponse(code = 400, message = "请求中有语法问题，或不能满足请求"),
+            @ApiResponse(code = 500, message = "服务器不能完成请求")})
+    @RequestMapping("/importTemplateNew")
+    @ResponseBody
+    public RespObj importTemplateNew(HttpServletRequest request,String newRole) throws Exception {
+        RespObj respObj = new RespObj(Constant.FAILD_CODE);
+        MultipartRequest multipartRequest = (MultipartRequest) request;
+        String result ="导入模板失败";
+        try {
+            MultiValueMap<String, MultipartFile> fileMap = multipartRequest.getMultiFileMap();
+            for (List<MultipartFile> multipartFiles : fileMap.values()) {
+                for (MultipartFile file : multipartFiles) {
+                    System.out.println("----" + file.getOriginalFilename());
+                    result = userService.importTemplateNew(file.getInputStream(),request,newRole,getUserId().toString());
                 }
             }
             respObj.setCode(Constant.SUCCESS_CODE);

@@ -17,6 +17,7 @@ import java.util.Date;
  * userId                                                   uid
  * applyTime        申请时间                                atm
  * type             1 申请   2 通过   3拒绝                 typ
+ * role             0 老师（新增） 1 公司员工                role
  * approveId        通过人                                  aid
  * loadTime         操作时间                                ltm
  *

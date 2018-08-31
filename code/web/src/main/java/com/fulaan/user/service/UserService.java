@@ -3,6 +3,7 @@ package com.fulaan.user.service;
 
 import com.db.app.RegionDao;
 import com.db.backstage.SystemMessageDao;
+import com.db.backstage.TeacherApproveDao;
 import com.db.backstage.UserLogResultDao;
 import com.db.controlphone.ControlVersionDao;
 import com.db.fcommunity.LoginLogDao;
@@ -45,6 +46,7 @@ import com.pojo.app.Platform;
 import com.pojo.app.RegionEntry;
 import com.pojo.app.SessionValue;
 import com.pojo.backstage.PictureType;
+import com.pojo.backstage.TeacherApproveEntry;
 import com.pojo.backstage.UserLogResultEntry;
 import com.pojo.controlphone.ControlVersionEntry;
 import com.pojo.controlphone.MQTTType;
@@ -129,6 +131,7 @@ public class UserService extends BaseService {
 
     private UserMobileDao userMobileDao = new UserMobileDao();
 
+    private TeacherApproveDao teacherApproveDao = new TeacherApproveDao();
 
     /**
      * 判断是否禁止访问
@@ -201,6 +204,45 @@ public class UserService extends BaseService {
         }
     }
 
+    public String registerBackAvailableUserNew(HttpServletRequest request, String userName, String phoneNumber,
+                                               int newRole, String nickName, String getUserId) throws Exception {
+        UserEntry userEntry = userDao.findByUserName(userName);
+        if (null == userEntry) {
+            UserMobileEntry userMobileEntry = userMobileDao.findByMobile(phoneNumber);
+            if (userMobileEntry == null) {
+                UserEntry user = registerUserEntry(request, Constant.EMPTY, userName, "123456", phoneNumber,
+                        nickName);
+                ObjectId userId = userDao.addUserEntry(user);
+                if (newRole != -1) {
+                    if (null == newVersionUserRoleDao.getEntry(userId)) {
+                        //新增老师添加 taotao.chan
+                        if (3 == newRole){
+                            newVersionUserRoleDao.saveEntry(new NewVersionUserRoleEntry(userId, 0));
+                            teacherApproveDao.addEntry(new TeacherApproveEntry(
+                                    userId,
+                                    userName,
+                                    "",
+                                    "",
+                                    new ObjectId(getUserId),
+                                    new Date().getTime(),
+                                    2));
+                        }else {
+                            newVersionUserRoleDao.saveEntry(new NewVersionUserRoleEntry(userId, newRole));
+                        }
+                    }
+                }
+                UserMobileEntry entry = new UserMobileEntry(phoneNumber, userId);
+                userMobileDao.save(entry);
+                return userId.toString();
+            } else {
+                throw new Exception("该手机号已被使用过");
+            }
+
+        } else {
+            throw new Exception("该用户名已用过");
+        }
+    }
+
     public String registerNewBackAvailableUser(HttpServletRequest request,String userName, String phoneNumber,int newRole,
                                             String nickName)throws Exception{
         UserEntry userEntry=userDao.findByUserName(userName);
@@ -213,6 +255,45 @@ public class UserService extends BaseService {
                 if(newRole!=-1) {
                     if(null==newVersionUserRoleDao.getEntry(userId)){
                         newVersionUserRoleDao.saveEntry(new NewVersionUserRoleEntry(userId, newRole));
+                    }
+                }
+                UserMobileEntry entry = new UserMobileEntry(phoneNumber, userId);
+                userMobileDao.save(entry);
+                return "  -----<span style='color:green;'>注册成功</span>";
+            }else{
+                return "  -----<span style='color:red;'>该手机号已被使用过</span>";
+            }
+
+        }else{
+            return "  -----<span style='color:red;'>该用户名已用过</span>";
+        }
+    }
+
+    public String registerNewBackAvailableUserNew(HttpServletRequest request,String userName, String phoneNumber,int newRole,
+                                               String nickName,String getUserId)throws Exception{
+        UserEntry userEntry=userDao.findByUserName(userName);
+        if(null==userEntry){
+            UserMobileEntry userMobileEntry = userMobileDao.findByMobile(phoneNumber);
+            if(userMobileEntry==null){
+                UserEntry user=registerUserEntry(request,Constant.EMPTY,userName,"123456",phoneNumber,
+                        nickName);
+                ObjectId userId=userDao.addUserEntry(user);
+                if(newRole!=-1) {
+                    if(null==newVersionUserRoleDao.getEntry(userId)){
+                        //新增老师添加 taotao.chan
+                        if (3 == newRole){
+                            newVersionUserRoleDao.saveEntry(new NewVersionUserRoleEntry(userId, 0));
+                            teacherApproveDao.addEntry(new TeacherApproveEntry(
+                                    userId,
+                                    userName,
+                                    "",
+                                    "",
+                                    new ObjectId(getUserId),
+                                    new Date().getTime(),
+                                    2));
+                        }else {
+                            newVersionUserRoleDao.saveEntry(new NewVersionUserRoleEntry(userId, newRole));
+                        }
                     }
                 }
                 UserMobileEntry entry = new UserMobileEntry(phoneNumber, userId);
@@ -1895,5 +1976,36 @@ public class UserService extends BaseService {
 
     public List<ObjectId> filterAvailableObjectIds(List<ObjectId> userIds){
         return userDao.filterAvailableObjectIds(userIds);
+    }
+
+    public String importTemplateNew(InputStream inputStream, HttpServletRequest request, String newRole ,String getUserId) throws Exception  {
+        HSSFWorkbook workbook = null;
+        workbook = new HSSFWorkbook(inputStream);
+        HSSFSheet sheet = workbook.getSheet(workbook.getSheetName(0));
+        int rowNum = sheet.getLastRowNum();
+        StringBuffer sb = new StringBuffer();
+        //sb.append("注册情况：\n");
+        for (int j = 2; j <= rowNum; j++) {
+            if(sheet.getRow(j)!=null){
+                if(sheet.getRow(j).getCell(0)!=null){
+                    sheet.getRow(j).getCell(0).setCellType(Cell.CELL_TYPE_STRING);
+                }
+                String phoneNumber = sheet.getRow(j).getCell(0).getStringCellValue();
+                if(phoneNumber!=null && !phoneNumber.equals("")){
+                    sb.append("<p>第"+j+"列："+phoneNumber);
+                    if(Validator.isMobile(phoneNumber)){
+                        String strt = this.registerNewBackAvailableUserNew(request,phoneNumber,phoneNumber,Integer.parseInt(newRole),phoneNumber,getUserId);
+                        sb.append(strt);
+                    }else{
+                        sb.append("  -----<span style='color:red;'>手机号格式不正确</span>");
+                    }
+                    sb.append("</p>");
+                }
+            }else{
+                sb.append("<p>第"+j+"列：");
+                sb.append("</p>");
+            }
+        }
+        return sb.toString();
     }
 }

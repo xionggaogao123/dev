@@ -2,7 +2,6 @@ package com.fulaan.operation.dto;
 
 import com.fulaan.dto.VideoDTO;
 import com.fulaan.pojo.Attachement;
-import com.fulaan.util.NewStringUtil;
 import com.pojo.appnotice.AppNoticeEntry;
 import com.pojo.fcommunity.AttachmentEntry;
 import com.pojo.fcommunity.VideoEntry;
@@ -157,7 +156,7 @@ public class AppNoticeDTO {
         this.subjectId=entry.getSubjectId()==null?"":entry.getSubjectId().toString();
         this.subject=entry.getSubject();
         this.title=entry.getTitle();
-        this.content=NewStringUtil.toGoodJsonStr(entry.getContent());
+        this.content= entry.getContent();
         this.groupId=entry.getGroupId()==null?"":entry.getGroupId().toString();
         this.communityId=entry.getCommunityId()==null?"":entry.getCommunityId().toString();
         this.groupName=entry.getGroupName();

@@ -90,6 +90,8 @@ public class GroupExamDetailDTO {
     private int pmType;
     //成绩类型：4种
     private int fsShowType;
+    
+    private int isNew;
 
     public GroupExamDetailDTO(){
 
@@ -152,6 +154,7 @@ public class GroupExamDetailDTO {
         this.lrType = entry.getLrType();
         this.pmType = entry.getPmType();
         this.fsShowType = entry.getFsShowType();
+        this.isNew = entry.getIsNew();
     }
     
     
@@ -664,6 +667,14 @@ public class GroupExamDetailDTO {
 
     public void setFsShowType(int fsShowType) {
         this.fsShowType = fsShowType;
+    }
+
+    public int getIsNew() {
+        return isNew;
+    }
+
+    public void setIsNew(int isNew) {
+        this.isNew = isNew;
     }
 
    

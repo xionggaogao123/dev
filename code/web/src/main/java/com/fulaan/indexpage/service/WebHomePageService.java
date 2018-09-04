@@ -375,10 +375,35 @@ public class WebHomePageService {
                     if (null != communityEntry) {
                         detailDTO.setGroupName(communityEntry.getCommunityName());
                     }
-                    SubjectClassEntry subjectClassEntry = subjectClassEntryMap.get(userRecordEntry.getSubjectId());
+                    /*SubjectClassEntry subjectClassEntry = subjectClassEntryMap.get(userRecordEntry.getSubjectId());
                     if (null != subjectClassEntry) {
                         detailDTO.setSubjectName(subjectClassEntry.getName());
+                    }*/
+                    
+                    if (userRecordEntry.getSubjectId() != null) {
+                        SubjectClassEntry subjectClassEntry = subjectClassEntryMap.get(userRecordEntry.getSubjectId());
+                        if (null != subjectClassEntry) {
+                            detailDTO.setSubjectName(subjectClassEntry.getName());
+                        }
+                    } else {
+                        String str = userRecordEntry.getSubjectIds();
+                        String[] sArry = str.split(",");
+                        StringBuffer subjectName = new StringBuffer();
+                        for (int i = 0;i < sArry.length;i++) {
+                            SubjectClassEntry subjectClassEntry = subjectClassEntryMap.get(new ObjectId(sArry[i]));
+                            if (null != subjectClassEntry) {
+                                subjectName.append(subjectClassEntry.getName());
+                                if (i < sArry.length-1) {
+                                    subjectName.append(",");
+                                }
+                                
+                            }
+                            
+                        }
+                        detailDTO.setSubjectName(subjectName.toString());
                     }
+                    
+                    
                     if (null != userRecordEntry.getExamType()) {
                         ExamTypeEntry examTypeEntry = examTypeEntryMap.get(userRecordEntry.getExamType());
                         if (null != examTypeEntry) {
@@ -435,10 +460,34 @@ public class WebHomePageService {
                         detailDTO.setExamTypeName(examTypeEntry.getExamTypeName());
                     }
                 }
-                SubjectClassEntry subjectClassEntry = subjectClassEntryMap.get(detailEntry.getSubjectId());
+                /*SubjectClassEntry subjectClassEntry = subjectClassEntryMap.get(detailEntry.getSubjectId());
                 if (null != subjectClassEntry) {
                     detailDTO.setSubjectName(subjectClassEntry.getName());
+                }*/
+                
+                if (detailEntry.getSubjectId() != null) {
+                    SubjectClassEntry subjectClassEntry = subjectClassEntryMap.get(detailEntry.getSubjectId());
+                    if (null != subjectClassEntry) {
+                        detailDTO.setSubjectName(subjectClassEntry.getName());
+                    }
+                } else {
+                    String str = detailEntry.getSubjectIds();
+                    String[] sArry = str.split(",");
+                    StringBuffer subjectName = new StringBuffer();
+                    for (int i = 0;i < sArry.length;i++) {
+                        SubjectClassEntry subjectClassEntry = subjectClassEntryMap.get(new ObjectId(sArry[i]));
+                        if (null != subjectClassEntry) {
+                            subjectName.append(subjectClassEntry.getName());
+                            if (i < sArry.length-1) {
+                                subjectName.append(",");
+                            }
+                            
+                        }
+                        
+                    }
+                    detailDTO.setSubjectName(subjectName.toString());
                 }
+                
                 if (detailEntry.getRecordScoreType() == Constant.ONE) {
                     RecordScoreEvaluateEntry evaluateEntry = recordScoreEvaluateDao.getEntryById(detailEntry.getID());
                     if (null != evaluateEntry) {

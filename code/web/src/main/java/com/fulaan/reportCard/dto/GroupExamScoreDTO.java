@@ -9,9 +9,9 @@ import java.util.List;
 public class GroupExamScoreDTO {
 
     private List<GroupExamUserRecordStrDTO> examGroupUserScoreDTOs=new ArrayList<GroupExamUserRecordStrDTO>();
-    
+    //新成绩单传这个
     private List<GroupExamUserRecordStrListDTO> examGroupUserScoreListDTOs=new ArrayList<GroupExamUserRecordStrListDTO>();
-
+    //保存或发送 0保存 2发送
     private int status;
 
     private String groupExamDetailId;

@@ -873,9 +873,31 @@ public class ReportCardService {
                     if (null != communityEntry) {
                         detailDTO.setGroupName(communityEntry.getCommunityName());
                     }
-                    SubjectClassEntry subjectClassEntry = subjectClassEntryMap.get(recordEntry.getSubjectId());
+                    /*SubjectClassEntry subjectClassEntry = subjectClassEntryMap.get(recordEntry.getSubjectId());
                     if (null != subjectClassEntry) {
                         detailDTO.setSubjectName(subjectClassEntry.getName());
+                    }*/
+                    if (recordEntry.getSubjectId() != null) {
+                        SubjectClassEntry subjectClassEntry = subjectClassEntryMap.get(recordEntry.getSubjectId());
+                        if (null != subjectClassEntry) {
+                            detailDTO.setSubjectName(subjectClassEntry.getName());
+                        }
+                    } else {
+                        String str = recordEntry.getSubjectIds();
+                        String[] sArry = str.split(",");
+                        StringBuffer subjectName = new StringBuffer();
+                        for (int i = 0;i < sArry.length;i++) {
+                            SubjectClassEntry subjectClassEntry = subjectClassEntryMap.get(new ObjectId(sArry[i]));
+                            if (null != subjectClassEntry) {
+                                subjectName.append(subjectClassEntry.getName());
+                                if (i < sArry.length-1) {
+                                    subjectName.append(",");
+                                }
+                                
+                            }
+                            
+                        }
+                        detailDTO.setSubjectName(subjectName.toString());
                     }
                     if (null != recordEntry.getExamType()) {
                         ExamTypeEntry examTypeEntry = examTypeEntryMap.get(recordEntry.getExamType());

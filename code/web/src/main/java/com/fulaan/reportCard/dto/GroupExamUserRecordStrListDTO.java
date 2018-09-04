@@ -14,8 +14,7 @@ public class GroupExamUserRecordStrListDTO {
     private String id;
     private String groupExamDetailId;
     private String userId;
-    private List<String> score = new ArrayList<String>();
-    private List<String> scoreRep = new ArrayList<String>();
+    private List<String> score = new ArrayList<String>();   
     private List<Integer> scoreLevel = new ArrayList<Integer>();
     private String userName;
     private String userNumber;
@@ -27,6 +26,8 @@ public class GroupExamUserRecordStrListDTO {
     private String examType;
     private List<String> subjectId = new ArrayList<String>();
     private List<String> subjectName = new ArrayList<String>();
+  //成绩等第集合
+    private List<String> scoreRep = new ArrayList<String>();
     //班级和成绩排名抬头
     private List<String> subjectNameWithDd = new ArrayList<String>();
     //班级和成绩排名具体成绩

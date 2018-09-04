@@ -2593,7 +2593,7 @@ public class ReportCardNewService {
         List<GroupExamUserRecordDTO> recordDTOs = searchRecordStudentScores(examGroupDetailId);
         GroupExamDetailEntry detailEntry = groupExamDetailDao.getGroupExamDetailEntry(examGroupDetailId);
         if (null != detailEntry) {
-            String sheetName = detailEntry.getExamName() + "录入模板";
+            String sheetName = detailEntry.getExamName();
             HSSFWorkbook wb = new HSSFWorkbook();
             HSSFSheet sheet = wb.createSheet(sheetName);
             sheet.addMergedRegion(new CellRangeAddress(0, 0, 0, 5));

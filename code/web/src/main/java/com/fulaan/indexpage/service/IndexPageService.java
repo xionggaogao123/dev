@@ -636,6 +636,34 @@ public class IndexPageService {
 
         return superTopicDTOs;
     }
+
+    public List<SuperTopicDTO> getEducationList(int role){
+        List<SuperTopicDTO> superTopicDTOs = new ArrayList<SuperTopicDTO>();
+        List<ObjectId> objectIdList = new ArrayList<ObjectId>();
+        if(role==2){//认证大V
+            objectIdList.add(new ObjectId(TEACHERCOMMUNIY));
+        }else{
+            objectIdList.add(new ObjectId(PARENTCOMMUNIY));
+        }
+        List<AppNoticeEntry> entries = appNoticeDao.getRoleList(objectIdList, 1, 1,"");
+        for(AppNoticeEntry appNoticeEntry:entries){
+            SuperTopicDTO superTopicDTO = new SuperTopicDTO();
+            superTopicDTO.setId("");
+            superTopicDTO.setUserName("");
+            superTopicDTO.setCreateTime("");
+            superTopicDTO.setTimeStr("");
+            superTopicDTO.setImageUrl(new ArrayList<Attachement>());
+            superTopicDTO.setLogo("");
+            superTopicDTO.setTitle(appNoticeEntry.getTitle());
+            superTopicDTO.setReadName(appNoticeEntry.getSubject());
+            superTopicDTO.setUrl("");
+            superTopicDTO.setVoteType(1);
+            superTopicDTOs.add(superTopicDTO);
+        }
+
+        return superTopicDTOs;
+    }
+
     public Map<String,Object> getHotTopicList(ObjectId userId,int page,int pageSize){
         Map<String,Object> map = new HashMap<String, Object>();
         List<SuperTopicDTO> superTopicDTOs = new ArrayList<SuperTopicDTO>();
@@ -1453,17 +1481,22 @@ public class IndexPageService {
         TeacherApproveEntry teacherApproveEntry = teacherApproveDao.getEntry(userId);
         List<SuperTopicDTO> superTopicDTOs = new ArrayList<SuperTopicDTO>();
         if(teacherApproveEntry!=null && teacherApproveEntry.getType()==2){//认证大V
-            dlist.add(new ObjectId(TEACHERCOMMUNIY));
+           // dlist.add(new ObjectId(TEACHERCOMMUNIY));
             if(page==1){
                 superTopicDTOs=getHotList(2);
             }
+            if(superTopicDTOs.size()==0){
+                superTopicDTOs=getEducationList(2);
+            }
 
         }else{
-            dlist.add(new ObjectId(PARENTCOMMUNIY));
+          //  dlist.add(new ObjectId(PARENTCOMMUNIY));
             if(page==1){
                 superTopicDTOs=getHotList(1);
             }
-
+            if(superTopicDTOs.size()==0){
+                superTopicDTOs=getEducationList(1);
+            }
         }
         List<IndexPageEntry> entrys = indexPageDao.getPageList(dlist,userId, page, pageSize);
         int count = indexPageDao.countPageList(dlist,userId);
@@ -1872,6 +1905,31 @@ public class IndexPageService {
                     ob1.put("isOwner",true);
                     ob1.put("allContent","");
                    // list.add(ob1);
+                    ob5 = ob1;
+                }else if(entry.getType()==5){
+                    Map<String,Object> ob1 = new HashMap<String, Object>();
+                    ob1.put("tag", CommunityType.system.getDes());
+                    ob1.put("cardType",3);
+                    ob1.put("groupName",dto8.getSourceName());
+                    ob1.put("id",dto8.getId());
+                    ob1.put("userName","家校美小助手");
+                    ob1.put("subject","");
+                    ob1.put("avatar","http://7xiclj.com1.z0.glb.clouddn.com/5b6178508126103aac1a705d.png");
+                    ob1.put("title","登录提醒");
+                    ob1.put("time",dto8.getCreateTime());
+                    ob1.put("content",dto8.getContent());
+                    ob1.put("imageList",new ArrayList<Attachement>());
+                    ob1.put("commentCount",0);
+                    ob1.put("videoList",new ArrayList<VideoDTO>());
+                    ob1.put("voiceList",new ArrayList<Attachement>());
+                    ob1.put("attachements",new ArrayList<Attachement>());
+                    ob1.put("isRead",0);
+                    ob1.put("totalReadCount", 0);
+                    ob1.put("readCount", 0);
+                    ob1.put("unReadCount",0);
+                    ob1.put("timeExpression","");
+                    ob1.put("isOwner",true);
+                    ob1.put("allContent","");
                     ob5 = ob1;
                 }else{
 
@@ -2341,6 +2399,31 @@ public class IndexPageService {
                     ob1.put("subject","");
                     ob1.put("avatar","http://7xiclj.com1.z0.glb.clouddn.com/5b61781e8126103aac1a705c.png");
                     ob1.put("title","直播课堂");
+                    ob1.put("time",dto8.getCreateTime());
+                    ob1.put("content",dto8.getContent());
+                    ob1.put("imageList",new ArrayList<Attachement>());
+                    ob1.put("commentCount",0);
+                    ob1.put("videoList",new ArrayList<VideoDTO>());
+                    ob1.put("voiceList",new ArrayList<Attachement>());
+                    ob1.put("attachements",new ArrayList<Attachement>());
+                    ob1.put("isRead",0);
+                    ob1.put("totalReadCount", 0);
+                    ob1.put("readCount", 0);
+                    ob1.put("unReadCount",0);
+                    ob1.put("timeExpression","");
+                    ob1.put("isOwner",true);
+                    ob1.put("allContent","");
+                    list.add(ob1);
+                }else if(entry.getType()==5){
+                    Map<String,Object> ob1 = new HashMap<String, Object>();
+                    ob1.put("tag", CommunityType.system.getDes());
+                    ob1.put("cardType",3);
+                    ob1.put("groupName",dto8.getSourceName());
+                    ob1.put("id",dto8.getId());
+                    ob1.put("userName","家校美小助手");
+                    ob1.put("subject","");
+                    ob1.put("avatar","http://7xiclj.com1.z0.glb.clouddn.com/5b6178508126103aac1a705d.png");
+                    ob1.put("title","登录提醒");
                     ob1.put("time",dto8.getCreateTime());
                     ob1.put("content",dto8.getContent());
                     ob1.put("imageList",new ArrayList<Attachement>());

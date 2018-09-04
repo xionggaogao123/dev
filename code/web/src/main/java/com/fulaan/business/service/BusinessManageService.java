@@ -1170,6 +1170,7 @@ public class BusinessManageService {
         }
         List<HourClassEntry> hourClassEntries = hourClassDao.getEntryList(id);
         double all = 0.00;
+        int minute = 0;
         for(HourClassEntry hourClassEntry : hourClassEntries){
             Double price = map.get(hourClassEntry.getID().toString());
             if(price!=null){
@@ -1180,6 +1181,7 @@ public class BusinessManageService {
             String str2 = DateTimeUtils.getLongToStrTimeTwo(hourClassEntry.getStartTime()).substring(0,11);
             long strNum = DateTimeUtils.getStrToLongTime(str2, "yyyy-MM-dd");
             sendMessage(excellentCoursesEntry.getTitle(),hourClassEntry.getID(),hourClassEntry.getStartTime(),strNum);
+            minute = hourClassEntry.getCurrentTime()/60000 - 5;
         }
         //课程改为进行中
         excellentCoursesEntry.setNewPrice(all);
@@ -1195,7 +1197,12 @@ public class BusinessManageService {
             startTime = DateTimeUtils.getLongToStrTimeTwo(start);
         }
         //todo
-        coursesRoomService.createBackCourses(excellentCoursesEntry.getTitle(),excellentCoursesEntry.getTarget(),excellentCoursesEntry.getID(),startTime);
+        if(minute>5){
+
+        }else{
+            minute = 5;
+        }
+        coursesRoomService.createBackCourses(excellentCoursesEntry.getTitle(),excellentCoursesEntry.getTarget(),excellentCoursesEntry.getID(),startTime,minute);
         backStageService.addLogMessage(id.toString(), "审核直播课堂：" + excellentCoursesEntry.getTitle(), LogMessageType.courses.getDes(), userId.toString());
         return "1";
     }

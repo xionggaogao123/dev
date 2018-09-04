@@ -2548,7 +2548,7 @@ public class DefaultFPostController extends BaseController {
 
         //
         NewVersionUserRoleEntry newVersionUserRoleEntry = newVersionUserRoleDao.getEntry(getUserId());
-        if(newVersionUserRoleEntry==null || newVersionUserRoleEntry.getNewRole()==1 || newVersionUserRoleEntry.getNewRole()==2){
+        if(newVersionUserRoleEntry==null || newVersionUserRoleEntry.getNewRole()==1 || newVersionUserRoleEntry.getNewRole()==2 ||  newVersionUserRoleEntry.getNewRole()==0){
             RespObj respObj = new RespObj(Constant.FAILD_CODE);
             respObj.setCode("600");
             respObj.setMessage("暂无发送权限！");

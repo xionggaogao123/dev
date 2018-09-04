@@ -1,6 +1,5 @@
 package com.fulaan.backstage.dto;
 
-import com.sun.istack.internal.NotNull;
 
 /**
  * 用户管理 列表展示Dto

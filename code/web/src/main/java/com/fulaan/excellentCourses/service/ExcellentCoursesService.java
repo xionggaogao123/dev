@@ -259,7 +259,6 @@ public class ExcellentCoursesService {
                 }
                 if(dto1.getOwnId() !=null && dto1.getOwnId().equals("无")){
                     dto1.setOwnId(userId.toString());
-                    dto1.setSubjectName(excellentCoursesEntry.getSubjectName());
                 }
                 HourClassEntry classEntry =  dto1.buildAddEntry();
                 oldPrice = sum(oldPrice,dto1.getClassOldPrice());
@@ -2326,7 +2325,7 @@ public class ExcellentCoursesService {
                             stm = s;
                             etm = e;
                         }else{
-                            if(stm<s){
+                            if(stm>s){
                                 stm= s;
                             }
                             if(e>etm){
@@ -2606,8 +2605,10 @@ public class ExcellentCoursesService {
                 }
             }
             if(fl){//是开课人
+                dto.setIsCollect(1);
                 hourClassDTOs.add(hourClassDTO);
             }else{
+                dto.setIsCollect(0);
                 if(hourClassDTO.getOwnId()!=null && hourClassDTO.getOwnId().equals(userId.toString())){
                     name = hourClassDTO.getOwnName();
                     hourClassDTOs.add(hourClassDTO);

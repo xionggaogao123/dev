@@ -396,7 +396,7 @@ liveid	直播id*/
     /**
      * 创建回调登陆直播间
      */
-    public  void createBackCourses(String name,String description,ObjectId contactId,String dateTime){
+    public  void createBackCourses(String name,String description,ObjectId contactId,String dateTime,int minute){
         Map<String,String> map = new TreeMap<String, String>();
         map.put("userid",CC_USERID);
         map.put("templatetype",CC_TEMPLATETYPE);
@@ -410,7 +410,7 @@ liveid	直播id*/
         try{
             List<Map<String,String>> mapList = new ArrayList<Map<String, String>>();
             Map<String,String> alarms = new HashMap<String, String>();
-            alarms.put("time","95");
+            alarms.put("time",minute+"");
             alarms.put("desc", "敬爱的老师,还有5分钟下课,请您注意休息");
             mapList.add(alarms);
             String str2 = JSONUtils.toJSONString(mapList);

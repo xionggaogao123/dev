@@ -102,6 +102,8 @@ public class SystemMessageService extends BaseService {
     @Autowired
     private UserService userService;
 
+    private NewVersionBindRelationDao newVersionBindRelationDao = new NewVersionBindRelationDao();
+
     //保存系统消息
     public  void  addEntry(ObjectId userId,AppCommentDTO dto){
         String coStr = dto.getComList();
@@ -727,6 +729,43 @@ public class SystemMessageService extends BaseService {
         jPushUtils.pushRestAndroidParentBusyWork(audience, description, "", "直播课堂通知", new HashMap<String, String>());
 
     }
+
+    /**
+     * 发送登陆提醒（同步消息提醒）
+     */
+    public void sendLoginNotice(ObjectId sonId,String name){
+        NewVersionBindRelationEntry newVersionBindRelationEntry = newVersionBindRelationDao.getBindEntry(sonId);
+        if(newVersionBindRelationEntry==null){
+            return;
+        }
+        ObjectId userId = newVersionBindRelationEntry.getMainUserId();
+        String description = "";
+        description  = "您的小孩"+name+"已经登录了!";
+        //添加系统信息
+        SystemMessageDTO dto = new SystemMessageDTO();
+        dto.setType(5);
+        dto.setAvatar("");
+        dto.setName(name);
+        dto.setFileUrl("");
+        dto.setSourceId("");
+        dto.setContent(description);
+        dto.setFileType(1);
+        dto.setSourceName("");
+        dto.setSourceType(0);
+        dto.setTitle("");
+        String id = systemMessageDao.addEntry(dto.buildAddEntry());
+
+        //添加首页记录
+        IndexPageDTO dto1 = new IndexPageDTO();
+        dto1.setType(CommunityType.system.getType());
+        dto1.setUserId(userId.toString());
+        dto1.setCommunityId(userId.toString());
+        dto1.setContactId(id.toString());
+        IndexPageEntry entry = dto1.buildAddEntry();
+        indexPageDao.addEntry(entry);
+
+    }
+
 
     /**
      * 发送上课提醒（同步消息提醒）

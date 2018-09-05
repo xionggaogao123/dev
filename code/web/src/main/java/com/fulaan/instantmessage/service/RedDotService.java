@@ -123,6 +123,15 @@ public class RedDotService {
         }
         return map;
     }
+    /**
+     * 减去某个类别红点数
+     */
+    public void jianRedDot(ObjectId userId,int type){
+        RedDotEntry redDotEntry = redDotDao.getEntryByUserId(userId,type);
+        if(redDotEntry!=null && redDotEntry.getNewNumber()>0){
+            redDotDao.updateEntry(redDotEntry.getID(),redDotEntry.getNewNumber());
+        }
+    }
 
     /**
      * 首页加载所有的红点记录

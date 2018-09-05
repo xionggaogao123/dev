@@ -1,18 +1,24 @@
 package com.pojo.indexPage;
 
+import com.mongodb.BasicDBList;
 import com.mongodb.BasicDBObject;
 import com.pojo.base.BaseDBObject;
+import com.pojo.utils.MongoUtils;
 import com.sys.constants.Constant;
 import org.bson.types.ObjectId;
+
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * 首页加载表
  * Created by James on 2017/9/28.
  * id
- * userId       发送用户       uid
- * type         类型           typ    1 作业    2 通知
- * communityId  社区id         cid
- * contactId    联系记录id     tid
+ * userId           发送用户               uid
+ * type             类型                   typ    1 作业    2 通知    4 系统通知  6 投票    7 活动   8 新集合通知  9 新成绩单
+ * communityId      社区id                 cid
+ * contactId        联系记录id             tid
+ * List<ObjectId>   接受者集合       receiveIdList
  */
 public class IndexPageEntry extends BaseDBObject {
 
@@ -23,6 +29,23 @@ public class IndexPageEntry extends BaseDBObject {
         super(baseEntry);
     }
     //添加构造
+    public IndexPageEntry(
+            int type,
+            ObjectId userId,
+            ObjectId communityId,
+            ObjectId contactId,
+            List<ObjectId> receiveIdList
+    ){
+        BasicDBObject dbObject=new BasicDBObject()
+                .append("typ", type)
+                .append("uid",userId)
+                .append("cid", communityId)
+                .append("tid",contactId)
+                .append("rlt",receiveIdList)
+                .append("isr", 0);
+        setBaseEntry(dbObject);
+    }
+
     public IndexPageEntry(
             int type,
             ObjectId userId,
@@ -54,6 +77,21 @@ public class IndexPageEntry extends BaseDBObject {
                 .append("tid",contactId)
                 .append("isr", 0);
         setBaseEntry(dbObject);
+    }
+
+    public void setReceiveIdList(List<ObjectId> receiveIdList){
+        setSimpleValue("rlt", MongoUtils.convert(receiveIdList));
+    }
+
+    public List<ObjectId> getReceiveIdList(){
+        ArrayList<ObjectId> receiveIdList = new ArrayList<ObjectId>();
+        BasicDBList dbList = (BasicDBList) getSimpleObjectValue("rlt");
+        if(dbList != null && !dbList.isEmpty()){
+            for (Object obj : dbList) {
+                receiveIdList.add((ObjectId)obj);
+            }
+        }
+        return receiveIdList;
     }
 
     public ObjectId getUserId(){

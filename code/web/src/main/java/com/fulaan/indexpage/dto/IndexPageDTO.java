@@ -3,6 +3,9 @@ package com.fulaan.indexpage.dto;
 import com.pojo.indexPage.IndexPageEntry;
 import org.bson.types.ObjectId;
 
+import java.util.ArrayList;
+import java.util.List;
+
 /**
  * Created by James on 2017/9/29.
  */
@@ -16,6 +19,15 @@ public class IndexPageDTO {
     private String userId;
     private String communityId;
     private String contactId;
+    private List<String> receiveIdList = new ArrayList<String>();
+
+    public List<String> getReceiveIdList() {
+        return receiveIdList;
+    }
+
+    public void setReceiveIdList(List<String> receiveIdList) {
+        this.receiveIdList = receiveIdList;
+    }
 
     public IndexPageDTO(){
 
@@ -45,6 +57,35 @@ public class IndexPageDTO {
         if(this.getContactId()!=null&&!"".equals(this.getContactId())){
             tId=new ObjectId(this.getContactId());
         }
+        List<ObjectId> rIdList = new ArrayList<ObjectId>();
+        for(String sId : this.receiveIdList){
+            rIdList.add(new ObjectId(sId));
+        }
+        IndexPageEntry openEntry =
+                new IndexPageEntry(
+                        this.type,
+                        uId,
+                        cId,
+                        tId,
+                        rIdList
+                );
+        return openEntry;
+
+    }
+
+    public IndexPageEntry buildNewAddEntry(){
+        ObjectId cId=null;
+        if(this.getCommunityId()!=null&&!"".equals(this.getCommunityId())){
+            cId=new ObjectId(this.getCommunityId());
+        }
+        ObjectId uId=null;
+        if(this.getUserId()!=null&&!"".equals(this.getUserId())){
+            uId=new ObjectId(this.getUserId());
+        }
+        ObjectId tId=null;
+        if(this.getContactId()!=null&&!"".equals(this.getContactId())){
+            tId=new ObjectId(this.getContactId());
+        }
         IndexPageEntry openEntry =
                 new IndexPageEntry(
                         this.type,
@@ -55,6 +96,7 @@ public class IndexPageDTO {
         return openEntry;
 
     }
+
     public IndexPageEntry updateEntry(){
         ObjectId Id=null;
         if(this.getId()!=null&&!"".equals(this.getId())){
@@ -123,4 +165,6 @@ public class IndexPageDTO {
     public void setContactId(String contactId) {
         this.contactId = contactId;
     }
+
+
 }

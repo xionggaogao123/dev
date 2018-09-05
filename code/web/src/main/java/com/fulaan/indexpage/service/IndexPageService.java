@@ -10,6 +10,7 @@ import com.db.backstage.TeacherApproveDao;
 import com.db.fcommunity.CommunityDetailDao;
 import com.db.fcommunity.MemberDao;
 import com.db.fcommunity.NewVersionCommunityBindDao;
+import com.db.indexPage.IndexContentDao;
 import com.db.indexPage.IndexPageDao;
 import com.db.operation.AppCommentDao;
 import com.db.operation.AppNoticeDao;
@@ -21,7 +22,9 @@ import com.fulaan.appvote.service.AppVoteService;
 import com.fulaan.backstage.dto.SystemMessageDTO;
 import com.fulaan.dto.VideoDTO;
 import com.fulaan.forum.service.FVoteService;
+import com.fulaan.indexpage.dto.IndexContentDTO;
 import com.fulaan.indexpage.dto.IndexPageDTO;
+import com.fulaan.instantmessage.service.RedDotService;
 import com.fulaan.operation.dto.AppCommentDTO;
 import com.fulaan.operation.dto.AppNoticeDTO;
 import com.fulaan.pojo.Attachement;
@@ -39,7 +42,9 @@ import com.pojo.fcommunity.CommunityDetailEntry;
 import com.pojo.fcommunity.NewVersionCommunityBindEntry;
 import com.pojo.forum.FVoteDTO;
 import com.pojo.forum.FVoteEntry;
+import com.pojo.indexPage.IndexContentEntry;
 import com.pojo.indexPage.IndexPageEntry;
+import com.pojo.instantmessage.ApplyTypeEn;
 import com.pojo.newVersionGrade.CommunityType;
 import com.pojo.operation.AppCommentEntry;
 import com.pojo.user.UserDetailInfoDTO;
@@ -75,6 +80,8 @@ public class IndexPageService {
     @Autowired
     private AppVoteService appVoteService;
 
+    private RedDotService redDotService = new RedDotService();
+
     private IndexPageDao indexPageDao = new IndexPageDao();
 
     private MemberDao memberDao =new MemberDao();
@@ -92,6 +99,8 @@ public class IndexPageService {
     private AppActivityUserDao appActivityUserDao = new AppActivityUserDao();
 
     private NewVersionCommunityBindDao newVersionCommunityBindDao = new NewVersionCommunityBindDao();
+
+    private IndexContentDao indexContentDao = new IndexContentDao();
     //老师社群
   //  private static final String TEACHERCOMMUNIY = "5ae993953d4df93f01b11a36";
     //线上
@@ -628,9 +637,10 @@ public class IndexPageService {
         }else{
             objectIdList.add(new ObjectId(PARENTCOMMUNIY));
         }
-        List<CommunityDetailEntry> entries =  communityDetailDao.getHotDetails(objectIdList, Constant.THREE, 1);
+        List<CommunityDetailEntry> entries =  communityDetailDao.getAllHotDetails(objectIdList, Constant.THREE, 1, 1);
         for(CommunityDetailEntry communityDetailEntry:entries){
             SuperTopicDTO superTopicDTO = new SuperTopicDTO(communityDetailEntry);
+            superTopicDTO.setVoteType(1);//热点话题
             superTopicDTOs.add(superTopicDTO);
         }
 
@@ -648,6 +658,7 @@ public class IndexPageService {
         List<AppNoticeEntry> entries = appNoticeDao.getRoleList(objectIdList, 1, 1,"");
         for(AppNoticeEntry appNoticeEntry:entries){
             SuperTopicDTO superTopicDTO = new SuperTopicDTO();
+            superTopicDTO.setVoteType(2);//教育咨询
             superTopicDTO.setId("");
             superTopicDTO.setUserName("");
             superTopicDTO.setCreateTime("");
@@ -1966,6 +1977,240 @@ public class IndexPageService {
         return map;
     }
 
+    public Map<String,Object> getSixHotIndexList(ObjectId userId,int page,int pageSize){
+        Map<String,Object> map = new HashMap<String, Object>();
+        //1.通知逻辑
+        List<ObjectId>  dlist =communityService.getCommunitys3(userId, 1, 200);
+        //2.老师和家长页面区分（）
+        TeacherApproveEntry teacherApproveEntry = teacherApproveDao.getEntry(userId);
+        //3.获取火热分享
+        List<SuperTopicDTO> superTopicDTOs = new ArrayList<SuperTopicDTO>();
+        if(teacherApproveEntry!=null && teacherApproveEntry.getType()==2){//认证大V
+            if(page==1){
+                superTopicDTOs=getHotList(2);
+            }
+            if(superTopicDTOs.size()==0){
+                superTopicDTOs=getEducationList(2);
+            }
+        }else{
+            if(page==1){
+                superTopicDTOs=getHotList(1);
+            }
+            if(superTopicDTOs.size()==0){
+                superTopicDTOs=getEducationList(1);
+            }
+        }
+        map.put("hotList",superTopicDTOs);
+        //获取最新系统通知
+        ObjectId syId = indexPageDao.getNewSystemPageList(userId, 1, 1);
+        List<Map<String,Object>> obmap = new ArrayList<Map<String, Object>>();
+        if(syId!=null){
+            getNewSystemMessage(syId,obmap);
+        }
+        map.put("systemMessage",obmap);
+        //新集合通知
+        List<ObjectId>  userIds = newVersionCommunityBindDao.getIdsByMainUserId(userId);
+        List<ObjectId> cntactIdList = indexPageDao.getNewPageList(dlist, userId, page, pageSize, Constant.EIGHT,userIds);
+        int count = indexPageDao.countNewPageList(dlist, userId, Constant.EIGHT,userIds);
+        List<IndexContentDTO> list2 = new ArrayList<IndexContentDTO>();
+        List<IndexContentEntry> entryList = indexContentDao.getPageList(cntactIdList);
+        List<ObjectId> oids = new ArrayList<ObjectId>();
+        for(IndexContentEntry indexContentEntry2 : entryList){
+            oids.add(indexContentEntry2.getUserId());
+        }
+        Map<ObjectId, UserEntry> userEntryMap = new HashMap<ObjectId, UserEntry>();
+        if (oids.size() > 0) {
+            userEntryMap = userService.getUserEntryMap(oids, Constant.FIELDS);
+        }
+        for(IndexContentEntry indexContentEntry : entryList){
+            ObjectId uid = indexContentEntry.getUserId();
+            IndexContentDTO dto = new IndexContentDTO(indexContentEntry);
+            dto.setId(indexContentEntry.getContactId().toString());
+           // Index
+            dto.setTimeExpression("");
+            if(userId.toString().equals(uid.toString())){
+                dto.setIsOwner(true);
+            }else{
+                dto.setIsOwner(false);
+            }
+            if(indexContentEntry.getReaList()!=null && indexContentEntry.getReaList().contains(userId)){
+                dto.setIsRead(1);
+            }else{
+                dto.setIsRead(0);
+            }
+            if(indexContentEntry.getReaList()!=null){
+                dto.setReadCount(indexContentEntry.getReaList().size());
+            }else{
+                dto.setReadCount(0);
+            }
+            dto.setTotalReadCount(indexContentEntry.getAllCount());
+            UserEntry userEntry = userEntryMap.get(uid);
+            if(userEntry!=null){
+                String name = StringUtils.isNotEmpty(userEntry.getNickName())?userEntry.getNickName():userEntry.getUserName();
+                dto.setUserName(name);
+                dto.setAvatar(AvatarUtils.getAvatar(userEntry.getAvatar(),userEntry.getRole(),userEntry.getSex()));
+            }
+            list2.add(dto);
+        }
+        map.put("count",count);
+        map.put("list",list2);
+        return map;
+    }
+
+    public void readMessage(ObjectId id,ObjectId userId){
+        IndexContentEntry indexContentEntry = indexContentDao.getEntry(id);
+        if(indexContentEntry!=null){
+            List<ObjectId> reList = indexContentEntry.getReaList();
+            if(!reList.contains(userId)) {
+                indexContentDao.pushReadList(userId, id);
+                //红点减一
+                redDotService.jianRedDot(userId, ApplyTypeEn.piao.getType());
+            }
+        }
+    }
+
+    public void getNewSystemMessage(ObjectId syId,List<Map<String,Object>> obmap){
+        SystemMessageEntry entry = systemMessageDao.getEntry(syId);
+        if(entry!=null){
+            SystemMessageDTO dto8 = new SystemMessageDTO(entry);
+            if(entry.getType()==1){
+                Map<String,Object> ob1 = new HashMap<String, Object>();
+                ob1.put("tag", CommunityType.system.getDes());
+                ob1.put("cardType",2);
+                ob1.put("groupName","");
+                ob1.put("id",dto8.getId());
+                ob1.put("userName","家校美小助手");
+                ob1.put("subject","");
+                ob1.put("avatar","http://7xiclj.com1.z0.glb.clouddn.com/5b6177aa8126103aac1a705b.png");
+                ob1.put("title","家校美使用向导");
+                ob1.put("time",dto8.getCreateTime());
+                ob1.put("content","家校美，一款富有魔力的产品！");
+                ob1.put("imageList",new ArrayList<Attachement>());
+                ob1.put("commentCount",0);
+                ob1.put("videoList",new ArrayList<VideoDTO>());
+                ob1.put("voiceList",new ArrayList<Attachement>());
+                ob1.put("attachements",new ArrayList<Attachement>());
+                ob1.put("isRead",0);
+                ob1.put("totalReadCount", 0);
+                ob1.put("readCount", 0);
+                ob1.put("unReadCount",0);
+                ob1.put("timeExpression","");
+                ob1.put("isOwner",true);
+                ob1.put("allContent","");
+                //ob5 = ob1;
+            }else if(entry.getType()==2){
+                Map<String,Object> ob1 = new HashMap<String, Object>();
+                ob1.put("tag", CommunityType.system.getDes());
+                ob1.put("cardType",3);
+                ob1.put("groupName",dto8.getSourceName());
+                ob1.put("id",dto8.getId());
+                ob1.put("userName","家校美小助手");
+                ob1.put("subject","");
+                ob1.put("avatar","http://7xiclj.com1.z0.glb.clouddn.com/5b6177aa8126103aac1a705b.png");
+                ob1.put("title","班级社群");
+                ob1.put("time",dto8.getCreateTime());
+                if(dto8.getContent()!=null && !dto8.getContent().equals("")){
+                    ob1.put("content","恭喜您于"+dto8.getCreateTime().substring(0,11)+"日成功创建了“"
+                            + dto8.getSourceName()+"”社群");
+                }else{
+                    ob1.put("content","恭喜您于"+dto8.getCreateTime().substring(0,11)+"日成功创建了“"
+                            + dto8.getSourceName()+"”社群");
+                }
+                ob1.put("imageList",new ArrayList<Attachement>());
+                ob1.put("commentCount",0);
+                ob1.put("videoList",new ArrayList<VideoDTO>());
+                ob1.put("voiceList",new ArrayList<Attachement>());
+                ob1.put("attachements",new ArrayList<Attachement>());
+                ob1.put("isRead",0);
+                ob1.put("totalReadCount", 0);
+                ob1.put("readCount", 0);
+                ob1.put("unReadCount",0);
+                ob1.put("timeExpression","");
+                ob1.put("isOwner",true);
+                ob1.put("allContent","");
+                obmap.add(ob1);
+            }else if(entry.getType()==3){
+                Map<String,Object> ob1 = new HashMap<String, Object>();
+                ob1.put("tag", dto8.getId());
+                ob1.put("cardType",5);
+                ob1.put("groupName",dto8.getSourceName());
+                ob1.put("id",dto8.getSourceId());
+                ob1.put("userName","家校美小助手");
+                ob1.put("subject",dto8.getTitle());
+                ob1.put("avatar","http://7xiclj.com1.z0.glb.clouddn.com/5b6177aa8126103aac1a705b.png");
+                ob1.put("title","火热分享");
+                ob1.put("time",dto8.getCreateTime());
+                ob1.put("content","您的留言被选为精选留言了");
+                ob1.put("imageList",new ArrayList<Attachement>());
+                ob1.put("commentCount",0);
+                ob1.put("videoList",new ArrayList<VideoDTO>());
+                ob1.put("voiceList",new ArrayList<Attachement>());
+                ob1.put("attachements",new ArrayList<Attachement>());
+                ob1.put("isRead",0);
+                ob1.put("totalReadCount", 0);
+                ob1.put("readCount", 0);
+                ob1.put("unReadCount",0);
+                ob1.put("timeExpression",dto8.getAvatar());
+                ob1.put("isOwner",true);
+                ob1.put("allContent","");
+                obmap.add(ob1);
+            }else if(entry.getType()==4){
+                Map<String,Object> ob1 = new HashMap<String, Object>();
+                ob1.put("tag", CommunityType.system.getDes());
+                ob1.put("cardType",3);
+                ob1.put("groupName",dto8.getSourceName());
+                ob1.put("id",dto8.getId());
+                ob1.put("userName","家校美小助手");
+                ob1.put("subject","");
+                ob1.put("avatar","http://7xiclj.com1.z0.glb.clouddn.com/5b6177aa8126103aac1a705b.png");
+                ob1.put("title","直播课堂");
+                ob1.put("time",dto8.getCreateTime());
+                ob1.put("content",dto8.getContent());
+                ob1.put("imageList",new ArrayList<Attachement>());
+                ob1.put("commentCount",0);
+                ob1.put("videoList",new ArrayList<VideoDTO>());
+                ob1.put("voiceList",new ArrayList<Attachement>());
+                ob1.put("attachements",new ArrayList<Attachement>());
+                ob1.put("isRead",0);
+                ob1.put("totalReadCount", 0);
+                ob1.put("readCount", 0);
+                ob1.put("unReadCount",0);
+                ob1.put("timeExpression","");
+                ob1.put("isOwner",true);
+                ob1.put("allContent","");
+                obmap.add(ob1);
+            }else if(entry.getType()==5){
+                Map<String,Object> ob1 = new HashMap<String, Object>();
+                ob1.put("tag", CommunityType.system.getDes());
+                ob1.put("cardType",3);
+                ob1.put("groupName",dto8.getSourceName());
+                ob1.put("id",dto8.getId());
+                ob1.put("userName","家校美小助手");
+                ob1.put("subject","");
+                ob1.put("avatar","http://7xiclj.com1.z0.glb.clouddn.com/5b6178508126103aac1a705d.png");
+                ob1.put("title","登录提醒");
+                ob1.put("time",dto8.getCreateTime());
+                ob1.put("content",dto8.getContent());
+                ob1.put("imageList",new ArrayList<Attachement>());
+                ob1.put("commentCount",0);
+                ob1.put("videoList",new ArrayList<VideoDTO>());
+                ob1.put("voiceList",new ArrayList<Attachement>());
+                ob1.put("attachements",new ArrayList<Attachement>());
+                ob1.put("isRead",0);
+                ob1.put("totalReadCount", 0);
+                ob1.put("readCount", 0);
+                ob1.put("unReadCount",0);
+                ob1.put("timeExpression","");
+                ob1.put("isOwner",true);
+                ob1.put("allContent","");
+                obmap.add(ob1);
+            }else{
+
+            }
+        }
+    }
+
+
     public void getDtosByEntries(List<AppActivityDTO> appActivityDTOs,List<AppActivityEntry> entries, ObjectId userId){
         Set<ObjectId> userIds = new HashSet<ObjectId>();
         Set<ObjectId> groupIds = new HashSet<ObjectId>();
@@ -2224,7 +2469,7 @@ public class IndexPageService {
             ob1.put("avatar",dto8.getAvatar());
             ob1.put("title",dto8.getTitle());
             ob1.put("time",dto8.getTime());
-            ob1.put("content",dto8.getContent());
+            ob1.put("content",entry.getContent());
             ob1.put("imageList",dto8.getImageList());
             ob1.put("commentCount",dto8.getCommentCount());
             ob1.put("videoList",dto8.getVideoList());

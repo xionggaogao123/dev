@@ -78,6 +78,17 @@ public class AppVoteDao extends BaseDao{
         return entries;
     }
 
+    public AppVoteEntry getEntry(ObjectId id){
+        BasicDBObject query=new BasicDBObject()
+                .append(Constant.ID,id);
+        DBObject dbObject=findOne(MongoFacroty.getAppDB(), Constant.COLLECTION_NEW_VERSION_APP_VOTE,query,Constant.FIELDS);
+        if(null!=dbObject){
+            return new AppVoteEntry(dbObject);
+        }else{
+            return null;
+        }
+    }
+
     public BasicDBObject getReceivedCondition(List<ObjectId> groupIds,
                                               ObjectId userId){
         List<Integer> visiblePermission = new ArrayList<Integer>();

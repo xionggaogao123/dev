@@ -21,6 +21,16 @@ public class SystemMessageDao extends BaseDao {
         return entry.getID().toString() ;
     }
 
+    public SystemMessageEntry getEntry(ObjectId id){
+        BasicDBObject query=new BasicDBObject(Constant.ID,id).append("isr",Constant.ZERO);
+        DBObject dbObject=findOne(MongoFacroty.getAppDB(), Constant.COLLECTION_SYSTEM_MESSAGE,query,Constant.FIELDS);
+        if(null!=dbObject){
+            return new SystemMessageEntry((BasicDBObject) dbObject);
+        }else {
+            return null;
+        }
+    }
+
     public List<SystemMessageEntry> selectContentList(List<ObjectId> ids) {
         BasicDBObject query =new BasicDBObject();
         query.append("isr", Constant.ZERO);

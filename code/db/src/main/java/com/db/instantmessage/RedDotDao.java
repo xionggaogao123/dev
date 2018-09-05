@@ -24,6 +24,13 @@ public class RedDotDao extends BaseDao {
         save(MongoFacroty.getAppDB(), Constant.COLLECTION_RED_DOT, list);
     }
 
+    //删除
+    public void updateEntry(ObjectId id,int number){
+        BasicDBObject query = new BasicDBObject(Constant.ID,id);
+        BasicDBObject updateValue=new BasicDBObject(Constant.MONGO_SET,new BasicDBObject("num",number));
+        update(MongoFacroty.getAppDB(), Constant.COLLECTION_RED_DOT, query,updateValue);
+    }
+
     //单个查询 otner类型
     public RedDotEntry getEntryByUserId(ObjectId userId,int type){
         BasicDBObject query = new BasicDBObject();

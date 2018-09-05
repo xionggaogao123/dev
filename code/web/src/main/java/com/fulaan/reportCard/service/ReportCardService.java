@@ -4,6 +4,7 @@ import com.db.business.ModuleTimeDao;
 import com.db.fcommunity.CommunityDao;
 import com.db.fcommunity.MemberDao;
 import com.db.fcommunity.NewVersionCommunityBindDao;
+import com.db.indexPage.IndexContentDao;
 import com.db.indexPage.IndexPageDao;
 import com.db.indexPage.WebHomePageDao;
 import com.db.operation.AppNoticeDao;
@@ -11,6 +12,7 @@ import com.db.reportCard.*;
 import com.db.wrongquestion.ExamTypeDao;
 import com.db.wrongquestion.SubjectClassDao;
 import com.fulaan.dto.VideoDTO;
+import com.fulaan.indexpage.dto.IndexContentDTO;
 import com.fulaan.indexpage.dto.IndexPageDTO;
 import com.fulaan.instantmessage.service.RedDotService;
 import com.fulaan.operation.dto.AppNoticeDTO;
@@ -25,6 +27,7 @@ import com.fulaan.wrongquestion.dto.ExamTypeDTO;
 import com.pojo.fcommunity.CommunityEntry;
 import com.pojo.fcommunity.MemberEntry;
 import com.pojo.fcommunity.NewVersionCommunityBindEntry;
+import com.pojo.indexPage.IndexContentEntry;
 import com.pojo.indexPage.IndexPageEntry;
 import com.pojo.indexPage.WebHomePageEntry;
 import com.pojo.instantmessage.ApplyTypeEn;
@@ -99,6 +102,8 @@ public class ReportCardService {
     private IndexPageDao indexPageDao = new IndexPageDao();
 
     private ModuleTimeDao moduleTimeDao=  new ModuleTimeDao();
+
+    private IndexContentDao indexContentDao = new IndexContentDao();
 
     public static void main(String[] args) throws Exception {
         ReportCardService reportCardService = new ReportCardService();
@@ -324,6 +329,42 @@ public class ReportCardService {
         GroupExamDetailEntry entry = groupExamDetailDao.getEntryById(groupExamDetailId);
         //添加红点
         redDotService.addThirdList(entry.getID(),entry.getCommunityId(), entry.getUserId(), ApplyTypeEn.repordcard.getType());
+
+        //新首页
+        IndexPageDTO dto2 = new IndexPageDTO();
+        dto2.setType(CommunityType.reportCard.getType());
+        dto2.setUserId(entry.getUserId().toString());
+        dto2.setCommunityId(entry.getCommunityId().toString());
+        dto2.setContactId(entry.getID().toString());
+        IndexPageEntry entry2 = dto2.buildAddEntry();
+        indexPageDao.addEntry(entry2);
+        SubjectClassEntry subjectClassEntry = subjectClassDao.getEntry(entry.getSubjectId());
+        String name = "";
+        if(subjectClassEntry!=null){
+            name = subjectClassEntry.getName();
+        }
+        CommunityEntry communityEntry = communityDao.findCommunityByObjectId(entry.getGroupId());
+        String groupName = "";
+        if(communityEntry!=null){
+            groupName = communityEntry.getCommunityName();
+        }
+        IndexContentDTO indexContentDTO = new IndexContentDTO(
+                name,
+                "通知—成绩单",
+                entry.getExamName(),
+                new ArrayList<VideoDTO>(),
+                new ArrayList<Attachement>(),
+                new ArrayList<Attachement>(),
+                new ArrayList<Attachement>(),
+                groupName,
+                "");
+        IndexContentEntry indexContentEntry = indexContentDTO.buildEntry(entry.getUserId().toString(),entry.getSubjectId().toString(), entry.getGroupId().toString(),entry.getCommunityId().toString(),3);
+        indexContentEntry.setReadList(new ArrayList<ObjectId>());
+        indexContentEntry.setContactId(entry.getID());
+        indexContentEntry.setContactType(8);
+        indexContentEntry.setAllCount(entry.getSignCount());
+        indexContentDao.addEntry(indexContentEntry);
+
         //成绩单发送记录
         moduleTimeDao.addEntry(entry.getUserId(),ApplyTypeEn.repordcard.getType(),entry.getCommunityId());
         PictureRunNable.addTongzhi(entry.getCommunityId().toString(), entry.getUserId().toString(), 6);
@@ -950,7 +991,7 @@ public class ReportCardService {
         retMap.put("page", page);
         retMap.put("pageSize", pageSize);
         //清除红点
-        redDotService.cleanThirdResult(userId, ApplyTypeEn.repordcard.getType());
+        //redDotService.cleanThirdResult(userId, ApplyTypeEn.repordcard.getType());
         return retMap;
     }
 
@@ -1171,8 +1212,10 @@ public class ReportCardService {
             }
             List<GroupExamUserRecordEntry> recordEntries = groupExamUserRecordDao.getExamUserRecordEntries(new ObjectId(groupExamDetailId), -1, -1, -1, 1);
             examScoreDTOs.clear();
+            List<String>  objectIdList = new ArrayList<String>();
             for (GroupExamUserRecordEntry entry : recordEntries) {
                 examScoreDTOs.add(new GroupExamUserRecordDTO(entry));
+                objectIdList.add(entry.getUserId().toString());
             }
             GroupExamDetailEntry detailEntry = groupExamDetailDao.getEntryById(new ObjectId(groupExamDetailId));
             if (detailEntry.getRecordScoreType() == Constant.ONE) {
@@ -1230,6 +1273,42 @@ public class ReportCardService {
             //发送状态下
             if(status==2 && isSend!=1){
                 redDotService.addThirdList(detailEntry.getID(),detailEntry.getCommunityId(), detailEntry.getUserId(), ApplyTypeEn.repordcard.getType());
+                //新首页
+                IndexPageDTO dto2 = new IndexPageDTO();
+                dto2.setType(CommunityType.reportCard.getType());
+                dto2.setUserId(detailEntry.getUserId().toString());
+                dto2.setCommunityId(detailEntry.getCommunityId().toString());
+                dto2.setContactId(detailEntry.getID().toString());
+                dto2.setReceiveIdList(objectIdList);
+                IndexPageEntry entry2 = dto2.buildAddEntry();
+                indexPageDao.addEntry(entry2);
+                SubjectClassEntry subjectClassEntry = subjectClassDao.getEntry(detailEntry.getSubjectId());
+                String name = "";
+                if(subjectClassEntry!=null){
+                    name = subjectClassEntry.getName();
+                }
+                CommunityEntry communityEntry = communityDao.findCommunityByObjectId(detailEntry.getGroupId());
+                String groupName = "";
+                if(communityEntry!=null){
+                    groupName = communityEntry.getCommunityName();
+                }
+                IndexContentDTO indexContentDTO = new IndexContentDTO(
+                        name,
+                        "通知—成绩单",
+                        detailEntry.getExamName(),
+                        new ArrayList<VideoDTO>(),
+                        new ArrayList<Attachement>(),
+                        new ArrayList<Attachement>(),
+                        new ArrayList<Attachement>(),
+                        groupName,
+                        "");
+                IndexContentEntry indexContentEntry = indexContentDTO.buildEntry(detailEntry.getUserId().toString(),detailEntry.getSubjectId().toString(), detailEntry.getGroupId().toString(),detailEntry.getCommunityId().toString(),3);
+                indexContentEntry.setReadList(new ArrayList<ObjectId>());
+                indexContentEntry.setContactId(detailEntry.getID());
+                indexContentEntry.setContactType(8);
+                indexContentEntry.setAllCount(examScoreDTOs.size());
+                indexContentDao.addEntry(indexContentEntry);
+
                 PictureRunNable.addTongzhi(detailEntry.getCommunityId().toString(), detailEntry.getUserId().toString(), 6);
                 //成绩单发送记录
                 moduleTimeDao.addEntry(detailEntry.getUserId(),ApplyTypeEn.repordcard.getType(),detailEntry.getCommunityId());

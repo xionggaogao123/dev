@@ -6,10 +6,12 @@ import com.db.business.ModuleTimeDao;
 import com.db.fcommunity.CommunityDao;
 import com.db.fcommunity.MemberDao;
 import com.db.fcommunity.NewVersionCommunityBindDao;
+import com.db.indexPage.IndexContentDao;
 import com.db.indexPage.IndexPageDao;
 import com.db.indexPage.WebHomePageDao;
 import com.db.operation.AppNoticeDao;
 import com.db.operation.AppOperationDao;
+import com.fulaan.indexpage.dto.IndexContentDTO;
 import com.fulaan.indexpage.dto.IndexPageDTO;
 import com.fulaan.instantmessage.service.RedDotService;
 import com.fulaan.integral.service.IntegralSufferService;
@@ -27,6 +29,7 @@ import com.pojo.appnotice.AppNoticeEntry;
 import com.pojo.backstage.PictureType;
 import com.pojo.fcommunity.CommunityEntry;
 import com.pojo.fcommunity.NewVersionCommunityBindEntry;
+import com.pojo.indexPage.IndexContentEntry;
 import com.pojo.indexPage.IndexPageEntry;
 import com.pojo.indexPage.WebHomePageEntry;
 import com.pojo.instantmessage.ApplyTypeEn;
@@ -74,6 +77,8 @@ public class AppNoticeService {
     private UserService userService;
     @Autowired
     private RedDotService redDotService;
+
+    private IndexContentDao indexContentDao = new IndexContentDao();
 
     @Autowired
     private NewVersionBindService newVersionBindService;
@@ -152,6 +157,32 @@ public class AppNoticeService {
                 dto1.setContactId(oid.toString());
                 IndexPageEntry entry = dto1.buildAddEntry();
                 indexPageDao.addEntry(entry);
+
+                IndexPageDTO dto2 = new IndexPageDTO();
+                dto2.setType(CommunityType.allNotice.getType());
+                dto2.setUserId(userId.toString());
+                dto2.setCommunityId(communityDTO.getCommunityId());
+                dto2.setContactId(oid.toString());
+                IndexPageEntry entry2 = dto2.buildAddEntry();
+                indexPageDao.addEntry(entry2);
+
+                IndexContentDTO indexContentDTO = new IndexContentDTO(
+                        dto.getSubject(),
+                        dto.getTitle(),
+                        dto.getContent(),
+                        dto.getVideoList(),
+                        dto.getImageList(),
+                        dto.getAttachements(),
+                        dto.getVoiceList(),
+                        communityDTO.getGroupName(),
+                        userEntry.getUserName());
+                List<ObjectId> members=memberDao.getAllMemberIds(new ObjectId(communityDTO.getGroupId()));
+                IndexContentEntry indexContentEntry = indexContentDTO.buildEntry(userId.toString(),dto.getSubjectId(), communityDTO.getGroupId(),communityDTO.getCommunityId(),dto.getWatchPermission());
+                indexContentEntry.setReadList(new ArrayList<ObjectId>());
+                indexContentEntry.setContactId(oid);
+                indexContentEntry.setContactType(1);
+                indexContentEntry.setAllCount(members.size());
+                indexContentDao.addEntry(indexContentEntry);
 
                 WebHomePageEntry pageEntry=new WebHomePageEntry(Constant.TWO, userId,
                         StringUtils.isNotEmpty(communityDTO.getCommunityId())?
@@ -294,7 +325,7 @@ public class AppNoticeService {
         result.put("page",page);
         result.put("pageSize",pageSize);
         moduleNumberDao.addEntry(userId,ApplyTypeEn.notice.getType());
-        redDotService.cleanResult(userId,ApplyTypeEn.notice.getType(),0l);
+        //redDotService.cleanResult(userId,ApplyTypeEn.notice.getType(),0l);
         return result;
     }
 
@@ -388,7 +419,7 @@ public class AppNoticeService {
         retMap.put("page",page);
         retMap.put("pageSize",pageSize);
         //清除红点
-        redDotService.cleanResult(userId,ApplyTypeEn.notice.getType(),0l);
+        //redDotService.cleanResult(userId,ApplyTypeEn.notice.getType(),0l);
         return retMap;
     }
 
@@ -414,7 +445,7 @@ public class AppNoticeService {
         retMap.put("page",page);
         retMap.put("pageSize",pageSize);
         //清除红点
-        redDotService.cleanResult(userId,ApplyTypeEn.notice.getType(),0l);
+       // redDotService.cleanResult(userId,ApplyTypeEn.notice.getType(),0l);
         return retMap;
     }
 
@@ -536,7 +567,7 @@ public class AppNoticeService {
         retMap.put("page",page);
         retMap.put("pageSize",pageSize);
         //清除红点
-        redDotService.cleanResult(userId,ApplyTypeEn.notice.getType(),0l);
+        //redDotService.cleanResult(userId,ApplyTypeEn.notice.getType(),0l);
         return retMap;
     }
 
@@ -553,7 +584,7 @@ public class AppNoticeService {
         retMap.put("page",page);
         retMap.put("pageSize",pageSize);
         //清除红点
-        redDotService.cleanResult(userId,ApplyTypeEn.notice.getType(),0l);
+        //redDotService.cleanResult(userId,ApplyTypeEn.notice.getType(),0l);
         return retMap;
     }
 
@@ -563,9 +594,18 @@ public class AppNoticeService {
             List<ObjectId> readList=appNoticeEntry.getReaList();
             if(!readList.contains(userId)) {
                 appNoticeDao.pushReadList(userId, id);
-                redDotService.cleanResult(userId,ApplyTypeEn.notice.getType(),0l);
+               // redDotService.cleanResult(userId,ApplyTypeEn.notice.getType(),0l);
             }
-
+            //首页通用
+            IndexContentEntry indexContentEntry = indexContentDao.getEntry(id);
+            if(indexContentEntry!=null){
+                List<ObjectId> reList = indexContentEntry.getReaList();
+                if(!reList.contains(userId)) {
+                    indexContentDao.pushReadList(userId, id);
+                    //红点减一
+                    redDotService.jianRedDot(userId,ApplyTypeEn.notice.getType());
+                }
+            }
         }else{
             throw new Exception("传入的id参数有误");
         }

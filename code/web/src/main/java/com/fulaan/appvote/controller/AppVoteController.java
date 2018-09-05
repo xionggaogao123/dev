@@ -7,6 +7,7 @@ import com.fulaan.base.BaseController;
 import com.sys.constants.Constant;
 import com.sys.utils.RespObj;
 import io.swagger.annotations.ApiOperation;
+import io.swagger.annotations.ApiParam;
 import io.swagger.annotations.ApiResponse;
 import io.swagger.annotations.ApiResponses;
 import org.bson.types.ObjectId;
@@ -118,6 +119,23 @@ public class AppVoteController extends BaseController{
             Map<String,Object> retMap=appVoteService.getMySendAppVote(getUserId(),page,pageSize);
             respObj.setCode(Constant.SUCCESS_CODE);
             respObj.setMessage(retMap);
+        }catch (Exception e){
+            respObj.setErrorMessage(e.getMessage());
+        }
+        return respObj;
+    }
+
+
+    @ApiOperation(value = "获取一个投票详情", httpMethod = "GET", produces = "application/json")
+    @ApiResponses( value = {@ApiResponse(code = 200, message = "Successful — 请求已完成",response = RespObj.class)})
+    @RequestMapping("/getOneAppVote")
+    @ResponseBody
+    public RespObj getOneAppVote(@ApiParam(name = "id", required = true, value = "id") @RequestParam("id") String id){
+        RespObj respObj=new RespObj(Constant.FAILD_CODE);
+        try{
+            AppVoteDTO dto=appVoteService.getOneAppVote(getUserId(),new ObjectId(id));
+            respObj.setCode(Constant.SUCCESS_CODE);
+            respObj.setMessage(dto);
         }catch (Exception e){
             respObj.setErrorMessage(e.getMessage());
         }

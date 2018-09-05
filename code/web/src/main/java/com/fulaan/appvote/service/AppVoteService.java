@@ -10,16 +10,20 @@ import com.db.fcommunity.CommunityDetailDao;
 import com.db.fcommunity.MemberDao;
 import com.db.fcommunity.NewVersionCommunityBindDao;
 import com.db.forum.FVoteDao;
+import com.db.indexPage.IndexContentDao;
 import com.db.indexPage.IndexPageDao;
 import com.fulaan.appvote.dto.AppVoteDTO;
 import com.fulaan.appvote.dto.VoteOption;
 import com.fulaan.appvote.dto.VoteResult;
+import com.fulaan.dto.VideoDTO;
 import com.fulaan.forum.service.FVoteService;
+import com.fulaan.indexpage.dto.IndexContentDTO;
 import com.fulaan.indexpage.dto.IndexPageDTO;
 import com.fulaan.instantmessage.service.RedDotService;
 import com.fulaan.integral.service.IntegralSufferService;
 import com.fulaan.operation.dto.GroupOfCommunityDTO;
 import com.fulaan.picturetext.runnable.PictureRunNable;
+import com.fulaan.pojo.Attachement;
 import com.fulaan.pojo.User;
 import com.fulaan.user.service.UserService;
 import com.pojo.appactivity.AppActivityEntry;
@@ -31,6 +35,7 @@ import com.pojo.fcommunity.CommunityEntry;
 import com.pojo.fcommunity.NewVersionCommunityBindEntry;
 import com.pojo.forum.FVoteDTO;
 import com.pojo.forum.FVoteEntry;
+import com.pojo.indexPage.IndexContentEntry;
 import com.pojo.indexPage.IndexPageEntry;
 import com.pojo.instantmessage.ApplyTypeEn;
 import com.pojo.integral.IntegralType;
@@ -90,6 +95,8 @@ public class AppVoteService {
 
     private IndexPageDao indexPageDao = new IndexPageDao();
 
+    private IndexContentDao indexContentDao = new IndexContentDao();
+
 
     public String saveAppVote(AppVoteDTO appVoteDTO) throws ParseException {
         SimpleDateFormat format = new SimpleDateFormat(DateTimeUtils.DATE_YYYY_MM_DD_HH_MM_SS_H);
@@ -129,6 +136,32 @@ public class AppVoteService {
                 dto1.setContactId(appVoteEntry.getID().toString());
                 IndexPageEntry entry = dto1.buildAddEntry();
                 indexPageDao.addEntry(entry);
+
+                //新首页记录
+                IndexPageDTO dto2 = new IndexPageDTO();
+                dto2.setType(CommunityType.allNotice.getType());
+                dto2.setUserId(appVoteDTO.getUserId());
+                dto2.setCommunityId(dto.getCommunityId());
+                dto2.setContactId(appVoteEntry.getID().toString());
+                IndexPageEntry entry2 = dto2.buildAddEntry();
+                indexPageDao.addEntry(entry2);
+                IndexContentDTO indexContentDTO = new IndexContentDTO(
+                        appVoteDTO.getSubjectName(),
+                        appVoteDTO.getTitle(),
+                        appVoteDTO.getContent(),
+                        new ArrayList<VideoDTO>(),
+                        appVoteDTO.getImageList(),
+                        new ArrayList<Attachement>(),
+                        new ArrayList<Attachement>(),
+                        dto.getGroupName(),
+                        "");
+                List<ObjectId> members=memberDao.getAllMemberIds(new ObjectId(dto.getGroupId()));
+                IndexContentEntry indexContentEntry = indexContentDTO.buildEntry(appVoteDTO.getUserId(),appVoteDTO.getSubjectId(), dto.getGroupId(),dto.getCommunityId(),appVoteDTO.getVisiblePermission());
+                indexContentEntry.setReadList(new ArrayList<ObjectId>());
+                indexContentEntry.setContactId(appVoteEntry.getID());
+                indexContentEntry.setContactType(7);
+                indexContentEntry.setAllCount(members.size());
+                indexContentDao.addEntry(indexContentEntry);
             }
 
         }
@@ -152,7 +185,7 @@ public class AppVoteService {
         getVoteDtos(appVoteDTOs, appVoteEntries,userId);
         int count = appVoteDao.countGatherAppVotes(userId,groupIds);
         //清除红点
-        redDotService.cleanOtherResult(userId, ApplyTypeEn.piao.getType());
+        //redDotService.cleanOtherResult(userId, ApplyTypeEn.piao.getType());
         retMap.put("list", appVoteDTOs);
         retMap.put("page", page);
         retMap.put("pageSize", pageSize);
@@ -180,6 +213,20 @@ public class AppVoteService {
        retMap.put("count", count);
        return retMap;
     }
+
+    public AppVoteDTO getOneAppVote(ObjectId userId, ObjectId id){
+        AppVoteEntry entry = appVoteDao.getEntry(id);
+        List<AppVoteDTO> appVoteDTOs = new ArrayList<AppVoteDTO>();
+        List<AppVoteEntry> appVoteEntries = new ArrayList<AppVoteEntry>();
+        appVoteEntries.add(entry);
+        getVoteDtos(appVoteDTOs, appVoteEntries, userId);
+        if(appVoteDTOs.size()>0){
+            return appVoteDTOs.get(0);
+        }else{
+            return null;
+        }
+    }
+
 
 
     public Map<String, Object> getMyReceivedAppVote(ObjectId userId, int page, int pageSize) {

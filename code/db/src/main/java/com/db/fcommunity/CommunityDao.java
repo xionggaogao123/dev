@@ -405,4 +405,65 @@ public class CommunityDao extends BaseDao {
         }
         return null;
     }
+
+    /**
+     * 获取userId 创建的社群
+     * @param map
+     * @return
+     */
+    public Map<String,Object> getUserCreatedCommunity(Map map) {
+        int page = map.get("page") == null?1:Integer.parseInt(map.get("page").toString());
+        int pageSize = map.get("pageSize") == null?10:Integer.parseInt(map.get("pageSize").toString());
+
+        Map<String,Object> result = new HashMap<String, Object>();
+        List<CommunityEntry> entries=new ArrayList<CommunityEntry>();
+        BasicDBObject query = new BasicDBObject().append("cmow", new ObjectId(map.get("userId").toString()));
+        query.append("r",Constant.ZERO);
+        List<DBObject> dbObjectList=find(MongoFacroty.getAppDB(), Constant.COLLECTION_FORUM_COMMUNITY, query,Constant.FIELDS
+                ,new BasicDBObject("_id", Constant.DESC), (page - 1) * pageSize, pageSize);
+        if(null!=dbObjectList&&!dbObjectList.isEmpty()){
+            for(DBObject dbObject:dbObjectList){
+                entries.add(new CommunityEntry(dbObject));
+            }
+        }
+        result.put("communityEntryList",entries);
+        //获取总 count
+        List<DBObject> countList=find(MongoFacroty.getAppDB(), Constant.COLLECTION_FORUM_COMMUNITY, query,Constant.FIELDS);
+        result.put("count",countList.size());
+        return result;
+    }
+
+    /**
+     * 获取userId 加入的社群
+     * @param map
+     * @return
+     */
+    public Map<String,Object> getUserJoinCommunityByIdList(List<ObjectId> communityIdList, Map map) {
+        int page = map.get("page") == null?1:Integer.parseInt(map.get("page").toString());
+        int pageSize = map.get("pageSize") == null?10:Integer.parseInt(map.get("pageSize").toString());
+
+        Map<String,Object> result = new HashMap<String, Object>();
+        List<CommunityEntry> entries=new ArrayList<CommunityEntry>();
+        //不取自己创建的社群 操作有退出
+        List<ObjectId> userIdList = new ArrayList<ObjectId>();
+        userIdList.add(new ObjectId(map.get("userId").toString()));
+//        BasicDBObject query = new BasicDBObject().append("cmow",  new BasicDBObject(Constant.MONGO_NOTIN, userIdList));
+        BasicDBObject query = new BasicDBObject();
+        query.append("cmow",  new BasicDBObject(Constant.MONGO_NOTIN, userIdList));
+        query.append("r",Constant.ZERO);
+        query.append("_id",new BasicDBObject(Constant.MONGO_IN, communityIdList));
+        List<DBObject> dbObjectList=find(MongoFacroty.getAppDB(), Constant.COLLECTION_FORUM_COMMUNITY, query,Constant.FIELDS
+                ,new BasicDBObject("_id", Constant.DESC), (page - 1) * pageSize, pageSize);
+        if(null!=dbObjectList&&!dbObjectList.isEmpty()){
+            for(DBObject dbObject:dbObjectList){
+                entries.add(new CommunityEntry(dbObject));
+            }
+        }
+        result.put("communityEntryList",entries);
+        //获取总 count
+        List<DBObject> countList=find(MongoFacroty.getAppDB(), Constant.COLLECTION_FORUM_COMMUNITY, query,Constant.FIELDS);
+        result.put("count",countList.size());
+        return result;
+    }
+
 }

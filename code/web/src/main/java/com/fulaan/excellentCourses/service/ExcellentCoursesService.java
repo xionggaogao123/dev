@@ -2632,13 +2632,9 @@ public class ExcellentCoursesService {
         }
         if(stm!=0l){
             dto.setStartTime(DateTimeUtils.getLongToStrTimeTwo(stm).substring(0,11));
-        }else{
-            dto.setStartTime("");
         }
         if(etm!=0l){
             dto.setEndTime(DateTimeUtils.getLongToStrTimeTwo(etm).substring(0,11));
-        }else{
-            dto.setEndTime("");
         }
         dto.setUserName(name);
         map.put("dto",dto);

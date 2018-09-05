@@ -961,6 +961,8 @@ public class Constant {
     /**------------------------错题本----------------------**/
     //首页记录表
     public static final String COLLECTION_INDEX_PAGE="indexpage";
+    //首页内容表
+    public static final String COLLECTION_INDEX_CONTENT="jxm_index_Content";
     //错题本2.0
     public static final String COLLECTION_QUESTION_BOOK = "questionbook";
     //解析表

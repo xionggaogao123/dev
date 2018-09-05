@@ -845,4 +845,44 @@ public class MemberDao extends BaseDao {
         update(MongoFacroty.getAppDB(), Constant.COLLECTION_FORUM_COMMUNITY_GROUP, query, updateValue);
     }
 
+    public List<MemberEntry> getCommunityListByUid(ObjectId userId) {
+        BasicDBObject query = new BasicDBObject("r", Constant.ZERO);
+        query.append("uid",userId);
+        query.append("cmid",new BasicDBObject(Constant.MONGO_EXIST,true));//有关联社群Id的
+
+        BasicDBObject orderBy = new BasicDBObject(Constant.ID, Constant.DESC);
+        List<MemberEntry> memberEntries = new ArrayList<MemberEntry>();
+        List<DBObject> dbObjects = find(MongoFacroty.getAppDB(), Constant.COLLECTION_FORUM_COMMUNITY_MEMBER, query, Constant.FIELDS, orderBy);
+        for (DBObject dbo : dbObjects) {
+            memberEntries.add(new MemberEntry(dbo));
+        }
+        return memberEntries;
+    }
+
+    public void updateRoleById(Map map) {
+        BasicDBObject query = new BasicDBObject(Constant.ID,new ObjectId(map.get("id").toString()));
+        BasicDBObject updateValue = new BasicDBObject(Constant.MONGO_SET,new BasicDBObject("rl",Integer.parseInt(map.get("role").toString())));
+        update(MongoFacroty.getAppDB(), Constant.COLLECTION_FORUM_COMMUNITY_MEMBER,query,updateValue);
+    }
+
+    public Map<String,Object> getAllMembersForPage(Map map) {
+        Map<String,Object> result = new HashMap<String, Object>();
+        int page = map.get("page") == null?1:Integer.parseInt(map.get("page").toString());
+        int pageSize = map.get("pageSize") == null?10:Integer.parseInt(map.get("pageSize").toString());
+
+        BasicDBObject query = new BasicDBObject()
+                .append("grid", new ObjectId(map.get("groupId").toString()))
+                .append("r", 0);
+        BasicDBObject orderBy = new BasicDBObject("rl", Constant.DESC).append(Constant.ID, Constant.DESC);
+        List<MemberEntry> memberEntries = new ArrayList<MemberEntry>();
+        List<DBObject> dbObjects = find(MongoFacroty.getAppDB(), Constant.COLLECTION_FORUM_COMMUNITY_MEMBER, query, Constant.FIELDS
+                ,orderBy, (page - 1) * pageSize, pageSize);
+        for (DBObject dbo : dbObjects) {
+            memberEntries.add(new MemberEntry(dbo));
+        }
+        result.put("memberEntries",memberEntries);
+        List<DBObject> allDbObjectsList = find(MongoFacroty.getAppDB(), Constant.COLLECTION_FORUM_COMMUNITY_MEMBER, query, Constant.FIELDS);
+        result.put("count",allDbObjectsList.size());
+        return result;
+    }
 }

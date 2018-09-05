@@ -232,6 +232,7 @@ public class DefaultReportCardNewController extends BaseController {
         for (GroupExamUserRecordDTO g : list) {
             GroupExamUserRecordStrListDTO gs = new GroupExamUserRecordStrListDTO(g);
             GroupExamDetailEntry gede = groupExamDetailDao.getEntryById(new ObjectId(gs.getGroupExamDetailId()));
+            gs.setFsShowType(gede.getFsShowType());
             List<String> subS = gs.getSubjectId();
             List<String> scoreS = gs.getScore();
             List<Integer> scoreSL = gs.getScoreLevel();

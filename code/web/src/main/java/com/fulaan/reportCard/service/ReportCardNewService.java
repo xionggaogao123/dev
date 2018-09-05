@@ -1570,6 +1570,13 @@ public class ReportCardNewService {
                     excellentPercentStr.append(String.valueOf(excellentPercent)).append(",");
                     qualifyPercentStr.append(String.valueOf(qualifyPercent)).append(",");
                     unQualifyPercentStr.append(String.valueOf(unQualifyPercent)).append(",");
+                } else {
+                    maxScoreStr.append("").append(",");
+                    minScoreStr.append("").append(",");
+                    avgScoreStr.append("").append(",");
+                    excellentPercentStr.append("").append(",");
+                    qualifyPercentStr.append("").append(",");
+                    unQualifyPercentStr.append("").append(",");
                 }
             } else {
                 int totalCount = 0;

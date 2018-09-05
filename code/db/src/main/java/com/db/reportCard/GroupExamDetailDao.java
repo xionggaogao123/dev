@@ -2,6 +2,7 @@ package com.db.reportCard;
 
 import com.db.base.BaseDao;
 import com.db.factory.MongoFacroty;
+import com.mongodb.BasicDBList;
 import com.mongodb.BasicDBObject;
 import com.mongodb.DBObject;
 import com.pojo.reportCard.GroupExamDetailEntry;
@@ -187,6 +188,27 @@ public class GroupExamDetailDao extends BaseDao{
         update(MongoFacroty.getAppDB(), Constant.COLLECTION_REPORT_CARD_GROUP_EXAM_DETAIL,query,updateValue);
     }
 
+    
+    public Map<ObjectId,GroupExamDetailEntry>  getGroupExamDetailMapOld(List<ObjectId> groupExamIds){
+        Map<ObjectId,GroupExamDetailEntry> entryMap=new HashMap<ObjectId, GroupExamDetailEntry>();
+        BasicDBList values = new BasicDBList();
+        BasicDBObject query1=new BasicDBObject("isNew",Constant.ZERO);
+        BasicDBObject query2=new BasicDBObject("isNew",new BasicDBObject(Constant.MONGO_EXIST, false));
+        values.add(query1);
+        values.add(query2);
+        
+        BasicDBObject query=new BasicDBObject()
+                .append(Constant.ID,new BasicDBObject(Constant.MONGO_IN,groupExamIds));
+        query.put(Constant.MONGO_OR, values);
+        List<DBObject> dbObjects=find(MongoFacroty.getAppDB(), Constant.COLLECTION_REPORT_CARD_GROUP_EXAM_DETAIL,query,Constant.FIELDS);
+        if(null!=dbObjects&&!dbObjects.isEmpty()){
+            for(DBObject dbObject:dbObjects){
+                GroupExamDetailEntry examDetailEntry=new GroupExamDetailEntry(dbObject);
+                entryMap.put(examDetailEntry.getID(),examDetailEntry);
+            }
+        }
+        return entryMap;
+    }
 
     public Map<ObjectId,GroupExamDetailEntry>  getGroupExamDetailMap(List<ObjectId> groupExamIds){
         Map<ObjectId,GroupExamDetailEntry> entryMap=new HashMap<ObjectId, GroupExamDetailEntry>();

@@ -38,6 +38,8 @@ public class GroupExamUserRecordStrListDTO {
     private boolean flgChoose = false;
     //是否自己小孩
     private boolean ownChild = false;
+    //分数展示类型    0.分数和等第1.分数和排名2.仅分数3.仅等第
+    private int fsShowType;
     
 
 
@@ -258,8 +260,17 @@ public class GroupExamUserRecordStrListDTO {
         this.scoreRep = scoreRep;
     }
 
+    public int getFsShowType() {
+        return fsShowType;
+    }
+
+    public void setFsShowType(int fsShowType) {
+        this.fsShowType = fsShowType;
+    }
 
 
+
+    
     
 
     

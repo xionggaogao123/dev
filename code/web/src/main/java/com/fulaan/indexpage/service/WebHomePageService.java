@@ -345,7 +345,7 @@ public class WebHomePageService {
                 childUserIds.add(groupExamUserRecordEntry.getUserId());
             }
             Map<ObjectId, GroupExamDetailEntry> groupExamDetailEntryMap = groupExamDetailDao
-                    .getGroupExamDetailMap(new ArrayList<ObjectId>(groupExamIds));
+                    .getGroupExamDetailMapOld(new ArrayList<ObjectId>(groupExamIds));
             initAllAvailableIds(communityIds,userIds,subjectIds,examTypeIds,groupExamDetailEntryMap);
             Map<ObjectId, CommunityEntry> communityEntryMap = communityDao
                     .findMapInfo(new ArrayList<ObjectId>(communityIds));
@@ -410,8 +410,11 @@ public class WebHomePageService {
                             detailDTO.setExamTypeName(examTypeEntry.getExamTypeName());
                         }
                     }
-                    detailDTO.setScore(userRecordEntry.getScore());
-                    detailDTO.setScoreLevel(userRecordEntry.getScoreLevel());
+                    if (detailEntry.getIsNew() == 0) {
+                        detailDTO.setScore(userRecordEntry.getScore());
+                        detailDTO.setScoreLevel(userRecordEntry.getScoreLevel());
+                    }
+                    
                     UserEntry mainUserEntry = mainUserEntryMap.get(detailEntry.getUserId());
                     if (null != mainUserEntry) {
                         detailDTO.setUserName(org.apache.commons.lang3.StringUtils.isNotBlank(mainUserEntry.getNickName())?mainUserEntry.getNickName():mainUserEntry.getUserName());
@@ -491,12 +494,18 @@ public class WebHomePageService {
                 if (detailEntry.getRecordScoreType() == Constant.ONE) {
                     RecordScoreEvaluateEntry evaluateEntry = recordScoreEvaluateDao.getEntryById(detailEntry.getID());
                     if (null != evaluateEntry) {
-                        detailDTO.setAvgScore(evaluateEntry.getAvgScore());
+                        if (detailDTO.getIsNew() == 0) {
+                            detailDTO.setAvgScore(evaluateEntry.getAvgScore());
+                        } 
+                        
                     }
                 } else {
                     RecordLevelEvaluateEntry levelEvaluateEntry = recordLevelEvaluateDao.getRecordLevelEvaluateEntry(detailEntry.getID());
                     if (null != levelEvaluateEntry) {
-                        detailDTO.setaPercent(levelEvaluateEntry.getApercent());
+                        if (detailDTO.getIsNew() == 0) {
+                            detailDTO.setaPercent(levelEvaluateEntry.getApercent());
+                        }
+                        
                     }
                 }
                 detailDTOs.add(detailDTO);

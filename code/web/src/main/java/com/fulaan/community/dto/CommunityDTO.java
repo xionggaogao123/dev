@@ -44,6 +44,11 @@ public class CommunityDTO {
      */
     private int top;
 
+    //展示社群 当前用户的角色
+    private String currentUserRole;
+    //社群所属学校
+    private String schoolName;
+
     public CommunityDTO() {
 
     }
@@ -242,6 +247,20 @@ public class CommunityDTO {
     public void setActive(boolean isActive) {
         this.isActive = isActive;
     }
-    
-    
+
+    public String getCurrentUserRole() {
+        return currentUserRole;
+    }
+
+    public void setCurrentUserRole(String currentUserRole) {
+        this.currentUserRole = currentUserRole;
+    }
+
+    public String getSchoolName() {
+        return schoolName;
+    }
+
+    public void setSchoolName(String schoolName) {
+        this.schoolName = schoolName;
+    }
 }

@@ -6,24 +6,39 @@ import com.db.backstage.RoleJurisdictionSettingDao;
 import com.db.backstage.TeacherApproveDao;
 import com.db.backstage.UserLogResultDao;
 import com.db.controlphone.ControlVersionDao;
+import com.db.fcommunity.CommunityDao;
+import com.db.fcommunity.MemberDao;
+import com.db.fcommunity.RemarkDao;
+import com.db.jiaschool.HomeSchoolDao;
+import com.db.jiaschool.SchoolCommunityDao;
 import com.db.user.NewVersionUserRoleDao;
 import com.db.user.UserDao;
 import com.fulaan.backstage.dto.UserManageResultDTO;
 import com.fulaan.cache.CacheHandler;
+import com.fulaan.community.dto.CommunityDTO;
 import com.fulaan.controlphone.dto.ControlVersionDTO;
-import com.fulaan.controlphone.service.ControlPhoneService;
+import com.fulaan.dto.MemberDTO;
+import com.fulaan.jiaschool.dto.SchoolCommunityDTO;
+import com.fulaan.service.MemberService;
 import com.pojo.app.SessionValue;
 import com.pojo.backstage.RoleJurisdictionSettingEntry;
 import com.pojo.backstage.TeacherApproveEntry;
 import com.pojo.backstage.UserLogResultEntry;
 import com.pojo.controlphone.ControlVersionEntry;
+import com.pojo.fcommunity.CommunityEntry;
+import com.pojo.fcommunity.MemberEntry;
+import com.pojo.fcommunity.RemarkEntry;
+import com.pojo.jiaschool.HomeSchoolEntry;
+import com.pojo.jiaschool.SchoolCommunityEntry;
 import com.pojo.user.NewVersionUserRoleEntry;
 import com.pojo.user.UserEntry;
 import org.apache.commons.lang.StringUtils;
 import org.bson.types.ObjectId;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -34,6 +49,9 @@ import java.util.Map;
  */
 @Service
 public class BackStageUserManageService {
+
+    @Autowired
+    private MemberService memberService;
 
     private NewVersionUserRoleDao newVersionUserRoleDao = new NewVersionUserRoleDao();
 
@@ -47,6 +65,17 @@ public class BackStageUserManageService {
     private RoleJurisdictionSettingDao roleJurisdictionSettingDao = new RoleJurisdictionSettingDao();
 
     private ControlVersionDao controlVersionDao = new ControlVersionDao();
+
+    //社群
+    private MemberDao memberDao = new MemberDao();
+
+    private CommunityDao communityDao =new CommunityDao();
+
+//    private RemarkDao remarkDao = new RemarkDao();
+
+    private SchoolCommunityDao schoolCommunityDao = new SchoolCommunityDao();
+
+    private HomeSchoolDao homeSchoolDao = new HomeSchoolDao();
 
     public JSONArray getUserRoleOption() {
         JSONArray jsonArray = new JSONArray();
@@ -136,7 +165,9 @@ public class BackStageUserManageService {
             if (null != userRoleEntry){//用户在学生 或者家长中 有角色
                 userManageResultDTO = new UserManageResultDTO();
                 userManageResultDTO.setId(userRoleEntry.getID().toString());
-                userManageResultDTO.setCommunityCount("");
+                //获取当前用户所有的社群
+                List<MemberEntry> entries2 = memberDao.getCommunityListByUid(userId);
+                userManageResultDTO.setCommunityCount(entries2.size()+"");
                 if (0 == userRoleEntry.getNewRole()){
                     userManageResultDTO.setUserRoleName("家长");
                     //家长，老师 员工 登录 或 未登录
@@ -192,7 +223,9 @@ public class BackStageUserManageService {
             if (null != teacherApproveEntry){//用户在老师 或者员工中 有角色
                 userManageResultDTO = new UserManageResultDTO();
                 userManageResultDTO.setId(teacherApproveEntry.getID().toString());
-                userManageResultDTO.setCommunityCount("");
+                //获取当前用户所有的社群
+                List<MemberEntry> entries2 = memberDao.getCommunityListByUid(userId);
+                userManageResultDTO.setCommunityCount(entries2.size()+"");
                 //家长，老师 员工 登录 或 未登录
                 String cacheUserKey= CacheHandler.getUserKey(userEntry.getID().toString());
                 if(org.apache.commons.lang3.StringUtils.isNotEmpty(cacheUserKey)){
@@ -232,7 +265,9 @@ public class BackStageUserManageService {
                     UserEntry userEntry = userDao.findByUserId(teacherApproveEntry.getUserId());
                     userManageResultDTO = new UserManageResultDTO();
                     userManageResultDTO.setId(teacherApproveEntry.getID().toString());
-                    userManageResultDTO.setCommunityCount("");
+                    //获取当前用户所有的社群
+                    List<MemberEntry> entries2 = memberDao.getCommunityListByUid(teacherApproveEntry.getUserId());
+                    userManageResultDTO.setCommunityCount(entries2.size()+"");
                     //家长，老师 员工 登录 或 未登录
                     String cacheUserKey= CacheHandler.getUserKey(userEntry.getID().toString());
                     if(org.apache.commons.lang3.StringUtils.isNotEmpty(cacheUserKey)){
@@ -277,7 +312,9 @@ public class BackStageUserManageService {
                     UserEntry userEntry = userDao.findByUserId(userRoleEntry.getUserId());
                     userManageResultDTO = new UserManageResultDTO();
                     userManageResultDTO.setId(userRoleEntry.getID().toString());
-                    userManageResultDTO.setCommunityCount("");
+                    //获取当前用户所有的社群
+                    List<MemberEntry> entries2 = memberDao.getCommunityListByUid(userRoleEntry.getUserId());
+                    userManageResultDTO.setCommunityCount(entries2.size()+"");
                     if ("家长".equals(map.get("roleOption"))){
                         userManageResultDTO.setUserRoleName("家长");
                         //家长，老师 员工 登录 或 未登录
@@ -347,4 +384,182 @@ public class BackStageUserManageService {
         }
 
     }
+
+    /**
+     * 获取用户创建的社群
+     * @param map
+     * @return
+     */
+    public Map<String,Object> getUserCreatedCommunity(Map map) {
+        List<CommunityDTO> communityDTOS = new ArrayList<CommunityDTO>();
+        Map<String,Object> result = communityDao.getUserCreatedCommunity(map);
+        List<CommunityEntry> communityEntries = (ArrayList)result.get("communityEntryList");
+//        List<CommunityEntry> communityEntries = communityDao.getUserCreatedCommunity(map);
+
+        for (CommunityEntry communityEntry : communityEntries){
+            CommunityDTO communityDTO = new CommunityDTO(communityEntry);
+            //根据communityId查询关联学校信息
+            List<ObjectId> communityIdL  = new ArrayList<ObjectId>();
+            communityIdL.add(communityEntry.getID());
+            List<SchoolCommunityEntry> schoolCommunityEntries = schoolCommunityDao.getReviewList2(communityIdL);
+            if (0 == schoolCommunityEntries.size()){//没关联学校
+                communityDTO.setSchoolName("");
+            }else {//有关联学校
+                HomeSchoolEntry homeSchoolEntry = homeSchoolDao.getEntryById(schoolCommunityEntries.get(0).getSchoolId());
+                communityDTO.setSchoolName(homeSchoolEntry.getName());
+            }
+
+            int memberCount = memberService.getMemberCount(communityEntry.getGroupId());
+            communityDTO.setMemberCount(memberCount);
+            communityDTOS.add(communityDTO);
+        }
+        result.remove("communityEntryList");
+        result.put("communitydtos",communityDTOS);
+        return result;
+    }
+
+    /**
+     * 获取用户加入的社群
+     * @param map
+     * @return
+     */
+    public Map<String,Object> getUserJoinCommunity(Map map) {
+        List<CommunityDTO> communityDTOS = new ArrayList<CommunityDTO>();
+        //获取当前用户所有的社群
+        List<MemberEntry> memberEntries = memberDao.getCommunityListByUid(new ObjectId(map.get("userId").toString()));
+        List<ObjectId> communityIdList = new ArrayList<ObjectId>();
+        for (MemberEntry memberEntry : memberEntries) {
+            if (!communityIdList.contains(memberEntry.getCommunityId())) {
+                communityIdList.add(memberEntry.getCommunityId());
+            }
+        }
+        Map<String,Object> result = communityDao.getUserJoinCommunityByIdList(communityIdList, map);
+        List<CommunityEntry> communityEntries = (ArrayList)result.get("communityEntryList");
+//        List<CommunityEntry> communityEntries = communityDao.getUserJoinCommunityByIdList(communityIdList, map);
+        for (CommunityEntry communityEntry : communityEntries) {
+            CommunityDTO communityDTO = new CommunityDTO(communityEntry);
+            //根据communityId查询关联学校信息
+            List<ObjectId> communityIdL  = new ArrayList<ObjectId>();
+            communityIdL.add(communityEntry.getID());
+            List<SchoolCommunityEntry> schoolCommunityEntries = schoolCommunityDao.getReviewList2(communityIdL);
+            if (0 == schoolCommunityEntries.size()){//没关联学校
+                communityDTO.setSchoolName("");
+            }else {//有关联学校
+                HomeSchoolEntry homeSchoolEntry = homeSchoolDao.getEntryById(schoolCommunityEntries.get(0).getSchoolId());
+                communityDTO.setSchoolName(homeSchoolEntry.getName());
+            }
+
+
+            List<MemberEntry> entries = memberDao.getAllMembers(communityEntry.getGroupId());
+            for (MemberEntry memberEntry : entries){
+                if (new ObjectId(map.get("userId").toString()).equals(memberEntry.getUserId())){
+                    communityDTO.setCurrentUserRole(new MemberDTO(memberEntry).getRoleStr());
+                }
+                if (2 == memberEntry.getRole()){
+                    communityDTO.setOwerName(memberEntry.getUserName());
+                }
+            }
+            communityDTOS.add(communityDTO);
+        }
+        result.remove("communityEntryList");
+        result.put("communitydtos",communityDTOS);
+        return result;
+    }
+
+    /**
+     * 查询社群成员
+     * @param map
+     * @return
+     */
+    public Map<String,Object> getCommunityMember(Map map) {
+        Map<String,Object> result = new HashMap<String, Object>();
+
+        ObjectId groupId = new ObjectId(map.get("groupId").toString());
+//        ObjectId userId = new ObjectId(map.get("userId").toString());
+//        List<MemberEntry> entries = memberDao.getAllMembers(groupId);
+        result = memberDao.getAllMembersForPage(map);
+        List<MemberEntry> entries = (ArrayList)result.get("memberEntries");
+        List<MemberDTO> memberDTOs = new ArrayList<MemberDTO>();
+        List<ObjectId> userIds=new ArrayList<ObjectId>();
+        for (MemberEntry entry : entries) {
+            userIds.add(entry.getUserId());
+        }
+//        Map<ObjectId,RemarkEntry> remarkEntryMap=new HashMap<ObjectId, RemarkEntry>();
+//        if(null!=userId) {
+//            remarkEntryMap=remarkDao.find(userId, userIds);
+//        }
+        for (MemberEntry entry : entries) {
+            MemberDTO memberDTO=new MemberDTO(entry);
+//            if(null!=remarkEntryMap){
+//                RemarkEntry remarkEntry=remarkEntryMap.get(entry.getUserId());
+//                if(null!=remarkEntry){
+//                    memberDTO.setNickName(remarkEntry.getRemark());
+//                }
+//            }
+            memberDTOs.add(memberDTO);
+        }
+        result.remove("memberEntries");
+        result.put("memberdtos",memberDTOs);
+        return result;
+    }
+
+    public String setCommunityRole(Map map) {
+        String msg = "";
+//        CommunityEntry communityEntry = communityDao.findBySearchId(map.get("searchParam").toString());
+        CommunityEntry communityEntry = communityDao.findByObjectId(new ObjectId(map.get("communityId").toString()));
+        //社群信息校验
+        if (null == communityEntry){
+//            communityEntry = communityDao.findByName(map.get("searchParam").toString());
+//            if (null == communityEntry){
+                return "无该社群，请确认输入的社群信息是否正确！";
+//            }
+        }
+
+        //用户信息校验
+        UserEntry userEntry = userDao.findByUserId(new ObjectId(map.get("userId").toString()));
+        if(null == userEntry){
+            return "当前用户信息有误！";
+        }
+
+//        Boolean flag = memberDao.isCommunityMember(communityEntry.getID(),userEntry.getID());
+//        if(true == flag){
+//            return "该用户在该社群中！";
+//        }
+//        MemberEntry memberEntry = new MemberEntry(
+//                userEntry.getID(),
+//                communityEntry.getGroupId(),
+//                communityEntry.getID(),
+//                userEntry.getNickName(),
+//                userEntry.getAvatar(),
+//                Integer.parseInt(map.get("role").toString()),
+//                userEntry.getUserName()
+//
+//        );
+//        memberEntry.setRole(0);
+        memberDao.updateRoleById(map);
+        msg = "操作成功！";
+        return msg;
+    }
+
+    /**
+     * 搜索社群信息
+     * searchParam(包括searchId（社群查找Id）communityName)
+     * @param map
+     * @return
+     */
+    public CommunityDTO getCommunityInfo(Map map) {
+        CommunityDTO communityDTO = null;
+        CommunityEntry communityEntry = communityDao.findBySearchId(map.get("searchParam").toString());
+        //社群信息校验
+        if (null == communityEntry){
+            communityEntry = communityDao.findByName(map.get("searchParam").toString());
+            if (null != communityEntry){
+                communityDTO = new CommunityDTO(communityEntry);
+            }
+        }else {
+            communityDTO = new CommunityDTO(communityEntry);
+        }
+        return communityDTO;
+    }
+
 }

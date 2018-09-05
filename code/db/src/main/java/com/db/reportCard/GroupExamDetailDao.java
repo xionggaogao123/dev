@@ -73,8 +73,15 @@ public class GroupExamDetailDao extends BaseDao{
     public int countMySendGroupExamDetailEntries(
             ObjectId subjectId,ObjectId examTypeId,int status,
             ObjectId userId){
+        
+        BasicDBList list = new BasicDBList();
+        BasicDBObject query1 = new BasicDBObject("isNew", Constant.ZERO);
+        BasicDBObject query2 = new BasicDBObject("isNew", new BasicDBObject(Constant.MONGO_EXIST, false));
+        list.add(query1);
+        list.add(query2);
         BasicDBObject query=new BasicDBObject()
                 .append("uid",userId);
+        query.put(Constant.MONGO_OR, list);
         if(null!=subjectId){
             query.append("sid",subjectId);
         }

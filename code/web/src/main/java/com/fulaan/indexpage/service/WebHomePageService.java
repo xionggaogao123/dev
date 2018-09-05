@@ -201,7 +201,7 @@ public class WebHomePageService {
         objectIdList.addAll(set);
         return objectIdList;
     }
-    public Map<String,Object> gatherReportCardList(String sId,String examType,
+    public Map<String,Object> gatherReportCardList(int i,String sId,String examType,
                                                    int status,
                                                    ObjectId userId,int page,int pageSize){
         Map<String,Object> result=new HashMap<String,Object>();
@@ -218,7 +218,7 @@ public class WebHomePageService {
         int count=webHomePageDao.countGatherReports(receiveIds,
                 examTypeId, subjectId, status,userId);
         List<GroupExamDetailDTO> detailDTOs=new ArrayList<GroupExamDetailDTO>();
-        getGatherReportCardList(detailDTOs, entries);
+        getGatherReportCardList(i,detailDTOs, entries);
         result.put("list", detailDTOs);
         result.put("count", count);
         result.put("page", page);
@@ -317,7 +317,7 @@ public class WebHomePageService {
         return result;
     }
 
-    public void getGatherReportCardList(List<GroupExamDetailDTO> detailDTOs,List<WebHomePageEntry> entries){
+    public void getGatherReportCardList(int ii,List<GroupExamDetailDTO> detailDTOs,List<WebHomePageEntry> entries){
         List<ObjectId> reportCardIds = new ArrayList<ObjectId>();
         List<ObjectId> reportCardSendIds = new ArrayList<ObjectId>();
         Map<ObjectId,Integer> reportCardStatus=new HashMap<ObjectId, Integer>();
@@ -344,8 +344,15 @@ public class WebHomePageService {
                 groupExamIds.add(groupExamUserRecordEntry.getGroupExamDetailId());
                 childUserIds.add(groupExamUserRecordEntry.getUserId());
             }
-            Map<ObjectId, GroupExamDetailEntry> groupExamDetailEntryMap = groupExamDetailDao
+            Map<ObjectId, GroupExamDetailEntry> groupExamDetailEntryMap = new HashMap<ObjectId, GroupExamDetailEntry>();
+            if (ii == 0) {
+                groupExamDetailEntryMap = groupExamDetailDao
                     .getGroupExamDetailMapOld(new ArrayList<ObjectId>(groupExamIds));
+            } else {
+                groupExamDetailEntryMap = groupExamDetailDao
+                    .getGroupExamDetailMap(new ArrayList<ObjectId>(groupExamIds));
+            }
+            
             initAllAvailableIds(communityIds,userIds,subjectIds,examTypeIds,groupExamDetailEntryMap);
             Map<ObjectId, CommunityEntry> communityEntryMap = communityDao
                     .findMapInfo(new ArrayList<ObjectId>(communityIds));
@@ -436,8 +443,16 @@ public class WebHomePageService {
             Set<ObjectId> communityIds = new HashSet<ObjectId>();
             Set<ObjectId> subjectIds = new HashSet<ObjectId>();
             Set<ObjectId> examTypeIds = new HashSet<ObjectId>();
-            Map<ObjectId, GroupExamDetailEntry> groupExamDetailEntryMap = groupExamDetailDao
+            Map<ObjectId, GroupExamDetailEntry> groupExamDetailEntryMap = new HashMap<ObjectId, GroupExamDetailEntry>();
+            if (ii == 0) {
+                groupExamDetailEntryMap = groupExamDetailDao
+                    .getGroupExamDetailMapOld(reportCardSendIds);
+            } else {
+                groupExamDetailEntryMap = groupExamDetailDao
                     .getGroupExamDetailMap(reportCardSendIds);
+            }
+            /*Map<ObjectId, GroupExamDetailEntry> groupExamDetailEntryMap = groupExamDetailDao
+                    .getGroupExamDetailMap(reportCardSendIds);*/
             initAllAvailableIds(communityIds,userIds,subjectIds,examTypeIds,groupExamDetailEntryMap);
             Map<ObjectId, CommunityEntry> communityEntryMap = communityDao
                     .findMapInfo(new ArrayList<ObjectId>(communityIds));

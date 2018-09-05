@@ -597,7 +597,7 @@ public class DefaultReportCardNewController extends BaseController {
  ){
      RespObj respObj=new RespObj(Constant.FAILD_CODE);
      try{
-         Map<String,Object> retMap= webHomePageService.gatherReportCardList(
+         Map<String,Object> retMap= webHomePageService.gatherReportCardList(1,
                  subjectId,examType,status,getUserId(),page,pageSize
          );
          respObj.setMessage(retMap);

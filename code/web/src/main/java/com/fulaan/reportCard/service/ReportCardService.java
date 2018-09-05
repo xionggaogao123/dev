@@ -946,8 +946,11 @@ public class ReportCardService {
                             detailDTO.setExamTypeName(examTypeEntry.getExamTypeName());
                         }
                     }
-                    detailDTO.setScore(recordEntry.getScore());
-                    detailDTO.setScoreLevel(recordEntry.getScoreLevel());
+                    if (detailDTO.getIsNew() == 0) {
+                        detailDTO.setScore(recordEntry.getScore());
+                        detailDTO.setScoreLevel(recordEntry.getScoreLevel());
+                    }
+                    
                     UserEntry mainUserEntry = mainUserEntryMap.get(detailEntry.getUserId());
                     if (null != mainUserEntry) {
                         detailDTO.setUserName(StringUtils.isNotEmpty(mainUserEntry.getNickName())?mainUserEntry.getNickName():mainUserEntry.getUserName());

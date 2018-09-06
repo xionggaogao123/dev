@@ -2010,6 +2010,7 @@ public class IndexPageService {
         map.put("systemMessage",obmap);
         //新集合通知
         List<ObjectId>  userIds = newVersionCommunityBindDao.getIdsByMainUserId(userId);
+        userIds.add(userId);
         List<ObjectId> cntactIdList = indexPageDao.getNewPageList(dlist, userId, page, pageSize, Constant.EIGHT,userIds);
         int count = indexPageDao.countNewPageList(dlist, userId, Constant.EIGHT,userIds);
         List<IndexContentDTO> list2 = new ArrayList<IndexContentDTO>();
@@ -2028,11 +2029,6 @@ public class IndexPageService {
             dto.setId(indexContentEntry.getContactId().toString());
            // Index
             dto.setTimeExpression("");
-            if(userId.toString().equals(uid.toString())){
-                dto.setIsOwner(true);
-            }else{
-                dto.setIsOwner(false);
-            }
             if(indexContentEntry.getReaList()!=null && indexContentEntry.getReaList().contains(userId)){
                 dto.setIsRead(1);
             }else{
@@ -2049,6 +2045,25 @@ public class IndexPageService {
                 String name = StringUtils.isNotEmpty(userEntry.getNickName())?userEntry.getNickName():userEntry.getUserName();
                 dto.setUserName(name);
                 dto.setAvatar(AvatarUtils.getAvatar(userEntry.getAvatar(),userEntry.getRole(),userEntry.getSex()));
+            }
+            if(userId.toString().equals(uid.toString())){
+                dto.setIsOwner(true);
+            }else{
+                if(indexContentEntry.getContactType()==8){
+                    String str = indexContentEntry.getUserName();
+                    String[] strings = str.split(",");
+                    for(String s:strings){
+                        for(ObjectId oid : userIds){
+                            if(s.contains(oid.toString())){
+                                String[] strings1 = s.split("#");
+                                if(strings1.length==2){
+                                    dto.setTag(strings1[1]);
+                                }
+                            }
+                        }
+                    }
+                }
+                dto.setIsOwner(false);
             }
             list2.add(dto);
         }

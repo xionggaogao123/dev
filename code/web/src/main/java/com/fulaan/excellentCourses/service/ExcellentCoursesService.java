@@ -9,6 +9,7 @@ import com.db.user.NewVersionUserRoleDao;
 import com.db.user.UserDao;
 import com.fulaan.backstage.dto.LogMessageDTO;
 import com.fulaan.cache.CacheHandler;
+import com.fulaan.community.dto.CommunityDTO;
 import com.fulaan.excellentCourses.dto.*;
 import com.fulaan.newVersionBind.service.NewVersionBindService;
 import com.fulaan.pojo.User;
@@ -3633,6 +3634,46 @@ public class ExcellentCoursesService {
         }
         return dtos;
     }
+
+    public List<CommunityDTO> getCommunityList(ObjectId id,ObjectId userId){
+        ExcellentCoursesEntry excellentCoursesEntry =  excellentCoursesDao.getEntry(id);
+        if(excellentCoursesEntry==null){
+            return new ArrayList<CommunityDTO>();
+        }
+        List<ObjectId> communityIdList = excellentCoursesEntry.getCommunityIdList();
+        List<CommunityDTO> objectIdList = communityService.getCommunitys2(userId, 1, 200);
+        for(CommunityDTO communityDTO:objectIdList){
+            if(communityIdList.contains(new ObjectId(communityDTO.getId()))){
+                communityDTO.setJoin(true);
+            }else{
+                communityDTO.setJoin(false);
+            }
+        }
+        List<CommunityDTO> objectIdList2 = new ArrayList<CommunityDTO>();
+        for(CommunityDTO communityDTO : objectIdList){
+            if(!communityDTO.getName().equals("复兰社区") &&  !communityDTO.getName().equals("复兰大学")){
+                objectIdList2.add(communityDTO);
+            }
+        }
+        return objectIdList2;
+    }
+
+    public void updateCommunityList(ObjectId id,String communityIds){
+        ExcellentCoursesEntry excellentCoursesEntry =  excellentCoursesDao.getEntry(id);
+        if(excellentCoursesEntry==null){
+           return;
+        }
+        String[] str = communityIds.split(",");
+        List<ObjectId> objectIdList = new ArrayList<ObjectId>();
+        for(String string:str){
+            if(ObjectId.isValid(string)){
+                objectIdList.add(new ObjectId(string));
+            }
+        }
+        excellentCoursesEntry.setCommunityIdList(objectIdList);
+        excellentCoursesDao.addEntry(excellentCoursesEntry);
+    }
+
 
     //cc 获取直播间状态
     public int getRoomStatus(String roomId){

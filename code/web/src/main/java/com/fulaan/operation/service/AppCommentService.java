@@ -269,6 +269,8 @@ public class AppCommentService {
             String tutorId = ma.get(dto3.getID().toString());
             if(tutorId!=null && ObjectId.isValid(tutorId)){
                 en.setTutorId(new ObjectId(tutorId));
+            }else{
+                en.setTutorId(null);
             }
             en.setID(null);
             en.setRecipientId(dto3.getID());

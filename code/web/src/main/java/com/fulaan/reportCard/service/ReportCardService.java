@@ -329,13 +329,24 @@ public class ReportCardService {
         GroupExamDetailEntry entry = groupExamDetailDao.getEntryById(groupExamDetailId);
         //添加红点
         redDotService.addThirdList(entry.getID(),entry.getCommunityId(), entry.getUserId(), ApplyTypeEn.repordcard.getType());
-
+        List<GroupExamUserRecordEntry> groupExamUserRecordEntries = groupExamUserRecordDao.getExamUserRecordEntries(groupExamDetailId);
+        List<String>  objectIdList = new ArrayList<String>();
+        objectIdList.add(entry.getUserId().toString());
+        StringBuffer sb = new StringBuffer();
+        for (GroupExamUserRecordEntry entry4 : groupExamUserRecordEntries) {
+            objectIdList.add(entry4.getUserId().toString());
+            sb.append(entry4.getUserId().toString());
+            sb.append("#");
+            sb.append(entry4.getID().toString());
+            sb.append(",");
+        }
         //新首页
         IndexPageDTO dto2 = new IndexPageDTO();
         dto2.setType(CommunityType.reportCard.getType());
         dto2.setUserId(entry.getUserId().toString());
         dto2.setCommunityId(entry.getCommunityId().toString());
         dto2.setContactId(entry.getID().toString());
+        dto2.setReceiveIdList(objectIdList);
         IndexPageEntry entry2 = dto2.buildAddEntry();
         indexPageDao.addEntry(entry2);
         SubjectClassEntry subjectClassEntry = subjectClassDao.getEntry(entry.getSubjectId());
@@ -357,7 +368,7 @@ public class ReportCardService {
                 new ArrayList<Attachement>(),
                 new ArrayList<Attachement>(),
                 groupName,
-                "");
+                sb.toString());
         IndexContentEntry indexContentEntry = indexContentDTO.buildEntry(entry.getUserId().toString(),entry.getSubjectId().toString(), entry.getGroupId().toString(),entry.getCommunityId().toString(),3);
         indexContentEntry.setReadList(new ArrayList<ObjectId>());
         indexContentEntry.setContactId(entry.getID());
@@ -1216,9 +1227,14 @@ public class ReportCardService {
             List<GroupExamUserRecordEntry> recordEntries = groupExamUserRecordDao.getExamUserRecordEntries(new ObjectId(groupExamDetailId), -1, -1, -1, 1);
             examScoreDTOs.clear();
             List<String>  objectIdList = new ArrayList<String>();
+            StringBuffer sb = new StringBuffer();
             for (GroupExamUserRecordEntry entry : recordEntries) {
                 examScoreDTOs.add(new GroupExamUserRecordDTO(entry));
                 objectIdList.add(entry.getUserId().toString());
+                sb.append(entry.getUserId().toString());
+                sb.append("#");
+                sb.append(entry.getID().toString());
+                sb.append(",");
             }
             GroupExamDetailEntry detailEntry = groupExamDetailDao.getEntryById(new ObjectId(groupExamDetailId));
             if (detailEntry.getRecordScoreType() == Constant.ONE) {
@@ -1282,6 +1298,7 @@ public class ReportCardService {
                 dto2.setUserId(detailEntry.getUserId().toString());
                 dto2.setCommunityId(detailEntry.getCommunityId().toString());
                 dto2.setContactId(detailEntry.getID().toString());
+                objectIdList.add(detailEntry.getUserId().toString());
                 dto2.setReceiveIdList(objectIdList);
                 IndexPageEntry entry2 = dto2.buildAddEntry();
                 indexPageDao.addEntry(entry2);
@@ -1298,13 +1315,13 @@ public class ReportCardService {
                 IndexContentDTO indexContentDTO = new IndexContentDTO(
                         name,
                         "通知—成绩单",
-                        detailEntry.getExamName(),
+                        name,
                         new ArrayList<VideoDTO>(),
                         new ArrayList<Attachement>(),
                         new ArrayList<Attachement>(),
                         new ArrayList<Attachement>(),
                         groupName,
-                        "");
+                        sb.toString());
                 IndexContentEntry indexContentEntry = indexContentDTO.buildEntry(detailEntry.getUserId().toString(),detailEntry.getSubjectId().toString(), detailEntry.getGroupId().toString(),detailEntry.getCommunityId().toString(),3);
                 indexContentEntry.setReadList(new ArrayList<ObjectId>());
                 indexContentEntry.setContactId(detailEntry.getID());
